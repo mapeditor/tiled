@@ -1,7 +1,7 @@
 /*
  * changeobjectgroupproperties.cpp
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
- * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2010-2022, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -21,41 +21,52 @@
 
 #include "changeobjectgroupproperties.h"
 
-#include "mapdocument.h"
-#include "objectgroup.h"
-#include "mapobjectmodel.h"
+#include "changeevents.h"
+#include "document.h"
 
 #include <QCoreApplication>
 
-using namespace Tiled;
+namespace Tiled {
 
-ChangeObjectGroupProperties::ChangeObjectGroupProperties(
-        MapDocument *mapDocument,
-        ObjectGroup *objectGroup,
-        const QColor &newColor,
-        ObjectGroup::DrawOrder newDrawOrder)
-    : QUndoCommand(
-        QCoreApplication::translate(
-            "Undo Commands", "Change Object Layer Properties"))
-    , mMapDocument(mapDocument)
-    , mObjectGroup(objectGroup)
-    , mUndoColor(objectGroup->color())
-    , mRedoColor(newColor)
-    , mUndoDrawOrder(objectGroup->drawOrder())
-    , mRedoDrawOrder(newDrawOrder)
+ChangeObjectGroupColor::ChangeObjectGroupColor(Document *document,
+                                               QList<ObjectGroup *> objectGroups,
+                                               const QColor &newColor)
+    : ChangeValue<ObjectGroup, QColor>(document, std::move(objectGroups), newColor)
 {
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Object Layer Color"));
 }
 
-void ChangeObjectGroupProperties::redo()
+QColor ChangeObjectGroupColor::getValue(const ObjectGroup *objectGroup) const
 {
-    mObjectGroup->setColor(mRedoColor);
-    mObjectGroup->setDrawOrder(mRedoDrawOrder);
-    emit mMapDocument->objectGroupChanged(mObjectGroup);
+    return objectGroup->color();
 }
 
-void ChangeObjectGroupProperties::undo()
+void ChangeObjectGroupColor::setValue(ObjectGroup *objectGroup, const QColor &value) const
 {
-    mObjectGroup->setColor(mUndoColor);
-    mObjectGroup->setDrawOrder(mUndoDrawOrder);
-    emit mMapDocument->objectGroupChanged(mObjectGroup);
+    objectGroup->setColor(value);
+    emit document()->changed(ObjectGroupChangeEvent(objectGroup, ObjectGroupChangeEvent::ColorProperty));
 }
+
+
+ChangeObjectGroupDrawOrder::ChangeObjectGroupDrawOrder(Document *document,
+                                                       QList<ObjectGroup *> objectGroups,
+                                                       ObjectGroup::DrawOrder newDrawOrder)
+    : ChangeValue<ObjectGroup, ObjectGroup::DrawOrder>(document, std::move(objectGroups), newDrawOrder)
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Object Layer Draw Order"));
+}
+
+ObjectGroup::DrawOrder ChangeObjectGroupDrawOrder::getValue(const ObjectGroup *objectGroup) const
+{
+    return objectGroup->drawOrder();
+}
+
+void ChangeObjectGroupDrawOrder::setValue(ObjectGroup *objectGroup, const ObjectGroup::DrawOrder &value) const
+{
+    objectGroup->setDrawOrder(value);
+    emit document()->changed(ObjectGroupChangeEvent(objectGroup, ObjectGroupChangeEvent::DrawOrderProperty));
+}
+
+} // namespace Tiled

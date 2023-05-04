@@ -1,6 +1,8 @@
 /*
  * automappingutils.cpp
- * Copyright 2012, Stefan Beller, stefanbeller@googlemail.com
+ * Copyright 2012, Stefan Beller <stefanbeller@googlemail.com>
+ * Copyright 2015, Seanba <sean@seanba.com>
+ * Copyright 2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -18,79 +20,73 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include "automappingutils.h"
 
-#include "addremovemapobject.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "maprenderer.h"
 #include "objectgroup.h"
 
-#include <QUndoStack>
-
 namespace Tiled {
 
-void eraseRegionObjectGroup(MapDocument *mapDocument,
-                            ObjectGroup *layer,
-                            const QRegion &where)
+QRect objectTileRect(const MapRenderer &renderer,
+                     const MapObject &object)
 {
-    QUndoStack *undo = mapDocument->undoStack();
+    // TODO: we are checking bounds, which is only correct for rectangles and
+    // tile objects. polygons and polylines are not covered correctly by this
+    // erase method (we are in fact deleting too many objects)
+    // TODO2: toAlignedRect may even break rects.
 
-    const auto objects = layer->objects();
-    for (MapObject *obj : objects) {
-        // TODO: we are checking bounds, which is only correct for rectangles and
-        // tile objects. polygons and polylines are not covered correctly by this
-        // erase method (we are in fact deleting too many objects)
-        // TODO2: toAlignedRect may even break rects.
+    // Convert the boundary of the object into tile space
+    const QRectF bounds = object.boundsUseTile();
+    const QPointF topLeft = renderer.pixelToTileCoords(bounds.topLeft());
+    const QPointF bottomRight = renderer.pixelToTileCoords(bounds.bottomRight());
 
-        // Convert the boundary of the object into tile space
-        const QRectF objBounds = obj->boundsUseTile();
-        QPointF tl = mapDocument->renderer()->pixelToTileCoords(objBounds.topLeft());
-        QPointF tr = mapDocument->renderer()->pixelToTileCoords(objBounds.topRight());
-        QPointF br = mapDocument->renderer()->pixelToTileCoords(objBounds.bottomRight());
-        QPointF bl = mapDocument->renderer()->pixelToTileCoords(objBounds.bottomLeft());
-
-        QRectF objInTileSpace;
-        objInTileSpace.setTopLeft(tl);
-        objInTileSpace.setTopRight(tr);
-        objInTileSpace.setBottomRight(br);
-        objInTileSpace.setBottomLeft(bl);
-
-        const QRect objAlignedRect = objInTileSpace.toAlignedRect();
-        if (where.intersects(objAlignedRect))
-            undo->push(new RemoveMapObjects(mapDocument, obj));
-    }
+    return QRectF(topLeft, bottomRight).toAlignedRect();
 }
 
-QRegion tileRegionOfObjectGroup(const ObjectGroup *layer)
+QList<MapObject*> objectsToErase(const MapDocument *mapDocument,
+                                 const ObjectGroup *layer,
+                                 const QRegion &where)
 {
-    QRegion ret;
-    for (MapObject *obj : layer->objects()) {
-        // TODO: we are using bounds, which is only correct for rectangles and
-        // tile objects. polygons and polylines are not probably covering less
-        // tiles.
-        ret += obj->bounds().toAlignedRect();
+    QList<MapObject*> objectsToErase;
+
+    for (MapObject *object : layer->objects()) {
+        const QRect tileRect = objectTileRect(*mapDocument->renderer(), *object);
+        if (where.intersects(tileRect))
+            objectsToErase.append(object);
     }
-    return ret;
+
+    return objectsToErase;
 }
 
-const QList<MapObject*> objectsInRegion(const ObjectGroup *layer,
-                                        const QRegion &where)
+QRegion tileRegionOfObjectGroup(const MapRenderer &renderer,
+                                const ObjectGroup *objectGroup)
+{
+    QRegion region;
+    for (const MapObject *object : objectGroup->objects())
+        region |= objectTileRect(renderer, *object);
+    return region;
+}
+
+/**
+ * Returns the list of objects occupying the given rectangle (in pixels).
+ */
+QList<MapObject*> objectsInRegion(const ObjectGroup *objectGroup,
+                                  const QRectF &where)
 {
     QList<MapObject*> ret;
-    for (MapObject *obj : layer->objects()) {
+    for (MapObject *object : objectGroup->objects()) {
         // TODO: we are checking bounds, which is only correct for rectangles and
         // tile objects. polygons and polylines are not covered correctly by this
         // erase method (we are in fact deleting too many objects)
-        // TODO2: toAlignedRect may even break rects.
-        const QRect rect = obj->boundsUseTile().toAlignedRect();
+        const QRectF rect = object->boundsUseTile();
 
         // QRegion::intersects() returns false for empty regions even if they are
         // contained within the region, so we also check for containment of the
         // top left to include the case of zero size objects.
         if (where.intersects(rect) || where.contains(rect.topLeft()))
-            ret += obj;
+            ret += object;
     }
     return ret;
 }

@@ -24,10 +24,11 @@
 
 #include <QDateTime>
 #include <QObject>
-#include <QPointer>
 #include <QSharedPointer>
 #include <QString>
 #include <QVariant>
+
+#include <memory>
 
 class QUndoStack;
 
@@ -37,6 +38,7 @@ class FileFormat;
 class Object;
 class Tile;
 
+class ChangeEvent;
 class EditableAsset;
 
 /**
@@ -48,12 +50,13 @@ class Document : public QObject,
     Q_OBJECT
 
     Q_PROPERTY(QString fileName READ fileName NOTIFY fileNameChanged)
-    Q_PROPERTY(bool modified READ isModified)
+    Q_PROPERTY(bool modified READ isModified NOTIFY modifiedChanged)
 
 public:
     enum DocumentType {
         MapDocumentType,
-        TilesetDocumentType
+        TilesetDocumentType,
+        WorldDocumentType
     };
 
     Document(DocumentType type,
@@ -64,6 +67,7 @@ public:
     DocumentType type() const { return mType; }
 
     QString fileName() const;
+    QString canonicalFilePath() const;
 
     /**
      * Returns the name with which to display this document. It is the file name
@@ -87,17 +91,20 @@ public:
 
     QDateTime lastSaved() const { return mLastSaved; }
 
-    QUndoStack *undoStack();
+    QUndoStack *undoStack() const;
     bool isModified() const;
 
-    Q_INVOKABLE virtual Tiled::EditableAsset *editable() = 0;
+    EditableAsset *editable();
+    void setEditable(std::unique_ptr<EditableAsset> editable);
 
     Object *currentObject() const { return mCurrentObject; }
     void setCurrentObject(Object *object);
+    void setCurrentObject(Object *object, Document *owningDocument);
 
     virtual QList<Object*> currentObjects() const;
 
     void setProperty(Object *object, const QString &name, const QVariant &value);
+    void setPropertyMember(Object *object, const QStringList &path, const QVariant &value);
     void setProperties(Object *object, const Properties &properties);
     void removeProperty(Object *object, const QString &name);
 
@@ -107,20 +114,25 @@ public:
     bool changedOnDisk() const;
     void setChangedOnDisk(bool changedOnDisk);
 
-    QString lastExportFileName() const;
-    void setLastExportFileName(const QString &fileName);
+    virtual QString lastExportFileName() const = 0;
+    virtual void setLastExportFileName(const QString &fileName) = 0;
 
     virtual FileFormat *exportFormat() const = 0;
     virtual void setExportFormat(FileFormat *format) = 0;
 
-    static const QList<Document*> &documentInstances();
+    virtual void checkIssues() {}
+
+    static const QHash<QString, Document *> &documentInstances();
 
 signals:
+    void changed(const ChangeEvent &change);
     void saved();
 
     void fileNameChanged(const QString &fileName,
                          const QString &oldFileName);
+    void modifiedChanged();
 
+    void currentObjectSet(Object *object);
     void currentObjectChanged(Object *object);
 
     /**
@@ -136,27 +148,78 @@ signals:
     void ignoreBrokenLinksChanged(bool ignoreBrokenLinks);
 
 protected:
+    virtual std::unique_ptr<EditableAsset> createEditable() = 0;
+    virtual bool isModifiedImpl() const;
+
+    void updateIsModified();
+
     void setFileName(const QString &fileName);
 
-    DocumentType mType;
-    QString mFileName;
+    void checkFilePathProperties(const Object *object) const;
+
     QDateTime mLastSaved;
 
-    Object *mCurrentObject;             /**< Current properties object. */
+    Object *mCurrentObject = nullptr;   /**< Current properties object. */
+    Document *mCurrentObjectDocument = nullptr;
 
-    bool mChangedOnDisk;
-    bool mIgnoreBrokenLinks;
-
-    QString mLastExportFileName;
+    std::unique_ptr<EditableAsset> mEditable;
 
 private:
-    static QList<Document*> sDocumentInstances;
+    void currentObjectDocumentChanged(const ChangeEvent &change);
+    void currentObjectDocumentDestroyed();
+
+    const DocumentType mType;
+
+    QString mFileName;
+    QString mCanonicalFilePath;
+
+    QUndoStack * const mUndoStack;
+
+    bool mModified = false;
+    bool mChangedOnDisk = false;
+    bool mIgnoreBrokenLinks = false;
+
+    static QHash<QString, Document*> sDocumentInstances;
 };
 
 
 inline QString Document::fileName() const
 {
     return mFileName;
+}
+
+inline QString Document::canonicalFilePath() const
+{
+    return mCanonicalFilePath;
+}
+
+/**
+ * Returns the undo stack of this document. Should be used to push any commands
+ * on that modify the document.
+ */
+inline QUndoStack *Document::undoStack() const
+{
+    return mUndoStack;
+}
+
+/**
+ * Returns whether the document has unsaved changes.
+ */
+inline bool Document::isModified() const
+{
+    return mModified;
+}
+
+/**
+ * Sets the current object for this document (displayed in the Properties view).
+ *
+ * This version should only be used with objects owned by this document. See
+ * setCurrentObject(Object*, Document*) for setting it to an object from
+ * another document.
+ */
+inline void Document::setCurrentObject(Object *object)
+{
+    setCurrentObject(object, this);
 }
 
 inline bool Document::ignoreBrokenLinks() const
@@ -169,17 +232,7 @@ inline bool Document::changedOnDisk() const
     return mChangedOnDisk;
 }
 
-inline QString Document::lastExportFileName() const
-{
-    return mLastExportFileName;
-}
-
-inline void Document::setLastExportFileName(const QString &fileName)
-{
-    mLastExportFileName = fileName;
-}
-
-inline const QList<Document *> &Document::documentInstances()
+inline const QHash<QString, Document *> &Document::documentInstances()
 {
     return sDocumentInstances;
 }

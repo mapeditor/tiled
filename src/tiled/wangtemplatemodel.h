@@ -26,9 +26,8 @@
 
 namespace Tiled {
 
-
 /**
- * A model for getting the info for a wang set template of a given WangSet
+ * A model for getting the info for a wang set template of a given WangSet.
  */
 class WangTemplateModel : public QAbstractListModel
 {
@@ -42,17 +41,13 @@ public:
     WangTemplateModel(WangSet *wangSet, QObject *parent = nullptr);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-
     QVariant data(const QModelIndex &index, int role) const override;
 
     WangId wangIdAt(const QModelIndex &index) const;
-
     QModelIndex wangIdIndex(WangId wangId) const;
 
     WangSet *wangSet() const { return mWangSet; }
     void setWangSet(WangSet *wangSet);
-
-    void resetModel();
 
 public slots:
     void wangSetChanged();

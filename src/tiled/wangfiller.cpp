@@ -20,14 +20,16 @@
 
 #include "wangfiller.h"
 
+#include "grid.h"
+#include "hexagonalrenderer.h"
+#include "map.h"
 #include "randompicker.h"
-#include "staggeredrenderer.h"
 #include "tilelayer.h"
 #include "wangset.h"
 
 using namespace Tiled;
 
-static const QPoint aroundTilePoints[] = {
+static constexpr QPoint aroundTilePoints[WangId::NumIndexes] = {
     QPoint( 0, -1),
     QPoint( 1, -1),
     QPoint( 1,  0),
@@ -38,32 +40,25 @@ static const QPoint aroundTilePoints[] = {
     QPoint(-1, -1)
 };
 
-WangFiller::WangFiller(WangSet *wangSet,
-                       StaggeredRenderer *staggeredRenderer,
-                       Map::StaggerAxis staggerAxis)
+WangFiller::WangFiller(const WangSet &wangSet,
+                       const MapRenderer *mapRenderer)
     : mWangSet(wangSet)
-    , mStaggeredRenderer(staggeredRenderer)
-    , mStaggerAxis(staggerAxis)
+    , mMapRenderer(mapRenderer)
+    , mHexagonalRenderer(dynamic_cast<const HexagonalRenderer*>(mapRenderer))
 {
-}
-
-void WangFiller::setWangSet(WangSet *wangSet)
-{
-    mWangSet = wangSet;
 }
 
 static void getSurroundingPoints(QPoint point,
-                                 StaggeredRenderer *staggeredRenderer,
-                                 Map::StaggerAxis staggerAxis,
+                                 const HexagonalRenderer *hexagonalRenderer,
                                  QPoint *points)
 {
-    if (staggeredRenderer) {
-        points[0] = staggeredRenderer->topRight(point.x(), point.y());
-        points[2] = staggeredRenderer->bottomRight(point.x(), point.y());
-        points[4] = staggeredRenderer->bottomLeft(point.x(), point.y());
-        points[6] = staggeredRenderer->topLeft(point.x(), point.y());
+    if (hexagonalRenderer) {
+        points[0] = hexagonalRenderer->topRight(point.x(), point.y());
+        points[2] = hexagonalRenderer->bottomRight(point.x(), point.y());
+        points[4] = hexagonalRenderer->bottomLeft(point.x(), point.y());
+        points[6] = hexagonalRenderer->topLeft(point.x(), point.y());
 
-        if (staggerAxis == Map::StaggerX) {
+        if (hexagonalRenderer->map()->staggerAxis() == Map::StaggerX) {
             points[1] = point + QPoint(2, 0);
             points[3] = point + QPoint(0, 1);
             points[5] = point + QPoint(-2, 0);
@@ -80,215 +75,278 @@ static void getSurroundingPoints(QPoint point,
     }
 }
 
-Cell WangFiller::findFittingCell(const TileLayer &back,
-                                 const TileLayer &front,
-                                 const QRegion &fillRegion,
-                                 QPoint point) const
+/**
+ * Matches the given \a info's edges/corners at \a position with an \a adjacent one.
+ * Also sets the mask for the given corner / side.
+ */
+static void updateToAdjacent(WangFiller::CellInfo &info, WangId adjacent, int position)
 {
-    Q_ASSERT(mWangSet);
+    const int adjacentPosition = WangId::oppositeIndex(position);
 
-    QList<WangTile> wangTilesList = mWangSet->findMatchingWangTiles(wangIdFromSurroundings(back,
-                                                                                           front,
-                                                                                           fillRegion,
-                                                                                           point));
-    RandomPicker<WangTile> wangTiles;
+    info.desired.setIndexColor(position, adjacent.indexColor(adjacentPosition));
+    info.mask.setIndexColor(position, WangId::INDEX_MASK);
 
-    for (const WangTile &wangTile : wangTilesList)
-        wangTiles.add(wangTile, mWangSet->wangTileProbability(wangTile));
+    if (!WangId::isCorner(position)) {
+        const int cornerA = WangId::nextIndex(position);
+        const int cornerB = WangId::previousIndex(position);
+        const int adjacentCornerA = WangId::previousIndex(adjacentPosition);
+        const int adjacentCornerB = WangId::nextIndex(adjacentPosition);
 
-    WangTile wangTile;
-    if (!mWangSet->isComplete()) {
-        // goes through all adjacent, empty tiles and sees if the current wangTile
-        // allows them to have at least one fill option.
-        while (!wangTiles.isEmpty()) {
-            wangTile = wangTiles.take();
+        info.desired.setIndexColor(cornerA, adjacent.indexColor(adjacentCornerA));
+        info.mask.setIndexColor(cornerA, WangId::INDEX_MASK);
 
-            bool continueFlag = false;
+        info.desired.setIndexColor(cornerB, adjacent.indexColor(adjacentCornerB));
+        info.mask.setIndexColor(cornerB, WangId::INDEX_MASK);
+    }
+}
 
-            QPoint adjacentPoints[8];
-            getSurroundingPoints(point, mStaggeredRenderer, mStaggerAxis, adjacentPoints);
+void WangFiller::fillRegion(TileLayer &target,
+                            const TileLayer &back,
+                            const QRegion &region,
+                            Grid<CellInfo> grid) const
+{
+    if (mCorrectionsEnabled) {
+        // Determine the desired WangId for all tiles in the region.
+        for (const QRect &rect : region) {
+            for (int y = rect.top(); y <= rect.bottom(); ++y) {
+                for (int x = rect.left(); x <= rect.right(); ++x) {
+                    CellInfo info = grid.get(x, y);
+                    const auto currentWangId = mWangSet.wangIdOfCell(back.cellAt(x, y));
 
-            // now goes through and checks adjacents, continuing if any can't be filled
-            for (int i = 0; i < 8; ++i) {
-                QPoint adjacentPoint = adjacentPoints[i];
+                    for (int i = 0; i < WangId::NumIndexes; ++i)
+                        if (!info.mask.indexColor(i))
+                            info.desired.setIndexColor(i, currentWangId.indexColor(i));
 
-                // check if the point is empty, otherwise, continue.
-                if (!getCell(back, front, fillRegion, adjacentPoint).isEmpty())
+                    grid.set(x, y, info);
+                }
+            }
+        }
+    } else {
+        // Set the Wang IDs at the border of the region to make sure the tiles in
+        // the filled region connect with those outside of it.
+        auto setDesiredWangId = [&] (int x, int y) {
+            const WangId source = wangIdFromSurroundings(back, region, QPoint(x, y));
+            CellInfo info = grid.get(x, y);
+            for (int i = 0; i < WangId::NumIndexes; ++i) {
+                if (!info.mask.indexColor(i)) {
+                    if (int color = source.indexColor(i)) {
+                        info.desired.setIndexColor(i, color);
+
+                        // When we're not making corrections, require the borders
+                        // to match already placed tiles.
+                        if (!mCorrectionsEnabled)
+                            info.mask.setIndexColor(i, WangId::INDEX_MASK);
+                    }
+                }
+            }
+            grid.set(x, y, info);
+        };
+
+        for (const QRect &rect : region) {
+            for (int x = rect.left(); x <= rect.right(); ++x) {
+                setDesiredWangId(x, rect.top());
+                setDesiredWangId(x, rect.bottom());
+            }
+            for (int y = rect.top() + 1; y < rect.bottom(); ++y) {
+                setDesiredWangId(rect.left(), y);
+                setDesiredWangId(rect.right(), y);
+            }
+        }
+    }
+
+    // Determine the bounds of the affected area
+    QRect bounds = region.boundingRect();
+    int margin = mWangSet.maximumColorDistance() + (mHexagonalRenderer != nullptr);
+    bounds.adjust(-margin, -margin, margin, margin);
+
+    // Don't try to make corrections outside of a fixed map
+    if (!mMapRenderer->map()->infinite())
+        bounds &= back.rect();
+
+    // Keep a list of points that need correction
+    QVector<QPoint> corrections;
+
+    auto resolve = [&] (int x, int y) {
+        const QPoint targetPos(x - target.x(),
+                               y - target.y());
+
+        if (target.cellAt(targetPos).checked())
+            return;
+
+        Cell cell;
+        if (!findBestMatch(target, grid, QPoint(x, y), cell)) {
+            // TODO: error feedback
+            return;
+        }
+
+        cell.setChecked(true);
+        target.setCell(targetPos.x(), targetPos.y(), cell);
+
+        const WangId cellWangId = mWangSet.wangIdOfCell(cell);
+
+        // Adjust the desired WangIds for the surrounding tiles based on the placed one
+        QPoint adjacentPoints[WangId::NumIndexes];
+        getSurroundingPoints(QPoint(x, y), mHexagonalRenderer, adjacentPoints);
+
+        for (int i = 0; i < WangId::NumIndexes; ++i) {
+            const QPoint p = adjacentPoints[i];
+            if (target.cellAt(p - target.position()).checked())
+                continue;
+
+            CellInfo adjacentInfo = grid.get(p);
+            updateToAdjacent(adjacentInfo, cellWangId, WangId::oppositeIndex(i));
+
+            // Check if we may need to reconsider a tile outside of our starting region
+            if (!WangId::isCorner(i) && mCorrectionsEnabled && bounds.contains(p) && !region.contains(p)) {
+                const WangId currentWangId = mWangSet.wangIdOfCell(back.cellAt(p));
+
+                if ((currentWangId & adjacentInfo.mask) != (adjacentInfo.desired & adjacentInfo.mask)) {
+                    corrections.append(p);
+
+                    // Synchronize desired WangId with current tile, keeping the masked indexes
+                    for (int i = 0; i < WangId::NumIndexes; ++i)
+                        if (!adjacentInfo.mask.indexColor(i))
+                            adjacentInfo.desired.setIndexColor(i, currentWangId.indexColor(i));
+                }
+            }
+
+            grid.set(p, adjacentInfo);
+        }
+    };
+
+    // First process the initial region
+    for (const QRect &rect : region) {
+        for (int y = rect.top(); y <= rect.bottom(); ++y)
+            for (int x = rect.left(); x <= rect.right(); ++x)
+                resolve(x, y);
+    }
+
+    // Process each batch of added correction points while avoiding to move
+    // around or allocate memory.
+    QVector<QPoint> processing;
+    while (!corrections.isEmpty()) {
+        processing.swap(corrections);
+        for (const QPoint &p : processing)
+            resolve(p.x(), p.y());
+        processing.clear();
+    }
+}
+
+WangId WangFiller::wangIdFromSurroundings(const TileLayer &back,
+                                          const QRegion &region,
+                                          QPoint point) const
+{
+    Cell surroundingCells[8];
+    QPoint adjacentPoints[8];
+    getSurroundingPoints(point, mHexagonalRenderer, adjacentPoints);
+
+    for (int i = 0; i < 8; ++i) {
+        if (!region.contains(adjacentPoints[i]))
+            surroundingCells[i] = back.cellAt(adjacentPoints[i]);
+    }
+
+    return mWangSet.wangIdFromSurrounding(surroundingCells);
+}
+
+bool WangFiller::findBestMatch(const TileLayer &target,
+                               const Grid<CellInfo> &grid,
+                               QPoint position,
+                               Cell &result) const
+{
+    const CellInfo info = grid.get(position);
+    const quint64 maskedWangId = info.desired & info.mask;
+
+    RandomPicker<Cell> matches;
+    int lowestPenalty = INT_MAX;
+
+    auto processCandidate = [&] (WangId wangId, const Cell &cell) {
+        if ((wangId & info.mask) != maskedWangId)
+            return;
+
+        int totalPenalty = 0;
+
+        for (int i = 0; i < WangId::NumIndexes; ++i) {
+            const int desiredColor = info.desired.indexColor(i);
+            const int candidateColor = wangId.indexColor(i);
+
+            if (candidateColor != desiredColor) {
+                int penalty = mWangSet.transitionPenalty(desiredColor, candidateColor);
+
+                // If there is no path to the desired color, this isn't a useful transition
+                if (penalty < 0) {
+                    if (mCorrectionsEnabled) {
+                        // When we're doing corrections, we'd rather not choose
+                        // this candidate at all because it's impossible to
+                        // transition to the desired color.
+                        return;
+                    } else {
+                        penalty = mWangSet.maximumColorDistance() + 1;
+                    }
+                }
+
+                totalPenalty += penalty;
+            }
+        }
+
+        // Add tile to the candidate list
+        if (totalPenalty <= lowestPenalty) {
+            if (totalPenalty < lowestPenalty) {
+                matches.clear();
+                lowestPenalty = totalPenalty;
+            }
+
+            qreal probability = mWangSet.wangIdProbability(wangId);
+            if (Tile *tile = cell.tile())
+                probability *= tile->probability();
+
+            matches.add(cell, probability);
+        }
+    };
+
+    const auto &wangIdsAndCells = mWangSet.wangIdsAndCells();
+    for (int i = 0, i_end = wangIdsAndCells.size(); i < i_end; ++i)
+        processCandidate(wangIdsAndCells[i].wangId, wangIdsAndCells[i].cell);
+
+    if (mCorrectionsEnabled)
+        processCandidate(WangId(), Cell());
+
+    // Choose a candidate at random, with consideration for probability
+    while (!matches.isEmpty()) {
+        result = matches.take();
+
+        // Check if we will be able to place any Wang tile next to this
+        // candidate. This can be a relatively expensive check, that we'll only
+        // do when we're not making corrections and when the WangSet is not
+        // complete.
+        if (!mCorrectionsEnabled && !mWangSet.isComplete()) {
+            bool discard = false;
+            WangId resultWangId = mWangSet.wangIdOfCell(result);
+
+            // Adjust the desired WangIds for the surrounding tiles based on
+            // the to be placed one.
+            QPoint adjacentPoints[WangId::NumIndexes];
+            getSurroundingPoints(position, mHexagonalRenderer, adjacentPoints);
+
+            for (int i = 0; i < WangId::NumIndexes; ++i) {
+                const QPoint p = adjacentPoints[i];
+                if (target.cellAt(p - target.position()).checked())
                     continue;
 
-                WangId adjacentWangId = wangIdFromSurroundings(back,
-                                                               front,
-                                                               fillRegion,
-                                                               adjacentPoint);
-                WangId wangId = wangTile.wangId();
-                adjacentWangId.updateToAdjacent(wangId, (i + 4) % 8);
+                CellInfo adjacentInfo = grid.get(p);
+                updateToAdjacent(adjacentInfo, resultWangId, WangId::oppositeIndex(i));
 
-                if (!mWangSet->wildWangIdIsUsed(adjacentWangId)) {
-                    continueFlag = true;
+                if (!mWangSet.wangIdIsUsed(adjacentInfo.desired, adjacentInfo.mask)) {
+                    discard = true;
                     break;
                 }
             }
 
-            if (!continueFlag)
-                break;
+            if (discard)
+                continue;
         }
-    } else if (!wangTiles.isEmpty()) {
-        wangTile = wangTiles.pick();
+
+        return true;
     }
 
-    return wangTile.makeCell();
-}
-
-std::unique_ptr<TileLayer> WangFiller::fillRegion(const TileLayer &back,
-                                                  const QRegion &fillRegion) const
-{
-    Q_ASSERT(mWangSet);
-
-    const QRect boundingRect = fillRegion.boundingRect();
-
-    std::unique_ptr<TileLayer> tileLayer { new TileLayer(QString(),
-                                                         boundingRect.x(),
-                                                         boundingRect.y(),
-                                                         boundingRect.width(),
-                                                         boundingRect.height()) };
-
-    QVector<WangId> wangIds(tileLayer->width() * tileLayer->height(), 0);
-#if QT_VERSION < 0x050800
-    const auto rects = fillRegion.rects();
-    for (const QRect &rect : rects) {
-#else
-    for (const QRect &rect : fillRegion) {
-#endif
-        for (int x = rect.left(); x <= rect.right(); ++x) {
-            int index = x - tileLayer->x() + (rect.top() - tileLayer->y()) * tileLayer->width();
-            wangIds[index] = wangIdFromSurroundings(back,
-                                                    fillRegion,
-                                                    QPoint(x, rect.top()));
-
-            index = x - tileLayer->x() + (rect.bottom() - tileLayer->y()) * tileLayer->width();
-            wangIds[index] = wangIdFromSurroundings(back,
-                                                    fillRegion,
-                                                    QPoint(x, rect.bottom()));
-        }
-        for (int y = rect.top() + 1; y < rect.bottom(); ++y) {
-            int index = rect.left() - tileLayer->x() + (y - tileLayer->y()) * tileLayer->width();
-            wangIds[index] = wangIdFromSurroundings(back,
-                                                    fillRegion,
-                                                    QPoint(rect.left(), y));
-
-            index = rect.right() - tileLayer->x() + (y - tileLayer->y()) * tileLayer->width();
-            wangIds[index] = wangIdFromSurroundings(back,
-                                                    fillRegion,
-                                                    QPoint(rect.right(), y));
-        }
-    }
-
-#if QT_VERSION < 0x050800
-    for (const QRect &rect : rects) {
-#else
-    for (const QRect &rect : fillRegion) {
-#endif
-        for (int y = rect.top(); y <= rect.bottom(); ++y) {
-            for (int x = rect.left(); x <= rect.right(); ++x) {
-                QPoint currentPoint(x, y);
-                int currentIndex = (currentPoint.y() - tileLayer->y()) * tileLayer->width() + (currentPoint.x() - tileLayer->x());
-
-                QList<WangTile> wangTilesList = mWangSet->findMatchingWangTiles(wangIds[currentIndex]);
-                RandomPicker<WangTile> wangTiles;
-
-                for (const WangTile &wangTile : wangTilesList)
-                    wangTiles.add(wangTile, mWangSet->wangTileProbability(wangTile));
-
-                while (!wangTiles.isEmpty()) {
-                    WangTile wangTile = wangTiles.take();
-
-                    bool fill = true;
-                    if (!mWangSet->isComplete()) {
-                        QPoint adjacentPoints[8];
-                        getSurroundingPoints(currentPoint, mStaggeredRenderer, mStaggerAxis, adjacentPoints);
-
-                        for (int i = 0; i < 8; ++i) {
-                            QPoint p = adjacentPoints[i];
-                            if (!fillRegion.contains(p) || !tileLayer->cellAt(p - tileLayer->position()).isEmpty())
-                                continue;
-                            p -= tileLayer->position();
-                            int index = p.y() * tileLayer->width() + p.x();
-
-                            WangId adjacentWangId = wangIds[index];
-                            adjacentWangId.updateToAdjacent(wangTile.wangId(), (i + 4) % 8);
-
-                            if (!mWangSet->wildWangIdIsUsed(adjacentWangId)) {
-                                fill = wangTiles.isEmpty();
-
-                                break;
-                            }
-                        }
-                    }
-
-                    if (fill) {
-                        tileLayer->setCell(currentPoint.x() - tileLayer->x(),
-                                           currentPoint.y() - tileLayer->y(),
-                                           wangTile.makeCell());
-                        QPoint adjacentPoints[8];
-                        getSurroundingPoints(currentPoint, mStaggeredRenderer, mStaggerAxis, adjacentPoints);
-                        for (int i = 0; i < 8; ++i) {
-                            QPoint p = adjacentPoints[i];
-                            if (!fillRegion.contains(p) || !tileLayer->cellAt(p - tileLayer->position()).isEmpty())
-                                continue;
-                            p -= tileLayer->position();
-                            int index = p.y() * tileLayer->width() + p.x();
-                            wangIds[index].updateToAdjacent(wangTile.wangId(), (i + 4) % 8);
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    return tileLayer;
-}
-
-const Cell &WangFiller::getCell(const TileLayer &back,
-                                const TileLayer &front,
-                                const QRegion &fillRegion,
-                                QPoint point) const
-{
-    if (!fillRegion.contains(point))
-        return back.cellAt(point);
-    else
-        return front.cellAt(point.x() - front.x(), point.y() - front.y());
-}
-
-
-WangId WangFiller::wangIdFromSurroundings(const TileLayer &back,
-                                          const TileLayer &front,
-                                          const QRegion &fillRegion,
-                                          QPoint point) const
-{
-    Cell surroundingCells[8];
-    QPoint adjacentPoints[8];
-    getSurroundingPoints(point, mStaggeredRenderer, mStaggerAxis, adjacentPoints);
-
-    for (int i = 0; i < 8; ++i)
-        surroundingCells[i] = getCell(back, front, fillRegion, adjacentPoints[i]);
-
-    return mWangSet->wangIdFromSurrounding(surroundingCells);
-}
-
-WangId WangFiller::wangIdFromSurroundings(const TileLayer &back,
-                                          const QRegion &fillRegion,
-                                          QPoint point) const
-{
-    Cell surroundingCells[8];
-
-    QPoint adjacentPoints[8];
-    getSurroundingPoints(point, mStaggeredRenderer, mStaggerAxis, adjacentPoints);
-
-    for (int i = 0; i < 8; ++i) {
-        if (!fillRegion.contains(adjacentPoints[i]))
-            surroundingCells[i] = back.cellAt(adjacentPoints[i]);
-    }
-
-    return mWangSet->wangIdFromSurrounding(surroundingCells);
+    return false;
 }

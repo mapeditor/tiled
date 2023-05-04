@@ -44,6 +44,7 @@
 
 #include "qtpropertybrowser.h"
 #include <QLineEdit>
+#include <QRegularExpression>
 
 #if QT_VERSION >= 0x040400
 QT_BEGIN_NAMESPACE
@@ -117,6 +118,8 @@ public:
     bool value(const QtProperty *property) const;
     bool textVisible(const QtProperty *property) const;
 
+    static void resetIcons();
+
 public Q_SLOTS:
     void setValue(QtProperty *property, bool val);
     void setTextVisible(QtProperty *property, bool textVisible);
@@ -184,19 +187,19 @@ public:
     ~QtStringPropertyManager();
 
     QString value(const QtProperty *property) const;
-    QRegExp regExp(const QtProperty *property) const;
+    QRegularExpression regExp(const QtProperty *property) const;
     EchoMode echoMode(const QtProperty *property) const;
     bool isReadOnly(const QtProperty *property) const;
 
 public Q_SLOTS:
     void setValue(QtProperty *property, const QString &val);
-    void setRegExp(QtProperty *property, const QRegExp &regExp);
+    void setRegExp(QtProperty *property, const QRegularExpression &regExp);
     void setEchoMode(QtProperty *property, EchoMode echoMode);
     void setReadOnly(QtProperty *property, bool readOnly);
 
 Q_SIGNALS:
     void valueChanged(QtProperty *property, const QString &val);
-    void regExpChanged(QtProperty *property, const QRegExp &regExp);
+    void regExpChanged(QtProperty *property, const QRegularExpression &regExp);
     void echoModeChanged(QtProperty *property, const int);
     void readOnlyChanged(QtProperty *property, bool);
 
@@ -413,13 +416,16 @@ public:
     QtDoublePropertyManager *subDoublePropertyManager() const;
 
     QPointF value(const QtProperty *property) const;
+    double singleStep(const QtProperty *property) const;
     int decimals(const QtProperty *property) const;
 
 public Q_SLOTS:
     void setValue(QtProperty *property, const QPointF &val);
+    void setSingleStep(QtProperty *property, double step);
     void setDecimals(QtProperty *property, int prec);
 Q_SIGNALS:
     void valueChanged(QtProperty *property, const QPointF &val);
+    void singleStepChanged(QtProperty *property, double step);
     void decimalsChanged(QtProperty *property, int prec);
 protected:
     QString valueText(const QtProperty *property) const;

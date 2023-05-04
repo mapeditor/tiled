@@ -22,7 +22,7 @@
 
 #include "abstractobjecttool.h"
 
-#include <QMap>
+#include <QHash>
 #include <QSet>
 
 #include <memory>
@@ -65,21 +65,17 @@ public:
 public slots:
     void deleteNodes();
 
-private slots:
+protected:
+    void changeEvent(const ChangeEvent &event) override;
+
+private:
     void updateHandles();
-    void objectsRemoved(const QList<MapObject *> &objects);
+    void objectsAboutToBeRemoved(const QList<MapObject *> &objects);
 
     void joinNodes();
     void splitSegments();
     void deleteSegment();
     void extendPolyline();
-
-private:
-    enum Action {
-        NoAction,
-        Selecting,
-        Moving
-    };
 
     void updateHover(const QPointF &scenePos, QGraphicsSceneMouseEvent *event = nullptr);
 
@@ -96,13 +92,25 @@ private:
     void startMoving(const QPointF &pos);
     void updateMovingItems(const QPointF &pos,
                            Qt::KeyboardModifiers modifiers);
-    void finishMoving(const QPointF &pos);
+    void finishMoving();
 
-    void abortCurrentAction(const QList<MapObject *> &objects = QList<MapObject*>());
+    enum AbortReason {
+        UserInteraction,
+        ObjectsRemoved,
+        Deactivated
+    };
+
+    void abortCurrentAction(AbortReason reason);
 
     void showHandleContextMenu(QPoint screenPos);
 
     QSet<PointHandle*> clickedHandles() const;
+
+    enum Action {
+        NoAction,
+        Selecting,
+        Moving
+    };
 
     struct InteractedSegment {
         MapObject *object = nullptr;
@@ -121,7 +129,7 @@ private:
     InteractedSegment mClickedSegment;
     MapObject *mClickedObject;
     QVector<QPointF> mOldHandlePositions;
-    QMap<MapObject*, QPolygonF> mOldPolygons;
+    QHash<MapObject*, QPolygonF> mOldPolygons;
     QPointF mAlignPosition;
     Action mAction;
     QPointF mStart;
@@ -130,7 +138,7 @@ private:
     Qt::KeyboardModifiers mModifiers;
 
     /// The list of handles associated with each selected map object
-    QMap<MapObject*, QList<PointHandle*> > mHandles;
+    QHash<MapObject*, QList<PointHandle*> > mHandles;
     QSet<PointHandle*> mSelectedHandles;
     QSet<PointHandle*> mHighlightedHandles;
 };

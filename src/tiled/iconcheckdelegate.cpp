@@ -36,20 +36,20 @@ IconCheckDelegate::IconCheckDelegate(IconType icon,
 {
     switch (icon) {
     case LockedIcon:
-        mCheckedIcon.addFile(QLatin1String(":/images/14x14/locked.png"));
-        mCheckedIcon.addFile(QLatin1String(":/images/16x16/locked.png"));
-        mCheckedIcon.addFile(QLatin1String(":/images/24x24/locked.png"));
-        mUncheckedIcon.addFile(QLatin1String(":/images/14x14/unlocked.png"));
-        mUncheckedIcon.addFile(QLatin1String(":/images/16x16/unlocked.png"));
-        mUncheckedIcon.addFile(QLatin1String(":/images/24x24/unlocked.png"));
+        mCheckedIcon.addFile(QLatin1String(":/images/14/locked.png"));
+        mCheckedIcon.addFile(QLatin1String(":/images/16/locked.png"));
+        mCheckedIcon.addFile(QLatin1String(":/images/24/locked.png"));
+        mUncheckedIcon.addFile(QLatin1String(":/images/14/unlocked.png"));
+        mUncheckedIcon.addFile(QLatin1String(":/images/16/unlocked.png"));
+        mUncheckedIcon.addFile(QLatin1String(":/images/24/unlocked.png"));
         break;
     case VisibilityIcon:
-        mCheckedIcon.addFile(QLatin1String(":/images/14x14/visible.png"));
-        mCheckedIcon.addFile(QLatin1String(":/images/16x16/visible.png"));
-        mCheckedIcon.addFile(QLatin1String(":/images/24x24/visible.png"));
-        mUncheckedIcon.addFile(QLatin1String(":/images/14x14/hidden.png"));
-        mUncheckedIcon.addFile(QLatin1String(":/images/16x16/hidden.png"));
-        mUncheckedIcon.addFile(QLatin1String(":/images/24x24/hidden.png"));
+        mCheckedIcon.addFile(QLatin1String(":/images/14/visible.png"));
+        mCheckedIcon.addFile(QLatin1String(":/images/16/visible.png"));
+        mCheckedIcon.addFile(QLatin1String(":/images/24/visible.png"));
+        mUncheckedIcon.addFile(QLatin1String(":/images/14/hidden.png"));
+        mUncheckedIcon.addFile(QLatin1String(":/images/16/hidden.png"));
+        mUncheckedIcon.addFile(QLatin1String(":/images/24/hidden.png"));
         break;
     }
 
@@ -58,7 +58,7 @@ IconCheckDelegate::IconCheckDelegate(IconType icon,
 
 int IconCheckDelegate::exclusiveSectionWidth()
 {
-    return qRound(Utils::dpiScaled(22));
+    return Utils::dpiScaled(22);
 }
 
 /**

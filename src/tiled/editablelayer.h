@@ -20,92 +20,166 @@
 
 #pragma once
 
+#include "editableobject.h"
 #include "layer.h"
-
-#include <QObject>
 
 #include <memory>
 
 namespace Tiled {
 
+class EditableGroupLayer;
 class EditableMap;
+class MapDocument;
 
-class EditableLayer : public QObject
+class EditableLayer : public EditableObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(int id READ id)
     Q_PROPERTY(QString name READ name WRITE setName)
     Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
+    Q_PROPERTY(QColor tintColor READ tintColor WRITE setTintColor)
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible)
     Q_PROPERTY(bool locked READ isLocked WRITE setLocked)
     Q_PROPERTY(QPointF offset READ offset WRITE setOffset)
+    Q_PROPERTY(QPointF parallaxFactor READ parallaxFactor WRITE setParallaxFactor)
     Q_PROPERTY(Tiled::EditableMap *map READ map)
+    Q_PROPERTY(Tiled::EditableGroupLayer *parentLayer READ parentLayer)
+    Q_PROPERTY(bool selected READ isSelected WRITE setSelected)
+    Q_PROPERTY(bool isTileLayer READ isTileLayer CONSTANT)
+    Q_PROPERTY(bool isObjectLayer READ isObjectLayer CONSTANT)
+    Q_PROPERTY(bool isGroupLayer READ isGroupLayer CONSTANT)
+    Q_PROPERTY(bool isImageLayer READ isImageLayer CONSTANT)
 
 public:
-    explicit EditableLayer(EditableMap *map,
-                           Layer *layer,
+    // Synchronized with Layer::LayerType
+    enum TypeFlag {
+        TileLayerType   = 0x01,
+        ObjectGroupType = 0x02,
+        ImageLayerType  = 0x04,
+        GroupLayerType  = 0x08
+    };
+    Q_ENUM(TypeFlag)
+
+    explicit EditableLayer(std::unique_ptr<Layer> layer,
                            QObject *parent = nullptr);
+
+    EditableLayer(EditableAsset *asset,
+                  Layer *layer,
+                  QObject *parent = nullptr);
     ~EditableLayer() override;
 
+    int id() const;
     const QString &name() const;
     qreal opacity() const;
+    QColor tintColor() const;
     bool isVisible() const;
     bool isLocked() const;
     QPointF offset() const;
+    QPointF parallaxFactor() const;
     EditableMap *map() const;
+    EditableGroupLayer *parentLayer() const;
+    bool isSelected() const;
+    bool isTileLayer() const;
+    bool isObjectLayer() const;
+    bool isGroupLayer() const;
+    bool isImageLayer() const;
 
     Layer *layer() const;
 
     void detach();
-    void attach(EditableMap *map);
+    void attach(EditableAsset *asset);
+    void hold();
+    Layer *release();
+    bool isOwning() const;
 
 public slots:
     void setName(const QString &name);
     void setOpacity(qreal opacity);
+    void setTintColor(const QColor &color);
     void setVisible(bool visible);
     void setLocked(bool locked);
     void setOffset(QPointF offset);
+    void setParallaxFactor(QPointF factor);
+    void setSelected(bool selected);
+
+protected:
+    MapDocument *mapDocument() const;
 
 private:
-    EditableMap *mMap;
-    Layer *mLayer;
     std::unique_ptr<Layer> mDetachedLayer;
 };
 
 
+inline int EditableLayer::id() const
+{
+    return layer()->id();
+}
+
 inline const QString &EditableLayer::name() const
 {
-    return mLayer->name();
+    return layer()->name();
 }
 
 inline qreal EditableLayer::opacity() const
 {
-    return mLayer->opacity();
+    return layer()->opacity();
+}
+
+inline QColor EditableLayer::tintColor() const
+{
+    return layer()->tintColor().isValid() ? layer()->tintColor()
+                                          : QColor(255, 255, 255, 255);
 }
 
 inline bool EditableLayer::isVisible() const
 {
-    return mLayer->isVisible();
+    return layer()->isVisible();
 }
 
 inline bool EditableLayer::isLocked() const
 {
-    return mLayer->isLocked();
+    return layer()->isLocked();
 }
 
 inline QPointF EditableLayer::offset() const
 {
-    return mLayer->offset();
+    return layer()->offset();
 }
 
-inline EditableMap *EditableLayer::map() const
+inline QPointF EditableLayer::parallaxFactor() const
 {
-    return mMap;
+    return layer()->parallaxFactor();
+}
+
+inline bool EditableLayer::isTileLayer() const
+{
+    return layer()->isTileLayer();
+}
+
+inline bool EditableLayer::isObjectLayer() const
+{
+    return layer()->isObjectGroup();
+}
+
+inline bool EditableLayer::isGroupLayer() const
+{
+    return layer()->isGroupLayer();
+}
+
+inline bool EditableLayer::isImageLayer() const
+{
+    return layer()->isImageLayer();
 }
 
 inline Layer *EditableLayer::layer() const
 {
-    return mLayer;
+    return static_cast<Layer*>(object());
+}
+
+inline bool EditableLayer::isOwning() const
+{
+    return mDetachedLayer.get() == layer();
 }
 
 } // namespace Tiled

@@ -49,6 +49,7 @@ public:
     StampBrush(QObject *parent = nullptr);
     ~StampBrush() override;
 
+    void activate(MapScene *scene) override;
     void deactivate(MapScene *scene) override;
 
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
@@ -88,7 +89,7 @@ signals:
     void wangFillChanged(bool value);
 
 protected:
-    void tilePositionChanged(const QPoint &tilePos) override;
+    void tilePositionChanged(QPoint tilePos) override;
 
     void mapDocumentChanged(MapDocument *oldDocument,
                             MapDocument *newDocument) override;
@@ -107,6 +108,7 @@ private:
     void beginCapture();
     void endCapture();
 
+    void updateBrushBehavior();
     void updatePreview();
     void updatePreview(QPoint tilePos);
 
@@ -138,7 +140,8 @@ private:
     /**
      * This stores the current behavior.
      */
-    BrushBehavior mBrushBehavior;
+    BrushBehavior mBrushBehavior = Free;
+    Qt::KeyboardModifiers mModifiers;
 
     /**
      * The starting position needed for drawing lines and circles.
@@ -147,13 +150,13 @@ private:
      */
     QPoint mStampReference;
 
-    bool mIsRandom;
+    bool mIsRandom = false;
     RandomPicker<Cell> mRandomCellPicker;
 
-    bool mIsWangFill;
-    WangSet *mWangSet;
+    bool mIsWangFill = false;
+    WangSet *mWangSet = nullptr;
 
-    bool mRandomCacheValid;
+    bool mRandomCacheValid = true;
     void updateRandomList();
     void invalidateRandomCache();
 

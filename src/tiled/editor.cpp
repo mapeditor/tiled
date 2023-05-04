@@ -28,3 +28,5 @@ Editor::Editor(QObject *parent)
 }
 
 } // namespace Tiled
+
+#include "moc_editor.cpp"

@@ -51,6 +51,12 @@ WangSetView::WangSetView(QWidget *parent)
     connect(mZoomable, &Zoomable::scaleChanged, this, &WangSetView::adjustScale);
 }
 
+/**
+ * Sets the \a tilesetDocument owning the Wang sets displayed by the view.
+ *
+ * The view needs the TilesetDocument in order to allow making changes to the
+ * Wang sets. When the WangSetView is used in the MapEditor, it remains unset.
+ */
 void WangSetView::setTilesetDocument(TilesetDocument *tilesetDocument)
 {
     mTilesetDocument = tilesetDocument;
@@ -60,6 +66,12 @@ WangSet *WangSetView::wangSetAt(const QModelIndex &index) const
 {
     const QVariant data = model()->data(index, WangSetModel::WangSetRole);
     return data.value<WangSet*>();
+}
+
+TilesetDocument *WangSetView::tilesetDocumentAt(const QModelIndex &index) const
+{
+    const QVariant data = model()->data(index, WangSetModel::TilesetDocumentRole);
+    return data.value<TilesetDocument*>();
 }
 
 bool WangSetView::event(QEvent *event)
@@ -79,9 +91,9 @@ bool WangSetView::event(QEvent *event)
 void WangSetView::wheelEvent(QWheelEvent *event)
 {
     if (event->modifiers() & Qt::ControlModifier
-        && event->orientation() == Qt::Vertical)
+        && event->angleDelta().y())
     {
-        mZoomable->handleWheelDelta(event->delta());
+        mZoomable->handleWheelDelta(event->angleDelta().y());
         return;
     }
 
@@ -98,10 +110,10 @@ void WangSetView::contextMenuEvent(QContextMenuEvent *event)
 
     QMenu menu;
 
-    QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
+    QIcon propIcon(QLatin1String(":images/16/document-properties.png"));
 
     QAction *wangSetProperties = menu.addAction(propIcon,
-                                             tr("Wang Set &Properties..."));
+                                             tr("Terrain Set &Properties..."));
     Utils::setThemeIcon(wangSetProperties, "document-properties");
 
     connect(wangSetProperties, &QAction::triggered,
@@ -124,3 +136,5 @@ void WangSetView::editWangSetProperties()
 void WangSetView::adjustScale()
 {
 }
+
+#include "moc_wangsetview.cpp"

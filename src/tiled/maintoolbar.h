@@ -39,19 +39,14 @@ public:
 protected:
     void changeEvent(QEvent *event) override;
 
-private slots:
+private:
     void onOrientationChanged(Qt::Orientation orientation);
 
     void currentDocumentChanged(Document *document);
 
-private:
     void retranslateUi();
 
     QToolButton *mNewButton;
-    QAction *mOpenAction;
-    QAction *mSaveAction;
-    QAction *mUndoAction;
-    QAction *mRedoAction;
     CommandButton *mCommandButton;
 };
 

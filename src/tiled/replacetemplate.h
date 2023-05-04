@@ -36,10 +36,10 @@ public:
                     const ObjectTemplate *oldObjectTemplate,
                     const ObjectTemplate *newObjectTemplate);
 
-    ~ReplaceTemplate();
+    ~ReplaceTemplate() override;
 
-    void undo() { swap(); }
-    void redo() { swap(); }
+    void undo() override { swap(); }
+    void redo() override { swap(); }
 
 private:
     void swap();

@@ -50,6 +50,21 @@ Name
    The name of the tileset. Used to identify the tileset in the
    *Tilesets* view when editing a map.
 
+.. raw:: html
+
+   <div class="new new-prev">Since Tiled 1.4</div>
+
+Object Alignment
+   The alignment to use for :ref:`tile objects <insert-tile-tool>` referring
+   to tiles from this tileset. This affects the placement of the tile relative
+   to the position of the object (the origin) and is also the location around
+   which the rotation is applied.
+
+   Possible values are: *Unspecified* (the default), *Top Left*, *Top*, *Top
+   Right*, *Left*, *Center*, *Right*, *Bottom Left*, *Bottom* and *Bottom
+   Right*. When unspecified, tile object alignment is generally *Bottom Left*,
+   except for Isometric maps where it is *Bottom*.
+
 Drawing Offset
    A drawing offset in pixels, applied when rendering any tile from
    the tileset (as part of tile layers or as tile objects). This is
@@ -68,8 +83,8 @@ Orientation
    *Isometric*. This value, along with the **Grid Width** and
    **Grid Height** properties, is taken into account by overlays
    rendered on top of the tiles. This helps for example when specifying
-   :ref:`terrain-information` or editing :ref:`wang-sets`. It also
-   affects the orientation used by the :ref:`tile-collision-editor`.
+   :ref:`terrain-information`. It also affects the orientation used by
+   the :ref:`tile-collision-editor`.
 
 Columns
    This is a read-only property for tilesets based on a tileset image,
@@ -96,8 +111,8 @@ ID
 
    <div class="new new-prev">Since Tiled 1.0</div>
 
-Type
-   This property refers to custom types defined in the :ref:`Object Types Editor <predefining-properties>`.
+Class
+   This property refers to custom classes defined in the :ref:`Custom Types Editor <custom-property-types>`.
    See the section about :ref:`typed-tiles` for more information.
 
 Width and Height
@@ -118,21 +133,12 @@ Terrain Information
 -------------------
 
 Terrain information can be added to a tileset to enable the use of the
-the :ref:`terrain-tool`. See the section about
+:ref:`terrain-tool`. See the section about
 :ref:`defining terrain information <define-terrain-information>`.
 
 .. raw:: html
 
    <div class="new new-prev">Since Tiled 1.1</div>
-
-.. _wang-sets:
-
-Wang Sets
----------
-
-A tileset can contain any number of Wang sets for use with the
-:ref:`wang-tool`. See :ref:`defining-wang-tile-info` for more
-information.
 
 .. _tile-collision-editor:
 
@@ -154,12 +160,20 @@ emitters or the source of gunshots.
 
    Tile Collision Editor
 
-.. note::
+.. raw:: html
 
-   Check out the `Tiled2Unity`_ tool by Sean Barton for a great example of
-   what you can do with this information. It can take the collision shapes
-   for all tiles and generate a single collision mesh from it, as
-   demonstrated in the `Mega Dad Adventures`_ post.
+   <div class="new new-prev">Since Tiled 1.3</div>
+
+To be able to easily check whether your tiles have the right collision shapes
+set up, they can be rendered on the map. To enable this, check *Show Tile
+Collision Shapes* in the *View* menu. The collision shapes are rendered for
+both tile layers and tile objects.
+
+.. figure:: images/view-tile-collisions.png
+   :alt: Showing Tile Collision on the Map
+
+   Collision shapes rendered on the map. This map is from `Owyn's Adventure
+   <https://store.steampowered.com/app/1020940/Owyns_Adventure/>`__.
 
 .. _tile-animation-editor:
 
@@ -185,9 +199,10 @@ The following steps allow to add or edit a tile animation:
   window show the (initially empty) animation associated with that tile,
   along with all other tiles from the tileset.
 
-* Drag tiles from the tileset view in the Tile Animation Editor into the
-  list on the left to add animation frames. You can drag multiple tiles at
-  the same time. Each new frame gets a default duration of 100 ms.
+* Drag tiles from the tileset view in the Tile Animation Editor into the list
+  on the left to add animation frames. You can drag multiple tiles at the same
+  time. Each new frame gets a default duration of 100 ms (or other value when
+  set using the :guilabel:`Frame Duration` field at the top).
 
 * Double-click on the duration of a frame to change it.
 
@@ -195,12 +210,16 @@ The following steps allow to add or edit a tile animation:
 
 A preview of the animation shows in the bottom left corner.
 
+You can change the duration of multiple frames at once by selecting them,
+changing the value in the :guilabel:`Frame Duration` field and then clicking
+:guilabel:`Apply`.
+
 .. |tile-collision-editor-icon|
-   image:: ../../src/tiled/images/48x48/tile-collision-editor.png
+   image:: ../../src/tiled/resources/images/48/tile-collision-editor.png
       :scale: 50
 
 .. |tile-animation-editor-icon|
-   image:: ../../src/tiled/images/24x24/animation-edit.png
+   image:: ../../src/tiled/resources/images/24/animation-edit.png
 
 .. _Tiled2Unity: http://www.seanba.com/Tiled2Unity
 .. _Mega Dad Adventures: http://www.seanba.com/megadadadventures.html
@@ -211,23 +230,21 @@ A preview of the animation shows in the bottom left corner.
    There are many ways in which the tileset editor can be made more
    efficient, for example:
 
-   **Wang Sets**
+   **Terrain Sets**
 
-   - Make it easier to set up Wang tiles (`#1729 <https://github.com/bjorn/tiled/issues/1729>`__)
+   - Make it easier to set up terrain (`#1729 <https://github.com/bjorn/tiled/issues/1729>`__)
 
    **Tile Collision Editor**
 
    - Allow setting collisions for multiple tiles at once (`#1322 <https://github.com/bjorn/tiled/issues/1322>`__)
-   - Render tile collision shapes to the main map (`#799 <https://github.com/bjorn/tiled/issues/799>`__)
-     or to the tileset view (`#1281 <https://github.com/bjorn/tiled/issues/1281>`__)
+   - Render tile collision shapes to the tileset view (`#1281 <https://github.com/bjorn/tiled/issues/1281>`__)
 
    **Tile Animation Editor**
 
-   - Allow changing the default frame duration (`#1631 <https://github.com/bjorn/tiled/issues/1631>`__)
-   - Allow changing the duration of multiple frames at the same time (`#1310 <https://github.com/bjorn/tiled/issues/1310>`__)
    - Support multiple named animations per tile (`#986 <https://github.com/bjorn/tiled/issues/986>`__)
+   - Make it easier to define animations spanning multiple tiles (`#811 <https://github.com/bjorn/tiled/issues/811>`__)
 
    If you like any of these plans, please help me getting around to it
-   faster by `becoming a patron <https://www.patreon.com/bjorn>`__. The
+   faster by `sponsoring Tiled development <https://www.mapeditor.org/donate>`__. The
    more support I receive the more time I can afford to spend improving
    Tiled!

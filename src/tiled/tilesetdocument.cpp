@@ -20,19 +20,21 @@
 
 #include "tilesetdocument.h"
 
+#include "changeevents.h"
+#include "editablemanager.h"
 #include "editabletileset.h"
+#include "issuesmodel.h"
 #include "map.h"
 #include "mapdocument.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tilesetformat.h"
-#include "tilesetterrainmodel.h"
 #include "tilesetwangsetmodel.h"
 #include "wangcolormodel.h"
 #include "wangset.h"
 
 #include <QCoreApplication>
 #include <QFileInfo>
+#include <QQmlEngine>
 #include <QUndoStack>
 
 namespace Tiled {
@@ -58,20 +60,22 @@ private:
 
 QMap<SharedTileset, TilesetDocument*> TilesetDocument::sTilesetToDocument;
 
-TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fileName)
-    : Document(TilesetDocumentType, fileName)
+TilesetDocument::TilesetDocument(const SharedTileset &tileset)
+    : Document(TilesetDocumentType, tileset->fileName())
     , mTileset(tileset)
-    , mTerrainModel(new TilesetTerrainModel(this, this))
     , mWangSetModel(new TilesetWangSetModel(this, this))
-    , mWangColorModel(nullptr)
 {
     Q_ASSERT(!sTilesetToDocument.contains(tileset));
     sTilesetToDocument.insert(tileset, this);
 
-    mCurrentObject = tileset.data();
+    // If there already happens to be an editable for this tileset, take
+    // ownership of it.
+    if (auto editable = EditableManager::instance().find(tileset.data())) {
+        setEditable(std::unique_ptr<EditableAsset>(editable));
+        QQmlEngine::setObjectOwnership(editable, QQmlEngine::CppOwnership);
+    }
 
-    // warning: will need to be kept up-to-date
-    mFileName = tileset->fileName();
+    mCurrentObject = tileset.data();
 
     connect(this, &TilesetDocument::propertyAdded,
             this, &TilesetDocument::onPropertyAdded);
@@ -82,24 +86,31 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset, const QString &fi
     connect(this, &TilesetDocument::propertiesChanged,
             this, &TilesetDocument::onPropertiesChanged);
 
-    connect(mTerrainModel, &TilesetTerrainModel::terrainRemoved,
-            this, &TilesetDocument::onTerrainRemoved);
-
     connect(mWangSetModel, &TilesetWangSetModel::wangSetRemoved,
             this, &TilesetDocument::onWangSetRemoved);
 }
 
 TilesetDocument::~TilesetDocument()
 {
+    // Clear any previously found issues in this document
+    IssuesModel::instance().removeIssuesWithContext(this);
+
     sTilesetToDocument.remove(mTileset);
+
+    // Needs to be deleted before the Tileset instance is deleted, because it
+    // may cause script values to detach from the map, in which case they'll
+    // need to be able to copy the data.
+    mEditable.reset();
 }
 
 bool TilesetDocument::save(const QString &fileName, QString *error)
 {
-    TilesetFormat *tilesetFormat = mTileset->format();
-
-    if (!tilesetFormat || !(tilesetFormat->capabilities() & FileFormat::Write))
+    auto tilesetFormat = findFileFormat<TilesetFormat>(mTileset->format(), FileFormat::Write);;
+    if (!tilesetFormat) {
+        if (error)
+            *error = tr("Tileset format '%1' not found").arg(mTileset->format());
         return false;
+    }
 
     if (!tilesetFormat->write(*tileset(), fileName)) {
         if (error)
@@ -109,7 +120,11 @@ bool TilesetDocument::save(const QString &fileName, QString *error)
 
     undoStack()->setClean();
 
-    mTileset->setFileName(fileName);
+    if (mTileset->fileName() != fileName) {
+        mTileset->setFileName(fileName);
+        mTileset->exportFileName.clear();
+    }
+
     setFileName(fileName);
 
     mLastSaved = QFileInfo(fileName).lastModified();
@@ -120,7 +135,7 @@ bool TilesetDocument::save(const QString &fileName, QString *error)
 
 bool TilesetDocument::canReload() const
 {
-    return !fileName().isEmpty() && mTileset->format();
+    return !fileName().isEmpty() && !mTileset->format().isEmpty();
 }
 
 bool TilesetDocument::reload(QString *error)
@@ -128,7 +143,12 @@ bool TilesetDocument::reload(QString *error)
     if (!canReload())
         return false;
 
-    auto format = mTileset->format();
+    auto format = findFileFormat<TilesetFormat>(mTileset->format(), FileFormat::Read);
+    if (!format) {
+        if (error)
+            *error = tr("Tileset format '%s' not found").arg(mTileset->format());
+        return false;
+    }
 
     SharedTileset tileset = format->read(fileName());
 
@@ -138,7 +158,8 @@ bool TilesetDocument::reload(QString *error)
         return false;
     }
 
-    tileset->setFormat(format);
+    tileset->setFileName(fileName());
+    tileset->setFormat(format->shortName());
 
     undoStack()->push(new ReloadTileset(this, tileset));
     undoStack()->setClean();
@@ -159,30 +180,42 @@ TilesetDocumentPtr TilesetDocument::load(const QString &fileName,
         return TilesetDocumentPtr();
     }
 
-    tileset->setFormat(format);
+    tileset->setFileName(fileName);
+    tileset->setFormat(format->shortName());
 
-    return TilesetDocumentPtr::create(tileset, fileName);
+    return TilesetDocumentPtr::create(tileset);
 }
 
-FileFormat *TilesetDocument::writerFormat() const
+TilesetFormat *TilesetDocument::writerFormat() const
 {
-    return mTileset->format();
+    return findFileFormat<TilesetFormat>(mTileset->format(), FileFormat::Write);
 }
 
 void TilesetDocument::setWriterFormat(TilesetFormat *format)
 {
-    mTileset->setFormat(format);
+    Q_ASSERT(format->hasCapabilities(FileFormat::Write));
+    mTileset->setFormat(format->shortName());
+}
+
+QString TilesetDocument::lastExportFileName() const
+{
+    return tileset()->exportFileName;
+}
+
+void TilesetDocument::setLastExportFileName(const QString &fileName)
+{
+    tileset()->exportFileName = fileName;
 }
 
 TilesetFormat* TilesetDocument::exportFormat() const
 {
-    return mExportFormat;
+    return findFileFormat<TilesetFormat>(tileset()->exportFormat);
 }
 
 void TilesetDocument::setExportFormat(FileFormat *format)
 {
-    mExportFormat = qobject_cast<TilesetFormat*>(format);
-    Q_ASSERT(mExportFormat);
+    Q_ASSERT(qobject_cast<TilesetFormat*>(format));
+    tileset()->exportFormat = format->shortName();
 }
 
 QString TilesetDocument::displayName() const
@@ -190,17 +223,31 @@ QString TilesetDocument::displayName() const
     QString displayName;
 
     if (isEmbedded()) {
-        MapDocument *mapDocument = mMapDocuments.first();
-        displayName = mapDocument->displayName();
-        displayName += QLatin1String("#");
+        displayName = mMapDocuments.first()->displayName();
+        displayName += QLatin1Char('#');
         displayName += mTileset->name();
     } else {
-        displayName = QFileInfo(mFileName).fileName();
+        displayName = QFileInfo(fileName()).fileName();
         if (displayName.isEmpty())
             displayName = tr("untitled.tsx");
     }
 
     return displayName;
+}
+
+QString TilesetDocument::externalOrEmbeddedFileName() const
+{
+    QString result;
+
+    if (isEmbedded()) {
+        result = mMapDocuments.first()->fileName();
+        result += QLatin1Char('#');
+        result += mTileset->name();
+    } else {
+        result = fileName();
+    }
+
+    return result;
 }
 
 /**
@@ -212,6 +259,7 @@ void TilesetDocument::swapTileset(SharedTileset &tileset)
     // Bring pointers to safety
     setSelectedTiles(QList<Tile*>());
     setCurrentObject(mTileset.data());
+    mEditable.reset();
 
     sTilesetToDocument.remove(mTileset);
     mTileset->swap(*tileset);
@@ -220,12 +268,9 @@ void TilesetDocument::swapTileset(SharedTileset &tileset)
     emit tilesetChanged(mTileset.data());
 }
 
-EditableAsset *TilesetDocument::editable()
+std::unique_ptr<EditableAsset> TilesetDocument::createEditable()
 {
-    if (!mEditableTileset)
-        mEditableTileset = new EditableTileset(this, this);
-
-    return mEditableTileset;
+    return std::make_unique<EditableTileset>(this, this);
 }
 
 /**
@@ -257,7 +302,7 @@ void TilesetDocument::setTilesetName(const QString &name)
         emit mapDocument->tilesetNameChanged(mTileset.data());
 }
 
-void TilesetDocument::setTilesetTileOffset(const QPoint &tileOffset)
+void TilesetDocument::setTilesetTileOffset(QPoint tileOffset)
 {
     mTileset->setTileOffset(tileOffset);
 
@@ -268,12 +313,29 @@ void TilesetDocument::setTilesetTileOffset(const QPoint &tileOffset)
     emit tilesetTileOffsetChanged(mTileset.data());
 
     for (MapDocument *mapDocument : mapDocuments())
-        emit mapDocument->tilesetTileOffsetChanged(mTileset.data());
+        emit mapDocument->tilesetTilePositioningChanged(mTileset.data());
+}
+
+void TilesetDocument::setTilesetObjectAlignment(Alignment objectAlignment)
+{
+    mTileset->setObjectAlignment(objectAlignment);
+
+    emit tilesetObjectAlignmentChanged(mTileset.data());
+
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->tilesetTilePositioningChanged(mTileset.data());
+}
+
+void TilesetDocument::setTilesetTransformationFlags(Tileset::TransformationFlags flags)
+{
+    tileset()->setTransformationFlags(flags);
+    emit tilesetChanged(mTileset.data());
 }
 
 void TilesetDocument::addTiles(const QList<Tile *> &tiles)
 {
     mTileset->addTiles(tiles);
+    emit tilesAdded(tiles);
     emit tilesetChanged(mTileset.data());
 }
 
@@ -287,8 +349,20 @@ void TilesetDocument::removeTiles(const QList<Tile *> &tiles)
         }
     }
 
+    emit changed(TilesEvent(ChangeEvent::TilesAboutToBeRemoved, tiles));
     mTileset->removeTiles(tiles);
+    emit tilesRemoved(tiles);
     emit tilesetChanged(mTileset.data());
+}
+
+/**
+ * \sa Tileset::relocateTiles
+ */
+QList<int> TilesetDocument::relocateTiles(const QList<Tile *> &tiles, int location)
+{
+    const auto prevLocations = mTileset->relocateTiles(tiles, location);
+    emit tilesetChanged(mTileset.data());
+    return prevLocations;
 }
 
 void TilesetDocument::setSelectedTiles(const QList<Tile*> &selectedTiles)
@@ -301,6 +375,7 @@ QList<Object *> TilesetDocument::currentObjects() const
 {
     if (mCurrentObject->typeId() == Object::TileType && !mSelectedTiles.isEmpty()) {
         QList<Object*> objects;
+        objects.reserve(mSelectedTiles.size());
         for (Tile *tile : mSelectedTiles)
             objects.append(tile);
         return objects;
@@ -319,22 +394,13 @@ WangColorModel *TilesetDocument::wangColorModel(WangSet *wangSet)
 
     std::unique_ptr<WangColorModel> &model = mWangColorModels[wangSet];
     if (!model)
-        model.reset(new WangColorModel(this, wangSet));
+        model = std::make_unique<WangColorModel>(this, wangSet);
     return model.get();
 }
 
-void TilesetDocument::setTileType(Tile *tile, const QString &type)
-{
-    Q_ASSERT(tile->tileset() == mTileset.data());
-
-    tile->setType(type);
-    emit tileTypeChanged(tile);
-
-    for (MapDocument *mapDocument : mapDocuments())
-        emit mapDocument->tileTypeChanged(tile);
-}
-
-void TilesetDocument::setTileImage(Tile *tile, const QPixmap &image, const QUrl &source)
+void TilesetDocument::setTileImage(Tile *tile,
+                                   const QPixmap &image,
+                                   const QUrl &source)
 {
     Q_ASSERT(tile->tileset() == mTileset.data());
 
@@ -354,6 +420,44 @@ void TilesetDocument::setTileProbability(Tile *tile, qreal probability)
 
     for (MapDocument *mapDocument : mapDocuments())
         emit mapDocument->tileProbabilityChanged(tile);
+}
+
+void TilesetDocument::swapTileObjectGroup(Tile *tile, std::unique_ptr<ObjectGroup> &objectGroup)
+{
+    tile->swapObjectGroup(objectGroup);
+    emit tileObjectGroupChanged(tile);
+
+    for (MapDocument *mapDocument : mapDocuments())
+        emit mapDocument->tileObjectGroupChanged(tile);
+}
+
+void TilesetDocument::checkIssues()
+{
+    // Clear any previously found issues in this document
+    IssuesModel::instance().removeIssuesWithContext(this);
+
+    if (tileset()->imageStatus() == LoadingError) {
+        auto fileName = tileset()->imageSource().toString(QUrl::PreferLocalFile);
+        ERROR(tr("Failed to load tileset image '%1'").arg(fileName),
+              std::function<void()>(), this);       // todo: hook to file dialog
+    }
+
+    checkFilePathProperties(tileset().data());
+
+    for (Tile *tile : tileset()->tiles()) {
+        checkFilePathProperties(tile);
+        // todo: check properties on collision objects
+
+        if (!tile->imageSource().isEmpty() && tile->imageStatus() == LoadingError) {
+            auto fileName = tile->imageSource().toString(QUrl::PreferLocalFile);
+            ERROR(tr("Failed to load tile image '%1'").arg(fileName),
+                  std::function<void()>(), this);   // todo: hook to file dialog
+        }
+    }
+    for (WangSet *wangSet : tileset()->wangSets()) {
+        checkFilePathProperties(wangSet);
+        // todo: check properties on wang colors
+    }
 }
 
 TilesetDocument *TilesetDocument::findDocumentForTileset(const SharedTileset &tileset)
@@ -385,18 +489,11 @@ void TilesetDocument::onPropertiesChanged(Object *object)
         emit mapDocument->propertiesChanged(object);
 }
 
-void TilesetDocument::onTerrainRemoved(Terrain *terrain)
-{
-    if (terrain == mCurrentObject)
-        setCurrentObject(nullptr);
-}
-
 void TilesetDocument::onWangSetRemoved(WangSet *wangSet)
 {
-    if (wangSet == mCurrentObject)
-        setCurrentObject(nullptr);
-
     mWangColorModels.erase(wangSet);
 }
 
 } // namespace Tiled
+
+#include "moc_tilesetdocument.cpp"

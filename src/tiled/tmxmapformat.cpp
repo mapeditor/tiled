@@ -23,7 +23,6 @@
 #include "map.h"
 #include "mapreader.h"
 #include "mapwriter.h"
-#include "preferences.h"
 #include "tilesetmanager.h"
 
 #include <QBuffer>
@@ -37,24 +36,22 @@ TmxMapFormat::TmxMapFormat(QObject *parent)
 {
 }
 
-Map *TmxMapFormat::read(const QString &fileName)
+std::unique_ptr<Map> TmxMapFormat::read(const QString &fileName)
 {
     mError.clear();
 
     MapReader reader;
-    Map *map = reader.readMap(fileName);
+    std::unique_ptr<Map> map(reader.readMap(fileName));
     if (!map)
         mError = reader.errorString();
 
     return map;
 }
 
-bool TmxMapFormat::write(const Map *map, const QString &fileName)
+bool TmxMapFormat::write(const Map *map, const QString &fileName, Options options)
 {
-    Preferences *prefs = Preferences::instance();
-
     MapWriter writer;
-    writer.setDtdEnabled(prefs->dtdEnabled());
+    writer.setMinimizeOutput(options.testFlag(WriteMinimized));
 
     bool result = writer.writeMap(map, fileName);
     if (!result)
@@ -76,7 +73,7 @@ QByteArray TmxMapFormat::toByteArray(const Map *map)
     return buffer.data();
 }
 
-Map *TmxMapFormat::fromByteArray(const QByteArray &data)
+std::unique_ptr<Map> TmxMapFormat::fromByteArray(const QByteArray &data)
 {
     mError.clear();
 
@@ -85,7 +82,7 @@ Map *TmxMapFormat::fromByteArray(const QByteArray &data)
     buffer.open(QBuffer::ReadOnly);
 
     MapReader reader;
-    Map *map = reader.readMap(&buffer);
+    std::unique_ptr<Map> map(reader.readMap(&buffer));
     if (!map)
         mError = reader.errorString();
 
@@ -130,12 +127,10 @@ SharedTileset TsxTilesetFormat::read(const QString &fileName)
     return tileset;
 }
 
-bool TsxTilesetFormat::write(const Tileset &tileset, const QString &fileName)
+bool TsxTilesetFormat::write(const Tileset &tileset, const QString &fileName, Options options)
 {
-    Preferences *prefs = Preferences::instance();
-
     MapWriter writer;
-    writer.setDtdEnabled(prefs->dtdEnabled());
+    writer.setMinimizeOutput(options.testFlag(WriteMinimized));
 
     bool result = writer.writeTileset(tileset, fileName);
     if (!result)
@@ -185,10 +180,7 @@ std::unique_ptr<ObjectTemplate> XmlObjectTemplateFormat::read(const QString &fil
 
 bool XmlObjectTemplateFormat::write(const ObjectTemplate *objectTemplate, const QString &fileName)
 {
-    Preferences *prefs = Preferences::instance();
-
     MapWriter writer;
-    writer.setDtdEnabled(prefs->dtdEnabled());
 
     bool result = writer.writeObjectTemplate(objectTemplate, fileName);
     if (!result)
@@ -218,3 +210,5 @@ bool XmlObjectTemplateFormat::supportsFile(const QString &fileName) const
 
     return false;
 }
+
+#include "moc_tmxmapformat.cpp"

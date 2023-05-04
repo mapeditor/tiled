@@ -36,16 +36,16 @@ public:
                           Tile *tile,
                           const QUrl &imageSource);
 
-    void undo() { apply(mOldImageSource); }
-    void redo() { apply(mNewImageSource); }
+    void undo() override { apply(mOldImageSource); }
+    void redo() override { apply(mNewImageSource); }
 
 private:
     void apply(const QUrl &imageSource);
 
     TilesetDocument *mTilesetDocument;
     Tile *mTile;
-    QUrl mOldImageSource;
-    QUrl mNewImageSource;
+    const QUrl mOldImageSource;
+    const QUrl mNewImageSource;
 };
 
 } // namespace Tiled

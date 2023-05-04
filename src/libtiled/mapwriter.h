@@ -34,6 +34,8 @@
 
 #include <QString>
 
+#include <memory>
+
 class QIODevice;
 
 namespace Tiled {
@@ -110,10 +112,16 @@ public:
     void setDtdEnabled(bool enabled);
     bool isDtdEnabled() const;
 
+    /**
+     * Sets whether the XML output is minimized.
+     */
+    void setMinimizeOutput(bool enabled);
+    bool minimizeOutput() const;
+
 private:
     Q_DISABLE_COPY(MapWriter)
 
-    Internal::MapWriterPrivate *d;
+    std::unique_ptr<Internal::MapWriterPrivate> d;
 };
 
 } // namespace Tiled

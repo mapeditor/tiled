@@ -99,14 +99,10 @@ void TilePainter::setCell(int x, int y, const Cell &cell)
 }
 
 void TilePainter::setCells(int x, int y,
-                           TileLayer *tileLayer,
+                           const TileLayer *tileLayer,
                            const QRegion &mask)
 {
-    QRegion region = paintableRegion(x, y,
-                                     tileLayer->width(),
-                                     tileLayer->height());
-    region &= mask;
-
+    QRegion region = paintableRegion(mask);
     if (region.isEmpty())
         return;
 
@@ -121,20 +117,13 @@ void TilePainter::setCells(int x, int y,
 
 void TilePainter::drawCells(int x, int y, TileLayer *tileLayer)
 {
-    const QRegion region = paintableRegion(x, y,
-                                           tileLayer->width(),
-                                           tileLayer->height());
+    const QRegion region = paintableRegion(tileLayer->localBounds().translated(x, y));
     if (region.isEmpty())
         return;
 
     TileLayerChangeWatcher watcher(mMapDocument, mTileLayer);
 
-#if QT_VERSION < 0x050800
-    const auto rects = region.rects();
-    for (const QRect &rect : rects) {
-#else
     for (const QRect &rect : region) {
-#endif
         for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
             for (int _x = rect.left(); _x <= rect.right(); ++_x) {
                 const Cell &cell = tileLayer->cellAt(_x - x, _y - y);
@@ -168,12 +157,7 @@ void TilePainter::drawStamp(const TileLayer *stamp,
     const int h = stamp->height();
     const QRect regionBounds = region.boundingRect();
 
-#if QT_VERSION < 0x050800
-    const auto rects = region.rects();
-    for (const QRect &rect : rects) {
-#else
     for (const QRect &rect : region) {
-#endif
         for (int _y = rect.top(); _y <= rect.bottom(); ++_y) {
             for (int _x = rect.left(); _x <= rect.right(); ++_x) {
                 const int stampX = (_x - regionBounds.left()) % w;
@@ -327,7 +311,7 @@ static QRegion fillRegion(const TileLayer *layer,
     return fillRegion;
 }
 
-QRegion TilePainter::computePaintableFillRegion(const QPoint &fillOrigin) const
+QRegion TilePainter::computePaintableFillRegion(QPoint fillOrigin) const
 {
     const Map *map = mMapDocument->map();
     const QRegion &selection = mMapDocument->selectedArea();
@@ -352,7 +336,7 @@ QRegion TilePainter::computePaintableFillRegion(const QPoint &fillOrigin) const
     return region;
 }
 
-QRegion TilePainter::computeFillRegion(const QPoint &fillOrigin) const
+QRegion TilePainter::computeFillRegion(QPoint fillOrigin) const
 {
     const Map *map = mMapDocument->map();
     QRegion bounds = map->infinite() ? mTileLayer->bounds() : mTileLayer->rect();

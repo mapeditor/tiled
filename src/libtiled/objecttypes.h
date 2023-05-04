@@ -28,8 +28,9 @@
 
 #pragma once
 
-#include <QString>
 #include <QColor>
+#include <QJsonArray>
+#include <QString>
 #include <QVector>
 
 #include "properties.h"
@@ -57,7 +58,7 @@ struct ObjectType
     Properties defaultProperties;
 };
 
-typedef QVector<ObjectType> ObjectTypes;
+using ObjectTypes = QVector<ObjectType>;
 
 
 class TILEDSHARED_EXPORT ObjectTypesSerializer
@@ -75,7 +76,8 @@ public:
                           const ObjectTypes &objectTypes);
 
     bool readObjectTypes(const QString &fileName,
-                         ObjectTypes &objectTypes);
+                         ObjectTypes &objectTypes,
+                         const ExportContext &context);
 
     QString errorString() const { return mError; }
 
@@ -83,5 +85,10 @@ private:
     Format mFormat;
     QString mError;
 };
+
+TILEDSHARED_EXPORT QJsonArray toJson(const ObjectTypes &objectTypes, const ExportContext &context);
+TILEDSHARED_EXPORT void fromJson(const QJsonArray &array, ObjectTypes &objectTypes, const ExportContext &context);
+
+TILEDSHARED_EXPORT ObjectTypes toObjectTypes(const PropertyTypes &propertyTypes);
 
 } // namespace Tiled

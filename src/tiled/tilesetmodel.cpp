@@ -22,19 +22,26 @@
 #include "tilesetmodel.h"
 
 #include "map.h"
+#include "relocatetiles.h"
 #include "tile.h"
 #include "tiled.h"
 #include "tileset.h"
+#include "tilesetdocument.h"
 
 #include <QMimeData>
 
 using namespace Tiled;
 
-TilesetModel::TilesetModel(Tileset *tileset, QObject *parent):
-    QAbstractListModel(parent),
-    mTileset(tileset)
+TilesetModel::TilesetModel(TilesetDocument *tilesetDocument, QObject *parent)
+    : QAbstractListModel(parent)
+    , mTilesetDocument(tilesetDocument)
 {
     refreshTileIds();
+
+    connect(tilesetDocument, &TilesetDocument::tileImageSourceChanged,
+            this, &TilesetModel::tileChanged);
+    connect(tilesetDocument, &TilesetDocument::tileAnimationChanged,
+            this, &TilesetModel::tileChanged);
 }
 
 int TilesetModel::rowCount(const QModelIndex &parent) const
@@ -59,8 +66,10 @@ int TilesetModel::columnCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
-    if (mTileset->columnCount())
-        return mTileset->columnCount();
+    if (mColumnCountOverride > 0)
+        return mColumnCountOverride;
+    if (tileset()->columnCount())
+        return tileset()->columnCount();
     // TODO: Non-table tilesets should use a different model.
     // For now use an arbitrary number of columns.
     return 5;
@@ -70,10 +79,7 @@ QVariant TilesetModel::data(const QModelIndex &index, int role) const
 {
     if (role == Qt::DecorationRole) {
         if (Tile *tile = tileAt(index))
-            return tile->image();
-    } else if (role == TerrainRole) {
-        if (Tile *tile = tileAt(index))
-            return tile->terrain();
+            return tile->image().copy(tile->imageRect());
     }
 
     return QVariant();
@@ -91,11 +97,17 @@ QVariant TilesetModel::headerData(int /* section */,
 Qt::ItemFlags TilesetModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags defaultFlags = QAbstractListModel::flags(index);
+    defaultFlags |= Qt::ItemIsDropEnabled;
 
     if (index.isValid())
         defaultFlags |= Qt::ItemIsDragEnabled;
 
     return defaultFlags;
+}
+
+Qt::DropActions TilesetModel::supportedDropActions() const
+{
+    return Qt::MoveAction;
 }
 
 QStringList TilesetModel::mimeTypes() const
@@ -107,18 +119,70 @@ QStringList TilesetModel::mimeTypes() const
 
 QMimeData *TilesetModel::mimeData(const QModelIndexList &indexes) const
 {
-    QMimeData *mimeData = new QMimeData;
     QByteArray encodedData;
 
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
     QDataStream stream(&encodedData, QIODevice::WriteOnly);
+#else
+    QDataStream stream(&encodedData, QDataStream::WriteOnly);
+#endif
 
     for (const QModelIndex &index : indexes) {
-        if (index.isValid())
-            stream << tileIdAt(index);
+        if (auto tile = tileAt(index))
+            stream << tile->id();
     }
 
+    if (encodedData.isEmpty())
+        return nullptr;
+
+    QMimeData *mimeData = new QMimeData;
     mimeData->setData(QLatin1String(TILES_MIMETYPE), encodedData);
     return mimeData;
+}
+
+bool TilesetModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+                                int row, int column,
+                                const QModelIndex &parent)
+{
+    Q_UNUSED(row);
+    Q_UNUSED(column);
+
+    if (!data || action != Qt::MoveAction)
+        return false;
+    if (!data->hasFormat(QLatin1String(TILES_MIMETYPE)))
+        return false;
+
+    QByteArray encodedData = data->data(QLatin1String(TILES_MIMETYPE));
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
+    QDataStream stream(&encodedData, QIODevice::ReadOnly);
+#else
+    QDataStream stream(&encodedData, QDataStream::ReadOnly);
+#endif
+
+    QList<Tile*> sourceTiles;
+
+    while (!stream.atEnd()) {
+        int sourceId;
+        stream >> sourceId;
+
+        if (stream.status() != QDataStream::Ok)
+            break;
+
+        if (Tile *sourceTile = tileset()->findTile(sourceId))
+            sourceTiles.append(sourceTile);
+    }
+
+    if (!sourceTiles.isEmpty()) {
+        Tile *destinationTile = tileAt(parent);
+        int destinationIndex = destinationTile ? mTileIds.indexOf(destinationTile->id())
+                                               : mTileIds.size() - 1;
+
+        mTilesetDocument->undoStack()->push(new RelocateTiles(mTilesetDocument,
+                                                              sourceTiles,
+                                                              destinationIndex));
+    }
+
+    return true;
 }
 
 Tile *TilesetModel::tileAt(const QModelIndex &index) const
@@ -130,24 +194,22 @@ Tile *TilesetModel::tileAt(const QModelIndex &index) const
 
     if (tileIndex < mTileIds.size()) {
         const int tileId = mTileIds.at(tileIndex);
-        return mTileset->findTile(tileId);
+        return tileset()->findTile(tileId);
     }
 
     return nullptr;
 }
 
-int TilesetModel::tileIdAt(const QModelIndex &index) const
-{
-    Q_ASSERT(index.isValid());
-    const int tileIndex = index.column() + index.row() * columnCount();
-    return mTileIds.at(tileIndex);
-}
-
 QModelIndex TilesetModel::tileIndex(const Tile *tile) const
 {
-    Q_ASSERT(tile->tileset() == mTileset);
+    Q_ASSERT(tile->tileset() == tileset());
 
     const int columnCount = TilesetModel::columnCount();
+
+    // Can't yield a valid index with column count <= 0
+    if (columnCount <= 0)
+        return QModelIndex();
+
     const int tileIndex = mTileIds.indexOf(tile->id());
     // todo: this assertion was hit when testing tileset image size changes
     Q_ASSERT(tileIndex != -1);
@@ -158,17 +220,9 @@ QModelIndex TilesetModel::tileIndex(const Tile *tile) const
     return index(row, column);
 }
 
-void TilesetModel::setTileset(Tileset *tileset)
+Tileset *TilesetModel::tileset() const
 {
-    if (mTileset == tileset)
-        return;
-
-    beginResetModel();
-
-    mTileset = tileset;
-    refreshTileIds();
-
-    endResetModel();
+    return mTilesetDocument->tileset().data();
 }
 
 void TilesetModel::tilesetChanged()
@@ -178,15 +232,19 @@ void TilesetModel::tilesetChanged()
     endResetModel();
 }
 
-void TilesetModel::resetModel()
+void TilesetModel::setColumnCountOverride(int columnCount)
 {
+    if (mColumnCountOverride == columnCount)
+        return;
+
     beginResetModel();
+    mColumnCountOverride = columnCount;
     endResetModel();
 }
 
 void TilesetModel::tilesChanged(const QList<Tile *> &tiles)
 {
-    if (tiles.first()->tileset() != mTileset)
+    if (tiles.first()->tileset() != tileset())
         return;
 
     QModelIndex topLeft;
@@ -216,9 +274,6 @@ void TilesetModel::tilesChanged(const QList<Tile *> &tiles)
 
 void TilesetModel::tileChanged(Tile *tile)
 {
-    if (tile->tileset() != mTileset)
-        return;
-
     const QModelIndex i = tileIndex(tile);
     emit dataChanged(i, i);
 }
@@ -226,6 +281,8 @@ void TilesetModel::tileChanged(Tile *tile)
 void TilesetModel::refreshTileIds()
 {
     mTileIds.clear();
-    for (Tile *tile : mTileset->tiles())
+    for (Tile *tile : tileset()->tiles())
         mTileIds.append(tile->id());
 }
+
+#include "moc_tilesetmodel.cpp"

@@ -25,6 +25,7 @@
 
 #include "mapdocument.h"
 #include "mapitem.h"
+#include "session.h"
 
 #include <QColor>
 #include <QGraphicsScene>
@@ -40,6 +41,7 @@ class TileLayer;
 class Tileset;
 
 class AbstractTool;
+class DebugDrawItem;
 class LayerItem;
 class MapDocument;
 class MapObjectItem;
@@ -60,12 +62,36 @@ public:
     MapDocument *mapDocument() const;
     void setMapDocument(MapDocument *map);
 
+    void setShowTileCollisionShapes(bool enabled);
+    void setParallaxEnabled(bool enabled);
+    void setPainterScale(qreal painterScale);
+
     QRectF mapBoundingRect() const;
 
-    void enableSelectedTool();
-    void disableSelectedTool();
-
     void setSelectedTool(AbstractTool *tool);
+
+    MapItem *mapItem(MapDocument *mapDocument) const;
+
+    DebugDrawItem *debugDrawItem() const;
+
+    const QRectF &viewRect() const;
+    void setViewRect(const QRectF &rect);
+
+    void setOverrideBackgroundColor(QColor backgroundColor);
+
+    QPointF absolutePositionForLayer(const Layer &layer) const;
+    QPointF layerItemPosition(const Layer &layer) const;
+    QPointF parallaxOffset(const Layer &layer) const;
+
+    static SessionOption<bool> enableWorlds;
+
+signals:
+    void mapDocumentChanged(MapDocument *mapDocument);
+
+    void sceneRefreshed();
+
+    void fontChanged();
+    void parallaxParametersChanged();
 
 protected:
     bool event(QEvent *event) override;
@@ -81,34 +107,40 @@ protected:
     void dragLeaveEvent(QGraphicsSceneDragDropEvent *event) override;
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event) override;
 
-private slots:
+private:
     void refreshScene();
 
+    void changeEvent(const ChangeEvent &change);
     void mapChanged();
     void repaintTileset(Tileset *tileset);
 
-    void adaptToTilesetTileSizeChanges();
-    void adaptToTileSizeChanges();
+    void tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset);
 
-    void tilesetReplaced();
-
-private:
     void updateDefaultBackgroundColor();
+    void updateBackgroundColor();
     void updateSceneRect();
+
+    void setWorldsEnabled(bool enabled);
 
     MapItem *takeOrCreateMapItem(const MapDocumentPtr &mapDocument,
                                  MapItem::DisplayMode displayMode);
 
     bool eventFilter(QObject *object, QEvent *event) override;
 
-    MapDocument *mMapDocument;
-    QHash<MapDocument*, MapItem*> mMapItems;
-    AbstractTool *mSelectedTool;
-    AbstractTool *mActiveTool;
-    bool mUnderMouse;
-    Qt::KeyboardModifiers mCurrentModifiers;
+    MapDocument *mMapDocument = nullptr;
+    QHash<Map*, MapItem*> mMapItems;
+    AbstractTool *mSelectedTool = nullptr;
+    DebugDrawItem *mDebugDrawItem = nullptr;
+    bool mUnderMouse = false;
+    bool mShowTileCollisionShapes = false;
+    bool mParallaxEnabled = true;
+    bool mWorldsEnabled = true;
+    Session::CallbackIterator mEnableWorldsCallback;
+    Qt::KeyboardModifiers mCurrentModifiers = Qt::NoModifier;
     QPointF mLastMousePos;
+    QRectF mViewRect;
     QColor mDefaultBackgroundColor;
+    QColor mOverrideBackgroundColor;
 };
 
 /**
@@ -117,6 +149,24 @@ private:
 inline MapDocument *MapScene::mapDocument() const
 {
     return mMapDocument;
+}
+
+/**
+ * Returns the map item displaying the given map, if any.
+ */
+inline MapItem *MapScene::mapItem(MapDocument *mapDocument) const
+{
+    return mapDocument ? mMapItems.value(mapDocument->map()) : nullptr;
+}
+
+inline DebugDrawItem *MapScene::debugDrawItem() const
+{
+    return mDebugDrawItem;
+}
+
+inline const QRectF &MapScene::viewRect() const
+{
+    return mViewRect;
 }
 
 } // namespace Tiled

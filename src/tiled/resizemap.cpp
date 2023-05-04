@@ -28,7 +28,7 @@
 namespace Tiled {
 
 ResizeMap::ResizeMap(MapDocument *mapDocument,
-                     const QSize &size,
+                     QSize size,
                      QUndoCommand *parent)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Resize Map"),

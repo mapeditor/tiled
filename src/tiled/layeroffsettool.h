@@ -32,7 +32,6 @@ class LayerOffsetTool : public AbstractTool
 public:
     explicit LayerOffsetTool(QObject *parent = nullptr);
 
-    void activate(MapScene *) override;
     void deactivate(MapScene *) override;
     void keyPressed(QKeyEvent *) override;
     void mouseEntered() override;
@@ -44,9 +43,6 @@ public:
     void modifiersChanged(Qt::KeyboardModifiers) override;
 
     void languageChanged() override;
-
-protected slots:
-    void updateEnabledState() override;
 
 protected:
     void mapDocumentChanged(MapDocument *oldDocument,

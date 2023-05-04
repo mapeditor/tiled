@@ -21,6 +21,7 @@
 #pragma once
 
 #include "map.h"
+#include "randompicker.h"
 #include "tiled.h"
 
 #include <QDir>
@@ -55,7 +56,7 @@ class TileStamp
 {
 public:
     TileStamp();
-    explicit TileStamp(Map *map);
+    explicit TileStamp(std::unique_ptr<Map> map);
 
     TileStamp(const TileStamp &other);
     TileStamp &operator=(const TileStamp &other);
@@ -76,7 +77,7 @@ public:
     QSize maxSize() const;
 
     const QVector<TileStampVariation> &variations() const;
-    void addVariation(Map *map, qreal probability = 1.0);
+    void addVariation(std::unique_ptr<Map> map, qreal probability = 1.0);
     void addVariation(const TileStampVariation &variation);
     Map *takeVariation(int index);
     bool isEmpty() const;
@@ -84,7 +85,7 @@ public:
     int quickStampIndex() const;
     void setQuickStampIndex(int quickStampIndex);
 
-    const TileStampVariation &randomVariation() const;
+    RandomPicker<Map *> randomVariations() const;
 
     TileStamp flipped(FlipDirection direction) const;
     TileStamp rotated(RotateDirection direction) const;
@@ -106,7 +107,8 @@ private:
  */
 inline void TileStamp::addVariation(const TileStampVariation &variation)
 {
-    addVariation(variation.map->clone(), variation.probability);
+    addVariation(variation.map->clone(),
+                 variation.probability);
 }
 
 } // namespace Tiled

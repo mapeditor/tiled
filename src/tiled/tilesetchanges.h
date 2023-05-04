@@ -21,13 +21,12 @@
 
 #pragma once
 
+#include "changevalue.h"
 #include "tileset.h"
-#include "undocommands.h"
 
 #include <QColor>
 #include <QPoint>
 #include <QSize>
-#include <QUndoCommand>
 
 namespace Tiled {
 
@@ -43,6 +42,9 @@ public:
 
     void undo() override;
     void redo() override;
+
+    int id() const override { return Cmd_ChangeTilesetName; }
+    bool mergeWith(const QUndoCommand *other) override;
 
 private:
     TilesetDocument *mTilesetDocument;
@@ -157,6 +159,44 @@ private:
 };
 
 
+class ChangeTilesetObjectAlignment : public QUndoCommand
+{
+public:
+    ChangeTilesetObjectAlignment(TilesetDocument *tilesetDocument,
+                                 Alignment objectAlignment);
+
+    void undo() override { swap(); }
+    void redo() override { swap(); }
+
+private:
+    void swap();
+
+    TilesetDocument *mTilesetDocument;
+    Alignment mObjectAlignment;
+};
+
+class ChangeTilesetTileRenderSize : public ChangeValue<Tileset, Tileset::TileRenderSize>
+{
+public:
+    ChangeTilesetTileRenderSize(TilesetDocument *tilesetDocument,
+                                Tileset::TileRenderSize tileRenderSize);
+
+protected:
+    Tileset::TileRenderSize getValue(const Tileset *tileset) const override;
+    void setValue(Tileset *tileset, const Tileset::TileRenderSize &tileRenderSize) const override;
+};
+
+class ChangeTilesetFillMode : public ChangeValue<Tileset, Tileset::FillMode>
+{
+public:
+    ChangeTilesetFillMode(TilesetDocument *tilesetDocument,
+                          Tileset::FillMode fillMode);
+
+protected:
+    Tileset::FillMode getValue(const Tileset *tileset) const override;
+    void setValue(Tileset *tileset, const Tileset::FillMode &fillMode) const override;
+};
+
 class ChangeTilesetGridSize : public QUndoCommand
 {
 public:
@@ -171,6 +211,21 @@ private:
 
     TilesetDocument *mTilesetDocument;
     QSize mGridSize;
+};
+
+class ChangeTilesetTransformationFlags : public QUndoCommand
+{
+public:
+    ChangeTilesetTransformationFlags(TilesetDocument *TilesetDocument,
+                                     Tileset::TransformationFlags newValue);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    TilesetDocument *mTilesetDocument;
+    const Tileset::TransformationFlags mOldValue;
+    const Tileset::TransformationFlags mNewValue;
 };
 
 } // namespace Tiled

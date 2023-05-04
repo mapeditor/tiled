@@ -1,0 +1,239 @@
+{
+    "automappingRulesFile": "",
+    "commands": [
+    ],
+    "extensionsPath": "extensions",
+    "folders": [
+        ".",
+        "../tests"
+    ],
+    "propertyTypes": [
+        {
+            "color": "#ffa0a0a4",
+            "id": 10,
+            "members": [
+                {
+                    "name": "fixture",
+                    "propertyType": "Fixture",
+                    "type": "class",
+                    "value": {
+                    }
+                },
+                {
+                    "name": "type",
+                    "propertyType": "BodyType",
+                    "type": "string",
+                    "value": "Static"
+                }
+            ],
+            "name": "Body",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset"
+            ]
+        },
+        {
+            "id": 1,
+            "name": "BodyType",
+            "storageType": "string",
+            "type": "enum",
+            "values": [
+                "Static",
+                "Dynamic"
+            ],
+            "valuesAsFlags": false
+        },
+        {
+            "id": 12,
+            "name": "CollisionCategories",
+            "storageType": "int",
+            "type": "enum",
+            "values": [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4"
+            ],
+            "valuesAsFlags": true
+        },
+        {
+            "id": 9,
+            "name": "Direction",
+            "storageType": "string",
+            "type": "enum",
+            "values": [
+                "Up",
+                "Right",
+                "Down",
+                "Left"
+            ],
+            "valuesAsFlags": false
+        },
+        {
+            "id": 2,
+            "name": "EnemyType",
+            "storageType": "string",
+            "type": "enum",
+            "values": [
+                "Neutral",
+                "Friendly",
+                "Aggressive"
+            ],
+            "valuesAsFlags": false
+        },
+        {
+            "color": "#ffcdab8f",
+            "id": 5,
+            "members": [
+                {
+                    "name": "direction",
+                    "propertyType": "Direction",
+                    "type": "string",
+                    "value": "Up"
+                }
+            ],
+            "name": "Exit",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ffa0a0a4",
+            "id": 11,
+            "members": [
+                {
+                    "name": "categoryBits",
+                    "propertyType": "CollisionCategories",
+                    "type": "int",
+                    "value": 0
+                },
+                {
+                    "name": "groupIndex",
+                    "type": "int",
+                    "value": 0
+                },
+                {
+                    "name": "maskBits",
+                    "propertyType": "CollisionCategories",
+                    "type": "int",
+                    "value": 0
+                }
+            ],
+            "name": "Filter",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset"
+            ]
+        },
+        {
+            "color": "#ffad7fa8",
+            "id": 4,
+            "members": [
+                {
+                    "name": "density",
+                    "type": "float",
+                    "value": 0
+                },
+                {
+                    "name": "filter",
+                    "propertyType": "Filter",
+                    "type": "class",
+                    "value": {
+                        "categoryBits": 1,
+                        "maskBits": 1
+                    }
+                },
+                {
+                    "name": "friction",
+                    "type": "float",
+                    "value": 1
+                },
+                {
+                    "name": "isSensor",
+                    "type": "bool",
+                    "value": false
+                },
+                {
+                    "name": "restitution",
+                    "type": "float",
+                    "value": 0
+                },
+                {
+                    "name": "restitutionThreshold",
+                    "type": "float",
+                    "value": 0
+                }
+            ],
+            "name": "Fixture",
+            "type": "class",
+            "useAs": [
+                "property",
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "color": "#ff729fcf",
+            "id": 6,
+            "members": [
+                {
+                    "name": "script",
+                    "type": "file",
+                    "value": ""
+                }
+            ],
+            "name": "NPC",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        },
+        {
+            "id": 3,
+            "name": "State",
+            "storageType": "string",
+            "type": "enum",
+            "values": [
+                "Open",
+                "Closed",
+                "Locked"
+            ],
+            "valuesAsFlags": false
+        },
+        {
+            "color": "#fffcaf3e",
+            "id": 8,
+            "members": [
+                {
+                    "name": "script",
+                    "type": "file",
+                    "value": ""
+                }
+            ],
+            "name": "Trigger",
+            "type": "class",
+            "useAs": [
+                "object",
+                "tile"
+            ]
+        }
+    ]
+}

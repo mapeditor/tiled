@@ -29,7 +29,7 @@ class CreateScalableObjectTool : public CreateObjectTool
     Q_OBJECT
 
 public:
-    CreateScalableObjectTool(QObject *parent);
+    CreateScalableObjectTool(Id id, QObject *parent);
 
 protected:
     bool startNewMapObject(const QPointF &pos, ObjectGroup *objectGroup) override;

@@ -28,7 +28,6 @@
 #include "objecttemplate.h"
 #include "properties.h"
 #include "templatemanager.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tileset.h"
@@ -47,58 +46,67 @@ static QString resolvePath(const QDir &dir, const QVariant &variant)
     return fileName;
 }
 
-Map *VariantToMapConverter::toMap(const QVariant &variant,
-                                  const QDir &mapDir)
+std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
+                                                  const QDir &mapDir)
 {
     mGidMapper.clear();
-    mMapDir = mapDir;
+    mDir = mapDir;
 
     const QVariantMap variantMap = variant.toMap();
-    const QString orientationString = variantMap[QLatin1String("orientation")].toString();
+    const QString orientationString = variantMap[QStringLiteral("orientation")].toString();
 
-    Map::Orientation orientation = orientationFromString(orientationString);
+    Map::Parameters mapParameters;
+    mapParameters.orientation = orientationFromString(orientationString);
 
-    if (orientation == Map::Unknown) {
+    if (mapParameters.orientation == Map::Unknown) {
         mError = tr("Unsupported map orientation: \"%1\"")
                 .arg(orientationString);
         return nullptr;
     }
 
-    const QString staggerAxisString = variantMap[QLatin1String("staggeraxis")].toString();
-    Map::StaggerAxis staggerAxis = staggerAxisFromString(staggerAxisString);
+    const QString staggerAxis = variantMap[QStringLiteral("staggeraxis")].toString();
+    const QString staggerIndex = variantMap[QStringLiteral("staggerindex")].toString();
+    const QString renderOrder = variantMap[QStringLiteral("renderorder")].toString();
 
-    const QString staggerIndexString = variantMap[QLatin1String("staggerindex")].toString();
-    Map::StaggerIndex staggerIndex = staggerIndexFromString(staggerIndexString);
+    const int nextLayerId = variantMap[QStringLiteral("nextlayerid")].toInt();
+    const int nextObjectId = variantMap[QStringLiteral("nextobjectid")].toInt();
 
-    const QString renderOrderString = variantMap[QLatin1String("renderorder")].toString();
-    Map::RenderOrder renderOrder = renderOrderFromString(renderOrderString);
+    mapParameters.renderOrder = renderOrderFromString(renderOrder);
+    mapParameters.width = variantMap[QStringLiteral("width")].toInt();
+    mapParameters.height = variantMap[QStringLiteral("height")].toInt();
+    mapParameters.tileWidth = variantMap[QStringLiteral("tilewidth")].toInt();
+    mapParameters.tileHeight = variantMap[QStringLiteral("tileheight")].toInt();
+    mapParameters.infinite = variantMap[QStringLiteral("infinite")].toInt();
+    mapParameters.hexSideLength = variantMap[QStringLiteral("hexsidelength")].toInt();
+    mapParameters.staggerAxis = staggerAxisFromString(staggerAxis);
+    mapParameters.staggerIndex = staggerIndexFromString(staggerIndex);
 
-    const int nextLayerId = variantMap[QLatin1String("nextlayerid")].toInt();
-    const int nextObjectId = variantMap[QLatin1String("nextobjectid")].toInt();
+    bool ok;
+    const qreal parallaxOriginX = variantMap[QStringLiteral("parallaxoriginx")].toDouble(&ok);
+    if (ok)
+        mapParameters.parallaxOrigin.setX( parallaxOriginX);
+    const qreal parallaxOriginY = variantMap[QStringLiteral("parallaxoriginy")].toDouble(&ok);
+    if (ok)
+        mapParameters.parallaxOrigin.setY(parallaxOriginY);
 
-    std::unique_ptr<Map> map(new Map(orientation,
-                                     variantMap[QLatin1String("width")].toInt(),
-                                     variantMap[QLatin1String("height")].toInt(),
-                                     variantMap[QLatin1String("tilewidth")].toInt(),
-                                     variantMap[QLatin1String("tileheight")].toInt(),
-                                     variantMap[QLatin1String("infinite")].toInt()));
-    map->setHexSideLength(variantMap[QLatin1String("hexsidelength")].toInt());
-    map->setStaggerAxis(staggerAxis);
-    map->setStaggerIndex(staggerIndex);
-    map->setRenderOrder(renderOrder);
+    const QString bgColor = variantMap[QStringLiteral("backgroundcolor")].toString();
+    if (QColor::isValidColor(bgColor))
+        mapParameters.backgroundColor = QColor(bgColor);
+
+    auto map = std::make_unique<Map>(mapParameters);
     if (nextLayerId)
         map->setNextLayerId(nextLayerId);
     if (nextObjectId)
         map->setNextObjectId(nextObjectId);
 
+    map->setClassName(variantMap[QStringLiteral("class")].toString());
+
+    readMapEditorSettings(*map, variantMap[QStringLiteral("editorsettings")].toMap());
+
     mMap = map.get();
     map->setProperties(extractProperties(variantMap));
 
-    const QString bgColor = variantMap[QLatin1String("backgroundcolor")].toString();
-    if (!bgColor.isEmpty() && QColor::isValidColor(bgColor))
-        map->setBackgroundColor(QColor(bgColor));
-
-    const auto tilesetVariants = variantMap[QLatin1String("tilesets")].toList();
+    const auto tilesetVariants = variantMap[QStringLiteral("tilesets")].toList();
     for (const QVariant &tilesetVariant : tilesetVariants) {
         SharedTileset tileset = toTileset(tilesetVariant);
         if (!tileset)
@@ -107,7 +115,7 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
         map->addTileset(tileset);
     }
 
-    const auto layerVariants = variantMap[QLatin1String("layers")].toList();
+    const auto layerVariants = variantMap[QStringLiteral("layers")].toList();
     for (const QVariant &layerVariant : layerVariants) {
         std::unique_ptr<Layer> layer = toLayer(layerVariant);
         if (!layer)
@@ -123,13 +131,17 @@ Map *VariantToMapConverter::toMap(const QVariant &variant,
             tileset->loadImage();
     }
 
-    return map.release();
+    const int compressionLevel = variantMap[QStringLiteral("compressionlevel")].toInt(&ok);
+    if (ok)
+        map->setCompressionLevel(compressionLevel);
+
+    return map;
 }
 
 SharedTileset VariantToMapConverter::toTileset(const QVariant &variant,
                                                const QDir &directory)
 {
-    mMapDir = directory;
+    mDir = directory;
     mReadingExternalTileset = true;
 
     SharedTileset tileset = toTileset(variant);
@@ -144,7 +156,7 @@ std::unique_ptr<ObjectTemplate> VariantToMapConverter::toObjectTemplate(const QV
                                                                         const QDir &directory)
 {
     mGidMapper.clear();
-    mMapDir = directory;
+    mDir = directory;
     return toObjectTemplate(variant);
 }
 
@@ -153,31 +165,33 @@ Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant
 {
     Properties properties;
 
+    const ExportContext context(mDir.path());
+
     // read object-based format (1.0)
     const QVariantMap propertiesMap = propertiesVariant.toMap();
     const QVariantMap propertyTypesMap = propertyTypesVariant.toMap();
     QVariantMap::const_iterator it = propertiesMap.constBegin();
     QVariantMap::const_iterator it_end = propertiesMap.constEnd();
     for (; it != it_end; ++it) {
-        int type = nameToType(propertyTypesMap.value(it.key()).toString());
-        if (type == QVariant::Invalid)
-            type = QVariant::String;
+        ExportValue exportValue;
+        exportValue.value = it.value();
+        exportValue.typeName = propertyTypesMap.value(it.key()).toString();
+        // TODO: Support for custom property types with customPropertyTypesMap
 
-        const QVariant value = fromExportValue(it.value(), type, mMapDir);
-        properties[it.key()] = value;
+        properties[it.key()] = context.toPropertyValue(exportValue);
     }
 
     // read array-based format (1.2)
     const QVariantList propertiesList = propertiesVariant.toList();
     for (const QVariant &propertyVariant : propertiesList) {
         const QVariantMap propertyVariantMap = propertyVariant.toMap();
-        const QString propertyName = propertyVariantMap[QLatin1String("name")].toString();
-        const QString propertyType = propertyVariantMap[QLatin1String("type")].toString();
-        const QVariant propertyValue = propertyVariantMap[QLatin1String("value")];
-        int type = nameToType(propertyType);
-        if (type == QVariant::Invalid)
-            type = QVariant::String;
-        properties[propertyName] = fromExportValue(propertyValue, type, mMapDir);
+        const QString propertyName = propertyVariantMap[QStringLiteral("name")].toString();
+        ExportValue exportValue;
+        exportValue.value = propertyVariantMap[QStringLiteral("value")];
+        exportValue.typeName = propertyVariantMap[QStringLiteral("type")].toString();
+        exportValue.propertyTypeName = propertyVariantMap[QStringLiteral("propertytype")].toString();
+
+        properties[propertyName] = context.toPropertyValue(exportValue);
     }
 
     return properties;
@@ -187,12 +201,12 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
 {
     const QVariantMap variantMap = variant.toMap();
 
-    const int firstGid = variantMap[QLatin1String("firstgid")].toInt();
+    const int firstGid = variantMap[QStringLiteral("firstgid")].toInt();
 
     // Handle external tilesets
-    const QVariant sourceVariant = variantMap[QLatin1String("source")];
+    const QVariant sourceVariant = variantMap[QStringLiteral("source")];
     if (!sourceVariant.isNull()) {
-        QString source = resolvePath(mMapDir, sourceVariant);
+        QString source = resolvePath(mDir, sourceVariant);
         QString error;
         SharedTileset tileset = TilesetManager::instance()->loadTileset(source, &error);
         if (!tileset) {
@@ -206,19 +220,24 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
         return tileset;
     }
 
-    const QString name = variantMap[QLatin1String("name")].toString();
-    const int tileWidth = variantMap[QLatin1String("tilewidth")].toInt();
-    const int tileHeight = variantMap[QLatin1String("tileheight")].toInt();
-    const int spacing = variantMap[QLatin1String("spacing")].toInt();
-    const int margin = variantMap[QLatin1String("margin")].toInt();
-    const QVariantMap tileOffset = variantMap[QLatin1String("tileoffset")].toMap();
-    const QVariantMap grid = variantMap[QLatin1String("grid")].toMap();
-    const int tileOffsetX = tileOffset[QLatin1String("x")].toInt();
-    const int tileOffsetY = tileOffset[QLatin1String("y")].toInt();
-    const int columns = variantMap[QLatin1String("columns")].toInt();
-    const QString bgColor = variantMap[QLatin1String("backgroundcolor")].toString();
+    const QString name = variantMap[QStringLiteral("name")].toString();
+    const QString className = variantMap[QStringLiteral("class")].toString();
+    const int tileWidth = variantMap[QStringLiteral("tilewidth")].toInt();
+    const int tileHeight = variantMap[QStringLiteral("tileheight")].toInt();
+    const int spacing = variantMap[QStringLiteral("spacing")].toInt();
+    const int margin = variantMap[QStringLiteral("margin")].toInt();
+    const QVariantMap tileOffset = variantMap[QStringLiteral("tileoffset")].toMap();
+    const QVariantMap grid = variantMap[QStringLiteral("grid")].toMap();
+    const int tileOffsetX = tileOffset[QStringLiteral("x")].toInt();
+    const int tileOffsetY = tileOffset[QStringLiteral("y")].toInt();
+    const int columns = variantMap[QStringLiteral("columns")].toInt();
+    const QString backgroundColor = variantMap[QStringLiteral("backgroundcolor")].toString();
+    const QString objectAlignment = variantMap[QStringLiteral("objectalignment")].toString();
+    const QString tileRenderSize = variantMap[QStringLiteral("tilerendersize")].toString();
+    const QString fillMode = variantMap[QStringLiteral("fillmode")].toString();
+    const QVariantMap transformations = variantMap[QStringLiteral("transformations")].toMap();
 
-    if (tileWidth <= 0 || tileHeight <= 0 ||
+    if (tileWidth < 0 || tileHeight < 0 ||
             (firstGid == 0 && !mReadingExternalTileset)) {
         mError = tr("Invalid tileset parameters for tileset '%1'").arg(name);
         return SharedTileset();
@@ -228,76 +247,132 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
                                           tileWidth, tileHeight,
                                           spacing, margin));
 
+    tileset->setClassName(className);
+    tileset->setObjectAlignment(alignmentFromString(objectAlignment));
+    tileset->setTileRenderSize(Tileset::tileRenderSizeFromString(tileRenderSize));
+    tileset->setFillMode(Tileset::fillModeFromString(fillMode));
     tileset->setTileOffset(QPoint(tileOffsetX, tileOffsetY));
     tileset->setColumnCount(columns);
 
+    if (!transformations.isEmpty()) {
+        Tileset::TransformationFlags transformationFlags;
+
+        if (transformations[QStringLiteral("hflip")].toBool())
+            transformationFlags |= Tileset::AllowFlipHorizontally;
+        if (transformations[QStringLiteral("vflip")].toBool())
+            transformationFlags |= Tileset::AllowFlipVertically;
+        if (transformations[QStringLiteral("rotate")].toBool())
+            transformationFlags |= Tileset::AllowRotate;
+        if (transformations[QStringLiteral("preferuntransformed")].toBool())
+            transformationFlags |= Tileset::PreferUntransformed;
+
+        tileset->setTransformationFlags(transformationFlags);
+    }
+
+    readTilesetEditorSettings(*tileset, variantMap[QStringLiteral("editorsettings")].toMap());
+
     if (!grid.isEmpty()) {
-        const QString orientation = grid[QLatin1String("orientation")].toString();
-        const QSize gridSize(grid[QLatin1String("width")].toInt(),
-                             grid[QLatin1String("height")].toInt());
+        const QString orientation = grid[QStringLiteral("orientation")].toString();
+        const QSize gridSize(grid[QStringLiteral("width")].toInt(),
+                             grid[QStringLiteral("height")].toInt());
 
         tileset->setOrientation(Tileset::orientationFromString(orientation));
         if (!gridSize.isEmpty())
             tileset->setGridSize(gridSize);
     }
 
-    if (!bgColor.isEmpty() && QColor::isValidColor(bgColor))
-        tileset->setBackgroundColor(QColor(bgColor));
+    if (QColor::isValidColor(backgroundColor))
+        tileset->setBackgroundColor(QColor(backgroundColor));
 
-    QVariant imageVariant = variantMap[QLatin1String("image")];
+    QVariant imageVariant = variantMap[QStringLiteral("image")];
 
     if (!imageVariant.isNull()) {
-        const int imageWidth = variantMap[QLatin1String("imagewidth")].toInt();
-        const int imageHeight = variantMap[QLatin1String("imageheight")].toInt();
+        if (tileWidth == 0 || tileHeight == 0) {
+            mError = tr("Invalid tileset parameters for tileset '%1'").arg(name);
+            return SharedTileset();
+        }
+        const int imageWidth = variantMap[QStringLiteral("imagewidth")].toInt();
+        const int imageHeight = variantMap[QStringLiteral("imageheight")].toInt();
 
         ImageReference imageRef;
-        imageRef.source = toUrl(imageVariant.toString(), mMapDir);
+        imageRef.source = toUrl(imageVariant.toString(), mDir);
         imageRef.size = QSize(imageWidth, imageHeight);
 
         tileset->setImageReference(imageRef);
     }
 
-    const QString trans = variantMap[QLatin1String("transparentcolor")].toString();
-    if (!trans.isEmpty() && QColor::isValidColor(trans))
+    const QString trans = variantMap[QStringLiteral("transparentcolor")].toString();
+    if (QColor::isValidColor(trans))
         tileset->setTransparentColor(QColor(trans));
 
     tileset->setProperties(extractProperties(variantMap));
 
-    // Read terrains
-    QVariantList terrainsVariantList = variantMap[QLatin1String("terrains")].toList();
-    for (int i = 0; i < terrainsVariantList.count(); ++i) {
-        QVariantMap terrainMap = terrainsVariantList[i].toMap();
-        Terrain *terrain = tileset->addTerrain(terrainMap[QLatin1String("name")].toString(),
-                                               terrainMap[QLatin1String("tile")].toInt());
-        terrain->setProperties(extractProperties(terrainMap));
+    // Read terrains as a WangSet
+    QVariantList terrainsVariantList = variantMap[QStringLiteral("terrains")].toList();
+    WangSet *terrainWangSet = nullptr;
+    if (!terrainsVariantList.isEmpty()) {
+        auto wangSet = std::make_unique<WangSet>(tileset.data(), tr("Terrains"), WangSet::Corner, -1);
+        wangSet->setColorCount(terrainsVariantList.size());
+
+        for (int i = 0; i < terrainsVariantList.count(); ++i) {
+            QVariantMap terrainMap = terrainsVariantList[i].toMap();
+
+            const auto &wc = wangSet->colorAt(i + 1);
+            wc->setName(terrainMap[QStringLiteral("name")].toString());
+            wc->setImageId(terrainMap[QStringLiteral("tile")].toInt());
+            wc->setProperties(extractProperties(terrainMap));
+        }
+
+        terrainWangSet = wangSet.get();
+        tileset->addWangSet(std::move(wangSet));
     }
 
     // Reads tile information (everything except the properties)
     auto readTile = [&](Tile *tile, const QVariantMap &tileVar) {
-        bool ok;
+        bool ok = true;
 
-        tile->setType(tileVar[QLatin1String("type")].toString());
+        const QRect imageRect(tileVar[QStringLiteral("x")].toInt(),
+                              tileVar[QStringLiteral("y")].toInt(),
+                              tileVar[QStringLiteral("width")].toInt(),
+                              tileVar[QStringLiteral("height")].toInt());
+        tile->setImageRect(imageRect);
 
-        QList<QVariant> terrains = tileVar[QLatin1String("terrain")].toList();
-        if (terrains.count() == 4) {
-            for (int i = 0; i < 4; ++i) {
-                int terrainId = terrains.at(i).toInt(&ok);
-                if (ok && terrainId >= 0 && terrainId < tileset->terrainCount())
-                    tile->setCornerTerrainId(i, terrainId);
+        QString className = tileVar[QStringLiteral("class")].toString();
+        if (className.isEmpty())    // fallback for compatibility
+            className = tileVar[QStringLiteral("type")].toString();
+        tile->setClassName(className);
+
+        // Read tile terrain ids as Wang IDs.
+        QList<QVariant> terrains = tileVar[QStringLiteral("terrain")].toList();
+        if (terrains.count() == 4 && terrainWangSet) {
+            WangId wangId;
+            for (int i = 0; i < 4 && ok; ++i) {
+                const int c = terrains.at(i).toInt(&ok) + 1;
+                if (ok) {
+                    switch (i) {
+                    case 0: wangId.setIndexColor(WangId::TopLeft, c); break;
+                    case 1: wangId.setIndexColor(WangId::TopRight, c); break;
+                    case 2: wangId.setIndexColor(WangId::BottomLeft, c); break;
+                    case 3: wangId.setIndexColor(WangId::BottomRight, c); break;
+                    }
+                }
             }
+
+            if (terrainWangSet->wangIdIsValid(wangId) && ok)
+                terrainWangSet->setWangId(tile->id(), wangId);
         }
 
-        qreal probability = tileVar[QLatin1String("probability")].toDouble(&ok);
+        qreal probability = tileVar[QStringLiteral("probability")].toDouble(&ok);
         if (ok)
             tile->setProbability(probability);
 
-        QVariant imageVariant = tileVar[QLatin1String("image")];
+        QVariant imageVariant = tileVar[QStringLiteral("image")];
         if (!imageVariant.isNull()) {
-            const QUrl imagePath = toUrl(imageVariant.toString(), mMapDir);
+            const QUrl imagePath = toUrl(imageVariant.toString(), mDir);
             tileset->setTileImage(tile, QPixmap(imagePath.toLocalFile()), imagePath);
         }
 
-        QVariantMap objectGroupVariant = tileVar[QLatin1String("objectgroup")].toMap();
+        QVariantMap objectGroupVariant = tileVar[QStringLiteral("objectgroup")].toMap();
         if (!objectGroupVariant.isEmpty()) {
             std::unique_ptr<ObjectGroup> objectGroup = toObjectGroup(objectGroupVariant);
             if (objectGroup) {
@@ -309,7 +384,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
                 // them in previous versions.
                 Properties p = objectGroup->properties();
                 if (!p.isEmpty()) {
-                    p.merge(tile->properties());
+                    mergeProperties(p, tile->properties());
                     tile->setProperties(p);
                     objectGroup->setProperties(Properties());
                 }
@@ -318,21 +393,21 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
             }
         }
 
-        QVariantList frameList = tileVar[QLatin1String("animation")].toList();
+        QVariantList frameList = tileVar[QStringLiteral("animation")].toList();
         if (!frameList.isEmpty()) {
             QVector<Frame> frames(frameList.size());
             for (int i = frameList.size() - 1; i >= 0; --i) {
                 const QVariantMap frameVariantMap = frameList[i].toMap();
                 Frame &frame = frames[i];
-                frame.tileId = frameVariantMap[QLatin1String("tileid")].toInt();
-                frame.duration = frameVariantMap[QLatin1String("duration")].toInt();
+                frame.tileId = frameVariantMap[QStringLiteral("tileid")].toInt();
+                frame.duration = frameVariantMap[QStringLiteral("duration")].toInt();
             }
             tile->setFrames(frames);
         }
     };
 
     // Read tiles (1.0 format)
-    const QVariant tilesVariant = variantMap[QLatin1String("tiles")];
+    const QVariant tilesVariant = variantMap[QStringLiteral("tiles")];
     const QVariantMap tilesVariantMap = tilesVariant.toMap();
     QVariantMap::const_iterator it = tilesVariantMap.constBegin();
     for (; it != tilesVariantMap.end(); ++it) {
@@ -349,8 +424,8 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     }
 
     // Read tile properties (1.0 format)
-    QVariantMap propertiesVariantMap = variantMap[QLatin1String("tileproperties")].toMap();
-    QVariantMap propertyTypesVariantMap = variantMap[QLatin1String("tilepropertytypes")].toMap();
+    QVariantMap propertiesVariantMap = variantMap[QStringLiteral("tileproperties")].toMap();
+    QVariantMap propertyTypesVariantMap = variantMap[QStringLiteral("tilepropertytypes")].toMap();
     for (it = propertiesVariantMap.constBegin(); it != propertiesVariantMap.constEnd(); ++it) {
         const int tileId = it.key().toInt();
         const QVariant &propertiesVar = it.value();
@@ -363,7 +438,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     const QVariantList tilesVariantList = tilesVariant.toList();
     for (int i = 0; i < tilesVariantList.count(); ++i) {
         const QVariantMap tileVar = tilesVariantList[i].toMap();
-        const int tileId  = tileVar[QLatin1String("id")].toInt();
+        const int tileId  = tileVar[QStringLiteral("id")].toInt();
         if (tileId < 0) {
             mError = tr("Invalid (negative) tile id: %1").arg(tileId);
             return SharedTileset();
@@ -374,7 +449,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     }
 
     // Read Wang sets
-    const QVariantList wangSetVariants = variantMap[QLatin1String("wangsets")].toList();
+    const QVariantList wangSetVariants = variantMap[QStringLiteral("wangsets")].toList();
     for (const QVariant &wangSetVariant : wangSetVariants) {
         if (auto wangSet = toWangSet(wangSetVariant.toMap(), tileset.data()))
             tileset->addWangSet(std::move(wangSet));
@@ -390,77 +465,107 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
 
 std::unique_ptr<WangSet> VariantToMapConverter::toWangSet(const QVariantMap &variantMap, Tileset *tileset)
 {
-    const QString name = variantMap[QLatin1String("name")].toString();
-    const int tile = variantMap[QLatin1String("tile")].toInt();
+    const QString name = variantMap[QStringLiteral("name")].toString();
+    const WangSet::Type type = wangSetTypeFromString(variantMap[QStringLiteral("type")].toString());
+    const int tileId = variantMap[QStringLiteral("tile")].toInt();
 
-    std::unique_ptr<WangSet> wangSet { new WangSet(tileset, name, tile) };
+    std::unique_ptr<WangSet> wangSet { new WangSet(tileset, name, type, tileId) };
 
+    wangSet->setClassName(variantMap[QStringLiteral("class")].toString());
     wangSet->setProperties(extractProperties(variantMap));
 
-    const QVariantList edgeColorVariants = variantMap[QLatin1String("edgecolors")].toList();
-    for (const QVariant &edgeColorVariant : edgeColorVariants)
-        wangSet->addWangColor(toWangColor(edgeColorVariant.toMap(), true));
+    const QVariantList colorVariants = variantMap[QStringLiteral("colors")].toList();
+    for (const QVariant &colorVariant : colorVariants)
+        wangSet->addWangColor(toWangColor(colorVariant.toMap()));
 
-    const QVariantList cornerColorVariants = variantMap[QLatin1String("cornercolors")].toList();
-    for (const QVariant &cornerColorVariant : cornerColorVariants)
-        wangSet->addWangColor(toWangColor(cornerColorVariant.toMap(), false));
+    // For backwards-compatibility
+    QVector<int> cornerColors;
+    QVector<int> edgeColors;
 
-    const QVariantList wangTileVariants = variantMap[QLatin1String("wangtiles")].toList();
+    const QVariantList edgeColorVariants = variantMap[QStringLiteral("edgecolors")].toList();
+    for (const QVariant &edgeColorVariant : edgeColorVariants) {
+        auto wc = toWangColor(edgeColorVariant.toMap());
+        wangSet->addWangColor(wc);
+        edgeColors.append(wc->colorIndex());
+    }
+    const QVariantList cornerColorVariants = variantMap[QStringLiteral("cornercolors")].toList();
+    for (const QVariant &cornerColorVariant : cornerColorVariants) {
+        auto wc = toWangColor(cornerColorVariant.toMap());
+        wangSet->addWangColor(wc);
+        cornerColors.append(wc->colorIndex());
+    }
+
+    const QVariantList wangTileVariants = variantMap[QStringLiteral("wangtiles")].toList();
     for (const QVariant &wangTileVariant : wangTileVariants) {
         const QVariantMap wangTileVariantMap = wangTileVariant.toMap();
 
-        const int tileId = wangTileVariantMap[QLatin1String("tileid")].toInt();
-        const QVariantList wangIdVariant = wangTileVariantMap[QLatin1String("wangid")].toList();
+        const int tileId = wangTileVariantMap[QStringLiteral("tileid")].toInt();
+        const QVariantList wangIdVariant = wangTileVariantMap[QStringLiteral("wangid")].toList();
 
         WangId wangId;
         bool ok = true;
-        for (int i = 0; i < 8 && ok; ++i)
+        for (int i = 0; i < WangId::NumIndexes && ok; ++i)
             wangId.setIndexColor(i, wangIdVariant[i].toUInt(&ok));
 
+        // Backwards compatibility with version 1.4:
+        // If the wang set was using explicit corner and edge colors,
+        // map the WangId to the unified colors.
+        if (!cornerColors.isEmpty() || !edgeColors.isEmpty()) {
+            for (int i = 0; i < 4; ++i) {
+                int color = wangId.cornerColor(i);
+                if (color > 0 && color <= cornerColors.size())
+                    wangId.setCornerColor(i, cornerColors.at(color - 1));
+            }
+            for (int i = 0; i < 4; ++i) {
+                int color = wangId.edgeColor(i);
+                if (color > 0 && color <= edgeColors.size())
+                    wangId.setEdgeColor(i, edgeColors.at(color - 1));
+            }
+        }
+
         if (!ok || !wangSet->wangIdIsValid(wangId)) {
-            mError = QLatin1String("Invalid wangId given for tileId: ") + QString::number(tileId);
+            mError = QStringLiteral("Invalid wangId given for tileId: ") + QString::number(tileId);
             return nullptr;
         }
 
-        const bool fH = wangTileVariantMap[QLatin1String("hflip")].toBool();
-        const bool fV = wangTileVariantMap[QLatin1String("vflip")].toBool();
-        const bool fA = wangTileVariantMap[QLatin1String("dflip")].toBool();
-
-        Tile *tile = tileset->findOrCreateTile(tileId);
-
-        WangTile wangTile(tile, wangId);
-        wangTile.setFlippedHorizontally(fH);
-        wangTile.setFlippedVertically(fV);
-        wangTile.setFlippedAntiDiagonally(fA);
-
-        wangSet->addWangTile(wangTile);
+        wangSet->setWangId(tileId, wangId);
     }
+
+
+    // Do something useful if we loaded an old Wang set
+    if (cornerColors.isEmpty() && !edgeColors.isEmpty())
+        wangSet->setType(WangSet::Edge);
+    if (edgeColors.isEmpty() && !cornerColors.isEmpty())
+        wangSet->setType(WangSet::Corner);
 
     return wangSet;
 }
 
-QSharedPointer<WangColor> VariantToMapConverter::toWangColor(const QVariantMap &variantMap,
-                                                             bool isEdge)
+QSharedPointer<WangColor> VariantToMapConverter::toWangColor(const QVariantMap &variantMap)
 {
-    const QString name = variantMap[QLatin1String("name")].toString();
-    const QColor color = variantMap[QLatin1String("color")].toString();
-    const int imageId = variantMap[QLatin1String("tile")].toInt();
-    const qreal probability = variantMap[QLatin1String("probability")].toDouble();
+    const QString name = variantMap[QStringLiteral("name")].toString();
+    const QColor color = variantMap[QStringLiteral("color")].toString();
+    const int imageId = variantMap[QStringLiteral("tile")].toInt();
+    const qreal probability = variantMap[QStringLiteral("probability")].toDouble();
 
-    return QSharedPointer<WangColor>::create(0,
-                                             isEdge,
-                                             name,
-                                             color,
-                                             imageId,
-                                             probability);
+    auto wangColor = QSharedPointer<WangColor>::create(0,
+                                                       name,
+                                                       color,
+                                                       imageId,
+                                                       probability);
+
+    wangColor->setClassName(variantMap[QStringLiteral("class")].toString());
+    wangColor->setProperties(extractProperties(variantMap));
+
+    return wangColor;
 }
 
 std::unique_ptr<ObjectTemplate> VariantToMapConverter::toObjectTemplate(const QVariant &variant)
 {
     const QVariantMap variantMap = variant.toMap();
 
-    const auto tilesetVariant = variantMap[QLatin1String("tileset")];
-    const auto objectVariant = variantMap[QLatin1String("object")];
+    const auto tilesetVariant = variantMap[QStringLiteral("tileset")];
+    const auto objectVariant = variantMap[QStringLiteral("object")];
 
     if (!tilesetVariant.isNull())
         toTileset(tilesetVariant);
@@ -476,22 +581,38 @@ std::unique_ptr<Layer> VariantToMapConverter::toLayer(const QVariant &variant)
     const QVariantMap variantMap = variant.toMap();
     std::unique_ptr<Layer> layer;
 
-    if (variantMap[QLatin1String("type")] == QLatin1String("tilelayer"))
+    if (variantMap[QStringLiteral("type")] == QLatin1String("tilelayer"))
         layer = toTileLayer(variantMap);
-    else if (variantMap[QLatin1String("type")] == QLatin1String("objectgroup"))
+    else if (variantMap[QStringLiteral("type")] == QLatin1String("objectgroup"))
         layer = toObjectGroup(variantMap);
-    else if (variantMap[QLatin1String("type")] == QLatin1String("imagelayer"))
+    else if (variantMap[QStringLiteral("type")] == QLatin1String("imagelayer"))
         layer = toImageLayer(variantMap);
-    else if (variantMap[QLatin1String("type")] == QLatin1String("group"))
+    else if (variantMap[QStringLiteral("type")] == QLatin1String("group"))
         layer = toGroupLayer(variantMap);
 
     if (layer) {
-        layer->setId(variantMap[QLatin1String("id")].toInt());
+        layer->setId(variantMap[QStringLiteral("id")].toInt());
+        layer->setClassName(variantMap[QStringLiteral("class")].toString());
+        layer->setOpacity(variantMap[QStringLiteral("opacity")].toReal());
+        layer->setVisible(variantMap[QStringLiteral("visible")].toBool());
+        layer->setLocked(variantMap[QStringLiteral("locked")].toBool());
+        layer->setTintColor(variantMap[QStringLiteral("tintcolor")].value<QColor>());
         layer->setProperties(extractProperties(variantMap));
 
-        const QPointF offset(variantMap[QLatin1String("offsetx")].toDouble(),
-                             variantMap[QLatin1String("offsety")].toDouble());
+        const QPointF offset(variantMap[QStringLiteral("offsetx")].toDouble(),
+                             variantMap[QStringLiteral("offsety")].toDouble());
         layer->setOffset(offset);
+
+        bool ok;
+        QPointF parallaxFactor(1.0, 1.0);
+        const qreal factorX = variantMap[QStringLiteral("parallaxx")].toDouble(&ok);
+        if (ok)
+            parallaxFactor.setX(factorX);
+        const qreal factorY = variantMap[QStringLiteral("parallaxy")].toDouble(&ok);
+        if (ok)
+            parallaxFactor.setY(factorY);
+
+        layer->setParallaxFactor(parallaxFactor);
     }
 
     return layer;
@@ -499,27 +620,21 @@ std::unique_ptr<Layer> VariantToMapConverter::toLayer(const QVariant &variant)
 
 std::unique_ptr<TileLayer> VariantToMapConverter::toTileLayer(const QVariantMap &variantMap)
 {
-    const QString name = variantMap[QLatin1String("name")].toString();
-    const int width = variantMap[QLatin1String("width")].toInt();
-    const int height = variantMap[QLatin1String("height")].toInt();
-    const int startX = variantMap[QLatin1String("startx")].toInt();
-    const int startY = variantMap[QLatin1String("starty")].toInt();
-    const QVariant dataVariant = variantMap[QLatin1String("data")];
+    const QString name = variantMap[QStringLiteral("name")].toString();
+    const int width = variantMap[QStringLiteral("width")].toInt();
+    const int height = variantMap[QStringLiteral("height")].toInt();
+    const int startX = variantMap[QStringLiteral("startx")].toInt();
+    const int startY = variantMap[QStringLiteral("starty")].toInt();
+    const QVariant dataVariant = variantMap[QStringLiteral("data")];
 
-    typedef std::unique_ptr<TileLayer> TileLayerPtr;
+    using TileLayerPtr = std::unique_ptr<TileLayer>;
     TileLayerPtr tileLayer(new TileLayer(name,
-                                         variantMap[QLatin1String("x")].toInt(),
-                                         variantMap[QLatin1String("y")].toInt(),
+                                         variantMap[QStringLiteral("x")].toInt(),
+                                         variantMap[QStringLiteral("y")].toInt(),
                                          width, height));
 
-    const qreal opacity = variantMap[QLatin1String("opacity")].toReal();
-    const bool visible = variantMap[QLatin1String("visible")].toBool();
-
-    tileLayer->setOpacity(opacity);
-    tileLayer->setVisible(visible);
-
-    const QString encoding = variantMap[QLatin1String("encoding")].toString();
-    const QString compression = variantMap[QLatin1String("compression")].toString();
+    const QString encoding = variantMap[QStringLiteral("encoding")].toString();
+    const QString compression = variantMap[QStringLiteral("compression")].toString();
 
     Map::LayerDataFormat layerDataFormat;
     if (encoding.isEmpty() || encoding == QLatin1String("csv")) {
@@ -531,6 +646,8 @@ std::unique_ptr<TileLayer> VariantToMapConverter::toTileLayer(const QVariantMap 
             layerDataFormat = Map::Base64Gzip;
         } else if (compression == QLatin1String("zlib")) {
             layerDataFormat = Map::Base64Zlib;
+        } else if (compression == QLatin1String("zstd")) {
+            layerDataFormat = Map::Base64Zstandard;
         } else {
             mError = tr("Compression method '%1' not supported").arg(compression);
             return nullptr;
@@ -547,14 +664,14 @@ std::unique_ptr<TileLayer> VariantToMapConverter::toTileLayer(const QVariantMap 
             return nullptr;
         }
     } else {
-        const QVariantList chunks = variantMap[QLatin1String("chunks")].toList();
+        const QVariantList chunks = variantMap[QStringLiteral("chunks")].toList();
         for (const QVariant &chunkVariant : chunks) {
             const QVariantMap chunkVariantMap = chunkVariant.toMap();
-            const QVariant chunkData = chunkVariantMap[QLatin1String("data")];
-            int x = chunkVariantMap[QLatin1String("x")].toInt();
-            int y = chunkVariantMap[QLatin1String("y")].toInt();
-            int width = chunkVariantMap[QLatin1String("width")].toInt();
-            int height = chunkVariantMap[QLatin1String("height")].toInt();
+            const QVariant chunkData = chunkVariantMap[QStringLiteral("data")];
+            int x = chunkVariantMap[QStringLiteral("x")].toInt();
+            int y = chunkVariantMap[QStringLiteral("y")].toInt();
+            int width = chunkVariantMap[QStringLiteral("width")].toInt();
+            int height = chunkVariantMap[QStringLiteral("height")].toInt();
 
             readTileLayerData(*tileLayer, chunkData, layerDataFormat, QRect(x, y, width, height));
         }
@@ -565,16 +682,10 @@ std::unique_ptr<TileLayer> VariantToMapConverter::toTileLayer(const QVariantMap 
 
 std::unique_ptr<ObjectGroup> VariantToMapConverter::toObjectGroup(const QVariantMap &variantMap)
 {
-    typedef std::unique_ptr<ObjectGroup> ObjectGroupPtr;
-    ObjectGroupPtr objectGroup(new ObjectGroup(variantMap[QLatin1String("name")].toString(),
-                                               variantMap[QLatin1String("x")].toInt(),
-                                               variantMap[QLatin1String("y")].toInt()));
-
-    const qreal opacity = variantMap[QLatin1String("opacity")].toReal();
-    const bool visible = variantMap[QLatin1String("visible")].toBool();
-
-    objectGroup->setOpacity(opacity);
-    objectGroup->setVisible(visible);
+    using ObjectGroupPtr = std::unique_ptr<ObjectGroup>;
+    ObjectGroupPtr objectGroup(new ObjectGroup(variantMap[QStringLiteral("name")].toString(),
+                                               variantMap[QStringLiteral("x")].toInt(),
+                                               variantMap[QStringLiteral("y")].toInt()));
 
     objectGroup->setColor(variantMap.value(QLatin1String("color")).value<QColor>());
 
@@ -587,7 +698,7 @@ std::unique_ptr<ObjectGroup> VariantToMapConverter::toObjectGroup(const QVariant
         }
     }
 
-    const auto objectVariants = variantMap[QLatin1String("objects")].toList();
+    const auto objectVariants = variantMap[QStringLiteral("objects")].toList();
     for (const QVariant &objectVariant : objectVariants)
         objectGroup->addObject(toMapObject(objectVariant.toMap()));
 
@@ -596,21 +707,24 @@ std::unique_ptr<ObjectGroup> VariantToMapConverter::toObjectGroup(const QVariant
 
 std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap &variantMap)
 {
-    const QString name = variantMap[QLatin1String("name")].toString();
-    const QString type = variantMap[QLatin1String("type")].toString();
-    const int id = variantMap[QLatin1String("id")].toInt();
-    const int gid = variantMap[QLatin1String("gid")].toInt();
-    const QVariant templateVariant = variantMap[QLatin1String("template")];
-    const qreal x = variantMap[QLatin1String("x")].toReal();
-    const qreal y = variantMap[QLatin1String("y")].toReal();
-    const qreal width = variantMap[QLatin1String("width")].toReal();
-    const qreal height = variantMap[QLatin1String("height")].toReal();
-    const qreal rotation = variantMap[QLatin1String("rotation")].toReal();
+    const QString name = variantMap[QStringLiteral("name")].toString();
+    const int id = variantMap[QStringLiteral("id")].toInt();
+    const int gid = variantMap[QStringLiteral("gid")].toInt();
+    const QVariant templateVariant = variantMap[QStringLiteral("template")];
+    const qreal x = variantMap[QStringLiteral("x")].toReal();
+    const qreal y = variantMap[QStringLiteral("y")].toReal();
+    const qreal width = variantMap[QStringLiteral("width")].toReal();
+    const qreal height = variantMap[QStringLiteral("height")].toReal();
+    const qreal rotation = variantMap[QStringLiteral("rotation")].toReal();
+
+    QString className = variantMap[QStringLiteral("class")].toString();
+    if (className.isEmpty())    // fallback for compatibility
+        className = variantMap[QStringLiteral("type")].toString();
 
     const QPointF pos(x, y);
     const QSizeF size(width, height);
 
-    std::unique_ptr<MapObject> object(new MapObject(name, type, pos, size));
+    auto object = std::make_unique<MapObject>(name, className, pos, size);
     object->setId(id);
 
     if (variantMap.contains(QLatin1String("rotation"))) {
@@ -619,7 +733,7 @@ std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap 
     }
 
     if (!templateVariant.isNull()) { // This object is a template instance
-        QString templateFileName = resolvePath(mMapDir, templateVariant);
+        QString templateFileName = resolvePath(mDir, templateVariant);
         auto objectTemplate = TemplateManager::instance()->loadObjectTemplate(templateFileName);
         object->setObjectTemplate(objectTemplate);
     }
@@ -627,7 +741,6 @@ std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap 
     object->setId(id);
 
     object->setPropertyChanged(MapObject::NameProperty, !name.isEmpty());
-    object->setPropertyChanged(MapObject::TypeProperty, !type.isEmpty());
     object->setPropertyChanged(MapObject::SizeProperty, !size.isEmpty());
 
     if (gid) {
@@ -646,24 +759,24 @@ std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap 
     }
 
     if (variantMap.contains(QLatin1String("visible"))) {
-        object->setVisible(variantMap[QLatin1String("visible")].toBool());
+        object->setVisible(variantMap[QStringLiteral("visible")].toBool());
         object->setPropertyChanged(MapObject::VisibleProperty);
     }
 
     object->setProperties(extractProperties(variantMap));
 
-    const QVariant polylineVariant = variantMap[QLatin1String("polyline")];
-    const QVariant polygonVariant = variantMap[QLatin1String("polygon")];
-    const QVariant ellipseVariant = variantMap[QLatin1String("ellipse")];
-    const QVariant pointVariant = variantMap[QLatin1String("point")];
-    const QVariant textVariant = variantMap[QLatin1String("text")];
+    const QVariant polylineVariant = variantMap[QStringLiteral("polyline")];
+    const QVariant polygonVariant = variantMap[QStringLiteral("polygon")];
+    const QVariant ellipseVariant = variantMap[QStringLiteral("ellipse")];
+    const QVariant pointVariant = variantMap[QStringLiteral("point")];
+    const QVariant textVariant = variantMap[QStringLiteral("text")];
 
-    if (polygonVariant.type() == QVariant::List) {
+    if (polygonVariant.userType() == QMetaType::QVariantList) {
         object->setShape(MapObject::Polygon);
         object->setPolygon(toPolygon(polygonVariant));
         object->setPropertyChanged(MapObject::ShapeProperty);
     }
-    if (polylineVariant.type() == QVariant::List) {
+    if (polylineVariant.userType() == QMetaType::QVariantList) {
         object->setShape(MapObject::Polyline);
         object->setPolygon(toPolygon(polylineVariant));
         object->setPropertyChanged(MapObject::ShapeProperty);
@@ -676,7 +789,7 @@ std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap 
         object->setShape(MapObject::Point);
         object->setPropertyChanged(MapObject::ShapeProperty);
     }
-    if (textVariant.type() == QVariant::Map) {
+    if (textVariant.userType() == QMetaType::QVariantMap) {
         object->setTextData(toTextData(textVariant.toMap()));
         object->setShape(MapObject::Text);
         object->setPropertyChanged(MapObject::TextProperty);
@@ -689,45 +802,37 @@ std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap 
 
 std::unique_ptr<ImageLayer> VariantToMapConverter::toImageLayer(const QVariantMap &variantMap)
 {
-    typedef std::unique_ptr<ImageLayer> ImageLayerPtr;
-    ImageLayerPtr imageLayer(new ImageLayer(variantMap[QLatin1String("name")].toString(),
-                                            variantMap[QLatin1String("x")].toInt(),
-                                            variantMap[QLatin1String("y")].toInt()));
+    using ImageLayerPtr = std::unique_ptr<ImageLayer>;
+    ImageLayerPtr imageLayer(new ImageLayer(variantMap[QStringLiteral("name")].toString(),
+                                            variantMap[QStringLiteral("x")].toInt(),
+                                            variantMap[QStringLiteral("y")].toInt()));
 
-    const qreal opacity = variantMap[QLatin1String("opacity")].toReal();
-    const bool visible = variantMap[QLatin1String("visible")].toBool();
-
-    imageLayer->setOpacity(opacity);
-    imageLayer->setVisible(visible);
-
-    const QString trans = variantMap[QLatin1String("transparentcolor")].toString();
-    if (!trans.isEmpty() && QColor::isValidColor(trans))
+    const QString trans = variantMap[QStringLiteral("transparentcolor")].toString();
+    if (QColor::isValidColor(trans))
         imageLayer->setTransparentColor(QColor(trans));
 
-    QVariant imageVariant = variantMap[QLatin1String("image")].toString();
+    QVariant imageVariant = variantMap[QStringLiteral("image")].toString();
 
     if (!imageVariant.isNull()) {
-        const QUrl imageSource = toUrl(imageVariant.toString(), mMapDir);
+        const QUrl imageSource = toUrl(imageVariant.toString(), mDir);
         imageLayer->loadFromImage(imageSource);
     }
+
+    imageLayer->setRepeatX(variantMap[QStringLiteral("repeatx")].toBool());
+    imageLayer->setRepeatY(variantMap[QStringLiteral("repeaty")].toBool());
 
     return imageLayer;
 }
 
 std::unique_ptr<GroupLayer> VariantToMapConverter::toGroupLayer(const QVariantMap &variantMap)
 {
-    const QString name = variantMap[QLatin1String("name")].toString();
-    const int x = variantMap[QLatin1String("x")].toInt();
-    const int y = variantMap[QLatin1String("y")].toInt();
-    const qreal opacity = variantMap[QLatin1String("opacity")].toReal();
-    const bool visible = variantMap[QLatin1String("visible")].toBool();
+    const QString name = variantMap[QStringLiteral("name")].toString();
+    const int x = variantMap[QStringLiteral("x")].toInt();
+    const int y = variantMap[QStringLiteral("y")].toInt();
 
-    std::unique_ptr<GroupLayer> groupLayer(new GroupLayer(name, x, y));
+    auto groupLayer = std::make_unique<GroupLayer>(name, x, y);
 
-    groupLayer->setOpacity(opacity);
-    groupLayer->setVisible(visible);
-
-    const auto layerVariants = variantMap[QLatin1String("layers")].toList();
+    const auto layerVariants = variantMap[QStringLiteral("layers")].toList();
     for (const QVariant &layerVariant : layerVariants) {
         std::unique_ptr<Layer> layer = toLayer(layerVariant);
         if (!layer)
@@ -745,8 +850,8 @@ QPolygonF VariantToMapConverter::toPolygon(const QVariant &variant) const
     const auto pointVariants = variant.toList();
     for (const QVariant &pointVariant : pointVariants) {
         const QVariantMap pointVariantMap = pointVariant.toMap();
-        const qreal pointX = pointVariantMap[QLatin1String("x")].toReal();
-        const qreal pointY = pointVariantMap[QLatin1String("y")].toReal();
+        const qreal pointX = pointVariantMap[QStringLiteral("x")].toReal();
+        const qreal pointY = pointVariantMap[QStringLiteral("y")].toReal();
         polygon.append(QPointF(pointX, pointY));
     }
     return polygon;
@@ -756,29 +861,29 @@ TextData VariantToMapConverter::toTextData(const QVariantMap &variant) const
 {
     TextData textData;
 
-    const QString family = variant[QLatin1String("fontfamily")].toString();
-    const int pixelSize = variant[QLatin1String("pixelsize")].toInt();
+    const QString family = variant[QStringLiteral("fontfamily")].toString();
+    const int pixelSize = variant[QStringLiteral("pixelsize")].toInt();
 
     if (!family.isEmpty())
         textData.font.setFamily(family);
     if (pixelSize > 0)
         textData.font.setPixelSize(pixelSize);
 
-    textData.wordWrap = variant[QLatin1String("wrap")].toInt() == 1;
-    textData.font.setBold(variant[QLatin1String("bold")].toInt() == 1);
-    textData.font.setItalic(variant[QLatin1String("italic")].toInt() == 1);
-    textData.font.setUnderline(variant[QLatin1String("underline")].toInt() == 1);
-    textData.font.setStrikeOut(variant[QLatin1String("strikeout")].toInt() == 1);
+    textData.wordWrap = variant[QStringLiteral("wrap")].toInt() == 1;
+    textData.font.setBold(variant[QStringLiteral("bold")].toInt() == 1);
+    textData.font.setItalic(variant[QStringLiteral("italic")].toInt() == 1);
+    textData.font.setUnderline(variant[QStringLiteral("underline")].toInt() == 1);
+    textData.font.setStrikeOut(variant[QStringLiteral("strikeout")].toInt() == 1);
     if (variant.contains(QLatin1String("kerning")))
-        textData.font.setKerning(variant[QLatin1String("kerning")].toInt() == 1);
+        textData.font.setKerning(variant[QStringLiteral("kerning")].toInt() == 1);
 
-    QString colorString = variant[QLatin1String("color")].toString();
+    QString colorString = variant[QStringLiteral("color")].toString();
     if (!colorString.isEmpty())
         textData.color = QColor(colorString);
 
     Qt::Alignment alignment;
 
-    QString hAlignString = variant[QLatin1String("halign")].toString();
+    QString hAlignString = variant[QStringLiteral("halign")].toString();
     if (hAlignString == QLatin1String("center"))
         alignment |= Qt::AlignHCenter;
     else if (hAlignString == QLatin1String("right"))
@@ -788,7 +893,7 @@ TextData VariantToMapConverter::toTextData(const QVariantMap &variant) const
     else
         alignment |= Qt::AlignLeft;
 
-    QString vAlignString = variant[QLatin1String("valign")].toString();
+    QString vAlignString = variant[QStringLiteral("valign")].toString();
     if (vAlignString == QLatin1String("center"))
         alignment |= Qt::AlignVCenter;
     else if (vAlignString == QLatin1String("bottom"))
@@ -798,9 +903,34 @@ TextData VariantToMapConverter::toTextData(const QVariantMap &variant) const
 
     textData.alignment = alignment;
 
-    textData.text = variant[QLatin1String("text")].toString();
+    textData.text = variant[QStringLiteral("text")].toString();
 
     return textData;
+}
+
+void VariantToMapConverter::readMapEditorSettings(Map &map, const QVariantMap &editorSettings)
+{
+    const QVariantMap chunkSizeVariant = editorSettings[QStringLiteral("chunksize")].toMap();
+    int chunkWidth = chunkSizeVariant[QStringLiteral("width")].toInt();
+    int chunkHeight = chunkSizeVariant[QStringLiteral("height")].toInt();
+    chunkWidth = chunkWidth == 0 ? CHUNK_SIZE : qMax(CHUNK_SIZE_MIN, chunkWidth);
+    chunkHeight = chunkHeight == 0 ? CHUNK_SIZE : qMax(CHUNK_SIZE_MIN, chunkHeight);
+    map.setChunkSize(QSize(chunkWidth, chunkHeight));
+
+    const QVariantMap exportVariant = editorSettings[QStringLiteral("export")].toMap();
+    const QString target = exportVariant[QStringLiteral("target")].toString();
+    if (!target.isEmpty() && target != QLatin1String("."))
+        map.exportFileName = QDir::cleanPath(mDir.filePath(target));
+    map.exportFormat = exportVariant[QStringLiteral("format")].toString();
+}
+
+void VariantToMapConverter::readTilesetEditorSettings(Tileset &tileset, const QVariantMap &editorSettings)
+{
+    const QVariantMap exportVariant = editorSettings[QStringLiteral("export")].toMap();
+    const QString target = exportVariant[QStringLiteral("target")].toString();
+    if (!target.isEmpty() && target != QLatin1String("."))
+        tileset.exportFileName = QDir::cleanPath(mDir.filePath(target));
+    tileset.exportFormat = exportVariant[QStringLiteral("format")].toString();
 }
 
 bool VariantToMapConverter::readTileLayerData(TileLayer &tileLayer,
@@ -845,7 +975,8 @@ bool VariantToMapConverter::readTileLayerData(TileLayer &tileLayer,
 
     case Map::Base64:
     case Map::Base64Zlib:
-    case Map::Base64Gzip: {
+    case Map::Base64Gzip:
+    case Map::Base64Zstandard:{
         const QByteArray data = dataVariant.toByteArray();
         GidMapper::DecodeError error = mGidMapper.decodeLayerData(tileLayer,
                                                                   data,
@@ -875,8 +1006,8 @@ bool VariantToMapConverter::readTileLayerData(TileLayer &tileLayer,
 
 Properties VariantToMapConverter::extractProperties(const QVariantMap &variantMap) const
 {
-    return toProperties(variantMap[QLatin1String("properties")],
-                        variantMap[QLatin1String("propertytypes")]);
+    return toProperties(variantMap[QStringLiteral("properties")],
+                        variantMap[QStringLiteral("propertytypes")]);
 }
 
 } // namespace Tiled

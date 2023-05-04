@@ -70,3 +70,5 @@ void FileChangedWarning::paintEvent(QPaintEvent *event)
 }
 
 } // namespace Tiled
+
+#include "moc_filechangedwarning.cpp"

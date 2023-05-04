@@ -27,13 +27,11 @@
 
 #include <cmath>
 
-#include "qtcompat_p.h"
-
 using namespace Tiled;
 
 static QString scaleToString(qreal scale)
 {
-    return QString(QLatin1String("%1 %")).arg(int(scale * 100));
+    return QStringLiteral("%1 %").arg(int(scale * 100));
 }
 
 
@@ -128,7 +126,7 @@ void Zoomable::handlePinchGesture(QPinchGesture *pinch)
         break;
     case Qt::GestureStarted:
         mGestureStartScale = mScale;
-        Q_FALLTHROUGH();
+        [[fallthrough]];
     case Qt::GestureUpdated: {
         qreal factor = pinch->totalScaleFactor();
         qreal scale = qBound(mZoomFactors.first(),
@@ -145,7 +143,7 @@ void Zoomable::handlePinchGesture(QPinchGesture *pinch)
 
 void Zoomable::zoomIn()
 {
-    for (qreal scale : mZoomFactors) {
+    for (qreal scale : std::as_const(mZoomFactors)) {
         if (scale > mScale) {
             setScale(scale);
             break;
@@ -186,7 +184,7 @@ void Zoomable::setComboBox(QComboBox *comboBox)
 
     if (mComboBox) {
         mComboBox->clear();
-        for (qreal scale : mZoomFactors)
+        for (qreal scale : std::as_const(mZoomFactors))
             mComboBox->addItem(scaleToString(scale), scale);
         syncComboBox();
         connect(mComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::activated),
@@ -198,7 +196,7 @@ void Zoomable::setComboBox(QComboBox *comboBox)
                 this, &Zoomable::comboEdited);
 
         if (!mComboValidator)
-            mComboValidator = new QRegExpValidator(mComboRegExp, this);
+            mComboValidator = new QRegularExpressionValidator(mComboRegExp, this);
         mComboBox->setValidator(mComboValidator);
     }
 }
@@ -210,12 +208,11 @@ void Zoomable::comboActivated(int index)
 
 void Zoomable::comboEdited()
 {
-    int pos = mComboRegExp.indexIn(mComboBox->currentText());
-    Q_ASSERT(pos != -1);
-    Q_UNUSED(pos)
+    const QRegularExpressionMatch match = mComboRegExp.match(mComboBox->currentText());
+    Q_ASSERT(match.hasMatch());
 
     qreal scale = qBound(mZoomFactors.first(),
-                         qreal(mComboRegExp.cap(1).toDouble() / 100.f),
+                         qreal(match.captured(1).toDouble() / 100.f),
                          mZoomFactors.last());
 
     setScale(scale);
@@ -231,3 +228,5 @@ void Zoomable::syncComboBox()
     mComboBox->setCurrentIndex(index);
     mComboBox->setEditText(scaleToString(mScale));
 }
+
+#include "moc_zoomable.cpp"

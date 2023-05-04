@@ -41,18 +41,18 @@ class TILEDSHARED_EXPORT OrthogonalRenderer : public MapRenderer
 public:
     OrthogonalRenderer(const Map *map) : MapRenderer(map) {}
 
-    QRect mapBoundingRect() const override;
-
     QRect boundingRect(const QRect &rect) const override;
 
     QRectF boundingRect(const MapObject *object) const override;
     QPainterPath shape(const MapObject *object) const override;
+    QPainterPath interactionShape(const MapObject *object) const override;
 
     void drawGrid(QPainter *painter, const QRectF &rect,
-                  QColor gridColor) const override;
+                  QColor gridColor, QSize gridMajor = QSize()) const override;
 
-    void drawTileLayer(QPainter *painter, const TileLayer *layer,
-                       const QRectF &exposed = QRectF()) const override;
+    using MapRenderer::drawTileLayer;
+    void drawTileLayer(const RenderTileCallback &renderTile,
+                       const QRectF &exposed) const override;
 
     void drawTileSelection(QPainter *painter,
                            const QRegion &region,
@@ -61,7 +61,7 @@ public:
 
     void drawMapObject(QPainter *painter,
                        const MapObject *object,
-                       const QColor &color) const override;
+                       const MapObjectColors &colors) const override;
 
     using MapRenderer::pixelToTileCoords;
     QPointF pixelToTileCoords(qreal x, qreal y) const override;

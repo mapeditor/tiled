@@ -21,19 +21,19 @@
 #pragma once
 
 #include "mapformat.h"
-#include "tilesetformat.h"
 #include "objecttemplateformat.h"
+#include "tilededitor_global.h"
+#include "tilesetformat.h"
 
 namespace Tiled {
 
 class Tileset;
 class MapObject;
 
-
 /**
  * A reader and writer for Tiled's .tmx map format.
  */
-class TmxMapFormat : public MapFormat
+class TILED_EDITOR_EXPORT TmxMapFormat : public MapFormat
 {
     Q_OBJECT
     Q_INTERFACES(Tiled::MapFormat)
@@ -41,9 +41,9 @@ class TmxMapFormat : public MapFormat
 public:
     TmxMapFormat(QObject *parent = nullptr);
 
-    Map *read(const QString &fileName) override;
+    std::unique_ptr<Map> read(const QString &fileName) override;
 
-    bool write(const Map *map, const QString &fileName) override;
+    bool write(const Map *map, const QString &fileName, Options options) override;
 
     /**
      * Converts the given map to a utf8 byte array (in .tmx format). This is
@@ -60,11 +60,11 @@ public:
      *
      * @see toByteArray
      */
-    Map *fromByteArray(const QByteArray &data);
+    std::unique_ptr<Map> fromByteArray(const QByteArray &data);
 
     QString nameFilter() const override { return tr("Tiled map files (*.tmx *.xml)"); }
 
-    QString shortName() const override { return QLatin1String("tmx"); }
+    QString shortName() const override { return QStringLiteral("tmx"); }
 
     bool supportsFile(const QString &fileName) const override;
 
@@ -74,11 +74,10 @@ private:
     QString mError;
 };
 
-
 /**
  * A reader and writer for Tiled's .tsx tileset format.
  */
-class TsxTilesetFormat : public TilesetFormat
+class TILED_EDITOR_EXPORT TsxTilesetFormat : public TilesetFormat
 {
     Q_OBJECT
     Q_INTERFACES(Tiled::TilesetFormat)
@@ -88,11 +87,11 @@ public:
 
     SharedTileset read(const QString &fileName) override;
 
-    bool write(const Tileset &tileset, const QString &fileName) override;
+    bool write(const Tileset &tileset, const QString &fileName, Options options) override;
 
     QString nameFilter() const override { return tr("Tiled tileset files (*.tsx *.xml)"); }
 
-    QString shortName() const override { return QLatin1String("tsx"); }
+    QString shortName() const override { return QStringLiteral("tsx"); }
 
     bool supportsFile(const QString &fileName) const override;
 
@@ -103,9 +102,9 @@ private:
 };
 
 /**
- * A reader and writer for Tiled's .tgx template format.
+ * A reader and writer for Tiled's .tx template format.
  */
-class XmlObjectTemplateFormat : public ObjectTemplateFormat
+class TILED_EDITOR_EXPORT XmlObjectTemplateFormat : public ObjectTemplateFormat
 {
     Q_OBJECT
     Q_INTERFACES(Tiled::ObjectTemplateFormat)
@@ -119,7 +118,7 @@ public:
 
     QString nameFilter() const override { return tr("Tiled template files (*.tx)"); }
 
-    QString shortName() const override { return QLatin1String("tx"); }
+    QString shortName() const override { return QStringLiteral("tx"); }
 
     bool supportsFile(const QString &fileName) const override;
 

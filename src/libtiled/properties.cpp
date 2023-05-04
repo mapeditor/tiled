@@ -28,39 +28,131 @@
 
 #include "properties.h"
 
+#include "logginginterface.h"
+#include "object.h"
+#include "propertytype.h"
 #include "tiled.h"
 
 #include <QColor>
 #include <QJsonObject>
+#include <QVector>
 
 namespace Tiled {
 
-void Properties::merge(const Properties &other)
+QString FilePath::toString(const FilePath &path)
 {
-    // Based on QMap::unite, but using insert instead of insertMulti
-    const_iterator it = other.constEnd();
-    const const_iterator b = other.constBegin();
-    while (it != b) {
-        --it;
-        insert(it.key(), it.value());
-    }
+    return path.url.toString(QUrl::PreferLocalFile);
 }
 
-QJsonArray Properties::toJson() const
+FilePath FilePath::fromString(const QString &string)
+{
+    return { Tiled::toUrl(string) };
+}
+
+
+bool setClassPropertyMemberValue(QVariant &classValue,
+                                 int depth,
+                                 const QStringList &path,
+                                 const QVariant &value)
+{
+    if (depth >= path.size())
+        return false;   // hierarchy not deep enough for path
+
+    if (classValue.userType() != propertyValueId())
+        return false;   // invalid class value
+
+    auto classPropertyValue = classValue.value<PropertyValue>();
+    if (classPropertyValue.value.userType() != QMetaType::QVariantMap)
+        return false;   // invalid class value
+
+    QVariantMap classMembers = classPropertyValue.value.toMap();
+    const auto &memberName = path.at(depth);
+    QVariant &member = classMembers[memberName];
+
+    if (depth == path.size() - 1) {
+        member = value;
+    } else {
+        if (!member.isValid() && value.isValid()) {
+            // We expect an unset class member, so we'll try to introduce it
+            // based on the class definition.
+            auto type = classPropertyValue.type();
+            if (type && type->isClass())
+                member = static_cast<const ClassPropertyType*>(type)->members.value(memberName);
+        }
+        if (!setClassPropertyMemberValue(member, depth + 1, path, value))
+           return false;
+    }
+
+    // Remove "unset" members (marked by invalid QVariant)
+    if (!member.isValid())
+        classMembers.remove(memberName);
+
+    // Mark whole class as "unset" if it has no members left, unless at top level
+    if (!classMembers.isEmpty() || depth == 1) {
+        classPropertyValue.value = classMembers;
+        classValue = QVariant::fromValue(classPropertyValue);
+    } else {
+        classValue = QVariant();
+    }
+
+    return true;
+}
+
+bool setPropertyMemberValue(Properties &properties,
+                            const QStringList &path,
+                            const QVariant &value)
+{
+    Q_ASSERT(!path.isEmpty());
+
+    auto &topLevelName = path.first();
+    auto topLevelValue = properties.value(topLevelName);
+
+    if (path.size() > 1) {
+        if (!setClassPropertyMemberValue(topLevelValue, 1, path, value))
+            return false;
+    } else {
+        topLevelValue = value;
+    }
+
+    properties.insert(topLevelName, topLevelValue);
+    return true;
+}
+
+void mergeProperties(Properties &target, const Properties &source)
+{
+    if (target.isEmpty()) {
+        target = source;
+        return;
+    }
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    // Based on QMap::unite, but using insert instead of insertMulti
+    Properties::const_iterator it = source.constEnd();
+    const Properties::const_iterator b = source.constBegin();
+    while (it != b) {
+        --it;
+        target.insert(it.key(), it.value());
+    }
+#else
+    target.insert(source);
+#endif
+}
+
+QJsonArray propertiesToJson(const Properties &properties, const ExportContext &context)
 {
     QJsonArray json;
 
-    const_iterator it = begin();
-    const const_iterator it_end = end();
+    Properties::const_iterator it = properties.begin();
+    const Properties::const_iterator it_end = properties.end();
     for (; it != it_end; ++it) {
         const QString &name = it.key();
-        const QJsonValue value = QJsonValue::fromVariant(toExportValue(it.value()));
-        const QString type = typeToName(it.value().userType());
+        const auto exportValue = context.toExportValue(it.value());
 
         QJsonObject propertyObject;
         propertyObject.insert(QLatin1String("name"), name);
-        propertyObject.insert(QLatin1String("value"), value);
-        propertyObject.insert(QLatin1String("type"), type);
+        propertyObject.insert(QLatin1String("value"), QJsonValue::fromVariant(exportValue.value));
+        propertyObject.insert(QLatin1String("type"), exportValue.typeName);
+        propertyObject.insert(QLatin1String("propertytype"), exportValue.propertyTypeName);
 
         json.append(propertyObject);
     }
@@ -68,40 +160,45 @@ QJsonArray Properties::toJson() const
     return json;
 }
 
-Properties Properties::fromJson(const QJsonArray &json)
+Properties propertiesFromJson(const QJsonArray &json, const ExportContext &context)
 {
     Properties properties;
 
     for (const QJsonValue &property : json) {
         const QJsonObject propertyObject = property.toObject();
         const QString name = propertyObject.value(QLatin1String("name")).toString();
-        const QString typeName = propertyObject.value(QLatin1String("type")).toString();
-        QVariant value = propertyObject.value(QLatin1String("value")).toVariant();
 
-        if (!typeName.isEmpty())
-            value = fromExportValue(value, nameToType(typeName));
+        ExportValue exportValue;
+        exportValue.value = propertyObject.value(QLatin1String("value")).toVariant();
+        exportValue.typeName = propertyObject.value(QLatin1String("type")).toString();
+        exportValue.propertyTypeName = propertyObject.value(QLatin1String("propertytype")).toString();
 
-        properties.insert(name, value);
+        properties.insert(name, context.toPropertyValue(exportValue));
     }
 
     return properties;
 }
 
-void AggregatedProperties::aggregate(const Properties &properties)
+void aggregateProperties(AggregatedProperties &aggregated, const Properties &properties)
 {
     auto it = properties.constEnd();
     const auto b = properties.constBegin();
     while (it != b) {
         --it;
 
-        auto pit = find(it.key());
-        if (pit != end()) {
+        auto pit = aggregated.find(it.key());
+        if (pit != aggregated.end()) {
             AggregatedPropertyData &propertyData = pit.value();
             propertyData.aggregate(it.value());
         } else {
-            insert(it.key(), AggregatedPropertyData(it.value()));
+            aggregated.insert(it.key(), AggregatedPropertyData(it.value()));
         }
     }
+}
+
+int propertyValueId()
+{
+    return qMetaTypeId<PropertyValue>();
 }
 
 int filePathTypeId()
@@ -109,97 +206,164 @@ int filePathTypeId()
     return qMetaTypeId<FilePath>();
 }
 
+int objectRefTypeId()
+{
+    return qMetaTypeId<ObjectRef>();
+}
+
 QString typeToName(int type)
 {
+    // We can't handle the PropertyValue purely by its type ID, since we need to
+    // know the name of the custom property type.
+    Q_ASSERT(type != propertyValueId());
+
     switch (type) {
-    case QVariant::String:
+    case QMetaType::QString:
         return QStringLiteral("string");
-    case QVariant::Double:
+    case QMetaType::Double:
         return QStringLiteral("float");
-    case QVariant::Color:
+    case QMetaType::QColor:
         return QStringLiteral("color");
+    case QMetaType::QVariantMap:
+        return QStringLiteral("class");
+
     default:
         if (type == filePathTypeId())
             return QStringLiteral("file");
+        if (type == objectRefTypeId())
+            return QStringLiteral("object");
     }
     return QLatin1String(QVariant::typeToName(type));
 }
 
-int nameToType(const QString &name)
+static int nameToType(const QString &name)
 {
     if (name == QLatin1String("string"))
-        return QVariant::String;
+        return QMetaType::QString;
     if (name == QLatin1String("float"))
-        return QVariant::Double;
+        return QMetaType::Double;
     if (name == QLatin1String("color"))
-        return QVariant::Color;
+        return QMetaType::QColor;
     if (name == QLatin1String("file"))
         return filePathTypeId();
+    if (name == QLatin1String("object"))
+        return objectRefTypeId();
+    if (name == QLatin1String("class"))
+        return QMetaType::QVariantMap;
 
     return QVariant::nameToType(name.toLatin1().constData());
 }
 
-static QString colorToString(const QColor &color)
+QString typeName(const QVariant &value)
 {
-    if (!color.isValid())
-        return QString();
+    if (value.userType() == propertyValueId())
+        return typeName(value.value<PropertyValue>().value);
 
-    return color.name(QColor::HexArgb);
+    return typeToName(value.userType());
 }
 
-QVariant toExportValue(const QVariant &value)
+const PropertyType *PropertyValue::type() const
 {
-    int type = value.userType();
+    return Object::propertyTypes().findTypeById(typeId);
+}
 
-    if (type == QVariant::Color)
-        return colorToString(value.value<QColor>());
+QString PropertyValue::typeName() const
+{
+    if (auto t = type())
+        return t->name;
+    return QString();
+}
 
-    if (type == filePathTypeId()) {
-        const FilePath filePath = value.value<FilePath>();
-        return filePath.url.toString(QUrl::PreferLocalFile);
+/**
+ * When just a path is given, the global property types are used.
+ */
+ExportContext::ExportContext(const QString &path)
+    : ExportContext(Object::propertyTypes(), path)
+{
+}
+
+ExportValue ExportContext::toExportValue(const QVariant &value) const
+{
+    ExportValue exportValue;
+    const int metaType = value.userType();
+
+    if (metaType == propertyValueId()) {
+        const auto propertyValue = value.value<PropertyValue>();
+
+        if (const PropertyType *propertyType = mTypes.findTypeById(propertyValue.typeId)) {
+            exportValue = propertyType->toExportValue(propertyValue.value, *this);
+        } else {
+            // the type may have been deleted
+            exportValue = toExportValue(propertyValue.value);
+        }
+
+        return exportValue; // early out, we don't want to assign typeName again
     }
 
-    return value;
+    if (metaType == QMetaType::QColor) {
+        const auto color = value.value<QColor>();
+        exportValue.value = color.isValid() ? color.name(QColor::HexArgb) : QString();
+    } else if (metaType == filePathTypeId()) {
+        const auto filePath = value.value<FilePath>();
+        exportValue.value = toFileReference(filePath.url, mPath);
+    } else if (metaType == objectRefTypeId()) {
+        exportValue.value = ObjectRef::toInt(value.value<ObjectRef>());
+    } else {
+        exportValue.value = value;
+    }
+
+    exportValue.typeName = typeToName(metaType);
+
+    return exportValue;
 }
 
-QVariant fromExportValue(const QVariant &value, int type)
+QVariant ExportContext::toPropertyValue(const ExportValue &exportValue) const
 {
-    if (type == QVariant::Invalid)
-        return value;
+    const int metaType = nameToType(exportValue.typeName);
+    QVariant propertyValue = toPropertyValue(exportValue.value, metaType);
 
-    if (value.userType() == type)
-        return value;
+    // Wrap the value in its custom property type when applicable
+    if (!exportValue.propertyTypeName.isEmpty()) {
+        if (const PropertyType *propertyType = mTypes.findPropertyValueType(exportValue.propertyTypeName)) {
+            propertyValue = propertyType->toPropertyValue(propertyValue, *this);
+        } else {
+            Tiled::ERROR(QStringLiteral("Unrecognized property type: '%1'")
+                         .arg(exportValue.propertyTypeName));
+        }
+    }
 
-    if (type == filePathTypeId()) {
-        QUrl url(value.toString());
-        if (url.isRelative())
-            url = QUrl::fromLocalFile(value.toString());
+    return propertyValue;
+}
+
+QVariant ExportContext::toPropertyValue(const QVariant &value, int metaType) const
+{
+    if (metaType == QMetaType::UnknownType || value.userType() == metaType)
+        return value;   // value possibly already converted
+
+    if (metaType == QMetaType::QVariantMap || metaType == propertyValueId())
+        return value;   // should be covered by property type
+
+    if (metaType == filePathTypeId()) {
+        const QUrl url = toUrl(value.toString(), mPath);
         return QVariant::fromValue(FilePath { url });
     }
 
-    QVariant variant(value);
-    variant.convert(type);
-    return variant;
+    if (metaType == objectRefTypeId())
+        return QVariant::fromValue(ObjectRef::fromInt(value.toInt()));
+
+    QVariant convertedValue = value;
+    return convertedValue.convert(metaType) ? convertedValue : value;
 }
 
-QVariant toExportValue(const QVariant &value, const QDir &dir)
+void initializeMetatypes()
 {
-    if (value.userType() == filePathTypeId()) {
-        const FilePath filePath = value.value<FilePath>();
-        return toFileReference(filePath.url, dir);
-    }
+    QMetaType::registerConverter<ObjectRef, int>(&ObjectRef::toInt);
+    QMetaType::registerConverter<int, ObjectRef>(&ObjectRef::fromInt);
 
-    return toExportValue(value);
-}
-
-QVariant fromExportValue(const QVariant &value, int type, const QDir &dir)
-{
-    if (type == filePathTypeId()) {
-        const QUrl url = toUrl(value.toString(), dir);
-        return QVariant::fromValue(FilePath { url });
-    }
-
-    return fromExportValue(value, type);
+    QMetaType::registerConverter<FilePath, QString>(&FilePath::toString);
+    QMetaType::registerConverter<QString, FilePath>(&FilePath::fromString);
 }
 
 } // namespace Tiled
+
+#include "moc_properties.cpp"

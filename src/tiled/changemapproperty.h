@@ -32,19 +32,6 @@ class MapDocument;
 class ChangeMapProperty : public QUndoCommand
 {
 public:
-    enum Property {
-        TileWidth,
-        TileHeight,
-        Infinite,
-        HexSideLength,
-        StaggerAxis,
-        StaggerIndex,
-        Orientation,
-        RenderOrder,
-        BackgroundColor,
-        LayerDataFormat
-    };
-
     /**
      * Constructs a command that changes the value of the given property.
      *
@@ -53,7 +40,7 @@ public:
      * @param mapDocument       the map document of the map
      * @param backgroundColor   the new color to apply for the background
      */
-    ChangeMapProperty(MapDocument *mapDocument, Property property, int value);
+    ChangeMapProperty(MapDocument *mapDocument, Map::Property property, int value);
 
     /**
      * Constructs a command that changes the map background color.
@@ -62,12 +49,20 @@ public:
      * @param backgroundColor   the new color to apply for the background
      */
     ChangeMapProperty(MapDocument *mapDocument, const QColor &backgroundColor);
+    
+    /**
+     * Constructs a command that changes the chunk size.
+     *
+     * @param mapDocument       the map document of the map
+     * @param chunkSize         the new chunk size to use for tile layers
+     */
+    ChangeMapProperty(MapDocument *mapDocument, QSize chunkSize);
 
     /**
      * Constructs a command that changes the map stagger axis.
      *
      * @param mapDocument       the map document of the map
-     * @param orientation       the new map stagger axis
+     * @param staggerAxis       the new map stagger axis
      */
     ChangeMapProperty(MapDocument *mapDocument, Map::StaggerAxis staggerAxis);
 
@@ -75,9 +70,17 @@ public:
      * Constructs a command that changes the map stagger index.
      *
      * @param mapDocument       the map document of the map
-     * @param orientation       the new map stagger index
+     * @param staggerIndex       the new map stagger index
      */
     ChangeMapProperty(MapDocument *mapDocument, Map::StaggerIndex staggerIndex);
+
+    /**
+     * Constructs a command that changes the parallax origin.
+     *
+     * @param mapDocument       the map document of the map
+     * @param parallaxOrigin    the new parallax origin
+     */
+    ChangeMapProperty(MapDocument *mapDocument, const QPointF &parallaxOrigin);
 
     /**
      * Constructs a command that changes the map orientation.
@@ -110,12 +113,14 @@ private:
     void swap();
 
     MapDocument *mMapDocument;
-    Property mProperty;
+    Map::Property mProperty;
     QColor mBackgroundColor;
+    QSize mChunkSize;
     union {
         int mIntValue;
         Map::StaggerAxis mStaggerAxis;
         Map::StaggerIndex mStaggerIndex;
+        QPointF mParallaxOrigin;
         Map::Orientation mOrientation;
         Map::RenderOrder mRenderOrder;
         Map::LayerDataFormat mLayerDataFormat;

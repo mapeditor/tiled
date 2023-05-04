@@ -33,6 +33,9 @@ class ShapeFillTool : public AbstractTileFillTool
 public:
     ShapeFillTool(QObject *parent = nullptr);
 
+    void activate(MapScene *scene) override;
+    void deactivate(MapScene *scene) override;
+
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
 
@@ -43,8 +46,10 @@ public:
     void populateToolBar(QToolBar *toolBar) override;
 
 protected:
-    void tilePositionChanged(const QPoint&) override;
+    void tilePositionChanged(QPoint) override;
     void clearConnections(MapDocument *) override {}
+
+    void updateStatusInfo() override;
 
 private:
     enum ToolBehavior {
@@ -57,12 +62,15 @@ private:
         Circle  // making a circle
     };
 
+    Qt::KeyboardModifiers mModifiers;
     ToolBehavior mToolBehavior;
     Shape mCurrentShape;
     QPoint mStartCorner;
 
     QAction *mRectFill;
     QAction *mCircleFill;
+
+    void setActionsEnabled(bool enabled);
 
     void setCurrentShape(Shape shape);
     void updateFillOverlay();

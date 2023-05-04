@@ -31,6 +31,8 @@
 
 #include "objecttemplateformat.h"
 
+#include <QFileInfo>
+
 namespace Tiled {
 
 ObjectTemplate::ObjectTemplate()
@@ -39,8 +41,7 @@ ObjectTemplate::ObjectTemplate()
 }
 
 ObjectTemplate::ObjectTemplate(const QString &fileName)
-    : Object(ObjectTemplateType)
-    , mFileName(fileName)
+    : mFileName(fileName)
 {
 }
 
@@ -61,31 +62,36 @@ void ObjectTemplate::setObject(const MapObject *object)
     }
 
     if (tileset)
-        mTileset = tileset->sharedPointer();
+        mTileset = tileset->sharedFromThis();
     else
         mTileset.reset();
 }
 
-void ObjectTemplate::setObject(std::unique_ptr<MapObject> &&object)
+void ObjectTemplate::setObject(std::unique_ptr<MapObject> object)
 {
     Q_ASSERT(object);
     mObject = std::move(object);
 
     Tileset *tileset = mObject->cell().tileset();
     if (tileset)
-        mTileset = tileset->sharedPointer();
+        mTileset = tileset->sharedFromThis();
     else
         mTileset.reset();
 }
 
-void ObjectTemplate::setFormat(ObjectTemplateFormat *format)
+bool ObjectTemplate::save()
 {
-    mFormat = format;
-}
+    auto format = findFileFormat<ObjectTemplateFormat>(mFormat);
+    if (!format)
+        return false;
+    if (mFileName.isEmpty())
+        return false;
 
-ObjectTemplateFormat *ObjectTemplate::format() const
-{
-    return mFormat;
+    const bool result = format->write(this, mFileName);
+
+    mLastSaved = QFileInfo(mFileName).lastModified();
+
+    return result;
 }
 
 } // namespace Tiled

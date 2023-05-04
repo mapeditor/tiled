@@ -24,13 +24,14 @@
 #include "mapobject.h"
 #include "mapobjectitem.h"
 #include "maprenderer.h"
+#include "objectgroup.h"
 #include "snaphelper.h"
 #include "utils.h"
 
 using namespace Tiled;
 
-CreateScalableObjectTool::CreateScalableObjectTool(QObject *parent)
-    : CreateObjectTool(parent)
+CreateScalableObjectTool::CreateScalableObjectTool(Id id, QObject *parent)
+    : CreateObjectTool(id, parent)
 {
 }
 
@@ -49,13 +50,12 @@ void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
 {
     const MapRenderer *renderer = mapDocument()->renderer();
     QPointF pixelCoords = renderer->screenToPixelCoords(pos);
+    SnapHelper(renderer, modifiers).snap(pixelCoords);
 
-    if (state() == Preview) {
-        SnapHelper(renderer, modifiers).snap(pixelCoords);
+    if (state() == Preview)
         mStartPos = pixelCoords;
-    }
 
-    QRectF objectArea(mStartPos, pixelCoords);
+    QRectF objectArea = QRectF(mStartPos, pixelCoords).normalized();
 
     // Holding shift creates circle or square
     if (modifiers & Qt::ShiftModifier) {
@@ -64,14 +64,15 @@ void CreateScalableObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
         objectArea.setHeight(max * sign(objectArea.height()));
     }
 
-    // Update the position and size of the new map object
-    QPointF snapSize(objectArea.width(), objectArea.height());
-    SnapHelper(renderer, modifiers).snap(snapSize);
-    objectArea.setWidth(snapSize.x());
-    objectArea.setHeight(snapSize.y());
+    // This objectArea assumes TopLeft alignment, but the map's object alignment might be different.
+    MapObject *newMapObject = mNewMapObjectItem->mapObject();
+    const auto offset = alignmentOffset(objectArea, newMapObject->alignment(mapDocument()->map()));
+    objectArea.translate(offset);
 
     // Not using the MapObjectModel because the object is not actually part of
     // the map yet
-    mNewMapObjectItem->mapObject()->setBounds(objectArea.normalized());
+    newMapObject->setBounds(objectArea);
     mNewMapObjectItem->syncWithMapObject();
 }
+
+#include "moc_createscalableobjecttool.cpp"

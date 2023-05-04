@@ -24,8 +24,10 @@
 
 #include <QAbstractScrollArea>
 #include <QApplication>
+#include <QComboBox>
 #include <QMainWindow>
 #include <QPainter>
+#include <QPainterPath>
 #include <QPixmapCache>
 #include <QScrollBar>
 #include <QStringBuilder>
@@ -33,6 +35,12 @@
 #include <QtMath>
 
 using namespace Tiled;
+
+// from windows style
+static const int windowsItemFrame        =  2; // menu item frame width
+static const int windowsItemHMargin      =  3; // menu item hor text margin
+static const int windowsItemVMargin      =  8; // menu item ver text margin
+static const int windowsRightBorder      = 15; // right border on windows
 
 /*
  * Below there are a lot of helper functions which are copied from various
@@ -66,14 +74,14 @@ template <typename T>
 template <typename T>
         struct QConcatenable<HexString<T> >
 {
-    typedef HexString<T> type;
+    using type = HexString<T>;
     enum { ExactSize = true };
     static int size(const HexString<T> &) { return sizeof(T) * 2; }
     static inline void appendTo(const HexString<T> &str, QChar *&out) { str.write(out); }
-    typedef QString ConvertTo;
+    using ConvertTo = QString;
 };
 
-static QString uniqueName(const QString &key, const QStyleOption *option, const QSize &size)
+static QString uniqueName(const QString &key, const QStyleOption *option, QSize size)
 {
     const QStyleOptionComplex *complexOption = qstyleoption_cast<const QStyleOptionComplex *>(option);
     QString tmp = key % HexString<uint>(option->state)
@@ -110,10 +118,63 @@ static inline QPixmap styleCachePixmap(const QSize &size)
     return cachePixmap;
 }
 
+#ifdef Q_OS_DARWIN
+static const qreal baseDpi = 72;
+#else
+static const qreal baseDpi = 96;
+#endif
+
+static qreal dpi(const QStyleOption *option)
+{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    // Expect that QStyleOption::QFontMetrics::QFont has the correct DPI set
+    if (option)
+        return option->fontMetrics.fontDpi();
+    return baseDpi;
+#else
+    Q_UNUSED(option)
+    return Utils::defaultDpi();
+#endif
+}
+
+static qreal dpiScaled(qreal value, qreal dpi)
+{
+    return value * dpi / baseDpi;
+}
+
+static int dpiScaled(int value, qreal dpi)
+{
+    return qRound(dpiScaled(qreal(value), dpi));
+}
+
+static qreal dpiScaled(qreal value, const QStyleOption *option)
+{
+    return dpiScaled(value, dpi(option));
+}
+
+static QRectF dpiScaled(QRectF value, const QStyleOption *option)
+{
+    auto dpi = ::dpi(option);
+    return QRectF(dpiScaled(value.x(), dpi),
+                  dpiScaled(value.y(), dpi),
+                  dpiScaled(value.width(), dpi),
+                  dpiScaled(value.height(), dpi));
+}
+
+static QSize dpiScaled(QSize value, const QStyleOption *option)
+{
+    auto dpi = ::dpi(option);
+    return QSize(dpiScaled(value.width(), dpi),
+                 dpiScaled(value.height(), dpi));
+}
+
 static void qt_fusion_draw_arrow(Qt::ArrowType type, QPainter *painter, const QStyleOption *option, const QRect &rect, const QColor &color)
 {
-    const int arrowWidth = Utils::dpiScaled(14);
-    const int arrowHeight = Utils::dpiScaled(8);
+    if (rect.isEmpty())
+        return;
+
+    const int arrowWidth = dpiScaled(14, option);
+    const int arrowHeight = dpiScaled(8, option);
 
     const int arrowMax = qMin(arrowHeight, arrowWidth);
     const int rectMax = qMin(rect.height(), rect.width());
@@ -123,7 +184,7 @@ static void qt_fusion_draw_arrow(Qt::ArrowType type, QPainter *painter, const QS
     QString cacheKey = uniqueName(QLatin1String("fusion-arrow"), option, rect.size())
             % HexString<uint>(type)
             % HexString<uint>(color.rgba());
-    if (!QPixmapCache::find(cacheKey, cachePixmap)) {
+    if (!QPixmapCache::find(cacheKey, &cachePixmap)) {
         cachePixmap = styleCachePixmap(rect.size());
         cachePixmap.fill(Qt::transparent);
         QPainter cachePainter(&cachePixmap);
@@ -260,10 +321,9 @@ static QColor getTabFrameColor(const QPalette &pal)
     return getButtonColor(pal).lighter(104);
 }
 
-static qreal roundedRectRadius()
+static qreal roundedRectRadius(qreal dpi)
 {
-    static qreal radius = Utils::dpiScaled(2.0);
-    return radius;
+    return dpiScaled(2.0, dpi);
 }
 
 
@@ -300,7 +360,8 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
         painter->translate(0.5, 0.5);
         painter->setPen(mergedColors(getOutlineColor(option->palette), tabFrameColor));
         painter->setBrush(mergedColors(option->palette.window().color(), tabFrameColor));
-        painter->drawRoundedRect(frame, roundedRectRadius(), roundedRectRadius());
+        const auto radius = roundedRectRadius(dpi(option));
+        painter->drawRoundedRect(frame, radius, radius);
         painter->restore();
         break;
     }
@@ -370,7 +431,7 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
             int state = option->state;
 
             QColor pressedColor = mergedColors(option->palette.base().color(),
-                                               option->palette.foreground().color(), 85);
+                                               option->palette.windowText().color(), 85);
             painter->setBrush(Qt::NoBrush);
 
             // Gradient fill
@@ -391,7 +452,7 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
             painter->drawRect(rect);
 
             QColor checkMarkColor = option->palette.text().color().darker(120);
-            const int checkMarkPadding = Utils::dpiScaled(3);
+            const int checkMarkPadding = dpiScaled(3, option);
 
             if (checkbox->state & State_NoChange) {
                 gradient = QLinearGradient(rect.topLeft(), rect.bottomLeft());
@@ -405,7 +466,7 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
                 painter->drawRect(rect.adjusted(checkMarkPadding, checkMarkPadding, -checkMarkPadding, -checkMarkPadding));
 
             } else if (checkbox->state & (State_On)) {
-                QPen checkPen = QPen(checkMarkColor, Utils::dpiScaled(1.8));
+                QPen checkPen = QPen(checkMarkColor, dpiScaled(1.8, option));
                 checkMarkColor.setAlpha(210);
                 painter->translate(-1, 0.5);
                 painter->setPen(checkPen);
@@ -429,7 +490,7 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
             proxy()->drawPrimitive(PE_PanelButtonCommand, option, painter, widget);
 
         QColor textColor = option->palette.text().color();
-        qreal penWidth = Utils::dpiScaled(1.25);
+        qreal penWidth = dpiScaled(1.25, option);
         QPen foregroundPen(textColor, penWidth, Qt::SolidLine, Qt::RoundCap);
         QPen shadowPen(QColor(0, 0, 0, 200), penWidth, Qt::SolidLine, Qt::RoundCap);
 
@@ -445,7 +506,7 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
             }
         }
 
-        QRect iconRect = Utils::dpiScaled(QRectF(0, 0, 8, 8)).toRect();
+        QRect iconRect = dpiScaled(QRectF(0, 0, 8, 8), option).toRect();
         iconRect.moveCenter(option->rect.center());
 
         const QPoint lines[] = {
@@ -503,6 +564,8 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
                 };
                 painter->drawPoints(points, 4);
             }
+
+            painter->restore();
             return;
         }
 
@@ -528,18 +591,20 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
         if (option->state & State_On)
             downColor = option->palette.button().color().darker(mIsDark ? 128 : 116);
 
+        const auto radius = roundedRectRadius(dpi(option));
+
         QLinearGradient gradient = qt_fusion_gradient(option->rect, (isEnabled && option->state & State_MouseOver ) ? buttonColor : buttonColor.darker(104));
         painter->setPen(Qt::transparent);
         painter->setBrush(isDown ? QBrush(downColor) : gradient);
-        painter->drawRoundedRect(r, roundedRectRadius(), roundedRectRadius());
+        painter->drawRoundedRect(r, radius, radius);
         painter->setBrush(Qt::NoBrush);
 
         // Outline
         painter->setPen(!isEnabled ? QPen(darkOutline.lighter(115)) : QPen(darkOutline));
-        painter->drawRoundedRect(r, roundedRectRadius(), roundedRectRadius());
+        painter->drawRoundedRect(r, radius, radius);
 
         painter->setPen(innerContrastLine());
-        painter->drawRoundedRect(r.adjusted(1, 1, -1, -1), roundedRectRadius(), roundedRectRadius());
+        painter->drawRoundedRect(r.adjusted(1, 1, -1, -1), radius, radius);
 
         painter->restore();
         break;
@@ -565,7 +630,7 @@ void TiledProxyStyle::drawControl(ControlElement element,
         // Don't draw handle for single pixel splitters
         if (option->rect.width() > 1 && option->rect.height() > 1) {
             //draw grips
-            int size = qRound(Utils::dpiScaled(3));
+            int size = dpiScaled(3, option);
             int offset = -size / 2 + 1;
 
             if (option->state & State_Horizontal) {
@@ -589,6 +654,221 @@ void TiledProxyStyle::drawControl(ControlElement element,
         painter->setPen(option->palette.mid().color());
         painter->drawLine(option->rect.bottomLeft(), option->rect.bottomRight());
     }
+        painter->restore();
+        break;
+
+    case CE_MenuItem:               // Copied to remove highlight outline and to make separators more visible in dark mode
+        painter->save();
+        // Draws one item in a popup menu.
+        if (const QStyleOptionMenuItem *menuItem = qstyleoption_cast<const QStyleOptionMenuItem *>(option)) {
+            QColor highlight = option->palette.highlight().color();
+            if (menuItem->menuItemType == QStyleOptionMenuItem::Separator) {
+                int w = 0;
+                const int margin = int(dpiScaled(5, option));
+                if (!menuItem->text.isEmpty()) {
+                    painter->setFont(menuItem->font);
+                    proxy()->drawItemText(painter, menuItem->rect.adjusted(margin, 0, -margin, 0), Qt::AlignLeft | Qt::AlignVCenter,
+                                          menuItem->palette, menuItem->state & State_Enabled, menuItem->text,
+                                          QPalette::Text);
+                    w = menuItem->fontMetrics.horizontalAdvance(menuItem->text) + margin;
+                }
+                if (isDark())
+                    painter->setPen(lightShade().darker(130));
+                else
+                    painter->setPen(shadow.lighter(106));
+                bool reverse = menuItem->direction == Qt::RightToLeft;
+                painter->drawLine(menuItem->rect.left() + margin + (reverse ? 0 : w), menuItem->rect.center().y(),
+                                  menuItem->rect.right() - margin - (reverse ? w : 0), menuItem->rect.center().y());
+                painter->restore();
+                break;
+            }
+            bool selected = menuItem->state & State_Selected && menuItem->state & State_Enabled;
+            if (selected)
+                painter->fillRect(option->rect, highlight);
+
+            bool checkable = menuItem->checkType != QStyleOptionMenuItem::NotCheckable;
+            bool checked = menuItem->checked;
+            bool sunken = menuItem->state & State_Sunken;
+            bool enabled = menuItem->state & State_Enabled;
+
+            bool ignoreCheckMark = false;
+            const int checkColHOffset = windowsItemHMargin + windowsItemFrame - 1;
+            int checkcol = qMax<int>(menuItem->rect.height() * 0.79,
+                                     qMax<int>(menuItem->maxIconWidth, dpiScaled(21, option))); // icon checkbox's highlight column width
+            if (
+                qobject_cast<const QComboBox*>(widget) ||
+                (option->styleObject && option->styleObject->property("_q_isComboBoxPopupItem").toBool()))
+                ignoreCheckMark = true; //ignore the checkmarks provided by the QComboMenuDelegate
+
+            if (!ignoreCheckMark) {
+                // Check, using qreal and QRectF to avoid error accumulation
+                const qreal boxMargin = dpiScaled(3.5, option);
+                const qreal boxWidth = checkcol - 2 * boxMargin;
+                QRectF checkRectF(option->rect.left() + boxMargin + checkColHOffset, option->rect.center().y() - boxWidth/2 + 1, boxWidth, boxWidth);
+                QRect checkRect = checkRectF.toRect();
+                checkRect.setWidth(checkRect.height()); // avoid .toRect() round error results in non-perfect square
+                checkRect = visualRect(menuItem->direction, menuItem->rect, checkRect);
+                if (checkable) {
+                    if (menuItem->checkType & QStyleOptionMenuItem::Exclusive) {
+                        // Radio button
+                        if (checked || sunken) {
+                            painter->setRenderHint(QPainter::Antialiasing);
+                            painter->setPen(Qt::NoPen);
+
+                            QPalette::ColorRole textRole = !enabled ? QPalette::Text:
+                                                                      selected ? QPalette::HighlightedText : QPalette::ButtonText;
+                            painter->setBrush(option->palette.brush( option->palette.currentColorGroup(), textRole));
+                            const int adjustment = checkRect.height() * 0.3;
+                            painter->drawEllipse(checkRect.adjusted(adjustment, adjustment, -adjustment, -adjustment));
+                        }
+                    } else {
+                        // Check box
+                        if (menuItem->icon.isNull()) {
+                            QStyleOptionButton box;
+                            box.QStyleOption::operator=(*option);
+                            box.rect = checkRect;
+                            if (checked)
+                                box.state |= State_On;
+                            proxy()->drawPrimitive(PE_IndicatorCheckBox, &box, painter, widget);
+                        }
+                    }
+                }
+            } else { //ignore checkmark
+                if (menuItem->icon.isNull())
+                    checkcol = 0;
+                else
+                    checkcol = menuItem->maxIconWidth;
+            }
+
+            // Text and icon, ripped from windows style
+            bool dis = !(menuItem->state & State_Enabled);
+            bool act = menuItem->state & State_Selected;
+            const QStyleOption *opt = option;
+            const QStyleOptionMenuItem *menuitem = menuItem;
+
+            QPainter *p = painter;
+            QRect vCheckRect = visualRect(opt->direction, menuitem->rect,
+                                          QRect(menuitem->rect.x() + checkColHOffset, menuitem->rect.y(),
+                                                checkcol, menuitem->rect.height()));
+            if (!menuItem->icon.isNull()) {
+                QIcon::Mode mode = dis ? QIcon::Disabled : QIcon::Normal;
+                if (act && !dis)
+                    mode = QIcon::Active;
+                QPixmap pixmap;
+
+                int smallIconSize = proxy()->pixelMetric(PM_SmallIconSize, option, widget);
+                QSize iconSize(smallIconSize, smallIconSize);
+                if (const QComboBox *combo = qobject_cast<const QComboBox*>(widget))
+                    iconSize = combo->iconSize();
+                if (checked)
+                    pixmap = menuItem->icon.pixmap(iconSize, mode, QIcon::On);
+                else
+                    pixmap = menuItem->icon.pixmap(iconSize, mode);
+
+                const int pixw = pixmap.width() / pixmap.devicePixelRatio();
+                const int pixh = pixmap.height() / pixmap.devicePixelRatio();
+
+                QRect pmr(0, 0, pixw, pixh);
+                pmr.moveCenter(vCheckRect.center());
+                painter->setPen(menuItem->palette.text().color());
+                if (!ignoreCheckMark && checkable && checked) {
+                    QStyleOption opt = *option;
+                    if (act) {
+                        QColor activeColor = mergedColors(option->palette.window().color(),
+                                                          option->palette.highlight().color());
+                        opt.palette.setBrush(QPalette::Button, activeColor);
+                    }
+                    opt.state |= State_Sunken;
+                    opt.rect = vCheckRect;
+                    proxy()->drawPrimitive(PE_PanelButtonCommand, &opt, painter, widget);
+                }
+                painter->drawPixmap(pmr.topLeft(), pixmap);
+            }
+            if (selected) {
+                painter->setPen(menuItem->palette.highlightedText().color());
+            } else {
+                painter->setPen(menuItem->palette.text().color());
+            }
+            int x, y, w, h;
+            menuitem->rect.getRect(&x, &y, &w, &h);
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+            int tab = menuitem->reservedShortcutWidth;
+#else
+            int tab = menuitem->tabWidth;
+#endif
+            QColor discol;
+            if (dis) {
+                discol = menuitem->palette.text().color();
+                p->setPen(discol);
+            }
+            int xm = checkColHOffset + checkcol + windowsItemHMargin;
+            int xpos = menuitem->rect.x() + xm;
+
+            QRect textRect(xpos, y + windowsItemVMargin, w - xm - windowsRightBorder - tab + 1, h - 2 * windowsItemVMargin);
+            QRect vTextRect = visualRect(opt->direction, menuitem->rect, textRect);
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+            QStringView s(menuitem->text);
+#else
+            QStringRef s(&menuitem->text);
+#endif
+            if (!s.isEmpty()) {                     // draw text
+                p->save();
+                int t = s.indexOf(QLatin1Char('\t'));
+                int text_flags = Qt::AlignVCenter | Qt::TextShowMnemonic | Qt::TextDontClip | Qt::TextSingleLine;
+                if (!styleHint(SH_UnderlineShortcut, menuitem, widget))
+                    text_flags |= Qt::TextHideMnemonic;
+                text_flags |= Qt::AlignLeft;
+                if (t >= 0) {
+                    QRect vShortcutRect = visualRect(opt->direction, menuitem->rect,
+                                                     QRect(textRect.topRight(), QPoint(menuitem->rect.right(), textRect.bottom())));
+                    const QString textToDraw = s.mid(t + 1).toString();
+                    if (dis && !act && proxy()->styleHint(SH_EtchDisabledText, option, widget)) {
+                        p->setPen(menuitem->palette.light().color());
+                        p->drawText(vShortcutRect.adjusted(1, 1, 1, 1), text_flags, textToDraw);
+                        p->setPen(discol);
+                    }
+                    p->drawText(vShortcutRect, text_flags, textToDraw);
+                    s = s.left(t);
+                }
+                QFont font = menuitem->font;
+                // font may not have any "hard" flags set. We override
+                // the point size so that when it is resolved against the device, this font will win.
+                // This is mainly to handle cases where someone sets the font on the window
+                // and then the combo inherits it and passes it onward. At that point the resolve mask
+                // is very, very weak. This makes it stonger.
+                font.setPointSizeF(QFontInfo(menuItem->font).pointSizeF());
+
+                if (menuitem->menuItemType == QStyleOptionMenuItem::DefaultItem)
+                    font.setBold(true);
+
+                p->setFont(font);
+                const QString textToDraw = s.left(t).toString();
+                if (dis && !act && proxy()->styleHint(SH_EtchDisabledText, option, widget)) {
+                    p->setPen(menuitem->palette.light().color());
+                    p->drawText(vTextRect.adjusted(1, 1, 1, 1), text_flags, textToDraw);
+                    p->setPen(discol);
+                }
+                p->drawText(vTextRect, text_flags, textToDraw);
+                p->restore();
+            }
+
+            // Arrow
+            if (menuItem->menuItemType == QStyleOptionMenuItem::SubMenu) {// draw sub menu arrow
+                int dim = (menuItem->rect.height() - 4) / 2;
+                PrimitiveElement arrow;
+                arrow = option->direction == Qt::RightToLeft ? PE_IndicatorArrowLeft : PE_IndicatorArrowRight;
+                int xpos = menuItem->rect.left() + menuItem->rect.width() - 3 - dim;
+                QRect  vSubMenuRect = visualRect(option->direction, menuItem->rect,
+                                                 QRect(xpos, menuItem->rect.top() + menuItem->rect.height() / 2 - dim / 2, dim, dim));
+                QStyleOptionMenuItem newMI = *menuItem;
+                newMI.rect = vSubMenuRect;
+                newMI.state = !enabled ? State_None : State_Enabled;
+                if (selected)
+                    newMI.palette.setColor(QPalette::WindowText,
+                                           newMI.palette.highlightedText().color());
+                proxy()->drawPrimitive(arrow, &newMI, painter, widget);
+            }
+        }
         painter->restore();
         break;
 
@@ -708,6 +988,12 @@ void TiledProxyStyle::drawControl(ControlElement element,
             }
             painter->setPen(oldPen);
         }
+        break;
+
+        // Fix the font used to draw dock widget titles (see QDockWidget::paintEvent)
+    case CE_DockWidgetTitle:
+        painter->setFont(QFont());
+        QProxyStyle::drawControl(element, option, painter, widget);
         break;
 
     case CE_TabBarTabShape:
@@ -845,6 +1131,18 @@ void TiledProxyStyle::drawControl(ControlElement element,
             }
         }
         break;
+
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0) && defined(Q_OS_WIN)
+    case CE_ItemViewItem:
+        if (const QStyleOptionViewItem *vopt = qstyleoption_cast<const QStyleOptionViewItem *>(option)) {
+            // Work around wrong inactive HighlightedText color
+            QStyleOptionViewItem voptCopy(*vopt);
+            voptCopy.palette = mPalette;
+            QProxyStyle::drawControl(element, &voptCopy, painter, widget);
+        }
+        break;
+#endif
+
     default:
         QProxyStyle::drawControl(element, option, painter, widget);
         break;
@@ -876,7 +1174,7 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
             QColor alphaOutline = outline;
             alphaOutline.setAlpha(180);
 
-            QColor arrowColor = option->palette.foreground().color();
+            QColor arrowColor = option->palette.windowText().color();
             arrowColor.setAlpha(220);
 
             const QColor bgColor = mPalette.color(QPalette::Base);
@@ -920,7 +1218,7 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
             if (scrollBar->subControls & SC_ScrollBarSlider) {
                 QColor sliderColor = getSliderColor(option->palette, isDarkBg);
 
-                int margin = qRound(Utils::dpiScaled(2));
+                int margin = dpiScaled(2, option);
 
                 QRect sliderRect = scrollBarSlider.adjusted(margin + 1, margin, -margin - 1, -margin - 1);
                 if (horizontal)
@@ -942,12 +1240,15 @@ void TiledProxyStyle::drawComplexControl(ComplexControl control,
                     sliderGradient.setColorAt(1, sliderColor);
                     painter->setBrush(sliderGradient);
                 }
+
+                const auto radius = roundedRectRadius(dpi(option));
+
                 painter->save();
                 painter->setRenderHint(QPainter::Antialiasing, true);
                 painter->translate(0.5, 0.5);
-                painter->drawRoundedRect(sliderRect, roundedRectRadius(), roundedRectRadius());
+                painter->drawRoundedRect(sliderRect, radius, radius);
                 painter->setPen(innerContrastLine());
-                painter->drawRoundedRect(sliderRect.adjusted(1, 1, -1, -1), roundedRectRadius(), roundedRectRadius());
+                painter->drawRoundedRect(sliderRect.adjusted(1, 1, -1, -1), radius, radius);
                 painter->restore();
             }
 
@@ -1039,6 +1340,8 @@ int TiledProxyStyle::pixelMetric(QStyle::PixelMetric metric,
     switch (metric) {
     case PM_MenuBarItemSpacing:
         return 0;                   // no space between menu bar items
+    case PM_MenuPanelWidth:
+        return dpiScaled(2, option);
     case PM_TabBarTabShiftHorizontal:
     case PM_TabBarTabShiftVertical:
         return 0;                   // no shifting of tabs
@@ -1069,12 +1372,11 @@ QSize TiledProxyStyle::sizeFromContents(ContentsType type,
     switch (type) {
     case CT_MenuBarItem:            // make the menu bar item itself wider
         if (!size.isEmpty())
-            size += QSize(Utils::dpiScaled(16.),
-                          Utils::dpiScaled(5.));
+            size += dpiScaled(QSize(16, 5), option);
         break;
     case CT_ItemViewItem:           // give item view items a little more space
         size = QCommonStyle::sizeFromContents(type, option, contentsSize, widget);
-        size += QSize(0, Utils::dpiScaled(2.));
+        size += QSize(0, dpiScaled(2, option));
         break;
     case CT_TabBarTab:
         if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
@@ -1091,17 +1393,17 @@ QSize TiledProxyStyle::sizeFromContents(ContentsType type,
             int widgetHeight = 0;
             int padding = 0;
             if (!tab->leftButtonSize.isEmpty()) {
-                padding += Utils::dpiScaled(4);
+                padding += dpiScaled(4, option);
                 widgetWidth += tab->leftButtonSize.width();
                 widgetHeight += tab->leftButtonSize.height();
             }
             if (!tab->rightButtonSize.isEmpty()) {
-                padding += Utils::dpiScaled(4);
+                padding += dpiScaled(4, option);
                 widgetWidth += tab->rightButtonSize.width();
                 widgetHeight += tab->rightButtonSize.height();
             }
             if (!tab->icon.isNull())
-                padding += Utils::dpiScaled(4);
+                padding += dpiScaled(4, option);
             if (verticalTabs(tab->shape)) {
                 size = QSize(qMax(maxWidgetWidth, qMax(fm.height(), iconSize.height()) + vframe),
                         fm.size(Qt::TextShowMnemonic, tab->text).width() + iconSize.width() + hframe + widgetHeight + padding);
@@ -1131,7 +1433,7 @@ QRect TiledProxyStyle::subElementRect(QStyle::SubElement subElement, const QStyl
             bool selected = tab->state & State_Selected;
             int verticalShift = proxy()->pixelMetric(QStyle::PM_TabBarTabShiftVertical, tab, widget);
             int horizontalShift = proxy()->pixelMetric(QStyle::PM_TabBarTabShiftHorizontal, tab, widget);
-            int hpadding = Utils::dpiScaled(4.);       // normally half the PM_TabBarTabHSpace
+            int hpadding = dpiScaled(4, option);       // normally half the PM_TabBarTabHSpace
 
             bool verticalTabs = tab->shape == QTabBar::RoundedEast
                     || tab->shape == QTabBar::RoundedWest
@@ -1156,7 +1458,7 @@ QRect TiledProxyStyle::subElementRect(QStyle::SubElement subElement, const QStyl
             QSize size = (subElement == SE_TabBarTabLeftButton) ? tab->leftButtonSize : tab->rightButtonSize;
             int w = size.width();
             int h = size.height();
-            int midHeight = static_cast<int>(qCeil(float(tr.height() - h) / 2));
+            int midHeight = static_cast<int>(qCeil(qreal(tr.height() - h) / 2));
             int midWidth = ((tr.width() - w) / 2);
             bool atTheTop = true;
             switch (tab->shape) {
@@ -1222,3 +1524,5 @@ QIcon TiledProxyStyle::standardIcon(QStyle::StandardPixmap standardIcon,
         return QProxyStyle::standardIcon(standardIcon, option, widget);
     }
 }
+
+#include "moc_tiledproxystyle.cpp"

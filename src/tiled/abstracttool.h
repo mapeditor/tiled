@@ -21,6 +21,10 @@
 
 #pragma once
 
+#include "changeevents.h"
+#include "id.h"
+#include "layer.h"
+
 #include <QCursor>
 #include <QGraphicsSceneMouseEvent>
 #include <QIcon>
@@ -32,6 +36,7 @@
 class QEvent;
 class QKeyEvent;
 class QToolBar;
+class QUndoStack;
 
 namespace Tiled {
 
@@ -56,21 +61,30 @@ class AbstractTool : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString name READ name WRITE setName)
-    Q_PROPERTY(QIcon icon READ icon WRITE setIcon)
-    Q_PROPERTY(QKeySequence shortcut READ shortcut WRITE setShortcut)
+    Q_PROPERTY(QByteArray id READ idName CONSTANT)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY changed)
+    Q_PROPERTY(QIcon icon READ icon WRITE setIcon NOTIFY changed)
+    Q_PROPERTY(QKeySequence shortcut READ shortcut WRITE setShortcut NOTIFY changed)
     Q_PROPERTY(QString statusInfo READ statusInfo WRITE setStatusInfo NOTIFY statusInfoChanged)
     Q_PROPERTY(QCursor cursor READ cursor WRITE setCursor NOTIFY cursorChanged)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
+    Q_PROPERTY(bool visible READ isVisible WRITE setVisible NOTIFY visibleChanged)
+    Q_PROPERTY(bool usesSelectedTiles READ usesSelectedTiles WRITE setUsesSelectedTiles)
+    Q_PROPERTY(bool usesWangSets READ usesWangSets WRITE setUsesWangSets)
+    Q_PROPERTY(int targetLayerType READ targetLayerType WRITE setTargetLayerType)
 
 public:
     /**
      * Constructs an abstract tool with the given \a name and \a icon.
      */
-    AbstractTool(const QString &name,
+    AbstractTool(Id id,
+                 const QString &name,
                  const QIcon &icon,
                  const QKeySequence &shortcut,
                  QObject *parent = nullptr);
+
+    Id id() const;
+    QByteArray idName() const;
 
     QString name() const;
     void setName(const QString &name);
@@ -90,6 +104,18 @@ public:
     bool isEnabled() const;
     void setEnabled(bool enabled);
 
+    bool isVisible() const;
+    void setVisible(bool visible);
+
+    bool usesSelectedTiles() const;
+    void setUsesSelectedTiles(bool usesSelectedTiles);
+
+    bool usesWangSets() const;
+    void setUsesWangSets(bool usesWangSets);
+
+    int targetLayerType() const;
+    void setTargetLayerType(int targetLayerType);
+
     ToolManager *toolManager() const;
     Tile *tile() const;
     ObjectTemplate *objectTemplate() const;
@@ -98,13 +124,13 @@ public:
      * Activates this tool. If the tool plans to add any items to the scene, it
      * probably wants to do it here.
      */
-    virtual void activate(MapScene *scene) = 0;
+    virtual void activate(MapScene *scene);
 
     /**
      * Deactivates this tool. Should do any necessary cleanup to make sure the
      * tool is no longer active.
      */
-    virtual void deactivate(MapScene *scene) = 0;
+    virtual void deactivate(MapScene *scene);
 
     virtual void keyPressed(QKeyEvent *);
 
@@ -145,8 +171,7 @@ public:
 
     /**
      * Called when the user presses or releases a modifier key resulting
-     * in a change of modifier status, and when the tool is enabled with
-     * a modifier key pressed.
+     * in a change of modifier status, and after the tool is activated.
      */
     virtual void modifiersChanged(Qt::KeyboardModifiers) {}
 
@@ -157,10 +182,16 @@ public:
 
     virtual void populateToolBar(QToolBar*) {}
 
-public slots:
     void setMapDocument(MapDocument *mapDocument);
 
+    /**
+     * override to use a different undo stack than the one from the document.
+     */
+    virtual QUndoStack* undoStack() { return nullptr; }
+
 protected:
+    virtual void changeEvent(const ChangeEvent &event);
+
     /**
      * Can be used to respond to the map document changing.
      */
@@ -172,10 +203,10 @@ protected:
     }
 
     MapDocument *mapDocument() const { return mMapDocument; }
+    MapScene *mapScene() const { return mMapScene; }
 
     Layer *currentLayer() const;
 
-protected slots:
     /**
      * By default, this function is called after the current map has changed
      * and when the current layer changes. It can be overridden to implement
@@ -186,9 +217,11 @@ protected slots:
     virtual void updateEnabledState();
 
 signals:
+    void changed();
     void statusInfoChanged(const QString &statusInfo);
     void cursorChanged(const QCursor &cursor);
     void enabledChanged(bool enabled);
+    void visibleChanged(bool visible);
 
 private:
     friend class ToolManager;
@@ -198,21 +231,32 @@ private:
     QKeySequence mShortcut;
     QString mStatusInfo;
     QCursor mCursor;
-    bool mEnabled;
+    Id mId;
+    bool mEnabled = false;
+    bool mVisible = true;
+    bool mUsesSelectedTiles = false;
+    bool mUsesWangSets = false;
+    int mTargetLayerType = 0;
 
-    ToolManager *mToolManager;
-    MapDocument *mMapDocument;
+    ToolManager *mToolManager = nullptr;
+    MapDocument *mMapDocument = nullptr;
+    MapScene *mMapScene = nullptr;
 };
 
+
+inline Id AbstractTool::id() const
+{
+    return mId;
+}
+
+inline QByteArray AbstractTool::idName() const
+{
+    return mId.name();
+}
 
 inline QString AbstractTool::name() const
 {
     return mName;
-}
-
-inline void AbstractTool::setName(const QString &name)
-{
-    mName = name;
 }
 
 inline QIcon AbstractTool::icon() const
@@ -220,20 +264,11 @@ inline QIcon AbstractTool::icon() const
     return mIcon;
 }
 
-inline void AbstractTool::setIcon(const QIcon &icon)
-{
-    mIcon = icon;
-}
-
 inline QKeySequence AbstractTool::shortcut() const
 {
     return mShortcut;
 }
 
-inline void AbstractTool::setShortcut(const QKeySequence &shortcut)
-{
-    mShortcut = shortcut;
-}
 
 inline QString AbstractTool::statusInfo() const
 {
@@ -248,6 +283,36 @@ inline QCursor AbstractTool::cursor() const
 inline bool AbstractTool::isEnabled() const
 {
     return mEnabled;
+}
+
+inline bool AbstractTool::isVisible() const
+{
+    return mVisible;
+}
+
+inline bool AbstractTool::usesSelectedTiles() const
+{
+    return mUsesSelectedTiles;
+}
+
+inline void AbstractTool::setUsesSelectedTiles(bool usesSelectedTiles)
+{
+    mUsesSelectedTiles = usesSelectedTiles;
+}
+
+inline bool AbstractTool::usesWangSets() const
+{
+    return mUsesWangSets;
+}
+
+inline void AbstractTool::setUsesWangSets(bool usesWangSets)
+{
+    mUsesWangSets = usesWangSets;
+}
+
+inline int AbstractTool::targetLayerType() const
+{
+    return mTargetLayerType;
 }
 
 /**

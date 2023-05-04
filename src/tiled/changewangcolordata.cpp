@@ -23,6 +23,8 @@
 #include "wangcolormodel.h"
 #include "tilesetdocument.h"
 
+#include <QCoreApplication>
+
 using namespace Tiled;
 
 ChangeWangColorName::ChangeWangColorName(TilesetDocument *tilesetDocument,
@@ -33,6 +35,7 @@ ChangeWangColorName::ChangeWangColorName(TilesetDocument *tilesetDocument,
     , mOldName(wangColor->name())
     , mNewName(newName)
 {
+    setText(QCoreApplication::translate("Undo Commands", "Change Terrain Name"));
 }
 
 void ChangeWangColorName::undo()
@@ -47,6 +50,16 @@ void ChangeWangColorName::redo()
     wangColorModel->setName(mWangColor, mNewName);
 }
 
+bool ChangeWangColorName::mergeWith(const QUndoCommand *other)
+{
+    auto o = static_cast<const ChangeWangColorName*>(other);
+    if (mWangColor != o->mWangColor)
+        return false;
+
+    mNewName = o->mNewName;
+    return true;
+}
+
 
 ChangeWangColorImage::ChangeWangColorImage(TilesetDocument *tilesetDocument,
                                            WangColor *wangColor,
@@ -58,6 +71,7 @@ ChangeWangColorImage::ChangeWangColorImage(TilesetDocument *tilesetDocument,
     , mOldImageId(wangColor->imageId())
     , mNewImageId(newImageId)
 {
+    setText(QCoreApplication::translate("Undo Commands", "Change Terrain Image"));
 }
 
 void ChangeWangColorImage::undo()
@@ -81,6 +95,7 @@ ChangeWangColorColor::ChangeWangColorColor(TilesetDocument *tilesetDocument,
     , mOldColor(wangColor->color())
     , mNewColor(newColor)
 {
+    setText(QCoreApplication::translate("Undo Commands", "Change Terrain Color"));
 }
 
 void ChangeWangColorColor::undo()
@@ -104,6 +119,7 @@ ChangeWangColorProbability::ChangeWangColorProbability(TilesetDocument *tilesetD
     , mOldProbability(wangColor->probability())
     , mNewProbability(newProbability)
 {
+    setText(QCoreApplication::translate("Undo Commands", "Change Terrain Probability"));
 }
 
 void ChangeWangColorProbability::undo()

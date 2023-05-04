@@ -1,6 +1,7 @@
 /*
  * commandmanager.cpp
  * Copyright 2017, Ketan Gupta <ketan19972010@gmail.com>
+ * Copyright 2018-2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -24,6 +25,8 @@
 #include "commanddialog.h"
 #include "logginginterface.h"
 #include "pluginmanager.h"
+#include "preferences.h"
+#include "projectmanager.h"
 #include "utils.h"
 
 #include <QApplication>
@@ -33,41 +36,86 @@
 
 namespace Tiled {
 
-CommandManager *CommandManager::mInstance;
-
 CommandManager::CommandManager()
     : mModel(new CommandDataModel(this))
-    , mLogger(new LoggingInterface(this))
 {
+    auto preferences = Preferences::instance();
+
+    // Load command list
+    const auto commands = preferences->value(QLatin1String("commandList")).toList();
+    for (const QVariant &commandVariant : commands)
+        mCommands.append(Command::fromVariant(commandVariant));
+
+    // Add default commands the first time the app has booted up.
+    // This is useful on its own and helps demonstrate how to use the commands.
+
+    Preference<bool> addedDefault { "addedDefaultCommands", false };
+    if (!addedDefault) {
+        // Disable default commands by default so user gets an informative
+        // warning when clicking the command button for the first time
+        Command command;
+        command.isEnabled = false;
+#ifdef Q_OS_LINUX
+        command.executable = QLatin1String("gedit");
+        command.arguments = QLatin1String("%mapfile");
+#elif defined(Q_OS_MAC)
+        command.executable = QLatin1String("open");
+        command.arguments = QLatin1String("-t %mapfile");
+#elif defined(Q_OS_WIN)
+        command.executable = QLatin1String("notepad.exe");
+        command.arguments = QLatin1String("%mapfile");
+#endif
+        if (!command.executable.isEmpty()) {
+            command.name = tr("Open in text editor");
+            mCommands.push_back(command);
+        }
+
+        commit();
+        addedDefault = true;
+    }
+
     updateActions();
 
-    PluginManager::addObject(mLogger);
+    connect(ProjectManager::instance(), &ProjectManager::projectChanged,
+            this, &CommandManager::updateActions);
 }
 
 CommandManager::~CommandManager()
 {
-    PluginManager::removeObject(mLogger);
 }
 
 CommandManager *CommandManager::instance()
 {
-    if (!mInstance)
-        mInstance = new CommandManager;
-
-    return mInstance;
+    static CommandManager instance;
+    return &instance;
 }
 
-void CommandManager::deleteInstance()
+bool CommandManager::executeDefaultCommand() const
 {
-    delete mInstance;
-    mInstance = nullptr;
+    const auto commands = allCommands();
+    for (const Command &command : commands) {
+        if (command.isEnabled) {
+            command.execute();
+            return true;
+        }
+    }
+    return false;
 }
 
-CommandDataModel *CommandManager::commandDataModel()
+const QVector<Command> &CommandManager::globalCommands() const
 {
-    return mModel;
+    return mCommands;
 }
 
+const QVector<Command> &CommandManager::projectCommands() const
+{
+    auto &project = ProjectManager::instance()->project();
+    return project.mCommands;
+}
+
+/**
+ * Registers a new QMenu with the CommandManager.
+ */
 void CommandManager::registerMenu(QMenu *menu)
 {
     mMenus.append(menu);
@@ -75,18 +123,34 @@ void CommandManager::registerMenu(QMenu *menu)
     menu->addActions(mActions);
 }
 
+/**
+ * Displays the dialog to edit the commands.
+ */
 void CommandManager::showDialog()
 {
     CommandDialog dialog(QApplication::activeWindow());
     dialog.exec();
+
+    mCommands = dialog.globalCommands();
+    commit();
+
+    auto &project = ProjectManager::instance()->project();
+    project.mCommands = dialog.projectCommands();
+    project.save();
+
+    updateActions();
 }
 
-void CommandManager::populateMenus()
+/**
+ * Saves the data to the users preferences.
+ */
+void CommandManager::commit()
 {
-    for (QMenu *menu : mMenus) {
-        menu->clear();
-        menu->addActions(mActions);
-    }
+    QVariantList commands;
+    for (const Command &command : std::as_const(mCommands))
+        commands.append(command.toVariant());
+
+    Preferences::instance()->setValue(QLatin1String("commandList"), commands);
 }
 
 void CommandManager::updateActions()
@@ -94,44 +158,59 @@ void CommandManager::updateActions()
     qDeleteAll(mActions);
     mActions.clear();
 
-    const QList<Command> &commands = mModel->allCommands();
-
-    for (int i = 0; i < commands.size(); ++i) {
-        const Command &command = commands.at(i);
-
+    auto addAction = [this] (const Command &command) {
         if (!command.isEnabled)
-            continue;
+            return;
 
         QAction *mAction = new QAction(command.name, this);
         mAction->setShortcut(command.shortcut);
-
-        connect(mAction, &QAction::triggered, [this,i]() { mModel->execute(i); });
-
+        connect(mAction, &QAction::triggered, [command] { command.execute(); });
         mActions.append(mAction);
-    }
+    };
+
+    auto addSeparator = [this] {
+        QAction *separator = new QAction(this);
+        separator->setSeparator(true);
+        mActions.append(separator);
+    };
+
+    // Add global commands
+    for (const Command &command : std::as_const(mCommands))
+        addAction(command);
+
+    addSeparator();
+
+    // Add project-specific commands
+    const auto &project = ProjectManager::instance()->project();
+    for (const Command &command : project.mCommands)
+        addAction(command);
+
+    addSeparator();
 
     // Add Edit Commands action
-    QAction *mSeparator = new QAction(this);
-    mSeparator->setSeparator(true);
+    mEditCommandsAction = new QAction(this);
+    mEditCommandsAction->setIcon(
+            QIcon(QLatin1String(":/images/24/system-run.png")));
+    Utils::setThemeIcon(mEditCommandsAction, "system-run");
 
-    mActions.append(mSeparator);
+    connect(mEditCommandsAction, &QAction::triggered, this, &CommandManager::showDialog);
 
-    mEditCommands = new QAction(this);
-    mEditCommands->setIcon(
-            QIcon(QLatin1String(":/images/24x24/system-run.png")));
-    Utils::setThemeIcon(mEditCommands, "system-run");
-
-    connect(mEditCommands, &QAction::triggered, this, &CommandManager::showDialog);
-
-    mActions.append(mEditCommands);
+    mActions.append(mEditCommandsAction);
 
     retranslateUi();
-    populateMenus();
+
+    // Populate registered menus
+    for (QMenu *menu : mMenus) {
+        menu->clear();
+        menu->addActions(mActions);
+    }
 }
 
 void CommandManager::retranslateUi()
 {
-    mEditCommands->setText(tr("Edit Commands..."));
+    mEditCommandsAction->setText(tr("Edit Commands..."));
 }
 
 } // namespace Tiled
+
+#include "moc_commandmanager.cpp"

@@ -21,13 +21,14 @@
 
 #pragma once
 
+#include "tile.h"
+
 #include <QAbstractListModel>
 
 namespace Tiled {
 
-class Tile;
 class Tileset;
-
+class TilesetDocument;
 
 /**
  * A model wrapping a tileset of a map. Used to display the tiles.
@@ -38,18 +39,11 @@ class TilesetModel : public QAbstractListModel
 
 public:
     /**
-     * The TerrainRole allows querying the terrain info.
-     */
-    enum UserRoles {
-        TerrainRole = Qt::UserRole
-    };
-
-    /**
      * Constructor.
      *
-     * @param tileset the initial tileset to display
+     * @param tilesetDocument the initial tileset to display
      */
-    TilesetModel(Tileset *tileset, QObject *parent = nullptr);
+    TilesetModel(TilesetDocument *tilesetDocument, QObject *parent = nullptr);
 
     /**
      * Returns the number of rows.
@@ -78,16 +72,18 @@ public:
                         int role = Qt::DisplayRole) const override;
 
     Qt::ItemFlags flags(const QModelIndex &index) const override;
+    Qt::DropActions supportedDropActions() const override;
 
     QStringList mimeTypes() const override;
     QMimeData *mimeData(const QModelIndexList &indexes) const override;
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action,
+                      int row, int column,
+                      const QModelIndex &parent) override;
 
     /**
      * Returns the tile at the given index.
      */
     Tile *tileAt(const QModelIndex &index) const;
-
-    int tileIdAt(const QModelIndex &index) const;
 
     /**
      * Returns the index of the given \a tile. The tile is required to be from
@@ -98,12 +94,7 @@ public:
     /**
      * Returns the tileset associated with this model.
      */
-    Tileset *tileset() const { return mTileset; }
-
-    /**
-     * Sets the tileset associated with this model.
-     */
-    void setTileset(Tileset *tileset);
+    Tileset *tileset() const;
 
     /**
      * Refreshes the list of tile IDs. Should be called after tiles are added
@@ -111,10 +102,7 @@ public:
      */
     void tilesetChanged();
 
-    /**
-     * Performs a reset on the model.
-     */
-    void resetModel();
+    void setColumnCountOverride(int columnCount);
 
 public slots:
     /**
@@ -124,10 +112,11 @@ public slots:
      * Tiles that are not from the tileset displayed by this model are simply
      * ignored. All tiles in the list are assumed to be from the same tileset.
      *
-     * \sa TilesetDocument::tileTerrainChanged
+     * \sa TilesetDocument::tileWangSetChanged
      */
     void tilesChanged(const QList<Tile*> &tiles);
 
+private:
     /**
      * Should be called when anything changes about the given \a tile that
      * affects its display in any views on this model.
@@ -137,11 +126,11 @@ public slots:
      */
     void tileChanged(Tile *tile);
 
-private:
     void refreshTileIds();
 
-    Tileset *mTileset;
+    TilesetDocument *mTilesetDocument;
     QList<int> mTileIds;
+    int mColumnCountOverride = 0;
 };
 
 } // namespace Tiled

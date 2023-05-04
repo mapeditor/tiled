@@ -21,42 +21,99 @@
 #pragma once
 
 #include "editableasset.h"
-#include "editableselectedarea.h"
 #include "mapdocument.h"
+#include "regionvaluetype.h"
+#include "scriptimage.h"
 
 namespace Tiled {
 
 class MapObject;
 
+class AutomappingManager;
 class EditableLayer;
 class EditableMapObject;
+class EditableSelectedArea;
+class EditableTileLayer;
+class EditableTileset;
 
 class EditableMap : public EditableAsset
 {
     Q_OBJECT
 
-    Q_PROPERTY(int width READ width NOTIFY sizeChanged)
-    Q_PROPERTY(int height READ height NOTIFY sizeChanged)
-    Q_PROPERTY(QSize size READ size NOTIFY sizeChanged)
-    Q_PROPERTY(int tileWidth READ tileWidth WRITE setTileWidth NOTIFY tileWidthChanged)
-    Q_PROPERTY(int tileHeight READ tileHeight WRITE setTileHeight NOTIFY tileHeightChanged)
+    Q_PROPERTY(int width READ width WRITE setWidth)
+    Q_PROPERTY(int height READ height WRITE setHeight)
+    Q_PROPERTY(QSize size READ size)
+    Q_PROPERTY(int tileWidth READ tileWidth WRITE setTileWidth)
+    Q_PROPERTY(int tileHeight READ tileHeight WRITE setTileHeight)
     Q_PROPERTY(bool infinite READ infinite WRITE setInfinite)
     Q_PROPERTY(int hexSideLength READ hexSideLength WRITE setHexSideLength)
-    Q_PROPERTY(Tiled::Map::StaggerAxis staggerAxis READ staggerAxis WRITE setStaggerAxis)
-    Q_PROPERTY(Tiled::Map::StaggerIndex staggerIndex READ staggerIndex WRITE setStaggerIndex)
-    Q_PROPERTY(Tiled::Map::Orientation orientation READ orientation WRITE setOrientation)
-    Q_PROPERTY(Tiled::Map::RenderOrder renderOrder READ renderOrder WRITE setRenderOrder)
+    Q_PROPERTY(StaggerAxis staggerAxis READ staggerAxis WRITE setStaggerAxis)
+    Q_PROPERTY(StaggerIndex staggerIndex READ staggerIndex WRITE setStaggerIndex)
+    Q_PROPERTY(QPointF parallaxOrigin READ parallaxOrigin WRITE setParallaxOrigin)
+    Q_PROPERTY(Orientation orientation READ orientation WRITE setOrientation)
+    Q_PROPERTY(RenderOrder renderOrder READ renderOrder WRITE setRenderOrder)
     Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
-    Q_PROPERTY(Tiled::Map::LayerDataFormat layerDataFormat READ layerDataFormat WRITE setLayerDataFormat)
-    Q_PROPERTY(Tiled::EditableSelectedArea *selectedArea READ selectedArea CONSTANT)
+    Q_PROPERTY(LayerDataFormat layerDataFormat READ layerDataFormat WRITE setLayerDataFormat)
     Q_PROPERTY(int layerCount READ layerCount)
+    Q_PROPERTY(QList<QObject*> tilesets READ tilesets)
+    Q_PROPERTY(QList<QObject*> layers READ layers)
+    Q_PROPERTY(Tiled::EditableSelectedArea *selectedArea READ selectedArea CONSTANT)
+    Q_PROPERTY(Tiled::EditableLayer* currentLayer READ currentLayer WRITE setCurrentLayer NOTIFY currentLayerChanged)
+    Q_PROPERTY(QList<QObject*> selectedLayers READ selectedLayers WRITE setSelectedLayers NOTIFY selectedLayersChanged)
+    Q_PROPERTY(QList<QObject*> selectedObjects READ selectedObjects WRITE setSelectedObjects NOTIFY selectedObjectsChanged)
 
 public:
-    explicit EditableMap(MapDocument *mapDocument,
-                         QObject *parent = nullptr);
+    // Synchronized with Map::Orientation
+    enum Orientation {
+        Unknown,
+        Orthogonal,
+        Isometric,
+        Staggered,
+        Hexagonal
+    };
+    Q_ENUM(Orientation)
+
+    // Synchronized with Map::LayerDataFormat
+    enum LayerDataFormat {
+        XML             = 0,
+        Base64          = 1,
+        Base64Gzip      = 2,
+        Base64Zlib      = 3,
+        Base64Zstandard = 4,
+        CSV             = 5
+    };
+    Q_ENUM(LayerDataFormat)
+
+    // Synchronized with Map::RenderOrder
+    enum RenderOrder {
+        RightDown  = 0,
+        RightUp    = 1,
+        LeftDown   = 2,
+        LeftUp     = 3
+    };
+    Q_ENUM(RenderOrder)
+
+    // Synchronized with Map::StaggerAxis
+    enum StaggerAxis {
+        StaggerX,
+        StaggerY
+    };
+    Q_ENUM(StaggerAxis)
+
+    // Synchronized with Map::StaggerIndex
+    enum StaggerIndex {
+        StaggerOdd  = 0,
+        StaggerEven = 1
+    };
+    Q_ENUM(StaggerIndex)
+
+    Q_INVOKABLE explicit EditableMap(QObject *parent = nullptr);
+    explicit EditableMap(MapDocument *mapDocument, QObject *parent = nullptr);
+    explicit EditableMap(const Map *map, QObject *parent = nullptr);
+    explicit EditableMap(std::unique_ptr<Map> map, QObject *parent = nullptr);
     ~EditableMap() override;
 
-    QString fileName() const override;
+    bool isReadOnly() const final;
 
     int width() const;
     int height() const;
@@ -65,65 +122,117 @@ public:
     int tileHeight() const;
     bool infinite() const;
     int hexSideLength() const;
-    Map::StaggerAxis staggerAxis() const;
-    Map::StaggerIndex staggerIndex() const;
-    Map::Orientation orientation() const;
-    Map::RenderOrder renderOrder() const;
+    StaggerAxis staggerAxis() const;
+    StaggerIndex staggerIndex() const;
+    QPointF parallaxOrigin() const;
+    Orientation orientation() const;
+    RenderOrder renderOrder() const;
     QColor backgroundColor() const;
-    Map::LayerDataFormat layerDataFormat() const;
+    LayerDataFormat layerDataFormat() const;
     int layerCount() const;
+    QList<QObject*> tilesets() const;
+    QList<QObject*> layers();
+    EditableSelectedArea *selectedArea();
+    EditableLayer *currentLayer();
+    QList<QObject*> selectedLayers();
+    QList<QObject*> selectedObjects();
+
     Q_INVOKABLE Tiled::EditableLayer *layerAt(int index);
     Q_INVOKABLE void removeLayerAt(int index);
     Q_INVOKABLE void removeLayer(Tiled::EditableLayer *editableLayer);
     Q_INVOKABLE void insertLayerAt(int index, Tiled::EditableLayer *editableLayer);
     Q_INVOKABLE void addLayer(Tiled::EditableLayer *editableLayer);
 
+    Q_INVOKABLE bool addTileset(Tiled::EditableTileset *tileset);
+    Q_INVOKABLE bool replaceTileset(Tiled::EditableTileset *oldEditableTileset,
+                                    Tiled::EditableTileset *newEditableTileset);
+    Q_INVOKABLE bool removeTileset(Tiled::EditableTileset *editableTileset);
+    Q_INVOKABLE QList<QObject *> usedTilesets() const;
+
+    Q_INVOKABLE void removeObjects(const QList<QObject*> &objects);
+
+    Q_INVOKABLE void merge(Tiled::EditableMap *editableMap, bool canJoin = false);
+
+    Q_INVOKABLE void resize(QSize size,
+                            QPoint offset = QPoint(),
+                            bool removeObjects = false);
+
+    Q_INVOKABLE void autoMap(const QString &rulesFile = QString());
+    Q_INVOKABLE void autoMap(const QRect &region, const QString &rulesFile = QString());
+    Q_INVOKABLE void autoMap(const QRectF &region, const QString &rulesFile = QString());
+    Q_INVOKABLE void autoMap(const Tiled::RegionValueType &region, const QString &rulesFile = QString());
+
+    Q_INVOKABLE Tiled::ScriptImage *toImage(QSize size = QSize());
+
+    Q_INVOKABLE QPointF screenToTile(qreal x, qreal y) const;
+    Q_INVOKABLE QPointF screenToTile(const QPointF &position) const;
+    Q_INVOKABLE QPointF tileToScreen(qreal x, qreal y) const;
+    Q_INVOKABLE QPointF tileToScreen(const QPointF &position) const;
+    Q_INVOKABLE QPointF screenToPixel(qreal x, qreal y) const;
+    Q_INVOKABLE QPointF screenToPixel(const QPointF &position) const;
+    Q_INVOKABLE QPointF pixelToScreen(qreal x, qreal y) const;
+    Q_INVOKABLE QPointF pixelToScreen(const QPointF &position) const;
+    Q_INVOKABLE QPointF pixelToTile(qreal x, qreal y) const;
+    Q_INVOKABLE QPointF pixelToTile(const QPointF &position) const;
+    Q_INVOKABLE QPointF tileToPixel(qreal x, qreal y) const;
+    Q_INVOKABLE QPointF tileToPixel(const QPointF &position) const;
+
+    void setWidth(int width);
+    void setHeight(int height);
+    Q_INVOKABLE void setSize(int width, int height);
     void setTileWidth(int value);
     void setTileHeight(int value);
+    Q_INVOKABLE void setTileSize(int width, int height);
     void setInfinite(bool value);
     void setHexSideLength(int value);
-    void setStaggerAxis(Map::StaggerAxis value);
-    void setStaggerIndex(Map::StaggerIndex value);
-    void setOrientation(Map::Orientation value);
-    void setRenderOrder(Map::RenderOrder value);
+    void setStaggerAxis(StaggerAxis value);
+    void setStaggerIndex(StaggerIndex value);
+    void setParallaxOrigin(const QPointF &parallaxOrigin);
+    void setOrientation(Orientation value);
+    void setRenderOrder(RenderOrder value);
     void setBackgroundColor(const QColor &value);
-    void setLayerDataFormat(Map::LayerDataFormat value);
-
-    MapDocument *mapDocument() const;
-    EditableSelectedArea *selectedArea();
-
-signals:
-    void sizeChanged();
-    void tileWidthChanged();
-    void tileHeightChanged();
-
-public slots:
-    void resize(const QSize &size,
-                const QPoint &offset = QPoint(),
-                bool removeObjects = false);
-
-private slots:
-    void detachEditableLayer(Layer *layer);
-    void detachMapObjects(const QList<MapObject*> &mapObjects);
-
-private:
-    friend class EditableLayer;
-    friend class EditableMapObject;
-    friend class EditableObjectGroup;
-
-    EditableLayer *editableLayer(Layer *layer);
-    EditableMapObject *editableMapObject(MapObject *mapObject);
+    void setLayerDataFormat(LayerDataFormat value);
+    void setCurrentLayer(EditableLayer *layer);
+    void setSelectedLayers(const QList<QObject*> &layers);
+    void setSelectedObjects(const QList<QObject*> &objects);
 
     Map *map() const;
+    MapDocument *mapDocument() const;
+
+    QSharedPointer<Document> createDocument() override;
+
+signals:
+    void currentLayerChanged();
+    void selectedLayersChanged();
+    void selectedObjectsChanged();
+
+    void regionEdited(const Tiled::RegionValueType &region, Tiled::EditableTileLayer *layer);
+
+private:
+    void documentChanged(const ChangeEvent &change);
+
+    void attachLayer(Layer *layer);
+    void detachLayer(Layer *layer);
+    void attachMapObjects(const QList<MapObject*> &mapObjects);
+    void detachMapObjects(const QList<MapObject*> &mapObjects);
+
+    void onRegionEdited(const QRegion &region, TileLayer *layer);
+
     MapRenderer *renderer() const;
 
-    MapDocument * const mMapDocument;
+    std::unique_ptr<Map> mDetachedMap;
+    mutable std::unique_ptr<MapRenderer> mRenderer;
+    bool mReadOnly = false;
 
-    QHash<Layer*, EditableLayer*> mEditableLayers;
-    QHash<MapObject*, EditableMapObject*> mEditableMapObjects;
-    EditableSelectedArea mSelectedArea;
+    EditableSelectedArea *mSelectedArea = nullptr;
+    AutomappingManager *mAutomappingManager = nullptr;
 };
 
+
+inline bool EditableMap::isReadOnly() const
+{
+    return mReadOnly;
+}
 
 inline int EditableMap::width() const
 {
@@ -160,24 +269,29 @@ inline int EditableMap::hexSideLength() const
     return map()->hexSideLength();
 }
 
-inline Map::StaggerAxis EditableMap::staggerAxis() const
+inline EditableMap::StaggerAxis EditableMap::staggerAxis() const
 {
-    return map()->staggerAxis();
+    return static_cast<StaggerAxis>(map()->staggerAxis());
 }
 
-inline Map::StaggerIndex EditableMap::staggerIndex() const
+inline EditableMap::StaggerIndex EditableMap::staggerIndex() const
 {
-    return map()->staggerIndex();
+    return static_cast<StaggerIndex>(map()->staggerIndex());
 }
 
-inline Map::Orientation EditableMap::orientation() const
+inline QPointF EditableMap::parallaxOrigin() const
 {
-    return map()->orientation();
+    return map()->parallaxOrigin();
 }
 
-inline Map::RenderOrder EditableMap::renderOrder() const
+inline EditableMap::Orientation EditableMap::orientation() const
 {
-    return map()->renderOrder();
+    return static_cast<Orientation>(map()->orientation());
+}
+
+inline EditableMap::RenderOrder EditableMap::renderOrder() const
+{
+    return static_cast<RenderOrder>(map()->renderOrder());
 }
 
 inline QColor EditableMap::backgroundColor() const
@@ -185,9 +299,9 @@ inline QColor EditableMap::backgroundColor() const
     return map()->backgroundColor();
 }
 
-inline Map::LayerDataFormat EditableMap::layerDataFormat() const
+inline EditableMap::LayerDataFormat EditableMap::layerDataFormat() const
 {
-    return map()->layerDataFormat();
+    return static_cast<LayerDataFormat>(map()->layerDataFormat());
 }
 
 inline int EditableMap::layerCount() const
@@ -195,24 +309,74 @@ inline int EditableMap::layerCount() const
     return map()->layerCount();
 }
 
-inline Map *EditableMap::map() const
+inline EditableSelectedArea *EditableMap::selectedArea()
 {
-    return mMapDocument->map();
+    return mSelectedArea;
 }
 
-inline MapRenderer *EditableMap::renderer() const
+inline void EditableMap::autoMap(const QString &rulesFile)
 {
-    return mMapDocument->renderer();
+    autoMap(RegionValueType(), rulesFile);
+}
+
+inline void EditableMap::autoMap(const QRect &region, const QString &rulesFile)
+{
+    autoMap(RegionValueType(region), rulesFile);
+}
+
+inline void EditableMap::autoMap(const QRectF &region, const QString &rulesFile)
+{
+    autoMap(region.toRect(), rulesFile);
+}
+
+inline QPointF EditableMap::screenToTile(const QPointF &position) const
+{
+    return screenToTile(position.x(), position.y());
+}
+
+inline QPointF EditableMap::tileToScreen(const QPointF &position) const
+{
+    return tileToScreen(position.x(), position.y());
+}
+
+inline QPointF EditableMap::screenToPixel(const QPointF &position) const
+{
+    return screenToPixel(position.x(), position.y());
+}
+
+inline QPointF EditableMap::pixelToScreen(const QPointF &position) const
+{
+    return pixelToScreen(position.x(), position.y());
+}
+
+inline QPointF EditableMap::pixelToTile(const QPointF &position) const
+{
+    return pixelToTile(position.x(), position.y());
+}
+
+inline QPointF EditableMap::tileToPixel(const QPointF &position) const
+{
+    return tileToPixel(position.x(), position.y());
+}
+
+inline void EditableMap::setWidth(int width)
+{
+    setSize(width, height());
+}
+
+inline void EditableMap::setHeight(int height)
+{
+    setSize(width(), height);
+}
+
+inline Map *EditableMap::map() const
+{
+    return static_cast<Map*>(object());
 }
 
 inline MapDocument *EditableMap::mapDocument() const
 {
-    return mMapDocument;
-}
-
-inline EditableSelectedArea *EditableMap::selectedArea()
-{
-    return &mSelectedArea;
+    return static_cast<MapDocument*>(document());
 }
 
 } // namespace Tiled

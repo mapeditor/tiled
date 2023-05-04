@@ -36,10 +36,9 @@ class DEFOLDPLUGINSHARED_EXPORT DefoldPlugin : public Tiled::WritableMapFormat
 public:
     DefoldPlugin();
 
-    bool write(const Tiled::Map *map, const QString &fileName) override;
+    bool write(const Tiled::Map *map, const QString &fileName, Options options) override;
     QString errorString() const override;
     QString shortName() const override;
-    QStringList outputFiles(const Tiled::Map *, const QString &fileName) const override;
 
 protected:
     QString nameFilter() const override;

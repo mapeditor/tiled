@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "map.h"
+#include "grid.h"
 #include "wangset.h"
 
 #include <QList>
@@ -31,7 +31,8 @@
 
 namespace Tiled {
 
-class StaggeredRenderer;
+class MapRenderer;
+class HexagonalRenderer;
 
 /**
  * WangFiller provides functions for choosing cells based on a surrounding map
@@ -43,67 +44,52 @@ class StaggeredRenderer;
 class WangFiller
 {
 public:
-    explicit WangFiller(WangSet *wangSet,
-                        StaggeredRenderer *staggeredRenderer = nullptr,
-                        Map::StaggerAxis staggerAxis = Map::StaggerX);
+    struct CellInfo {
+        WangId desired;
+        WangId mask;
 
-    WangSet *wangSet() const { return mWangSet; }
-    void setWangSet(WangSet *wangSet);
+        bool operator==(const CellInfo &other) const {
+            return desired == other.desired && mask == other.mask;
+        }
+    };
 
-    /**
-     * Finds a cell from the attached wangSet which fits the given
-     * surroundings.
-     *
-     * If \a lookForward is true, this will only choose a cell which allows all
-     * empty adjacent cells to also be filled. If non exist, then no cell will
-     * be choosen.
-     */
-    Cell findFittingCell(const TileLayer &back,
-                         const TileLayer &front,
-                         const QRegion &fillRegion,
-                         QPoint point) const;
+    explicit WangFiller(const WangSet &wangSet, const MapRenderer *mapRenderer);
+
+    void setCorrectionsEnabled(bool enabled) { mCorrectionsEnabled = enabled; }
+
+    void setDebugPainter(QPainter *painter) { mDebugPainter = painter; }
 
     /**
-     * Returns a tilelayer which has \a fillRegion filled with Wang methods.
+     * Fills the given \a region in the \a target layer with Wang methods,
+     * based on the desired \a wangIds.
      *
-     * If \a lookForward is true, this will only choose a cell which allows all
-     * empty adjacent cells to also be filled. If non exist, then no cell will
-     * be choosen.
+     * The \a back layer is used to match up the edges to existing tiles.
      */
-    std::unique_ptr<TileLayer> fillRegion(const TileLayer &back,
-                                          const QRegion &fillRegion) const;
+    void fillRegion(TileLayer &target,
+                    const TileLayer &back,
+                    const QRegion &region,
+                    Grid<CellInfo> wangIds = {}) const;
 
 private:
     /**
-     * Returns a cell from either the \a back or \a front, based on the
-     * \a fillRegion. \a point, \a front, and \a fillRegion are relative to
-     * \a back.
-     */
-    const Cell &getCell(const TileLayer &back,
-                        const TileLayer &front,
-                        const QRegion &fillRegion,
-                        QPoint point) const;
-
-    /**
-     * Returns a wangId based on \a front and \a back. Adjacent cells are
-     * obtained using getCell().
-     */
-    WangId wangIdFromSurroundings(const TileLayer &back,
-                                  const TileLayer &front,
-                                  const QRegion &fillRegion,
-                                  QPoint point) const;
-
-    /**
      * Returns a wangId based on cells from \a back which are not in the
-     * \a fillRegion. \a point and \a fillRegion are relative to \a back.
+     * \a region. \a point and \a region are relative to \a back.
      */
     WangId wangIdFromSurroundings(const TileLayer &back,
-                                  const QRegion &fillRegion,
+                                  const QRegion &region,
                                   QPoint point) const;
 
-    WangSet *mWangSet;
-    StaggeredRenderer *mStaggeredRenderer;
-    Map::StaggerAxis mStaggerAxis;
+    bool findBestMatch(const TileLayer &target,
+                       const Grid<CellInfo> &grid,
+                       QPoint position,
+                       Cell &result) const;
+
+    const WangSet &mWangSet;
+    const MapRenderer * const mMapRenderer;
+    const HexagonalRenderer * const mHexagonalRenderer;
+    bool mCorrectionsEnabled = false;
+
+    QPainter *mDebugPainter = nullptr;
 };
 
 } // namespace Tiled

@@ -26,6 +26,7 @@
 #include <QSet>
 #include <QVector>
 
+#include <array>
 #include <memory>
 
 class QGraphicsItem;
@@ -61,14 +62,22 @@ public:
 
     void languageChanged() override;
 
-private slots:
+    void populateToolBar(QToolBar*) override;
+
+protected:
+    void changeEvent(const ChangeEvent &event) override;
+
+private:
+    void languageChangedImpl();
+
     void updateHandles();
     void updateHandlesAndOrigin();
     void updateHandleVisibility();
 
-    void objectsRemoved(const QList<MapObject *> &);
+    void objectsAboutToBeRemoved(const QList<MapObject *> &);
 
-private:
+    void setSelectionMode(Qt::ItemSelectionMode selectionMode);
+
     enum Action {
         NoAction,
         Selecting,
@@ -86,15 +95,16 @@ private:
     void updateHandlesImpl(bool resetOriginIndicator);
 
     void updateHover(const QPointF &pos);
-    void updateSelection(const QPointF &pos,
-                         Qt::KeyboardModifiers modifiers);
+    QList<MapObject*> objectsAboutToBeSelected(const QPointF &pos,
+                                               Qt::KeyboardModifiers modifiers) const;
+    void updateSelection(const QPointF &pos, Qt::KeyboardModifiers modifiers);
 
     void startSelecting();
 
     void startMoving(const QPointF &pos, Qt::KeyboardModifiers modifiers);
     void updateMovingItems(const QPointF &pos,
                            Qt::KeyboardModifiers modifiers);
-    void finishMoving(const QPointF &pos);
+    void finishMoving();
 
     void startMovingOrigin(const QPointF &pos);
     void updateMovingOrigin(const QPointF &pos, Qt::KeyboardModifiers modifiers);
@@ -103,7 +113,7 @@ private:
     void startRotating(const QPointF &pos);
     void updateRotatingItems(const QPointF &pos,
                              Qt::KeyboardModifiers modifiers);
-    void finishRotating(const QPointF &pos);
+    void finishRotating();
 
     void startResizing();
     void updateResizingItems(const QPointF &pos,
@@ -111,12 +121,18 @@ private:
     void updateResizingSingleItem(const QPointF &resizingOrigin,
                                   const QPointF &screenPos,
                                   Qt::KeyboardModifiers modifiers);
-    void finishResizing(const QPointF &pos);
+    void finishResizing();
 
     void setMode(Mode mode);
     void saveSelectionState();
 
-    void abortCurrentAction(const QList<MapObject *> &removedObjects = QList<MapObject*>());
+    enum AbortReason {
+        UserInteraction,
+        ObjectsRemoved,
+        Deactivated
+    };
+
+    void abortCurrentAction(AbortReason reason);
 
     void refreshCursor();
 
@@ -124,6 +140,23 @@ private:
                        Qt::KeyboardModifiers modifiers);
 
     QList<MapObject*> changingObjects() const;
+
+    QAction *mSelectIntersected;
+    QAction *mSelectContained;
+
+    std::unique_ptr<SelectionRectangle> mSelectionRectangle;
+    std::unique_ptr<QGraphicsItem> mOriginIndicator;
+    std::array<RotateHandle*, 4> mRotateHandles;
+    std::array<ResizeHandle*, 8> mResizeHandles;
+    bool mMousePressed = false;
+
+    MapObject *mHoveredObject = nullptr;
+    Handle *mHoveredHandle = nullptr;
+
+    MapObject *mClickedObject = nullptr;
+    OriginIndicator *mClickedOriginIndicator = nullptr;
+    RotateHandle *mClickedRotateHandle = nullptr;
+    ResizeHandle *mClickedResizeHandle = nullptr;
 
     struct MovingObject
     {
@@ -136,33 +169,22 @@ private:
         qreal oldRotation;
     };
 
-    std::unique_ptr<SelectionRectangle> mSelectionRectangle;
-    std::unique_ptr<QGraphicsItem> mOriginIndicator;
-    RotateHandle *mRotateHandles[4];
-    ResizeHandle *mResizeHandles[8];
-    bool mMousePressed;
-
-    MapObject *mHoveredObject;
-    Handle *mHoveredHandle;
-
-    MapObject *mClickedObject;
-    OriginIndicator *mClickedOriginIndicator;
-    RotateHandle *mClickedRotateHandle;
-    ResizeHandle *mClickedResizeHandle;
-
     QVector<MovingObject> mMovingObjects;
 
     QPointF mAlignPosition;
     QPointF mOriginPos;
-    bool mResizingLimitHorizontal;
-    bool mResizingLimitVertical;
-    Mode mMode;
-    Action mAction;
+    bool mResizingLimitHorizontal = false;
+    bool mResizingLimitVertical = false;
+    Qt::ItemSelectionMode mSelectionMode;
+    Mode mMode = Resize;
+    Action mAction = NoAction;
     QPointF mStart;
     QPointF mStartOffset;
     QPointF mLastMousePos;
     QPoint mScreenStart;
     Qt::KeyboardModifiers mModifiers;
+
+    static Preference<Qt::ItemSelectionMode> ourSelectionMode;
 };
 
 } // namespace Tiled

@@ -1,29 +1,85 @@
-import qbs 1.0
+import qbs.Probes as Probes
 
 DynamicLibrary {
     targetName: "tiled"
 
     Depends { name: "cpp" }
-    Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "5.5" }
+    Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "5.12" }
 
-    Properties {
-        condition: !qbs.toolchain.contains("msvc")
-        cpp.dynamicLibraries: base.concat(["z"])
+    Probes.PkgConfigProbe {
+        id: pkgConfigZstd
+        name: "libzstd"
+        forStaticBuild: project.staticZstd
     }
 
-    cpp.cxxLanguageVersion: "c++11"
+    cpp.cxxLanguageVersion: "c++17"
+    cpp.cxxFlags: {
+        var flags = base;
+        if (qbs.toolchain.contains("msvc")) {
+            if (Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 3)
+                flags.push("/permissive-");
+        }
+        return flags;
+    }
     cpp.visibility: "minimal"
-    cpp.defines: [
-        "TILED_LIBRARY",
-        "QT_NO_CAST_FROM_ASCII",
-        "QT_NO_CAST_TO_ASCII",
-        "QT_NO_URL_CAST_FROM_STRING",
-        "_USE_MATH_DEFINES"
-    ]
+    cpp.defines: {
+        var defs = [
+            "TILED_LIBRARY",
+            "TILED_LIB_DIR=\"" + project.libDir + "\"",
+            "QT_NO_CAST_FROM_ASCII",
+            "QT_NO_CAST_TO_ASCII",
+            "QT_NO_URL_CAST_FROM_STRING",
+            "QT_DISABLE_DEPRECATED_BEFORE=QT_VERSION_CHECK(5,15,0)",
+            "QT_NO_DEPRECATED_WARNINGS",
+            "_USE_MATH_DEFINES",
+        ]
+
+        if (project.staticZstd || pkgConfigZstd.found)
+            defs.push("TILED_ZSTD_SUPPORT");
+
+        if (project.windowsLayout)
+            defs.push("TILED_WINDOWS_LAYOUT");
+
+        return defs;
+    }
+    cpp.dynamicLibraries: {
+        var libs = base;
+
+        if (!qbs.toolchain.contains("msvc"))
+            libs.push("z");
+
+        if (pkgConfigZstd.found && !project.staticZstd)
+            libs = libs.concat(pkgConfigZstd.libraries);
+
+        return libs;
+    }
+    cpp.staticLibraries: {
+        var libs = base;
+
+        if (project.staticZstd) {
+            if (pkgConfigZstd.found)
+                libs = libs.concat(pkgConfigZstd.libraries);
+            else
+                libs.push("zstd");
+        }
+
+        return libs;
+    }
 
     Properties {
-        condition: qbs.targetOS.contains("macos")
-        cpp.cxxFlags: ["-Wno-unknown-pragmas"]
+        condition: pkgConfigZstd.found
+        cpp.cxxFlags: outer.concat(pkgConfigZstd.cflags)
+        cpp.libraryPaths: outer.concat(pkgConfigZstd.libraryPaths)
+        cpp.linkerFlags: outer.concat(pkgConfigZstd.linkerFlags)
+    }
+
+    // When libzstd was not found but staticZstd is enabled, assume that zstd
+    // has been compiled in a "zstd" directory at the repository root (this is
+    // done by the autobuilds for Windows and macOS).
+    Properties {
+        condition: !pkgConfigZstd.found && project.staticZstd
+        cpp.libraryPaths: outer.concat(["../../zstd/lib"])
+        cpp.includePaths: outer.concat(["../../zstd/lib"])
     }
 
     Properties {
@@ -35,12 +91,14 @@ DynamicLibrary {
     files: [
         "compression.cpp",
         "compression.h",
+        "containerhelpers.h",
         "fileformat.cpp",
         "fileformat.h",
         "filesystemwatcher.cpp",
         "filesystemwatcher.h",
         "gidmapper.cpp",
         "gidmapper.h",
+        "grid.h",
         "grouplayer.cpp",
         "grouplayer.h",
         "hex.cpp",
@@ -57,6 +115,7 @@ DynamicLibrary {
         "isometricrenderer.h",
         "layer.cpp",
         "layer.h",
+        "logginginterface.cpp",
         "logginginterface.h",
         "map.cpp",
         "map.h",
@@ -72,6 +131,8 @@ DynamicLibrary {
         "maptovariantconverter.h",
         "mapwriter.cpp",
         "mapwriter.h",
+        "minimaprenderer.cpp",
+        "minimaprenderer.h",
         "object.cpp",
         "object.h",
         "objectgroup.cpp",
@@ -90,13 +151,14 @@ DynamicLibrary {
         "pluginmanager.h",
         "properties.cpp",
         "properties.h",
+        "propertytype.cpp",
+        "propertytype.h",
         "savefile.cpp",
         "savefile.h",
         "staggeredrenderer.cpp",
         "staggeredrenderer.h",
         "templatemanager.cpp",
         "templatemanager.h",
-        "terrain.h",
         "tile.cpp",
         "tileanimationdriver.cpp",
         "tileanimationdriver.h",
@@ -137,15 +199,14 @@ DynamicLibrary {
         cpp.includePaths: "."
     }
 
-    Group {
-        condition: !qbs.targetOS.contains("darwin")
-        qbs.install: true
-        qbs.installDir: {
-            if (qbs.targetOS.contains("windows"))
+    install: !qbs.targetOS.contains("darwin")
+    installDir: {
+        if (qbs.targetOS.contains("windows"))
+            if (project.windowsLayout)
                 return ""
             else
-                return "lib"
-        }
-        fileTagsFilter: "dynamiclibrary"
+                return "bin"
+        else
+            return project.libDir
     }
 }

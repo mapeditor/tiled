@@ -62,3 +62,5 @@ void TileAnimationDriver::updateState(State newState, State oldState)
 }
 
 } // namespace Tiled
+
+#include "moc_tileanimationdriver.cpp"

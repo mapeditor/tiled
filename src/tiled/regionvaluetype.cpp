@@ -20,11 +20,9 @@
 
 #include "regionvaluetype.h"
 
-namespace Tiled {
+#include "geometry.h"
 
-RegionValueType::RegionValueType()
-{
-}
+namespace Tiled {
 
 RegionValueType::RegionValueType(int x, int y, int w, int h)
     : mRegion(x, y, w, h)
@@ -45,15 +43,39 @@ QString RegionValueType::toString() const
 {
     switch (mRegion.rectCount()) {
     case 0:
-        return QLatin1String("Region(empty)");
+        return QStringLiteral("Region(empty)");
     case 1: {
-        QRect r = boundingRect();
+        const QRect r = boundingRect();
         return QString::asprintf("Region(x = %d, y = %d, w = %d, h = %d)",
                                  r.x(), r.y(), r.width(), r.height());
     }
     default:
-        return QLatin1String("Region(...)");
+        return QStringLiteral("Region(...)");
     }
 }
 
+QVector<RegionValueType> RegionValueType::contiguousRegions() const
+{
+    const auto regions = Tiled::coherentRegions(mRegion);
+    QVector<RegionValueType> regionValues;
+    for (const auto &region : regions)
+        regionValues.append(RegionValueType(region));
+    return regionValues;
+}
+
+QVector<QRect> RegionValueType::rects() const
+{
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    QVector<QRect> rects;
+    rects.reserve(static_cast<int>(mRegion.end() - mRegion.begin()));
+    for (const QRect &rect : mRegion)
+        rects.append(rect);
+    return rects;
+#else
+    return QVector<QRect>(mRegion.begin(), mRegion.end());
+#endif
+}
+
 } // namespace Tiled
+
+#include "moc_regionvaluetype.cpp"

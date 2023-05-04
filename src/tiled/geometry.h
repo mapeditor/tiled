@@ -22,19 +22,20 @@
 
 #include <QPoint>
 #include <QRegion>
+#include <QTransform>
 #include <QVector>
 
 namespace Tiled {
 
 QVector<QPoint> pointsOnEllipse(int x0, int y0, int x1, int y1);
 QRegion ellipseRegion(int x0, int y0, int x1, int y1);
-QVector<QPoint> pointsOnLine(int x0, int y0, int x1, int y1);
+QVector<QPoint> pointsOnLine(int x0, int y0, int x1, int y1, bool manhattan = false);
 
 inline QVector<QPoint> pointsOnEllipse(QPoint a, QPoint b)
 { return pointsOnEllipse(a.x(), a.y(), b.x(), b.y()); }
 
-inline QVector<QPoint> pointsOnLine(QPoint a, QPoint b)
-{ return pointsOnLine(a.x(), a.y(), b.x(), b.y()); }
+inline QVector<QPoint> pointsOnLine(QPoint a, QPoint b, bool manhattan = false)
+{ return pointsOnLine(a.x(), a.y(), b.x(), b.y(), manhattan); }
 
 QVector<QRegion> coherentRegions(const QRegion &region);
 

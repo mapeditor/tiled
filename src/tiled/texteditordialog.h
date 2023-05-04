@@ -34,13 +34,13 @@ class TextEditorDialog : public QDialog
 
 public:
     explicit TextEditorDialog(QWidget *parent = nullptr);
-    ~TextEditorDialog();
+    ~TextEditorDialog() override;
 
     void setText(const QString &text);
     QString text() const;
 
 protected:
-    void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e) override;
 
 private:
     Ui::TextEditorDialog *mUi;

@@ -20,51 +20,16 @@
 
 #pragma once
 
-#include "undocommands.h"
-
-#include <QHash>
-#include <QRegion>
-#include <QUndoCommand>
+#include "painttilelayer.h"
 
 namespace Tiled {
 
-class Tile;
-class TileLayer;
-
-class MapDocument;
-
-class EraseTiles : public QUndoCommand
+class EraseTiles : public PaintTileLayer
 {
 public:
     EraseTiles(MapDocument *mapDocument,
                TileLayer *tileLayer,
                const QRegion &region);
-    ~EraseTiles() override;
-
-    /**
-     * Sets whether this undo command can be merged with an existing command.
-     */
-    void setMergeable(bool mergeable)
-    { mMergeable = mergeable; }
-
-    void undo() override;
-    void redo() override;
-
-    int id() const override { return Cmd_EraseTiles; }
-    bool mergeWith(const QUndoCommand *other) override;
-
-private:
-    struct LayerData
-    {
-        void mergeWith(const LayerData &o);
-
-        TileLayer *mErasedCells = nullptr;
-        QRegion mRegion;
-    };
-
-    MapDocument *mMapDocument;
-    QHash<TileLayer*, LayerData> mLayerData;
-    bool mMergeable;
 };
 
 } // namespace Tiled

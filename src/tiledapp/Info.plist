@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CSResourcesFileMapped</key>
+	<true/>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright 2008-2020 Thorbjørn Lindeijer</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Tiled Map</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>tmx-icon-mac</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>tmx</string>
+			</array>
+		</dict>
+	</array>
+	<key>SUPublicDSAKeyFile</key>
+	<string>dsa_pub.pem</string>
+</dict>
+</plist>

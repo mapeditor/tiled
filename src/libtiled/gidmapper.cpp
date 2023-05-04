@@ -33,6 +33,8 @@
 #include "tiled.h"
 #include "tileset.h"
 
+#include <algorithm>
+
 using namespace Tiled;
 
 // Bits on the far end of the 32-bit global tile ID are used for tile flags
@@ -47,7 +49,6 @@ const unsigned RotatedHexagonal120Flag   = 0x10000000;
  * incrementally.
  */
 GidMapper::GidMapper()
-    : mInvalidTile(0)
 {
 }
 
@@ -101,8 +102,11 @@ Cell GidMapper::gidToCell(unsigned gid, bool &ok) const
             const SharedTileset &tileset = i.value();
 
             result.setTile(tileset.data(), tileId);
-
             ok = true;
+
+            // Adjust the next tile ID, in order to preserve tile references
+            // even to tilesets that failed to load.
+            tileset->setNextTileId(std::max(tileset->nextTileId(), tileId + 1));
         }
     }
 
@@ -149,7 +153,7 @@ unsigned GidMapper::cellToGid(const Cell &cell) const
  */
 QByteArray GidMapper::encodeLayerData(const TileLayer &tileLayer,
                                       Map::LayerDataFormat format,
-                                      QRect bounds) const
+                                      QRect bounds, int compressionLevel) const
 {
     Q_ASSERT(format != Map::XML);
     Q_ASSERT(format != Map::CSV);
@@ -171,9 +175,11 @@ QByteArray GidMapper::encodeLayerData(const TileLayer &tileLayer,
     }
 
     if (format == Map::Base64Gzip)
-        tileData = compress(tileData, Gzip);
+        tileData = compress(tileData, Gzip, compressionLevel);
     else if (format == Map::Base64Zlib)
-        tileData = compress(tileData, Zlib);
+        tileData = compress(tileData, Zlib, compressionLevel);
+    else if (format == Map::Base64Zstandard)
+        tileData = compress(tileData, Zstandard, compressionLevel);
 
     return tileData.toBase64();
 }
@@ -189,8 +195,12 @@ GidMapper::DecodeError GidMapper::decodeLayerData(TileLayer &tileLayer,
     QByteArray decodedData = QByteArray::fromBase64(layerData);
     const int size = bounds.width() * bounds.height() * 4;
 
-    if (format == Map::Base64Gzip || format == Map::Base64Zlib)
-        decodedData = decompress(decodedData, size);
+    if (format == Map::Base64Gzip)
+        decodedData = decompress(decodedData, size, Gzip);
+    else if (format == Map::Base64Zlib)
+        decodedData = decompress(decodedData, size, Zlib);
+    else if (format == Map::Base64Zstandard)
+        decodedData = decompress(decodedData, size, Zstandard);
 
     if (size != decodedData.length())
         return CorruptLayerData;

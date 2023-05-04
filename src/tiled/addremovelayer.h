@@ -41,7 +41,7 @@ public:
                    GroupLayer *parentLayer,
                    QUndoCommand *parent = nullptr);
 
-    ~AddRemoveLayer();
+    ~AddRemoveLayer() override;
 
 protected:
     void addLayer();
@@ -67,11 +67,8 @@ public:
              int index, Layer *layer, GroupLayer *parentLayer,
              QUndoCommand *parent = nullptr);
 
-    void undo() override
-    { removeLayer(); }
-
-    void redo() override
-    { addLayer(); }
+    void undo() override;
+    void redo() override;
 
     AddLayer *clone(QUndoCommand *parent = nullptr) const override;
 };
@@ -89,11 +86,8 @@ public:
                 int index, GroupLayer *parentLayer,
                 QUndoCommand *parent = nullptr);
 
-    void undo() override
-    { addLayer(); }
-
-    void redo() override
-    { removeLayer(); }
+    void undo() override;
+    void redo() override;
 };
 
 } // namespace Tiled

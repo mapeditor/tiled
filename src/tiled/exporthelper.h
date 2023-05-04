@@ -20,7 +20,9 @@
 
 #pragma once
 
+#include "fileformat.h"
 #include "preferences.h"
+#include "tilededitor_global.h"
 #include "tileset.h"
 
 #include <memory>
@@ -31,12 +33,14 @@ namespace Tiled {
  * Applies certain export options to a map and its tilesets, or to a specific
  * tileset.
  */
-class ExportHelper
+class TILED_EDITOR_EXPORT ExportHelper
 {
 public:
     explicit ExportHelper(Preferences::ExportOptions options = Preferences::instance()->exportOptions())
         : mOptions(options)
     {}
+
+    FileFormat::Options formatOptions() const;
 
     SharedTileset prepareExportTileset(const SharedTileset &tileset,
                                        bool savingTileset = true) const;
@@ -44,7 +48,7 @@ public:
     const Map *prepareExportMap(const Map *map, std::unique_ptr<Map> &exportMap) const;
 
 private:
-    void resolveTypeAndProperties(MapObject *object) const;
+    void resolveProperties(Object *object) const;
 
     const Preferences::ExportOptions mOptions;
 };

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objecttypes>
+ <objecttype name="Fixture" color="#ad7fa8">
+  <property name="friction" type="float" default="1"/>
+  <property name="static" type="bool" default="false"/>
+ </objecttype>
+ <objecttype name="Location" color="#eeeeec"/>
+ <objecttype name="NPC" color="#729fcf"/>
+ <objecttype name="RuleOptions" color="#99c1f1">
+  <property name="disabled" type="bool" default="false"/>
+  <property name="modX" type="int" default="1"/>
+  <property name="modY" type="int" default="1"/>
+  <property name="noOverlappingOutput" type="bool" default="false"/>
+  <property name="offsetX" type="int" default="0"/>
+  <property name="offsetY" type="int" default="0"/>
+  <property name="probability" type="float" default="1"/>
+ </objecttype>
+ <objecttype name="Trigger" color="#fcaf3e">
+  <property name="script" type="file" default=""/>
+ </objecttype>
+</objecttypes>

@@ -38,8 +38,10 @@ class TileLayer;
 class Tileset;
 
 class BorderItem;
+class LayerChangeEvent;
 class LayerItem;
 class MapObjectItem;
+class MapScene;
 class ObjectSelectionItem;
 class TileGridItem;
 class TileSelectionItem;
@@ -64,9 +66,15 @@ public:
             QGraphicsItem *parent = nullptr);
     ~MapItem() override;
 
+    enum { Type = UserType + 3 };
+    int type() const override { return Type; }
+
     MapDocument *mapDocument() const;
 
     void setDisplayMode(DisplayMode displayMode);
+    void setShowTileCollisionShapes(bool enabled);
+
+    void updateLayerPositions();
 
     // QGraphicsItem
     QRectF boundingRect() const override;
@@ -83,30 +91,35 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
+    bool isWorldToolSelected() const;
+
     /**
      * Repaints the specified \a region of the given \a tileLayer. The region
      * is in tile coordinates.
      */
     void repaintRegion(const QRegion &region, TileLayer *tileLayer);
 
+    void documentChanged(const ChangeEvent &change);
     void mapChanged();
     void tileLayerChanged(TileLayer *tileLayer, MapDocument::TileLayerChangeFlags flags);
 
     void layerAdded(Layer *layer);
+    void layerAboutToBeRemoved(GroupLayer *parentLayer, int index);
     void layerRemoved(Layer *layer);
-    void layerChanged(Layer *layer);
+    void layerChanged(const LayerChangeEvent &change);
+    void layerTintColorChanged(Layer *layer);
 
-    void objectGroupChanged(ObjectGroup *objectGroup);
     void imageLayerChanged(ImageLayer *imageLayer);
 
     void adaptToTilesetTileSizeChanges(Tileset *tileset);
     void adaptToTileSizeChanges(Tile *tile);
+    void tileObjectGroupChanged(Tile *tile);
 
     void tilesetReplaced(int index, Tileset *tileset);
 
     void objectsInserted(ObjectGroup *objectGroup, int first, int last);
-    void objectsRemoved(const QList<MapObject*> &objects);
-    void objectsChanged(const QList<MapObject*> &objects);
+    void deleteObjectItem(MapObject *object);
+    void syncObjectItems(const QList<MapObject*> &objects);
     void objectsIndexChanged(ObjectGroup *objectGroup, int first, int last);
 
     void syncAllObjectItems();
@@ -116,6 +129,7 @@ private:
 
     void createLayerItems(const QList<Layer *> &layers);
     LayerItem *createLayerItem(Layer *layer);
+    void deleteLayerItems(Layer *layer);
 
     void updateBoundingRect();
     void updateSelectedLayersHighlight();

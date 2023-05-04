@@ -35,8 +35,8 @@ namespace Tiled {
 /**
  * A hexagonal renderer.
  *
- * Only pointy-topped hexagons are supported at the moment, shifting either the
- * odd or the even rows to the right.
+ * Both pointy-topped and flat-topped hexagons are supported, as well as
+ * shifting either the odd or the even rows/columns to the right.
  *
  * The same problems as present when using the StaggeredRenderer happen with
  * this renderer.
@@ -54,8 +54,8 @@ protected:
         bool doStaggerY(int y) const
         { return !staggerX && (y & 1) ^ staggerEven; }
 
-        const int tileWidth;
-        const int tileHeight;
+        int tileWidth;
+        int tileHeight;
         int sideLengthX;
         int sideOffsetX;
         int sideLengthY;
@@ -67,17 +67,23 @@ protected:
     };
 
 public:
-    HexagonalRenderer(const Map *map) : OrthogonalRenderer(map) {}
-
-    QRect mapBoundingRect() const override;
+    HexagonalRenderer(const Map *map)
+        : OrthogonalRenderer(map)
+    {
+        setCellType(HexagonalCells);
+    }
 
     QRect boundingRect(const QRect &rect) const override;
 
     void drawGrid(QPainter *painter, const QRectF &exposed,
-                  QColor gridColor) const override;
+                  QColor gridColor, QSize gridMajor = QSize()) const override;
 
-    void drawTileLayer(QPainter *painter, const TileLayer *layer,
-                       const QRectF &exposed = QRectF()) const override;
+    QPointF snapToGrid(const QPointF &pixelCoords,
+                       int subdivisions) const override;
+
+    using MapRenderer::drawTileLayer;
+    void drawTileLayer(const RenderTileCallback &renderTile,
+                       const QRectF &exposed) const override;
 
     void drawTileSelection(QPainter *painter,
                            const QRegion &region,
@@ -103,6 +109,8 @@ public:
     QPoint bottomRight(int x, int y) const;
 
     QPolygonF tileToScreenPolygon(int x, int y) const;
+    QPolygonF tileToScreenPolygon(QPoint tileCoords) const
+    { return tileToScreenPolygon(tileCoords.x(), tileCoords.y()); }
 };
 
 } // namespace Tiled

@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2017 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2020 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2020 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2020 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -56,6 +56,7 @@ import org.mapeditor.core.MapLayer;
 import org.mapeditor.core.Map;
 import org.mapeditor.core.MapObject;
 import org.mapeditor.core.ObjectGroup;
+import org.mapeditor.core.Group;
 import org.mapeditor.core.Orientation;
 import org.mapeditor.core.Properties;
 import org.mapeditor.core.Sprite;
@@ -67,10 +68,7 @@ import org.mapeditor.io.xml.XMLWriter;
 /**
  * A writer for Tiled's TMX map format.
  *
- * @author Thorbjørn Lindeijer
- * @author Adam Turk
- * @author Mike Thomas
- * @version 1.0.2
+ * @version 1.4.2
  */
 public class TMXMapWriter {
 
@@ -139,7 +137,7 @@ public class TMXMapWriter {
     }
 
     /**
-     * <p>writeMap.</p>
+     * writeMap.
      *
      * @param map a {@link org.mapeditor.core.Map} object.
      * @param out a {@link java.io.OutputStream} object.
@@ -157,7 +155,7 @@ public class TMXMapWriter {
     }
 
     /**
-     * <p>writeTileset.</p>
+     * writeTileset.
      *
      * @param set a {@link org.mapeditor.core.TileSet} object.
      * @param out a {@link java.io.OutputStream} object.
@@ -175,17 +173,26 @@ public class TMXMapWriter {
     }
 
     private void writeMap(Map map, XMLWriter w, String wp) throws IOException {
-        w.writeDocType("map", null, "http://mapeditor.org/dtd/1.0/map.dtd");
+//        w.writeDocType("map", null, "http://mapeditor.org/dtd/1.0/map.dtd");
         w.startElement("map");
 
-        w.writeAttribute("version", "1.0");
+        w.writeAttribute("version", "1.2");
+
+        if (!map.getTiledversion().isEmpty()) {
+            w.writeAttribute("tiledversion", map.getTiledversion());
+        }
 
         Orientation orientation = map.getOrientation();
         w.writeAttribute("orientation", orientation.value());
+        w.writeAttribute("renderorder", map.getRenderorder().value());
         w.writeAttribute("width", map.getWidth());
         w.writeAttribute("height", map.getHeight());
         w.writeAttribute("tilewidth", map.getTileWidth());
         w.writeAttribute("tileheight", map.getTileHeight());
+        w.writeAttribute("infinite", map.getInfinite());
+
+        w.writeAttribute("nextlayerid", map.getNextlayerid());
+        w.writeAttribute("nextobjectid", map.getNextobjectid());
 
         switch (orientation) {
             case HEXAGONAL:
@@ -210,9 +217,30 @@ public class TMXMapWriter {
                 writeMapLayer((TileLayer) layer, w, wp);
             } else if (layer instanceof ObjectGroup) {
                 writeObjectGroup((ObjectGroup) layer, w, wp);
+            } else if (layer instanceof Group) {
+                writeGroup((Group) layer, w, wp);
             }
         }
         firstGidPerTileset = null;
+
+        w.endElement();
+    }
+
+    private void writeGroup(Group group, XMLWriter w, String wp) throws IOException {
+        w.startElement("group");
+
+        writeLayerAttributes(group, w);
+        writeProperties(group.getProperties(), w);
+
+        for (MapLayer layer : group.getLayers()) {
+            if (layer instanceof TileLayer) {
+                writeMapLayer((TileLayer) layer, w, wp);
+            } else if (layer instanceof ObjectGroup) {
+                writeObjectGroup((ObjectGroup) layer, w, wp);
+            } else if (layer instanceof Group) {
+                writeGroup((Group) layer, w, wp);
+            } // TODO: Image Layer writing
+        }
 
         w.endElement();
     }
@@ -309,10 +337,17 @@ public class TMXMapWriter {
             // Write tile properties when necessary.
             for (Tile tile : set) {
                 // todo: move the null check back into the iterator?
-                if (tile != null && !tile.getProperties().isEmpty()) {
+                if (tile != null
+                        && (!tile.getProperties().isEmpty()
+                        || !tile.getType().isEmpty())) {
                     w.startElement("tile");
                     w.writeAttribute("id", tile.getId());
-                    writeProperties(tile.getProperties(), w);
+                    if (!tile.getType().isEmpty()) {
+                        w.writeAttribute("type", tile.getType());
+                    }
+                    if (!tile.getProperties().isEmpty()) {
+                        writeProperties(tile.getProperties(), w);
+                    }
                     w.endElement();
                 }
             }
@@ -324,6 +359,7 @@ public class TMXMapWriter {
             // TODO: This shouldn't be necessary
             for (Tile tile : set) {
                 if (!tile.getProperties().isEmpty()
+                        || !tile.getType().isEmpty()
                         || tile.getSource() != null) {
                     needWrite = true;
                     break;
@@ -376,6 +412,9 @@ public class TMXMapWriter {
      */
     private void writeLayerAttributes(MapLayer l, XMLWriter w) throws IOException {
         Rectangle bounds = l.getBounds();
+
+        w.writeAttribute("id", l.getId());
+
         w.writeAttribute("name", l.getName());
         if (l instanceof TileLayer) {
             if (bounds.width != 0) {
@@ -406,6 +445,10 @@ public class TMXMapWriter {
         }
         if (l.getOffsetY() != null && l.getOffsetY() != 0) {
             w.writeAttribute("offsety", l.getOffsetY());
+        }
+
+        if (l.getLocked() != null && l.getLocked() != 0) {
+            w.writeAttribute("locked", l.getLocked());
         }
     }
 
@@ -453,6 +496,7 @@ public class TMXMapWriter {
 
                     if (tile != null) {
                         gid = getGid(tile);
+                        gid |= tl.getFlagsAt(x, y);
                     }
 
                     out.write(gid & LAST_BYTE);
@@ -527,6 +571,10 @@ public class TMXMapWriter {
         w.startElement("tile");
         w.writeAttribute("id", tile.getId());
 
+        if (!tile.getType().isEmpty()) {
+            w.writeAttribute("type", tile.getType());
+        }
+
         if (!tile.getProperties().isEmpty()) {
             writeProperties(tile.getProperties(), w);
         }
@@ -570,7 +618,35 @@ public class TMXMapWriter {
     private void writeMapObject(MapObject mapObject, XMLWriter w, String wp)
             throws IOException {
         w.startElement("object");
-        w.writeAttribute("name", mapObject.getName());
+        w.writeAttribute("id", mapObject.getId());
+
+        long gid = 0;
+        if (mapObject.getTile() != null) {
+            Tile t = mapObject.getTile();
+            gid = firstGidPerTileset.get(t.getTileSet()) + t.getId();
+        } else if (mapObject.getGid() != null) {
+            gid = mapObject.getGid();
+        }
+
+        if (mapObject.getFlipHorizontal()) {
+            gid |= TMXMapReader.FLIPPED_HORIZONTALLY_FLAG;
+        }
+
+        if (mapObject.getFlipVertical()) {
+            gid |= TMXMapReader.FLIPPED_VERTICALLY_FLAG;
+        }
+
+        if (mapObject.getFlipDiagonal()) {
+            gid |= TMXMapReader.FLIPPED_DIAGONALLY_FLAG;
+        }
+
+        if (gid != 0) {
+            w.writeAttribute("gid", gid);
+        }
+
+        if (!mapObject.getName().isEmpty()) {
+            w.writeAttribute("name", mapObject.getName());
+        }
 
         if (mapObject.getType().length() != 0) {
             w.writeAttribute("type", mapObject.getType());
@@ -579,18 +655,23 @@ public class TMXMapWriter {
         w.writeAttribute("x", mapObject.getX());
         w.writeAttribute("y", mapObject.getY());
 
-        if (mapObject.getWidth() != 0) {
-            w.writeAttribute("width", mapObject.getWidth());
+        // TODO: Implement Polygon, Ellipse & Polyline too
+        boolean isPoint = mapObject.getPoint() != null;
+        if (isPoint) {
+            w.startElement("point");
+            w.endElement();
         }
-        if (mapObject.getHeight() != 0) {
-            w.writeAttribute("height", mapObject.getHeight());
+        else {
+            if (mapObject.getWidth() != 0) {
+                w.writeAttribute("width", mapObject.getWidth());
+            }
+            if (mapObject.getHeight() != 0) {
+                w.writeAttribute("height", mapObject.getHeight());
+            }
         }
 
-        if (mapObject.getTile() != null) {
-            Tile t = mapObject.getTile();
-            w.writeAttribute("gid", firstGidPerTileset.get(t.getTileSet()) + t.getId());
-        } else if (mapObject.getGid() != null) {
-            w.writeAttribute("gid", mapObject.getGid());
+        if (mapObject.getRotation() != 0) {
+            w.writeAttribute("rotation", mapObject.getRotation());
         }
 
         writeProperties(mapObject.getProperties(), w);
@@ -682,7 +763,7 @@ public class TMXMapWriter {
     }
 
     /**
-     * <p>accept.</p>
+     * accept.
      *
      * @param pathName a {@link java.io.File} object.
      * @return a boolean.

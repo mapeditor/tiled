@@ -6,27 +6,39 @@ Thorbjørn Lindeijer <bjorn@lindeijer.nl>
 Other contributors:
 
 Stefan Beller
+Mohamed Thabet
 Erik Schilling
 Samuli Tuomola
-Jeff Bland
+Phlosioneer
+Benjamin Trotter
 Petr Viktorin
-Mauricio Muñoz Lucero
+Jeff Bland
+Ketan Gupta
+Mitch Curtis
+monolifed
+Allan Nordhøy
 Jake Petroules
+Mike Thomas
+Mauricio Muñoz Lucero
+Rhenaud Dubois
 Mamed Ibrahimov
 Yohann Ferreira
+João Lopes
 mauve
 Alex Vega (semtiko)
-Martin Ziel
-Hiroki Utsunomiya
-Mike Thomas
-Parker Miller
-seeseekey
-monolifed
-Roderic Morris
-Will Luongo
-Ketan Gupta
-Michael Bickel
 Olexandr Nesterenko
+Balázs Úr
+Martin Ziel
+Любомир Василев
+Hiroki Utsunomiya
+Parker Miller
+Tuomas Lähteenmäki
+seeseekey
+HonestQiao
+Roderic Morris
+Nils Kübler
+Will Luongo
+Michael Bickel
 Porfírio Ribeiro
 Sean Humeniuk
 wayfu
@@ -36,75 +48,126 @@ Manu Evans
 Mikolai Fajer
 zhaosting
 Alejandro Cámara
+Bilge Theall
+Danny Tuppeny
+Justin Jacobs
 Oskar Wiksten
 Peter André Johansen
+Prachi Joshi
 Tamir Atias (KonoM)
 Tim Baker
+Antoine Gersant
 Hendrik Brummermann
+Igor
+Louies
+Michael de Lang
 Mohammad Mehdi Salem Naraghi
+Nathan Tolbert
 Omnomnobot
+Tripolis777
+ekeimaja
 Andrew G. Crowell
-Balázs Úr
+Chase W
 Cheuk Yin Ng
 Clint Bellanger
 Dennis Honeyman
 Henrik Heino
-Igor
+Justin Zheng
 Laete Meireles
+Mattias Münster
 Michael Woerister
-Mohamed Thabet
+Pavel Tkachenko
+Rafael Osipov
+Ruin0x11
 Sebastian Pidek
+Stéphane Seng
+Thanachart Monpassorn
 Yehnan Chiang
-ekeimaja
+qwebltd
+Alex Heyman
 Alexander Kuhrt
 Andreas Abraham
 Arseniy Tsyro
+Bastien LABOUCHE
 Bdtrotte
-Bilge Theall
+Bruno Baère Pederassi Lomba de Araujo
+Calvin M.T
 Champi080
 Christian Henz
 Christoph Schnackenberg
 Christophe Conceicao
 Clyde
+CodeSpartan
 Dale Kim
+Edgar Minderlin
+Evelyn Mahasin
+Genek Tomashko
 HenryJia
-Janis Kirsteins
+Jeannette L
+Jonathan Bayle
+João Baptista de Paula e Silva
+JuKuSoft.com
+JustinZhengBC
+Jānis Kiršteins
 Kenney Phillis
 Kim
 Maus
-Nathan Tolbert
 Niek
+Patrick Griffis
 Pierre-David Bélanger
 Porfirio
 Przemysław Grzywacz
+Rui Mendes
 Seanba
+Sergey Savchuk
+TheRamenChef
+Tim Cooper
 Wodann
 Yuriy
+ZTarget
+digitalhoax
 juniperbrew
+kralle333
+ldurniat
 nuriu
+odamite
 oktonion
+ssantos
 tolbert
 zigal
-Любомир Василев
+A. Regnander
 Aban
 Acuion
+Adam B
+Adam Hornáček
 Adam Rippon
 Ahmad Hamdani
 Alejandro Alvarez
 Alessandro Portale
 Alex Koz
 Alexei Bratuhin
+Andreas Kleinert
 Andrew Motrenko
 Ansis Māliņš
+Anton R
 Antonio Ricci
 Ava Brumfield
+BRULE Herman
 Bendegúz Nagy
+Bill Clark
 Bin Wu
 Brandon Dillon
 Brian Cain
+Bryce-C
+CaptainCrumble
 CaptainFrog
 Carisius
+Casper Færgemand
+Chris Cacciatore
+Cuong Nguyen
+Daivuk
 Dennis Hostetler
+Dieppedalle David
 Dmitry Hrabrov
 Dmitry Marakasov
 Dobes Vandermeer
@@ -113,9 +176,15 @@ Eduardo Medeiros Pereira
 Edward Hutchins
 Emmanuel Barroga
 Eric Kidd
+Ettore Atalan
 Firas Assaad
 Flyte
+Freeyorp
+Fyrenic
+Gabriel Rohden
+Gauthier Billot
 Glavak
+Gnumaru
 Gornova
 Gregory Nickonov
 Guilherme Rodrigues Caetano
@@ -123,20 +192,28 @@ Gurkenlabs
 Hanmac
 Harri Berglund
 Harry Hsiao
+Henry Wang
 Hermann Döppes
+ILIUS
+Ian Davis
 Ian Langworth ☠
 Jack Roper
+Jacob Coughenour
 Jared Adams
+Joel Bodenmann
 Joel Leclerc
 Johel Ernesto Guerrero Peña
-Jonathan Bayle
 JonesBlunt
+Josh Bramlett
 Juan Rodriguez
+Julien Dumont
 Justas Bistrickas
-Justin Jacobs
+Katia Piazza
+Keshav Sharma
 Kimmo Rundelin
 Kody Kurtz
 Kyle Delaney
+Kyle Filz
 Lennert Raesch
 Leon Moctezuma
 Ludolph Neethling
@@ -145,100 +222,114 @@ MHendricks
 Marce Coll
 Marco Fras
 Mark van Rij
+Markus
+Mateo de Mayo
+Matheus Bastos
+Matt Drollette
 Matt Styles
+MatthewAlner
 Mattia Basaglia
 Michael Aquilina
+Michael Vetter
 Michael Williams
-Mitch Curtis
+Michał Wawrzynowicz
 Mohammed SLIMANI
+Nathan
 Nikita Razdobreev
+Nolan Baker
 Nuri Uzunoğlu
 Okami
 Oliver Zell
+Oğuz Ersen
+Paul V Craven
 Phil Hagelberg
 Postremus
 Prayag Verma
 Robert Maes
 Roberto Raggi
+Robin Modisch
+Ruslan Gainutdinov
+Ryan Roden-Corrent
 RyanSchmittDev
+Sam Manflame
+Samuel Magnan
+Satvik Ramaprasad
 Sausage Johnson
 Sebastian Grillmaier
 Sharganov Artem
 Sibiot
 Simião
+Simon Parzer
 Sébastien BURILLARD
+Thomas Herbelin
+Thomas ten Cate
 Todd Carnes
 Tom Linthwaite
 Tomasz Kubiak
+Tomer Daniel
+TrunXGIT
+UnknownSkyrimPasserby
 Vincent Petithory
 Vitek1425
+Vojtěch Šamla
 Vsevolod Klementjev
 Wade Brainerd
+WaldiS
+Weverton Reis
+Wilfredo Velázquez-Rodríguez
+William Taylor
 Xenodora
 YFdyh000
+Yan
 Ying-Chun Liu (PaulLiu)
+Zach Oakes
 Zach Reizner
 Zachary Jia
+Zhao Sting
 arcrowel
 arntro-4
 assofohdz
 bitJericho
 buckle2000
+cristyhj
 devnewton
 endlesstravel
 endstation
 erem2k
 fireraccoon
+fqsrz
 i-ka
+impbox
 iskolbin
 kekd.ck
+kensington
 leeonix
 luan-cestari
 mhussa
+miru2533
 mogemimi
+nasso
 nicolaichuk
+nimradium
 nykm
+obeezzy
+olueiro
+oncer
+pavel.bondoronok
+pvlbndrnk
+radman0x
 ranjak
+rlewicki
+saeedakhter
+spiiin
+sujiniku
 theHacker
-tomerdaniel
+yjaffal
+Володимир Бриняк
+柠檬杀手
+阮少华
+송태섭
 최아영
-
-
-Translators:
-
-Ahmad Hamdani            (Czech)
-Alex Vega                (Russian)
-Antonio Ricci            (Italian)
-Bilge Theall             (Chinese)
-Bin Wu                   (Chinese)
-Damene Abdelkader        (Arabic, Algeria)
-Eduardo Medeiros Pereira (Portuguese, Brazil)
-ekeimaja                 (Finnish)
-Gornova                  (Italian)
-Hiroki Utsunomiya        (Japanese)
-Jonatas de Moraes Junior (Portuguese, Brazil)
-jurkan                   (German)
-Jānis Kiršteins          (Latvian)
-Laete Meireles           (Portuguese, Brazil)
-Lyubomir Vasilev         (Bulgarian)
-Mauricio Muñoz Lucero    (Spanish)
-miru2533                 (Korean)
-Nuri Uzunoğlu            (Turkish)
-Olexandr Nesterenko      (Ukrainian)
-Peter André Johansen     (Norwegian Bokmål)
-Petr Viktorin            (Czech)
-Porfírio Ribeiro         (Portuguese)
-Sebastian Grillmaier     (German)
-Sébastien Burillard      (French)
-seeseekey                (German)
-SshipSunBee              (Korean)
-Tamir Atias (KonoM)      (Hebrew)
-Thorbjørn Lindeijer      (Dutch)
-Tomasz Kubiak            (Polish)
-Tomer Daniel             (Hebrew)
-Úr Balázs                (Hungarian)
-Yohann Ferreira          (French)
-Zhao Sting               (Chinese)
 
 
 Acknowledgements:
@@ -253,12 +344,23 @@ The dice icon is based on an SVG by Steaphan Greene that I found on Wikipedia:
 http://en.wikipedia.org/wiki/File:2-Dice-Icon.svg
 
 Inkscape icons by Barbara Muraus, Jakub Steiner and Josh Andler (CC-BY-SA 3.0)
-* src/tiled/images/14x14/hidden.png
-* src/tiled/images/14x14/visible.png
-* src/tiled/images/16x16/hidden.png
-* src/tiled/images/16x16/visible.png
-* src/tiled/images/24x24/hidden.png
-* src/tiled/images/24x24/visible.png
+* src/tiled/images/14/hidden.png
+* src/tiled/images/14/visible.png
+* src/tiled/images/16/hidden.png
+* src/tiled/images/16/visible.png
+* src/tiled/images/24/hidden.png
+* src/tiled/images/24/visible.png
+
+Icons from the Elementary icon theme (GPLv3)
+* src/tiled/images/scalable/edit-delete-symbolic.svg
+* src/tiled/images/scalable/edit-undo-symbolic.svg
+* src/tiled/images/scalable/software-update-available-symbolic.svg
+* src/tiled/images/16/dialog-error.png
+* src/tiled/images/16/dialog-warning.png
+* src/tiled/images/24/dialog-error.png
+* src/tiled/images/24/dialog-warning.png
+* src/tiled/images/32/dialog-error.png
+* src/tiled/images/32/dialog-warning.png
 
 
 Tilesets:
@@ -271,3 +373,4 @@ Replica Island - (C) Chris Pruett and Genki Mine, Apache (except hotspots.png)
 hexmini.png - Public Domain, http://opengameart.org/content/pixel-hex-tilesets-enhanced
 buch-outdoor.png - (C) Michele "Buch" Bucelli, CC-BY 3.0, http://opengameart.org/users/buch
 examples/sticker-knight - (C) Ponywolf, CC0, http://opengameart.org/content/sticker-knight-platformer
+wangblob.png, CC0, https://opengameart.org/content/seamless-tileset-template-ii

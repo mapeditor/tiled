@@ -29,7 +29,7 @@ namespace Tiled {
 class TilesetDocument;
 
 /**
- * A widget that allows opening the EditTilesetDialog for changing the tileset
+ * A widget that allows opening the NewTilesetDialog for changing the tileset
  * parameters.
  */
 class TilesetParametersEdit : public QWidget
@@ -42,10 +42,9 @@ public:
     void setTilesetDocument(TilesetDocument *tilesetDocument);
     TilesetDocument *tilesetDocument() const;
 
-private slots:
+private:
     void buttonClicked();
 
-private:
     QLabel *mLabel;
     TilesetDocument *mTilesetDocument;
 };

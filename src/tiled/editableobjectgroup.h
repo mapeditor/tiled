@@ -30,27 +30,43 @@ class EditableObjectGroup : public EditableLayer
 {
     Q_OBJECT
 
+    Q_PROPERTY(QList<QObject*> objects READ objects)
     Q_PROPERTY(int objectCount READ objectCount)
     Q_PROPERTY(QColor color READ color WRITE setColor)
+    Q_PROPERTY(DrawOrder drawOrder READ drawOrder WRITE setDrawOrder)
 
 public:
-    EditableObjectGroup(EditableMap *map,
+    // Synchronized with ObjectGroup::DrawOrder
+    enum DrawOrder {
+        UnknownOrder = -1,
+        TopDownOrder,
+        IndexOrder
+    };
+    Q_ENUM(DrawOrder)
+
+    Q_INVOKABLE explicit EditableObjectGroup(const QString &name = QString(),
+                                             QObject *parent = nullptr);
+
+    EditableObjectGroup(EditableAsset *asset,
                         ObjectGroup *objectGroup,
                         QObject *parent = nullptr);
 
+    QList<QObject*> objects();
     int objectCount() const;
+
     Q_INVOKABLE Tiled::EditableMapObject *objectAt(int index);
     Q_INVOKABLE void removeObjectAt(int index);
     Q_INVOKABLE void removeObject(Tiled::EditableMapObject *editableMapObject);
     Q_INVOKABLE void insertObjectAt(int index, Tiled::EditableMapObject *editableMapObject);
     Q_INVOKABLE void addObject(Tiled::EditableMapObject *editableMapObject);
     QColor color() const;
+    DrawOrder drawOrder() const;
+
+    ObjectGroup *objectGroup() const;
 
 public slots:
     void setColor(const QColor &color);
-
-private:
-    ObjectGroup *objectGroup() const;
+    void setDrawOrder(DrawOrder drawOrder);
 };
 
 
@@ -62,6 +78,11 @@ inline int EditableObjectGroup::objectCount() const
 inline QColor EditableObjectGroup::color() const
 {
     return objectGroup()->color();
+}
+
+inline EditableObjectGroup::DrawOrder EditableObjectGroup::drawOrder() const
+{
+    return static_cast<DrawOrder>(objectGroup()->drawOrder());
 }
 
 inline ObjectGroup *EditableObjectGroup::objectGroup() const

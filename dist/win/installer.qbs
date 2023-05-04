@@ -1,11 +1,10 @@
-import qbs
 import qbs.FileInfo
 import qbs.File
 import qbs.TextFile
 import qbs.Environment
 
 WindowsInstallerPackage {
-    builtByDefault: false
+    builtByDefault: project.windowsInstaller
     condition: {
         if (project.windowsInstaller) {
             if (!(qbs.toolchain.contains("mingw") || qbs.toolchain.contains("msvc"))) {
@@ -18,25 +17,27 @@ WindowsInstallerPackage {
     }
 
     Depends { productTypes: ["application", "dynamiclibrary"] }
-    type: base.concat(["appcast"])
 
     Depends { name: "cpp" }
     Depends { name: "Qt.core" }
 
-    property int bits: {
+    property string version: Environment.getEnv("TILED_MSI_VERSION") || project.version
+    property string bits: {
         if (qbs.architecture === "x86_64")
-            return 64;
-        if (qbs.architecture === "x86")
-            return 32;
+            return "64";
+        else
+            return "32";
     }
 
     targetName: "Tiled-" + project.version + "-win" + bits
 
     wix.defines: {
         var defs = [
-            "Version=" + project.version,
+            "Version=" + version,
             "InstallRoot=" + qbs.installRoot,
             "QtDir=" + FileInfo.joinPaths(Qt.core.binPath, ".."),
+            "QtVersionMajor=" + Qt.core.versionMajor,
+            "QtVersionMinor=" + Qt.core.versionMinor,
             "RootDir=" + project.sourceDirectory
         ];
 
@@ -51,15 +52,22 @@ WindowsInstallerPackage {
             }
         }
 
-        if (project.sparkleEnabled)
-            defs.push("Sparkle");
+        defs.push("WindowsVistaStyle")
 
         if (File.exists(Environment.getEnv("PYTHONHOME")))
             defs.push("Python");
 
-        var openSslDir = "C:\\OpenSSL-Win" + bits;
-        if (File.exists(openSslDir))
-            defs.push("OpenSslDir=" + openSslDir);
+        var rpMapEnabled = !qbs.toolchain.contains("msvc")
+        if (rpMapEnabled)
+            defs.push("RpMap");
+
+        if (project.openSslPath) {
+            defs.push("OpenSsl111Dir=" + project.openSslPath);
+        } else {
+            var openSslDir = "C:\\OpenSSL-v111-Win" + bits
+            if (File.exists(openSslDir))
+                defs.push("OpenSsl111Dir=" + openSslDir);
+        }
 
         return defs;
     }
@@ -68,50 +76,11 @@ WindowsInstallerPackage {
         "WixUIExtension"
     ]
 
-    files: ["installer.wxs"]
-
-    Group {
-        name: "AppCastXml"
-        files: [ "../appcast-win-snapshots.xml.in" ]
-        fileTags: ["appCastXmlIn"]
-        condition: project.snapshot
-    }
-
-    Rule {
-        inputs: ["appCastXmlIn"]
-        Artifact {
-            filePath: input.completeBaseName.replace('win', 'win' + product.bits);
-            fileTags: "appcast"
-        }
-        prepare: {
-            var cmd = new JavaScriptCommand();
-            cmd.description = "prepare " + FileInfo.fileName(output.filePath);
-            cmd.highlight = "codegen";
-
-            cmd.sourceCode = function() {
-                var i;
-                var vars = {};
-                var inf = new TextFile(input.filePath);
-                var all = inf.readAll();
-
-                vars['DATE'] = new Date().toISOString().slice(0, 10);
-                vars['VERSION'] = project.version;
-                vars['FILENAME'] = product.targetName + ".msi";
-                vars['APPCAST_FILENAME'] = output.fileName;
-
-                for (i in vars) {
-                    all = all.replace(new RegExp('@' + i + '@(?!\w)', 'g'), vars[i]);
-                }
-
-                var file = new TextFile(output.filePath, TextFile.WriteOnly);
-                file.truncate();
-                file.write(all);
-                file.close();
-            }
-
-            return cmd;
-        }
-    }
+    files: [
+        "Custom_InstallDir.wxs",
+        "Custom_InstallDirDlg.wxs",
+        "installer.wxs"
+    ]
 
     // This is a clever hack to make the rule that compiles the installer
     // depend on all installables, since that rule implicitly depends on

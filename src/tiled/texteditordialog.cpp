@@ -21,9 +21,16 @@
 #include "texteditordialog.h"
 #include "ui_texteditordialog.h"
 
+#include "session.h"
 #include "utils.h"
 
+#include <QFontDatabase>
+
 namespace Tiled {
+
+namespace session {
+static SessionOption<bool> monospace { "textEdit.monospace", true };
+} // namespace session
 
 TextEditorDialog::TextEditorDialog(QWidget *parent)
     : QDialog(parent)
@@ -31,9 +38,14 @@ TextEditorDialog::TextEditorDialog(QWidget *parent)
 {
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-#endif
+
+    connect(mUi->monospaceFont, &QAbstractButton::toggled, this, [this] (bool checked) {
+        mUi->plainTextEdit->setFont(checked ? QFontDatabase::systemFont(QFontDatabase::FixedFont)
+                                            : QGuiApplication::font());
+        session::monospace.set(checked);
+    });
+
+    mUi->monospaceFont->setChecked(session::monospace);
 
     Utils::restoreGeometry(this);
 }
@@ -67,3 +79,5 @@ void TextEditorDialog::changeEvent(QEvent *e)
 }
 
 } // namespace Tiled
+
+#include "moc_texteditordialog.cpp"

@@ -39,22 +39,23 @@ namespace Tiled {
  * such a way that the map will also be diamond shaped. The X axis points to
  * the bottom right while the Y axis points to the bottom left.
  */
-class TILEDSHARED_EXPORT IsometricRenderer : public MapRenderer
+class TILEDSHARED_EXPORT IsometricRenderer final : public MapRenderer
 {
 public:
     IsometricRenderer(const Map *map) : MapRenderer(map) {}
-
-    QRect mapBoundingRect() const override;
 
     QRect boundingRect(const QRect &rect) const override;
 
     QRectF boundingRect(const MapObject *object) const override;
     QPainterPath shape(const MapObject *object) const override;
+    QPainterPath interactionShape(const MapObject *object) const override;
 
-    void drawGrid(QPainter *painter, const QRectF &rect, QColor grid) const override;
+    void drawGrid(QPainter *painter, const QRectF &rect,
+                  QColor grid, QSize gridMajor) const override;
 
-    void drawTileLayer(QPainter *painter, const TileLayer *layer,
-                       const QRectF &exposed = QRectF()) const override;
+    using MapRenderer::drawTileLayer;
+    void drawTileLayer(const RenderTileCallback &renderTile,
+                       const QRectF &exposed) const override;
 
     void drawTileSelection(QPainter *painter,
                            const QRegion &region,
@@ -63,7 +64,7 @@ public:
 
     void drawMapObject(QPainter *painter,
                        const MapObject *object,
-                       const QColor &color) const override;
+                       const MapObjectColors &colors) const override;
 
     using MapRenderer::pixelToTileCoords;
     QPointF pixelToTileCoords(qreal x, qreal y) const override;
@@ -84,6 +85,7 @@ public:
     QPointF pixelToScreenCoords(qreal x, qreal y) const override;
 
 private:
+    QTransform transform() const;
     QPolygonF pixelRectToScreenPolygon(const QRectF &rect) const;
     QPolygonF tileRectToScreenPolygon(const QRect &rect) const;
 };

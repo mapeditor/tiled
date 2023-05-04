@@ -26,6 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "pluginmanager.h"
 #include "tmxrasterizer.h"
 
 #include <QCommandLineParser>
@@ -42,38 +43,54 @@ static QString localFile(const QString &fileNameOrUrl)
 
 int main(int argc, char *argv[])
 {
+    Tiled::increaseImageAllocationLimit();
+
     QGuiApplication app(argc, argv);
 
     app.setOrganizationDomain(QLatin1String("mapeditor.org"));
     app.setApplicationName(QLatin1String("TmxRasterizer"));
     app.setApplicationVersion(QLatin1String("1.0"));
 
+    PluginManager::instance()->loadPlugins();
+
     QCommandLineParser parser;
-    parser.setApplicationDescription(QCoreApplication::translate("main", "Renders a Tiled map (TMX format) to an image."));
+    parser.setApplicationDescription(QCoreApplication::translate("main", "Renders a Tiled map or world to an image."));
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addOptions({
-                          { { "s", "scale" },
+                          { { QStringLiteral("s"), QStringLiteral("scale") },
                             QCoreApplication::translate("main", "The scale of the output image (default: 1)."),
                             QCoreApplication::translate("main", "scale") },
-                          { { "t", "tilesize" },
+                          { { QStringLiteral("t"), QStringLiteral("tilesize") },
                             QCoreApplication::translate("main", "The requested size in pixels at which a tile is rendered (overrides the --scale option)."),
                             QCoreApplication::translate("main", "size") },
-                          { "size",
+                          { QStringLiteral("size"),
                             QCoreApplication::translate("main", "The output image fits within a SIZE x SIZE square (overrides the --scale and --tilesize options)."),
                             QCoreApplication::translate("main", "size") },
-                          { { "a", "anti-aliasing" },
+                          { { QStringLiteral("a"), QStringLiteral("anti-aliasing") },
                             QCoreApplication::translate("main", "Antialias edges of primitives.") },
-                          { "no-smoothing",
+                          { QStringLiteral("no-smoothing"),
                             QCoreApplication::translate("main", "Use nearest neighbour instead of smooth blending of pixels.") },
-                          { "ignore-visibility",
+                          { QStringLiteral("ignore-visibility"),
                             QCoreApplication::translate("main", "Ignore all layer visibility flags in the map file, and render all layers in the output (default is to omit invisible layers).") },
-                          { "hide-layer",
+                          { QStringLiteral("hide-layer"),
                             QCoreApplication::translate("main", "Specifies a layer to omit from the output image. Can be repeated to hide multiple layers."),
                             QCoreApplication::translate("main", "name") },
+                          { QStringLiteral("show-layer"),
+                            QCoreApplication::translate("main", "If used only specified layers are shown. Can be repeated to show multiple specified layers only."),
+                            QCoreApplication::translate("main", "name") },
+                          { QStringLiteral("hide-tile-layers"),
+                            QCoreApplication::translate("main", "Don't render tile layers.") },
+                          { QStringLiteral("hide-object-layers"),
+                            QCoreApplication::translate("main", "Don't render object layers.") },
+                          { QStringLiteral("hide-image-layers"),
+                            QCoreApplication::translate("main", "Don't render image layers.") },
+                          { QStringLiteral("advance-animations"),
+                            QCoreApplication::translate("main", "If used, tile animations are advanced by the specified duration."),
+                            QCoreApplication::translate("main", "duration") }
                       });
-    parser.addPositionalArgument("map", QCoreApplication::translate("main", "Map file to render."));
-    parser.addPositionalArgument("image", QCoreApplication::translate("main", "Image file to output."));
+    parser.addPositionalArgument(QStringLiteral("map|world"), QCoreApplication::translate("main", "Map or world file to render."));
+    parser.addPositionalArgument(QStringLiteral("image"), QCoreApplication::translate("main", "Image file to output."));
     parser.process(app);
 
     const QStringList args = parser.positionalArguments();
@@ -91,6 +108,10 @@ int main(int argc, char *argv[])
     w.setSmoothImages(!parser.isSet(QLatin1String("no-smoothing")));
     w.setIgnoreVisibility(parser.isSet(QLatin1String("ignore-visibility")));
     w.setLayersToHide(parser.values(QLatin1String("hide-layer")));
+    w.setLayersToShow(parser.values(QLatin1String("show-layer")));
+    w.setLayerTypeVisible(Layer::TileLayerType, !parser.isSet(QLatin1String("hide-tile-layers")));
+    w.setLayerTypeVisible(Layer::ObjectGroupType, !parser.isSet(QLatin1String("hide-object-layers")));
+    w.setLayerTypeVisible(Layer::ImageLayerType, !parser.isSet(QLatin1String("hide-image-layers")));
 
     if (parser.isSet(QLatin1String("size"))) {
         bool ok;
@@ -115,6 +136,15 @@ int main(int argc, char *argv[])
         w.setScale(parser.value(QLatin1String("scale")).toDouble(&ok));
         if (!ok || w.scale() <= 0.0) {
             qWarning().noquote() << QCoreApplication::translate("main", "Invalid scale specified: \"%1\"").arg(parser.value(QLatin1String("scale")));
+            exit(1);
+        }
+    }
+
+    if (parser.isSet(QLatin1String("advance-animations"))) {
+        bool ok;
+        w.setAdvanceAnimations(parser.value(QLatin1String("advance-animations")).toInt(&ok));
+        if (!ok || w.advanceAnimations() < 0) {
+            qWarning().noquote() << QCoreApplication::translate("main", "Invalid advance-animations specified: \"%1\"").arg(parser.value(QLatin1String("advance-animations")));
             exit(1);
         }
     }

@@ -28,11 +28,17 @@
 #include "tile.h"
 #include "tilelayer.h"
 
-#include <QTextStream>
+#include <QCoreApplication>
 #include <QHash>
 #include <QList>
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+#include <QStringView>
+#endif
+#include <QTextStream>
 
 #include <QtMath>
+
+#include "qtcompat_p.h"
 
 using namespace Tengine;
 
@@ -40,22 +46,28 @@ TenginePlugin::TenginePlugin()
 {
 }
 
-bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
+bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName, Options options)
 {
+    Q_UNUSED(options)
+
     using namespace Tiled;
 
     SaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        mError = tr("Could not open file for writing.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
     }
     QTextStream out(file.device());
 
     // Write the header
-    QString header = map->property("header").toString();
-    for (const QString &line : header.split("\\n")) {
-        out << line << endl;
-    }
+    const QString header = map->property("header").toString();
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+    const auto lines = QStringView(header).split(QStringLiteral("\\n"));
+#else
+    const auto lines = header.splitRef("\\n");
+#endif
+    for (const auto &line : lines)
+        out << line << Qt::endl;
 
     const int width = map->width();
     const int height = map->height();
@@ -178,7 +190,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
         }
     }
     // Write the definitions to the file
-    out << "-- defineTile section" << endl;
+    out << "-- defineTile section" << Qt::endl;
     for (i = cachedTiles.constBegin(); i != cachedTiles.constEnd(); ++i) {
         QString displayString = i.key();
         // Only print the emptyTile definition if there were empty tiles
@@ -192,11 +204,11 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
         if (!args.isEmpty()) {
             args = QString(", %1").arg(args);
         }
-        out << QString("defineTile(\"%1\"%2)").arg(displayString, args) << endl;
+        out << QString("defineTile(\"%1\"%2)").arg(displayString, args) << Qt::endl;
     }
 
     // Check for an ObjectGroup named AddSpot
-    out << endl << "-- addSpot section" << endl;
+    out << Qt::endl << "-- addSpot section" << Qt::endl;
     for (Layer *layer : map->layers()) {
         ObjectGroup *objectLayer = layer->asObjectGroup();
         if (objectLayer && objectLayer->name().startsWith("addspot", Qt::CaseInsensitive)) {
@@ -211,7 +223,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                 }
                 for (int y = qFloor(obj->y()); y <= qFloor(obj->y() + obj->height()); ++y) {
                     for (int x = qFloor(obj->x()); x <= qFloor(obj->x() + obj->width()); ++x) {
-                        out << QString("addSpot({%1, %2}%3)").arg(x).arg(y).arg(args) << endl;
+                        out << QString("addSpot({%1, %2}%3)").arg(x).arg(y).arg(args) << Qt::endl;
                     }
                 }
             }
@@ -219,7 +231,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
     }
 
     // Check for an ObjectGroup named AddZone
-    out << endl << "-- addZone section" << endl;
+    out << Qt::endl << "-- addZone section" << Qt::endl;
     for (Layer *layer : map->layers()) {
         ObjectGroup *objectLayer = layer->asObjectGroup();
         if (objectLayer && objectLayer->name().startsWith("addzone", Qt::CaseInsensitive)) {
@@ -236,7 +248,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
                 int top_left_y = qFloor(obj->y());
                 int bottom_right_x = qFloor(obj->x() + obj->width());
                 int bottom_right_y = qFloor(obj->y() + obj->height());
-                out << QString("addZone({%1, %2, %3, %4}%5)").arg(top_left_x).arg(top_left_y).arg(bottom_right_x).arg(bottom_right_y).arg(args) << endl;
+                out << QString("addZone({%1, %2, %3, %4}%5)").arg(top_left_x).arg(top_left_y).arg(bottom_right_x).arg(bottom_right_y).arg(args) << Qt::endl;
             }
         }
     }
@@ -266,8 +278,8 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
         itemStop = "";
         seperator = "";
     }
-    out << endl << "-- ASCII map section" << endl;
-    out << "return " << returnStart << endl;
+    out << Qt::endl << "-- ASCII map section" << Qt::endl;
+    out << "return " << returnStart << Qt::endl;
     for (int y = 0; y < height; ++y) {
         out << lineStart;
         for (int x = 0; x < width; ++x) {
@@ -276,7 +288,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName)
         if (y == height - 1) {
             out << lineStop << returnStop;
         } else {
-            out << lineStop << endl;
+            out << lineStop << Qt::endl;
         }
     }
 
@@ -295,7 +307,7 @@ QString TenginePlugin::nameFilter() const
 
 QString TenginePlugin::shortName() const
 {
-    return QLatin1String("te4");
+    return QStringLiteral("te4");
 }
 
 QString TenginePlugin::errorString() const

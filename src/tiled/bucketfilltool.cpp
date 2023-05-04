@@ -23,27 +23,25 @@
 
 #include "bucketfilltool.h"
 
-#include "addremovetileset.h"
 #include "brushitem.h"
 #include "tilepainter.h"
-#include "tile.h"
 #include "tilelayer.h"
 #include "mapdocument.h"
-#include "painttilelayer.h"
-#include "staggeredrenderer.h"
 #include "stampactions.h"
 
-#include <QApplication>
+#include <QCoreApplication>
+#include <QUndoStack>
 
 #include <memory>
 
 using namespace Tiled;
 
 BucketFillTool::BucketFillTool(QObject *parent)
-    : AbstractTileFillTool(tr("Bucket Fill Tool"),
+    : AbstractTileFillTool("BucketFillTool",
+                           tr("Bucket Fill Tool"),
                            QIcon(QLatin1String(
-                                   ":images/22x22/stock-tool-bucket-fill.png")),
-                           QKeySequence(tr("F")),
+                                   ":images/22/stock-tool-bucket-fill.png")),
+                           QKeySequence(Qt::Key_F),
                            nullptr,
                            parent)
     , mLastFillMethod(mFillMethod)
@@ -54,7 +52,7 @@ BucketFillTool::~BucketFillTool()
 {
 }
 
-void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
+void BucketFillTool::tilePositionChanged(QPoint tilePos)
 {
     AbstractTileFillTool::tilePositionChanged(tilePos);
 
@@ -70,7 +68,7 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
     if (!tileLayer)
         return;
 
-    bool shiftPressed = QApplication::keyboardModifiers() & Qt::ShiftModifier;
+    bool shiftPressed = mModifiers & Qt::ShiftModifier;
     bool fillRegionChanged = false;
 
     TilePainter regionComputer(mapDocument(), tileLayer);
@@ -107,6 +105,8 @@ void BucketFillTool::tilePositionChanged(const QPoint &tilePos)
 
             if (computeRegion)
                 mFillRegion = regionComputer.computePaintableFillRegion(tilePos);
+            else
+                mFillRegion = QRegion();
         } else {
             // If holding shift, the region is the selection bounds
             mFillRegion = mapDocument()->selectedArea();
@@ -160,12 +160,14 @@ void BucketFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
         return;
 
     mapDocument()->undoStack()->beginMacro(QCoreApplication::translate("Undo Commands", "Fill Area"));
-    mapDocument()->paintTileLayers(preview.data(), false, &mMissingTilesets);
+    mapDocument()->paintTileLayers(*preview, false, &mMissingTilesets);
     mapDocument()->undoStack()->endMacro();
 }
 
-void BucketFillTool::modifiersChanged(Qt::KeyboardModifiers)
+void BucketFillTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
+    mModifiers = modifiers;
+
     // Don't need to recalculate fill region if there was no fill region
     if (!mPreviewMap)
         return;
@@ -176,7 +178,6 @@ void BucketFillTool::modifiersChanged(Qt::KeyboardModifiers)
 void BucketFillTool::languageChanged()
 {
     setName(tr("Bucket Fill Tool"));
-    setShortcut(QKeySequence(tr("F")));
 
     mStampActions->languageChanged();
 }
@@ -224,3 +225,5 @@ void BucketFillTool::clearConnections(MapDocument *mapDocument)
     disconnect(mapDocument, &MapDocument::selectedAreaChanged,
                this, &BucketFillTool::clearOverlay);
 }
+
+#include "moc_bucketfilltool.cpp"

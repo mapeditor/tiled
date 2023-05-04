@@ -23,8 +23,14 @@
 
 #include "actionmanager.h"
 #include "documentmanager.h"
+#include "mainwindow.h"
+#include "stylehelper.h"
+#include "tiledproxystyle.h"
 
 #include <QAction>
+#include <QApplication>
+#include <QGraphicsOpacityEffect>
+#include <QMenu>
 
 namespace Tiled {
 
@@ -34,9 +40,28 @@ NoEditorWidget::NoEditorWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect(ui->newMapButton, &QPushButton::clicked, this, &NoEditorWidget::newMap);
-    connect(ui->newTilesetButton, &QPushButton::clicked, this, &NoEditorWidget::newTileset);
-    connect(ui->openFileButton, &QPushButton::clicked, this, &NoEditorWidget::openFile);
+    ui->logo->setPixmap(QPixmap(QString::fromUtf8(":/images/about-tiled-logo.png")));
+
+    auto opacityEffect = new QGraphicsOpacityEffect(this);
+    opacityEffect->setOpacity(0.25);
+    ui->logo->setGraphicsEffect(opacityEffect);
+
+    ui->versionLabel->setText(QStringLiteral("%1 %2").arg(QGuiApplication::applicationDisplayName(), QGuiApplication::applicationVersion()));
+
+    connect(ui->newProjectButton, &QToolButton::clicked, ActionManager::action("NewProject"), &QAction::trigger);
+
+    connect(ui->newMapButton, &QToolButton::clicked, this, &NoEditorWidget::newMap);
+    connect(ui->newTilesetButton, &QToolButton::clicked, this, &NoEditorWidget::newTileset);
+    connect(ui->openFileButton, &QToolButton::clicked, this, &NoEditorWidget::openFile);
+
+    Preferences *preferences = Preferences::instance();
+    connect(preferences, &Preferences::recentProjectsChanged, this, &NoEditorWidget::updateRecentProjectsMenu);
+
+    connect(StyleHelper::instance(), &StyleHelper::styleApplied, this, &NoEditorWidget::adjustToStyle);
+
+    updateRecentProjectsMenu();
+    adjustToStyle();
+    retranslateUi();
 }
 
 NoEditorWidget::~NoEditorWidget()
@@ -50,6 +75,7 @@ void NoEditorWidget::changeEvent(QEvent *e)
     switch (e->type()) {
     case QEvent::LanguageChange:
         ui->retranslateUi(this);
+        retranslateUi();
         break;
     default:
         break;
@@ -71,4 +97,36 @@ void NoEditorWidget::openFile()
     DocumentManager::instance()->openFileDialog();
 }
 
+void NoEditorWidget::retranslateUi()
+{
+    ui->newProjectButton->setText(ActionManager::action("NewProject")->text());
+    ui->openFileButton->setText(ActionManager::action("Open")->text());
+}
+
+void NoEditorWidget::updateRecentProjectsMenu()
+{
+    auto menu = ui->recentProjectsButton->menu();
+    if (!menu)
+        menu = new QMenu(this);
+
+    menu->clear();
+
+    bool enabled = MainWindow::instance()->addRecentProjectsActions(menu);
+
+    ui->recentProjectsButton->setMenu(menu);
+    ui->recentProjectsButton->setEnabled(enabled);
+}
+
+void NoEditorWidget::adjustToStyle()
+{
+    if (auto *style = qobject_cast<TiledProxyStyle*>(QApplication::style())) {
+        if (style->isDark())
+            ui->logo->setPixmap(QPixmap(QString::fromUtf8(":/images/about-tiled-logo-white.png")));
+        else
+            ui->logo->setPixmap(QPixmap(QString::fromUtf8(":/images/about-tiled-logo.png")));
+    }
+}
+
 } // namespace Tiled
+
+#include "moc_noeditorwidget.cpp"

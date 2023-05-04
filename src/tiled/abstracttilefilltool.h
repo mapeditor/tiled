@@ -33,7 +33,6 @@ class WangSet;
 
 class MapDocument;
 class StampActions;
-class WangFiller;
 
 class AbstractTileFillTool : public AbstractTileTool
 {
@@ -46,13 +45,15 @@ public:
         WangFill
     };
 
-    AbstractTileFillTool(const QString &name,
+    AbstractTileFillTool(Id id,
+                         const QString &name,
                          const QIcon &icon,
                          const QKeySequence &shortcut,
                          BrushItem *brushItem = nullptr,
                          QObject *parent = nullptr);
     ~AbstractTileFillTool() override;
 
+    void activate(MapScene *scene) override;
     void deactivate(MapScene *scene) override;
 
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
@@ -86,7 +87,7 @@ protected:
     void mapDocumentChanged(MapDocument *oldDocument,
                             MapDocument *newDocument) override;
 
-    void tilePositionChanged(const QPoint &tilePos) override;
+    void tilePositionChanged(QPoint tilePos) override;
 
     QList<Layer *> targetLayers() const override;
 
@@ -101,6 +102,7 @@ protected:
     QVector<SharedTileset> mMissingTilesets;
 
     FillMethod mFillMethod;
+    QRect mFillBounds;
 
     StampActions *mStampActions;
 

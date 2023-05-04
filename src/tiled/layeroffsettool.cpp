@@ -1,7 +1,7 @@
 /*
 * layeroffsettool.cpp
 * Copyright 2014, Mattia Basaglia
-* Copyright 2015, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+* Copyright 2015-2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
 *
 * This file is part of Tiled.
 *
@@ -23,9 +23,9 @@
 
 #include "changelayer.h"
 #include "grouplayer.h"
-#include "layermodel.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
+#include "mapscene.h"
 #include "snaphelper.h"
 
 #include <QApplication>
@@ -34,19 +34,19 @@
 
 #include <QtMath>
 
-#include "qtcompat_p.h"
-
 using namespace Tiled;
 
 LayerOffsetTool::LayerOffsetTool(QObject *parent)
-    : AbstractTool(tr("Offset Layers"),
-                   QIcon(QLatin1String(":images/22x22/stock-tool-move-22.png")),
-                   QKeySequence(tr("M")),
+    : AbstractTool("LayerOffsetTool",
+                   tr("Offset Layers"),
+                   QIcon(QLatin1String(":images/22/stock-tool-move-22.png")),
+                   QKeySequence(Qt::Key_M),
                    parent)
     , mMousePressed(false)
     , mDragging(false)
     , mApplyingChange(false)
 {
+    setTargetLayerType(Layer::AnyLayerType);
 }
 
 void LayerOffsetTool::mouseEntered()
@@ -55,14 +55,12 @@ void LayerOffsetTool::mouseEntered()
 
 void LayerOffsetTool::mouseLeft()
 {
+    setStatusInfo(QString());
 }
 
-void LayerOffsetTool::activate(MapScene *)
+void LayerOffsetTool::deactivate(MapScene *mapScene)
 {
-}
-
-void LayerOffsetTool::deactivate(MapScene *)
-{
+    AbstractTool::deactivate(mapScene);
     finishDrag();
 }
 
@@ -84,12 +82,12 @@ void LayerOffsetTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modif
     // Take into account the offset of the current layer
     QPointF offsetPos = pos;
     if (Layer *layer = currentLayer())
-        offsetPos -= layer->totalOffset();
+        offsetPos -= mapScene()->absolutePositionForLayer(*layer);
 
     const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos);
     const int x = qFloor(tilePosF.x());
     const int y = qFloor(tilePosF.y());
-    setStatusInfo(QString(QLatin1String("%1, %2")).arg(x).arg(y));
+    setStatusInfo(QStringLiteral("%1, %2").arg(x).arg(y));
 
     if (!mMousePressed)
         return;
@@ -106,10 +104,11 @@ void LayerOffsetTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modif
     }
 
     mApplyingChange = true;
-    for (const DraggingLayer &dragging : qAsConst(mDraggingLayers)) {
+    for (const DraggingLayer &dragging : std::as_const(mDraggingLayers)) {
         QPointF newOffset = dragging.oldOffset + (pos - mMouseSceneStart);
         SnapHelper(mapDocument()->renderer(), modifiers).snap(newOffset);
-        mapDocument()->layerModel()->setLayerOffset(dragging.layer, newOffset);
+        dragging.layer->setOffset(newOffset);
+        emit mapDocument()->changed(LayerChangeEvent(dragging.layer, LayerChangeEvent::OffsetProperty));
     }
     mApplyingChange = false;
 }
@@ -138,12 +137,6 @@ void LayerOffsetTool::modifiersChanged(Qt::KeyboardModifiers)
 void LayerOffsetTool::languageChanged()
 {
     setName(tr("Offset Layers"));
-    setShortcut(QKeySequence(tr("M")));
-}
-
-void LayerOffsetTool::updateEnabledState()
-{
-    setEnabled(currentLayer());
 }
 
 void LayerOffsetTool::mapDocumentChanged(MapDocument *oldDocument,
@@ -211,8 +204,10 @@ void LayerOffsetTool::abortDrag()
         return;
 
     mApplyingChange = true;
-    for (const DraggingLayer &dragging : qAsConst(draggedLayers))
-        mapDocument()->layerModel()->setLayerOffset(dragging.layer, dragging.oldOffset);
+    for (const DraggingLayer &dragging : std::as_const(draggedLayers)) {
+        dragging.layer->setOffset(dragging.oldOffset);
+        emit mapDocument()->changed(LayerChangeEvent(dragging.layer, LayerChangeEvent::OffsetProperty));
+    }
     mApplyingChange = false;
 }
 
@@ -228,19 +223,19 @@ void LayerOffsetTool::finishDrag()
     if (!mapDocument() || draggedLayers.isEmpty())
         return;
 
-    auto undoStack = mapDocument()->undoStack();
-    undoStack->beginMacro(QCoreApplication::translate("Undo Commands",
-                                                      "Change Layer Offset"));
-
     mApplyingChange = true;
-    for (const DraggingLayer &dragging : qAsConst(draggedLayers)) {
-        const QPointF newOffset = dragging.layer->offset();
-        mapDocument()->layerModel()->setLayerOffset(dragging.layer, dragging.oldOffset);
-        undoStack->push(new SetLayerOffset(mapDocument(),
-                                           dragging.layer,
-                                           newOffset));
-    }
-    mApplyingChange = false;
+    QList<Layer *> layers;
+    QVector<QPointF> offsets;
 
-    undoStack->endMacro();
+    for (const DraggingLayer &dragging : std::as_const(draggedLayers)) {
+        const QPointF newOffset = dragging.layer->offset();
+        dragging.layer->setOffset(dragging.oldOffset);  // restore old offset for undo command
+        layers.append(dragging.layer);
+        offsets.append(newOffset);
+    }
+    auto undoStack = mapDocument()->undoStack();
+    undoStack->push(new SetLayerOffset(mapDocument(), std::move(layers), offsets));
+    mApplyingChange = false;
 }
+
+#include "moc_layeroffsettool.cpp"

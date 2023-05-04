@@ -21,6 +21,8 @@
 #pragma once
 
 #include "createobjecttool.h"
+#include "tilelayer.h"
+#include "tileset.h"
 
 namespace Tiled {
 
@@ -40,8 +42,20 @@ protected:
 
     MapObject *createNewMapObject() override;
 
+    // Overrides to apply to the new object instead of the selected ones
+    void flipHorizontally() override;
+    void flipVertically() override;
+    void rotateLeft() override;
+    void rotateRight() override;
+
 private:
     void languageChangedImpl();
+
+    void setCell(const Cell &cell);
+
+    Cell mCell;
+    SharedTileset mTileset; // keeps alive tileset referenced by mCell
+    int mRotation = 0;
 };
 
 } // namespace Tiled

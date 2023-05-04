@@ -224,7 +224,7 @@ bool RaiseLowerHelper::initContext()
         QPainterPath path = renderer->shape(object);
         QPointF screenPos = renderer->pixelToScreenCoords(object->position());
         path = rotateAt(screenPos, object->rotation()).map(path);
-        path.translate(object->objectGroup()->totalOffset());
+        path.translate(mMapScene->absolutePositionForLayer(*object->objectGroup()));
 
         shape |= path;
     }

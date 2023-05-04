@@ -36,7 +36,7 @@ class CreateObjectTool : public AbstractObjectTool
     Q_OBJECT
 
 public:
-    CreateObjectTool(QObject *parent = nullptr);
+    CreateObjectTool(Id id, QObject *parent = nullptr);
     ~CreateObjectTool() override;
 
     void activate(MapScene *scene) override;
@@ -52,8 +52,7 @@ public:
     void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
 
 protected:
-    void mapDocumentChanged(MapDocument *oldDocument,
-                            MapDocument *newDocument) override;
+    void changeEvent(const ChangeEvent &event) override;
 
     void updateEnabledState() override;
 
@@ -81,7 +80,8 @@ protected:
     MapObjectItem *mNewMapObjectItem;   // owned by mObjectGroupItem if set
 
 private:
-    void objectGroupChanged(ObjectGroup *objectGroup);
+    void objectGroupChanged(const ObjectGroupChangeEvent &event);
+    void updateNewObjectGroupItemPos();
 
     void tryCreatePreview(const QPointF &scenePos,
                           Qt::KeyboardModifiers modifiers);

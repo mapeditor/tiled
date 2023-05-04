@@ -127,17 +127,12 @@ bool PluginManager::loadPlugin(PluginFile *plugin)
 
 bool PluginManager::unloadPlugin(PluginFile *plugin)
 {
-    bool derivedPlugin = qobject_cast<Plugin*>(plugin->instance) != nullptr;
+    if (plugin->instance && !qobject_cast<Plugin*>(plugin->instance))
+        removeObject(plugin->instance);
 
-    if (plugin->loader->unload()) {
-        if (!derivedPlugin)
-            removeObject(plugin->instance);
+    plugin->instance = nullptr;
 
-        plugin->instance = nullptr;
-        return true;
-    } else {
-        return false;
-    }
+    return plugin->loader->unload();
 }
 
 PluginManager *PluginManager::instance()
@@ -189,19 +184,21 @@ void PluginManager::loadPlugins()
             addObject(instance);
     }
 
-    // Determine the plugin path based on the application location
-#ifndef TILED_PLUGIN_DIR
-    QString pluginPath = QCoreApplication::applicationDirPath();
-#endif
-
-#if defined(Q_OS_WIN32)
-    pluginPath += QLatin1String("/plugins/tiled");
-#elif defined(Q_OS_MAC)
-    pluginPath += QLatin1String("/../PlugIns");
-#elif defined(TILED_PLUGIN_DIR)
+#ifdef TILED_PLUGIN_DIR
     QString pluginPath = QLatin1String(TILED_PLUGIN_DIR);
 #else
-    pluginPath += QLatin1String("/../lib/tiled/plugins");
+    // Determine the plugin path based on the application location
+    QString pluginPath = QCoreApplication::applicationDirPath();
+
+#if defined(TILED_WINDOWS_LAYOUT)
+    pluginPath += QStringLiteral("/plugins/tiled");
+#elif defined(Q_OS_MAC)
+    pluginPath += QStringLiteral("/../PlugIns");
+#else
+    pluginPath += QStringLiteral("/../");
+    pluginPath += QLatin1String(TILED_LIB_DIR);
+    pluginPath += QStringLiteral("/tiled/plugins");
+#endif
 #endif
 
     // Load dynamic plugins
@@ -251,3 +248,5 @@ PluginFile *PluginManager::pluginByFileName(const QString &fileName)
 }
 
 } // namespace Tiled
+
+#include "moc_pluginmanager.cpp"

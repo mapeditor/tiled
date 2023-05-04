@@ -22,59 +22,72 @@
 
 #include "addremovemapobject.h"
 #include "changeobjectgroupproperties.h"
+#include "editablemanager.h"
 #include "editablemap.h"
 #include "scriptmanager.h"
 
+#include <QCoreApplication>
+
 namespace Tiled {
 
-EditableObjectGroup::EditableObjectGroup(EditableMap *map,
+EditableObjectGroup::EditableObjectGroup(const QString &name, QObject *parent)
+    : EditableLayer(std::unique_ptr<Layer>(new ObjectGroup(name)), parent)
+{
+}
+
+EditableObjectGroup::EditableObjectGroup(EditableAsset *asset,
                                          ObjectGroup *objectGroup,
                                          QObject *parent)
-    : EditableLayer(map, objectGroup, parent)
+    : EditableLayer(asset, objectGroup, parent)
 {
+}
+
+QList<QObject *> EditableObjectGroup::objects()
+{
+    auto &editableManager = EditableManager::instance();
+    QList<QObject*> objects;
+    for (MapObject *object : objectGroup()->objects())
+        objects.append(editableManager.editableMapObject(asset(), object));
+    return objects;
 }
 
 EditableMapObject *EditableObjectGroup::objectAt(int index)
 {
     if (index < 0 || index >= objectCount()) {
-        ScriptManager::instance().throwError(tr("Index out of range"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
         return nullptr;
     }
 
     auto mapObject = objectGroup()->objectAt(index);
-
-    if (map()) {
-        return map()->editableMapObject(mapObject);
-    } else {
-        // todo: what's going to ensure this object doesn't become roaming?
-        // todo: what about avoiding the creation of multiple instances pointing to the same object?
-        return new EditableMapObject(nullptr, mapObject);
-    }
+    return EditableManager::instance().editableMapObject(asset(), mapObject);
 }
 
 void EditableObjectGroup::removeObjectAt(int index)
 {
     if (index < 0 || index >= objectCount()) {
-        ScriptManager::instance().throwError(tr("Index out of range"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
         return;
     }
 
     auto mapObject = objectGroup()->objectAt(index);
 
-    if (map()) {
-        map()->push(new RemoveMapObjects(map()->mapDocument(), mapObject));
-    } else {
+    if (auto doc = document()) {
+        asset()->push(new RemoveMapObjects(doc, mapObject));
+    } else if (!checkReadOnly()) {
         objectGroup()->removeObjectAt(index);
-        // todo: if there is still a EditableMapObject instance pointing to this object, it should not be deleted
-        delete mapObject;
+        EditableManager::instance().release(mapObject);
     }
 }
 
 void EditableObjectGroup::removeObject(EditableMapObject *editableMapObject)
 {
+    if (!editableMapObject) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
     int index = objectGroup()->objects().indexOf(editableMapObject->mapObject());
     if (index == -1) {
-        ScriptManager::instance().throwError(tr("Object not found"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Object not found"));
         return;
     }
 
@@ -83,26 +96,38 @@ void EditableObjectGroup::removeObject(EditableMapObject *editableMapObject)
 
 void EditableObjectGroup::insertObjectAt(int index, EditableMapObject *editableMapObject)
 {
+    if (!editableMapObject) {
+        ScriptManager::instance().throwNullArgError(1);
+        return;
+    }
     if (index < 0 || index > objectCount()) {
-        ScriptManager::instance().throwError(tr("Index out of range"));
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
         return;
     }
 
-    if (editableMapObject->mapObject()->objectGroup()) {
-        ScriptManager::instance().throwError(tr("Object already part of an object layer"));
+    auto mapObject = editableMapObject->mapObject();
+
+    if (mapObject->objectGroup()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Object already part of an object layer"));
         return;
     }
 
-    if (map()) {
-        map()->push(new AddMapObjects(map()->mapDocument(),
-                                      objectGroup(),
-                                      editableMapObject->mapObject()));
+    if (checkReadOnly())
+        return;
 
-        editableMapObject->attach(map());
+    // Avoid duplicate IDs by resetting when needed
+    if (Map *map = objectGroup()->map()) {
+        if (mapObject->id() != 0 && map->findObjectById(mapObject->id()))
+            mapObject->resetId();
+    }
+
+    if (auto doc = document()) {
+        AddRemoveMapObjects::Entry entry { mapObject, objectGroup() };
+        entry.index = index;
+        asset()->push(new AddMapObjects(doc, { entry }));
     } else {
-        // todo: when this ObjectGroup is added to a map later, who is going to
-        // attach the EditableMapObject, which is not referenced anywhere?
-        objectGroup()->insertObject(index, editableMapObject->mapObject());
+        objectGroup()->insertObject(index, mapObject);
+        editableMapObject->release();   // now owned by the object group
     }
 }
 
@@ -113,14 +138,24 @@ void EditableObjectGroup::addObject(EditableMapObject *editableMapObject)
 
 void EditableObjectGroup::setColor(const QColor &color)
 {
-    if (map()) {
-        map()->push(new ChangeObjectGroupProperties(map()->mapDocument(),
-                                                    objectGroup(),
-                                                    color,
-                                                    objectGroup()->drawOrder()));
-    } else {
+    if (auto doc = document()) {
+        asset()->push(new ChangeObjectGroupColor(doc, { objectGroup() }, color));
+    } else if (!checkReadOnly()) {
         objectGroup()->setColor(color);
     }
 }
 
+void EditableObjectGroup::setDrawOrder(DrawOrder drawOrder)
+{
+    if (auto doc = document()) {
+        asset()->push(new ChangeObjectGroupDrawOrder(doc,
+                                                     { objectGroup() },
+                                                     static_cast<ObjectGroup::DrawOrder>(drawOrder)));
+    } else if (!checkReadOnly()) {
+        objectGroup()->setDrawOrder(static_cast<ObjectGroup::DrawOrder>(drawOrder));
+    }
+}
+
 } // namespace Tiled
+
+#include "moc_editableobjectgroup.cpp"

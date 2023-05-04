@@ -20,34 +20,51 @@
 
 #include "utils.h"
 
+#include "mapformat.h"
 #include "preferences.h"
 
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>
+#ifdef TILED_ENABLE_DBUS
+#include <QDBusConnection>
+#include <QDBusMessage>
+#endif
+#include <QDesktopServices>
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+#include <QDesktopWidget>
+#endif
 #include <QDir>
 #include <QFileInfo>
 #include <QGuiApplication>
 #include <QImageReader>
 #include <QImageWriter>
+#include <QJsonDocument>
 #include <QKeyEvent>
 #include <QMainWindow>
 #include <QMenu>
+#include <QPainter>
 #include <QProcess>
+#include <QRegularExpression>
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
 #include <QRegExp>
+#endif
 #include <QScreen>
-#include <QSettings>
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+#include <QtCore/qapplicationstatic.h>
+#endif
 
 static QString toImageFileFilter(const QList<QByteArray> &formats)
 {
     QString filter(QCoreApplication::translate("Utils", "Image files"));
-    filter += QLatin1String(" (");
+    filter += QStringLiteral(" (");
     bool first = true;
     for (const QByteArray &format : formats) {
         if (!first)
             filter += QLatin1Char(' ');
         first = false;
-        filter += QLatin1String("*.");
+        filter += QStringLiteral("*.");
         filter += QString::fromLatin1(format.toLower());
     }
     filter += QLatin1Char(')');
@@ -59,10 +76,16 @@ namespace Utils {
 
 /**
  * Returns a file dialog filter that matches all readable image formats.
+ *
+ * This includes all supported map formats, which are rendered to an image when
+ * used in this context.
  */
 QString readableImageFormatsFilter()
 {
-    return toImageFileFilter(QImageReader::supportedImageFormats());
+    auto imageFilter = toImageFileFilter(QImageReader::supportedImageFormats());
+
+    FormatHelper<MapFormat> helper(FileFormat::Read, imageFilter);
+    return helper.filter();
 }
 
 /**
@@ -82,35 +105,260 @@ QStringList cleanFilterList(const QString &filter)
     const char filterRegExp[] =
     "^(.*)\\(([a-zA-Z0-9_.,*? +;#\\-\\[\\]@\\{\\}/!<>\\$%&=^~:\\|]*)\\)$";
 
-    QRegExp regexp(QString::fromLatin1(filterRegExp));
+    QRegularExpression regexp(QString::fromLatin1(filterRegExp));
     Q_ASSERT(regexp.isValid());
     QString f = filter;
-    int i = regexp.indexIn(f);
-    if (i >= 0)
-        f = regexp.cap(2);
+    QRegularExpressionMatch match = regexp.match(filter);
+    if (match.hasMatch())
+        f = match.captured(2);
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     return f.split(QLatin1Char(' '), QString::SkipEmptyParts);
+#else
+    return f.split(QLatin1Char(' '), Qt::SkipEmptyParts);
+#endif
 }
 
 /**
- * Returns whether the \a fileName has an extension that is matched by
+ * Returns whether the \a filePath has an extension that is matched by
  * the \a nameFilter.
  */
-bool fileNameMatchesNameFilter(const QString &fileName,
+bool fileNameMatchesNameFilter(const QString &filePath,
                                const QString &nameFilter)
 {
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
     QRegExp rx;
     rx.setCaseSensitivity(Qt::CaseInsensitive);
     rx.setPatternSyntax(QRegExp::Wildcard);
+#else
+    QRegularExpression rx;
+    rx.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
+#endif
 
     const QStringList filterList = cleanFilterList(nameFilter);
+    const QString fileName = QFileInfo(filePath).fileName();
     for (const QString &filter : filterList) {
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
         rx.setPattern(filter);
         if (rx.exactMatch(fileName))
+#else
+        rx.setPattern(QRegularExpression::wildcardToRegularExpression(filter));
+        if (rx.match(fileName).hasMatch())
+#endif
             return true;
     }
     return false;
 }
 
+QString firstExtension(const QString &nameFilter)
+{
+    QString extension;
+
+    const auto filterList = cleanFilterList(nameFilter);
+    if (!filterList.isEmpty()) {
+        extension = filterList.first();
+        extension.remove(QLatin1Char('*'));
+    }
+
+    return extension;
+}
+
+struct Match {
+    int wordIndex;
+    int stringIndex;
+};
+
+/**
+ * Matches the given \a word against the \a string. The match is a fuzzy one,
+ * being case-insensitive and allowing any characters to appear between the
+ * characters of the given word.
+ *
+ * Attempts to make matching indexes sequential.
+ */
+static bool matchingIndexes(const QString &word, QStringRef string, QVarLengthArray<Match, 16> &matchingIndexes)
+{
+    int index = 0;
+
+    for (int i = 0; i < word.size(); ++i) {
+        const QChar c = word.at(i);
+
+        int newIndex = string.indexOf(c, index, Qt::CaseInsensitive);
+        if (newIndex == -1)
+            return false;
+
+        // If the new match is not sequential, check if we can make it
+        // sequential by moving a previous match forward
+        if (newIndex != index) {
+            for (int offset = 1; matchingIndexes.size() >= offset; ++offset) {
+                int backTrackIndex = newIndex - offset;
+                Match &match = matchingIndexes[matchingIndexes.size() - offset];
+
+                const int previousIndex = string.lastIndexOf(string.at(match.stringIndex), backTrackIndex, Qt::CaseInsensitive);
+
+                if (previousIndex == backTrackIndex)
+                    match.stringIndex = previousIndex;
+                else
+                    break;
+            }
+        }
+
+        matchingIndexes.append({ i, newIndex });
+        index = newIndex + 1;
+    }
+
+    return true;
+}
+
+/**
+ * Rates the match between \a word and \a string with a score indicating the
+ * strength of the match, for sorting purposes.
+ *
+ * A score of 0 indicates there is no match.
+ */
+static int matchingScore(const QString &word, QStringRef string)
+{
+    QVarLengthArray<Match, 16> indexes;
+    if (!matchingIndexes(word, string, indexes))
+        return 0;
+
+    int score = 1;  // empty word matches
+    int previousIndex = -1;
+
+    for (const Match &match : std::as_const(indexes)) {
+        const int start = match.stringIndex == 0;
+        const int sequential = match.stringIndex == previousIndex + 1;
+
+        const auto c = word.at(match.wordIndex);
+        const int caseMatch = c.isUpper() && string.at(match.stringIndex) == c;
+
+        score += 1 + start + sequential + caseMatch;
+        previousIndex = match.stringIndex;
+    }
+
+    return score;
+}
+
+static bool matchingRanges(const QString &word, QStringRef string, int offset, RangeSet<int> &result)
+{
+    QVarLengthArray<Match, 16> indexes;
+    if (!matchingIndexes(word, string, indexes))
+        return false;
+
+    for (const Match &match : std::as_const(indexes))
+        result.insert(match.stringIndex + offset);
+
+    return true;
+}
+
+int matchingScore(const QStringList &words, QStringRef string)
+{
+    const auto fileName = string.mid(string.lastIndexOf(QLatin1Char('/')) + 1);
+
+    int totalScore = 1;     // no words matches everything
+
+    for (const QString &word : words) {
+        if (int score = Utils::matchingScore(word, fileName)) {
+            // Higher score if file name matches
+            totalScore += score * 2;
+        } else if ((score = Utils::matchingScore(word, string))) {
+            totalScore += score;
+        } else {
+            totalScore = 0;
+            break;
+        }
+    }
+
+    return totalScore;
+}
+
+RangeSet<int> matchingRanges(const QStringList &words, QStringRef string)
+{
+    const int startOfFileName = string.lastIndexOf(QLatin1Char('/')) + 1;
+    const auto fileName = string.mid(startOfFileName);
+
+    RangeSet<int> result;
+
+    for (const QString &word : words) {
+        if (!matchingRanges(word, fileName, startOfFileName, result))
+            matchingRanges(word, string, 0, result);
+    }
+
+    return result;
+}
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+/*
+ * Caching icons here, since Qt no longer caches null icons in
+ * QIcon::fromTheme.
+ */
+using IconCache = QHash<QString, QIcon>;
+Q_APPLICATION_STATIC(IconCache, iconCache);
+
+QIcon themeIcon(const QString &name)
+{
+    IconCache *cache = iconCache();
+    auto it = cache->find(name);
+    if (it == cache->end())
+        it = cache->insert(name, QIcon::fromTheme(name));
+    return *it;
+}
+#else
+QIcon themeIcon(const QString &name)
+{
+    return QIcon::fromTheme(name);
+}
+#endif
+
+QIcon colorIcon(const QColor &color, QSize size)
+{
+    QPixmap pixmap(size);
+    pixmap.fill(color);
+
+    QPainter painter(&pixmap);
+    painter.setPen(QColor(0, 0, 0, 128));
+    painter.drawRect(0, 0, size.width() - 1, size.height() - 1);
+
+    return QIcon(pixmap);
+}
+
+/**
+ * Returns the available geometry of the screen containing the given \a widget.
+ */
+QRect screenRect(const QWidget *widget)
+{
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    return QApplication::desktop()->availableGeometry(widget);
+#else
+    const QPoint center = widget->mapToGlobal(widget->rect().center());
+    const QScreen *screen = widget->screen()->virtualSiblingAt(center);
+    if (!screen)
+        screen = widget->screen();
+    return screen->availableGeometry();
+#endif
+}
+
+/**
+ * Returns the suitable geometry for a popup of the given \a popupSize,
+ * relative to the \a parent widget.
+ */
+QRect popupGeometry(const QWidget *parent, QSize popupSize)
+{
+    const QRect screen = screenRect(parent);
+    const QSize widgetSize = parent->size();
+    QPoint pos = parent->mapToGlobal(QPoint(0, widgetSize.height()));
+
+    // Move popup up when there is not enough space below
+    if (pos.y() + popupSize.height() > screen.bottom())
+        pos.ry() -= widgetSize.height() + popupSize.height();
+
+    // Align popup to the right when expected
+    if (parent->isRightToLeft())
+        pos.rx() += widgetSize.width() - popupSize.width();
+
+    // Make sure the popup is visible on the sides of the screen
+    pos.rx() = qBound(screen.left(), pos.x(), screen.right() - popupSize.width());
+
+    return QRect(pos, popupSize);
+}
 
 /**
  * Restores a widget's geometry.
@@ -120,14 +368,14 @@ void restoreGeometry(QWidget *widget)
 {
     Q_ASSERT(!widget->objectName().isEmpty());
 
-    const QSettings *settings = Preferences::instance()->settings();
+    const auto preferences = Preferences::instance();
 
     const QString key = widget->objectName() + QLatin1String("/Geometry");
-    widget->restoreGeometry(settings->value(key).toByteArray());
+    widget->restoreGeometry(preferences->value(key).toByteArray());
 
     if (QMainWindow *mainWindow = qobject_cast<QMainWindow*>(widget)) {
         const QString stateKey = widget->objectName() + QLatin1String("/State");
-        mainWindow->restoreState(settings->value(stateKey).toByteArray());
+        mainWindow->restoreState(preferences->value(stateKey).toByteArray());
     }
 }
 
@@ -139,15 +387,29 @@ void saveGeometry(QWidget *widget)
 {
     Q_ASSERT(!widget->objectName().isEmpty());
 
-    QSettings *settings = Preferences::instance()->settings();
+    auto preferences = Preferences::instance();
 
     const QString key = widget->objectName() + QLatin1String("/Geometry");
-    settings->setValue(key, widget->saveGeometry());
+    preferences->setValue(key, widget->saveGeometry());
 
     if (QMainWindow *mainWindow = qobject_cast<QMainWindow*>(widget)) {
         const QString stateKey = widget->objectName() + QLatin1String("/State");
-        settings->setValue(stateKey, mainWindow->saveState());
+        preferences->setValue(stateKey, mainWindow->saveState());
     }
+}
+
+int defaultDpi()
+{
+    static int dpi = []{
+        if (const QScreen *screen = QGuiApplication::primaryScreen())
+            return static_cast<int>(screen->logicalDotsPerInchX());
+#ifdef Q_OS_MAC
+        return 72;
+#else
+        return 96;
+#endif
+    }();
+    return dpi;
 }
 
 qreal defaultDpiScale()
@@ -171,16 +433,21 @@ qreal dpiScaled(qreal value)
 #endif
 }
 
+int dpiScaled(int value)
+{
+    return qRound(dpiScaled(qreal(value)));
+}
+
 QSize dpiScaled(QSize value)
 {
-    return QSize(qRound(dpiScaled(value.width())),
-                 qRound(dpiScaled(value.height())));
+    return QSize(dpiScaled(value.width()),
+                 dpiScaled(value.height()));
 }
 
 QPoint dpiScaled(QPoint value)
 {
-    return QPoint(qRound(dpiScaled(value.x())),
-                  qRound(dpiScaled(value.y())));
+    return QPoint(dpiScaled(value.x()),
+                  dpiScaled(value.y()));
 }
 
 QRectF dpiScaled(QRectF value)
@@ -240,13 +507,13 @@ static void showInFileManager(const QString &fileName)
 #if defined(Q_OS_WIN)
     QStringList param;
     if (!QFileInfo(fileName).isDir())
-        param += QLatin1String("/select,");
+        param += QStringLiteral("/select,");
     param += QDir::toNativeSeparators(fileName);
     QProcess::startDetached(QLatin1String("explorer.exe"), param);
 #elif defined(Q_OS_MAC)
     QStringList scriptArgs;
     scriptArgs << QLatin1String("-e")
-               << QString::fromLatin1("tell application \"Finder\" to reveal POSIX file \"%1\"")
+               << QStringLiteral("tell application \"Finder\" to reveal POSIX file \"%1\"")
                                      .arg(fileName);
     QProcess::execute(QLatin1String("/usr/bin/osascript"), scriptArgs);
     scriptArgs.clear();
@@ -254,25 +521,90 @@ static void showInFileManager(const QString &fileName)
                << QLatin1String("tell application \"Finder\" to activate");
     QProcess::execute(QLatin1String("/usr/bin/osascript"), scriptArgs);
 #else
-    // We cannot select a file here, because xdg-open would open the file
-    // instead of the file browser...
-    QProcess::startDetached(QString(QLatin1String("xdg-open \"%1\""))
-                            .arg(QFileInfo(fileName).absolutePath()));
-#endif
+
+#ifdef TILED_ENABLE_DBUS
+    QDBusMessage message = QDBusMessage::createMethodCall(
+        QStringLiteral("org.freedesktop.FileManager1"),
+        QStringLiteral("/org/freedesktop/FileManager1"),
+        QStringLiteral("org.freedesktop.FileManager1"),
+        QStringLiteral("ShowItems"));
+
+    message.setArguments({
+        QStringList(QUrl::fromLocalFile(fileName).toString()),
+        QString()
+    });
+
+    const QDBusError error = QDBusConnection::sessionBus().call(message);
+
+    if (!error.isValid())
+        return;
+#endif // TILED_ENABLE_DBUS
+
+    // Fall back to xdg-open. We cannot select a file here, because
+    // xdg-open would open the file instead of the file browser...
+    QProcess::startDetached(QStringLiteral("xdg-open"),
+                            QStringList(QFileInfo(fileName).absolutePath()));
+
+#endif // !Q_OS_WIN && !Q_OS_MAC
 }
 
 void addFileManagerActions(QMenu &menu, const QString &fileName)
 {
-    QAction *copyPath = menu.addAction(QCoreApplication::translate("Utils", "Copy File Path"));
-    QObject::connect(copyPath, &QAction::triggered, [fileName] {
-        QClipboard *clipboard = QApplication::clipboard();
-        clipboard->setText(QDir::toNativeSeparators(fileName));
+    if (fileName.isEmpty())
+        return;
+
+    menu.addAction(QCoreApplication::translate("Utils", "Copy File Path"), &menu, [fileName] {
+        QApplication::clipboard()->setText(QDir::toNativeSeparators(fileName));
     });
 
-    QAction *openFolder = menu.addAction(QCoreApplication::translate("Utils", "Open Containing Folder..."));
-    QObject::connect(openFolder, &QAction::triggered, [fileName] {
+    addOpenContainingFolderAction(menu, fileName);
+}
+
+void addOpenContainingFolderAction(QMenu &menu, const QString &fileName)
+{
+    menu.addAction(QCoreApplication::translate("Utils", "Open Containing Folder..."), &menu, [fileName] {
         showInFileManager(fileName);
     });
+}
+
+void addOpenWithSystemEditorAction(QMenu &menu, const QString &fileName)
+{
+    menu.addAction(QCoreApplication::translate("Utils", "Open with System Editor"), &menu, [=] {
+        QDesktopServices::openUrl(QUrl::fromLocalFile(fileName));
+    });
+}
+
+static bool readJsonFile(QIODevice &device, QSettings::SettingsMap &map)
+{
+    QJsonParseError error;
+    map = QJsonDocument::fromJson(device.readAll(), &error).toVariant().toMap();
+    return error.error == QJsonParseError::NoError;
+}
+
+static bool writeJsonFile(QIODevice &device, const QSettings::SettingsMap &map)
+{
+    const auto json = QJsonDocument { QJsonObject::fromVariantMap(map) }.toJson();
+    return device.write(json) == json.size();
+}
+
+QSettings::Format jsonSettingsFormat()
+{
+    static const auto format = QSettings::registerFormat(QStringLiteral("json"),
+                                                         readJsonFile,
+                                                         writeJsonFile);
+    return format;
+}
+
+std::unique_ptr<QSettings> jsonSettings(const QString &fileName)
+{
+    return std::make_unique<QSettings>(fileName, jsonSettingsFormat());
+}
+
+QString Error::jsonParseError(QJsonParseError error)
+{
+    return QCoreApplication::translate("File Errors",
+                                       "JSON parse error at offset %1:\n%2.").arg(error.offset).arg(error.errorString());
+
 }
 
 } // namespace Utils

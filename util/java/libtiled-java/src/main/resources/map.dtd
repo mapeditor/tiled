@@ -56,6 +56,8 @@
     staggeraxis CDATA #IMPLIED
     staggerindex CDATA #IMPLIED
     backgroundcolor CDATA #IMPLIED
+    infinite (0 | 1) #IMPLIED
+    nextlayerid ID #IMPLIED
     nextobjectid ID #IMPLIED
 >
 
@@ -129,6 +131,7 @@
 
 <!ELEMENT layer (properties?, data)>
 <!ATTLIST layer
+  id          CDATA   #REQUIRED
   name        CDATA   #REQUIRED
   width       CDATA   #REQUIRED
   height      CDATA   #REQUIRED
@@ -136,10 +139,12 @@
   y           CDATA   #IMPLIED
   opacity     CDATA   #IMPLIED
   visible     (0 | 1) #IMPLIED
+  locked      (0 | 1) #IMPLIED
 >
 
 <!ELEMENT objectgroup (properties?, object*)>
 <!ATTLIST objectgroup
+  id          CDATA   #REQUIRED
   name        CDATA   #REQUIRED
   width       CDATA   #IMPLIED
   height      CDATA   #IMPLIED
@@ -147,10 +152,12 @@
   y           CDATA   #IMPLIED
   opacity     CDATA   #IMPLIED
   visible     (0 | 1) #IMPLIED
+  locked      (0 | 1) #IMPLIED
 >
 
 <!ELEMENT object (properties?)>
 <!ATTLIST object
+  id          CDATA   #REQUIRED
   name        CDATA   #IMPLIED
   type        CDATA   #IMPLIED
   x           CDATA   #REQUIRED
@@ -158,4 +165,5 @@
   width       CDATA   #IMPLIED
   height      CDATA   #IMPLIED
   gid         CDATA   #IMPLIED
+  rotation    CDATA   #IMPLIED
 >

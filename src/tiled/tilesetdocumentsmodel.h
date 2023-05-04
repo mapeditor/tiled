@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILESETDOCUMENTSMODEL_H
-#define TILESETDOCUMENTSMODEL_H
+#pragma once
 
 #include "tilesetdocument.h"
 
@@ -111,5 +110,3 @@ private:
 };
 
 } // namespace Tiled
-
-#endif // TILESETDOCUMENTSMODEL_H

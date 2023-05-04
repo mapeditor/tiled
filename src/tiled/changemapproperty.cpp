@@ -20,38 +20,41 @@
 
 #include "changemapproperty.h"
 
+#include "changeevents.h"
 #include "map.h"
 #include "mapdocument.h"
-#include "objectgroup.h"
-#include "tilelayer.h"
 
 #include <QCoreApplication>
 
 using namespace Tiled;
 
 ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
-                                     ChangeMapProperty::Property property,
+                                     Map::Property property,
                                      int value)
     : mMapDocument(mapDocument)
     , mProperty(property)
     , mIntValue(value)
 {
     switch (property) {
-    case TileWidth:
+    case Map::TileWidthProperty:
         setText(QCoreApplication::translate("Undo Commands",
                                             "Change Tile Width"));
         break;
-    case TileHeight:
+    case Map::TileHeightProperty:
         setText(QCoreApplication::translate("Undo Commands",
                                             "Change Tile Height"));
         break;
-    case Infinite:
+    case Map::InfiniteProperty:
         setText(QCoreApplication::translate("Undo Commands",
                                             "Change Infinite Property"));
         break;
-    case HexSideLength:
+    case Map::HexSideLengthProperty:
         setText(QCoreApplication::translate("Undo Commands",
                                             "Change Hex Side Length"));
+        break;
+    case Map::CompressionLevelProperty:
+        setText(QCoreApplication::translate("Undo Commands",
+                                            "Change Compression Level"));
         break;
     default:
         break;
@@ -63,8 +66,18 @@ ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Background Color"))
     , mMapDocument(mapDocument)
-    , mProperty(BackgroundColor)
+    , mProperty(Map::BackgroundColorProperty)
     , mBackgroundColor(backgroundColor)
+{
+}
+
+ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
+                                     QSize chunkSize)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                               "Change Chunk Size"))
+    , mMapDocument(mapDocument)
+    , mProperty(Map::ChunkSizeProperty)
+    , mChunkSize(chunkSize)
 {
 }
 
@@ -73,7 +86,7 @@ ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Stagger Axis"))
     , mMapDocument(mapDocument)
-    , mProperty(StaggerAxis)
+    , mProperty(Map::StaggerAxisProperty)
     , mStaggerAxis(staggerAxis)
 {
 }
@@ -83,8 +96,18 @@ ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Stagger Index"))
     , mMapDocument(mapDocument)
-    , mProperty(StaggerIndex)
+    , mProperty(Map::StaggerIndexProperty)
     , mStaggerIndex(staggerIndex)
+{
+}
+
+ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
+                                     const QPointF &parallaxOrigin)
+        : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                                   "Change Parallax Origin"))
+        , mMapDocument(mapDocument)
+        , mProperty(Map::ParallaxOriginProperty)
+        , mParallaxOrigin(parallaxOrigin)
 {
 }
 
@@ -93,7 +116,7 @@ ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Orientation"))
     , mMapDocument(mapDocument)
-    , mProperty(Orientation)
+    , mProperty(Map::OrientationProperty)
     , mOrientation(orientation)
 {
 }
@@ -103,7 +126,7 @@ ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Render Order"))
     , mMapDocument(mapDocument)
-    , mProperty(RenderOrder)
+    , mProperty(Map::RenderOrderProperty)
     , mRenderOrder(renderOrder)
 {
 }
@@ -113,7 +136,7 @@ ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Change Layer Data Format"))
     , mMapDocument(mapDocument)
-    , mProperty(LayerDataFormat)
+    , mProperty(Map::LayerDataFormatProperty)
     , mLayerDataFormat(layerDataFormat)
 {
 }
@@ -133,68 +156,86 @@ void ChangeMapProperty::swap()
     Map *map = mMapDocument->map();
 
     switch (mProperty) {
-    case TileWidth: {
+    case Map::TileWidthProperty: {
         const int tileWidth = map->tileWidth();
         map->setTileWidth(mIntValue);
         mIntValue = tileWidth;
         break;
     }
-    case TileHeight: {
+    case Map::TileHeightProperty: {
         const int tileHeight = map->tileHeight();
         map->setTileHeight(mIntValue);
         mIntValue = tileHeight;
         break;
     }
-    case Infinite: {
+    case Map::InfiniteProperty: {
         const int infinite = map->infinite();
         map->setInfinite(mIntValue);
         mIntValue = infinite;
         break;
     }
-    case Orientation: {
+    case Map::OrientationProperty: {
         const Map::Orientation orientation = map->orientation();
         map->setOrientation(mOrientation);
         mOrientation = orientation;
-        mMapDocument->createRenderer();
         break;
     }
-    case HexSideLength: {
+    case Map::HexSideLengthProperty: {
         const int hexSideLength = map->hexSideLength();
         map->setHexSideLength(mIntValue);
         mIntValue = hexSideLength;
         break;
     }
-    case StaggerAxis: {
+    case Map::StaggerAxisProperty: {
         const Map::StaggerAxis staggerAxis = map->staggerAxis();
         map->setStaggerAxis(mStaggerAxis);
         mStaggerAxis = staggerAxis;
         break;
     }
-    case StaggerIndex: {
+    case Map::StaggerIndexProperty: {
         const Map::StaggerIndex staggerIndex = map->staggerIndex();
         map->setStaggerIndex(mStaggerIndex);
         mStaggerIndex = staggerIndex;
         break;
     }
-    case RenderOrder: {
+    case Map::ParallaxOriginProperty: {
+        const QPointF parallaxOrigin = map->parallaxOrigin();
+        map->setParallaxOrigin(mParallaxOrigin);
+        mParallaxOrigin = parallaxOrigin;
+        break;
+    }
+    case Map::RenderOrderProperty: {
         const Map::RenderOrder renderOrder = map->renderOrder();
         map->setRenderOrder(mRenderOrder);
         mRenderOrder = renderOrder;
         break;
     }
-    case BackgroundColor: {
+    case Map::BackgroundColorProperty: {
         const QColor backgroundColor = map->backgroundColor();
         map->setBackgroundColor(mBackgroundColor);
         mBackgroundColor = backgroundColor;
         break;
     }
-    case LayerDataFormat: {
+    case Map::LayerDataFormatProperty: {
         const Map::LayerDataFormat layerDataFormat = map->layerDataFormat();
         map->setLayerDataFormat(mLayerDataFormat);
         mLayerDataFormat = layerDataFormat;
         break;
     }
+    case Map::CompressionLevelProperty: {
+        const int compressionLevel = map->compressionLevel();
+        map->setCompressionLevel(mIntValue);
+        mIntValue = compressionLevel;
+        break;
+    }
+    case Map::ChunkSizeProperty: {
+        const QSize chunkSize = map->chunkSize();
+        map->setChunkSize(mChunkSize);
+        mChunkSize = chunkSize;
+        break;
+    }
     }
 
+    emit mMapDocument->changed(MapChangeEvent(mProperty));
     emit mMapDocument->mapChanged();
 }

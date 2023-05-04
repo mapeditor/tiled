@@ -35,8 +35,8 @@ public:
                    int index,
                    const SharedTileset &tileset);
 
-    void undo() { swap(); }
-    void redo() { swap(); }
+    void undo() override { swap(); }
+    void redo() override { swap(); }
 
 private:
     void swap();

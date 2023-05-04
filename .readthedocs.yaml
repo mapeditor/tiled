@@ -1,0 +1,12 @@
+version: 2
+
+sphinx:
+  builder: dirhtml
+  configuration: docs/conf.py
+
+formats:
+  - pdf
+
+python:
+  install:
+  - requirements: docs/requirements.txt

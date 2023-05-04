@@ -22,7 +22,6 @@
 
 #include <QString>
 #include <QKeySequence>
-#include <QProcess>
 #include <QVariant>
 
 #ifdef Q_OS_MAC
@@ -33,80 +32,22 @@ namespace Tiled {
 
 struct Command
 {
-    Command(bool isEnabled = true,
-            QString name = QString(),
-            QString executable = QString(),
-            QString arguments = QString(),
-            QString workingDirectory = QString(),
-            QKeySequence shortcut = QKeySequence(),
-            bool showOutput = true,
-            bool saveBeforeExecute = true)
-        : isEnabled(isEnabled)
-        , name(std::move(name))
-        , executable(std::move(executable))
-        , arguments(std::move(arguments))
-        , workingDirectory(std::move(workingDirectory))
-        , shortcut(shortcut)
-        , showOutput(showOutput)
-        , saveBeforeExecute(saveBeforeExecute) {}
-
-    bool isEnabled;
+    bool isEnabled = true;
     QString name;
     QString executable;
     QString arguments;
     QString workingDirectory;
     QKeySequence shortcut;
-    bool showOutput;
-    bool saveBeforeExecute;
-
-    /**
-     * Returns the final command with replaced tokens.
-     */
-    QString finalCommand() const;
+    bool showOutput = true;
+    bool saveBeforeExecute = true;
 
     QString finalWorkingDirectory() const;
+    QString finalCommand() const;
 
-    QString replaceVariables(const QString &string, bool quoteValues = true) const;
-
-    /**
-     * Executes the command in the operating system shell or terminal
-     * application.
-     */
     void execute(bool inTerminal = false) const;
 
-    /**
-     * Stores this command in a QVariant.
-     */
-    QVariant toQVariant() const;
-
-    /**
-     * Generates a command from a QVariant.
-     */
-    static Command fromQVariant(const QVariant &variant);
-};
-
-class CommandProcess : public QProcess
-{
-    Q_OBJECT
-
-public:
-    CommandProcess(const Command &command, bool inTerminal = false, bool showOutput = true);
-
-private slots:
-    void consoleOutput();
-    void consoleError();
-    void handleProcessError(QProcess::ProcessError);
-
-private:
-    void reportErrorAndDelete(const QString &);
-
-    QString mName;
-    QString mFinalCommand;
-    QString mFinalWorkingDirectory;
-
-#ifdef Q_OS_MAC
-    QTemporaryFile mFile;
-#endif
+    QVariantHash toVariant() const;
+    static Command fromVariant(const QVariant &variant);
 };
 
 } // namespace Tiled

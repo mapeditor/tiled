@@ -22,6 +22,7 @@
 #pragma once
 
 #include "tiled_global.h"
+#include "filesystemwatcher.h"
 
 #include <QHash>
 #include <QObject>
@@ -46,10 +47,8 @@ signals:
     /**
      * Template has changed and instances need an update.
      *
-     * Currently emitted from the TemplatesDock.
-     *
-     * TODO: Would make sense to watch template files for changes, and also use
-     * this signal after reloading the template.
+     * Currently emitted from the TemplatesDock, and whenever a template
+     * file changes.
      */
     void objectTemplateChanged(ObjectTemplate *objectTemplate);
 
@@ -57,9 +56,12 @@ private:
     Q_DISABLE_COPY(TemplateManager)
 
     TemplateManager(QObject *parent = nullptr);
-    ~TemplateManager();
+    ~TemplateManager() override;
+
+    void pathsChanged(const QStringList &paths);
 
     QHash<QString, ObjectTemplate*> mObjectTemplates;
+    FileSystemWatcher *mWatcher;
 
     static TemplateManager *mInstance;
 };

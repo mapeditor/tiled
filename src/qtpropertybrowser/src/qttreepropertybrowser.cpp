@@ -52,6 +52,7 @@
 #include <QStyle>
 #include <QPalette>
 #include <QScreen>
+#include <QScrollBar>
 
 #ifndef Q_OS_MAC
 static qreal defaultDpiScale()
@@ -174,6 +175,7 @@ QtPropertyEditorView::QtPropertyEditorView(QWidget *parent) :
     QTreeWidget(parent),
     m_editorPrivate(0)
 {
+    setUniformRowHeights(true);
     connect(header(), SIGNAL(sectionDoubleClicked(int)), this, SLOT(resizeColumnToContents(int)));
 }
 
@@ -500,7 +502,7 @@ static QIcon drawIndicatorIcon(const QPalette &palette, QStyle *style)
 void QtTreePropertyBrowserPrivate::init(QWidget *parent)
 {
     QHBoxLayout *layout = new QHBoxLayout(parent);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     m_treeWidget = new QtPropertyEditorView(parent);
     m_treeWidget->setEditorPrivate(this);
     m_treeWidget->setIconSize(QSize(18, 18));
@@ -629,7 +631,7 @@ void QtTreePropertyBrowserPrivate::propertyInserted(QtBrowserItem *index, QtBrow
     m_indexToItem[index] = newItem;
 
     newItem->setFlags(newItem->flags() | Qt::ItemIsEditable);
-    m_treeWidget->setItemExpanded(newItem, true);
+    newItem->setExpanded(true);
 
     updateItem(newItem);
 }
@@ -1003,6 +1005,16 @@ int QtTreePropertyBrowser::splitterPosition() const
 void QtTreePropertyBrowser::setSplitterPosition(int position)
 {
     d_ptr->m_treeWidget->header()->resizeSection(0, position);
+}
+
+int QtTreePropertyBrowser::scrollPosition() const
+{
+    return d_ptr->m_treeWidget->verticalScrollBar()->value();
+}
+
+void QtTreePropertyBrowser::setScrollPosition(int value)
+{
+    d_ptr->m_treeWidget->verticalScrollBar()->setValue(value);
 }
 
 /*!

@@ -30,8 +30,6 @@ namespace Tiled {
 
 class TILEDSHARED_EXPORT GroupLayer : public Layer
 {
-    Q_OBJECT
-
 public:
     GroupLayer(const QString &name, int x, int y);
     ~GroupLayer() override;
@@ -40,10 +38,9 @@ public:
     Layer *layerAt(int index) const;
     const QList<Layer*> &layers() const { return mLayers; }
 
-    void addLayer(Layer *layer);
+    void addLayer(std::unique_ptr<Layer> layer);
     void insertLayer(int index, Layer *layer);
     Layer *takeLayerAt(int index);
-    void addLayer(std::unique_ptr<Layer> &&layer);
 
     bool isEmpty() const override;
     QSet<SharedTileset> usedTilesets() const override;
@@ -78,11 +75,6 @@ inline int GroupLayer::layerCount() const
 inline Layer *GroupLayer::layerAt(int index) const
 {
     return mLayers.at(index);
-}
-
-inline void GroupLayer::addLayer(std::unique_ptr<Layer> &&layer)
-{
-    addLayer(layer.release());
 }
 
 } // namespace Tiled

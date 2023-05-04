@@ -83,9 +83,9 @@ QModelIndex TreeViewComboBox::lastIndex(const QModelIndex &index) const
 void TreeViewComboBox::wheelEvent(QWheelEvent *e)
 {
     QModelIndex index = m_view->currentIndex();
-    if (e->delta() > 0)
+    if (e->angleDelta().y() > 0)
         index = indexAbove(index);
-    else if (e->delta() < 0)
+    else if (e->angleDelta().y() < 0)
         index = indexBelow(index);
 
     e->accept();
@@ -170,3 +170,5 @@ TreeViewComboBoxView *TreeViewComboBox::view() const
 }
 
 } // namespace Tiled
+
+#include "moc_treeviewcombobox.cpp"

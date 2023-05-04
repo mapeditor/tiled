@@ -21,6 +21,7 @@
 #pragma once
 
 #include "abstracttool.h"
+#include "preferences.h"
 
 class QAction;
 
@@ -40,10 +41,20 @@ class AbstractObjectTool : public AbstractTool
     Q_OBJECT
 
 public:
+    enum SelectionBehavior {
+        AllLayers,
+        PreferSelectedLayers,
+        SelectedLayers
+    };
+    Q_ENUM(SelectionBehavior)
+
+    static Preference<SelectionBehavior> ourSelectionBehavior;
+
     /**
      * Constructs an abstract object tool with the given \a name and \a icon.
      */
-    AbstractObjectTool(const QString &name,
+    AbstractObjectTool(Id id,
+                       const QString &name,
                        const QIcon &icon,
                        const QKeySequence &shortcut,
                        QObject *parent = nullptr);
@@ -60,43 +71,40 @@ public:
 
     void populateToolBar(QToolBar*) override;
 
-protected:
-    /**
-     * Overridden to only enable this tool when the currently selected layer is
-     * an object group.
-     */
-    void updateEnabledState() override;
+    static SelectionBehavior selectionBehavior();
+    void filterMapObjects(QList<MapObject*> &mapObjects) const;
 
-    MapScene *mapScene() const { return mMapScene; }
+protected:
     ObjectGroup *currentObjectGroup() const;
     QList<MapObject*> mapObjectsAt(const QPointF &pos) const;
     MapObject *topMostMapObjectAt(const QPointF &pos) const;
 
-private slots:
+    virtual void flipHorizontally();
+    virtual void flipVertically();
+    virtual void rotateLeft();
+    virtual void rotateRight();
+
+private:
     void duplicateObjects();
     void removeObjects();
+    void applyCollisionsToSelectedTiles(bool replace);
     void resetTileSize();
+    void convertRectanglesToPolygons();
     void saveSelectedObject();
     void detachSelectedObjects();
     void replaceObjectsWithTemplate();
     void resetInstances();
     void changeTile();
 
-    void flipHorizontally();
-    void flipVertically();
-    void rotateLeft();
-    void rotateRight();
-
     void raise();
     void lower();
     void raiseToTop();
     void lowerToBottom();
 
-private:
     void showContextMenu(MapObject *clickedObject,
                          QPoint screenPos);
 
-    MapScene *mMapScene;
+    void setActionsEnabled(bool enabled);
 
     QAction *mFlipHorizontal;
     QAction *mFlipVertical;

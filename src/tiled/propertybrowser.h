@@ -1,6 +1,6 @@
 /*
  * propertybrowser.h
- * Copyright 2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2013-2021, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,11 +20,16 @@
 
 #pragma once
 
-#include <QHash>
-#include <QUndoCommand>
+#include "changeevents.h"
+#include "custompropertieshelper.h"
+#include "map.h"
+#include "properties.h"
 
 #include <QtTreePropertyBrowser>
-#include "properties.h"
+
+#include <QHash>
+
+class QUndoCommand;
 
 class QtGroupPropertyManager;
 class QtVariantProperty;
@@ -34,10 +39,7 @@ namespace Tiled {
 
 class GroupLayer;
 class ImageLayer;
-class Layer;
-class Map;
 class MapObject;
-class Object;
 class ObjectGroup;
 class Tile;
 class TileLayer;
@@ -54,32 +56,15 @@ class PropertyBrowser : public QtTreePropertyBrowser
 public:
     explicit PropertyBrowser(QWidget *parent = nullptr);
 
-    /**
-     * Sets the \a object for which to display the properties.
-     */
     void setObject(Object *object);
-
-    /**
-     * Returns the object for which the properties are displayed.
-     */
     Object *object() const;
 
-    /**
-     * Sets the \a document, used for keeping track of changes and for
-     * undo/redo support.
-     */
     void setDocument(Document *document);
 
-    /**
-     * Returns whether the given \a item displays a custom property.
-     */
     bool isCustomPropertyItem(const QtBrowserItem *item) const;
     bool allCustomPropertyItems(const QList<QtBrowserItem*> &items) const;
 
-    /**
-     * Makes the custom property with the \a name the currently edited one,
-     * if it exists.
-     */
+    void selectCustomProperty(const QString &name);
     void editCustomProperty(const QString &name);
 
     QSize sizeHint() const override;
@@ -87,18 +72,14 @@ public:
 protected:
     bool event(QEvent *event) override;
 
-private slots:
+private:
+    void documentChanged(const ChangeEvent &change);
     void mapChanged();
-    void objectsChanged(const QList<MapObject*> &objects);
-    void objectsTypeChanged(const QList<MapObject*> &objects);
-    void layerChanged(Layer *layer);
-    void objectGroupChanged(ObjectGroup *objectGroup);
-    void imageLayerChanged(ImageLayer *imageLayer);
+    void mapObjectsChanged(const MapObjectsChangeEvent &mapObjectsChange);
     void tilesetChanged(Tileset *tileset);
     void tileChanged(Tile *tile);
     void tileTypeChanged(Tile *tile);
-    void terrainChanged(Tileset *tileset, int index);
-    void wangSetChanged(Tileset *tileset, int index);
+    void wangSetChanged(WangSet *wangSet);
     void invertYAxisChanged();
 
     void propertyAdded(Object *object, const QString &name);
@@ -109,16 +90,16 @@ private slots:
     void selectedLayersChanged();
     void selectedTilesChanged();
 
-    void objectTypesChanged();
+    void propertyTypesChanged();
 
     void valueChanged(QtProperty *property, const QVariant &val);
+    void customPropertyValueChanged(const QStringList &path, const QVariant &value);
 
     void resetProperty(QtProperty *property);
 
-private:
     enum PropertyId {
         NameProperty,
-        TypeProperty,
+        ClassProperty,
         XProperty,
         YProperty,
         WidthProperty,
@@ -133,6 +114,9 @@ private:
         WordWrapProperty,
         OffsetXProperty,
         OffsetYProperty,
+        ParallaxFactorProperty,
+        RepeatXProperty,
+        RepeatYProperty,
         ColorProperty,
         BackgroundColorProperty,
         TileWidthProperty,
@@ -143,25 +127,37 @@ private:
         HexSideLengthProperty,
         StaggerAxisProperty,
         StaggerIndexProperty,
+        ParallaxOriginProperty,
         RenderOrderProperty,
         LayerFormatProperty,
         ImageSourceProperty,
+        ImageRectProperty,
         TilesetImageParametersProperty,
         FlippingProperty,
         DrawOrderProperty,
         FileNameProperty,
+        ObjectAlignmentProperty,
+        TileRenderSizeProperty,
+        FillModeProperty,
         TileOffsetProperty,
         MarginProperty,
         SpacingProperty,
         TileProbabilityProperty,
         ColumnCountProperty,
         IdProperty,
-        EdgeCountProperty,
-        CornerCountProperty,
+        ColorCountProperty,
         WangColorProbabilityProperty,
-        CustomProperty,
+        WangSetTypeProperty,
         InfiniteProperty,
-        TemplateProperty
+        TemplateProperty,
+        CompressionLevelProperty,
+        ChunkWidthProperty,
+        ChunkHeightProperty,
+        TintColorProperty,
+        AllowFlipHorizontallyProperty,
+        AllowFlipVerticallyProperty,
+        AllowRotateProperty,
+        PreferUntransformedProperty,
     };
 
     void addMapProperties();
@@ -173,28 +169,29 @@ private:
     void addGroupLayerProperties();
     void addTilesetProperties();
     void addTileProperties();
-    void addTerrainProperties();
     void addWangSetProperties();
     void addWangColorProperties();
+
+    QtVariantProperty *addClassProperty(QtProperty *parent);
 
     void applyMapValue(PropertyId id, const QVariant &val);
     void applyMapObjectValue(PropertyId id, const QVariant &val);
     QUndoCommand *applyMapObjectValueTo(PropertyId id, const QVariant &val, MapObject *mapObject);
     void applyLayerValue(PropertyId id, const QVariant &val);
-    QUndoCommand *applyLayerValueTo(PropertyId id, const QVariant &val, Layer *layer);
-    QUndoCommand *applyTileLayerValueTo(PropertyId id, const QVariant &val, TileLayer *tileLayer);
-    QUndoCommand *applyObjectGroupValueTo(PropertyId id, const QVariant &val, ObjectGroup *objectGroup);
-    QUndoCommand *applyImageLayerValueTo(PropertyId id, const QVariant &val, ImageLayer *imageLayer);
-    QUndoCommand *applyGroupLayerValueTo(PropertyId id, const QVariant &val, GroupLayer *groupLayer);
+    QUndoCommand *applyTileLayerValueTo(PropertyId id, const QVariant &val, QList<TileLayer *> tileLayers);
+    QUndoCommand *applyObjectGroupValueTo(PropertyId id, const QVariant &val, QList<ObjectGroup *> objectGroups);
+    QUndoCommand *applyImageLayerValueTo(PropertyId id, const QVariant &val, QList<ImageLayer *> imageLayers);
+    QUndoCommand *applyGroupLayerValueTo(PropertyId id, const QVariant &val, QList<GroupLayer *> groupLayers);
     void applyTilesetValue(PropertyId id, const QVariant &val);
     void applyTileValue(PropertyId id, const QVariant &val);
-    void applyTerrainValue(PropertyId id, const QVariant &val);
     void applyWangSetValue(PropertyId id, const QVariant &val);
     void applyWangColorValue(PropertyId id, const QVariant &val);
 
     QtVariantProperty *createProperty(PropertyId id,
                                       int type,
                                       const QString &name);
+    QtVariantProperty *createCustomProperty(const QString &name,
+                                            const QVariant &value);
 
     using QtTreePropertyBrowser::addProperty;
     QtVariantProperty *addProperty(PropertyId id,
@@ -202,24 +199,31 @@ private:
                                    const QString &name,
                                    QtProperty *parent);
 
-    QtVariantProperty *createCustomProperty(const QString &name, const QVariant &value);
-    void deleteCustomProperty(QtVariantProperty *property);
+    QtVariantProperty *addCustomProperty(const QString &name, const QVariant &value);
     void setCustomPropertyValue(QtVariantProperty *property, const QVariant &value);
+    void recreateProperty(QtVariantProperty *property, const QVariant &value);
 
     void addProperties();
     void removeProperties();
     void updateProperties();
+    Properties combinedProperties() const;
     void updateCustomProperties();
+
     void updateCustomPropertyColor(const QString &name);
+    void updateCustomPropertyColors();
+    void updateCustomPropertyColor(QtVariantProperty *property);
+
+    QVariant toDisplayValue(QVariant value) const;
+    QVariant fromDisplayValue(QtProperty *property, QVariant value) const;
 
     void retranslateUi();
 
-    bool mUpdating;
-    int mMapObjectFlags;
-    Object *mObject;
-    Document *mDocument;
-    MapDocument *mMapDocument;
-    TilesetDocument *mTilesetDocument;
+    bool mUpdating = false;
+    int mMapObjectFlags = 0;
+    Object *mObject = nullptr;
+    Document *mDocument = nullptr;
+    MapDocument *mMapDocument = nullptr;
+    TilesetDocument *mTilesetDocument = nullptr;
 
     QtVariantPropertyManager *mVariantManager;
     QtGroupPropertyManager *mGroupManager;
@@ -227,20 +231,27 @@ private:
 
     QHash<QtProperty *, PropertyId> mPropertyToId;
     QHash<PropertyId, QtVariantProperty *> mIdToProperty;
-    QHash<QString, QtVariantProperty *> mNameToProperty;
-
-    Properties mCombinedProperties;
+    CustomPropertiesHelper mCustomPropertiesHelper;
 
     QStringList mStaggerAxisNames;
     QStringList mStaggerIndexNames;
     QStringList mOrientationNames;
     QStringList mTilesetOrientationNames;
+    QStringList mTileRenderSizeNames;
+    QStringList mFillModeNames;
     QStringList mLayerFormatNames;
+    QList<Map::LayerDataFormat> mLayerFormatValues;
     QStringList mRenderOrderNames;
+    QStringList mAlignmentNames;
     QStringList mFlippingFlagNames;
     QStringList mDrawOrderNames;
+    QStringList mWangSetTypeNames;
+    QMap<int, QIcon> mWangSetIcons;
 };
 
+/**
+ * Returns the object for which the properties are displayed.
+ */
 inline Object *PropertyBrowser::object() const
 {
     return mObject;

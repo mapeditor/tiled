@@ -40,23 +40,19 @@ class PreferencesDialog : public QDialog
 
 public:
     PreferencesDialog(QWidget *parent = nullptr);
-    ~PreferencesDialog();
+    ~PreferencesDialog() override;
 
 protected:
     void changeEvent(QEvent *e) override;
 
-private slots:
+private:
     void languageSelected(int index);
 
-private:
     void fromPreferences();
 
     void retranslateUi();
 
     void styleComboChanged();
-
-    void autoUpdateToggled(bool checked);
-    void checkForUpdates();
 
     Ui::PreferencesDialog *mUi;
     QStringList mLanguages;

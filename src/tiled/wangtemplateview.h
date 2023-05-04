@@ -42,8 +42,6 @@ public:
 
     qreal scale() const;
 
-    void updateBackgroundColor();
-
     WangTemplateModel *wangTemplateModel() const
     { return static_cast<WangTemplateModel *>(model()); }
 
@@ -56,10 +54,9 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
 
-private slots:
+private:
     void adjustScale();
 
-private:
     Zoomable *mZoomable;
 };
 

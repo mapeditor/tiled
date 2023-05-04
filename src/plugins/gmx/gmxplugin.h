@@ -1,6 +1,7 @@
 /*
  * GMX Tiled Plugin
  * Copyright 2016, Jones Blunt <mrjonesblunt@gmail.com>
+ * Copyright 2016-2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -34,7 +35,7 @@ class GMXSHARED_EXPORT GmxPlugin : public Tiled::WritableMapFormat
 public:
     GmxPlugin();
 
-    bool write(const Tiled::Map *map, const QString &fileName) override;
+    bool write(const Tiled::Map *map, const QString &fileName, Options options) override;
     QString errorString() const override;
     QString shortName() const override;
 

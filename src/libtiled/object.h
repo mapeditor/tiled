@@ -28,34 +28,32 @@
 
 #pragma once
 
-#include <QObject>
-
 #include "properties.h"
-#include "objecttypes.h"
+#include "propertytype.h"
 
 namespace Tiled {
 
 /**
  * The base class for anything that can hold properties.
  */
-class TILEDSHARED_EXPORT Object : public QObject
+class TILEDSHARED_EXPORT Object
 {
-    Q_OBJECT
-
 public:
+    // Keep values synchronized with ClassPropertyType::ClassUsageFlag
     enum TypeId {
-        LayerType,
-        MapObjectType,
-        MapType,
-        ObjectTemplateType,
-        TerrainType,
-        TilesetType,
-        TileType,
-        WangSetType,
-        WangColorType
+        LayerType           = 0x02,
+        MapObjectType       = 0x04,
+        MapType             = 0x08,
+        TilesetType         = 0x10,
+        TileType            = 0x20,
+        WangSetType         = 0x40,
+        WangColorType       = 0x80,
     };
 
-    explicit Object(TypeId typeId) : mTypeId(typeId) {}
+    explicit Object(TypeId typeId, const QString &className = QString())
+        : mTypeId(typeId)
+        , mClassName(className)
+    {}
 
     /**
      * Virtual destructor.
@@ -67,10 +65,18 @@ public:
      */
     TypeId typeId() const { return mTypeId; }
 
+    const QString &className() const;
+    void setClassName(const QString &className);
+
     /**
      * Returns the properties of this object.
      */
     const Properties &properties() const { return mProperties; }
+
+    /**
+     * Returns the properties of this object.
+     */
+    Properties &properties() { return mProperties; }
 
     /**
      * Replaces all existing properties with a new set of properties.
@@ -88,10 +94,10 @@ public:
      * Merges \a properties with the existing properties. Properties with the
      * same name will be overridden.
      *
-     * \sa Properties::merge
+     * \sa Tiled::mergeProperties
      */
     void mergeProperties(const Properties &properties)
-    { mProperties.merge(properties); }
+    { Tiled::mergeProperties(mProperties, properties); }
 
     /**
      * Returns the value of the object's \a name property.
@@ -99,7 +105,8 @@ public:
     QVariant property(const QString &name) const
     { return mProperties.value(name); }
 
-    QVariant inheritedProperty(const QString &name) const;
+    QVariant resolvedProperty(const QString &name) const;
+    QVariantMap resolvedProperties() const;
 
     /**
      * Returns the value of the object's \a name property, as a string.
@@ -109,6 +116,12 @@ public:
      */
     QString propertyAsString(const QString &name) const
     { return mProperties.value(name).toString(); }
+
+    /**
+     * Returns the type of the object's \a name property, as a string.
+     */
+    QString propertyType(const QString &name) const
+    { return typeName(mProperties.value(name)); }
 
     /**
      * Returns whether this object has a property with the given \a name.
@@ -130,17 +143,33 @@ public:
 
     bool isPartOfTileset() const;
 
-    static void setObjectTypes(const ObjectTypes &objectTypes);
-    static const ObjectTypes &objectTypes()
-    { return mObjectTypes; }
+    static void setPropertyTypes(const SharedPropertyTypes &propertyTypes);
+    static const PropertyTypes &propertyTypes();
 
 private:
     const TypeId mTypeId;
+    QString mClassName;
     Properties mProperties;
 
-    static ObjectTypes mObjectTypes;
+    static SharedPropertyTypes mPropertyTypes;
 };
 
+
+/**
+ * Returns the class of this object. The class usually says something about
+ * how the object is meant to be interpreted by the engine.
+ *
+ * Tile objects that do not have a class explicitly set on them are assumed to
+ * be of the class set on their tile (see MapObject::effectiveClassName).
+ */
+inline const QString &Object::className() const
+{ return mClassName; }
+
+/**
+ * Sets the class of this object.
+ */
+inline void Object::setClassName(const QString &className)
+{ mClassName = className; }
 
 /**
  * Returns whether this object is stored as part of a tileset.
@@ -150,7 +179,6 @@ inline bool Object::isPartOfTileset() const
     switch (mTypeId) {
     case Object::TilesetType:
     case Object::TileType:
-    case Object::TerrainType:
     case Object::WangSetType:
     case Object::WangColorType:
         return true;

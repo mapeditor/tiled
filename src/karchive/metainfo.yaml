@@ -1,0 +1,21 @@
+maintainer: dfaure
+description: File compression
+tier: 1
+type: functional
+platforms:
+    - name: Linux
+    - name: FreeBSD
+    - name: Windows
+    - name: MacOSX
+    - name: Android
+portingAid: false
+deprecated: false
+release: true
+libraries:
+ - qmake: KArchive
+   cmake: "KF5::Archive"
+cmakename: KF5Archive
+
+public_lib: true
+group: Frameworks
+subgroup: Tier 1

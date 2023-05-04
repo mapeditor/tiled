@@ -57,20 +57,6 @@ class Tile;
  */
 class TILEDSHARED_EXPORT Map : public Object
 {
-    Q_OBJECT
-
-    Q_PROPERTY(int width READ width NOTIFY widthChanged)
-    Q_PROPERTY(int height READ height NOTIFY heightChanged)
-    Q_PROPERTY(int tileWidth READ tileWidth NOTIFY tileWidthChanged)
-    Q_PROPERTY(int tileHeight READ tileHeight NOTIFY tileHeightChanged)
-    Q_PROPERTY(QSize size READ size NOTIFY sizeChanged)
-
-    Q_ENUMS(Orientation
-            LayerDataFormat
-            RenderOrder
-            StaggerAxis
-            StaggerIndex)
-
     class LayerIteratorHelper
     {
     public:
@@ -79,6 +65,7 @@ class TILEDSHARED_EXPORT Map : public Object
         LayerIterator begin() const;
         LayerIterator end() const;
         bool isEmpty() const;
+        QList<Layer*> toList() const;
 
     private:
         const Map &mMap;
@@ -86,6 +73,26 @@ class TILEDSHARED_EXPORT Map : public Object
     };
 
 public:
+    QString fileName;
+    QString exportFileName;
+    QString exportFormat;
+
+    enum Property {
+        TileWidthProperty,
+        TileHeightProperty,
+        InfiniteProperty,
+        HexSideLengthProperty,
+        StaggerAxisProperty,
+        StaggerIndexProperty,
+        ParallaxOriginProperty,
+        OrientationProperty,
+        RenderOrderProperty,
+        BackgroundColorProperty,
+        LayerDataFormatProperty,
+        CompressionLevelProperty,
+        ChunkSizeProperty
+    };
+
     /**
      * The orientation of the map determines how it should be rendered. An
      * Orthogonal map is using rectangular tiles that are aligned on a
@@ -105,11 +112,12 @@ public:
      * The different formats in which the tile layer data can be stored.
      */
     enum LayerDataFormat {
-        XML        = 0,
-        Base64     = 1,
-        Base64Gzip = 2,
-        Base64Zlib = 3,
-        CSV        = 4
+        XML             = 0,
+        Base64          = 1,
+        Base64Gzip      = 2,
+        Base64Zlib      = 3,
+        Base64Zstandard = 4,
+        CSV             = 5
     };
 
     /**
@@ -141,101 +149,72 @@ public:
         StaggerEven = 1
     };
 
+    struct Parameters
+    {
+        Orientation orientation = Orthogonal;
+        RenderOrder renderOrder = RightDown;
+        int width = 0;
+        int height = 0;
+        int tileWidth = 0;
+        int tileHeight = 0;
+        bool infinite = false;
+        int hexSideLength = 0;
+        StaggerAxis staggerAxis = StaggerY;
+        StaggerIndex staggerIndex = StaggerOdd;
+        QPointF parallaxOrigin;
+        QColor backgroundColor;
+    };
+
+    struct EditorSettings
+    {
+        int compressionLevel = -1;
+        QSize chunkSize = QSize(CHUNK_SIZE, CHUNK_SIZE);
+        LayerDataFormat layerDataFormat = Base64Zlib;
+    };
+
     Map();
+    Map(const Parameters &parameters);
 
     /**
      * Constructor taking map orientation, size and tile size as parameters.
+     *
+     * @deprecated Only kept around for the Python API!
      */
     Map(Orientation orientation,
         int width, int height,
-        int tileWidth, int tileHeight,
-        bool infinite = false);
+        int tileWidth, int tileHeight);
 
-    Map(Orientation orientation,
-        QSize size,
-        QSize tileSize,
-        bool infinite = false);
+    ~Map() override;
 
-    /**
-     * Destructor.
-     */
-    ~Map();
+    const Parameters &parameters() const;
 
-    /**
-     * Returns the orientation of the map.
-     */
-    Orientation orientation() const { return mOrientation; }
+    Orientation orientation() const;
+    void setOrientation(Orientation orientation);
 
-    /**
-     * Sets the orientation of the map.
-     */
-    void setOrientation(Orientation orientation)
-    { mOrientation = orientation; }
+    RenderOrder renderOrder() const;
+    void setRenderOrder(RenderOrder renderOrder);
 
-    /**
-     * Returns the render order of the map.
-     */
-    RenderOrder renderOrder() const { return mRenderOrder; }
+    int compressionLevel() const;
+    void setCompressionLevel(int compressionLevel);
 
-    /**
-     * Sets the render order of the map.
-     */
-    void setRenderOrder(RenderOrder renderOrder)
-    { mRenderOrder = renderOrder; }
-
-    /**
-     * Returns the width of this map in tiles.
-     */
-    int width() const { return mWidth; }
-
-    /**
-     * Sets the width of this map in tiles.
-     */
+    int width() const;
     void setWidth(int width);
 
-    /**
-     * Returns the height of this map in tiles.
-     */
-    int height() const { return mHeight; }
-
-    /**
-     * Sets the height of this map in tiles.
-     */
+    int height() const;
     void setHeight(int height);
 
-    /**
-     * Returns the size of this map. Provided for convenience.
-     */
-    QSize size() const { return QSize(mWidth, mHeight); }
+    QSize size() const;
 
-    /**
-     * Returns the tile width of this map.
-     */
-    int tileWidth() const { return mTileWidth; }
-
-    /**
-     * Sets the width of one tile.
-     */
+    int tileWidth() const;
     void setTileWidth(int width);
 
-    /**
-     * Returns the tile height used by this map.
-     */
-    int tileHeight() const { return mTileHeight; }
-
-    /**
-     * Sets the height of one tile.
-     */
+    int tileHeight() const;
     void setTileHeight(int height);
 
-    bool infinite() const { return mInfinite; }
+    QSize tileSize() const;
 
-    void setInfinite(bool infinite) { mInfinite = infinite; }
-
-    /**
-     * Returns the size of one tile. Provided for convenience.
-     */
-    QSize tileSize() const { return QSize(mTileWidth, mTileHeight); }
+    bool infinite() const;
+    void setInfinite(bool infinite);
 
     int hexSideLength() const;
     void setHexSideLength(int hexSideLength);
@@ -247,193 +226,80 @@ public:
     void setStaggerIndex(StaggerIndex staggerIndex);
     void invertStaggerIndex();
 
-    /**
-     * Returns the margins that have to be taken into account when figuring
-     * out which part of the map to repaint after changing some tiles.
-     */
+    QPointF parallaxOrigin() const;
+    void setParallaxOrigin(const QPointF &parallaxOrigin);
+
     QMargins drawMargins() const;
     void invalidateDrawMargins();
 
-    QMargins computeLayerOffsetMargins() const;
+    void adjustBoundingRectForOffsetsAndImageLayers(QRect &boundingRect) const;
 
-    /**
-     * Returns the number of layers of this map.
-     */
-    int layerCount() const
-    { return mLayers.size(); }
-
-    /**
-     * Convenience function that returns the number of layers of this map that
-     * match the given \a type.
-     */
+    int layerCount() const;
     int layerCount(Layer::TypeFlag type) const;
 
-    int tileLayerCount() const
-    { return layerCount(Layer::TileLayerType); }
+    int tileLayerCount() const;
+    int objectGroupCount() const;
+    int imageLayerCount() const;
+    int groupLayerCount() const;
 
-    int objectGroupCount() const
-    { return layerCount(Layer::ObjectGroupType); }
+    Layer *layerAt(int index) const;
 
-    int imageLayerCount() const
-    { return layerCount(Layer::ImageLayerType); }
-
-    int groupLayerCount() const
-    { return layerCount(Layer::GroupLayerType); }
-
-    /**
-     * Returns the top-level layer at the specified \a index.
-     */
-    Layer *layerAt(int index) const
-    { return mLayers.at(index); }
-
-    /**
-     * Returns the list of top-level layers of this map.
-     */
-    const QList<Layer*> &layers() const { return mLayers; }
+    const QList<Layer*> &layers() const;
 
     LayerIteratorHelper allLayers(int layerTypes = Layer::AnyLayerType) const;
     LayerIteratorHelper tileLayers() const;
     LayerIteratorHelper objectGroups() const;
 
-    /**
-     * Adds a layer to this map.
-     */
-    void addLayer(std::unique_ptr<Layer> &&layer);
+    void addLayer(std::unique_ptr<Layer> layer);
     void addLayer(Layer *layer);
 
-    /**
-     * Returns the index of the layer given by \a layerName, or -1 if no
-     * layer with that name is found.
-     *
-     * The second optional parameter specifies the layer types which are
-     * searched.
-     *
-     * @deprecated Does not support group layers. Use findLayer() instead.
-     */
-    int indexOfLayer(const QString &layerName,
-                     int layerTypes = Layer::AnyLayerType) const;
-
-    /**
-     * Returns the first layer with the given \a name, or nullptr if no
-     * layer with that name is found.
-     *
-     * The second optional parameter specifies the layer types which are
-     * searched.
-     */
     Layer *findLayer(const QString &name,
                      int layerTypes = Layer::AnyLayerType) const;
 
-    /**
-     * Adds a layer to this map, inserting it at the given index.
-     */
     void insertLayer(int index, Layer *layer);
 
-    /**
-     * Removes the layer at the given index from this map and returns it.
-     * The caller becomes responsible for the lifetime of this layer.
-     */
     Layer *takeLayerAt(int index);
 
-    /**
-     * Adds a tileset to this map. The map does not take ownership over its
-     * tilesets, this is merely for keeping track of which tilesets are used by
-     * the map, and their saving order.
-     *
-     * @param tileset the tileset to add
-     * @return whether the tileset wasn't already part of the map
-     */
     bool addTileset(const SharedTileset &tileset);
-
-    /**
-     * Convenience function to be used together with Layer::usedTilesets()
-     */
     void addTilesets(const QSet<SharedTileset> &tilesets);
-
-    /**
-     * Inserts \a tileset at \a index in the list of tilesets used by this map.
-     */
     void insertTileset(int index, const SharedTileset &tileset);
 
-    /**
-     * Returns the index of the given \a tileset, or -1 if it is not used in
-     * this map.
-     */
     int indexOfTileset(const SharedTileset &tileset) const;
 
-    /**
-     * Removes the tileset at \a index from this map.
-     *
-     * \warning Does not make sure that this map no longer refers to tiles from
-     *          the removed tileset!
-     *
-     * \sa addTileset
-     */
     void removeTilesetAt(int index);
 
-    /**
-     * Replaces all tiles from \a oldTileset with tiles from \a newTileset.
-     * Also replaces the old tileset with the new tileset in the list of
-     * tilesets.
-     *
-     * @return whether the new tileset was added to the map
-     */
     bool replaceTileset(const SharedTileset &oldTileset,
                         const SharedTileset &newTileset);
 
-    /**
-     * Returns the number of tilesets of this map.
-     */
-    int tilesetCount() const { return mTilesets.size(); }
+    int tilesetCount() const;
+    SharedTileset tilesetAt(int index) const;
+    const QVector<SharedTileset> &tilesets() const;
 
-    /**
-     * Returns the tileset at the given index.
-     */
-    SharedTileset tilesetAt(int index) const { return mTilesets.at(index); }
-
-    /**
-     * Returns the tilesets that have been added to this map.
-     */
-    const QVector<SharedTileset> &tilesets() const { return mTilesets; }
-
-    /**
-     * Computes the tilesets that are used by this map.
-     */
     QSet<SharedTileset> usedTilesets() const;
 
-    /**
-     * Returns a list of MapObjects to be updated in the map scene
-     */
     QList<MapObject*> replaceObjectTemplate(const ObjectTemplate *oldObjectTemplate,
                                             const ObjectTemplate *newObjectTemplate);
 
-    /**
-     * Returns the background color of this map.
-     */
-    const QColor &backgroundColor() const { return mBackgroundColor; }
+    const QColor &backgroundColor() const;
+    void setBackgroundColor(QColor color);
 
-    /**
-     * Sets the background color of this map.
-     */
-    void setBackgroundColor(QColor color) { mBackgroundColor = color; }
-
-    /**
-     * Returns whether the given \a tileset is used by any tile layer of this
-     * map.
-     */
+    QSize chunkSize() const;
+    void setChunkSize(QSize size);
+    
     bool isTilesetUsed(const Tileset *tileset) const;
 
-    Map *clone() const;
+    std::unique_ptr<Map> clone() const;
 
-    /**
-     * Returns whether the map is staggered
-     */
-    bool isStaggered() const
-    { return orientation() == Hexagonal || orientation() == Staggered; }
+    void copyLayers(const QList<Layer*> &layers,
+                    const QRegion &tileRegion,
+                    Map &targetMap) const;
 
-    LayerDataFormat layerDataFormat() const
-    { return mLayerDataFormat; }
-    void setLayerDataFormat(LayerDataFormat format)
-    { mLayerDataFormat = format; }
+    void normalizeTileLayerPositionsAndMapSize();
+
+    bool isStaggered() const;
+
+    LayerDataFormat layerDataFormat() const;
+    void setLayerDataFormat(LayerDataFormat format);
 
     void setNextLayerId(int nextId);
     int nextLayerId() const;
@@ -444,14 +310,11 @@ public:
     int takeNextObjectId();
     void initializeObjectIds(ObjectGroup &objectGroup);
 
-    QRegion tileRegion() const;
+    Layer *findLayerById(int layerId) const;
+    MapObject *findObjectById(int objectId) const;
 
-signals:
-    void widthChanged();
-    void heightChanged();
-    void tileWidthChanged();
-    void tileHeightChanged();
-    void sizeChanged();
+    QRect tileBoundingRect() const;
+    QRegion tileRegion() const;
 
 private:
     friend class GroupLayer;    // so it can call adoptLayer
@@ -460,65 +323,240 @@ private:
 
     void recomputeDrawMargins() const;
 
-    Orientation mOrientation;
-    RenderOrder mRenderOrder;
-    int mWidth;
-    int mHeight;
-    int mTileWidth;
-    int mTileHeight;
-    bool mInfinite;
-    int mHexSideLength;
-    StaggerAxis mStaggerAxis;
-    StaggerIndex mStaggerIndex;
-    QColor mBackgroundColor;
+    Parameters mParameters;
+    EditorSettings mEditorSettings;
+
     mutable QMargins mDrawMargins;
-    mutable bool mDrawMarginsDirty;
+    mutable bool mDrawMarginsDirty = true;
+
     QList<Layer*> mLayers;
     QVector<SharedTileset> mTilesets;
-    LayerDataFormat mLayerDataFormat;
-    int mNextLayerId;
-    int mNextObjectId;
+
+    int mNextLayerId = 1;
+    int mNextObjectId = 1;
 };
 
 
+inline const Map::Parameters &Map::parameters() const
+{
+    return mParameters;
+}
+
+inline Map::Orientation Map::orientation() const
+{
+    return mParameters.orientation;
+}
+
+inline void Map::setOrientation(Map::Orientation orientation)
+{
+    mParameters.orientation = orientation;
+}
+
+inline Map::RenderOrder Map::renderOrder() const
+{
+    return mParameters.renderOrder;
+}
+
+inline void Map::setRenderOrder(Map::RenderOrder renderOrder)
+{
+    mParameters.renderOrder = renderOrder;
+}
+
+/**
+ * Returns the compression level used for compressed tile layer data.
+ */
+inline int Map::compressionLevel() const
+{
+    return mEditorSettings.compressionLevel;
+}
+
+inline void Map::setCompressionLevel(int compressionLevel)
+{
+    mEditorSettings.compressionLevel = compressionLevel;
+}
+
+/**
+ * Returns the width of this map in tiles.
+ */
+inline int Map::width() const
+{
+    return mParameters.width;
+}
+
+/**
+ * Sets the width of this map in tiles.
+ */
+inline void Map::setWidth(int width)
+{
+    mParameters.width = width;
+}
+
+/**
+ * Returns the height of this map in tiles.
+ */
+inline int Map::height() const
+{
+    return mParameters.height;
+}
+
+/**
+ * Sets the height of this map in tiles.
+ */
+inline void Map::setHeight(int height)
+{
+    mParameters.height = height;
+}
+
+/**
+ * Returns the size of this map. Provided for convenience.
+ */
+inline QSize Map::size() const
+{
+    return QSize(mParameters.width, mParameters.height);
+}
+
+/**
+ * Returns the tile width of this map.
+ */
+inline int Map::tileWidth() const
+{
+    return mParameters.tileWidth;
+}
+
+/**
+ * Sets the width of one tile.
+ */
+inline void Map::setTileWidth(int width)
+{
+    mParameters.tileWidth = width;
+}
+
+/**
+ * Returns the tile height used by this map.
+ */
+inline int Map::tileHeight() const
+{
+    return mParameters.tileHeight;
+}
+
+/**
+ * Sets the height of one tile.
+ */
+inline void Map::setTileHeight(int height)
+{
+    mParameters.tileHeight = height;
+}
+
+/**
+ * Returns the size of one tile. Provided for convenience.
+ */
+inline QSize Map::tileSize() const
+{
+    return QSize(mParameters.tileWidth, mParameters.tileHeight);
+}
+
+inline bool Map::infinite() const
+{
+    return mParameters.infinite;
+}
+
+inline void Map::setInfinite(bool infinite)
+{
+    mParameters.infinite = infinite;
+}
+
 inline int Map::hexSideLength() const
 {
-    return mHexSideLength;
+    return mParameters.hexSideLength;
 }
 
 inline void Map::setHexSideLength(int hexSideLength)
 {
-    mHexSideLength = hexSideLength;
+    mParameters.hexSideLength = hexSideLength;
 }
 
 inline Map::StaggerAxis Map::staggerAxis() const
 {
-    return mStaggerAxis;
+    return mParameters.staggerAxis;
 }
 
 inline void Map::setStaggerAxis(StaggerAxis staggerAxis)
 {
-    mStaggerAxis = staggerAxis;
+    mParameters.staggerAxis = staggerAxis;
 }
 
 inline Map::StaggerIndex Map::staggerIndex() const
 {
-    return mStaggerIndex;
+    return mParameters.staggerIndex;
 }
 
 inline void Map::setStaggerIndex(StaggerIndex staggerIndex)
 {
-    mStaggerIndex = staggerIndex;
+    mParameters.staggerIndex = staggerIndex;
 }
 
 inline void Map::invertStaggerIndex()
 {
-    mStaggerIndex = static_cast<StaggerIndex>(!mStaggerIndex);
+    mParameters.staggerIndex = static_cast<StaggerIndex>(!mParameters.staggerIndex);
+}
+
+inline QPointF Map::parallaxOrigin() const
+{
+    return mParameters.parallaxOrigin;
+}
+
+inline void Map::setParallaxOrigin(const QPointF &parallaxOrigin)
+{
+    mParameters.parallaxOrigin = parallaxOrigin;
 }
 
 inline void Map::invalidateDrawMargins()
 {
     mDrawMarginsDirty = true;
+}
+
+/**
+ * Returns the number of layers of this map.
+ */
+inline int Map::layerCount() const
+{
+    return mLayers.size();
+}
+
+inline int Map::tileLayerCount() const
+{
+    return layerCount(Layer::TileLayerType);
+}
+
+inline int Map::objectGroupCount() const
+{
+    return layerCount(Layer::ObjectGroupType);
+}
+
+inline int Map::imageLayerCount() const
+{
+    return layerCount(Layer::ImageLayerType);
+}
+
+inline int Map::groupLayerCount() const
+{
+    return layerCount(Layer::GroupLayerType);
+}
+
+/**
+ * Returns the top-level layer at the specified \a index.
+ */
+inline Layer *Map::layerAt(int index) const
+{
+    return mLayers.at(index);
+}
+
+/**
+ * Returns the list of top-level layers of this map.
+ */
+inline const QList<Layer *> &Map::layers() const
+{
+    return mLayers;
 }
 
 /**
@@ -546,9 +584,80 @@ inline Map::LayerIteratorHelper Map::objectGroups() const
     return allLayers(Layer::ObjectGroupType);
 }
 
-inline void Map::addLayer(std::unique_ptr<Layer> &&layer)
+/**
+ * Adds a layer to this map.
+ */
+inline void Map::addLayer(std::unique_ptr<Layer> layer)
 {
     addLayer(layer.release());
+}
+
+/**
+ * Returns the number of tilesets of this map.
+ */
+inline int Map::tilesetCount() const
+{
+    return mTilesets.size();
+}
+
+/**
+ * Returns the tileset at the given index.
+ */
+inline SharedTileset Map::tilesetAt(int index) const
+{
+    return mTilesets.at(index);
+}
+
+/**
+ * Returns the tilesets that have been added to this map.
+ */
+inline const QVector<SharedTileset> &Map::tilesets() const
+{
+    return mTilesets;
+}
+
+/**
+ * Returns the background color of this map.
+ */
+inline const QColor &Map::backgroundColor() const
+{
+    return mParameters.backgroundColor;
+}
+
+inline void Map::setBackgroundColor(QColor color)
+{
+    mParameters.backgroundColor = color;
+}
+
+/**
+ * Returns the chunk size used when saving tile layers of this map.
+ */
+inline QSize Map::chunkSize() const
+{
+    return mEditorSettings.chunkSize;
+}
+
+inline void Map::setChunkSize(QSize size)
+{
+    mEditorSettings.chunkSize = size;
+}
+
+/**
+ * Returns whether the map is staggered.
+ */
+inline bool Map::isStaggered() const
+{
+    return orientation() == Hexagonal || orientation() == Staggered;
+}
+
+inline Map::LayerDataFormat Map::layerDataFormat() const
+{
+    return mEditorSettings.layerDataFormat;
+}
+
+inline void Map::setLayerDataFormat(Map::LayerDataFormat format)
+{
+    mEditorSettings.layerDataFormat = format;
 }
 
 /**
@@ -626,6 +735,19 @@ inline bool Map::LayerIteratorHelper::isEmpty() const
     return LayerIterator(&mMap, mLayerTypes).next() == nullptr;
 }
 
+inline QList<Layer *> Map::LayerIteratorHelper::toList() const
+{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    return QList<Layer *>(begin(), end());
+#else
+    LayerIterator iterator(&mMap, mLayerTypes);
+    QList<Layer *> layers;
+    while (Layer *layer = iterator.next())
+        layers.append(layer);
+    return layers;
+#endif
+}
+
 
 TILEDSHARED_EXPORT QString staggerAxisToString(Map::StaggerAxis);
 TILEDSHARED_EXPORT Map::StaggerAxis staggerAxisFromString(const QString &);
@@ -650,13 +772,22 @@ TILEDSHARED_EXPORT QString orientationToString(Map::Orientation);
  */
 TILEDSHARED_EXPORT Map::Orientation orientationFromString(const QString &);
 
+/**
+ * Helper function that returns a string representing the compression used by
+ * the given layer data format.
+ *
+ * @return The compression as a lowercase string.
+ */
+TILEDSHARED_EXPORT QString compressionToString(Map::LayerDataFormat);
+
 TILEDSHARED_EXPORT QString renderOrderToString(Map::RenderOrder renderOrder);
 TILEDSHARED_EXPORT Map::RenderOrder renderOrderFromString(const QString &);
 
-typedef QSharedPointer<Map> SharedMap;
+using SharedMap = QSharedPointer<Map>;
 
 } // namespace Tiled
 
+Q_DECLARE_METATYPE(Tiled::Map*)
 Q_DECLARE_METATYPE(Tiled::Map::Orientation)
 Q_DECLARE_METATYPE(Tiled::Map::LayerDataFormat)
 Q_DECLARE_METATYPE(Tiled::Map::RenderOrder)

@@ -97,3 +97,5 @@ void FlexibleScrollBar::setOverrideRange(int min, int max)
 }
 
 } // namespace Tiled
+
+#include "moc_flexiblescrollbar.cpp"

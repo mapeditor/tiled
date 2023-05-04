@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg  PUBLIC '-//W3C//DTD SVG 1.1//EN'  'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>
+<svg enable-background="new 0 0 612 792" version="1.1" viewBox="0 0 612 792" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+<g transform="scale(3.125)">
+			<rect x="26.609" y="55.409" width="106.44" height="106.44" fill="#fff"/>
+			<path d="m133.04 55.409h-106.43v106.44h106.44v-106.44zm-8.869 8.869v88.695h-88.696v-88.695h88.696z" fill="#888A85"/>
+		<g transform="matrix(1.0833 0 0 1.0833 3.75 3.75)">
+			<rect x="53.85" y="80.434" width="106.44" height="106.44" fill="#fff"/>
+			<g transform="matrix(.46154 0 0 .46154 6.2308 6.2308)">
+				<rect x="191.87" y="249.47" width="106.44" height="106.44" fill="#fff"/>
+				<path d="m298.3 249.47h-106.44v106.44h106.44v-106.44z" fill="#888A85"/>
+			</g>
+			<g transform="matrix(.92308 0 0 .92308 -3.4615 -3.4615)">
+				<g transform="translate(1.5 3.5)">
+					<rect x="60.587" y="87.387" width="8.87" height="8.87" fill="#888A85"/>
+				</g>
+				<g transform="translate(3.5 3.5)">
+					<rect x="76.326" y="87.387" width="8.87" height="8.87" fill="#888A85"/>
+				</g>
+				<g transform="translate(5.5 3.5)">
+					<rect x="92.065" y="87.387" width="8.87" height="8.87" fill="#888A85"/>
+				</g>
+				<g transform="translate(7.5 3.5)">
+					<rect x="107.8" y="87.387" width="8.87" height="8.87" fill="#888A85"/>
+				</g>
+				<g transform="translate(9.5 3.5)">
+					<rect x="123.54" y="87.387" width="8.87" height="8.87" fill="#888A85"/>
+				</g>
+				<g transform="translate(11.5 3.5)">
+					<rect x="139.28" y="87.387" width="8.87" height="8.87" fill="#888A85"/>
+				</g>
+				<g transform="translate(3.5 15.5)">
+					<rect x="76.326" y="181.82" width="8.87" height="8.87" fill="#888A85"/>
+				</g>
+				<g transform="translate(5.5 15.5)">
+					<rect x="92.065" y="181.82" width="8.87" height="8.87" fill="#888A85"/>
+				</g>
+				<g transform="translate(7.5 15.5)">
+					<rect x="107.8" y="181.82" width="8.87" height="8.87" fill="#888A85"/>
+				</g>
+				<g transform="translate(9.5 15.5)">
+					<rect x="123.54" y="181.82" width="8.87" height="8.87" fill="#888A85"/>
+				</g>
+				<g transform="translate(11.5 15.5)">
+					<rect x="139.28" y="181.82" width="8.87" height="8.87" fill="#888A85"/>
+				</g>
+				<g transform="translate(13.5 3.5)">
+					<rect x="155.02" y="87.387" width="8.87" height="8.87" fill="#888A85"/>
+				</g>
+				<g transform="translate(1.5 5.5)">
+					<rect x="60.587" y="103.13" width="8.87" height="8.87" fill="#888A85"/>
+				</g>
+				<g transform="translate(1.5 7.5)">
+					<rect x="60.587" y="118.86" width="8.87" height="8.869" fill="#888A85"/>
+				</g>
+				<g transform="translate(1.5 9.5)">
+					<rect x="60.587" y="134.6" width="8.87" height="8.87" fill="#888A85"/>
+				</g>
+				<g transform="translate(1.5 11.5)">
+					<rect x="60.587" y="150.34" width="8.87" height="8.87" fill="#888A85"/>
+				</g>
+				<g transform="translate(1.5 13.5)">
+					<rect x="60.587" y="166.08" width="8.87" height="8.87" fill="#888A85"/>
+				</g>
+				<g transform="translate(1.5 15.5)">
+					<rect x="60.587" y="181.82" width="8.87" height="8.87" fill="#888A85"/>
+				</g>
+				<g transform="translate(13.5 5.5)">
+					<rect x="155.02" y="103.13" width="8.87" height="8.87" fill="#888A85"/>
+				</g>
+				<g transform="translate(13.5 7.5)">
+					<rect x="155.02" y="118.86" width="8.87" height="8.869" fill="#888A85"/>
+				</g>
+				<g transform="translate(13.5 9.5)">
+					<rect x="155.02" y="134.6" width="8.87" height="8.87" fill="#888A85"/>
+				</g>
+				<g transform="translate(13.5 11.5)">
+					<rect x="155.02" y="150.34" width="8.87" height="8.87" fill="#888A85"/>
+				</g>
+				<g transform="translate(13.5 13.5)">
+					<rect x="155.02" y="166.08" width="8.87" height="8.87" fill="#888A85"/>
+				</g>
+				<g transform="translate(13.5 15.5)">
+					<rect x="155.02" y="181.82" width="8.87" height="8.87" fill="#888A85"/>
+				</g>
+			</g>
+			<g transform="matrix(.92308 0 0 .92308 -3.4615 -3.4615)">
+				<rect x="70.957" y="152.97" width="39.977" height="8.869" fill="#888A85"/>
+			</g>
+			<g transform="matrix(.23077 0 0 3.6923 7.6154 -47.769)">
+				<rect x="448.7" y="36.939" width="35.479" height="10.101" fill="#888A85"/>
+			</g>
+		</g>
+</g>
+<linearGradient id="a" x1="415.76" x2="415.76" y1="561.19" y2="450.33" gradientUnits="userSpaceOnUse">
+	<stop stop-color="#F35E5D" offset="0"/>
+	<stop stop-color="#F79D9D" offset="1"/>
+</linearGradient>
+<rect x="360.32" y="450.32" width="110.87" height="110.87" fill="url(#a)"/>
+</svg>

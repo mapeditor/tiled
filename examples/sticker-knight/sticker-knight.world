@@ -1,0 +1,27 @@
+{
+    "maps": [
+        {
+            "fileName": "map/sandbox2.tmx",
+            "height": 992,
+            "width": 2560,
+            "x": 1824,
+            "y": 0
+        },
+        {
+            "fileName": "map/sandbox.tmx",
+            "height": 1440,
+            "width": 2528,
+            "x": 0,
+            "y": -1792
+        },
+        {
+            "fileName": "ui/title.json",
+            "height": 832,
+            "width": 1216,
+            "x": -1760,
+            "y": -1408
+        }
+    ],
+    "onlyShowAdjacentMaps": false,
+    "type": "world"
+}

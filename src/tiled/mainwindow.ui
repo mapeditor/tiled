@@ -16,9 +16,6 @@
   <property name="dockOptions">
    <set>QMainWindow::AllowNestedDocks|QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
   </property>
-  <property name="unifiedTitleAndToolBarOnMac">
-   <bool>true</bool>
-  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="leftMargin">
@@ -41,7 +38,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>31</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -54,14 +51,21 @@
      </property>
      <property name="icon">
       <iconset resource="tiled.qrc">
-       <normaloff>:/images/16x16/document-open-recent.png</normaloff>:/images/16x16/document-open-recent.png</iconset>
+       <normaloff>:/images/16/document-open-recent.png</normaloff>:/images/16/document-open-recent.png</iconset>
      </property>
+     <property name="toolTipsVisible">
+      <bool>true</bool>
+     </property>
+     <addaction name="actionReopenClosedFile"/>
+     <addaction name="separator"/>
      <addaction name="actionClearRecentFiles"/>
     </widget>
     <widget class="QMenu" name="menuNew">
      <property name="title">
       <string>&amp;New</string>
      </property>
+     <addaction name="actionNewProject"/>
+     <addaction name="separator"/>
      <addaction name="actionNewMap"/>
      <addaction name="actionNewTileset"/>
     </widget>
@@ -71,9 +75,19 @@
      </property>
      <addaction name="actionEditCommands"/>
     </widget>
+    <widget class="QMenu" name="menuRecentProjects">
+     <property name="title">
+      <string>&amp;Recent Projects</string>
+     </property>
+     <property name="toolTipsVisible">
+      <bool>true</bool>
+     </property>
+    </widget>
     <addaction name="menuNew"/>
     <addaction name="actionOpen"/>
+    <addaction name="actionOpenFileInProject"/>
     <addaction name="menuRecentFiles"/>
+    <addaction name="menuRecentProjects"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionSaveAs"/>
@@ -87,6 +101,7 @@
     <addaction name="separator"/>
     <addaction name="actionClose"/>
     <addaction name="actionCloseAll"/>
+    <addaction name="actionCloseProject"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -106,23 +121,17 @@
      <string>&amp;Help</string>
     </property>
     <addaction name="actionDocumentation"/>
+    <addaction name="actionForum"/>
     <addaction name="separator"/>
-    <addaction name="actionBecomePatron"/>
+    <addaction name="actionDonate"/>
     <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuMap">
     <property name="title">
      <string>&amp;Map</string>
     </property>
-    <widget class="QMenu" name="menuUnloadWorld">
-     <property name="title">
-      <string>Unload World</string>
-     </property>
-    </widget>
     <addaction name="actionAddExternalTileset"/>
-    <addaction name="separator"/>
-    <addaction name="actionLoadWorld"/>
-    <addaction name="menuUnloadWorld"/>
+    <addaction name="actionAddAutomappingRulesTileset"/>
     <addaction name="separator"/>
     <addaction name="actionResizeMap"/>
     <addaction name="actionOffsetMap"/>
@@ -155,10 +164,15 @@
      <addaction name="actionSnapToFineGrid"/>
      <addaction name="actionSnapToPixels"/>
     </widget>
+    <addaction name="actionSearchActions"/>
     <addaction name="actionShowGrid"/>
     <addaction name="actionShowTileObjectOutlines"/>
+    <addaction name="actionShowObjectReferences"/>
     <addaction name="menuShowObjectNames"/>
     <addaction name="actionShowTileAnimations"/>
+    <addaction name="actionShowTileCollisionShapes"/>
+    <addaction name="actionEnableWorlds"/>
+    <addaction name="actionEnableParallax"/>
     <addaction name="actionHighlightCurrentLayer"/>
     <addaction name="actionHighlightHoveredObject"/>
     <addaction name="separator"/>
@@ -167,6 +181,7 @@
     <addaction name="actionZoomIn"/>
     <addaction name="actionZoomOut"/>
     <addaction name="actionZoomNormal"/>
+    <addaction name="actionFitInView"/>
     <addaction name="separator"/>
     <addaction name="actionFullScreen"/>
     <addaction name="actionClearView"/>
@@ -177,27 +192,51 @@
     </property>
     <addaction name="actionTilesetProperties"/>
    </widget>
+   <widget class="QMenu" name="menuProject">
+    <property name="title">
+     <string>&amp;Project</string>
+    </property>
+    <addaction name="actionAddFolderToProject"/>
+    <addaction name="actionRefreshProjectFolders"/>
+    <addaction name="separator"/>
+    <addaction name="actionProjectProperties"/>
+   </widget>
+   <widget class="QMenu" name="menuWorld">
+    <property name="title">
+     <string>&amp;World</string>
+    </property>
+    <widget class="QMenu" name="menuUnloadWorld">
+     <property name="title">
+      <string>&amp;Unload World</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menuSaveWorld">
+     <property name="title">
+      <string>&amp;Save World</string>
+     </property>
+    </widget>
+    <addaction name="actionNewWorld"/>
+    <addaction name="actionLoadWorld"/>
+    <addaction name="separator"/>
+    <addaction name="menuUnloadWorld"/>
+    <addaction name="menuSaveWorld"/>
+    <addaction name="separator"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
+   <addaction name="menuWorld"/>
    <addaction name="menuMap"/>
    <addaction name="menuTileset"/>
+   <addaction name="menuProject"/>
    <addaction name="menuHelp"/>
   </widget>
   <action name="actionOpen">
-   <property name="icon">
-    <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/document-open.png</normaloff>:/images/16x16/document-open.png</iconset>
-   </property>
    <property name="text">
-    <string>&amp;Open...</string>
+    <string>&amp;Open File or Project...</string>
    </property>
   </action>
   <action name="actionSave">
-   <property name="icon">
-    <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/document-save.png</normaloff>:/images/16x16/document-save.png</iconset>
-   </property>
    <property name="text">
     <string>&amp;Save</string>
    </property>
@@ -205,7 +244,7 @@
   <action name="actionQuit">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/application-exit.png</normaloff>:/images/16x16/application-exit.png</iconset>
+     <normaloff>:/images/16/application-exit.png</normaloff>:/images/16/application-exit.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Quit</string>
@@ -220,7 +259,7 @@
    </property>
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/edit-copy.png</normaloff>:/images/16x16/edit-copy.png</iconset>
+     <normaloff>:/images/16/edit-copy.png</normaloff>:/images/16/edit-copy.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Copy</string>
@@ -232,7 +271,7 @@
    </property>
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/edit-paste.png</normaloff>:/images/16x16/edit-paste.png</iconset>
+     <normaloff>:/images/16/edit-paste.png</normaloff>:/images/16/edit-paste.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Paste</string>
@@ -241,7 +280,7 @@
   <action name="actionAbout">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/help-about.png</normaloff>:/images/16x16/help-about.png</iconset>
+     <normaloff>:/images/16/help-about.png</normaloff>:/images/16/help-about.png</iconset>
    </property>
    <property name="text">
     <string>&amp;About Tiled</string>
@@ -261,7 +300,7 @@
   <action name="actionResizeMap">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/document-page-setup.png</normaloff>:/images/16x16/document-page-setup.png</iconset>
+     <normaloff>:/images/16/document-page-setup.png</normaloff>:/images/16/document-page-setup.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Resize Map...</string>
@@ -270,7 +309,7 @@
   <action name="actionMapProperties">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/document-properties.png</normaloff>:/images/16x16/document-properties.png</iconset>
+     <normaloff>:/images/16/document-properties.png</normaloff>:/images/16/document-properties.png</iconset>
    </property>
    <property name="text">
     <string>Map &amp;Properties...</string>
@@ -281,7 +320,7 @@
     <string>AutoMap</string>
    </property>
    <property name="shortcut">
-    <string>A</string>
+    <string notr="true">Ctrl+M</string>
    </property>
   </action>
   <action name="actionShowGrid">
@@ -292,19 +331,19 @@
     <string>Show &amp;Grid</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+G</string>
+    <string notr="true">Ctrl+G</string>
    </property>
   </action>
   <action name="actionSaveAs">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/document-save-as.png</normaloff>:/images/16x16/document-save-as.png</iconset>
+     <normaloff>:/images/16/document-save-as.png</normaloff>:/images/16/document-save-as.png</iconset>
    </property>
    <property name="text">
     <string>Save &amp;As...</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Alt+S</string>
+    <string notr="true">Ctrl+Alt+S</string>
    </property>
   </action>
   <action name="actionNewTileset">
@@ -315,7 +354,7 @@
   <action name="actionClose">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/window-close.png</normaloff>:/images/16x16/window-close.png</iconset>
+     <normaloff>:/images/16/window-close.png</normaloff>:/images/16/window-close.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Close</string>
@@ -324,7 +363,7 @@
   <action name="actionZoomIn">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/zoom-in.png</normaloff>:/images/16x16/zoom-in.png</iconset>
+     <normaloff>:/images/16/zoom-in.png</normaloff>:/images/16/zoom-in.png</iconset>
    </property>
    <property name="text">
     <string>Zoom In</string>
@@ -333,7 +372,7 @@
   <action name="actionZoomOut">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/zoom-out.png</normaloff>:/images/16x16/zoom-out.png</iconset>
+     <normaloff>:/images/16/zoom-out.png</normaloff>:/images/16/zoom-out.png</iconset>
    </property>
    <property name="text">
     <string>Zoom Out</string>
@@ -345,13 +384,13 @@
    </property>
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/zoom-original.png</normaloff>:/images/16x16/zoom-original.png</iconset>
+     <normaloff>:/images/16/zoom-original.png</normaloff>:/images/16/zoom-original.png</iconset>
    </property>
    <property name="text">
     <string>Normal Size</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+0</string>
+    <string notr="true">Ctrl+0</string>
    </property>
   </action>
   <action name="actionExportAsImage">
@@ -365,7 +404,7 @@
    </property>
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/edit-cut.png</normaloff>:/images/16x16/edit-cut.png</iconset>
+     <normaloff>:/images/16/edit-cut.png</normaloff>:/images/16/edit-cut.png</iconset>
    </property>
    <property name="text">
     <string>Cu&amp;t</string>
@@ -374,9 +413,6 @@
   <action name="actionOffsetMap">
    <property name="text">
     <string>&amp;Offset Map...</string>
-   </property>
-   <property name="toolTip">
-    <string>Offsets everything in a layer</string>
    </property>
   </action>
   <action name="actionPreferences">
@@ -390,7 +426,7 @@
   <action name="actionClearRecentFiles">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/edit-clear.png</normaloff>:/images/16x16/edit-clear.png</iconset>
+     <normaloff>:/images/16/edit-clear.png</normaloff>:/images/16/edit-clear.png</iconset>
    </property>
    <property name="text">
     <string>Clear Recent Files</string>
@@ -401,7 +437,7 @@
     <string>E&amp;xport As...</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+E</string>
+    <string notr="true">Ctrl+Shift+E</string>
    </property>
   </action>
   <action name="actionAddExternalTileset">
@@ -422,7 +458,7 @@
     <string>C&amp;lose All</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+W</string>
+    <string notr="true">Ctrl+Shift+W</string>
    </property>
   </action>
   <action name="actionDelete">
@@ -431,7 +467,7 @@
    </property>
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/edit-delete.png</normaloff>:/images/16x16/edit-delete.png</iconset>
+     <normaloff>:/images/16/edit-delete.png</normaloff>:/images/16/edit-delete.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Delete</string>
@@ -448,7 +484,7 @@
     <string>&amp;Highlight Current Layer</string>
    </property>
    <property name="shortcut">
-    <string>H</string>
+    <string notr="true">H</string>
    </property>
   </action>
   <action name="actionShowTileObjectOutlines">
@@ -480,7 +516,7 @@
     <string>Reload</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+R</string>
+    <string notr="true">Ctrl+R</string>
    </property>
   </action>
   <action name="actionExport">
@@ -488,12 +524,12 @@
     <string>&amp;Export</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+E</string>
+    <string notr="true">Ctrl+E</string>
    </property>
   </action>
-  <action name="actionBecomePatron">
+  <action name="actionDonate">
    <property name="text">
-    <string>Become a Patron</string>
+    <string>Support Tiled Development ↗</string>
    </property>
   </action>
   <action name="actionSaveAll">
@@ -501,12 +537,12 @@
     <string>Save All</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+S</string>
+    <string notr="true">Ctrl+Shift+S</string>
    </property>
   </action>
   <action name="actionDocumentation">
    <property name="text">
-    <string>User Manual</string>
+    <string>User Manual ↗</string>
    </property>
   </action>
   <action name="actionNoLabels">
@@ -557,7 +593,7 @@
     <string>Paste &amp;in Place</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+V</string>
+    <string notr="true">Ctrl+Shift+V</string>
    </property>
   </action>
   <action name="actionFullScreen">
@@ -568,7 +604,7 @@
     <string>Full Screen</string>
    </property>
    <property name="shortcut">
-    <string>F11</string>
+    <string notr="true">F11</string>
    </property>
   </action>
   <action name="actionSnapToPixels">
@@ -582,7 +618,7 @@
   <action name="actionTilesetProperties">
    <property name="icon">
     <iconset resource="tiled.qrc">
-     <normaloff>:/images/16x16/document-properties.png</normaloff>:/images/16x16/document-properties.png</iconset>
+     <normaloff>:/images/16/document-properties.png</normaloff>:/images/16/document-properties.png</iconset>
    </property>
    <property name="text">
     <string>Tileset &amp;Properties...</string>
@@ -602,7 +638,7 @@
   <action name="actionEditCommands">
    <property name="icon">
     <iconset>
-     <normalon>:/images/24x24/system-run.png</normalon>
+     <normalon>:/images/24/system-run.png</normalon>
     </iconset>
    </property>
    <property name="text">
@@ -617,7 +653,7 @@
     <string>Clear View</string>
    </property>
    <property name="shortcut">
-    <string>Tab</string>
+    <string notr="true">Tab</string>
    </property>
   </action>
   <action name="actionLabelForHoveredObject">
@@ -630,7 +666,12 @@
   </action>
   <action name="actionLoadWorld">
    <property name="text">
-    <string>Load World...</string>
+    <string>&amp;Load World...</string>
+   </property>
+  </action>
+  <action name="actionNewWorld">
+   <property name="text">
+    <string>&amp;New World...</string>
    </property>
   </action>
   <action name="actionHighlightHoveredObject">
@@ -639,6 +680,128 @@
    </property>
    <property name="text">
     <string>Highlight Hovered Object</string>
+   </property>
+  </action>
+  <action name="actionShowTileCollisionShapes">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Tile Collision Shapes</string>
+   </property>
+  </action>
+  <action name="actionFitInView">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/16/zoom-fit-best.png</normaloff>:/images/16/zoom-fit-best.png</iconset>
+   </property>
+   <property name="text">
+    <string>Fit Map in View</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">Ctrl+/</string>
+   </property>
+  </action>
+  <action name="actionForum">
+   <property name="text">
+    <string>Community Forum ↗</string>
+   </property>
+  </action>
+  <action name="actionCloseProject">
+   <property name="text">
+    <string>&amp;Close Project</string>
+   </property>
+  </action>
+  <action name="actionClearRecentProjects">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/16/edit-clear.png</normaloff>:/images/16/edit-clear.png</iconset>
+   </property>
+   <property name="text">
+    <string>Clear Recent Projects</string>
+   </property>
+  </action>
+  <action name="actionAddFolderToProject">
+   <property name="text">
+    <string>Add Folder to Project...</string>
+   </property>
+  </action>
+  <action name="actionRefreshProjectFolders">
+   <property name="text">
+    <string>Refresh Folders</string>
+   </property>
+  </action>
+  <action name="actionShowObjectReferences">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Object &amp;References</string>
+   </property>
+  </action>
+  <action name="actionReopenClosedFile">
+   <property name="text">
+    <string>Reopen Closed File</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">Ctrl+Shift+T</string>
+   </property>
+  </action>
+  <action name="actionProjectProperties">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/16/document-properties.png</normaloff>:/images/16/document-properties.png</iconset>
+   </property>
+   <property name="text">
+    <string>Project &amp;Properties...</string>
+   </property>
+  </action>
+  <action name="actionOpenFileInProject">
+   <property name="text">
+    <string>Open File in &amp;Project...</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionEnableParallax">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Enable Parallax</string>
+   </property>
+  </action>
+  <action name="actionEnableWorlds">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show &amp;World</string>
+   </property>
+  </action>
+  <action name="actionNewProject">
+   <property name="text">
+    <string>&amp;New Project...</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">Ctrl+Shift+N</string>
+   </property>
+  </action>
+  <action name="actionAddAutomappingRulesTileset">
+   <property name="text">
+    <string>Add Automapping Rules Tileset</string>
+   </property>
+  </action>
+  <action name="actionSearchActions">
+   <property name="text">
+    <string>Search Actions...</string>
+   </property>
+   <property name="toolTip">
+    <string>Search actions available in Tiled</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">Ctrl+Shift+P</string>
    </property>
   </action>
  </widget>

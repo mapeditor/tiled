@@ -30,9 +30,7 @@
 #include "tileset.h"
 
 #include "imagecache.h"
-#include "terrain.h"
 #include "tile.h"
-#include "tilesetformat.h"
 #include "tilesetmanager.h"
 #include "wangset.h"
 
@@ -40,51 +38,35 @@
 
 namespace Tiled {
 
-SharedTileset Tileset::create(const QString &name, int tileWidth, int tileHeight, int tileSpacing, int margin)
-{
-    SharedTileset tileset(new Tileset(name, tileWidth, tileHeight,
-                                      tileSpacing, margin));
-    tileset->mWeakPointer = tileset;
-    TilesetManager::instance()->addTileset(tileset.data());
-    return tileset;
-}
-
 Tileset::Tileset(QString name, int tileWidth, int tileHeight,
-                 int tileSpacing, int margin):
-    Object(TilesetType),
-    mName(std::move(name)),
-    mTileWidth(tileWidth),
-    mTileHeight(tileHeight),
-    mTileSpacing(tileSpacing),
-    mMargin(margin),
-    mOrientation(Orthogonal),
-    mGridSize(tileWidth, tileHeight),
-    mColumnCount(0),
-    mExpectedColumnCount(0),
-    mExpectedRowCount(0),
-    mNextTileId(0),
-    mMaximumTerrainDistance(0),
-    mTerrainDistancesDirty(false),
-    mStatus(LoadingReady)
+                 int tileSpacing, int margin)
+    : Object(TilesetType)
+    , mName(std::move(name))
+    , mTileWidth(tileWidth)
+    , mTileHeight(tileHeight)
+    , mTileSpacing(tileSpacing)
+    , mMargin(margin)
+    , mGridSize(tileWidth, tileHeight)
 {
     Q_ASSERT(tileSpacing >= 0);
     Q_ASSERT(margin >= 0);
+
+    TilesetManager::instance()->addTileset(this);
 }
 
 Tileset::~Tileset()
 {
     TilesetManager::instance()->removeTileset(this);
     qDeleteAll(mTiles);
-    qDeleteAll(mTerrainTypes);
     qDeleteAll(mWangSets);
 }
 
-void Tileset::setFormat(TilesetFormat *format)
+void Tileset::setFormat(const QString &format)
 {
     mFormat = format;
 }
 
-TilesetFormat *Tileset::format() const
+QString Tileset::format() const
 {
     return mFormat;
 }
@@ -96,7 +78,6 @@ TilesetFormat *Tileset::format() const
  */
 void Tileset::setTileSize(QSize tileSize)
 {
-    Q_ASSERT(!tileSize.isEmpty());
     mTileWidth = tileSize.width();
     mTileHeight = tileSize.height();
 }
@@ -123,15 +104,28 @@ void Tileset::setMargin(int margin)
 }
 
 /**
+ * Returns the location of the tile with the given ID.
+ */
+int Tileset::findTileLocation(Tile *tile) const
+{
+    return mTiles.indexOf(tile);
+}
+
+/**
  * Returns the tile with the given ID, creating it when it does not exist yet.
  */
 Tile *Tileset::findOrCreateTile(int id)
 {
-    if (Tile *tile = mTiles.value(id))
+    if (Tile *tile = mTilesById.value(id))
         return tile;
 
     mNextTileId = std::max(mNextTileId, id + 1);
-    return mTiles[id] = new Tile(id, this);
+
+    auto tile = new Tile(id, this);
+    mTilesById[id] = tile;
+    mTiles.append(tile);
+
+    return tile;
 }
 
 /**
@@ -201,52 +195,9 @@ bool Tileset::loadFromImage(const QImage &image, const QUrl &source)
         return false;
     }
 
-    const QSize tileSize = this->tileSize();
-    const int margin = this->margin();
-    const int spacing = this->tileSpacing();
+    mImage = QPixmap::fromImage(image);
 
-    Q_ASSERT(tileSize.width() > 0 && tileSize.height() > 0);
-
-    const int stopWidth = image.width() - tileSize.width();
-    const int stopHeight = image.height() - tileSize.height();
-
-    int tileNum = 0;
-
-    for (int y = margin; y <= stopHeight; y += tileSize.height() + spacing) {
-        for (int x = margin; x <= stopWidth; x += tileSize.width() + spacing) {
-            const QImage tileImage = image.copy(x, y, tileSize.width(), tileSize.height());
-            QPixmap tilePixmap = QPixmap::fromImage(tileImage);
-            const QColor &transparent = mImageReference.transparentColor;
-
-            if (transparent.isValid()) {
-                const QImage mask = tileImage.createMaskFromColor(transparent.rgb());
-                tilePixmap.setMask(QBitmap::fromImage(mask));
-            }
-
-            auto it = mTiles.find(tileNum);
-            if (it != mTiles.end())
-                it.value()->setImage(tilePixmap);
-            else
-                mTiles.insert(tileNum, new Tile(tilePixmap, tileNum, this));
-
-            ++tileNum;
-        }
-    }
-
-    // Blank out any remaining tiles to avoid confusion (todo: could be more clear)
-    for (Tile *tile : mTiles) {
-        if (tile->id() >= tileNum) {
-            QPixmap tilePixmap = QPixmap(tileSize);
-            tilePixmap.fill();
-            tile->setImage(tilePixmap);
-        }
-    }
-
-    mNextTileId = std::max(mNextTileId, tileNum);
-
-    mImageReference.size = image.size();
-    mColumnCount = columnCountForWidth(mImageReference.size.width());
-    mImageReference.status = LoadingReady;
+    initializeTilesetTiles();
 
     return true;
 }
@@ -260,8 +211,7 @@ bool Tileset::loadFromImage(const QImage &image, const QUrl &source)
  */
 bool Tileset::loadFromImage(const QImage &image, const QString &source)
 {
-    const QUrl url(source);
-    return loadFromImage(image, url.isRelative() ? QUrl::fromLocalFile(source) : url);
+    return loadFromImage(image, Tiled::toUrl(source));
 }
 
 /**
@@ -285,50 +235,65 @@ bool Tileset::loadFromImage(const QString &fileName)
  */
 bool Tileset::loadImage()
 {
-    TilesheetParameters p;
-    p.fileName = mImageReference.source.toLocalFile();
-    p.tileWidth = mTileWidth;
-    p.tileHeight = mTileHeight;
-    p.spacing = mTileSpacing;
-    p.margin = mMargin;
-    p.transparentColor = mImageReference.transparentColor;
-
-    auto image = ImageCache::loadImage(p.fileName);
-    if (image.isNull()) {
+    if (mTileWidth <= 0 || mTileHeight <= 0) {
         mImageReference.status = LoadingError;
         return false;
     }
 
-    auto tiles = ImageCache::cutTiles(p);
+    mImage = ImageCache::loadPixmap(Tiled::urlToLocalFileOrQrc(mImageReference.source));
+    if (mImage.isNull()) {
+        mImageReference.status = LoadingError;
+        return false;
+    }
 
-    for (int tileNum = 0; tileNum < tiles.size(); ++tileNum) {
-        auto it = mTiles.find(tileNum);
-        if (it != mTiles.end())
-            it.value()->setImage(tiles.at(tileNum));
-        else
-            mTiles.insert(tileNum, new Tile(tiles.at(tileNum), tileNum, this));
+    initializeTilesetTiles();
+
+    return true;
+}
+
+void Tileset::initializeTilesetTiles()
+{
+    if (mImageReference.transparentColor.isValid())
+        mImage.setMask(mImage.createMaskFromColor(mImageReference.transparentColor));
+
+    QVector<QRect> tileRects;
+
+    for (int y = mMargin; y <= mImage.height() - mTileHeight; y += mTileHeight + mTileSpacing)
+        for (int x = mMargin; x <= mImage.width() - mTileWidth; x += mTileWidth + mTileSpacing)
+            tileRects.append(QRect(x, y, mTileWidth, mTileHeight));
+
+    for (int tileNum = 0; tileNum < tileRects.size(); ++tileNum) {
+        auto it = mTilesById.find(tileNum);
+        if (it != mTilesById.end()) {
+            it.value()->setImage(QPixmap());    // make sure it uses the tileset's image
+            it.value()->setImageRect(tileRects.at(tileNum));
+        } else {
+            auto tile = new Tile(tileNum, this);
+            tile->setImageRect(tileRects.at(tileNum));
+            mTilesById.insert(tileNum, tile);
+            mTiles.insert(tileNum, tile);
+        }
     }
 
     QPixmap blank;
 
     // Blank out any remaining tiles to avoid confusion (todo: could be more clear)
-    for (Tile *tile : mTiles) {
-        if (tile->id() >= tiles.size()) {
+    for (Tile *tile : std::as_const(mTiles)) {
+        if (tile->id() >= tileRects.size()) {
             if (blank.isNull()) {
                 blank = QPixmap(mTileWidth, mTileHeight);
                 blank.fill();
             }
             tile->setImage(blank);
+            tile->setImageRect(QRect(0, 0, mTileWidth, mTileHeight));
         }
     }
 
-    mNextTileId = std::max(mNextTileId, tiles.size());
+    mNextTileId = std::max<int>(mNextTileId, tileRects.size());
 
-    mImageReference.size = image.size();
+    mImageReference.size = mImage.size();
     mColumnCount = columnCountForWidth(mImageReference.size.width());
     mImageReference.status = LoadingReady;
-
-    return true;
 }
 
 /**
@@ -355,6 +320,11 @@ static bool sameTileImages(const Tileset &subject, const Tileset &candidate)
  */
 SharedTileset Tileset::findSimilarTileset(const QVector<SharedTileset> &tilesets) const
 {
+    // The TilesetManager avoids loading the same external tileset twice, so
+    // for external tilesets we don't need to look for "similar" tilesets.
+    if (isExternal())
+        return SharedTileset();
+
     for (const SharedTileset &candidate : tilesets) {
         Q_ASSERT(candidate != this);
 
@@ -398,15 +368,14 @@ void Tileset::setImageSource(const QUrl &imageSource)
 
 /**
  * Exists only because the Python plugin interface does not handle QUrl (would
- * be nice to add this). Assumes \a source is a local file when it would
- * otherwise be a relative URL (without scheme).
+ * be nice to add this). Assumes \a source is a local file when it is either
+ * an absolute file path or would otherwise be a relative URL (without scheme).
  *
  * \sa loadFromImage
  */
 void Tileset::setImageSource(const QString &source)
 {
-    const QUrl url(source);
-    setImageSource(url.isRelative() ? QUrl::fromLocalFile(source) : url);
+    setImageSource(Tiled::toUrl(source));
 }
 
 /**
@@ -433,272 +402,45 @@ int Tileset::rowCountForHeight(int height) const
     return (height - mMargin + mTileSpacing) / (mTileHeight + mTileSpacing);
 }
 
-/**
- * Adds a new terrain type.
- *
- * @param name      the name of the terrain
- * @param imageTile the id of the tile that represents the terrain visually
- * @return the created Terrain instance
- */
-Terrain *Tileset::addTerrain(const QString &name, int imageTileId)
-{
-    Terrain *terrain = new Terrain(terrainCount(), this, name,
-                                   imageTileId);
-    insertTerrain(terrainCount(), terrain);
-    return terrain;
-}
-
-/**
- * Adds the \a terrain type at the given \a index.
- *
- * The terrain should already have this tileset associated with it.
- */
-void Tileset::insertTerrain(int index, Terrain *terrain)
-{
-    Q_ASSERT(terrain->tileset() == this);
-
-    mTerrainTypes.insert(index, terrain);
-
-    // Reassign terrain IDs
-    for (int terrainId = index; terrainId < mTerrainTypes.size(); ++terrainId)
-        mTerrainTypes.at(terrainId)->mId = terrainId;
-
-    // Adjust tile terrain references
-    for (Tile *tile : mTiles) {
-        for (int corner = 0; corner < 4; ++corner) {
-            const int terrainId = tile->cornerTerrainId(corner);
-            if (terrainId >= index)
-                tile->setCornerTerrainId(corner, terrainId + 1);
-        }
-    }
-
-    mTerrainDistancesDirty = true;
-}
-
-/**
- * Removes the terrain type at the given \a index and returns it. The
- * caller becomes responsible for the lifetime of the terrain type.
- *
- * This will cause the terrain ids of subsequent terrains to shift up to
- * fill the space and the terrain information of all tiles in this tileset
- * will be updated accordingly.
- */
-Terrain *Tileset::takeTerrainAt(int index)
-{
-    Terrain *terrain = mTerrainTypes.takeAt(index);
-
-    // Reassign terrain IDs
-    for (int terrainId = index; terrainId < mTerrainTypes.size(); ++terrainId)
-        mTerrainTypes.at(terrainId)->mId = terrainId;
-
-    // Clear and adjust tile terrain references
-    for (Tile *tile : mTiles) {
-        for (int corner = 0; corner < 4; ++corner) {
-            const int terrainId = tile->cornerTerrainId(corner);
-            if (terrainId == index)
-                tile->setCornerTerrainId(corner, 0xFF);
-            else if (terrainId > index)
-                tile->setCornerTerrainId(corner, terrainId - 1);
-        }
-    }
-
-    mTerrainDistancesDirty = true;
-
-    return terrain;
-}
-
-/**
- * Swaps a terrain type at \a index with another index.
- */
-void Tileset::swapTerrains(int index, int swapIndex)
-{
-    mTerrainTypes.swap(index, swapIndex);
-
-    // Reassign terrain IDs
-    mTerrainTypes.at(index)->mId = index;
-    mTerrainTypes.at(swapIndex)->mId = swapIndex;
-
-    // Clear and adjust tile terrain references
-    for (Tile *tile : mTiles) {
-        for (int corner = 0; corner < 4; ++corner) {
-            const int terrainId = tile->cornerTerrainId(corner);
-            if (terrainId == index)
-                tile->setCornerTerrainId(corner, swapIndex);
-            else if (terrainId == swapIndex)
-                tile->setCornerTerrainId(corner, index);
-        }
-    }
-
-    mTerrainDistancesDirty = true;
-}
-
-/**
- * Returns the transition penalty(/distance) between 2 terrains. -1 if no
- * transition is possible.
- */
-int Tileset::terrainTransitionPenalty(int terrainType0, int terrainType1) const
-{
-    if (mTerrainDistancesDirty)
-        const_cast<Tileset*>(this)->recalculateTerrainDistances();
-
-    terrainType0 = terrainType0 == 255 ? -1 : terrainType0;
-    terrainType1 = terrainType1 == 255 ? -1 : terrainType1;
-
-    // Do some magic, since we don't have a transition array for no-terrain
-    if (terrainType0 == -1 && terrainType1 == -1)
-        return 0;
-    if (terrainType0 == -1)
-        return mTerrainTypes.at(terrainType1)->transitionDistance(terrainType0);
-    return mTerrainTypes.at(terrainType0)->transitionDistance(terrainType1);
-}
-
-int Tileset::maximumTerrainDistance() const
-{
-    if (mTerrainDistancesDirty)
-        const_cast<Tileset*>(this)->recalculateTerrainDistances();
-
-    return mMaximumTerrainDistance;
-}
-
-/**
- * Calculates the transition distance matrix for all terrain types.
- */
-void Tileset::recalculateTerrainDistances()
-{
-    // some fancy macros which can search for a value in each byte of a word simultaneously
-    #define hasZeroByte(dword) (((dword) - 0x01010101UL) & ~(dword) & 0x80808080UL)
-    #define hasByteEqualTo(dword, value) (hasZeroByte((dword) ^ (~0UL/255 * (value))))
-
-    // Terrain distances are the number of transitions required before one terrain may meet another
-    // Terrains that have no transition path have a distance of -1
-    int maximumDistance = 1;
-
-    for (int i = 0; i < terrainCount(); ++i) {
-        Terrain *type = terrain(i);
-        QVector<int> distance(terrainCount() + 1, -1);
-
-        // Check all tiles for transitions to other terrain types
-        for (const Tile *tile : mTiles) {
-            if (!hasByteEqualTo(tile->terrain(), i))
-                continue;
-
-            // This tile has transitions, add the transitions as neightbours (distance 1)
-            int tl = tile->cornerTerrainId(0);
-            int tr = tile->cornerTerrainId(1);
-            int bl = tile->cornerTerrainId(2);
-            int br = tile->cornerTerrainId(3);
-
-            // Terrain on diagonally opposite corners are not actually a neighbour
-            if (tl == i || br == i) {
-                distance[tr + 1] = 1;
-                distance[bl + 1] = 1;
-            }
-            if (tr == i || bl == i) {
-                distance[tl + 1] = 1;
-                distance[br + 1] = 1;
-            }
-
-            // terrain has at least one tile of its own type
-            distance[i + 1] = 0;
-        }
-
-        type->setTransitionDistances(distance);
-    }
-
-    // Calculate indirect transition distances
-    bool bNewConnections;
-    do {
-        bNewConnections = false;
-
-        // For each combination of terrain types
-        for (int i = 0; i < terrainCount(); ++i) {
-            Terrain *t0 = terrain(i);
-            for (int j = 0; j < terrainCount(); ++j) {
-                if (i == j)
-                    continue;
-                Terrain *t1 = terrain(j);
-
-                // Scan through each terrain type, and see if we have any in common
-                for (int t = -1; t < terrainCount(); ++t) {
-                    int d0 = t0->transitionDistance(t);
-                    int d1 = t1->transitionDistance(t);
-                    if (d0 == -1 || d1 == -1)
-                        continue;
-
-                    // We have found a common connection
-                    int d = t0->transitionDistance(j);
-                    Q_ASSERT(t1->transitionDistance(i) == d);
-
-                    // If the new path is shorter, record the new distance
-                    if (d == -1 || d0 + d1 < d) {
-                        d = d0 + d1;
-                        t0->setTransitionDistance(j, d);
-                        t1->setTransitionDistance(i, d);
-                        maximumDistance = qMax(maximumDistance, d);
-
-                        // We're making progress, flag for another iteration...
-                        bNewConnections = true;
-                    }
-                }
-            }
-        }
-
-        // Repeat while we are still making new connections (could take a
-        // number of iterations for distant terrain types to connect)
-    } while (bNewConnections);
-
-    mMaximumTerrainDistance = maximumDistance;
-    mTerrainDistancesDirty = false;
-}
-
-void Tileset::addWangSet(WangSet *wangSet)
+void Tileset::addWangSet(std::unique_ptr<WangSet> wangSet)
 {
     Q_ASSERT(wangSet->tileset() == this);
-
-    mWangSets.append(wangSet);
-}
-
-void Tileset::addWangSet(std::unique_ptr<WangSet> &&wangSet)
-{
-    addWangSet(wangSet.release());
+    mWangSets.append(wangSet.release());
 }
 
 /**
- * @brief Tileset::insertWangSet Adds a wangSet.
- * @param wangSet A pointer to the wangset to add.
+ * Adds a WangSet.
  */
-void Tileset::insertWangSet(int index, WangSet *wangSet)
+void Tileset::insertWangSet(int index, std::unique_ptr<WangSet> wangSet)
 {
     Q_ASSERT(wangSet->tileset() == this);
-
-    mWangSets.insert(index, wangSet);
+    mWangSets.insert(index, wangSet.release());
 }
 
 /**
- * @brief Tileset::takeWangSetAt Removes the wangset at a given index
- *                               And returns it to the caller.
- * @param index Index to take at.
- * @return
+ * Removes the WangSet at a given \a index and returns it to the caller.
  */
-WangSet *Tileset::takeWangSetAt(int index)
+std::unique_ptr<WangSet> Tileset::takeWangSetAt(int index)
 {
-    return mWangSets.takeAt(index);
+    return std::unique_ptr<WangSet>(mWangSets.takeAt(index));
 }
 
 /**
  * Adds a new tile to the end of the tileset.
  */
-Tile *Tileset::addTile(const QPixmap &image, const QUrl &source)
+Tile *Tileset::addTile(const QPixmap &image, const QUrl &source, const QRect &rect)
 {
     Tile *newTile = new Tile(takeNextTileId(), this);
     newTile->setImage(image);
     newTile->setImageSource(source);
+    newTile->setImageRect(rect.isNull() ? image.rect() : rect);
 
-    mTiles.insert(newTile->id(), newTile);
-    if (mTileHeight < image.height())
-        mTileHeight = image.height();
-    if (mTileWidth < image.width())
-        mTileWidth = image.width();
+    mTilesById.insert(newTile->id(), newTile);
+    mTiles.append(newTile);
+    if (mTileHeight < newTile->height())
+        mTileHeight = newTile->height();
+    if (mTileWidth < newTile->width())
+        mTileWidth = newTile->width();
     return newTile;
 }
 
@@ -710,8 +452,9 @@ Tile *Tileset::addTile(const QPixmap &image, const QUrl &source)
 void Tileset::addTiles(const QList<Tile *> &tiles)
 {
     for (Tile *tile : tiles) {
-        Q_ASSERT(!mTiles.contains(tile->id()));
-        mTiles.insert(tile->id(), tile);
+        Q_ASSERT(tile->tileset() == this && !mTilesById.contains(tile->id()));
+        mTilesById.insert(tile->id(), tile);
+        mTiles.append(tile);
     }
 
     updateTileSize();
@@ -725,8 +468,9 @@ void Tileset::addTiles(const QList<Tile *> &tiles)
 void Tileset::removeTiles(const QList<Tile *> &tiles)
 {
     for (Tile *tile : tiles) {
-        Q_ASSERT(mTiles.contains(tile->id()));
-        mTiles.remove(tile->id());
+        Q_ASSERT(tile->tileset() == this && mTilesById.contains(tile->id()));
+        mTilesById.remove(tile->id());
+        mTiles.removeOne(tile);
     }
 
     updateTileSize();
@@ -737,11 +481,43 @@ void Tileset::removeTiles(const QList<Tile *> &tiles)
  */
 void Tileset::deleteTile(int id)
 {
-    delete mTiles.take(id);
+    auto tile = mTilesById.take(id);
+    mTiles.removeOne(tile);
+    delete tile;
 }
 
 /**
- * Sets the \a image to be used for the tile with the given \a id.
+ * Moves the \a tiles from their current position the given \a position.
+ *
+ * Returns the previous locations of the moved tiles.
+ */
+QList<int> Tileset::relocateTiles(const QList<Tile *> &tiles, int location)
+{
+    QList<int> prevLocations;
+    for (Tile *tile : tiles) {
+        int fromIndex = mTiles.indexOf(tile);
+        mTiles.move(fromIndex, location);
+        if (fromIndex > location)
+            ++location; // insert the next tile after the previous one
+
+        prevLocations.append(fromIndex);
+    }
+    return prevLocations;
+}
+
+bool Tileset::anyTileOutOfOrder() const
+{
+    int tileId = 0;
+    for (const Tile *tile : mTiles) {
+        if (tile->id() != tileId)
+            return true;
+        ++tileId;
+    }
+    return false;
+}
+
+/**
+ * Sets the \a image to be used for the given \a tile.
  *
  * This function makes sure the tile width and tile height properties of the
  * tileset reflect the maximum size. It is only expected to be used for
@@ -752,28 +528,60 @@ void Tileset::setTileImage(Tile *tile,
                            const QUrl &source)
 {
     Q_ASSERT(isCollection());
-    Q_ASSERT(mTiles.value(tile->id()) == tile);
+    Q_ASSERT(mTilesById.value(tile->id()) == tile);
 
-    const QSize previousImageSize = tile->image().size();
-    const QSize newImageSize = image.size();
-
+    const QSize previousTileSize = tile->size();
     tile->setImage(image);
     tile->setImageSource(source);
 
-    if (previousImageSize != newImageSize) {
-        // Update our max. tile size
-        if (previousImageSize.height() == mTileHeight ||
-                previousImageSize.width() == mTileWidth) {
-            // This used to be the max image; we have to recompute
-            updateTileSize();
-        } else {
-            // Check if we have a new maximum
-            if (mTileHeight < newImageSize.height())
-                mTileHeight = newImageSize.height();
-            if (mTileWidth < newImageSize.width())
-                mTileWidth = newImageSize.width();
-        }
+    maybeUpdateTileSize(previousTileSize, tile->size());
+}
+
+void Tileset::setTileImageRect(Tile *tile, const QRect &imageRect)
+{
+    Q_ASSERT(mTilesById.value(tile->id()) == tile);
+
+    const QSize previousTileSize = tile->size();
+    tile->setImageRect(imageRect);
+
+    maybeUpdateTileSize(previousTileSize, tile->size());
+}
+
+void Tileset::maybeUpdateTileSize(QSize previousTileSize, QSize newTileSize)
+{
+    if (previousTileSize == newTileSize)
+        return;
+
+    // Update our max. tile size
+    if (previousTileSize.height() == mTileHeight ||
+            previousTileSize.width() == mTileWidth) {
+        // This used to be the max image; we have to recompute
+        updateTileSize();
+    } else {
+        // Check if we have a new maximum
+        if (mTileHeight < newTileSize.height())
+            mTileHeight = newTileSize.height();
+        if (mTileWidth < newTileSize.width())
+            mTileWidth = newTileSize.width();
     }
+}
+
+void Tileset::setOriginalTileset(const SharedTileset &original)
+{
+    mOriginalTileset = original;
+}
+
+/**
+ * When a tileset gets exported, a copy might be made to apply certain export
+ * options. In this case, the copy will have a (weak) pointer to the original
+ * tileset, to allow issues found during export to refer to this tileset.
+ */
+SharedTileset Tileset::originalTileset()
+{
+    SharedTileset original { mOriginalTileset };
+    if (!original)
+        original = sharedFromThis();
+    return original;
 }
 
 void Tileset::swap(Tileset &other)
@@ -789,67 +597,63 @@ void Tileset::swap(Tileset &other)
     std::swap(mTileSpacing, other.mTileSpacing);
     std::swap(mMargin, other.mMargin);
     std::swap(mTileOffset, other.mTileOffset);
+    std::swap(mObjectAlignment, other.mObjectAlignment);
     std::swap(mOrientation, other.mOrientation);
+    std::swap(mTileRenderSize, other.mTileRenderSize);
+    std::swap(mFillMode, other.mFillMode);
     std::swap(mGridSize, other.mGridSize);
     std::swap(mColumnCount, other.mColumnCount);
     std::swap(mExpectedColumnCount, other.mExpectedColumnCount);
     std::swap(mExpectedRowCount, other.mExpectedRowCount);
+    std::swap(mTilesById, other.mTilesById);
     std::swap(mTiles, other.mTiles);
     std::swap(mNextTileId, other.mNextTileId);
-    std::swap(mTerrainTypes, other.mTerrainTypes);
     std::swap(mWangSets, other.mWangSets);
-    std::swap(mTerrainDistancesDirty, other.mTerrainDistancesDirty);
     std::swap(mStatus, other.mStatus);
     std::swap(mBackgroundColor, other.mBackgroundColor);
     std::swap(mFormat, other.mFormat);
 
     // Don't swap mWeakPointer, since it's a reference to this.
 
-    // Update back references from tiles and terrains
-    for (auto tile : mTiles)
+    // Update back references from tiles and Wang sets
+    for (auto tile : std::as_const(mTiles))
         tile->mTileset = this;
-    for (auto terrain : mTerrainTypes)
-        terrain->mTileset = this;
-    for (auto wangSet : mWangSets)
+    for (auto wangSet : std::as_const(mWangSets))
         wangSet->setTileset(this);
 
-    for (auto tile : other.mTiles)
+    for (auto tile : std::as_const(other.mTiles))
         tile->mTileset = &other;
-    for (auto terrain : other.mTerrainTypes)
-        terrain->mTileset = &other;
-    for (auto wangSet : other.mWangSets)
+    for (auto wangSet : std::as_const(other.mWangSets))
         wangSet->setTileset(&other);
 }
 
 SharedTileset Tileset::clone() const
 {
     SharedTileset c = create(mName, mTileWidth, mTileHeight, mTileSpacing, mMargin);
+    c->setClassName(className());
     c->setProperties(properties());
 
     // mFileName stays empty
     c->mTileOffset = mTileOffset;
+    c->mObjectAlignment = mObjectAlignment;
     c->mOrientation = mOrientation;
+    c->mTileRenderSize = mTileRenderSize;
+    c->mFillMode = mFillMode;
     c->mGridSize = mGridSize;
     c->mColumnCount = mColumnCount;
     c->mNextTileId = mNextTileId;
-    c->mTerrainDistancesDirty = mTerrainDistancesDirty;
     c->mStatus = mStatus;
     c->mBackgroundColor = mBackgroundColor;
     c->mFormat = mFormat;
+    c->mTransformationFlags = mTransformationFlags;
 
-    QMapIterator<int, Tile*> tileIterator(mTiles);
-    while (tileIterator.hasNext()) {
-        tileIterator.next();
+    for (auto tile : mTiles) {
+        const int id = tile->id();
+        Tile *clonedTile = tile->clone(c.data());
 
-        const int id = tileIterator.key();
-        const Tile *tile = tileIterator.value();
-
-        c->mTiles.insert(id, tile->clone(c.data()));
+        c->mTilesById.insert(id, clonedTile);
+        c->mTiles.append(clonedTile);
     }
-
-    c->mTerrainTypes.reserve(mTerrainTypes.size());
-    for (Terrain *terrain : mTerrainTypes)
-        c->mTerrainTypes.append(terrain->clone(c.data()));
 
     c->mWangSets.reserve(mWangSets.size());
     for (WangSet *wangSet : mWangSets)
@@ -858,6 +662,7 @@ SharedTileset Tileset::clone() const
     // Call setter to please TilesetManager, which starts watching the image of
     // the tileset when it calls TilesetManager::tilesetImageSourceChanged.
     c->setImageReference(mImageReference);
+    c->mImage = mImage;
 
     return c;
 }
@@ -869,7 +674,7 @@ void Tileset::updateTileSize()
 {
     int maxWidth = 0;
     int maxHeight = 0;
-    for (Tile *tile : mTiles) {
+    for (Tile *tile : std::as_const(mTiles)) {
         const QSize size = tile->size();
         if (maxWidth < size.width())
             maxWidth = size.width();
@@ -885,9 +690,9 @@ QString Tileset::orientationToString(Tileset::Orientation orientation)
 {
     switch (orientation) {
     case Tileset::Orthogonal:
-        return QLatin1String("orthogonal");
+        return QStringLiteral("orthogonal");
     case Tileset::Isometric:
-        return QLatin1String("isometric");
+        return QStringLiteral("isometric");
     }
     return QString();
 }
@@ -898,6 +703,42 @@ Tileset::Orientation Tileset::orientationFromString(const QString &string)
     if (string == QLatin1String("isometric"))
         orientation = Isometric;
     return orientation;
+}
+
+QString Tileset::tileRenderSizeToString(TileRenderSize tileRenderSize)
+{
+    switch (tileRenderSize) {
+    case TileSize:
+        return QStringLiteral("tile");
+    case GridSize:
+        return QStringLiteral("grid");
+    }
+    return QString();
+}
+
+Tileset::TileRenderSize Tileset::tileRenderSizeFromString(const QString &string)
+{
+    if (string == QLatin1String("grid"))
+        return GridSize;
+    return TileSize;
+}
+
+QString Tileset::fillModeToString(FillMode fillMode)
+{
+    switch (fillMode) {
+    case Stretch:
+        return QStringLiteral("stretch");
+    case PreserveAspectFit:
+        return QStringLiteral("preserve-aspect-fit");
+    }
+    return QString();
+}
+
+Tileset::FillMode Tileset::fillModeFromString(const QString &string)
+{
+    if (string == QLatin1String("preserve-aspect-fit"))
+        return PreserveAspectFit;
+    return Stretch;
 }
 
 } // namespace Tiled

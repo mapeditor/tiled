@@ -47,7 +47,6 @@
 #include <mapdocument.h>
 #include <mapobject.h>
 #include <objectgroup.h>
-#include <terrain.h>
 #include <tile.h>
 #include <tileset.h>
 #include <tilesetmanager.h>

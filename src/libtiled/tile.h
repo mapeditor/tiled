@@ -32,50 +32,18 @@
 #include "object.h"
 #include "tiled.h"
 
+#include <QPainterPath>
 #include <QPixmap>
 #include <QSharedPointer>
 #include <QUrl>
 
 #include <memory>
+#include <optional>
 
 namespace Tiled {
 
 class ObjectGroup;
-class Terrain;
 class Tileset;
-
-/**
- * Convenience function for creating tile terrain information.
- */
-inline unsigned makeTerrain(int id)
-{
-    id &= 0xFF;
-    return id << 24 | id << 16 | id << 8 | id;
-}
-
-/**
- * Convenience function for creating tile terrain information.
- */
-inline unsigned makeTerrain(int topLeft,
-                            int topRight,
-                            int bottomLeft,
-                            int bottomRight)
-{
-    return (topLeft & 0xFF) << 24 |
-           (topRight & 0xFF) << 16 |
-           (bottomLeft & 0xFF) << 8 |
-           (bottomRight & 0xFF);
-}
-
-/**
- * Returns the given \a terrain with the \a corner modified to \a terrainId.
- */
-inline unsigned setTerrainCorner(unsigned terrain, int corner, int terrainId)
-{
-    unsigned mask = 0xFF << (3 - corner) * 8;
-    unsigned insert = terrainId << (3 - corner) * 8;
-    return (terrain & ~mask) | (insert & mask);
-}
 
 /**
  * A single frame of an animated tile.
@@ -94,13 +62,11 @@ struct Frame
 
 class TILEDSHARED_EXPORT Tile : public Object
 {
-    Q_OBJECT
-
 public:
     Tile(int id, Tileset *tileset);
     Tile(const QPixmap &image, int id, Tileset *tileset);
 
-    ~Tile();
+    ~Tile() override;
 
     int id() const;
 
@@ -108,6 +74,7 @@ public:
     QSharedPointer<Tileset> sharedTileset() const;
 
     const QPixmap &image() const;
+    const QPainterPath &imageShape() const;
     void setImage(const QPixmap &image);
 
     const Tile *currentFrameTile() const;
@@ -115,29 +82,25 @@ public:
     const QUrl &imageSource() const;
     void setImageSource(const QUrl &imageSource);
 
+    const QRect &imageRect() const;
+    void setImageRect(const QRect &imageRect);
+
     int width() const;
     int height() const;
     QSize size() const;
 
     QPoint offset() const;
 
-    const QString &type() const;
-    void setType(const QString &type);
-
-    Terrain *terrainAtCorner(int corner) const;
-
-    int cornerTerrainId(int corner) const;
-    void setCornerTerrainId(int corner, int terrainId);
-
-    inline unsigned terrain() const;
-    void setTerrain(unsigned terrain);
+    // For Python API compatibility
+    const QString &type() const { return className(); }
+    void setType(const QString &type) { setClassName(type); };
 
     qreal probability() const;
     void setProbability(qreal probability);
 
     ObjectGroup *objectGroup() const;
-    void setObjectGroup(std::unique_ptr<ObjectGroup> &&objectGroup);
-    ObjectGroup *swapObjectGroup(ObjectGroup *objectGroup);
+    void setObjectGroup(std::unique_ptr<ObjectGroup> objectGroup);
+    void swapObjectGroup(std::unique_ptr<ObjectGroup> &objectGroup);
 
     const QVector<Frame> &frames() const;
     void setFrames(const QVector<Frame> &frames);
@@ -155,10 +118,10 @@ private:
     int mId;
     Tileset *mTileset;
     QPixmap mImage;
+    mutable std::optional<QPainterPath> mImageShape;   // cache
     QUrl mImageSource;
+    QRect mImageRect;
     LoadingStatus mImageStatus;
-    QString mType;
-    unsigned mTerrain;
     qreal mProbability;
     std::unique_ptr<ObjectGroup> mObjectGroup;
 
@@ -186,23 +149,6 @@ inline Tileset *Tile::tileset() const
 }
 
 /**
- * Returns the image of this tile.
- */
-inline const QPixmap &Tile::image() const
-{
-    return mImage;
-}
-
-/**
- * Sets the image of this tile.
- */
-inline void Tile::setImage(const QPixmap &image)
-{
-    mImage = image;
-    mImageStatus = image.isNull() ? LoadingError : LoadingReady;
-}
-
-/**
  * Returns the URL of the external image that represents this tile.
  * When this tile doesn't refer to an external image, an empty URL is
  * returned.
@@ -218,11 +164,19 @@ inline void Tile::setImageSource(const QUrl &imageSource)
 }
 
 /**
+ * Returns the image source rect in pixels.
+ */
+inline const QRect &Tile::imageRect() const
+{
+    return mImageRect;
+}
+
+/**
  * Returns the width of this tile.
  */
 inline int Tile::width() const
 {
-    return mImage.width();
+    return mImageRect.width();
 }
 
 /**
@@ -230,7 +184,7 @@ inline int Tile::width() const
  */
 inline int Tile::height() const
 {
-    return mImage.height();
+    return mImageRect.height();
 }
 
 /**
@@ -238,50 +192,7 @@ inline int Tile::height() const
  */
 inline QSize Tile::size() const
 {
-    return mImage.size();
-}
-
-/**
- * Returns the type of this tile. Tile objects that do not have a type
- * explicitly set on them are assumed to be of the type returned by this
- * function.
- */
-inline const QString &Tile::type() const
-{
-    return mType;
-}
-
-/**
- * Sets the type of this tile.
- * \sa type()
- */
-inline void Tile::setType(const QString &type)
-{
-    mType = type;
-}
-
-/**
- * Returns the terrain id at a given corner.
- */
-inline int Tile::cornerTerrainId(int corner) const
-{
-    unsigned t = (terrain() >> (3 - corner)*8) & 0xFF; return t == 0xFF ? -1 : (int)t;
-}
-
-/**
- * Set the terrain type of a given corner.
- */
-inline void Tile::setCornerTerrainId(int corner, int terrainId)
-{
-    setTerrain(setTerrainCorner(mTerrain, corner, terrainId));
-}
-
-/**
- * Returns the terrain for each corner of this tile.
- */
-inline unsigned Tile::terrain() const
-{
-    return mTerrain;
+    return mImageRect.size();
 }
 
 /**
@@ -338,3 +249,5 @@ inline void Tile::setImageStatus(LoadingStatus status)
 }
 
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::Tile*)

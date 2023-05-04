@@ -30,43 +30,67 @@
 
 #include "layer.h"
 
+#include "map.h"
+#include "mapreader.h"
 #include <QString>
 #include <QStringList>
 
 using namespace Tiled;
 
+class QImage;
+class QPainter;
+
 class TmxRasterizer
 {
-
 public:
     TmxRasterizer();
 
     qreal scale() const { return mScale; }
     int tileSize() const { return mTileSize; }
     int size() const { return mSize; }
+    int advanceAnimations() const { return mAdvanceAnimations; }
     bool useAntiAliasing() const { return mUseAntiAliasing; }
     bool smoothImages() const { return mSmoothImages; }
-    bool IgnoreVisibility() const { return mIgnoreVisibility; }
+    bool ignoreVisibility() const { return mIgnoreVisibility; }
 
     void setScale(qreal scale) { mScale = scale; }
     void setTileSize(int tileSize) { mTileSize = tileSize; }
     void setSize(int size) { mSize = size; }
+    void setAdvanceAnimations(int duration) { mAdvanceAnimations = duration; }
     void setAntiAliasing(bool useAntiAliasing) { mUseAntiAliasing = useAntiAliasing; }
     void setSmoothImages(bool smoothImages) { mSmoothImages = smoothImages; }
     void setIgnoreVisibility(bool IgnoreVisibility) { mIgnoreVisibility = IgnoreVisibility; }
 
     void setLayersToHide(QStringList layersToHide) { mLayersToHide = layersToHide; }
+    void setLayersToShow(QStringList layersToShow) { mLayersToShow = layersToShow; }
 
-    int render(const QString &mapFileName, const QString &imageFileName);
+    void setLayerTypeVisible(Layer::TypeFlag layerType, bool visible);
+
+    int render(const QString &fileName, const QString &imageFileName);
 
 private:
-    qreal mScale;
-    int mTileSize;
-    int mSize;
-    bool mUseAntiAliasing;
-    bool mSmoothImages;
-    bool mIgnoreVisibility;
+    qreal mScale = 1.0;
+    int mTileSize = 0;
+    int mSize = 0;
+    int mAdvanceAnimations = 0;
+    bool mUseAntiAliasing = false;
+    bool mSmoothImages = true;
+    bool mIgnoreVisibility = false;
     QStringList mLayersToHide;
+    QStringList mLayersToShow;
+    int mLayerTypesToShow = Layer::AnyLayerType & ~Layer::GroupLayerType;
 
+    void drawMapLayers(const MapRenderer &renderer, QPainter &painter, QPoint mapOffset = QPoint(0, 0)) const;
+    int renderMap(const QString &mapFileName, const QString &imageFileName);
+    int renderWorld(const QString &worldFileName, const QString &imageFileName);
+    int saveImage(const QString &imageFileName, const QImage &image) const;
     bool shouldDrawLayer(const Layer *layer) const;
 };
+
+inline void TmxRasterizer::setLayerTypeVisible(Layer::TypeFlag layerType, bool visible)
+{
+    if (visible)
+        mLayerTypesToShow |= layerType;
+    else
+        mLayerTypesToShow &= ~layerType;
+}

@@ -6,159 +6,26 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>857</width>
-    <height>273</height>
+    <width>662</width>
+    <height>314</height>
    </rect>
   </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
-  </property>
   <property name="windowTitle">
-   <string>Properties</string>
+   <string>Edit Commands</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
-    <widget class="Tiled::CommandTreeView" name="treeView">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>-1</number>
      </property>
-     <property name="dragDropMode">
-      <enum>QAbstractItemView::DragDrop</enum>
-     </property>
-     <property name="alternatingRowColors">
-      <bool>true</bool>
-     </property>
-     <property name="selectionMode">
-      <enum>QAbstractItemView::ExtendedSelection</enum>
-     </property>
-     <property name="selectionBehavior">
-      <enum>QAbstractItemView::SelectRows</enum>
+     <property name="documentMode">
+      <bool>false</bool>
      </property>
     </widget>
-   </item>
-   <item row="0" column="1">
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="1" column="1" colspan="2">
-      <widget class="QLineEdit" name="argumentsEdit"/>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Executable:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="executableEdit">
-       <property name="inputMask">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QPushButton" name="exBrowseButton">
-       <property name="text">
-        <string>Browse...</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Shortcut:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QKeySequenceEdit" name="keySequenceEdit">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="2">
-      <widget class="QPushButton" name="clearButton">
-       <property name="text">
-        <string>Clear</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0" colspan="3">
-      <widget class="QCheckBox" name="saveBox">
-       <property name="text">
-        <string>&amp;Save map before executing</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0" colspan="3">
-      <spacer name="verticalSpacer">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Arguments:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Working Directory:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLineEdit" name="workingDirectoryEdit"/>
-     </item>
-     <item row="2" column="2">
-      <widget class="QPushButton" name="wdBrowseButton">
-       <property name="text">
-        <string>Browse...</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0" colspan="3">
-      <widget class="QCheckBox" name="outputBox">
-       <property name="text">
-        <string>Show output in Console view</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </item>
    <item row="1" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -195,24 +62,8 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>Tiled::CommandTreeView</class>
-   <extends>QTreeView</extends>
-   <header>commanddialog.h</header>
-  </customwidget>
- </customwidgets>
  <tabstops>
-  <tabstop>treeView</tabstop>
-  <tabstop>executableEdit</tabstop>
-  <tabstop>exBrowseButton</tabstop>
-  <tabstop>argumentsEdit</tabstop>
-  <tabstop>workingDirectoryEdit</tabstop>
-  <tabstop>wdBrowseButton</tabstop>
-  <tabstop>keySequenceEdit</tabstop>
-  <tabstop>clearButton</tabstop>
-  <tabstop>outputBox</tabstop>
-  <tabstop>saveBox</tabstop>
+  <tabstop>tabWidget</tabstop>
   <tabstop>pushButton</tabstop>
  </tabstops>
  <resources/>
@@ -224,28 +75,12 @@
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>468</x>
-     <y>287</y>
+     <x>647</x>
+     <y>299</y>
     </hint>
     <hint type="destinationlabel">
      <x>474</x>
      <y>214</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>clearButton</sender>
-   <signal>clicked()</signal>
-   <receiver>keySequenceEdit</receiver>
-   <slot>clear()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>411</x>
-     <y>252</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>328</x>
-     <y>251</y>
     </hint>
    </hints>
   </connection>

@@ -169,8 +169,11 @@ QRegion ellipseRegion(int x0, int y0, int x1, int y1)
  * This is an implementation of Bresenham's line algorithm, initially copied
  * from http://en.wikipedia.org/wiki/Bresenham's_line_algorithm#Optimization
  * changed to C++ syntax.
+ *
+ * When the \a manhattan option (named after "Manhattan distance") is set to
+ * true, the points on the line can't take diagonal steps.
  */
-QVector<QPoint> pointsOnLine(int x0, int y0, int x1, int y1)
+QVector<QPoint> pointsOnLine(int x0, int y0, int x1, int y1, bool manhattan)
 {
     QVector<QPoint> ret;
 
@@ -197,15 +200,17 @@ QVector<QPoint> pointsOnLine(int x0, int y0, int x1, int y1)
     else
         ystep = -1;
 
-    for (int x = x0; x < x1 + 1 ; x++) {
-        if (steep)
-            ret += QPoint(y, x);
-        else
-            ret += QPoint(x, y);
+    ret.reserve(deltax + 1 + (manhattan ? deltay : 0));
+
+    for (int x = x0; x <= x1; x++) {
+        ret += steep ? QPoint(y, x) : QPoint(x, y);
         error = error - deltay;
         if (error < 0) {
              y = y + ystep;
              error = error + deltax;
+
+             if (manhattan && x < x1)
+                ret += steep ? QPoint(y, x) : QPoint(x, y);
         }
     }
 
@@ -218,20 +223,12 @@ QVector<QPoint> pointsOnLine(int x0, int y0, int x1, int y1)
 /**
  * Checks if a given rectangle \a rect is coherent to another given \a region.
  * 'coherent' means that either the rectangle is overlapping the region or
- * the rectangle contains at least one tile, which is a direct neighbour
- * to a tile, which belongs to the region.
+ * the rectangle contains at least one tile, which is a neighbour to a tile,
+ * which belongs to the region.
  */
 static bool isCoherentTo(const QRect &rect, const QRegion &region)
 {
-    // check if the region is coherent at top or bottom
-    if (region.intersects(rect.adjusted(0, -1, 0, 1)))
-        return true;
-
-    // check if the region is coherent at left or right side
-    if (region.intersects(rect.adjusted(-1, 0, 1, 0)))
-        return true;
-
-    return false;
+    return region.intersects(rect.adjusted(-1, -1, 1, 1));
 }
 
 /**
@@ -242,12 +239,12 @@ QVector<QRegion> coherentRegions(const QRegion &region)
 {
     QVector<QRegion> result;
     QVector<QRect> rects;
-#if QT_VERSION < 0x050800
-    rects = region.rects();
-#else
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     rects.reserve(static_cast<int>(region.end() - region.begin()));
     for (const QRect &rect : region)
         rects.append(rect);
+#else
+    rects = QVector<QRect>(region.begin(), region.end());
 #endif
 
     while (!rects.isEmpty()) {

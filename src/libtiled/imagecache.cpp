@@ -28,84 +28,89 @@
 
 #include "imagecache.h"
 
+#include "logginginterface.h"
+#include "map.h"
+#include "mapformat.h"
+#include "minimaprenderer.h"
+
 #include <QBitmap>
+#include <QCoreApplication>
+#include <QFileInfo>
 
 namespace Tiled {
 
-bool TilesheetParameters::operator==(const TilesheetParameters &other) const
+struct LoadedPixmap
 {
-    return fileName == other.fileName &&
-            tileWidth == other.tileWidth &&
-            tileHeight == other.tileHeight &&
-            margin == other.margin &&
-            spacing == other.spacing &&
-            transparentColor == other.transparentColor;
-}
+    explicit LoadedPixmap(const LoadedImage &cachedImage);
 
-uint qHash(const TilesheetParameters &key, uint seed) Q_DECL_NOTHROW
+    operator const QPixmap &() const { return pixmap; }
+
+    QPixmap pixmap;
+    QDateTime lastModified;
+};
+
+
+LoadedImage::LoadedImage()
+    : LoadedImage(QImage(), QDateTime())
+{}
+
+LoadedImage::LoadedImage(QImage image, const QDateTime &lastModified)
+    : image(std::move(image))
+    , lastModified(lastModified)
+{}
+
+
+LoadedPixmap::LoadedPixmap(const LoadedImage &cachedImage)
+    : pixmap(QPixmap::fromImage(cachedImage))
+    , lastModified(cachedImage.lastModified)
+{}
+
+
+QHash<QString, LoadedImage> ImageCache::sLoadedImages;
+QHash<QString, LoadedPixmap> ImageCache::sLoadedPixmaps;
+
+LoadedImage ImageCache::loadImage(const QString &fileName)
 {
-    uint h = ::qHash(key.fileName, seed);
-    h = ::qHash(key.tileWidth, h);
-    h = ::qHash(key.tileHeight, h);
-    h = ::qHash(key.margin, h);
-    h = ::qHash(key.spacing, h);
-    h = ::qHash(key.transparentColor.rgba(), h);
-    return h;
-}
+    if (fileName.isEmpty())
+        return {};
 
-
-QHash<QString, QImage> ImageCache::sLoadedImages;
-QHash<QString, QPixmap> ImageCache::sLoadedPixmaps;
-QHash<TilesheetParameters, QVector<QPixmap>> ImageCache::sCutTiles;
-
-QImage ImageCache::loadImage(const QString &fileName)
-{
     auto it = sLoadedImages.find(fileName);
-    if (it == sLoadedImages.end())
-        it = sLoadedImages.insert(fileName, QImage(fileName));
+
+    QFileInfo info(fileName);
+    bool found = it != sLoadedImages.end();
+    bool old = found && it.value().lastModified < info.lastModified();
+
+    if (old)
+        remove(fileName);
+
+    if (old || !found) {
+        QImage image(fileName);
+
+        // If the image failed to load, try to load and render a map file
+        if (image.isNull())
+            image = renderMap(fileName);
+
+        it = sLoadedImages.insert(fileName, LoadedImage(image, info.lastModified()));
+    }
+
     return it.value();
 }
 
 QPixmap ImageCache::loadPixmap(const QString &fileName)
 {
+    if (fileName.isEmpty())
+        return {};
+
     auto it = sLoadedPixmaps.find(fileName);
-    if (it == sLoadedPixmaps.end())
-        it = sLoadedPixmaps.insert(fileName, QPixmap::fromImage(loadImage(fileName)));
-    return it.value();
-}
 
-static QVector<QPixmap> cutTilesImpl(const TilesheetParameters &p)
-{
-    Q_ASSERT(p.tileWidth > 0 && p.tileHeight > 0);
+    bool found = it != sLoadedPixmaps.end();
+    bool old = found && it.value().lastModified < QFileInfo(fileName).lastModified();
 
-    const QImage image(ImageCache::loadImage(p.fileName));
-    const int stopWidth = image.width() - p.tileWidth;
-    const int stopHeight = image.height() - p.tileHeight;
+    if (old)
+        remove(fileName);
+    if (old || !found)
+        it = sLoadedPixmaps.insert(fileName, LoadedPixmap(loadImage(fileName)));
 
-    QVector<QPixmap> tiles;
-
-    for (int y = p.margin; y <= stopHeight; y += p.tileHeight + p.spacing) {
-        for (int x = p.margin; x <= stopWidth; x += p.tileWidth + p.spacing) {
-            const QImage tileImage = image.copy(x, y, p.tileWidth, p.tileHeight);
-            QPixmap tilePixmap = QPixmap::fromImage(tileImage);
-
-            if (p.transparentColor.isValid()) {
-                const QImage mask = tileImage.createMaskFromColor(p.transparentColor.rgb());
-                tilePixmap.setMask(QBitmap::fromImage(mask));
-            }
-
-            tiles.append(tilePixmap);
-        }
-    }
-
-    return tiles;
-}
-
-QVector<QPixmap> ImageCache::cutTiles(const TilesheetParameters &parameters)
-{
-    auto it = sCutTiles.find(parameters);
-    if (it == sCutTiles.end())
-        it = sCutTiles.insert(parameters, cutTilesImpl(parameters));
     return it.value();
 }
 
@@ -113,13 +118,46 @@ void ImageCache::remove(const QString &fileName)
 {
     sLoadedImages.remove(fileName);
     sLoadedPixmaps.remove(fileName);
+}
 
-    // Also remove any previously cut tiles
-    QMutableHashIterator<TilesheetParameters, QVector<QPixmap>> it(sCutTiles);
-    while (it.hasNext()) {
-        if (it.next().key().fileName == fileName)
-            it.remove();
+QImage ImageCache::renderMap(const QString &fileName)
+{
+    if (fileName.isEmpty())
+        return {};
+
+    static QSet<QString> loadingMaps;
+
+    if (loadingMaps.contains(fileName)) {
+        ERROR(QCoreApplication::translate("Tiled::ImageCache",
+                                          "Recursive metatile map detected: %1")
+              .arg(fileName), OpenFile { fileName });
+        return {};
     }
+
+    loadingMaps.insert(fileName);
+
+    QString errorString;
+    auto map = Tiled::readMap(fileName, &errorString);
+
+    loadingMaps.remove(fileName);
+
+    if (!map) {
+        ERROR(QCoreApplication::translate("Tiled::ImageCache",
+                                          "Failed to read metatile map %1: %2")
+              .arg(fileName, errorString));
+
+        return {};
+    }
+
+    MiniMapRenderer miniMapRenderer(map.get());
+
+    const MiniMapRenderer::RenderFlags renderFlags(MiniMapRenderer::DrawTileLayers |
+                                                   MiniMapRenderer::DrawMapObjects |
+                                                   MiniMapRenderer::DrawImageLayers |
+                                                   MiniMapRenderer::IgnoreInvisibleLayer |
+                                                   MiniMapRenderer::DrawBackground);
+    const QSize mapSize = miniMapRenderer.mapSize();
+    return miniMapRenderer.render(mapSize, renderFlags);
 }
 
 } // namespace Tiled

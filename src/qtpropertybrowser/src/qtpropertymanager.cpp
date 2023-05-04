@@ -1310,12 +1310,14 @@ public:
 
     struct Data
     {
-        Data() : regExp(QString(QLatin1Char('*')),  Qt::CaseSensitive, QRegExp::Wildcard),
-            echoMode(QLineEdit::Normal), readOnly(false)
+        Data() :
+            regExp(QStringLiteral(".*"), QRegularExpression::CaseInsensitiveOption),
+            echoMode(QLineEdit::Normal),
+            readOnly(false)
         {
         }
         QString val;
-        QRegExp regExp;
+        QRegularExpression regExp;
         int echoMode;
         bool readOnly;
     };
@@ -1355,7 +1357,7 @@ public:
 */
 
 /*!
-    \fn void QtStringPropertyManager::regExpChanged(QtProperty *property, const QRegExp &regExp)
+    \fn void QtStringPropertyManager::regExpChanged(QtProperty *property, const QRegularExpression &regExp)
 
     This signal is emitted whenever a property created by this manager
     changes its currenlty set regular expression, passing a pointer to
@@ -1404,9 +1406,9 @@ QString QtStringPropertyManager::value(const QtProperty *property) const
 
     \sa setRegExp()
 */
-QRegExp QtStringPropertyManager::regExp(const QtProperty *property) const
+QRegularExpression QtStringPropertyManager::regExp(const QtProperty *property) const
 {
-    return getData<QRegExp>(d_ptr->m_values, &QtStringPropertyManagerPrivate::Data::regExp, property, QRegExp());
+    return getData<QRegularExpression>(d_ptr->m_values, &QtStringPropertyManagerPrivate::Data::regExp, property, QRegularExpression());
 }
 
 /*!
@@ -1477,7 +1479,7 @@ void QtStringPropertyManager::setValue(QtProperty *property, const QString &val)
     if (data.val == val)
         return;
 
-    if (data.regExp.isValid() && !data.regExp.exactMatch(val))
+    if (data.regExp.isValid() && !data.regExp.match(val).hasMatch())
         return;
 
     data.val = val;
@@ -1493,7 +1495,7 @@ void QtStringPropertyManager::setValue(QtProperty *property, const QString &val)
 
     \sa regExp(), setValue(), regExpChanged()
 */
-void QtStringPropertyManager::setRegExp(QtProperty *property, const QRegExp &regExp)
+void QtStringPropertyManager::setRegExp(QtProperty *property, const QRegularExpression &regExp)
 {
     const QtStringPropertyManagerPrivate::PropertyValueMap::iterator it = d_ptr->m_values.find(property);
     if (it == d_ptr->m_values.end())
@@ -1617,13 +1619,14 @@ public:
     typedef QMap<const QtProperty *, Data> PropertyValueMap;
     PropertyValueMap m_values;
 
-    const QIcon m_checkedIcon;
-    const QIcon m_uncheckedIcon;
+    static QIcon m_checkedIcon;
+    static QIcon m_uncheckedIcon;
 };
 
-QtBoolPropertyManagerPrivate::QtBoolPropertyManagerPrivate() :
-    m_checkedIcon(drawCheckBox(true)),
-    m_uncheckedIcon(drawCheckBox(false))
+QIcon QtBoolPropertyManagerPrivate::m_checkedIcon;
+QIcon QtBoolPropertyManagerPrivate::m_uncheckedIcon;
+
+QtBoolPropertyManagerPrivate::QtBoolPropertyManagerPrivate()
 {
 }
 
@@ -1688,6 +1691,16 @@ bool QtBoolPropertyManager::textVisible(const QtProperty *property) const
 }
 
 /*!
+    Resets the icons used to draw the checked and unchecked states. Should be
+    called after theme changes.
+*/
+void QtBoolPropertyManager::resetIcons()
+{
+    QtBoolPropertyManagerPrivate::m_checkedIcon = QIcon();
+    QtBoolPropertyManagerPrivate::m_uncheckedIcon = QIcon();
+}
+
+/*!
     \reimp
 */
 QString QtBoolPropertyManager::valueText(const QtProperty *property) const
@@ -1700,9 +1713,7 @@ QString QtBoolPropertyManager::valueText(const QtProperty *property) const
     if (!data.textVisible)
         return QString();
 
-    static const QString trueText = tr("True");
-    static const QString falseText = tr("False");
-    return data.val ? trueText : falseText;
+    return data.val ? tr("True") : tr("False");
 }
 
 /*!
@@ -1713,6 +1724,11 @@ QIcon QtBoolPropertyManager::valueIcon(const QtProperty *property) const
     const QtBoolPropertyManagerPrivate::PropertyValueMap::const_iterator it = d_ptr->m_values.constFind(property);
     if (it == d_ptr->m_values.constEnd())
         return QIcon();
+
+    if (QtBoolPropertyManagerPrivate::m_checkedIcon.isNull()) {
+        QtBoolPropertyManagerPrivate::m_checkedIcon = drawCheckBox(true);
+        QtBoolPropertyManagerPrivate::m_uncheckedIcon = drawCheckBox(false);
+    }
 
     return it.value().val ? d_ptr->m_checkedIcon : d_ptr->m_uncheckedIcon;
 }
@@ -2928,9 +2944,9 @@ public:
 
     struct Data
     {
-        Data() : decimals(2) {}
         QPointF val;
-        int decimals;
+        double singleStep = 1.0;
+        int decimals = 2;
     };
 
     void slotDoubleChanged(QtProperty *property, double value);
@@ -3066,6 +3082,18 @@ QPointF QtPointFPropertyManager::value(const QtProperty *property) const
 }
 
 /*!
+    Returns the given \a property's step value.
+
+    The step is typically used to increment or decrement a property value while pressing an arrow key.
+
+    \sa setSingleStep()
+*/
+double QtPointFPropertyManager::singleStep(const QtProperty *property) const
+{
+    return getData<double>(d_ptr->m_values, &QtPointFPropertyManagerPrivate::Data::singleStep, property, 0);
+}
+
+/*!
     Returns the given \a property's precision, in decimals.
 
     \sa setDecimals()
@@ -3112,6 +3140,36 @@ void QtPointFPropertyManager::setValue(QtProperty *property, const QPointF &val)
 
     emit propertyChanged(property);
     emit valueChanged(property, val);
+}
+
+/*!
+    Sets the step value for the given \a property to \a step.
+
+    The step is typically used to increment or decrement a property value while pressing an arrow key.
+
+    \sa singleStep()
+*/
+void QtPointFPropertyManager::setSingleStep(QtProperty *property, double step)
+{
+    const QtPointFPropertyManagerPrivate::PropertyValueMap::iterator it = d_ptr->m_values.find(property);
+    if (it == d_ptr->m_values.end())
+        return;
+
+    QtPointFPropertyManagerPrivate::Data data = it.value();
+
+    if (step < 0)
+        step = 0;
+
+    if (data.singleStep == step)
+        return;
+
+    data.singleStep = step;
+    d_ptr->m_doublePropertyManager->setSingleStep(d_ptr->m_propertyToX[property], step);
+    d_ptr->m_doublePropertyManager->setSingleStep(d_ptr->m_propertyToY[property], step);
+
+    it.value() = data;
+
+    emit singleStepChanged(property, data.singleStep);
 }
 
 /*!
@@ -5014,8 +5072,7 @@ void QtEnumPropertyManager::setValue(QtProperty *property, int val)
 
 /*!
     Sets the given \a property's list of enum names to \a
-    enumNames. The \a property's current value is reset to 0
-    indicating the first item of the list.
+    enumNames. The \a property's current value is bound to a valid index.
 
     If the specified \a enumNames list is empty, the \a property's
     current value is set to -1.
@@ -5034,11 +5091,7 @@ void QtEnumPropertyManager::setEnumNames(QtProperty *property, const QStringList
         return;
 
     data.enumNames = enumNames;
-
-    data.val = -1;
-
-    if (enumNames.count() > 0)
-        data.val = 0;
+    data.val = qBound(-1, data.val, enumNames.count() - 1);
 
     it.value() = data;
 
@@ -5337,8 +5390,8 @@ void QtFlagPropertyManager::setValue(QtProperty *property, int val)
 
 /*!
     Sets the given \a property's list of flag names to \a flagNames. The
-    property's current value is reset to 0 indicating the first item
-    of the list.
+    property's current value is cleared of any flags for which no name is
+    provided.
 
     \sa flagNames(), flagNamesChanged()
 */
@@ -5354,7 +5407,7 @@ void QtFlagPropertyManager::setFlagNames(QtProperty *property, const QStringList
         return;
 
     data.flagNames = flagNames;
-    data.val = 0;
+    data.val &= ((1 << data.flagNames.count()) - 1);
 
     it.value() = data;
 
@@ -5362,20 +5415,22 @@ void QtFlagPropertyManager::setFlagNames(QtProperty *property, const QStringList
     while (itProp.hasNext()) {
         QtProperty *prop = itProp.next();
         if (prop) {
-            delete prop;
             d_ptr->m_flagToProperty.remove(prop);
+            delete prop;
         }
     }
     d_ptr->m_propertyToFlags[property].clear();
 
     QStringListIterator itFlag(flagNames);
+    int level = 0;
     while (itFlag.hasNext()) {
         const QString flagName = itFlag.next();
-        QtProperty *prop = d_ptr->m_boolPropertyManager->addProperty();
-        prop->setPropertyName(flagName);
+        QtProperty *prop = d_ptr->m_boolPropertyManager->addProperty(flagName);
+        d_ptr->m_boolPropertyManager->setValue(prop, data.val & (1 << level));
         property->addSubProperty(prop);
         d_ptr->m_propertyToFlags[property].append(prop);
         d_ptr->m_flagToProperty[prop] = property;
+        level++;
     }
 
     emit flagNamesChanged(property, data.flagNames);
@@ -5403,8 +5458,8 @@ void QtFlagPropertyManager::uninitializeProperty(QtProperty *property)
     while (itProp.hasNext()) {
         QtProperty *prop = itProp.next();
         if (prop) {
-            delete prop;
             d_ptr->m_flagToProperty.remove(prop);
+            delete prop;
         }
     }
     d_ptr->m_propertyToFlags.remove(property);
@@ -6067,7 +6122,11 @@ void QtFontPropertyManager::setValue(QtProperty *property, const QFont &val)
         return;
 
     const QFont oldVal = it.value();
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
     if (oldVal == val && oldVal.resolve() == val.resolve())
+#else
+    if (oldVal == val && oldVal.resolveMask() == val.resolveMask())
+#endif
         return;
 
     it.value() = val;

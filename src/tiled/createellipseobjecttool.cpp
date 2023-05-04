@@ -26,11 +26,13 @@
 using namespace Tiled;
 
 CreateEllipseObjectTool::CreateEllipseObjectTool(QObject *parent)
-    : CreateScalableObjectTool(parent)
+    : CreateScalableObjectTool("CreateEllipseObjectTool",
+                               parent)
 {
-    QIcon icon(QLatin1String(":images/24x24/insert-ellipse.png"));
-    icon.addFile(QLatin1String(":images/48x48/insert-ellipse.png"));
+    QIcon icon(QLatin1String(":images/24/insert-ellipse.png"));
+    icon.addFile(QLatin1String(":images/48/insert-ellipse.png"));
     setIcon(icon);
+    setShortcut(Qt::Key_C);
     Utils::setThemeIcon(this, "insert-ellipse");
     languageChangedImpl();
 }
@@ -44,7 +46,6 @@ void CreateEllipseObjectTool::languageChanged()
 void CreateEllipseObjectTool::languageChangedImpl()
 {
     setName(tr("Insert Ellipse"));
-    setShortcut(QKeySequence(tr("C")));
 }
 
 MapObject *CreateEllipseObjectTool::createNewMapObject()
@@ -53,3 +54,5 @@ MapObject *CreateEllipseObjectTool::createNewMapObject()
     newMapObject->setShape(MapObject::Ellipse);
     return newMapObject;
 }
+
+#include "moc_createellipseobjecttool.cpp"

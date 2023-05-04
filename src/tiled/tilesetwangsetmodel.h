@@ -20,26 +20,35 @@
 
 #pragma once
 
+#include "wangset.h"
+
 #include <QAbstractItemModel>
+
+#include <memory>
 
 namespace Tiled {
 
 class Tileset;
-class WangSet;
-class WangColor;
 
 class TilesetDocument;
 
+/**
+ * This model displays the Wang sets of a single tileset.
+ *
+ * It also provides some functions for modifying those Wang sets.
+ */
 class TilesetWangSetModel : public QAbstractListModel
 {
     Q_OBJECT
 
 public:
+    // Synchronized with WangSetModel
     enum UserRoles {
-        WangSetRole = Qt::UserRole
+        WangSetRole = Qt::UserRole,
+        TilesetDocumentRole,
     };
 
-    explicit TilesetWangSetModel(TilesetDocument *mapDocument,
+    explicit TilesetWangSetModel(TilesetDocument *tilesetDocument,
                                  QObject *parent = nullptr);
     ~TilesetWangSetModel() override;
 
@@ -63,26 +72,26 @@ public:
 
     WangSet *wangSetAt(const QModelIndex &index) const;
 
-    void insertWangSet(int index, WangSet *wangSet);
-    WangSet *takeWangSetAt(int index);
+    void insertWangSet(int index, std::unique_ptr<WangSet> wangSet);
+    std::unique_ptr<WangSet> takeWangSetAt(int index);
     void setWangSetName(WangSet *wangSet, const QString &name);
-    void setWangSetEdges(WangSet *wangSet, int value);
-    void setWangSetCorners(WangSet *wangSet, int value);
+    void setWangSetType(WangSet *wangSet, WangSet::Type type);
+    void setWangSetColorCount(WangSet *wangSet, int value);
     void setWangSetImage(WangSet *wangSet, int tileId);
     void insertWangColor(WangSet *wangSet, const QSharedPointer<WangColor> &wangColor);
-    void removeWangColorAt(WangSet *wangSet, int color, bool isEdge);
+    QSharedPointer<WangColor> takeWangColorAt(WangSet *wangSet, int color);
 
 signals:
-    void wangSetAboutToBeAdded(Tileset *tileset);
-    void wangSetAdded(Tileset *tileset);
-    void wangSetAboutToBeRemoved(WangSet *wangSet);
+    void wangSetAdded(Tileset *tileset, int index);
     void wangSetRemoved(WangSet *wangSet);
 
+    void wangColorRemoved(WangColor *wangColor);
+
     /**
-     * Emitted when either the name, image, edgeCount, or corner count
-     * of a wangSet changed.
+     * Emitted when either the name, image, colorCount or type of a wangSet
+     * changed.
      */
-    void wangSetChanged(Tileset *tileset, int index);
+    void wangSetChanged(WangSet *wangSet);
 
 private:
     void emitWangSetChange(WangSet *wangSet);

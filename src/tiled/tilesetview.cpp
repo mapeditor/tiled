@@ -20,17 +20,18 @@
 
 #include "tilesetview.h"
 
-#include "changetileterrain.h"
+#include "actionmanager.h"
+#include "changeevents.h"
 #include "changetilewangid.h"
-#include "map.h"
+#include "pannableviewhelper.h"
 #include "preferences.h"
 #include "stylehelper.h"
-#include "terrain.h"
 #include "tile.h"
 #include "tileset.h"
 #include "tilesetdocument.h"
 #include "tilesetmodel.h"
 #include "utils.h"
+#include "wangoverlay.h"
 #include "zoomable.h"
 
 #include <QAbstractItemDelegate>
@@ -41,15 +42,40 @@
 #include <QHeaderView>
 #include <QMenu>
 #include <QPainter>
+#include <QPainterPath>
 #include <QPinchGesture>
 #include <QScrollBar>
 #include <QUndoCommand>
 #include <QWheelEvent>
 #include <QtCore/qmath.h>
 
+#include <QDebug>
+
 using namespace Tiled;
 
 namespace {
+
+static void setupTilesetGridTransform(const Tileset &tileset, QTransform &transform, QRect &targetRect)
+{
+    if (tileset.orientation() == Tileset::Isometric) {
+        const QPoint tileCenter = targetRect.center();
+        targetRect.setHeight(targetRect.width());
+        targetRect.moveCenter(tileCenter);
+
+        const QSize gridSize = tileset.gridSize();
+
+        transform.translate(tileCenter.x(), tileCenter.y());
+
+        const auto ratio = (qreal) gridSize.height() / gridSize.width();
+        const auto scaleX = 1.0 / sqrt(2.0);
+        const auto scaleY = scaleX * ratio;
+        transform.scale(scaleX, scaleY);
+
+        transform.rotate(45.0);
+
+        transform.translate(-tileCenter.x(), -tileCenter.y());
+    }
+}
 
 /**
  * The delegate for drawing tile items in the tileset view.
@@ -69,459 +95,14 @@ public:
                    const QModelIndex &index) const override;
 
 private:
+    void drawFilmStrip(QPainter *painter, QRect targetRect) const;
+    void drawWangOverlay(QPainter *painter,
+                         const Tile *tile,
+                         QRect targetRect,
+                         const QModelIndex &index) const;
+
     TilesetView *mTilesetView;
 };
-
-enum Corners
-{
-    TopLeft = 1,
-    TopRight = 2,
-    BottomLeft = 4,
-    BottomRight = 8
-};
-
-/**
- * Returns a mask of the corners of a certain tile's \a terrain that contain
- * the given \a terrainTypeId.
- */
-static unsigned terrainCorners(unsigned terrain, int terrainTypeId)
-{
-    const unsigned terrainIndex = terrainTypeId >= 0 ? terrainTypeId : 0xFF;
-
-    return (((terrain >> 24) & 0xFF) == terrainIndex ? TopLeft : 0) |
-            (((terrain >> 16) & 0xFF) == terrainIndex ? TopRight : 0) |
-            (((terrain >> 8) & 0xFF) == terrainIndex ? BottomLeft : 0) |
-            ((terrain & 0xFF) == terrainIndex ? BottomRight : 0);
-}
-
-static unsigned invertCorners(unsigned corners)
-{
-    return corners ^ (TopLeft | TopRight | BottomLeft | BottomRight);
-}
-
-static void paintCorners(QPainter *painter,
-                         unsigned corners,
-                         const QRect &rect)
-{
-    const int hx = rect.width() / 2;
-    const int hy = rect.height() / 2;
-
-    switch (corners) {
-    case TopLeft:
-        painter->drawPie(rect.translated(-hx, -hy), -90 * 16, 90 * 16);
-        break;
-    case TopRight:
-        painter->drawPie(rect.translated(hx, -hy), 180 * 16, 90 * 16);
-        break;
-    case TopRight | TopLeft:
-        painter->drawRect(rect.x(), rect.y(), rect.width(), hy);
-        break;
-    case BottomLeft:
-        painter->drawPie(rect.translated(-hx, hy), 0, 90 * 16);
-        break;
-    case BottomLeft | TopLeft:
-        painter->drawRect(rect.x(), rect.y(), hx, rect.height());
-        break;
-    case BottomLeft | TopRight:
-        painter->drawPie(rect.translated(-hx, hy), 0, 90 * 16);
-        painter->drawPie(rect.translated(hx, -hy), 180 * 16, 90 * 16);
-        break;
-    case BottomLeft | TopRight | TopLeft: {
-        QPainterPath fill, ellipse;
-        fill.addRect(rect);
-        ellipse.addEllipse(rect.translated(hx, hy));
-        painter->drawPath(fill.subtracted(ellipse));
-        break;
-    }
-    case BottomRight:
-        painter->drawPie(rect.translated(hx, hy), 90 * 16, 90 * 16);
-        break;
-    case BottomRight | TopLeft:
-        painter->drawPie(rect.translated(-hx, -hy), -90 * 16, 90 * 16);
-        painter->drawPie(rect.translated(hx, hy), 90 * 16, 90 * 16);
-        break;
-    case BottomRight | TopRight:
-        painter->drawRect(rect.x() + hx, rect.y(), hx, rect.height());
-        break;
-    case BottomRight | TopRight | TopLeft: {
-        QPainterPath fill, ellipse;
-        fill.addRect(rect);
-        ellipse.addEllipse(rect.translated(-hx, hy));
-        painter->drawPath(fill.subtracted(ellipse));
-        break;
-    }
-    case BottomRight | BottomLeft:
-        painter->drawRect(rect.x(), rect.y() + hy, rect.width(), hy);
-        break;
-    case BottomRight | BottomLeft | TopLeft: {
-        QPainterPath fill, ellipse;
-        fill.addRect(rect);
-        ellipse.addEllipse(rect.translated(hx, -hy));
-        painter->drawPath(fill.subtracted(ellipse));
-        break;
-    }
-    case BottomRight | BottomLeft | TopRight: {
-        QPainterPath fill, ellipse;
-        fill.addRect(rect);
-        ellipse.addEllipse(rect.translated(-hx, -hy));
-        painter->drawPath(fill.subtracted(ellipse));
-        break;
-    }
-    case BottomRight | BottomLeft | TopRight | TopLeft:
-        painter->drawRect(rect);
-        break;
-    }
-}
-
-static void setCosmeticPen(QPainter *painter, const QBrush &brush, qreal width)
-{
-#if QT_VERSION >= 0x050600
-    const qreal devicePixelRatio = painter->device()->devicePixelRatioF();
-#else
-    const int devicePixelRatio = painter->device()->devicePixelRatio();
-#endif
-
-    QPen pen(brush, width * devicePixelRatio);
-    pen.setCosmetic(true);
-    painter->setPen(pen);
-}
-
-static void paintTerrainOverlay(QPainter *painter,
-                                unsigned terrain,
-                                int terrainTypeId,
-                                const QRect &rect,
-                                const QColor &color)
-{
-    painter->save();
-    painter->setClipRect(rect);
-    painter->setRenderHint(QPainter::Antialiasing);
-
-    // Draw the "any terrain" background
-    painter->setBrush(QColor(128, 128, 128, 100));
-    setCosmeticPen(painter, Qt::gray, 2);
-    paintCorners(painter, invertCorners(terrainCorners(terrain, -1)), rect);
-
-    if (terrainTypeId != -1) {
-        const unsigned corners = terrainCorners(terrain, terrainTypeId);
-
-        // Draw the shadow
-        painter->translate(1, 1);
-        painter->setBrush(Qt::NoBrush);
-        setCosmeticPen(painter, Qt::black, 2);
-        paintCorners(painter, corners, rect);
-
-        // Draw the foreground
-        painter->translate(-1, -1);
-        painter->setBrush(QColor(color.red(), color.green(), color.blue(), 100));
-        setCosmeticPen(painter, color, 2);
-        paintCorners(painter, corners, rect);
-    }
-
-    painter->restore();
-}
-
-static QTransform tilesetGridTransform(const Tileset &tileset, QPoint tileCenter)
-{
-    QTransform transform;
-
-    if (tileset.orientation() == Tileset::Isometric) {
-        const QSize gridSize = tileset.gridSize();
-
-        transform.translate(tileCenter.x(), tileCenter.y());
-
-        const auto ratio = (qreal) gridSize.height() / gridSize.width();
-        const auto scaleX = 1.0 / sqrt(2.0);
-        const auto scaleY = scaleX * ratio;
-        transform.scale(scaleX, scaleY);
-
-        transform.rotate(45.0);
-
-        transform.translate(-tileCenter.x(), -tileCenter.y());
-    }
-
-    return transform;
-}
-
-static void setWangStyle(QPainter *painter, WangSet *wangSet, int index, bool edge)
-{
-    QColor c;
-    if (edge)
-        c = wangSet->edgeColorAt(index)->color();
-    else
-        c = wangSet->cornerColorAt(index)->color();
-
-    painter->setBrush(QColor(c.red(), c.green(), c.blue(), 200));
-    setCosmeticPen(painter, c, 2);
-}
-
-static void paintWangOverlay(QPainter *painter,
-                             WangId wangId,
-                             WangSet *wangSet,
-                             const QRect &rect)
-{
-    painter->save();
-    painter->setClipRect(rect);
-    painter->setRenderHint(QPainter::Antialiasing);
-
-    //arbitrary fraction, could be made constant.
-    int thicknessW = rect.width()/6;
-    int thicknessH = rect.height()/6;
-
-    if (wangSet->edgeColorCount() > 1) {
-        if (wangSet->cornerColorCount() > 1) {
-            QRect wRect;
-            int edge;
-
-            //top
-            edge = wangId.edgeColor(0);
-            if (edge > 0) {
-                setWangStyle(painter, wangSet, edge, true);
-
-                wRect = QRect(QPoint(rect.left() + rect.width()/3, rect.top()),
-                              QPoint(rect.right() - rect.width()/3, rect.top() + thicknessH));
-                painter->drawRect(wRect);
-            }
-
-            //right
-            edge = wangId.edgeColor(1);
-            if (edge > 0) {
-                setWangStyle(painter, wangSet, edge, true);
-
-                wRect = QRect(QPoint(rect.right() - thicknessW, rect.top() + rect.height()/3),
-                              QPoint(rect.right(), rect.bottom() - rect.height()/3));
-                painter->drawRect(wRect);
-            }
-
-            //bottom
-            edge = wangId.edgeColor(2);
-            if (edge > 0) {
-                setWangStyle(painter, wangSet, edge, true);
-
-                wRect = QRect(QPoint(rect.left() + rect.width()/3, rect.bottom() - thicknessH),
-                              QPoint(rect.right() - rect.width()/3, rect.bottom()));
-                painter->drawRect(wRect);
-            }
-
-            //left
-            edge = wangId.edgeColor(3);
-            if (edge > 0) {
-                setWangStyle(painter, wangSet, edge, true);
-
-                wRect = QRect(QPoint(rect.left(), rect.top() + rect.height()/3),
-                              QPoint(rect.left() + thicknessW, rect.bottom() - rect.height()/3));
-                painter->drawRect(wRect);
-            }
-        } else {
-            int edge;
-
-            //top
-            edge = wangId.edgeColor(0);
-            if (edge > 0) {
-                setWangStyle(painter, wangSet, edge, true);
-
-                const QPoint points[] = {
-                    rect.topLeft(),
-                    rect.topRight(),
-                    rect.topRight() + QPoint(-thicknessW, thicknessH),
-                    rect.topLeft() + QPoint(thicknessW, thicknessH)
-                };
-
-                painter->drawPolygon(points, 4);
-            }
-
-            //right
-            edge = wangId.edgeColor(1);
-            if (edge > 0) {
-                setWangStyle(painter, wangSet, edge, true);
-
-                const QPoint points[] = {
-                    rect.topRight(),
-                    rect.bottomRight(),
-                    rect.bottomRight() + QPoint(-thicknessW, -thicknessH),
-                    rect.topRight() + QPoint(-thicknessW, thicknessH)
-                };
-
-                painter->drawPolygon(points, 4);
-            }
-
-            //bottom
-            edge = wangId.edgeColor(2);
-            if (edge > 0) {
-                setWangStyle(painter, wangSet, edge, true);
-
-                const QPoint points[] = {
-                    rect.bottomRight(),
-                    rect.bottomLeft(),
-                    rect.bottomLeft() + QPoint(thicknessW, -thicknessH),
-                    rect.bottomRight() + QPoint(-thicknessW, -thicknessH)
-                };
-
-                painter->drawPolygon(points, 4);
-            }
-
-            //left
-            edge = wangId.edgeColor(3);
-            if (edge > 0) {
-                setWangStyle(painter, wangSet, edge, true);
-
-                const QPoint points[] = {
-                    rect.topLeft(),
-                    rect.bottomLeft(),
-                    rect.bottomLeft() + QPoint(thicknessW, -thicknessH),
-                    rect.topLeft() + QPoint(thicknessW, thicknessH)
-                };
-
-                painter->drawPolygon(points, 4);
-            }
-        }
-    }
-
-    if (wangSet->cornerColorCount() > 1) {
-        if (wangSet->edgeColorCount() > 1) {
-            int corner;
-
-            //top right
-            corner = wangId.cornerColor(0);
-            if (corner > 0) {
-                setWangStyle(painter, wangSet, corner, false);
-
-                const QPoint points[] = {
-                    rect.topRight(),
-                    QPoint(rect.right(), rect.top() + rect.height()/3),
-                    QPoint(rect.right() - thicknessW, rect.top() + rect.height()/3),
-                    rect.topRight() + QPoint(-thicknessW, thicknessH),
-                    QPoint(rect.right() - rect.width()/3, rect.top() + thicknessH),
-                    QPoint(rect.right() - rect.width()/3, rect.top())
-                };
-
-                painter->drawPolygon(points, 6);
-            }
-
-            //bottom right
-            corner = wangId.cornerColor(1);
-            if (corner > 0) {
-                setWangStyle(painter, wangSet, corner, false);
-
-                const QPoint points[] = {
-                    rect.bottomRight(),
-                    QPoint(rect.right(), rect.bottom() - rect.height()/3),
-                    QPoint(rect.right() - thicknessW, rect.bottom() - rect.height()/3),
-                    rect.bottomRight() + QPoint(-thicknessW, -thicknessH),
-                    QPoint(rect.right() - rect.width()/3, rect.bottom() - thicknessH),
-                    QPoint(rect.right() - rect.width()/3, rect.bottom())
-                };
-
-                painter->drawPolygon(points, 6);
-            }
-
-            //bottom left
-            corner = wangId.cornerColor(2);
-            if (corner > 0) {
-                setWangStyle(painter, wangSet, corner, false);
-
-                const QPoint points[] = {
-                    rect.bottomLeft(),
-                    QPoint(rect.left(), rect.bottom() - rect.height()/3),
-                    QPoint(rect.left() + thicknessW, rect.bottom() - rect.height()/3),
-                    rect.bottomLeft() + QPoint(thicknessW, -thicknessH),
-                    QPoint(rect.left() + rect.width()/3, rect.bottom() - thicknessH),
-                    QPoint(rect.left() + rect.width()/3, rect.bottom()),
-                };
-
-                painter->drawPolygon(points, 6);
-            }
-
-            //top left
-            corner = wangId.cornerColor(3);
-            if (corner > 0) {
-                setWangStyle(painter, wangSet, corner, false);
-
-                const QPoint points[] = {
-                    rect.topLeft(),
-                    QPoint(rect.left(), rect.top() + rect.height()/3),
-                    QPoint(rect.left() + thicknessW, rect.top() + rect.height()/3),
-                    rect.topLeft() + QPoint(thicknessW, thicknessH),
-                    QPoint(rect.left() + rect.width()/3, rect.top() + thicknessH),
-                    QPoint(rect.left() + rect.width()/3, rect.top())
-                };
-
-                painter->drawPolygon(points, 6);
-            }
-        } else {
-            int corner;
-
-            //top right
-            corner = wangId.cornerColor(0);
-            if (corner > 0) {
-                setWangStyle(painter, wangSet, corner, false);
-
-                const QPoint points[] = {
-                    rect.topRight(),
-                    QPoint(rect.right(), rect.center().y()),
-                    QPoint(rect.right() - thicknessW, rect.center().y()),
-                    rect.topRight() + QPoint(-thicknessW, thicknessH),
-                    QPoint(rect.center().x(), rect.top() + thicknessH),
-                    QPoint(rect.center().x(), rect.top())
-                };
-
-                painter->drawPolygon(points, 6);
-            }
-
-            //bottom right
-            corner = wangId.cornerColor(1);
-            if (corner > 0) {
-                setWangStyle(painter, wangSet, corner, false);
-
-                const QPoint points[] = {
-                    rect.bottomRight(),
-                    QPoint(rect.right(), rect.center().y()),
-                    QPoint(rect.right() - thicknessW, rect.center().y()),
-                    rect.bottomRight() + QPoint(-thicknessW, -thicknessH),
-                    QPoint(rect.center().x(), rect.bottom() - thicknessH),
-                    QPoint(rect.center().x(), rect.bottom()),
-                };
-
-                painter->drawPolygon(points, 6);
-            }
-
-            //top left
-            corner = wangId.cornerColor(3);
-            if (corner > 0) {
-                setWangStyle(painter, wangSet, corner, false);
-
-                const QPoint points[] = {
-                    rect.topLeft(),
-                    QPoint(rect.left(), rect.center().y()),
-                    QPoint(rect.left() + thicknessW, rect.center().y()),
-                    rect.topLeft() + QPoint(thicknessW, thicknessH),
-                    QPoint(rect.center().x(), rect.top() + thicknessH),
-                    QPoint(rect.center().x(), rect.top())
-                };
-
-                painter->drawPolygon(points, 6);
-            }
-
-            //bottom left
-            corner = wangId.cornerColor(2);
-            if (corner > 0) {
-                setWangStyle(painter, wangSet, corner, false);
-
-                const QPoint points[] = {
-                    rect.bottomLeft(),
-                    QPoint(rect.left(), rect.center().y()),
-                    QPoint(rect.left() + thicknessW, rect.center().y()),
-                    rect.bottomLeft() + QPoint(thicknessW, -thicknessH),
-                    QPoint(rect.center().x(), rect.bottom() - thicknessH),
-                    QPoint(rect.center().x(), rect.bottom())
-                };
-
-                painter->drawPolygon(points, 6);
-            }
-        }
-    }
-
-    painter->restore();
-}
 
 void TileDelegate::paint(QPainter *painter,
                          const QStyleOptionViewItem &option,
@@ -535,24 +116,36 @@ void TileDelegate::paint(QPainter *painter,
     const QPixmap &tileImage = tile->image();
     const int extra = mTilesetView->drawGrid() ? 1 : 0;
     const qreal zoom = mTilesetView->scale();
+    const bool wrapping = mTilesetView->dynamicWrapping();
 
-    QSize tileSize = tileImage.size();
+    QSize tileSize = tile->size();
     if (tileImage.isNull()) {
         Tileset *tileset = model->tileset();
         if (tileset->isCollection()) {
             tileSize = QSize(32, 32);
         } else {
-            int max = std::max(tileset->tileWidth(), tileset->tileWidth());
+            int max = std::max(tileset->tileWidth(), tileset->tileHeight());
             int min = std::min(max, 32);
             tileSize = QSize(min, min);
         }
     }
-    tileSize *= zoom;
 
     // Compute rectangle to draw the image in: bottom- and left-aligned
     QRect targetRect = option.rect.adjusted(0, 0, -extra, -extra);
-    targetRect.setTop(targetRect.bottom() - tileSize.height() + 1);
-    targetRect.setRight(targetRect.left() + tileSize.width() - 1);
+
+    if (wrapping) {
+        qreal scale = std::min(static_cast<qreal>(targetRect.width()) / tileSize.width(),
+                               static_cast<qreal>(targetRect.height()) / tileSize.height());
+        tileSize *= scale;
+
+        auto center = targetRect.center();
+        targetRect.setSize(tileSize);
+        targetRect.moveCenter(center);
+    } else {
+        tileSize *= zoom;
+        targetRect.setTop(targetRect.bottom() - tileSize.height() + 1);
+        targetRect.setRight(targetRect.left() + tileSize.width() - 1);
+    }
 
     // Draw the tile image
     if (Zoomable *zoomable = mTilesetView->zoomable())
@@ -560,44 +153,14 @@ void TileDelegate::paint(QPainter *painter,
             painter->setRenderHint(QPainter::SmoothPixmapTransform);
 
     if (!tileImage.isNull())
-        painter->drawPixmap(targetRect, tileImage);
+        painter->drawPixmap(targetRect, tileImage, tile->imageRect());
     else
         mTilesetView->imageMissingIcon().paint(painter, targetRect, Qt::AlignBottom | Qt::AlignLeft);
 
 
     // Overlay with film strip when animated
-    if (mTilesetView->markAnimatedTiles() && tile->isAnimated()) {
-        painter->save();
-
-        qreal scale = qMin(tileImage.width() / 32.0,
-                           tileImage.height() / 32.0);
-
-        painter->setClipRect(targetRect);
-        painter->translate(targetRect.right(),
-                           targetRect.bottom());
-        painter->scale(scale * zoom, scale * zoom);
-        painter->translate(-18, 3);
-        painter->rotate(-45);
-        painter->setOpacity(0.8);
-
-        QRectF strip(0, 0, 32, 6);
-        painter->fillRect(strip, Qt::black);
-
-        painter->setRenderHint(QPainter::Antialiasing);
-        painter->setBrush(Qt::white);
-        painter->setPen(Qt::NoPen);
-
-        QRectF hole(0, 0, strip.height() * 0.6, strip.height() * 0.6);
-        qreal step = (strip.height() - hole.height()) + hole.width();
-        qreal margin = (strip.height() - hole.height()) / 2;
-
-        for (qreal x = (step - hole.width()) / 2; x < strip.right(); x += step) {
-            hole.moveTo(x, margin);
-            painter->drawRoundedRect(hole, 25, 25, Qt::RelativeSize);
-        }
-
-        painter->restore();
-    }
+    if (mTilesetView->markAnimatedTiles() && tile->isAnimated())
+        drawFilmStrip(painter, targetRect);
 
     const auto highlight = option.palette.highlight();
 
@@ -609,62 +172,8 @@ void TileDelegate::paint(QPainter *painter,
         painter->setOpacity(opacity);
     }
 
-    if (mTilesetView->isEditTerrain()) {
-        painter->save();
-        painter->setTransform(tilesetGridTransform(*tile->tileset(), targetRect.center()), true);
-
-        const unsigned terrain = tile->terrain();
-
-        paintTerrainOverlay(painter, terrain,
-                            mTilesetView->terrainId(), targetRect,
-                            highlight.color());
-
-        // Overlay with terrain corner indication when hovered
-        if (index == mTilesetView->hoveredIndex()) {
-            QPoint pos;
-            switch (mTilesetView->hoveredCorner()) {
-            case 0: pos = targetRect.topLeft(); break;
-            case 1: pos = targetRect.topRight(); break;
-            case 2: pos = targetRect.bottomLeft(); break;
-            case 3: pos = targetRect.bottomRight(); break;
-            }
-
-            painter->save();
-            painter->setBrush(option.palette.highlight());
-            painter->setClipRect(targetRect);
-            painter->setRenderHint(QPainter::Antialiasing);
-            setCosmeticPen(painter, highlight.color().darker(), 2);
-            painter->drawEllipse(pos,
-                                 targetRect.width() / 3,
-                                 targetRect.height() / 3);
-            painter->restore();
-        }
-
-        painter->restore();
-    }
-
-    if (mTilesetView->isEditWangSet()) {
-        painter->save();
-        painter->setTransform(tilesetGridTransform(*tile->tileset(), targetRect.center()), true);
-
-        if (WangSet *wangSet = mTilesetView->wangSet()) {
-
-            paintWangOverlay(painter, wangSet->wangIdOfTile(tile),
-                             wangSet,
-                             targetRect);
-
-            if (mTilesetView->hoveredIndex() == index) {
-                qreal opacity = painter->opacity();
-                painter->setOpacity(0.9);
-                paintWangOverlay(painter, mTilesetView->wangId(),
-                                 wangSet,
-                                 targetRect);
-                painter->setOpacity(opacity);
-            }
-        }
-
-        painter->restore();
-    }
+    if (mTilesetView->isEditWangSet())
+        drawWangOverlay(painter, tile, targetRect, index);
 }
 
 QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
@@ -672,12 +181,18 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
 {
     const TilesetModel *m = static_cast<const TilesetModel*>(index.model());
     const int extra = mTilesetView->drawGrid() ? 1 : 0;
+    const qreal scale = mTilesetView->scale();
 
     if (const Tile *tile = m->tileAt(index)) {
-        const QPixmap &image = tile->image();
-        QSize tileSize = image.size();
+        if (mTilesetView->dynamicWrapping()) {
+            Tileset *tileset = tile->tileset();
+            return QSize(tileset->tileWidth() * scale + extra,
+                         tileset->tileHeight() * scale + extra);
+        }
 
-        if (image.isNull()) {
+        QSize tileSize = tile->size();
+
+        if (tile->image().isNull()) {
             Tileset *tileset = m->tileset();
             if (tileset->isCollection()) {
                 tileSize = QSize(32, 32);
@@ -688,40 +203,93 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
             }
         }
 
-        return QSize(tileSize.width() * mTilesetView->scale() + extra,
-                     tileSize.height() * mTilesetView->scale() + extra);
+        return QSize(tileSize.width() * scale + extra,
+                     tileSize.height() * scale + extra);
     }
 
     return QSize(extra, extra);
 }
 
-} // anonymous namespace
+void TileDelegate::drawFilmStrip(QPainter *painter, QRect targetRect) const
+{
+    painter->save();
 
+    qreal scale = qMin(targetRect.width() / 32.0,
+                       targetRect.height() / 32.0);
+
+    painter->setClipRect(targetRect);
+    painter->translate(targetRect.right(),
+                       targetRect.bottom());
+    painter->scale(scale, scale);
+    painter->translate(-18, 3);
+    painter->rotate(-45);
+    painter->setOpacity(0.8);
+
+    QRectF strip(0, 0, 32, 6);
+    painter->fillRect(strip, Qt::black);
+
+    painter->setRenderHint(QPainter::Antialiasing);
+    painter->setBrush(Qt::white);
+    painter->setPen(Qt::NoPen);
+
+    QRectF hole(0, 0, strip.height() * 0.6, strip.height() * 0.6);
+    qreal step = (strip.height() - hole.height()) + hole.width();
+    qreal margin = (strip.height() - hole.height()) / 2;
+
+    for (qreal x = (step - hole.width()) / 2; x < strip.right(); x += step) {
+        hole.moveTo(x, margin);
+        painter->drawRoundedRect(hole, 25, 25, Qt::RelativeSize);
+    }
+
+    painter->restore();
+}
+
+void TileDelegate::drawWangOverlay(QPainter *painter,
+                                   const Tile *tile,
+                                   QRect targetRect,
+                                   const QModelIndex &index) const
+{
+    WangSet *wangSet = mTilesetView->wangSet();
+    if (!wangSet)
+        return;
+
+    painter->save();
+
+    QTransform transform;
+    setupTilesetGridTransform(*tile->tileset(), transform, targetRect);
+    painter->setTransform(transform, true);
+
+    paintWangOverlay(painter, wangSet->wangIdOfTile(tile),
+                     *wangSet,
+                     targetRect);
+
+    if (mTilesetView->hoveredIndex() == index) {
+        qreal opacity = painter->opacity();
+        painter->setOpacity(0.5);
+        paintWangOverlay(painter, mTilesetView->wangId(),
+                         *wangSet,
+                         targetRect,
+                         WangOverlayOptions());
+        painter->setOpacity(opacity);
+    }
+
+    painter->restore();
+}
+
+} // anonymous namespace
 
 TilesetView::TilesetView(QWidget *parent)
     : QTableView(parent)
     , mZoomable(new Zoomable(this))
-    , mTilesetDocument(nullptr)
-    , mMarkAnimatedTiles(true)
-    , mEditTerrain(false)
-    , mEditWangSet(false)
-    , mWangBehavior(WholeId)
-    , mEraseTerrain(false)
-    , mTerrain(nullptr)
-    , mWangSet(nullptr)
-    , mWangId(0)
-    , mWangColorIndex(0)
-    , mHoveredCorner(0)
-    , mTerrainChanged(false)
-    , mWangIdChanged(false)
-    , mHandScrolling(false)
-    , mImageMissingIcon(QStringLiteral("://images/32x32/image-missing.png"))
+    , mImageMissingIcon(QStringLiteral("://images/32/image-missing.png"))
 {
     setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     setItemDelegate(new TileDelegate(this, this));
     setShowGrid(false);
     setTabKeyNavigation(false);
+    setDropIndicatorShown(true);
+    setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     QHeaderView *hHeader = horizontalHeader();
     QHeaderView *vHeader = verticalHeader();
@@ -748,11 +316,28 @@ TilesetView::TilesetView(QWidget *parent)
             this, &TilesetView::updateBackgroundColor);
 
     connect(mZoomable, &Zoomable::scaleChanged, this, &TilesetView::adjustScale);
+
+    connect(new PannableViewHelper(this), &PannableViewHelper::cursorChanged,
+            this, [this] (std::optional<Qt::CursorShape> cursor) {
+        if (cursor)
+            viewport()->setCursor(*cursor);
+        else
+            viewport()->unsetCursor();
+    });
 }
 
 void TilesetView::setTilesetDocument(TilesetDocument *tilesetDocument)
 {
+    if (mTilesetDocument)
+        mTilesetDocument->disconnect(this);
+
     mTilesetDocument = tilesetDocument;
+
+    if (mTilesetDocument) {
+        connect(mTilesetDocument, &Document::changed, this, &TilesetView::onChange);
+        connect(mTilesetDocument, &TilesetDocument::tilesAdded, this, &TilesetView::refreshColumnCount);
+        connect(mTilesetDocument, &TilesetDocument::tilesRemoved, this, &TilesetView::refreshColumnCount);
+    }
 }
 
 QSize TilesetView::sizeHint() const
@@ -769,8 +354,12 @@ int TilesetView::sizeHintForColumn(int column) const
     if (model->tileset()->isCollection())
         return QTableView::sizeHintForColumn(column);
 
+    const int gridSpace = mDrawGrid ? 1 : 0;
+    if (dynamicWrapping())
+        return model->tileset()->tileWidth() * scale() + gridSpace;
+
     const int tileWidth = model->tileset()->tileWidth();
-    return qRound(tileWidth * scale()) + (mDrawGrid ? 1 : 0);
+    return qRound(tileWidth * scale()) + gridSpace;
 }
 
 int TilesetView::sizeHintForRow(int row) const
@@ -782,8 +371,12 @@ int TilesetView::sizeHintForRow(int row) const
     if (model->tileset()->isCollection())
         return QTableView::sizeHintForRow(row);
 
+    const int gridSpace = mDrawGrid ? 1 : 0;
+    if (dynamicWrapping())
+        return model->tileset()->tileHeight() * scale() + gridSpace;
+
     const int tileHeight = model->tileset()->tileHeight();
-    return qRound(tileHeight * scale()) + (mDrawGrid ? 1 : 0);
+    return qRound(tileHeight * scale()) + gridSpace;
 }
 
 qreal TilesetView::scale() const
@@ -791,10 +384,41 @@ qreal TilesetView::scale() const
     return mZoomable->scale();
 }
 
+void TilesetView::setDynamicWrapping(bool enabled)
+{
+    WrapBehavior behavior = enabled ? WrapDynamic : WrapFixed;
+    if (mWrapBehavior == behavior)
+        return;
+
+    mWrapBehavior = behavior;
+    setVerticalScrollBarPolicy(dynamicWrapping() ? Qt::ScrollBarAlwaysOn
+                                                 : Qt::ScrollBarAsNeeded);
+    scheduleDelayedItemsLayout();
+    refreshColumnCount();
+}
+
+bool TilesetView::dynamicWrapping() const
+{
+    switch (mWrapBehavior) {
+    case WrapDefault:
+        if (tilesetModel())
+            return tilesetModel()->tileset()->isCollection();
+        break;
+    case WrapDynamic:
+        return true;
+    case WrapFixed:
+        return false;
+    }
+
+    return false;
+}
+
 void TilesetView::setModel(QAbstractItemModel *model)
 {
     QTableView::setModel(model);
     updateBackgroundColor();
+    setVerticalScrollBarPolicy(dynamicWrapping() ? Qt::ScrollBarAlwaysOn : Qt::ScrollBarAsNeeded);
+    refreshColumnCount();
 }
 
 void TilesetView::setMarkAnimatedTiles(bool enabled)
@@ -840,52 +464,50 @@ void TilesetView::keyPressEvent(QKeyEvent *event)
         return;
     }
 
-    if (mEditWangSet && !(event->modifiers() & Qt::ControlModifier)) {
+    // TODO: These shortcuts only work while the TilesetView is focused. It
+    // would be preferable if they could be used more globally.
+    if (mEditWangSet && mWangBehavior == AssignWholeId && !(event->modifiers() & Qt::ControlModifier)) {
+        WangId transformedWangId = mWangId;
 
         if (event->key() == Qt::Key_Z) {
             if (event->modifiers() & Qt::ShiftModifier)
-                mWangId.rotate(-1);
+                transformedWangId.rotate(-1);
             else
-                mWangId.rotate(1);
+                transformedWangId.rotate(1);
+        } else if (event->key() == Qt::Key_X) {
+            transformedWangId.flipHorizontally();
+        } else if (event->key() == Qt::Key_Y) {
+            transformedWangId.flipVertically();
+        }
 
-            if (mHoveredIndex.isValid())
-                update(mHoveredIndex);
-
+        if (mWangId != transformedWangId) {
+            setWangId(transformedWangId);
             emit currentWangIdChanged(mWangId);
-
             return;
         }
-        if (event->key() == Qt::Key_X) {
-            mWangId.flipHorizontally();
+    }
 
-            if (mHoveredIndex.isValid())
-                update(mHoveredIndex);
-
-            emit currentWangIdChanged(mWangId);
-
-            return;
-        }
-        if (event->key() == Qt::Key_Y) {
-            mWangId.flipVertically();
-
-            if (mHoveredIndex.isValid())
-                update(mHoveredIndex);
-
-            emit currentWangIdChanged(mWangId);
-
-            return;
-        }
+    // Ignore space, because we'd like to use it for panning
+    if (event->key() == Qt::Key_Space) {
+        event->ignore();
+        return;
     }
 
     return QTableView::keyPressEvent(event);
 }
 
-void TilesetView::setEditTerrain(bool enabled)
+void TilesetView::setRelocateTiles(bool enabled)
 {
-    if (mEditTerrain == enabled)
+    if (mRelocateTiles == enabled)
         return;
 
-    mEditTerrain = enabled;
+    mRelocateTiles = enabled;
+
+    if (enabled)
+        setDragDropMode(QTableView::InternalMove);
+    else
+        setDragDropMode(QTableView::NoDragDrop);
+
     setMouseTracking(true);
     viewport()->update();
 }
@@ -900,25 +522,6 @@ void TilesetView::setEditWangSet(bool enabled)
     viewport()->update();
 }
 
-/**
- * The id of the terrain currently being specified. Returns -1 when no terrain
- * is set (used for erasing terrain info).
- */
-int TilesetView::terrainId() const
-{
-     return mTerrain ? mTerrain->id() : -1;
-}
-
-void TilesetView::setTerrain(const Terrain *terrain)
-{
-    if (mTerrain == terrain)
-        return;
-
-    mTerrain = terrain;
-    if (mEditTerrain)
-        viewport()->update();
-}
-
 void TilesetView::setWangSet(WangSet *wangSet)
 {
     if (mWangSet == wangSet)
@@ -930,44 +533,26 @@ void TilesetView::setWangSet(WangSet *wangSet)
         viewport()->update();
 }
 
+/**
+ * Sets the WangId and changes WangBehavior to WholeId.
+ */
 void TilesetView::setWangId(WangId wangId)
 {
-    mWangBehavior = WholeId;
-    mWangColorIndex = 0;
-
-    if (!mWangSet || wangId == mWangId)
-        return;
-
-    Q_ASSERT(mWangSet->wangIdIsValid(wangId));
-
     mWangId = wangId;
+    mWangBehavior = AssignWholeId;
 
     if (mEditWangSet && hoveredIndex().isValid())
         update(hoveredIndex());
 }
 
-void TilesetView::setWangEdgeColor(int color)
+/**
+ * Sets the wangColor, and changes WangBehavior depending on the type of the
+ * WangSet.
+ */
+void TilesetView::setWangColor(int color)
 {
-    if (!color)
-        setWangId(0);
-
-    mWangBehavior = Edge;
-
-    Q_ASSERT(color <= mWangSet->edgeColorCount());
-
     mWangColorIndex = color;
-}
-
-void TilesetView::setWangCornerColor(int color)
-{
-    if (!color)
-        setWangId(0);
-
-    mWangBehavior = Corner;
-
-    Q_ASSERT(color <= mWangSet->cornerColorCount());
-
-    mWangColorIndex = color;
+    mWangBehavior = AssignHoveredIndex;
 }
 
 QIcon TilesetView::imageMissingIcon() const
@@ -977,19 +562,6 @@ QIcon TilesetView::imageMissingIcon() const
 
 void TilesetView::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::MidButton && isActiveWindow()) {
-        mLastMousePos = event->globalPos();
-        setHandScrolling(true);
-        return;
-    }
-
-    if (mEditTerrain) {
-        if (event->button() == Qt::LeftButton)
-            applyTerrain();
-
-        return;
-    }
-
     if (mEditWangSet) {
         if (event->button() == Qt::LeftButton)
             applyWangId();
@@ -1002,21 +574,6 @@ void TilesetView::mousePressEvent(QMouseEvent *event)
 
 void TilesetView::mouseMoveEvent(QMouseEvent *event)
 {
-    if (mHandScrolling) {
-        auto *hBar = horizontalScrollBar();
-        auto *vBar = verticalScrollBar();
-        const QPoint d = event->globalPos() - mLastMousePos;
-
-        int horizontalValue = hBar->value() + (isRightToLeft() ? d.x() : -d.x());
-        int verticalValue = vBar->value() - d.y();
-
-        hBar->setValue(horizontalValue);
-        vBar->setValue(verticalValue);
-
-        mLastMousePos = event->globalPos();
-        return;
-    }
-
     if (mEditWangSet) {
         if (!mWangSet)
             return;
@@ -1026,46 +583,62 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
         const QModelIndex previousHoveredIndex = mHoveredIndex;
         mHoveredIndex = hoveredIndex;
 
-        WangId wangId = mWangId;
+        WangId wangId;
 
-        if (mWangBehavior != WholeId) {
+        if (mWangBehavior == AssignWholeId) {
+            wangId = mWangId;
+        } else {
             QRect tileRect = visualRect(mHoveredIndex);
-            const auto t = tilesetGridTransform(*tilesetDocument()->tileset(), tileRect.center());
-            const auto mappedPos = t.inverted().map(pos);
+            QTransform transform;
+            setupTilesetGridTransform(*tilesetDocument()->tileset(), transform, tileRect);
+
+            const auto mappedPos = transform.inverted().map(pos);
             QPoint tileLocalPos = mappedPos - tileRect.topLeft();
             QPointF tileLocalPosF((qreal) tileLocalPos.x() / tileRect.width(),
                                   (qreal) tileLocalPos.y() / tileRect.height());
-            tileLocalPosF -= QPointF(0.5, 0.5);
 
-            wangId = 0;
-            if (mWangBehavior == Edge) {
-                if (tileLocalPosF.x() < tileLocalPosF.y()) {
-                    if (tileLocalPosF.x() > -tileLocalPosF.y())
-                        wangId.setEdgeColor(2, mWangColorIndex);
-                    else
-                        wangId.setEdgeColor(3, mWangColorIndex);
-                } else {
-                    if (tileLocalPosF.x() > -tileLocalPosF.y())
-                        wangId.setEdgeColor(1, mWangColorIndex);
-                    else
-                        wangId.setEdgeColor(0, mWangColorIndex);
+            const int x = qBound(0, qFloor(tileLocalPosF.x() * 3), 2);
+            const int y = qBound(0, qFloor(tileLocalPosF.y() * 3), 2);
+            WangId::Index index = WangId::indexByGrid(x, y);
+
+            if (index != WangId::NumIndexes) {  // center is dead zone
+                switch (mWangSet->type()) {
+                case WangSet::Edge:
+                    tileLocalPosF -= QPointF(0.5, 0.5);
+
+                    if (tileLocalPosF.x() < tileLocalPosF.y()) {
+                        if (tileLocalPosF.x() > -tileLocalPosF.y())
+                            index = WangId::Bottom;
+                        else
+                            index = WangId::Left;
+                    } else {
+                        if (tileLocalPosF.x() > -tileLocalPosF.y())
+                            index = WangId::Right;
+                        else
+                            index = WangId::Top;
+                    }
+                    break;
+                case WangSet::Corner:
+                    if (tileLocalPosF.x() > 0.5) {
+                        if (tileLocalPosF.y() > 0.5)
+                            index = WangId::BottomRight;
+                        else
+                            index = WangId::TopRight;
+                    } else {
+                        if (tileLocalPosF.y() > 0.5)
+                            index = WangId::BottomLeft;
+                        else
+                            index = WangId::TopLeft;
+                    }
+                    break;
+                case WangSet::Mixed:
+                    break;
                 }
-            } else {
-                if (tileLocalPosF.x() > 0) {
-                    if (tileLocalPosF.y() > 0)
-                        wangId.setCornerColor(1, mWangColorIndex);
-                    else
-                        wangId.setCornerColor(0, mWangColorIndex);
-                } else {
-                    if (tileLocalPosF.y() > 0)
-                        wangId.setCornerColor(2, mWangColorIndex);
-                    else
-                        wangId.setCornerColor(3, mWangColorIndex);
-                }
+
+                wangId.setIndexColor(index, mWangColorIndex ? mWangColorIndex
+                                                            : WangId::INDEX_MASK);
             }
         }
-
-        Q_ASSERT(mWangSet->wangIdIsValid(wangId));
 
         if (previousHoveredIndex != mHoveredIndex || wangId != mWangId) {
             mWangId = wangId;
@@ -1082,61 +655,11 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
         return;
     }
 
-    if (mEditTerrain) {
-        const QPoint pos = event->pos();
-        const QModelIndex hoveredIndex = indexAt(pos);
-        const QModelIndex previousHoveredIndex = mHoveredIndex;
-        mHoveredIndex = hoveredIndex;
-        int previousHoverCorner = mHoveredCorner;
-
-        if (mHoveredIndex.isValid()) {
-            const QPoint center = visualRect(hoveredIndex).center();
-
-            const auto t = tilesetGridTransform(*tilesetDocument()->tileset(), center);
-            const auto mappedPos = t.inverted().map(pos);
-
-            int hoveredCorner = 0;
-            if (mappedPos.x() > center.x())
-                hoveredCorner += 1;
-            if (mappedPos.y() > center.y())
-                hoveredCorner += 2;
-
-            mHoveredCorner = hoveredCorner;
-        }
-
-        if (previousHoveredIndex != mHoveredIndex) {
-            if (previousHoveredIndex.isValid())
-                update(previousHoveredIndex);
-            if (mHoveredIndex.isValid())
-                update(mHoveredIndex);
-        } else if (previousHoverCorner != mHoveredCorner) {
-            if (mHoveredIndex.isValid())
-                update(mHoveredIndex);
-        }
-
-        if (event->buttons() & Qt::LeftButton)
-            applyTerrain();
-
-        return;
-    }
-
     QTableView::mouseMoveEvent(event);
 }
 
 void TilesetView::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::MidButton) {
-        setHandScrolling(false);
-        return;
-    }
-
-    if (mEditTerrain) {
-        if (event->button() == Qt::LeftButton)
-            finishTerrainChange();
-
-        return;
-    }
-
     if (mEditWangSet) {
         if (event->button() == Qt::LeftButton)
             finishWangIdChange();
@@ -1145,15 +668,6 @@ void TilesetView::mouseReleaseEvent(QMouseEvent *event)
     }
 
     QTableView::mouseReleaseEvent(event);
-    return;
-}
-
-void TilesetView::enterEvent(QEvent *event)
-{
-    if (mEditWangSet)
-        setFocus();
-
-    QTableView::enterEvent(event);
 }
 
 void TilesetView::leaveEvent(QEvent *event)
@@ -1168,18 +682,56 @@ void TilesetView::leaveEvent(QEvent *event)
 }
 
 /**
- * Override to support zooming in and out using the mouse wheel.
+ * Override to support zooming in and out using the mouse wheel, as well as to
+ * make the scrolling speed independent of Ctrl modifier and zoom level.
  */
 void TilesetView::wheelEvent(QWheelEvent *event)
 {
-    if (event->modifiers() & Qt::ControlModifier &&
-            event->orientation() == Qt::Vertical)
-    {
-        mZoomable->handleWheelDelta(event->delta());
+    auto hor = horizontalScrollBar();
+    auto ver = verticalScrollBar();
+
+    bool wheelZoomsByDefault = !dynamicWrapping() && Preferences::instance()->wheelZoomsByDefault();
+    bool control = event->modifiers() & Qt::ControlModifier;
+
+    if ((wheelZoomsByDefault != control) && event->angleDelta().y()) {
+
+#if QT_VERSION < QT_VERSION_CHECK(5,14,0)
+        const QPointF &viewportPos = event->posF();
+#else
+        const QPointF &viewportPos = event->position();
+#endif
+        const QPointF contentPos(viewportPos.x() + hor->value(),
+                                 viewportPos.y() + ver->value());
+
+        QPointF relativeContentPos;
+
+        const QSize oldContentSize = viewportSizeHint();
+        if (!oldContentSize.isEmpty()) {
+            relativeContentPos = QPointF(contentPos.x() / oldContentSize.width(),
+                                         contentPos.y() / oldContentSize.height());
+        }
+
+        mZoomable->handleWheelDelta(event->angleDelta().y());
+
+        executeDelayedItemsLayout();
+
+        const QSize newContentSizeHint = viewportSizeHint();
+        const QPointF newContentPos(relativeContentPos.x() * newContentSizeHint.width(),
+                                    relativeContentPos.y() * newContentSizeHint.height());
+
+        hor->setValue(newContentPos.x() - viewportPos.x());
+        ver->setValue(newContentPos.y() - viewportPos.y());
         return;
     }
 
-    QTableView::wheelEvent(event);
+    QPoint delta = event->pixelDelta();
+    if (delta.isNull())
+        delta = Utils::dpiScaled(event->angleDelta());
+
+    if (delta.x())
+        hor->setValue(hor->value() - delta.x());
+    if (delta.y())
+        ver->setValue(ver->value() - delta.y());
 }
 
 /**
@@ -1196,37 +748,38 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
 
     QMenu menu;
 
-    QIcon propIcon(QLatin1String(":images/16x16/document-properties.png"));
-
     if (tile) {
-        if (mEditTerrain) {
-            // Select this tile to make sure it is clear that only a single
-            // tile is being used.
-            selectionModel()->setCurrentIndex(index,
-                                              QItemSelectionModel::SelectCurrent |
-                                              QItemSelectionModel::Clear);
-
-            QAction *addTerrain = menu.addAction(tr("Add Terrain Type"));
-            connect(addTerrain, &QAction::triggered, this, &TilesetView::addTerrainType);
-
-            if (mTerrain) {
-                QAction *setImage = menu.addAction(tr("Set Terrain Image"));
-                connect(setImage, &QAction::triggered, this, &TilesetView::selectTerrainImage);
-            }
-        } else if (mEditWangSet) {
+        if (mEditWangSet) {
             selectionModel()->setCurrentIndex(index,
                                               QItemSelectionModel::SelectCurrent |
                                               QItemSelectionModel::Clear);
 
             if (mWangSet) {
-                QAction *setImage = menu.addAction(tr("Set Wang Set Image"));
+                QAction *setImage = menu.addAction(tr("Use as Terrain Set Image"));
                 connect(setImage, &QAction::triggered, this, &TilesetView::selectWangSetImage);
             }
-            if (mWangBehavior != WholeId && mWangColorIndex) {
-                QAction *setImage = menu.addAction(tr("Set Wang Color Image"));
+            if (mWangBehavior != AssignWholeId && mWangColorIndex) {
+                QAction *setImage = menu.addAction(tr("Use as Terrain Image"));
                 connect(setImage, &QAction::triggered, this, &TilesetView::selectWangColorImage);
             }
-        } else if (mTilesetDocument) {
+            menu.addSeparator();
+        }
+
+        QUrl imageSource = tile->imageSource();
+        if (imageSource.isEmpty())
+            imageSource = tile->tileset()->imageSource();
+
+        if (!imageSource.isEmpty()) {
+            const QString localFile = imageSource.toLocalFile();
+            if (!localFile.isEmpty()) {
+                Utils::addOpenContainingFolderAction(menu, localFile);
+                Utils::addOpenWithSystemEditorAction(menu, localFile);
+                menu.addSeparator();
+            }
+        }
+
+        if (mTilesetDocument) {
+            const QIcon propIcon(QStringLiteral(":images/16/document-properties.png"));
             QAction *tileProperties = menu.addAction(propIcon,
                                                      tr("Tile &Properties..."));
             Utils::setThemeIcon(tileProperties, "document-properties");
@@ -1235,7 +788,7 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
             // Assuming we're used in the MapEditor
 
             // Enable "swap" if there are exactly 2 tiles selected
-            bool exactlyTwoTilesSelected =
+            const bool exactlyTwoTilesSelected =
                     (selectionModel()->selectedIndexes().size() == 2);
 
             QAction *swapTilesAction = menu.addAction(tr("&Swap Tiles"));
@@ -1254,19 +807,34 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     connect(toggleGrid, &QAction::toggled,
             prefs, &Preferences::setShowTilesetGrid);
 
+    QAction *selectAllTiles = menu.addAction(tr("Select &All Tiles"));
+    connect(selectAllTiles, &QAction::triggered, this, &QAbstractItemView::selectAll);
+
+    ActionManager::applyMenuExtensions(&menu, MenuIds::tilesetViewTiles);
+
     menu.exec(event->globalPos());
 }
 
-void TilesetView::addTerrainType()
+void TilesetView::resizeEvent(QResizeEvent *event)
 {
-    if (Tile *tile = currentTile())
-        emit createNewTerrain(tile);
+    QTableView::resizeEvent(event);
+    refreshColumnCount();
 }
 
-void TilesetView::selectTerrainImage()
+void TilesetView::onChange(const ChangeEvent &change)
 {
-    if (Tile *tile = currentTile())
-        emit terrainImageSelected(tile);
+    switch (change.type) {
+    case ChangeEvent::WangSetChanged: {
+        auto &wangSetChange = static_cast<const WangSetChangeEvent&>(change);
+        if (mEditWangSet && wangSetChange.wangSet == mWangSet &&
+                (wangSetChange.properties & WangSetChangeEvent::TypeProperty)) {
+            viewport()->update();
+        }
+        break;
+    }
+    default:
+        break;
+    }
 }
 
 void TilesetView::selectWangSetImage()
@@ -1278,7 +846,7 @@ void TilesetView::selectWangSetImage()
 void TilesetView::selectWangColorImage()
 {
     if (Tile *tile = currentTile())
-        emit wangColorImageSelected(tile, mWangBehavior == Edge, mWangColorIndex);
+        emit wangColorImageSelected(tile, mWangColorIndex);
 }
 
 void TilesetView::editTileProperties()
@@ -1312,45 +880,32 @@ void TilesetView::swapTiles()
 void TilesetView::setDrawGrid(bool drawGrid)
 {
     mDrawGrid = drawGrid;
-    if (TilesetModel *model = tilesetModel())
-        model->resetModel();
+    scheduleDelayedItemsLayout();
+    refreshColumnCount();
 }
 
 void TilesetView::adjustScale()
 {
-    if (TilesetModel *model = tilesetModel())
-        model->resetModel();
+    scheduleDelayedItemsLayout();
+    refreshColumnCount();
 }
 
-void TilesetView::applyTerrain()
+void TilesetView::refreshColumnCount()
 {
-    if (!mHoveredIndex.isValid())
+    if (!tilesetModel())
         return;
 
-    Tile *tile = tilesetModel()->tileAt(mHoveredIndex);
-    if (!tile)
+    if (!dynamicWrapping()) {
+        tilesetModel()->setColumnCountOverride(0);
         return;
+    }
 
-    unsigned terrain = setTerrainCorner(tile->terrain(),
-                                        mHoveredCorner,
-                                        mEraseTerrain ? 0xFF : terrainId());
-
-    if (terrain == tile->terrain())
-        return;
-
-    QUndoCommand *command = new ChangeTileTerrain(mTilesetDocument, tile, terrain);
-    mTilesetDocument->undoStack()->push(command);
-    mTerrainChanged = true;
-}
-
-void TilesetView::finishTerrainChange()
-{
-    if (!mTerrainChanged)
-        return;
-
-    // Prevent further merging since mouse was released
-    mTilesetDocument->undoStack()->push(new ChangeTileTerrain);
-    mTerrainChanged = false;
+    const QSize maxSize = maximumViewportSize();
+    const int gridSpace = mDrawGrid ? 1 : 0;
+    const int tileWidth = tilesetModel()->tileset()->tileWidth();
+    const int scaledTileSize = std::max<int>(tileWidth * scale(), 1) + gridSpace;
+    const int columnCount = std::max(maxSize.width() / scaledTileSize, 1);
+    tilesetModel()->setColumnCountOverride(columnCount);
 }
 
 void TilesetView::applyWangId()
@@ -1363,12 +918,14 @@ void TilesetView::applyWangId()
         return;
 
     WangId previousWangId = mWangSet->wangIdOfTile(tile);
-    WangId newWangId = mWangId;
+    WangId newWangId = previousWangId;
 
-    if (mWangBehavior != WholeId) {
-        for (int i = 0; i < 8; ++i) {
-            if (!newWangId.indexColor(i))
-                newWangId.setIndexColor(i, previousWangId.indexColor(i));
+    if (mWangBehavior == AssignWholeId) {
+        newWangId = mWangId;
+    } else {
+        for (int i = 0; i < WangId::NumIndexes; ++i) {
+            if (mWangId.indexColor(i))
+                newWangId.setIndexColor(i, mWangColorIndex);
         }
     }
 
@@ -1403,19 +960,6 @@ Tile *TilesetView::currentTile() const
     return model ? model->tileAt(currentIndex()) : nullptr;
 }
 
-void TilesetView::setHandScrolling(bool handScrolling)
-{
-    if (mHandScrolling == handScrolling)
-        return;
-
-    mHandScrolling = handScrolling;
-
-    if (mHandScrolling)
-        setCursor(QCursor(Qt::ClosedHandCursor));
-    else
-        unsetCursor();
-}
-
 void TilesetView::updateBackgroundColor()
 {
     QColor base = QApplication::palette().dark().color();
@@ -1430,3 +974,5 @@ void TilesetView::updateBackgroundColor()
     p.setColor(QPalette::Base, base);
     setPalette(p);
 }
+
+#include "moc_tilesetview.cpp"

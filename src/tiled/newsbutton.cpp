@@ -21,27 +21,37 @@
 #include "newsbutton.h"
 
 #include "newsfeed.h"
+#include "preferences.h"
+#include "tiledapplication.h"
 #include "utils.h"
 
 #include <QDesktopServices>
+#include <QEvent>
 #include <QMenu>
 #include <QPainter>
 
+#ifdef TILED_SNAPSHOT
+static const char newsArchiveUrl[] = "https://thorbjorn.itch.io/tiled/devlog";
+#else
 static const char newsArchiveUrl[] = "https://www.mapeditor.org/news";
+#endif
 
 namespace Tiled {
 
 NewsButton::NewsButton(QWidget *parent)
     : QToolButton(parent)
-    , mReadIcon(QLatin1String("://images/16x16/mail-read-symbolic.png"))
-    , mUnreadIcon(QLatin1String("://images/16x16/mail-unread-symbolic.png"))
+    , mReadIcon(QLatin1String("://images/16/mail-read-symbolic.png"))
+    , mUnreadIcon(QLatin1String("://images/16/mail-unread-symbolic.png"))
 {
-    auto &feed = NewsFeed::instance();
+    const auto preferences = Preferences::instance();
+    setVisible(preferences->displayNews());
+    connect(preferences, &Preferences::displayNewsChanged, this, &NewsButton::setVisible);
+
+    auto &feed = tiledApp()->newsFeed();
 
     setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     setAutoRaise(true);
-    setText(tr("News"));
     setToolTip(feed.errorString());
 
     connect(&feed, &NewsFeed::refreshed,
@@ -53,11 +63,24 @@ NewsButton::NewsButton(QWidget *parent)
             this, &NewsButton::showNewsMenu);
 
     refreshButton();
+    retranslateUi();
+}
+
+void NewsButton::changeEvent(QEvent *event)
+{
+    QToolButton::changeEvent(event);
+    switch (event->type()) {
+    case QEvent::LanguageChange:
+        retranslateUi();
+        break;
+    default:
+        break;
+    }
 }
 
 void NewsButton::refreshButton()
 {
-    auto &feed = NewsFeed::instance();
+    auto &feed = tiledApp()->newsFeed();
     auto unreadCount = feed.unreadCount();
 
     if (unreadCount > 0) {
@@ -76,7 +99,8 @@ void NewsButton::refreshButton()
         painter.setFont(font);
         painter.setBrush(Qt::white);
         painter.setPen(Qt::white);
-        painter.drawText(numberPixmap.rect(), Qt::AlignCenter, QString::number(unreadCount));
+        painter.drawText(numberPixmap.rect(), Qt::AlignCenter, unreadCount < 5 ? QString::number(unreadCount) :
+                                                                                 QStringLiteral("!"));
 
         setIcon(QIcon(numberPixmap));
     } else {
@@ -89,10 +113,13 @@ void NewsButton::refreshButton()
 void NewsButton::showNewsMenu()
 {
     auto newsFeedMenu = new QMenu;
-    auto &feed = NewsFeed::instance();
+    auto &feed = tiledApp()->newsFeed();
 
     for (const NewsItem &newsItem : feed.newsItems()) {
-        QAction *action = newsFeedMenu->addAction(newsItem.title);
+        QAction *action = newsFeedMenu->addAction(newsItem.title, [=] {
+            QDesktopServices::openUrl(newsItem.link);
+            tiledApp()->newsFeed().markRead(newsItem);
+        });
 
         if (feed.isUnread(newsItem)) {
             QFont f = action->font();
@@ -102,18 +129,17 @@ void NewsButton::showNewsMenu()
         } else {
             action->setIcon(mReadIcon);
         }
-
-        connect(action, &QAction::triggered, [=] {
-            QDesktopServices::openUrl(newsItem.link);
-            NewsFeed::instance().markRead(newsItem);
-        });
     }
 
     newsFeedMenu->addSeparator();
+#ifdef TILED_SNAPSHOT
+    QAction *action = newsFeedMenu->addAction(tr("View All Posts"));
+#else
     QAction *action = newsFeedMenu->addAction(tr("News Archive"));
+#endif
     connect(action, &QAction::triggered, [] {
         QDesktopServices::openUrl(QUrl(QLatin1String(newsArchiveUrl)));
-        NewsFeed::instance().markAllRead();
+        tiledApp()->newsFeed().markAllRead();
     });
 
     auto size = newsFeedMenu->sizeHint();
@@ -124,4 +150,15 @@ void NewsButton::showNewsMenu()
     setDown(false);
 }
 
+void NewsButton::retranslateUi()
+{
+#ifdef TILED_SNAPSHOT
+    setText(tr("Devlog"));
+#else
+    setText(tr("News"));
+#endif
+}
+
 } // namespace Tiled
+
+#include "moc_newsbutton.cpp"

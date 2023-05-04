@@ -57,10 +57,9 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
 
-private slots:
+private:
     void redrawTimeout();
 
-private:
     MapDocument *mMapDocument;
     QImage mMapImage;
     QRect mImageRect;
@@ -72,10 +71,10 @@ private:
     MiniMapRenderer::RenderFlags mRenderFlags;
 
     QRect viewportRect() const;
-    QPointF mapToScene(QPoint p) const;
+    QPointF mapToScene(QPointF p) const;
     void updateImageRect();
     void renderMapToImage();
-    void centerViewOnLocalPixel(QPoint centerPos, int delta = 0);
+    void centerViewOnLocalPixel(const QPointF &centerPos, int delta = 0);
 };
 
 } // namespace Tiled

@@ -25,8 +25,9 @@
 
 #include "mapformat.h"
 
-#include <QObject>
 #include <QMap>
+#include <QObject>
+#include <QTextStream>
 
 namespace Flare {
 
@@ -39,15 +40,19 @@ class FLARESHARED_EXPORT FlarePlugin : public Tiled::MapFormat
 public:
     FlarePlugin();
 
-    Tiled::Map *read(const QString &fileName) override;
+    std::unique_ptr<Tiled::Map> read(const QString &fileName) override;
     bool supportsFile(const QString &fileName) const override;
 
-    bool write(const Tiled::Map *map, const QString &fileName) override;
+    bool write(const Tiled::Map *map, const QString &fileName, Options options) override;
     QString nameFilter() const override;
     QString shortName() const override;
     QString errorString() const override;
 
 private:
+    void writeProperties(QTextStream &out,
+                         const Tiled::Properties &properties,
+                         const Tiled::ExportContext &context);
+
     QString mError;
 };
 

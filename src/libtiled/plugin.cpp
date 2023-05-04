@@ -34,7 +34,7 @@ namespace Tiled {
 
 Plugin::~Plugin()
 {
-    for (QObject *object : mAddedObjects)
+    for (QObject *object : std::as_const(mAddedObjects))
         PluginManager::removeObject(object);
 }
 
@@ -61,3 +61,5 @@ void Plugin::removeObject(QObject *object)
 }
 
 } // namespace Tiled
+
+#include "moc_plugin.cpp"
