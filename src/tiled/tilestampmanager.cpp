@@ -98,6 +98,7 @@ static TileStamp stampFromContext(AbstractTool *selectedTool)
         mapParameters.width = selectionBounds.width();
         mapParameters.height = selectionBounds.height();
         mapParameters.infinite = false;
+        mapParameters.invertYAxis = false;
         auto copyMap = std::make_unique<Map>(mapParameters);
 
         map->copyLayers(mapDocument->selectedLayers(), selectedArea, *copyMap);

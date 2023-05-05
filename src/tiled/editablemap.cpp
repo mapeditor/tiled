@@ -539,6 +539,14 @@ void EditableMap::setInfinite(bool value)
         map()->setInfinite(value);
 }
 
+void EditableMap::setInvertYAxis(bool value)
+{
+    if (auto doc = mapDocument())
+        push(new ChangeMapProperty(doc, Map::InvertYAxisProperty, value));
+    else if (!checkReadOnly())
+        map()->setInvertYAxis(value);
+}
+
 void EditableMap::setHexSideLength(int value)
 {
     if (auto doc = mapDocument())

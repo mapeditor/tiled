@@ -153,9 +153,6 @@ PropertyBrowser::PropertyBrowser(QWidget *parent)
     connect(variantEditorFactory, &VariantEditorFactory::resetProperty,
             this, &PropertyBrowser::resetProperty);
 
-    connect(Preferences::instance(), &Preferences::invertYAxisChanged,
-            this, &PropertyBrowser::invertYAxisChanged);
-
     connect(Preferences::instance(), &Preferences::propertyTypesChanged,
             this, &PropertyBrowser::propertyTypesChanged);
 
@@ -419,12 +416,6 @@ void PropertyBrowser::tileTypeChanged(Tile *tile)
 void PropertyBrowser::wangSetChanged(WangSet *wangSet)
 {
     if (mObject == wangSet)
-        updateProperties();
-}
-
-void PropertyBrowser::invertYAxisChanged()
-{
-    if (mObject && mObject->typeId() == Object::MapObjectType)
         updateProperties();
 }
 
@@ -749,6 +740,7 @@ void PropertyBrowser::addMapProperties()
     auto tileWidthProperty = addProperty(TileWidthProperty, QMetaType::Int, tr("Tile Width"), groupProperty);
     auto tileHeightProperty = addProperty(TileHeightProperty, QMetaType::Int, tr("Tile Height"), groupProperty);
     addProperty(InfiniteProperty, QMetaType::Bool, tr("Infinite"), groupProperty);
+    addProperty(InvertYAxisProperty, QMetaType::Bool, tr("Invert Y-Axis"), groupProperty);
 
     tileWidthProperty->setAttribute(QStringLiteral("minimum"), 1);
     tileHeightProperty->setAttribute(QStringLiteral("minimum"), 1);
@@ -1187,6 +1179,10 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
 
         undoStack->push(changePropertyCommand);
         undoStack->endMacro();
+        break;
+    }
+    case InvertYAxisProperty: {
+        command = new ChangeMapProperty(mMapDocument, Map::InvertYAxisProperty, val.toInt());
         break;
     }
     case OrientationProperty: {
@@ -1862,6 +1858,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[TileWidthProperty]->setValue(map->tileWidth());
         mIdToProperty[TileHeightProperty]->setValue(map->tileHeight());
         mIdToProperty[InfiniteProperty]->setValue(map->infinite());
+        mIdToProperty[InvertYAxisProperty]->setValue(map->invertYAxis());
         mIdToProperty[OrientationProperty]->setValue(map->orientation() - 1);
         mIdToProperty[HexSideLengthProperty]->setValue(map->hexSideLength());
         mIdToProperty[StaggerAxisProperty]->setValue(map->staggerAxis());

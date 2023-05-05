@@ -264,6 +264,7 @@ std::unique_ptr<Map> MapReaderPrivate::readMap()
     mapParameters.tileWidth = atts.value(QLatin1String("tilewidth")).toInt();
     mapParameters.tileHeight = atts.value(QLatin1String("tileheight")).toInt();
     mapParameters.infinite = atts.value(QLatin1String("infinite")).toInt();
+    mapParameters.invertYAxis = atts.value(QLatin1String("invertyaxis")).toInt();
     mapParameters.hexSideLength = atts.value(QLatin1String("hexsidelength")).toInt();
     mapParameters.staggerAxis = staggerAxisFromString(staggerAxis);
     mapParameters.staggerIndex = staggerIndexFromString(staggerIndex);

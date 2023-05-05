@@ -81,6 +81,7 @@ public:
         TileWidthProperty,
         TileHeightProperty,
         InfiniteProperty,
+        InvertYAxisProperty,
         HexSideLengthProperty,
         StaggerAxisProperty,
         StaggerIndexProperty,
@@ -158,6 +159,7 @@ public:
         int tileWidth = 0;
         int tileHeight = 0;
         bool infinite = false;
+        bool invertYAxis = false;
         int hexSideLength = 0;
         StaggerAxis staggerAxis = StaggerY;
         StaggerIndex staggerIndex = StaggerOdd;
@@ -215,6 +217,9 @@ public:
 
     bool infinite() const;
     void setInfinite(bool infinite);
+
+    bool invertYAxis() const;
+    void setInvertYAxis(bool invertYAxis);
 
     int hexSideLength() const;
     void setHexSideLength(int hexSideLength);
@@ -285,7 +290,7 @@ public:
 
     QSize chunkSize() const;
     void setChunkSize(QSize size);
-    
+
     bool isTilesetUsed(const Tileset *tileset) const;
 
     std::unique_ptr<Map> clone() const;
@@ -463,6 +468,16 @@ inline bool Map::infinite() const
 inline void Map::setInfinite(bool infinite)
 {
     mParameters.infinite = infinite;
+}
+
+inline bool Map::invertYAxis() const
+{
+    return mParameters.invertYAxis;
+}
+
+inline void Map::setInvertYAxis(bool invertYAxis)
+{
+    mParameters.invertYAxis = invertYAxis;
 }
 
 inline int Map::hexSideLength() const

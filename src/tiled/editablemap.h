@@ -46,6 +46,7 @@ class EditableMap : public EditableAsset
     Q_PROPERTY(int tileWidth READ tileWidth WRITE setTileWidth)
     Q_PROPERTY(int tileHeight READ tileHeight WRITE setTileHeight)
     Q_PROPERTY(bool infinite READ infinite WRITE setInfinite)
+    Q_PROPERTY(bool invertYAxis READ invertYAxis WRITE setInvertYAxis)
     Q_PROPERTY(int hexSideLength READ hexSideLength WRITE setHexSideLength)
     Q_PROPERTY(StaggerAxis staggerAxis READ staggerAxis WRITE setStaggerAxis)
     Q_PROPERTY(StaggerIndex staggerIndex READ staggerIndex WRITE setStaggerIndex)
@@ -121,6 +122,7 @@ public:
     int tileWidth() const;
     int tileHeight() const;
     bool infinite() const;
+    bool invertYAxis() const;
     int hexSideLength() const;
     StaggerAxis staggerAxis() const;
     StaggerIndex staggerIndex() const;
@@ -184,6 +186,7 @@ public:
     void setTileHeight(int value);
     Q_INVOKABLE void setTileSize(int width, int height);
     void setInfinite(bool value);
+    void setInvertYAxis(bool value);
     void setHexSideLength(int value);
     void setStaggerAxis(StaggerAxis value);
     void setStaggerIndex(StaggerIndex value);
@@ -262,6 +265,11 @@ inline int EditableMap::tileHeight() const
 inline bool EditableMap::infinite() const
 {
     return map()->infinite();
+}
+
+inline bool EditableMap::invertYAxis() const
+{
+    return map()->invertYAxis();
 }
 
 inline int EditableMap::hexSideLength() const

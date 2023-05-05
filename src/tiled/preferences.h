@@ -172,8 +172,6 @@ public:
 
     bool wheelZoomsByDefault() const;
 
-    bool invertYAxis() const;
-
     template <typename T>
     T get(const char *key, const T &defaultValue = T()) const
     { return value(QLatin1String(key), defaultValue).template value<T>(); }
@@ -209,7 +207,6 @@ public slots:
     void setRestoreSessionOnStartup(bool enabled);
     void setPluginEnabled(const QString &fileName, bool enabled);
     void setWheelZoomsByDefault(bool mode);
-    void setInvertYAxis(bool enabled);
 
     void clearRecentFiles();
     void clearRecentProjects();

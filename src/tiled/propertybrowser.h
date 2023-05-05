@@ -80,7 +80,6 @@ private:
     void tileChanged(Tile *tile);
     void tileTypeChanged(Tile *tile);
     void wangSetChanged(WangSet *wangSet);
-    void invertYAxisChanged();
 
     void propertyAdded(Object *object, const QString &name);
     void propertyRemoved(Object *object, const QString &name);
@@ -149,6 +148,7 @@ private:
         WangColorProbabilityProperty,
         WangSetTypeProperty,
         InfiniteProperty,
+        InvertYAxisProperty,
         TemplateProperty,
         CompressionLevelProperty,
         ChunkWidthProperty,

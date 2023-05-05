@@ -211,6 +211,8 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
                      QString::number(map.tileHeight()));
     w.writeAttribute(QStringLiteral("infinite"),
                      QString::number(map.infinite()));
+    w.writeAttribute(QStringLiteral("invertyaxis"),
+                     QString::number(map.invertYAxis()));
 
     if (map.orientation() == Map::Hexagonal) {
         w.writeAttribute(QStringLiteral("hexsidelength"),

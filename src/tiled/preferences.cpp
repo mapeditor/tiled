@@ -754,17 +754,6 @@ void Preferences::setWheelZoomsByDefault(bool mode)
     setValue(QLatin1String("Interface/WheelZoomsByDefault"), mode);
 }
 
-bool Preferences::invertYAxis() const
-{
-    return get("Interface/InvertYAxis", false);
-}
-
-void Preferences::setInvertYAxis(bool on)
-{
-    setValue(QLatin1String("Interface/InvertYAxis"), on);
-    emit invertYAxisChanged();
-}
-
 QString Preferences::homeLocation()
 {
     return QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
