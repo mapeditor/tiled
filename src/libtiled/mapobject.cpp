@@ -30,7 +30,6 @@
 
 #include "mapobject.h"
 
-#include "map.h"
 #include "maprenderer.h"
 #include "objectgroup.h"
 #include "objecttemplate.h"

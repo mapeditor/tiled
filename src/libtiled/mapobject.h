@@ -30,6 +30,7 @@
 
 #pragma once
 
+#include "map.h"
 #include "object.h"
 #include "tiled.h"
 #include "tilelayer.h"
@@ -154,6 +155,7 @@ public:
     void setX(qreal x);
 
     qreal y() const;
+    qreal nonInvertedY() const;
     void setY(qreal y);
 
     const QSizeF &size() const;
@@ -313,10 +315,16 @@ inline void MapObject::setX(qreal x)
  * Returns the y position of this object.
  */
 inline qreal MapObject::y() const
+{ return map()->invertYAxis() && !isTileObject() ? mPos.y() + height() : mPos.y(); }
+
+/**
+ * Returns the y position of this object as though the y coordinates were not inverted.
+ */
+inline qreal MapObject::nonInvertedY() const
 { return mPos.y(); }
 
 /**
- * Sets the x position of this object.
+ * Sets the y position of this object.
  */
 inline void MapObject::setY(qreal y)
 { mPos.setY(y); }
