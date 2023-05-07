@@ -253,8 +253,6 @@ signals:
 
     void aboutToSwitchSession();
 
-    void invertYAxisChanged();
-
 private:
     void addToRecentFileList(const QString &fileName, QStringList &files);
 
