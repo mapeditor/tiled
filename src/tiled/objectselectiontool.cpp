@@ -1765,7 +1765,16 @@ QPointF ObjectSelectionTool::snapToGrid(const QPointF &diff,
         const QPointF newAlignScreenPos = alignScreenPos + diff;
 
         QPointF newAlignPixelPos = renderer->screenToPixelCoords(newAlignScreenPos);
-        snapHelper.snap(newAlignPixelPos);
+
+        QPointF offset(0, 0);
+        Map *map = mClickedObject->map();
+
+        // If Y-axis is inverted, snap the lower left corner to the grid
+        if (map->invertYAxis() && !mClickedObject->isTileObject())
+            offset.ry() += map->tileHeight() * floor(mClickedObject->height() / map->tileHeight())
+                         - mClickedObject->height();
+
+        snapHelper.snap(newAlignPixelPos, offset);
 
         return renderer->pixelToScreenCoords(newAlignPixelPos) - alignScreenPos;
     }

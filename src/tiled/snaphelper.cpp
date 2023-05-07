@@ -40,7 +40,7 @@ SnapHelper::SnapHelper(const MapRenderer *renderer,
     if (modifiers & Qt::ControlModifier) {
         if (modifiers & Qt::ShiftModifier) {
             toggleFineSnap();
-        } else { 
+        } else {
             toggleSnap();
         }
     }
@@ -58,7 +58,7 @@ void SnapHelper::toggleSnap()
         break;
     }
 }
-  
+
 void SnapHelper::toggleFineSnap()
 {
     switch (mSnapMode) {
@@ -73,13 +73,16 @@ void SnapHelper::toggleFineSnap()
 }
 
 void SnapHelper::snap(QPointF &pixelPos) const
+{ snap(pixelPos, QPointF(0, 0)); }
+
+void SnapHelper::snap(QPointF &pixelPos, QPointF offset) const
 {
     if (mSnapMode != NoSnap) {
         if (mSnapMode == SnapToFineGrid) {
             const int gridFine = Preferences::instance()->gridFine();
-            pixelPos = mRenderer->snapToGrid(pixelPos, gridFine);
+            pixelPos = mRenderer->snapToGrid(pixelPos, offset, gridFine);
         } else {
-            pixelPos = mRenderer->snapToGrid(pixelPos);
+            pixelPos = mRenderer->snapToGrid(pixelPos, offset);
         }
     } else if (mSnapToPixels) {
         QPointF screenPos = mRenderer->pixelToScreenCoords(pixelPos);
