@@ -314,11 +314,11 @@ std::unique_ptr<Map> MapReaderPrivate::readMap()
                 tileset->loadImage();
         }
 
-        // Fix up sizes of tile objects. This is for backwards compatibility.
         LayerIterator iterator(mMap.get());
         while (Layer *layer = iterator.next()) {
             if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
                 for (MapObject *object : *objectGroup) {
+                    // Fix up sizes of tile objects. This is for backwards compatibility.
                     if (const Tile *tile = object->cell().tile()) {
                         const QSizeF tileSize = tile->size();
                         if (object->width() == 0)
@@ -326,6 +326,11 @@ std::unique_ptr<Map> MapReaderPrivate::readMap()
                         if (object->height() == 0)
                             object->setHeight(tileSize.height());
                     }
+
+                    // Invert Y-axis if set
+                    if (mMap->invertYAxis())
+                        object->setY(mMap->height() * mMap->tileHeight() - object->y());
+
                 }
             }
         }

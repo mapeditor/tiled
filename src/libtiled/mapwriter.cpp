@@ -786,7 +786,18 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
 
     if (!mapObject.isTemplateBase()) {
         w.writeAttribute(QStringLiteral("x"), QString::number(pos.x()));
-        w.writeAttribute(QStringLiteral("y"), QString::number(pos.y()));
+
+        qreal y = pos.y();
+        if (mapObject.map()->invertYAxis()) {
+            y = mapObject.map()->height() * mapObject.map()->tileHeight() - pos.y();
+            // Objects which anchor in the upper-left need to be translated by their height
+            if (mapObject.shape() != MapObject::Polygon &&
+                mapObject.shape() != MapObject::Polyline &&
+                !mapObject.isTileObject())
+                y -= mapObject.height();
+        }
+
+        w.writeAttribute(QStringLiteral("y"), QString::number(y));
     }
 
     if (shouldWrite(true, isTemplateInstance, mapObject.propertyChanged(MapObject::SizeProperty))) {
