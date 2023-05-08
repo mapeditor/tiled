@@ -788,14 +788,8 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
         w.writeAttribute(QStringLiteral("x"), QString::number(pos.x()));
 
         qreal y = pos.y();
-        if (mapObject.map()->invertYAxis()) {
-            y = mapObject.map()->height() * mapObject.map()->tileHeight() - pos.y();
-            // Objects which anchor in the upper-left need to be translated by their height
-            if (mapObject.shape() != MapObject::Polygon &&
-                mapObject.shape() != MapObject::Polyline &&
-                !mapObject.isTileObject())
-                y -= mapObject.height();
-        }
+        if (mapObject.map()->invertYAxis())
+            y = mapObject.map()->height() * mapObject.map()->tileHeight() - y;
 
         w.writeAttribute(QStringLiteral("y"), QString::number(y));
     }

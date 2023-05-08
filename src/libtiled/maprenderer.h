@@ -138,8 +138,7 @@ public:
     virtual void drawGrid(QPainter *painter, const QRectF &rect,
                           QColor gridColor = Qt::black, QSize gridMajor = QSize()) const = 0;
 
-    virtual QPointF snapToGrid(const QPointF &pixelCoords, int subdivisions = 1) const;
-    virtual QPointF snapToGrid(const QPointF &pixelCoords, QPointF offset,
+    virtual QPointF snapToGrid(const QPointF &pixelCoords,
                                int subdivisions = 1) const;
 
     using RenderTileCallback = std::function<void (QPoint, const QPointF &)>;

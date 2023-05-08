@@ -37,7 +37,6 @@ public:
     bool snaps() const { return mSnapMode != NoSnap || mSnapToPixels; }
 
     void snap(QPointF &pixelPos) const;
-    void snap(QPointF &pixelPos, QPointF offset) const;
 
 private:
     const MapRenderer *mRenderer;

@@ -1271,18 +1271,14 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
     case XProperty: {
         command = new ChangeMapObject(mDocument, mapObject,
                                       MapObject::PositionProperty,
-                                      QPointF(val.toReal(), mapObject->nonInvertedY()));
+                                      QPointF(val.toReal(), mapObject->y()));
         break;
     }
     case YProperty: {
-        qreal y = val.toReal();
-        if (mapObject->map()->invertYAxis() && !mapObject->isTileObject())
-            y += mapObject->height();
-
         command = new ChangeMapObject(mDocument, mapObject,
                                       MapObject::PositionProperty,
                                       QPointF(mapObject->x(),
-                                              InvertYAxisHelper(mMapDocument).pixelY(y)));
+                                              InvertYAxisHelper(mMapDocument).pixelY(val.toReal())));
         break;
     }
     case WidthProperty: {

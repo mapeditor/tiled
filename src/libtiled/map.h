@@ -475,11 +475,6 @@ inline bool Map::invertYAxis() const
     return mParameters.invertYAxis;
 }
 
-inline void Map::setInvertYAxis(bool invertYAxis)
-{
-    mParameters.invertYAxis = invertYAxis;
-}
-
 inline int Map::hexSideLength() const
 {
     return mParameters.hexSideLength;

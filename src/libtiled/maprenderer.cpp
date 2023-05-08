@@ -237,9 +237,6 @@ QPainterPath MapRenderer::pointInteractionShape(const MapObject *object) const
 }
 
 QPointF MapRenderer::snapToGrid(const QPointF &pixelCoords, int subdivisions) const
-{ return snapToGrid(pixelCoords, QPointF(0, 0), subdivisions); }
-
-QPointF MapRenderer::snapToGrid(const QPointF &pixelCoords, QPointF offset, int subdivisions) const
 {
     QPointF tileCoords = pixelToTileCoords(pixelCoords);
     if (subdivisions > 1) {
@@ -248,7 +245,7 @@ QPointF MapRenderer::snapToGrid(const QPointF &pixelCoords, QPointF offset, int 
     } else {
         tileCoords = tileCoords.toPoint();
     }
-    return tileToPixelCoords(tileCoords) + offset;
+    return tileToPixelCoords(tileCoords);
 }
 
 void MapRenderer::drawTileLayer(QPainter *painter, const TileLayer *layer, const QRectF &exposed) const

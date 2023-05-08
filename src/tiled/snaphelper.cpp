@@ -73,16 +73,13 @@ void SnapHelper::toggleFineSnap()
 }
 
 void SnapHelper::snap(QPointF &pixelPos) const
-{ snap(pixelPos, QPointF(0, 0)); }
-
-void SnapHelper::snap(QPointF &pixelPos, QPointF offset) const
 {
     if (mSnapMode != NoSnap) {
         if (mSnapMode == SnapToFineGrid) {
             const int gridFine = Preferences::instance()->gridFine();
-            pixelPos = mRenderer->snapToGrid(pixelPos, offset, gridFine);
+            pixelPos = mRenderer->snapToGrid(pixelPos, gridFine);
         } else {
-            pixelPos = mRenderer->snapToGrid(pixelPos, offset);
+            pixelPos = mRenderer->snapToGrid(pixelPos);
         }
     } else if (mSnapToPixels) {
         QPointF screenPos = mRenderer->pixelToScreenCoords(pixelPos);

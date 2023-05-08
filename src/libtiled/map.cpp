@@ -69,6 +69,24 @@ Map::~Map()
     qDeleteAll(mLayers);
 }
 
+void Map::setInvertYAxis(bool invertYAxis)
+{
+    mParameters.invertYAxis = invertYAxis;
+
+    for (auto layer : mLayers) {
+        if (!layer->isObjectGroup())
+            continue;
+
+        auto og = layer->asObjectGroup();
+        for (auto it = og->begin(); it != og->end(); ++it) {
+            auto object = *it;
+            // Tile objects are anchored in the lower-left already, so don't height-adjust
+            if (!object->isTileObject())
+                object->setY(object->y() + object->height() * (invertYAxis ? 1 : -1));
+        }
+    }
+}
+
 /**
  * Returns the margins that have to be taken into account when figuring
  * out which part of the map to repaint after changing some tiles.

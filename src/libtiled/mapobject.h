@@ -155,7 +155,6 @@ public:
     void setX(qreal x);
 
     qreal y() const;
-    qreal nonInvertedY() const;
     void setY(qreal y);
 
     const QSizeF &size() const;
@@ -315,12 +314,6 @@ inline void MapObject::setX(qreal x)
  * Returns the y position of this object.
  */
 inline qreal MapObject::y() const
-{ return map()->invertYAxis() && !isTileObject() ? mPos.y() + height() : mPos.y(); }
-
-/**
- * Returns the y position of this object as though the y coordinates were not inverted.
- */
-inline qreal MapObject::nonInvertedY() const
 { return mPos.y(); }
 
 /**
