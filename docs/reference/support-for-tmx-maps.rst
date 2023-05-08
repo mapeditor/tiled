@@ -257,8 +257,8 @@ DragonRuby Game Toolkit
 Flame
 ~~~~~
 
-- `flame_tiled <https://pub.dev/packages/flame_tiled>`__ is a library for 
-  incorporating Tiled maps into the `Flame <https://pub.dev/packages/flame>`
+- `flame_tiled <https://pub.dev/packages/flame_tiled>`__ is a library for
+  incorporating Tiled maps into the `Flame <https://pub.dev/packages/flame>`__
   game engine.
 
 Flixel
