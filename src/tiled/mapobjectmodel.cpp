@@ -26,11 +26,11 @@
 #include "changemapobject.h"
 #include "changeproperties.h"
 #include "grouplayer.h"
+#include "invertyaxishelper.h"
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "objectgroup.h"
-#include "invertyaxishelper.h"
 
 #include <QApplication>
 #include <QPalette>

@@ -1765,7 +1765,6 @@ QPointF ObjectSelectionTool::snapToGrid(const QPointF &diff,
         const QPointF newAlignScreenPos = alignScreenPos + diff;
 
         QPointF newAlignPixelPos = renderer->screenToPixelCoords(newAlignScreenPos);
-
         snapHelper.snap(newAlignPixelPos);
 
         return renderer->pixelToScreenCoords(newAlignPixelPos) - alignScreenPos;

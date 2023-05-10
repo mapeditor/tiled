@@ -156,7 +156,6 @@ bool ClipboardManager::copySelection(const MapDocument &mapDocument)
     mapParameters.width = selectionBounds.width();
     mapParameters.height = selectionBounds.height();
     mapParameters.infinite = false;
-    mapParameters.invertYAxis = false;
     Map copyMap(mapParameters);
 
     if (!selectedArea.isEmpty()) {

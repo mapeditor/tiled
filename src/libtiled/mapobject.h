@@ -30,7 +30,6 @@
 
 #pragma once
 
-#include "map.h"
 #include "object.h"
 #include "tiled.h"
 #include "tilelayer.h"

@@ -21,13 +21,13 @@
 #include "abstracttiletool.h"
 
 #include "brushitem.h"
+#include "invertyaxishelper.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "tilelayer.h"
 #include "tilestamp.h"
-#include "invertyaxishelper.h"
 
 #include <QKeyEvent>
 #include <QtMath>

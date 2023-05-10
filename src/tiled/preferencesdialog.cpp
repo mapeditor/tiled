@@ -139,6 +139,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             this, [] (bool checked) { MapView::ourAutoScrollingEnabled = checked; });
     connect(mUi->smoothScrolling, &QCheckBox::toggled,
             this, [] (bool checked) { MapView::ourSmoothScrollingEnabled = checked; });
+
     connect(mUi->styleCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, &PreferencesDialog::styleComboChanged);
     connect(mUi->objectSelectionBehaviorCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),

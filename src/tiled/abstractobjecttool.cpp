@@ -26,6 +26,7 @@
 #include "changepolygon.h"
 #include "changetileobjectgroup.h"
 #include "documentmanager.h"
+#include "invertyaxishelper.h"
 #include "mapdocument.h"
 #include "map.h"
 #include "mapobject.h"
@@ -39,7 +40,6 @@
 #include "tile.h"
 #include "tmxmapformat.h"
 #include "utils.h"
-#include "invertyaxishelper.h"
 
 #include <QFileDialog>
 #include <QGraphicsView>
