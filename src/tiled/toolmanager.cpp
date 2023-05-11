@@ -156,7 +156,7 @@ void ToolManager::unregisterTool(AbstractTool *tool)
 /**
  * Selects the given tool. It should be previously added using registerTool().
  *
- * Returns whether the tool was succesfully selected.
+ * Returns whether the tool was successfully selected.
  */
 bool ToolManager::selectTool(AbstractTool *tool)
 {

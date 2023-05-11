@@ -78,7 +78,7 @@ bool CommandLineParser::parse(const QStringList &arguments)
 
         // Long options
         if (arg.at(1) == QLatin1Char('-')) {
-            // Double hypen "--" means no more options will follow
+            // Double hyphen "--" means no more options will follow
             if (arg.length() == 2) {
                 noMoreArguments = true;
                 continue;

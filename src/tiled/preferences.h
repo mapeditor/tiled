@@ -81,7 +81,7 @@ public:
     };
 
     ObjectLabelVisiblity objectLabelVisibility() const;
-    void setObjectLabelVisibility(ObjectLabelVisiblity visiblity);
+    void setObjectLabelVisibility(ObjectLabelVisiblity visibility);
 
     bool labelForHoveredObject() const;
     void setLabelForHoveredObject(bool enabled);

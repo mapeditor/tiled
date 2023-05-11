@@ -1165,7 +1165,7 @@ void TilesetDock::embedTileset()
         return;
 
     // To embed a tileset we clone it, since further changes to that tileset
-    // should not affect the exteral tileset.
+    // should not affect the external tileset.
     SharedTileset embeddedTileset = tileset->clone();
 
     QUndoStack *undoStack = mMapDocument->undoStack();

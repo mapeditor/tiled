@@ -108,7 +108,7 @@ bool ChangeTileWangId::mergeWith(const QUndoCommand *other)
                                  mWangSet == o->mWangSet))
         return false;
 
-    // suboptimal, could use a map to remove any unnessesary changes if the
+    // suboptimal, could use a map to remove any unnecessary changes if the
     // same tile has multiple changes.
     mChanges += o->mChanges;
 

@@ -33,7 +33,7 @@ class IssuesCounter : public QToolButton
 public:
     explicit IssuesCounter(QWidget *parent = nullptr);
 
-    // Skip the QToolButton implementations, due to custum contents
+    // Skip the QToolButton implementations, due to custom contents
     QSize sizeHint() const override { return QAbstractButton::sizeHint(); }
     QSize minimumSizeHint() const override { return QAbstractButton::minimumSizeHint(); };
 

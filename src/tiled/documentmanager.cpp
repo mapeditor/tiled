@@ -421,7 +421,7 @@ bool DocumentManager::switchToDocument(const QString &fileName)
 
 /**
  * Switches to the given \a document, if there is already a tab open for it.
- * \return whether the switch was succesful
+ * \return whether the switch was successful
  */
 bool DocumentManager::switchToDocument(Document *document)
 {
@@ -450,7 +450,7 @@ void DocumentManager::switchToDocument(MapDocument *mapDocument, QPointF viewCen
 }
 
 /**
- * Switches to the given \a mapDocument, taking tilesets into accout
+ * Switches to the given \a mapDocument, taking tilesets into account
  */
 void DocumentManager::switchToDocumentAndHandleSimiliarTileset(MapDocument *mapDocument, QPointF viewCenter, qreal scale)
 {

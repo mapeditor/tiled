@@ -824,7 +824,7 @@ qreal WangSet::wangIdProbability(WangId wangId) const
 }
 
 /**
- * Returns whether or not the given wangId is valid in the contex of the
+ * Returns whether or not the given wangId is valid in the context of the
  * current wangSet
  */
 bool WangSet::wangIdIsValid(WangId wangId) const
@@ -935,7 +935,7 @@ WangId WangSet::templateWangIdAt(unsigned n) const
         break;
     case Edge:
         for (int i = WangId::NumEdges - 1; i >= 0; --i) {
-            //this is the number of permutations possible bellow this point in the wangId
+            //this is the number of permutations possible below this point in the wangId
             const int belowPermutations = qPow(colorCount(), i);
             const int value = n / belowPermutations;
 
