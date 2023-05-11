@@ -54,6 +54,7 @@ public:
     QString mAutomappingRulesFile;
     QVector<Command> mCommands;
     CompatibilityVersion mCompatibilityVersion = Tiled_Current;
+    Project &operator =(const Project &value);
 
 private:
     QDateTime mLastSaved;
@@ -82,5 +83,20 @@ inline const SharedPropertyTypes &Project::propertyTypes() const
 {
     return mPropertyTypes;
 }
-
+inline Project &Project::operator =(const Project &value)
+{ 
+    if (this == &value) {
+            return *this;
+    }
+    mExtensionsPath = value.mExtensionsPath;
+    mObjectTypesFile = value.mObjectTypesFile;
+    mAutomappingRulesFile = value.mAutomappingRulesFile;
+    mCompatibilityVersion = value.mCompatibilityVersion;
+    mCommands = value.mCommands;
+    mLastSaved = value.mLastSaved;
+    mFileName = value.mFileName;
+    mFolders = value.mFolders;
+    mPropertyTypes = value.mPropertyTypes;
+    return *this; 
+}
 } // namespace Tiled
