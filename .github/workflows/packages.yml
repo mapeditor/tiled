@@ -48,7 +48,7 @@ jobs:
         include:
         - qt_version: 5.15.2
           qt_version_major: 5
-        - qt_version: 6.4.3
+        - qt_version: 6.5.0
           qt_version_major: 6
 
     env:
@@ -63,7 +63,19 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install libgl1-mesa-dev libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 libxcb-randr0 libxcb-shape0 libzstd-dev libcurl4-openssl-dev
+        sudo apt install \
+          libcurl4-openssl-dev \
+          libgl1-mesa-dev \
+          libxcb-cursor0 \
+          libxcb-icccm4 \
+          libxcb-image0 \
+          libxcb-keysyms1 \
+          libxcb-randr0 \
+          libxcb-render-util0 \
+          libxcb-shape0 \
+          libxcb-xinerama0 \
+          libxkbcommon-x11-0 \
+          libzstd-dev
 
     - name: Install Qt
       run: |
@@ -180,7 +192,7 @@ jobs:
         - qt_version: 5.12.12
           version_suffix: "10.12-10.13"
           qt_creator_version: 5.0.3
-        - qt_version: 6.4.3
+        - qt_version: 6.5.0
           version_suffix: "10.14+"
           qt_creator_version: 7.0.2
 
@@ -272,7 +284,7 @@ jobs:
           mingw_version: 8.1.0
           mingw_component: mingw
           mingw_path: /c/Qt/Tools/mingw810_32/bin
-        - qt_version: 6.4.3
+        - qt_version: 6.5.0
           qt_version_major: 6
           qt_toolchain: win64_mingw
           arch: 64
