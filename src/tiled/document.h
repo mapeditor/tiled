@@ -56,7 +56,8 @@ public:
     enum DocumentType {
         MapDocumentType,
         TilesetDocumentType,
-        WorldDocumentType
+        WorldDocumentType,
+        ProjectDocumentType
     };
 
     Document(DocumentType type,

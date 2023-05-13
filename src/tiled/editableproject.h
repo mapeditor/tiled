@@ -22,12 +22,12 @@
 #pragma once
 
 #include "project.h"
-
+#include "editableasset.h"
 #include <QObject>
 
 namespace Tiled {
 
-class EditableProject : public QObject
+class EditableProject : public EditableAsset
 {
     Q_OBJECT
 
@@ -38,12 +38,12 @@ class EditableProject : public QObject
 
 public:
     EditableProject(Project *project, QObject *parent = nullptr);
-
+    bool isReadOnly() const override;
     QString extensionsPath() const;
     QString automappingRulesFile() const;
     QString fileName() const;
     QStringList folders() const;
-
+    QSharedPointer<Document> createDocument() override;
 private:
     Project *mProject;
 };

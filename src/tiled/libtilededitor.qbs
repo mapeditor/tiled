@@ -390,6 +390,8 @@ DynamicLibrary {
         "project.h",
         "projectdock.cpp",
         "projectdock.h",
+        "projectdocument.cpp",
+        "projectdocument.h",
         "projectmanager.cpp",
         "projectmanager.h",
         "projectmodel.cpp",

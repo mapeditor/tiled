@@ -56,6 +56,7 @@
 #include "newtilesetdialog.h"
 #include "offsetmapdialog.h"
 #include "projectdock.h"
+#include "projectdocument.h"
 #include "projectmanager.h"
 #include "projectpropertiesdialog.h"
 #include "propertytypeseditor.h"
@@ -1487,15 +1488,20 @@ void MainWindow::restoreSession()
 void MainWindow::projectProperties()
 {
     Project &project = ProjectManager::instance()->project();
-
-    if (ProjectPropertiesDialog(project, this).exec() == QDialog::Accepted) {
-        project.save();
-
-        ScriptManager::instance().refreshExtensionsPaths();
-        mAutomappingManager->refreshRulesFile();
-
-        FileFormat::setCompatibilityVersion(project.mCompatibilityVersion);
+    if (project.fileName().length() == 0){
+        return;
     }
+    auto projectDocument = new ProjectDocument(&project);
+    emit projectDocument->editCurrentObject();
+
+    // if (ProjectPropertiesDialog(project, this).exec() == QDialog::Accepted) {
+    //     project.save();
+
+    //     ScriptManager::instance().refreshExtensionsPaths();
+    //     mAutomappingManager->refreshRulesFile();
+
+    //     FileFormat::setCompatibilityVersion(project.mCompatibilityVersion);
+    // }
 }
 
 void MainWindow::cut()

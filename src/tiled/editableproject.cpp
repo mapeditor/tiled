@@ -20,11 +20,12 @@
  */
 
 #include "editableproject.h"
+#include "projectdocument.h"
 
 namespace Tiled {
 
 EditableProject::EditableProject(Project *project, QObject *parent)
-    : QObject(parent)
+    : EditableAsset(nullptr, nullptr, parent)
     , mProject(project)
 {
 }
@@ -49,6 +50,14 @@ QStringList EditableProject::folders() const
    return mProject->folders();
 }
 
+bool EditableProject::isReadOnly() const
+{
+   return false;
+}
+QSharedPointer<Document> EditableProject:createDocument()
+{
+    return ProjectDocumentPtr::create(mProject);
+}
 } // namespace Tiled
 
 #include "moc_editableproject.cpp"
