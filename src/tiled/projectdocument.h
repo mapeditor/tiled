@@ -24,9 +24,9 @@
 #include "document.h"
 #include "project.h"
 #include "editableproject.h"
-using ProjectDocumentPtr = QSharedPointer<ProjectDocument>;
 
 namespace Tiled {
+
 class ProjectDocument : public Document
 {
     Q_OBJECT
@@ -45,4 +45,6 @@ public:
 private:
     Project *mProject;
 };
+
+using ProjectDocumentPtr = QSharedPointer<ProjectDocument>;
 } // namespace Tiled

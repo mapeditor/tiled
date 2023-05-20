@@ -54,7 +54,7 @@ bool EditableProject::isReadOnly() const
 {
    return false;
 }
-QSharedPointer<Document> EditableProject:createDocument()
+QSharedPointer<Document> EditableProject::createDocument()
 {
     return ProjectDocumentPtr::create(mProject);
 }

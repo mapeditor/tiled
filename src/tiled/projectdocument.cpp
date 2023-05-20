@@ -70,4 +70,5 @@ std::unique_ptr<EditableAsset> ProjectDocument::createEditable()
     return std::make_unique<EditableProject>(mProject, this);
 }
 
-} // namespace Tiled}
+} // namespace Tiled
+#include "moc_projectdocument.cpp"
