@@ -224,7 +224,7 @@ jobs:
 
     - name: Build Tiled
       run: |
-        qbs install --install-root install config:release qbs.installPrefix:"" projects.Tiled.staticZstd:true
+        qbs install --install-root install config:release qbs.architectures:x86_64,arm64 qbs.installPrefix:"" projects.Tiled.staticZstd:true
 
     - name: Deploy Qt
       run: |
