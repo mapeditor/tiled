@@ -1488,22 +1488,22 @@ void MainWindow::restoreSession()
 void MainWindow::projectProperties()
 {
     Project &project = ProjectManager::instance()->project();
-    if (project.fileName().length() == 0){
+    if (project.fileName().length() == 0) {
         return;
     }
-    auto projectDocument = new ProjectDocument(&project);
-    mPropertiesDock = new PropertiesDock(this);
-    mPropertiesDock->setDocument(projectDocument); // TODO crashes
+    // auto projectDocument = new ProjectDocument(&project);
+    // mPropertiesDock = new PropertiesDock(this);
+    //mPropertiesDock->setDocument(projectDocument); // TODO crashes
     //emit projectDocument->editCurrentObject();
 
-    // if (ProjectPropertiesDialog(project, this).exec() == QDialog::Accepted) {
-    //     project.save();
+     if (ProjectPropertiesDialog(project, this).exec() == QDialog::Accepted) {
+       project.save();
 
-    //     ScriptManager::instance().refreshExtensionsPaths();
-    //     mAutomappingManager->refreshRulesFile();
+        ScriptManager::instance().refreshExtensionsPaths();
+        mAutomappingManager->refreshRulesFile();
 
-    //     FileFormat::setCompatibilityVersion(project.mCompatibilityVersion);
-    // }
+       FileFormat::setCompatibilityVersion(project.mCompatibilityVersion);
+     }
 }
 
 void MainWindow::cut()

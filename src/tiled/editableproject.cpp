@@ -25,7 +25,7 @@
 namespace Tiled {
 
 EditableProject::EditableProject(Project *project, QObject *parent)
-    : EditableAsset(nullptr, nullptr, parent)
+    : EditableAsset(nullptr, project, parent)
     , mProject(project)
 {
 }
