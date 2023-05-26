@@ -77,12 +77,14 @@ bool Project::save(const QString &fileName)
 
     const QJsonArray propertyTypes = mPropertyTypes->toJson(dir.path());
 
+    const QJsonArray projectProperties = propertiesToJson(properties());
     QJsonObject project {
         { QStringLiteral("propertyTypes"), propertyTypes },
         { QStringLiteral("folders"), folders },
         { QStringLiteral("extensionsPath"), relative(dir, extensionsPath) },
         { QStringLiteral("automappingRulesFile"), dir.relativeFilePath(mAutomappingRulesFile) },
         { QStringLiteral("commands"), commands },
+        { QStringLiteral("properties"),  projectProperties },
     };
 
     if (mCompatibilityVersion != Tiled_Latest)
@@ -126,6 +128,12 @@ bool Project::load(const QString &fileName)
     mAutomappingRulesFile = absolute(dir, project.value(QLatin1String("automappingRulesFile")).toString());
 
     mPropertyTypes->loadFromJson(project.value(QLatin1String("propertyTypes")).toArray(), dir.path());
+
+    const QString projectPropertiesKey = QLatin1String("properties");
+    if (project.contains(projectPropertiesKey)) {
+        const Properties loadedProperties = propertiesFromJson(project.value(projectPropertiesKey).toArray());
+        setProperties(loadedProperties);
+    }
 
     mFolders.clear();
     const QJsonArray folders = project.value(QLatin1String("folders")).toArray();
