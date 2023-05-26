@@ -76,8 +76,8 @@ bool Project::save(const QString &fileName)
         commands.append(QJsonObject::fromVariantHash(command.toVariant()));
 
     const QJsonArray propertyTypes = mPropertyTypes->toJson(dir.path());
-
-    const QJsonArray projectProperties = propertiesToJson(properties());
+    const ExportContext context(*mPropertyTypes, dir.path());
+    const QJsonArray projectProperties = propertiesToJson(properties(), context);
     QJsonObject project {
         { QStringLiteral("propertyTypes"), propertyTypes },
         { QStringLiteral("folders"), folders },
@@ -131,7 +131,8 @@ bool Project::load(const QString &fileName)
 
     const QString projectPropertiesKey = QLatin1String("properties");
     if (project.contains(projectPropertiesKey)) {
-        const Properties loadedProperties = propertiesFromJson(project.value(projectPropertiesKey).toArray());
+        const ExportContext context(*mPropertyTypes, dir.path());
+        const Properties loadedProperties = propertiesFromJson(project.value(projectPropertiesKey).toArray(), context);
         setProperties(loadedProperties);
     }
 
