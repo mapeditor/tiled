@@ -97,6 +97,8 @@ inline Project &Project::operator =(const Project &value)
     mFileName = value.mFileName;
     mFolders = value.mFolders;
     mPropertyTypes = value.mPropertyTypes;
+    setClassName(value.className());
+    setProperties(value.properties());
     return *this; 
 }
 } // namespace Tiled
