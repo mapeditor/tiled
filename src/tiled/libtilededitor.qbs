@@ -561,6 +561,8 @@ DynamicLibrary {
         "wangfiller.h",
         "wangoverlay.cpp",
         "wangoverlay.h",
+        "wangpainter.cpp",
+        "wangpainter.h",
         "wangsetmodel.cpp",
         "wangsetmodel.h",
         "wangsetview.cpp",

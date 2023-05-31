@@ -22,10 +22,15 @@
 
 #include "abstracttiletool.h"
 #include "wangset.h"
+#include "wangfiller.h"
 
 namespace Tiled {
 
-struct FillRegion;
+struct FillRegion
+{
+    Grid<WangFiller::CellInfo> grid;
+    QRegion region;
+};
 
 class WangBrush : public AbstractTileTool
 {

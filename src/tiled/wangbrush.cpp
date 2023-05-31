@@ -31,7 +31,6 @@
 #include "mapscene.h"
 #include "painttilelayer.h"
 #include "tilelayer.h"
-#include "wangfiller.h"
 
 #include <QStyleOptionGraphicsItem>
 #include <QtMath>
@@ -528,12 +527,6 @@ static constexpr QPoint aroundVertexPoints[WangId::NumCorners] = {
     QPoint( 0,  0),
     QPoint(-1,  0),
     QPoint(-1, -1)
-};
-
-struct FillRegion
-{
-    Grid<WangFiller::CellInfo> grid;
-    QRegion region;
 };
 
 void WangBrush::updateBrush()

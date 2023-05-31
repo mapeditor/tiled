@@ -58,6 +58,17 @@ void TileLayerEdit::setTile(int x, int y, EditableTile *tile, int flags)
     mChanges.setCell(x, y, cell);
 }
 
+void TileLayerEdit::setTerrain(int x, int y, int color, EditableWangSet *wangSet, WangId::Index direction) {
+   if (mWangPainter == nullptr) {
+        mWangPainter = new WangPainter();
+    }
+    mWangPainter->setWangSet(wangSet->wangSet());
+    mWangPainter->setColor(color);
+    mWangPainter->setPosition(QPoint(x, y));
+    mWangPainter->setDirection(direction);
+    mWangPainter->paint(mTargetLayer->mapDocument(), &mChanges);
+}
+
 void TileLayerEdit::apply()
 {
     // Applying an edit automatically makes it mergeable, so that further

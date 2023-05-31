@@ -21,7 +21,9 @@
 #pragma once
 
 #include "editabletile.h"
+#include "editablewangset.h"
 #include "tilelayer.h"
+#include "wangpainter.h"
 
 #include <QObject>
 
@@ -54,12 +56,14 @@ public:
 
 public slots:
     void setTile(int x, int y, EditableTile *tile, int flags = 0);
+    void setTerrain(int x, int y, int color, EditableWangSet *wangSet, WangId::Index direction = WangId::Left);
     void apply();
 
 private:
     EditableTileLayer *mTargetLayer;
     TileLayer mChanges;
     bool mMergeable = false;
+    WangPainter *mWangPainter = nullptr;
 };
 
 
