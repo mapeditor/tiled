@@ -852,7 +852,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QShortcut *copyPositionShortcut = new QShortcut(Qt::ALT + Qt::Key_C, this);
     connect(copyPositionShortcut, &QShortcut::activated,
             mActionHandler, &MapDocumentActionHandler::copyPosition);
-    mPropertiesDock = new PropertiesDock(this);
     updateActions();
     updateZoomActions();
     readSettings();
@@ -1491,10 +1490,6 @@ void MainWindow::projectProperties()
     if (project.fileName().length() == 0) {
         return;
     }
-    // auto projectDocument = new ProjectDocument(&project);
-    // mPropertiesDock = new PropertiesDock(this);
-    //mPropertiesDock->setDocument(projectDocument); // TODO crashes
-    //emit projectDocument->editCurrentObject();
 
      if (ProjectPropertiesDialog(project, this).exec() == QDialog::Accepted) {
        project.save();
