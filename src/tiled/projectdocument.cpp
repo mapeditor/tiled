@@ -19,8 +19,9 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include "projectdocument.h"
+
+#include "editableproject.h"
 
 namespace Tiled {
 
@@ -41,6 +42,7 @@ bool ProjectDocument::save(const QString &fileName, QString *error = nullptr)
 {
     return mProject->save();
 }
+
 FileFormat *ProjectDocument::writerFormat() const
 {
     return nullptr;
@@ -65,10 +67,12 @@ void ProjectDocument::setLastExportFileName(const QString &fileName)
 {
     // do nothing
 }
+
 std::unique_ptr<EditableAsset> ProjectDocument::createEditable()
 {
     return std::make_unique<EditableProject>(mProject, this);
 }
 
 } // namespace Tiled
+
 #include "moc_projectdocument.cpp"

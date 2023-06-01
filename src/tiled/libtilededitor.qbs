@@ -401,6 +401,8 @@ DynamicLibrary {
         "projectpropertiesdialog.ui",
         "propertiesdock.cpp",
         "propertiesdock.h",
+        "propertieswidget.cpp",
+        "propertieswidget.h",
         "propertybrowser.cpp",
         "propertybrowser.h",
         "propertytypeseditor.cpp",

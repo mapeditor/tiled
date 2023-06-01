@@ -23,7 +23,6 @@
 
 #include "document.h"
 #include "project.h"
-#include "editableproject.h"
 
 namespace Tiled {
 
@@ -47,4 +46,5 @@ private:
 };
 
 using ProjectDocumentPtr = QSharedPointer<ProjectDocument>;
+
 } // namespace Tiled

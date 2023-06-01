@@ -1,6 +1,6 @@
 /*
- * propertiesdock.h
- * Copyright 2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * propertieswidget.h
+ * Copyright 2013-2023, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,37 +20,58 @@
 
 #pragma once
 
-#include <QDockWidget>
+#include <QWidget>
 
 namespace Tiled {
 
+class Object;
+
 class Document;
+class PropertyBrowser;
 
-class PropertiesWidget;
-
-class PropertiesDock : public QDockWidget
+class PropertiesWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit PropertiesDock(QWidget *parent = nullptr);
+    explicit PropertiesWidget(QWidget *parent = nullptr);
 
     /**
      * Sets the \a document on which this properties dock will act.
      */
     void setDocument(Document *document);
 
+signals:
+    void bringToFront();
+
 public slots:
     void selectCustomProperty(const QString &name);
 
 protected:
     bool event(QEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
 private:
-    void bringToFront();
+    void currentObjectChanged(Object *object);
+    void updateActions();
+
+    void cutProperties();
+    bool copyProperties();
+    void pasteProperties();
+    void openAddPropertyDialog();
+    void addProperty(const QString &name, const QVariant &value);
+    void removeProperties();
+    void renameProperty();
+    void renamePropertyTo(const QString &name);
+    void showContextMenu(const QPoint &pos);
+
     void retranslateUi();
 
-    PropertiesWidget *mPropertiesWidget;
+    Document *mDocument;
+    PropertyBrowser *mPropertyBrowser;
+    QAction *mActionAddProperty;
+    QAction *mActionRemoveProperty;
+    QAction *mActionRenameProperty;
 };
 
 } // namespace Tiled
