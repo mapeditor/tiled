@@ -27,7 +27,6 @@
 #include "preferences.h"
 #include "preferencesdialog.h"
 #include "project.h"
-#include "propertiesdock.h"
 #include "session.h"
 #include "tilededitor_global.h"
 
@@ -237,7 +236,6 @@ private:
     MapDocumentActionHandler *mActionHandler;
     ConsoleDock *mConsoleDock;
     ProjectDock *mProjectDock;
-    PropertiesDock *mPropertiesDock;
     IssuesDock *mIssuesDock;
     PropertyTypesEditor *mPropertyTypesEditor;
     QPointer<LocatorWidget> mLocatorWidget;

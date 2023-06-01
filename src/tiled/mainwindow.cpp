@@ -852,6 +852,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QShortcut *copyPositionShortcut = new QShortcut(Qt::ALT + Qt::Key_C, this);
     connect(copyPositionShortcut, &QShortcut::activated,
             mActionHandler, &MapDocumentActionHandler::copyPosition);
+
     updateActions();
     updateZoomActions();
     readSettings();
@@ -1487,18 +1488,17 @@ void MainWindow::restoreSession()
 void MainWindow::projectProperties()
 {
     Project &project = ProjectManager::instance()->project();
-    if (project.fileName().length() == 0) {
+    if (project.fileName().length() == 0)
         return;
-    }
 
-     if (ProjectPropertiesDialog(project, this).exec() == QDialog::Accepted) {
-       project.save();
+    if (ProjectPropertiesDialog(project, this).exec() == QDialog::Accepted) {
+        project.save();
 
         ScriptManager::instance().refreshExtensionsPaths();
         mAutomappingManager->refreshRulesFile();
 
-       FileFormat::setCompatibilityVersion(project.mCompatibilityVersion);
-     }
+        FileFormat::setCompatibilityVersion(project.mCompatibilityVersion);
+    }
 }
 
 void MainWindow::cut()
