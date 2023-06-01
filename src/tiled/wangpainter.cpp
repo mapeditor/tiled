@@ -197,7 +197,7 @@ void WangPainter::updateStamp(QPoint pos, MapDocument *mapDocument, TileLayer *b
     mStamp = SharedTileLayer::create(QString(), 0, 0, 0, 0);
     WangFiller wangFiller{*mWangSet, mapDocument->renderer()};
     wangFiller.setCorrectionsEnabled(true);
-    FillRegion fill;
+    WangFiller::FillRegion fill;
     updateStampAt(mapDocument, fill, pos, useTileMode);
     wangFiller.fillRegion(*mStamp, *back, fill.region, fill.grid);
 
@@ -210,7 +210,7 @@ void WangPainter::updateStamp(QPoint pos, MapDocument *mapDocument, TileLayer *b
 }
 
 // NOTE: This is currently duplicated from WangBrush::updateBrushAt.
-void WangPainter::updateStampAt(MapDocument *mapDocument, FillRegion &fill, QPoint pos, bool useTileMode) {
+void WangPainter::updateStampAt(MapDocument *mapDocument, WangFiller::FillRegion &fill, QPoint pos, bool useTileMode) {
     auto hexgonalRenderer = dynamic_cast<HexagonalRenderer *>(mapDocument->renderer());
     Grid<WangFiller::CellInfo> &grid = fill.grid;
     QRegion &region = fill.region;

@@ -52,6 +52,11 @@ public:
             return desired == other.desired && mask == other.mask;
         }
     };
+    struct FillRegion
+    {
+        Grid<CellInfo> grid;
+        QRegion region;
+    };
 
     explicit WangFiller(const WangSet &wangSet, const MapRenderer *mapRenderer);
 

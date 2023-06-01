@@ -26,12 +26,6 @@
 
 namespace Tiled {
 
-struct FillRegion
-{
-    Grid<WangFiller::CellInfo> grid;
-    QRegion region;
-};
-
 class WangBrush : public AbstractTileTool
 {
     Q_OBJECT
@@ -86,7 +80,7 @@ private:
     void beginPaint();
     void doPaint(bool mergeable);
     void updateBrush();
-    void updateBrushAt(FillRegion &fill, QPoint pos);
+    void updateBrushAt(WangFiller::FillRegion &fill, QPoint pos);
 
     // The point painting happens around
     // In tile mode, this is that tile

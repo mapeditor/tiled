@@ -539,7 +539,7 @@ void WangBrush::updateBrush()
     const TileLayer *currentLayer = currentTileLayer();
     Q_ASSERT(currentLayer);
 
-    FillRegion fill;
+    WangFiller::FillRegion fill;
 
     QVector<QPoint> points;
     bool ignoreFirst = false;
@@ -635,7 +635,7 @@ void WangBrush::updateBrush()
     brushItem()->setTileLayer(stamp, brushRegion);
 }
 
-void WangBrush::updateBrushAt(FillRegion &fill, QPoint pos)
+void WangBrush::updateBrushAt(WangFiller::FillRegion &fill, QPoint pos)
 {
     auto hexgonalRenderer = dynamic_cast<HexagonalRenderer*>(mapDocument()->renderer());
     Grid<WangFiller::CellInfo> &grid = fill.grid;

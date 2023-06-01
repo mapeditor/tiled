@@ -18,7 +18,7 @@ namespace Tiled {
         void paint(MapDocument *mapDocument, TileLayer *tileLayer, bool useTileMode = false);
 
     private:
-        void updateStampAt(MapDocument *mapDocument, FillRegion &fill, QPoint pos, bool useTileMode = false);
+        void updateStampAt(MapDocument *mapDocument, WangFiller::FillRegion &fill, QPoint pos, bool useTileMode = false);
         void updateStamp(QPoint pos, MapDocument *mapDocument, TileLayer *back, bool useTileMode = false);
 
         const WangSet *mWangSet;
