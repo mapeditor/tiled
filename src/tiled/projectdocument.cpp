@@ -25,9 +25,8 @@
 
 namespace Tiled {
 
-ProjectDocument::ProjectDocument(Project *project)
-    : Document(ProjectDocumentType, project->fileName())
-
+ProjectDocument::ProjectDocument(Project *project, QObject *parent)
+    : Document(ProjectDocumentType, project->fileName(), parent)
 {
     mCurrentObject = project;
     mProject = project;

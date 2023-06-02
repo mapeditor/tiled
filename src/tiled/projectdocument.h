@@ -31,7 +31,8 @@ class ProjectDocument : public Document
     Q_OBJECT
 
 public:
-    ProjectDocument(Project *project);
+    ProjectDocument(Project *project, QObject *parent = nullptr);
+
     QString displayName() const override;
     FileFormat *writerFormat() const override;
     bool save(const QString&, QString*) override;
