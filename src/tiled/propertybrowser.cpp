@@ -1841,7 +1841,8 @@ void PropertyBrowser::updateProperties()
 
     QScopedValueRollback<bool> updating(mUpdating, true);
 
-    mIdToProperty[ClassProperty]->setValue(mObject->className());
+    if (auto classProperty = mIdToProperty.value(ClassProperty))
+        classProperty->setValue(mObject->className());
 
     switch (mObject->typeId()) {
     case Object::MapType: {
