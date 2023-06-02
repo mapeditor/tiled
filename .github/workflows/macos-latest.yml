@@ -27,7 +27,7 @@ jobs:
     - name: Install dependencies
       run: |
         brew install qbs
-        brew link qt5 --force
+        brew link qt --force
 
     - name: Setup Qbs
       run: |
