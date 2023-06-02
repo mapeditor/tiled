@@ -112,73 +112,84 @@ void WangPainter::setColor(int color) {
     }
 }
 
-void WangPainter::setPosition(QPoint pos) {
+WangId::Index WangPainter::getDesiredDirection(WangId::Index initialDirection) {
     if (mBrushMode == WangBrush::BrushMode::Idle) {
-        return;
+        return initialDirection;
     }
-    mCurrentPosition = pos;
-}
-
-void WangPainter::setDirection(WangId::Index directionToGenerate) {
-    if (mBrushMode == WangBrush::BrushMode::Idle) {
-        return;
-    }
-    
-    // TODO: for PaintCorner mode, this is irrelevant. For PaintEdge and PaintEdgeAndCorner, we actually
-    // need to know what wang index to use when generating the stamp. 
-    mWangIndex = directionToGenerate;
 
     switch (mBrushMode) {
         case WangBrush::BrushMode::Idle:              // can't happen due to check above
-            return;
+            return initialDirection;
         case WangBrush::BrushMode::PaintCorner:
             // override this because it should always be topLeft for PaintCorner.
-            mWangIndex = WangId::TopLeft;
+            return WangId::TopLeft;
             break;
         case WangBrush::BrushMode::PaintEdge: 
             // no corners, so we have to set these to cardinal coordinates.
-            switch (mWangIndex) {
+            switch (initialDirection) {
                 case WangId::BottomRight:
-                    
-                    mWangIndex = WangId::Bottom;
+                    return WangId::Bottom;
                     break;
                 case WangId::BottomLeft:
-                    mWangIndex = WangId::Left;
+                    return WangId::Left;
                     break;
                 case WangId::TopLeft:
-                    mWangIndex = WangId::Top;
+                    return WangId::Top;
                     break;
                 case WangId::TopRight:
-                    mWangIndex = WangId::Right;
+                    return WangId::Right;
                     break;
                 default:
+                    return initialDirection;
                     break;
             }
             break;
         
         case WangBrush::BrushMode::PaintEdgeAndCorner:
-            switch (mWangIndex) {
+            switch (initialDirection) {
                 case WangId::BottomRight:
-                    mWangIndex = WangId::TopLeft;
+                    return WangId::TopLeft;
                     break;
                 case WangId::BottomLeft:
-                    mWangIndex = WangId::TopLeft;
+                    return WangId::TopLeft;
                     break;
                 case WangId::TopRight:
-                    mWangIndex = WangId::TopLeft;
+                    return WangId::TopLeft;
                     break;
                 default:
+                    return initialDirection;
                     break;
             }
             break;
     }
 }
 
-void WangPainter::paint(MapDocument *mapDocument, TileLayer *tileLayer, bool useTileMode) {
-    updateStamp(mCurrentPosition, mapDocument, tileLayer, useTileMode);
-    for (int j = 0; j < mStamp->height(); ++j) {
-        for (int i = 0; i < mStamp->width(); ++i) {
-            Cell cell = mStamp->cellAt(i, j);
+void WangPainter::setTerrain(MapDocument *mapDocument, int color, QPoint pos, WangId::Index directionToGenerate) {
+    setColor(color);
+    WangId::Index direction = getDesiredDirection(directionToGenerate);
+    qInfo() << "setting terrain " << color << pos << direction;
+    generateTerrainAt(mapDocument, mCurrentFill, mCurrentColor, pos, direction, false);
+}
+
+void WangPainter::commit(MapDocument *mapDocument, TileLayer *tileLayer) {
+    SharedTileLayer stamp = SharedTileLayer::create(QString(), 0, 0, 0, 0);
+    WangFiller wangFiller{*mWangSet, mapDocument->renderer()};
+    wangFiller.setCorrectionsEnabled(true);
+
+    wangFiller.fillRegion(*stamp, *tileLayer, mCurrentFill.region, mCurrentFill.grid);
+
+    QRegion brushRegion = stamp->region([](const Cell &cell)
+                                            { return cell.checked(); });
+    brushRegion.translate(tileLayer->position());
+    QRect brushRect = brushRegion.boundingRect();
+    stamp->setPosition(brushRect.topLeft());
+    stamp->resize(brushRect.size(), -brushRect.topLeft());
+
+    qInfo() << "committing terrain " << stamp->bounds();
+
+    for (int j = 0; j < stamp->height(); ++j) {
+        for (int i = 0; i < stamp->width(); ++i) {
+            Cell cell = stamp->cellAt(i, j);
             if (cell.tileset() == nullptr)
             {
                 continue;
@@ -188,29 +199,14 @@ void WangPainter::paint(MapDocument *mapDocument, TileLayer *tileLayer, bool use
                 continue;
             }
             
-            tileLayer->setCell(mStamp->x() + i, mStamp->y() + j, cell);
+            tileLayer->setCell(stamp->x() + i, stamp->y() + j, cell);
         }
     }
+    WangFiller::FillRegion newFill;
+    mCurrentFill = newFill;
 }
 
-void WangPainter::updateStamp(QPoint pos, MapDocument *mapDocument, TileLayer *back, bool useTileMode) {
-    mStamp = SharedTileLayer::create(QString(), 0, 0, 0, 0);
-    WangFiller wangFiller{*mWangSet, mapDocument->renderer()};
-    wangFiller.setCorrectionsEnabled(true);
-    WangFiller::FillRegion fill;
-    updateStampAt(mapDocument, fill, pos, useTileMode);
-    wangFiller.fillRegion(*mStamp, *back, fill.region, fill.grid);
-
-    QRegion brushRegion = mStamp->region([](const Cell &cell)
-                                            { return cell.checked(); });
-    brushRegion.translate(back->position());
-    QRect brushRect = brushRegion.boundingRect();
-    mStamp->setPosition(brushRect.topLeft());
-    mStamp->resize(brushRect.size(), -brushRect.topLeft());
-}
-
-// NOTE: This is currently duplicated from WangBrush::updateBrushAt.
-void WangPainter::updateStampAt(MapDocument *mapDocument, WangFiller::FillRegion &fill, QPoint pos, bool useTileMode) {
+void WangPainter::generateTerrainAt(MapDocument *mapDocument, WangFiller::FillRegion &fill, int color, QPoint pos, WangId::Index direction, bool useTileMode) {
     auto hexgonalRenderer = dynamic_cast<HexagonalRenderer *>(mapDocument->renderer());
     Grid<WangFiller::CellInfo> &grid = fill.grid;
     QRegion &region = fill.region;
@@ -254,21 +250,21 @@ void WangPainter::updateStampAt(MapDocument *mapDocument, WangFiller::FillRegion
         case WangBrush::BrushMode::PaintCorner:
             for (int i = 0; i < WangId::NumCorners; ++i)
             {
-                center.desired.setCornerColor(i, mCurrentColor);
+                center.desired.setCornerColor(i, color);
                 center.mask.setCornerColor(i, WangId::INDEX_MASK);
             }
             break;
         case WangBrush::BrushMode::PaintEdge:
             for (int i = 0; i < WangId::NumEdges; ++i)
             {
-                center.desired.setEdgeColor(i, mCurrentColor);
+                center.desired.setEdgeColor(i, color);
                 center.mask.setEdgeColor(i, WangId::INDEX_MASK);
             }
             break;
         case WangBrush::BrushMode::PaintEdgeAndCorner:
             for (int i = 0; i < WangId::NumIndexes; ++i)
             {
-                center.desired.setIndexColor(i, mCurrentColor);
+                center.desired.setIndexColor(i, color);
                 center.mask.setIndexColor(i, WangId::INDEX_MASK);
             }
             break;
@@ -291,15 +287,15 @@ void WangPainter::updateStampAt(MapDocument *mapDocument, WangFiller::FillRegion
             // Mark the opposite side or corner of the adjacent tile
             if (isCorner || (mBrushMode == WangBrush::BrushMode::PaintEdge || mBrushMode ==WangBrush::BrushMode::PaintEdgeAndCorner))
             {
-                adjacent.desired.setIndexColor(WangId::oppositeIndex(i), mCurrentColor);
+                adjacent.desired.setIndexColor(WangId::oppositeIndex(i), color);
                 adjacent.mask.setIndexColor(WangId::oppositeIndex(i), WangId::INDEX_MASK);
             }
 
             // Mark the touching corners of the adjacent tile
             if (!isCorner && (mBrushMode == WangBrush::BrushMode::PaintCorner || mBrushMode == WangBrush::BrushMode::PaintEdgeAndCorner))
             {
-                adjacent.desired.setIndexColor((i + 3) % WangId::NumIndexes, mCurrentColor);
-                adjacent.desired.setIndexColor((i + 5) % WangId::NumIndexes, mCurrentColor);
+                adjacent.desired.setIndexColor((i + 3) % WangId::NumIndexes, color);
+                adjacent.desired.setIndexColor((i + 5) % WangId::NumIndexes, color);
                 adjacent.mask.setIndexColor((i + 3) % WangId::NumIndexes, WangId::INDEX_MASK);
                 adjacent.mask.setIndexColor((i + 5) % WangId::NumIndexes, WangId::INDEX_MASK);
             }
@@ -310,13 +306,13 @@ void WangPainter::updateStampAt(MapDocument *mapDocument, WangFiller::FillRegion
     }
     else
     {
-        if (mWangIndex == WangId::NumIndexes)
+        if (direction == WangId::NumIndexes)
             return;
 
         auto brushMode = mBrushMode;
 
         if (brushMode == WangBrush::BrushMode::PaintEdgeAndCorner)
-            brushMode = WangId::isCorner(mWangIndex) ? WangBrush::BrushMode::PaintCorner : WangBrush::BrushMode::PaintEdge;
+            brushMode = WangId::isCorner(direction) ? WangBrush::BrushMode::PaintCorner : WangBrush::BrushMode::PaintEdge;
 
         switch (brushMode)
         {
@@ -344,7 +340,7 @@ void WangPainter::updateStampAt(MapDocument *mapDocument, WangFiller::FillRegion
                     region += QRect(p, QSize(1, 1));
 
                     WangFiller::CellInfo adjacent = grid.get(p);
-                    adjacent.desired.setCornerColor((i + 2) % 4, mCurrentColor);
+                    adjacent.desired.setCornerColor((i + 2) % 4, color);
                     adjacent.mask.setCornerColor((i + 2) % 4, WangId::INDEX_MASK);
 
                     grid.set(p, adjacent);
@@ -357,7 +353,7 @@ void WangPainter::updateStampAt(MapDocument *mapDocument, WangFiller::FillRegion
                 QPoint dirPoint;
                 if (hexgonalRenderer)
                 {
-                    switch (mWangIndex)
+                    switch (direction)
                     {
                     case WangId::Top:
                         dirPoint = hexgonalRenderer->topRight(pos.x(), pos.y());
@@ -377,7 +373,7 @@ void WangPainter::updateStampAt(MapDocument *mapDocument, WangFiller::FillRegion
                 }
                 else
                 {
-                    dirPoint = pos + aroundTilePoints[mWangIndex];
+                    dirPoint = pos + aroundTilePoints[direction];
                 }
 
                 region += QRect(pos, QSize(1, 1));
@@ -385,14 +381,14 @@ void WangPainter::updateStampAt(MapDocument *mapDocument, WangFiller::FillRegion
 
                 {
                     WangFiller::CellInfo info = grid.get(pos);
-                    info.desired.setIndexColor(mWangIndex, mCurrentColor);
-                    info.mask.setIndexColor(mWangIndex, WangId::INDEX_MASK);
+                    info.desired.setIndexColor(direction, color);
+                    info.mask.setIndexColor(direction, WangId::INDEX_MASK);
                     grid.set(pos, info);
                 }
                 {
                     WangFiller::CellInfo info = grid.get(dirPoint);
-                    info.desired.setIndexColor(WangId::oppositeIndex(mWangIndex), mCurrentColor);
-                    info.mask.setIndexColor(WangId::oppositeIndex(mWangIndex), WangId::INDEX_MASK);
+                    info.desired.setIndexColor(WangId::oppositeIndex(direction), color);
+                    info.mask.setIndexColor(WangId::oppositeIndex(direction), WangId::INDEX_MASK);
                     grid.set(dirPoint, info);
                 }
 

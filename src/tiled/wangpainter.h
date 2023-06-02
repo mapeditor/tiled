@@ -12,23 +12,18 @@ namespace Tiled {
         virtual ~WangPainter();
 
         void setWangSet(const WangSet *wangSet);
-        void setColor(int color);
-        void setPosition(QPoint pos);
-        void setDirection(WangId::Index directionToGenerate);
-        void paint(MapDocument *mapDocument, TileLayer *tileLayer, bool useTileMode = false);
+        void setTerrain(MapDocument *mapDocument, int color, QPoint pos, WangId::Index directionToGenerate);
+        void commit(MapDocument *mapDocument, TileLayer *tileLayer);
 
     private:
-        void updateStampAt(MapDocument *mapDocument, WangFiller::FillRegion &fill, QPoint pos, bool useTileMode = false);
-        void updateStamp(QPoint pos, MapDocument *mapDocument, TileLayer *back, bool useTileMode = false);
+        void setColor(int color);
+        WangId::Index getDesiredDirection(WangId::Index initialDirection);
+        void generateTerrainAt(MapDocument *mapDocument, WangFiller::FillRegion &fill, int color, QPoint pos, WangId::Index direction, bool useTileMode = false);
 
         const WangSet *mWangSet;
-        SharedTileLayer mStamp;
-        QRegion mStampRegion;
-        QPoint mCurrentPosition;
-        
-        int mCurrentColor = 0;
-        WangId::Index mWangIndex = WangId::Top;
 
+        int mCurrentColor = 0;
+        WangFiller::FillRegion mCurrentFill;
         WangBrush::BrushMode mBrushMode = WangBrush::BrushMode::Idle;
     };
 }

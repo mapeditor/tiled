@@ -63,14 +63,15 @@ void TileLayerEdit::setTerrain(int x, int y, int color, EditableWangSet *wangSet
         mWangPainter = new WangPainter();
     }
     mWangPainter->setWangSet(wangSet->wangSet());
-    mWangPainter->setColor(color);
-    mWangPainter->setPosition(QPoint(x, y));
-    mWangPainter->setDirection(direction);
-    mWangPainter->paint(mTargetLayer->mapDocument(), &mChanges);
+    mWangPainter->setTerrain(mTargetLayer->mapDocument(), color, QPoint(x, y), direction);
 }
 
 void TileLayerEdit::apply()
 {
+    // TEMPORARY: apply terrain changes
+    if (mWangPainter != nullptr) {
+        mWangPainter->commit(mTargetLayer->mapDocument(), &mChanges);
+    }
     // Applying an edit automatically makes it mergeable, so that further
     // changes made through the same edit are merged by default.
     bool mergeable = std::exchange(mMergeable, true);
