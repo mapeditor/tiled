@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2023-03-10 11:19+0100\n"
-"PO-Revision-Date: 2023-06-01 13:49+0000\n"
+"PO-Revision-Date: 2023-06-10 12:50+0000\n"
 "Last-Translator: firstmiddlelast <qube132@yahoo.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tiled/manual/fr/>"
 "\n"
@@ -1164,10 +1164,14 @@ msgid ""
 "![Tileset with cliff top tiles and cliff side "
 "tiles.](images/automapping/automap_example6.png)"
 msgstr ""
+"![Jeu de tuiles avec des tuiles de dessus de falaises et tuiles de côtés de "
+"falaises.](images/automapping/automap_example6.png)"
 
 #: ../../manual/automapping.md:257
 msgid "Tileset with cliff top tiles and cliff side tiles."
 msgstr ""
+"Jeu de tuiles avec des tuiles de dessus de falaises et tuiles de côtés de "
+"falaises."
 
 #: ../../manual/automapping.md:259
 msgid ""
@@ -1181,7 +1185,7 @@ msgstr ""
 
 #: ../../manual/automapping.md:264
 msgid "Cliff top tiles with no sides."
-msgstr ""
+msgstr "Tuiles de dessus de falaises, sans côtés."
 
 #: ../../manual/automapping.md:264
 msgid "The starting map: the flat top of a cliff painted using Terrains."
@@ -1191,7 +1195,7 @@ msgstr ""
 
 #: ../../manual/automapping.md:270
 msgid "The same cliff, with sides added."
-msgstr ""
+msgstr "La même falaise, avec des côtés ajoutés."
 
 #: ../../manual/automapping.md:270
 msgid "Automapping can add the appropriate cliff tiles."
@@ -1213,12 +1217,15 @@ msgid ""
 "![The bottom left corner, bottom side, and bottom right corner of the "
 "cliff top.](images/automapping/automap_example3.png)"
 msgstr ""
+"![Le coin bas gauche, le bas, et le coin bas droite du sommet de la "
+"falaise.](images/automapping/automap_example3.png)"
 
 #: ../../manual/automapping.md:277
 msgid ""
 "The bottom left corner, bottom side, and bottom right corner of the cliff"
 " top."
 msgstr ""
+"Le coin bas gauche, le bas, et le coin bas droite du sommet de la falaise."
 
 #: ../../manual/automapping.md:267 ../../manual/automapping.md:289
 #: ../../manual/automapping.md:323
@@ -1231,12 +1238,18 @@ msgid ""
 "lower, since they should go below the cliff top "
 "tiles.](images/automapping/automap_example4.png)"
 msgstr ""
+"![Tuiles falaise correspondant aux tuiles ci-dessus, positionnées une tuile "
+"plus bas, puisqu'elles devraient aller en-dessous des tuiles de sommet de "
+"falaise.](images/automapping/automap_example4.png)"
 
 #: ../../manual/automapping.md:278
 msgid ""
 "Cliff tiles corresponding to the above tiles, positioned one tile lower, "
 "since they should go below the cliff top tiles."
 msgstr ""
+"Tuiles falaise correspondant aux tuiles ci-dessus, positionnées une tuile "
+"plus bas, puisqu'elles devraient aller en-dessous des tuiles de sommet de "
+"falaise."
 
 #: ../../manual/automapping.md:267
 msgid "output**1**\\_Cliff"
@@ -1248,12 +1261,17 @@ msgid ""
 "purpose but has different "
 "details.](images/automapping/automap_example5.png)"
 msgstr ""
+"![Pareil qu'au-dessus, mais avec une tuile médiane différence qui poursuit "
+"le même objectif mais a des détails différents.](images/automapping/"
+"automap_example5.png)"
 
 #: ../../manual/automapping.md:279
 msgid ""
 "Same as above, but with a different middle tile that serves the same "
 "purpose but has different details."
 msgstr ""
+"Pareil qu'au-dessus, mais avec une tuile médiane différence qui poursuit le "
+"même objectif mais a des détails différents."
 
 #: ../../manual/automapping.md:267
 msgid "output**2**\\_Cliff"
@@ -1276,6 +1294,8 @@ msgid ""
 "The same cliff example as before, with cliffs added, but with some tiles "
 "not quite connecting correctly."
 msgstr ""
+"Le même exemple de falaise qu'auparavant, avec les falaises ajoutées, mais "
+"certaines tuiles ne se connectent pas tout-à-fait correctement."
 
 #: ../../manual/automapping.md:286
 msgid "The result of the rules above."
@@ -1283,7 +1303,7 @@ msgstr "Le résultat des règles plus haut."
 
 #: ../../manual/automapping.md:292
 msgid "The same example, with the problem tiles circled in yellow."
-msgstr ""
+msgstr "Le même exemple, avec les tuiles problématiques entourées en jaune."
 
 #: ../../manual/automapping.md:292
 msgid ""
@@ -1333,32 +1353,42 @@ msgid ""
 "![The side and corner tiles, with matching concave corner tiles above "
 "them.](images/automapping/automap_example9.png)"
 msgstr ""
+"![Les tuiles de côté et des coins, avec les tuiles d'angle concaves "
+"correspondantes au-dessus.](images/automapping/automap_example9.png)"
 
 #: ../../manual/automapping.md:301
 msgid "The side and corner tiles, with matching concave corner tiles above them."
 msgstr ""
+"Les tuiles de côté et des coins, avec les tuiles d'angle concaves "
+"correspondantes au-dessus."
 
 #: ../../manual/automapping.md:289
 msgid ""
 "![Different concave corner "
 "tiles.](images/automapping/automap_example10.png)"
 msgstr ""
+"![Differentes tuiles d'angle concaves.](images/automapping/automap_example10."
+"png)"
 
 #: ../../manual/automapping.md:302
 msgid "Different concave corner tiles."
-msgstr ""
+msgstr "Differentes tuiles d'angle concaves."
 
 #: ../../manual/automapping.md:289
 msgid ""
 "![The output tiles, versions of the sides and corners meant to be next to"
 " cliff tiles.](images/automapping/automap_example11.png)"
 msgstr ""
+"![Les tuiles d'output, versions des côtés et des angles supposées être "
+"adjacentes aux tuiles falaise.](images/automapping/automap_example11.png)"
 
 #: ../../manual/automapping.md:303
 msgid ""
 "The output tiles, versions of the sides and corners meant to be next to "
 "cliff tiles."
 msgstr ""
+"Les tuiles d'output, versions des côtés et des angles supposées être "
+"adjacentes aux tuiles falaise."
 
 #: ../../manual/automapping.md:289 ../../manual/automapping.md:323
 msgid "output\\_Cliff"
@@ -1421,6 +1451,9 @@ msgid ""
 "Animation showing erasing the cliff top Terrain. The cliff top is updated"
 " correctly, but the cliff tiles are not."
 msgstr ""
+"Animation montrant l'effacement du Terrain de sommet de falaise. Le sommet "
+"de falaise est mis à jour correctement, mais les tuiles falaise ne le sont "
+"pas."
 
 #: ../../manual/automapping.md:318
 msgid "Without some extra rules, Automap While Drawing can produce messy results."
@@ -1509,12 +1542,17 @@ msgid ""
 "side and corner tiles in a row "
 "below.](images/automapping/automap_example12.png)"
 msgstr ""
+"![Les différentes tuiles falaise en ligne au-dessus, et les variations de "
+"falaise des tuiles de côté et d'angle en ligne en-dessous.](images/"
+"automapping/automap_example12.png)"
 
 #: ../../manual/automapping.md:338
 msgid ""
 "The different cliff tiles in a row above, and the cliff variants of side "
 "and corner tiles in a row below."
 msgstr ""
+"Les différentes tuiles falaise en ligne au-dessus, et les variations de "
+"falaise des tuiles de côté et d'angle en ligne en-dessous."
 
 #: ../../manual/automapping.md:323
 msgid ""
@@ -1522,12 +1560,17 @@ msgid ""
 "the side and corner tiles in the row "
 "below.](images/automapping/automap_example13.png)"
 msgstr ""
+"![Tuiles Empty entourées en rouge dans la ligne au-dessus, et les variantes "
+"de base des tuiles de côté et d'angle dans la ligne au-dessous.](images/"
+"automapping/automap_example13.png)"
 
 #: ../../manual/automapping.md:339
 msgid ""
 "Red-outlined Empty tiles in the row above, and the basic variants of the "
 "side and corner tiles in the row below."
 msgstr ""
+"Tuiles Empty entourées en rouge dans la ligne au-dessus, et les variantes de "
+"base des tuiles de côté et d'angle dans la ligne au-dessous."
 
 #: ../../manual/automapping.md:341
 msgid ""
@@ -1562,6 +1605,8 @@ msgid ""
 "Animation showing erasing the cliff top Terrain. This time, everything is"
 " updated correctly."
 msgstr ""
+"Animation montrant l'effacement du Terrain en haut de la falaise. Cette "
+"fois, tout est mis à jour correctement."
 
 #: ../../manual/automapping.md:348
 msgid "Now, Automap While Drawing produces correct results."
@@ -1597,10 +1642,12 @@ msgid ""
 "![Two rock-grass transition "
 "tiles.](images/automapping/automap_example16.png)"
 msgstr ""
+"![Deux tuiles de transition pierre-herbe.](images/automapping/"
+"automap_example16.png)"
 
 #: ../../manual/automapping.md:358
 msgid "Two rock-grass transition tiles."
-msgstr ""
+msgstr "Deux tuiles de transition pierre-herbe."
 
 #: ../../manual/automapping.md:345
 msgid "input\\_Platform"
@@ -1608,53 +1655,64 @@ msgstr "input\\_Plateforme"
 
 #: ../../manual/automapping.md:345
 msgid "![Two grass tiles.](images/automapping/automap_example17.png)"
-msgstr ""
+msgstr "![Deux tuiles herbe.](images/automapping/automap_example17.png)"
 
 #: ../../manual/automapping.md:345
 msgid ""
 "![Two grass-rock transition "
 "tiles.](images/automapping/automap_example18.png)"
 msgstr ""
+"![Deux tuiles de transition herbe-pierre.](images/automapping/"
+"automap_example18.png)"
 
 #: ../../manual/automapping.md:360
 msgid "Two grass-rock transition tiles."
-msgstr ""
+msgstr "Deux tuiles de transition herbe-pierre."
 
 #: ../../manual/automapping.md:345
 msgid "![Two left grass corner tile.](images/automapping/automap_example19.png)"
 msgstr ""
+"![Deux tuiles d'angle gauche d'herbe. ](images/automapping/automap_example19."
+"png)"
 
 #: ../../manual/automapping.md:361
 msgid "Two left grass corner tile."
-msgstr ""
+msgstr "Deux tuiles d'angle gauche d'herbe."
 
 #: ../../manual/automapping.md:345
 msgid "![Two light grass corner tile.](images/automapping/automap_example20.png)"
 msgstr ""
+"![Deux tuiles d'angle gauche d'herbe éparse.](images/automapping/"
+"automap_example20.png)"
 
 #: ../../manual/automapping.md:362
 msgid "Two light grass corner tile."
-msgstr ""
+msgstr "Deux tuiles d'angle gauche d'herbe éparse."
 
 #: ../../manual/automapping.md:345
 msgid ""
 "![Nothing in the first rule, Negate tile in the second "
 "rule.](images/automapping/automap_example21.png)"
 msgstr ""
+"![Rien dans la première règle, tuile Negate dans la seconde règle.](images/"
+"automapping/automap_example21.png)"
 
 #: ../../manual/automapping.md:363
 msgid "Nothing in the first rule, Negate tile in the second rule."
-msgstr ""
+msgstr "Nothing dans la première règle, tuile Negate dans la seconde."
 
 #: ../../manual/automapping.md:345
 msgid ""
 "![Flower detail tile in the first rule, Empty tile in the "
 "second.](images/automapping/automap_example22.png)"
 msgstr ""
+"![Tuile de détails floraux dans la première règle, tuile Empty dans la "
+"seconde.](images/automapping/automap_example22.png)"
 
 #: ../../manual/automapping.md:364
 msgid "Flower detail tile in the first rule, Empty tile in the second."
 msgstr ""
+"Tuile de détails floraux dans la première règle, tuile Empty dans la seconde."
 
 #: ../../manual/automapping.md:345
 msgid "outputA\\_Foreground"
@@ -1665,10 +1723,13 @@ msgid ""
 "![Grass detail tile in the first rule, Empty tile in the "
 "second.](images/automapping/automap_example23.png)"
 msgstr ""
+"![Tuile de détails d'herbe dans la première règle, tuile Empty dans la "
+"seconde.](images/automapping/automap_example23.png)"
 
 #: ../../manual/automapping.md:365
 msgid "Grass detail tile in the first rule, Empty tile in the second."
 msgstr ""
+"Tuile de détails d'herbe dans la première règle, tuile Empty dans la seconde."
 
 #: ../../manual/automapping.md:345
 msgid "outputB\\_Foreground"
@@ -1676,11 +1737,11 @@ msgstr "outputB\\_Premierplan"
 
 #: ../../manual/automapping.md:345
 msgid "![Two Empty tiles.](images/automapping/automap_example24.png)"
-msgstr ""
+msgstr "![Deux tuiles Empty.](images/automapping/automap_example24.png)"
 
 #: ../../manual/automapping.md:366
 msgid "Two Empty tiles."
-msgstr ""
+msgstr "Deux tuiles Empty."
 
 #: ../../manual/automapping.md:345
 msgid "outputC\\_Foreground"
@@ -1719,12 +1780,17 @@ msgid ""
 " has a negation sign over its platform "
 "tiles.](images/automapping/automap_example25.png)"
 msgstr ""
+"![Les deux règles avec tant les inputs que les outputs visibles, mais la "
+"seconde règle a le signe négation sur ses tuiles de plateforme.](images/"
+"automapping/automap_example25.png)"
 
 #: ../../manual/automapping.md:370
 msgid ""
 "The two rules with both inputs and outputs visible, but the second rule "
 "has a negation sign over its platform tiles."
 msgstr ""
+"Les deux règles avec tant les inputs que les outputs visibles, mais la "
+"seconde règle a le signe négation sur ses tuiles de plateforme."
 
 #: ../../manual/automapping.md:372
 msgid ""
@@ -1739,6 +1805,7 @@ msgstr ""
 #: ../../manual/automapping.md:377
 msgid "Platforms with grass and flowers over some of the grassy tiles."
 msgstr ""
+"Plateformes avec de l'herbe et des fleurs sur certaines des tuiles herbeuses."
 
 #: ../../manual/automapping.md:377
 msgid "A result from the two rules above."
@@ -2239,16 +2306,15 @@ msgstr ""
 
 #: ../../manual/editing-tile-layers.rst:13
 msgid "Stamp Brush"
-msgstr "Brosse Tampon"
+msgstr "Pinceau Tampon"
 
 #: ../../manual/editing-tile-layers.rst:15
 msgid "Shortcut: ``B`` |stock-tool-clone|"
 msgstr "Raccourci : ``B`` |stock-tool-clone|"
 
 #: ../../manual/editing-tile-layers.rst:178
-#, fuzzy
 msgid "stock-tool-clone"
-msgstr "Raccourci : ``B`` |stock-tool-clone|"
+msgstr "stock-tool-clone"
 
 #: ../../manual/editing-tile-layers.rst:17
 msgid ""
@@ -2258,16 +2324,16 @@ msgid ""
 "capture tile stamps from the currently active layer. A tile stamp is "
 "commonly created by selecting one or more tiles in the Tilesets view."
 msgstr ""
-"L'outil le plus basique pour modifier des calques de tuiles est la Brosse"
-" Tampon. Elle peut être utilisée pour peindre aussi bien une seule tuile "
-"qu'un \"tampon\" plus large, c'est de là que vient son nom. En utilisant "
-"le clique droit de la souris, elle peut également capturer rapidement un "
-"tampon de tuile du calque actif. Un tampon de tuile est souvent créé en "
-"sélectionnant une ou plusieurs tuiles dans la vue Jeu de Tuiles."
+"L'outil le plus basique pour modifier des calques de tuiles est le Pinceau "
+"Tampon. Il peut être utilisé pour peindre aussi bien une seule tuile qu'un "
+"\"tampon\" plus large, c'est de là que vient son nom. En utilisant le clique "
+"droit de la souris, il peut également capturer rapidement un tampon de tuile "
+"du calque actif. Un tampon de tuile est souvent créé en sélectionnant une ou "
+"plusieurs tuiles dans la vue Jeu de Tuiles."
 
 #: ../../manual/editing-tile-layers.rst:23
 msgid "The Stamp Brush has some extra features:"
-msgstr "La Brosse Tampon a de nombreuses fonctionnalités supplémentaires :"
+msgstr "Le Pinceau Tampon a de nombreuses fonctionnalités supplémentaires :"
 
 #: ../../manual/editing-tile-layers.rst:25
 msgid "While holding ``Shift``, click any two points to draw a line between them."
@@ -2292,12 +2358,11 @@ msgid ""
 "the tile stamp, as well as the probability set on each tile in the "
 "*Tileset Editor*."
 msgstr ""
-"Activez le *Mode Aléatoire* en utilisant le bouton dé sur la barre "
-"d'outils Options d'Outils pour peindre des tuiles aléatoires du tampon de"
-" tuiles avec la Brosse Tampon. La probabilité de chaque tuile dépend "
-"autant de combien de fois elle apparaît sur le tampon de tuiles, que de "
-"la probabilité indiquée pour chaque tuile dans l'*Éditeur de Jeu de "
-"Tuiles*."
+"Activez le *Mode Aléatoire* en utilisant le bouton dé sur la barre d'outils "
+"Options d'Outils pour peindre des tuiles aléatoires du tampon de tuiles avec "
+"le Pinceau Tampon. La probabilité de chaque tuile dépend autant de combien "
+"de fois elle apparaît sur le tampon de tuiles, que de la probabilité "
+"indiquée pour chaque tuile dans l'*Éditeur de Jeu de Tuiles*."
 
 #: ../../manual/editing-tile-layers.rst:37
 msgid ""
@@ -2306,12 +2371,11 @@ msgid ""
 " This makes adjacent tiles match edge and corner terrains to be placed. "
 "Terrain tiles are described in detail in :doc:`terrain`."
 msgstr ""
-"Activez le *Mode de Remplissage de Terrain* en utilisant le bouton de "
-"tuile de terrain |terrain| dans la barre d'outils afin que la Brosse "
-"Tampon utilise des tuiles aléatoires. Ceci force les coins et contours "
-"des tuiles adjacentes à s'accorder avec celles de la tuile placée. Les "
-"tuiles de terrain sont couvertes plus en détail dans la page "
-":doc:`terrain`."
+"Activez le *Mode de Remplissage de Terrain* en utilisant le bouton de tuile "
+"de terrain |terrain| dans la barre d'outils afin que le Pinceau Tampon "
+"utilise des tuiles aléatoires. Ceci force les coins et contours des tuiles "
+"adjacentes à s'accorder avec celles de la tuile placée. Les tuiles de "
+"terrain sont couvertes plus en détail dans la page :doc:`terrain`."
 
 #: ../../manual/editing-tile-layers.rst:184 ../../manual/terrain.rst:351
 msgid "terrain"
@@ -2343,7 +2407,7 @@ msgstr ""
 
 #: ../../manual/editing-tile-layers.rst:55
 msgid "Terrain Brush"
-msgstr "Brosse de Terrain"
+msgstr "Pinceau Terrain"
 
 #: ../../manual/editing-tile-layers.rst:57
 msgid "Shortcut: ``T`` |terrain-edit|"
@@ -2351,7 +2415,7 @@ msgstr "Raccourci : ``T`` |terrain-edit|"
 
 #: ../../manual/editing-tile-layers.rst:183
 msgid "terrain-edit"
-msgstr ""
+msgstr "terrain-edit"
 
 #: ../../manual/editing-tile-layers.rst:59
 msgid ""
@@ -2360,11 +2424,10 @@ msgid ""
 "it up requires associating terrain information with your tiles, which is "
 "described in detail in :doc:`terrain`."
 msgstr ""
-"La Brosse de Terrain permet une édition efficace avec certain types de "
-"transitions de terrain (basés sur les coins, côtés ou une combinaison des"
-" deux). La mettre en place requiert d'associer les informations de "
-"terrain avec vos tuiles, ce qui est décrit en détail dans la page "
-":doc:`terrain`."
+"Le Pinceau Terrain permet une édition efficace avec certain types de "
+"transitions de terrain (basés sur les coins, côtés ou une combinaison des "
+"deux). Le mettre en place requiert d'associer les informations de terrain "
+"avec vos tuiles, ce qui est décrit en détail dans la page :doc:`terrain`."
 
 #: ../../manual/editing-tile-layers.rst:64
 msgid ""
@@ -2401,9 +2464,8 @@ msgid "Shortcut: ``F`` |stock-tool-bucket-fill|"
 msgstr "Raccourci : ``F`` |stock-tool-bucket-fill|"
 
 #: ../../manual/editing-tile-layers.rst:177
-#, fuzzy
 msgid "stock-tool-bucket-fill"
-msgstr "Raccourci : ``F`` |stock-tool-bucket-fill|"
+msgstr "stock-tool-bucket-fill"
 
 #: ../../manual/editing-tile-layers.rst:89
 msgid ""
@@ -2448,9 +2510,8 @@ msgid "Shortcut: ``P`` |rectangle-fill|"
 msgstr "Raccourci : ``P`` |rectangle-fill|"
 
 #: ../../manual/editing-tile-layers.rst:176
-#, fuzzy
 msgid "rectangle-fill"
-msgstr "Raccourci : ``P`` |rectangle-fill|"
+msgstr "rectangle-fill"
 
 #: ../../manual/editing-tile-layers.rst:112
 msgid ""
@@ -2471,9 +2532,8 @@ msgid "Shortcut: ``E`` |stock-tool-eraser|"
 msgstr "Raccourci : ``E`` |stock-tool-eraser|"
 
 #: ../../manual/editing-tile-layers.rst:179
-#, fuzzy
 msgid "stock-tool-eraser"
-msgstr "Raccourci : ``E`` |stock-tool-eraser|"
+msgstr "stock-tool-eraser"
 
 #: ../../manual/editing-tile-layers.rst:125
 msgid ""
@@ -2508,7 +2568,7 @@ msgstr ""
 
 #: ../../manual/editing-tile-layers.rst:180
 msgid "stock-tool-rect-select"
-msgstr ""
+msgstr "stock-tool-rect-select"
 
 #: ../../manual/editing-tile-layers.rst:144
 msgid ""
@@ -2520,7 +2580,7 @@ msgstr ""
 
 #: ../../manual/editing-tile-layers.rst:182
 msgid "stock-tool-fuzzy-select-22"
-msgstr ""
+msgstr "stock-tool-fuzzy-select-22"
 
 #: ../../manual/editing-tile-layers.rst:147
 msgid ""
@@ -2533,7 +2593,7 @@ msgstr ""
 
 #: ../../manual/editing-tile-layers.rst:181
 msgid "stock-tool-by-color-select"
-msgstr ""
+msgstr "stock-tool-by-color-select"
 
 #: ../../manual/editing-tile-layers.rst:150
 msgid ""
@@ -2924,9 +2984,8 @@ msgstr ""
 "propriétés personnalisées avec chaque forme."
 
 #: ../../manual/editing-tilesets.rst:217
-#, fuzzy
 msgid "tile-collision-editor-icon"
-msgstr "Éditeur de Collision de Tuiles"
+msgstr "Icône d'Éditeur de Collision de Tuiles"
 
 #: ../../manual/editing-tilesets.rst:153
 msgid ""
@@ -2935,11 +2994,11 @@ msgid ""
 " them to add certain hot-spots to your sprites like for particle emitters"
 " or the source of gunshots."
 msgstr ""
-"Normalement ces formes définissent les informations de collision pour une"
-" certaine image ou pour une tuile représentant la géométrie du niveau, "
-"mais bien sûr vous pouvez aussi les utiliser pour ajouter certaines zones"
-" sensibles à vos images pour par exemple des émetteurs de particules ou "
-"la source de coups de feu."
+"Normalement ces formes définissent les informations de collision pour un "
+"certain sprite ou pour une tuile représentant la géométrie du niveau, mais "
+"bien sûr vous pouvez aussi les utiliser pour ajouter certaines zones "
+"sensibles (hot-spots) à vos sprites pour par exemple des émetteurs de "
+"particules ou la source de coups de feu."
 
 #: ../../manual/editing-tilesets.rst:167
 msgid ""
@@ -2956,7 +3015,7 @@ msgstr ""
 
 #: ../../manual/editing-tilesets.rst:175
 msgid "Showing Tile Collision on the Map"
-msgstr ""
+msgstr "Collision de Tuiles sur la Carte"
 
 #: ../../manual/editing-tilesets.rst:175
 msgid ""
@@ -2984,9 +3043,8 @@ msgstr ""
 "le bouton *Éditeur d'Animation de Tuile* |tile-animation-editor-icon| ."
 
 #: ../../manual/editing-tilesets.rst:221
-#, fuzzy
 msgid "tile-animation-editor-icon"
-msgstr "Éditeur d'Animation de Tuile"
+msgstr "Icône d'Éditeur d'Animation de Tuile"
 
 #: ../../manual/editing-tilesets.rst:187
 msgid ""
@@ -3630,7 +3688,7 @@ msgstr "Vues"
 
 #: ../../manual/export-gmx.rst:-1
 msgid "GameMaker View Settings"
-msgstr ""
+msgstr "Configurations de Vue GameMaker"
 
 #: ../../manual/export-gmx.rst:69
 msgid ""
@@ -4004,23 +4062,20 @@ msgstr ""
 "suivantes :"
 
 #: ../../manual/export-tscn.rst:25
-#, fuzzy
 msgid "bool ``ySortEnabled`` (default: false)"
-msgstr "Le booléen (bool) ``vtiled`` (false par défaut)"
+msgstr "Le booléen (bool) ``ySortEnabled`` (false par défaut)"
 
 #: ../../manual/export-tscn.rst:26
-#, fuzzy
 msgid "int ``zIndex`` (default: 0)"
-msgstr "L'entier (int) ``imageIndex`` (0 par défaut)"
+msgstr "L'entier (int) ``zIndex`` (0 par défaut)"
 
 #: ../../manual/export-tscn.rst:27 ../../manual/export-yy.rst:343
 msgid "bool ``noExport`` (default: false)"
 msgstr "Le booléen (bool) ``noExport`` (false par défaut)"
 
 #: ../../manual/export-tscn.rst:28
-#, fuzzy
 msgid "bool ``tilesetOnly`` (default: blank)"
-msgstr "Le booléen (bool) ``vtiled`` (false par défaut)"
+msgstr "Le booléen (bool) ``tilesetOnly`` (false par défaut)"
 
 #: ../../manual/export-tscn.rst:30
 msgid ""
@@ -4032,12 +4087,11 @@ msgstr ""
 "en fonction de leur coordonnée Y."
 
 #: ../../manual/export-tscn.rst:33
-#, fuzzy
 msgid ""
 "The ``zIndex`` property can be used to assign a specific depth value to a"
 " layer."
 msgstr ""
-"La propriété ``depth`` peut être utilisée pour assigner une valeur de "
+"La propriété ``zIndex`` peut être utilisée pour assigner une valeur de "
 "profondeur spécifique à un calque."
 
 #: ../../manual/export-tscn.rst:36
@@ -4076,9 +4130,8 @@ msgid "Tilesets support the following property:"
 msgstr "Les jeux de tuiles supportent la propriété suivante :"
 
 #: ../../manual/export-tscn.rst:54
-#, fuzzy
 msgid "bool ``exportAlternates`` (default: false)"
-msgstr "Le booléen (bool) ``noExport`` (false par défaut)"
+msgstr "Le booléen (bool) ``exportAlternates`` (false par défaut)"
 
 #: ../../manual/export-tscn.rst:56
 msgid ""
@@ -4095,9 +4148,9 @@ msgid "Maps support the following custom property:"
 msgstr "Les cartes supportent les propriétés personnalisées suivantes :"
 
 #: ../../manual/export-tscn.rst:67
-#, fuzzy
 msgid "string ``tilesetResPath`` (default: blank)"
-msgstr "La chaîne de caractères (string) ``tags`` (\"\" par défaut)"
+msgstr ""
+"La chaîne de caractères (string) ``tilesetResPath`` (chaîne vide par défaut)"
 
 #: ../../manual/export-tscn.rst:69
 msgid ""
@@ -4187,15 +4240,14 @@ msgid ""
 "graphics, sprite graphics or views. :ref:`Image layers <yy-image-layers>`"
 " get exported as background layers."
 msgstr ""
-"Ce greffon va faire de son mieux pour exporter la carte aussi fidèlement "
-"que possible, correspondant les fonctionnalités diverses de Tiled à "
-"celles de GameMaker. Les :ref:`calques de tuiles <yy-tile-layers>` sont "
-"exportés en tant calques de tuiles si possible, mais peuvent devenir des "
-"calques de ressources si nécessaire. Les :ref:`objets <yy-object-layers>`"
-" peuvent être exportées en tant qu'instances, mais aussi en tant que "
-"graphismes de tuile, graphismes d'image ou vues. Les :ref:`calques "
-"d'images <yy-image-layers>` sont exportés en tant que calques d'arrière-"
-"plan."
+"Ce greffon va faire de son mieux pour exporter la carte aussi fidèlement que "
+"possible, correspondant les fonctionnalités diverses de Tiled à celles de "
+"GameMaker. Les :ref:`calques de tuiles <yy-tile-layers>` sont exportés en "
+"tant calques de tuiles si possible, mais peuvent devenir des calques de "
+"ressources si nécessaire. Les :ref:`objets <yy-object-layers>` peuvent être "
+"exportées en tant qu'instances, mais aussi en tant que graphismes de tuile, "
+"graphismes de sprite ou vues. Les :ref:`calques d'images <yy-image-layers>` "
+"sont exportés en tant que calques d'arrière-plan."
 
 #: ../../manual/export-yy.rst:23
 msgid ""
@@ -4228,9 +4280,9 @@ msgid ""
 "sprites, tilesets and objects used by the map are expected to be already "
 "available in the GameMaker project."
 msgstr ""
-"Comme Tiled ne fait qu'exporter une carte en tant que salle GameMaker "
-"pour le moment, toutes images, jeux de tuiles ou objets utilisés par la "
-"carte sont supposés être déjà existants dans le projet GameMaker."
+"Comme Tiled ne fait qu'exporter une carte en tant que salle GameMaker pour "
+"le moment, tous sprites, jeux de tuiles ou objets utilisés par la carte sont "
+"supposés être déjà existants dans le projet GameMaker."
 
 #: ../../manual/export-yy.rst:40
 msgid ""
@@ -4248,7 +4300,6 @@ msgstr ""
 "est utilisé."
 
 #: ../../manual/export-yy.rst:47
-#, fuzzy
 msgid ""
 "If necessary, the sprite name can be explicitly specified using a custom "
 "``sprite`` property (supported on tilesets, tiles from image collection "
@@ -4256,7 +4307,8 @@ msgid ""
 msgstr ""
 "Si nécessaire, le nom du sprite peut être explicitement spécifié à l'aide "
 "d'une propriété personnalisée ``sprite`` (supportée par les jeux de tuiles, "
-"les tuiles de jeux de tuiles de collection d'images et les calques d'images)."
+"les tuiles provenant de jeux de tuiles basés sur des collection d'images, et "
+"les calques d'images)."
 
 #: ../../manual/export-yy.rst:51
 msgid ""
@@ -4328,9 +4380,9 @@ msgid ""
 "When the layer includes tiles from a collection of images tileset, these "
 "will get exported to an asset layer as sprite graphics."
 msgstr ""
-"Quand le calque inclut des tuiles venant d'un jeu de tuiles de collection"
-" d'images, celles-ci seront exportées dans un calque de ressources en "
-"tant que graphismes d'image."
+"Quand le calque inclut des tuiles venant d'un jeu de tuiles de collection "
+"d'images, celles-ci seront exportées dans un calque de ressources en tant "
+"que graphismes de sprite."
 
 #: ../../manual/export-yy.rst:85 ../../manual/layers.rst:55
 msgid "Object Layers"
@@ -4365,10 +4417,10 @@ msgid ""
 "as either a tile graphic or a sprite graphic, depending on whether the "
 "tile is from a tileset image or a collection of images."
 msgstr ""
-"Quand un objet n'a aucun Type, mais que c'est un objet tuile, alors il "
-"est exporté soit en tant que graphisme de tuile ou graphisme d'image, "
-"dépendant de si la tuile appartient à une image de jeu de tuiles ou à une"
-" collection d'images."
+"Quand un objet n'a aucun Type, mais que c'est un objet tuile, alors il est "
+"exporté soit en tant que graphisme de tuile ou graphisme de sprite, "
+"dépendant de si la tuile appartient à une image de jeu de tuiles ou à une "
+"collection d'images."
 
 #: ../../manual/export-yy.rst:100
 msgid ""
@@ -4376,7 +4428,7 @@ msgid ""
 "exported instance or sprite asset:"
 msgstr ""
 "Les propriétés personnalisées suivantes peuvent être ajoutées aux objets "
-"pour affecter l'instance exportée ou l'image ressource :"
+"pour affecter l'instance exportée ou la ressource de sprite :"
 
 #: ../../manual/export-yy.rst:103
 msgid "color ``colour`` (default: based on layer tint color)"
@@ -4399,10 +4451,10 @@ msgid ""
 "the top-left. This origin is taken into account when determining the "
 "position of the exported instance."
 msgstr ""
-"Les propriétés ``originX`` et ``originY`` peuvent être utilisées pour "
-"donner l'origine de l'image définie dans GameMaker à Tiled en tant que "
-"décalage depuis en haut à gauche. Cette origine est prise en compte lors "
-"de la détermination de la position de l'instance exportée."
+"Les propriétés ``originX`` et ``originY`` peuvent être utilisées pour donner "
+"l'origine du sprite définie dans GameMaker à Tiled en tant que décalage "
+"depuis en haut à gauche. Cette origine est prise en compte lors de la "
+"détermination de la position de l'instance exportée."
 
 #: ../../manual/export-yy.rst:123
 msgid ""
@@ -4510,22 +4562,22 @@ msgid ""
 "objects can be exported as sprite graphics instead."
 msgstr ""
 "Quand une rotation de 90 degrés avec un alignement de grille suffit, ces "
-"tuiles doivent être placées dans des calques de tuiles à la place. Quand "
-"un placement libre avec une rotation est requis, alors un jeu de tuiles "
-"de collection d'images doit être utilisé, pour que les objets exportés "
-"soient exportés en tant que graphismes d'image à la place."
+"tuiles doivent être placées dans des calques de tuiles à la place. Quand un "
+"placement libre avec une rotation est requis, alors un jeu de tuiles de "
+"collection d'images doit être utilisé, pour que les objets exportés soient "
+"exportés en tant que graphismes de sprite à la place."
 
 #: ../../manual/export-yy.rst:171
 msgid "Sprite Graphics"
-msgstr "Graphismes d'Image"
+msgstr "Graphismes de Sprite"
 
 #: ../../manual/export-yy.rst:173
 msgid ""
 "The following additional custom properties can be set on objects that are"
 " exported as sprite graphics:"
 msgstr ""
-"Les propriétés personnalisées additionnelles suivantes peuvent être "
-"ajoutées aux objets qui sont exportés en tant que graphismes d'image :"
+"Les propriétés personnalisées additionnelles suivantes peuvent être ajoutées "
+"aux objets qui sont exportés en tant que graphismes de sprite :"
 
 #: ../../manual/export-yy.rst:176
 msgid "float ``headPosition`` (default: 0.0)"
@@ -4549,10 +4601,10 @@ msgid ""
 "of the corresponding sprite asset. Alternatively the custom property "
 "``sprite`` can be used to explicitly set the name of the sprite asset."
 msgstr ""
-"Le nom de fichier de l'image source est présumé être le même que le nom "
-"de l'image ressource correspondante. Alternativement, la propriété "
-"personnalisée ``sprite`` peut être utilisée pour explicitement donner le "
-"nom de l'image ressource."
+"Le nom de fichier de l'image source est présumé être le même que le nom de "
+"la ressource sprite correspondante. Alternativement, la propriété "
+"personnalisée ``sprite`` peut être utilisée pour explicitement donner le nom "
+"de la ressource sprite."
 
 #: ../../manual/export-yy.rst:190
 msgid ""
@@ -4580,14 +4632,16 @@ msgstr ""
 "de l'image par défaut)"
 
 #: ../../manual/export-yy.rst:198
-#, fuzzy
 msgid "bool ``htiled`` (default: value of Repeat X property)"
-msgstr "Le booléen (bool) ``htiled`` (false par défaut)"
+msgstr ""
+"Le booléen (bool) ``htiled`` (par défaut prend la valeur de la propriété "
+"Repeat X)"
 
 #: ../../manual/export-yy.rst:199
-#, fuzzy
 msgid "bool ``vtiled`` (default: value of Repeat Y property)"
-msgstr "Le booléen (bool) ``vtiled`` (false par défaut)"
+msgstr ""
+"Le booléen (bool) ``vtiled`` (par défaut prend la valeur de la propriété "
+"Repeat Y)"
 
 #: ../../manual/export-yy.rst:200
 msgid "bool ``stretch`` (default: false)"
@@ -4610,14 +4664,13 @@ msgid "int ``animationSpeedtype`` (default: 0)"
 msgstr "L'entier (int) ``animationSpeedtype`` (0 par défaut)"
 
 #: ../../manual/export-yy.rst:206
-#, fuzzy
 msgid ""
 "Even though the custom properties such as ``hspeed`` and ``vspeed`` have "
 "no visual effect inside Tiled you will see the effect in the exported "
 "room inside GameMaker."
 msgstr ""
-"Même si les propriétés personnalisées telles que ``htiled`` et ``vtiled``"
-" n'ont pas d'effet visuel dans Tiled, vous verrez l'effet dans la salle "
+"Même si les propriétés personnalisées telles que ``hspeed`` et ``vspeed`` "
+"n'ont pas d'effet visuel dans Tiled, vous verrez l'effet dans la salle "
 "exportée dans GameMaker."
 
 #: ../../manual/export-yy.rst:211
@@ -4734,7 +4787,7 @@ msgstr "Le booléen ``inheritPhysicsSettings`` (false par défaut)"
 
 #: ../../manual/export-yy.rst:270
 msgid "Sprite References"
-msgstr "Références d'Images"
+msgstr "Références des Sprites"
 
 #: ../../manual/export-yy.rst:272
 msgid ""
@@ -4744,12 +4797,12 @@ msgid ""
 "collection tilesets and image layers to explicitly specify the sprite "
 "name:"
 msgstr ""
-"Comme :ref:`mentionné ci-dessus <yy-asset-references>`, les références "
-"vers des images sont généralement dérivées du nom de la ressource d'image"
-" depuis le nom du fichier d'image. Les propriétés suivantes peuvent être "
-"données sur des jeux de tuiles, des tuiles d'un jeu de tuiles de "
-"collection d'images et des calques d'images pour explicitement spécifier "
-"le nom de l'image :"
+"Comme :ref:`mentionné ci-dessus <yy-asset-references>`, les références vers "
+"des sprites sont généralement dérivées du nom de la ressource sprite à "
+"partir du nom du fichier d'image. Les propriétés suivantes peuvent être "
+"données sur des jeux de tuiles, des tuiles d'un jeu de tuiles de collection "
+"d'images et des calques d'images pour explicitement spécifier le nom du "
+"sprite :"
 
 #: ../../manual/export-yy.rst:282
 msgid "Paths"
@@ -5943,7 +5996,7 @@ msgstr ""
 
 #: ../../manual/layers.rst:162
 msgid "Parallax Reference Point"
-msgstr ""
+msgstr "Point de Référence de Parallaxe"
 
 #: ../../manual/layers.rst:164
 msgid ""
@@ -5985,7 +6038,6 @@ msgstr ""
 "10 = 7`` pixels."
 
 #: ../../manual/layers.rst:179
-#, fuzzy
 msgid ""
 "Quite often, a viewport transform is used to scroll the entire map. In "
 "this case, one may need to adjust the position of each layer to take its "
@@ -6039,7 +6091,7 @@ msgstr ""
 
 #: ../../manual/layers.rst:210
 msgid "Tint Color Example"
-msgstr ""
+msgstr "Exemple de Couleur de Teinte"
 
 #: ../../manual/layers.rst:210
 msgid "A gray tileset rendered in a different color for each layer."
@@ -7688,7 +7740,7 @@ msgid ""
 "Sets* - sets of tiles labeled according to their terrain layouts. Tiled "
 "supports the following terrain sets:"
 msgstr ""
-"La Brosse de Terrain s'appuie sur le jeu de tuiles qui comprend une ou "
+"Le Pinceau Terrain s'appuie sur le jeu de tuiles qui comprend une ou "
 "plusieurs *Collections de Terrain* - des collections de tuiles étiquetées "
 "par rapport à leurs agencements de terrain. Tiled supporte les collections "
 "de terrain suivantes :"
@@ -7812,11 +7864,11 @@ msgid ""
 "set by right-clicking a tile and choosing \"Use as Terrain Set Image\"."
 msgstr ""
 "Lors de l'ajout d'une collection de terrains, le nom de la nouvelle "
-"collection est automatiquement sélectionné. Donnez un nom reconnaissable "
-"à la collection, dans cet exemple nous allons écrire \"Desert Ground\". "
-"Nous pouvons aussi utiliser une des tuiles comme l'icône de la collection"
-" en faisant un clic droit sur une tuile et en choisissant \"Utiliser "
-"comme l'Icône de la Collection de Terrains\"."
+"collection est automatiquement sélectionné. Donnez un nom reconnaissable à "
+"la collection, dans cet exemple nous allons écrire \"Desert Ground\". Nous "
+"pouvons aussi assigner une des tuiles en tant qu'icône de la collection en "
+"faisant un clic droit sur une tuile et en choisissant \"Utiliser comme "
+"l'Icône de la Collection de Terrains\"."
 
 #: ../../manual/terrain.rst:91
 msgid "Adding Terrains"
@@ -7827,9 +7879,9 @@ msgid ""
 "The new set will have one terrain added by default. If we already know we"
 " need additional ones, click the *Add Terrain* button to add more."
 msgstr ""
-"La nouvelle collection aura un terrain ajouté par d\"faut. Si nous savons"
-" déjà qu'il en faudra plus, cliquez sur le bouton *Ajouter un Terrain* "
-"pour en ajouter plus."
+"La nouvelle collection aura un terrain ajouté par défaut. Si nous savons "
+"déjà qu'il en faudra plus, cliquez sur le bouton *Ajouter un Terrain* pour "
+"en ajouter plus."
 
 #: ../../manual/terrain.rst:96
 msgid ""
@@ -7857,9 +7909,9 @@ msgid ""
 "tiles\". If you have tiles transitioning to nothing, it should be enough "
 "to not mark those areas."
 msgstr ""
-"Nous n'aurons généralement pas besoin de définir un terrain explicitement"
-" pour les \"tuiles vides\". Si vous avez des tuiles qui transitionnent "
-"vers rien, ne pas baliser ces aires devrait suffire."
+"Nous n'aurons généralement pas besoin de définir un terrain explicitement "
+"pour les \"tuiles vides\". Si vous avez des tuiles qui transitionnent vers "
+"rien, ne pas baliser ces surfaces devrait suffire."
 
 #: ../../manual/terrain.rst:114
 msgid "With our terrains set up we're ready to mark each of our tiles."
@@ -7900,7 +7952,7 @@ msgstr ""
 
 #: ../../manual/terrain.rst:131
 msgid "Sand marked"
-msgstr ""
+msgstr "Sable marqué."
 
 #: ../../manual/terrain.rst:131
 msgid "Here we have marked all the sandy corners in our example tileset."
@@ -7971,7 +8023,7 @@ msgstr ""
 
 #: ../../manual/terrain.rst:162
 msgid "Editing with the Terrain Brush"
-msgstr "Édition avec la Brosse de Terrain"
+msgstr "Édition avec le Pinceau Terrain"
 
 #: ../../manual/terrain.rst:164
 msgid ""
@@ -8089,7 +8141,7 @@ msgstr ""
 
 #: ../../manual/terrain.rst:220
 msgid "Stamp Brush with Terrain Fill Mode Enabled"
-msgstr "La Brosse Tampon avec le Mode de Remplissage de Terrain Activé"
+msgstr "Le Pinceau Tampon avec le Mode de Remplissage de Terrain Activé"
 
 #: ../../manual/terrain.rst:222
 msgid ""
@@ -8099,12 +8151,11 @@ msgid ""
 "there are multiple variations of the same tile, in which case it will "
 "randomize between those."
 msgstr ""
-"Veuillez noter que vu que ce mode fait en sorte que les tuiles "
-"nouvellement placées correspondent aux tuiles déjà existantes, "
-"généralement rien ne va changer lorsque vous peignez avec la Brosse "
-"Tampon sur un terrain existant. La seule exception est si vous avez "
-"plusieurs variations de la même tuile, qui dans ce cas va faire une "
-"sélection aléatoire entre celles-ci."
+"Veuillez noter que vu que ce mode fait en sorte que les tuiles nouvellement "
+"placées correspondent aux tuiles déjà existantes, généralement rien ne va "
+"changer lorsque vous peignez avec le Pinceau Tampon sur un terrain existant. "
+"La seule exception est si vous avez plusieurs variations de la même tuile, "
+"qui dans ce cas va faire une sélection aléatoire entre celles-ci."
 
 #: ../../manual/terrain.rst:229
 msgid "Bucket Fill with Terrain Fill Mode Enabled"
@@ -8132,12 +8183,11 @@ msgid ""
 "change the frequency with which a certain tile or terrain is chosen "
 "compared to other valid options."
 msgstr ""
-"Le :ref:`terrain-fill-mode` et la Brosse de Terrain vont par défaut "
-"considérer toutes les tuiles correspondantes avec une probabilité égale. "
-"Les tuiles individuelles ainsi que les terrains ont une propriété "
-"*Probabilité*, qui peut être utilisée pour changer la fréquence à "
-"laquelle une certaine tuile ou terrain est choisie comparée aux autres "
-"options valides."
+"Le :ref:`terrain-fill-mode` et le Pinceau Terrain vont par défaut considérer "
+"toutes les tuiles correspondantes avec une probabilité égale. Les tuiles "
+"individuelles ainsi que les terrains ont une propriété *Probabilité*, qui "
+"peut être utilisée pour changer la fréquence à laquelle une certaine tuile "
+"ou terrain est choisie comparée aux autres options valides."
 
 #: ../../manual/terrain.rst:243
 msgid ""
@@ -8280,7 +8330,7 @@ msgstr ""
 
 #: ../../manual/terrain.rst:315
 msgid "Blob with rotation."
-msgstr ""
+msgstr "Blob avec rotation."
 
 #: ../../manual/terrain.rst:315
 msgid ""
