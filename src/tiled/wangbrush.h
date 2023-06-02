@@ -23,6 +23,7 @@
 #include "abstracttiletool.h"
 #include "wangset.h"
 #include "wangfiller.h"
+#include "wangpainter.h"
 
 namespace Tiled {
 
@@ -31,13 +32,6 @@ class WangBrush : public AbstractTileTool
     Q_OBJECT
 
 public:
-    enum BrushMode {
-        PaintCorner,
-        PaintEdge,
-        PaintEdgeAndCorner,
-        Idle // no valid color selected
-    };
-
     WangBrush(QObject *parent = nullptr);
     ~WangBrush() override;
 
@@ -80,7 +74,6 @@ private:
     void beginPaint();
     void doPaint(bool mergeable);
     void updateBrush();
-    void updateBrushAt(WangFiller::FillRegion &fill, QPoint pos);
 
     // The point painting happens around
     // In tile mode, this is that tile
@@ -92,9 +85,9 @@ private:
     QPoint mLineStartPos;
     WangId::Index mWangIndex = WangId::Top;
 
+    WangPainter *mWangPainter = nullptr;
     const WangSet *mWangSet = nullptr;
     int mCurrentColor = 0;
-    BrushMode mBrushMode = Idle;
     bool mIsTileMode = false;
     bool mRotationalSymmetry = false;
     bool mLineStartSet = false;

@@ -30,6 +30,10 @@ WangPainter::WangPainter() {}
 
 WangPainter::~WangPainter() {}
 
+WangPainter::BrushMode WangPainter::brushMode() {
+    return mBrushMode;
+}
+
 void WangPainter::setWangSet(const WangSet *wangSet) {
     if (wangSet == mWangSet) {
         return;
@@ -43,21 +47,21 @@ void WangPainter::setWangSet(const WangSet *wangSet) {
         switch (mWangSet->type())
         {
         case WangSet::Corner:
-            mBrushMode = WangBrush::BrushMode::PaintCorner;
+            mBrushMode = BrushMode::PaintCorner;
             break;
         case WangSet::Edge:
-            mBrushMode = WangBrush::BrushMode::PaintEdge;
+            mBrushMode = BrushMode::PaintEdge;
             break;
         case WangSet::Mixed:
         {
-            mBrushMode = WangBrush::BrushMode::PaintEdgeAndCorner;
+            mBrushMode = BrushMode::PaintEdgeAndCorner;
             break;
         }
         }
     }
     else
     {
-        mBrushMode = WangBrush::BrushMode::Idle;
+        mBrushMode = BrushMode::Idle;
     }
 }
 
@@ -73,10 +77,10 @@ void WangPainter::setColor(int color) {
     switch (mWangSet->type())
     {
         case WangSet::Corner:
-            mBrushMode = WangBrush::BrushMode::PaintCorner;
+            mBrushMode = BrushMode::PaintCorner;
             break;
         case WangSet::Edge:
-            mBrushMode = WangBrush::BrushMode::PaintEdge;
+            mBrushMode = BrushMode::PaintEdge;
             break;
         case WangSet::Mixed:
         {
@@ -101,11 +105,11 @@ void WangPainter::setColor(int color) {
             }
 
             if (usedAsEdge == usedAsCorner)
-                mBrushMode = WangBrush::BrushMode::PaintEdgeAndCorner;
+                mBrushMode = BrushMode::PaintEdgeAndCorner;
             else if (usedAsEdge)
-                mBrushMode = WangBrush::BrushMode::PaintEdge;
+                mBrushMode = BrushMode::PaintEdge;
             else
-                mBrushMode = WangBrush::BrushMode::PaintCorner;
+                mBrushMode = BrushMode::PaintCorner;
 
             break;
         }
@@ -113,18 +117,18 @@ void WangPainter::setColor(int color) {
 }
 
 WangId::Index WangPainter::getDesiredDirection(WangId::Index initialDirection) {
-    if (mBrushMode == WangBrush::BrushMode::Idle) {
+    if (mBrushMode == BrushMode::Idle) {
         return initialDirection;
     }
 
     switch (mBrushMode) {
-        case WangBrush::BrushMode::Idle:              // can't happen due to check above
+        case BrushMode::Idle:              // can't happen due to check above
             return initialDirection;
-        case WangBrush::BrushMode::PaintCorner:
+        case BrushMode::PaintCorner:
             // override this because it should always be topLeft for PaintCorner.
             return WangId::TopLeft;
             break;
-        case WangBrush::BrushMode::PaintEdge: 
+        case BrushMode::PaintEdge: 
             // no corners, so we have to set these to cardinal coordinates.
             switch (initialDirection) {
                 case WangId::BottomRight:
@@ -145,7 +149,7 @@ WangId::Index WangPainter::getDesiredDirection(WangId::Index initialDirection) {
             }
             break;
         
-        case WangBrush::BrushMode::PaintEdgeAndCorner:
+        case BrushMode::PaintEdgeAndCorner:
             switch (initialDirection) {
                 case WangId::BottomRight:
                     return WangId::TopLeft;
@@ -164,11 +168,19 @@ WangId::Index WangPainter::getDesiredDirection(WangId::Index initialDirection) {
     }
 }
 
-void WangPainter::setTerrain(MapDocument *mapDocument, int color, QPoint pos, WangId::Index directionToGenerate) {
+void WangPainter::setTerrain(WangFiller::FillRegion &fill, MapDocument *mapDocument, int color, QPoint pos, WangId::Index directionToGenerate) {
     setColor(color);
     WangId::Index direction = getDesiredDirection(directionToGenerate);
-    qInfo() << "setting terrain " << color << pos << direction;
-    generateTerrainAt(mapDocument, mCurrentFill, mCurrentColor, pos, direction, false);
+    generateTerrainAt(mapDocument, fill, mCurrentColor, pos, direction, false);
+}
+
+void WangPainter::setTerrain(MapDocument *mapDocument, int color, QPoint pos, WangId::Index directionToGenerate) {
+    setTerrain(mCurrentFill, mapDocument, color, pos, directionToGenerate);
+}
+
+void WangPainter::clear() {
+    WangFiller::FillRegion newFill;
+    mCurrentFill = newFill;
 }
 
 void WangPainter::commit(MapDocument *mapDocument, TileLayer *tileLayer) {
@@ -185,8 +197,6 @@ void WangPainter::commit(MapDocument *mapDocument, TileLayer *tileLayer) {
     stamp->setPosition(brushRect.topLeft());
     stamp->resize(brushRect.size(), -brushRect.topLeft());
 
-    qInfo() << "committing terrain " << stamp->bounds();
-
     for (int j = 0; j < stamp->height(); ++j) {
         for (int i = 0; i < stamp->width(); ++i) {
             Cell cell = stamp->cellAt(i, j);
@@ -202,8 +212,7 @@ void WangPainter::commit(MapDocument *mapDocument, TileLayer *tileLayer) {
             tileLayer->setCell(stamp->x() + i, stamp->y() + j, cell);
         }
     }
-    WangFiller::FillRegion newFill;
-    mCurrentFill = newFill;
+    clear();
 }
 
 void WangPainter::generateTerrainAt(MapDocument *mapDocument, WangFiller::FillRegion &fill, int color, QPoint pos, WangId::Index direction, bool useTileMode) {
@@ -247,28 +256,28 @@ void WangPainter::generateTerrainAt(MapDocument *mapDocument, WangFiller::FillRe
 
         switch (mBrushMode)
         {
-        case WangBrush::BrushMode::PaintCorner:
+        case BrushMode::PaintCorner:
             for (int i = 0; i < WangId::NumCorners; ++i)
             {
                 center.desired.setCornerColor(i, color);
                 center.mask.setCornerColor(i, WangId::INDEX_MASK);
             }
             break;
-        case WangBrush::BrushMode::PaintEdge:
+        case BrushMode::PaintEdge:
             for (int i = 0; i < WangId::NumEdges; ++i)
             {
                 center.desired.setEdgeColor(i, color);
                 center.mask.setEdgeColor(i, WangId::INDEX_MASK);
             }
             break;
-        case WangBrush::BrushMode::PaintEdgeAndCorner:
+        case BrushMode::PaintEdgeAndCorner:
             for (int i = 0; i < WangId::NumIndexes; ++i)
             {
                 center.desired.setIndexColor(i, color);
                 center.mask.setIndexColor(i, WangId::INDEX_MASK);
             }
             break;
-        case WangBrush::BrushMode::Idle:
+        case BrushMode::Idle:
             break;
         }
 
@@ -278,21 +287,21 @@ void WangPainter::generateTerrainAt(MapDocument *mapDocument, WangFiller::FillRe
         for (int i = 0; i < WangId::NumIndexes; ++i)
         {
             const bool isCorner = WangId::isCorner(i);
-            if (mBrushMode == WangBrush::BrushMode::PaintEdge && isCorner)
+            if (mBrushMode == BrushMode::PaintEdge && isCorner)
                 continue;
 
             QPoint p = adjacentPositions[i];
             WangFiller::CellInfo adjacent = grid.get(p);
 
             // Mark the opposite side or corner of the adjacent tile
-            if (isCorner || (mBrushMode == WangBrush::BrushMode::PaintEdge || mBrushMode ==WangBrush::BrushMode::PaintEdgeAndCorner))
+            if (isCorner || (mBrushMode == BrushMode::PaintEdge || mBrushMode ==BrushMode::PaintEdgeAndCorner))
             {
                 adjacent.desired.setIndexColor(WangId::oppositeIndex(i), color);
                 adjacent.mask.setIndexColor(WangId::oppositeIndex(i), WangId::INDEX_MASK);
             }
 
             // Mark the touching corners of the adjacent tile
-            if (!isCorner && (mBrushMode == WangBrush::BrushMode::PaintCorner || mBrushMode == WangBrush::BrushMode::PaintEdgeAndCorner))
+            if (!isCorner && (mBrushMode == BrushMode::PaintCorner || mBrushMode == BrushMode::PaintEdgeAndCorner))
             {
                 adjacent.desired.setIndexColor((i + 3) % WangId::NumIndexes, color);
                 adjacent.desired.setIndexColor((i + 5) % WangId::NumIndexes, color);
@@ -311,12 +320,12 @@ void WangPainter::generateTerrainAt(MapDocument *mapDocument, WangFiller::FillRe
 
         auto brushMode = mBrushMode;
 
-        if (brushMode == WangBrush::BrushMode::PaintEdgeAndCorner)
-            brushMode = WangId::isCorner(direction) ? WangBrush::BrushMode::PaintCorner : WangBrush::BrushMode::PaintEdge;
+        if (brushMode == BrushMode::PaintEdgeAndCorner)
+            brushMode = WangId::isCorner(direction) ? BrushMode::PaintCorner : BrushMode::PaintEdge;
 
         switch (brushMode)
         {
-            case WangBrush::BrushMode::PaintCorner:
+            case BrushMode::PaintCorner:
             {
                 QPoint adjacentPoints[WangId::NumCorners];
 
@@ -348,7 +357,7 @@ void WangPainter::generateTerrainAt(MapDocument *mapDocument, WangFiller::FillRe
 
                 break;
             }
-            case WangBrush::BrushMode::PaintEdge:
+            case BrushMode::PaintEdge:
             {
                 QPoint dirPoint;
                 if (hexgonalRenderer)
@@ -394,8 +403,8 @@ void WangPainter::generateTerrainAt(MapDocument *mapDocument, WangFiller::FillRe
 
                 break;
             }
-            case WangBrush::BrushMode::PaintEdgeAndCorner: // Handled before switch
-            case WangBrush::BrushMode::Idle:
+            case BrushMode::PaintEdgeAndCorner: // Handled before switch
+            case BrushMode::Idle:
                 break;
         }
     }
