@@ -21,8 +21,8 @@ namespace Tiled {
         BrushMode brushMode();
 
         void setWangSet(const WangSet *wangSet);
-        void setTerrain(WangFiller::FillRegion &fill, MapDocument *mapDocument, int color, QPoint pos, WangId::Index directionToGenerate);
-        void setTerrain(MapDocument *mapDocument, int color, QPoint pos, WangId::Index directionToGenerate);
+        void setTerrain(WangFiller::FillRegion &fill, MapDocument *mapDocument, int color, QPoint pos, WangId::Index directionToGenerate, bool useTileMode = false);
+        void setTerrain(MapDocument *mapDocument, int color, QPoint pos, WangId::Index directionToGenerate, bool useTileMode = false);
         void clear();
         void commit(MapDocument *mapDocument, TileLayer *tileLayer);
 

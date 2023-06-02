@@ -168,14 +168,14 @@ WangId::Index WangPainter::getDesiredDirection(WangId::Index initialDirection) {
     }
 }
 
-void WangPainter::setTerrain(WangFiller::FillRegion &fill, MapDocument *mapDocument, int color, QPoint pos, WangId::Index directionToGenerate) {
+void WangPainter::setTerrain(WangFiller::FillRegion &fill, MapDocument *mapDocument, int color, QPoint pos, WangId::Index directionToGenerate, bool useTileMode) {
     setColor(color);
     WangId::Index direction = getDesiredDirection(directionToGenerate);
-    generateTerrainAt(mapDocument, fill, mCurrentColor, pos, direction, false);
+    generateTerrainAt(mapDocument, fill, mCurrentColor, pos, direction, useTileMode);
 }
 
-void WangPainter::setTerrain(MapDocument *mapDocument, int color, QPoint pos, WangId::Index directionToGenerate) {
-    setTerrain(mCurrentFill, mapDocument, color, pos, directionToGenerate);
+void WangPainter::setTerrain(MapDocument *mapDocument, int color, QPoint pos, WangId::Index directionToGenerate, bool useTileMode) {
+    setTerrain(mCurrentFill, mapDocument, color, pos, directionToGenerate, useTileMode);
 }
 
 void WangPainter::clear() {

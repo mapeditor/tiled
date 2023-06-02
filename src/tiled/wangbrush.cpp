@@ -495,11 +495,11 @@ void WangBrush::updateBrush()
             else if (to.y() < from.y())
                 mWangIndex = WangId::Bottom;
 
-            mWangPainter->setTerrain(fill, mapDocument(), mCurrentColor, to, mWangIndex);
+            mWangPainter->setTerrain(fill, mapDocument(), mCurrentColor, to, mWangIndex, mIsTileMode);
         }
     } else {
         for (int i = ignoreFirst ? 1 : 0; i < points.size(); ++i) {
-            mWangPainter->setTerrain(fill, mapDocument(), mCurrentColor, points.at(i), mWangIndex);
+            mWangPainter->setTerrain(fill, mapDocument(), mCurrentColor, points.at(i), mWangIndex, mIsTileMode);
         }
     }
 
