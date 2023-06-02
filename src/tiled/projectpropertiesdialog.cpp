@@ -23,11 +23,12 @@
 
 #include "mapformat.h"
 #include "project.h"
+#include "projectdocument.h"
 #include "utils.h"
 #include "varianteditorfactory.h"
 #include "variantpropertymanager.h"
-
 #include <QtGroupPropertyManager>
+#include <QLabel>
 
 namespace Tiled {
 
@@ -35,6 +36,7 @@ ProjectPropertiesDialog::ProjectPropertiesDialog(Project &project, QWidget *pare
     : QDialog(parent)
     , ui(new Ui::ProjectPropertiesDialog)
     , mProject(project)
+    , mCustomPropertiesWidget(new PropertiesWidget(parent))
 {
     ui->setupUi(this);
 
@@ -79,7 +81,13 @@ ProjectPropertiesDialog::ProjectPropertiesDialog(Project &project, QWidget *pare
 
     ui->propertyBrowser->addProperty(generalGroupProperty);
     ui->propertyBrowser->addProperty(filesGroupProperty);
-}
+
+    auto customPropertiesLabel = new QLabel(tr("Custom Properties"));
+    ui->verticalLayout->insertWidget(2, customPropertiesLabel);
+    mCustomPropertiesWidget->setDocument(new ProjectDocument(&project));
+    ui->verticalLayout->insertWidget(3, mCustomPropertiesWidget);
+
+}       
 
 ProjectPropertiesDialog::~ProjectPropertiesDialog()
 {

@@ -21,6 +21,7 @@
 #pragma once
 
 #include "tiled.h"
+#include "propertieswidget.h"
 
 #include <QDialog>
 
@@ -52,6 +53,7 @@ private:
     QtVariantProperty *mCompatibilityVersionProperty;
     QtVariantProperty *mExtensionPathProperty;
     QtVariantProperty *mAutomappingRulesFileProperty;
+    PropertiesWidget *mCustomPropertiesWidget;
 };
 
 } // namespace Tiled
