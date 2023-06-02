@@ -25,6 +25,7 @@
 #include "editablemap.h"
 #include "resizetilelayer.h"
 #include "tilelayeredit.h"
+#include "tilelayerwangedit.h"
 #include "tilesetdocument.h"
 
 namespace Tiled {
@@ -45,6 +46,8 @@ EditableTileLayer::~EditableTileLayer()
 {
     while (!mActiveEdits.isEmpty())
         delete mActiveEdits.first();
+    while (!mActiveWangEdits.isEmpty())
+        delete mActiveWangEdits.first();
 }
 
 void EditableTileLayer::setSize(QSize size)
@@ -99,6 +102,11 @@ EditableTile *EditableTileLayer::tileAt(int x, int y) const
 TileLayerEdit *EditableTileLayer::edit()
 {
     return new TileLayerEdit(this);
+}
+
+TileLayerWangEdit *EditableTileLayer::wangEdit(EditableWangSet *wangSet)
+{
+    return new TileLayerWangEdit(this, wangSet);
 }
 
 } // namespace Tiled

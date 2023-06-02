@@ -20,8 +20,9 @@
 
 #pragma once
 
-#include "editabletile.h"
+#include "editablewangset.h"
 #include "tilelayer.h"
+#include "wangpainter.h"
 
 #include <QObject>
 
@@ -29,7 +30,7 @@ namespace Tiled {
 
 class EditableTileLayer;
 
-class TileLayerEdit : public QObject
+class TileLayerWangEdit : public QObject
 {
     Q_OBJECT
 
@@ -37,9 +38,10 @@ class TileLayerEdit : public QObject
     Q_PROPERTY(bool mergeable READ isMergeable WRITE setMergeable)
 
 public:
-    explicit TileLayerEdit(EditableTileLayer *tileLayer,
+    explicit TileLayerWangEdit(EditableTileLayer *tileLayer,
+                           EditableWangSet *wangSet,
                            QObject *parent = nullptr);
-    ~TileLayerEdit() override;
+    ~TileLayerWangEdit() override;
 
     /**
      * Sets whether this edit can be merged with a previous edit.
@@ -53,31 +55,32 @@ public:
     EditableTileLayer *target() const;
 
 public slots:
-    void setTile(int x, int y, EditableTile *tile, int flags = 0);
+    void setTerrain(int x, int y, int color, WangId::Index direction = WangId::Left);
     void apply();
 
 private:
     EditableTileLayer *mTargetLayer;
     TileLayer mChanges;
     bool mMergeable = false;
+    WangPainter *mWangPainter = nullptr;
 };
 
 
-inline void TileLayerEdit::setMergeable(bool mergeable)
+inline void TileLayerWangEdit::setMergeable(bool mergeable)
 {
     mMergeable = mergeable;
 }
 
-inline bool TileLayerEdit::isMergeable() const
+inline bool TileLayerWangEdit::isMergeable() const
 {
     return mMergeable;
 }
 
-inline EditableTileLayer *TileLayerEdit::target() const
+inline EditableTileLayer *TileLayerWangEdit::target() const
 {
     return mTargetLayer;
 }
 
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::TileLayerEdit*)
+Q_DECLARE_METATYPE(Tiled::TileLayerWangEdit*)
