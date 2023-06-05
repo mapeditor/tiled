@@ -29,12 +29,18 @@ class Object;
 class Document;
 class PropertyBrowser;
 
+/**
+ * The PropertiesWidget combines the PropertyBrowser with some controls that
+ * allow adding and removing properties. It also implements cut, copy and paste
+ * actions and the context menu.
+ */
 class PropertiesWidget : public QWidget
 {
     Q_OBJECT
 
 public:
     explicit PropertiesWidget(QWidget *parent = nullptr);
+    ~PropertiesWidget() override;
 
     /**
      * Sets the \a document on which this properties dock will act.

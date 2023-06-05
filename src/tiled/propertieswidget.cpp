@@ -95,6 +95,12 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
     retranslateUi();
 }
 
+PropertiesWidget::~PropertiesWidget()
+{
+    // Disconnect to avoid crashing due to signals emitted during destruction
+    mPropertyBrowser->disconnect(this);
+}
+
 void PropertiesWidget::setDocument(Document *document)
 {
     if (mDocument == document)
