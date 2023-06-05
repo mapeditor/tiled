@@ -41,14 +41,14 @@ class TILEDSHARED_EXPORT Object
 public:
     // Keep values synchronized with ClassPropertyType::ClassUsageFlag
     enum TypeId {
-        LayerType           = 0x02,
-        MapObjectType       = 0x04,
-        MapType             = 0x08,
-        TilesetType         = 0x10,
-        TileType            = 0x20,
-        WangSetType         = 0x40,
-        WangColorType       = 0x80,
-        ProjectType         = 0xA0,
+        LayerType           = 0x002,
+        MapObjectType       = 0x004,
+        MapType             = 0x008,
+        TilesetType         = 0x010,
+        TileType            = 0x020,
+        WangSetType         = 0x040,
+        WangColorType       = 0x080,
+        ProjectType         = 0x100,
     };
 
     explicit Object(TypeId typeId, const QString &className = QString())

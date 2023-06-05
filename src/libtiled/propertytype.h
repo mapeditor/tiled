@@ -135,18 +135,18 @@ class TILEDSHARED_EXPORT ClassPropertyType final : public PropertyType
 {
 public:
     enum ClassUsageFlag {
-        PropertyValueType   = 0x01,
+        PropertyValueType   = 0x001,
 
         // Keep values synchronized with Object::TypeId
-        LayerClass          = 0x02,
-        MapObjectClass      = 0x04,
-        MapClass            = 0x08,
-        TilesetClass        = 0x10,
-        TileClass           = 0x20,
-        WangSetClass        = 0x40,
-        WangColorClass      = 0x80,
-        ProjectClass        = 0xA0,
-        AnyUsage            = 0xFF,
+        LayerClass          = 0x002,
+        MapObjectClass      = 0x004,
+        MapClass            = 0x008,
+        TilesetClass        = 0x010,
+        TileClass           = 0x020,
+        WangSetClass        = 0x040,
+        WangColorClass      = 0x080,
+        ProjectClass        = 0x100,
+        AnyUsage            = 0xFFF,
         AnyObjectClass      = AnyUsage & ~PropertyValueType,
     };
 
