@@ -20,7 +20,6 @@
  */
 
 #include "editableproject.h"
-#include "projectdocument.h"
 
 namespace Tiled {
 
@@ -32,12 +31,12 @@ EditableProject::EditableProject(Project *project, QObject *parent)
 
 QString EditableProject::extensionsPath() const
 {
-   return mProject->mExtensionsPath;
+    return mProject->mExtensionsPath;
 }
 
 QString EditableProject::automappingRulesFile() const
 {
-   return mProject->mAutomappingRulesFile;
+    return mProject->mAutomappingRulesFile;
 }
 
 QString EditableProject::fileName() const
@@ -47,17 +46,21 @@ QString EditableProject::fileName() const
 
 QStringList EditableProject::folders() const
 {
-   return mProject->folders();
+    return mProject->folders();
 }
 
 bool EditableProject::isReadOnly() const
 {
-   return false;
+    return false;
 }
+
 QSharedPointer<Document> EditableProject::createDocument()
 {
-    return ProjectDocumentPtr::create(mProject);
+    // We don't currently support opening a project in a tab, which this
+    // function is meant for.
+    return nullptr;
 }
+
 } // namespace Tiled
 
 #include "moc_editableproject.cpp"

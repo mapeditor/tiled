@@ -109,7 +109,7 @@ const QVector<Command> &CommandManager::globalCommands() const
 
 const QVector<Command> &CommandManager::projectCommands() const
 {
-    auto &project = ProjectManager::instance()->project();
+    const auto &project = ProjectManager::instance()->project();
     return project.mCommands;
 }
 

@@ -992,8 +992,11 @@ void MainWindow::initializeSession()
     const auto &session = Session::current();
 
     // Restore associated project if applicable
-    Project project;
-    bool projectLoaded = !session.project.isEmpty() && project.load(session.project);
+    std::unique_ptr<Project> project;
+    if (!session.project.isEmpty())
+        project = Project::load(session.project);
+
+    const bool projectLoaded = project != nullptr;
 
     if (projectLoaded) {
         ProjectManager::instance()->setProject(std::move(project));
@@ -1380,9 +1383,9 @@ bool MainWindow::closeAllFiles()
 
 bool MainWindow::openProjectFile(const QString &fileName)
 {
-    Project project;
+    auto project = Project::load(fileName);
 
-    if (!project.load(fileName)) {
+    if (!project) {
         QMessageBox::critical(window(),
                               tr("Error Opening Project"),
                               tr("An error occurred while opening the project."));
@@ -1414,10 +1417,10 @@ void MainWindow::newProject()
         fileName.append(QStringLiteral(".tiled-project"));
     }
 
-    Project project;
-    project.addFolder(QFileInfo(fileName).path());
+    auto project = std::make_unique<Project>();
+    project->addFolder(QFileInfo(fileName).path());
 
-    if (!project.save(fileName)) {
+    if (!project->save(fileName)) {
         QMessageBox::critical(window(),
                               tr("Error Saving Project"),
                               tr("An error occurred while saving the project."));
@@ -1436,10 +1439,10 @@ bool MainWindow::closeProject()
     if (project.fileName().isEmpty())
         return true;
 
-    return switchProject(Project{});
+    return switchProject(nullptr);
 }
 
-bool MainWindow::switchProject(Project project)
+bool MainWindow::switchProject(std::unique_ptr<Project> project)
 {
     auto prefs = Preferences::instance();
     emit prefs->aboutToSwitchSession();
@@ -1449,11 +1452,15 @@ bool MainWindow::switchProject(Project project)
 
     WorldManager::instance().unloadAllWorlds();
 
-    auto &session = Session::switchCurrent(Session::defaultFileNameForProject(project.fileName()));
+    if (project) {
+        auto &session = Session::switchCurrent(Session::defaultFileNameForProject(project->fileName()));
 
-    if (!project.fileName().isEmpty()) {
-        session.setProject(project.fileName());
-        prefs->addRecentProject(project.fileName());
+        if (!project->fileName().isEmpty()) {
+            session.setProject(project->fileName());
+            prefs->addRecentProject(project->fileName());
+        }
+    } else {
+        Session::switchCurrent(Session::defaultFileName());
     }
 
     ProjectManager::instance()->setProject(std::move(project));

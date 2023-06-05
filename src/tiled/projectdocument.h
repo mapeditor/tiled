@@ -1,7 +1,7 @@
 /*
  * projectdocument.h
- * Copyright 2022, Chris Boehm AKA dogboydog
- * Copyright 2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * Copyright 2023, Chris Boehm AKA dogboydog
+ * Copyright 2023, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -31,7 +31,7 @@ class ProjectDocument : public Document
     Q_OBJECT
 
 public:
-    ProjectDocument(Project *project, QObject *parent = nullptr);
+    ProjectDocument(std::unique_ptr<Project> project, QObject *parent = nullptr);
 
     QString displayName() const override;
     FileFormat *writerFormat() const override;
@@ -42,9 +42,10 @@ public:
     void setLastExportFileName(const QString &fileName) override;
     std::unique_ptr<EditableAsset> createEditable() override;
 
+    Project &project() { return *mProject; }
+
 private:
-    Project *mProject;
-    Project mProjectCopy;
+    std::unique_ptr<Project> mProject;
 };
 
 using ProjectDocumentPtr = QSharedPointer<ProjectDocument>;

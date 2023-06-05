@@ -33,6 +33,8 @@ class ProjectPropertiesDialog;
 
 namespace Tiled {
 
+class ProjectDocument;
+
 class ProjectPropertiesDialog : public QDialog
 {
     Q_OBJECT
@@ -47,7 +49,7 @@ private:
     Ui::ProjectPropertiesDialog *ui;
 
     Project &mProject;
-    Project mProjectCopy;
+    ProjectDocument *mPropertiesProjectDocument;
     QList<CompatibilityVersion> mVersions;
     QtVariantProperty *mCompatibilityVersionProperty;
     QtVariantProperty *mExtensionPathProperty;

@@ -28,6 +28,8 @@
 #include <QStringList>
 #include <QVector>
 
+#include <memory>
+
 namespace Tiled {
 
 class Project : public Object
@@ -38,7 +40,8 @@ public:
     const QString &fileName() const;
     bool save();
     bool save(const QString &fileName);
-    bool load(const QString &fileName);
+
+    static std::unique_ptr<Project> load(const QString &fileName);
 
     void addFolder(const QString &folder);
     void removeFolder(int index);
@@ -46,8 +49,6 @@ public:
 
     const QDateTime &lastSaved() const;
     const SharedPropertyTypes &propertyTypes() const;
-
-    Project &operator =(const Project &value);
 
     QString mExtensionsPath;
     QString mObjectTypesFile;

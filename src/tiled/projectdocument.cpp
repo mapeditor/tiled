@@ -1,7 +1,7 @@
 /*
  * projectdocument.cpp
- * Copyright 2022, Chris Boehm AKA dogboydog
- * Copyright 2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * Copyright 2023, Chris Boehm AKA dogboydog
+ * Copyright 2023, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -25,11 +25,11 @@
 
 namespace Tiled {
 
-ProjectDocument::ProjectDocument(Project *project, QObject *parent)
+ProjectDocument::ProjectDocument(std::unique_ptr<Project> project, QObject *parent)
     : Document(ProjectDocumentType, project->fileName(), parent)
 {
-    mCurrentObject = project;
-    mProject = project;
+    mProject = std::move(project);
+    mCurrentObject = mProject.get();
 }
 
 QString ProjectDocument::displayName() const
@@ -69,7 +69,7 @@ void ProjectDocument::setLastExportFileName(const QString &/* fileName */)
 
 std::unique_ptr<EditableAsset> ProjectDocument::createEditable()
 {
-    return std::make_unique<EditableProject>(mProject, this);
+    return std::make_unique<EditableProject>(mProject.get(), this);
 }
 
 } // namespace Tiled

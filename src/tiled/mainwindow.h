@@ -131,7 +131,7 @@ private:
     bool openProjectFile(const QString &fileName);
     void newProject();
     bool closeProject();
-    bool switchProject(Project project);
+    bool switchProject(std::unique_ptr<Project> project);
     void restoreSession();
     void projectProperties();
 

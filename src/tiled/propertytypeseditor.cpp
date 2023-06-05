@@ -250,7 +250,7 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
 
     Preferences *prefs = Preferences::instance();
 
-    auto &project = ProjectManager::instance()->project();
+    const auto &project = ProjectManager::instance()->project();
     mPropertyTypesModel->setPropertyTypes(project.propertyTypes());
 
     connect(prefs, &Preferences::propertyTypesChanged,
@@ -412,7 +412,7 @@ void PropertyTypesEditor::propertyTypesChanged()
     if (mSettingPrefPropertyTypes)
         return;
 
-    auto &project = ProjectManager::instance()->project();
+    const auto &project = ProjectManager::instance()->project();
     mPropertyTypesModel->setPropertyTypes(project.propertyTypes());
 
     selectedPropertyTypesChanged();

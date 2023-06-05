@@ -141,37 +141,53 @@ ProjectModel::~ProjectModel()
     mScanningThread.wait();
 }
 
-void ProjectModel::setProject(Project project)
+void ProjectModel::setProject(std::unique_ptr<Project> project)
 {
     if (mUpdateNameFiltersTimer.isActive())
         updateNameFilters();
 
     beginResetModel();
 
-    mProject = std::move(project);
+    mProjectDocument = std::make_unique<ProjectDocument>(std::move(project));
     mFolders.clear();
     mFoldersPendingScan.clear();
 
-    for (const QString &folder : mProject.folders()) {
+    const auto &folders = this->project().folders();
+    for (const QString &folder : folders) {
         mFolders.push_back(std::make_unique<FolderEntry>(folder));
         scheduleFolderScan(folder);
     }
 
     mWatcher.clear();
-    mWatcher.addPaths(mProject.folders());
+    mWatcher.addPaths(folders);
 
     endResetModel();
 }
 
+Project &ProjectModel::project()
+{
+    return mProjectDocument ? mProjectDocument->project() : mEmptyProject;
+}
+
+EditableAsset *ProjectModel::editableProject()
+{
+    return mProjectDocument ? mProjectDocument->editable() : nullptr;
+}
+
 void ProjectModel::addFolder(const QString &folder)
 {
-    const int row = int(mProject.folders().size());
+    if (!mProjectDocument)
+        return;
+
+    const int row = int(project().folders().size());
 
     beginInsertRows(QModelIndex(), row, row);
 
-    mProject.addFolder(folder);
+    project().addFolder(folder);
+
     mFolders.push_back(std::make_unique<FolderEntry>(folder));
     mWatcher.addPath(folder);
+
     scheduleFolderScan(folder);
 
     endInsertRows();
@@ -181,6 +197,9 @@ void ProjectModel::addFolder(const QString &folder)
 
 void ProjectModel::removeFolder(int row)
 {
+    if (!mProjectDocument)
+        return;
+
     const QString folder = mFolders.at(row)->filePath;
 
     QStringList watchedFilePaths;
@@ -188,9 +207,12 @@ void ProjectModel::removeFolder(int row)
     collectDirectories(*mFolders.at(row), watchedFilePaths);
 
     beginRemoveRows(QModelIndex(), row, row);
-    mProject.removeFolder(row);
+
+    project().removeFolder(row);
+
     mFolders.erase(mFolders.begin() + row);
     mWatcher.removePaths(watchedFilePaths);
+
     endRemoveRows();
 
     emit folderRemoved(folder);

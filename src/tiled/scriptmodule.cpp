@@ -214,11 +214,9 @@ QList<QObject *> ScriptModule::openAssets() const
     return assets;
 }
 
-EditableProject *ScriptModule::project()
+EditableAsset *ScriptModule::project()
 {
-    if (!mEditableProject)
-        mEditableProject = new EditableProject(&ProjectManager::instance()->project(), this);
-    return mEditableProject;
+    return ProjectManager::instance()->editableProject();
 }
 
 TilesetEditor *ScriptModule::tilesetEditor() const

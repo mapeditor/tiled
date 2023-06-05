@@ -21,8 +21,9 @@
 
 #pragma once
 
-#include "project.h"
 #include "editableasset.h"
+#include "project.h"
+
 #include <QObject>
 
 namespace Tiled {

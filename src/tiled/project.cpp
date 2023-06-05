@@ -105,49 +105,48 @@ bool Project::save(const QString &fileName)
     return true;
 }
 
-bool Project::load(const QString &fileName)
+std::unique_ptr<Project> Project::load(const QString &fileName)
 {
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return false;
+        return nullptr;
 
     QJsonParseError error;
     const QByteArray json = file.readAll();
     const QJsonDocument document(QJsonDocument::fromJson(json, &error));
     if (error.error != QJsonParseError::NoError)
-        return false;
+        return nullptr;
 
-    mFileName = fileName;
+    auto project = std::make_unique<Project>();
+    project->mFileName = fileName;
 
     const QDir dir = QFileInfo(fileName).dir();
-    const QJsonObject project = document.object();
+    const QJsonObject projectJson = document.object();
 
-    mExtensionsPath = absolute(dir, project.value(QLatin1String("extensionsPath")).toString(QStringLiteral("extensions")));
-    mObjectTypesFile = absolute(dir, project.value(QLatin1String("objectTypesFile")).toString());
-    mAutomappingRulesFile = absolute(dir, project.value(QLatin1String("automappingRulesFile")).toString());
+    project->mExtensionsPath = absolute(dir, projectJson.value(QLatin1String("extensionsPath")).toString(QStringLiteral("extensions")));
+    project->mObjectTypesFile = absolute(dir, projectJson.value(QLatin1String("objectTypesFile")).toString());
+    project->mAutomappingRulesFile = absolute(dir, projectJson.value(QLatin1String("automappingRulesFile")).toString());
 
-    mPropertyTypes->loadFromJson(project.value(QLatin1String("propertyTypes")).toArray(), dir.path());
+    project->mPropertyTypes->loadFromJson(projectJson.value(QLatin1String("propertyTypes")).toArray(), dir.path());
 
     const QString projectPropertiesKey = QLatin1String("properties");
-    if (project.contains(projectPropertiesKey)) {
-        const ExportContext context(*mPropertyTypes, dir.path());
-        const Properties loadedProperties = propertiesFromJson(project.value(projectPropertiesKey).toArray(), context);
-        setProperties(loadedProperties);
+    if (projectJson.contains(projectPropertiesKey)) {
+        const ExportContext context(*project->mPropertyTypes, dir.path());
+        const Properties loadedProperties = propertiesFromJson(projectJson.value(projectPropertiesKey).toArray(), context);
+        project->setProperties(loadedProperties);
     }
 
-    mFolders.clear();
-    const QJsonArray folders = project.value(QLatin1String("folders")).toArray();
+    const QJsonArray folders = projectJson.value(QLatin1String("folders")).toArray();
     for (const QJsonValue &folderValue : folders)
-        mFolders.append(QDir::cleanPath(dir.absoluteFilePath(folderValue.toString())));
+        project->mFolders.append(QDir::cleanPath(dir.absoluteFilePath(folderValue.toString())));
 
-    mCommands.clear();
-    const QJsonArray commands = project.value(QLatin1String("commands")).toArray();
+    const QJsonArray commands = projectJson.value(QLatin1String("commands")).toArray();
     for (const QJsonValue &commandValue : commands)
-        mCommands.append(Command::fromVariant(commandValue.toVariant()));
+        project->mCommands.append(Command::fromVariant(commandValue.toVariant()));
 
-    mCompatibilityVersion = static_cast<CompatibilityVersion>(project.value(QLatin1String("compatibilityVersion")).toInt(Tiled_Latest));
+    project->mCompatibilityVersion = static_cast<CompatibilityVersion>(projectJson.value(QLatin1String("compatibilityVersion")).toInt(Tiled_Latest));
 
-    return true;
+    return project;
 }
 
 void Project::addFolder(const QString &folder)
@@ -159,25 +158,6 @@ void Project::removeFolder(int index)
 {
     Q_ASSERT(index >= 0 && index < mFolders.size());
     mFolders.removeAt(index);
-}
-
-Project &Project::operator =(const Project &value)
-{
-    if (this == &value) {
-        return *this;
-    }
-    mExtensionsPath = value.mExtensionsPath;
-    mObjectTypesFile = value.mObjectTypesFile;
-    mAutomappingRulesFile = value.mAutomappingRulesFile;
-    mCompatibilityVersion = value.mCompatibilityVersion;
-    mCommands = value.mCommands;
-    mLastSaved = value.mLastSaved;
-    mFileName = value.mFileName;
-    mFolders = value.mFolders;
-    mPropertyTypes = value.mPropertyTypes;
-    setClassName(value.className());
-    setProperties(value.properties());
-    return *this;
 }
 
 } // namespace Tiled
