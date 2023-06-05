@@ -35,7 +35,7 @@ public:
 
     QString displayName() const override;
     FileFormat *writerFormat() const override;
-    bool save(const QString&, QString*) override;
+    bool save(const QString &fileName, QString *error) override;
     void setExportFormat(FileFormat *format) override;
     FileFormat *exportFormat() const override;
     QString lastExportFileName() const override;

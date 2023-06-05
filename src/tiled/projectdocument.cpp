@@ -37,7 +37,7 @@ QString ProjectDocument::displayName() const
     return mProject->fileName();
 }
 
-bool ProjectDocument::save(const QString &fileName, QString *error = nullptr)
+bool ProjectDocument::save(const QString &/* fileName */, QString */* error */)
 {
     return mProject->save();
 }
@@ -47,7 +47,7 @@ FileFormat *ProjectDocument::writerFormat() const
     return nullptr;
 }
 
-void ProjectDocument::setExportFormat(FileFormat *format)
+void ProjectDocument::setExportFormat(FileFormat *)
 {
     // do nothing
 }
@@ -62,7 +62,7 @@ QString ProjectDocument::lastExportFileName() const
     return mProject->fileName();
 }
 
-void ProjectDocument::setLastExportFileName(const QString &fileName) 
+void ProjectDocument::setLastExportFileName(const QString &/* fileName */)
 {
     // do nothing
 }

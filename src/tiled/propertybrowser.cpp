@@ -488,6 +488,7 @@ static void addAutomappingProperties(Properties &properties, const Object *objec
     case Object::TileType:
     case Object::WangSetType:
     case Object::WangColorType:
+    case Object::ProjectType:
         break;
     }
 }
@@ -695,6 +696,7 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     case Object::TileType:              applyTileValue(id, val); break;
     case Object::WangSetType:           applyWangSetValue(id, val); break;
     case Object::WangColorType:         applyWangColorValue(id, val); break;
+    case Object::ProjectType: break;
     }
 }
 
@@ -1802,6 +1804,7 @@ void PropertyBrowser::addProperties()
     case Object::TileType:              addTileProperties(); break;
     case Object::WangSetType:           addWangSetProperties(); break;
     case Object::WangColorType:         addWangColorProperties(); break;
+    case Object::ProjectType: break;
     }
 
     // Make sure certain properties are collapsed, to save space
@@ -2018,6 +2021,8 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[WangColorProbabilityProperty]->setValue(wangColor->probability());
         break;
     }
+    case Object::ProjectType:
+        break;
     }
 }
 

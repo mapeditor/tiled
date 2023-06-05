@@ -38,12 +38,14 @@ class EditableProject : public EditableAsset
 
 public:
     EditableProject(Project *project, QObject *parent = nullptr);
+
     bool isReadOnly() const override;
     QString extensionsPath() const;
     QString automappingRulesFile() const;
     QString fileName() const;
     QStringList folders() const;
     QSharedPointer<Document> createDocument() override;
+
 private:
     Project *mProject;
 };
