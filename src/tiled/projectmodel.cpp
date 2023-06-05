@@ -148,7 +148,11 @@ void ProjectModel::setProject(std::unique_ptr<Project> project)
 
     beginResetModel();
 
-    mProjectDocument = std::make_unique<ProjectDocument>(std::move(project));
+    if (project)
+        mProjectDocument = std::make_unique<ProjectDocument>(std::move(project));
+    else
+        mProjectDocument.reset();
+
     mFolders.clear();
     mFoldersPendingScan.clear();
 
