@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "project.h"
 #include "tiled.h"
 
 #include <QDialog>
@@ -31,8 +32,6 @@ class ProjectPropertiesDialog;
 }
 
 namespace Tiled {
-
-class Project;
 
 class ProjectPropertiesDialog : public QDialog
 {
@@ -48,6 +47,7 @@ private:
     Ui::ProjectPropertiesDialog *ui;
 
     Project &mProject;
+    Project mProjectCopy;
     QList<CompatibilityVersion> mVersions;
     QtVariantProperty *mCompatibilityVersionProperty;
     QtVariantProperty *mExtensionPathProperty;

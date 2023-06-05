@@ -19,7 +19,6 @@
  */
 
 #include "project.h"
-#include "preferences.h"
 #include "properties.h"
 #include "savefile.h"
 
@@ -160,6 +159,25 @@ void Project::removeFolder(int index)
 {
     Q_ASSERT(index >= 0 && index < mFolders.size());
     mFolders.removeAt(index);
+}
+
+Project &Project::operator =(const Project &value)
+{
+    if (this == &value) {
+        return *this;
+    }
+    mExtensionsPath = value.mExtensionsPath;
+    mObjectTypesFile = value.mObjectTypesFile;
+    mAutomappingRulesFile = value.mAutomappingRulesFile;
+    mCompatibilityVersion = value.mCompatibilityVersion;
+    mCommands = value.mCommands;
+    mLastSaved = value.mLastSaved;
+    mFileName = value.mFileName;
+    mFolders = value.mFolders;
+    mPropertyTypes = value.mPropertyTypes;
+    setClassName(value.className());
+    setProperties(value.properties());
+    return *this;
 }
 
 } // namespace Tiled

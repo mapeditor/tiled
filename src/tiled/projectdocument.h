@@ -44,6 +44,7 @@ public:
 
 private:
     Project *mProject;
+    Project mProjectCopy;
 };
 
 using ProjectDocumentPtr = QSharedPointer<ProjectDocument>;

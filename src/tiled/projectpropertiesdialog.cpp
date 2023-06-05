@@ -24,7 +24,6 @@
 #include "mapformat.h"
 #include "project.h"
 #include "projectdocument.h"
-#include "utils.h"
 #include "varianteditorfactory.h"
 #include "variantpropertymanager.h"
 #include <QtGroupPropertyManager>
@@ -35,6 +34,7 @@ ProjectPropertiesDialog::ProjectPropertiesDialog(Project &project, QWidget *pare
     : QDialog(parent)
     , ui(new Ui::ProjectPropertiesDialog)
     , mProject(project)
+    , mProjectCopy(project)
 {
     ui->setupUi(this);
 
@@ -80,7 +80,7 @@ ProjectPropertiesDialog::ProjectPropertiesDialog(Project &project, QWidget *pare
     ui->propertyBrowser->addProperty(generalGroupProperty);
     ui->propertyBrowser->addProperty(filesGroupProperty);
 
-    ui->propertiesWidget->setDocument(new ProjectDocument(&project, this));
+    ui->propertiesWidget->setDocument(new ProjectDocument(&mProjectCopy, this));
 }       
 
 ProjectPropertiesDialog::~ProjectPropertiesDialog()
@@ -90,6 +90,7 @@ ProjectPropertiesDialog::~ProjectPropertiesDialog()
 
 void ProjectPropertiesDialog::accept()
 {
+    mProject.setProperties(mProjectCopy.properties());
     mProject.mCompatibilityVersion = mVersions.at(mCompatibilityVersionProperty->value().toInt());
     mProject.mExtensionsPath = mExtensionPathProperty->value().toString();
     mProject.mAutomappingRulesFile = mAutomappingRulesFileProperty->value().toString();
