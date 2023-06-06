@@ -28,7 +28,9 @@
 
 namespace Tiled {
 
-class EditableProject : public EditableAsset
+class ProjectDocument;
+
+class EditableProject final : public EditableAsset
 {
     Q_OBJECT
 
@@ -38,18 +40,23 @@ class EditableProject : public EditableAsset
     Q_PROPERTY(QStringList folders READ folders)
 
 public:
-    EditableProject(Project *project, QObject *parent = nullptr);
+    EditableProject(ProjectDocument *projectDocument, QObject *parent = nullptr);
 
     bool isReadOnly() const override;
     QString extensionsPath() const;
     QString automappingRulesFile() const;
     QString fileName() const;
     QStringList folders() const;
-    QSharedPointer<Document> createDocument() override;
 
-private:
-    Project *mProject;
+    Project *project() const;
+
+    QSharedPointer<Document> createDocument() override;
 };
+
+inline Project *EditableProject::project() const
+{
+    return static_cast<Project*>(object());
+}
 
 } // namespace Tiled
 

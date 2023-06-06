@@ -21,32 +21,33 @@
 
 #include "editableproject.h"
 
+#include "projectdocument.h"
+
 namespace Tiled {
 
-EditableProject::EditableProject(Project *project, QObject *parent)
-    : EditableAsset(nullptr, project, parent)
-    , mProject(project)
+EditableProject::EditableProject(ProjectDocument *projectDocument, QObject *parent)
+    : EditableAsset(projectDocument, &projectDocument->project(), parent)
 {
 }
 
 QString EditableProject::extensionsPath() const
 {
-    return mProject->mExtensionsPath;
+    return project()->mExtensionsPath;
 }
 
 QString EditableProject::automappingRulesFile() const
 {
-    return mProject->mAutomappingRulesFile;
+    return project()->mAutomappingRulesFile;
 }
 
 QString EditableProject::fileName() const
 {
-    return mProject->fileName();
+    return project()->fileName();
 }
 
 QStringList EditableProject::folders() const
 {
-    return mProject->folders();
+    return project()->folders();
 }
 
 bool EditableProject::isReadOnly() const

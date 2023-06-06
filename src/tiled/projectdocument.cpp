@@ -23,6 +23,8 @@
 
 #include "editableproject.h"
 
+#include <QUndoStack>
+
 namespace Tiled {
 
 ProjectDocument::ProjectDocument(std::unique_ptr<Project> project, QObject *parent)
@@ -30,6 +32,9 @@ ProjectDocument::ProjectDocument(std::unique_ptr<Project> project, QObject *pare
 {
     mProject = std::move(project);
     mCurrentObject = mProject.get();
+
+    connect(undoStack(), &QUndoStack::indexChanged,
+            this, [this] { mProject->save(); });
 }
 
 QString ProjectDocument::displayName() const
@@ -69,7 +74,7 @@ void ProjectDocument::setLastExportFileName(const QString &/* fileName */)
 
 std::unique_ptr<EditableAsset> ProjectDocument::createEditable()
 {
-    return std::make_unique<EditableProject>(mProject.get(), this);
+    return std::make_unique<EditableProject>(this, this);
 }
 
 } // namespace Tiled
