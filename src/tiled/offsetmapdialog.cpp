@@ -84,7 +84,7 @@ QList<Layer *> OffsetMapDialog::affectedLayers() const
  * Returns the bounding rect that is to be affected by the offset operation.
  *
  * For infinite maps, when not using the currently selected area, the returned
- * rect is empty.
+ * rect is roughly derived from tile layer contents.
  */
 QRect OffsetMapDialog::affectedBoundingRect() const
 {
@@ -92,8 +92,7 @@ QRect OffsetMapDialog::affectedBoundingRect() const
 
     switch (boundsSelection()) {
     case WholeMap:
-        if (!mMapDocument->map()->infinite())
-            boundingRect = QRect(QPoint(0, 0), mMapDocument->map()->size());
+        boundingRect = mMapDocument->map()->tileBoundingRect();
         break;
     case CurrentSelectionArea: {
         const QRegion &selection = mMapDocument->selectedArea();

@@ -117,35 +117,24 @@ void MapObject::setTextData(const TextData &textData)
     mTextData = textData;
 }
 
+static void align(QRectF &r, Alignment alignment)
+{
+    r.translate(-alignmentOffset(r.size(), alignment));
+}
+
 /**
  * Shortcut to getting a QRectF from position() and size() that uses cell tile
  * if present.
  *
- * \deprecated See problems in comment.
+ * \deprecated See problems in comment. Try to use \a screenBounds instead.
  */
 QRectF MapObject::boundsUseTile() const
 {
-    // FIXME: This is outdated code:
-    // * It does not take into account that a tile object can be scaled.
-    // * It neglects that origin is not the same in orthogonal and isometric
-    //   maps (see MapObject::alignment).
-    // * It does not deal with rotation.
-
-    if (const Tile *tile = mCell.tile()) {
-        // Using the tile for determining boundary
-        // Note the position given is the bottom-left corner so correct for that
-        return QRectF(QPointF(mPos.x(),
-                              mPos.y() - tile->height()),
-                      tile->size());
-    }
-
-    // No tile so just use regular bounds
-    return bounds();
-}
-
-static void align(QRectF &r, Alignment alignment)
-{
-    r.translate(-alignmentOffset(r.size(), alignment));
+    // FIXME: This does not deal with tile offset, rotation, isometric
+    // projection and polygons.
+    QRectF b = bounds();
+    align(b, alignment());
+    return b;
 }
 
 /**
