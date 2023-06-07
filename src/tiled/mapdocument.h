@@ -151,6 +151,7 @@ public:
     void offsetMap(const QList<Layer *> &layers,
                    QPoint offset,
                    const QRect &bounds,
+                   bool wholeMap,
                    bool wrapX, bool wrapY);
 
     void flipSelectedObjects(FlipDirection direction);

@@ -413,6 +413,7 @@ void MapDocument::autocropMap()
 void MapDocument::offsetMap(const QList<Layer*> &layers,
                             const QPoint offset,
                             const QRect &bounds,
+                            bool wholeMap,
                             bool wrapX, bool wrapY)
 {
     if (layers.empty())
@@ -421,7 +422,7 @@ void MapDocument::offsetMap(const QList<Layer*> &layers,
     undoStack()->beginMacro(tr("Offset Map"));
     for (auto layer : layers) {
         undoStack()->push(new OffsetLayer(this, layer, offset,
-                                          bounds, wrapX, wrapY));
+                                          bounds, wholeMap, wrapX, wrapY));
     }
     undoStack()->endMacro();
 }
