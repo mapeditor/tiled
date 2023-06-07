@@ -36,6 +36,7 @@
 #include <QRegularExpression>
 
 #include <iostream>
+#include <map>
 #include <stdexcept>
 
 using namespace Tiled;
@@ -114,6 +115,128 @@ static QString sanitizeQuotedString(QString str)
     return str.replace(QLatin1Char('"'), QStringLiteral("\\\""));
 }
 
+// https://docs.godotengine.org/en/latest/classes/class_tileset.html#enum-tileset-tileshape
+enum TileShape {
+    TILE_SHAPE_SQUARE = 0,
+    TILE_SHAPE_ISOMETRIC = 1,
+    TILE_SHAPE_HALF_OFFSET_SQUARE = 2,
+    TILE_SHAPE_HEXAGON = 3,
+};
+
+// https://docs.godotengine.org/en/latest/classes/class_tileset.html#enum-tileset-tilelayout
+enum TileLayout {
+    TILE_LAYOUT_STACKED = 0,
+    TILE_LAYOUT_STACKED_OFFSET = 1,
+    TILE_LAYOUT_STAIRS_RIGHT = 2,
+    TILE_LAYOUT_STAIRS_DOWN = 3,
+    TILE_LAYOUT_DIAMOND_RIGHT = 4,
+    TILE_LAYOUT_DIAMOND_DOWN = 5,
+};
+
+// https://docs.godotengine.org/en/latest/classes/class_%40globalscope.html#enum-globalscope-variant-type
+enum VariantType
+{
+    TYPE_NIL = 0,
+    TYPE_BOOL = 1,
+    TYPE_INT = 2,
+    TYPE_FLOAT = 3,
+    TYPE_STRING = 4,
+    TYPE_VECTOR2 = 5,
+    TYPE_VECTOR2I = 6,
+    TYPE_RECT2 = 7,
+    TYPE_RECT2I = 8,
+    TYPE_VECTOR3 = 9,
+    TYPE_VECTOR3I = 10,
+    TYPE_TRANSFORM2D = 11,
+    TYPE_VECTOR4 = 12,
+    TYPE_VECTOR4I = 13,
+    TYPE_PLANE = 14,
+    TYPE_QUATERNION = 15,
+    TYPE_AABB = 16,
+    TYPE_BASIS = 17,
+    TYPE_TRANSFORM3D = 18,
+    TYPE_PROJECTION = 19,
+    TYPE_COLOR = 20,
+    TYPE_STRING_NAME = 21,
+    TYPE_NODE_PATH = 22,
+    TYPE_RID = 23,
+    TYPE_OBJECT = 24,
+    TYPE_CALLABLE = 25,
+    TYPE_SIGNAL = 26,
+    TYPE_DICTIONARY = 27,
+    TYPE_ARRAY = 28,
+    TYPE_PACKED_BYTE_ARRAY = 29,
+    TYPE_PACKED_INT32_ARRAY = 30,
+    TYPE_PACKED_INT64_ARRAY = 31,
+    TYPE_PACKED_FLOAT32_ARRAY = 32,
+    TYPE_PACKED_FLOAT64_ARRAY = 33,
+    TYPE_PACKED_STRING_ARRAY = 34,
+    TYPE_PACKED_VECTOR2_ARRAY = 35,
+    TYPE_PACKED_VECTOR3_ARRAY = 36,
+    TYPE_PACKED_COLOR_ARRAY = 37,
+    TYPE_MAX = 38,
+};
+
+static VariantType variantType(const QVariant &value)
+{
+    switch (value.userType()) {
+    case QMetaType::Bool:
+        return TYPE_BOOL;
+
+    case QMetaType::Int:
+    case QMetaType::Long:
+    case QMetaType::LongLong:
+    case QMetaType::SChar:
+    case QMetaType::Short:
+    case QMetaType::UChar:
+    case QMetaType::UInt:
+    case QMetaType::UShort:
+        return TYPE_INT;
+
+    case QMetaType::Float:
+    case QMetaType::Double:
+        return TYPE_FLOAT;
+
+    case QMetaType::QString:
+        return TYPE_STRING;
+
+    case QMetaType::QQuaternion:
+        return TYPE_QUATERNION;
+
+    case QMetaType::QColor:
+        return TYPE_COLOR;
+
+    case QMetaType::QVariantMap:
+    case QMetaType::QVariantHash:
+        return TYPE_DICTIONARY;
+
+    case QMetaType::QVariantList:
+    case QMetaType::QStringList:
+        return TYPE_ARRAY;
+
+    default:
+        if (value.userType() == filePathTypeId()) {
+            // todo
+        } else if (value.userType() == objectRefTypeId()) {
+            // todo
+        } else if (value.userType() == propertyValueId()) {
+            const auto propertyValue = value.value<PropertyValue>();
+            if (propertyValue.type()->isClass()) {
+                return TYPE_DICTIONARY;
+            } else if (propertyValue.type()->isEnum()) {
+                return TYPE_INT;
+            }
+        }
+        return TYPE_NIL;
+    }
+}
+
+struct CustomDataLayer
+{
+    VariantType type = TYPE_NIL;
+    int index = 0;
+};
+
 // For collecting information about the tilesets we're using
 struct TilesetInfo
 {
@@ -131,6 +254,7 @@ struct AssetInfo
     QList<const TileLayer*> layers;
     QSet<QString> tilesetIds;
     QString resRoot;
+    std::map<QString, CustomDataLayer> customDataLayers;
 };
 
 // Adds a tileset to the assetInfo struct
@@ -144,22 +268,50 @@ static void addTileset(Tileset *tileset, AssetInfo &assetInfo)
     if (!tilesetInfo.tileset) {
         tilesetInfo.tileset = tileset->sharedPointer();
 
-        // Find the tiles that aren't blank and have no properties
+        // Find the tiles that aren't blank or have properties. Also determine
+        // the Custom Data Layers.
         auto image = tileset->image().toImage();
         for (const auto tile : tileset->tiles()) {
             bool blank = true;
 
-            if (!tile->className().isEmpty() || !tile->properties().isEmpty())
+            const auto properties = tile->resolvedProperties();
+
+            if (!tile->className().isEmpty() || !properties.isEmpty()) {
+                // Always export tiles with class name or custom properties, since
+                // this data might be relevant.
                 blank = false;
+            } else {
+                // Otherwise, export the tile if it isn't entirely transparent
+                const auto rect = tile->imageRect();
+                for (auto y = rect.top(); blank && y <= rect.bottom(); ++y)
+                    for (auto x = rect.left(); blank && x <= rect.right(); ++x)
+                        blank &= image.pixelColor(x, y).alpha() == 0;
+            }
 
-            auto rect = tile->imageRect();
-            for (auto y = rect.y(); blank && y < rect.y() + rect.height(); ++y)
-                for (auto x = rect.x(); blank && x < rect.x() + rect.width(); ++x)
-                    if (image.pixelColor(x, y).alpha() != 0)
-                        blank = false;
+            if (blank)
+                continue;
 
-            if (!blank)
-                tilesetInfo.usedTiles.insert(tile->id());
+            tilesetInfo.usedTiles.insert(tile->id());
+
+            // Set up custom data layers to cover all used tile properties
+            Properties::const_iterator it = properties.begin();
+            const Properties::const_iterator it_end = properties.end();
+            for (; it != it_end; ++it) {
+                const QString &name = it.key();
+                const QVariant &value = it.value();
+
+                const auto type = variantType(value);
+                if (type == TYPE_NIL) {
+                    Tiled::WARNING(TscnPlugin::tr("Godot exporter does not support property type of '%1'").arg(name));
+                    continue;
+                }
+
+                auto &customDataLayer = assetInfo.customDataLayers[name];
+                if (customDataLayer.type == TYPE_NIL)
+                    customDataLayer.type = type;
+                else if (customDataLayer.type != type)
+                    Tiled::WARNING(TscnPlugin::tr("Inconsistent type for property '%1'").arg(name));
+            }
         }
     }
 }
@@ -234,6 +386,13 @@ static AssetInfo collectAssets(const Map *map)
         tilesetInfo.id = id;
         tilesetInfo.atlasId = i;
         assetInfo.tilesetIds.insert(id);
+        ++i;
+    }
+
+    // Assign indexes to the custom data layers
+    i = 0;
+    for (auto& [name, layer] : assetInfo.customDataLayers) {
+        layer.index = i;
         ++i;
     }
 
@@ -325,7 +484,8 @@ static bool exportTileCollisions(QFileDevice *device, const Tile *tile,
 }
 
 // Write supported property types to output device
-static bool writeProperties(QFileDevice *device, const Properties &properties, bool first);
+static void writePropertyValue(QFileDevice *device, const QVariant &value);
+static bool writeProperties(QFileDevice *device, const Properties &properties);
 
 // Write the tileset
 // If you're creating a reusable tileset file, pass in a new file device and
@@ -447,7 +607,7 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
 
                     // Tile presence
                     device->write(formatByteString("%1 = %2\n", tileName, alt));
-                    
+
                     // Flip/rotate
                     if (alt & FlippedH)
                         device->write(formatByteString("%1/flip_h = true\n", tileName));
@@ -459,9 +619,19 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
                     foundCollisions |= exportTileCollisions(device, tile, tileName, alt);
 
                     // Custom properties
-                    device->write(formatByteString("%1/custom_data_0 = {", tileName));
-                    writeProperties(device, tile->resolvedProperties(), true);
-                    device->write("\n}\n");
+                    QMapIterator<QString,QVariant> it(tile->resolvedProperties());
+                    while (it.hasNext()) {
+                        it.next();
+                        const QString &name = it.key();
+                        const QVariant &value = it.value();
+
+                        auto dataLayerIt = assetInfo.customDataLayers.find(name);
+                        if (dataLayerIt != assetInfo.customDataLayers.end()) {
+                            device->write(formatByteString("%1/custom_data_%2 = ", tileName, dataLayerIt->second.index));
+                            writePropertyValue(device, value);
+                            device->write("\n");
+                        }
+                    }
                 }
             }
         }
@@ -479,20 +649,20 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
         int shape, layout;
         switch (map->orientation()) {
         case Map::Orthogonal:
-            shape = 0;
-            layout = 0;
+            shape = TILE_SHAPE_SQUARE;
+            layout = TILE_LAYOUT_STACKED;
             break;
         case Map::Staggered:
-            shape = 1;
-            layout = 0;
+            shape = TILE_SHAPE_ISOMETRIC;
+            layout = TILE_LAYOUT_STACKED;
             break;
         case Map::Isometric:
-            shape = 1;
-            layout = 5;
+            shape = TILE_SHAPE_ISOMETRIC;
+            layout = TILE_LAYOUT_DIAMOND_DOWN;
             break;
         case Map::Hexagonal:
-            shape = 3;
-            layout = 0;
+            shape = TILE_SHAPE_HEXAGON;
+            layout = TILE_LAYOUT_STACKED;
 
             if (map->hexSideLength() != map->tileHeight() / 2) {
                 throw tscnError(TscnPlugin::tr("Godot only supports hexagonal maps "
@@ -530,8 +700,10 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
             map->tileWidth(), tileHeight));
     }
 
-    device->write("custom_data_layer_0/name = \"Properties\"\n");
-    device->write("custom_data_layer_0/type = 27\n");
+    for (const auto& [name, layer] : assetInfo.customDataLayers) {
+        device->write(formatByteString("custom_data_layer_%1/name = \"%2\"\n", layer.index, name));
+        device->write(formatByteString("custom_data_layer_%1/type = %2\n", layer.index, layer.type));
+    }
 
     for (const TilesetInfo &tilesetInfo : std::as_const(assetInfo.tilesetInfo)) {
         device->write(formatByteString(
@@ -542,48 +714,60 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
     device->write("\n");
 }
 
-static bool writeProperty(QFileDevice *device, const QString &key, const QVariant &value, bool first)
+static void writePropertyValue(QFileDevice *device, const QVariant &value)
 {
     const int metaType = value.userType();
 
-    const QString sep = first ? QStringLiteral("") : QStringLiteral(",");
-    const QString sanitizedKey = sanitizeQuotedString(key);
-
-    if (metaType == propertyValueId()) {
-        const auto propertyValue = value.value<PropertyValue>();
-        if (propertyValue.type()->isClass()) {
-            device->write(formatByteString("%1\n\"%2\": {", sep, sanitizedKey));
-            writeProperties(device, propertyValue.value.toMap(), true);
-            device->write("\n}");
-            return false;
-        } else if (propertyValue.type()->isEnum()) {
-            device->write(formatByteString("%1\n\"%2\": %3", sep, sanitizedKey, propertyValue.value.toInt()));
-            return false;
-        }
-        return first;
-    }
-
     switch (metaType) {
     case QMetaType::QString:
-        device->write(formatByteString("%1\n\"%2\": \"%3\"", sep, sanitizedKey, sanitizeQuotedString(value.toString())));
-        return false;
+        device->write(formatByteString("\"%3\"", sanitizeQuotedString(value.toString())));
+        break;
     case QMetaType::Bool:
     case QMetaType::Int:
     case QMetaType::Double:
-        device->write(formatByteString("%1\n\"%2\": %3", sep, sanitizedKey, value.toString()));
-        return false;
+        device->write(value.toString().toUtf8());
+        break;
     default:
-        return first;
+        if (metaType == propertyValueId()) {
+            const auto propertyValue = value.value<PropertyValue>();
+            if (propertyValue.type()->isClass()) {
+                device->write("{\n");
+                bool empty = writeProperties(device, propertyValue.value.toMap());
+                device->write(empty ? "}" : "\n}");
+            } else if (propertyValue.type()->isEnum()) {
+                device->write(QByteArray::number(propertyValue.value.toInt()));
+            }
+        } else {
+            // todo: add support for QColor, FilePath and ObjectRef
+            Tiled::WARNING(TscnPlugin::tr("Godot exporter does not support property of type '%1'").arg(metaType));
+            device->write("0");
+        }
+        break;
     }
 }
 
-static bool writeProperties(QFileDevice *device, const Properties &properties, bool first)
+static void writeProperty(QFileDevice *device, const QString &key, const QVariant &value)
 {
+    device->write(formatByteString("\"%2\": ", sanitizeQuotedString(key)));
+    writePropertyValue(device, value);
+}
+
+static bool writeProperties(QFileDevice *device, const Properties &properties)
+{
+    bool first = true;
+
     QMapIterator<QString,QVariant> it(properties);
     while (it.hasNext()) {
-        auto value = it.next().value();
-        first = writeProperty(device, it.key(), value, first);
+        it.next();
+
+        if (!first)
+            device->write(",\n");
+
+        writeProperty(device, it.key(), it.value());
+
+        first = false;
     }
+
     return first;
 }
 
