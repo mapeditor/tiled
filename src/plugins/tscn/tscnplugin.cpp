@@ -216,9 +216,9 @@ static VariantType variantType(const QVariant &value)
 
     default:
         if (value.userType() == filePathTypeId()) {
-            // todo
+            return TYPE_STRING;
         } else if (value.userType() == objectRefTypeId()) {
-            // todo
+            return TYPE_INT;
         } else if (value.userType() == propertyValueId()) {
             const auto propertyValue = value.value<PropertyValue>();
             if (propertyValue.type()->isClass()) {
@@ -727,6 +727,12 @@ static void writePropertyValue(QFileDevice *device, const QVariant &value)
     case QMetaType::Double:
         device->write(value.toString().toUtf8());
         break;
+    case QMetaType::QColor: {
+        const QColor color = value.value<QColor>();
+        device->write(formatByteString("Color(%1, %2, %3, %4)",
+            color.redF(), color.greenF(), color.blueF(), color.alphaF()));
+        break;
+    }
     default:
         if (metaType == propertyValueId()) {
             const auto propertyValue = value.value<PropertyValue>();
@@ -737,8 +743,14 @@ static void writePropertyValue(QFileDevice *device, const QVariant &value)
             } else if (propertyValue.type()->isEnum()) {
                 device->write(QByteArray::number(propertyValue.value.toInt()));
             }
+        } else if (metaType == filePathTypeId()) {
+            const auto filePath = value.value<FilePath>();
+            // todo: Use Tiled::toFileReference(filePath.url, dir) once we have a dir
+            device->write(formatByteString("\"%1\"", sanitizeQuotedString(FilePath::toString(filePath))));
+        } else if (metaType == objectRefTypeId()) {
+            const auto objectRef = value.value<ObjectRef>();
+            device->write(QByteArray::number(objectRef.id));
         } else {
-            // todo: add support for QColor, FilePath and ObjectRef
             Tiled::WARNING(TscnPlugin::tr("Godot exporter does not support property of type '%1'").arg(metaType));
             device->write("0");
         }
