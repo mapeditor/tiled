@@ -4,6 +4,7 @@
 * Fixed object preview position with parallax factor on group layer (#3669)
 * Fixed hover highlight rendering with active parallax factor (#3669)
 * Fixed updating of object selection outlines when changing parallax factor (#3669)
+* Godot 4 plugin: Export custom tile properties as Custom Data Layers (with Kevin Harrison, #3653)
 
 ### Tiled 1.10.1 (4 April 2023)
 
