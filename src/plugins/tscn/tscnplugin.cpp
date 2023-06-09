@@ -776,6 +776,7 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
     device->write("\n");
 }
 
+
 bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
 {
     Q_UNUSED(options)
