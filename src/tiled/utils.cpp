@@ -51,7 +51,7 @@
 #endif
 #include <QScreen>
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0) && QT_VERSION < QT_VERSION_CHECK(6, 5, 1)
 #include <QtCore/qapplicationstatic.h>
 #endif
 
@@ -285,7 +285,7 @@ RangeSet<int> matchingRanges(const QStringList &words, QStringRef string)
     return result;
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0) && QT_VERSION < QT_VERSION_CHECK(6, 5, 1)
 /*
  * Caching icons here, since Qt no longer caches null icons in
  * QIcon::fromTheme.

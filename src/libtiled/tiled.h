@@ -130,7 +130,7 @@ TILEDSHARED_EXPORT Alignment alignmentFromString(const QString &);
 
 TILEDSHARED_EXPORT CompatibilityVersion versionFromString(const QString &);
 
-TILEDSHARED_EXPORT void increaseImageAllocationLimit(int mbLimit = 1024);
+TILEDSHARED_EXPORT void increaseImageAllocationLimit(int mbLimit = 4096);
 
 } // namespace Tiled
 

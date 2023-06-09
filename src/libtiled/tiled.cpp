@@ -223,7 +223,7 @@ Tiled::CompatibilityVersion Tiled::versionFromString(const QString &string)
 void Tiled::increaseImageAllocationLimit(int mbLimit)
 {
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-    // Adjust the allocation limit to accomodate larger images
+    // Adjust the allocation limit to accommodate larger images
     const int currentLimit = QImageReader::allocationLimit();
     if (currentLimit && currentLimit < mbLimit)
         QImageReader::setAllocationLimit(mbLimit);

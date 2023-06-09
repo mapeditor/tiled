@@ -99,7 +99,7 @@ QVector<QPoint> pointsOnEllipse(int x0, int y0, int x1, int y1)
 }
 
 /**
- * returns an elliptical region centered at x0,y0 with radius determinded by x1,y1
+ * returns an elliptical region centered at x0,y0 with radius determined by x1,y1
  */
 QRegion ellipseRegion(int x0, int y0, int x1, int y1)
 {

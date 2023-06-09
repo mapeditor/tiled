@@ -221,7 +221,7 @@ World *WorldManager::addEmptyWorld(const QString &fileName, QString *errorString
 /**
  * Loads the world with the given \a fileName.
  *
- * \returns the world if it was loaded succesfully, optionally setting
+ * \returns the world if it was loaded successfully, optionally setting
  *          \a errorString when not.
  */
 World *WorldManager::loadWorld(const QString &fileName, QString *errorString)

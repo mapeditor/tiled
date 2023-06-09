@@ -132,7 +132,7 @@ QRectF MapObject::boundsUseTile() const
     // * It does not deal with rotation.
 
     if (const Tile *tile = mCell.tile()) {
-        // Using the tile for determing boundary
+        // Using the tile for determining boundary
         // Note the position given is the bottom-left corner so correct for that
         return QRectF(QPointF(mPos.x(),
                               mPos.y() - tile->height()),

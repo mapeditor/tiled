@@ -167,7 +167,7 @@ bool GmxPlugin::write(const Map *map, const QString &fileName, Options options)
                 stream.writeAttribute("yview", QString::number(qRound(pos.y())));
                 stream.writeAttribute("wview", QString::number(qRound(object->width())));
                 stream.writeAttribute("hview", QString::number(qRound(object->height())));
-                // Round these incase user adds properties as floats and not ints
+                // Round these in case user adds properties as floats and not ints
                 stream.writeAttribute("xport", QString::number(qRound(optionalProperty(object, "xport", 0.0))));
                 stream.writeAttribute("yport", QString::number(qRound(optionalProperty(object, "yport", 0.0))));
                 stream.writeAttribute("wport", QString::number(qRound(optionalProperty(object, "wport", 1024.0))));

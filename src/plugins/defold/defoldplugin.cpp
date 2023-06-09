@@ -123,7 +123,7 @@ bool DefoldPlugin::write(const Tiled::Map *map, const QString &fileName, Options
     double z = 0.0;
 
     while (auto tileLayer = static_cast<Tiled::TileLayer*>(it.next())) {
-        // Defold exports the z value to be beteen -1 and 1, so these
+        // Defold exports the z value to be between -1 and 1, so these
         // automatic increments should allow up to 10000 layers.
         z = optionalProperty(tileLayer, QStringLiteral("z"), z + 0.0001);
 
