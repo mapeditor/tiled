@@ -173,6 +173,9 @@ void ObjectsView::restoreExpandedLayers()
     const auto &layers = mMapDocument->expandedObjectLayers;
     for (const int layerId : layers) {
         if (Layer *layer = mMapDocument->map()->findLayerById(layerId)) {
+            if (!layer->isObjectGroup() && !layer->isGroupLayer())
+                continue;
+
             const QModelIndex sourceIndex = mMapDocument->mapObjectModel()->index(layer);
             const QModelIndex index = mProxyModel->mapFromSource(sourceIndex);
             setExpanded(index, true);
