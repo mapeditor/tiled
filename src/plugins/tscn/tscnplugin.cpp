@@ -77,7 +77,8 @@ static std::invalid_argument tscnError(const QString &error)
 /**
  * Determines the res:// root for the Godot project. This is done by searching
  * for a .godot file in the parent paths of the file.
- * If there's no .godot file found in a shared root, it returns a blank string.
+ *
+ * Throws std::invalid_argument if there's no .godot file found.
  */
 static QString determineResRoot(const QString &filePath)
 {
@@ -484,8 +485,8 @@ static bool exportTileCollisions(QFileDevice *device, const Tile *tile,
 }
 
 // Write supported property types to output device
-static void writePropertyValue(QFileDevice *device, const QVariant &value);
-static bool writeProperties(QFileDevice *device, const Properties &properties);
+static void writePropertyValue(QFileDevice *device, const QVariant &value, const QString &resRoot);
+static bool writeProperties(QFileDevice *device, const Properties &properties, const QString &resRoot);
 
 // Write the tileset
 // If you're creating a reusable tileset file, pass in a new file device and
@@ -628,7 +629,7 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
                         auto dataLayerIt = assetInfo.customDataLayers.find(name);
                         if (dataLayerIt != assetInfo.customDataLayers.end()) {
                             device->write(formatByteString("%1/custom_data_%2 = ", tileName, dataLayerIt->second.index));
-                            writePropertyValue(device, value);
+                            writePropertyValue(device, value, assetInfo.resRoot);
                             device->write("\n");
                         }
                     }
@@ -714,7 +715,7 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
     device->write("\n");
 }
 
-static void writePropertyValue(QFileDevice *device, const QVariant &value)
+static void writePropertyValue(QFileDevice *device, const QVariant &value, const QString &resRoot)
 {
     const int metaType = value.userType();
 
@@ -738,15 +739,14 @@ static void writePropertyValue(QFileDevice *device, const QVariant &value)
             const auto propertyValue = value.value<PropertyValue>();
             if (propertyValue.type()->isClass()) {
                 device->write("{\n");
-                bool empty = writeProperties(device, propertyValue.value.toMap());
+                bool empty = writeProperties(device, propertyValue.value.toMap(), resRoot);
                 device->write(empty ? "}" : "\n}");
             } else if (propertyValue.type()->isEnum()) {
                 device->write(QByteArray::number(propertyValue.value.toInt()));
             }
         } else if (metaType == filePathTypeId()) {
             const auto filePath = value.value<FilePath>();
-            // todo: Use Tiled::toFileReference(filePath.url, dir) once we have a dir
-            device->write(formatByteString("\"%1\"", sanitizeQuotedString(FilePath::toString(filePath))));
+            device->write(formatByteString("\"%1\"", sanitizeQuotedString(Tiled::toFileReference(filePath.url, resRoot))));
         } else if (metaType == objectRefTypeId()) {
             const auto objectRef = value.value<ObjectRef>();
             device->write(QByteArray::number(objectRef.id));
@@ -758,13 +758,7 @@ static void writePropertyValue(QFileDevice *device, const QVariant &value)
     }
 }
 
-static void writeProperty(QFileDevice *device, const QString &key, const QVariant &value)
-{
-    device->write(formatByteString("\"%2\": ", sanitizeQuotedString(key)));
-    writePropertyValue(device, value);
-}
-
-static bool writeProperties(QFileDevice *device, const Properties &properties)
+static bool writeProperties(QFileDevice *device, const Properties &properties, const QString &resRoot)
 {
     bool first = true;
 
@@ -775,7 +769,8 @@ static bool writeProperties(QFileDevice *device, const Properties &properties)
         if (!first)
             device->write(",\n");
 
-        writeProperty(device, it.key(), it.value());
+        device->write(formatByteString("\"%2\": ", sanitizeQuotedString(it.key())));
+        writePropertyValue(device, it.value(), resRoot);
 
         first = false;
     }
@@ -862,7 +857,7 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
         //   SrcX         = SrcX * 65536 + TileSetId
         //   SrcY         = SrcY + 65536 * AlternateId
         int layerIndex = 0;
-        for (const auto &layer : std::as_const(assetInfo.layers)) {
+        for (const auto layer : std::as_const(assetInfo.layers)) {
             device->write(formatByteString("layer_%1/name = \"%2\"\n",
                                            layerIndex,
                                            sanitizeQuotedString(layer->name())));
