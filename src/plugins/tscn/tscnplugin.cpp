@@ -763,7 +763,7 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
     }
 
     for (const auto& [name, layer] : assetInfo.customDataLayers) {
-        device->write(formatByteString("custom_data_layer_%1/name = \"%2\"\n", layer.index, name));
+        device->write(formatByteString("custom_data_layer_%1/name = \"%2\"\n", layer.index, sanitizeQuotedString(name)));
         device->write(formatByteString("custom_data_layer_%1/type = %2\n", layer.index, layer.type));
     }
 
