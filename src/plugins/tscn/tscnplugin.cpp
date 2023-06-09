@@ -135,8 +135,7 @@ enum TileLayout {
 };
 
 // https://docs.godotengine.org/en/latest/classes/class_%40globalscope.html#enum-globalscope-variant-type
-enum VariantType
-{
+enum VariantType {
     TYPE_NIL = 0,
     TYPE_BOOL = 1,
     TYPE_INT = 2,
@@ -484,9 +483,71 @@ static bool exportTileCollisions(QFileDevice *device, const Tile *tile,
     return foundCollisions;
 }
 
-// Write supported property types to output device
-static void writePropertyValue(QFileDevice *device, const QVariant &value, const QString &resRoot);
-static bool writeProperties(QFileDevice *device, const Properties &properties, const QString &resRoot);
+static bool writeProperties(QFileDevice *device, const QVariantMap &properties, const QString &resRoot);
+
+// Write supported property values to output device
+static void writePropertyValue(QFileDevice *device, const QVariant &value, const QString &resRoot)
+{
+    const int metaType = value.userType();
+
+    switch (metaType) {
+    case QMetaType::QString:
+        device->write(formatByteString("\"%3\"", sanitizeQuotedString(value.toString())));
+        break;
+    case QMetaType::Bool:
+    case QMetaType::Int:
+    case QMetaType::Double:
+        device->write(value.toString().toUtf8());
+        break;
+    case QMetaType::QColor: {
+        const QColor color = value.value<QColor>();
+        device->write(formatByteString("Color(%1, %2, %3, %4)",
+            color.redF(), color.greenF(), color.blueF(), color.alphaF()));
+        break;
+    }
+    default:
+        if (metaType == propertyValueId()) {
+            const auto propertyValue = value.value<PropertyValue>();
+            if (propertyValue.type()->isClass()) {
+                device->write("{\n");
+                bool empty = writeProperties(device, propertyValue.value.toMap(), resRoot);
+                device->write(empty ? "}" : "\n}");
+            } else if (propertyValue.type()->isEnum()) {
+                device->write(QByteArray::number(propertyValue.value.toInt()));
+            }
+        } else if (metaType == filePathTypeId()) {
+            const auto filePath = value.value<FilePath>();
+            device->write(formatByteString("\"%1\"", sanitizeQuotedString(Tiled::toFileReference(filePath.url, resRoot))));
+        } else if (metaType == objectRefTypeId()) {
+            const auto objectRef = value.value<ObjectRef>();
+            device->write(QByteArray::number(objectRef.id));
+        } else {
+            Tiled::WARNING(TscnPlugin::tr("Godot exporter does not support property of type '%1'").arg(metaType));
+            device->write("0");
+        }
+        break;
+    }
+}
+
+static bool writeProperties(QFileDevice *device, const QVariantMap &properties, const QString &resRoot)
+{
+    bool first = true;
+
+    QMapIterator<QString,QVariant> it(properties);
+    while (it.hasNext()) {
+        it.next();
+
+        if (!first)
+            device->write(",\n");
+
+        device->write(formatByteString("\"%2\": ", sanitizeQuotedString(it.key())));
+        writePropertyValue(device, it.value(), resRoot);
+
+        first = false;
+    }
+
+    return first;
+}
 
 // Write the tileset
 // If you're creating a reusable tileset file, pass in a new file device and
@@ -713,69 +774,6 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
     }
 
     device->write("\n");
-}
-
-static void writePropertyValue(QFileDevice *device, const QVariant &value, const QString &resRoot)
-{
-    const int metaType = value.userType();
-
-    switch (metaType) {
-    case QMetaType::QString:
-        device->write(formatByteString("\"%3\"", sanitizeQuotedString(value.toString())));
-        break;
-    case QMetaType::Bool:
-    case QMetaType::Int:
-    case QMetaType::Double:
-        device->write(value.toString().toUtf8());
-        break;
-    case QMetaType::QColor: {
-        const QColor color = value.value<QColor>();
-        device->write(formatByteString("Color(%1, %2, %3, %4)",
-            color.redF(), color.greenF(), color.blueF(), color.alphaF()));
-        break;
-    }
-    default:
-        if (metaType == propertyValueId()) {
-            const auto propertyValue = value.value<PropertyValue>();
-            if (propertyValue.type()->isClass()) {
-                device->write("{\n");
-                bool empty = writeProperties(device, propertyValue.value.toMap(), resRoot);
-                device->write(empty ? "}" : "\n}");
-            } else if (propertyValue.type()->isEnum()) {
-                device->write(QByteArray::number(propertyValue.value.toInt()));
-            }
-        } else if (metaType == filePathTypeId()) {
-            const auto filePath = value.value<FilePath>();
-            device->write(formatByteString("\"%1\"", sanitizeQuotedString(Tiled::toFileReference(filePath.url, resRoot))));
-        } else if (metaType == objectRefTypeId()) {
-            const auto objectRef = value.value<ObjectRef>();
-            device->write(QByteArray::number(objectRef.id));
-        } else {
-            Tiled::WARNING(TscnPlugin::tr("Godot exporter does not support property of type '%1'").arg(metaType));
-            device->write("0");
-        }
-        break;
-    }
-}
-
-static bool writeProperties(QFileDevice *device, const Properties &properties, const QString &resRoot)
-{
-    bool first = true;
-
-    QMapIterator<QString,QVariant> it(properties);
-    while (it.hasNext()) {
-        it.next();
-
-        if (!first)
-            device->write(",\n");
-
-        device->write(formatByteString("\"%2\": ", sanitizeQuotedString(it.key())));
-        writePropertyValue(device, it.value(), resRoot);
-
-        first = false;
-    }
-
-    return first;
 }
 
 bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
