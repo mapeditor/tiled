@@ -57,6 +57,17 @@ The ``exportAlternates`` property is necessary when using flipped or rotated
 tiles. This will create 7 alternate tiles for each tile, allowing all flipped
 and rotation combinations.
 
+Tile Properties
+~~~~~~~~~~~~~~~
+
+.. raw:: html
+
+    <div class="new">New in Tiled 1.10.2</div>
+
+All custom properties set on tiles will get exported as `Custom Data Layers
+<https://docs.godotengine.org/en/stable/tutorials/2d/using_tilesets.html#assigning-custom-metadata-to-the-tileset-s-tiles>`__
+of the Godot TileSet resource.
+
 .. _godot4-map-properties:
 
 Map Properties
