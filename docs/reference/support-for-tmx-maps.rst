@@ -212,7 +212,7 @@ Bevy
 Castle Game Engine (Object Pascal)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  `Castle Game Engine <https://castle-engine.io/>`__ has native support for Tiled maps (see the `CastleTiledMap unit <https://castle-engine.io/apidoc-unstable/html/CastleTiledMap.html>`__)
+-  `Castle Game Engine <https://castle-engine.io/>`__ has native support for Tiled maps (see the `engine manual about Tiled Maps <https://castle-engine.io/tiled_maps>`__)
 
 Cell2D
 ~~~~~~
