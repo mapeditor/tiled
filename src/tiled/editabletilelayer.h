@@ -71,8 +71,8 @@ public:
     TileLayer *tileLayer() const;
 
 private:
-    friend TileLayerEdit;
-    friend TileLayerWangEdit;
+    friend class TileLayerEdit;
+    friend class TileLayerWangEdit;
 
     QList<TileLayerEdit*> mActiveEdits;
     QList<TileLayerWangEdit*> mActiveWangEdits;

@@ -36,7 +36,7 @@ class HexagonalRenderer;
 
 /**
  * WangFiller provides functions for choosing cells based on a surrounding map
- * and a wangSet.
+ * and a WangSet.
  *
  * Optionally when choosing cells, this will look at adjacent cells
  * to ensure that they will be able to be filled based on the chosen cell.
@@ -52,6 +52,7 @@ public:
             return desired == other.desired && mask == other.mask;
         }
     };
+
     struct FillRegion
     {
         Grid<CellInfo> grid;
