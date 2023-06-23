@@ -218,7 +218,7 @@ bool WangId::hasEdgeWithColor(int value) const
 /**
  * Rotates the wang Id clockwise by (90 * rotations) degrees.
  * Meaning with one rotation, the top edge becomes the right edge,
- * and the top right corner, becomes the top bottom.
+ * and the top right corner, becomes the bottom right.
  */
 void WangId::rotate(int rotations)
 {

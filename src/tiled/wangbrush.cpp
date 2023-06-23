@@ -498,9 +498,8 @@ void WangBrush::updateBrush()
             mWangPainter->setTerrain(fill, mapDocument(), mCurrentColor, to, mWangIndex, mIsTileMode);
         }
     } else {
-        for (int i = ignoreFirst ? 1 : 0; i < points.size(); ++i) {
+        for (int i = ignoreFirst ? 1 : 0; i < points.size(); ++i)
             mWangPainter->setTerrain(fill, mapDocument(), mCurrentColor, points.at(i), mWangIndex, mIsTileMode);
-        }
     }
 
     // Extend the region to be filled with a 180-degree rotated version if
@@ -564,4 +563,6 @@ void WangBrush::updateBrush()
     brushItem()->setTileLayer(stamp, brushRegion);
 }
 
-}
+} // namespace Tiled
+
+#include "moc_wangbrush.cpp"
