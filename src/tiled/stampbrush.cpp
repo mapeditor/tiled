@@ -30,7 +30,7 @@
 #include "tile.h"
 #include "tilestamp.h"
 #include "wangset.h"
-#include "wangpainter.h"
+#include "wangfiller.h"
 
 #include <QAction>
 #include <QToolBar>
@@ -461,9 +461,9 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
             new TileLayer(QString(), bounds.topLeft(), bounds.size())
         };
 
-        WangPainter wangPainter(*mWangSet, mapDocument()->renderer());
-        wangPainter.setRegion(paintedRegion);
-        wangPainter.apply(*previewLayer, *tileLayer);
+        WangFiller wangFiller(*mWangSet, mapDocument()->renderer());
+        wangFiller.setRegion(paintedRegion);
+        wangFiller.apply(*previewLayer, *tileLayer);
 
         preview->addLayer(std::move(previewLayer));
         preview->addTileset(mWangSet->tileset()->sharedFromThis());

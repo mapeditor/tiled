@@ -22,7 +22,7 @@
 #pragma once
 
 #include "abstracttiletool.h"
-#include "wangpainter.h"
+#include "wangfiller.h"
 #include "wangset.h"
 
 namespace Tiled {
@@ -81,7 +81,7 @@ private:
     void beginPaint();
     void doPaint(bool mergeable);
     void updateBrush();
-    void updateBrushAt(WangPainter &painter, QPoint pos);
+    void updateBrushAt(WangFiller &filler, QPoint pos);
 
     // The point painting happens around
     // In tile mode, this is that tile

@@ -23,7 +23,7 @@
 
 #include "editablewangset.h"
 #include "tilelayer.h"
-#include "wangpainter.h"
+#include "wangfiller.h"
 
 #include <QObject>
 
@@ -69,13 +69,14 @@ public slots:
     void setTerrain(int x, int y, int color, WangId::Index index);
     void setCorner(int x, int y, int color);
     void setEdge(int x, int y, int color, Edge direction);
+
     void apply();
 
 private:
     EditableTileLayer *mTargetLayer;
     TileLayer mChanges;
     bool mMergeable = false;
-    std::unique_ptr<WangPainter> mWangPainter;
+    std::unique_ptr<WangFiller> mWangFiller;
 };
 
 

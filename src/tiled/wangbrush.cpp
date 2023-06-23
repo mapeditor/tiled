@@ -540,7 +540,7 @@ void WangBrush::updateBrush()
     const TileLayer *currentLayer = currentTileLayer();
     Q_ASSERT(currentLayer);
 
-    WangPainter wangPainter { *mWangSet, mapDocument()->renderer() };
+    WangFiller wangFiller { *mWangSet, mapDocument()->renderer() };
 
     QVector<QPoint> points;
     bool ignoreFirst = false;
@@ -568,14 +568,14 @@ void WangBrush::updateBrush()
             else if (to.y() < from.y())
                 mWangIndex = WangId::Bottom;
 
-            updateBrushAt(wangPainter, to);
-            }
+            updateBrushAt(wangFiller, to);
+        }
     } else {
         for (int i = ignoreFirst ? 1 : 0; i < points.size(); ++i)
-            updateBrushAt(wangPainter, points.at(i));
+            updateBrushAt(wangFiller, points.at(i));
     }
 
-    auto &fill = wangPainter.region();
+    auto &fill = wangFiller.region();
 
     // Extend the region to be filled with a 180-degree rotated version if
     // rotational symmetry is enabled.
@@ -589,8 +589,8 @@ void WangBrush::updateBrush()
             for (int y = rect.top(); y <= rect.bottom(); ++y) {
                 for (int x = rect.left(); x <= rect.right(); ++x) {
                     const QPoint targetPos(w - x - 1, h - y - 1);
-                    const WangPainter::CellInfo &sourceInfo = fill.grid.get(x, y);
-                    WangPainter::CellInfo targetInfo = fill.grid.get(targetPos);
+                    const WangFiller::CellInfo &sourceInfo = fill.grid.get(x, y);
+                    WangFiller::CellInfo targetInfo = fill.grid.get(targetPos);
 
                     const WangId rotatedDesired = sourceInfo.desired.rotated(2);
                     const WangId rotatedMask = sourceInfo.mask.rotated(2);
@@ -621,8 +621,8 @@ void WangBrush::updateBrush()
 
     SharedTileLayer stamp = SharedTileLayer::create(QString(), 0, 0, 0, 0);
 
-    wangPainter.setCorrectionsEnabled(true);
-    wangPainter.apply(*stamp, *currentLayer);
+    wangFiller.setCorrectionsEnabled(true);
+    wangFiller.apply(*stamp, *currentLayer);
 
     static_cast<WangBrushItem*>(brushItem())->setInvalidTiles();
 
@@ -637,11 +637,11 @@ void WangBrush::updateBrush()
     brushItem()->setTileLayer(stamp, brushRegion);
 }
 
-void WangBrush::updateBrushAt(WangPainter &painter, QPoint pos)
+void WangBrush::updateBrushAt(WangFiller &filler, QPoint pos)
 {
     auto hexagonalRenderer = dynamic_cast<HexagonalRenderer*>(mapDocument()->renderer());
-    auto &fill = painter.region();
-    Grid<WangPainter::CellInfo> &grid = fill.grid;
+    auto &fill = filler.region();
+    Grid<WangFiller::CellInfo> &grid = fill.grid;
     QRegion &region = fill.region;
 
     // When drawing lines in PaintEdgeAndCorner mode we force "tile mode"
@@ -671,7 +671,7 @@ void WangBrush::updateBrushAt(WangPainter &painter, QPoint pos)
                 adjacentPositions[i] = pos + aroundTilePoints[i];
         }
 
-        WangPainter::CellInfo center = grid.get(pos);
+        WangFiller::CellInfo center = grid.get(pos);
 
         switch (mBrushMode) {
         case PaintCorner:
@@ -705,7 +705,7 @@ void WangBrush::updateBrushAt(WangPainter &painter, QPoint pos)
                 continue;
 
             QPoint p = adjacentPositions[i];
-            WangPainter::CellInfo adjacent = grid.get(p);
+            WangFiller::CellInfo adjacent = grid.get(p);
 
             // Mark the opposite side or corner of the adjacent tile
             if (isCorner || (mBrushMode == PaintEdge || mBrushMode == PaintEdgeAndCorner)) {
@@ -730,16 +730,16 @@ void WangBrush::updateBrushAt(WangPainter &painter, QPoint pos)
 
         switch (mBrushMode) {
         case PaintCorner:
-            painter.setCorner(mCurrentColor, pos);
+            filler.setCorner(mCurrentColor, pos);
             break;
         case PaintEdge:
-            painter.setEdge(mCurrentColor, pos, mWangIndex);
+            filler.setEdge(mCurrentColor, pos, mWangIndex);
             break;
         case PaintEdgeAndCorner:
             if (WangId::isCorner(mWangIndex))
-                painter.setCorner(mCurrentColor, pos);
+                filler.setCorner(mCurrentColor, pos);
             else
-                painter.setEdge(mCurrentColor, pos, mWangIndex);
+                filler.setEdge(mCurrentColor, pos, mWangIndex);
             break;
         case Idle:
             break;

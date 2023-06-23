@@ -1,5 +1,5 @@
 /*
- * wangpainter.cpp
+ * wangfiller.cpp
  * Copyright 2017, Benjamin Trotter <bdtrotte@ucsc.edu>
  * Copyright 2020-2023, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2023, a-morphous
@@ -20,7 +20,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "wangpainter.h"
+#include "wangfiller.h"
 
 #include "grid.h"
 #include "hexagonalrenderer.h"
@@ -43,7 +43,7 @@ static constexpr QPoint aroundTilePoints[WangId::NumIndexes] = {
 };
 
 
-WangPainter::WangPainter(const WangSet &wangSet,
+WangFiller::WangFiller(const WangSet &wangSet,
                          const MapRenderer *mapRenderer)
     : mWangSet(wangSet)
     , mMapRenderer(mapRenderer)
@@ -51,25 +51,25 @@ WangPainter::WangPainter(const WangSet &wangSet,
 {
 }
 
-void WangPainter::setRegion(const QRegion &region)
+void WangFiller::setRegion(const QRegion &region)
 {
-    mPaintRegion.region = region;
+    mFillRegion.region = region;
 }
 
-void WangPainter::setTerrain(int color, QPoint pos, WangId::Index index)
+void WangFiller::setTerrain(int color, QPoint pos, WangId::Index index)
 {
     // Mark this cell as part of the region to process
-    mPaintRegion.region += QRect(pos, pos);
+    mFillRegion.region += QRect(pos, pos);
 
     // Set the requested color at the given index
-    auto &grid = mPaintRegion.grid;
+    auto &grid = mFillRegion.grid;
     CellInfo cell = grid.get(pos);
     cell.desired.setIndexColor(index, color);
     cell.mask.setIndexColor(index, WangId::INDEX_MASK);
     grid.set(pos, cell);
 }
 
-void WangPainter::setCorner(int color, QPoint vertexPos)
+void WangFiller::setCorner(int color, QPoint vertexPos)
 {
     if (mHexagonalRenderer) {
         const QPoint topLeft = mHexagonalRenderer->topLeft(vertexPos.x(), vertexPos.y());
@@ -86,7 +86,7 @@ void WangPainter::setCorner(int color, QPoint vertexPos)
     }
 }
 
-void WangPainter::setEdge(int color, QPoint pos, WangId::Index index)
+void WangFiller::setEdge(int color, QPoint pos, WangId::Index index)
 {
     setTerrain(color, pos, index);
 
@@ -148,7 +148,7 @@ static void getSurroundingPoints(QPoint point,
  * Matches the given \a info's edges/corners at \a position with an \a adjacent one.
  * Also sets the mask for the given corner / side.
  */
-static void updateToAdjacent(WangPainter::CellInfo &info, WangId adjacent, int position)
+static void updateToAdjacent(WangFiller::CellInfo &info, WangId adjacent, int position)
 {
     const int adjacentPosition = WangId::oppositeIndex(position);
 
@@ -169,10 +169,10 @@ static void updateToAdjacent(WangPainter::CellInfo &info, WangId adjacent, int p
     }
 }
 
-void WangPainter::apply(TileLayer &target, const TileLayer &back)
+void WangFiller::apply(TileLayer &target, const TileLayer &back)
 {
-    auto &grid = mPaintRegion.grid;
-    auto &region = mPaintRegion.region;
+    auto &grid = mFillRegion.grid;
+    auto &region = mFillRegion.region;
 
     if (mCorrectionsEnabled) {
         // Determine the desired WangId for all tiles in the region.
@@ -301,9 +301,9 @@ void WangPainter::apply(TileLayer &target, const TileLayer &back)
     }
 }
 
-WangId WangPainter::wangIdFromSurroundings(const TileLayer &back,
-                                           const QRegion &region,
-                                           QPoint point) const
+WangId WangFiller::wangIdFromSurroundings(const TileLayer &back,
+                                          const QRegion &region,
+                                          QPoint point) const
 {
     Cell surroundingCells[8];
     QPoint adjacentPoints[8];
@@ -317,10 +317,10 @@ WangId WangPainter::wangIdFromSurroundings(const TileLayer &back,
     return mWangSet.wangIdFromSurrounding(surroundingCells);
 }
 
-bool WangPainter::findBestMatch(const TileLayer &target,
-                                const Grid<CellInfo> &grid,
-                                QPoint position,
-                                Cell &result) const
+bool WangFiller::findBestMatch(const TileLayer &target,
+                               const Grid<CellInfo> &grid,
+                               QPoint position,
+                               Cell &result) const
 {
     const CellInfo info = grid.get(position);
     const quint64 maskedWangId = info.desired & info.mask;

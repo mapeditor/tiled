@@ -1,5 +1,5 @@
 /*
- * wangpainter.h
+ * wangfiller.h
  * Copyright 2017, Benjamin Trotter <bdtrotte@ucsc.edu>
  * Copyright 2020-2023, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2023, a-morphous
@@ -43,7 +43,7 @@ class HexagonalRenderer;
  * Optionally when choosing cells, this will look at adjacent cells
  * to ensure that they will be able to be filled based on the chosen cell.
  */
-class WangPainter
+class WangFiller
 {
 public:
     struct CellInfo
@@ -56,15 +56,15 @@ public:
         }
     };
 
-    struct PaintRegion
+    struct FillRegion
     {
         Grid<CellInfo> grid;
         QRegion region;
     };
 
-    explicit WangPainter(const WangSet &wangSet, const MapRenderer *mapRenderer);
+    explicit WangFiller(const WangSet &wangSet, const MapRenderer *mapRenderer);
 
-    PaintRegion &region() { return mPaintRegion; }
+    FillRegion &region() { return mFillRegion; }
 
     void setCorrectionsEnabled(bool enabled) { mCorrectionsEnabled = enabled; }
 
@@ -100,7 +100,7 @@ private:
     const MapRenderer * const mMapRenderer;
     const HexagonalRenderer * const mHexagonalRenderer;
     bool mCorrectionsEnabled = false;
-    PaintRegion mPaintRegion;
+    FillRegion mFillRegion;
 
     QPainter *mDebugPainter = nullptr;
 };

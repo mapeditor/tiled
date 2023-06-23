@@ -22,7 +22,7 @@
 #include "brushitem.h"
 #include "mapdocument.h"
 #include "stampactions.h"
-#include "wangpainter.h"
+#include "wangfiller.h"
 
 #include <QAction>
 
@@ -286,9 +286,9 @@ void AbstractTileFillTool::wangFill(TileLayer &tileLayerToFill,
     if (!mWangSet)
         return;
 
-    WangPainter wangPainter(*mWangSet, mapDocument()->renderer());
-    wangPainter.setRegion(region);
-    wangPainter.apply(tileLayerToFill, backgroundTileLayer);
+    WangFiller wangFiller(*mWangSet, mapDocument()->renderer());
+    wangFiller.setRegion(region);
+    wangFiller.apply(tileLayerToFill, backgroundTileLayer);
 }
 
 void AbstractTileFillTool::fillWithStamp(Map &map,

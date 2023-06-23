@@ -34,8 +34,8 @@ TileLayerWangEdit::TileLayerWangEdit(EditableTileLayer *tileLayer, EditableWangS
     mTargetLayer->mActiveWangEdits.append(this);
 
     // todo: don't crash when given target layer without document
-    mWangPainter = std::make_unique<WangPainter>(*wangSet->wangSet(),
-                                                 mTargetLayer->mapDocument()->renderer());
+    mWangFiller = std::make_unique<WangFiller>(*wangSet->wangSet(),
+                                               mTargetLayer->mapDocument()->renderer());
 }
 
 TileLayerWangEdit::~TileLayerWangEdit()
@@ -45,23 +45,23 @@ TileLayerWangEdit::~TileLayerWangEdit()
 
 void TileLayerWangEdit::setTerrain(int x, int y, int color, WangId::Index index)
 {
-    mWangPainter->setTerrain(color, QPoint(x, y), index);
+    mWangFiller->setTerrain(color, QPoint(x, y), index);
 }
 
 void TileLayerWangEdit::setCorner(int x, int y, int color)
 {
-    mWangPainter->setCorner(color, QPoint(x, y));
+    mWangFiller->setCorner(color, QPoint(x, y));
 }
 
 void TileLayerWangEdit::setEdge(int x, int y, int color, Edge direction)
 {
-    mWangPainter->setEdge(color, QPoint(x, y), static_cast<WangId::Index>(direction));
+    mWangFiller->setEdge(color, QPoint(x, y), static_cast<WangId::Index>(direction));
 }
 
 void TileLayerWangEdit::apply()
 {
     // apply terrain changes
-    mWangPainter->apply(mChanges, *mTargetLayer->tileLayer());
+    mWangFiller->apply(mChanges, *mTargetLayer->tileLayer());
 
     // Applying an edit automatically makes it mergeable, so that further
     // changes made through the same edit are merged by default.
