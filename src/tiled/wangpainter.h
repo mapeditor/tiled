@@ -1,5 +1,7 @@
 /*
  * wangpainter.h
+ * Copyright 2017, Benjamin Trotter <bdtrotte@ucsc.edu>
+ * Copyright 2020-2023, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2023, a-morphous
  *
  * This file is part of Tiled.
@@ -20,44 +22,87 @@
 
 #pragma once
 
-#include "mapdocument.h"
-#include "tilelayer.h"
-#include "wangfiller.h"
+#include "grid.h"
 #include "wangset.h"
+
+#include <QList>
+#include <QMap>
+#include <QPoint>
+
+#include <memory>
 
 namespace Tiled {
 
+class MapRenderer;
+class HexagonalRenderer;
+
+/**
+ * Provides functions for choosing cells based on a surrounding map and a
+ * WangSet.
+ *
+ * Optionally when choosing cells, this will look at adjacent cells
+ * to ensure that they will be able to be filled based on the chosen cell.
+ */
 class WangPainter
 {
 public:
-    enum BrushMode {
-        PaintCorner,
-        PaintEdge,
-        PaintEdgeAndCorner,
-        Idle // no valid color selected
+    struct CellInfo
+    {
+        WangId desired;
+        WangId mask;
+
+        bool operator==(const CellInfo &other) const {
+            return desired == other.desired && mask == other.mask;
+        }
     };
 
-    WangPainter();
-    virtual ~WangPainter();
+    struct PaintRegion
+    {
+        Grid<CellInfo> grid;
+        QRegion region;
+    };
 
-    BrushMode brushMode();
+    explicit WangPainter(const WangSet &wangSet, const MapRenderer *mapRenderer);
 
-    void setWangSet(const WangSet *wangSet);
-    void setTerrain(WangFiller::FillRegion &fill, MapDocument *mapDocument, int color, QPoint pos, WangId::Index directionToGenerate, bool useTileMode = false);
-    void setTerrain(MapDocument *mapDocument, int color, QPoint pos, WangId::Index directionToGenerate, bool useTileMode = false);
-    void clear();
-    void commit(MapDocument *mapDocument, TileLayer *tileLayer);
+    PaintRegion &region() { return mPaintRegion; }
+
+    void setCorrectionsEnabled(bool enabled) { mCorrectionsEnabled = enabled; }
+
+    void setDebugPainter(QPainter *painter) { mDebugPainter = painter; }
+
+    void setRegion(const QRegion &region);
+    void setTerrain(int color, QPoint pos, WangId::Index index);
+    void setCorner(int color, QPoint vertexPos);
+    void setEdge(int color, QPoint pos, WangId::Index index);
+
+    /**
+     * Applies the scheduled Wang changes to the \a target layer.
+     *
+     * The \a back layer is used to match up the edges to existing tiles.
+     */
+    void apply(TileLayer &target, const TileLayer &back);
 
 private:
-    void setColor(int color);
-    WangId::Index getDesiredDirection(WangId::Index initialDirection);
-    void generateTerrainAt(MapDocument *mapDocument, WangFiller::FillRegion &fill, int color, QPoint pos, WangId::Index direction, bool useTileMode = false);
+    /**
+     * Returns a wangId based on cells from \a back which are not in the
+     * \a region. \a point and \a region are relative to \a back.
+     */
+    WangId wangIdFromSurroundings(const TileLayer &back,
+                                  const QRegion &region,
+                                  QPoint point) const;
 
-    const WangSet *mWangSet;
+    bool findBestMatch(const TileLayer &target,
+                       const Grid<CellInfo> &grid,
+                       QPoint position,
+                       Cell &result) const;
 
-    int mCurrentColor = 0;
-    WangFiller::FillRegion mCurrentFill;
-    BrushMode mBrushMode = BrushMode::Idle;
+    const WangSet &mWangSet;
+    const MapRenderer * const mMapRenderer;
+    const HexagonalRenderer * const mHexagonalRenderer;
+    bool mCorrectionsEnabled = false;
+    PaintRegion mPaintRegion;
+
+    QPainter *mDebugPainter = nullptr;
 };
 
 } // namespace Tiled

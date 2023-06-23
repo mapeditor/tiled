@@ -1,6 +1,7 @@
 /*
  * tilelayerwangedit.cpp
  * Copyright 2023, a-morphous
+ * Copyright 2023, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,12 +21,8 @@
 
 #include "tilelayerwangedit.h"
 
-#include "addremovetileset.h"
-#include "editablemap.h"
-#include "editabletile.h"
 #include "editabletilelayer.h"
-#include "painttilelayer.h"
-#include "scriptmanager.h"
+#include "mapdocument.h"
 
 namespace Tiled {
 
@@ -35,8 +32,10 @@ TileLayerWangEdit::TileLayerWangEdit(EditableTileLayer *tileLayer, EditableWangS
 {
     // todo: what if the WangSet is deleted?
     mTargetLayer->mActiveWangEdits.append(this);
-	mWangPainter = new WangPainter();
-	mWangPainter->setWangSet(wangSet->wangSet());
+
+    // todo: don't crash when given target layer without document
+    mWangPainter = std::make_unique<WangPainter>(*wangSet->wangSet(),
+                                                 mTargetLayer->mapDocument()->renderer());
 }
 
 TileLayerWangEdit::~TileLayerWangEdit()
@@ -44,20 +43,30 @@ TileLayerWangEdit::~TileLayerWangEdit()
     mTargetLayer->mActiveWangEdits.removeOne(this);
 }
 
-void TileLayerWangEdit::setTerrain(int x, int y, int color, WangId::Index direction)
+void TileLayerWangEdit::setTerrain(int x, int y, int color, WangId::Index index)
 {
-    mWangPainter->setTerrain(mTargetLayer->mapDocument(), color, QPoint(x, y), direction);
+    mWangPainter->setTerrain(color, QPoint(x, y), index);
+}
+
+void TileLayerWangEdit::setCorner(int x, int y, int color)
+{
+    mWangPainter->setCorner(color, QPoint(x, y));
+}
+
+void TileLayerWangEdit::setEdge(int x, int y, int color, Edge direction)
+{
+    mWangPainter->setEdge(color, QPoint(x, y), static_cast<WangId::Index>(direction));
 }
 
 void TileLayerWangEdit::apply()
 {
-	// apply terrain changes
-    mWangPainter->commit(mTargetLayer->mapDocument(), &mChanges);
+    // apply terrain changes
+    mWangPainter->apply(mChanges, *mTargetLayer->tileLayer());
 
     // Applying an edit automatically makes it mergeable, so that further
     // changes made through the same edit are merged by default.
     bool mergeable = std::exchange(mMergeable, true);
-	mTargetLayer->applyChangesFrom(&mChanges, mergeable);
+    mTargetLayer->applyChangesFrom(&mChanges, mergeable);
     mChanges.clear();
 }
 

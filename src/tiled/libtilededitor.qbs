@@ -559,8 +559,6 @@ DynamicLibrary {
         "wangcolorview.h",
         "wangdock.cpp",
         "wangdock.h",
-        "wangfiller.cpp",
-        "wangfiller.h",
         "wangoverlay.cpp",
         "wangoverlay.h",
         "wangpainter.cpp",

@@ -1,6 +1,7 @@
 /*
  * wangset.h
  * Copyright 2017, Benjamin Trotter <bdtrotte@ucsc.edu>
+ *
  * This file is part of libtiled.
  *
  * Redistribution and use in source and binary forms, with or without

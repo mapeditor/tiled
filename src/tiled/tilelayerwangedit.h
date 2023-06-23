@@ -1,6 +1,7 @@
 /*
  * tilelayerwangedit.h
  * Copyright 2023, a-morphous
+ * Copyright 2023, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -26,6 +27,8 @@
 
 #include <QObject>
 
+#include <memory>
+
 namespace Tiled {
 
 class EditableTileLayer;
@@ -38,6 +41,14 @@ class TileLayerWangEdit : public QObject
     Q_PROPERTY(bool mergeable READ isMergeable WRITE setMergeable)
 
 public:
+    enum Edge {
+        Left = WangId::Left,
+        Right = WangId::Right,
+        Top = WangId::Top,
+        Bottom = WangId::Bottom
+    };
+    Q_ENUM(Edge)
+
     explicit TileLayerWangEdit(EditableTileLayer *tileLayer,
                                EditableWangSet *wangSet,
                                QObject *parent = nullptr);
@@ -55,14 +66,16 @@ public:
     EditableTileLayer *target() const;
 
 public slots:
-    void setTerrain(int x, int y, int color, WangId::Index direction = WangId::Left);
+    void setTerrain(int x, int y, int color, WangId::Index index);
+    void setCorner(int x, int y, int color);
+    void setEdge(int x, int y, int color, Edge direction);
     void apply();
 
 private:
     EditableTileLayer *mTargetLayer;
     TileLayer mChanges;
     bool mMergeable = false;
-    WangPainter *mWangPainter = nullptr;
+    std::unique_ptr<WangPainter> mWangPainter;
 };
 
 
