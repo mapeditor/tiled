@@ -19,6 +19,10 @@
   banner: sponsors/chanel_expert.png
   sponsored_exception_until: "9999-12-31"
 
+- name: get instagram followers
+  url: https://www.socialwick.com/instagram/followers
+  banner: sponsors/socialwick.png
+
 - name: Buy Instagram and TikTok followers on SocialBoosting!
   url: https://www.socialboosting.com/buy-tiktok-followers
   banner: sponsors/socialboosting.png
