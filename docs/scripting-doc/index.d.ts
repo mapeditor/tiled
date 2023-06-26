@@ -2069,6 +2069,8 @@ interface MapEditor {
   /**
    * Gets the currently selected {@link WangSet} in the "Terrain Sets" view.
    *
+   * See also {@link TileLayerWangEdit}.
+   *
    * @since 1.8
    */
   readonly currentWangSet: WangSet
@@ -2084,6 +2086,8 @@ interface MapEditor {
    * Gets the currently selected Wang color index in the "Terrain Sets" view.
    * The value 0 is used to represent the eraser mode, and the first Wang color
    * has index 1.
+   *
+   * See also {@link TileLayerWangEdit}.
    *
    * @since 1.8
    */
@@ -2926,8 +2930,10 @@ declare enum WangIndex {
  * are applied by looking for tiles matching the desired Wang colors, which
  * includes a random factor in case of multiple matches.
  *
- * Colors in a {@link WangSet} are numbered starting from 1. To request no
- * Wang color, usually for Wang-aware erasing, use 0.
+ * Colors in a {@link WangSet} are numbered starting from 1. To request no Wang
+ * color, usually for Wang-aware erasing, use 0. The currently selected {@link
+ * WangSet} and color are available through {@link MapEditor.currentWangSet}
+ * and {@link MapEditor.currentWangColorIndex}.
  *
  * An instance of this object is created by calling {@link TileLayer.wangEdit}.
  *
