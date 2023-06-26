@@ -95,10 +95,6 @@
   url: https://www.casinoutansvenskalicensen.se/
   banner: sponsors/casino-utan-svensk-licens.png
 
-- name: https://casino-wise.com/casinos-not-on-gamstop/
-  url: https://casino-wise.com/casinos-not-on-gamstop/
-  banner: sponsors/casino-wise-com-dark.png
-
 - name: crypto casino
   url: https://bonusbitcoin.co/
   banner: sponsors/bonus-bitcoin-co.png
@@ -126,10 +122,6 @@
 - name: CasinoscanadaReviews
   url: https://casinoscanada.reviews/en/
   banner: sponsors/casinoscanada.png
-
-- name: Pelisivut
-  url: https://www.pelisivut.com/
-  banner: sponsors/pelisivut.png
 
 - name: CasinotopNz
   url: https://casinotop.co.nz/
