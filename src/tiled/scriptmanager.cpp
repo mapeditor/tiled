@@ -128,7 +128,7 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<ScriptMapFormatWrapper*>();
     qRegisterMetaType<ScriptTilesetFormatWrapper*>();
     qRegisterMetaType<ScriptImage*>();
-    qRegisterMetaType<WangId>();
+    qRegisterMetaType<WangIndex::Value>("WangIndex");
     connect(&mWatcher, &FileSystemWatcher::pathsChanged,
             this, &ScriptManager::scriptFilesChanged);
 
@@ -399,7 +399,7 @@ void ScriptManager::initialize()
     globalObject.setProperty(QStringLiteral("TileMap"), engine->newQMetaObject<EditableMap>());
     globalObject.setProperty(QStringLiteral("Tileset"), engine->newQMetaObject<EditableTileset>());
     globalObject.setProperty(QStringLiteral("WangSet"), engine->newQMetaObject<EditableWangSet>());
-    globalObject.setProperty(QStringLiteral("WangId"), engine->newQMetaObject<WangId>());
+    globalObject.setProperty(QStringLiteral("WangIndex"), engine->newQMetaObject(&WangIndex::staticMetaObject));
 
     registerBase64(engine);
     registerDialog(engine);

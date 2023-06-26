@@ -46,7 +46,17 @@ TileLayerWangEdit::~TileLayerWangEdit()
     mTargetLayer->mActiveWangEdits.removeOne(this);
 }
 
-void TileLayerWangEdit::setWangIndex(QPoint pos, WangIndex index, int color)
+bool TileLayerWangEdit::correctionsEnabled() const
+{
+    return mWangFiller->correctionsEnabled();
+}
+
+void TileLayerWangEdit::setCorrectionsEnabled(bool correctionsEnabled)
+{
+    mWangFiller->setCorrectionsEnabled(correctionsEnabled);
+}
+
+void TileLayerWangEdit::setWangIndex(QPoint pos, WangIndex::Value index, int color)
 {
     mWangFiller->setWangIndex(pos, static_cast<WangId::Index>(index), color);
 }
@@ -56,13 +66,13 @@ void TileLayerWangEdit::setCorner(QPoint pos, int color)
     mWangFiller->setCorner(pos, color);
 }
 
-void TileLayerWangEdit::setEdge(QPoint pos, WangIndex edge, int color)
+void TileLayerWangEdit::setEdge(QPoint pos, WangIndex::Value edge, int color)
 {
     switch (edge) {
-    case Top:
-    case Right:
-    case Bottom:
-    case Left:
+    case WangIndex::Top:
+    case WangIndex::Right:
+    case WangIndex::Bottom:
+    case WangIndex::Left:
         mWangFiller->setEdge(pos, static_cast<WangId::Index>(edge), color);
         break;
     default:

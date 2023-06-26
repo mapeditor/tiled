@@ -66,6 +66,7 @@ public:
 
     FillRegion &region() { return mFillRegion; }
 
+    bool correctionsEnabled() const { return mCorrectionsEnabled; }
     void setCorrectionsEnabled(bool enabled) { mCorrectionsEnabled = enabled; }
 
     void setDebugPainter(QPainter *painter) { mDebugPainter = painter; }

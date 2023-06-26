@@ -43,8 +43,6 @@ namespace Tiled {
 
 class TILEDSHARED_EXPORT WangId
 {
-    Q_GADGET
-
 public:
     constexpr static unsigned BITS_PER_INDEX = 8;
     constexpr static quint64 INDEX_MASK = 0xFF;
@@ -65,7 +63,6 @@ public:
         NumEdges    = 4,
         NumIndexes  = 8,
     };
-    Q_ENUM(Index)
 
     enum Masks : quint64 {
         MaskTop         = INDEX_MASK << (BITS_PER_INDEX * Top),
@@ -80,7 +77,6 @@ public:
         MaskEdges       = MaskTop | MaskRight | MaskBottom | MaskLeft,
         MaskCorners     = MaskTopRight | MaskBottomRight | MaskBottomLeft | MaskTopLeft,
     };
-    Q_ENUM(Masks)
 
     constexpr WangId(quint64 id = 0) : mId(id) {}
 

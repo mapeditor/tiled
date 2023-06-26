@@ -2845,6 +2845,14 @@ declare class TileLayer extends Layer {
    * Returns an object that enables making modifications to the tile layer.
    */
   edit() : TileLayerEdit
+
+  /**
+   * Returns an object that enables making modifications to the tile layer
+   * using the given {@link WangSet}.
+   *
+   * @since 1.10.2
+   */
+  wangEdit(wangSet: WangSet) : TileLayerWangEdit
 }
 
 /**
@@ -2861,7 +2869,8 @@ interface TileLayerEdit {
   readonly target : TileLayer
 
   /**
-   * Whether applied edits are mergeable with previous edits. Starts out as false and is automatically set to true by {@link apply}.
+   * Whether applied edits are mergeable with previous edits. Starts out as
+   * `false` and is automatically set to `true` by {@link apply}.
    */
   mergeable : boolean
 
@@ -2873,6 +2882,135 @@ interface TileLayerEdit {
    * To remove a tile, set it to `null`.
    */
   setTile(x : number, y : number, tile : Tile | null, flags? : number) : void
+
+  /**
+   * Applies all changes made through this object. This object can be reused to make further changes.
+   */
+  apply() : void
+}
+
+/**
+ * The Wang indexes are arranged as follows:
+ *
+ * ```
+ * 7 0 1
+ * 6 - 2
+ * 5 4 3
+ * ```
+ *
+ * These indexes are used by the {@link TileLayerWangEdit}.
+ *
+ * @since 1.10.2
+ */
+declare enum WangIndex {
+  Top         = 0,
+  TopRight    = 1,
+  Right       = 2,
+  BottomRight = 3,
+  Bottom      = 4,
+  BottomLeft  = 5,
+  Left        = 6,
+  TopLeft     = 7,
+  NumCorners  = 4,
+  NumEdges    = 4,
+  NumIndexes  = 8,
+}
+
+/**
+ * This object enables modifying the tiles on a tile layer using a
+ * {@link WangSet}. For performance reasons, the changes are not applied
+ * directly. The {@link apply} function needs to be called when you're done
+ * making changes.
+ *
+ * Note that the results of calling {@link apply} may vary since the changes
+ * are applied by looking for tiles matching the desired Wang colors, which
+ * includes a random factor in case of multiple matches.
+ *
+ * Colors in a {@link WangSet} are numbered starting from 1. To request no
+ * Wang color, usually for Wang-aware erasing, use 0.
+ *
+ * An instance of this object is created by calling {@link TileLayer.wangEdit}.
+ *
+ * @since 1.10.2
+ */
+interface TileLayerWangEdit {
+  /**
+   * The target layer of this edit object.
+   */
+  readonly target : TileLayer
+
+  /**
+   * Whether applied edits are mergeable with previous edits. Starts out as
+   * `false` and is automatically set to `true` by {@link apply}.
+   */
+  mergeable : boolean
+
+  /**
+   * Whether neighboring tiles will be corrected to match up with any marked
+   * changes once {@link apply} is called. This can cause a larger area to get
+   * modified. Defaults to `false`.
+   */
+  correctionsEnabled : boolean
+
+  /**
+   * Sets the desired color for the given Wang index at the given location.
+   *
+   * This is a low-level function, which only affects the given location and
+   * does not automatically adjust any neighboring tiles. Use {@link setCorner}
+   * or {@link setEdge} when that is desired or set {@link correctionsEnabled}
+   * to `true`.
+   */
+  setWangIndex(x : number, y : number, wangIndex: WangIndex, color : number) : void
+
+  /**
+   * Sets the desired color for the given Wang index at the given location.
+   *
+   * This is a low-level function, which only affects the given location and
+   * does not automatically adjust any neighboring tiles. Use {@link setCorner}
+   * or {@link setEdge} when that is desired or set {@link correctionsEnabled}
+   * to `true`.
+   */
+  setWangIndex(pos : point, wangIndex: WangIndex, color : number) : void
+
+  /**
+   * Sets the desired color for the given corner at the given vertex location.
+   *
+   * The vertex location refers to a point in between the tiles, where (0, 0) is
+   * the top-left corner of the map and (mapWidth, mapHeight) is the bottom-right
+   * corner.
+   *
+   * Changing the color of a corner affects all 4 tiles meeting at that corner.
+   */
+  setCorner(x : number, y : number, color : number) : void
+
+  /**
+   * Sets the desired color for the given corner at the given vertex location.
+   *
+   * The vertex location refers to a point in between the tiles, where (0, 0) is
+   * the top-left corner of the map and (mapWidth, mapHeight) is the bottom-right
+   * corner.
+   *
+   * Changing the color of a corner affects all 4 tiles meeting at that corner.
+   */
+  setCorner(pos : point, color : number) : void
+
+  /**
+   * Sets the desired color for the given edge at the given location. Only the
+   * values {@link WangIndex.Top}, {@link WangIndex.Left}, {@link
+   * WangIndex.Right} and {@link WangIndex.Bottom} are supported.
+   *
+   * Changing the color of an edge affects the 2 tiles connected by that edge.
+   */
+  setEdge(x : number, y : number, edge: WangIndex, color : number) : void
+
+  /**
+   * Sets the desired color for the given edge at the given location. Only the
+   * values {@link WangIndex.Top}, {@link WangIndex.Left}, {@link
+   * WangIndex.Right} and {@link WangIndex.Bottom} are supported.
+   *
+   * Changing the color of an edge affects the 2 tiles connected by that edge.
+   */
+  setEdge(pos : point, edge: WangIndex, color : number) : void
 
   /**
    * Applies all changes made through this object. This object can be reused to make further changes.
@@ -2921,7 +3059,7 @@ declare class WangSet extends TiledObject {
   /**
    * Returns the current Wang ID associated with the given tile.
    *
-   * The Wang ID is given by an array of 8 numbers, indicating the colors associated with each index in the following order: [Top, TopRight, Right, BottomRight, Bottom, BottomLeft, Left, TopLeft].
+   * The Wang ID is given by an array of 8 numbers, indicating the colors associated with each index in the following order: [Top, TopRight, Right, BottomRight, Bottom, BottomLeft, Left, TopLeft] (see {@link WangIndex}).
    * A value of 0 indicates that no color is associated with a given index.
    */
   public wangId(tile : Tile) : number[]
@@ -2929,7 +3067,7 @@ declare class WangSet extends TiledObject {
   /**
    * Sets the Wang ID associated with the given tile.
    *
-   * The Wang ID is given by an array of 8 numbers, indicating the colors associated with each index in the following order: [Top, TopRight, Right, BottomRight, Bottom, BottomLeft, Left, TopLeft].
+   * The Wang ID is given by an array of 8 numbers, indicating the colors associated with each index in the following order: [Top, TopRight, Right, BottomRight, Bottom, BottomLeft, Left, TopLeft] (see {@link WangIndex}).
    * A value of 0 indicates that no color is associated with a given index.
    *
    * Make sure the Wang set color count is set before calling this function, because it will raise an error when the Wang ID refers to non-existing colors.

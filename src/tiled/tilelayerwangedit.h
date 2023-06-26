@@ -33,16 +33,12 @@ namespace Tiled {
 
 class EditableTileLayer;
 
-class TileLayerWangEdit : public QObject
+// Copy of WangId::Index, for exposing the enum to JS
+namespace WangIndex
 {
-    Q_OBJECT
+    Q_NAMESPACE
 
-    Q_PROPERTY(Tiled::EditableTileLayer *target READ target CONSTANT)
-    Q_PROPERTY(bool mergeable READ isMergeable WRITE setMergeable)
-
-public:
-    // Copy of WangId::Index, for compatibility with Qt 5
-    enum WangIndex {
+    enum Value {
         Top         = 0,
         TopRight    = 1,
         Right       = 2,
@@ -56,8 +52,18 @@ public:
         NumEdges    = 4,
         NumIndexes  = 8,
     };
-    Q_ENUM(WangIndex)
+    Q_ENUM_NS(Value)
+}
 
+class TileLayerWangEdit : public QObject
+{
+    Q_OBJECT
+
+    Q_PROPERTY(Tiled::EditableTileLayer *target READ target CONSTANT)
+    Q_PROPERTY(bool mergeable READ isMergeable WRITE setMergeable)
+    Q_PROPERTY(bool correctionsEnabled READ correctionsEnabled WRITE setCorrectionsEnabled)
+
+public:
     explicit TileLayerWangEdit(EditableTileLayer *tileLayer,
                                EditableWangSet *wangSet,
                                QObject *parent = nullptr);
@@ -72,15 +78,18 @@ public:
     void setMergeable(bool mergeable);
     bool isMergeable() const;
 
+    bool correctionsEnabled() const;
+    void setCorrectionsEnabled(bool newCorrectionsEnabled);
+
     EditableTileLayer *target() const;
 
 public slots:
-    void setWangIndex(int x, int y, WangIndex index, int color);
-    void setWangIndex(QPoint pos, WangIndex index, int color);
+    void setWangIndex(int x, int y, Tiled::WangIndex::Value index, int color);
+    void setWangIndex(QPoint pos, Tiled::WangIndex::Value index, int color);
     void setCorner(int x, int y, int color);
     void setCorner(QPoint pos, int color);
-    void setEdge(int x, int y, WangIndex edge, int color);
-    void setEdge(QPoint pos, WangIndex edge, int color);
+    void setEdge(int x, int y, Tiled::WangIndex::Value edge, int color);
+    void setEdge(QPoint pos, Tiled::WangIndex::Value edge, int color);
 
     void apply();
 
@@ -107,7 +116,7 @@ inline EditableTileLayer *TileLayerWangEdit::target() const
     return mTargetLayer;
 }
 
-inline void TileLayerWangEdit::setWangIndex(int x, int y, WangIndex index, int color)
+inline void TileLayerWangEdit::setWangIndex(int x, int y, WangIndex::Value index, int color)
 {
     setWangIndex(QPoint(x, y), index, color);
 }
@@ -117,7 +126,7 @@ inline void TileLayerWangEdit::setCorner(int x, int y, int color)
     setCorner(QPoint(x, y), color);
 }
 
-inline void TileLayerWangEdit::setEdge(int x, int y, WangIndex edge, int color)
+inline void TileLayerWangEdit::setEdge(int x, int y, WangIndex::Value edge, int color)
 {
     setEdge(QPoint(x, y), edge, color);
 }
