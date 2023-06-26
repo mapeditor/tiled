@@ -113,6 +113,11 @@ TileLayerWangEdit *EditableTileLayer::wangEdit(EditableWangSet *wangSet)
         return nullptr;
     }
 
+    if (!map()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Layer not part of a map"));
+        return nullptr;
+    }
+
     return new TileLayerWangEdit(this, wangSet);
 }
 

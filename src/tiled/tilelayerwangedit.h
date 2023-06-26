@@ -22,6 +22,7 @@
 #pragma once
 
 #include "editablewangset.h"
+#include "map.h"
 #include "tilelayer.h"
 #include "wangfiller.h"
 
@@ -97,6 +98,8 @@ private:
     EditableTileLayer *mTargetLayer;
     TileLayer mChanges;
     bool mMergeable = false;
+    const Map mMap;                             // Copy for the configuration
+    std::unique_ptr<MapRenderer> mRenderer;
     std::unique_ptr<WangFiller> mWangFiller;
 };
 

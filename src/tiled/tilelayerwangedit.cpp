@@ -21,8 +21,9 @@
 
 #include "tilelayerwangedit.h"
 
+#include "editablemap.h"
 #include "editabletilelayer.h"
-#include "mapdocument.h"
+#include "maprenderer.h"
 #include "scriptmanager.h"
 
 #include <QCoreApplication>
@@ -32,13 +33,16 @@ namespace Tiled {
 TileLayerWangEdit::TileLayerWangEdit(EditableTileLayer *tileLayer, EditableWangSet *wangSet, QObject *parent)
     : QObject(parent)
     , mTargetLayer(tileLayer)
+    , mMap(tileLayer->map()->map()->parameters())
+    , mRenderer(MapRenderer::create(&mMap))
+    , mWangFiller(std::make_unique<WangFiller>(*wangSet->wangSet(),
+                                               mRenderer.get()))
 {
-    // todo: what if the WangSet is deleted?
     mTargetLayer->mActiveWangEdits.append(this);
 
-    // todo: don't crash when given target layer without document
-    mWangFiller = std::make_unique<WangFiller>(*wangSet->wangSet(),
-                                               mTargetLayer->mapDocument()->renderer());
+    // Avoid usage of this object when the WangSet is deleted (this actually
+    // requires keeping the EditableWangSet alive).
+    connect(wangSet, &QObject::destroyed, this, &QObject::deleteLater);
 }
 
 TileLayerWangEdit::~TileLayerWangEdit()

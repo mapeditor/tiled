@@ -278,7 +278,7 @@ public:
 
     QList<WangTile> sortedWangTiles() const;
 
-    WangId wangIdFromSurrounding(const WangId surroundingWangIds[]) const;
+    static WangId wangIdFromSurrounding(const WangId surroundingWangIds[]);
     WangId wangIdFromSurrounding(const Cell surroundingCells[]) const;
 
     WangId wangIdOfTile(const Tile *tile) const;

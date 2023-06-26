@@ -20,12 +20,8 @@
 
 #include "tilelayeredit.h"
 
-#include "addremovetileset.h"
-#include "editablemap.h"
 #include "editabletile.h"
 #include "editabletilelayer.h"
-#include "painttilelayer.h"
-#include "scriptmanager.h"
 
 namespace Tiled {
 

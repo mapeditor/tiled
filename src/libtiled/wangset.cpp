@@ -728,7 +728,7 @@ QList<WangTile> WangSet::sortedWangTiles() const
  *      6|X|2
  *      5|4|3
  */
-WangId WangSet::wangIdFromSurrounding(const WangId surroundingWangIds[]) const
+WangId WangSet::wangIdFromSurrounding(const WangId surroundingWangIds[])
 {
     quint64 id = 0;
 

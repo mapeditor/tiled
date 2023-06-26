@@ -46,8 +46,7 @@ class HexagonalRenderer;
 class WangFiller
 {
 public:
-    struct CellInfo
-    {
+    struct CellInfo {
         WangId desired;
         WangId mask;
 
@@ -56,8 +55,7 @@ public:
         }
     };
 
-    struct FillRegion
-    {
+    struct FillRegion {
         Grid<CellInfo> grid;
         QRegion region;
     };
