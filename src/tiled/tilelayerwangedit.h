@@ -41,13 +41,22 @@ class TileLayerWangEdit : public QObject
     Q_PROPERTY(bool mergeable READ isMergeable WRITE setMergeable)
 
 public:
-    enum Edge {
-        Left = WangId::Left,
-        Right = WangId::Right,
-        Top = WangId::Top,
-        Bottom = WangId::Bottom
+    // Copy of WangId::Index, for compatibility with Qt 5
+    enum WangIndex {
+        Top         = 0,
+        TopRight    = 1,
+        Right       = 2,
+        BottomRight = 3,
+        Bottom      = 4,
+        BottomLeft  = 5,
+        Left        = 6,
+        TopLeft     = 7,
+
+        NumCorners  = 4,
+        NumEdges    = 4,
+        NumIndexes  = 8,
     };
-    Q_ENUM(Edge)
+    Q_ENUM(WangIndex)
 
     explicit TileLayerWangEdit(EditableTileLayer *tileLayer,
                                EditableWangSet *wangSet,
@@ -66,9 +75,12 @@ public:
     EditableTileLayer *target() const;
 
 public slots:
-    void setTerrain(int x, int y, int color, WangId::Index index);
+    void setWangIndex(int x, int y, WangIndex index, int color);
+    void setWangIndex(QPoint pos, WangIndex index, int color);
     void setCorner(int x, int y, int color);
-    void setEdge(int x, int y, int color, Edge direction);
+    void setCorner(QPoint pos, int color);
+    void setEdge(int x, int y, WangIndex edge, int color);
+    void setEdge(QPoint pos, WangIndex edge, int color);
 
     void apply();
 
@@ -93,6 +105,21 @@ inline bool TileLayerWangEdit::isMergeable() const
 inline EditableTileLayer *TileLayerWangEdit::target() const
 {
     return mTargetLayer;
+}
+
+inline void TileLayerWangEdit::setWangIndex(int x, int y, WangIndex index, int color)
+{
+    setWangIndex(QPoint(x, y), index, color);
+}
+
+inline void TileLayerWangEdit::setCorner(int x, int y, int color)
+{
+    setCorner(QPoint(x, y), color);
+}
+
+inline void TileLayerWangEdit::setEdge(int x, int y, WangIndex edge, int color)
+{
+    setEdge(QPoint(x, y), edge, color);
 }
 
 } // namespace Tiled

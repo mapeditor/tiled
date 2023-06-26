@@ -44,7 +44,7 @@ static constexpr QPoint aroundTilePoints[WangId::NumIndexes] = {
 
 
 WangFiller::WangFiller(const WangSet &wangSet,
-                         const MapRenderer *mapRenderer)
+                       const MapRenderer *mapRenderer)
     : mWangSet(wangSet)
     , mMapRenderer(mapRenderer)
     , mHexagonalRenderer(dynamic_cast<const HexagonalRenderer*>(mapRenderer))
@@ -56,7 +56,7 @@ void WangFiller::setRegion(const QRegion &region)
     mFillRegion.region = region;
 }
 
-void WangFiller::setTerrain(int color, QPoint pos, WangId::Index index)
+void WangFiller::setWangIndex(QPoint pos, WangId::Index index, int color)
 {
     // Mark this cell as part of the region to process
     mFillRegion.region += QRect(pos, pos);
@@ -69,26 +69,26 @@ void WangFiller::setTerrain(int color, QPoint pos, WangId::Index index)
     grid.set(pos, cell);
 }
 
-void WangFiller::setCorner(int color, QPoint vertexPos)
+void WangFiller::setCorner(QPoint vertexPos, int color)
 {
     if (mHexagonalRenderer) {
         const QPoint topLeft = mHexagonalRenderer->topLeft(vertexPos.x(), vertexPos.y());
 
-        setTerrain(color, mHexagonalRenderer->topRight(vertexPos.x(), vertexPos.y()), WangId::BottomLeft);
-        setTerrain(color, vertexPos, WangId::TopLeft);
-        setTerrain(color, topLeft, WangId::TopRight);
-        setTerrain(color, mHexagonalRenderer->topRight(topLeft.x(), topLeft.y()), WangId::BottomRight);
+        setWangIndex(mHexagonalRenderer->topRight(vertexPos.x(), vertexPos.y()), WangId::BottomLeft, color);
+        setWangIndex(vertexPos, WangId::TopLeft, color);
+        setWangIndex(topLeft, WangId::TopRight, color);
+        setWangIndex(mHexagonalRenderer->topRight(topLeft.x(), topLeft.y()), WangId::BottomRight, color);
     } else {
-        setTerrain(color, vertexPos + QPoint( 0, -1), WangId::BottomLeft);
-        setTerrain(color, vertexPos + QPoint( 0,  0), WangId::TopLeft);
-        setTerrain(color, vertexPos + QPoint(-1,  0), WangId::TopRight);
-        setTerrain(color, vertexPos + QPoint(-1, -1), WangId::BottomRight);
+        setWangIndex(vertexPos + QPoint( 0, -1), WangId::BottomLeft, color);
+        setWangIndex(vertexPos + QPoint( 0,  0), WangId::TopLeft, color);
+        setWangIndex(vertexPos + QPoint(-1,  0), WangId::TopRight, color);
+        setWangIndex(vertexPos + QPoint(-1, -1), WangId::BottomRight, color);
     }
 }
 
-void WangFiller::setEdge(int color, QPoint pos, WangId::Index index)
+void WangFiller::setEdge(QPoint pos, WangId::Index index, int color)
 {
-    setTerrain(color, pos, index);
+    setWangIndex(pos, index, color);
 
     const auto oppositeIndex = WangId::oppositeIndex(index);
     QPoint dirPoint;
@@ -114,7 +114,7 @@ void WangFiller::setEdge(int color, QPoint pos, WangId::Index index)
         dirPoint = pos + aroundTilePoints[index];
     }
 
-    setTerrain(color, dirPoint, oppositeIndex);
+    setWangIndex(dirPoint, oppositeIndex, color);
 }
 
 static void getSurroundingPoints(QPoint point,

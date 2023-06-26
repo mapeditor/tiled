@@ -71,9 +71,9 @@ public:
     void setDebugPainter(QPainter *painter) { mDebugPainter = painter; }
 
     void setRegion(const QRegion &region);
-    void setTerrain(int color, QPoint pos, WangId::Index index);
-    void setCorner(int color, QPoint vertexPos);
-    void setEdge(int color, QPoint pos, WangId::Index index);
+    void setWangIndex(QPoint pos, WangId::Index index, int color);
+    void setCorner(QPoint vertexPos, int color);
+    void setEdge(QPoint pos, WangId::Index index, int color);
 
     /**
      * Applies the scheduled Wang changes to the \a target layer.

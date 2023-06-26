@@ -730,16 +730,16 @@ void WangBrush::updateBrushAt(WangFiller &filler, QPoint pos)
 
         switch (mBrushMode) {
         case PaintCorner:
-            filler.setCorner(mCurrentColor, pos);
+            filler.setCorner(pos, mCurrentColor);
             break;
         case PaintEdge:
-            filler.setEdge(mCurrentColor, pos, mWangIndex);
+            filler.setEdge(pos, mWangIndex, mCurrentColor);
             break;
         case PaintEdgeAndCorner:
             if (WangId::isCorner(mWangIndex))
-                filler.setCorner(mCurrentColor, pos);
+                filler.setCorner(pos, mCurrentColor);
             else
-                filler.setEdge(mCurrentColor, pos, mWangIndex);
+                filler.setEdge(pos, mWangIndex, mCurrentColor);
             break;
         case Idle:
             break;

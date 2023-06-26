@@ -23,6 +23,9 @@
 
 #include "editabletilelayer.h"
 #include "mapdocument.h"
+#include "scriptmanager.h"
+
+#include <QCoreApplication>
 
 namespace Tiled {
 
@@ -43,19 +46,29 @@ TileLayerWangEdit::~TileLayerWangEdit()
     mTargetLayer->mActiveWangEdits.removeOne(this);
 }
 
-void TileLayerWangEdit::setTerrain(int x, int y, int color, WangId::Index index)
+void TileLayerWangEdit::setWangIndex(QPoint pos, WangIndex index, int color)
 {
-    mWangFiller->setTerrain(color, QPoint(x, y), index);
+    mWangFiller->setWangIndex(pos, static_cast<WangId::Index>(index), color);
 }
 
-void TileLayerWangEdit::setCorner(int x, int y, int color)
+void TileLayerWangEdit::setCorner(QPoint pos, int color)
 {
-    mWangFiller->setCorner(color, QPoint(x, y));
+    mWangFiller->setCorner(pos, color);
 }
 
-void TileLayerWangEdit::setEdge(int x, int y, int color, Edge direction)
+void TileLayerWangEdit::setEdge(QPoint pos, WangIndex edge, int color)
 {
-    mWangFiller->setEdge(color, QPoint(x, y), static_cast<WangId::Index>(direction));
+    switch (edge) {
+    case Top:
+    case Right:
+    case Bottom:
+    case Left:
+        mWangFiller->setEdge(pos, static_cast<WangId::Index>(edge), color);
+        break;
+    default:
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid edge index"));
+        break;
+    }
 }
 
 void TileLayerWangEdit::apply()

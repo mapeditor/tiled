@@ -1024,3 +1024,5 @@ WangSet::Type wangSetTypeFromString(const QString &string)
 }
 
 } // namespace Tiled
+
+#include "moc_wangset.cpp"

@@ -26,9 +26,9 @@
 #include "editablemap.h"
 #include "painttilelayer.h"
 #include "resizetilelayer.h"
+#include "scriptmanager.h"
 #include "tilelayeredit.h"
 #include "tilelayerwangedit.h"
-#include "tilesetdocument.h"
 
 namespace Tiled {
 
@@ -108,6 +108,11 @@ TileLayerEdit *EditableTileLayer::edit()
 
 TileLayerWangEdit *EditableTileLayer::wangEdit(EditableWangSet *wangSet)
 {
+    if (!wangSet) {
+        ScriptManager::instance().throwNullArgError(0);
+        return nullptr;
+    }
+
     return new TileLayerWangEdit(this, wangSet);
 }
 
