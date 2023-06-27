@@ -404,7 +404,7 @@ bool WangFiller::findBestMatch(const TileLayer &target,
                 CellInfo adjacentInfo = grid.get(p);
                 updateToAdjacent(adjacentInfo, resultWangId, WangId::oppositeIndex(i));
 
-                if (!mWangSet.wangIdIsUsed(adjacentInfo.desired, adjacentInfo.mask)) {
+                if (adjacentInfo.desired && !mWangSet.wangIdIsUsed(adjacentInfo.desired, adjacentInfo.mask)) {
                     discard = true;
                     break;
                 }
