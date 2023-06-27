@@ -1908,9 +1908,11 @@ void MainWindow::offsetMap()
         if (layers.empty())
             return;
 
+        const bool wholeMap = offsetDialog.boundsSelection() == OffsetMapDialog::WholeMap;
         mapDocument->offsetMap(layers,
                                offsetDialog.offset(),
                                offsetDialog.affectedBoundingRect(),
+                               wholeMap,
                                offsetDialog.wrapX(),
                                offsetDialog.wrapY());
     }

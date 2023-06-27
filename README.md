@@ -49,8 +49,7 @@ libraries have been installed as well as the Qbs build tool:
 * On Fedora:        `sudo dnf builddep tiled`
 * On Arch Linux:    `sudo pacman -S qt qt5-tools qbs`
 * On macOS with [Homebrew](https://brew.sh/):
-  + `brew install qbs`
-  + `brew link qt5 --force`
+  + `brew install qbs` (which automatically pulls in `qt`)
 
 If you want to build the Python plugin, you additionally need to install the
 Python 3 development libraries:

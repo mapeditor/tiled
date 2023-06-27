@@ -158,26 +158,25 @@ void ObjectGroup::replaceReferencesToTileset(Tileset *oldTileset,
 
 void ObjectGroup::offsetObjects(const QPointF &offset,
                                 const QRectF &bounds,
+                                bool wholeMap,
                                 bool wrapX, bool wrapY)
 {
     if (offset.isNull())
         return;
 
-    const bool boundsValid = bounds.isValid();
-
     for (MapObject *object : std::as_const(mObjects)) {
-        const QPointF objectCenter = object->bounds().center();
-        if (boundsValid && !bounds.contains(objectCenter))
+        const QPointF objectCenter = object->boundsUseTile().center();
+        if (!wholeMap && !bounds.contains(objectCenter))
             continue;
 
         QPointF newCenter(objectCenter + offset);
 
-        if (wrapX && boundsValid) {
+        if (wrapX && bounds.width() > 0) {
             qreal nx = std::fmod(newCenter.x() - bounds.left(), bounds.width());
             newCenter.setX(bounds.left() + (nx < 0 ? bounds.width() + nx : nx));
         }
 
-        if (wrapY && boundsValid) {
+        if (wrapY && bounds.height() > 0) {
             qreal ny = std::fmod(newCenter.y() - bounds.top(), bounds.height());
             newCenter.setY(bounds.top() + (ny < 0 ? bounds.height() + ny : ny));
         }
