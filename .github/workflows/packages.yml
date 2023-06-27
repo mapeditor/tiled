@@ -221,7 +221,7 @@ jobs:
       run: |
         git clone --depth 1 -b master https://github.com/facebook/zstd.git
         pushd zstd/lib
-        make libzstd.a
+        CFLAGS="-arch arm64 -arch x86_64" make libzstd.a
         popd
 
     - name: Build Tiled
