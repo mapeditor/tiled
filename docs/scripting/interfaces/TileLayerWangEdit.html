@@ -12,7 +12,7 @@
 	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>TileLayerEdit | Tiled Scripting API</title>
+	<title>TileLayerWangEdit | Tiled Scripting API</title>
 	<meta name="description" content="Documentation for Tiled Scripting API">
 	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
@@ -76,10 +76,10 @@
 					<a href="../index.html">Tiled Scripting API</a>
 				</li>
 				<li>
-					<a href="TileLayerEdit.html">TileLayerEdit</a>
+					<a href="TileLayerWangEdit.html">TileLayerWangEdit</a>
 				</li>
 			</ul>
-			<h1>Interface TileLayerEdit</h1>
+			<h1>Interface TileLayerWangEdit</h1>
 		</div>
 	</div>
 </header>
@@ -89,18 +89,30 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>This object enables modifying the tiles on a tile layer. Tile layers can&#39;t be
-							modified directly for reasons of efficiency. The <a href="TileLayerEdit.html#apply">apply</a>
-						function needs to be called when you&#39;re done making changes.</p>
+						<p>This object enables modifying the tiles on a tile layer using a
+							<a href="../classes/WangSet.html">WangSet</a>. For performance reasons, the changes are not applied
+							directly. The <a href="TileLayerWangEdit.html#apply">apply</a> function needs to be called when you&#39;re done
+						making changes.</p>
 					</div>
-					<p>An instance of this object is created by calling <a href="../classes/TileLayer.html#edit">TileLayer.edit</a>.</p>
+					<p>Note that the results of calling <a href="TileLayerWangEdit.html#apply">apply</a> may vary since the changes
+						are applied by looking for tiles matching the desired Wang colors, which
+					includes a random factor in case of multiple matches.</p>
+					<p>Colors in a <a href="../classes/WangSet.html">WangSet</a> are numbered starting from 1. To request no Wang
+						color, usually for Wang-aware erasing, use 0. The currently selected <a href="../classes/WangSet.html">WangSet</a> and color are available through <a href="MapEditor.html#currentWangSet">MapEditor.currentWangSet</a>
+					and <a href="MapEditor.html#currentWangColorIndex">MapEditor.currentWangColorIndex</a>.</p>
+					<p>An instance of this object is created by calling <a href="../classes/TileLayer.html#wangEdit">TileLayer.wangEdit</a>.</p>
+					<dl class="tsd-comment-tags">
+						<dt>since</dt>
+						<dd><p>1.10.2</p>
+						</dd>
+					</dl>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">TileLayerEdit</span>
+						<span class="target">TileLayerWangEdit</span>
 					</li>
 				</ul>
 			</section>
@@ -111,15 +123,18 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="TileLayerEdit.html#mergeable" class="tsd-kind-icon">mergeable</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="TileLayerEdit.html#target" class="tsd-kind-icon">target</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="TileLayerWangEdit.html#correctionsEnabled" class="tsd-kind-icon">corrections<wbr>Enabled</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="TileLayerWangEdit.html#mergeable" class="tsd-kind-icon">mergeable</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="TileLayerWangEdit.html#target" class="tsd-kind-icon">target</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="TileLayerEdit.html#apply" class="tsd-kind-icon">apply</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="TileLayerEdit.html#setTile" class="tsd-kind-icon">set<wbr>Tile</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="TileLayerWangEdit.html#apply" class="tsd-kind-icon">apply</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="TileLayerWangEdit.html#setCorner" class="tsd-kind-icon">set<wbr>Corner</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="TileLayerWangEdit.html#setEdge" class="tsd-kind-icon">set<wbr>Edge</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="TileLayerWangEdit.html#setWangIndex" class="tsd-kind-icon">set<wbr>Wang<wbr>Index</a></li>
 							</ul>
 						</section>
 					</div>
@@ -127,6 +142,20 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="correctionsEnabled" class="tsd-anchor"></a>
+					<h3>corrections<wbr>Enabled</h3>
+					<div class="tsd-signature tsd-kind-icon">corrections<wbr>Enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Whether neighboring tiles will be corrected to match up with any marked
+								changes once <a href="TileLayerWangEdit.html#apply">apply</a> is called. This can cause a larger area to get
+							modified. Defaults to <code>false</code>.</p>
+						</div>
+					</div>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="mergeable" class="tsd-anchor"></a>
 					<h3>mergeable</h3>
@@ -136,7 +165,7 @@
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>Whether applied edits are mergeable with previous edits. Starts out as
-							<code>false</code> and is automatically set to <code>true</code> by <a href="TileLayerEdit.html#apply">apply</a>.</p>
+							<code>false</code> and is automatically set to <code>true</code> by <a href="TileLayerWangEdit.html#apply">apply</a>.</p>
 						</div>
 					</div>
 				</section>
@@ -174,10 +203,11 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="setTile" class="tsd-anchor"></a>
-					<h3>set<wbr>Tile</h3>
+					<a name="setCorner" class="tsd-anchor"></a>
+					<h3>set<wbr>Corner</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">set<wbr>Tile<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, tile<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="../classes/Tile.html" class="tsd-signature-type" data-tsd-kind="Class">Tile</a>, flags<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Corner<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, color<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Corner<span class="tsd-signature-symbol">(</span>pos<span class="tsd-signature-symbol">: </span><a href="point.html" class="tsd-signature-type" data-tsd-kind="Interface">point</a>, color<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -185,11 +215,93 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Sets the tile at the given location, optionally specifying tile flags (any
-										combination of <a href="../classes/Tile.html#FlippedHorizontally">Tile.FlippedHorizontally</a>, <a href="../classes/Tile.html#FlippedVertically">Tile.FlippedVertically</a>,
-									<a href="../classes/Tile.html#FlippedAntiDiagonally">Tile.FlippedAntiDiagonally</a> and <a href="../classes/Tile.html#RotatedHexagonal120">Tile.RotatedHexagonal120</a>).</p>
+									<p>Sets the desired color for the given corner at the given vertex location.</p>
 								</div>
-								<p>To remove a tile, set it to <code>null</code>.</p>
+								<p>The vertex location refers to a point in between the tiles, where (0, 0) is
+									the top-left corner of the map and (mapWidth, mapHeight) is the bottom-right
+								corner.</p>
+								<p>Changing the color of a corner affects all 4 tiles meeting at that corner.</p>
+							</div>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sets the desired color for the given corner at the given vertex location.</p>
+								</div>
+								<p>The vertex location refers to a point in between the tiles, where (0, 0) is
+									the top-left corner of the map and (mapWidth, mapHeight) is the bottom-right
+								corner.</p>
+								<p>Changing the color of a corner affects all 4 tiles meeting at that corner.</p>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="setEdge" class="tsd-anchor"></a>
+					<h3>set<wbr>Edge</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Edge<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, edge<span class="tsd-signature-symbol">: </span><a href="../enums/WangIndex.html" class="tsd-signature-type" data-tsd-kind="Enumeration">WangIndex</a>, color<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Edge<span class="tsd-signature-symbol">(</span>pos<span class="tsd-signature-symbol">: </span><a href="point.html" class="tsd-signature-type" data-tsd-kind="Interface">point</a>, edge<span class="tsd-signature-symbol">: </span><a href="../enums/WangIndex.html" class="tsd-signature-type" data-tsd-kind="Enumeration">WangIndex</a>, color<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sets the desired color for the given edge at the given location. Only the
+									values <a href="../enums/WangIndex.html#Top">WangIndex.Top</a>, <a href="../enums/WangIndex.html#Left">WangIndex.Left</a>, <a href="../enums/WangIndex.html#Right">WangIndex.Right</a> and <a href="../enums/WangIndex.html#Bottom">WangIndex.Bottom</a> are supported.</p>
+								</div>
+								<p>Changing the color of an edge affects the 2 tiles connected by that edge.</p>
+							</div>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sets the desired color for the given edge at the given location. Only the
+									values <a href="../enums/WangIndex.html#Top">WangIndex.Top</a>, <a href="../enums/WangIndex.html#Left">WangIndex.Left</a>, <a href="../enums/WangIndex.html#Right">WangIndex.Right</a> and <a href="../enums/WangIndex.html#Bottom">WangIndex.Bottom</a> are supported.</p>
+								</div>
+								<p>Changing the color of an edge affects the 2 tiles connected by that edge.</p>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="setWangIndex" class="tsd-anchor"></a>
+					<h3>set<wbr>Wang<wbr>Index</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Wang<wbr>Index<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, wangIndex<span class="tsd-signature-symbol">: </span><a href="../enums/WangIndex.html" class="tsd-signature-type" data-tsd-kind="Enumeration">WangIndex</a>, color<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Wang<wbr>Index<span class="tsd-signature-symbol">(</span>pos<span class="tsd-signature-symbol">: </span><a href="point.html" class="tsd-signature-type" data-tsd-kind="Interface">point</a>, wangIndex<span class="tsd-signature-symbol">: </span><a href="../enums/WangIndex.html" class="tsd-signature-type" data-tsd-kind="Enumeration">WangIndex</a>, color<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sets the desired color for the given Wang index at the given location.</p>
+								</div>
+								<p>This is a low-level function, which only affects the given location and
+									does not automatically adjust any neighboring tiles. Use <a href="TileLayerWangEdit.html#setCorner">setCorner</a>
+									or <a href="TileLayerWangEdit.html#setEdge">setEdge</a> when that is desired or set <a href="TileLayerWangEdit.html#correctionsEnabled">correctionsEnabled</a>
+								to <code>true</code>.</p>
+							</div>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sets the desired color for the given Wang index at the given location.</p>
+								</div>
+								<p>This is a low-level function, which only affects the given location and
+									does not automatically adjust any neighboring tiles. Use <a href="TileLayerWangEdit.html#setCorner">setCorner</a>
+									or <a href="TileLayerWangEdit.html#setEdge">setEdge</a> when that is desired or set <a href="TileLayerWangEdit.html#correctionsEnabled">correctionsEnabled</a>
+								to <code>true</code>.</p>
 							</div>
 						</li>
 					</ul>
@@ -209,19 +321,28 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="TileLayerEdit.html" class="tsd-kind-icon">Tile<wbr>Layer<wbr>Edit</a>
+						<a href="TileLayerWangEdit.html" class="tsd-kind-icon">Tile<wbr>Layer<wbr>Wang<wbr>Edit</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="TileLayerEdit.html#mergeable" class="tsd-kind-icon">mergeable</a>
+								<a href="TileLayerWangEdit.html#correctionsEnabled" class="tsd-kind-icon">corrections<wbr>Enabled</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="TileLayerEdit.html#target" class="tsd-kind-icon">target</a>
+								<a href="TileLayerWangEdit.html#mergeable" class="tsd-kind-icon">mergeable</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="TileLayerWangEdit.html#target" class="tsd-kind-icon">target</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="TileLayerEdit.html#apply" class="tsd-kind-icon">apply</a>
+								<a href="TileLayerWangEdit.html#apply" class="tsd-kind-icon">apply</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="TileLayerEdit.html#setTile" class="tsd-kind-icon">set<wbr>Tile</a>
+								<a href="TileLayerWangEdit.html#setCorner" class="tsd-kind-icon">set<wbr>Corner</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="TileLayerWangEdit.html#setEdge" class="tsd-kind-icon">set<wbr>Edge</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="TileLayerWangEdit.html#setWangIndex" class="tsd-kind-icon">set<wbr>Wang<wbr>Index</a>
 							</li>
 						</ul>
 					</li>
