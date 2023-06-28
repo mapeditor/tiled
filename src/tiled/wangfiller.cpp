@@ -299,6 +299,8 @@ void WangFiller::apply(TileLayer &target, const TileLayer &back)
             resolve(p.x(), p.y());
         processing.clear();
     }
+
+    mFillRegion = FillRegion();
 }
 
 WangId WangFiller::wangIdFromSurroundings(const TileLayer &back,
