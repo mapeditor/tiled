@@ -7,7 +7,7 @@
 * Fixed updating of object selection outlines when changing parallax factor (#3669)
 * Fixed "Offset Map" action to offset all objects when choosing "Whole Map" as bounds
 * Godot 4 plugin: Export custom tile properties as Custom Data Layers (with Kevin Harrison, #3653)
-* AppImage: Updated to Sentry 0.6.3
+* AppImage: Updated to Sentry 0.6.4
 * Qt 6: Increased the image allocation limit from 1 GB to 4 GB (#3616)
 * macOS: The macOS 10.14+ build is now a Universal macOS Binary (#3707)
 
