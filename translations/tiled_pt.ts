@@ -100,17 +100,17 @@
     <message>
         <location line="+22"/>
         <source>Failed to load source tileset.</source>
-        <translation>Falha ao carregar o conjunto de blocos fonte.</translation>
+        <translation>Falha ao carregar o conjunto de tiles fonte.</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Failed to export tileset to target file.</source>
-        <translation>Falha ao exportar o conjunto de blocos para o ficheiro de destino.</translation>
+        <translation>Falha ao exportar o conjunto de tiles para o arquivo de destino.</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Project file &apos;%1&apos; not found.</source>
-        <translation>Ficheiro de projeto &apos;%1&apos; não encontrado.</translation>
+        <translation>Arquivo de projeto &apos;%1&apos; não encontrado.</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -156,7 +156,7 @@
     <message>
         <location line="+5"/>
         <source>Export the specified tileset file to target</source>
-        <translation>Exportar o conjunto de blocos específico para destino</translation>
+        <translation>Exportar o conjunto de tiles específico para destino</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -181,7 +181,7 @@
     <message>
         <location line="+12"/>
         <source>Tileset export formats:</source>
-        <translation>Formatos de exportação de conjunto de blocos:</translation>
+        <translation>Formatos de exportação de conjunto de tiles:</translation>
     </message>
     <message>
         <location line="-112"/>
@@ -191,17 +191,17 @@
     <message>
         <location line="+10"/>
         <source>Export the map with tilesets embedded</source>
-        <translation>Exportar o mapa com conjuntos de blocos incorporados</translation>
+        <translation>Exportar o mapa com conjuntos de tiles incorporados</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the map or tileset with template instances detached</source>
-        <translation>Exportar o mapa ou conjunto de blocos com instâncias de modelo separadas</translation>
+        <translation>Exportar o mapa ou conjunto de tiles com instâncias de modelo separadas</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the map or tileset with types and properties resolved</source>
-        <translation>Exportar o mapa ou conjunto de blocos com tipos e propriedades resolvidos</translation>
+        <translation>Exportar o mapa ou conjunto de tiles com tipos e propriedades resolvidos</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -492,12 +492,12 @@
     <message>
         <location filename="../src/plugins/flare/flareplugin.cpp" line="+106"/>
         <source>Error loading tileset %1, which expands to %2. Path not found!</source>
-        <translation>Erro ao carregar conjunto de blocos &apos;%1&apos;, que expande para %2. Caminho não encontrado!</translation>
+        <translation>Erro ao carregar conjunto de tiles &apos;%1&apos;, que expande para %2. Caminho não encontrado!</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>No tilesets section found before layer section.</source>
-        <translation>Nenhuma seção de conjunto de blocos encontrada antes da seção de camada.</translation>
+        <translation>Nenhuma seção de conjunto de tiles encontrada antes da seção de camada.</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -507,7 +507,7 @@
     <message>
         <location line="+69"/>
         <source>This seems to be no valid flare map. A Flare map consists of at least a header section, a tileset section and one tile layer.</source>
-        <translation>Isto não parece ser um mapa Flare válido. Um mapa Flare consiste em pelo menos uma seção de cabeçalho, uma secção de conjunto de blocos e uma camada de blocos.</translation>
+        <translation>Isto não parece ser um mapa Flare válido. Um mapa Flare consiste em pelo menos uma seção de cabeçalho, uma secção de conjunto de tiles e uma camada de tiles.</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -606,12 +606,12 @@
     <message>
         <location line="+14"/>
         <source>JSON tileset files (*.tsj *.json)</source>
-        <translation>Ficheiros de conjunto de blocos JSON (*.tsj *.json)</translation>
+        <translation>Arquivos de conjunto de tiles JSON (*.tsj *.json)</translation>
     </message>
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
         <source>JSON tileset files [Tiled 1.1] (*.json)</source>
-        <translation>Ficheiros de conjunto de blocos JSON [Tiled 1.1] (*.json)</translation>
+        <translation>Arquivos de conjunto de tiles JSON [Tiled 1.1] (*.json)</translation>
     </message>
 </context>
 <context>
@@ -627,7 +627,7 @@
     <message>
         <location line="+45"/>
         <source>Lua files (*.lua)</source>
-        <translation>Ficheiros Lua (*.lua)</translation>
+        <translation>Arquivos Lua (*.lua)</translation>
     </message>
 </context>
 <context>
@@ -785,17 +785,17 @@
     <message>
         <location line="+8"/>
         <source>Add Automapping Rules Tileset</source>
-        <translation>Adicionar Conjunto de Blocos de Regras de Mapeamento Automático</translation>
+        <translation>Adicionar Conjunto de Tiles de Regras de Mapeamento Automático</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Search Actions...</source>
-        <translation type="unfinished"></translation>
+        <translation>Procurar Ações...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Search actions available in Tiled</source>
-        <translation type="unfinished"></translation>
+        <translation>Procurar ações disponíveis no Tiled</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -880,7 +880,7 @@
     <message>
         <location line="+9"/>
         <source>Tileset &amp;Properties...</source>
-        <translation>&amp;Propriedades do Conjunto de Blocos...</translation>
+        <translation>&amp;Propriedades do Conjunto de Tiles...</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -945,7 +945,7 @@
     <message>
         <location line="+125"/>
         <source>&amp;Add External Tileset...</source>
-        <translation>&amp;Adicionar Conjunto de Blocos Externo...</translation>
+        <translation>&amp;Adicionar Conjunto de Tiles Externo...</translation>
     </message>
     <message>
         <location line="-380"/>
@@ -965,7 +965,7 @@
     <message>
         <location line="+31"/>
         <source>Tileset</source>
-        <translation>Conjunto de Blocos</translation>
+        <translation>Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+262"/>
@@ -1025,7 +1025,7 @@
     <message>
         <location line="+8"/>
         <source>New &amp;Tileset...</source>
-        <translation>Novo &amp;Conjunto de Blocos...</translation>
+        <translation>Novo &amp;Conjunto de Tiles...</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1091,7 +1091,7 @@
     <message>
         <location line="+19"/>
         <source>Not a tileset file.</source>
-        <translation>Não é um ficheiro de conjunto de blocos.</translation>
+        <translation>Não é um arquivo de conjunto de tiles.</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -1128,7 +1128,7 @@ Linha %1, coluna %2</translation>
         <location line="+46"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+180"/>
         <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
-        <translation>Parâmetros de conjunto de blocos inválidos para conjunto de blocos &apos;%1&apos;</translation>
+        <translation>Parâmetros de conjunto de tiles inválidos para conjunto de tiles &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+64"/>
@@ -1205,7 +1205,7 @@ Linha %1, coluna %2</translation>
         <location line="+63"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+33"/>
         <source>Tile used but no tilesets specified</source>
-        <translation>Bloco usado mas nenhum conjunto de blocos foi especificado</translation>
+        <translation>Tile usado, mas nenhum conjunto de tiles foi especificado</translation>
     </message>
     <message>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="-575"/>
@@ -1294,17 +1294,17 @@ Linha %1, coluna %2</translation>
         <location filename="../src/tiled/newtilesetdialog.ui" line="+14"/>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="+256"/>
         <source>New Tileset</source>
-        <translation>Novo Conjunto de Blocos</translation>
+        <translation>Novo Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Tileset</source>
-        <translation>Conjunto de Blocos</translation>
+        <translation>Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>Based on Tileset Image</source>
-        <translation>Com base na Imagem do Conjunto de Blocos</translation>
+        <translation>Com base na Imagem do Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1339,7 +1339,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+129"/>
         <source>Tile width:</source>
-        <translation>Largura do bloco:</translation>
+        <translation>Largura do tile:</translation>
     </message>
     <message>
         <location line="+38"/>
@@ -1368,7 +1368,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+94"/>
         <source>The space at the edges of the tileset.</source>
-        <translation>O espaço nas bordas do conjunto de blocos.</translation>
+        <translation>O espaço nas bordas do conjunto de tiles.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1378,12 +1378,12 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="-45"/>
         <source>Tile height:</source>
-        <translation>Altura do bloco:</translation>
+        <translation>Altura do tile:</translation>
     </message>
     <message>
         <location line="+91"/>
         <source>The space between the tiles.</source>
-        <translation>O espaço entre os blocos.</translation>
+        <translation>O espaço entre os tiles.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -1393,7 +1393,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/newtilesetdialog.cpp" line="-2"/>
         <source>Edit Tileset</source>
-        <translation>Editar Conjunto de Blocos</translation>
+        <translation>Editar Conjunto de Tiles</translation>
     </message>
 </context>
 <context>
@@ -1416,7 +1416,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+10"/>
         <source>New Tileset...</source>
-        <translation>Novo Conjunto de Blocos...</translation>
+        <translation>Novo Conjunto de Tiles...</translation>
     </message>
 </context>
 <context>
@@ -1424,7 +1424,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="+89"/>
         <source>New Tileset...</source>
-        <translation>Novo Conjunto de Blocos...</translation>
+        <translation>Novo Conjunto de Tiles...</translation>
     </message>
 </context>
 <context>
@@ -1615,7 +1615,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="+23"/>
         <source>&amp;Reload tileset images when they change</source>
-        <translation>&amp;Recarregar imagens de conjunto de blocos quando existirem mudanças</translation>
+        <translation>&amp;Recarregar imagens de conjunto de tiles quando existirem mudanças</translation>
     </message>
     <message>
         <location line="+116"/>
@@ -1666,7 +1666,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="-7"/>
         <source>Embed tilesets</source>
-        <translation>Incorporar conjuntos de blocos</translation>
+        <translation>Incorporar conjuntos de tiles</translation>
     </message>
     <message>
         <location line="+130"/>
@@ -2590,13 +2590,13 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+53"/>
         <source>Tile not from the same tileset</source>
-        <translation>O bloco não é do mesmo conjunto de blocos</translation>
+        <translation>O tile não é do mesmo conjunto de tiles</translation>
     </message>
     <message>
         <location filename="../src/tiled/editabletile.cpp" line="-68"/>
         <location line="+16"/>
         <source>Tileset needs to be an image collection</source>
-        <translation>Conjuntos de blocos têm que ser uma coleção de imagens</translation>
+        <translation>Conjuntos de tiles têm que ser uma coleção de imagens</translation>
     </message>
     <message>
         <location line="+27"/>
@@ -2616,27 +2616,27 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+62"/>
         <source>Can only add tiles to an image collection tileset</source>
-        <translation>Apenas se podem adicionar blocos a um conjunto de blocos de coleção de imagens</translation>
+        <translation>Apenas se podem adicionar blocos a um conjunto de tiles de coleção de imagens</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Can only remove tiles from an image collection tileset</source>
-        <translation>Apenas se podem remover blocos de um conjunto de blocos de coleção de imagens</translation>
+        <translation>Apenas se podem remover blocos de um conjunto de tiles de coleção de imagens</translation>
     </message>
     <message>
         <location line="+68"/>
         <source>Can&apos;t set the image of an image collection tileset</source>
-        <translation>Não se pode definir a imagem de um conjunto de blocos de coleção de imagens</translation>
+        <translation>Não se pode definir a imagem de um conjunto de tiles de coleção de imagens</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Can&apos;t set tile size on an image collection tileset</source>
-        <translation>Não se pode definir o tamanho do bloco de um conjunto de blocos de coleção de imagens</translation>
+        <translation>Não se pode definir o tamanho do tile de um conjunto de tiles de coleção de imagens</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Can&apos;t set column count for image-based tilesets</source>
-        <translation>Não é possível definir a contagem de colunas para conjuntos de blocos baseados em imagem</translation>
+        <translation>Não é possível definir a contagem de colunas para conjuntos de tiles baseados em imagem</translation>
     </message>
     <message>
         <location line="+78"/>
@@ -2647,7 +2647,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+4"/>
         <source>Tile not from this tileset</source>
-        <translation>Esse bloco não é deste conjunto de blocos</translation>
+        <translation>Esse tile não é deste conjunto de tiles</translation>
     </message>
     <message>
         <location filename="../src/tiled/scriptedfileformat.cpp" line="+102"/>
@@ -2704,7 +2704,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+6"/>
         <source>Can&apos;t reload an embedded tileset</source>
-        <translation>Não é possível recarregar um conjunto de blocos incorporado</translation>
+        <translation>Não é possível recarregar um conjunto de tiles incorporado</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -2882,7 +2882,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+17"/>
         <source>Error reading tileset</source>
-        <translation>Erro ao ler conjunto de blocos</translation>
+        <translation>Erro ao ler conjunto de tiles</translation>
     </message>
     <message>
         <location line="+35"/>
@@ -3154,7 +3154,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+4"/>
         <source>Can&apos;t create template with embedded tileset</source>
-        <translation>Não é possível criar modelo com conjunto de blocos incorporado</translation>
+        <translation>Não é possível criar modelo com conjunto de tiles incorporado</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -3411,17 +3411,17 @@ Linha %1, coluna %2</translation>
     <message>
         <location filename="../src/tiled/brokenlinks.cpp" line="+269"/>
         <source>Tileset</source>
-        <translation>Conjunto de Blocos</translation>
+        <translation>Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Template tileset</source>
-        <translation>Modelo de conjunto de blocos</translation>
+        <translation>Modelo de conjunto de tiles</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tileset image</source>
-        <translation>Imagem de conjunto de blocos</translation>
+        <translation>Imagem de conjunto de tiles</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3476,7 +3476,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+7"/>
         <source>Open Tileset...</source>
-        <translation>Abrir Conjunto de Blocos...</translation>
+        <translation>Abrir Conjunto de Tiles...</translation>
     </message>
     <message>
         <location line="+36"/>
@@ -3502,7 +3502,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="-12"/>
         <source>Locate External Tileset</source>
-        <translation>Localizar Conjunto de Blocos Externo</translation>
+        <translation>Localizar Conjunto de Tiles Externo</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -3512,7 +3512,7 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+33"/>
         <source>Error Reading Tileset</source>
-        <translation>Erro na Leitura do Conjunto de Blocos</translation>
+        <translation>Erro na Leitura do Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -3860,12 +3860,12 @@ Linha %1, coluna %2</translation>
     <message>
         <location line="+321"/>
         <source>Tileset Columns Changed</source>
-        <translation>Colunas de Conjunto de Blocos Alteradas</translation>
+        <translation>Colunas de Conjunto de Tiles Alteradas</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The number of tile columns in the tileset &apos;%1&apos; appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
-        <translation>A quantidade de colunas de blocos no conjunto de blocos &apos;%1&apos; parecem ter mudado de %2 para %3. Deseja ajustar as referências dos blocos?</translation>
+        <translation>A quantidade de colunas de tiles no conjunto de tiles &apos;%1&apos; parecem ter mudado de %2 para %3. Deseja ajustar as referências dos tiles?</translation>
     </message>
 </context>
 <context>
@@ -4178,7 +4178,7 @@ Deseja substituí-lo?</translation>
     <message>
         <location filename="../src/tiled/actionsearch.cpp" line="+242"/>
         <source>Search actions...</source>
-        <translation type="unfinished"></translation>
+        <translation>Procurar ações...</translation>
     </message>
 </context>
 <context>
@@ -4405,7 +4405,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+14"/>
         <source>Error Exporting Tileset</source>
-        <translation>Erro ao Exportar Conjunto de Blocos</translation>
+        <translation>Erro ao Exportar Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="-235"/>
@@ -4471,7 +4471,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+233"/>
         <source>Add External Tileset(s)</source>
-        <translation>Adicionar Conjunto(s) de Blocos Externo(s)</translation>
+        <translation>Adicionar Conjunto(s) de Tiles Externo(s)</translation>
     </message>
     <message>
         <location line="+119"/>
@@ -4624,17 +4624,17 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+10"/>
         <source>Tileset Changes</source>
-        <translation>Mudanças no Conjunto de Blocos</translation>
+        <translation>Mudanças no Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+193"/>
         <source>Group Layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupo de Camadas %1</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>Failed to load tileset &apos;%1&apos;</source>
-        <translation>Falha ao carregar conjunto de blocos &apos;%1&apos;</translation>
+        <translation>Falha ao carregar conjunto de tiles &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -4874,13 +4874,13 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+200"/>
         <source>Unrecognized tileset format.</source>
-        <translation>Formato de conjunto de blocos não reconhecido.</translation>
+        <translation>Formato de conjunto de tiles não reconhecido.</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+5"/>
         <source>Error Reading Tileset</source>
-        <translation>Erro na Leitura do Conjunto de Blocos</translation>
+        <translation>Erro na Leitura do Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4891,8 +4891,9 @@ Por favor, selecione um formato específico.</translation>
         <location line="+17"/>
         <source>Add %n Tileset(s)</source>
         <translation>
-            <numerusform>Adicionar %n Conjunto de Blocos</numerusform>
-            <numerusform>Adicionar %n Conjuntos de Blocos</numerusform>
+            <numerusform>Adicionar %n Conjunto de Tiles</numerusform>
+            <numerusform>Adicionar %n Conjuntos de Tiles</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -4995,17 +4996,17 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="-6"/>
         <source>Failed to load tileset image &apos;%1&apos;.</source>
-        <translation>Erro no carregamento da imagem de conjunto de blocos &apos;%1&apos;.</translation>
+        <translation>Erro no carregamento da imagem de conjunto de tiles &apos;%1&apos;.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>No tiles found in the tileset image when using the given tile size, margin and spacing!</source>
-        <translation>Blocos não encontrados na imagem de conjunto de blocos usando o tamanho, margem e espaçamento das tiles!</translation>
+        <translation>Tiles não encontrados na imagem de conjunto de tiles usando o tamanho, margem e espaçamento das tiles!</translation>
     </message>
     <message>
         <location line="+47"/>
         <source>Tileset Image</source>
-        <translation>Imagem de Conjunto de Blocos</translation>
+        <translation>Imagem de Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+31"/>
@@ -5098,7 +5099,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/wangdock.cpp" line="+72"/>
         <source>&lt;p&gt;No tileset with Terrain Sets available.&lt;/p&gt;&lt;p&gt;Open a tileset with a Terrain Set or set up a new Terrain Set to be able to use the Terrain Brush or the Terrain Fill Mode.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Conjunto de Blocos com Conjunto de Terreno não disponível.&lt;/p&gt;&lt;p&gt;Abra um Conjunto de Blocos com um Conjunto de Terreno ou prepare um novo Conjunto de Terreno para ser capaz de usar o Pincel de Terreno ou o Modo de Preenchimento de Terreno.&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Conjunto de Tiles com Conjunto de Terreno não disponível.&lt;/p&gt;&lt;p&gt;Abra um Conjunto de Tiles com um Conjunto de Terreno ou prepare um novo Conjunto de Terreno para ser capaz de usar o Pincel de Terreno ou o Modo de Preenchimento de Terreno.&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -5324,12 +5325,12 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+16"/>
         <source>Select in Tilesets View</source>
-        <translation>Selecione na Visualização de Conjuntos de Blocos</translation>
+        <translation>Selecione na Visualização de Conjuntos de Tiles</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Add Tileset to Map</source>
-        <translation>Adicionar Conjunto de Blocos ao Mapa</translation>
+        <translation>Adicionar Conjunto de Tiles ao Mapa</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -5687,7 +5688,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+9"/>
         <source>Tileset</source>
-        <translation>Conjunto de Blocos</translation>
+        <translation>Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -5848,7 +5849,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="-729"/>
         <source>Error Reading Tileset</source>
-        <translation>Erro na Leitura do Conjunto de Blocos</translation>
+        <translation>Erro na Leitura do Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+324"/>
@@ -6015,7 +6016,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+1"/>
         <source>Tileset</source>
-        <translation>Conjunto de Blocos</translation>
+        <translation>Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6126,7 +6127,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+5"/>
         <source>Draw fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Desenhar preenchimento</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -6216,7 +6217,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/scriptdialog.cpp" line="+26"/>
         <source>Script</source>
-        <translation type="unfinished"></translation>
+        <translation>Script</translation>
     </message>
 </context>
 <context>
@@ -6446,7 +6447,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/templatesdock.cpp" line="+310"/>
         <source>Open Tileset</source>
-        <translation>Abrir Conjunto de Blocos</translation>
+        <translation>Abrir Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -6457,7 +6458,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="-4"/>
         <source>Locate Tileset</source>
-        <translation>Localizar Conjunto de Blocos</translation>
+        <translation>Localizar Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+65"/>
@@ -6472,12 +6473,12 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+4"/>
         <source>Locate External Tileset</source>
-        <translation>Localizar Conjunto de Blocos Externo</translation>
+        <translation>Localizar Conjunto de Tiles Externo</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Error Reading Tileset</source>
-        <translation>Erro na Leitura do Conjunto de Blocos</translation>
+        <translation>Erro na Leitura do Conjunto de Tiles</translation>
     </message>
 </context>
 <context>
@@ -6651,89 +6652,89 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="-308"/>
         <source>All Files (*)</source>
-        <translation>Todos os Ficheiros (*)</translation>
+        <translation>Todos os Arquivos(*)</translation>
     </message>
     <message>
         <location line="+11"/>
         <location line="+136"/>
         <source>Replace Tileset</source>
-        <translation>Substituir Conjunto de Blocos</translation>
+        <translation>Substituir Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="-121"/>
         <source>Error Reading Tileset</source>
-        <translation>Erro na Leitura do Conjunto de Blocos</translation>
+        <translation>Erro na Leitura do Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+42"/>
         <source>Remove Tileset</source>
-        <translation>Remover Conjunto de Blocos</translation>
+        <translation>Remover Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The tileset &quot;%1&quot; is still in use by the map!</source>
-        <translation>O conjunto de blocos &quot;%1&quot; ainda está em uso no mapa!</translation>
+        <translation>O conjunto de tiles &quot;%1&quot; ainda está em uso no mapa!</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Remove this tileset and all references to the tiles in this tileset?</source>
-        <translation>Remover este conjunto de blocos e todas as referências dos blocos neste conjunto de blocos?</translation>
+        <translation>Remover este conjunto de tiles e todas as referências dos tiles neste conjunto de tiles?</translation>
     </message>
     <message>
         <location line="+68"/>
         <source>Tilesets</source>
-        <translation>Conjuntos de Blocos</translation>
+        <translation>Conjuntos de Tiles</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Tileset</source>
-        <translation>Novo Conjunto de Blocos</translation>
+        <translation>Novo Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Embed Tileset</source>
-        <translation>Incorporar Conjunto d&amp;e Blocos</translation>
+        <translation>Incorporar Conjunto d&amp;e Tiles</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Export Tileset As...</source>
-        <translation>&amp;Exportar Conjunto de Blocos Como...</translation>
+        <translation>&amp;Exportar Conjunto de Tiles Como...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Edit Tile&amp;set</source>
-        <translation>Editar Conjunto de Bloco&amp;s</translation>
+        <translation>Editar Conjunto de Tile&amp;s</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Remove Tileset</source>
-        <translation>&amp;Remover Conjunto de Blocos</translation>
+        <translation>&amp;Remover Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select Next Tileset</source>
-        <translation>Selecionar Próximo Conjunto de Blocos</translation>
+        <translation>Selecionar Próximo Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select Previous Tileset</source>
-        <translation>Selecionar o Conjunto de Blocos Anterior</translation>
+        <translation>Selecionar o Conjunto de Tiles Anterior</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Dynamically Wrap Tiles</source>
-        <translation>Embrulhar Blocos Dinamicamente</translation>
+        <translation>Embrulhar Tiles Dinamicamente</translation>
     </message>
     <message>
         <location line="+271"/>
         <location line="+17"/>
         <source>Export Tileset</source>
-        <translation>Exportar Conjunto de Blocos</translation>
+        <translation>Exportar Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Error saving tileset: %1</source>
-        <translation>Erro ao salvar o conjunto de blocos: %1</translation>
+        <translation>Erro ao salvar o conjunto de tiles: %1</translation>
     </message>
 </context>
 <context>
@@ -6741,12 +6742,12 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/tilesetdocument.cpp" line="+111"/>
         <source>Tileset format &apos;%1&apos; not found</source>
-        <translation>Formato de conjunto de blocos &apos;%1&apos; não encontrado</translation>
+        <translation>Formato de conjunto de tiless &apos;%1&apos; não encontrado</translation>
     </message>
     <message>
         <location line="+38"/>
         <source>Tileset format &apos;%s&apos; not found</source>
-        <translation>O formato de conjunto de blocos &apos;%s&apos; não foi encontrado</translation>
+        <translation>O formato de conjunto de tiles &apos;%s&apos; não foi encontrado</translation>
     </message>
     <message>
         <location line="+83"/>
@@ -6756,12 +6757,12 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+209"/>
         <source>Failed to load tileset image &apos;%1&apos;</source>
-        <translation>Falha ao carregar imagem de conjunto de blocos &apos;%1&apos;</translation>
+        <translation>Falha ao carregar imagem de conjunto de tiles &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Failed to load tile image &apos;%1&apos;</source>
-        <translation>Falha ao carregar imagem de bloco &apos;%1&apos;</translation>
+        <translation>Falha ao carregar imagem de tiles &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -6770,7 +6771,7 @@ Por favor, selecione um formato específico.</translation>
         <location filename="../src/tiled/tileseteditor.cpp" line="-807"/>
         <location line="+494"/>
         <source>Tileset</source>
-        <translation>Conjunto de Blocos</translation>
+        <translation>Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6778,38 +6779,38 @@ Por favor, selecione um formato específico.</translation>
         <location line="+29"/>
         <location line="+23"/>
         <source>Add Tiles</source>
-        <translation>Adicionar Blocos</translation>
+        <translation>Adicionar Tiles</translation>
     </message>
     <message>
         <location line="-75"/>
         <location line="+197"/>
         <source>Remove Tiles</source>
-        <translation>Remover Blocos</translation>
+        <translation>Remover Tiles</translation>
     </message>
     <message>
         <location line="-196"/>
         <source>Rearrange Tiles</source>
-        <translation>Reorganizar Blocos</translation>
+        <translation>Reorganizar Tiles</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tile Animation Editor</source>
-        <translation>Editor de Animação de Blocos</translation>
+        <translation>Editor de Animação de Tiles</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Dynamically Wrap Tiles</source>
-        <translation>Embrulhar Blocos Dinamicamente</translation>
+        <translation>Embrulhar Tiles Dinamicamente</translation>
     </message>
     <message>
         <location line="+47"/>
         <source>Apply this action to all tiles</source>
-        <translation>Aplicar esta ação a todos os blocos</translation>
+        <translation>Aplicar esta ação a todos os tiles</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Tile &quot;%1&quot; already exists in the tileset!</source>
-        <translation>o Bloco &quot;%1&quot; já existe no Conjunto de Blocos!</translation>
+        <translation>O Tile &quot;%1&quot; já existe no Conjunto de Tiles!</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -6824,12 +6825,12 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+122"/>
         <source>Tiles to be removed are in use by open maps!</source>
-        <translation>Blocos a remover são usados em mapas abertos!</translation>
+        <translation>Os tiles a ser removidos estão sendo usados em mapas abertos!</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Remove all references to these tiles?</source>
-        <translation>Remover todas as referências a estes blocos?</translation>
+        <translation>Remover todas as referências a estes tiles?</translation>
     </message>
     <message>
         <location line="+88"/>
@@ -6860,12 +6861,12 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+22"/>
         <source>Tile &amp;Properties...</source>
-        <translation>&amp;Propriedades do Bloco...</translation>
+        <translation>&amp;Propriedades do Tile...</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>&amp;Swap Tiles</source>
-        <translation>Trocar Bloco&amp;s</translation>
+        <translation>Trocar Tile&amp;s</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -6875,7 +6876,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+8"/>
         <source>Select &amp;All Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecion&amp;ar Todos os Tiles</translation>
     </message>
 </context>
 <context>
@@ -6891,7 +6892,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+27"/>
         <source>Tiled tileset files (*.tsx *.xml)</source>
-        <translation>Ficheiros de conjunto de blocos Tiled (*.tsx *.xml)</translation>
+        <translation>Ficheiros de conjunto de tiles Tiled (*.tsx *.xml)</translation>
     </message>
 </context>
 <context>
@@ -7176,72 +7177,72 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/plugins/tscn/tscnplugin.cpp" line="-484"/>
         <source>Could not find .godot project in file path for file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível encontrar o projeto .godot no diretório do arquivo %1</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>All files must share the same project root. File &apos;%1&apos; does not share project root &apos;%2&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Todos os arquivos devem compartilhar a mesma raiz de projeto. O arquivo &apos;%1&apos; não compartilha a raiz de projeto &apos;%2&apos;.</translation>
     </message>
     <message>
         <location line="+34"/>
         <source>Cannot export tileset &apos;%1&apos; because the Godot exporter does not support collection-type tilesets.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não é possível exportar o conjunto de tiles &apos;%1&apos;, pois o exportador para o Godot não suporta coleções de conjuntos de tiles.</translation>
     </message>
     <message>
         <location line="+58"/>
         <source>The Godot exporter does not yet support objects</source>
-        <translation type="unfinished"></translation>
+        <translation>O exportador para o Godot ainda não suporta objetos</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>The Godot exporter does not yet support image layers</source>
-        <translation type="unfinished"></translation>
+        <translation>O exportador para o Godot ainda não suporta imagens em camadas</translation>
     </message>
     <message>
         <location line="+70"/>
         <source>Godot exporter only supports collisions that are rectangles or polygons.</source>
-        <translation type="unfinished"></translation>
+        <translation>O exportador para o Godot só suporta colisões que são retângulos e polígonos.</translation>
     </message>
     <message>
         <location line="+132"/>
         <source>Tile animations must flow left-to-right, top-to-bottom, with no skipped tiles.</source>
-        <translation type="unfinished"></translation>
+        <translation>Animações de tiles devem seguir da esquerda para a direita, de cima pra baixo, sem pular tiles.</translation>
     </message>
     <message>
         <location line="+86"/>
         <source>Godot only supports hexagonal maps where the Hex Side Length is exactly half its height. For a tile height of %1, the Hex Side Length should be set to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>O Godot apenas suporta mapas hexagonais em que o comprimento do lado hexagonal é exatamente metade da sua altura. Para uma altura de tile de %1, o comprimento do lado hexagonal deve ser definido como %2.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Unsupported tile orientation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Orientação de tile não suportada.</translation>
     </message>
     <message>
         <location line="+68"/>
         <source>tilesetResPath must be in the form of &apos;res://&lt;filename&gt;.tres&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>O Diretório de Recursos do Conjunto de Tiles deve estar no formato &apos;res://&lt;nome_do_arquivo&gt;.tres&apos;.</translation>
     </message>
     <message>
         <location line="+77"/>
         <source>Cannot use tile %1 from tileset %2 because it is reserved as an animation frame.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não é possível usar o tile %1 do conjunto de tiles %2, pois este está reservado como quadro de animação.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Hex tiles that are rotated by 120° degrees are not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiles hexagonais rotacionados a 120° graus não são suportados.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Map uses flipped/rotated tiles. The tileset must have the custom exportAlternates property enabled to export this map.</source>
-        <translation type="unfinished"></translation>
+        <translation>O mapa usar tiles girados/espelhados. O conjunto de tiles deve ter a propriedade customizada exportAlternates para exportar esse mapa.</translation>
     </message>
     <message>
         <location line="+53"/>
         <source>Godot 4 Scene files (*.tscn)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arquivos de Cena do Godot 4 (*.tscn)</translation>
     </message>
 </context>
 <context>
@@ -7360,17 +7361,17 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/addremovetileset.cpp" line="+61"/>
         <source>Add Tileset</source>
-        <translation>Adicionar Conjunto de Blocos</translation>
+        <translation>Adicionar Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Remove Tileset</source>
-        <translation>Remover Conjunto de Blocos</translation>
+        <translation>Remover Conjunto de Tiles</translation>
     </message>
     <message>
         <location filename="../src/tiled/tilesetchanges.cpp" line="+35"/>
         <source>Change Tileset Name</source>
-        <translation>Mudar Nome do Conjunto de Blocos</translation>
+        <translation>Mudar Nome do Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -7380,7 +7381,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+48"/>
         <source>Edit Tileset</source>
-        <translation>Editar Conjunto de Blocos</translation>
+        <translation>Editar Conjunto de Tiles</translation>
     </message>
     <message>
         <location line="+36"/>
@@ -7410,7 +7411,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+20"/>
         <source>Change Tileset</source>
-        <translation>Alterar Conjunto de Blocos</translation>
+        <translation>Alterar Conjunto de Tiles</translation>
     </message>
     <message>
         <location filename="../src/tiled/movemapobjecttogroup.cpp" line="+33"/>
@@ -7660,7 +7661,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/replacetileset.cpp" line="+33"/>
         <source>Replace Tileset</source>
-        <translation>Substituir Conjunto de Blocos</translation>
+        <translation>Substituir Conjunto de Tiles</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/tiled/flipmapobjects.cpp" line="+47"/>
@@ -7679,7 +7680,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/tilesetdocument.cpp" line="-404"/>
         <source>Reload Tileset</source>
-        <translation>Recarregar Conjunto de Blocos</translation>
+        <translation>Recarregar Conjunto de Tiles</translation>
     </message>
     <message>
         <location filename="../src/tiled/replacetemplate.cpp" line="+34"/>
