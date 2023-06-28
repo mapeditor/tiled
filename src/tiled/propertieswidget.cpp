@@ -235,8 +235,10 @@ void PropertiesWidget::pasteProperties()
 
     if (!commands.isEmpty()) {
         QUndoStack *undoStack = mDocument->undoStack();
-        undoStack->beginMacro(tr("Paste Property/Properties", nullptr,
-                                 pastedProperties.size()));
+        undoStack->beginMacro(QCoreApplication::translate("Tiled::PropertiesDock",
+                                                          "Paste Property/Properties",
+                                                          nullptr,
+                                                          pastedProperties.size()));
 
         for (QUndoCommand *command : commands)
             undoStack->push(command);
@@ -285,8 +287,10 @@ void PropertiesWidget::removeProperties()
         propertyNames.append(item->property()->propertyName());
 
     QUndoStack *undoStack = mDocument->undoStack();
-    undoStack->beginMacro(tr("Remove Property/Properties", nullptr,
-                             propertyNames.size()));
+    undoStack->beginMacro(QCoreApplication::translate("Tiled::PropertiesDock",
+                                                      "Remove Property/Properties",
+                                                      nullptr,
+                                                      propertyNames.size()));
 
     for (const QString &name : propertyNames) {
         undoStack->push(new RemoveProperty(mDocument,
@@ -308,9 +312,9 @@ void PropertiesWidget::renameProperty()
     QInputDialog *dialog = new QInputDialog(mPropertyBrowser);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->setInputMode(QInputDialog::TextInput);
-    dialog->setLabelText(tr("Name:"));
+    dialog->setLabelText(QCoreApplication::translate("Tiled::PropertiesDock", "Name:"));
     dialog->setTextValue(oldName);
-    dialog->setWindowTitle(tr("Rename Property"));
+    dialog->setWindowTitle(QCoreApplication::translate("Tiled::PropertiesDock", "Rename Property"));
     connect(dialog, &QInputDialog::textValueSelected, this, &PropertiesWidget::renamePropertyTo);
     dialog->open();
 }
@@ -369,7 +373,7 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
             if (auto mapDocument = qobject_cast<MapDocument*>(mDocument)) {
                 const DisplayObjectRef objectRef(value.value<ObjectRef>(), mapDocument);
 
-                contextMenu.addAction(tr("Go to Object"), [=] {
+                contextMenu.addAction(QCoreApplication::translate("Tiled::PropertiesDock", "Go to Object"), [=] {
                     if (auto object = objectRef.object()) {
                         objectRef.mapDocument->setSelectedObjects({object});
                         emit objectRef.mapDocument->focusMapObjectRequested(object);
@@ -382,14 +386,14 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
     if (!contextMenu.isEmpty())
         contextMenu.addSeparator();
 
-    QAction *cutAction = contextMenu.addAction(tr("Cu&t"), this, &PropertiesWidget::cutProperties);
-    QAction *copyAction = contextMenu.addAction(tr("&Copy"), this, &PropertiesWidget::copyProperties);
-    QAction *pasteAction = contextMenu.addAction(tr("&Paste"), this, &PropertiesWidget::pasteProperties);
+    QAction *cutAction = contextMenu.addAction(QCoreApplication::translate("Tiled::PropertiesDock", "Cu&t"), this, &PropertiesWidget::cutProperties);
+    QAction *copyAction = contextMenu.addAction(QCoreApplication::translate("Tiled::PropertiesDock", "&Copy"), this, &PropertiesWidget::copyProperties);
+    QAction *pasteAction = contextMenu.addAction(QCoreApplication::translate("Tiled::PropertiesDock", "&Paste"), this, &PropertiesWidget::pasteProperties);
     contextMenu.addSeparator();
     QMenu *convertMenu = nullptr;
 
     if (customPropertiesSelected) {
-        convertMenu = contextMenu.addMenu(tr("Convert To"));
+        convertMenu = contextMenu.addMenu(QCoreApplication::translate("Tiled::PropertiesDock", "Convert To"));
         contextMenu.addAction(mActionRemoveProperty);
         contextMenu.addAction(mActionRenameProperty);
     } else {
@@ -455,7 +459,7 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
 
     if (selectedItem && convertMenu && selectedItem->parentWidget() == convertMenu) {
         QUndoStack *undoStack = mDocument->undoStack();
-        undoStack->beginMacro(tr("Convert Property/Properties", nullptr, items.size()));
+        undoStack->beginMacro(QCoreApplication::translate("Tiled::PropertiesDock", "Convert Property/Properties", nullptr, items.size()));
 
         for (const QString &propertyName : propertyNames) {
             QVariant propertyValue = object->property(propertyName);

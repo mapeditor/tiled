@@ -26,6 +26,7 @@
 #include "projectdocument.h"
 #include "varianteditorfactory.h"
 #include "variantpropertymanager.h"
+
 #include <QtGroupPropertyManager>
 
 namespace Tiled {
@@ -83,7 +84,7 @@ ProjectPropertiesDialog::ProjectPropertiesDialog(Project &project, QWidget *pare
     ui->propertyBrowser->addProperty(filesGroupProperty);
 
     ui->propertiesWidget->setDocument(mPropertiesProjectDocument);
-}       
+}
 
 ProjectPropertiesDialog::~ProjectPropertiesDialog()
 {

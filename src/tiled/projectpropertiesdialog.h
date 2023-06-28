@@ -20,7 +20,6 @@
 
 #pragma once
 
-#include "project.h"
 #include "tiled.h"
 
 #include <QDialog>
@@ -33,6 +32,7 @@ class ProjectPropertiesDialog;
 
 namespace Tiled {
 
+class Project;
 class ProjectDocument;
 
 class ProjectPropertiesDialog : public QDialog
