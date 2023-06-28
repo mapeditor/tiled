@@ -462,8 +462,8 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
         };
 
         WangFiller wangFiller(*mWangSet, mapDocument()->renderer());
-
-        wangFiller.fillRegion(*previewLayer, *tileLayer, paintedRegion);
+        wangFiller.setRegion(paintedRegion);
+        wangFiller.apply(*previewLayer, *tileLayer);
 
         preview->addLayer(std::move(previewLayer));
         preview->addTileset(mWangSet->tileset()->sharedFromThis());

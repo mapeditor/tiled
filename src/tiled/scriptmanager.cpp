@@ -49,6 +49,7 @@
 #include "tilecollisiondock.h"
 #include "tilelayer.h"
 #include "tilelayeredit.h"
+#include "tilelayerwangedit.h"
 #include "tilesetdock.h"
 #include "tileseteditor.h"
 
@@ -121,11 +122,13 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<ScriptedTool*>();
     qRegisterMetaType<TileCollisionDock*>();
     qRegisterMetaType<TileLayerEdit*>();
+    qRegisterMetaType<TileLayerWangEdit*>();
     qRegisterMetaType<TilesetDock*>();
     qRegisterMetaType<TilesetEditor*>();
     qRegisterMetaType<ScriptMapFormatWrapper*>();
     qRegisterMetaType<ScriptTilesetFormatWrapper*>();
     qRegisterMetaType<ScriptImage*>();
+    qRegisterMetaType<WangIndex::Value>("WangIndex");
     connect(&mWatcher, &FileSystemWatcher::pathsChanged,
             this, &ScriptManager::scriptFilesChanged);
 
@@ -396,6 +399,7 @@ void ScriptManager::initialize()
     globalObject.setProperty(QStringLiteral("TileMap"), engine->newQMetaObject<EditableMap>());
     globalObject.setProperty(QStringLiteral("Tileset"), engine->newQMetaObject<EditableTileset>());
     globalObject.setProperty(QStringLiteral("WangSet"), engine->newQMetaObject<EditableWangSet>());
+    globalObject.setProperty(QStringLiteral("WangIndex"), engine->newQMetaObject(&WangIndex::staticMetaObject));
 
     registerBase64(engine);
     registerDialog(engine);

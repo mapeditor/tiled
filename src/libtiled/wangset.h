@@ -1,6 +1,7 @@
 /*
  * wangset.h
  * Copyright 2017, Benjamin Trotter <bdtrotte@ucsc.edu>
+ *
  * This file is part of libtiled.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -277,7 +278,7 @@ public:
 
     QList<WangTile> sortedWangTiles() const;
 
-    WangId wangIdFromSurrounding(const WangId surroundingWangIds[]) const;
+    static WangId wangIdFromSurrounding(const WangId surroundingWangIds[]);
     WangId wangIdFromSurrounding(const Cell surroundingCells[]) const;
 
     WangId wangIdOfTile(const Tile *tile) const;

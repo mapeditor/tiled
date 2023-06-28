@@ -1,6 +1,8 @@
 /*
  * wangfiller.cpp
  * Copyright 2017, Benjamin Trotter <bdtrotte@ucsc.edu>
+ * Copyright 2020-2023, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2023, a-morphous
  *
  * This file is part of Tiled.
  *
@@ -40,12 +42,79 @@ static constexpr QPoint aroundTilePoints[WangId::NumIndexes] = {
     QPoint(-1, -1)
 };
 
+
 WangFiller::WangFiller(const WangSet &wangSet,
                        const MapRenderer *mapRenderer)
     : mWangSet(wangSet)
     , mMapRenderer(mapRenderer)
     , mHexagonalRenderer(dynamic_cast<const HexagonalRenderer*>(mapRenderer))
 {
+}
+
+void WangFiller::setRegion(const QRegion &region)
+{
+    mFillRegion.region = region;
+}
+
+void WangFiller::setWangIndex(QPoint pos, WangId::Index index, int color)
+{
+    // Mark this cell as part of the region to process
+    mFillRegion.region += QRect(pos, pos);
+
+    // Set the requested color at the given index
+    auto &grid = mFillRegion.grid;
+    CellInfo cell = grid.get(pos);
+    cell.desired.setIndexColor(index, color);
+    cell.mask.setIndexColor(index, WangId::INDEX_MASK);
+    grid.set(pos, cell);
+}
+
+void WangFiller::setCorner(QPoint vertexPos, int color)
+{
+    if (mHexagonalRenderer) {
+        const QPoint topLeft = mHexagonalRenderer->topLeft(vertexPos.x(), vertexPos.y());
+
+        setWangIndex(mHexagonalRenderer->topRight(vertexPos.x(), vertexPos.y()), WangId::BottomLeft, color);
+        setWangIndex(vertexPos, WangId::TopLeft, color);
+        setWangIndex(topLeft, WangId::TopRight, color);
+        setWangIndex(mHexagonalRenderer->topRight(topLeft.x(), topLeft.y()), WangId::BottomRight, color);
+    } else {
+        setWangIndex(vertexPos + QPoint( 0, -1), WangId::BottomLeft, color);
+        setWangIndex(vertexPos + QPoint( 0,  0), WangId::TopLeft, color);
+        setWangIndex(vertexPos + QPoint(-1,  0), WangId::TopRight, color);
+        setWangIndex(vertexPos + QPoint(-1, -1), WangId::BottomRight, color);
+    }
+}
+
+void WangFiller::setEdge(QPoint pos, WangId::Index index, int color)
+{
+    setWangIndex(pos, index, color);
+
+    const auto oppositeIndex = WangId::oppositeIndex(index);
+    QPoint dirPoint;
+
+    if (mHexagonalRenderer) {
+        switch (index) {
+        case WangId::Top:
+            dirPoint = mHexagonalRenderer->topRight(pos.x(), pos.y());
+            break;
+        case WangId::Right:
+            dirPoint = mHexagonalRenderer->bottomRight(pos.x(), pos.y());
+            break;
+        case WangId::Bottom:
+            dirPoint = mHexagonalRenderer->bottomLeft(pos.x(), pos.y());
+            break;
+        case WangId::Left:
+            dirPoint = mHexagonalRenderer->topLeft(pos.x(), pos.y());
+            break;
+        default:    // Other color indexes not handled when painting edges
+            return;
+        }
+    } else {
+        dirPoint = pos + aroundTilePoints[index];
+    }
+
+    setWangIndex(dirPoint, oppositeIndex, color);
 }
 
 static void getSurroundingPoints(QPoint point,
@@ -100,11 +169,11 @@ static void updateToAdjacent(WangFiller::CellInfo &info, WangId adjacent, int po
     }
 }
 
-void WangFiller::fillRegion(TileLayer &target,
-                            const TileLayer &back,
-                            const QRegion &region,
-                            Grid<CellInfo> grid) const
+void WangFiller::apply(TileLayer &target, const TileLayer &back)
 {
+    auto &grid = mFillRegion.grid;
+    auto &region = mFillRegion.region;
+
     if (mCorrectionsEnabled) {
         // Determine the desired WangId for all tiles in the region.
         for (const QRect &rect : region) {
@@ -230,6 +299,8 @@ void WangFiller::fillRegion(TileLayer &target,
             resolve(p.x(), p.y());
         processing.clear();
     }
+
+    mFillRegion = FillRegion();
 }
 
 WangId WangFiller::wangIdFromSurroundings(const TileLayer &back,
@@ -335,7 +406,7 @@ bool WangFiller::findBestMatch(const TileLayer &target,
                 CellInfo adjacentInfo = grid.get(p);
                 updateToAdjacent(adjacentInfo, resultWangId, WangId::oppositeIndex(i));
 
-                if (!mWangSet.wangIdIsUsed(adjacentInfo.desired, adjacentInfo.mask)) {
+                if (adjacentInfo.desired && !mWangSet.wangIdIsUsed(adjacentInfo.desired, adjacentInfo.mask)) {
                     discard = true;
                     break;
                 }

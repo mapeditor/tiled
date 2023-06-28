@@ -1,6 +1,7 @@
 /*
  * wangset.cpp
  * Copyright 2017, Benjamin Trotter <bdtrotte@ucsc.edu>
+ *
  * This file is part of libtiled.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -218,7 +219,7 @@ bool WangId::hasEdgeWithColor(int value) const
 /**
  * Rotates the wang Id clockwise by (90 * rotations) degrees.
  * Meaning with one rotation, the top edge becomes the right edge,
- * and the top right corner, becomes the top bottom.
+ * and the top right corner, becomes the bottom right.
  */
 void WangId::rotate(int rotations)
 {
@@ -727,7 +728,7 @@ QList<WangTile> WangSet::sortedWangTiles() const
  *      6|X|2
  *      5|4|3
  */
-WangId WangSet::wangIdFromSurrounding(const WangId surroundingWangIds[]) const
+WangId WangSet::wangIdFromSurrounding(const WangId surroundingWangIds[])
 {
     quint64 id = 0;
 

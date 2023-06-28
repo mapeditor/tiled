@@ -499,6 +499,8 @@ DynamicLibrary {
         "tilelayeredit.h",
         "tilelayeritem.cpp",
         "tilelayeritem.h",
+        "tilelayerwangedit.cpp",
+        "tilelayerwangedit.h",
         "tilepainter.cpp",
         "tilepainter.h",
         "tileselectionitem.cpp",
