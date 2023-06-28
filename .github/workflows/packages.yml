@@ -192,9 +192,11 @@ jobs:
         - qt_version: 5.12.12
           version_suffix: "10.12-10.13"
           qt_creator_version: 5.0.3
+          architectures: x86_64
         - qt_version: 6.5.1
           version_suffix: "10.14+"
           qt_creator_version: 7.0.2
+          architectures: x86_64,arm64
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
@@ -219,12 +221,12 @@ jobs:
       run: |
         git clone --depth 1 -b master https://github.com/facebook/zstd.git
         pushd zstd/lib
-        make libzstd.a
+        CFLAGS="-arch arm64 -arch x86_64" make libzstd.a
         popd
 
     - name: Build Tiled
       run: |
-        qbs install --install-root install config:release qbs.installPrefix:"" projects.Tiled.staticZstd:true
+        qbs install --install-root install config:release qbs.architectures:${{ matrix.architectures }} qbs.installPrefix:"" projects.Tiled.staticZstd:true
 
     - name: Deploy Qt
       run: |
