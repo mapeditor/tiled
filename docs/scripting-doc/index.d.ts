@@ -1091,7 +1091,7 @@ declare class TiledObject {
  *
  * @since 1.10.1
  */
-declare class Project {
+declare class Project extends TiledObject {
   /**
    * A project-specific directory where you can put Tiled extensions.
    *

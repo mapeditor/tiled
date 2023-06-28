@@ -325,7 +325,7 @@ void AutomappingManager::refreshRulesFile(const QString &ruleFileOverride)
         }
 
         if (rulesFile.isEmpty() || !QFileInfo::exists(rulesFile)) {
-            auto &project = ProjectManager::instance()->project();
+            const auto &project = ProjectManager::instance()->project();
             if (!project.mAutomappingRulesFile.isEmpty())
                 rulesFile = project.mAutomappingRulesFile;
         }

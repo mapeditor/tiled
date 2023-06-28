@@ -23,7 +23,6 @@
 #include "id.h"
 #include "issuesdock.h"
 #include "properties.h"
-#include "editableproject.h"
 
 #include <QJSValue>
 #include <QObject>
@@ -70,7 +69,7 @@ class ScriptModule : public QObject
 
     Q_PROPERTY(Tiled::EditableAsset *activeAsset READ activeAsset WRITE setActiveAsset NOTIFY activeAssetChanged)
     Q_PROPERTY(QList<QObject*> openAssets READ openAssets)
-    Q_PROPERTY(Tiled::EditableProject *project READ project)
+    Q_PROPERTY(Tiled::EditableAsset *project READ project)
 
     Q_PROPERTY(Tiled::MapEditor *mapEditor READ mapEditor)
     Q_PROPERTY(Tiled::TilesetEditor *tilesetEditor READ tilesetEditor)
@@ -100,7 +99,7 @@ public:
 
     QList<QObject*> openAssets() const;
 
-    EditableProject *project();
+    EditableAsset *project();
 
     TilesetEditor *tilesetEditor() const;
     MapEditor *mapEditor() const;
@@ -176,7 +175,6 @@ private:
     std::map<Id, std::unique_ptr<ScriptedTool>> mRegisteredTools;
 
     QStringList mScriptArguments;
-    EditableProject *mEditableProject = nullptr;
 };
 
 inline bool ScriptModule::versionLessThan(const QString &a)

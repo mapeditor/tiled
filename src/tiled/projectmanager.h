@@ -26,6 +26,7 @@
 
 namespace Tiled {
 
+class EditableAsset;
 class ProjectModel;
 
 /**
@@ -42,8 +43,9 @@ public:
 
     static ProjectManager *instance();
 
-    void setProject(Project project);
+    void setProject(std::unique_ptr<Project> project);
     Project &project();
+    EditableAsset *editableProject();
 
     ProjectModel *projectModel();
 

@@ -19,7 +19,6 @@
  */
 
 #include "project.h"
-#include "preferences.h"
 #include "properties.h"
 #include "savefile.h"
 
@@ -45,7 +44,8 @@ static QString absolute(const QDir &dir, const QString &fileName)
 }
 
 Project::Project()
-    : mPropertyTypes(SharedPropertyTypes::create())
+    : Object(Object::ProjectType)
+    , mPropertyTypes(SharedPropertyTypes::create())
 {
 }
 
@@ -75,13 +75,15 @@ bool Project::save(const QString &fileName)
         commands.append(QJsonObject::fromVariantHash(command.toVariant()));
 
     const QJsonArray propertyTypes = mPropertyTypes->toJson(dir.path());
-
+    const ExportContext context(*mPropertyTypes, dir.path());
+    const QJsonArray projectProperties = propertiesToJson(properties(), context);
     QJsonObject project {
         { QStringLiteral("propertyTypes"), propertyTypes },
         { QStringLiteral("folders"), folders },
         { QStringLiteral("extensionsPath"), relative(dir, extensionsPath) },
         { QStringLiteral("automappingRulesFile"), dir.relativeFilePath(mAutomappingRulesFile) },
         { QStringLiteral("commands"), commands },
+        { QStringLiteral("properties"),  projectProperties },
     };
 
     if (mCompatibilityVersion != Tiled_Latest)
@@ -103,42 +105,48 @@ bool Project::save(const QString &fileName)
     return true;
 }
 
-bool Project::load(const QString &fileName)
+std::unique_ptr<Project> Project::load(const QString &fileName)
 {
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return false;
+        return nullptr;
 
     QJsonParseError error;
     const QByteArray json = file.readAll();
     const QJsonDocument document(QJsonDocument::fromJson(json, &error));
     if (error.error != QJsonParseError::NoError)
-        return false;
+        return nullptr;
 
-    mFileName = fileName;
+    auto project = std::make_unique<Project>();
+    project->mFileName = fileName;
 
     const QDir dir = QFileInfo(fileName).dir();
-    const QJsonObject project = document.object();
+    const QJsonObject projectJson = document.object();
 
-    mExtensionsPath = absolute(dir, project.value(QLatin1String("extensionsPath")).toString(QStringLiteral("extensions")));
-    mObjectTypesFile = absolute(dir, project.value(QLatin1String("objectTypesFile")).toString());
-    mAutomappingRulesFile = absolute(dir, project.value(QLatin1String("automappingRulesFile")).toString());
+    project->mExtensionsPath = absolute(dir, projectJson.value(QLatin1String("extensionsPath")).toString(QStringLiteral("extensions")));
+    project->mObjectTypesFile = absolute(dir, projectJson.value(QLatin1String("objectTypesFile")).toString());
+    project->mAutomappingRulesFile = absolute(dir, projectJson.value(QLatin1String("automappingRulesFile")).toString());
 
-    mPropertyTypes->loadFromJson(project.value(QLatin1String("propertyTypes")).toArray(), dir.path());
+    project->mPropertyTypes->loadFromJson(projectJson.value(QLatin1String("propertyTypes")).toArray(), dir.path());
 
-    mFolders.clear();
-    const QJsonArray folders = project.value(QLatin1String("folders")).toArray();
+    const QString projectPropertiesKey = QLatin1String("properties");
+    if (projectJson.contains(projectPropertiesKey)) {
+        const ExportContext context(*project->mPropertyTypes, dir.path());
+        const Properties loadedProperties = propertiesFromJson(projectJson.value(projectPropertiesKey).toArray(), context);
+        project->setProperties(loadedProperties);
+    }
+
+    const QJsonArray folders = projectJson.value(QLatin1String("folders")).toArray();
     for (const QJsonValue &folderValue : folders)
-        mFolders.append(QDir::cleanPath(dir.absoluteFilePath(folderValue.toString())));
+        project->mFolders.append(QDir::cleanPath(dir.absoluteFilePath(folderValue.toString())));
 
-    mCommands.clear();
-    const QJsonArray commands = project.value(QLatin1String("commands")).toArray();
+    const QJsonArray commands = projectJson.value(QLatin1String("commands")).toArray();
     for (const QJsonValue &commandValue : commands)
-        mCommands.append(Command::fromVariant(commandValue.toVariant()));
+        project->mCommands.append(Command::fromVariant(commandValue.toVariant()));
 
-    mCompatibilityVersion = static_cast<CompatibilityVersion>(project.value(QLatin1String("compatibilityVersion")).toInt(Tiled_Latest));
+    project->mCompatibilityVersion = static_cast<CompatibilityVersion>(projectJson.value(QLatin1String("compatibilityVersion")).toInt(Tiled_Latest));
 
-    return true;
+    return project;
 }
 
 void Project::addFolder(const QString &folder)

@@ -243,6 +243,7 @@ DocumentManager::DocumentManager(QObject *parent)
             break;
         }
         case Document::WorldDocumentType:
+        case Document::ProjectDocumentType:
             break;
         }
 

@@ -40,11 +40,11 @@ ProjectManager::ProjectManager(QObject *parent)
 /**
  * Replaces the current project with the given \a project.
  */
-void ProjectManager::setProject(Project _project)
+void ProjectManager::setProject(std::unique_ptr<Project> _project)
 {
     mProjectModel->setProject(std::move(_project));
 
-    auto &project = mProjectModel->project(); // _project was moved
+    auto &project = mProjectModel->project();
 
     // Automatically import object types if they are referenced by the project
     if (!project.mObjectTypesFile.isEmpty()) {
@@ -69,6 +69,11 @@ void ProjectManager::setProject(Project _project)
 Project &ProjectManager::project()
 {
     return mProjectModel->project();
+}
+
+EditableAsset *ProjectManager::editableProject()
+{
+    return mProjectModel->editableProject();
 }
 
 } // namespace Tiled

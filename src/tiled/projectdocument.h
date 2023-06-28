@@ -1,5 +1,5 @@
 /*
- * editableproject.h
+ * projectdocument.h
  * Copyright 2023, Chris Boehm AKA dogboydog
  * Copyright 2023, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
@@ -21,43 +21,33 @@
 
 #pragma once
 
-#include "editableasset.h"
+#include "document.h"
 #include "project.h"
-
-#include <QObject>
 
 namespace Tiled {
 
-class ProjectDocument;
-
-class EditableProject final : public EditableAsset
+class ProjectDocument : public Document
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString extensionsPath READ extensionsPath)
-    Q_PROPERTY(QString automappingRulesFile READ automappingRulesFile)
-    Q_PROPERTY(QString fileName READ fileName)
-    Q_PROPERTY(QStringList folders READ folders)
-
 public:
-    EditableProject(ProjectDocument *projectDocument, QObject *parent = nullptr);
+    ProjectDocument(std::unique_ptr<Project> project, QObject *parent = nullptr);
 
-    bool isReadOnly() const override;
-    QString extensionsPath() const;
-    QString automappingRulesFile() const;
-    QString fileName() const;
-    QStringList folders() const;
+    QString displayName() const override;
+    FileFormat *writerFormat() const override;
+    bool save(const QString &fileName, QString *error) override;
+    void setExportFormat(FileFormat *format) override;
+    FileFormat *exportFormat() const override;
+    QString lastExportFileName() const override;
+    void setLastExportFileName(const QString &fileName) override;
+    std::unique_ptr<EditableAsset> createEditable() override;
 
-    Project *project() const;
+    Project &project() { return *mProject; }
 
-    QSharedPointer<Document> createDocument() override;
+private:
+    std::unique_ptr<Project> mProject;
 };
 
-inline Project *EditableProject::project() const
-{
-    return static_cast<Project*>(object());
-}
+using ProjectDocumentPtr = QSharedPointer<ProjectDocument>;
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::EditableProject*)
