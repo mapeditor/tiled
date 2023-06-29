@@ -25,6 +25,7 @@
 #include "editabletilelayer.h"
 #include "maprenderer.h"
 #include "scriptmanager.h"
+#include "tilelayer.h"
 
 #include <QCoreApplication>
 
@@ -85,16 +86,23 @@ void TileLayerWangEdit::setEdge(QPoint pos, WangIndex::Value edge, int color)
     }
 }
 
+EditableTileLayer *TileLayerWangEdit::generate()
+{
+    auto changes = std::make_unique<TileLayer>();
+    mWangFiller->apply(*changes, *mTargetLayer->tileLayer());
+    return new EditableTileLayer(std::move(changes));
+}
+
 void TileLayerWangEdit::apply()
 {
-    // apply terrain changes
-    mWangFiller->apply(mChanges, *mTargetLayer->tileLayer());
-
     // Applying an edit automatically makes it mergeable, so that further
     // changes made through the same edit are merged by default.
-    bool mergeable = std::exchange(mMergeable, true);
-    mTargetLayer->applyChangesFrom(&mChanges, mergeable);
-    mChanges.clear();
+    const bool mergeable = std::exchange(mMergeable, true);
+
+    // Apply terrain changes
+    TileLayer changes;
+    mWangFiller->apply(changes, *mTargetLayer->tileLayer());
+    mTargetLayer->applyChangesFrom(&changes, mergeable);
 }
 
 } // namespace Tiled

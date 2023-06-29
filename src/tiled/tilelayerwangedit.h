@@ -23,7 +23,6 @@
 
 #include "editablewangset.h"
 #include "map.h"
-#include "tilelayer.h"
 #include "wangfiller.h"
 
 #include <QObject>
@@ -84,6 +83,8 @@ public:
 
     EditableTileLayer *target() const;
 
+    Q_INVOKABLE Tiled::EditableTileLayer *generate();
+
 public slots:
     void setWangIndex(int x, int y, Tiled::WangIndex::Value index, int color);
     void setWangIndex(QPoint pos, Tiled::WangIndex::Value index, int color);
@@ -96,7 +97,6 @@ public slots:
 
 private:
     EditableTileLayer *mTargetLayer;
-    TileLayer mChanges;
     bool mMergeable = false;
     const Map mMap;                             // Copy for the configuration
     std::unique_ptr<MapRenderer> mRenderer;

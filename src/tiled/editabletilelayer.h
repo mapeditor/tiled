@@ -44,6 +44,9 @@ public:
                                            QSize size = QSize(0, 0),
                                            QObject *parent = nullptr);
 
+    explicit EditableTileLayer(std::unique_ptr<TileLayer> tileLayer,
+                               QObject *parent = nullptr);
+
     explicit EditableTileLayer(EditableMap *map,
                                TileLayer *layer,
                                QObject *parent = nullptr);
