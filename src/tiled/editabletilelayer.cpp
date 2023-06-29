@@ -37,6 +37,11 @@ EditableTileLayer::EditableTileLayer(const QString &name, QSize size, QObject *p
 {
 }
 
+EditableTileLayer::EditableTileLayer(std::unique_ptr<TileLayer> tileLayer, QObject *parent)
+    : EditableLayer(std::move(tileLayer), parent)
+{
+}
+
 EditableTileLayer::EditableTileLayer(EditableMap *map,
                                      TileLayer *layer,
                                      QObject *parent)

@@ -24,7 +24,6 @@
 #include "editablegrouplayer.h"
 #include "editablemanager.h"
 #include "editablemap.h"
-#include "scriptmanager.h"
 
 namespace Tiled {
 

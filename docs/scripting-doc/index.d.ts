@@ -2888,7 +2888,8 @@ interface TileLayerEdit {
   setTile(x : number, y : number, tile : Tile | null, flags? : number) : void
 
   /**
-   * Applies all changes made through this object. This object can be reused to make further changes.
+   * Applies the changes made through this object to the target layer. This
+   * object can be reused to make further changes.
    */
   apply() : void
 }
@@ -2923,12 +2924,12 @@ declare enum WangIndex {
 /**
  * This object enables modifying the tiles on a tile layer using a
  * {@link WangSet}. For performance reasons, the changes are not applied
- * directly. The {@link apply} function needs to be called when you're done
- * making changes.
+ * directly. Call either the {@link apply} or {@link generate} function when
+ * you're done making changes.
  *
- * Note that the results of calling {@link apply} may vary since the changes
- * are applied by looking for tiles matching the desired Wang colors, which
- * includes a random factor in case of multiple matches.
+ * Note that the result may vary since the changes are applied by looking for
+ * tiles matching the desired Wang colors, which includes a random factor in
+ * case of multiple matches.
  *
  * Colors in a {@link WangSet} are numbered starting from 1. To request no Wang
  * color, usually for Wang-aware erasing, use 0. The currently selected {@link
@@ -3019,9 +3020,33 @@ interface TileLayerWangEdit {
   setEdge(pos : point, edge: WangIndex, color : number) : void
 
   /**
-   * Applies all changes made through this object. This object can be reused to make further changes.
+   * Applies the changes made through this object to the target layer. This
+   * object can be reused to make further changes.
+   *
+   * Alternatively, get a copy of the modifications using {@link generate}.
    */
   apply() : void
+
+  /**
+   * Applies the changes made through this object to a new layer and returns
+   * that layer. This object can be reused to make further changes.
+   *
+   * @example
+   * Making a change and use the result for {@link Tool.preview}:
+   * ```js
+   * let wangSet = tiled.mapEditor.currentWangSet
+   * let wangEdit = tiled.activeAsset.currentLayer.wangEdit(wangSet)
+   * wangEdit.correctionsEnabled = true
+   * wangEdit.setCorner(this.tilePosition, tiled.mapEditor.currentWangColorIndex)
+   * let map = new TileMap()
+   * map.addLayer(wangEdit.generate())
+   * this.preview = map
+   * ```
+   *
+   * Alternatively, you can apply the changes directly to the target layer
+   * using {@link apply}.
+   */
+  generate() : TileLayer
 }
 
 /**
@@ -3523,6 +3548,10 @@ interface Tool {
 
   /**
    * Get or set the preview for tile layer edits.
+   *
+   * When getting or setting this property, a copy is made. To modify the
+   * preview, you need to assign a changed {@link TileMap} instance to this
+   * property.
    */
   preview: TileMap;
 
