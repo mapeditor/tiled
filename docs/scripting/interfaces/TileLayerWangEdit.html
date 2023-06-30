@@ -91,12 +91,12 @@
 					<div class="lead">
 						<p>This object enables modifying the tiles on a tile layer using a
 							<a href="../classes/WangSet.html">WangSet</a>. For performance reasons, the changes are not applied
-							directly. The <a href="TileLayerWangEdit.html#apply">apply</a> function needs to be called when you&#39;re done
-						making changes.</p>
+							directly. Call either the <a href="TileLayerWangEdit.html#apply">apply</a> or <a href="TileLayerWangEdit.html#generate">generate</a> function when
+						you&#39;re done making changes.</p>
 					</div>
-					<p>Note that the results of calling <a href="TileLayerWangEdit.html#apply">apply</a> may vary since the changes
-						are applied by looking for tiles matching the desired Wang colors, which
-					includes a random factor in case of multiple matches.</p>
+					<p>Note that the result may vary since the changes are applied by looking for
+						tiles matching the desired Wang colors, which includes a random factor in
+					case of multiple matches.</p>
 					<p>Colors in a <a href="../classes/WangSet.html">WangSet</a> are numbered starting from 1. To request no Wang
 						color, usually for Wang-aware erasing, use 0. The currently selected <a href="../classes/WangSet.html">WangSet</a> and color are available through <a href="MapEditor.html#currentWangSet">MapEditor.currentWangSet</a>
 					and <a href="MapEditor.html#currentWangColorIndex">MapEditor.currentWangColorIndex</a>.</p>
@@ -132,6 +132,7 @@
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="TileLayerWangEdit.html#apply" class="tsd-kind-icon">apply</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="TileLayerWangEdit.html#generate" class="tsd-kind-icon">generate</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="TileLayerWangEdit.html#setCorner" class="tsd-kind-icon">set<wbr>Corner</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="TileLayerWangEdit.html#setEdge" class="tsd-kind-icon">set<wbr>Edge</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="TileLayerWangEdit.html#setWangIndex" class="tsd-kind-icon">set<wbr>Wang<wbr>Index</a></li>
@@ -196,8 +197,44 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Applies all changes made through this object. This object can be reused to make further changes.</p>
+									<p>Applies the changes made through this object to the target layer. This
+									object can be reused to make further changes.</p>
 								</div>
+								<p>Alternatively, get a copy of the modifications using <a href="TileLayerWangEdit.html#generate">generate</a>.</p>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="generate" class="tsd-anchor"></a>
+					<h3>generate</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">generate<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/TileLayer.html" class="tsd-signature-type" data-tsd-kind="Class">TileLayer</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Applies the changes made through this object to a new layer and returns
+									that layer. This object can be reused to make further changes.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>example</dt>
+									<dd><p>Making a change and use the result for <a href="Tool.html#preview">Tool.preview</a>:</p>
+										<pre><code class="language-js"><span style="color: #569CD6">let</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">wangSet</span><span style="color: #D4D4D4"> = </span><span style="color: #9CDCFE">tiled</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">mapEditor</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">currentWangSet</span>
+<span style="color: #569CD6">let</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">wangEdit</span><span style="color: #D4D4D4"> = </span><span style="color: #9CDCFE">tiled</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">activeAsset</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">currentLayer</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">wangEdit</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">wangSet</span><span style="color: #D4D4D4">)</span>
+<span style="color: #9CDCFE">wangEdit</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">correctionsEnabled</span><span style="color: #D4D4D4"> = </span><span style="color: #569CD6">true</span>
+<span style="color: #9CDCFE">wangEdit</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">setCorner</span><span style="color: #D4D4D4">(</span><span style="color: #569CD6">this</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">tilePosition</span><span style="color: #D4D4D4">, </span><span style="color: #9CDCFE">tiled</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">mapEditor</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">currentWangColorIndex</span><span style="color: #D4D4D4">)</span>
+<span style="color: #569CD6">let</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">map</span><span style="color: #D4D4D4"> = </span><span style="color: #569CD6">new</span><span style="color: #D4D4D4"> </span><span style="color: #DCDCAA">TileMap</span><span style="color: #D4D4D4">()</span>
+<span style="color: #9CDCFE">map</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">addLayer</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">wangEdit</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">generate</span><span style="color: #D4D4D4">())</span>
+<span style="color: #569CD6">this</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">preview</span><span style="color: #D4D4D4"> = </span><span style="color: #9CDCFE">map</span>
+</code></pre>
+										<p>Alternatively, you can apply the changes directly to the target layer
+										using <a href="TileLayerWangEdit.html#apply">apply</a>.</p>
+									</dd>
+								</dl>
 							</div>
 						</li>
 					</ul>
@@ -334,6 +371,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="TileLayerWangEdit.html#apply" class="tsd-kind-icon">apply</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="TileLayerWangEdit.html#generate" class="tsd-kind-icon">generate</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="TileLayerWangEdit.html#setCorner" class="tsd-kind-icon">set<wbr>Corner</a>
