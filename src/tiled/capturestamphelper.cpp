@@ -22,7 +22,6 @@
 
 #include "map.h"
 #include "mapdocument.h"
-#include "tilelayer.h"
 
 #include <memory>
 

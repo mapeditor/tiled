@@ -529,7 +529,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
             if (regionCache.contains(map)) {
                 stampRegion = regionCache.value(map);
             } else {
-                stampRegion = map->tileRegion();
+                stampRegion = map->modifiedTileRegion();
                 regionCache.insert(map, stampRegion);
             }
 
@@ -635,7 +635,7 @@ void StampBrush::updatePreview(QPoint tilePos)
         }
 
         if (mPreviewMap)
-            tileRegion = mPreviewMap->tileRegion();
+            tileRegion = mPreviewMap->modifiedTileRegion();
 
         if (tileRegion.isEmpty())
             tileRegion = QRect(tilePos, tilePos);
