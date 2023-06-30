@@ -518,12 +518,12 @@ QRect Map::tileBoundingRect() const
     return mapBounds;
 }
 
-QRegion Map::tileRegion() const
+QRegion Map::modifiedTileRegion() const
 {
     QRegion region;
     LayerIterator it(this, Layer::TileLayerType);
     while (auto tileLayer = static_cast<TileLayer*>(it.next()))
-        region |= tileLayer->region();
+        region |= tileLayer->modifiedRegion();
     return region;
 }
 

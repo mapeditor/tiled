@@ -992,8 +992,8 @@ void MapDocument::paintTileLayers(const Map &map, bool mergeable,
         auto source = sourceLayers[i];
         auto target = targetLayers[i];
 
-        const QRegion editedRegion = source->region();
-        if (editedRegion.isEmpty())
+        const QRegion paintRegion = source->modifiedRegion();
+        if (paintRegion.isEmpty())
             continue;
 
         std::unique_ptr<TileLayer> newLayer;
@@ -1018,7 +1018,7 @@ void MapDocument::paintTileLayers(const Map &map, bool mergeable,
                                                           source->x(),
                                                           source->y(),
                                                           source,
-                                                          editedRegion);
+                                                          paintRegion);
 
         if (missingTilesets && !missingTilesets->isEmpty()) {
             for (const SharedTileset &tileset : std::as_const(*missingTilesets)) {
@@ -1058,7 +1058,7 @@ void MapDocument::paintTileLayers(const Map &map, bool mergeable,
         paintCommand->setMergeable(mergeable);
         undoStack()->push(paintCommand);
 
-        regions[target] |= editedRegion;
+        regions[target] |= paintRegion;
 
         mergeable = true; // further paints are always mergeable
     }
