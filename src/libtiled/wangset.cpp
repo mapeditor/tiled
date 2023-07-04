@@ -719,60 +719,6 @@ QList<WangTile> WangSet::sortedWangTiles() const
 }
 
 /**
- * Returns a WangId matching that of the provided \a surroundingWangIds.
- *
- * This is based off a provided array, { 0, 1, 2, 3, 4, 5, 6, 7 },
- * which corresponds to:
- *
- *      7|0|1
- *      6|X|2
- *      5|4|3
- */
-WangId WangSet::wangIdFromSurrounding(const WangId surroundingWangIds[])
-{
-    quint64 id = 0;
-
-    // Edges
-    for (int i = 0; i < WangId::NumEdges; ++i)
-        id |= quint64(surroundingWangIds[i*2].edgeColor((2 + i) % WangId::NumEdges)) << (i * WangId::BITS_PER_INDEX * 2);
-
-    // Corners
-    for (int i = 0; i < WangId::NumCorners; ++i) {
-        int color = surroundingWangIds[i*2 + 1].cornerColor((2 + i) % WangId::NumCorners);
-
-        if (!color)
-            color = surroundingWangIds[i*2].cornerColor((1 + i) % WangId::NumCorners);
-
-        if (!color)
-            color = surroundingWangIds[(i*2 + 2) % WangId::NumIndexes].cornerColor((3 + i) % WangId::NumCorners);
-
-        id |= quint64(color) << (WangId::BITS_PER_INDEX + i * WangId::BITS_PER_INDEX * 2);
-    }
-
-    return id;
-}
-
-/**
- * Returns a wangId matching that of the provided surrounding tiles.
- *
- * This is based off a provided array, { 0, 1, 2, 3, 4, 5, 6, 7 },
- * which corresponds to:
- *
- *      7|0|1
- *      6|X|2
- *      5|4|3
- */
-WangId WangSet::wangIdFromSurrounding(const Cell surroundingCells[]) const
-{
-    WangId wangIds[WangId::NumIndexes];
-
-    for (int i = 0; i < WangId::NumIndexes; ++i)
-        wangIds[i] = wangIdOfCell(surroundingCells[i]);
-
-    return wangIdFromSurrounding(wangIds);
-}
-
-/**
  * Returns the WangId of a given \a tile.
  *
  * The tile is expected to be from the tileset to which this WangSet belongs.

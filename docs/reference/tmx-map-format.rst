@@ -359,7 +359,7 @@ Defines a list of colors and any number of Wang tiles using these colors.
 
 Can contain at most one: :ref:`tmx-properties`
 
-Can contain up to 255: :ref:`tmx-wangcolor` (since Tiled 1.5)
+Can contain up to 254: :ref:`tmx-wangcolor` (255 since Tiled 1.5, 254 since Tiled 1.10.2)
 
 Can contain any number: :ref:`tmx-wangtile`
 
@@ -389,7 +389,7 @@ associating it with a certain Wang ID.
 
 -  **tileid:** The tile ID.
 -  **wangid:** The Wang ID, since Tiled 1.5 given by a comma-separated list of
-   indexes (0-255) referring to the Wang colors in the Wang set in the order:
+   indexes (0-254) referring to the Wang colors in the Wang set in the order:
    top, top-right, right, bottom-right, bottom, bottom-left, left, top-left.
    Index 0 means *unset* and index 1 refers to the first Wang color. Before
    Tiled 1.5, the Wang ID was saved as a 32-bit unsigned integer stored in the

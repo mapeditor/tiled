@@ -517,7 +517,7 @@ void WangBrush::updateBrush()
     const TileLayer *currentLayer = currentTileLayer();
     Q_ASSERT(currentLayer);
 
-    WangFiller wangFiller { *mWangSet, mapDocument()->renderer() };
+    WangFiller wangFiller { *mWangSet, *currentLayer, mapDocument()->renderer() };
 
     QVector<QPoint> points;
     bool ignoreFirst = false;
@@ -599,7 +599,7 @@ void WangBrush::updateBrush()
     SharedTileLayer stamp = SharedTileLayer::create(QString(), 0, 0, 0, 0);
 
     wangFiller.setCorrectionsEnabled(true);
-    wangFiller.apply(*stamp, *currentLayer);
+    wangFiller.apply(*stamp);
 
     static_cast<WangBrushItem*>(brushItem())->setInvalidTiles();
 
@@ -617,9 +617,6 @@ void WangBrush::updateBrush()
 void WangBrush::updateBrushAt(WangFiller &filler, QPoint pos)
 {
     auto hexagonalRenderer = dynamic_cast<HexagonalRenderer*>(mapDocument()->renderer());
-    auto &fill = filler.region();
-    Grid<WangFiller::CellInfo> &grid = fill.grid;
-    QRegion &region = fill.region;
 
     // When drawing lines in PaintEdgeAndCorner mode we force "tile mode"
     // because we currently can't draw thinner lines properly in that mode.
@@ -648,7 +645,7 @@ void WangBrush::updateBrushAt(WangFiller &filler, QPoint pos)
                 adjacentPositions[i] = pos + aroundTilePoints[i];
         }
 
-        WangFiller::CellInfo center = grid.get(pos);
+        WangFiller::CellInfo &center = filler.changePosition(pos);
 
         switch (mBrushMode) {
         case PaintCorner:
@@ -673,16 +670,13 @@ void WangBrush::updateBrushAt(WangFiller &filler, QPoint pos)
             break;
         }
 
-        region += QRect(pos, QSize(1, 1));
-        grid.set(pos, center);
-
         for (int i = 0; i < WangId::NumIndexes; ++i) {
             const bool isCorner = WangId::isCorner(i);
             if (mBrushMode == PaintEdge && isCorner)
                 continue;
 
             QPoint p = adjacentPositions[i];
-            WangFiller::CellInfo adjacent = grid.get(p);
+            WangFiller::CellInfo &adjacent = filler.changePosition(p);
 
             // Mark the opposite side or corner of the adjacent tile
             if (isCorner || (mBrushMode == PaintEdge || mBrushMode == PaintEdgeAndCorner)) {
@@ -697,9 +691,6 @@ void WangBrush::updateBrushAt(WangFiller &filler, QPoint pos)
                 adjacent.mask.setIndexColor((i + 3) % WangId::NumIndexes, WangId::INDEX_MASK);
                 adjacent.mask.setIndexColor((i + 5) % WangId::NumIndexes, WangId::INDEX_MASK);
             }
-
-            region += QRect(p, QSize(1, 1));
-            grid.set(p, adjacent);
         }
     } else {
         if (mWangIndex == WangId::NumIndexes)

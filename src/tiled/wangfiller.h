@@ -47,7 +47,7 @@ class WangFiller
 {
 public:
     struct CellInfo {
-        WangId desired;
+        WangId desired = WangId::FULL_MASK;
         WangId mask;
 
         bool operator==(const CellInfo &other) const {
@@ -60,7 +60,13 @@ public:
         QRegion region;
     };
 
-    explicit WangFiller(const WangSet &wangSet, const MapRenderer *mapRenderer);
+    /**
+     * Constructs a WangFiller that works with the given \a wangSet and uses
+     * the \a back layer to match up the edges to existing tiles.
+     */
+    explicit WangFiller(const WangSet &wangSet,
+                        const TileLayer &back,
+                        const MapRenderer *mapRenderer);
 
     FillRegion &region() { return mFillRegion; }
 
@@ -70,25 +76,23 @@ public:
     void setDebugPainter(QPainter *painter) { mDebugPainter = painter; }
 
     void setRegion(const QRegion &region);
+    CellInfo &changePosition(QPoint pos);
     void setWangIndex(QPoint pos, WangId::Index index, int color);
     void setCorner(QPoint vertexPos, int color);
     void setEdge(QPoint pos, WangId::Index index, int color);
 
     /**
      * Applies the scheduled Wang changes to the \a target layer.
-     *
-     * The \a back layer is used to match up the edges to existing tiles.
      */
-    void apply(TileLayer &target, const TileLayer &back);
+    void apply(TileLayer &target);
 
 private:
     /**
-     * Returns a wangId based on cells from \a back which are not in the
-     * \a region. \a point and \a region are relative to \a back.
+     * Returns a wangId based the cells surrounding the given point, which
+     * are outside of the current region.
      */
-    WangId wangIdFromSurroundings(const TileLayer &back,
-                                  const QRegion &region,
-                                  QPoint point) const;
+    WangId wangIdFromSurroundings(QPoint point) const;
+    WangId wangIdFromSurroundingCells(const Cell surroundingCells[]) const;
 
     bool findBestMatch(const TileLayer &target,
                        const Grid<CellInfo> &grid,
@@ -96,6 +100,7 @@ private:
                        Cell &result) const;
 
     const WangSet &mWangSet;
+    const TileLayer &mBack;
     const MapRenderer * const mMapRenderer;
     const HexagonalRenderer * const mHexagonalRenderer;
     bool mCorrectionsEnabled = false;

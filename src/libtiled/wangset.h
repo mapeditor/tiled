@@ -47,7 +47,7 @@ public:
     constexpr static unsigned BITS_PER_INDEX = 8;
     constexpr static quint64 INDEX_MASK = 0xFF;
     constexpr static quint64 FULL_MASK = Q_UINT64_C(0xFFFFFFFFFFFFFFFF);
-    constexpr static int MAX_COLOR_COUNT = (1 << BITS_PER_INDEX) - 1;
+    constexpr static int MAX_COLOR_COUNT = (1 << BITS_PER_INDEX) - 2;
 
     enum Index {
         Top         = 0,
@@ -277,9 +277,6 @@ public:
     const QVector<WangIdAndCell> &wangIdsAndCells() const;
 
     QList<WangTile> sortedWangTiles() const;
-
-    static WangId wangIdFromSurrounding(const WangId surroundingWangIds[]);
-    WangId wangIdFromSurrounding(const Cell surroundingCells[]) const;
 
     WangId wangIdOfTile(const Tile *tile) const;
     WangId wangIdOfCell(const Cell &cell) const;

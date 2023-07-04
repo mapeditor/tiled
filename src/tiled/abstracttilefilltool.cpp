@@ -286,9 +286,9 @@ void AbstractTileFillTool::wangFill(TileLayer &tileLayerToFill,
     if (!mWangSet)
         return;
 
-    WangFiller wangFiller(*mWangSet, mapDocument()->renderer());
+    WangFiller wangFiller(*mWangSet, backgroundTileLayer, mapDocument()->renderer());
     wangFiller.setRegion(region);
-    wangFiller.apply(tileLayerToFill, backgroundTileLayer);
+    wangFiller.apply(tileLayerToFill);
 }
 
 void AbstractTileFillTool::fillWithStamp(Map &map,
