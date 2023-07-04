@@ -60,6 +60,7 @@ class TileLayerWangEdit : public QObject
     Q_OBJECT
 
     Q_PROPERTY(Tiled::EditableTileLayer *target READ target CONSTANT)
+    Q_PROPERTY(Tiled::EditableWangSet *wangSet READ wangSet CONSTANT)
     Q_PROPERTY(bool mergeable READ isMergeable WRITE setMergeable)
     Q_PROPERTY(bool correctionsEnabled READ correctionsEnabled WRITE setCorrectionsEnabled)
 
@@ -82,6 +83,7 @@ public:
     void setCorrectionsEnabled(bool newCorrectionsEnabled);
 
     EditableTileLayer *target() const;
+    EditableWangSet *wangSet() const;
 
     Q_INVOKABLE Tiled::EditableTileLayer *generate();
 
@@ -97,6 +99,7 @@ public slots:
 
 private:
     EditableTileLayer *mTargetLayer;
+    EditableWangSet *mWangSet;
     bool mMergeable = false;
     const Map mMap;                             // Copy for the configuration
     std::unique_ptr<MapRenderer> mRenderer;
@@ -117,6 +120,11 @@ inline bool TileLayerWangEdit::isMergeable() const
 inline EditableTileLayer *TileLayerWangEdit::target() const
 {
     return mTargetLayer;
+}
+
+inline EditableWangSet *TileLayerWangEdit::wangSet() const
+{
+    return mWangSet;
 }
 
 inline void TileLayerWangEdit::setWangIndex(int x, int y, WangIndex::Value index, int color)

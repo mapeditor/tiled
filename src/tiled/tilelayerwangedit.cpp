@@ -34,6 +34,7 @@ namespace Tiled {
 TileLayerWangEdit::TileLayerWangEdit(EditableTileLayer *tileLayer, EditableWangSet *wangSet, QObject *parent)
     : QObject(parent)
     , mTargetLayer(tileLayer)
+    , mWangSet(wangSet)
     , mMap(tileLayer->map()->map()->parameters())
     , mRenderer(MapRenderer::create(&mMap))
     , mWangFiller(std::make_unique<WangFiller>(*wangSet->wangSet(),
@@ -43,7 +44,7 @@ TileLayerWangEdit::TileLayerWangEdit(EditableTileLayer *tileLayer, EditableWangS
 
     // Avoid usage of this object when the WangSet is deleted (this actually
     // requires keeping the EditableWangSet alive).
-    connect(wangSet, &QObject::destroyed, this, &QObject::deleteLater);
+    connect(mWangSet, &QObject::destroyed, this, &QObject::deleteLater);
 }
 
 TileLayerWangEdit::~TileLayerWangEdit()

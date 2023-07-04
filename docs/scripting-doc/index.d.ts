@@ -2947,6 +2947,12 @@ interface TileLayerWangEdit {
   readonly target : TileLayer
 
   /**
+   * The Wang set that will be used when {@link apply} or {@link generate} is
+   * called.
+   */
+  readonly wangSet : WangSet
+
+  /**
    * Whether applied edits are mergeable with previous edits. Starts out as
    * `false` and is automatically set to `true` by {@link apply}.
    */
