@@ -56,39 +56,6 @@ WangFiller::WangFiller(const WangSet &wangSet,
 void WangFiller::setRegion(const QRegion &region)
 {
     mFillRegion.region = region;
-    auto &grid = mFillRegion.grid;
-
-    // Set the Wang IDs at the border of the region to make sure the tiles in
-    // the filled region connect with those outside of it.
-    auto setDesiredWangId = [&] (int x, int y, WangId::Index edge) {
-        const WangId source = wangIdFromSurroundings(QPoint(x, y));
-        CellInfo &info = grid.add(x, y);
-
-        auto setIndex = [&](int i) {
-            if (!info.mask.indexColor(i)) {
-                const int color = source.indexColor(i);
-                if (color != WangId::INDEX_MASK) {
-                    info.desired.setIndexColor(i, color);
-                    info.mask.setIndexColor(i, WangId::INDEX_MASK);
-                }
-            }
-        };
-
-        setIndex(WangId::previousIndex(edge));
-        setIndex(edge);
-        setIndex(WangId::nextIndex(edge));
-    };
-
-    for (const QRect &rect : region) {
-        for (int x = rect.left(); x <= rect.right(); ++x) {
-            setDesiredWangId(x, rect.top(), WangId::Top);
-            setDesiredWangId(x, rect.bottom(), WangId::Bottom);
-        }
-        for (int y = rect.top(); y <= rect.bottom(); ++y) {
-            setDesiredWangId(rect.left(), y, WangId::Left);
-            setDesiredWangId(rect.right(), y, WangId::Right);
-        }
-    }
 }
 
 WangFiller::CellInfo &WangFiller::changePosition(QPoint pos)
@@ -97,7 +64,7 @@ WangFiller::CellInfo &WangFiller::changePosition(QPoint pos)
 
     // Initialize the desired WangId when necessary, and make sure the location
     // is part of the to be processed region.
-    if (info.desired == WangId::FULL_MASK) {
+    if (info == CellInfo()) {
         info.desired = mWangSet.wangIdOfCell(mBack.cellAt(pos));
         mFillRegion.region += QRect(pos, pos);
     }
@@ -219,6 +186,40 @@ void WangFiller::apply(TileLayer &target)
     auto &grid = mFillRegion.grid;
     auto &region = mFillRegion.region;
 
+    if (!mCorrectionsEnabled) {
+        // Set the Wang IDs at the border of the region to make sure the tiles in
+        // the filled region connect with those outside of it.
+        auto setDesiredWangId = [&] (int x, int y, WangId::Index edge) {
+            const WangId source = wangIdFromSurroundings(QPoint(x, y));
+            CellInfo &info = grid.add(x, y);
+
+            auto setIndex = [&](int i) {
+                if (!info.mask.indexColor(i)) {
+                    const int color = source.indexColor(i);
+                    if (color != WangId::INDEX_MASK) {
+                        info.desired.setIndexColor(i, color);
+                        info.mask.setIndexColor(i, WangId::INDEX_MASK);
+                    }
+                }
+            };
+
+            setIndex(WangId::previousIndex(edge));
+            setIndex(edge);
+            setIndex(WangId::nextIndex(edge));
+        };
+
+        for (const QRect &rect : region) {
+            for (int x = rect.left(); x <= rect.right(); ++x) {
+                setDesiredWangId(x, rect.top(), WangId::Top);
+                setDesiredWangId(x, rect.bottom(), WangId::Bottom);
+            }
+            for (int y = rect.top(); y <= rect.bottom(); ++y) {
+                setDesiredWangId(rect.left(), y, WangId::Left);
+                setDesiredWangId(rect.right(), y, WangId::Right);
+            }
+        }
+    }
+
     // Determine the bounds of the affected area
     QRect bounds = region.boundingRect();
     int margin = mWangSet.maximumColorDistance() + (mHexagonalRenderer != nullptr);
@@ -258,7 +259,7 @@ void WangFiller::apply(TileLayer &target)
             if (target.cellAt(p - target.position()).checked())
                 continue;
 
-            CellInfo adjacentInfo = grid.get(p);
+            CellInfo &adjacentInfo = grid.add(p);
             updateToAdjacent(adjacentInfo, cellWangId, WangId::oppositeIndex(i));
 
             // Check if we may need to reconsider a tile outside of our starting region
@@ -274,8 +275,6 @@ void WangFiller::apply(TileLayer &target)
                             adjacentInfo.desired.setIndexColor(i, currentWangId.indexColor(i));
                 }
             }
-
-            grid.set(p, adjacentInfo);
         }
     };
 
