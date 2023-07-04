@@ -4,6 +4,7 @@
 * Removed Space and Ctrl+Space shortcuts from Layers view to avoid conflict with panning (#3672)
 * Scripting: Added API for editing tile layers using terrain sets (with a-morphous, #3758)
 * Scripting: Support erasing tiles in Tool.preview and TileMap.merge
+* Scripting: Added WangSet.effectiveTypeForColor
 * Fixed object preview position with parallax factor on group layer (#3669)
 * Fixed hover highlight rendering with active parallax factor (#3669)
 * Fixed updating of object selection outlines when changing parallax factor (#3669)

@@ -299,6 +299,8 @@ public:
     bool isComplete() const;
     quint64 completeSetSize() const;
 
+    Type effectiveTypeForColor(int color) const;
+
     WangId templateWangIdAt(unsigned n) const;
 
     WangSet *clone(Tileset *tileset) const;

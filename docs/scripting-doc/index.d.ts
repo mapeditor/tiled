@@ -3124,6 +3124,17 @@ declare class WangSet extends TiledObject {
    * @since 1.8
    */
   public setColorName(colorIndex: number, name: string) : void
+
+  /**
+   * Returns the effective WangSet type for the given color.
+   *
+   * Always equals the {@link type} of the WangSet in case of corner or edge
+   * sets. In case of a mixed set, it could also be {@link WangSet.Corner} or
+   * {@link WangSet.Edge}, when the given color is only used in that context.
+   *
+   * @since 1.10.2
+   */
+  public effectiveTypeForColor(int color) : typeof WangSet.Edge | typeof WangSet.Corner | typeof WangSet.Mixed
 }
 
 /**

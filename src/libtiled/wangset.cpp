@@ -910,6 +910,36 @@ quint64 WangSet::completeSetSize() const
     }
 }
 
+WangSet::Type WangSet::effectiveTypeForColor(int color) const
+{
+    if (type() == Mixed) {
+        // Determine a meaningful mode by looking at where the color is used.
+        bool usedAsCorner = false;
+        bool usedAsEdge = false;
+
+        if (color > 0 && color <= colorCount()) {
+            for (const WangId wangId : wangIdByTileId()) {
+                for (int i = 0; i < WangId::NumIndexes; ++i) {
+                    if (wangId.indexColor(i) == color) {
+                        const bool isCorner = WangId::isCorner(i);
+                        usedAsCorner |= isCorner;
+                        usedAsEdge |= !isCorner;
+                    }
+                }
+            }
+        }
+
+        if (usedAsEdge == usedAsCorner)
+            return Mixed;
+        else if (usedAsEdge)
+            return Edge;
+        else
+            return Corner;
+    }
+
+    return type();
+}
+
 /**
  * Returns the Nth WangId starting at 0x11111111
  * and, when C is the number of colors, ending at 0xCCCCCCCC.

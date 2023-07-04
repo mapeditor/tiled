@@ -214,39 +214,16 @@ void WangBrush::setColor(int color)
     if (!mWangSet)
         return;
 
-    switch (mWangSet->type()) {
+    switch (mWangSet->effectiveTypeForColor(color)) {
     case WangSet::Corner:
         mBrushMode = PaintCorner;
         break;
     case WangSet::Edge:
         mBrushMode = PaintEdge;
         break;
-    case WangSet::Mixed: {
-        // Determine a meaningful mode by looking at where the color is used.
-        bool usedAsCorner = false;
-        bool usedAsEdge = false;
-
-        if (mWangSet && color > 0 && color <= mWangSet->colorCount()) {
-            for (const WangId wangId : mWangSet->wangIdByTileId()) {
-                for (int i = 0; i < WangId::NumIndexes; ++i) {
-                    if (wangId.indexColor(i) == color) {
-                        const bool isCorner = WangId::isCorner(i);
-                        usedAsCorner |= isCorner;
-                        usedAsEdge |= !isCorner;
-                    }
-                }
-            }
-        }
-
-        if (usedAsEdge == usedAsCorner)
-            mBrushMode = PaintEdgeAndCorner;
-        else if (usedAsEdge)
-            mBrushMode = PaintEdge;
-        else
-            mBrushMode = PaintCorner;
-
+    case WangSet::Mixed:
+        mBrushMode = PaintEdgeAndCorner;
         break;
-    }
     }
 }
 
