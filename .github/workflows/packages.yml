@@ -193,7 +193,7 @@ jobs:
           version_suffix: "10.12-10.13"
           qt_creator_version: 5.0.3
           architectures: x86_64
-        - qt_version: 6.5.1
+        - qt_version: 6.5.0
           version_suffix: "10.14+"
           qt_creator_version: 7.0.2
           architectures: x86_64,arm64
