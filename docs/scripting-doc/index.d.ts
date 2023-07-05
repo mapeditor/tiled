@@ -4363,9 +4363,13 @@ declare class FileEdit extends Qt.QWidget {
   fileUrl: Qt.QUrl;
 
   /**
-   * Signal emitted when the selected fileUrl changes
+   * Signal emitted when the selected fileUrl changes.
    */
   fileUrlChanged: Signal<Qt.QUrl>;
+  /**
+   * If `true`, the user will be prompted for a directory rather than a file. Defaults to `false`.
+   */
+  isDirectory: boolean;
 }
 /**
  * A widget that displays an {@link Image} on your dialog.
@@ -4582,20 +4586,20 @@ declare class Dialog extends Qt.QWidget {
   done(resultCode: typeof Dialog.Rejected | typeof Dialog.Accepted): void;
 
   /**
-   * Called when the dialog is closed via {@link accept()} or the {@link done()}
+   * Called when the dialog is closed via {@link accept} or the {@link done}
    * method is called with {@link Dialog.Accepted} as its argument.
    */
   accepted: Signal<void>;
 
   /**
-   * Called when the dialog is closed via the X button, {@link reject()}, or the
-   * {@link done()} method is called with {@link Dialog.Rejected} as its
+   * Called when the dialog is closed via the X button, {@link reject}, or the
+   * {@link done} method is called with {@link Dialog.Rejected} as its
    * argument.
    */
   rejected: Signal<void>;
 
   /**
-   * Called when the dialog is closed or the {@link done()} method is called.
+   * Called when the dialog is closed or the {@link done} method is called.
    * The number value it provides is either {@link Dialog.Accepted} or
    * {@link Dialog.Rejected}.
    */
