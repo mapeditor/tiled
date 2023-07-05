@@ -157,15 +157,16 @@ static void getSurroundingPoints(QPoint point,
 }
 
 /**
- * Matches the given \a info's edges/corners at \a position with an \a adjacent one.
- * Also sets the mask for the given corner / side.
+ * Matches the given \a adjacentInfo's edges/corners with the given \a wangId.
+ * The position of the adjacent info is given by \a adjacentPosition. Also sets
+ * the mask for the given corner / side.
  */
-static void updateToAdjacent(WangFiller::CellInfo &info, WangId adjacent, int position)
+static void updateAdjacent(WangFiller::CellInfo &adjacentInfo, WangId wangId, int adjacentPosition)
 {
-    const int adjacentPosition = WangId::oppositeIndex(position);
+    const int position = WangId::oppositeIndex(adjacentPosition);
 
-    info.desired.setIndexColor(position, adjacent.indexColor(adjacentPosition));
-    info.mask.setIndexColor(position, WangId::INDEX_MASK);
+    adjacentInfo.desired.setIndexColor(position, wangId.indexColor(adjacentPosition));
+    adjacentInfo.mask.setIndexColor(position, WangId::INDEX_MASK);
 
     if (!WangId::isCorner(position)) {
         const int cornerA = WangId::nextIndex(position);
@@ -173,11 +174,11 @@ static void updateToAdjacent(WangFiller::CellInfo &info, WangId adjacent, int po
         const int adjacentCornerA = WangId::previousIndex(adjacentPosition);
         const int adjacentCornerB = WangId::nextIndex(adjacentPosition);
 
-        info.desired.setIndexColor(cornerA, adjacent.indexColor(adjacentCornerA));
-        info.mask.setIndexColor(cornerA, WangId::INDEX_MASK);
+        adjacentInfo.desired.setIndexColor(cornerA, wangId.indexColor(adjacentCornerA));
+        adjacentInfo.mask.setIndexColor(cornerA, WangId::INDEX_MASK);
 
-        info.desired.setIndexColor(cornerB, adjacent.indexColor(adjacentCornerB));
-        info.mask.setIndexColor(cornerB, WangId::INDEX_MASK);
+        adjacentInfo.desired.setIndexColor(cornerB, wangId.indexColor(adjacentCornerB));
+        adjacentInfo.mask.setIndexColor(cornerB, WangId::INDEX_MASK);
     }
 }
 
@@ -187,35 +188,24 @@ void WangFiller::apply(TileLayer &target)
     auto &region = mFillRegion.region;
 
     if (!mCorrectionsEnabled) {
-        // Set the Wang IDs at the border of the region to make sure the tiles in
-        // the filled region connect with those outside of it.
-        auto setDesiredWangId = [&] (int x, int y, WangId::Index edge) {
-            const WangId source = wangIdFromSurroundings(QPoint(x, y));
+        // Set the Wang IDs at the border of the region to prefer the tiles in
+        // the filled region to connect with those outside of it.
+        auto setDesiredWangId = [&] (int x, int y, quint64 mask) {
+            const WangId surroundings = wangIdFromSurroundings(QPoint(x, y));
             CellInfo &info = grid.add(x, y);
 
-            auto setIndex = [&](int i) {
-                if (!info.mask.indexColor(i)) {
-                    const int color = source.indexColor(i);
-                    if (color != WangId::INDEX_MASK) {
-                        info.desired.setIndexColor(i, color);
-                        info.mask.setIndexColor(i, WangId::INDEX_MASK);
-                    }
-                }
-            };
-
-            setIndex(WangId::previousIndex(edge));
-            setIndex(edge);
-            setIndex(WangId::nextIndex(edge));
+            // Don't override explicitly set indexes
+            info.desired.mergeWith(surroundings, mask & ~info.mask);
         };
 
         for (const QRect &rect : region) {
             for (int x = rect.left(); x <= rect.right(); ++x) {
-                setDesiredWangId(x, rect.top(), WangId::Top);
-                setDesiredWangId(x, rect.bottom(), WangId::Bottom);
+                setDesiredWangId(x, rect.top(), WangId::MaskTopSide);
+                setDesiredWangId(x, rect.bottom(), WangId::MaskBottomSide);
             }
             for (int y = rect.top(); y <= rect.bottom(); ++y) {
-                setDesiredWangId(rect.left(), y, WangId::Left);
-                setDesiredWangId(rect.right(), y, WangId::Right);
+                setDesiredWangId(rect.left(), y, WangId::MaskLeftSide);
+                setDesiredWangId(rect.right(), y, WangId::MaskRightSide);
             }
         }
     }
@@ -260,7 +250,7 @@ void WangFiller::apply(TileLayer &target)
                 continue;
 
             CellInfo &adjacentInfo = grid.add(p);
-            updateToAdjacent(adjacentInfo, cellWangId, WangId::oppositeIndex(i));
+            updateAdjacent(adjacentInfo, cellWangId, i);
 
             // Check if we may need to reconsider a tile outside of our starting region
             if (!WangId::isCorner(i) && mCorrectionsEnabled && bounds.contains(p) && !region.contains(p)) {
@@ -312,21 +302,26 @@ static WangId wangIdFromSurrounding(const WangId surroundingWangIds[])
 {
     WangId id = WangId::FULL_MASK;
 
-    // Edges
-    for (int i = 0; i < WangId::NumEdges; ++i)
-        id.setEdgeColor(i, surroundingWangIds[i * 2].edgeColor((2 + i) % WangId::NumEdges));
+    for (int i : { WangId::Top, WangId::Right, WangId::Bottom, WangId::Left })
+        id.setIndexColor(i, surroundingWangIds[i].indexColor(WangId::oppositeIndex(i)));
 
-    // Corners
-    for (int i = 0; i < WangId::NumCorners; ++i) {
-        int color = surroundingWangIds[i*2 + 1].cornerColor((2 + i) % WangId::NumCorners);
+    for (int i : { WangId::TopRight, WangId::BottomRight, WangId::BottomLeft, WangId::TopLeft }) {
+        int color = surroundingWangIds[i].indexColor(WangId::oppositeIndex(i));
 
-        if (color == WangId::INDEX_MASK)
-            color = surroundingWangIds[i*2].cornerColor((1 + i) % WangId::NumCorners);
+        // Each corner has two additional connecting tiles on the side, from which a color could be derived.
+        if (color == WangId::INDEX_MASK || !color) {
+            int leftSideCorner = surroundingWangIds[WangId::previousIndex(i)].indexColor((i + 2) % WangId::NumIndexes);
+            if (leftSideCorner != WangId::INDEX_MASK)
+                color = leftSideCorner;
+        }
 
-        if (color == WangId::INDEX_MASK)
-            color = surroundingWangIds[(i*2 + 2) % WangId::NumIndexes].cornerColor((3 + i) % WangId::NumCorners);
+        if (color == WangId::INDEX_MASK || !color) {
+            int rightSideCorner = surroundingWangIds[WangId::nextIndex(i)].indexColor((i + 6) % WangId::NumIndexes);
+            if (rightSideCorner != WangId::INDEX_MASK)
+                color = rightSideCorner;
+        }
 
-        id.setCornerColor(i, color);
+        id.setIndexColor(i, color);
     }
 
     return id;
@@ -339,9 +334,15 @@ WangId WangFiller::wangIdFromSurroundings(QPoint point) const
     getSurroundingPoints(point, mHexagonalRenderer, adjacentPoints);
 
     for (int i = 0; i < WangId::NumIndexes; ++i) {
-        const bool inRegion = mFillRegion.region.contains(adjacentPoints[i]);
-        wangIds[i] = inRegion ? WangId(WangId::FULL_MASK)
-                              : mWangSet.wangIdOfCell(mBack.cellAt(adjacentPoints[i]));
+        wangIds[i] = WangId::FULL_MASK;
+
+        if (!mMapRenderer->map()->infinite() && !mBack.rect().contains(adjacentPoints[i]))
+            continue;
+
+        if (mFillRegion.region.contains(adjacentPoints[i]))
+            continue;
+
+        wangIds[i] = mWangSet.wangIdOfCell(mBack.cellAt(adjacentPoints[i]));
     }
 
     return wangIdFromSurrounding(wangIds);
@@ -420,8 +421,8 @@ bool WangFiller::findBestMatch(const TileLayer &target,
         // do when we're not making corrections and when the WangSet is not
         // complete.
         if (!mCorrectionsEnabled && !mWangSet.isComplete()) {
+            const WangId resultWangId = mWangSet.wangIdOfCell(result);
             bool discard = false;
-            WangId resultWangId = mWangSet.wangIdOfCell(result);
 
             // Adjust the desired WangIds for the surrounding tiles based on
             // the to be placed one.
@@ -434,7 +435,7 @@ bool WangFiller::findBestMatch(const TileLayer &target,
                     continue;
 
                 CellInfo adjacentInfo = grid.get(p);
-                updateToAdjacent(adjacentInfo, resultWangId, WangId::oppositeIndex(i));
+                updateAdjacent(adjacentInfo, resultWangId, i);
 
                 if (adjacentInfo.desired && !mWangSet.wangIdIsUsed(adjacentInfo.desired, adjacentInfo.mask)) {
                     discard = true;

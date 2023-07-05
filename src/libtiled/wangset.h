@@ -74,6 +74,11 @@ public:
         MaskLeft        = INDEX_MASK << (BITS_PER_INDEX * Left),
         MaskTopLeft     = INDEX_MASK << (BITS_PER_INDEX * TopLeft),
 
+        MaskTopSide     = MaskTopLeft | MaskTop | MaskTopRight,
+        MaskRightSide   = MaskTopRight | MaskRight | MaskBottomRight,
+        MaskBottomSide  = MaskBottomLeft | MaskBottom | MaskBottomRight,
+        MaskLeftSide    = MaskTopLeft | MaskLeft | MaskBottomLeft,
+
         MaskEdges       = MaskTop | MaskRight | MaskBottom | MaskLeft,
         MaskCorners     = MaskTopRight | MaskBottomRight | MaskBottomLeft | MaskTopLeft,
     };
@@ -95,6 +100,7 @@ public:
     void setIndexColor(int index, unsigned value);
 
     void updateToAdjacent(WangId adjacent, int position);
+    void mergeWith(WangId wangId, quint64 mask);
 
     bool hasWildCards() const;
     bool hasCornerWildCards() const;
@@ -127,6 +133,11 @@ public:
 private:
     quint64 mId;
 };
+
+inline void WangId::mergeWith(WangId wangId, quint64 mask)
+{
+    mId = (mId & ~mask) | (wangId & mask);
+}
 
 inline WangId::Index WangId::oppositeIndex(int index)
 {
