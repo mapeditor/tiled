@@ -21,16 +21,15 @@
 #include "shapefilltool.h"
 
 #include "actionmanager.h"
-#include "addremovetileset.h"
 #include "brushitem.h"
 #include "geometry.h"
 #include "mapdocument.h"
-#include "painttilelayer.h"
 #include "stampactions.h"
 
-#include <QApplication>
 #include <QActionGroup>
+#include <QApplication>
 #include <QToolBar>
+#include <QUndoStack>
 
 #include <memory>
 
@@ -62,9 +61,9 @@ ShapeFillTool::ShapeFillTool(QObject *parent)
     ActionManager::registerAction(mRectFill, "ShapeFillTool.RectangleFill");
     ActionManager::registerAction(mCircleFill, "ShapeFillTool.CircleFill");
 
-    connect(mRectFill, &QAction::triggered,
+    connect(mRectFill, &QAction::triggered, this,
             [this] { setCurrentShape(Rect); });
-    connect(mCircleFill, &QAction::triggered,
+    connect(mCircleFill, &QAction::triggered, this,
             [this] { setCurrentShape(Circle); });
 
     setActionsEnabled(false);
@@ -207,27 +206,27 @@ void ShapeFillTool::updateFillOverlay()
         dy = ((dy > 0) - (dy < 0)) * min;
     }
 
-    const QRect boundingRect(mStartCorner, mStartCorner + QPoint(dx, dy));
+    const bool alt = mModifiers & Qt::AltModifier;
+    const QPoint p1 = alt ? mStartCorner - QPoint(dx, dy)
+                          : mStartCorner;
+    const QPoint p2 = mStartCorner + QPoint(dx, dy);
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    QRect area = QRect(p1, p2).normalized();
+    if (area.width() == 0)
+        area.adjust(-1, 0, 1, 0);
+    if (area.height() == 0)
+        area.adjust(0, -1, 0, 1);
+#else
+    QRect area = QRect::span(p1, p2);
+#endif
 
     switch (mCurrentShape) {
-    case Rect: {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        QRect area = boundingRect.normalized();
-        if (area.width() == 0)
-            area.adjust(-1, 0, 1, 0);
-        if (area.height() == 0)
-            area.adjust(0, -1, 0, 1);
-#else
-        QRect area = QRect::span(mStartCorner, mStartCorner + QPoint(dx, dy));
-#endif
+    case Rect:
         updatePreview(area);
         break;
-    }
     case Circle:
-        updatePreview(ellipseRegion(boundingRect.left(),
-                                    boundingRect.top(),
-                                    boundingRect.right(),
-                                    boundingRect.bottom()));
+        updatePreview(ellipseRegion(area));
         break;
     }
 }

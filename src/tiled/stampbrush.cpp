@@ -617,7 +617,9 @@ void StampBrush::updatePreview(QPoint tilePos)
             drawPreviewLayer(pointsOnLine(mStampReference, tilePos));
             break;
         case CircleMidSet:
-            drawPreviewLayer(pointsOnEllipse(mStampReference, tilePos));
+            drawPreviewLayer(pointsOnEllipse(mStampReference,
+                                             qAbs(mStampReference.x() - tilePos.x()),
+                                             qAbs(mStampReference.y() - tilePos.y())));
             break;
         case Capture:
             // already handled above

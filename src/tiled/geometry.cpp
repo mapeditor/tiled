@@ -1,6 +1,9 @@
 /*
  * geometry.cpp
  * Copyright 2010-2011, Stefan Beller <stefanbeller@googlemail.com>
+ * Copyright 2017, Benjamin Trotter <bdtrotte@ucsc.edu>
+ * Copyright 2020, Zingl Alois
+ * Copyright 2017-2023, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -26,141 +29,93 @@ namespace Tiled {
 
 /**
  * Returns a lists of points on an ellipse.
- * (x0,y0) is the midpoint
- * (x1,y1) determines the radius.
+ * (xm,ym) is the midpoint
+ * (a,b) determines the radii.
  *
- * It is adapted from http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
- * here is the original: http://homepage.smc.edu/kennedy_john/belipse.pdf
+ * From "Bresenham Curve Rasterizing Algorithms".
+ *
+ * @version V20.15 april 2020
+ * @copyright MIT open-source license software
+ * @url https://github.com/zingl/Bresenham
+ * @author  Zingl Alois
  */
-QVector<QPoint> pointsOnEllipse(int x0, int y0, int x1, int y1)
+QVector<QPoint> pointsOnEllipse(int xm, int ym, int a, int b)
 {
     QVector<QPoint> ret;
-    int x, y;
-    int xChange, yChange;
-    int ellipseError;
-    int twoXSquare, twoYSquare;
-    int stoppingX, stoppingY;
-    int radiusX = x0 > x1 ? x0 - x1 : x1 - x0;
-    int radiusY = y0 > y1 ? y0 - y1 : y1 - y0;
 
-    if (radiusX == 0 && radiusY == 0)
-        return ret;
+    long x = -a, y = 0;          /* II. quadrant from bottom left to top right */
+    long e2 = b, dx = (1+2*x)*e2*e2;                       /* error increment  */
+    long dy = x*x, err = dx+dy;                             /* error of 1.step */
 
-    twoXSquare = 2 * radiusX * radiusX;
-    twoYSquare = 2 * radiusY * radiusY;
-    x = radiusX;
-    y = 0;
-    xChange = radiusY * radiusY * (1 - 2 * radiusX);
-    yChange = radiusX * radiusX;
-    ellipseError = 0;
-    stoppingX = twoYSquare*radiusX;
-    stoppingY = 0;
-    while (stoppingX >= stoppingY) {
-        ret += QPoint(x0 + x, y0 + y);
-        ret += QPoint(x0 - x, y0 + y);
-        ret += QPoint(x0 + x, y0 - y);
-        ret += QPoint(x0 - x, y0 - y);
-        y++;
-        stoppingY += twoXSquare;
-        ellipseError += yChange;
-        yChange += twoXSquare;
-        if ((2 * ellipseError + xChange) > 0) {
-            x--;
-            stoppingX -= twoYSquare;
-            ellipseError += xChange;
-            xChange += twoYSquare;
-        }
-    }
-    x = 0;
-    y = radiusY;
-    xChange = radiusY * radiusY;
-    yChange = radiusX * radiusX * (1 - 2 * radiusY);
-    ellipseError = 0;
-    stoppingX = 0;
-    stoppingY = twoXSquare * radiusY;
-    while (stoppingX <= stoppingY) {
-        ret += QPoint(x0 + x, y0 + y);
-        ret += QPoint(x0 - x, y0 + y);
-        ret += QPoint(x0 + x, y0 - y);
-        ret += QPoint(x0 - x, y0 - y);
-        x++;
-        stoppingX += twoYSquare;
-        ellipseError += xChange;
-        xChange += twoYSquare;
-        if ((2 * ellipseError + yChange) > 0) {
-            y--;
-            stoppingY -= twoXSquare;
-            ellipseError += yChange;
-            yChange += twoXSquare;
-        }
+    do {
+        ret += QPoint(xm-x, ym+y);                            /*   I. Quadrant */
+        ret += QPoint(xm+x, ym+y);                            /*  II. Quadrant */
+        ret += QPoint(xm+x, ym-y);                            /* III. Quadrant */
+        ret += QPoint(xm-x, ym-y);                            /*  IV. Quadrant */
+        e2 = 2*err;
+        if (e2 >= dx) { x++; err += dx += 2*(long)b*b; }             /* x step */
+        if (e2 <= dy) { y++; err += dy += 2*(long)a*a; }             /* y step */
+    } while (x <= 0);
+
+    while (y++ < b) {            /* too early stop for flat ellipses with a=1, */
+        ret += QPoint(xm, ym+y);                   /* -> finish tip of ellipse */
+        ret += QPoint(xm, ym-y);
     }
 
     return ret;
 }
 
 /**
- * returns an elliptical region centered at x0,y0 with radius determined by x1,y1
+ * Returns an elliptical region based on a rectangle given by x0,y0 (top-left)
+ * and x1,y1 (bottom-right), inclusive.
+ *
+ * From "Bresenham Curve Rasterizing Algorithms", adjusted to output a filled
+ * region instead of an outline.
+ *
+ * @version V20.15 april 2020
+ * @copyright MIT open-source license software
+ * @url https://github.com/zingl/Bresenham
+ * @author  Zingl Alois
  */
 QRegion ellipseRegion(int x0, int y0, int x1, int y1)
 {
     QRegion ret;
-    int x, y;
-    int xChange, yChange;
-    int ellipseError;
-    int twoXSquare, twoYSquare;
-    int stoppingX, stoppingY;
-    int radiusX = x0 > x1 ? x0 - x1 : x1 - x0;
-    int radiusY = y0 > y1 ? y0 - y1 : y1 - y0;
 
-    if (radiusX == 0 && radiusY == 0)
-        return ret;
+    auto addRect = [&ret](int x0, int y0, int x1, int y1) {
+        ret += QRect(QPoint(x0, y0), QPoint(x1, y1));
+    };
 
-    twoXSquare = 2 * radiusX * radiusX;
-    twoYSquare = 2 * radiusY * radiusY;
-    x = radiusX;
-    y = 0;
-    xChange = radiusY * radiusY * (1 - 2 * radiusX);
-    yChange = radiusX * radiusX;
-    ellipseError = 0;
-    stoppingX = twoYSquare*radiusX;
-    stoppingY = 0;
-    while (stoppingX >= stoppingY) {
-        ret += QRect(-x, y, x * 2, 1);
-        ret += QRect(-x, -y, x * 2, 1);
-        y++;
-        stoppingY += twoXSquare;
-        ellipseError += yChange;
-        yChange += twoXSquare;
-        if ((2 * ellipseError + xChange) > 0) {
-            x--;
-            stoppingX -= twoYSquare;
-            ellipseError += xChange;
-            xChange += twoYSquare;
-        }
-    }
-    x = 0;
-    y = radiusY;
-    xChange = radiusY * radiusY;
-    yChange = radiusX * radiusX * (1 - 2 * radiusY);
-    ellipseError = 0;
-    stoppingX = 0;
-    stoppingY = twoXSquare * radiusY;
-    while (stoppingX <= stoppingY) {
-        ret += QRect(-x, y, x * 2, 1);
-        ret += QRect(-x, -y, x * 2, 1);
-        x++;
-        stoppingX += twoYSquare;
-        ellipseError += xChange;
-        xChange += twoYSquare;
-        if ((2 * ellipseError + yChange) > 0) {
-            y--;
-            stoppingY -= twoXSquare;
-            ellipseError += yChange;
-            yChange += twoXSquare;
-        }
+    long a = abs(x1-x0), b = abs(y1-y0), b1 = b&1;                 /* diameter */
+    double dx = 4*(1.0-a)*b*b, dy = 4*(b1+1)*a*a;           /* error increment */
+    double err = dx+dy+b1*a*a, e2;                          /* error of 1.step */
+
+    if (x0 > x1) { x0 = x1; x1 += a; }        /* if called with swapped points */
+    if (y0 > y1) y0 = y1;                                  /* .. exchange them */
+    y0 += (b+1)/2; y1 = y0-b1;                               /* starting pixel */
+    a = 8*a*a; b1 = 8*b*b;
+
+    do {
+       // (x1, y0)                                            /*   I. Quadrant */
+       // (x0, y0)                                            /*  II. Quadrant */
+       // (x0, y1)                                            /* III. Quadrant */
+       // (x1, y1)                                            /*  IV. Quadrant */
+
+       addRect(x0, y0, x1, y0);                                 /* Bottom half */
+       addRect(x0, y1, x1, y1);                                    /* Top half */
+
+       e2 = 2*err;
+       if (e2 <= dy) { y0++; y1--; err += dy += a; }                 /* y step */
+       if (e2 >= dx || 2*err > dy) { x0++; x1--; err += dx += b1; }  /* x step */
+    } while (x0 <= x1);
+
+    while (y0-y1 <= b) {                /* too early stop of flat ellipses a=1 */
+       addRect(x0-1, y0, x1+1, y0);                /* -> finish tip of ellipse */
+       addRect(x0-1, y1, x1+1, y1);
+       y0++;
+       y1--;
     }
 
-    return ret.translated(x0, y0);
+    return ret;
 }
 
 /**
