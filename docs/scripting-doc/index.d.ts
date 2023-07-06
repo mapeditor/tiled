@@ -4370,6 +4370,13 @@ declare class FileEdit extends Qt.QWidget {
    * If `true`, the user will be prompted for a directory rather than a file. Defaults to `false`.
    */
   isDirectory: boolean;
+  /**
+   * When specified, only files that match the filter are shown. 
+   * The filter is given in a format like "Images (*.png *.xpm *.jpg)".
+   *  If you want multiple filters, separate them with ';;', for example:
+   * ` "Images (*.png *.xpm *.jpg);;Text files (*.txt);;XML files (*.xml)"`
+   */
+  filter: string;
 }
 /**
  * A widget that displays an {@link Image} on your dialog.
