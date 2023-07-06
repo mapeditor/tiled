@@ -73,6 +73,9 @@ public:
     bool correctionsEnabled() const { return mCorrectionsEnabled; }
     void setCorrectionsEnabled(bool enabled) { mCorrectionsEnabled = enabled; }
 
+    bool erasingEnabled() const { return mErasingEnabled; }
+    void setErasingEnabled(bool enabled) { mErasingEnabled = enabled; }
+
     void setDebugPainter(QPainter *painter) { mDebugPainter = painter; }
 
     void setRegion(const QRegion &region);
@@ -104,6 +107,7 @@ private:
     const MapRenderer * const mMapRenderer;
     const HexagonalRenderer * const mHexagonalRenderer;
     bool mCorrectionsEnabled = false;
+    bool mErasingEnabled = true;
     FillRegion mFillRegion;
 
     QPainter *mDebugPainter = nullptr;

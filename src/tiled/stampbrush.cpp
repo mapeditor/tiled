@@ -462,6 +462,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
         };
 
         WangFiller wangFiller(*mWangSet, *tileLayer, mapDocument()->renderer());
+        wangFiller.setErasingEnabled(false);
         wangFiller.setRegion(paintedRegion);
         wangFiller.apply(*previewLayer);
 

@@ -336,13 +336,14 @@ WangId WangFiller::wangIdFromSurroundings(QPoint point) const
     for (int i = 0; i < WangId::NumIndexes; ++i) {
         wangIds[i] = WangId::FULL_MASK;
 
-        if (!mMapRenderer->map()->infinite() && !mBack.rect().contains(adjacentPoints[i]))
+        const auto &cell = mBack.cellAt(adjacentPoints[i]);
+        if (cell.isEmpty())
             continue;
 
         if (mFillRegion.region.contains(adjacentPoints[i]))
             continue;
 
-        wangIds[i] = mWangSet.wangIdOfCell(mBack.cellAt(adjacentPoints[i]));
+        wangIds[i] = mWangSet.wangIdOfCell(cell);
     }
 
     return wangIdFromSurrounding(wangIds);
@@ -410,7 +411,8 @@ bool WangFiller::findBestMatch(const TileLayer &target,
     for (int i = 0, i_end = wangIdsAndCells.size(); i < i_end; ++i)
         processCandidate(wangIdsAndCells[i].wangId, wangIdsAndCells[i].cell);
 
-    processCandidate(WangId(), Cell());
+    if (mErasingEnabled)
+        processCandidate(WangId(), Cell());
 
     // Choose a candidate at random, with consideration for probability
     while (!matches.isEmpty()) {

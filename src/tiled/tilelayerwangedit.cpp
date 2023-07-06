@@ -26,6 +26,7 @@
 #include "maprenderer.h"
 #include "scriptmanager.h"
 #include "tilelayer.h"
+#include "wangfiller.h"
 
 #include <QCoreApplication>
 
@@ -61,6 +62,16 @@ bool TileLayerWangEdit::correctionsEnabled() const
 void TileLayerWangEdit::setCorrectionsEnabled(bool correctionsEnabled)
 {
     mWangFiller->setCorrectionsEnabled(correctionsEnabled);
+}
+
+bool TileLayerWangEdit::erasingEnabled() const
+{
+    return mWangFiller->erasingEnabled();
+}
+
+void TileLayerWangEdit::setErasingEnabled(bool erasingEnabled)
+{
+    mWangFiller->setErasingEnabled(erasingEnabled);
 }
 
 void TileLayerWangEdit::setWangIndex(QPoint pos, WangIndex::Value index, int color)
