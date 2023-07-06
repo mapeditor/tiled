@@ -567,19 +567,13 @@ void WangBrush::updateBrush()
                 for (int x = rect.left(); x <= rect.right(); ++x) {
                     const QPoint targetPos(w - x - 1, h - y - 1);
                     const WangFiller::CellInfo &sourceInfo = fill.grid.get(x, y);
-                    WangFiller::CellInfo targetInfo = fill.grid.get(targetPos);
+                    WangFiller::CellInfo &targetInfo = wangFiller.changePosition(targetPos);
 
                     const WangId rotatedDesired = sourceInfo.desired.rotated(2);
                     const WangId rotatedMask = sourceInfo.mask.rotated(2);
 
-                    for (int i = 0; i < WangId::NumIndexes; ++i) {
-                        if (rotatedMask.indexColor(i)) {
-                            targetInfo.desired.setIndexColor(i, rotatedDesired.indexColor(i));
-                            targetInfo.mask.setIndexColor(i, WangId::INDEX_MASK);
-                        }
-                    }
-
-                    fill.grid.set(targetPos, targetInfo);
+                    targetInfo.desired.mergeWith(rotatedDesired, rotatedMask);
+                    targetInfo.mask.mergeWith(rotatedMask, rotatedMask);
                 }
             }
 
