@@ -49,7 +49,7 @@ Mixed Set
 Based on the information in a terrain set, the :ref:`terrain-tool` can
 understand the map and automatically choose the right tiles when making edits.
 When necessary, it also adjusts neighboring tiles to make sure they correctly
-connect to the modified area. A terrain set can contain up to 255 terrains.
+connect to the modified area. A terrain set can contain up to 254 terrains.
 
 The :ref:`stamp-tool`, as well as the :ref:`bucket-fill-tool` and the
 :ref:`shape-fill-tool`, also have a mode where they can :ref:`fill an area with
@@ -335,7 +335,7 @@ your own project. A few things to keep in mind:
   the terrain overlay is displayed correctly, set up the *Orientation*,
   *Grid Width* and *Grid Height* in the tileset properties.
 
-- The tool will handle any number of terrains (up to 255) and each corner of a
+- The tool will handle any number of terrains (up to 254) and each corner of a
   tile can have a different type of terrain. Still, there are other ways of
   dealing with transitions that this tool can't handle. Also, it is not able
   to edit multiple layers at the same time. For a more flexible, but also more

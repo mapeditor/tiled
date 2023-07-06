@@ -23,7 +23,6 @@
 
 #include "editablewangset.h"
 #include "map.h"
-#include "wangfiller.h"
 
 #include <QObject>
 
@@ -32,6 +31,8 @@
 namespace Tiled {
 
 class EditableTileLayer;
+class MapRenderer;
+class WangFiller;
 
 // Copy of WangId::Index, for exposing the enum to JS
 namespace WangIndex
@@ -63,6 +64,7 @@ class TileLayerWangEdit : public QObject
     Q_PROPERTY(Tiled::EditableWangSet *wangSet READ wangSet CONSTANT)
     Q_PROPERTY(bool mergeable READ isMergeable WRITE setMergeable)
     Q_PROPERTY(bool correctionsEnabled READ correctionsEnabled WRITE setCorrectionsEnabled)
+    Q_PROPERTY(bool erasingEnabled READ erasingEnabled WRITE setErasingEnabled)
 
 public:
     explicit TileLayerWangEdit(EditableTileLayer *tileLayer,
@@ -80,7 +82,10 @@ public:
     bool isMergeable() const;
 
     bool correctionsEnabled() const;
-    void setCorrectionsEnabled(bool newCorrectionsEnabled);
+    void setCorrectionsEnabled(bool correctionsEnabled);
+
+    bool erasingEnabled() const;
+    void setErasingEnabled(bool erasingEnabled);
 
     EditableTileLayer *target() const;
     EditableWangSet *wangSet() const;

@@ -2966,6 +2966,12 @@ interface TileLayerWangEdit {
   correctionsEnabled : boolean
 
   /**
+   * Whether the empty tile is considered when looking for matching tiles.
+   * Defaults to `true`.
+   */
+  erasingEnabled : boolean
+
+  /**
    * Sets the desired color for the given Wang index at the given location.
    *
    * This is a low-level function, which only affects the given location and

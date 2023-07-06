@@ -47,7 +47,7 @@ public:
     constexpr static unsigned BITS_PER_INDEX = 8;
     constexpr static quint64 INDEX_MASK = 0xFF;
     constexpr static quint64 FULL_MASK = Q_UINT64_C(0xFFFFFFFFFFFFFFFF);
-    constexpr static int MAX_COLOR_COUNT = (1 << BITS_PER_INDEX) - 1;
+    constexpr static int MAX_COLOR_COUNT = (1 << BITS_PER_INDEX) - 2;
 
     enum Index {
         Top         = 0,
@@ -74,6 +74,11 @@ public:
         MaskLeft        = INDEX_MASK << (BITS_PER_INDEX * Left),
         MaskTopLeft     = INDEX_MASK << (BITS_PER_INDEX * TopLeft),
 
+        MaskTopSide     = MaskTopLeft | MaskTop | MaskTopRight,
+        MaskRightSide   = MaskTopRight | MaskRight | MaskBottomRight,
+        MaskBottomSide  = MaskBottomLeft | MaskBottom | MaskBottomRight,
+        MaskLeftSide    = MaskTopLeft | MaskLeft | MaskBottomLeft,
+
         MaskEdges       = MaskTop | MaskRight | MaskBottom | MaskLeft,
         MaskCorners     = MaskTopRight | MaskBottomRight | MaskBottomLeft | MaskTopLeft,
     };
@@ -95,6 +100,7 @@ public:
     void setIndexColor(int index, unsigned value);
 
     void updateToAdjacent(WangId adjacent, int position);
+    void mergeWith(WangId wangId, quint64 mask);
 
     bool hasWildCards() const;
     bool hasCornerWildCards() const;
@@ -127,6 +133,11 @@ public:
 private:
     quint64 mId;
 };
+
+inline void WangId::mergeWith(WangId wangId, quint64 mask)
+{
+    mId = (mId & ~mask) | (wangId & mask);
+}
 
 inline WangId::Index WangId::oppositeIndex(int index)
 {
@@ -277,9 +288,6 @@ public:
     const QVector<WangIdAndCell> &wangIdsAndCells() const;
 
     QList<WangTile> sortedWangTiles() const;
-
-    static WangId wangIdFromSurrounding(const WangId surroundingWangIds[]);
-    WangId wangIdFromSurrounding(const Cell surroundingCells[]) const;
 
     WangId wangIdOfTile(const Tile *tile) const;
     WangId wangIdOfCell(const Cell &cell) const;
