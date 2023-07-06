@@ -260,7 +260,7 @@ void ScriptedTool::setIconFileName(const QString &fileName)
     QString iconFile = fileName;
 
     const QString ext = QStringLiteral("ext:");
-    if (!iconFile.startsWith(ext) && !iconFile.startsWith(QLatin1String(":")))
+    if (!iconFile.startsWith(ext) && !iconFile.startsWith(QLatin1Char(':')))
         iconFile.prepend(ext);
 
     setIcon(QIcon { iconFile });
