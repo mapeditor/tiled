@@ -3134,7 +3134,7 @@ declare class WangSet extends TiledObject {
    *
    * @since 1.10.2
    */
-  public effectiveTypeForColor(int color) : typeof WangSet.Edge | typeof WangSet.Corner | typeof WangSet.Mixed
+  public effectiveTypeForColor(color : number) : typeof WangSet.Edge | typeof WangSet.Corner | typeof WangSet.Mixed
 }
 
 /**
@@ -4356,9 +4356,8 @@ declare class ColorButton extends Qt.QWidget {
  * and displays the path in the dialog.
  */
 declare class FileEdit extends Qt.QWidget {
-
   /**
-   * The {@link Qt.Qurl} of the currently selected file.
+   * The {@link Qt.QUrl} of the currently selected file.
    */
   fileUrl: Qt.QUrl;
 
@@ -4370,11 +4369,15 @@ declare class FileEdit extends Qt.QWidget {
    * If `true`, the user will be prompted for a directory rather than a file. Defaults to `false`.
    */
   isDirectory: boolean;
+
   /**
    * When specified, only files that match the filter are shown. 
-   * The filter is given in a format like "Images (*.png *.xpm *.jpg)".
-   *  If you want multiple filters, separate them with ';;', for example:
-   * ` "Images (*.png *.xpm *.jpg);;Text files (*.txt);;XML files (*.xml)"`
+   * The filter is given in a format like `"Images (*.png *.xpm *.jpg)"`.
+   *
+   * If you want multiple filters, separate them with ';;', for example:
+   * ```
+   * "Images (*.png *.xpm *.jpg);;Text files (*.txt);;XML files (*.xml)"
+   * ```
    */
   filter: string;
 }
@@ -4491,7 +4494,7 @@ declare class Dialog extends Qt.QWidget {
   /**
    * Adds an image widget that can display an image in a dialog.
    */
-   addImage(labelText: string, image: Image): ImageWidget;
+  addImage(labelText: string, image: Image): ImageWidget;
 
   /**
    * Add a {@link Qt.QSlider} widget to the dialog to allow a user to
@@ -4499,17 +4502,19 @@ declare class Dialog extends Qt.QWidget {
    * This can be used to enter integer or decimal values.
    */
   addNumberInput(labelText?: string): Qt.QDoubleSpinBox;
+
   /**
    * Add a {@link Qt.QSlider} widget to the dialog to allow a user to
    * slide a handle within a number range. This can only be used to enter integer-type values.
    */
   addSlider(labelText?: string): Qt.QSlider;
- /**
-  * Add a {@link Qt.QCheckBox} widget to the dialog to allow a user to
-  * toggle a boolean value.
-  * @param labelText The text of the label to display inside the checkbox widget
-  * @param defaultValue true to have the checkbox checked by default, false to have the checkbox start unchecked.
-  */
+
+  /**
+   * Add a {@link Qt.QCheckBox} widget to the dialog to allow a user to
+   * toggle a boolean value.
+   * @param labelText The text of the label to display inside the checkbox widget
+   * @param defaultValue true to have the checkbox checked by default, false to have the checkbox start unchecked.
+   */
   addCheckBox(labelText: string, defaultValue: boolean): Qt.QCheckBox;
 
   /**
@@ -4518,6 +4523,7 @@ declare class Dialog extends Qt.QWidget {
    * @param labelText
    */
   addButton(labelText: string): Qt.QPushButton;
+
   /**
    * Add a {@link Qt.QLineEdit} widget to the dialog to allow the user
    * to enter a single line of text
@@ -4549,10 +4555,12 @@ declare class Dialog extends Qt.QWidget {
    */
   addColorButton(labelText?: string): ColorButton;
 
-  /* Widget with a button which opens a file picker dialog
-  * and displays the path in the dialog.
-  */
+  /**
+   * Add a {@link FileEdit} widget with a button which opens a file picker
+   * dialog and displays the path in the dialog.
+   */
   addFilePicker(labelText?: string): FileEdit;
+
   /**
    * Erase all of the widgets that you have added to the dialog.
    * Call this if you want to re-draw your dialog with a new configuration of widgets.
