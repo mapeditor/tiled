@@ -586,10 +586,6 @@ void WangBrush::updateBrush()
         fill.region = completeRegion;
     }
 
-    // Don't try to make changes outside of a fixed map
-    if (!mapDocument()->map()->infinite())
-        fill.region &= currentLayer->rect();
-
     SharedTileLayer stamp = SharedTileLayer::create(QString(), 0, 0, 0, 0);
 
     wangFiller.setCorrectionsEnabled(true);

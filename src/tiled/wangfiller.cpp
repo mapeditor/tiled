@@ -187,6 +187,22 @@ void WangFiller::apply(TileLayer &target)
     auto &grid = mFillRegion.grid;
     auto &region = mFillRegion.region;
 
+    // Don't try to make changes outside of a fixed map. Instead, to still
+    // provide some feedback in previews, explicitly mark this area as empty.
+    if (!mMapRenderer->map()->infinite()) {
+        const auto emptyRegion = region.subtracted(mBack.rect());
+
+        Cell empty;
+        empty.setChecked(true);
+
+        for (const QRect &rect : emptyRegion)
+            for (int y = rect.top(); y <= rect.bottom(); ++y)
+                for (int x = rect.left(); x <= rect.right(); ++x)
+                    target.setCell(x - target.x(), y - target.y(), empty);
+
+        region &= mBack.rect();
+    }
+
     if (!mCorrectionsEnabled) {
         // Set the Wang IDs at the border of the region to prefer the tiles in
         // the filled region to connect with those outside of it.
