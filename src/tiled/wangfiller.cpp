@@ -210,8 +210,10 @@ void WangFiller::apply(TileLayer &target)
             const WangId surroundings = wangIdFromSurroundings(QPoint(x, y));
             CellInfo &info = grid.add(x, y);
 
-            // Don't override explicitly set indexes
-            info.desired.mergeWith(surroundings, mask & ~info.mask);
+            // Don't override explicitly set indexes and don't override with
+            // unset indices from surroundings.
+            mask &= ~(info.mask | surroundings.mask(WangId::INDEX_MASK));
+            info.desired.mergeWith(surroundings, mask);
         };
 
         for (const QRect &rect : region) {
