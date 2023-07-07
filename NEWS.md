@@ -2,6 +2,7 @@
 
 * Added support for setting custom properties on the project (#2903)
 * Removed Space and Ctrl+Space shortcuts from Layers view to avoid conflict with panning (#3672)
+* Display the image base name for unnamed tile objects referring to single images
 * Scripting: Added API for editing tile layers using terrain sets (with a-morphous, #3758)
 * Scripting: Support erasing tiles in Tool.preview and TileMap.merge
 * Scripting: Added WangSet.effectiveTypeForColor
