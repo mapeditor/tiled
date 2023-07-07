@@ -1517,13 +1517,13 @@ declare namespace Geometry {
   export function pointsOnEllipse(center: point, radiusX: number, radiusY: number): point[];
 
   /**
-   * Returns an elliptical region based on a rectangle.
+   * Returns an elliptical region based on the given bounding rectangle.
    */
   export function ellipseRegion(rect: rect): region
 
   /**
-   * Returns an elliptical region based on a rectangle given by x0,y0 (top-left)
-   * and x1,y1 (bottom-right), inclusive.
+   * Returns an elliptical region based on a bounding rectangle given by x0,y0
+   * (top-left) and x1,y1 (bottom-right), inclusive.
    */
   export function ellipseRegion(x0: number, y0: number, x1: number, y1: number): region
 }
