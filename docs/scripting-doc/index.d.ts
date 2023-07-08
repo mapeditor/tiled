@@ -4425,12 +4425,7 @@ declare class FileEdit extends Qt.QWidget {
 
   /**
    * When specified, only files that match the filter are shown. 
-   * The filter is given in a format like `"Images (*.png *.xpm *.jpg)"`.
-   *
-   * If you want multiple filters, separate them with ';;', for example:
-   * ```
-   * "Images (*.png *.xpm *.jpg);;Text files (*.txt);;XML files (*.xml)"
-   * ```
+   * See {@link FileFilter}. 
    */
   filter: string;
 }
