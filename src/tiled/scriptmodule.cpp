@@ -626,7 +626,7 @@ QString ScriptModule::promptSaveFile(const QString &defaultDir, const QString &f
 {
     QString finalTitle = QString(title);
     if (finalTitle.isEmpty())
-        finalTitle = tr("Open File");
+        finalTitle = tr("Save File");
     return QFileDialog::getSaveFileName(MainWindow::maybeInstance(), finalTitle,
                         defaultDir, filters);
 }
