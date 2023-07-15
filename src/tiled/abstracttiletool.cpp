@@ -25,7 +25,6 @@
 #include "mapdocument.h"
 #include "maprenderer.h"
 #include "mapscene.h"
-#include "tile.h"
 #include "tilelayer.h"
 #include "tilestamp.h"
 
@@ -45,6 +44,8 @@ AbstractTileTool::AbstractTileTool(Id id,
     , mBrushItem(brushItem)
     , mBrushVisible(false)
 {
+    setTargetLayerType(Layer::TileLayerType);
+
     if (!mBrushItem)
         mBrushItem = new BrushItem;
     mBrushItem->setVisible(false);
@@ -160,7 +161,7 @@ void AbstractTileTool::mapDocumentChanged(MapDocument *oldDocument,
 
 void AbstractTileTool::updateEnabledState()
 {
-    setEnabled(currentTileLayer() != nullptr);
+    AbstractTool::updateEnabledState();
     updateBrushVisibility();
 }
 
@@ -168,29 +169,29 @@ void AbstractTileTool::updateStatusInfo()
 {
     if (mBrushVisible) {
         Cell cell;
+        bool hex = false;
 
         if (const TileLayer *tileLayer = currentTileLayer()) {
             const QPoint pos = tilePosition() - tileLayer->position();
             cell = tileLayer->cellAt(pos);
+            hex = mapDocument()->renderer()->cellType() == MapRenderer::HexagonalCells;
         }
 
         QString tileIdString = cell.tileId() >= 0 ? QString::number(cell.tileId()) : tr("empty");
 
-        QVarLengthArray<QChar, 3> flippedBits;
+        QStringList flippedBits;
         if (cell.flippedHorizontally())
-            flippedBits.append(QLatin1Char('H'));
+            flippedBits.append(QStringLiteral("H"));
         if (cell.flippedVertically())
-            flippedBits.append(QLatin1Char('V'));
+            flippedBits.append(QStringLiteral("V"));
         if (cell.flippedAntiDiagonally())
-            flippedBits.append(QLatin1Char('D'));
+            flippedBits.append(hex ? QStringLiteral("Rot60") : QStringLiteral("D"));
+        if (cell.rotatedHexagonal120())
+            flippedBits.append(QStringLiteral("Rot120"));
 
         if (!flippedBits.isEmpty()) {
             tileIdString.append(QLatin1Char(' '));
-            tileIdString.append(flippedBits.first());
-            for (int i = 1; i < flippedBits.size(); ++i) {
-                tileIdString.append(QLatin1Char(','));
-                tileIdString.append(flippedBits.at(i));
-            }
+            tileIdString.append(flippedBits.join(QLatin1Char(',')));
         }
 
         setStatusInfo(QStringLiteral("%1, %2 [%3]")
@@ -212,6 +213,9 @@ TileLayer *AbstractTileTool::currentTileLayer() const
 
 void AbstractTileTool::updateBrushVisibility()
 {
+    if (!mBrushItem)
+        return;
+
     // Show the tile brush only when at least one target layer is visible
     bool showBrush = false;
     if (mBrushVisible) {
@@ -223,6 +227,7 @@ void AbstractTileTool::updateBrushVisibility()
             }
         }
     }
+
     mBrushItem->setVisible(showBrush);
 }
 

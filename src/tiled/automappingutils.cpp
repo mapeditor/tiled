@@ -29,66 +29,64 @@
 
 namespace Tiled {
 
+QRect objectTileRect(const MapRenderer &renderer,
+                     const MapObject &object)
+{
+    // TODO: we are checking bounds, which is only correct for rectangles and
+    // tile objects. polygons and polylines are not covered correctly by this
+    // erase method (we are in fact deleting too many objects)
+    // TODO2: toAlignedRect may even break rects.
+
+    // Convert the boundary of the object into tile space
+    const QRectF bounds = object.boundsUseTile();
+    const QPointF topLeft = renderer.pixelToTileCoords(bounds.topLeft());
+    const QPointF bottomRight = renderer.pixelToTileCoords(bounds.bottomRight());
+
+    return QRectF(topLeft, bottomRight).toAlignedRect();
+}
+
 QList<MapObject*> objectsToErase(const MapDocument *mapDocument,
                                  const ObjectGroup *layer,
                                  const QRegion &where)
 {
     QList<MapObject*> objectsToErase;
 
-    for (MapObject *obj : layer->objects()) {
-        // TODO: we are checking bounds, which is only correct for rectangles and
-        // tile objects. polygons and polylines are not covered correctly by this
-        // erase method (we are in fact deleting too many objects)
-        // TODO2: toAlignedRect may even break rects.
-
-        // Convert the boundary of the object into tile space
-        const QRectF objBounds = obj->boundsUseTile();
-        const QPointF tl = mapDocument->renderer()->pixelToTileCoords(objBounds.topLeft());
-        const QPointF tr = mapDocument->renderer()->pixelToTileCoords(objBounds.topRight());
-        const QPointF br = mapDocument->renderer()->pixelToTileCoords(objBounds.bottomRight());
-        const QPointF bl = mapDocument->renderer()->pixelToTileCoords(objBounds.bottomLeft());
-
-        QRectF objInTileSpace;
-        objInTileSpace.setTopLeft(tl);
-        objInTileSpace.setTopRight(tr);
-        objInTileSpace.setBottomRight(br);
-        objInTileSpace.setBottomLeft(bl);
-
-        const QRect objAlignedRect = objInTileSpace.toAlignedRect();
-        if (where.intersects(objAlignedRect))
-            objectsToErase.append(obj);
+    for (MapObject *object : layer->objects()) {
+        const QRect tileRect = objectTileRect(*mapDocument->renderer(), *object);
+        if (where.intersects(tileRect))
+            objectsToErase.append(object);
     }
 
     return objectsToErase;
 }
 
-QRegion tileRegionOfObjectGroup(const ObjectGroup *layer)
+QRegion tileRegionOfObjectGroup(const MapRenderer &renderer,
+                                const ObjectGroup *objectGroup)
 {
-    QRegion ret;
-    for (MapObject *obj : layer->objects()) {
-        // TODO: we are using bounds, which is only correct for rectangles and
-        // tile objects. polygons and polylines are not probably covering less
-        // tiles.
-        ret += obj->bounds().toAlignedRect();
-    }
-    return ret;
+    QRegion region;
+    for (const MapObject *object : objectGroup->objects())
+        region |= objectTileRect(renderer, *object);
+    return region;
 }
 
-QList<MapObject*> objectsInRegion(const ObjectGroup *layer, const QRegion &where)
+/**
+ * Returns the list of objects occupying the given rectangle (in pixels).
+ */
+QList<MapObject*> objectsInRegion(const ObjectGroup *objectGroup,
+                                  const QRectF &where)
 {
     QList<MapObject*> ret;
-    for (MapObject *obj : layer->objects()) {
+    for (MapObject *object : objectGroup->objects()) {
         // TODO: we are checking bounds, which is only correct for rectangles and
         // tile objects. polygons and polylines are not covered correctly by this
         // erase method (we are in fact deleting too many objects)
-        // TODO2: toAlignedRect may even break rects.
-        const QRect rect = obj->boundsUseTile().toAlignedRect();
+        const QRectF rect = object->boundsUseTile();
 
         // QRegion::intersects() returns false for empty regions even if they are
         // contained within the region, so we also check for containment of the
         // top left to include the case of zero size objects.
         if (where.intersects(rect) || where.contains(rect.topLeft()))
-            ret += obj;
+            ret += object;
     }
     return ret;
 }

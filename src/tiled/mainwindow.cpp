@@ -30,9 +30,9 @@
 
 #include "aboutdialog.h"
 #include "actionmanager.h"
+#include "actionsearch.h"
 #include "addremovetileset.h"
 #include "automappingmanager.h"
-#include "commandbutton.h"
 #include "commandmanager.h"
 #include "consoledock.h"
 #include "documentmanager.h"
@@ -41,7 +41,6 @@
 #include "exporthelper.h"
 #include "issuescounter.h"
 #include "issuesdock.h"
-#include "languagemanager.h"
 #include "layer.h"
 #include "locatorwidget.h"
 #include "map.h"
@@ -49,36 +48,29 @@
 #include "mapdocumentactionhandler.h"
 #include "mapeditor.h"
 #include "mapformat.h"
-#include "mapobject.h"
-#include "maprenderer.h"
 #include "mapscene.h"
 #include "mapview.h"
 #include "minimaprenderer.h"
 #include "newmapdialog.h"
 #include "newsbutton.h"
 #include "newtilesetdialog.h"
-#include "objectgroup.h"
 #include "offsetmapdialog.h"
 #include "projectdock.h"
+#include "projectdocument.h"
 #include "projectmanager.h"
 #include "projectpropertiesdialog.h"
 #include "propertytypeseditor.h"
 #include "resizedialog.h"
 #include "scriptmanager.h"
 #include "sentryhelper.h"
-#include "stylehelper.h"
 #include "templatesdock.h"
-#include "tile.h"
-#include "tilelayer.h"
 #include "tileset.h"
 #include "tilesetdock.h"
 #include "tilesetdocument.h"
 #include "tileseteditor.h"
 #include "tilesetmanager.h"
 #include "tmxmapformat.h"
-#include "undodock.h"
 #include "utils.h"
-#include "worlddocument.h"
 #include "worldmanager.h"
 #include "zoomable.h"
 
@@ -233,8 +225,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , mAutomappingManager(new AutomappingManager(this))
     , mDocumentManager(nullptr)
 {
-    StyleHelper::initialize();
-
     Q_ASSERT(!mInstance);
     mInstance = this;
 
@@ -294,6 +284,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionOffsetMap, "OffsetMap");
     ActionManager::registerAction(mUi->actionOpen, "Open");
     ActionManager::registerAction(mUi->actionOpenFileInProject, "OpenFileInProject");
+    ActionManager::registerAction(mUi->actionSearchActions, "SearchActions");
     ActionManager::registerAction(mUi->actionPaste, "Paste");
     ActionManager::registerAction(mUi->actionPasteInPlace, "PasteInPlace");
     ActionManager::registerAction(mUi->actionPreferences, "Preferences");
@@ -330,10 +321,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QIcon saveIcon(QLatin1String(":images/16/document-save.png"));
     QIcon redoIcon(QLatin1String(":images/16/edit-redo.png"));
     QIcon undoIcon(QLatin1String(":images/16/edit-undo.png"));
+    QIcon searchActionsIcon(QLatin1String(":images/16/edit-find.png"));
     QIcon highlightCurrentLayerIcon(QLatin1String("://images/scalable/highlight-current-layer-16.svg"));
 
     openIcon.addFile(QLatin1String(":images/24/document-open.png"));
     saveIcon.addFile(QLatin1String(":images/24/document-save.png"));
+    searchActionsIcon.addFile(QLatin1String(":images/24/edit-find.png"));
     highlightCurrentLayerIcon.addFile(QLatin1String("://images/scalable/highlight-current-layer-24.svg"));
 
 #ifndef Q_OS_MAC
@@ -344,6 +337,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     mUi->actionOpen->setIcon(openIcon);
     mUi->actionSave->setIcon(saveIcon);
+    mUi->actionSearchActions->setIcon(searchActionsIcon);
 
     QUndoGroup *undoGroup = mDocumentManager->undoGroup();
     QAction *undoAction = undoGroup->createUndoAction(this, tr("Undo"));
@@ -530,6 +524,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionNewTileset, &QAction::triggered, this, [this] { newTileset(); });
     connect(mUi->actionOpen, &QAction::triggered, this, &MainWindow::openFileDialog);
     connect(mUi->actionOpenFileInProject, &QAction::triggered, this, &MainWindow::openFileInProject);
+    connect(mUi->actionSearchActions, &QAction::triggered, this, &MainWindow::searchActions);
     connect(mUi->actionReopenClosedFile, &QAction::triggered, this, &MainWindow::reopenClosedFile);
     connect(mUi->actionClearRecentFiles, &QAction::triggered, preferences, &Preferences::clearRecentFiles);
     connect(mUi->actionSave, &QAction::triggered, this, &MainWindow::saveFile);
@@ -716,6 +711,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionDelete, "edit-delete");
     setThemeIcon(redoAction, "edit-redo");
     setThemeIcon(undoAction, "edit-undo");
+    setThemeIcon(mUi->actionSearchActions, "edit-find");
     setThemeIcon(mUi->actionZoomIn, "zoom-in");
     setThemeIcon(mUi->actionZoomOut, "zoom-out");
     setThemeIcon(mUi->actionZoomNormal, "zoom-original");
@@ -733,7 +729,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     // Set up the status bar (see also currentEditorChanged)
     auto myStatusBar = statusBar();
-    myStatusBar->addPermanentWidget(new NewsButton(myStatusBar));
+    mNewsButton = new NewsButton(myStatusBar);
+    myStatusBar->addPermanentWidget(mNewsButton);
     myStatusBar->addPermanentWidget(new NewVersionButton(NewVersionButton::AutoVisible, myStatusBar));
 
     QIcon terminalIcon(QLatin1String("://images/24/terminal.png"));
@@ -785,13 +782,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     lockIcon.addFile(QLatin1String(":/images/24/locked.png"));
     mLockLayout->setIcon(lockIcon);
 
-    ActionManager::registerAction(mResetToDefaultLayout, "ResetToDefaultLayout");
-    ActionManager::registerAction(mLockLayout, "LockLayout");
-
     mShowPropertyTypesEditor = new QAction(tr("Custom Types Editor"), this);
     mShowPropertyTypesEditor->setCheckable(true);
 
-    mUi->menuView->insertAction(mUi->actionShowGrid, mViewsAndToolbarsAction);
+    ActionManager::registerAction(mResetToDefaultLayout, "ResetToDefaultLayout");
+    ActionManager::registerAction(mLockLayout, "LockLayout");
+    ActionManager::registerAction(mShowPropertyTypesEditor, "CustomTypesEditor");
+
+    mUi->menuView->insertAction(mUi->actionSearchActions, mViewsAndToolbarsAction);
     mUi->menuView->insertAction(mUi->actionShowGrid, mShowPropertyTypesEditor);
     mUi->menuView->insertSeparator(mUi->actionShowGrid);
 
@@ -942,34 +940,6 @@ void MainWindow::changeEvent(QEvent *event)
     }
 }
 
-void MainWindow::keyPressEvent(QKeyEvent *event)
-{
-    if (event->isAutoRepeat())
-        return;
-
-    if (MapView *mapView = mDocumentManager->currentMapView()) {
-        switch (event->key()) {
-        case Qt::Key_Space:
-            mapView->setScrollingMode(MapView::DragScrolling);
-            break;
-        }
-    }
-}
-
-void MainWindow::keyReleaseEvent(QKeyEvent *event)
-{
-    if (event->isAutoRepeat())
-        return;
-
-    if (MapView *mapView = mDocumentManager->currentMapView()) {
-        switch (event->key()) {
-        case Qt::Key_Space:
-            mapView->setScrollingMode(MapView::NoScrolling);
-            break;
-        }
-    }
-}
-
 void MainWindow::dragEnterEvent(QDragEnterEvent *e)
 {
     const QList<QUrl> urls = e->mimeData()->urls();
@@ -1022,8 +992,11 @@ void MainWindow::initializeSession()
     const auto &session = Session::current();
 
     // Restore associated project if applicable
-    Project project;
-    bool projectLoaded = !session.project.isEmpty() && project.load(session.project);
+    std::unique_ptr<Project> project;
+    if (!session.project.isEmpty())
+        project = Project::load(session.project);
+
+    const bool projectLoaded = project != nullptr;
 
     if (projectLoaded) {
         ProjectManager::instance()->setProject(std::move(project));
@@ -1140,8 +1113,18 @@ void MainWindow::openFileDialog()
 
 void MainWindow::openFileInProject()
 {
+    showLocatorWidget(new FileLocatorSource);
+}
+
+void MainWindow::searchActions()
+{
+    showLocatorWidget(new ActionLocatorSource);
+}
+
+void MainWindow::showLocatorWidget(LocatorSource *source)
+{
     if (mLocatorWidget)
-        return;
+        mLocatorWidget->close();
 
     const QSize size(qMax(width() / 3, qMin(Utils::dpiScaled(600), width())),
                      qMin(Utils::dpiScaled(600), height()));
@@ -1150,7 +1133,7 @@ void MainWindow::openFileInProject()
                           qMin(remainingHeight / 5, Utils::dpiScaled(60)));
     const QRect rect = QRect(mapToGlobal(localPos), size);
 
-    mLocatorWidget = new LocatorWidget(this);
+    mLocatorWidget = new LocatorWidget(source, this);
     mLocatorWidget->move(rect.topLeft());
     mLocatorWidget->setMaximumSize(rect.size());
     mLocatorWidget->show();
@@ -1400,9 +1383,9 @@ bool MainWindow::closeAllFiles()
 
 bool MainWindow::openProjectFile(const QString &fileName)
 {
-    Project project;
+    auto project = Project::load(fileName);
 
-    if (!project.load(fileName)) {
+    if (!project) {
         QMessageBox::critical(window(),
                               tr("Error Opening Project"),
                               tr("An error occurred while opening the project."));
@@ -1434,10 +1417,10 @@ void MainWindow::newProject()
         fileName.append(QStringLiteral(".tiled-project"));
     }
 
-    Project project;
-    project.addFolder(QFileInfo(fileName).path());
+    auto project = std::make_unique<Project>();
+    project->addFolder(QFileInfo(fileName).path());
 
-    if (!project.save(fileName)) {
+    if (!project->save(fileName)) {
         QMessageBox::critical(window(),
                               tr("Error Saving Project"),
                               tr("An error occurred while saving the project."));
@@ -1456,10 +1439,10 @@ bool MainWindow::closeProject()
     if (project.fileName().isEmpty())
         return true;
 
-    return switchProject(Project{});
+    return switchProject(nullptr);
 }
 
-bool MainWindow::switchProject(Project project)
+bool MainWindow::switchProject(std::unique_ptr<Project> project)
 {
     auto prefs = Preferences::instance();
     emit prefs->aboutToSwitchSession();
@@ -1469,11 +1452,15 @@ bool MainWindow::switchProject(Project project)
 
     WorldManager::instance().unloadAllWorlds();
 
-    auto &session = Session::switchCurrent(Session::defaultFileNameForProject(project.fileName()));
+    if (project) {
+        auto &session = Session::switchCurrent(Session::defaultFileNameForProject(project->fileName()));
 
-    if (!project.fileName().isEmpty()) {
-        session.setProject(project.fileName());
-        prefs->addRecentProject(project.fileName());
+        if (!project->fileName().isEmpty()) {
+            session.setProject(project->fileName());
+            prefs->addRecentProject(project->fileName());
+        }
+    } else {
+        Session::switchCurrent(Session::defaultFileName());
     }
 
     ProjectManager::instance()->setProject(std::move(project));
@@ -1508,6 +1495,8 @@ void MainWindow::restoreSession()
 void MainWindow::projectProperties()
 {
     Project &project = ProjectManager::instance()->project();
+    if (project.fileName().length() == 0)
+        return;
 
     if (ProjectPropertiesDialog(project, this).exec() == QDialog::Accepted) {
         project.save();
@@ -1868,7 +1857,7 @@ void MainWindow::addAutomappingRulesTileset()
     if (!mapDocument)
         return;
 
-    auto tileset = Tiled::readTileset(QStringLiteral("://automap-tiles.tsx"));
+    auto tileset = TilesetManager::instance()->loadTileset(QStringLiteral(":/automap-tiles.tsx"));
     if (!tileset)   // Should never happen, but better do nothing than crash
         return;
 
@@ -1929,9 +1918,11 @@ void MainWindow::offsetMap()
         if (layers.empty())
             return;
 
+        const bool wholeMap = offsetDialog.boundsSelection() == OffsetMapDialog::WholeMap;
         mapDocument->offsetMap(layers,
                                offsetDialog.offset(),
                                offsetDialog.affectedBoundingRect(),
+                               wholeMap,
                                offsetDialog.wrapX(),
                                offsetDialog.wrapY());
     }
@@ -2479,9 +2470,20 @@ void MainWindow::closeDocument(int index)
 
 void MainWindow::currentEditorChanged(Editor *editor)
 {
-    for (QWidget *widget : mEditorStatusBarWidgets)
+    for (QWidget *widget : mEditorStatusBarWidgets) {
         statusBar()->removeWidget(widget);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+        widget->hide();
+#endif
+    }
     mEditorStatusBarWidgets.clear();
+
+    // QStatusBar::removeWidget hides the wrong widget
+    // https://codereview.qt-project.org/c/qt/qtbase/+/460302
+#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+    if (Preferences::instance()->displayNews())
+        mNewsButton->setVisible(true);
+#endif
 
     if (!editor)
         return;

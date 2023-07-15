@@ -380,6 +380,7 @@ public:
 
     QRegion region(std::function<bool (const Cell &)> condition) const;
     QRegion region() const;
+    QRegion modifiedRegion() const;
 
     const Cell &cellAt(int x, int y) const;
     const Cell &cellAt(QPoint point) const;
@@ -624,6 +625,17 @@ inline const Chunk* TileLayer::findChunk(int x, int y) const
 inline QRegion TileLayer::region() const
 {
     return region([] (const Cell &cell) { return !cell.isEmpty(); });
+}
+
+/**
+ * Calculates the modified region of this layer. This includes both all
+ * non-empty cells as well as any cells that were marked as "checked".
+ */
+inline QRegion TileLayer::modifiedRegion() const
+{
+    return region([] (const Cell &cell) {
+        return !cell.isEmpty() || cell.checked();
+    });
 }
 
 /**

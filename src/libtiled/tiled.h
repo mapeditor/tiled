@@ -72,6 +72,9 @@ enum LoadingStatus {
 enum CompatibilityVersion {
     UnknownVersion  = 0,
     Tiled_1_8       = 1080,
+    Tiled_1_9       = 1090,
+    Tiled_1_10      = 1100,
+    Tiled_Current   = Tiled_1_10,
     Tiled_Latest    = 65535,
 };
 
@@ -126,6 +129,8 @@ TILEDSHARED_EXPORT QString alignmentToString(Alignment);
 TILEDSHARED_EXPORT Alignment alignmentFromString(const QString &);
 
 TILEDSHARED_EXPORT CompatibilityVersion versionFromString(const QString &);
+
+TILEDSHARED_EXPORT void increaseImageAllocationLimit(int mbLimit = 4096);
 
 } // namespace Tiled
 

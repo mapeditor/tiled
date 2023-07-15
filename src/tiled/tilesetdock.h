@@ -64,7 +64,7 @@ class TilesetDock : public QDockWidget
 {
     Q_OBJECT
 
-    Q_PROPERTY(Tiled::EditableTileset *currentTileset READ currentEditableTileset WRITE setCurrentEditableTileset)
+    Q_PROPERTY(Tiled::EditableTileset *currentTileset READ currentEditableTileset WRITE setCurrentEditableTileset NOTIFY currentTilesetChanged)
     Q_PROPERTY(QList<QObject*> selectedTiles READ selectedTiles WRITE setSelectedTiles)
 
 public:
@@ -99,6 +99,11 @@ public:
 
 signals:
     /**
+     * Emitted when the currently selected tileset changed.
+     */
+    void currentTilesetChanged();
+
+    /**
      * Emitted when the current tile changed.
      */
     void currentTileChanged(Tile *tile);
@@ -121,7 +126,7 @@ protected:
     void dropEvent(QDropEvent *) override;
 
 private:
-    void currentTilesetChanged();
+    void onCurrentTilesetChanged();
     void selectionChanged();
     void currentChanged(const QModelIndex &index);
 

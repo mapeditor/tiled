@@ -39,12 +39,6 @@ additions. See the `JavaScript Host Environment`_ documentation for details.
 It may also be helpful to check out the `List of JavaScript Objects and
 Functions`_ that are available.
 
-.. note::
-
-    The full scripting API and support for ECMAScript 7 features are only
-    available for Tiled builds based on Qt 5.12 or later. This currently
-    excludes the Windows XP and snap releases before Tiled 1.8.1.
-
 .. _script-extensions:
 
 Scripted Extensions
@@ -155,9 +149,9 @@ __filename
     get called. If you need it there, copy the value to local scope.
 
 .. _Tiled Scripting API: https://www.mapeditor.org/docs/scripting/
-.. _JavaScript Host Environment: https://doc.qt.io/qt-5/qtqml-javascript-hostenvironment.html
-.. _List of JavaScript Objects and Functions: https://doc.qt.io/qt-5/qtqml-javascript-functionlist.html
-.. _QML module: https://doc.qt.io/qt-5/qtqml-index.html
+.. _JavaScript Host Environment: https://doc.qt.io/qt-6/qtqml-javascript-hostenvironment.html
+.. _List of JavaScript Objects and Functions: https://doc.qt.io/qt-6/qtqml-javascript-functionlist.html
+.. _QML module: https://doc.qt.io/qt-6/qtqml-index.html
 .. _@mapeditor/tiled-api: https://www.npmjs.com/package/@mapeditor/tiled-api
 .. _JavaScript modules: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
 .. _import: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import

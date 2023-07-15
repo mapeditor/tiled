@@ -28,37 +28,15 @@
 #include <QJsonObject>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QVersionNumber>
 
 static const char versionInfoUrl[] = "https://www.mapeditor.org/versions.json";
 
-static bool versionLessThan(const QString &a, const QString &b)
-{
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
-    const auto aParts = QStringView(a).split(QLatin1Char('.'));
-    const auto bParts = QStringView(b).split(QLatin1Char('.'));
-#else
-    const auto aParts = a.splitRef(QLatin1Char('.'));
-    const auto bParts = b.splitRef(QLatin1Char('.'));
-#endif
-    const int commonLength = std::min(aParts.size(), bParts.size());
-
-    for (int i = 0; i < commonLength; ++i) {
-        const int aNumber = aParts.at(i).toInt();
-        const int bNumber = bParts.at(i).toInt();
-        if (aNumber < bNumber)
-            return true;
-        if (bNumber < aNumber)
-            return false;
-    }
-
-    // Version was the same so far, making a older when it has less parts
-    return aParts.size() < bParts.size();
-}
-
 namespace Tiled {
 
-NewVersionChecker::NewVersionChecker()
-    : mNetworkAccessManager(new QNetworkAccessManager(this))
+NewVersionChecker::NewVersionChecker(QObject *parent)
+    : QObject(parent)
+    , mNetworkAccessManager(new QNetworkAccessManager(this))
 {
     connect(mNetworkAccessManager, &QNetworkAccessManager::finished,
             this, &NewVersionChecker::finished);
@@ -66,12 +44,6 @@ NewVersionChecker::NewVersionChecker()
     auto preferences = Preferences::instance();
     setEnabled(preferences->checkForUpdates());
     connect(preferences, &Preferences::checkForUpdatesChanged, this, &NewVersionChecker::setEnabled);
-}
-
-NewVersionChecker &NewVersionChecker::instance()
-{
-    static NewVersionChecker instance;
-    return instance;
 }
 
 void NewVersionChecker::setEnabled(bool enabled)
@@ -106,7 +78,9 @@ void NewVersionChecker::refresh()
 
 bool NewVersionChecker::isNewVersionAvailable() const
 {
-    return versionLessThan(QCoreApplication::applicationVersion(), mVersionInfo.version);
+    const auto currentVersion = QVersionNumber::fromString(QCoreApplication::applicationVersion());
+    const auto latestVersion = QVersionNumber::fromString(mVersionInfo.version);
+    return currentVersion < latestVersion;
 }
 
 void NewVersionChecker::timerEvent(QTimerEvent *event)

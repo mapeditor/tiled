@@ -24,11 +24,9 @@
 
 #include "geometry.h"
 #include "mapdocument.h"
-#include "mapobject.h"
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "objectgroup.h"
-#include "objectgroupitem.h"
 #include "tile.h"
 #include "utils.h"
 
@@ -54,12 +52,15 @@ MapObjectItem::MapObjectItem(MapObject *object, MapDocument *mapDocument,
 
 void MapObjectItem::syncWithMapObject()
 {
-    const QColor color = mObject->effectiveColor();
+    MapObjectColors colors = mObject->effectiveColors();
+
+    if (mIsHoveredIndicator)
+        colors.main = colors.main.lighter();
 
     // Update the whole object when the name, polygon or color has changed
-    if (mPolygon != mObject->polygon() || mColor != color) {
+    if (mPolygon != mObject->polygon() || mColors != colors) {
         mPolygon = mObject->polygon();
-        mColor = color;
+        mColors = colors;
         update();
     }
 
@@ -70,7 +71,7 @@ void MapObjectItem::syncWithMapObject()
     setToolTip(toolTip);
 
     MapRenderer *renderer = mMapDocument->renderer();
-    const QPointF pixelPos = renderer->pixelToScreenCoords(mObject->position());
+    QPointF pixelPos = renderer->pixelToScreenCoords(mObject->position());
     QRectF bounds = renderer->boundingRect(mObject);
 
     bounds.translate(-pixelPos);
@@ -78,17 +79,16 @@ void MapObjectItem::syncWithMapObject()
     if (renderer->flags().testFlag(ShowTileCollisionShapes))
         expandBoundsToCoverTileCollisionObjects(bounds);
 
-    setPos(pixelPos);
-    setRotation(mObject->rotation());
-
     if (ObjectGroup *objectGroup = mObject->objectGroup()) {
         if (mIsHoveredIndicator) {
-            auto totalOffset = static_cast<MapScene*>(scene())->absolutePositionForLayer(*objectGroup);
-            setTransform(QTransform::fromTranslate(totalOffset.x(), totalOffset.y()));
+            pixelPos += static_cast<MapScene*>(scene())->absolutePositionForLayer(*objectGroup);
         } else if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder) {
             setZValue(pixelPos.y());
         }
     }
+
+    setPos(pixelPos);
+    setRotation(mObject->rotation());
 
     if (mBoundingRect != bounds) {
         // Notify the graphics scene about the geometry change in advance
@@ -108,14 +108,7 @@ void MapObjectItem::setIsHoverIndicator(bool isHoverIndicator)
 
     mIsHoveredIndicator = isHoverIndicator;
 
-    if (isHoverIndicator) {
-        auto totalOffset = static_cast<MapScene*>(scene())->absolutePositionForLayer(*mObject->objectGroup());
-        setTransform(QTransform::fromTranslate(totalOffset.x(), totalOffset.y()));
-    } else {
-        setTransform(QTransform());
-    }
-
-    update();
+    syncWithMapObject();
 }
 
 QRectF MapObjectItem::boundingRect() const
@@ -139,7 +132,7 @@ void MapObjectItem::paint(QPainter *painter,
 {
     const auto renderer = mMapDocument->renderer();
     const qreal painterScale = renderer->painterScale();
-    const QColor color = mIsHoveredIndicator ? mColor.lighter() : mColor;
+
     const qreal previousOpacity = painter->opacity();
 
     if (flags() & QGraphicsItem::ItemIgnoresTransformations)
@@ -148,15 +141,17 @@ void MapObjectItem::paint(QPainter *painter,
     if (mIsHoveredIndicator)
         painter->setOpacity(0.4);
 
-    painter->translate(-pos());
-    renderer->drawMapObject(painter, mObject, color);
-    painter->translate(pos());
+    // This is the same as pos(), except for hover indicators
+    const QPointF pixelPos = renderer->pixelToScreenCoords(mObject->position());
+
+    painter->translate(-pixelPos);
+    renderer->drawMapObject(painter, mObject, mColors);
+    painter->translate(pixelPos);
 
     if (mIsHoveredIndicator) {
         painter->setOpacity(0.6);
 
         // TODO: Code mostly duplicated in MapObjectOutline
-        const QPointF pixelPos = renderer->pixelToScreenCoords(mObject->position());
         QRectF bounds = mObject->screenBounds(*renderer);
         bounds.translate(-pixelPos);
 

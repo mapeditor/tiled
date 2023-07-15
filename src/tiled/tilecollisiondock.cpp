@@ -35,7 +35,6 @@
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
-#include "mapdocumentactionhandler.h"
 #include "mapobject.h"
 #include "mapscene.h"
 #include "mapview.h"
@@ -76,7 +75,7 @@ static Preference<QByteArray> splitterState { "TileCollisionDock/SplitterState" 
 TileCollisionDock::TileCollisionDock(QWidget *parent)
     : QDockWidget(parent)
     , mMapScene(new MapScene(this))
-    , mMapView(new MapView(this, MapView::NoStaticContents))
+    , mMapView(new MapView(this))
     , mObjectsView(new ObjectsView(this))
     , mToolManager(new ToolManager(this))
 {

@@ -23,7 +23,7 @@
 #include "actionmanager.h"
 #include "changeevents.h"
 #include "changetilewangid.h"
-#include "map.h"
+#include "pannableviewhelper.h"
 #include "preferences.h"
 #include "stylehelper.h"
 #include "tile.h"
@@ -289,6 +289,7 @@ TilesetView::TilesetView(QWidget *parent)
     setShowGrid(false);
     setTabKeyNavigation(false);
     setDropIndicatorShown(true);
+    setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     QHeaderView *hHeader = horizontalHeader();
     QHeaderView *vHeader = verticalHeader();
@@ -315,6 +316,14 @@ TilesetView::TilesetView(QWidget *parent)
             this, &TilesetView::updateBackgroundColor);
 
     connect(mZoomable, &Zoomable::scaleChanged, this, &TilesetView::adjustScale);
+
+    connect(new PannableViewHelper(this), &PannableViewHelper::cursorChanged,
+            this, [this] (std::optional<Qt::CursorShape> cursor) {
+        if (cursor)
+            viewport()->setCursor(*cursor);
+        else
+            viewport()->unsetCursor();
+    });
 }
 
 void TilesetView::setTilesetDocument(TilesetDocument *tilesetDocument)
@@ -478,6 +487,12 @@ void TilesetView::keyPressEvent(QKeyEvent *event)
         }
     }
 
+    // Ignore space, because we'd like to use it for panning
+    if (event->key() == Qt::Key_Space) {
+        event->ignore();
+        return;
+    }
+
     return QTableView::keyPressEvent(event);
 }
 
@@ -547,12 +562,6 @@ QIcon TilesetView::imageMissingIcon() const
 
 void TilesetView::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::MiddleButton && isActiveWindow()) {
-        mLastMousePos = event->globalPos();
-        setHandScrolling(true);
-        return;
-    }
-
     if (mEditWangSet) {
         if (event->button() == Qt::LeftButton)
             applyWangId();
@@ -565,21 +574,6 @@ void TilesetView::mousePressEvent(QMouseEvent *event)
 
 void TilesetView::mouseMoveEvent(QMouseEvent *event)
 {
-    if (mHandScrolling) {
-        auto *hBar = horizontalScrollBar();
-        auto *vBar = verticalScrollBar();
-        const QPoint d = event->globalPos() - mLastMousePos;
-
-        int horizontalValue = hBar->value() + (isRightToLeft() ? d.x() : -d.x());
-        int verticalValue = vBar->value() - d.y();
-
-        hBar->setValue(horizontalValue);
-        vBar->setValue(verticalValue);
-
-        mLastMousePos = event->globalPos();
-        return;
-    }
-
     if (mEditWangSet) {
         if (!mWangSet)
             return;
@@ -666,11 +660,6 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
 
 void TilesetView::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::MiddleButton) {
-        setHandScrolling(false);
-        return;
-    }
-
     if (mEditWangSet) {
         if (event->button() == Qt::LeftButton)
             finishWangIdChange();
@@ -759,8 +748,6 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
 
     QMenu menu;
 
-    QIcon propIcon(QLatin1String(":images/16/document-properties.png"));
-
     if (tile) {
         if (mEditWangSet) {
             selectionModel()->setCurrentIndex(index,
@@ -775,7 +762,24 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
                 QAction *setImage = menu.addAction(tr("Use as Terrain Image"));
                 connect(setImage, &QAction::triggered, this, &TilesetView::selectWangColorImage);
             }
-        } else if (mTilesetDocument) {
+            menu.addSeparator();
+        }
+
+        QUrl imageSource = tile->imageSource();
+        if (imageSource.isEmpty())
+            imageSource = tile->tileset()->imageSource();
+
+        if (!imageSource.isEmpty()) {
+            const QString localFile = imageSource.toLocalFile();
+            if (!localFile.isEmpty()) {
+                Utils::addOpenContainingFolderAction(menu, localFile);
+                Utils::addOpenWithSystemEditorAction(menu, localFile);
+                menu.addSeparator();
+            }
+        }
+
+        if (mTilesetDocument) {
+            const QIcon propIcon(QStringLiteral(":images/16/document-properties.png"));
             QAction *tileProperties = menu.addAction(propIcon,
                                                      tr("Tile &Properties..."));
             Utils::setThemeIcon(tileProperties, "document-properties");
@@ -784,7 +788,7 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
             // Assuming we're used in the MapEditor
 
             // Enable "swap" if there are exactly 2 tiles selected
-            bool exactlyTwoTilesSelected =
+            const bool exactlyTwoTilesSelected =
                     (selectionModel()->selectedIndexes().size() == 2);
 
             QAction *swapTilesAction = menu.addAction(tr("&Swap Tiles"));
@@ -802,6 +806,9 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     Preferences *prefs = Preferences::instance();
     connect(toggleGrid, &QAction::toggled,
             prefs, &Preferences::setShowTilesetGrid);
+
+    QAction *selectAllTiles = menu.addAction(tr("Select &All Tiles"));
+    connect(selectAllTiles, &QAction::triggered, this, &QAbstractItemView::selectAll);
 
     ActionManager::applyMenuExtensions(&menu, MenuIds::tilesetViewTiles);
 
@@ -951,19 +958,6 @@ Tile *TilesetView::currentTile() const
 {
     const TilesetModel *model = tilesetModel();
     return model ? model->tileAt(currentIndex()) : nullptr;
-}
-
-void TilesetView::setHandScrolling(bool handScrolling)
-{
-    if (mHandScrolling == handScrolling)
-        return;
-
-    mHandScrolling = handScrolling;
-
-    if (mHandScrolling)
-        setCursor(QCursor(Qt::ClosedHandCursor));
-    else
-        unsetCursor();
 }
 
 void TilesetView::updateBackgroundColor()

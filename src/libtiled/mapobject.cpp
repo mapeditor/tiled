@@ -117,35 +117,24 @@ void MapObject::setTextData(const TextData &textData)
     mTextData = textData;
 }
 
+static void align(QRectF &r, Alignment alignment)
+{
+    r.translate(-alignmentOffset(r.size(), alignment));
+}
+
 /**
  * Shortcut to getting a QRectF from position() and size() that uses cell tile
  * if present.
  *
- * \deprecated See problems in comment.
+ * \deprecated See problems in comment. Try to use \a screenBounds instead.
  */
 QRectF MapObject::boundsUseTile() const
 {
-    // FIXME: This is outdated code:
-    // * It does not take into account that a tile object can be scaled.
-    // * It neglects that origin is not the same in orthogonal and isometric
-    //   maps (see MapObject::alignment).
-    // * It does not deal with rotation.
-
-    if (const Tile *tile = mCell.tile()) {
-        // Using the tile for determing boundary
-        // Note the position given is the bottom-left corner so correct for that
-        return QRectF(QPointF(mPos.x(),
-                              mPos.y() - tile->height()),
-                      tile->size());
-    }
-
-    // No tile so just use regular bounds
-    return bounds();
-}
-
-static void align(QRectF &r, Alignment alignment)
-{
-    r.translate(-alignmentOffset(r.size(), alignment));
+    // FIXME: This does not deal with tile offset, rotation, isometric
+    // projection and polygons.
+    QRectF b = bounds();
+    align(b, alignment());
+    return b;
 }
 
 /**
@@ -288,20 +277,26 @@ Alignment MapObject::alignment(const Map *map) const
  * that the object is in. If still no color is defined, it defaults to
  * gray.
  */
-QColor MapObject::effectiveColor() const
+MapObjectColors MapObject::effectiveColors() const
 {
-    const QString &effectiveClass = this->effectiveClassName();
+    MapObjectColors colors;
+    bool drawFill = true;
 
-    // See if this object's class has a color associated with it
-    if (auto type = Object::propertyTypes().findClassFor(effectiveClass, *this))
-        return type->color;
+    if (auto classType = Object::propertyTypes().findClassFor(effectiveClassName(), *this)) {
+        colors.main = classType->color;
+        drawFill = classType->drawFill;
+    } else if (mObjectGroup && mObjectGroup->color().isValid()) {
+        colors.main = mObjectGroup->color();
+    } else {
+        colors.main = Qt::gray;
+    }
 
-    // If not, get color from object group
-    if (mObjectGroup && mObjectGroup->color().isValid())
-        return mObjectGroup->color();
+    if (drawFill) {
+        colors.fill = colors.main;
+        colors.fill.setAlpha(50);
+    }
 
-    // Fallback color
-    return Qt::gray;
+    return colors;
 }
 
 QVariant MapObject::mapObjectProperty(Property property) const

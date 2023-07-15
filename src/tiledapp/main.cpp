@@ -22,22 +22,21 @@
 
 #include "commandlineparser.h"
 #include "exporthelper.h"
-#include "languagemanager.h"
 #include "logginginterface.h"
 #include "mainwindow.h"
-#include "mapdocument.h"
 #include "mapformat.h"
-#include "mapreader.h"
 #include "pluginmanager.h"
 #include "preferences.h"
 #include "scriptmanager.h"
 #include "sentryhelper.h"
+#include "stylehelper.h"
 #include "tiledapplication.h"
 #include "tileset.h"
 #include "tmxmapformat.h"
 
 #include <QDebug>
 #include <QFileInfo>
+#include <QImageReader>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QtPlugin>
@@ -420,6 +419,8 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
 
+    Tiled::increaseImageAllocationLimit();
+
     TiledApplication a(argc, argv);
 
 #ifdef TILED_SENTRY
@@ -570,6 +571,7 @@ int main(int argc, char *argv[])
     }
 
     Session::initialize();
+    StyleHelper::initialize();
 
     MainWindow w;
     w.show();
@@ -592,7 +594,7 @@ int main(int argc, char *argv[])
 
     w.initializeSession();
 
-    for (const QString &fileName : qAsConst(filesToOpen))
+    for (const QString &fileName : std::as_const(filesToOpen))
         w.openFile(fileName);
 
     return a.exec();

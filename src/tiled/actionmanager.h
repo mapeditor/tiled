@@ -80,6 +80,7 @@ public:
 
     static QAction *action(Id id);
     static QAction *findAction(Id id);
+    static QAction *findEnabledAction(Id id);
 
     static bool hasMenu(Id id);
 

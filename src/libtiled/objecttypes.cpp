@@ -314,7 +314,7 @@ ObjectTypes toObjectTypes(const PropertyTypes &propertyTypes)
 {
     ObjectTypes objectTypes;
 
-    for (const PropertyType *type : qAsConst(propertyTypes)) {
+    for (const PropertyType *type : std::as_const(propertyTypes)) {
         if (!type->isClass())   // only classes supported
             continue;
 

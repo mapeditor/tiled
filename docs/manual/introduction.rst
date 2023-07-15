@@ -63,15 +63,22 @@ as well as to be able to quickly switch between multiple projects, it is
 recommended to first set up a :doc:`Tiled project <projects>`. This is however
 an entirely optional step that can be skipped when desired.
 
-Choose *Project -> Save Project As...* to save a new project file. The
-recommended location is the root of your project, but you can place it
-anywhere you want.
+Choose *File -> New -> New Project...* to create a new project file. It is
+recommended to save this file in the root of your project. The directory in
+which you store the project will be automatically added, so that its files are
+visible in the Project view.
 
-Next, we'll add at least one folder, either some "assets" folder or simply the
-root of your project, but you can also choose to add several top-level folders
-like "tilesets", "maps", "templates", etc. Right-click in the Project view and
-choose *Add Folder to Project...* to add the relevant folders.
+When necessary, you can add additional folders to the project or replace the
+one added by default. For example, you could choose to add several top-level
+folders like "tilesets", "maps", "templates", etc. Right-click in the
+Project view and choose *Add Folder to Project...* to add the
+relevant folders.
 
+.. hint::
+
+   You can press ``Ctrl+Shift+P`` to open the action search widget,
+   which can provide a faster way to get to actions than looking for them in
+   the menus!
 
 Creating a New Map
 ~~~~~~~~~~~~~~~~~~

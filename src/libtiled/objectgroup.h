@@ -156,6 +156,7 @@ public:
      * \sa TileLayer::offsetTiles()
      */
     void offsetObjects(const QPointF &offset, const QRectF &bounds,
+                       bool wholeMap,
                        bool wrapX, bool wrapY);
 
     bool canMergeWith(const Layer *other) const override;

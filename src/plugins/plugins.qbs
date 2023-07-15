@@ -16,6 +16,7 @@ Project {
         "rpmap",
         "tbin",
         "tengine",
+        "tscn",
         "yy"
     ]
 }

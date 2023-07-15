@@ -204,6 +204,16 @@ available since it is in some cases preferable to the custom style. The
 base color and selection color can't be changed when using this style,
 as they depend on the system.
 
+.. raw:: html
+
+   <div class="new">New in Tiled 1.10</div>
+
+Custom Interface Font
+~~~~~~~~~~~~~~~~~~~~~
+
+Normally the application font defaults to the one defined by the system. If
+you'd like Tiled to use a different font, you can set one here.
+
 Plugins
 -------
 

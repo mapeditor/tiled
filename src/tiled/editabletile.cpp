@@ -171,20 +171,19 @@ void EditableTile::setProbability(qreal probability)
 
 void EditableTile::setObjectGroup(EditableObjectGroup *editableObjectGroup)
 {
-    if (!editableObjectGroup) {
-        ScriptManager::instance().throwNullArgError(0);
-        return;
-    }
-
-    if (!editableObjectGroup->isOwning()) {
-        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "ObjectGroup is in use"));
-        return;
-    }
-
     if (checkReadOnly())
         return;
 
-    std::unique_ptr<ObjectGroup> og(static_cast<ObjectGroup*>(editableObjectGroup->release()));
+    std::unique_ptr<ObjectGroup> og;
+
+    if (editableObjectGroup) {
+        if (!editableObjectGroup->isOwning()) {
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "ObjectGroup is in use"));
+            return;
+        }
+
+        og.reset(static_cast<ObjectGroup*>(editableObjectGroup->release()));
+    }
 
     if (TilesetDocument *doc = tilesetDocument()) {
         asset()->push(new ChangeTileObjectGroup(doc, tile(), std::move(og)));
@@ -193,8 +192,12 @@ void EditableTile::setObjectGroup(EditableObjectGroup *editableObjectGroup)
         tile()->setObjectGroup(std::move(og));
     }
 
-    Q_ASSERT(editableObjectGroup->objectGroup() == tile()->objectGroup());
-    Q_ASSERT(!editableObjectGroup->isOwning());
+    if (editableObjectGroup) {
+        Q_ASSERT(editableObjectGroup->objectGroup() == tile()->objectGroup());
+        Q_ASSERT(!editableObjectGroup->isOwning());
+    } else {
+        Q_ASSERT(tile()->objectGroup() == nullptr);
+    }
 }
 
 void EditableTile::setFrames(QJSValue value)

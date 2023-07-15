@@ -29,11 +29,8 @@
 #include "hexagonalrenderer.h"
 
 #include "map.h"
-#include "mapobject.h"
-#include "tile.h"
-#include "tilelayer.h"
-#include "tileset.h"
 
+#include <QVarLengthArray>
 #include <QVector2D>
 #include <QtCore/qmath.h>
 
@@ -42,9 +39,7 @@
 using namespace Tiled;
 
 HexagonalRenderer::RenderParams::RenderParams(const Map *map)
-    : tileWidth(map->tileWidth() & ~1)
-    , tileHeight(map->tileHeight() & ~1)
-    , sideLengthX(0)
+    : sideLengthX(0)
     , sideLengthY(0)
     , staggerX(map->staggerAxis() == Map::StaggerX)
     , staggerEven(map->staggerIndex() == Map::StaggerEven)
@@ -56,11 +51,14 @@ HexagonalRenderer::RenderParams::RenderParams(const Map *map)
             sideLengthY = map->hexSideLength();
     }
 
-    sideOffsetX = (tileWidth - sideLengthX) / 2;
-    sideOffsetY = (tileHeight - sideLengthY) / 2;
+    sideOffsetX = (map->tileWidth() - sideLengthX) / 2;
+    sideOffsetY = (map->tileHeight() - sideLengthY) / 2;
 
     columnWidth = sideOffsetX + sideLengthX;
     rowHeight = sideOffsetY + sideLengthY;
+
+    tileWidth = columnWidth + sideOffsetX;
+    tileHeight = rowHeight + sideOffsetY;
 }
 
 QRect HexagonalRenderer::boundingRect(const QRect &rect) const
@@ -96,13 +94,12 @@ QRect HexagonalRenderer::boundingRect(const QRect &rect) const
 void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
                                  QColor gridColor, QSize gridMajor) const
 {
-    Q_UNUSED(gridMajor)  // Unclear how this should apply to hexagonal maps
-
-    QRect rect = exposed.toAlignedRect();
+    const QRect rect = exposed.toAlignedRect();
     if (rect.isNull())
         return;
 
     const RenderParams p(map());
+    const bool infinite = map()->infinite();
 
     // Determine the tile and pixel coordinates to start at
     QPoint startTile = screenToTileCoords(rect.topLeft()).toPoint();
@@ -121,107 +118,162 @@ void HexagonalRenderer::drawGrid(QPainter *painter, const QRectF &exposed,
     if (inLeftHalf)
         startTile.rx()--;
 
-    if (!map()->infinite()) {
+    if (!infinite) {
         startTile.setX(qMax(0, startTile.x()));
         startTile.setY(qMax(0, startTile.y()));
     }
 
     startPos = tileToScreenCoords(startTile).toPoint();
 
-    const QPoint oct[8] = {
-        QPoint(0,                           p.tileHeight - p.sideOffsetY),
+    const QPoint oct[5] = {
+        QPoint(0,                           p.rowHeight),
         QPoint(0,                           p.sideOffsetY),
         QPoint(p.sideOffsetX,               0),
-        QPoint(p.tileWidth - p.sideOffsetX, 0),
+        QPoint(p.columnWidth,               0),
         QPoint(p.tileWidth,                 p.sideOffsetY),
-        QPoint(p.tileWidth,                 p.tileHeight - p.sideOffsetY),
-        QPoint(p.tileWidth - p.sideOffsetX, p.tileHeight),
-        QPoint(p.sideOffsetX,               p.tileHeight)
     };
 
-    QVector<QLine> lines;
-    lines.reserve(8);
+    const QLine left(oct[0], oct[1]);
+    const QLine topLeft(oct[1], oct[2]);
+    const QLine top(oct[2], oct[3]);
+    const QLine topRight(oct[3], oct[4]);
 
-    QPen _gridPen, gridPen; // always use major grid pen for hex maps
-    setupGridPens(painter->device(), gridColor, _gridPen, gridPen, p.tileWidth, gridMajor);
+    QVarLengthArray<QLine, 8> minorLines;
+    QVarLengthArray<QLine, 8> majorLines;
 
-    painter->setPen(gridPen);
+    QPen gridPen, majorGridPen;
+    setupGridPens(painter->device(), gridColor, gridPen, majorGridPen, qMin(p.columnWidth, p.rowHeight), gridMajor);
+
+    if (majorGridPen.color().alpha() <= 0)
+        return;
 
     if (p.staggerX) {
+        // Prevent possible infinite loop
+        if (p.columnWidth <= 0 || p.tileHeight + p.sideLengthY <= 0)
+            return;
+
         // Odd row shifting is applied in the rendering loop, so un-apply it here
         if (p.doStaggerX(startTile.x()))
             startPos.ry() -= p.rowHeight;
 
-        for (; startPos.x() <= rect.right() && (startTile.x() < map()->width() || map()->infinite()); startTile.rx()++) {
+        startTile.rx() -= 1;
+        startPos.rx() -= p.columnWidth;
+
+        for (; startPos.x() <= rect.right() && (startTile.x() <= map()->width() || infinite); startTile.rx()++) {
+            const bool isStaggered = p.doStaggerX(startTile.x());
+            const bool firstColumn = !infinite && startTile.x() == -1;
+            const bool lastColumn = !infinite && startTile.x() == map()->width();
+            const bool xIsMajor = gridMajor.width() != 0 && startTile.x() % gridMajor.width() == 0;
+            const bool nextXIsMajor = gridMajor.width() != 0 && (startTile.x() + 1) % gridMajor.width() == 0;
+
             QPoint rowTile = startTile;
             QPoint rowPos = startPos;
 
-            if (p.doStaggerX(startTile.x()))
+            if (isStaggered)
                 rowPos.ry() += p.rowHeight;
 
-            for (; rowPos.y() <= rect.bottom() && (rowTile.y() < map()->height() || map()->infinite()); rowTile.ry()++) {
-                lines.append(QLine(rowPos + oct[1], rowPos + oct[2]));
-                lines.append(QLine(rowPos + oct[2], rowPos + oct[3]));
-                lines.append(QLine(rowPos + oct[3], rowPos + oct[4]));
+            for (; rowPos.y() <= rect.bottom() && (rowTile.y() <= map()->height() || infinite); rowTile.ry()++) {
+                const bool yIsMajor = gridMajor.height() != 0 && rowTile.y() % gridMajor.height() == 0;
+                const bool firstRow = !infinite && rowTile.y() == 0;
+                const bool lastRow = !infinite && rowTile.y() == map()->height();
 
-                const bool isStaggered = p.doStaggerX(startTile.x());
-                const bool lastRow = rowTile.y() == map()->height() - 1;
-                const bool lastColumn = rowTile.x() == map()->width() - 1;
-                const bool bottomLeft = rowTile.x() == 0 || (lastRow && isStaggered);
-                const bool bottomRight = lastColumn || (lastRow && isStaggered);
+                if (!firstColumn && !(lastRow && (isStaggered || rowTile.x() == 0)) && !(firstRow && lastColumn && !isStaggered)) {
+                    if ((yIsMajor && !isStaggered) || xIsMajor)
+                        majorLines.append(topLeft.translated(rowPos));
+                    else
+                        minorLines.append(topLeft.translated(rowPos));
+                }
 
-                if (bottomRight)
-                    lines.append(QLine(rowPos + oct[5], rowPos + oct[6]));
-                if (lastRow)
-                    lines.append(QLine(rowPos + oct[6], rowPos + oct[7]));
-                if (bottomLeft)
-                    lines.append(QLine(rowPos + oct[7], rowPos + oct[0]));
+                if (!firstColumn && !lastColumn) {
+                    if (yIsMajor)
+                        majorLines.append(top.translated(rowPos));
+                    else
+                        minorLines.append(top.translated(rowPos));
+                }
 
-                painter->drawLines(lines);
-                lines.resize(0);
+                if (!lastColumn && !(lastRow && (isStaggered || startTile.x() == map()->width() - 1)) && !(firstColumn && firstRow && !isStaggered)) {
+                    if ((yIsMajor && !isStaggered) || nextXIsMajor)
+                        majorLines.append(topRight.translated(rowPos));
+                    else
+                        minorLines.append(topRight.translated(rowPos));
+                }
 
                 rowPos.ry() += p.tileHeight + p.sideLengthY;
             }
 
             startPos.rx() += p.columnWidth;
+
+            painter->setPen(gridPen);
+            painter->drawLines(minorLines.constData(), minorLines.size());
+            painter->setPen(majorGridPen);
+            painter->drawLines(majorLines.constData(), majorLines.size());
+            minorLines.clear();
+            majorLines.clear();
         }
     } else {
+        // Prevent possible infinite loop
+        if (p.rowHeight <= 0 || p.tileWidth + p.sideLengthX <= 0)
+            return;
+
         // Odd row shifting is applied in the rendering loop, so un-apply it here
         if (p.doStaggerY(startTile.y()))
             startPos.rx() -= p.columnWidth;
 
-        for (; startPos.y() <= rect.bottom() && (startTile.y() < map()->height() || map()->infinite()); startTile.ry()++) {
+        for (; startPos.y() <= rect.bottom() && (startTile.y() <= map()->height() || infinite); startTile.ry()++) {
+            const bool yIsMajor = gridMajor.height() != 0 && startTile.y() % gridMajor.height() == 0;
+            const bool isStaggered = p.doStaggerY(startTile.y());
+            const bool firstRow = !infinite && startTile.y() == 0;
+            const bool lastRow = !infinite && startTile.y() == map()->height();
+
             QPoint rowTile = startTile;
             QPoint rowPos = startPos;
 
-            if (p.doStaggerY(startTile.y()))
-                rowPos.rx() += p.columnWidth;
+            if (isStaggered) {
+                rowTile.rx() -= 1;
+                rowPos.rx() -= p.columnWidth;
+            }
 
-            for (; rowPos.x() <= rect.right() && (rowTile.x() < map()->width() || map()->infinite()); rowTile.rx()++) {
-                lines.append(QLine(rowPos + oct[0], rowPos + oct[1]));
-                lines.append(QLine(rowPos + oct[1], rowPos + oct[2]));
-                lines.append(QLine(rowPos + oct[3], rowPos + oct[4]));
+            for (; rowPos.x() <= rect.right() && (rowTile.x() <= map()->width() || infinite); rowTile.rx()++) {
+                const bool xIsMajor = gridMajor.width() != 0 && rowTile.x() % gridMajor.width() == 0;
+                const bool nextXIsMajor = gridMajor.width() != 0 && (rowTile.x() + 1) % gridMajor.width() == 0;
+                const bool lastColumn = !infinite && rowTile.x() == map()->width();
+                const bool firstColumn = !infinite && rowTile.x() == -1;
 
-                const bool isStaggered = p.doStaggerY(startTile.y());
-                const bool lastRow = rowTile.y() == map()->height() - 1;
-                const bool lastColumn = rowTile.x() == map()->width() - 1;
-                const bool bottomLeft = lastRow || (rowTile.x() == 0 && !isStaggered);
-                const bool bottomRight = lastRow || (lastColumn && isStaggered);
+                // Left side
+                if (!lastRow && !(isStaggered && firstColumn)) {
+                    if (xIsMajor)
+                        majorLines.append(left.translated(rowPos));
+                    else
+                        minorLines.append(left.translated(rowPos));
+                }
 
-                if (lastColumn)
-                    lines.append(QLine(rowPos + oct[4], rowPos + oct[5]));
-                if (bottomRight)
-                    lines.append(QLine(rowPos + oct[5], rowPos + oct[6]));
-                if (bottomLeft)
-                    lines.append(QLine(rowPos + oct[7], rowPos + oct[0]));
+                // Top-left side
+                if (!firstColumn && !(lastRow && !isStaggered && rowTile.x() == 0) && !(lastColumn && isStaggered) && !(firstRow && lastColumn)) {
+                    if (yIsMajor || (!isStaggered && xIsMajor))
+                        majorLines.append(topLeft.translated(rowPos));
+                    else
+                        minorLines.append(topLeft.translated(rowPos));
+                }
 
-                painter->drawLines(lines);
-                lines.resize(0);
+                // Top-right side
+                if (!lastColumn && !(firstRow && firstColumn) && !(lastRow && isStaggered && rowTile.x() == map()->width() - 1)) {
+                    if (yIsMajor || (isStaggered && nextXIsMajor))
+                        majorLines.append(topRight.translated(rowPos));
+                    else
+                        minorLines.append(topRight.translated(rowPos));
+                }
 
                 rowPos.rx() += p.tileWidth + p.sideLengthX;
             }
 
             startPos.ry() += p.rowHeight;
+
+            painter->setPen(gridPen);
+            painter->drawLines(minorLines.constData(), minorLines.size());
+            painter->setPen(majorGridPen);
+            painter->drawLines(majorLines.constData(), majorLines.size());
+            minorLines.clear();
+            majorLines.clear();
         }
     }
 }
@@ -239,7 +291,7 @@ QPointF HexagonalRenderer::snapToGrid(const QPointF &pixelCoords, int subdivisio
     QPointF nearest;
     qreal minDist = std::numeric_limits<qreal>::max();
 
-    for (const QPointF &candidate : hex) {
+    for (const QPointF &candidate : std::as_const(hex)) {
         const QPointF diff = candidate - pixelCoords;
         const qreal lengthSquared = diff.x() * diff.x() + diff.y() * diff.y();
         if (lengthSquared < minDist) {
@@ -255,6 +307,10 @@ void HexagonalRenderer::drawTileLayer(const RenderTileCallback &renderTile,
                                       const QRectF &exposed) const
 {
     const RenderParams p(map());
+
+    // Prevent possible infinite loop
+    if (p.rowHeight <= 0 || p.tileWidth + p.sideLengthX <= 0)
+        return;
 
     // Determine the tile and pixel coordinates to start at
     QPoint startTile = screenToTileCoords(exposed.topLeft()).toPoint();
@@ -540,13 +596,13 @@ QPolygonF HexagonalRenderer::tileToScreenPolygon(int x, int y) const
     const QPointF topRight = tileToScreenCoords(x, y);
 
     QPolygonF polygon(8);
-    polygon[0] = topRight + QPoint(0,                           p.tileHeight - p.sideOffsetY);
-    polygon[1] = topRight + QPoint(0,                           p.sideOffsetY);
-    polygon[2] = topRight + QPoint(p.sideOffsetX,               0);
-    polygon[3] = topRight + QPoint(p.tileWidth - p.sideOffsetX, 0);
-    polygon[4] = topRight + QPoint(p.tileWidth,                 p.sideOffsetY);
-    polygon[5] = topRight + QPoint(p.tileWidth,                 p.tileHeight - p.sideOffsetY);
-    polygon[6] = topRight + QPoint(p.tileWidth - p.sideOffsetX, p.tileHeight);
-    polygon[7] = topRight + QPoint(p.sideOffsetX,               p.tileHeight);
+    polygon[0] = topRight + QPoint(0,               p.rowHeight);
+    polygon[1] = topRight + QPoint(0,               p.sideOffsetY);
+    polygon[2] = topRight + QPoint(p.sideOffsetX,   0);
+    polygon[3] = topRight + QPoint(p.columnWidth,   0);
+    polygon[4] = topRight + QPoint(p.tileWidth,     p.sideOffsetY);
+    polygon[5] = topRight + QPoint(p.tileWidth,     p.rowHeight);
+    polygon[6] = topRight + QPoint(p.columnWidth,   p.tileHeight);
+    polygon[7] = topRight + QPoint(p.sideOffsetX,   p.tileHeight);
     return polygon;
 }

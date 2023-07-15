@@ -20,9 +20,9 @@
 
 #pragma once
 
-#include "documentmanager.h"
 #include "id.h"
 #include "issuesdock.h"
+#include "properties.h"
 
 #include <QJSValue>
 #include <QObject>
@@ -34,6 +34,7 @@ class QAction;
 
 namespace Tiled {
 
+class Document;
 class EditableAsset;
 class MapEditor;
 class ScriptImage;
@@ -58,6 +59,7 @@ class ScriptModule : public QObject
     Q_PROPERTY(QString arch READ arch)
     Q_PROPERTY(QString extensionsPath READ extensionsPath)
     Q_PROPERTY(QString applicationDirPath READ applicationDirPath)
+    Q_PROPERTY(QString projectFilePath READ projectFilePath)
     Q_PROPERTY(QStringList scriptArguments READ scriptArguments)
 
     Q_PROPERTY(QStringList actions READ actions)
@@ -67,6 +69,7 @@ class ScriptModule : public QObject
 
     Q_PROPERTY(Tiled::EditableAsset *activeAsset READ activeAsset WRITE setActiveAsset NOTIFY activeAssetChanged)
     Q_PROPERTY(QList<QObject*> openAssets READ openAssets)
+    Q_PROPERTY(Tiled::EditableAsset *project READ project)
 
     Q_PROPERTY(Tiled::MapEditor *mapEditor READ mapEditor)
     Q_PROPERTY(Tiled::TilesetEditor *tilesetEditor READ tilesetEditor)
@@ -81,6 +84,7 @@ public:
     QString arch() const;
     QString extensionsPath() const;
     QString applicationDirPath() const;
+    QString projectFilePath() const;
 
     QStringList scriptArguments() const;
     void setScriptArguments(const QStringList &arguments);
@@ -95,12 +99,16 @@ public:
 
     QList<QObject*> openAssets() const;
 
+    EditableAsset *project();
+
     TilesetEditor *tilesetEditor() const;
     MapEditor *mapEditor() const;
 
     Q_INVOKABLE Tiled::FilePath filePath(const QUrl &path) const;
     Q_INVOKABLE Tiled::ObjectRef objectRef(int id) const;
     Q_INVOKABLE QVariant propertyValue(const QString &typeName, const QVariant &value) const;
+    Q_INVOKABLE bool versionLessThan(const QString &a);
+    Q_INVOKABLE bool versionLessThan(const QString &a, const QString &b);
 
     Q_INVOKABLE Tiled::EditableAsset *open(const QString &fileName) const;
     Q_INVOKABLE bool close(Tiled::EditableAsset *asset) const;
@@ -117,6 +125,17 @@ public:
     Q_INVOKABLE Tiled::ScriptTilesetFormatWrapper *tilesetFormatForFile(const QString &fileName) const;
 
     Q_INVOKABLE void extendMenu(const QByteArray &idName, QJSValue items);
+
+    // Synchronized with Tiled::CompressionMethod
+    enum CompressionMethod {
+        Gzip,
+        Zlib,
+        Zstandard
+    };
+    Q_ENUM(CompressionMethod)
+
+    Q_INVOKABLE QByteArray compress(const QByteArray &data, CompressionMethod method = Zlib, int compressionLevel = -1);
+    Q_INVOKABLE QByteArray decompress(const QByteArray &data, CompressionMethod method = Zlib);
 
 signals:
     void assetCreated(Tiled::EditableAsset *asset);
@@ -157,5 +176,10 @@ private:
 
     QStringList mScriptArguments;
 };
+
+inline bool ScriptModule::versionLessThan(const QString &a)
+{
+    return versionLessThan(version(), a);
+}
 
 } // namespace Tiled

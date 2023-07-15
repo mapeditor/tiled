@@ -1224,7 +1224,7 @@ void ObjectSelectionTool::startMoving(const QPointF &pos,
     mAlignPosition = mMovingObjects.first().oldPosition;
     mOriginPos = mOriginIndicator->pos();
 
-    for (const MovingObject &object : qAsConst(mMovingObjects)) {
+    for (const MovingObject &object : std::as_const(mMovingObjects)) {
         const QPointF &pos = object.oldPosition;
         if (pos.x() < mAlignPosition.x())
             mAlignPosition.setX(pos.x());
@@ -1244,7 +1244,7 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
     QVector<TransformState> states;
     states.reserve(mMovingObjects.size());
 
-    for (const MovingObject &object : qAsConst(mMovingObjects)) {
+    for (const MovingObject &object : std::as_const(mMovingObjects)) {
         const QPointF newPixelPos = object.oldScreenPosition + diff;
         const QPointF newPos = renderer->screenToPixelCoords(newPixelPos);
 
@@ -1329,7 +1329,7 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
     QVector<TransformState> states;
     states.reserve(mMovingObjects.size());
 
-    for (const MovingObject &object : qAsConst(mMovingObjects)) {
+    for (const MovingObject &object : std::as_const(mMovingObjects)) {
         MapObject *mapObject = object.mapObject;
         const QPointF offset = mapScene()->absolutePositionForLayer(*mapObject->objectGroup());
 
@@ -1433,7 +1433,7 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
     QVector<TransformState> states;
     states.reserve(mMovingObjects.size());
 
-    for (const MovingObject &object : qAsConst(mMovingObjects)) {
+    for (const MovingObject &object : std::as_const(mMovingObjects)) {
         MapObject *mapObject = object.mapObject;
         const QPointF offset = mapScene()->absolutePositionForLayer(*mapObject->objectGroup());
 
@@ -1691,7 +1691,7 @@ void ObjectSelectionTool::abortCurrentAction(AbortReason reason)
             states.reserve(mMovingObjects.size());
 
             // Reset objects to their old transform
-            for (const MovingObject &object : qAsConst(mMovingObjects)) {
+            for (const MovingObject &object : std::as_const(mMovingObjects)) {
                 states.append(TransformState(object.mapObject));
                 auto &state = states.last();
 

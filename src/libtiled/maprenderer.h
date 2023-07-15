@@ -28,6 +28,7 @@
 
 #pragma once
 
+#include "mapobject.h"
 #include "tiled_global.h"
 
 #include <functional>
@@ -181,7 +182,7 @@ public:
      */
     virtual void drawMapObject(QPainter *painter,
                                const MapObject *object,
-                               const QColor &color) const = 0;
+                               const MapObjectColors &colors) const = 0;
 
     /**
      * Draws the a pin in the given \a color using the \a painter.

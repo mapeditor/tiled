@@ -105,6 +105,15 @@ void AbstractTool::setVisible(bool visible)
     emit visibleChanged(visible);
 }
 
+void AbstractTool::setTargetLayerType(int targetLayerType)
+{
+    if (mTargetLayerType == targetLayerType)
+        return;
+
+    mTargetLayerType = targetLayerType;
+    updateEnabledState();
+}
+
 Tile *AbstractTool::tile() const
 {
     return toolManager()->tile();
@@ -170,7 +179,16 @@ void AbstractTool::changeEvent(const ChangeEvent &event)
 
 void AbstractTool::updateEnabledState()
 {
-    setEnabled(mMapDocument != nullptr);
+    // By default, no tool is enabled when there is no map selected
+    bool enabled = mMapDocument != nullptr;
+
+    // If a target layer type is set, check if the current layer matches
+    if (mTargetLayerType) {
+        auto layer = currentLayer();
+        enabled &= layer && layer->layerType() & mTargetLayerType;
+    }
+
+    setEnabled(enabled);
 }
 
 Layer *AbstractTool::currentLayer() const

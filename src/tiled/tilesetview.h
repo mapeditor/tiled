@@ -133,7 +133,6 @@ private:
     void applyWangId();
     void finishWangIdChange();
     Tile *currentTile() const;
-    void setHandScrolling(bool handScrolling);
 
     enum WangBehavior {
         AssignWholeId,      // Assigning templates
@@ -159,9 +158,6 @@ private:
     int mWangColorIndex = 0;
     QModelIndex mHoveredIndex;
     bool mWangIdChanged = false;
-
-    bool mHandScrolling = false;
-    QPoint mLastMousePos;
 
     const QIcon mImageMissingIcon;
 };

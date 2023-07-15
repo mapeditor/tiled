@@ -22,26 +22,31 @@
 
 #include "actionmanager.h"
 #include "commandmanager.h"
+#include "compression.h"
+#include "documentmanager.h"
 #include "editabletileset.h"
 #include "issuesmodel.h"
 #include "logginginterface.h"
 #include "mainwindow.h"
 #include "mapeditor.h"
+#include "projectmanager.h"
+#include "scriptdialog.h"
 #include "scriptedaction.h"
 #include "scriptedfileformat.h"
 #include "scriptedtool.h"
 #include "scriptfileformatwrappers.h"
 #include "scriptmanager.h"
-#include "scriptdialog.h"
 #include "tilesetdocument.h"
 #include "tileseteditor.h"
 
 #include <QAction>
 #include <QCoreApplication>
 #include <QInputDialog>
+#include <QLibraryInfo>
 #include <QMenu>
 #include <QMessageBox>
 #include <QQmlEngine>
+#include <QVersionNumber>
 
 namespace Tiled {
 
@@ -113,6 +118,11 @@ QString ScriptModule::extensionsPath() const
 QString ScriptModule::applicationDirPath() const
 {
     return QCoreApplication::applicationDirPath();
+}
+
+QString ScriptModule::projectFilePath() const
+{
+    return ProjectManager::instance()->project().fileName();
 }
 
 QStringList ScriptModule::scriptArguments() const
@@ -204,6 +214,11 @@ QList<QObject *> ScriptModule::openAssets() const
     return assets;
 }
 
+EditableAsset *ScriptModule::project()
+{
+    return ProjectManager::instance()->editableProject();
+}
+
 TilesetEditor *ScriptModule::tilesetEditor() const
 {
     if (auto documentManager = DocumentManager::maybeInstance())
@@ -246,6 +261,11 @@ QVariant ScriptModule::propertyValue(const QString &typeName, const QVariant &va
     }
 
     return type->wrap(value);
+}
+
+bool ScriptModule::versionLessThan(const QString &a, const QString &b)
+{
+    return QVersionNumber::fromString(a) < QVersionNumber::fromString(b);
 }
 
 EditableAsset *ScriptModule::open(const QString &fileName) const
@@ -507,6 +527,16 @@ void ScriptModule::extendMenu(const QByteArray &idName, QJSValue items)
     }
 
     ActionManager::registerMenuExtension(menuId, extension);
+}
+
+QByteArray ScriptModule::compress(const QByteArray &data, CompressionMethod method, int compressionLevel)
+{
+    return Tiled::compress(data, static_cast<Tiled::CompressionMethod>(method), compressionLevel);
+}
+
+QByteArray ScriptModule::decompress(const QByteArray &data, CompressionMethod method)
+{
+    return Tiled::decompress(data, data.size(), static_cast<Tiled::CompressionMethod>(method));
 }
 
 void ScriptModule::trigger(const QByteArray &actionName) const

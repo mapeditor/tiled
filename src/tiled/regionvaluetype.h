@@ -54,6 +54,8 @@ public:
     Q_INVOKABLE void intersect(const QRectF &rect);
     Q_INVOKABLE void intersect(const Tiled::RegionValueType &region);
 
+    Q_INVOKABLE QVector<Tiled::RegionValueType> contiguousRegions() const;
+
     QRect boundingRect() const;
     QVector<QRect> rects() const;
 

@@ -36,7 +36,7 @@ class ScriptImage;
 /**
  * A widget which allows the user to display a ScriptImage
  */
-class ScriptImageWidget: public QLabel
+class ScriptImageWidget : public QLabel
 {
     Q_OBJECT
 
@@ -58,7 +58,7 @@ class ScriptDialog : public QDialog
 
 public:
     enum NewRowMode {
-        SameWidgetRows =0,
+        SameWidgetRows = 0,
         ManualRows = 1,
         SingleWidgetRows = 2
     };
@@ -102,8 +102,10 @@ private:
     int m_widgetsInRow = 0;
     QGridLayout *m_gridLayout;
     QHBoxLayout *m_rowLayout;
-    QString m_lastWidgetTypeName;
+    const QMetaObject *m_lastWidgetType;
     NewRowMode m_newRowMode = SameWidgetRows;
+
+    static QSet<ScriptDialog*> sDialogInstances;
 };
 
 

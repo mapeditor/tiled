@@ -110,7 +110,16 @@ Shape Fill Tool
 Shortcut: ``P`` |rectangle-fill|
 
 This tool provides a quick way to fill rectangles or ellipses with a certain
-tile or pattern. Hold ``Shift`` to fill an exact square or circle.
+tile or pattern.
+
+- Holding ``Shift`` fills an exact square or circle.
+
+.. raw:: html
+
+   <div class="new">Since Tiled 1.10.2</div>
+
+- Holding ``Alt`` draws the rectangle or ellipse centered around the starting
+  location.
 
 You can also flip and rotate the current stamp as described for the
 :ref:`stamp-tool`.
@@ -173,12 +182,12 @@ it again later. The following shortcuts work for this purpose:
 Tile stamps can also be stored by name and extended with variations
 using the *Tile Stamps* view.
 
-.. |rectangle-fill| image:: ../../src/tiled/images/22/rectangle-fill.png
-.. |stock-tool-bucket-fill| image:: ../../src/tiled/images/22/stock-tool-bucket-fill.png
-.. |stock-tool-clone| image:: ../../src/tiled/images/22/stock-tool-clone.png
-.. |stock-tool-eraser| image:: ../../src/tiled/images/22/stock-tool-eraser.png
-.. |stock-tool-rect-select| image:: ../../src/tiled/images/22/stock-tool-rect-select.png
-.. |stock-tool-by-color-select| image:: ../../src/tiled/images/22/stock-tool-by-color-select.png
-.. |stock-tool-fuzzy-select-22| image:: ../../src/tiled/images/22/stock-tool-fuzzy-select-22.png
-.. |terrain-edit| image:: ../../src/tiled/images/24/terrain-edit.png
-.. |terrain| image:: ../../src/tiled/images/24/terrain.png
+.. |rectangle-fill| image:: ../../src/tiled/resources/images/22/rectangle-fill.png
+.. |stock-tool-bucket-fill| image:: ../../src/tiled/resources/images/22/stock-tool-bucket-fill.png
+.. |stock-tool-clone| image:: ../../src/tiled/resources/images/22/stock-tool-clone.png
+.. |stock-tool-eraser| image:: ../../src/tiled/resources/images/22/stock-tool-eraser.png
+.. |stock-tool-rect-select| image:: ../../src/tiled/resources/images/22/stock-tool-rect-select.png
+.. |stock-tool-by-color-select| image:: ../../src/tiled/resources/images/22/stock-tool-by-color-select.png
+.. |stock-tool-fuzzy-select-22| image:: ../../src/tiled/resources/images/22/stock-tool-fuzzy-select-22.png
+.. |terrain-edit| image:: ../../src/tiled/resources/images/24/terrain-edit.png
+.. |terrain| image:: ../../src/tiled/resources/images/24/terrain.png

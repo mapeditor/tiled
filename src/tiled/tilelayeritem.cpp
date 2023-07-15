@@ -23,7 +23,6 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
-#include "tile.h"
 
 #include <QStyleOptionGraphicsItem>
 

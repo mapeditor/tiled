@@ -9,6 +9,37 @@
     ],
     "propertyTypes": [
         {
+            "color": "#ffa0a0a4",
+            "id": 10,
+            "members": [
+                {
+                    "name": "fixture",
+                    "propertyType": "Fixture",
+                    "type": "class",
+                    "value": {
+                    }
+                },
+                {
+                    "name": "type",
+                    "propertyType": "BodyType",
+                    "type": "string",
+                    "value": "Static"
+                }
+            ],
+            "name": "Body",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset"
+            ]
+        },
+        {
             "id": 1,
             "name": "BodyType",
             "storageType": "string",
@@ -16,6 +47,33 @@
             "values": [
                 "Static",
                 "Dynamic"
+            ],
+            "valuesAsFlags": false
+        },
+        {
+            "id": 12,
+            "name": "CollisionCategories",
+            "storageType": "int",
+            "type": "enum",
+            "values": [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4"
+            ],
+            "valuesAsFlags": true
+        },
+        {
+            "id": 9,
+            "name": "Direction",
+            "storageType": "string",
+            "type": "enum",
+            "values": [
+                "Up",
+                "Right",
+                "Down",
+                "Left"
             ],
             "valuesAsFlags": false
         },
@@ -32,21 +90,17 @@
             "valuesAsFlags": false
         },
         {
-            "color": "#ffad7fa8",
-            "id": 4,
+            "color": "#ffcdab8f",
+            "id": 5,
             "members": [
                 {
-                    "name": "friction",
-                    "type": "float",
-                    "value": 1
-                },
-                {
-                    "name": "static",
-                    "type": "bool",
-                    "value": false
+                    "name": "direction",
+                    "propertyType": "Direction",
+                    "type": "string",
+                    "value": "Up"
                 }
             ],
-            "name": "Fixture",
+            "name": "Exit",
             "type": "class",
             "useAs": [
                 "object",
@@ -54,13 +108,83 @@
             ]
         },
         {
-            "color": "#ffeeeeec",
-            "id": 5,
+            "color": "#ffa0a0a4",
+            "id": 11,
             "members": [
+                {
+                    "name": "categoryBits",
+                    "propertyType": "CollisionCategories",
+                    "type": "int",
+                    "value": 0
+                },
+                {
+                    "name": "groupIndex",
+                    "type": "int",
+                    "value": 0
+                },
+                {
+                    "name": "maskBits",
+                    "propertyType": "CollisionCategories",
+                    "type": "int",
+                    "value": 0
+                }
             ],
-            "name": "Location",
+            "name": "Filter",
             "type": "class",
             "useAs": [
+                "property",
+                "map",
+                "layer",
+                "object",
+                "tile",
+                "tileset",
+                "wangcolor",
+                "wangset"
+            ]
+        },
+        {
+            "color": "#ffad7fa8",
+            "id": 4,
+            "members": [
+                {
+                    "name": "density",
+                    "type": "float",
+                    "value": 0
+                },
+                {
+                    "name": "filter",
+                    "propertyType": "Filter",
+                    "type": "class",
+                    "value": {
+                        "categoryBits": 1,
+                        "maskBits": 1
+                    }
+                },
+                {
+                    "name": "friction",
+                    "type": "float",
+                    "value": 1
+                },
+                {
+                    "name": "isSensor",
+                    "type": "bool",
+                    "value": false
+                },
+                {
+                    "name": "restitution",
+                    "type": "float",
+                    "value": 0
+                },
+                {
+                    "name": "restitutionThreshold",
+                    "type": "float",
+                    "value": 0
+                }
+            ],
+            "name": "Fixture",
+            "type": "class",
+            "useAs": [
+                "property",
                 "object",
                 "tile"
             ]
@@ -69,55 +193,13 @@
             "color": "#ff729fcf",
             "id": 6,
             "members": [
-            ],
-            "name": "NPC",
-            "type": "class",
-            "useAs": [
-                "object",
-                "tile"
-            ]
-        },
-        {
-            "color": "#ff99c1f1",
-            "id": 7,
-            "members": [
                 {
-                    "name": "disabled",
-                    "type": "bool",
-                    "value": false
-                },
-                {
-                    "name": "modX",
-                    "type": "int",
-                    "value": 1
-                },
-                {
-                    "name": "modY",
-                    "type": "int",
-                    "value": 1
-                },
-                {
-                    "name": "noOverlappingOutput",
-                    "type": "bool",
-                    "value": false
-                },
-                {
-                    "name": "offsetX",
-                    "type": "int",
-                    "value": 0
-                },
-                {
-                    "name": "offsetY",
-                    "type": "int",
-                    "value": 0
-                },
-                {
-                    "name": "probability",
-                    "type": "float",
-                    "value": 1
+                    "name": "script",
+                    "type": "file",
+                    "value": ""
                 }
             ],
-            "name": "RuleOptions",
+            "name": "NPC",
             "type": "class",
             "useAs": [
                 "object",

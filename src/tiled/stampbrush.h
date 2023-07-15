@@ -34,7 +34,6 @@ class WangSet;
 
 class MapDocument;
 class StampActions;
-class WangFiller;
 
 /**
  * Implements a tile brush that acts like a stamp. It is able to paint a block
@@ -49,6 +48,7 @@ public:
     StampBrush(QObject *parent = nullptr);
     ~StampBrush() override;
 
+    void activate(MapScene *scene) override;
     void deactivate(MapScene *scene) override;
 
     void mousePressed(QGraphicsSceneMouseEvent *event) override;

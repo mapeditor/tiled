@@ -20,8 +20,9 @@
 
 #include "tiledapplication.h"
 
-#include "documentmanager.h"
 #include "languagemanager.h"
+#include "newsfeed.h"
+#include "newversionchecker.h"
 #include "pluginmanager.h"
 #include "preferences.h"
 #include "scriptmanager.h"
@@ -64,6 +65,20 @@ TiledApplication::~TiledApplication()
     Preferences::deleteInstance();
     PluginManager::deleteInstance();
     Session::deinitialize();
+}
+
+NewVersionChecker &TiledApplication::newVersionChecker()
+{
+    if (!mNewVersionChecker)
+        mNewVersionChecker = new NewVersionChecker(this);
+    return *mNewVersionChecker;
+}
+
+NewsFeed &TiledApplication::newsFeed()
+{
+    if (!mNewsFeed)
+        mNewsFeed = std::make_unique<NewsFeed>();
+    return *mNewsFeed;
 }
 
 bool TiledApplication::event(QEvent *event)

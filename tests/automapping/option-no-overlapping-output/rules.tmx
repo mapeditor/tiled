@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="4" height="4" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="1">
+ <properties>
+  <property name="NoOverlappingOutput" type="bool" value="true"/>
+ </properties>
+ <tileset firstgid="1" source="../spr_test_tileset.tsx"/>
+ <layer id="1" name="input_in" width="4" height="4">
+  <data encoding="csv">
+0,0,0,0,
+0,2,2,0,
+0,2,2,0,
+0,0,0,0
+</data>
+ </layer>
+ <layer id="2" name="output_out" width="4" height="4">
+  <data encoding="csv">
+0,0,0,0,
+0,2,3,0,
+0,4,5,0,
+0,0,0,0
+</data>
+ </layer>
+</map>

@@ -44,6 +44,7 @@ namespace Tiled {
 class Layer;
 class Map;
 class MapObject;
+class MapRenderer;
 class ObjectGroup;
 class TileLayer;
 
@@ -80,6 +81,8 @@ struct OutputSet
     QString name;
     // Maps output layers in mRulesMap to their names in mTargetMap
     QHash<const Layer*, QString> layers;
+    QHash<const Layer*, Properties> outputLayerProperties;
+    qreal probability = 1.0;
 };
 
 struct RuleOptions
@@ -92,7 +95,8 @@ struct RuleOptions
         OffsetX             = 1 << 3,
         OffsetY             = 1 << 4,
         NoOverlappingOutput = 1 << 5,
-        Disabled            = 1 << 6
+        Disabled            = 1 << 6,
+        IgnoreLock          = 1 << 7
     };
 
     qreal skipChance = 0.0;
@@ -102,6 +106,7 @@ struct RuleOptions
     int offsetY = 0;
     bool noOverlappingOutput = false;
     bool disabled = false;
+    bool ignoreLock = false;
 };
 
 struct RuleOptionsArea
@@ -202,7 +207,7 @@ struct TILED_EDITOR_EXPORT AutoMappingContext
     std::vector<std::unique_ptr<Layer>> newLayers;  // Layers created in AutoMapper::prepareAutoMap
     QVector<QVector<AddMapObjects::Entry>> newMapObjects;   // Objects placed by AutoMapper
     QSet<MapObject*> mapObjectsToRemove;
-    QHash<Layer*, Properties> changedProperties;
+    QHash<const Layer*, Properties> changedProperties;
 
     // Clones of existing tile layers that might have been changed in AutoMapper::autoMap
     std::unordered_map<TileLayer*, std::unique_ptr<TileLayer>> originalToOutputLayerMapping;
@@ -261,6 +266,7 @@ public:
          * Determines whether the rules on the map need to be matched in order.
          */
         bool matchInOrder = false;
+        bool matchInOrderWasSet = false;
 
         /**
          * This variable determines, how many overlapping tiles should be used.
@@ -332,6 +338,7 @@ private:
 
     void setupRuleMapProperties();
     void setupInputLayerProperties(InputLayer &inputLayer);
+    void setupOutputSetProperties(OutputSet &outputSet);
     void setupRuleOptionsArea(RuleOptionsArea &optionsArea, const MapObject *mapObject);
 
     /**
@@ -378,13 +385,13 @@ private:
 
 
     /**
-     * This copies multiple TileLayers from one map to another.
-     * Only the region \a region is considered for copying.
-     * In the destination it will come to the region translated by Offset.
+     * This copies multiple layers from one map to another.
+     * Only the output region of the \a rule is considered for copying.
+     * In the destination it will come to the region translated by \a offset.
      * The parameter \a ruleOutput contains a map of which layers of the rules
      * map should get copied into which layers of the working map.
      */
-    void copyMapRegion(const QRegion &region, QPoint Offset,
+    void copyMapRegion(const Rule &rule, QPoint offset,
                        const OutputSet &ruleOutput,
                        AutoMappingContext &context) const;
 
@@ -416,6 +423,7 @@ private:
      * Map containing the rules.
      */
     const std::unique_ptr<Map> mRulesMap;
+    const std::unique_ptr<MapRenderer> mRulesMapRenderer;
     const QRegularExpression mMapNameFilter;
 
     RuleMapSetup mRuleMapSetup;

@@ -260,7 +260,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName, Option
     QString lineStop;
     QString itemStart;
     QString itemStop;
-    QString seperator;
+    QString separator;
     if (outputLists) {
         returnStart = "{";
         returnStop = "}";
@@ -268,7 +268,7 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName, Option
         lineStop = "},";
         itemStart = "[[";
         itemStop = "]]";
-        seperator = ",";
+        separator = ",";
     } else {
         returnStart = "[[";
         returnStop = "]]";
@@ -276,14 +276,14 @@ bool TenginePlugin::write(const Tiled::Map *map, const QString &fileName, Option
         lineStop = "";
         itemStart = "";
         itemStop = "";
-        seperator = "";
+        separator = "";
     }
     out << Qt::endl << "-- ASCII map section" << Qt::endl;
     out << "return " << returnStart << Qt::endl;
     for (int y = 0; y < height; ++y) {
         out << lineStart;
         for (int x = 0; x < width; ++x) {
-            out << itemStart << asciiMap[x + (y * width)] << itemStop << seperator;
+            out << itemStart << asciiMap[x + (y * width)] << itemStop << separator;
         }
         if (y == height - 1) {
             out << lineStop << returnStop;

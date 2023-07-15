@@ -151,6 +151,7 @@ public:
     void offsetMap(const QList<Layer *> &layers,
                    QPoint offset,
                    const QRect &bounds,
+                   bool wholeMap,
                    bool wrapX, bool wrapY);
 
     void flipSelectedObjects(FlipDirection direction);
@@ -387,6 +388,8 @@ private:
     void onLayerRemoved(Layer *layer);
 
     void moveObjectIndex(const MapObject *object, int count);
+
+    QString newLayerName(Layer::TypeFlag layerType) const;
 
     /*
      * QString is used since the formats referenced here may be dynamically

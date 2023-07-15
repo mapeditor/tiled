@@ -23,11 +23,8 @@
 #include "documentmanager.h"
 #include "filteredit.h"
 #include "projectmanager.h"
-#include "projectmodel.h"
-#include "rangeset.h"
 #include "utils.h"
 
-#include <QAbstractListModel>
 #include <QApplication>
 #include <QDir>
 #include <QKeyEvent>
@@ -42,50 +39,6 @@
 
 namespace Tiled {
 
-class MatchesModel : public QAbstractListModel
-{
-public:
-    explicit MatchesModel(QObject *parent = nullptr);
-
-    int rowCount(const QModelIndex &parent) const override;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-
-    const QVector<ProjectModel::Match> &matches() const { return mMatches; }
-    void setMatches(QVector<ProjectModel::Match> matches);
-
-private:
-    QVector<ProjectModel::Match> mMatches;
-};
-
-MatchesModel::MatchesModel(QObject *parent)
-    : QAbstractListModel(parent)
-{}
-
-int MatchesModel::rowCount(const QModelIndex &parent) const
-{
-    return parent.isValid() ? 0 : mMatches.size();
-}
-
-QVariant MatchesModel::data(const QModelIndex &index, int role) const
-{
-    switch (role) {
-    case Qt::DisplayRole: {
-        const ProjectModel::Match &match = mMatches.at(index.row());
-        return match.relativePath().toString();
-    }
-    }
-    return QVariant();
-}
-
-void MatchesModel::setMatches(QVector<ProjectModel::Match> matches)
-{
-    beginResetModel();
-    mMatches = std::move(matches);
-    endResetModel();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
 static QFont scaledFont(const QFont &font, qreal scale)
 {
     QFont scaled(font);
@@ -96,13 +49,13 @@ static QFont scaledFont(const QFont &font, qreal scale)
     return scaled;
 }
 
-class MatchDelegate : public QStyledItemDelegate
+class FileMatchDelegate : public QStyledItemDelegate
 {
 public:
-    MatchDelegate(QObject *parent = nullptr);
+    FileMatchDelegate(QObject *parent = nullptr);
 
     QSize sizeHint(const QStyleOptionViewItem &option,
-                  const QModelIndex &index) const override;
+                   const QModelIndex &index) const override;
 
     void paint(QPainter *painter,
                const QStyleOptionViewItem &option,
@@ -125,11 +78,12 @@ private:
     QStringList mWords;
 };
 
-MatchDelegate::MatchDelegate(QObject *parent)
+FileMatchDelegate::FileMatchDelegate(QObject *parent)
     : QStyledItemDelegate(parent)
 {}
 
-QSize MatchDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &) const
+QSize FileMatchDelegate::sizeHint(const QStyleOptionViewItem &option,
+                                  const QModelIndex &) const
 {
     const QFont bigFont = scaledFont(option.font, 1.2);
     const QFontMetrics bigFontMetrics(bigFont);
@@ -138,9 +92,9 @@ QSize MatchDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIn
     return QSize(margin * 2, margin * 2 + bigFontMetrics.lineSpacing() * 2);
 }
 
-void MatchDelegate::paint(QPainter *painter,
-                          const QStyleOptionViewItem &option,
-                          const QModelIndex &index) const
+void FileMatchDelegate::paint(QPainter *painter,
+                              const QStyleOptionViewItem &option,
+                              const QModelIndex &index) const
 {
     painter->save();
 
@@ -219,7 +173,6 @@ void MatchDelegate::paint(QPainter *painter,
     QStaticText staticText(fileNameHtml);
     staticText.setTextOption(textOption);
     staticText.setTextFormat(Qt::RichText);
-    staticText.setTextWidth(fileNameRect.width());
     staticText.prepare(painter->transform(), fonts.big);
 
     painter->setFont(fonts.big);
@@ -290,7 +243,7 @@ void ResultsView::updateMaximumHeight()
     setMaximumHeight(maximumHeight);
 }
 
-inline void ResultsView::keyPressEvent(QKeyEvent *event)
+void ResultsView::keyPressEvent(QKeyEvent *event)
 {
     // Make sure the Enter and Return keys activate the current index. This
     // doesn't happen otherwise on macOS.
@@ -307,24 +260,26 @@ inline void ResultsView::keyPressEvent(QKeyEvent *event)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-LocatorWidget::LocatorWidget(QWidget *parent)
+LocatorWidget::LocatorWidget(LocatorSource *locatorSource,
+                             QWidget *parent)
     : QFrame(parent, Qt::Popup)
+    , mLocatorSource(locatorSource)
     , mFilterEdit(new FilterEdit(this))
     , mResultsView(new ResultsView(this))
-    , mListModel(new MatchesModel(this))
-    , mDelegate(new MatchDelegate(this))
 {
     setAttribute(Qt::WA_DeleteOnClose);
     setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
 
+    mLocatorSource->setParent(this);        // take ownership of source
+
     mResultsView->setUniformRowHeights(true);
     mResultsView->setRootIsDecorated(false);
-    mResultsView->setItemDelegate(mDelegate);
+    mResultsView->setItemDelegate(mLocatorSource->delegate());
     mResultsView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-    mResultsView->setModel(mListModel);
+    mResultsView->setModel(mLocatorSource);
     mResultsView->setHeaderHidden(true);
 
-    mFilterEdit->setPlaceholderText(tr("Filename"));
+    mFilterEdit->setPlaceholderText(mLocatorSource->placeholderText());
     mFilterEdit->setFilteredView(mResultsView);
     mFilterEdit->setClearTextOnEscape(false);
     mFilterEdit->setFont(scaledFont(mFilterEdit->font(), 1.5));
@@ -346,9 +301,8 @@ LocatorWidget::LocatorWidget(QWidget *parent)
 
     connect(mFilterEdit, &QLineEdit::textChanged, this, &LocatorWidget::setFilterText);
     connect(mResultsView, &QAbstractItemView::activated, this, [this] (const QModelIndex &index) {
-        const QString file = mListModel->matches().at(index.row()).path;
         close();
-        DocumentManager::instance()->openFile(file);
+        mLocatorSource->activate(index);
     });
 }
 
@@ -375,6 +329,60 @@ void LocatorWidget::setFilterText(const QString &text)
     const QStringList words = normalized.split(QLatin1Char(' '), Qt::SkipEmptyParts);
 #endif
 
+    mLocatorSource->setFilterWords(words);
+
+    mResultsView->updateGeometry();
+    mResultsView->updateMaximumHeight();
+
+    // Restore or introduce selection
+    if (auto index = mLocatorSource->index(0, 0); index.isValid())
+        mResultsView->setCurrentIndex(index);
+
+    layout()->activate();
+    resize(sizeHint());
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+FileLocatorSource::FileLocatorSource(QObject *parent)
+    : LocatorSource(parent)
+    , mDelegate(new FileMatchDelegate(this))
+{}
+
+int FileLocatorSource::rowCount(const QModelIndex &parent) const
+{
+    return parent.isValid() ? 0 : mMatches.size();
+}
+
+QVariant FileLocatorSource::data(const QModelIndex &index, int role) const
+{
+    switch (role) {
+    case Qt::DisplayRole: {
+        const ProjectModel::Match &match = mMatches.at(index.row());
+        return match.relativePath().toString();
+    }
+    }
+    return QVariant();
+}
+
+QAbstractItemDelegate *FileLocatorSource::delegate() const
+{
+    return mDelegate;
+}
+
+QString FileLocatorSource::placeholderText() const
+{
+    return QCoreApplication::translate("Tiled::LocatorWidget", "Filename");
+}
+
+void FileLocatorSource::activate(const QModelIndex &index)
+{
+    const QString file = mMatches.at(index.row()).path;
+    DocumentManager::instance()->openFile(file);
+}
+
+void FileLocatorSource::setFilterWords(const QStringList &words)
+{
     auto projectModel = ProjectManager::instance()->projectModel();
     auto matches = projectModel->findFiles(words);
 
@@ -388,17 +396,10 @@ void LocatorWidget::setFilterText(const QString &text)
     });
 
     mDelegate->setWords(words);
-    mListModel->setMatches(matches);
 
-    mResultsView->updateGeometry();
-    mResultsView->updateMaximumHeight();
-
-    // Restore or introduce selection
-    if (!matches.isEmpty())
-        mResultsView->setCurrentIndex(mListModel->index(0));
-
-    layout()->activate();
-    resize(sizeHint());
+    beginResetModel();
+    mMatches = std::move(matches);
+    endResetModel();
 }
 
 } // namespace Tiled

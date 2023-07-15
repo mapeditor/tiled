@@ -118,7 +118,7 @@ void ChangeWangSetColorCount::undo()
 {
     mTilesetDocument->wangSetModel()->setWangSetColorCount(mWangSet, mOldValue);
 
-    for (const WangColorChange &w : qAsConst(mRemovedWangColors)) {
+    for (const WangColorChange &w : std::as_const(mRemovedWangColors)) {
         WangColor &wangColor = *mWangSet->colorAt(w.index);
         wangColor.setName(w.wangColor->name());
         wangColor.setImageId(w.wangColor->imageId());

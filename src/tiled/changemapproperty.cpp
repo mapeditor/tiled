@@ -23,8 +23,6 @@
 #include "changeevents.h"
 #include "map.h"
 #include "mapdocument.h"
-#include "objectgroup.h"
-#include "tilelayer.h"
 
 #include <QCoreApplication>
 

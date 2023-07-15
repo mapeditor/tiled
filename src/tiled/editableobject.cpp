@@ -112,6 +112,7 @@ static Map *mapForObject(Object *object)
     case Object::TileType:
     case Object::WangSetType:
     case Object::WangColorType:
+    case Object::ProjectType:
         break;
     }
     return nullptr;

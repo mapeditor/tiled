@@ -23,6 +23,7 @@
 
 #include <QColor>
 #include <QDateTime>
+#include <QFont>
 #include <QObject>
 #include <QSettings>
 
@@ -80,7 +81,7 @@ public:
     };
 
     ObjectLabelVisiblity objectLabelVisibility() const;
-    void setObjectLabelVisibility(ObjectLabelVisiblity visiblity);
+    void setObjectLabelVisibility(ObjectLabelVisiblity visibility);
 
     bool labelForHoveredObject() const;
     void setLabelForHoveredObject(bool enabled);
@@ -99,6 +100,11 @@ public:
 
     QColor selectionColor() const;
     void setSelectionColor(const QColor &color);
+
+    bool useCustomFont() const;
+    void setUseCustomFont(bool useCustomFont);
+    QFont customFont() const;
+    void setCustomFont(const QFont &font);
 
     Map::LayerDataFormat layerDataFormat() const;
     void setLayerDataFormat(Map::LayerDataFormat layerDataFormat);
@@ -229,6 +235,7 @@ signals:
     void applicationStyleChanged(ApplicationStyle);
     void baseColorChanged(const QColor &baseColor);
     void selectionColorChanged(const QColor &selectionColor);
+    void applicationFontChanged();
 
     void useOpenGLChanged(bool useOpenGL);
 

@@ -207,7 +207,7 @@ void TilesetManager::filesChanged(const QStringList &fileNames)
     for (const QString &fileName : fileNames)
         ImageCache::remove(fileName);
 
-    for (Tileset *tileset : qAsConst(mTilesets)) {
+    for (Tileset *tileset : std::as_const(mTilesets)) {
         const QString fileName = tileset->imageSource().toLocalFile();
         if (fileNames.contains(fileName))
             if (tileset->loadImage())
@@ -226,7 +226,7 @@ void TilesetManager::resetTileAnimations()
     // TODO: This could be more optimal by keeping track of the list of
     // actually animated tiles
 
-    for (Tileset *tileset : qAsConst(mTilesets)) {
+    for (Tileset *tileset : std::as_const(mTilesets)) {
         bool imageChanged = false;
 
         for (Tile *tile : tileset->tiles())
@@ -242,7 +242,7 @@ void TilesetManager::advanceTileAnimations(int ms)
     // TODO: This could be more optimal by keeping track of the list of
     // actually animated tiles
 
-    for (Tileset *tileset : qAsConst(mTilesets)) {
+    for (Tileset *tileset : std::as_const(mTilesets)) {
         bool imageChanged = false;
 
         for (Tile *tile : tileset->tiles())

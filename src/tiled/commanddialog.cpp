@@ -51,7 +51,7 @@ CommandDialog::CommandDialog(QWidget *parent)
     mUi->tabWidget->addTab(mGlobalCommandsEdit, tr("Global Commands"));
     mUi->tabWidget->addTab(mProjectCommandsEdit, tr("Project Commands"));
 
-    auto &project = ProjectManager::instance()->project();
+    const auto &project = ProjectManager::instance()->project();
     mUi->tabWidget->setTabEnabled(1, !project.fileName().isEmpty());
 
     Utils::restoreGeometry(this);

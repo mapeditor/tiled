@@ -57,6 +57,11 @@ public:
         return mThresholds.isEmpty();
     }
 
+    qsizetype size() const
+    {
+        return mThresholds.size();
+    }
+
     const T &pick() const
     {
         Q_ASSERT(!isEmpty());

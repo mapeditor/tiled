@@ -314,7 +314,7 @@ public:
     MapObject *findObjectById(int objectId) const;
 
     QRect tileBoundingRect() const;
-    QRegion tileRegion() const;
+    QRegion modifiedTileRegion() const;
 
 private:
     friend class GroupLayer;    // so it can call adoptLayer

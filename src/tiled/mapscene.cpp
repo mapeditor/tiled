@@ -122,7 +122,7 @@ void MapScene::setShowTileCollisionShapes(bool enabled)
         return;
 
     mShowTileCollisionShapes = enabled;
-    for (auto mapItem : qAsConst(mMapItems))
+    for (auto mapItem : std::as_const(mMapItems))
         mapItem->setShowTileCollisionShapes(enabled);
 }
 
@@ -133,6 +133,16 @@ void MapScene::setParallaxEnabled(bool enabled)
 
     mParallaxEnabled = enabled;
     emit parallaxParametersChanged();
+}
+
+/**
+ * Sets the painter scale on the MapRenderer instances for all MapItem
+ * instances.
+ */
+void MapScene::setPainterScale(qreal painterScale)
+{
+    for (auto mapItem : std::as_const(mMapItems))
+        mapItem->mapDocument()->renderer()->setPainterScale(painterScale);
 }
 
 /**
@@ -293,7 +303,7 @@ void MapScene::refreshScene()
     mMapItems.swap(mapItems);
     qDeleteAll(mapItems);       // delete all map items that didn't get reused
 
-    for (MapItem *mapItem : qAsConst(mMapItems))
+    for (MapItem *mapItem : std::as_const(mMapItems))
         mapItem->updateLayerPositions();
 
     updateBackgroundColor();
@@ -333,7 +343,7 @@ void MapScene::updateSceneRect()
 {
     QRectF sceneRect;
 
-    for (MapItem *mapItem : qAsConst(mMapItems))
+    for (MapItem *mapItem : std::as_const(mMapItems))
         sceneRect |= mapItem->boundingRect().translated(mapItem->pos());
 
     setSceneRect(sceneRect);
@@ -346,7 +356,7 @@ void MapScene::setWorldsEnabled(bool enabled)
 
     mWorldsEnabled = enabled;
 
-    for (MapItem *mapItem : qAsConst(mMapItems))
+    for (MapItem *mapItem : std::as_const(mMapItems))
         mapItem->setVisible(mWorldsEnabled || mapItem->mapDocument() == mMapDocument);
 }
 
@@ -398,7 +408,7 @@ void MapScene::mapChanged()
 
 void MapScene::repaintTileset(Tileset *tileset)
 {
-    for (MapItem *mapItem : qAsConst(mMapItems)) {
+    for (MapItem *mapItem : std::as_const(mMapItems)) {
         if (contains(mapItem->mapDocument()->map()->tilesets(), tileset)) {
             update();
             return;
@@ -433,6 +443,9 @@ bool MapScene::event(QEvent *event)
         mUnderMouse = false;
         if (mSelectedTool)
             mSelectedTool->mouseLeft();
+        break;
+    case QEvent::FontChange:
+        emit fontChanged();
         break;
     default:
         break;

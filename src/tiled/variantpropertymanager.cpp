@@ -347,12 +347,17 @@ void VariantPropertyManager::setAttribute(QtProperty *property,
     }
 
     if (mStringAttributes.contains(property)) {
+        StringAttributes &attributes = mStringAttributes[property];
         if (attribute == mSuggestionsAttribute) {
-            mStringAttributes[property].suggestions = val.toStringList();
+            const QStringList suggestions = val.toStringList();
+            if (attributes.suggestions == suggestions)
+                return;
+            attributes.suggestions = suggestions;
+            emit attributeChanged(property, attribute, val);
             return;
         }
         if (attribute == mMultilineAttribute) {
-            mStringAttributes[property].multiline = val.toBool();
+            attributes.multiline = val.toBool();
             return;
         }
     }

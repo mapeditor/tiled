@@ -126,7 +126,7 @@ void ActionsModel::refreshConflicts()
 
     QMultiMap<QKeySequence, Id> actionsByKey;
 
-    for (const auto &actionId : qAsConst(mActions)) {
+    for (const auto &actionId : std::as_const(mActions)) {
         if (auto action = ActionManager::findAction(actionId)) {
             const auto shortcuts = action->shortcuts();
             for (const auto &shortcut : shortcuts)
@@ -137,7 +137,7 @@ void ActionsModel::refreshConflicts()
     QVector<bool> conflicts;
     conflicts.reserve(mActions.size());
 
-    for (const auto &actionId : qAsConst(mActions)) {
+    for (const auto &actionId : std::as_const(mActions)) {
         if (auto action = ActionManager::findAction(actionId)) {
             const auto shortcuts = action->shortcuts();
             conflicts.append(std::any_of(shortcuts.begin(), shortcuts.end(),
@@ -205,7 +205,7 @@ QVariant ActionsModel::data(const QModelIndex &index, int role) const
         const Id actionId = mActions.at(index.row());
 
         if (ActionManager::instance()->hasCustomShortcut(actionId)) {
-            QFont font = QApplication::font();
+            QFont font;
             font.setBold(true);
             return font;
         }
@@ -762,7 +762,7 @@ void ShortcutSettingsPage::exportShortcuts()
     auto actions = ActionManager::actions();
     std::sort(actions.begin(), actions.end());
 
-    for (Id actionId : qAsConst(actions)) {
+    for (Id actionId : std::as_const(actions)) {
         const auto action = ActionManager::action(actionId);
         const auto shortcuts = action->shortcuts();
 

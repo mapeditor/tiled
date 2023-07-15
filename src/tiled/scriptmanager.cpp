@@ -19,7 +19,6 @@
  */
 
 #include "scriptmanager.h"
-#include "documentmanager.h"
 #include "editablegrouplayer.h"
 #include "editableimagelayer.h"
 #include "editablemap.h"
@@ -37,8 +36,8 @@
 #include "project.h"
 #include "projectmanager.h"
 #include "regionvaluetype.h"
+#include "scriptbase64.h"
 #include "scriptedaction.h"
-#include "scriptedfileformat.h"
 #include "scriptedtool.h"
 #include "scriptfile.h"
 #include "scriptfileformatwrappers.h"
@@ -50,6 +49,7 @@
 #include "tilecollisiondock.h"
 #include "tilelayer.h"
 #include "tilelayeredit.h"
+#include "tilelayerwangedit.h"
 #include "tilesetdock.h"
 #include "tileseteditor.h"
 
@@ -61,6 +61,8 @@
 #include <QStandardPaths>
 #if QT_VERSION < QT_VERSION_CHECK(6,0,0)
 #include <QTextCodec>
+#else
+#include <QStringDecoder>
 #endif
 #include <QtDebug>
 
@@ -115,15 +117,18 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<MapEditor*>();
     qRegisterMetaType<MapView*>();
     qRegisterMetaType<RegionValueType>();
+    qRegisterMetaType<QVector<Tiled::RegionValueType>>();
     qRegisterMetaType<ScriptedAction*>();
     qRegisterMetaType<ScriptedTool*>();
     qRegisterMetaType<TileCollisionDock*>();
     qRegisterMetaType<TileLayerEdit*>();
+    qRegisterMetaType<TileLayerWangEdit*>();
     qRegisterMetaType<TilesetDock*>();
     qRegisterMetaType<TilesetEditor*>();
     qRegisterMetaType<ScriptMapFormatWrapper*>();
     qRegisterMetaType<ScriptTilesetFormatWrapper*>();
     qRegisterMetaType<ScriptImage*>();
+    qRegisterMetaType<WangIndex::Value>("WangIndex");
     connect(&mWatcher, &FileSystemWatcher::pathsChanged,
             this, &ScriptManager::scriptFilesChanged);
 
@@ -248,7 +253,7 @@ void ScriptManager::loadExtensions()
 {
     QStringList extensionSearchPaths;
 
-    for (const QString &extensionsPath : qAsConst(mExtensionsPaths)) {
+    for (const QString &extensionsPath : std::as_const(mExtensionsPaths)) {
         // Extension scripts and resources can also be in the top-level
         extensionSearchPaths.append(extensionsPath);
 
@@ -370,7 +375,7 @@ void ScriptManager::initialize()
 
     // Work around issue where since Qt 6, the value from the global Qt
     // namespace are no longer part of the Qt object.
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0) && QT_VERSION < QT_VERSION_CHECK(6,4,0)
     QJSValue qtObject = globalObject.property(QStringLiteral("Qt"));
 
     auto &qtNamespace = Qt::staticMetaObject;
@@ -382,6 +387,7 @@ void ScriptManager::initialize()
 #endif
 
     globalObject.setProperty(QStringLiteral("tiled"), engine->newQObject(mModule));
+    globalObject.setProperty(QStringLiteral("Tiled"), engine->newQMetaObject<ScriptModule>());
     globalObject.setProperty(QStringLiteral("GroupLayer"), engine->newQMetaObject<EditableGroupLayer>());
     globalObject.setProperty(QStringLiteral("Image"), engine->newQMetaObject<ScriptImage>());
     globalObject.setProperty(QStringLiteral("ImageLayer"), engine->newQMetaObject<EditableImageLayer>());
@@ -393,11 +399,13 @@ void ScriptManager::initialize()
     globalObject.setProperty(QStringLiteral("TileMap"), engine->newQMetaObject<EditableMap>());
     globalObject.setProperty(QStringLiteral("Tileset"), engine->newQMetaObject<EditableTileset>());
     globalObject.setProperty(QStringLiteral("WangSet"), engine->newQMetaObject<EditableWangSet>());
+    globalObject.setProperty(QStringLiteral("WangIndex"), engine->newQMetaObject(&WangIndex::staticMetaObject));
 
+    registerBase64(engine);
+    registerDialog(engine);
     registerFile(engine);
     registerFileInfo(engine);
     registerProcess(engine);
-    registerDialog(engine);
     loadExtensions();
 }
 

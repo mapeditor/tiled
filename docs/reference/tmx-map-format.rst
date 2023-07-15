@@ -297,8 +297,8 @@ tiles (e.g. to extend a Wang set by transforming existing tiles).
 ~~~~~~
 
 -  **id:** The local tile ID within its tileset.
--  **class:** The type of the tile. Refers to an object type and is used
-   by tile objects. (optional) (since 1.0, renamed from ``type`` since 1.9)
+-  **type:** The class of the tile. Is inherited by tile objects. (since 1.0,
+   defaults to "", was saved as ``class`` in 1.9)
 -  *terrain:* Defines the terrain type of each corner of the tile,
    given as comma-separated indexes in the terrain types array in the
    order top-left, top-right, bottom-left, bottom-right. Leaving out a
@@ -359,7 +359,7 @@ Defines a list of colors and any number of Wang tiles using these colors.
 
 Can contain at most one: :ref:`tmx-properties`
 
-Can contain up to 255: :ref:`tmx-wangcolor` (since Tiled 1.5)
+Can contain up to 254: :ref:`tmx-wangcolor` (255 since Tiled 1.5, 254 since Tiled 1.10.2)
 
 Can contain any number: :ref:`tmx-wangtile`
 
@@ -388,13 +388,13 @@ Defines a Wang tile, by referring to a tile in the tileset and
 associating it with a certain Wang ID.
 
 -  **tileid:** The tile ID.
--  **wangid:** "The Wang ID, given by a comma-separated list of indexes
-   (starting from 1, because 0 means _unset_) referring to the Wang colors in
-   the Wang set in the following order: top, top right, right, bottom right,
-   bottom, bottom left, left, top left (since Tiled 1.5). Before Tiled 1.5, the
-   Wang ID was saved as a 32-bit unsigned integer stored in the format
-   ``0xCECECECE`` (where each C is a corner color and each E is an edge color,
-   in reverse order)."
+-  **wangid:** The Wang ID, since Tiled 1.5 given by a comma-separated list of
+   indexes (0-254) referring to the Wang colors in the Wang set in the order:
+   top, top-right, right, bottom-right, bottom, bottom-left, left, top-left.
+   Index 0 means *unset* and index 1 refers to the first Wang color. Before
+   Tiled 1.5, the Wang ID was saved as a 32-bit unsigned integer stored in the
+   format ``0xCECECECE`` (where each C is a corner color and each E is an edge
+   color, in reverse order).
 -  *hflip:* Whether the tile is flipped horizontally (removed in Tiled 1.5).
 -  *vflip:* Whether the tile is flipped vertically (removed in Tiled 1.5).
 -  *dflip:* Whether the tile is flipped on its diagonal (removed in Tiled 1.5).
@@ -536,8 +536,8 @@ Can contain any number: :ref:`tmx-object`
    object was deleted, no object gets the same ID. Can not be changed in Tiled.
    (since Tiled 0.11)
 -  **name:** The name of the object. An arbitrary string. (defaults to "")
--  **class:** The class of the object. An arbitrary string. (defaults to "",
-   renamed from ``type`` since 1.9)
+-  **type:** The class of the object. An arbitrary string. (defaults to "",
+   was saved as ``class`` in 1.9)
 -  **x:** The x coordinate of the object in pixels. (defaults to 0)
 -  **y:** The y coordinate of the object in pixels. (defaults to 0)
 -  **width:** The width of the object in pixels. (defaults to 0)

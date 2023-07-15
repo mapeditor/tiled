@@ -445,11 +445,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                                  QString::number(imageRect.height()));
             }
 
-            if (!tile->className().isEmpty()) {
-                const bool classAsType = FileFormat::compatibilityVersion() <= Tiled_1_8;
-                w.writeAttribute(classAsType ? QStringLiteral("type")
-                                             : QStringLiteral("class"), tile->className());
-            }
+            if (!tile->className().isEmpty())
+                w.writeAttribute(FileFormat::classPropertyNameForObject(), tile->className());
             if (tile->probability() != 1.0)
                 w.writeAttribute(QStringLiteral("probability"), QString::number(tile->probability()));
             if (!tile->properties().isEmpty())
@@ -517,7 +514,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
             w.writeAttribute(QStringLiteral("tile"), QString::number(ws->imageTileId()));
 
             for (int i = 1; i <= ws->colorCount(); ++i) {
-                if (WangColor *wc = ws->colorAt(i).data()) {
+                if (const WangColor *wc = ws->colorAt(i).data()) {
                     w.writeStartElement(QStringLiteral("wangcolor"));
 
                     w.writeAttribute(QStringLiteral("name"), wc->name());
@@ -777,11 +774,8 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     if (shouldWrite(!name.isEmpty(), isTemplateInstance, mapObject.propertyChanged(MapObject::NameProperty)))
         w.writeAttribute(QStringLiteral("name"), name);
 
-    if (!className.isEmpty()) {
-        const bool classAsType = FileFormat::compatibilityVersion() <= Tiled_1_8;
-        w.writeAttribute(classAsType ? QStringLiteral("type")
-                                     : QStringLiteral("class"), className);
-    }
+    if (!className.isEmpty())
+        w.writeAttribute(FileFormat::classPropertyNameForObject(), className);
 
     if (shouldWrite(!mapObject.cell().isEmpty(), isTemplateInstance, mapObject.propertyChanged(MapObject::CellProperty))) {
         const unsigned gid = mGidMapper.cellToGid(mapObject.cell());

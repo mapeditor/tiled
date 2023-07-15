@@ -126,7 +126,7 @@ ChangeMapObjectsTile::ChangeMapObjectsTile(Document *document,
     , mMapObjects(mapObjects)
     , mTile(tile)
 {
-    for (MapObject *object : qAsConst(mMapObjects)) {
+    for (MapObject *object : std::as_const(mMapObjects)) {
         Cell cell = object->cell();
         mOldCells.append(cell);
         Tile *tile = cell.tile();
@@ -213,7 +213,7 @@ void DetachObjects::redo()
 {
     QUndoCommand::redo(); // redo child commands
 
-    for (MapObject *object : qAsConst(mMapObjects))
+    for (MapObject *object : std::as_const(mMapObjects))
         object->detachFromTemplate();
 
     emit mDocument->changed(MapObjectsChangeEvent(mMapObjects, MapObject::TemplateProperty));

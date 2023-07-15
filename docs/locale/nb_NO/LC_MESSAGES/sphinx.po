@@ -1,0 +1,42 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023, Tiled Documentation Writers
+# This file is distributed under the same license as the Tiled package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Tiled 1.10\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-03-10 11:19+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: nb_NO\n"
+"Language-Team: nb_NO <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.11.0\n"
+
+#: ../../_templates/layout.html:61
+#, python-format
+msgid "Search within %(docstitle)s"
+msgstr ""
+
+#: ../../_templates/layout.html:83
+msgid "About these documents"
+msgstr ""
+
+#: ../../_templates/layout.html:86
+msgid "Index"
+msgstr ""
+
+#: ../../_templates/layout.html:89
+msgid "Search"
+msgstr ""
+
+#: ../../_templates/layout.html:92
+msgid "Copyright"
+msgstr ""
+

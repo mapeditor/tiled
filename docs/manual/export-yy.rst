@@ -151,7 +151,7 @@ object.
 
 .. note::
 
-    As of now only variable definitions of the object itself can be overriden.
+    As of now only variable definitions of the object itself can be overridden.
     Overriding variable definitions of parent objects is not supported. As a
     workaround you can use the creation code to override variables of a parent
     object.

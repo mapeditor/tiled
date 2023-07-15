@@ -1,4 +1,3 @@
-import qbs 1.0
 import qbs.File
 import qbs.FileInfo
 import qbs.TextFile
@@ -52,6 +51,9 @@ DynamicLibrary {
         if (project.snapshot)
             defs.push("TILED_SNAPSHOT");
 
+        if (project.windowsLayout)
+            defs.push("TILED_WINDOWS_LAYOUT");
+
         if (qbs.targetOS.contains("linux") && project.dbus && Qt.dbus.present)
             defs.push("TILED_ENABLE_DBUS");
 
@@ -91,6 +93,8 @@ DynamicLibrary {
         "abstractworldtool.h",
         "actionmanager.cpp",
         "actionmanager.h",
+        "actionsearch.cpp",
+        "actionsearch.h",
         "addpropertydialog.cpp",
         "addpropertydialog.h",
         "addpropertydialog.ui",
@@ -222,6 +226,8 @@ DynamicLibrary {
         "editableobject.h",
         "editableobjectgroup.cpp",
         "editableobjectgroup.h",
+        "editableproject.cpp",
+        "editableproject.h",
         "editableselectedarea.cpp",
         "editableselectedarea.h",
         "editabletile.cpp",
@@ -367,6 +373,8 @@ DynamicLibrary {
         "offsetmapdialog.ui",
         "painttilelayer.cpp",
         "painttilelayer.h",
+        "pannableviewhelper.cpp",
+        "pannableviewhelper.h",
         "pluginlistmodel.cpp",
         "pluginlistmodel.h",
         "pointhandle.cpp",
@@ -382,6 +390,8 @@ DynamicLibrary {
         "project.h",
         "projectdock.cpp",
         "projectdock.h",
+        "projectdocument.cpp",
+        "projectdocument.h",
         "projectmanager.cpp",
         "projectmanager.h",
         "projectmodel.cpp",
@@ -391,6 +401,8 @@ DynamicLibrary {
         "projectpropertiesdialog.ui",
         "propertiesdock.cpp",
         "propertiesdock.h",
+        "propertieswidget.cpp",
+        "propertieswidget.h",
         "propertybrowser.cpp",
         "propertybrowser.h",
         "propertytypeseditor.cpp",
@@ -423,6 +435,8 @@ DynamicLibrary {
         "resizetilelayer.h",
         "reversingproxymodel.cpp",
         "reversingproxymodel.h",
+        "scriptbase64.cpp",
+        "scriptbase64.h",
         "scriptdialog.cpp",
         "scriptdialog.h",
         "scriptedaction.cpp",
@@ -482,7 +496,6 @@ DynamicLibrary {
         "tilecollisiondock.h",
         "tiledapplication.cpp",
         "tiledapplication.h",
-        "tiled.qrc",
         "tilededitor_global.h",
         "tiledproxystyle.cpp",
         "tiledproxystyle.h",
@@ -490,6 +503,8 @@ DynamicLibrary {
         "tilelayeredit.h",
         "tilelayeritem.cpp",
         "tilelayeritem.h",
+        "tilelayerwangedit.cpp",
+        "tilelayerwangedit.h",
         "tilepainter.cpp",
         "tilepainter.h",
         "tileselectionitem.cpp",
@@ -569,6 +584,13 @@ DynamicLibrary {
     ]
 
     Group {
+        name: "Resources"
+        Qt.core.resourceSourceBase: "resources/"
+        files: "resources/**"
+        fileTags: ["qt.core.resource_data"]
+    }
+
+    Group {
         name: "Sentry"
         condition: project.sentry
         files: [
@@ -591,15 +613,14 @@ DynamicLibrary {
         cpp.includePaths: "."
     }
 
-    Group {
-        condition: !qbs.targetOS.contains("darwin")
-        qbs.install: true
-        qbs.installDir: {
-            if (qbs.targetOS.contains("windows"))
+    install: !qbs.targetOS.contains("darwin")
+    installDir: {
+        if (qbs.targetOS.contains("windows"))
+            if (project.windowsLayout)
                 return ""
             else
-                return "lib"
-        }
-        fileTagsFilter: "dynamiclibrary"
+                return "bin"
+        else
+            return project.libDir
     }
 }

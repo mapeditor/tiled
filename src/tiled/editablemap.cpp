@@ -26,26 +26,22 @@
 #include "automappingmanager.h"
 #include "changeevents.h"
 #include "changemapproperty.h"
-#include "changeselectedarea.h"
-#include "editablegrouplayer.h"
-#include "editableimagelayer.h"
 #include "editablelayer.h"
 #include "editablemanager.h"
 #include "editablemapobject.h"
-#include "editableobjectgroup.h"
 #include "editableselectedarea.h"
 #include "editabletilelayer.h"
+#include "editabletileset.h"
 #include "grouplayer.h"
-#include "imagelayer.h"
 #include "mapobject.h"
 #include "maprenderer.h"
+#include "minimaprenderer.h"
 #include "objectgroup.h"
 #include "replacetileset.h"
 #include "resizemap.h"
 #include "scriptmanager.h"
 #include "tilelayer.h"
 #include "tileset.h"
-#include "tilesetdocument.h"
 
 #include <QCoreApplication>
 #include <QQmlEngine>
@@ -447,6 +443,19 @@ void EditableMap::autoMap(const RegionValueType &region, const QString &rulesFil
         manager.autoMap();
     else
         manager.autoMapRegion(region.region());
+}
+
+Tiled::ScriptImage *EditableMap::toImage(QSize size)
+{
+    const MiniMapRenderer miniMapRenderer(map());
+    const QSize imageSize = size.isValid() ? size : miniMapRenderer.mapSize();
+    const MiniMapRenderer::RenderFlags renderFlags(MiniMapRenderer::DrawTileLayers |
+                                                   MiniMapRenderer::DrawMapObjects |
+                                                   MiniMapRenderer::DrawImageLayers |
+                                                   MiniMapRenderer::IgnoreInvisibleLayer |
+                                                   MiniMapRenderer::DrawBackground);
+
+    return new ScriptImage(miniMapRenderer.render(imageSize, renderFlags));
 }
 
 QPointF EditableMap::screenToTile(qreal x, qreal y) const

@@ -141,7 +141,7 @@ void ObjectReferenceTool::updateEnabledState()
 void ObjectReferenceTool::setItemsVisible(bool visible)
 {
     mItemsVisible = visible;
-    for (auto item : qAsConst(mReferenceItems))
+    for (auto item : std::as_const(mReferenceItems))
         item->setVisible(visible);
 }
 

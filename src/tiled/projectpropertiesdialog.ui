@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>575</width>
-    <height>168</height>
+    <width>586</width>
+    <height>356</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,6 +16,21 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QtGroupBoxPropertyBrowser" name="propertyBrowser" native="true"/>
+   </item>
+   <item>
+    <widget class="QWidget" name="container" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>1</verstretch>
+      </sizepolicy>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="Tiled::PropertiesWidget" name="propertiesWidget"/>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -35,6 +50,11 @@
    <extends>QWidget</extends>
    <header location="global">QtGroupBoxPropertyBrowser</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Tiled::PropertiesWidget</class>
+   <extends>QTreeView</extends>
+   <header>propertieswidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

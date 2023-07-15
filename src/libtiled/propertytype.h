@@ -37,7 +37,6 @@
 #include <QVariant>
 #include <QVector>
 
-#include "containerhelpers.h"
 #include "tiled_global.h"
 
 #include <memory>
@@ -88,8 +87,6 @@ public:
     virtual QJsonObject toJson(const ExportContext &) const;
     virtual void initializeFromJson(const QJsonObject &json) = 0;
 
-    virtual void resolveDependencies(const ExportContext &) {};
-
     static std::unique_ptr<PropertyType> createFromJson(const QJsonObject &json);
 
     static Type typeFromString(const QString &string);
@@ -138,25 +135,26 @@ class TILEDSHARED_EXPORT ClassPropertyType final : public PropertyType
 {
 public:
     enum ClassUsageFlag {
-        PropertyValueType   = 0x01,
+        PropertyValueType   = 0x001,
 
         // Keep values synchronized with Object::TypeId
-        LayerClass          = 0x02,
-        MapObjectClass      = 0x04,
-        MapClass            = 0x08,
-        TilesetClass        = 0x10,
-        TileClass           = 0x20,
-        WangSetClass        = 0x40,
-        WangColorClass      = 0x80,
-
-        AnyUsage            = 0xFF,
+        LayerClass          = 0x002,
+        MapObjectClass      = 0x004,
+        MapClass            = 0x008,
+        TilesetClass        = 0x010,
+        TileClass           = 0x020,
+        WangSetClass        = 0x040,
+        WangColorClass      = 0x080,
+        ProjectClass        = 0x100,
+        AnyUsage            = 0xFFF,
         AnyObjectClass      = AnyUsage & ~PropertyValueType,
     };
 
     QVariantMap members;
     QColor color = Qt::gray;
     int usageFlags = AnyUsage;
-
+    bool memberValuesResolved = true;
+    bool drawFill = true;
     ClassPropertyType(const QString &name) : PropertyType(PT_Class, name) {}
 
     ExportValue toExportValue(const QVariant &value, const ExportContext &) const override;
@@ -166,8 +164,6 @@ public:
 
     QJsonObject toJson(const ExportContext &context) const override;
     void initializeFromJson(const QJsonObject &json) override;
-
-    void resolveDependencies(const ExportContext &context) override;
 
     bool canAddMemberOfType(const PropertyType *propertyType) const;
     bool canAddMemberOfType(const PropertyType *propertyType, const PropertyTypes &types) const;
@@ -218,6 +214,11 @@ public:
     Types::const_iterator end() const { return mTypes.end(); }
 
 private:
+    void resolveMemberValues(ClassPropertyType *classType, const ExportContext &context);
+
+    PropertyType *findTypeByNamePriv(const QString &name, int usageFlags = ClassPropertyType::AnyUsage);
+    PropertyType *findPropertyValueTypePriv(const QString &name);
+
     Types mTypes;
     int mNextId = 0;
 };

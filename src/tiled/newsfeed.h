@@ -44,11 +44,8 @@ class NewsFeed : public QObject
 {
     Q_OBJECT
 
-private:
-    NewsFeed();
-
 public:
-    static NewsFeed &instance();
+    NewsFeed(QObject *parent = nullptr);
 
     void setEnabled(bool enabled);
 

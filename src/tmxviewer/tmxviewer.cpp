@@ -34,7 +34,6 @@
 #include "maprenderer.h"
 #include "objectgroup.h"
 #include "tilelayer.h"
-#include "tileset.h"
 
 #include <QCoreApplication>
 #include <QDebug>
@@ -74,10 +73,8 @@ public:
 
     void paint(QPainter *p, const QStyleOptionGraphicsItem *, QWidget *) override
     {
-        const QColor &color = mMapObject->objectGroup()->color();
         p->translate(-pos());
-        mRenderer->drawMapObject(p, mMapObject,
-                                 color.isValid() ? color : Qt::darkGray);
+        mRenderer->drawMapObject(p, mMapObject, mMapObject->effectiveColors());
     }
 
 private:

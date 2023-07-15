@@ -23,7 +23,7 @@
 
 #include "mapformat.h"
 #include "project.h"
-#include "utils.h"
+#include "projectdocument.h"
 #include "varianteditorfactory.h"
 #include "variantpropertymanager.h"
 
@@ -35,8 +35,11 @@ ProjectPropertiesDialog::ProjectPropertiesDialog(Project &project, QWidget *pare
     : QDialog(parent)
     , ui(new Ui::ProjectPropertiesDialog)
     , mProject(project)
+    , mPropertiesProjectDocument(new ProjectDocument(std::make_unique<Project>(), this))
 {
     ui->setupUi(this);
+
+    mPropertiesProjectDocument->project().setProperties(project.properties());
 
     auto variantPropertyManager = new VariantPropertyManager(this);
     auto variantEditorFactory = new VariantEditorFactory(this);
@@ -47,6 +50,8 @@ ProjectPropertiesDialog::ProjectPropertiesDialog(Project &project, QWidget *pare
 
     const QMap<CompatibilityVersion, QString> versionToName {
         { Tiled_1_8,             tr("Tiled 1.8") },
+        { Tiled_1_9,             tr("Tiled 1.9") },
+        { Tiled_1_10,            tr("Tiled 1.10") },
         { Tiled_Latest,          tr("Latest") },
     };
     mVersions = versionToName.keys();
@@ -77,6 +82,8 @@ ProjectPropertiesDialog::ProjectPropertiesDialog(Project &project, QWidget *pare
 
     ui->propertyBrowser->addProperty(generalGroupProperty);
     ui->propertyBrowser->addProperty(filesGroupProperty);
+
+    ui->propertiesWidget->setDocument(mPropertiesProjectDocument);
 }
 
 ProjectPropertiesDialog::~ProjectPropertiesDialog()
@@ -86,6 +93,7 @@ ProjectPropertiesDialog::~ProjectPropertiesDialog()
 
 void ProjectPropertiesDialog::accept()
 {
+    mProject.setProperties(mPropertiesProjectDocument->project().properties());
     mProject.mCompatibilityVersion = mVersions.at(mCompatibilityVersionProperty->value().toInt());
     mProject.mExtensionsPath = mExtensionPathProperty->value().toString();
     mProject.mAutomappingRulesFile = mAutomappingRulesFileProperty->value().toString();

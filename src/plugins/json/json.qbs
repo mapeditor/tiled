@@ -1,5 +1,3 @@
-import qbs 1.0
-
 TiledPlugin {
     cpp.defines: base.concat(["JSON_LIBRARY"])
 

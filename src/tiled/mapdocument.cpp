@@ -62,6 +62,8 @@
 
 #include <QFileInfo>
 #include <QRect>
+#include <QSet>
+#include <QString>
 #include <QUndoStack>
 
 using namespace Tiled;
@@ -379,7 +381,7 @@ void MapDocument::resizeMap(QSize size, QPoint offset, bool removeObjects)
 
     if (!objectsToMove.isEmpty()) {
         QVector<TransformState> states;
-        for (MapObject *o : qAsConst(objectsToMove)) {
+        for (MapObject *o : std::as_const(objectsToMove)) {
             states.append(TransformState(o));
             states.last().setPosition(o->position() + pixelOffset);
         }
@@ -411,6 +413,7 @@ void MapDocument::autocropMap()
 void MapDocument::offsetMap(const QList<Layer*> &layers,
                             const QPoint offset,
                             const QRect &bounds,
+                            bool wholeMap,
                             bool wrapX, bool wrapY)
 {
     if (layers.empty())
@@ -419,7 +422,7 @@ void MapDocument::offsetMap(const QList<Layer*> &layers,
     undoStack()->beginMacro(tr("Offset Map"));
     for (auto layer : layers) {
         undoStack()->push(new OffsetLayer(this, layer, offset,
-                                          bounds, wrapX, wrapY));
+                                          bounds, wholeMap, wrapX, wrapY));
     }
     undoStack()->endMacro();
 }
@@ -435,7 +438,7 @@ void MapDocument::flipSelectedObjects(FlipDirection direction)
 
     QRectF sharedBounds;
 
-    for (const MapObject *object : qAsConst(mSelectedObjects)) {
+    for (const MapObject *object : std::as_const(mSelectedObjects)) {
         QPointF screenPos = mRenderer->pixelToScreenCoords(object->position());
         QRectF bounds = object->screenBounds(*mRenderer);
         sharedBounds |= rotateAt(screenPos, object->rotation()).mapRect(bounds);
@@ -457,7 +460,7 @@ void MapDocument::rotateSelectedObjects(RotateDirection direction)
     states.reserve(mSelectedObjects.size());
 
     // TODO: Rotate them properly as a group
-    for (MapObject *mapObject : qAsConst(mSelectedObjects)) {
+    for (MapObject *mapObject : std::as_const(mSelectedObjects)) {
         const qreal oldRotation = mapObject->rotation();
         qreal newRotation = oldRotation;
 
@@ -486,23 +489,20 @@ void MapDocument::rotateSelectedObjects(RotateDirection direction)
 Layer *MapDocument::addLayer(Layer::TypeFlag layerType)
 {
     Layer *layer = nullptr;
-    QString name;
+    const QString name = newLayerName(layerType);
+    Q_ASSERT(!name.isEmpty());
 
     switch (layerType) {
     case Layer::TileLayerType:
-        name = tr("Tile Layer %1").arg(mMap->tileLayerCount() + 1);
         layer = new TileLayer(name, 0, 0, mMap->width(), mMap->height());
         break;
     case Layer::ObjectGroupType:
-        name = tr("Object Layer %1").arg(mMap->objectGroupCount() + 1);
         layer = new ObjectGroup(name, 0, 0);
         break;
     case Layer::ImageLayerType:
-        name = tr("Image Layer %1").arg(mMap->imageLayerCount() + 1);
         layer = new ImageLayer(name, 0, 0);
         break;
     case Layer::GroupLayerType:
-        name = tr("Group %1").arg(mMap->groupLayerCount() + 1);
         layer = new GroupLayer(name, 0, 0);
         break;
     }
@@ -646,7 +646,7 @@ void MapDocument::duplicateLayers(const QList<Layer *> &layers)
     GroupLayer *previousParentLayer = nullptr;
     int previousIndex = 0;
 
-    for (const auto &dup : qAsConst(duplications)) {
+    for (const auto &dup : std::as_const(duplications)) {
         auto parentLayer = dup.original->parentLayer();
 
         int index = previousIndex;
@@ -741,7 +741,7 @@ void MapDocument::moveLayersUp(const QList<Layer *> &layers)
         return;
 
     undoStack()->beginMacro(QCoreApplication::translate("Undo Commands", "Raise %n Layer(s)", "", layersToMove.size()));
-    for (Layer *layer : qAsConst(layersToMove))
+    for (Layer *layer : std::as_const(layersToMove))
         undoStack()->push(new MoveLayer(this, layer, MoveLayer::Up));
     undoStack()->endMacro();
 }
@@ -768,7 +768,7 @@ void MapDocument::moveLayersDown(const QList<Layer *> &layers)
         return;
 
     undoStack()->beginMacro(QCoreApplication::translate("Undo Commands", "Lower %n Layer(s)", "", layersToMove.size()));
-    for (Layer *layer : qAsConst(layersToMove))
+    for (Layer *layer : std::as_const(layersToMove))
         undoStack()->push(new MoveLayer(this, layer, MoveLayer::Down));
     undoStack()->endMacro();
 }
@@ -992,8 +992,8 @@ void MapDocument::paintTileLayers(const Map &map, bool mergeable,
         auto source = sourceLayers[i];
         auto target = targetLayers[i];
 
-        const QRegion editedRegion = source->region();
-        if (editedRegion.isEmpty())
+        const QRegion paintRegion = source->modifiedRegion();
+        if (paintRegion.isEmpty())
             continue;
 
         std::unique_ptr<TileLayer> newLayer;
@@ -1018,10 +1018,10 @@ void MapDocument::paintTileLayers(const Map &map, bool mergeable,
                                                           source->x(),
                                                           source->y(),
                                                           source,
-                                                          editedRegion);
+                                                          paintRegion);
 
         if (missingTilesets && !missingTilesets->isEmpty()) {
-            for (const SharedTileset &tileset : qAsConst(*missingTilesets)) {
+            for (const SharedTileset &tileset : std::as_const(*missingTilesets)) {
                 if (!mMap->tilesets().contains(tileset))
                     new AddTileset(this, tileset, paintCommand);
             }
@@ -1058,7 +1058,7 @@ void MapDocument::paintTileLayers(const Map &map, bool mergeable,
         paintCommand->setMergeable(mergeable);
         undoStack()->push(paintCommand);
 
-        regions[target] |= editedRegion;
+        regions[target] |= paintRegion;
 
         mergeable = true; // further paints are always mergeable
     }
@@ -1289,7 +1289,7 @@ void MapDocument::unifyTilesets(Map &map)
 void MapDocument::unifyTilesets(Map &map, QVector<SharedTileset> &missingTilesets) const
 {
     QVector<SharedTileset> availableTilesets = mMap->tilesets();
-    for (const SharedTileset &tileset : qAsConst(missingTilesets))
+    for (const SharedTileset &tileset : std::as_const(missingTilesets))
         if (!availableTilesets.contains(tileset))
             availableTilesets.append(tileset);
 
@@ -1449,6 +1449,43 @@ void MapDocument::onLayerRemoved(Layer *layer)
     switchSelectedLayers(selectedLayers);
 
     emit layerRemoved(layer);
+}
+
+QString MapDocument::newLayerName(Layer::TypeFlag layerType) const
+{
+    const char *parametricName = nullptr;
+    switch (layerType)
+    {
+        case Layer::TypeFlag::TileLayerType:
+            parametricName = QT_TR_NOOP("Tile Layer %1");
+            break;
+        case Layer::TypeFlag::ObjectGroupType:
+            parametricName = QT_TR_NOOP("Object Layer %1");
+            break;
+        case Layer::TypeFlag::ImageLayerType:
+            parametricName = QT_TR_NOOP("Image Layer %1");
+            break;
+        case Layer::TypeFlag::GroupLayerType:
+            parametricName = QT_TR_NOOP("Group Layer %1");
+            break;
+        default:
+            // invalid layer type
+            return {};
+    }
+
+    QSet<QString> layerNames;
+    int number = 0;
+    for (const auto layer : mMap->allLayers(layerType)) {
+        ++number;
+        layerNames.insert(layer->name());
+    }
+
+    QString candidateName;
+    do {
+        candidateName = tr(parametricName).arg(++number);
+    } while (layerNames.contains(candidateName));
+
+    return candidateName;
 }
 
 void MapDocument::checkIssues()

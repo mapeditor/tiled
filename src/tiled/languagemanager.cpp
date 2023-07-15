@@ -42,7 +42,7 @@ LanguageManager::LanguageManager()
     , mAppTranslator(nullptr)
 {
     mTranslationsDir = QCoreApplication::applicationDirPath();
-#if defined(Q_OS_WIN32)
+#if defined(TILED_WINDOWS_LAYOUT)
     mTranslationsDir += QStringLiteral("/translations");
 #elif defined(Q_OS_MAC)
     mTranslationsDir += QStringLiteral("/../Translations");

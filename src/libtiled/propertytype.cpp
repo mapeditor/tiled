@@ -79,9 +79,9 @@ QJsonObject PropertyType::toJson(const ExportContext &) const
 /**
  * Creates a PropertyType instance based on the given JSON object.
  *
- * After loading all property types, PropertyType::resolveDependencies should
- * be called on each of them. This two step process allows class members to
- * refer to other types, regardless of their order.
+ * After loading all property types, ClassPropertyType::resolveMemberValues
+ * should be called for each class. This two step process allows class members
+ * to refer to other types, regardless of their order.
  */
 std::unique_ptr<PropertyType> PropertyType::createFromJson(const QJsonObject &json)
 {
@@ -246,7 +246,6 @@ QString EnumPropertyType::storageTypeToString(StorageType type)
 
 ExportValue ClassPropertyType::toExportValue(const QVariant &value, const ExportContext &context) const
 {
-    ExportValue result;
     Properties properties = value.toMap();
 
     QMutableMapIterator<QString, QVariant> it(properties);
@@ -262,6 +261,8 @@ ExportValue ClassPropertyType::toExportValue(const QVariant &value, const Export
 
 QVariant ClassPropertyType::toPropertyValue(const QVariant &value, const ExportContext &context) const
 {
+    Q_ASSERT(memberValuesResolved);
+
     Properties properties = value.toMap();
 
     QMutableMapIterator<QString, QVariant> it(properties);
@@ -307,6 +308,7 @@ static const struct  {
     { ClassPropertyType::TilesetClass,          QLatin1String("tileset") },
     { ClassPropertyType::WangColorClass,        QLatin1String("wangcolor") },
     { ClassPropertyType::WangSetClass,          QLatin1String("wangset") },
+    { ClassPropertyType::ProjectClass,          QLatin1String("project") },
 };
 
 QJsonObject ClassPropertyType::toJson(const ExportContext &context) const
@@ -334,6 +336,7 @@ QJsonObject ClassPropertyType::toJson(const ExportContext &context) const
     auto json = PropertyType::toJson(context);
     json.insert(QStringLiteral("members"), members);
     json.insert(QStringLiteral("color"), color.name(QColor::HexArgb));
+    json.insert(QStringLiteral("drawFill"), drawFill);
 
     QJsonArray useAs;
 
@@ -356,10 +359,15 @@ void ClassPropertyType::initializeFromJson(const QJsonObject &json)
 
         members.insert(name, map);
     }
+    memberValuesResolved = false;
 
     const QString colorName = json.value(QLatin1String("color")).toString();
     if (QColor::isValidColor(colorName))
         color.setNamedColor(colorName);
+
+    const QString drawFillPropertyName = QLatin1String("drawFill");
+    if (json.contains(drawFillPropertyName))
+        drawFill = json.value(drawFillPropertyName).toBool();
 
     const QJsonValue useAsJson = json.value(QLatin1String("useAs"));
     if (useAsJson.isArray()) {
@@ -373,34 +381,6 @@ void ClassPropertyType::initializeFromJson(const QJsonObject &json)
         // Before "useAs" was introduced, class types were only used as
         // property values.
         usageFlags = PropertyValueType;
-    }
-}
-
-void ClassPropertyType::resolveDependencies(const ExportContext &context)
-{
-    QMutableMapIterator<QString, QVariant> it(members);
-    while (it.hasNext()) {
-        it.next();
-
-        const QVariantMap map = it.value().toMap();
-        ExportValue exportValue;
-        exportValue.value = map.value(QStringLiteral("value"));
-        exportValue.typeName = map.value(QStringLiteral("type")).toString();
-        exportValue.propertyTypeName = map.value(QStringLiteral("propertyType")).toString();
-
-        // Remove any members that would result in a circular reference
-        if (!exportValue.propertyTypeName.isEmpty()) {
-            if (auto propertyType = context.types().findPropertyValueType(exportValue.propertyTypeName)) {
-                if (!canAddMemberOfType(propertyType, context.types())) {
-                    Tiled::ERROR(QStringLiteral("Removed member '%1' from class '%2' since it would cause a circular reference")
-                                 .arg(it.key(), name));
-                    it.remove();
-                    continue;
-                }
-            }
-        }
-
-        it.setValue(context.toPropertyValue(exportValue));
     }
 }
 
@@ -499,7 +479,7 @@ void PropertyTypes::merge(PropertyTypes typesToMerge)
     }
 
     // Update the type IDs for the class members
-    for (auto classType : qAsConst(classesToProcess)) {
+    for (auto classType : std::as_const(classesToProcess)) {
         QMutableMapIterator<QString, QVariant> it(classType->members);
         while (it.hasNext()) {
             QVariant &classMember = it.next().value();
@@ -562,6 +542,9 @@ const PropertyType *PropertyTypes::findTypeById(int typeId) const
  */
 const PropertyType *PropertyTypes::findTypeByName(const QString &name, int usageFlags) const
 {
+    if (name.isEmpty())
+        return nullptr;
+
     auto it = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
         return type->name == name && (typeUsageFlags(*type) & usageFlags) != 0;
     });
@@ -584,6 +567,16 @@ const ClassPropertyType *PropertyTypes::findClassFor(const QString &name, const 
     return static_cast<const ClassPropertyType*>(it == mTypes.end() ? nullptr : *it);
 }
 
+PropertyType *PropertyTypes::findTypeByNamePriv(const QString &name, int usageFlags)
+{
+    return const_cast<PropertyType*>(std::as_const(*this).findTypeByName(name, usageFlags));
+}
+
+PropertyType *PropertyTypes::findPropertyValueTypePriv(const QString &name)
+{
+    return findTypeByNamePriv(name, ClassPropertyType::PropertyValueType);
+}
+
 void PropertyTypes::loadFromJson(const QJsonArray &list, const QString &path)
 {
     clear();
@@ -594,8 +587,56 @@ void PropertyTypes::loadFromJson(const QJsonArray &list, const QString &path)
         if (auto propertyType = PropertyType::createFromJson(typeValue.toObject()))
             add(std::move(propertyType));
 
-    for (auto propertyType : mTypes)
-        propertyType->resolveDependencies(context);
+    for (PropertyType *type : mTypes)
+        if (type->isClass())
+            resolveMemberValues(static_cast<ClassPropertyType*>(type), context);
+}
+
+void PropertyTypes::resolveMemberValues(ClassPropertyType *classType,
+                                        const ExportContext &context)
+{
+    if (classType->memberValuesResolved)
+        return;
+
+    classType->memberValuesResolved = true;
+
+    // Before we can resolve the member values, we need to make sure all
+    // classes we depend on have resolved member values (recursively, because
+    // ExportContext::toPropertyValue works recursively too).
+    QMapIterator<QString, QVariant> constIt(classType->members);
+    while (constIt.hasNext()) {
+        constIt.next();
+
+        const QVariantMap map = constIt.value().toMap();
+        const QString propertyTypeName = map.value(QStringLiteral("propertyType")).toString();
+        if (auto propertyType = findPropertyValueTypePriv(propertyTypeName))
+            if (propertyType->isClass())
+                resolveMemberValues(static_cast<ClassPropertyType*>(propertyType), context);
+    }
+
+    // Now resolve the member values
+    QMutableMapIterator<QString, QVariant> it(classType->members);
+    while (it.hasNext()) {
+        it.next();
+
+        const QVariantMap map = it.value().toMap();
+        ExportValue exportValue;
+        exportValue.value = map.value(QStringLiteral("value"));
+        exportValue.typeName = map.value(QStringLiteral("type")).toString();
+        exportValue.propertyTypeName = map.value(QStringLiteral("propertyType")).toString();
+
+        // Remove any members that would result in a circular reference
+        if (auto propertyType = findPropertyValueType(exportValue.propertyTypeName)) {
+            if (!classType->canAddMemberOfType(propertyType, *this)) {
+                Tiled::ERROR(QStringLiteral("Removed member '%1' from class '%2' since it would cause a circular reference")
+                             .arg(it.key(), classType->name));
+                it.remove();
+                continue;
+            }
+        }
+
+        it.setValue(context.toPropertyValue(exportValue));
+    }
 }
 
 QJsonArray PropertyTypes::toJson(const QString &path) const

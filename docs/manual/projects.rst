@@ -25,7 +25,7 @@ Compatibility Version
 Extensions Directory
    A project-specific directory where you can put :doc:`Tiled extensions
    </reference/scripting>`. It defaults to simply ``extensions``, so when you
-   have a directory called "extensions" alonside your project file it will be
+   have a directory called "extensions" alongside your project file it will be
    picked up automatically.
 
    The directory is loaded in addition to the global extensions.

@@ -63,6 +63,17 @@ struct TILEDSHARED_EXPORT TextData
     QSizeF textSize() const;
 };
 
+struct MapObjectColors
+{
+    QColor main;
+    QColor fill;
+
+    bool operator!=(const MapObjectColors &other) const
+    {
+        return main != other.main || fill != other.fill;
+    }
+};
+
 /**
  * An object on a map. Objects are positioned and scaled using floating point
  * values, ensuring they are not limited to the tile grid. They are suitable
@@ -80,7 +91,7 @@ public:
      * When a polygon is set, the shape determines whether it should be
      * interpreted as a filled polygon or a line.
      *
-     * Text objects contain arbitrary text, contained withih their rectangle
+     * Text objects contain arbitrary text, contained within their rectangle
      * (in screen coordinates).
      */
     enum Shape {
@@ -133,7 +144,7 @@ public:
 
     // For Python API compatibility
     const QString &type() const { return className(); }
-    void setType(const QString &type) { setClassName(type); };
+    void setType(const QString &type) { setClassName(type); }
     const QString &effectiveType() const { return effectiveClassName(); }
 
     const QPointF &position() const;
@@ -195,6 +206,7 @@ public:
     void setVisible(bool visible);
 
     QColor effectiveColor() const;
+    MapObjectColors effectiveColors() const;
 
     QVariant mapObjectProperty(Property property) const;
     void setMapObjectProperty(Property property, const QVariant &value);
@@ -472,6 +484,9 @@ inline bool MapObject::isVisible() const
 
 inline void MapObject::setVisible(bool visible)
 { mVisible = visible; }
+
+inline QColor MapObject::effectiveColor() const
+{ return effectiveColors().main; }
 
 inline void MapObject::setChangedProperties(ChangedProperties changedProperties)
 { mChangedProperties = changedProperties; }

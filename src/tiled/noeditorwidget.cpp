@@ -26,7 +26,6 @@
 #include "mainwindow.h"
 #include "stylehelper.h"
 #include "tiledproxystyle.h"
-#include "utils.h"
 
 #include <QAction>
 #include <QApplication>
@@ -41,6 +40,8 @@ NoEditorWidget::NoEditorWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->logo->setPixmap(QPixmap(QString::fromUtf8(":/images/about-tiled-logo.png")));
+
     auto opacityEffect = new QGraphicsOpacityEffect(this);
     opacityEffect->setOpacity(0.25);
     ui->logo->setGraphicsEffect(opacityEffect);
@@ -48,7 +49,6 @@ NoEditorWidget::NoEditorWidget(QWidget *parent) :
     ui->versionLabel->setText(QStringLiteral("%1 %2").arg(QGuiApplication::applicationDisplayName(), QGuiApplication::applicationVersion()));
 
     connect(ui->newProjectButton, &QToolButton::clicked, ActionManager::action("NewProject"), &QAction::trigger);
-    connect(ui->addFolderToProjectButton, &QToolButton::clicked, ActionManager::action("AddFolderToProject"), &QAction::trigger);
 
     connect(ui->newMapButton, &QToolButton::clicked, this, &NoEditorWidget::newMap);
     connect(ui->newTilesetButton, &QToolButton::clicked, this, &NoEditorWidget::newTileset);
@@ -100,7 +100,6 @@ void NoEditorWidget::openFile()
 void NoEditorWidget::retranslateUi()
 {
     ui->newProjectButton->setText(ActionManager::action("NewProject")->text());
-    ui->addFolderToProjectButton->setText(ActionManager::action("AddFolderToProject")->text());
     ui->openFileButton->setText(ActionManager::action("Open")->text());
 }
 

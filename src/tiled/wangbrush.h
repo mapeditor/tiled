@@ -1,6 +1,7 @@
 /*
  * wangbrush.h
  * Copyright 2017, Benjamin Trotter <bdtrotte@ucsc.edu>
+ * Copyright 2020, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -21,13 +22,12 @@
 #pragma once
 
 #include "abstracttiletool.h"
+#include "wangfiller.h"
 #include "wangset.h"
 
 #include <QToolBar>
 
 namespace Tiled {
-
-struct FillRegion;
 
 class WangBrush : public AbstractTileTool
 {
@@ -85,7 +85,7 @@ private:
     void beginPaint();
     void doPaint(bool mergeable);
     void updateBrush();
-    void updateBrushAt(FillRegion &fill, QPoint pos);
+    void updateBrushAt(WangFiller &filler, QPoint pos);
 
     // The point painting happens around
     // In tile mode, this is that tile

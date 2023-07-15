@@ -1,5 +1,3 @@
-import qbs
-
 InstallPackage {
     builtByDefault: project.snapshot || project.release
     condition: {

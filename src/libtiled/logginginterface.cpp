@@ -129,13 +129,11 @@ void LoggingInterface::log(OutputType type, const QString &message)
 }
 
 
-std::function<void (const OpenFile &)> OpenFile::activated;
-std::function<void (const JumpToTile &)> JumpToTile::activated;
-std::function<void (const JumpToObject &)> JumpToObject::activated;
-std::function<void (const SelectLayer &)> SelectLayer::activated;
-std::function<void (const SelectCustomProperty &)> SelectCustomProperty::activated;
-std::function<void (const SelectTile &)> SelectTile::activated;
-
+OpenFile::OpenFile(const QString &file)
+    : file(file)
+{
+    Q_ASSERT(!file.isEmpty());
+}
 
 JumpToTile::JumpToTile(const Map *map, QPoint tilePos, const Layer *layer)
     : mapFile(map->fileName)
@@ -188,6 +186,8 @@ SelectCustomProperty::SelectCustomProperty(QString fileName,
     case Object::WangColorType:
         // not so helpful... would need WangSet index as well
         id = static_cast<const WangColor*>(object)->colorIndex();
+        break;
+    case Object::ProjectType:
         break;
     }
 }

@@ -14,6 +14,7 @@ General
 -  ``Ctrl + N`` - Create a new map
 -  ``Ctrl + O`` - Open any file or project
 -  ``Ctrl + P`` - Open a file in the current project
+-  ``Ctrl + Shift + P`` - Search for available actions
 -  ``Ctrl + Shift + T`` - Reopen a recently closed file
 -  ``Ctrl + S`` - Save current document
 -  ``Ctrl + Alt + S`` - Save current document to another file

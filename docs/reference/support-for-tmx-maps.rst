@@ -30,6 +30,7 @@ C
 ~
 
 -  `cute tiled <https://github.com/RandyGaul/cute_headers>`__ - JSON map loader with examples (zlib/Public Domain).
+-  `libtmj <https://github.com/Zer0-One/libtmj>`__ - JSON map and tileset loader with zlib/gzip/zstd support (BSD 2-Clause)
 -  `TMX <https://github.com/baylej/tmx/>`__ - TMX map loader
    with Allegro5 and SDL2 examples (BSD).
 
@@ -97,6 +98,11 @@ D
 -  `dtiled <https://github.com/rcorre/dtiled>`__ can load JSON-formatted Tiled
    maps. It also provides general tilemap-related functions and algorithms.
 
+Dart
+~~~~
+
+- `tiled <https://pub.dev/packages/tiled>`__: a library for loading TMX files
+
 Go
 ~~
 
@@ -124,6 +130,11 @@ Java
    -  `libtiled-java
       port <http://chiselapp.com/user/devnewton/repository/libtiled-android/index>`__
       is a port of the libtiled-java to be used on Android phones.
+
+OCaml
+~~~~~
+
+- `tmx <http://github.com/fishyfriend/tmx>`__
 
 PHP
 ~~~
@@ -201,7 +212,7 @@ Bevy
 Castle Game Engine (Object Pascal)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  `Castle Game Engine <https://castle-engine.io/>`__ has native support for Tiled maps (see the `CastleTiledMap unit <https://castle-engine.io/apidoc-unstable/html/CastleTiledMap.html>`__)
+-  `Castle Game Engine <https://castle-engine.io/>`__ has native support for Tiled maps (see the `engine manual about Tiled Maps <https://castle-engine.io/tiled_maps>`__)
 
 Cell2D
 ~~~~~~
@@ -235,6 +246,21 @@ Construct 2 - Scirra
    file inside the editor. `Official
    Note <https://www.scirra.com/construct2/releases/r149>`__
 
+DragonRuby Game Toolkit
+~~~~~~~~~~~~~~~~~~~~~~~
+
+-  `DRTiled <https://github.com/wildfiler/drtiled>`__ adds support for loading
+   Tiled maps to the `DragonRuby Game Toolkit
+   <https://dragonruby.org/toolkit/game>`__. The maps can be rendered using
+   `DRTiled Renderer <https://github.com/vinnydiehl/drtiled-renderer>`__.
+
+Flame
+~~~~~
+
+- `flame_tiled <https://pub.dev/packages/flame_tiled>`__ is a library for
+  incorporating Tiled maps into the `Flame <https://pub.dev/packages/flame>`__
+  game engine.
+
 Flixel
 ~~~~~~
 
@@ -249,7 +275,7 @@ Game Maker
 
 Godot
 ~~~~~
-
+- Tiled ships with a plugin for exporting to :ref:`Godot 4 <godot4-export>` as .tscn scene files.
 - `Tiled Map Importer <https://godotengine.org/asset-library/asset/25>`__ imports each map as Godot scene which can be instanced or inherited (`forum announcement <http://discourse.mapeditor.org/t/importer-plugin-for-godot-engine/1833/1>`__).
 - `Godot Tiled importer (Mono version) <https://github.com/mi-sts/godot_tiled_importer>`__ imports Tiled maps exported to JSON (.tmj) format. Supports all map orientations.
 - `Tiled To Godot Export <https://github.com/MikeMnD/tiled-to-godot-export>`__ is a Tiled :doc:`JavaScript extension </reference/scripting>` for exporting Tilemaps and Tilesets in Godot 3.2 format (`forum announcement <https://discourse.mapeditor.org/t/tiled-editor-map-and-tileset-integration-with-godot-3-2/4347>`__).
@@ -327,11 +353,11 @@ LibGDX
    `provides <https://libgdx.com/wiki/graphics/2d/tile-maps>`__ a
    packer, loader and renderer for TMX maps
 
-LITIengine
+LITIENGINE
 ~~~~~~~~~~
 
--  `LITIengine <https://litiengine.com>`__ is a 2D Java Game Engine that
-   supports loading, saving and rendering maps in the .tmx format.
+-  `LITIENGINE <https://litiengine.com>`__ is an open source Java 2D Game Engine that
+   supports loading, editing, saving, and rendering maps in the .tmx format.
 
 LÖVE
 ~~~~

@@ -4,6 +4,14 @@ TMX Changelog
 Below are described the changes/additions that were made to the
 :doc:`tmx-map-format` for recent versions of Tiled.
 
+Tiled 1.10
+----------
+
+-  Renamed the ``class`` attribute on :ref:`tmx-tileset-tile` and
+   :ref:`tmx-object` back to ``type``, to keep compatibility with Tiled 1.8
+   and earlier. The attribute remains ``class`` for other elements since it
+   could not be renamed to ``type`` everywhere.
+
 Tiled 1.9
 ---------
 

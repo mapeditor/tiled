@@ -144,7 +144,7 @@ void Eraser::doErase(bool continuation)
     if (!erasedRegions.isEmpty())
         mapDocument()->undoStack()->push(eraseCommand);
 
-    for (auto &[region, tileLayer] : qAsConst(erasedRegions)) {
+    for (auto &[region, tileLayer] : std::as_const(erasedRegions)) {
         if (tileLayer->map() != mapDocument()->map())
             continue;
 

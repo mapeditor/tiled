@@ -92,7 +92,7 @@ private:
     void propertyTypesChanged();
 
     void valueChanged(QtProperty *property, const QVariant &val);
-    void customPropertyValueChanged(const QString &name, const QVariant &value);
+    void customPropertyValueChanged(const QStringList &path, const QVariant &value);
 
     void resetProperty(QtProperty *property);
 
@@ -207,7 +207,10 @@ private:
     void updateProperties();
     Properties combinedProperties() const;
     void updateCustomProperties();
+
     void updateCustomPropertyColor(const QString &name);
+    void updateCustomPropertyColors();
+    void updateCustomPropertyColor(QtVariantProperty *property);
 
     QVariant toDisplayValue(QVariant value) const;
     QVariant fromDisplayValue(QtProperty *property, QVariant value) const;

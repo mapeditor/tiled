@@ -74,7 +74,18 @@ StampActions::StampActions(QObject *parent) : QObject(parent)
     ActionManager::registerAction(mRotateLeft, "RotateLeft");
     ActionManager::registerAction(mRotateRight, "RotateRight");
 
+    setEnabled(false);
     languageChanged();
+}
+
+void StampActions::setEnabled(bool enabled)
+{
+    mRandom->setEnabled(enabled);
+    mWangFill->setEnabled(enabled);
+    mFlipHorizontal->setEnabled(enabled);
+    mFlipVertical->setEnabled(enabled);
+    mRotateLeft->setEnabled(enabled);
+    mRotateRight->setEnabled(enabled);
 }
 
 void StampActions::languageChanged()

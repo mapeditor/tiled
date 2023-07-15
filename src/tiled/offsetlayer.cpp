@@ -45,14 +45,13 @@ OffsetLayer::OffsetLayer(MapDocument *mapDocument,
                          Layer *layer,
                          QPoint offset,
                          const QRect &bounds,
+                         bool wholeMap,
                          bool wrapX,
                          bool wrapY)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Offset Layer"))
     , mMapDocument(mapDocument)
-    , mDone(false)
     , mOriginalLayer(layer)
-    , mOffsetLayer(nullptr)
 {
     switch (mOriginalLayer->layerType()) {
     case Layer::TileLayerType:
@@ -74,7 +73,7 @@ OffsetLayer::OffsetLayer(MapDocument *mapDocument,
         const QRectF pixelBounds = renderer->tileToPixelCoords(bounds);
 
         if (mOriginalLayer->layerType() == Layer::ObjectGroupType) {
-            static_cast<ObjectGroup*>(mOffsetLayer)->offsetObjects(pixelOffset, pixelBounds, wrapX, wrapY);
+            static_cast<ObjectGroup*>(mOffsetLayer)->offsetObjects(pixelOffset, pixelBounds, wholeMap, wrapX, wrapY);
         } else {
             // (wrapping not supported for image layers and group layers)
             mOldOffset = mOriginalLayer->offset();

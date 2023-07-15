@@ -1,5 +1,3 @@
-import qbs 1.0
-
 StaticLibrary {
     condition: !qbs.toolchain.contains("msvc")
 

@@ -21,7 +21,6 @@
 #include "scriptedaction.h"
 
 #include "scriptmanager.h"
-#include "utils.h"
 
 #include <QJSEngine>
 
@@ -62,7 +61,7 @@ void ScriptedAction::setIconFileName(const QString &fileName)
     QString iconFile = fileName;
 
     const QString ext = QStringLiteral("ext:");
-    if (!iconFile.startsWith(ext))
+    if (!iconFile.startsWith(ext) && !iconFile.startsWith(QLatin1Char(':')))
         iconFile.prepend(ext);
 
     setIcon(QIcon { iconFile });

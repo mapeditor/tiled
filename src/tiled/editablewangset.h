@@ -39,7 +39,7 @@ class EditableWangSet : public EditableObject
     Q_PROPERTY(Type type READ type WRITE setType)
     Q_PROPERTY(Tiled::EditableTile *imageTile READ imageTile WRITE setImageTile)
     Q_PROPERTY(int colorCount READ colorCount WRITE setColorCount)
-    Q_PROPERTY(Tiled::EditableTileset *tileset READ tileset)
+    Q_PROPERTY(Tiled::EditableTileset *tileset READ tileset CONSTANT)
 
 public:
     enum Type {
@@ -65,6 +65,8 @@ public:
 
     Q_INVOKABLE QString colorName(int colorIndex) const;
     Q_INVOKABLE void setColorName(int colorIndex, const QString &name);
+
+    Q_INVOKABLE Type effectiveTypeForColor(int color) const;
 
     void setName(const QString &name);
     void setType(Type type);
@@ -98,6 +100,11 @@ inline EditableWangSet::Type EditableWangSet::type() const
 inline int EditableWangSet::colorCount() const
 {
     return wangSet()->colorCount();
+}
+
+inline EditableWangSet::Type EditableWangSet::effectiveTypeForColor(int color) const
+{
+    return static_cast<Type>(wangSet()->effectiveTypeForColor(color));
 }
 
 inline WangSet *EditableWangSet::wangSet() const

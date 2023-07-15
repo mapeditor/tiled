@@ -53,8 +53,7 @@ QVariant Object::resolvedProperty(const QString &name) const
 
     QString objectClassName = className();
 
-    switch (typeId()) {
-    case MapObjectType: {
+    if (typeId() == MapObjectType) {
         auto mapObject = static_cast<const MapObject*>(this);
         objectClassName = mapObject->effectiveClassName();
 
@@ -65,14 +64,9 @@ QVariant Object::resolvedProperty(const QString &name) const
         if (Tile *tile = mapObject->cell().tile())
             if (tile->hasProperty(name))
                 return tile->property(name);
-
-        break;
-    }
-    default:
-        return QVariant();
     }
 
-    if (auto type = mPropertyTypes->findClassFor(objectClassName, *this))
+    if (auto type = propertyTypes().findClassFor(objectClassName, *this))
         return type->members.value(name);
 
     return QVariant();
@@ -91,10 +85,8 @@ QVariantMap Object::resolvedProperties() const
         objectClassName = mapObject->effectiveClassName();
     }
 
-    if (auto type = mPropertyTypes->findClassFor(objectClassName, *this)) {
-        Tiled::mergeProperties(allProperties,
-                               static_cast<const ClassPropertyType*>(type)->members);
-    }
+    if (auto type = propertyTypes().findClassFor(objectClassName, *this))
+        Tiled::mergeProperties(allProperties, type->members);
     
     if (typeId() == Object::MapObjectType) {
         auto mapObject = static_cast<const MapObject*>(this);

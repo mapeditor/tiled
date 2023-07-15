@@ -64,6 +64,7 @@ public:
 
     void setShowTileCollisionShapes(bool enabled);
     void setParallaxEnabled(bool enabled);
+    void setPainterScale(qreal painterScale);
 
     QRectF mapBoundingRect() const;
 
@@ -89,6 +90,7 @@ signals:
 
     void sceneRefreshed();
 
+    void fontChanged();
     void parallaxParametersChanged();
 
 protected:

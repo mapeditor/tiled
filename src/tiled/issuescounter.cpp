@@ -89,17 +89,16 @@ void IssuesCounter::updateLabels()
     const bool hasErrors = errorCount > 0;
     const bool hasWarnings = warningCount > 0;
 
-    const QFont font = QApplication::font();
-    QFont boldFont = font;
+    QFont boldFont = font();
     boldFont.setBold(true);
 
     mErrorCount->setText(QString::number(errorCount));
     mErrorCount->setEnabled(hasErrors);
-    mErrorCount->setFont(hasErrors ? boldFont : font);
+    mErrorCount->setFont(hasErrors ? boldFont : font());
 
     mWarningCount->setText(QString::number(warningCount));
     mWarningCount->setEnabled(hasWarnings);
-    mWarningCount->setFont(hasWarnings ? boldFont : font);
+    mWarningCount->setFont(hasWarnings ? boldFont : font());
 
     const QIcon::Mode errorIconMode = hasErrors ? QIcon::Normal : QIcon::Disabled;
     const QIcon::Mode warningIconMode = hasWarnings ? QIcon::Normal : QIcon::Disabled;
