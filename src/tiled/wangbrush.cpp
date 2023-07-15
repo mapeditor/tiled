@@ -92,9 +92,7 @@ WangBrush::WangBrush(QObject *parent)
     // Set up toolbar action for toggling fill full tiles mode,
     // which basically makes the brush bigger.
 
-    // TODO: set a proper icon for this action.
-    QIcon rotateRightIcon(QLatin1String(":images/24/rotate-right.png"));
-    rotateRightIcon.addFile(QLatin1String(":images/32/rotate-right.png"));
+    QIcon rotateRightIcon(QLatin1String(":images/scalable/fill-full-tiles.svg"));
 
     mToggleFillFullTiles = new QAction(this);
     mToggleFillFullTiles->setCheckable(true);
