@@ -32,7 +32,6 @@
 #include "mapscene.h"
 #include "painttilelayer.h"
 #include "tilelayer.h"
-#include "wangfiller.h"
 #include "actionmanager.h"
 
 #include <QStyleOptionGraphicsItem>
