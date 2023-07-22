@@ -3001,7 +3001,7 @@ Line %1, column %2</source>
     <message>
         <location line="+72"/>
         <source>Failed to open file.</source>
-        <translation>Неуспешно отваряне на файла.</translation>
+        <translation>Файлът не може да бъде отворен.</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -3011,7 +3011,7 @@ Line %1, column %2</source>
     <message>
         <location line="+35"/>
         <source>Failed to open file</source>
-        <translation>Неуспешно отваряне на файла</translation>
+        <translation>Файлът не може да бъде отворен</translation>
     </message>
     <message>
         <location filename="../src/plugins/tbin/tbinplugin.cpp" line="-315"/>
