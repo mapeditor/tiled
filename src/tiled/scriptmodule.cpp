@@ -598,7 +598,7 @@ QString ScriptModule::prompt(const QString &label, const QString &text, const QS
     return QInputDialog::getText(MainWindow::maybeInstance(), title, label, QLineEdit::Normal, text);
 }
 
-QString ScriptModule::promptForDirectory(const QString &defaultDir, const QString &title) const
+QString ScriptModule::promptDirectory(const QString &defaultDir, const QString &title) const
 {
     ScriptManager::ResetBlocker blocker;
     return QFileDialog::getExistingDirectory(MainWindow::maybeInstance(),
@@ -607,7 +607,7 @@ QString ScriptModule::promptForDirectory(const QString &defaultDir, const QStrin
                                              QFileDialog::ShowDirsOnly);
 }
 
-QStringList ScriptModule::promptOpenMultipleFiles(const QString &defaultDir, const QString &filters, const QString &title) const
+QStringList ScriptModule::promptOpenFiles(const QString &defaultDir, const QString &filters, const QString &title) const
 {
     ScriptManager::ResetBlocker blocker;
     return QFileDialog::getOpenFileNames(MainWindow::maybeInstance(),

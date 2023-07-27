@@ -183,6 +183,7 @@ interface size {
  * polygon array and then assign it to {@link MapObject.polygon}.
  */
 type Polygon = point[];
+
 /**
  * A string used to show only certain types of files when prompting the user to select a file path.
  * 
@@ -195,6 +196,7 @@ type Polygon = point[];
  * ```
  */
 type FileFilter = string;
+
 /**
  * The value of a property of type 'object', which refers to a
  * {@link MapObject} by its ID.
@@ -3941,7 +3943,7 @@ declare namespace tiled {
    * 
    * Returns the absolute path of the chosen directory, or an empty string if the user cancels the dialog. 
    */
-  export function promptForDirectory(defaultDir?: string,  title?: string): string;
+  export function promptDirectory(defaultDir?: string, title?: string): string;
   
   /**
    * Shows a dialog which asks the user to choose one or more existing files.
@@ -3950,7 +3952,7 @@ declare namespace tiled {
    * 
    * Returns an array of the absolute paths of the chosen files, or an empty array if the user cancels the dialog. 
    */
-  export function promptOpenMultipleFiles(defaultDir?: string, filters?: string, title?: string): string[];
+  export function promptOpenFiles(defaultDir?: string, filters?: FileFilter, title?: string): string[];
   
   /**
    * Shows a dialog which asks the user to choose an existing file.
@@ -3959,7 +3961,7 @@ declare namespace tiled {
    * 
    * Returns the absolute path of the chosen file, or an empty string if the user cancels the dialog. 
    */
-  export function promptOpenFile(defaultDir?: string, filters?: string, title?: string): string;
+  export function promptOpenFile(defaultDir?: string, filters?: FileFilter, title?: string): string;
   
   /**
    * Shows a dialog which asks the user to choose a destination for saving a file. 
@@ -4425,9 +4427,8 @@ declare class FileEdit extends Qt.QWidget {
 
   /**
    * When specified, only files that match the filter are shown. 
-   * See {@link FileFilter}. 
    */
-  filter: string;
+  filter: FileFilter;
 }
 /**
  * A widget that displays an {@link Image} on your dialog.

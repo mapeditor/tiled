@@ -136,8 +136,8 @@ public:
 
     Q_INVOKABLE QByteArray compress(const QByteArray &data, CompressionMethod method = Zlib, int compressionLevel = -1);
     Q_INVOKABLE QByteArray decompress(const QByteArray &data, CompressionMethod method = Zlib);
-    Q_INVOKABLE QString promptForDirectory(const QString &defaultDir = QString(), const QString &title = QString()) const;
-    Q_INVOKABLE QStringList promptOpenMultipleFiles(const QString &defaultDir = QString(),  const QString &filters = QString(), const QString &title = QString()) const;
+    Q_INVOKABLE QString promptDirectory(const QString &defaultDir = QString(), const QString &title = QString()) const;
+    Q_INVOKABLE QStringList promptOpenFiles(const QString &defaultDir = QString(),  const QString &filters = QString(), const QString &title = QString()) const;
     Q_INVOKABLE QString promptOpenFile(const QString &defaultDir = QString(), const QString &filters = QString(), const QString &title = QString()) const;
     Q_INVOKABLE QString promptSaveFile(const QString &defaultDir = QString(), const QString &filters = QString(),  const QString &title = QString()) const;
 
