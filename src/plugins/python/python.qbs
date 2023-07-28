@@ -8,7 +8,7 @@ TiledPlugin {
 
     condition: {
         if (qbs.targetOS.contains("windows"))
-            return File.exists(Environment.getEnv("PYTHONHOME"));
+            return pythonDllProbe.found;
 
         return pkgConfigPython3Embed.found || pkgConfigPython3.found;
     }
