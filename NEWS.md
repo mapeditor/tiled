@@ -3,6 +3,7 @@
 * Added support for setting custom properties on the project (#2903)
 * Removed Space and Ctrl+Space shortcuts from Layers view to avoid conflict with panning (#3672)
 * Scripting: Added API for editing tile layers using terrain sets (with a-morphous, #3758)
+* Scripting: Added file dialog API (with dogboydog, #3782)
 * Scripting: Support erasing tiles in Tool.preview and TileMap.merge
 * Scripting: Added WangSet.effectiveTypeForColor
 * Fixed object preview position with parallax factor on group layer (#3669)
