@@ -185,6 +185,19 @@ interface size {
 type Polygon = point[];
 
 /**
+ * A string used to show only certain types of files when prompting the user to select a file path.
+ * 
+ * Used in {@link FileEdit} and in {@link tiled.promptOpenFile} and related methods. 
+ * The filter is given in a format like `"Images (*.png *.xpm *.jpg)"`.
+ *
+ * If you want multiple filters, separate them with ';;', for example:
+ * ```
+ * "Images (*.png *.xpm *.jpg);;Text files (*.txt);;XML files (*.xml)"
+ * ```
+ */
+type FileFilter = string;
+
+/**
  * The value of a property of type 'object', which refers to a
  * {@link MapObject} by its ID.
  *
@@ -3925,6 +3938,42 @@ declare namespace tiled {
   export function prompt(label: string, text?: string, title?: string): string;
 
   /**
+   * Shows a dialog which asks the user to choose an existing directory. 
+   * Optionally override the starting directory of the dialog or its title.
+   * 
+   * Returns the absolute path of the chosen directory, or an empty string if the user cancels the dialog. 
+   */
+  export function promptDirectory(defaultDir?: string, title?: string): string;
+  
+  /**
+   * Shows a dialog which asks the user to choose one or more existing files.
+   * Optionally override the starting directory of the dialog or its title.
+   * You can also restrict to only certain file types by specifying {@link FileFilter|filters}.
+   * 
+   * Returns an array of the absolute paths of the chosen files, or an empty array if the user cancels the dialog. 
+   */
+  export function promptOpenFiles(defaultDir?: string, filters?: FileFilter, title?: string): string[];
+  
+  /**
+   * Shows a dialog which asks the user to choose an existing file.
+   * Optionally override the starting directory of the dialog or its title.
+   * You can also restrict to only certain file types by specifying {@link FileFilter|filters}.
+   * 
+   * Returns the absolute path of the chosen file, or an empty string if the user cancels the dialog. 
+   */
+  export function promptOpenFile(defaultDir?: string, filters?: FileFilter, title?: string): string;
+  
+  /**
+   * Shows a dialog which asks the user to choose a destination for saving a file. 
+   * If the user chooses a file path which already exists, they will be asked to confirm that they want to overwrite the file.
+   * Optionally override the starting directory of the dialog or its title.
+   * You can also restrict to only certain file types by specifying {@link FileFilter|filters}.
+   * 
+   * Returns the absolute path of the chosen file, or an empty string if the user cancels the dialog. 
+   */
+  export function promptSaveFile(defaultDir?: string, filters?: string, title?: string): string;
+
+  /**
    * Outputs the given text in the Console window as regular text.
    */
   export function log(text: string): void;
@@ -4378,14 +4427,8 @@ declare class FileEdit extends Qt.QWidget {
 
   /**
    * When specified, only files that match the filter are shown. 
-   * The filter is given in a format like `"Images (*.png *.xpm *.jpg)"`.
-   *
-   * If you want multiple filters, separate them with ';;', for example:
-   * ```
-   * "Images (*.png *.xpm *.jpg);;Text files (*.txt);;XML files (*.xml)"
-   * ```
    */
-  filter: string;
+  filter: FileFilter;
 }
 /**
  * A widget that displays an {@link Image} on your dialog.
