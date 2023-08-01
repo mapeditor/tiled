@@ -1,6 +1,7 @@
 ### Unreleased
 
 * Added support for setting custom properties on the project (#2903)
+* Added feedback when Terrain Brush and Terrain Fill Mode can't find a tile
 * Removed Space and Ctrl+Space shortcuts from Layers view to avoid conflict with panning (#3672)
 * Scripting: Added API for editing tile layers using terrain sets (with a-morphous, #3758)
 * Scripting: Support erasing tiles in Tool.preview and TileMap.merge
