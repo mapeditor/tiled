@@ -3,9 +3,12 @@
 * Added support for setting custom properties on the project (#2903)
 * Added feedback when Terrain Brush and Terrain Fill Mode can't find a tile
 * Removed Space and Ctrl+Space shortcuts from Layers view to avoid conflict with panning (#3672)
+* Display the image base name for unnamed tile objects referring to single images
 * Scripting: Added API for editing tile layers using terrain sets (with a-morphous, #3758)
+* Scripting: Added file dialog API (with dogboydog, #3782)
 * Scripting: Support erasing tiles in Tool.preview and TileMap.merge
 * Scripting: Added WangSet.effectiveTypeForColor
+* Fixed crash when changing file property of custom class (#3783)
 * Fixed object preview position with parallax factor on group layer (#3669)
 * Fixed hover highlight rendering with active parallax factor (#3669)
 * Fixed updating of object selection outlines when changing parallax factor (#3669)

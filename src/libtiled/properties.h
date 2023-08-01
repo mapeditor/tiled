@@ -60,6 +60,9 @@ public:
 
     const PropertyType *type() const;
     QString typeName() const;
+
+    bool operator==(const PropertyValue &o) const
+    { return typeId == o.typeId && value == o.value; }
 };
 
 class TILEDSHARED_EXPORT FilePath
@@ -69,6 +72,9 @@ class TILEDSHARED_EXPORT FilePath
 
 public:
     QUrl url;
+
+    bool operator==(const FilePath &o) const
+    { return url == o.url; }
 
     static QString toString(const FilePath &path);
     static FilePath fromString(const QString &string);
@@ -81,6 +87,9 @@ class TILEDSHARED_EXPORT ObjectRef
 
 public:
     int id;
+
+    bool operator==(const ObjectRef &o) const
+    { return id == o.id; }
 
     static int toInt(const ObjectRef &ref) { return ref.id; }
     static ObjectRef fromInt(int id) { return ObjectRef { id }; }
