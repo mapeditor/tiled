@@ -118,6 +118,16 @@ QRegion ellipseRegion(int x0, int y0, int x1, int y1)
     return ret;
 }
 
+QRegion ellipseRegion(QRect rect)
+{
+    // Check for empty rectangle explicitly, because ellipseRegion above can't
+    // handle empty rectangles due to the coordinates being inclusive.
+    if (rect.width() == 0 || rect.height() == 0)
+        return QRegion();
+
+    return ellipseRegion(rect.left(), rect.top(), rect.right(), rect.bottom());
+}
+
 /**
  * Returns the lists of points on a line from (x0,y0) to (x1,y1).
  *

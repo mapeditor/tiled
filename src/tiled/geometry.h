@@ -31,13 +31,11 @@ namespace Tiled {
 
 QVector<QPoint> pointsOnEllipse(int xm, int ym, int a, int b);
 QRegion ellipseRegion(int x0, int y0, int x1, int y1);
+QRegion ellipseRegion(QRect rect);
 QVector<QPoint> pointsOnLine(int x0, int y0, int x1, int y1, bool manhattan = false);
 
 inline QVector<QPoint> pointsOnEllipse(QPoint center, int radiusX, int radiusY)
 { return pointsOnEllipse(center.x(), center.y(), radiusX, radiusY); }
-
-inline QRegion ellipseRegion(QRect rect)
-{ return ellipseRegion(rect.left(), rect.top(), rect.right(), rect.bottom()); }
 
 inline QVector<QPoint> pointsOnLine(QPoint a, QPoint b, bool manhattan = false)
 { return pointsOnLine(a.x(), a.y(), b.x(), b.y(), manhattan); }
