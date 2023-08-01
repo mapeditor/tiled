@@ -6,6 +6,7 @@
 * Scripting: Added API for editing tile layers using terrain sets (with a-morphous, #3758)
 * Scripting: Added file dialog API (with dogboydog, #3782)
 * Scripting: Support erasing tiles in Tool.preview and TileMap.merge
+* Scripting: Added Geometry interface with line and ellipse helpers
 * Scripting: Added WangSet.effectiveTypeForColor
 * Fixed crash when changing file property of custom class (#3783)
 * Fixed object preview position with parallax factor on group layer (#3669)

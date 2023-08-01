@@ -1508,6 +1508,40 @@ declare namespace Base64 {
 }
 
 /**
+ * Provides functions to rasterize lines and ellipses.
+ *
+ * @since 1.10.2
+ */
+declare namespace Geometry {
+  /**
+   * Returns the lists of points on a line from `a` to `b`.
+   *
+   * When the `manhattan` option (named after "Manhattan distance") is set to
+   * `true`, the points on the line can't take diagonal steps.
+   */
+  export function pointsOnLine(a: point, b: point, manhattan?: boolean): point[];
+
+  /**
+   * Returns a lists of points on an ellipse, with `center` as the midpoint
+   * and with the given radii.
+   *
+   * May return duplicate points.
+   */
+  export function pointsOnEllipse(center: point, radiusX: number, radiusY: number): point[];
+
+  /**
+   * Returns an elliptical region based on the given bounding rectangle.
+   */
+  export function ellipseRegion(rect: rect): region
+
+  /**
+   * Returns an elliptical region based on a bounding rectangle given by x0,y0
+   * (top-left) and x1,y1 (bottom-right), inclusive.
+   */
+  export function ellipseRegion(x0: number, y0: number, x1: number, y1: number): region
+}
+
+/**
  * Offers various operations on file paths, such as turning absolute paths
  * into relative ones, splitting a path into its components, and so on.
  */

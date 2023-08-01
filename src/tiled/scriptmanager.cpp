@@ -19,6 +19,7 @@
  */
 
 #include "scriptmanager.h"
+
 #include "editablegrouplayer.h"
 #include "editableimagelayer.h"
 #include "editablemap.h"
@@ -37,15 +38,16 @@
 #include "projectmanager.h"
 #include "regionvaluetype.h"
 #include "scriptbase64.h"
+#include "scriptdialog.h"
 #include "scriptedaction.h"
 #include "scriptedtool.h"
 #include "scriptfile.h"
 #include "scriptfileformatwrappers.h"
 #include "scriptfileinfo.h"
+#include "scriptgeometry.h"
 #include "scriptimage.h"
 #include "scriptmodule.h"
 #include "scriptprocess.h"
-#include "scriptdialog.h"
 #include "tilecollisiondock.h"
 #include "tilelayer.h"
 #include "tilelayeredit.h"
@@ -405,6 +407,7 @@ void ScriptManager::initialize()
     registerDialog(engine);
     registerFile(engine);
     registerFileInfo(engine);
+    registerGeometry(engine);
     registerProcess(engine);
     loadExtensions();
 }
