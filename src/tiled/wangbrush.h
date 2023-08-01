@@ -22,10 +22,30 @@
 #pragma once
 
 #include "abstracttiletool.h"
+#include "brushitem.h"
 #include "wangfiller.h"
 #include "wangset.h"
 
 namespace Tiled {
+
+class WangBrushItem : public BrushItem
+{
+public:
+    WangBrushItem() {}
+
+    QRectF boundingRect() const override;
+
+    void paint(QPainter *painter,
+               const QStyleOptionGraphicsItem *option,
+               QWidget *widget) override;
+
+    void setInvalidTiles(const QRegion &region);
+    bool isValid() const { return mInvalidTiles.isEmpty(); }
+
+private:
+    // The tiles which can't be painted.
+    QRegion mInvalidTiles;
+};
 
 class WangBrush : public AbstractTileTool
 {

@@ -22,7 +22,6 @@
 #include "wangbrush.h"
 
 #include "addremovetileset.h"
-#include "brushitem.h"
 #include "containerhelpers.h"
 #include "geometry.h"
 #include "hexagonalrenderer.h"
@@ -37,25 +36,6 @@
 #include <QtMath>
 
 namespace Tiled {
-
-class WangBrushItem : public BrushItem
-{
-public:
-    WangBrushItem() {}
-
-    QRectF boundingRect() const override;
-
-    void paint(QPainter *painter,
-               const QStyleOptionGraphicsItem *option,
-               QWidget *widget) override;
-
-    void setInvalidTiles(const QRegion &region);
-    bool isValid() const { return mInvalidTiles.isEmpty(); }
-
-private:
-    // The tiles which can't be painted.
-    QRegion mInvalidTiles;
-};
 
 QRectF WangBrushItem::boundingRect() const
 {
@@ -488,15 +468,6 @@ static constexpr QPoint aroundTilePoints[WangId::NumIndexes] = {
     QPoint( 1,  1),
     QPoint( 0,  1),
     QPoint(-1,  1),
-    QPoint(-1,  0),
-    QPoint(-1, -1)
-};
-
-//  3 0
-//  2 1
-static constexpr QPoint aroundVertexPoints[WangId::NumCorners] = {
-    QPoint( 0, -1),
-    QPoint( 0,  0),
     QPoint(-1,  0),
     QPoint(-1, -1)
 };
