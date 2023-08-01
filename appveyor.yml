@@ -1,7 +1,7 @@
 clone_depth: 200
 version: '1.11.{build}'
 image:
-  - Visual Studio 2019
+  - Visual Studio 2022
 
 cache:
   - C:\Users\appveyor\.m2
@@ -14,7 +14,7 @@ environment:
   matrix:
     - QTDIR: C:\Qt\6.7\msvc2019_64
       PYTHONHOME: C:\Python312-x64
-      DEFAULT_PROFILE: MSVC2019-x64
+      DEFAULT_PROFILE: MSVC2022-x64
       PUSH_RELEASE: false
       ENABLE_ZSTD: false
     - QTDIR: C:\Qt\6.7\mingw_64
