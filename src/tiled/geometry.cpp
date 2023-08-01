@@ -125,6 +125,7 @@ QRegion ellipseRegion(QRect rect)
     if (rect.width() == 0 || rect.height() == 0)
         return QRegion();
 
+    rect = rect.normalized();
     return ellipseRegion(rect.left(), rect.top(), rect.right(), rect.bottom());
 }
 

@@ -51,7 +51,7 @@ public:
 #endif
 
     Q_INVOKABLE Tiled::RegionValueType ellipseRegion(QRect rect)
-    { return RegionValueType { Tiled::ellipseRegion(rect.normalized()) }; }
+    { return RegionValueType { Tiled::ellipseRegion(rect) }; }
 
     Q_INVOKABLE Tiled::RegionValueType ellipseRegion(int x0, int y0, int x1, int y1)
     { return RegionValueType { Tiled::ellipseRegion(x0, y0, x1, y1) }; }
