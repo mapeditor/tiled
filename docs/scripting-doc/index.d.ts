@@ -3581,7 +3581,7 @@ interface TilesetEditor {
  * from the [Qt::KeyboarModifiers](https://doc.qt.io/qt-6/qt.html#KeyboardModifier-enum)
  * enum, available similarly like `Qt.ShiftModifier`.
  */
-interface Tool {
+interface ToolDefinition {
   /**
    * Name of the tool as shown on the tool bar.
    */
@@ -3590,7 +3590,7 @@ interface Tool {
   /**
    * File name of an icon. If set, the icon is shown on the tool bar and the name becomes the tool tip.
    */
-  icon: string;
+  icon?: string;
 
   /**
    * List of action IDs, specifying the actions that should be added to the
@@ -3604,17 +3604,156 @@ interface Tool {
    *
    * @since 1.9
    */
+  toolBarActions?: string[];
+
+  /**
+   * Whether this tool uses the currently selected tiles. This defaults to
+   * `false`.
+   *
+   * When set to `false` and the currently selected tiles change while this
+   * tool is active, the Stamp Brush is automatically activated. Set this
+   * property to `true` to keep this tool active.
+   *
+   * @since 1.8
+   */
+  usesSelectedTiles?: boolean;
+
+  /**
+   * Whether this tool works with Wang sets. This defaults to `false`.
+   *
+   * When set to `false` and a Wang color is clicked while this tool is active,
+   * the Terrain Brush is automatically activated. Set this property to `true`
+   * to keep this tool active.
+   *
+   * @since 1.8
+   */
+  usesWangSets?: boolean;
+
+  /**
+   * The target layer type for which this tool should be enabled. A convenient
+   * alternative to overriding {@link updateEnabledState}.
+   *
+   * The value can be any combination of the layer types
+   * {@link Layer.TileLayerType}, {@link Layer.ObjectGroupType},
+   * {@link Layer.ImageLayerType} and {@link Layer.GroupLayerType}.
+   *
+   * @since 1.10
+   */
+  targetLayerType?: number;
+
+  /**
+   * Called when the tool was activated.
+   */
+  activated?(this: Tool): void;
+
+  /**
+   * Called when the tool was deactivated.
+   */
+  deactivated?(this: Tool): void;
+
+  /**
+   * Called when a key was pressed while the tool was active.
+   *
+   * The keys are defined by numbers from the
+   * [Qt::Key](https://doc.qt.io/qt-6/qt.html#Key-enum) enum. They can
+   * be accessed like `Qt.Key_Return`.
+   */
+  keyPressed?(this: Tool, key: number, modifiers: number): void;
+
+  /**
+   * Called when the mouse entered the map view.
+   */
+  mouseEntered?(this: Tool): void;
+
+  /**
+   * Called when the mouse left the map view.
+   */
+  mouseLeft?(this: Tool): void;
+
+  /**
+   * Called when the mouse position in the map scene changed.
+   */
+  mouseMoved?(this: Tool, x: number, y: number, modifiers: number): void;
+
+  /**
+   * Called when a mouse button was pressed.
+   */
+  mousePressed?(this: Tool, button: number, x: number, y: number, modifiers: number): void;
+
+  /**
+   * Called when a mouse button was released.
+   */
+  mouseReleased?(this: Tool, button: number, x: number, y: number, modifiers: number): void;
+
+  /**
+   * Called when a mouse button was double-clicked.
+   */
+  mouseDoubleClicked?(this: Tool, button: number, x: number, y: number, modifiers: number): void;
+
+  /**
+   * Called when the active modifier keys changed.
+   */
+  modifiersChanged?(this: Tool, modifiers: number): void;
+
+  /**
+   * Called when the language was changed.
+   */
+  languageChanged?(this: Tool): void;
+
+  /**
+   * Called when the active map was changed.
+   */
+  mapChanged?(this: Tool, oldMap: TileMap, newMap: TileMap): void;
+
+  /**
+   * Called when the hovered tile position changed.
+   */
+  tilePositionChanged?(this: Tool): void;
+
+  /**
+   * Defining this function is necessary to suppress the default updating of
+   * the status bar text.
+   *
+   * This function is called automatically when the hovered tile position
+   * changed, but {@link statusInfo} can be changed in any other function as
+   * well.
+   */
+  updateStatusInfo?(this: Tool): void;
+
+  /**
+   * Called when the map or the current layer changed.
+   */
+  updateEnabledState?(this: Tool): void;
+}
+
+/**
+ * Once a tool is registered using {@link tiled.registerTool}, it returns a
+ * tool instance. This interface extends the {@link ToolDefinition} interface
+ * with the additional properties that are available on the tool instance.
+ *
+ * Not all properties in the {@link ToolDefinition} interface can be changed
+ * after the tool has been registered.
+ */
+interface Tool extends ToolDefinition {
+  /**
+   * File name of the icon, or empty string when not set.
+   */
+  icon: string;
+
+  /**
+   * @see ToolDefinition.toolBarActions
+   */
   toolBarActions: string[];
 
   /**
    * Currently active tile map.
    */
-  readonly map: TileMap;
+  readonly map: TileMap | null;
 
   /**
    * The last clicked tile for the active map. See also the {@link MapEditor.currentBrush} property.
    */
-  readonly selectedTile: any;
+  readonly selectedTile: Tile | null;
 
   /**
    * Get or set the preview for tile layer edits.
@@ -3639,125 +3778,6 @@ interface Tool {
    * Whether this tool is enabled.
    */
   enabled: boolean;
-
-  /**
-   * Whether this tool uses the currently selected tiles. This defaults to
-   * `false`.
-   *
-   * When set to `false` and the currently selected tiles change while this
-   * tool is active, the Stamp Brush is automatically activated. Set this
-   * property to `true` to keep this tool active.
-   *
-   * @since 1.8
-   */
-  usesSelectedTiles: boolean;
-
-  /**
-   * Whether this tool works with Wang sets. This defaults to `false`.
-   *
-   * When set to `false` and a Wang color is clicked while this tool is active,
-   * the Terrain Brush is automatically activated. Set this property to `true`
-   * to keep this tool active.
-   *
-   * @since 1.8
-   */
-  usesWangSets: boolean;
-
-  /**
-   * The target layer type for which this tool should be enabled. A convenient
-   * alternative to overriding {@link updateEnabledState}.
-   *
-   * The value can be any combination of the layer types
-   * {@link Layer.TileLayerType}, {@link Layer.ObjectGroupType},
-   * {@link Layer.ImageLayerType} and {@link Layer.GroupLayerType}.
-   *
-   * @since 1.10
-   */
-  targetLayerType: number;
-
-  /**
-   * Called when the tool was activated.
-   */
-  activated(): void;
-
-  /**
-   * Called when the tool was deactivated.
-   */
-  deactivated(): void;
-
-  /**
-   * Called when a key was pressed while the tool was active.
-   *
-   * The keys are defined by numbers from the
-   * [Qt::Key](https://doc.qt.io/qt-6/qt.html#Key-enum) enum. They can
-   * be accessed like `Qt.Key_Return`.
-   */
-  keyPressed(key: number, modifiers: number): void;
-
-  /**
-   * Called when the mouse entered the map view.
-   */
-  mouseEntered(): void;
-
-  /**
-   * Called when the mouse left the map view.
-   */
-  mouseLeft(): void;
-
-  /**
-   * Called when the mouse position in the map scene changed.
-   */
-  mouseMoved(x: number, y: number, modifiers: number): void;
-
-  /**
-   * Called when a mouse button was pressed.
-   */
-  mousePressed(button: number, x: number, y: number, modifiers: number): void;
-
-  /**
-   * Called when a mouse button was released.
-   */
-  mouseReleased(button: number, x: number, y: number, modifiers: number): void;
-
-  /**
-   * Called when a mouse button was double-clicked.
-   */
-  mouseDoubleClicked(button: number, x: number, y: number, modifiers: number): void;
-
-  /**
-   * Called when the active modifier keys changed.
-   */
-  modifiersChanged(modifiers: number): void;
-
-  /**
-   * Called when the language was changed.
-   */
-  languageChanged(): void;
-
-  /**
-   * Called when the active map was changed.
-   */
-  mapChanged(oldMap: TileMap, newMap: TileMap): void;
-
-  /**
-   * Called when the hovered tile position changed.
-   */
-  tilePositionChanged(): void;
-
-  /**
-   * Defining this function is necessary to suppress the default updating of
-   * the status bar text.
-   *
-   * This function is called automatically when the hovered tile position
-   * changed, but {@link statusInfo} can be changed in any other function as
-   * well.
-   */
-  updateStatusInfo(): void;
-
-  /**
-   * Called when the map or the current layer changed.
-   */
-  updateEnabledState(): void;
 }
 
 declare namespace Tiled {
@@ -4141,7 +4161,7 @@ declare namespace tiled {
    * })
    * ```
    */
-  export function registerTool(shortName: string, tool: Tool): Tool;
+  export function registerTool(shortName: string, tool: ToolDefinition): Tool;
 
   /**
    * Returns the tileset format object with the given name, or
