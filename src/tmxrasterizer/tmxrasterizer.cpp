@@ -31,8 +31,6 @@
 #include "imagelayer.h"
 #include "map.h"
 #include "mapformat.h"
-#include "mapreader.h"
-#include "maprenderer.h"
 #include "objectgroup.h"
 #include "tilelayer.h"
 #include "tilesetmanager.h"

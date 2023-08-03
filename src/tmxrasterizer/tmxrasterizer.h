@@ -30,8 +30,8 @@
 
 #include "layer.h"
 
-#include "map.h"
-#include "mapreader.h"
+#include "maprenderer.h"
+
 #include <QString>
 #include <QStringList>
 
