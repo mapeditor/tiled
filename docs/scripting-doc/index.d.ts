@@ -989,7 +989,7 @@ declare class TiledObject {
   /**
    * The asset this object is part of, or `null`.
    */
-  readonly asset: Asset;
+  readonly asset: Asset | null;
 
   /**
    * Whether the object is read-only.
@@ -1306,13 +1306,13 @@ declare class MapObject extends TiledObject {
    * Layer this object is part of (or `null` in case of a standalone
    * object).
    */
-  layer: ObjectGroup;
+  layer: ObjectGroup | null;
 
   /**
    * Map this object is part of (or `null` in case of a
    * standalone object).
    */
-  readonly map: TileMap;
+  readonly map: TileMap | null;
 
   /**
    * Constructs a new map object, which can be added to an {@link ObjectGroup}.
@@ -3703,7 +3703,7 @@ interface ToolDefinition {
   /**
    * Called when the active map was changed.
    */
-  mapChanged?(this: Tool, oldMap: TileMap, newMap: TileMap): void;
+  mapChanged?(this: Tool, oldMap: TileMap | null, newMap: TileMap | null): void;
 
   /**
    * Called when the hovered tile position changed.
