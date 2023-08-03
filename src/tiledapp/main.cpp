@@ -92,6 +92,7 @@ private:
     void showVersion();
     void justQuit();
     void setDisableOpenGL();
+    void setProject();
     void setExportMap();
     void setExportTileset();
     void setExportEmbedTilesets();
@@ -118,6 +119,16 @@ private:
 
 static void initializePluginsAndExtensions()
 {
+    // Load the project without restoring the session
+    if (!Preferences::startupProject().isEmpty()) {
+        if (auto project = Project::load(Preferences::startupProject())) {
+            ProjectManager::instance()->setProject(std::move(project));
+        } else {
+            qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to load project '%1'.")
+                                    .arg(Preferences::startupProject());
+        }
+    }
+
     PluginManager::instance()->loadPlugins();
     ScriptManager::instance().ensureInitialized();
 }
@@ -193,6 +204,11 @@ CommandLineHandler::CommandLineHandler()
                 QLatin1String("--disable-opengl"),
                 tr("Disable hardware accelerated rendering"));
 
+    option<&CommandLineHandler::setProject>(
+                QChar(),
+                QLatin1String("--project"),
+                tr("Project file to load"));
+
     option<&CommandLineHandler::setExportMap>(
                 QChar(),
                 QLatin1String("--export-map"),
@@ -262,6 +278,22 @@ void CommandLineHandler::justQuit()
 void CommandLineHandler::setDisableOpenGL()
 {
     disableOpenGL = true;
+}
+
+void CommandLineHandler::setProject()
+{
+    const QString projectFile = nextArgument();
+    const QFileInfo fileInfo(projectFile);
+
+    if (fileInfo.suffix() != QLatin1String("tiled-project")) {
+        qWarning().noquote() << QCoreApplication::translate("Command line", "Project file expected: --project <.tiled-project file>");
+        justQuit();
+    } else if (!fileInfo.exists()) {
+        qWarning().noquote() << QCoreApplication::translate("Command line", "Project file '%1' not found.").arg(projectFile);
+        justQuit();
+    } else {
+        Preferences::setStartupProject(QDir::cleanPath(fileInfo.absoluteFilePath()));
+    }
 }
 
 void CommandLineHandler::setExportMap()
