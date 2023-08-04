@@ -10,6 +10,7 @@
 * Scripting: Added Geometry interface with line and ellipse helpers
 * Scripting: Added WangSet.effectiveTypeForColor
 * Fixed crash when changing file property of custom class (#3783)
+* Fixed loading of invalid color properties (#3793)
 * Fixed object preview position with parallax factor on group layer (#3669)
 * Fixed hover highlight rendering with active parallax factor (#3669)
 * Fixed updating of object selection outlines when changing parallax factor (#3669)
