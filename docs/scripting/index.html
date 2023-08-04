@@ -107,6 +107,7 @@
 								<li class="tsd-kind-namespace"><a href="modules/Base64.html" class="tsd-kind-icon">Base64</a></li>
 								<li class="tsd-kind-namespace"><a href="modules/File.html" class="tsd-kind-icon">File</a></li>
 								<li class="tsd-kind-namespace"><a href="modules/FileInfo.html" class="tsd-kind-icon">File<wbr>Info</a></li>
+								<li class="tsd-kind-namespace"><a href="modules/Geometry.html" class="tsd-kind-icon">Geometry</a></li>
 								<li class="tsd-kind-namespace"><a href="modules/Qt.html" class="tsd-kind-icon">Qt</a></li>
 								<li class="tsd-kind-namespace"><a href="modules/Tiled.html" class="tsd-kind-icon">Tiled</a></li>
 								<li class="tsd-kind-namespace"><a href="modules/tiled.html" class="tsd-kind-icon">tiled</a></li>
@@ -170,6 +171,7 @@
 								<li class="tsd-kind-interface"><a href="interfaces/TilesetFormat.html" class="tsd-kind-icon">Tileset<wbr>Format</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/TilesetsView.html" class="tsd-kind-icon">Tilesets<wbr>View</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/Tool.html" class="tsd-kind-icon">Tool</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/ToolDefinition.html" class="tsd-kind-icon">Tool<wbr>Definition</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/cell.html" class="tsd-kind-icon">cell</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/color.html" class="tsd-kind-icon">color</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/frame.html" class="tsd-kind-icon">frame</a></li>
@@ -182,6 +184,7 @@
 						<section class="tsd-index-section ">
 							<h3>Type aliases</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-type-alias"><a href="index.html#FileFilter" class="tsd-kind-icon">File<wbr>Filter</a></li>
 								<li class="tsd-kind-type-alias"><a href="index.html#MapObjectShape" class="tsd-kind-icon">Map<wbr>Object<wbr>Shape</a></li>
 								<li class="tsd-kind-type-alias"><a href="index.html#MenuItem" class="tsd-kind-icon">Menu<wbr>Item</a></li>
 								<li class="tsd-kind-type-alias"><a href="index.html#Polygon" class="tsd-kind-icon">Polygon</a></li>
@@ -193,6 +196,23 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Type aliases</h2>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias">
+					<a name="FileFilter" class="tsd-anchor"></a>
+					<h3>File<wbr>Filter</h3>
+					<div class="tsd-signature tsd-kind-icon">File<wbr>Filter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A string used to show only certain types of files when prompting the user to select a file path.</p>
+						</div>
+						<p>Used in <a href="classes/FileEdit.html">FileEdit</a> and in <a href="modules/tiled.html#promptOpenFile">tiled.promptOpenFile</a> and related methods.
+						The filter is given in a format like <code>&quot;Images (*.png *.xpm *.jpg)&quot;</code>.</p>
+						<p>If you want multiple filters, separate them with &#39;;;&#39;, for example:</p>
+						<pre><code><span style="color: #CE9178">&quot;Images (*.png *.xpm *.jpg);;Text files (*.txt);;XML files (*.xml)&quot;</span>
+</code></pre>
+					</div>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias">
 					<a name="MapObjectShape" class="tsd-anchor"></a>
 					<h3>Map<wbr>Object<wbr>Shape</h3>
@@ -262,6 +282,9 @@
 					</li>
 					<li class=" tsd-kind-namespace">
 						<a href="modules/FileInfo.html">File<wbr>Info</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="modules/Geometry.html">Geometry</a>
 					</li>
 					<li class=" tsd-kind-namespace">
 						<a href="modules/Qt.html">Qt</a>
@@ -412,6 +435,9 @@
 						<a href="interfaces/Tool.html" class="tsd-kind-icon">Tool</a>
 					</li>
 					<li class=" tsd-kind-interface">
+						<a href="interfaces/ToolDefinition.html" class="tsd-kind-icon">Tool<wbr>Definition</a>
+					</li>
+					<li class=" tsd-kind-interface">
 						<a href="interfaces/cell.html" class="tsd-kind-icon">cell</a>
 					</li>
 					<li class=" tsd-kind-interface">
@@ -431,6 +457,9 @@
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/size.html" class="tsd-kind-icon">size</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="index.html#FileFilter" class="tsd-kind-icon">File<wbr>Filter</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="index.html#MapObjectShape" class="tsd-kind-icon">Map<wbr>Object<wbr>Shape</a>

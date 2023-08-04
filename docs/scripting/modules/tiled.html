@@ -144,6 +144,10 @@
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#objectRef" class="tsd-kind-icon">object<wbr>Ref</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#open" class="tsd-kind-icon">open</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#prompt" class="tsd-kind-icon">prompt</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#promptDirectory" class="tsd-kind-icon">prompt<wbr>Directory</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#promptOpenFile" class="tsd-kind-icon">prompt<wbr>Open<wbr>File</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#promptOpenFiles" class="tsd-kind-icon">prompt<wbr>Open<wbr>Files</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#promptSaveFile" class="tsd-kind-icon">prompt<wbr>Save<wbr>File</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#propertyValue" class="tsd-kind-icon">property<wbr>Value</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#registerAction" class="tsd-kind-icon">register<wbr>Action</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#registerMapFormat" class="tsd-kind-icon">register<wbr>Map<wbr>Format</a></li>
@@ -821,6 +825,90 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+					<a name="promptDirectory" class="tsd-anchor"></a>
+					<h3>prompt<wbr>Directory</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+						<li class="tsd-signature tsd-kind-icon">prompt<wbr>Directory<span class="tsd-signature-symbol">(</span>defaultDir<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, title<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Shows a dialog which asks the user to choose an existing directory.
+									Optionally override the starting directory of the dialog or its title.</p>
+								</div>
+								<p>Returns the absolute path of the chosen directory, or an empty string if the user cancels the dialog.</p>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+					<a name="promptOpenFile" class="tsd-anchor"></a>
+					<h3>prompt<wbr>Open<wbr>File</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+						<li class="tsd-signature tsd-kind-icon">prompt<wbr>Open<wbr>File<span class="tsd-signature-symbol">(</span>defaultDir<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, filters<span class="tsd-signature-symbol">?: </span><a href="../index.html#FileFilter" class="tsd-signature-type" data-tsd-kind="Type alias">FileFilter</a>, title<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Shows a dialog which asks the user to choose an existing file.
+										Optionally override the starting directory of the dialog or its title.
+									You can also restrict to only certain file types by specifying <a href="../index.html#FileFilter">filters</a>.</p>
+								</div>
+								<p>Returns the absolute path of the chosen file, or an empty string if the user cancels the dialog.</p>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+					<a name="promptOpenFiles" class="tsd-anchor"></a>
+					<h3>prompt<wbr>Open<wbr>Files</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+						<li class="tsd-signature tsd-kind-icon">prompt<wbr>Open<wbr>Files<span class="tsd-signature-symbol">(</span>defaultDir<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, filters<span class="tsd-signature-symbol">?: </span><a href="../index.html#FileFilter" class="tsd-signature-type" data-tsd-kind="Type alias">FileFilter</a>, title<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Shows a dialog which asks the user to choose one or more existing files.
+										Optionally override the starting directory of the dialog or its title.
+									You can also restrict to only certain file types by specifying <a href="../index.html#FileFilter">filters</a>.</p>
+								</div>
+								<p>Returns an array of the absolute paths of the chosen files, or an empty array if the user cancels the dialog.</p>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+					<a name="promptSaveFile" class="tsd-anchor"></a>
+					<h3>prompt<wbr>Save<wbr>File</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+						<li class="tsd-signature tsd-kind-icon">prompt<wbr>Save<wbr>File<span class="tsd-signature-symbol">(</span>defaultDir<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, filters<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, title<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Shows a dialog which asks the user to choose a destination for saving a file.
+										If the user chooses a file path which already exists, they will be asked to confirm that they want to overwrite the file.
+										Optionally override the starting directory of the dialog or its title.
+									You can also restrict to only certain file types by specifying <a href="../index.html#FileFilter">filters</a>.</p>
+								</div>
+								<p>Returns the absolute path of the chosen file, or an empty string if the user cancels the dialog.</p>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
 					<a name="propertyValue" class="tsd-anchor"></a>
 					<h3>property<wbr>Value</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
@@ -975,7 +1063,7 @@
 					<a name="registerTool" class="tsd-anchor"></a>
 					<h3>register<wbr>Tool</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
-						<li class="tsd-signature tsd-kind-icon">register<wbr>Tool<span class="tsd-signature-symbol">(</span>shortName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, tool<span class="tsd-signature-symbol">: </span><a href="../interfaces/Tool.html" class="tsd-signature-type" data-tsd-kind="Interface">Tool</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/Tool.html" class="tsd-signature-type" data-tsd-kind="Interface">Tool</a></li>
+						<li class="tsd-signature tsd-kind-icon">register<wbr>Tool<span class="tsd-signature-symbol">(</span>shortName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, tool<span class="tsd-signature-symbol">: </span><a href="../interfaces/ToolDefinition.html" class="tsd-signature-type" data-tsd-kind="Interface">ToolDefinition</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/Tool.html" class="tsd-signature-type" data-tsd-kind="Interface">Tool</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -1192,6 +1280,9 @@
 						<a href="FileInfo.html">File<wbr>Info</a>
 					</li>
 					<li class=" tsd-kind-namespace">
+						<a href="Geometry.html">Geometry</a>
+					</li>
+					<li class=" tsd-kind-namespace">
 						<a href="Qt.html">Qt</a>
 					</li>
 					<li class=" tsd-kind-namespace">
@@ -1317,6 +1408,18 @@
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-namespace">
 						<a href="tiled.html#prompt" class="tsd-kind-icon">prompt</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-namespace">
+						<a href="tiled.html#promptDirectory" class="tsd-kind-icon">prompt<wbr>Directory</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-namespace">
+						<a href="tiled.html#promptOpenFile" class="tsd-kind-icon">prompt<wbr>Open<wbr>File</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-namespace">
+						<a href="tiled.html#promptOpenFiles" class="tsd-kind-icon">prompt<wbr>Open<wbr>Files</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-namespace">
+						<a href="tiled.html#promptSaveFile" class="tsd-kind-icon">prompt<wbr>Save<wbr>File</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-namespace">
 						<a href="tiled.html#propertyValue" class="tsd-kind-icon">property<wbr>Value</a>

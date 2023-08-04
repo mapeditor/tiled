@@ -12,7 +12,7 @@
 	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>QUrl | Tiled Scripting API</title>
+	<title>Geometry | Tiled Scripting API</title>
 	<meta name="description" content="Documentation for Tiled Scripting API">
 	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
@@ -76,13 +76,10 @@
 					<a href="../index.html">Tiled Scripting API</a>
 				</li>
 				<li>
-					<a href="../modules/Qt.html">Qt</a>
-				</li>
-				<li>
-					<a href="Qt.QUrl.html">QUrl</a>
+					<a href="Geometry.html">Geometry</a>
 				</li>
 			</ul>
-			<h1>Class QUrl</h1>
+			<h1>Namespace Geometry</h1>
 		</div>
 	</div>
 </header>
@@ -92,60 +89,38 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Used in <a href="FileEdit.html">FileEdit</a> as the URL of the currently selected file.</p>
+						<p>Provides functions to rasterize lines and ellipses.</p>
 					</div>
+					<dl class="tsd-comment-tags">
+						<dt>since</dt>
+						<dd><p>1.10.2</p>
+						</dd>
+					</dl>
 				</div>
-			</section>
-			<section class="tsd-panel tsd-hierarchy">
-				<h3>Hierarchy</h3>
-				<ul class="tsd-hierarchy">
-					<li>
-						<span class="target">QUrl</span>
-					</li>
-				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Constructors</h3>
+							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="Qt.QUrl.html#constructor" class="tsd-kind-icon">constructor</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Methods</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Qt.QUrl.html#toString" class="tsd-kind-icon">to<wbr>String</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="Geometry.html#ellipseRegion" class="tsd-kind-icon">ellipse<wbr>Region</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="Geometry.html#pointsOnEllipse" class="tsd-kind-icon">points<wbr>OnEllipse</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="Geometry.html#pointsOnLine" class="tsd-kind-icon">points<wbr>OnLine</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
-					<a name="constructor" class="tsd-anchor"></a>
-					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new QUrl<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QUrl.html" class="tsd-signature-type" data-tsd-kind="Class">QUrl</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-						</li>
-					</ul>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="toString" class="tsd-anchor"></a>
-					<h3>to<wbr>String</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">to<wbr>String<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+					<a name="ellipseRegion" class="tsd-anchor"></a>
+					<h3>ellipse<wbr>Region</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+						<li class="tsd-signature tsd-kind-icon">ellipse<wbr>Region<span class="tsd-signature-symbol">(</span>rect<span class="tsd-signature-symbol">: </span><a href="../interfaces/rect.html" class="tsd-signature-type" data-tsd-kind="Interface">rect</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/region.html" class="tsd-signature-type" data-tsd-kind="Interface">region</a></li>
+						<li class="tsd-signature tsd-kind-icon">ellipse<wbr>Region<span class="tsd-signature-symbol">(</span>x0<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y0<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, x1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/region.html" class="tsd-signature-type" data-tsd-kind="Interface">region</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -153,8 +128,58 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Get a string representation of the file.</p>
+									<p>Returns an elliptical region based on the given bounding rectangle.</p>
 								</div>
+							</div>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns an elliptical region based on a bounding rectangle given by x0,y0
+									(top-left) and x1,y1 (bottom-right), inclusive.</p>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+					<a name="pointsOnEllipse" class="tsd-anchor"></a>
+					<h3>points<wbr>OnEllipse</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+						<li class="tsd-signature tsd-kind-icon">points<wbr>OnEllipse<span class="tsd-signature-symbol">(</span>center<span class="tsd-signature-symbol">: </span><a href="../interfaces/point.html" class="tsd-signature-type" data-tsd-kind="Interface">point</a>, radiusX<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, radiusY<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/point.html" class="tsd-signature-type" data-tsd-kind="Interface">point</a><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns a lists of points on an ellipse, with <code>center</code> as the midpoint
+									and with the given radii.</p>
+								</div>
+								<p>May return duplicate points.</p>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+					<a name="pointsOnLine" class="tsd-anchor"></a>
+					<h3>points<wbr>OnLine</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+						<li class="tsd-signature tsd-kind-icon">points<wbr>OnLine<span class="tsd-signature-symbol">(</span>a<span class="tsd-signature-symbol">: </span><a href="../interfaces/point.html" class="tsd-signature-type" data-tsd-kind="Interface">point</a>, b<span class="tsd-signature-symbol">: </span><a href="../interfaces/point.html" class="tsd-signature-type" data-tsd-kind="Interface">point</a>, manhattan<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/point.html" class="tsd-signature-type" data-tsd-kind="Interface">point</a><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns the lists of points on a line from <code>a</code> to <code>b</code>.</p>
+								</div>
+								<p>When the <code>manhattan</code> option (named after &quot;Manhattan distance&quot;) is set to
+								<code>true</code>, the points on the line can&#39;t take diagonal steps.</p>
 							</div>
 						</li>
 					</ul>
@@ -168,125 +193,38 @@
 						<a href="../index.html">Exports</a>
 					</li>
 					<li class=" tsd-kind-namespace">
-						<a href="../modules/Base64.html">Base64</a>
+						<a href="Base64.html">Base64</a>
 					</li>
 					<li class=" tsd-kind-namespace">
-						<a href="../modules/File.html">File</a>
+						<a href="File.html">File</a>
 					</li>
 					<li class=" tsd-kind-namespace">
-						<a href="../modules/FileInfo.html">File<wbr>Info</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="../modules/Geometry.html">Geometry</a>
+						<a href="FileInfo.html">File<wbr>Info</a>
 					</li>
 					<li class="current tsd-kind-namespace">
-						<a href="../modules/Qt.html">Qt</a>
+						<a href="Geometry.html">Geometry</a>
 					</li>
 					<li class=" tsd-kind-namespace">
-						<a href="../modules/Tiled.html">Tiled</a>
+						<a href="Qt.html">Qt</a>
 					</li>
 					<li class=" tsd-kind-namespace">
-						<a href="../modules/tiled.html">tiled</a>
+						<a href="Tiled.html">Tiled</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="tiled.html">tiled</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-namespace">
-						<a href="Qt.QAbstractButton.html" class="tsd-kind-icon">QAbstract<wbr>Button</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-namespace">
-						<a href="Qt.QCheckBox.html" class="tsd-kind-icon">QCheck<wbr>Box</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-namespace">
-						<a href="Qt.QComboBox.html" class="tsd-kind-icon">QCombo<wbr>Box</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-namespace">
-						<a href="Qt.QDoubleSpinBox.html" class="tsd-kind-icon">QDouble<wbr>Spin<wbr>Box</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-namespace">
-						<a href="Qt.QFrame.html" class="tsd-kind-icon">QFrame</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-namespace">
-						<a href="Qt.QLabel.html" class="tsd-kind-icon">QLabel</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-namespace">
-						<a href="Qt.QLineEdit.html" class="tsd-kind-icon">QLine<wbr>Edit</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-namespace">
-						<a href="Qt.QPushButton.html" class="tsd-kind-icon">QPush<wbr>Button</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-namespace">
-						<a href="Qt.QSlider.html" class="tsd-kind-icon">QSlider</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-namespace">
-						<a href="Qt.QTextEdit.html" class="tsd-kind-icon">QText<wbr>Edit</a>
-					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-class tsd-parent-kind-namespace">
-						<a href="Qt.QUrl.html" class="tsd-kind-icon">QUrl</a>
-						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="Qt.QUrl.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Qt.QUrl.html#toString" class="tsd-kind-icon">to<wbr>String</a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<ul class="after-current">
-					<li class=" tsd-kind-class tsd-parent-kind-namespace">
-						<a href="Qt.QWidget.html" class="tsd-kind-icon">QWidget</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#Alignment" class="tsd-kind-icon">Alignment</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#CheckState" class="tsd-kind-icon">Check<wbr>State</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#AlignBottom" class="tsd-kind-icon">Align<wbr>Bottom</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#AlignCenter" class="tsd-kind-icon">Align<wbr>Center</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#AlignHCenter" class="tsd-kind-icon">AlignHCenter</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#AlignJustify" class="tsd-kind-icon">Align<wbr>Justify</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#AlignLeft" class="tsd-kind-icon">Align<wbr>Left</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#AlignRight" class="tsd-kind-icon">Align<wbr>Right</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#AlignTop" class="tsd-kind-icon">Align<wbr>Top</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#AlignVCenter" class="tsd-kind-icon">AlignVCenter</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#Checked" class="tsd-kind-icon">Checked</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#PartiallyChecked" class="tsd-kind-icon">Partially<wbr>Checked</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#Unchecked" class="tsd-kind-icon">Unchecked</a>
+					<li class=" tsd-kind-function tsd-parent-kind-namespace">
+						<a href="Geometry.html#ellipseRegion" class="tsd-kind-icon">ellipse<wbr>Region</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#point" class="tsd-kind-icon">point</a>
+						<a href="Geometry.html#pointsOnEllipse" class="tsd-kind-icon">points<wbr>OnEllipse</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#rect" class="tsd-kind-icon">rect</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-namespace">
-						<a href="../modules/Qt.html#size" class="tsd-kind-icon">size</a>
+						<a href="Geometry.html#pointsOnLine" class="tsd-kind-icon">points<wbr>OnLine</a>
 					</li>
 				</ul>
 			</nav>

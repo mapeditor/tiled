@@ -142,6 +142,7 @@
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="WangSet.html#colorName" class="tsd-kind-icon">color<wbr>Name</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="WangSet.html#effectiveTypeForColor" class="tsd-kind-icon">effective<wbr>Type<wbr>For<wbr>Color</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="WangSet.html#properties" class="tsd-kind-icon">properties</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="WangSet.html#property" class="tsd-kind-icon">property</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="WangSet.html#removeProperty" class="tsd-kind-icon">remove<wbr>Property</a></li>
@@ -181,7 +182,7 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="asset" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> asset</h3>
-					<div class="tsd-signature tsd-kind-icon">asset<span class="tsd-signature-symbol">:</span> <a href="Asset.html" class="tsd-signature-type" data-tsd-kind="Class">Asset</a></div>
+					<div class="tsd-signature tsd-kind-icon">asset<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="Asset.html" class="tsd-signature-type" data-tsd-kind="Class">Asset</a></div>
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="TiledObject.html">TiledObject</a>.<a href="TiledObject.html#asset">asset</a></p>
 					</aside>
@@ -324,6 +325,32 @@
 								<dl class="tsd-comment-tags">
 									<dt>since</dt>
 									<dd><p>1.8</p>
+									</dd>
+								</dl>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="effectiveTypeForColor" class="tsd-anchor"></a>
+					<h3>effective<wbr>Type<wbr>For<wbr>Color</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">effective<wbr>Type<wbr>For<wbr>Color<span class="tsd-signature-symbol">(</span>color<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">typeof </span><a href="WangSet.html#Edge" class="tsd-signature-type" data-tsd-kind="Property">Edge</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="WangSet.html#Corner" class="tsd-signature-type" data-tsd-kind="Property">Corner</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="WangSet.html#Mixed" class="tsd-signature-type" data-tsd-kind="Property">Mixed</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns the effective WangSet type for the given color.</p>
+								</div>
+								<p>Always equals the <a href="WangSet.html#type">type</a> of the WangSet in case of corner or edge
+									sets. In case of a mixed set, it could also be <a href="WangSet.html#Corner">WangSet.Corner</a> or
+								<a href="WangSet.html#Edge">WangSet.Edge</a>, when the given color is only used in that context.</p>
+								<dl class="tsd-comment-tags">
+									<dt>since</dt>
+									<dd><p>1.10.2</p>
 									</dd>
 								</dl>
 							</div>
@@ -680,6 +707,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="WangSet.html#colorName" class="tsd-kind-icon">color<wbr>Name</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="WangSet.html#effectiveTypeForColor" class="tsd-kind-icon">effective<wbr>Type<wbr>For<wbr>Color</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="WangSet.html#properties" class="tsd-kind-icon">properties</a>

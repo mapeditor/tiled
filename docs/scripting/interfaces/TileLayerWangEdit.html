@@ -124,8 +124,10 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="TileLayerWangEdit.html#correctionsEnabled" class="tsd-kind-icon">corrections<wbr>Enabled</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="TileLayerWangEdit.html#erasingEnabled" class="tsd-kind-icon">erasing<wbr>Enabled</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="TileLayerWangEdit.html#mergeable" class="tsd-kind-icon">mergeable</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="TileLayerWangEdit.html#target" class="tsd-kind-icon">target</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="TileLayerWangEdit.html#wangSet" class="tsd-kind-icon">wang<wbr>Set</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -158,6 +160,19 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="erasingEnabled" class="tsd-anchor"></a>
+					<h3>erasing<wbr>Enabled</h3>
+					<div class="tsd-signature tsd-kind-icon">erasing<wbr>Enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Whether the empty tile is considered when looking for matching tiles.
+							Defaults to <code>true</code>.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="mergeable" class="tsd-anchor"></a>
 					<h3>mergeable</h3>
 					<div class="tsd-signature tsd-kind-icon">mergeable<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
@@ -179,6 +194,19 @@
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>The target layer of this edit object.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="wangSet" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> wang<wbr>Set</h3>
+					<div class="tsd-signature tsd-kind-icon">wang<wbr>Set<span class="tsd-signature-symbol">:</span> <a href="../classes/WangSet.html" class="tsd-signature-type" data-tsd-kind="Class">WangSet</a></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The Wang set that will be used when <a href="TileLayerWangEdit.html#apply">apply</a> or <a href="TileLayerWangEdit.html#generate">generate</a> is
+							called.</p>
 						</div>
 					</div>
 				</section>
@@ -364,10 +392,16 @@
 								<a href="TileLayerWangEdit.html#correctionsEnabled" class="tsd-kind-icon">corrections<wbr>Enabled</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="TileLayerWangEdit.html#erasingEnabled" class="tsd-kind-icon">erasing<wbr>Enabled</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="TileLayerWangEdit.html#mergeable" class="tsd-kind-icon">mergeable</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="TileLayerWangEdit.html#target" class="tsd-kind-icon">target</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="TileLayerWangEdit.html#wangSet" class="tsd-kind-icon">wang<wbr>Set</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="TileLayerWangEdit.html#apply" class="tsd-kind-icon">apply</a>
