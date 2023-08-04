@@ -1,4 +1,4 @@
-### Unreleased
+### Tiled 1.10.2 (4 August 2023)
 
 * Added support for setting custom properties on the project (#2903)
 * Added feedback when Terrain Brush and Terrain Fill Mode can't find a tile
