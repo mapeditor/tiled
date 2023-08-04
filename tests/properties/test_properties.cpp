@@ -244,6 +244,8 @@ private slots:
     void toPropertyValue();
     void toPropertyValue_data();
 
+    void enumWith31Flags();
+
     void loadAndSavePropertyTypes();
     void loadCircularReference();
     void loadEnumInNestedClass();
@@ -334,6 +336,48 @@ void test_Properties::toPropertyValue_data()
     QTest::newRow("object") << QStringLiteral("1") << QStringLiteral("object") << QVariant::fromValue(ObjectRef { 1 });
 
     // todo: test enums and classes, and also add a test for toExportValue
+}
+
+void test_Properties::enumWith31Flags()
+{
+    EnumPropertyType flagsAsString("flagsAsString");
+    flagsAsString.storageType = EnumPropertyType::StringValue;
+    flagsAsString.valuesAsFlags = true;
+
+    EnumPropertyType flagsAsInt("flagsAsInt");
+    flagsAsInt.storageType = EnumPropertyType::IntValue;
+    flagsAsInt.valuesAsFlags = true;
+
+    QString allFlagsString;
+    int allFlagsInt = 0;
+
+    for (int i = 1; i <= 31; ++i) {
+        flagsAsString.values.append(QString::number(i));
+        flagsAsInt.values.append(QString::number(i));
+
+        if (!allFlagsString.isEmpty())
+            allFlagsString.append(QLatin1Char(','));
+        allFlagsString.append(QString::number(i));
+        allFlagsInt |= (1 << (i - 1));
+    }
+
+    ExportContext context;
+
+    QVariant property1 = flagsAsString.toPropertyValue(QStringLiteral("1"), context);
+    QVariant propertyAll = flagsAsString.toPropertyValue(allFlagsString, context);
+
+    QCOMPARE(property1, QVariant::fromValue(PropertyValue(1, flagsAsString.id)));
+    QCOMPARE(propertyAll, QVariant::fromValue(PropertyValue(allFlagsInt, flagsAsString.id)));
+
+    ExportValue exportString1 = flagsAsString.toExportValue(property1.value<PropertyValue>().value, context);
+    ExportValue exportStringAll = flagsAsString.toExportValue(propertyAll.value<PropertyValue>().value, context);
+    ExportValue exportInt1 = flagsAsInt.toExportValue(property1.value<PropertyValue>().value, context);
+    ExportValue exportIntAll = flagsAsInt.toExportValue(propertyAll.value<PropertyValue>().value, context);
+
+    QCOMPARE(exportString1.value, QStringLiteral("1"));
+    QCOMPARE(exportStringAll.value, allFlagsString);
+    QCOMPARE(exportInt1.value, 1);
+    QCOMPARE(exportIntAll.value, allFlagsInt);
 }
 
 void test_Properties::loadAndSavePropertyTypes()
