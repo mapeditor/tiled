@@ -92,17 +92,16 @@ WangBrush::WangBrush(QObject *parent)
     // Set up toolbar action for toggling fill full tiles mode,
     // which basically makes the brush bigger.
 
-    QIcon rotateRightIcon(QLatin1String(":images/scalable/fill-full-tiles.svg"));
+    QIcon fillFullTilesIcon(QLatin1String(":images/scalable/fill-full-tiles.svg"));
 
     mToggleFillFullTiles = new QAction(this);
     mToggleFillFullTiles->setCheckable(true);
-    mToggleFillFullTiles->setIcon(rotateRightIcon);
+    mToggleFillFullTiles->setIcon(fillFullTilesIcon);
     mToggleFillFullTiles->setText(tr("Fill Full Tiles"));
 
     ActionManager::registerAction(mToggleFillFullTiles, "ToggleFillFullTiles");
-    connect(mToggleFillFullTiles, &QAction::toggled, [this](bool isChecked) {
-        mIsFillFullTilesByDefault = isChecked;
-        mIsTileMode = mIsFillFullTilesByDefault;
+    connect(mToggleFillFullTiles, &QAction::toggled, this, [this](bool checked) {
+        mIsTileMode = checked;
         stateChanged();
     });
 }
@@ -169,7 +168,7 @@ void WangBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
 void WangBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
     const bool isControlPressed = modifiers & Qt::ControlModifier;
-    const bool isTileMode = isControlPressed != mIsFillFullTilesByDefault;
+    const bool isTileMode = isControlPressed != mToggleFillFullTiles->isChecked();
     const bool rotationalSymmetry = modifiers & Qt::AltModifier;
     const bool lineMode = modifiers & Qt::ShiftModifier;
 

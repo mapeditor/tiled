@@ -125,7 +125,6 @@ private:
     bool mLineStartSet = false;
     BrushBehavior mBrushBehavior = Free;
     QAction *mToggleFillFullTiles;
-    bool mIsFillFullTilesByDefault = false;
 };
 
 } // namespace Tiled
