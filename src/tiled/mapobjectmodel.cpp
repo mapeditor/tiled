@@ -155,8 +155,17 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
         case Qt::DisplayRole:
         case Qt::EditRole:
             switch (index.column()) {
-            case Name:
-                return mapObject->name();
+            case Name: {
+                QString name = mapObject->name();
+
+                // Display the tile image file name as a fallback
+                if (name.isEmpty())
+                    if (Tile *tile = mapObject->cell().tile())
+                        if (!tile->imageSource().isEmpty())
+                            name = QFileInfo(tile->imageSource().fileName()).completeBaseName();
+
+                return name;
+            }
             case Class:
                 return mapObject->effectiveClassName();
             case Id:
@@ -173,14 +182,25 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
             if (index.column() == Name)
                 return ObjectIconManager::instance().iconForObject(*mapObject);
             break;
-        case Qt::ForegroundRole:
-            if (index.column() == 1) {
-                const QPalette palette = QApplication::palette();
-                const auto classColorGroup = mapObject->className().isEmpty() ? QPalette::Disabled
-                                                                              : QPalette::Active;
-                return palette.brush(classColorGroup, QPalette::WindowText);
+        case Qt::ForegroundRole: {
+            bool disabled = false;
+
+            switch (index.column()) {
+            case Name:
+                disabled = mapObject->name().isEmpty();
+                break;
+            case Class:
+                disabled = mapObject->className().isEmpty();
+                break;
             }
+
+            if (disabled) {
+                const QPalette palette = QApplication::palette();
+                return palette.brush(QPalette::Disabled, QPalette::WindowText);
+            }
+
             return QVariant();
+        }
         case Qt::CheckStateRole:
             if (index.column() > 0)
                 return QVariant();
@@ -191,6 +211,7 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
             return QVariant();
         }
     }
+
     if (Layer *layer = toLayer(index)) {
         switch (role) {
         case Qt::DisplayRole:
@@ -214,6 +235,7 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
             return QVariant();
         }
     }
+
     return QVariant();
 }
 

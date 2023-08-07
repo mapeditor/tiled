@@ -5365,10 +5365,10 @@ void QtFlagPropertyManager::setValue(QtProperty *property, int val)
     if (data.val == val)
         return;
 
-    if (val > (1 << data.flagNames.count()) - 1)
+    if (val < 0)
         return;
 
-    if (val < 0)
+    if (static_cast<unsigned>(val) >= (1u << data.flagNames.count()))
         return;
 
     data.val = val;

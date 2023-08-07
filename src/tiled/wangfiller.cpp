@@ -182,8 +182,13 @@ static void updateAdjacent(WangFiller::CellInfo &adjacentInfo, WangId wangId, in
     }
 }
 
+/**
+ * Applies the scheduled Wang changes to the \a target layer.
+ */
 void WangFiller::apply(TileLayer &target)
 {
+    mInvalidRegion = QRegion();
+
     auto &grid = mFillRegion.grid;
     auto &region = mFillRegion.region;
 
@@ -249,7 +254,7 @@ void WangFiller::apply(TileLayer &target)
 
         Cell cell;
         if (!findBestMatch(target, grid, QPoint(x, y), cell)) {
-            // TODO: error feedback
+            mInvalidRegion += QRect(x, y, 1, 1);
             return;
         }
 

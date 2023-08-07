@@ -451,6 +451,8 @@ DynamicLibrary {
         "scriptfileformatwrappers.h",
         "scriptfileinfo.cpp",
         "scriptfileinfo.h",
+        "scriptgeometry.cpp",
+        "scriptgeometry.h",
         "scriptimage.cpp",
         "scriptimage.h",
         "scriptmanager.cpp",

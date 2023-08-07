@@ -22,6 +22,7 @@
 #include "brushitem.h"
 #include "mapdocument.h"
 #include "stampactions.h"
+#include "wangbrush.h"
 #include "wangfiller.h"
 
 #include <QAction>
@@ -32,9 +33,10 @@ AbstractTileFillTool::AbstractTileFillTool(Id id,
                                            const QString &name,
                                            const QIcon &icon,
                                            const QKeySequence &shortcut,
-                                           BrushItem *brushItem,
                                            QObject *parent)
-    : AbstractTileTool(id, name, icon, shortcut, brushItem, parent)
+    : AbstractTileTool(id, name, icon, shortcut,
+                       new WangBrushItem,
+                       parent)
     , mFillMethod(TileFill)
     , mStampActions(new StampActions(this))
     , mWangSet(nullptr)
@@ -194,6 +196,8 @@ void AbstractTileFillTool::updatePreview(const QRegion &fillRegion)
     mFillBounds = fillRegion.boundingRect();
     auto preview = SharedMap::create(mapDocument()->map()->parameters());
 
+    static_cast<WangBrushItem*>(brushItem())->setInvalidTiles(QRegion());
+
     switch (mFillMethod) {
     case TileFill:
         fillWithStamp(*preview, mStamp, fillRegion);
@@ -230,6 +234,8 @@ void AbstractTileFillTool::updatePreview(const QRegion &fillRegion)
 void AbstractTileFillTool::clearOverlay()
 {
     brushItem()->clear();
+    static_cast<WangBrushItem*>(brushItem())->setInvalidTiles(QRegion());
+
     mPreviewMap.clear();
 }
 
@@ -289,6 +295,8 @@ void AbstractTileFillTool::wangFill(TileLayer &tileLayerToFill,
     WangFiller wangFiller(*mWangSet, backgroundTileLayer, mapDocument()->renderer());
     wangFiller.setRegion(region);
     wangFiller.apply(tileLayerToFill);
+
+    static_cast<WangBrushItem*>(brushItem())->setInvalidTiles(wangFiller.invalidRegion());
 }
 
 void AbstractTileFillTool::fillWithStamp(Map &map,

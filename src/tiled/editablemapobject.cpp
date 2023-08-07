@@ -61,6 +61,7 @@ EditableMapObject::~EditableMapObject()
     EditableManager::instance().remove(this);
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 QJSValue EditableMapObject::polygon() const
 {
     QJSEngine *engine = ScriptManager::instance().engine();
@@ -77,6 +78,7 @@ QJSValue EditableMapObject::polygon() const
 
     return array;
 }
+#endif
 
 EditableTile *EditableMapObject::tile() const
 {
@@ -166,6 +168,7 @@ void EditableMapObject::setVisible(bool visible)
     setMapObjectProperty(MapObject::VisibleProperty, visible);
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 void EditableMapObject::setPolygon(QJSValue polygonValue)
 {
     if (!polygonValue.isArray()) {
@@ -189,6 +192,12 @@ void EditableMapObject::setPolygon(QJSValue polygonValue)
         polygon.append(point);
     }
 
+    setPolygon(polygon);
+}
+#endif
+
+void EditableMapObject::setPolygon(const QPolygonF &polygon)
+{
     if (Document *doc = document()) {
         asset()->push(new ChangePolygon(doc, mapObject(), polygon));
     } else if (!checkReadOnly()) {

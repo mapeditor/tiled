@@ -6037,8 +6037,8 @@ Lütfen belirli bir biçim seçin.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is 32.</source>
-        <translation>Bayrak olarak depolanan değerleri olan enum için çok fazla değer. En fazla bit bayrağı sayısı 32&apos;dir.</translation>
+        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is %1.</source>
+        <translation>Bayrak olarak depolanan değerleri olan enum için çok fazla değer. En fazla bit bayrağı sayısı %1&apos;dir.</translation>
     </message>
     <message>
         <location line="+69"/>

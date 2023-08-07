@@ -6050,8 +6050,8 @@ Please select specific format.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is 32.</source>
-        <translation>Too many values for enum with values stored as flags. Maximum number of bit flags is 32.</translation>
+        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is %1.</source>
+        <translation>Too many values for enum with values stored as flags. Maximum number of bit flags is %1.</translation>
     </message>
     <message>
         <location line="+69"/>

@@ -6061,8 +6061,8 @@ Por favor, selecione um formato específico.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is 32.</source>
-        <translation>Muitos valores para enumeração com valores armazenados como sinalizadores. O número máximo de sinalizadores de bits é 32.</translation>
+        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is %1.</source>
+        <translation>Muitos valores para enumeração com valores armazenados como sinalizadores. O número máximo de sinalizadores de bits é %1.</translation>
     </message>
     <message>
         <location line="+69"/>

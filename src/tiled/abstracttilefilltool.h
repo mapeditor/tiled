@@ -49,7 +49,6 @@ public:
                          const QString &name,
                          const QIcon &icon,
                          const QKeySequence &shortcut,
-                         BrushItem *brushItem = nullptr,
                          QObject *parent = nullptr);
     ~AbstractTileFillTool() override;
 

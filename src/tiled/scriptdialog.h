@@ -90,6 +90,8 @@ public:
     NewRowMode newRowMode() const;
     void setNewRowMode(NewRowMode mode);
 
+    int exec() override;
+
     static void deleteAllDialogs();
 
 private:

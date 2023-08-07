@@ -35,7 +35,7 @@ environment:
 configuration: Release
 
 install:
-  - choco install -y qbs --version 1.21.0
+  - choco install -y qbs --version 2.0.2
   - nuget install secure-file -ExcludeVersion
   - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin
 

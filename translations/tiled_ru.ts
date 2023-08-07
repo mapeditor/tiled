@@ -6088,8 +6088,8 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+1"/>
-        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is 32.</source>
-        <translation type="unfinished">Слишком много значений для перечисления со значениями сохраненными как флаги. Максимальное количество бит-флагов - 32.</translation>
+        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is %1.</source>
+        <translation type="unfinished">Слишком много значений для перечисления со значениями сохраненными как флаги. Максимальное количество бит-флагов - %1.</translation>
     </message>
     <message>
         <location line="+69"/>

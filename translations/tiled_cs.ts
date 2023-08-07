@@ -6091,8 +6091,8 @@ Prosím vyberte formát ručně.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is 32.</source>
-        <translation>Příliš mnoho hodnot pro výčet uložený po bitech. Maximální počet takových hodnot je 32.</translation>
+        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is %1.</source>
+        <translation>Příliš mnoho hodnot pro výčet uložený po bitech. Maximální počet takových hodnot je %1.</translation>
     </message>
     <message>
         <location line="+69"/>

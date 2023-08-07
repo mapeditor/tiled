@@ -6088,8 +6088,8 @@ Veuillez sélectionner un format spécifique.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is 32.</source>
-        <translation>Trop de valeurs de cette énumération sont stockées en tant que drapeaux. Le nombre maximal de bits de drapeaux est 32.</translation>
+        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is %1.</source>
+        <translation>Trop de valeurs de cette énumération sont stockées en tant que drapeaux. Le nombre maximal de bits de drapeaux est %1.</translation>
     </message>
     <message>
         <location line="+69"/>

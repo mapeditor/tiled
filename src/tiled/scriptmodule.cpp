@@ -41,6 +41,7 @@
 
 #include <QAction>
 #include <QCoreApplication>
+#include <QFileDialog> 
 #include <QInputDialog>
 #include <QLibraryInfo>
 #include <QMenu>
@@ -539,6 +540,7 @@ QByteArray ScriptModule::decompress(const QByteArray &data, CompressionMethod me
     return Tiled::decompress(data, data.size(), static_cast<Tiled::CompressionMethod>(method));
 }
 
+
 void ScriptModule::trigger(const QByteArray &actionName) const
 {
     if (QAction *action = ActionManager::findAction(actionName))
@@ -594,6 +596,39 @@ QString ScriptModule::prompt(const QString &label, const QString &text, const QS
 {
     ScriptManager::ResetBlocker blocker;
     return QInputDialog::getText(MainWindow::maybeInstance(), title, label, QLineEdit::Normal, text);
+}
+
+QString ScriptModule::promptDirectory(const QString &defaultDir, const QString &title) const
+{
+    ScriptManager::ResetBlocker blocker;
+    return QFileDialog::getExistingDirectory(MainWindow::maybeInstance(),
+                                             title.isEmpty() ? tr("Open Directory") : title,
+                                             defaultDir,
+                                             QFileDialog::ShowDirsOnly);
+}
+
+QStringList ScriptModule::promptOpenFiles(const QString &defaultDir, const QString &filters, const QString &title) const
+{
+    ScriptManager::ResetBlocker blocker;
+    return QFileDialog::getOpenFileNames(MainWindow::maybeInstance(),
+                                         title.isEmpty() ? tr("Open Files") : title,
+                                         defaultDir, filters);
+}
+
+QString ScriptModule::promptOpenFile(const QString &defaultDir, const QString &filters, const QString &title) const
+{
+    ScriptManager::ResetBlocker blocker;
+    return QFileDialog::getOpenFileName(MainWindow::maybeInstance(),
+                                        title.isEmpty() ? tr("Open File") : title,
+                                        defaultDir, filters);
+}
+
+QString ScriptModule::promptSaveFile(const QString &defaultDir, const QString &filters, const QString &title) const
+{
+    ScriptManager::ResetBlocker blocker;
+    return QFileDialog::getSaveFileName(MainWindow::maybeInstance(),
+                                        title.isEmpty() ? tr("Save File") : title,
+                                        defaultDir, filters);
 }
 
 void ScriptModule::log(const QString &text) const

@@ -173,13 +173,11 @@ void FileMatchDelegate::paint(QPainter *painter,
     QStaticText staticText(fileNameHtml);
     staticText.setTextOption(textOption);
     staticText.setTextFormat(Qt::RichText);
-    staticText.prepare(painter->transform(), fonts.big);
 
     painter->setFont(fonts.big);
     painter->drawStaticText(fileNameRect.topLeft(), staticText);
 
     staticText.setText(filePathHtml);
-    staticText.prepare(painter->transform(), fonts.small);
 
     painter->setOpacity(0.75);
     painter->setFont(fonts.small);

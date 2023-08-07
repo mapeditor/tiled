@@ -24,13 +24,10 @@
 #include "mainwindow.h"
 #include "map.h"
 #include "mapdocument.h"
-#include "mapeditor.h"
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "mapview.h"
 #include "selectionrectangle.h"
-#include "tile.h"
-#include "utils.h"
 #include "worlddocument.h"
 #include "worldmanager.h"
 

@@ -55,6 +55,7 @@ constexpr auto propertyTypesJson = R"([
     },
     {
         "color": "#ffa0a0a4",
+        "drawFill": true,
         "id": 5,
         "members": [
             {
@@ -240,6 +241,11 @@ class test_Properties : public QObject
 private slots:
     void initTestCase();
 
+    void toPropertyValue();
+    void toPropertyValue_data();
+
+    void enumWith31Flags();
+
     void loadAndSavePropertyTypes();
     void loadCircularReference();
     void loadEnumInNestedClass();
@@ -289,6 +295,91 @@ void test_Properties::initTestCase()
     classType.members.insert(QStringLiteral("enumFlagsInt"), flagsIntValue);
 }
 
+void test_Properties::toPropertyValue()
+{
+    QFETCH(QString, value);
+    QFETCH(QString, type);
+    QFETCH(QVariant, expected);
+
+    ExportContext context;
+    ExportValue exportValue;
+    exportValue.value = value;
+    exportValue.typeName = type;
+
+    const auto actual = context.toPropertyValue(exportValue);
+    QCOMPARE(actual, expected);
+}
+
+void test_Properties::toPropertyValue_data()
+{
+    QTest::addColumn<QString>("value");
+    QTest::addColumn<QString>("type");
+    QTest::addColumn<QVariant>("expected");
+
+    QTest::newRow("color") << QStringLiteral("#ff0000ff") << QStringLiteral("color") << QVariant::fromValue(QColor(Qt::blue));
+    QTest::newRow("invalid-color") << QString() << QStringLiteral("color") << QVariant::fromValue(QColor());
+    QTest::newRow("int") << QStringLiteral("42") << QStringLiteral("int") << QVariant::fromValue(42);
+    QTest::newRow("float") << QStringLiteral("42.0") << QStringLiteral("float") << QVariant::fromValue(42.0);
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+    QTest::newRow("invalid-int") << QStringLiteral("foo") << QStringLiteral("int") << QVariant(QMetaType(QMetaType::Int));
+    QTest::newRow("invalid-float") << QStringLiteral("foo") << QStringLiteral("float") << QVariant(QMetaType(QMetaType::Double));
+#else
+    QTest::newRow("invalid-int") << QStringLiteral("foo") << QStringLiteral("int") << QVariant(QVariant::Int);
+    QTest::newRow("invalid-float") << QStringLiteral("foo") << QStringLiteral("float") << QVariant(QVariant::Double);
+#endif
+    QTest::newRow("bool-true") << QStringLiteral("true") << QStringLiteral("bool") << QVariant::fromValue(true);
+    QTest::newRow("bool-false") << QStringLiteral("false") << QStringLiteral("bool") << QVariant::fromValue(false);
+    QTest::newRow("string") << QStringLiteral("foo") << QStringLiteral("string") << QVariant::fromValue(QStringLiteral("foo"));
+#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
+    QTest::newRow("file") << QStringLiteral("/foo") << QStringLiteral("file") << QVariant::fromValue(FilePath { QUrl::fromLocalFile(QStringLiteral("/foo")) });
+#endif
+    QTest::newRow("object") << QStringLiteral("1") << QStringLiteral("object") << QVariant::fromValue(ObjectRef { 1 });
+
+    // todo: test enums and classes, and also add a test for toExportValue
+}
+
+void test_Properties::enumWith31Flags()
+{
+    EnumPropertyType flagsAsString("flagsAsString");
+    flagsAsString.storageType = EnumPropertyType::StringValue;
+    flagsAsString.valuesAsFlags = true;
+
+    EnumPropertyType flagsAsInt("flagsAsInt");
+    flagsAsInt.storageType = EnumPropertyType::IntValue;
+    flagsAsInt.valuesAsFlags = true;
+
+    QString allFlagsString;
+    int allFlagsInt = 0;
+
+    for (int i = 1; i <= 31; ++i) {
+        flagsAsString.values.append(QString::number(i));
+        flagsAsInt.values.append(QString::number(i));
+
+        if (!allFlagsString.isEmpty())
+            allFlagsString.append(QLatin1Char(','));
+        allFlagsString.append(QString::number(i));
+        allFlagsInt |= (1 << (i - 1));
+    }
+
+    ExportContext context;
+
+    QVariant property1 = flagsAsString.toPropertyValue(QStringLiteral("1"), context);
+    QVariant propertyAll = flagsAsString.toPropertyValue(allFlagsString, context);
+
+    QCOMPARE(property1, QVariant::fromValue(PropertyValue(1, flagsAsString.id)));
+    QCOMPARE(propertyAll, QVariant::fromValue(PropertyValue(allFlagsInt, flagsAsString.id)));
+
+    ExportValue exportString1 = flagsAsString.toExportValue(property1.value<PropertyValue>().value, context);
+    ExportValue exportStringAll = flagsAsString.toExportValue(propertyAll.value<PropertyValue>().value, context);
+    ExportValue exportInt1 = flagsAsInt.toExportValue(property1.value<PropertyValue>().value, context);
+    ExportValue exportIntAll = flagsAsInt.toExportValue(propertyAll.value<PropertyValue>().value, context);
+
+    QCOMPARE(exportString1.value, QStringLiteral("1"));
+    QCOMPARE(exportStringAll.value, allFlagsString);
+    QCOMPARE(exportInt1.value, 1);
+    QCOMPARE(exportIntAll.value, allFlagsInt);
+}
+
 void test_Properties::loadAndSavePropertyTypes()
 {
     QJsonParseError error;
@@ -326,11 +417,11 @@ void test_Properties::loadCircularReference()
     types.loadFromJson(doc.array(), QString());
 
     // Verify the back reference is not present
-    const auto b = types.findPropertyValueType(QStringLiteral("B"));
-    QVERIFY(b);
-    QCOMPARE(b->type, PropertyType::PT_Class);
-    const auto &membersB = static_cast<const ClassPropertyType*>(b)->members;
-    QVERIFY(!membersB.contains(QStringLiteral("a")));
+    const auto a = types.findPropertyValueType(QStringLiteral("A"));
+    QVERIFY(a);
+    QCOMPARE(a->type, PropertyType::PT_Class);
+    const auto &membersA = static_cast<const ClassPropertyType*>(a)->members;
+    QVERIFY(!membersA.contains(QStringLiteral("b")));
 }
 
 void test_Properties::loadEnumInNestedClass()

@@ -352,7 +352,8 @@ QVariant ExportContext::toPropertyValue(const QVariant &value, int metaType) con
         return QVariant::fromValue(ObjectRef::fromInt(value.toInt()));
 
     QVariant convertedValue = value;
-    return convertedValue.convert(metaType) ? convertedValue : value;
+    convertedValue.convert(metaType);
+    return convertedValue;
 }
 
 void initializeMetatypes()

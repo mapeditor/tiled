@@ -54,7 +54,8 @@ WindowsInstallerPackage {
 
         defs.push("WindowsVistaStyle")
 
-        if (File.exists(Environment.getEnv("PYTHONHOME")))
+        var pythonHome = Environment.getEnv("PYTHONHOME");
+        if (pythonHome && File.exists(pythonHome))
             defs.push("Python");
 
         var rpMapEnabled = !qbs.toolchain.contains("msvc")

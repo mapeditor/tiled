@@ -272,6 +272,12 @@ void ScriptDialog::setNewRowMode(NewRowMode mode)
     m_newRowMode = mode;
 }
 
+int ScriptDialog::exec()
+{
+    ScriptManager::ResetBlocker blocker;
+    return QDialog::exec();
+}
+
 QWidget *ScriptDialog::addDialogWidget(QWidget *widget, const QString &label)
 {
     determineWidgetGrouping(widget);

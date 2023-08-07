@@ -43,17 +43,25 @@ ScriptedTool::ScriptedTool(Id id, QJSValue object, QObject *parent)
     : AbstractTileTool(id, QStringLiteral("<unnamed tool>"), QIcon(), QKeySequence(), nullptr, parent)
     , mScriptObject(std::move(object))
 {
-    setTargetLayerType(0);  // default behavior is not to disable based on current layer
-
+    // Read out the properties from the script object before setting its prototype
     const QJSValue nameProperty = mScriptObject.property(QStringLiteral("name"));
+    const QJSValue iconProperty = mScriptObject.property(QStringLiteral("icon"));
+    const QJSValue toolBarActionsProperty = mScriptObject.property(QStringLiteral("toolBarActions"));
+    const QJSValue usesSelectedTilesProperty = mScriptObject.property(QStringLiteral("usesSelectedTiles"));
+    const QJSValue usesWangSetsProperty = mScriptObject.property(QStringLiteral("usesWangSets"));
+    const QJSValue targetLayerTypeProperty = mScriptObject.property(QStringLiteral("targetLayerType"));
+
+    // Make members of ScriptedTool available through the original object
+    auto &scriptManager = ScriptManager::instance();
+    auto self = scriptManager.engine()->newQObject(this);
+    mScriptObject.setPrototype(self);
+
     if (nameProperty.isString())
         setName(nameProperty.toString());
 
-    const QJSValue iconProperty = mScriptObject.property(QStringLiteral("icon"));
     if (iconProperty.isString())
         setIconFileName(iconProperty.toString());
 
-    const QJSValue toolBarActionsProperty = mScriptObject.property(QStringLiteral("toolBarActions"));
     if (toolBarActionsProperty.isArray()) {
         QStringList actionNames;
         const int length = toolBarActionsProperty.property(QStringLiteral("length")).toInt();
@@ -62,22 +70,16 @@ ScriptedTool::ScriptedTool(Id id, QJSValue object, QObject *parent)
         setToolBarActions(actionNames);
     }
 
-    const QJSValue usesSelectedTilesProperty = mScriptObject.property(QStringLiteral("usesSelectedTiles"));
     if (usesSelectedTilesProperty.isBool())
         setUsesSelectedTiles(usesSelectedTilesProperty.toBool());
 
-    const QJSValue usesWangSetsProperty = mScriptObject.property(QStringLiteral("usesWangSets"));
     if (usesWangSetsProperty.isBool())
         setUsesWangSets(usesWangSetsProperty.toBool());
 
-    const QJSValue targetLayerTypeProperty = mScriptObject.property(QStringLiteral("targetLayerType"));
     if (targetLayerTypeProperty.isNumber())
         setTargetLayerType(targetLayerTypeProperty.toInt());
-
-    // Make members of ScriptedTool available through the original object
-    auto &scriptManager = ScriptManager::instance();
-    auto self = scriptManager.engine()->newQObject(this);
-    mScriptObject.setPrototype(self);
+    else
+        setTargetLayerType(0);  // default behavior is not to disable based on current layer
 
     PluginManager::addObject(this);
 }

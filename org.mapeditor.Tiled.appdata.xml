@@ -16,6 +16,35 @@
  </keywords>
  <content_rating type="oars-1.0" />
  <releases>
+  <release version="1.10.2" type="stable" date="2023-08-04">
+   <url>https://www.mapeditor.org/2023/08/04/tiled-1-10-2-released.html</url>
+   <description>
+    <ul>
+      <li>Added support for setting custom properties on the project (#2903)</li>
+      <li>Added feedback when Terrain Brush and Terrain Fill Mode can't find a tile</li>
+      <li>Removed Space and Ctrl+Space shortcuts from Layers view to avoid conflict with panning (#3672)</li>
+      <li>Display the image base name for unnamed tile objects referring to single images</li>
+      <li>Scripting: Added API for editing tile layers using terrain sets (with a-morphous, #3758)</li>
+      <li>Scripting: Added file dialog API (with dogboydog, #3782)</li>
+      <li>Scripting: Support erasing tiles in Tool.preview and TileMap.merge</li>
+      <li>Scripting: Added Geometry interface with line and ellipse helpers</li>
+      <li>Scripting: Added WangSet.effectiveTypeForColor</li>
+      <li>Fixed crash when changing file property of custom class (#3783)</li>
+      <li>Fixed loading of invalid color properties (#3793)</li>
+      <li>Fixed handling of enum values with 31 flags and fixed the applied limit (#3658)</li>
+      <li>Fixed object preview position with parallax factor on group layer (#3669)</li>
+      <li>Fixed hover highlight rendering with active parallax factor (#3669)</li>
+      <li>Fixed updating of object selection outlines when changing parallax factor (#3669)</li>
+      <li>Fixed "Offset Map" action to offset all objects when choosing "Whole Map" as bounds</li>
+      <li>Fixed several issues with drawing ellipses (#3776)</li>
+      <li>Fixed Terrain Fill Mode for sets containing transitions to empty (#3774)</li>
+      <li>Godot 4 plugin: Export custom tile properties as Custom Data Layers (with Kevin Harrison, #3653)</li>
+      <li>AppImage: Updated to Sentry 0.6.5</li>
+      <li>Qt 6: Increased the image allocation limit from 1 GB to 4 GB (#3616)</li>
+      <li>macOS: The macOS 10.14+ build is now a Universal macOS Binary (#3707)</li>
+    </ul>
+   </description>
+  </release>
   <release version="1.10.1" type="stable" date="2023-04-04">
    <url>https://www.mapeditor.org/2023/04/04/tiled-1-10-1-released.html</url>
    <description>

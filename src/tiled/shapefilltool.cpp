@@ -41,7 +41,6 @@ ShapeFillTool::ShapeFillTool(QObject *parent)
                            QIcon(QLatin1String(
                                      ":images/22/rectangle-fill.png")),
                            QKeySequence(Qt::Key_P),
-                           nullptr,
                            parent)
     , mToolBehavior(Free)
     , mCurrentShape(Rect)
