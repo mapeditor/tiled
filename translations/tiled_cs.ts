@@ -115,7 +115,7 @@
     <message>
         <location line="+6"/>
         <source>Session file &apos;%1&apos; not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Soubor se sezením &apos;%1&apos; nebyl nalezen.</translation>
     </message>
 </context>
 <context>
@@ -796,17 +796,17 @@
     <message>
         <location line="+5"/>
         <source>Search Actions...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyhledat akce...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Search actions available in Tiled</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyhledat akce dostupné v Tiled</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
         <location line="-92"/>
@@ -1749,12 +1749,12 @@ Line %1, column %2</source>
     <message>
         <location line="-29"/>
         <source>Background fade color:</source>
-        <translation>Prolínací barva pozadí</translation>
+        <translation>Prolínací barva pozadí:</translation>
     </message>
     <message>
         <location line="+55"/>
         <source>Major grid:</source>
-        <translation>Hlavní mřížka</translation>
+        <translation>Hlavní mřížka:</translation>
     </message>
     <message>
         <location line="-33"/>
@@ -1785,12 +1785,12 @@ Line %1, column %2</source>
     <message>
         <location line="+74"/>
         <source>Use custom interface font</source>
-        <translation type="unfinished"></translation>
+        <translation>Použít vlastní písmo pro rozhraní</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Písmo:</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -2083,7 +2083,7 @@ Line %1, column %2</source>
     <message>
         <location line="+28"/>
         <source>Select Font</source>
-        <translation>Výběr fontu</translation>
+        <translation>Výběr písma</translation>
     </message>
 </context>
 <context>
@@ -4189,7 +4189,7 @@ Má se přepsat?</translation>
     <message>
         <location filename="../src/tiled/actionsearch.cpp" line="+242"/>
         <source>Search actions...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyhledat akce...</translation>
     </message>
 </context>
 <context>
@@ -4467,7 +4467,7 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="+35"/>
         <source>The current project contains &lt;a href=&quot;https://doc.mapeditor.org/en/stable/reference/scripting/&quot;&gt;scripted extensions&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Make sure you trust those extensions before enabling them!&lt;/i&gt;</source>
-        <translation>Tento projekt obsahuje skriptová rozšíření (&lt;a href=&quot;https://doc.mapeditor.org/en/stable/reference/scripting/&quot;&gt;více informací  – anglicky)&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Než tato rozšíření povolíte, ověřte si že jim věříte!&lt;/i&gt;</translation>
+        <translation>Tento projekt obsahuje skriptová rozšíření (&lt;a href=&quot;https://doc.mapeditor.org/en/stable/reference/scripting/&quot;&gt;více informací – anglicky)&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Než tato rozšíření povolíte, ověřte si že jim věříte!&lt;/i&gt;</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4644,7 +4644,7 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="+193"/>
         <source>Group Layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Skupina vrstev %1</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -6246,7 +6246,7 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location filename="../src/tiled/scriptdialog.cpp" line="+26"/>
         <source>Script</source>
-        <translation type="unfinished"></translation>
+        <translation>Skript</translation>
     </message>
 </context>
 <context>
