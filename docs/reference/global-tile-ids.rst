@@ -133,7 +133,7 @@ clear, it deals with flags and deduces the appropriate tileset:
          Tileset *tileset = tilesets[i];
 
          if (tileset->first_gid() <= global_tile_id) {
-           tiles[y][x] = tileset->tileAt(global_tile_id - tileset->first_gid());
+           tiles[y][x] = tileset->get_tile(global_tile_id - tileset->first_gid());
            break;
          }
        }
