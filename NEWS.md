@@ -1,3 +1,7 @@
+### Unreleased
+
+* Added button to toggle Terrain Brush to full tile mode (by Finlay Pearson, #3407)
+
 ### Tiled 1.10.2 (4 August 2023)
 
 * Added support for setting custom properties on the project (#2903)
