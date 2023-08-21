@@ -190,10 +190,10 @@ jobs:
       matrix:
         include:
         - qt_version: 5.12.12
-          version_suffix: "10.12-10.13"
+          version_suffix: "10.12-10.15"
           architectures: x86_64
         - qt_version: 6.5.2
-          version_suffix: "10.14+"
+          version_suffix: "11+"
           architectures: x86_64,arm64
 
     env:
@@ -403,20 +403,20 @@ jobs:
         asset_name: Tiled-${{ needs.version.outputs.version }}_Linux_Qt-6_x86_64.AppImage
         asset_content_type: application/vnd.appimage
 
-    - name: Upload macOS app (10.12-10.13)
+    - name: Upload macOS app (10.12-10.15)
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Tiled_macOS-10.12-10.13.app/Tiled_macOS-10.12-10.13.zip
-        asset_name: Tiled-${{ needs.version.outputs.version }}_macOS-10.12-10.13.zip
+        asset_path: Tiled_macOS-10.12-10.15.app/Tiled_macOS-10.12-10.15.zip
+        asset_name: Tiled-${{ needs.version.outputs.version }}_macOS-10.12-10.15.zip
         asset_content_type: application/zip
 
-    - name: Upload macOS app (10.14+)
+    - name: Upload macOS app (11+)
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Tiled_macOS-10.14+.app/Tiled_macOS-10.14+.zip
-        asset_name: Tiled-${{ needs.version.outputs.version }}_macOS-10.14+.zip
+        asset_path: Tiled_macOS-11+.app/Tiled_macOS-11+.zip
+        asset_name: Tiled-${{ needs.version.outputs.version }}_macOS-11+.zip
         asset_content_type: application/zip
 
   sentry:
