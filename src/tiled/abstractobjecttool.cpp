@@ -26,6 +26,7 @@
 #include "changepolygon.h"
 #include "changetileobjectgroup.h"
 #include "documentmanager.h"
+#include "grouplayer.h"
 #include "mapdocument.h"
 #include "map.h"
 #include "mapobject.h"
@@ -711,12 +712,29 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
     auto objectGroups = mapDocument()->map()->objectGroups();
     auto objectGroupsIterator = objectGroups.begin();
     if (objectGroupsIterator != objectGroups.end() && objectGroupsIterator.next()) {
+        QStringList parentLayerNames;
+
         menu.addSeparator();
         QMenu *moveToLayerMenu = menu.addMenu(tr("Move %n Object(s) to Layer",
                                                  "", selectedObjects.size()));
-        for (Layer *layer : objectGroups) {
-            ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
-            QAction *action = moveToLayerMenu->addAction(objectGroup->name());
+
+        objectGroupsIterator.toBack();
+        while (auto objectGroup = static_cast<ObjectGroup*>(objectGroupsIterator.previous())) {
+            // Create a menu action name based on parent layers. For example "Layer 1 (Parent1/Parent2)".
+            QString actionText = objectGroup->name();
+
+            if (auto parentLayer = objectGroup->parentLayer()) {
+                while (parentLayer) {
+                    parentLayerNames.prepend(parentLayer->name());
+                    parentLayer = parentLayer->parentLayer();
+                }
+
+                actionText = tr("%1 (%2)").arg(actionText,
+                                               parentLayerNames.join(QLatin1String("/")));
+                parentLayerNames.clear();
+            }
+
+            QAction *action = moveToLayerMenu->addAction(actionText);
             action->setData(QVariant::fromValue(objectGroup));
             action->setEnabled(objectGroup != sameObjectGroup);
         }
