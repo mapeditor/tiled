@@ -228,6 +228,7 @@ public:
     QList<int> relocateTiles(const QList<Tile *> &tiles, int location);
 
     bool anyTileOutOfOrder() const;
+    void resetTileOrder();
 
     void setNextTileId(int nextId);
     int nextTileId() const;
