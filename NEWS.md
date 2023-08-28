@@ -1,3 +1,5 @@
+* JSON format: Fixed tile order when loading a tileset using the old format
+
 ### Tiled 1.10.2 (4 August 2023)
 
 * Added support for setting custom properties on the project (#2903)
