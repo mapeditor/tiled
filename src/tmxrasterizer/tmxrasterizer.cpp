@@ -76,7 +76,7 @@ void TmxRasterizer::drawMapLayers(const MapRenderer &renderer,
                 std::stable_sort(objects.begin(), objects.end(), [](MapObject *a, MapObject *b){return a->y() < b->y();});
 
             for (const MapObject *object : std::as_const(objects)) {
-                if (object->isVisible()) {
+                if (shouldDrawObject(object)) {
                     if (object->rotation() != qreal(0)) {
                         QPointF origin = renderer.pixelToScreenCoords(object->position());
                         painter.save();
@@ -115,6 +115,18 @@ bool TmxRasterizer::shouldDrawLayer(const Layer *layer) const
 
     return !layer->isHidden();
 }
+
+bool TmxRasterizer::shouldDrawObject(const MapObject *object) const
+{
+    if (mObjectsToHide.contains(object->name(), Qt::CaseInsensitive))
+        return false;
+
+    if (mObjectsToShow.contains(object->name(), Qt::CaseInsensitive))
+        return true;
+
+    return object->isVisible();
+}
+
 
 int TmxRasterizer::render(const QString &fileName,
                           const QString &imageFileName)
