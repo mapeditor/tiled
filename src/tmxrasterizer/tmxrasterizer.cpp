@@ -121,8 +121,10 @@ bool TmxRasterizer::shouldDrawObject(const MapObject *object) const
     if (mObjectsToHide.contains(object->name(), Qt::CaseInsensitive))
         return false;
 
-    if (mObjectsToShow.contains(object->name(), Qt::CaseInsensitive))
-        return true;
+    if (!mObjectsToShow.empty()) {
+        if (!mObjectsToShow.contains(object->name(), Qt::CaseInsensitive))
+            return false;
+    }
 
     return object->isVisible();
 }
