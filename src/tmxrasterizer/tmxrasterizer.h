@@ -64,6 +64,9 @@ public:
     void setLayersToHide(QStringList layersToHide) { mLayersToHide = layersToHide; }
     void setLayersToShow(QStringList layersToShow) { mLayersToShow = layersToShow; }
 
+    void setObjectsToHide(QStringList objectsToHide) { mObjectsToHide = objectsToHide; }
+    void setObjectsToShow(QStringList objectsToShow) { mObjectsToShow = objectsToShow; }
+
     void setLayerTypeVisible(Layer::TypeFlag layerType, bool visible);
 
     int render(const QString &fileName, const QString &imageFileName);
@@ -78,6 +81,8 @@ private:
     bool mIgnoreVisibility = false;
     QStringList mLayersToHide;
     QStringList mLayersToShow;
+    QStringList mObjectsToHide;
+    QStringList mObjectsToShow;
     int mLayerTypesToShow = Layer::AnyLayerType & ~Layer::GroupLayerType;
 
     void drawMapLayers(const MapRenderer &renderer, QPainter &painter, QPoint mapOffset = QPoint(0, 0)) const;
@@ -85,6 +90,7 @@ private:
     int renderWorld(const QString &worldFileName, const QString &imageFileName);
     int saveImage(const QString &imageFileName, const QImage &image) const;
     bool shouldDrawLayer(const Layer *layer) const;
+    bool shouldDrawObject(const MapObject *object) const;
 };
 
 inline void TmxRasterizer::setLayerTypeVisible(Layer::TypeFlag layerType, bool visible)
