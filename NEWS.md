@@ -1,4 +1,7 @@
+### Unreleased
+
 * JSON format: Fixed tile order when loading a tileset using the old format
+* tmxrasterizer: Added --hide-object and --show-object arguments (by Lars Luz, #3819)
 
 ### Tiled 1.10.2 (4 August 2023)
 
