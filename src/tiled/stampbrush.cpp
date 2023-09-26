@@ -334,7 +334,7 @@ void StampBrush::beginCapture()
     mBrushBehavior = Capture;
     mCaptureStampHelper.beginCapture(tilePosition());
 
-    setStamp(TileStamp());
+    updatePreview();
 }
 
 void StampBrush::endCapture()
