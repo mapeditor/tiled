@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
                             QCoreApplication::translate("main", "If used, tile animations are advanced by the specified duration."),
                             QCoreApplication::translate("main", "duration") },
                           { QStringLiteral("hide-object"),
-                            QCoreApplication::translate("main", "Specifies a object to omit from the output image. Can be repeated to hide multiple objects. If multiple objects share the specified name they all will be hidden."),
+                            QCoreApplication::translate("main", "Specifies an object to omit from the output image. Can be repeated to hide multiple objects. If multiple objects share the specified name they all will be hidden."),
                             QCoreApplication::translate("main", "name") },
                           { QStringLiteral("show-object"),
                             QCoreApplication::translate("main", "If used only specified objects are shown. Can be repeated to show multiple specified objects only. If multiple objects share the specified name they all will be shown."),
