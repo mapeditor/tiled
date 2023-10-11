@@ -84,10 +84,13 @@ public:
     void setCorner(QPoint vertexPos, int color);
     void setEdge(QPoint pos, WangId::Index index, int color);
 
-    /**
-     * Applies the scheduled Wang changes to the \a target layer.
-     */
     void apply(TileLayer &target);
+
+    /**
+     * Returns the region with locations for which a matching tile could not be
+     * found in the last call to apply().
+     */
+    const QRegion &invalidRegion() const { return mInvalidRegion; }
 
 private:
     /**
@@ -109,6 +112,7 @@ private:
     bool mCorrectionsEnabled = false;
     bool mErasingEnabled = true;
     FillRegion mFillRegion;
+    QRegion mInvalidRegion;
 
     QPainter *mDebugPainter = nullptr;
 };

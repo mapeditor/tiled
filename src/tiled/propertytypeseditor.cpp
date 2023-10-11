@@ -515,10 +515,10 @@ void PropertyTypesEditor::removeValues()
 
 bool PropertyTypesEditor::checkValueCount(int count)
 {
-    if (count > 32) {
+    if (count > 31) {
         QMessageBox::critical(this,
                               tr("Too Many Values"),
-                              tr("Too many values for enum with values stored as flags. Maximum number of bit flags is 32."));
+                              tr("Too many values for enum with values stored as flags. Maximum number of bit flags is %1.").arg(31));
         return false;
     }
     return true;
@@ -1133,13 +1133,18 @@ void PropertyTypesEditor::memberValueChanged(const QStringList &path, const QVar
     if (!classType)
         return;
 
-    auto &topLevelName = path.first();
-
     if (!setPropertyMemberValue(classType->members, path, value))
         return;
 
-    if (auto property = mPropertiesHelper->property(topLevelName))
-        property->setValue(mPropertiesHelper->toDisplayValue(classType->members.value(topLevelName)));
+    // When a nested property was changed, we need to update the value of the
+    // top-level property to match.
+    if (path.size() > 1) {
+        auto &topLevelName = path.first();
+        if (auto property = mPropertiesHelper->property(topLevelName)) {
+            QScopedValueRollback<bool> updatingDetails(mUpdatingDetails, true);
+            property->setValue(mPropertiesHelper->toDisplayValue(classType->members.value(topLevelName)));
+        }
+    }
 
     applyPropertyTypes();
 }

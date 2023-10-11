@@ -42,7 +42,6 @@ BucketFillTool::BucketFillTool(QObject *parent)
                            QIcon(QLatin1String(
                                    ":images/22/stock-tool-bucket-fill.png")),
                            QKeySequence(Qt::Key_F),
-                           nullptr,
                            parent)
     , mLastFillMethod(mFillMethod)
 {

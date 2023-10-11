@@ -516,6 +516,13 @@ bool Tileset::anyTileOutOfOrder() const
     return false;
 }
 
+void Tileset::resetTileOrder()
+{
+    mTiles.clear();
+    for (Tile *tile : std::as_const(mTilesById))
+        mTiles.append(tile);
+}
+
 /**
  * Sets the \a image to be used for the given \a tile.
  *

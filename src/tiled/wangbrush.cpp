@@ -22,7 +22,6 @@
 #include "wangbrush.h"
 
 #include "addremovetileset.h"
-#include "brushitem.h"
 #include "containerhelpers.h"
 #include "geometry.h"
 #include "hexagonalrenderer.h"
@@ -38,53 +37,30 @@
 
 namespace Tiled {
 
-class WangBrushItem : public BrushItem
-{
-public:
-    WangBrushItem()
-        : BrushItem()
-        , mIsValid(true) {}
-
-    QRectF boundingRect() const override;
-
-    void paint(QPainter *painter,
-               const QStyleOptionGraphicsItem *option,
-               QWidget *widget) override;
-
-    void setInvalidTiles(const QRegion &region = QRegion());
-    bool isValid() const { return mIsValid; }
-
-private:
-    //there is a current brush
-    bool mIsValid;
-    //The tiles which can't be painted.
-    QRegion mInvalidTiles;
-};
-
 QRectF WangBrushItem::boundingRect() const
 {
-    if (mIsValid) {
-        return BrushItem::boundingRect();
-    } else {
-        QRect bounds = mInvalidTiles.boundingRect();
-        QRectF bounding = mapDocument()->renderer()->boundingRect(bounds);
+    auto bounds = BrushItem::boundingRect();
+
+    if (!isValid()) {
+        QRect invalidTileBounds = mInvalidTiles.boundingRect();
+        QRectF invalidPixelBounds = mapDocument()->renderer()->boundingRect(invalidTileBounds);
 
         // Adjust for border drawn at tile selection edges
-        bounding.adjust(-1, -1, 1, 1);
-
-        return bounding;
+        bounds |= invalidPixelBounds.adjusted(-1, -1, 1, 1);
     }
+
+    return bounds;
 }
 
 void WangBrushItem::paint(QPainter *painter,
                           const QStyleOptionGraphicsItem *option,
                           QWidget *widget)
 {
-    if (mIsValid) {
-        BrushItem::paint(painter, option, widget);
-    } else {
+    BrushItem::paint(painter, option, widget);
+
+    if (!isValid()) {
         const MapRenderer *renderer = mapDocument()->renderer();
-        QColor invalid(255, 0, 0, 64);
+        const QColor invalid(255, 0, 0, 128);
 
         renderer->drawTileSelection(painter,
                                     mInvalidTiles,
@@ -95,15 +71,13 @@ void WangBrushItem::paint(QPainter *painter,
 
 void WangBrushItem::setInvalidTiles(const QRegion &region)
 {
-    if (region.isEmpty()) {
-        mIsValid = true;
-    } else {
-        mIsValid = false;
-        mInvalidTiles = region;
+    if (mInvalidTiles == region)
+        return;
 
-        update();
-    }
+    mInvalidTiles = region;
+    update();
 }
+
 
 WangBrush::WangBrush(QObject *parent)
     : AbstractTileTool("WangTool",
@@ -498,15 +472,6 @@ static constexpr QPoint aroundTilePoints[WangId::NumIndexes] = {
     QPoint(-1, -1)
 };
 
-//  3 0
-//  2 1
-static constexpr QPoint aroundVertexPoints[WangId::NumCorners] = {
-    QPoint( 0, -1),
-    QPoint( 0,  0),
-    QPoint(-1,  0),
-    QPoint(-1, -1)
-};
-
 void WangBrush::updateBrush()
 {
     brushItem()->clear();
@@ -591,7 +556,7 @@ void WangBrush::updateBrush()
     wangFiller.setCorrectionsEnabled(true);
     wangFiller.apply(*stamp);
 
-    static_cast<WangBrushItem*>(brushItem())->setInvalidTiles();
+    static_cast<WangBrushItem*>(brushItem())->setInvalidTiles(wangFiller.invalidRegion());
 
     // Translate to map coordinate space and normalize stamp
     QRegion brushRegion = stamp->region([] (const Cell &cell) { return cell.checked(); });

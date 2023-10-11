@@ -1,10 +1,22 @@
 ### Unreleased
 
+* JSON format: Fixed tile order when loading a tileset using the old format
+* tmxrasterizer: Added --hide-object and --show-object arguments (by Lars Luz, #3819)
+
+### Tiled 1.10.2 (4 August 2023)
+
 * Added support for setting custom properties on the project (#2903)
+* Added feedback when Terrain Brush and Terrain Fill Mode can't find a tile
 * Removed Space and Ctrl+Space shortcuts from Layers view to avoid conflict with panning (#3672)
+* Display the image base name for unnamed tile objects referring to single images
 * Scripting: Added API for editing tile layers using terrain sets (with a-morphous, #3758)
+* Scripting: Added file dialog API (with dogboydog, #3782)
 * Scripting: Support erasing tiles in Tool.preview and TileMap.merge
+* Scripting: Added Geometry interface with line and ellipse helpers
 * Scripting: Added WangSet.effectiveTypeForColor
+* Fixed crash when changing file property of custom class (#3783)
+* Fixed loading of invalid color properties (#3793)
+* Fixed handling of enum values with 31 flags and fixed the applied limit (#3658)
 * Fixed object preview position with parallax factor on group layer (#3669)
 * Fixed hover highlight rendering with active parallax factor (#3669)
 * Fixed updating of object selection outlines when changing parallax factor (#3669)
@@ -12,7 +24,7 @@
 * Fixed several issues with drawing ellipses (#3776)
 * Fixed Terrain Fill Mode for sets containing transitions to empty (#3774)
 * Godot 4 plugin: Export custom tile properties as Custom Data Layers (with Kevin Harrison, #3653)
-* AppImage: Updated to Sentry 0.6.4
+* AppImage: Updated to Sentry 0.6.5
 * Qt 6: Increased the image allocation limit from 1 GB to 4 GB (#3616)
 * macOS: The macOS 10.14+ build is now a Universal macOS Binary (#3707)
 

@@ -434,6 +434,13 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
         tileset->findOrCreateTile(tileId)->setProperties(properties);
     }
 
+    if (!tilesVariantMap.isEmpty() || !propertiesVariantMap.isEmpty()) {
+        // The presence of either of these maps indicates that the tileset
+        // is in the old 1.0 format. This means the tiles may not have been
+        // added in the right order.
+        tileset->resetTileOrder();
+    }
+
     // Read the tiles saved as a list (1.2 format)
     const QVariantList tilesVariantList = tilesVariant.toList();
     for (int i = 0; i < tilesVariantList.count(); ++i) {

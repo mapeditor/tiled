@@ -175,6 +175,9 @@ void MapScene::setSelectedTool(AbstractTool *tool)
         mSelectedTool = tool;
         mSelectedTool->activate(this);
 
+        if (!mSelectedTool)
+            return; // Tool deactivated itself upon activation
+
         mCurrentModifiers = QApplication::keyboardModifiers();
         mSelectedTool->modifiersChanged(mCurrentModifiers);
 

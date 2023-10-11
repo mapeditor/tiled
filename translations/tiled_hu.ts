@@ -6061,8 +6061,8 @@ Válasszon egy adott formátumot.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is 32.</source>
-        <translation>Túl sok érték egy jelzőkként tárolt értékekkel rendelkező felsorolásnál. A bitjelzők legnagyobb száma 32.</translation>
+        <source>Too many values for enum with values stored as flags. Maximum number of bit flags is %1.</source>
+        <translation>Túl sok érték egy jelzőkként tárolt értékekkel rendelkező felsorolásnál. A bitjelzők legnagyobb száma %1.</translation>
     </message>
     <message>
         <location line="+69"/>

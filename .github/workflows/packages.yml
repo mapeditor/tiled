@@ -15,7 +15,7 @@ on:
     - '.travis.yml'
 
 env:
-  QBS_VERSION: 1.23.1
+  QBS_VERSION: 2.0.2
   TILED_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') }}
   TILED_SNAPSHOT: ${{ !startsWith(github.ref, 'refs/tags/v') }}
 
@@ -43,7 +43,7 @@ jobs:
     strategy:
       matrix:
         include:
-        - qt_version: 6.5.1
+        - qt_version: 6.5.2
           qt_version_major: 6
           qt_toolchain: win64_mingw
           arch: 64
@@ -145,4 +145,3 @@ jobs:
         asset_path: Tiled-win32.msi/Tiled-${{ needs.version.outputs.version }}-win32.msi
         asset_name: Tiled-${{ needs.version.outputs.version }}_Windows-7-8_x86.msi
         asset_content_type: application/x-msi
-

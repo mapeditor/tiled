@@ -87,7 +87,13 @@ int main(int argc, char *argv[])
                             QCoreApplication::translate("main", "Don't render image layers.") },
                           { QStringLiteral("advance-animations"),
                             QCoreApplication::translate("main", "If used, tile animations are advanced by the specified duration."),
-                            QCoreApplication::translate("main", "duration") }
+                            QCoreApplication::translate("main", "duration") },
+                          { QStringLiteral("hide-object"),
+                            QCoreApplication::translate("main", "Specifies an object to omit from the output image. Can be repeated to hide multiple objects. If multiple objects share the specified name they all will be hidden."),
+                            QCoreApplication::translate("main", "name") },
+                          { QStringLiteral("show-object"),
+                            QCoreApplication::translate("main", "If used only specified objects are shown. Can be repeated to show multiple specified objects only. If multiple objects share the specified name they all will be shown."),
+                            QCoreApplication::translate("main", "name") }
                       });
     parser.addPositionalArgument(QStringLiteral("map|world"), QCoreApplication::translate("main", "Map or world file to render."));
     parser.addPositionalArgument(QStringLiteral("image"), QCoreApplication::translate("main", "Image file to output."));
@@ -112,6 +118,8 @@ int main(int argc, char *argv[])
     w.setLayerTypeVisible(Layer::TileLayerType, !parser.isSet(QLatin1String("hide-tile-layers")));
     w.setLayerTypeVisible(Layer::ObjectGroupType, !parser.isSet(QLatin1String("hide-object-layers")));
     w.setLayerTypeVisible(Layer::ImageLayerType, !parser.isSet(QLatin1String("hide-image-layers")));
+    w.setObjectsToHide(parser.values(QLatin1String("hide-object")));
+    w.setObjectsToShow(parser.values(QLatin1String("show-object")));
 
     if (parser.isSet(QLatin1String("size"))) {
         bool ok;
