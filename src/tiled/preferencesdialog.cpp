@@ -316,9 +316,8 @@ void PreferencesDialog::restoreToDefault(QString regexKey)
     Preferences *prefs = Preferences::instance();
     QStringList generalKeys = prefs->allKeys().filter(QRegularExpression(regexKey));
     for ( const auto& key : generalKeys)
-    {
         prefs->remove(key);
-    }
+
     this->fromPreferences();
 }
 
