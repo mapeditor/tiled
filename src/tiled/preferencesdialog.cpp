@@ -35,6 +35,8 @@
 #include <QDesktopServices>
 #include <QSortFilterProxyModel>
 
+#include <QDebug>
+
 using namespace Tiled;
 
 PreferencesDialog::PreferencesDialog(QWidget *parent)
@@ -176,6 +178,21 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     });
 
     resize(sizeHint());
+
+    connect(mUi->defaultGeneral, &QPushButton::clicked, this, [=] {
+        this->restoreToDefault(QString::fromUtf8("(Export|Storage|Startup)/"));
+    });
+
+    connect(mUi->defaultInterface, &QPushButton::clicked, this, [=] {
+        this->restoreToDefault(QString::fromUtf8(
+            "Interface/(?!(ApplicationStyle|BaseColor|SelectionColor|UseCustomFont|CustomFont))"));
+        this->restoreToDefault(QString::fromUtf8("Install/(DisplayNews|CheckForUpdates)"));
+    });
+
+    connect(mUi->defaultTheme, &QPushButton::clicked, this, [=] {
+        this->restoreToDefault(QString::fromUtf8(
+            "Interface/(ApplicationStyle|BaseColor|SelectionColor|UseCustomFont|CustomFont)"));
+    });
 }
 
 PreferencesDialog::~PreferencesDialog()
@@ -292,6 +309,17 @@ void PreferencesDialog::styleComboChanged()
     mUi->baseColorLabel->setEnabled(!systemStyle);
     mUi->selectionColor->setEnabled(!systemStyle);
     mUi->selectionColorLabel->setEnabled(!systemStyle);
+}
+
+void PreferencesDialog::restoreToDefault(QString regexKey)
+{
+    Preferences *prefs = Preferences::instance();
+    QStringList generalKeys = prefs->allKeys().filter(QRegularExpression(regexKey));
+    for ( const auto& key : generalKeys)
+    {
+        prefs->remove(key);
+    }
+    this->fromPreferences();
 }
 
 #include "moc_preferencesdialog.cpp"
