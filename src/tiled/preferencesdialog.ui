@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>544</width>
-    <height>595</height>
+    <height>626</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -191,7 +191,7 @@
             </size>
            </property>
            <property name="text">
-            <string>Restore to default</string>
+            <string>Reset to default</string>
            </property>
            <property name="iconSize">
             <size>
@@ -466,7 +466,7 @@
             </size>
            </property>
            <property name="text">
-            <string>Restore to default</string>
+            <string>Reset to default</string>
            </property>
           </widget>
          </item>
@@ -659,7 +659,7 @@
             </size>
            </property>
            <property name="text">
-            <string>Restore to default</string>
+            <string>Reset to default</string>
            </property>
           </widget>
          </item>

@@ -193,7 +193,10 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     connect(mUi->defaultTheme, &QPushButton::clicked, preferences, [preferences, this] {
         this->restoreToDefault(QString::fromUtf8(
             "Interface/(ApplicationStyle|BaseColor|SelectionColor|UseCustomFont|CustomFont)"));
-        mUi->fontComboBox->setCurrentFont(preferences->customFont());
+
+        QFont customFont = preferences->customFont();
+        mUi->fontComboBox->setCurrentFont(customFont);
+        mUi->fontSize->setValue(customFont.pointSize());
     });
 }
 
