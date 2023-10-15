@@ -187,11 +187,13 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
         this->restoreToDefault(QString::fromUtf8(
             "Interface/(?!(ApplicationStyle|BaseColor|SelectionColor|UseCustomFont|CustomFont))"));
         this->restoreToDefault(QString::fromUtf8("Install/(DisplayNews|CheckForUpdates)"));
+        this->restoreToDefault(QString::fromUtf8("AbstractObjectTool/"));
     });
 
-    connect(mUi->defaultTheme, &QPushButton::clicked, this, [=] {
+    connect(mUi->defaultTheme, &QPushButton::clicked, preferences, [preferences, this] {
         this->restoreToDefault(QString::fromUtf8(
             "Interface/(ApplicationStyle|BaseColor|SelectionColor|UseCustomFont|CustomFont)"));
+        mUi->fontComboBox->setCurrentFont(preferences->customFont());
     });
 }
 
