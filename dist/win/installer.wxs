@@ -80,7 +80,7 @@
               <Shortcut Id="startmenuTiled" Directory="ProgramMenuFolder" Name="Tiled" WorkingDirectory='INSTALLDIR' Icon="tiled.exe" IconIndex="0" Advertise="yes" />
             </File>
             <File Source="$(var.InstallRoot)\terraingenerator.exe" />
-            <File Source="$(var.InstallRoot)\tiled.dll" />
+            <File Source="$(var.InstallRoot)\libtiled.dll" />
             <File Source="$(var.InstallRoot)\tilededitor.dll" />
             <File Source="$(var.InstallRoot)\tmxrasterizer.exe" />
             <File Source="$(var.InstallRoot)\tmxviewer.exe" />
