@@ -813,6 +813,8 @@ void MapItem::deleteLayerItems(Layer *layer)
 void MapItem::updateBoundingRect()
 {
     QRect boundingRect = mapDocument()->renderer()->mapBoundingRect();
+    //Leave room for the boundary line so it doesn't overlap the map.
+    boundingRect.adjust(-1, -1, 0, 0);
 
     // This rectangle represents the map boundary and as such is unaffected
     // by layer offsets or image layers.
