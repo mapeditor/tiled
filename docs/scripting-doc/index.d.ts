@@ -4679,7 +4679,7 @@ declare class Dialog extends Qt.QWidget {
    */
   show(): void;
 
-  /*
+  /**
    * Open the dialog, blocking your script until the Dialog has been
    * accepted or rejected.
    */
