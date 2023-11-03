@@ -191,6 +191,10 @@
 									<a href="../classes/Tile.html#FlippedAntiDiagonally">Tile.FlippedAntiDiagonally</a> and <a href="../classes/Tile.html#RotatedHexagonal120">Tile.RotatedHexagonal120</a>).</p>
 								</div>
 								<p>To remove a tile, set it to <code>null</code>.</p>
+								<p>When the modifications are applied to the target layer, using <a href="TileLayerEdit.html#apply">apply</a>, all locations which have been set retain a special flag. This flag
+									is taken into account by <a href="../classes/TileMap.html#merge">TileMap.merge</a> and <a href="Tool.html#preview">Tool.preview</a>,
+									to enable erasing tiles and highlighting the erased area, respectively
+								(since Tiled 1.10.2).</p>
 							</div>
 						</li>
 					</ul>

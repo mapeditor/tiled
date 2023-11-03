@@ -975,10 +975,18 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Merges the tile layers in the given map with this one. If only a single tile layer exists in the given map, it will be merged with the currentLayer.</p>
+									<p>Merges the tile layers in the given map with this one. If only a single
+										tile layer exists in the given map, it will be merged with the
+									<a href="TileMap.html#currentLayer">currentLayer</a>.</p>
 								</div>
-								<p>This operation can currently only be applied to maps loaded from a file.</p>
-								<p>If <code>canJoin</code> is true, the operation joins with the previous one on the undo stack when possible. Useful for reducing the amount of undo commands.</p>
+								<p>Normally, merging tile layers will ignore empty areas in the source map.
+									However, when edits to tile layers in the source map have previously been
+									made through <a href="../interfaces/TileLayerEdit.html#setTile">TileLayerEdit.setTile</a>, these edits are applied
+									regardless of whether the tiles are empty or not. This enables erasing of
+								tiles, for example when merging the <a href="../interfaces/Tool.html#preview">Tool.preview</a>.</p>
+								<p>This operation can currently only be applied to maps open in the editor.</p>
+								<p>If <code>canJoin</code> is true, the operation joins with the previous one on the
+								undo stack when possible. Useful for reducing the amount of undo commands.</p>
 							</div>
 						</li>
 					</ul>
