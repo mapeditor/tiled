@@ -47,8 +47,8 @@ class EditableTileset : public EditableAsset
     Q_PROPERTY(int imageWidth READ imageWidth)
     Q_PROPERTY(int imageHeight READ imageHeight)
     Q_PROPERTY(QSize imageSize READ imageSize)
-    Q_PROPERTY(int tileSpacing READ tileSpacing)
-    Q_PROPERTY(int margin READ margin)
+    Q_PROPERTY(int tileSpacing READ tileSpacing WRITE setTileSpacing)
+    Q_PROPERTY(int margin READ margin WRITE setMargin)
     Q_PROPERTY(Alignment objectAlignment READ objectAlignment WRITE setObjectAlignment)
     Q_PROPERTY(TileRenderSize tileRenderSize READ tileRenderSize WRITE setTileRenderSize)
     Q_PROPERTY(FillMode fillMode READ fillMode WRITE setFillMode)
@@ -157,6 +157,8 @@ public slots:
     void setTileHeight(int height);
     void setTileSize(QSize size);
     void setTileSize(int width, int height);
+    void setTileSpacing(int tileSpacing);
+    void setMargin(int margin);
     void setColumnCount(int columnCount);
     void setObjectAlignment(Alignment objectAlignment);
     void setTileRenderSize(TileRenderSize tileRenderSize);

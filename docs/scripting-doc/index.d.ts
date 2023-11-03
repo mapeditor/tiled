@@ -3336,13 +3336,21 @@ declare class Tileset extends Asset {
 
   /**
    * Spacing between tiles in this tileset in pixels.
+   *
+   * @note Changing this property will cause an image-based tileset to update
+   * all its tiles. When setting up a tileset, you'll want to set this property
+   * before setting the {@link image} property.
    */
-  readonly tileSpacing : number
+  tileSpacing : number
 
   /**
    * Margin around the tileset in pixels (only used at the top and left sides of the tileset image).
+   *
+   * @note Changing this property will cause an image-based tileset to update
+   * all its tiles. When setting up a tileset, you'll want to set this property
+   * before setting the {@link image} property.
    */
-  readonly margin : number
+  margin : number
 
   /**
    * The alignment to use for tile objects (when Unspecified, uses Bottom alignment on isometric maps and BottomLeft alignment for all other maps).

@@ -151,7 +151,7 @@ void TilesetManager::reloadImages(Tileset *tileset)
             }
         }
         emit tilesetImagesChanged(tileset);
-    } else {
+    } else if (tileset->imageSource().isLocalFile()) {
         ImageCache::remove(tileset->imageSource().toLocalFile());
         if (tileset->loadImage())
             emit tilesetImagesChanged(tileset);

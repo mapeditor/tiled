@@ -248,9 +248,7 @@ void EditableTileset::setImage(const QString &imageFilePath)
         push(new ChangeTilesetParameters(doc, parameters));
     } else if (!checkReadOnly()) {
         tileset()->setImageSource(imageFilePath);
-
-        if (!tileSize().isEmpty() && !image().isEmpty())
-            tileset()->loadImage();
+        tileset()->loadImage();
     }
 }
 
@@ -268,9 +266,43 @@ void EditableTileset::setTileSize(QSize size)
         push(new ChangeTilesetParameters(doc, parameters));
     } else if (!checkReadOnly()) {
         tileset()->setTileSize(size);
+        tileset()->initializeTilesetTiles();
+    }
+}
 
-        if (!tileSize().isEmpty() && !image().isEmpty())
-            tileset()->loadImage();
+void EditableTileset::setTileSpacing(int tileSpacing)
+{
+    if (isCollection() && tileCount() > 0) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Can't set tile spacing on an image collection tileset"));
+        return;
+    }
+
+    if (auto doc = tilesetDocument()) {
+        TilesetParameters parameters(*tileset());
+        parameters.tileSpacing = tileSpacing;
+
+        push(new ChangeTilesetParameters(doc, parameters));
+    } else if (!checkReadOnly()) {
+        tileset()->setTileSpacing(tileSpacing);
+        tileset()->initializeTilesetTiles();
+    }
+}
+
+void EditableTileset::setMargin(int margin)
+{
+    if (isCollection() && tileCount() > 0) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Can't set margin on an image collection tileset"));
+        return;
+    }
+
+    if (auto doc = tilesetDocument()) {
+        TilesetParameters parameters(*tileset());
+        parameters.margin = margin;
+
+        push(new ChangeTilesetParameters(doc, parameters));
+    } else if (!checkReadOnly()) {
+        tileset()->setMargin(margin);
+        tileset()->initializeTilesetTiles();
     }
 }
 
@@ -336,9 +368,7 @@ void EditableTileset::setTransparentColor(const QColor &color)
         push(new ChangeTilesetParameters(doc, parameters));
     } else if (!checkReadOnly()) {
         tileset()->setTransparentColor(color);
-
-        if (!tileSize().isEmpty() && !image().isEmpty())
-            tileset()->loadImage();
+        tileset()->initializeTilesetTiles();
     }
 }
 

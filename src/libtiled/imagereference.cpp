@@ -21,7 +21,6 @@
 #include "imagereference.h"
 
 #include "imagecache.h"
-#include "tileset.h"
 
 namespace Tiled {
 
@@ -33,10 +32,10 @@ bool ImageReference::hasImage() const
 QPixmap ImageReference::create() const
 {
     QPixmap pixmap;
-    if (source.isLocalFile())
-        pixmap = ImageCache::loadPixmap(source.toLocalFile());
-    else if (source.scheme() == QLatin1String("qrc"))
-        pixmap = ImageCache::loadPixmap(QLatin1Char(':') + source.path());
+
+    const QString fileName = Tiled::urlToLocalFileOrQrc(source);
+    if (!fileName.isEmpty())
+        pixmap = ImageCache::loadPixmap(fileName);
     else if (!data.isEmpty())
         pixmap = QPixmap::fromImage(QImage::fromData(data, format));
 

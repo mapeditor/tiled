@@ -404,12 +404,17 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
     writeProperties(w, tileset.properties());
 
     // Write the image element
-    const QUrl &imageSource = tileset.imageSource();
-    if (!imageSource.isEmpty()) {
+    const bool isCollection = tileset.isCollection();
+    if (!isCollection) {
         w.writeStartElement(QStringLiteral("image"));
-        QString source = toFileReference(imageSource, mUseAbsolutePaths ? QString()
-                                                                        : mDir.path());
-        w.writeAttribute(QStringLiteral("source"), source);
+
+        const QUrl &imageSource = tileset.imageSource();
+        if (!imageSource.isEmpty()) {
+            // Write a reference to an external tileset image
+            QString source = toFileReference(imageSource, mUseAbsolutePaths ? QString()
+                                                                            : mDir.path());
+            w.writeAttribute(QStringLiteral("source"), source);
+        }
 
         const QColor transColor = tileset.transparentColor();
         if (transColor.isValid())
@@ -422,10 +427,22 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
             w.writeAttribute(QStringLiteral("height"),
                              QString::number(tileset.imageHeight()));
 
+        if (imageSource.isEmpty()) {
+            // Write an embedded image
+            w.writeAttribute(QStringLiteral("format"), QLatin1String("png"));
+
+            w.writeStartElement(QStringLiteral("data"));
+            w.writeAttribute(QStringLiteral("encoding"), QLatin1String("base64"));
+
+            QBuffer buffer;
+            tileset.image().save(&buffer, "png");
+            w.writeCharacters(QString::fromLatin1(buffer.data().toBase64()));
+            w.writeEndElement(); // </data>
+        }
+
         w.writeEndElement();
     }
 
-    const bool isCollection = tileset.isCollection();
     const bool includeAllTiles = isCollection || tileset.anyTileOutOfOrder();
 
     for (const Tile *tile : tileset.tiles()) {

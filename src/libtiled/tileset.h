@@ -198,6 +198,7 @@ public:
     bool loadFromImage(const QImage &image, const QString &source);
     bool loadFromImage(const QString &fileName);
     bool loadImage();
+    bool initializeTilesetTiles();
 
     SharedTileset findSimilarTileset(const QVector<SharedTileset> &tilesets) const;
 
@@ -293,8 +294,6 @@ public:
     static FillMode fillModeFromString(const QString &);
 
 private:
-    void initializeTilesetTiles();
-
     void maybeUpdateTileSize(QSize oldSize, QSize newSize);
     void updateTileSize();
 
@@ -642,11 +641,12 @@ inline const QPixmap &Tileset::image() const
 
 /**
  * Returns whether this tileset is a collection of images. In this case, the
- * tileset itself has no image source.
+ * tileset itself has no image source and the tileset image is also not
+ * embedded.
  */
 inline bool Tileset::isCollection() const
 {
-    return imageSource().isEmpty();
+    return imageSource().isEmpty() && image().isNull();
 }
 
 inline const QList<WangSet*> &Tileset::wangSets() const

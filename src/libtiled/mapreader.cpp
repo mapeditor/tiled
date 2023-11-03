@@ -307,9 +307,8 @@ std::unique_ptr<Map> MapReaderPrivate::readMap()
         mMap.reset();
     } else {
         // Try to load the tileset images for embedded tilesets
-        auto tilesets = mMap->tilesets();
-        for (SharedTileset &tileset : tilesets) {
-            if (!tileset->isCollection() && tileset->fileName().isEmpty())
+        for (const SharedTileset &tileset : mMap->tilesets()) {
+            if (tileset->fileName().isEmpty())
                 tileset->loadImage();
         }
 
@@ -1501,7 +1500,7 @@ std::unique_ptr<Map> MapReader::readMap(const QString &fileName)
 SharedTileset MapReader::readTileset(QIODevice *device, const QString &path)
 {
     SharedTileset tileset = d->readTileset(device, path);
-    if (tileset && !tileset->isCollection())
+    if (tileset)
         tileset->loadImage();
 
     return tileset;
