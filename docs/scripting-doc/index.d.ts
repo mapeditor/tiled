@@ -2700,11 +2700,20 @@ declare class TileMap extends Asset {
   public removeObjects(objects : MapObject[]): void;
 
   /**
-   * Merges the tile layers in the given map with this one. If only a single tile layer exists in the given map, it will be merged with the currentLayer.
+   * Merges the tile layers in the given map with this one. If only a single
+   * tile layer exists in the given map, it will be merged with the
+   * {@link currentLayer}.
    *
-   * This operation can currently only be applied to maps loaded from a file.
+   * Normally, merging tile layers will ignore empty areas in the source map.
+   * However, when edits to tile layers in the source map have previously been
+   * made through {@link TileLayerEdit.setTile}, these edits are applied
+   * regardless of whether the tiles are empty or not. This enables erasing of
+   * tiles, for example when merging the {@link Tool.preview}.
    *
-   * If `canJoin` is true, the operation joins with the previous one on the undo stack when possible. Useful for reducing the amount of undo commands.
+   * This operation can currently only be applied to maps open in the editor.
+   *
+   * If `canJoin` is true, the operation joins with the previous one on the
+   * undo stack when possible. Useful for reducing the amount of undo commands.
    */
   public merge(map: TileMap, canJoin?: boolean): void;
 
@@ -2931,6 +2940,12 @@ interface TileLayerEdit {
    * {@link Tile.FlippedAntiDiagonally} and {@link Tile.RotatedHexagonal120}).
    *
    * To remove a tile, set it to `null`.
+   *
+   * When the modifications are applied to the target layer, using {@link
+   * apply}, all locations which have been set retain a special flag. This flag
+   * is taken into account by {@link TileMap.merge} and {@link Tool.preview},
+   * to enable erasing tiles and highlighting the erased area, respectively
+   * (since Tiled 1.10.2).
    */
   setTile(x : number, y : number, tile : Tile | null, flags? : number) : void
 
@@ -3761,6 +3776,9 @@ interface Tool extends ToolDefinition {
    * When getting or setting this property, a copy is made. To modify the
    * preview, you need to assign a changed {@link TileMap} instance to this
    * property.
+   *
+   * To highlight areas that will be erased, use {@link TileLayerEdit.setTile}
+   * to set tiles to `null`, before assigning the map to the preview.
    */
   preview: TileMap;
 
