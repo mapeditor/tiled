@@ -1,14 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="44.8" height="51.2" version="1.1" viewBox="0 0 44.8 51.2" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
- <metadata>
-  <rdf:RDF>
-   <cc:Work rdf:about="">
-    <dc:format>image/svg+xml</dc:format>
-    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-    <dc:title/>
-   </cc:Work>
-  </rdf:RDF>
- </metadata>
- <!-- Font Awesome Free 5.15.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) -->
- <path d="m22.59 2.7652c-12.26 0-22.59 9.85-22.59 22.01 0 0.39 0.01 22.79 0.01 22.79l22.58-0.02c12.27 0 22.21-10.23 22.21-22.39s-9.94-22.39-22.21-22.39zm-0.19 35.2c-1.94 0-3.79-0.43-5.44-1.21l-8.11 2.01 2.29-7.5c-0.98-1.81-1.54-3.89-1.54-6.1 0-7.07 5.73-12.8 12.8-12.8s12.8 5.73 12.8 12.8-5.73 12.8-12.8 12.8z"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="44.8" height="51.2" version="1.1" viewBox="0 0 44.8 51.2"><metadata/><path d="m22.59 2.7652c-12.26 0-22.59 9.85-22.59 22.01 0 0.39 0.01 22.79 0.01 22.79l22.58-0.02c12.27 0 22.21-10.23 22.21-22.39s-9.94-22.39-22.21-22.39zm-0.19 35.2c-1.94 0-3.79-0.43-5.44-1.21l-8.11 2.01 2.29-7.5c-0.98-1.81-1.54-3.89-1.54-6.1 0-7.07 5.73-12.8 12.8-12.8s12.8 5.73 12.8 12.8-5.73 12.8-12.8 12.8z"/></svg>
