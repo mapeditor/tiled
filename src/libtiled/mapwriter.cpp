@@ -30,7 +30,6 @@
 
 #include "mapwriter.h"
 
-#include "compression.h"
 #include "gidmapper.h"
 #include "grouplayer.h"
 #include "map.h"
@@ -95,6 +94,11 @@ private:
     void writeGroupLayer(QXmlStreamWriter &w, const GroupLayer &groupLayer);
     void writeProperties(QXmlStreamWriter &w,
                          const Properties &properties);
+    void writeImage(QXmlStreamWriter &w,
+                    const QUrl &source,
+                    const QPixmap &image,
+                    const QColor &transColor,
+                    const QSize size);
 
     QDir mDir;      // The directory in which the file is being saved
     GidMapper mGidMapper;
@@ -404,45 +408,11 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
     writeProperties(w, tileset.properties());
 
     // Write the image element
+    writeImage(w, tileset.imageSource(), tileset.image(),
+               tileset.transparentColor(),
+               QSize(tileset.imageWidth(), tileset.imageHeight()));
+
     const bool isCollection = tileset.isCollection();
-    if (!isCollection) {
-        w.writeStartElement(QStringLiteral("image"));
-
-        const QUrl &imageSource = tileset.imageSource();
-        if (!imageSource.isEmpty()) {
-            // Write a reference to an external tileset image
-            QString source = toFileReference(imageSource, mUseAbsolutePaths ? QString()
-                                                                            : mDir.path());
-            w.writeAttribute(QStringLiteral("source"), source);
-        }
-
-        const QColor transColor = tileset.transparentColor();
-        if (transColor.isValid())
-            w.writeAttribute(QStringLiteral("trans"), transColor.name().mid(1));
-
-        if (tileset.imageWidth() > 0)
-            w.writeAttribute(QStringLiteral("width"),
-                             QString::number(tileset.imageWidth()));
-        if (tileset.imageHeight() > 0)
-            w.writeAttribute(QStringLiteral("height"),
-                             QString::number(tileset.imageHeight()));
-
-        if (imageSource.isEmpty()) {
-            // Write an embedded image
-            w.writeAttribute(QStringLiteral("format"), QLatin1String("png"));
-
-            w.writeStartElement(QStringLiteral("data"));
-            w.writeAttribute(QStringLiteral("encoding"), QLatin1String("base64"));
-
-            QBuffer buffer;
-            tileset.image().save(&buffer, "png");
-            w.writeCharacters(QString::fromLatin1(buffer.data().toBase64()));
-            w.writeEndElement(); // </data>
-        }
-
-        w.writeEndElement();
-    }
-
     const bool includeAllTiles = isCollection || tileset.anyTileOutOfOrder();
 
     for (const Tile *tile : tileset.tiles()) {
@@ -468,38 +438,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                 w.writeAttribute(QStringLiteral("probability"), QString::number(tile->probability()));
             if (!tile->properties().isEmpty())
                 writeProperties(w, tile->properties());
-            if (isCollection) {
-                w.writeStartElement(QStringLiteral("image"));
-
-                const QSize imageSize = tile->image().isNull() ? tile->size()
-                                                               : tile->image().size();
-                if (!imageSize.isNull()) {
-                    w.writeAttribute(QStringLiteral("width"),
-                                     QString::number(imageSize.width()));
-                    w.writeAttribute(QStringLiteral("height"),
-                                     QString::number(imageSize.height()));
-                }
-
-                if (tile->imageSource().isEmpty()) {
-                    w.writeAttribute(QStringLiteral("format"),
-                                     QLatin1String("png"));
-
-                    w.writeStartElement(QStringLiteral("data"));
-                    w.writeAttribute(QStringLiteral("encoding"),
-                                     QLatin1String("base64"));
-
-                    QBuffer buffer;
-                    tile->image().save(&buffer, "png");
-                    w.writeCharacters(QString::fromLatin1(buffer.data().toBase64()));
-                    w.writeEndElement(); // </data>
-                } else {
-                    QString source = toFileReference(tile->imageSource(), mUseAbsolutePaths ? QString()
-                                                                                            : mDir.path());
-                    w.writeAttribute(QStringLiteral("source"), source);
-                }
-
-                w.writeEndElement(); // </image>
-            }
+            if (isCollection)
+                writeImage(w, tile->imageSource(), tile->image(), QColor(), tile->size());
             if (tile->objectGroup())
                 writeObjectGroup(w, *tile->objectGroup());
             if (tile->isAnimated()) {
@@ -922,30 +862,8 @@ void MapWriterPrivate::writeImageLayer(QXmlStreamWriter &w,
     if (imageLayer.repeatY())
         w.writeAttribute(QStringLiteral("repeaty"), QString::number(imageLayer.repeatY()));
 
-    // Write the image element
-    const QUrl &imageSource = imageLayer.imageSource();
-    if (!imageSource.isEmpty()) {
-        w.writeStartElement(QStringLiteral("image"));
-
-        QString source = toFileReference(imageSource, mUseAbsolutePaths ? QString()
-                                                                        : mDir.path());
-
-        w.writeAttribute(QStringLiteral("source"), source);
-
-        const QColor transColor = imageLayer.transparentColor();
-        if (transColor.isValid())
-            w.writeAttribute(QStringLiteral("trans"), transColor.name().mid(1));
-
-        const QSize imageSize = imageLayer.image().size();
-        if (!imageSize.isNull()) {
-            w.writeAttribute(QStringLiteral("width"),
-                             QString::number(imageSize.width()));
-            w.writeAttribute(QStringLiteral("height"),
-                             QString::number(imageSize.height()));
-        }
-
-        w.writeEndElement();
-    }
+    writeImage(w, imageLayer.imageSource(), imageLayer.image(),
+               imageLayer.transparentColor(), QSize());
 
     writeProperties(w, imageLayer.properties());
 
@@ -1005,6 +923,52 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
     }
 
     w.writeEndElement();
+}
+
+void MapWriterPrivate::writeImage(QXmlStreamWriter &w,
+                                  const QUrl &source,
+                                  const QPixmap &image,
+                                  const QColor &transColor,
+                                  const QSize size)
+{
+    if (source.isEmpty() && image.isNull())
+        return;
+
+    w.writeStartElement(QStringLiteral("image"));
+
+    if (!source.isEmpty()) {
+        QString fileRef = toFileReference(source, mUseAbsolutePaths ? QString()
+                                                                    : mDir.path());
+        w.writeAttribute(QStringLiteral("source"), fileRef);
+    }
+
+    if (transColor.isValid())
+        w.writeAttribute(QStringLiteral("trans"), transColor.name().mid(1));
+
+    const QSize imageSize = image.isNull() ? size : image.size();
+    if (imageSize.width() > 0) {
+        w.writeAttribute(QStringLiteral("width"),
+                         QString::number(imageSize.width()));
+    }
+    if (imageSize.height() > 0) {
+        w.writeAttribute(QStringLiteral("height"),
+                         QString::number(imageSize.height()));
+    }
+
+    if (source.isEmpty()) {
+        // Write an embedded image
+        w.writeAttribute(QStringLiteral("format"), QLatin1String("png"));
+
+        w.writeStartElement(QStringLiteral("data"));
+        w.writeAttribute(QStringLiteral("encoding"), QLatin1String("base64"));
+
+        QBuffer buffer;
+        image.save(&buffer, "png");
+        w.writeCharacters(QString::fromLatin1(buffer.data().toBase64()));
+        w.writeEndElement(); // </data>
+    }
+
+    w.writeEndElement(); // </image>
 }
 
 
