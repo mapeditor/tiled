@@ -282,7 +282,7 @@ interface FilePath {
   /**
    * The URL of the file.
    */
-  url: string;
+  url: Qt.QUrl;
 }
 
 /**
@@ -2027,7 +2027,7 @@ declare class ImageLayer extends Layer {
   /**
    * Reference to the image rendered by this layer.
    */
-  imageSource: string;
+  imageSource: Qt.QUrl;
 
   /**
    * Returns a copy of this layer's image.
