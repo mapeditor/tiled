@@ -38,12 +38,13 @@ EditableWangSet::EditableWangSet(EditableTileset *tileset,
                                  QObject *parent)
     : EditableObject(tileset, wangSet, parent)
 {
-
 }
 
 EditableWangSet::~EditableWangSet()
 {
-    EditableManager::instance().remove(this);
+    // Prevent owned object from trying to delete us again
+    if (mDetachedWangSet)
+        mDetachedWangSet->setEditable(nullptr);
 }
 
 EditableTile *EditableWangSet::imageTile() const
@@ -177,14 +178,10 @@ void EditableWangSet::detach()
 {
     Q_ASSERT(tileset());
 
-    auto &editableManager = EditableManager::instance();
-
-    editableManager.remove(this);
     setAsset(nullptr);
 
     mDetachedWangSet.reset(wangSet()->clone(nullptr));
     setObject(mDetachedWangSet.get());
-    editableManager.mEditables.insert(wangSet(), this);
 }
 
 void EditableWangSet::attach(EditableTileset *tileset)

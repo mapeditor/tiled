@@ -40,7 +40,6 @@ EditableTileset::EditableTileset(const QString &name, QObject *parent)
     , mTileset(Tileset::create(name, 0, 0))
 {
     setObject(mTileset.data());
-    EditableManager::instance().mEditables.insert(tileset(), this);
 }
 
 EditableTileset::EditableTileset(const Tileset *tileset, QObject *parent)
@@ -60,8 +59,6 @@ EditableTileset::EditableTileset(TilesetDocument *tilesetDocument,
     connect(tilesetDocument, &TilesetDocument::tileObjectGroupChanged, this, &EditableTileset::tileObjectGroupChanged);
     connect(tilesetDocument->wangSetModel(), &TilesetWangSetModel::wangSetAdded, this, &EditableTileset::wangSetAdded);
     connect(tilesetDocument->wangSetModel(), &TilesetWangSetModel::wangSetRemoved, this, &EditableTileset::wangSetRemoved);
-
-    EditableManager::instance().mEditables.insert(tileset(), this);
 }
 
 EditableTileset::~EditableTileset()
@@ -69,7 +66,9 @@ EditableTileset::~EditableTileset()
     detachTiles(tileset()->tiles());
     detachWangSets(tileset()->wangSets());
 
-    EditableManager::instance().remove(this);
+    // Prevent owned object from trying to delete us again
+    if (mTileset)
+        mTileset->setEditable(nullptr);
 }
 
 void EditableTileset::loadFromImage(ScriptImage *image, const QString &source)

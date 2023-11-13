@@ -44,7 +44,9 @@ EditableTile::EditableTile(EditableTileset *tileset, Tile *tile, QObject *parent
 
 EditableTile::~EditableTile()
 {
-    EditableManager::instance().remove(this);
+    // Prevent owned object from trying to delete us again
+    if (mDetachedTile)
+        mDetachedTile->setEditable(nullptr);
 }
 
 EditableObjectGroup *EditableTile::objectGroup() const
@@ -97,19 +99,15 @@ void EditableTile::detach()
 
     auto &editableManager = EditableManager::instance();
 
-    editableManager.remove(this);
     setAsset(nullptr);
 
     mDetachedTile.reset(tile()->clone(nullptr));
     setObject(mDetachedTile.get());
-    editableManager.mEditables.insert(tile(), this);
 
     // Move over any attached editable object group
     if (auto editable = editableManager.find(mAttachedObjectGroup)) {
-        editableManager.remove(editable);
         editable->setAsset(nullptr);
         editable->setObject(tile()->objectGroup());
-        editableManager.mEditables.insert(tile()->objectGroup(), editable);
         mAttachedObjectGroup = tile()->objectGroup();
     } else {
         mAttachedObjectGroup = nullptr;

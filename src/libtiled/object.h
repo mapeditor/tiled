@@ -31,6 +31,8 @@
 #include "properties.h"
 #include "propertytype.h"
 
+#include <QPointer>
+
 namespace Tiled {
 
 /**
@@ -148,9 +150,26 @@ public:
     static const PropertyTypes &propertyTypes();
 
 private:
+    friend class EditableLayer;
+    friend class EditableManager;
+    friend class EditableMap;
+    friend class EditableMapObject;
+    friend class EditableObject;
+    friend class EditableTile;
+    friend class EditableTileset;
+    friend class EditableWangSet;
+
+    QObject *editable() const { return mEditable; }
+    void setEditable(QObject *editable) { mEditable = editable; }
+
     const TypeId mTypeId;
     QString mClassName;
     Properties mProperties;
+
+    /**
+     * The editable wrapper created for this object.
+     */
+    QPointer<QObject> mEditable;
 
     static SharedPropertyTypes mPropertyTypes;
 };

@@ -146,9 +146,4 @@ inline void EditableObject::setAsset(EditableAsset *asset)
     mAsset = asset;
 }
 
-inline void EditableObject::setObject(Object *object)
-{
-    mObject = object;
-}
-
 } // namespace Tiled

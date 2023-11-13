@@ -93,6 +93,10 @@ EditableMap::~EditableMap()
 {
     for (Layer *layer : map()->layers())
         detachLayer(layer);
+
+    // Prevent owned object from trying to delete us again
+    if (mDetachedMap)
+        mDetachedMap->setEditable(nullptr);
 }
 
 QList<QObject *> EditableMap::tilesets() const
@@ -361,7 +365,7 @@ void EditableMap::removeObjects(const QList<QObject*> &objects)
     if (auto doc = mapDocument()) {
         asset()->push(new RemoveMapObjects(doc, mapObjects));
     } else {
-        for (MapObject *mapObject : mapObjects) {
+        for (MapObject *mapObject : std::as_const(mapObjects)) {
             mapObject->objectGroup()->removeObject(mapObject);
             EditableManager::instance().release(mapObject);
         }

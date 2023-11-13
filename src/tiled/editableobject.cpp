@@ -40,6 +40,8 @@ EditableObject::EditableObject(EditableAsset *asset,
     , mAsset(asset)
     , mObject(object)
 {
+    if (object)
+        object->setEditable(this);
 }
 
 bool EditableObject::isReadOnly() const
@@ -74,6 +76,17 @@ void EditableObject::removeProperty(const QString &name)
 Document *EditableObject::document() const
 {
     return asset() ? asset()->document() : nullptr;
+}
+
+void EditableObject::setObject(Object *object)
+{
+    if (mObject)
+        mObject->setEditable(nullptr);
+
+    if (object)
+        object->setEditable(this);
+
+    mObject = object;
 }
 
 void EditableObject::setClassName(const QString &className)

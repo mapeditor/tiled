@@ -34,8 +34,11 @@
 namespace Tiled {
 
 SharedPropertyTypes Object::mPropertyTypes;
+
 Object::~Object()
-{}
+{
+    delete mEditable;
+}
 
 /**
  * Returns the value of the property \a name, taking into account that it may

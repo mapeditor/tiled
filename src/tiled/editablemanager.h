@@ -20,7 +20,6 @@
 
 #pragma once
 
-#include <QHash>
 #include <QObject>
 
 #include <memory>
@@ -64,8 +63,6 @@ public:
     EditableTileset *find(Tileset *tileset) const;
     EditableWangSet *find(WangSet *wangSet) const;
 
-    void remove(EditableObject *editable);
-
     void release(Layer *layer);
     void release(MapObject *mapObject);
     void release(std::unique_ptr<WangSet> wangSet);
@@ -85,8 +82,6 @@ private:
     friend class EditableTileset;
     friend class EditableTile;
     friend class EditableWangSet;
-
-    QHash<Object*, EditableObject*> mEditables;
 
     static std::unique_ptr<EditableManager> mInstance;
 };

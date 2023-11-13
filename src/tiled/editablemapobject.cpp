@@ -26,7 +26,6 @@
 #include "editablemap.h"
 #include "editableobjectgroup.h"
 #include "editabletile.h"
-#include "scriptmanager.h"
 
 #include <QCoreApplication>
 #include <QJSEngine>
@@ -46,7 +45,6 @@ EditableMapObject::EditableMapObject(Shape shape,
     mapObject()->setShape(static_cast<MapObject::Shape>(shape));
 
     mDetachedMapObject.reset(mapObject());
-    EditableManager::instance().mEditables.insert(mapObject(), this);
 }
 
 EditableMapObject::EditableMapObject(EditableAsset *asset,
@@ -58,7 +56,9 @@ EditableMapObject::EditableMapObject(EditableAsset *asset,
 
 EditableMapObject::~EditableMapObject()
 {
-    EditableManager::instance().remove(this);
+    // Prevent owned object from trying to delete us again
+    if (mDetachedMapObject)
+        mDetachedMapObject->setEditable(nullptr);
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -107,12 +107,10 @@ void EditableMapObject::detach()
 {
     Q_ASSERT(asset());
 
-    EditableManager::instance().remove(this);
     setAsset(nullptr);
 
     mDetachedMapObject.reset(mapObject()->clone());
     setObject(mDetachedMapObject.get());
-    EditableManager::instance().mEditables.insert(mapObject(), this);
 }
 
 void EditableMapObject::attach(EditableMap *map)
