@@ -151,12 +151,15 @@ EditableMapObject *EditableMapObject::get(EditableAsset *asset, MapObject *mapOb
     if (!mapObject)
         return nullptr;
 
-    if (auto editable = EditableMapObject::find(mapObject))
+    auto editable = EditableMapObject::find(mapObject);
+    if (editable)
         return editable;
 
     Q_ASSERT(mapObject->objectGroup());
 
-    return new EditableMapObject(asset, mapObject);
+    editable = new EditableMapObject(asset, mapObject);
+    editable->moveOwnershipToCpp();
+    return editable;
 }
 
 void EditableMapObject::release(MapObject *mapObject)

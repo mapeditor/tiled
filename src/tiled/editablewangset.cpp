@@ -226,10 +226,13 @@ EditableWangSet *EditableWangSet::get(EditableTileset *tileset, WangSet *wangSet
     Q_ASSERT(wangSet);
     Q_ASSERT(wangSet->tileset() == tileset->tileset());
 
-    if (auto editable = EditableWangSet::find(wangSet))
+    auto editable = EditableWangSet::find(wangSet);
+    if (editable)
         return editable;
 
-    return new EditableWangSet(tileset, wangSet);
+    editable = new EditableWangSet(tileset, wangSet);
+    editable->moveOwnershipToCpp();
+    return editable;
 }
 
 /**

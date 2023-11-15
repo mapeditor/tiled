@@ -145,10 +145,13 @@ EditableTile *EditableTile::get(EditableTileset *tileset, Tile *tile)
     Q_ASSERT(tile);
     Q_ASSERT(tile->tileset() == tileset->tileset());
 
-    if (auto editable = EditableTile::find(tile))
+    auto editable = EditableTile::find(tile);
+    if (editable)
         return editable;
 
-    return new EditableTile(tileset, tile);
+    editable = new EditableTile(tileset, tile);
+    editable->moveOwnershipToCpp();
+    return editable;
 }
 
 void EditableTile::setImageFileName(const QString &fileName)

@@ -121,23 +121,30 @@ EditableLayer *EditableLayer::get(EditableMap *map, Layer *layer)
     if (!layer)
         return nullptr;
 
-    if (auto editable = find(layer))
+    auto editable = find(layer);
+    if (editable)
         return editable;
 
     Q_ASSERT(!map || layer->map() == map->map());
 
     switch (layer->layerType()) {
     case Layer::TileLayerType:
-        return new EditableTileLayer(map, static_cast<TileLayer*>(layer));
+        editable = new EditableTileLayer(map, static_cast<TileLayer*>(layer));
+        break;
     case Layer::ObjectGroupType:
-        return new EditableObjectGroup(map, static_cast<ObjectGroup*>(layer));
+        editable = new EditableObjectGroup(map, static_cast<ObjectGroup*>(layer));
+        break;
     case Layer::ImageLayerType:
-        return new EditableImageLayer(map, static_cast<ImageLayer*>(layer));
+        editable = new EditableImageLayer(map, static_cast<ImageLayer*>(layer));
+        break;
     case Layer::GroupLayerType:
-        return new EditableGroupLayer(map, static_cast<GroupLayer*>(layer));
+        editable = new EditableGroupLayer(map, static_cast<GroupLayer*>(layer));
+        break;
     }
 
-    return nullptr;
+    editable->moveOwnershipToCpp();
+
+    return editable;
 }
 
 void EditableLayer::release(Layer *layer)

@@ -228,10 +228,13 @@ EditableTileset *EditableTileset::get(Tileset *tileset)
     if (auto document = TilesetDocument::findDocumentForTileset(tileset->sharedFromThis()))
         return document->editable();
 
-    if (auto editable = EditableTileset::find(tileset))
+    auto editable = EditableTileset::find(tileset);
+    if (editable)
         return editable;
 
-    return new EditableTileset(tileset);
+    editable = new EditableTileset(tileset);
+    editable->moveOwnershipToCpp();
+    return editable;
 }
 
 void EditableTileset::setName(const QString &name)

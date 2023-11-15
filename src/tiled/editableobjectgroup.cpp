@@ -147,7 +147,9 @@ EditableObjectGroup *EditableObjectGroup::get(EditableAsset *asset, ObjectGroup 
     if (auto editable = EditableLayer::find(objectGroup))
         return static_cast<EditableObjectGroup*>(editable);
 
-    return new EditableObjectGroup(asset, objectGroup);
+    auto editable = new EditableObjectGroup(asset, objectGroup);
+    editable->moveOwnershipToCpp();
+    return editable;
 }
 
 void EditableObjectGroup::setColor(const QColor &color)
