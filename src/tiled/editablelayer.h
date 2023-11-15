@@ -92,6 +92,10 @@ public:
     void hold(std::unique_ptr<Layer> layer);
     bool isOwning() const;
 
+    static EditableLayer *find(Layer *layer);
+    static EditableLayer *get(EditableMap *map, Layer *layer);
+    static void release(Layer *layer);
+
 public slots:
     void setName(const QString &name);
     void setOpacity(qreal opacity);
@@ -179,6 +183,11 @@ inline Layer *EditableLayer::layer() const
 inline bool EditableLayer::isOwning() const
 {
     return mDetachedLayer.get() == layer();
+}
+
+inline EditableLayer *EditableLayer::find(Layer *layer)
+{
+    return static_cast<EditableLayer*>(layer->editable());
 }
 
 } // namespace Tiled

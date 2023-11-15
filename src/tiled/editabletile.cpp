@@ -24,7 +24,6 @@
 #include "changetileanimation.h"
 #include "changetileimagesource.h"
 #include "changetileobjectgroup.h"
-#include "editablemanager.h"
 #include "editableobjectgroup.h"
 #include "editabletileset.h"
 #include "imagecache.h"
@@ -57,7 +56,7 @@ EditableObjectGroup *EditableTile::objectGroup() const
         Q_ASSERT(mAttachedObjectGroup == tile()->objectGroup());
     }
 
-    return EditableManager::instance().editableObjectGroup(asset(), mAttachedObjectGroup);
+    return EditableObjectGroup::get(asset(), mAttachedObjectGroup);
 }
 
 QJSValue EditableTile::frames() const
@@ -107,8 +106,7 @@ void EditableTile::detach()
     setObject(mDetachedTile.get());
 
     // Move over any attached editable object group
-    auto &editableManager = EditableManager::instance();
-    if (auto editable = editableManager.find(mAttachedObjectGroup)) {
+    if (auto editable = EditableLayer::find(mAttachedObjectGroup)) {
         editable->setAsset(nullptr);
         editable->setObject(tile()->objectGroup());
         mAttachedObjectGroup = tile()->objectGroup();
@@ -128,9 +126,29 @@ void EditableTile::attach(EditableTileset *tileset)
 
 void EditableTile::detachObjectGroup()
 {
-    if (auto editable = EditableManager::instance().find(mAttachedObjectGroup))
+    if (auto editable = EditableLayer::find(mAttachedObjectGroup))
         editable->detach();
     mAttachedObjectGroup = nullptr;
+}
+
+EditableTile *EditableTile::get(Tile *tile)
+{
+    if (!tile)
+        return nullptr;
+
+    auto tileset = EditableTileset::get(tile->tileset());
+    return get(tileset, tile);
+}
+
+EditableTile *EditableTile::get(EditableTileset *tileset, Tile *tile)
+{
+    Q_ASSERT(tile);
+    Q_ASSERT(tile->tileset() == tileset->tileset());
+
+    if (auto editable = EditableTile::find(tile))
+        return editable;
+
+    return new EditableTile(tileset, tile);
 }
 
 void EditableTile::setImageFileName(const QString &fileName)

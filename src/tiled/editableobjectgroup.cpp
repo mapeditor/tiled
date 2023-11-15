@@ -23,7 +23,6 @@
 #include "addremovemapobject.h"
 #include "changeobjectgroupproperties.h"
 #include "editableasset.h"
-#include "editablemanager.h"
 #include "map.h"
 #include "scriptmanager.h"
 
@@ -45,10 +44,9 @@ EditableObjectGroup::EditableObjectGroup(EditableAsset *asset,
 
 QList<QObject *> EditableObjectGroup::objects()
 {
-    auto &editableManager = EditableManager::instance();
     QList<QObject*> objects;
     for (MapObject *object : objectGroup()->objects())
-        objects.append(editableManager.editableMapObject(asset(), object));
+        objects.append(EditableMapObject::get(asset(), object));
     return objects;
 }
 
@@ -60,7 +58,7 @@ EditableMapObject *EditableObjectGroup::objectAt(int index)
     }
 
     auto mapObject = objectGroup()->objectAt(index);
-    return EditableManager::instance().editableMapObject(asset(), mapObject);
+    return EditableMapObject::get(asset(), mapObject);
 }
 
 void EditableObjectGroup::removeObjectAt(int index)
@@ -76,7 +74,7 @@ void EditableObjectGroup::removeObjectAt(int index)
         asset()->push(new RemoveMapObjects(doc, mapObject));
     } else if (!checkReadOnly()) {
         objectGroup()->removeObjectAt(index);
-        EditableManager::instance().release(mapObject);
+        EditableMapObject::release(mapObject);
     }
 }
 
@@ -135,6 +133,21 @@ void EditableObjectGroup::insertObjectAt(int index, EditableMapObject *editableM
 void EditableObjectGroup::addObject(EditableMapObject *editableMapObject)
 {
     insertObjectAt(objectCount(), editableMapObject);
+}
+
+/**
+ * This functions exists in addition to EditableLayer::get() because the asset
+ * might also be an EditableTileset in the case of object groups.
+ */
+EditableObjectGroup *EditableObjectGroup::get(EditableAsset *asset, ObjectGroup *objectGroup)
+{
+    if (!objectGroup)
+        return nullptr;
+
+    if (auto editable = EditableLayer::find(objectGroup))
+        return static_cast<EditableObjectGroup*>(editable);
+
+    return new EditableObjectGroup(asset, objectGroup);
 }
 
 void EditableObjectGroup::setColor(const QColor &color)

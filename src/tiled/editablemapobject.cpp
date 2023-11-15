@@ -22,7 +22,6 @@
 
 #include "changemapobject.h"
 #include "changepolygon.h"
-#include "editablemanager.h"
 #include "editablemap.h"
 #include "editableobjectgroup.h"
 #include "editabletile.h"
@@ -87,7 +86,7 @@ QJSValue EditableMapObject::polygon() const
 
 EditableTile *EditableMapObject::tile() const
 {
-    return EditableManager::instance().editableTile(mapObject()->cell().tile());
+    return EditableTile::get(mapObject()->cell().tile());
 }
 
 bool EditableMapObject::isSelected() const
@@ -100,7 +99,7 @@ bool EditableMapObject::isSelected() const
 
 EditableObjectGroup *EditableMapObject::layer() const
 {
-    return EditableManager::instance().editableObjectGroup(asset(), mapObject()->objectGroup());
+    return EditableObjectGroup::get(asset(), mapObject()->objectGroup());
 }
 
 EditableMap *EditableMapObject::map() const
@@ -145,6 +144,26 @@ void EditableMapObject::hold(std::unique_ptr<MapObject> mapObject)
 
     setAsset(nullptr);
     mDetachedMapObject = std::move(mapObject);
+}
+
+EditableMapObject *EditableMapObject::get(EditableAsset *asset, MapObject *mapObject)
+{
+    if (!mapObject)
+        return nullptr;
+
+    if (auto editable = EditableMapObject::find(mapObject))
+        return editable;
+
+    Q_ASSERT(mapObject->objectGroup());
+
+    return new EditableMapObject(asset, mapObject);
+}
+
+void EditableMapObject::release(MapObject *mapObject)
+{
+    std::unique_ptr<MapObject> owned { mapObject };
+    if (auto editable = EditableMapObject::find(mapObject))
+        editable->hold(std::move(owned));
 }
 
 void EditableMapObject::setShape(Shape shape)

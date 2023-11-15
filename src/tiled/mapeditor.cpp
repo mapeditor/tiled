@@ -32,7 +32,6 @@
 #include "createtextobjecttool.h"
 #include "createtileobjecttool.h"
 #include "documentmanager.h"
-#include "editablemanager.h"
 #include "editablemap.h"
 #include "editablewangset.h"
 #include "editpolygontool.h"
@@ -1064,8 +1063,7 @@ void MapEditor::setCurrentBrush(EditableMap *editableMap)
 
 EditableWangSet *MapEditor::currentWangSet() const
 {
-    auto currentWangSet = mWangDock->currentWangSet();
-    return EditableManager::instance().editableWangSet(currentWangSet);
+    return EditableWangSet::get(mWangDock->currentWangSet());
 }
 
 int MapEditor::currentWangColorIndex() const

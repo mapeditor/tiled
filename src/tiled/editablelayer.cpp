@@ -22,8 +22,10 @@
 
 #include "changelayer.h"
 #include "editablegrouplayer.h"
-#include "editablemanager.h"
+#include "editableimagelayer.h"
 #include "editablemap.h"
+#include "editableobjectgroup.h"
+#include "editabletilelayer.h"
 
 namespace Tiled {
 
@@ -54,7 +56,7 @@ EditableMap *EditableLayer::map() const
 EditableGroupLayer *EditableLayer::parentLayer() const
 {
     GroupLayer *parent = layer()->parentLayer();
-    return static_cast<EditableGroupLayer*>(EditableManager::instance().editableLayer(map(), parent));
+    return static_cast<EditableGroupLayer*>(EditableLayer::get(map(), parent));
 }
 
 bool EditableLayer::isSelected() const
@@ -112,6 +114,37 @@ void EditableLayer::hold(std::unique_ptr<Layer> layer)
 
     setAsset(nullptr);
     mDetachedLayer = std::move(layer);
+}
+
+EditableLayer *EditableLayer::get(EditableMap *map, Layer *layer)
+{
+    if (!layer)
+        return nullptr;
+
+    if (auto editable = find(layer))
+        return editable;
+
+    Q_ASSERT(!map || layer->map() == map->map());
+
+    switch (layer->layerType()) {
+    case Layer::TileLayerType:
+        return new EditableTileLayer(map, static_cast<TileLayer*>(layer));
+    case Layer::ObjectGroupType:
+        return new EditableObjectGroup(map, static_cast<ObjectGroup*>(layer));
+    case Layer::ImageLayerType:
+        return new EditableImageLayer(map, static_cast<ImageLayer*>(layer));
+    case Layer::GroupLayerType:
+        return new EditableGroupLayer(map, static_cast<GroupLayer*>(layer));
+    }
+
+    return nullptr;
+}
+
+void EditableLayer::release(Layer *layer)
+{
+    std::unique_ptr<Layer> owned { layer };
+    if (auto editable = EditableLayer::find(layer))
+        editable->hold(std::move(owned));
 }
 
 void EditableLayer::setName(const QString &name)

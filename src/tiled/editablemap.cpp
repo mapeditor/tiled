@@ -27,7 +27,6 @@
 #include "changeevents.h"
 #include "changemapproperty.h"
 #include "editablelayer.h"
-#include "editablemanager.h"
 #include "editablemapobject.h"
 #include "editableselectedarea.h"
 #include "editabletilelayer.h"
@@ -102,10 +101,9 @@ EditableMap::~EditableMap()
 QList<QObject *> EditableMap::tilesets() const
 {
     QList<QObject *> editableTilesets;
-    auto &editableManager = EditableManager::instance();
 
     for (const SharedTileset &tileset : map()->tilesets())
-        editableTilesets.append(editableManager.editableTileset(tileset.data()));
+        editableTilesets.append(EditableTileset::get(tileset.data()));
 
     return editableTilesets;
 }
@@ -113,10 +111,9 @@ QList<QObject *> EditableMap::tilesets() const
 QList<QObject *> EditableMap::layers()
 {
     QList<QObject *> editables;
-    auto &editableManager = EditableManager::instance();
 
     for (const auto layer : map()->layers())
-        editables.append(editableManager.editableLayer(this, layer));
+        editables.append(EditableLayer::get(this, layer));
 
     return editables;
 }
@@ -124,7 +121,7 @@ QList<QObject *> EditableMap::layers()
 EditableLayer *EditableMap::currentLayer()
 {
     if (auto document = mapDocument())
-        return EditableManager::instance().editableLayer(this, document->currentLayer());
+        return EditableLayer::get(this, document->currentLayer());
     return nullptr;
 }
 
@@ -135,10 +132,9 @@ QList<QObject *> EditableMap::selectedLayers()
 
     QList<QObject*> selectedLayers;
 
-    auto &editableManager = EditableManager::instance();
     const auto selectedLayersOrdered = mapDocument()->selectedLayersOrdered();
     for (Layer *layer : selectedLayersOrdered)
-        selectedLayers.append(editableManager.editableLayer(this, layer));
+        selectedLayers.append(EditableLayer::get(this, layer));
 
     return selectedLayers;
 }
@@ -150,10 +146,9 @@ QList<QObject *> EditableMap::selectedObjects()
 
     QList<QObject*> selectedObjects;
 
-    auto &editableManager = EditableManager::instance();
     const auto selectedObjectsOrdered = mapDocument()->selectedObjectsOrdered();
     for (MapObject *object : selectedObjectsOrdered)
-        selectedObjects.append(editableManager.editableMapObject(this, object));
+        selectedObjects.append(EditableMapObject::get(this, object));
 
     return selectedObjects;
 }
@@ -166,7 +161,7 @@ EditableLayer *EditableMap::layerAt(int index)
     }
 
     Layer *layer = map()->layerAt(index);
-    return EditableManager::instance().editableLayer(this, layer);
+    return EditableLayer::get(this, layer);
 }
 
 void EditableMap::removeLayerAt(int index)
@@ -180,7 +175,7 @@ void EditableMap::removeLayerAt(int index)
         push(new RemoveLayer(doc, index, nullptr));
     } else if (!checkReadOnly()) {
         auto layer = map()->takeLayerAt(index);
-        EditableManager::instance().release(layer);
+        EditableLayer::release(layer);
     }
 }
 
@@ -342,7 +337,7 @@ QList<QObject *> EditableMap::usedTilesets() const
 
     QList<QObject *> editableTilesets;
     for (const SharedTileset &tileset : tilesets)
-        editableTilesets.append(EditableManager::instance().editableTileset(tileset.data()));
+        editableTilesets.append(EditableTileset::get(tileset.data()));
     return editableTilesets;
 }
 
@@ -372,7 +367,7 @@ void EditableMap::removeObjects(const QList<QObject*> &objects)
     } else {
         for (MapObject *mapObject : std::as_const(mapObjects)) {
             mapObject->objectGroup()->removeObject(mapObject);
-            EditableManager::instance().release(mapObject);
+            EditableMapObject::release(mapObject);
         }
     }
 }
@@ -705,7 +700,7 @@ void EditableMap::documentChanged(const ChangeEvent &change)
 
 void EditableMap::attachLayer(Layer *layer)
 {
-    if (EditableLayer *editable = EditableManager::instance().find(layer))
+    if (auto editable = EditableLayer::find(layer))
         editable->attach(this);
 
     if (GroupLayer *groupLayer = layer->asGroupLayer()) {
@@ -718,7 +713,7 @@ void EditableMap::attachLayer(Layer *layer)
 
 void EditableMap::detachLayer(Layer *layer)
 {
-    auto editableLayer = EditableManager::instance().find(layer);
+    auto editableLayer = EditableLayer::find(layer);
     if (editableLayer && editableLayer->map() == this)
         editableLayer->detach();
 
@@ -732,18 +727,16 @@ void EditableMap::detachLayer(Layer *layer)
 
 void EditableMap::attachMapObjects(const QList<MapObject *> &mapObjects)
 {
-    const auto &editableManager = EditableManager::instance();
     for (MapObject *mapObject : mapObjects) {
-        if (EditableMapObject *editable = editableManager.find(mapObject))
+        if (auto editable = EditableMapObject::find(mapObject))
             editable->attach(this);
     }
 }
 
 void EditableMap::detachMapObjects(const QList<MapObject *> &mapObjects)
 {
-    const auto &editableManager = EditableManager::instance();
     for (MapObject *mapObject : mapObjects) {
-        if (EditableMapObject *editable = editableManager.find(mapObject)) {
+        if (auto editable = EditableMapObject::find(mapObject)) {
             Q_ASSERT(editable->map() == this);
             editable->detach();
         }
@@ -752,8 +745,7 @@ void EditableMap::detachMapObjects(const QList<MapObject *> &mapObjects)
 
 void EditableMap::onRegionEdited(const QRegion &region, TileLayer *layer)
 {
-    auto &editableManager = EditableManager::instance();
-    const auto editableLayer = static_cast<EditableTileLayer*>(editableManager.editableLayer(this, layer));
+    const auto editableLayer = static_cast<EditableTileLayer*>(EditableLayer::get(this, layer));
     emit regionEdited(RegionValueType(region), editableLayer);
 }
 

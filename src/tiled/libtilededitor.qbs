@@ -216,8 +216,6 @@ DynamicLibrary {
         "editableimagelayer.h",
         "editablelayer.cpp",
         "editablelayer.h",
-        "editablemanager.cpp",
-        "editablemanager.h",
         "editablemap.cpp",
         "editablemap.h",
         "editablemapobject.cpp",

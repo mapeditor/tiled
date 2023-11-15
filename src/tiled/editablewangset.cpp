@@ -23,7 +23,6 @@
 #include "changetilewangid.h"
 #include "changewangcolordata.h"
 #include "changewangsetdata.h"
-#include "editablemanager.h"
 #include "editabletile.h"
 #include "editabletileset.h"
 #include "scriptmanager.h"
@@ -50,7 +49,7 @@ EditableWangSet::~EditableWangSet()
 EditableTile *EditableWangSet::imageTile() const
 {
     if (Tile *tile = wangSet()->imageTile())
-        return EditableManager::instance().editableTile(tileset(), tile);
+        return EditableTile::get(tileset(), tile);
 
     return nullptr;
 }
@@ -211,6 +210,36 @@ void EditableWangSet::hold(std::unique_ptr<WangSet> wangSet)
 
     setAsset(nullptr);
     mDetachedWangSet = std::move(wangSet);
+}
+
+EditableWangSet *EditableWangSet::get(WangSet *wangSet)
+{
+    if (!wangSet)
+        return nullptr;
+
+    auto tileset = EditableTileset::get(wangSet->tileset());
+    return get(tileset, wangSet);
+}
+
+EditableWangSet *EditableWangSet::get(EditableTileset *tileset, WangSet *wangSet)
+{
+    Q_ASSERT(wangSet);
+    Q_ASSERT(wangSet->tileset() == tileset->tileset());
+
+    if (auto editable = EditableWangSet::find(wangSet))
+        return editable;
+
+    return new EditableWangSet(tileset, wangSet);
+}
+
+/**
+ * Releases the WangSet by either finding an EditableWangSet instance to take
+ * ownership of it or deleting it.
+ */
+void EditableWangSet::release(std::unique_ptr<WangSet> wangSet)
+{
+    if (auto editable = EditableWangSet::find(wangSet.get()))
+        editable->hold(std::move(wangSet));
 }
 
 TilesetDocument *EditableWangSet::tilesetDocument() const

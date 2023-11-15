@@ -22,7 +22,6 @@
 
 #include "addremovetileset.h"
 #include "changelayer.h"
-#include "editablemanager.h"
 #include "editablemap.h"
 #include "painttilelayer.h"
 #include "resizetilelayer.h"
@@ -103,7 +102,7 @@ int EditableTileLayer::flagsAt(int x, int y) const
 
 EditableTile *EditableTileLayer::tileAt(int x, int y) const
 {
-    return EditableManager::instance().editableTile(cellAt(x, y).tile());
+    return EditableTile::get(cellAt(x, y).tile());
 }
 
 TileLayerEdit *EditableTileLayer::edit()

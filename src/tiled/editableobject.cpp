@@ -22,7 +22,6 @@
 
 #include "changeproperties.h"
 #include "editableasset.h"
-#include "editablemanager.h"
 #include "editablemapobject.h"
 #include "map.h"
 #include "mapobject.h"
@@ -175,7 +174,7 @@ QVariant EditableObject::toScript(const QVariant &value) const
         }
 
         if (referencedObject) {
-            auto editable = EditableManager::instance().editableMapObject(asset(), referencedObject);
+            auto editable = EditableMapObject::get(asset(), referencedObject);
             return QVariant::fromValue(editable);
         }
     }

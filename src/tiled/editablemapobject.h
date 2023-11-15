@@ -143,6 +143,10 @@ public:
     void hold(std::unique_ptr<MapObject> mapObject);
     bool isOwning() const;
 
+    static EditableMapObject *find(MapObject *mapObject);
+    static EditableMapObject *get(EditableAsset *asset, MapObject *mapObject);
+    static void release(MapObject *mapObject);
+
 public slots:
     void setShape(Shape shape);
     void setName(QString name);
@@ -280,6 +284,11 @@ inline MapObject *EditableMapObject::mapObject() const
 inline bool EditableMapObject::isOwning() const
 {
     return mDetachedMapObject.get() == object();
+}
+
+inline EditableMapObject *EditableMapObject::find(MapObject *mapObject)
+{
+    return static_cast<EditableMapObject*>(mapObject->editable());
 }
 
 inline void EditableMapObject::setX(qreal x)

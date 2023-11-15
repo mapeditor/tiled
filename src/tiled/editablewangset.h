@@ -79,6 +79,11 @@ public:
     void attach(EditableTileset *tileset);
     void hold(std::unique_ptr<WangSet> wangSet);
 
+    static EditableWangSet *find(WangSet *wangSet);
+    static EditableWangSet *get(WangSet *wangSet);
+    static EditableWangSet *get(EditableTileset *tileset, WangSet *wangSet);
+    static void release(std::unique_ptr<WangSet> wangSet);
+
 private:
     TilesetDocument *tilesetDocument() const;
 
@@ -109,6 +114,11 @@ inline EditableWangSet::Type EditableWangSet::effectiveTypeForColor(int color) c
 inline WangSet *EditableWangSet::wangSet() const
 {
     return static_cast<WangSet*>(object());
+}
+
+inline EditableWangSet *EditableWangSet::find(WangSet *wangSet)
+{
+    return static_cast<EditableWangSet*>(wangSet->editable());
 }
 
 } // namespace Tiled

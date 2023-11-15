@@ -150,6 +150,9 @@ public:
 
     QSharedPointer<Document> createDocument() override;
 
+    static EditableTileset *find(Tileset *tileset);
+    static EditableTileset *get(Tileset *tileset);
+
 public slots:
     void setName(const QString &name);
     void setImage(const QString &imageFilePath);
@@ -296,6 +299,11 @@ inline bool EditableTileset::isCollection() const
 inline Tileset *EditableTileset::tileset() const
 {
     return static_cast<Tileset*>(object());
+}
+
+inline EditableTileset *EditableTileset::find(Tileset *tileset)
+{
+    return static_cast<EditableTileset*>(tileset->editable());
 }
 
 inline void EditableTileset::setTileWidth(int width)
