@@ -67,7 +67,9 @@ EditableMapObject::~EditableMapObject()
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 QJSValue EditableMapObject::polygon() const
 {
-    QJSEngine *engine = ScriptManager::instance().engine();
+    QJSEngine *engine = qjsEngine(this);
+    if (!engine)
+        return QJSValue();
 
     const auto &polygon = mapObject()->polygon();
     QJSValue array = engine->newArray(polygon.size());
@@ -109,34 +111,40 @@ EditableMap *EditableMapObject::map() const
 void EditableMapObject::detach()
 {
     Q_ASSERT(asset());
-
     setAsset(nullptr);
+
+    if (!moveOwnershipToJavaScript())
+        return;
 
     mDetachedMapObject.reset(mapObject()->clone());
     setObject(mDetachedMapObject.get());
 }
 
-void EditableMapObject::attach(EditableMap *map)
+/**
+ * Turns this stand-alone object into a reference, with the object now owned by
+ * an object group. The given \a asset may be nullptr.
+ *
+ * Returns nullptr if the editable wasn't owning its object.
+ */
+MapObject *EditableMapObject::attach(EditableAsset *asset)
 {
-    Q_ASSERT(!asset() && map);
+    Q_ASSERT(!this->asset());
 
-    setAsset(map);
-    mDetachedMapObject.release();
+    setAsset(asset);
+    moveOwnershipToCpp();
+    return mDetachedMapObject.release();
 }
 
-void EditableMapObject::hold()
+void EditableMapObject::hold(std::unique_ptr<MapObject> mapObject)
 {
-    Q_ASSERT(!asset());             // if asset exists, it holds the object (possibly indirectly)
     Q_ASSERT(!mDetachedMapObject);  // can't already be holding the object
+    Q_ASSERT(this->mapObject() == mapObject.get());
 
-    mDetachedMapObject.reset(mapObject());
-}
+    if (!moveOwnershipToJavaScript())
+        return;
 
-void EditableMapObject::release()
-{
-    Q_ASSERT(mDetachedMapObject.get() == mapObject());
-
-    mDetachedMapObject.release();
+    setAsset(nullptr);
+    mDetachedMapObject = std::move(mapObject);
 }
 
 void EditableMapObject::setShape(Shape shape)

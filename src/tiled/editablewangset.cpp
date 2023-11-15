@@ -67,7 +67,10 @@ QJSValue EditableWangSet::wangId(EditableTile *editableTile)
         return {};
     }
 
-    QJSEngine *engine = ScriptManager::instance().engine();
+    QJSEngine *engine = qjsEngine(this);
+    if (!engine)
+        return QJSValue();
+
     WangId wangId = wangSet()->wangIdOfTile(editableTile->tile());
 
     QJSValue wangIdArray = engine->newArray(WangId::NumIndexes);
@@ -177,8 +180,10 @@ void EditableWangSet::setColorCount(int n)
 void EditableWangSet::detach()
 {
     Q_ASSERT(tileset());
-
     setAsset(nullptr);
+
+    if (!moveOwnershipToJavaScript())
+        return;
 
     mDetachedWangSet.reset(wangSet()->clone(nullptr));
     setObject(mDetachedWangSet.get());
@@ -188,23 +193,24 @@ void EditableWangSet::attach(EditableTileset *tileset)
 {
     Q_ASSERT(!asset() && tileset);
 
+    moveOwnershipToCpp();
     setAsset(tileset);
     mDetachedWangSet.release();
 }
 
-void EditableWangSet::hold()
+/**
+ * Take ownership of the referenced wang set or delete it.
+ */
+void EditableWangSet::hold(std::unique_ptr<WangSet> wangSet)
 {
-    Q_ASSERT(!asset());             // if asset exists, it holds the object (possibly indirectly)
     Q_ASSERT(!mDetachedWangSet);    // can't already be holding the object
+    Q_ASSERT(this->wangSet() == wangSet.get());
 
-    mDetachedWangSet.reset(wangSet());
-}
+    if (!moveOwnershipToJavaScript())
+        return;
 
-void EditableWangSet::release()
-{
-    Q_ASSERT(mDetachedWangSet.get() == wangSet());
-
-    mDetachedWangSet.release();
+    setAsset(nullptr);
+    mDetachedWangSet = std::move(wangSet);
 }
 
 TilesetDocument *EditableWangSet::tilesetDocument() const

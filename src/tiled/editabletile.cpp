@@ -62,7 +62,9 @@ EditableObjectGroup *EditableTile::objectGroup() const
 
 QJSValue EditableTile::frames() const
 {
-    QJSEngine *engine = ScriptManager::instance().engine();
+    QJSEngine *engine = qjsEngine(this);
+    if (!engine)
+        return QJSValue();
 
     const auto &frames = tile()->frames();
     QJSValue array = engine->newArray(frames.size());
@@ -96,15 +98,16 @@ void EditableTile::setImage(ScriptImage *image)
 void EditableTile::detach()
 {
     Q_ASSERT(tileset());
-
-    auto &editableManager = EditableManager::instance();
-
     setAsset(nullptr);
+
+    if (!moveOwnershipToJavaScript())
+        return;
 
     mDetachedTile.reset(tile()->clone(nullptr));
     setObject(mDetachedTile.get());
 
     // Move over any attached editable object group
+    auto &editableManager = EditableManager::instance();
     if (auto editable = editableManager.find(mAttachedObjectGroup)) {
         editable->setAsset(nullptr);
         editable->setObject(tile()->objectGroup());
@@ -118,6 +121,7 @@ void EditableTile::attach(EditableTileset *tileset)
 {
     Q_ASSERT(!asset() && tileset);
 
+    moveOwnershipToCpp();
     setAsset(tileset);
     mDetachedTile.release();
 }
@@ -180,7 +184,7 @@ void EditableTile::setObjectGroup(EditableObjectGroup *editableObjectGroup)
             return;
         }
 
-        og.reset(static_cast<ObjectGroup*>(editableObjectGroup->release()));
+        og.reset(static_cast<ObjectGroup*>(editableObjectGroup->attach(asset())));
     }
 
     if (TilesetDocument *doc = tilesetDocument()) {

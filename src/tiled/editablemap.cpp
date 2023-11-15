@@ -220,12 +220,12 @@ void EditableMap::insertLayerAt(int index, EditableLayer *editableLayer)
     }
 
     if (!editableLayer) {
-        ScriptManager::instance().throwNullArgError(0);
+        ScriptManager::instance().throwNullArgError(1);
         return;
     }
 
-    if (editableLayer->map()) {
-        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Layer already part of a map"));
+    if (!editableLayer->isOwning()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Layer is in use"));
         return;
     }
 
@@ -248,12 +248,17 @@ void EditableMap::insertLayerAt(int index, EditableLayer *editableLayer)
         map()->addTilesets(tilesets);
 
         // ownership moves to the map
-        map()->insertLayer(index, editableLayer->release());
+        map()->insertLayer(index, editableLayer->attach(this));
     }
 }
 
 void EditableMap::addLayer(EditableLayer *editableLayer)
 {
+    if (!editableLayer) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
+
     insertLayerAt(layerCount(), editableLayer);
 }
 

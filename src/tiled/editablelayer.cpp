@@ -71,8 +71,10 @@ bool EditableLayer::isSelected() const
 void EditableLayer::detach()
 {
     Q_ASSERT(asset());
-
     setAsset(nullptr);
+
+    if (!moveOwnershipToJavaScript())
+        return;
 
     mDetachedLayer.reset(layer()->clone());
 //    mDetachedLayer->resetIds();
@@ -81,35 +83,35 @@ void EditableLayer::detach()
 
 /**
  * Turns this stand-alone layer into a reference, with the layer now owned by
- * the given asset.
+ * a map, group layer or tile (in case of object group).
+ *
+ * The given \a asset may be a nullptr in case the layer is added to a group
+ * layer which isn't part of a map.
+ *
+ * Returns nullptr if the editable wasn't owning its layer.
  */
-void EditableLayer::attach(EditableAsset *asset)
+Layer *EditableLayer::attach(EditableAsset *asset)
 {
-    Q_ASSERT(!this->asset() && asset);
+    Q_ASSERT(!this->asset());
 
     setAsset(asset);
-    mDetachedLayer.release();
-}
-
-/**
- * Take ownership of the referenced layer.
- */
-void EditableLayer::hold()
-{
-    Q_ASSERT(!asset());         // if asset exists, it holds the layer (possibly indirectly)
-    Q_ASSERT(!mDetachedLayer);  // can't already be holding the layer
-
-    mDetachedLayer.reset(layer());
-}
-
-/**
- * Release ownership of the referenced layer.
- */
-Layer *EditableLayer::release()
-{
-    Q_ASSERT(isOwning());
-
+    moveOwnershipToCpp();
     return mDetachedLayer.release();
+}
+
+/**
+ * Take ownership of the referenced layer or delete it.
+ */
+void EditableLayer::hold(std::unique_ptr<Layer> layer)
+{
+    Q_ASSERT(!mDetachedLayer);  // can't already be holding the layer
+    Q_ASSERT(this->layer() == layer.get());
+
+    if (!moveOwnershipToJavaScript())
+        return;
+
+    setAsset(nullptr);
+    mDetachedLayer = std::move(layer);
 }
 
 void EditableLayer::setName(const QString &name)

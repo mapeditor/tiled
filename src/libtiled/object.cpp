@@ -90,19 +90,19 @@ QVariantMap Object::resolvedProperties() const
 
     if (auto type = propertyTypes().findClassFor(objectClassName, *this))
         Tiled::mergeProperties(allProperties, type->members);
-    
+
     if (typeId() == Object::MapObjectType) {
         auto mapObject = static_cast<const MapObject*>(this);
 
         if (const Tile *tile = mapObject->cell().tile())
             Tiled::mergeProperties(allProperties, tile->properties());
-        
+
         if (const MapObject *templateObject = mapObject->templateObject())
             Tiled::mergeProperties(allProperties, templateObject->properties());
     }
 
     Tiled::mergeProperties(allProperties, properties());
-    
+
     return allProperties;
 }
 

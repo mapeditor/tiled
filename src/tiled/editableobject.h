@@ -80,6 +80,10 @@ public:
 public slots:
     void setClassName(const QString &type);
 
+protected:
+    bool moveOwnershipToJavaScript();
+    void moveOwnershipToCpp();
+
 private:
     QVariant toScript(const QVariant &value) const;
     QVariant fromScript(const QVariant &value) const;

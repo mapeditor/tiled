@@ -126,7 +126,7 @@ TileLayerWangEdit *EditableTileLayer::wangEdit(EditableWangSet *wangSet)
     return new TileLayerWangEdit(this, wangSet);
 }
 
-void EditableTileLayer::applyChangesFrom(TileLayer *changes, bool mergeable) 
+void EditableTileLayer::applyChangesFrom(TileLayer *changes, bool mergeable)
 {
     // Determine painted region and normalize the changes layer
     auto paintedRegion = changes->region([] (const Cell &cell) { return cell.checked(); });

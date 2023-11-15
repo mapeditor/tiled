@@ -54,45 +54,43 @@ void EditableManager::deleteInstance()
     mInstance.reset();
 }
 
-EditableTileset *Tiled::EditableManager::find(Tileset *tileset) const
+EditableTileset *Tiled::EditableManager::find(Tileset *tileset)
 {
     return static_cast<EditableTileset*>(tileset->editable());
 }
 
-EditableLayer *EditableManager::find(Layer *layer) const
+EditableLayer *EditableManager::find(Layer *layer)
 {
     return static_cast<EditableLayer*>(layer->editable());
 }
 
-EditableMapObject *EditableManager::find(MapObject *mapObject) const
+EditableMapObject *EditableManager::find(MapObject *mapObject)
 {
     return static_cast<EditableMapObject*>(mapObject->editable());
 }
 
-EditableTile *EditableManager::find(Tile *tile) const
+EditableTile *EditableManager::find(Tile *tile)
 {
     return static_cast<EditableTile*>(tile->editable());
 }
 
-EditableWangSet *EditableManager::find(WangSet *wangSet) const
+EditableWangSet *EditableManager::find(WangSet *wangSet)
 {
     return static_cast<EditableWangSet*>(wangSet->editable());
 }
 
 void EditableManager::release(Layer *layer)
 {
+    std::unique_ptr<Layer> owned { layer };
     if (EditableLayer *editable = find(layer))
-        editable->hold();
-    else
-        delete layer;
+        editable->hold(std::move(owned));
 }
 
 void EditableManager::release(MapObject *mapObject)
 {
+    std::unique_ptr<MapObject> owned { mapObject };
     if (EditableMapObject *editable = find(mapObject))
-        editable->hold();
-    else
-        delete mapObject;
+        editable->hold(std::move(owned));
 }
 
 /**
@@ -101,10 +99,8 @@ void EditableManager::release(MapObject *mapObject)
  */
 void EditableManager::release(std::unique_ptr<WangSet> wangSet)
 {
-    if (EditableWangSet *editable = find(wangSet.get())) {
-        editable->hold();
-        wangSet.release();
-    }
+    if (EditableWangSet *editable = find(wangSet.get()))
+        editable->hold(std::move(wangSet));
 }
 
 EditableLayer *EditableManager::editableLayer(EditableMap *map, Layer *layer)
@@ -158,7 +154,7 @@ EditableMapObject *EditableManager::editableMapObject(EditableAsset *asset, MapO
     if (!editable)
         editable = new EditableMapObject(asset, mapObject);
 
-    return static_cast<EditableMapObject*>(editable);
+    return editable;
 }
 
 EditableTileset *EditableManager::editableTileset(Tileset *tileset)
@@ -173,7 +169,7 @@ EditableTileset *EditableManager::editableTileset(Tileset *tileset)
     if (!editable)
         editable = new EditableTileset(tileset);
 
-    return static_cast<EditableTileset*>(editable);
+    return editable;
 }
 
 EditableTile *EditableManager::editableTile(Tile *tile)

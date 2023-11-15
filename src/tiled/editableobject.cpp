@@ -30,6 +30,7 @@
 #include "scriptmanager.h"
 
 #include <QCoreApplication>
+#include <QQmlEngine>
 
 namespace Tiled {
 
@@ -80,6 +81,9 @@ Document *EditableObject::document() const
 
 void EditableObject::setObject(Object *object)
 {
+    if (mObject == object)
+        return;
+
     if (mObject)
         mObject->setEditable(nullptr);
 
@@ -95,6 +99,21 @@ void EditableObject::setClassName(const QString &className)
         asset()->push(new ChangeClassName(doc, { object() }, className));
     else if (!checkReadOnly())
         object()->setClassName(className);
+}
+
+bool EditableObject::moveOwnershipToJavaScript()
+{
+    // The object needs to be associated with a JS engine already
+    if (!qjsEngine(this))
+        return false;
+
+    QQmlEngine::setObjectOwnership(this, QQmlEngine::JavaScriptOwnership);
+    return true;
+}
+
+void EditableObject::moveOwnershipToCpp()
+{
+    QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
 }
 
 /**

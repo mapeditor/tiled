@@ -57,32 +57,26 @@ public:
     static EditableManager &instance();
     static void deleteInstance();
 
-    EditableLayer *find(Layer *layer) const;
-    EditableMapObject *find(MapObject *mapObject) const;
-    EditableTile *find(Tile *tile) const;
-    EditableTileset *find(Tileset *tileset) const;
-    EditableWangSet *find(WangSet *wangSet) const;
+    static EditableLayer *find(Layer *layer);
+    static EditableMapObject *find(MapObject *mapObject);
+    static EditableTile *find(Tile *tile);
+    static EditableTileset *find(Tileset *tileset);
+    static EditableWangSet *find(WangSet *wangSet);
 
-    void release(Layer *layer);
-    void release(MapObject *mapObject);
-    void release(std::unique_ptr<WangSet> wangSet);
+    static void release(Layer *layer);
+    static void release(MapObject *mapObject);
+    static void release(std::unique_ptr<WangSet> wangSet);
 
-    EditableLayer *editableLayer(EditableMap *map, Layer *layer);
-    EditableObjectGroup *editableObjectGroup(EditableAsset *asset, ObjectGroup *objectGroup);
-    EditableMapObject *editableMapObject(EditableAsset *asset, MapObject *mapObject);
-    EditableTileset *editableTileset(Tileset *tileset);
-    EditableTile *editableTile(Tile *tile);
-    EditableTile *editableTile(EditableTileset *tileset, Tile *tile);
-    EditableWangSet *editableWangSet(WangSet *wangSet);
-    EditableWangSet *editableWangSet(EditableTileset *tileset, WangSet *wangSet);
+    static EditableLayer *editableLayer(EditableMap *map, Layer *layer);
+    static EditableObjectGroup *editableObjectGroup(EditableAsset *asset, ObjectGroup *objectGroup);
+    static EditableMapObject *editableMapObject(EditableAsset *asset, MapObject *mapObject);
+    static EditableTileset *editableTileset(Tileset *tileset);
+    static EditableTile *editableTile(Tile *tile);
+    static EditableTile *editableTile(EditableTileset *tileset, Tile *tile);
+    static EditableWangSet *editableWangSet(WangSet *wangSet);
+    static EditableWangSet *editableWangSet(EditableTileset *tileset, WangSet *wangSet);
 
 private:
-    friend class EditableLayer;
-    friend class EditableMapObject;
-    friend class EditableTileset;
-    friend class EditableTile;
-    friend class EditableWangSet;
-
     static std::unique_ptr<EditableManager> mInstance;
 };
 

@@ -88,9 +88,8 @@ public:
     Layer *layer() const;
 
     void detach();
-    void attach(EditableAsset *asset);
-    void hold();
-    Layer *release();
+    Layer *attach(EditableAsset *asset);
+    void hold(std::unique_ptr<Layer> layer);
     bool isOwning() const;
 
 public slots:

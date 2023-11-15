@@ -22,8 +22,9 @@
 
 #include "addremovemapobject.h"
 #include "changeobjectgroupproperties.h"
+#include "editableasset.h"
 #include "editablemanager.h"
-#include "editablemap.h"
+#include "map.h"
 #include "scriptmanager.h"
 
 #include <QCoreApplication>
@@ -105,15 +106,15 @@ void EditableObjectGroup::insertObjectAt(int index, EditableMapObject *editableM
         return;
     }
 
-    auto mapObject = editableMapObject->mapObject();
-
-    if (mapObject->objectGroup()) {
+    if (!editableMapObject->isOwning()) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Object already part of an object layer"));
         return;
     }
 
     if (checkReadOnly())
         return;
+
+    auto mapObject = editableMapObject->mapObject();
 
     // Avoid duplicate IDs by resetting when needed
     if (Map *map = objectGroup()->map()) {
@@ -126,8 +127,8 @@ void EditableObjectGroup::insertObjectAt(int index, EditableMapObject *editableM
         entry.index = index;
         asset()->push(new AddMapObjects(doc, { entry }));
     } else {
-        objectGroup()->insertObject(index, mapObject);
-        editableMapObject->release();   // now owned by the object group
+        // ownership moves to the object group
+        objectGroup()->insertObject(index, editableMapObject->attach(asset()));
     }
 }
 

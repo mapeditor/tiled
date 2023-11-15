@@ -77,8 +77,7 @@ public:
 
     void detach();
     void attach(EditableTileset *tileset);
-    void hold();
-    void release();
+    void hold(std::unique_ptr<WangSet> wangSet);
 
 private:
     TilesetDocument *tilesetDocument() const;

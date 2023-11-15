@@ -100,7 +100,7 @@ void EditableGroupLayer::insertLayerAt(int index, EditableLayer *editableLayer)
     }
 
     if (!editableLayer) {
-        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
+        ScriptManager::instance().throwNullArgError(1);
         return;
     }
 
@@ -124,12 +124,17 @@ void EditableGroupLayer::insertLayerAt(int index, EditableLayer *editableLayer)
             map->addTilesets(tilesets);
 
         // ownership moves to the group layer
-        groupLayer()->insertLayer(index, editableLayer->release());
+        groupLayer()->insertLayer(index, editableLayer->attach(asset()));
     }
 }
 
 void EditableGroupLayer::addLayer(EditableLayer *editableLayer)
 {
+    if (!editableLayer) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
+
     insertLayerAt(layerCount(), editableLayer);
 }
 
