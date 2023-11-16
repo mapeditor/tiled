@@ -675,6 +675,8 @@ QSharedPointer<Document> EditableMap::createDocument()
     auto document = MapDocumentPtr::create(std::move(mDetachedMap));
     document->setEditable(std::unique_ptr<EditableAsset>(this));
 
+    mSelectedArea = new EditableSelectedArea(document.data(), this);
+
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
 
     return document;
