@@ -154,7 +154,8 @@ inline void EditableObject::setAsset(EditableAsset *asset)
 
 inline EditableObject *EditableObject::find(Object *object)
 {
-    return static_cast<EditableObject*>(object->mEditable.data());
+    return object ? static_cast<EditableObject*>(object->mEditable.data())
+                  : nullptr;
 }
 
 } // namespace Tiled
