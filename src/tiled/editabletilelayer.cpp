@@ -29,6 +29,8 @@
 #include "tilelayeredit.h"
 #include "tilelayerwangedit.h"
 
+static int EditableTileLayer_instances = 0;
+
 namespace Tiled {
 
 EditableTileLayer::EditableTileLayer(const QString &name, QSize size, QObject *parent)
@@ -46,10 +48,12 @@ EditableTileLayer::EditableTileLayer(EditableMap *map,
                                      QObject *parent)
     : EditableLayer(map, layer, parent)
 {
+    qDebug() << Q_FUNC_INFO << layer->name() << ++EditableTileLayer_instances;
 }
 
 EditableTileLayer::~EditableTileLayer()
 {
+    qDebug() << Q_FUNC_INFO << layer()->name() << --EditableTileLayer_instances;
     while (!mActiveEdits.isEmpty())
         delete mActiveEdits.first();
     while (!mActiveWangEdits.isEmpty())
