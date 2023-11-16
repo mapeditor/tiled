@@ -44,7 +44,7 @@ EditableLayer::~EditableLayer()
 {
     // Prevent owned object from trying to delete us again
     if (mDetachedLayer)
-        mDetachedLayer->setEditable(nullptr);
+        setObject(nullptr);
 }
 
 EditableMap *EditableLayer::map() const

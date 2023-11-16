@@ -41,7 +41,7 @@ EditableObject::EditableObject(EditableAsset *asset,
     , mObject(object)
 {
     if (object)
-        object->setEditable(this);
+        object->mEditable = this;
 }
 
 bool EditableObject::isReadOnly() const
@@ -84,10 +84,10 @@ void EditableObject::setObject(Object *object)
         return;
 
     if (mObject)
-        mObject->setEditable(nullptr);
+        mObject->mEditable = nullptr;
 
     if (object)
-        object->setEditable(this);
+        object->mEditable = this;
 
     mObject = object;
 }

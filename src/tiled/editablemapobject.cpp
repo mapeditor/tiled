@@ -60,7 +60,7 @@ EditableMapObject::~EditableMapObject()
 {
     // Prevent owned object from trying to delete us again
     if (mDetachedMapObject)
-        mDetachedMapObject->setEditable(nullptr);
+        setObject(nullptr);
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)

@@ -303,7 +303,7 @@ inline Tileset *EditableTileset::tileset() const
 
 inline EditableTileset *EditableTileset::find(Tileset *tileset)
 {
-    return static_cast<EditableTileset*>(tileset->editable());
+    return static_cast<EditableTileset*>(EditableObject::find(tileset));
 }
 
 inline void EditableTileset::setTileWidth(int width)

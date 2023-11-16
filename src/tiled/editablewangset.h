@@ -118,7 +118,7 @@ inline WangSet *EditableWangSet::wangSet() const
 
 inline EditableWangSet *EditableWangSet::find(WangSet *wangSet)
 {
-    return static_cast<EditableWangSet*>(wangSet->editable());
+    return static_cast<EditableWangSet*>(EditableObject::find(wangSet));
 }
 
 } // namespace Tiled

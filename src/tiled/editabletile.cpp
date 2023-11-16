@@ -45,7 +45,7 @@ EditableTile::~EditableTile()
 {
     // Prevent owned object from trying to delete us again
     if (mDetachedTile)
-        mDetachedTile->setEditable(nullptr);
+        setObject(nullptr);
 }
 
 EditableObjectGroup *EditableTile::objectGroup() const

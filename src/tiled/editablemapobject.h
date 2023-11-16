@@ -288,7 +288,7 @@ inline bool EditableMapObject::isOwning() const
 
 inline EditableMapObject *EditableMapObject::find(MapObject *mapObject)
 {
-    return static_cast<EditableMapObject*>(mapObject->editable());
+    return static_cast<EditableMapObject*>(EditableObject::find(mapObject));
 }
 
 inline void EditableMapObject::setX(qreal x)

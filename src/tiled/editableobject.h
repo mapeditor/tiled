@@ -77,6 +77,8 @@ public:
     void setAsset(EditableAsset *asset);
     void setObject(Object *object);
 
+    static EditableObject *find(Object *object);
+
 public slots:
     void setClassName(const QString &type);
 
@@ -148,6 +150,11 @@ inline Object *EditableObject::object() const
 inline void EditableObject::setAsset(EditableAsset *asset)
 {
     mAsset = asset;
+}
+
+inline EditableObject *EditableObject::find(Object *object)
+{
+    return static_cast<EditableObject*>(object->mEditable.data());
 }
 
 } // namespace Tiled

@@ -95,7 +95,7 @@ EditableMap::~EditableMap()
 
     // Prevent owned object from trying to delete us again
     if (mDetachedMap)
-        mDetachedMap->setEditable(nullptr);
+        setObject(nullptr);
 }
 
 QList<QObject *> EditableMap::tilesets() const

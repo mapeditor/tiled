@@ -159,7 +159,7 @@ inline Tile *EditableTile::tile() const
 
 inline EditableTile *EditableTile::find(Tile *tile)
 {
-    return static_cast<EditableTile*>(tile->editable());
+    return static_cast<EditableTile*>(EditableObject::find(tile));
 }
 
 } // namespace Tiled

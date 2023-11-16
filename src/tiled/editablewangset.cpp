@@ -43,7 +43,7 @@ EditableWangSet::~EditableWangSet()
 {
     // Prevent owned object from trying to delete us again
     if (mDetachedWangSet)
-        mDetachedWangSet->setEditable(nullptr);
+        setObject(nullptr);
 }
 
 EditableTile *EditableWangSet::imageTile() const

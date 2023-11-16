@@ -187,7 +187,7 @@ inline bool EditableLayer::isOwning() const
 
 inline EditableLayer *EditableLayer::find(Layer *layer)
 {
-    return static_cast<EditableLayer*>(layer->editable());
+    return static_cast<EditableLayer*>(EditableObject::find(layer));
 }
 
 } // namespace Tiled

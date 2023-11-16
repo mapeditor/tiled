@@ -67,7 +67,7 @@ EditableTileset::~EditableTileset()
 
     // Prevent owned object from trying to delete us again
     if (mTileset)
-        mTileset->setEditable(nullptr);
+        setObject(nullptr);
 }
 
 void EditableTileset::loadFromImage(ScriptImage *image, const QString &source)
