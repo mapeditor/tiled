@@ -77,8 +77,14 @@ public:
     void setAsset(EditableAsset *asset);
     void setObject(Object *object);
 
+    static EditableObject *find(Object *object);
+
 public slots:
     void setClassName(const QString &type);
+
+protected:
+    bool moveOwnershipToJavaScript();
+    void moveOwnershipToCpp();
 
 private:
     QVariant toScript(const QVariant &value) const;
@@ -146,9 +152,10 @@ inline void EditableObject::setAsset(EditableAsset *asset)
     mAsset = asset;
 }
 
-inline void EditableObject::setObject(Object *object)
+inline EditableObject *EditableObject::find(Object *object)
 {
-    mObject = object;
+    return object ? static_cast<EditableObject*>(object->mEditable.data())
+                  : nullptr;
 }
 
 } // namespace Tiled

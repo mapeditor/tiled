@@ -24,7 +24,6 @@
 #include "changetileanimation.h"
 #include "changetileimagesource.h"
 #include "changetileobjectgroup.h"
-#include "editablemanager.h"
 #include "editableobjectgroup.h"
 #include "editabletileset.h"
 #include "imagecache.h"
@@ -44,7 +43,9 @@ EditableTile::EditableTile(EditableTileset *tileset, Tile *tile, QObject *parent
 
 EditableTile::~EditableTile()
 {
-    EditableManager::instance().remove(this);
+    // Prevent owned object from trying to delete us again
+    if (mDetachedTile)
+        setObject(nullptr);
 }
 
 EditableObjectGroup *EditableTile::objectGroup() const
@@ -55,12 +56,14 @@ EditableObjectGroup *EditableTile::objectGroup() const
         Q_ASSERT(mAttachedObjectGroup == tile()->objectGroup());
     }
 
-    return EditableManager::instance().editableObjectGroup(asset(), mAttachedObjectGroup);
+    return EditableObjectGroup::get(asset(), mAttachedObjectGroup);
 }
 
 QJSValue EditableTile::frames() const
 {
-    QJSEngine *engine = ScriptManager::instance().engine();
+    QJSEngine *engine = qjsEngine(this);
+    if (!engine)
+        return QJSValue();
 
     const auto &frames = tile()->frames();
     QJSValue array = engine->newArray(frames.size());
@@ -94,22 +97,18 @@ void EditableTile::setImage(ScriptImage *image)
 void EditableTile::detach()
 {
     Q_ASSERT(tileset());
-
-    auto &editableManager = EditableManager::instance();
-
-    editableManager.remove(this);
     setAsset(nullptr);
+
+    if (!moveOwnershipToJavaScript())
+        return;
 
     mDetachedTile.reset(tile()->clone(nullptr));
     setObject(mDetachedTile.get());
-    editableManager.mEditables.insert(tile(), this);
 
     // Move over any attached editable object group
-    if (auto editable = editableManager.find(mAttachedObjectGroup)) {
-        editableManager.remove(editable);
+    if (auto editable = EditableLayer::find(mAttachedObjectGroup)) {
         editable->setAsset(nullptr);
         editable->setObject(tile()->objectGroup());
-        editableManager.mEditables.insert(tile()->objectGroup(), editable);
         mAttachedObjectGroup = tile()->objectGroup();
     } else {
         mAttachedObjectGroup = nullptr;
@@ -120,15 +119,39 @@ void EditableTile::attach(EditableTileset *tileset)
 {
     Q_ASSERT(!asset() && tileset);
 
+    moveOwnershipToCpp();
     setAsset(tileset);
     mDetachedTile.release();
 }
 
 void EditableTile::detachObjectGroup()
 {
-    if (auto editable = EditableManager::instance().find(mAttachedObjectGroup))
+    if (auto editable = EditableLayer::find(mAttachedObjectGroup))
         editable->detach();
     mAttachedObjectGroup = nullptr;
+}
+
+EditableTile *EditableTile::get(Tile *tile)
+{
+    if (!tile)
+        return nullptr;
+
+    auto tileset = EditableTileset::get(tile->tileset());
+    return get(tileset, tile);
+}
+
+EditableTile *EditableTile::get(EditableTileset *tileset, Tile *tile)
+{
+    Q_ASSERT(tile);
+    Q_ASSERT(tile->tileset() == tileset->tileset());
+
+    auto editable = EditableTile::find(tile);
+    if (editable)
+        return editable;
+
+    editable = new EditableTile(tileset, tile);
+    editable->moveOwnershipToCpp();
+    return editable;
 }
 
 void EditableTile::setImageFileName(const QString &fileName)
@@ -182,7 +205,7 @@ void EditableTile::setObjectGroup(EditableObjectGroup *editableObjectGroup)
             return;
         }
 
-        og.reset(static_cast<ObjectGroup*>(editableObjectGroup->release()));
+        og.reset(static_cast<ObjectGroup*>(editableObjectGroup->attach(asset())));
     }
 
     if (TilesetDocument *doc = tilesetDocument()) {

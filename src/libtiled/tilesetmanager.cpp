@@ -35,6 +35,8 @@
 #include "tileanimationdriver.h"
 #include "tilesetformat.h"
 
+#include <QDebug>
+
 namespace Tiled {
 
 TilesetManager *TilesetManager::mInstance;
@@ -57,7 +59,10 @@ TilesetManager::TilesetManager():
 TilesetManager::~TilesetManager()
 {
     // Assert that there are no remaining tileset instances
-    Q_ASSERT(mTilesets.isEmpty());
+    if (!mTilesets.isEmpty()) {
+        qWarning() << "TilesetManager: There are still" << mTilesets.size()
+                   << "tilesets loaded at exit!";
+    }
 }
 
 /**

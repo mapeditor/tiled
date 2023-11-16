@@ -9,7 +9,7 @@ DynamicLibrary {
     Depends { name: "translations" }
     Depends { name: "qtpropertybrowser" }
     Depends { name: "qtsingleapplication" }
-    Depends { name: "Qt"; submodules: ["core", "widgets", "concurrent", "qml", "qml-private", "svg"]; versionAtLeast: "5.12" }
+    Depends { name: "Qt"; submodules: ["core", "widgets", "concurrent", "qml", "svg"]; versionAtLeast: "5.12" }
     Depends { name: "Qt.openglwidgets"; condition: Qt.core.versionMajor >= 6 }
     Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux") && project.dbus; required: false }
     Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") && Qt.core.versionMajor >= 6 }
@@ -216,8 +216,6 @@ DynamicLibrary {
         "editableimagelayer.h",
         "editablelayer.cpp",
         "editablelayer.h",
-        "editablemanager.cpp",
-        "editablemanager.h",
         "editablemap.cpp",
         "editablemap.h",
         "editablemapobject.cpp",

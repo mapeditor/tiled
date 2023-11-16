@@ -29,7 +29,6 @@
 #include "createpolygonobjecttool.h"
 #include "createrectangleobjecttool.h"
 #include "createtemplatetool.h"
-#include "editablemanager.h"
 #include "editablemapobject.h"
 #include "editpolygontool.h"
 #include "layermodel.h"
@@ -307,7 +306,6 @@ QList<QObject *> TileCollisionDock::selectedObjectsForScript() const
     if (!mDummyMapDocument)
         return objects;
 
-    auto &editableManager = EditableManager::instance();
     auto editableTileset = mTilesetDocument->editable();
     const auto &originalObjects = mTile->objectGroup()->objects();
 
@@ -318,7 +316,7 @@ QList<QObject *> TileCollisionDock::selectedObjectsForScript() const
 
         if (it != originalObjects.end()) {
             MapObject *oo = *it;
-            objects.append(editableManager.editableMapObject(editableTileset, oo));
+            objects.append(EditableMapObject::get(editableTileset, oo));
         }
     }
 

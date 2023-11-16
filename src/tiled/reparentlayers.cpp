@@ -23,7 +23,6 @@
 #include "grouplayer.h"
 #include "layermodel.h"
 #include "mapdocument.h"
-#include "map.h"
 
 namespace Tiled {
 

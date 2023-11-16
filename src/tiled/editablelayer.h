@@ -88,10 +88,13 @@ public:
     Layer *layer() const;
 
     void detach();
-    void attach(EditableAsset *asset);
-    void hold();
-    Layer *release();
+    Layer *attach(EditableAsset *asset);
+    void hold(std::unique_ptr<Layer> layer);
     bool isOwning() const;
+
+    static EditableLayer *find(Layer *layer);
+    static EditableLayer *get(EditableMap *map, Layer *layer);
+    static void release(Layer *layer);
 
 public slots:
     void setName(const QString &name);
@@ -180,6 +183,11 @@ inline Layer *EditableLayer::layer() const
 inline bool EditableLayer::isOwning() const
 {
     return mDetachedLayer.get() == layer();
+}
+
+inline EditableLayer *EditableLayer::find(Layer *layer)
+{
+    return static_cast<EditableLayer*>(EditableObject::find(layer));
 }
 
 } // namespace Tiled

@@ -27,7 +27,6 @@
 #include "changewangcolordata.h"
 #include "changewangsetdata.h"
 #include "documentmanager.h"
-#include "editablemanager.h"
 #include "editablewangset.h"
 #include "erasetiles.h"
 #include "imagecache.h"
@@ -506,8 +505,7 @@ QAction *TilesetEditor::editWangSetsAction() const
 
 EditableWangSet *TilesetEditor::currentWangSet() const
 {
-    auto currentWangSet = mWangDock->currentWangSet();
-    return EditableManager::instance().editableWangSet(currentWangSet);
+    return EditableWangSet::get(mWangDock->currentWangSet());
 }
 
 int TilesetEditor::currentWangColorIndex() const

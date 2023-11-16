@@ -43,18 +43,17 @@ AddRemoveLayer::AddRemoveLayer(MapDocument *mapDocument,
 
 AddRemoveLayer::~AddRemoveLayer()
 {
-    delete mLayer;
 }
 
 void AddRemoveLayer::addLayer()
 {
-    mMapDocument->layerModel()->insertLayer(mParentLayer, mIndex, mLayer);
-    mLayer = nullptr;
+    mMapDocument->layerModel()->insertLayer(mParentLayer, mIndex,
+                                            mLayer.release());
 }
 
 void AddRemoveLayer::removeLayer()
 {
-    mLayer = mMapDocument->layerModel()->takeLayerAt(mParentLayer, mIndex);
+    mLayer.reset(mMapDocument->layerModel()->takeLayerAt(mParentLayer, mIndex));
 }
 
 AddLayer::AddLayer(MapDocument *mapDocument,

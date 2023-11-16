@@ -268,7 +268,7 @@ void ScriptManager::loadExtensions()
 
     QDir::setSearchPaths(QStringLiteral("ext"), extensionSearchPaths);
 
-    for (const QString &extensionPath : extensionSearchPaths)
+    for (const QString &extensionPath : std::as_const(extensionSearchPaths))
         loadExtension(extensionPath);
 }
 

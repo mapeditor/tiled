@@ -139,9 +139,13 @@ public:
     MapObject *mapObject() const;
 
     void detach();
-    void attach(EditableMap *map);
-    void hold();
-    void release();
+    MapObject *attach(EditableAsset *asset);
+    void hold(std::unique_ptr<MapObject> mapObject);
+    bool isOwning() const;
+
+    static EditableMapObject *find(MapObject *mapObject);
+    static EditableMapObject *get(EditableAsset *asset, MapObject *mapObject);
+    static void release(MapObject *mapObject);
 
 public slots:
     void setShape(Shape shape);
@@ -275,6 +279,16 @@ inline bool EditableMapObject::tileFlippedVertically() const
 inline MapObject *EditableMapObject::mapObject() const
 {
     return static_cast<MapObject*>(object());
+}
+
+inline bool EditableMapObject::isOwning() const
+{
+    return mDetachedMapObject.get() == object();
+}
+
+inline EditableMapObject *EditableMapObject::find(MapObject *mapObject)
+{
+    return static_cast<EditableMapObject*>(EditableObject::find(mapObject));
 }
 
 inline void EditableMapObject::setX(qreal x)

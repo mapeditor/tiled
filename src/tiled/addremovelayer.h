@@ -24,6 +24,8 @@
 
 #include <QUndoCommand>
 
+#include <memory>
+
 namespace Tiled {
 
 class GroupLayer;
@@ -48,7 +50,7 @@ protected:
     void removeLayer();
 
     MapDocument *mMapDocument;
-    Layer *mLayer;
+    std::unique_ptr<Layer> mLayer;
     GroupLayer *mParentLayer;
     int mIndex;
 };
