@@ -1,4 +1,3 @@
-import qbs
 import qbs.FileInfo
 
 CppApplication {
@@ -17,6 +16,6 @@ CppApplication {
         }
         return flags;
     }
-    cpp.rpaths: FileInfo.joinPaths(cpp.rpathOrigin, "../install-root/usr/local/lib/")
+    cpp.rpaths: FileInfo.joinPaths(cpp.rpathOrigin, "../install-root/usr/local", project.libDir)
     autotest.workingDir: sourceDirectory
 }

@@ -774,7 +774,7 @@ void TilesetEditor::addTiles(const QList<QUrl> &urls)
     QList<Tile*> tiles;
     tiles.reserve(loadedFiles.size());
 
-    for (const LoadedFile &loadedFile : qAsConst(loadedFiles)) {
+    for (const LoadedFile &loadedFile : std::as_const(loadedFiles)) {
         Tile *newTile = new Tile(tileset->takeNextTileId(), tileset);
         newTile->setImage(loadedFile.image);
         newTile->setImageSource(loadedFile.imageSource);

@@ -24,7 +24,6 @@
 #include "layerdock.h"
 
 #include "actionmanager.h"
-#include "changelayer.h"
 #include "layer.h"
 #include "layermodel.h"
 #include "map.h"
@@ -321,7 +320,7 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
                 this, &LayerView::layerRemoved);
 
         // Restore expanded layers
-        for (const int layerId : qAsConst(mMapDocument->expandedGroupLayers)) {
+        for (const int layerId : std::as_const(mMapDocument->expandedGroupLayers)) {
             if (Layer *layer = mMapDocument->map()->findLayerById(layerId)) {
                 const QModelIndex sourceIndex = layerModel->index(layer);
                 const QModelIndex index = mProxyModel->mapFromSource(sourceIndex);
@@ -478,24 +477,11 @@ void LayerView::contextMenuEvent(QContextMenuEvent *event)
 
 void LayerView::keyPressEvent(QKeyEvent *event)
 {
-    Layer *layer = mMapDocument ? mMapDocument->currentLayer() : nullptr;
-
     switch (event->key()) {
     case Qt::Key_Delete:
     case Qt::Key_Backspace:
         if (mMapDocument && !mMapDocument->selectedLayers().isEmpty()) {
             mMapDocument->removeLayers(mMapDocument->selectedLayers());
-            return;
-        }
-        break;
-    case Qt::Key_Space:
-        if (layer) {
-            QUndoCommand *command = nullptr;
-            if (event->modifiers() & Qt::ControlModifier)
-                command = new SetLayerLocked(mMapDocument, { layer }, !layer->isLocked());
-            else
-                command = new SetLayerVisible(mMapDocument, { layer }, !layer->isVisible());
-            mMapDocument->undoStack()->push(command);
             return;
         }
         break;

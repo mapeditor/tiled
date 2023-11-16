@@ -221,7 +221,7 @@ World *WorldManager::addEmptyWorld(const QString &fileName, QString *errorString
 /**
  * Loads the world with the given \a fileName.
  *
- * \returns the world if it was loaded succesfully, optionally setting
+ * \returns the world if it was loaded successfully, optionally setting
  *          \a errorString when not.
  */
 World *WorldManager::loadWorld(const QString &fileName, QString *errorString)
@@ -272,7 +272,7 @@ bool WorldManager::saveWorld(const QString &fileName, QString *errorString)
 {
     World *savingWorld = nullptr;
 
-    for (auto world : qAsConst(mWorlds)) {
+    for (auto world : std::as_const(mWorlds)) {
         if (world->fileName == fileName) {
             savingWorld = world;
             break;
@@ -293,7 +293,7 @@ bool WorldManager::saveWorld(World &world, QString *errorString)
     const QDir worldDir = QFileInfo(world.fileName).dir();
 
     QJsonArray maps;
-    for (const World::MapEntry& map : qAsConst(world.maps)) {
+    for (const World::MapEntry& map : std::as_const(world.maps)) {
         QJsonObject jsonMap;
 
         const QString relativeFileName = QDir::cleanPath(worldDir.relativeFilePath(map.fileName));
@@ -356,7 +356,7 @@ void WorldManager::unloadAllWorlds()
     QMap<QString, World*> worlds;
     worlds.swap(mWorlds);
 
-    for (World *world : qAsConst(worlds)) {
+    for (World *world : std::as_const(worlds)) {
         emit worldUnloaded(world->fileName);
         delete world;
     }
@@ -390,7 +390,7 @@ bool WorldManager::mapCanBeModified(const QString &fileName) const
 
 void WorldManager::setMapRect(const QString &fileName, const QRect &rect)
 {
-    for (auto world : qAsConst(mWorlds)) {
+    for (auto world : std::as_const(mWorlds)) {
         int index = world->mapIndex(fileName);
         if (index < 0)
             continue;
@@ -405,7 +405,7 @@ void WorldManager::setMapRect(const QString &fileName, const QRect &rect)
 
 bool WorldManager::removeMap(const QString &fileName)
 {
-    for (auto world : qAsConst(mWorlds)) {
+    for (auto world : std::as_const(mWorlds)) {
         int index = world->mapIndex(fileName);
         if (index < 0)
             continue;
@@ -428,7 +428,7 @@ bool WorldManager::addMap(const QString &fileName, const QString &mapFileName, c
     if (worldForMap(mapFileName))
         return false;
 
-    for (auto world : qAsConst(mWorlds)) {
+    for (auto world : std::as_const(mWorlds)) {
         if (!world->canBeModified())
             continue;
 

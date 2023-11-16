@@ -49,7 +49,7 @@ QRectF DebugDrawItem::boundingRect() const
 
 void DebugDrawItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    for (const Entry &entry : mEntries)
+    for (const Entry &entry : std::as_const(mEntries))
         const_cast<QPicture *>(&entry.picture)->play(painter);
 }
 

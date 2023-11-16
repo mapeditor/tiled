@@ -1,5 +1,3 @@
-import qbs 1.0
-
 TiledPlugin {
     condition: !qbs.toolchain.contains("msvc")
 

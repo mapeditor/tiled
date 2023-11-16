@@ -298,10 +298,12 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     start(mFinalCommand);
-#else
+#elif QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QStringList args = QProcess::splitCommand(mFinalCommand);
     const QString executable = args.takeFirst();
     start(executable, args);
+#else
+    startCommand(mFinalCommand);
 #endif
 }
 

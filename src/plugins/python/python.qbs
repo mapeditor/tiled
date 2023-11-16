@@ -1,4 +1,3 @@
-import qbs 1.0
 import qbs.Probes as Probes
 import qbs.File
 import qbs.Environment
@@ -9,7 +8,7 @@ TiledPlugin {
 
     condition: {
         if (qbs.targetOS.contains("windows"))
-            return File.exists(Environment.getEnv("PYTHONHOME"));
+            return pythonDllProbe.found;
 
         return pkgConfigPython3Embed.found || pkgConfigPython3.found;
     }

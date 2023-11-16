@@ -20,10 +20,7 @@
 
 #include "mapeditor.h"
 
-#include "actionmanager.h"
-#include "addremovelayer.h"
 #include "addremovetileset.h"
-#include "brokenlinks.h"
 #include "bucketfilltool.h"
 #include "changeselectedarea.h"
 #include "createellipseobjecttool.h"
@@ -40,7 +37,6 @@
 #include "editablewangset.h"
 #include "editpolygontool.h"
 #include "eraser.h"
-#include "filechangedwarning.h"
 #include "layerdock.h"
 #include "layermodel.h"
 #include "layeroffsettool.h"
@@ -56,7 +52,6 @@
 #include "objectsdock.h"
 #include "objectselectiontool.h"
 #include "objecttemplate.h"
-#include "painttilelayer.h"
 #include "preferences.h"
 #include "propertiesdock.h"
 #include "reversingproxymodel.h"
@@ -96,6 +91,7 @@
 #include <QStackedWidget>
 #include <QToolBar>
 #include <QUndoGroup>
+#include <QWindow>
 
 #include <memory>
 
@@ -300,6 +296,7 @@ MapEditor::MapEditor(QObject *parent)
     retranslateUi();
 
     Preferences *prefs = Preferences::instance();
+    connect(prefs, &Preferences::useOpenGLChanged, this, &MapEditor::setUseOpenGL);
     connect(prefs, &Preferences::languageChanged, this, &MapEditor::retranslateUi);
     connect(prefs, &Preferences::showTileCollisionShapesChanged,
             this, &MapEditor::showTileCollisionShapesChanged);
@@ -446,9 +443,9 @@ void MapEditor::setCurrentDocument(Document *document)
         mapScene->setSelectedTool(mSelectedTool);
 
         if (mSelectedTool)
-            mapView->viewport()->setCursor(mSelectedTool->cursor());
+            mapView->setToolCursor(mSelectedTool->cursor());
         else
-            mapView->viewport()->unsetCursor();
+            mapView->unsetToolCursor();
 
         mViewWithTool = mapView;
     }
@@ -665,9 +662,9 @@ void MapEditor::setSelectedTool(AbstractTool *tool)
         mapScene->setSelectedTool(tool);
 
         if (tool)
-            mViewWithTool->viewport()->setCursor(tool->cursor());
+            mViewWithTool->setToolCursor(tool->cursor());
         else
-            mViewWithTool->viewport()->unsetCursor();
+            mViewWithTool->unsetToolCursor();
     }
 
     if (tool) {
@@ -809,7 +806,7 @@ void MapEditor::currentWidgetChanged()
 void MapEditor::cursorChanged(const QCursor &cursor)
 {
     if (mViewWithTool)
-        mViewWithTool->viewport()->setCursor(cursor);
+        mViewWithTool->setToolCursor(cursor);
 }
 
 void MapEditor::updateStatusInfoLabel(const QString &statusInfo)
@@ -978,19 +975,41 @@ void MapEditor::setupQuickStamps()
 
         // Set up shortcut for selecting this quick stamp
         QShortcut *selectStamp = new QShortcut(key, mMainWindow);
-        connect(selectStamp, &QShortcut::activated, [=] { mTileStampManager->selectQuickStamp(i); });
+        connect(selectStamp, &QShortcut::activated, this, [=] { mTileStampManager->selectQuickStamp(i); });
 
         // Set up shortcut for creating this quick stamp
         QShortcut *createStamp = new QShortcut(Qt::CTRL + key, mMainWindow);
-        connect(createStamp, &QShortcut::activated, [=] { mTileStampManager->createQuickStamp(i); });
+        connect(createStamp, &QShortcut::activated, this, [=] { mTileStampManager->createQuickStamp(i); });
 
         // Set up shortcut for extending this quick stamp
         QShortcut *extendStamp = new QShortcut((Qt::CTRL | Qt::SHIFT) + key, mMainWindow);
-        connect(extendStamp, &QShortcut::activated, [=] { mTileStampManager->extendQuickStamp(i); });
+        connect(extendStamp, &QShortcut::activated, this, [=] { mTileStampManager->extendQuickStamp(i); });
     }
 
     connect(mTileStampManager, &TileStampManager::setStamp,
             this, &MapEditor::setStamp);
+}
+
+void MapEditor::setUseOpenGL(bool useOpenGL)
+{
+    for (MapView *mapView : std::as_const(mWidgetForMap))
+        mapView->setUseOpenGL(useOpenGL);
+
+    if (useOpenGL)
+        return;
+
+    // When turning off OpenGL, we may need to change the surface type back
+    // to RasterSurface, to avoid lag and improve performance.
+    if (auto w = mMainWindow->window()->windowHandle()) {
+        if (w->surfaceType() != QSurface::RasterSurface) {
+            w->setSurfaceType(QSurface::RasterSurface);
+
+            if (w->handle()) {
+                w->destroy();
+                w->show();
+            }
+        }
+    }
 }
 
 void MapEditor::retranslateUi()
@@ -1001,13 +1020,13 @@ void MapEditor::retranslateUi()
 
 void MapEditor::showTileCollisionShapesChanged(bool enabled)
 {
-    for (MapView *mapView : qAsConst(mWidgetForMap))
+    for (MapView *mapView : std::as_const(mWidgetForMap))
         mapView->mapScene()->setShowTileCollisionShapes(enabled);
 }
 
 void MapEditor::parallaxEnabledChanged(bool enabled)
 {
-    for (MapView *mapView : qAsConst(mWidgetForMap))
+    for (MapView *mapView : std::as_const(mWidgetForMap))
         mapView->mapScene()->setParallaxEnabled(enabled);
 }
 

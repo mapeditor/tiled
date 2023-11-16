@@ -51,6 +51,10 @@
 #endif
 #include <QScreen>
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0) && QT_VERSION < QT_VERSION_CHECK(6, 5, 1)
+#include <QtCore/qapplicationstatic.h>
+#endif
+
 static QString toImageFileFilter(const QList<QByteArray> &formats)
 {
     QString filter(QCoreApplication::translate("Utils", "Image files"));
@@ -219,7 +223,7 @@ static int matchingScore(const QString &word, QStringRef string)
     int score = 1;  // empty word matches
     int previousIndex = -1;
 
-    for (const Match &match : qAsConst(indexes)) {
+    for (const Match &match : std::as_const(indexes)) {
         const int start = match.stringIndex == 0;
         const int sequential = match.stringIndex == previousIndex + 1;
 
@@ -239,7 +243,7 @@ static bool matchingRanges(const QString &word, QStringRef string, int offset, R
     if (!matchingIndexes(word, string, indexes))
         return false;
 
-    for (const Match &match : qAsConst(indexes))
+    for (const Match &match : std::as_const(indexes))
         result.insert(match.stringIndex + offset);
 
     return true;
@@ -280,6 +284,29 @@ RangeSet<int> matchingRanges(const QStringList &words, QStringRef string)
 
     return result;
 }
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0) && QT_VERSION < QT_VERSION_CHECK(6, 5, 1)
+/*
+ * Caching icons here, since Qt no longer caches null icons in
+ * QIcon::fromTheme.
+ */
+using IconCache = QHash<QString, QIcon>;
+Q_APPLICATION_STATIC(IconCache, iconCache);
+
+QIcon themeIcon(const QString &name)
+{
+    IconCache *cache = iconCache();
+    auto it = cache->find(name);
+    if (it == cache->end())
+        it = cache->insert(name, QIcon::fromTheme(name));
+    return *it;
+}
+#else
+QIcon themeIcon(const QString &name)
+{
+    return QIcon::fromTheme(name);
+}
+#endif
 
 QIcon colorIcon(const QColor &color, QSize size)
 {
@@ -526,7 +553,7 @@ void addFileManagerActions(QMenu &menu, const QString &fileName)
     if (fileName.isEmpty())
         return;
 
-    menu.addAction(QCoreApplication::translate("Utils", "Copy File Path"), [fileName] {
+    menu.addAction(QCoreApplication::translate("Utils", "Copy File Path"), &menu, [fileName] {
         QApplication::clipboard()->setText(QDir::toNativeSeparators(fileName));
     });
 
@@ -535,14 +562,14 @@ void addFileManagerActions(QMenu &menu, const QString &fileName)
 
 void addOpenContainingFolderAction(QMenu &menu, const QString &fileName)
 {
-    menu.addAction(QCoreApplication::translate("Utils", "Open Containing Folder..."), [fileName] {
+    menu.addAction(QCoreApplication::translate("Utils", "Open Containing Folder..."), &menu, [fileName] {
         showInFileManager(fileName);
     });
 }
 
 void addOpenWithSystemEditorAction(QMenu &menu, const QString &fileName)
 {
-    menu.addAction(QCoreApplication::translate("Utils", "Open with System Editor"), [=] {
+    menu.addAction(QCoreApplication::translate("Utils", "Open with System Editor"), &menu, [=] {
         QDesktopServices::openUrl(QUrl::fromLocalFile(fileName));
     });
 }

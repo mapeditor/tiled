@@ -73,11 +73,8 @@ void BrushItem::clear()
  */
 void BrushItem::setTileLayer(const SharedTileLayer &tileLayer)
 {
-    mTileLayer = tileLayer;
-    mRegion = tileLayer ? tileLayer->region() : QRegion();
-
-    updateBoundingRect();
-    update();
+    setTileLayer(tileLayer,
+                 tileLayer ? tileLayer->modifiedRegion() : QRegion());
 }
 
 /**
@@ -97,11 +94,7 @@ void BrushItem::setTileLayer(const SharedTileLayer &tileLayer,
 
 void BrushItem::setMap(const SharedMap &map)
 {
-    mMap = map;
-    mRegion = map->tileRegion();
-
-    updateBoundingRect();
-    update();
+    setMap(map, map->modifiedTileRegion());
 }
 
 void BrushItem::setMap(const SharedMap &map, const QRegion &region)

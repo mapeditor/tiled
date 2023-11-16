@@ -1,6 +1,7 @@
 /*
  * wangset.cpp
  * Copyright 2017, Benjamin Trotter <bdtrotte@ucsc.edu>
+ *
  * This file is part of libtiled.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -218,7 +219,7 @@ bool WangId::hasEdgeWithColor(int value) const
 /**
  * Rotates the wang Id clockwise by (90 * rotations) degrees.
  * Meaning with one rotation, the top edge becomes the right edge,
- * and the top right corner, becomes the top bottom.
+ * and the top right corner, becomes the bottom right.
  */
 void WangId::rotate(int rotations)
 {
@@ -628,7 +629,7 @@ void WangSet::recalculateColorDistances()
         QVector<int> distance(colorCount() + 1, -1);
 
         // Check all tiles for transitions to other Wang colors
-        for (const WangId wangId : qAsConst(mTileIdToWangId)) {
+        for (const WangId wangId : std::as_const(mTileIdToWangId)) {
 
             // Don't consider edges and corners to be connected. This helps
             // avoid seeing transitions to "no color" for edge or corner
@@ -718,60 +719,6 @@ QList<WangTile> WangSet::sortedWangTiles() const
 }
 
 /**
- * Returns a WangId matching that of the provided \a surroundingWangIds.
- *
- * This is based off a provided array, { 0, 1, 2, 3, 4, 5, 6, 7 },
- * which corresponds to:
- *
- *      7|0|1
- *      6|X|2
- *      5|4|3
- */
-WangId WangSet::wangIdFromSurrounding(const WangId surroundingWangIds[]) const
-{
-    quint64 id = 0;
-
-    // Edges
-    for (int i = 0; i < WangId::NumEdges; ++i)
-        id |= quint64(surroundingWangIds[i*2].edgeColor((2 + i) % WangId::NumEdges)) << (i * WangId::BITS_PER_INDEX * 2);
-
-    // Corners
-    for (int i = 0; i < WangId::NumCorners; ++i) {
-        int color = surroundingWangIds[i*2 + 1].cornerColor((2 + i) % WangId::NumCorners);
-
-        if (!color)
-            color = surroundingWangIds[i*2].cornerColor((1 + i) % WangId::NumCorners);
-
-        if (!color)
-            color = surroundingWangIds[(i*2 + 2) % WangId::NumIndexes].cornerColor((3 + i) % WangId::NumCorners);
-
-        id |= quint64(color) << (WangId::BITS_PER_INDEX + i * WangId::BITS_PER_INDEX * 2);
-    }
-
-    return id;
-}
-
-/**
- * Returns a wangId matching that of the provided surrounding tiles.
- *
- * This is based off a provided array, { 0, 1, 2, 3, 4, 5, 6, 7 },
- * which corresponds to:
- *
- *      7|0|1
- *      6|X|2
- *      5|4|3
- */
-WangId WangSet::wangIdFromSurrounding(const Cell surroundingCells[]) const
-{
-    WangId wangIds[WangId::NumIndexes];
-
-    for (int i = 0; i < WangId::NumIndexes; ++i)
-        wangIds[i] = wangIdOfCell(surroundingCells[i]);
-
-    return wangIdFromSurrounding(wangIds);
-}
-
-/**
  * Returns the WangId of a given \a tile.
  *
  * The tile is expected to be from the tileset to which this WangSet belongs.
@@ -824,7 +771,7 @@ qreal WangSet::wangIdProbability(WangId wangId) const
 }
 
 /**
- * Returns whether or not the given wangId is valid in the contex of the
+ * Returns whether or not the given wangId is valid in the context of the
  * current wangSet
  */
 bool WangSet::wangIdIsValid(WangId wangId) const
@@ -909,6 +856,36 @@ quint64 WangSet::completeSetSize() const
     }
 }
 
+WangSet::Type WangSet::effectiveTypeForColor(int color) const
+{
+    if (type() == Mixed) {
+        // Determine a meaningful mode by looking at where the color is used.
+        bool usedAsCorner = false;
+        bool usedAsEdge = false;
+
+        if (color > 0 && color <= colorCount()) {
+            for (const WangId wangId : wangIdByTileId()) {
+                for (int i = 0; i < WangId::NumIndexes; ++i) {
+                    if (wangId.indexColor(i) == color) {
+                        const bool isCorner = WangId::isCorner(i);
+                        usedAsCorner |= isCorner;
+                        usedAsEdge |= !isCorner;
+                    }
+                }
+            }
+        }
+
+        if (usedAsEdge == usedAsCorner)
+            return Mixed;
+        else if (usedAsEdge)
+            return Edge;
+        else
+            return Corner;
+    }
+
+    return type();
+}
+
 /**
  * Returns the Nth WangId starting at 0x11111111
  * and, when C is the number of colors, ending at 0xCCCCCCCC.
@@ -935,7 +912,7 @@ WangId WangSet::templateWangIdAt(unsigned n) const
         break;
     case Edge:
         for (int i = WangId::NumEdges - 1; i >= 0; --i) {
-            //this is the number of permutations possible bellow this point in the wangId
+            //this is the number of permutations possible below this point in the wangId
             const int belowPermutations = qPow(colorCount(), i);
             const int value = n / belowPermutations;
 

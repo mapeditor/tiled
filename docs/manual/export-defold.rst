@@ -69,7 +69,7 @@ Custom Properties
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.9.3</div>
+   <div class="new">New in Tiled 1.10</div>
 
 * A custom float property named "z" can be added to tile layers to manually
   specify their ``z`` value.

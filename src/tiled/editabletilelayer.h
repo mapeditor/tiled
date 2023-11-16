@@ -27,7 +27,9 @@
 namespace Tiled {
 
 class EditableTile;
+class EditableWangSet;
 class TileLayerEdit;
+class TileLayerWangEdit;
 
 class EditableTileLayer : public EditableLayer
 {
@@ -41,6 +43,9 @@ public:
     Q_INVOKABLE explicit EditableTileLayer(const QString &name = QString(),
                                            QSize size = QSize(0, 0),
                                            QObject *parent = nullptr);
+
+    explicit EditableTileLayer(std::unique_ptr<TileLayer> tileLayer,
+                               QObject *parent = nullptr);
 
     explicit EditableTileLayer(EditableMap *map,
                                TileLayer *layer,
@@ -64,13 +69,18 @@ public:
     Q_INVOKABLE Tiled::EditableTile *tileAt(int x, int y) const;
 
     Q_INVOKABLE Tiled::TileLayerEdit *edit();
+    Q_INVOKABLE Tiled::TileLayerWangEdit *wangEdit(Tiled::EditableWangSet *wangSet);
 
     TileLayer *tileLayer() const;
 
 private:
-    friend TileLayerEdit;
+    friend class TileLayerEdit;
+    friend class TileLayerWangEdit;
 
     QList<TileLayerEdit*> mActiveEdits;
+    QList<TileLayerWangEdit*> mActiveWangEdits;
+
+    void applyChangesFrom(TileLayer *changes, bool mergeable);
 };
 
 

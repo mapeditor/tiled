@@ -20,17 +20,25 @@
 
 #include "editabletilelayer.h"
 
+#include "addremovetileset.h"
 #include "changelayer.h"
 #include "editablemanager.h"
 #include "editablemap.h"
+#include "painttilelayer.h"
 #include "resizetilelayer.h"
+#include "scriptmanager.h"
 #include "tilelayeredit.h"
-#include "tilesetdocument.h"
+#include "tilelayerwangedit.h"
 
 namespace Tiled {
 
 EditableTileLayer::EditableTileLayer(const QString &name, QSize size, QObject *parent)
     : EditableLayer(std::unique_ptr<Layer>(new TileLayer(name, QPoint(), size)), parent)
+{
+}
+
+EditableTileLayer::EditableTileLayer(std::unique_ptr<TileLayer> tileLayer, QObject *parent)
+    : EditableLayer(std::move(tileLayer), parent)
 {
 }
 
@@ -45,6 +53,8 @@ EditableTileLayer::~EditableTileLayer()
 {
     while (!mActiveEdits.isEmpty())
         delete mActiveEdits.first();
+    while (!mActiveWangEdits.isEmpty())
+        delete mActiveWangEdits.first();
 }
 
 void EditableTileLayer::setSize(QSize size)
@@ -99,6 +109,61 @@ EditableTile *EditableTileLayer::tileAt(int x, int y) const
 TileLayerEdit *EditableTileLayer::edit()
 {
     return new TileLayerEdit(this);
+}
+
+TileLayerWangEdit *EditableTileLayer::wangEdit(EditableWangSet *wangSet)
+{
+    if (!wangSet) {
+        ScriptManager::instance().throwNullArgError(0);
+        return nullptr;
+    }
+
+    if (!map()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Layer not part of a map"));
+        return nullptr;
+    }
+
+    return new TileLayerWangEdit(this, wangSet);
+}
+
+void EditableTileLayer::applyChangesFrom(TileLayer *changes, bool mergeable) 
+{
+    // Determine painted region and normalize the changes layer
+    auto paintedRegion = changes->region([] (const Cell &cell) { return cell.checked(); });
+
+    // If the painted region is empty there's nothing else to do
+    if (paintedRegion.isEmpty())
+        return;
+
+    auto rect = paintedRegion.boundingRect();
+    changes->resize(rect.size(), -rect.topLeft());
+    const auto tilesets = changes->usedTilesets();
+
+    if (mapDocument()) {
+        // Apply the change using an undo command
+        auto mapDocument = map()->mapDocument();
+        auto paint = new PaintTileLayer(mapDocument,
+                                        tileLayer(),
+                                        rect.x(), rect.y(),
+                                        changes,
+                                        paintedRegion);
+        paint->setMergeable(mergeable);
+
+        // Add any used tilesets that aren't yet part of the target map
+        const auto existingTilesets = mapDocument->map()->tilesets();
+        for (const SharedTileset &tileset : tilesets)
+            if (!existingTilesets.contains(tileset))
+                new AddTileset(mapDocument, tileset, paint);
+
+        map()->push(paint);
+    } else {
+        // Add any used tilesets that aren't yet part of the target map
+        if (auto map = tileLayer()->map())
+            map->addTilesets(tilesets);
+
+        // Apply the change directly
+        tileLayer()->setCells(rect.x(), rect.y(), changes, paintedRegion);
+    }
 }
 
 } // namespace Tiled

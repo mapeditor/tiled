@@ -94,6 +94,8 @@ AbstractObjectTool::AbstractObjectTool(Id id,
                                        QObject *parent)
     : AbstractTool(id, name, icon, shortcut, parent)
 {
+    setTargetLayerType(Layer::ObjectGroupType);
+
     QIcon flipHorizontalIcon(QLatin1String(":images/24/flip-horizontal.png"));
     QIcon flipVerticalIcon(QLatin1String(":images/24/flip-vertical.png"));
     QIcon rotateLeftIcon(QLatin1String(":images/24/rotate-left.png"));
@@ -229,7 +231,7 @@ void AbstractObjectTool::filterMapObjects(QList<MapObject *> &mapObjects) const
 
         QList<MapObject*> filteredList;
 
-        for (MapObject *mapObject : qAsConst(mapObjects)) {
+        for (MapObject *mapObject : std::as_const(mapObjects)) {
             if (std::any_of(selectedLayers.begin(), selectedLayers.end(),
                             [=] (Layer *layer) { return layer->isParentOrSelf(mapObject->objectGroup()); })) {
                 filteredList.append(mapObject);
@@ -239,11 +241,6 @@ void AbstractObjectTool::filterMapObjects(QList<MapObject *> &mapObjects) const
         if (behavior == SelectedLayers || !filteredList.isEmpty())
             mapObjects.swap(filteredList);
     }
-}
-
-void AbstractObjectTool::updateEnabledState()
-{
-    setEnabled(currentObjectGroup() != nullptr);
 }
 
 ObjectGroup *AbstractObjectTool::currentObjectGroup() const
@@ -394,7 +391,7 @@ void AbstractObjectTool::resetTileSize()
     if (!commands.isEmpty()) {
         QUndoStack *undoStack = mapDocument()->undoStack();
         undoStack->beginMacro(tr("Reset Tile Size"));
-        for (auto command : qAsConst(commands))
+        for (auto command : std::as_const(commands))
             undoStack->push(command);
         undoStack->endMacro();
     }
@@ -429,7 +426,7 @@ void AbstractObjectTool::convertRectanglesToPolygons()
     if (!commands.isEmpty()) {
         QUndoStack *undoStack = mapDocument()->undoStack();
         undoStack->beginMacro(tr("Convert to Polygon"));
-        for (auto command : qAsConst(commands))
+        for (auto command : std::as_const(commands))
             undoStack->push(command);
         undoStack->endMacro();
     }
@@ -511,7 +508,7 @@ void AbstractObjectTool::detachSelectedObjects()
     auto changeMapObjectCommand = new DetachObjects(currentMapDocument, templateInstances);
 
     // Add any missing tileset used by the templates to the map map before detaching
-    for (const SharedTileset &sharedTileset : qAsConst(sharedTilesets)) {
+    for (const SharedTileset &sharedTileset : std::as_const(sharedTilesets)) {
         if (!currentMapDocument->map()->tilesets().contains(sharedTileset))
             new AddTileset(currentMapDocument, sharedTileset, changeMapObjectCommand);
     }

@@ -20,12 +20,17 @@
 
 #pragma once
 
+#include "tilededitor_global.h"
+
+#include <QFont>
 #include <QObject>
 #include <QPalette>
 
+#include <optional>
+
 namespace Tiled {
 
-class StyleHelper : public QObject
+class TILED_EDITOR_EXPORT StyleHelper : public QObject
 {
     Q_OBJECT
 
@@ -35,6 +40,8 @@ public:
 
     const QString &defaultStyle() { return mDefaultStyle; }
     const QPalette &defaultPalette() { return mDefaultPalette; }
+
+    void applyFont();
 
 signals:
     void styleApplied();
@@ -46,6 +53,7 @@ private:
 
     const QString mDefaultStyle;
     const QPalette mDefaultPalette;
+    std::optional<QFont> mDefaultFont;
     const bool mDefaultShowShortcutsInContextMenus = true;
 
     static StyleHelper *mInstance;

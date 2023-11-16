@@ -143,7 +143,7 @@ void Zoomable::handlePinchGesture(QPinchGesture *pinch)
 
 void Zoomable::zoomIn()
 {
-    for (qreal scale : qAsConst(mZoomFactors)) {
+    for (qreal scale : std::as_const(mZoomFactors)) {
         if (scale > mScale) {
             setScale(scale);
             break;
@@ -184,7 +184,7 @@ void Zoomable::setComboBox(QComboBox *comboBox)
 
     if (mComboBox) {
         mComboBox->clear();
-        for (qreal scale : qAsConst(mZoomFactors))
+        for (qreal scale : std::as_const(mZoomFactors))
             mComboBox->addItem(scaleToString(scale), scale);
         syncComboBox();
         connect(mComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::activated),

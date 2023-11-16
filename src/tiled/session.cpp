@@ -334,7 +334,7 @@ Session &Session::switchCurrent(const QString &fileName)
         migratePreferences();
 
     // Call all registered callbacks because any value may have changed
-    for (const auto &callbacks : qAsConst(mChangedCallbacks))
+    for (const auto &callbacks : std::as_const(mChangedCallbacks))
         for (const auto &callback : callbacks)
             callback();
 

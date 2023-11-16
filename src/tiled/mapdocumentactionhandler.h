@@ -22,15 +22,15 @@
 #pragma once
 
 #include <QObject>
-#include "mapobject.h"
 
 class QAction;
 class QMenu;
 
 namespace Tiled {
 
-class ObjectGroup;
 class MapObject;
+class ObjectGroup;
+class ObjectTemplate;
 
 class MapDocument;
 

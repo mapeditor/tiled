@@ -193,7 +193,7 @@ void MiniMapRenderer::renderToImage(QImage &image, RenderFlags renderFlags) cons
                 if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder)
                     std::stable_sort(objects.begin(), objects.end(), objectLessThan);
 
-                for (const MapObject *object : qAsConst(objects)) {
+                for (const MapObject *object : std::as_const(objects)) {
                     if (object->isVisible()) {
                         if (object->rotation() != qreal(0)) {
                             QPointF origin = mRenderer->pixelToScreenCoords(object->position());

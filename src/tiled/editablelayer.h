@@ -52,6 +52,15 @@ class EditableLayer : public EditableObject
     Q_PROPERTY(bool isImageLayer READ isImageLayer CONSTANT)
 
 public:
+    // Synchronized with Layer::LayerType
+    enum TypeFlag {
+        TileLayerType   = 0x01,
+        ObjectGroupType = 0x02,
+        ImageLayerType  = 0x04,
+        GroupLayerType  = 0x08
+    };
+    Q_ENUM(TypeFlag)
+
     explicit EditableLayer(std::unique_ptr<Layer> layer,
                            QObject *parent = nullptr);
 

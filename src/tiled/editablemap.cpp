@@ -26,17 +26,13 @@
 #include "automappingmanager.h"
 #include "changeevents.h"
 #include "changemapproperty.h"
-#include "changeselectedarea.h"
-#include "editablegrouplayer.h"
-#include "editableimagelayer.h"
 #include "editablelayer.h"
 #include "editablemanager.h"
 #include "editablemapobject.h"
-#include "editableobjectgroup.h"
 #include "editableselectedarea.h"
 #include "editabletilelayer.h"
+#include "editabletileset.h"
 #include "grouplayer.h"
-#include "imagelayer.h"
 #include "mapobject.h"
 #include "maprenderer.h"
 #include "minimaprenderer.h"
@@ -46,7 +42,6 @@
 #include "scriptmanager.h"
 #include "tilelayer.h"
 #include "tileset.h"
-#include "tilesetdocument.h"
 
 #include <QCoreApplication>
 #include <QQmlEngine>

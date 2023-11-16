@@ -352,7 +352,7 @@ void EditPolygonTool::languageChanged()
 
 void EditPolygonTool::setSelectedHandles(const QSet<PointHandle *> &handles)
 {
-    for (PointHandle *handle : qAsConst(mSelectedHandles))
+    for (PointHandle *handle : std::as_const(mSelectedHandles))
         if (!handles.contains(handle))
             handle->setSelected(false);
 
@@ -365,7 +365,7 @@ void EditPolygonTool::setSelectedHandles(const QSet<PointHandle *> &handles)
 
 void EditPolygonTool::setHighlightedHandles(const QSet<PointHandle *> &handles)
 {
-    for (PointHandle *handle : qAsConst(mHighlightedHandles))
+    for (PointHandle *handle : std::as_const(mHighlightedHandles))
         if (!handles.contains(handle))
             handle->setHighlighted(false);
 
@@ -401,7 +401,7 @@ void EditPolygonTool::updateHandles()
     while (i.hasNext()) {
         i.next();
         if (!selection.contains(i.key())) {
-            for (PointHandle *handle : qAsConst(i.value()))
+            for (PointHandle *handle : std::as_const(i.value()))
                 deleteHandle(handle);
 
             i.remove();
@@ -528,7 +528,7 @@ void EditPolygonTool::startMoving(const QPointF &pos)
     mOldPolygons.clear();
     mAlignPosition = renderer->screenToPixelCoords((*mSelectedHandles.begin())->pos());
 
-    for (PointHandle *handle : qAsConst(mSelectedHandles)) {
+    for (PointHandle *handle : std::as_const(mSelectedHandles)) {
         const QPointF pos = renderer->screenToPixelCoords(handle->pos());
         mOldHandlePositions.append(handle->pos());
         if (pos.x() < mAlignPosition.x())
@@ -563,7 +563,7 @@ void EditPolygonTool::updateMovingItems(const QPointF &pos,
     QHash<MapObject*, QPolygonF> newPolygons = mOldPolygons;
 
     int i = 0;
-    for (PointHandle *handle : qAsConst(mSelectedHandles)) {
+    for (PointHandle *handle : std::as_const(mSelectedHandles)) {
         // update handle position
         QPointF newScreenPos = mOldHandlePositions.at(i) + diff;
         handle->setPos(newScreenPos);

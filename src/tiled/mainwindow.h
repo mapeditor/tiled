@@ -106,9 +106,6 @@ protected:
     void closeEvent(QCloseEvent *event) override;
     void changeEvent(QEvent *event) override;
 
-    void keyPressEvent(QKeyEvent *) override;
-    void keyReleaseEvent(QKeyEvent *) override;
-
     void dragEnterEvent(QDragEnterEvent *) override;
     void dropEvent(QDropEvent *) override;
 
@@ -134,7 +131,7 @@ private:
     bool openProjectFile(const QString &fileName);
     void newProject();
     bool closeProject();
-    bool switchProject(Project project);
+    bool switchProject(std::unique_ptr<Project> project);
     void restoreSession();
     void projectProperties();
 

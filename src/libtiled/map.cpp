@@ -432,10 +432,9 @@ void Map::normalizeTileLayerPositionsAndMapSize()
             tileLayer->setPosition(tileLayer->position() - contentRect.topLeft());
 
         // Adjust the stagger index when layers are moved by odd amounts
-        const int staggerOffSet = (staggerAxis() == Map::StaggerX ? contentRect.x()
+        const int staggerOffset = (staggerAxis() == Map::StaggerX ? contentRect.x()
                                                                   : contentRect.y()) % 2;
-
-        setStaggerIndex(static_cast<Map::StaggerIndex>((staggerIndex() + staggerOffSet) % 2));
+        setStaggerIndex(static_cast<Map::StaggerIndex>((staggerIndex() + staggerOffset) % 2));
     }
 
     setWidth(contentRect.width());
@@ -515,12 +514,12 @@ QRect Map::tileBoundingRect() const
     return mapBounds;
 }
 
-QRegion Map::tileRegion() const
+QRegion Map::modifiedTileRegion() const
 {
     QRegion region;
     LayerIterator it(this, Layer::TileLayerType);
     while (auto tileLayer = static_cast<TileLayer*>(it.next()))
-        region |= tileLayer->region();
+        region |= tileLayer->modifiedRegion();
     return region;
 }
 

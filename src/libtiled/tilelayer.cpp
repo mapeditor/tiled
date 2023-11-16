@@ -770,7 +770,8 @@ QVector<QRect> TileLayer::sortedChunksToWrite(QSize chunkSize) const
 
     QHashIterator<QPoint, Chunk> it(mChunks);
     while (it.hasNext()) {
-        const Chunk &chunk = it.next().value();
+        it.next();
+        const Chunk &chunk = it.value();
         if (chunk.isEmpty())
             continue;
 

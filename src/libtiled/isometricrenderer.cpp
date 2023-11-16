@@ -32,7 +32,6 @@
 #include "mapobject.h"
 #include "tile.h"
 #include "tilelayer.h"
-#include "tileset.h"
 #include "objectgroup.h"
 
 #include <QtMath>
@@ -220,7 +219,7 @@ void IsometricRenderer::drawGrid(QPainter *painter, const QRectF &rect,
     }
 
     QPen gridPen, majorGridPen;
-    setupGridPens(painter->device(), gridColor, gridPen, majorGridPen, tileWidth, gridMajor);
+    setupGridPens(painter->device(), gridColor, gridPen, majorGridPen, qMin(tileWidth, tileHeight), gridMajor);
 
     for (int y = startY; y <= endY; ++y) {
         const QPointF start = tileToScreenCoords(startX, y);

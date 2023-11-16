@@ -453,9 +453,15 @@ static void addAutomappingProperties(Properties &properties, const Object *objec
 
     switch (object->typeId()) {
     case Object::LayerType: {
-        if (static_cast<const Layer*>(object)->name().startsWith(QLatin1String("input"), Qt::CaseInsensitive)) {
+        auto layer = static_cast<const Layer*>(object);
+
+        if (layer->name().startsWith(QLatin1String("input"), Qt::CaseInsensitive)) {
             mergeProperties(properties, QVariantMap {
                 { QStringLiteral("AutoEmpty"), false },
+            });
+        } else if (layer->name().startsWith(QLatin1String("output"), Qt::CaseInsensitive)) {
+            mergeProperties(properties, QVariantMap {
+                { QStringLiteral("Probability"), 1.0 },
             });
         }
         break;
@@ -482,6 +488,7 @@ static void addAutomappingProperties(Properties &properties, const Object *objec
     case Object::TileType:
     case Object::WangSetType:
     case Object::WangColorType:
+    case Object::ProjectType:
         break;
     }
 }
@@ -689,6 +696,7 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     case Object::TileType:              applyTileValue(id, val); break;
     case Object::WangSetType:           applyWangSetValue(id, val); break;
     case Object::WangColorType:         applyWangColorValue(id, val); break;
+    case Object::ProjectType: break;
     }
 }
 
@@ -1154,8 +1162,11 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
     case InfiniteProperty: {
         bool infinite = val.toInt();
 
+        auto changePropertyCommand = new ChangeMapProperty(mMapDocument, Map::InfiniteProperty,
+                                                           val.toInt());
+
         QUndoStack *undoStack = mDocument->undoStack();
-        undoStack->beginMacro(tr("Change Infinite Property"));
+        undoStack->beginMacro(changePropertyCommand->text());
 
         if (!infinite) {
             QRect mapBounds(QPoint(0, 0), mMapDocument->map()->size());
@@ -1172,8 +1183,7 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
             mMapDocument->resizeMap(mapBounds.size(), -mapBounds.topLeft(), false);
         }
 
-        undoStack->push(new ChangeMapProperty(mMapDocument, Map::InfiniteProperty,
-                                              val.toInt()));
+        undoStack->push(changePropertyCommand);
         undoStack->endMacro();
         break;
     }
@@ -1807,6 +1817,7 @@ void PropertyBrowser::addProperties()
     case Object::TileType:              addTileProperties(); break;
     case Object::WangSetType:           addWangSetProperties(); break;
     case Object::WangColorType:         addWangColorProperties(); break;
+    case Object::ProjectType: break;
     }
 
     // Make sure certain properties are collapsed, to save space
@@ -1846,7 +1857,8 @@ void PropertyBrowser::updateProperties()
 
     QScopedValueRollback<bool> updating(mUpdating, true);
 
-    mIdToProperty[ClassProperty]->setValue(mObject->className());
+    if (auto classProperty = mIdToProperty.value(ClassProperty))
+        classProperty->setValue(mObject->className());
 
     switch (mObject->typeId()) {
     case Object::MapType: {
@@ -2023,6 +2035,8 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[WangColorProbabilityProperty]->setValue(wangColor->probability());
         break;
     }
+    case Object::ProjectType:
+        break;
     }
 }
 

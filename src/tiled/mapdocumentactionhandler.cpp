@@ -29,7 +29,6 @@
 #include "documentmanager.h"
 #include "erasetiles.h"
 #include "grouplayer.h"
-#include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -422,12 +421,12 @@ void MapDocumentActionHandler::delete_()
         undoStack->push(commands.first());
     } else if (commands.size() > 1) {
         undoStack->beginMacro(tr("Delete"));
-        for (QUndoCommand *command : qAsConst(commands))
+        for (QUndoCommand *command : std::as_const(commands))
             undoStack->push(command);
         undoStack->endMacro();
     }
 
-    for (auto &erased : qAsConst(erasedRegions)) {
+    for (auto &erased : std::as_const(erasedRegions)) {
         if (erased.second->map() != mMapDocument->map())
             continue;
 
@@ -622,7 +621,7 @@ void MapDocumentActionHandler::layerVia(MapDocumentActionHandler::LayerViaVarian
 
         ObjectReferencesHelper objectRefs(map);
 
-        for (MapObject *mapObject : qAsConst(selectedObjects)) {
+        for (MapObject *mapObject : std::as_const(selectedObjects)) {
             MapObject *clone = mapObject->clone();
             if (variant == ViaCopy)
                 objectRefs.reassignId(clone);

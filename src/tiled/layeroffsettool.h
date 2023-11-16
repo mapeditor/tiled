@@ -44,9 +44,6 @@ public:
 
     void languageChanged() override;
 
-protected slots:
-    void updateEnabledState() override;
-
 protected:
     void mapDocumentChanged(MapDocument *oldDocument,
                             MapDocument *newDocument) override;

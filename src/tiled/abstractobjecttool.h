@@ -75,12 +75,6 @@ public:
     void filterMapObjects(QList<MapObject*> &mapObjects) const;
 
 protected:
-    /**
-     * Overridden to only enable this tool when the currently selected layer is
-     * an object group.
-     */
-    void updateEnabledState() override;
-
     ObjectGroup *currentObjectGroup() const;
     QList<MapObject*> mapObjectsAt(const QPointF &pos) const;
     MapObject *topMostMapObjectAt(const QPointF &pos) const;

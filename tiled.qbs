@@ -1,15 +1,15 @@
-import qbs 1.0
 import qbs.Environment
 
 Project {
     name: "Tiled"
 
     qbsSearchPaths: "qbs"
-    minimumQbsVersion: "1.12"
+    minimumQbsVersion: "1.13"
 
-    property string version: Environment.getEnv("TILED_VERSION") || "1.9.2";
+    property string version: Environment.getEnv("TILED_VERSION") || "1.10.2";
     property bool snapshot: Environment.getEnv("TILED_SNAPSHOT") == "true"
     property bool release: Environment.getEnv("TILED_RELEASE") == "true"
+    property string libDir: "lib"
     property bool installHeaders: false
     property bool useRPaths: true
     property bool windowsInstaller: false

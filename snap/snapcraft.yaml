@@ -2,7 +2,7 @@ name: tiled
 adopt-info: tiled
 version: git
 license: GPL-2.0
-base: core20
+base: core22
 
 grade: stable
 confinement: strict
@@ -46,9 +46,8 @@ parts:
     plugin: make
     override-build: |
         qbs setup-toolchains --detect
-        qbs config defaultProfile gcc
-        qbs build --jobs "${SNAPCRAFT_PARALLEL_BUILD_COUNT}" --command-echo-mode command-line config:release qbs.installPrefix:"/usr" projects.Tiled.version:${SNAPCRAFT_PROJECT_VERSION} projects.Tiled.useRPaths:false
-        qbs install --install-root "${SNAPCRAFT_PART_INSTALL}" config:release
+        qbs build --jobs "${CRAFT_PARALLEL_BUILD_COUNT}" --command-echo-mode command-line config:release qbs.installPrefix:"/usr" projects.Tiled.version:$(craftctl get version) projects.Tiled.useRPaths:false
+        qbs install --install-root "${CRAFT_PART_INSTALL}" config:release
     parse-info:
       - usr/share/metainfo/org.mapeditor.Tiled.appdata.xml
     source: .
@@ -83,7 +82,6 @@ parts:
       - dpkg-dev
     stage-packages:
       - libxkbcommon0
-      - ttf-ubuntu-font-family
       - dmz-cursor-theme
       - light-themes
       - adwaita-icon-theme
@@ -93,7 +91,6 @@ parts:
       - libqt5gui5
       - libqt5svg5 # for loading icon themes which are svg
       - libgdk-pixbuf2.0-0
-      - try: [appmenu-qt5] # not available on core18
       - locales-all
       - xdg-user-dirs
       - fcitx-frontend-qt5

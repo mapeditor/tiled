@@ -21,6 +21,7 @@
 #include "tiled.h"
 
 #include <QDir>
+#include <QImageReader>
 
 QPointF Tiled::alignmentOffset(const QSizeF &size, Alignment alignment)
 {
@@ -217,4 +218,16 @@ Tiled::CompatibilityVersion Tiled::versionFromString(const QString &string)
     else if (string == QLatin1String("latest"))
         return Tiled_Latest;
     return UnknownVersion;
+}
+
+void Tiled::increaseImageAllocationLimit(int mbLimit)
+{
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    // Adjust the allocation limit to accommodate larger images
+    const int currentLimit = QImageReader::allocationLimit();
+    if (currentLimit && currentLimit < mbLimit)
+        QImageReader::setAllocationLimit(mbLimit);
+#else
+    Q_UNUSED(mbLimit);
+#endif
 }

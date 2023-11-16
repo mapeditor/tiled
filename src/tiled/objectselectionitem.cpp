@@ -35,7 +35,7 @@
 #include "utils.h"
 #include "variantpropertymanager.h"
 
-#include <QGuiApplication>
+#include <QApplication>
 #include <QTimerEvent>
 #include <QVector2D>
 
@@ -183,7 +183,7 @@ void MapObjectLabel::syncWithMapObject(const MapRenderer &renderer)
     if (!nameVisible)
         return;
 
-    const QFontMetricsF metrics(QGuiApplication::font());
+    const QFontMetricsF metrics(scene() ? scene()->font() : QApplication::font());
     QRectF boundingRect = metrics.boundingRect(mObject->name());
 
     const qreal margin = Utils::dpiScaled(labelMargin);
@@ -326,13 +326,13 @@ void ObjectSelectionItem::updateItemPositions()
 
     const MapRenderer &renderer = *mMapDocument->renderer();
 
-    for (MapObjectLabel *label : qAsConst(mObjectLabels))
+    for (MapObjectLabel *label : std::as_const(mObjectLabels))
         label->syncWithMapObject(renderer);
 
-    for (MapObjectOutline *outline : qAsConst(mObjectOutlines))
+    for (MapObjectOutline *outline : std::as_const(mObjectOutlines))
         outline->syncWithMapObject(renderer);
 
-    for (const auto &items : qAsConst(mReferencesBySourceObject)) {
+    for (const auto &items : std::as_const(mReferencesBySourceObject)) {
         for (ObjectReferenceItem *item : items) {
             item->syncWithSourceObject(renderer);
             item->syncWithTargetObject(renderer);
@@ -346,6 +346,23 @@ void ObjectSelectionItem::updateItemPositions()
 const MapRenderer &ObjectSelectionItem::mapRenderer() const
 {
     return *mMapDocument->renderer();
+}
+
+QVariant ObjectSelectionItem::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    if (change == ItemSceneChange) {
+        if (auto mapScene = static_cast<MapScene*>(scene())) {
+            disconnect(mapScene, &MapScene::fontChanged,
+                       this, &ObjectSelectionItem::sceneFontChanged);
+        }
+
+        if (auto mapScene = static_cast<MapScene*>(value.value<QGraphicsScene*>())) {
+            connect(mapScene, &MapScene::fontChanged,
+                    this, &ObjectSelectionItem::sceneFontChanged);
+        }
+    }
+
+    return QGraphicsObject::itemChange(change, value);
 }
 
 void ObjectSelectionItem::changeEvent(const ChangeEvent &event)
@@ -499,7 +516,7 @@ void ObjectSelectionItem::layerAdded(Layer *layer)
     if (objectLabelVisibility() == Preferences::AllObjectLabels) {
         const MapRenderer &renderer = *mMapDocument->renderer();
 
-        for (MapObject *object : qAsConst(newObjects)) {
+        for (MapObject *object : std::as_const(newObjects)) {
             Q_ASSERT(!mObjectLabels.contains(object));
 
             MapObjectLabel *labelItem = new MapObjectLabel(object, this);
@@ -544,7 +561,7 @@ void ObjectSelectionItem::layerChanged(const LayerChangeEvent &event)
     // If an object or group layer changed, that means its offset may have
     // changed, which affects the outlines of selected objects on that layer
     // and the positions of any name labels that are shown.
-    if (event.properties & LayerChangeEvent::OffsetProperty) {
+    if (event.properties & LayerChangeEvent::PositionProperties) {
         if (objectGroup) {
             syncOverlayItems(objectGroup->objects());
         } else {
@@ -587,7 +604,7 @@ void ObjectSelectionItem::updateItemColors() const
     for (MapObjectLabel *label : mObjectLabels)
         label->updateColor();
 
-    for (const auto &referenceItems : qAsConst(mReferencesBySourceObject))
+    for (const auto &referenceItems : std::as_const(mReferencesBySourceObject))
         for (ObjectReferenceItem *item : referenceItems)
             item->updateColor();
 }
@@ -671,11 +688,11 @@ void ObjectSelectionItem::tilesetTilePositioningChanged(Tileset *tileset)
     // Tile offset and alignment affect the position of selection outlines and labels
     const MapRenderer &renderer = *mMapDocument->renderer();
 
-    for (MapObjectLabel *label : qAsConst(mObjectLabels))
+    for (MapObjectLabel *label : std::as_const(mObjectLabels))
         if (label->mapObject()->cell().tileset() == tileset)
             label->syncWithMapObject(renderer);
 
-    for (MapObjectOutline *outline : qAsConst(mObjectOutlines))
+    for (MapObjectOutline *outline : std::as_const(mObjectOutlines))
         if (outline->mapObject()->cell().tileset() == tileset)
             outline->syncWithMapObject(renderer);
 
@@ -693,7 +710,7 @@ void ObjectSelectionItem::tileTypeChanged(Tile *tile)
         return cell.tileset() == tile->tileset() && cell.tileId() == tile->id();
     };
 
-    for (MapObjectLabel *label : qAsConst(mObjectLabels))
+    for (MapObjectLabel *label : std::as_const(mObjectLabels))
         if (isObjectAffected(label->mapObject()))
             label->updateColor();
 
@@ -718,9 +735,16 @@ void ObjectSelectionItem::showObjectReferencesChanged()
 void ObjectSelectionItem::objectLineWidthChanged()
 {
     // Object reference items should redraw when line width is changed
-    for (const auto &items : qAsConst(mReferencesBySourceObject))
+    for (const auto &items : std::as_const(mReferencesBySourceObject))
         for (ObjectReferenceItem *item : items)
             item->update();
+}
+
+void ObjectSelectionItem::sceneFontChanged()
+{
+    const MapRenderer &renderer = *mMapDocument->renderer();
+    for (MapObjectLabel *label : std::as_const(mObjectLabels))
+        label->syncWithMapObject(renderer);
 }
 
 void ObjectSelectionItem::addRemoveObjectLabels()
@@ -877,7 +901,7 @@ void ObjectSelectionItem::addRemoveObjectReferences()
     }
 
     // delete remaining items
-    for (const auto &items : qAsConst(mReferencesBySourceObject))
+    for (const auto &items : std::as_const(mReferencesBySourceObject))
         qDeleteAll(items);
 
     mReferencesBySourceObject.swap(referencesBySourceObject);
@@ -923,7 +947,7 @@ void ObjectSelectionItem::addRemoveObjectReferences(MapObject *object)
     }
 
     // Delete remaining existing items, also removing them from mReferencesByTargetObject
-    for (ObjectReferenceItem *item : qAsConst(existingItems)) {
+    for (ObjectReferenceItem *item : std::as_const(existingItems)) {
         auto &itemsByTarget = mReferencesByTargetObject[item->targetObject()];
         itemsByTarget.removeOne(item);
         if (itemsByTarget.isEmpty())

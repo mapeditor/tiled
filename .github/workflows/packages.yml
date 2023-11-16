@@ -15,8 +15,8 @@ on:
     - '.travis.yml'
 
 env:
-  QBS_VERSION: 1.23.1
-  SENTRY_VERSION: 0.5.4
+  QBS_VERSION: 2.0.2
+  SENTRY_VERSION: 0.6.5
   SENTRY_ORG: mapeditor
   SENTRY_PROJECT: tiled
   TILED_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') }}
@@ -40,27 +40,21 @@ jobs:
 
   linux:
     name: Linux (AppImage, Qt ${{ matrix.qt_version_major }})
-    runs-on: ${{ matrix.image }}
+    runs-on: ubuntu-20.04
     needs: version
 
     strategy:
       matrix:
         include:
-        - image: ubuntu-18.04
-          qt_version: 5.15.2
+        - qt_version: 5.15.2
           qt_version_major: 5
-          qt_creator_version: 5.0.3
-          gcc_version: 9
-        - image: ubuntu-20.04
-          qt_version: 6.4.2
+        - qt_version: 6.5.3
           qt_version_major: 6
-          qt_creator_version: 9.0.1
-          gcc_version: 10
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
       QT_VERSION: ${{ matrix.qt_version }}
-      QTCREATOR_VERSION: ${{ matrix.qt_creator_version }}
+      QTCREATOR_VERSION: 10.0.2
 
     steps:
     - name: Checkout repository
@@ -69,7 +63,19 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install libgl1-mesa-dev libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 libxcb-randr0 libxcb-shape0 libzstd-dev libcurl4-openssl-dev
+        sudo apt install \
+          libcurl4-openssl-dev \
+          libgl1-mesa-dev \
+          libxcb-cursor0 \
+          libxcb-icccm4 \
+          libxcb-image0 \
+          libxcb-keysyms1 \
+          libxcb-randr0 \
+          libxcb-render-util0 \
+          libxcb-shape0 \
+          libxcb-xinerama0 \
+          libxkbcommon-x11-0 \
+          libzstd-dev
 
     - name: Install Qt
       run: |
@@ -90,7 +96,7 @@ jobs:
       run: |
         qbs --version
         qbs setup-toolchains --detect
-        qbs config defaultProfile x86_64-linux-gnu-gcc-${{ matrix.gcc_version }}
+        qbs config defaultProfile x86_64-linux-gnu-gcc-10
 
     - name: Build Sentry Native
       run: |
@@ -124,6 +130,8 @@ jobs:
         export EXTRA_QT_PLUGINS=svg
         export LD_LIBRARY_PATH=/opt/Qt/${QT_VERSION}/gcc_64/lib:$PWD/AppDir/usr/lib
         export OUTPUT=Tiled-Qt${{ matrix.qt_version_major }}-x86_64.AppImage
+        # Avoid shipping the debug information
+        find AppDir -name \*.debug -delete
         ./linuxdeploy-x86_64.AppImage --appdir AppDir --custom-apprun=dist/linux/AppRun --exclude-library "*libpython3*" --plugin qt
         # We don't need the bearer plugins (needed for Qt 5 only)
         rm -rfv AppDir/usr/plugins/bearer
@@ -182,16 +190,16 @@ jobs:
       matrix:
         include:
         - qt_version: 5.12.12
-          version_suffix: "10.12-10.13"
-          qt_creator_version: 5.0.3
-        - qt_version: 6.4.2
-          version_suffix: "10.14+"
-          qt_creator_version: 7.0.2
+          version_suffix: "10.12-10.15"
+          architectures: x86_64
+        - qt_version: 6.5.3
+          version_suffix: "11+"
+          architectures: x86_64,arm64
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
       QT_VERSION: ${{ matrix.qt_version }}
-      QTCREATOR_VERSION: ${{ matrix.qt_creator_version }}
+      QTCREATOR_VERSION: 10.0.2
 
     steps:
     - name: Checkout repository
@@ -211,12 +219,12 @@ jobs:
       run: |
         git clone --depth 1 -b master https://github.com/facebook/zstd.git
         pushd zstd/lib
-        make libzstd.a
+        CFLAGS="-arch arm64 -arch x86_64" make libzstd.a
         popd
 
     - name: Build Tiled
       run: |
-        qbs install --install-root install config:release qbs.installPrefix:"" projects.Tiled.staticZstd:true
+        qbs install --install-root install config:release qbs.architectures:${{ matrix.architectures }} qbs.installPrefix:"" projects.Tiled.staticZstd:true
 
     - name: Deploy Qt
       run: |
@@ -225,32 +233,30 @@ jobs:
         pushd install
         ruby ../dist/macos/fixup-install-names.rb
 
+    - name: Create Certificate File
+      id: certificateFile
+      if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
+      uses: timheuer/base64-to-file@v1
+      with:
+        fileName: 'certificate.p12'
+        encodedString: ${{ secrets.MACOS_CERTIFICATE }}
+
     - name: Import Certificate
       if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
-      uses: devbotsxyz/xcode-import-certificate@v1
-      with:
-        certificate-data: ${{ secrets.MACOS_CERTIFICATE }}
-        certificate-passphrase: ${{ secrets.MACOS_CERTIFICATE_PWD }}
-        keychain-password: ${{ secrets.KEYCHAIN_PWD }}
+      run: |
+        security create-keychain -p ${{ secrets.KEYCHAIN_PWD }} mapeditor/tiled
+        security default-keychain -s mapeditor/tiled
+        security unlock-keychain -p ${{ secrets.KEYCHAIN_PWD }} mapeditor/tiled
+        security -q import ${{ steps.certificateFile.outputs.filePath }} -f pkcs12 -k mapeditor/tiled -P ${{ secrets.MACOS_CERTIFICATE_PWD }} -T /usr/bin/codesign -x
+        security set-key-partition-list -S 'apple-tool:,apple:' -s -k ${{ secrets.KEYCHAIN_PWD }} mapeditor/tiled
 
-    - name: Sign
+    - name: Sign, Notarize & Staple
       if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
       run: |
         codesign --deep --force --verify --verbose --sign Lindeijer --options runtime install/Tiled.app
-
-    - name: Notarize
-      if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
-      uses: devbotsxyz/xcode-notarize@v1
-      with:
-        product-path: install/Tiled.app
-        appstore-connect-username: ${{ secrets.NOTARIZATION_USERNAME }}
-        appstore-connect-password: ${{ secrets.NOTARIZATION_PASSWORD }}
-
-    - name: Staple
-      if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
-      uses: devbotsxyz/xcode-staple@v1
-      with:
-        product-path: install/Tiled.app
+        ditto -c -k --sequesterRsrc --keepParent install/Tiled.app Tiled_for_notarization.zip
+        xcrun notarytool submit --apple-id ${{ secrets.NOTARIZATION_USERNAME }} --password ${{ secrets.NOTARIZATION_PASSWORD }} --team-id ${{ secrets.NOTARIZATION_TEAM }} --wait Tiled_for_notarization.zip
+        xcrun stapler staple install/Tiled.app
 
     - name: Create Archive
       run: |
@@ -278,7 +284,7 @@ jobs:
           mingw_version: 8.1.0
           mingw_component: mingw
           mingw_path: /c/Qt/Tools/mingw810_32/bin
-        - qt_version: 6.4.2
+        - qt_version: 6.5.3
           qt_version_major: 6
           qt_toolchain: win64_mingw
           arch: 64
@@ -397,20 +403,20 @@ jobs:
         asset_name: Tiled-${{ needs.version.outputs.version }}_Linux_Qt-6_x86_64.AppImage
         asset_content_type: application/vnd.appimage
 
-    - name: Upload macOS app (10.12-10.13)
+    - name: Upload macOS app (10.12-10.15)
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Tiled_macOS-10.12-10.13.app/Tiled_macOS-10.12-10.13.zip
-        asset_name: Tiled-${{ needs.version.outputs.version }}_macOS-10.12-10.13.zip
+        asset_path: Tiled_macOS-10.12-10.15.app/Tiled_macOS-10.12-10.15.zip
+        asset_name: Tiled-${{ needs.version.outputs.version }}_macOS-10.12-10.15.zip
         asset_content_type: application/zip
 
-    - name: Upload macOS app (10.14+)
+    - name: Upload macOS app (11+)
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Tiled_macOS-10.14+.app/Tiled_macOS-10.14+.zip
-        asset_name: Tiled-${{ needs.version.outputs.version }}_macOS-10.14+.zip
+        asset_path: Tiled_macOS-11+.app/Tiled_macOS-11+.zip
+        asset_name: Tiled-${{ needs.version.outputs.version }}_macOS-11+.zip
         asset_content_type: application/zip
 
   sentry:

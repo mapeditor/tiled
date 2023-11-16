@@ -159,6 +159,7 @@ private:
     void updateLayerComboIndex();
 
     void setupQuickStamps();
+    void setUseOpenGL(bool useOpenGL);
     void retranslateUi();
     void showTileCollisionShapesChanged(bool enabled);
     void parallaxEnabledChanged(bool enabled);

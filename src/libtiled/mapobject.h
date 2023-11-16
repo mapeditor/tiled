@@ -91,7 +91,7 @@ public:
      * When a polygon is set, the shape determines whether it should be
      * interpreted as a filled polygon or a line.
      *
-     * Text objects contain arbitrary text, contained withih their rectangle
+     * Text objects contain arbitrary text, contained within their rectangle
      * (in screen coordinates).
      */
     enum Shape {

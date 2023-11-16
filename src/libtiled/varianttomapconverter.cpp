@@ -237,7 +237,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     const QString fillMode = variantMap[QStringLiteral("fillmode")].toString();
     const QVariantMap transformations = variantMap[QStringLiteral("transformations")].toMap();
 
-    if (tileWidth <= 0 || tileHeight <= 0 ||
+    if (tileWidth < 0 || tileHeight < 0 ||
             (firstGid == 0 && !mReadingExternalTileset)) {
         mError = tr("Invalid tileset parameters for tileset '%1'").arg(name);
         return SharedTileset();
@@ -287,6 +287,10 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     QVariant imageVariant = variantMap[QStringLiteral("image")];
 
     if (!imageVariant.isNull()) {
+        if (tileWidth == 0 || tileHeight == 0) {
+            mError = tr("Invalid tileset parameters for tileset '%1'").arg(name);
+            return SharedTileset();
+        }
         const int imageWidth = variantMap[QStringLiteral("imagewidth")].toInt();
         const int imageHeight = variantMap[QStringLiteral("imageheight")].toInt();
 
@@ -428,6 +432,13 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
         const QVariant propertyTypesVar = propertyTypesVariantMap.value(it.key());
         const Properties properties = toProperties(propertiesVar, propertyTypesVar);
         tileset->findOrCreateTile(tileId)->setProperties(properties);
+    }
+
+    if (!tilesVariantMap.isEmpty() || !propertiesVariantMap.isEmpty()) {
+        // The presence of either of these maps indicates that the tileset
+        // is in the old 1.0 format. This means the tiles may not have been
+        // added in the right order.
+        tileset->resetTileOrder();
     }
 
     // Read the tiles saved as a list (1.2 format)

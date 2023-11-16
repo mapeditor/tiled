@@ -90,6 +90,7 @@ signals:
 
     void sceneRefreshed();
 
+    void fontChanged();
     void parallaxParametersChanged();
 
 protected:

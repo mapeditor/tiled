@@ -131,6 +131,11 @@ Java
       port <http://chiselapp.com/user/devnewton/repository/libtiled-android/index>`__
       is a port of the libtiled-java to be used on Android phones.
 
+OCaml
+~~~~~
+
+- `tmx <http://github.com/fishyfriend/tmx>`__
+
 PHP
 ~~~
 
@@ -207,7 +212,7 @@ Bevy
 Castle Game Engine (Object Pascal)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  `Castle Game Engine <https://castle-engine.io/>`__ has native support for Tiled maps (see the `CastleTiledMap unit <https://castle-engine.io/apidoc-unstable/html/CastleTiledMap.html>`__)
+-  `Castle Game Engine <https://castle-engine.io/>`__ has native support for Tiled maps (see the `engine manual about Tiled Maps <https://castle-engine.io/tiled_maps>`__)
 
 Cell2D
 ~~~~~~
@@ -241,11 +246,19 @@ Construct 2 - Scirra
    file inside the editor. `Official
    Note <https://www.scirra.com/construct2/releases/r149>`__
 
+DragonRuby Game Toolkit
+~~~~~~~~~~~~~~~~~~~~~~~
+
+-  `DRTiled <https://github.com/wildfiler/drtiled>`__ adds support for loading
+   Tiled maps to the `DragonRuby Game Toolkit
+   <https://dragonruby.org/toolkit/game>`__. The maps can be rendered using
+   `DRTiled Renderer <https://github.com/vinnydiehl/drtiled-renderer>`__.
+
 Flame
 ~~~~~
 
-- `flame_tiled <https://pub.dev/packages/flame_tiled>`__ is a library for 
-  incorporating Tiled maps into the `Flame <https://pub.dev/packages/flame>`
+- `flame_tiled <https://pub.dev/packages/flame_tiled>`__ is a library for
+  incorporating Tiled maps into the `Flame <https://pub.dev/packages/flame>`__
   game engine.
 
 Flixel

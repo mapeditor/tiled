@@ -21,17 +21,18 @@
 #pragma once
 
 #include "command.h"
-#include "properties.h"
-#include "propertytype.h"
+#include "object.h"
 #include "tiled.h"
 
 #include <QDateTime>
 #include <QStringList>
 #include <QVector>
 
+#include <memory>
+
 namespace Tiled {
 
-class Project
+class Project : public Object
 {
 public:
     Project();
@@ -39,7 +40,8 @@ public:
     const QString &fileName() const;
     bool save();
     bool save(const QString &fileName);
-    bool load(const QString &fileName);
+
+    static std::unique_ptr<Project> load(const QString &fileName);
 
     void addFolder(const QString &folder);
     void removeFolder(int index);

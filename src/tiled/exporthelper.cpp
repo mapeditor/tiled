@@ -206,6 +206,7 @@ void ExportHelper::resolveProperties(Object *object) const
             resolveProperties(color.data());
         break;
     case Object::WangColorType:
+    case Object::ProjectType:
         break;
     }
 

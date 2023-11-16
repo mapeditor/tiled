@@ -21,15 +21,11 @@
 
 #include "stampbrush.h"
 
-#include "addremovelayer.h"
-#include "addremovetileset.h"
 #include "brushitem.h"
 #include "geometry.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapscene.h"
-#include "painttilelayer.h"
-#include "staggeredrenderer.h"
 #include "stampactions.h"
 #include "tile.h"
 #include "tilestamp.h"
@@ -59,13 +55,13 @@ StampBrush::StampBrush(QObject *parent)
     connect(mStampActions->random(), &QAction::toggled, this, &StampBrush::randomChanged);
     connect(mStampActions->wangFill(), &QAction::toggled, this, &StampBrush::wangFillChanged);
 
-    connect(mStampActions->flipHorizontal(), &QAction::triggered,
+    connect(mStampActions->flipHorizontal(), &QAction::triggered, this,
             [this] { emit stampChanged(mStamp.flipped(FlipHorizontally)); });
-    connect(mStampActions->flipVertical(), &QAction::triggered,
+    connect(mStampActions->flipVertical(), &QAction::triggered, this,
             [this] { emit stampChanged(mStamp.flipped(FlipVertically)); });
-    connect(mStampActions->rotateLeft(), &QAction::triggered,
+    connect(mStampActions->rotateLeft(), &QAction::triggered, this,
             [this] { emit stampChanged(mStamp.rotated(RotateLeft)); });
-    connect(mStampActions->rotateRight(), &QAction::triggered,
+    connect(mStampActions->rotateRight(), &QAction::triggered, this,
             [this] { emit stampChanged(mStamp.rotated(RotateRight)); });
 }
 
@@ -383,7 +379,7 @@ static void shiftRows(TileLayer *tileLayer, Map::StaggerIndex staggerIndex)
 {
     tileLayer->resize(QSize(tileLayer->width() + 1, tileLayer->height()), QPoint());
 
-    for (int y = (staggerIndex + 1) & 1; y < tileLayer->height(); y += 2) {
+    for (int y = (tileLayer->y() + staggerIndex + 1) & 1; y < tileLayer->height(); y += 2) {
         for (int x = tileLayer->width() - 2; x >= 0; --x)
             tileLayer->setCell(x + 1, y, tileLayer->cellAt(x, y));
         tileLayer->setCell(0, y, Cell());
@@ -394,7 +390,7 @@ static void shiftColumns(TileLayer *tileLayer, Map::StaggerIndex staggerIndex)
 {
     tileLayer->resize(QSize(tileLayer->width(), tileLayer->height() + 1), QPoint());
 
-    for (int x = (staggerIndex + 1) & 1; x < tileLayer->width(); x += 2) {
+    for (int x = (tileLayer->x() + staggerIndex + 1) & 1; x < tileLayer->width(); x += 2) {
         for (int y = tileLayer->height() - 2; y >= 0; --y)
             tileLayer->setCell(x, y + 1, tileLayer->cellAt(x, y));
         tileLayer->setCell(x, 0, Cell());
@@ -465,9 +461,10 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
             new TileLayer(QString(), bounds.topLeft(), bounds.size())
         };
 
-        WangFiller wangFiller(*mWangSet, mapDocument()->renderer());
-
-        wangFiller.fillRegion(*previewLayer, *tileLayer, paintedRegion);
+        WangFiller wangFiller(*mWangSet, *tileLayer, mapDocument()->renderer());
+        wangFiller.setErasingEnabled(false);
+        wangFiller.setRegion(paintedRegion);
+        wangFiller.apply(*previewLayer);
 
         preview->addLayer(std::move(previewLayer));
         preview->addTileset(mWangSet->tileset()->sharedFromThis());
@@ -478,21 +475,23 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
         QHash<const Map *, QRegion> regionCache;
         QHash<const Map *, Map *> shiftedCopies;
         const auto randomVariations = mStamp.randomVariations();
+        const Map::StaggerAxis mapStaggerAxis = mapDocument()->map()->staggerAxis();
+        const Map::StaggerIndex mapStaggerIndex = mapDocument()->map()->staggerIndex();
 
         mMissingTilesets.clear();
 
-        for (const QPoint &p : points) {
-            Map *map = randomVariations.pick();
-            mapDocument()->unifyTilesets(*map, mMissingTilesets);
+        // Pick a random variation for the first position
+        Map *variation = randomVariations.pick();
+        mapDocument()->unifyTilesets(*variation, mMissingTilesets);
 
-            Map::StaggerAxis mapStaggerAxis = mapDocument()->map()->staggerAxis();
+        for (const QPoint &p : points) {
+            Map *map = variation;
 
             // if staggered map, makes sure stamp stays the same
             if (mapDocument()->map()->isStaggered()
                     && ((mapStaggerAxis == Map::StaggerY) ? map->height() > 1 : map->width() > 1)) {
 
-                Map::StaggerIndex mapStaggerIndex = mapDocument()->map()->staggerIndex();
-                Map::StaggerIndex stampStaggerIndex = map->staggerIndex();
+                const Map::StaggerIndex stampStaggerIndex = map->staggerIndex();
 
                 if (mapStaggerAxis == Map::StaggerY) {
                     bool topIsOdd = (p.y() - map->height() / 2) & 1;
@@ -531,7 +530,7 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
             if (regionCache.contains(map)) {
                 stampRegion = regionCache.value(map);
             } else {
-                stampRegion = map->tileRegion();
+                stampRegion = map->modifiedTileRegion();
                 regionCache.insert(map, stampRegion);
             }
 
@@ -545,6 +544,13 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
 
                 PaintOperation op = { centered, map };
                 operations.append(op);
+
+                // Pick a potentially new random variation for the next position
+                Map *newVariation = randomVariations.pick();
+                if (variation != newVariation) {
+                    variation = newVariation;
+                    mapDocument()->unifyTilesets(*variation, mMissingTilesets);
+                }
             }
         }
 
@@ -612,7 +618,9 @@ void StampBrush::updatePreview(QPoint tilePos)
             drawPreviewLayer(pointsOnLine(mStampReference, tilePos));
             break;
         case CircleMidSet:
-            drawPreviewLayer(pointsOnEllipse(mStampReference, tilePos));
+            drawPreviewLayer(pointsOnEllipse(mStampReference,
+                                             qAbs(mStampReference.x() - tilePos.x()),
+                                             qAbs(mStampReference.y() - tilePos.y())));
             break;
         case Capture:
             // already handled above
@@ -630,7 +638,7 @@ void StampBrush::updatePreview(QPoint tilePos)
         }
 
         if (mPreviewMap)
-            tileRegion = mPreviewMap->tileRegion();
+            tileRegion = mPreviewMap->modifiedTileRegion();
 
         if (tileRegion.isEmpty())
             tileRegion = QRect(tilePos, tilePos);

@@ -32,6 +32,7 @@ class MapObject;
 
 class MapDocument;
 class MapScene;
+class PannableViewHelper;
 class TileAnimationDriver;
 class Zoomable;
 
@@ -50,23 +51,10 @@ class MapView : public QGraphicsView
     Q_PROPERTY(QPointF center READ viewCenter WRITE forceCenterOn)
 
 public:
-    /**
-     * Using Qt::WA_StaticContents gives a performance boost in certain
-     * resizing operations. There is however a problem with it when used in
-     * child windows, so this option allows it to be turned off in that case.
-     *
-     * See https://codereview.qt-project.org/#change,74595 for my attempt at
-     * fixing the problem in Qt.
-     */
-    enum Mode {
-        StaticContents,
-        NoStaticContents,
-    };
-
     static Preference<bool> ourAutoScrollingEnabled;
     static Preference<bool> ourSmoothScrollingEnabled;
 
-    MapView(QWidget *parent = nullptr, Mode mode = StaticContents);
+    MapView(QWidget *parent = nullptr);
     ~MapView() override;
 
     void setScene(MapScene *scene);
@@ -82,19 +70,16 @@ public:
 
     void fitMapInView();
 
-    enum ScrollingMode {
-        NoScrolling,
-        DragScrolling,
-        AutoScrolling
-    };
-    ScrollingMode scrollingMode() const { return mScrollingMode; }
-    void setScrollingMode(ScrollingMode mode);
+    void setToolCursor(const QCursor &cursor);
+    void unsetToolCursor();
 
     using QGraphicsView::centerOn;
     Q_INVOKABLE void centerOn(qreal x, qreal y) { forceCenterOn(QPointF(x, y)); }
 
     void forceCenterOn(QPointF pos);
     void forceCenterOn(QPointF pos, const Layer &layer);
+
+    void setUseOpenGL(bool useOpenGL);
 
 protected:
     bool event(QEvent *event) override;
@@ -108,8 +93,6 @@ protected:
 
     void wheelEvent(QWheelEvent *event) override;
 
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
 
     void focusInEvent(QFocusEvent *event) override;
@@ -124,11 +107,11 @@ signals:
 
 private:
     void adjustScale(qreal scale);
-    void setUseOpenGL(bool useOpenGL);
     void updateSceneRect(const QRectF &sceneRect);
     void updateSceneRect(const QRectF &sceneRect, const QTransform &transform);
     void updateViewRect();
     void focusMapObject(MapObject *mapObject);
+    void updateCursor();
 
     enum PanDirectionFlag {
         Left    = 0x1,
@@ -150,12 +133,12 @@ private:
     QPoint mLastMousePos;
     QPoint mScrollStartPos;
     QPointF mLastMouseScenePos;
-    ScrollingMode mScrollingMode = NoScrolling;
+    PannableViewHelper *mPannableViewHelper;
+    std::unique_ptr<QCursor> mToolCursor;
     bool mViewInitialized = false;
     bool mHasInitialCenterPos = false;
     QPointF mInitialCenterPos;
     QRectF mViewRect;
-    Mode mMode;
     Zoomable *mZoomable;
 
     PanDirections mPanDirections;

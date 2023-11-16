@@ -1,4 +1,4 @@
-import qbs 1.0
+import qbs.FileInfo
 
 DynamicLibrary {
     Depends { name: "libtiled" }
@@ -34,17 +34,14 @@ DynamicLibrary {
         bundle.isBundle: false
     }
 
-    Group {
-        qbs.install: true
-        qbs.installDir: {
-            if (project.windowsLayout)
-                return "plugins/tiled"
-            else if (qbs.targetOS.contains("macos"))
-                return "Tiled.app/Contents/PlugIns"
-            else
-                return "lib/tiled/plugins"
-        }
-        fileTagsFilter: "dynamiclibrary"
+    install: true
+    installDir: {
+        if (project.windowsLayout)
+            return "plugins/tiled"
+        else if (qbs.targetOS.contains("macos"))
+            return "Tiled.app/Contents/PlugIns"
+        else
+            return FileInfo.joinPaths(project.libDir, "tiled/plugins")
     }
 
     FileTagger {

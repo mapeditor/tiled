@@ -64,7 +64,11 @@ class EditableMapObject : public EditableObject
     Q_PROPERTY(QSizeF size READ size WRITE setSize)
     Q_PROPERTY(qreal rotation READ rotation WRITE setRotation)
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible)
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     Q_PROPERTY(QJSValue polygon READ polygon WRITE setPolygon)
+#else
+    Q_PROPERTY(QList<QPointF> polygon READ polygon WRITE setPolygon)
+#endif
     Q_PROPERTY(QString text READ text WRITE setText)
     Q_PROPERTY(Tiled::Font font READ font WRITE setFont)
     Q_PROPERTY(Qt::Alignment textAlignment READ textAlignment WRITE setTextAlignment)
@@ -115,7 +119,11 @@ public:
     QSizeF size() const;
     qreal rotation() const;
     bool isVisible() const;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QJSValue polygon() const;
+#else
+    const QPolygonF &polygon() const;
+#endif
     QString text() const;
     Font font() const;
     Qt::Alignment textAlignment() const;
@@ -146,7 +154,10 @@ public slots:
     void setSize(QSizeF size);
     void setRotation(qreal rotation);
     void setVisible(bool visible);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     void setPolygon(QJSValue polygon);
+#endif
+    void setPolygon(const QPolygonF &polygon);
     void setText(const QString &text);
     void setFont(const Font &font);
     void setTextAlignment(Qt::Alignment textAlignment);
@@ -218,6 +229,13 @@ inline bool EditableMapObject::isVisible() const
 {
     return mapObject()->isVisible();
 }
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+inline const QPolygonF &EditableMapObject::polygon() const
+{
+    return mapObject()->polygon();
+}
+#endif
 
 inline QString EditableMapObject::text() const
 {

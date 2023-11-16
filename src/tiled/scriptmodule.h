@@ -20,9 +20,9 @@
 
 #pragma once
 
-#include "documentmanager.h"
 #include "id.h"
 #include "issuesdock.h"
+#include "properties.h"
 
 #include <QJSValue>
 #include <QObject>
@@ -34,6 +34,7 @@ class QAction;
 
 namespace Tiled {
 
+class Document;
 class EditableAsset;
 class MapEditor;
 class ScriptImage;
@@ -68,6 +69,7 @@ class ScriptModule : public QObject
 
     Q_PROPERTY(Tiled::EditableAsset *activeAsset READ activeAsset WRITE setActiveAsset NOTIFY activeAssetChanged)
     Q_PROPERTY(QList<QObject*> openAssets READ openAssets)
+    Q_PROPERTY(Tiled::EditableAsset *project READ project)
 
     Q_PROPERTY(Tiled::MapEditor *mapEditor READ mapEditor)
     Q_PROPERTY(Tiled::TilesetEditor *tilesetEditor READ tilesetEditor)
@@ -97,6 +99,8 @@ public:
 
     QList<QObject*> openAssets() const;
 
+    EditableAsset *project();
+
     TilesetEditor *tilesetEditor() const;
     MapEditor *mapEditor() const;
 
@@ -121,6 +125,21 @@ public:
     Q_INVOKABLE Tiled::ScriptTilesetFormatWrapper *tilesetFormatForFile(const QString &fileName) const;
 
     Q_INVOKABLE void extendMenu(const QByteArray &idName, QJSValue items);
+
+    // Synchronized with Tiled::CompressionMethod
+    enum CompressionMethod {
+        Gzip,
+        Zlib,
+        Zstandard
+    };
+    Q_ENUM(CompressionMethod)
+
+    Q_INVOKABLE QByteArray compress(const QByteArray &data, CompressionMethod method = Zlib, int compressionLevel = -1);
+    Q_INVOKABLE QByteArray decompress(const QByteArray &data, CompressionMethod method = Zlib);
+    Q_INVOKABLE QString promptDirectory(const QString &defaultDir = QString(), const QString &title = QString()) const;
+    Q_INVOKABLE QStringList promptOpenFiles(const QString &defaultDir = QString(),  const QString &filters = QString(), const QString &title = QString()) const;
+    Q_INVOKABLE QString promptOpenFile(const QString &defaultDir = QString(), const QString &filters = QString(), const QString &title = QString()) const;
+    Q_INVOKABLE QString promptSaveFile(const QString &defaultDir = QString(), const QString &filters = QString(),  const QString &title = QString()) const;
 
 signals:
     void assetCreated(Tiled::EditableAsset *asset);

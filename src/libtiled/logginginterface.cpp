@@ -187,6 +187,8 @@ SelectCustomProperty::SelectCustomProperty(QString fileName,
         // not so helpful... would need WangSet index as well
         id = static_cast<const WangColor*>(object)->colorIndex();
         break;
+    case Object::ProjectType:
+        break;
     }
 }
 

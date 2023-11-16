@@ -150,7 +150,6 @@ void ActionMatchDelegate::paint(QPainter *painter,
     QStaticText staticText(nameHtml);
     staticText.setTextOption(textOption);
     staticText.setTextFormat(Qt::RichText);
-    staticText.prepare(painter->transform(), fonts.big);
 
     painter->setFont(fonts.big);
     painter->drawStaticText(nameRect.topLeft(), staticText);
@@ -170,7 +169,6 @@ void ActionMatchDelegate::paint(QPainter *painter,
 
         staticText.setTextFormat(Qt::PlainText);
         staticText.setText(shortcutText);
-        staticText.prepare(painter->transform(), fonts.small);
 
         const int centeringMargin = (shortcutRect.height() - smallFontMetrics.height()) / 2;
         painter->setOpacity(0.75);

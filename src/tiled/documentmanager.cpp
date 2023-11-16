@@ -243,6 +243,7 @@ DocumentManager::DocumentManager(QObject *parent)
             break;
         }
         case Document::WorldDocumentType:
+        case Document::ProjectDocumentType:
             break;
         }
 
@@ -421,7 +422,7 @@ bool DocumentManager::switchToDocument(const QString &fileName)
 
 /**
  * Switches to the given \a document, if there is already a tab open for it.
- * \return whether the switch was succesful
+ * \return whether the switch was successful
  */
 bool DocumentManager::switchToDocument(Document *document)
 {
@@ -450,7 +451,7 @@ void DocumentManager::switchToDocument(MapDocument *mapDocument, QPointF viewCen
 }
 
 /**
- * Switches to the given \a mapDocument, taking tilesets into accout
+ * Switches to the given \a mapDocument, taking tilesets into account
  */
 void DocumentManager::switchToDocumentAndHandleSimiliarTileset(MapDocument *mapDocument, QPointF viewCenter, qreal scale)
 {
@@ -1334,7 +1335,7 @@ void DocumentManager::tilesetImagesChanged(Tileset *tileset)
     SharedTileset sharedTileset = tileset->sharedFromThis();
     QList<Document*> affectedDocuments;
 
-    for (const auto &document : qAsConst(mDocuments)) {
+    for (const auto &document : std::as_const(mDocuments)) {
         if (auto mapDocument = qobject_cast<MapDocument*>(document.data())) {
             if (mapDocument->map()->tilesets().contains(sharedTileset))
                 affectedDocuments.append(document.data());
@@ -1345,7 +1346,7 @@ void DocumentManager::tilesetImagesChanged(Tileset *tileset)
         affectedDocuments.append(tilesetDocument);
 
     if (!affectedDocuments.isEmpty() && askForAdjustment(*tileset)) {
-        for (Document *document : qAsConst(affectedDocuments)) {
+        for (Document *document : std::as_const(affectedDocuments)) {
             if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
                 auto command = new AdjustTileIndexes(mapDocument, *tileset);
                 document->undoStack()->push(command);

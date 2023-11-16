@@ -31,8 +31,6 @@
 #include "imagelayer.h"
 #include "map.h"
 #include "mapformat.h"
-#include "mapreader.h"
-#include "maprenderer.h"
 #include "objectgroup.h"
 #include "tilelayer.h"
 #include "tilesetmanager.h"
@@ -77,8 +75,8 @@ void TmxRasterizer::drawMapLayers(const MapRenderer &renderer,
             if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder)
                 std::stable_sort(objects.begin(), objects.end(), [](MapObject *a, MapObject *b){return a->y() < b->y();});
 
-            for (const MapObject *object : qAsConst(objects)) {
-                if (object->isVisible()) {
+            for (const MapObject *object : std::as_const(objects)) {
+                if (shouldDrawObject(object)) {
                     if (object->rotation() != qreal(0)) {
                         QPointF origin = renderer.pixelToScreenCoords(object->position());
                         painter.save();
@@ -117,6 +115,20 @@ bool TmxRasterizer::shouldDrawLayer(const Layer *layer) const
 
     return !layer->isHidden();
 }
+
+bool TmxRasterizer::shouldDrawObject(const MapObject *object) const
+{
+    if (mObjectsToHide.contains(object->name(), Qt::CaseInsensitive))
+        return false;
+
+    if (!mObjectsToShow.empty()) {
+        if (!mObjectsToShow.contains(object->name(), Qt::CaseInsensitive))
+            return false;
+    }
+
+    return object->isVisible();
+}
+
 
 int TmxRasterizer::render(const QString &fileName,
                           const QString &imageFileName)

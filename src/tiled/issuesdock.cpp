@@ -163,7 +163,7 @@ IssuesDock::IssuesDock(QWidget *parent)
 
     mIssuesView->setModel(mProxyModel);
     mIssuesView->setIconSize(Utils::dpiScaled(QSize(16, 16)));
-    mIssuesView->setItemDelegate(new IssueDelegate);
+    mIssuesView->setItemDelegate(new IssueDelegate(this));
     mIssuesView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 
     mFilterEdit->setFilteredView(mIssuesView);
