@@ -59,8 +59,6 @@ parts:
       - qbs
       - libqt5svg5-dev
       - qtdeclarative5-dev
-      - qtdeclarative5-private-dev
-      - qtbase5-private-dev
       - zlib1g-dev
       - libzstd-dev
     stage-packages:
