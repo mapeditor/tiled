@@ -4014,6 +4014,7 @@ declare namespace tiled {
    * Optionally override the starting directory of the dialog or its title.
    * 
    * Returns the absolute path of the chosen directory, or an empty string if the user cancels the dialog. 
+   * @since 1.10.2
    */
   export function promptDirectory(defaultDir?: string, title?: string): string;
   
@@ -4023,6 +4024,7 @@ declare namespace tiled {
    * You can also restrict to only certain file types by specifying {@link FileFilter|filters}.
    * 
    * Returns an array of the absolute paths of the chosen files, or an empty array if the user cancels the dialog. 
+   * @since 1.10.2
    */
   export function promptOpenFiles(defaultDir?: string, filters?: FileFilter, title?: string): string[];
   
@@ -4032,6 +4034,7 @@ declare namespace tiled {
    * You can also restrict to only certain file types by specifying {@link FileFilter|filters}.
    * 
    * Returns the absolute path of the chosen file, or an empty string if the user cancels the dialog. 
+   * @since 1.10.2
    */
   export function promptOpenFile(defaultDir?: string, filters?: FileFilter, title?: string): string;
   
@@ -4042,6 +4045,7 @@ declare namespace tiled {
    * You can also restrict to only certain file types by specifying {@link FileFilter|filters}.
    * 
    * Returns the absolute path of the chosen file, or an empty string if the user cancels the dialog. 
+   * @since 1.10.2
    */
   export function promptSaveFile(defaultDir?: string, filters?: string, title?: string): string;
 
@@ -4498,7 +4502,7 @@ declare class FileEdit extends Qt.QWidget {
   isDirectory: boolean;
 
   /**
-   * When specified, only files that match the filter are shown. 
+   * When specified, only files that match the {@link FileFilter|filter} are shown. 
    */
   filter: FileFilter;
 }
