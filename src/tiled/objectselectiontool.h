@@ -124,6 +124,7 @@ private:
     void finishResizing();
 
     void setMode(Mode mode);
+    void resetModeForSelection(const QList<MapObject *> &selection);
     void saveSelectionState();
 
     enum AbortReason {

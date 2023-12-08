@@ -687,18 +687,12 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
                     if (selection.size() > 1 || selection.first()->canRotate())
                         setMode(Rotate);
                 } else {
-                    if (selection.size() == 1 && selection.first()->canRotate() && !canResize(selection.first()))
-                        setMode(Rotate);
-                    else
-                        setMode(Resize);
+                    resetModeForSelection(selection);
                 }
             } else {
                 selection.clear();
                 selection.append(mClickedObject);
-                if (selection.first()->canRotate() && !canResize(selection.first()))
-                    setMode(Rotate);
-                else
-                    setMode(Resize);
+                resetModeForSelection(selection);
                 mapDocument()->setSelectedObjects(selection);
             }
         } else if (!(modifiers & Qt::ShiftModifier)) {
@@ -1660,6 +1654,17 @@ void ObjectSelectionTool::finishResizing()
     mMovingObjects.clear();
 
     updateHandlesAndOrigin();
+}
+
+void ObjectSelectionTool::resetModeForSelection(const QList<MapObject *> &selection)
+{
+    if (selection.size() == 1)
+        if (selection.first()->canRotate())
+            if (!canResize(selection.first())) {
+                setMode(Rotate);
+                return;
+            }
+    setMode(Resize);
 }
 
 void ObjectSelectionTool::setMode(Mode mode)
