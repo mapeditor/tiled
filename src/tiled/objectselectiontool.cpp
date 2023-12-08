@@ -371,7 +371,7 @@ void ObjectSelectionTool::activate(MapScene *scene)
     connect(mapDocument(), &MapDocument::mapChanged,
             this, &ObjectSelectionTool::updateHandlesAndOrigin);
     connect(mapDocument(), &MapDocument::selectedObjectsChanged,
-            this, &ObjectSelectionTool::updateHandlesAndOrigin);
+            this, &ObjectSelectionTool::updateHandlesAndOriginAndMode);
     connect(mapDocument(), &MapDocument::tilesetTilePositioningChanged,
             this, &ObjectSelectionTool::updateHandlesAndOrigin);
     connect(scene, &MapScene::parallaxParametersChanged,
@@ -395,7 +395,7 @@ void ObjectSelectionTool::deactivate(MapScene *scene)
     disconnect(mapDocument(), &MapDocument::mapChanged,
                this, &ObjectSelectionTool::updateHandlesAndOrigin);
     disconnect(mapDocument(), &MapDocument::selectedObjectsChanged,
-               this, &ObjectSelectionTool::updateHandlesAndOrigin);
+               this, &ObjectSelectionTool::updateHandlesAndOriginAndMode);
     disconnect(mapDocument(), &MapDocument::tilesetTilePositioningChanged,
                this, &ObjectSelectionTool::updateHandlesAndOrigin);
     disconnect(scene, &MapScene::parallaxParametersChanged,
@@ -802,12 +802,17 @@ void ObjectSelectionTool::changeEvent(const ChangeEvent &event)
 
 void ObjectSelectionTool::updateHandles()
 {
-    updateHandlesImpl(false);
+    updateHandlesImpl(false, false);
 }
 
 void ObjectSelectionTool::updateHandlesAndOrigin()
 {
-    updateHandlesImpl(true);
+    updateHandlesImpl(true, false);
+}
+
+void ObjectSelectionTool::updateHandlesAndOriginAndMode()
+{
+    updateHandlesImpl(true, true);
 }
 
 // TODO: Check whether this function should be moved into MapObject::bounds
@@ -983,7 +988,7 @@ static QRectF uniteBounds(const QRectF &a, const QRectF &b)
     return QRectF(left, top, right - left, bottom - top);
 }
 
-void ObjectSelectionTool::updateHandlesImpl(bool resetOriginIndicator)
+void ObjectSelectionTool::updateHandlesImpl(bool resetOriginIndicator, bool shouldResetMode)
 {
     if (mAction == Moving || mAction == Rotating || mAction == Resizing)
         return;
@@ -992,6 +997,9 @@ void ObjectSelectionTool::updateHandlesImpl(bool resetOriginIndicator)
     const bool showHandles = objects.size() > 0 && (objects.size() > 1 || canResizeOrRotate(objects.first()));
 
     if (showHandles) {
+        if (shouldResetMode)
+            resetModeForSelection(objects);
+
         MapRenderer *renderer = mapDocument()->renderer();
         QRectF boundingRect = objectBounds(objects.first(), renderer,
                                            objectTransform(objects.first(), renderer, mapScene()));

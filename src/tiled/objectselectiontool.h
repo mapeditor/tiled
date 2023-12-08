@@ -72,6 +72,7 @@ private:
 
     void updateHandles();
     void updateHandlesAndOrigin();
+    void updateHandlesAndOriginAndMode();
     void updateHandleVisibility();
 
     void objectsAboutToBeRemoved(const QList<MapObject *> &);
@@ -92,7 +93,7 @@ private:
         Rotate,
     };
 
-    void updateHandlesImpl(bool resetOriginIndicator);
+    void updateHandlesImpl(bool resetOriginIndicator, bool shouldResetMode);
 
     void updateHover(const QPointF &pos);
     QList<MapObject*> objectsAboutToBeSelected(const QPointF &pos,
