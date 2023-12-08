@@ -835,8 +835,7 @@ void PropertyBrowser::addMapObjectProperties()
         addProperty(HeightProperty, QMetaType::Double, tr("Height"), groupProperty);
     }
 
-    bool isPoint = mapObject->shape() == MapObject::Point;
-    addProperty(RotationProperty, QMetaType::Double, tr("Rotation"), groupProperty)->setEnabled(!isPoint);
+    addProperty(RotationProperty, QMetaType::Double, tr("Rotation"), groupProperty);
 
     if (mMapObjectFlags & ObjectHasTile) {
         QtVariantProperty *flippingProperty =

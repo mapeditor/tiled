@@ -58,6 +58,8 @@
 
 using namespace Tiled;
 
+static bool canResize(const MapObject *object);
+
 namespace Tiled {
 
 enum AnchorPosition {
@@ -685,12 +687,18 @@ void ObjectSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
                     if (selection.size() > 1 || selection.first()->canRotate())
                         setMode(Rotate);
                 } else {
-                    setMode(Resize);
+                    if (selection.size() == 1 && selection.first()->canRotate() && !canResize(selection.first()))
+                        setMode(Rotate);
+                    else
+                        setMode(Resize);
                 }
             } else {
                 selection.clear();
                 selection.append(mClickedObject);
-                setMode(Resize);
+                if (selection.first()->canRotate() && !canResize(selection.first()))
+                    setMode(Rotate);
+                else
+                    setMode(Resize);
                 mapDocument()->setSelectedObjects(selection);
             }
         } else if (!(modifiers & Qt::ShiftModifier)) {
@@ -856,6 +864,16 @@ static bool canResize(const MapObject *object)
     return object->shape() != MapObject::Point;
 }
 
+static bool canResizeOrRotate(const MapObject *object)
+{
+    return canResize(object) || object->canRotate();
+}
+
+static bool originIsAlwaysPosition(const MapObject *object)
+{
+    return object->shape() == MapObject::Point;
+}
+
 static bool canResizeAbsolute(const MapObject *object)
 {
     switch (object->shape()) {
@@ -977,7 +995,7 @@ void ObjectSelectionTool::updateHandlesImpl(bool resetOriginIndicator)
         return;
 
     const QList<MapObject*> &objects = mapDocument()->selectedObjects();
-    const bool showHandles = objects.size() > 0 && (objects.size() > 1 || canResize(objects.first()));
+    const bool showHandles = objects.size() > 0 && (objects.size() > 1 || canResizeOrRotate(objects.first()));
 
     if (showHandles) {
         MapRenderer *renderer = mapDocument()->renderer();
@@ -1013,7 +1031,11 @@ void ObjectSelectionTool::updateHandlesImpl(bool resetOriginIndicator)
                 topRight = transform.map(renderer->pixelToScreenCoords(bounds.topRight()));
                 bottomLeft = transform.map(renderer->pixelToScreenCoords(bounds.bottomLeft()));
                 bottomRight = transform.map(renderer->pixelToScreenCoords(bounds.bottomRight()));
-                center = transform.map(renderer->pixelToScreenCoords(bounds.center()));
+
+                if (originIsAlwaysPosition(object))
+                    center = object->position();
+                else
+                    center = transform.map(renderer->pixelToScreenCoords(bounds.center()));
 
                 // Ugly hack to make handles appear nicer in this case
                 if (mapDocument()->map()->orientation() == Map::Isometric)
@@ -1026,7 +1048,11 @@ void ObjectSelectionTool::updateHandlesImpl(bool resetOriginIndicator)
                 topRight = transform.map(bounds.topRight());
                 bottomLeft = transform.map(bounds.bottomLeft());
                 bottomRight = transform.map(bounds.bottomRight());
-                center = transform.map(bounds.center());
+
+                if (originIsAlwaysPosition(object))
+                    center = object->position();
+                else
+                    center = transform.map(bounds.center());
             }
         }
 
@@ -1074,9 +1100,10 @@ void ObjectSelectionTool::updateHandleVisibility()
 {
     const QList<MapObject*> &objects = mapDocument()->selectedObjects();
     const bool hasSelection = !objects.isEmpty();
-    const bool hasResizableObject = std::any_of(objects.begin(), objects.end(), canResize);
-    const bool showHandles = hasSelection && (objects.size() > 1 || hasResizableObject) && (mAction == NoAction || mAction == Selecting);
+    const bool hasResizableOrRotatableObject = std::any_of(objects.begin(), objects.end(), canResizeOrRotate);
+    const bool showHandles = hasSelection && (objects.size() > 1 || hasResizableOrRotatableObject) && (mAction == NoAction || mAction == Selecting);
     const bool showOrigin = hasSelection &&
+            (objects.size() > 1 || !originIsAlwaysPosition(objects.first())) &&
             mAction != Moving && (mMode == Rotate || mAction == Resizing);
 
     for (RotateHandle *handle : mRotateHandles)

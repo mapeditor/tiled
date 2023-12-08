@@ -110,8 +110,7 @@ void MapObjectOutline::syncWithMapObject(const MapRenderer &renderer)
 
     setPos(pixelPos);
     setRotation(mObject->rotation());
-    setFlag(QGraphicsItem::ItemIgnoresTransformations,
-            mObject->shape() == MapObject::Point);
+    setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
 
     if (mBoundingRect != bounds) {
         prepareGeometryChange();
