@@ -58,8 +58,6 @@
 
 using namespace Tiled;
 
-static bool canResize(const MapObject *object);
-
 namespace Tiled {
 
 enum AnchorPosition {
