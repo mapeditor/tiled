@@ -10,9 +10,9 @@ Python Scripts
     platforms. It should be preferred over the Python plugin when possible.
 
 Tiled ships with a plugin that enables you to use Python 3 to add
-support for custom map formats. This is nice especially since you don't
-need to compile Tiled yourself and the scripts are easy to deploy to any
-platform.
+support for custom map and tileset formats. This is nice especially since
+you don't need to compile Tiled yourself and the scripts are easy to deploy
+to any platform.
 
 For the scripts to get loaded, they should be placed in ``~/.tiled``.
 Tiled watches this directory for changes, so there is no need to restart
@@ -118,6 +118,12 @@ above script.
 .. note::
 
     This example does not support the use of group layers.
+
+Tileset Plugins
+---------------
+
+To write tileset plugins, extend your class from ``tiled.TilesetPlugin``
+instead of ``tiled.Plugin``.
 
 Debugging Your Script
 ---------------------
