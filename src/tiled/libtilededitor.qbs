@@ -236,6 +236,8 @@ DynamicLibrary {
         "editabletileset.h",
         "editablewangset.cpp",
         "editablewangset.h",
+        "editableworld.cpp",
+        "editableworld.h",
         "editor.cpp",
         "editor.h",
         "editpolygontool.cpp",

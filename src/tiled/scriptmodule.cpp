@@ -25,6 +25,7 @@
 #include "compression.h"
 #include "documentmanager.h"
 #include "editabletileset.h"
+#include "editableworld.h"
 #include "issuesmodel.h"
 #include "logginginterface.h"
 #include "mainwindow.h"
@@ -64,6 +65,13 @@ ScriptModule::ScriptModule(QObject *parent)
         connect(documentManager, &DocumentManager::documentAboutToClose, this, &ScriptModule::documentAboutToClose);
         connect(documentManager, &DocumentManager::currentDocumentChanged, this, &ScriptModule::currentDocumentChanged);
     }
+
+    connect(&WorldManager::instance(), &WorldManager::worldsChanged, this, &ScriptModule::onWorldsChanged);
+    connect(&WorldManager::instance(), &WorldManager::worldLoaded, this, &ScriptModule::onWorldLoaded);
+    connect(&WorldManager::instance(), &WorldManager::worldReloaded, this, &ScriptModule::onWorldReloaded);
+    connect(&WorldManager::instance(), &WorldManager::worldUnloaded, this, &ScriptModule::onWorldUnloaded);
+    connect(&WorldManager::instance(), &WorldManager::worldSaved, this, &ScriptModule::onWorldSaved);
+
 }
 
 ScriptModule::~ScriptModule()
@@ -689,6 +697,56 @@ void ScriptModule::documentAboutToClose(Document *document)
 void ScriptModule::currentDocumentChanged(Document *document)
 {
     emit activeAssetChanged(document ? document->editable() : nullptr);
+}
+
+QList<Tiled::EditableAsset*> ScriptModule::worlds() const
+{
+    QList<Tiled::EditableAsset*> worlds;
+    for (const World *world : WorldManager::instance().worlds())
+    {
+        const QString worldFile = world->fileName;
+        WorldDocument *worldDocument = new WorldDocument(worldFile);
+        // TODO crashing, store references to the world document somewhere to prevent it from freeing?
+        EditableAsset *editableWorld = worldDocument->createEditable().get();
+        worlds.append(editableWorld);
+    }
+    return worlds;
+}
+
+void ScriptModule::loadWorld(const QString &fileName) const
+{
+    WorldManager::instance().loadWorld(fileName);
+}
+
+void ScriptModule::unloadWorld(const QString &fileName) const
+{
+    WorldManager::instance().unloadWorld(fileName);
+}
+
+void ScriptModule::unloadAllWorlds() const
+{
+    WorldManager::instance().unloadAllWorlds();
+}
+
+void ScriptModule::onWorldsChanged()
+{
+    emit worldsChanged();
+}
+void ScriptModule::onWorldLoaded(const QString &fileName)
+{
+    emit worldLoaded(fileName);
+}
+void ScriptModule::onWorldReloaded(const QString &fileName)
+{
+    emit worldReloaded(fileName);
+}
+void ScriptModule::onWorldUnloaded(const QString &fileName)
+{
+    emit worldUnloaded(fileName);
+}
+void ScriptModule::onWorldSaved(const QString &fileName)
+{
+    emit worldSaved(fileName);
 }
 
 } // namespace Tiled

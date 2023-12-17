@@ -30,6 +30,7 @@
 #include "editabletilelayer.h"
 #include "editabletileset.h"
 #include "editablewangset.h"
+#include "editableworld.h"
 #include "logginginterface.h"
 #include "mapeditor.h"
 #include "mapview.h"
@@ -115,6 +116,7 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<EditableTileLayer*>();
     qRegisterMetaType<EditableTileset*>();
     qRegisterMetaType<EditableWangSet*>();
+    qRegisterMetaType<EditableWorld*>();
     qRegisterMetaType<Font>();
     qRegisterMetaType<MapEditor*>();
     qRegisterMetaType<MapView*>();

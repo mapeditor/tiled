@@ -275,6 +275,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionLabelsForAllObjects, "LabelsForAllObjects");
     ActionManager::registerAction(mUi->actionLabelsForSelectedObjects, "LabelsForSelectedObjects");
     ActionManager::registerAction(mUi->actionLoadWorld, "LoadWorld");
+    ActionManager::registerAction(mUi->actionUnloadAllWorlds, "UnloadAllWorlds");
     ActionManager::registerAction(mUi->actionMapProperties, "MapProperties");
     ActionManager::registerAction(mUi->actionNewMap, "NewMap");
     ActionManager::registerAction(mUi->actionNewProject, "NewProject");
@@ -615,6 +616,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
                 mLoadedWorlds = WorldManager::instance().worlds().keys();
             });
         }
+        if (WorldManager::instance().worlds().count() >= 2)
+            mUi->menuUnloadWorld->addAction(mUi->actionUnloadAllWorlds);
     });
     connect(mUi->actionNewWorld, &QAction::triggered, this, [this] {
         Session &session = Session::current();
@@ -656,8 +659,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             });
         }
     });
+    connect(mUi->actionUnloadAllWorlds,  &QAction::triggered, this, []{WorldManager::instance().unloadAllWorlds();});
     connect(mUi->menuWorld, &QMenu::aboutToShow, this, [this] {
         mUi->menuUnloadWorld->setEnabled(!WorldManager::instance().worlds().isEmpty());
+        mUi->actionUnloadAllWorlds->setEnabled(!WorldManager::instance().worlds().isEmpty());
         mUi->menuSaveWorld->setEnabled(DocumentManager::instance()->isAnyWorldModified());
     });
     connect(mUi->actionResizeMap, &QAction::triggered, this, &MainWindow::resizeMap);
