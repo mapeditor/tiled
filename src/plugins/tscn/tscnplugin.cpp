@@ -463,8 +463,8 @@ static bool exportTileCollisions(QFileDevice *device, const Tile *tile,
                 for (auto point : polygon) {
                     if (!first)
                         device->write(", ");
-                    double x = point.x() - centerX;
-                    double y = point.y() - centerY;
+                    double x = object->x() + point.x() - centerX;
+                    double y = object->y() + point.y() - centerY;
                     flipState(x, y, flippedState);
                     device->write(formatByteString("%1, %2", x, y));
                     first = false;
