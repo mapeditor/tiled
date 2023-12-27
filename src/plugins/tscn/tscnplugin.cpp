@@ -435,8 +435,8 @@ static bool exportTileCollisions(QFileDevice *device, const Tile *tile,
 
             foundCollisions = true;
 
-            const auto centerX = tile->width() / 2 - object->x();
-            const auto centerY = tile->height() / 2 - object->y();
+            const auto centerX = tile->width() / 2;
+            const auto centerY = tile->height() / 2;
 
             device->write(formatByteString(
                 "%1/physics_layer_0/polygon_%2/points = PackedVector2Array(",
@@ -446,8 +446,8 @@ static bool exportTileCollisions(QFileDevice *device, const Tile *tile,
             case MapObject::Rectangle: {
                 auto x1 = object->x() - centerX;
                 auto y1 = object->y() - centerY;
-                auto x2 = object->width() - centerX;
-                auto y2 = object->height() - centerY;
+                auto x2 = object->x() + object->width() - centerX;
+                auto y2 = object->y() + object->height() - centerY;
 
                 flipState(x1, y1, flippedState);
                 flipState(x2, y2, flippedState);
@@ -463,8 +463,8 @@ static bool exportTileCollisions(QFileDevice *device, const Tile *tile,
                 for (auto point : polygon) {
                     if (!first)
                         device->write(", ");
-                    auto x = point.x() - centerX;
-                    auto y = point.y() - centerY;
+                    double x = point.x() - centerX;
+                    double y = point.y() - centerY;
                     flipState(x, y, flippedState);
                     device->write(formatByteString("%1, %2", x, y));
                     first = false;
