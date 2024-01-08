@@ -186,8 +186,8 @@ type Polygon = point[];
 
 /**
  * A string used to show only certain types of files when prompting the user to select a file path.
- * 
- * Used in {@link FileEdit} and in {@link tiled.promptOpenFile} and related methods. 
+ *
+ * Used in {@link FileEdit} and in {@link tiled.promptOpenFile} and related methods.
  * The filter is given in a format like `"Images (*.png *.xpm *.jpg)"`.
  *
  * If you want multiple filters, separate them with ';;', for example:
@@ -490,7 +490,7 @@ declare namespace Qt {
        */
       textChanged: Signal<void>;
       /**
-       * This property holds the text editor's contents as HTML 
+       * This property holds the text editor's contents as HTML
        * See the supported HTML subset here:
        * https://doc.qt.io/qt-6/richtext-html-subset.html
        */
@@ -1268,7 +1268,7 @@ declare class MapObject extends TiledObject {
   font: Font;
 
   /**
-   * The alignment of a text object.
+   * The alignment of a text object. Can be set using a combination of {@link Qt.Alignment} flags.
    */
   textAlignment: Qt.Alignment;
 
@@ -2952,6 +2952,12 @@ interface TileLayerEdit {
   /**
    * Applies the changes made through this object to the target layer. This
    * object can be reused to make further changes.
+   *
+   * By default, the first time this method is called on a {@link TileLayerEdit}
+   * instance, it triggers a new undoable edit. Subsequent edits made through
+   * the same instance will merge with the previous step. To manually control
+   * whether the edit will be merged or not, set the {@link mergeable} property
+   * before calling {@link apply}.
    */
   apply() : void
 }
@@ -4010,41 +4016,41 @@ declare namespace tiled {
   export function prompt(label: string, text?: string, title?: string): string;
 
   /**
-   * Shows a dialog which asks the user to choose an existing directory. 
+   * Shows a dialog which asks the user to choose an existing directory.
    * Optionally override the starting directory of the dialog or its title.
-   * 
-   * Returns the absolute path of the chosen directory, or an empty string if the user cancels the dialog. 
+   *
+   * Returns the absolute path of the chosen directory, or an empty string if the user cancels the dialog.
    * @since 1.10.2
    */
   export function promptDirectory(defaultDir?: string, title?: string): string;
-  
+
   /**
    * Shows a dialog which asks the user to choose one or more existing files.
    * Optionally override the starting directory of the dialog or its title.
    * You can also restrict to only certain file types by specifying {@link FileFilter|filters}.
-   * 
-   * Returns an array of the absolute paths of the chosen files, or an empty array if the user cancels the dialog. 
+   *
+   * Returns an array of the absolute paths of the chosen files, or an empty array if the user cancels the dialog.
    * @since 1.10.2
    */
   export function promptOpenFiles(defaultDir?: string, filters?: FileFilter, title?: string): string[];
-  
+
   /**
    * Shows a dialog which asks the user to choose an existing file.
    * Optionally override the starting directory of the dialog or its title.
    * You can also restrict to only certain file types by specifying {@link FileFilter|filters}.
-   * 
-   * Returns the absolute path of the chosen file, or an empty string if the user cancels the dialog. 
+   *
+   * Returns the absolute path of the chosen file, or an empty string if the user cancels the dialog.
    * @since 1.10.2
    */
   export function promptOpenFile(defaultDir?: string, filters?: FileFilter, title?: string): string;
-  
+
   /**
-   * Shows a dialog which asks the user to choose a destination for saving a file. 
+   * Shows a dialog which asks the user to choose a destination for saving a file.
    * If the user chooses a file path which already exists, they will be asked to confirm that they want to overwrite the file.
    * Optionally override the starting directory of the dialog or its title.
    * You can also restrict to only certain file types by specifying {@link FileFilter|filters}.
-   * 
-   * Returns the absolute path of the chosen file, or an empty string if the user cancels the dialog. 
+   *
+   * Returns the absolute path of the chosen file, or an empty string if the user cancels the dialog.
    * @since 1.10.2
    */
   export function promptSaveFile(defaultDir?: string, filters?: string, title?: string): string;
@@ -4502,7 +4508,7 @@ declare class FileEdit extends Qt.QWidget {
   isDirectory: boolean;
 
   /**
-   * When specified, only files that match the {@link FileFilter|filter} are shown. 
+   * When specified, only files that match the {@link FileFilter|filter} are shown.
    */
   filter: FileFilter;
 }
@@ -4579,7 +4585,7 @@ declare class Dialog extends Qt.QWidget {
   static readonly SingleWidgetRows: unique symbol;
 
   /**
-   * Controls the automatic widget placement behavior of the dialog. 
+   * Controls the automatic widget placement behavior of the dialog.
    * Defaults to {@link SameWidgetRows}
    */
   newRowMode: typeof Dialog.SingleWidgetRows | typeof Dialog.SameWidgetRows | typeof Dialog.ManualRows;
