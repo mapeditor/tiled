@@ -170,6 +170,11 @@
 									<p>Applies the changes made through this object to the target layer. This
 									object can be reused to make further changes.</p>
 								</div>
+								<p>By default, the first time this method is called on a <a href="TileLayerEdit.html">TileLayerEdit</a>
+									instance, it triggers a new undoable edit. Subsequent edits made through
+									the same instance will merge with the previous step. To manually control
+									whether the edit will be merged or not, set the <a href="TileLayerEdit.html#mergeable">mergeable</a> property
+								before calling <a href="TileLayerEdit.html#apply">apply</a>.</p>
 							</div>
 						</li>
 					</ul>
