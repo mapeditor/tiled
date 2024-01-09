@@ -49,6 +49,8 @@ public:
     int tileSize() const { return mTileSize; }
     int size() const { return mSize; }
     int advanceAnimations() const { return mAdvanceAnimations; }
+    int frameCount() const { return mFrameCount; }
+    int frameDuration() const { return mFrameDuration; }
     bool useAntiAliasing() const { return mUseAntiAliasing; }
     bool smoothImages() const { return mSmoothImages; }
     bool ignoreVisibility() const { return mIgnoreVisibility; }
@@ -57,6 +59,8 @@ public:
     void setTileSize(int tileSize) { mTileSize = tileSize; }
     void setSize(int size) { mSize = size; }
     void setAdvanceAnimations(int duration) { mAdvanceAnimations = duration; }
+    void setFrameCount(int frameCount) { mFrameCount = frameCount; }
+    void setFrameDuration(int frameDuration) { mFrameDuration = frameDuration; }
     void setAntiAliasing(bool useAntiAliasing) { mUseAntiAliasing = useAntiAliasing; }
     void setSmoothImages(bool smoothImages) { mSmoothImages = smoothImages; }
     void setIgnoreVisibility(bool IgnoreVisibility) { mIgnoreVisibility = IgnoreVisibility; }
@@ -69,13 +73,15 @@ public:
 
     void setLayerTypeVisible(Layer::TypeFlag layerType, bool visible);
 
-    int render(const QString &fileName, const QString &imageFileName);
+    int render(const QString &fileName, QString imageFileName);
 
 private:
     qreal mScale = 1.0;
     int mTileSize = 0;
     int mSize = 0;
     int mAdvanceAnimations = 0;
+    int mFrameCount = 0;
+    int mFrameDuration = 100;
     bool mUseAntiAliasing = false;
     bool mSmoothImages = true;
     bool mIgnoreVisibility = false;

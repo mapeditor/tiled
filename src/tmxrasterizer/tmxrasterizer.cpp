@@ -37,6 +37,7 @@
 #include "worldmanager.h"
 
 #include <QDebug>
+#include <QFileInfo>
 #include <QImageWriter>
 
 #include <memory>
@@ -131,12 +132,36 @@ bool TmxRasterizer::shouldDrawObject(const MapObject *object) const
 
 
 int TmxRasterizer::render(const QString &fileName,
-                          const QString &imageFileName)
+                          QString imageFileName)
 {
-    if (fileName.endsWith(QLatin1String(".world"), Qt::CaseInsensitive))
-        return renderWorld(fileName, imageFileName);
-    else
-        return renderMap(fileName, imageFileName);
+    const QFileInfo imageFileInfo(imageFileName);
+
+    const QString imagePath = imageFileInfo.path();
+    const QString imageBaseName = imageFileInfo.completeBaseName();
+    const QString imageSuffix = imageFileInfo.suffix();
+
+    const int frameCount = qMax(1, mFrameCount);
+
+    for (int frame = 0; frame < frameCount; ++frame) {
+        if (mFrameCount > 0) {
+            imageFileName = QString(QLatin1String("%1/%2%3.%4"))
+                    .arg(imagePath, imageBaseName, QString::number(frame), imageSuffix);
+        }
+
+        int ret;
+
+        if (fileName.endsWith(QLatin1String(".world"), Qt::CaseInsensitive))
+            ret = renderWorld(fileName, imageFileName);
+        else
+            ret = renderMap(fileName, imageFileName);
+
+        if (ret)
+            return ret;
+
+        mAdvanceAnimations += mFrameDuration;
+    }
+
+    return 0;
 }
 
 int TmxRasterizer::renderMap(const QString &mapFileName,
@@ -168,7 +193,7 @@ int TmxRasterizer::renderMap(const QString &mapFileName,
         xScale = yScale = mScale;
     }
 
-    if (mAdvanceAnimations > 0) 
+    if (mAdvanceAnimations > 0)
         TilesetManager::instance()->advanceTileAnimations(mAdvanceAnimations);
 
     mapSize.rwidth() *= xScale;
@@ -273,9 +298,9 @@ int TmxRasterizer::renderWorld(const QString &worldFileName,
                     qUtf8Printable(errorString));
             continue;
         }
-        if (mAdvanceAnimations > 0) 
+        if (mAdvanceAnimations > 0)
             TilesetManager::instance()->advanceTileAnimations(mAdvanceAnimations);
-        
+
         const auto renderer = MapRenderer::create(map.get());
         drawMapLayers(*renderer, painter, mapEntry.rect.topLeft());
         TilesetManager::instance()->resetTileAnimations();
