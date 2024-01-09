@@ -8,6 +8,7 @@
 * Windows: Fixed the support for WebP images (updated to Qt 6.5.3, #3661)
 * Fixed mouse handling issue when zooming while painting (#3863)
 * Fixed possible crash after a scripted tool disappears while active
+* AppImage: Updated to Sentry 0.6.7
 
 ### Tiled 1.10.2 (4 August 2023)
 

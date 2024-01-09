@@ -16,7 +16,7 @@ on:
 
 env:
   QBS_VERSION: 2.0.2
-  SENTRY_VERSION: 0.6.5
+  SENTRY_VERSION: 0.6.7
   SENTRY_ORG: mapeditor
   SENTRY_PROJECT: tiled
   TILED_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') }}
