@@ -142,6 +142,23 @@ int TmxRasterizer::render(const QString &fileName,
 
     const int frameCount = qMax(1, mFrameCount);
 
+    std::unique_ptr<Map> map;
+    std::unique_ptr<MapRenderer> renderer;
+
+    // If we're not rendering a world, load the map once and create a renderer
+    if (!fileName.endsWith(QLatin1String(".world"), Qt::CaseInsensitive)) {
+        QString errorString;
+        map = readMap(fileName, &errorString);
+        if (!map) {
+            qWarning("Error while reading \"%s\":\n%s",
+                     qUtf8Printable(fileName),
+                     qUtf8Printable(errorString));
+            return 1;
+        }
+
+        renderer = MapRenderer::create(map.get());
+    }
+
     for (int frame = 0; frame < frameCount; ++frame) {
         if (mFrameCount > 0) {
             imageFileName = QString(QLatin1String("%1/%2%3.%4"))
@@ -150,34 +167,26 @@ int TmxRasterizer::render(const QString &fileName,
 
         int ret;
 
-        if (fileName.endsWith(QLatin1String(".world"), Qt::CaseInsensitive))
+        if (map) {
+            ret = renderMap(*renderer, imageFileName);
+            mAdvanceAnimations = mFrameDuration;
+        } else {
             ret = renderWorld(fileName, imageFileName);
-        else
-            ret = renderMap(fileName, imageFileName);
+            mAdvanceAnimations = mAdvanceAnimations + mFrameDuration;
+        }
 
         if (ret)
             return ret;
-
-        mAdvanceAnimations += mFrameDuration;
     }
 
     return 0;
 }
 
-int TmxRasterizer::renderMap(const QString &mapFileName,
+int TmxRasterizer::renderMap(const MapRenderer &renderer,
                              const QString &imageFileName)
 {
-    QString errorString;
-    std::unique_ptr<Map> map { readMap(mapFileName, &errorString) };
-    if (!map) {
-        qWarning("Error while reading \"%s\":\n%s",
-                 qUtf8Printable(mapFileName),
-                 qUtf8Printable(errorString));
-        return 1;
-    }
-
-    const auto renderer = MapRenderer::create(map.get());
-    QRect mapBoundingRect = renderer->mapBoundingRect();
+    const auto map = renderer.map();
+    QRect mapBoundingRect = renderer.mapBoundingRect();
     map->adjustBoundingRectForOffsetsAndImageLayers(mapBoundingRect);
     QSize mapSize = mapBoundingRect.size();
     qreal xScale, yScale;
@@ -209,8 +218,8 @@ int TmxRasterizer::renderMap(const QString &mapFileName,
 
     painter.translate(-mapBoundingRect.left(), -mapBoundingRect.top());
 
-    drawMapLayers(*renderer, painter);
-    map.reset();
+    drawMapLayers(renderer, painter);
+
     return saveImage(imageFileName, image);
 }
 

@@ -92,7 +92,7 @@ private:
     int mLayerTypesToShow = Layer::AnyLayerType & ~Layer::GroupLayerType;
 
     void drawMapLayers(const MapRenderer &renderer, QPainter &painter, QPoint mapOffset = QPoint(0, 0)) const;
-    int renderMap(const QString &mapFileName, const QString &imageFileName);
+    int renderMap(const MapRenderer &renderer, const QString &imageFileName);
     int renderWorld(const QString &worldFileName, const QString &imageFileName);
     int saveImage(const QString &imageFileName, const QImage &image) const;
     bool shouldDrawLayer(const Layer *layer) const;
