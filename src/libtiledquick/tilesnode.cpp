@@ -34,7 +34,7 @@ TilesNode::TilesNode(QSGTexture *texture, const QVector<TileData> &tileData)
     mOpaqueMaterial.setTexture(texture);
     mOpaqueMaterial.setMipmapFiltering(QSGTexture::Linear);
 
-    mGeometry.setDrawingMode(GL_TRIANGLES);
+    mGeometry.setDrawingMode(QSGGeometry::DrawTriangles);
     mGeometry.setVertexDataPattern(QSGGeometry::StaticPattern);
 
     processTileData(tileData);
