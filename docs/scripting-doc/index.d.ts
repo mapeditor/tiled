@@ -2273,6 +2273,8 @@ declare class Tile extends TiledObject {
 
   /**
    * Indicates whether this tile is animated.
+   *
+   * @see {@link frames} for the animation frames.
    */
   readonly animated : boolean
 
