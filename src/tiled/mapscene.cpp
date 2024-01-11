@@ -145,6 +145,17 @@ void MapScene::setPainterScale(qreal painterScale)
         mapItem->mapDocument()->renderer()->setPainterScale(painterScale);
 }
 
+void MapScene::setSuppressMouseMoveEvents(bool suppress)
+{
+    mSuppressMouseMoveEvents = suppress;
+
+    if (!suppress && mMouseMoveEventSuppressed) {
+        // Replay the last mouse move event
+        toolMouseMoved(mLastMousePos, mLastModifiers);
+        mMouseMoveEventSuppressed = false;
+    }
+}
+
 /**
  * Returns the bounding rect of the map. This can be different from the
  * sceneRect() when multiple maps are displayed.
@@ -178,12 +189,12 @@ void MapScene::setSelectedTool(AbstractTool *tool)
         if (!mSelectedTool)
             return; // Tool deactivated itself upon activation
 
-        mCurrentModifiers = QApplication::keyboardModifiers();
-        mSelectedTool->modifiersChanged(mCurrentModifiers);
+        mToolModifiers = QApplication::keyboardModifiers();
+        mSelectedTool->modifiersChanged(mToolModifiers);
 
         if (mUnderMouse) {
             mSelectedTool->mouseEntered();
-            mSelectedTool->mouseMoved(mLastMousePos, mCurrentModifiers);
+            mSelectedTool->mouseMoved(mLastMousePos, mToolModifiers);
         }
     }
 }
@@ -469,7 +480,12 @@ void MapScene::keyPressEvent(QKeyEvent *event)
 void MapScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     mLastMousePos = mouseEvent->scenePos();
+    mLastModifiers = mouseEvent->modifiers();
 
+    if (mSuppressMouseMoveEvents) {
+        mMouseMoveEventSuppressed = true;
+        return;
+    }
     if (!mMapDocument)
         return;
 
@@ -482,17 +498,8 @@ void MapScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 //    if (mouseEvent->isAccepted())
 //        return;
 
-    if (mSelectedTool) {
-        const Qt::KeyboardModifiers newModifiers = mouseEvent->modifiers();
-
-        if (newModifiers != mCurrentModifiers) {
-            mSelectedTool->modifiersChanged(newModifiers);
-            mCurrentModifiers = newModifiers;
-        }
-
-        mSelectedTool->mouseMoved(mouseEvent->scenePos(), mCurrentModifiers);
+    if (toolMouseMoved(mLastMousePos, mLastModifiers))
         mouseEvent->accept();
-    }
 }
 
 void MapScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
@@ -621,9 +628,9 @@ bool MapScene::eventFilter(QObject *, QEvent *event)
             QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
             const Qt::KeyboardModifiers newModifiers = keyEvent->modifiers();
 
-            if (mSelectedTool && newModifiers != mCurrentModifiers) {
+            if (mSelectedTool && newModifiers != mToolModifiers) {
                 mSelectedTool->modifiersChanged(newModifiers);
-                mCurrentModifiers = newModifiers;
+                mToolModifiers = newModifiers;
             }
         }
         break;
@@ -632,6 +639,20 @@ bool MapScene::eventFilter(QObject *, QEvent *event)
     }
 
     return false;
+}
+
+bool MapScene::toolMouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
+{
+    if (!mSelectedTool)
+        return false;
+
+    if (mToolModifiers != modifiers) {
+        mToolModifiers = modifiers;
+        mSelectedTool->modifiersChanged(modifiers);
+    }
+
+    mSelectedTool->mouseMoved(pos, modifiers);
+    return true;
 }
 
 #include "moc_mapscene.cpp"
