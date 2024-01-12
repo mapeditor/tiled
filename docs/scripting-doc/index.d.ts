@@ -1364,6 +1364,19 @@ declare class MapObject extends TiledObject {
 }
 
 /**
+ * The top-level assets supported by Tiled. Not all of these assets have
+ * associated editors.
+ *
+ * @since 1.10.x TODO
+ */
+declare enum AssetType {
+  TileMap = 1,
+  Tileset,
+  Project,
+  World,
+}
+
+/**
  * Represents any top-level data type that can be saved to a file.
  *
  * Currently either a {@link TileMap} or a {@link Tileset}.
@@ -1406,6 +1419,11 @@ declare class Asset extends TiledObject {
    * Whether the asset is a {@link Tileset}.
    */
   readonly isTileset: boolean;
+
+  /**
+   * The type of this asset.
+   */
+  readonly assetType: AssetType;
 
   /**
    * Creates a single undo command that wraps all changes applied to this

@@ -659,7 +659,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             });
         }
     });
-    connect(mUi->actionUnloadAllWorlds,  &QAction::triggered, this, []{WorldManager::instance().unloadAllWorlds();});
+    connect(mUi->actionUnloadAllWorlds,  &QAction::triggered, this, [] {
+        WorldManager::instance().unloadAllWorlds();
+    });
     connect(mUi->menuWorld, &QMenu::aboutToShow, this, [this] {
         mUi->menuUnloadWorld->setEnabled(!WorldManager::instance().worlds().isEmpty());
         mUi->actionUnloadAllWorlds->setEnabled(!WorldManager::instance().worlds().isEmpty());

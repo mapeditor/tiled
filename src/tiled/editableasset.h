@@ -34,6 +34,18 @@ namespace Tiled {
 
 class Document;
 
+namespace AssetType {
+    Q_NAMESPACE
+
+    enum Value {
+        TileMap = 1,
+        Tileset,
+        Project,
+        World,
+    };
+    Q_ENUM_NS(Value)
+} // namespace AssetType
+
 class EditableAsset : public EditableObject
 {
     Q_OBJECT
@@ -42,14 +54,16 @@ class EditableAsset : public EditableObject
     Q_PROPERTY(bool modified READ isModified NOTIFY modifiedChanged)
     Q_PROPERTY(bool isTileMap READ isMap CONSTANT)
     Q_PROPERTY(bool isTileset READ isTileset CONSTANT)
+    Q_PROPERTY(AssetType::Value assetType READ assetType CONSTANT)
 
 public:
     EditableAsset(Document *document, Object *object, QObject *parent = nullptr);
 
     QString fileName() const;
     bool isReadOnly() const override = 0;
-    bool isMap() const;
-    bool isTileset() const;
+    bool isMap() const { return assetType() == AssetType::TileMap; }
+    bool isTileset() const { return assetType() == AssetType::Tileset; }
+    virtual AssetType::Value assetType() const = 0;
 
     QUndoStack *undoStack() const;
     bool isModified() const;

@@ -27,8 +27,8 @@ namespace Tiled {
 
 ScriptWorld::ScriptWorld(World *world)
     : Object(*this)
+    , world(world)
 {
-    this->world = world;
 }
 
 EditableWorld::EditableWorld(WorldDocument *worldDocument, QObject *parent)
@@ -48,10 +48,12 @@ QString ScriptWorldMapEntry::fileName() const
 {
     return mMapEntry->fileName;
 }
+
 QRect ScriptWorldMapEntry::rect() const
 {
     return mMapEntry->rect;
 }
+
 QString EditableWorld::displayName() const
 {
     return world()->displayName();
@@ -69,6 +71,7 @@ QVector<ScriptWorldMapEntry*> EditableWorld::allMaps() const
         maps.append(new ScriptWorldMapEntry(&entry));
     return maps;
 }
+
 QVector<ScriptWorldMapEntry*> EditableWorld::mapsInRect(const QRect &rect) const
 {
     QVector<ScriptWorldMapEntry*> maps;
@@ -76,6 +79,7 @@ QVector<ScriptWorldMapEntry*> EditableWorld::mapsInRect(const QRect &rect) const
         maps.append(new ScriptWorldMapEntry(&entry));
     return maps;
 }
+
 bool EditableWorld::isReadOnly() const
 {
     return !world()->canBeModified();
@@ -87,4 +91,5 @@ QSharedPointer<Document> EditableWorld::createDocument()
     // function is meant for.
     return nullptr;
 }
-}
+
+} // namespace Tiled

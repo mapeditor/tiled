@@ -19,9 +19,9 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "editableworld.h"
 #include "worlddocument.h"
 
+#include "editableworld.h"
 #include "worldmanager.h"
 
 #include <QFileInfo>

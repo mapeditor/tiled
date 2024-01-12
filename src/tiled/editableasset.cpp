@@ -21,8 +21,6 @@
 #include "editableasset.h"
 
 #include "document.h"
-#include "editablemap.h"
-#include "editabletileset.h"
 #include "scriptmanager.h"
 
 #include <QCoreApplication>
@@ -45,16 +43,6 @@ QString EditableAsset::fileName() const
     if (document())
         return document()->fileName();
     return QString();
-}
-
-bool EditableAsset::isMap() const
-{
-    return qobject_cast<const EditableMap*>(this) != nullptr;
-}
-
-bool EditableAsset::isTileset() const
-{
-    return qobject_cast<const EditableTileset*>(this) != nullptr;
 }
 
 QUndoStack *EditableAsset::undoStack() const

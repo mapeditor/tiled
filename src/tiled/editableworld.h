@@ -18,23 +18,26 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 #pragma once
 
 #include "editableasset.h"
 #include "worlddocument.h"
 #include "worldmanager.h"
+
 #include <QObject>
 
 namespace Tiled {
-/*
+
+/**
  * Wrapper which allows world structs to be used with the EditableAsset
- * class
+ * class.
  */
 class ScriptWorld : public Object
 {
-
 public:
     ScriptWorld(World *world);
+
     World *world;
 };
 
@@ -57,18 +60,20 @@ private:
 };
 
 /**
- * @brief The EditableWorld class provides access to Worlds via scripting
+ * @brief The EditableWorld class provides access to Worlds via scripting.
  */
 class EditableWorld final : public EditableAsset
 {
-
     Q_OBJECT
     Q_PROPERTY(QString displayName READ displayName)
     Q_PROPERTY(QVector<ScriptWorldMapEntry*> allMaps READ allMaps)
 
 public:
     EditableWorld(WorldDocument *worldDocument, QObject *parent = nullptr);
+
     bool isReadOnly() const override;
+    AssetType::Value assetType() const override { return AssetType::World; }
+
     World *world() const;
     QString displayName() const;
     Q_INVOKABLE QVector<ScriptWorldMapEntry*> allMaps() const;
@@ -86,7 +91,7 @@ inline World *EditableWorld::world() const
     return static_cast<ScriptWorld*>(object())->world;
 }
 
-}
+} // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::EditableWorld*)
 Q_DECLARE_METATYPE(Tiled::ScriptWorldMapEntry*)
