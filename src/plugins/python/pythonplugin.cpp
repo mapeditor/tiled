@@ -19,9 +19,11 @@
  */
 
 #include "pythonplugin.h"
+#include "pluginmanager.h"
 
 #include "logginginterface.h"
 #include "map.h"
+#include "tileset.h"
 
 #include <QDateTime>
 #include <QDir>
@@ -29,7 +31,10 @@
 
 PyMODINIT_FUNC PyInit_tiled(void);
 extern int _wrap_convert_py2c__Tiled__Map___star__(PyObject *obj, Tiled::Map * *address);
+extern int _wrap_convert_py2c__Tiled__SharedTileset___star__(PyObject *obj, Tiled::SharedTileset * *address);
 extern PyObject* _wrap_convert_c2py__Tiled__Map_const___star__(Tiled::Map const * *cvalue);
+extern PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *cvalue);
+extern PyObject* _wrap_convert_c2py__Tiled__Tileset_const(Tiled::Tileset const *cvalue);
 extern PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *cvalue);
 
 namespace Python {
@@ -48,6 +53,7 @@ static void handleError()
 PythonPlugin::PythonPlugin()
     : mScriptDir(QDir::homePath() + "/.tiled")
     , mPluginClass(nullptr)
+    , mTilesetPluginClass(nullptr)
 {
     mReloadTimer.setSingleShot(true);
     mReloadTimer.setInterval(1000);
@@ -65,10 +71,16 @@ PythonPlugin::~PythonPlugin()
 {
     for (const ScriptEntry &script : mScripts) {
         Py_DECREF(script.module);
-        Py_DECREF(script.mapFormat->pythonClass());
+        if(script.mapFormat) {
+          Py_DECREF(script.mapFormat->pythonClass());
+        }
+        if(script.tilesetFormat) {
+          Py_DECREF(script.tilesetFormat->pythonClass());
+        }
     }
 
     Py_XDECREF(mPluginClass);
+    Py_XDECREF(mTilesetPluginClass);
 
     Py_Finalize();
 }
@@ -89,6 +101,7 @@ void PythonPlugin::initialize()
 
         if (pmod) {
             PyObject *tiledPlugin = PyObject_GetAttrString(pmod, "Plugin");
+            PyObject *tiledTilesetPlugin = PyObject_GetAttrString(pmod, "TilesetPlugin");
             Py_DECREF(pmod);
 
             if (tiledPlugin) {
@@ -98,10 +111,23 @@ void PythonPlugin::initialize()
                     Py_DECREF(tiledPlugin);
                 }
             }
+            if (tiledTilesetPlugin) {
+                if (PyCallable_Check(tiledTilesetPlugin)) {
+                    mTilesetPluginClass = tiledTilesetPlugin;
+                } else {
+                    Py_DECREF(tiledTilesetPlugin);
+                }
+            }
         }
 
         if (!mPluginClass) {
             Tiled::ERROR("Can't find tiled.Plugin baseclass");
+            handleError();
+            return;
+        }
+
+        if (!mTilesetPluginClass) {
+            Tiled::ERROR("Can't find tiled.TilesetPlugin baseclass");
             handleError();
             return;
         }
@@ -169,6 +195,11 @@ void PythonPlugin::reloadModules()
             Py_DECREF(pluginClass);
         }
 
+        if (script.tilesetFormat) {
+            PyObject *pluginClass = script.tilesetFormat->pythonClass();
+            Py_DECREF(pluginClass);
+        }
+
         if (loadOrReloadModule(script)) {
             mScripts.insert(name, script);
         } else {
@@ -182,6 +213,10 @@ void PythonPlugin::reloadModules()
                 removeObject(script.mapFormat);
                 delete script.mapFormat;
             }
+            if (script.tilesetFormat) {
+                removeObject(script.tilesetFormat);
+                delete script.tilesetFormat;
+            }
         }
     }
 
@@ -192,7 +227,7 @@ void PythonPlugin::reloadModules()
 /**
  * Finds the first Python class that extends tiled.Plugin
  */
-PyObject *PythonPlugin::findPluginSubclass(PyObject *module)
+PyObject *PythonPlugin::findPluginSubclass(PyObject *module, PyObject *pluginClass)
 {
     PyObject *dir = PyObject_Dir(module);
     PyObject *result = nullptr;
@@ -205,9 +240,9 @@ PyObject *PythonPlugin::findPluginSubclass(PyObject *module)
             break;
         }
 
-        if (value != mPluginClass &&
+        if (value != pluginClass &&
                 PyCallable_Check(value) &&
-                PyObject_IsSubclass(value, mPluginClass) == 1) {
+                PyObject_IsSubclass(value, pluginClass) == 1) {
             result = value;
             handleError();
             break;
@@ -238,33 +273,53 @@ bool PythonPlugin::loadOrReloadModule(ScriptEntry &script)
     if (!script.module)
         return false;
 
-    PyObject *pluginClass = findPluginSubclass(script.module);
+    PyObject *pluginClass = findPluginSubclass(script.module, mTilesetPluginClass);
 
-    if (!pluginClass) {
-        PySys_WriteStderr("Extension of tiled.Plugin not defined in "
-                          "script: %s\n", name.constData());
-        return false;
-    }
-
-    if (script.mapFormat) {
-        script.mapFormat->setPythonClass(pluginClass);
+    if(pluginClass) {
+      if (script.tilesetFormat) {
+          script.tilesetFormat->setPythonClass(pluginClass);
+      } else {
+          PySys_WriteStdout("---- Tileset plugin\n");
+          script.tilesetFormat = new PythonTilesetFormat(name, pluginClass, this);
+          addObject(script.tilesetFormat);
+      }
     } else {
-        script.mapFormat = new PythonMapFormat(name, pluginClass, this);
-        addObject(script.mapFormat);
-    }
+      PyObject *module = PyImport_ImportModule(name.constData());
+      Py_DECREF(script.module);
+      script.module = module;
+      pluginClass = findPluginSubclass(script.module, mPluginClass);
+      if (!pluginClass) {
+          PySys_WriteStderr("Extension of tiled.Plugin not defined in "
+                            "script: %s\n", name.constData());
+          return false;
+      }
 
+      if (script.mapFormat) {
+          script.mapFormat->setPythonClass(pluginClass);
+      } else {
+          PySys_WriteStdout("---- Map plugin\n");
+          script.mapFormat = new PythonMapFormat(name, pluginClass, this);
+          addObject(script.mapFormat);
+      }
+    }
     return true;
 }
 
+
+PythonFormat::PythonFormat(const QString &scriptFile, PyObject *class_)
+    : mClass(nullptr)
+    , mScriptFile(scriptFile)
+{
+    this->setPythonClass(class_);
+}
 
 PythonMapFormat::PythonMapFormat(const QString &scriptFile,
                                  PyObject *class_,
                                  QObject *parent)
     : MapFormat(parent)
-    , mClass(nullptr)
-    , mScriptFile(scriptFile)
+    , PythonFormat(scriptFile, class_)
 {
-    setPythonClass(class_);
+  setPythonClass(class_); // again as super class has no virtual dispatch in constructor
 }
 
 std::unique_ptr<Tiled::Map> PythonMapFormat::read(const QString &fileName)
@@ -326,7 +381,7 @@ bool PythonMapFormat::write(const Tiled::Map *map, const QString &fileName, Opti
     return false;
 }
 
-bool PythonMapFormat::supportsFile(const QString &fileName) const
+bool PythonFormat::_supportsFile(const QString &fileName) const
 {
     if (!PyObject_HasAttrString(mClass, "supportsFile"))
         return false;
@@ -345,7 +400,7 @@ bool PythonMapFormat::supportsFile(const QString &fileName) const
     return ret;
 }
 
-QString PythonMapFormat::nameFilter() const
+QString PythonFormat::_nameFilter() const
 {
     QString ret;
 
@@ -373,7 +428,7 @@ QString PythonMapFormat::nameFilter() const
     return ret;
 }
 
-QString PythonMapFormat::shortName() const
+QString PythonFormat::_shortName() const
 {
     QString ret;
 
@@ -381,7 +436,7 @@ QString PythonMapFormat::shortName() const
     PyObject *pfun = PyObject_GetAttrString(mClass, "shortName");
     if (!pfun || !PyCallable_Check(pfun)) {
         PySys_WriteStderr("Plugin extension doesn't define \"shortName\". Falling back to \"nameFilter\"\n");
-        return nameFilter();
+        return _nameFilter();
     }
 
     // have fun
@@ -401,16 +456,20 @@ QString PythonMapFormat::shortName() const
     return ret;
 }
 
-QString PythonMapFormat::errorString() const
+QString PythonFormat::_errorString() const
 {
     return mError;
 }
 
-void PythonMapFormat::setPythonClass(PyObject *class_)
+void PythonFormat::setPythonClass(PyObject *class_)
 {
     mClass = class_;
-    mCapabilities = NoCapability;
+}
 
+void PythonMapFormat::setPythonClass(PyObject *class_)
+{
+    PythonFormat::setPythonClass(class_);
+    mCapabilities = NoCapability;
     // @classmethod nameFilter(cls)
     if (PyObject_HasAttrString(mClass, "nameFilter")) {
         // @classmethod write(cls, map, filename)
@@ -423,6 +482,94 @@ void PythonMapFormat::setPythonClass(PyObject *class_)
         if (PyObject_HasAttrString(mClass, "read") &&
                 PyObject_HasAttrString(mClass, "supportsFile")) {
             mCapabilities |= Tiled::MapFormat::Read;
+        }
+    }
+}
+
+
+PythonTilesetFormat::PythonTilesetFormat(const QString &scriptFile,
+                                 PyObject *class_,
+                                 QObject *parent)
+    : TilesetFormat(parent)
+    , PythonFormat(scriptFile, class_)
+{
+  setPythonClass(class_); // again as super class has no virtual dispatch in constructor
+}
+
+Tiled::SharedTileset PythonTilesetFormat::read(const QString &fileName)
+{
+    mError = QString();
+
+    Tiled::INFO(tr("-- Using script %1 to read %2").arg(mScriptFile, fileName));
+
+    if (!PyObject_HasAttrString(mClass, "read")) {
+        mError = "Please define class that extends tiled.TilesetPlugin and "
+                "has @classmethod read(cls, filename)";
+        return nullptr;
+    }
+    PyObject *pinst = PyObject_CallMethod(mClass, (char *)"read",
+                                          (char *)"(s)", fileName.toUtf8().constData());
+
+    Tiled::SharedTileset *ret = nullptr;
+    if (!pinst) {
+        PySys_WriteStderr("** Uncaught exception in script **\n");
+    } else {
+        _wrap_convert_py2c__Tiled__SharedTileset___star__(pinst, &ret);
+        Py_DECREF(pinst);
+    }
+    handleError();
+
+    return *ret;
+}
+
+bool PythonTilesetFormat::write(const Tiled::Tileset &tileset, const QString &fileName, Options options)
+{
+    Q_UNUSED(options)
+
+    mError = QString();
+
+    Tiled::INFO(tr("-- Using script %1 to write %2").arg(mScriptFile, fileName));
+
+    PyObject *ptileset = _wrap_convert_c2py__Tiled__Tileset_const(&tileset);
+    if (!ptileset)
+        return false;
+    PyObject *pinst = PyObject_CallMethod(mClass,
+                                          (char *)"write", (char *)"(Ns)",
+                                          ptileset,
+                                          fileName.toUtf8().constData());
+
+    if (!pinst) {
+        PySys_WriteStderr("** Uncaught exception in script **\n");
+        mError = tr("Uncaught exception in script. Please check console.");
+    } else {
+        bool ret = PyObject_IsTrue(pinst);
+        Py_DECREF(pinst);
+        if (!ret)
+            mError = tr("Script returned false. Please check console.");
+        return ret;
+    }
+
+    handleError();
+    return false;
+}
+
+
+void PythonTilesetFormat::setPythonClass(PyObject *class_)
+{
+    PythonFormat::setPythonClass(class_);
+    mCapabilities = NoCapability;
+    // @classmethod nameFilter(cls)
+    if (PyObject_HasAttrString(mClass, "nameFilter")) {
+        // @classmethod write(cls, map, filename)
+        if (PyObject_HasAttrString(mClass, "write")) {
+            mCapabilities |= Tiled::TilesetFormat::Write;
+        }
+
+        // @classmethod read(cls, filename)
+        // @classmethod supportsFile(cls, filename)
+        if (PyObject_HasAttrString(mClass, "read") &&
+                PyObject_HasAttrString(mClass, "supportsFile")) {
+            mCapabilities |= Tiled::TilesetFormat::Read;
         }
     }
 }
