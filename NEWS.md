@@ -5,6 +5,7 @@
 * tmxviewer: Added support for viewing JSON maps (#3866)
 * Windows: Fixed the support for WebP images (updated to Qt 6.5.3)
 * Fixed mouse handling issue when zooming while painting (#3863)
+* Fixed possible crash after a scripted tool disappears while active
 
 ### Tiled 1.10.2 (4 August 2023)
 
