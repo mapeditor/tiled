@@ -2,6 +2,7 @@
 
 * JSON format: Fixed tile order when loading a tileset using the old format
 * tmxrasterizer: Added --hide-object and --show-object arguments (by Lars Luz, #3819)
+* Python plugin: Added support for implementing tileset formats (#3857)
 * Windows: Fixed the support for WebP images (updated to Qt 6.5.3)
 
 ### Tiled 1.10.2 (4 August 2023)
