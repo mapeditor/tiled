@@ -15,7 +15,7 @@ on:
     - '.travis.yml'
 
 env:
-  QBS_VERSION: 2.0.2
+  QBS_VERSION: 2.2.1
   SENTRY_VERSION: 0.6.7
   SENTRY_ORG: mapeditor
   SENTRY_PROJECT: tiled
@@ -54,7 +54,7 @@ jobs:
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
       QT_VERSION: ${{ matrix.qt_version }}
-      QTCREATOR_VERSION: 10.0.2
+      QTCREATOR_VERSION: 12.0.1
 
     steps:
     - name: Checkout repository
@@ -199,7 +199,7 @@ jobs:
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
       QT_VERSION: ${{ matrix.qt_version }}
-      QTCREATOR_VERSION: 10.0.2
+      QTCREATOR_VERSION: 12.0.1
 
     steps:
     - name: Checkout repository
