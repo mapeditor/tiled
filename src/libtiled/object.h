@@ -51,6 +51,7 @@ public:
         WangSetType         = 0x040,
         WangColorType       = 0x080,
         ProjectType         = 0x100,
+        WorldType           = 0x200,
     };
 
     explicit Object(TypeId typeId, const QString &className = QString())

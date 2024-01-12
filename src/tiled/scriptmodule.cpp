@@ -702,14 +702,16 @@ void ScriptModule::currentDocumentChanged(Document *document)
 QList<Tiled::EditableAsset*> ScriptModule::worlds() const
 {
     QList<Tiled::EditableAsset*> worlds;
-    for (const World *world : WorldManager::instance().worlds())
-    {
-        const QString worldFile = world->fileName;
-        WorldDocument *worldDocument = new WorldDocument(worldFile);
-        // TODO crashing, store references to the world document somewhere to prevent it from freeing?
-        EditableAsset *editableWorld = worldDocument->createEditable().get();
-        worlds.append(editableWorld);
+
+    auto documentManager = DocumentManager::maybeInstance();
+    if (!documentManager)
+        return worlds;
+
+    for (const World *world : WorldManager::instance().worlds()) {
+        WorldDocument *worldDocument = documentManager->ensureWorldDocument(world->fileName);
+        worlds.append(worldDocument->editable());
     }
+
     return worlds;
 }
 

@@ -26,15 +26,16 @@
 namespace Tiled {
 
 ScriptWorld::ScriptWorld(World *world)
-    : Object(*this)
+    : Object(WorldType)
     , world(world)
 {
 }
 
 EditableWorld::EditableWorld(WorldDocument *worldDocument, QObject *parent)
-    : EditableAsset(worldDocument, &mWorldObject, parent),
-    mWorldObject(ScriptWorld(WorldManager::instance().worlds().value(worldDocument->fileName())))
+    : EditableAsset(worldDocument, nullptr, parent)
+    , mWorldObject(WorldManager::instance().worlds().value(worldDocument->fileName()))
 {
+    setObject(&mWorldObject);
 }
 
 
