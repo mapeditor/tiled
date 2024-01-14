@@ -29,18 +29,6 @@
 
 namespace Tiled {
 
-/**
- * Wrapper which allows world structs to be used with the EditableAsset
- * class.
- */
-class ScriptWorld : public Object
-{
-public:
-    ScriptWorld(World *world);
-
-    World *world;
-};
-
 /*
  * Exposes the World::MapEntry struct to scripting
  */
@@ -51,12 +39,24 @@ class ScriptWorldMapEntry : public QObject
     Q_PROPERTY(QRect rect READ rect CONSTANT)
 
 public:
-    ScriptWorldMapEntry(World::MapEntry *mapEntry);
+    ScriptWorldMapEntry(World::MapEntry mapEntry);
     QString fileName() const;
     QRect rect() const;
 
 private:
-    World::MapEntry *mMapEntry;
+    World::MapEntry mMapEntry;
+};
+
+/**
+ * Wrapper which allows world structs to be used with the EditableAsset
+ * class.
+ */
+class ScriptWorld : public Object
+{
+public:
+    ScriptWorld(World *world);
+
+    World *world;
 };
 
 /**
@@ -77,10 +77,15 @@ public:
     World *world() const;
     QString displayName() const;
     Q_INVOKABLE QVector<ScriptWorldMapEntry*> allMaps() const;
-    Q_INVOKABLE QVector<ScriptWorldMapEntry*> mapsInRect(const QRect &rect) const;
+    Q_INVOKABLE QVector<ScriptWorldMapEntry*> mapsInRect(const QRect &rect);
     Q_INVOKABLE bool containsMap(const QString &fileName);
-
+    Q_INVOKABLE int mapIndex(const QString &fileName) const;
+    Q_INVOKABLE void setMapRect(int mapIndex, const QRect &rect);
+    Q_INVOKABLE void addMap(const QString &fileName, const QRect &rect);
+    Q_INVOKABLE void removeMap(int mapIndex);
+    Q_INVOKABLE bool save();
     QSharedPointer<Document> createDocument() override;
+
 
 private:
     ScriptWorld mWorldObject;

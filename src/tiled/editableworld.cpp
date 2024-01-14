@@ -39,20 +39,19 @@ EditableWorld::EditableWorld(WorldDocument *worldDocument, QObject *parent)
 }
 
 
-ScriptWorldMapEntry::ScriptWorldMapEntry(World::MapEntry *mapEntry)
-    : mMapEntry(mapEntry)
+ScriptWorldMapEntry::ScriptWorldMapEntry(World::MapEntry mapEntry)
 {
-
+    mMapEntry = mapEntry;
 }
 
 QString ScriptWorldMapEntry::fileName() const
 {
-    return mMapEntry->fileName;
+    return mMapEntry.fileName;
 }
 
 QRect ScriptWorldMapEntry::rect() const
 {
-    return mMapEntry->rect;
+    return mMapEntry.rect;
 }
 
 QString EditableWorld::displayName() const
@@ -69,15 +68,15 @@ QVector<ScriptWorldMapEntry*> EditableWorld::allMaps() const
 {
     QVector<ScriptWorldMapEntry*> maps;
     for (auto &entry : world()->allMaps())
-        maps.append(new ScriptWorldMapEntry(&entry));
+        maps.append(new ScriptWorldMapEntry(entry));
     return maps;
 }
 
-QVector<ScriptWorldMapEntry*> EditableWorld::mapsInRect(const QRect &rect) const
+QVector<ScriptWorldMapEntry*> EditableWorld::mapsInRect(const QRect &rect)
 {
     QVector<ScriptWorldMapEntry*> maps;
     for (auto &entry : world()->mapsInRect(rect))
-        maps.append(new ScriptWorldMapEntry(&entry));
+        maps.append(new ScriptWorldMapEntry(entry));
     return maps;
 }
 
@@ -86,6 +85,27 @@ bool EditableWorld::isReadOnly() const
     return !world()->canBeModified();
 }
 
+int EditableWorld::mapIndex(const QString &fileName) const
+{
+    return mWorldObject.world->mapIndex(fileName);
+}
+void EditableWorld::setMapRect(int mapIndex, const QRect &rect)
+{
+    mWorldObject.world->setMapRect(mapIndex, rect);
+}
+void EditableWorld::addMap(const QString &fileName, const QRect &rect)
+{
+    mWorldObject.world->addMap(fileName, rect);
+}
+void EditableWorld::removeMap(int mapIndex)
+{
+    mWorldObject.world->removeMap(mapIndex);
+}
+
+bool EditableWorld::save()
+{
+    return WorldManager::instance().saveWorld(mWorldObject.world->fileName);
+}
 QSharedPointer<Document> EditableWorld::createDocument()
 {
     // We don't currently support opening a world in its own tab, which this
