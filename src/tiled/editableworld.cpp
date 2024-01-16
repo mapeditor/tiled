@@ -20,38 +20,19 @@
  */
 
 #include "editableworld.h"
-#include "worlddocument.h"
-#include "worldmanager.h"
+
+#include "changeworld.h"
+#include "scriptmanager.h"
+
+#include <QUndoStack>
 
 namespace Tiled {
-
-ScriptWorld::ScriptWorld(World *world)
-    : Object(WorldType)
-    , world(world)
-{
-}
 
 EditableWorld::EditableWorld(WorldDocument *worldDocument, QObject *parent)
     : EditableAsset(worldDocument, nullptr, parent)
     , mWorldObject(WorldManager::instance().worlds().value(worldDocument->fileName()))
 {
     setObject(&mWorldObject);
-}
-
-
-ScriptWorldMapEntry::ScriptWorldMapEntry(World::MapEntry mapEntry)
-{
-    mMapEntry = mapEntry;
-}
-
-QString ScriptWorldMapEntry::fileName() const
-{
-    return mMapEntry.fileName;
-}
-
-QRect ScriptWorldMapEntry::rect() const
-{
-    return mMapEntry.rect;
 }
 
 QString EditableWorld::displayName() const
@@ -64,18 +45,18 @@ bool EditableWorld::containsMap(const QString &fileName)
     return world()->containsMap(fileName);
 }
 
-QVector<ScriptWorldMapEntry*> EditableWorld::allMaps() const
+QList<ScriptWorldMapEntry*> EditableWorld::maps() const
 {
-    QVector<ScriptWorldMapEntry*> maps;
-    for (auto &entry : world()->allMaps())
+    QList<ScriptWorldMapEntry*> maps;
+    for (const auto &entry : std::as_const(world()->maps))
         maps.append(new ScriptWorldMapEntry(entry));
     return maps;
 }
 
-QVector<ScriptWorldMapEntry*> EditableWorld::mapsInRect(const QRect &rect)
+QList<ScriptWorldMapEntry*> EditableWorld::mapsInRect(const QRect &rect)
 {
-    QVector<ScriptWorldMapEntry*> maps;
-    for (auto &entry : world()->mapsInRect(rect))
+    QList<ScriptWorldMapEntry*> maps;
+    for (const auto &entry : world()->mapsInRect(rect))
         maps.append(new ScriptWorldMapEntry(entry));
     return maps;
 }
@@ -89,23 +70,49 @@ int EditableWorld::mapIndex(const QString &fileName) const
 {
     return mWorldObject.world->mapIndex(fileName);
 }
+
 void EditableWorld::setMapRect(int mapIndex, const QRect &rect)
 {
-    mWorldObject.world->setMapRect(mapIndex, rect);
+    if (mapIndex < 0 || mapIndex >= mWorldObject.world->maps.size()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
+        return;
+    }
+
+    const QString &fileName = mWorldObject.world->maps.at(mapIndex).fileName;
+    document()->undoStack()->push(new SetMapRectCommand(fileName, rect));
 }
-void EditableWorld::addMap(const QString &fileName, const QRect &rect)
+
+void EditableWorld::addMap(const QString &mapFileName, const QRect &rect)
 {
-    mWorldObject.world->addMap(fileName, rect);
+    if (mapFileName.isEmpty()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
+        return;
+    }
+
+    if (WorldManager::instance().worldForMap(mapFileName)) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Map is already part of a loaded world"));
+        return;
+    }
+
+    document()->undoStack()->push(new AddMapCommand(fileName(), mapFileName, rect));
 }
+
 void EditableWorld::removeMap(int mapIndex)
 {
-    mWorldObject.world->removeMap(mapIndex);
+    if (mapIndex < 0 || mapIndex >= mWorldObject.world->maps.size()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
+        return;
+    }
+
+    const QString &fileName = mWorldObject.world->maps.at(mapIndex).fileName;
+    document()->undoStack()->push(new RemoveMapCommand(fileName));
 }
 
 bool EditableWorld::save()
 {
     return WorldManager::instance().saveWorld(mWorldObject.world->fileName);
 }
+
 QSharedPointer<Document> EditableWorld::createDocument()
 {
     // We don't currently support opening a world in its own tab, which this

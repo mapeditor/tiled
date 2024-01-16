@@ -160,6 +160,8 @@ DynamicLibrary {
         "changewangcolordata.h",
         "changewangsetdata.cpp",
         "changewangsetdata.h",
+        "changeworld.cpp",
+        "changeworld.h",
         "clipboardmanager.cpp",
         "clipboardmanager.h",
         "colorbutton.cpp",

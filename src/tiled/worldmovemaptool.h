@@ -22,8 +22,6 @@
 
 #include "abstractworldtool.h"
 
-#include <memory>
-
 namespace Tiled {
 
 class MapItem;

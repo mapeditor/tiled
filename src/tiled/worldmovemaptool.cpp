@@ -18,10 +18,10 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "actionmanager.h"
-#include "changeevents.h"
+#include "worldmovemaptool.h"
+
+#include "changeworld.h"
 #include "documentmanager.h"
-#include "geometry.h"
 #include "layer.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -29,10 +29,8 @@
 #include "mapscene.h"
 #include "mapview.h"
 #include "preferences.h"
-#include "snaphelper.h"
 #include "toolmanager.h"
 #include "utils.h"
-#include "worldmovemaptool.h"
 #include "worldmanager.h"
 #include "zoomable.h"
 
@@ -43,41 +41,11 @@
 #include <QTransform>
 #include <QUndoStack>
 
-#include <cmath>
 #include <utility>
 
 using namespace Tiled;
 
 namespace Tiled {
-
-class SetMapRectCommand : public QUndoCommand
-{
-public:
-    SetMapRectCommand(const QString &mapName, QRect rect)
-        : QUndoCommand(QCoreApplication::translate("Undo Commands", "Move Map"))
-        , mMapName(mapName)
-        , mRect(rect)
-    {
-        const WorldManager &manager = WorldManager::instance();
-        mPreviousRect = manager.worldForMap(mMapName)->mapRect(mMapName);
-    }
-
-    void undo() override
-    {
-        WorldManager::instance().setMapRect(mMapName, mPreviousRect);
-    }
-
-    void redo() override
-    {
-        WorldManager::instance().setMapRect(mMapName, mRect);
-    }
-
-private:
-    QString mMapName;
-    QRect mRect;
-    QRect mPreviousRect;
-};
-
 
 WorldMoveMapTool::WorldMoveMapTool(QObject *parent)
     : AbstractWorldTool("WorldMoveMapTool",

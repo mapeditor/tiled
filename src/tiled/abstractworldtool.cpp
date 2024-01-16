@@ -20,6 +20,7 @@
 
 #include "abstractworldtool.h"
 #include "actionmanager.h"
+#include "changeworld.h"
 #include "documentmanager.h"
 #include "mainwindow.h"
 #include "map.h"
@@ -42,73 +43,6 @@
 #include <QtMath>
 
 namespace Tiled {
-
-class AddMapCommand : public QUndoCommand
-{
-public:
-    AddMapCommand(const QString &worldName, const QString &mapName, const QRect &rect)
-        : QUndoCommand(QCoreApplication::translate("Undo Commands", "Add Map to World"))
-        , mWorldName(worldName)
-        , mMapName(mapName)
-        , mRect(rect)
-    {
-    }
-
-    void undo() override
-    {
-        WorldManager::instance().removeMap(mMapName);
-    }
-
-    void redo() override
-    {
-        WorldManager::instance().addMap(mWorldName, mMapName, mRect);
-    }
-
-private:
-    QString mWorldName;
-    QString mMapName;
-    QRect mRect;
-};
-
-class RemoveMapCommand : public QUndoCommand
-{
-public:
-    RemoveMapCommand(const QString &mapName)
-        : QUndoCommand(QCoreApplication::translate("Undo Commands", "Remove Map from World"))
-        , mMapName(mapName)
-    {
-        const WorldManager &manager = WorldManager::instance();
-        const World *world = manager.worldForMap(mMapName);
-        mPreviousRect = world->mapRect(mMapName);
-        mWorldName = world->fileName;
-    }
-
-    void undo() override
-    {
-        WorldManager::instance().addMap(mWorldName, mMapName, mPreviousRect);
-    }
-
-    void redo() override
-    {
-        // ensure we're switching to a different map in case the current map is removed
-        DocumentManager *manager = DocumentManager::instance();
-        if (manager->currentDocument() && manager->currentDocument()->fileName() == mMapName) {
-            const World *world = WorldManager::instance().worldForMap(mMapName);
-            for (World::MapEntry &entry : world->allMaps())
-                if (entry.fileName != mMapName) {
-                    manager->switchToDocument(entry.fileName);
-                    break;
-                }
-        }
-        WorldManager::instance().removeMap(mMapName);
-    }
-
-private:
-    QString mWorldName;
-    QString mMapName;
-    QRect mPreviousRect;
-};
-
 
 AbstractWorldTool::AbstractWorldTool(Id id,
                                      const QString &name,

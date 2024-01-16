@@ -39,9 +39,12 @@ class ScriptWorldMapEntry : public QObject
     Q_PROPERTY(QRect rect READ rect CONSTANT)
 
 public:
-    ScriptWorldMapEntry(World::MapEntry mapEntry);
-    QString fileName() const;
-    QRect rect() const;
+    ScriptWorldMapEntry(World::MapEntry mapEntry)
+        : mMapEntry(mapEntry)
+    {}
+
+    const QString &fileName() const { return mMapEntry.fileName; }
+    QRect rect() const { return mMapEntry.rect; }
 
 private:
     World::MapEntry mMapEntry;
@@ -54,7 +57,10 @@ private:
 class ScriptWorld : public Object
 {
 public:
-    ScriptWorld(World *world);
+    ScriptWorld(World *world)
+        : Object(WorldType)
+        , world(world)
+    {}
 
     World *world;
 };
@@ -66,7 +72,7 @@ class EditableWorld final : public EditableAsset
 {
     Q_OBJECT
     Q_PROPERTY(QString displayName READ displayName)
-    Q_PROPERTY(QVector<ScriptWorldMapEntry*> allMaps READ allMaps)
+    Q_PROPERTY(QList<ScriptWorldMapEntry*> maps READ maps)
 
 public:
     EditableWorld(WorldDocument *worldDocument, QObject *parent = nullptr);
@@ -76,16 +82,17 @@ public:
 
     World *world() const;
     QString displayName() const;
-    Q_INVOKABLE QVector<ScriptWorldMapEntry*> allMaps() const;
-    Q_INVOKABLE QVector<ScriptWorldMapEntry*> mapsInRect(const QRect &rect);
+
+    Q_INVOKABLE QList<ScriptWorldMapEntry*> maps() const;
+    Q_INVOKABLE QList<ScriptWorldMapEntry*> mapsInRect(const QRect &rect);
     Q_INVOKABLE bool containsMap(const QString &fileName);
     Q_INVOKABLE int mapIndex(const QString &fileName) const;
     Q_INVOKABLE void setMapRect(int mapIndex, const QRect &rect);
-    Q_INVOKABLE void addMap(const QString &fileName, const QRect &rect);
+    Q_INVOKABLE void addMap(const QString &mapFileName, const QRect &rect);
     Q_INVOKABLE void removeMap(int mapIndex);
     Q_INVOKABLE bool save();
-    QSharedPointer<Document> createDocument() override;
 
+    QSharedPointer<Document> createDocument() override;
 
 private:
     ScriptWorld mWorldObject;
