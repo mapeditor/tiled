@@ -27,7 +27,7 @@ class QMenu;
 
 namespace Tiled {
 
-struct World;
+class World;
 
 class SelectionRectangle;
 

@@ -25,7 +25,6 @@
 #include "compression.h"
 #include "documentmanager.h"
 #include "editabletileset.h"
-#include "editableworld.h"
 #include "issuesmodel.h"
 #include "logginginterface.h"
 #include "mainwindow.h"
@@ -39,6 +38,9 @@
 #include "scriptmanager.h"
 #include "tilesetdocument.h"
 #include "tileseteditor.h"
+#include "world.h"
+#include "worlddocument.h"
+#include "worldmanager.h"
 
 #include <QAction>
 #include <QCoreApplication>

@@ -22,8 +22,8 @@
 #pragma once
 
 #include "editableasset.h"
+#include "world.h"
 #include "worlddocument.h"
-#include "worldmanager.h"
 
 #include <QObject>
 

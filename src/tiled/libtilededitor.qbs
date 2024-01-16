@@ -581,6 +581,8 @@ DynamicLibrary {
         "wangtemplateview.h",
         "worlddocument.cpp",
         "worlddocument.h",
+        "worldmanager.cpp",
+        "worldmanager.h",
         "worldmovemaptool.cpp",
         "worldmovemaptool.h",
         "zoomable.cpp",

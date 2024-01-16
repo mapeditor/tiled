@@ -29,6 +29,7 @@
 #include "mapscene.h"
 #include "mapview.h"
 #include "selectionrectangle.h"
+#include "world.h"
 #include "worlddocument.h"
 #include "worldmanager.h"
 

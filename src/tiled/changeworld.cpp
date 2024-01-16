@@ -22,6 +22,7 @@
 #include "changeworld.h"
 
 #include "documentmanager.h"
+#include "world.h"
 #include "worldmanager.h"
 
 #include <QCoreApplication>
@@ -43,7 +44,6 @@ void AddMapCommand::undo()
 
 void AddMapCommand::redo()
 {
-    qDebug() << Q_FUNC_INFO;
     WorldManager::instance().addMap(mWorldName, mMapName, mRect);
 }
 

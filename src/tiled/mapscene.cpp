@@ -33,12 +33,12 @@
 #include "maprenderer.h"
 #include "objectgroup.h"
 #include "objecttemplate.h"
-#include "preferences.h"
 #include "snaphelper.h"
 #include "stylehelper.h"
 #include "templatemanager.h"
 #include "tilesetmanager.h"
 #include "toolmanager.h"
+#include "world.h"
 #include "worldmanager.h"
 
 #include <QApplication>

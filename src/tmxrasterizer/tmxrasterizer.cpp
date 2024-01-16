@@ -34,7 +34,7 @@
 #include "objectgroup.h"
 #include "tilelayer.h"
 #include "tilesetmanager.h"
-#include "worldmanager.h"
+#include "world.h"
 
 #include <QDebug>
 #include <QImageWriter>
@@ -211,9 +211,8 @@ int TmxRasterizer::saveImage(const QString &imageFileName,
 int TmxRasterizer::renderWorld(const QString &worldFileName,
                                const QString &imageFileName)
 {
-    WorldManager &worldManager = WorldManager::instance();
     QString errorString;
-    const World *world = worldManager.loadWorld(worldFileName, &errorString);
+    const auto world = World::load(worldFileName, &errorString);
     if (!world) {
         qWarning("Error loading the world file \"%s\":\n%s",
                  qUtf8Printable(worldFileName),

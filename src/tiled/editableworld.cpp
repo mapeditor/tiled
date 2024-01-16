@@ -23,6 +23,7 @@
 
 #include "changeworld.h"
 #include "scriptmanager.h"
+#include "worldmanager.h"
 
 #include <QUndoStack>
 

@@ -27,7 +27,7 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "projectmanager.h"
-#include "worlddocument.h"
+#include "world.h"
 #include "worldmanager.h"
 
 #include <QAction>

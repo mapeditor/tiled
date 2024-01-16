@@ -1,6 +1,6 @@
 /*
- * worldmanager.h
- * Copyright 2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * world.h
+ * Copyright 2017-2024, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of libtiled.
  *
@@ -30,11 +30,7 @@
 
 #include "tiled_global.h"
 
-#include "filesystemwatcher.h"
-
 #include <QCoreApplication>
-#include <QMap>
-#include <QObject>
 #include <QPoint>
 #include <QRect>
 #include <QRegularExpression>
@@ -45,8 +41,11 @@
 
 namespace Tiled {
 
-struct TILEDSHARED_EXPORT World
+class TILEDSHARED_EXPORT World
 {
+    Q_DECLARE_TR_FUNCTIONS(Tiled::WorldManager);
+
+public:
     struct Pattern
     {
         QRegularExpression regexp;
@@ -91,56 +90,12 @@ struct TILEDSHARED_EXPORT World
      */
     QString displayName() const;
     static QString displayName(const QString &fileName);
+
+    static std::unique_ptr<World> load(const QString &fileName,
+                                       QString *errorString = nullptr);
+    static bool save(World &world,
+                     QString *errorString = nullptr);
 };
 
-class TILEDSHARED_EXPORT WorldManager : public QObject
-{
-    Q_OBJECT
-
-    WorldManager();
-    ~WorldManager() override;
-
-public:
-    static WorldManager &instance();
-    static void deleteInstance();
-
-    World *addEmptyWorld(const QString &fileName, QString *errorString);
-    World *loadWorld(const QString &fileName, QString *errorString = nullptr);
-    void loadWorlds(const QStringList &fileNames);
-    void unloadWorld(const QString &fileName);
-    void unloadAllWorlds();
-    bool saveWorld(const QString &fileName, QString *errorString = nullptr);
-
-    const QMap<QString, World*> &worlds() const { return mWorlds; }
-
-    const World *worldForMap(const QString &fileName) const;
-
-    void setMapRect(const QString &fileName, const QRect &rect);
-    bool mapCanBeModified(const QString &fileName) const;
-    bool removeMap(const QString &fileName);
-    bool addMap(const QString &fileName, const QString &mapFileName, const QRect &rect);
-
-signals:
-    void worldsChanged();
-    void worldLoaded(const QString &fileName);
-    void worldReloaded(const QString &fileName);
-    void worldUnloaded(const QString &fileName);
-    void worldSaved(const QString &fileName);
-
-private:
-    bool saveWorld(World &world, QString *errorString = nullptr);
-    World *loadAndStoreWorld(const QString &fileName, QString *errorString = nullptr);
-    void reloadWorldFiles(const QStringList &fileNames);
-
-    std::unique_ptr<World> privateLoadWorld(const QString &fileName,
-                                            QString *errorString = nullptr);
-
-    QMap<QString, World*> mWorlds;
-
-    FileSystemWatcher mFileSystemWatcher;
-    QString mIgnoreFileChangeEventForFile;
-
-    static WorldManager *mInstance;
-};
 
 } // namespace Tiled

@@ -31,7 +31,7 @@
 #include "preferences.h"
 #include "toolmanager.h"
 #include "utils.h"
-#include "worldmanager.h"
+#include "world.h"
 #include "zoomable.h"
 
 #include <QApplication>

@@ -46,7 +46,7 @@
 #include "tilesetmanager.h"
 #include "tmxmapformat.h"
 #include "utils.h"
-#include "wangset.h"
+#include "world.h"
 #include "worlddocument.h"
 #include "worldmanager.h"
 #include "zoomable.h"
@@ -275,7 +275,7 @@ DocumentManager::DocumentManager(QObject *parent)
         }
     };
 
-    WorldManager& worldManager = WorldManager::instance();
+    WorldManager &worldManager = WorldManager::instance();
     connect(&worldManager, &WorldManager::worldLoaded,
             this, &DocumentManager::onWorldLoaded);
     connect(&worldManager, &WorldManager::worldUnloaded,

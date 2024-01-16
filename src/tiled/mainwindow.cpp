@@ -56,7 +56,6 @@
 #include "newtilesetdialog.h"
 #include "offsetmapdialog.h"
 #include "projectdock.h"
-#include "projectdocument.h"
 #include "projectmanager.h"
 #include "projectpropertiesdialog.h"
 #include "propertytypeseditor.h"
@@ -71,6 +70,7 @@
 #include "tilesetmanager.h"
 #include "tmxmapformat.h"
 #include "utils.h"
+#include "world.h"
 #include "worldmanager.h"
 #include "zoomable.h"
 
