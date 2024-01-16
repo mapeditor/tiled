@@ -31,9 +31,8 @@ namespace Tiled {
 
 EditableWorld::EditableWorld(WorldDocument *worldDocument, QObject *parent)
     : EditableAsset(worldDocument, nullptr, parent)
-    , mWorldObject(WorldManager::instance().worlds().value(worldDocument->fileName()))
 {
-    setObject(&mWorldObject);
+    setObject(WorldManager::instance().worlds().value(worldDocument->fileName()));
 }
 
 QString EditableWorld::displayName() const
@@ -69,17 +68,17 @@ bool EditableWorld::isReadOnly() const
 
 int EditableWorld::mapIndex(const QString &fileName) const
 {
-    return mWorldObject.world->mapIndex(fileName);
+    return world()->mapIndex(fileName);
 }
 
 void EditableWorld::setMapRect(int mapIndex, const QRect &rect)
 {
-    if (mapIndex < 0 || mapIndex >= mWorldObject.world->maps.size()) {
+    if (mapIndex < 0 || mapIndex >= world()->maps.size()) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
         return;
     }
 
-    const QString &fileName = mWorldObject.world->maps.at(mapIndex).fileName;
+    const QString &fileName = world()->maps.at(mapIndex).fileName;
     document()->undoStack()->push(new SetMapRectCommand(fileName, rect));
 }
 
@@ -100,18 +99,18 @@ void EditableWorld::addMap(const QString &mapFileName, const QRect &rect)
 
 void EditableWorld::removeMap(int mapIndex)
 {
-    if (mapIndex < 0 || mapIndex >= mWorldObject.world->maps.size()) {
+    if (mapIndex < 0 || mapIndex >= world()->maps.size()) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
         return;
     }
 
-    const QString &fileName = mWorldObject.world->maps.at(mapIndex).fileName;
+    const QString &fileName = world()->maps.at(mapIndex).fileName;
     document()->undoStack()->push(new RemoveMapCommand(fileName));
 }
 
 bool EditableWorld::save()
 {
-    return WorldManager::instance().saveWorld(mWorldObject.world->fileName);
+    return WorldManager::instance().saveWorld(world()->fileName);
 }
 
 QSharedPointer<Document> EditableWorld::createDocument()

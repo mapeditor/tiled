@@ -701,9 +701,9 @@ void ScriptModule::currentDocumentChanged(Document *document)
     emit activeAssetChanged(document ? document->editable() : nullptr);
 }
 
-QList<Tiled::EditableAsset*> ScriptModule::worlds() const
+QList<QObject *> ScriptModule::worlds() const
 {
-    QList<Tiled::EditableAsset*> worlds;
+    QList<QObject*> worlds;
 
     auto documentManager = DocumentManager::maybeInstance();
     if (!documentManager)

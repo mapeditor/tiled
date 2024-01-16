@@ -51,21 +51,6 @@ private:
 };
 
 /**
- * Wrapper which allows world structs to be used with the EditableAsset
- * class.
- */
-class ScriptWorld : public Object
-{
-public:
-    ScriptWorld(World *world)
-        : Object(WorldType)
-        , world(world)
-    {}
-
-    World *world;
-};
-
-/**
  * @brief The EditableWorld class provides access to Worlds via scripting.
  */
 class EditableWorld final : public EditableAsset
@@ -93,14 +78,11 @@ public:
     Q_INVOKABLE bool save();
 
     QSharedPointer<Document> createDocument() override;
-
-private:
-    ScriptWorld mWorldObject;
 };
 
 inline World *EditableWorld::world() const
 {
-    return static_cast<ScriptWorld*>(object())->world;
+    return static_cast<World*>(object());
 }
 
 } // namespace Tiled

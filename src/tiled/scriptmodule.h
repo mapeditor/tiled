@@ -73,7 +73,7 @@ class ScriptModule : public QObject
 
     Q_PROPERTY(Tiled::MapEditor *mapEditor READ mapEditor)
     Q_PROPERTY(Tiled::TilesetEditor *tilesetEditor READ tilesetEditor)
-    Q_PROPERTY(QList<Tiled::EditableAsset*> worlds READ worlds)
+    Q_PROPERTY(QList<QObject*> worlds READ worlds)
 
 public:
     ScriptModule(QObject *parent = nullptr);
@@ -142,7 +142,7 @@ public:
     Q_INVOKABLE QString promptOpenFile(const QString &defaultDir = QString(), const QString &filters = QString(), const QString &title = QString()) const;
     Q_INVOKABLE QString promptSaveFile(const QString &defaultDir = QString(), const QString &filters = QString(),  const QString &title = QString()) const;
 
-    QList<Tiled::EditableAsset*> worlds() const;
+    QList<QObject*> worlds() const;
     Q_INVOKABLE void loadWorld(const QString &fileName) const;
     Q_INVOKABLE void unloadWorld(const QString &fileName) const;
     Q_INVOKABLE void unloadAllWorlds() const;

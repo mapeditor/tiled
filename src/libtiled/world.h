@@ -28,7 +28,7 @@
 
 #pragma once
 
-#include "tiled_global.h"
+#include "object.h"
 
 #include <QCoreApplication>
 #include <QPoint>
@@ -41,11 +41,13 @@
 
 namespace Tiled {
 
-class TILEDSHARED_EXPORT World
+class TILEDSHARED_EXPORT World : public Object
 {
     Q_DECLARE_TR_FUNCTIONS(Tiled::WorldManager);
 
 public:
+    World() : Object(WorldType) {}
+
     struct Pattern
     {
         QRegularExpression regexp;
