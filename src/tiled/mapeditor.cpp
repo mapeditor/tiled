@@ -50,6 +50,7 @@
 #include "objectreferencetool.h"
 #include "objectsdock.h"
 #include "objectselectiontool.h"
+#include "objecttemplate.h"         // used when compiling against Qt 5
 #include "preferences.h"
 #include "propertiesdock.h"
 #include "reversingproxymodel.h"
