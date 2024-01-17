@@ -49,7 +49,32 @@ public:
 private:
     World::MapEntry mMapEntry;
 };
+/*
+ * Exposes the World::Pattern struct to scripting
+ */
+class ScriptWorldPattern : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QString regExp READ regExp CONSTANT);
+    Q_PROPERTY(int multiplierX READ multiplierX CONSTANT);
+    Q_PROPERTY(int multiplierY READ multiplierY CONSTANT);
+    Q_PROPERTY(QPoint offset READ offset CONSTANT);
+    Q_PROPERTY(QSize mapSize READ mapSize CONSTANT);
 
+public:
+    ScriptWorldPattern (World::Pattern pattern)
+        : mPattern(pattern)
+    {}
+
+    QString regExp() { return mPattern.regexp.pattern(); }
+    const int multiplierX() const { return mPattern.multiplierX; }
+    const int multiplierY() const { return mPattern.multiplierY; }
+    const QPoint offset() const { return mPattern.offset; }
+    const QSize mapSize() const { return mPattern.mapSize; }
+
+private:
+    World::Pattern mPattern;
+};
 /**
  * @brief The EditableWorld class provides access to Worlds via scripting.
  */
@@ -70,6 +95,8 @@ public:
 
     Q_INVOKABLE QList<ScriptWorldMapEntry*> maps() const;
     Q_INVOKABLE QList<ScriptWorldMapEntry*> mapsInRect(const QRect &rect);
+    Q_INVOKABLE QList<ScriptWorldMapEntry*> allMaps() const;
+    Q_INVOKABLE QList<ScriptWorldPattern*> patterns() const;
     Q_INVOKABLE bool containsMap(const QString &fileName);
     Q_INVOKABLE int mapIndex(const QString &fileName) const;
     Q_INVOKABLE void setMapRect(int mapIndex, const QRect &rect);
@@ -89,3 +116,4 @@ inline World *EditableWorld::world() const
 
 Q_DECLARE_METATYPE(Tiled::EditableWorld*)
 Q_DECLARE_METATYPE(Tiled::ScriptWorldMapEntry*)
+Q_DECLARE_METATYPE(Tiled::ScriptWorldPattern*)

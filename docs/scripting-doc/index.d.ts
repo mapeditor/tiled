@@ -1132,7 +1132,7 @@ declare class Project extends TiledObject {
 }
 
 /**
- * For a map that is added to a {@link World},
+ * Details of a map that is added to a {@link World},
  * @since 1.10.x TODO
  */
 declare class WorldMapEntry {
@@ -1147,12 +1147,57 @@ declare class WorldMapEntry {
 } 
 
 /**
+ * Patterns added to a {@link World}, which are used to automatically match
+ * maps.
+ * https://doc.mapeditor.org/en/stable/manual/worlds/#using-pattern-matching
+ * @since 1.10.x TODO
+ */
+declare class WorldPattern {
+  /** 
+   * String version of the regular expression pattern used 
+   */
+  regExp: string;
+  /**
+   * Multiplied by the first number (x) in the regular expression to determine
+   * the map's position in the world.
+  */
+  multiplierX: number;
+  /**
+   * Multiplied by the second number (y) in the regular expression to determine
+   * the map's position in the world.
+   */
+  multiplierY: number;
+  /**
+   * After calculating the map's position in the world using x and y in its 
+   * regular expression and the associated multipliers, this offset is added
+   * to determine the final position.
+   */
+  offset: point;
+  /**
+   * Used to support showing only directly neighboring maps when a world is loaded.
+   * For more information, see the Showing Only Direct Neighbors section of this page:
+   * https://doc.mapeditor.org/en/stable/manual/worlds/#using-pattern-matching
+   */
+  mapSize: size;
+}
+/**
  * A world defined in a .world file, which is a JSON file that tells
  * Tiled which maps are part of the world and at what location.
  * https://doc.mapeditor.org/en/stable/manual/worlds/
  * @since 1.10.x TODO
  */
 declare class World extends TiledObject {
+  /**
+   * Returns maps that are explicitly added to this world. It does 
+   * not include those maps which match due to patterns defined on the world.
+   */
+  maps() : WorldMapEntry[];
+
+  /**
+   * Returns the list of patterns that are configured for this map.
+   * The patterns will be used to automatically match maps in your project.
+   */
+  patterns(): WorldPattern[];
   /**
    * Returns all maps that are added to this World.
    */
@@ -1167,6 +1212,11 @@ declare class World extends TiledObject {
    * @param fileName filename of the map
    */
   containsMap(fileName : string) : boolean;
+
+  /**
+   * The display name of the World.
+   */
+  displayName: string;
 }
 
 /**

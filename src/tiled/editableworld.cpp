@@ -61,6 +61,22 @@ QList<ScriptWorldMapEntry*> EditableWorld::mapsInRect(const QRect &rect)
     return maps;
 }
 
+QList<ScriptWorldMapEntry*> EditableWorld::allMaps() const
+{
+    QList<ScriptWorldMapEntry*> maps;
+    for (const auto &entry : (world()->allMaps()))
+        maps.append(new ScriptWorldMapEntry(entry));
+    return maps;
+}
+
+QList<ScriptWorldPattern*> EditableWorld::patterns() const
+{
+    QList<ScriptWorldPattern*> patterns;
+    for (const auto &entry : std::as_const(world()->patterns))
+        patterns.append(new ScriptWorldPattern(entry));
+    return patterns;
+}
+
 bool EditableWorld::isReadOnly() const
 {
     return !world()->canBeModified();
