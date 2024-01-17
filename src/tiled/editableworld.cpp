@@ -35,46 +35,29 @@ EditableWorld::EditableWorld(WorldDocument *worldDocument, QObject *parent)
     setObject(WorldManager::instance().worlds().value(worldDocument->fileName()));
 }
 
-QString EditableWorld::displayName() const
-{
-    return world()->displayName();
-}
-
 bool EditableWorld::containsMap(const QString &fileName)
 {
     return world()->containsMap(fileName);
 }
 
-QList<ScriptWorldMapEntry*> EditableWorld::maps() const
+QVector<WorldMapEntry> EditableWorld::maps() const
 {
-    QList<ScriptWorldMapEntry*> maps;
-    for (const auto &entry : std::as_const(world()->maps))
-        maps.append(new ScriptWorldMapEntry(entry));
-    return maps;
+    return world()->maps;
 }
 
-QList<ScriptWorldMapEntry*> EditableWorld::mapsInRect(const QRect &rect)
+QVector<WorldMapEntry> EditableWorld::mapsInRect(const QRect &rect)
 {
-    QList<ScriptWorldMapEntry*> maps;
-    for (const auto &entry : world()->mapsInRect(rect))
-        maps.append(new ScriptWorldMapEntry(entry));
-    return maps;
+    return world()->mapsInRect(rect);
 }
 
-QList<ScriptWorldMapEntry*> EditableWorld::allMaps() const
+QVector<WorldMapEntry> EditableWorld::allMaps() const
 {
-    QList<ScriptWorldMapEntry*> maps;
-    for (const auto &entry : (world()->allMaps()))
-        maps.append(new ScriptWorldMapEntry(entry));
-    return maps;
+    return world()->allMaps();
 }
 
-QList<ScriptWorldPattern*> EditableWorld::patterns() const
+QVector<WorldPattern> EditableWorld::patterns() const
 {
-    QList<ScriptWorldPattern*> patterns;
-    for (const auto &entry : std::as_const(world()->patterns))
-        patterns.append(new ScriptWorldPattern(entry));
-    return patterns;
+    return world()->patterns;
 }
 
 bool EditableWorld::isReadOnly() const

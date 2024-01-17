@@ -277,7 +277,7 @@ void MapScene::refreshScene()
         const QPoint currentMapPosition = world->mapRect(currentMapFile).topLeft();
         auto const contextMaps = world->contextMaps(currentMapFile);
 
-        for (const World::MapEntry &mapEntry : contextMaps) {
+        for (const WorldMapEntry &mapEntry : contextMaps) {
             MapDocumentPtr mapDocument;
 
             if (mapEntry.fileName == currentMapFile) {

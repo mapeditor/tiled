@@ -41,6 +41,34 @@
 
 namespace Tiled {
 
+class TILEDSHARED_EXPORT WorldMapEntry
+{
+    Q_GADGET
+    Q_PROPERTY(QString fileName MEMBER fileName)
+    Q_PROPERTY(QRect rect MEMBER rect)
+
+public:
+    QString fileName;
+    QRect rect;
+};
+
+class TILEDSHARED_EXPORT WorldPattern
+{
+    Q_GADGET
+    Q_PROPERTY(QRegularExpression regExp MEMBER regexp);
+    Q_PROPERTY(int multiplierX MEMBER multiplierX);
+    Q_PROPERTY(int multiplierY MEMBER multiplierY);
+    Q_PROPERTY(QPoint offset MEMBER offset);
+    Q_PROPERTY(QSize mapSize MEMBER mapSize);
+
+public:
+    QRegularExpression regexp;
+    int multiplierX;
+    int multiplierY;
+    QPoint offset;
+    QSize mapSize;
+};
+
 class TILEDSHARED_EXPORT World : public Object
 {
     Q_DECLARE_TR_FUNCTIONS(Tiled::WorldManager);
@@ -48,24 +76,9 @@ class TILEDSHARED_EXPORT World : public Object
 public:
     World() : Object(WorldType) {}
 
-    struct Pattern
-    {
-        QRegularExpression regexp;
-        int multiplierX;
-        int multiplierY;
-        QPoint offset;
-        QSize mapSize;
-    };
-
-    struct MapEntry
-    {
-        QString fileName;
-        QRect rect;
-    };
-
     QString fileName;
-    QVector<MapEntry> maps;
-    QVector<Pattern> patterns;
+    QVector<WorldMapEntry> maps;
+    QVector<WorldPattern> patterns;
     bool onlyShowAdjacentMaps = false;
     bool hasUnsavedChanges = false;
 
@@ -75,9 +88,9 @@ public:
     void removeMap(int mapIndex);
     bool containsMap(const QString &fileName) const;
     QRect mapRect(const QString &fileName) const;
-    QVector<MapEntry> allMaps() const;
-    QVector<MapEntry> mapsInRect(const QRect &rect) const;
-    QVector<MapEntry> contextMaps(const QString &fileName) const;
+    QVector<WorldMapEntry> allMaps() const;
+    QVector<WorldMapEntry> mapsInRect(const QRect &rect) const;
+    QVector<WorldMapEntry> contextMaps(const QString &fileName) const;
     QString firstMap() const;
 
     void error(const QString &message) const;
@@ -99,5 +112,7 @@ public:
                      QString *errorString = nullptr);
 };
 
-
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::WorldPattern)
+Q_DECLARE_METATYPE(Tiled::WorldMapEntry)

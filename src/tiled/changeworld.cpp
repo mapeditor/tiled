@@ -69,7 +69,7 @@ void RemoveMapCommand::redo()
     DocumentManager *manager = DocumentManager::instance();
     if (manager->currentDocument() && manager->currentDocument()->fileName() == mMapName) {
         const World *world = WorldManager::instance().worldForMap(mMapName);
-        for (const World::MapEntry &entry : world->allMaps()) {
+        for (const WorldMapEntry &entry : world->allMaps()) {
             if (entry.fileName != mMapName) {
                 manager->switchToDocument(entry.fileName);
                 break;

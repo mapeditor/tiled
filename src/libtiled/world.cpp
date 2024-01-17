@@ -59,7 +59,7 @@ void World::removeMap(int mapIndex)
 
 void World::addMap(const QString &fileName, const QRect &rect)
 {
-    MapEntry entry;
+    WorldMapEntry entry;
     entry.rect = rect;
     entry.fileName = fileName;
     maps.append(entry);
@@ -76,7 +76,7 @@ int World::mapIndex(const QString &fileName) const
 
 bool World::containsMap(const QString &fileName) const
 {
-    for (const World::MapEntry &mapEntry : maps) {
+    for (const WorldMapEntry &mapEntry : maps) {
         if (mapEntry.fileName == fileName)
             return true;
     }
@@ -87,7 +87,7 @@ bool World::containsMap(const QString &fileName) const
     if (QFileInfo(this->fileName).path() != QFileInfo(fileName).path())
         return false;
 
-    for (const World::Pattern &pattern : patterns) {
+    for (const WorldPattern &pattern : patterns) {
         QRegularExpressionMatch match = pattern.regexp.match(fileName);
         if (match.hasMatch())
             return true;
@@ -98,12 +98,12 @@ bool World::containsMap(const QString &fileName) const
 
 QRect World::mapRect(const QString &fileName) const
 {
-    for (const World::MapEntry &mapEntry : maps) {
+    for (const WorldMapEntry &mapEntry : maps) {
        if (mapEntry.fileName == fileName)
             return mapEntry.rect;
     }
 
-    for (const World::Pattern &pattern : patterns) {
+    for (const WorldPattern &pattern : patterns) {
         QRegularExpressionMatch match = pattern.regexp.match(fileName);
         if (match.hasMatch()) {
 #if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
@@ -123,15 +123,15 @@ QRect World::mapRect(const QString &fileName) const
     return QRect();
 }
 
-QVector<World::MapEntry> World::allMaps() const
+QVector<WorldMapEntry> World::allMaps() const
 {
-    QVector<World::MapEntry> all(maps);
+    QVector<WorldMapEntry> all(maps);
 
     if (!patterns.isEmpty()) {
         const QDir dir(QFileInfo(fileName).dir());
         const QStringList entries = dir.entryList(QDir::Files | QDir::Readable);
 
-        for (const World::Pattern &pattern : patterns) {
+        for (const WorldPattern &pattern : patterns) {
             for (const QString &fileName : entries) {
                 QRegularExpressionMatch match = pattern.regexp.match(fileName);
                 if (match.hasMatch()) {
@@ -143,7 +143,7 @@ QVector<World::MapEntry> World::allMaps() const
                     const int y = match.capturedRef(2).toInt();
 #endif
 
-                    MapEntry entry;
+                    WorldMapEntry entry;
                     entry.fileName = dir.filePath(fileName);
                     entry.rect = QRect(QPoint(x * pattern.multiplierX,
                                               y * pattern.multiplierY) + pattern.offset,
@@ -157,18 +157,18 @@ QVector<World::MapEntry> World::allMaps() const
     return all;
 }
 
-QVector<World::MapEntry> World::mapsInRect(const QRect &rect) const
+QVector<WorldMapEntry> World::mapsInRect(const QRect &rect) const
 {
-    QVector<World::MapEntry> maps(allMaps());
+    QVector<WorldMapEntry> maps(allMaps());
 
     maps.erase(std::remove_if(maps.begin(), maps.end(),
-                              [&](const World::MapEntry &mapEntry) { return !mapEntry.rect.intersects(rect); }),
+                              [&](const WorldMapEntry &mapEntry) { return !mapEntry.rect.intersects(rect); }),
                maps.end());
 
     return maps;
 }
 
-QVector<World::MapEntry> World::contextMaps(const QString &fileName) const
+QVector<WorldMapEntry> World::contextMaps(const QString &fileName) const
 {
     if (onlyShowAdjacentMaps)
         return mapsInRect(mapRect(fileName).adjusted(-1, -1, 1, 1));
@@ -184,7 +184,7 @@ QString World::firstMap() const
         const QDir dir(QFileInfo(fileName).dir());
         const QStringList entries = dir.entryList(QDir::Files | QDir::Readable);
 
-        for (const World::Pattern &pattern : patterns) {
+        for (const WorldPattern &pattern : patterns) {
             for (const QString &fileName : entries) {
                 QRegularExpressionMatch match = pattern.regexp.match(fileName);
                 if (match.hasMatch())
@@ -277,7 +277,7 @@ std::unique_ptr<World> World::load(const QString &fileName,
     for (const QJsonValue &value : maps) {
         const QJsonObject mapObject = value.toObject();
 
-        World::MapEntry map;
+        WorldMapEntry map;
         map.fileName = QDir::cleanPath(dir.filePath(mapObject.value(QLatin1String("fileName")).toString()));
         map.rect = QRect(mapObject.value(QLatin1String("x")).toInt(),
                          mapObject.value(QLatin1String("y")).toInt(),
@@ -291,7 +291,7 @@ std::unique_ptr<World> World::load(const QString &fileName,
     for (const QJsonValue &value : patterns) {
         const QJsonObject patternObject = value.toObject();
 
-        World::Pattern pattern;
+        WorldPattern pattern;
         pattern.regexp.setPattern(patternObject.value(QLatin1String("regexp")).toString());
         pattern.multiplierX = patternObject.value(QLatin1String("multiplierX")).toInt(1);
         pattern.multiplierY = patternObject.value(QLatin1String("multiplierY")).toInt(1);
@@ -327,7 +327,7 @@ bool World::save(World &world, QString *errorString)
     const QDir worldDir = QFileInfo(world.fileName).dir();
 
     QJsonArray maps;
-    for (const World::MapEntry& map : std::as_const(world.maps)) {
+    for (const WorldMapEntry &map : std::as_const(world.maps)) {
         QJsonObject jsonMap;
 
         const QString relativeFileName = QDir::cleanPath(worldDir.relativeFilePath(map.fileName));
@@ -363,3 +363,5 @@ bool World::save(World &world, QString *errorString)
 }
 
 } // namespace Tiled
+
+#include "moc_world.cpp"

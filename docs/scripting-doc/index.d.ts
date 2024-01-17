@@ -1132,7 +1132,8 @@ declare class Project extends TiledObject {
 }
 
 /**
- * Details of a map that is added to a {@link World},
+ * Details of a map that is added to a {@link World}.
+ *
  * @since 1.10.x TODO
  */
 declare class WorldMapEntry {
@@ -1140,6 +1141,7 @@ declare class WorldMapEntry {
    * File name of the map.
    */
   fileName : string;
+
   /**
    * A rect describing the location and dimensions of the map within the World.
    */
@@ -1148,75 +1150,87 @@ declare class WorldMapEntry {
 
 /**
  * Patterns added to a {@link World}, which are used to automatically match
- * maps.
- * https://doc.mapeditor.org/en/stable/manual/worlds/#using-pattern-matching
+ * maps. See the [Using Pattern
+ * Matching](https://doc.mapeditor.org/en/stable/manual/worlds/#using-pattern-matching)
+ * section in the manual for more information.
+ *
  * @since 1.10.x TODO
  */
 declare class WorldPattern {
   /** 
-   * String version of the regular expression pattern used 
+   * The regular expression pattern used to match maps in the world.
    */
-  regExp: string;
+  regExp: RegExp;
+
   /**
    * Multiplied by the first number (x) in the regular expression to determine
    * the map's position in the world.
-  */
+   */
   multiplierX: number;
+
   /**
    * Multiplied by the second number (y) in the regular expression to determine
    * the map's position in the world.
    */
   multiplierY: number;
+
   /**
    * After calculating the map's position in the world using x and y in its 
    * regular expression and the associated multipliers, this offset is added
    * to determine the final position.
    */
   offset: point;
+
   /**
-   * Used to support showing only directly neighboring maps when a world is loaded.
-   * For more information, see the Showing Only Direct Neighbors section of this page:
-   * https://doc.mapeditor.org/en/stable/manual/worlds/#using-pattern-matching
+   * The size of the map in pixels.
+   *
+   * Used to support showing only directly neighboring maps when a world is
+   * loaded. For more information, see the [Showing Only Direct
+   * Neighbors](https://doc.mapeditor.org/en/stable/manual/worlds/#showing-only-direct-neighbors)
+   * section in the manual.
    */
   mapSize: size;
 }
+
 /**
  * A world defined in a .world file, which is a JSON file that tells
  * Tiled which maps are part of the world and at what location.
- * https://doc.mapeditor.org/en/stable/manual/worlds/
+ *
+ * See the [Working with
+ * Worlds](https://doc.mapeditor.org/en/stable/manual/worlds/) page in the
+ * manual for more information.
+ *
  * @since 1.10.x TODO
  */
 declare class World extends TiledObject {
   /**
-   * Returns maps that are explicitly added to this world. It does 
-   * not include those maps which match due to patterns defined on the world.
+   * The maps that are explicitly added to this world. It does not include
+   * those maps which match due to patterns defined on the world.
    */
-  maps() : WorldMapEntry[];
+  readonly maps : WorldMapEntry[];
 
   /**
-   * Returns the list of patterns that are configured for this map.
-   * The patterns will be used to automatically match maps in your project.
+   * The patterns that are configured for this map. These patterns will be used
+   * to automatically match maps in your project.
    */
-  patterns(): WorldPattern[];
+  readonly patterns : WorldPattern[];
+
   /**
-   * Returns all maps that are added to this World.
+   * Returns all maps that are part of this world, either directly referenced
+   * or matched by one of the patterns.
    */
   allMaps() : WorldMapEntry[];
-  /**
-   * Return any maps that intersect with the given {@link rect} .
-   * @param rect - the rect used to 
-   */
-  mapsInRect(rect : rect) : WorldMapEntry[];
-  /**
-   * Returns true if this World contains the map specified in fileName.
-   * @param fileName filename of the map
-   */
-  containsMap(fileName : string) : boolean;
 
   /**
-   * The display name of the World.
+   * Returns any maps that intersect with the given {@link rect}. This is a
+   * filtered version of the results from {@link allMaps}.
    */
-  displayName: string;
+  mapsInRect(rect : rect) : WorldMapEntry[];
+
+  /**
+   * Returns true if this world contains the map specified in fileName.
+   */
+  containsMap(fileName : string) : boolean;
 }
 
 /**
