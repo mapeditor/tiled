@@ -1134,7 +1134,7 @@ declare class Project extends TiledObject {
 /**
  * Details of a map that is added to a {@link World}.
  *
- * @since 1.10.x TODO
+ * @since 1.10.3
  */
 declare class WorldMapEntry {
   /**
@@ -1154,7 +1154,7 @@ declare class WorldMapEntry {
  * Matching](https://doc.mapeditor.org/en/stable/manual/worlds/#using-pattern-matching)
  * section in the manual for more information.
  *
- * @since 1.10.x TODO
+ * @since 1.10.3
  */
 declare class WorldPattern {
   /** 
@@ -1200,7 +1200,7 @@ declare class WorldPattern {
  * Worlds](https://doc.mapeditor.org/en/stable/manual/worlds/) page in the
  * manual for more information.
  *
- * @since 1.10.x TODO
+ * @since 1.10.3
  */
 declare class World extends TiledObject {
   /**
@@ -1431,7 +1431,7 @@ declare class MapObject extends TiledObject {
  * The top-level assets supported by Tiled. Not all of these assets have
  * associated editors.
  *
- * @since 1.10.x TODO
+ * @since 1.10.3
  */
 declare enum AssetType {
   TileMap = 1,
@@ -4492,59 +4492,59 @@ declare namespace tiled {
 
   /**
    * A list of all currently loaded {@link World|worlds}.
-   * @since 1.10.x TODO
+   * @since 1.10.3
    */
   export const worlds : World[];
 
   /**
    * Load a world contained in a .world file in the path fileName.
-   * @since 1.10.x TODO
+   * @since 1.10.3
    */
   export function loadWorld(fileName : string) : void;
 
   /**
    * Unload a world contained in a .world file in the path fileName.
-   * @since 1.10.x TODO
+   * @since 1.10.3
    */
   export function unloadWorld(fileName : string) : void;
 
   /**
    * Unload all currently loaded worlds.
-   *  @since 1.10.x TODO
+   *  @since 1.10.3
    */
   export function unloadAllWorlds() : void;
 
   /**
    * Signal emitted when any world is saved, loaded, unloaded, or reloaded.
-   * @since 1.10.x TODO
+   * @since 1.10.3
    */
   export const worldsChanged : Signal<void>;
 
   /**
    * Signal emitted when a world is loaded. 
    * Provides the file name of the world that was loaded.
-   * @since 1.10.x TODO
+   * @since 1.10.3
    */
   export const worldLoaded : Signal<string>;
 
   /**
    * Signal emitted when a world is reloaded. 
    * Provides the file name of the world that was reloaded.
-   * @since 1.10.x TODO
+   * @since 1.10.3
    */
   export const worldReloaded : Signal<string>;
 
   /**
    * Signal emitted when a world is reloaded. 
    * Provides the file name of the world that was unloaded.
-   * @since 1.10.x TODO
+   * @since 1.10.3
    */
   export const worldUnloaded : Signal<string>;
   
   /**
    * Signal emitted when a world is reloaded. 
    * Provides the file name of the world that was saved.
-   * @since 1.10.x TODO
+   * @since 1.10.3
    */
   export const worldSaved : Signal<string>;
 }
