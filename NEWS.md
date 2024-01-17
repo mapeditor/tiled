@@ -1,8 +1,14 @@
 ### Unreleased
 
+* Added --project command-line parameter for use when exporting (#3797)
 * JSON format: Fixed tile order when loading a tileset using the old format
 * tmxrasterizer: Added --hide-object and --show-object arguments (by Lars Luz, #3819)
-* Windows: Fixed the support for WebP images (updated to Qt 6.5.3)
+* tmxrasterizer: Added --frames and --frame-duration arguments to export animated maps as multiple images (#3868)
+* tmxviewer: Added support for viewing JSON maps (#3866)
+* Windows: Fixed the support for WebP images (updated to Qt 6.5.3, #3661)
+* Fixed mouse handling issue when zooming while painting (#3863)
+* Fixed possible crash after a scripted tool disappears while active
+* AppImage: Updated to Sentry 0.6.7
 
 ### Tiled 1.10.2 (4 August 2023)
 

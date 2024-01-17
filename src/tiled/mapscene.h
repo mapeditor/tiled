@@ -65,6 +65,7 @@ public:
     void setShowTileCollisionShapes(bool enabled);
     void setParallaxEnabled(bool enabled);
     void setPainterScale(qreal painterScale);
+    void setSuppressMouseMoveEvents(bool suppress);
 
     QRectF mapBoundingRect() const;
 
@@ -127,6 +128,8 @@ private:
 
     bool eventFilter(QObject *object, QEvent *event) override;
 
+    bool toolMouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers);
+
     MapDocument *mMapDocument = nullptr;
     QHash<Map*, MapItem*> mMapItems;
     AbstractTool *mSelectedTool = nullptr;
@@ -135,8 +138,11 @@ private:
     bool mShowTileCollisionShapes = false;
     bool mParallaxEnabled = true;
     bool mWorldsEnabled = true;
+    bool mSuppressMouseMoveEvents = false;
+    bool mMouseMoveEventSuppressed = false;
     Session::CallbackIterator mEnableWorldsCallback;
-    Qt::KeyboardModifiers mCurrentModifiers = Qt::NoModifier;
+    Qt::KeyboardModifiers mToolModifiers = Qt::NoModifier;
+    Qt::KeyboardModifiers mLastModifiers = Qt::NoModifier;
     QPointF mLastMousePos;
     QRectF mViewRect;
     QColor mDefaultBackgroundColor;

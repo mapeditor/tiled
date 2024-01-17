@@ -440,9 +440,9 @@ static void addAutomappingProperties(Properties &properties, const Object *objec
 {
     auto addRuleOptions = [&] {
         mergeProperties(properties, QVariantMap {
-            { QStringLiteral("Probability"), 0.0 },
-            { QStringLiteral("ModX"), 0 },
-            { QStringLiteral("ModY"), 0 },
+            { QStringLiteral("Probability"), 1.0 },
+            { QStringLiteral("ModX"), 1 },
+            { QStringLiteral("ModY"), 1 },
             { QStringLiteral("OffsetX"), 0 },
             { QStringLiteral("OffsetY"), 0 },
             { QStringLiteral("NoOverlappingOutput"), false },
