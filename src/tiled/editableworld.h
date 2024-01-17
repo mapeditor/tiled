@@ -47,9 +47,9 @@ public:
     QVector<WorldMapEntry> maps() const;
     QVector<WorldPattern> patterns() const;
 
-    Q_INVOKABLE QVector<WorldMapEntry> mapsInRect(const QRect &rect);
+    Q_INVOKABLE QVector<WorldMapEntry> mapsInRect(const QRect &rect) const;
     Q_INVOKABLE QVector<WorldMapEntry> allMaps() const;
-    Q_INVOKABLE bool containsMap(const QString &fileName);
+    Q_INVOKABLE bool containsMap(const QString &fileName) const;
     Q_INVOKABLE int mapIndex(const QString &fileName) const;
     Q_INVOKABLE void setMapRect(int mapIndex, const QRect &rect);
     Q_INVOKABLE void addMap(const QString &mapFileName, const QRect &rect);

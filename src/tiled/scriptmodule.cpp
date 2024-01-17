@@ -68,11 +68,11 @@ ScriptModule::ScriptModule(QObject *parent)
         connect(documentManager, &DocumentManager::currentDocumentChanged, this, &ScriptModule::currentDocumentChanged);
     }
 
-    connect(&WorldManager::instance(), &WorldManager::worldsChanged, this, &ScriptModule::onWorldsChanged);
-    connect(&WorldManager::instance(), &WorldManager::worldLoaded, this, &ScriptModule::onWorldLoaded);
-    connect(&WorldManager::instance(), &WorldManager::worldReloaded, this, &ScriptModule::onWorldReloaded);
-    connect(&WorldManager::instance(), &WorldManager::worldUnloaded, this, &ScriptModule::onWorldUnloaded);
-    connect(&WorldManager::instance(), &WorldManager::worldSaved, this, &ScriptModule::onWorldSaved);
+    connect(&WorldManager::instance(), &WorldManager::worldsChanged, this, &ScriptModule::worldsChanged);
+    connect(&WorldManager::instance(), &WorldManager::worldLoaded, this, &ScriptModule::worldLoaded);
+    connect(&WorldManager::instance(), &WorldManager::worldReloaded, this, &ScriptModule::worldReloaded);
+    connect(&WorldManager::instance(), &WorldManager::worldUnloaded, this, &ScriptModule::worldUnloaded);
+    connect(&WorldManager::instance(), &WorldManager::worldSaved, this, &ScriptModule::worldSaved);
 
 }
 
@@ -730,27 +730,6 @@ void ScriptModule::unloadWorld(const QString &fileName) const
 void ScriptModule::unloadAllWorlds() const
 {
     WorldManager::instance().unloadAllWorlds();
-}
-
-void ScriptModule::onWorldsChanged()
-{
-    emit worldsChanged();
-}
-void ScriptModule::onWorldLoaded(const QString &fileName)
-{
-    emit worldLoaded(fileName);
-}
-void ScriptModule::onWorldReloaded(const QString &fileName)
-{
-    emit worldReloaded(fileName);
-}
-void ScriptModule::onWorldUnloaded(const QString &fileName)
-{
-    emit worldUnloaded(fileName);
-}
-void ScriptModule::onWorldSaved(const QString &fileName)
-{
-    emit worldSaved(fileName);
 }
 
 } // namespace Tiled

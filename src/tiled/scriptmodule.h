@@ -183,12 +183,6 @@ private:
     void documentAboutToClose(Document *document);
     void currentDocumentChanged(Document *document);
 
-    void onWorldsChanged();
-    void onWorldLoaded(const QString &fileName);
-    void onWorldReloaded(const QString &fileName);
-    void onWorldUnloaded(const QString &fileName);
-    void onWorldSaved(const QString &fileName);
-
     void setCallback(Issue &issue, QJSValue activated);
 
     std::map<Id, std::unique_ptr<ScriptedAction>> mRegisteredActions;

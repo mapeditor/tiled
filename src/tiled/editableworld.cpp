@@ -35,7 +35,7 @@ EditableWorld::EditableWorld(WorldDocument *worldDocument, QObject *parent)
     setObject(WorldManager::instance().worlds().value(worldDocument->fileName()));
 }
 
-bool EditableWorld::containsMap(const QString &fileName)
+bool EditableWorld::containsMap(const QString &fileName) const
 {
     return world()->containsMap(fileName);
 }
@@ -45,7 +45,7 @@ QVector<WorldMapEntry> EditableWorld::maps() const
     return world()->maps;
 }
 
-QVector<WorldMapEntry> EditableWorld::mapsInRect(const QRect &rect)
+QVector<WorldMapEntry> EditableWorld::mapsInRect(const QRect &rect) const
 {
     return world()->mapsInRect(rect);
 }

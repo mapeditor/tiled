@@ -1486,6 +1486,8 @@ declare class Asset extends TiledObject {
 
   /**
    * The type of this asset.
+   *
+   * @since 1.10.3
    */
   readonly assetType: AssetType;
 
@@ -4510,7 +4512,7 @@ declare namespace tiled {
 
   /**
    * Unload all currently loaded worlds.
-   *  @since 1.10.3
+   * @since 1.10.3
    */
   export function unloadAllWorlds() : void;
 
