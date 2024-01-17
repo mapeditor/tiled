@@ -25,8 +25,6 @@
 #include "world.h"
 #include "worlddocument.h"
 
-#include <QObject>
-
 namespace Tiled {
 
 /**
