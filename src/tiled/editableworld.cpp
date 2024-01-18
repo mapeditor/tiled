@@ -22,6 +22,7 @@
 #include "editableworld.h"
 
 #include "changeworld.h"
+#include "maprenderer.h"
 #include "scriptmanager.h"
 #include "worldmanager.h"
 
@@ -65,20 +66,33 @@ bool EditableWorld::isReadOnly() const
     return !world()->canBeModified();
 }
 
-int EditableWorld::mapIndex(const QString &fileName) const
+void EditableWorld::setMapRect(const QString &mapFileName, const QRect &rect)
 {
-    return world()->mapIndex(fileName);
-}
-
-void EditableWorld::setMapRect(int mapIndex, const QRect &rect)
-{
-    if (mapIndex < 0 || mapIndex >= world()->maps.size()) {
-        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
+    const int mapIndex = world()->mapIndex(mapFileName);
+    if (mapIndex < 0) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Map not found in this world"));
         return;
     }
 
-    const QString &fileName = world()->maps.at(mapIndex).fileName;
-    document()->undoStack()->push(new SetMapRectCommand(fileName, rect));
+    document()->undoStack()->push(new SetMapRectCommand(mapFileName, rect));
+}
+
+void EditableWorld::setMapPos(EditableMap *map, QPoint position)
+{
+    if (!map) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
+
+    const int mapIndex = world()->mapIndex(map->fileName());
+    if (mapIndex < 0) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Map not found in this world"));
+        return;
+    }
+
+    QRect rect = world()->maps.at(mapIndex).rect;
+    rect.moveTo(position);
+    document()->undoStack()->push(new SetMapRectCommand(map->fileName(), rect));
 }
 
 void EditableWorld::addMap(const QString &mapFileName, const QRect &rect)
@@ -96,34 +110,41 @@ void EditableWorld::addMap(const QString &mapFileName, const QRect &rect)
     document()->undoStack()->push(new AddMapCommand(fileName(), mapFileName, rect));
 }
 
-void EditableWorld::addMap(EditableMap *map, const QPoint &position)
+void EditableWorld::addMap(EditableMap *map, QPoint position)
 {
-    if (map == nullptr) {
-        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
+    if (!map) {
+        ScriptManager::instance().throwNullArgError(0);
         return;
     }
-    addMap(map->fileName(), QRect(position.x(), position.y(), map->size().width(), map->size().height()));
+
+    if (map->fileName().isEmpty()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Can't add unsaved map to a world"));
+        return;
+    }
+
+    const QSize size = MapRenderer::create(map->map())->mapBoundingRect().size();
+    addMap(map->fileName(), QRect(position, size));
 }
 
-void EditableWorld::removeMap(int mapIndex)
+void EditableWorld::removeMap(const QString &mapFileName)
 {
-    if (mapIndex < 0 || mapIndex >= world()->maps.size()) {
-        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
+    const int mapIndex = world()->mapIndex(mapFileName);
+    if (mapIndex < 0) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Map not found in this world"));
         return;
     }
 
-    const QString &fileName = world()->maps.at(mapIndex).fileName;
-    document()->undoStack()->push(new RemoveMapCommand(fileName));
+    document()->undoStack()->push(new RemoveMapCommand(mapFileName));
 }
 
 void EditableWorld::removeMap(EditableMap *map)
 {
-    if (map == nullptr) {
-        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
+    if (!map) {
+        ScriptManager::instance().throwNullArgError(0);
         return;
     }
-    int removeMapIndex = mapIndex(map->fileName());
-    removeMap(removeMapIndex);
+
+    removeMap(map->fileName());
 }
 
 bool EditableWorld::save()
