@@ -1243,25 +1243,25 @@ declare class World extends TiledObject {
   /**
    * Change the position of a map within this world.
    * @param map The TileMap of which to change the position.
-   * @param pos The new position of the map.
+   * @param x The x position of the map in the world, in pixels.
+   * @param y The y position of the map in the world, in pixels.
    */
-  setMapPos(map: TileMap, pos: point): void;
+  setMapPos(map: TileMap, x: number, y: number): void;
 
   /**
    * Add a map to this world.
-   * @param fileName The file name of the map to add to this world
-   * @param worldRect A Qt.rect specifying the position and size of the map to add
+   * @param fileName The file name of the map to add to this world.
+   * @param rect A Qt.rect specifying the position and size of the map to add.
    */
-  addMap(fileName: string, worldRect: rect): void;
+  addMap(fileName: string, rect: rect): void;
 
   /**
-   * Add a map to this world.
+   * Add a map to this world. The map size in pixels will be set automatically.
    * @param map The TileMap instance to add to the world.
-   * @param worldRect A Qt.point specifying the position to add the map at. The map
-   *                  size will automatically be used to specify the map's size in the
-   *                  world.
+   * @param x The x position of the map in the world, in pixels.
+   * @param y The y position of the map in the world, in pixels.
    */
-  addMap(map: TileMap, worldRect: point): void;
+  addMap(map: TileMap, x: number, y: number): void;
 
   /**
    * Remove a map from this world.

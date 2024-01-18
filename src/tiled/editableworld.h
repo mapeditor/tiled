@@ -52,9 +52,9 @@ public:
     Q_INVOKABLE QVector<WorldMapEntry> allMaps() const;
     Q_INVOKABLE bool containsMap(const QString &fileName) const;
     Q_INVOKABLE void setMapRect(const QString &mapFileName, const QRect &rect);
-    Q_INVOKABLE void setMapPos(EditableMap *map, QPoint position);
+    Q_INVOKABLE void setMapPos(EditableMap *map, int x, int y);
     Q_INVOKABLE void addMap(const QString &mapFileName, const QRect &rect);
-    Q_INVOKABLE void addMap(EditableMap *map, QPoint position);
+    Q_INVOKABLE void addMap(EditableMap *map, int x, int y);
     Q_INVOKABLE void removeMap(const QString &mapFileName);
     Q_INVOKABLE void removeMap(EditableMap *map);
     Q_INVOKABLE bool save();

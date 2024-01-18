@@ -77,7 +77,7 @@ void EditableWorld::setMapRect(const QString &mapFileName, const QRect &rect)
     document()->undoStack()->push(new SetMapRectCommand(mapFileName, rect));
 }
 
-void EditableWorld::setMapPos(EditableMap *map, QPoint position)
+void EditableWorld::setMapPos(EditableMap *map, int x, int y)
 {
     if (!map) {
         ScriptManager::instance().throwNullArgError(0);
@@ -91,7 +91,7 @@ void EditableWorld::setMapPos(EditableMap *map, QPoint position)
     }
 
     QRect rect = world()->maps.at(mapIndex).rect;
-    rect.moveTo(position);
+    rect.moveTo(x, y);
     document()->undoStack()->push(new SetMapRectCommand(map->fileName(), rect));
 }
 
@@ -110,7 +110,7 @@ void EditableWorld::addMap(const QString &mapFileName, const QRect &rect)
     document()->undoStack()->push(new AddMapCommand(fileName(), mapFileName, rect));
 }
 
-void EditableWorld::addMap(EditableMap *map, QPoint position)
+void EditableWorld::addMap(EditableMap *map, int x, int y)
 {
     if (!map) {
         ScriptManager::instance().throwNullArgError(0);
@@ -123,7 +123,7 @@ void EditableWorld::addMap(EditableMap *map, QPoint position)
     }
 
     const QSize size = MapRenderer::create(map->map())->mapBoundingRect().size();
-    addMap(map->fileName(), QRect(position, size));
+    addMap(map->fileName(), QRect(QPoint(x, y), size));
 }
 
 void EditableWorld::removeMap(const QString &mapFileName)
