@@ -616,8 +616,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
                 mLoadedWorlds = WorldManager::instance().worlds().keys();
             });
         }
-        if (WorldManager::instance().worlds().count() >= 2)
+        if (WorldManager::instance().worlds().count() >= 2) {
+            mUi->menuUnloadWorld->addSeparator();
             mUi->menuUnloadWorld->addAction(mUi->actionUnloadAllWorlds);
+        }
     });
     connect(mUi->actionNewWorld, &QAction::triggered, this, [this] {
         Session &session = Session::current();
