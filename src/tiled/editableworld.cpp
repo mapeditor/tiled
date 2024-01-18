@@ -96,6 +96,15 @@ void EditableWorld::addMap(const QString &mapFileName, const QRect &rect)
     document()->undoStack()->push(new AddMapCommand(fileName(), mapFileName, rect));
 }
 
+void EditableWorld::addMap(EditableMap *map, const QPoint &position)
+{
+    if (map == nullptr) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
+        return;
+    }
+    addMap(map->fileName(), QRect(position.x(), position.y(), map->size().width(), map->size().height()));
+}
+
 void EditableWorld::removeMap(int mapIndex)
 {
     if (mapIndex < 0 || mapIndex >= world()->maps.size()) {
@@ -105,6 +114,16 @@ void EditableWorld::removeMap(int mapIndex)
 
     const QString &fileName = world()->maps.at(mapIndex).fileName;
     document()->undoStack()->push(new RemoveMapCommand(fileName));
+}
+
+void EditableWorld::removeMap(EditableMap *map)
+{
+    if (map == nullptr) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
+        return;
+    }
+    int removeMapIndex = mapIndex(map->fileName());
+    removeMap(removeMapIndex);
 }
 
 bool EditableWorld::save()

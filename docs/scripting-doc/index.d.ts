@@ -1231,6 +1231,58 @@ declare class World extends TiledObject {
    * Returns true if this world contains the map specified in fileName.
    */
   containsMap(fileName : string) : boolean;
+
+   /**
+    * Get the index for a given map filename. 
+    * @param fileName The file name of the map.
+    */
+   mapIndex(fileName : string): number;
+
+  /**
+   * Add a map to this world.
+   * @param fileName The file name of the map to add to this world
+   * @param worldRect A Qt.rect specifying the position and size of the map to add
+   */
+  addMap(fileName: string, worldRect: rect): void;
+
+   /**
+   * Add a map to this world.
+   * @param map The TileMap instance to add to the world.
+   * @param worldRect A Qt.point specifying the position to add the map at. The map
+   *                  size will automatically be used to specify the map's size in the
+   *                  world.
+   */
+   addMap(map: TileMap, worldRect: point): void;
+
+   /**
+    * Remove a map from this world.
+    * @param mapIndex - the index of the map to remove.
+    */
+   removeMap(mapIndex: number): void;
+
+   /**
+    * Remove a map from this world.
+    * @param map The TileMap instance to remove from this world.
+    */
+   removeMap(map: TileMap): void;
+
+   /**
+    * Returns true if the map at the given fileName is contained in this world.
+    * @param fileName The file name of the map to check for.
+    */
+   containsMap(fileName : string): boolean;
+
+   /**
+    * Change the position and size of a TileMap within this world.
+    * @param mapIndex The index of the map to change the position and size for.
+    * @param rect The new rect describing the position and size of the map.
+    */
+   setMapRect(mapIndex : number, rect : rect): void;
+   
+   /**
+    * Save this world to disk. Returns true if the world was saved successfully. 
+    */
+   save(): boolean;
 }
 
 /**

@@ -22,6 +22,7 @@
 #pragma once
 
 #include "editableasset.h"
+#include "editablemap.h"
 #include "world.h"
 #include "worlddocument.h"
 
@@ -53,7 +54,9 @@ public:
     Q_INVOKABLE int mapIndex(const QString &fileName) const;
     Q_INVOKABLE void setMapRect(int mapIndex, const QRect &rect);
     Q_INVOKABLE void addMap(const QString &mapFileName, const QRect &rect);
+    Q_INVOKABLE void addMap(EditableMap *map, const QPoint &position);
     Q_INVOKABLE void removeMap(int mapIndex);
+    Q_INVOKABLE void removeMap(EditableMap *map);
     Q_INVOKABLE bool save();
 
     QSharedPointer<Document> createDocument() override;
