@@ -56,7 +56,7 @@ public:
     void setMapRect(const QString &fileName, const QRect &rect);
     bool mapCanBeModified(const QString &fileName) const;
     bool removeMap(const QString &fileName);
-    bool addMap(const QString &fileName, const QString &mapFileName, const QRect &rect);
+    bool addMap(const QString &worldFileName, const QString &mapFileName, const QRect &rect);
 
 signals:
     void worldsChanged();

@@ -174,7 +174,6 @@ bool AbstractWorldTool::mapCanBeMoved(MapDocument *mapDocument) const
     return world != nullptr && world->canBeModified();
 }
 
-
 QRect AbstractWorldTool::mapRect(MapDocument *mapDocument) const
 {
     auto rect = mapDocument->renderer()->mapBoundingRect();

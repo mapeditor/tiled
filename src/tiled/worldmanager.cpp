@@ -164,9 +164,9 @@ bool WorldManager::saveWorld(const QString &fileName, QString *errorString)
         }
     }
 
-    if (!savingWorld || !savingWorld->canBeModified()) {
+    if (!savingWorld) {
         if (errorString)
-            *errorString = tr("World doesn't support saving");
+            *errorString = tr("World not found");
         return false;
     }
 
@@ -249,12 +249,10 @@ void WorldManager::setMapRect(const QString &fileName, const QRect &rect)
         if (index < 0)
             continue;
 
-        if (!world->canBeModified())
-            continue;
-
         world->setMapRect(index, rect);
+        emit worldsChanged();
+        break;
     }
-    emit worldsChanged();
 }
 
 bool WorldManager::removeMap(const QString &fileName)
@@ -262,9 +260,6 @@ bool WorldManager::removeMap(const QString &fileName)
     for (auto world : std::as_const(mWorlds)) {
         int index = world->mapIndex(fileName);
         if (index < 0)
-            continue;
-
-        if (!world->canBeModified())
             continue;
 
         world->removeMap(index);
@@ -275,7 +270,7 @@ bool WorldManager::removeMap(const QString &fileName)
     return false;
 }
 
-bool WorldManager::addMap(const QString &fileName, const QString &mapFileName, const QRect &rect)
+bool WorldManager::addMap(const QString &worldFileName, const QString &mapFileName, const QRect &rect)
 {
     Q_ASSERT(!mapFileName.isEmpty());
 
@@ -283,10 +278,7 @@ bool WorldManager::addMap(const QString &fileName, const QString &mapFileName, c
         return false;
 
     for (auto world : std::as_const(mWorlds)) {
-        if (!world->canBeModified())
-            continue;
-
-        if (world->fileName == fileName) {
+        if (world->fileName == worldFileName) {
             world->addMap(mapFileName, rect);
             emit worldsChanged();
             return true;

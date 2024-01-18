@@ -337,11 +337,34 @@ bool World::save(World &world, QString *errorString)
         jsonMap.insert(QLatin1String("y"), map.rect.y());
         jsonMap.insert(QLatin1String("width"), map.rect.width());
         jsonMap.insert(QLatin1String("height"), map.rect.height());
-        maps.push_back(jsonMap);
+        maps.append(jsonMap);
+    }
+
+    QJsonArray patterns;
+    for (const WorldPattern &pattern : std::as_const(world.patterns)) {
+        QJsonObject jsonPattern;
+
+        jsonPattern.insert(QLatin1String("regexp"), pattern.regexp.pattern());
+        if (pattern.multiplierX != 1)
+            jsonPattern.insert(QLatin1String("multiplierX"), pattern.multiplierX);
+        if (pattern.multiplierY != 1)
+            jsonPattern.insert(QLatin1String("multiplierY"), pattern.multiplierY);
+        if (pattern.offset.x() != 0)
+            jsonPattern.insert(QLatin1String("offsetX"), pattern.offset.x());
+        if (pattern.offset.y() != 0)
+            jsonPattern.insert(QLatin1String("offsetY"), pattern.offset.y());
+        if (pattern.mapSize.width() != std::abs(pattern.multiplierX))
+            jsonPattern.insert(QLatin1String("mapWidth"), pattern.mapSize.width());
+        if (pattern.mapSize.height() != std::abs(pattern.multiplierY))
+            jsonPattern.insert(QLatin1String("mapHeight"), pattern.mapSize.height());
+        patterns.append(jsonPattern);
     }
 
     QJsonObject document;
-    document.insert(QLatin1String("maps"), maps);
+    if (!maps.isEmpty())
+        document.insert(QLatin1String("maps"), maps);
+    if (!patterns.isEmpty())
+        document.insert(QLatin1String("patterns"), patterns);
     document.insert(QLatin1String("type"), QLatin1String("world"));
     document.insert(QLatin1String("onlyShowAdjacentMaps"), world.onlyShowAdjacentMaps);
 
