@@ -1,6 +1,7 @@
 ### Unreleased
 
 * Added --project command-line parameter for use when exporting (#3797)
+* Scripting: Added API for working with worlds (#3539)
 * JSON format: Fixed tile order when loading a tileset using the old format
 * tmxrasterizer: Added --hide-object and --show-object arguments (by Lars Luz, #3819)
 * tmxrasterizer: Added --frames and --frame-duration arguments to export animated maps as multiple images (#3868)

@@ -44,8 +44,7 @@ public:
 
     FileFormat *writerFormat() const override { return nullptr; }
 
-    // TODO: Expose worlds in script API
-    std::unique_ptr<EditableAsset> createEditable() override { return {}; }
+    std::unique_ptr<EditableAsset> createEditable() override;
 
     // Exporting not supported for worlds
     QString lastExportFileName() const override { return QString(); }

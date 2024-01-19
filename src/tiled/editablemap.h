@@ -36,7 +36,7 @@ class EditableSelectedArea;
 class EditableTileLayer;
 class EditableTileset;
 
-class EditableMap : public EditableAsset
+class EditableMap final : public EditableAsset
 {
     Q_OBJECT
 
@@ -113,7 +113,8 @@ public:
     explicit EditableMap(std::unique_ptr<Map> map, QObject *parent = nullptr);
     ~EditableMap() override;
 
-    bool isReadOnly() const final;
+    bool isReadOnly() const override;
+    AssetType::Value assetType() const override { return AssetType::TileMap; }
 
     int width() const;
     int height() const;

@@ -105,6 +105,7 @@ public:
     ~EditableTileset() override;
 
     bool isReadOnly() const final;
+    AssetType::Value assetType() const override { return AssetType::Tileset; }
 
     const QString &name() const;
     QString image() const;

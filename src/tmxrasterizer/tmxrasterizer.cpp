@@ -34,7 +34,7 @@
 #include "objectgroup.h"
 #include "tilelayer.h"
 #include "tilesetmanager.h"
-#include "worldmanager.h"
+#include "world.h"
 
 #include <QDebug>
 #include <QFileInfo>
@@ -245,9 +245,8 @@ int TmxRasterizer::saveImage(const QString &imageFileName,
 int TmxRasterizer::renderWorld(const QString &worldFileName,
                                const QString &imageFileName)
 {
-    WorldManager &worldManager = WorldManager::instance();
     QString errorString;
-    const World *world = worldManager.loadWorld(worldFileName, &errorString);
+    const auto world = World::load(worldFileName, &errorString);
     if (!world) {
         qWarning("Error loading the world file \"%s\":\n%s",
                  qUtf8Printable(worldFileName),
@@ -262,7 +261,7 @@ int TmxRasterizer::renderWorld(const QString &worldFileName,
         return 1;
     }
     QRect worldBoundingRect;
-    for (const World::MapEntry &mapEntry : maps) {
+    for (const WorldMapEntry &mapEntry : maps) {
         std::unique_ptr<Map> map { readMap(mapEntry.fileName, &errorString) };
         if (!map) {
             qWarning("Error while reading \"%s\":\n%s",
@@ -299,7 +298,7 @@ int TmxRasterizer::renderWorld(const QString &worldFileName,
 
     painter.translate(-worldBoundingRect.topLeft());
 
-    for (const World::MapEntry &mapEntry : maps) {
+    for (const WorldMapEntry &mapEntry : maps) {
         std::unique_ptr<Map> map { readMap(mapEntry.fileName, &errorString) };
         if (!map) {
             qWarning("Error while reading \"%s\":\n%s",

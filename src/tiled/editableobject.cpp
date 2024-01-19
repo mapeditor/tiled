@@ -144,6 +144,7 @@ static Map *mapForObject(Object *object)
     case Object::WangSetType:
     case Object::WangColorType:
     case Object::ProjectType:
+    case Object::WorldType:
         break;
     }
     return nullptr;

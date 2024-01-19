@@ -33,12 +33,12 @@
 #include "maprenderer.h"
 #include "objectgroup.h"
 #include "objecttemplate.h"
-#include "preferences.h"
 #include "snaphelper.h"
 #include "stylehelper.h"
 #include "templatemanager.h"
 #include "tilesetmanager.h"
 #include "toolmanager.h"
+#include "world.h"
 #include "worldmanager.h"
 
 #include <QApplication>
@@ -288,7 +288,7 @@ void MapScene::refreshScene()
         const QPoint currentMapPosition = world->mapRect(currentMapFile).topLeft();
         auto const contextMaps = world->contextMaps(currentMapFile);
 
-        for (const World::MapEntry &mapEntry : contextMaps) {
+        for (const WorldMapEntry &mapEntry : contextMaps) {
             MapDocumentPtr mapDocument;
 
             if (mapEntry.fileName == currentMapFile) {

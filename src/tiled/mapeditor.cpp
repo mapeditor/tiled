@@ -50,7 +50,7 @@
 #include "objectreferencetool.h"
 #include "objectsdock.h"
 #include "objectselectiontool.h"
-#include "objecttemplate.h"
+#include "objecttemplate.h"         // used when compiling against Qt 5
 #include "preferences.h"
 #include "propertiesdock.h"
 #include "reversingproxymodel.h"
@@ -73,10 +73,9 @@
 #include "undodock.h"
 #include "wangbrush.h"
 #include "wangdock.h"
-#include "wangset.h"
 #include "zoomable.h"
-#include "worldmovemaptool.h"
 #include "worldmanager.h"
+#include "worldmovemaptool.h"
 
 #include <QComboBox>
 #include <QDialogButtonBox>
