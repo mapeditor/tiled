@@ -1580,6 +1580,8 @@ declare class Asset extends TiledObject {
    * To save assets to a specific file or in a different format, use {@link
    * tiled.mapFormat} or {@link tiled.tilesetFormat}. This is currently not
    * supported for worlds.
+   *
+   * @since 1.10.3
    */
   save(): boolean;
 }
