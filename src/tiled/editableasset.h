@@ -70,6 +70,7 @@ public:
     bool push(QUndoCommand *command);
     bool push(std::unique_ptr<QUndoCommand> command);
 
+    Q_INVOKABLE bool save();
     Q_INVOKABLE QJSValue macro(const QString &text, QJSValue callback);
 
     Document *document() const;

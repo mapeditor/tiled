@@ -71,6 +71,7 @@
 #include "tmxmapformat.h"
 #include "utils.h"
 #include "world.h"
+#include "worlddocument.h"
 #include "worldmanager.h"
 #include "zoomable.h"
 
@@ -651,13 +652,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         mUi->menuSaveWorld->clear();
 
         for (const World *world : WorldManager::instance().worlds()) {
-            if (!mDocumentManager->isWorldModified(world->fileName))
+            auto worldDocument = mDocumentManager->ensureWorldDocument(world->fileName);
+            if (!worldDocument->isModified())
                 continue;
 
-            mUi->menuSaveWorld->addAction(world->fileName, this, [this, fileName = world->fileName] {
-                QString error;
-                if (!WorldManager::instance().saveWorld(fileName, &error))
-                    QMessageBox::critical(this, tr("Error Saving World"), error);
+            mUi->menuSaveWorld->addAction(world->fileName, this, [this, worldDocument] {
+                mDocumentManager->saveDocument(worldDocument);
             });
         }
     });
@@ -1213,14 +1213,12 @@ void MainWindow::saveAll()
     }
 
     for (const World *world : WorldManager::instance().worlds()) {
-        if (!mDocumentManager->isWorldModified(world->fileName))
+        auto worldDocument = mDocumentManager->ensureWorldDocument(world->fileName);
+        if (!worldDocument->isModified())
             continue;
 
-        QString error;
-        if (!WorldManager::instance().saveWorld(world->fileName, &error)) {
-            QMessageBox::critical(this, tr("Error Saving World"), error);
+        if (!mDocumentManager->saveDocument(worldDocument))
             return;
-        }
     }
 }
 
@@ -1264,7 +1262,8 @@ bool MainWindow::confirmAllSave()
 
 bool MainWindow::confirmSaveWorld(const QString &fileName)
 {
-    if (!mDocumentManager->isWorldModified(fileName))
+    auto worldDocument = mDocumentManager->ensureWorldDocument(fileName);
+    if (!worldDocument->isModified())
         return true;
 
     int ret = QMessageBox::warning(
@@ -1273,15 +1272,8 @@ bool MainWindow::confirmSaveWorld(const QString &fileName)
             QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
 
     switch (ret) {
-    case QMessageBox::Save: {
-        QString error;
-        if (!WorldManager::instance().saveWorld(fileName, &error)) {
-            QMessageBox::critical(window(), tr("Error Saving World"), error);
-            return false;
-        }
-
-        return true;
-    }
+    case QMessageBox::Save:
+        return mDocumentManager->saveDocument(worldDocument, fileName);
     case QMessageBox::Discard:
         return true;
     case QMessageBox::Cancel:

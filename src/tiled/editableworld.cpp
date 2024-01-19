@@ -147,11 +147,6 @@ void EditableWorld::removeMap(EditableMap *map)
     removeMap(map->fileName());
 }
 
-bool EditableWorld::save()
-{
-    return WorldManager::instance().saveWorld(world()->fileName);
-}
-
 QSharedPointer<Document> EditableWorld::createDocument()
 {
     // We don't currently support opening a world in its own tab, which this
@@ -160,3 +155,5 @@ QSharedPointer<Document> EditableWorld::createDocument()
 }
 
 } // namespace Tiled
+
+#include "moc_editableworld.cpp"

@@ -1302,6 +1302,8 @@ void DocumentManager::onWorldLoaded(const QString &worldFile)
     WorldDocument *worldDocument = new WorldDocument(worldFile);
     mWorldDocuments.insert(worldFile, worldDocument);
     mUndoGroup->addStack(worldDocument->undoStack());
+
+    emit documentOpened(worldDocument);
 }
 
 void DocumentManager::onWorldUnloaded(const QString &worldFile)

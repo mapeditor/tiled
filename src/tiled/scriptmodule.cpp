@@ -66,14 +66,9 @@ ScriptModule::ScriptModule(QObject *parent)
         connect(documentManager, &DocumentManager::documentSaved, this, &ScriptModule::documentSaved);
         connect(documentManager, &DocumentManager::documentAboutToClose, this, &ScriptModule::documentAboutToClose);
         connect(documentManager, &DocumentManager::currentDocumentChanged, this, &ScriptModule::currentDocumentChanged);
+
+        connect(&WorldManager::instance(), &WorldManager::worldsChanged, this, &ScriptModule::worldsChanged);
     }
-
-    connect(&WorldManager::instance(), &WorldManager::worldsChanged, this, &ScriptModule::worldsChanged);
-    connect(&WorldManager::instance(), &WorldManager::worldLoaded, this, &ScriptModule::worldLoaded);
-    connect(&WorldManager::instance(), &WorldManager::worldReloaded, this, &ScriptModule::worldReloaded);
-    connect(&WorldManager::instance(), &WorldManager::worldUnloaded, this, &ScriptModule::worldUnloaded);
-    connect(&WorldManager::instance(), &WorldManager::worldSaved, this, &ScriptModule::worldSaved);
-
 }
 
 ScriptModule::~ScriptModule()

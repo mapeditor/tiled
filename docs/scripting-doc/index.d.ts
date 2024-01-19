@@ -1202,7 +1202,7 @@ declare class WorldPattern {
  *
  * @since 1.10.3
  */
-declare class World extends TiledObject {
+declare class World extends Asset {
   /**
    * The maps that are explicitly added to this world. It does not include
    * those maps which match due to patterns defined on the world.
@@ -1274,11 +1274,6 @@ declare class World extends TiledObject {
    * @param map The TileMap instance to remove from this world.
    */
   removeMap(map: TileMap): void;
-
-  /**
-   * Save this world to disk. Returns true if the world was saved successfully.
-   */
-  save(): boolean;
 }
 
 /**
@@ -1572,6 +1567,21 @@ declare class Asset extends TiledObject {
    * @note The undo system is only enabled for assets loaded in the editor!
    */
   redo(): void;
+
+  /**
+   * Save this asset to disk. Returns true if the asset was saved successfully.
+   *
+   * Errors are reported by the UI. When an editor is open for this asset, this
+   * editor is activated when an error is reported.
+   *
+   * Only supported with the editor running, not when running scripts on the
+   * CLI. Also, the asset should already have an associated file.
+   *
+   * To save assets to a specific file or in a different format, use {@link
+   * tiled.mapFormat} or {@link tiled.tilesetFormat}. This is currently not
+   * supported for worlds.
+   */
+  save(): boolean;
 }
 
 /**
@@ -4565,38 +4575,10 @@ declare namespace tiled {
   export function unloadAllWorlds() : void;
 
   /**
-   * Signal emitted when any world is saved, loaded, unloaded, or reloaded.
+   * Signal emitted when any world is loaded, unloaded, reloaded or changed.
    * @since 1.10.3
    */
   export const worldsChanged : Signal<void>;
-
-  /**
-   * Signal emitted when a world is loaded. 
-   * Provides the file name of the world that was loaded.
-   * @since 1.10.3
-   */
-  export const worldLoaded : Signal<string>;
-
-  /**
-   * Signal emitted when a world is reloaded. 
-   * Provides the file name of the world that was reloaded.
-   * @since 1.10.3
-   */
-  export const worldReloaded : Signal<string>;
-
-  /**
-   * Signal emitted when a world is reloaded. 
-   * Provides the file name of the world that was unloaded.
-   * @since 1.10.3
-   */
-  export const worldUnloaded : Signal<string>;
-  
-  /**
-   * Signal emitted when a world is reloaded. 
-   * Provides the file name of the world that was saved.
-   * @since 1.10.3
-   */
-  export const worldSaved : Signal<string>;
 }
 
 /**

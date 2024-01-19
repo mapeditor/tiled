@@ -57,7 +57,6 @@ public:
     Q_INVOKABLE void addMap(EditableMap *map, int x, int y);
     Q_INVOKABLE void removeMap(const QString &mapFileName);
     Q_INVOKABLE void removeMap(EditableMap *map);
-    Q_INVOKABLE bool save();
 
     QSharedPointer<Document> createDocument() override;
 };

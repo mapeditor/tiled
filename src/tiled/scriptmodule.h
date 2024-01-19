@@ -157,10 +157,6 @@ signals:
     void activeAssetChanged(Tiled::EditableAsset *asset);
 
     void worldsChanged();
-    void worldLoaded(const QString &fileName);
-    void worldReloaded(const QString &fileName);
-    void worldUnloaded(const QString &fileName);
-    void worldSaved(const QString &fileName);
 
 public slots:
     void trigger(const QByteArray &actionName) const;
