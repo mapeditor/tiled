@@ -593,6 +593,10 @@ SharedTileset Tileset::originalTileset()
 
 void Tileset::swap(Tileset &other)
 {
+    const QString className = this->className();
+    setClassName(other.className());
+    other.setClassName(className);
+
     const Properties p = properties();
     setProperties(other.properties());
     other.setProperties(p);
