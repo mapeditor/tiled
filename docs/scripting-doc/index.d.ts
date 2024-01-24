@@ -1234,6 +1234,12 @@ declare class World extends Asset {
   containsMap(fileName : string) : boolean;
 
   /**
+   * Returns true if this world contains the given map.
+   * @param map The TileMap to check for.
+   */
+  containsMap(map : TileMap) : boolean;
+
+  /**
    * Change the position and size of a map within this world.
    * @param fileName The file name of the map to change the position and size for.
    * @param rect The new rect describing the position and size of the map.

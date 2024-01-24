@@ -41,6 +41,21 @@ bool EditableWorld::containsMap(const QString &fileName) const
     return world()->containsMap(fileName);
 }
 
+bool EditableWorld::containsMap(EditableMap *map) const
+{
+    if (!map) {
+        ScriptManager::instance().throwNullArgError(0);
+        return false;
+    }
+
+    if (map->fileName().isEmpty()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Save this TileMap before checking for its presence in worlds"));
+        return false;
+    }
+
+    return containsMap(map->fileName());
+}
+
 QVector<WorldMapEntry> EditableWorld::maps() const
 {
     return world()->maps;
