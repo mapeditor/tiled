@@ -49,7 +49,6 @@ bool EditableWorld::containsMap(EditableMap *map) const
     }
 
     if (map->fileName().isEmpty()) {
-        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Save this TileMap before checking for its presence in worlds"));
         return false;
     }
 
