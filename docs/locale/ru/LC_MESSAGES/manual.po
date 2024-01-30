@@ -6,23 +6,27 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Tiled 1.10\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2023-03-10 11:19+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2024-01-31 14:01+0000\n"
+"Last-Translator: Sergey Opossum <seeyouantee.clouddrive@gmail.com>\n"
+"Language-Team: Russian <https://hosted.weblate.org/projects/tiled/manual/ru/>"
+"\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.4-dev\n"
 
 #: ../../manual/automapping.md:1
 msgid "Automapping"
-msgstr ""
+msgstr "Автомаппинг"
 
 #: ../../manual/automapping.md:3
 msgid "What is Automapping?"
-msgstr ""
+msgstr "Что такое автомаппинг?"
 
 #: ../../manual/automapping.md:5
 msgid "Automapping can automatically place or replace tiles based on rules you define. It looks for tiles in your working map that match each rule's input, and if it finds any, it'll place the corresponding output. This enables complex or repetitive tile placement to be entirely automated, which can make decorating your levels much faster, and can help you automatically correct mistakes."
