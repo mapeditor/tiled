@@ -424,6 +424,9 @@ static bool exportTileCollisions(QFileDevice *device, const Tile *tile,
     if (const auto objectGroup = tile->objectGroup()) {
         int polygonId = 0;
 
+        const auto centerX = tile->width() / 2;
+        const auto centerY = tile->height() / 2;
+
         for (const auto object : objectGroup->objects()) {
             const auto shape = object->shape();
 
@@ -434,9 +437,6 @@ static bool exportTileCollisions(QFileDevice *device, const Tile *tile,
             }
 
             foundCollisions = true;
-
-            const auto centerX = tile->width() / 2;
-            const auto centerY = tile->height() / 2;
 
             device->write(formatByteString(
                 "%1/physics_layer_0/polygon_%2/points = PackedVector2Array(",
@@ -458,13 +458,12 @@ static bool exportTileCollisions(QFileDevice *device, const Tile *tile,
                 break;
             }
             case MapObject::Polygon: {
-                auto polygon = object->polygon().toPolygon();
                 bool first = true;
-                for (auto point : polygon) {
+                for (auto point : object->polygon()) {
                     if (!first)
                         device->write(", ");
-                    double x = object->x() + point.x() - centerX;
-                    double y = object->y() + point.y() - centerY;
+                    auto x = object->x() + point.x() - centerX;
+                    auto y = object->y() + point.y() - centerY;
                     flipState(x, y, flippedState);
                     device->write(formatByteString("%1, %2", x, y));
                     first = false;
