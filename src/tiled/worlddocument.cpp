@@ -21,6 +21,7 @@
 
 #include "worlddocument.h"
 
+#include "editableworld.h"
 #include "worldmanager.h"
 
 #include <QFileInfo>
@@ -83,6 +84,10 @@ bool WorldDocument::isModifiedImpl() const
     return Document::isModifiedImpl() || (world && world->hasUnsavedChanges);
 }
 
+std::unique_ptr<EditableAsset> WorldDocument::createEditable()
+{
+    return std::make_unique<EditableWorld>(this, this);
+}
 } // namespace Tiled
 
 #include "moc_worlddocument.cpp"

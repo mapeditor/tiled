@@ -38,6 +38,7 @@
 #include "tilelayer.h"
 #include "tilelayeritem.h"
 #include "tileselectionitem.h"
+#include "world.h"
 #include "worldmanager.h"
 #include "zoomable.h"
 

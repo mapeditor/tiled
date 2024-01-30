@@ -22,7 +22,6 @@
 
 #include "changeproperties.h"
 #include "editableasset.h"
-#include "editablemanager.h"
 #include "editablemapobject.h"
 #include "map.h"
 #include "mapobject.h"
@@ -30,6 +29,7 @@
 #include "scriptmanager.h"
 
 #include <QCoreApplication>
+#include <QQmlEngine>
 
 namespace Tiled {
 
@@ -40,6 +40,8 @@ EditableObject::EditableObject(EditableAsset *asset,
     , mAsset(asset)
     , mObject(object)
 {
+    if (object)
+        object->mEditable = this;
 }
 
 bool EditableObject::isReadOnly() const
@@ -76,12 +78,41 @@ Document *EditableObject::document() const
     return asset() ? asset()->document() : nullptr;
 }
 
+void EditableObject::setObject(Object *object)
+{
+    if (mObject == object)
+        return;
+
+    if (mObject)
+        mObject->mEditable = nullptr;
+
+    if (object)
+        object->mEditable = this;
+
+    mObject = object;
+}
+
 void EditableObject::setClassName(const QString &className)
 {
     if (Document *doc = document())
         asset()->push(new ChangeClassName(doc, { object() }, className));
     else if (!checkReadOnly())
         object()->setClassName(className);
+}
+
+bool EditableObject::moveOwnershipToJavaScript()
+{
+    // The object needs to be associated with a JS engine already
+    if (!qjsEngine(this))
+        return false;
+
+    QQmlEngine::setObjectOwnership(this, QQmlEngine::JavaScriptOwnership);
+    return true;
+}
+
+void EditableObject::moveOwnershipToCpp()
+{
+    QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
 }
 
 /**
@@ -113,6 +144,7 @@ static Map *mapForObject(Object *object)
     case Object::WangSetType:
     case Object::WangColorType:
     case Object::ProjectType:
+    case Object::WorldType:
         break;
     }
     return nullptr;
@@ -143,7 +175,7 @@ QVariant EditableObject::toScript(const QVariant &value) const
         }
 
         if (referencedObject) {
-            auto editable = EditableManager::instance().editableMapObject(asset(), referencedObject);
+            auto editable = EditableMapObject::get(asset(), referencedObject);
             return QVariant::fromValue(editable);
         }
     }

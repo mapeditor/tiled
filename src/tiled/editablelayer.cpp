@@ -22,8 +22,10 @@
 
 #include "changelayer.h"
 #include "editablegrouplayer.h"
-#include "editablemanager.h"
+#include "editableimagelayer.h"
 #include "editablemap.h"
+#include "editableobjectgroup.h"
+#include "editabletilelayer.h"
 
 namespace Tiled {
 
@@ -31,7 +33,6 @@ EditableLayer::EditableLayer(std::unique_ptr<Layer> layer, QObject *parent)
     : EditableObject(nullptr, layer.get(), parent)
 {
     mDetachedLayer = std::move(layer);
-    EditableManager::instance().mEditables.insert(this->layer(), this);
 }
 
 EditableLayer::EditableLayer(EditableAsset *asset, Layer *layer, QObject *parent)
@@ -41,7 +42,9 @@ EditableLayer::EditableLayer(EditableAsset *asset, Layer *layer, QObject *parent
 
 EditableLayer::~EditableLayer()
 {
-    EditableManager::instance().remove(this);
+    // Prevent owned object from trying to delete us again
+    if (mDetachedLayer)
+        setObject(nullptr);
 }
 
 EditableMap *EditableLayer::map() const
@@ -53,7 +56,7 @@ EditableMap *EditableLayer::map() const
 EditableGroupLayer *EditableLayer::parentLayer() const
 {
     GroupLayer *parent = layer()->parentLayer();
-    return static_cast<EditableGroupLayer*>(EditableManager::instance().editableLayer(map(), parent));
+    return static_cast<EditableGroupLayer*>(EditableLayer::get(map(), parent));
 }
 
 bool EditableLayer::isSelected() const
@@ -70,47 +73,85 @@ bool EditableLayer::isSelected() const
 void EditableLayer::detach()
 {
     Q_ASSERT(asset());
-
-    EditableManager::instance().remove(this);
     setAsset(nullptr);
+
+    if (!moveOwnershipToJavaScript())
+        return;
 
     mDetachedLayer.reset(layer()->clone());
 //    mDetachedLayer->resetIds();
     setObject(mDetachedLayer.get());
-    EditableManager::instance().mEditables.insert(layer(), this);
 }
 
 /**
  * Turns this stand-alone layer into a reference, with the layer now owned by
- * the given asset.
+ * a map, group layer or tile (in case of object group).
+ *
+ * The given \a asset may be a nullptr in case the layer is added to a group
+ * layer which isn't part of a map.
+ *
+ * Returns nullptr if the editable wasn't owning its layer.
  */
-void EditableLayer::attach(EditableAsset *asset)
+Layer *EditableLayer::attach(EditableAsset *asset)
 {
-    Q_ASSERT(!this->asset() && asset);
+    Q_ASSERT(!this->asset());
 
     setAsset(asset);
-    mDetachedLayer.release();
-}
-
-/**
- * Take ownership of the referenced layer.
- */
-void EditableLayer::hold()
-{
-    Q_ASSERT(!asset());         // if asset exists, it holds the layer (possibly indirectly)
-    Q_ASSERT(!mDetachedLayer);  // can't already be holding the layer
-
-    mDetachedLayer.reset(layer());
-}
-
-/**
- * Release ownership of the referenced layer.
- */
-Layer *EditableLayer::release()
-{
-    Q_ASSERT(isOwning());
-
+    moveOwnershipToCpp();
     return mDetachedLayer.release();
+}
+
+/**
+ * Take ownership of the referenced layer or delete it.
+ */
+void EditableLayer::hold(std::unique_ptr<Layer> layer)
+{
+    Q_ASSERT(!mDetachedLayer);  // can't already be holding the layer
+    Q_ASSERT(this->layer() == layer.get());
+
+    if (!moveOwnershipToJavaScript())
+        return;
+
+    setAsset(nullptr);
+    mDetachedLayer = std::move(layer);
+}
+
+EditableLayer *EditableLayer::get(EditableMap *map, Layer *layer)
+{
+    if (!layer)
+        return nullptr;
+
+    auto editable = find(layer);
+    if (editable)
+        return editable;
+
+    Q_ASSERT(!map || layer->map() == map->map());
+
+    switch (layer->layerType()) {
+    case Layer::TileLayerType:
+        editable = new EditableTileLayer(map, static_cast<TileLayer*>(layer));
+        break;
+    case Layer::ObjectGroupType:
+        editable = new EditableObjectGroup(map, static_cast<ObjectGroup*>(layer));
+        break;
+    case Layer::ImageLayerType:
+        editable = new EditableImageLayer(map, static_cast<ImageLayer*>(layer));
+        break;
+    case Layer::GroupLayerType:
+        editable = new EditableGroupLayer(map, static_cast<GroupLayer*>(layer));
+        break;
+    }
+
+    editable->moveOwnershipToCpp();
+
+    return editable;
+}
+
+void EditableLayer::release(Layer *layer)
+{
+    std::unique_ptr<Layer> owned { layer };
+    if (auto editable = EditableLayer::find(layer))
+        editable->hold(std::move(owned));
 }
 
 void EditableLayer::setName(const QString &name)

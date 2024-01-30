@@ -38,6 +38,9 @@
 #include "scriptmanager.h"
 #include "tilesetdocument.h"
 #include "tileseteditor.h"
+#include "world.h"
+#include "worlddocument.h"
+#include "worldmanager.h"
 
 #include <QAction>
 #include <QCoreApplication>
@@ -63,6 +66,8 @@ ScriptModule::ScriptModule(QObject *parent)
         connect(documentManager, &DocumentManager::documentSaved, this, &ScriptModule::documentSaved);
         connect(documentManager, &DocumentManager::documentAboutToClose, this, &ScriptModule::documentAboutToClose);
         connect(documentManager, &DocumentManager::currentDocumentChanged, this, &ScriptModule::currentDocumentChanged);
+
+        connect(&WorldManager::instance(), &WorldManager::worldsChanged, this, &ScriptModule::worldsChanged);
     }
 }
 
@@ -689,6 +694,37 @@ void ScriptModule::documentAboutToClose(Document *document)
 void ScriptModule::currentDocumentChanged(Document *document)
 {
     emit activeAssetChanged(document ? document->editable() : nullptr);
+}
+
+QList<QObject *> ScriptModule::worlds() const
+{
+    QList<QObject*> worlds;
+
+    auto documentManager = DocumentManager::maybeInstance();
+    if (!documentManager)
+        return worlds;
+
+    for (const World *world : WorldManager::instance().worlds()) {
+        WorldDocument *worldDocument = documentManager->ensureWorldDocument(world->fileName);
+        worlds.append(worldDocument->editable());
+    }
+
+    return worlds;
+}
+
+void ScriptModule::loadWorld(const QString &fileName) const
+{
+    WorldManager::instance().loadWorld(fileName);
+}
+
+void ScriptModule::unloadWorld(const QString &fileName) const
+{
+    WorldManager::instance().unloadWorld(fileName);
+}
+
+void ScriptModule::unloadAllWorlds() const
+{
+    WorldManager::instance().unloadAllWorlds();
 }
 
 } // namespace Tiled

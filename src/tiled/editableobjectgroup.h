@@ -64,6 +64,8 @@ public:
 
     ObjectGroup *objectGroup() const;
 
+    static EditableObjectGroup *get(EditableAsset *asset, ObjectGroup *objectGroup);
+
 public slots:
     void setColor(const QColor &color);
     void setDrawOrder(DrawOrder drawOrder);

@@ -23,6 +23,7 @@
 #include "command.h"
 #include "object.h"
 #include "tiled.h"
+#include "tilededitor_global.h"
 
 #include <QDateTime>
 #include <QStringList>
@@ -32,7 +33,7 @@
 
 namespace Tiled {
 
-class Project : public Object
+class TILED_EDITOR_EXPORT Project : public Object
 {
 public:
     Project();

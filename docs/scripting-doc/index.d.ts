@@ -186,8 +186,8 @@ type Polygon = point[];
 
 /**
  * A string used to show only certain types of files when prompting the user to select a file path.
- * 
- * Used in {@link FileEdit} and in {@link tiled.promptOpenFile} and related methods. 
+ *
+ * Used in {@link FileEdit} and in {@link tiled.promptOpenFile} and related methods.
  * The filter is given in a format like `"Images (*.png *.xpm *.jpg)"`.
  *
  * If you want multiple filters, separate them with ';;', for example:
@@ -490,7 +490,7 @@ declare namespace Qt {
        */
       textChanged: Signal<void>;
       /**
-       * This property holds the text editor's contents as HTML 
+       * This property holds the text editor's contents as HTML
        * See the supported HTML subset here:
        * https://doc.qt.io/qt-6/richtext-html-subset.html
        */
@@ -1132,6 +1132,157 @@ declare class Project extends TiledObject {
 }
 
 /**
+ * Details of a map that is added to a {@link World}.
+ *
+ * @since 1.10.3
+ */
+declare class WorldMapEntry {
+  /**
+   * File name of the map.
+   */
+  fileName : string;
+
+  /**
+   * A rect describing the location and dimensions of the map within the World.
+   */
+  rect : rect;
+} 
+
+/**
+ * Patterns added to a {@link World}, which are used to automatically match
+ * maps. See the [Using Pattern
+ * Matching](https://doc.mapeditor.org/en/stable/manual/worlds/#using-pattern-matching)
+ * section in the manual for more information.
+ *
+ * @since 1.10.3
+ */
+declare class WorldPattern {
+  /** 
+   * The regular expression pattern used to match maps in the world.
+   */
+  regExp: RegExp;
+
+  /**
+   * Multiplied by the first number (x) in the regular expression to determine
+   * the map's position in the world.
+   */
+  multiplierX: number;
+
+  /**
+   * Multiplied by the second number (y) in the regular expression to determine
+   * the map's position in the world.
+   */
+  multiplierY: number;
+
+  /**
+   * After calculating the map's position in the world using x and y in its 
+   * regular expression and the associated multipliers, this offset is added
+   * to determine the final position.
+   */
+  offset: point;
+
+  /**
+   * The size of the map in pixels.
+   *
+   * Used to support showing only directly neighboring maps when a world is
+   * loaded. For more information, see the [Showing Only Direct
+   * Neighbors](https://doc.mapeditor.org/en/stable/manual/worlds/#showing-only-direct-neighbors)
+   * section in the manual.
+   */
+  mapSize: size;
+}
+
+/**
+ * A world defined in a .world file, which is a JSON file that tells
+ * Tiled which maps are part of the world and at what location.
+ *
+ * See the [Working with
+ * Worlds](https://doc.mapeditor.org/en/stable/manual/worlds/) page in the
+ * manual for more information.
+ *
+ * @since 1.10.3
+ */
+declare class World extends Asset {
+  /**
+   * The maps that are explicitly added to this world. It does not include
+   * those maps which match due to patterns defined on the world.
+   */
+  readonly maps : WorldMapEntry[];
+
+  /**
+   * The patterns that are configured for this map. These patterns will be used
+   * to automatically match maps in your project.
+   */
+  readonly patterns : WorldPattern[];
+
+  /**
+   * Returns all maps that are part of this world, either directly referenced
+   * or matched by one of the patterns.
+   */
+  allMaps() : WorldMapEntry[];
+
+  /**
+   * Returns any maps that intersect with the given {@link rect}. This is a
+   * filtered version of the results from {@link allMaps}.
+   */
+  mapsInRect(rect : rect) : WorldMapEntry[];
+
+  /**
+   * Returns true if this world contains a map with the given fileName.
+   * @param fileName The file name of the map to check for.
+   */
+  containsMap(fileName : string) : boolean;
+
+  /**
+   * Returns true if this world contains the given map.
+   * @param map The TileMap to check for.
+   */
+  containsMap(map : TileMap) : boolean;
+
+  /**
+   * Change the position and size of a map within this world.
+   * @param fileName The file name of the map to change the position and size for.
+   * @param rect The new rect describing the position and size of the map.
+   */
+  setMapRect(fileName: string, rect : rect): void;
+
+  /**
+   * Change the position of a map within this world.
+   * @param map The TileMap of which to change the position.
+   * @param x The x position of the map in the world, in pixels.
+   * @param y The y position of the map in the world, in pixels.
+   */
+  setMapPos(map: TileMap, x: number, y: number): void;
+
+  /**
+   * Add a map to this world.
+   * @param fileName The file name of the map to add to this world.
+   * @param rect A Qt.rect specifying the position and size of the map to add.
+   */
+  addMap(fileName: string, rect: rect): void;
+
+  /**
+   * Add a map to this world. The map size in pixels will be set automatically.
+   * @param map The TileMap instance to add to the world.
+   * @param x The x position of the map in the world, in pixels.
+   * @param y The y position of the map in the world, in pixels.
+   */
+  addMap(map: TileMap, x: number, y: number): void;
+
+  /**
+   * Remove a map from this world.
+   * @param fileName The file name of the map to remove.
+   */
+  removeMap(fileName: string): void;
+
+  /**
+   * Remove a map from this world.
+   * @param map The TileMap instance to remove from this world.
+   */
+  removeMap(map: TileMap): void;
+}
+
+/**
  * Defines the font used to render objects which have {@link MapObject.shape}
  * set to {@link MapObject.Text}.
  */
@@ -1268,7 +1419,7 @@ declare class MapObject extends TiledObject {
   font: Font;
 
   /**
-   * The alignment of a text object.
+   * The alignment of a text object. Can be set using a combination of {@link Qt.Alignment} flags.
    */
   textAlignment: Qt.Alignment;
 
@@ -1326,6 +1477,19 @@ declare class MapObject extends TiledObject {
 }
 
 /**
+ * The top-level assets supported by Tiled. Not all of these assets have
+ * associated editors.
+ *
+ * @since 1.10.3
+ */
+declare enum AssetType {
+  TileMap = 1,
+  Tileset,
+  Project,
+  World,
+}
+
+/**
  * Represents any top-level data type that can be saved to a file.
  *
  * Currently either a {@link TileMap} or a {@link Tileset}.
@@ -1370,6 +1534,13 @@ declare class Asset extends TiledObject {
   readonly isTileset: boolean;
 
   /**
+   * The type of this asset.
+   *
+   * @since 1.10.3
+   */
+  readonly assetType: AssetType;
+
+  /**
    * Creates a single undo command that wraps all changes applied to this
    * asset by the given callback. Recommended to avoid spamming the undo
    * stack with small steps that the user does not care about.
@@ -1402,6 +1573,23 @@ declare class Asset extends TiledObject {
    * @note The undo system is only enabled for assets loaded in the editor!
    */
   redo(): void;
+
+  /**
+   * Save this asset to disk. Returns true if the asset was saved successfully.
+   *
+   * Errors are reported by the UI. When an editor is open for this asset, this
+   * editor is activated when an error is reported.
+   *
+   * Only supported with the editor running, not when running scripts on the
+   * CLI. Also, the asset should already have an associated file.
+   *
+   * To save assets to a specific file or in a different format, use {@link
+   * tiled.mapFormat} or {@link tiled.tilesetFormat}. This is currently not
+   * supported for worlds.
+   *
+   * @since 1.10.3
+   */
+  save(): boolean;
 }
 
 /**
@@ -2273,6 +2461,8 @@ declare class Tile extends TiledObject {
 
   /**
    * Indicates whether this tile is animated.
+   *
+   * @see {@link frames} for the animation frames.
    */
   readonly animated : boolean
 
@@ -2952,6 +3142,12 @@ interface TileLayerEdit {
   /**
    * Applies the changes made through this object to the target layer. This
    * object can be reused to make further changes.
+   *
+   * By default, the first time this method is called on a {@link TileLayerEdit}
+   * instance, it triggers a new undoable edit. Subsequent edits made through
+   * the same instance will merge with the previous step. To manually control
+   * whether the edit will be merged or not, set the {@link mergeable} property
+   * before calling {@link apply}.
    */
   apply() : void
 }
@@ -4018,38 +4214,42 @@ declare namespace tiled {
   export function prompt(label: string, text?: string, title?: string): string;
 
   /**
-   * Shows a dialog which asks the user to choose an existing directory. 
+   * Shows a dialog which asks the user to choose an existing directory.
    * Optionally override the starting directory of the dialog or its title.
-   * 
-   * Returns the absolute path of the chosen directory, or an empty string if the user cancels the dialog. 
+   *
+   * Returns the absolute path of the chosen directory, or an empty string if the user cancels the dialog.
+   * @since 1.10.2
    */
   export function promptDirectory(defaultDir?: string, title?: string): string;
-  
+
   /**
    * Shows a dialog which asks the user to choose one or more existing files.
    * Optionally override the starting directory of the dialog or its title.
    * You can also restrict to only certain file types by specifying {@link FileFilter|filters}.
-   * 
-   * Returns an array of the absolute paths of the chosen files, or an empty array if the user cancels the dialog. 
+   *
+   * Returns an array of the absolute paths of the chosen files, or an empty array if the user cancels the dialog.
+   * @since 1.10.2
    */
   export function promptOpenFiles(defaultDir?: string, filters?: FileFilter, title?: string): string[];
-  
+
   /**
    * Shows a dialog which asks the user to choose an existing file.
    * Optionally override the starting directory of the dialog or its title.
    * You can also restrict to only certain file types by specifying {@link FileFilter|filters}.
-   * 
-   * Returns the absolute path of the chosen file, or an empty string if the user cancels the dialog. 
+   *
+   * Returns the absolute path of the chosen file, or an empty string if the user cancels the dialog.
+   * @since 1.10.2
    */
   export function promptOpenFile(defaultDir?: string, filters?: FileFilter, title?: string): string;
-  
+
   /**
-   * Shows a dialog which asks the user to choose a destination for saving a file. 
+   * Shows a dialog which asks the user to choose a destination for saving a file.
    * If the user chooses a file path which already exists, they will be asked to confirm that they want to overwrite the file.
    * Optionally override the starting directory of the dialog or its title.
    * You can also restrict to only certain file types by specifying {@link FileFilter|filters}.
-   * 
-   * Returns the absolute path of the chosen file, or an empty string if the user cancels the dialog. 
+   *
+   * Returns the absolute path of the chosen file, or an empty string if the user cancels the dialog.
+   * @since 1.10.2
    */
   export function promptSaveFile(defaultDir?: string, filters?: string, title?: string): string;
 
@@ -4365,6 +4565,36 @@ declare namespace tiled {
    * The {@link activeAsset} has changed.
    */
   export const activeAssetChanged: Signal<Asset>;
+
+  /**
+   * A list of all currently loaded {@link World|worlds}.
+   * @since 1.10.3
+   */
+  export const worlds : World[];
+
+  /**
+   * Load a world contained in a .world file in the path fileName.
+   * @since 1.10.3
+   */
+  export function loadWorld(fileName : string) : void;
+
+  /**
+   * Unload a world contained in a .world file in the path fileName.
+   * @since 1.10.3
+   */
+  export function unloadWorld(fileName : string) : void;
+
+  /**
+   * Unload all currently loaded worlds.
+   * @since 1.10.3
+   */
+  export function unloadAllWorlds() : void;
+
+  /**
+   * Signal emitted when any world is loaded, unloaded, reloaded or changed.
+   * @since 1.10.3
+   */
+  export const worldsChanged : Signal<void>;
 }
 
 /**
@@ -4506,7 +4736,7 @@ declare class FileEdit extends Qt.QWidget {
   isDirectory: boolean;
 
   /**
-   * When specified, only files that match the filter are shown. 
+   * When specified, only files that match the {@link FileFilter|filter} are shown.
    */
   filter: FileFilter;
 }
@@ -4583,7 +4813,7 @@ declare class Dialog extends Qt.QWidget {
   static readonly SingleWidgetRows: unique symbol;
 
   /**
-   * Controls the automatic widget placement behavior of the dialog. 
+   * Controls the automatic widget placement behavior of the dialog.
    * Defaults to {@link SameWidgetRows}
    */
   newRowMode: typeof Dialog.SingleWidgetRows | typeof Dialog.SameWidgetRows | typeof Dialog.ManualRows;

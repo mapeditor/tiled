@@ -31,6 +31,8 @@
 #include "properties.h"
 #include "propertytype.h"
 
+#include <QPointer>
+
 namespace Tiled {
 
 /**
@@ -49,6 +51,7 @@ public:
         WangSetType         = 0x040,
         WangColorType       = 0x080,
         ProjectType         = 0x100,
+        WorldType           = 0x200,
     };
 
     explicit Object(TypeId typeId, const QString &className = QString())
@@ -151,6 +154,12 @@ private:
     const TypeId mTypeId;
     QString mClassName;
     Properties mProperties;
+
+    /**
+     * The editable wrapper created for this object.
+     */
+    QPointer<QObject> mEditable;
+    friend class EditableObject;
 
     static SharedPropertyTypes mPropertyTypes;
 };

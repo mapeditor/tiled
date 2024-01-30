@@ -6,6 +6,9 @@ import qbs.Utilities
 
 Probe {
     id: pythonDllProbe
+
+    condition: qbs.targetOS.contains("windows")
+
     property string pythonDir: pythonInstallDir // Input
     property string buildVariant: qbs.buildVariant // Input
     property string fileNamePrefix // Output

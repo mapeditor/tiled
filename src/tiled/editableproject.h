@@ -43,6 +43,8 @@ public:
     EditableProject(ProjectDocument *projectDocument, QObject *parent = nullptr);
 
     bool isReadOnly() const override;
+    AssetType::Value assetType() const override { return AssetType::Project; }
+
     QString extensionsPath() const;
     QString automappingRulesFile() const;
     QString fileName() const;

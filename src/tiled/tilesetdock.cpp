@@ -27,7 +27,6 @@
 #include "addremovetileset.h"
 #include "containerhelpers.h"
 #include "documentmanager.h"
-#include "editablemanager.h"
 #include "editabletile.h"
 #include "erasetiles.h"
 #include "map.h"
@@ -1033,10 +1032,9 @@ QList<QObject *> TilesetDock::selectedTiles() const
     EditableTileset *editableTileset = currentEditableTileset();
 
     const TilesetModel *model = view->tilesetModel();
-    auto &editableManager = EditableManager::instance();
     for (const QModelIndex &index : indexes)
         if (Tile *tile = model->tileAt(index))
-            result.append(editableManager.editableTile(editableTileset, tile));
+            result.append(EditableTile::get(editableTileset, tile));
 
     return result;
 }

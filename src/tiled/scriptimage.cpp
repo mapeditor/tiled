@@ -66,7 +66,10 @@ QByteArray ScriptImage::saveToData(const QByteArray &format, int quality)
 
 QJSValue ScriptImage::colorTable() const
 {
-    QJSEngine *engine = ScriptManager::instance().engine();
+    QJSEngine *engine = qjsEngine(this);
+    if (!engine)
+        return QJSValue();
+
     const auto colors = mImage.colorTable();
 
     QJSValue array = engine->newArray(colors.size());

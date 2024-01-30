@@ -21,7 +21,6 @@
 #include "tilesetdocument.h"
 
 #include "changeevents.h"
-#include "editablemanager.h"
 #include "editabletileset.h"
 #include "issuesmodel.h"
 #include "map.h"
@@ -70,7 +69,7 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset)
 
     // If there already happens to be an editable for this tileset, take
     // ownership of it.
-    if (auto editable = EditableManager::instance().find(tileset.data())) {
+    if (auto editable = EditableTileset::find(tileset.data())) {
         setEditable(std::unique_ptr<EditableAsset>(editable));
         QQmlEngine::setObjectOwnership(editable, QQmlEngine::CppOwnership);
     }

@@ -15,8 +15,8 @@ on:
     - '.travis.yml'
 
 env:
-  QBS_VERSION: 2.0.2
-  SENTRY_VERSION: 0.6.5
+  QBS_VERSION: 2.2.1
+  SENTRY_VERSION: 0.6.7
   SENTRY_ORG: mapeditor
   SENTRY_PROJECT: tiled
   TILED_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') }}
@@ -48,13 +48,13 @@ jobs:
         include:
         - qt_version: 5.15.2
           qt_version_major: 5
-        - qt_version: 6.5.3
+        - qt_version: 6.6.1
           qt_version_major: 6
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
       QT_VERSION: ${{ matrix.qt_version }}
-      QTCREATOR_VERSION: 10.0.2
+      QTCREATOR_VERSION: 12.0.1
 
     steps:
     - name: Checkout repository
@@ -192,14 +192,14 @@ jobs:
         - qt_version: 5.12.12
           version_suffix: "10.12-10.15"
           architectures: x86_64
-        - qt_version: 6.5.3
+        - qt_version: 6.6.1
           version_suffix: "11+"
           architectures: x86_64,arm64
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
       QT_VERSION: ${{ matrix.qt_version }}
-      QTCREATOR_VERSION: 10.0.2
+      QTCREATOR_VERSION: 12.0.1
 
     steps:
     - name: Checkout repository
@@ -284,7 +284,7 @@ jobs:
           mingw_version: 8.1.0
           mingw_component: mingw
           mingw_path: /c/Qt/Tools/mingw810_32/bin
-        - qt_version: 6.5.3
+        - qt_version: 6.6.1
           qt_version_major: 6
           qt_toolchain: win64_mingw
           arch: 64

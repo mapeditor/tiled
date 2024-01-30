@@ -188,6 +188,7 @@ SelectCustomProperty::SelectCustomProperty(QString fileName,
         id = static_cast<const WangColor*>(object)->colorIndex();
         break;
     case Object::ProjectType:
+    case Object::WorldType:
         break;
     }
 }

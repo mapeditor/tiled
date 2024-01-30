@@ -207,6 +207,7 @@ void ExportHelper::resolveProperties(Object *object) const
         break;
     case Object::WangColorType:
     case Object::ProjectType:
+    case Object::WorldType:
         break;
     }
 

@@ -22,11 +22,12 @@
 
 #include "changemapobject.h"
 #include "changepolygon.h"
-#include "editablemanager.h"
 #include "editablemap.h"
 #include "editableobjectgroup.h"
 #include "editabletile.h"
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include "scriptmanager.h"
+#endif
 
 #include <QCoreApplication>
 #include <QJSEngine>
@@ -46,7 +47,6 @@ EditableMapObject::EditableMapObject(Shape shape,
     mapObject()->setShape(static_cast<MapObject::Shape>(shape));
 
     mDetachedMapObject.reset(mapObject());
-    EditableManager::instance().mEditables.insert(mapObject(), this);
 }
 
 EditableMapObject::EditableMapObject(EditableAsset *asset,
@@ -58,13 +58,17 @@ EditableMapObject::EditableMapObject(EditableAsset *asset,
 
 EditableMapObject::~EditableMapObject()
 {
-    EditableManager::instance().remove(this);
+    // Prevent owned object from trying to delete us again
+    if (mDetachedMapObject)
+        setObject(nullptr);
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 QJSValue EditableMapObject::polygon() const
 {
-    QJSEngine *engine = ScriptManager::instance().engine();
+    QJSEngine *engine = qjsEngine(this);
+    if (!engine)
+        return QJSValue();
 
     const auto &polygon = mapObject()->polygon();
     QJSValue array = engine->newArray(polygon.size());
@@ -82,7 +86,7 @@ QJSValue EditableMapObject::polygon() const
 
 EditableTile *EditableMapObject::tile() const
 {
-    return EditableManager::instance().editableTile(mapObject()->cell().tile());
+    return EditableTile::get(mapObject()->cell().tile());
 }
 
 bool EditableMapObject::isSelected() const
@@ -95,7 +99,7 @@ bool EditableMapObject::isSelected() const
 
 EditableObjectGroup *EditableMapObject::layer() const
 {
-    return EditableManager::instance().editableObjectGroup(asset(), mapObject()->objectGroup());
+    return EditableObjectGroup::get(asset(), mapObject()->objectGroup());
 }
 
 EditableMap *EditableMapObject::map() const
@@ -106,36 +110,63 @@ EditableMap *EditableMapObject::map() const
 void EditableMapObject::detach()
 {
     Q_ASSERT(asset());
-
-    EditableManager::instance().remove(this);
     setAsset(nullptr);
+
+    if (!moveOwnershipToJavaScript())
+        return;
 
     mDetachedMapObject.reset(mapObject()->clone());
     setObject(mDetachedMapObject.get());
-    EditableManager::instance().mEditables.insert(mapObject(), this);
 }
 
-void EditableMapObject::attach(EditableMap *map)
+/**
+ * Turns this stand-alone object into a reference, with the object now owned by
+ * an object group. The given \a asset may be nullptr.
+ *
+ * Returns nullptr if the editable wasn't owning its object.
+ */
+MapObject *EditableMapObject::attach(EditableAsset *asset)
 {
-    Q_ASSERT(!asset() && map);
+    Q_ASSERT(!this->asset());
 
-    setAsset(map);
-    mDetachedMapObject.release();
+    setAsset(asset);
+    moveOwnershipToCpp();
+    return mDetachedMapObject.release();
 }
 
-void EditableMapObject::hold()
+void EditableMapObject::hold(std::unique_ptr<MapObject> mapObject)
 {
-    Q_ASSERT(!asset());             // if asset exists, it holds the object (possibly indirectly)
     Q_ASSERT(!mDetachedMapObject);  // can't already be holding the object
+    Q_ASSERT(this->mapObject() == mapObject.get());
 
-    mDetachedMapObject.reset(mapObject());
+    if (!moveOwnershipToJavaScript())
+        return;
+
+    setAsset(nullptr);
+    mDetachedMapObject = std::move(mapObject);
 }
 
-void EditableMapObject::release()
+EditableMapObject *EditableMapObject::get(EditableAsset *asset, MapObject *mapObject)
 {
-    Q_ASSERT(mDetachedMapObject.get() == mapObject());
+    if (!mapObject)
+        return nullptr;
 
-    mDetachedMapObject.release();
+    auto editable = EditableMapObject::find(mapObject);
+    if (editable)
+        return editable;
+
+    Q_ASSERT(mapObject->objectGroup());
+
+    editable = new EditableMapObject(asset, mapObject);
+    editable->moveOwnershipToCpp();
+    return editable;
+}
+
+void EditableMapObject::release(MapObject *mapObject)
+{
+    std::unique_ptr<MapObject> owned { mapObject };
+    if (auto editable = EditableMapObject::find(mapObject))
+        editable->hold(std::move(owned));
 }
 
 void EditableMapObject::setShape(Shape shape)

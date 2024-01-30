@@ -105,6 +105,7 @@ public:
     ~EditableTileset() override;
 
     bool isReadOnly() const final;
+    AssetType::Value assetType() const override { return AssetType::Tileset; }
 
     const QString &name() const;
     QString image() const;
@@ -149,6 +150,9 @@ public:
     Tileset *tileset() const;
 
     QSharedPointer<Document> createDocument() override;
+
+    static EditableTileset *find(Tileset *tileset);
+    static EditableTileset *get(Tileset *tileset);
 
 public slots:
     void setName(const QString &name);
@@ -298,6 +302,11 @@ inline bool EditableTileset::isCollection() const
 inline Tileset *EditableTileset::tileset() const
 {
     return static_cast<Tileset*>(object());
+}
+
+inline EditableTileset *EditableTileset::find(Tileset *tileset)
+{
+    return static_cast<EditableTileset*>(EditableObject::find(tileset));
 }
 
 inline void EditableTileset::setTileWidth(int width)

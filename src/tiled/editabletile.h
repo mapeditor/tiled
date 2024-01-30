@@ -93,6 +93,10 @@ public:
     const ObjectGroup *attachedObjectGroup() const { return mAttachedObjectGroup; }
     void detachObjectGroup();
 
+    static EditableTile *find(Tile *tile);
+    static EditableTile *get(Tile *tile);
+    static EditableTile *get(EditableTileset *tileset, Tile *tile);
+
 public slots:
     void setImageFileName(const QString &fileName);
     void setImageRect(const QRect &rect);
@@ -151,6 +155,11 @@ inline bool EditableTile::isAnimated() const
 inline Tile *EditableTile::tile() const
 {
     return static_cast<Tile*>(object());
+}
+
+inline EditableTile *EditableTile::find(Tile *tile)
+{
+    return static_cast<EditableTile*>(EditableObject::find(tile));
 }
 
 } // namespace Tiled
