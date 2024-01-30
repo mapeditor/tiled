@@ -160,8 +160,8 @@ class PythonTilesetFormat : public Tiled::TilesetFormat, public PythonFormat
 
 public:
     PythonTilesetFormat(const QString &scriptFile,
-                       PyObject *class_,
-                       QObject *parent = nullptr);
+                        PyObject *class_,
+                        QObject *parent = nullptr);
 
     void setPythonClass(PyObject *class_) override;
     Capabilities capabilities() const override { return mCapabilities; };

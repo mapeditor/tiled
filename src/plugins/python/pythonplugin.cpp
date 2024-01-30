@@ -225,7 +225,7 @@ void PythonPlugin::reloadModules()
 }
 
 /**
- * Finds the first Python class that extends tiled.Plugin
+ * Finds the first Python class that extends the given \a pluginClass.
  */
 PyObject *PythonPlugin::findPluginSubclass(PyObject *module, PyObject *pluginClass)
 {
@@ -275,7 +275,7 @@ bool PythonPlugin::loadOrReloadModule(ScriptEntry &script)
 
     PyObject *pluginClass = findPluginSubclass(script.module, mTilesetPluginClass);
 
-    if(pluginClass) {
+    if (pluginClass) {
       if (script.tilesetFormat) {
           script.tilesetFormat->setPythonClass(pluginClass);
       } else {
@@ -289,7 +289,7 @@ bool PythonPlugin::loadOrReloadModule(ScriptEntry &script)
       script.module = module;
       pluginClass = findPluginSubclass(script.module, mPluginClass);
       if (!pluginClass) {
-          PySys_WriteStderr("Extension of tiled.Plugin not defined in "
+          PySys_WriteStderr("No extension of tiled.Plugin or tiled.TilesetPlugin defined in "
                             "script: %s\n", name.constData());
           return false;
       }
@@ -310,7 +310,7 @@ PythonFormat::PythonFormat(const QString &scriptFile, PyObject *class_)
     : mClass(nullptr)
     , mScriptFile(scriptFile)
 {
-    this->setPythonClass(class_);
+    setPythonClass(class_);
 }
 
 PythonMapFormat::PythonMapFormat(const QString &scriptFile,
@@ -319,7 +319,7 @@ PythonMapFormat::PythonMapFormat(const QString &scriptFile,
     : MapFormat(parent)
     , PythonFormat(scriptFile, class_)
 {
-  setPythonClass(class_); // again as super class has no virtual dispatch in constructor
+    setPythonClass(class_); // again as super class has no virtual dispatch in constructor
 }
 
 std::unique_ptr<Tiled::Map> PythonMapFormat::read(const QString &fileName)
