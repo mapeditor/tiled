@@ -424,6 +424,9 @@ static bool exportTileCollisions(QFileDevice *device, const Tile *tile,
     if (const auto objectGroup = tile->objectGroup()) {
         int polygonId = 0;
 
+        const auto centerX = tile->width() / 2;
+        const auto centerY = tile->height() / 2;
+
         for (const auto object : objectGroup->objects()) {
             const auto shape = object->shape();
 
@@ -435,9 +438,6 @@ static bool exportTileCollisions(QFileDevice *device, const Tile *tile,
 
             foundCollisions = true;
 
-            const auto centerX = tile->width() / 2 - object->x();
-            const auto centerY = tile->height() / 2 - object->y();
-
             device->write(formatByteString(
                 "%1/physics_layer_0/polygon_%2/points = PackedVector2Array(",
                 tileName, polygonId));
@@ -446,8 +446,8 @@ static bool exportTileCollisions(QFileDevice *device, const Tile *tile,
             case MapObject::Rectangle: {
                 auto x1 = object->x() - centerX;
                 auto y1 = object->y() - centerY;
-                auto x2 = object->width() - centerX;
-                auto y2 = object->height() - centerY;
+                auto x2 = object->x() + object->width() - centerX;
+                auto y2 = object->y() + object->height() - centerY;
 
                 flipState(x1, y1, flippedState);
                 flipState(x2, y2, flippedState);
@@ -458,13 +458,12 @@ static bool exportTileCollisions(QFileDevice *device, const Tile *tile,
                 break;
             }
             case MapObject::Polygon: {
-                auto polygon = object->polygon().toPolygon();
                 bool first = true;
-                for (auto point : polygon) {
+                for (auto point : object->polygon()) {
                     if (!first)
                         device->write(", ");
-                    auto x = point.x() - centerX;
-                    auto y = point.y() - centerY;
+                    auto x = object->x() + point.x() - centerX;
+                    auto y = object->y() + point.y() - centerY;
                     flipState(x, y, flippedState);
                     device->write(formatByteString("%1, %2", x, y));
                     first = false;

@@ -3,6 +3,7 @@
 * Added --project command-line parameter for use when exporting (#3797)
 * Scripting: Added API for working with worlds (#3539)
 * JSON format: Fixed tile order when loading a tileset using the old format
+* Godot export: Fixed positioning of tile collision shapes (by Ryan Petrie, #3862)
 * tmxrasterizer: Added --hide-object and --show-object arguments (by Lars Luz, #3819)
 * tmxrasterizer: Added --frames and --frame-duration arguments to export animated maps as multiple images (#3868)
 * tmxviewer: Added support for viewing JSON maps (#3866)
