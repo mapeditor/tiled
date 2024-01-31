@@ -3037,7 +3037,7 @@ msgid "Using Wang Tiles"
 msgstr ""
 
 #: ../../manual/using-wang-tiles.rst:8
-msgid "Wang tiles are similar in concept to Terrains. This is, however, more focused on filling larger areas without repetition. One defines the edge and corner colors of tiles in a tileset. This information can then be used when filling, or brushing to allow for smooth, non-repetitive transitions between tiles. In most cases this tiling is random, and based on color probability. More info on Wang tiles can be found `here <http://www.cr31.co.uk/stagecast/wang/intro.html>`_."
+msgid "Wang tiles are similar in concept to Terrains. This is, however, more focused on filling larger areas without repetition. One defines the edge and corner colors of tiles in a tileset. This information can then be used when filling, or brushing to allow for smooth, non-repetitive transitions between tiles. In most cases this tiling is random, and based on color probability. More info on Wang tiles can be found `here <https://web.archive.org/web/20230101id_/cr31.co.uk/stagecast/wang/intro.html>`_."
 msgstr ""
 
 #: ../../manual/using-wang-tiles.rst:15
@@ -3177,5 +3177,5 @@ msgid "Standard Wang Sets"
 msgstr ""
 
 #: ../../manual/using-wang-tiles.rst:144
-msgid "Some typical Wang sets are `2-corner <http://www.cr31.co.uk/stagecast/wang/2corn.html>`__, `2-edge <http://www.cr31.co.uk/stagecast/wang/2edge.html>`__, and `blob <http://www.cr31.co.uk/stagecast/wang/blob.html>`__. Wang tiles in Tiled support up to 15 edge and 15 corner colors in a single set."
+msgid "Some typical Wang sets are `2-corner <https://web.archive.org/web/20230101id_/cr31.co.uk/stagecast/wang/2corn.html>`__, `2-edge <https://web.archive.org/web/20230101id_/cr31.co.uk/stagecast/wang/2edge.html>`__, and `blob <https://web.archive.org/web/20230101id_/cr31.co.uk/stagecast/wang/blob.html>`__. Wang tiles in Tiled support up to 15 edge and 15 corner colors in a single set."
 msgstr ""
