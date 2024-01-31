@@ -3,6 +3,7 @@
 * Added --project command-line parameter for use when exporting (#3797)
 * Scripting: Added API for working with worlds (#3539)
 * Scripting: Added Tile.image for accessing a tile's image data
+* Scripting: Added Tileset.imageFileName and ImageLayer.imageFileName
 * Scripting: Made Tileset.margin and Tileset.tileSpacing writable
 * JSON format: Fixed tile order when loading a tileset using the old format
 * Godot export: Fixed positioning of tile collision shapes (by Ryan Petrie, #3862)

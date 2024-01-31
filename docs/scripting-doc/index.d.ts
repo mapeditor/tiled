@@ -2214,14 +2214,25 @@ declare class ImageLayer extends Layer {
 
   /**
    * Reference to the image rendered by this layer.
+   *
+   * If you need a plain string, you'll want to use {@link imageFileName}
+   * instead.
    */
   imageSource: Qt.QUrl;
 
   /**
+   * Reference to the image rendered by this layer.
+   *
+   * @since 1.10.3
+   */
+  imageFileName: string;
+
+  /**
    * Returns a copy of this layer's image.
    *
-   * When assigning an image to this property, the imageSource property is
-   * cleared. Use {@link setImage} when you want to also set the imageSource.
+   * When assigning an image to this property, the {@link imageFileName}
+   * property is cleared. Use {@link setImage} when you want to also set the
+   * imageSource.
    *
    * @warning This property is writable but has no undo!
    *

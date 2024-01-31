@@ -69,6 +69,11 @@ void EditableImageLayer::setImageSource(const QUrl &imageSource)
     }
 }
 
+void EditableImageLayer::setImageFileName(const QString &fileName)
+{
+    setImageSource(QUrl::fromLocalFile(fileName));
+}
+
 void EditableImageLayer::setImage(ScriptImage *image, const QUrl &source)
 {
     if (checkReadOnly())
