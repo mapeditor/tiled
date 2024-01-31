@@ -20,6 +20,7 @@
 
 #include "editableimagelayer.h"
 
+#include "changeevents.h"
 #include "changeimagelayerproperty.h"
 #include "editablemap.h"
 #include "scriptimage.h"
@@ -75,6 +76,9 @@ void EditableImageLayer::setImage(ScriptImage *image, const QUrl &source)
 
     // WARNING: This function has no undo!
     imageLayer()->loadFromImage(QPixmap::fromImage(image->image()), source);
+
+    if (auto doc = document())
+        emit doc->changed(ImageLayerChangeEvent(imageLayer(), ImageLayerChangeEvent::ImageSourceProperty));
 }
 
 void EditableImageLayer::setRepeatX(bool repeatX)
