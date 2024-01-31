@@ -48,6 +48,11 @@ EditableTile::~EditableTile()
         setObject(nullptr);
 }
 
+ScriptImage *EditableTile::image() const
+{
+    return new ScriptImage(tile()->image().toImage());
+}
+
 EditableObjectGroup *EditableTile::objectGroup() const
 {
     if (!mAttachedObjectGroup) {

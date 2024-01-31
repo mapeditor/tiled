@@ -2432,6 +2432,17 @@ declare class Tile extends TiledObject {
   imageFileName : string
 
   /**
+   * Returns the image of this tile, or the image of its tileset if it doesn't
+   * have an individual one.
+   *
+   * You can assign an {@link Image} to this property to change the tile's
+   * image. See {@link setImage} for more information.
+   *
+   * @since 1.10.3
+   */
+  image: Image;
+
+  /**
    * The source rectangle (in pixels) for this tile.
    *
    * This can be either a sub-rectangle of the tile image when the tile is part
@@ -2474,7 +2485,15 @@ declare class Tile extends TiledObject {
   /**
    * Sets the image of this tile.
    *
-   * @warning This function has no undo and does not affect the saved tileset!
+   * You should prefer to set the {@link imageFileName} when possible. This
+   * function is mostly useful when the image data is loaded from a custom
+   * format.
+   *
+   * If an image is set directly on a tile, instead of setting the {@link
+   * imageFileName}, when saving the tileset the image data will be embedded
+   * for formats that support this (currently only TMX/TSX).
+   *
+   * @warning This function has no undo!
    */
   setImage(image : Image) : void
 }
@@ -3454,6 +3473,13 @@ declare class Tileset extends Asset {
    * repeatedly setting up the tiles in response to changing parameters.
    *
    * @note Map files are supported tileset image source as well.
+   *
+   * @since 1.10.3
+   */
+  imageFileName : string
+
+  /**
+   * @deprecated Use {@link imageFileName} instead.
    */
   image : string
 
@@ -4716,6 +4742,7 @@ declare class ColorButton extends Qt.QWidget {
    */
   colorChanged: Signal<color>;
 }
+
 /**
  * Widget with a button which opens a file picker dialog
  * and displays the path in the dialog.
@@ -4740,11 +4767,11 @@ declare class FileEdit extends Qt.QWidget {
    */
   filter: FileFilter;
 }
+
 /**
  * A widget that displays an {@link Image} on your dialog.
  */
 declare class ImageWidget extends Qt.QWidget {
-
   /**
    * The image to be displayed in the widget
    */

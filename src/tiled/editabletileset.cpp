@@ -245,7 +245,7 @@ void EditableTileset::setName(const QString &name)
         tileset()->setName(name);
 }
 
-void EditableTileset::setImage(const QString &imageFilePath)
+void EditableTileset::setImageFileName(const QString &imageFilePath)
 {
     if (isCollection() && tileCount() > 0) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Can't set the image of an image collection tileset"));
