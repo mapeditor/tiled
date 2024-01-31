@@ -346,7 +346,7 @@ your own project. A few things to keep in mind:
   transitions that are compatible with this tool on `OpenGameArt.org
   <http://opengameart.org/>`__.
 
-.. _blob tileset: https://web.archive.org/web/20230101id_/cr31.co.uk/stagecast/wang/blob.html
+.. _blob tileset: https://web.archive.org/web/20230101/cr31.co.uk/stagecast/wang/blob.html
 
 .. |terrain| image:: ../../src/tiled/resources/images/24/terrain.png
 
