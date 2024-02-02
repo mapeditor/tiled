@@ -25,7 +25,7 @@ Tiled supports the following basic property types:
 
 -  **bool** (true or false)
 -  **color** (a 32-bit color value)
--  **file** (a relative path referencing a file)
+-  **file** (a file reference, which is saved as a relative path)
 -  **float** (a floating point number)
 -  **int** (a whole number)
 -  **object** (a reference to an object) - *Since Tiled 1.4*
