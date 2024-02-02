@@ -2260,8 +2260,8 @@ declare class ImageLayer extends Layer {
   constructor(name? : string);
 
   /**
-   * Sets the image for this layer to the given image, optionally also
-   * setting the source of the image.
+   * Sets the image for this layer to the given image, optionally also setting
+   * its file name. The existing image file name is cleared.
    *
    * @warning This function has no undo!
    */
@@ -2494,19 +2494,24 @@ declare class Tile extends TiledObject {
   readonly tileset : Tileset
 
   /**
-   * Sets the image of this tile.
+   * Sets the image of this tile, optionally also setting its file name. The
+   * existing image file name is cleared.
    *
-   * You should prefer to set the {@link imageFileName} when possible. This
-   * function is mostly useful when the image data is loaded from a custom
+   * You should prefer to just set the {@link imageFileName} when possible.
+   * This function is mostly useful when the image data is loaded from a custom
    * format.
    *
-   * If an image is set directly on a tile, instead of setting the {@link
-   * imageFileName}, when saving the tileset the image data will be embedded
-   * for formats that support this (currently only TMX/TSX).
+   * If an image is set directly on a tile, without specifying its file name,
+   * when saving the tileset the image data will be embedded for formats that
+   * support this (currently only TMX/TSX).
+   *
+   * @note Before Tiled 1.10.3, this function did not change the image file
+   * name. For compatibility, set {@link imageFileName} before calling this
+   * function, if necessary.
    *
    * @warning This function has no undo!
    */
-  setImage(image : Image) : void
+  setImage(image : Image, source?: string) : void
 }
 
 /**

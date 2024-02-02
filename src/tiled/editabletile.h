@@ -85,7 +85,8 @@ public:
     bool isAnimated() const;
     EditableTileset *tileset() const;
 
-    Q_INVOKABLE void setImage(Tiled::ScriptImage *image);
+    Q_INVOKABLE void setImage(Tiled::ScriptImage *image,
+                              const QString &fileName = QString());
 
     Tile *tile() const;
 
