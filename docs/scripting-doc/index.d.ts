@@ -2214,14 +2214,25 @@ declare class ImageLayer extends Layer {
 
   /**
    * Reference to the image rendered by this layer.
+   *
+   * If you need a plain string, you'll want to use {@link imageFileName}
+   * instead.
    */
   imageSource: Qt.QUrl;
 
   /**
+   * Reference to the image rendered by this layer.
+   *
+   * @since 1.10.3
+   */
+  imageFileName: string;
+
+  /**
    * Returns a copy of this layer's image.
    *
-   * When assigning an image to this property, the imageSource property is
-   * cleared. Use {@link setImage} when you want to also set the imageSource.
+   * When assigning an image to this property, the {@link imageFileName}
+   * property is cleared. Use {@link setImage} when you want to also set the
+   * imageSource.
    *
    * @warning This property is writable but has no undo!
    *
@@ -2249,8 +2260,8 @@ declare class ImageLayer extends Layer {
   constructor(name? : string);
 
   /**
-   * Sets the image for this layer to the given image, optionally also
-   * setting the source of the image.
+   * Sets the image for this layer to the given image, optionally also setting
+   * its file name. The existing image file name is cleared.
    *
    * @warning This function has no undo!
    */
@@ -2432,6 +2443,17 @@ declare class Tile extends TiledObject {
   imageFileName : string
 
   /**
+   * Returns the image of this tile, or the image of its tileset if it doesn't
+   * have an individual one.
+   *
+   * You can assign an {@link Image} to this property to change the tile's
+   * image. See {@link setImage} for more information.
+   *
+   * @since 1.10.3
+   */
+  image: Image;
+
+  /**
    * The source rectangle (in pixels) for this tile.
    *
    * This can be either a sub-rectangle of the tile image when the tile is part
@@ -2472,11 +2494,24 @@ declare class Tile extends TiledObject {
   readonly tileset : Tileset
 
   /**
-   * Sets the image of this tile.
+   * Sets the image of this tile, optionally also setting its file name. The
+   * existing image file name is cleared.
    *
-   * @warning This function has no undo and does not affect the saved tileset!
+   * You should prefer to just set the {@link imageFileName} when possible.
+   * This function is mostly useful when the image data is loaded from a custom
+   * format.
+   *
+   * If an image is set directly on a tile, without specifying its file name,
+   * when saving the tileset the image data will be embedded for formats that
+   * support this (currently only TMX/TSX).
+   *
+   * @note Before Tiled 1.10.3, this function did not change the image file
+   * name. For compatibility, set {@link imageFileName} before calling this
+   * function, if necessary.
+   *
+   * @warning This function has no undo!
    */
-  setImage(image : Image) : void
+  setImage(image : Image, source?: string) : void
 }
 
 /**
@@ -3454,6 +3489,13 @@ declare class Tileset extends Asset {
    * repeatedly setting up the tiles in response to changing parameters.
    *
    * @note Map files are supported tileset image source as well.
+   *
+   * @since 1.10.3
+   */
+  imageFileName : string
+
+  /**
+   * @deprecated Use {@link imageFileName} instead.
    */
   image : string
 
@@ -4716,6 +4758,7 @@ declare class ColorButton extends Qt.QWidget {
    */
   colorChanged: Signal<color>;
 }
+
 /**
  * Widget with a button which opens a file picker dialog
  * and displays the path in the dialog.
@@ -4740,11 +4783,11 @@ declare class FileEdit extends Qt.QWidget {
    */
   filter: FileFilter;
 }
+
 /**
  * A widget that displays an {@link Image} on your dialog.
  */
 declare class ImageWidget extends Qt.QWidget {
-
   /**
    * The image to be displayed in the widget
    */

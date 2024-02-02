@@ -20,6 +20,7 @@
 
 #include "editableimagelayer.h"
 
+#include "changeevents.h"
 #include "changeimagelayerproperty.h"
 #include "editablemap.h"
 #include "scriptimage.h"
@@ -68,6 +69,11 @@ void EditableImageLayer::setImageSource(const QUrl &imageSource)
     }
 }
 
+void EditableImageLayer::setImageFileName(const QString &fileName)
+{
+    setImageSource(QUrl::fromLocalFile(fileName));
+}
+
 void EditableImageLayer::setImage(ScriptImage *image, const QUrl &source)
 {
     if (checkReadOnly())
@@ -75,6 +81,9 @@ void EditableImageLayer::setImage(ScriptImage *image, const QUrl &source)
 
     // WARNING: This function has no undo!
     imageLayer()->loadFromImage(QPixmap::fromImage(image->image()), source);
+
+    if (auto doc = document())
+        emit doc->changed(ImageLayerChangeEvent(imageLayer(), ImageLayerChangeEvent::ImageSourceProperty));
 }
 
 void EditableImageLayer::setRepeatX(bool repeatX)

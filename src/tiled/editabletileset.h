@@ -35,7 +35,8 @@ class EditableTileset : public EditableAsset
     Q_OBJECT
 
     Q_PROPERTY(QString name READ name WRITE setName)
-    Q_PROPERTY(QString image READ image WRITE setImage)
+    Q_PROPERTY(QString image READ imageFileName WRITE setImageFileName) // deprecated
+    Q_PROPERTY(QString imageFileName READ imageFileName WRITE setImageFileName)
     Q_PROPERTY(QList<QObject*> tiles READ tiles)
     Q_PROPERTY(QList<QObject*> wangSets READ wangSets)
     Q_PROPERTY(int tileCount READ tileCount)
@@ -108,7 +109,7 @@ public:
     AssetType::Value assetType() const override { return AssetType::Tileset; }
 
     const QString &name() const;
-    QString image() const;
+    QString imageFileName() const;
     int tileCount() const;
     int columnCount() const;
     int nextTileId() const;
@@ -156,7 +157,7 @@ public:
 
 public slots:
     void setName(const QString &name);
-    void setImage(const QString &imageFilePath);
+    void setImageFileName(const QString &imageFilePath);
     void setTileWidth(int width);
     void setTileHeight(int height);
     void setTileSize(QSize size);
@@ -199,7 +200,7 @@ inline const QString &EditableTileset::name() const
     return tileset()->name();
 }
 
-inline QString EditableTileset::image() const
+inline QString EditableTileset::imageFileName() const
 {
     return tileset()->imageSource().toString(QUrl::PreferLocalFile);
 }

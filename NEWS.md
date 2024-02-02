@@ -2,13 +2,15 @@
 
 * Added --project command-line parameter for use when exporting (#3797)
 * Scripting: Added API for working with worlds (#3539)
+* Scripting: Added Tile.image for accessing a tile's image data
+* Scripting: Added Tileset.imageFileName and ImageLayer.imageFileName
+* Scripting: Made Tileset.margin and Tileset.tileSpacing writable
 * JSON format: Fixed tile order when loading a tileset using the old format
 * Godot export: Fixed positioning of tile collision shapes (by Ryan Petrie, #3862)
 * tmxrasterizer: Added --hide-object and --show-object arguments (by Lars Luz, #3819)
-* Scripting: Made Tileset.margin and Tileset.tileSpacing writable
 * tmxrasterizer: Added --frames and --frame-duration arguments to export animated maps as multiple images (#3868)
 * tmxviewer: Added support for viewing JSON maps (#3866)
-* Windows: Fixed the support for WebP images (updated to Qt 6.5.3, #3661)
+* Windows: Fixed the support for WebP images (updated to Qt 6.6.1, #3661)
 * Fixed mouse handling issue when zooming while painting (#3863)
 * Fixed possible crash after a scripted tool disappears while active
 * TMX format: Embedded images are now also supported on tilesets and image layers

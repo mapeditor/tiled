@@ -28,6 +28,7 @@
 #include "scriptmanager.h"
 #include "tilesetchanges.h"
 #include "tilesetdocument.h"
+#include "tilesetmanager.h"
 #include "tilesetwangsetmodel.h"
 
 #include <QCoreApplication>
@@ -78,7 +79,11 @@ void EditableTileset::loadFromImage(ScriptImage *image, const QString &source)
     }
 
     // WARNING: This function has no undo!
-    tileset()->loadFromImage(image->image(), source);
+    if (tileset()->loadFromImage(image->image(), source))
+        emit TilesetManager::instance()->tilesetImagesChanged(tileset());
+
+    if (auto doc = tilesetDocument())
+        emit doc->tilesetChanged(tileset());
 }
 
 EditableTile *EditableTileset::tile(int id)
@@ -245,7 +250,7 @@ void EditableTileset::setName(const QString &name)
         tileset()->setName(name);
 }
 
-void EditableTileset::setImage(const QString &imageFilePath)
+void EditableTileset::setImageFileName(const QString &imageFilePath)
 {
     if (isCollection() && tileCount() > 0) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Can't set the image of an image collection tileset"));

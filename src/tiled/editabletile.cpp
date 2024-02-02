@@ -30,6 +30,7 @@
 #include "objectgroup.h"
 #include "scriptimage.h"
 #include "scriptmanager.h"
+#include "tilesetdocument.h"
 
 #include <QCoreApplication>
 #include <QJSEngine>
@@ -46,6 +47,11 @@ EditableTile::~EditableTile()
     // Prevent owned object from trying to delete us again
     if (mDetachedTile)
         setObject(nullptr);
+}
+
+ScriptImage *EditableTile::image() const
+{
+    return new ScriptImage(tile()->image().toImage());
 }
 
 EditableObjectGroup *EditableTile::objectGroup() const
@@ -83,15 +89,20 @@ EditableTileset *EditableTile::tileset() const
     return static_cast<EditableTileset*>(asset());
 }
 
-void EditableTile::setImage(ScriptImage *image)
+void EditableTile::setImage(ScriptImage *image, const QString &fileName)
 {
     if (!image) {
         ScriptManager::instance().throwNullArgError(0);
         return;
     }
 
+    const auto pixmap = QPixmap::fromImage(image->image());
+
     // WARNING: This function has no undo!
-    tile()->setImage(QPixmap::fromImage(image->image()));
+    if (auto doc = tilesetDocument())
+        doc->setTileImage(tile(), pixmap, QUrl::fromLocalFile(fileName));
+    else
+        tile()->setImage(pixmap);
 }
 
 void EditableTile::detach()
