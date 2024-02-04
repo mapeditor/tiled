@@ -7,7 +7,7 @@ Using Templates
 
 Any created object can be saved as a template. These templates can then be
 instantiated elsewhere as objects that inherit the template's properties. This
-can save a lot of tedious work of setting up the object type and properties,
+can save a lot of tedious work of setting up the object class and properties,
 or even just finding the right tile in the tileset.
 
 Each template is stored in its own file, where they can be organized in
