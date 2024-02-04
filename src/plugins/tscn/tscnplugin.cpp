@@ -240,7 +240,8 @@ struct CustomDataLayer
 // Remove any special chars from a string
 static QString sanitizeSpecialChars(QString str)
 {
-    return str.replace(QRegularExpression("[^a-zA-Z0-9]"), "");
+    static QRegularExpression sanitizer("[^a-zA-Z0-9]");
+    return str.replace(sanitizer, "");
 }
 
 // For collecting information about the tilesets we're using
@@ -340,19 +341,19 @@ static void findUsedTilesets(const TileLayer *layer, AssetInfo &assetInfo)
 // Search an object layer for all object resources and save them in assetInfo
 static void findUsedObjects(const ObjectGroup *objectLayer, AssetInfo &assetInfo)
 {
+    QRegularExpression resPathValidator("^res://(.*)\\.tscn$");
+
     for (const MapObject *object : objectLayer->objects()) {
         auto resPath = object->resolvedProperty("resPath").toString();
 
-        if (resPath.isEmpty()) {            
-            if (resPath.isEmpty()) {
-                Tiled::WARNING(TscnPlugin::tr("Only objects with the resPath property will be exported"),
-                    Tiled::JumpToObject { object });
-                continue;
-            }
+        if (resPath.isEmpty()) {
+            Tiled::WARNING(TscnPlugin::tr("Only objects with the resPath property will be exported"),
+                Tiled::JumpToObject { object });
+            continue;
         }
         
         QRegularExpressionMatch match;
-        if (!resPath.contains(QRegularExpression("^res://(.*)\\.tscn$"), &match)) {
+        if (!resPath.contains(resPathValidator, &match)) {
             Tiled::ERROR(TscnPlugin::tr("resPath must be in the form of 'res://<filename>.tscn'."),
                 Tiled::JumpToObject { object });
             continue;
@@ -362,7 +363,7 @@ static void findUsedObjects(const ObjectGroup *objectLayer, AssetInfo &assetInfo
         int uniqueifier = 1;
         QString id = baseName;
 
-        // Create the objectId map such that every key and every value is unique.
+        // Create the objectId map such that every resPath has a unique ID.
         while (true) {
             // keys() is slow. If this becomes a problem, we can create a reverse map.
             auto keys = assetInfo.objectIds.keys(id);
@@ -372,9 +373,14 @@ static void findUsedObjects(const ObjectGroup *objectLayer, AssetInfo &assetInfo
                 break;
             }
 
+            // The key already exists with the right value
             if (keys[0] == resPath)
                 break;
 
+            // The baseName is based off of a file path, which is unique by definition,
+            // but because we santized it, paths like res://ab/c.tscn and res://a/bc.tscn
+            // would both get santitized into the non-unique name of abc, so we need to
+            // add a uniqueifier and try again.
             ++uniqueifier;
             id = baseName + QString::number(uniqueifier);
         }
