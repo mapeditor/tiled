@@ -1037,9 +1037,67 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
                 sanitizeQuotedString(assetInfo.objectIds[resPath]))
             );
 
-            auto pos = object->position();
-            pos.setX(pos.x() + object->resolvedProperty("originX").toFloat());
-            pos.setY(pos.y() + object->resolvedProperty("originY").toFloat());
+            QPointF pos;
+            Tiled::Alignment alignment;
+
+            // Set the alignment based on the object type
+            if (object->isTileObject()) {
+                auto tileset = object->cell().tileset();
+                alignment = tileset->objectAlignment();
+
+                if (alignment == Alignment::Unspecified) {
+                    if (tileset->orientation() == Tileset::Orientation::Isometric)
+                        alignment = Alignment::Bottom;
+                    else
+                        alignment = Alignment::BottomLeft;
+                }
+            } else {
+                alignment = Alignment::BottomLeft;
+            }
+
+            // Set the horizontal alignment
+            switch (alignment) {
+            case Alignment::TopLeft:
+            case Alignment::Left:
+            case Alignment::BottomLeft:
+                pos.setX(object->position().x() + object->width()/2);
+                break;
+            case Alignment::Top:
+            case Alignment::Center:
+            case Alignment::Bottom:
+                pos.setX(object->position().x());
+                break;
+            case Alignment::TopRight:
+            case Alignment::Right:
+            case Alignment::BottomRight:
+                pos.setX(object->position().x() - object->width()/2);
+                break;
+            case Alignment::Unspecified:
+                // Suppress warning
+                break;
+            }
+
+            // Set the vertical alignment
+            switch (alignment) {
+            case Alignment::TopLeft:
+            case Alignment::Top:
+            case Alignment::TopRight:
+                pos.setY(object->position().y() + object->height()/2);
+                break;
+            case Alignment::Left:
+            case Alignment::Center:
+            case Alignment::Right:
+                pos.setY(object->position().y());
+                break;
+            case Alignment::BottomLeft:
+            case Alignment::Bottom:
+            case Alignment::BottomRight:
+                pos.setY(object->position().y() - object->height()/2);
+                break;
+            case Alignment::Unspecified:
+                // Suppress warning
+                break;
+            }
 
             device->write(formatByteString(
                 "position = Vector2(%1, %2)\n",

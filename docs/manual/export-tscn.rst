@@ -92,20 +92,13 @@ overwritten every time the map is exported.
 Object Properties
 ~~~~~~~~~~~~~~~~~
 
-Objects support the following properties:
+Objects support the following property:
 
 * string ``resPath`` (required)
-* float ``originX`` (default: 0)
-* float ``originY`` (default: 0)
 
 The ``resPath`` property takes the form of 'res://<pbject path>.tscn' and must
 be set to the path of the Godot object you wish to replace the object with.
 Objects without this property set will not be exported.
-
-The ``originX`` and ``originY`` properties provide an offset to the object
-position. Tiled normally sets the origin to the lower-left corner of the
-object, so if the origin of your object in Godot is different, you can use
-these properties to ensure they get properly positioned.
 
 Limitations
 ~~~~~~~~~~~
