@@ -5,6 +5,7 @@
 * Scripting: Added Tile.image for accessing a tile's image data
 * Scripting: Added Tileset.imageFileName and ImageLayer.imageFileName
 * Scripting: Made Tileset.margin and Tileset.tileSpacing writable
+* Scripting: Restored compatibility for MapObject.polygon (#3845)
 * JSON format: Fixed tile order when loading a tileset using the old format
 * Godot export: Fixed positioning of tile collision shapes (by Ryan Petrie, #3862)
 * tmxrasterizer: Added --hide-object and --show-object arguments (by Lars Luz, #3819)
