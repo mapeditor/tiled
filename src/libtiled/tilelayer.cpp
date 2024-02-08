@@ -612,6 +612,8 @@ void TileLayer::resize(QSize size, QPoint offset)
 
     mChunks = newLayer->mChunks;
     mBounds = newLayer->mBounds;
+    mUsedTilesets = newLayer->mUsedTilesets;
+    mUsedTilesetsDirty = newLayer->mUsedTilesetsDirty;
     setSize(size);
 }
 
@@ -655,6 +657,8 @@ void TileLayer::offsetTiles(QPoint offset,
 
     mChunks = newLayer->mChunks;
     mBounds = newLayer->mBounds;
+    mUsedTilesets = newLayer->mUsedTilesets;
+    mUsedTilesetsDirty = newLayer->mUsedTilesetsDirty;
 }
 
 void TileLayer::offsetTiles(QPoint offset)
