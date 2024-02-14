@@ -46,9 +46,10 @@ TilesetManager *TilesetManager::mInstance;
  */
 TilesetManager::TilesetManager():
     mWatcher(new FileSystemWatcher(this)),
-    mAnimationDriver(new TileAnimationDriver(this)),
-    mReloadTilesetsOnChange(false)
+    mAnimationDriver(new TileAnimationDriver(this))
 {
+    mWatcher->setEnabled(false);
+
     connect(mWatcher, &FileSystemWatcher::pathsChanged,
             this, &TilesetManager::filesChanged);
 
@@ -169,8 +170,12 @@ void TilesetManager::reloadImages(Tileset *tileset)
  */
 void TilesetManager::setReloadTilesetsOnChange(bool enabled)
 {
-    mReloadTilesetsOnChange = enabled;
-    // TODO: Clear the file system watcher when disabled
+    mWatcher->setEnabled(enabled);
+}
+
+bool TilesetManager::reloadTilesetsOnChange() const
+{
+    return mWatcher->isEnabled();
 }
 
 /**
@@ -206,9 +211,6 @@ void TilesetManager::tilesetImageSourceChanged(const Tileset &tileset,
 
 void TilesetManager::filesChanged(const QStringList &fileNames)
 {
-    if (!mReloadTilesetsOnChange)
-        return;
-
     for (const QString &fileName : fileNames)
         ImageCache::remove(fileName);
 

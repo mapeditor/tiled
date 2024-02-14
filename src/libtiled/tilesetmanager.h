@@ -99,12 +99,8 @@ private:
     QList<Tileset*> mTilesets;
     FileSystemWatcher *mWatcher;
     TileAnimationDriver *mAnimationDriver;
-    bool mReloadTilesetsOnChange;
 
     static TilesetManager *mInstance;
 };
-
-inline bool TilesetManager::reloadTilesetsOnChange() const
-{ return mReloadTilesetsOnChange; }
 
 } // namespace Tiled
