@@ -138,7 +138,7 @@ jobs:
         ./linuxdeploy-x86_64.AppImage --appdir AppDir --custom-apprun=dist/linux/AppRun --exclude-library "*libpython3*" --output appimage
 
     - name: Upload Tiled.AppImage
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Tiled-Qt${{ matrix.qt_version_major }}-x86_64.AppImage
         path: Tiled-Qt${{ matrix.qt_version_major }}-x86_64.AppImage
@@ -167,7 +167,7 @@ jobs:
       uses: snapcore/action-build@v1
 
     - name: Upload snap artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: tiled_amd64.snap
         path: tiled_*_amd64.snap
@@ -263,7 +263,7 @@ jobs:
         ditto -c -k --sequesterRsrc --keepParent install/Tiled.app Tiled_macOS-${{ matrix.version_suffix }}.zip
 
     - name: Upload Tiled.app
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Tiled_macOS-${{ matrix.version_suffix }}.app
         path: Tiled_macOS-${{ matrix.version_suffix }}.zip
@@ -337,13 +337,13 @@ jobs:
         mv release/installer*/Tiled-*.msi .
 
     - name: Upload Tiled installer
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Tiled-win${{ matrix.arch }}.msi
         path: Tiled-*.msi
 
     - name: Upload Tiled archive
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Tiled-win${{ matrix.arch }}
         path: release/install-root/*
@@ -369,7 +369,7 @@ jobs:
         prerelease: false
 
     - name: Download all artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
 
     - name: Upload Windows 64-bit installer
       uses: actions/upload-release-asset@v1
