@@ -649,9 +649,6 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
             sanitizeQuotedString(it->id)));
     }
 
-    if (!isExternal)
-        writeExtObjects(device, assetInfo);
-
     device->write("\n");
 
     // TileSetAtlasSource nodes
@@ -883,6 +880,8 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
         // gdscene node
         device->write(formatByteString("[gd_scene load_steps=%1 format=3]\n\n", loadSteps));
 
+        writeExtObjects(device, assetInfo);
+
         // tileset, either inline, or as an external file
         if (tilesetResPath.isEmpty()) {
             writeTileset(map, device, false, assetInfo);
@@ -894,8 +893,6 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
             device->write(formatByteString(
                 "[ext_resource type=\"TileSet\" path=\"%1\" id=\"TileSet_0\"]\n",
                 sanitizeQuotedString(tilesetResPath)));
-            
-            writeExtObjects(device, assetInfo);
 
             QString resFileName = assetInfo.resRoot + '/' + match.captured(1);
             SaveFile tilesetFile(resFileName);
@@ -1037,67 +1034,11 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
                 sanitizeQuotedString(assetInfo.objectIds[resPath]))
             );
 
-            QPointF pos;
-            Tiled::Alignment alignment;
-
-            // Set the alignment based on the object type
-            if (object->isTileObject()) {
-                auto tileset = object->cell().tileset();
-                alignment = tileset->objectAlignment();
-
-                if (alignment == Alignment::Unspecified) {
-                    if (tileset->orientation() == Tileset::Orientation::Isometric)
-                        alignment = Alignment::Bottom;
-                    else
-                        alignment = Alignment::BottomLeft;
-                }
-            } else {
-                alignment = Alignment::BottomLeft;
-            }
-
-            // Set the horizontal alignment
-            switch (alignment) {
-            case Alignment::TopLeft:
-            case Alignment::Left:
-            case Alignment::BottomLeft:
-                pos.setX(object->position().x() + object->width()/2);
-                break;
-            case Alignment::Top:
-            case Alignment::Center:
-            case Alignment::Bottom:
-                pos.setX(object->position().x());
-                break;
-            case Alignment::TopRight:
-            case Alignment::Right:
-            case Alignment::BottomRight:
-                pos.setX(object->position().x() - object->width()/2);
-                break;
-            case Alignment::Unspecified:
-                // Suppress warning
-                break;
-            }
-
-            // Set the vertical alignment
-            switch (alignment) {
-            case Alignment::TopLeft:
-            case Alignment::Top:
-            case Alignment::TopRight:
-                pos.setY(object->position().y() + object->height()/2);
-                break;
-            case Alignment::Left:
-            case Alignment::Center:
-            case Alignment::Right:
-                pos.setY(object->position().y());
-                break;
-            case Alignment::BottomLeft:
-            case Alignment::Bottom:
-            case Alignment::BottomRight:
-                pos.setY(object->position().y() - object->height()/2);
-                break;
-            case Alignment::Unspecified:
-                // Suppress warning
-                break;
-            }
+            // Convert Tiled's alignment position to Godot's centre-aligned position.
+            QPointF pos =
+                object->position() -
+                Tiled::alignmentOffset(object->size(), object->alignment()) +
+                QPointF(object->width()/2, object->height()/2);
 
             device->write(formatByteString(
                 "position = Vector2(%1, %2)\n",
