@@ -341,25 +341,25 @@ static void findUsedTilesets(const TileLayer *layer, AssetInfo &assetInfo)
 // Search an object layer for all object resources and save them in assetInfo
 static void findUsedObjects(const ObjectGroup *objectLayer, AssetInfo &assetInfo)
 {
-    QRegularExpression resPathValidator("^res://(.*)\\.tscn$");
+    static QRegularExpression resPathValidator("^res://(.*)\\.tscn$");
 
     for (const MapObject *object : objectLayer->objects()) {
-        auto resPath = object->resolvedProperty("resPath").toString();
+        const auto resPath = object->resolvedProperty("resPath").toString();
 
         if (resPath.isEmpty()) {
             Tiled::WARNING(TscnPlugin::tr("Only objects with the resPath property will be exported"),
-                Tiled::JumpToObject { object });
+                           Tiled::JumpToObject { object });
             continue;
         }
-        
+
         QRegularExpressionMatch match;
         if (!resPath.contains(resPathValidator, &match)) {
             Tiled::ERROR(TscnPlugin::tr("resPath must be in the form of 'res://<filename>.tscn'."),
-                Tiled::JumpToObject { object });
+                         Tiled::JumpToObject { object });
             continue;
         }
-        
-        QString baseName = sanitizeSpecialChars(match.captured(1));
+
+        const QString baseName = sanitizeSpecialChars(match.captured(1));
         int uniqueifier = 1;
         QString id = baseName;
 
@@ -385,7 +385,7 @@ static void findUsedObjects(const ObjectGroup *objectLayer, AssetInfo &assetInfo
             id = baseName + QString::number(uniqueifier);
         }
 
-        assetInfo.objects.push_back(object);
+        assetInfo.objects.append(object);
     }
 }
 
@@ -409,7 +409,6 @@ static void collectAssetsRecursive(const QList<Layer*> &layers, AssetInfo &asset
         case Layer::ObjectGroupType: {
             auto objectLayer = static_cast<const ObjectGroup*>(layer);
             findUsedObjects(objectLayer, assetInfo);
-            
             break;
         }
         case Layer::ImageLayerType:
@@ -611,7 +610,8 @@ static bool writeProperties(QFileDevice *device, const QVariantMap &properties, 
 }
 
 // Write the ext_resource lines for any objects exported
-static void writeExtObjects(QFileDevice *device, AssetInfo& assetInfo) {
+static void writeExtObjects(QFileDevice *device, const AssetInfo &assetInfo)
+{
     for (auto it = assetInfo.objectIds.begin(); it != assetInfo.objectIds.end(); ++it) {
         device->write(formatByteString(
             "[ext_resource type=\"PackedScene\" path=\"%1\" id=\"%2\"]\n",
@@ -1026,7 +1026,7 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
             if (name.isEmpty())
                 name = "Object" + QString::number(object->id());
 
-            auto resPath = object->resolvedProperty("resPath").toString();
+            const auto resPath = object->resolvedProperty("resPath").toString();
 
             device->write(formatByteString(
                 "[node name=\"%1\" parent=\".\" instance=ExtResource(\"%2\")]\n",
