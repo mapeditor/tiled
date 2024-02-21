@@ -6,6 +6,7 @@
 * Scripting: Added Tileset.imageFileName and ImageLayer.imageFileName
 * Scripting: Made Tileset.margin and Tileset.tileSpacing writable
 * JSON format: Fixed tile order when loading a tileset using the old format
+* Godot export: Added support for exporting objects (by Rick Yorgason, #3615)
 * Godot export: Fixed positioning of tile collision shapes (by Ryan Petrie, #3862)
 * tmxrasterizer: Added --hide-object and --show-object arguments (by Lars Luz, #3819)
 * tmxrasterizer: Added --frames and --frame-duration arguments to export animated maps as multiple images (#3868)
@@ -62,7 +63,7 @@
 
 * Restored Tiled 1.8 file format compatibility by default (#3560)
 * Added action search popup on Ctrl+Shift+P (with dogboydog, #3449)
-* Added Godot 4 export plugin (#3550)
+* Added Godot 4 export plugin (by Rick Yorgason, #3550)
 * Added file system actions also for tileset image based tilesets (#3448)
 * Added custom class option to disable drawing fill for objects (with dogboydog, #3312)
 * Added option to choose a custom interface font (#3589)
