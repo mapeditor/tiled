@@ -37,6 +37,7 @@ class FileEdit : public QWidget
 
     Q_PROPERTY(QString filter READ filter WRITE setFilter)
     Q_PROPERTY(QUrl fileUrl READ fileUrl WRITE setFileUrl)
+    Q_PROPERTY(QString filePath READ filePath WRITE setFilePath)
     Q_PROPERTY(bool isDirectory READ isDirectory WRITE setIsDirectory)
 
 public:
@@ -44,6 +45,9 @@ public:
 
     void setFileUrl(const QUrl &url);
     QUrl fileUrl() const;
+
+    void setFilePath(const QString &path);
+    QString filePath() const;
 
     void setFilter(const QString &filter) { mFilter = filter; }
     QString filter() const { return mFilter; }

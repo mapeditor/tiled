@@ -69,9 +69,14 @@ class TILEDSHARED_EXPORT FilePath
 {
     Q_GADGET
     Q_PROPERTY(QUrl url MEMBER url)
+    Q_PROPERTY(QString localFile READ localFile WRITE setLocalFile)
 
 public:
     QUrl url;
+
+    QString localFile() const { return url.toLocalFile(); }
+    void setLocalFile(const QString &filePath)
+    { url = QUrl::fromLocalFile(filePath); }
 
     bool operator==(const FilePath &o) const
     { return url == o.url; }
