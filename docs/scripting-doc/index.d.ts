@@ -4785,21 +4785,21 @@ declare class ColorButton extends Qt.QWidget {
  */
 declare class FileEdit extends Qt.QWidget {
   /**
-   * The file path of the currently selected file.
+   * The current file path.
    *
    * @since 1.10.3
    */
-  filePath: string;
+  fileName: string;
 
   /**
    * The {@link Qt.QUrl} of the currently selected file.
    *
-   * If you need the file path as a string, use the {@link filePath} property.
+   * If you need the file path as a string, use the {@link fileName} property.
    */
   fileUrl: Qt.QUrl;
 
   /**
-   * Signal emitted when the selected fileUrl changes.
+   * Signal emitted when the selected file changes.
    */
   fileUrlChanged: Signal<Qt.QUrl>;
 

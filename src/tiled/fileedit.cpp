@@ -65,21 +65,21 @@ FileEdit::FileEdit(QWidget *parent)
 
 void FileEdit::setFileUrl(const QUrl &url)
 {
-    setFilePath(url.toString(QUrl::PreferLocalFile));
+    setFileName(url.toString(QUrl::PreferLocalFile));
 }
 
 QUrl FileEdit::fileUrl() const
 {
-    return Tiled::toUrl(filePath());
+    return Tiled::toUrl(fileName());
 }
 
-void FileEdit::setFilePath(const QString &path)
+void FileEdit::setFileName(const QString &fileName)
 {
-    if (mLineEdit->text() != path)
-        mLineEdit->setText(path);
+    if (mLineEdit->text() != fileName)
+        mLineEdit->setText(fileName);
 }
 
-QString FileEdit::filePath() const
+QString FileEdit::fileName() const
 {
     return mLineEdit->text();
 }
