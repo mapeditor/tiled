@@ -98,13 +98,13 @@ static MatchType matchType(const Tile *tile)
     const QString matchType = tile->resolvedProperty(QStringLiteral("MatchType")).toString();
     if (matchType == QLatin1String("Empty"))
         return MatchType::Empty;
-    else if (matchType == QLatin1String("NonEmpty"))
+    if (matchType == QLatin1String("NonEmpty"))
         return MatchType::NonEmpty;
-    else if (matchType == QLatin1String("Other"))
+    if (matchType == QLatin1String("Other"))
         return MatchType::Other;
-    else if (matchType == QLatin1String("Negate"))
+    if (matchType == QLatin1String("Negate"))
         return MatchType::Negate;
-    else if (matchType == QLatin1String("Ignore"))
+    if (matchType == QLatin1String("Ignore"))
         return MatchType::Ignore;
 
     return MatchType::Tile;
@@ -750,27 +750,16 @@ static void collectCellsInRegion(const QVector<InputLayer> &list,
     }
 }
 
-/**
- * Returns whether the \a tileLayer has any output in the given \a region.
- */
-static bool hasOutputInRegion(const TileLayer &tileLayer,
-                              const QRegion &region)
+static bool isEmptyRegion(const TileLayer &tileLayer,
+                          const QRegion &region)
 {
-    for (const QRect &rect : region) {
-        for (int y = rect.top(); y <= rect.bottom(); ++y) {
-            for (int x = rect.left(); x <= rect.right(); ++x) {
-                switch (matchType(tileLayer.cellAt(x, y).tile())) {
-                case MatchType::Tile:
-                case MatchType::Empty:
-                    return true;
-                default:
-                    break;
-                }
-            }
-        }
-    }
+    for (const QRect &rect : region)
+        for (int y = rect.top(); y <= rect.bottom(); ++y)
+            for (int x = rect.left(); x <= rect.right(); ++x)
+                if (!tileLayer.cellAt(x, y).isEmpty())
+                    return false;
 
-    return false;
+    return true;
 }
 
 /**
@@ -1005,7 +994,7 @@ bool AutoMapper::compileOutputSet(RuleOutputSet &index,
         case Layer::TileLayerType: {
             auto fromTileLayer = static_cast<const TileLayer*>(from);
 
-            if (hasOutputInRegion(*fromTileLayer, outputRegion))
+            if (!isEmptyRegion(*fromTileLayer, outputRegion))
                 index.tileOutputs.append(fromTileLayer);
             break;
         }
