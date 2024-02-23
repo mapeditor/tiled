@@ -29,14 +29,12 @@ class MapObject;
 class MapRenderer;
 class ObjectGroup;
 
-class MapDocument;
-
 QRect objectTileRect(const MapRenderer &renderer,
                      const MapObject &object);
 
-QList<MapObject*> objectsToErase(const MapDocument *mapDocument,
-                                 const ObjectGroup *layer,
-                                 const QRegion &where);
+QList<MapObject*> objectsInRegion(const MapRenderer &renderer,
+                                  const ObjectGroup *layer,
+                                  const QRegion &where);
 
 QRegion tileRegionOfObjectGroup(const MapRenderer &renderer,
                                 const ObjectGroup *objectGroup);

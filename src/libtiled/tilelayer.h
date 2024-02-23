@@ -251,16 +251,16 @@ public:
         {
             if (lhs.mChunkPointer == lhs.mChunkEndPointer || rhs.mChunkPointer == rhs.mChunkEndPointer)
                 return lhs.mChunkPointer == rhs.mChunkPointer;
-            else
-                return lhs.mCellPointer == rhs.mCellPointer;
+
+            return lhs.mCellPointer == rhs.mCellPointer;
         }
 
         friend bool operator!=(const iterator& lhs, const iterator& rhs)
         {
             if (lhs.mChunkPointer == lhs.mChunkEndPointer || rhs.mChunkPointer == rhs.mChunkEndPointer)
                 return lhs.mChunkPointer != rhs.mChunkPointer;
-            else
-                return lhs.mCellPointer != rhs.mCellPointer;
+
+            return lhs.mCellPointer != rhs.mCellPointer;
         }
 
         Cell &value() const { return *mCellPointer; }
@@ -307,16 +307,16 @@ public:
         {
             if (lhs.mChunkPointer == lhs.mChunkEndPointer || rhs.mChunkPointer == rhs.mChunkEndPointer)
                 return lhs.mChunkPointer == rhs.mChunkPointer;
-            else
-                return lhs.mCellPointer == rhs.mCellPointer;
+
+            return lhs.mCellPointer == rhs.mCellPointer;
         }
 
         friend bool operator!=(const const_iterator& lhs, const const_iterator& rhs)
         {
             if (lhs.mChunkPointer == lhs.mChunkEndPointer || rhs.mChunkPointer == rhs.mChunkEndPointer)
                 return lhs.mChunkPointer != rhs.mChunkPointer;
-            else
-                return lhs.mCellPointer != rhs.mCellPointer;
+
+            return lhs.mCellPointer != rhs.mCellPointer;
         }
 
         const Cell &value() const { return *mCellPointer; }
@@ -646,8 +646,8 @@ inline const Cell &TileLayer::cellAt(int x, int y) const
 {
     if (const Chunk *chunk = findChunk(x, y))
         return chunk->cellAt(x & CHUNK_MASK, y & CHUNK_MASK);
-    else
-        return Cell::empty;
+
+    return Cell::empty;
 }
 
 inline const Cell &TileLayer::cellAt(QPoint point) const

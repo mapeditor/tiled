@@ -45,14 +45,14 @@ QRect objectTileRect(const MapRenderer &renderer,
     return QRectF(topLeft, bottomRight).toAlignedRect();
 }
 
-QList<MapObject*> objectsToErase(const MapDocument *mapDocument,
-                                 const ObjectGroup *layer,
-                                 const QRegion &where)
+QList<MapObject*> objectsInRegion(const MapRenderer &renderer,
+                                  const ObjectGroup *layer,
+                                  const QRegion &where)
 {
     QList<MapObject*> objectsToErase;
 
     for (MapObject *object : layer->objects()) {
-        const QRect tileRect = objectTileRect(*mapDocument->renderer(), *object);
+        const QRect tileRect = objectTileRect(renderer, *object);
         if (where.intersects(tileRect))
             objectsToErase.append(object);
     }
