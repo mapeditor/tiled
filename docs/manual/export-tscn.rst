@@ -53,9 +53,11 @@ Tilesets support the following property:
 
 * bool ``exportAlternates`` (default: false)
 
-The ``exportAlternates`` property is necessary when using flipped or rotated
-tiles. This will create 7 alternate tiles for each tile, allowing all flipped
-and rotation combinations.
+**Deprecated:** The ``exportAlternates`` property is necessary when using
+flipped or rotated tiles in Godot 4.0 and 4.1. This will create 7 alternate
+tiles for each tile, allowing all flipped and rotation combinations. This
+has been deprecated in Tiled 1.10.3 in favour of Godot 4.2's native rotation
+and flipping support.
 
 Tile Properties
 ~~~~~~~~~~~~~~~
