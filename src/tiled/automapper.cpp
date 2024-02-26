@@ -577,6 +577,9 @@ void AutoMapper::setupRules()
     if (setup.mLayerOutputRegions)
         regionOutput |= setup.mLayerOutputRegions->region();
 
+    const bool ignoreEmptyOutputs = !(mRuleMapSetup.mLayerRegions ||
+                                      mRuleMapSetup.mLayerInputRegions);
+
     // When no input regions have been defined at all, derive them from the
     // "input" and "inputnot" layers.
     if (!setup.mLayerRegions && !setup.mLayerInputRegions) {
@@ -635,7 +638,7 @@ void AutoMapper::setupRules()
 
         for (const OutputSet &outputSet : std::as_const(mRuleMapSetup.mOutputSets)) {
             RuleOutputSet index;
-            if (compileOutputSet(index, outputSet, rule.outputRegion))
+            if (compileOutputSet(index, outputSet, rule.outputRegion) || !ignoreEmptyOutputs)
                 rule.outputSets.add(index, outputSet.probability);
         }
     }
