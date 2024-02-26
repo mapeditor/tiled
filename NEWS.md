@@ -12,6 +12,7 @@
 * tmxrasterizer: Added --hide-object and --show-object arguments (by Lars Luz, #3819)
 * tmxrasterizer: Added --frames and --frame-duration arguments to export animated maps as multiple images (#3868)
 * tmxviewer: Added support for viewing JSON maps (#3866)
+* AutoMapping: Ignore empty outputs per-rule (#3523)
 * Windows: Fixed the support for WebP images (updated to Qt 6.6.1, #3661)
 * Fixed mouse handling issue when zooming while painting (#3863)
 * Fixed possible crash after a scripted tool disappears while active

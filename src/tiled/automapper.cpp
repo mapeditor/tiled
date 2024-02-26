@@ -29,9 +29,7 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "maprenderer.h"
-#include "object.h"
 #include "objectgroup.h"
-#include "randompicker.h"
 #include "tile.h"
 
 #include <QDebug>
@@ -100,13 +98,13 @@ static MatchType matchType(const Tile *tile)
     const QString matchType = tile->resolvedProperty(QStringLiteral("MatchType")).toString();
     if (matchType == QLatin1String("Empty"))
         return MatchType::Empty;
-    else if (matchType == QLatin1String("NonEmpty"))
+    if (matchType == QLatin1String("NonEmpty"))
         return MatchType::NonEmpty;
-    else if (matchType == QLatin1String("Other"))
+    if (matchType == QLatin1String("Other"))
         return MatchType::Other;
-    else if (matchType == QLatin1String("Negate"))
+    if (matchType == QLatin1String("Negate"))
         return MatchType::Negate;
-    else if (matchType == QLatin1String("Ignore"))
+    if (matchType == QLatin1String("Ignore"))
         return MatchType::Ignore;
 
     return MatchType::Tile;
@@ -125,19 +123,14 @@ struct CompileContext
 
 struct ApplyContext
 {
-    ApplyContext(const RuleMapSetup &setup, QRegion *appliedRegion)
+    ApplyContext(QRegion *appliedRegion)
         : appliedRegion(appliedRegion)
-    {
-        for (const OutputSet &outputSet : std::as_const(setup.mOutputSets))
-            outputSets.add(&outputSet, outputSet.probability);
-    }
+    {}
 
-    // These regions store which parts or the map have already been altered by
+    // These regions store which parts of the map have already been altered by
     // exactly this rule. We store all the altered parts to make sure there are
     // no overlaps of the same rule applied to (neighbouring) places.
     QHash<const Layer*, QRegion> appliedRegions;
-
-    RandomPicker<const OutputSet*> outputSets;
 
     QRegion *appliedRegion;
 };
@@ -161,9 +154,7 @@ AutoMapper::AutoMapper(std::unique_ptr<Map> rulesMap, const QRegularExpression &
         setupRules();
 }
 
-AutoMapper::~AutoMapper()
-{
-}
+AutoMapper::~AutoMapper() = default;
 
 QString AutoMapper::rulesMapFileName() const
 {
@@ -312,10 +303,10 @@ void AutoMapper::setupInputLayerProperties(InputLayer &inputLayer)
     }
 }
 
-void AutoMapper::setupOutputSetProperties(OutputSet &outputSet)
+void AutoMapper::setupOutputSetProperties(OutputSet &outputSet, RuleMapSetup &setup)
 {
-    for (auto it = outputSet.layers.keyBegin(); it != outputSet.layers.keyEnd(); ++it) {
-        const Layer *layer = *it;
+    for (const auto &outputLayer : outputSet.layers) {
+        const Layer *layer = outputLayer.layer;
 
         Properties outputProperties;
 
@@ -339,7 +330,7 @@ void AutoMapper::setupOutputSetProperties(OutputSet &outputSet)
         }
 
         if (!outputProperties.isEmpty())
-            outputSet.outputLayerProperties[layer] = std::move(outputProperties);
+            setup.mOutputLayerProperties[layer] = std::move(outputProperties);
     }
 }
 
@@ -508,7 +499,7 @@ bool AutoMapper::setupRuleMapLayers()
                 return set.name == setName;
             }, setName);
 
-            outputSet.layers.insert(layer, layerName);
+            outputSet.layers.append({ layer, layerName });
 
             continue;
         }
@@ -531,7 +522,7 @@ bool AutoMapper::setupRuleMapLayers()
     }
 
     for (OutputSet &set : setup.mOutputSets)
-        setupOutputSetProperties(set);
+        setupOutputSetProperties(set, setup);
 
     if (!error.isEmpty()) {
         error = rulesMapFileName() + QLatin1Char('\n') + error;
@@ -586,6 +577,9 @@ void AutoMapper::setupRules()
     if (setup.mLayerOutputRegions)
         regionOutput |= setup.mLayerOutputRegions->region();
 
+    const bool ignoreEmptyOutputs = !(mRuleMapSetup.mLayerRegions ||
+                                      mRuleMapSetup.mLayerInputRegions);
+
     // When no input regions have been defined at all, derive them from the
     // "input" and "inputnot" layers.
     if (!setup.mLayerRegions && !setup.mLayerInputRegions) {
@@ -607,9 +601,10 @@ void AutoMapper::setupRules()
     // "output" layers.
     if (!setup.mLayerRegions && !setup.mLayerOutputRegions) {
         for (const OutputSet &outputSet : std::as_const(mRuleMapSetup.mOutputSets)) {
-            std::for_each(outputSet.layers.keyBegin(),
-                          outputSet.layers.keyEnd(),
-                          [&] (const Layer *layer) {
+            std::for_each(outputSet.layers.begin(),
+                          outputSet.layers.end(),
+                          [&] (const OutputLayer &outputLayer) {
+                const Layer *layer = outputLayer.layer;
                 if (layer->isTileLayer()) {
                     auto tileLayer = static_cast<const TileLayer*>(layer);
                     regionOutput |= tileLayer->region();
@@ -640,6 +635,12 @@ void AutoMapper::setupRules()
         for (const auto &optionsArea : setup.mRuleOptionsAreas)
             if (combinedRegion.intersected(optionsArea.area) == combinedRegion)
                 mergeRuleOptions(rule.options, optionsArea.options, optionsArea.setOptions);
+
+        for (const OutputSet &outputSet : std::as_const(mRuleMapSetup.mOutputSets)) {
+            RuleOutputSet index;
+            if (compileOutputSet(index, outputSet, rule.outputRegion) || !ignoreEmptyOutputs)
+                rule.outputSets.add(index, outputSet.probability);
+        }
     }
 
 #ifndef QT_NO_DEBUG
@@ -754,10 +755,22 @@ static void collectCellsInRegion(const QVector<InputLayer> &list,
     }
 }
 
+static bool isEmptyRegion(const TileLayer &tileLayer,
+                          const QRegion &region)
+{
+    for (const QRect &rect : region)
+        for (int y = rect.top(); y <= rect.bottom(); ++y)
+            for (int x = rect.left(); x <= rect.right(); ++x)
+                if (!tileLayer.cellAt(x, y).isEmpty())
+                    return false;
+
+    return true;
+}
+
 /**
  * Sets up a small data structure for this rule that is optimized for matching.
  */
-void AutoMapper::compileRule(QVector<RuleInputSet> &inputSets,
+bool AutoMapper::compileRule(QVector<RuleInputSet> &inputSets,
                              const Rule &rule,
                              const AutoMappingContext &context) const
 {
@@ -768,6 +781,8 @@ void AutoMapper::compileRule(QVector<RuleInputSet> &inputSets,
         if (compileInputSet(index, inputSet, rule.inputRegion, compileContext, context))
             inputSets.append(std::move(index));
     }
+
+    return !inputSets.isEmpty();
 }
 
 /**
@@ -975,6 +990,43 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
     return true;
 }
 
+bool AutoMapper::compileOutputSet(RuleOutputSet &index,
+                                  const OutputSet &outputSet,
+                                  const QRegion &outputRegion) const
+{
+    for (const OutputLayer &outputLayer : outputSet.layers) {
+        const Layer *from = outputLayer.layer;
+
+        switch (from->layerType()) {
+        case Layer::TileLayerType: {
+            auto fromTileLayer = static_cast<const TileLayer*>(from);
+
+            if (!isEmptyRegion(*fromTileLayer, outputRegion))
+                index.tileOutputs.append({ fromTileLayer, outputLayer.name });
+            break;
+        }
+        case Layer::ObjectGroupType: {
+            auto fromObjectGroup = static_cast<const ObjectGroup*>(from);
+
+            auto objects = objectsInRegion(*mRulesMapRenderer, fromObjectGroup, outputRegion);
+            if (!objects.isEmpty()) {
+                QVector<const MapObject*> constObjects;
+                for (auto object : objects)
+                    constObjects.append(object);
+                index.objectOutputs.append({ fromObjectGroup, constObjects, outputLayer.name });
+            }
+            break;
+        }
+        case Layer::ImageLayerType:
+        case Layer::GroupLayerType:
+            Q_UNREACHABLE();
+            break;
+        }
+    }
+
+    return !(index.tileOutputs.isEmpty() && index.objectOutputs.isEmpty());
+}
+
 void AutoMapper::autoMap(const QRegion &where,
                          QRegion *appliedRegion,
                          AutoMappingContext &context) const
@@ -1004,31 +1056,16 @@ void AutoMapper::autoMap(const QRegion &where,
         }
 
         const QRegion regionToErase = inputLayersRegion.intersected(applyRegion);
-        for (const OutputSet &ruleOutput : std::as_const(mRuleMapSetup.mOutputSets)) {
-            QHashIterator<const Layer*, QString> it(ruleOutput.layers);
-            while (it.hasNext()) {
-                it.next();
 
-                const QString &name = it.value();
+        for (const QString &name : mRuleMapSetup.mOutputTileLayerNames)
+            context.outputTileLayers.value(name)->erase(regionToErase);
 
-                switch (it.key()->layerType()) {
-                case Layer::TileLayerType:
-                    context.outputTileLayers.value(name)->erase(regionToErase);
-                    break;
-                case Layer::ObjectGroupType: {
-                    const auto objects = objectsToErase(context.targetDocument,
-                                                        context.outputObjectGroups.value(name),
-                                                        regionToErase);
-                    for (MapObject *mapObject : objects)
-                        context.mapObjectsToRemove.insert(mapObject);
-                    break;
-                }
-                case Layer::ImageLayerType:
-                case Layer::GroupLayerType:
-                    Q_UNREACHABLE();
-                    break;
-                }
-            }
+        for (const QString &name : mRuleMapSetup.mOutputObjectGroupNames) {
+            const auto objects = objectsInRegion(*context.targetDocument->renderer(),
+                                                 context.outputObjectGroups.value(name),
+                                                 regionToErase);
+            for (MapObject *mapObject : objects)
+                context.mapObjectsToRemove.insert(mapObject);
         }
     }
 
@@ -1042,7 +1079,7 @@ void AutoMapper::autoMap(const QRegion &where,
             get = &getBoundCell;
     }
 
-    ApplyContext applyContext(mRuleMapSetup, appliedRegion);
+    ApplyContext applyContext { appliedRegion };
 
     if (mOptions.matchInOrder) {
         for (const Rule &rule : mRules) {
@@ -1142,8 +1179,12 @@ void AutoMapper::matchRule(const Rule &rule,
                            const std::function<void(QPoint pos)> &matched,
                            const AutoMappingContext &context) const
 {
+    if (rule.outputSets.isEmpty())
+        return;
+
     QVector<RuleInputSet> inputSets;
-    compileRule(inputSets, rule, context);
+    if (!compileRule(inputSets, rule, context))
+        return;
 
     const QRect inputBounds = rule.inputRegion.boundingRect();
 
@@ -1188,143 +1229,134 @@ void AutoMapper::applyRule(const Rule &rule, QPoint pos,
                            ApplyContext &applyContext,
                            AutoMappingContext &context) const
 {
-    Q_ASSERT(!applyContext.outputSets.isEmpty());
+    Q_ASSERT(!rule.outputSets.isEmpty());
 
     // Translate the position to adjust to the location of the rule.
     pos -= rule.inputRegion.boundingRect().topLeft();
 
     // choose by chance which group of rule_layers should be used:
-    const OutputSet &ruleOutput = *applyContext.outputSets.pick();
+    const RuleOutputSet &outputSet = rule.outputSets.pick();
 
     if (rule.options.noOverlappingOutput) {
         // check if there are no overlaps within this rule.
         QHash<const Layer*, QRegion> ruleRegionInLayer;
 
-        const bool overlap = std::any_of(ruleOutput.layers.keyValueBegin(),
-                                         ruleOutput.layers.keyValueEnd(),
-                                         [&] (const std::pair<const Layer *, QString> &entry) {
-            const Layer *layer = entry.first;
-            const QString &targetName = entry.second;
+        // TODO: Very slow to re-calculate the entire region for
+        // each rule output layer here, each time a rule has a match.
 
-            QRegion outputLayerRegion;
-            Layer *targetLayer;
+        for (const auto &tileOutput : outputSet.tileOutputs) {
+            const Layer *targetLayer = context.outputTileLayers.value(tileOutput.name);
+            QRegion &outputLayerRegion = ruleRegionInLayer[targetLayer];
+            outputLayerRegion = tileOutput.tileLayer->region() & rule.outputRegion;
+        }
 
-            // TODO: Very slow to re-calculate the entire region for
-            // each rule output layer here, each time a rule has a match.
-            switch (layer->layerType()) {
-            case Layer::TileLayerType:
-                outputLayerRegion = static_cast<const TileLayer*>(layer)->region();
-                targetLayer = context.outputTileLayers.value(targetName);
-                break;
-            case Layer::ObjectGroupType:
-                outputLayerRegion = tileRegionOfObjectGroup(*mRulesMapRenderer,
-                                                            static_cast<const ObjectGroup*>(layer));
-                targetLayer = context.outputObjectGroups.value(targetName);
-                break;
-            case Layer::ImageLayerType:
-            case Layer::GroupLayerType:
-                Q_UNREACHABLE();
-                return false;
-            }
+        for (const auto &objectOutput : outputSet.objectOutputs) {
+            const Layer *targetLayer = context.outputTileLayers.value(objectOutput.name);
+            QRegion &outputLayerRegion = ruleRegionInLayer[targetLayer];
+            for (const MapObject *mapObject : objectOutput.objects)
+                outputLayerRegion |= objectTileRect(*mRulesMapRenderer, *mapObject);
+        }
 
-            outputLayerRegion &= rule.outputRegion;
-            outputLayerRegion.translate(pos.x(), pos.y());
+        // Translate the regions to the position of the rule and check for overlap.
+        for (auto it = ruleRegionInLayer.keyValueBegin(), it_end = ruleRegionInLayer.keyValueEnd();
+             it != it_end; ++it) {
 
-            ruleRegionInLayer[targetLayer] = outputLayerRegion;
+            auto base = it.base();
+            const Layer *layer = base.key();
+            QRegion &region = base.value();
 
-            return applyContext.appliedRegions[targetLayer].intersects(outputLayerRegion);
-        });
+            region.translate(pos.x(), pos.y());
 
-        if (overlap)
-            return;
+            if (applyContext.appliedRegions[layer].intersects(region))
+                return; // Don't apply the rule
+        }
 
         // Remember the newly applied region
-        std::for_each(ruleRegionInLayer.keyValueBegin(),
-                      ruleRegionInLayer.keyValueEnd(),
-                      [&] (const std::pair<const Layer *, QRegion> &entry) {
-            const Layer *layer = entry.first;
-            const QRegion &region = entry.second;
+        for (auto it = ruleRegionInLayer.keyValueBegin(), it_end = ruleRegionInLayer.keyValueEnd();
+             it != it_end; ++it) {
+
+            auto base = it.base();
+            const Layer *layer = base.key();
+            const QRegion &region = base.value();
 
             applyContext.appliedRegions[layer] |= region;
-        });
+        }
     }
 
-    copyMapRegion(rule, pos, ruleOutput, context);
+    copyMapRegion(rule, pos, outputSet, context);
 
     if (applyContext.appliedRegion)
         *applyContext.appliedRegion |= rule.outputRegion.translated(pos.x(), pos.y());
 }
 
 void AutoMapper::copyMapRegion(const Rule &rule, QPoint offset,
-                               const OutputSet &ruleOutput,
+                               const RuleOutputSet &outputSet,
                                AutoMappingContext &context) const
 {
-    const QRegion &outputRegion = rule.outputRegion;
+    for (const auto &tileOutput : outputSet.tileOutputs) {
+        TileLayer *toTileLayer = context.outputTileLayers.value(tileOutput.name);
 
-    for (auto it = ruleOutput.layers.begin(), end = ruleOutput.layers.end(); it != end; ++it) {
-        const Layer *from = it.key();
-        const QString &targetName = it.value();
+        if (!rule.options.ignoreLock && !toTileLayer->isUnlocked())
+            continue;
 
-        Layer *to = nullptr;
+        if (!context.touchedTileLayers.isEmpty())
+            appendUnique<const TileLayer*>(context.touchedTileLayers, toTileLayer);
 
-        switch (from->layerType()) {
-        case Layer::TileLayerType: {
-            auto fromTileLayer = static_cast<const TileLayer*>(from);
-            auto toTileLayer = context.outputTileLayers.value(targetName);
-
-            if (!rule.options.ignoreLock && !toTileLayer->isUnlocked())
-                continue;
-
-            if (!context.touchedTileLayers.isEmpty())
-                appendUnique<const TileLayer*>(context.touchedTileLayers, toTileLayer);
-
-            to = toTileLayer;
-            for (const QRect &rect : outputRegion) {
-                copyTileRegion(fromTileLayer, rect, toTileLayer,
-                               rect.x() + offset.x(), rect.y() + offset.y(),
-                               context);
-            }
-            break;
+        for (const QRect &rect : rule.outputRegion) {
+            copyTileRegion(tileOutput.tileLayer, rect, toTileLayer,
+                           rect.x() + offset.x(), rect.y() + offset.y(),
+                           context);
         }
-        case Layer::ObjectGroupType: {
-            auto fromObjectGroup = static_cast<const ObjectGroup*>(from);
-            auto toObjectGroup = context.outputObjectGroups.value(targetName);
+
+        applyLayerProperties(tileOutput.tileLayer, toTileLayer, context);
+    }
+
+    if (!outputSet.objectOutputs.isEmpty()) {
+        QVector<AddMapObjects::Entry> newMapObjects;
+        newMapObjects.reserve(outputSet.objectOutputs.size());
+
+        const MapRenderer *renderer = context.targetDocument->renderer();
+        const QRect outputRect = rule.outputRegion.boundingRect();
+        const QRectF pixelRect = renderer->tileToPixelCoords(outputRect);
+        const QPointF pixelOffset = renderer->tileToPixelCoords(outputRect.topLeft() + offset) - pixelRect.topLeft();
+
+        for (const auto &objectOutput : outputSet.objectOutputs) {
+            auto toObjectGroup = context.outputObjectGroups.value(objectOutput.name);
 
             if (!rule.options.ignoreLock && !toObjectGroup->isUnlocked())
                 continue;
 
-            to = toObjectGroup;
-            for (const QRect &rect : outputRegion) {
-                copyObjectRegion(fromObjectGroup, rect, toObjectGroup,
-                                 rect.x() + offset.x(), rect.y() + offset.y(),
-                                 context);
+            for (auto mapObject : objectOutput.objects) {
+                MapObject *clone = mapObject->clone();
+                clone->setX(clone->x() + pixelOffset.x());
+                clone->setY(clone->y() + pixelOffset.y());
+                newMapObjects.append(AddMapObjects::Entry { clone, toObjectGroup });
             }
-            break;
+
+            context.newMapObjects.append(newMapObjects);
+
+            applyLayerProperties(objectOutput.objectGroup, toObjectGroup, context);
         }
-        case Layer::ImageLayerType:
-        case Layer::GroupLayerType:
-            Q_UNREACHABLE();
-            break;
-        }
-        Q_ASSERT(to);
+    }
+}
 
-        // Copy any custom properties set on the output layer
-        auto propertiesIt = ruleOutput.outputLayerProperties.constFind(from);
-        if (propertiesIt != ruleOutput.outputLayerProperties.constEnd()) {
-            Properties mergedProperties = context.changedProperties.value(to, to->properties());
-            mergeProperties(mergedProperties, *propertiesIt);
+void AutoMapper::applyLayerProperties(const Layer *from, Layer *to, AutoMappingContext &context) const
+{
+    auto propertiesIt = mRuleMapSetup.mOutputLayerProperties.constFind(from);
+    if (propertiesIt != mRuleMapSetup.mOutputLayerProperties.constEnd()) {
+        Properties mergedProperties = context.changedProperties.value(to, to->properties());
+        mergeProperties(mergedProperties, *propertiesIt);
 
-            if (mergedProperties != to->properties()) {
-                const bool isNewLayer = contains_where(context.newLayers,
-                                                       [to] (const std::unique_ptr<Layer> &l) {
-                    return l.get() == to;
-                });
+        if (mergedProperties != to->properties()) {
+            const bool isNewLayer = contains_where(context.newLayers,
+                                                   [to] (const std::unique_ptr<Layer> &l) {
+                return l.get() == to;
+            });
 
-                if (isNewLayer)
-                    to->setProperties(mergedProperties);
-                else
-                    context.changedProperties.insert(to, mergedProperties);
-            }
+            if (isNewLayer)
+                to->setProperties(mergedProperties);
+            else
+                context.changedProperties.insert(to, mergedProperties);
         }
     }
 }
@@ -1368,10 +1400,10 @@ void AutoMapper::copyTileRegion(const TileLayer *srcLayer, QRect rect,
             }
 
             switch (matchType(cell.tile())) {
-            case Tiled::MatchType::Tile:
+            case MatchType::Tile:
                 dstLayer->setCell(xd, yd, cell);
                 break;
-            case Tiled::MatchType::Empty:
+            case MatchType::Empty:
                 dstLayer->setCell(xd, yd, Cell());
                 break;
             default:
@@ -1379,31 +1411,6 @@ void AutoMapper::copyTileRegion(const TileLayer *srcLayer, QRect rect,
             }
         }
     }
-}
-
-void AutoMapper::copyObjectRegion(const ObjectGroup *srcLayer, const QRectF &rect,
-                                  ObjectGroup *dstLayer, int dstX, int dstY,
-                                  AutoMappingContext &context) const
-{
-    const QRectF pixelRect = context.targetDocument->renderer()->tileToPixelCoords(rect);
-    const QList<MapObject*> objects = objectsInRegion(srcLayer, pixelRect.toAlignedRect());
-    if (objects.isEmpty())
-        return;
-
-    QPointF pixelOffset = context.targetDocument->renderer()->tileToPixelCoords(dstX, dstY);
-    pixelOffset -= pixelRect.topLeft();
-
-    QVector<AddMapObjects::Entry> newMapObjects;
-    newMapObjects.reserve(objects.size());
-
-    for (MapObject *obj : objects) {
-        MapObject *clone = obj->clone();
-        clone->setX(clone->x() + pixelOffset.x());
-        clone->setY(clone->y() + pixelOffset.y());
-        newMapObjects.append(AddMapObjects::Entry { clone, dstLayer });
-    }
-
-    context.newMapObjects.append(newMapObjects);
 }
 
 void AutoMapper::addWarning(const QString &message, std::function<void ()> callback)
