@@ -39,7 +39,4 @@ QList<MapObject*> objectsInRegion(const MapRenderer &renderer,
 QRegion tileRegionOfObjectGroup(const MapRenderer &renderer,
                                 const ObjectGroup *objectGroup);
 
-QList<MapObject*> objectsInRegion(const ObjectGroup *objectGroup,
-                                  const QRectF &where);
-
 } // namespace Tiled
