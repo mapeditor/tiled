@@ -109,7 +109,7 @@ output[index]_name
 
 Everything after the first underscore is the **name**, which determines which layer in the working map the tiles or objects will be placed on. If the working map includes multiple layers by this name, the bottom-most one will be used. If the rule matches and the working map does not already contain the named output layer, Automapping will create the layer.
 
-The **index** is optional, and is not related to the input indices. Instead, output indices are used to randomize the output: every time the rule finds a match, a random output index is chosen and only the output layers with that index will have their contents placed into the working map.
+The **index** is optional, and is not related to the input indices. Instead, output indices are used to randomize the output: every time the rule finds a match, a random output index is chosen and only the output layers with that index will have their contents placed into the working map. If an output index is completely empty for a given rule, it will never be chosen for that rule (since Tiled 1.10.3).
 
 #### Random Output Example
 
