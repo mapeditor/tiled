@@ -218,6 +218,7 @@ Probability {bdg-primary}`New in Tiled 1.10`
 
 {bdg-secondary-line}`Since Tiled 1.9`
 
+(object-properties)=
 ### Object Properties
 
 A number of options can be set on individual rules, even within the same rule map. To do this, add an Object Layer to your rule map called `rule_options`. On this layer, you can create plain rectangle objects and any options you set on these objects will apply to all rules they contain.
