@@ -1249,13 +1249,12 @@ void AutoMapper::applyRule(const Rule &rule, QPoint pos,
             outputLayerRegion |= objectTileRect(*mRulesMapRenderer, *mapObject);
         }
 
-        // Translate the regions to the position of the rule and check for
-        // overlap.
+        // Translate the regions to the position of the rule and check for overlap.
         for (auto it = ruleRegionInLayer.keyValueBegin(), it_end = ruleRegionInLayer.keyValueEnd();
              it != it_end; ++it) {
 
-            const Layer *layer = it->first;
-            QRegion &region = it->second;
+            const Layer *layer = it.base().key();
+            QRegion &region = it.base().value();
 
             region.translate(pos.x(), pos.y());
 
@@ -1267,8 +1266,8 @@ void AutoMapper::applyRule(const Rule &rule, QPoint pos,
         for (auto it = ruleRegionInLayer.keyValueBegin(), it_end = ruleRegionInLayer.keyValueEnd();
              it != it_end; ++it) {
 
-            const Layer *layer = it->first;
-            const QRegion &region = it->second;
+            const Layer *layer = it.base().key();
+            const QRegion &region = it.base().value();
 
             applyContext.appliedRegions[layer] |= region;
         }
