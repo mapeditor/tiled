@@ -74,13 +74,19 @@ struct InputSet
     std::vector<InputConditions> layers;
 };
 
+struct OutputLayer
+{
+    const Layer *layer;
+    QString name;
+};
+
 // One set of output layers sharing the same index
 struct OutputSet
 {
     OutputSet(const QString &name) : name(name) {}
 
     QString name;
-    QVector<const Layer*> layers;
+    QVector<OutputLayer> layers;
     qreal probability = 1.0;
 };
 
@@ -150,8 +156,8 @@ struct RuleMapSetup
     QSet<QString> mOutputTileLayerNames;
     QSet<QString> mOutputObjectGroupNames;
 
-    // Maps output layers in mRulesMap to their names in mTargetMap
-    QHash<const Layer*, QString> mOutputLayerNames;
+    // The properties that should be copied to the target map, when any rule
+    // matches for these output layers.
     QHash<const Layer*, Properties> mOutputLayerProperties;
 };
 
@@ -180,10 +186,23 @@ struct RuleInputSet
     QVector<Cell> cells;
 };
 
+struct RuleOutputTileLayer
+{
+    const TileLayer *tileLayer;         // reference to layer in rule map
+    QString name;                       // target layer name
+};
+
+struct RuleOutputMapObjects
+{
+    const ObjectGroup *objectGroup;     // reference to layer in rule map
+    QVector<const MapObject*> objects;  // references to objects in rule map
+    QString name;                       // target layer name
+};
+
 struct RuleOutputSet
 {
-    QVector<const TileLayer*> tileOutputs;
-    QVector<const MapObject*> objectOutputs;
+    QVector<RuleOutputTileLayer> tileOutputs;
+    QVector<RuleOutputMapObjects> objectOutputs;
 };
 
 struct CompileContext;
