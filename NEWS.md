@@ -8,6 +8,7 @@
 * Scripting: Restored compatibility for MapObject.polygon (#3845)
 * JSON format: Fixed tile order when loading a tileset using the old format
 * Godot export: Added support for exporting objects (by Rick Yorgason, #3615)
+* Godot export: Use Godot 4.2 tile transformation flags (by Rick Yorgason, #3895)
 * Godot export: Fixed positioning of tile collision shapes (by Ryan Petrie, #3862)
 * tmxrasterizer: Added --hide-object and --show-object arguments (by Lars Luz, #3819)
 * tmxrasterizer: Added --frames and --frame-duration arguments to export animated maps as multiple images (#3868)

@@ -461,6 +461,7 @@ static AssetInfo collectAssets(const Map *map)
 }
 
 enum FlippedState {
+    // exportAlternate Deprecation Note: Change to 1<<12, 1<<13, 1<<14 when exportAlternates is removed
     FlippedH = 1,
     FlippedV = 2,
     Transposed = 4
@@ -676,8 +677,10 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
             device->write(formatByteString("texture_region_size = Vector2i(%1, %2)\n",
                                            tileset.tileWidth(), tileset.tileHeight()));
 
+        // exportAlternate Deprecation Note: Remove this block
         bool hasAlternates = tileset.resolvedProperty("exportAlternates").toBool();
-
+        if (hasAlternates)
+            Tiled::WARNING(TscnPlugin::tr("exportAlternates is deprecated. Godot 4.2 supports native tile rotation. Tileset: %1").arg(tileset.name()));
         unsigned maxAlternate = hasAlternates ? FlippedH | FlippedV | Transposed : 0;
 
         // Tile info
@@ -731,6 +734,7 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
                 }
 
                 // If we're using alternate tiles, give a hint for the next alt ID
+                // exportAlternate Deprecation Note: Remove the entire if and for blocks following
                 if (hasAlternates) {
                     device->write(formatByteString("%1:%2/next_alternative_id = 8\n",
                                                    x, y));
@@ -936,7 +940,7 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
         // Where:
         //   DestLocation = (DestX >= 0 ? DestY : DestY + 1) * 65536 + DestX
         //   SrcX         = SrcX * 65536 + TileSetId
-        //   SrcY         = SrcY + 65536 * AlternateId
+        //   SrcY         = SrcY + 65536 * (AlternateId | FLIP_H | FLIP_V | TRANSPOSE)
         int layerIndex = 0;
         for (const auto layer : std::as_const(assetInfo.layers)) {
             device->write(formatByteString("layer_%1/name = \"%2\"\n",
@@ -986,11 +990,9 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
                             alt |= FlippedV;
                         if (cell.flippedAntiDiagonally())
                             alt |= Transposed;
+                        // exportAlternate Deprecation Note: Remove this if block
                         if (alt && !cell.tileset()->resolvedProperty("exportAlternates").toBool()) {
-                            Tiled::ERROR(TscnPlugin::tr("Map uses flipped/rotated tiles. The tileset must have "
-                                                        "the custom exportAlternates property enabled to export this map."),
-                                         Tiled::JumpToTile { map, QPoint(x, y), layer });
-                            alt = 0;
+                            alt <<= 12;
                         }
 
                         int destLocation = (x >= 0 ? y : y + 1) * 65536 + x;
