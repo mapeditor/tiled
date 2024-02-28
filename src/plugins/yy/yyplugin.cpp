@@ -1003,10 +1003,12 @@ static std::unique_ptr<GMRLayer> processObjectGroup(const ObjectGroup *objectGro
             instance.scaleX = takeProperty(props, "scaleX", instance.scaleX);
             instance.scaleY = takeProperty(props, "scaleY", instance.scaleY);
 
+            QPointF pos = context.renderer->pixelToScreenCoords(mapObject->position());
+
             // Adjust the position based on the origin
             QTransform transform;
             transform.rotate(mapObject->rotation());
-            const QPointF pos = mapObject->position() + transform.map(origin);
+            pos += transform.map(origin);
 
             // TODO: Support creation code - takeProperty(props, "code", QString());
             // Would need to be written out as a separate file
@@ -1093,10 +1095,12 @@ static std::unique_ptr<GMRLayer> processObjectGroup(const ObjectGroup *objectGro
             // GameMaker, taking into account the rotation.
             origin -= alignmentOffset(mapObject->size(), mapObject->alignment());
 
+            QPointF pos = context.renderer->pixelToScreenCoords(mapObject->position());
+
             // Adjust the position based on the origin
             QTransform transform;
             transform.rotate(mapObject->rotation());
-            const QPointF pos = mapObject->position() + transform.map(origin);
+            pos += transform.map(origin);
 
             g.colour = optionalProperty(mapObject, "colour", color);
             // TODO: g.inheritedItemId

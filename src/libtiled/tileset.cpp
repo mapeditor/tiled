@@ -29,7 +29,6 @@
 
 #include "tileset.h"
 
-#include "imagecache.h"
 #include "tile.h"
 #include "tilesetmanager.h"
 #include "wangset.h"

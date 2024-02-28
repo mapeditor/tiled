@@ -6,10 +6,12 @@
 * Scripting: Added Tileset.imageFileName and ImageLayer.imageFileName
 * Scripting: Made Tileset.margin and Tileset.tileSpacing writable
 * Scripting: Restored compatibility for MapObject.polygon (#3845)
+* TMX format: Embedded images are now also supported on tilesets and image layers
 * JSON format: Fixed tile order when loading a tileset using the old format
-* Godot export: Added support for exporting objects (by Rick Yorgason, #3615)
-* Godot export: Use Godot 4.2 tile transformation flags (by Rick Yorgason, #3895)
-* Godot export: Fixed positioning of tile collision shapes (by Ryan Petrie, #3862)
+* Godot 4 plugin: Added support for exporting objects (by Rick Yorgason, #3615)
+* Godot 4 plugin: Use Godot 4.2 tile transformation flags (by Rick Yorgason, #3895)
+* Godot 4 plugin: Fixed positioning of tile collision shapes (by Ryan Petrie, #3862)
+* GameMaker 2 plugin: Fixed positioning of objects on isometric maps
 * tmxrasterizer: Added --hide-object and --show-object arguments (by Lars Luz, #3819)
 * tmxrasterizer: Added --frames and --frame-duration arguments to export animated maps as multiple images (#3868)
 * tmxviewer: Added support for viewing JSON maps (#3866)
@@ -18,7 +20,6 @@
 * Fixed mouse handling issue when zooming while painting (#3863)
 * Fixed possible crash after a scripted tool disappears while active
 * Fixed updating of used tilesets after resizing map (#3884)
-* TMX format: Embedded images are now also supported on tilesets and image layers
 * AppImage: Updated to Sentry 0.6.7
 
 ### Tiled 1.10.2 (4 August 2023)
