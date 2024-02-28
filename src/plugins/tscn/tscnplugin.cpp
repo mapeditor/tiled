@@ -680,7 +680,7 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
         // exportAlternate Deprecation Note: Remove this block
         bool hasAlternates = tileset.resolvedProperty("exportAlternates").toBool();
         if (hasAlternates)
-            Tiled::WARNING(TscnPlugin::tr("exportAlternates depricated. Godot 4.2 supports native tile rotation. Tileset: %1").arg(tileset.name()));
+            Tiled::WARNING(TscnPlugin::tr("exportAlternates is deprecated. Godot 4.2 supports native tile rotation. Tileset: %1").arg(tileset.name()));
         unsigned maxAlternate = hasAlternates ? FlippedH | FlippedV | Transposed : 0;
 
         // Tile info
