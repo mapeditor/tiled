@@ -19,6 +19,7 @@
 * AutoMapping: Ignore empty outputs per-rule (#3523)
 * AutoMapping: Always apply output sets with empty index
 * Windows: Fixed the support for WebP images (updated to Qt 6.6.1, #3661)
+* Fixed possible crash after assigning to tiled.activeAsset
 * Fixed the option to resolve properties on export to also resolve class members (#3411, #3315)
 * Fixed terrain tool behavior and terrain overlays after changing terrain set type (#3204, #3260)
 * Fixed mouse handling issue when zooming while painting (#3863)

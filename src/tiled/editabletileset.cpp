@@ -36,14 +36,14 @@
 namespace Tiled {
 
 EditableTileset::EditableTileset(const QString &name, QObject *parent)
-    : EditableAsset(nullptr, nullptr, parent)
+    : EditableAsset(nullptr, parent)
     , mTileset(Tileset::create(name, 0, 0))
 {
     setObject(mTileset.data());
 }
 
 EditableTileset::EditableTileset(const Tileset *tileset, QObject *parent)
-    : EditableAsset(nullptr, const_cast<Tileset*>(tileset), parent)
+    : EditableAsset(const_cast<Tileset*>(tileset), parent)
     , mReadOnly(true)
     , mTileset(const_cast<Tileset*>(tileset)->sharedFromThis())    // keep alive
 {
@@ -51,14 +51,9 @@ EditableTileset::EditableTileset(const Tileset *tileset, QObject *parent)
 
 EditableTileset::EditableTileset(TilesetDocument *tilesetDocument,
                                  QObject *parent)
-    : EditableAsset(tilesetDocument, tilesetDocument->tileset().data(), parent)
+    : EditableAsset(tilesetDocument->tileset().data(), parent)
 {
-    connect(tilesetDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
-    connect(tilesetDocument, &TilesetDocument::tilesAdded, this, &EditableTileset::attachTiles);
-    connect(tilesetDocument, &TilesetDocument::tilesRemoved, this, &EditableTileset::detachTiles);
-    connect(tilesetDocument, &TilesetDocument::tileObjectGroupChanged, this, &EditableTileset::tileObjectGroupChanged);
-    connect(tilesetDocument->wangSetModel(), &TilesetWangSetModel::wangSetAdded, this, &EditableTileset::wangSetAdded);
-    connect(tilesetDocument->wangSetModel(), &TilesetWangSetModel::wangSetRemoved, this, &EditableTileset::wangSetRemoved);
+    setDocument(tilesetDocument);
 }
 
 EditableTileset::~EditableTileset()
@@ -394,6 +389,25 @@ void EditableTileset::setBackgroundColor(const QColor &color)
         push(new ChangeTilesetBackgroundColor(doc, color));
     else if (!checkReadOnly())
         tileset()->setBackgroundColor(color);
+}
+
+void EditableTileset::setDocument(Document *document)
+{
+    Q_ASSERT(!document || document->type() == Document::TilesetDocumentType);
+
+    if (this->document() == document)
+        return;
+
+    EditableAsset::setDocument(document);
+
+    if (auto doc = tilesetDocument()) {
+        connect(doc, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
+        connect(doc, &TilesetDocument::tilesAdded, this, &EditableTileset::attachTiles);
+        connect(doc, &TilesetDocument::tilesRemoved, this, &EditableTileset::detachTiles);
+        connect(doc, &TilesetDocument::tileObjectGroupChanged, this, &EditableTileset::tileObjectGroupChanged);
+        connect(doc->wangSetModel(), &TilesetWangSetModel::wangSetAdded, this, &EditableTileset::wangSetAdded);
+        connect(doc->wangSetModel(), &TilesetWangSetModel::wangSetRemoved, this, &EditableTileset::wangSetRemoved);
+    }
 }
 
 bool EditableTileset::tilesFromEditables(const QList<QObject *> &editableTiles, QList<Tile*> &tiles)

@@ -163,7 +163,7 @@ public:
     Q_INVOKABLE void autoMap(const QRectF &region, const QString &rulesFile = QString());
     Q_INVOKABLE void autoMap(const Tiled::RegionValueType &region, const QString &rulesFile = QString());
 
-    Q_INVOKABLE Tiled::ScriptImage *toImage(QSize size = QSize());
+    Q_INVOKABLE Tiled::ScriptImage *toImage(QSize size = QSize()) const;
 
     Q_INVOKABLE QPointF screenToTile(qreal x, qreal y) const;
     Q_INVOKABLE QPointF screenToTile(const QPointF &position) const;
@@ -208,6 +208,9 @@ signals:
     void selectedObjectsChanged();
 
     void regionEdited(const Tiled::RegionValueType &region, Tiled::EditableTileLayer *layer);
+
+protected:
+    void setDocument(Document *document) override;
 
 private:
     void documentChanged(const ChangeEvent &change);

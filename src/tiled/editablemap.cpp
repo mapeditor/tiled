@@ -49,25 +49,16 @@
 namespace Tiled {
 
 EditableMap::EditableMap(QObject *parent)
-    : EditableAsset(nullptr, new Map(), parent)
+    : EditableAsset(new Map(), parent)
 {
     mDetachedMap.reset(map());
 }
 
 EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
-    : EditableAsset(mapDocument, mapDocument->map(), parent)
+    : EditableAsset(mapDocument->map(), parent)
     , mSelectedArea(new EditableSelectedArea(mapDocument, this))
 {
-    connect(mapDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
-    connect(mapDocument, &Document::changed, this, &EditableMap::documentChanged);
-    connect(mapDocument, &MapDocument::layerAdded, this, &EditableMap::attachLayer);
-    connect(mapDocument, &MapDocument::layerRemoved, this, &EditableMap::detachLayer);
-
-    connect(mapDocument, &MapDocument::currentLayerChanged, this, &EditableMap::currentLayerChanged);
-    connect(mapDocument, &MapDocument::selectedLayersChanged, this, &EditableMap::selectedLayersChanged);
-    connect(mapDocument, &MapDocument::selectedObjectsChanged, this, &EditableMap::selectedObjectsChanged);
-
-    connect(mapDocument, &MapDocument::regionEdited, this, &EditableMap::onRegionEdited);
+    setDocument(mapDocument);
 }
 
 /**
@@ -76,14 +67,13 @@ EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
  * The map's lifetime must exceed that of the EditableMap instance.
  */
 EditableMap::EditableMap(const Map *map, QObject *parent)
-    : EditableAsset(nullptr, const_cast<Map*>(map), parent)
+    : EditableAsset(const_cast<Map*>(map), parent)
     , mReadOnly(true)
-    , mSelectedArea(nullptr)
 {
 }
 
 EditableMap::EditableMap(std::unique_ptr<Map> map, QObject *parent)
-    : EditableAsset(nullptr, map.get(), parent)
+    : EditableAsset(map.get(), parent)
     , mDetachedMap(std::move(map))
 {
 }
@@ -449,7 +439,7 @@ void EditableMap::autoMap(const RegionValueType &region, const QString &rulesFil
         manager.autoMapRegion(region.region());
 }
 
-Tiled::ScriptImage *EditableMap::toImage(QSize size)
+Tiled::ScriptImage *EditableMap::toImage(QSize size) const
 {
     const MiniMapRenderer miniMapRenderer(map());
     const QSize imageSize = size.isValid() ? size : miniMapRenderer.mapSize();
@@ -680,6 +670,29 @@ QSharedPointer<Document> EditableMap::createDocument()
     QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
 
     return document;
+}
+
+void EditableMap::setDocument(Document *document)
+{
+    Q_ASSERT(!document || document->type() == Document::MapDocumentType);
+
+    if (this->document() == document)
+        return;
+
+    EditableAsset::setDocument(document);
+
+    if (auto doc = mapDocument()) {
+        connect(doc, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
+        connect(doc, &Document::changed, this, &EditableMap::documentChanged);
+        connect(doc, &MapDocument::layerAdded, this, &EditableMap::attachLayer);
+        connect(doc, &MapDocument::layerRemoved, this, &EditableMap::detachLayer);
+
+        connect(doc, &MapDocument::currentLayerChanged, this, &EditableMap::currentLayerChanged);
+        connect(doc, &MapDocument::selectedLayersChanged, this, &EditableMap::selectedLayersChanged);
+        connect(doc, &MapDocument::selectedObjectsChanged, this, &EditableMap::selectedObjectsChanged);
+
+        connect(doc, &MapDocument::regionEdited, this, &EditableMap::onRegionEdited);
+    }
 }
 
 void EditableMap::documentChanged(const ChangeEvent &change)

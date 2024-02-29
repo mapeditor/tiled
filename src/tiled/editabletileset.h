@@ -30,7 +30,7 @@ class EditableWangSet;
 class ScriptImage;
 class TilesetDocument;
 
-class EditableTileset : public EditableAsset
+class EditableTileset final : public EditableAsset
 {
     Q_OBJECT
 
@@ -172,6 +172,9 @@ public slots:
     void setOrientation(Orientation orientation);
     void setTransparentColor(const QColor &color);
     void setBackgroundColor(const QColor &color);
+
+protected:
+    void setDocument(Document *document) override;
 
 private:
     bool tilesFromEditables(const QList<QObject*> &editableTiles, QList<Tile *> &tiles);

@@ -57,7 +57,7 @@ class EditableAsset : public EditableObject
     Q_PROPERTY(AssetType::Value assetType READ assetType CONSTANT)
 
 public:
-    EditableAsset(Document *document, Object *object, QObject *parent = nullptr);
+    EditableAsset(Object *object, QObject *parent = nullptr);
 
     QString fileName() const;
     bool isReadOnly() const override = 0;
@@ -88,22 +88,19 @@ signals:
     void modifiedChanged();
     void fileNameChanged(const QString &fileName, const QString &oldFileName);
 
+protected:
+    virtual void setDocument(Document *document);
+
 private:
     friend class Document;
-    void setDocument(Document *document);
 
-    Document *mDocument;
+    Document *mDocument = nullptr;
 };
 
 
 inline Document *EditableAsset::document() const
 {
     return mDocument;
-}
-
-inline void EditableAsset::setDocument(Document *document)
-{
-    mDocument = document;
 }
 
 } // namespace Tiled
