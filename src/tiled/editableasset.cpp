@@ -28,14 +28,9 @@
 
 namespace Tiled {
 
-EditableAsset::EditableAsset(Document *document, Object *object, QObject *parent)
+EditableAsset::EditableAsset(Object *object, QObject *parent)
     : EditableObject(this, object, parent)
-    , mDocument(document)
 {
-    if (document) {
-        connect(document, &Document::modifiedChanged,
-                this, &EditableAsset::modifiedChanged);
-    }
 }
 
 QString EditableAsset::fileName() const
@@ -124,6 +119,22 @@ void EditableAsset::redo()
         stack->redo();
     else
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Undo system not available for this asset"));
+}
+
+void EditableAsset::setDocument(Document *document)
+{
+    if (mDocument == document)
+        return;
+
+    if (mDocument)
+        mDocument->disconnect(this);
+
+    if (document) {
+        connect(document, &Document::modifiedChanged,
+                this, &EditableAsset::modifiedChanged);
+    }
+
+    mDocument = document;
 }
 
 } // namespace Tiled

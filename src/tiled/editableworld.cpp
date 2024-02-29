@@ -31,9 +31,10 @@
 namespace Tiled {
 
 EditableWorld::EditableWorld(WorldDocument *worldDocument, QObject *parent)
-    : EditableAsset(worldDocument, nullptr, parent)
+    : EditableAsset(nullptr, parent)
 {
     setObject(WorldManager::instance().worlds().value(worldDocument->fileName()));
+    setDocument(worldDocument);
 }
 
 bool EditableWorld::containsMap(const QString &fileName) const
