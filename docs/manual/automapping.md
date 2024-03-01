@@ -4,6 +4,8 @@
 
 Automapping can automatically place or replace tiles based on rules you define. It looks for tiles in your working map that match each rule's input, and if it finds any, it'll place the corresponding output. This enables complex or repetitive tile placement to be entirely automated, which can make decorating your levels much faster, and can help you automatically correct mistakes.
 
+If your tiles are set up to work as corners and edges of shapes, you may want to look into using [Terrains](terrain.rst) instead. Terrains provide a more convenient way to automate placement of such tiles.
+
 Automapping can be applied manually via *Map > AutoMap*, or dynamically as you draw on the map if you enable *Map > AutoMap While Drawing*.
 
 :::{note}
@@ -261,7 +263,7 @@ A common Automapping scenario is to automate the placement of cliff sides. Tiles
 
 ![Tileset with cliff top tiles and cliff side tiles.](images/automapping/automap_example6.png)
 
-Terrains can be used to place the top of the cliff, but they cannot reliably add the vertical cliffs themselves. Fortunately, they are no problem for Automapping.
+[Terrains](terrain.rst) can be used to place the top of the cliff, but they cannot reliably add the vertical cliffs themselves. Fortunately, they are no problem for Automapping.
 
 ```{figure} images/automapping/automap_example1.png
 :alt: Cliff top tiles with no sides.
