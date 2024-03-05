@@ -103,7 +103,7 @@ bool ChangeTileWangId::mergeWith(const QUndoCommand *other)
     if (!mMergeable)
         return false;
 
-    const ChangeTileWangId *o = static_cast<const ChangeTileWangId*>(other);
+    auto o = static_cast<const ChangeTileWangId*>(other);
     if (o->mTilesetDocument && !(mTilesetDocument == o->mTilesetDocument &&
                                  mWangSet == o->mWangSet))
         return false;

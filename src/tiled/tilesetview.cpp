@@ -259,7 +259,8 @@ void TileDelegate::drawWangOverlay(QPainter *painter,
     setupTilesetGridTransform(*tile->tileset(), transform, targetRect);
     painter->setTransform(transform, true);
 
-    paintWangOverlay(painter, wangSet->wangIdOfTile(tile),
+    paintWangOverlay(painter,
+                     wangSet->wangIdOfTile(tile) & wangSet->typeMask(),
                      *wangSet,
                      targetRect);
 

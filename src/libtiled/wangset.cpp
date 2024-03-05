@@ -175,7 +175,7 @@ bool WangId::hasEdgeWildCards() const
 /**
  * Returns a mask that is 0 for any indexes that have no color defined.
  */
-quint64 WangId::mask() const
+WangId WangId::mask() const
 {
     quint64 mask = 0;
     for (int i = 0; i < NumIndexes; ++i) {
@@ -188,7 +188,7 @@ quint64 WangId::mask() const
 /**
  * Returns a mask that is 0 for any indexes that don't match the given color.
  */
-quint64 WangId::mask(int value) const
+WangId WangId::mask(int value) const
 {
     quint64 mask = 0;
     for (int i = 0; i < NumIndexes; ++i) {
@@ -413,9 +413,36 @@ WangSet::WangSet(Tileset *tileset,
     : Object(Object::WangSetType)
     , mTileset(tileset)
     , mName(name)
-    , mType(type)
     , mImageTileId(imageTileId)
 {
+    setType(type);
+}
+
+/**
+ * Changes the type of this Wang set.
+ *
+ * Does not modify any WangIds to make sure they adhere to the type! Instead,
+ * a type mask is applied where relevant.
+ */
+void WangSet::setType(Type type)
+{
+    mType = type;
+
+    switch (type) {
+    case Corner:
+        mTypeMask = WangId::MaskCorners;
+        break;
+    case Edge:
+        mTypeMask = WangId::MaskEdges;
+        break;
+    default:
+    case Mixed:
+        mTypeMask = WangId::FULL_MASK;
+        break;
+    }
+
+    mColorDistancesDirty = true;
+    mCellsDirty = true;
 }
 
 /**
@@ -516,7 +543,7 @@ void WangSet::setWangId(int tileId, WangId wangId)
         removeTileId(tileId);
     }
 
-    if (wangId == 0)
+    if (wangId.isEmpty())
         return;
 
     mTileIdToWangId.insert(tileId, wangId);
@@ -531,6 +558,12 @@ void WangSet::removeTileId(int tileId)
     mCellsDirty = true;
 }
 
+/**
+ * Returns the list of WangIds and their corresponding cells, as defined by
+ * this Wang set.
+ *
+ * The WangIds are masked based on the type of the Wang set.
+ */
 const QVector<WangSet::WangIdAndCell> &WangSet::wangIdsAndCells() const
 {
     if (cellsDirty())
@@ -544,15 +577,19 @@ void WangSet::recalculateCells()
     mCellsDirty = false;
     mUniqueFullWangIdCount = 0;
 
+    const auto mask = typeMask();
     QSet<WangId> addedWangIds;
 
     // First insert all available tiles
     QHashIterator<int, WangId> it(mTileIdToWangId);
     while (it.hasNext()) {
         it.next();
-        mUniqueFullWangIdCount += !it.value().hasWildCards() && !addedWangIds.contains(it.value());
-        addedWangIds.insert(it.value());
-        mWangIdAndCells.append({it.value(), Cell(mTileset, it.key())});
+
+        const auto wangId = WangId(it.value() & mask);
+
+        mUniqueFullWangIdCount += !wangId.hasWildCards() && !addedWangIds.contains(wangId);
+        addedWangIds.insert(wangId);
+        mWangIdAndCells.append({wangId, Cell(mTileset, it.key())});
     }
 
     const auto transformationFlags = tileset()->transformationFlags();
@@ -566,10 +603,12 @@ void WangSet::recalculateCells()
     while (it.hasNext()) {
         it.next();
 
+        const auto wangId = WangId(it.value() & mask);
+
         Cell cells[8] = { Cell(mTileset, it.key()) };
-        WangId wangIds[8] = { it.value() };
+        WangId wangIds[8] = { wangId };
         int count = 1;
-        const bool hasWildCards = it.value().hasWildCards();
+        const bool hasWildCards = wangId.hasWildCards();
 
         // Add 90, 180 and 270 degree rotations if enabled
         if (transformationFlags.testFlag(Tileset::AllowRotate)) {
@@ -629,7 +668,8 @@ void WangSet::recalculateColorDistances()
         QVector<int> distance(colorCount() + 1, -1);
 
         // Check all tiles for transitions to other Wang colors
-        for (const WangId wangId : std::as_const(mTileIdToWangId)) {
+        for (WangId wangId : std::as_const(mTileIdToWangId)) {
+            wangId &= typeMask();
 
             // Don't consider edges and corners to be connected. This helps
             // avoid seeing transitions to "no color" for edge or corner
@@ -734,6 +774,8 @@ WangId WangSet::wangIdOfTile(const Tile *tile) const
  *
  * If the cell refers to a different tileset than the one to which this WangSet
  * belongs, an empty WangId is returned.
+ *
+ * The result is masked based on the type of the Wang set.
  */
 WangId WangSet::wangIdOfCell(const Cell &cell) const
 {
@@ -752,7 +794,7 @@ WangId WangSet::wangIdOfCell(const Cell &cell) const
             wangId.flipVertically();
     }
 
-    return wangId;
+    return wangId & typeMask();
 }
 
 /**
@@ -793,10 +835,13 @@ bool WangSet::wangIdIsValid(WangId wangId, int colorCount)
  *
  * When \a mask is given, returns whether there is a WangId assigned to a
  * WangTile matching the part of the \a wangId indicated by the mask.
+ *
+ * The \a wangId is automatically masked based on the type of the Wang set.
  */
 bool WangSet::wangIdIsUsed(WangId wangId, WangId mask) const
 {
-    const quint64 maskedWangId = wangId & mask;
+    mask &= typeMask();
+    const WangId maskedWangId = wangId & mask;
 
     for (const auto &wangIdAndCell : wangIdsAndCells())
         if ((wangIdAndCell.wangId & mask) == maskedWangId)
@@ -844,7 +889,7 @@ bool WangSet::isComplete() const
  */
 quint64 WangSet::completeSetSize() const
 {
-    quint64 c = static_cast<quint64>(colorCount());
+    auto c = static_cast<quint64>(colorCount());
 
     switch (mType) {
     case Corner:
@@ -877,10 +922,9 @@ WangSet::Type WangSet::effectiveTypeForColor(int color) const
 
         if (usedAsEdge == usedAsCorner)
             return Mixed;
-        else if (usedAsEdge)
+        if (usedAsEdge)
             return Edge;
-        else
-            return Corner;
+        return Corner;
     }
 
     return type();
