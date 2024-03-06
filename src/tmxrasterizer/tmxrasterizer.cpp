@@ -28,6 +28,7 @@
 
 #include "tmxrasterizer.h"
 
+#include "grouplayer.h"
 #include "imagelayer.h"
 #include "map.h"
 #include "mapformat.h"
@@ -44,9 +45,7 @@
 
 using namespace Tiled;
 
-TmxRasterizer::TmxRasterizer()
-{
-}
+TmxRasterizer::TmxRasterizer() = default;
 
 void TmxRasterizer::drawMapLayers(const MapRenderer &renderer,
                                   QPainter &painter,
@@ -62,9 +61,9 @@ void TmxRasterizer::drawMapLayers(const MapRenderer &renderer,
         painter.setOpacity(layer->effectiveOpacity());
         painter.translate(offset);
 
-        const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
-        const ImageLayer *imageLayer = dynamic_cast<const ImageLayer*>(layer);
-        const ObjectGroup *objectGroup = dynamic_cast<const ObjectGroup*>(layer);
+        auto *tileLayer = dynamic_cast<const TileLayer*>(layer);
+        auto *imageLayer = dynamic_cast<const ImageLayer*>(layer);
+        auto *objectGroup = dynamic_cast<const ObjectGroup*>(layer);
 
         if (tileLayer) {
             renderer.drawTileLayer(&painter, tileLayer);
@@ -98,16 +97,26 @@ void TmxRasterizer::drawMapLayers(const MapRenderer &renderer,
     }
 }
 
+static bool containsLayerOrParentLayerName(const Layer *layer, const QStringList &layerNames)
+{
+    while (layer) {
+        if (layerNames.contains(layer->name(), Qt::CaseInsensitive))
+            return true;
+        layer = layer->parentLayer();
+    }
+    return false;
+}
+
 bool TmxRasterizer::shouldDrawLayer(const Layer *layer) const
 {
     if (!(mLayerTypesToShow & layer->layerType()))
         return false;
 
-    if (mLayersToHide.contains(layer->name(), Qt::CaseInsensitive))
+    if (containsLayerOrParentLayerName(layer, mLayersToHide))
         return false;
 
     if (!mLayersToShow.empty()) {
-       if (!mLayersToShow.contains(layer->name(), Qt::CaseInsensitive))
+        if (!containsLayerOrParentLayerName(layer, mLayersToShow))
            return false;
     }
 

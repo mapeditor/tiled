@@ -14,6 +14,7 @@
 * GameMaker 2 plugin: Fixed positioning of objects on isometric maps
 * tmxrasterizer: Added --hide-object and --show-object arguments (by Lars Luz, #3819)
 * tmxrasterizer: Added --frames and --frame-duration arguments to export animated maps as multiple images (#3868)
+* tmxrasterizer: Fixed --hide/show-layer to work on group layers (#3899)
 * tmxviewer: Added support for viewing JSON maps (#3866)
 * AutoMapping: Ignore empty outputs per-rule (#3523)
 * Windows: Fixed the support for WebP images (updated to Qt 6.6.1, #3661)
