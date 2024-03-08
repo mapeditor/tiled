@@ -4455,8 +4455,8 @@ Por favor, selecione um formato específico.</translation>
     </message>
     <message>
         <location line="+35"/>
-        <source>The current project contains &lt;a href=&quot;https://doc.mapeditor.org/en/stable/reference/scripting/&quot;&gt;scripted extensions&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Make sure you trust those extensions before enabling them!&lt;/i&gt;</source>
-        <translation>O projeto atual contém &lt;a href=&quot;https://doc.mapeditor.org/en/stable/reference/scripting/&quot;&gt; extensões com script &lt;/a&gt;.&lt;br&gt;&lt;i&gt;Garanta que essas extensões sejam confiáveis antes de habilitá-las!&lt;/i&gt;</translation>
+        <source>The current project contains &lt;a href=&quot;https://doc.mapeditor.org/en/stable/manual/scripting/&quot;&gt;scripted extensions&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Make sure you trust those extensions before enabling them!&lt;/i&gt;</source>
+        <translation>O projeto atual contém &lt;a href=&quot;https://doc.mapeditor.org/en/stable/manual/scripting/&quot;&gt; extensões com script &lt;/a&gt;.&lt;br&gt;&lt;i&gt;Garanta que essas extensões sejam confiáveis antes de habilitá-las!&lt;/i&gt;</translation>
     </message>
     <message>
         <location line="+3"/>

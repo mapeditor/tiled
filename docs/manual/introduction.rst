@@ -33,7 +33,7 @@ rotated. Object layers offer a lot of flexibility to add almost any
 information to your level that your game needs.
 
 Other things worth mentioning are the support for adding custom map or tileset
-formats through plugins, :doc:`extending Tiled </reference/scripting>` with
+formats through plugins, :doc:`extending Tiled </manual/scripting>` with
 JavaScript, the tile stamp memory, :ref:`tile animation support
 <tile-animation-editor>` and the :ref:`tile collision editor
 <tile-collision-editor>`.

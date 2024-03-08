@@ -4449,8 +4449,8 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+35"/>
-        <source>The current project contains &lt;a href=&quot;https://doc.mapeditor.org/en/stable/reference/scripting/&quot;&gt;scripted extensions&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Make sure you trust those extensions before enabling them!&lt;/i&gt;</source>
-        <translation>当前项目包含&lt;a href=&quot;https://doc.mapeditor.org/en/stable/reference/scripting/&quot;&gt;脚本扩展&lt;/a&gt;。&lt;br&gt;&lt;i&gt;在启用这些扩展之前，请您确保它们值得信任！&lt;/i&gt;</translation>
+        <source>The current project contains &lt;a href=&quot;https://doc.mapeditor.org/en/stable/manual/scripting/&quot;&gt;scripted extensions&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Make sure you trust those extensions before enabling them!&lt;/i&gt;</source>
+        <translation>当前项目包含&lt;a href=&quot;https://doc.mapeditor.org/en/stable/manual/scripting/&quot;&gt;脚本扩展&lt;/a&gt;。&lt;br&gt;&lt;i&gt;在启用这些扩展之前，请您确保它们值得信任！&lt;/i&gt;</translation>
     </message>
     <message>
         <location line="+3"/>

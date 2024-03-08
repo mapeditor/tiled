@@ -218,7 +218,7 @@ Plugins
 -------
 
 Here you can choose which plugins are enabled, as well as opening the
-:doc:`scripted extensions </reference/scripting>` folder.
+:doc:`scripted extensions </manual/scripting>` folder.
 
 Plugins add support for map and/or tileset file formats. Some generic plugins
 are enabled by default, while more specific ones need to be manually enabled.

@@ -243,7 +243,7 @@ rendered.
 -  **height:** The image height in pixels (optional)
 
 Tiled maps or tilesets with embedded image data can currently only be created
-using the :doc:`JavaScript API </reference/scripting>`, or in custom tools
+using the :doc:`JavaScript API </manual/scripting>`, or in custom tools
 based on ``libtiled`` (Qt/C++) or `tmxlib
 <https://pypi.python.org/pypi/tmxlib>`__ (Python).
 

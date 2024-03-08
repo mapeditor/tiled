@@ -66,9 +66,9 @@ directory of the ``.tiled-project`` file, but this can be changed in the
 .. warning::
 
     Since Tiled 1.7, project-specific extensions are only enabled by default
-    for projects you created. When opening any other project, a popup will
-    notify you when the project has a scripted extensions directory, allowing
-    you to enable extensions for that project.
+    for new projects you save from Tiled. When opening any other project, a
+    popup will notify you when the project has a scripted extensions directory,
+    allowing you to enable extensions for that project.
 
     Always be careful when enabling extensions on projects you haven't
     created, since extensions have access to your files and can execute

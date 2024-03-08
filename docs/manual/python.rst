@@ -4,15 +4,13 @@ Python Scripts
 .. note::
 
     Since Tiled 1.3, Tiled can be :doc:`extended using JavaScript
-    </reference/scripting>`. The JavaScript API provides a lot more
+    </manual/scripting>`. The JavaScript API provides a lot more
     opportunity for extending Tiled's functionality than just adding custom
     map formats. It is fully documented and works out of the box on all
-    platforms. It should be preferred over the Python plugin when possible.
+    platforms. It recommended over the Python plugin whenever possible.
 
-Tiled ships with a plugin that enables you to use Python 3 to add
-support for custom map formats. This is nice especially since you don't
-need to compile Tiled yourself and the scripts are easy to deploy to any
-platform.
+Tiled ships with a plugin that enables you to use Python 3 to add support for
+custom map and tileset formats.
 
 For the scripts to get loaded, they should be placed in ``~/.tiled``.
 Tiled watches this directory for changes, so there is no need to restart
@@ -50,7 +48,8 @@ There are several `example scripts`_ available in the repository.
     However, currently Linux builds are done on Ubuntu 20.04 against
     Python 3.8, and you'd need to install the same version somehow.
 
-    The Python plugin is currently not available for macOS releases.
+    The Python plugin is not available for macOS releases, nor in the Ubuntu
+    snap.
 
 Example Export Plugin
 ---------------------

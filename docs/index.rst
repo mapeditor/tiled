@@ -27,7 +27,7 @@ Tiled Documentation
    manual/export
    manual/keyboard-shortcuts
    manual/preferences
-   manual/python
+   manual/scripting
 
 .. toctree::
    :maxdepth: 2
@@ -38,4 +38,3 @@ Tiled Documentation
    reference/tmx-changelog
    reference/json-map-format
    reference/global-tile-ids
-   reference/scripting

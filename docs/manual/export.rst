@@ -27,6 +27,7 @@ or tileset itself).
    export-tbin
    export-other
    export-custom
+   python
    export-image
 
 .. note::

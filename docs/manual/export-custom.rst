@@ -11,16 +11,24 @@ file formats.
 Using JavaScript
 ~~~~~~~~~~~~~~~~
 
-Tiled is :doc:`extendable using JavaScript </reference/scripting>` and it is
+Tiled is :doc:`extendable using JavaScript </manual/scripting>` and it is
 possible to add custom export formats using `tiled.registerMapFormat
-<https://www.mapeditor.org/docs/scripting/modules/tiled.html#registermapformat>`__ or `tiled.registerTilesetFormat
-<https://www.mapeditor.org/docs/scripting/modules/tiled.html#registertilesetformat>`__.
+<https://www.mapeditor.org/docs/scripting/modules/tiled.html#registerMapFormat>`__ or `tiled.registerTilesetFormat
+<https://www.mapeditor.org/docs/scripting/modules/tiled.html#registerTilesetFormat>`__.
+
+This is the recommended way to add support for custom map or tileset formats.
 
 Using Python
 ~~~~~~~~~~~~
 
-It is also possible to write :doc:`Python scripts <python>` to add
-support for importing or exporting custom map formats.
+On some platforms, it is also possible to write :doc:`Python scripts <python>`
+to add support for importing or exporting custom map and tileset formats.
+
+.. warning::
+
+    Python scripting is not supported by the macOS release nor the Tiled snap
+    release for Ubuntu. The plugin is also very specific in the supported
+    Python version. Hence, its use is not recommend.
 
 Using C++
 ~~~~~~~~~

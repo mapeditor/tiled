@@ -1598,7 +1598,7 @@ void MainWindow::openProjectExtensionsPopup()
 
     auto label = new QLabel;
     label->setTextFormat(Qt::RichText);
-    label->setText(tr("The current project contains <a href=\"https://doc.mapeditor.org/en/stable/reference/scripting/\">scripted extensions</a>.<br><i>Make sure you trust those extensions before enabling them!</i>"));
+    label->setText(tr("The current project contains <a href=\"https://doc.mapeditor.org/en/stable/manual/scripting/\">scripted extensions</a>.<br><i>Make sure you trust those extensions before enabling them!</i>"));
     label->setOpenExternalLinks(true);
 
     auto enableButton = new QPushButton(tr("&Enable Extensions"));

@@ -36,6 +36,7 @@ extensions = [
     'myst_parser',
     'sphinx_design',
     'sphinx_rtd_theme',
+    'sphinx_reredirects',
 ]
 
 myst_enable_extensions = [
@@ -134,6 +135,10 @@ html_sidebars = {
         'searchbox.html',
         'donate.html',
     ]
+}
+
+redirects = {
+    "reference/scripting": "../../manual/scripting/",
 }
 
 

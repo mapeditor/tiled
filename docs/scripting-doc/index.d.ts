@@ -5,7 +5,7 @@
  * {@link tiled.registerAction | custom actions} and {@link tiled.registerTool | new tools}.
  * Scripts can also {@link Signal | automate actions based on signals}.
  *
- * See the [Tiled Manual](https://doc.mapeditor.org/en/stable/reference/scripting) for more information on writing or installing extensions.
+ * See the [Tiled Manual](https://doc.mapeditor.org/en/stable/manual/scripting) for more information on writing or installing extensions.
  *
  * ### Type Definitions
  *
