@@ -18,6 +18,7 @@
 * tmxviewer: Added support for viewing JSON maps (#3866)
 * AutoMapping: Ignore empty outputs per-rule (#3523)
 * Windows: Fixed the support for WebP images (updated to Qt 6.6.1, #3661)
+* Fixed the option to resolve properties on export to also resolve class members (#3411, #3315)
 * Fixed terrain tool behavior and terrain overlays after changing terrain set type (#3204, #3260)
 * Fixed mouse handling issue when zooming while painting (#3863)
 * Fixed possible crash after a scripted tool disappears while active

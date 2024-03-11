@@ -141,6 +141,50 @@ const Map *ExportHelper::prepareExportMap(const Map *map, std::unique_ptr<Map> &
     return exportMap.get();
 }
 
+static bool resolveClassPropertyMembers(QVariant &value)
+{
+    if (value.userType() != propertyValueId())
+        return false;
+
+    auto propertyValue = value.value<PropertyValue>();
+    const PropertyType *propertyType = propertyValue.type();
+    if (!propertyType || !propertyType->isClass())
+        return false;
+
+    auto classType = static_cast<const ClassPropertyType*>(propertyType);
+    QVariantMap classValue = propertyValue.value.toMap();
+    bool changed = false;
+
+    // iterate over the members of the class type, making sure each
+    // member is present in classValue, recursively resolving its members
+    auto it = classType->members.begin();
+    const auto it_end = classType->members.end();
+    for (; it != it_end; ++it) {
+        const auto &memberName = it.key();
+        auto &value = classValue[memberName];
+
+        if (!value.isValid()) {
+            value = it.value();
+            changed = true;
+        }
+
+        changed |= resolveClassPropertyMembers(value);
+    }
+
+    if (changed) {
+        propertyValue.value = classValue;
+        value = QVariant::fromValue(propertyValue);
+    }
+
+    return changed;
+}
+
+static void resolveClassPropertyMembers(QVariantMap &properties)
+{
+    for (auto &value : properties)
+        resolveClassPropertyMembers(value);
+}
+
 void ExportHelper::resolveProperties(Object *object) const
 {
     switch (object->typeId()) {
@@ -175,6 +219,7 @@ void ExportHelper::resolveProperties(Object *object) const
         // Override with own properties
         mergeProperties(properties, mapObject->properties());
 
+        resolveClassPropertyMembers(properties);
         mapObject->setProperties(properties);
         return;
     }
@@ -211,7 +256,9 @@ void ExportHelper::resolveProperties(Object *object) const
         break;
     }
 
-    object->setProperties(object->resolvedProperties());
+    auto properties = object->resolvedProperties();
+    resolveClassPropertyMembers(properties);
+    object->setProperties(properties);
 }
 
 } // namespace Tiled
