@@ -26,6 +26,7 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "mapscene.h"
+#include "painttilelayer.h"
 #include "stampactions.h"
 #include "tile.h"
 #include "tilestamp.h"
@@ -33,6 +34,7 @@
 #include "wangfiller.h"
 
 #include <QAction>
+#include <QCoreApplication>
 #include <QToolBar>
 #include <QVector>
 
@@ -143,7 +145,8 @@ void StampBrush::mousePressed(QGraphicsSceneMouseEvent *event)
                 break;
             }
             return;
-        } else if (event->button() == Qt::RightButton && event->modifiers() == Qt::NoModifier) {
+        } else if (event->button() == Qt::RightButton && (event->modifiers() == Qt::NoModifier ||
+                                                          event->modifiers() == Qt::ShiftModifier)) {
             beginCapture();
             return;
         }
@@ -331,7 +334,7 @@ void StampBrush::beginCapture()
     mBrushBehavior = Capture;
     mCaptureStampHelper.beginCapture(tilePosition());
 
-    setStamp(TileStamp());
+    updatePreview();
 }
 
 void StampBrush::endCapture()
@@ -341,11 +344,51 @@ void StampBrush::endCapture()
 
     mBrushBehavior = Free;
 
-    TileStamp stamp = mCaptureStampHelper.endCapture(*mapDocument(), tilePosition());
-    if (!stamp.isEmpty())
-        emit stampChanged(TileStamp(stamp));
-    else
-        updatePreview();
+    doErase(mCaptureStampHelper.capturedArea(tilePosition()));
+    updatePreview();
+}
+
+void StampBrush::doErase(QRect area)
+{
+    QList<QPair<QRegion, TileLayer*>> erasedRegions;
+
+    auto *eraseCommand = new PaintTileLayer(mapDocument());
+    eraseCommand->setText(QCoreApplication::translate("Undo Commands", "Erase"));
+
+    auto eraseOnLayer = [&] (TileLayer *tileLayer) {
+        if (!tileLayer->isUnlocked())
+            return;
+
+        QRect eraseRegion = area.intersected(tileLayer->bounds());
+        if (eraseRegion.isEmpty())
+            return;
+
+        eraseCommand->erase(tileLayer, eraseRegion);
+
+        erasedRegions.append({ eraseRegion, tileLayer });
+    };
+
+    const bool allLayers = mModifiers & Qt::ShiftModifier;
+    if (allLayers) {
+        for (Layer *layer : mapDocument()->map()->tileLayers())
+            eraseOnLayer(static_cast<TileLayer*>(layer));
+    } else if (!mapDocument()->selectedLayers().isEmpty()) {
+        for (Layer *layer : mapDocument()->selectedLayers())
+            if (TileLayer *tileLayer = layer->asTileLayer())
+                eraseOnLayer(tileLayer);
+    } else if (auto tileLayer = currentTileLayer()) {
+        eraseOnLayer(tileLayer);
+    }
+
+    if (!erasedRegions.isEmpty())
+        mapDocument()->undoStack()->push(eraseCommand);
+
+    for (auto &[region, tileLayer] : std::as_const(erasedRegions)) {
+        if (tileLayer->map() != mapDocument()->map())
+            continue;
+
+        emit mapDocument()->regionEdited(region, tileLayer);
+    }
 }
 
 /**

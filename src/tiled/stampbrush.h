@@ -106,6 +106,7 @@ private:
 
     void beginCapture();
     void endCapture();
+    void doErase(QRect area);
 
     void updateBrushBehavior();
     void updatePreview();
