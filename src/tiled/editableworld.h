@@ -60,11 +60,19 @@ public:
     Q_INVOKABLE void removeMap(EditableMap *map);
 
     QSharedPointer<Document> createDocument() override;
+
+    static EditableWorld *find(World *world);
+    static EditableWorld *get(WorldDocument *worldDocument);
 };
 
 inline World *EditableWorld::world() const
 {
     return static_cast<World*>(object());
+}
+
+inline EditableWorld *EditableWorld::find(World *world)
+{
+    return static_cast<EditableWorld*>(EditableObject::find(world));
 }
 
 } // namespace Tiled

@@ -72,9 +72,9 @@ void ProjectDocument::setLastExportFileName(const QString &/* fileName */)
     // do nothing
 }
 
-std::unique_ptr<EditableAsset> ProjectDocument::createEditable()
+EditableAsset *ProjectDocument::editable()
 {
-    return std::make_unique<EditableProject>(this, this);
+    return EditableProject::get(this);
 }
 
 } // namespace Tiled

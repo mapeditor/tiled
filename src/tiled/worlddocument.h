@@ -24,9 +24,9 @@
 #include "document.h"
 #include "editableasset.h"
 
-class WorldManager;
-
 namespace Tiled {
+
+class World;
 
 /**
  * Represents an editable world document.
@@ -44,13 +44,15 @@ public:
 
     FileFormat *writerFormat() const override { return nullptr; }
 
-    std::unique_ptr<EditableAsset> createEditable() override;
+    EditableAsset *editable() override;
 
     // Exporting not supported for worlds
     QString lastExportFileName() const override { return QString(); }
     void setLastExportFileName(const QString &) override {}
     FileFormat *exportFormat() const override { return nullptr; }
     void setExportFormat(FileFormat *) override {}
+
+    World *world() const;
 
 private:
     void onWorldsChanged();

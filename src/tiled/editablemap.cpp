@@ -49,25 +49,14 @@
 namespace Tiled {
 
 EditableMap::EditableMap(QObject *parent)
-    : EditableAsset(nullptr, new Map(), parent)
+    : EditableMap(std::make_unique<Map>(), parent)
 {
-    mDetachedMap.reset(map());
 }
 
 EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
-    : EditableAsset(mapDocument, mapDocument->map(), parent)
-    , mSelectedArea(new EditableSelectedArea(mapDocument, this))
+    : EditableAsset(mapDocument->map(), parent)
 {
-    connect(mapDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
-    connect(mapDocument, &Document::changed, this, &EditableMap::documentChanged);
-    connect(mapDocument, &MapDocument::layerAdded, this, &EditableMap::attachLayer);
-    connect(mapDocument, &MapDocument::layerRemoved, this, &EditableMap::detachLayer);
-
-    connect(mapDocument, &MapDocument::currentLayerChanged, this, &EditableMap::currentLayerChanged);
-    connect(mapDocument, &MapDocument::selectedLayersChanged, this, &EditableMap::selectedLayersChanged);
-    connect(mapDocument, &MapDocument::selectedObjectsChanged, this, &EditableMap::selectedObjectsChanged);
-
-    connect(mapDocument, &MapDocument::regionEdited, this, &EditableMap::onRegionEdited);
+    setDocument(mapDocument);
 }
 
 /**
@@ -76,14 +65,13 @@ EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
  * The map's lifetime must exceed that of the EditableMap instance.
  */
 EditableMap::EditableMap(const Map *map, QObject *parent)
-    : EditableAsset(nullptr, const_cast<Map*>(map), parent)
+    : EditableAsset(const_cast<Map*>(map), parent)
     , mReadOnly(true)
-    , mSelectedArea(nullptr)
 {
 }
 
 EditableMap::EditableMap(std::unique_ptr<Map> map, QObject *parent)
-    : EditableAsset(nullptr, map.get(), parent)
+    : EditableAsset(map.get(), parent)
     , mDetachedMap(std::move(map))
 {
 }
@@ -671,15 +659,26 @@ void EditableMap::setSelectedObjects(const QList<QObject *> &objects)
 QSharedPointer<Document> EditableMap::createDocument()
 {
     Q_ASSERT(mDetachedMap);
+    Q_ASSERT(!document());
 
     auto document = MapDocumentPtr::create(std::move(mDetachedMap));
-    document->setEditable(std::unique_ptr<EditableAsset>(this));
-
-    mSelectedArea = new EditableSelectedArea(document.data(), this);
-
-    QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
+    setDocument(document.data());
 
     return document;
+}
+
+EditableMap *EditableMap::get(MapDocument *mapDocument)
+{
+    if (!mapDocument)
+        return nullptr;
+
+    auto editable = EditableMap::find(mapDocument->map());
+    if (editable)
+        return editable;
+
+    editable = new EditableMap(mapDocument);
+    // editable->moveOwnershipToCpp();
+    return editable;
 }
 
 void EditableMap::documentChanged(const ChangeEvent &change)
@@ -757,6 +756,24 @@ MapRenderer *EditableMap::renderer() const
         mRenderer = MapRenderer::create(map());
 
     return mRenderer.get();
+}
+
+void EditableMap::setDocument(MapDocument *mapDocument)
+{
+    EditableAsset::setDocument(mapDocument);
+
+    mSelectedArea = new EditableSelectedArea(mapDocument, this);
+
+    connect(mapDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
+    connect(mapDocument, &Document::changed, this, &EditableMap::documentChanged);
+    connect(mapDocument, &MapDocument::layerAdded, this, &EditableMap::attachLayer);
+    connect(mapDocument, &MapDocument::layerRemoved, this, &EditableMap::detachLayer);
+
+    connect(mapDocument, &MapDocument::currentLayerChanged, this, &EditableMap::currentLayerChanged);
+    connect(mapDocument, &MapDocument::selectedLayersChanged, this, &EditableMap::selectedLayersChanged);
+    connect(mapDocument, &MapDocument::selectedObjectsChanged, this, &EditableMap::selectedObjectsChanged);
+
+    connect(mapDocument, &MapDocument::regionEdited, this, &EditableMap::onRegionEdited);
 }
 
 } // namespace Tiled

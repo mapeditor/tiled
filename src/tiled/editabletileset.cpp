@@ -36,14 +36,14 @@
 namespace Tiled {
 
 EditableTileset::EditableTileset(const QString &name, QObject *parent)
-    : EditableAsset(nullptr, nullptr, parent)
+    : EditableAsset(nullptr, parent)
     , mTileset(Tileset::create(name, 0, 0))
 {
     setObject(mTileset.data());
 }
 
 EditableTileset::EditableTileset(const Tileset *tileset, QObject *parent)
-    : EditableAsset(nullptr, const_cast<Tileset*>(tileset), parent)
+    : EditableAsset(const_cast<Tileset*>(tileset), parent)
     , mReadOnly(true)
     , mTileset(const_cast<Tileset*>(tileset)->sharedFromThis())    // keep alive
 {
@@ -51,14 +51,9 @@ EditableTileset::EditableTileset(const Tileset *tileset, QObject *parent)
 
 EditableTileset::EditableTileset(TilesetDocument *tilesetDocument,
                                  QObject *parent)
-    : EditableAsset(tilesetDocument, tilesetDocument->tileset().data(), parent)
+    : EditableAsset(tilesetDocument->tileset().data(), parent)
 {
-    connect(tilesetDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
-    connect(tilesetDocument, &TilesetDocument::tilesAdded, this, &EditableTileset::attachTiles);
-    connect(tilesetDocument, &TilesetDocument::tilesRemoved, this, &EditableTileset::detachTiles);
-    connect(tilesetDocument, &TilesetDocument::tileObjectGroupChanged, this, &EditableTileset::tileObjectGroupChanged);
-    connect(tilesetDocument->wangSetModel(), &TilesetWangSetModel::wangSetAdded, this, &EditableTileset::wangSetAdded);
-    connect(tilesetDocument->wangSetModel(), &TilesetWangSetModel::wangSetRemoved, this, &EditableTileset::wangSetRemoved);
+    setDocument(tilesetDocument);
 }
 
 EditableTileset::~EditableTileset()
@@ -230,12 +225,12 @@ EditableTileset *EditableTileset::get(Tileset *tileset)
     if (!tileset)
         return nullptr;
 
-    if (auto document = TilesetDocument::findDocumentForTileset(tileset->sharedFromThis()))
-        return document->editable();
-
     auto editable = EditableTileset::find(tileset);
     if (editable)
         return editable;
+
+    if (auto document = TilesetDocument::findDocumentForTileset(tileset->sharedFromThis()))
+        return new EditableTileset(document);
 
     editable = new EditableTileset(tileset);
     editable->moveOwnershipToCpp();
@@ -465,6 +460,18 @@ void EditableTileset::wangSetAdded(Tileset *tileset, int index)
 void EditableTileset::wangSetRemoved(WangSet *wangSet)
 {
     detachWangSets({ wangSet });
+}
+
+void EditableTileset::setDocument(TilesetDocument *tilesetDocument)
+{
+    EditableAsset::setDocument(tilesetDocument);
+
+    connect(tilesetDocument, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
+    connect(tilesetDocument, &TilesetDocument::tilesAdded, this, &EditableTileset::attachTiles);
+    connect(tilesetDocument, &TilesetDocument::tilesRemoved, this, &EditableTileset::detachTiles);
+    connect(tilesetDocument, &TilesetDocument::tileObjectGroupChanged, this, &EditableTileset::tileObjectGroupChanged);
+    connect(tilesetDocument->wangSetModel(), &TilesetWangSetModel::wangSetAdded, this, &EditableTileset::wangSetAdded);
+    connect(tilesetDocument->wangSetModel(), &TilesetWangSetModel::wangSetRemoved, this, &EditableTileset::wangSetRemoved);
 }
 
 } // namespace Tiled

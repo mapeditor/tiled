@@ -92,6 +92,8 @@ public:
 
     bool save(const QString &fileName, QString *error = nullptr) override;
 
+    EditableAsset *editable() override;
+
     /**
      * Loads a map and returns a MapDocument instance on success. Returns null
      * on error and sets the \a error message.
@@ -373,7 +375,6 @@ public slots:
     void deselectObjects(const QList<MapObject*> &objects);
 
 protected:
-    std::unique_ptr<EditableAsset> createEditable() override;
 
 private:
     void onChanged(const ChangeEvent &change);

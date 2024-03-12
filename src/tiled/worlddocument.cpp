@@ -80,14 +80,20 @@ void WorldDocument::onWorldSaved(const QString &fileName)
 
 bool WorldDocument::isModifiedImpl() const
 {
-    const World *world = WorldManager::instance().worlds().value(fileName());
+    const World *world = this->world();
     return Document::isModifiedImpl() || (world && world->hasUnsavedChanges);
 }
 
-std::unique_ptr<EditableAsset> WorldDocument::createEditable()
+EditableAsset *WorldDocument::editable()
 {
-    return std::make_unique<EditableWorld>(this, this);
+    return EditableWorld::get(this);
 }
+
+World *WorldDocument::world() const
+{
+    return WorldManager::instance().worlds().value(fileName());
+}
+
 } // namespace Tiled
 
 #include "moc_worlddocument.cpp"

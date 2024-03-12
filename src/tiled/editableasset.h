@@ -21,6 +21,7 @@
 #pragma once
 
 #include "editableobject.h"
+#include "document.h"
 
 #include <QJSValue>
 #include <QSharedPointer>
@@ -57,7 +58,8 @@ class EditableAsset : public EditableObject
     Q_PROPERTY(AssetType::Value assetType READ assetType CONSTANT)
 
 public:
-    EditableAsset(Document *document, Object *object, QObject *parent = nullptr);
+    EditableAsset(Object *object, QObject *parent = nullptr);
+    ~EditableAsset() override;
 
     QString fileName() const;
     bool isReadOnly() const override = 0;
@@ -88,22 +90,17 @@ signals:
     void modifiedChanged();
     void fileNameChanged(const QString &fileName, const QString &oldFileName);
 
-private:
-    friend class Document;
+protected:
     void setDocument(Document *document);
 
-    Document *mDocument;
+private:
+    DocumentPtr mDocument;
 };
 
 
 inline Document *EditableAsset::document() const
 {
-    return mDocument;
-}
-
-inline void EditableAsset::setDocument(Document *document)
-{
-    mDocument = document;
+    return mDocument.get();
 }
 
 } // namespace Tiled

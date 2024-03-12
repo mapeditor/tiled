@@ -31,8 +31,9 @@
 namespace Tiled {
 
 EditableWorld::EditableWorld(WorldDocument *worldDocument, QObject *parent)
-    : EditableAsset(worldDocument, nullptr, parent)
+    : EditableAsset(nullptr, parent)
 {
+    setDocument(worldDocument);
     setObject(WorldManager::instance().worlds().value(worldDocument->fileName()));
 }
 
@@ -166,6 +167,18 @@ QSharedPointer<Document> EditableWorld::createDocument()
     // We don't currently support opening a world in its own tab, which this
     // function is meant for.
     return nullptr;
+}
+
+EditableWorld *EditableWorld::get(WorldDocument *worldDocument)
+{
+    if (!worldDocument)
+        return nullptr;
+
+    auto editable = find(worldDocument->world());
+    if (editable)
+        return editable;
+
+    return new EditableWorld(worldDocument);
 }
 
 } // namespace Tiled

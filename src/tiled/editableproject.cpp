@@ -26,8 +26,9 @@
 namespace Tiled {
 
 EditableProject::EditableProject(ProjectDocument *projectDocument, QObject *parent)
-    : EditableAsset(projectDocument, &projectDocument->project(), parent)
+    : EditableAsset(&projectDocument->project(), parent)
 {
+    setDocument(projectDocument);
 }
 
 QString EditableProject::extensionsPath() const
@@ -60,6 +61,18 @@ QSharedPointer<Document> EditableProject::createDocument()
     // We don't currently support opening a project in a tab, which this
     // function is meant for.
     return nullptr;
+}
+
+EditableProject *EditableProject::get(ProjectDocument *projectDocument)
+{
+    if (!projectDocument)
+        return nullptr;
+
+    auto editable = find(&projectDocument->project());
+    if (editable)
+        return editable;
+
+    return new EditableProject(projectDocument);
 }
 
 } // namespace Tiled

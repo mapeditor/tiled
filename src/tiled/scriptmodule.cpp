@@ -198,8 +198,11 @@ bool ScriptModule::setActiveAsset(EditableAsset *asset) const
     if (asset->checkReadOnly())
         return false;
 
-    if (auto document = asset->document())
-        return documentManager->switchToDocument(document);
+    if (auto document = asset->document()) {
+        if (!documentManager->switchToDocument(document))
+            documentManager->addDocument(document->sharedFromThis());
+        return true;
+    }
 
     if (auto document = asset->createDocument()) {
         documentManager->addDocument(document);
@@ -272,6 +275,24 @@ QVariant ScriptModule::propertyValue(const QString &typeName, const QVariant &va
 bool ScriptModule::versionLessThan(const QString &a, const QString &b)
 {
     return QVersionNumber::fromString(a) < QVersionNumber::fromString(b);
+}
+
+EditableAsset *ScriptModule::load(const QString &fileName) const
+{
+    auto documentManager = DocumentManager::maybeInstance();
+    if (!documentManager) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Editor not available"));
+        return nullptr;
+    }
+
+    QString error;
+    if (auto document = documentManager->loadDocument(fileName, nullptr, &error)) {
+        return document->editable();
+    } else {
+        ScriptManager::instance().throwError(error);
+    }
+
+    return nullptr;
 }
 
 EditableAsset *ScriptModule::open(const QString &fileName) const
