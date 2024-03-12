@@ -62,10 +62,12 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     mUi->languageCombo->insertItem(0, tr("System default"));
 
     mUi->styleCombo->addItems({ QApplication::translate("PreferencesDialog", "Native"),
-                                QApplication::translate("PreferencesDialog", "Tiled Fusion") });
+                                QApplication::translate("PreferencesDialog", "Tiled Fusion"),
+                                QApplication::translate("PreferencesDialog", "Prolific")});
 
     mUi->styleCombo->setItemData(0, Preferences::SystemDefaultStyle);
     mUi->styleCombo->setItemData(1, Preferences::TiledStyle);
+    mUi->styleCombo->setItemData(2, Preferences::ProlificStyle);
 
     mUi->objectSelectionBehaviorCombo->addItems({ tr("Select From Any Layer"),
                                                   tr("Prefer Selected Layers"),
