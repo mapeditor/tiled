@@ -112,19 +112,6 @@ inline QString colorToString(const QColor &color)
     return color.name();
 }
 
-inline QMargins maxMargins(const QMargins &a,
-                           const QMargins &b)
-{
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    return QMargins(qMax(a.left(), b.left()),
-                    qMax(a.top(), b.top()),
-                    qMax(a.right(), b.right()),
-                    qMax(a.bottom(), b.bottom()));
-#else
-    return a | b;
-#endif
-}
-
 TILEDSHARED_EXPORT QString alignmentToString(Alignment);
 TILEDSHARED_EXPORT Alignment alignmentFromString(const QString &);
 
