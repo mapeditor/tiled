@@ -362,6 +362,7 @@ private:
         QRegion inputRegion;
         QRegion outputRegion;
         RuleOptions options;
+        std::optional<RuleOutputSet> outputSet;
         RandomPicker<RuleOutputSet> outputSets;
     };
 
@@ -431,13 +432,23 @@ private:
                    const AutoMappingContext &context) const;
 
     /**
-     * Applies the given \a rule at each of the given \a positions.
-     *
-     * Might skip some of the positions to satisfy the NoOverlappingRules
-     * option.
+     * Applies the given \a rule at the given \a pos.
      */
     void applyRule(const Rule &rule, QPoint pos, ApplyContext &applyContext,
                    AutoMappingContext &context) const;
+
+    /**
+     * Applies the \a outputSet for the given \a rule at the given \a pos.
+     *
+     * Returns whether the rule was applied. A rule does not apply when the
+     * NoOverlappingRules option is set and there is an overlap with previously
+     * applied output.
+     */
+    bool applyRuleOutputSet(const Rule &rule,
+                            const RuleOutputSet &outputSet,
+                            QPoint pos,
+                            ApplyContext &applyContext,
+                            AutoMappingContext &context) const;
 
     void addWarning(const QString &text,
                     std::function<void()> callback = std::function<void()>());
