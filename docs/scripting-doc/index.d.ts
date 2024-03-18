@@ -281,8 +281,18 @@ type MenuItem = MenuAction|MenuSeparator
 interface FilePath {
   /**
    * The URL of the file.
+   *
+   * If you need a local file path, use {@link localFile}.
    */
   url: Qt.QUrl;
+
+  /**
+   * The local file path, or empty if the current URL value doesn't refer
+   * to a local file.
+   *
+   * @since 1.10.3
+   */
+  localFile: string;
 }
 
 /**
@@ -437,9 +447,19 @@ declare namespace Qt {
   /**
    * Used in {@link FileEdit} as the URL of the currently selected file.
    */
-  class QUrl{
+  class QUrl {
     /**
-     * Get a string representation of the file.
+     * Get a string representation of the URL.
+     *
+     * Note that this representation will generally start with "file://". In
+     * case you need a local file path, you can use the following code:
+     *
+     * ```js
+     * var path = url.toString().replace(/^file:\/{2}/, '');
+     * ```
+     *
+     * Or have a look at whether an alternative property is available that
+     * gives you a local file path in the first place.
      */
     toString(): string;
   }
@@ -4765,16 +4785,27 @@ declare class ColorButton extends Qt.QWidget {
  */
 declare class FileEdit extends Qt.QWidget {
   /**
+   * The current file path.
+   *
+   * @since 1.10.3
+   */
+  fileName: string;
+
+  /**
    * The {@link Qt.QUrl} of the currently selected file.
+   *
+   * If you need the file path as a string, use the {@link fileName} property.
    */
   fileUrl: Qt.QUrl;
 
   /**
-   * Signal emitted when the selected fileUrl changes.
+   * Signal emitted when the selected file changes.
    */
   fileUrlChanged: Signal<Qt.QUrl>;
+
   /**
-   * If `true`, the user will be prompted for a directory rather than a file. Defaults to `false`.
+   * If `true`, the user will be prompted for a directory rather than a file.
+   * Defaults to `false`.
    */
   isDirectory: boolean;
 

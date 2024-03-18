@@ -4,6 +4,7 @@
 * Scripting: Added API for working with worlds (#3539)
 * Scripting: Added Tile.image for accessing a tile's image data
 * Scripting: Added Tileset.imageFileName and ImageLayer.imageFileName
+* Scripting: Added FilePath.localFile and FileEdit.fileName (string alternatives to Qt.QUrl properties)
 * Scripting: Made Tileset.margin and Tileset.tileSpacing writable
 * Scripting: Restored compatibility for MapObject.polygon (#3845)
 * TMX format: Embedded images are now also supported on tilesets and image layers
