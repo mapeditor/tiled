@@ -1250,6 +1250,7 @@ void AutoMapper::applyRule(const Rule &rule, QPoint pos,
 
         if (rule.outputSet)
             collectLayerOutputRegions(rule, *rule.outputSet, context, ruleRegionInLayer);
+
         if (randomOutputSet)
             collectLayerOutputRegions(rule, *randomOutputSet, context, ruleRegionInLayer);
 
@@ -1264,7 +1265,7 @@ void AutoMapper::applyRule(const Rule &rule, QPoint pos,
             region.translate(pos.x(), pos.y());
 
             if (applyContext.appliedRegions[layer].intersects(region))
-                return; // Don't apply the output
+                return; // Don't apply the rule
         }
 
         // Remember the newly applied region
@@ -1279,11 +1280,9 @@ void AutoMapper::applyRule(const Rule &rule, QPoint pos,
         }
     }
 
-    // Apply potential unconditional output set
     if (rule.outputSet)
         copyMapRegion(rule, pos, *rule.outputSet, context);
 
-    // If named output sets are given, choose one of them by chance
     if (randomOutputSet)
         copyMapRegion(rule, pos, *randomOutputSet, context);
 
