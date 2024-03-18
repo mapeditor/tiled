@@ -111,7 +111,9 @@ output[index]_name
 
 Everything after the first underscore is the **name**, which determines which layer in the working map the tiles or objects will be placed on. If the working map includes multiple layers by this name, the bottom-most one will be used. If the rule matches and the working map does not already contain the named output layer, Automapping will create the layer.
 
-The **index** is optional, and is not related to the input indices. Instead, output indices are used to randomize the output: every time the rule finds a match, a random output index is chosen and only the output layers with that index will have their contents placed into the working map. If an output index is completely empty for a given rule, it will never be chosen for that rule (since Tiled 1.10.3).
+The **index** is optional, and is not related to the input indices. Instead, output indices are used to randomize the output: every time the rule finds a match, a random output index is chosen and only the output layers with that index will have their contents placed into the working map.
+
+For convenience, Tiled 1.10.3 introduced two changes to the behavior related to indexes. If an output index is completely empty for a given rule, it will never be chosen for that rule. This is useful when some rules have more random options than others. Also, when no index is specified, that part of the rule's output will always apply when the rule matches. This can be used to combine an unconditional part of a rule's output with a random part.
 
 #### Random Output Example
 
@@ -405,6 +407,8 @@ If you'd like to instead update your rules to not rely on any legacy behavior, t
 * If were relying on the behavior that any tile which is left empty on all of the input layers for a given index is treated as “any tile not in this rule”, you should instead use the [Other]{.tile .other} [special tile](#specialtiles) at those locations, and also the [Empty]{.tile .empty} [special tile](#specialtiles) on an inputnot layer at those same locations. The Empty tile is needed because old-style Other never matched Empty, but the MatchType Other tile does match Empty.
 
 * If you have rules that rely on some output indices being empty to randomly not make any changes, you will need to place [**Ignore** special tiles](#specialtiles) in at least one layer of each empty output index so that those indices aren't ignored. Alternatively, you can use [`rule_options`](#object-properties) to give those rules a chance to not run at all.
+
+* If you had rules with random output, but did not specify an index for one of the outputs, this part of the rule's output is now excluded from the options and applied unconditionally instead. If all outputs should be random options, make sure they all have an index.
 
 ## Credits
 
