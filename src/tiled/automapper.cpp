@@ -1240,47 +1240,18 @@ void AutoMapper::applyRule(const Rule &rule, QPoint pos,
     // Translate the position to adjust to the location of the rule.
     pos -= rule.inputRegion.boundingRect().topLeft();
 
-    bool applied = false;
-
-    // Apply potential unconditional output set
-    if (rule.outputSet)
-        applied |= applyRuleOutputSet(rule, *rule.outputSet, pos, applyContext, context);
-
     // If named output sets are given, choose one of them by chance
-    if (!rule.outputSets.isEmpty()) {
-        const auto &outputSet = rule.outputSets.pick();
-        applied |= applyRuleOutputSet(rule, outputSet, pos, applyContext, context);
-    }
+    const RuleOutputSet *randomOutputSet = nullptr;
+    if (!rule.outputSets.isEmpty())
+        randomOutputSet = &rule.outputSets.pick();
 
-    if (applied && applyContext.appliedRegion)
-        *applyContext.appliedRegion |= rule.outputRegion.translated(pos.x(), pos.y());
-}
-
-bool AutoMapper::applyRuleOutputSet(const Rule &rule,
-                                    const RuleOutputSet &outputSet,
-                                    QPoint pos,
-                                    ApplyContext &applyContext,
-                                    AutoMappingContext &context) const
-{
     if (rule.options.noOverlappingOutput) {
-        // check if there are no overlaps within this rule.
         QHash<const Layer*, QRegion> ruleRegionInLayer;
 
-        // TODO: Very slow to re-calculate the entire region for
-        // each rule output layer here, each time a rule has a match.
-
-        for (const auto &tileOutput : outputSet.tileOutputs) {
-            const Layer *targetLayer = context.outputTileLayers.value(tileOutput.name);
-            QRegion &outputLayerRegion = ruleRegionInLayer[targetLayer];
-            outputLayerRegion = tileOutput.tileLayer->region() & rule.outputRegion;
-        }
-
-        for (const auto &objectOutput : outputSet.objectOutputs) {
-            const Layer *targetLayer = context.outputTileLayers.value(objectOutput.name);
-            QRegion &outputLayerRegion = ruleRegionInLayer[targetLayer];
-            for (const MapObject *mapObject : objectOutput.objects)
-                outputLayerRegion |= objectTileRect(*mRulesMapRenderer, *mapObject);
-        }
+        if (rule.outputSet)
+            collectLayerOutputRegions(rule, *rule.outputSet, context, ruleRegionInLayer);
+        if (randomOutputSet)
+            collectLayerOutputRegions(rule, *randomOutputSet, context, ruleRegionInLayer);
 
         // Translate the regions to the position of the rule and check for overlap.
         for (auto it = ruleRegionInLayer.keyValueBegin(), it_end = ruleRegionInLayer.keyValueEnd();
@@ -1293,7 +1264,7 @@ bool AutoMapper::applyRuleOutputSet(const Rule &rule,
             region.translate(pos.x(), pos.y());
 
             if (applyContext.appliedRegions[layer].intersects(region))
-                return false; // Don't apply the output
+                return; // Don't apply the output
         }
 
         // Remember the newly applied region
@@ -1308,9 +1279,46 @@ bool AutoMapper::applyRuleOutputSet(const Rule &rule,
         }
     }
 
-    copyMapRegion(rule, pos, outputSet, context);
+    // Apply potential unconditional output set
+    if (rule.outputSet)
+        copyMapRegion(rule, pos, *rule.outputSet, context);
 
-    return true;
+    // If named output sets are given, choose one of them by chance
+    if (randomOutputSet)
+        copyMapRegion(rule, pos, *randomOutputSet, context);
+
+    if (applyContext.appliedRegion)
+        *applyContext.appliedRegion |= rule.outputRegion.translated(pos.x(), pos.y());
+}
+
+/**
+ * Collects the per-layer output region of the given \a rule, when using the
+ * given \a outputSet.
+ *
+ * The \a ruleRegionInLayer parameter tells us for each target output layer,
+ * which region will be touched by applying this output.
+ */
+void AutoMapper::collectLayerOutputRegions(const Rule &rule,
+                                           const RuleOutputSet &outputSet,
+                                           AutoMappingContext &context,
+                                           QHash<const Layer*, QRegion> &ruleRegionInLayer) const
+{
+    // TODO: Very slow to re-calculate the entire region for each rule output
+    // layer here, each time a rule has a match. These regions are also
+    // calculated in AutoMapper::setupRules, when no region layers are defined.
+
+    for (const auto &tileOutput : outputSet.tileOutputs) {
+        const Layer *targetLayer = context.outputTileLayers.value(tileOutput.name);
+        QRegion &outputLayerRegion = ruleRegionInLayer[targetLayer];
+        outputLayerRegion |= tileOutput.tileLayer->region() & rule.outputRegion;
+    }
+
+    for (const auto &objectOutput : outputSet.objectOutputs) {
+        const Layer *targetLayer = context.outputTileLayers.value(objectOutput.name);
+        QRegion &outputLayerRegion = ruleRegionInLayer[targetLayer];
+        for (const MapObject *mapObject : objectOutput.objects)
+            outputLayerRegion |= objectTileRect(*mRulesMapRenderer, *mapObject);
+    }
 }
 
 void AutoMapper::copyMapRegion(const Rule &rule, QPoint offset,

@@ -437,18 +437,10 @@ private:
     void applyRule(const Rule &rule, QPoint pos, ApplyContext &applyContext,
                    AutoMappingContext &context) const;
 
-    /**
-     * Applies the \a outputSet for the given \a rule at the given \a pos.
-     *
-     * Returns whether the rule was applied. A rule does not apply when the
-     * NoOverlappingRules option is set and there is an overlap with previously
-     * applied output.
-     */
-    bool applyRuleOutputSet(const Rule &rule,
-                            const RuleOutputSet &outputSet,
-                            QPoint pos,
-                            ApplyContext &applyContext,
-                            AutoMappingContext &context) const;
+    void collectLayerOutputRegions(const Rule &rule,
+                                   const RuleOutputSet &outputSet,
+                                   AutoMappingContext &context,
+                                   QHash<const Layer *, QRegion> &ruleRegionInLayer) const;
 
     void addWarning(const QString &text,
                     std::function<void()> callback = std::function<void()>());
