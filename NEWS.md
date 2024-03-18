@@ -24,6 +24,7 @@
 * Fixed mouse handling issue when zooming while painting (#3863)
 * Fixed possible crash after a scripted tool disappears while active
 * Fixed updating of used tilesets after resizing map (#3884)
+* Fixed alignment of shortcuts in action search
 * AppImage: Updated to Sentry 0.6.7
 
 ### Tiled 1.10.2 (4 August 2023)
