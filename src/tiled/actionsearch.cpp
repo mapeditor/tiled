@@ -154,7 +154,7 @@ void ActionMatchDelegate::paint(QPainter *painter,
     painter->setFont(fonts.big);
     painter->drawStaticText(nameRect.topLeft(), staticText);
 
-    const QIcon icon = index.data(Qt::DecorationRole).value<QIcon>();
+    const auto icon = index.data(Qt::DecorationRole).value<QIcon>();
     if (!icon.isNull()) {
         const auto iconRect = QRect(option.rect.topLeft() + QPoint(margin, margin),
                                     QSize(iconSize, iconSize));
@@ -162,13 +162,14 @@ void ActionMatchDelegate::paint(QPainter *painter,
         icon.paint(painter, iconRect);
     }
 
-    const QKeySequence shortcut = index.data(ActionLocatorSource::ShortcutRole).value<QKeySequence>();
+    const auto shortcut = index.data(ActionLocatorSource::ShortcutRole).value<QKeySequence>();
     if (!shortcut.isEmpty()) {
         const QString shortcutText = shortcut.toString(QKeySequence::NativeText);
         const QFontMetrics smallFontMetrics(fonts.small);
 
         staticText.setTextFormat(Qt::PlainText);
         staticText.setText(shortcutText);
+        staticText.prepare(painter->transform(), fonts.small);
 
         const int centeringMargin = (shortcutRect.height() - smallFontMetrics.height()) / 2;
         painter->setOpacity(0.75);
@@ -242,7 +243,7 @@ QString ActionLocatorSource::placeholderText() const
 
 QVector<ActionLocatorSource::Match> ActionLocatorSource::findActions(const QStringList &words)
 {
-    const QRegularExpression re(QLatin1String("(?<=^|[^&])&"));
+    static const QRegularExpression re(QLatin1String("(?<=^|[^&])&"));
     const QList<Id> actions = ActionManager::actions();
     const Id searchActionsId("SearchActions");
 
