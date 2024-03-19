@@ -408,7 +408,7 @@ If you'd like to instead update your rules to not rely on any legacy behavior, t
 
 * If you have rules that rely on some output indices being empty to randomly not make any changes, you will need to place [**Ignore** special tiles](#specialtiles) in at least one layer of each empty output index so that those indices aren't ignored. Alternatively, you can use [`rule_options`](#object-properties) to give those rules a chance to not run at all.
 
-* If you had rules with random output, but did not specify an index for one of the outputs, this part of the rule's output is now excluded from the options and applied unconditionally instead. If all outputs should be random options, make sure they all have an index.
+* If you had rules with random output, but did not specify an index for one of the outputs, this part of the rule's output is now excluded from the options and applied unconditionally instead. If all outputs should be random options, make sure they all have an index. You can update your existing rule maps using the "[Add Output Index](https://github.com/mapeditor/tiled-extensions/blob/master/AddOutputIndex.js)" script by eishiya.
 
 ## Credits
 
