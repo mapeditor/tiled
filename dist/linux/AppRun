@@ -27,7 +27,7 @@ my_help() {
     echo "Tiled help:"
 }
 
-if [ -n ${1} ]
+if [ -n "${1}" ]
 then
     case ${1} in
         terraingenerator)
