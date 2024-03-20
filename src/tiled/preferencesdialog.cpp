@@ -35,6 +35,8 @@
 #include <QDesktopServices>
 #include <QSortFilterProxyModel>
 
+#include <QDebug>
+
 using namespace Tiled;
 
 PreferencesDialog::PreferencesDialog(QWidget *parent)
@@ -176,6 +178,26 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     });
 
     resize(sizeHint());
+
+    connect(mUi->defaultGeneral, &QPushButton::clicked, this, [=] {
+        this->restoreToDefault(QString::fromUtf8("(Export|Storage|Startup)/"));
+    });
+
+    connect(mUi->defaultInterface, &QPushButton::clicked, this, [=] {
+        this->restoreToDefault(QString::fromUtf8(
+            "Interface/(?!(ApplicationStyle|BaseColor|SelectionColor|UseCustomFont|CustomFont))"));
+        this->restoreToDefault(QString::fromUtf8("Install/(DisplayNews|CheckForUpdates)"));
+        this->restoreToDefault(QString::fromUtf8("AbstractObjectTool/"));
+    });
+
+    connect(mUi->defaultTheme, &QPushButton::clicked, preferences, [preferences, this] {
+        this->restoreToDefault(QString::fromUtf8(
+            "Interface/(ApplicationStyle|BaseColor|SelectionColor|UseCustomFont|CustomFont)"));
+
+        QFont customFont = preferences->customFont();
+        mUi->fontComboBox->setCurrentFont(customFont);
+        mUi->fontSize->setValue(customFont.pointSize());
+    });
 }
 
 PreferencesDialog::~PreferencesDialog()
@@ -292,6 +314,16 @@ void PreferencesDialog::styleComboChanged()
     mUi->baseColorLabel->setEnabled(!systemStyle);
     mUi->selectionColor->setEnabled(!systemStyle);
     mUi->selectionColorLabel->setEnabled(!systemStyle);
+}
+
+void PreferencesDialog::restoreToDefault(QString regexKey)
+{
+    Preferences *prefs = Preferences::instance();
+    QStringList generalKeys = prefs->allKeys().filter(QRegularExpression(regexKey));
+    for ( const auto& key : generalKeys)
+        prefs->remove(key);
+
+    this->fromPreferences();
 }
 
 #include "moc_preferencesdialog.cpp"

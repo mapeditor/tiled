@@ -54,6 +54,8 @@ private:
 
     void styleComboChanged();
 
+    void restoreToDefault(QString regexKey);
+
     Ui::PreferencesDialog *mUi;
     QStringList mLanguages;
 };
