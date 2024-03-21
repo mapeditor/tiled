@@ -73,7 +73,14 @@ class TILEDSHARED_EXPORT Cell
     Q_PROPERTY(bool rotatedHexagonal120 READ rotatedHexagonal120 WRITE setRotatedHexagonal120)
 
 public:
-    static Cell empty;
+    enum Flags {
+        FlippedHorizontally     = 0x01,
+        FlippedVertically       = 0x02,
+        FlippedAntiDiagonally   = 0x04,
+        RotatedHexagonal120     = 0x08,
+        Checked                 = 0x10,
+        VisualFlags             = FlippedHorizontally | FlippedVertically | FlippedAntiDiagonally | RotatedHexagonal120
+    };
 
     Cell() = default;
 
@@ -93,7 +100,7 @@ public:
     {
         return _tileset == other._tileset
                 && _tileId == other._tileId
-                && (_flags & VisualFlags) == (other._flags & VisualFlags);
+                && flags() == other.flags();
     }
 
     bool operator != (const Cell &other) const
@@ -125,16 +132,9 @@ public:
     void setTile(Tile *tile);
     bool refersTile(const Tile *tile) const;
 
-private:
-    enum Flags {
-        FlippedHorizontally     = 0x01,
-        FlippedVertically       = 0x02,
-        FlippedAntiDiagonally   = 0x04,
-        RotatedHexagonal120     = 0x08,
-        Checked                 = 0x10,
-        VisualFlags             = FlippedHorizontally | FlippedVertically | FlippedAntiDiagonally | RotatedHexagonal120
-    };
+    static Cell empty;
 
+private:
     Tileset *_tileset = nullptr;
     int _tileId = -1;
     int _flags = 0;

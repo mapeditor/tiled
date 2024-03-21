@@ -458,6 +458,10 @@ static void addAutomappingProperties(Properties &properties, const Object *objec
         if (layer->name().startsWith(QLatin1String("input"), Qt::CaseInsensitive)) {
             mergeProperties(properties, QVariantMap {
                 { QStringLiteral("AutoEmpty"), false },
+                { QStringLiteral("IgnoreHorizontalFlip"), false },
+                { QStringLiteral("IgnoreVerticalFlip"), false },
+                { QStringLiteral("IgnoreDiagonalFlip"), false },
+                // { QStringLiteral("IgnoreHexRotate120"), false },
             });
         } else if (layer->name().startsWith(QLatin1String("output"), Qt::CaseInsensitive)) {
             mergeProperties(properties, QVariantMap {

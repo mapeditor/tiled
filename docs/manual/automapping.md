@@ -113,6 +113,7 @@ Everything after the first underscore is the **name**, which determines which la
 
 The **index** is optional, and is not related to the input indices. Instead, output indices are used to randomize the output: every time the rule finds a match, a random output index is chosen and only the output layers with that index will have their contents placed into the working map.
 
+{bdg-primary}`New in Tiled 1.10.3`
 For convenience, Tiled 1.10.3 introduced two changes to the behavior related to indexes. If an output index is completely empty for a given rule, it will never be chosen for that rule. This is useful when some rules have more random options than others. Also, when no index is specified, that part of the rule's output will always apply when the rule matches. This can be used to combine an unconditional part of a rule's output with a random part.
 
 #### Random Output Example
@@ -215,6 +216,18 @@ AutoEmpty (alias: StrictEmpty)
 : This boolean layer property can be added to `input` and `inputnot` layers to customize the behavior for empty tiles within a rule.
 
   Normally, empty tiles are simply ignored. When **AutoEmpty** is `true`, empty tiles within the input region match empty tiles in the target layer. This can only happen when you have multiple input/inputnot layers and some of the tiles that are part of the same rule are empty while others are not. Usually, using the [Empty]{.tile .empty} [special tile](#specialtiles) is the best way to specify an empty tile, but this property is useful when you have multiple input layers, some of which need to match many empty tiles. Note that the input region is defined by *all* input layers, regardless of index.
+
+IgnoreHorizontalFlip {bdg-primary}`New in Tiled 1.10.3`
+: This boolean layer property can be added to `input` and `inputnot` layers to also match horizontally flipped versions of the input tile.
+
+IgnoreVerticalFlip
+: This boolean layer property can be added to `input` and `inputnot` layers to also match vertically flipped versions of the input tile.
+
+IgnoreDiagonalFlip
+: This boolean layer property can be added to `input` and `inputnot` layers to also match anti-diagonally flipped versions of the input tile. This kind of flip is used for 90-degree rotation of tiles.
+
+IgnoreHexRotate120
+: This boolean layer property can be added to `input` and `inputnot` layers to also match 120-degree rotated tiles on hexagonal maps. However, note that Automapping currently does not really work for hexagonal maps since it does not take into account the staggered axis.
 
 (outputProbability)=
 Probability {bdg-primary}`New in Tiled 1.10`

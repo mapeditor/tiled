@@ -22,6 +22,7 @@ void test_AutoMapping::autoMap_data()
 {
     QTest::addColumn<QString>("directory");
 
+    QTest::newRow("ignore-flip") << QStringLiteral("ignore-flip");
     QTest::newRow("infinite-target-map") << QStringLiteral("infinite-target-map");
     QTest::newRow("inputnot") << QStringLiteral("inputnot");
     QTest::newRow("match-type") << QStringLiteral("match-type");
