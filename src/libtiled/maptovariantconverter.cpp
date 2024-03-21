@@ -63,6 +63,7 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
     mapVariant[QStringLiteral("tilewidth")] = map.tileWidth();
     mapVariant[QStringLiteral("tileheight")] = map.tileHeight();
     mapVariant[QStringLiteral("infinite")] = map.infinite();
+    mapVariant[QStringLiteral("invertyaxis")] = map.invertYAxis();
     mapVariant[QStringLiteral("nextlayerid")] = map.nextLayerId();
     mapVariant[QStringLiteral("nextobjectid")] = map.nextObjectId();
     mapVariant[QStringLiteral("compressionlevel")] = map.compressionLevel();

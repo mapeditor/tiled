@@ -261,7 +261,7 @@ Alignment MapObject::alignment(const Map *map) const
 
     if (alignment == Unspecified) {
         if (mCell.isEmpty())
-            return TopLeft;
+            return map && map->invertYAxis() ? BottomLeft : TopLeft;
         else if (map && map->orientation() == Map::Isometric)
             return Bottom;
 
