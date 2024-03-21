@@ -116,9 +116,9 @@ static MatchType matchType(const Tile *tile)
  */
 struct CompileContext
 {
-    QVector<Cell> anyOf;
-    QVector<Cell> noneOf;
-    QVector<Cell> inputCells;
+    QVector<MatchCell> anyOf;
+    QVector<MatchCell> noneOf;
+    QVector<MatchCell> inputCells;
 };
 
 struct ApplyContext
@@ -277,8 +277,6 @@ void AutoMapper::setupRuleMapProperties()
 
 void AutoMapper::setupInputLayerProperties(InputLayer &inputLayer)
 {
-    inputLayer.strictEmpty = false;
-
     QMapIterator<QString, QVariant> it(inputLayer.tileLayer->properties());
     while (it.hasNext()) {
         it.next();
@@ -286,12 +284,27 @@ void AutoMapper::setupInputLayerProperties(InputLayer &inputLayer)
         const QString &name = it.key();
         const QVariant &value = it.value();
 
-        if (name.compare(QLatin1String("strictempty"), Qt::CaseInsensitive) == 0 ||
-                name.compare(QLatin1String("autoempty"), Qt::CaseInsensitive) == 0) {
-            if (value.canConvert(QMetaType::Bool)) {
-                inputLayer.strictEmpty = value.toBool();
-                continue;
-            }
+        if (checkOption(name, value, QLatin1String("StrictEmpty"), inputLayer.strictEmpty))
+            continue;
+        if (checkOption(name, value, QLatin1String("AutoEmpty"), inputLayer.strictEmpty))
+            continue;
+
+        bool ignoreFlip;
+        if (checkOption(name, value, QLatin1String("IgnoreHorizontalFlip"), ignoreFlip) && ignoreFlip) {
+            inputLayer.flagsMask &= ~Cell::FlippedHorizontally;
+            continue;
+        }
+        if (checkOption(name, value, QLatin1String("IgnoreVerticalFlip"), ignoreFlip) && ignoreFlip) {
+            inputLayer.flagsMask &= ~Cell::FlippedVertically;
+            continue;
+        }
+        if (checkOption(name, value, QLatin1String("IgnoreDiagonalFlip"), ignoreFlip) && ignoreFlip) {
+            inputLayer.flagsMask &= ~Cell::FlippedAntiDiagonally;
+            continue;
+        }
+        if (checkOption(name, value, QLatin1String("IgnoreHexRotate120"), ignoreFlip) && ignoreFlip) {
+            inputLayer.flagsMask &= ~Cell::RotatedHexagonal120;
+            continue;
         }
 
         addWarning(tr("Ignoring unknown property '%2' = '%3' on layer '%4' (rule map '%1')")
@@ -468,8 +481,7 @@ bool AutoMapper::setupRuleMapLayers()
 
             setup.mInputLayerNames.insert(layerName);
 
-            InputLayer inputLayer;
-            inputLayer.tileLayer = tileLayer;
+            InputLayer inputLayer { tileLayer };
             setupInputLayerProperties(inputLayer);
 
             auto &inputSet = find_or_emplace<InputSet>(setup.mInputSets, [&setName] (const InputSet &set) {
@@ -740,17 +752,17 @@ static void forEachPointInRegion(const QRegion &region, Callback callback)
  */
 static void collectCellsInRegion(const QVector<InputLayer> &list,
                                  const QRegion &r,
-                                 QVector<Cell> &cells)
+                                 QVector<MatchCell> &cells)
 {
     for (const InputLayer &inputLayer : list) {
         forEachPointInRegion(r, [&] (int x, int y) {
             const Cell &cell = inputLayer.tileLayer->cellAt(x, y);
             switch (matchType(cell.tile())) {
             case MatchType::Tile:
-                appendUnique(cells, cell);
+                appendUnique(cells, { cell, inputLayer.flagsMask });
                 break;
             case MatchType::Empty:
-                appendUnique(cells, Cell());
+                appendUnique(cells, MatchCell());
                 break;
             default:
                 break;
@@ -795,14 +807,16 @@ bool AutoMapper::compileRule(QVector<RuleInputSet> &inputSets,
  * Returns whether this combination can match at all. A match is not possible,
  * when \a anyOf is non-empty, but all cells in \a anyOf are also in \a noneOf.
  */
-static bool optimizeAnyNoneOf(QVector<Cell> &anyOf, QVector<Cell> &noneOf)
+static bool optimizeAnyNoneOf(QVector<MatchCell> &anyOf, QVector<MatchCell> &noneOf)
 {
-    auto compareCell = [] (const Cell &a, const Cell &b) {
+    auto compareCell = [] (const MatchCell &a, const MatchCell &b) {
         if (a.tileset() != b.tileset())
             return a.tileset() < b.tileset();
         if (a.tileId() != b.tileId())
             return a.tileId() < b.tileId();
-        return a.flags() < b.flags();
+        if (a.flags() != b.flags())
+            return a.flags() < b.flags();
+        return a.flagsMask < b.flagsMask;
     };
 
     // First sort and erase duplicates
@@ -851,9 +865,9 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
 {
     const QPoint topLeft = inputRegion.boundingRect().topLeft();
 
-    QVector<Cell> &anyOf = compileContext.anyOf;
-    QVector<Cell> &noneOf = compileContext.noneOf;
-    QVector<Cell> &inputCells = compileContext.inputCells;
+    QVector<MatchCell> &anyOf = compileContext.anyOf;
+    QVector<MatchCell> &noneOf = compileContext.noneOf;
+    QVector<MatchCell> &inputCells = compileContext.inputCells;
 
     for (const InputConditions &conditions : inputSet.layers) {
         inputCells.clear();
@@ -874,16 +888,16 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
                 switch (matchType(cell.tile())) {
                 case MatchType::Unknown:
                     if (inputLayer.strictEmpty)
-                        anyOf.append(cell);
+                        anyOf.append({ cell, inputLayer.flagsMask });
                     break;
                 case MatchType::Tile:
-                    anyOf.append(cell);
+                    anyOf.append({ cell, inputLayer.flagsMask });
                     break;
                 case MatchType::Empty:
-                    anyOf.append(Cell());
+                    anyOf.append(MatchCell());
                     break;
                 case MatchType::NonEmpty:
-                    noneOf.append(Cell());
+                    noneOf.append(MatchCell());
                     break;
                 case MatchType::Other:
                     // The "any other tile" case is implemented as "none of the
@@ -906,16 +920,16 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
                 switch (matchType(cell.tile())) {
                 case MatchType::Unknown:
                     if (inputLayer.strictEmpty)
-                        noneOf.append(cell);
+                        noneOf.append({ cell, inputLayer.flagsMask });
                     break;
                 case MatchType::Tile:
-                    noneOf.append(cell);
+                    noneOf.append({ cell, inputLayer.flagsMask });
                     break;
                 case MatchType::Empty:
-                    noneOf.append(Cell());
+                    noneOf.append(MatchCell());
                     break;
                 case MatchType::NonEmpty:
-                    anyOf.append(Cell());
+                    anyOf.append(MatchCell());
                     break;
                 case MatchType::Other:
                     // This is the "not any other tile" case, which is
@@ -941,7 +955,7 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
                     if (inputCells.isEmpty())
                         collectCellsInRegion(conditions.listYes, inputRegion, inputCells);
                     noneOf.append(inputCells);
-                    noneOf.append(Cell());
+                    noneOf.append(MatchCell());
                 }
             }
 
@@ -960,16 +974,16 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
                 const bool emptyAllowed = (anyOf.isEmpty() ||
                                            std::any_of(anyOf.cbegin(),
                                                        anyOf.cend(),
-                                                       [] (const Cell &cell) { return cell.isEmpty(); }))
+                                                       [] (const MatchCell &cell) { return cell.isEmpty(); }))
                         && std::none_of(noneOf.cbegin(),
                                         noneOf.cend(),
-                                        [] (const Cell &cell) { return cell.isEmpty(); });
+                                        [] (const MatchCell &cell) { return cell.isEmpty(); });
 
                 if (!emptyAllowed)
                     canMatch = false;
             }
 
-            if (anyOf.size() > 0 || noneOf.size() > 0) {
+            if (!anyOf.empty() || !noneOf.empty()) {
                 index.cells.append(anyOf);
                 index.cells.append(noneOf);
 
@@ -1134,6 +1148,14 @@ void AutoMapper::autoMap(const QRegion &where,
     }
 }
 
+static bool cellMatches(const MatchCell &matchCell, const Cell &cell)
+{
+    const auto flagsMask = matchCell.flagsMask;
+    return matchCell.tileset() == cell.tileset()
+            && matchCell.tileId() == cell.tileId()
+            && (matchCell.flags() & flagsMask) == (cell.flags() & flagsMask);
+}
+
 /**
  * Checks whether the given \a inputSet matches at the given \a offset.
  */
@@ -1152,8 +1174,8 @@ static bool matchInputIndex(const RuleInputSet &inputSet, QPoint offset, AutoMap
             bool anyMatch = !pos.anyCount;
 
             for (auto c = std::exchange(nextCell, nextCell + pos.anyCount); c < nextCell; ++c) {
-                const Cell &desired = inputSet.cells[c];
-                if (desired.isEmpty() ? cell.isEmpty() : desired == cell) {
+                const MatchCell &desired = inputSet.cells[c];
+                if (desired.isEmpty() ? cell.isEmpty() : cellMatches(desired, cell)) {
                     anyMatch = true;
                     break;
                 }
@@ -1164,8 +1186,8 @@ static bool matchInputIndex(const RuleInputSet &inputSet, QPoint offset, AutoMap
 
             // Match fails as soon as any of the "none" tiles is seen
             for (auto c = std::exchange(nextCell, nextCell + pos.noneCount); c < nextCell; ++c) {
-                const Cell &undesired = inputSet.cells[c];
-                if (undesired.isEmpty() ? cell.isEmpty() : undesired == cell)
+                const MatchCell &undesired = inputSet.cells[c];
+                if (undesired.isEmpty() ? cell.isEmpty() : cellMatches(undesired, cell))
                     return false;
             }
         }

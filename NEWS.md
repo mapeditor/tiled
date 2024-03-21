@@ -18,6 +18,7 @@
 * tmxrasterizer: Fixed --hide/show-layer to work on group layers (#3899)
 * tmxviewer: Added support for viewing JSON maps (#3866)
 * AutoMapping: Ignore empty outputs per-rule (#3523)
+* Automapping: Added per-input-layer properties for ignoring flip flags (#3803)
 * AutoMapping: Always apply output sets with empty index
 * Windows: Fixed the support for WebP images (updated to Qt 6.6.1, #3661)
 * Fixed possible crash after assigning to tiled.activeAsset

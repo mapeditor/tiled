@@ -36,7 +36,6 @@
 #include <QVector>
 
 #include <memory>
-#include <type_traits>
 #include <unordered_map>
 #include <vector>
 
@@ -53,13 +52,20 @@ class MapDocument;
 
 struct InputLayer
 {
+    explicit InputLayer(const TileLayer *tileLayer = nullptr)
+        : tileLayer(tileLayer)
+    {}
+
     const TileLayer *tileLayer;
-    bool strictEmpty;
+    bool strictEmpty = false;
+    int flagsMask = Cell::VisualFlags;
 };
 
 struct InputConditions
 {
-    InputConditions(const QString &layerName) : layerName(layerName) {}
+    explicit InputConditions(const QString &layerName)
+        : layerName(layerName)
+    {}
 
     QString layerName;
     QVector<InputLayer> listYes;        // "input"
@@ -175,6 +181,16 @@ struct RuleInputLayerPos
     int noneCount;                  // none of these cells
 };
 
+struct MatchCell : Cell
+{
+    int flagsMask = Cell::VisualFlags;
+
+    bool operator == (const MatchCell &other) const
+    {
+        return Cell::operator==(other) && flagsMask == other.flagsMask;
+    }
+};
+
 /**
  * An efficient structure for matching purposes. Each data structure has a
  * single container, which keeps things packed together in memory.
@@ -183,7 +199,7 @@ struct RuleInputSet
 {
     QVector<RuleInputLayer> layers;
     QVector<RuleInputLayerPos> positions;
-    QVector<Cell> cells;
+    QVector<MatchCell> cells;
 };
 
 struct RuleOutputTileLayer
@@ -305,7 +321,7 @@ public:
         int autoMappingRadius = 0;
     };
 
-    using GetCell = std::add_pointer_t<const Cell &(int x, int y, const TileLayer &tileLayer)>;
+    using GetCell = const Cell &(*)(int x, int y, const TileLayer &tileLayer);
 
     /**
      * Constructs an AutoMapper.

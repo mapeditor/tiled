@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="10" height="5" tilewidth="16" tileheight="16" infinite="0" nextlayerid="12" nextobjectid="2">
+ <tileset firstgid="1" source="../spr_test_tileset.tsx"/>
+ <layer id="7" name="input_set" width="10" height="5">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,2,0,0,
+0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="9" name="input_set" width="10" height="5">
+  <properties>
+   <property name="IgnoreVerticalFlip" type="bool" value="true"/>
+  </properties>
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,2,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="10" name="input_set" width="10" height="5">
+  <properties>
+   <property name="IgnoreHorizontalFlip" type="bool" value="true"/>
+  </properties>
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,2,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="5" name="input_set" width="10" height="5">
+  <properties>
+   <property name="IgnoreHorizontalFlip" type="bool" value="true"/>
+   <property name="IgnoreVerticalFlip" type="bool" value="true"/>
+  </properties>
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,2,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="11" name="input_set" width="10" height="5">
+  <properties>
+   <property name="IgnoreDiagonalFlip" type="bool" value="true"/>
+  </properties>
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,2,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="8" name="input_set" width="10" height="5">
+  <properties>
+   <property name="IgnoreDiagonalFlip" type="bool" value="true"/>
+   <property name="IgnoreVerticalFlip" type="bool" value="true"/>
+  </properties>
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,2,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="1" name="input_set" width="10" height="5">
+  <properties>
+   <property name="IgnoreDiagonalFlip" type="bool" value="true"/>
+   <property name="IgnoreHorizontalFlip" type="bool" value="true"/>
+  </properties>
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,2,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="6" name="input_set" width="10" height="5">
+  <properties>
+   <property name="IgnoreDiagonalFlip" type="bool" value="true"/>
+   <property name="IgnoreHorizontalFlip" type="bool" value="true"/>
+   <property name="IgnoreVerticalFlip" type="bool" value="true"/>
+  </properties>
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,2,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="2" name="output_set" width="10" height="5">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,5,0,6,0,7,0,8,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,9,0,10,0,11,0,12,0,0,
+0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+</map>
