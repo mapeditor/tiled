@@ -984,7 +984,7 @@ void TilesetEditor::duplicateWangSet()
         return;
 
     WangSet *duplicate = wangSet->clone(tileset);
-    duplicate->setName(QCoreApplication::translate("Tiled::MapDocument", "Copy of %1").arg(duplicate->name()));
+    duplicate->setName(nameOfDuplicate(wangSet->name()));
 
     mCurrentTilesetDocument->undoStack()->push(new AddWangSet(mCurrentTilesetDocument,
                                                               duplicate));

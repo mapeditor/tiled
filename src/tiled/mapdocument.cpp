@@ -33,6 +33,7 @@
 #include "changeselectedarea.h"
 #include "containerhelpers.h"
 #include "editablemap.h"
+#include "editor.h"
 #include "flipmapobjects.h"
 #include "geometry.h"
 #include "grouplayer.h"
@@ -634,7 +635,7 @@ void MapDocument::duplicateLayers(const QList<Layer *> &layers)
         }
 
         objectRefs.reassignIds(dup.clone);
-        dup.clone->setName(tr("Copy of %1").arg(dup.clone->name()));
+        dup.clone->setName(Editor::nameOfDuplicate(dup.clone->name()));
 
         duplications.append(dup);
     }
@@ -1595,6 +1596,7 @@ void MapDocument::duplicateObjects(const QList<MapObject *> &objects)
 
     for (MapObject *mapObject : objects) {
         MapObject *clone = mapObject->clone();
+        clone->setName(Editor::nameOfDuplicate(clone->name()));
         objectRefs.reassignId(clone);
         objectsToAdd.append(AddMapObjects::Entry { clone, mapObject->objectGroup() });
         objectsToAdd.last().index = mapObject->objectGroup()->objects().indexOf(mapObject) + 1;

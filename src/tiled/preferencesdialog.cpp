@@ -22,6 +22,7 @@
 #include "ui_preferencesdialog.h"
 
 #include "abstractobjecttool.h"
+#include "editor.h"
 #include "languagemanager.h"
 #include "mapobjectitem.h"
 #include "mapview.h"
@@ -71,8 +72,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
                                                   tr("Prefer Selected Layers"),
                                                   tr("Selected Layers Only") });
 
-    PluginListModel *pluginListModel = new PluginListModel(this);
-    QSortFilterProxyModel *pluginProxyModel = new QSortFilterProxyModel(this);
+    auto *pluginListModel = new PluginListModel(this);
+    auto *pluginProxyModel = new QSortFilterProxyModel(this);
     pluginProxyModel->setSortLocaleAware(true);
     pluginProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
     pluginProxyModel->setSourceModel(pluginListModel);
@@ -111,8 +112,10 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
         Sentry::instance()->setUserConsent(value ? Sentry::ConsentGiven : Sentry::ConsentRevoked);
     });
     mUi->crashReportingLabel->setOpenExternalLinks(true);
+    mUi->crashReportingAndUpdates->setTitle(tr("Updates and Crash Reporting"));
 #else
-    mUi->crashReporting->setVisible(false);
+    mUi->sendCrashReports->setVisible(false);
+    mUi->crashReportingLabel->setVisible(false);
 #endif
 
     connect(mUi->languageCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
@@ -139,6 +142,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             this, [] (bool checked) { MapView::ourAutoScrollingEnabled = checked; });
     connect(mUi->smoothScrolling, &QCheckBox::toggled,
             this, [] (bool checked) { MapView::ourSmoothScrollingEnabled = checked; });
+    connect(mUi->duplicateAddsCopy, &QCheckBox::toggled,
+            this, [] (bool checked) { Editor::duplicateAddsCopy = checked; });
 
     connect(mUi->styleCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, &PreferencesDialog::styleComboChanged);
@@ -230,6 +235,7 @@ void PreferencesDialog::fromPreferences()
     mUi->wheelZoomsByDefault->setChecked(prefs->wheelZoomsByDefault());
     mUi->autoScrolling->setChecked(MapView::ourAutoScrollingEnabled);
     mUi->smoothScrolling->setChecked(MapView::ourSmoothScrollingEnabled);
+    mUi->duplicateAddsCopy->setChecked(Editor::duplicateAddsCopy);
 
     const QFont customFont = prefs->customFont();
     mUi->fontGroupBox->setChecked(prefs->useCustomFont());

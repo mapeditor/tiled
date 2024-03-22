@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "preferences.h"
+
 #include <QObject>
 
 class QToolBar;
@@ -68,6 +70,10 @@ public:
     virtual void performStandardAction(StandardAction action) = 0;
 
     virtual void resetLayout() = 0;
+
+    static Preference<bool> duplicateAddsCopy;
+
+    static QString nameOfDuplicate(const QString &name);
 
 signals:
     void enabledStandardActionsChanged();
