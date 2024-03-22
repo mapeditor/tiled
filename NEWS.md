@@ -1,4 +1,4 @@
-### Unreleased
+### Tiled 1.11.0 (Unreleased)
 
 * Added --project command-line parameter for use when exporting (#3797)
 * Scripting: Added API for working with worlds (#3539)
