@@ -288,7 +288,7 @@ bool MapObjectModel::setData(const QModelIndex &index, const QVariant &value,
             return true;
         }
         case Qt::EditRole: {
-            const QString newName = value.toString();
+            const QString newName = value.toString().trimmed();
             if (layer->name() != newName) {
                 SetLayerName *rename = new SetLayerName(mMapDocument,
                                                         { layer },

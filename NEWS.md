@@ -1,6 +1,8 @@
 ### Unreleased
 
 * Added --project command-line parameter for use when exporting (#3797)
+* Made adding "Copy" when duplicating optional and disabled by default (#3917)
+* Layer names are now trimmed when edited in the UI, to avoid accidental whitespace
 * Scripting: Added API for working with worlds (#3539)
 * Scripting: Added Tile.image for accessing a tile's image data
 * Scripting: Added Tileset.imageFileName and ImageLayer.imageFileName
