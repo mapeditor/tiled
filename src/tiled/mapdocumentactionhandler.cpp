@@ -332,6 +332,41 @@ QMenu *MapDocumentActionHandler::createGroupLayerMenu(QWidget *parent) const
     return groupLayerMenu;
 }
 
+void MapDocumentActionHandler::populateMoveToLayerMenu(QMenu *menu, const ObjectGroup *current)
+{
+    if (!mMapDocument)
+        return;
+
+    const GroupLayer *parentLayer = nullptr;
+
+    LayerIterator objectGroupsIterator(mMapDocument->map(), Layer::ObjectGroupType);
+    objectGroupsIterator.toBack();
+
+    while (auto objectGroup = static_cast<ObjectGroup*>(objectGroupsIterator.previous())) {
+        // Create a separator to indicate the parent layer(s), using "(Parent1/Parent2)".
+        if (parentLayer != objectGroup->parentLayer()) {
+            auto separator = menu->addSeparator();
+            separator->setEnabled(false);
+
+            parentLayer = objectGroup->parentLayer();
+            if (parentLayer) {
+                QStringList parentLayerNames;
+                auto currentParentLayer = parentLayer;
+                while (currentParentLayer) {
+                    parentLayerNames.prepend(currentParentLayer->name());
+                    currentParentLayer = currentParentLayer->parentLayer();
+                }
+
+                separator->setText(parentLayerNames.join(QLatin1String("/")));
+            }
+        }
+
+        QAction *action = menu->addAction(objectGroup->name());
+        action->setData(QVariant::fromValue(objectGroup));
+        action->setEnabled(objectGroup != current);
+    }
+}
+
 /**
  * Used to check whether we can cut or delete the current tile selection.
  */

@@ -93,6 +93,8 @@ public:
     QMenu *createNewLayerMenu(QWidget *parent) const;
     QMenu *createGroupLayerMenu(QWidget *parent) const;
 
+    void populateMoveToLayerMenu(QMenu *menu, const ObjectGroup *current);
+
 public slots:
     void cut();
     bool copy();

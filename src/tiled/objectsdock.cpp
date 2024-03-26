@@ -23,13 +23,13 @@
 #include "actionmanager.h"
 #include "documentmanager.h"
 #include "filteredit.h"
-#include "grouplayer.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
 #include "mapobject.h"
 #include "objectgroup.h"
 #include "objectsview.h"
+#include "raiselowerhelper.h"
 #include "utils.h"
 
 #include <QBoxLayout>
@@ -74,8 +74,11 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     connect(mActionNewLayer, &QAction::triggered,
             handler->actionAddObjectGroup(), &QAction::trigger);
 
+    QIcon objectsGroupIcon(QLatin1String("://images/16/layer-object.png"));
+    objectsGroupIcon.addFile(QLatin1String("://images/32/layer-object.png"));
+
     mActionMoveToGroup = new QAction(this);
-    mActionMoveToGroup->setIcon(QIcon(QLatin1String(":/images/16/layer-object.png")));
+    mActionMoveToGroup->setIcon(objectsGroupIcon);
 
     mActionMoveUp = new QAction(this);
     mActionMoveUp->setIcon(QIcon(QLatin1String(":/images/16/go-up.png")));
@@ -86,7 +89,7 @@ ObjectsDock::ObjectsDock(QWidget *parent)
     Utils::setThemeIcon(mActionMoveUp, "go-up");
     Utils::setThemeIcon(mActionMoveDown, "go-down");
 
-    QToolBar *toolBar = new QToolBar;
+    auto *toolBar = new QToolBar;
     toolBar->setFloatable(false);
     toolBar->setMovable(false);
     toolBar->setIconSize(Utils::smallIconSize());
@@ -195,17 +198,18 @@ void ObjectsDock::aboutToShowMoveToMenu()
 {
     mMoveToMenu->clear();
 
-    for (Layer *layer : mMapDocument->map()->objectGroups()) {
-        QAction *action = mMoveToMenu->addAction(layer->name());
-        action->setData(QVariant::fromValue(static_cast<ObjectGroup*>(layer)));
-    }
+    auto &selectedObjects = mMapDocument->selectedObjects();
+    auto sameObjectGroup = RaiseLowerHelper::sameObjectGroup(selectedObjects);
+
+    auto handler = MapDocumentActionHandler::instance();
+    handler->populateMoveToLayerMenu(mMoveToMenu, sameObjectGroup);
 }
 
 void ObjectsDock::triggeredMoveToMenu(QAction *action)
 {
     MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
 
-    ObjectGroup *objectGroup = action->data().value<ObjectGroup*>();
+    auto *objectGroup = action->data().value<ObjectGroup*>();
     handler->moveObjectsToGroup(objectGroup);
 }
 
