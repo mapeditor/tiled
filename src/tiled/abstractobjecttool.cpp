@@ -27,6 +27,7 @@
 #include "changetileobjectgroup.h"
 #include "documentmanager.h"
 #include "mapdocument.h"
+#include "mapdocumentactionhandler.h"
 #include "map.h"
 #include "mapobject.h"
 #include "mapobjectitem.h"
@@ -708,18 +709,13 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
         menu.addAction(tr("Lower Object to Bottom"), this, &AbstractObjectTool::lowerToBottom, Qt::Key_End);
     }
 
-    auto objectGroups = mapDocument()->map()->objectGroups();
-    auto objectGroupsIterator = objectGroups.begin();
-    if (objectGroupsIterator != objectGroups.end() && objectGroupsIterator.next()) {
+    if (LayerIterator(mapDocument()->map(), Layer::ObjectGroupType).next()) {
         menu.addSeparator();
         QMenu *moveToLayerMenu = menu.addMenu(tr("Move %n Object(s) to Layer",
                                                  "", selectedObjects.size()));
-        for (Layer *layer : objectGroups) {
-            ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
-            QAction *action = moveToLayerMenu->addAction(objectGroup->name());
-            action->setData(QVariant::fromValue(objectGroup));
-            action->setEnabled(objectGroup != sameObjectGroup);
-        }
+
+        auto actionHandler = MapDocumentActionHandler::instance();
+        actionHandler->populateMoveToLayerMenu(moveToLayerMenu, sameObjectGroup);
     }
 
     menu.addSeparator();
