@@ -32,6 +32,7 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "mapobject.h"
+#include "mapobjectmodel.h"
 #include "maprenderer.h"
 #include "mapview.h"
 #include "movelayer.h"
@@ -342,6 +343,8 @@ void MapDocumentActionHandler::populateMoveToLayerMenu(QMenu *menu, const Object
     LayerIterator objectGroupsIterator(mMapDocument->map(), Layer::ObjectGroupType);
     objectGroupsIterator.toBack();
 
+    const auto objectGroupIcon = mMapDocument->mapObjectModel()->objectGroupIcon();
+
     while (auto objectGroup = static_cast<ObjectGroup*>(objectGroupsIterator.previous())) {
         // Create a separator to indicate the parent layer(s), using "(Parent1/Parent2)".
         if (parentLayer != objectGroup->parentLayer()) {
@@ -361,7 +364,7 @@ void MapDocumentActionHandler::populateMoveToLayerMenu(QMenu *menu, const Object
             }
         }
 
-        QAction *action = menu->addAction(objectGroup->name());
+        QAction *action = menu->addAction(objectGroupIcon, objectGroup->name());
         action->setData(QVariant::fromValue(objectGroup));
         action->setEnabled(objectGroup != current);
     }
