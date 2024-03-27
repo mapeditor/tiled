@@ -217,7 +217,7 @@ jobs:
 
     - name: Build Zstandard
       run: |
-        git clone --depth 1 -b master https://github.com/facebook/zstd.git
+        git clone --depth 1 -b release https://github.com/facebook/zstd.git
         pushd zstd/lib
         CFLAGS="-arch arm64 -arch x86_64" make libzstd.a
         popd
@@ -325,7 +325,7 @@ jobs:
     - name: Build Zstandard
       run: |
         export PATH="${MINGW_PATH}:$PATH"
-        git clone --depth 1 -b master https://github.com/facebook/zstd.git
+        git clone --depth 1 -b release https://github.com/facebook/zstd.git
         pushd zstd/lib
         CC=gcc mingw32-make -j2 libzstd.a
         popd
