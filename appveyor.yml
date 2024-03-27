@@ -48,7 +48,7 @@ build_script:
   - if defined TILED_SNAPSHOT set TILED_ITCH_CHANNEL=%TILED_ITCH_CHANNEL%-snapshot
   - if not defined APPVEYOR_PULL_REQUEST_NUMBER if [%APPVEYOR_REPO_BRANCH%]==[snapshot] if defined PUSH_SNAPSHOT set PUSH_TO_ITCH=true
   - echo Building Tiled %TILED_VERSION% (%TILED_ITCH_CHANNEL%) from %COMMITNOW%
-  - git clone --depth 1 -b master https://github.com/facebook/zstd.git
+  - git clone --depth 1 -b release https://github.com/facebook/zstd.git
   - if defined MINGW cd zstd/lib & set CC=gcc & mingw32-make -j2 libzstd.a & cd ../../
   - qbs --version
   - qbs setup-toolchains --detect
