@@ -110,12 +110,12 @@
     <message>
         <location line="+14"/>
         <source>Project file &apos;%1&apos; not found.</source>
-        <translation>Arquivo de projeto &apos;%1&apos; não encontrado.</translation>
+        <translation>Ficheiro de projeto &apos;%1&apos; não encontrado.</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Session file &apos;%1&apos; not found.</source>
-        <translation>Arquivo de sessão &apos;%1&apos; não encontrado.</translation>
+        <translation>Ficheiro de sessão &apos;%1&apos; não encontrado.</translation>
     </message>
 </context>
 <context>
@@ -606,7 +606,7 @@
     <message>
         <location line="+14"/>
         <source>JSON tileset files (*.tsj *.json)</source>
-        <translation>Arquivos de conjunto de tiles JSON (*.tsj *.json)</translation>
+        <translation>Ficheiros de conjunto de tiles JSON (*.tsj *.json)</translation>
     </message>
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
@@ -6652,7 +6652,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/tiled/tilesetdock.cpp" line="-308"/>
         <source>All Files (*)</source>
-        <translation>Todos os Arquivos(*)</translation>
+        <translation>Todos os Ficheiros(*)</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -7177,12 +7177,12 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location filename="../src/plugins/tscn/tscnplugin.cpp" line="-484"/>
         <source>Could not find .godot project in file path for file %1</source>
-        <translation>Não foi possível encontrar o projeto .godot no diretório do arquivo %1</translation>
+        <translation>Não foi possível encontrar o projeto .godot no diretório do ficheiro %1</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>All files must share the same project root. File &apos;%1&apos; does not share project root &apos;%2&apos;.</source>
-        <translation>Todos os arquivos devem compartilhar a mesma raiz de projeto. O arquivo &apos;%1&apos; não compartilha a raiz de projeto &apos;%2&apos;.</translation>
+        <translation>Todos os ficheiros devem partilhar a mesma raiz de projeto. O ficheiro &apos;%1&apos; não partilha a raiz de projeto &apos;%2&apos;.</translation>
     </message>
     <message>
         <location line="+34"/>
@@ -7222,7 +7222,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+68"/>
         <source>tilesetResPath must be in the form of &apos;res://&lt;filename&gt;.tres&apos;.</source>
-        <translation>O Diretório de Recursos do Conjunto de Tiles deve estar no formato &apos;res://&lt;nome_do_arquivo&gt;.tres&apos;.</translation>
+        <translation>O Diretório de Recursos do Conjunto de Tiles deve estar no formato &apos;res://&lt;nome_do_ficheiro&gt;.tres&apos;.</translation>
     </message>
     <message>
         <location line="+77"/>
@@ -7242,7 +7242,7 @@ Por favor, selecione um formato específico.</translation>
     <message>
         <location line="+53"/>
         <source>Godot 4 Scene files (*.tscn)</source>
-        <translation>Arquivos de Cena do Godot 4 (*.tscn)</translation>
+        <translation>Ficheiro de Cena do Godot 4 (*.tscn)</translation>
     </message>
 </context>
 <context>
