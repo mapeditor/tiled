@@ -1,4 +1,4 @@
-### Unreleased
+### Tiled 1.11.0 (Unreleased)
 
 * Added --project command-line parameter for use when exporting (#3797)
 * Added group layer names in "Move Object to Layer" menu (#3454)
