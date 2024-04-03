@@ -35,7 +35,6 @@ extern int _wrap_convert_py2c__Tiled__SharedTileset___star__(PyObject *obj, Tile
 extern PyObject* _wrap_convert_c2py__Tiled__Map_const___star__(Tiled::Map const * *cvalue);
 extern PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *cvalue);
 extern PyObject* _wrap_convert_c2py__Tiled__Tileset_const(Tiled::Tileset const *cvalue);
-extern PyObject* _wrap_convert_c2py__Tiled__LoggingInterface(Tiled::LoggingInterface *cvalue);
 
 namespace Python {
 
@@ -71,11 +70,11 @@ PythonPlugin::~PythonPlugin()
 {
     for (const ScriptEntry &script : mScripts) {
         Py_DECREF(script.module);
-        if(script.mapFormat) {
-          Py_DECREF(script.mapFormat->pythonClass());
+        if (script.mapFormat) {
+            Py_DECREF(script.mapFormat->pythonClass());
         }
-        if(script.tilesetFormat) {
-          Py_DECREF(script.tilesetFormat->pythonClass());
+        if (script.tilesetFormat) {
+            Py_DECREF(script.tilesetFormat->pythonClass());
         }
     }
 

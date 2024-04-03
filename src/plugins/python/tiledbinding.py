@@ -398,7 +398,7 @@ static Tiled::SharedTileset loadTileset(const QString &file)
 """)
 
 """
- C++ class PythonScript is seen as Tiled.Plugin from Python script
+ C++ class PythonScript is seen as tiled.Plugin from Python script
  (naming describes the opposite side from either perspective)
 """
 cls_pp = mod.add_class('PythonScript',
@@ -407,7 +407,7 @@ cls_pp = mod.add_class('PythonScript',
     custom_name='Plugin')
 
 """
- C++ class PythonTilesetScript is seen as Tiled.TilesetPlugin from 
+ C++ class PythonTilesetScript is seen as tiled.TilesetPlugin from 
  Python script (naming describes the opposite side from either perspective)
 """
 cls_ptp = mod.add_class('PythonTilesetScript',

@@ -106,9 +106,7 @@ public:
     QString nameFilter() const;
 };
 
-class PythonFormat
-{
-
+class PythonFormat {
 public:
     PyObject *pythonClass() const { return mClass; }
     virtual void setPythonClass(PyObject *class_);
