@@ -51,7 +51,7 @@ tilesets and image layers).
 For tilesets, the tileset name entered in Tiled must match the name of the
 tileset asset in GameMaker.
 
-For object instances, the name of the object should be set in the *Type*
+For object instances, the name of the object should be set in the *Class*
 field.
 
 Exporting a Tiled Map
@@ -88,12 +88,12 @@ Object layers in Tiled are very flexible since objects take so many forms. As
 such the export looks at each object to see how it should be exported to the
 GameMaker room.
 
-When an object has a *Type*, it is exported as an instance on an instance
-layer, where the type refers to the name of the object to instantiate. Except,
-when the type is "view", the object is interpreted as :ref:`a view
+When an object has a *Class*, it is exported as an instance on an instance
+layer, where the class refers to the name of the object to instantiate. Except,
+when the class is "view", the object is interpreted as :ref:`a view
 <yy-views>`.
 
-When an object has no Type, but it is a tile object, then it is exported as
+When an object has no Class, but it is a tile object, then it is exported as
 either a tile graphic or a sprite graphic, depending on whether the tile is
 from a tileset image or a collection of images.
 
@@ -120,8 +120,8 @@ position of the exported instance.
 
 .. hint::
 
-   Of course setting the type and/or the above properties manually for each
-   instance will get old fast. Instead you can use tile objects with the type
+   Of course setting the class and/or the above properties manually for each
+   instance will get old fast. Instead you can use tile objects with the class
    set on the tile or use :doc:`object templates <using-templates>`.
 
 Object Instances
@@ -292,7 +292,7 @@ Views
 ~~~~~
 
 Views can be defined using :ref:`rectangle objects <insert-rectangle-tool>`
-where the *Type* has been set to "view". The position and size will be snapped
+where the *Class* has been set to "view". The position and size will be snapped
 to pixels. Whether the view is visible when the room starts depends on whether
 the object is visible. The use of views is automatically enabled when any
 views are defined.

@@ -143,7 +143,7 @@ Can contain at most one: :ref:`tmx-chunksize`, :ref:`tmx-export`
    maps to the first tile in this tileset).
 -  **source:** If this tileset is stored in an external TSX (Tile Set XML)
    file, this attribute refers to that file. That TSX file has the same
-   structure as the ``<tileset>`` element described here. (There is the
+   structure as the :ref:`tmx-tileset` element described here. (There is the
    firstgid attribute missing and this source attribute is also not
    there. These two attributes are kept in the TMX map, since they are
    map specific.)
@@ -186,7 +186,7 @@ tile defines its own image. In the first case there is a single child
 :ref:`tmx-image` element. In the latter case, each child
 :ref:`tmx-tileset-tile` element contains an :ref:`tmx-image` element.
 
-If there are multiple ``<tileset>`` elements, they are in ascending
+If there are multiple :ref:`tmx-tileset` elements, they are in ascending
 order of their ``firstgid`` attribute. The first tileset always has a
 ``firstgid`` value of 1. Since Tiled 0.15, image collection tilesets do
 not necessarily number their tiles consecutively since gaps can occur
@@ -229,7 +229,7 @@ rendered.
 <image>
 ~~~~~~~
 
--  **format:** Used for embedded images, in combination with a ``data``
+-  **format:** Used for embedded images, in combination with a :ref:`tmx-data`
    child element. Valid values are file extensions like ``png``,
    ``gif``, ``jpg``, ``bmp``, etc.
 -  *id:* Used by some versions of Tiled Java. Deprecated and unsupported.
@@ -242,10 +242,10 @@ rendered.
    correction when the image changes)
 -  **height:** The image height in pixels (optional)
 
-Note that it is not currently possible to use Tiled to create maps with
-embedded image data, even though the TMX format supports this. It is
-possible to create such maps using ``libtiled`` (Qt/C++) or
-`tmxlib <https://pypi.python.org/pypi/tmxlib>`__ (Python).
+Tiled maps or tilesets with embedded image data can currently only be created
+using the :doc:`JavaScript API </manual/scripting>`, or in custom tools
+based on ``libtiled`` (Qt/C++) or `tmxlib
+<https://pypi.python.org/pypi/tmxlib>`__ (Python).
 
 Can contain at most one: :ref:`tmx-data`
 
@@ -259,7 +259,7 @@ the :ref:`tmx-wangsets` element, which is more flexible. Tilesets containing
 terrain types are automatically saved with a Wang set instead.
 
 This element defines an array of terrain types, which can be referenced
-from the ``terrain`` attribute of the ``tile`` element.
+from the ``terrain`` attribute of the :ref:`tmx-tileset-tile` element.
 
 Can contain any number: :ref:`tmx-terrain`
 
@@ -436,14 +436,18 @@ Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-data`
 ~~~~~~
 
 -  **encoding:** The encoding used to encode the tile layer data. When used,
-   it can be "base64" and "csv" at the moment. (optional)
+   it can be "base64" and, when used for tile layer data, "csv". (optional)
 -  **compression:** The compression used to compress the tile layer data.
    Tiled supports "gzip", "zlib" and (as a compile-time option since Tiled 1.3)
    "zstd".
 
-When no encoding or compression is given, the tiles are stored as
-individual XML ``tile`` elements. Next to that, the easiest format to
-parse is the "csv" (comma separated values) format.
+This element is usually used as a child of a :ref:`tmx-layer` element, and
+contains the actual tile layer data. It can also occur as a child of
+an :ref:`tmx-image` element, where it can store embedded image data.
+
+When no encoding or compression is given, the tiles are stored as individual
+XML :ref:`tmx-tilelayer-tile` elements, but this option is deprecated. Next to
+that, the easiest format to parse is the "csv" (comma separated values) format.
 
 The base64-encoded and optionally compressed layer data is somewhat more
 complicated to parse. First you need to base64-decode it, then you may
@@ -470,7 +474,7 @@ Can contain any number: :ref:`tmx-tilelayer-tile`, :ref:`tmx-chunk`
 -  **height:** The height of the chunk in tiles.
 
 This is currently added only for infinite maps. The contents of a chunk
-element is same as that of the ``data`` element, except it stores the
+element is same as that of the :ref:`tmx-data` element, except it stores the
 data of the area specified in the attributes.
 
 Can contain any number: :ref:`tmx-tilelayer-tile`
@@ -482,10 +486,10 @@ Can contain any number: :ref:`tmx-tilelayer-tile`
 
 -  **gid:** The global tile ID (default: 0).
 
-Not to be confused with the ``tile`` element inside a ``tileset``, this
-element defines the value of a single tile on a tile layer. This is
-however the most inefficient way of storing the tile layer data, and
-should generally be avoided.
+Not to be confused with the :ref:`tmx-tileset-tile` element inside a
+:ref:`tmx-tileset`, this element defines the value of a single tile on a tile
+layer. This is however the most inefficient way of storing the tile layer data,
+and should generally be avoided.
 
 .. _tmx-objectgroup:
 

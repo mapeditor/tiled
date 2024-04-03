@@ -148,7 +148,7 @@ void ToolManager::unregisterTool(AbstractTool *tool)
             it.remove();
 
     if (mSelectedTool == tool)
-        mSelectedTool = nullptr;
+        setSelectedTool(nullptr);
 
     autoSwitchTool();
 }

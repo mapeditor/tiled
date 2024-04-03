@@ -161,18 +161,18 @@ static void getSurroundingPoints(QPoint point,
  * The position of the adjacent info is given by \a adjacentPosition. Also sets
  * the mask for the given corner / side.
  */
-static void updateAdjacent(WangFiller::CellInfo &adjacentInfo, WangId wangId, int adjacentPosition)
+static void updateAdjacent(WangFiller::CellInfo &adjacentInfo, WangId wangId, int adjacentIndex)
 {
-    const int position = WangId::oppositeIndex(adjacentPosition);
+    const int index = WangId::oppositeIndex(adjacentIndex);
 
-    adjacentInfo.desired.setIndexColor(position, wangId.indexColor(adjacentPosition));
-    adjacentInfo.mask.setIndexColor(position, WangId::INDEX_MASK);
+    adjacentInfo.desired.setIndexColor(index, wangId.indexColor(adjacentIndex));
+    adjacentInfo.mask.setIndexColor(index, WangId::INDEX_MASK);
 
-    if (!WangId::isCorner(position)) {
-        const int cornerA = WangId::nextIndex(position);
-        const int cornerB = WangId::previousIndex(position);
-        const int adjacentCornerA = WangId::previousIndex(adjacentPosition);
-        const int adjacentCornerB = WangId::nextIndex(adjacentPosition);
+    if (!WangId::isCorner(index)) {
+        const int cornerA = WangId::nextIndex(index);
+        const int cornerB = WangId::previousIndex(index);
+        const int adjacentCornerA = WangId::previousIndex(adjacentIndex);
+        const int adjacentCornerB = WangId::nextIndex(adjacentIndex);
 
         adjacentInfo.desired.setIndexColor(cornerA, wangId.indexColor(adjacentCornerA));
         adjacentInfo.mask.setIndexColor(cornerA, WangId::INDEX_MASK);
@@ -211,7 +211,7 @@ void WangFiller::apply(TileLayer &target)
     if (!mCorrectionsEnabled) {
         // Set the Wang IDs at the border of the region to prefer the tiles in
         // the filled region to connect with those outside of it.
-        auto setDesiredWangId = [&] (int x, int y, quint64 mask) {
+        auto setDesiredWangId = [&] (int x, int y, WangId mask) {
             const WangId surroundings = wangIdFromSurroundings(QPoint(x, y));
             CellInfo &info = grid.add(x, y);
 
@@ -378,7 +378,7 @@ bool WangFiller::findBestMatch(const TileLayer &target,
                                Cell &result) const
 {
     const CellInfo info = grid.get(position);
-    const quint64 maskedWangId = info.desired & info.mask;
+    const WangId maskedWangId = info.desired & info.mask;
 
     RandomPicker<Cell> matches;
     int lowestPenalty = INT_MAX;
@@ -407,9 +407,9 @@ bool WangFiller::findBestMatch(const TileLayer &target,
                     // this candidate at all because it's impossible to
                     // transition to the desired color.
                     return;
-                } else {
-                    penalty = mWangSet.maximumColorDistance() + 1;
                 }
+
+                penalty = mWangSet.maximumColorDistance() + 1;
             }
 
             totalPenalty += penalty;
@@ -431,8 +431,8 @@ bool WangFiller::findBestMatch(const TileLayer &target,
     };
 
     const auto &wangIdsAndCells = mWangSet.wangIdsAndCells();
-    for (int i = 0, i_end = wangIdsAndCells.size(); i < i_end; ++i)
-        processCandidate(wangIdsAndCells[i].wangId, wangIdsAndCells[i].cell);
+    for (const auto &wangIdAndCell : wangIdsAndCells)
+        processCandidate(wangIdAndCell.wangId, wangIdAndCell.cell);
 
     if (mErasingEnabled)
         processCandidate(WangId(), Cell());

@@ -109,6 +109,7 @@ public:
                              FileFormat *fileFormat = nullptr,
                              QString *error = nullptr);
 
+    bool saveDocument(Document *document);
     bool saveDocument(Document *document, const QString &fileName);
     bool saveDocumentAs(Document *document);
 
@@ -254,6 +255,16 @@ private:
 inline QUndoGroup *DocumentManager::undoGroup() const
 {
     return mUndoGroup;
+}
+
+/**
+ * Save the given document to its existing file name.
+ *
+ * @return <code>true</code> on success, <code>false</code> on failure
+ */
+inline bool DocumentManager::saveDocument(Document *document)
+{
+    return saveDocument(document, document->fileName());
 }
 
 /**

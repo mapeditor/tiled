@@ -57,6 +57,9 @@ class TILEDSHARED_EXPORT FileSystemWatcher : public QObject
 public:
     explicit FileSystemWatcher(QObject *parent = nullptr);
 
+    void setEnabled(bool enabled);
+    bool isEnabled() const;
+
     void addPath(const QString &path);
     void addPaths(const QStringList &paths);
     void removePath(const QString &path);
@@ -79,13 +82,20 @@ private:
     void onFileChanged(const QString &path);
     void onDirectoryChanged(const QString &path);
     void pathsChangedTimeout();
+    void clearInternal();
 
     QFileSystemWatcher *mWatcher;
     QMap<QString, int> mWatchCount;
 
     QSet<QString> mChangedPaths;
     QTimer mChangedPathsTimer;
+    bool mEnabled = true;
 };
+
+inline bool FileSystemWatcher::isEnabled() const
+{
+    return mEnabled;
+}
 
 inline void FileSystemWatcher::addPath(const QString &path)
 {

@@ -235,7 +235,7 @@ WangDock::WangDock(QWidget *parent)
     mEraseWangIdsButton->setIcon(QIcon(QLatin1String(":images/22/stock-tool-eraser.png")));
     mEraseWangIdsButton->setCheckable(true);
     mEraseWangIdsButton->setAutoExclusive(true);
-    mEraseWangIdsButton->setChecked(mCurrentWangId == 0);
+    mEraseWangIdsButton->setChecked(mCurrentWangId.isEmpty());
 
     connect(mEraseWangIdsButton, &QPushButton::clicked,
             this, &WangDock::activateErase);

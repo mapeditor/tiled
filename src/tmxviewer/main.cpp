@@ -28,6 +28,7 @@
 
 #include "tmxviewer.h"
 
+#include "pluginmanager.h"
 #include "tiled.h"
 
 #include <QApplication>
@@ -57,8 +58,10 @@ int main(int argc, char *argv[])
     a.setApplicationName(QStringLiteral("TmxViewer"));
     a.setApplicationVersion(QStringLiteral("1.0"));
 
+    Tiled::PluginManager::instance()->loadPlugins();
+
     QCommandLineParser parser;
-    parser.setApplicationDescription(QCoreApplication::translate("main", "Displays a Tiled map (TMX format)."));
+    parser.setApplicationDescription(QCoreApplication::translate("main", "Displays a Tiled map."));
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addPositionalArgument(QStringLiteral("file"), QCoreApplication::translate("main", "Map file to display."));

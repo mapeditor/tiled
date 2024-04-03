@@ -4,6 +4,8 @@
 
 Automapping can automatically place or replace tiles based on rules you define. It looks for tiles in your working map that match each rule's input, and if it finds any, it'll place the corresponding output. This enables complex or repetitive tile placement to be entirely automated, which can make decorating your levels much faster, and can help you automatically correct mistakes.
 
+If your tiles are set up to work as corners and edges of shapes, you may want to look into using [Terrains](terrain.rst) instead. Terrains provide a more convenient way to automate placement of such tiles.
+
 Automapping can be applied manually via *Map > AutoMap*, or dynamically as you draw on the map if you enable *Map > AutoMap While Drawing*.
 
 :::{note}
@@ -111,6 +113,9 @@ Everything after the first underscore is the **name**, which determines which la
 
 The **index** is optional, and is not related to the input indices. Instead, output indices are used to randomize the output: every time the rule finds a match, a random output index is chosen and only the output layers with that index will have their contents placed into the working map.
 
+{bdg-primary}`New in Tiled 1.10.3`
+For convenience, Tiled 1.10.3 introduced two changes to the behavior related to indexes. If an output index is completely empty for a given rule, it will never be chosen for that rule. This is useful when some rules have more random options than others. Also, when no index is specified, that part of the rule's output will always apply when the rule matches. This can be used to combine an unconditional part of a rule's output with a random part.
+
 #### Random Output Example
 
 Continuing with the example from before, you can use output layers like these to randomise the Ground layer:
@@ -212,12 +217,25 @@ AutoEmpty (alias: StrictEmpty)
 
   Normally, empty tiles are simply ignored. When **AutoEmpty** is `true`, empty tiles within the input region match empty tiles in the target layer. This can only happen when you have multiple input/inputnot layers and some of the tiles that are part of the same rule are empty while others are not. Usually, using the [Empty]{.tile .empty} [special tile](#specialtiles) is the best way to specify an empty tile, but this property is useful when you have multiple input layers, some of which need to match many empty tiles. Note that the input region is defined by *all* input layers, regardless of index.
 
+IgnoreHorizontalFlip {bdg-primary}`New in Tiled 1.10.3`
+: This boolean layer property can be added to `input` and `inputnot` layers to also match horizontally flipped versions of the input tile.
+
+IgnoreVerticalFlip
+: This boolean layer property can be added to `input` and `inputnot` layers to also match vertically flipped versions of the input tile.
+
+IgnoreDiagonalFlip
+: This boolean layer property can be added to `input` and `inputnot` layers to also match anti-diagonally flipped versions of the input tile. This kind of flip is used for 90-degree rotation of tiles.
+
+IgnoreHexRotate120
+: This boolean layer property can be added to `input` and `inputnot` layers to also match 120-degree rotated tiles on hexagonal maps. However, note that Automapping currently does not really work for hexagonal maps since it does not take into account the staggered axis.
+
 (outputProbability)=
 Probability {bdg-primary}`New in Tiled 1.10`
 : This float layer property can be added to `output` layers to control the probability that a given output index will be chosen. The probabilities for each output index are relative to one another, and default to 1.0. For example, if you have outputA with probability 2 and outputB with probability 0.5, A will be chosen four times as often as B. If multiple output layers with the same index have their **Probability** set, the last (top-most) layer's probability will be used.
 
 {bdg-secondary-line}`Since Tiled 1.9`
 
+(object-properties)=
 ### Object Properties
 
 A number of options can be set on individual rules, even within the same rule map. To do this, add an Object Layer to your rule map called `rule_options`. On this layer, you can create plain rectangle objects and any options you set on these objects will apply to all rules they contain.
@@ -260,7 +278,7 @@ A common Automapping scenario is to automate the placement of cliff sides. Tiles
 
 ![Tileset with cliff top tiles and cliff side tiles.](images/automapping/automap_example6.png)
 
-Terrains can be used to place the top of the cliff, but they cannot reliably add the vertical cliffs themselves. Fortunately, they are no problem for Automapping.
+[Terrains](terrain.rst) can be used to place the top of the cliff, but they cannot reliably add the vertical cliffs themselves. Fortunately, they are no problem for Automapping.
 
 ```{figure} images/automapping/automap_example1.png
 :alt: Cliff top tiles with no sides.
@@ -384,7 +402,7 @@ A result from the two rules above.
 (updating-rules)=
 ## Updating Legacy Rules
 
-If you have some Automapping rules from before Tiled 1.9, they should still work much as they always did in most cases. When Tiled sees that a rule map contains `regions` layers, it will automatically bring back the old behavior - rules will be matched in order by default, and cells within input regions that are empty in all the input layers for a given layer and index will be treated as "Other".
+If you have some Automapping rules from before Tiled 1.9, they should still work much as they always did in most cases. When Tiled sees that a rule map contains `regions` layers, it will automatically bring back the old behavior - rules will be matched in order by default, cells within input regions that are empty in all the input layers for a given layer and index will be treated as "Other", and completely empty output indices will still be selected as valid outputs.
 
 :::{warning}
 In Tiled 1.9.x, the presence of `regions` layers did not imply **MatchInOrder**. If you're using 1.9.x rather than 1.10+ and want to use legacy rules, you'll need to set the **MatchInOrder** map property to `true`.
@@ -394,13 +412,16 @@ If you'd like to instead update your rules to not rely on any legacy behavior, t
 
 * If your rules rely on being applied in a set order, set the [**MatchInOrder**](#MatchInOrder) map property to `true`.
 * When deleting your `regions` layers, make sure you weren't relying on them to connect otherwise disconnected areas of tiles. If you were, use the [Ignore]{.tile .ignore} [special tile](#specialtiles) to connect them on one of the `input` layers, so that Tiled knows they're part of the same rule. To make sure the rules behave exactly the same, fill in any part that was previously part of the input region.
-    
+
 * If were using the [**DeleteTiles**](#DeleteTiles) map property to erase tiles from the output layer, you can keep using this property. If you want to make your rule more visually clear, however, you should unset the **DeleteTiles** property, and instead use the [Empty]{.tile .empty} [special tile](#specialtiles) in all the output cells you want to delete from.
-    
+
 * If were using the [**StrictEmpty**](#AutoEmpty) map property to look for empty input tiles, you should now use the Empty special tile instead in the cells you want to check for being empty. You can also continue use the **StrictEmpty** property (or its newer alias, **AutoEmpty**), as long as at least one other input layer is not empty at those locations.
-    
+
 * If were relying on the behavior that any tile which is left empty on all of the input layers for a given index is treated as “any tile not in this rule”, you should instead use the [Other]{.tile .other} [special tile](#specialtiles) at those locations, and also the [Empty]{.tile .empty} [special tile](#specialtiles) on an inputnot layer at those same locations. The Empty tile is needed because old-style Other never matched Empty, but the MatchType Other tile does match Empty.
-    
+
+* If you have rules that rely on some output indices being empty to randomly not make any changes, you will need to place [**Ignore** special tiles](#specialtiles) in at least one layer of each empty output index so that those indices aren't ignored. Alternatively, you can use [`rule_options`](#object-properties) to give those rules a chance to not run at all.
+
+* If you had rules with random output, but did not specify an index for one of the outputs, this part of the rule's output is now excluded from the options and applied unconditionally instead. If all outputs should be random options, make sure they all have an index. You can automate updating your existing rule maps with the "[Add Output Index](https://github.com/mapeditor/tiled-extensions/blob/master/AddOutputIndex.js)" script.
 
 ## Credits
 

@@ -4452,7 +4452,7 @@ Por favor seleccione un formato específico.</translation>
     </message>
     <message>
         <location line="+35"/>
-        <source>The current project contains &lt;a href=&quot;https://doc.mapeditor.org/en/stable/reference/scripting/&quot;&gt;scripted extensions&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Make sure you trust those extensions before enabling them!&lt;/i&gt;</source>
+        <source>The current project contains &lt;a href=&quot;https://doc.mapeditor.org/en/stable/manual/scripting/&quot;&gt;scripted extensions&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Make sure you trust those extensions before enabling them!&lt;/i&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

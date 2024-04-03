@@ -53,9 +53,11 @@ Tilesets support the following property:
 
 * bool ``exportAlternates`` (default: false)
 
-The ``exportAlternates`` property is necessary when using flipped or rotated
-tiles. This will create 7 alternate tiles for each tile, allowing all flipped
-and rotation combinations.
+**Deprecated:** The ``exportAlternates`` property is necessary when using
+flipped or rotated tiles in Godot 4.0 and 4.1. This will create 7 alternate
+tiles for each tile, allowing all flipped and rotation combinations. This
+has been deprecated in Tiled 1.10.3 in favour of Godot 4.2's native rotation
+and flipping support.
 
 Tile Properties
 ~~~~~~~~~~~~~~~
@@ -78,7 +80,7 @@ Maps support the following custom property:
 * string ``tilesetResPath`` (default: blank)
 
 The ``tilesetResPath`` property saves the tileset to an external .tres file,
-allowing it to be shared between multiple maps more efficiently. This path 
+allowing it to be shared between multiple maps more efficiently. This path
 must be in the form of 'res://<path>.tres'. The tileset file will be
 overwritten every time the map is exported.
 
@@ -89,13 +91,28 @@ overwritten every time the map is exported.
     *all* of the same tilesets. You may wish to create a layer with the
     ``tilesetOnly`` property to ensure the correct tilesets are exported.
 
+.. raw:: html
+
+   <div class="new">Since Tiled 1.10.3</div>
+
+Object Properties
+~~~~~~~~~~~~~~~~~
+
+Objects support the following property:
+
+* string ``resPath`` (required)
+
+The ``resPath`` property takes the form of 'res://<pbject path>.tscn' and must
+be set to the path of the Godot object you wish to replace the object with.
+Objects without this property set will not be exported.
+
 Limitations
 ~~~~~~~~~~~
 
-* The Godot 4 exporter does not currently support collection of images 
-  tilesets, object layers, or image layers.
+* The Godot 4 exporter does not currently support collection of images
+  tilesets or image layers.
 * Godot's hexagonal maps only support :ref:`hex side lengths <tmx-map>`
-  that are exactly half the tile height. So if, for example, your tile 
+  that are exactly half the tile height. So if, for example, your tile
   height is 16, then your hex side length must be 8.
 * Godot's hexagonal maps do not support 120° tile rotations.
 * Animations frames must strictly go from left-to-right and top-to-bottom,

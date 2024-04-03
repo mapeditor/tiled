@@ -73,7 +73,14 @@ class TILEDSHARED_EXPORT Cell
     Q_PROPERTY(bool rotatedHexagonal120 READ rotatedHexagonal120 WRITE setRotatedHexagonal120)
 
 public:
-    static Cell empty;
+    enum Flags {
+        FlippedHorizontally     = 0x01,
+        FlippedVertically       = 0x02,
+        FlippedAntiDiagonally   = 0x04,
+        RotatedHexagonal120     = 0x08,
+        Checked                 = 0x10,
+        VisualFlags             = FlippedHorizontally | FlippedVertically | FlippedAntiDiagonally | RotatedHexagonal120
+    };
 
     Cell() = default;
 
@@ -93,7 +100,7 @@ public:
     {
         return _tileset == other._tileset
                 && _tileId == other._tileId
-                && (_flags & VisualFlags) == (other._flags & VisualFlags);
+                && flags() == other.flags();
     }
 
     bool operator != (const Cell &other) const
@@ -125,16 +132,9 @@ public:
     void setTile(Tile *tile);
     bool refersTile(const Tile *tile) const;
 
-private:
-    enum Flags {
-        FlippedHorizontally     = 0x01,
-        FlippedVertically       = 0x02,
-        FlippedAntiDiagonally   = 0x04,
-        RotatedHexagonal120     = 0x08,
-        Checked                 = 0x10,
-        VisualFlags             = FlippedHorizontally | FlippedVertically | FlippedAntiDiagonally | RotatedHexagonal120
-    };
+    static Cell empty;
 
+private:
     Tileset *_tileset = nullptr;
     int _tileId = -1;
     int _flags = 0;
@@ -251,16 +251,16 @@ public:
         {
             if (lhs.mChunkPointer == lhs.mChunkEndPointer || rhs.mChunkPointer == rhs.mChunkEndPointer)
                 return lhs.mChunkPointer == rhs.mChunkPointer;
-            else
-                return lhs.mCellPointer == rhs.mCellPointer;
+
+            return lhs.mCellPointer == rhs.mCellPointer;
         }
 
         friend bool operator!=(const iterator& lhs, const iterator& rhs)
         {
             if (lhs.mChunkPointer == lhs.mChunkEndPointer || rhs.mChunkPointer == rhs.mChunkEndPointer)
                 return lhs.mChunkPointer != rhs.mChunkPointer;
-            else
-                return lhs.mCellPointer != rhs.mCellPointer;
+
+            return lhs.mCellPointer != rhs.mCellPointer;
         }
 
         Cell &value() const { return *mCellPointer; }
@@ -307,16 +307,16 @@ public:
         {
             if (lhs.mChunkPointer == lhs.mChunkEndPointer || rhs.mChunkPointer == rhs.mChunkEndPointer)
                 return lhs.mChunkPointer == rhs.mChunkPointer;
-            else
-                return lhs.mCellPointer == rhs.mCellPointer;
+
+            return lhs.mCellPointer == rhs.mCellPointer;
         }
 
         friend bool operator!=(const const_iterator& lhs, const const_iterator& rhs)
         {
             if (lhs.mChunkPointer == lhs.mChunkEndPointer || rhs.mChunkPointer == rhs.mChunkEndPointer)
                 return lhs.mChunkPointer != rhs.mChunkPointer;
-            else
-                return lhs.mCellPointer != rhs.mCellPointer;
+
+            return lhs.mCellPointer != rhs.mCellPointer;
         }
 
         const Cell &value() const { return *mCellPointer; }
@@ -646,8 +646,8 @@ inline const Cell &TileLayer::cellAt(int x, int y) const
 {
     if (const Chunk *chunk = findChunk(x, y))
         return chunk->cellAt(x & CHUNK_MASK, y & CHUNK_MASK);
-    else
-        return Cell::empty;
+
+    return Cell::empty;
 }
 
 inline const Cell &TileLayer::cellAt(QPoint point) const

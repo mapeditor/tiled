@@ -26,8 +26,9 @@
 namespace Tiled {
 
 EditableProject::EditableProject(ProjectDocument *projectDocument, QObject *parent)
-    : EditableAsset(projectDocument, &projectDocument->project(), parent)
+    : EditableAsset(&projectDocument->project(), parent)
 {
+    setDocument(projectDocument);
 }
 
 QString EditableProject::extensionsPath() const

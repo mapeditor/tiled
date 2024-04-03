@@ -10,7 +10,7 @@ DynamicLibrary {
     Depends { name: "qtpropertybrowser" }
     Depends { name: "qtsingleapplication" }
     Depends { name: "Qt"; submodules: ["core", "widgets", "concurrent", "qml", "svg"]; versionAtLeast: "5.12" }
-    Depends { name: "Qt.openglwidgets"; condition: Qt.core.versionMajor >= 6 }
+    Depends { name: "Qt.openglwidgets"; condition: Qt.core.versionMajor >= 6; required: false }
     Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux") && project.dbus; required: false }
     Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") && Qt.core.versionMajor >= 6 }
 
@@ -160,6 +160,8 @@ DynamicLibrary {
         "changewangcolordata.h",
         "changewangsetdata.cpp",
         "changewangsetdata.h",
+        "changeworld.cpp",
+        "changeworld.h",
         "clipboardmanager.cpp",
         "clipboardmanager.h",
         "colorbutton.cpp",
@@ -236,6 +238,8 @@ DynamicLibrary {
         "editabletileset.h",
         "editablewangset.cpp",
         "editablewangset.h",
+        "editableworld.cpp",
+        "editableworld.h",
         "editor.cpp",
         "editor.h",
         "editpolygontool.cpp",
@@ -577,6 +581,8 @@ DynamicLibrary {
         "wangtemplateview.h",
         "worlddocument.cpp",
         "worlddocument.h",
+        "worldmanager.cpp",
+        "worldmanager.h",
         "worldmovemaptool.cpp",
         "worldmovemaptool.h",
         "zoomable.cpp",

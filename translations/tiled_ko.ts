@@ -4364,8 +4364,8 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="-237"/>
-        <source>The current project contains &lt;a href=&quot;https://doc.mapeditor.org/en/stable/reference/scripting/&quot;&gt;scripted extensions&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Make sure you trust those extensions before enabling them!&lt;/i&gt;</source>
-        <translation>현재 프로젝트는 &lt;a href=&quot;https://doc.mapeditor.org/en/stable/reference/scripting/&quot;&gt;개요 확장자를 포함하고 있다.확장을 활성화하기 전에 해당 확장을 신뢰하는지 확인하십시오!&lt;/i&gt;</translation>
+        <source>The current project contains &lt;a href=&quot;https://doc.mapeditor.org/en/stable/manual/scripting/&quot;&gt;scripted extensions&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Make sure you trust those extensions before enabling them!&lt;/i&gt;</source>
+        <translation>현재 프로젝트는 &lt;a href=&quot;https://doc.mapeditor.org/en/stable/manual/scripting/&quot;&gt;개요 확장자를 포함하고 있다.확장을 활성화하기 전에 해당 확장을 신뢰하는지 확인하십시오!&lt;/i&gt;</translation>
     </message>
     <message>
         <location line="-964"/>

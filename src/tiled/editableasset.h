@@ -34,6 +34,18 @@ namespace Tiled {
 
 class Document;
 
+namespace AssetType {
+    Q_NAMESPACE
+
+    enum Value {
+        TileMap = 1,
+        Tileset,
+        Project,
+        World,
+    };
+    Q_ENUM_NS(Value)
+} // namespace AssetType
+
 class EditableAsset : public EditableObject
 {
     Q_OBJECT
@@ -42,20 +54,23 @@ class EditableAsset : public EditableObject
     Q_PROPERTY(bool modified READ isModified NOTIFY modifiedChanged)
     Q_PROPERTY(bool isTileMap READ isMap CONSTANT)
     Q_PROPERTY(bool isTileset READ isTileset CONSTANT)
+    Q_PROPERTY(AssetType::Value assetType READ assetType CONSTANT)
 
 public:
-    EditableAsset(Document *document, Object *object, QObject *parent = nullptr);
+    EditableAsset(Object *object, QObject *parent = nullptr);
 
     QString fileName() const;
     bool isReadOnly() const override = 0;
-    bool isMap() const;
-    bool isTileset() const;
+    bool isMap() const { return assetType() == AssetType::TileMap; }
+    bool isTileset() const { return assetType() == AssetType::Tileset; }
+    virtual AssetType::Value assetType() const = 0;
 
     QUndoStack *undoStack() const;
     bool isModified() const;
     bool push(QUndoCommand *command);
     bool push(std::unique_ptr<QUndoCommand> command);
 
+    Q_INVOKABLE bool save();
     Q_INVOKABLE QJSValue macro(const QString &text, QJSValue callback);
 
     Document *document() const;
@@ -73,22 +88,19 @@ signals:
     void modifiedChanged();
     void fileNameChanged(const QString &fileName, const QString &oldFileName);
 
+protected:
+    virtual void setDocument(Document *document);
+
 private:
     friend class Document;
-    void setDocument(Document *document);
 
-    Document *mDocument;
+    Document *mDocument = nullptr;
 };
 
 
 inline Document *EditableAsset::document() const
 {
     return mDocument;
-}
-
-inline void EditableAsset::setDocument(Document *document)
-{
-    mDocument = document;
 }
 
 } // namespace Tiled

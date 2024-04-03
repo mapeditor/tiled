@@ -72,9 +72,9 @@ Detach templates
     template object files.
 
 Resolve object types and properties
-    Stores effective object type and properties with each object.
+    Stores effective object class and properties with each object.
     Object properties are inherited from a tile (in case of a tile
-    object) and from the default properties of their type.
+    object) and from the members of their class.
 
 Minimize output
     Omits unnecessary whitespace in the output file. This option is supported
@@ -218,7 +218,7 @@ Plugins
 -------
 
 Here you can choose which plugins are enabled, as well as opening the
-:doc:`scripted extensions </reference/scripting>` folder.
+:doc:`scripted extensions </manual/scripting>` folder.
 
 Plugins add support for map and/or tileset file formats. Some generic plugins
 are enabled by default, while more specific ones need to be manually enabled.

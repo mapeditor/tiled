@@ -30,7 +30,6 @@
 #include "imagelayer.h"
 
 #include "imagecache.h"
-#include "map.h"
 
 #include <QBitmap>
 
@@ -110,4 +109,3 @@ ImageLayer *ImageLayer::initializeClone(ImageLayer *clone) const
 
     return clone;
 }
-

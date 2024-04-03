@@ -108,6 +108,8 @@ public:
 
     void moveObjects(ObjectGroup *og, int from, int to, int count);
 
+    QIcon objectGroupIcon() const;
+
 private:
     void layerAdded(Layer *layer);
     void layerAboutToBeRemoved(GroupLayer *groupLayer, int index);
@@ -127,5 +129,10 @@ private:
 
     QIcon mObjectGroupIcon;
 };
+
+inline QIcon MapObjectModel::objectGroupIcon() const
+{
+    return mObjectGroupIcon;
+}
 
 } // namespace Tiled

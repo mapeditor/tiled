@@ -88,6 +88,8 @@ public:
     constexpr operator quint64() const { return mId; }
     inline void setId(quint64 id) { mId = id; }
 
+    bool isEmpty() const { return mId == 0; }
+
     int edgeColor(int index) const;
     int cornerColor(int index) const;
 
@@ -100,13 +102,13 @@ public:
     void setIndexColor(int index, unsigned value);
 
     void updateToAdjacent(WangId adjacent, int position);
-    void mergeWith(WangId wangId, quint64 mask);
+    void mergeWith(WangId wangId, WangId mask);
 
     bool hasWildCards() const;
     bool hasCornerWildCards() const;
     bool hasEdgeWildCards() const;
-    quint64 mask() const;
-    quint64 mask(int value) const;
+    WangId mask() const;
+    WangId mask(int value) const;
 
     bool hasCornerWithColor(int value) const;
     bool hasEdgeWithColor(int value) const;
@@ -117,6 +119,11 @@ public:
     void flipVertically();
     WangId flippedHorizontally() const;
     WangId flippedVertically() const;
+
+    bool operator==(WangId other) const { return mId == other.mId; }
+    bool operator!=(WangId other) const { return mId != other.mId; }
+    WangId operator& (quint64 mask) const { return mId & mask; }
+    WangId operator&=(quint64 mask) { return mId &= mask; }
 
     static Index indexByGrid(int x, int y);
     static Index oppositeIndex(int index);
@@ -134,9 +141,9 @@ private:
     quint64 mId;
 };
 
-inline void WangId::mergeWith(WangId wangId, quint64 mask)
+inline void WangId::mergeWith(WangId wangId, WangId mask)
 {
-    mId = (mId & ~mask) | (wangId & mask);
+    *this = (*this & ~mask) | (wangId & mask);
 }
 
 inline WangId::Index WangId::oppositeIndex(int index)
@@ -261,6 +268,8 @@ public:
     Type type() const;
     void setType(Type type);
 
+    WangId typeMask() const;
+
     int imageTileId() const;
     void setImageTileId(int imageTileId);
     Tile *imageTile() const;
@@ -323,6 +332,7 @@ private:
     Tileset *mTileset;
     QString mName;
     Type mType;
+    WangId mTypeMask;
     int mImageTileId;
 
     // How many unique, full WangIds are active in this set.
@@ -366,13 +376,9 @@ inline WangSet::Type WangSet::type() const
     return mType;
 }
 
-/**
- * Changes the type of this Wang set. Does not modify any WangIds to make sure
- * they adhere to the type!
- */
-inline void WangSet::setType(WangSet::Type type)
+inline WangId WangSet::typeMask() const
 {
-    mType = type;
+    return mTypeMask;
 }
 
 inline int WangSet::imageTileId() const

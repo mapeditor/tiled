@@ -51,6 +51,23 @@ FileSystemWatcher::FileSystemWatcher(QObject *parent) :
             this, &FileSystemWatcher::pathsChangedTimeout);
 }
 
+void FileSystemWatcher::setEnabled(bool enabled)
+{
+    if (mEnabled == enabled)
+        return;
+
+    mEnabled = enabled;
+
+    if (enabled) {
+        const auto files = mWatchCount.keys();
+        if (!files.isEmpty())
+            mWatcher->addPaths(files);
+    } else {
+        clearInternal();
+        mChangedPathsTimer.stop();
+    }
+}
+
 void FileSystemWatcher::addPaths(const QStringList &paths)
 {
     QStringList pathsToAdd;
@@ -63,7 +80,9 @@ void FileSystemWatcher::addPaths(const QStringList &paths)
 
         QMap<QString, int>::iterator entry = mWatchCount.find(path);
         if (entry == mWatchCount.end()) {
-            pathsToAdd.append(path);
+            if (mEnabled)
+                pathsToAdd.append(path);
+
             mWatchCount.insert(path, 1);
         } else {
             // Path is already being watched, increment watch count
@@ -93,7 +112,9 @@ void FileSystemWatcher::removePaths(const QStringList &paths)
 
         if (entry.value() == 0) {
             mWatchCount.erase(entry);
-            pathsToRemove.append(path);
+
+            if (mEnabled)
+                pathsToRemove.append(path);
         }
     }
 
@@ -101,7 +122,7 @@ void FileSystemWatcher::removePaths(const QStringList &paths)
         mWatcher->removePaths(pathsToRemove);
 }
 
-void FileSystemWatcher::clear()
+void FileSystemWatcher::clearInternal()
 {
     const QStringList files = mWatcher->files();
     if (!files.isEmpty())
@@ -110,7 +131,11 @@ void FileSystemWatcher::clear()
     const QStringList directories = mWatcher->directories();
     if (!directories.isEmpty())
         mWatcher->removePaths(directories);
+}
 
+void FileSystemWatcher::clear()
+{
+    clearInternal();
     mWatchCount.clear();
 }
 

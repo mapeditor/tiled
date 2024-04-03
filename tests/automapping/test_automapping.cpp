@@ -22,6 +22,7 @@ void test_AutoMapping::autoMap_data()
 {
     QTest::addColumn<QString>("directory");
 
+    QTest::newRow("ignore-flip") << QStringLiteral("ignore-flip");
     QTest::newRow("infinite-target-map") << QStringLiteral("infinite-target-map");
     QTest::newRow("inputnot") << QStringLiteral("inputnot");
     QTest::newRow("match-type") << QStringLiteral("match-type");
@@ -59,7 +60,7 @@ void test_AutoMapping::autoMap()
 
         QRect bounds;
         while (Layer *layer = iterator.next()) {
-            if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
+            if (auto *tileLayer = dynamic_cast<TileLayer*>(layer))
                 bounds = bounds.united(tileLayer->bounds());
         }
         region = bounds;
@@ -91,8 +92,8 @@ void test_AutoMapping::autoMap()
         if (resultLayer->layerType() != Layer::TileLayerType)
             continue;
 
-        const TileLayer *resultTileLayer = static_cast<const TileLayer*>(resultLayer);
-        const TileLayer *mapTileLayer = static_cast<const TileLayer*>(mapLayer);
+        const auto *resultTileLayer = static_cast<const TileLayer*>(resultLayer);
+        const auto *mapTileLayer = static_cast<const TileLayer*>(mapLayer);
 
         QCOMPARE(mapTileLayer->region(), resultTileLayer->region());
 

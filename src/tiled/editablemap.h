@@ -36,7 +36,7 @@ class EditableSelectedArea;
 class EditableTileLayer;
 class EditableTileset;
 
-class EditableMap : public EditableAsset
+class EditableMap final : public EditableAsset
 {
     Q_OBJECT
 
@@ -113,7 +113,8 @@ public:
     explicit EditableMap(std::unique_ptr<Map> map, QObject *parent = nullptr);
     ~EditableMap() override;
 
-    bool isReadOnly() const final;
+    bool isReadOnly() const override;
+    AssetType::Value assetType() const override { return AssetType::TileMap; }
 
     int width() const;
     int height() const;
@@ -162,7 +163,7 @@ public:
     Q_INVOKABLE void autoMap(const QRectF &region, const QString &rulesFile = QString());
     Q_INVOKABLE void autoMap(const Tiled::RegionValueType &region, const QString &rulesFile = QString());
 
-    Q_INVOKABLE Tiled::ScriptImage *toImage(QSize size = QSize());
+    Q_INVOKABLE Tiled::ScriptImage *toImage(QSize size = QSize()) const;
 
     Q_INVOKABLE QPointF screenToTile(qreal x, qreal y) const;
     Q_INVOKABLE QPointF screenToTile(const QPointF &position) const;
@@ -207,6 +208,9 @@ signals:
     void selectedObjectsChanged();
 
     void regionEdited(const Tiled::RegionValueType &region, Tiled::EditableTileLayer *layer);
+
+protected:
+    void setDocument(Document *document) override;
 
 private:
     void documentChanged(const ChangeEvent &change);

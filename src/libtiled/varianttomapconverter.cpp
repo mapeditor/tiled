@@ -125,9 +125,8 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
     }
 
     // Try to load the tileset images
-    auto tilesets = map->tilesets();
-    for (SharedTileset &tileset : tilesets) {
-        if (!tileset->imageSource().isEmpty() && tileset->fileName().isEmpty())
+    for (const SharedTileset &tileset : map->tilesets()) {
+        if (tileset->fileName().isEmpty())
             tileset->loadImage();
     }
 
@@ -145,7 +144,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant,
     mReadingExternalTileset = true;
 
     SharedTileset tileset = toTileset(variant);
-    if (tileset && !tileset->imageSource().isEmpty())
+    if (tileset)
         tileset->loadImage();
 
     mReadingExternalTileset = false;

@@ -440,9 +440,9 @@ static void addAutomappingProperties(Properties &properties, const Object *objec
 {
     auto addRuleOptions = [&] {
         mergeProperties(properties, QVariantMap {
-            { QStringLiteral("Probability"), 0.0 },
-            { QStringLiteral("ModX"), 0 },
-            { QStringLiteral("ModY"), 0 },
+            { QStringLiteral("Probability"), 1.0 },
+            { QStringLiteral("ModX"), 1 },
+            { QStringLiteral("ModY"), 1 },
             { QStringLiteral("OffsetX"), 0 },
             { QStringLiteral("OffsetY"), 0 },
             { QStringLiteral("NoOverlappingOutput"), false },
@@ -458,6 +458,10 @@ static void addAutomappingProperties(Properties &properties, const Object *objec
         if (layer->name().startsWith(QLatin1String("input"), Qt::CaseInsensitive)) {
             mergeProperties(properties, QVariantMap {
                 { QStringLiteral("AutoEmpty"), false },
+                { QStringLiteral("IgnoreHorizontalFlip"), false },
+                { QStringLiteral("IgnoreVerticalFlip"), false },
+                { QStringLiteral("IgnoreDiagonalFlip"), false },
+                // { QStringLiteral("IgnoreHexRotate120"), false },
             });
         } else if (layer->name().startsWith(QLatin1String("output"), Qt::CaseInsensitive)) {
             mergeProperties(properties, QVariantMap {
@@ -484,11 +488,7 @@ static void addAutomappingProperties(Properties &properties, const Object *objec
                 addRuleOptions();
         break;
     }
-    case Object::TilesetType:
-    case Object::TileType:
-    case Object::WangSetType:
-    case Object::WangColorType:
-    case Object::ProjectType:
+    default:
         break;
     }
 }
@@ -696,7 +696,8 @@ void PropertyBrowser::valueChanged(QtProperty *property, const QVariant &val)
     case Object::TileType:              applyTileValue(id, val); break;
     case Object::WangSetType:           applyWangSetValue(id, val); break;
     case Object::WangColorType:         applyWangColorValue(id, val); break;
-    case Object::ProjectType: break;
+    case Object::ProjectType:           break;
+    case Object::WorldType:             break;
     }
 }
 
@@ -1804,7 +1805,8 @@ void PropertyBrowser::addProperties()
     case Object::TileType:              addTileProperties(); break;
     case Object::WangSetType:           addWangSetProperties(); break;
     case Object::WangColorType:         addWangColorProperties(); break;
-    case Object::ProjectType: break;
+    case Object::ProjectType:           break;
+    case Object::WorldType:             break;
     }
 
     // Make sure certain properties are collapsed, to save space
@@ -2022,6 +2024,8 @@ void PropertyBrowser::updateProperties()
         break;
     }
     case Object::ProjectType:
+        break;
+    case Object::WorldType:
         break;
     }
 }

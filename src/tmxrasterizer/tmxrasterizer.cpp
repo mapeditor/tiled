@@ -28,24 +28,24 @@
 
 #include "tmxrasterizer.h"
 
+#include "grouplayer.h"
 #include "imagelayer.h"
 #include "map.h"
 #include "mapformat.h"
 #include "objectgroup.h"
 #include "tilelayer.h"
 #include "tilesetmanager.h"
-#include "worldmanager.h"
+#include "world.h"
 
 #include <QDebug>
+#include <QFileInfo>
 #include <QImageWriter>
 
 #include <memory>
 
 using namespace Tiled;
 
-TmxRasterizer::TmxRasterizer()
-{
-}
+TmxRasterizer::TmxRasterizer() = default;
 
 void TmxRasterizer::drawMapLayers(const MapRenderer &renderer,
                                   QPainter &painter,
@@ -61,9 +61,9 @@ void TmxRasterizer::drawMapLayers(const MapRenderer &renderer,
         painter.setOpacity(layer->effectiveOpacity());
         painter.translate(offset);
 
-        const TileLayer *tileLayer = dynamic_cast<const TileLayer*>(layer);
-        const ImageLayer *imageLayer = dynamic_cast<const ImageLayer*>(layer);
-        const ObjectGroup *objectGroup = dynamic_cast<const ObjectGroup*>(layer);
+        auto *tileLayer = dynamic_cast<const TileLayer*>(layer);
+        auto *imageLayer = dynamic_cast<const ImageLayer*>(layer);
+        auto *objectGroup = dynamic_cast<const ObjectGroup*>(layer);
 
         if (tileLayer) {
             renderer.drawTileLayer(&painter, tileLayer);
@@ -97,16 +97,26 @@ void TmxRasterizer::drawMapLayers(const MapRenderer &renderer,
     }
 }
 
+static bool containsLayerOrParentLayerName(const Layer *layer, const QStringList &layerNames)
+{
+    while (layer) {
+        if (layerNames.contains(layer->name(), Qt::CaseInsensitive))
+            return true;
+        layer = layer->parentLayer();
+    }
+    return false;
+}
+
 bool TmxRasterizer::shouldDrawLayer(const Layer *layer) const
 {
     if (!(mLayerTypesToShow & layer->layerType()))
         return false;
 
-    if (mLayersToHide.contains(layer->name(), Qt::CaseInsensitive))
+    if (containsLayerOrParentLayerName(layer, mLayersToHide))
         return false;
 
     if (!mLayersToShow.empty()) {
-       if (!mLayersToShow.contains(layer->name(), Qt::CaseInsensitive))
+        if (!containsLayerOrParentLayerName(layer, mLayersToShow))
            return false;
     }
 
@@ -131,28 +141,61 @@ bool TmxRasterizer::shouldDrawObject(const MapObject *object) const
 
 
 int TmxRasterizer::render(const QString &fileName,
-                          const QString &imageFileName)
+                          QString imageFileName)
 {
-    if (fileName.endsWith(QLatin1String(".world"), Qt::CaseInsensitive))
-        return renderWorld(fileName, imageFileName);
-    else
-        return renderMap(fileName, imageFileName);
-}
+    const QFileInfo imageFileInfo(imageFileName);
 
-int TmxRasterizer::renderMap(const QString &mapFileName,
-                             const QString &imageFileName)
-{
-    QString errorString;
-    std::unique_ptr<Map> map { readMap(mapFileName, &errorString) };
-    if (!map) {
-        qWarning("Error while reading \"%s\":\n%s",
-                 qUtf8Printable(mapFileName),
-                 qUtf8Printable(errorString));
-        return 1;
+    const QString imagePath = imageFileInfo.path();
+    const QString imageBaseName = imageFileInfo.completeBaseName();
+    const QString imageSuffix = imageFileInfo.suffix();
+
+    const int frameCount = qMax(1, mFrameCount);
+
+    std::unique_ptr<Map> map;
+    std::unique_ptr<MapRenderer> renderer;
+
+    // If we're not rendering a world, load the map once and create a renderer
+    if (!fileName.endsWith(QLatin1String(".world"), Qt::CaseInsensitive)) {
+        QString errorString;
+        map = readMap(fileName, &errorString);
+        if (!map) {
+            qWarning("Error while reading \"%s\":\n%s",
+                     qUtf8Printable(fileName),
+                     qUtf8Printable(errorString));
+            return 1;
+        }
+
+        renderer = MapRenderer::create(map.get());
     }
 
-    const auto renderer = MapRenderer::create(map.get());
-    QRect mapBoundingRect = renderer->mapBoundingRect();
+    for (int frame = 0; frame < frameCount; ++frame) {
+        if (mFrameCount > 0) {
+            imageFileName = QString(QLatin1String("%1/%2%3.%4"))
+                    .arg(imagePath, imageBaseName, QString::number(frame), imageSuffix);
+        }
+
+        int ret;
+
+        if (map) {
+            ret = renderMap(*renderer, imageFileName);
+            mAdvanceAnimations = mFrameDuration;
+        } else {
+            ret = renderWorld(fileName, imageFileName);
+            mAdvanceAnimations = mAdvanceAnimations + mFrameDuration;
+        }
+
+        if (ret)
+            return ret;
+    }
+
+    return 0;
+}
+
+int TmxRasterizer::renderMap(const MapRenderer &renderer,
+                             const QString &imageFileName)
+{
+    const auto map = renderer.map();
+    QRect mapBoundingRect = renderer.mapBoundingRect();
     map->adjustBoundingRectForOffsetsAndImageLayers(mapBoundingRect);
     QSize mapSize = mapBoundingRect.size();
     qreal xScale, yScale;
@@ -168,7 +211,7 @@ int TmxRasterizer::renderMap(const QString &mapFileName,
         xScale = yScale = mScale;
     }
 
-    if (mAdvanceAnimations > 0) 
+    if (mAdvanceAnimations > 0)
         TilesetManager::instance()->advanceTileAnimations(mAdvanceAnimations);
 
     mapSize.rwidth() *= xScale;
@@ -184,8 +227,8 @@ int TmxRasterizer::renderMap(const QString &mapFileName,
 
     painter.translate(-mapBoundingRect.left(), -mapBoundingRect.top());
 
-    drawMapLayers(*renderer, painter);
-    map.reset();
+    drawMapLayers(renderer, painter);
+
     return saveImage(imageFileName, image);
 }
 
@@ -211,9 +254,8 @@ int TmxRasterizer::saveImage(const QString &imageFileName,
 int TmxRasterizer::renderWorld(const QString &worldFileName,
                                const QString &imageFileName)
 {
-    WorldManager &worldManager = WorldManager::instance();
     QString errorString;
-    const World *world = worldManager.loadWorld(worldFileName, &errorString);
+    const auto world = World::load(worldFileName, &errorString);
     if (!world) {
         qWarning("Error loading the world file \"%s\":\n%s",
                  qUtf8Printable(worldFileName),
@@ -228,7 +270,7 @@ int TmxRasterizer::renderWorld(const QString &worldFileName,
         return 1;
     }
     QRect worldBoundingRect;
-    for (const World::MapEntry &mapEntry : maps) {
+    for (const WorldMapEntry &mapEntry : maps) {
         std::unique_ptr<Map> map { readMap(mapEntry.fileName, &errorString) };
         if (!map) {
             qWarning("Error while reading \"%s\":\n%s",
@@ -265,7 +307,7 @@ int TmxRasterizer::renderWorld(const QString &worldFileName,
 
     painter.translate(-worldBoundingRect.topLeft());
 
-    for (const World::MapEntry &mapEntry : maps) {
+    for (const WorldMapEntry &mapEntry : maps) {
         std::unique_ptr<Map> map { readMap(mapEntry.fileName, &errorString) };
         if (!map) {
             qWarning("Error while reading \"%s\":\n%s",
@@ -273,9 +315,9 @@ int TmxRasterizer::renderWorld(const QString &worldFileName,
                     qUtf8Printable(errorString));
             continue;
         }
-        if (mAdvanceAnimations > 0) 
+        if (mAdvanceAnimations > 0)
             TilesetManager::instance()->advanceTileAnimations(mAdvanceAnimations);
-        
+
         const auto renderer = MapRenderer::create(map.get());
         drawMapLayers(*renderer, painter, mapEntry.rect.topLeft());
         TilesetManager::instance()->resetTileAnimations();

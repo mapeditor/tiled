@@ -209,6 +209,7 @@
      <property name="title">
       <string>&amp;Unload World</string>
      </property>
+     <addaction name="actionUnloadAllWorlds"/>
     </widget>
     <widget class="QMenu" name="menuSaveWorld">
      <property name="title">
@@ -802,6 +803,11 @@
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+Shift+P</string>
+   </property>
+  </action>
+  <action name="actionUnloadAllWorlds">
+   <property name="text">
+    <string>Unload All Worlds</string>
    </property>
   </action>
  </widget>

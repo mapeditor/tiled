@@ -5,7 +5,7 @@
  * {@link tiled.registerAction | custom actions} and {@link tiled.registerTool | new tools}.
  * Scripts can also {@link Signal | automate actions based on signals}.
  *
- * See the [Tiled Manual](https://doc.mapeditor.org/en/stable/reference/scripting) for more information on writing or installing extensions.
+ * See the [Tiled Manual](https://doc.mapeditor.org/en/stable/manual/scripting) for more information on writing or installing extensions.
  *
  * ### Type Definitions
  *
@@ -186,8 +186,8 @@ type Polygon = point[];
 
 /**
  * A string used to show only certain types of files when prompting the user to select a file path.
- * 
- * Used in {@link FileEdit} and in {@link tiled.promptOpenFile} and related methods. 
+ *
+ * Used in {@link FileEdit} and in {@link tiled.promptOpenFile} and related methods.
  * The filter is given in a format like `"Images (*.png *.xpm *.jpg)"`.
  *
  * If you want multiple filters, separate them with ';;', for example:
@@ -281,8 +281,18 @@ type MenuItem = MenuAction|MenuSeparator
 interface FilePath {
   /**
    * The URL of the file.
+   *
+   * If you need a local file path, use {@link localFile}.
    */
-  url: string;
+  url: Qt.QUrl;
+
+  /**
+   * The local file path, or empty if the current URL value doesn't refer
+   * to a local file.
+   *
+   * @since 1.10.3
+   */
+  localFile: string;
 }
 
 /**
@@ -437,9 +447,19 @@ declare namespace Qt {
   /**
    * Used in {@link FileEdit} as the URL of the currently selected file.
    */
-  class QUrl{
+  class QUrl {
     /**
-     * Get a string representation of the file.
+     * Get a string representation of the URL.
+     *
+     * Note that this representation will generally start with "file://". In
+     * case you need a local file path, you can use the following code:
+     *
+     * ```js
+     * var path = url.toString().replace(/^file:\/{2}/, '');
+     * ```
+     *
+     * Or have a look at whether an alternative property is available that
+     * gives you a local file path in the first place.
      */
     toString(): string;
   }
@@ -490,7 +510,7 @@ declare namespace Qt {
        */
       textChanged: Signal<void>;
       /**
-       * This property holds the text editor's contents as HTML 
+       * This property holds the text editor's contents as HTML
        * See the supported HTML subset here:
        * https://doc.qt.io/qt-6/richtext-html-subset.html
        */
@@ -1132,6 +1152,157 @@ declare class Project extends TiledObject {
 }
 
 /**
+ * Details of a map that is added to a {@link World}.
+ *
+ * @since 1.10.3
+ */
+declare class WorldMapEntry {
+  /**
+   * File name of the map.
+   */
+  fileName : string;
+
+  /**
+   * A rect describing the location and dimensions of the map within the World.
+   */
+  rect : rect;
+} 
+
+/**
+ * Patterns added to a {@link World}, which are used to automatically match
+ * maps. See the [Using Pattern
+ * Matching](https://doc.mapeditor.org/en/stable/manual/worlds/#using-pattern-matching)
+ * section in the manual for more information.
+ *
+ * @since 1.10.3
+ */
+declare class WorldPattern {
+  /** 
+   * The regular expression pattern used to match maps in the world.
+   */
+  regExp: RegExp;
+
+  /**
+   * Multiplied by the first number (x) in the regular expression to determine
+   * the map's position in the world.
+   */
+  multiplierX: number;
+
+  /**
+   * Multiplied by the second number (y) in the regular expression to determine
+   * the map's position in the world.
+   */
+  multiplierY: number;
+
+  /**
+   * After calculating the map's position in the world using x and y in its 
+   * regular expression and the associated multipliers, this offset is added
+   * to determine the final position.
+   */
+  offset: point;
+
+  /**
+   * The size of the map in pixels.
+   *
+   * Used to support showing only directly neighboring maps when a world is
+   * loaded. For more information, see the [Showing Only Direct
+   * Neighbors](https://doc.mapeditor.org/en/stable/manual/worlds/#showing-only-direct-neighbors)
+   * section in the manual.
+   */
+  mapSize: size;
+}
+
+/**
+ * A world defined in a .world file, which is a JSON file that tells
+ * Tiled which maps are part of the world and at what location.
+ *
+ * See the [Working with
+ * Worlds](https://doc.mapeditor.org/en/stable/manual/worlds/) page in the
+ * manual for more information.
+ *
+ * @since 1.10.3
+ */
+declare class World extends Asset {
+  /**
+   * The maps that are explicitly added to this world. It does not include
+   * those maps which match due to patterns defined on the world.
+   */
+  readonly maps : WorldMapEntry[];
+
+  /**
+   * The patterns that are configured for this map. These patterns will be used
+   * to automatically match maps in your project.
+   */
+  readonly patterns : WorldPattern[];
+
+  /**
+   * Returns all maps that are part of this world, either directly referenced
+   * or matched by one of the patterns.
+   */
+  allMaps() : WorldMapEntry[];
+
+  /**
+   * Returns any maps that intersect with the given {@link rect}. This is a
+   * filtered version of the results from {@link allMaps}.
+   */
+  mapsInRect(rect : rect) : WorldMapEntry[];
+
+  /**
+   * Returns true if this world contains a map with the given fileName.
+   * @param fileName The file name of the map to check for.
+   */
+  containsMap(fileName : string) : boolean;
+
+  /**
+   * Returns true if this world contains the given map.
+   * @param map The TileMap to check for.
+   */
+  containsMap(map : TileMap) : boolean;
+
+  /**
+   * Change the position and size of a map within this world.
+   * @param fileName The file name of the map to change the position and size for.
+   * @param rect The new rect describing the position and size of the map.
+   */
+  setMapRect(fileName: string, rect : rect): void;
+
+  /**
+   * Change the position of a map within this world.
+   * @param map The TileMap of which to change the position.
+   * @param x The x position of the map in the world, in pixels.
+   * @param y The y position of the map in the world, in pixels.
+   */
+  setMapPos(map: TileMap, x: number, y: number): void;
+
+  /**
+   * Add a map to this world.
+   * @param fileName The file name of the map to add to this world.
+   * @param rect A Qt.rect specifying the position and size of the map to add.
+   */
+  addMap(fileName: string, rect: rect): void;
+
+  /**
+   * Add a map to this world. The map size in pixels will be set automatically.
+   * @param map The TileMap instance to add to the world.
+   * @param x The x position of the map in the world, in pixels.
+   * @param y The y position of the map in the world, in pixels.
+   */
+  addMap(map: TileMap, x: number, y: number): void;
+
+  /**
+   * Remove a map from this world.
+   * @param fileName The file name of the map to remove.
+   */
+  removeMap(fileName: string): void;
+
+  /**
+   * Remove a map from this world.
+   * @param map The TileMap instance to remove from this world.
+   */
+  removeMap(map: TileMap): void;
+}
+
+/**
  * Defines the font used to render objects which have {@link MapObject.shape}
  * set to {@link MapObject.Text}.
  */
@@ -1268,7 +1439,7 @@ declare class MapObject extends TiledObject {
   font: Font;
 
   /**
-   * The alignment of a text object.
+   * The alignment of a text object. Can be set using a combination of {@link Qt.Alignment} flags.
    */
   textAlignment: Qt.Alignment;
 
@@ -1326,6 +1497,19 @@ declare class MapObject extends TiledObject {
 }
 
 /**
+ * The top-level assets supported by Tiled. Not all of these assets have
+ * associated editors.
+ *
+ * @since 1.10.3
+ */
+declare enum AssetType {
+  TileMap = 1,
+  Tileset,
+  Project,
+  World,
+}
+
+/**
  * Represents any top-level data type that can be saved to a file.
  *
  * Currently either a {@link TileMap} or a {@link Tileset}.
@@ -1370,6 +1554,13 @@ declare class Asset extends TiledObject {
   readonly isTileset: boolean;
 
   /**
+   * The type of this asset.
+   *
+   * @since 1.10.3
+   */
+  readonly assetType: AssetType;
+
+  /**
    * Creates a single undo command that wraps all changes applied to this
    * asset by the given callback. Recommended to avoid spamming the undo
    * stack with small steps that the user does not care about.
@@ -1402,6 +1593,23 @@ declare class Asset extends TiledObject {
    * @note The undo system is only enabled for assets loaded in the editor!
    */
   redo(): void;
+
+  /**
+   * Save this asset to disk. Returns true if the asset was saved successfully.
+   *
+   * Errors are reported by the UI. When an editor is open for this asset, this
+   * editor is activated when an error is reported.
+   *
+   * Only supported with the editor running, not when running scripts on the
+   * CLI. Also, the asset should already have an associated file.
+   *
+   * To save assets to a specific file or in a different format, use {@link
+   * tiled.mapFormat} or {@link tiled.tilesetFormat}. This is currently not
+   * supported for worlds.
+   *
+   * @since 1.10.3
+   */
+  save(): boolean;
 }
 
 /**
@@ -2026,14 +2234,25 @@ declare class ImageLayer extends Layer {
 
   /**
    * Reference to the image rendered by this layer.
+   *
+   * If you need a plain string, you'll want to use {@link imageFileName}
+   * instead.
    */
-  imageSource: string;
+  imageSource: Qt.QUrl;
+
+  /**
+   * Reference to the image rendered by this layer.
+   *
+   * @since 1.10.3
+   */
+  imageFileName: string;
 
   /**
    * Returns a copy of this layer's image.
    *
-   * When assigning an image to this property, the imageSource property is
-   * cleared. Use {@link setImage} when you want to also set the imageSource.
+   * When assigning an image to this property, the {@link imageFileName}
+   * property is cleared. Use {@link setImage} when you want to also set the
+   * imageSource.
    *
    * @warning This property is writable but has no undo!
    *
@@ -2061,8 +2280,8 @@ declare class ImageLayer extends Layer {
   constructor(name? : string);
 
   /**
-   * Sets the image for this layer to the given image, optionally also
-   * setting the source of the image.
+   * Sets the image for this layer to the given image, optionally also setting
+   * its file name. The existing image file name is cleared.
    *
    * @warning This function has no undo!
    */
@@ -2244,6 +2463,17 @@ declare class Tile extends TiledObject {
   imageFileName : string
 
   /**
+   * Returns the image of this tile, or the image of its tileset if it doesn't
+   * have an individual one.
+   *
+   * You can assign an {@link Image} to this property to change the tile's
+   * image. See {@link setImage} for more information.
+   *
+   * @since 1.10.3
+   */
+  image: Image;
+
+  /**
    * The source rectangle (in pixels) for this tile.
    *
    * This can be either a sub-rectangle of the tile image when the tile is part
@@ -2273,6 +2503,8 @@ declare class Tile extends TiledObject {
 
   /**
    * Indicates whether this tile is animated.
+   *
+   * @see {@link frames} for the animation frames.
    */
   readonly animated : boolean
 
@@ -2282,11 +2514,24 @@ declare class Tile extends TiledObject {
   readonly tileset : Tileset
 
   /**
-   * Sets the image of this tile.
+   * Sets the image of this tile, optionally also setting its file name. The
+   * existing image file name is cleared.
    *
-   * @warning This function has no undo and does not affect the saved tileset!
+   * You should prefer to just set the {@link imageFileName} when possible.
+   * This function is mostly useful when the image data is loaded from a custom
+   * format.
+   *
+   * If an image is set directly on a tile, without specifying its file name,
+   * when saving the tileset the image data will be embedded for formats that
+   * support this (currently only TMX/TSX).
+   *
+   * @note Before Tiled 1.10.3, this function did not change the image file
+   * name. For compatibility, set {@link imageFileName} before calling this
+   * function, if necessary.
+   *
+   * @warning This function has no undo!
    */
-  setImage(image : Image) : void
+  setImage(image : Image, source?: string) : void
 }
 
 /**
@@ -2952,6 +3197,12 @@ interface TileLayerEdit {
   /**
    * Applies the changes made through this object to the target layer. This
    * object can be reused to make further changes.
+   *
+   * By default, the first time this method is called on a {@link TileLayerEdit}
+   * instance, it triggers a new undoable edit. Subsequent edits made through
+   * the same instance will merge with the previous step. To manually control
+   * whether the edit will be merged or not, set the {@link mergeable} property
+   * before calling {@link apply}.
    */
   apply() : void
 }
@@ -3258,6 +3509,13 @@ declare class Tileset extends Asset {
    * repeatedly setting up the tiles in response to changing parameters.
    *
    * @note Map files are supported tileset image source as well.
+   *
+   * @since 1.10.3
+   */
+  imageFileName : string
+
+  /**
+   * @deprecated Use {@link imageFileName} instead.
    */
   image : string
 
@@ -3336,13 +3594,21 @@ declare class Tileset extends Asset {
 
   /**
    * Spacing between tiles in this tileset in pixels.
+   *
+   * @note Changing this property will cause an image-based tileset to update
+   * all its tiles. When setting up a tileset, you'll want to set this property
+   * before setting the {@link image} property.
    */
-  readonly tileSpacing : number
+  tileSpacing : number
 
   /**
    * Margin around the tileset in pixels (only used at the top and left sides of the tileset image).
+   *
+   * @note Changing this property will cause an image-based tileset to update
+   * all its tiles. When setting up a tileset, you'll want to set this property
+   * before setting the {@link image} property.
    */
-  readonly margin : number
+  margin : number
 
   /**
    * The alignment to use for tile objects (when Unspecified, uses Bottom alignment on isometric maps and BottomLeft alignment for all other maps).
@@ -4010,41 +4276,41 @@ declare namespace tiled {
   export function prompt(label: string, text?: string, title?: string): string;
 
   /**
-   * Shows a dialog which asks the user to choose an existing directory. 
+   * Shows a dialog which asks the user to choose an existing directory.
    * Optionally override the starting directory of the dialog or its title.
-   * 
-   * Returns the absolute path of the chosen directory, or an empty string if the user cancels the dialog. 
+   *
+   * Returns the absolute path of the chosen directory, or an empty string if the user cancels the dialog.
    * @since 1.10.2
    */
   export function promptDirectory(defaultDir?: string, title?: string): string;
-  
+
   /**
    * Shows a dialog which asks the user to choose one or more existing files.
    * Optionally override the starting directory of the dialog or its title.
    * You can also restrict to only certain file types by specifying {@link FileFilter|filters}.
-   * 
-   * Returns an array of the absolute paths of the chosen files, or an empty array if the user cancels the dialog. 
+   *
+   * Returns an array of the absolute paths of the chosen files, or an empty array if the user cancels the dialog.
    * @since 1.10.2
    */
   export function promptOpenFiles(defaultDir?: string, filters?: FileFilter, title?: string): string[];
-  
+
   /**
    * Shows a dialog which asks the user to choose an existing file.
    * Optionally override the starting directory of the dialog or its title.
    * You can also restrict to only certain file types by specifying {@link FileFilter|filters}.
-   * 
-   * Returns the absolute path of the chosen file, or an empty string if the user cancels the dialog. 
+   *
+   * Returns the absolute path of the chosen file, or an empty string if the user cancels the dialog.
    * @since 1.10.2
    */
   export function promptOpenFile(defaultDir?: string, filters?: FileFilter, title?: string): string;
-  
+
   /**
-   * Shows a dialog which asks the user to choose a destination for saving a file. 
+   * Shows a dialog which asks the user to choose a destination for saving a file.
    * If the user chooses a file path which already exists, they will be asked to confirm that they want to overwrite the file.
    * Optionally override the starting directory of the dialog or its title.
    * You can also restrict to only certain file types by specifying {@link FileFilter|filters}.
-   * 
-   * Returns the absolute path of the chosen file, or an empty string if the user cancels the dialog. 
+   *
+   * Returns the absolute path of the chosen file, or an empty string if the user cancels the dialog.
    * @since 1.10.2
    */
   export function promptSaveFile(defaultDir?: string, filters?: string, title?: string): string;
@@ -4361,6 +4627,36 @@ declare namespace tiled {
    * The {@link activeAsset} has changed.
    */
   export const activeAssetChanged: Signal<Asset>;
+
+  /**
+   * A list of all currently loaded {@link World|worlds}.
+   * @since 1.10.3
+   */
+  export const worlds : World[];
+
+  /**
+   * Load a world contained in a .world file in the path fileName.
+   * @since 1.10.3
+   */
+  export function loadWorld(fileName : string) : void;
+
+  /**
+   * Unload a world contained in a .world file in the path fileName.
+   * @since 1.10.3
+   */
+  export function unloadWorld(fileName : string) : void;
+
+  /**
+   * Unload all currently loaded worlds.
+   * @since 1.10.3
+   */
+  export function unloadAllWorlds() : void;
+
+  /**
+   * Signal emitted when any world is loaded, unloaded, reloaded or changed.
+   * @since 1.10.3
+   */
+  export const worldsChanged : Signal<void>;
 }
 
 /**
@@ -4482,35 +4778,47 @@ declare class ColorButton extends Qt.QWidget {
    */
   colorChanged: Signal<color>;
 }
+
 /**
  * Widget with a button which opens a file picker dialog
  * and displays the path in the dialog.
  */
 declare class FileEdit extends Qt.QWidget {
   /**
+   * The current file path.
+   *
+   * @since 1.10.3
+   */
+  fileName: string;
+
+  /**
    * The {@link Qt.QUrl} of the currently selected file.
+   *
+   * If you need the file path as a string, use the {@link fileName} property.
    */
   fileUrl: Qt.QUrl;
 
   /**
-   * Signal emitted when the selected fileUrl changes.
+   * Signal emitted when the selected file changes.
    */
   fileUrlChanged: Signal<Qt.QUrl>;
+
   /**
-   * If `true`, the user will be prompted for a directory rather than a file. Defaults to `false`.
+   * If `true`, the user will be prompted for a directory rather than a file.
+   * Defaults to `false`.
    */
   isDirectory: boolean;
 
   /**
-   * When specified, only files that match the {@link FileFilter|filter} are shown. 
+   * When specified, only files that match the {@link FileFilter|filter} are shown.
    */
   filter: FileFilter;
 }
+
 /**
  * A widget that displays an {@link Image} on your dialog.
  */
 declare class ImageWidget extends Qt.QWidget {
-
   /**
    * The image to be displayed in the widget
    */
@@ -4579,7 +4887,7 @@ declare class Dialog extends Qt.QWidget {
   static readonly SingleWidgetRows: unique symbol;
 
   /**
-   * Controls the automatic widget placement behavior of the dialog. 
+   * Controls the automatic widget placement behavior of the dialog.
    * Defaults to {@link SameWidgetRows}
    */
   newRowMode: typeof Dialog.SingleWidgetRows | typeof Dialog.SameWidgetRows | typeof Dialog.ManualRows;

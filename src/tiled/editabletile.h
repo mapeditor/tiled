@@ -42,6 +42,7 @@ class EditableTile : public EditableObject
     Q_PROPERTY(QSize size READ size)
     Q_PROPERTY(QString type READ className WRITE setClassName)  // compatibility with Tiled < 1.9
     Q_PROPERTY(QString imageFileName READ imageFileName WRITE setImageFileName)
+    Q_PROPERTY(Tiled::ScriptImage *image READ image WRITE setImage)
     Q_PROPERTY(QRect imageRect READ imageRect WRITE setImageRect)
     Q_PROPERTY(qreal probability READ probability WRITE setProbability)
     Q_PROPERTY(Tiled::EditableObjectGroup *objectGroup READ objectGroup WRITE setObjectGroup)
@@ -76,6 +77,7 @@ public:
     int height() const;
     QSize size() const;
     QString imageFileName() const;
+    ScriptImage *image() const;
     QRect imageRect() const;
     qreal probability() const;
     EditableObjectGroup *objectGroup() const;
@@ -83,7 +85,8 @@ public:
     bool isAnimated() const;
     EditableTileset *tileset() const;
 
-    Q_INVOKABLE void setImage(Tiled::ScriptImage *image);
+    Q_INVOKABLE void setImage(Tiled::ScriptImage *image,
+                              const QString &fileName = QString());
 
     Tile *tile() const;
 

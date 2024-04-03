@@ -1,9 +1,39 @@
 ### Unreleased
 
+* Added --project command-line parameter for use when exporting (#3797)
+* Added group layer names in "Move Object to Layer" menu (#3454)
+* Made adding "Copy" when duplicating optional and disabled by default (#3917)
+* Layer names are now trimmed when edited in the UI, to avoid accidental whitespace
+* Scripting: Added API for working with worlds (#3539)
+* Scripting: Added Tile.image for accessing a tile's image data
+* Scripting: Added Tileset.imageFileName and ImageLayer.imageFileName
+* Scripting: Added FilePath.localFile and FileEdit.fileName (string alternatives to Qt.QUrl properties)
+* Scripting: Made Tileset.margin and Tileset.tileSpacing writable
+* Scripting: Restored compatibility for MapObject.polygon (#3845)
+* TMX format: Embedded images are now also supported on tilesets and image layers
 * JSON format: Fixed tile order when loading a tileset using the old format
+* Godot 4 plugin: Added support for exporting objects (by Rick Yorgason, #3615)
+* Godot 4 plugin: Use Godot 4.2 tile transformation flags (by Rick Yorgason, #3895)
+* Godot 4 plugin: Fixed positioning of tile collision shapes (by Ryan Petrie, #3862)
+* GameMaker 2 plugin: Fixed positioning of objects on isometric maps
 * tmxrasterizer: Added --hide-object and --show-object arguments (by Lars Luz, #3819)
+* tmxrasterizer: Added --frames and --frame-duration arguments to export animated maps as multiple images (#3868)
+* tmxrasterizer: Fixed --hide/show-layer to work on group layers (#3899)
+* tmxviewer: Added support for viewing JSON maps (#3866)
+* AutoMapping: Ignore empty outputs per-rule (#3523)
+* Automapping: Added per-input-layer properties for ignoring flip flags (#3803)
+* AutoMapping: Always apply output sets with empty index
+* Windows: Fixed the support for WebP images (updated to Qt 6.6.1, #3661)
+* Fixed possible crash after assigning to tiled.activeAsset
+* Fixed the option to resolve properties on export to also resolve class members (#3411, #3315)
+* Fixed terrain tool behavior and terrain overlays after changing terrain set type (#3204, #3260)
+* Fixed mouse handling issue when zooming while painting (#3863)
+* Fixed possible crash after a scripted tool disappears while active
+* Fixed updating of used tilesets after resizing map (#3884)
+* Fixed alignment of shortcuts in action search
+* AppImage: Fixed ability to open paths with spaces from the CLI (#3914)
+* AppImage: Updated to Sentry 0.6.7
 * Python plugin: Added support for implementing tileset formats (#3857)
-* Windows: Fixed the support for WebP images (updated to Qt 6.5.3)
 
 ### Tiled 1.10.2 (4 August 2023)
 
@@ -51,7 +81,7 @@
 
 * Restored Tiled 1.8 file format compatibility by default (#3560)
 * Added action search popup on Ctrl+Shift+P (with dogboydog, #3449)
-* Added Godot 4 export plugin (#3550)
+* Added Godot 4 export plugin (by Rick Yorgason, #3550)
 * Added file system actions also for tileset image based tilesets (#3448)
 * Added custom class option to disable drawing fill for objects (with dogboydog, #3312)
 * Added option to choose a custom interface font (#3589)

@@ -25,9 +25,7 @@
 #include "editablemap.h"
 #include "editableobjectgroup.h"
 #include "editabletile.h"
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include "scriptmanager.h"
-#endif
 
 #include <QCoreApplication>
 #include <QJSEngine>
@@ -63,7 +61,6 @@ EditableMapObject::~EditableMapObject()
         setObject(nullptr);
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 QJSValue EditableMapObject::polygon() const
 {
     QJSEngine *engine = qjsEngine(this);
@@ -82,7 +79,6 @@ QJSValue EditableMapObject::polygon() const
 
     return array;
 }
-#endif
 
 EditableTile *EditableMapObject::tile() const
 {
@@ -199,7 +195,6 @@ void EditableMapObject::setVisible(bool visible)
     setMapObjectProperty(MapObject::VisibleProperty, visible);
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 void EditableMapObject::setPolygon(QJSValue polygonValue)
 {
     if (!polygonValue.isArray()) {
@@ -225,7 +220,6 @@ void EditableMapObject::setPolygon(QJSValue polygonValue)
 
     setPolygon(polygon);
 }
-#endif
 
 void EditableMapObject::setPolygon(const QPolygonF &polygon)
 {

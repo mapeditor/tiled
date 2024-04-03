@@ -22,6 +22,7 @@
 #pragma once
 
 #include "addremovemapobject.h"
+#include "randompicker.h"
 #include "tilededitor_global.h"
 #include "tilelayer.h"
 #include "tileset.h"
@@ -35,7 +36,6 @@
 #include <QVector>
 
 #include <memory>
-#include <type_traits>
 #include <unordered_map>
 #include <vector>
 
@@ -52,13 +52,20 @@ class MapDocument;
 
 struct InputLayer
 {
+    explicit InputLayer(const TileLayer *tileLayer = nullptr)
+        : tileLayer(tileLayer)
+    {}
+
     const TileLayer *tileLayer;
-    bool strictEmpty;
+    bool strictEmpty = false;
+    int flagsMask = Cell::VisualFlags;
 };
 
 struct InputConditions
 {
-    InputConditions(const QString &layerName) : layerName(layerName) {}
+    explicit InputConditions(const QString &layerName)
+        : layerName(layerName)
+    {}
 
     QString layerName;
     QVector<InputLayer> listYes;        // "input"
@@ -73,15 +80,19 @@ struct InputSet
     std::vector<InputConditions> layers;
 };
 
+struct OutputLayer
+{
+    const Layer *layer;
+    QString name;
+};
+
 // One set of output layers sharing the same index
 struct OutputSet
 {
     OutputSet(const QString &name) : name(name) {}
 
     QString name;
-    // Maps output layers in mRulesMap to their names in mTargetMap
-    QHash<const Layer*, QString> layers;
-    QHash<const Layer*, Properties> outputLayerProperties;
+    QVector<OutputLayer> layers;
     qreal probability = 1.0;
 };
 
@@ -150,6 +161,10 @@ struct RuleMapSetup
     QSet<QString> mInputLayerNames;
     QSet<QString> mOutputTileLayerNames;
     QSet<QString> mOutputObjectGroupNames;
+
+    // The properties that should be copied to the target map, when any rule
+    // matches for these output layers.
+    QHash<const Layer*, Properties> mOutputLayerProperties;
 };
 
 struct RuleInputLayer
@@ -166,6 +181,16 @@ struct RuleInputLayerPos
     int noneCount;                  // none of these cells
 };
 
+struct MatchCell : Cell
+{
+    int flagsMask = Cell::VisualFlags;
+
+    bool operator == (const MatchCell &other) const
+    {
+        return Cell::operator==(other) && flagsMask == other.flagsMask;
+    }
+};
+
 /**
  * An efficient structure for matching purposes. Each data structure has a
  * single container, which keeps things packed together in memory.
@@ -174,7 +199,26 @@ struct RuleInputSet
 {
     QVector<RuleInputLayer> layers;
     QVector<RuleInputLayerPos> positions;
-    QVector<Cell> cells;
+    QVector<MatchCell> cells;
+};
+
+struct RuleOutputTileLayer
+{
+    const TileLayer *tileLayer;         // reference to layer in rule map
+    QString name;                       // target layer name
+};
+
+struct RuleOutputMapObjects
+{
+    const ObjectGroup *objectGroup;     // reference to layer in rule map
+    QVector<const MapObject*> objects;  // references to objects in rule map
+    QString name;                       // target layer name
+};
+
+struct RuleOutputSet
+{
+    QVector<RuleOutputTileLayer> tileOutputs;
+    QVector<RuleOutputMapObjects> objectOutputs;
 };
 
 struct CompileContext;
@@ -277,7 +321,7 @@ public:
         int autoMappingRadius = 0;
     };
 
-    using GetCell = std::add_pointer_t<const Cell &(int x, int y, const TileLayer &tileLayer)>;
+    using GetCell = const Cell &(*)(int x, int y, const TileLayer &tileLayer);
 
     /**
      * Constructs an AutoMapper.
@@ -334,11 +378,13 @@ private:
         QRegion inputRegion;
         QRegion outputRegion;
         RuleOptions options;
+        std::optional<RuleOutputSet> outputSet;
+        RandomPicker<RuleOutputSet> outputSets;
     };
 
     void setupRuleMapProperties();
     void setupInputLayerProperties(InputLayer &inputLayer);
-    void setupOutputSetProperties(OutputSet &outputSet);
+    static void setupOutputSetProperties(OutputSet &outputSet, RuleMapSetup &setup);
     void setupRuleOptionsArea(RuleOptionsArea &optionsArea, const MapObject *mapObject);
 
     /**
@@ -350,7 +396,7 @@ private:
     void setupRules();
 
     void setupWorkMapLayers(AutoMappingContext &context) const;
-    void compileRule(QVector<RuleInputSet> &inputSets,
+    bool compileRule(QVector<RuleInputSet> &inputSets,
                      const Rule &rule,
                      const AutoMappingContext &context) const;
     bool compileInputSet(RuleInputSet &index,
@@ -358,6 +404,9 @@ private:
                          const QRegion &inputRegion,
                          CompileContext &compileContext,
                          const AutoMappingContext &context) const;
+    bool compileOutputSet(RuleOutputSet &index,
+                          const OutputSet &outputSet,
+                          const QRegion &outputRegion) const;
 
     /**
      * This copies all tiles from TileLayer \a srcLayer to TileLayer
@@ -373,27 +422,18 @@ private:
                         int dstX, int dstY, const AutoMappingContext &context) const;
 
     /**
-     * This copies all objects from the \a src_lr ObjectGroup to the \a dst_lr
-     * in the given \a rect.
-     *
-     * The parameter \a dstX and \a dstY offset the copied objects in the
-     * destination object group.
-     */
-    void copyObjectRegion(const ObjectGroup *srcLayer, const QRectF &rect,
-                          ObjectGroup *dstLayer, int dstX, int dstY,
-                          AutoMappingContext &context) const;
-
-
-    /**
      * This copies multiple layers from one map to another.
      * Only the output region of the \a rule is considered for copying.
      * In the destination it will come to the region translated by \a offset.
-     * The parameter \a ruleOutput contains a map of which layers of the rules
+     * The parameter \a outputSet contains a map of which layers of the rules
      * map should get copied into which layers of the working map.
      */
     void copyMapRegion(const Rule &rule, QPoint offset,
-                       const OutputSet &ruleOutput,
+                       const RuleOutputSet &outputSet,
                        AutoMappingContext &context) const;
+
+    void applyLayerProperties(const Layer *from, Layer *to,
+                              AutoMappingContext &context) const;
 
     /**
      * This goes through all the positions in \a matchRegion and checks if the
@@ -408,13 +448,15 @@ private:
                    const AutoMappingContext &context) const;
 
     /**
-     * Applies the given \a rule at each of the given \a positions.
-     *
-     * Might skip some of the positions to satisfy the NoOverlappingRules
-     * option.
+     * Applies the given \a rule at the given \a pos.
      */
     void applyRule(const Rule &rule, QPoint pos, ApplyContext &applyContext,
                    AutoMappingContext &context) const;
+
+    void collectLayerOutputRegions(const Rule &rule,
+                                   const RuleOutputSet &outputSet,
+                                   AutoMappingContext &context,
+                                   QHash<const Layer *, QRegion> &ruleRegionInLayer) const;
 
     void addWarning(const QString &text,
                     std::function<void()> callback = std::function<void()>());

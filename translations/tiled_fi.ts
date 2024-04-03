@@ -4455,8 +4455,8 @@ Ole hyvä ja valitse tietty tiedostomuoto.</translation>
     </message>
     <message>
         <location line="+35"/>
-        <source>The current project contains &lt;a href=&quot;https://doc.mapeditor.org/en/stable/reference/scripting/&quot;&gt;scripted extensions&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Make sure you trust those extensions before enabling them!&lt;/i&gt;</source>
-        <translation>Nykyinen projekti sisältää &lt;a href=&quot;https://doc.mapeditor.org/en/stable/reference/scripting/&quot;&gt;skriptattuja laajennuksia&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Varmista, että luotat näihin laajennuksiin ennen kuin otat ne käyttöön!&lt;/i&gt;</translation>
+        <source>The current project contains &lt;a href=&quot;https://doc.mapeditor.org/en/stable/manual/scripting/&quot;&gt;scripted extensions&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Make sure you trust those extensions before enabling them!&lt;/i&gt;</source>
+        <translation>Nykyinen projekti sisältää &lt;a href=&quot;https://doc.mapeditor.org/en/stable/manual/scripting/&quot;&gt;skriptattuja laajennuksia&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Varmista, että luotat näihin laajennuksiin ennen kuin otat ne käyttöön!&lt;/i&gt;</translation>
     </message>
     <message>
         <location line="+3"/>

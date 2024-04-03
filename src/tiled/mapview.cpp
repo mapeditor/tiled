@@ -249,7 +249,7 @@ void MapView::updateSceneRect(const QRectF &sceneRect, const QTransform &transfo
 
 void MapView::updateViewRect()
 {
-    const QRectF viewRect = mapToScene(viewport()->geometry()).boundingRect();
+    const QRectF viewRect = mapToScene(viewport()->rect()).boundingRect();
     if (mViewRect == viewRect)
         return;
 
@@ -397,21 +397,21 @@ void MapView::forceCenterOn(QPointF pos)
 
     const qreal width = viewport()->width();
     const qreal height = viewport()->height();
-    const QPointF viewPoint = transform().map(pos) - viewport()->pos();
+    const QPointF viewPoint = transform().map(pos);
 
     if (hScroll) {
         if (isRightToLeft()) {
             qint64 horizontal = 0;
             horizontal += hBar->minimum();
             horizontal += hBar->maximum();
-            horizontal -= int(viewPoint.x() - width / 2.0);
+            horizontal -= qRound(viewPoint.x() - width / 2.0);
             hBar->forceSetValue(static_cast<int>(horizontal));
         } else {
-            hBar->forceSetValue(int(viewPoint.x() - width / 2.0));
+            hBar->forceSetValue(qRound(viewPoint.x() - width / 2.0));
         }
     }
     if (vScroll)
-        vBar->forceSetValue(int(viewPoint.y() - height / 2.0));
+        vBar->forceSetValue(qRound(viewPoint.y() - height / 2.0));
 }
 
 /**
@@ -583,8 +583,13 @@ void MapView::wheelEvent(QWheelEvent *event)
         // No automatic anchoring since we'll do it manually
         setTransformationAnchor(QGraphicsView::NoAnchor);
 
+        // Mouse move events need to be suppressed while zooming, otherwise
+        // the tools will get several mouse move events in various stages of
+        // the zooming process.
+        mapScene()->setSuppressMouseMoveEvents(true);
         mZoomable->handleWheelDelta(event->angleDelta().y());
         adjustCenterFromMousePosition(mLastMousePos);
+        mapScene()->setSuppressMouseMoveEvents(false);
 
         // Restore the centering anchor
         setTransformationAnchor(QGraphicsView::AnchorViewCenter);
@@ -640,7 +645,7 @@ void MapView::adjustCenterFromMousePosition(QPoint mousePos)
 {
     // Place the last known mouse scene pos below the mouse again
     const QWidget *view = viewport();
-    const QPointF viewCenterScenePos = mapToScene(view->geometry().center());
+    const QPointF viewCenterScenePos = viewportTransform().inverted().map(QRectF(view->rect()).center());
     const QPointF mouseScenePos = mapToScene(view->mapFromGlobal(mousePos));
     const QPointF diff = viewCenterScenePos - mouseScenePos;
     QGraphicsView::centerOn(mLastMouseScenePos + diff);

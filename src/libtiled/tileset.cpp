@@ -29,7 +29,6 @@
 
 #include "tileset.h"
 
-#include "imagecache.h"
 #include "tile.h"
 #include "tilesetmanager.h"
 #include "wangset.h"
@@ -228,31 +227,29 @@ bool Tileset::loadFromImage(const QString &fileName)
 }
 
 /**
- * Tries to load the image this tileset is referring to.
+ * Tries to load the image this tileset is referring to, if any.
  *
  * @return <code>true</code> if loading was successful, otherwise
  *         returns <code>false</code>
  */
 bool Tileset::loadImage()
 {
-    if (mTileWidth <= 0 || mTileHeight <= 0) {
-        mImageReference.status = LoadingError;
-        return false;
+    if (mImageReference.hasImage()) {
+        mImage = mImageReference.create();
+        if (mImage.isNull()) {
+            mImageReference.status = LoadingError;
+            return false;
+        }
     }
 
-    mImage = ImageCache::loadPixmap(Tiled::urlToLocalFileOrQrc(mImageReference.source));
-    if (mImage.isNull()) {
-        mImageReference.status = LoadingError;
-        return false;
-    }
-
-    initializeTilesetTiles();
-
-    return true;
+    return initializeTilesetTiles();
 }
 
-void Tileset::initializeTilesetTiles()
+bool Tileset::initializeTilesetTiles()
 {
+    if (mImage.isNull() || mTileWidth <= 0 || mTileHeight <= 0)
+        return false;
+
     if (mImageReference.transparentColor.isValid())
         mImage.setMask(mImage.createMaskFromColor(mImageReference.transparentColor));
 
@@ -294,6 +291,7 @@ void Tileset::initializeTilesetTiles()
     mImageReference.size = mImage.size();
     mColumnCount = columnCountForWidth(mImageReference.size.width());
     mImageReference.status = LoadingReady;
+    return true;
 }
 
 /**
@@ -593,6 +591,10 @@ SharedTileset Tileset::originalTileset()
 
 void Tileset::swap(Tileset &other)
 {
+    const QString className = this->className();
+    setClassName(other.className());
+    other.setClassName(className);
+
     const Properties p = properties();
     setProperties(other.properties());
     other.setProperties(p);

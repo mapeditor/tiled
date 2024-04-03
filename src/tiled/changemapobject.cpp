@@ -100,9 +100,7 @@ static QList<MapObject*> objectList(const QVector<MapObjectCell> &changes)
 
 void ChangeMapObjectCells::swap()
 {
-    for (int i = 0; i < mChanges.size(); ++i) {
-        MapObjectCell &change = mChanges[i];
-
+    for (auto &change : mChanges) {
         auto cell = change.object->cell();
         change.object->setCell(change.cell);
         change.cell = cell;

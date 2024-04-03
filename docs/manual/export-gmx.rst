@@ -7,7 +7,7 @@ GameMaker: Studio 1.4 uses a custom XML-based format to store its rooms,
 and Tiled ships with a plugin to export maps in this format. Currently
 only orthogonal maps will export correctly.
 
-Tile layers and tile objects (when no type is set) will export as "tile"
+Tile layers and tile objects (when no class is set) will export as "tile"
 elements. These support horizontal and vertical flipping, but no
 rotation. For tile objects, scaling is also supported.
 
@@ -21,7 +21,7 @@ Object Instances
 ~~~~~~~~~~~~~~~~
 
 GameMaker object instances are created by putting the object name in the
-"Type" field of the object in Tiled. Rotation is supported here, and for
+"Class" field of the object in Tiled. Rotation is supported here, and for
 tile objects also flipping and scaling is supported (though flipping in
 combination with rotation doesn't appear to work in GameMaker).
 
@@ -50,9 +50,9 @@ position of the exported instance.
 
 .. hint::
 
-   Of course setting the type and/or the above properties manually for
+   Of course setting the class and/or the above properties manually for
    each instance will get old fast. Since Tiled 1.0.2, you can instead
-   use tile objects with the type set on the tile, and in Tiled 1.1 you
+   use tile objects with the class set on the tile, and in Tiled 1.1 you
    can also use :doc:`object templates <using-templates>`.
 
 .. raw:: html
@@ -67,7 +67,7 @@ Views
    :align: right
 
 Views can be defined using :ref:`rectangle objects <insert-rectangle-tool>`
-where the Type has been set to ``view``. The position and size will be
+where the Class has been set to ``view``. The position and size will be
 snapped to pixels. Whether the view is visible when the room starts
 depends on whether the object is visible. The use of views is
 automatically enabled when any views are defined.

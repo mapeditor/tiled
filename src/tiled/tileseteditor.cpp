@@ -248,6 +248,8 @@ TilesetEditor::TilesetEditor(QObject *parent)
 
     retranslateUi();
     connect(Preferences::instance(), &Preferences::languageChanged, this, &TilesetEditor::retranslateUi);
+
+    updateAddRemoveActions();
 }
 
 void TilesetEditor::saveState()
@@ -271,15 +273,15 @@ void TilesetEditor::restoreState()
 
 void TilesetEditor::addDocument(Document *document)
 {
-    TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document);
+    auto *tilesetDocument = qobject_cast<TilesetDocument*>(document);
     Q_ASSERT(tilesetDocument);
 
-    TilesetView *view = new TilesetView(mWidgetStack);
+    auto *view = new TilesetView(mWidgetStack);
     view->setTilesetDocument(tilesetDocument);
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
-    TilesetModel *tilesetModel = new TilesetModel(tilesetDocument, view);
+    auto *tilesetModel = new TilesetModel(tilesetDocument, view);
     view->setModel(tilesetModel);
 
     connect(tilesetDocument, &TilesetDocument::tileWangSetChanged,
@@ -328,7 +330,7 @@ void TilesetEditor::removeDocument(Document *document)
 
 void TilesetEditor::setCurrentDocument(Document *document)
 {
-    TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document);
+    auto *tilesetDocument = qobject_cast<TilesetDocument*>(document);
     Q_ASSERT(tilesetDocument || !document);
 
     if (document && DocumentManager::instance()->currentEditor() == this)
@@ -722,7 +724,7 @@ void TilesetEditor::addTiles(const QList<QUrl> &urls)
         if (!(dontAskAgain && rememberOption) && hasTileInTileset(url, *tileset)) {
             if (dontAskAgain)
                 continue;
-            QCheckBox *checkBox = new QCheckBox(tr("Apply this action to all tiles"));
+            auto *checkBox = new QCheckBox(tr("Apply this action to all tiles"));
             QMessageBox warning(QMessageBox::Warning,
                         tr("Add Tiles"),
                         tr("Tile \"%1\" already exists in the tileset!").arg(url.toString()),
@@ -961,7 +963,7 @@ void TilesetEditor::addWangSet(WangSet::Type type)
     if (!tileset)
         return;
 
-    WangSet *wangSet = new WangSet(tileset, QString(), type);
+    auto *wangSet = new WangSet(tileset, QString(), type);
     wangSet->setName(tr("Unnamed Set"));
     wangSet->setColorCount(1);
 
@@ -982,7 +984,7 @@ void TilesetEditor::duplicateWangSet()
         return;
 
     WangSet *duplicate = wangSet->clone(tileset);
-    duplicate->setName(QCoreApplication::translate("Tiled::MapDocument", "Copy of %1").arg(duplicate->name()));
+    duplicate->setName(nameOfDuplicate(wangSet->name()));
 
     mCurrentTilesetDocument->undoStack()->push(new AddWangSet(mCurrentTilesetDocument,
                                                               duplicate));

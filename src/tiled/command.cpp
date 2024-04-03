@@ -27,7 +27,8 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "projectmanager.h"
-#include "worlddocument.h"
+#include "world.h"
+#include "worlddocument.h"  // used to know that WorldDocument is a Document
 #include "worldmanager.h"
 
 #include <QAction>
@@ -157,10 +158,14 @@ void Command::execute(bool inTerminal) const
     if (saveBeforeExecute) {
         ActionManager::instance()->action("Save")->trigger();
 
-        if (Document *document = DocumentManager::instance()->currentDocument())
-            if (document->type() == Document::MapDocumentType)
-                if (const World *world = WorldManager::instance().worldForMap(document->fileName()))
-                    WorldManager::instance().saveWorld(world->fileName);
+        if (Document *document = DocumentManager::instance()->currentDocument()) {
+            if (document->type() == Document::MapDocumentType) {
+                if (const World *world = WorldManager::instance().worldForMap(document->fileName())) {
+                    auto worldDocument = DocumentManager::instance()->ensureWorldDocument(world->fileName);
+                    DocumentManager::instance()->saveDocument(worldDocument);
+                }
+            }
+        }
     }
 
     // Start the process

@@ -34,7 +34,7 @@ class ProjectModel;
  *
  * No dependencies.
  */
-class ProjectManager : public QObject
+class TILED_EDITOR_EXPORT ProjectManager : public QObject
 {
     Q_OBJECT
 

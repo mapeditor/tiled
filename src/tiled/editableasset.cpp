@@ -20,9 +20,7 @@
 
 #include "editableasset.h"
 
-#include "document.h"
-#include "editablemap.h"
-#include "editabletileset.h"
+#include "documentmanager.h"
 #include "scriptmanager.h"
 
 #include <QCoreApplication>
@@ -30,14 +28,9 @@
 
 namespace Tiled {
 
-EditableAsset::EditableAsset(Document *document, Object *object, QObject *parent)
+EditableAsset::EditableAsset(Object *object, QObject *parent)
     : EditableObject(this, object, parent)
-    , mDocument(document)
 {
-    if (document) {
-        connect(document, &Document::modifiedChanged,
-                this, &EditableAsset::modifiedChanged);
-    }
 }
 
 QString EditableAsset::fileName() const
@@ -45,16 +38,6 @@ QString EditableAsset::fileName() const
     if (document())
         return document()->fileName();
     return QString();
-}
-
-bool EditableAsset::isMap() const
-{
-    return qobject_cast<const EditableMap*>(this) != nullptr;
-}
-
-bool EditableAsset::isTileset() const
-{
-    return qobject_cast<const EditableTileset*>(this) != nullptr;
 }
 
 QUndoStack *EditableAsset::undoStack() const
@@ -84,6 +67,22 @@ bool EditableAsset::push(std::unique_ptr<QUndoCommand> command)
 
     undoStack()->push(command.release());
     return true;
+}
+
+bool EditableAsset::save()
+{
+    auto documentManager = DocumentManager::maybeInstance();
+    if (!documentManager) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Editor not available"));
+        return false;
+    }
+
+    if (fileName().isEmpty()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Asset not associated with a file"));
+        return false;
+    }
+
+    return documentManager->saveDocument(document());
 }
 
 QJSValue EditableAsset::macro(const QString &text, QJSValue callback)
@@ -120,6 +119,22 @@ void EditableAsset::redo()
         stack->redo();
     else
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Undo system not available for this asset"));
+}
+
+void EditableAsset::setDocument(Document *document)
+{
+    if (mDocument == document)
+        return;
+
+    if (mDocument)
+        mDocument->disconnect(this);
+
+    if (document) {
+        connect(document, &Document::modifiedChanged,
+                this, &EditableAsset::modifiedChanged);
+    }
+
+    mDocument = document;
 }
 
 } // namespace Tiled

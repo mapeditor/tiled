@@ -4455,8 +4455,8 @@ Válasszon egy adott formátumot.</translation>
     </message>
     <message>
         <location line="+35"/>
-        <source>The current project contains &lt;a href=&quot;https://doc.mapeditor.org/en/stable/reference/scripting/&quot;&gt;scripted extensions&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Make sure you trust those extensions before enabling them!&lt;/i&gt;</source>
-        <translation>A jelenlegi projekt &lt;a href=&quot;https://doc.mapeditor.org/en/stable/reference/scripting/&quot;&gt;parancsfájllal vezérelt kiterjesztéseket&lt;/a&gt; tartalmaz.&lt;br&gt;&lt;i&gt;Győződjön meg arról, hogy megbízik-e ezekben a kiterjesztésekben, mielőtt engedélyezi azokat!&lt;/i&gt;</translation>
+        <source>The current project contains &lt;a href=&quot;https://doc.mapeditor.org/en/stable/manual/scripting/&quot;&gt;scripted extensions&lt;/a&gt;.&lt;br&gt;&lt;i&gt;Make sure you trust those extensions before enabling them!&lt;/i&gt;</source>
+        <translation>A jelenlegi projekt &lt;a href=&quot;https://doc.mapeditor.org/en/stable/manual/scripting/&quot;&gt;parancsfájllal vezérelt kiterjesztéseket&lt;/a&gt; tartalmaz.&lt;br&gt;&lt;i&gt;Győződjön meg arról, hogy megbízik-e ezekben a kiterjesztésekben, mielőtt engedélyezi azokat!&lt;/i&gt;</translation>
     </message>
     <message>
         <location line="+3"/>

@@ -43,7 +43,7 @@ jobs:
     steps:
     - name: Download artifact
       id: download
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: ${{ matrix.artifact }}
         path: upload

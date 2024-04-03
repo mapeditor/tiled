@@ -20,11 +20,40 @@
 
 #include "editor.h"
 
+#include <QCoreApplication>
+#include <QRegularExpression>
+
 namespace Tiled {
+
+Preference<bool> Editor::duplicateAddsCopy { "Editor/DuplicateAddsCopy" };
 
 Editor::Editor(QObject *parent)
     : QObject(parent)
 {
+}
+
+QString Editor::nameOfDuplicate(const QString &name)
+{
+    if (name.isEmpty() || !duplicateAddsCopy)
+        return name;
+
+    const QString copyText = tr("Copy");
+
+    // Look for an existing postfix, optionally capturing a number
+    const QRegularExpression regexp = QRegularExpression(QStringLiteral(
+        R"((.*)\s*%1\s*(\d+)?$)").arg(copyText));
+
+    const QRegularExpressionMatch match = regexp.match(name);
+    if (match.hasMatch()) {
+        const QString copyName = match.captured(1).trimmed();
+        const QString capturedNumber = match.captured(2);
+        const int copyNumber = capturedNumber.isNull() ? 2 : capturedNumber.toInt() + 1;
+
+        return QStringLiteral("%1 %2 %3").arg(copyName, copyText,
+                                              QString::number(copyNumber));
+    }
+
+    return QStringLiteral("%1 %2").arg(name, copyText);
 }
 
 } // namespace Tiled
