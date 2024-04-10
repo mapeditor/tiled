@@ -154,11 +154,12 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Set Tiled version
       id: version
       run: |
-        sed -i 's/^version: .*/version: '"${TILED_VERSION}"'/g' snap/snapcraft.yaml
         if [[ "$TILED_RELEASE" == 'true' ]]; then echo "snap_channel=candidate" >> $GITHUB_OUTPUT ; fi
         if [[ "$TILED_RELEASE" != 'true' ]]; then echo "snap_channel=beta" >> $GITHUB_OUTPUT ; fi
 
