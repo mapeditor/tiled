@@ -250,6 +250,10 @@ done
 
 DOWNLOAD_DIR=`mktemp -d 2>/dev/null || mktemp -d -t 'install-qt'`
 
+function version {
+  echo "$@" | awk -F. '{ printf("%03d%03d%03d\n", $1,$2,$3); }';
+}
+
 #
 # The repository structure is a mess. Try different URL variants
 #
@@ -293,6 +297,12 @@ function compute_url(){
             return 0
         fi
     else
+        if [ "$(version "${VERSION}")" -ge "$(version "6.7.0")" ]; then
+            if [ "${TOOLCHAIN}" == "gcc_64" ]; then
+                TOOLCHAIN="linux_gcc_64"
+            fi
+        fi
+
         REMOTE_BASES=(
             # New repository format (>=6.0.0)
             "qt6_${VERSION//./}/qt.qt6.${VERSION//./}.${TOOLCHAIN}"
@@ -322,10 +332,6 @@ function compute_url(){
 
     echo "Could not determine a remote URL for ${COMPONENT} with version ${VERSION}">&2
     exit 1
-}
-
-function version {
-  echo "$@" | awk -F. '{ printf("%03d%03d%03d\n", $1,$2,$3); }';
 }
 
 mkdir -p ${INSTALL_DIR}
