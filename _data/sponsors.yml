@@ -1,3 +1,7 @@
+- name: Terrible Toybox
+  url: https://terribletoybox.com/
+  banner: sponsors/terribletoybox.png
+
 - name: Vizor Games
   url: https://vizor-games.com/
   banner: sponsors/vizor-games.png
