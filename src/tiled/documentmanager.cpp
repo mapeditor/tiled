@@ -62,7 +62,6 @@
 #include <QScrollBar>
 #include <QStackedLayout>
 #include <QTabBar>
-#include <QTabWidget>
 #include <QUndoGroup>
 #include <QUndoStack>
 #include <QVBoxLayout>
@@ -85,6 +84,7 @@ DocumentManager *DocumentManager::maybeInstance()
 
 DocumentManager::DocumentManager(QObject *parent)
     : QObject(parent)
+    , mLockedIcon(QLatin1String(":images/16/locked.png"))
     , mTilesetDocumentsModel(new TilesetDocumentsModel(this))
     , mWidget(new QWidget)
     , mNoEditorWidget(new NoEditorWidget(mWidget))
@@ -99,6 +99,8 @@ DocumentManager::DocumentManager(QObject *parent)
 {
     Q_ASSERT(!mInstance);
     mInstance = this;
+
+    mLockedIcon.addFile(QStringLiteral(":images/24/locked.png"));
 
     mBrokenLinksWidget->setVisible(false);
 
@@ -571,15 +573,12 @@ int DocumentManager::insertDocument(int index, const DocumentPtr &document)
     if (Editor *editor = mEditorForType.value(document->type()))
         editor->addDocument(documentPtr);
 
-    QString tabText = document->displayName();
-    if (document->isModified())
-        tabText.prepend(QLatin1Char('*'));
-
-    const int documentIndex = mTabBar->insertTab(index, tabText);
-    mTabBar->setTabToolTip(documentIndex, document->fileName());
+    mTabBar->insertTab(index, QString());
+    updateDocumentTab(documentPtr);
 
     connect(documentPtr, &Document::fileNameChanged, this, &DocumentManager::fileNameChanged);
     connect(documentPtr, &Document::modifiedChanged, this, [=] { updateDocumentTab(documentPtr); });
+    connect(documentPtr, &Document::isReadOnlyChanged, this, [=] { updateDocumentTab(documentPtr); });
     connect(documentPtr, &Document::saved, this, &DocumentManager::onDocumentSaved);
 
     if (auto *mapDocument = qobject_cast<MapDocument*>(documentPtr)) {
@@ -592,7 +591,7 @@ int DocumentManager::insertDocument(int index, const DocumentPtr &document)
 
     emit documentOpened(documentPtr);
 
-    return documentIndex;
+    return index;
 }
 
 /**
@@ -1022,12 +1021,18 @@ void DocumentManager::updateDocumentTab(Document *document)
     if (index == -1)
         return;
 
+    QIcon tabIcon = document->isReadOnly() ? mLockedIcon : QIcon();
     QString tabText = document->displayName();
+    QString tabToolTip = document->fileName();
+
     if (document->isModified())
         tabText.prepend(QLatin1Char('*'));
+    if (document->isReadOnly())
+        tabToolTip = tr("%1 [read-only]").arg(tabToolTip);
 
+    mTabBar->setTabIcon(index, tabIcon);
     mTabBar->setTabText(index, tabText);
-    mTabBar->setTabToolTip(index, document->fileName());
+    mTabBar->setTabToolTip(index, tabToolTip);
 }
 
 void DocumentManager::onDocumentSaved()
@@ -1117,9 +1122,13 @@ void DocumentManager::fileChanged(const QString &fileName)
         return;
 
     const auto &document = mDocuments.at(index);
+    const QFileInfo fileInfo { fileName };
+
+    // Always update potentially changed read-only state
+    document->setReadOnly(!fileInfo.isWritable());
 
     // Ignore change event when it seems to be our own save
-    if (QFileInfo(fileName).lastModified() == document->lastSaved())
+    if (fileInfo.lastModified() == document->lastSaved())
         return;
 
     // Automatically reload when there are no unsaved changes

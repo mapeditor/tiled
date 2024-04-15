@@ -2,6 +2,7 @@
 
 * Added --project command-line parameter for use when exporting (#3797)
 * Added group layer names in "Move Object to Layer" menu (#3454)
+* Added lock icon to open tabs for which the file is read-only
 * Made adding "Copy" when duplicating optional and disabled by default (#3917)
 * Layer names are now trimmed when edited in the UI, to avoid accidental whitespace
 * Scripting: Added API for working with worlds (#3539)

@@ -25,6 +25,7 @@
 #include "tilesetdocument.h"
 
 #include <QHash>
+#include <QIcon>
 #include <QList>
 #include <QObject>
 #include <QPointF>
@@ -221,6 +222,8 @@ private:
 
     MapDocument *openMapFile(const QString &path);
     TilesetDocument *openTilesetFile(const QString &path);
+
+    QIcon mLockedIcon;
 
     QVector<DocumentPtr> mDocuments;
     QMap<QString, WorldDocument*> mWorldDocuments;

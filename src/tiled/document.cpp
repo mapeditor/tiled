@@ -41,9 +41,13 @@ Document::Document(DocumentType type, const QString &fileName,
     : QObject(parent)
     , mType(type)
     , mFileName(fileName)
-    , mCanonicalFilePath(QFileInfo(mFileName).canonicalFilePath())
     , mUndoStack(new QUndoStack(this))
 {
+    const QFileInfo fileInfo { fileName };
+    mLastSaved = fileInfo.lastModified();
+    mCanonicalFilePath = fileInfo.canonicalFilePath();
+    mReadOnly = !fileInfo.isWritable();
+
     if (!mCanonicalFilePath.isEmpty())
         sDocumentInstances.insert(mCanonicalFilePath, this);
 
@@ -308,6 +312,15 @@ void Document::setIgnoreBrokenLinks(bool ignoreBrokenLinks)
 void Document::setChangedOnDisk(bool changedOnDisk)
 {
     mChangedOnDisk = changedOnDisk;
+}
+
+void Document::setReadOnly(bool readOnly)
+{
+    if (mReadOnly == readOnly)
+        return;
+
+    mReadOnly = readOnly;
+    emit isReadOnlyChanged(readOnly);
 }
 
 } // namespace Tiled

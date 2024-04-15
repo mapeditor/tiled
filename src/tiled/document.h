@@ -115,6 +115,9 @@ public:
     bool changedOnDisk() const;
     void setChangedOnDisk(bool changedOnDisk);
 
+    bool isReadOnly() const;
+    void setReadOnly(bool readOnly);
+
     virtual QString lastExportFileName() const = 0;
     virtual void setLastExportFileName(const QString &fileName) = 0;
 
@@ -132,6 +135,7 @@ signals:
     void fileNameChanged(const QString &fileName,
                          const QString &oldFileName);
     void modifiedChanged();
+    void isReadOnlyChanged(bool readOnly);
 
     void currentObjectSet(Object *object);
     void currentObjectChanged(Object *object);
@@ -176,6 +180,7 @@ private:
 
     QUndoStack * const mUndoStack;
 
+    bool mReadOnly = false;
     bool mModified = false;
     bool mChangedOnDisk = false;
     bool mIgnoreBrokenLinks = false;
@@ -231,6 +236,11 @@ inline bool Document::ignoreBrokenLinks() const
 inline bool Document::changedOnDisk() const
 {
     return mChangedOnDisk;
+}
+
+inline bool Document::isReadOnly() const
+{
+    return mReadOnly;
 }
 
 inline const QHash<QString, Document *> &Document::documentInstances()
