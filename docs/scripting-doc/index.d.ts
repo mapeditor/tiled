@@ -455,7 +455,7 @@ declare namespace Qt {
      * case you need a local file path, you can use the following code:
      *
      * ```js
-     * var path = url.toString().replace(/^file:\/{2}/, '');
+     * var path = url.toString().replace(/^file:\/{3}/, (tiled.platform == 'windows') ? '' : '/');;
      * ```
      *
      * Or have a look at whether an alternative property is available that
