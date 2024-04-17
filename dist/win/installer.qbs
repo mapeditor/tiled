@@ -52,7 +52,10 @@ WindowsInstallerPackage {
             }
         }
 
-        defs.push("WindowsVistaStyle")
+        if (Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 7)
+            defs.push("WindowsStylePlugin=qmodernwindowsstyle.dll")
+        else
+            defs.push("WindowsStylePlugin=qwindowsvistastyle.dll")
 
         var pythonHome = Environment.getEnv("PYTHONHOME");
         if (pythonHome && File.exists(pythonHome))
