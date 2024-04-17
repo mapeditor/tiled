@@ -20,11 +20,16 @@
 
 #include "tiledproxystyle.h"
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #include "utils.h"
+#endif
 
 #include <QAbstractScrollArea>
 #include <QApplication>
 #include <QComboBox>
+#if QT_VERSION < QT_VERSION_CHECK(6, 7, 0)
+#include <QGroupBox>
+#endif
 #include <QMainWindow>
 #include <QPainter>
 #include <QPainterPath>
@@ -351,7 +356,17 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
     switch (element) {
     case PE_FrameGroupBox:
     {
-        int topMargin = qMax(pixelMetric(PM_ExclusiveIndicatorHeight), option->fontMetrics.height()) + 3;
+        int topMargin = 0;
+#if QT_VERSION < QT_VERSION_CHECK(6, 7, 0)
+        auto control = qobject_cast<const QGroupBox *>(widget);
+        if (control && !control->isCheckable() && control->title().isEmpty()) {
+            // Shrinking the topMargin if Not checkable AND title is empty
+            topMargin = 3;
+        } else {
+            topMargin = qMax(pixelMetric(PM_ExclusiveIndicatorHeight),
+                             option->fontMetrics.height()) + 3;
+        }
+#endif
         QRect frame = option->rect.adjusted(0, topMargin, -1, -1);
         QColor tabFrameColor = getTabFrameColor(option->palette);
 
