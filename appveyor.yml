@@ -12,12 +12,12 @@ environment:
   BUTLER_API_KEY:
     secure: j7JM5L6KeqpnQukzJLsm7J6oV92SpmyEZLSoED1pZ3gQ79VIkdxtbQmTkqUNZPsz
   matrix:
-    - QTDIR: C:\Qt\6.4\msvc2019_64
+    - QTDIR: C:\Qt\6.7\msvc2019_64
       PYTHONHOME: C:\Python38-x64
       DEFAULT_PROFILE: MSVC2019-x64
       PUSH_RELEASE: false
       ENABLE_ZSTD: false
-    - QTDIR: C:\Qt\6.4\mingw_64
+    - QTDIR: C:\Qt\6.7\mingw_64
       PYTHONHOME: C:\Python38-x64
       MINGW: C:\Qt\Tools\mingw1120_64
       DEFAULT_PROFILE: x86_64-w64-mingw32-gcc-11_2_0
