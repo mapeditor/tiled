@@ -356,15 +356,14 @@ void TiledProxyStyle::drawPrimitive(PrimitiveElement element,
     switch (element) {
     case PE_FrameGroupBox:
     {
-        int topMargin = 0;
+        int topMargin = 3;
 #if QT_VERSION < QT_VERSION_CHECK(6, 7, 0)
         auto control = qobject_cast<const QGroupBox *>(widget);
         if (control && !control->isCheckable() && control->title().isEmpty()) {
             // Shrinking the topMargin if Not checkable AND title is empty
-            topMargin = 3;
         } else {
-            topMargin = qMax(pixelMetric(PM_ExclusiveIndicatorHeight),
-                             option->fontMetrics.height()) + 3;
+            topMargin += qMax(pixelMetric(PM_ExclusiveIndicatorHeight),
+                              option->fontMetrics.height());
         }
 #endif
         QRect frame = option->rect.adjusted(0, topMargin, -1, -1);
