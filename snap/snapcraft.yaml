@@ -1,6 +1,5 @@
 name: tiled
 adopt-info: tiled
-version: git
 license: GPL-2.0
 base: core22
 
@@ -44,10 +43,13 @@ apps:
 parts:
   tiled:
     plugin: make
+    override-pull: |
+      craftctl default
+      craftctl set version="$(git describe | sed 's/v//')"
     override-build: |
-        qbs setup-toolchains --detect
-        qbs build --jobs "${CRAFT_PARALLEL_BUILD_COUNT}" --command-echo-mode command-line config:release qbs.installPrefix:"/usr" projects.Tiled.version:$(craftctl get version) projects.Tiled.useRPaths:false
-        qbs install --install-root "${CRAFT_PART_INSTALL}" config:release
+      qbs setup-toolchains --detect
+      qbs build --jobs "${CRAFT_PARALLEL_BUILD_COUNT}" --command-echo-mode command-line config:release qbs.installPrefix:"/usr" projects.Tiled.version:$(craftctl get version) projects.Tiled.useRPaths:false
+      qbs install --install-root "${CRAFT_PART_INSTALL}" config:release
     parse-info:
       - usr/share/metainfo/org.mapeditor.Tiled.appdata.xml
     source: .
