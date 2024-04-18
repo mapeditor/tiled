@@ -27,32 +27,28 @@ my_help() {
     echo "Tiled help:"
 }
 
-if [ -n "${1}" ]
-then
-    case ${1} in
-        terraingenerator)
-            shift
-            exec "$this_dir"/${bin_dir}/terraingenerator "$@"
-            ;;
-        tiled)
-            shift
-            exec "$this_dir"/${bin_dir}/tiled "$@"
-            ;;
-        tmxrasterizer)
-            shift
-            exec "$this_dir"/${bin_dir}/tmxrasterizer "$@"
-            ;;
-        tmxviewer)
-            shift
-            exec "$this_dir"/${bin_dir}/tmxviewer "$@"
-            ;;
-        "--help")
-            my_help
-            exec "$this_dir"/${bin_dir}/tiled "--help"
-            ;;
-        *)
-            exec "$this_dir"/${bin_dir}/tiled "$@"
-            ;;
-    esac
-
-fi
+case ${1} in
+    terraingenerator)
+        shift
+        exec "$this_dir"/${bin_dir}/terraingenerator "$@"
+        ;;
+    tiled)
+        shift
+        exec "$this_dir"/${bin_dir}/tiled "$@"
+        ;;
+    tmxrasterizer)
+        shift
+        exec "$this_dir"/${bin_dir}/tmxrasterizer "$@"
+        ;;
+    tmxviewer)
+        shift
+        exec "$this_dir"/${bin_dir}/tmxviewer "$@"
+        ;;
+    "--help")
+        my_help
+        exec "$this_dir"/${bin_dir}/tiled "--help"
+        ;;
+    *)
+        exec "$this_dir"/${bin_dir}/tiled "$@"
+        ;;
+esac
