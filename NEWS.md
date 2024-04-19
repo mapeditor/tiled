@@ -16,6 +16,7 @@
 * Godot 4 plugin: Use Godot 4.2 tile transformation flags (by Rick Yorgason, #3895)
 * Godot 4 plugin: Fixed positioning of tile collision shapes (by Ryan Petrie, #3862)
 * GameMaker 2 plugin: Fixed positioning of objects on isometric maps
+* Python plugin: Added support for implementing tileset formats (#3857)
 * tmxrasterizer: Added --hide-object and --show-object arguments (by Lars Luz, #3819)
 * tmxrasterizer: Added --frames and --frame-duration arguments to export animated maps as multiple images (#3868)
 * tmxrasterizer: Fixed --hide/show-layer to work on group layers (#3899)
@@ -33,7 +34,6 @@
 * Fixed alignment of shortcuts in action search
 * AppImage: Fixed ability to open paths with spaces from the CLI (#3914)
 * AppImage: Updated to Sentry 0.6.7
-* Python plugin: Added support for implementing tileset formats (#3857)
 
 ### Tiled 1.10.2 (4 August 2023)
 

@@ -118,6 +118,10 @@ above script.
 
     This example does not support the use of group layers.
 
+.. raw:: html
+
+   <div class="new">New in Tiled 1.11</div>
+
 Tileset Plugins
 ---------------
 

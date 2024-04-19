@@ -46,16 +46,10 @@ class PythonTilesetFormat;
 
 struct ScriptEntry
 {
-    ScriptEntry()
-        : module(nullptr)
-        , mapFormat(nullptr)
-        , tilesetFormat(nullptr)
-    {}
-
     QString name;
-    PyObject *module;
-    PythonMapFormat *mapFormat;
-    PythonTilesetFormat *tilesetFormat;
+    PyObject *module = nullptr;
+    PythonMapFormat *mapFormat = nullptr;
+    PythonTilesetFormat *tilesetFormat = nullptr;
 };
 
 class Q_DECL_EXPORT PythonPlugin : public Tiled::Plugin
@@ -109,8 +103,8 @@ public:
 class PythonFormat {
 public:
     PyObject *pythonClass() const { return mClass; }
-    virtual void setPythonClass(PyObject *class_);
-  
+    void setPythonClass(PyObject *class_);
+
 protected:
     PythonFormat(const QString &scriptFile, PyObject *class_);
 
@@ -123,6 +117,7 @@ protected:
     PyObject *mClass;
     QString mScriptFile;
     QString mError;
+    Tiled::FileFormat::Capabilities mCapabilities;
 };
 
 class PythonMapFormat : public Tiled::MapFormat, public PythonFormat
@@ -135,7 +130,6 @@ public:
                     PyObject *class_,
                     QObject *parent = nullptr);
 
-    void setPythonClass(PyObject *class_) override;
     Capabilities capabilities() const override { return mCapabilities; };
 
     std::unique_ptr<Tiled::Map> read(const QString &fileName) override;
@@ -146,9 +140,6 @@ public:
     QString nameFilter() const override { return _nameFilter(); }
     QString shortName() const override { return _shortName(); }
     QString errorString() const override { return _errorString(); }
-
-private:
-    Capabilities mCapabilities;
 };
 
 class PythonTilesetFormat : public Tiled::TilesetFormat, public PythonFormat
@@ -161,7 +152,6 @@ public:
                         PyObject *class_,
                         QObject *parent = nullptr);
 
-    void setPythonClass(PyObject *class_) override;
     Capabilities capabilities() const override { return mCapabilities; };
 
     Tiled::SharedTileset read(const QString &fileName) override;
@@ -172,9 +162,6 @@ public:
     QString nameFilter() const override { return _nameFilter(); }
     QString shortName() const override { return _shortName(); }
     QString errorString() const override { return _errorString(); }
-  
-private:
-    Capabilities mCapabilities;
 };
 
 } // namespace Python
