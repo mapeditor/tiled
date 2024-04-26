@@ -37,6 +37,13 @@ ProjectDocument::ProjectDocument(std::unique_ptr<Project> project, QObject *pare
             this, [this] { mProject->save(); });
 }
 
+ProjectDocument::~ProjectDocument()
+{
+    // The Editable needs to be deleted before the Project, otherwise ~Object()
+    // will delete it, whereas the editable is actually owned by the Document.
+    mEditable.reset();
+}
+
 QString ProjectDocument::displayName() const
 {
     return mProject->fileName();
