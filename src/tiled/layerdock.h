@@ -103,9 +103,12 @@ protected:
 private:
     void onExpanded(const QModelIndex &index);
     void onCollapsed(const QModelIndex &index);
+    void restoreExpandedLayers();
 
     void currentRowChanged(const QModelIndex &proxyIndex);
     void indexPressed(const QModelIndex &proxyIndex);
+
+    void documentChanged(const ChangeEvent &event);
     void currentLayerChanged(Layer *layer);
     void selectedLayersChanged();
     void layerRemoved(Layer *layer);

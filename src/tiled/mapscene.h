@@ -131,7 +131,7 @@ private:
     bool toolMouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers);
 
     MapDocument *mMapDocument = nullptr;
-    QHash<Map*, MapItem*> mMapItems;
+    QHash<MapDocument*, MapItem*> mMapItems;
     AbstractTool *mSelectedTool = nullptr;
     DebugDrawItem *mDebugDrawItem = nullptr;
     bool mUnderMouse = false;
@@ -162,7 +162,7 @@ inline MapDocument *MapScene::mapDocument() const
  */
 inline MapItem *MapScene::mapItem(MapDocument *mapDocument) const
 {
-    return mapDocument ? mMapItems.value(mapDocument->map()) : nullptr;
+    return mapDocument ? mMapItems.value(mapDocument) : nullptr;
 }
 
 inline DebugDrawItem *MapScene::debugDrawItem() const

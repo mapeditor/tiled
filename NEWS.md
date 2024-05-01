@@ -27,6 +27,7 @@
 * Automapping: Added per-input-layer properties for ignoring flip flags (#3803)
 * AutoMapping: Always apply output sets with empty index
 * Windows: Fixed the support for WebP images (updated to Qt 6.6.1, #3661)
+* Fixed issues related to map and tileset reloading
 * Fixed possible crash after assigning to tiled.activeAsset
 * Fixed the option to resolve properties on export to also resolve class members (#3411, #3315)
 * Fixed terrain tool behavior and terrain overlays after changing terrain set type (#3204, #3260)

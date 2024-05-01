@@ -27,7 +27,6 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "reparentlayers.h"
-#include "tilelayer.h"
 
 #include <QApplication>
 #include <QMimeData>
@@ -39,8 +38,6 @@ using namespace Tiled;
 
 LayerModel::LayerModel(QObject *parent):
     QAbstractItemModel(parent),
-    mMapDocument(nullptr),
-    mMap(nullptr),
     mTileLayerIcon(QLatin1String(":/images/16/layer-tile.png")),
     mObjectGroupIcon(QLatin1String(":/images/16/layer-object.png")),
     mImageLayerIcon(QLatin1String(":/images/16/layer-image.png"))
@@ -53,7 +50,7 @@ QModelIndex LayerModel::index(int row, int column, const QModelIndex &parent) co
 {
     // Top-level layer index
     if (!parent.isValid()) {
-        if (row < mMap->layerCount())
+        if (row < map()->layerCount())
             return createIndex(row, column, nullptr);
         return QModelIndex();
     }
@@ -88,7 +85,7 @@ int LayerModel::rowCount(const QModelIndex &parent) const
         return 0;
     }
 
-    return mMap ? mMap->layerCount() : 0;
+    return map()->layerCount();
 }
 
 int LayerModel::columnCount(const QModelIndex &parent) const
@@ -305,7 +302,7 @@ bool LayerModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
     while (!stream.atEnd()) {
         int globalIndex;
         stream >> globalIndex;
-        if (Layer *layer = layerAtGlobalIndex(mMap, globalIndex))
+        if (Layer *layer = layerAtGlobalIndex(map(), globalIndex))
             layers.append(layer);
     }
 
@@ -333,7 +330,7 @@ QModelIndex LayerModel::index(Layer *layer, int column) const
     if (!layer)
         return QModelIndex();
 
-    Q_ASSERT(layer->map() == mMap);
+    Q_ASSERT(layer->map() == map());
 
     if (auto parentLayer = layer->parentLayer()) {
         int row = parentLayer->layers().indexOf(layer);
@@ -341,7 +338,7 @@ QModelIndex LayerModel::index(Layer *layer, int column) const
         return createIndex(row, column, parentLayer);
     }
 
-    int row = mMap->layers().indexOf(layer);
+    int row = map()->layers().indexOf(layer);
     Q_ASSERT(row != -1);
     return createIndex(row, column, nullptr);
 }
@@ -354,7 +351,7 @@ Layer *LayerModel::toLayer(const QModelIndex &index) const
     if (auto groupLayer = static_cast<GroupLayer*>(index.internalPointer()))
         return groupLayer->layerAt(index.row());
 
-    return mMap->layerAt(index.row());
+    return map()->layerAt(index.row());
 }
 
 /**
@@ -373,7 +370,6 @@ void LayerModel::setMapDocument(MapDocument *mapDocument)
 
     beginResetModel();
     mMapDocument = mapDocument;
-    mMap = mMapDocument->map();
     endResetModel();
 }
 
@@ -388,7 +384,7 @@ void LayerModel::insertLayer(GroupLayer *parentLayer, int index, Layer *layer)
     if (parentLayer)
         parentLayer->insertLayer(index, layer);
     else
-        mMap->insertLayer(index, layer);
+        map()->insertLayer(index, layer);
     endInsertRows();
     emit layerAdded(layer);
 }
@@ -407,7 +403,7 @@ Layer *LayerModel::takeLayerAt(GroupLayer *parentLayer, int index)
     if (parentLayer)
         layer = parentLayer->takeLayerAt(index);
     else
-        layer = mMap->takeLayerAt(index);
+        layer = map()->takeLayerAt(index);
     endRemoveRows();
     emit layerRemoved(layer);
     return layer;
@@ -585,6 +581,12 @@ void LayerModel::toggleLockOtherLayers(const QList<Layer *> &layers)
 void LayerModel::documentChanged(const ChangeEvent &change)
 {
     switch (change.type) {
+    case ChangeEvent::DocumentAboutToReload:
+        beginResetModel();
+        break;
+    case ChangeEvent::DocumentReloaded:
+        endResetModel();
+        break;
     case ChangeEvent::LayerChanged: {
         const auto &layerChange = static_cast<const LayerChangeEvent&>(change);
 
@@ -608,6 +610,11 @@ void LayerModel::documentChanged(const ChangeEvent &change)
     default:
         break;
     }
+}
+
+Map *LayerModel::map() const
+{
+    return mMapDocument->map();
 }
 
 #include "moc_layermodel.cpp"

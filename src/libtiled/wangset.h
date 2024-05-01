@@ -258,6 +258,7 @@ public:
             const QString &name,
             Type type,
             int imageTileId = -1);
+    ~WangSet();
 
     Tileset *tileset() const;
     void setTileset(Tileset *tileset);

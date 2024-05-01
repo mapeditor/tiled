@@ -98,8 +98,9 @@ signals:
 private:
     void documentChanged(const ChangeEvent &change);
 
-    MapDocument *mMapDocument;
-    Map *mMap;
+    Map *map() const;
+
+    MapDocument *mMapDocument = nullptr;
 
     QIcon mTileLayerIcon;
     QIcon mObjectGroupIcon;

@@ -69,6 +69,25 @@
 
 using namespace Tiled;
 
+class ReloadMap : public QUndoCommand
+{
+public:
+    ReloadMap(MapDocument *mapDocument, std::unique_ptr<Map> map)
+        : mMapDocument(mapDocument)
+        , mMap(std::move(map))
+    {
+        setText(QCoreApplication::translate("Undo Commands", "Reload Map"));
+    }
+
+    void undo() override { mMapDocument->swapMap(mMap); }
+    void redo() override { mMapDocument->swapMap(mMap); }
+
+private:
+    MapDocument *mMapDocument;
+    std::unique_ptr<Map> mMap;
+};
+
+
 MapDocument::MapDocument(std::unique_ptr<Map> map)
     : Document(MapDocumentType, map->fileName)
     , mMap(std::move(map))
@@ -155,6 +174,42 @@ bool MapDocument::save(const QString &fileName, QString *error)
     }
 
     emit saved();
+    return true;
+}
+
+bool MapDocument::canReload() const
+{
+    return !fileName().isEmpty() && !mReaderFormat.isEmpty();
+}
+
+bool MapDocument::reload(QString *error)
+{
+    if (!canReload())
+        return false;
+
+    auto format = findFileFormat<MapFormat>(mReaderFormat, FileFormat::Read);
+    if (!format) {
+        if (error)
+            *error = tr("Map format '%s' not found").arg(mReaderFormat);
+        return false;
+    }
+
+    auto map = format->read(fileName());
+
+    if (!map) {
+        if (error)
+            *error = format->errorString();
+        return false;
+    }
+
+    map->fileName = fileName();
+
+    undoStack()->push(new ReloadMap(this, std::move(map)));
+    undoStack()->setClean();
+
+    mLastSaved = QFileInfo(fileName()).lastModified();
+    setChangedOnDisk(false);
+
     return true;
 }
 
@@ -1530,6 +1585,54 @@ void MapDocument::checkIssues()
                 checkFilePathProperties(mapObject);
         }
     }
+}
+
+void MapDocument::swapMap(std::unique_ptr<Map> &other)
+{
+    // Store previous state
+    const int currentLayerId = currentLayer() ? currentLayer()->id() : -1;
+
+    QVector<int> selectedLayerIds;
+    for (const Layer *layer : selectedLayers())
+        selectedLayerIds.append(layer->id());
+
+    QVector<int> selectedObjectIds;
+    for (const MapObject *object : selectedObjects())
+        selectedObjectIds.append(object->id());
+
+    // Bring pointers to safety
+    setSelectedLayers({});
+    setSelectedObjects({});
+    setAboutToBeSelectedObjects({});
+    setHoveredMapObject(nullptr);
+    setCurrentLayer(nullptr);
+    setCurrentObject(nullptr);
+
+    emit changed(AboutToReloadEvent());
+
+    mMap.swap(other);
+    createRenderer();
+
+    emit changed(ReloadEvent());
+
+    // Restore previous state
+    QList<MapObject*> selectedObjects;
+    for (int id : selectedObjectIds) {
+        if (MapObject *object = mMap->findObjectById(id))
+            selectedObjects.append(object);
+    }
+    setSelectedObjects(selectedObjects);
+
+    if (currentLayerId != -1)
+        if (auto layer = mMap->findLayerById(currentLayerId))
+            switchCurrentLayer(layer);
+
+    QList<Layer*> selectedLayers;
+    for (int id : selectedLayerIds) {
+        if (Layer *layer = mMap->findLayerById(id))
+            selectedLayers.append(layer);
+    }
+    switchSelectedLayers(selectedLayers);
 }
 
 void MapDocument::updateTemplateInstances(const ObjectTemplate *objectTemplate)

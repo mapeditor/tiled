@@ -46,7 +46,7 @@ using TilesetDocumentPtr = QSharedPointer<TilesetDocument>;
 /**
  * Represents an editable tileset.
  */
-class TilesetDocument : public Document
+class TilesetDocument final : public Document
 {
     Q_OBJECT
 
@@ -58,7 +58,7 @@ public:
 
     bool save(const QString &fileName, QString *error = nullptr) override;
 
-    bool canReload() const;
+    bool canReload() const override;
     bool reload(QString *error);
 
     /**

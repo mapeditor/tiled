@@ -116,6 +116,9 @@ DocumentManager::DocumentManager(QObject *parent)
     connect(mFileChangedWarning, &FileChangedWarning::reload, this, &DocumentManager::reloadCurrentDocument);
     connect(mFileChangedWarning, &FileChangedWarning::ignore, this, &DocumentManager::hideChangedWarning);
 
+    connect(this, &DocumentManager::templateTilesetReplaced,
+            mBrokenLinksModel, &BrokenLinksModel::refresh);
+
     QVBoxLayout *vertical = new QVBoxLayout(mWidget);
     vertical->addWidget(mTabBar);
     vertical->addWidget(mFileChangedWarning);
@@ -573,13 +576,17 @@ int DocumentManager::insertDocument(int index, const DocumentPtr &document)
     if (Editor *editor = mEditorForType.value(document->type()))
         editor->addDocument(documentPtr);
 
-    mTabBar->insertTab(index, QString());
-    updateDocumentTab(documentPtr);
-
+    // Connect before adding the tab, so that we handle the 'changed' signal
+    // first, since we may be creating TilesetDocument instances for tilesets
+    // used by a reloaded map (design not ideal...).
     connect(documentPtr, &Document::fileNameChanged, this, &DocumentManager::fileNameChanged);
     connect(documentPtr, &Document::modifiedChanged, this, [=] { updateDocumentTab(documentPtr); });
     connect(documentPtr, &Document::isReadOnlyChanged, this, [=] { updateDocumentTab(documentPtr); });
+    connect(documentPtr, &Document::changed, this, &DocumentManager::onDocumentChanged);
     connect(documentPtr, &Document::saved, this, &DocumentManager::onDocumentSaved);
+
+    mTabBar->insertTab(index, QString());
+    updateDocumentTab(documentPtr);
 
     if (auto *mapDocument = qobject_cast<MapDocument*>(documentPtr)) {
         connect(mapDocument, &MapDocument::tilesetAdded, this, &DocumentManager::tilesetAdded);
@@ -904,55 +911,38 @@ bool DocumentManager::reloadCurrentDocument()
 }
 
 /**
- * Reloads the document at the given \a index. It will lose any undo
- * history and current selections. Will not ask the user whether to save
- * any changes!
+ * Reloads the document at the given \a index. Will not ask the user whether to
+ * save any changes!
  *
  * Returns whether the document loaded successfully.
  */
 bool DocumentManager::reloadDocumentAt(int index)
 {
-    const auto oldDocument = mDocuments.at(index);
+    const auto document = mDocuments.at(index);
     QString error;
 
-    if (auto mapDocument = oldDocument.objectCast<MapDocument>()) {
-        auto readerFormat = mapDocument->readerFormat();
-        if (!readerFormat)
-            return false;
-
-        // TODO: Consider fixing the reload to avoid recreating the MapDocument
-        auto newDocument = MapDocument::load(oldDocument->fileName(),
-                                             readerFormat,
-                                             &error);
-        if (!newDocument) {
-            emit reloadError(tr("%1:\n\n%2").arg(oldDocument->fileName(), error));
+    if (auto mapDocument = document.objectCast<MapDocument>()) {
+        if (!mapDocument->reload(&error)) {
+            emit reloadError(tr("%1:\n\n%2").arg(document->fileName(), error));
             return false;
         }
 
-        // Save the document state, to ensure the new document will match it
-        static_cast<MapEditor*>(editor(Document::MapDocumentType))->saveDocumentState(mapDocument.data());
-
-        // Replace old tab
         const bool isCurrent = index == mTabBar->currentIndex();
-        insertDocument(index, newDocument);
         if (isCurrent) {
-            switchToDocument(index);
-
             if (mBrokenLinksModel->hasBrokenLinks())
                 mBrokenLinksWidget->show();
         }
-        closeDocumentAt(index + 1);
 
-        checkTilesetColumns(newDocument.data());
+        checkTilesetColumns(mapDocument.data());
 
-    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(oldDocument)) {
+    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
         if (tilesetDocument->isEmbedded()) {
             // For embedded tilesets, we need to reload the map
             index = findDocument(tilesetDocument->mapDocuments().first());
             if (!reloadDocumentAt(index))
                 return false;
         } else if (!tilesetDocument->reload(&error)) {
-            emit reloadError(tr("%1:\n\n%2").arg(oldDocument->fileName(), error));
+            emit reloadError(tr("%1:\n\n%2").arg(document->fileName(), error));
             return false;
         }
 
@@ -961,6 +951,8 @@ bool DocumentManager::reloadDocumentAt(int index)
 
     if (!isDocumentChangedOnDisk(currentDocument()))
         mFileChangedWarning->setVisible(false);
+
+    emit documentReloaded(document.data());
 
     return true;
 }
@@ -1033,6 +1025,27 @@ void DocumentManager::updateDocumentTab(Document *document)
     mTabBar->setTabIcon(index, tabIcon);
     mTabBar->setTabText(index, tabText);
     mTabBar->setTabToolTip(index, tabToolTip);
+}
+
+void DocumentManager::onDocumentChanged(const ChangeEvent &event)
+{
+    auto mapDocument = qobject_cast<MapDocument*>(sender());
+    if (!mapDocument)
+        return;
+
+    // In case a map is reloaded, the set of used tilesets might have changed
+    switch (event.type) {
+    case ChangeEvent::DocumentAboutToReload:
+        for (const SharedTileset &tileset : mapDocument->map()->tilesets())
+            removeFromTilesetDocument(tileset, mapDocument);
+        break;
+    case ChangeEvent::DocumentReloaded:
+        for (const SharedTileset &tileset : mapDocument->map()->tilesets())
+            addToTilesetDocument(tileset, mapDocument);
+        break;
+    default:
+        break;
+    }
 }
 
 void DocumentManager::onDocumentSaved()

@@ -150,6 +150,7 @@ public:
 signals:
     void assetCreated(Tiled::EditableAsset *asset);
     void assetOpened(Tiled::EditableAsset *asset);
+    void assetReloaded(Tiled::EditableAsset *asset);
     void assetAboutToBeSaved(Tiled::EditableAsset *asset);
     void assetSaved(Tiled::EditableAsset *asset);
     void assetAboutToBeClosed(Tiled::EditableAsset *asset);
@@ -174,6 +175,7 @@ public slots:
 private:
     void documentCreated(Document *document);
     void documentOpened(Document *document);
+    void documentReloaded(Document *document);
     void documentAboutToBeSaved(Document *document);
     void documentSaved(Document *document);
     void documentAboutToClose(Document *document);

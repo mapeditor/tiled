@@ -258,12 +258,15 @@ void TilesetDocument::swapTileset(SharedTileset &tileset)
     // Bring pointers to safety
     setSelectedTiles(QList<Tile*>());
     setCurrentObject(mTileset.data());
-    mEditable.reset();
+    mWangColorModels.clear();
+
+    emit changed(AboutToReloadEvent());
 
     sTilesetToDocument.remove(mTileset);
     mTileset->swap(*tileset);
     sTilesetToDocument.insert(mTileset, this);
 
+    emit changed(ReloadEvent());
     emit tilesetChanged(mTileset.data());
 }
 

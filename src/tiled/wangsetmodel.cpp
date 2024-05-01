@@ -21,7 +21,6 @@
 #include "wangsetmodel.h"
 
 #include "changeevents.h"
-#include "containerhelpers.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "tile.h"
@@ -259,6 +258,15 @@ void WangSetModel::onTilesetDataChanged(const QModelIndex &topLeft, const QModel
 void WangSetModel::onDocumentChanged(const ChangeEvent &change)
 {
     switch (change.type) {
+    // On tileset reload, we need to reset the model since we don't know what
+    // has changed.
+    case ChangeEvent::DocumentAboutToReload:
+        beginResetModel();
+        break;
+    case ChangeEvent::DocumentReloaded:
+        endResetModel();
+        break;
+
     case ChangeEvent::WangSetAboutToBeAdded: {
         auto wangSetEvent = static_cast<const WangSetEvent&>(change);
 

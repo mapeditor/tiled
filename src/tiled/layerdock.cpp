@@ -312,6 +312,8 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
         auto layerModel = mMapDocument->layerModel();
         mProxyModel->setSourceModel(layerModel);
 
+        connect(mMapDocument, &MapDocument::changed,
+                this, &LayerView::documentChanged);
         connect(mMapDocument, &MapDocument::currentLayerChanged,
                 this, &LayerView::currentLayerChanged);
         connect(mMapDocument, &MapDocument::selectedLayersChanged,
@@ -319,14 +321,7 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
         connect(mMapDocument, &MapDocument::layerRemoved,
                 this, &LayerView::layerRemoved);
 
-        // Restore expanded layers
-        for (const int layerId : std::as_const(mMapDocument->expandedGroupLayers)) {
-            if (Layer *layer = mMapDocument->map()->findLayerById(layerId)) {
-                const QModelIndex sourceIndex = layerModel->index(layer);
-                const QModelIndex index = mProxyModel->mapFromSource(sourceIndex);
-                setExpanded(index, true);
-            }
-        }
+        restoreExpandedLayers();
 
         currentLayerChanged(mMapDocument->currentLayer());
         selectedLayersChanged();
@@ -358,6 +353,18 @@ void LayerView::onCollapsed(const QModelIndex &proxyIndex)
             mMapDocument->expandedGroupLayers.remove(layer->id());
 }
 
+void LayerView::restoreExpandedLayers()
+{
+    const LayerModel *layerModel = mMapDocument->layerModel();
+    for (const int layerId : std::as_const(mMapDocument->expandedGroupLayers)) {
+        if (Layer *layer = mMapDocument->map()->findLayerById(layerId)) {
+            const QModelIndex sourceIndex = layerModel->index(layer);
+            const QModelIndex index = mProxyModel->mapFromSource(sourceIndex);
+            setExpanded(index, true);
+        }
+    }
+}
+
 void LayerView::currentRowChanged(const QModelIndex &proxyIndex)
 {
     if (!mMapDocument)
@@ -375,6 +382,17 @@ void LayerView::indexPressed(const QModelIndex &proxyIndex)
     const QModelIndex index = mProxyModel->mapToSource(proxyIndex);
     if (Layer *layer = mMapDocument->layerModel()->toLayer(index))
         mMapDocument->setCurrentObject(layer);
+}
+
+void LayerView::documentChanged(const ChangeEvent &event)
+{
+    switch (event.type) {
+    case ChangeEvent::DocumentReloaded:
+        restoreExpandedLayers();
+        break;
+    default:
+        break;
+    }
 }
 
 void LayerView::currentLayerChanged(Layer *layer)

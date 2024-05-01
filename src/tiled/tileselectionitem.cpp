@@ -21,8 +21,6 @@
 #include "tileselectionitem.h"
 
 #include "changeevents.h"
-#include "grouplayer.h"
-#include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
 #include "mapscene.h"
@@ -79,6 +77,10 @@ void TileSelectionItem::paint(QPainter *painter,
 void TileSelectionItem::documentChanged(const ChangeEvent &change)
 {
     switch (change.type) {
+    case ChangeEvent::DocumentReloaded:
+        selectionChanged(mMapDocument->selectedArea(),
+                         mMapDocument->selectedArea());
+        break;
     case ChangeEvent::LayerChanged: {
         const auto &layerChange = static_cast<const LayerChangeEvent&>(change);
         if (layerChange.properties & LayerChangeEvent::PositionProperties)

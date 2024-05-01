@@ -366,7 +366,7 @@ bool LayerIterator::operator==(const LayerIterator &other) const
  * Returns the global layer index for the given \a layer. Obtained by iterating
  * the layer's map while incrementing the index until layer is found.
  */
-int globalIndex(Layer *layer)
+int globalIndex(const Layer *layer)
 {
     if (!layer)
         return -1;

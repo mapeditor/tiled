@@ -147,6 +147,7 @@ public:
 signals:
     void documentCreated(Document *document);
     void documentOpened(Document *document);
+    void documentReloaded(Document *document);
     void documentAboutToBeSaved(Document *document);
     void documentSaved(Document *document);
 
@@ -198,6 +199,7 @@ private:
     void fileNameChanged(const QString &fileName,
                          const QString &oldFileName);
     void updateDocumentTab(Document *document);
+    void onDocumentChanged(const ChangeEvent &event);
     void onDocumentSaved();
     void documentTabMoved(int from, int to);
     void tabContextMenuRequested(const QPoint &pos);

@@ -62,6 +62,7 @@ ScriptModule::ScriptModule(QObject *parent)
     if (auto documentManager = DocumentManager::maybeInstance()) {
         connect(documentManager, &DocumentManager::documentCreated, this, &ScriptModule::documentCreated);
         connect(documentManager, &DocumentManager::documentOpened, this, &ScriptModule::documentOpened);
+        connect(documentManager, &DocumentManager::documentReloaded, this, &ScriptModule::documentReloaded);
         connect(documentManager, &DocumentManager::documentAboutToBeSaved, this, &ScriptModule::documentAboutToBeSaved);
         connect(documentManager, &DocumentManager::documentSaved, this, &ScriptModule::documentSaved);
         connect(documentManager, &DocumentManager::documentAboutToClose, this, &ScriptModule::documentAboutToClose);
@@ -674,6 +675,11 @@ void ScriptModule::documentCreated(Document *document)
 void ScriptModule::documentOpened(Document *document)
 {
     emit assetOpened(document->editable());
+}
+
+void ScriptModule::documentReloaded(Document *document)
+{
+    emit assetReloaded(document->editable());
 }
 
 void ScriptModule::documentAboutToBeSaved(Document *document)

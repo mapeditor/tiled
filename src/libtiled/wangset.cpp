@@ -418,6 +418,12 @@ WangSet::WangSet(Tileset *tileset,
     setType(type);
 }
 
+WangSet::~WangSet()
+{
+    for (auto &color : std::as_const(mColors))
+        color->mWangSet = nullptr;
+}
+
 /**
  * Changes the type of this Wang set.
  *

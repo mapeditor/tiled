@@ -698,6 +698,16 @@ void EditableMap::setDocument(Document *document)
 void EditableMap::documentChanged(const ChangeEvent &change)
 {
     switch (change.type) {
+    case ChangeEvent::DocumentAboutToReload:
+        for (Layer *layer : map()->layers())
+            detachLayer(layer);
+
+        mRenderer.reset();
+        setObject(nullptr);
+        break;
+    case ChangeEvent::DocumentReloaded:
+        setObject(mapDocument()->map());
+        break;
     case ChangeEvent::MapChanged:
         if (static_cast<const MapChangeEvent&>(change).property == Map::OrientationProperty)
             mRenderer.reset();

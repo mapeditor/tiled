@@ -75,8 +75,6 @@ const QIcon &ObjectIconManager::iconForObject(const MapObject &object) const
 
 MapObjectModel::MapObjectModel(QObject *parent)
     : QAbstractItemModel(parent)
-    , mMapDocument(nullptr)
-    , mMap(nullptr)
     , mObjectGroupIcon(QLatin1String(":/images/16/layer-object.png"))
 {
     mObjectGroupIcon.addFile(QLatin1String(":images/32/layer-object.png"));
@@ -333,7 +331,7 @@ QModelIndex MapObjectModel::index(Layer *layer) const
 {
     Q_ASSERT(layer);
     Q_ASSERT(layer->isObjectGroup() || layer->isGroupLayer());
-    Q_ASSERT(layer->map() == mMap);
+    Q_ASSERT(layer->map() == map());
 
     const int row = filteredChildLayers(layer->parentLayer()).indexOf(layer);
     return createIndex(row, 0, layer);
@@ -343,7 +341,7 @@ QModelIndex MapObjectModel::index(MapObject *mapObject, int column) const
 {
     Q_ASSERT(mapObject);
     Q_ASSERT(mapObject->objectGroup());
-    Q_ASSERT(mapObject->map() == mMap);
+    Q_ASSERT(mapObject->map() == map());
 
     const int row = mapObject->objectGroup()->objects().indexOf(mapObject);
     return createIndex(row, column, mapObject);
@@ -413,13 +411,10 @@ void MapObjectModel::setMapDocument(MapDocument *mapDocument)
 
     beginResetModel();
     mMapDocument = mapDocument;
-    mMap = nullptr;
 
     mFilteredLayers.clear();
 
     if (mMapDocument) {
-        mMap = mMapDocument->map();
-
         connect(mMapDocument, &MapDocument::layerAdded,
                 this, &MapObjectModel::layerAdded);
         connect(mMapDocument, &MapDocument::layerAboutToBeRemoved,
@@ -464,7 +459,7 @@ void MapObjectModel::layerAdded(Layer *layer)
 
 void MapObjectModel::layerAboutToBeRemoved(GroupLayer *groupLayer, int index)
 {
-    const auto &layers = groupLayer ? groupLayer->layers() : mMap->layers();
+    const auto &layers = groupLayer ? groupLayer->layers() : map()->layers();
     Layer *layer = layers.at(index);
 
     if (layer->isObjectGroup() || layer->isGroupLayer()) {
@@ -493,7 +488,7 @@ void MapObjectModel::classChanged(const QList<Object *> &objects)
         for (Object *object : objects)
             affectedObjects.append(static_cast<MapObject*>(object));
     } else if (typeId == Object::TileType) {
-        for (const Layer *layer : mMap->objectGroups()) {
+        for (const Layer *layer : map()->objectGroups()) {
             auto objectGroup = static_cast<const ObjectGroup*>(layer);
             for (MapObject *mapObject : objectGroup->objects()) {
                 if (mapObject->className().isEmpty())
@@ -514,7 +509,7 @@ QList<Layer *> &MapObjectModel::filteredChildLayers(GroupLayer *parentLayer) con
 {
     if (!mFilteredLayers.contains(parentLayer)) {
         QList<Layer*> &filtered = mFilteredLayers[parentLayer];
-        const auto &layers = parentLayer ? parentLayer->layers() : mMap->layers();
+        const auto &layers = parentLayer ? parentLayer->layers() : map()->layers();
         for (Layer *layer : layers)
             if (layer->isObjectGroup() || layer->isGroupLayer())
                 filtered.append(layer);
@@ -540,6 +535,13 @@ void MapObjectModel::documentChanged(const ChangeEvent &change)
 {
     // Notify views about certain property changes
     switch (change.type) {
+    case ChangeEvent::DocumentAboutToReload:
+        beginResetModel();
+        break;
+    case ChangeEvent::DocumentReloaded:
+        mFilteredLayers.clear();
+        endResetModel();
+        break;
     case ChangeEvent::ObjectsChanged: {
         auto &objectsChange = static_cast<const ObjectsChangeEvent&>(change);
         if (objectsChange.properties & ObjectsChangeEvent::ClassProperty)
@@ -611,6 +613,11 @@ void MapObjectModel::emitDataChanged(const QList<MapObject *> &objects,
                          index(object, *minMaxPair.second),
                          roles);
     }
+}
+
+Map *MapObjectModel::map() const
+{
+    return mMapDocument->map();
 }
 
 #include "moc_mapobjectmodel.cpp"

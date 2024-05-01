@@ -825,6 +825,9 @@ void TilesetView::resizeEvent(QResizeEvent *event)
 void TilesetView::onChange(const ChangeEvent &change)
 {
     switch (change.type) {
+    case ChangeEvent::DocumentReloaded:
+        refreshColumnCount();
+        break;
     case ChangeEvent::WangSetChanged: {
         auto &wangSetChange = static_cast<const WangSetChangeEvent&>(change);
         if (mEditWangSet && wangSetChange.wangSet == mWangSet &&

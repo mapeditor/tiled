@@ -368,6 +368,27 @@ QVariant ObjectSelectionItem::itemChange(GraphicsItemChange change, const QVaria
 void ObjectSelectionItem::changeEvent(const ChangeEvent &event)
 {
     switch (event.type) {
+    case ChangeEvent::DocumentAboutToReload:
+        qDeleteAll(mObjectLabels);
+        qDeleteAll(mObjectOutlines);
+        qDeleteAll(mObjectHoverItems);
+        for (const auto &referenceItems : std::as_const(mReferencesBySourceObject))
+            qDeleteAll(referenceItems);
+
+        mObjectLabels.clear();
+        mObjectOutlines.clear();
+        mObjectHoverItems.clear();
+        mReferencesBySourceObject.clear();
+        mReferencesByTargetObject.clear();
+        break;
+
+    case ChangeEvent::DocumentReloaded:
+        if (objectLabelVisibility() == Preferences::AllObjectLabels)
+            addRemoveObjectLabels();
+
+        if (Preferences::instance()->showObjectReferences())
+            addRemoveObjectReferences();
+        break;
     case ChangeEvent::ObjectsChanged: {
         auto &objectsChange = static_cast<const ObjectsChangeEvent&>(event);
         if (!objectsChange.objects.isEmpty() && (objectsChange.properties & ObjectsChangeEvent::ClassProperty)) {

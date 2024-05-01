@@ -88,6 +88,8 @@ public:
      */
     virtual bool save(const QString &fileName, QString *error = nullptr) = 0;
 
+    virtual bool canReload() const { return false; }
+
     virtual FileFormat *writerFormat() const = 0;
 
     QDateTime lastSaved() const { return mLastSaved; }

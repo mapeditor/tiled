@@ -436,7 +436,7 @@ inline Layer *LayerIterator::operator->() const
 }
 
 
-TILEDSHARED_EXPORT int globalIndex(Layer *layer);
+TILEDSHARED_EXPORT int globalIndex(const Layer *layer);
 TILEDSHARED_EXPORT Layer *layerAtGlobalIndex(const Map *map, int index);
 
 } // namespace Tiled

@@ -37,6 +37,8 @@ class ChangeEvent
 {
 public:
     enum Type {
+        DocumentAboutToReload,
+        DocumentReloaded,
         ObjectsChanged,
         MapChanged,
         LayerChanged,
@@ -68,6 +70,22 @@ protected:
 
     // not virtual, but protected to avoid calling at this level
     ~ChangeEvent()
+    {}
+};
+
+class AboutToReloadEvent : public ChangeEvent
+{
+public:
+    AboutToReloadEvent()
+        : ChangeEvent(DocumentAboutToReload)
+    {}
+};
+
+class ReloadEvent : public ChangeEvent
+{
+public:
+    ReloadEvent()
+        : ChangeEvent(DocumentReloaded)
     {}
 };
 

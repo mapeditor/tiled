@@ -35,6 +35,8 @@ TilesetWangSetModel::TilesetWangSetModel(TilesetDocument *tilesetDocument,
     QAbstractListModel(parent),
     mTilesetDocument(tilesetDocument)
 {
+    connect(tilesetDocument, &TilesetDocument::changed,
+            this, &TilesetWangSetModel::documentChanged);
 }
 
 TilesetWangSetModel::~TilesetWangSetModel()
@@ -202,6 +204,20 @@ void TilesetWangSetModel::emitWangSetChange(WangSet *wangSet)
     const QModelIndex index = TilesetWangSetModel::index(wangSet);
     emit dataChanged(index, index);
     emit wangSetChanged(wangSet);
+}
+
+void TilesetWangSetModel::documentChanged(const ChangeEvent &event)
+{
+    switch (event.type) {
+    case ChangeEvent::DocumentAboutToReload:
+        beginResetModel();
+        break;
+    case ChangeEvent::DocumentReloaded:
+        endResetModel();
+        break;
+    default:
+        break;
+    }
 }
 
 #include "moc_tilesetwangsetmodel.cpp"

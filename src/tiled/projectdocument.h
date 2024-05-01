@@ -26,7 +26,7 @@
 
 namespace Tiled {
 
-class ProjectDocument : public Document
+class ProjectDocument final : public Document
 {
     Q_OBJECT
 

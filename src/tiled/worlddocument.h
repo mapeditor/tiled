@@ -31,7 +31,7 @@ namespace Tiled {
 /**
  * Represents an editable world document.
  */
-class WorldDocument : public Document
+class WorldDocument final : public Document
 {
     Q_OBJECT
 

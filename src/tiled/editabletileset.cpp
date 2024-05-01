@@ -22,6 +22,7 @@
 
 #include "addremovetiles.h"
 #include "addremovewangset.h"
+#include "changeevents.h"
 #include "editabletile.h"
 #include "editablewangset.h"
 #include "scriptimage.h"
@@ -402,6 +403,7 @@ void EditableTileset::setDocument(Document *document)
 
     if (auto doc = tilesetDocument()) {
         connect(doc, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
+        connect(doc, &Document::changed, this, &EditableTileset::documentChanged);
         connect(doc, &TilesetDocument::tilesAdded, this, &EditableTileset::attachTiles);
         connect(doc, &TilesetDocument::tilesRemoved, this, &EditableTileset::detachTiles);
         connect(doc, &TilesetDocument::tileObjectGroupChanged, this, &EditableTileset::tileObjectGroupChanged);
@@ -427,6 +429,23 @@ bool EditableTileset::tilesFromEditables(const QList<QObject *> &editableTiles, 
     }
 
     return true;
+}
+
+void EditableTileset::documentChanged(const ChangeEvent &event)
+{
+    switch (event.type) {
+    case ChangeEvent::DocumentAboutToReload:
+        detachTiles(tileset()->tiles());
+        detachWangSets(tileset()->wangSets());
+
+        setObject(nullptr);
+        break;
+    case ChangeEvent::DocumentReloaded:
+        setObject(tilesetDocument()->tileset().data());
+        break;
+    default:
+        break;
+    }
 }
 
 void EditableTileset::attachTiles(const QList<Tile *> &tiles)

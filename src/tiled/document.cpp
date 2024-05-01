@@ -168,6 +168,10 @@ void Document::setCurrentObject(Object *object, Document *owningDocument)
 void Document::currentObjectDocumentChanged(const ChangeEvent &change)
 {
     switch (change.type) {
+    case ChangeEvent::DocumentAboutToReload:
+        setCurrentObject(nullptr);
+        break;
+
     case ChangeEvent::TilesAboutToBeRemoved: {
         auto tilesEvent = static_cast<const TilesEvent&>(change);
 

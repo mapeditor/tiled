@@ -358,6 +358,21 @@ void MapItem::repaintRegion(const QRegion &region, TileLayer *tileLayer)
 void MapItem::documentChanged(const ChangeEvent &change)
 {
     switch (change.type) {
+    case ChangeEvent::DocumentAboutToReload:
+        for (Layer *layer : mMapDocument->map()->layers())
+            deleteLayerItems(layer);
+        break;
+    case ChangeEvent::DocumentReloaded: {
+        // The renderer has been re-created
+        auto lineWidth = Preferences::instance()->objectLineWidth();
+        mapDocument()->renderer()->setObjectLineWidth(lineWidth);
+
+        createLayerItems(mMapDocument->map()->layers());
+
+        updateBoundingRect();
+        updateLayerPositions();
+        break;
+    }
     case ChangeEvent::ObjectsChanged: {
         auto &objectsChange = static_cast<const ObjectsChangeEvent&>(change);
         if (!objectsChange.objects.isEmpty() && (objectsChange.properties & ObjectsChangeEvent::ClassProperty)) {

@@ -4608,6 +4608,13 @@ declare namespace tiled {
   export const assetOpened: Signal<Asset>;
 
   /**
+   * An asset has been reloaded.
+   *
+   * @since 1.11
+   */
+  export const assetReloaded: Signal<Asset>;
+
+  /**
    * An asset is about to be saved. Can be used to make last-minute
    * changes.
    */

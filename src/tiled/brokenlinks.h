@@ -90,6 +90,8 @@ signals:
     void hasBrokenLinksChanged(bool hasBrokenLinks);
 
 private:
+    void documentChanged(const ChangeEvent &event);
+
     void tileImageSourceChanged(Tile *tile);
     void tilesetChanged(Tileset *tileset);
 
