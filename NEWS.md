@@ -16,6 +16,7 @@
 * Godot 4 plugin: Use Godot 4.2 tile transformation flags (by Rick Yorgason, #3895)
 * Godot 4 plugin: Fixed positioning of tile collision shapes (by Ryan Petrie, #3862)
 * GameMaker 2 plugin: Fixed positioning of objects on isometric maps
+* Python plugin: Raised minimum Python version to 3.8
 * tmxrasterizer: Added --hide-object and --show-object arguments (by Lars Luz, #3819)
 * tmxrasterizer: Added --frames and --frame-duration arguments to export animated maps as multiple images (#3868)
 * tmxrasterizer: Fixed --hide/show-layer to work on group layers (#3899)
