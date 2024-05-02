@@ -89,6 +89,8 @@ void PythonPlugin::initialize()
         PyImport_AppendInittab("tiled.Tiled", PyInit_tiled);
 
         PyStatus status = Py_InitializeFromConfig(&config);
+        PyConfig_Clear(&config);
+
         if (PyStatus_Exception(status)) {
             Tiled::ERROR("Python initialization failed");
             handleError();
