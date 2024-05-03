@@ -216,7 +216,6 @@ void PythonPlugin::reloadModules()
             if (!script.module) {
                 PySys_WriteStderr("** Parse exception **\n");
                 PyErr_Print();
-                PyErr_Clear();
             }
         }
     }
