@@ -67,7 +67,7 @@ PythonPlugin::PythonPlugin()
 
 PythonPlugin::~PythonPlugin()
 {
-    for (const ScriptEntry &script : mScripts) {
+    for (const ScriptEntry &script : std::as_const(mScripts)) {
         Py_DECREF(script.module);
 
         if (script.mapFormat)
@@ -230,28 +230,32 @@ void PythonPlugin::reloadModules()
  */
 PyObject *PythonPlugin::findPluginSubclass(PyObject *module, PyObject *pluginClass)
 {
-    PyObject *dir = PyObject_Dir(module);
     PyObject *result = nullptr;
 
+    PyObject *dir = PyObject_Dir(module);
     if (!dir) {
         handleError();
         return result;
     }
 
-    for (int i = 0; i < PyList_Size(dir); i++) {
+    const int dirSize = PyList_Size(dir);
+    for (int i = 0; i < dirSize; i++) {
         PyObject *value = PyObject_GetAttr(module, PyList_GetItem(dir, i));
-
         if (!value) {
             handleError();
             break;
         }
 
-        if (value != pluginClass &&
-                PyCallable_Check(value) &&
-                PyObject_IsSubclass(value, pluginClass) == 1) {
-            result = value;
-            handleError();
-            break;
+        if (value != pluginClass && PyCallable_Check(value)) {
+            const int isSubclass = PyObject_IsSubclass(value, pluginClass);
+
+            if (isSubclass == -1) {
+                // usually "TypeError: issubclass() arg 1 must be a class"
+                PyErr_Clear();
+            } else if (isSubclass == 1) {
+                result = value;
+                break;
+            }
         }
 
         Py_DECREF(value);
