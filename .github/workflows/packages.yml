@@ -48,7 +48,7 @@ jobs:
         include:
         - qt_version: 5.15.2
           qt_version_major: 5
-        - qt_version: 6.6.2
+        - qt_version: 6.7.0
           qt_version_major: 6
 
     env:
@@ -154,11 +154,12 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Set Tiled version
       id: version
       run: |
-        sed -i 's/^version: .*/version: '"${TILED_VERSION}"'/g' snap/snapcraft.yaml
         if [[ "$TILED_RELEASE" == 'true' ]]; then echo "snap_channel=candidate" >> $GITHUB_OUTPUT ; fi
         if [[ "$TILED_RELEASE" != 'true' ]]; then echo "snap_channel=beta" >> $GITHUB_OUTPUT ; fi
 
@@ -192,7 +193,7 @@ jobs:
         - qt_version: 5.12.12
           version_suffix: "10.12-10.15"
           architectures: x86_64
-        - qt_version: 6.6.2
+        - qt_version: 6.7.0
           version_suffix: "11+"
           architectures: x86_64,arm64
 
@@ -284,7 +285,7 @@ jobs:
           mingw_version: 8.1.0
           mingw_component: mingw
           mingw_path: /c/Qt/Tools/mingw810_32/bin
-        - qt_version: 6.6.2
+        - qt_version: 6.7.0
           qt_version_major: 6
           qt_toolchain: win64_mingw
           arch: 64

@@ -203,10 +203,10 @@
                 <File Source="$(var.QtDir)\plugins\imageformats\qwebp.dll"/>
               </Component>
             </Directory>
-            <?ifdef WindowsVistaStyle ?>
+            <?ifdef WindowsStylePlugin ?>
             <Directory Id="stylePlugins" Name="styles">
               <Component Id="StylePlugins" Guid="{DB5D5DD3-1128-4FE0-A76C-EB7E4069EBFE}">
-                <File Source="$(var.QtDir)\plugins\styles\qwindowsvistastyle.dll"/>
+                <File Source="$(var.QtDir)\plugins\styles\$(var.WindowsStylePlugin)"/>
               </Component>
             </Directory>
             <?endif?>
@@ -448,7 +448,7 @@
       <ComponentRef Id='PlatformPlugins' />
       <ComponentRef Id='ImageFormatPlugins' />
       <ComponentRef Id='IconEnginePlugins' />
-      <?ifdef WindowsVistaStyle ?>
+      <?ifdef WindowsStylePlugin ?>
         <ComponentRef Id='StylePlugins' />
       <?endif?>
       <?if $(var.QtVersionMajor) >= 6 and $(var.QtVersionMinor) >= 2 ?>

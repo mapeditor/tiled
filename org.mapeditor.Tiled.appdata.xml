@@ -6,6 +6,9 @@
  <name>Tiled</name>
  <summary>General purpose map editor</summary>
  <summary xml:lang="de">Leveleditor für allgemeine Zwecke</summary>
+ <developer id="org.mapeditor">
+  <name>Thorbjørn Lindeijer</name>
+ </developer>
  <keywords>
   <keyword>2D</keyword>
   <keyword>mapeditor</keyword>

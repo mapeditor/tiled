@@ -45,7 +45,7 @@ usage: install-qt [options] [components]
 
 Examples
   ./install-qt.sh --version 5.13.1 qtbase
-  ./install-qt.sh --version 5.14.0 --target android --toolchain any qtbase qtscript
+  ./install-qt.sh --version 5.14.0 --target android --toolchain any qtbase
 
 Positional arguments
   components
@@ -89,7 +89,7 @@ Options
                 android
                     any, android_armv7, android_arm64_v8a
                 desktop
-                    clang_64 (default),
+                    clang_64 (default)
                 ios
                     ios
 
@@ -234,7 +234,6 @@ fi
 
 MIRRORS="\
     http://ftp.acc.umu.se/mirror/qt.io/qtproject \
-    http://qt.mirrors.tds.net/qt \
     http://ftp.fau.de/qtproject \
     http://download.qt.io \
 "
@@ -249,6 +248,10 @@ for MIRROR in ${MIRRORS}; do
 done
 
 DOWNLOAD_DIR=`mktemp -d 2>/dev/null || mktemp -d -t 'install-qt'`
+
+function version {
+  echo "$@" | awk -F. '{ printf("%03d%03d%03d\n", $1,$2,$3); }';
+}
 
 #
 # The repository structure is a mess. Try different URL variants
@@ -293,6 +296,12 @@ function compute_url(){
             return 0
         fi
     else
+        if [ "$(version "${VERSION}")" -ge "$(version "6.7.0")" ]; then
+            if [ "${TOOLCHAIN}" == "gcc_64" ]; then
+                TOOLCHAIN="linux_gcc_64"
+            fi
+        fi
+
         REMOTE_BASES=(
             # New repository format (>=6.0.0)
             "qt6_${VERSION//./}/qt.qt6.${VERSION//./}.${TOOLCHAIN}"
@@ -322,10 +331,6 @@ function compute_url(){
 
     echo "Could not determine a remote URL for ${COMPONENT} with version ${VERSION}">&2
     exit 1
-}
-
-function version {
-  echo "$@" | awk -F. '{ printf("%03d%03d%03d\n", $1,$2,$3); }';
 }
 
 mkdir -p ${INSTALL_DIR}
@@ -373,7 +378,7 @@ for COMPONENT in ${COMPONENTS}; do
             SUBDIR="${TOOLCHAIN/win32_/}"
         elif [[ "${TOOLCHAIN}" =~ "any" ]] && [[ "${TARGET_PLATFORM}" == "android" ]]; then
             SUBDIR="android"
-        elif [ "${HOST_OS}" == "mac_x64" ] && [ ! "${VERSION}" \< "6.1.2" ]; then
+        elif [[ "${HOST_OS}" == "mac_x64" ]] && [[ ! "${VERSION}" < "6.1.2" ]] && [[ "${TARGET_PLATFORM}" == "desktop" ]]; then
             SUBDIR="macos"
         else
             SUBDIR="${TOOLCHAIN}"
@@ -381,11 +386,25 @@ for COMPONENT in ${COMPONENTS}; do
 
         if [ "${TARGET_PLATFORM}" == "android" ] && [ ! "${VERSION}" \< "6.0.0" ]; then
             CONF_FILE="${UNPACK_DIR}/${VERSION}/${SUBDIR}/bin/target_qt.conf"
+            ANDROID_QMAKE_FILE="${UNPACK_DIR}/${VERSION}/${SUBDIR}/bin/qmake"
+            if [ "${TOOLCHAIN}" == "android_armv7" ] && [ ! "${VERSION}" \< "6.4.2" ]; then
+                sed -i "s/\r//" "${CONF_FILE}"
+                sed -i "s|HostLibraryExecutables=.\/bin|HostLibraryExecutables=.\/libexec|g" "${CONF_FILE}"
+                chmod +x "${ANDROID_QMAKE_FILE}"
+                sed -i "s|\\\|\/|g" "${ANDROID_QMAKE_FILE}"
+            fi
             sed -i "s|target|../$TOOLCHAIN|g" "${CONF_FILE}"
             sed -i "/HostPrefix/ s|$|gcc_64|g" "${CONF_FILE}"
-            ANDROID_QMAKE_FILE="${UNPACK_DIR}/${VERSION}/${SUBDIR}/bin/qmake"
             QMAKE_FILE="${UNPACK_DIR}/${VERSION}/gcc_64/bin/qmake"
             sed -i "s|\/home\/qt\/work\/install\/bin\/qmake|$QMAKE_FILE|g" "${ANDROID_QMAKE_FILE}"
+            sed -i "s|\/Users\/qt\/work\/install\/bin\/qmake|$QMAKE_FILE|g" "${ANDROID_QMAKE_FILE}"
+        elif [ "${TARGET_PLATFORM}" == "ios" ] && [ ! "${VERSION}" \< "6.0.0" ]; then
+            CONF_FILE="${UNPACK_DIR}/${VERSION}/${SUBDIR}/bin/target_qt.conf"
+            sed -i.bak "s|HostData=target|HostData=../$TOOLCHAIN|g" "${CONF_FILE}"
+            sed -i.bak "s|HostPrefix=..\/..\/|HostPrefix=..\/..\/macos|g" "${CONF_FILE}"
+            IOS_QMAKE_FILE="${UNPACK_DIR}/${VERSION}/${SUBDIR}/bin/qmake"
+            QMAKE_FILE="${UNPACK_DIR}/${VERSION}/macos/bin/qmake"
+            sed -i.bak "s|\/Users\/qt\/work\/install\/bin\/qmake|${QMAKE_FILE}|g" "${IOS_QMAKE_FILE}"
         else
             CONF_FILE="${UNPACK_DIR}/${VERSION}/${SUBDIR}/bin/qt.conf"
             echo "[Paths]" > ${CONF_FILE}

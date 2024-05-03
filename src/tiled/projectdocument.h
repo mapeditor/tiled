@@ -32,6 +32,7 @@ class ProjectDocument : public Document
 
 public:
     ProjectDocument(std::unique_ptr<Project> project, QObject *parent = nullptr);
+    ~ProjectDocument() override;
 
     QString displayName() const override;
     FileFormat *writerFormat() const override;

@@ -86,14 +86,26 @@ PythonPlugin::~PythonPlugin()
 void PythonPlugin::initialize()
 {
     if (!Py_IsInitialized()) {
-        // PEP370
-        Py_NoSiteFlag = 1;
-        Py_NoUserSiteDirectory = 1;
+        // PEP 587
+        PyConfig config;
+        PyConfig_InitPythonConfig(&config);
+
+        // PEP 370
+        config.site_import = 0;
+        config.user_site_directory = 0;
 
         PyImport_AppendInittab("tiled", PyInit_tiled);
         PyImport_AppendInittab("tiled.qt", PyInit_tiled);
         PyImport_AppendInittab("tiled.Tiled", PyInit_tiled);
-        Py_Initialize();
+
+        PyStatus status = Py_InitializeFromConfig(&config);
+        PyConfig_Clear(&config);
+
+        if (PyStatus_Exception(status)) {
+            Tiled::ERROR("Python initialization failed");
+            handleError();
+            return;
+        }
 
         PyObject *pmod = PyImport_ImportModule("tiled");
 
