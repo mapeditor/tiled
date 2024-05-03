@@ -21,8 +21,6 @@
 #include "pythonplugin.h"
 
 #include "logginginterface.h"
-#include "map.h"
-#include "tileset.h"
 
 #include <QDateTime>
 #include <QDir>
@@ -330,73 +328,6 @@ PythonFormat::PythonFormat(const QString &scriptFile, PyObject *class_)
     setPythonClass(class_);
 }
 
-PythonMapFormat::PythonMapFormat(const QString &scriptFile,
-                                 PyObject *class_,
-                                 QObject *parent)
-    : MapFormat(parent)
-    , PythonFormat(scriptFile, class_)
-{
-}
-
-std::unique_ptr<Tiled::Map> PythonMapFormat::read(const QString &fileName)
-{
-    mError = QString();
-
-    Tiled::INFO(tr("-- Using script %1 to read %2").arg(mScriptFile, fileName));
-
-    if (!PyObject_HasAttrString(mClass, "read")) {
-        mError = "Please define class that extends tiled.Plugin and "
-                "has @classmethod read(cls, filename)";
-        return nullptr;
-    }
-    PyObject *pinst = PyObject_CallMethod(mClass, (char *)"read",
-                                          (char *)"(s)", fileName.toUtf8().constData());
-
-    Tiled::Map *ret = nullptr;
-    if (!pinst) {
-        PySys_WriteStderr("** Uncaught exception in script **\n");
-    } else {
-        _wrap_convert_py2c__Tiled__Map___star__(pinst, &ret);
-        Py_DECREF(pinst);
-    }
-    handleError();
-
-    if (ret)
-        ret->setProperty("__script__", mScriptFile);
-    return std::unique_ptr<Tiled::Map>(ret);
-}
-
-bool PythonMapFormat::write(const Tiled::Map *map, const QString &fileName, Options options)
-{
-    Q_UNUSED(options)
-
-    mError = QString();
-
-    Tiled::INFO(tr("-- Using script %1 to write %2").arg(mScriptFile, fileName));
-
-    PyObject *pmap = _wrap_convert_c2py__Tiled__Map_const___star__(&map);
-    if (!pmap)
-        return false;
-    PyObject *pinst = PyObject_CallMethod(mClass,
-                                          (char *)"write", (char *)"(Ns)",
-                                          pmap,
-                                          fileName.toUtf8().constData());
-
-    if (!pinst) {
-        PySys_WriteStderr("** Uncaught exception in script **\n");
-        mError = tr("Uncaught exception in script. Please check console.");
-    } else {
-        bool ret = PyObject_IsTrue(pinst);
-        Py_DECREF(pinst);
-        if (!ret)
-            mError = tr("Script returned false. Please check console.");
-        return ret;
-    }
-
-    handleError();
-    return false;
-}
-
 bool PythonFormat::_supportsFile(const QString &fileName) const
 {
     if (!PyObject_HasAttrString(mClass, "supportsFile"))
@@ -496,6 +427,74 @@ void PythonFormat::setPythonClass(PyObject *class_)
             mCapabilities |= Tiled::MapFormat::Read;
         }
     }
+}
+
+
+PythonMapFormat::PythonMapFormat(const QString &scriptFile,
+                                 PyObject *class_,
+                                 QObject *parent)
+    : MapFormat(parent)
+    , PythonFormat(scriptFile, class_)
+{
+}
+
+std::unique_ptr<Tiled::Map> PythonMapFormat::read(const QString &fileName)
+{
+    mError = QString();
+
+    Tiled::INFO(tr("-- Using script %1 to read %2").arg(mScriptFile, fileName));
+
+    if (!PyObject_HasAttrString(mClass, "read")) {
+        mError = "Please define class that extends tiled.Plugin and "
+                "has @classmethod read(cls, filename)";
+        return nullptr;
+    }
+    PyObject *pinst = PyObject_CallMethod(mClass, (char *)"read",
+                                          (char *)"(s)", fileName.toUtf8().constData());
+
+    Tiled::Map *ret = nullptr;
+    if (!pinst) {
+        PySys_WriteStderr("** Uncaught exception in script **\n");
+    } else {
+        _wrap_convert_py2c__Tiled__Map___star__(pinst, &ret);
+        Py_DECREF(pinst);
+    }
+    handleError();
+
+    if (ret)
+        ret->setProperty("__script__", mScriptFile);
+    return std::unique_ptr<Tiled::Map>(ret);
+}
+
+bool PythonMapFormat::write(const Tiled::Map *map, const QString &fileName, Options options)
+{
+    Q_UNUSED(options)
+
+    mError = QString();
+
+    Tiled::INFO(tr("-- Using script %1 to write %2").arg(mScriptFile, fileName));
+
+    PyObject *pmap = _wrap_convert_c2py__Tiled__Map_const___star__(&map);
+    if (!pmap)
+        return false;
+    PyObject *pinst = PyObject_CallMethod(mClass,
+                                          (char *)"write", (char *)"(Ns)",
+                                          pmap,
+                                          fileName.toUtf8().constData());
+
+    if (!pinst) {
+        PySys_WriteStderr("** Uncaught exception in script **\n");
+        mError = tr("Uncaught exception in script. Please check console.");
+    } else {
+        bool ret = PyObject_IsTrue(pinst);
+        Py_DECREF(pinst);
+        if (!ret)
+            mError = tr("Script returned false. Please check console.");
+        return ret;
+    }
+
+    handleError();
+    return false;
 }
 
 

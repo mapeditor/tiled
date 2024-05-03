@@ -3,7 +3,6 @@ Trivial example of a Tileset export plugin. Place it under ~/.tiled.
 2024, <pablo.duboue@gmail.com>
 """
 
-
 from tiled import *
 
 class TExample(TilesetPlugin):

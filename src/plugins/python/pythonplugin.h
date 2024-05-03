@@ -27,8 +27,8 @@
 #include <Python.h>
 
 #include "mapformat.h"
-#include "tilesetformat.h"
 #include "plugin.h"
+#include "tilesetformat.h"
 
 #include <QFileSystemWatcher>
 #include <QMap>
@@ -100,7 +100,8 @@ public:
     QString nameFilter() const;
 };
 
-class PythonFormat {
+class PythonFormat
+{
 public:
     PyObject *pythonClass() const { return mClass; }
     void setPythonClass(PyObject *class_);
