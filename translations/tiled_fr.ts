@@ -3910,7 +3910,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="-22"/>
         <source>Split Segment</source>
-        <translation>Séparer le Segment</translation>
+        <translation>Diviser le Segment</translation>
     </message>
     <message numerus="yes">
         <location line="+259"/>
@@ -3941,7 +3941,7 @@ Ligne %1, colonne %2</translation>
         <location line="-292"/>
         <location line="+327"/>
         <source>Split Segments</source>
-        <translation>Séparer les Segments</translation>
+        <translation>Diviser les Segments</translation>
     </message>
     <message>
         <location line="-326"/>
@@ -7462,7 +7462,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+28"/>
         <source>Split Polyline</source>
-        <translation>Séparer la Polyligne</translation>
+        <translation>Diviser la Polyligne</translation>
     </message>
     <message>
         <location filename="../src/tiled/changelayer.cpp" line="+21"/>
