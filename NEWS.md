@@ -32,6 +32,7 @@
 * Fixed possible crash after a scripted tool disappears while active
 * Fixed updating of used tilesets after resizing map (#3884)
 * Fixed alignment of shortcuts in action search
+* Fixed object assignment buttons in tile collision editor (#3399)
 * AppImage: Fixed ability to open paths with spaces from the CLI (#3914)
 * AppImage: Updated to Sentry 0.6.7
 

@@ -38,6 +38,7 @@
 #include "mapscene.h"
 #include "mapview.h"
 #include "objectgroup.h"
+#include "objectreferencetool.h"
 #include "objectselectiontool.h"
 #include "objectsview.h"
 #include "preferences.h"
@@ -110,6 +111,7 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
 
     mToolManager = new ToolManager(this);
     toolsToolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
+    toolsToolBar->addAction(mToolManager->registerTool(new ObjectReferenceTool(this)));
     toolsToolBar->addAction(mToolManager->registerTool(new EditPolygonTool(this)));
     toolsToolBar->addAction(mToolManager->registerTool(rectangleObjectsTool));
     toolsToolBar->addAction(mToolManager->registerTool(pointObjectsTool));
