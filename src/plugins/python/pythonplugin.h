@@ -28,6 +28,7 @@
 
 #include "mapformat.h"
 #include "plugin.h"
+#include "tilesetformat.h"
 
 #include <QFileSystemWatcher>
 #include <QMap>
@@ -41,17 +42,14 @@ class Map;
 namespace Python {
 
 class PythonMapFormat;
+class PythonTilesetFormat;
 
 struct ScriptEntry
 {
-    ScriptEntry()
-        : module(nullptr)
-        , mapFormat(nullptr)
-    {}
-
     QString name;
-    PyObject *module;
-    PythonMapFormat *mapFormat;
+    PyObject *module = nullptr;
+    PythonMapFormat *mapFormat = nullptr;
+    PythonTilesetFormat *tilesetFormat = nullptr;
 };
 
 class Q_DECL_EXPORT PythonPlugin : public Tiled::Plugin
@@ -70,11 +68,12 @@ private:
     void reloadModules();
     bool loadOrReloadModule(ScriptEntry &script);
 
-    PyObject *findPluginSubclass(PyObject *module);
+    PyObject *findPluginSubclass(PyObject *module, PyObject *pluginClass);
 
     QString mScriptDir;
     QMap<QString,ScriptEntry> mScripts;
     PyObject *mPluginClass;
+    PyObject *mTilesetPluginClass;
 
     QFileSystemWatcher mFileSystemWatcher;
     QTimer mReloadTimer;
@@ -91,8 +90,38 @@ public:
     QString nameFilter() const;
 };
 
+// Class exposed for Python scripts to extend
+class PythonTilesetScript {
+public:
+    // perhaps provide default that throws NotImplementedError
+    Tiled::SharedTileset *read(const QString &fileName);
+    bool supportsFile(const QString &fileName) const;
+    bool write(const Tiled::Tileset &tileset, const QString &fileName);
+    QString nameFilter() const;
+};
 
-class PythonMapFormat : public Tiled::MapFormat
+class PythonFormat
+{
+public:
+    PyObject *pythonClass() const { return mClass; }
+    void setPythonClass(PyObject *class_);
+
+protected:
+    PythonFormat(const QString &scriptFile, PyObject *class_);
+
+    bool _supportsFile(const QString &fileName) const;
+
+    QString _nameFilter() const;
+    QString _shortName() const;
+    QString _errorString() const;
+
+    PyObject *mClass;
+    QString mScriptFile;
+    QString mError;
+    Tiled::FileFormat::Capabilities mCapabilities;
+};
+
+class PythonMapFormat : public Tiled::MapFormat, public PythonFormat
 {
     Q_OBJECT
     Q_INTERFACES(Tiled::MapFormat)
@@ -102,25 +131,38 @@ public:
                     PyObject *class_,
                     QObject *parent = nullptr);
 
-    Capabilities capabilities() const override { return mCapabilities; }
+    Capabilities capabilities() const override { return mCapabilities; };
 
     std::unique_ptr<Tiled::Map> read(const QString &fileName) override;
-    bool supportsFile(const QString &fileName) const override;
+    bool supportsFile(const QString &fileName) const override { return _supportsFile(fileName); }
 
     bool write(const Tiled::Map *map, const QString &fileName, Options options) override;
 
-    QString nameFilter() const override;
-    QString shortName() const override;
-    QString errorString() const override;
+    QString nameFilter() const override { return _nameFilter(); }
+    QString shortName() const override { return _shortName(); }
+    QString errorString() const override { return _errorString(); }
+};
 
-    PyObject *pythonClass() const { return mClass; }
-    void setPythonClass(PyObject *class_);
+class PythonTilesetFormat : public Tiled::TilesetFormat, public PythonFormat
+{
+    Q_OBJECT
+    Q_INTERFACES(Tiled::TilesetFormat)
 
-private:
-    PyObject *mClass;
-    QString mScriptFile;
-    QString mError;
-    Capabilities mCapabilities;
+public:
+    PythonTilesetFormat(const QString &scriptFile,
+                        PyObject *class_,
+                        QObject *parent = nullptr);
+
+    Capabilities capabilities() const override { return mCapabilities; };
+
+    Tiled::SharedTileset read(const QString &fileName) override;
+    bool supportsFile(const QString &fileName) const override { return _supportsFile(fileName); }
+
+    bool write(const Tiled::Tileset &tileset, const QString &fileName, Options options) override;
+
+    QString nameFilter() const override { return _nameFilter(); }
+    QString shortName() const override { return _shortName(); }
+    QString errorString() const override { return _errorString(); }
 };
 
 } // namespace Python

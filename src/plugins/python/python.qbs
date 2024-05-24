@@ -34,8 +34,10 @@ TiledPlugin {
 
     Properties {
         condition: pkgConfigPython3.found
-        cpp.cxxFlags: outer.concat(pkgConfigPython3.cflags)
+        cpp.cxxFlags: outer.concat(pkgConfigPython3.compilerFlags)
+        cpp.defines: pkgConfigPython3.defines
         cpp.dynamicLibraries: pkgConfigPython3.libraries
+        cpp.includePaths: pkgConfigPython3.includePaths
         cpp.libraryPaths: pkgConfigPython3.libraryPaths
         cpp.linkerFlags: pkgConfigPython3.linkerFlags
     }
