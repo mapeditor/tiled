@@ -2,6 +2,7 @@
 
 * Added --project command-line parameter for use when exporting (#3797)
 * Added group layer names in "Move Object to Layer" menu (#3454)
+* Added lock icon to open tabs for which the file is read-only
 * Made adding "Copy" when duplicating optional and disabled by default (#3917)
 * Layer names are now trimmed when edited in the UI, to avoid accidental whitespace
 * Scripting: Added API for working with worlds (#3539)
@@ -33,6 +34,7 @@
 * Fixed possible crash after a scripted tool disappears while active
 * Fixed updating of used tilesets after resizing map (#3884)
 * Fixed alignment of shortcuts in action search
+* Fixed object assignment buttons in tile collision editor (#3399)
 * AppImage: Fixed ability to open paths with spaces from the CLI (#3914)
 * AppImage: Updated to Sentry 0.6.7
 
