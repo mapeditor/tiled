@@ -277,7 +277,7 @@ void AbstractWorldTool::addAnotherMapToWorld(QPoint insertPos)
     QString error;
     DocumentPtr document = DocumentManager::instance()->loadDocument(fileName, nullptr, &error);
 
-    if (!document) {
+    if (!document || document->type() != Document::MapDocumentType) {
         QMessageBox::critical(MainWindow::instance(),
                               tr("Error Opening File"),
                               tr("Error opening '%1':\n%2").arg(fileName, error));
