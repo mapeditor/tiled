@@ -67,8 +67,8 @@ public:
 
     DocumentType type() const { return mType; }
 
-    QString fileName() const;
-    QString canonicalFilePath() const;
+    const QString &fileName() const;
+    const QString &canonicalFilePath() const;
 
     /**
      * Returns the name with which to display this document. It is the file name
@@ -128,8 +128,6 @@ public:
 
     virtual void checkIssues() {}
 
-    static const QHash<QString, Document *> &documentInstances();
-
 signals:
     void changed(const ChangeEvent &change);
     void saved();
@@ -186,17 +184,15 @@ private:
     bool mModified = false;
     bool mChangedOnDisk = false;
     bool mIgnoreBrokenLinks = false;
-
-    static QHash<QString, Document*> sDocumentInstances;
 };
 
 
-inline QString Document::fileName() const
+inline const QString &Document::fileName() const
 {
     return mFileName;
 }
 
-inline QString Document::canonicalFilePath() const
+inline const QString &Document::canonicalFilePath() const
 {
     return mCanonicalFilePath;
 }
@@ -243,11 +239,6 @@ inline bool Document::changedOnDisk() const
 inline bool Document::isReadOnly() const
 {
     return mReadOnly;
-}
-
-inline const QHash<QString, Document *> &Document::documentInstances()
-{
-    return sDocumentInstances;
 }
 
 using DocumentPtr = QSharedPointer<Document>;

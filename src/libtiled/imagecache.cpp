@@ -29,7 +29,6 @@
 #include "imagecache.h"
 
 #include "logginginterface.h"
-#include "map.h"
 #include "mapformat.h"
 #include "minimaprenderer.h"
 

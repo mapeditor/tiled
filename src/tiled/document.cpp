@@ -22,6 +22,7 @@
 
 #include "changeevents.h"
 #include "containerhelpers.h"
+#include "documentmanager.h"
 #include "editableasset.h"
 #include "logginginterface.h"
 #include "object.h"
@@ -33,8 +34,6 @@
 #include <QUndoStack>
 
 namespace Tiled {
-
-QHash<QString, Document*> Document::sDocumentInstances;
 
 Document::Document(DocumentType type, const QString &fileName,
                    QObject *parent)
@@ -48,8 +47,7 @@ Document::Document(DocumentType type, const QString &fileName,
     mCanonicalFilePath = fileInfo.canonicalFilePath();
     mReadOnly = fileInfo.exists() && !fileInfo.isWritable();
 
-    if (!mCanonicalFilePath.isEmpty())
-        sDocumentInstances.insert(mCanonicalFilePath, this);
+    DocumentManager::instance()->registerDocument(this);
 
     connect(mUndoStack, &QUndoStack::indexChanged, this, &Document::updateIsModified);
     connect(mUndoStack, &QUndoStack::cleanChanged, this, &Document::updateIsModified);
@@ -61,11 +59,8 @@ Document::~Document()
     if (mCurrentObjectDocument)
         mCurrentObjectDocument->disconnect(this);
 
-    if (!mCanonicalFilePath.isEmpty()) {
-        auto i = sDocumentInstances.find(mCanonicalFilePath);
-        if (i != sDocumentInstances.end() && *i == this)
-            sDocumentInstances.erase(i);
-    }
+    if (auto manager = DocumentManager::maybeInstance())
+        manager->unregisterDocument(this);
 }
 
 EditableAsset *Document::editable()
@@ -88,19 +83,14 @@ void Document::setFileName(const QString &fileName)
 
     QString oldFileName = mFileName;
 
-    if (!mCanonicalFilePath.isEmpty()) {
-        auto i = sDocumentInstances.find(mCanonicalFilePath);
-        if (i != sDocumentInstances.end() && *i == this)
-            sDocumentInstances.erase(i);
-    }
+    DocumentManager::instance()->unregisterDocument(this);
 
     const QFileInfo fileInfo { fileName };
     mFileName = fileName;
     mCanonicalFilePath = fileInfo.canonicalFilePath();
     setReadOnly(fileInfo.exists() && !fileInfo.isWritable());
 
-    if (!mCanonicalFilePath.isEmpty())
-        sDocumentInstances.insert(mCanonicalFilePath, this);
+    DocumentManager::instance()->registerDocument(this);
 
     emit fileNameChanged(fileName, oldFileName);
 }

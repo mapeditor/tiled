@@ -214,7 +214,7 @@ void AbstractWorldTool::showContextMenu(QGraphicsSceneMouseEvent *event)
                        this, [=] { addAnotherMapToWorld(insertPos); });
 
         if (targetDocument != nullptr && targetDocument != currentDocument) {
-            const QString targetFilename = targetDocument->fileName();
+            const QString &targetFilename = targetDocument->fileName();
             menu.addAction(QIcon(QLatin1String(":images/24/world-map-remove-this.png")),
                            tr("Remove \"%1\" from World \"%2\"")
                            .arg(targetDocument->displayName(),

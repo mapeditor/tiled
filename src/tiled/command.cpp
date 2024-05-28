@@ -73,7 +73,7 @@ static QString replaceVariables(const QString &string, bool quoteValues = true)
 
     // Perform variable replacement
     if (Document *document = DocumentManager::instance()->currentDocument()) {
-        const QString fileName = document->fileName();
+        const QString &fileName = document->fileName();
         QFileInfo fileInfo(fileName);
         const QString mapPath = fileInfo.absolutePath();
         const QString projectPath = QFileInfo(ProjectManager::instance()->project().fileName()).absolutePath();

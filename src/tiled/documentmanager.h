@@ -68,6 +68,7 @@ class DocumentManager : public QObject
     ~DocumentManager() override;
 
     friend class MainWindow;
+    friend class Document;      // for file watching
 
 public:
     static DocumentManager *instance();
@@ -123,6 +124,7 @@ public:
 
     bool reloadCurrentDocument();
     bool reloadDocumentAt(int index);
+    bool reloadDocument(Document *document);
 
     void checkTilesetColumns(MapDocument *mapDocument);
     bool checkTilesetColumns(TilesetDocument *tilesetDocument);
@@ -225,6 +227,9 @@ private:
     MapDocument *openMapFile(const QString &path);
     TilesetDocument *openTilesetFile(const QString &path);
 
+    void registerDocument(Document *document);
+    void unregisterDocument(Document *document);
+
     QIcon mLockedIcon;
 
     QVector<DocumentPtr> mDocuments;
@@ -245,6 +250,7 @@ private:
 
     QUndoGroup *mUndoGroup;
     FileSystemWatcher *mFileSystemWatcher;
+    QHash<QString, Document*> mDocumentByFileName;
 
     static DocumentManager *mInstance;
 

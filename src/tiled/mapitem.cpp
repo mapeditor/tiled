@@ -458,7 +458,7 @@ void MapItem::mapChanged()
     updateBoundingRect();
 
     // When this map is part of a world, update that map's rect when necessary
-    const QString mapFileName = mapDocument()->fileName();
+    const QString &mapFileName = mapDocument()->fileName();
     if (const World *world = WorldManager::instance().worldForMap(mapFileName)) {
         if (world->canBeModified()) {
             const QRect currentRectInWorld = world->mapRect(mapFileName);

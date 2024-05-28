@@ -2323,9 +2323,8 @@ void MainWindow::retranslateUi()
 void MainWindow::exportMapAs(MapDocument *mapDocument)
 {
     SessionOption<QString> lastUsedExportFilter { "map.lastUsedExportFilter" };
-    QString fileName = mapDocument->fileName();
     QString selectedFilter = lastUsedExportFilter;
-    auto exportDetails = chooseExportDetails<MapFormat>(fileName,
+    auto exportDetails = chooseExportDetails<MapFormat>(mapDocument->fileName(),
                                                         mapDocument->lastExportFileName(),
                                                         selectedFilter,
                                                         this);

@@ -937,9 +937,8 @@ void TilesetDock::tabContextMenuRequested(const QPoint &pos)
     QMenu menu;
 
     auto tilesetDocument = mTilesetDocuments.at(index);
-    const QString fileName = tilesetDocument->fileName();
 
-    Utils::addFileManagerActions(menu, fileName);
+    Utils::addFileManagerActions(menu, tilesetDocument->fileName());
 
     menu.addSeparator();
     menu.addAction(mEditTileset->icon(), mEditTileset->text(), this, [tileset = tilesetDocument->tileset()] {
