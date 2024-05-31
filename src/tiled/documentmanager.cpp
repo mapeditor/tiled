@@ -1125,7 +1125,7 @@ void DocumentManager::fileChanged(const QString &fileName)
     const QFileInfo fileInfo { fileName };
 
     // Always update potentially changed read-only state
-    document->setReadOnly(!fileInfo.isWritable());
+    document->setReadOnly(fileInfo.exists() && !fileInfo.isWritable());
 
     // Ignore change event when it seems to be our own save
     if (fileInfo.lastModified() == document->lastSaved())

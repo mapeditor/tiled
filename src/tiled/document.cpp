@@ -46,7 +46,7 @@ Document::Document(DocumentType type, const QString &fileName,
     const QFileInfo fileInfo { fileName };
     mLastSaved = fileInfo.lastModified();
     mCanonicalFilePath = fileInfo.canonicalFilePath();
-    mReadOnly = !fileInfo.isWritable();
+    mReadOnly = fileInfo.exists() && !fileInfo.isWritable();
 
     if (!mCanonicalFilePath.isEmpty())
         sDocumentInstances.insert(mCanonicalFilePath, this);
@@ -94,8 +94,10 @@ void Document::setFileName(const QString &fileName)
             sDocumentInstances.erase(i);
     }
 
+    const QFileInfo fileInfo { fileName };
     mFileName = fileName;
-    mCanonicalFilePath = QFileInfo(fileName).canonicalFilePath();
+    mCanonicalFilePath = fileInfo.canonicalFilePath();
+    setReadOnly(fileInfo.exists() && !fileInfo.isWritable());
 
     if (!mCanonicalFilePath.isEmpty())
         sDocumentInstances.insert(mCanonicalFilePath, this);
