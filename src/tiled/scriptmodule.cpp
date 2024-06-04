@@ -250,7 +250,7 @@ ObjectRef ScriptModule::objectRef(int id) const
     return { id };
 }
 
-QVariant ScriptModule::propertyValue(const QString &typeName, const QVariant &value) const
+QVariant ScriptModule::propertyValue(const QString &typeName, const QJSValue &value) const
 {
     auto type = Object::propertyTypes().findPropertyValueType(typeName);
     if (!type) {
@@ -258,16 +258,22 @@ QVariant ScriptModule::propertyValue(const QString &typeName, const QVariant &va
         return {};
     }
 
+    const QVariant var = value.toVariant();
+
     switch (type->type) {
     case PropertyType::PT_Invalid:
     case PropertyType::PT_Class:
+        if (var.userType() != QVariant::Map) {
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Expected object to initialize class value"));
+            return {};
+        }
         break;
     case PropertyType::PT_Enum:
         // Call toPropertyValue to support using strings to create a value
-        return type->toPropertyValue(value, ExportContext());
+        return type->toPropertyValue(var, ExportContext());
     }
 
-    return type->wrap(value);
+    return type->wrap(var);
 }
 
 bool ScriptModule::versionLessThan(const QString &a, const QString &b)

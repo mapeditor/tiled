@@ -1040,7 +1040,7 @@ declare class TiledObject {
   /**
    * Sets the value of the custom property with the given name. Supported
    * types are `bool`, `number`, `string`, {@link FilePath},
-   * {@link ObjectRef} and {@link MapObject}.
+   * {@link ObjectRef}, {@link MapObject} and {@link PropertyValue}.
    *
    * @note When setting a `number`, the property type will be set to either
    * `int` or `float`, depending on whether it is a whole number. To force

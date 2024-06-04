@@ -49,7 +49,7 @@ bool EditableObject::isReadOnly() const
     return asset() && asset()->isReadOnly();
 }
 
-void EditableObject::setProperty(const QString &name, const QVariant &value)
+void EditableObject::setPropertyImpl(const QString &name, const QVariant &value)
 {
     if (Document *doc = document())
         asset()->push(new SetProperty(doc, { mObject }, name, fromScript(value)));

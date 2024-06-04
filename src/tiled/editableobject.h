@@ -22,6 +22,7 @@
 
 #include "object.h"
 
+#include <QJSValue>
 #include <QObject>
 
 namespace Tiled {
@@ -58,7 +59,7 @@ public:
     const QString &className() const;
 
     Q_INVOKABLE QVariant property(const QString &name) const;
-    Q_INVOKABLE void setProperty(const QString &name, const QVariant &value);
+    Q_INVOKABLE void setProperty(const QString &name, const QJSValue &value);
     Q_INVOKABLE void setColorProperty(const QString &name, const QColor &value);
     Q_INVOKABLE void setColorProperty(const QString &name, int r, int g, int b, int a = 255);
     Q_INVOKABLE void setFloatProperty(const QString &name, qreal value);
@@ -87,6 +88,8 @@ protected:
     void moveOwnershipToCpp();
 
 private:
+    void setPropertyImpl(const QString &name, const QVariant &value);
+
     QVariant toScript(const QVariant &value) const;
     QVariant fromScript(const QVariant &value) const;
     QVariantMap toScript(const QVariantMap &value) const;
@@ -112,19 +115,24 @@ inline QVariant EditableObject::property(const QString &name) const
     return toScript(mObject->property(name));
 }
 
+inline void EditableObject::setProperty(const QString &name, const QJSValue &value)
+{
+    setPropertyImpl(name, value.toVariant());
+}
+
 inline void EditableObject::setColorProperty(const QString &name, const QColor &value)
 {
-    setProperty(name, value);
+    setPropertyImpl(name, value);
 }
 
 inline void EditableObject::setColorProperty(const QString &name, int r, int g, int b, int a)
 {
-    setProperty(name, QColor(r, g, b, a));
+    setPropertyImpl(name, QColor(r, g, b, a));
 }
 
 inline void EditableObject::setFloatProperty(const QString &name, qreal value)
 {
-    setProperty(name, value);
+    setPropertyImpl(name, value);
 }
 
 inline QVariantMap EditableObject::properties() const
