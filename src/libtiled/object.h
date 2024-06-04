@@ -140,6 +140,18 @@ public:
     { mProperties.insert(name, value); }
 
     /**
+     * Sets the value of an object's property identified the given \a path
+     * to \a value.
+     *
+     * The \a path is a list of property names, where each name identifies
+     * a member of the previous member's value. The last name in the list
+     * identifies the property to set.
+     *
+     * Returns whether the property was set.
+     */
+    bool setProperty(const QStringList &path, const QVariant &value);
+
+    /**
      * Removes the property with the given \a name.
      */
     void removeProperty(const QString &name)

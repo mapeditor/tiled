@@ -1052,6 +1052,28 @@ declare class TiledObject {
   setProperty(name: string, value: TiledObjectPropertyValue): void;
 
   /**
+   * Sets the value of an object's property identified the given \a path
+   * to \a value.
+   *
+   * The \a path is a list of property names, where each name identifies
+   * a member of the previous member's value. The last name in the list
+   * identifies the property to set.
+   *
+   * Supported types are `bool`, `number`, `string`, {@link FilePath},
+   * {@link ObjectRef}, {@link MapObject} and {@link PropertyValue}.
+   *
+   * @note When setting a `number`, the property type will be set to either
+   * `int` or `float`, depending on whether it is a whole number. To force
+   * the property to be `float`, use {@link setFloatProperty}.
+   *
+   * @note This function does not support setting `color` properties. Use
+   * {@link setColorProperty} instead.
+   *
+   * @since 1.11
+   */
+  setProperty(path: string[], value: TiledObjectPropertyValue): void;
+
+  /**
    * Sets the value of the custom property with the given name to the given
    * color value.
    *

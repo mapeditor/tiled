@@ -57,6 +57,19 @@ void EditableObject::setPropertyImpl(const QString &name, const QVariant &value)
         mObject->setProperty(name, fromScript(value));
 }
 
+void EditableObject::setPropertyImpl(const QStringList &path, const QVariant &value)
+{
+    if (path.isEmpty()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
+        return;
+    }
+
+    if (Document *doc = document())
+        asset()->push(new SetProperty(doc, { mObject }, path, fromScript(value)));
+    else
+        mObject->setProperty(path, fromScript(value));
+}
+
 void EditableObject::setProperties(const QVariantMap &properties)
 {
     if (Document *doc = document())

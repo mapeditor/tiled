@@ -8,6 +8,7 @@
 * Changed default shortcut for "Save As" to Ctrl+Shift+S and removed shortcut from "Save All" (#3933)
 * Layer names are now trimmed when edited in the UI, to avoid accidental whitespace
 * Scripting: Added API for working with worlds (#3539)
+* Scripting: Added Object.setProperty overload for setting nested values
 * Scripting: Added Tile.image for accessing a tile's image data
 * Scripting: Added Image.copy overload that takes a rectangle
 * Scripting: Added Tileset.imageFileName and ImageLayer.imageFileName

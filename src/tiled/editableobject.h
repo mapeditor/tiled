@@ -60,6 +60,7 @@ public:
 
     Q_INVOKABLE QVariant property(const QString &name) const;
     Q_INVOKABLE void setProperty(const QString &name, const QJSValue &value);
+    Q_INVOKABLE void setProperty(const QStringList &path, const QJSValue &value);
     Q_INVOKABLE void setColorProperty(const QString &name, const QColor &value);
     Q_INVOKABLE void setColorProperty(const QString &name, int r, int g, int b, int a = 255);
     Q_INVOKABLE void setFloatProperty(const QString &name, qreal value);
@@ -89,6 +90,7 @@ protected:
 
 private:
     void setPropertyImpl(const QString &name, const QVariant &value);
+    void setPropertyImpl(const QStringList &path, const QVariant &value);
 
     QVariant toScript(const QVariant &value) const;
     QVariant fromScript(const QVariant &value) const;
@@ -118,6 +120,11 @@ inline QVariant EditableObject::property(const QString &name) const
 inline void EditableObject::setProperty(const QString &name, const QJSValue &value)
 {
     setPropertyImpl(name, value.toVariant());
+}
+
+inline void EditableObject::setProperty(const QStringList &path, const QJSValue &value)
+{
+    setPropertyImpl(path, value.toVariant());
 }
 
 inline void EditableObject::setColorProperty(const QString &name, const QColor &value)

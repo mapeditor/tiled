@@ -106,6 +106,11 @@ QVariantMap Object::resolvedProperties() const
     return allProperties;
 }
 
+bool Object::setProperty(const QStringList &path, const QVariant &value)
+{
+    return setPropertyMemberValue(mProperties, path, value);
+}
+
 void Object::setPropertyTypes(const SharedPropertyTypes &propertyTypes)
 {
     mPropertyTypes = propertyTypes;
