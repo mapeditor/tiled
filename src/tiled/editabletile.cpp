@@ -54,6 +54,12 @@ ScriptImage *EditableTile::image() const
     return new ScriptImage(tile()->image().toImage());
 }
 
+ScriptImage *EditableTile::displayImage() const
+{
+    QPixmap cropped = tile()->image().copy(tile()->imageRect());
+    return new ScriptImage(cropped.toImage());
+}
+
 EditableObjectGroup *EditableTile::objectGroup() const
 {
     if (!mAttachedObjectGroup) {

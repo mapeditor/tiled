@@ -2474,6 +2474,16 @@ declare class Tile extends TiledObject {
   image: Image;
 
   /**
+   * Returns the image of this tile, cropped to its {@link imageRect}
+   * to include only the visible portion of the image.
+   *
+   * This property is read-only.
+   * 
+   * @since 1.11
+   */
+  displayImage: Image;
+
+  /**
    * The source rectangle (in pixels) for this tile.
    *
    * This can be either a sub-rectangle of the tile image when the tile is part
