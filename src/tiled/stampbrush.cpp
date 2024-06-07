@@ -201,19 +201,22 @@ void StampBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 void StampBrush::updateBrushBehavior()
 {
     BrushBehavior brushBehavior = mBrushBehavior;
+    BrushState brushState = mBrushState;
 
     if (mModifiers & Qt::ShiftModifier) {
-        if (mModifiers & Qt::ControlModifier) {
+        if (mModifiers & Qt::ControlModifier)
             brushBehavior = BrushBehavior::Circle;
-        } else {
+        else
             brushBehavior = BrushBehavior::Line;
-        }
     } else {
         brushBehavior = BrushBehavior::Neutral;
+        if (brushState == BrushState::StartSet)
+            brushState = BrushState::Free;
     }
 
-    if (mBrushBehavior != brushBehavior) {
+    if (brushBehavior != mBrushBehavior || brushState != mBrushState) {
         mBrushBehavior = brushBehavior;
+        mBrushState = brushState;
         updatePreview();
     }
 }
