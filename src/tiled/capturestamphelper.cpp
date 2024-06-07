@@ -21,6 +21,7 @@
 #include "capturestamphelper.h"
 
 #include "changeselectedarea.h"
+#include "erasetiles.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "tilelayer.h"
@@ -58,16 +59,29 @@ TileStamp CaptureStampHelper::endCapture(MapDocument &mapDocument, QPoint tilePo
     mapDocument.map()->copyLayers(mapDocument.selectedLayers(),
                                   captured,
                                   *stamp);
-    // Delete copied elements.
-    if (mCut) {
+
+    // Delete captured elements when cutting
+    if (mCut && !captured.isEmpty()) {
+        QList<QUndoCommand*> commands;
+        QList<QPair<QRegion, TileLayer*>> erasedRegions;
+
         for (auto layer : mapDocument.selectedLayers()) {
             if (!layer->isTileLayer())
                 continue;
-            const auto tilelayer = layer->asTileLayer();
-            tilelayer->setTiles(captured, new Tile(0, nullptr));
+            TileLayer *const tileLayer = layer->asTileLayer();
+            const QRegion area = captured.intersected(tileLayer->bounds());
+            if (area.isEmpty())
+                continue;
+            // Delete the captured part of the layer
+            commands.append(new EraseTiles(&mapDocument, tileLayer, area));
+            erasedRegions.append({ area, tileLayer });
         }
-        if (!mapDocument.selectedArea().isEmpty())
-            mapDocument.undoStack()->push(new ChangeSelectedArea(&mapDocument, QRegion()));
+
+        QUndoStack *const undoStack = mapDocument.undoStack();
+        undoStack->beginMacro(Document::tr("Cut"));
+        for (QUndoCommand *command : std::as_const(commands))
+            undoStack->push(command);
+        undoStack->endMacro();
     }
 
     if (stamp->layerCount() > 0) {
