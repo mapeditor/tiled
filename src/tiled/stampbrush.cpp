@@ -77,7 +77,8 @@ void StampBrush::activate(MapScene *scene)
 
 void StampBrush::deactivate(MapScene *scene)
 {
-    mBrushBehavior = Free;
+    mBrushBehavior = BrushBehavior::Neutral;
+    mBrushState = BrushState::Free;
     mCaptureStampHelper.reset();
     mStampActions->setEnabled(false);
     AbstractTileTool::deactivate(scene);
@@ -85,7 +86,7 @@ void StampBrush::deactivate(MapScene *scene)
 
 void StampBrush::tilePositionChanged(QPoint pos)
 {
-    if (mBrushBehavior == Paint) {
+    if (mBrushState == BrushState::Paint) {
         // Draw a line from the previous point to avoid gaps, skipping the
         // first point, since it was painted when the mouse was pressed, or the
         // last time the mouse was moved.
@@ -117,34 +118,40 @@ void StampBrush::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     if (brushItem()->isVisible()) {
         if (event->button() == Qt::LeftButton) {
-            switch (mBrushBehavior) {
-            case Line:
-                mStampReference = tilePosition();
-                mBrushBehavior = LineStartSet;
-                break;
-            case Circle:
-                mStampReference = tilePosition();
-                mBrushBehavior = CircleMidSet;
-                break;
-            case LineStartSet:
+            switch (mBrushState) {
+            case BrushState::StartSet:
                 doPaint();
                 mStampReference = tilePosition();
                 break;
-            case CircleMidSet:
-                doPaint();
-                break;
-            case Paint:
+            case BrushState::Paint:
                 beginPaint();
                 break;
-            case Free:
-                beginPaint();
+            case BrushState::Free:
+                switch (mBrushBehavior) {
+                case BrushBehavior::Line:
+                    mStampReference = tilePosition();
+                    mBrushState = BrushState::StartSet;
+                    break;
+                case BrushBehavior::Circle:
+                    mStampReference = tilePosition();
+                    mBrushState = BrushState::StartSet;
+                    break;
+                case BrushBehavior::Neutral:
+                    beginPaint();
+                    break;
+                default:
+                    break;
+                }
                 break;
-            case Capture:
+            case BrushState::Capture:
                 break;
             }
             return;
-        } else if (event->button() == Qt::RightButton && event->modifiers() == Qt::NoModifier) {
-            beginCapture();
+        } else if (event->button() == Qt::RightButton) {
+            if (event->modifiers() == Qt::NoModifier)
+                beginCapture(false);
+            else if (event->modifiers() & Qt::ShiftModifier)
+                beginCapture(true);
             return;
         }
     }
@@ -154,32 +161,24 @@ void StampBrush::mousePressed(QGraphicsSceneMouseEvent *event)
 
 void StampBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
-    switch (mBrushBehavior) {
-    case LineStartSet:
+    switch (mBrushState) {
+    case BrushState::StartSet:
         if (event->button() == Qt::LeftButton) {
             if (mStampReference != tilePosition()) {
                 doPaint();
-                mBrushBehavior = Line;
+                mBrushState = BrushState::Free;
             }
         }
         break;
-    case CircleMidSet:
-        if (event->button() == Qt::LeftButton) {
-            if (mStampReference != tilePosition()) {
-                doPaint();
-                updateBrushBehavior();
-            }
-        }
-        break;
-    case Capture:
+    case BrushState::Capture:
         if (event->button() == Qt::RightButton) {
             endCapture();
-            mBrushBehavior = Free;
+            mBrushState = BrushState::Free;
         }
         break;
-    case Paint:
+    case BrushState::Paint:
         if (event->button() == Qt::LeftButton) {
-            mBrushBehavior = Free;
+            mBrushState = BrushState::Free;
 
             // allow going over different variations by repeatedly clicking
             updatePreview();
@@ -205,20 +204,12 @@ void StampBrush::updateBrushBehavior()
 
     if (mModifiers & Qt::ShiftModifier) {
         if (mModifiers & Qt::ControlModifier) {
-            if (brushBehavior == LineStartSet) {
-                brushBehavior = CircleMidSet;
-            } else if (brushBehavior != CircleMidSet) {
-                brushBehavior = Circle;
-            }
+            brushBehavior = BrushBehavior::Circle;
         } else {
-            if (brushBehavior == CircleMidSet) {
-                brushBehavior = LineStartSet;
-            } else if (brushBehavior != LineStartSet) {
-                brushBehavior = Line;
-            }
+            brushBehavior = BrushBehavior::Line;
         }
-    } else if (brushBehavior != Paint && brushBehavior != Capture) {
-        brushBehavior = Free;
+    } else {
+        brushBehavior = BrushBehavior::Neutral;
     }
 
     if (mBrushBehavior != brushBehavior) {
@@ -316,30 +307,30 @@ void StampBrush::setWangSet(WangSet *wangSet)
 
 void StampBrush::beginPaint()
 {
-    if (mBrushBehavior != Free)
+    if (mBrushState != BrushState::Free)
         return;
 
-    mBrushBehavior = Paint;
+    mBrushState = BrushState::Paint;
     doPaint();
 }
 
-void StampBrush::beginCapture()
+void StampBrush::beginCapture(bool cut)
 {
-    if (mBrushBehavior != Free)
+    if (mBrushState != BrushState::Free)
         return;
 
-    mBrushBehavior = Capture;
-    mCaptureStampHelper.beginCapture(tilePosition());
+    mBrushState = BrushState::Capture;
+    mCaptureStampHelper.beginCapture(tilePosition(), cut);
 
     setStamp(TileStamp());
 }
 
 void StampBrush::endCapture()
 {
-    if (mBrushBehavior != Capture)
+    if (mBrushState != BrushState::Capture)
         return;
 
-    mBrushBehavior = Free;
+    mBrushState = BrushState::Free;
 
     TileStamp stamp = mCaptureStampHelper.endCapture(*mapDocument(), tilePosition());
     if (!stamp.isEmpty())
@@ -609,31 +600,32 @@ void StampBrush::updatePreview(QPoint tilePos)
 
     QRegion tileRegion;
 
-    if (mBrushBehavior == Capture) {
+    if (mBrushState == BrushState::Capture) {
         mPreviewMap.clear();
         tileRegion = mCaptureStampHelper.capturedArea(tilePos);
     } else {
-        switch (mBrushBehavior) {
-        case LineStartSet:
-            drawPreviewLayer(pointsOnLine(mStampReference, tilePos));
+        switch (mBrushState) {
+        case BrushState::StartSet:
+            if (mBrushBehavior == BrushBehavior::Circle) {
+                drawPreviewLayer(pointsOnEllipse(mStampReference,
+                                                 qAbs(mStampReference.x() - tilePos.x()),
+                                                 qAbs(mStampReference.y() - tilePos.y())));
+            } else {
+                drawPreviewLayer(pointsOnLine(mStampReference, tilePos));
+            }
             break;
-        case CircleMidSet:
-            drawPreviewLayer(pointsOnEllipse(mStampReference,
-                                             qAbs(mStampReference.x() - tilePos.x()),
-                                             qAbs(mStampReference.y() - tilePos.y())));
-            break;
-        case Capture:
+        case BrushState::Capture:
             // already handled above
             break;
-        case Circle:
+        case BrushState::Free:
+        case BrushState::Paint:
             // while finding the mid point, there is no need to show
             // the (maybe bigger than 1x1) stamp
-            mPreviewMap.clear();
-            break;
-        case Line:
-        case Free:
-        case Paint:
-            drawPreviewLayer(QVector<QPoint>() << tilePos);
+            if (mBrushBehavior == BrushBehavior::Circle) {
+                mPreviewMap.clear();
+            } else {
+                drawPreviewLayer(QVector<QPoint>() << tilePos);
+            }
             break;
         }
 

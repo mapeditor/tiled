@@ -104,7 +104,7 @@ private:
     void doPaint(int flags = 0,
                  QHash<TileLayer *, QRegion> *paintedRegions = nullptr);
 
-    void beginCapture();
+    void beginCapture(bool cut);
     void endCapture();
 
     void updateBrushBehavior();
@@ -124,22 +124,26 @@ private:
      * There are several options how the stamp utility can be used.
      * It must be one of the following:
      */
-    enum BrushBehavior {
+    enum class BrushBehavior {
+        Neutral,        // nothing special
+        Line,           // hold shift: a line
+        Circle          // hold Shift + Ctrl: a circle
+    };
+
+    enum class BrushState {
         Free,           // nothing special: you can move the mouse,
                         // preview of the selection
-        Paint,          // left mouse pressed: free painting
         Capture,        // right mouse pressed: capture a rectangle
-        Line,           // hold shift: a line
-        LineStartSet,   // when you have defined a starting point,
+        Paint,          // left mouse pressed: free painting
+        StartSet        // when you have defined a starting point,
                         // cancel with right click
-        Circle,         // hold Shift + Ctrl: a circle
-        CircleMidSet
     };
 
     /**
      * This stores the current behavior.
      */
-    BrushBehavior mBrushBehavior = Free;
+    BrushBehavior mBrushBehavior = BrushBehavior::Neutral;
+    BrushState mBrushState = BrushState::Free;
     Qt::KeyboardModifiers mModifiers;
 
     /**

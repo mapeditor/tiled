@@ -20,10 +20,13 @@
 
 #include "capturestamphelper.h"
 
+#include "changeselectedarea.h"
 #include "map.h"
 #include "mapdocument.h"
+#include "tilelayer.h"
 
 #include <memory>
+#include <qundostack.h>
 
 namespace Tiled {
 
@@ -32,13 +35,14 @@ CaptureStampHelper::CaptureStampHelper()
 {
 }
 
-void CaptureStampHelper::beginCapture(QPoint tilePosition)
+void CaptureStampHelper::beginCapture(QPoint tilePosition, bool cut)
 {
     mActive = true;
     mCaptureStart = tilePosition;
+    mCut = cut;
 }
 
-TileStamp CaptureStampHelper::endCapture(const MapDocument &mapDocument, QPoint tilePosition)
+TileStamp CaptureStampHelper::endCapture(MapDocument &mapDocument, QPoint tilePosition)
 {
     mActive = false;
 
@@ -54,6 +58,17 @@ TileStamp CaptureStampHelper::endCapture(const MapDocument &mapDocument, QPoint 
     mapDocument.map()->copyLayers(mapDocument.selectedLayers(),
                                   captured,
                                   *stamp);
+    // Delete copied elements.
+    if (mCut) {
+        for (auto layer : mapDocument.selectedLayers()) {
+            if (!layer->isTileLayer())
+                continue;
+            const auto tilelayer = layer->asTileLayer();
+            tilelayer->setTiles(captured, new Tile(0, nullptr));
+        }
+        if (!mapDocument.selectedArea().isEmpty())
+            mapDocument.undoStack()->push(new ChangeSelectedArea(&mapDocument, QRegion()));
+    }
 
     if (stamp->layerCount() > 0) {
         stamp->normalizeTileLayerPositionsAndMapSize();
