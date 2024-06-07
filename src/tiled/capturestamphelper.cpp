@@ -20,14 +20,12 @@
 
 #include "capturestamphelper.h"
 
-#include "changeselectedarea.h"
 #include "erasetiles.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "tilelayer.h"
 
 #include <memory>
-#include <qundostack.h>
 
 namespace Tiled {
 
