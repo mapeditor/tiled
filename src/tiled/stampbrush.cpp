@@ -128,18 +128,13 @@ void StampBrush::mousePressed(QGraphicsSceneMouseEvent *event)
                 break;
             case BrushState::Free:
                 switch (mBrushBehavior) {
-                case BrushBehavior::Line:
-                    mStampReference = tilePosition();
-                    mBrushState = BrushState::StartSet;
-                    break;
-                case BrushBehavior::Circle:
-                    mStampReference = tilePosition();
-                    mBrushState = BrushState::StartSet;
-                    break;
                 case BrushBehavior::Neutral:
                     beginPaint();
                     break;
-                default:
+                case BrushBehavior::Line:
+                case BrushBehavior::Circle:
+                    mStampReference = tilePosition();
+                    mBrushState = BrushState::StartSet;
                     break;
                 }
                 break;
@@ -193,9 +188,7 @@ void StampBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
 void StampBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
     mModifiers = modifiers;
-
-    if (!mStamp.isEmpty() || mIsWangFill)
-        updateBrushBehavior();
+    updateBrushBehavior();
 }
 
 void StampBrush::updateBrushBehavior()
