@@ -142,7 +142,9 @@ void StampBrush::mousePressed(QGraphicsSceneMouseEvent *event)
                 break;
             }
             return;
-        } else if (event->button() == Qt::RightButton) {
+        } else if (event->button() == Qt::RightButton &&
+                   !(event->modifiers() & Qt::ControlModifier))
+        {
             beginCapture();
             return;
         }

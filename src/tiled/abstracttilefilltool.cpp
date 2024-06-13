@@ -76,7 +76,9 @@ void AbstractTileFillTool::deactivate(MapScene *scene)
 
 void AbstractTileFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() == Qt::RightButton) {
+    if (event->button() == Qt::RightButton &&
+        !(event->modifiers() & Qt::ControlModifier))
+    {
         mCaptureStampHelper.beginCapture(tilePosition());
         return;
     }
