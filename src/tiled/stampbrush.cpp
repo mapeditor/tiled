@@ -143,10 +143,7 @@ void StampBrush::mousePressed(QGraphicsSceneMouseEvent *event)
             }
             return;
         } else if (event->button() == Qt::RightButton) {
-            if (event->modifiers() == Qt::NoModifier)
-                beginCapture(false);
-            else if (event->modifiers() & Qt::ShiftModifier)
-                beginCapture(true);
+            beginCapture();
             return;
         }
     }
@@ -310,13 +307,13 @@ void StampBrush::beginPaint()
     doPaint();
 }
 
-void StampBrush::beginCapture(bool cut)
+void StampBrush::beginCapture()
 {
     if (mBrushState != BrushState::Free)
         return;
 
     mBrushState = BrushState::Capture;
-    mCaptureStampHelper.beginCapture(tilePosition(), cut);
+    mCaptureStampHelper.beginCapture(tilePosition());
 
     setStamp(TileStamp());
 }
@@ -328,7 +325,8 @@ void StampBrush::endCapture()
 
     mBrushState = BrushState::Free;
 
-    TileStamp stamp = mCaptureStampHelper.endCapture(*mapDocument(), tilePosition());
+    const bool cut = mModifiers & Qt::ShiftModifier;
+    TileStamp stamp = mCaptureStampHelper.endCapture(*mapDocument(), tilePosition(), cut);
     if (!stamp.isEmpty())
         emit stampChanged(TileStamp(stamp));
     else

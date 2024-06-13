@@ -104,7 +104,7 @@ private:
     void doPaint(int flags = 0,
                  QHash<TileLayer *, QRegion> *paintedRegions = nullptr);
 
-    void beginCapture(bool cut);
+    void beginCapture();
     void endCapture();
 
     void updateBrushBehavior();

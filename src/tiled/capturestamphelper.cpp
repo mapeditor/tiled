@@ -34,14 +34,13 @@ CaptureStampHelper::CaptureStampHelper()
 {
 }
 
-void CaptureStampHelper::beginCapture(QPoint tilePosition, bool cut)
+void CaptureStampHelper::beginCapture(QPoint tilePosition)
 {
     mActive = true;
     mCaptureStart = tilePosition;
-    mCut = cut;
 }
 
-TileStamp CaptureStampHelper::endCapture(MapDocument &mapDocument, QPoint tilePosition)
+TileStamp CaptureStampHelper::endCapture(MapDocument &mapDocument, QPoint tilePosition, bool cut)
 {
     mActive = false;
 
@@ -59,7 +58,7 @@ TileStamp CaptureStampHelper::endCapture(MapDocument &mapDocument, QPoint tilePo
                                   *stamp);
 
     // Delete captured elements when cutting
-    if (mCut && !captured.isEmpty()) {
+    if (cut && !captured.isEmpty()) {
         QList<QUndoCommand*> commands;
         QList<QPair<QRegion, TileLayer*>> erasedRegions;
 
