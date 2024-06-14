@@ -60,7 +60,7 @@
     <message>
         <location line="-33"/>
         <source>Failed to load project &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка загрузки проекта &apos;%1&apos;.</translation>
     </message>
     <message>
         <location line="+44"/>
@@ -75,7 +75,7 @@
     <message>
         <location line="+111"/>
         <source>Project file expected: --project &lt;.tiled-project file&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ожидается файл проекта: --project &lt;.tiled-project file&gt;</translation>
     </message>
     <message>
         <location line="+75"/>
@@ -162,7 +162,7 @@
     <message>
         <location line="+5"/>
         <source>Project file to load</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл проекта который загрузить</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -831,7 +831,7 @@
     <message>
         <location line="+8"/>
         <source>Unload All Worlds</source>
-        <translation type="unfinished"></translation>
+        <translation>Выгрузить все Миры</translation>
     </message>
     <message>
         <location line="-97"/>
@@ -1784,12 +1784,12 @@ Line %1, column %2</source>
     <message>
         <location line="+229"/>
         <source>Behavior</source>
-        <translation type="unfinished"></translation>
+        <translation>Поведение</translation>
     </message>
     <message>
         <location line="+67"/>
         <source>Add &quot;Copy&quot; when duplicating</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавлять &quot;Копия&quot; при дублировании</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -2453,7 +2453,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/editableasset.cpp" line="+81"/>
         <source>Asset not associated with a file</source>
-        <translation type="unfinished"></translation>
+        <translation>У ресурса нет ассоциации с файлом</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2630,12 +2630,12 @@ Line %1, column %2</source>
     <message>
         <location line="+18"/>
         <source>Can&apos;t set tile spacing on an image collection tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно установить промежуток на коллекции изображений</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Can&apos;t set margin on an image collection tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно установить отступ на коллекции изображений</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -2943,29 +2943,29 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/editabletilelayer.cpp" line="+121"/>
         <source>Layer not part of a map</source>
-        <translation type="unfinished"></translation>
+        <translation>Слой не принадлежит к карте</translation>
     </message>
     <message>
         <location filename="../src/tiled/editableworld.cpp" line="-28"/>
         <location line="+16"/>
         <location line="+44"/>
         <source>Map not found in this world</source>
-        <translation type="unfinished"></translation>
+        <translation>Карта не найдена в этом Мире</translation>
     </message>
     <message>
         <location line="-27"/>
         <source>Map is already part of a loaded world</source>
-        <translation type="unfinished"></translation>
+        <translation>Карта уже часть загруженного Мира</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Can&apos;t add unsaved map to a world</source>
-        <translation type="unfinished"></translation>
+        <translation>Нельзя добавить несохраненною карту в Мир</translation>
     </message>
     <message>
         <location filename="../src/tiled/tilelayerwangedit.cpp" line="+97"/>
         <source>Invalid edge index</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверный индекс края</translation>
     </message>
 </context>
 <context>
@@ -4011,7 +4011,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/editor.cpp" line="+40"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Копия</translation>
     </message>
 </context>
 <context>
@@ -4606,7 +4606,7 @@ Please select specific format.</source>
     <message>
         <location line="+44"/>
         <source>Map format &apos;%s&apos; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Формат карт &apos;%s&apos; не найден</translation>
     </message>
     <message>
         <location line="+96"/>
@@ -5328,7 +5328,7 @@ Please select specific format.</source>
     <message>
         <location line="-171"/>
         <source>Updates and Crash Reporting</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновления и отчеты об ошибках</translation>
     </message>
 </context>
 <context>
@@ -6361,12 +6361,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/scriptmodule.cpp" line="+42"/>
         <source>Open Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть папку</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Open Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть файлы</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -6376,7 +6376,7 @@ Please select specific format.</source>
     <message>
         <location line="+8"/>
         <source>Save File</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить файл</translation>
     </message>
 </context>
 <context>
@@ -7250,7 +7250,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/worldmanager.cpp" line="+169"/>
         <source>World not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Мир не найден</translation>
     </message>
 </context>
 <context>
@@ -7303,22 +7303,22 @@ Please select specific format.</source>
     <message>
         <location line="+41"/>
         <source>Godot exporter does not support property type of &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспортер Godot не поддерживает тип свойств &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Inconsistent type for property &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Несовместимый тип свойства &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>Only objects with the resPath property will be exported</source>
-        <translation type="unfinished"></translation>
+        <translation>Только объекты со свойством resPath будут экспортированы</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>resPath must be in the form of &apos;res://&lt;filename&gt;.tscn&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>resPath должно быть в виде &apos;res://&lt;filename&gt;.tscn&apos;.</translation>
     </message>
     <message>
         <location line="+58"/>
@@ -7333,12 +7333,12 @@ Please select specific format.</source>
     <message>
         <location line="+90"/>
         <source>Godot exporter does not support property of type &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспортер Godot не поддерживает свойство типа &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+97"/>
         <source>exportAlternates is deprecated. Godot 4.2 supports native tile rotation. Tileset: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>exportAlternates депретирован. Godot 4.2 нативно поддерживает вращение тайлов. Набор тайлов: %1</translation>
     </message>
     <message>
         <location line="+23"/>
@@ -7831,7 +7831,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapdocument.cpp" line="-1063"/>
         <source>Reload Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Перезагрузить карту</translation>
     </message>
     <message numerus="yes">
         <location line="+720"/>
@@ -8089,27 +8089,27 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>Specifies an object to omit from the output image. Can be repeated to hide multiple objects. If multiple objects share the specified name they all will be hidden.</source>
-        <translation type="unfinished"></translation>
+        <translation>Задаёт объект который исключить из результирующего изображения. Можно повторить, чтобы скрыть несколько объектов. В случае что несколько объектов имеют одно имя, все будут скрыты.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>If used only specified objects are shown. Can be repeated to show multiple specified objects only. If multiple objects share the specified name they all will be shown.</source>
-        <translation type="unfinished"></translation>
+        <translation>С этим параметром, только назначенные объекты будут показаны. Можно повторить, чтобы показать несколько назначенных объектов. В случае что несколько объектов имеют одно имя, все будут показаны.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>If used, tile animations are advanced by the specified duration in milliseconds.</source>
-        <translation type="unfinished"></translation>
+        <translation>С этим параметром, анимации тайлов будут продвинуты на назначенную продолжительность в миллисекундах.</translation>
     </message>
     <message>
         <location line="+75"/>
         <source>Invalid number of frames specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Указано некорректное количество кадров: &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Invalid frame-duration specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Указан некорректный frame-duration: &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="-83"/>
@@ -8119,18 +8119,18 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>Number of frames to export. This will add a frame number suffix to the image names. Animations are advanced by &lt;frame-duration&gt; for each frame.</source>
-        <translation type="unfinished"></translation>
+        <translation>Количество кадров экспортировать. Этот параметр добавит номер кадра в концах названий изображений. Анимации продвинуты на &lt;frame-duration&gt; каждый кадр.</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+3"/>
         <source>number</source>
-        <translation type="unfinished"></translation>
+        <translation>число</translation>
     </message>
     <message>
         <location line="-1"/>
         <source>Duration of each frame in milliseconds, defaults to 100.</source>
-        <translation type="unfinished"></translation>
+        <translation>Длительность каждого кадра в миллисекундах, по умолчанию 100.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -8165,7 +8165,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tmxviewer/main.cpp" line="+64"/>
         <source>Displays a Tiled map.</source>
-        <translation type="unfinished"></translation>
+        <translation>Отображает Tiled-карту.</translation>
     </message>
     <message>
         <location line="+3"/>
