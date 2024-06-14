@@ -48,17 +48,22 @@
 <context>
     <name>Command line</name>
     <message>
-        <location filename="../src/tiledapp/main.cpp" line="+454"/>
+        <location filename="../src/tiledapp/main.cpp" line="+486"/>
         <source>Export syntax is --export-map [format] &lt;source&gt; &lt;target&gt;</source>
         <translation>Az exportálási szintaxis: --export-map [formátum] &lt;forrás&gt; &lt;cél&gt;</translation>
     </message>
     <message>
-        <location line="-303"/>
+        <location line="-326"/>
         <source>Format not recognized (see --export-formats)</source>
         <translation>A formátum nem ismerhető fel (lásd: --export-formats)</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="-33"/>
+        <source>Failed to load project &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+44"/>
         <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
         <translation>Nem egyedi fájlkiterjesztés. Nem lehet meghatározni a helyes exportálási formátumot.</translation>
     </message>
@@ -68,7 +73,12 @@
         <translation>Nem található exportáló a célfájlhoz.</translation>
     </message>
     <message>
-        <location line="+165"/>
+        <location line="+111"/>
+        <source>Project file expected: --project &lt;.tiled-project file&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+75"/>
         <source>Missing argument, set version using: --export-version &lt;version&gt;</source>
         <translation>Hiányzó argumentum, állítsa be a verziót ennek használatával: --export-version &lt;verzió&gt;</translation>
     </message>
@@ -83,7 +93,7 @@
         <translation>Hiányzó argumentum, hajtson végre egy parancsfájlt ennek használatával: --evaluate &lt;parancsfájl&gt; [argumentumok]</translation>
     </message>
     <message>
-        <location line="+122"/>
+        <location line="+124"/>
         <source>Failed to load source map.</source>
         <translation>Nem sikerült betölteni a forrástérképet.</translation>
     </message>
@@ -108,7 +118,8 @@
         <translation>Nem sikerült exportálni a csempekészletet a célfájlba.</translation>
     </message>
     <message>
-        <location line="+14"/>
+        <location line="-276"/>
+        <location line="+290"/>
         <source>Project file &apos;%1&apos; not found.</source>
         <translation>A(z) „%1” projektfájl nem található.</translation>
     </message>
@@ -134,7 +145,7 @@
 <context>
     <name>CommandLineHandler</name>
     <message>
-        <location filename="../src/tiledapp/main.cpp" line="-370"/>
+        <location filename="../src/tiledapp/main.cpp" line="-393"/>
         <source>Display the version</source>
         <translation>A verzió megjelenítése</translation>
     </message>
@@ -147,6 +158,11 @@
         <location line="+5"/>
         <source>Disable hardware accelerated rendering</source>
         <translation>Hardveresen gyorsított megjelenítés letiltása</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Project file to load</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+5"/>
@@ -174,7 +190,7 @@
         <translation>Egy parancsfájl végrehajtása és kilépés</translation>
     </message>
     <message>
-        <location line="+65"/>
+        <location line="+81"/>
         <source>Map export formats:</source>
         <translation>Térképexportálási formátumok:</translation>
     </message>
@@ -184,7 +200,7 @@
         <translation>Csempekészlet-exportálási formátumok:</translation>
     </message>
     <message>
-        <location line="-112"/>
+        <location line="-128"/>
         <source>Print a list of supported export formats</source>
         <translation>Támogatott exportálási formátumok listájának kiírása</translation>
     </message>
@@ -414,7 +430,7 @@
 <context>
     <name>File Errors</name>
     <message>
-        <location filename="../src/libtiled/mapwriter.cpp" line="+111"/>
+        <location filename="../src/libtiled/mapwriter.cpp" line="+115"/>
         <location filename="../src/plugins/csv/csvplugin.cpp" line="-104"/>
         <location filename="../src/plugins/defold/defoldplugin.cpp" line="+57"/>
         <location filename="../src/plugins/defoldcollection/defoldcollectionplugin.cpp" line="+174"/>
@@ -433,16 +449,16 @@
         <location line="+45"/>
         <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+245"/>
         <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+57"/>
-        <location filename="../src/plugins/tscn/tscnplugin.cpp" line="+546"/>
-        <location line="+35"/>
-        <location filename="../src/plugins/yy/yyplugin.cpp" line="+1347"/>
+        <location filename="../src/plugins/tscn/tscnplugin.cpp" line="+864"/>
+        <location line="+40"/>
+        <location filename="../src/plugins/yy/yyplugin.cpp" line="+1351"/>
         <location filename="../src/tiled/propertytypeseditor.cpp" line="+805"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="+745"/>
         <source>Could not open file for writing.</source>
         <translation>Nem sikerült megnyitni a fájlt írásra.</translation>
     </message>
     <message>
-        <location filename="../src/libtiled/worldmanager.cpp" line="+133"/>
+        <location filename="../src/libtiled/world.cpp" line="+259"/>
         <location filename="../src/plugins/flare/flareplugin.cpp" line="-258"/>
         <location filename="../src/plugins/json/jsonplugin.cpp" line="-316"/>
         <location line="+162"/>
@@ -457,7 +473,7 @@
         <translation>Nem sikerült megnyitni a fájlt olvasásra.</translation>
     </message>
     <message>
-        <location filename="../src/tiled/utils.cpp" line="+578"/>
+        <location filename="../src/tiled/utils.cpp" line="+605"/>
         <source>JSON parse error at offset %1:
 %2.</source>
         <translation>JSON feldolgozási hiba a(z) %1. eltolásnál:
@@ -467,7 +483,7 @@
 <context>
     <name>File Types</name>
     <message>
-        <location filename="../src/tiled/projectpropertiesdialog.cpp" line="+66"/>
+        <location filename="../src/tiled/projectpropertiesdialog.cpp" line="+69"/>
         <source>Automapping Rules files (*.txt)</source>
         <translation>Automatikus térképezési szabályok fájljai (*.txt)</translation>
     </message>
@@ -663,12 +679,12 @@
         <translation>Világ &amp;eltávolítása</translation>
     </message>
     <message>
-        <location line="+5"/>
+        <location line="+6"/>
         <source>&amp;Save World</source>
         <translation>Világ &amp;mentése</translation>
     </message>
     <message>
-        <location line="-69"/>
+        <location line="-70"/>
         <source>&amp;View</source>
         <translation>&amp;Nézet</translation>
     </message>
@@ -688,7 +704,7 @@
         <translation>&amp;Legutóbbi projektek</translation>
     </message>
     <message>
-        <location line="+161"/>
+        <location line="+162"/>
         <source>&amp;Save</source>
         <translation>M&amp;entés</translation>
     </message>
@@ -813,12 +829,12 @@
         <translation>A Tiled programban elérhető keresési műveletek</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+Shift+P</source>
-        <translation>Ctrl+Shift+P</translation>
+        <location line="+8"/>
+        <source>Unload All Worlds</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-92"/>
+        <location line="-97"/>
         <source>&amp;Close Project</source>
         <translation>Projekt &amp;bezárása</translation>
     </message>
@@ -938,7 +954,7 @@
         <translation>&amp;Külső csempekészlet hozzáadása…</translation>
     </message>
     <message>
-        <location line="-380"/>
+        <location line="-381"/>
         <source>&amp;New</source>
         <translation>Ú&amp;j</translation>
     </message>
@@ -963,7 +979,7 @@
         <translation>&amp;Világ</translation>
     </message>
     <message>
-        <location line="+30"/>
+        <location line="+31"/>
         <source>&amp;Open File or Project...</source>
         <translation>Fájl vagy projekt &amp;megnyitása…</translation>
     </message>
@@ -1068,7 +1084,7 @@
         <translation>Nézet törlése</translation>
     </message>
     <message>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+936"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="+945"/>
         <source>All Files (*)</source>
         <translation>Minden fájl (*)</translation>
     </message>
@@ -1124,9 +1140,10 @@ Line %1, column %2</source>
         <translation>Nem támogatott térképtájolás: „%1”</translation>
     </message>
     <message>
-        <location line="+133"/>
+        <location line="+132"/>
         <location line="+46"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+180"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+179"/>
+        <location line="+49"/>
         <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
         <translation>Érvénytelen csempekészlet-paraméterek a(z) „%1” csempekészletnél</translation>
     </message>
@@ -1137,7 +1154,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location line="+229"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+68"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+23"/>
         <source>Terrains</source>
         <translation>Terepek</translation>
     </message>
@@ -1149,7 +1166,7 @@ Line %1, column %2</source>
     <message>
         <location line="+58"/>
         <location line="+62"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+680"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+687"/>
         <source>Invalid tile: %1</source>
         <translation>Érvénytelen csempe: %1</translation>
     </message>
@@ -1208,8 +1225,8 @@ Line %1, column %2</source>
         <translation>A csempe használatban van, de nincs csempekészlet megadva</translation>
     </message>
     <message>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-575"/>
-        <location line="+27"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-582"/>
+        <location line="+34"/>
         <source>Invalid (negative) tile id: %1</source>
         <translation>Érvénytelen (negatív) csempeazonosító: %1</translation>
     </message>
@@ -1409,7 +1426,7 @@ Line %1, column %2</source>
         <translation>Legutóbbi projektek</translation>
     </message>
     <message>
-        <location line="+110"/>
+        <location line="+83"/>
         <source>New Map...</source>
         <translation>Új térkép…</translation>
     </message>
@@ -1422,7 +1439,7 @@ Line %1, column %2</source>
 <context>
     <name>NoTilesetWidget</name>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+89"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+88"/>
         <source>New Tileset...</source>
         <translation>Új csempekészlet…</translation>
     </message>
@@ -1556,7 +1573,7 @@ Line %1, column %2</source>
     </message>
     <message>
         <location filename="../src/tiled/newmapdialog.cpp" line="+77"/>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+1236"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="+1243"/>
         <source>Base64 (uncompressed)</source>
         <translation>Base64 (tömörítetlen)</translation>
     </message>
@@ -1618,23 +1635,23 @@ Line %1, column %2</source>
         <translation>&amp;Csempekészletképek újratöltése, ha megváltoznak</translation>
     </message>
     <message>
-        <location line="+116"/>
+        <location line="+131"/>
         <location line="+6"/>
         <source>Interface</source>
         <translation>Felület</translation>
     </message>
     <message>
-        <location line="+120"/>
+        <location line="+39"/>
         <source>&amp;Language:</source>
         <translation>&amp;Nyelv:</translation>
     </message>
     <message>
-        <location line="+56"/>
+        <location line="+30"/>
         <source>Hardware &amp;accelerated drawing (OpenGL)</source>
         <translation>&amp;Hardveresen gyorsított rajzolás (OpenGL)</translation>
     </message>
     <message>
-        <location line="-315"/>
+        <location line="-223"/>
         <source>Turn this off if you&apos;re having trouble saving your files.</source>
         <translation>Ezt kapcsolja ki, ha problémái vannak a fájlok mentésével.</translation>
     </message>
@@ -1669,22 +1686,22 @@ Line %1, column %2</source>
         <translation>Csempekészletek beágyazása</translation>
     </message>
     <message>
-        <location line="+130"/>
+        <location line="+156"/>
         <source>Grid color:</source>
         <translation>Rács színe:</translation>
     </message>
     <message>
-        <location line="+128"/>
+        <location line="+71"/>
         <source>Fine grid divisions:</source>
         <translation>Segédrács felosztásai:</translation>
     </message>
     <message>
-        <location line="-160"/>
+        <location line="+13"/>
         <source> pixels</source>
         <translation> képpont</translation>
     </message>
     <message>
-        <location line="-135"/>
+        <location line="-277"/>
         <source>Restore previous session on startup</source>
         <translation>Előző munkamenet helyreállítása indításkor</translation>
     </message>
@@ -1699,22 +1716,17 @@ Line %1, column %2</source>
         <translation>Kimenet minimalizálása</translation>
     </message>
     <message>
-        <location line="+258"/>
+        <location line="+200"/>
         <source>Object line width:</source>
         <translation>Objektum vonalvastagsága:</translation>
     </message>
     <message>
-        <location line="-37"/>
+        <location line="+98"/>
         <source>Mouse wheel &amp;zooms by default</source>
         <translation>Nagyítás egérgörgővel alapértelmezetten</translation>
     </message>
     <message>
-        <location line="-211"/>
-        <source>Crash Reporting</source>
-        <translation>Összeomlási jelentés</translation>
-    </message>
-    <message>
-        <location line="+9"/>
+        <location line="-253"/>
         <source>Enable sending anonymous crash reports</source>
         <translation>Névtelen összeomlási jelentések küldésének engedélyezése</translation>
     </message>
@@ -1724,43 +1736,43 @@ Line %1, column %2</source>
         <translation>(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;további információk&lt;/a&gt;)</translation>
     </message>
     <message>
-        <location line="+205"/>
+        <location line="+206"/>
         <source>Object selection behavior:</source>
         <translation>Objektum kijelölésének viselkedése:</translation>
     </message>
     <message>
-        <location line="-43"/>
+        <location line="+47"/>
         <source>Middle mouse button uses auto-&amp;scrolling</source>
         <translation>A középső egérgomb automatikus &amp;görgetést használ</translation>
     </message>
     <message>
-        <location line="-17"/>
+        <location line="+7"/>
         <source>Use s&amp;mooth scrolling</source>
         <translation>&amp;Simított görgetés használata</translation>
     </message>
     <message>
-        <location line="-39"/>
+        <location line="-144"/>
         <location line="+20"/>
         <source> tiles</source>
         <translation> csempe</translation>
     </message>
     <message>
-        <location line="-29"/>
+        <location line="-39"/>
         <source>Background fade color:</source>
         <translation>Háttér elhalványulásának színe:</translation>
     </message>
     <message>
-        <location line="+55"/>
+        <location line="-27"/>
         <source>Major grid:</source>
         <translation>Fő rács:</translation>
     </message>
     <message>
-        <location line="-33"/>
+        <location line="+59"/>
         <source>by</source>
         <translation>–</translation>
     </message>
     <message>
-        <location line="+139"/>
+        <location line="-165"/>
         <source>Display news in status bar</source>
         <translation>Hírek megjelenítése az állapotsávon</translation>
     </message>
@@ -1768,6 +1780,16 @@ Line %1, column %2</source>
         <location line="+7"/>
         <source>Highlight new version in status bar</source>
         <translation>Új verzió kiemelése az állapotsávon</translation>
+    </message>
+    <message>
+        <location line="+229"/>
+        <source>Behavior</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+67"/>
+        <source>Add &quot;Copy&quot; when duplicating</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+24"/>
@@ -1806,14 +1828,14 @@ Line %1, column %2</source>
         <translation>Megnyitás…</translation>
     </message>
     <message>
-        <location filename="../src/tiled/preferencesdialog.cpp" line="+64"/>
-        <location line="+211"/>
+        <location filename="../src/tiled/preferencesdialog.cpp" line="+65"/>
+        <location line="+216"/>
         <source>Native</source>
         <translation>Eredeti</translation>
     </message>
     <message>
-        <location line="-210"/>
-        <location line="+211"/>
+        <location line="-215"/>
+        <location line="+216"/>
         <source>Tiled Fusion</source>
         <translation>Tiled fúzió</translation>
     </message>
@@ -1833,17 +1855,17 @@ Line %1, column %2</source>
         <translation>Alapszín:</translation>
     </message>
     <message>
-        <location line="-109"/>
+        <location line="-405"/>
         <source>Updates</source>
         <translation>Frissítések</translation>
     </message>
     <message>
-        <location line="-10"/>
+        <location line="+281"/>
         <source>Pixel-perfect tile object selection</source>
         <translation>Képponttökéletes csempeobjektum-kiválasztás</translation>
     </message>
     <message>
-        <location line="+191"/>
+        <location line="+196"/>
         <source>Plugins</source>
         <translation>Bővítmények</translation>
     </message>
@@ -1877,7 +1899,7 @@ Line %1, column %2</source>
 <context>
     <name>Python::PythonMapFormat</name>
     <message>
-        <location filename="../src/plugins/python/pythonplugin.cpp" line="+274"/>
+        <location filename="../src/plugins/python/pythonplugin.cpp" line="+445"/>
         <source>-- Using script %1 to read %2</source>
         <translation>-- A(z) %1 parancsfájl használata %2 olvasásához</translation>
     </message>
@@ -1900,9 +1922,32 @@ Line %1, column %2</source>
 <context>
     <name>Python::PythonPlugin</name>
     <message>
-        <location line="-176"/>
+        <location line="-313"/>
         <source>Reloading Python scripts</source>
         <translation>Python-parancsfájlok újratöltése</translation>
+    </message>
+</context>
+<context>
+    <name>Python::PythonTilesetFormat</name>
+    <message>
+        <location line="+334"/>
+        <source>-- Using script %1 to read %2</source>
+        <translation type="unfinished">-- A(z) %1 parancsfájl használata %2 olvasásához</translation>
+    </message>
+    <message>
+        <location line="+28"/>
+        <source>-- Using script %1 to write %2</source>
+        <translation type="unfinished">-- A(z) %1 parancsfájl használata %2 írásához</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Uncaught exception in script. Please check console.</source>
+        <translation type="unfinished">El nem fogott kivétel a parancsfájlban. Nézze meg a konzolt.</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Script returned false. Please check console.</source>
+        <translation type="unfinished">A parancsfájl hamis értékkel tért vissza. Nézze meg a konzolt.</translation>
     </message>
 </context>
 <context>
@@ -1924,7 +1969,7 @@ Line %1, column %2</source>
 <context>
     <name>QtBoolPropertyManager</name>
     <message>
-        <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+1716"/>
+        <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+1550"/>
         <source>True</source>
         <translation>Igaz</translation>
     </message>
@@ -1953,7 +1998,7 @@ Line %1, column %2</source>
 <context>
     <name>QtColorPropertyManager</name>
     <message>
-        <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+4783"/>
+        <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+4218"/>
         <source>Red</source>
         <translation>Vörös</translation>
     </message>
@@ -2123,27 +2168,9 @@ Line %1, column %2</source>
     </message>
 </context>
 <context>
-    <name>QtLocalePropertyManager</name>
-    <message>
-        <location line="-3576"/>
-        <source>%1, %2</source>
-        <translation>%1, %2</translation>
-    </message>
-    <message>
-        <location line="+53"/>
-        <source>Language</source>
-        <translation>Nyelv</translation>
-    </message>
-    <message>
-        <location line="+8"/>
-        <source>Country</source>
-        <translation>Ország</translation>
-    </message>
-</context>
-<context>
     <name>QtPointFPropertyManager</name>
     <message>
-        <location line="+421"/>
+        <location line="-2778"/>
         <source>(%1, %2)</source>
         <translation>(%1, %2)</translation>
     </message>
@@ -2269,43 +2296,9 @@ Line %1, column %2</source>
     </message>
 </context>
 <context>
-    <name>QtSizePolicyPropertyManager</name>
-    <message>
-        <location line="+1701"/>
-        <location line="+1"/>
-        <source>&lt;Invalid&gt;</source>
-        <translation>&lt;Érvénytelen&gt;</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>[%1, %2, %3, %4]</source>
-        <translation>[%1, %2, %3, %4]</translation>
-    </message>
-    <message>
-        <location line="+45"/>
-        <source>Horizontal Policy</source>
-        <translation>Vízszintes irányelv</translation>
-    </message>
-    <message>
-        <location line="+9"/>
-        <source>Vertical Policy</source>
-        <translation>Függőleges irányelv</translation>
-    </message>
-    <message>
-        <location line="+9"/>
-        <source>Horizontal Stretch</source>
-        <translation>Vízszintes nyújtás</translation>
-    </message>
-    <message>
-        <location line="+8"/>
-        <source>Vertical Stretch</source>
-        <translation>Függőleges nyújtás</translation>
-    </message>
-</context>
-<context>
     <name>QtSizePropertyManager</name>
     <message>
-        <location line="-2277"/>
+        <location line="-503"/>
         <source>%1 x %2</source>
         <translation>%1×%2</translation>
     </message>
@@ -2458,7 +2451,12 @@ Line %1, column %2</source>
 <context>
     <name>Script Errors</name>
     <message>
-        <location filename="../src/tiled/editableasset.cpp" line="+92"/>
+        <location filename="../src/tiled/editableasset.cpp" line="+81"/>
+        <source>Asset not associated with a file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>Invalid callback</source>
         <translation>Érvénytelen visszahívás</translation>
     </message>
@@ -2469,46 +2467,42 @@ Line %1, column %2</source>
         <translation>A visszavonási rendszer nem érhető el ennél az eszköznél</translation>
     </message>
     <message>
-        <location filename="../src/tiled/editablegrouplayer.cpp" line="+58"/>
+        <location filename="../src/tiled/editablegrouplayer.cpp" line="+56"/>
         <location line="+11"/>
         <location line="+29"/>
-        <location filename="../src/tiled/editablemap.cpp" line="+165"/>
+        <location filename="../src/tiled/editablemap.cpp" line="+149"/>
         <location line="+11"/>
         <location line="+43"/>
-        <location filename="../src/tiled/editableobjectgroup.cpp" line="+57"/>
+        <location filename="../src/tiled/editableobjectgroup.cpp" line="+56"/>
         <location line="+11"/>
         <location line="+36"/>
-        <location filename="../src/tiled/editablewangset.cpp" line="+113"/>
+        <location filename="../src/tiled/editablewangset.cpp" line="+116"/>
         <location line="+9"/>
         <source>Index out of range</source>
         <translation>Az index kívül esik a tartományon</translation>
     </message>
     <message>
         <location line="-16"/>
-        <location line="+21"/>
-        <location filename="../src/tiled/editablemap.cpp" line="+72"/>
-        <location filename="../src/tiled/scriptdialog.cpp" line="+89"/>
+        <location filename="../src/tiled/editablemap.cpp" line="+77"/>
+        <location filename="../src/tiled/editableworld.cpp" line="+116"/>
+        <location filename="../src/tiled/scriptdialog.cpp" line="+87"/>
         <source>Invalid argument</source>
         <translation>Érvénytelen argumentum</translation>
     </message>
     <message>
-        <location line="-15"/>
-        <location filename="../src/tiled/editablemap.cpp" line="-94"/>
+        <location line="+6"/>
+        <location filename="../src/tiled/editablemap.cpp" line="-99"/>
         <source>Layer not found</source>
         <translation>A réteg nem található</translation>
     </message>
     <message>
         <location line="+20"/>
+        <location filename="../src/tiled/editablemap.cpp" line="+32"/>
         <source>Layer is in use</source>
         <translation>A réteg használatban van</translation>
     </message>
     <message>
-        <location filename="../src/tiled/editablemap.cpp" line="+32"/>
-        <source>Layer already part of a map</source>
-        <translation>A réteg már része egy térképnek</translation>
-    </message>
-    <message>
-        <location line="+165"/>
+        <location filename="../src/tiled/editablemap.cpp" line="+170"/>
         <source>Merge is currently not supported for detached maps</source>
         <translation>Az egyesítés jelenleg nem támogatott leválasztott térképeknél</translation>
     </message>
@@ -2540,7 +2534,7 @@ Line %1, column %2</source>
     <message>
         <location line="-284"/>
         <location line="+305"/>
-        <location filename="../src/tiled/tilecollisiondock.cpp" line="+360"/>
+        <location filename="../src/tiled/tilecollisiondock.cpp" line="+359"/>
         <source>Not an object</source>
         <translation>Nem objektum</translation>
     </message>
@@ -2551,8 +2545,8 @@ Line %1, column %2</source>
         <translation>Az objektum nem ebből a térképből való</translation>
     </message>
     <message>
-        <location filename="../src/tiled/editablemapobject.cpp" line="+172"/>
-        <location filename="../src/tiled/editabletile.cpp" line="+206"/>
+        <location filename="../src/tiled/editablemapobject.cpp" line="+201"/>
+        <location filename="../src/tiled/editabletile.cpp" line="+240"/>
         <source>Array expected</source>
         <translation>Tömb várt</translation>
     </message>
@@ -2562,7 +2556,7 @@ Line %1, column %2</source>
         <translation>Érvénytelen koordináta</translation>
     </message>
     <message>
-        <location filename="../src/tiled/editableobject.cpp" line="+93"/>
+        <location filename="../src/tiled/editableobject.cpp" line="+124"/>
         <source>Asset is read-only</source>
         <translation>Az eszköz csak olvasható</translation>
     </message>
@@ -2573,7 +2567,7 @@ Line %1, column %2</source>
         <translation>Az objektum nem található</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+19"/>
         <source>Object already part of an object layer</source>
         <translation>Az objektum már része egy objektumrétegnek</translation>
     </message>
@@ -2609,12 +2603,12 @@ Line %1, column %2</source>
         <translation>Érvénytelen érték (negatív)</translation>
     </message>
     <message>
-        <location filename="../src/tiled/editabletileset.cpp" line="+91"/>
+        <location filename="../src/tiled/editabletileset.cpp" line="+90"/>
         <source>Invalid tile ID</source>
         <translation>Érvénytelen csempeazonosító</translation>
     </message>
     <message>
-        <location line="+62"/>
+        <location line="+59"/>
         <source>Can only add tiles to an image collection tileset</source>
         <translation>Csak csempéket adhat hozzá egy képgyűjtemény csempekészletéhez</translation>
     </message>
@@ -2624,23 +2618,33 @@ Line %1, column %2</source>
         <translation>Csak csempéket távolíthat el egy képgyűjtemény csempekészletéből</translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+84"/>
         <source>Can&apos;t set the image of an image collection tileset</source>
         <translation>Nem lehet beállítani egy képgyűjtemény csempekészletének képét</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+18"/>
         <source>Can&apos;t set tile size on an image collection tileset</source>
         <translation>Nem lehet beállítani egy képgyűjtemény csempekészletének csempeméretét</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+18"/>
+        <source>Can&apos;t set tile spacing on an image collection tileset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+18"/>
+        <source>Can&apos;t set margin on an image collection tileset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+18"/>
         <source>Can&apos;t set column count for image-based tilesets</source>
         <translation>Nem lehet beállítani az oszlopszámot a képalapú csempekészleteknél</translation>
     </message>
     <message>
-        <location line="+78"/>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+919"/>
+        <location line="+96"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+918"/>
         <source>Not a tile</source>
         <translation>Nem csempe</translation>
     </message>
@@ -2675,7 +2679,7 @@ Line %1, column %2</source>
         <translation>Érvénytelen visszatérési érték az „outputFiles” függvénynél (karakterlánc vagy tömb várt)</translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptedtool.cpp" line="+231"/>
+        <location filename="../src/tiled/scriptedtool.cpp" line="+239"/>
         <source>Could not find action &apos;%1&apos;</source>
         <translation>Nem található a(z) „%1” művelet</translation>
     </message>
@@ -2685,13 +2689,14 @@ Line %1, column %2</source>
         <translation>Érvénytelen eszközobjektum (a „name” tulajdonság karakterláncát igényli)</translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptmodule.cpp" line="+186"/>
-        <location line="+82"/>
+        <location filename="../src/tiled/editableasset.cpp" line="-45"/>
+        <location filename="../src/tiled/scriptmodule.cpp" line="+195"/>
+        <location line="+87"/>
         <source>Editor not available</source>
         <translation>A szerkesztő nem érhető el</translation>
     </message>
     <message>
-        <location line="-25"/>
+        <location filename="../src/tiled/scriptmodule.cpp" line="-25"/>
         <source>Unknown type: %1</source>
         <translation>Ismeretlen típus: %1</translation>
     </message>
@@ -2749,7 +2754,7 @@ Line %1, column %2</source>
         <translation>Nem elválasztó elem művelet nélkül</translation>
     </message>
     <message>
-        <location line="+26"/>
+        <location line="+37"/>
         <source>Unknown action</source>
         <translation>Ismeretlen művelet</translation>
     </message>
@@ -2890,12 +2895,12 @@ Line %1, column %2</source>
         <translation>Hiba a térkép olvasásakor</translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptmanager.cpp" line="+334"/>
+        <location filename="../src/tiled/scriptmanager.cpp" line="+342"/>
         <source>Argument %1 is undefined or the wrong type</source>
         <translation>A(z) %1 argumentum meghatározatlan vagy hibás típusú</translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptimage.cpp" line="+95"/>
+        <location filename="../src/tiled/scriptimage.cpp" line="+98"/>
         <source>Invalid color name: &apos;%2&apos;</source>
         <translation>Érvénytelen színnév: „%2”</translation>
     </message>
@@ -2934,6 +2939,33 @@ Line %1, column %2</source>
         <location line="+118"/>
         <source>Access to Process object that was already closed.</source>
         <translation>Hozzáférés egy olyan Process objektumhoz, amely már be lett zárva.</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/editabletilelayer.cpp" line="+121"/>
+        <source>Layer not part of a map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/editableworld.cpp" line="-28"/>
+        <location line="+16"/>
+        <location line="+44"/>
+        <source>Map not found in this world</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-27"/>
+        <source>Map is already part of a loaded world</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Can&apos;t add unsaved map to a world</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/tilelayerwangedit.cpp" line="+97"/>
+        <source>Invalid edge index</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3072,14 +3104,14 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::AbstractObjectTool</name>
     <message>
-        <location filename="../src/tiled/abstractobjecttool.cpp" line="+199"/>
-        <location line="+503"/>
+        <location filename="../src/tiled/abstractobjecttool.cpp" line="+202"/>
+        <location line="+498"/>
         <source>Flip Horizontally</source>
         <translation>Tükrözés vízszintesen</translation>
     </message>
     <message>
-        <location line="-502"/>
-        <location line="+503"/>
+        <location line="-497"/>
+        <location line="+498"/>
         <source>Flip Vertically</source>
         <translation>Tükrözés függőlegesen</translation>
     </message>
@@ -3105,14 +3137,12 @@ Line %1, column %2</source>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>%n objektum kettőzése</numerusform>
-            <numerusform>%n objektum kettőzése</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+2"/>
         <source>Remove %n Object(s)</source>
         <translation>
-            <numerusform>%n objektum eltávolítása</numerusform>
             <numerusform>%n objektum eltávolítása</numerusform>
         </translation>
     </message>
@@ -3187,15 +3217,14 @@ Line %1, column %2</source>
         <translation>Objektum hátra küldése legalulra</translation>
     </message>
     <message numerus="yes">
-        <location line="+7"/>
+        <location line="+5"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>%n objektum áthelyezése a rétegre</numerusform>
             <numerusform>%n objektum áthelyezése a rétegre</numerusform>
         </translation>
     </message>
     <message>
-        <location line="+13"/>
+        <location line="+10"/>
         <source>Object &amp;Properties...</source>
         <translation>Objektum &amp;tulajdonságai…</translation>
     </message>
@@ -3226,7 +3255,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::AbstractTileTool</name>
     <message>
-        <location filename="../src/tiled/abstracttiletool.cpp" line="+179"/>
+        <location filename="../src/tiled/abstracttiletool.cpp" line="+180"/>
         <source>empty</source>
         <translation>üres</translation>
     </message>
@@ -3234,7 +3263,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::AbstractWorldTool</name>
     <message>
-        <location filename="../src/tiled/abstractworldtool.cpp" line="+205"/>
+        <location filename="../src/tiled/abstractworldtool.cpp" line="+137"/>
         <source>Add another map to the current world</source>
         <translation>Másik térkép hozzáadása a jelenlegi világhoz</translation>
     </message>
@@ -3249,7 +3278,7 @@ Line %1, column %2</source>
         <translation>A jelenlegi térkép eltávolítása a jelenlegi világból</translation>
     </message>
     <message>
-        <location line="+74"/>
+        <location line="+73"/>
         <source>Add a Map to World &quot;%2&quot;</source>
         <translation>Térkép hozzáadása a(z) „%2” világhoz</translation>
     </message>
@@ -3307,22 +3336,22 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::AutoMapper</name>
     <message>
-        <location filename="../src/tiled/automapper.cpp" line="+268"/>
+        <location filename="../src/tiled/automapper.cpp" line="+262"/>
         <source>Ignoring unknown property &apos;%2&apos; = &apos;%3&apos; (rule map &apos;%1&apos;)</source>
         <translation>Az ismeretlen „%2” = „%3” tulajdonság mellőzése („%1” szabálytérkép)</translation>
     </message>
     <message>
-        <location line="+35"/>
+        <location line="+48"/>
         <source>Ignoring unknown property &apos;%2&apos; = &apos;%3&apos; on layer &apos;%4&apos; (rule map &apos;%1&apos;)</source>
         <translation>Az ismeretlen „%2” = „%3” tulajdonság mellőzése a(z) „%4” rétegen („%1” szabálytérkép)</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+52"/>
         <source>Ignoring unknown property &apos;%2&apos; = &apos;%3&apos; for rule options (rule map &apos;%1&apos;)</source>
         <translation>Az ismeretlen „%2” = „%3” tulajdonság mellőzése a szabálybeállításoknál („%1” szabálytérkép)</translation>
     </message>
     <message>
-        <location line="+59"/>
+        <location line="+58"/>
         <source>&apos;regions_*&apos; layers must be tile layers.</source>
         <translation>A „regions_*” rétegeknek csemperétegeknek kell lenniük.</translation>
     </message>
@@ -3342,7 +3371,7 @@ Line %1, column %2</source>
         <translation>Az elforgatott téglalapok nem támogatottak a „rule_options” rétegeken.</translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+10"/>
         <source>&apos;rule_options&apos; layers must be object layers.</source>
         <translation>A „rule_options” rétegeknek objektumrétegeknek kell lenniük.</translation>
     </message>
@@ -3357,13 +3386,13 @@ Line %1, column %2</source>
         <translation>Az „input_*” és az „inputnot_*” rétegeknek csemperétegeknek kell lenniük.</translation>
     </message>
     <message>
-        <location line="+48"/>
+        <location line="+47"/>
         <source>No input_&lt;name&gt; or inputnot_&lt;name&gt; layer found!</source>
         <translation>Nem található input_&lt;név&gt; vagy inputnot_&lt;név&gt; réteg!</translation>
     </message>
     <message>
-        <location line="-119"/>
-        <location line="+114"/>
+        <location line="-117"/>
+        <location line="+112"/>
         <source>Layer &apos;%1&apos; is not recognized as a valid layer for Automapping.</source>
         <translation>A(z) „%1” réteg nem ismerhető fel érvényes rétegként az automatikus térképezéshez.</translation>
     </message>
@@ -3409,7 +3438,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::BrokenLinksModel</name>
     <message>
-        <location filename="../src/tiled/brokenlinks.cpp" line="+269"/>
+        <location filename="../src/tiled/brokenlinks.cpp" line="+271"/>
         <source>Tileset</source>
         <translation>Csempekészlet</translation>
     </message>
@@ -3452,7 +3481,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::BrokenLinksWidget</name>
     <message>
-        <location line="+89"/>
+        <location line="+111"/>
         <source>Some files could not be found</source>
         <translation>Néhány fájl nem található</translation>
     </message>
@@ -3523,8 +3552,8 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::BucketFillTool</name>
     <message>
-        <location filename="../src/tiled/bucketfilltool.cpp" line="+44"/>
-        <location line="+139"/>
+        <location filename="../src/tiled/bucketfilltool.cpp" line="+41"/>
+        <location line="+138"/>
         <source>Bucket Fill Tool</source>
         <translation>Kitöltés eszköz</translation>
     </message>
@@ -3668,7 +3697,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::CommandProcess</name>
     <message>
-        <location filename="../src/tiled/command.cpp" line="+259"/>
+        <location filename="../src/tiled/command.cpp" line="+264"/>
         <source>Unable to create/open %1</source>
         <translation>Nem lehet létrehozni vagy megnyitni: %1</translation>
     </message>
@@ -3683,7 +3712,7 @@ Line %1, column %2</source>
         <translation>Végrehajtás: %1</translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+36"/>
         <source>The command failed to start.</source>
         <translation>A parancs indítása sikertelen.</translation>
     </message>
@@ -3815,25 +3844,34 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Document</name>
     <message>
-        <location filename="../src/tiled/document.cpp" line="+110"/>
+        <location filename="../src/tiled/document.cpp" line="+106"/>
         <source>Custom property &apos;%1&apos; refers to non-existing file &apos;%2&apos;</source>
         <translation>A(z) „%1” egyéni tulajdonság egy nem létező „%2” fájlra hivatkozik</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/capturestamphelper.cpp" line="+63"/>
+        <source>Cut</source>
+        <translation type="unfinished">Kivágás</translation>
     </message>
 </context>
 <context>
     <name>Tiled::DocumentManager</name>
     <message>
-        <location filename="../src/tiled/documentmanager.cpp" line="+647"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="+651"/>
+        <location filename="../src/tiled/editormanager.cpp" line="+648"/>
         <source>Unrecognized file format.</source>
         <translation>Felismerhetetlen fájlformátum.</translation>
     </message>
     <message>
         <location line="+67"/>
+        <location filename="../src/tiled/editormanager.cpp" line="+67"/>
         <source>Save File As</source>
         <translation>Fájl mentése másként</translation>
     </message>
     <message>
-        <location line="+214"/>
+        <location line="+213"/>
+        <location line="+21"/>
+        <location filename="../src/tiled/editormanager.cpp" line="+214"/>
         <location line="+27"/>
         <source>%1:
 
@@ -3843,27 +3881,37 @@ Line %1, column %2</source>
 %2</translation>
     </message>
     <message>
-        <location line="+112"/>
+        <location line="+77"/>
+        <source>%1 [read-only]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+63"/>
+        <location filename="../src/tiled/editormanager.cpp" line="+112"/>
         <source>Close</source>
         <translation>Bezárás</translation>
     </message>
     <message>
         <location line="+6"/>
+        <location filename="../src/tiled/editormanager.cpp" line="+6"/>
         <source>Close Other Tabs</source>
         <translation>Többi lap bezárása</translation>
     </message>
     <message>
         <location line="+4"/>
+        <location filename="../src/tiled/editormanager.cpp" line="+4"/>
         <source>Close Tabs to the Right</source>
         <translation>Lapok bezárása ettől jobbra</translation>
     </message>
     <message>
-        <location line="+321"/>
+        <location line="+358"/>
+        <location filename="../src/tiled/editormanager.cpp" line="+323"/>
         <source>Tileset Columns Changed</source>
         <translation>A csempekészlet oszlopai megváltoztak</translation>
     </message>
     <message>
         <location line="+1"/>
+        <location filename="../src/tiled/editormanager.cpp" line="+1"/>
         <source>The number of tile columns in the tileset &apos;%1&apos; appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
         <translation>Úgy tűnik, hogy a(z) „%1” csempekészletben lévő csempeoszlopok száma megváltozott: %2 → %3. Szeretné hozzáigazítani a csempehivatkozásokat?</translation>
     </message>
@@ -3914,7 +3962,6 @@ Line %1, column %2</source>
         <source>Move %n Node(s)</source>
         <translation>
             <numerusform>%n csomópont áthelyezése</numerusform>
-            <numerusform>%n csomópont áthelyezése</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3922,7 +3969,6 @@ Line %1, column %2</source>
         <location line="+94"/>
         <source>Delete %n Node(s)</source>
         <translation>
-            <numerusform>%n csomópont törlése</numerusform>
             <numerusform>%n csomópont törlése</numerusform>
         </translation>
     </message>
@@ -3951,9 +3997,17 @@ Line %1, column %2</source>
     </message>
 </context>
 <context>
+    <name>Tiled::Editor</name>
+    <message>
+        <location filename="../src/tiled/editor.cpp" line="+40"/>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Tiled::Eraser</name>
     <message>
-        <location filename="../src/tiled/eraser.cpp" line="+37"/>
+        <location filename="../src/tiled/eraser.cpp" line="+35"/>
         <location line="+62"/>
         <source>Eraser</source>
         <translation>Radír</translation>
@@ -4030,7 +4084,7 @@ Le szeretné cserélni?</translation>
         <translation>Kiválasztás</translation>
     </message>
     <message>
-        <location line="+81"/>
+        <location line="+89"/>
         <source>Choose a Folder</source>
         <translation>Mappa kiválasztása</translation>
     </message>
@@ -4043,7 +4097,7 @@ Le szeretné cserélni?</translation>
 <context>
     <name>Tiled::ImageCache</name>
     <message>
-        <location filename="../src/libtiled/imagecache.cpp" line="+131"/>
+        <location filename="../src/libtiled/imagecache.cpp" line="+130"/>
         <source>Recursive metatile map detected: %1</source>
         <translation>Rekurzív metacsempetérkép észlelhető: %1</translation>
     </message>
@@ -4060,14 +4114,12 @@ Le szeretné cserélni?</translation>
         <source>%n error(s)</source>
         <translation>
             <numerusform>%n hiba</numerusform>
-            <numerusform>%n hiba</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+1"/>
         <source>%n warning(s)</source>
         <translation>
-            <numerusform>%n figyelmeztetés</numerusform>
             <numerusform>%n figyelmeztetés</numerusform>
         </translation>
     </message>
@@ -4098,7 +4150,7 @@ Le szeretné cserélni?</translation>
 <context>
     <name>Tiled::LayerDock</name>
     <message>
-        <location filename="../src/tiled/layerdock.cpp" line="+237"/>
+        <location filename="../src/tiled/layerdock.cpp" line="+236"/>
         <source>Layers</source>
         <translation>Rétegek</translation>
     </message>
@@ -4116,7 +4168,7 @@ Le szeretné cserélni?</translation>
 <context>
     <name>Tiled::LayerModel</name>
     <message>
-        <location filename="../src/tiled/layermodel.cpp" line="+236"/>
+        <location filename="../src/tiled/layermodel.cpp" line="+233"/>
         <source>Layer</source>
         <translation>Réteg</translation>
     </message>
@@ -4135,11 +4187,10 @@ Le szeretné cserélni?</translation>
         <source>Drag Layer(s)</source>
         <translation>
             <numerusform>Réteg húzása</numerusform>
-            <numerusform>Rétegek húzása</numerusform>
         </translation>
     </message>
     <message>
-        <location line="+226"/>
+        <location line="+225"/>
         <source>Show Other Layers</source>
         <translation>Egyéb rétegek megjelenítése</translation>
     </message>
@@ -4162,8 +4213,8 @@ Le szeretné cserélni?</translation>
 <context>
     <name>Tiled::LayerOffsetTool</name>
     <message>
-        <location filename="../src/tiled/layeroffsettool.cpp" line="+42"/>
-        <location line="+97"/>
+        <location filename="../src/tiled/layeroffsettool.cpp" line="+41"/>
+        <location line="+98"/>
         <source>Offset Layers</source>
         <translation>Rétegek eltolása</translation>
     </message>
@@ -4171,12 +4222,12 @@ Le szeretné cserélni?</translation>
 <context>
     <name>Tiled::LocatorWidget</name>
     <message>
-        <location filename="../src/tiled/locatorwidget.cpp" line="+375"/>
+        <location filename="../src/tiled/locatorwidget.cpp" line="+373"/>
         <source>Filename</source>
         <translation>Fájlnév</translation>
     </message>
     <message>
-        <location filename="../src/tiled/actionsearch.cpp" line="+242"/>
+        <location filename="../src/tiled/actionsearch.cpp" line="+241"/>
         <source>Search actions...</source>
         <translation>Keresési műveletek…</translation>
     </message>
@@ -4206,10 +4257,12 @@ Le szeretné cserélni?</translation>
 <context>
     <name>Tiled::MainWindow</name>
     <message>
-        <location filename="../src/tiled/abstractobjecttool.cpp" line="-281"/>
-        <location filename="../src/tiled/documentmanager.cpp" line="-647"/>
+        <location filename="../src/tiled/abstractobjecttool.cpp" line="-276"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="-705"/>
         <location line="+26"/>
-        <location filename="../src/tiled/mainwindow.cpp" line="+1427"/>
+        <location filename="../src/tiled/editormanager.cpp" line="-649"/>
+        <location line="+26"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="+1403"/>
         <source>untitled</source>
         <translation>névtelen</translation>
     </message>
@@ -4225,35 +4278,39 @@ Le szeretné cserélni?</translation>
     </message>
     <message>
         <location filename="../src/tiled/documentmanager.cpp" line="-96"/>
+        <location filename="../src/tiled/editormanager.cpp" line="-96"/>
         <source>Error Saving File</source>
         <translation>Hiba a fájl mentésekor</translation>
     </message>
     <message>
         <location line="+41"/>
+        <location filename="../src/tiled/editormanager.cpp" line="+41"/>
         <source>Extension Mismatch</source>
         <translation>A kiterjesztés nem megfelelő</translation>
     </message>
     <message>
         <location line="+1"/>
+        <location filename="../src/tiled/editormanager.cpp" line="+1"/>
         <source>The file extension does not match the chosen file type.</source>
         <translation>A fájl kiterjesztése nem illeszkedik a választott fájltípushoz.</translation>
     </message>
     <message>
         <location line="+4"/>
+        <location filename="../src/tiled/editormanager.cpp" line="+4"/>
         <source>Tiled may not automatically recognize your file when loading. Are you sure you want to save with this extension?</source>
         <translation>A Tiled esetleg nem ismeri fel automatikusan a fájlt a betöltéskor. Biztosan el szeretné menteni ezzel a kiterjesztéssel?</translation>
     </message>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="-1290"/>
-        <location line="+449"/>
-        <location line="+36"/>
-        <location line="+487"/>
-        <location line="+736"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="-1265"/>
+        <location line="+450"/>
+        <location line="+40"/>
+        <location line="+465"/>
+        <location line="+734"/>
         <source>All Files (*)</source>
         <translation>Minden fájl (*)</translation>
     </message>
     <message>
-        <location line="-1686"/>
+        <location line="-1667"/>
         <source>Export As...</source>
         <translation>Exportálás másként…</translation>
     </message>
@@ -4280,7 +4337,7 @@ Válasszon egy adott formátumot.</translation>
         <translation>A megadott fájlnév nem rendelkezik semmilyen ismert fájlkiterjesztéssel.</translation>
     </message>
     <message>
-        <location line="+156"/>
+        <location line="+157"/>
         <source>Undo</source>
         <translation>Visszavonás</translation>
     </message>
@@ -4291,30 +4348,30 @@ Válasszon egy adott formátumot.</translation>
     </message>
     <message>
         <location line="+151"/>
-        <location line="+1833"/>
+        <location line="+1815"/>
         <source>&amp;Layer</source>
         <translation>&amp;Réteg</translation>
     </message>
     <message>
-        <location line="-1740"/>
-        <location line="+36"/>
-        <location line="+495"/>
+        <location line="-1722"/>
+        <location line="+40"/>
+        <location line="+473"/>
         <source>World files (*.world)</source>
         <translation>World-fájlok (*.world)</translation>
     </message>
     <message>
-        <location line="-529"/>
+        <location line="-511"/>
         <source>Load World</source>
         <translation>Világ betöltése</translation>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+459"/>
+        <location line="+441"/>
         <source>Error Loading World</source>
         <translation>Hiba a világ betöltésekor</translation>
     </message>
     <message>
-        <location line="-429"/>
+        <location line="-407"/>
         <source>New World</source>
         <translation>Új világ</translation>
     </message>
@@ -4324,20 +4381,20 @@ Válasszon egy adott formátumot.</translation>
         <translation>Hiba a világ létrehozásakor</translation>
     </message>
     <message>
-        <location line="+132"/>
-        <location line="+1558"/>
+        <location line="+135"/>
+        <location line="+1533"/>
         <source>Views and Toolbars</source>
         <translation>Nézetek és eszköztárak</translation>
     </message>
     <message>
-        <location line="-1555"/>
-        <location line="+1556"/>
+        <location line="-1530"/>
+        <location line="+1531"/>
         <source>Reset to Default Layout</source>
         <translation>Visszaállítás az alapértelmezett elrendezésre</translation>
     </message>
     <message>
-        <location line="-1555"/>
-        <location line="+1556"/>
+        <location line="-1530"/>
+        <location line="+1531"/>
         <source>Lock Layout</source>
         <translation>Elrendezés zárolása</translation>
     </message>
@@ -4359,20 +4416,13 @@ Válasszon egy adott formátumot.</translation>
         <translation>Fájl megnyitása</translation>
     </message>
     <message>
-        <location line="-468"/>
-        <location line="+582"/>
-        <location line="+58"/>
-        <source>Error Saving World</source>
-        <translation>Hiba a világ mentésekor</translation>
-    </message>
-    <message>
-        <location line="-510"/>
-        <location line="+1549"/>
+        <location line="-313"/>
+        <location line="+1524"/>
         <source>Custom Types Editor</source>
         <translation>Egyéni típusok szerkesztője</translation>
     </message>
     <message>
-        <location line="-1083"/>
+        <location line="-1085"/>
         <source>Unsaved Changes</source>
         <translation>Mentetlen változtatások</translation>
     </message>
@@ -4382,7 +4432,7 @@ Válasszon egy adott formátumot.</translation>
         <translation>Mentetlen változtatások vannak. Szeretné most elmenteni?</translation>
     </message>
     <message>
-        <location line="+35"/>
+        <location line="+36"/>
         <source>Unsaved Changes to World</source>
         <translation>Mentetlen változtatások a világon</translation>
     </message>
@@ -4392,7 +4442,7 @@ Válasszon egy adott formátumot.</translation>
         <translation>Mentetlen változtatások vannak a(z) „%1” világon. Szeretné most elmenteni a világot?</translation>
     </message>
     <message>
-        <location line="+50"/>
+        <location line="+43"/>
         <location line="+14"/>
         <source>Exported to %1</source>
         <translation>Exportálva ide: %1</translation>
@@ -4408,8 +4458,8 @@ Válasszon egy adott formátumot.</translation>
         <translation>Hiba a csempekészlet exportálásakor</translation>
     </message>
     <message>
-        <location line="-235"/>
-        <location line="+308"/>
+        <location line="-227"/>
+        <location line="+300"/>
         <source>Tiled Projects (*.tiled-project)</source>
         <translation>Tiled-projektek (*.tiled-project)</translation>
     </message>
@@ -4439,7 +4489,7 @@ Válasszon egy adott formátumot.</translation>
         <translation>Hiba történt a projekt mentése közben.</translation>
     </message>
     <message>
-        <location line="+129"/>
+        <location line="+135"/>
         <source>&lt;html&gt;Enable anonymous crash reporting? &lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;Engedélyezi a névtelen összeomlási jelentésküldést? &lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;további információk&lt;/a&gt;&lt;/html&gt;</translation>
     </message>
@@ -4474,7 +4524,7 @@ Válasszon egy adott formátumot.</translation>
         <translation>Külső csempekészletek hozzáadása</translation>
     </message>
     <message>
-        <location line="+119"/>
+        <location line="+121"/>
         <source>Automatic Mapping Error</source>
         <translation>Automatikus térképezési hiba</translation>
     </message>
@@ -4499,7 +4549,7 @@ Válasszon egy adott formátumot.</translation>
         <translation>&amp;Csoportosítás</translation>
     </message>
     <message>
-        <location line="+39"/>
+        <location line="+38"/>
         <source>Some export files already exist:</source>
         <translation>Néhány exportálási fájl már létezik:</translation>
     </message>
@@ -4533,12 +4583,17 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Tiled::MapDocument</name>
     <message>
-        <location filename="../src/tiled/mapdocument.cpp" line="+129"/>
+        <location filename="../src/tiled/mapdocument.cpp" line="+149"/>
         <source>Map format &apos;%1&apos; not found</source>
         <translation>A(z) „%1” térképformátum nem található</translation>
     </message>
     <message>
-        <location line="+104"/>
+        <location line="+44"/>
+        <source>Map format &apos;%s&apos; not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+96"/>
         <source>untitled.tmx</source>
         <translation>névtelen.tmx</translation>
     </message>
@@ -4548,12 +4603,12 @@ Válasszon egy adott formátumot.</translation>
         <translation>Térkép átméretezése</translation>
     </message>
     <message>
-        <location line="+82"/>
+        <location line="+83"/>
         <source>Offset Map</source>
         <translation>Térkép eltolása</translation>
     </message>
     <message>
-        <location line="+1038"/>
+        <location line="+1087"/>
         <location filename="../src/tiled/newmapdialog.cpp" line="+88"/>
         <source>Tile Layer %1</source>
         <translation>%1. csemperéteg</translation>
@@ -4569,7 +4624,7 @@ Válasszon egy adott formátumot.</translation>
         <translation>%1. képréteg</translation>
     </message>
     <message>
-        <location line="-928"/>
+        <location line="-977"/>
         <source>Group %1</source>
         <translation>%1. csoport</translation>
     </message>
@@ -4578,14 +4633,12 @@ Válasszon egy adott formátumot.</translation>
         <source>Group %n Layer(s)</source>
         <translation>
             <numerusform>%n réteg csoportosítása</numerusform>
-            <numerusform>%n réteg csoportosítása</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+16"/>
         <source>Ungroup %n Layer(s)</source>
         <translation>
-            <numerusform>%n réteg szétbontása</numerusform>
             <numerusform>%n réteg szétbontása</numerusform>
         </translation>
     </message>
@@ -4594,17 +4647,10 @@ Válasszon egy adott formátumot.</translation>
         <source>Duplicate %n Layer(s)</source>
         <translation>
             <numerusform>%n réteg kettőzése</numerusform>
-            <numerusform>%n réteg kettőzése</numerusform>
         </translation>
     </message>
     <message>
-        <location line="+35"/>
-        <location filename="../src/tiled/tileseteditor.cpp" line="+987"/>
-        <source>Copy of %1</source>
-        <translation>%1 másolata</translation>
-    </message>
-    <message>
-        <location line="+49"/>
+        <location line="+84"/>
         <source>Merge Layer Down</source>
         <translation>Rétegek egyesítése lefelé</translation>
     </message>
@@ -4613,11 +4659,10 @@ Válasszon egy adott formátumot.</translation>
         <source>Remove %n Layer(s)</source>
         <translation>
             <numerusform>%n réteg eltávolítása</numerusform>
-            <numerusform>%n réteg eltávolítása</numerusform>
         </translation>
     </message>
     <message>
-        <location line="+482"/>
+        <location line="+531"/>
         <source>Tile</source>
         <translation>Csempe</translation>
     </message>
@@ -4642,10 +4687,9 @@ Válasszon egy adott formátumot.</translation>
         <translation>Nem sikerült betölteni a(z) „%1” sablont</translation>
     </message>
     <message numerus="yes">
-        <location line="+89"/>
+        <location line="+138"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform>%n objektum kettőzése</numerusform>
             <numerusform>%n objektum kettőzése</numerusform>
         </translation>
     </message>
@@ -4654,14 +4698,12 @@ Válasszon egy adott formátumot.</translation>
         <source>Remove %n Object(s)</source>
         <translation>
             <numerusform>%n objektum eltávolítása</numerusform>
-            <numerusform>%n objektum eltávolítása</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+11"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
-            <numerusform>%n objektum áthelyezése a rétegre</numerusform>
             <numerusform>%n objektum áthelyezése a rétegre</numerusform>
         </translation>
     </message>
@@ -4670,14 +4712,12 @@ Válasszon egy adott formátumot.</translation>
         <source>Move %n Object(s) Up</source>
         <translation>
             <numerusform>%n objektum mozgatása fel</numerusform>
-            <numerusform>%n objektum mozgatása fel</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+36"/>
         <source>Move %n Object(s) Down</source>
         <translation>
-            <numerusform>%n objektum mozgatása le</numerusform>
             <numerusform>%n objektum mozgatása le</numerusform>
         </translation>
     </message>
@@ -4731,18 +4771,18 @@ Válasszon egy adott formátumot.</translation>
     </message>
     <message>
         <location line="+1"/>
-        <location line="+342"/>
+        <location line="+381"/>
         <source>Layer via Copy</source>
         <translation>Réteg másoláson keresztül</translation>
     </message>
     <message>
-        <location line="-341"/>
-        <location line="+341"/>
+        <location line="-380"/>
+        <location line="+380"/>
         <source>Layer via Cut</source>
         <translation>Réteg kivágáson keresztül</translation>
     </message>
     <message>
-        <location line="-340"/>
+        <location line="-379"/>
         <source>&amp;Group Layers</source>
         <translation>Rétegek &amp;csoportosítása</translation>
     </message>
@@ -4827,7 +4867,7 @@ Válasszon egy adott formátumot.</translation>
         <translation>&amp;Csoportosítás</translation>
     </message>
     <message>
-        <location line="+33"/>
+        <location line="+70"/>
         <source>Cut</source>
         <translation>Kivágás</translation>
     </message>
@@ -4838,10 +4878,9 @@ Válasszon egy adott formátumot.</translation>
         <translation>Törlés</translation>
     </message>
     <message numerus="yes">
-        <location line="+445"/>
+        <location line="+447"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
-            <numerusform>%n objektum kettőzése</numerusform>
             <numerusform>%n objektum kettőzése</numerusform>
         </translation>
     </message>
@@ -4849,7 +4888,6 @@ Válasszon egy adott formátumot.</translation>
         <location line="+1"/>
         <source>Remove %n Object(s)</source>
         <translation>
-            <numerusform>%n objektum eltávolítása</numerusform>
             <numerusform>%n objektum eltávolítása</numerusform>
         </translation>
     </message>
@@ -4867,7 +4905,7 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Tiled::MapEditor</name>
     <message>
-        <location filename="../src/tiled/mapeditor.cpp" line="+714"/>
+        <location filename="../src/tiled/mapeditor.cpp" line="+709"/>
         <source>Paste in Place</source>
         <translation>Beillesztés helyben</translation>
     </message>
@@ -4892,11 +4930,10 @@ Válasszon egy adott formátumot.</translation>
         <source>Add %n Tileset(s)</source>
         <translation>
             <numerusform>%n csempekészlet hozzáadása</numerusform>
-            <numerusform>%n csempekészlet hozzáadása</numerusform>
         </translation>
     </message>
     <message>
-        <location line="+58"/>
+        <location line="+80"/>
         <source>Tools</source>
         <translation>Eszközök</translation>
     </message>
@@ -4909,7 +4946,7 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Tiled::MapObjectModel</name>
     <message>
-        <location filename="../src/tiled/mapobjectmodel.cpp" line="+241"/>
+        <location filename="../src/tiled/mapobjectmodel.cpp" line="+261"/>
         <source>Change Object Name</source>
         <translation>Objektumnév megváltoztatása</translation>
     </message>
@@ -5127,7 +5164,6 @@ Válasszon egy adott formátumot.</translation>
         <source>Move %n Object(s)</source>
         <translation>
             <numerusform>%n objektum áthelyezése</numerusform>
-            <numerusform>%n objektum áthelyezése</numerusform>
         </translation>
     </message>
     <message>
@@ -5165,7 +5201,6 @@ Válasszon egy adott formátumot.</translation>
         <source>Rotate %n Object(s)</source>
         <translation>
             <numerusform>%n objektum forgatása</numerusform>
-            <numerusform>%n objektum forgatása</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -5173,14 +5208,13 @@ Válasszon egy adott formátumot.</translation>
         <source>Resize %n Object(s)</source>
         <translation>
             <numerusform>%n objektum átméretezése</numerusform>
-            <numerusform>%n objektum átméretezése</numerusform>
         </translation>
     </message>
 </context>
 <context>
     <name>Tiled::ObjectsDock</name>
     <message>
-        <location filename="../src/tiled/objectsdock.cpp" line="+165"/>
+        <location filename="../src/tiled/objectsdock.cpp" line="+168"/>
         <source>Objects</source>
         <translation>Objektumok</translation>
     </message>
@@ -5214,35 +5248,39 @@ Válasszon egy adott formátumot.</translation>
         <source>Move %n Object(s) to Layer</source>
         <translation>
             <numerusform>%n objektum áthelyezése a rétegre</numerusform>
-            <numerusform>%n objektum áthelyezése a rétegre</numerusform>
         </translation>
     </message>
 </context>
 <context>
     <name>Tiled::PreferencesDialog</name>
     <message>
-        <location filename="../src/tiled/preferencesdialog.cpp" line="-214"/>
-        <location line="+211"/>
+        <location filename="../src/tiled/preferencesdialog.cpp" line="-219"/>
+        <location line="+216"/>
         <source>System default</source>
         <translation>Rendszer alapértelmezettje</translation>
     </message>
     <message>
-        <location line="-203"/>
-        <location line="+208"/>
+        <location line="-208"/>
+        <location line="+213"/>
         <source>Select From Any Layer</source>
         <translation>Kijelölés bármely rétegről</translation>
     </message>
     <message>
-        <location line="-207"/>
-        <location line="+208"/>
+        <location line="-212"/>
+        <location line="+213"/>
         <source>Prefer Selected Layers</source>
         <translation>Kijelölt rétegek előnyben részesítése</translation>
     </message>
     <message>
-        <location line="-207"/>
-        <location line="+208"/>
+        <location line="-212"/>
+        <location line="+213"/>
         <source>Selected Layers Only</source>
         <translation>Csak a kijelölt rétegek</translation>
+    </message>
+    <message>
+        <location line="-171"/>
+        <source>Updates and Crash Reporting</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5261,7 +5299,7 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Tiled::ProjectModel</name>
     <message>
-        <location filename="../src/tiled/projectmodel.cpp" line="+283"/>
+        <location filename="../src/tiled/projectmodel.cpp" line="+309"/>
         <source>(Refreshing)</source>
         <translation>(Frissítés)</translation>
     </message>
@@ -5340,34 +5378,32 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Tiled::PropertiesDock</name>
     <message numerus="yes">
-        <location filename="../src/tiled/propertiesdock.cpp" line="+247"/>
+        <location filename="../src/tiled/propertieswidget.cpp" line="+238"/>
         <source>Paste Property/Properties</source>
         <translation>
             <numerusform>Tulajdonság beillesztése</numerusform>
-            <numerusform>Tulajdonságok beillesztése</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location line="+50"/>
+        <location line="+52"/>
         <source>Remove Property/Properties</source>
         <translation>
             <numerusform>Tulajdonság eltávolítása</numerusform>
-            <numerusform>Tulajdonságok eltávolítása</numerusform>
         </translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="+25"/>
         <source>Name:</source>
         <translation>Név:</translation>
     </message>
     <message>
         <location line="+2"/>
-        <location line="+211"/>
+        <location line="+209"/>
         <source>Rename Property</source>
         <translation>Tulajdonság átnevezése</translation>
     </message>
     <message>
-        <location line="-152"/>
+        <location line="-150"/>
         <source>Go to Object</source>
         <translation>Ugrás az objektumhoz</translation>
     </message>
@@ -5392,7 +5428,7 @@ Válasszon egy adott formátumot.</translation>
         <translation>Átalakítás erre</translation>
     </message>
     <message>
-        <location line="+131"/>
+        <location line="+129"/>
         <source>Rename...</source>
         <translation>Átnevezés…</translation>
     </message>
@@ -5402,20 +5438,19 @@ Válasszon egy adott formátumot.</translation>
         <translation>Eltávolítás</translation>
     </message>
     <message numerus="yes">
-        <location line="-62"/>
+        <location line="-60"/>
         <source>Convert Property/Properties</source>
         <translation>
             <numerusform>Tulajdonság átalakítása</numerusform>
-            <numerusform>Tulajdonságok átalakítása</numerusform>
         </translation>
     </message>
     <message>
-        <location line="+58"/>
+        <location filename="../src/tiled/propertiesdock.cpp" line="+75"/>
         <source>Properties</source>
         <translation>Tulajdonságok</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location filename="../src/tiled/propertieswidget.cpp" line="+58"/>
         <source>Add Property</source>
         <translation>Tulajdonság hozzáadása</translation>
     </message>
@@ -5428,7 +5463,7 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Tiled::PropertyBrowser</name>
     <message>
-        <location filename="../src/tiled/propertybrowser.cpp" line="-1435"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="-1442"/>
         <source>Map</source>
         <translation>Térkép</translation>
     </message>
@@ -5559,18 +5594,18 @@ Válasszon egy adott formátumot.</translation>
     </message>
     <message>
         <location line="-38"/>
-        <location line="+1324"/>
+        <location line="+1331"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location line="-1323"/>
-        <location line="+1324"/>
+        <location line="-1330"/>
+        <location line="+1331"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
     <message>
-        <location line="-1313"/>
+        <location line="-1320"/>
         <source>Rotation</source>
         <translation>Forgatás</translation>
     </message>
@@ -5811,7 +5846,7 @@ Válasszon egy adott formátumot.</translation>
         <translation>Osztály</translation>
     </message>
     <message>
-        <location line="+1035"/>
+        <location line="+1042"/>
         <source>Tile Size</source>
         <translation>Csempe mérete</translation>
     </message>
@@ -5846,17 +5881,17 @@ Válasszon egy adott formátumot.</translation>
         <translation>Keverék</translation>
     </message>
     <message>
-        <location line="-729"/>
+        <location line="-736"/>
         <source>Error Reading Tileset</source>
         <translation>Hiba a csempekészlet olvasásakor</translation>
     </message>
     <message>
-        <location line="+324"/>
+        <location line="+326"/>
         <source>Custom Properties</source>
         <translation>Egyéni tulajdonságok</translation>
     </message>
     <message>
-        <location line="+334"/>
+        <location line="+339"/>
         <source>Odd</source>
         <translation>Páratlan</translation>
     </message>
@@ -6257,7 +6292,7 @@ Válasszon egy adott formátumot.</translation>
         <translation>Parancsfájlmotor újraindítása</translation>
     </message>
     <message>
-        <location line="+72"/>
+        <location line="+77"/>
         <source>Script files changed: %1</source>
         <translation>A parancsfájlok megváltoztak: %1</translation>
     </message>
@@ -6265,6 +6300,29 @@ Válasszon egy adott formátumot.</translation>
         <location line="+38"/>
         <source>Extensions paths changed: %1</source>
         <translation>A kiterjesztések útvonalai megváltoztak: %1</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::ScriptModule</name>
+    <message>
+        <location filename="../src/tiled/scriptmodule.cpp" line="+42"/>
+        <source>Open Directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Open Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Open File</source>
+        <translation type="unfinished">Fájl megnyitása</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Save File</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6279,8 +6337,8 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Tiled::ShapeFillTool</name>
     <message>
-        <location filename="../src/tiled/shapefilltool.cpp" line="+41"/>
-        <location line="+105"/>
+        <location filename="../src/tiled/shapefilltool.cpp" line="+40"/>
+        <location line="+104"/>
         <source>Shape Fill Tool</source>
         <translation>Alakzatkitöltés eszköz</translation>
     </message>
@@ -6392,7 +6450,7 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Tiled::StampActions</name>
     <message>
-        <location filename="../src/tiled/abstractobjecttool.cpp" line="-268"/>
+        <location filename="../src/tiled/abstractobjecttool.cpp" line="-263"/>
         <location filename="../src/tiled/stampactions.cpp" line="+97"/>
         <source>Rotate Left</source>
         <translation>Forgatás balra</translation>
@@ -6427,8 +6485,8 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Tiled::StampBrush</name>
     <message>
-        <location filename="../src/tiled/stampbrush.cpp" line="+49"/>
-        <location line="+187"/>
+        <location filename="../src/tiled/stampbrush.cpp" line="+45"/>
+        <location line="+173"/>
         <source>Stamp Brush</source>
         <translation>Bélyegecset</translation>
     </message>
@@ -6444,7 +6502,7 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Tiled::TemplatesDock</name>
     <message>
-        <location filename="../src/tiled/templatesdock.cpp" line="+310"/>
+        <location filename="../src/tiled/templatesdock.cpp" line="+309"/>
         <source>Open Tileset</source>
         <translation>Csempekészlet megnyitása</translation>
     </message>
@@ -6506,7 +6564,7 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Tiled::TileCollisionDock</name>
     <message>
-        <location filename="../src/tiled/tilecollisiondock.cpp" line="-553"/>
+        <location filename="../src/tiled/tilecollisiondock.cpp" line="-552"/>
         <source>Hidden</source>
         <translation>Rejtett</translation>
     </message>
@@ -6526,7 +6584,7 @@ Válasszon egy adott formátumot.</translation>
         <translation>Objektumok listája</translation>
     </message>
     <message>
-        <location line="+418"/>
+        <location line="+417"/>
         <source>Delete</source>
         <translation>Törlés</translation>
     </message>
@@ -6649,7 +6707,7 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Tiled::TilesetDock</name>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="-308"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="-307"/>
         <source>All Files (*)</source>
         <translation>Minden fájl (*)</translation>
     </message>
@@ -6725,7 +6783,7 @@ Válasszon egy adott formátumot.</translation>
         <translation>Csempék dinamikus tördelése</translation>
     </message>
     <message>
-        <location line="+271"/>
+        <location line="+269"/>
         <location line="+17"/>
         <source>Export Tileset</source>
         <translation>Csempekészlet exportálása</translation>
@@ -6739,7 +6797,7 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Tiled::TilesetDocument</name>
     <message>
-        <location filename="../src/tiled/tilesetdocument.cpp" line="+111"/>
+        <location filename="../src/tiled/tilesetdocument.cpp" line="+110"/>
         <source>Tileset format &apos;%1&apos; not found</source>
         <translation>A(z) „%1” csempekészlet-formátum nem található</translation>
     </message>
@@ -6754,7 +6812,7 @@ Válasszon egy adott formátumot.</translation>
         <translation>névtelen.tsx</translation>
     </message>
     <message>
-        <location line="+209"/>
+        <location line="+212"/>
         <source>Failed to load tileset image &apos;%1&apos;</source>
         <translation>Nem sikerült betölteni a(z) „%1” csempekészletképet</translation>
     </message>
@@ -6767,8 +6825,8 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Tiled::TilesetEditor</name>
     <message>
-        <location filename="../src/tiled/tileseteditor.cpp" line="-807"/>
-        <location line="+494"/>
+        <location filename="../src/tiled/tileseteditor.cpp" line="+179"/>
+        <location line="+495"/>
         <source>Tileset</source>
         <translation>Csempekészlet</translation>
     </message>
@@ -6848,7 +6906,7 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Tiled::TilesetView</name>
     <message>
-        <location filename="../src/tiled/tilesetview.cpp" line="+769"/>
+        <location filename="../src/tiled/tilesetview.cpp" line="+759"/>
         <source>Use as Terrain Set Image</source>
         <translation>Használat terepkészletképként</translation>
     </message>
@@ -6991,13 +7049,13 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Tiled::WangBrush</name>
     <message>
-        <location filename="../src/tiled/wangbrush.cpp" line="+111"/>
+        <location filename="../src/tiled/wangbrush.cpp" line="+84"/>
         <location line="+97"/>
         <source>Terrain Brush</source>
         <translation>Terepecset</translation>
     </message>
     <message>
-        <location line="+202"/>
+        <location line="+179"/>
         <source>Missing terrain transition</source>
         <translation>Hiányzó terepátmenet</translation>
     </message>
@@ -7013,14 +7071,14 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Tiled::WangDock</name>
     <message>
-        <location filename="../src/tiled/wangdock.cpp" line="+197"/>
-        <location line="+375"/>
+        <location filename="../src/tiled/wangdock.cpp" line="+199"/>
+        <location line="+386"/>
         <source>Terrains</source>
         <translation>Terepek</translation>
     </message>
     <message>
-        <location line="-374"/>
-        <location line="+375"/>
+        <location line="-385"/>
+        <location line="+386"/>
         <source>Patterns</source>
         <translation>Minták</translation>
     </message>
@@ -7086,7 +7144,7 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Tiled::WorldDocument</name>
     <message>
-        <location filename="../src/tiled/worlddocument.cpp" line="+47"/>
+        <location filename="../src/tiled/worlddocument.cpp" line="+48"/>
         <source>untitled.world</source>
         <translation>névtelen.world</translation>
     </message>
@@ -7094,7 +7152,7 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Tiled::WorldManager</name>
     <message>
-        <location filename="../src/libtiled/worldmanager.cpp" line="+8"/>
+        <location filename="../src/libtiled/world.cpp" line="+8"/>
         <source>JSON parse error at offset %1:
 %2.</source>
         <translation>JSON feldolgozási hiba a(z) %1. eltolásnál:
@@ -7131,20 +7189,20 @@ Válasszon egy adott formátumot.</translation>
         <translation>A világ nem tartalmazott érvényes térképeket vagy mintákat: %1</translation>
     </message>
     <message>
-        <location line="+90"/>
-        <source>World doesn&apos;t support saving</source>
-        <translation>A világ nem támogatja a mentést</translation>
-    </message>
-    <message>
-        <location line="+37"/>
+        <location line="+56"/>
         <source>Could not open file for reading.</source>
         <translation>Nem sikerült megnyitni a fájlt olvasásra.</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/worldmanager.cpp" line="+169"/>
+        <source>World not found</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Tiled::WorldMoveMapTool</name>
     <message>
-        <location filename="../src/tiled/worldmovemaptool.cpp" line="+84"/>
+        <location filename="../src/tiled/worldmovemaptool.cpp" line="+52"/>
         <location line="+169"/>
         <source>World Tool</source>
         <translation>Világ eszköz</translation>
@@ -7174,7 +7232,7 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Tscn::TscnPlugin</name>
     <message>
-        <location filename="../src/plugins/tscn/tscnplugin.cpp" line="-484"/>
+        <location filename="../src/plugins/tscn/tscnplugin.cpp" line="-810"/>
         <source>Could not find .godot project in file path for file %1</source>
         <translation>Nem található .godot projekt a(z) %1 fájl fájlútvonalán</translation>
     </message>
@@ -7184,32 +7242,57 @@ Válasszon egy adott formátumot.</translation>
         <translation>Az összes fájlnak ugyanazt a projektgyökeret kell megosztaniuk. A(z) „%1” fájl nem osztja meg a(z) „%2” projektgyökeret.</translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+165"/>
         <source>Cannot export tileset &apos;%1&apos; because the Godot exporter does not support collection-type tilesets.</source>
         <translation>Nem lehet exportálni a(z) „%1” csempekészletet, mert a Godot-exportáló nem támogatja a gyűjtemény típusú csempekészleteket.</translation>
     </message>
     <message>
-        <location line="+58"/>
-        <source>The Godot exporter does not yet support objects</source>
-        <translation>A Godot-exportáló még nem támogatja az objektumokat</translation>
+        <location line="+41"/>
+        <source>Godot exporter does not support property type of &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+8"/>
+        <source>Inconsistent type for property &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+28"/>
+        <source>Only objects with the resPath property will be exported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>resPath must be in the form of &apos;res://&lt;filename&gt;.tscn&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+58"/>
         <source>The Godot exporter does not yet support image layers</source>
         <translation>A Godot-exportáló még nem támogatja a képrétegeket</translation>
     </message>
     <message>
-        <location line="+70"/>
+        <location line="+81"/>
         <source>Godot exporter only supports collisions that are rectangles or polygons.</source>
         <translation>A Godot-exportáló csak olyan ütközéseket támogat, amelyek téglalapok vagy sokszögek.</translation>
     </message>
     <message>
-        <location line="+132"/>
+        <location line="+90"/>
+        <source>Godot exporter does not support property of type &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+97"/>
+        <source>exportAlternates is deprecated. Godot 4.2 supports native tile rotation. Tileset: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+23"/>
         <source>Tile animations must flow left-to-right, top-to-bottom, with no skipped tiles.</source>
         <translation>A csempeanimációknak balról jobbra, fentről lefelé kell történnie kihagyott csempék nélkül.</translation>
     </message>
     <message>
-        <location line="+86"/>
+        <location line="+102"/>
         <source>Godot only supports hexagonal maps where the Hex Side Length is exactly half its height. For a tile height of %1, the Hex Side Length should be set to %2.</source>
         <translation>A Godot csak olyan hexagonális térképeket támogat, ahol a hatszög oldalának hossza pontosan fele a magasságának. Egy %1 magasságú csempénél a hatszög oldalának hosszát %2 értékre kell beállítani.</translation>
     </message>
@@ -7219,12 +7302,12 @@ Válasszon egy adott formátumot.</translation>
         <translation>Nem támogatott csempetájolás.</translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+78"/>
         <source>tilesetResPath must be in the form of &apos;res://&lt;filename&gt;.tres&apos;.</source>
         <translation>A csempekészlet erőforrás-útvonalának „res://&lt;fájlnév&gt;.tres” alakban kell lennie.</translation>
     </message>
     <message>
-        <location line="+77"/>
+        <location line="+80"/>
         <source>Cannot use tile %1 from tileset %2 because it is reserved as an animation frame.</source>
         <translation>Nem lehet használni a(z) %1 csempét a(z) %2 csempekészletből, mert az foglalt egy animáció-képkockaként.</translation>
     </message>
@@ -7234,12 +7317,7 @@ Válasszon egy adott formátumot.</translation>
         <translation>A 120° fokkal elforgatott hatszögletű csempék nem támogatottak.</translation>
     </message>
     <message>
-        <location line="+10"/>
-        <source>Map uses flipped/rotated tiles. The tileset must have the custom exportAlternates property enabled to export this map.</source>
-        <translation>A térkép tükrözött vagy elforgatott csempéket használ. A térkép exportálásához a csempekészletnél engedélyezve kell legyen az egyéni exportAlternates tulajdonság.</translation>
-    </message>
-    <message>
-        <location line="+53"/>
+        <location line="+92"/>
         <source>Godot 4 Scene files (*.tscn)</source>
         <translation>Godot 4 jelenetfájlok (*.tscn)</translation>
     </message>
@@ -7247,7 +7325,7 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Undo Commands</name>
     <message>
-        <location filename="../src/tiled/addremovelayer.cpp" line="+65"/>
+        <location filename="../src/tiled/addremovelayer.cpp" line="+64"/>
         <source>Add Layer</source>
         <translation>Réteg hozzáadása</translation>
     </message>
@@ -7332,8 +7410,8 @@ Válasszon egy adott formátumot.</translation>
         <translation>Kijelölés megváltoztatása</translation>
     </message>
     <message>
-        <location filename="../src/tiled/eraser.cpp" line="+18"/>
         <location filename="../src/tiled/erasetiles.cpp" line="+35"/>
+        <location filename="../src/tiled/mapdocument.cpp" line="-716"/>
         <source>Erase</source>
         <translation>Törlés</translation>
     </message>
@@ -7348,7 +7426,7 @@ Válasszon egy adott formátumot.</translation>
         <translation>Objektum áthelyezése rétegre</translation>
     </message>
     <message>
-        <location filename="../src/tiled/offsetlayer.cpp" line="+50"/>
+        <location filename="../src/tiled/offsetlayer.cpp" line="+51"/>
         <source>Offset Layer</source>
         <translation>Réteg eltolása</translation>
     </message>
@@ -7494,10 +7572,9 @@ Válasszon egy adott formátumot.</translation>
         <translation>Objektum elrejtése</translation>
     </message>
     <message numerus="yes">
-        <location line="+70"/>
+        <location line="+68"/>
         <source>Change %n Object/s Tile</source>
         <translation>
-            <numerusform>%n objektum csempéjének megváltoztatása</numerusform>
             <numerusform>%n objektum csempéjének megváltoztatása</numerusform>
         </translation>
     </message>
@@ -7506,7 +7583,6 @@ Válasszon egy adott formátumot.</translation>
         <source>Detach %n Template Instance(s)</source>
         <translation>
             <numerusform>%n sablonpéldány leválasztása</numerusform>
-            <numerusform>%n sablonpéldány leválasztása</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -7514,14 +7590,12 @@ Válasszon egy adott formátumot.</translation>
         <source>Reset %n Instances</source>
         <translation>
             <numerusform>%n példány visszaállítása</numerusform>
-            <numerusform>%n példány visszaállítása</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+53"/>
         <source>Replace %n Object(s) With Template</source>
         <translation>
-            <numerusform>%n objektum cseréje sablonnal</numerusform>
             <numerusform>%n objektum cseréje sablonnal</numerusform>
         </translation>
     </message>
@@ -7664,10 +7738,9 @@ Válasszon egy adott formátumot.</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/tiled/flipmapobjects.cpp" line="+47"/>
-        <location filename="../src/tiled/propertybrowser.cpp" line="-912"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="-919"/>
         <source>Flip %n Object(s)</source>
         <translation>
-            <numerusform>%n objektum tükrözése</numerusform>
             <numerusform>%n objektum tükrözése</numerusform>
         </translation>
     </message>
@@ -7677,7 +7750,7 @@ Válasszon egy adott formátumot.</translation>
         <translation>Csempék felcserélése</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetdocument.cpp" line="-404"/>
+        <location filename="../src/tiled/tilesetdocument.cpp" line="-407"/>
         <source>Reload Tileset</source>
         <translation>Csempekészlet újratöltése</translation>
     </message>
@@ -7691,11 +7764,15 @@ Válasszon egy adott formátumot.</translation>
         <source>Shape Fill</source>
         <translation>Alakzatkitöltés</translation>
     </message>
+    <message>
+        <location filename="../src/tiled/mapdocument.cpp" line="-1063"/>
+        <source>Reload Map</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message numerus="yes">
-        <location filename="../src/tiled/mapdocument.cpp" line="-961"/>
+        <location line="+720"/>
         <source>Raise %n Layer(s)</source>
         <translation>
-            <numerusform>%n réteg előre hozása</numerusform>
             <numerusform>%n réteg előre hozása</numerusform>
         </translation>
     </message>
@@ -7703,7 +7780,6 @@ Válasszon egy adott formátumot.</translation>
         <location line="+27"/>
         <source>Lower %n Layer(s)</source>
         <translation>
-            <numerusform>%n réteg hátra küldése</numerusform>
             <numerusform>%n réteg hátra küldése</numerusform>
         </translation>
     </message>
@@ -7806,12 +7882,12 @@ Válasszon egy adott formátumot.</translation>
         <translation>Objektumréteg rajzolási irányának megváltoztatása</translation>
     </message>
     <message>
-        <location filename="../src/tiled/abstractworldtool.cpp" line="-299"/>
+        <location filename="../src/tiled/changeworld.cpp" line="+33"/>
         <source>Add Map to World</source>
         <translation>Térkép hozzáadása a világhoz</translation>
     </message>
     <message>
-        <location line="+27"/>
+        <location line="+19"/>
         <source>Remove Map from World</source>
         <translation>Térkép eltávolítása a világból</translation>
     </message>
@@ -7820,11 +7896,10 @@ Válasszon egy adott formátumot.</translation>
         <source>Transform %n Object(s)</source>
         <translation>
             <numerusform>%n objektum átalakítása</numerusform>
-            <numerusform>%n objektum átalakítása</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="../src/tiled/worldmovemaptool.cpp" line="-146"/>
+        <location filename="../src/tiled/changeworld.cpp" line="+32"/>
         <source>Move Map</source>
         <translation>Térkép áthelyezése</translation>
     </message>
@@ -7832,12 +7907,12 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>Utils</name>
     <message>
-        <location filename="../src/tiled/utils.cpp" line="-522"/>
+        <location filename="../src/tiled/utils.cpp" line="-545"/>
         <source>Image files</source>
         <translation>Képfájlok</translation>
     </message>
     <message>
-        <location line="+473"/>
+        <location line="+496"/>
         <source>Copy File Path</source>
         <translation>Fájl útvonalának másolása</translation>
     </message>
@@ -7863,7 +7938,7 @@ Válasszon egy adott formátumot.</translation>
 <context>
     <name>main</name>
     <message>
-        <location filename="../src/tmxrasterizer/main.cpp" line="+55"/>
+        <location filename="../src/tmxrasterizer/main.cpp" line="+57"/>
         <source>Renders a Tiled map or world to an image.</source>
         <translation>Megjelenít egy Tiled-térképet vagy világot egy képben.</translation>
     </message>
@@ -7916,11 +7991,13 @@ Válasszon egy adott formátumot.</translation>
     <message>
         <location line="+1"/>
         <location line="+3"/>
+        <location line="+9"/>
+        <location line="+3"/>
         <source>name</source>
         <translation>név</translation>
     </message>
     <message>
-        <location line="-1"/>
+        <location line="-13"/>
         <source>If used only specified layers are shown. Can be repeated to show multiple specified layers only.</source>
         <translation>Ha használva van, akkor csak a megadott rétegek jelennek meg. Ismételhető csak több megadott réteg megjelenítéséhez.</translation>
     </message>
@@ -7941,16 +8018,52 @@ Válasszon egy adott formátumot.</translation>
     </message>
     <message>
         <location line="+2"/>
-        <source>If used, tile animations are advanced by the specified duration.</source>
-        <translation>Ha használva van, akkor a csempeanimációk a megadott időtartammal előrébb kerülnek.</translation>
+        <source>Specifies an object to omit from the output image. Can be repeated to hide multiple objects. If multiple objects share the specified name they all will be hidden.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+3"/>
+        <source>If used only specified objects are shown. Can be repeated to show multiple specified objects only. If multiple objects share the specified name they all will be shown.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>If used, tile animations are advanced by the specified duration in milliseconds.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+75"/>
+        <source>Invalid number of frames specified: &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Invalid frame-duration specified: &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-83"/>
         <source>duration</source>
         <translation>időtartam</translation>
     </message>
     <message>
         <location line="+2"/>
+        <source>Number of frames to export. This will add a frame number suffix to the image names. Animations are advanced by &lt;frame-duration&gt; for each frame.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <location line="+3"/>
+        <source>number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-1"/>
+        <source>Duration of each frame in milliseconds, defaults to 100.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <source>Map or world file to render.</source>
         <translation>Megjelenítendő térkép- vagy világfájlok.</translation>
     </message>
@@ -7960,7 +8073,7 @@ Válasszon egy adott formátumot.</translation>
         <translation>A kimeneten megjelenítendő képfájl.</translation>
     </message>
     <message>
-        <location line="+27"/>
+        <location line="+29"/>
         <source>Invalid size specified: &quot;%1&quot;</source>
         <translation>Érvénytelen méret lett megadva: „%1”</translation>
     </message>
@@ -7980,9 +8093,9 @@ Válasszon egy adott formátumot.</translation>
         <translation>Érvénytelen előzetes animációk lettek megadva: „%1”</translation>
     </message>
     <message>
-        <location filename="../src/tmxviewer/main.cpp" line="+57"/>
-        <source>Displays a Tiled map (TMX format).</source>
-        <translation>Megjelenít egy Tiled-térképet (TMX-formátum).</translation>
+        <location filename="../src/tmxviewer/main.cpp" line="+64"/>
+        <source>Displays a Tiled map.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+3"/>

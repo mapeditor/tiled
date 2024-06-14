@@ -48,7 +48,7 @@
 <context>
     <name>Command line</name>
     <message>
-        <location filename="../src/tiledapp/main.cpp" line="+151"/>
+        <location filename="../src/tiledapp/main.cpp" line="+160"/>
         <source>Format not recognized (see --export-formats)</source>
         <translation>읽을 수 없는 형식(--export-formats를 참조하십시오)</translation>
     </message>
@@ -58,7 +58,12 @@
         <translation>대상 파일에 대한 내보내기가 없습니다.</translation>
     </message>
     <message>
-        <location line="+165"/>
+        <location line="+111"/>
+        <source>Project file expected: --project &lt;.tiled-project file&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+75"/>
         <source>Missing argument, set version using: --export-version &lt;version&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -73,12 +78,13 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+168"/>
+        <location line="+170"/>
         <source>Failed to load source tileset.</source>
         <translation>타일셋 소스 로드에 실패했습니다.</translation>
     </message>
     <message>
-        <location line="+28"/>
+        <location line="-262"/>
+        <location line="+290"/>
         <source>Project file &apos;%1&apos; not found.</source>
         <translation>프로젝트 파일 &apos;%1&apos;을 찾을 수 없습니다.</translation>
     </message>
@@ -93,7 +99,12 @@
         <translation>대상 파일에 타일셋 내보내기를 실패했습니다.</translation>
     </message>
     <message>
-        <location line="-82"/>
+        <location line="-441"/>
+        <source>Failed to load project &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+359"/>
         <source>Export syntax is --export-map [format] &lt;source&gt; &lt;target&gt;</source>
         <translation>내보내기 구문 형식은 --export-map [format] &lt;source&gt; &lt;target&gt;</translation>
     </message>
@@ -108,12 +119,12 @@
         <translation>Export 구문의 형식은 --export-tileset [format] &lt;source&gt; &lt;target&gt;</translation>
     </message>
     <message>
-        <location line="-338"/>
+        <location line="-361"/>
         <source>Non-unique file extension. Can&apos;t determine correct export format.</source>
         <translation>확장자가 한 개가 아닙니다. 올바른 내보내기 형식을 결정할 수 없습니다.</translation>
     </message>
     <message>
-        <location line="+329"/>
+        <location line="+352"/>
         <source>Failed to export map to target file.</source>
         <translation>맵 내보내기에 실패했습니다.</translation>
     </message>
@@ -134,12 +145,12 @@
 <context>
     <name>CommandLineHandler</name>
     <message>
-        <location filename="../src/tiledapp/main.cpp" line="-180"/>
+        <location filename="../src/tiledapp/main.cpp" line="-182"/>
         <source>Map export formats:</source>
         <translation>맵 내보내기 형식:</translation>
     </message>
     <message>
-        <location line="-105"/>
+        <location line="-121"/>
         <source>Export the specified tileset file to target</source>
         <translation>지정된 타일셋 파일을 대상으로 내보내기</translation>
     </message>
@@ -154,12 +165,17 @@
         <translation>타일셋 파일이 포함된 내보내기</translation>
     </message>
     <message>
-        <location line="-30"/>
+        <location line="-35"/>
         <source>Only check validity of arguments</source>
         <translation>인수의 유효함만 확인</translation>
     </message>
     <message>
-        <location line="+25"/>
+        <location line="+10"/>
+        <source>Project file to load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+20"/>
         <source>Set the compatibility version used when exporting</source>
         <translation type="unfinished"></translation>
     </message>
@@ -174,17 +190,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+77"/>
+        <location line="+93"/>
         <source>Tileset export formats:</source>
         <translation>타일셋 내보내기 형식:</translation>
     </message>
     <message>
-        <location line="-127"/>
+        <location line="-148"/>
         <source>Disable hardware accelerated rendering</source>
         <translation>하드웨어 가속 렌더링 사용하지 않음</translation>
     </message>
     <message>
-        <location line="+45"/>
+        <location line="+50"/>
         <source>Start a new instance, even if an instance is already running</source>
         <translation>인스턴스가 이미 실행중인 경우에도 새 인스턴스 시작</translation>
     </message>
@@ -199,12 +215,12 @@
         <translation>불필요한 공백을 생략하여 내보낸 파일 최소화</translation>
     </message>
     <message>
-        <location line="-50"/>
+        <location line="-55"/>
         <source>Display the version</source>
         <translation>버전 표시</translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+20"/>
         <source>Export the specified map file to target</source>
         <translation>지정된 지도 파일을 대상으로 내보내기</translation>
     </message>
@@ -414,7 +430,7 @@
 <context>
     <name>File Errors</name>
     <message>
-        <location filename="../src/libtiled/worldmanager.cpp" line="+133"/>
+        <location filename="../src/libtiled/world.cpp" line="+259"/>
         <location filename="../src/plugins/flare/flareplugin.cpp" line="+59"/>
         <location filename="../src/plugins/json/jsonplugin.cpp" line="+57"/>
         <location line="+162"/>
@@ -429,7 +445,7 @@
         <translation>읽기용으로 파일을 열 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/libtiled/mapwriter.cpp" line="+111"/>
+        <location filename="../src/libtiled/mapwriter.cpp" line="+115"/>
         <location filename="../src/plugins/csv/csvplugin.cpp" line="-104"/>
         <location filename="../src/plugins/defold/defoldplugin.cpp" line="+57"/>
         <location filename="../src/plugins/defoldcollection/defoldcollectionplugin.cpp" line="+174"/>
@@ -448,16 +464,16 @@
         <location line="+45"/>
         <location filename="../src/plugins/replicaisland/replicaislandplugin.cpp" line="+245"/>
         <location filename="../src/plugins/tengine/tengineplugin.cpp" line="+57"/>
-        <location filename="../src/plugins/tscn/tscnplugin.cpp" line="+546"/>
-        <location line="+35"/>
-        <location filename="../src/plugins/yy/yyplugin.cpp" line="+1347"/>
+        <location filename="../src/plugins/tscn/tscnplugin.cpp" line="+864"/>
+        <location line="+40"/>
+        <location filename="../src/plugins/yy/yyplugin.cpp" line="+1351"/>
         <location filename="../src/tiled/propertytypeseditor.cpp" line="+73"/>
         <location filename="../src/tiled/shortcutsettingspage.cpp" line="+55"/>
         <source>Could not open file for writing.</source>
         <translation>쓰기용으로 파일을 열 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/tiled/utils.cpp" line="+578"/>
+        <location filename="../src/tiled/utils.cpp" line="+605"/>
         <source>JSON parse error at offset %1:
 %2.</source>
         <translation type="unfinished">오프셋의 JSON 구문 오류 %1:
@@ -467,7 +483,7 @@
 <context>
     <name>File Types</name>
     <message>
-        <location filename="../src/tiled/projectpropertiesdialog.cpp" line="+66"/>
+        <location filename="../src/tiled/projectpropertiesdialog.cpp" line="+69"/>
         <source>Automapping Rules files (*.txt)</source>
         <translation>오토매핑 규칙 파일 (*.txt)</translation>
     </message>
@@ -643,7 +659,7 @@
         <translation>새로 만들기 (&amp;N)</translation>
     </message>
     <message>
-        <location line="+345"/>
+        <location line="+346"/>
         <source>Cu&amp;t</source>
         <translation>&amp;잘라내기</translation>
     </message>
@@ -653,7 +669,7 @@
         <translation>복사 (&amp;C)</translation>
     </message>
     <message>
-        <location line="-156"/>
+        <location line="-157"/>
         <source>&amp;Edit</source>
         <translation>편집 (&amp;E)</translation>
     </message>
@@ -668,7 +684,7 @@
         <translation>도움말 (&amp;H)</translation>
     </message>
     <message>
-        <location line="+129"/>
+        <location line="+130"/>
         <source>&amp;Quit</source>
         <translation>종료 (&amp;Q)</translation>
     </message>
@@ -678,12 +694,12 @@
         <translation>저장 (&amp;S)</translation>
     </message>
     <message>
-        <location line="-95"/>
+        <location line="-96"/>
         <source>&amp;View</source>
         <translation>보기 (&amp;V)</translation>
     </message>
     <message>
-        <location line="+90"/>
+        <location line="+91"/>
         <source>&amp;Open File or Project...</source>
         <translation>파일 또는 프로젝트 열기 (&amp;O)...</translation>
     </message>
@@ -728,12 +744,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Ctrl+Shift+P</source>
+        <location line="+8"/>
+        <source>Unload All Worlds</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-654"/>
+        <location line="-660"/>
         <source>Show Object &amp;Names</source>
         <translation>오브젝트 이름 표시&amp;Names</translation>
     </message>
@@ -743,7 +759,7 @@
         <translation>최근 프로젝트 (&amp;R)</translation>
     </message>
     <message>
-        <location line="+280"/>
+        <location line="+281"/>
         <source>&amp;Close</source>
         <translation>닫기 (&amp;C)</translation>
     </message>
@@ -763,12 +779,12 @@
         <translation>붙여넣기 (&amp;P)</translation>
     </message>
     <message>
-        <location line="-71"/>
+        <location line="-72"/>
         <source>&amp;World</source>
         <translation>월드 (&amp;W)</translation>
     </message>
     <message>
-        <location line="+574"/>
+        <location line="+575"/>
         <source>Show &amp;World</source>
         <translation>&amp;월드 보기</translation>
     </message>
@@ -803,12 +819,12 @@
         <translation>커뮤니티 포럼 ↗</translation>
     </message>
     <message>
-        <location line="-547"/>
+        <location line="-548"/>
         <source>Snapping</source>
         <translation>스냅</translation>
     </message>
     <message>
-        <location line="+372"/>
+        <location line="+373"/>
         <source>Support Tiled Development ↗</source>
         <translation>Tiled 개발을 지원 ↗</translation>
     </message>
@@ -868,12 +884,12 @@
         <translation>월드를 로드 중입니다 (&amp;L)...</translation>
     </message>
     <message>
-        <location line="-595"/>
+        <location line="-596"/>
         <source>Commands</source>
         <translation>Command</translation>
     </message>
     <message>
-        <location line="+304"/>
+        <location line="+305"/>
         <source>Zoom Out</source>
         <translation>축소</translation>
     </message>
@@ -908,12 +924,12 @@
         <translation>월드 저장 (&amp;S)</translation>
     </message>
     <message>
-        <location line="-18"/>
+        <location line="-19"/>
         <source>&amp;Project</source>
         <translation>프로젝트 (&amp;P)</translation>
     </message>
     <message>
-        <location line="+193"/>
+        <location line="+194"/>
         <source>Normal Size</source>
         <translation>원래 크기</translation>
     </message>
@@ -988,7 +1004,7 @@
         <translation>내보내기 (&amp;E)</translation>
     </message>
     <message>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+936"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="+945"/>
         <source>All Files (*)</source>
         <translation>모든 파일 (*)</translation>
     </message>
@@ -998,12 +1014,12 @@
         <translation>&amp;같은 위치에 붙여넣기</translation>
     </message>
     <message>
-        <location line="-402"/>
+        <location line="-403"/>
         <source>Tileset</source>
         <translation>타일셋</translation>
     </message>
     <message>
-        <location line="+207"/>
+        <location line="+208"/>
         <source>Export As &amp;Image...</source>
         <translation>이미지로 내보내기(&amp;I)...</translation>
     </message>
@@ -1023,12 +1039,12 @@
         <translation>그리는 중 오토맵 사용</translation>
     </message>
     <message>
-        <location line="-370"/>
+        <location line="-371"/>
         <source>&amp;Unload World</source>
         <translation>로드되지 않은 월드 (&amp;U)</translation>
     </message>
     <message>
-        <location line="+546"/>
+        <location line="+547"/>
         <source>Project &amp;Properties...</source>
         <translation>프로젝트 속성(&amp;P)...</translation>
     </message>
@@ -1038,12 +1054,12 @@
         <translation>프로젝트 닫기 (&amp;C)</translation>
     </message>
     <message>
-        <location line="-662"/>
+        <location line="-663"/>
         <source>&amp;Recent Files</source>
         <translation>최근 파일 목록 (&amp;R)</translation>
     </message>
     <message>
-        <location line="+624"/>
+        <location line="+625"/>
         <source>&amp;New World...</source>
         <translation>새로운 월드 생성 (&amp;N)...</translation>
     </message>
@@ -1084,8 +1100,8 @@
 <context>
     <name>MapReader</name>
     <message>
-        <location filename="../src/libtiled/mapreader.cpp" line="+947"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+648"/>
+        <location filename="../src/libtiled/mapreader.cpp" line="+946"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+658"/>
         <source>Compression method &apos;%1&apos; not supported</source>
         <translation>압축 방식 &apos;%1&apos; 은 지원되지 않습니다</translation>
     </message>
@@ -1095,17 +1111,17 @@
         <translation>유효하지 않은 타일 ID 입니다: %1</translation>
     </message>
     <message>
-        <location line="-330"/>
+        <location line="-329"/>
         <source>Not a map file.</source>
         <translation>맵 파일이 아닙니다.</translation>
     </message>
     <message>
-        <location line="+909"/>
+        <location line="+908"/>
         <source>Unable to parse tile at (%1,%2) on layer &apos;%3&apos;: &quot;%4&quot;</source>
         <translation>타일을 분석할 수 없습니다. (at (%1,%2) on layer &apos;%3&apos;: &quot;%4&quot;)</translation>
     </message>
     <message>
-        <location line="-863"/>
+        <location line="-862"/>
         <source>%3
 
 Line %1, column %2</source>
@@ -1114,20 +1130,21 @@ Line %1, column %2</source>
 %1 행 , %2 열</translation>
     </message>
     <message>
-        <location line="+337"/>
+        <location line="+336"/>
         <source>Error reading embedded image for tile %1</source>
         <translation>내장된 타일 &apos;%1&apos; 의 이미지를 읽는 도중 오류가 발생했습니다</translation>
     </message>
     <message>
         <location line="-163"/>
         <location line="+46"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-406"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-417"/>
+        <location line="+49"/>
         <source>Invalid tileset parameters for tileset &apos;%1&apos;</source>
         <translation>유효하지 않은 타일셋 &apos;%1&apos;의 타일셋 인수입니다</translation>
     </message>
     <message>
-        <location line="-179"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-180"/>
+        <location line="-178"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-228"/>
         <source>Unsupported map orientation: &quot;%1&quot;</source>
         <translation>지원되지 않는 맵 구도 입니다: &quot;%1&quot;</translation>
     </message>
@@ -1137,35 +1154,35 @@ Line %1, column %2</source>
         <translation>파일을 읽을 수 없습니다: %1</translation>
     </message>
     <message>
-        <location line="+814"/>
+        <location line="+813"/>
         <location line="+62"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+928"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+938"/>
         <source>Invalid tile: %1</source>
         <translation>유효하지 않은 타일입니다: %1</translation>
     </message>
     <message>
-        <location line="-899"/>
+        <location line="-898"/>
         <source>Not a template file.</source>
         <translation>템플릿 파일이 아닙니다.</translation>
     </message>
     <message>
-        <location line="+1113"/>
+        <location line="+1112"/>
         <source>Invalid points data for polygon</source>
         <translation>유효하지 않은 폴리곤의 포인트 데이터 입니다</translation>
     </message>
     <message>
-        <location line="-1130"/>
+        <location line="-1129"/>
         <source>Not a tileset file.</source>
         <translation>타일셋 파일이 아닙니다.</translation>
     </message>
     <message>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-578"/>
-        <location line="+27"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-585"/>
+        <location line="+34"/>
         <source>Invalid (negative) tile id: %1</source>
         <translation>유효하지 않은 타일 ID (음수)입니다: %1</translation>
     </message>
     <message>
-        <location filename="../src/libtiled/mapreader.cpp" line="+942"/>
+        <location filename="../src/libtiled/mapreader.cpp" line="+941"/>
         <location filename="../src/libtiled/varianttomapconverter.cpp" line="+253"/>
         <source>Invalid draw order: %1</source>
         <translation>유효하지 않은 그리기 순서 입니다: %1</translation>
@@ -1180,19 +1197,19 @@ Line %1, column %2</source>
         <translation>레이어 &apos;%1&apos; 의 레이어 데이터가 손상되어 있습니다</translation>
     </message>
     <message>
-        <location line="-864"/>
+        <location line="-863"/>
         <source>File not found: %1</source>
         <translation>파일을 찾을 수 없습니다: %1</translation>
     </message>
     <message>
-        <location line="+503"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-674"/>
+        <location line="+502"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="-681"/>
         <source>Terrains</source>
         <translation>지형</translation>
     </message>
     <message>
         <location line="+227"/>
-        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+342"/>
+        <location filename="../src/libtiled/varianttomapconverter.cpp" line="+349"/>
         <source>Unknown encoding: %1</source>
         <translation>알 수 없는 인코딩 입니다: %1</translation>
     </message>
@@ -1404,7 +1421,7 @@ Line %1, column %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+120"/>
+        <location line="+93"/>
         <source>New Tileset...</source>
         <translation>새로운 타일셋...</translation>
     </message>
@@ -1414,7 +1431,7 @@ Line %1, column %2</source>
         <translation>새로운 맵...</translation>
     </message>
     <message>
-        <location line="-140"/>
+        <location line="-113"/>
         <source>&lt;font size=&quot;+2&quot;&gt;No Open Files&lt;/font&gt;</source>
         <translation>&lt;font size=&quot;+2&quot;&gt;열린 파일 없음 &lt;/font&gt;</translation>
     </message>
@@ -1422,7 +1439,7 @@ Line %1, column %2</source>
 <context>
     <name>NoTilesetWidget</name>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+89"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+88"/>
         <source>New Tileset...</source>
         <translation>새로운 타일셋...</translation>
     </message>
@@ -1541,7 +1558,7 @@ Line %1, column %2</source>
     <name>PreferencesDialog</name>
     <message>
         <location filename="../src/tiled/newmapdialog.cpp" line="+76"/>
-        <location filename="../src/tiled/propertybrowser.cpp" line="+1250"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="+1257"/>
         <source>CSV</source>
         <translation>CSV</translation>
     </message>
@@ -1551,24 +1568,24 @@ Line %1, column %2</source>
         <translation>저장 및 불러오기</translation>
     </message>
     <message>
-        <location line="+390"/>
+        <location line="+418"/>
         <location line="+6"/>
         <source>Theme</source>
         <translation>테마</translation>
     </message>
     <message>
-        <location line="-203"/>
+        <location line="-205"/>
         <source>Background fade color:</source>
         <translation>배경 투명 색상:</translation>
     </message>
     <message>
-        <location filename="../src/tiled/preferencesdialog.cpp" line="+65"/>
-        <location line="+211"/>
+        <location filename="../src/tiled/preferencesdialog.cpp" line="+66"/>
+        <location line="+216"/>
         <source>Tiled Fusion</source>
         <translation>Tiled Fusion 스타일</translation>
     </message>
     <message>
-        <location filename="../src/tiled/preferencesdialog.ui" line="-126"/>
+        <location filename="../src/tiled/preferencesdialog.ui" line="-152"/>
         <source>Omits unnecessary whitespace when supported by the output format</source>
         <translation>출력 형식에서 지원하는 경우 불필요한 공백을 생략합니다</translation>
     </message>
@@ -1578,28 +1595,38 @@ Line %1, column %2</source>
         <translation>개체 유형 및 속성 확인</translation>
     </message>
     <message>
-        <location line="+308"/>
+        <location line="+40"/>
         <source>Display news in status bar</source>
         <translation>상태 표시줄에 뉴스 표시</translation>
     </message>
     <message>
-        <location line="-345"/>
+        <location line="-77"/>
         <source>Use safe writing of files</source>
         <translation>파일 안전 작성 사용</translation>
     </message>
     <message>
-        <location line="+193"/>
+        <location line="+229"/>
         <location line="+20"/>
         <source> tiles</source>
         <translation> 타일</translation>
     </message>
     <message>
-        <location line="+116"/>
+        <location line="+64"/>
+        <source>Behavior</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+39"/>
         <source>Pixel-perfect tile object selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+132"/>
+        <location line="+28"/>
+        <source>Add &quot;Copy&quot; when duplicating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+109"/>
         <source>Use custom interface font</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1620,7 +1647,7 @@ Line %1, column %2</source>
         <translation>왼쪽 위 방향으로</translation>
     </message>
     <message>
-        <location filename="../src/tiled/preferencesdialog.ui" line="-529"/>
+        <location filename="../src/tiled/preferencesdialog.ui" line="-557"/>
         <source>Turn this off if you&apos;re having trouble saving your files.</source>
         <translation>파일 저장에 문제 발생시 이 옵션을 꺼주십시오.</translation>
     </message>
@@ -1640,43 +1667,43 @@ Line %1, column %2</source>
         <translation>출력 최소화</translation>
     </message>
     <message>
-        <location line="+178"/>
+        <location line="+122"/>
         <source>Major grid:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-33"/>
+        <location line="+59"/>
         <source>by</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+113"/>
+        <location line="+19"/>
         <source>Object line width:</source>
         <translation>오브젝트 선 굵기:</translation>
     </message>
     <message>
-        <location line="-63"/>
+        <location line="-71"/>
         <source>&amp;Language:</source>
         <translation>언어(&amp;L):</translation>
     </message>
     <message>
-        <location line="+56"/>
+        <location line="+30"/>
         <source>Hardware &amp;accelerated drawing (OpenGL)</source>
         <translation>하드웨어 가속 그리기 (OpenGL)(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../src/tiled/preferencesdialog.cpp" line="-212"/>
-        <location line="+211"/>
+        <location filename="../src/tiled/preferencesdialog.cpp" line="-217"/>
+        <location line="+216"/>
         <source>Native</source>
         <translation>Native 스타일</translation>
     </message>
     <message>
-        <location filename="../src/tiled/preferencesdialog.ui" line="-291"/>
+        <location filename="../src/tiled/preferencesdialog.ui" line="-199"/>
         <source>Repeat last export on save</source>
         <translation>저장 시 마지막 내보내기 반복</translation>
     </message>
     <message>
-        <location line="+401"/>
+        <location line="+429"/>
         <source>Style:</source>
         <translation>스타일:</translation>
     </message>
@@ -1686,7 +1713,7 @@ Line %1, column %2</source>
         <translation>열기...</translation>
     </message>
     <message>
-        <location line="-471"/>
+        <location line="-473"/>
         <source>(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;)</source>
         <translation>(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;더 많은정보&lt;/a&gt;)</translation>
     </message>
@@ -1696,7 +1723,7 @@ Line %1, column %2</source>
         <translation>그리드 색상:</translation>
     </message>
     <message>
-        <location line="+274"/>
+        <location line="+276"/>
         <source>Base color:</source>
         <translation>기본 색상:</translation>
     </message>
@@ -1706,12 +1733,12 @@ Line %1, column %2</source>
         <translation>플러그인</translation>
     </message>
     <message>
-        <location line="-378"/>
+        <location line="-264"/>
         <source> pixels</source>
         <translation> 픽셀</translation>
     </message>
     <message>
-        <location line="+140"/>
+        <location line="+75"/>
         <source>Mouse wheel &amp;zooms by default</source>
         <translation>기본적으로 마우스 휠 &amp;확대/축소</translation>
     </message>
@@ -1721,7 +1748,7 @@ Line %1, column %2</source>
         <translation>Base64 (gzip 압축)</translation>
     </message>
     <message>
-        <location filename="../src/tiled/preferencesdialog.ui" line="-251"/>
+        <location filename="../src/tiled/preferencesdialog.ui" line="-328"/>
         <source>Export Options</source>
         <translation>옵션 내보내기</translation>
     </message>
@@ -1731,27 +1758,27 @@ Line %1, column %2</source>
         <translation>XML (사용되지않는)</translation>
     </message>
     <message>
-        <location filename="../src/tiled/preferencesdialog.ui" line="+218"/>
+        <location filename="../src/tiled/preferencesdialog.ui" line="+335"/>
         <source>Middle mouse button uses auto-&amp;scrolling</source>
         <translation>마우스 가운데 버튼은 자동&amp;스크롤 사용</translation>
     </message>
     <message>
-        <location line="-235"/>
+        <location line="-352"/>
         <source>&amp;Reload tileset images when they change</source>
         <translation>타일셋 이미지 변경시 다시 불러오기(&amp;R)</translation>
     </message>
     <message>
-        <location line="+338"/>
+        <location line="+70"/>
         <source>Highlight new version in status bar</source>
         <translation>상태 표시줄에서 새 버전 강조 표시</translation>
     </message>
     <message>
-        <location line="-120"/>
+        <location line="+289"/>
         <source>Use s&amp;mooth scrolling</source>
         <translation>&amp;부드러운 스크롤 사용</translation>
     </message>
     <message>
-        <location line="-102"/>
+        <location line="-228"/>
         <location line="+6"/>
         <source>Interface</source>
         <translation>인터페이스</translation>
@@ -1763,7 +1790,7 @@ Line %1, column %2</source>
         <translation>Base64 (미압축)</translation>
     </message>
     <message>
-        <location filename="../src/tiled/preferencesdialog.ui" line="+408"/>
+        <location filename="../src/tiled/preferencesdialog.ui" line="+421"/>
         <source>Directory:</source>
         <translation>디렉토리:</translation>
     </message>
@@ -1773,17 +1800,17 @@ Line %1, column %2</source>
         <translation>확장</translation>
     </message>
     <message>
-        <location line="-199"/>
+        <location line="-495"/>
         <source>Updates</source>
         <translation>업데이트</translation>
     </message>
     <message>
-        <location line="-367"/>
+        <location line="-99"/>
         <source>Preferences</source>
         <translation>설정</translation>
     </message>
     <message>
-        <location line="+404"/>
+        <location line="+432"/>
         <source>Keyboard</source>
         <translation>키보드</translation>
     </message>
@@ -1799,7 +1826,7 @@ Line %1, column %2</source>
         <translation>왼쪽 아래 방향으로</translation>
     </message>
     <message>
-        <location filename="../src/tiled/preferencesdialog.ui" line="-368"/>
+        <location filename="../src/tiled/preferencesdialog.ui" line="-396"/>
         <source>Embed tilesets</source>
         <translation>숨겨진 타일셋</translation>
     </message>
@@ -1821,12 +1848,12 @@ Line %1, column %2</source>
         <translation>Base64 (zlib 압축)</translation>
     </message>
     <message>
-        <location filename="../src/tiled/preferencesdialog.ui" line="+307"/>
+        <location filename="../src/tiled/preferencesdialog.ui" line="+334"/>
         <source>Object selection behavior:</source>
         <translation>오브젝트 선택 동작:</translation>
     </message>
     <message>
-        <location line="-212"/>
+        <location line="-213"/>
         <source>Enable sending anonymous crash reports</source>
         <translation>익명으로 충돌 보고서 보내기 사용</translation>
     </message>
@@ -1837,7 +1864,7 @@ Line %1, column %2</source>
         <translation>오른쪽 아래 방향으로</translation>
     </message>
     <message>
-        <location filename="../src/tiled/preferencesdialog.ui" line="+222"/>
+        <location filename="../src/tiled/preferencesdialog.ui" line="+165"/>
         <source>Fine grid divisions:</source>
         <translation>정밀 그리드 분할:</translation>
     </message>
@@ -1846,11 +1873,6 @@ Line %1, column %2</source>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Right Up</source>
         <translation>오른쪽 위 방향으로</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/preferencesdialog.ui" line="-231"/>
-        <source>Crash Reporting</source>
-        <translation>충돌 보고</translation>
     </message>
 </context>
 <context>
@@ -1877,7 +1899,7 @@ Line %1, column %2</source>
 <context>
     <name>Python::PythonMapFormat</name>
     <message>
-        <location filename="../src/plugins/python/pythonplugin.cpp" line="+321"/>
+        <location filename="../src/plugins/python/pythonplugin.cpp" line="+492"/>
         <source>Script returned false. Please check console.</source>
         <translation>스크립트가 false를 반환하였습니다. 콘솔을 확인하여 주십시오.</translation>
     </message>
@@ -1900,9 +1922,32 @@ Line %1, column %2</source>
 <context>
     <name>Python::PythonPlugin</name>
     <message>
-        <location line="-159"/>
+        <location line="-296"/>
         <source>Reloading Python scripts</source>
         <translation>Python 스크립트 다시 불러오는 중</translation>
+    </message>
+</context>
+<context>
+    <name>Python::PythonTilesetFormat</name>
+    <message>
+        <location line="+334"/>
+        <source>-- Using script %1 to read %2</source>
+        <translation type="unfinished">-- %2를 읽기 위해 스크립트 %1을 사용합니다</translation>
+    </message>
+    <message>
+        <location line="+28"/>
+        <source>-- Using script %1 to write %2</source>
+        <translation type="unfinished">-- %2를 쓰기 위해 스크립트 %1을 사용합니다</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Uncaught exception in script. Please check console.</source>
+        <translation type="unfinished">스크립트에 캐치되지 않은 예외가 있습니다. 콘솔을 확인하여 주십시오.</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Script returned false. Please check console.</source>
+        <translation type="unfinished">스크립트가 false를 반환하였습니다. 콘솔을 확인하여 주십시오.</translation>
     </message>
 </context>
 <context>
@@ -1924,7 +1969,7 @@ Line %1, column %2</source>
 <context>
     <name>QtBoolPropertyManager</name>
     <message>
-        <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+1716"/>
+        <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+1550"/>
         <source>True</source>
         <translation>True</translation>
     </message>
@@ -1953,7 +1998,7 @@ Line %1, column %2</source>
 <context>
     <name>QtColorPropertyManager</name>
     <message>
-        <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+4783"/>
+        <location filename="../src/qtpropertybrowser/src/qtpropertymanager.cpp" line="+4218"/>
         <source>Red</source>
         <translation>적색</translation>
     </message>
@@ -2123,27 +2168,9 @@ Line %1, column %2</source>
     </message>
 </context>
 <context>
-    <name>QtLocalePropertyManager</name>
-    <message>
-        <location line="-3540"/>
-        <source>%1, %2</source>
-        <translation>%1, %2</translation>
-    </message>
-    <message>
-        <location line="+53"/>
-        <source>Language</source>
-        <translation>언어</translation>
-    </message>
-    <message>
-        <location line="+8"/>
-        <source>Country</source>
-        <translation>국가</translation>
-    </message>
-</context>
-<context>
     <name>QtPointFPropertyManager</name>
     <message>
-        <location line="+522"/>
+        <location line="-2641"/>
         <source>X</source>
         <translation>X</translation>
     </message>
@@ -2269,43 +2296,9 @@ Line %1, column %2</source>
     </message>
 </context>
 <context>
-    <name>QtSizePolicyPropertyManager</name>
-    <message>
-        <location line="+1913"/>
-        <source>Vertical Stretch</source>
-        <translation>수직 늘이기</translation>
-    </message>
-    <message>
-        <location line="-26"/>
-        <source>Horizontal Policy</source>
-        <translation>수평 정책</translation>
-    </message>
-    <message>
-        <location line="-47"/>
-        <location line="+1"/>
-        <source>&lt;Invalid&gt;</source>
-        <translation>&lt;무효&gt;</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>[%1, %2, %3, %4]</source>
-        <translation>[%1, %2, %3, %4]</translation>
-    </message>
-    <message>
-        <location line="+63"/>
-        <source>Horizontal Stretch</source>
-        <translation>수평 늘이기</translation>
-    </message>
-    <message>
-        <location line="-9"/>
-        <source>Vertical Policy</source>
-        <translation>수직 정책</translation>
-    </message>
-</context>
-<context>
     <name>QtSizePropertyManager</name>
     <message>
-        <location line="-2164"/>
+        <location line="-268"/>
         <source>Width</source>
         <translation>너비</translation>
     </message>
@@ -2458,12 +2451,17 @@ Line %1, column %2</source>
 <context>
     <name>Script Errors</name>
     <message>
-        <location filename="../src/tiled/editableasset.cpp" line="+92"/>
+        <location filename="../src/tiled/editableasset.cpp" line="+81"/>
+        <source>Asset not associated with a file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
         <source>Invalid callback</source>
         <translation>유효하지 않은 callback</translation>
     </message>
     <message>
-        <location filename="../src/tiled/editableobjectgroup.cpp" line="+111"/>
+        <location filename="../src/tiled/editableobjectgroup.cpp" line="+108"/>
         <source>Object already part of an object layer</source>
         <translation>오브젝트가 이니 오브젝트 레이어의 일부임</translation>
     </message>
@@ -2529,15 +2527,15 @@ Line %1, column %2</source>
         <translation>파일 형식이 &apos;write&apos;를 지원하지 않습니다</translation>
     </message>
     <message>
-        <location filename="../src/tiled/editabletile.cpp" line="+181"/>
+        <location filename="../src/tiled/editabletile.cpp" line="+215"/>
         <source>ObjectGroup is in use</source>
         <translation>오브젝트그룹 사용 중</translation>
     </message>
     <message>
-        <location filename="../src/tiled/editablegrouplayer.cpp" line="+82"/>
-        <location line="+21"/>
-        <location filename="../src/tiled/editablemap.cpp" line="+291"/>
-        <location filename="../src/tiled/scriptdialog.cpp" line="+89"/>
+        <location filename="../src/tiled/editablegrouplayer.cpp" line="+80"/>
+        <location filename="../src/tiled/editablemap.cpp" line="+280"/>
+        <location filename="../src/tiled/editableworld.cpp" line="+116"/>
+        <location filename="../src/tiled/scriptdialog.cpp" line="+87"/>
         <source>Invalid argument</source>
         <translation>유효하지 않은 인수</translation>
     </message>
@@ -2564,22 +2562,22 @@ Line %1, column %2</source>
         <translation>이 맵의 오브젝트가 아닙니다</translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptmanager.cpp" line="+334"/>
+        <location filename="../src/tiled/scriptmanager.cpp" line="+342"/>
         <source>Argument %1 is undefined or the wrong type</source>
         <translation>%1 인수가 정의되지 않았거나 잘못된 형식입니다</translation>
     </message>
     <message>
-        <location filename="../src/tiled/editablewangset.cpp" line="+100"/>
+        <location filename="../src/tiled/editablewangset.cpp" line="+103"/>
         <source>Invalid Wang ID</source>
         <translation>유효하지 않은 Wang ID</translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptimage.cpp" line="+100"/>
+        <location filename="../src/tiled/scriptimage.cpp" line="+103"/>
         <source>Invalid color value</source>
         <translation>유효하지 않은 색 값</translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptmodule.cpp" line="+243"/>
+        <location filename="../src/tiled/scriptmodule.cpp" line="+257"/>
         <source>Unknown type: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2594,7 +2592,7 @@ Line %1, column %2</source>
         <translation>분리된 맵에는 현재 자동 매핑이 지원되지 않습니다</translation>
     </message>
     <message>
-        <location filename="../src/tiled/editablemapobject.cpp" line="+185"/>
+        <location filename="../src/tiled/editablemapobject.cpp" line="+214"/>
         <source>Invalid coordinate</source>
         <translation>유효하지 않은 코디네이트</translation>
     </message>
@@ -2619,7 +2617,7 @@ Line %1, column %2</source>
         <translation>레이어가 아닙니다</translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptmodule.cpp" line="+31"/>
+        <location filename="../src/tiled/scriptmodule.cpp" line="+42"/>
         <source>Unknown action</source>
         <translation>알 수 없는 동작</translation>
     </message>
@@ -2629,7 +2627,7 @@ Line %1, column %2</source>
         <translation>이미 닫힌 TextFile 오브젝트에 대한 접근입니다.</translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptmodule.cpp" line="-156"/>
+        <location filename="../src/tiled/scriptmodule.cpp" line="-167"/>
         <location line="+14"/>
         <location line="+14"/>
         <source>Invalid shortName</source>
@@ -2638,7 +2636,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/editablemap.cpp" line="-280"/>
         <location line="+305"/>
-        <location filename="../src/tiled/tilecollisiondock.cpp" line="+360"/>
+        <location filename="../src/tiled/tilecollisiondock.cpp" line="+359"/>
         <source>Not an object</source>
         <translation>오브젝트가 아닙니다</translation>
     </message>
@@ -2648,7 +2646,7 @@ Line %1, column %2</source>
         <translation>타일셋 읽기 오류</translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptedtool.cpp" line="+231"/>
+        <location filename="../src/tiled/scriptedtool.cpp" line="+239"/>
         <source>Could not find action &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2675,7 +2673,7 @@ Line %1, column %2</source>
         <translation>파일을 열 수 없습니다 &apos;%1&apos;: %2</translation>
     </message>
     <message>
-        <location filename="../src/tiled/editableobject.cpp" line="+93"/>
+        <location filename="../src/tiled/editableobject.cpp" line="+124"/>
         <source>Asset is read-only</source>
         <translation>에셋이 읽기만 가능합니다</translation>
     </message>
@@ -2697,7 +2695,7 @@ Line %1, column %2</source>
         <translation>유효하지 않은 &apos;write&apos; 반환입니다(문자열 ㄸㅗ는 정의되지 않은 예상)</translation>
     </message>
     <message>
-        <location filename="../src/tiled/editabletileset.cpp" line="+240"/>
+        <location filename="../src/tiled/editabletileset.cpp" line="+252"/>
         <source>Can&apos;t set the image of an image collection tileset</source>
         <translation>이미지 모음 타일셋의 이미지를 설정할 수 없습니다</translation>
     </message>
@@ -2712,28 +2710,38 @@ Line %1, column %2</source>
         <translation>유효하지 않은 callback 함수</translation>
     </message>
     <message>
-        <location filename="../src/tiled/editabletileset.cpp" line="+118"/>
-        <location filename="../src/tiled/tilesetdock.cpp" line="+919"/>
+        <location filename="../src/tiled/editabletileset.cpp" line="+168"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="+918"/>
         <source>Not a tile</source>
         <translation>타일이 아닙니다</translation>
     </message>
     <message>
-        <location line="-98"/>
+        <location line="-150"/>
         <source>Can&apos;t set tile size on an image collection tileset</source>
         <translation>이미지 모음 타일셋에서 타일 크기를 설정할 수 없습니다</translation>
     </message>
     <message>
-        <location line="-169"/>
+        <location line="-180"/>
         <source>Invalid tile ID</source>
         <translation>유효하지 않은 타일 ID</translation>
     </message>
     <message>
-        <location line="+81"/>
+        <location line="+78"/>
         <source>Can only remove tiles from an image collection tileset</source>
         <translation>이미지 모음 타일셋에서 타일만 제거할 수 있습니다</translation>
     </message>
     <message>
-        <location line="+108"/>
+        <location line="+120"/>
+        <source>Can&apos;t set tile spacing on an image collection tileset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+18"/>
+        <source>Can&apos;t set margin on an image collection tileset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+18"/>
         <source>Can&apos;t set column count for image-based tilesets</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2764,8 +2772,9 @@ Line %1, column %2</source>
         <translation>BinaryFile 생성자를 열려면 파일의 경로가 필요합니다.</translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptmodule.cpp" line="-165"/>
-        <location line="+82"/>
+        <location filename="../src/tiled/editableasset.cpp" line="-15"/>
+        <location filename="../src/tiled/scriptmodule.cpp" line="-170"/>
+        <location line="+87"/>
         <source>Editor not available</source>
         <translation>편집기를 사용할 수 없습니다</translation>
     </message>
@@ -2791,7 +2800,7 @@ Line %1, column %2</source>
         <translation>오픈 에셋이 아닙니다</translation>
     </message>
     <message>
-        <location filename="../src/tiled/editableasset.cpp" line="+22"/>
+        <location filename="../src/tiled/editableasset.cpp" line="+37"/>
         <location line="+8"/>
         <source>Undo system not available for this asset</source>
         <translation>이 에셋에 사용할 수 없는 시스템 실행 취소</translation>
@@ -2802,7 +2811,8 @@ Line %1, column %2</source>
         <translation>이 맵의 레이어가 아닙니다</translation>
     </message>
     <message>
-        <location filename="../src/tiled/editablegrouplayer.cpp" line="+5"/>
+        <location filename="../src/tiled/editablegrouplayer.cpp" line="+26"/>
+        <location filename="../src/tiled/editablemap.cpp" line="-413"/>
         <source>Layer is in use</source>
         <translation>사용중인 레이어</translation>
     </message>
@@ -2810,11 +2820,6 @@ Line %1, column %2</source>
         <location filename="../src/tiled/scriptmodule.cpp" line="+43"/>
         <source>Reserved ID</source>
         <translation>예약된 ID</translation>
-    </message>
-    <message>
-        <location filename="../src/tiled/editablemap.cpp" line="-408"/>
-        <source>Layer already part of a map</source>
-        <translation>레이어가 이미 맵의 일부입니다</translation>
     </message>
     <message>
         <location filename="../src/tiled/editablegrouplayer.cpp" line="-20"/>
@@ -2828,7 +2833,7 @@ Line %1, column %2</source>
         <translation>알 수 없는 메뉴</translation>
     </message>
     <message>
-        <location filename="../src/tiled/editabletileset.cpp" line="-127"/>
+        <location filename="../src/tiled/editabletileset.cpp" line="-175"/>
         <source>Can only add tiles to an image collection tileset</source>
         <translation>이미지 모음 타일셋에는 타일만 추가할 수 있습니다</translation>
     </message>
@@ -2838,7 +2843,7 @@ Line %1, column %2</source>
         <translation>같은 타일셋에서 가져온 타일이 아닙니다</translation>
     </message>
     <message>
-        <location filename="../src/tiled/editablemap.cpp" line="+228"/>
+        <location filename="../src/tiled/editablemap.cpp" line="+233"/>
         <source>Invalid size</source>
         <translation>유효하지 않은 사이즈</translation>
     </message>
@@ -2848,7 +2853,7 @@ Line %1, column %2</source>
         <translation>실행 오류 &apos;%1&apos;: %2</translation>
     </message>
     <message>
-        <location filename="../src/tiled/editabletileset.cpp" line="+209"/>
+        <location filename="../src/tiled/editabletileset.cpp" line="+275"/>
         <source>Tile not from this tileset</source>
         <translation>이 타일셋에서 가져온 타일이 아닙니다</translation>
     </message>
@@ -2856,10 +2861,10 @@ Line %1, column %2</source>
         <location filename="../src/tiled/editablegrouplayer.cpp" line="-30"/>
         <location line="+11"/>
         <location line="+29"/>
-        <location filename="../src/tiled/editablemap.cpp" line="-260"/>
+        <location filename="../src/tiled/editablemap.cpp" line="-265"/>
         <location line="+11"/>
         <location line="+43"/>
-        <location filename="../src/tiled/editableobjectgroup.cpp" line="-54"/>
+        <location filename="../src/tiled/editableobjectgroup.cpp" line="-52"/>
         <location line="+11"/>
         <location line="+36"/>
         <location filename="../src/tiled/editablewangset.cpp" line="-40"/>
@@ -2868,7 +2873,7 @@ Line %1, column %2</source>
         <translation>범위를 벗어난 인덱스</translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptmodule.cpp" line="+65"/>
+        <location filename="../src/tiled/scriptmodule.cpp" line="+76"/>
         <source>Unknown command</source>
         <translation>알 수 없는 Command</translation>
     </message>
@@ -2916,7 +2921,7 @@ Line %1, column %2</source>
         <translation>이 에셋의 오브젝트가 아닙니다</translation>
     </message>
     <message>
-        <location filename="../src/tiled/scriptmodule.cpp" line="-50"/>
+        <location filename="../src/tiled/scriptmodule.cpp" line="-61"/>
         <source>Separators can&apos;t have actions</source>
         <translation>구분 기호는 동작을 가질 수 없습니다</translation>
     </message>
@@ -2934,6 +2939,33 @@ Line %1, column %2</source>
         <location filename="../src/tiled/scriptmodule.cpp" line="+10"/>
         <source>Non-separator item without action</source>
         <translation>동작이 없는 비구분자 항목</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/editabletilelayer.cpp" line="+121"/>
+        <source>Layer not part of a map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/editableworld.cpp" line="-28"/>
+        <location line="+16"/>
+        <location line="+44"/>
+        <source>Map not found in this world</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-27"/>
+        <source>Map is already part of a loaded world</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Can&apos;t add unsaved map to a world</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/tilelayerwangedit.cpp" line="+97"/>
+        <source>Invalid edge index</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3072,7 +3104,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::AbstractObjectTool</name>
     <message numerus="yes">
-        <location filename="../src/tiled/abstractobjecttool.cpp" line="+613"/>
+        <location filename="../src/tiled/abstractobjecttool.cpp" line="+611"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>%n개 오브젝트 복제</numerusform>
@@ -3094,8 +3126,8 @@ Line %1, column %2</source>
         <translation>오브젝트 올리기</translation>
     </message>
     <message>
-        <location line="-509"/>
-        <location line="+503"/>
+        <location line="-504"/>
+        <location line="+498"/>
         <source>Flip Horizontally</source>
         <translation>가로로 뒤집기</translation>
     </message>
@@ -3110,14 +3142,14 @@ Line %1, column %2</source>
         <translation>존재하는 오브젝트 대체</translation>
     </message>
     <message numerus="yes">
-        <location line="+91"/>
+        <location line="+89"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
             <numerusform>%n 오브젝트(s)를 레이어로 이동</numerusform>
         </translation>
     </message>
     <message>
-        <location line="-25"/>
+        <location line="-23"/>
         <source>Detach</source>
         <translation>분리</translation>
     </message>
@@ -3159,8 +3191,8 @@ Line %1, column %2</source>
         <translation>오브젝트 맨 위로 올리기</translation>
     </message>
     <message>
-        <location line="-510"/>
-        <location line="+503"/>
+        <location line="-505"/>
+        <location line="+498"/>
         <source>Flip Vertically</source>
         <translation>세로로 뒤집기</translation>
     </message>
@@ -3192,7 +3224,7 @@ Line %1, column %2</source>
         <translation>템플릿으로 저장</translation>
     </message>
     <message>
-        <location line="+58"/>
+        <location line="+53"/>
         <source>Object &amp;Properties...</source>
         <translation>오브젝트 속성(&amp;P)...</translation>
     </message>
@@ -3223,7 +3255,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::AbstractTileTool</name>
     <message>
-        <location filename="../src/tiled/abstracttiletool.cpp" line="+179"/>
+        <location filename="../src/tiled/abstracttiletool.cpp" line="+180"/>
         <source>empty</source>
         <translation>비어있음</translation>
     </message>
@@ -3231,7 +3263,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::AbstractWorldTool</name>
     <message>
-        <location filename="../src/tiled/abstractworldtool.cpp" line="+351"/>
+        <location filename="../src/tiled/abstractworldtool.cpp" line="+282"/>
         <source>Error Opening File</source>
         <translation>파일 여는 중 오류 발생</translation>
     </message>
@@ -3241,22 +3273,22 @@ Line %1, column %2</source>
         <translation>맵 불러오기</translation>
     </message>
     <message>
-        <location line="-130"/>
+        <location line="-129"/>
         <source>Add another map to the current world</source>
         <translation>현재 월드에 또다른 맵 추가</translation>
     </message>
     <message>
-        <location line="+76"/>
+        <location line="+75"/>
         <source>Add a Map to World &quot;%2&quot;</source>
         <translation>&quot;%2&quot;월드에 맵 추가</translation>
     </message>
     <message>
-        <location line="-74"/>
+        <location line="-73"/>
         <source>Remove the current map from the current world</source>
         <translation>현재 월드에서 현재 맵 삭제</translation>
     </message>
     <message>
-        <location line="+125"/>
+        <location line="+124"/>
         <source>All Files (*)</source>
         <translation>모든 파일 (*)</translation>
     </message>
@@ -3277,7 +3309,7 @@ Line %1, column %2</source>
         <translation>현재 %2 에서 &quot;%1&quot; 삭제</translation>
     </message>
     <message>
-        <location line="-82"/>
+        <location line="-81"/>
         <source>Add the current map to a loaded world</source>
         <translation>불러온 월드에 현재 맵 추가</translation>
     </message>
@@ -3303,23 +3335,23 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::AutoMapper</name>
     <message>
-        <location filename="../src/tiled/automapper.cpp" line="+303"/>
+        <location filename="../src/tiled/automapper.cpp" line="+310"/>
         <source>Ignoring unknown property &apos;%2&apos; = &apos;%3&apos; on layer &apos;%4&apos; (rule map &apos;%1&apos;)</source>
         <translation>&apos;%4&apos;레이어에서 알 수 없는 속성 &apos;%2&apos; = &apos;%3&apos; 을 무시합니다 (규칙 맵 &apos;%1&apos;)</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="+52"/>
         <source>Ignoring unknown property &apos;%2&apos; = &apos;%3&apos; for rule options (rule map &apos;%1&apos;)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+46"/>
-        <location line="+114"/>
+        <location line="+45"/>
+        <location line="+112"/>
         <source>Layer &apos;%1&apos; is not recognized as a valid layer for Automapping.</source>
         <translation>&apos;%1&apos; 레이어는 유효한 오토맵 레이어로 인식되지 않습니다.</translation>
     </message>
     <message>
-        <location line="-90"/>
+        <location line="-88"/>
         <source>Only rectangle objects are supported on &apos;rule_options&apos; layers.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3329,7 +3361,7 @@ Line %1, column %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+11"/>
+        <location line="+10"/>
         <source>&apos;rule_options&apos; layers must be object layers.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3339,32 +3371,32 @@ Line %1, column %2</source>
         <translation>레이어 &apos;%1&apos;의 밑줄 표시를 잊으셨습니까?</translation>
     </message>
     <message>
-        <location line="+67"/>
+        <location line="+66"/>
         <source>No input_&lt;name&gt; or inputnot_&lt;name&gt; layer found!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-221"/>
+        <location line="-262"/>
         <source>Ignoring unknown property &apos;%2&apos; = &apos;%3&apos; (rule map &apos;%1&apos;)</source>
         <translation>알 수 없는 속성 &apos;%2&apos; = &apos;%3&apos; 을 무시합니다 (규칙 맵 &apos;%1&apos;)</translation>
     </message>
     <message>
-        <location line="+108"/>
+        <location line="+151"/>
         <source>&apos;%1&apos; layer must not occur more than once.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+65"/>
+        <location line="+64"/>
         <source>&apos;input_*&apos; and &apos;inputnot_*&apos; layers must be tile layers.</source>
         <translation>&apos;input_*&apos; 와 &apos;inputnot_*&apos; 레이어는 타일 레이어여야 합니다.</translation>
     </message>
     <message>
-        <location line="+51"/>
+        <location line="+50"/>
         <source>No output_&lt;name&gt; layer found!</source>
         <translation>output_ &lt;name&gt; 레이어가 발견되지 않았습니다!</translation>
     </message>
     <message>
-        <location line="-109"/>
+        <location line="-107"/>
         <source>&apos;regions_*&apos; layers must be tile layers.</source>
         <translation>&apos;regions_*&apos; 레이어는 타일 레이어여야 합니다.</translation>
     </message>
@@ -3405,7 +3437,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::BrokenLinksModel</name>
     <message>
-        <location filename="../src/tiled/brokenlinks.cpp" line="+301"/>
+        <location filename="../src/tiled/brokenlinks.cpp" line="+303"/>
         <source>Type</source>
         <translation>타입</translation>
     </message>
@@ -3448,7 +3480,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::BrokenLinksWidget</name>
     <message>
-        <location line="+119"/>
+        <location line="+141"/>
         <source>Some files could not be found</source>
         <translation>일부 파일이 발견되지 않을 수 있습니다</translation>
     </message>
@@ -3519,8 +3551,8 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::BucketFillTool</name>
     <message>
-        <location filename="../src/tiled/bucketfilltool.cpp" line="+44"/>
-        <location line="+139"/>
+        <location filename="../src/tiled/bucketfilltool.cpp" line="+41"/>
+        <location line="+138"/>
         <source>Bucket Fill Tool</source>
         <translation>페인트 통 도구</translation>
     </message>
@@ -3664,7 +3696,7 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::CommandProcess</name>
     <message>
-        <location filename="../src/tiled/command.cpp" line="+269"/>
+        <location filename="../src/tiled/command.cpp" line="+274"/>
         <source>Unable to add executable permissions to %1</source>
         <translation>%1 에 실행 권한을 추가할 수 없습니다</translation>
     </message>
@@ -3674,7 +3706,7 @@ Line %1, column %2</source>
         <translation>실행 중: %1</translation>
     </message>
     <message>
-        <location line="+43"/>
+        <location line="+45"/>
         <source>An unknown error occurred.</source>
         <translation>알 수 없는 오류가 발생하였습니다.</translation>
     </message>
@@ -3699,7 +3731,7 @@ Line %1, column %2</source>
         <translation>%1 실행중 오류 발생</translation>
     </message>
     <message>
-        <location line="-81"/>
+        <location line="-83"/>
         <source>Unable to create/open %1</source>
         <translation>%1 을 생성하거나 열 수 없습니다</translation>
     </message>
@@ -3811,35 +3843,51 @@ Line %1, column %2</source>
 <context>
     <name>Tiled::Document</name>
     <message>
-        <location filename="../src/tiled/document.cpp" line="+110"/>
+        <location filename="../src/tiled/document.cpp" line="+106"/>
         <source>Custom property &apos;%1&apos; refers to non-existing file &apos;%2&apos;</source>
         <translation>사용자 지정 속성 &apos;%1&apos;이(가) 존재하지 않는 파일 &apos;%2&apos;을(를) 참조합니다</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/capturestamphelper.cpp" line="+63"/>
+        <source>Cut</source>
+        <translation type="unfinished">잘라내기</translation>
     </message>
 </context>
 <context>
     <name>Tiled::DocumentManager</name>
     <message>
-        <location filename="../src/tiled/documentmanager.cpp" line="+1067"/>
+        <location filename="../src/tiled/documentmanager.cpp" line="+1092"/>
+        <location filename="../src/tiled/editormanager.cpp" line="+1068"/>
         <source>Close</source>
         <translation>닫기</translation>
     </message>
     <message>
-        <location line="+331"/>
+        <location line="+368"/>
+        <location filename="../src/tiled/editormanager.cpp" line="+333"/>
         <source>Tileset Columns Changed</source>
         <translation>타일셋 열이 변경됨</translation>
     </message>
     <message>
-        <location line="-325"/>
+        <location line="-362"/>
+        <location filename="../src/tiled/editormanager.cpp" line="-327"/>
         <source>Close Other Tabs</source>
         <translation>다른 탭 닫기</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="-69"/>
+        <source>%1 [read-only]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+73"/>
+        <location filename="../src/tiled/editormanager.cpp" line="+4"/>
         <source>Close Tabs to the Right</source>
         <translation>오른쪽 탭 닫기</translation>
     </message>
     <message>
-        <location line="-149"/>
+        <location line="-171"/>
+        <location line="+21"/>
+        <location filename="../src/tiled/editormanager.cpp" line="-149"/>
         <location line="+27"/>
         <source>%1:
 
@@ -3849,17 +3897,20 @@ Line %1, column %2</source>
 %2</translation>
     </message>
     <message>
-        <location line="+444"/>
+        <location line="+509"/>
+        <location filename="../src/tiled/editormanager.cpp" line="+446"/>
         <source>The number of tile columns in the tileset &apos;%1&apos; appears to have changed from %2 to %3. Do you want to adjust tile references?</source>
         <translation>&apos;%1&apos; 타일셋 열의 수가 &apos;%2&apos; 에서 &apos;%3&apos; 으로 변경되었습니다. 타일에 대한 참조를 조정하시겠습니까?</translation>
     </message>
     <message>
-        <location line="-685"/>
+        <location line="-743"/>
+        <location filename="../src/tiled/editormanager.cpp" line="-687"/>
         <source>Save File As</source>
         <translation>다름 이름으로 저장</translation>
     </message>
     <message>
         <location line="-67"/>
+        <location filename="../src/tiled/editormanager.cpp" line="-67"/>
         <source>Unrecognized file format.</source>
         <translation>인식할 수 없는 파일 형식.</translation>
     </message>
@@ -3945,9 +3996,17 @@ Line %1, column %2</source>
     </message>
 </context>
 <context>
+    <name>Tiled::Editor</name>
+    <message>
+        <location filename="../src/tiled/editor.cpp" line="+40"/>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Tiled::Eraser</name>
     <message>
-        <location filename="../src/tiled/eraser.cpp" line="+37"/>
+        <location filename="../src/tiled/eraser.cpp" line="+35"/>
         <location line="+62"/>
         <source>Eraser</source>
         <translation>지우개</translation>
@@ -4019,17 +4078,17 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::FileEdit</name>
     <message>
-        <location filename="../src/tiled/fileedit.cpp" line="+131"/>
+        <location filename="../src/tiled/fileedit.cpp" line="+139"/>
         <source>Choose a Folder</source>
         <translation>폴더 선택</translation>
     </message>
     <message>
-        <location line="-81"/>
+        <location line="-89"/>
         <source>Choose</source>
         <translation>선택</translation>
     </message>
     <message>
-        <location line="+85"/>
+        <location line="+93"/>
         <source>Choose a File</source>
         <translation>파일을 선택하십시오</translation>
     </message>
@@ -4037,7 +4096,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::ImageCache</name>
     <message>
-        <location filename="../src/libtiled/imagecache.cpp" line="+131"/>
+        <location filename="../src/libtiled/imagecache.cpp" line="+130"/>
         <source>Recursive metatile map detected: %1</source>
         <translation>재귀 메타타일 맵이 검색되었습니다: %1</translation>
     </message>
@@ -4090,7 +4149,7 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::LayerDock</name>
     <message>
-        <location filename="../src/tiled/layerdock.cpp" line="+237"/>
+        <location filename="../src/tiled/layerdock.cpp" line="+236"/>
         <source>Layers</source>
         <translation>레이어</translation>
     </message>
@@ -4108,12 +4167,12 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::LayerModel</name>
     <message>
-        <location filename="../src/tiled/layermodel.cpp" line="+236"/>
+        <location filename="../src/tiled/layermodel.cpp" line="+233"/>
         <source>Layer</source>
         <translation>레이어</translation>
     </message>
     <message>
-        <location line="+316"/>
+        <location line="+315"/>
         <source>Hide Other Layers</source>
         <translation>다른 레이어 표시 안함</translation>
     </message>
@@ -4128,7 +4187,7 @@ Do you want to replace it?</source>
         <translation>다른 레이어 표시</translation>
     </message>
     <message numerus="yes">
-        <location line="-226"/>
+        <location line="-225"/>
         <source>Drag Layer(s)</source>
         <translation type="unfinished">
             <numerusform>%n 레이어 드래그</numerusform>
@@ -4145,7 +4204,7 @@ Do you want to replace it?</source>
         <translation>표시됨</translation>
     </message>
     <message>
-        <location line="+343"/>
+        <location line="+342"/>
         <source>Unlock Other Layers</source>
         <translation>다른 레이어 잠금 해제</translation>
     </message>
@@ -4153,8 +4212,8 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::LayerOffsetTool</name>
     <message>
-        <location filename="../src/tiled/layeroffsettool.cpp" line="+42"/>
-        <location line="+97"/>
+        <location filename="../src/tiled/layeroffsettool.cpp" line="+41"/>
+        <location line="+98"/>
         <source>Offset Layers</source>
         <translation>레이어 Offset</translation>
     </message>
@@ -4162,12 +4221,12 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::LocatorWidget</name>
     <message>
-        <location filename="../src/tiled/locatorwidget.cpp" line="+375"/>
+        <location filename="../src/tiled/locatorwidget.cpp" line="+373"/>
         <source>Filename</source>
         <translation>파일명</translation>
     </message>
     <message>
-        <location filename="../src/tiled/actionsearch.cpp" line="+242"/>
+        <location filename="../src/tiled/actionsearch.cpp" line="+241"/>
         <source>Search actions...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4197,22 +4256,22 @@ Do you want to replace it?</source>
 <context>
     <name>Tiled::MainWindow</name>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="+1584"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="+1566"/>
         <source>&amp;No</source>
         <translation>아니오 (&amp;N)</translation>
     </message>
     <message>
-        <location line="+745"/>
+        <location line="+747"/>
         <source>&amp;New</source>
         <translation>새로 만들기(&amp;N)</translation>
     </message>
     <message>
-        <location line="-746"/>
+        <location line="-748"/>
         <source>&amp;Yes</source>
         <translation>예 (&amp;Yes)</translation>
     </message>
     <message>
-        <location line="-1239"/>
+        <location line="-1219"/>
         <source>Redo</source>
         <translation>다시 실행</translation>
     </message>
@@ -4222,35 +4281,36 @@ Do you want to replace it?</source>
         <translation>실행 취소</translation>
     </message>
     <message>
-        <location line="-168"/>
+        <location line="-169"/>
         <source>Non-unique file extension.
 Please select specific format.</source>
         <translation>확장자가 한 개가 아닙니다.
 명확한 형식을 지정해주세요.</translation>
     </message>
     <message>
-        <location line="+610"/>
-        <location line="+1549"/>
+        <location line="+618"/>
+        <location line="+1524"/>
         <source>Custom Types Editor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-992"/>
+        <location line="-1000"/>
         <source>Error Exporting Map</source>
         <translation>맵 내보내는 중 오류 발생</translation>
     </message>
     <message>
-        <location line="-91"/>
+        <location line="-85"/>
         <source>Unsaved Changes</source>
         <translation>변경 사항 저장되지 않음</translation>
     </message>
     <message>
         <location filename="../src/tiled/documentmanager.cpp" line="+35"/>
+        <location filename="../src/tiled/editormanager.cpp" line="+35"/>
         <source>Error Saving File</source>
         <translation>파일 저장중 오류 발생</translation>
     </message>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="-1077"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="-1058"/>
         <source>Non-unique file extension</source>
         <translation>확장자가 한 개가 아닙니다</translation>
     </message>
@@ -4261,54 +4321,56 @@ Please select specific format.</source>
     </message>
     <message>
         <location filename="../src/tiled/documentmanager.cpp" line="+46"/>
+        <location filename="../src/tiled/editormanager.cpp" line="+46"/>
         <source>Tiled may not automatically recognize your file when loading. Are you sure you want to save with this extension?</source>
         <translation>Tiled는 불러오는 중 파일을 자동으로 인식하지 못할 수 있습니다. 이 확장자로 저장하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="+1464"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="+1445"/>
         <source>&amp;Close</source>
         <translation>닫기(&amp;C)</translation>
     </message>
     <message>
-        <location line="+707"/>
+        <location line="+709"/>
         <source>&amp;Group</source>
         <translation>그룹 (&amp;G)</translation>
     </message>
     <message>
-        <location line="-1835"/>
-        <location line="+1833"/>
+        <location line="-1817"/>
+        <location line="+1815"/>
         <source>&amp;Layer</source>
         <translation>레이어(&amp;L)</translation>
     </message>
     <message>
-        <location line="+65"/>
+        <location line="+64"/>
         <location line="+39"/>
         <source>Error Exporting Map!</source>
         <translation>맵 내보내기 오류!</translation>
     </message>
     <message>
-        <location filename="../src/tiled/abstractobjecttool.cpp" line="-276"/>
+        <location filename="../src/tiled/abstractobjecttool.cpp" line="-271"/>
         <source>Save Template</source>
         <translation>템플릿 저장</translation>
     </message>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="-1017"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="-1024"/>
         <source>Error Opening Project</source>
         <translation>프로젝트 열기 오류</translation>
     </message>
     <message>
-        <location line="-326"/>
+        <location line="-318"/>
         <source>Error Opening File</source>
         <translation>파일 여는 중 오류 발생</translation>
     </message>
     <message>
-        <location line="-312"/>
-        <location line="+1556"/>
+        <location line="-287"/>
+        <location line="+1531"/>
         <source>Lock Layout</source>
         <translation>레이어 잠금</translation>
     </message>
     <message>
         <location filename="../src/tiled/documentmanager.cpp" line="-4"/>
+        <location filename="../src/tiled/editormanager.cpp" line="-4"/>
         <source>The file extension does not match the chosen file type.</source>
         <translation>파일 확장자가 선택된 파일의 타입과 맞지 않습니다.</translation>
     </message>
@@ -4316,7 +4378,9 @@ Please select specific format.</source>
         <location filename="../src/tiled/abstractobjecttool.cpp" line="-5"/>
         <location filename="../src/tiled/documentmanager.cpp" line="+28"/>
         <location line="+26"/>
-        <location filename="../src/tiled/mainwindow.cpp" line="-906"/>
+        <location filename="../src/tiled/editormanager.cpp" line="+28"/>
+        <location line="+26"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="-914"/>
         <source>untitled</source>
         <translation>untitled</translation>
     </message>
@@ -4326,23 +4390,23 @@ Please select specific format.</source>
         <translation>타일 Collision 편집기</translation>
     </message>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="-139"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="-132"/>
         <source>There are unsaved changes to world &quot;%1&quot;. Do you want to save the world now?</source>
         <translation>저장되지 않은 변경 사항이 있습니다 &quot;%1&quot; 지금 저장하시겠습니까?</translation>
     </message>
     <message>
-        <location line="-698"/>
+        <location line="-679"/>
         <source>Load World</source>
         <translation>월드 불러오기</translation>
     </message>
     <message>
         <location line="+8"/>
-        <location line="+459"/>
+        <location line="+441"/>
         <source>Error Loading World</source>
         <translation>월드 불러오기 오류</translation>
     </message>
     <message>
-        <location line="+393"/>
+        <location line="+385"/>
         <source>Error Saving Project</source>
         <translation>프로젝트 저장 오류</translation>
     </message>
@@ -4352,13 +4416,13 @@ Please select specific format.</source>
         <translation>타일셋 내보내기 오류</translation>
     </message>
     <message>
-        <location line="-583"/>
-        <location line="+1558"/>
+        <location line="-550"/>
+        <location line="+1533"/>
         <source>Views and Toolbars</source>
         <translation>보기 및 툴바</translation>
     </message>
     <message>
-        <location line="-475"/>
+        <location line="-477"/>
         <source>Add External Tileset(s)</source>
         <translation>외부 타일셋 추가</translation>
     </message>
@@ -4368,97 +4432,90 @@ Please select specific format.</source>
         <translation>현재 프로젝트는 &lt;a href=&quot;https://doc.mapeditor.org/en/stable/manual/scripting/&quot;&gt;개요 확장자를 포함하고 있다.확장을 활성화하기 전에 해당 확장을 신뢰하는지 확인하십시오!&lt;/i&gt;</translation>
     </message>
     <message>
-        <location line="-964"/>
-        <location line="+582"/>
-        <location line="+58"/>
-        <source>Error Saving World</source>
-        <translation>월드 저장 오류</translation>
-    </message>
-    <message>
-        <location line="-654"/>
+        <location line="-954"/>
         <source>Error Creating World</source>
         <translation>월드 생성 오류</translation>
     </message>
     <message>
-        <location line="+1346"/>
+        <location line="+1324"/>
         <source>Automatic Mapping Warning</source>
         <translation>오토맵 경고</translation>
     </message>
     <message>
-        <location line="-1801"/>
+        <location line="-1784"/>
         <source>Unknown File Format</source>
         <translation>알 수 없는 파일 형식</translation>
     </message>
     <message>
-        <location line="+1789"/>
+        <location line="+1772"/>
         <source>Automatic Mapping Error</source>
         <translation>오토맵 오류</translation>
     </message>
     <message>
-        <location line="-637"/>
+        <location line="-645"/>
         <location line="+14"/>
         <source>Exported to %1</source>
         <translation>%1 로 내보냈습니다</translation>
     </message>
     <message>
-        <location line="-100"/>
+        <location line="-94"/>
         <source>There are unsaved changes. Do you want to save now?</source>
         <translation>저장되지 않은 변경 사항이 있습니다. 지금 저장하시겠습니까?</translation>
     </message>
     <message>
-        <location line="-624"/>
+        <location line="-600"/>
         <source>New World</source>
         <translation>새로운 월드</translation>
     </message>
     <message>
-        <location line="-441"/>
+        <location line="-446"/>
         <source>The given filename does not have any known file extension.</source>
         <translation>입력된 파일명은 지원되는 확장자를 포함하지 않습니다.</translation>
     </message>
     <message>
-        <location line="+2182"/>
+        <location line="+2164"/>
         <source>Some export files already exist:</source>
         <translation>일부 내보낸 파일들이 이미 존재합니다:</translation>
     </message>
     <message>
-        <location line="-918"/>
+        <location line="-925"/>
         <source>An error occurred while saving the project.</source>
         <translation>프로젝트를 저장하는 동안 오류가 발생했습니다.</translation>
     </message>
     <message>
-        <location line="+920"/>
+        <location line="+927"/>
         <source>Do you want to replace them?</source>
         <translation>대체하시겠습니까?</translation>
     </message>
     <message>
-        <location line="-1595"/>
-        <location line="+1556"/>
+        <location line="-1569"/>
+        <location line="+1531"/>
         <source>Reset to Default Layout</source>
         <translation>레이어 초기값 초기화</translation>
     </message>
     <message>
-        <location line="-2195"/>
-        <location line="+449"/>
-        <location line="+36"/>
-        <location line="+487"/>
-        <location line="+736"/>
+        <location line="-2178"/>
+        <location line="+450"/>
+        <location line="+40"/>
+        <location line="+465"/>
+        <location line="+734"/>
         <source>All Files (*)</source>
         <translation>모든 파일 (*)</translation>
     </message>
     <message>
-        <location line="-755"/>
+        <location line="-753"/>
         <source>Error opening &apos;%1&apos;:
 %2</source>
         <translation>열기 오류 &apos;%1&apos;::
 %2</translation>
     </message>
     <message>
-        <location line="+197"/>
+        <location line="+196"/>
         <source>Unsaved Changes to World</source>
         <translation>월드 변경 사항 저장되지 않음</translation>
     </message>
     <message>
-        <location line="+129"/>
+        <location line="+122"/>
         <source>An error occurred while opening the project.</source>
         <translation>프로젝트를 여는 동안 오류가 발생했습니다.</translation>
     </message>
@@ -4468,22 +4525,22 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+944"/>
+        <location line="+951"/>
         <source>Overwrite Files</source>
         <translation>파일 덮어쓰기</translation>
     </message>
     <message>
-        <location line="-1252"/>
+        <location line="-1251"/>
         <source>Open File</source>
         <translation>파일 ㅇㅕㄹ기</translation>
     </message>
     <message>
-        <location line="+1403"/>
+        <location line="+1402"/>
         <source>Error Reloading Map</source>
         <translation>맵 다시 불러오는 중 오류 발생</translation>
     </message>
     <message>
-        <location line="-904"/>
+        <location line="-905"/>
         <source>&amp;Enable Extensions</source>
         <translation>확장 사용 (&amp;E)</translation>
     </message>
@@ -4494,24 +4551,25 @@ Please select specific format.</source>
     </message>
     <message>
         <location filename="../src/tiled/documentmanager.cpp" line="-55"/>
+        <location filename="../src/tiled/editormanager.cpp" line="-55"/>
         <source>Extension Mismatch</source>
         <translation>확장자 불일치</translation>
     </message>
     <message>
-        <location filename="../src/tiled/mainwindow.cpp" line="-459"/>
-        <location line="+308"/>
+        <location filename="../src/tiled/mainwindow.cpp" line="-457"/>
+        <location line="+300"/>
         <source>Tiled Projects (*.tiled-project)</source>
         <translation>타일 프로젝트 (*.tiled-project)</translation>
     </message>
     <message>
-        <location line="+872"/>
+        <location line="+880"/>
         <source>[*]%1%2</source>
         <translation>[*]%1%2</translation>
     </message>
     <message>
-        <location line="-1713"/>
-        <location line="+36"/>
-        <location line="+495"/>
+        <location line="-1695"/>
+        <location line="+40"/>
+        <location line="+473"/>
         <source>World files (*.world)</source>
         <translation>월드 파일 (*.world)</translation>
     </message>
@@ -4524,29 +4582,34 @@ Please select specific format.</source>
 <context>
     <name>Tiled::MapDocument</name>
     <message>
-        <location filename="../src/tiled/mapdocument.cpp" line="+1265"/>
+        <location filename="../src/tiled/mapdocument.cpp" line="+1371"/>
         <source>Tile</source>
         <translation>타일</translation>
     </message>
     <message numerus="yes">
-        <location line="+340"/>
+        <location line="+389"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>%n개 오브젝트 복제</numerusform>
         </translation>
     </message>
     <message>
-        <location line="-1266"/>
+        <location line="-1365"/>
         <source>Resize Map</source>
         <translation>맵 크기 조정</translation>
     </message>
     <message>
-        <location line="+346"/>
+        <location line="-202"/>
+        <source>Map format &apos;%s&apos; not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+549"/>
         <source>Merge Layer Down</source>
         <translation>아래 레이어와 병합</translation>
     </message>
     <message>
-        <location line="+774"/>
+        <location line="+823"/>
         <location filename="../src/tiled/newmapdialog.cpp" line="+90"/>
         <source>Tile Layer %1</source>
         <translation>타일 레이어 %1</translation>
@@ -4557,55 +4620,55 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location line="+161"/>
+        <location line="+210"/>
         <source>Move %n Object(s) to Layer</source>
         <translation>
             <numerusform>%n개 오브젝트 레이어로 이동</numerusform>
         </translation>
     </message>
     <message>
-        <location line="-113"/>
+        <location line="-162"/>
         <source>Failed to load template &apos;%1&apos;</source>
         <translation>&apos;%1&apos; 템플릿 불러오기 실패</translation>
     </message>
     <message numerus="yes">
-        <location line="+151"/>
+        <location line="+200"/>
         <source>Move %n Object(s) Up</source>
         <translation>
             <numerusform>%n개 레이어를 위로 옮기기</numerusform>
         </translation>
     </message>
     <message>
-        <location line="-1434"/>
+        <location line="-1533"/>
         <source>untitled.tmx</source>
         <translation>untitled.tmx</translation>
     </message>
     <message numerus="yes">
-        <location line="+1470"/>
+        <location line="+1569"/>
         <source>Move %n Object(s) Down</source>
         <translation>
             <numerusform>%n개 레이어를 아래로 이동</numerusform>
         </translation>
     </message>
     <message>
-        <location line="-1574"/>
+        <location line="-1709"/>
         <source>Map format &apos;%1&apos; not found</source>
         <translation>맵 형식 %1를 찾을 수 없습니다</translation>
     </message>
     <message numerus="yes">
-        <location line="+426"/>
+        <location line="+463"/>
         <source>Ungroup %n Layer(s)</source>
         <translation>
             <numerusform>%n개 레이어(s) 그룹 해제</numerusform>
         </translation>
     </message>
     <message>
-        <location line="+907"/>
+        <location line="+956"/>
         <source>Object Layer %1</source>
         <translation>오브젝트 레이어 %1</translation>
     </message>
     <message numerus="yes">
-        <location line="-861"/>
+        <location line="-910"/>
         <source>Duplicate %n Layer(s)</source>
         <translation>
             <numerusform>%n개 Layer(s) 복제</numerusform>
@@ -4622,44 +4685,38 @@ Please select specific format.</source>
         <translation>맵 Offset</translation>
     </message>
     <message numerus="yes">
-        <location line="+1197"/>
+        <location line="+1295"/>
         <source>Remove %n Object(s)</source>
         <translation>
             <numerusform>%n개 오브젝트 삭제</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location line="-835"/>
+        <location line="-933"/>
         <source>Remove %n Layer(s)</source>
         <translation>
             <numerusform>%n개 레이어(s) 삭제</numerusform>
         </translation>
     </message>
     <message>
-        <location line="+714"/>
+        <location line="+763"/>
         <source>Failed to load tileset &apos;%1&apos;</source>
         <translation>&apos;%1&apos;타일셋 불러오기 실패</translation>
     </message>
     <message numerus="yes">
-        <location line="-958"/>
+        <location line="-1007"/>
         <source>Group %n Layer(s)</source>
         <translation>
             <numerusform>%n개 레이어(s) ㄱㅡ룹</numerusform>
         </translation>
     </message>
     <message>
-        <location line="+736"/>
+        <location line="+785"/>
         <source>Tileset Changes</source>
         <translation>타일셋 변경</translation>
     </message>
     <message>
-        <location line="-639"/>
-        <location filename="../src/tiled/tileseteditor.cpp" line="+987"/>
-        <source>Copy of %1</source>
-        <translation>%1의 사본</translation>
-    </message>
-    <message>
-        <location line="+829"/>
+        <location line="+190"/>
         <source>Image Layer %1</source>
         <translation>이미지 레이어 %1</translation>
     </message>
@@ -4667,12 +4724,12 @@ Please select specific format.</source>
 <context>
     <name>Tiled::MapDocumentActionHandler</name>
     <message>
-        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+361"/>
+        <location filename="../src/tiled/mapdocumentactionhandler.cpp" line="+398"/>
         <source>Cut</source>
         <translation>잘라내기</translation>
     </message>
     <message>
-        <location line="-51"/>
+        <location line="-88"/>
         <source>&amp;New</source>
         <translation>새로 만들기(&amp;N)</translation>
     </message>
@@ -4682,14 +4739,14 @@ Please select specific format.</source>
         <translation>레이어 내리기(&amp;L)</translation>
     </message>
     <message numerus="yes">
-        <location line="+601"/>
+        <location line="+640"/>
         <source>Duplicate %n Object(s)</source>
         <translation>
             <numerusform>%n개 오브젝트 복제</numerusform>
         </translation>
     </message>
     <message>
-        <location line="-614"/>
+        <location line="-653"/>
         <source>&amp;Group Layer</source>
         <translation>레이어 그룹화(&amp;G)</translation>
     </message>
@@ -4724,13 +4781,13 @@ Please select specific format.</source>
         <translation>선택 해제(&amp;N)</translation>
     </message>
     <message>
-        <location line="+173"/>
+        <location line="+210"/>
         <location line="+3"/>
         <source>Delete</source>
         <translation>삭제</translation>
     </message>
     <message>
-        <location line="-151"/>
+        <location line="-188"/>
         <source>Layer &amp;Properties...</source>
         <translation>레이어 속성(&amp;P)...</translation>
     </message>
@@ -4761,12 +4818,12 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="+7"/>
-        <location line="+342"/>
+        <location line="+381"/>
         <source>Layer via Copy</source>
         <translation>사본을 통한 레이어</translation>
     </message>
     <message>
-        <location line="-337"/>
+        <location line="-376"/>
         <source>&amp;Duplicate Layers</source>
         <translation>레이어 복제(&amp;D)</translation>
     </message>
@@ -4781,17 +4838,17 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+607"/>
+        <location line="+646"/>
         <source>Remove Objects</source>
         <translation>오브젝트 삭제</translation>
     </message>
     <message>
-        <location line="-627"/>
+        <location line="-666"/>
         <source>Select &amp;All</source>
         <translation>모두 선택(&amp;A)</translation>
     </message>
     <message numerus="yes">
-        <location line="+624"/>
+        <location line="+663"/>
         <source>Remove %n Object(s)</source>
         <translation>
             <numerusform>%n개 오브젝트 삭제</numerusform>
@@ -4803,7 +4860,7 @@ Please select specific format.</source>
         <translation>오브젝트 복제</translation>
     </message>
     <message>
-        <location line="-600"/>
+        <location line="-639"/>
         <source>Lock/&amp;Unlock Other Layers</source>
         <translation>다른 레이어 잠금/잠금 해제(&amp;U)</translation>
     </message>
@@ -4834,12 +4891,12 @@ Please select specific format.</source>
     </message>
     <message>
         <location line="-13"/>
-        <location line="+341"/>
+        <location line="+380"/>
         <source>Layer via Cut</source>
         <translation>잘라내기를 통한 레이어</translation>
     </message>
     <message>
-        <location line="-340"/>
+        <location line="-379"/>
         <source>&amp;Group Layers</source>
         <translation>레이어 그룹화(&amp;G)</translation>
     </message>
@@ -4847,12 +4904,12 @@ Please select specific format.</source>
 <context>
     <name>Tiled::MapEditor</name>
     <message>
-        <location filename="../src/tiled/mapeditor.cpp" line="+998"/>
+        <location filename="../src/tiled/mapeditor.cpp" line="+1015"/>
         <source>Tools</source>
         <translation>도구</translation>
     </message>
     <message numerus="yes">
-        <location line="-58"/>
+        <location line="-80"/>
         <source>Add %n Tileset(s)</source>
         <translation>
             <numerusform>%n개 타일셋 추가</numerusform>
@@ -4864,12 +4921,12 @@ Please select specific format.</source>
         <translation>%1: %2</translation>
     </message>
     <message>
-        <location line="+76"/>
+        <location line="+98"/>
         <source>Tool Options</source>
         <translation>도구 옵션</translation>
     </message>
     <message>
-        <location line="-82"/>
+        <location line="-104"/>
         <location line="+5"/>
         <source>Error Reading Tileset</source>
         <translation>타일셋 읽기 오류</translation>
@@ -4888,7 +4945,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::MapObjectModel</name>
     <message>
-        <location filename="../src/tiled/mapobjectmodel.cpp" line="+302"/>
+        <location filename="../src/tiled/mapobjectmodel.cpp" line="+322"/>
         <source>Class</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5156,7 +5213,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::ObjectsDock</name>
     <message>
-        <location filename="../src/tiled/objectsdock.cpp" line="+169"/>
+        <location filename="../src/tiled/objectsdock.cpp" line="+172"/>
         <source>Add Object Layer</source>
         <translation>오브젝트 레이어 추가</translation>
     </message>
@@ -5196,26 +5253,31 @@ Please select specific format.</source>
 <context>
     <name>Tiled::PreferencesDialog</name>
     <message>
-        <location filename="../src/tiled/preferencesdialog.cpp" line="-205"/>
-        <location line="+208"/>
+        <location filename="../src/tiled/preferencesdialog.cpp" line="-210"/>
+        <location line="+213"/>
         <source>Select From Any Layer</source>
         <translation>모든 레이어에서 선택</translation>
     </message>
     <message>
-        <location line="-206"/>
-        <location line="+208"/>
+        <location line="-211"/>
+        <location line="+213"/>
         <source>Selected Layers Only</source>
         <translation>오직 선택한 레이어만</translation>
     </message>
     <message>
-        <location line="-218"/>
-        <location line="+211"/>
+        <location line="-171"/>
+        <source>Updates and Crash Reporting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-52"/>
+        <location line="+216"/>
         <source>System default</source>
         <translation>시스템 기본 설정</translation>
     </message>
     <message>
-        <location line="-202"/>
-        <location line="+208"/>
+        <location line="-207"/>
+        <location line="+213"/>
         <source>Prefer Selected Layers</source>
         <translation>선택한 레이어 선호</translation>
     </message>
@@ -5236,7 +5298,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::ProjectModel</name>
     <message>
-        <location filename="../src/tiled/projectmodel.cpp" line="+283"/>
+        <location filename="../src/tiled/projectmodel.cpp" line="+309"/>
         <source>(Refreshing)</source>
         <translation>(새로고침 중)</translation>
     </message>
@@ -5315,7 +5377,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::PropertiesDock</name>
     <message>
-        <location filename="../src/tiled/propertiesdock.cpp" line="+394"/>
+        <location filename="../src/tiled/propertieswidget.cpp" line="+389"/>
         <source>Cu&amp;t</source>
         <translation>잘라내기(&amp;T)</translation>
     </message>
@@ -5340,7 +5402,7 @@ Please select specific format.</source>
         <translation>붙여넣기(&amp;P)</translation>
     </message>
     <message>
-        <location line="+136"/>
+        <location line="+134"/>
         <source>Rename...</source>
         <translation>이름 변경...</translation>
     </message>
@@ -5357,24 +5419,24 @@ Please select specific format.</source>
         </translation>
     </message>
     <message>
-        <location line="+228"/>
+        <location filename="../src/tiled/propertiesdock.cpp" line="+75"/>
         <source>Properties</source>
         <translation>속성</translation>
     </message>
     <message numerus="yes">
-        <location line="-278"/>
+        <location filename="../src/tiled/propertieswidget.cpp" line="-52"/>
         <source>Paste Property/Properties</source>
         <translation type="unfinished">
             <numerusform>%n개 속성 붙여넣기</numerusform>
         </translation>
     </message>
     <message>
-        <location line="+154"/>
+        <location line="+158"/>
         <source>Convert To</source>
         <translation>다음으로 변환하기</translation>
     </message>
     <message>
-        <location line="+129"/>
+        <location line="+127"/>
         <source>Remove Property</source>
         <translation>속성 삭제</translation>
     </message>
@@ -5384,13 +5446,13 @@ Please select specific format.</source>
         <translation>속성 추가</translation>
     </message>
     <message>
-        <location line="-205"/>
-        <location line="+211"/>
+        <location line="-203"/>
+        <location line="+209"/>
         <source>Rename Property</source>
         <translation>속성 이름 변경</translation>
     </message>
     <message numerus="yes">
-        <location line="-66"/>
+        <location line="-64"/>
         <source>Convert Property/Properties</source>
         <translation type="unfinished">
             <numerusform>%n개 속성 변환</numerusform>
@@ -5400,19 +5462,19 @@ Please select specific format.</source>
 <context>
     <name>Tiled::PropertyBrowser</name>
     <message>
-        <location filename="../src/tiled/propertybrowser.cpp" line="-1332"/>
-        <location line="+1324"/>
+        <location filename="../src/tiled/propertybrowser.cpp" line="-1339"/>
+        <location line="+1331"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location line="-1323"/>
-        <location line="+1324"/>
+        <location line="-1330"/>
+        <location line="+1331"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
     <message>
-        <location line="-1334"/>
+        <location line="-1341"/>
         <location line="+44"/>
         <location line="+182"/>
         <source>ID</source>
@@ -5459,7 +5521,7 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1021"/>
+        <location line="+1028"/>
         <source>Odd</source>
         <translation>홀수</translation>
     </message>
@@ -5499,17 +5561,17 @@ Please select specific format.</source>
         <translation>짝수</translation>
     </message>
     <message>
-        <location line="-1304"/>
+        <location line="-1311"/>
         <source>Font</source>
         <translation>폰트</translation>
     </message>
     <message>
-        <location line="+1356"/>
+        <location line="+1363"/>
         <source>Left</source>
         <translation>왼쪽</translation>
     </message>
     <message>
-        <location line="-1388"/>
+        <location line="-1395"/>
         <location line="+43"/>
         <location line="+87"/>
         <location line="+131"/>
@@ -5552,7 +5614,7 @@ Please select specific format.</source>
         <translation>이미지</translation>
     </message>
     <message>
-        <location line="+1163"/>
+        <location line="+1170"/>
         <source>Mixed</source>
         <translation>혼합된</translation>
     </message>
@@ -5562,19 +5624,19 @@ Please select specific format.</source>
         <translation>오른쪽</translation>
     </message>
     <message>
-        <location line="-1471"/>
+        <location line="-1478"/>
         <location line="+95"/>
         <location line="+214"/>
         <source>Width</source>
         <translation>너비</translation>
     </message>
     <message>
-        <location line="+1168"/>
+        <location line="+1175"/>
         <source>Horizontal</source>
         <translation>수평</translation>
     </message>
     <message>
-        <location line="-1431"/>
+        <location line="-1438"/>
         <source>Tile Render Order</source>
         <translation>타일 렌더링 순서</translation>
     </message>
@@ -5589,12 +5651,12 @@ Please select specific format.</source>
         <translation>레이어 그룹화</translation>
     </message>
     <message>
-        <location line="+1277"/>
+        <location line="+1284"/>
         <source>Top Right</source>
         <translation>오른쪽 위</translation>
     </message>
     <message>
-        <location line="-1307"/>
+        <location line="-1314"/>
         <source>Drawing Order</source>
         <translation>그리기 순서</translation>
     </message>
@@ -5619,12 +5681,12 @@ Please select specific format.</source>
         <translation>이 타일이 선택될 상대적인 확률</translation>
     </message>
     <message>
-        <location line="+765"/>
+        <location line="+767"/>
         <source>Custom Properties</source>
         <translation>사용자 정의 속성</translation>
     </message>
     <message>
-        <location line="-324"/>
+        <location line="-326"/>
         <source>Error Reading Tileset</source>
         <translation>타일셋 읽기 오류</translation>
     </message>
@@ -5634,7 +5696,7 @@ Please select specific format.</source>
         <translation>오브젝트 정렬</translation>
     </message>
     <message>
-        <location line="+1254"/>
+        <location line="+1261"/>
         <source>Bottom</source>
         <translation>하단</translation>
     </message>
@@ -5644,17 +5706,17 @@ Please select specific format.</source>
         <translation>중앙</translation>
     </message>
     <message>
-        <location line="-1214"/>
+        <location line="-1221"/>
         <source>Grid Height</source>
         <translation>격자 높이</translation>
     </message>
     <message>
-        <location line="+1229"/>
+        <location line="+1236"/>
         <source>Corner</source>
         <translation>코너</translation>
     </message>
     <message>
-        <location line="-1482"/>
+        <location line="-1489"/>
         <location line="+282"/>
         <source>Tile Height</source>
         <translation>타일 높이</translation>
@@ -5677,12 +5739,12 @@ Please select specific format.</source>
         <translation>잠금</translation>
     </message>
     <message>
-        <location line="+1355"/>
+        <location line="+1362"/>
         <source>Manual</source>
         <translation>수동으로</translation>
     </message>
     <message>
-        <location line="-1196"/>
+        <location line="-1203"/>
         <source>Margin</source>
         <translation>여백</translation>
     </message>
@@ -5702,18 +5764,18 @@ Please select specific format.</source>
         <translation>소스</translation>
     </message>
     <message>
-        <location line="+1189"/>
+        <location line="+1196"/>
         <source>Bottom Left</source>
         <translation>왼쪽 하단</translation>
     </message>
     <message>
-        <location line="-1477"/>
+        <location line="-1484"/>
         <location line="+254"/>
         <source>Orientation</source>
         <translation>구도</translation>
     </message>
     <message>
-        <location line="+1232"/>
+        <location line="+1239"/>
         <source>Top Down</source>
         <translation>위에서 아래로</translation>
     </message>
@@ -5723,7 +5785,7 @@ Please select specific format.</source>
         <translation>왼쪽 위</translation>
     </message>
     <message>
-        <location line="-1332"/>
+        <location line="-1339"/>
         <source>Tint Color</source>
         <translation>색조 색상</translation>
     </message>
@@ -5841,7 +5903,7 @@ Please select specific format.</source>
         <translation>변형되지 않은 타일 선호</translation>
     </message>
     <message>
-        <location line="+1197"/>
+        <location line="+1204"/>
         <source>Unspecified</source>
         <translation>정의되지 않은</translation>
     </message>
@@ -5851,7 +5913,7 @@ Please select specific format.</source>
         <translation>오른쪽 하단</translation>
     </message>
     <message>
-        <location line="-1334"/>
+        <location line="-1341"/>
         <source>Parallax Factor</source>
         <translation>시차 요소</translation>
     </message>
@@ -5867,12 +5929,12 @@ Please select specific format.</source>
         <translation>투명색</translation>
     </message>
     <message>
-        <location line="+1190"/>
+        <location line="+1197"/>
         <source>Vertical</source>
         <translation>수직</translation>
     </message>
     <message>
-        <location line="-1392"/>
+        <location line="-1399"/>
         <location line="+40"/>
         <source>Visible</source>
         <translation>표시됨</translation>
@@ -6199,12 +6261,12 @@ Please select specific format.</source>
         <translation>스택 추적:</translation>
     </message>
     <message>
-        <location line="+151"/>
+        <location line="+156"/>
         <source>Extensions paths changed: %1</source>
         <translation>확장 경로 변경: %1</translation>
     </message>
     <message>
-        <location line="-223"/>
+        <location line="-228"/>
         <source>Error decoding file: %1</source>
         <translation>파일 디코딩 오류: %1</translation>
     </message>
@@ -6224,12 +6286,12 @@ Please select specific format.</source>
         <translation>%1 라인에서: %2</translation>
     </message>
     <message>
-        <location line="+101"/>
+        <location line="+106"/>
         <source>Script files changed: %1</source>
         <translation>스크립트 파일 변형: %1</translation>
     </message>
     <message>
-        <location line="-180"/>
+        <location line="-185"/>
         <source>Evaluating &apos;%1&apos;</source>
         <translation>평가 중 &apos;%1&apos;</translation>
     </message>
@@ -6237,6 +6299,29 @@ Please select specific format.</source>
         <location line="-19"/>
         <source>Error opening file: %1</source>
         <translation>파일 열기 오류: %1</translation>
+    </message>
+</context>
+<context>
+    <name>Tiled::ScriptModule</name>
+    <message>
+        <location filename="../src/tiled/scriptmodule.cpp" line="+93"/>
+        <source>Open Directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Open Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Open File</source>
+        <translation type="unfinished">파일 ㅇㅕㄹ기</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Save File</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6251,7 +6336,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::ShapeFillTool</name>
     <message>
-        <location filename="../src/tiled/shapefilltool.cpp" line="+149"/>
+        <location filename="../src/tiled/shapefilltool.cpp" line="+147"/>
         <source>Circle Fill</source>
         <translation>원형 채우기</translation>
     </message>
@@ -6266,8 +6351,8 @@ Please select specific format.</source>
         <translation>직사각형 채우기</translation>
     </message>
     <message>
-        <location line="-107"/>
-        <location line="+105"/>
+        <location line="-106"/>
+        <location line="+104"/>
         <source>Shape Fill Tool</source>
         <translation>도형 채우기 도구</translation>
     </message>
@@ -6364,7 +6449,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::StampActions</name>
     <message>
-        <location filename="../src/tiled/abstractobjecttool.cpp" line="-267"/>
+        <location filename="../src/tiled/abstractobjecttool.cpp" line="-262"/>
         <location filename="../src/tiled/stampactions.cpp" line="+98"/>
         <source>Rotate Right</source>
         <translation>오른쪽으로 회전하기</translation>
@@ -6399,8 +6484,8 @@ Please select specific format.</source>
 <context>
     <name>Tiled::StampBrush</name>
     <message>
-        <location filename="../src/tiled/stampbrush.cpp" line="+49"/>
-        <location line="+187"/>
+        <location filename="../src/tiled/stampbrush.cpp" line="+45"/>
+        <location line="+173"/>
         <source>Stamp Brush</source>
         <translation>스탬프 브러쉬</translation>
     </message>
@@ -6416,7 +6501,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::TemplatesDock</name>
     <message>
-        <location filename="../src/tiled/templatesdock.cpp" line="+314"/>
+        <location filename="../src/tiled/templatesdock.cpp" line="+313"/>
         <location line="+9"/>
         <source>%1: Couldn&apos;t find &quot;%2&quot;</source>
         <translation>%1: 찾을 수 없습니다 &quot;%2&quot;</translation>
@@ -6493,7 +6578,7 @@ Please select specific format.</source>
         <translation>삭제</translation>
     </message>
     <message>
-        <location line="-438"/>
+        <location line="-437"/>
         <source>Show Bottom</source>
         <translation>하단 표시</translation>
     </message>
@@ -6503,17 +6588,17 @@ Please select specific format.</source>
         <translation>숨겨짐</translation>
     </message>
     <message>
-        <location line="+559"/>
+        <location line="+558"/>
         <source>Move Objects Up</source>
         <translation>오브젝트 위로 이동</translation>
     </message>
     <message>
-        <location line="-554"/>
+        <location line="-553"/>
         <source>Show Right</source>
         <translation>오른쪽 표시</translation>
     </message>
     <message>
-        <location line="+553"/>
+        <location line="+552"/>
         <source>Remove Objects</source>
         <translation>오브젝트 삭제</translation>
     </message>
@@ -6528,12 +6613,12 @@ Please select specific format.</source>
         <translation>오브젝트 속성</translation>
     </message>
     <message>
-        <location line="-532"/>
+        <location line="-531"/>
         <source>Objects list</source>
         <translation>오브젝트 목록</translation>
     </message>
     <message>
-        <location line="+531"/>
+        <location line="+530"/>
         <source>Move Objects Down</source>
         <translation>오브젝트 아래로 이동</translation>
     </message>
@@ -6621,7 +6706,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::TilesetDock</name>
     <message>
-        <location filename="../src/tiled/tilesetdock.cpp" line="-166"/>
+        <location filename="../src/tiled/tilesetdock.cpp" line="-165"/>
         <source>Tilesets</source>
         <translation>타일셋</translation>
     </message>
@@ -6641,12 +6726,12 @@ Please select specific format.</source>
         <translation>타일셋 내보내기(&amp;E)...</translation>
     </message>
     <message>
-        <location line="+295"/>
+        <location line="+293"/>
         <source>Error saving tileset: %1</source>
         <translation>타일셋 저장하는 중 오류 발생: %1</translation>
     </message>
     <message>
-        <location line="-414"/>
+        <location line="-412"/>
         <source>Error Reading Tileset</source>
         <translation>타일셋 읽기 오류</translation>
     </message>
@@ -6656,13 +6741,13 @@ Please select specific format.</source>
         <translation>다음 타일셋 선택</translation>
     </message>
     <message>
-        <location line="+273"/>
+        <location line="+271"/>
         <location line="+17"/>
         <source>Export Tileset</source>
         <translation>타일셋 내보내기</translation>
     </message>
     <message>
-        <location line="-293"/>
+        <location line="-291"/>
         <source>Edit Tile&amp;set</source>
         <translation>타일셋 편집(S)(&amp;S)</translation>
     </message>
@@ -6711,17 +6796,17 @@ Please select specific format.</source>
 <context>
     <name>Tiled::TilesetDocument</name>
     <message>
-        <location filename="../src/tiled/tilesetdocument.cpp" line="+232"/>
+        <location filename="../src/tiled/tilesetdocument.cpp" line="+231"/>
         <source>untitled.tsx</source>
         <translation>untitled.tsx</translation>
     </message>
     <message>
-        <location line="+209"/>
+        <location line="+212"/>
         <source>Failed to load tileset image &apos;%1&apos;</source>
         <translation>타일셋 이미지 &apos;%1&apos;를 불러오는데 실패했습니다</translation>
     </message>
     <message>
-        <location line="-330"/>
+        <location line="-333"/>
         <source>Tileset format &apos;%1&apos; not found</source>
         <translation>타일셋 형식 &apos;%1&apos;를 찾을 수 없습니다</translation>
     </message>
@@ -6731,7 +6816,7 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+304"/>
+        <location line="+307"/>
         <source>Failed to load tile image &apos;%1&apos;</source>
         <translation>타일 이미지 &apos;%1&apos; 을 불러오는 데 실패하였습니다</translation>
     </message>
@@ -6739,7 +6824,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::TilesetEditor</name>
     <message>
-        <location filename="../src/tiled/tileseteditor.cpp" line="-310"/>
+        <location filename="../src/tiled/tileseteditor.cpp" line="+677"/>
         <location line="+197"/>
         <source>Remove Tiles</source>
         <translation>타일 삭제</translation>
@@ -6788,8 +6873,8 @@ Please select specific format.</source>
         <translation>타일 &quot;%1&quot; 이 이미 타일셋에 존재합니다!</translation>
     </message>
     <message>
-        <location line="-550"/>
-        <location line="+494"/>
+        <location line="-551"/>
+        <location line="+495"/>
         <source>Tileset</source>
         <translation>타일셋</translation>
     </message>
@@ -6820,7 +6905,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::TilesetView</name>
     <message>
-        <location filename="../src/tiled/tilesetview.cpp" line="+769"/>
+        <location filename="../src/tiled/tilesetview.cpp" line="+759"/>
         <source>Use as Terrain Set Image</source>
         <translation>지형 셋 이미지 사용</translation>
     </message>
@@ -6963,13 +7048,13 @@ Please select specific format.</source>
 <context>
     <name>Tiled::WangBrush</name>
     <message>
-        <location filename="../src/tiled/wangbrush.cpp" line="+111"/>
+        <location filename="../src/tiled/wangbrush.cpp" line="+84"/>
         <location line="+97"/>
         <source>Terrain Brush</source>
         <translation>지형 브러쉬</translation>
     </message>
     <message>
-        <location line="+202"/>
+        <location line="+179"/>
         <source>Missing terrain transition</source>
         <translation>누락된 지형 전환</translation>
     </message>
@@ -6985,7 +7070,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::WangDock</name>
     <message>
-        <location filename="../src/tiled/wangdock.cpp" line="+563"/>
+        <location filename="../src/tiled/wangdock.cpp" line="+576"/>
         <source>Add Terrain Set</source>
         <translation>지형 셋 추가</translation>
     </message>
@@ -7015,8 +7100,8 @@ Please select specific format.</source>
         <translation>새로운 코너 셋</translation>
     </message>
     <message>
-        <location line="-366"/>
-        <location line="+375"/>
+        <location line="-377"/>
+        <location line="+386"/>
         <source>Patterns</source>
         <translation>패턴</translation>
     </message>
@@ -7036,8 +7121,8 @@ Please select specific format.</source>
         <translation>지형 셋</translation>
     </message>
     <message>
-        <location line="-363"/>
-        <location line="+375"/>
+        <location line="-374"/>
+        <location line="+386"/>
         <source>Terrains</source>
         <translation>지형</translation>
     </message>
@@ -7058,7 +7143,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::WorldDocument</name>
     <message>
-        <location filename="../src/tiled/worlddocument.cpp" line="+47"/>
+        <location filename="../src/tiled/worlddocument.cpp" line="+48"/>
         <source>untitled.world</source>
         <translation>untitled.world</translation>
     </message>
@@ -7066,7 +7151,7 @@ Please select specific format.</source>
 <context>
     <name>Tiled::WorldManager</name>
     <message>
-        <location filename="../src/libtiled/worldmanager.cpp" line="+53"/>
+        <location filename="../src/libtiled/world.cpp" line="+53"/>
         <source>World: Invalid mapHeight: %1</source>
         <translation>월드 유효하지 않은 맵높이: %1</translation>
     </message>
@@ -7086,12 +7171,7 @@ Please select specific format.</source>
         <translation>월드: 유효하지않은 multiplierX: %1</translation>
     </message>
     <message>
-        <location line="+104"/>
-        <source>World doesn&apos;t support saving</source>
-        <translation>월드가 저장을 지원하지 않습니다</translation>
-    </message>
-    <message>
-        <location line="-143"/>
+        <location line="-39"/>
         <source>JSON parse error at offset %1:
 %2.</source>
         <translation>오프셋의 JSON 구문 오류 %1:
@@ -7108,15 +7188,20 @@ Please select specific format.</source>
         <translation>월드: %1의 유효하지 않은 사진, 2 사진들이 예상됩니다</translation>
     </message>
     <message>
-        <location line="+143"/>
+        <location line="+72"/>
         <source>Could not open file for reading.</source>
         <translation>읽기용으로 파일을 열 수 없습니다.</translation>
+    </message>
+    <message>
+        <location filename="../src/tiled/worldmanager.cpp" line="+169"/>
+        <source>World not found</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Tiled::WorldMoveMapTool</name>
     <message>
-        <location filename="../src/tiled/worldmovemaptool.cpp" line="+84"/>
+        <location filename="../src/tiled/worldmovemaptool.cpp" line="+52"/>
         <location line="+169"/>
         <source>World Tool</source>
         <translation>월드 도구</translation>
@@ -7146,7 +7231,7 @@ Please select specific format.</source>
 <context>
     <name>Tscn::TscnPlugin</name>
     <message>
-        <location filename="../src/plugins/tscn/tscnplugin.cpp" line="-484"/>
+        <location filename="../src/plugins/tscn/tscnplugin.cpp" line="-810"/>
         <source>Could not find .godot project in file path for file %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7156,32 +7241,57 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+34"/>
+        <location line="+165"/>
         <source>Cannot export tileset &apos;%1&apos; because the Godot exporter does not support collection-type tilesets.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+58"/>
-        <source>The Godot exporter does not yet support objects</source>
+        <location line="+41"/>
+        <source>Godot exporter does not support property type of &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+8"/>
+        <source>Inconsistent type for property &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+28"/>
+        <source>Only objects with the resPath property will be exported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>resPath must be in the form of &apos;res://&lt;filename&gt;.tscn&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+58"/>
         <source>The Godot exporter does not yet support image layers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+70"/>
+        <location line="+81"/>
         <source>Godot exporter only supports collisions that are rectangles or polygons.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+132"/>
+        <location line="+90"/>
+        <source>Godot exporter does not support property of type &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+97"/>
+        <source>exportAlternates is deprecated. Godot 4.2 supports native tile rotation. Tileset: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+23"/>
         <source>Tile animations must flow left-to-right, top-to-bottom, with no skipped tiles.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+86"/>
+        <location line="+102"/>
         <source>Godot only supports hexagonal maps where the Hex Side Length is exactly half its height. For a tile height of %1, the Hex Side Length should be set to %2.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7191,12 +7301,12 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+68"/>
+        <location line="+78"/>
         <source>tilesetResPath must be in the form of &apos;res://&lt;filename&gt;.tres&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+77"/>
+        <location line="+80"/>
         <source>Cannot use tile %1 from tileset %2 because it is reserved as an animation frame.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7206,12 +7316,7 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+10"/>
-        <source>Map uses flipped/rotated tiles. The tileset must have the custom exportAlternates property enabled to export this map.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+53"/>
+        <location line="+92"/>
         <source>Godot 4 Scene files (*.tscn)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7244,8 +7349,8 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tiled/eraser.cpp" line="+18"/>
         <location filename="../src/tiled/erasetiles.cpp" line="+35"/>
+        <location filename="../src/tiled/mapdocument.cpp" line="-429"/>
         <source>Erase</source>
         <translation>지우기</translation>
     </message>
@@ -7323,7 +7428,7 @@ Please select specific format.</source>
         <translation>레이어 이름 변경</translation>
     </message>
     <message>
-        <location filename="../src/tiled/addremovelayer.cpp" line="+94"/>
+        <location filename="../src/tiled/addremovelayer.cpp" line="+93"/>
         <source>Remove Layer</source>
         <translation>레이어 삭제</translation>
     </message>
@@ -7338,7 +7443,7 @@ Please select specific format.</source>
         <translation>폴리선 분리</translation>
     </message>
     <message>
-        <location filename="../src/tiled/offsetlayer.cpp" line="+50"/>
+        <location filename="../src/tiled/offsetlayer.cpp" line="+51"/>
         <source>Offset Layer</source>
         <translation>레이어 Offset</translation>
     </message>
@@ -7464,7 +7569,7 @@ Please select specific format.</source>
         <translation>지형 삭제</translation>
     </message>
     <message>
-        <location filename="../src/tiled/editablemap.cpp" line="+309"/>
+        <location filename="../src/tiled/editablemap.cpp" line="+314"/>
         <source>Change Tile Size</source>
         <translation>타일 크기 변경</translation>
     </message>
@@ -7474,7 +7579,7 @@ Please select specific format.</source>
         <translation>타일셋 삭제</translation>
     </message>
     <message>
-        <location filename="../src/tiled/tilesetdocument.cpp" line="-404"/>
+        <location filename="../src/tiled/tilesetdocument.cpp" line="-407"/>
         <source>Reload Tileset</source>
         <translation>타일셋 다시 불러오기</translation>
     </message>
@@ -7509,7 +7614,7 @@ Please select specific format.</source>
         <translation>레이어 시차 요소 변경</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/tiled/changemapobject.cpp" line="+147"/>
+        <location filename="../src/tiled/changemapobject.cpp" line="+145"/>
         <source>Detach %n Template Instance(s)</source>
         <translation>
             <numerusform>%n개 템플릿 분리(s)</numerusform>
@@ -7647,8 +7752,13 @@ Please select specific format.</source>
         <source>Change Properties</source>
         <translation>속성 변경</translation>
     </message>
+    <message>
+        <location filename="../src/tiled/mapdocument.cpp" line="-1063"/>
+        <source>Reload Map</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message numerus="yes">
-        <location filename="../src/tiled/mapdocument.cpp" line="-696"/>
+        <location line="+747"/>
         <source>Lower %n Layer(s)</source>
         <translation>
             <numerusform>%n개 레이어(s) 내리기</numerusform>
@@ -7728,7 +7838,7 @@ Please select specific format.</source>
         </translation>
     </message>
     <message>
-        <location line="-84"/>
+        <location line="-82"/>
         <source>Change Object</source>
         <translation>오브젝트 변경</translation>
     </message>
@@ -7771,12 +7881,12 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tiled/abstractworldtool.cpp" line="-153"/>
+        <location filename="../src/tiled/changeworld.cpp" line="+33"/>
         <source>Add Map to World</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+27"/>
+        <location line="+19"/>
         <source>Remove Map from World</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7788,7 +7898,7 @@ Please select specific format.</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/tiled/worldmovemaptool.cpp" line="-146"/>
+        <location filename="../src/tiled/changeworld.cpp" line="+32"/>
         <source>Move Map</source>
         <translation type="unfinished">맵으로 이동</translation>
     </message>
@@ -7801,12 +7911,12 @@ Please select specific format.</source>
         <translation>파일 경로 복사</translation>
     </message>
     <message>
-        <location line="-473"/>
+        <location line="-496"/>
         <source>Image files</source>
         <translation>이미지 파일</translation>
     </message>
     <message>
-        <location line="+489"/>
+        <location line="+512"/>
         <source>Open with System Editor</source>
         <translation>시스템 편집기와 열기</translation>
     </message>
@@ -7847,13 +7957,15 @@ Please select specific format.</source>
         <translation>보기</translation>
     </message>
     <message>
-        <location filename="../src/tmxrasterizer/main.cpp" line="+76"/>
+        <location filename="../src/tmxrasterizer/main.cpp" line="+78"/>
+        <location line="+3"/>
+        <location line="+9"/>
         <location line="+3"/>
         <source>name</source>
         <translation>이름</translation>
     </message>
     <message>
-        <location line="-15"/>
+        <location line="-27"/>
         <location line="+3"/>
         <source>size</source>
         <translation>크기</translation>
@@ -7875,12 +7987,12 @@ Please select specific format.</source>
         <translation>맵 파일이 로드되지 않았습니다</translation>
     </message>
     <message>
-        <location filename="../src/tmxrasterizer/main.cpp" line="+30"/>
+        <location filename="../src/tmxrasterizer/main.cpp" line="+42"/>
         <source>Image file to output.</source>
         <translation>출력할 이미지 파일입니다.</translation>
     </message>
     <message>
-        <location line="-36"/>
+        <location line="-48"/>
         <source>Renders a Tiled map or world to an image.</source>
         <translation>Tiled map ㄸㅗ는 월드를 이미지로 렌더링합니다.</translation>
     </message>
@@ -7905,12 +8017,7 @@ Please select specific format.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+2"/>
-        <source>If used, tile animations are advanced by the specified duration.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+31"/>
+        <location line="+47"/>
         <source>Invalid size specified: &quot;%1&quot;</source>
         <translation>유효하지 않은 사이즈 지정입니다: &quot;%1&quot;</translation>
     </message>
@@ -7921,7 +8028,7 @@ Please select specific format.</source>
         <translation>Tiled Quick</translation>
     </message>
     <message>
-        <location filename="../src/tmxrasterizer/main.cpp" line="-58"/>
+        <location filename="../src/tmxrasterizer/main.cpp" line="-72"/>
         <source>The scale of the output image (default: 1).</source>
         <translation>출력 이미지의 스케일 입니다(기본값: 1).</translation>
     </message>
@@ -7937,12 +8044,7 @@ Please select specific format.</source>
         <translation>지도 파일의 모든 레이어 가시성 플래그를 무시하고 출력의 모든 레이어를 렌더링합니다(기본적으로 보이지 않는 레이어는 생략합니다).</translation>
     </message>
     <message>
-        <location filename="../src/tmxviewer/main.cpp" line="+57"/>
-        <source>Displays a Tiled map (TMX format).</source>
-        <translation>타일 맵을 표시합니다 (TMX 형식).</translation>
-    </message>
-    <message>
-        <location filename="../src/tmxrasterizer/main.cpp" line="-2"/>
+        <location line="-2"/>
         <source>Use nearest neighbour instead of smooth blending of pixels.</source>
         <translation>픽셀을 부드럽게 혼합하는 대신 가장 갂ㅏ운 neighbour를 사용합니다.</translation>
     </message>
@@ -7952,42 +8054,83 @@ Please select specific format.</source>
         <translation>보기에 맵을 맞추기</translation>
     </message>
     <message>
-        <location filename="../src/tmxrasterizer/main.cpp" line="+19"/>
+        <location filename="../src/tmxrasterizer/main.cpp" line="+31"/>
         <source>Map or world file to render.</source>
         <translation>렌더링할 맵 또는 월드 파일입니다.</translation>
     </message>
     <message>
-        <location line="-24"/>
+        <location line="-36"/>
         <source>The output image fits within a SIZE x SIZE square (overrides the --scale and --tilesize options).</source>
         <translation>출력 이미지는 SIZE x SIZE 정사각형 안에 맞습니다(--scale 및 --tilesize 옵션을 재정의함).</translation>
     </message>
     <message>
-        <location line="+70"/>
+        <location line="+21"/>
+        <source>Specifies an object to omit from the output image. Can be repeated to hide multiple objects. If multiple objects share the specified name they all will be hidden.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>If used only specified objects are shown. Can be repeated to show multiple specified objects only. If multiple objects share the specified name they all will be shown.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>If used, tile animations are advanced by the specified duration in milliseconds.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Number of frames to export. This will add a frame number suffix to the image names. Animations are advanced by &lt;frame-duration&gt; for each frame.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <location line="+3"/>
+        <source>number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-1"/>
+        <source>Duration of each frame in milliseconds, defaults to 100.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+51"/>
         <source>Invalid scale specified: &quot;%1&quot;</source>
         <translation>유효하지 않은 scale 지정입니다: &quot;%1&quot;</translation>
     </message>
     <message>
-        <location line="-9"/>
+        <location line="+18"/>
+        <source>Invalid number of frames specified: &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Invalid frame-duration specified: &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-36"/>
         <source>Invalid tile size specified: &quot;%1&quot;</source>
         <translation>유효하지 않은 타일 사이즈 지정입니다: &quot;%1&quot;</translation>
     </message>
     <message>
-        <location line="-39"/>
+        <location line="-47"/>
         <source>duration</source>
         <translation>기간</translation>
     </message>
     <message>
-        <location line="-10"/>
+        <location line="-16"/>
         <source>If used only specified layers are shown. Can be repeated to show multiple specified layers only.</source>
         <translation>지정된 레이어만 사용된게 보여진 경우 여러 개의 지정된 레이어만 표시되도록 반복할 수 있습니다.</translation>
     </message>
     <message>
-        <location line="+67"/>
+        <location line="+81"/>
         <source>Invalid advance-animations specified: &quot;%1&quot;</source>
         <translation>유효하지 않은 애니메이션 지정입니다: &quot;%1&quot;</translation>
     </message>
     <message>
-        <location line="-70"/>
+        <location line="-84"/>
         <source>Specifies a layer to omit from the output image. Can be repeated to hide multiple layers.</source>
         <translation>출력 이미지에서 생략할 레이어를 지정합니다. 여러 레이어를 숨기기 위해 반복할 수 있습니다.</translation>
     </message>
@@ -7997,7 +8140,12 @@ Please select specific format.</source>
         <translation>타일을 렌더링할 때 요청된 픽셀의 크기입니다(--scale 옵션을 무시하고).</translation>
     </message>
     <message>
-        <location filename="../src/tmxviewer/main.cpp" line="+3"/>
+        <location filename="../src/tmxviewer/main.cpp" line="+64"/>
+        <source>Displays a Tiled map.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <source>Map file to display.</source>
         <translation>맵 파일을 보여줍니다.</translation>
     </message>
