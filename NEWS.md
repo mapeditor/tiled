@@ -5,6 +5,7 @@
 * Added lock icon to open tabs for which the file is read-only
 * Added Shift modifier to cut when capturing a tile stamp (by kdx2a, #3961)
 * Made adding "Copy" when duplicating optional and disabled by default (#3917)
+* Changed default shortcut for "Save As" to Ctrl+Shift+S and removed shortcut from "Save All" (#3933)
 * Layer names are now trimmed when edited in the UI, to avoid accidental whitespace
 * Scripting: Added API for working with worlds (#3539)
 * Scripting: Added Tile.image for accessing a tile's image data

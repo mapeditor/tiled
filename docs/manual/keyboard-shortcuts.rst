@@ -17,8 +17,7 @@ General
 -  ``Ctrl + Shift + P`` - Search for available actions
 -  ``Ctrl + Shift + T`` - Reopen a recently closed file
 -  ``Ctrl + S`` - Save current document
--  ``Ctrl + Alt + S`` - Save current document to another file
--  ``Ctrl + Shift + S`` - Save all documents
+-  ``Ctrl + Shift + S`` - Save current document to another file
 -  ``Ctrl + E`` - Export current document
 -  ``Ctrl + Shift + E`` - Export current document to another file
 -  ``Ctrl + R`` - Reload current document

@@ -344,7 +344,7 @@
     <string>Save &amp;As...</string>
    </property>
    <property name="shortcut">
-    <string notr="true">Ctrl+Alt+S</string>
+    <string notr="true">Ctrl+Shift+S</string>
    </property>
   </action>
   <action name="actionNewTileset">
@@ -536,9 +536,6 @@
   <action name="actionSaveAll">
    <property name="text">
     <string>Save All</string>
-   </property>
-   <property name="shortcut">
-    <string notr="true">Ctrl+Shift+S</string>
    </property>
   </action>
   <action name="actionDocumentation">
