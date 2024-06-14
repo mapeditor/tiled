@@ -34,7 +34,7 @@ public:
     CaptureStampHelper();
 
     void beginCapture(QPoint tilePosition);
-    TileStamp endCapture(const MapDocument &mapDocument, QPoint tilePosition);
+    TileStamp endCapture(MapDocument &mapDocument, QPoint tilePosition, bool cut);
 
     bool isActive() const { return mActive; }
     void reset();

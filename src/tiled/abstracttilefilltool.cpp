@@ -76,7 +76,9 @@ void AbstractTileFillTool::deactivate(MapScene *scene)
 
 void AbstractTileFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() == Qt::RightButton && event->modifiers() == Qt::NoModifier) {
+    if (event->button() == Qt::RightButton &&
+        !(event->modifiers() & Qt::ControlModifier))
+    {
         mCaptureStampHelper.beginCapture(tilePosition());
         return;
     }
@@ -89,7 +91,8 @@ void AbstractTileFillTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     if (event->button() == Qt::RightButton && mCaptureStampHelper.isActive()) {
         clearOverlay();
 
-        TileStamp stamp = mCaptureStampHelper.endCapture(*mapDocument(), tilePosition());
+        const bool cut = event->modifiers() & Qt::ShiftModifier;
+        TileStamp stamp = mCaptureStampHelper.endCapture(*mapDocument(), tilePosition(), cut);
         if (!stamp.isEmpty())
             emit stampChanged(stamp);
 

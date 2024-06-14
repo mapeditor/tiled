@@ -38,7 +38,7 @@ void CaptureStampHelper::beginCapture(QPoint tilePosition)
     mCaptureStart = tilePosition;
 }
 
-TileStamp CaptureStampHelper::endCapture(const MapDocument &mapDocument, QPoint tilePosition)
+TileStamp CaptureStampHelper::endCapture(MapDocument &mapDocument, QPoint tilePosition, bool cut)
 {
     mActive = false;
 
@@ -54,6 +54,14 @@ TileStamp CaptureStampHelper::endCapture(const MapDocument &mapDocument, QPoint 
     mapDocument.map()->copyLayers(mapDocument.selectedLayers(),
                                   captured,
                                   *stamp);
+
+    // Erase captured area when cutting
+    if (cut && !captured.isEmpty()) {
+        const bool allLayers = false;
+        const bool mergeable = false;
+        mapDocument.eraseTileLayers(captured, allLayers, mergeable,
+                                    Document::tr("Cut"));
+    }
 
     if (stamp->layerCount() > 0) {
         stamp->normalizeTileLayerPositionsAndMapSize();

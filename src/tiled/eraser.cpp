@@ -22,11 +22,9 @@
 
 #include "brushitem.h"
 #include "geometry.h"
-#include "map.h"
 #include "mapdocument.h"
 #include "mapscene.h"
 #include "painttilelayer.h"
-#include "tilelayer.h"
 
 #include <QCoreApplication>
 
@@ -111,45 +109,7 @@ void Eraser::doErase(bool continuation)
     }
     mLastTilePos = tilePos;
 
-    QList<QPair<QRegion, TileLayer*>> erasedRegions;
-
-    auto *eraseCommand = new PaintTileLayer(mapDocument());
-    eraseCommand->setText(QCoreApplication::translate("Undo Commands", "Erase"));
-    eraseCommand->setMergeable(continuation);
-
-    auto eraseOnLayer = [&] (TileLayer *tileLayer) {
-        if (!tileLayer->isUnlocked())
-            return;
-
-        QRegion eraseRegion = globalEraseRegion.intersected(tileLayer->bounds());
-        if (eraseRegion.isEmpty())
-            return;
-
-        eraseCommand->erase(tileLayer, eraseRegion);
-
-        erasedRegions.append({ eraseRegion, tileLayer });
-    };
-
-    if (mAllLayers) {
-        for (Layer *layer : mapDocument()->map()->tileLayers())
-            eraseOnLayer(static_cast<TileLayer*>(layer));
-    } else if (!mapDocument()->selectedLayers().isEmpty()) {
-        for (Layer *layer : mapDocument()->selectedLayers())
-            if (TileLayer *tileLayer = layer->asTileLayer())
-                eraseOnLayer(tileLayer);
-    } else if (auto tileLayer = currentTileLayer()) {
-        eraseOnLayer(tileLayer);
-    }
-
-    if (!erasedRegions.isEmpty())
-        mapDocument()->undoStack()->push(eraseCommand);
-
-    for (auto &[region, tileLayer] : std::as_const(erasedRegions)) {
-        if (tileLayer->map() != mapDocument()->map())
-            continue;
-
-        emit mapDocument()->regionEdited(region, tileLayer);
-    }
+    mapDocument()->eraseTileLayers(globalEraseRegion, mAllLayers, continuation);
 }
 
 QRect Eraser::eraseArea() const

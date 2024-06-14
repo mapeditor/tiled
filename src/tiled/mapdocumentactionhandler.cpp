@@ -465,6 +465,8 @@ void MapDocumentActionHandler::delete_()
     }
 
     for (auto &erased : std::as_const(erasedRegions)) {
+        // Sanity check needed because a script might respond to the below
+        // signal by removing the layer from the map.
         if (erased.second->map() != mMapDocument->map())
             continue;
 
