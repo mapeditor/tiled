@@ -2466,6 +2466,17 @@ declare class Tile extends TiledObject {
    * Returns the image of this tile, or the image of its tileset if it doesn't
    * have an individual one.
    *
+   * Note that a tile represents a sub-rectangle of its image (or its tileset's
+   * image), even if is part of an image collection tileset. The {@link
+   * imageRect} property provides access to this sub-rectangle. If you need a
+   * copy of the tile's image that is already cropped to this sub-rectangle,
+   * you can use the following snippet:
+   *
+   * ```js
+   * let rect = tile.imageRect;
+   * let image = tile.image.copy(rect.x, rect.y, rect.width, rect.height)
+   * ```
+   *
    * You can assign an {@link Image} to this property to change the tile's
    * image. See {@link setImage} for more information.
    *
