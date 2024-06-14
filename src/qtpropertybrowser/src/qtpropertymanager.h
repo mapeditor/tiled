@@ -345,36 +345,6 @@ private:
     Q_DISABLE_COPY(QtCharPropertyManager)
 };
 
-class QtEnumPropertyManager;
-class QtLocalePropertyManagerPrivate;
-
-class QT_QTPROPERTYBROWSER_EXPORT QtLocalePropertyManager : public QtAbstractPropertyManager
-{
-    Q_OBJECT
-public:
-    QtLocalePropertyManager(QObject *parent = 0);
-    ~QtLocalePropertyManager();
-
-    QtEnumPropertyManager *subEnumPropertyManager() const;
-
-    QLocale value(const QtProperty *property) const;
-
-public Q_SLOTS:
-    void setValue(QtProperty *property, const QLocale &val);
-Q_SIGNALS:
-    void valueChanged(QtProperty *property, const QLocale &val);
-protected:
-    QString valueText(const QtProperty *property) const;
-    virtual void initializeProperty(QtProperty *property);
-    virtual void uninitializeProperty(QtProperty *property);
-private:
-    QtLocalePropertyManagerPrivate *d_ptr;
-    Q_DECLARE_PRIVATE(QtLocalePropertyManager)
-    Q_DISABLE_COPY(QtLocalePropertyManager)
-    Q_PRIVATE_SLOT(d_func(), void slotEnumChanged(QtProperty *, int))
-    Q_PRIVATE_SLOT(d_func(), void slotPropertyDestroyed(QtProperty *))
-};
-
 class QtPointPropertyManagerPrivate;
 
 class QT_QTPROPERTYBROWSER_EXPORT QtPointPropertyManager : public QtAbstractPropertyManager
@@ -640,37 +610,6 @@ private:
     Q_DECLARE_PRIVATE(QtFlagPropertyManager)
     Q_DISABLE_COPY(QtFlagPropertyManager)
     Q_PRIVATE_SLOT(d_func(), void slotBoolChanged(QtProperty *, bool))
-    Q_PRIVATE_SLOT(d_func(), void slotPropertyDestroyed(QtProperty *))
-};
-
-class QtSizePolicyPropertyManagerPrivate;
-
-class QT_QTPROPERTYBROWSER_EXPORT QtSizePolicyPropertyManager : public QtAbstractPropertyManager
-{
-    Q_OBJECT
-public:
-    QtSizePolicyPropertyManager(QObject *parent = 0);
-    ~QtSizePolicyPropertyManager();
-
-    QtIntPropertyManager *subIntPropertyManager() const;
-    QtEnumPropertyManager *subEnumPropertyManager() const;
-
-    QSizePolicy value(const QtProperty *property) const;
-
-public Q_SLOTS:
-    void setValue(QtProperty *property, const QSizePolicy &val);
-Q_SIGNALS:
-    void valueChanged(QtProperty *property, const QSizePolicy &val);
-protected:
-    QString valueText(const QtProperty *property) const;
-    virtual void initializeProperty(QtProperty *property);
-    virtual void uninitializeProperty(QtProperty *property);
-private:
-    QtSizePolicyPropertyManagerPrivate *d_ptr;
-    Q_DECLARE_PRIVATE(QtSizePolicyPropertyManager)
-    Q_DISABLE_COPY(QtSizePolicyPropertyManager)
-    Q_PRIVATE_SLOT(d_func(), void slotIntChanged(QtProperty *, int))
-    Q_PRIVATE_SLOT(d_func(), void slotEnumChanged(QtProperty *, int))
     Q_PRIVATE_SLOT(d_func(), void slotPropertyDestroyed(QtProperty *))
 };
 
