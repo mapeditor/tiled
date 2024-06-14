@@ -330,7 +330,7 @@ void StampBrush::endCapture()
     const bool cut = mModifiers & Qt::ShiftModifier;
     TileStamp stamp = mCaptureStampHelper.endCapture(*mapDocument(), tilePosition(), cut);
     if (!stamp.isEmpty())
-        emit stampChanged(TileStamp(stamp));
+        emit stampChanged(stamp);
     else
         updatePreview();
 }

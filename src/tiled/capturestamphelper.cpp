@@ -20,10 +20,8 @@
 
 #include "capturestamphelper.h"
 
-#include "erasetiles.h"
 #include "map.h"
 #include "mapdocument.h"
-#include "tilelayer.h"
 
 #include <memory>
 
@@ -57,28 +55,12 @@ TileStamp CaptureStampHelper::endCapture(MapDocument &mapDocument, QPoint tilePo
                                   captured,
                                   *stamp);
 
-    // Delete captured elements when cutting
+    // Erase captured area when cutting
     if (cut && !captured.isEmpty()) {
-        QList<QUndoCommand*> commands;
-        QList<QPair<QRegion, TileLayer*>> erasedRegions;
-
-        for (auto layer : mapDocument.selectedLayers()) {
-            if (!layer->isTileLayer())
-                continue;
-            TileLayer *const tileLayer = layer->asTileLayer();
-            const QRegion area = captured.intersected(tileLayer->bounds());
-            if (area.isEmpty())
-                continue;
-            // Delete the captured part of the layer
-            commands.append(new EraseTiles(&mapDocument, tileLayer, area));
-            erasedRegions.append({ area, tileLayer });
-        }
-
-        QUndoStack *const undoStack = mapDocument.undoStack();
-        undoStack->beginMacro(Document::tr("Cut"));
-        for (QUndoCommand *command : std::as_const(commands))
-            undoStack->push(command);
-        undoStack->endMacro();
+        const bool allLayers = false;
+        const bool mergeable = false;
+        mapDocument.eraseTileLayers(captured, allLayers, mergeable,
+                                    Document::tr("Cut"));
     }
 
     if (stamp->layerCount() > 0) {

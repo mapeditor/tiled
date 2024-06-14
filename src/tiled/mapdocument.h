@@ -178,6 +178,10 @@ public:
     void paintTileLayers(const Map &map, bool mergeable = false,
                          QVector<SharedTileset> *missingTilesets = nullptr,
                          QHash<TileLayer *, QRegion> *paintedRegions = nullptr);
+    void eraseTileLayers(const QRegion &region,
+                         bool allLayers = false,
+                         bool mergeable = false,
+                         const QString &customName = QString());
 
     void replaceObjectTemplate(const ObjectTemplate *oldObjectTemplate,
                                const ObjectTemplate *newObjectTemplate);

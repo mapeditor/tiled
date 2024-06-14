@@ -1076,6 +1076,55 @@ void MapDocument::paintTileLayers(const Map &map, bool mergeable,
     }
 }
 
+void MapDocument::eraseTileLayers(const QRegion &region,
+                                  bool allLayers,
+                                  bool mergeable,
+                                  const QString &customName)
+{
+    QList<QPair<QRegion, TileLayer*>> erasedRegions;
+
+    auto eraseCommand = std::make_unique<PaintTileLayer>(this);
+    eraseCommand->setText(customName.isEmpty() ? QCoreApplication::translate("Undo Commands", "Erase")
+                                               : customName);
+    eraseCommand->setMergeable(mergeable);
+
+    auto eraseOnLayer = [&] (TileLayer *tileLayer) {
+        if (!tileLayer->isUnlocked())
+            return;
+
+        QRegion eraseRegion = region.intersected(tileLayer->bounds());
+        if (eraseRegion.isEmpty())
+            return;
+
+        eraseCommand->erase(tileLayer, eraseRegion);
+
+        erasedRegions.append({ eraseRegion, tileLayer });
+    };
+
+    if (allLayers) {
+        for (Layer *layer : map()->tileLayers())
+            eraseOnLayer(static_cast<TileLayer*>(layer));
+    } else if (!selectedLayers().isEmpty()) {
+        for (Layer *layer : selectedLayers())
+            if (TileLayer *tileLayer = layer->asTileLayer())
+                eraseOnLayer(tileLayer);
+    } else if (auto tileLayer = dynamic_cast<TileLayer*>(currentLayer())) {
+        eraseOnLayer(tileLayer);
+    }
+
+    if (!erasedRegions.isEmpty())
+        undoStack()->push(eraseCommand.release());
+
+    for (auto &[region, tileLayer] : std::as_const(erasedRegions)) {
+        // Sanity check needed because a script might respond to the below
+        // signal by removing the layer from the map.
+        if (tileLayer->map() != map())
+            continue;
+
+        emit regionEdited(region, tileLayer);
+    }
+}
+
 void MapDocument::replaceObjectTemplate(const ObjectTemplate *oldObjectTemplate,
                                         const ObjectTemplate *newObjectTemplate)
 {
