@@ -84,7 +84,7 @@ class ScriptClassPropertyType : public ScriptPropertyType
     Q_OBJECT
     Q_PROPERTY(QColor color READ color)
     Q_PROPERTY(QVariantMap members READ members)
-    
+
 public:
     ScriptClassPropertyType(const ClassPropertyType *propertyType)
         : mClassType(propertyType),
@@ -101,34 +101,9 @@ private:
 };
 
 
-/**
- * Scripting engine wrapper for SharedPropertyTypes
- */
-class ScriptPropertyTypes : public QObject
-{
-    Q_OBJECT
-    Q_PROPERTY(size_t count READ count)
-    Q_PROPERTY(QVector<ScriptPropertyType*> all READ all)
-
-public:
-    ScriptPropertyTypes(SharedPropertyTypes sharedPropertyTypes)
-    : mTypes(sharedPropertyTypes)
-    {}
-    size_t count();
-    Q_INVOKABLE void removeByName(const QString &name);
-    Q_INVOKABLE ScriptPropertyType *findByName(const QString &name);
-    QVector<ScriptPropertyType*> all() const;
-
-private:
-    ScriptPropertyType *toScriptType(const PropertyType *type) const;
-    void applyPropertyChanges();
-    SharedPropertyTypes mTypes;
-};
-
 void registerPropertyTypes(QJSEngine *jsEngine);
 
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::ScriptPropertyTypes*)
 Q_DECLARE_METATYPE(Tiled::ScriptPropertyType*)
 
