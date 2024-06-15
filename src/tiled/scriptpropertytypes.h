@@ -83,13 +83,15 @@ class ScriptClassPropertyType : public ScriptPropertyType
 {
     Q_OBJECT
     Q_PROPERTY(QColor color READ color)
-
+    Q_PROPERTY(QVariantMap members READ members)
+    
 public:
     ScriptClassPropertyType(const ClassPropertyType *propertyType)
         : mClassType(propertyType),
           ScriptPropertyType(propertyType)
     {}
     QColor color() const { return mClassType->color; }
+    QVariantMap members() const {return mClassType->members; }
     // TODO: " No viable overloaded '=' "
     // void setColor(const QColor &value) { mClassType->color = value; }
 
@@ -111,28 +113,15 @@ class ScriptPropertyTypes : public QObject
 public:
     ScriptPropertyTypes(SharedPropertyTypes sharedPropertyTypes)
     : mTypes(sharedPropertyTypes)
-    {
-        connect(Preferences::instance(), &Preferences::propertyTypesChanged, this, &ScriptPropertyTypes::propertyTypesChanged);
-        propertyTypesChanged();
-    }
+    {}
     size_t count();
     Q_INVOKABLE void removeByName(const QString &name);
     Q_INVOKABLE ScriptPropertyType *findByName(const QString &name);
     QVector<ScriptPropertyType*> all() const;
 
-    // TODO: how to make this class iterable so you can loop through it to pull up 
-    // each property type? 
-    // Enable easy iteration over objects with range-based for
-    QList<ScriptPropertyType*>::iterator begin() { return mAllScriptTypes.begin(); }
-    QList<ScriptPropertyType*>::iterator end() { return mAllScriptTypes.end(); }
-    QList<ScriptPropertyType*>::const_iterator begin() const { return mAllScriptTypes.begin(); }
-    QList<ScriptPropertyType*>::const_iterator end() const { return mAllScriptTypes.end(); }
-
 private:
     ScriptPropertyType *toScriptType(const PropertyType *type) const;
     void applyPropertyChanges();
-    void propertyTypesChanged();
-    QList<ScriptPropertyType*> mAllScriptTypes;
     SharedPropertyTypes mTypes;
 };
 
