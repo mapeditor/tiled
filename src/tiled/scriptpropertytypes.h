@@ -23,6 +23,7 @@
 #include "propertytype.h"
 
 #include <QJSEngine>
+#include <QList>
 #include <QObject>
 
 namespace Tiled {
@@ -104,15 +105,28 @@ class ScriptPropertyTypes : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(size_t count READ count)
+    Q_PROPERTY(QVector<ScriptPropertyType*> all READ all)
 
 public:
     ScriptPropertyTypes(SharedPropertyTypes sharedPropertyTypes)
     : mTypes(sharedPropertyTypes)
     {}
     size_t count();
-    Q_INVOKABLE ScriptPropertyType *findTypeByName(const QString &name);
+    Q_INVOKABLE void removeByName(const QString &name);
+    Q_INVOKABLE ScriptPropertyType *findByName(const QString &name);
+    QVector<ScriptPropertyType*> all() const;
+
+    // TODO: when I don't have a list of ScriptPropertyType,
+    // how can i make this iterable?
+    // Enable easy iteration over objects with range-based for
+    // QList<ScriptPropertyType*>::iterator begin() { return mTypes->begin(); }
+    // QList<ScriptPropertyType*>::iterator end() { return mTypes->end(); }
+    // QList<ScriptPropertyType*>::const_iterator begin() const { return mTypes->begin(); }
+    // QList<ScriptPropertyType*>::const_iterator end() const { return mTypes->end(); }
 
 private:
+    ScriptPropertyType *toScriptType(const PropertyType *type) const;
+    void applyPropertyChanges();
     SharedPropertyTypes mTypes;
 };
 

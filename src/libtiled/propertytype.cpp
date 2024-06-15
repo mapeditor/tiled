@@ -530,6 +530,21 @@ const PropertyType *PropertyTypes::findTypeById(int typeId) const
 }
 
 /**
+ * Returns a pointer to the PropertyType matching the given \a typeId, or
+ * nullptr if it can't be found.
+ */
+const int PropertyTypes::findIndexByName(const QString &name) const
+{
+    if (name.isEmpty())
+        return -1;
+
+    for (int i =0; i<mTypes.count(); i++)
+        if (mTypes[i]->name == name)
+            return i;
+
+    return -1;
+}
+/**
  * Returns a pointer to the PropertyType matching the given \a name and
  * \a usageFlags, or nullptr if it can't be found.
  */
