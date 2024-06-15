@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "preferences.h"
 #include "propertytype.h"
 
 #include <QJSEngine>
@@ -110,23 +111,28 @@ class ScriptPropertyTypes : public QObject
 public:
     ScriptPropertyTypes(SharedPropertyTypes sharedPropertyTypes)
     : mTypes(sharedPropertyTypes)
-    {}
+    {
+        connect(Preferences::instance(), &Preferences::propertyTypesChanged, this, &ScriptPropertyTypes::propertyTypesChanged);
+        propertyTypesChanged();
+    }
     size_t count();
     Q_INVOKABLE void removeByName(const QString &name);
     Q_INVOKABLE ScriptPropertyType *findByName(const QString &name);
     QVector<ScriptPropertyType*> all() const;
 
-    // TODO: when I don't have a list of ScriptPropertyType,
-    // how can i make this iterable?
+    // TODO: how to make this class iterable so you can loop through it to pull up 
+    // each property type? 
     // Enable easy iteration over objects with range-based for
-    // QList<ScriptPropertyType*>::iterator begin() { return mTypes->begin(); }
-    // QList<ScriptPropertyType*>::iterator end() { return mTypes->end(); }
-    // QList<ScriptPropertyType*>::const_iterator begin() const { return mTypes->begin(); }
-    // QList<ScriptPropertyType*>::const_iterator end() const { return mTypes->end(); }
+    QList<ScriptPropertyType*>::iterator begin() { return mAllScriptTypes.begin(); }
+    QList<ScriptPropertyType*>::iterator end() { return mAllScriptTypes.end(); }
+    QList<ScriptPropertyType*>::const_iterator begin() const { return mAllScriptTypes.begin(); }
+    QList<ScriptPropertyType*>::const_iterator end() const { return mAllScriptTypes.end(); }
 
 private:
     ScriptPropertyType *toScriptType(const PropertyType *type) const;
     void applyPropertyChanges();
+    void propertyTypesChanged();
+    QList<ScriptPropertyType*> mAllScriptTypes;
     SharedPropertyTypes mTypes;
 };
 

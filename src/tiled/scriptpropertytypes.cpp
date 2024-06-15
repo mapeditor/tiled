@@ -19,7 +19,6 @@
  */
 
 #include "scriptpropertytypes.h"
-#include "preferences.h"
 #include "project.h"
 #include "projectmanager.h"
 
@@ -61,6 +60,7 @@ void ScriptPropertyTypes::removeByName(const QString &name)
     if (index < 0 )
         return
 
+    // TODO the type isn't actually being deleted even when index >= 0
     mTypes->removeAt(index);
     applyPropertyChanges();
 }
@@ -80,6 +80,13 @@ void ScriptPropertyTypes::applyPropertyChanges()
 
     Project &project = ProjectManager::instance()->project();
     project.save();
+}
+
+void ScriptPropertyTypes::propertyTypesChanged()
+{
+    mAllScriptTypes.clear();
+    for (PropertyType *type : *mTypes)
+        mAllScriptTypes.append(toScriptType(type));
 }
 void registerPropertyTypes(QJSEngine *jsEngine)
 {
