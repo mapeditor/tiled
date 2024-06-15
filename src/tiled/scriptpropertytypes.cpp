@@ -82,12 +82,6 @@ void ScriptPropertyTypes::applyPropertyChanges()
     project.save();
 }
 
-void ScriptPropertyTypes::propertyTypesChanged()
-{
-    mAllScriptTypes.clear();
-    for (PropertyType *type : *mTypes)
-        mAllScriptTypes.append(toScriptType(type));
-}
 void registerPropertyTypes(QJSEngine *jsEngine)
 {
     jsEngine->globalObject().setProperty(QStringLiteral("EnumPropertyType"),
