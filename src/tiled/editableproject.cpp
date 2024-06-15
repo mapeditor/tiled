@@ -51,6 +51,11 @@ QStringList EditableProject::folders() const
     return project()->folders();
 }
 
+ScriptPropertyTypes *EditableProject::propertyTypes() const
+{
+    return new ScriptPropertyTypes(project()->propertyTypes());
+}
+
 bool EditableProject::isReadOnly() const
 {
     return false;
