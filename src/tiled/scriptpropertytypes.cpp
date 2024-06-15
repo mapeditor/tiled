@@ -19,6 +19,9 @@
  */
 
 #include "scriptpropertytypes.h"
+#include "preferences.h"
+#include "project.h"
+#include "projectmanager.h"
 
 namespace Tiled {
 
@@ -32,9 +35,8 @@ size_t ScriptPropertyTypes::count()
     return mTypes->count();
 }
 
-ScriptPropertyType *ScriptPropertyTypes::findTypeByName(const QString &name)
+ScriptPropertyType *ScriptPropertyTypes::toScriptType(const PropertyType *type) const
 {
-    const PropertyType *type = mTypes->findTypeByName(name);
     if (!type)
         return nullptr;
 
@@ -47,6 +49,38 @@ ScriptPropertyType *ScriptPropertyTypes::findTypeByName(const QString &name)
     return new ScriptPropertyType(type);
 }
 
+ScriptPropertyType *ScriptPropertyTypes::findByName(const QString &name)
+{
+    const PropertyType *type = mTypes->findTypeByName(name);
+    return toScriptType(type);
+}
+
+void ScriptPropertyTypes::removeByName(const QString &name)
+{
+    int index = mTypes->findIndexByName(name);
+    if (index < 0 )
+        return
+
+    mTypes->removeAt(index);
+    applyPropertyChanges();
+}
+
+// TODO remove if we can implement an iterator
+QVector<ScriptPropertyType *>ScriptPropertyTypes::all() const
+{
+    QVector<ScriptPropertyType*> scriptTypes;
+    for (const PropertyType *type : *mTypes)
+        scriptTypes.append(toScriptType(type));
+    return scriptTypes;
+}
+
+void ScriptPropertyTypes::applyPropertyChanges()
+{
+    emit Preferences::instance()->propertyTypesChanged();
+
+    Project &project = ProjectManager::instance()->project();
+    project.save();
+}
 void registerPropertyTypes(QJSEngine *jsEngine)
 {
     jsEngine->globalObject().setProperty(QStringLiteral("EnumPropertyType"),
