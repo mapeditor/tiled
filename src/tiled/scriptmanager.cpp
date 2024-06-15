@@ -49,7 +49,7 @@
 #include "scriptimage.h"
 #include "scriptmodule.h"
 #include "scriptprocess.h"
-#include "scriptpropertytypes.h"
+#include "scriptpropertytype.h"
 #include "tilecollisiondock.h"
 #include "tilelayer.h"
 #include "tilelayeredit.h"

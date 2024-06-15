@@ -20,8 +20,8 @@
  */
 
 #include "editableproject.h"
-
 #include "projectdocument.h"
+#include "projectmanager.h"
 
 namespace Tiled {
 
@@ -51,10 +51,6 @@ QStringList EditableProject::folders() const
     return project()->folders();
 }
 
-ScriptPropertyTypes *EditableProject::propertyTypes() const
-{
-    return new ScriptPropertyTypes(project()->propertyTypes());
-}
 
 bool EditableProject::isReadOnly() const
 {
@@ -66,6 +62,54 @@ QSharedPointer<Document> EditableProject::createDocument()
     // We don't currently support opening a project in a tab, which this
     // function is meant for.
     return nullptr;
+}
+
+
+ScriptPropertyType *EditableProject::toScriptType(const PropertyType *type) const
+{
+    if (!type)
+        return nullptr;
+
+    if (type->isEnum())
+        return new ScriptEnumPropertyType(static_cast<const EnumPropertyType *>(type));
+
+    if (type->isClass())
+        return new ScriptClassPropertyType(static_cast<const ClassPropertyType *>(type));
+
+    return new ScriptPropertyType(type);
+}
+
+ScriptPropertyType *EditableProject::findTypeByName(const QString &name)
+{
+    const PropertyType *type = project()->propertyTypes()->findTypeByName(name);
+    return toScriptType(type);
+}
+
+void EditableProject::removeTypeByName(const QString &name)
+{
+    int index = project()->propertyTypes()->findIndexByName(name);
+    if (index < 0 )
+        return
+
+    // TODO the type isn't actually being deleted even when index >= 0
+    project()->propertyTypes()->removeAt(index);
+    applyPropertyChanges();
+}
+
+QVector<ScriptPropertyType *>EditableProject::propertyTypes() const
+{
+    QVector<ScriptPropertyType*> scriptTypes;
+    for (const PropertyType *type : *project()->propertyTypes())
+        scriptTypes.append(toScriptType(type));
+    return scriptTypes;
+}
+
+void EditableProject::applyPropertyChanges()
+{
+    emit Preferences::instance()->propertyTypesChanged();
+
+    Project &project = ProjectManager::instance()->project();
+    project.save();
 }
 
 } // namespace Tiled
