@@ -676,12 +676,12 @@
     <message>
         <location line="+79"/>
         <source>&amp;Unload World</source>
-        <translation>&amp;Выгрузить Мир</translation>
+        <translation>&amp;Выгрузить мир</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Save World</source>
-        <translation>&amp;Сохранить Мир</translation>
+        <translation>&amp;Сохранить мир</translation>
     </message>
     <message>
         <location line="-70"/>
@@ -796,12 +796,12 @@
     <message>
         <location line="+5"/>
         <source>&amp;Load World...</source>
-        <translation>Загрузить &amp;Мир...</translation>
+        <translation>Загрузить &amp;мир...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;New World...</source>
-        <translation>&amp;Новый Мир...</translation>
+        <translation>&amp;Новый мир...</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -831,7 +831,7 @@
     <message>
         <location line="+8"/>
         <source>Unload All Worlds</source>
-        <translation>Выгрузить все Миры</translation>
+        <translation>Выгрузить все миры</translation>
     </message>
     <message>
         <location line="-97"/>
@@ -2950,17 +2950,17 @@ Line %1, column %2</source>
         <location line="+16"/>
         <location line="+44"/>
         <source>Map not found in this world</source>
-        <translation>Карта не найдена в этом Мире</translation>
+        <translation>Карта не найдена в этом мире</translation>
     </message>
     <message>
         <location line="-27"/>
         <source>Map is already part of a loaded world</source>
-        <translation>Карта уже часть загруженного Мира</translation>
+        <translation>Карта уже часть загруженного мира</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Can&apos;t add unsaved map to a world</source>
-        <translation>Нельзя добавить несохраненною карту в Мир</translation>
+        <translation>Нельзя добавить не сохраненною карту в мир</translation>
     </message>
     <message>
         <location filename="../src/tiled/tilelayerwangedit.cpp" line="+97"/>
@@ -3286,17 +3286,17 @@ Line %1, column %2</source>
     <message>
         <location line="+73"/>
         <source>Add a Map to World &quot;%2&quot;</source>
-        <translation>Добавить карту в Мир &quot;%2&quot;</translation>
+        <translation>Добавить карту в мир &quot;%2&quot;</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Remove &quot;%1&quot; from World &quot;%2&quot;</source>
-        <translation>Удалить &quot;%1&quot; из Мира &quot;%2&quot;</translation>
+        <translation>Удалить &quot;%1&quot; из мира &quot;%2&quot;</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Add &quot;%1&quot; to World &quot;%2&quot;</source>
-        <translation>Добавить &quot;%1&quot; в Мир &quot;%2&quot;</translation>
+        <translation>Добавить &quot;%1&quot; в мир &quot;%2&quot;</translation>
     </message>
     <message>
         <location line="+26"/>
@@ -4378,23 +4378,23 @@ Please select specific format.</source>
     <message>
         <location line="-511"/>
         <source>Load World</source>
-        <translation>Загрузить Мир</translation>
+        <translation>Загрузить мир</translation>
     </message>
     <message>
         <location line="+8"/>
         <location line="+441"/>
         <source>Error Loading World</source>
-        <translation>Ошибка при загрузке Мира</translation>
+        <translation>Ошибка при загрузке мира</translation>
     </message>
     <message>
         <location line="-407"/>
         <source>New World</source>
-        <translation>Создать новый Мир</translation>
+        <translation>Создать новый мир</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Error Creating World</source>
-        <translation>Ошибка при создании Мира</translation>
+        <translation>Ошибка при создании мира</translation>
     </message>
     <message>
         <location line="+135"/>
@@ -4450,12 +4450,12 @@ Please select specific format.</source>
     <message>
         <location line="+36"/>
         <source>Unsaved Changes to World</source>
-        <translation>Несохраненные изменения в Мире</translation>
+        <translation>Несохраненные изменения в мире</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>There are unsaved changes to world &quot;%1&quot;. Do you want to save the world now?</source>
-        <translation>В мире &quot;%1&quot; есть несохраненные изменения. Хотите сохранить мир сейчас?</translation>
+        <translation>В мире &quot;%1&quot; есть не сохраненные изменения. Хотите сохранить мир сейчас?</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -7240,7 +7240,7 @@ Please select specific format.</source>
     <message>
         <location line="+8"/>
         <source>World contained no valid maps or patterns: %1</source>
-        <translation>В Мире не найдено действительных карт или шаблонов: %1</translation>
+        <translation>В мире не найдено действительных карт или шаблонов: %1</translation>
     </message>
     <message>
         <location line="+56"/>
