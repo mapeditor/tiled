@@ -458,6 +458,8 @@ DynamicLibrary {
         "scriptmodule.h",
         "scriptprocess.cpp",
         "scriptprocess.h",
+        "scriptpropertytypes.cpp",
+        "scriptpropertytypes.h",
         "selectionrectangle.cpp",
         "selectionrectangle.h",
         "selectsametiletool.cpp",
