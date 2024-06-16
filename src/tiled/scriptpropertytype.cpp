@@ -33,6 +33,8 @@ void registerPropertyTypes(QJSEngine *jsEngine)
 {
     jsEngine->globalObject().setProperty(QStringLiteral("EnumPropertyType"),
                                          jsEngine->newQMetaObject<ScriptEnumPropertyType>());
+    jsEngine->globalObject().setProperty(QStringLiteral("ClassPropertyType"),
+                                         jsEngine->newQMetaObject<ScriptClassPropertyType>());
 }
 
 } // namespace Tiled
