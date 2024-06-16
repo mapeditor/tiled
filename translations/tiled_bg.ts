@@ -60,7 +60,7 @@
     <message>
         <location line="-33"/>
         <source>Failed to load project &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Проектът „%1“ не може да бъде зареден.</translation>
     </message>
     <message>
         <location line="+44"/>
@@ -75,7 +75,7 @@
     <message>
         <location line="+111"/>
         <source>Project file expected: --project &lt;.tiled-project file&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Липсва файл на проект: --project &lt;файл .tiled-project&gt;</translation>
     </message>
     <message>
         <location line="+75"/>
@@ -162,7 +162,7 @@
     <message>
         <location line="+5"/>
         <source>Project file to load</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл на проекта, който да бъде зареден</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -676,7 +676,7 @@
     <message>
         <location line="+79"/>
         <source>&amp;Unload World</source>
-        <translation>&amp;Отзареждане на света</translation>
+        <translation>&amp;Затваряне на света</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -831,7 +831,7 @@
     <message>
         <location line="+8"/>
         <source>Unload All Worlds</source>
-        <translation type="unfinished"></translation>
+        <translation>Затваряне на всички светове</translation>
     </message>
     <message>
         <location line="-97"/>
@@ -1784,12 +1784,12 @@ Line %1, column %2</source>
     <message>
         <location line="+229"/>
         <source>Behavior</source>
-        <translation type="unfinished"></translation>
+        <translation>Поведение</translation>
     </message>
     <message>
         <location line="+67"/>
         <source>Add &quot;Copy&quot; when duplicating</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавяне на „Копие“ при дублиране</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -1932,22 +1932,22 @@ Line %1, column %2</source>
     <message>
         <location line="+334"/>
         <source>-- Using script %1 to read %2</source>
-        <translation type="unfinished">-- Използване на скрипта „%1“ за прочит на „%2“</translation>
+        <translation>-- Използване на скрипта „%1“ за прочит на „%2“</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>-- Using script %1 to write %2</source>
-        <translation type="unfinished">-- Използване на скрипта „%1“ за запис на „%2“</translation>
+        <translation>-- Използване на скрипта „%1“ за запис на „%2“</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Uncaught exception in script. Please check console.</source>
-        <translation type="unfinished">В скрипта беше хвърлено неприхванато изключение. Моля, проверете конзолата.</translation>
+        <translation>В скрипта беше хвърлено неприхванато изключение. Моля, проверете конзолата.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Script returned false. Please check console.</source>
-        <translation type="unfinished">Скриптът върна като резултат „невярно“. Моля, проверете конзолата.</translation>
+        <translation>Скриптът върна като резултат „невярно“. Моля, проверете конзолата.</translation>
     </message>
 </context>
 <context>
@@ -2453,7 +2453,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/editableasset.cpp" line="+81"/>
         <source>Asset not associated with a file</source>
-        <translation type="unfinished"></translation>
+        <translation>Ресурсът не е асоцииран с файл</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2630,12 +2630,12 @@ Line %1, column %2</source>
     <message>
         <location line="+18"/>
         <source>Can&apos;t set tile spacing on an image collection tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Не може да се задава разстоянието между плочките за плочен набор, който представлява колекция от изображения</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Can&apos;t set margin on an image collection tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Не може да се задава кантът за плочен набор, който представлява колекция от изображения</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -2943,29 +2943,29 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/editabletilelayer.cpp" line="+121"/>
         <source>Layer not part of a map</source>
-        <translation type="unfinished"></translation>
+        <translation>Слоят не е част от карта</translation>
     </message>
     <message>
         <location filename="../src/tiled/editableworld.cpp" line="-28"/>
         <location line="+16"/>
         <location line="+44"/>
         <source>Map not found in this world</source>
-        <translation type="unfinished"></translation>
+        <translation>Картата не е намерена в този свят</translation>
     </message>
     <message>
         <location line="-27"/>
         <source>Map is already part of a loaded world</source>
-        <translation type="unfinished"></translation>
+        <translation>Картата не е част от зареден свят</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Can&apos;t add unsaved map to a world</source>
-        <translation type="unfinished"></translation>
+        <translation>Незапазена карта не може да бъде добавена в свят</translation>
     </message>
     <message>
         <location filename="../src/tiled/tilelayerwangedit.cpp" line="+97"/>
         <source>Invalid edge index</source>
-        <translation type="unfinished"></translation>
+        <translation>Неправилен индекс на ръб</translation>
     </message>
 </context>
 <context>
@@ -3854,7 +3854,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/capturestamphelper.cpp" line="+63"/>
         <source>Cut</source>
-        <translation type="unfinished">Изрязване</translation>
+        <translation>Изрязване</translation>
     </message>
 </context>
 <context>
@@ -3886,7 +3886,7 @@ Line %1, column %2</source>
     <message>
         <location line="+77"/>
         <source>%1 [read-only]</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 [само за четене]</translation>
     </message>
     <message>
         <location line="+63"/>
@@ -4006,7 +4006,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/editor.cpp" line="+40"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Копие</translation>
     </message>
 </context>
 <context>
@@ -4598,7 +4598,7 @@ Please select specific format.</source>
     <message>
         <location line="+44"/>
         <source>Map format &apos;%s&apos; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Форматът за карти „%s“ не е намерен</translation>
     </message>
     <message>
         <location line="+96"/>
@@ -5304,7 +5304,7 @@ Please select specific format.</source>
     <message>
         <location line="-171"/>
         <source>Updates and Crash Reporting</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновления и доклади за сривове</translation>
     </message>
 </context>
 <context>
@@ -6334,22 +6334,22 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/scriptmodule.cpp" line="+42"/>
         <source>Open Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Отваряне на папка</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Open Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Отваряне на файлове</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Open File</source>
-        <translation type="unfinished">Отваряне на файл</translation>
+        <translation>Отваряне на файл</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Save File</source>
-        <translation type="unfinished"></translation>
+        <translation>Запазване на файла</translation>
     </message>
 </context>
 <context>
@@ -7223,7 +7223,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/worldmanager.cpp" line="+169"/>
         <source>World not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Светът не е намерен</translation>
     </message>
 </context>
 <context>
@@ -7276,22 +7276,22 @@ Please select specific format.</source>
     <message>
         <location line="+41"/>
         <source>Godot exporter does not support property type of &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Изнасянето за Godot не поддържа свойства от тип „%1“</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Inconsistent type for property &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Несъвместим тип за свойството „%1“</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>Only objects with the resPath property will be exported</source>
-        <translation type="unfinished"></translation>
+        <translation>Само обекти със свойството „resPath“ ще бъдат изнесени</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>resPath must be in the form of &apos;res://&lt;filename&gt;.tscn&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>„resPath“ трябва да бъде във вида „res://&lt;filename&gt;.tscn“.</translation>
     </message>
     <message>
         <location line="+58"/>
@@ -7306,12 +7306,12 @@ Please select specific format.</source>
     <message>
         <location line="+90"/>
         <source>Godot exporter does not support property of type &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Изнасянето за Godot не поддържа свойства от тип „%1“</translation>
     </message>
     <message>
         <location line="+97"/>
         <source>exportAlternates is deprecated. Godot 4.2 supports native tile rotation. Tileset: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>„exportAlternates“ вече не се поддържа. Godot 4.2 поддържа директно завъртане на плочките. Плочен набор: %1</translation>
     </message>
     <message>
         <location line="+23"/>
@@ -7799,7 +7799,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapdocument.cpp" line="-1063"/>
         <source>Reload Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Презареждане на картата</translation>
     </message>
     <message numerus="yes">
         <location line="+720"/>
@@ -8054,27 +8054,27 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>Specifies an object to omit from the output image. Can be repeated to hide multiple objects. If multiple objects share the specified name they all will be hidden.</source>
-        <translation type="unfinished"></translation>
+        <translation>Задава обект, който да бъде пропуснат в резултатното изображение. Може да се повтаря, за да се скрият множество обекти. Ако няколко обекта имат същото име, всички те ще бъдат скрити.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>If used only specified objects are shown. Can be repeated to show multiple specified objects only. If multiple objects share the specified name they all will be shown.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ако се използва, само посочените обекти ще бъдат показани. Може да се повтаря, за да се покажат множество обекти. Ако няколко обекта имат същото име, всички те ще бъдат показани.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>If used, tile animations are advanced by the specified duration in milliseconds.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ако се използва, анимациите на плочките ще бъдат превъртени напред с посоченото в милисекунди време.</translation>
     </message>
     <message>
         <location line="+75"/>
         <source>Invalid number of frames specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Посочен е неправилен брой кадри: „%1“</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Invalid frame-duration specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Посочена е неправилна продължителност на кадъра: „%1“</translation>
     </message>
     <message>
         <location line="-83"/>
@@ -8084,18 +8084,18 @@ Please select specific format.</source>
     <message>
         <location line="+2"/>
         <source>Number of frames to export. This will add a frame number suffix to the image names. Animations are advanced by &lt;frame-duration&gt; for each frame.</source>
-        <translation type="unfinished"></translation>
+        <translation>Брой кадри, които да бъдат изнесени. Към имената на изображенията ще бъде добавено число, отговарящо на броя кадри. Анимациите ще бъдат превъртени напред с &lt;продължителност-на-кадъра&gt; за всеки кадър.</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+3"/>
         <source>number</source>
-        <translation type="unfinished"></translation>
+        <translation>число</translation>
     </message>
     <message>
         <location line="-1"/>
         <source>Duration of each frame in milliseconds, defaults to 100.</source>
-        <translation type="unfinished"></translation>
+        <translation>Продължителност на всеки кадър, в милисекунди. По подразбиране: 100.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -8130,7 +8130,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tmxviewer/main.cpp" line="+64"/>
         <source>Displays a Tiled map.</source>
-        <translation type="unfinished"></translation>
+        <translation>Показва карта създадена чрез Tiled.</translation>
     </message>
     <message>
         <location line="+3"/>
