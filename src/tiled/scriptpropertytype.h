@@ -84,16 +84,41 @@ class ScriptClassPropertyType : public ScriptPropertyType
     Q_OBJECT
     Q_PROPERTY(QColor color READ color)
     Q_PROPERTY(QVariantMap members READ members)
+    Q_PROPERTY(bool drawFill READ drawFill)
+    Q_PROPERTY(int usageFlags READ usageFlags)
 
 public:
     ScriptClassPropertyType(const ClassPropertyType *propertyType)
         : mClassType(propertyType),
           ScriptPropertyType(propertyType)
     {}
+
+    // TODO: a way to avoid duplicating this again? 
+    enum ClassUsageFlag {
+        PropertyValueType   = 0x001,
+
+        // Keep values synchronized with Object::TypeId
+        LayerClass          = 0x002,
+        MapObjectClass      = 0x004,
+        MapClass            = 0x008,
+        TilesetClass        = 0x010,
+        TileClass           = 0x020,
+        WangSetClass        = 0x040,
+        WangColorClass      = 0x080,
+        ProjectClass        = 0x100,
+        AnyUsage            = 0xFFF,
+        AnyObjectClass      = AnyUsage & ~PropertyValueType,
+    };
+    Q_ENUM(ClassUsageFlag)
+
     QColor color() const { return mClassType->color; }
-    QVariantMap members() const {return mClassType->members; }
     // TODO: " No viable overloaded '=' "
-    // void setColor(const QColor &value) { mClassType->color = value; }
+    // void setColor(QColor &value) { mClassType->color = value; }
+    QVariantMap members() const {return mClassType->members; }
+    bool drawFill() const { return mClassType->drawFill; }
+    // void setDrawFill(bool value) { mClassType->drawFill = value; }
+    int usageFlags() const { return mClassType->usageFlags; }
+    //void setUsageFlags(int value) { mClassType->setUsageFlags(value); }
 
 private:
 
