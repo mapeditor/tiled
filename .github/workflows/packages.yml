@@ -184,7 +184,7 @@ jobs:
 
   macos:
     name: macOS (${{ matrix.version_suffix }})
-    runs-on: macos-11
+    runs-on: macos-latest
     needs: version
 
     strategy:
@@ -271,7 +271,7 @@ jobs:
 
   windows:
     name: Windows (${{ matrix.arch }}-bit, Qt ${{ matrix.qt_version_major }})
-    runs-on: windows-2019
+    runs-on: windows-latest
     needs: version
 
     strategy:
