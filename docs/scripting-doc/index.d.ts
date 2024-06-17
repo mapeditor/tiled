@@ -2205,6 +2205,15 @@ declare class Image {
 
   /**
    * Copies the given rectangle to a new image object.
+   *
+   * When no rectangle is given, the entire image is copied.
+   *
+   * @since 1.11
+   */
+  copy(rect?: rect) : Image;
+
+  /**
+   * Copies the given rectangle to a new image object.
    */
   copy(x: number, y: number, width: number, height: number) : Image;
 
@@ -2473,8 +2482,7 @@ declare class Tile extends TiledObject {
    * you can use the following snippet:
    *
    * ```js
-   * let rect = tile.imageRect;
-   * let image = tile.image.copy(rect.x, rect.y, rect.width, rect.height)
+   * let image = tile.image.copy(tile.imageRect);
    * ```
    *
    * You can assign an {@link Image} to this property to change the tile's
