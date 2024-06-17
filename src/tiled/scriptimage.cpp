@@ -108,6 +108,11 @@ void ScriptImage::setColorTable(QJSValue colors)
     mImage.setColorTable(std::move(colorTable));
 }
 
+ScriptImage *ScriptImage::copy(QRect rect) const
+{
+    return new ScriptImage(mImage.copy(rect));
+}
+
 ScriptImage *ScriptImage::copy(int x, int y, int w, int h) const
 {
     return new ScriptImage(mImage.copy(x, y, w, h));

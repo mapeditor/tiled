@@ -146,6 +146,7 @@ public:
 
     Q_INVOKABLE void setColorTable(QJSValue colors);
 
+    Q_INVOKABLE Tiled::ScriptImage *copy(QRect rect = {}) const;
     Q_INVOKABLE Tiled::ScriptImage *copy(int x, int y, int w, int h) const;
     Q_INVOKABLE Tiled::ScriptImage *scaled(int w, int h,
                                            AspectRatioMode aspectMode = IgnoreAspectRatio,
