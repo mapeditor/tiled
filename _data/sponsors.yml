@@ -1,10 +1,7 @@
 - name: Terrible Toybox
   url: https://terribletoybox.com/
   banner: sponsors/terribletoybox.png
-
-- name: Vizor Games
-  url: https://vizor-games.com/
-  banner: sponsors/vizor-games.png
+  sponsor: https://www.patreon.com/user/?u=473662
 
 - name: "Rusted Warfare: An RTS with Tiled Maps & Workshop Modding"
   url: https://store.steampowered.com/app/647960/Rusted_Warfare__RTS/
@@ -22,6 +19,7 @@
 - name: Buy Instagram followers Insfollowpro
   url: https://insfollowpro.com/
   banner: sponsors/insfollowpro.png
+  sponsor: https://www.patreon.com/user?u=32960974
 
 - name: buy instagram followers from skweezer.net
   url: https://skweezer.net/buy-instagram-followers
@@ -34,10 +32,6 @@
 - name: get instagram followers
   url: https://www.socialwick.com/instagram/followers
   banner: sponsors/socialwick.png
-
-- name: Buy Instagram Comments Twicsy
-  url: https://twicsy.com/buy-instagram-comments
-  banner: sponsors/twicsy.png
 
 - name: Buy Instagram and TikTok followers on SocialBoosting!
   url: https://www.socialboosting.com/buy-tiktok-followers
@@ -54,10 +48,6 @@
 - name: Phone Tracker
   url: https://celltrackingapps.com/
   banner: sponsors/celltrackingapps.png
-
-- name: JustAnotherPanel.com is simply the fastest, cheapest, BIGGEST panel in the SMM World.
-  url: https://justanotherpanel.com/
-  banner: sponsors/justanotherpanel.png
 
 - name: Buy real Instagram followers from Stormlikes starting at only $2.97. Stormlikes has been voted the best site to buy followers from the likes of US Magazine.
   url: https://www.stormlikes.net/buy-instagram-followers
@@ -90,6 +80,7 @@
 - name: Buy Instagram Likes
   url: https://twicsy.com/buy-instagram-likes
   banner: sponsors/twicsy.png
+  sponsor: https://opencollective.com/twicsy
 
 - name: C19
   url: https://www.c19.cl/
@@ -99,17 +90,9 @@
   url: https://www.livecrazytime.org/
   banner: sponsors/crazytime.png
 
-- name: OnlineCasinoProfy
-  url: https://onlinecasinoprofy.com/en/crypto-gambling/
-  banner: sponsors/onlinecasinoprofy.png
-
 - name: online casino buiten Nederland
   url: https://onlinecasinosspelen.com/buitenlandse-online-casinos
   banner: sponsors/online-casinos-spelen.png
-
-- name: We create reviews of aviation games
-  url: https://aviaorevue.com.br/
-  banner: sponsors/aviaorevue.png
 
 - name: $10 Minimum Deposit Casinos in Canada
   url: https://playcasinoscanada.com/casino-bonuses/10-minimum-deposit-casinos-in-canada/
@@ -123,21 +106,14 @@
   url: https://www.onlinecasinosdeutschland.de/
   banner: sponsors/onlinecasinosdeutschland.png
 
-- name: nettikasinot
-  url: https://www.nettikasinot.com/
-  banner: sponsors/nettikasinot.png
-
 - name: Buy Instagram Followers Twicsy
   url: https://twicsy.com/buy-instagram-followers
   banner: sponsors/twicsy-followers.png
+  sponsor: https://opencollective.com/buy-instagram-followers-twicsy
 
 - name: Best Australian Online Casinos in 2024
   url: https://aussiecasinoreviewer.com/
   banner: sponsors/aussiecasinoreviewer.png
-
-- name: Tu guía de apuestas online en Chile
-  url: https://www.apostar.org/casinos-online/
-  banner: sponsors/apostarorg.png
 
 - name: slots online empire
   url: https://slotsempire.com/
@@ -159,10 +135,6 @@
   url: https://poprey.com/buy-instagram-views
   banner: sponsors/poprey.png
 
-- name: best online casinos in Canada at leafletcasino.com
-  url: https://leafletcasino.com/
-  banner: sponsors/leafletcasino.jpg
-
 - name: Inkedin - Gambling News & Updates
   url: https://inkedin.com/no-deposit-casino-sites/
   banner: sponsors/inkedin.png
@@ -170,10 +142,6 @@
 - name: Play Online Blackjack at reddogcasino.com
   url: https://reddogcasino.com/en/games/blackjack
   banner: sponsors/red-dog-casino.png
-
-- name: CasinoscanadaReviews
-  url: https://casinoscanada.reviews/en/
-  banner: sponsors/casinoscanada.png
 
 - name: CasinotopNz
   url: https://casinotop.co.nz/
