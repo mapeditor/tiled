@@ -1,6 +1,6 @@
 /*
- * scriptimage.cpp
- * Copyright 2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * scriptpropertytype.cpp
+ * Copyright 2024, chris <dogboydog@users.noreply.github.com>
  *
  * This file is part of Tiled.
  *
@@ -19,12 +19,10 @@
  */
 
 #include "scriptpropertytype.h"
-#include "project.h"
-#include "projectmanager.h"
 
 namespace Tiled {
 
-QString ScriptPropertyType::name() const
+const QString &ScriptPropertyType::name() const
 {
     return mType->name;
 }

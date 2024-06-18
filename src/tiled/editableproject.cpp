@@ -20,6 +20,8 @@
  */
 
 #include "editableproject.h"
+
+#include "preferences.h"
 #include "projectdocument.h"
 #include "projectmanager.h"
 
@@ -29,6 +31,11 @@ EditableProject::EditableProject(ProjectDocument *projectDocument, QObject *pare
     : EditableAsset(&projectDocument->project(), parent)
 {
     setDocument(projectDocument);
+}
+
+bool EditableProject::isReadOnly() const
+{
+    return false;
 }
 
 QString EditableProject::extensionsPath() const
@@ -51,10 +58,12 @@ QStringList EditableProject::folders() const
     return project()->folders();
 }
 
-
-bool EditableProject::isReadOnly() const
+QVector<ScriptPropertyType *>EditableProject::propertyTypes() const
 {
-    return false;
+    QVector<ScriptPropertyType*> scriptTypes;
+    for (const PropertyType *type : *project()->propertyTypes())
+        scriptTypes.append(toScriptType(type));
+    return scriptTypes;
 }
 
 QSharedPointer<Document> EditableProject::createDocument()
@@ -64,19 +73,21 @@ QSharedPointer<Document> EditableProject::createDocument()
     return nullptr;
 }
 
-
 ScriptPropertyType *EditableProject::toScriptType(const PropertyType *type) const
 {
     if (!type)
         return nullptr;
 
-    if (type->isEnum())
-        return new ScriptEnumPropertyType(static_cast<const EnumPropertyType *>(type));
-
-    if (type->isClass())
+    switch (type->type) {
+    case PropertyType::PT_Invalid:
+        break;
+    case PropertyType::PT_Class:
         return new ScriptClassPropertyType(static_cast<const ClassPropertyType *>(type));
+    case PropertyType::PT_Enum:
+        return new ScriptEnumPropertyType(static_cast<const EnumPropertyType *>(type));
+    }
 
-    return new ScriptPropertyType(type);
+    return nullptr;
 }
 
 ScriptPropertyType *EditableProject::findTypeByName(const QString &name)
@@ -88,20 +99,12 @@ ScriptPropertyType *EditableProject::findTypeByName(const QString &name)
 void EditableProject::removeTypeByName(const QString &name)
 {
     int index = project()->propertyTypes()->findIndexByName(name);
-    if (index < 0 )
+    if (index < 0)
         return
 
     // TODO the type isn't actually being deleted even when index >= 0
     project()->propertyTypes()->removeAt(index);
     applyPropertyChanges();
-}
-
-QVector<ScriptPropertyType *>EditableProject::propertyTypes() const
-{
-    QVector<ScriptPropertyType*> scriptTypes;
-    for (const PropertyType *type : *project()->propertyTypes())
-        scriptTypes.append(toScriptType(type));
-    return scriptTypes;
 }
 
 void EditableProject::applyPropertyChanges()
