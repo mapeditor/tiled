@@ -175,6 +175,8 @@ DynamicLibrary {
         "tilesetformat.h",
         "tilesetmanager.cpp",
         "tilesetmanager.h",
+        "tmxmapformat.cpp",
+        "tmxmapformat.h",
         "varianttomapconverter.cpp",
         "varianttomapconverter.h",
         "wangset.cpp",

@@ -541,8 +541,6 @@ DynamicLibrary {
         "tilestampmodel.h",
         "tilestampsdock.cpp",
         "tilestampsdock.h",
-        "tmxmapformat.cpp",
-        "tmxmapformat.h",
         "toolmanager.cpp",
         "toolmanager.h",
         "transformmapobjects.cpp",
