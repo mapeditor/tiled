@@ -40,7 +40,7 @@
 * Fixed alignment of shortcuts in action search
 * Fixed object assignment buttons in tile collision editor (#3399)
 * AppImage: Fixed ability to open paths with spaces from the CLI (#3914)
-* AppImage: Updated to Sentry 0.6.7
+* AppImage: Updated to Sentry 0.7.6
 
 ### Tiled 1.10.2 (4 August 2023)
 

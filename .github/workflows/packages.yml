@@ -16,7 +16,7 @@ on:
 
 env:
   QBS_VERSION: 2.2.1
-  SENTRY_VERSION: 0.6.7
+  SENTRY_VERSION: 0.7.6
   SENTRY_ORG: mapeditor
   SENTRY_PROJECT: tiled
   TILED_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') }}
@@ -104,7 +104,7 @@ jobs:
         mkdir sentry-native
         pushd sentry-native
         unzip -q ../sentry-native.zip
-        cmake -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo
+        cmake -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=breakpad
         cmake --build build --parallel
         sudo cmake --install build --prefix /usr --config RelWithDebInfo
         popd
