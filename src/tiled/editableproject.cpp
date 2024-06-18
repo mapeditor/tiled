@@ -100,9 +100,8 @@ void EditableProject::removeTypeByName(const QString &name)
 {
     int index = project()->propertyTypes()->findIndexByName(name);
     if (index < 0)
-        return
+        return;
 
-    // TODO the type isn't actually being deleted even when index >= 0
     project()->propertyTypes()->removeAt(index);
     applyPropertyChanges();
 }
