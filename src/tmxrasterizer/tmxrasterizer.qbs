@@ -4,6 +4,7 @@ TiledQtGuiApplication {
     consoleApplication: true
 
     Depends { name: "libtiled" }
+    Depends { name: "libtilededitor" }
 
     cpp.includePaths: ["."]
 
