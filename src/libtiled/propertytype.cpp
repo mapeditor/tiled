@@ -518,6 +518,22 @@ void PropertyTypes::mergeObjectTypes(const QVector<ObjectType> &objectTypes)
 }
 
 /**
+ * Returns the index of the type of the given name, or -1 if no such type is
+ * found.
+ */
+int PropertyTypes::findIndexByName(const QString &name) const
+{
+    if (name.isEmpty())
+        return -1;
+
+    for (int i = 0; i < mTypes.count(); i++)
+        if (mTypes[i]->name == name)
+            return i;
+
+    return -1;
+}
+
+/**
  * Returns a pointer to the PropertyType matching the given \a typeId, or
  * nullptr if it can't be found.
  */
@@ -529,21 +545,6 @@ const PropertyType *PropertyTypes::findTypeById(int typeId) const
     return it == mTypes.end() ? nullptr : *it;
 }
 
-/**
- * Returns the index of the type of the given name, 
- * or -1 if no such type is found.
- */
-const int PropertyTypes::findIndexByName(const QString &name) const
-{
-    if (name.isEmpty())
-        return -1;
-
-    for (int i =0; i<mTypes.count(); i++)
-        if (mTypes[i]->name == name)
-            return i;
-
-    return -1;
-}
 /**
  * Returns a pointer to the PropertyType matching the given \a name and
  * \a usageFlags, or nullptr if it can't be found.

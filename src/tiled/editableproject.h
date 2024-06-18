@@ -40,6 +40,7 @@ class EditableProject final : public EditableAsset
     Q_PROPERTY(QString fileName READ fileName)
     Q_PROPERTY(QStringList folders READ folders)
     Q_PROPERTY(QVector<ScriptPropertyType *> propertyTypes READ propertyTypes)
+
 public:
     EditableProject(ProjectDocument *projectDocument, QObject *parent = nullptr);
 
@@ -50,13 +51,15 @@ public:
     QString automappingRulesFile() const;
     QString fileName() const;
     QStringList folders() const;
+    QVector<ScriptPropertyType*> propertyTypes() const;
+
     Project *project() const;
 
     QSharedPointer<Document> createDocument() override;
 
     Q_INVOKABLE void removeTypeByName(const QString &name);
     Q_INVOKABLE ScriptPropertyType *findTypeByName(const QString &name);
-    QVector<ScriptPropertyType*> propertyTypes() const;
+
 private:
     ScriptPropertyType *toScriptType(const PropertyType *type) const;
     void applyPropertyChanges();
