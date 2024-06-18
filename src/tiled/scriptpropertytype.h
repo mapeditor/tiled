@@ -1,6 +1,6 @@
 /*
- * scriptimage.h
- * Copyright 2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * scriptpropertytype.h
+ * Copyright 2024, chris <dogboydog@users.noreply.github.com>
  *
  * This file is part of Tiled.
  *
@@ -20,7 +20,6 @@
 
 #pragma once
 
-#include "preferences.h"
 #include "propertytype.h"
 
 #include <QJSEngine>
@@ -44,7 +43,7 @@ public:
         : mType(propertyType)
     {}
 
-    QString name() const;
+    const QString &name() const;
     bool isClass() const { return mType->isClass(); }
     bool isEnum() const { return mType->isEnum(); }
     QVariant defaultValue() { return mType->defaultValue(); }
@@ -62,8 +61,8 @@ class ScriptEnumPropertyType : public ScriptPropertyType
 
 public:
     ScriptEnumPropertyType(const EnumPropertyType *propertyType)
-        : mEnumType(propertyType),
-          ScriptPropertyType(propertyType)
+        : ScriptPropertyType(propertyType)
+        , mEnumType(propertyType)
     {}
     // copied from propertytype.h
     enum StorageType {
@@ -89,8 +88,8 @@ class ScriptClassPropertyType : public ScriptPropertyType
 
 public:
     ScriptClassPropertyType(const ClassPropertyType *propertyType)
-        : mClassType(propertyType),
-          ScriptPropertyType(propertyType)
+        : ScriptPropertyType(propertyType)
+        , mClassType(propertyType)
     {}
 
     // TODO: a way to avoid duplicating this again? 
@@ -121,7 +120,6 @@ public:
     //void setUsageFlags(int value) { mClassType->setUsageFlags(value); }
 
 private:
-
     const ClassPropertyType *mClassType;
 };
 
@@ -131,4 +129,3 @@ void registerPropertyTypes(QJSEngine *jsEngine);
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::ScriptPropertyType*)
-

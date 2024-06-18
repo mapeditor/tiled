@@ -200,8 +200,9 @@ public:
     void merge(PropertyTypes types);
     void mergeObjectTypes(const QVector<ObjectType> &objectTypes);
 
+    int findIndexByName(const QString &name) const;
+
     const PropertyType *findTypeById(int typeId) const;
-    const int findIndexByName(const QString &name) const;
     const PropertyType *findTypeByName(const QString &name, int usageFlags = ClassPropertyType::AnyUsage) const;
     const PropertyType *findPropertyValueType(const QString &name) const;
     const ClassPropertyType *findClassFor(const QString &name, const Object &object) const;
