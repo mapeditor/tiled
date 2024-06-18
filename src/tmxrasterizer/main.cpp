@@ -53,6 +53,8 @@ int main(int argc, char *argv[])
     app.setApplicationVersion(QLatin1String("1.0"));
 
     PluginManager::instance()->loadPlugins();
+
+    // Necessary to enable loading of object templates in XML format
     XmlObjectTemplateFormat xmlObjectTemplateFormat;
     PluginManager::addObject(&xmlObjectTemplateFormat);
 
