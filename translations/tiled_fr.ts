@@ -60,7 +60,7 @@
     <message>
         <location line="-33"/>
         <source>Failed to load project &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Échec de chargement du projet &apos;%1&apos;.</translation>
     </message>
     <message>
         <location line="+44"/>
@@ -75,7 +75,7 @@
     <message>
         <location line="+111"/>
         <source>Project file expected: --project &lt;.tiled-project file&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier de projet attendu&#x202f;: --project &lt;fichier .tiled-project&gt;</translation>
     </message>
     <message>
         <location line="+75"/>
@@ -162,7 +162,7 @@
     <message>
         <location line="+5"/>
         <source>Project file to load</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier de projet à charger</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -831,7 +831,7 @@
     <message>
         <location line="+8"/>
         <source>Unload All Worlds</source>
-        <translation type="unfinished"></translation>
+        <translation>Décharger tous les Mondes</translation>
     </message>
     <message>
         <location line="-97"/>
@@ -1784,12 +1784,12 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+229"/>
         <source>Behavior</source>
-        <translation type="unfinished"></translation>
+        <translation>Comportement</translation>
     </message>
     <message>
         <location line="+67"/>
         <source>Add &quot;Copy&quot; when duplicating</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter &quot;Copie&quot; lors de la duplication</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -1932,22 +1932,22 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+334"/>
         <source>-- Using script %1 to read %2</source>
-        <translation type="unfinished">-- Utilisation du script %1 afin de lire %2</translation>
+        <translation>-- Utilisation du script %1 afin de lire %2</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>-- Using script %1 to write %2</source>
-        <translation type="unfinished">-- Utilisation du script %1 afin d&apos;écrire %2</translation>
+        <translation>-- Utilisation du script %1 afin d&apos;écrire %2</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Uncaught exception in script. Please check console.</source>
-        <translation type="unfinished">Exception non gérée dans le script. Veuillez vérifier sur la console.</translation>
+        <translation>Exception non gérée dans le script. Veuillez vérifier la console.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Script returned false. Please check console.</source>
-        <translation type="unfinished">Le script a retourné &quot;faux&quot;. Veuillez vérifier sur la console.</translation>
+        <translation>Le script a retourné false. Veuillez vérifier la console.</translation>
     </message>
 </context>
 <context>
@@ -2453,7 +2453,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/editableasset.cpp" line="+81"/>
         <source>Asset not associated with a file</source>
-        <translation type="unfinished"></translation>
+        <translation>Ressource non associée à un fichier</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2630,12 +2630,12 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+18"/>
         <source>Can&apos;t set tile spacing on an image collection tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de paramétrer l&apos;espacement des tuiles sur un jeu de tuiles de collection d&apos;images</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Can&apos;t set margin on an image collection tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de paramétrer la marge sur un jeu de tuiles de collection d&apos;images</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -2943,29 +2943,29 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/editabletilelayer.cpp" line="+121"/>
         <source>Layer not part of a map</source>
-        <translation type="unfinished"></translation>
+        <translation>Le calque n&apos;appartient pas à la carte</translation>
     </message>
     <message>
         <location filename="../src/tiled/editableworld.cpp" line="-28"/>
         <location line="+16"/>
         <location line="+44"/>
         <source>Map not found in this world</source>
-        <translation type="unfinished"></translation>
+        <translation>La carte est introuvable dans ce monde</translation>
     </message>
     <message>
         <location line="-27"/>
         <source>Map is already part of a loaded world</source>
-        <translation type="unfinished"></translation>
+        <translation>La carte fait déjà partie d&apos;un monde chargé</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Can&apos;t add unsaved map to a world</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ajouter une carte non sauvegardée dans un monde</translation>
     </message>
     <message>
         <location filename="../src/tiled/tilelayerwangedit.cpp" line="+97"/>
         <source>Invalid edge index</source>
-        <translation type="unfinished"></translation>
+        <translation>Index de bord invalide</translation>
     </message>
 </context>
 <context>
@@ -3854,7 +3854,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/capturestamphelper.cpp" line="+63"/>
         <source>Cut</source>
-        <translation type="unfinished">Couper</translation>
+        <translation>Couper</translation>
     </message>
 </context>
 <context>
@@ -3886,7 +3886,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location line="+77"/>
         <source>%1 [read-only]</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 [lecture seule]</translation>
     </message>
     <message>
         <location line="+63"/>
@@ -4006,7 +4006,7 @@ Ligne %1, colonne %2</translation>
     <message>
         <location filename="../src/tiled/editor.cpp" line="+40"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Copier</translation>
     </message>
 </context>
 <context>
@@ -4598,7 +4598,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+44"/>
         <source>Map format &apos;%s&apos; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Format de carte &apos;%s&apos; introuvable</translation>
     </message>
     <message>
         <location line="+96"/>
@@ -5304,7 +5304,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="-171"/>
         <source>Updates and Crash Reporting</source>
-        <translation type="unfinished"></translation>
+        <translation>Rapport de Mises à Jour et de Plantage</translation>
     </message>
 </context>
 <context>
@@ -6334,22 +6334,22 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/scriptmodule.cpp" line="+42"/>
         <source>Open Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir un Dossier</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Open Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir des Fichiers</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Open File</source>
-        <translation type="unfinished">Ouvrir un Fichier</translation>
+        <translation>Ouvrir un Fichier</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Save File</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauvegarder le Fichier</translation>
     </message>
 </context>
 <context>
@@ -7223,7 +7223,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/worldmanager.cpp" line="+169"/>
         <source>World not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Monde introuvable</translation>
     </message>
 </context>
 <context>
@@ -7276,22 +7276,22 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+41"/>
         <source>Godot exporter does not support property type of &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;exportateur Godot ne supporte pas les propriétés de type &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Inconsistent type for property &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Type inconsistant pour la propriété &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>Only objects with the resPath property will be exported</source>
-        <translation type="unfinished"></translation>
+        <translation>Seuls les objets ayant la propriété resPath seront exportés</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>resPath must be in the form of &apos;res://&lt;filename&gt;.tscn&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>resPath doit suivre la forme suivante&#x202f;: &apos;res://&lt;nom de fichier&gt;.tscn&apos;.</translation>
     </message>
     <message>
         <location line="+58"/>
@@ -7306,12 +7306,12 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+90"/>
         <source>Godot exporter does not support property of type &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;exportateur Godot ne supporte pas les propriétés de type &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+97"/>
         <source>exportAlternates is deprecated. Godot 4.2 supports native tile rotation. Tileset: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>exportAlternates est obsolète. Godot 4.2 supporte la rotation native de tuile. Jeu de tuiles&#x202f;: %1</translation>
     </message>
     <message>
         <location line="+23"/>
@@ -7799,7 +7799,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tiled/mapdocument.cpp" line="-1063"/>
         <source>Reload Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Recharger la Carte</translation>
     </message>
     <message numerus="yes">
         <location line="+720"/>
@@ -8054,27 +8054,27 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+2"/>
         <source>Specifies an object to omit from the output image. Can be repeated to hide multiple objects. If multiple objects share the specified name they all will be hidden.</source>
-        <translation type="unfinished"></translation>
+        <translation>Spécifie un objet à omettre de l&apos;image de sortie. Peut être répété plusieurs fois pour cacher plusieurs objets. Si plusieurs objets partagent le même nom, il seront tous cachés.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>If used only specified objects are shown. Can be repeated to show multiple specified objects only. If multiple objects share the specified name they all will be shown.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si utilisé, seuls les objets spécifiés sont affichés. Peut être répété plusieurs fois pour seulement afficher les objets donnés. Si plusieurs objets partagent le même nom, ils seront tous affichés.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>If used, tile animations are advanced by the specified duration in milliseconds.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si utilisé, les animations de tuiles sont avancées par la durée donnée en millisecondes.</translation>
     </message>
     <message>
         <location line="+75"/>
         <source>Invalid number of frames specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de trames spécifié invalide&#x202f;: &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Invalid frame-duration specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Durée de trame spécifiée invalide&#x202f;: &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="-83"/>
@@ -8084,18 +8084,18 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location line="+2"/>
         <source>Number of frames to export. This will add a frame number suffix to the image names. Animations are advanced by &lt;frame-duration&gt; for each frame.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de trames à exporter. Cela ajoutera un préfixe de numéro de trame aux noms des images. Les animations sont avancées de &lt;frame-duration&gt; millisecondes pour chaque trame.</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+3"/>
         <source>number</source>
-        <translation type="unfinished"></translation>
+        <translation>nombre</translation>
     </message>
     <message>
         <location line="-1"/>
         <source>Duration of each frame in milliseconds, defaults to 100.</source>
-        <translation type="unfinished"></translation>
+        <translation>Durée de chaque trame en millisecondes, 100 par défaut.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -8130,7 +8130,7 @@ Veuillez sélectionner un format spécifique.</translation>
     <message>
         <location filename="../src/tmxviewer/main.cpp" line="+64"/>
         <source>Displays a Tiled map.</source>
-        <translation type="unfinished"></translation>
+        <translation>Affiche une carte Tiled.</translation>
     </message>
     <message>
         <location line="+3"/>
