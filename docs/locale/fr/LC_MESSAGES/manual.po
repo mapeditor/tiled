@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2023-03-10 11:19+0100\n"
-"PO-Revision-Date: 2023-06-10 12:50+0000\n"
-"Last-Translator: firstmiddlelast <qube132@yahoo.com>\n"
+"PO-Revision-Date: 2024-06-20 06:24+0000\n"
+"Last-Translator: Rhenaud Dubois <rhen33390@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tiled/manual/fr/>"
 "\n"
 "Language: fr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Weblate 5.6-rc\n"
 "Generated-By: Babel 2.11.0\n"
 
 #: ../../manual/automapping.md:1
@@ -409,11 +409,11 @@ msgid ""
 "right.](images/automapping/automap_input7.png) ![Rock made out of two "
 "tiles.](images/automapping/automap_input8.png)"
 msgstr ""
-"![Deux tuiles d'herbe.](images/automapping/automap_input4.png) ![Deux tuiles "
-"de fleurs.](images/automapping/automap_input5.png) ![Une tuile de fleur à "
-"gauche, une tuile d'herbe à droite.](images/automapping/automap_input6.png) "
+"![Deux tuiles d'herbe.](images/automapping/automap_input4.png) ![Deux tuiles "
+"de fleurs.](images/automapping/automap_input5.png) ![Une tuile de fleur à "
+"gauche, une tuile d'herbe à droite.](images/automapping/automap_input6.png) "
 "![Une tuile d'herbe à gauche, une tuile d'herbe à droite.](images/"
-"automapping/automap_input7.png) ![Un rocher réparti sur deux tuiles.](images/"
+"automapping/automap_input7.png) ![Un rocher réparti sur deux tuiles.](images/"
 "automapping/automap_input8.png)"
 
 #: ../../manual/automapping.md:72
@@ -1217,7 +1217,7 @@ msgid ""
 "![The bottom left corner, bottom side, and bottom right corner of the "
 "cliff top.](images/automapping/automap_example3.png)"
 msgstr ""
-"![Le coin bas gauche, le bas, et le coin bas droite du sommet de la "
+"![Le coin bas gauche, le côté bas, et le coin bas droite du sommet de la "
 "falaise.](images/automapping/automap_example3.png)"
 
 #: ../../manual/automapping.md:277
@@ -1238,9 +1238,9 @@ msgid ""
 "lower, since they should go below the cliff top "
 "tiles.](images/automapping/automap_example4.png)"
 msgstr ""
-"![Tuiles falaise correspondant aux tuiles ci-dessus, positionnées une tuile "
-"plus bas, puisqu'elles devraient aller en-dessous des tuiles de sommet de "
-"falaise.](images/automapping/automap_example4.png)"
+"![Tuiles de falaise correspondant aux tuiles ci-dessus, positionnées une "
+"tuile plus bas, puisqu'elles devraient aller en-dessous des tuiles de sommet "
+"de falaise.](images/automapping/automap_example4.png)"
 
 #: ../../manual/automapping.md:278
 msgid ""
@@ -1261,8 +1261,8 @@ msgid ""
 "purpose but has different "
 "details.](images/automapping/automap_example5.png)"
 msgstr ""
-"![Pareil qu'au-dessus, mais avec une tuile médiane différence qui poursuit "
-"le même objectif mais a des détails différents.](images/automapping/"
+"![Pareil qu'au-dessus, mais avec une tuile de milieu différente qui poursuit "
+"le même objectif mais qui a des détails différents.](images/automapping/"
 "automap_example5.png)"
 
 #: ../../manual/automapping.md:279
@@ -1353,7 +1353,7 @@ msgid ""
 "![The side and corner tiles, with matching concave corner tiles above "
 "them.](images/automapping/automap_example9.png)"
 msgstr ""
-"![Les tuiles de côté et des coins, avec les tuiles d'angle concaves "
+"![Les tuiles de côté et de coins, avec les tuiles d'angle concave "
 "correspondantes au-dessus.](images/automapping/automap_example9.png)"
 
 #: ../../manual/automapping.md:301
@@ -1367,7 +1367,7 @@ msgid ""
 "![Different concave corner "
 "tiles.](images/automapping/automap_example10.png)"
 msgstr ""
-"![Differentes tuiles d'angle concaves.](images/automapping/automap_example10."
+"![Differentes tuiles d'angle concave.](images/automapping/automap_example10."
 "png)"
 
 #: ../../manual/automapping.md:302
@@ -1379,8 +1379,8 @@ msgid ""
 "![The output tiles, versions of the sides and corners meant to be next to"
 " cliff tiles.](images/automapping/automap_example11.png)"
 msgstr ""
-"![Les tuiles d'output, versions des côtés et des angles supposées être "
-"adjacentes aux tuiles falaise.](images/automapping/automap_example11.png)"
+"![Les tuiles d'output, versions des côtés et des coins supposées être "
+"adjacentes aux tuiles de falaise.](images/automapping/automap_example11.png)"
 
 #: ../../manual/automapping.md:303
 msgid ""
@@ -1395,12 +1395,14 @@ msgid "output\\_Cliff"
 msgstr "output\\_Falaise"
 
 #: ../../manual/automapping.md:305
-#, fuzzy
 msgid ""
 "There is no need to repeat the side and corner tiles on the second "
 "\"input\\_Cliff\" layer, you can leave those cells empty and only include"
 " the extra input tiles that you need."
 msgstr ""
+"Il n'est pas nécessaire de répéter les tuiles de bord ou de coin dans le "
+"second calque \"input\\_Cliff\", vous pouvez laisser ces cellules vides et "
+"n'inclure que les tuiles d'input additionnelles dont vous avez besoin."
 
 #: ../../manual/automapping.md:307
 msgid ""
@@ -1575,6 +1577,9 @@ msgid ""
 "The output tiles in the top row are the [Empty]{.tile .empty} [special "
 "tile](#specialtiles), which means the output will erase those tiles."
 msgstr ""
+"Les tuiles d'output dans la ligne du haut sont les [tuiles "
+"spéciales](#specialtiles) [Empty]{.tile .empty}, qui signifient que l'output "
+"effacera ces tuiles."
 
 #: ../../manual/automapping.md:343
 msgid ""
@@ -1811,7 +1816,6 @@ msgid "Updating Legacy Rules"
 msgstr "Mise à jour de Règles Héritées d'une version précédente"
 
 #: ../../manual/automapping.md:383
-#, fuzzy
 msgid ""
 "If you have some Automapping rules from before Tiled 1.9, they should "
 "still work much as they always did in most cases. When Tiled sees that a "
@@ -1820,9 +1824,15 @@ msgid ""
 "within input regions that are empty in all the input layers for a given "
 "layer and index will be treated as \"Other\"."
 msgstr ""
+"Si vous avez des règles d'Automapping datant d'avant Tiled 1.9, elles "
+"devraient encore fonctionner comme elles le faisaient avant. Quand Tiled "
+"voit une carte de règles contenant des calques `regions`, il remet "
+"automatiquement l'ancien comportement en place - les règles sont appliquées "
+"dans l'ordre par défaut, et les cellules dans les régions d'input qui sont "
+"vides dans tous les calques d'input pour un calque et index donné seront "
+"traitées comme \"Other\"."
 
 #: ../../manual/automapping.md:386
-#, fuzzy
 msgid ""
 "In Tiled 1.9.x, the presense of `regions` layers did not imply "
 "`MatchInOrder`. If you're using 1.9.x rather than 1.10+ and want to use "
@@ -1831,33 +1841,30 @@ msgid ""
 msgstr ""
 "Dans Tiled 1.9.x, la présence de calques `regions` n'impliquait pas "
 "`MatchInOrder`. Si vous utilisez la 1.9.x plutôt que 1.10+ et voulez "
-"utiliser les règles de la précédente itération, il vous faudra mettre la "
-"propriété de carte `MatchInOrder` à ``true``."
+"utiliser les anciennes règles, il vous faudra mettre la propriété de carte "
+"`MatchInOrder` à ``true``."
 
 #: ../../manual/automapping.md:389
-#, fuzzy
 msgid ""
 "If you'd like to instead update your rules to not rely on any legacy "
 "behavior, that can be as simple as deleting your `regions` layer(s), or "
 "it might take some extra work, depending on how exactly your rules are "
 "set up:"
 msgstr ""
-"Si vous voudriez plutôt mettre vos règles à jour pour ne pas dépendre d'un "
-"comportement précédent, cela peut être aussi simple que d'effacer votre(vos) "
+"Si vous voulez plutôt mettre vos règles à jour pour ne pas dépendre d'un "
+"ancien comportement, cela peut être aussi simple que d'effacer votre(vos) "
 "calque(s) `regions`, ou bien cela pourrait demander un peu plus de travail, "
-"selon comment vos règles sont configurées :"
+"selon comment vos règles sont configurées :"
 
 #: ../../manual/automapping.md:391
-#, fuzzy
 msgid ""
 "If your rules rely on being applied in a set order, set the "
 "[`MatchInOrder` map property](#MatchInOrder) to `true`."
 msgstr ""
-"Si vos règles doivent être appliquées dans un order fixé, positionnez la ["
+"Si vos règles s'appuient sur un ordre d'applicage fixe, positionnez la ["
 "propriété de carte `MatchInOrder`](#MatchInOrder) à `true`."
 
 #: ../../manual/automapping.md:392
-#, fuzzy
 msgid ""
 "When deleting your `regions` layers, make sure you weren't relying on "
 "them to connect otherwise disconnected areas of tiles. If you were, use "
@@ -1866,6 +1873,13 @@ msgid ""
 "same rule. To make sure the rules behave exactly the same, fill in any "
 "part that was previously part of the input region."
 msgstr ""
+"Lors de la suppression de vos calques `regions`, assurez-vous que vous ne "
+"comptez pas sur elles pour connecter des régions de tuiles qui deviendraient "
+"déconnectées sans elles. Si c'est le cas, utilisez la [tuile "
+"spéciale](#specialtiles) [Ignore]{.tile .ignore} pour les connecter dans un "
+"des calques `input`, pour que Tiled sache qu'elles font partie de la même "
+"règle. Pour vous assurer que les règles se comportent exactement de la même "
+"façon, remplissez tout ce qui faisait partie de la région d'input."
 
 #: ../../manual/automapping.md:394
 msgid ""
@@ -1900,7 +1914,6 @@ msgstr ""
 "moins un autre calque d'input n'est pas vide à ces emplacements."
 
 #: ../../manual/automapping.md:398
-#, fuzzy
 msgid ""
 "If were relying on the behavior that any tile which is left empty on all "
 "of the input layers for a given index is treated as “any tile not in this"
@@ -1910,6 +1923,14 @@ msgid ""
 "locations. The Empty tile is needed because old-style Other never matched"
 " Empty, but the MatchType Other tile does match Empty."
 msgstr ""
+"Si vous vous reposiez sur le comportement qui est qu'une tuile laissée vide "
+"dans tous les calques d'input pour un index donné est traitée comme “toute "
+"tuile qui n'est pas dans cette règle”, vous devriez plutôt utiliser la ["
+"tuile spéciale](#specialtiles) [Other]{.tile .other} à ces emplacements, et "
+"aussi la [tuile spéciale](#specialtiles) [Empty]{.tile .empty} sur un calque "
+"non input à ces mêmes emplacements. La tuile Empty est nécessaire parce que "
+"l'ancien Other ne détecte pas Empty, mais la tuile MatchType Other détecte "
+"bien Empty."
 
 #: ../../manual/automapping.md:401
 msgid "Credits"
@@ -6017,7 +6038,6 @@ msgstr ""
 "10 = 7`` pixels."
 
 #: ../../manual/layers.rst:179
-#, fuzzy
 msgid ""
 "Quite often, a viewport transform is used to scroll the entire map. In "
 "this case, one may need to adjust the position of each layer to take its "
@@ -6025,12 +6045,12 @@ msgid ""
 "the parallax factor directly, we now multiply by ``1 - parallaxFactor`` "
 "to get the layer position. For example:"
 msgstr ""
-"Assez souvent, une transformation du viewport est utilisée pour scroller la "
-"carte entière. Dans ce cas, il pourrait être nécessaire d'ajuster la "
-"position de chaque calque pour prendre son facteur de parallaxe en compte. "
-"Au lieu de multiplier la distance par le facteur de parallaxe directement, "
-"nous allons maintenant multiplier par ``1 - facteurDeParallaxe`` pour avoir "
-"la position du calque. Par exemple :"
+"Assez souvent, une transformation de la fenêtre d'affichage est utilisée "
+"pour faire défiler la carte entière. Dans ce cas, il pourrait être "
+"nécessaire d'ajuster la position de chaque calque pour prendre son facteur "
+"de parallaxe en compte. Au lieu de multiplier la distance par le facteur de "
+"parallaxe directement, nous allons maintenant multiplier par ``1 - "
+"facteurDeParallaxe`` pour avoir la position du calque. Par exemple :"
 
 #: ../../manual/layers.rst:185
 msgid ""
