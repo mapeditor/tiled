@@ -115,7 +115,7 @@ jobs:
 
     - name: Upload symbols and sources to Sentry
       if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
-      continue-on-error: true
+      continue-on-error: ${{ needs.version.outputs.release == 'false' }}
       env:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       run: |
