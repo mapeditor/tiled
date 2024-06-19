@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-10 11:19+0100\n"
-"PO-Revision-Date: 2023-07-30 15:02+0000\n"
-"Last-Translator: firstmiddlelast <qube132@yahoo.com>\n"
+"PO-Revision-Date: 2024-06-20 06:24+0000\n"
+"Last-Translator: Rhenaud Dubois <rhen33390@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tiled/reference/"
 "fr/>\n"
 "Language: fr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.0-dev\n"
+"X-Generator: Weblate 5.6-rc\n"
 "Generated-By: Babel 2.11.0\n"
 
 #: ../../reference/global-tile-ids.rst:2
@@ -194,9 +194,10 @@ msgid ""
 "directly tested, please make sure to report any errors you encounter when"
 " basing your parsing code on it, thanks!)"
 msgstr ""
-"(Etant donné que le code ci-dessus a été créé sur la page du wiki et ne put "
-"être testé directement, veuillez s'il vous plaît signaler toute erreur que "
-"vous rencontrez si vous basez votre code d'analyse sur ceci. Merci!)"
+"(Etant donné que le code ci-dessus a été créé sur cette page du wiki et n'a "
+"pas pu être testé directement, veuillez s'il vous plaît signaler toute "
+"erreur que vous rencontrez si vous basez votre code d'analyse sur ceci. "
+"Merci !)"
 
 #: ../../reference/json-map-format.rst:2
 msgid "JSON Map Format"
@@ -626,8 +627,10 @@ msgid ""
 "Horizontal :ref:`parallax factor <parallax-factor>` for this layer "
 "(default: 1). (since Tiled 1.5)"
 msgstr ""
-":ref:`Facteur de parallaxe <parallax-factor>` horizontal pour ce calque "
-"(1 par défaut). (Depuis Tiled 1.5)"
+"(Étant donné que le code ci-dessus a été créé sur cette page du wiki et n'a "
+"pas pu être testé directement, veuillez s'il vous plaît signaler toute "
+"erreur que vous rencontrez si vous basez votre code d'analyse sur ceci. "
+"Merci !)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "parallaxy"
@@ -878,7 +881,7 @@ msgstr "text"
 
 #: ../../reference/json-map-format.rst:1
 msgid ":ref:`json-object-text`"
-msgstr ":ref:`objet texte JSON <json-object-text>`"
+msgstr ":ref:`Objet texte JSON <json-object-text>`"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Only used for text objects"
@@ -1080,7 +1083,7 @@ msgstr "grid"
 
 #: ../../reference/json-map-format.rst:1
 msgid ":ref:`json-tileset-grid`"
-msgstr ":ref:`grille de jeu de tuiles JSON <json-tileset-grid>`"
+msgstr ":ref:`Grille de jeu de tuiles JSON <json-tileset-grid>`"
 
 #: ../../reference/json-map-format.rst:1
 msgid "(optional)"
@@ -1176,7 +1179,8 @@ msgstr "tileoffset"
 
 #: ../../reference/json-map-format.rst:1
 msgid ":ref:`json-tileset-tileoffset`"
-msgstr ":ref:`décalage de tuiles de jeu de tuiles JSON <json-tileset-tileoffset>`"
+msgstr ""
+":ref:`Décalage de tuiles de jeu de tuiles JSON <json-tileset-tileoffset>`"
 
 #: ../../reference/json-map-format.rst:1
 msgid "tilerendersize"
@@ -1209,8 +1213,7 @@ msgstr "transformations"
 #: ../../reference/json-map-format.rst:1
 msgid ":ref:`json-tileset-transformations`"
 msgstr ""
-":ref:`transformations de jeu de tuiles JSON <json-tileset-"
-"transformations>`"
+":ref:`Transformations de jeu de tuiles JSON <json-tileset-transformations>`"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Allowed transformations (optional)"
@@ -1402,7 +1405,7 @@ msgstr "objectgroup"
 
 #: ../../reference/json-map-format.rst:1
 msgid ":ref:`json-layer`"
-msgstr ":ref:`calque <json-layer>`"
+msgstr ":ref:`Calque <json-layer>`"
 
 #: ../../reference/json-map-format.rst:1
 msgid ""
@@ -1610,7 +1613,7 @@ msgstr "tileset"
 
 #: ../../reference/json-map-format.rst:1
 msgid ":ref:`json-tileset`"
-msgstr ":ref:`jeu de tuiles <json-tileset>`"
+msgstr ":ref:`Jeu de tuiles <json-tileset>`"
 
 #: ../../reference/json-map-format.rst:1
 msgid "External tileset used by the template (optional)"
@@ -1622,7 +1625,7 @@ msgstr "object"
 
 #: ../../reference/json-map-format.rst:1
 msgid ":ref:`json-object`"
-msgstr ":ref:`objet JSON <json-object>`"
+msgstr ":ref:`Objet JSON <json-object>`"
 
 #: ../../reference/json-map-format.rst:1
 msgid "The object instantiated by this template"
