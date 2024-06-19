@@ -26,6 +26,7 @@
 * tmxrasterizer: Added --frames and --frame-duration arguments to export animated maps as multiple images (#3868)
 * tmxrasterizer: Fixed --hide/show-layer to work on group layers (#3899)
 * tmxviewer: Added support for viewing JSON maps (#3866)
+* tmxrasterizer/viewer: Fixed loading of XML object templates (with Christian Schaadt, #3977)
 * AutoMapping: Ignore empty outputs per-rule (#3523)
 * Automapping: Added per-input-layer properties for ignoring flip flags (#3803)
 * AutoMapping: Always apply output sets with empty index

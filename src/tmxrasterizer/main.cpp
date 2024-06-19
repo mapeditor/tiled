@@ -28,6 +28,7 @@
 
 #include "pluginmanager.h"
 #include "tmxrasterizer.h"
+#include "tmxmapformat.h"
 
 #include <QCommandLineParser>
 #include <QDebug>
@@ -52,6 +53,10 @@ int main(int argc, char *argv[])
     app.setApplicationVersion(QLatin1String("1.0"));
 
     PluginManager::instance()->loadPlugins();
+
+    // Necessary to enable loading of object templates in XML format
+    XmlObjectTemplateFormat xmlObjectTemplateFormat;
+    PluginManager::addObject(&xmlObjectTemplateFormat);
 
     QCommandLineParser parser;
     parser.setApplicationDescription(QCoreApplication::translate("main", "Renders a Tiled map or world to an image."));
