@@ -115,11 +115,12 @@ jobs:
 
     - name: Upload symbols and sources to Sentry
       if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
+      continue-on-error: ${{ needs.version.outputs.release == 'false' }}
       env:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       run: |
         curl -sL https://sentry.io/get-cli/ | bash
-        sentry-cli upload-dif --include-sources src .
+        sentry-cli upload-dif --log-level=info --include-sources src .
 
     - name: Build AppImage
       run: |
