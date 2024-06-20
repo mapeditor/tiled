@@ -38,9 +38,9 @@ There are several `example scripts`_ available in the repository.
 .. warning::
 
     On Windows, Python is not installed by default. For the Tiled Python
-    plugin to work, you'll need to install Python 3.8 (get it from
+    plugin to work, you'll need to install Python 3.12 (get it from
     https://www.python.org/). You will also need to check the box "Add Python
-    3.8 to PATH" in the installer:
+    3.12 to PATH" in the installer:
 
     .. figure:: images/python-windows.png
 
