@@ -105,6 +105,8 @@ public:
     TilesetEditor *tilesetEditor() const;
     MapEditor *mapEditor() const;
 
+    Q_INVOKABLE QColor color(const QString &name) const;
+    Q_INVOKABLE QColor color(float r, float g, float b, float a = 1.0f) const;
     Q_INVOKABLE Tiled::FilePath filePath(const QUrl &path) const;
     Q_INVOKABLE Tiled::ObjectRef objectRef(int id) const;
     Q_INVOKABLE QVariant propertyValue(const QString &typeName, const QJSValue &value) const;

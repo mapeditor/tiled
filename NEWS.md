@@ -13,6 +13,7 @@
 * Scripting: Added Image.copy overload that takes a rectangle
 * Scripting: Added Tileset.imageFileName and ImageLayer.imageFileName
 * Scripting: Added FilePath.localFile and FileEdit.fileName (string alternatives to Qt.QUrl properties)
+* Scripting: Added tiled.color to create color values
 * Scripting: Made Tileset.margin and Tileset.tileSpacing writable
 * Scripting: Restored compatibility for MapObject.polygon (#3845)
 * Scripting: Fixed issues with editing properties after setting class values from script

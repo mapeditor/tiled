@@ -240,6 +240,20 @@ MapEditor *ScriptModule::mapEditor() const
     return nullptr;
 }
 
+QColor ScriptModule::color(const QString &name) const
+{
+#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
+    return QColor::isValidColor(name) ? QColor(name) : QColor();
+#else
+    return QColor::fromString(name);
+#endif
+}
+
+QColor ScriptModule::color(float r, float g, float b, float a) const
+{
+    return QColor::fromRgbF(r, g, b, a);
+}
+
 FilePath ScriptModule::filePath(const QUrl &path) const
 {
     return { path };
