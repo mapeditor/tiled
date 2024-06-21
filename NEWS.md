@@ -17,6 +17,7 @@
 * Scripting: Made Tileset.margin and Tileset.tileSpacing writable
 * Scripting: Restored compatibility for MapObject.polygon (#3845)
 * Scripting: Fixed issues with editing properties after setting class values from script
+* Scripting: Fixed setting/getting object reference values when nested as a class member
 * TMX format: Embedded images are now also supported on tilesets and image layers
 * JSON format: Fixed tile order when loading a tileset using the old format
 * Godot 4 plugin: Added support for exporting objects (by Rick Yorgason, #3615)

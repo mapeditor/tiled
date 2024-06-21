@@ -193,16 +193,30 @@ QVariant EditableObject::toScript(const QVariant &value) const
         }
     }
 
+    if (type == propertyValueId()) {
+        auto propertyValue = value.value<PropertyValue>();
+        propertyValue.value = toScript(propertyValue.value);
+        return QVariant::fromValue(propertyValue);
+    }
+
     return value;
 }
 
 QVariant EditableObject::fromScript(const QVariant &value) const
 {
-    if (value.userType() == QMetaType::QVariantMap)
+    const int type = value.userType();
+
+    if (type == QMetaType::QVariantMap)
         return fromScript(value.toMap());
 
     if (auto editableMapObject = value.value<EditableMapObject*>())
         return QVariant::fromValue(ObjectRef { editableMapObject->id() });
+
+    if (type == propertyValueId()) {
+        auto propertyValue = value.value<PropertyValue>();
+        propertyValue.value = fromScript(propertyValue.value);
+        return QVariant::fromValue(propertyValue);
+    }
 
     return value;
 }
