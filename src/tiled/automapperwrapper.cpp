@@ -26,9 +26,9 @@
 #include "addremovetileset.h"
 #include "automapper.h"
 #include "changeproperties.h"
-#include "containerhelpers.h"
 #include "map.h"
 #include "mapdocument.h"
+#include "mapobject.h"
 #include "objectreferenceshelper.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -82,10 +82,13 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
         }
     }
 
+    QSet<SharedTileset> usedTilesets;   // keep track of tilesets used by pending changes
+
     // Apply the changes to existing tile layers
     for (auto& [original, outputLayer] : context.originalToOutputLayerMapping) {
         const QRegion diffRegion = original->computeDiffRegion(*outputLayer);
         if (!diffRegion.isEmpty()) {
+            usedTilesets |= outputLayer->usedTilesets();
             paint(original, 0, 0, outputLayer.get(),
                   diffRegion.translated(original->position()));
         }
@@ -95,11 +98,6 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
         if (propertiesIt != context.changedProperties.end())
             new ChangeProperties(mapDocument, QString(), original, *propertiesIt, this);
     }
-
-    // Make sure to add any newly used tilesets to the map
-    for (const SharedTileset &tileset : std::as_const(context.newTilesets))
-        if (context.targetMap->isTilesetUsed(tileset.data()))
-            new AddTileset(mapDocument, tileset, this);
 
     auto anyObjectForObjectGroup = [&] (ObjectGroup *objectGroup) {
         for (const QVector<AddMapObjects::Entry> &entries : std::as_const(context.newMapObjects)) {
@@ -121,6 +119,7 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
             if (!anyObjectForObjectGroup(objectGroup))
                 continue;
 
+        usedTilesets |= layer->usedTilesets();
         new AddLayer(mapDocument,
                      newLayerIndex++,
                      layer.release(), nullptr, this);
@@ -133,8 +132,12 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
         for (const QVector<AddMapObjects::Entry> &entries : std::as_const(context.newMapObjects)) {
             // Each group of copied objects needs to be rewired separately
             ObjectReferencesHelper objectRefs(mapDocument->map());
-            for (auto &entry : std::as_const(entries))
+            for (auto &entry : std::as_const(entries)) {
                 objectRefs.reassignId(entry.mapObject);
+
+                if (Tile *tile = entry.mapObject->cell().tile())
+                    usedTilesets.insert(tile->tileset()->sharedFromThis());
+            }
             objectRefs.rewire();
 
             allEntries.append(entries);
@@ -146,4 +149,9 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
     // Remove any objects that have been scheduled for removal
     if (!context.mapObjectsToRemove.isEmpty())
         new RemoveMapObjects(mapDocument, context.mapObjectsToRemove.values(), this);
+
+    // Make sure to add any newly used tilesets to the map
+    for (const SharedTileset &tileset : std::as_const(context.newTilesets))
+        if (usedTilesets.contains(tileset))
+            new AddTileset(mapDocument, tileset, this);
 }
