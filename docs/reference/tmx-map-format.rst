@@ -149,11 +149,12 @@ Can contain at most one: :ref:`tmx-chunksize`, :ref:`tmx-export`
    map specific.)
 -  **name:** The name of this tileset.
 -  **class:** The class of this tileset (since 1.9, defaults to "").
--  **tilewidth:** The (maximum) width of the tiles in this tileset. Irrelevant
-   for image collection tilesets, but stores the maximum tile width.
--  **tileheight:** The (maximum) height of the tiles in this tileset.
-   Irrelevant for image collection tilesets, but stores the maximum tile
-   height.
+-  **tilewidth:** The width of the tiles in this tileset, which should be at
+   least 1 except in the case of image collection tilesets (in which case it
+   stores the maximum tile width).
+-  **tileheight:** The height of the tiles in this tileset, which should be at
+   least 1 except in the case of image collection tilesets (in which case it
+   stores the maximum tile height).
 -  **spacing:** The spacing in pixels between the tiles in this tileset
    (applies to the tileset image, defaults to 0). Irrelevant for image
    collection tilesets.
