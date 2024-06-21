@@ -25,7 +25,7 @@ environment:
       ENABLE_ZSTD: true
       TILED_ITCH_CHANNEL: windows-64bit
     - QTDIR: C:\Qt\5.15\mingw81_32
-      PYTHONHOME: C:\Python312
+      PYTHONHOME: C:\Python38
       MINGW: C:\Qt\Tools\mingw810_32
       DEFAULT_PROFILE: i686-w64-mingw32-gcc-8_1_0
       PUSH_RELEASE: true
