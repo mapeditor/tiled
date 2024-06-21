@@ -37,16 +37,20 @@ There are several `example scripts`_ available in the repository.
 
 .. warning::
 
-    On Windows, Python is not installed by default. For the Tiled Python
-    plugin to work, you'll need to install Python 3.8 (get it from
-    https://www.python.org/). You will also need to check the box "Add Python
-    3.8 to PATH" in the installer:
+    For the Tiled Python plugin to work you'll need to install a compatible
+    version of Python.
+
+    On Windows, get Python from https://www.python.org/. As of Tiled 1.11, the
+    Windows 10+ build requires Python 3.12 whereas the Windows 7-8 build
+    requires Python 3.8. You will also need to check the box "Add python.exe to
+    PATH" in the installer:
 
     .. figure:: images/python-windows.png
 
-    On Linux you will also need to install the appropriate package.
-    However, currently Linux builds are done on Ubuntu 20.04 against
-    Python 3.8, and you'd need to install the same version somehow.
+    On Linux you will need to install the appropriate package. However,
+    currently Linux AppImage builds are done on Ubuntu 20.04 against Python
+    3.8, and you'd need to install the same version somehow (on Fedora you can
+    just install the ``python3.8`` package).
 
     The Python plugin is not available for macOS releases, nor in the Ubuntu
     snap.
