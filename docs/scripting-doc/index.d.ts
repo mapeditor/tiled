@@ -290,7 +290,7 @@ interface FilePath {
    * The local file path, or empty if the current URL value doesn't refer
    * to a local file.
    *
-   * @since 1.10.3
+   * @since 1.11
    */
   localFile: string;
 }
@@ -1175,7 +1175,7 @@ declare class Project extends TiledObject {
 /**
  * Details of a map that is added to a {@link World}.
  *
- * @since 1.10.3
+ * @since 1.11
  */
 declare class WorldMapEntry {
   /**
@@ -1195,7 +1195,7 @@ declare class WorldMapEntry {
  * Matching](https://doc.mapeditor.org/en/stable/manual/worlds/#using-pattern-matching)
  * section in the manual for more information.
  *
- * @since 1.10.3
+ * @since 1.11
  */
 declare class WorldPattern {
   /** 
@@ -1241,7 +1241,7 @@ declare class WorldPattern {
  * Worlds](https://doc.mapeditor.org/en/stable/manual/worlds/) page in the
  * manual for more information.
  *
- * @since 1.10.3
+ * @since 1.11
  */
 declare class World extends Asset {
   /**
@@ -1521,7 +1521,7 @@ declare class MapObject extends TiledObject {
  * The top-level assets supported by Tiled. Not all of these assets have
  * associated editors.
  *
- * @since 1.10.3
+ * @since 1.11
  */
 declare enum AssetType {
   TileMap = 1,
@@ -1577,7 +1577,7 @@ declare class Asset extends TiledObject {
   /**
    * The type of this asset.
    *
-   * @since 1.10.3
+   * @since 1.11
    */
   readonly assetType: AssetType;
 
@@ -1628,7 +1628,7 @@ declare class Asset extends TiledObject {
    * tiled.mapFormat} or {@link tiled.tilesetFormat}. This is currently not
    * supported for worlds.
    *
-   * @since 1.10.3
+   * @since 1.11
    */
   save(): boolean;
 }
@@ -2273,7 +2273,7 @@ declare class ImageLayer extends Layer {
   /**
    * Reference to the image rendered by this layer.
    *
-   * @since 1.10.3
+   * @since 1.11
    */
   imageFileName: string;
 
@@ -2509,7 +2509,7 @@ declare class Tile extends TiledObject {
    * You can assign an {@link Image} to this property to change the tile's
    * image. See {@link setImage} for more information.
    *
-   * @since 1.10.3
+   * @since 1.11
    */
   image: Image;
 
@@ -2565,7 +2565,7 @@ declare class Tile extends TiledObject {
    * when saving the tileset the image data will be embedded for formats that
    * support this (currently only TMX/TSX).
    *
-   * @note Before Tiled 1.10.3, this function did not change the image file
+   * @note Before Tiled 1.11, this function did not change the image file
    * name. For compatibility, set {@link imageFileName} before calling this
    * function, if necessary.
    *
@@ -3552,7 +3552,7 @@ declare class Tileset extends Asset {
    *
    * @note Map files are supported tileset image source as well.
    *
-   * @since 1.10.3
+   * @since 1.11
    */
   imageFileName : string
 
@@ -4697,31 +4697,31 @@ declare namespace tiled {
 
   /**
    * A list of all currently loaded {@link World|worlds}.
-   * @since 1.10.3
+   * @since 1.11
    */
   export const worlds : World[];
 
   /**
    * Load a world contained in a .world file in the path fileName.
-   * @since 1.10.3
+   * @since 1.11
    */
   export function loadWorld(fileName : string) : void;
 
   /**
    * Unload a world contained in a .world file in the path fileName.
-   * @since 1.10.3
+   * @since 1.11
    */
   export function unloadWorld(fileName : string) : void;
 
   /**
    * Unload all currently loaded worlds.
-   * @since 1.10.3
+   * @since 1.11
    */
   export function unloadAllWorlds() : void;
 
   /**
    * Signal emitted when any world is loaded, unloaded, reloaded or changed.
-   * @since 1.10.3
+   * @since 1.11
    */
   export const worldsChanged : Signal<void>;
 }
@@ -4854,7 +4854,7 @@ declare class FileEdit extends Qt.QWidget {
   /**
    * The current file path.
    *
-   * @since 1.10.3
+   * @since 1.11
    */
   fileName: string;
 
