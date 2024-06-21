@@ -35,6 +35,7 @@
 * AutoMapping: Ignore empty outputs per-rule (#3523)
 * Automapping: Added per-input-layer properties for ignoring flip flags (#3803)
 * AutoMapping: Always apply output sets with empty index
+* AutoMapping: Fixed adding of new tilesets used by applied changes
 * Windows: Fixed the support for WebP images (updated to Qt 6.6.1, #3661)
 * Fixed issues related to map and tileset reloading
 * Fixed possible crash after assigning to tiled.activeAsset
