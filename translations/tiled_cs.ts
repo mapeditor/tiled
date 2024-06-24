@@ -60,7 +60,7 @@
     <message>
         <location line="-33"/>
         <source>Failed to load project &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepodařilo se načíst projekt &apos;%1&apos;.</translation>
     </message>
     <message>
         <location line="+44"/>
@@ -75,7 +75,7 @@
     <message>
         <location line="+111"/>
         <source>Project file expected: --project &lt;.tiled-project file&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Očekáván soubor s projektem: --project &lt;soubor .tiled-project&gt;</translation>
     </message>
     <message>
         <location line="+75"/>
@@ -162,7 +162,7 @@
     <message>
         <location line="+5"/>
         <source>Project file to load</source>
-        <translation type="unfinished"></translation>
+        <translation>Soubor s projektem k načtení</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -822,7 +822,7 @@
     <message>
         <location line="+8"/>
         <source>Unload All Worlds</source>
-        <translation type="unfinished"></translation>
+        <translation>Zavřít všechny světy</translation>
     </message>
     <message>
         <location line="-97"/>
@@ -1786,12 +1786,12 @@ Line %1, column %2</source>
     <message>
         <location line="+229"/>
         <source>Behavior</source>
-        <translation type="unfinished"></translation>
+        <translation>Chování</translation>
     </message>
     <message>
         <location line="+67"/>
         <source>Add &quot;Copy&quot; when duplicating</source>
-        <translation type="unfinished"></translation>
+        <translation>Při duplikaci přidat položku „Kopírovat“</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -1934,22 +1934,22 @@ Line %1, column %2</source>
     <message>
         <location line="+334"/>
         <source>-- Using script %1 to read %2</source>
-        <translation type="unfinished">-- Čtení %2 skriptem %1</translation>
+        <translation>-- Skript %1 čte soubor %2</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>-- Using script %1 to write %2</source>
-        <translation type="unfinished">-- Zápis %2 skriptem %1</translation>
+        <translation>-- Skript %1 zapisuje soubor %2</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Uncaught exception in script. Please check console.</source>
-        <translation type="unfinished">Nezachycená výjimka ve skriptu. Zkontrolujte prosím konzoli.</translation>
+        <translation>Nezachycená výjimka ve skriptu. Zkontrolujte prosím konzoli.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Script returned false. Please check console.</source>
-        <translation type="unfinished">Skript vrátil nepravdivou hodnotu. Zkontrolujte prosím konzoli.</translation>
+        <translation>Skript vrátil nepravdivou hodnotu. Zkontrolujte prosím konzoli.</translation>
     </message>
 </context>
 <context>
@@ -2455,7 +2455,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/editableasset.cpp" line="+81"/>
         <source>Asset not associated with a file</source>
-        <translation type="unfinished"></translation>
+        <translation>Položka není přiřazena souboru</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2632,12 +2632,12 @@ Line %1, column %2</source>
     <message>
         <location line="+18"/>
         <source>Can&apos;t set tile spacing on an image collection tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Mezery mezi dlaždicemi se pro sadu obrázků nedají nastavit</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Can&apos;t set margin on an image collection tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>Okraje se pro sadu obrázků nedají nastavit</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -2945,29 +2945,29 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/editabletilelayer.cpp" line="+121"/>
         <source>Layer not part of a map</source>
-        <translation type="unfinished"></translation>
+        <translation>Vrstva naní součástí mapy</translation>
     </message>
     <message>
         <location filename="../src/tiled/editableworld.cpp" line="-28"/>
         <location line="+16"/>
         <location line="+44"/>
         <source>Map not found in this world</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapa nenalezena v tomto světě</translation>
     </message>
     <message>
         <location line="-27"/>
         <source>Map is already part of a loaded world</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapa už je součástí světa</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Can&apos;t add unsaved map to a world</source>
-        <translation type="unfinished"></translation>
+        <translation>Neuložená mapa se nedá přidat do světa</translation>
     </message>
     <message>
         <location filename="../src/tiled/tilelayerwangedit.cpp" line="+97"/>
         <source>Invalid edge index</source>
-        <translation type="unfinished"></translation>
+        <translation>Neplatný index dlaždice</translation>
     </message>
 </context>
 <context>
@@ -3860,7 +3860,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/capturestamphelper.cpp" line="+63"/>
         <source>Cut</source>
-        <translation type="unfinished">Vyjmout</translation>
+        <translation>Vyjmout</translation>
     </message>
 </context>
 <context>
@@ -3892,7 +3892,7 @@ Line %1, column %2</source>
     <message>
         <location line="+77"/>
         <source>%1 [read-only]</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 [jen ke čtení]</translation>
     </message>
     <message>
         <location line="+63"/>
@@ -4014,7 +4014,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/editor.cpp" line="+40"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopírovat</translation>
     </message>
 </context>
 <context>
@@ -4609,7 +4609,7 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="+44"/>
         <source>Map format &apos;%s&apos; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Formát mapy &apos;%s&apos; nenalezen</translation>
     </message>
     <message>
         <location line="+96"/>
@@ -5331,7 +5331,7 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="-171"/>
         <source>Updates and Crash Reporting</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualizace a hlášení pádu programu</translation>
     </message>
 </context>
 <context>
@@ -6218,7 +6218,7 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="+5"/>
         <source>Draw fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Vykreslit výplň</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -6364,22 +6364,22 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location filename="../src/tiled/scriptmodule.cpp" line="+42"/>
         <source>Open Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřít adresář</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Open Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřít soubory</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Open File</source>
-        <translation type="unfinished">Otevřít soubor</translation>
+        <translation>Otevřít soubor</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Save File</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit soubor</translation>
     </message>
 </context>
 <context>
@@ -6990,7 +6990,7 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="+8"/>
         <source>Select &amp;All Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Vybrat vš&amp;echny dlaždice</translation>
     </message>
 </context>
 <context>
@@ -7253,7 +7253,7 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location filename="../src/tiled/worldmanager.cpp" line="+169"/>
         <source>World not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Svět nenalezen</translation>
     </message>
 </context>
 <context>
@@ -7291,92 +7291,92 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location filename="../src/plugins/tscn/tscnplugin.cpp" line="-810"/>
         <source>Could not find .godot project in file path for file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>V cestě k souboru %1 se nepodařilo najít projekt .godot</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>All files must share the same project root. File &apos;%1&apos; does not share project root &apos;%2&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Všechny soubory musí mít stejný projektový kořen. Soubor &apos;%1&apos; nemá kořen &apos;%2&apos;.</translation>
     </message>
     <message>
         <location line="+165"/>
         <source>Cannot export tileset &apos;%1&apos; because the Godot exporter does not support collection-type tilesets.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepodařilo se exportovat sadu dlaždic &apos;%1&apos; protože exportér pro Godot nepodporuje sady obrázků.</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Godot exporter does not support property type of &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportér pro Godot nepodporuje typ vlastnosti &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Inconsistent type for property &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Nekonzistentní typ vlastnosti &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>Only objects with the resPath property will be exported</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportovány budou pouze objekty s vlastností resPath</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>resPath must be in the form of &apos;res://&lt;filename&gt;.tscn&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>resPath musí být ve tvaru &apos;res://&lt;jméno_souboru&gt;.tscn&apos;.</translation>
     </message>
     <message>
         <location line="+58"/>
         <source>The Godot exporter does not yet support image layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportér pro Godot zatím nepodporuje obrázkové vrstvy</translation>
     </message>
     <message>
         <location line="+81"/>
         <source>Godot exporter only supports collisions that are rectangles or polygons.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportér pro Godot podoporuje pro kolize jen obdélníky a mnohoúhelníky.</translation>
     </message>
     <message>
         <location line="+90"/>
         <source>Godot exporter does not support property of type &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportér pro Godot nepodporuje vlastnost typu &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+97"/>
         <source>exportAlternates is deprecated. Godot 4.2 supports native tile rotation. Tileset: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>exportAlternates už není potřeba. Godot 4.2 podporuje otáčení dlaždic přímo. Sada dlaždic: %1</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Tile animations must flow left-to-right, top-to-bottom, with no skipped tiles.</source>
-        <translation type="unfinished"></translation>
+        <translation>Animace dlaždic musí postupovat zleva doprava, zvrchu dolů, bez přeskočených dlaždic.</translation>
     </message>
     <message>
         <location line="+102"/>
         <source>Godot only supports hexagonal maps where the Hex Side Length is exactly half its height. For a tile height of %1, the Hex Side Length should be set to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Šestiúhelníkové dlaždice pro Godot musí mít délku hrany rovnou polovině výšky. Pro výšku %1 musí délka hrany být %2.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Unsupported tile orientation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepodporované otočení dlaždice.</translation>
     </message>
     <message>
         <location line="+78"/>
         <source>tilesetResPath must be in the form of &apos;res://&lt;filename&gt;.tres&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>tilesetResPath musí být ve tvaru &apos;res://&lt;jméno_souboru&gt;.tscn&apos;.</translation>
     </message>
     <message>
         <location line="+80"/>
         <source>Cannot use tile %1 from tileset %2 because it is reserved as an animation frame.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dlaždice %1 ze sady %2 se nedá použít protože je rezervována jako okénko animace.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Hex tiles that are rotated by 120° degrees are not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Šestiúhelníkové dlaždice otočené o 120° nejsou podoporovány.</translation>
     </message>
     <message>
         <location line="+92"/>
         <source>Godot 4 Scene files (*.tscn)</source>
-        <translation type="unfinished"></translation>
+        <translation>Soubory scén pro Godot 4 (*.tscn)</translation>
     </message>
 </context>
 <context>
@@ -7829,12 +7829,12 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location filename="../src/tiled/shapefilltool.cpp" line="-57"/>
         <source>Shape Fill</source>
-        <translation>Výplnění tvaru</translation>
+        <translation>Vyplnění tvaru</translation>
     </message>
     <message>
         <location filename="../src/tiled/mapdocument.cpp" line="-1063"/>
         <source>Reload Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Znovunačtení mapy</translation>
     </message>
     <message numerus="yes">
         <location line="+720"/>
@@ -8092,27 +8092,27 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="+2"/>
         <source>Specifies an object to omit from the output image. Can be repeated to hide multiple objects. If multiple objects share the specified name they all will be hidden.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Specifikovaný objekt bude ve výsledném obrázku skryt (vynechán). Vícenásobným použitím se dá skrýt více objektů. Pokud má dané jméno více objektů, skryjí se všechny.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>If used only specified objects are shown. Can be repeated to show multiple specified objects only. If multiple objects share the specified name they all will be shown.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ve výsledném obrázku bude vykreslen pouze specifikovaný objekt. Vícenásobným použitím se dá vykreslit více objektů. Pokud má dané jméno více objektů, vykreslí se všechny.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>If used, tile animations are advanced by the specified duration in milliseconds.</source>
-        <translation type="unfinished"></translation>
+        <translation>Posunout animace o daný počet milisekund dopředu.</translation>
     </message>
     <message>
         <location line="+75"/>
         <source>Invalid number of frames specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Zadan špatný počet okének (--frames): &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Invalid frame-duration specified: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Zadano špatné trvání okénka animace (--frame-duration): &quot;%1&quot;</translation>
     </message>
     <message>
         <location line="-83"/>
@@ -8122,18 +8122,18 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location line="+2"/>
         <source>Number of frames to export. This will add a frame number suffix to the image names. Animations are advanced by &lt;frame-duration&gt; for each frame.</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet okének animace, které se exportují. Ke každému jménu souboru bude připojeno číslo okénka. Animace se mezi okénky posunou o &lt;frame-duration&gt;.</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+3"/>
         <source>number</source>
-        <translation type="unfinished"></translation>
+        <translation>číslo</translation>
     </message>
     <message>
         <location line="-1"/>
         <source>Duration of each frame in milliseconds, defaults to 100.</source>
-        <translation type="unfinished"></translation>
+        <translation>Doba trvání okénka animace v milisekundách. Výchozí hodnota je 100.</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -8168,7 +8168,7 @@ Prosím vyberte formát ručně.</translation>
     <message>
         <location filename="../src/tmxviewer/main.cpp" line="+64"/>
         <source>Displays a Tiled map.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukáže mapu Tiled.</translation>
     </message>
     <message>
         <location line="+3"/>
