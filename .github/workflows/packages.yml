@@ -120,7 +120,7 @@ jobs:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       run: |
         curl -sL https://sentry.io/get-cli/ | bash
-        sentry-cli upload-dif --log-level=info --include-sources src .
+        sentry-cli debug-files upload --include-sources src AppDir
 
     - name: Build AppImage
       run: |
