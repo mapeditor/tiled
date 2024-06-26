@@ -389,13 +389,9 @@ void CommandLineHandler::evaluateScript()
     for (QString argument = nextArgument(); !argument.isNull(); argument = nextArgument())
         arguments.append(argument);
 
-    ScriptManager &scriptManager = ScriptManager::instance();
-
     static bool initialized = false;
     if (!initialized) {
         initialized = true;
-
-        PluginManager::instance()->loadPlugins();
 
         // Output messages to command-line
         auto& logger = LoggingInterface::instance();
@@ -403,9 +399,10 @@ void CommandLineHandler::evaluateScript()
         QObject::connect(&logger, &LoggingInterface::warning, [] (const QString &message) { qWarning() << message; });
         QObject::connect(&logger, &LoggingInterface::error, [] (const QString &message) { qWarning() << message; });
 
-        scriptManager.ensureInitialized();
+        initializePluginsAndExtensions();
     }
 
+    ScriptManager &scriptManager = ScriptManager::instance();
     scriptManager.setScriptArguments(arguments);
     scriptManager.evaluateFileOrLoadModule(scriptFile);
 }

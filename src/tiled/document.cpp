@@ -47,7 +47,8 @@ Document::Document(DocumentType type, const QString &fileName,
     mCanonicalFilePath = fileInfo.canonicalFilePath();
     mReadOnly = fileInfo.exists() && !fileInfo.isWritable();
 
-    DocumentManager::instance()->registerDocument(this);
+    if (auto manager = DocumentManager::maybeInstance())
+        manager->registerDocument(this);
 
     connect(mUndoStack, &QUndoStack::indexChanged, this, &Document::updateIsModified);
     connect(mUndoStack, &QUndoStack::cleanChanged, this, &Document::updateIsModified);
