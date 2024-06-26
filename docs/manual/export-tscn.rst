@@ -102,7 +102,7 @@ Objects support the following property:
 
 * string ``resPath`` (required)
 
-The ``resPath`` property takes the form of 'res://<pbject path>.tscn' and must
+The ``resPath`` property takes the form of 'res://<object path>.tscn' and must
 be set to the path of the Godot object you wish to replace the object with.
 Objects without this property set will not be exported.
 

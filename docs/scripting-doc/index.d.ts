@@ -1051,10 +1051,10 @@ declare class TiledObject {
   setProperty(name: string, value: TiledObjectPropertyValue): void;
 
   /**
-   * Sets the value of an object's property identified the given \a path
-   * to \a value.
+   * Sets the value of an object's property identified by the given path
+   * to the given value.
    *
-   * The \a path is a list of property names, where each name identifies
+   * The path is a list of property names, where each name identifies
    * a member of the previous member's value. The last name in the list
    * identifies the property to set.
    *
