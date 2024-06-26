@@ -110,6 +110,7 @@
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#assetAboutToBeSaved" class="tsd-kind-icon">asset<wbr>About<wbr>ToBe<wbr>Saved</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#assetCreated" class="tsd-kind-icon">asset<wbr>Created</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#assetOpened" class="tsd-kind-icon">asset<wbr>Opened</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#assetReloaded" class="tsd-kind-icon">asset<wbr>Reloaded</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#assetSaved" class="tsd-kind-icon">asset<wbr>Saved</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#extensionsPath" class="tsd-kind-icon">extensions<wbr>Path</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#mapEditor" class="tsd-kind-icon">map<wbr>Editor</a></li>
@@ -124,6 +125,8 @@
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#tilesetEditor" class="tsd-kind-icon">tileset<wbr>Editor</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#tilesetFormats" class="tsd-kind-icon">tileset<wbr>Formats</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#version" class="tsd-kind-icon">version</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#worlds" class="tsd-kind-icon">worlds</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#worldsChanged" class="tsd-kind-icon">worlds<wbr>Changed</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -131,6 +134,7 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#alert" class="tsd-kind-icon">alert</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#close" class="tsd-kind-icon">close</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#color" class="tsd-kind-icon">color</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#compress" class="tsd-kind-icon">compress</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#confirm" class="tsd-kind-icon">confirm</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#decompress" class="tsd-kind-icon">decompress</a></li>
@@ -138,6 +142,7 @@
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#executeCommand" class="tsd-kind-icon">execute<wbr>Command</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#extendMenu" class="tsd-kind-icon">extend<wbr>Menu</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#filePath" class="tsd-kind-icon">file<wbr>Path</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#loadWorld" class="tsd-kind-icon">load<wbr>World</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#log" class="tsd-kind-icon">log</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#mapFormat" class="tsd-kind-icon">map<wbr>Format</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#mapFormatForFile" class="tsd-kind-icon">map<wbr>Format<wbr>For<wbr>File</a></li>
@@ -157,6 +162,8 @@
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#tilesetFormat" class="tsd-kind-icon">tileset<wbr>Format</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#tilesetFormatForFile" class="tsd-kind-icon">tileset<wbr>Format<wbr>For<wbr>File</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#trigger" class="tsd-kind-icon">trigger</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#unloadAllWorlds" class="tsd-kind-icon">unload<wbr>All<wbr>Worlds</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#unloadWorld" class="tsd-kind-icon">unload<wbr>World</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#versionLessThan" class="tsd-kind-icon">version<wbr>Less<wbr>Than</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-namespace"><a href="tiled.html#warn" class="tsd-kind-icon">warn</a></li>
 							</ul>
@@ -280,6 +287,23 @@
 						<div class="lead">
 							<p>An asset has been opened.</p>
 						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
+					<a name="assetReloaded" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> asset<wbr>Reloaded</h3>
+					<div class="tsd-signature tsd-kind-icon">asset<wbr>Reloaded<span class="tsd-signature-symbol">:</span> <a href="../interfaces/Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><a href="../classes/Asset.html" class="tsd-signature-type" data-tsd-kind="Class">Asset</a><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>An asset has been reloaded.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.11</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
@@ -500,6 +524,40 @@
 						</div>
 					</div>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
+					<a name="worlds" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> worlds</h3>
+					<div class="tsd-signature tsd-kind-icon">worlds<span class="tsd-signature-symbol">:</span> <a href="../classes/World.html" class="tsd-signature-type" data-tsd-kind="Class">World</a><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A list of all currently loaded <a href="../classes/World.html">worlds</a>.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.11</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
+					<a name="worldsChanged" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> worlds<wbr>Changed</h3>
+					<div class="tsd-signature tsd-kind-icon">worlds<wbr>Changed<span class="tsd-signature-symbol">:</span> <a href="../interfaces/Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Signal emitted when any world is loaded, unloaded, reloaded or changed.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.11</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
@@ -538,6 +596,47 @@
 										confirm the loss of any unsaved changes, set <a href="tiled.html#activeAsset">activeAsset</a> and
 									trigger the &quot;Close&quot; action instead).</p>
 								</div>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+					<a name="color" class="tsd-anchor"></a>
+					<h3>color</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+						<li class="tsd-signature tsd-kind-icon">color<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/color.html" class="tsd-signature-type" data-tsd-kind="Interface">color</a></li>
+						<li class="tsd-signature tsd-kind-icon">color<span class="tsd-signature-symbol">(</span>r<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, g<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, b<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, a<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/color.html" class="tsd-signature-type" data-tsd-kind="Interface">color</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Creates a <a href="tiled.html#color">color</a> based on the given color name (i.e. red or #ff0000).</p>
+								</div>
+								<p>See <a href="https://doc.qt.io/qt-6/qcolor.html#fromString">QColor::fromString</a>
+								for the accepted color names.</p>
+								<dl class="tsd-comment-tags">
+									<dt>since</dt>
+									<dd><p>1.11</p>
+									</dd>
+								</dl>
+							</div>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Creates a <a href="tiled.html#color">color</a> with the RGB value r, g, b, and the alpha-channel
+									(transparency) value of a (which defaults to 1.0).</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>since</dt>
+									<dd><p>1.11</p>
+									</dd>
+								</dl>
 							</div>
 						</li>
 					</ul>
@@ -705,6 +804,29 @@
 								<div class="lead">
 									<p>Creates a <a href="../interfaces/FilePath.html">FilePath</a> object with the given URL.</p>
 								</div>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+					<a name="loadWorld" class="tsd-anchor"></a>
+					<h3>load<wbr>World</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+						<li class="tsd-signature tsd-kind-icon">load<wbr>World<span class="tsd-signature-symbol">(</span>fileName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Load a world contained in a .world file in the path fileName.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>since</dt>
+									<dd><p>1.11</p>
+									</dd>
+								</dl>
 							</div>
 						</li>
 					</ul>
@@ -1237,6 +1359,52 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+					<a name="unloadAllWorlds" class="tsd-anchor"></a>
+					<h3>unload<wbr>All<wbr>Worlds</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+						<li class="tsd-signature tsd-kind-icon">unload<wbr>All<wbr>Worlds<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Unload all currently loaded worlds.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>since</dt>
+									<dd><p>1.11</p>
+									</dd>
+								</dl>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
+					<a name="unloadWorld" class="tsd-anchor"></a>
+					<h3>unload<wbr>World</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
+						<li class="tsd-signature tsd-kind-icon">unload<wbr>World<span class="tsd-signature-symbol">(</span>fileName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Unload a world contained in a .world file in the path fileName.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>since</dt>
+									<dd><p>1.11</p>
+									</dd>
+								</dl>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-namespace">
 					<a name="versionLessThan" class="tsd-anchor"></a>
 					<h3>version<wbr>Less<wbr>Than</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-namespace">
@@ -1343,6 +1511,9 @@
 						<a href="tiled.html#assetOpened" class="tsd-kind-icon">asset<wbr>Opened</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="tiled.html#assetReloaded" class="tsd-kind-icon">asset<wbr>Reloaded</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
 						<a href="tiled.html#assetSaved" class="tsd-kind-icon">asset<wbr>Saved</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
@@ -1384,11 +1555,20 @@
 					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
 						<a href="tiled.html#version" class="tsd-kind-icon">version</a>
 					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="tiled.html#worlds" class="tsd-kind-icon">worlds</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="tiled.html#worldsChanged" class="tsd-kind-icon">worlds<wbr>Changed</a>
+					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-namespace">
 						<a href="tiled.html#alert" class="tsd-kind-icon">alert</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-namespace">
 						<a href="tiled.html#close" class="tsd-kind-icon">close</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-namespace">
+						<a href="tiled.html#color" class="tsd-kind-icon">color</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-namespace">
 						<a href="tiled.html#compress" class="tsd-kind-icon">compress</a>
@@ -1410,6 +1590,9 @@
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-namespace">
 						<a href="tiled.html#filePath" class="tsd-kind-icon">file<wbr>Path</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-namespace">
+						<a href="tiled.html#loadWorld" class="tsd-kind-icon">load<wbr>World</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-namespace">
 						<a href="tiled.html#log" class="tsd-kind-icon">log</a>
@@ -1467,6 +1650,12 @@
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-namespace">
 						<a href="tiled.html#trigger" class="tsd-kind-icon">trigger</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-namespace">
+						<a href="tiled.html#unloadAllWorlds" class="tsd-kind-icon">unload<wbr>All<wbr>Worlds</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-namespace">
+						<a href="tiled.html#unloadWorld" class="tsd-kind-icon">unload<wbr>World</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-namespace">
 						<a href="tiled.html#versionLessThan" class="tsd-kind-icon">version<wbr>Less<wbr>Than</a>

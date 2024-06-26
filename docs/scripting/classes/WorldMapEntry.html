@@ -12,7 +12,7 @@
 	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>FileEdit | Tiled Scripting API</title>
+	<title>WorldMapEntry | Tiled Scripting API</title>
 	<meta name="description" content="Documentation for Tiled Scripting API">
 	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
@@ -76,10 +76,10 @@
 					<a href="../index.html">Tiled Scripting API</a>
 				</li>
 				<li>
-					<a href="FileEdit.html">FileEdit</a>
+					<a href="WorldMapEntry.html">WorldMapEntry</a>
 				</li>
 			</ul>
-			<h1>Class FileEdit</h1>
+			<h1>Class WorldMapEntry</h1>
 		</div>
 	</div>
 </header>
@@ -89,21 +89,20 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Widget with a button which opens a file picker dialog
-						and displays the path in the dialog.</p>
+						<p>Details of a map that is added to a <a href="World.html">World</a>.</p>
 					</div>
+					<dl class="tsd-comment-tags">
+						<dt>since</dt>
+						<dd><p>1.11</p>
+						</dd>
+					</dl>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="Qt.QWidget.html" class="tsd-signature-type" data-tsd-kind="Class">QWidget</a>
-						<ul class="tsd-hierarchy">
-							<li>
-								<span class="target">FileEdit</span>
-							</li>
-						</ul>
+						<span class="target">WorldMapEntry</span>
 					</li>
 				</ul>
 			</section>
@@ -111,43 +110,33 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section tsd-is-inherited">
+						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><a href="FileEdit.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="WorldMapEntry.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="FileEdit.html#enabled" class="tsd-kind-icon">enabled</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="FileEdit.html#fileName" class="tsd-kind-icon">file<wbr>Name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="FileEdit.html#fileUrl" class="tsd-kind-icon">file<wbr>Url</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="FileEdit.html#fileUrlChanged" class="tsd-kind-icon">file<wbr>Url<wbr>Changed</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="FileEdit.html#filter" class="tsd-kind-icon">filter</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="FileEdit.html#isDirectory" class="tsd-kind-icon">is<wbr>Directory</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="FileEdit.html#minimumHeight" class="tsd-kind-icon">minimum<wbr>Height</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="FileEdit.html#minimumWidth" class="tsd-kind-icon">minimum<wbr>Width</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="FileEdit.html#styleSheet" class="tsd-kind-icon">style<wbr>Sheet</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="FileEdit.html#toolTip" class="tsd-kind-icon">tool<wbr>Tip</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="FileEdit.html#visible" class="tsd-kind-icon">visible</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="WorldMapEntry.html#fileName" class="tsd-kind-icon">file<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="WorldMapEntry.html#rect" class="tsd-kind-icon">rect</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>File<wbr>Edit<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="FileEdit.html" class="tsd-signature-type" data-tsd-kind="Class">FileEdit</a></li>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>World<wbr>Map<wbr>Entry<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="WorldMapEntry.html" class="tsd-signature-type" data-tsd-kind="Class">WorldMapEntry</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#constructor">constructor</a></p>
 							</aside>
 						</li>
 					</ul>
@@ -155,20 +144,6 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="enabled" class="tsd-anchor"></a>
-					<h3>enabled</h3>
-					<div class="tsd-signature tsd-kind-icon">enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#enabled">enabled</a></p>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>If false, the widget cannot be interacted with.
-							Qt documentation: <a href="https://doc.qt.io/qt-6/qwidget.html#enabled-prop">QWidget::enabled</a></p>
-						</div>
-					</div>
-				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="fileName" class="tsd-anchor"></a>
 					<h3>file<wbr>Name</h3>
@@ -177,133 +152,19 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The current file path.</p>
-						</div>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.11</p>
-							</dd>
-						</dl>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="fileUrl" class="tsd-anchor"></a>
-					<h3>file<wbr>Url</h3>
-					<div class="tsd-signature tsd-kind-icon">file<wbr>Url<span class="tsd-signature-symbol">:</span> <a href="Qt.QUrl.html" class="tsd-signature-type" data-tsd-kind="Class">QUrl</a></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The <a href="Qt.QUrl.html">Qt.QUrl</a> of the currently selected file.</p>
-						</div>
-						<p>If you need the file path as a string, use the <a href="FileEdit.html#fileName">fileName</a> property.</p>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="fileUrlChanged" class="tsd-anchor"></a>
-					<h3>file<wbr>Url<wbr>Changed</h3>
-					<div class="tsd-signature tsd-kind-icon">file<wbr>Url<wbr>Changed<span class="tsd-signature-symbol">:</span> <a href="../interfaces/Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><a href="Qt.QUrl.html" class="tsd-signature-type" data-tsd-kind="Class">QUrl</a><span class="tsd-signature-symbol">&gt;</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Signal emitted when the selected file changes.</p>
+							<p>File name of the map.</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="filter" class="tsd-anchor"></a>
-					<h3>filter</h3>
-					<div class="tsd-signature tsd-kind-icon">filter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="rect" class="tsd-anchor"></a>
+					<h3>rect</h3>
+					<div class="tsd-signature tsd-kind-icon">rect<span class="tsd-signature-symbol">:</span> <a href="../interfaces/rect.html" class="tsd-signature-type" data-tsd-kind="Interface">rect</a></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>When specified, only files that match the <a href="../index.html#FileFilter">filter</a> are shown.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="isDirectory" class="tsd-anchor"></a>
-					<h3>is<wbr>Directory</h3>
-					<div class="tsd-signature tsd-kind-icon">is<wbr>Directory<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>If <code>true</code>, the user will be prompted for a directory rather than a file.
-							Defaults to <code>false</code>.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="minimumHeight" class="tsd-anchor"></a>
-					<h3>minimum<wbr>Height</h3>
-					<div class="tsd-signature tsd-kind-icon">minimum<wbr>Height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#minimumHeight">minimumHeight</a></p>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>You can use this property to prevent the widget from being resized to a height
-							below this amount.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="minimumWidth" class="tsd-anchor"></a>
-					<h3>minimum<wbr>Width</h3>
-					<div class="tsd-signature tsd-kind-icon">minimum<wbr>Width<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#minimumWidth">minimumWidth</a></p>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>You can use this property to prevent the widget from being resized to a width
-							below this amount.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="styleSheet" class="tsd-anchor"></a>
-					<h3>style<wbr>Sheet</h3>
-					<div class="tsd-signature tsd-kind-icon">style<wbr>Sheet<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#styleSheet">styleSheet</a></p>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Set this property to override the style sheet for this widget.</p>
-						</div>
-						<p>See <a href="https://doc.qt.io/qt-6/stylesheet.html">https://doc.qt.io/qt-6/stylesheet.html</a> and <a href="https://doc.qt.io/qt-6/stylesheet-examples.html">https://doc.qt.io/qt-6/stylesheet-examples.html</a> for more information.</p>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="toolTip" class="tsd-anchor"></a>
-					<h3>tool<wbr>Tip</h3>
-					<div class="tsd-signature tsd-kind-icon">tool<wbr>Tip<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#toolTip">toolTip</a></p>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The toolTip displayed when the user mouses over this widget</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="visible" class="tsd-anchor"></a>
-					<h3>visible</h3>
-					<div class="tsd-signature tsd-kind-icon">visible<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#visible">visible</a></p>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Controls whether this widget is visible.
-								When toggling this property, the dialog layout will automatically adjust itself
-								based on the visible widgets.
-							Qt documentation: <a href="https://doc.qt.io/qt-6/qwidget.html#visible-prop">QWidget::visible</a>;</p>
+							<p>A rect describing the location and dimensions of the map within the World.</p>
 						</div>
 					</div>
 				</section>
@@ -322,43 +183,16 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class">
-						<a href="FileEdit.html" class="tsd-kind-icon">File<wbr>Edit</a>
+						<a href="WorldMapEntry.html" class="tsd-kind-icon">World<wbr>Map<wbr>Entry</a>
 						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
-								<a href="FileEdit.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="FileEdit.html#enabled" class="tsd-kind-icon">enabled</a>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="WorldMapEntry.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="FileEdit.html#fileName" class="tsd-kind-icon">file<wbr>Name</a>
+								<a href="WorldMapEntry.html#fileName" class="tsd-kind-icon">file<wbr>Name</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="FileEdit.html#fileUrl" class="tsd-kind-icon">file<wbr>Url</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="FileEdit.html#fileUrlChanged" class="tsd-kind-icon">file<wbr>Url<wbr>Changed</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="FileEdit.html#filter" class="tsd-kind-icon">filter</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="FileEdit.html#isDirectory" class="tsd-kind-icon">is<wbr>Directory</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="FileEdit.html#minimumHeight" class="tsd-kind-icon">minimum<wbr>Height</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="FileEdit.html#minimumWidth" class="tsd-kind-icon">minimum<wbr>Width</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="FileEdit.html#styleSheet" class="tsd-kind-icon">style<wbr>Sheet</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="FileEdit.html#toolTip" class="tsd-kind-icon">tool<wbr>Tip</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="FileEdit.html#visible" class="tsd-kind-icon">visible</a>
+								<a href="WorldMapEntry.html#rect" class="tsd-kind-icon">rect</a>
 							</li>
 						</ul>
 					</li>

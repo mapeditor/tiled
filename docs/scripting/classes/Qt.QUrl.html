@@ -153,8 +153,14 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Get a string representation of the file.</p>
+									<p>Get a string representation of the URL.</p>
 								</div>
+								<p>Note that this representation will generally start with &quot;file://&quot;. In
+								case you need a local file path, you can use the following code:</p>
+								<pre><code class="language-js"><span style="color: #569CD6">var</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">path</span><span style="color: #D4D4D4"> = </span><span style="color: #9CDCFE">url</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">toString</span><span style="color: #D4D4D4">().</span><span style="color: #DCDCAA">replace</span><span style="color: #D4D4D4">(</span><span style="color: #D16969">/</span><span style="color: #DCDCAA">^</span><span style="color: #D16969">file:</span><span style="color: #D7BA7D">\/{3}</span><span style="color: #D16969">/</span><span style="color: #D4D4D4">, (</span><span style="color: #9CDCFE">tiled</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">platform</span><span style="color: #D4D4D4"> == </span><span style="color: #CE9178">&#039;windows&#039;</span><span style="color: #D4D4D4">) ? </span><span style="color: #CE9178">&#039;&#039;</span><span style="color: #D4D4D4"> : </span><span style="color: #CE9178">&#039;/&#039;</span><span style="color: #D4D4D4">);;</span>
+</code></pre>
+								<p>Or have a look at whether an alternative property is available that
+								gives you a local file path in the first place.</p>
 							</div>
 						</li>
 					</ul>

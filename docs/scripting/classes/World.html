@@ -12,7 +12,7 @@
 	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>Asset | Tiled Scripting API</title>
+	<title>World | Tiled Scripting API</title>
 	<meta name="description" content="Documentation for Tiled Scripting API">
 	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
@@ -76,10 +76,10 @@
 					<a href="../index.html">Tiled Scripting API</a>
 				</li>
 				<li>
-					<a href="Asset.html">Asset</a>
+					<a href="World.html">World</a>
 				</li>
 			</ul>
-			<h1>Class Asset</h1>
+			<h1>Class World</h1>
 		</div>
 	</div>
 </header>
@@ -89,34 +89,27 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Represents any top-level data type that can be saved to a file.</p>
+						<p>A world defined in a .world file, which is a JSON file that tells
+						Tiled which maps are part of the world and at what location.</p>
 					</div>
-					<p>Currently either a <a href="../enums/AssetType.html#TileMap">TileMap</a> or a <a href="../enums/AssetType.html#Tileset">Tileset</a>.</p>
-					<p>For assets that are loaded in the editor, all modifications and
-						modifications to their contained parts create undo commands. This
-						includes both modifying functions that are called as well as simply
-					assigning to a writable property.</p>
+					<p>See the <a href="https://doc.mapeditor.org/en/stable/manual/worlds/">Working with
+						Worlds</a> page in the
+					manual for more information.</p>
+					<dl class="tsd-comment-tags">
+						<dt>since</dt>
+						<dd><p>1.11</p>
+						</dd>
+					</dl>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="TiledObject.html" class="tsd-signature-type" data-tsd-kind="Class">TiledObject</a>
+						<a href="Asset.html" class="tsd-signature-type" data-tsd-kind="Class">Asset</a>
 						<ul class="tsd-hierarchy">
 							<li>
-								<span class="target">Asset</span>
-								<ul class="tsd-hierarchy">
-									<li>
-										<a href="World.html" class="tsd-signature-type" data-tsd-kind="Class">World</a>
-									</li>
-									<li>
-										<a href="TileMap.html" class="tsd-signature-type" data-tsd-kind="Class">TileMap</a>
-									</li>
-									<li>
-										<a href="Tileset.html" class="tsd-signature-type" data-tsd-kind="Class">Tileset</a>
-									</li>
-								</ul>
+								<span class="target">World</span>
 							</li>
 						</ul>
 					</li>
@@ -129,40 +122,49 @@
 						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><a href="Asset.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><a href="World.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Asset.html#asset" class="tsd-kind-icon">asset</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Asset.html#assetType" class="tsd-kind-icon">asset<wbr>Type</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Asset.html#className" class="tsd-kind-icon">class<wbr>Name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Asset.html#fileName" class="tsd-kind-icon">file<wbr>Name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Asset.html#fileNameChanged" class="tsd-kind-icon">file<wbr>Name<wbr>Changed</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Asset.html#isTileMap" class="tsd-kind-icon">is<wbr>Tile<wbr>Map</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Asset.html#isTileset" class="tsd-kind-icon">is<wbr>Tileset</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Asset.html#modified" class="tsd-kind-icon">modified</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Asset.html#modifiedChanged" class="tsd-kind-icon">modified<wbr>Changed</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Asset.html#readOnly" class="tsd-kind-icon">read<wbr>Only</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="World.html#asset" class="tsd-kind-icon">asset</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="World.html#assetType" class="tsd-kind-icon">asset<wbr>Type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="World.html#className" class="tsd-kind-icon">class<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="World.html#fileName" class="tsd-kind-icon">file<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="World.html#fileNameChanged" class="tsd-kind-icon">file<wbr>Name<wbr>Changed</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="World.html#isTileMap" class="tsd-kind-icon">is<wbr>Tile<wbr>Map</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="World.html#isTileset" class="tsd-kind-icon">is<wbr>Tileset</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="World.html#maps" class="tsd-kind-icon">maps</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="World.html#modified" class="tsd-kind-icon">modified</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="World.html#modifiedChanged" class="tsd-kind-icon">modified<wbr>Changed</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="World.html#patterns" class="tsd-kind-icon">patterns</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="World.html#readOnly" class="tsd-kind-icon">read<wbr>Only</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="Asset.html#macro" class="tsd-kind-icon">macro</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="Asset.html#properties" class="tsd-kind-icon">properties</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="Asset.html#property" class="tsd-kind-icon">property</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Asset.html#redo" class="tsd-kind-icon">redo</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="Asset.html#removeProperty" class="tsd-kind-icon">remove<wbr>Property</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="Asset.html#resolvedProperties" class="tsd-kind-icon">resolved<wbr>Properties</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="Asset.html#resolvedProperty" class="tsd-kind-icon">resolved<wbr>Property</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Asset.html#save" class="tsd-kind-icon">save</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="Asset.html#setColorProperty" class="tsd-kind-icon">set<wbr>Color<wbr>Property</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="Asset.html#setFloatProperty" class="tsd-kind-icon">set<wbr>Float<wbr>Property</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="Asset.html#setProperties" class="tsd-kind-icon">set<wbr>Properties</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="Asset.html#setProperty" class="tsd-kind-icon">set<wbr>Property</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Asset.html#undo" class="tsd-kind-icon">undo</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="World.html#addMap" class="tsd-kind-icon">add<wbr>Map</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="World.html#allMaps" class="tsd-kind-icon">all<wbr>Maps</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="World.html#containsMap" class="tsd-kind-icon">contains<wbr>Map</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="World.html#macro" class="tsd-kind-icon">macro</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="World.html#mapsInRect" class="tsd-kind-icon">maps<wbr>InRect</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="World.html#properties" class="tsd-kind-icon">properties</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="World.html#property" class="tsd-kind-icon">property</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="World.html#redo" class="tsd-kind-icon">redo</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="World.html#removeMap" class="tsd-kind-icon">remove<wbr>Map</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="World.html#removeProperty" class="tsd-kind-icon">remove<wbr>Property</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="World.html#resolvedProperties" class="tsd-kind-icon">resolved<wbr>Properties</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="World.html#resolvedProperty" class="tsd-kind-icon">resolved<wbr>Property</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="World.html#save" class="tsd-kind-icon">save</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="World.html#setColorProperty" class="tsd-kind-icon">set<wbr>Color<wbr>Property</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="World.html#setFloatProperty" class="tsd-kind-icon">set<wbr>Float<wbr>Property</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="World.html#setMapPos" class="tsd-kind-icon">set<wbr>Map<wbr>Pos</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="World.html#setMapRect" class="tsd-kind-icon">set<wbr>Map<wbr>Rect</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="World.html#setProperties" class="tsd-kind-icon">set<wbr>Properties</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="World.html#setProperty" class="tsd-kind-icon">set<wbr>Property</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="World.html#undo" class="tsd-kind-icon">undo</a></li>
 							</ul>
 						</section>
 					</div>
@@ -174,12 +176,12 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Asset<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Asset.html" class="tsd-signature-type" data-tsd-kind="Class">Asset</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>World<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="World.html" class="tsd-signature-type" data-tsd-kind="Class">World</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="TiledObject.html">TiledObject</a>.<a href="TiledObject.html#constructor">constructor</a></p>
+								<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#constructor">constructor</a></p>
 							</aside>
 						</li>
 					</ul>
@@ -192,7 +194,7 @@
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> asset</h3>
 					<div class="tsd-signature tsd-kind-icon">asset<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="Asset.html" class="tsd-signature-type" data-tsd-kind="Class">Asset</a></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="TiledObject.html">TiledObject</a>.<a href="TiledObject.html#asset">asset</a></p>
+						<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#asset">asset</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
@@ -200,11 +202,12 @@
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="assetType" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> asset<wbr>Type</h3>
 					<div class="tsd-signature tsd-kind-icon">asset<wbr>Type<span class="tsd-signature-symbol">:</span> <a href="../enums/AssetType.html" class="tsd-signature-type" data-tsd-kind="Enumeration">AssetType</a></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#assetType">assetType</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
@@ -222,7 +225,7 @@
 					<h3>class<wbr>Name</h3>
 					<div class="tsd-signature tsd-kind-icon">class<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="TiledObject.html">TiledObject</a>.<a href="TiledObject.html#className">className</a></p>
+						<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#className">className</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
@@ -236,11 +239,12 @@
 						</dl>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="fileName" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> file<wbr>Name</h3>
 					<div class="tsd-signature tsd-kind-icon">file<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#fileName">fileName</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
@@ -248,25 +252,27 @@
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="fileNameChanged" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> file<wbr>Name<wbr>Changed</h3>
 					<div class="tsd-signature tsd-kind-icon">file<wbr>Name<wbr>Changed<span class="tsd-signature-symbol">:</span> <a href="../interfaces/Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#fileNameChanged">fileNameChanged</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The signal emitted when <a href="Asset.html#fileName">fileName</a> changes.</p>
+							<p>The signal emitted when <a href="World.html#fileName">fileName</a> changes.</p>
 						</div>
 						<p>Its first parameter is the new file name, the second parameter is the old
 						file name.</p>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="isTileMap" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> is<wbr>Tile<wbr>Map</h3>
 					<div class="tsd-signature tsd-kind-icon">is<wbr>Tile<wbr>Map<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#isTileMap">isTileMap</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
@@ -274,11 +280,12 @@
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="isTileset" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> is<wbr>Tileset</h3>
 					<div class="tsd-signature tsd-kind-icon">is<wbr>Tileset<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#isTileset">isTileset</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
@@ -287,10 +294,24 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="maps" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> maps</h3>
+					<div class="tsd-signature tsd-kind-icon">maps<span class="tsd-signature-symbol">:</span> <a href="WorldMapEntry.html" class="tsd-signature-type" data-tsd-kind="Class">WorldMapEntry</a><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The maps that are explicitly added to this world. It does not include
+							those maps which match due to patterns defined on the world.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="modified" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> modified</h3>
 					<div class="tsd-signature tsd-kind-icon">modified<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#modified">modified</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
@@ -298,15 +319,29 @@
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="modifiedChanged" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> modified<wbr>Changed</h3>
 					<div class="tsd-signature tsd-kind-icon">modified<wbr>Changed<span class="tsd-signature-symbol">:</span> <a href="../interfaces/Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#modifiedChanged">modifiedChanged</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The signal emitted when <a href="Asset.html#modified">modified</a> changes.</p>
+							<p>The signal emitted when <a href="World.html#modified">modified</a> changes.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="patterns" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> patterns</h3>
+					<div class="tsd-signature tsd-kind-icon">patterns<span class="tsd-signature-symbol">:</span> <a href="WorldPattern.html" class="tsd-signature-type" data-tsd-kind="Class">WorldPattern</a><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The patterns that are configured for this map. These patterns will be used
+							to automatically match maps in your project.</p>
 						</div>
 					</div>
 				</section>
@@ -315,7 +350,7 @@
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> read<wbr>Only</h3>
 					<div class="tsd-signature tsd-kind-icon">read<wbr>Only<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="TiledObject.html">TiledObject</a>.<a href="TiledObject.html#readOnly">readOnly</a></p>
+						<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#readOnly">readOnly</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
@@ -326,15 +361,91 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="addMap" class="tsd-anchor"></a>
+					<h3>add<wbr>Map</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Map<span class="tsd-signature-symbol">(</span>fileName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, rect<span class="tsd-signature-symbol">: </span><a href="../interfaces/rect.html" class="tsd-signature-type" data-tsd-kind="Interface">rect</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Map<span class="tsd-signature-symbol">(</span>map<span class="tsd-signature-symbol">: </span><a href="TileMap.html" class="tsd-signature-type" data-tsd-kind="Class">TileMap</a>, x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Add a map to this world.</p>
+								</div>
+							</div>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Add a map to this world. The map size in pixels will be set automatically.</p>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="allMaps" class="tsd-anchor"></a>
+					<h3>all<wbr>Maps</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">all<wbr>Maps<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="WorldMapEntry.html" class="tsd-signature-type" data-tsd-kind="Class">WorldMapEntry</a><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns all maps that are part of this world, either directly referenced
+									or matched by one of the patterns.</p>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="containsMap" class="tsd-anchor"></a>
+					<h3>contains<wbr>Map</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">contains<wbr>Map<span class="tsd-signature-symbol">(</span>fileName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						<li class="tsd-signature tsd-kind-icon">contains<wbr>Map<span class="tsd-signature-symbol">(</span>map<span class="tsd-signature-symbol">: </span><a href="TileMap.html" class="tsd-signature-type" data-tsd-kind="Class">TileMap</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns true if this world contains a map with the given fileName.</p>
+								</div>
+							</div>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns true if this world contains the given map.</p>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
 					<a name="macro" class="tsd-anchor"></a>
 					<h3>macro</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">macro&lt;T&gt;<span class="tsd-signature-symbol">(</span>text<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#macro">macro</a></p>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
@@ -355,6 +466,25 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="mapsInRect" class="tsd-anchor"></a>
+					<h3>maps<wbr>InRect</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">maps<wbr>InRect<span class="tsd-signature-symbol">(</span>rect<span class="tsd-signature-symbol">: </span><a href="../interfaces/rect.html" class="tsd-signature-type" data-tsd-kind="Interface">rect</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="WorldMapEntry.html" class="tsd-signature-type" data-tsd-kind="Class">WorldMapEntry</a><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns any maps that intersect with the given <a href="../interfaces/rect.html">rect</a>. This is a
+									filtered version of the results from <a href="World.html#allMaps">allMaps</a>.</p>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="properties" class="tsd-anchor"></a>
 					<h3>properties</h3>
@@ -364,14 +494,14 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="TiledObject.html">TiledObject</a>.<a href="TiledObject.html#properties">properties</a></p>
+								<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#properties">properties</a></p>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Returns all custom properties set on this object.</p>
 								</div>
 								<p>Modifications to the properties will not affect the original object.
-								Does not include inherited values (see <a href="Asset.html#resolvedProperties">resolvedProperties</a>).</p>
+								Does not include inherited values (see <a href="World.html#resolvedProperties">resolvedProperties</a>).</p>
 							</div>
 						</li>
 					</ul>
@@ -385,13 +515,13 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="TiledObject.html">TiledObject</a>.<a href="TiledObject.html#property">property</a></p>
+								<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#property">property</a></p>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Returns the value of the custom property with the given name, or
 										<code>undefined</code> if no such property is set on the object. Does not
-									include inherited values (see <a href="Asset.html#resolvedProperty">resolvedProperty</a>).</p>
+									include inherited values (see <a href="World.html#resolvedProperty">resolvedProperty</a>).</p>
 								</div>
 								<p><code>file</code> properties are returned as <a href="../interfaces/FilePath.html">FilePath</a>.</p>
 								<p><code>object</code> properties are returned as <a href="MapObject.html">MapObject</a> when possible,
@@ -400,15 +530,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="redo" class="tsd-anchor"></a>
 					<h3>redo</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">redo<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#redo">redo</a></p>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
@@ -423,6 +554,34 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="removeMap" class="tsd-anchor"></a>
+					<h3>remove<wbr>Map</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>Map<span class="tsd-signature-symbol">(</span>fileName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>Map<span class="tsd-signature-symbol">(</span>map<span class="tsd-signature-symbol">: </span><a href="TileMap.html" class="tsd-signature-type" data-tsd-kind="Class">TileMap</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Remove a map from this world.</p>
+								</div>
+							</div>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Remove a map from this world.</p>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="removeProperty" class="tsd-anchor"></a>
 					<h3>remove<wbr>Property</h3>
@@ -432,7 +591,7 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="TiledObject.html">TiledObject</a>.<a href="TiledObject.html#removeProperty">removeProperty</a></p>
+								<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#removeProperty">removeProperty</a></p>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
@@ -451,7 +610,7 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="TiledObject.html">TiledObject</a>.<a href="TiledObject.html#resolvedProperties">resolvedProperties</a></p>
+								<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#resolvedProperties">resolvedProperties</a></p>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
@@ -472,7 +631,7 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="TiledObject.html">TiledObject</a>.<a href="TiledObject.html#resolvedProperty">resolvedProperty</a></p>
+								<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#resolvedProperty">resolvedProperty</a></p>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
@@ -484,15 +643,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="save" class="tsd-anchor"></a>
 					<h3>save</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">save<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#save">save</a></p>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
@@ -523,7 +683,7 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="TiledObject.html">TiledObject</a>.<a href="TiledObject.html#setColorProperty">setColorProperty</a></p>
+								<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#setColorProperty">setColorProperty</a></p>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
@@ -536,14 +696,14 @@
 									<dd><p>1.10</p>
 									</dd>
 									<dt>deprecated</dt>
-									<dd><p>Use <a href="Asset.html#setProperty">setProperty</a> with a value created by <a href="../modules/tiled.html#color">tiled.color</a> instead.</p>
+									<dd><p>Use <a href="World.html#setProperty">setProperty</a> with a value created by <a href="../modules/tiled.html#color">tiled.color</a> instead.</p>
 									</dd>
 								</dl>
 							</div>
 						</li>
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="TiledObject.html">TiledObject</a>.<a href="TiledObject.html#setColorProperty">setColorProperty</a></p>
+								<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#setColorProperty">setColorProperty</a></p>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
@@ -558,7 +718,7 @@
 									<dd><p>1.10</p>
 									</dd>
 									<dt>deprecated</dt>
-									<dd><p>Use <a href="Asset.html#setProperty">setProperty</a> with a value created by <a href="../modules/tiled.html#color">tiled.color</a> instead.</p>
+									<dd><p>Use <a href="World.html#setProperty">setProperty</a> with a value created by <a href="../modules/tiled.html#color">tiled.color</a> instead.</p>
 									</dd>
 								</dl>
 							</div>
@@ -574,20 +734,56 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="TiledObject.html">TiledObject</a>.<a href="TiledObject.html#setFloatProperty">setFloatProperty</a></p>
+								<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#setFloatProperty">setFloatProperty</a></p>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Sets the value of the custom property with the given name to the given
 									float value.</p>
 								</div>
-								<p>This function is provided as alternative to <a href="Asset.html#setProperty">setProperty</a>, since
+								<p>This function is provided as alternative to <a href="World.html#setProperty">setProperty</a>, since
 								that function will set whole numbers as <code>int</code> properties.</p>
 								<dl class="tsd-comment-tags">
 									<dt>since</dt>
 									<dd><p>1.10</p>
 									</dd>
 								</dl>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="setMapPos" class="tsd-anchor"></a>
+					<h3>set<wbr>Map<wbr>Pos</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Map<wbr>Pos<span class="tsd-signature-symbol">(</span>map<span class="tsd-signature-symbol">: </span><a href="TileMap.html" class="tsd-signature-type" data-tsd-kind="Class">TileMap</a>, x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Change the position of a map within this world.</p>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="setMapRect" class="tsd-anchor"></a>
+					<h3>set<wbr>Map<wbr>Rect</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Map<wbr>Rect<span class="tsd-signature-symbol">(</span>fileName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, rect<span class="tsd-signature-symbol">: </span><a href="../interfaces/rect.html" class="tsd-signature-type" data-tsd-kind="Interface">rect</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Change the position and size of a map within this world.</p>
+								</div>
 							</div>
 						</li>
 					</ul>
@@ -601,7 +797,7 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="TiledObject.html">TiledObject</a>.<a href="TiledObject.html#setProperties">setProperties</a></p>
+								<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#setProperties">setProperties</a></p>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
@@ -622,7 +818,7 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="TiledObject.html">TiledObject</a>.<a href="TiledObject.html#setProperty">setProperty</a></p>
+								<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#setProperty">setProperty</a></p>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
@@ -635,14 +831,14 @@
 									<dt>note</dt>
 									<dd><p>When setting a <code>number</code>, the property type will be set to either
 											<code>int</code> or <code>float</code>, depending on whether it is a whole number. To force
-										the property to be <code>float</code>, use <a href="Asset.html#setFloatProperty">setFloatProperty</a>.</p>
+										the property to be <code>float</code>, use <a href="World.html#setFloatProperty">setFloatProperty</a>.</p>
 									</dd>
 								</dl>
 							</div>
 						</li>
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="TiledObject.html">TiledObject</a>.<a href="TiledObject.html#setProperty">setProperty</a></p>
+								<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#setProperty">setProperty</a></p>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
@@ -659,7 +855,7 @@
 									<dt>note</dt>
 									<dd><p>When setting a <code>number</code>, the property type will be set to either
 											<code>int</code> or <code>float</code>, depending on whether it is a whole number. To force
-										the property to be <code>float</code>, use <a href="Asset.html#setFloatProperty">setFloatProperty</a>.</p>
+										the property to be <code>float</code>, use <a href="World.html#setFloatProperty">setFloatProperty</a>.</p>
 									</dd>
 									<dt>since</dt>
 									<dd><p>1.11</p>
@@ -669,15 +865,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="undo" class="tsd-anchor"></a>
 					<h3>undo</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">undo<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#undo">undo</a></p>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
@@ -707,79 +904,106 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class">
-						<a href="Asset.html" class="tsd-kind-icon">Asset</a>
+						<a href="World.html" class="tsd-kind-icon">World</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
-								<a href="Asset.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="World.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="Asset.html#asset" class="tsd-kind-icon">asset</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="Asset.html#assetType" class="tsd-kind-icon">asset<wbr>Type</a>
+								<a href="World.html#asset" class="tsd-kind-icon">asset</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="Asset.html#className" class="tsd-kind-icon">class<wbr>Name</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="Asset.html#fileName" class="tsd-kind-icon">file<wbr>Name</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="Asset.html#fileNameChanged" class="tsd-kind-icon">file<wbr>Name<wbr>Changed</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="Asset.html#isTileMap" class="tsd-kind-icon">is<wbr>Tile<wbr>Map</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="Asset.html#isTileset" class="tsd-kind-icon">is<wbr>Tileset</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="Asset.html#modified" class="tsd-kind-icon">modified</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="Asset.html#modifiedChanged" class="tsd-kind-icon">modified<wbr>Changed</a>
+								<a href="World.html#assetType" class="tsd-kind-icon">asset<wbr>Type</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="Asset.html#readOnly" class="tsd-kind-icon">read<wbr>Only</a>
+								<a href="World.html#className" class="tsd-kind-icon">class<wbr>Name</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-								<a href="Asset.html#macro" class="tsd-kind-icon">macro</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="World.html#fileName" class="tsd-kind-icon">file<wbr>Name</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="Asset.html#properties" class="tsd-kind-icon">properties</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="World.html#fileNameChanged" class="tsd-kind-icon">file<wbr>Name<wbr>Changed</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="Asset.html#property" class="tsd-kind-icon">property</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="World.html#isTileMap" class="tsd-kind-icon">is<wbr>Tile<wbr>Map</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Asset.html#redo" class="tsd-kind-icon">redo</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="World.html#isTileset" class="tsd-kind-icon">is<wbr>Tileset</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="Asset.html#removeProperty" class="tsd-kind-icon">remove<wbr>Property</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="World.html#maps" class="tsd-kind-icon">maps</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="Asset.html#resolvedProperties" class="tsd-kind-icon">resolved<wbr>Properties</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="World.html#modified" class="tsd-kind-icon">modified</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="Asset.html#resolvedProperty" class="tsd-kind-icon">resolved<wbr>Property</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="World.html#modifiedChanged" class="tsd-kind-icon">modified<wbr>Changed</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Asset.html#save" class="tsd-kind-icon">save</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="World.html#patterns" class="tsd-kind-icon">patterns</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="Asset.html#setColorProperty" class="tsd-kind-icon">set<wbr>Color<wbr>Property</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="Asset.html#setFloatProperty" class="tsd-kind-icon">set<wbr>Float<wbr>Property</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="Asset.html#setProperties" class="tsd-kind-icon">set<wbr>Properties</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="Asset.html#setProperty" class="tsd-kind-icon">set<wbr>Property</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="World.html#readOnly" class="tsd-kind-icon">read<wbr>Only</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Asset.html#undo" class="tsd-kind-icon">undo</a>
+								<a href="World.html#addMap" class="tsd-kind-icon">add<wbr>Map</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="World.html#allMaps" class="tsd-kind-icon">all<wbr>Maps</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="World.html#containsMap" class="tsd-kind-icon">contains<wbr>Map</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+								<a href="World.html#macro" class="tsd-kind-icon">macro</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="World.html#mapsInRect" class="tsd-kind-icon">maps<wbr>InRect</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="World.html#properties" class="tsd-kind-icon">properties</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="World.html#property" class="tsd-kind-icon">property</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="World.html#redo" class="tsd-kind-icon">redo</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="World.html#removeMap" class="tsd-kind-icon">remove<wbr>Map</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="World.html#removeProperty" class="tsd-kind-icon">remove<wbr>Property</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="World.html#resolvedProperties" class="tsd-kind-icon">resolved<wbr>Properties</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="World.html#resolvedProperty" class="tsd-kind-icon">resolved<wbr>Property</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="World.html#save" class="tsd-kind-icon">save</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="World.html#setColorProperty" class="tsd-kind-icon">set<wbr>Color<wbr>Property</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="World.html#setFloatProperty" class="tsd-kind-icon">set<wbr>Float<wbr>Property</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="World.html#setMapPos" class="tsd-kind-icon">set<wbr>Map<wbr>Pos</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="World.html#setMapRect" class="tsd-kind-icon">set<wbr>Map<wbr>Rect</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="World.html#setProperties" class="tsd-kind-icon">set<wbr>Properties</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="World.html#setProperty" class="tsd-kind-icon">set<wbr>Property</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="World.html#undo" class="tsd-kind-icon">undo</a>
 							</li>
 						</ul>
 					</li>

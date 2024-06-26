@@ -124,6 +124,7 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Tileset.html#asset" class="tsd-kind-icon">asset</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Tileset.html#assetType" class="tsd-kind-icon">asset<wbr>Type</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#backgroundColor" class="tsd-kind-icon">background<wbr>Color</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Tileset.html#className" class="tsd-kind-icon">class<wbr>Name</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#collection" class="tsd-kind-icon">collection</a></li>
@@ -132,6 +133,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Tileset.html#fileNameChanged" class="tsd-kind-icon">file<wbr>Name<wbr>Changed</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#fillMode" class="tsd-kind-icon">fill<wbr>Mode</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#image" class="tsd-kind-icon">image</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#imageFileName" class="tsd-kind-icon">image<wbr>File<wbr>Name</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#imageHeight" class="tsd-kind-icon">image<wbr>Height</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#imageSize" class="tsd-kind-icon">image<wbr>Size</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#imageWidth" class="tsd-kind-icon">image<wbr>Width</a></li>
@@ -191,6 +193,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Tileset.html#removeWangSet" class="tsd-kind-icon">remove<wbr>Wang<wbr>Set</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="Tileset.html#resolvedProperties" class="tsd-kind-icon">resolved<wbr>Properties</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="Tileset.html#resolvedProperty" class="tsd-kind-icon">resolved<wbr>Property</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="Tileset.html#save" class="tsd-kind-icon">save</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="Tileset.html#setColorProperty" class="tsd-kind-icon">set<wbr>Color<wbr>Property</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="Tileset.html#setFloatProperty" class="tsd-kind-icon">set<wbr>Float<wbr>Property</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="Tileset.html#setProperties" class="tsd-kind-icon">set<wbr>Properties</a></li>
@@ -238,6 +241,24 @@
 						<div class="lead">
 							<p>The asset this object is part of, or <code>null</code>.</p>
 						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="assetType" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> asset<wbr>Type</h3>
+					<div class="tsd-signature tsd-kind-icon">asset<wbr>Type<span class="tsd-signature-symbol">:</span> <a href="../enums/AssetType.html" class="tsd-signature-type" data-tsd-kind="Enumeration">AssetType</a></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#assetType">assetType</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The type of this asset.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.11</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
@@ -361,6 +382,20 @@
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
+						<dl class="tsd-comment-tags">
+							<dt>deprecated</dt>
+							<dd><p>Use <a href="Tileset.html#imageFileName">imageFileName</a> instead.</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="imageFileName" class="tsd-anchor"></a>
+					<h3>image<wbr>File<wbr>Name</h3>
+					<div class="tsd-signature tsd-kind-icon">image<wbr>File<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>The file name of the image used by this tileset. Empty in case of image collection tilesets.</p>
 						</div>
@@ -372,6 +407,9 @@
 							</dd>
 							<dt>note</dt>
 							<dd><p>Map files are supported tileset image source as well.</p>
+							</dd>
+							<dt>since</dt>
+							<dd><p>1.11</p>
 							</dd>
 						</dl>
 					</div>
@@ -438,7 +476,7 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Whether the asset is a <a href="TileMap.html">TileMap</a>.</p>
+							<p>Whether the asset is a <a href="../enums/AssetType.html#TileMap">TileMap</a>.</p>
 						</div>
 					</div>
 				</section>
@@ -451,13 +489,13 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Whether the asset is a <a href="Tileset.html">Tileset</a>.</p>
+							<p>Whether the asset is a <a href="../enums/AssetType.html#Tileset">Tileset</a>.</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="margin" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> margin</h3>
+					<h3>margin</h3>
 					<div class="tsd-signature tsd-kind-icon">margin<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 					</aside>
@@ -465,6 +503,13 @@
 						<div class="lead">
 							<p>Margin around the tileset in pixels (only used at the top and left sides of the tileset image).</p>
 						</div>
+						<dl class="tsd-comment-tags">
+							<dt>note</dt>
+							<dd><p>Changing this property will cause an image-based tileset to update
+									all its tiles. When setting up a tileset, you&#39;ll want to set this property
+								before setting the <a href="Tileset.html#image">image</a> property.</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
@@ -649,7 +694,7 @@
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="tileSpacing" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> tile<wbr>Spacing</h3>
+					<h3>tile<wbr>Spacing</h3>
 					<div class="tsd-signature tsd-kind-icon">tile<wbr>Spacing<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 					</aside>
@@ -657,6 +702,13 @@
 						<div class="lead">
 							<p>Spacing between tiles in this tileset in pixels.</p>
 						</div>
+						<dl class="tsd-comment-tags">
+							<dt>note</dt>
+							<dd><p>Changing this property will cause an image-based tileset to update
+									all its tiles. When setting up a tileset, you&#39;ll want to set this property
+								before setting the <a href="Tileset.html#image">image</a> property.</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
@@ -1121,6 +1173,36 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="save" class="tsd-anchor"></a>
+					<h3>save</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">save<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#save">save</a></p>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Save this asset to disk. Returns true if the asset was saved successfully.</p>
+								</div>
+								<p>Errors are reported by the UI. When an editor is open for this asset, this
+								editor is activated when an error is reported.</p>
+								<p>Only supported with the editor running, not when running scripts on the
+								CLI. Also, the asset should already have an associated file.</p>
+								<p>To save assets to a specific file or in a different format, use <a href="../modules/tiled.html#mapFormat">tiled.mapFormat</a> or <a href="../modules/tiled.html#tilesetFormat">tiled.tilesetFormat</a>. This is currently not
+								supported for worlds.</p>
+								<dl class="tsd-comment-tags">
+									<dt>since</dt>
+									<dd><p>1.11</p>
+									</dd>
+								</dl>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="setColorProperty" class="tsd-anchor"></a>
 					<h3>set<wbr>Color<wbr>Property</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -1142,6 +1224,9 @@
 									<dt>since</dt>
 									<dd><p>1.10</p>
 									</dd>
+									<dt>deprecated</dt>
+									<dd><p>Use <a href="Tileset.html#setProperty">setProperty</a> with a value created by <a href="../modules/tiled.html#color">tiled.color</a> instead.</p>
+									</dd>
 								</dl>
 							</div>
 						</li>
@@ -1160,6 +1245,9 @@
 								<dl class="tsd-comment-tags">
 									<dt>since</dt>
 									<dd><p>1.10</p>
+									</dd>
+									<dt>deprecated</dt>
+									<dd><p>Use <a href="Tileset.html#setProperty">setProperty</a> with a value created by <a href="../modules/tiled.html#color">tiled.color</a> instead.</p>
 									</dd>
 								</dl>
 							</div>
@@ -1218,6 +1306,7 @@
 					<h3>set<wbr>Property</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">set<wbr>Property<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><a href="../index.html#TiledObjectPropertyValue" class="tsd-signature-type" data-tsd-kind="Type alias">TiledObjectPropertyValue</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Property<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, value<span class="tsd-signature-symbol">: </span><a href="../index.html#TiledObjectPropertyValue" class="tsd-signature-type" data-tsd-kind="Type alias">TiledObjectPropertyValue</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -1226,19 +1315,43 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Sets the value of the custom property with the given name. Supported
-										types are <code>bool</code>, <code>number</code>, <code>string</code>, <a href="../interfaces/FilePath.html">FilePath</a>,
-									<a href="../interfaces/ObjectRef.html">ObjectRef</a> and <a href="MapObject.html">MapObject</a>.</p>
+									<p>Sets the value of the custom property with the given name.</p>
 								</div>
+								<p>Supported types are <code>bool</code>, <code>number</code>, <code>string</code>, <a href="ObjectGroup.html#color">color</a>,
+									<a href="../interfaces/FilePath.html">FilePath</a>, <a href="../interfaces/ObjectRef.html">ObjectRef</a>, <a href="MapObject.html">MapObject</a> and
+								<a href="../interfaces/PropertyValue.html">PropertyValue</a>.</p>
 								<dl class="tsd-comment-tags">
 									<dt>note</dt>
 									<dd><p>When setting a <code>number</code>, the property type will be set to either
 											<code>int</code> or <code>float</code>, depending on whether it is a whole number. To force
 										the property to be <code>float</code>, use <a href="Tileset.html#setFloatProperty">setFloatProperty</a>.</p>
 									</dd>
+								</dl>
+							</div>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#setProperty">setProperty</a></p>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sets the value of an object&#39;s property identified the given \a path
+									to \a value.</p>
+								</div>
+								<p>The \a path is a list of property names, where each name identifies
+									a member of the previous member&#39;s value. The last name in the list
+								identifies the property to set.</p>
+								<p>Supported types are <code>bool</code>, <code>number</code>, <code>string</code>, <a href="ObjectGroup.html#color">color</a>,
+									<a href="../interfaces/FilePath.html">FilePath</a>, <a href="../interfaces/ObjectRef.html">ObjectRef</a>, <a href="MapObject.html">MapObject</a> and
+								<a href="../interfaces/PropertyValue.html">PropertyValue</a>.</p>
+								<dl class="tsd-comment-tags">
 									<dt>note</dt>
-									<dd><p>This function does not support setting <code>color</code> properties. Use
-										<a href="Tileset.html#setColorProperty">setColorProperty</a> instead.</p>
+									<dd><p>When setting a <code>number</code>, the property type will be set to either
+											<code>int</code> or <code>float</code>, depending on whether it is a whole number. To force
+										the property to be <code>float</code>, use <a href="Tileset.html#setFloatProperty">setFloatProperty</a>.</p>
+									</dd>
+									<dt>since</dt>
+									<dd><p>1.11</p>
 									</dd>
 								</dl>
 							</div>
@@ -1329,6 +1442,9 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="Tileset.html#asset" class="tsd-kind-icon">asset</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Tileset.html#assetType" class="tsd-kind-icon">asset<wbr>Type</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Tileset.html#backgroundColor" class="tsd-kind-icon">background<wbr>Color</a>
 							</li>
@@ -1352,6 +1468,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Tileset.html#image" class="tsd-kind-icon">image</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Tileset.html#imageFileName" class="tsd-kind-icon">image<wbr>File<wbr>Name</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Tileset.html#imageHeight" class="tsd-kind-icon">image<wbr>Height</a>
@@ -1514,6 +1633,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="Tileset.html#resolvedProperty" class="tsd-kind-icon">resolved<wbr>Property</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="Tileset.html#save" class="tsd-kind-icon">save</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="Tileset.html#setColorProperty" class="tsd-kind-icon">set<wbr>Color<wbr>Property</a>

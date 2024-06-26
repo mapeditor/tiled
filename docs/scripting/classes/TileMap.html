@@ -125,6 +125,7 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="TileMap.html#asset" class="tsd-kind-icon">asset</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="TileMap.html#assetType" class="tsd-kind-icon">asset<wbr>Type</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="TileMap.html#backgroundColor" class="tsd-kind-icon">background<wbr>Color</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="TileMap.html#className" class="tsd-kind-icon">class<wbr>Name</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="TileMap.html#currentLayer" class="tsd-kind-icon">current<wbr>Layer</a></li>
@@ -203,6 +204,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="TileMap.html#resize" class="tsd-kind-icon">resize</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="TileMap.html#resolvedProperties" class="tsd-kind-icon">resolved<wbr>Properties</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="TileMap.html#resolvedProperty" class="tsd-kind-icon">resolved<wbr>Property</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="TileMap.html#save" class="tsd-kind-icon">save</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="TileMap.html#screenToPixel" class="tsd-kind-icon">screen<wbr>ToPixel</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="TileMap.html#screenToTile" class="tsd-kind-icon">screen<wbr>ToTile</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="TileMap.html#setColorProperty" class="tsd-kind-icon">set<wbr>Color<wbr>Property</a></li>
@@ -256,6 +258,24 @@
 						<div class="lead">
 							<p>The asset this object is part of, or <code>null</code>.</p>
 						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="assetType" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> asset<wbr>Type</h3>
+					<div class="tsd-signature tsd-kind-icon">asset<wbr>Type<span class="tsd-signature-symbol">:</span> <a href="../enums/AssetType.html" class="tsd-signature-type" data-tsd-kind="Enumeration">AssetType</a></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#assetType">assetType</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The type of this asset.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.11</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
@@ -386,7 +406,7 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Whether the asset is a <a href="TileMap.html">TileMap</a>.</p>
+							<p>Whether the asset is a <a href="../enums/AssetType.html#TileMap">TileMap</a>.</p>
 						</div>
 					</div>
 				</section>
@@ -399,7 +419,7 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Whether the asset is a <a href="Tileset.html">Tileset</a>.</p>
+							<p>Whether the asset is a <a href="../enums/AssetType.html#Tileset">Tileset</a>.</p>
 						</div>
 					</div>
 				</section>
@@ -1292,6 +1312,36 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="save" class="tsd-anchor"></a>
+					<h3>save</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">save<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#save">save</a></p>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Save this asset to disk. Returns true if the asset was saved successfully.</p>
+								</div>
+								<p>Errors are reported by the UI. When an editor is open for this asset, this
+								editor is activated when an error is reported.</p>
+								<p>Only supported with the editor running, not when running scripts on the
+								CLI. Also, the asset should already have an associated file.</p>
+								<p>To save assets to a specific file or in a different format, use <a href="../modules/tiled.html#mapFormat">tiled.mapFormat</a> or <a href="../modules/tiled.html#tilesetFormat">tiled.tilesetFormat</a>. This is currently not
+								supported for worlds.</p>
+								<dl class="tsd-comment-tags">
+									<dt>since</dt>
+									<dd><p>1.11</p>
+									</dd>
+								</dl>
+							</div>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="screenToPixel" class="tsd-anchor"></a>
 					<h3>screen<wbr>ToPixel</h3>
@@ -1370,6 +1420,9 @@
 									<dt>since</dt>
 									<dd><p>1.10</p>
 									</dd>
+									<dt>deprecated</dt>
+									<dd><p>Use <a href="TileMap.html#setProperty">setProperty</a> with a value created by <a href="../modules/tiled.html#color">tiled.color</a> instead.</p>
+									</dd>
 								</dl>
 							</div>
 						</li>
@@ -1388,6 +1441,9 @@
 								<dl class="tsd-comment-tags">
 									<dt>since</dt>
 									<dd><p>1.10</p>
+									</dd>
+									<dt>deprecated</dt>
+									<dd><p>Use <a href="TileMap.html#setProperty">setProperty</a> with a value created by <a href="../modules/tiled.html#color">tiled.color</a> instead.</p>
 									</dd>
 								</dl>
 							</div>
@@ -1446,6 +1502,7 @@
 					<h3>set<wbr>Property</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">set<wbr>Property<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><a href="../index.html#TiledObjectPropertyValue" class="tsd-signature-type" data-tsd-kind="Type alias">TiledObjectPropertyValue</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Property<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, value<span class="tsd-signature-symbol">: </span><a href="../index.html#TiledObjectPropertyValue" class="tsd-signature-type" data-tsd-kind="Type alias">TiledObjectPropertyValue</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -1454,19 +1511,43 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Sets the value of the custom property with the given name. Supported
-										types are <code>bool</code>, <code>number</code>, <code>string</code>, <a href="../interfaces/FilePath.html">FilePath</a>,
-									<a href="../interfaces/ObjectRef.html">ObjectRef</a> and <a href="MapObject.html">MapObject</a>.</p>
+									<p>Sets the value of the custom property with the given name.</p>
 								</div>
+								<p>Supported types are <code>bool</code>, <code>number</code>, <code>string</code>, <a href="ObjectGroup.html#color">color</a>,
+									<a href="../interfaces/FilePath.html">FilePath</a>, <a href="../interfaces/ObjectRef.html">ObjectRef</a>, <a href="MapObject.html">MapObject</a> and
+								<a href="../interfaces/PropertyValue.html">PropertyValue</a>.</p>
 								<dl class="tsd-comment-tags">
 									<dt>note</dt>
 									<dd><p>When setting a <code>number</code>, the property type will be set to either
 											<code>int</code> or <code>float</code>, depending on whether it is a whole number. To force
 										the property to be <code>float</code>, use <a href="TileMap.html#setFloatProperty">setFloatProperty</a>.</p>
 									</dd>
+								</dl>
+							</div>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="Asset.html">Asset</a>.<a href="Asset.html#setProperty">setProperty</a></p>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sets the value of an object&#39;s property identified the given \a path
+									to \a value.</p>
+								</div>
+								<p>The \a path is a list of property names, where each name identifies
+									a member of the previous member&#39;s value. The last name in the list
+								identifies the property to set.</p>
+								<p>Supported types are <code>bool</code>, <code>number</code>, <code>string</code>, <a href="ObjectGroup.html#color">color</a>,
+									<a href="../interfaces/FilePath.html">FilePath</a>, <a href="../interfaces/ObjectRef.html">ObjectRef</a>, <a href="MapObject.html">MapObject</a> and
+								<a href="../interfaces/PropertyValue.html">PropertyValue</a>.</p>
+								<dl class="tsd-comment-tags">
 									<dt>note</dt>
-									<dd><p>This function does not support setting <code>color</code> properties. Use
-										<a href="TileMap.html#setColorProperty">setColorProperty</a> instead.</p>
+									<dd><p>When setting a <code>number</code>, the property type will be set to either
+											<code>int</code> or <code>float</code>, depending on whether it is a whole number. To force
+										the property to be <code>float</code>, use <a href="TileMap.html#setFloatProperty">setFloatProperty</a>.</p>
+									</dd>
+									<dt>since</dt>
+									<dd><p>1.11</p>
 									</dd>
 								</dl>
 							</div>
@@ -1658,6 +1739,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="TileMap.html#asset" class="tsd-kind-icon">asset</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="TileMap.html#assetType" class="tsd-kind-icon">asset<wbr>Type</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="TileMap.html#backgroundColor" class="tsd-kind-icon">background<wbr>Color</a>
@@ -1877,6 +1961,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="TileMap.html#resolvedProperty" class="tsd-kind-icon">resolved<wbr>Property</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="TileMap.html#save" class="tsd-kind-icon">save</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="TileMap.html#screenToPixel" class="tsd-kind-icon">screen<wbr>ToPixel</a>

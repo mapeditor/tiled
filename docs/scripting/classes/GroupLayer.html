@@ -737,6 +737,9 @@
 									<dt>since</dt>
 									<dd><p>1.10</p>
 									</dd>
+									<dt>deprecated</dt>
+									<dd><p>Use <a href="GroupLayer.html#setProperty">setProperty</a> with a value created by <a href="../modules/tiled.html#color">tiled.color</a> instead.</p>
+									</dd>
 								</dl>
 							</div>
 						</li>
@@ -755,6 +758,9 @@
 								<dl class="tsd-comment-tags">
 									<dt>since</dt>
 									<dd><p>1.10</p>
+									</dd>
+									<dt>deprecated</dt>
+									<dd><p>Use <a href="GroupLayer.html#setProperty">setProperty</a> with a value created by <a href="../modules/tiled.html#color">tiled.color</a> instead.</p>
 									</dd>
 								</dl>
 							</div>
@@ -813,6 +819,7 @@
 					<h3>set<wbr>Property</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">set<wbr>Property<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><a href="../index.html#TiledObjectPropertyValue" class="tsd-signature-type" data-tsd-kind="Type alias">TiledObjectPropertyValue</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Property<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, value<span class="tsd-signature-symbol">: </span><a href="../index.html#TiledObjectPropertyValue" class="tsd-signature-type" data-tsd-kind="Type alias">TiledObjectPropertyValue</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -821,19 +828,43 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Sets the value of the custom property with the given name. Supported
-										types are <code>bool</code>, <code>number</code>, <code>string</code>, <a href="../interfaces/FilePath.html">FilePath</a>,
-									<a href="../interfaces/ObjectRef.html">ObjectRef</a> and <a href="MapObject.html">MapObject</a>.</p>
+									<p>Sets the value of the custom property with the given name.</p>
 								</div>
+								<p>Supported types are <code>bool</code>, <code>number</code>, <code>string</code>, <a href="ObjectGroup.html#color">color</a>,
+									<a href="../interfaces/FilePath.html">FilePath</a>, <a href="../interfaces/ObjectRef.html">ObjectRef</a>, <a href="MapObject.html">MapObject</a> and
+								<a href="../interfaces/PropertyValue.html">PropertyValue</a>.</p>
 								<dl class="tsd-comment-tags">
 									<dt>note</dt>
 									<dd><p>When setting a <code>number</code>, the property type will be set to either
 											<code>int</code> or <code>float</code>, depending on whether it is a whole number. To force
 										the property to be <code>float</code>, use <a href="GroupLayer.html#setFloatProperty">setFloatProperty</a>.</p>
 									</dd>
+								</dl>
+							</div>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="Layer.html">Layer</a>.<a href="Layer.html#setProperty">setProperty</a></p>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sets the value of an object&#39;s property identified the given \a path
+									to \a value.</p>
+								</div>
+								<p>The \a path is a list of property names, where each name identifies
+									a member of the previous member&#39;s value. The last name in the list
+								identifies the property to set.</p>
+								<p>Supported types are <code>bool</code>, <code>number</code>, <code>string</code>, <a href="ObjectGroup.html#color">color</a>,
+									<a href="../interfaces/FilePath.html">FilePath</a>, <a href="../interfaces/ObjectRef.html">ObjectRef</a>, <a href="MapObject.html">MapObject</a> and
+								<a href="../interfaces/PropertyValue.html">PropertyValue</a>.</p>
+								<dl class="tsd-comment-tags">
 									<dt>note</dt>
-									<dd><p>This function does not support setting <code>color</code> properties. Use
-										<a href="GroupLayer.html#setColorProperty">setColorProperty</a> instead.</p>
+									<dd><p>When setting a <code>number</code>, the property type will be set to either
+											<code>int</code> or <code>float</code>, depending on whether it is a whole number. To force
+										the property to be <code>float</code>, use <a href="GroupLayer.html#setFloatProperty">setFloatProperty</a>.</p>
+									</dd>
+									<dt>since</dt>
+									<dd><p>1.11</p>
 									</dd>
 								</dl>
 							</div>

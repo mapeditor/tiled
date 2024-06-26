@@ -12,7 +12,7 @@
 	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>FilePath | Tiled Scripting API</title>
+	<title>AssetType | Tiled Scripting API</title>
 	<meta name="description" content="Documentation for Tiled Scripting API">
 	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
@@ -76,10 +76,10 @@
 					<a href="../index.html">Tiled Scripting API</a>
 				</li>
 				<li>
-					<a href="FilePath.html">FilePath</a>
+					<a href="AssetType.html">AssetType</a>
 				</li>
 			</ul>
-			<h1>Interface FilePath</h1>
+			<h1>Enumeration AssetType</h1>
 		</div>
 	</div>
 </header>
@@ -89,65 +89,61 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Used as the value for custom &#39;file&#39; properties.</p>
+						<p>The top-level assets supported by Tiled. Not all of these assets have
+						associated editors.</p>
 					</div>
-					<p>Can be created with <a href="../modules/tiled.html#filePath">tiled.filePath</a>.</p>
+					<dl class="tsd-comment-tags">
+						<dt>since</dt>
+						<dd><p>1.11</p>
+						</dd>
+					</dl>
 				</div>
-			</section>
-			<section class="tsd-panel tsd-hierarchy">
-				<h3>Hierarchy</h3>
-				<ul class="tsd-hierarchy">
-					<li>
-						<span class="target">FilePath</span>
-					</li>
-				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Properties</h3>
+							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="FilePath.html#localFile" class="tsd-kind-icon">local<wbr>File</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="FilePath.html#url" class="tsd-kind-icon">url</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="AssetType.html#Project" class="tsd-kind-icon">Project</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="AssetType.html#TileMap" class="tsd-kind-icon">Tile<wbr>Map</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="AssetType.html#Tileset" class="tsd-kind-icon">Tileset</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="AssetType.html#World" class="tsd-kind-icon">World</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="localFile" class="tsd-anchor"></a>
-					<h3>local<wbr>File</h3>
-					<div class="tsd-signature tsd-kind-icon">local<wbr>File<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<h2>Enumeration members</h2>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="Project" class="tsd-anchor"></a>
+					<h3>Project</h3>
+					<div class="tsd-signature tsd-kind-icon">Project<span class="tsd-signature-symbol">:</span></div>
 					<aside class="tsd-sources">
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The local file path, or empty if the current URL value doesn&#39;t refer
-							to a local file.</p>
-						</div>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.11</p>
-							</dd>
-						</dl>
-					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="url" class="tsd-anchor"></a>
-					<h3>url</h3>
-					<div class="tsd-signature tsd-kind-icon">url<span class="tsd-signature-symbol">:</span> <a href="../classes/Qt.QUrl.html" class="tsd-signature-type" data-tsd-kind="Class">QUrl</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="TileMap" class="tsd-anchor"></a>
+					<h3>Tile<wbr>Map</h3>
+					<div class="tsd-signature tsd-kind-icon">Tile<wbr>Map<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = 1</span></div>
 					<aside class="tsd-sources">
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The URL of the file.</p>
-						</div>
-						<p>If you need a local file path, use <a href="FilePath.html#localFile">localFile</a>.</p>
-					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="Tileset" class="tsd-anchor"></a>
+					<h3>Tileset</h3>
+					<div class="tsd-signature tsd-kind-icon">Tileset<span class="tsd-signature-symbol">:</span></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="World" class="tsd-anchor"></a>
+					<h3>World</h3>
+					<div class="tsd-signature tsd-kind-icon">World<span class="tsd-signature-symbol">:</span></div>
+					<aside class="tsd-sources">
+					</aside>
 				</section>
 			</section>
 		</div>
@@ -163,14 +159,20 @@
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface">
-						<a href="FilePath.html" class="tsd-kind-icon">File<wbr>Path</a>
+					<li class="current tsd-kind-enum">
+						<a href="AssetType.html" class="tsd-kind-icon">Asset<wbr>Type</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="FilePath.html#localFile" class="tsd-kind-icon">local<wbr>File</a>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="AssetType.html#Project" class="tsd-kind-icon">Project</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="FilePath.html#url" class="tsd-kind-icon">url</a>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="AssetType.html#TileMap" class="tsd-kind-icon">Tile<wbr>Map</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="AssetType.html#Tileset" class="tsd-kind-icon">Tileset</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="AssetType.html#World" class="tsd-kind-icon">World</a>
 							</li>
 						</ul>
 					</li>

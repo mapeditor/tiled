@@ -125,6 +125,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tile.html#frames" class="tsd-kind-icon">frames</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tile.html#height" class="tsd-kind-icon">height</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tile.html#id" class="tsd-kind-icon">id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tile.html#image" class="tsd-kind-icon">image</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tile.html#imageFileName" class="tsd-kind-icon">image<wbr>File<wbr>Name</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tile.html#imageRect" class="tsd-kind-icon">image<wbr>Rect</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tile.html#objectGroup" class="tsd-kind-icon">object<wbr>Group</a></li>
@@ -260,6 +261,32 @@
 						<div class="lead">
 							<p>ID of this tile within its tileset.</p>
 						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="image" class="tsd-anchor"></a>
+					<h3>image</h3>
+					<div class="tsd-signature tsd-kind-icon">image<span class="tsd-signature-symbol">:</span> <a href="Image.html" class="tsd-signature-type" data-tsd-kind="Class">Image</a></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Returns the image of this tile, or the image of its tileset if it doesn&#39;t
+							have an individual one.</p>
+						</div>
+						<p>Note that a tile represents a sub-rectangle of its image (or its tileset&#39;s
+							image), even if is part of an image collection tileset. The <a href="Tile.html#imageRect">imageRect</a> property provides access to this sub-rectangle. If you need a
+							copy of the tile&#39;s image that is already cropped to this sub-rectangle,
+						you can use the following snippet:</p>
+						<pre><code class="language-js"><span style="color: #569CD6">let</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">image</span><span style="color: #D4D4D4"> = </span><span style="color: #9CDCFE">tile</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">image</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">copy</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">tile</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">imageRect</span><span style="color: #D4D4D4">);</span>
+</code></pre>
+						<p>You can assign an <a href="Image.html">Image</a> to this property to change the tile&#39;s
+						image. See <a href="Tile.html#setImage">setImage</a> for more information.</p>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.11</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
@@ -544,6 +571,9 @@
 									<dt>since</dt>
 									<dd><p>1.10</p>
 									</dd>
+									<dt>deprecated</dt>
+									<dd><p>Use <a href="Tile.html#setProperty">setProperty</a> with a value created by <a href="../modules/tiled.html#color">tiled.color</a> instead.</p>
+									</dd>
 								</dl>
 							</div>
 						</li>
@@ -562,6 +592,9 @@
 								<dl class="tsd-comment-tags">
 									<dt>since</dt>
 									<dd><p>1.10</p>
+									</dd>
+									<dt>deprecated</dt>
+									<dd><p>Use <a href="Tile.html#setProperty">setProperty</a> with a value created by <a href="../modules/tiled.html#color">tiled.color</a> instead.</p>
 									</dd>
 								</dl>
 							</div>
@@ -599,7 +632,7 @@
 					<a name="setImage" class="tsd-anchor"></a>
 					<h3>set<wbr>Image</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">set<wbr>Image<span class="tsd-signature-symbol">(</span>image<span class="tsd-signature-symbol">: </span><a href="Image.html" class="tsd-signature-type" data-tsd-kind="Class">Image</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Image<span class="tsd-signature-symbol">(</span>image<span class="tsd-signature-symbol">: </span><a href="Image.html" class="tsd-signature-type" data-tsd-kind="Class">Image</a>, source<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -607,11 +640,23 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Sets the image of this tile.</p>
+									<p>Sets the image of this tile, optionally also setting its file name. The
+									existing image file name is cleared.</p>
 								</div>
+								<p>You should prefer to just set the <a href="Tile.html#imageFileName">imageFileName</a> when possible.
+									This function is mostly useful when the image data is loaded from a custom
+								format.</p>
+								<p>If an image is set directly on a tile, without specifying its file name,
+									when saving the tileset the image data will be embedded for formats that
+								support this (currently only TMX/TSX).</p>
 								<dl class="tsd-comment-tags">
+									<dt>note</dt>
+									<dd><p>Before Tiled 1.11, this function did not change the image file
+											name. For compatibility, set <a href="Tile.html#imageFileName">imageFileName</a> before calling this
+										function, if necessary.</p>
+									</dd>
 									<dt>warning</dt>
-									<dd><p>This function has no undo and does not affect the saved tileset!</p>
+									<dd><p>This function has no undo!</p>
 									</dd>
 								</dl>
 							</div>
@@ -643,6 +688,7 @@
 					<h3>set<wbr>Property</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">set<wbr>Property<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><a href="../index.html#TiledObjectPropertyValue" class="tsd-signature-type" data-tsd-kind="Type alias">TiledObjectPropertyValue</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Property<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, value<span class="tsd-signature-symbol">: </span><a href="../index.html#TiledObjectPropertyValue" class="tsd-signature-type" data-tsd-kind="Type alias">TiledObjectPropertyValue</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -651,19 +697,43 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Sets the value of the custom property with the given name. Supported
-										types are <code>bool</code>, <code>number</code>, <code>string</code>, <a href="../interfaces/FilePath.html">FilePath</a>,
-									<a href="../interfaces/ObjectRef.html">ObjectRef</a> and <a href="MapObject.html">MapObject</a>.</p>
+									<p>Sets the value of the custom property with the given name.</p>
 								</div>
+								<p>Supported types are <code>bool</code>, <code>number</code>, <code>string</code>, <a href="ObjectGroup.html#color">color</a>,
+									<a href="../interfaces/FilePath.html">FilePath</a>, <a href="../interfaces/ObjectRef.html">ObjectRef</a>, <a href="MapObject.html">MapObject</a> and
+								<a href="../interfaces/PropertyValue.html">PropertyValue</a>.</p>
 								<dl class="tsd-comment-tags">
 									<dt>note</dt>
 									<dd><p>When setting a <code>number</code>, the property type will be set to either
 											<code>int</code> or <code>float</code>, depending on whether it is a whole number. To force
 										the property to be <code>float</code>, use <a href="Tile.html#setFloatProperty">setFloatProperty</a>.</p>
 									</dd>
+								</dl>
+							</div>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="TiledObject.html">TiledObject</a>.<a href="TiledObject.html#setProperty">setProperty</a></p>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sets the value of an object&#39;s property identified the given \a path
+									to \a value.</p>
+								</div>
+								<p>The \a path is a list of property names, where each name identifies
+									a member of the previous member&#39;s value. The last name in the list
+								identifies the property to set.</p>
+								<p>Supported types are <code>bool</code>, <code>number</code>, <code>string</code>, <a href="ObjectGroup.html#color">color</a>,
+									<a href="../interfaces/FilePath.html">FilePath</a>, <a href="../interfaces/ObjectRef.html">ObjectRef</a>, <a href="MapObject.html">MapObject</a> and
+								<a href="../interfaces/PropertyValue.html">PropertyValue</a>.</p>
+								<dl class="tsd-comment-tags">
 									<dt>note</dt>
-									<dd><p>This function does not support setting <code>color</code> properties. Use
-										<a href="Tile.html#setColorProperty">setColorProperty</a> instead.</p>
+									<dd><p>When setting a <code>number</code>, the property type will be set to either
+											<code>int</code> or <code>float</code>, depending on whether it is a whole number. To force
+										the property to be <code>float</code>, use <a href="Tile.html#setFloatProperty">setFloatProperty</a>.</p>
+									</dd>
+									<dt>since</dt>
+									<dd><p>1.11</p>
 									</dd>
 								</dl>
 							</div>
@@ -707,6 +777,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Tile.html#id" class="tsd-kind-icon">id</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Tile.html#image" class="tsd-kind-icon">image</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Tile.html#imageFileName" class="tsd-kind-icon">image<wbr>File<wbr>Name</a>
