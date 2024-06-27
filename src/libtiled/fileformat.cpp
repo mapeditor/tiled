@@ -68,12 +68,13 @@ QString FileFormat::versionString()
         return QStringLiteral("1.8");
     case Tiled_1_9:
         return QStringLiteral("1.9");
+    case Tiled_1_10:
+        return QStringLiteral("1.10");
     case UnknownVersion:
-    case Tiled_Current:
     case Tiled_Latest:
         break;
     }
-    return QStringLiteral("1.10");
+    return QStringLiteral("1.11");
 }
 
 QString FileFormat::classPropertyNameForObject()
