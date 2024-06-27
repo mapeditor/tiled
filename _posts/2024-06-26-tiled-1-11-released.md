@@ -7,7 +7,7 @@ author:
 tags: release
 ---
 
-Tiled 1.11 brings many scripting API additions, automapping enhancements, export plug-in improvements, and various quality-of-life changes and bug fixes.
+Tiled 1.11 brings many scripting API additions, automapping enhancements, export plugin improvements, and various quality-of-life changes and bug fixes.
 
 ### Scripting Changes
 
@@ -21,33 +21,33 @@ A host of small but useful usability improvements have been made. The "Move Obje
 
 To move rectangular areas of tiles, you can now hold <kdb>Shift</kbd> while right-click dragging [to "cut" the captured tile stamp](https://github.com/mapeditor/tiled/issues/3961). This can provide a quick alternative to switching to the tile selection or eraser tools.
 
-When a read-only file is opened, a lock icon is now added to its tab. This is particularly useful for people using file locking in the context of version control.
+When a read-only file is opened, a lock icon is now shown in its tab. This is particularly useful for people using file locking in the context of version control.
 
 ### Exporting Improvements
 
-#### Godot 4 Export Plug-in
+#### Godot 4 Export Plugin
 
-The Godot 4 export plug-in now supports [exporting objects](https://doc.mapeditor.org/en/stable/manual/export-tscn/#object-properties). Objects you wish to export need to have a custom `resPath` property set on them, in the form of `res://<object path>.tscn`, indicating the Godot object you wish to replace the object with. Also, the support for exporting flipped tiles has been updated to use the new [tile transformation flags](https://github.com/godotengine/godot/pull/80144) added in Godot 4.2. Finally, the positioning of collision objects was fixed.
+The Godot 4 export plugin now supports [exporting objects](https://doc.mapeditor.org/en/stable/manual/export-tscn/#object-properties). Objects you wish to export need to have a custom `resPath` property set on them, in the form of `res://<object path>.tscn`, indicating the Godot object you wish to replace the object with. Also, the support for exporting flipped tiles has been updated to use the new [tile transformation flags](https://github.com/godotengine/godot/pull/80144) added in Godot 4.2. Finally, the positioning of collision objects was fixed.
 
 If this export option doesn't fit your needs, the [Tiled Importer for Godot 4](https://github.com/Kiamo2/YATI) remains a good alternative with a very extensive feature set.
 
-#### Python Plug-in
+#### Python Plugin
 
 The Python plugin now supports implementation of [custom tileset formats](https://doc.mapeditor.org/en/stable/manual/python/#tileset-plugins). Also, the Windows 10+ release of Tiled now uses Python 3.12 (previously 3.8 was used). It is still recommended to [extend Tiled with JavaScript](https://doc.mapeditor.org/en/stable/manual/scripting/) instead, which has more features and better availability.
 
-#### GameMaker 2 Plug-in
+#### GameMaker 2 Plugin
 
 The positioning of objects on isometric maps when [exporting to GameMaker 2](https://doc.mapeditor.org/en/stable/manual/export-yy) was fixed.
 
 #### tmxrasterizer
 
-While not technically an exporter, the `tmxrasterizer` utility shipping with Tiled provides a way to quickly turn a map (or an entire world) into an image. For this release, it gained `--hide/show-object` arguments for fine-grained control over visible objects. It also gained `--frames` and `--frame-duration` arguments to [export animated maps](https://github.com/mapeditor/tiled/pull/3868) as multiple images. The `--hide/show-layer` arguments [now work on group layers](https://github.com/mapeditor/tiled/issues/3899).
+While not technically an exporter, the `tmxrasterizer` utility shipping with Tiled provides a way to quickly turn a map (or an entire world) into an image. For this release, it gained `--hide/show-object` arguments for fine-grained control over object visibility. It also gained `--frames` and `--frame-duration` arguments to [export animated maps](https://github.com/mapeditor/tiled/pull/3868) as multiple images. The `--hide/show-layer` arguments [now work on group layers](https://github.com/mapeditor/tiled/issues/3899).
 
 Also, the loading of object templates in `.tx` format was fixed, allowing `tmxrasterizer` and `tmxviewer` to render template instances.
 
 ### Automapping Changes
 
-The [Automapping feature][Automapping] has been made more convenient based on three behavioral changes:
+The [Automapping feature][Automapping] has been made more convenient with three behavioral changes:
 
 * **Ignore empty outputs per-rule**: This is useful when your rules have multiple output variations, but not all of them have the same amount of variations. Now, only those output indices with actual output for a given rule are considered. The [special "Ignore" tile](https://doc.mapeditor.org/en/stable/manual/automapping/#specialtiles) can be used if you need an empty variation.
 
@@ -59,7 +59,7 @@ Finally, the Automapping feature no longer fails add new tilesets used by applie
 
 ### Noteworthy Bugfixes
 
-The way maps are reloaded when they are changed externally was rewritten to fix issues with reloading maps in the context of worlds. Also, loaded maps and tilesets, which are currently not opened for editing, are now also reloaded when they change on disk.
+The way maps are reloaded when they are changed externally was rewritten to fix issues with reloading maps in the context of worlds. Also, loaded maps and tilesets which are currently not opened for editing, are now also reloaded when they change on disk.
 
 With the "Resolve object types and properties" [export option](https://doc.mapeditor.org/en/stable/manual/preferences/#export-options) enabled, members of custom classes used as properties are now also exported with their default values.
 
@@ -102,7 +102,7 @@ Many other small improvements could not be mentioned, so check out the full chan
 *   tmxviewer: Added support for viewing JSON maps ([#3866](https://github.com/mapeditor/tiled/issues/3866))
 *   tmxrasterizer/viewer: Fixed loading of XML object templates (with Christian Schaadt, [#3977](https://github.com/mapeditor/tiled/pull/3977))
 *   AutoMapping: Ignore empty outputs per-rule ([#3523](https://github.com/mapeditor/tiled/issues/3523))
-*   Automapping: Added per-input-layer properties for ignoring flip flags ([#3803](https://github.com/mapeditor/tiled/issues/3803))
+*   AutoMapping: Added per-input-layer properties for ignoring flip flags ([#3803](https://github.com/mapeditor/tiled/issues/3803))
 *   AutoMapping: Always apply output sets with empty index
 *   AutoMapping: Fixed adding of new tilesets used by applied changes
 *   Windows: Fixed the support for WebP images (updated to Qt 6.6.1, [#3661](https://github.com/mapeditor/tiled/issues/3661))
