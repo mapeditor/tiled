@@ -1,3 +1,7 @@
+### Unreleased
+
+* Scripting: Added `FileFormat.nameFilter`
+
 ### Tiled 1.11.0 (27 June 2024)
 
 * Added --project command-line parameter for use when exporting (#3797)
@@ -7,15 +11,15 @@
 * Made adding "Copy" when duplicating optional and disabled by default (#3917)
 * Changed default shortcut for "Save As" to Ctrl+Shift+S and removed shortcut from "Save All" (#3933)
 * Layer names are now trimmed when edited in the UI, to avoid accidental whitespace
-* Scripting: Added API for working with worlds (#3539)
-* Scripting: Added Object.setProperty overload for setting nested values
-* Scripting: Added Tile.image for accessing a tile's image data
-* Scripting: Added Image.copy overload that takes a rectangle
-* Scripting: Added Tileset.imageFileName and ImageLayer.imageFileName
-* Scripting: Added FilePath.localFile and FileEdit.fileName (string alternatives to Qt.QUrl properties)
-* Scripting: Added tiled.color to create color values
-* Scripting: Made Tileset.margin and Tileset.tileSpacing writable
-* Scripting: Restored compatibility for MapObject.polygon (#3845)
+* Scripting: Added API for working with worlds (with dogboydog, #3539)
+* Scripting: Added `Object.setProperty` overload for setting nested values
+* Scripting: Added `Tile.image` for accessing a tile's image data
+* Scripting: Added `Image.copy` overload that takes a rectangle
+* Scripting: Added `Tileset.imageFileName` and `ImageLayer.imageFileName`
+* Scripting: Added `FilePath.localFile` and `FileEdit.fileName` (string alternatives to `Qt.QUrl` properties)
+* Scripting: Added `tiled.color` to create color values
+* Scripting: Made `Tileset.margin` and `Tileset.tileSpacing` writable
+* Scripting: Restored compatibility for `MapObject.polygon` (#3845)
 * Scripting: Fixed issues with editing properties after setting class values from script
 * Scripting: Fixed setting/getting object reference values when nested as a class member
 * TMX format: Embedded images are now also supported on tilesets and image layers
@@ -27,9 +31,9 @@
 * Python plugin: Added support for implementing tileset formats (with Pablo Duboue, #3857)
 * Python plugin: Raised minimum Python version to 3.8
 * Python plugin: Now built against Python 3.12 for Windows 10+
-* tmxrasterizer: Added --hide-object and --show-object arguments (by Lars Luz, #3819)
-* tmxrasterizer: Added --frames and --frame-duration arguments to export animated maps as multiple images (#3868)
-* tmxrasterizer: Fixed --hide/show-layer to work on group layers (#3899)
+* tmxrasterizer: Added `--hide-object` and `--show-object` arguments (by Lars Luz, #3819)
+* tmxrasterizer: Added `--frames` and `--frame-duration` arguments to export animated maps as multiple images (#3868)
+* tmxrasterizer: Fixed `--hide/show-layer` to work on group layers (#3899)
 * tmxviewer: Added support for viewing JSON maps (#3866)
 * tmxrasterizer/viewer: Fixed loading of XML object templates (with Christian Schaadt, #3977)
 * AutoMapping: Ignore empty outputs per-rule (#3523)

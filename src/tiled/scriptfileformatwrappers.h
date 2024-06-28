@@ -36,6 +36,7 @@ class ScriptFileFormatWrapper : public QObject
 
     Q_PROPERTY(bool canRead READ canRead)
     Q_PROPERTY(bool canWrite READ canWrite)
+    Q_PROPERTY(QString nameFilter READ nameFilter)
 
 public:
     explicit ScriptFileFormatWrapper(FileFormat *format, QObject *parent = nullptr);
@@ -44,6 +45,7 @@ public:
 
     bool canRead() const;
     bool canWrite() const;
+    QString nameFilter() const;
 
 protected:
     bool assertCanRead() const;

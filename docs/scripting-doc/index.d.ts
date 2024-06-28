@@ -1650,6 +1650,13 @@ interface FileFormat {
   readonly canWrite: boolean;
 
   /**
+   * The file name filter used by this format (used in file dialogs).
+   *
+   * @since 1.11.1
+   */
+  readonly nameFilter: FileFilter;
+
+  /**
    * Returns whether the given file is readable by this format.
    */
   supportsFile(fileName: string): boolean;

@@ -23,7 +23,6 @@
 #include "editablemap.h"
 #include "editabletileset.h"
 #include "mapformat.h"
-#include "scriptedfileformat.h"
 #include "scriptmanager.h"
 #include "tilesetformat.h"
 
@@ -50,6 +49,11 @@ bool ScriptFileFormatWrapper::canRead() const
 bool ScriptFileFormatWrapper::canWrite() const
 {
     return mFormat->capabilities() & FileFormat::Write;
+}
+
+QString ScriptFileFormatWrapper::nameFilter() const
+{
+    return mFormat->nameFilter();
 }
 
 bool ScriptFileFormatWrapper::assertCanRead() const
