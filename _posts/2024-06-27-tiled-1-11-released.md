@@ -76,7 +76,7 @@ Many other small improvements could not be mentioned, so check out the full chan
 *   Made adding "Copy" when duplicating optional and disabled by default ([#3917](https://github.com/mapeditor/tiled/pull/3917))
 *   Changed default shortcut for "Save As" to <kbd>Ctrl+Shift+S</kbd> and removed shortcut from "Save All" ([#3933](https://github.com/mapeditor/tiled/issues/3933))
 *   Layer names are now trimmed when edited in the UI, to avoid accidental whitespace
-*   Scripting: Added API for working with worlds ([#3539](https://github.com/mapeditor/tiled/issues/3539))
+*   Scripting: Added API for working with worlds (with dogboydog, [#3539](https://github.com/mapeditor/tiled/issues/3539))
 *   Scripting: Added `Object.setProperty` overload for setting nested values
 *   Scripting: Added `Tile.image` for accessing a tile's image data
 *   Scripting: Added `Image.copy` overload that takes a rectangle
