@@ -9,7 +9,7 @@ tags: release
 
 Tiled 1.11 brings many scripting API additions, automapping enhancements, export plugin improvements, and various quality-of-life changes and bug fixes.
 
-### Scripting Changes
+### Scripting API Additions
 
 Notable additions to the scripting API include support for [working with worlds](https://www.mapeditor.org/docs/scripting/classes/World.html), conveniently setting nested object properties, accessing tile images, creating [color values](https://www.mapeditor.org/docs/scripting/modules/tiled.html#color), and modifying tileset margin and spacing.
 
@@ -19,7 +19,7 @@ Additionally, a `--project` command-line parameter was added to allow project ex
 
 A host of small but useful usability improvements have been made. The "Move Object to Layer" menu now [displays group layer names](https://github.com/mapeditor/tiled/pull/3811). The <kbd>Ctrl+Shift+S</kbd> shortcut is now "Save As" by default, to match most other applications. Duplicating layers no longer adds "Copy" to the name by default.
 
-To move rectangular areas of tiles, you can now hold <kdb>Shift</kbd> while right-click dragging [to "cut" the captured tile stamp](https://github.com/mapeditor/tiled/issues/3961). This can provide a quick alternative to switching to the tile selection or eraser tools.
+To move rectangular areas of tiles, you can now hold <kbd>Shift</kbd> while right-click dragging [to "cut" the captured tile stamp](https://github.com/mapeditor/tiled/issues/3961). This can provide a quick alternative to switching to the tile selection or eraser tools.
 
 When a read-only file is opened, a lock icon is now shown in its tab. This is particularly useful for people using file locking in the context of version control.
 
@@ -33,7 +33,7 @@ If this export option doesn't fit your needs, the [Tiled Importer for Godot 4](h
 
 #### Python Plugin
 
-The Python plugin now supports implementation of [custom tileset formats](https://doc.mapeditor.org/en/stable/manual/python/#tileset-plugins). Also, the Windows 10+ release of Tiled now uses Python 3.12 (previously 3.8 was used). It is still recommended to [extend Tiled with JavaScript](https://doc.mapeditor.org/en/stable/manual/scripting/) instead, which has more features and better availability.
+The Python plugin now supports implementation of [custom tileset formats](https://doc.mapeditor.org/en/stable/manual/python/#tileset-plugins). Also, the Windows 10+ release of Tiled now uses Python 3.12 (previously 3.8 was used). It is however recommended to [extend Tiled with JavaScript](https://doc.mapeditor.org/en/stable/manual/scripting/) instead, which has more features and better availability.
 
 #### GameMaker 2 Plugin
 
@@ -117,8 +117,9 @@ Many other small improvements could not be mentioned, so check out the full chan
 *   Fixed object assignment buttons in tile collision editor ([#3399](https://github.com/mapeditor/tiled/issues/3399))
 *   AppImage: Fixed ability to open paths with spaces from the CLI ([#3914](https://github.com/mapeditor/tiled/issues/3914))
 *   AppImage: Updated to Sentry 0.7.6
+*   Updated Bulgarian, Czech, French and Russian translations
 
-## Support Tiled Development <img src="/img/heart.png" style="width: 1em;" title=":heart:" class="emoji" alt=":heart:">
+## Support Tiled Development ❤️
 
 Continued Tiled development is made possible by monthly donations through
 [Patreon], [GitHub Sponsors][sponsors] and [OpenCollective] as well as many
