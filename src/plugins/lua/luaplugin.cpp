@@ -226,6 +226,7 @@ void LuaWriter::writeMap(const Map *map)
     mWriter.writeKeyAndValue("height", map->height());
     mWriter.writeKeyAndValue("tilewidth", map->tileWidth());
     mWriter.writeKeyAndValue("tileheight", map->tileHeight());
+    mWriter.writeKeyAndValue("invertyaxis", map->invertYAxis());
     mWriter.writeKeyAndValue("nextlayerid", map->nextLayerId());
     mWriter.writeKeyAndValue("nextobjectid", map->nextObjectId());
 
