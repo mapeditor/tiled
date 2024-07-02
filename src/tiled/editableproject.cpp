@@ -21,7 +21,9 @@
 
 #include "editableproject.h"
 
+#include "preferences.h"
 #include "projectdocument.h"
+#include "projectmanager.h"
 
 namespace Tiled {
 
@@ -29,6 +31,11 @@ EditableProject::EditableProject(ProjectDocument *projectDocument, QObject *pare
     : EditableAsset(&projectDocument->project(), parent)
 {
     setDocument(projectDocument);
+}
+
+bool EditableProject::isReadOnly() const
+{
+    return false;
 }
 
 QString EditableProject::extensionsPath() const
@@ -51,9 +58,12 @@ QStringList EditableProject::folders() const
     return project()->folders();
 }
 
-bool EditableProject::isReadOnly() const
+QVector<ScriptPropertyType *>EditableProject::propertyTypes() const
 {
-    return false;
+    QVector<ScriptPropertyType*> scriptTypes;
+    for (const PropertyType *type : *project()->propertyTypes())
+        scriptTypes.append(toScriptType(type));
+    return scriptTypes;
 }
 
 QSharedPointer<Document> EditableProject::createDocument()
@@ -61,6 +71,47 @@ QSharedPointer<Document> EditableProject::createDocument()
     // We don't currently support opening a project in a tab, which this
     // function is meant for.
     return nullptr;
+}
+
+ScriptPropertyType *EditableProject::toScriptType(const PropertyType *type) const
+{
+    if (!type)
+        return nullptr;
+
+    switch (type->type) {
+    case PropertyType::PT_Invalid:
+        break;
+    case PropertyType::PT_Class:
+        return new ScriptClassPropertyType(static_cast<const ClassPropertyType *>(type));
+    case PropertyType::PT_Enum:
+        return new ScriptEnumPropertyType(static_cast<const EnumPropertyType *>(type));
+    }
+
+    return nullptr;
+}
+
+ScriptPropertyType *EditableProject::findTypeByName(const QString &name)
+{
+    const PropertyType *type = project()->propertyTypes()->findTypeByName(name);
+    return toScriptType(type);
+}
+
+void EditableProject::removeTypeByName(const QString &name)
+{
+    int index = project()->propertyTypes()->findIndexByName(name);
+    if (index < 0)
+        return;
+
+    project()->propertyTypes()->removeAt(index);
+    applyPropertyChanges();
+}
+
+void EditableProject::applyPropertyChanges()
+{
+    emit Preferences::instance()->propertyTypesChanged();
+
+    Project &project = ProjectManager::instance()->project();
+    project.save();
 }
 
 } // namespace Tiled
