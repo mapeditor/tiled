@@ -1,10 +1,11 @@
 [main]
 host = https://www.transifex.com
-type = QT
 
-[tiled.master]
-file_filter = translations/tiled_<lang>.ts
-minimum_perc = 0
-source_file = translations/tiled_en.ts
-source_lang = en
-type = QT
+[o:mapeditororg:p:tiled:r:master]
+file_filter            = translations/tiled_<lang>.ts
+source_file            = translations/tiled_en.ts
+source_lang            = en
+type                   = QT
+minimum_perc           = 0
+replace_edited_strings = false
+keep_translations      = false
