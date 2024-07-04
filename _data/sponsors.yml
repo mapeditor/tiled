@@ -16,6 +16,11 @@
   banner: sponsors/chanel_expert.png
   sponsored_exception_until: "9999-12-31"
 
+- name: Route4Me Route Planner
+  url: https://www.route4me.com/
+  banner: sponsors/route4me.png
+  sponsor: https://github.com/route4me
+
 - name: Buy Instagram followers Insfollowpro
   url: https://insfollowpro.com/
   banner: sponsors/insfollowpro.png
