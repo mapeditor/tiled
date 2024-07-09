@@ -362,6 +362,14 @@
    <binary>tiled</binary>
    <id>tiled.desktop</id>
  </provides>
+ <requires>
+  <control>pointing</control>
+  <control>keyboard</control>
+ </requires>
+ <supports>
+  <control>tablet</control>
+  <control>touch</control>
+ </supports>
  <translation type="qt">tiled</translation>
  <update_contact>tingping@fedoraproject.org</update_contact>
 </component>
