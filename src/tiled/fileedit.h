@@ -88,5 +88,3 @@ inline bool FileEdit::isDirectory() const
 }
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::FileEdit*)

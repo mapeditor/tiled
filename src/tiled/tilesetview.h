@@ -173,5 +173,3 @@ inline bool TilesetView::markAnimatedTiles() const
 }
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::TilesetView *)

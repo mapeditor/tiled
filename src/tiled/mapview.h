@@ -159,5 +159,3 @@ inline QPointF MapView::viewCenter() const
 }
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::MapView*)

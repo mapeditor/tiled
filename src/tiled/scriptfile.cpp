@@ -793,7 +793,4 @@ void registerFile(QJSEngine *jsEngine)
 
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::ScriptBinaryFile*)
-Q_DECLARE_METATYPE(Tiled::ScriptTextFile*)
-
 #include "scriptfile.moc"

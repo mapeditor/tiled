@@ -209,5 +209,3 @@ inline TileCollisionDock *TilesetEditor::collisionEditor() const
 }
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::TilesetEditor*)

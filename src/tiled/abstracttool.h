@@ -324,5 +324,3 @@ inline ToolManager *AbstractTool::toolManager() const
 }
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::AbstractTool*)

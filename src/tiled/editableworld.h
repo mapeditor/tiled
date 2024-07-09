@@ -68,5 +68,3 @@ inline World *EditableWorld::world() const
 }
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::EditableWorld*)

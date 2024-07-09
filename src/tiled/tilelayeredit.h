@@ -79,5 +79,3 @@ inline EditableTileLayer *TileLayerEdit::target() const
 }
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::TileLayerEdit*)

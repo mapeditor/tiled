@@ -331,5 +331,3 @@ inline void EditableTileset::setTileSize(int width, int height)
 }
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::EditableTileset*)

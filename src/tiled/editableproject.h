@@ -61,5 +61,3 @@ inline Project *EditableProject::project() const
 }
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::EditableProject*)

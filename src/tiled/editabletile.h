@@ -166,5 +166,3 @@ inline EditableTile *EditableTile::find(Tile *tile)
 }
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::EditableTile*)

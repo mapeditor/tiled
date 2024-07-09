@@ -195,6 +195,3 @@ TILEDSHARED_EXPORT QString typeName(const QVariant &value);
 TILEDSHARED_EXPORT void initializeMetatypes();
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::FilePath)
-Q_DECLARE_METATYPE(Tiled::ObjectRef)

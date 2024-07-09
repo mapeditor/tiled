@@ -45,5 +45,3 @@ public:
 };
 
 } // namespace TiledQuick
-
-Q_DECLARE_METATYPE(TiledQuick::MapRef)

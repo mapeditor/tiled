@@ -191,5 +191,3 @@ inline EditableLayer *EditableLayer::find(Layer *layer)
 }
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::EditableLayer*)

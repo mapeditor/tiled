@@ -104,5 +104,3 @@ inline Document *EditableAsset::document() const
 }
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::EditableAsset*)

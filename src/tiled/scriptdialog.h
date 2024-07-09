@@ -114,6 +114,3 @@ private:
 void registerDialog(QJSEngine *jsEngine);
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::ScriptDialog*);
-Q_DECLARE_METATYPE(Tiled::ScriptImageWidget*)
