@@ -308,8 +308,8 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
         return;
 
     // Hide while we update the tab bar, to avoid repeated layouting
-    // But, this causes problems on OS X (issue #1055)
-#ifndef Q_OS_OSX
+    // But, this causes problems on macOS (issue #1055)
+#ifndef Q_OS_MACOS
     widget()->hide();
 #endif
 
@@ -339,7 +339,7 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
 
     updateActions();
 
-#ifndef Q_OS_OSX
+#ifndef Q_OS_MACOS
     widget()->show();
 #endif
 }

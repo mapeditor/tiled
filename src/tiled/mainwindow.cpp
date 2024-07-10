@@ -358,9 +358,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionPaste->setShortcuts(QKeySequence::Paste);
     QList<QKeySequence> deleteKeys = QKeySequence::keyBindings(QKeySequence::Delete);
     deleteKeys.removeAll(Qt::Key_D | Qt::ControlModifier);  // used as "duplicate" shortcut
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
     // Add the Backspace key as primary shortcut for Delete, which seems to be
-    // the expected one for OS X.
+    // the expected one for macOS.
     if (!deleteKeys.contains(QKeySequence(Qt::Key_Backspace)))
         deleteKeys.prepend(QKeySequence(Qt::Key_Backspace));
 #endif

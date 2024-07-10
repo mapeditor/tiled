@@ -83,7 +83,7 @@ NewsFeed &TiledApplication::newsFeed()
 
 bool TiledApplication::event(QEvent *event)
 {
-    // Handle the QFileOpenEvent to open files on MacOS X.
+    // Handle the QFileOpenEvent to open files on macOS.
     if (event->type() == QEvent::FileOpen) {
         QFileOpenEvent *fileOpenEvent = static_cast<QFileOpenEvent*>(event);
         emit fileOpenRequest(fileOpenEvent->file());
