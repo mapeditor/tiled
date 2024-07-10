@@ -4321,6 +4321,9 @@ declare namespace tiled {
    * Shows a dialog that asks the user to enter some text, along with the
    * given label and optional title. The optional `text` parameter
    * provides the initial value of the text. Returns the entered text.
+   *
+   * For more complex input requirements, consider creating a custom
+   * {@link Dialog}.
    */
   export function prompt(label: string, text?: string, title?: string): string;
 
@@ -4328,7 +4331,9 @@ declare namespace tiled {
    * Shows a dialog which asks the user to choose an existing directory.
    * Optionally override the starting directory of the dialog or its title.
    *
-   * Returns the absolute path of the chosen directory, or an empty string if the user cancels the dialog.
+   * Returns the absolute path of the chosen directory, or an empty string if
+   * the user cancels the dialog.
+   *
    * @since 1.10.2
    */
   export function promptDirectory(defaultDir?: string, title?: string): string;
@@ -4338,7 +4343,9 @@ declare namespace tiled {
    * Optionally override the starting directory of the dialog or its title.
    * You can also restrict to only certain file types by specifying {@link FileFilter|filters}.
    *
-   * Returns an array of the absolute paths of the chosen files, or an empty array if the user cancels the dialog.
+   * Returns an array of the absolute paths of the chosen files, or an empty
+   * array if the user cancels the dialog.
+   *
    * @since 1.10.2
    */
   export function promptOpenFiles(defaultDir?: string, filters?: FileFilter, title?: string): string[];
@@ -4348,7 +4355,9 @@ declare namespace tiled {
    * Optionally override the starting directory of the dialog or its title.
    * You can also restrict to only certain file types by specifying {@link FileFilter|filters}.
    *
-   * Returns the absolute path of the chosen file, or an empty string if the user cancels the dialog.
+   * Returns the absolute path of the chosen file, or an empty string if the
+   * user cancels the dialog.
+   *
    * @since 1.10.2
    */
   export function promptOpenFile(defaultDir?: string, filters?: FileFilter, title?: string): string;
@@ -4359,7 +4368,9 @@ declare namespace tiled {
    * Optionally override the starting directory of the dialog or its title.
    * You can also restrict to only certain file types by specifying {@link FileFilter|filters}.
    *
-   * Returns the absolute path of the chosen file, or an empty string if the user cancels the dialog.
+   * Returns the absolute path of the chosen file, or an empty string if the
+   * user cancels the dialog.
+   *
    * @since 1.10.2
    */
   export function promptSaveFile(defaultDir?: string, filters?: string, title?: string): string;
@@ -4903,12 +4914,14 @@ declare class ImageWidget extends Qt.QWidget {
  * The `Dialog` object is used to display a dialog to the user
  * which can be filled with a variety of widgets.
  *
- * The left-hand column of the dialog can only contain headings. If you call {@link addHeading} without
- * specifying maxWidth = true, your heading will be placed in the left-hand column of the dialog.
+ * The left-hand column of the dialog can only contain headings. If you call
+ * {@link addHeading} without specifying maxWidth = true, your heading will be
+ * placed in the left-hand column of the dialog.
  *
- * All other widgets will be placed in the right-hand side column. When you add multiple instances
- * of the same type of widget sequentially, they will be grouped into the same row unless you call {@link addNewRow}
- * in between adding the widgets.
+ * All other widgets will be placed in the right-hand side column. When you add
+ * multiple instances of the same type of widget sequentially, they will be
+ * grouped into the same row unless you call {@link addNewRow} in between
+ * adding the widgets or change the {@link newRowMode} property.
  *
  * This type is an extension of the [QDialog](https://doc.qt.io/qt-6/qdialog.html) type from Qt.
  *
@@ -4930,23 +4943,27 @@ declare class Dialog extends Qt.QWidget {
    * a title and using the default width and height of 450 pixels.
    */
   constructor();
+
   /**
    * Create a new dialog object, customizing the title.
    * @param windowTitle - the title appearing at the top of the dialog.
    */
   constructor(windowTitle: string);
+
   /**
-   * The default row layout mode for Dialogs.
-   * In this mode, if you add multiple of the same type of widget in a row,
-   * (for instance by calling {@link addButton} twice in a row),
-   * the Dialog will automatically group them into the same row.
+   * The default row layout mode.
    *
-   * As soon as a differently typed widget is added, a new
-   * row will be added to the dialog. The exception to this rule is
-   * the widget created by addLabel(), which will be mixed with any other
-   * widget types when using this mode.
+   * In this mode, if you add multiple of the same type of widget in a row,
+   * (for instance by calling {@link addButton} twice in a row), the Dialog
+   * will automatically group them into the same row.
+   *
+   * As soon as a differently typed widget is added, a new row will be added to
+   * the dialog. The exception to this rule is the widget created by {@link
+   * addLabel}, which will be mixed with any other widget types when using this
+   * mode.
    */
   static readonly SameWidgetRows: unique symbol;
+
   /**
    * In this mode, the dialog will not add a new row unless you call
    * {@link addNewRow}, {@link addHeading} or {@link addSeparator}.
@@ -4962,7 +4979,7 @@ declare class Dialog extends Qt.QWidget {
 
   /**
    * Controls the automatic widget placement behavior of the dialog.
-   * Defaults to {@link SameWidgetRows}
+   * Defaults to {@link SameWidgetRows}.
    */
   newRowMode: typeof Dialog.SingleWidgetRows | typeof Dialog.SameWidgetRows | typeof Dialog.ManualRows;
 
@@ -5022,14 +5039,14 @@ declare class Dialog extends Qt.QWidget {
    * @param labelText The text of the label to display inside the checkbox widget
    * @param defaultValue true to have the checkbox checked by default, false to have the checkbox start unchecked.
    */
-  addCheckBox(labelText: string, defaultValue: boolean): Qt.QCheckBox;
+  addCheckBox(labelText?: string, defaultValue?: boolean): Qt.QCheckBox;
 
   /**
    * Add a {@link Qt.QPushButton} widget to the dialog to allow the user
    * to press a button that you can respond to the clicked signal of.
    * @param labelText
    */
-  addButton(labelText: string): Qt.QPushButton;
+  addButton(labelText?: string): Qt.QPushButton;
 
   /**
    * Add a {@link Qt.QLineEdit} widget to the dialog to allow the user
