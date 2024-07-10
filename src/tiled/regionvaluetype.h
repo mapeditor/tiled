@@ -132,5 +132,3 @@ inline const QRegion &RegionValueType::region() const
 }
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::RegionValueType)

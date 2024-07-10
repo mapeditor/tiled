@@ -148,5 +148,3 @@ inline void TileLayerWangEdit::setEdge(int x, int y, WangIndex::Value edge, int 
 }
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::TileLayerWangEdit*)

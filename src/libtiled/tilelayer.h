@@ -664,5 +664,3 @@ inline void TileLayer::setCells(int x, int y, const TileLayer *tileLayer)
 using SharedTileLayer = QSharedPointer<TileLayer>;
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::Cell)

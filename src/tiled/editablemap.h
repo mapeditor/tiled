@@ -384,5 +384,3 @@ inline MapDocument *EditableMap::mapDocument() const
 }
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::EditableMap*)

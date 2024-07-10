@@ -55,5 +55,3 @@ private:
 };
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::ColorButton*);

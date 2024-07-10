@@ -94,5 +94,3 @@ inline QString ScriptedTool::iconFileName() const
 }
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::ScriptedTool*)

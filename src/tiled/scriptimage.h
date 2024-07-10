@@ -161,5 +161,3 @@ private:
 };
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::ScriptImage*)

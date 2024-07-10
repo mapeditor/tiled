@@ -169,5 +169,3 @@ inline bool TileCollisionDock::hasSelectedObjects() const
 }
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::TileCollisionDock*)

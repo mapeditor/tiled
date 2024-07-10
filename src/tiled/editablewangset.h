@@ -122,5 +122,3 @@ inline EditableWangSet *EditableWangSet::find(WangSet *wangSet)
 }
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::EditableWangSet*)

@@ -295,5 +295,3 @@ inline void EditableMapObject::setHeight(qreal height)
 }
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::Font)

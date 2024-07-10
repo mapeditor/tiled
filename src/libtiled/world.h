@@ -113,6 +113,3 @@ public:
 };
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::WorldPattern)
-Q_DECLARE_METATYPE(Tiled::WorldMapEntry)

@@ -77,6 +77,3 @@ public:
 };
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::ScriptTilesetFormatWrapper*)
-Q_DECLARE_METATYPE(Tiled::ScriptMapFormatWrapper*)
