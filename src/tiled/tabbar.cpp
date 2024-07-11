@@ -51,7 +51,7 @@ void TabBar::mouseReleaseEvent(QMouseEvent *event)
 
 void TabBar::wheelEvent(QWheelEvent *event)
 {
-    // Qt excludes OS X when implementing mouse wheel for switching tabs.
+    // Qt excludes macOS when implementing mouse wheel for switching tabs.
     // However, we explicitly want this feature on the tilesets and open
     // documents tab bars as a possible means of navigation.
 
