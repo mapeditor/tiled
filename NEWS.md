@@ -1,6 +1,7 @@
 ### Unreleased
 
 * Scripting: Added `FileFormat.nameFilter`
+* Scripting: Added `MapEditor.currentBrushChanged` signal
 
 ### Tiled 1.11.0 (27 June 2024)
 

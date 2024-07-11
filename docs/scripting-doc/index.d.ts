@@ -1562,7 +1562,7 @@ declare class Asset extends TiledObject {
   /**
    * The signal emitted when {@link modified} changes.
    */
-  readonly modifiedChanged: Signal<null>;
+  readonly modifiedChanged: Signal<void>;
 
   /**
    * Whether the asset is a {@link TileMap}.
@@ -2370,6 +2370,16 @@ interface MapEditor {
   currentBrush : TileMap
 
   /**
+   * Signal emitted when the current brush has changed.
+   *
+   * This signal is also emitted when assigning to {@link currentBrush}, so be
+   * careful not to cause an infinite loop.
+   *
+   * @since 1.11.1
+   */
+  currentBrushChanged : Signal<void>;
+
+  /**
    * Gets the currently selected {@link WangSet} in the "Terrain Sets" view.
    *
    * See also {@link TileLayerWangEdit}.
@@ -2383,7 +2393,7 @@ interface MapEditor {
    *
    * @since 1.8
    */
-  readonly currentWangSetChanged: Signal<null>;
+  readonly currentWangSetChanged: Signal<void>;
 
   /**
    * Gets the currently selected Wang color index in the "Terrain Sets" view.
@@ -2430,7 +2440,7 @@ interface TilesetsView {
    *
    * @since 1.9.1
    */
-  readonly currentTilesetChanged: Signal<null>;
+  readonly currentTilesetChanged: Signal<void>;
 
   /**
    * A list of the tiles that are selected in the current tileset.
@@ -2876,7 +2886,7 @@ declare class TileMap extends Asset {
   /**
    * The signal emitted when {@link currentLayer} changes.
    */
-  readonly currentLayerChanged: Signal<null>;
+  readonly currentLayerChanged: Signal<void>;
 
   /**
    * Selected layers.
@@ -2889,7 +2899,7 @@ declare class TileMap extends Asset {
   /**
    * The signal emitted when {@link selectedLayers} changes.
    */
-  readonly selectedLayersChanged: Signal<null>;
+  readonly selectedLayersChanged: Signal<void>;
 
   /**
    * Selected objects.
@@ -2902,7 +2912,7 @@ declare class TileMap extends Asset {
   /**
    * The signal emitted when {@link selectedObjects} changes.
    */
-  readonly selectedObjectsChanged: Signal<null>;
+  readonly selectedObjectsChanged: Signal<void>;
 
   /**
    * Constructs a new map.
@@ -3880,7 +3890,7 @@ interface TilesetEditor {
    *
    * @since 1.9
    */
-  readonly currentWangSetChanged: Signal<null>;
+  readonly currentWangSetChanged: Signal<void>;
 
   /**
    * Gets the currently selected Wang color index in the "Terrain Sets" view.
