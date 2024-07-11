@@ -232,9 +232,9 @@ QWidget *ScriptDialog::addSlider(const QString &labelText)
     return addDialogWidget(horizontalSlider, labelText);
 }
 
-QWidget *ScriptDialog::addCheckBox(const QString &labelText, bool defaultValue)
+QWidget *ScriptDialog::addCheckBox(const QString &text, bool defaultValue)
 {
-    QCheckBox *checkBox = new QCheckBox(labelText, this);
+    QCheckBox *checkBox = new QCheckBox(text, this);
     checkBox->setCheckState(defaultValue ? Qt::Checked: Qt::Unchecked);
     return addDialogWidget(checkBox);
 }
@@ -245,9 +245,9 @@ QWidget *ScriptDialog::addComboBox(const QString &labelText, const QStringList &
     return addDialogWidget(comboBox, labelText);
 }
 
-QWidget *ScriptDialog::addButton(const QString &labelText)
+QWidget *ScriptDialog::addButton(const QString &text)
 {
-    return addDialogWidget(new QPushButton(labelText, this));
+    return addDialogWidget(new QPushButton(text, this));
 }
 
 QWidget *ScriptDialog::addFilePicker(const QString &labelText)

@@ -1322,55 +1322,44 @@ declare class World extends Asset {
 
   /**
    * Returns true if this world contains a map with the given fileName.
-   * @param fileName The file name of the map to check for.
    */
   containsMap(fileName : string) : boolean;
 
   /**
    * Returns true if this world contains the given map.
-   * @param map The TileMap to check for.
    */
   containsMap(map : TileMap) : boolean;
 
   /**
-   * Change the position and size of a map within this world.
-   * @param fileName The file name of the map to change the position and size for.
-   * @param rect The new rect describing the position and size of the map.
+   * Change the position and size (in pixels) of the map with the given
+   * fileName within this world.
    */
   setMapRect(fileName: string, rect : rect): void;
 
   /**
-   * Change the position of a map within this world.
-   * @param map The TileMap of which to change the position.
-   * @param x The x position of the map in the world, in pixels.
-   * @param y The y position of the map in the world, in pixels.
+   * Change the position (in pixels) of the given map within this world.
    */
   setMapPos(map: TileMap, x: number, y: number): void;
 
   /**
-   * Add a map to this world.
-   * @param fileName The file name of the map to add to this world.
-   * @param rect A Qt.rect specifying the position and size of the map to add.
+   * Add a map to this world by its file name. The position and size is
+   * specified in pixels by the given rect.
    */
   addMap(fileName: string, rect: rect): void;
 
   /**
-   * Add a map to this world. The map size in pixels will be set automatically.
-   * @param map The TileMap instance to add to the world.
-   * @param x The x position of the map in the world, in pixels.
-   * @param y The y position of the map in the world, in pixels.
+   * Add the given map to this world. The position is given in pixels. The map
+   * size will be set automatically.
    */
   addMap(map: TileMap, x: number, y: number): void;
 
   /**
-   * Remove a map from this world.
-   * @param fileName The file name of the map to remove.
+   * Remove the map with the given file name from this world.
    */
   removeMap(fileName: string): void;
 
   /**
-   * Remove a map from this world.
-   * @param map The TileMap instance to remove from this world.
+   * Remove the given map from this world.
    */
   removeMap(map: TileMap): void;
 }
@@ -5023,16 +5012,12 @@ declare class Dialog extends Qt.QWidget {
   static readonly Accepted: unique symbol
 
   /**
-   * Create a new Dialog object without assigning
-   * a title and using the default width and height of 450 pixels.
+   * Create a new dialog with the given window title.
+   *
+   * When not given the title defaults to "Script".
    */
-  constructor();
+  constructor(windowTitle?: string);
 
-  /**
-   * Create a new dialog object, customizing the title.
-   * @param windowTitle - the title appearing at the top of the dialog.
-   */
-  constructor(windowTitle: string);
 
   /**
    * The default row layout mode.
@@ -5074,22 +5059,18 @@ declare class Dialog extends Qt.QWidget {
   addNewRow(): void;
 
   /**
-   * Add a heading to the dialog. A heading will always be the first
-   * widget in a row.
+   * Add a heading to the dialog with the given labelText. A heading will
+   * always be the first widget in a row.
    *
-   * @param labelText - the text to display in the heading.
-   * @param maxWidth -  if true, the heading will be expanded to the full
-   *                    width of the dialog. if false, it will be confined
-   *                    to the left-hand column of the dialog.
-   *                    Defaults to false.
+   * If the optional maxWidth parameter is true, the heading will be expanded
+   * to the full width of the dialog. Otherwise, it will be confined to the
+   * left-hand column of the dialog.
    */
   addHeading(labelText:string, maxWidth?: boolean): Qt.QLabel;
 
   /**
-   * Add a label to the dialog. A label will always be the first
-   * widget in a row.
-   *
-   * @param labelText - the text to display in the label.
+   * Add a label to the dialog with the given test. A label will always be the
+   * first widget in a row.
    */
   addLabel(labelText:string): Qt.QLabel;
 
@@ -5105,67 +5086,81 @@ declare class Dialog extends Qt.QWidget {
   addImage(labelText: string, image: Image): ImageWidget;
 
   /**
-   * Add a {@link Qt.QSlider} widget to the dialog to allow a user to
-   * type a numerical value or use up and down controls on the widget to manipulate the value.
+   * Add a {@link Qt.QSlider} widget to the dialog to allow a user to type a
+   * numerical value or use up and down controls on the widget to manipulate
+   * the value.
+   *
    * This can be used to enter integer or decimal values.
    */
   addNumberInput(labelText?: string): Qt.QDoubleSpinBox;
 
   /**
    * Add a {@link Qt.QSlider} widget to the dialog to allow a user to
-   * slide a handle within a number range. This can only be used to enter integer-type values.
+   * slide a handle within a number range.
+   *
+   * This can only be used to enter integer-type values.
    */
   addSlider(labelText?: string): Qt.QSlider;
 
   /**
-   * Add a {@link Qt.QCheckBox} widget to the dialog to allow a user to
-   * toggle a boolean value.
-   * @param labelText The text of the label to display inside the checkbox widget
-   * @param defaultValue true to have the checkbox checked by default, false to have the checkbox start unchecked.
+   * Add a {@link Qt.QCheckBox} widget with the given text to the dialog.
+   * Allows a user to toggle a boolean value.
+   *
+   * If the defaultValue parameter is true the checkbox is checked by default.
    */
-  addCheckBox(labelText?: string, defaultValue?: boolean): Qt.QCheckBox;
+  addCheckBox(text?: string, defaultValue?: boolean): Qt.QCheckBox;
 
   /**
-   * Add a {@link Qt.QPushButton} widget to the dialog to allow the user
-   * to press a button that you can respond to the clicked signal of.
-   * @param labelText
+   * Add a {@link Qt.QPushButton} widget with the given text to the dialog.
+   * Allows the user to press a button that you can respond to the clicked
+   * signal of.
    */
-  addButton(labelText?: string): Qt.QPushButton;
+  addButton(text?: string): Qt.QPushButton;
 
   /**
-   * Add a {@link Qt.QLineEdit} widget to the dialog to allow the user
-   * to enter a single line of text
-   * @param labelText - text to display in a label to the left of the widget
-   * @param defaultValue - the default value to display in the input
+   * Add a {@link Qt.QLineEdit} widget to the dialog to allow the user to enter
+   * a single line of text. The initial text on the widget can be given by
+   * defaultValue parameter.
+   *
+   * If the labelText is non-empty, a label widget will be added to the left of
+   * the widget.
    */
   addTextInput(labelText?: string, defaultValue?: string): Qt.QLineEdit;
 
   /**
-   * Add a {@link Qt.QTextEdit} widget to the dialog to allow the user
-   * to edit multiple lines of text. Also allows display of rendered HTML
-   * by setting the {@link Qt.QTextEdit.html} property.
-   * @param labelText - text to display in a label to the left of the widget
-   * @param defaultValue - the default value to display in the input
+   * Add a {@link Qt.QTextEdit} widget to the dialog to allow the user to edit
+   * multiple lines of text. Also allows display of rendered HTML by setting
+   * the {@link Qt.QTextEdit.html} property. The initial text on the widget can
+   * be given by defaultValue parameter.
+   *
+   * If the labelText is non-empty, a label widget will be added to the left of
+   * the widget.
    */
   addTextEdit(labelText?: string, defaultValue?: string): Qt.QTextEdit;
 
   /**
-   * Add a {@link Qt.QComboBox} widget (AKA a dropdown) allowing the user to pick
-   * between multiple pre-set values.
-   * @param labelText The text to display on the widget label to the left of the dropdown
-   * @param values The values to allow the user to select between.
+   * Add a {@link Qt.QComboBox} widget (also known as a dropdown) allowing the
+   * user to select one of the given values.
+   *
+   * If the labelText is non-empty, a label widget will be added to the left of
+   * the widget.
    */
   addComboBox(labelText: string, values: string[]): Qt.QComboBox;
 
   /**
    * Add a {@link ColorButton} widget that allows the user to pick a color.
-   * @param labelText the text of the widget label displayed to the left of the widget.
+   *
+   * If the labelText is non-empty, a label widget will be added to the left of
+   * the widget.
    */
   addColorButton(labelText?: string): ColorButton;
 
   /**
    * Add a {@link FileEdit} widget with a button which opens a file picker
    * dialog and displays the path in the dialog.
+   *
+   * If the labelText is non-empty, a label widget will be added to the left of
+   * the widget.
    */
   addFilePicker(labelText?: string): FileEdit;
 
@@ -5203,8 +5198,6 @@ declare class Dialog extends Qt.QWidget {
   /**
    * Close this dialog, setting its result code to {@link Dialog.Accepted} or
    * {@link Dialog.Rejected}.
-   *
-   * @param resultCode - {@link Dialog.Accepted} or {@link Dialog.Rejected}
    */
   done(resultCode: typeof Dialog.Rejected | typeof Dialog.Accepted): void;
 

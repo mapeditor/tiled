@@ -79,8 +79,8 @@ public:
     Q_INVOKABLE QWidget *addNumberInput(const QString &labelText);
     Q_INVOKABLE QWidget *addSlider(const QString &labelText);
     Q_INVOKABLE QWidget *addComboBox(const QString &labelText, const QStringList &values);
-    Q_INVOKABLE QWidget *addCheckBox(const QString &labelText = QString(), bool defaultValue = false);
-    Q_INVOKABLE QWidget *addButton(const QString &labelText = QString());
+    Q_INVOKABLE QWidget *addCheckBox(const QString &text = QString(), bool defaultValue = false);
+    Q_INVOKABLE QWidget *addButton(const QString &text = QString());
     Q_INVOKABLE QWidget *addFilePicker(const QString &labelText = QString());
     Q_INVOKABLE QWidget *addColorButton(const QString &labelText = QString());
     Q_INVOKABLE QWidget *addImage(const QString &labelText, Tiled::ScriptImage *image);
