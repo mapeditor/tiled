@@ -55,9 +55,6 @@ public:
     QList<Layer*>::iterator end() { return mLayers.end(); }
     QList<Layer*>::const_iterator begin() const { return mLayers.begin(); }
     QList<Layer*>::const_iterator end() const { return mLayers.end(); }
-
-    bool isExpanded() const;
-    void setExpanded(bool expanded);
 protected:
     void setMap(Map *map) override;
     GroupLayer *initializeClone(GroupLayer *clone) const;
@@ -66,19 +63,7 @@ private:
     void adoptLayer(Layer &layer);
 
     QList<Layer*> mLayers;
-
-    bool mExpanded = true;
 };
-
-
-inline bool GroupLayer::isExpanded() const
-{
-    return mExpanded;
-}
-
-inline void GroupLayer::setExpanded(bool expanded)  {
-    mExpanded = expanded;
-}
 
 inline int GroupLayer::layerCount() const
 {

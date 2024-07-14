@@ -25,6 +25,9 @@
 #include "editableasset.h"
 #include "map.h"
 #include "scriptmanager.h"
+#include "documentmanager.h"
+#include "mapeditor.h"
+#include "objectsdock.h"
 
 #include <QCoreApplication>
 
@@ -170,6 +173,20 @@ void EditableObjectGroup::setDrawOrder(DrawOrder drawOrder)
     } else if (!checkReadOnly()) {
         objectGroup()->setDrawOrder(static_cast<ObjectGroup::DrawOrder>(drawOrder));
     }
+}
+
+inline bool EditableObjectGroup::isExpanded() const
+{
+    auto documentManager = DocumentManager::instance();
+    auto mapEditor = static_cast<MapEditor*>(documentManager->editor(Document::MapDocumentType));
+    return mapEditor->objectsDock()->isExpanded(objectGroup());
+}
+
+inline void EditableObjectGroup::setExpanded(bool expanded)
+{
+    auto documentManager = DocumentManager::instance();
+    auto mapEditor = static_cast<MapEditor*>(documentManager->editor(Document::MapDocumentType));
+    mapEditor->objectsDock()->setExpanded(objectGroup(), expanded);
 }
 
 } // namespace Tiled

@@ -24,7 +24,6 @@
 #include "document.h"
 #include "layer.h"
 #include "map.h"
-#include "grouplayer.h"
 
 #include <QCoreApplication>
 
@@ -211,26 +210,6 @@ void SetTileLayerSize::setValue(TileLayer *layer, const QSize &value) const
 {
     layer->setSize(value);
     emit document()->changed(TileLayerChangeEvent(layer, TileLayerChangeEvent::SizeProperty));
-}
-
-SetGroupLayerExpanded::SetGroupLayerExpanded(Document *document,
-                                 QList<GroupLayer *> layers,
-                                 bool expanded)
-    : ChangeValue<GroupLayer, bool>(document, std::move(layers), expanded)
-{
-    setText(QCoreApplication::translate("Undo Commands",
-                                        "Change Group Layer Expanded State"));
-}
-
-bool SetGroupLayerExpanded::getValue(const GroupLayer *layer) const
-{
-    return layer->isExpanded();
-}
-
-void SetGroupLayerExpanded::setValue(GroupLayer *layer, const bool &value) const
-{
-    layer->setExpanded(value);
-//    emit document()->changed(LayerChangeEvent(layer, LayerChangeEvent::OpacityProperty));
 }
 
 } // namespace Tiled

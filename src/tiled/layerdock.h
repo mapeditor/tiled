@@ -22,6 +22,7 @@
 #pragma once
 
 #include "mapdocument.h"
+#include "editablegrouplayer.h"
 
 #include <QDockWidget>
 #include <QTreeView>
@@ -54,7 +55,10 @@ public:
      */
     void setMapDocument(MapDocument *mapDocument);
 
-    LayerView *layerView() const { return mLayerView; };
+    Q_INVOKABLE bool isExpanded(EditableGroupLayer *layer) const { return isExpanded(layer->groupLayer()); };
+    Q_INVOKABLE void setExpanded(EditableGroupLayer *layer, bool expanded) { setExpanded(layer->groupLayer(), expanded); };
+    bool isExpanded(GroupLayer *layer) const;
+    void setExpanded(GroupLayer *layer, bool expanded);
 
 protected:
     void changeEvent(QEvent *e) override;

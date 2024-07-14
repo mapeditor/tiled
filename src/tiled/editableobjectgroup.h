@@ -34,6 +34,7 @@ class EditableObjectGroup : public EditableLayer
     Q_PROPERTY(int objectCount READ objectCount)
     Q_PROPERTY(QColor color READ color WRITE setColor)
     Q_PROPERTY(DrawOrder drawOrder READ drawOrder WRITE setDrawOrder)
+    Q_PROPERTY(bool expanded READ isExpanded WRITE setExpanded)
 
 public:
     // Synchronized with ObjectGroup::DrawOrder
@@ -66,9 +67,11 @@ public:
 
     static EditableObjectGroup *get(EditableAsset *asset, ObjectGroup *objectGroup);
 
+    bool isExpanded() const;
 public slots:
     void setColor(const QColor &color);
     void setDrawOrder(DrawOrder drawOrder);
+    void setExpanded(bool expanded);
 };
 
 

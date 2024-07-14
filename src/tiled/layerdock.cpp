@@ -34,6 +34,7 @@
 #include "utils.h"
 #include "iconcheckdelegate.h"
 #include "changeevents.h"
+#include "grouplayer.h"
 
 #include <QApplication>
 #include <QBoxLayout>
@@ -147,6 +148,18 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
     }
 
     updateOpacitySlider();
+}
+
+bool LayerDock::isExpanded(GroupLayer *layer) const {
+    auto sourceIndex = mMapDocument->layerModel()->index(layer);
+    auto index = mLayerView->proxyModel()->mapFromSource(sourceIndex);
+    return mLayerView->isExpanded(index);
+}
+
+void LayerDock::setExpanded(GroupLayer *layer, bool expanded) {
+    auto sourceIndex = mMapDocument->layerModel()->index(layer);
+    auto index = mLayerView->proxyModel()->mapFromSource(sourceIndex);
+    mLayerView->setExpanded(index, expanded);
 }
 
 void LayerDock::changeEvent(QEvent *e)

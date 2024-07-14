@@ -51,11 +51,9 @@ public:
     Q_INVOKABLE void addLayer(Tiled::EditableLayer *editableLayer);
 
     bool isExpanded() const;
+    GroupLayer *groupLayer() const;
 public slots:
     void setExpanded(bool expanded);
-
-private:
-    GroupLayer *groupLayer() const;
 };
 
 inline int EditableGroupLayer::layerCount() const
