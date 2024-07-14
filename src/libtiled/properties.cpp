@@ -227,6 +227,8 @@ static int nameToType(const QString &name)
         return objectRefTypeId();
     if (name == QLatin1String("class"))
         return QMetaType::QVariantMap;
+    if (name == QLatin1String("list"))
+        return QMetaType::QVariantList;
 
     return QVariant::nameToType(name.toLatin1().constData());
 }
@@ -235,6 +237,14 @@ QString typeName(const QVariant &value)
 {
     if (value.userType() == propertyValueId())
         return typeName(value.value<PropertyValue>().value);
+
+    return typeToName(value.userType());
+}
+
+QString userTypeName(const QVariant &value)
+{
+    if (value.userType() == propertyValueId())
+        return value.value<PropertyValue>().typeName();
 
     return typeToName(value.userType());
 }
@@ -344,6 +354,35 @@ void initializeMetatypes()
 
     QMetaType::registerConverter<FilePath, QString>(&FilePath::toString);
     QMetaType::registerConverter<QString, FilePath>(&FilePath::fromString);
+}
+
+QVariantList possiblePropertyValues(const ClassPropertyType *parentClassType)
+{
+    QVariantList values;
+
+    values.append(false);                               // bool
+    values.append(QColor());                            // color
+    values.append(0.0);                                 // float
+    values.append(QVariant::fromValue(FilePath()));     // file
+    values.append(0);                                   // int
+    values.append(QVariant::fromValue(ObjectRef()));    // object
+    values.append(QString());                           // string
+    values.append(QVariant(QVariantList()));            // list
+
+    for (const auto &propertyType : Object::propertyTypes()) {
+        // Avoid suggesting the creation of circular dependencies between types
+        if (parentClassType && !parentClassType->canAddMemberOfType(propertyType.data()))
+            continue;
+
+        // Avoid suggesting classes not meant to be used as property value
+        if (propertyType->isClass())
+            if (!static_cast<const ClassPropertyType&>(*propertyType).isPropertyValueType())
+                continue;
+
+        values.append(propertyType->wrap(propertyType->defaultValue()));
+    }
+
+    return values;
 }
 
 } // namespace Tiled
