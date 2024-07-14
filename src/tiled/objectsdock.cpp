@@ -151,6 +151,14 @@ void ObjectsDock::setMapDocument(MapDocument *mapDoc)
     updateActions();
 }
 
+bool ObjectsDock::isExpanded(ObjectGroup *layer) const {
+    return mObjectsView->isExpanded(mObjectsView->layerViewIndex(layer));
+}
+
+void ObjectsDock::setExpanded(ObjectGroup *layer, bool expanded) {
+    mObjectsView->setExpanded(mObjectsView->layerViewIndex(layer), expanded);
+}
+
 void ObjectsDock::changeEvent(QEvent *e)
 {
     QDockWidget::changeEvent(e);

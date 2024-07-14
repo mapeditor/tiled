@@ -24,6 +24,9 @@
 #include "addremovetileset.h"
 #include "editablemap.h"
 #include "scriptmanager.h"
+#include "documentmanager.h"
+#include "mapeditor.h"
+#include "layerdock.h"
 
 #include <QCoreApplication>
 
@@ -134,6 +137,20 @@ void EditableGroupLayer::addLayer(EditableLayer *editableLayer)
     }
 
     insertLayerAt(layerCount(), editableLayer);
+}
+
+inline bool EditableGroupLayer::isExpanded() const
+{
+    auto documentManager = DocumentManager::instance();
+    auto mapEditor = static_cast<MapEditor*>(documentManager->editor(Document::MapDocumentType));
+    return mapEditor->layerDock()->isExpanded(groupLayer());
+}
+
+inline void EditableGroupLayer::setExpanded(bool expanded)
+{
+    auto documentManager = DocumentManager::instance();
+    auto mapEditor = static_cast<MapEditor*>(documentManager->editor(Document::MapDocumentType));
+    mapEditor->layerDock()->setExpanded(groupLayer(), expanded);
 }
 
 } // namespace Tiled

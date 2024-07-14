@@ -31,6 +31,7 @@ class EditableGroupLayer : public EditableLayer
 
     Q_PROPERTY(int layerCount READ layerCount)
     Q_PROPERTY(QList<QObject*> layers READ layers)
+    Q_PROPERTY(bool expanded READ isExpanded WRITE setExpanded)
 
 public:
     Q_INVOKABLE explicit EditableGroupLayer(const QString &name = QString(),
@@ -49,8 +50,10 @@ public:
     Q_INVOKABLE void insertLayerAt(int index, Tiled::EditableLayer *editableLayer);
     Q_INVOKABLE void addLayer(Tiled::EditableLayer *editableLayer);
 
-private:
+    bool isExpanded() const;
     GroupLayer *groupLayer() const;
+public slots:
+    void setExpanded(bool expanded);
 };
 
 inline int EditableGroupLayer::layerCount() const

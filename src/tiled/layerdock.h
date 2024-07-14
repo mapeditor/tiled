@@ -22,6 +22,7 @@
 #pragma once
 
 #include "mapdocument.h"
+#include "editablegrouplayer.h"
 
 #include <QDockWidget>
 #include <QTreeView>
@@ -53,6 +54,11 @@ public:
      * Sets the map for which the layers should be displayed.
      */
     void setMapDocument(MapDocument *mapDocument);
+
+    Q_INVOKABLE bool isExpanded(EditableGroupLayer *layer) const { return isExpanded(layer->groupLayer()); };
+    Q_INVOKABLE void setExpanded(EditableGroupLayer *layer, bool expanded) { setExpanded(layer->groupLayer(), expanded); };
+    bool isExpanded(GroupLayer *layer) const;
+    void setExpanded(GroupLayer *layer, bool expanded);
 
 protected:
     void changeEvent(QEvent *e) override;
@@ -89,6 +95,8 @@ public:
     void setMapDocument(MapDocument *mapDocument);
 
     void editLayerModelIndex(const QModelIndex &layerModelIndex);
+
+    QAbstractProxyModel *proxyModel() { return mProxyModel; }
 
 protected:
     bool event(QEvent *event) override;

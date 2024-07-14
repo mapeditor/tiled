@@ -55,7 +55,6 @@ public:
     QList<Layer*>::iterator end() { return mLayers.end(); }
     QList<Layer*>::const_iterator begin() const { return mLayers.begin(); }
     QList<Layer*>::const_iterator end() const { return mLayers.end(); }
-
 protected:
     void setMap(Map *map) override;
     GroupLayer *initializeClone(GroupLayer *clone) const;
@@ -65,7 +64,6 @@ private:
 
     QList<Layer*> mLayers;
 };
-
 
 inline int GroupLayer::layerCount() const
 {
