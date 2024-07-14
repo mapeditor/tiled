@@ -54,6 +54,8 @@ public:
      */
     void setMapDocument(MapDocument *mapDocument);
 
+    LayerView *layerView() const { return mLayerView; };
+
 protected:
     void changeEvent(QEvent *e) override;
 
@@ -89,6 +91,8 @@ public:
     void setMapDocument(MapDocument *mapDocument);
 
     void editLayerModelIndex(const QModelIndex &layerModelIndex);
+
+    QAbstractProxyModel *proxyModel() { return mProxyModel; }
 
 protected:
     bool event(QEvent *event) override;

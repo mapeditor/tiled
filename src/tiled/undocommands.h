@@ -52,6 +52,8 @@ enum UndoCommands {
     Cmd_EraseTiles,
     Cmd_PaintTileLayer,
     Cmd_SetProperty,
+    Cmd_ChangeGroupLayerExpanded,
+    Cmd_ChangeObjectGroupExpanded,
 };
 
 /**

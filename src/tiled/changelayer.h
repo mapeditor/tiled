@@ -31,6 +31,7 @@ namespace Tiled {
 
 class Layer;
 class TileLayer;
+class GroupLayer;
 
 class SetLayerName : public ChangeValue<Layer, QString>
 {
@@ -170,6 +171,23 @@ public:
 private:
     QSize getValue(const TileLayer *layer) const override;
     void setValue(TileLayer *layer, const QSize &value) const override;
+};
+
+/**
+ * Used for changing group layer expanded state.
+ */
+class SetGroupLayerExpanded : public ChangeValue<GroupLayer, bool>
+{
+public:
+    SetGroupLayerExpanded(Document *document,
+                    QList<GroupLayer *> layers,
+                    bool expanded);
+
+    int id() const override { return Cmd_ChangeGroupLayerExpanded; }
+
+private:
+    bool getValue(const GroupLayer *layer) const override;
+    void setValue(GroupLayer *layer, const bool &value) const override;
 };
 
 } // namespace Tiled
