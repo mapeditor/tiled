@@ -28,8 +28,6 @@
 #include "documentmanager.h"
 #include "mapeditor.h"
 #include "layerdock.h"
-#include "layermodel.h"
-#include "qabstractproxymodel.h"
 
 #include <QCoreApplication>
 
@@ -144,24 +142,16 @@ void EditableGroupLayer::addLayer(EditableLayer *editableLayer)
 
 inline bool EditableGroupLayer::isExpanded() const
 {
-
-    return groupLayer()->isExpanded();
+    auto documentManager = DocumentManager::instance();
+    auto mapEditor = static_cast<MapEditor*>(documentManager->editor(Document::MapDocumentType));
+    return mapEditor->layerDock()->isExpanded(groupLayer());
 }
 
 inline void EditableGroupLayer::setExpanded(bool expanded)
 {
-    if (auto doc = document()){
-        auto documentManager = DocumentManager::instance();
-        auto mapEditor = static_cast<MapEditor*>(documentManager->editor(Document::MapDocumentType));
-
-        auto sourceIndex = mapDocument()->layerModel()->index(layer());
-        auto layerView = mapEditor->layerDock()->layerView();
-
-        auto index = layerView->proxyModel()->mapFromSource(sourceIndex);
-        layerView->setExpanded(index, expanded);
-        asset()->push(new SetGroupLayerExpanded(doc, { groupLayer() }, expanded));
-    }else if (!checkReadOnly())
-        groupLayer()->setExpanded(expanded);
+    auto documentManager = DocumentManager::instance();
+    auto mapEditor = static_cast<MapEditor*>(documentManager->editor(Document::MapDocumentType));
+    mapEditor->layerDock()->setExpanded(groupLayer(), expanded);
 }
 
 } // namespace Tiled

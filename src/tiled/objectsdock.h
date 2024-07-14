@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "editableobjectgroup.h"
+
 #include <QDockWidget>
 #include <QMap>
 
@@ -40,6 +42,11 @@ public:
     ObjectsDock(QWidget *parent = nullptr);
 
     void setMapDocument(MapDocument *mapDoc);
+
+    Q_INVOKABLE bool isExpanded(EditableObjectGroup *layer) const { return isExpanded(layer->objectGroup()); };
+    Q_INVOKABLE void setExpanded(EditableObjectGroup *layer, bool expanded) { setExpanded(layer->objectGroup(), expanded); };
+    bool isExpanded(ObjectGroup *layer) const;
+    void setExpanded(ObjectGroup *layer, bool expanded);
 
 protected:
     void changeEvent(QEvent *e) override;

@@ -72,6 +72,8 @@ class MapEditor final : public Editor
     Q_OBJECT
 
     Q_PROPERTY(Tiled::TilesetDock *tilesetsView READ tilesetDock CONSTANT)
+    Q_PROPERTY(Tiled::LayerDock *layersView READ layerDock CONSTANT)
+    Q_PROPERTY(Tiled::ObjectsDock *objectsView READ objectsDock CONSTANT)
     Q_PROPERTY(Tiled::EditableMap *currentBrush READ currentBrush WRITE setCurrentBrush NOTIFY currentBrushChanged)
     Q_PROPERTY(Tiled::EditableWangSet *currentWangSet READ currentWangSet WRITE setCurrentWangSet NOTIFY currentWangSetChanged)
     Q_PROPERTY(int currentWangColorIndex READ currentWangColorIndex WRITE setCurrentWangColorIndex NOTIFY currentWangColorIndexChanged)
@@ -84,6 +86,7 @@ public:
 
     TilesetDock *tilesetDock() const { return mTilesetDock; }
     LayerDock *layerDock() const { return mLayerDock; }
+    ObjectsDock *objectsDock() const { return mObjectsDock; }
     TemplatesDock *templatesDock() const { return mTemplatesDock; }
 
     void saveState() override;
