@@ -20,10 +20,13 @@
 
 #include "listedit.h"
 
+#include "properties.h"
+#include "propertytypesmodel.h"
 #include "utils.h"
 
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QMenu>
 #include <QToolButton>
 
 namespace Tiled {
@@ -38,24 +41,32 @@ ListEdit::ListEdit(QWidget *parent)
     mLabel = new QLabel{this};
     mLabel->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
 
-    QToolButton *addButton = new QToolButton{this};
-    addButton->setIcon(QIcon(QStringLiteral(":/images/22/add.png")));
-    Utils::setThemeIcon(addButton, "add");
+    mAddMenu = new QMenu{this};
 
-    QToolButton *editButton = new QToolButton{this};
-    editButton->setSizePolicy(QSizePolicy{QSizePolicy::Fixed, QSizePolicy::Preferred});
-    editButton->setText(tr("Edit..."));
+    mAddButton = new QToolButton{this};
+    mAddButton->setIcon(QIcon(QStringLiteral(":/images/22/add.png")));
+    mAddButton->setText(tr("Add"));
+    mAddButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    mAddButton->setMenu(mAddMenu);
+    mAddButton->setPopupMode(QToolButton::MenuButtonPopup);
+    Utils::setThemeIcon(mAddButton, "add");
+
     layout->addWidget(mLabel);
-    layout->addWidget(addButton);
-    layout->addWidget(editButton);
+    layout->addWidget(mAddButton);
 
-    setFocusProxy(editButton);
+    setFocusProxy(mAddButton);
     setFocusPolicy(Qt::StrongFocus);
 
-    connect(addButton, &QToolButton::clicked,
+    connect(mAddButton, &QToolButton::clicked,
             this, &ListEdit::addButtonClicked);
-    connect(editButton, &QToolButton::clicked,
-            this, &ListEdit::editButtonClicked);
+    connect(mAddMenu, &QMenu::aboutToShow,
+            this, &ListEdit::populateAddMenu);
+
+    connect(mAddMenu, &QMenu::triggered, this, [this](QAction *action) {
+        mValue.append(action->data());
+        mLabel->setText(valueText(mValue));
+        emit valueChanged(mValue);
+    });
 }
 
 void ListEdit::setValue(const QVariantList &value)
@@ -72,16 +83,28 @@ QString ListEdit::valueText(const QVariantList &value)
 
 void ListEdit::addButtonClicked()
 {
-    // todo: spawn a kind of "add property" dialog, but without a name field?
-    // or maybe add button is a dropdown with the available types?
-    mValue.append(0);
+    if (mValue.isEmpty())
+        return mAddButton->showMenu();
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    mValue.append(QVariant(mValue.last().metaType()));
+#else
+    mValue.append(QVariant(mValue.last().userType(), nullptr));
+#endif
     mLabel->setText(valueText(mValue));
     emit valueChanged(mValue);
 }
 
-void ListEdit::editButtonClicked()
+void ListEdit::populateAddMenu()
 {
-    // todo: spawn list edit dialog
+    mAddMenu->clear();
+
+    const QVariantList values = possiblePropertyValues(nullptr);
+    for (const auto &value : values) {
+        const QIcon icon = PropertyTypesModel::iconForProperty(value);
+        auto action = mAddMenu->addAction(icon, userTypeName(value));
+        action->setData(value);
+    }
 }
 
 } // namespace Tiled

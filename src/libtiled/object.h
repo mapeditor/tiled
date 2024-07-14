@@ -126,6 +126,8 @@ public:
 
     /**
      * Returns the type of the object's \a name property, as a string.
+     *
+     * This function exists only for the Python plugin.
      */
     QString propertyType(const QString &name) const
     { return typeName(mProperties.value(name)); }

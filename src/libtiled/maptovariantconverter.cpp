@@ -816,45 +816,44 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
             // TODO: Support custom property types in json1? Maybe with a customPropertyTypesMap...
         }
 
-        variantMap[QStringLiteral("properties")] = propertiesMap;
-        variantMap[QStringLiteral("propertytypes")] = propertyTypesMap;
+        variantMap[QStringLiteral("properties")] = std::move(propertiesMap);
+        variantMap[QStringLiteral("propertytypes")] = std::move(propertyTypesMap);
     } else {
         QVariantList propertiesVariantList;
 
         Properties::const_iterator it = properties.constBegin();
         Properties::const_iterator it_end = properties.constEnd();
         for (; it != it_end; ++it) {
-            const auto exportValue = context.toExportValue(it.value());
-
-            QVariantMap propertyVariantMap;
+            QVariantMap propertyVariantMap = toVariantMap(it.value(), context);
             propertyVariantMap[QStringLiteral("name")] = it.key();
-            propertyVariantMap[QStringLiteral("type")] = exportValue.typeName;
-            if (!exportValue.propertyTypeName.isEmpty())
-                propertyVariantMap[QStringLiteral("propertytype")] = exportValue.propertyTypeName;
 
-            if (exportValue.typeName == QLatin1String("list")) {
-                const QVariantList values = it.value().toList();
-                QVariantList valuesVariantList;
-
-                // todo: this doesn't support lists of lists
-                for (const QVariant &value : values) {
-                    QVariantMap valueVariantMap;
-                    const auto exportValue = context.toExportValue(value);
-                    valueVariantMap[QStringLiteral("value")] = exportValue.value;
-                    valueVariantMap[QStringLiteral("type")] = exportValue.typeName;
-                    if (!exportValue.propertyTypeName.isEmpty())
-                        valueVariantMap[QStringLiteral("propertytype")] = exportValue.propertyTypeName;
-                    valuesVariantList << valueVariantMap;
-                }
-
-                propertyVariantMap[QStringLiteral("value")] = valuesVariantList;
-            } else {
-                propertyVariantMap[QStringLiteral("value")] = exportValue.value;
-            }
-
-            propertiesVariantList << propertyVariantMap;
+            propertiesVariantList << std::move(propertyVariantMap);
         }
 
         variantMap[QStringLiteral("properties")] = propertiesVariantList;
     }
+}
+
+QVariantMap MapToVariantConverter::toVariantMap(const QVariant &propertyValue, const ExportContext &context) const
+{
+    const auto exportValue = context.toExportValue(propertyValue);
+    QVariantMap propertyVariantMap;
+
+    propertyVariantMap[QStringLiteral("type")] = exportValue.typeName;
+    if (!exportValue.propertyTypeName.isEmpty())
+        propertyVariantMap[QStringLiteral("propertytype")] = exportValue.propertyTypeName;
+
+    if (exportValue.typeName == QLatin1String("list")) {
+        QVariantList valuesVariantList;
+
+        const QVariantList values = propertyValue.toList();
+        for (const QVariant &value : values)
+            valuesVariantList << toVariantMap(value, context);
+
+        propertyVariantMap[QStringLiteral("value")] = std::move(valuesVariantList);
+    } else {
+        propertyVariantMap[QStringLiteral("value")] = exportValue.value;
+    }
+
+    return propertyVariantMap;
 }

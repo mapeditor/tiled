@@ -452,7 +452,6 @@ void VariantMapProperty::emitMemberValueChanged(const QStringList &path, const Q
 
 AddValueProperty::AddValueProperty(QObject *parent)
     : Property(QString(), parent)
-    , m_plainTypeIcon(QStringLiteral("://images/scalable/property-type-plain.svg"))
     , m_placeholderText(tr("Property name"))
 {
     setActions(Action::AddDisabled);
@@ -523,29 +522,10 @@ QWidget *AddValueProperty::createEditor(QWidget *parent)
     // Create combo box with property types
     auto typeBox = new ComboBox(parent);
 
-    // Add possible types from QVariant
-    typeBox->addItem(m_plainTypeIcon, typeToName(QMetaType::Bool),      false);
-    typeBox->addItem(m_plainTypeIcon, typeToName(QMetaType::QColor),    QColor());
-    typeBox->addItem(m_plainTypeIcon, typeToName(QMetaType::Double),    0.0);
-    typeBox->addItem(m_plainTypeIcon, typeToName(filePathTypeId()),     QVariant::fromValue(FilePath()));
-    typeBox->addItem(m_plainTypeIcon, typeToName(QMetaType::Int),       0);
-    typeBox->addItem(m_plainTypeIcon, typeToName(objectRefTypeId()),    QVariant::fromValue(ObjectRef()));
-    typeBox->addItem(m_plainTypeIcon, typeToName(QMetaType::QString),   QString());
-    typeBox->addItem(m_plainTypeIcon, typeToName(QMetaType::QVariantList),  QVariantList());
-
-    for (const auto &propertyType : Object::propertyTypes()) {
-        // Avoid suggesting the creation of circular dependencies between types
-        if (m_parentClassType && !m_parentClassType->canAddMemberOfType(propertyType.data()))
-            continue;
-
-        // Avoid suggesting classes not meant to be used as property value
-        if (propertyType->isClass())
-            if (!static_cast<const ClassPropertyType&>(*propertyType).isPropertyValueType())
-                continue;
-
-        const QVariant var = propertyType->wrap(propertyType->defaultValue());
-        const QIcon icon = PropertyTypesModel::iconForPropertyType(propertyType->type);
-        typeBox->addItem(icon, propertyType->name, var);
+    const QVariantList values = possiblePropertyValues(m_parentClassType);
+    for (const auto &value : values) {
+        const QIcon icon = PropertyTypesModel::iconForProperty(value);
+        typeBox->addItem(icon, userTypeName(value), value);
     }
 
     // Restore previously used type

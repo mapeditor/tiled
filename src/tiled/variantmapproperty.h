@@ -117,7 +117,6 @@ protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
-    QIcon m_plainTypeIcon;
     QString m_placeholderText;
     QVariant m_value;
     bool m_hasFocus = false;

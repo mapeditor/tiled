@@ -86,6 +86,7 @@ private:
 
     void addProperties(QVariantMap &variantMap,
                        const Properties &properties) const;
+    QVariantMap toVariantMap(const QVariant &propertyValue, const ExportContext &context) const;
 
     int mVersion;
     QDir mDir;
