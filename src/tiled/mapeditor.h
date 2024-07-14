@@ -83,6 +83,7 @@ public:
     ~MapEditor() override;
 
     TilesetDock *tilesetDock() const { return mTilesetDock; }
+    LayerDock *layerDock() const { return mLayerDock; }
     TemplatesDock *templatesDock() const { return mTemplatesDock; }
 
     void saveState() override;
