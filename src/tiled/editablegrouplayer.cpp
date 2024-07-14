@@ -20,7 +20,6 @@
 
 #include "editablegrouplayer.h"
 
-#include "changelayer.h"
 #include "addremovelayer.h"
 #include "addremovetileset.h"
 #include "editablemap.h"
