@@ -85,7 +85,7 @@ class TILEDSHARED_EXPORT ObjectRef
     Q_PROPERTY(int id MEMBER id)
 
 public:
-    int id;
+    int id = 0;
 
     bool operator==(const ObjectRef &o) const
     { return id == o.id; }
@@ -185,7 +185,10 @@ constexpr int objectRefTypeId() { return qMetaTypeId<ObjectRef>(); }
 
 TILEDSHARED_EXPORT QString typeToName(int type);
 TILEDSHARED_EXPORT QString typeName(const QVariant &value);
+TILEDSHARED_EXPORT QString userTypeName(const QVariant &value);
 
 TILEDSHARED_EXPORT void initializeMetatypes();
+
+TILEDSHARED_EXPORT QVariantList possiblePropertyValues(const ClassPropertyType *parentClassType = nullptr);
 
 } // namespace Tiled
