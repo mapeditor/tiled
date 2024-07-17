@@ -110,6 +110,9 @@ public:
     Q_INVOKABLE Tiled::FilePath filePath(const QUrl &path) const;
     Q_INVOKABLE Tiled::ObjectRef objectRef(int id) const;
     Q_INVOKABLE QVariant propertyValue(const QString &typeName, const QJSValue &value) const;
+    Q_INVOKABLE QCursor cursor(Qt::CursorShape shape);
+    Q_INVOKABLE QCursor cursor(Tiled::ScriptImage *image, int hotX = -1, int hotY = -1);
+
     Q_INVOKABLE bool versionLessThan(const QString &a);
     Q_INVOKABLE bool versionLessThan(const QString &a, const QString &b);
 

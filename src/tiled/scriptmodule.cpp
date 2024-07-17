@@ -35,6 +35,7 @@
 #include "scriptedfileformat.h"
 #include "scriptedtool.h"
 #include "scriptfileformatwrappers.h"
+#include "scriptimage.h"
 #include "scriptmanager.h"
 #include "tilesetdocument.h"
 #include "tileseteditor.h"
@@ -288,6 +289,21 @@ QVariant ScriptModule::propertyValue(const QString &typeName, const QJSValue &va
     }
 
     return type->wrap(var);
+}
+
+QCursor ScriptModule::cursor(Qt::CursorShape shape)
+{
+    return shape;
+}
+
+QCursor ScriptModule::cursor(ScriptImage *image, int hotX, int hotY)
+{
+    if (!image) {
+        ScriptManager::instance().throwNullArgError(0);
+        return {};
+    }
+
+    return QCursor { QPixmap::fromImage(image->image()), hotX, hotY };
 }
 
 bool ScriptModule::versionLessThan(const QString &a, const QString &b)
