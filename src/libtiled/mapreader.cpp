@@ -1463,7 +1463,7 @@ QVariant MapReaderPrivate::readPropertyValue(const ExportContext &context)
         } else if (xml.isStartElement()) {
             if (xml.name() == QLatin1String("properties"))
                 exportValue.value = readProperties();
-            else if (xml.name() == QLatin1String("value"))
+            else if (xml.name() == QLatin1String("item"))
                 values.append(readPropertyValue(context));
             else
                 readUnknownElement();
