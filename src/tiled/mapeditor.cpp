@@ -783,6 +783,8 @@ void MapEditor::setStamp(const TileStamp &stamp)
         mToolManager->selectTool(mStampBrush);
 
     mTilesetDock->selectTilesInStamp(stamp);
+
+    emit currentBrushChanged();
 }
 
 void MapEditor::selectWangBrush()
