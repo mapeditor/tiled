@@ -26,6 +26,7 @@
 #include "changepolygon.h"
 #include "changetileobjectgroup.h"
 #include "documentmanager.h"
+#include "invertyaxishelper.h"
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
 #include "map.h"
@@ -186,7 +187,10 @@ void AbstractObjectTool::mouseMoved(const QPointF &pos,
     const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos);
     const int x = qFloor(tilePosF.x());
     const int y = qFloor(tilePosF.y());
-    setStatusInfo(QStringLiteral("%1, %2 (%3, %4)").arg(x).arg(y).arg(pixelPos.x()).arg(pixelPos.y()));
+    setStatusInfo(QStringLiteral("%1, %2 (%3, %4)").arg(x)
+                                                   .arg(InvertYAxisHelper(mapDocument()).tileY(y))
+                                                   .arg(pixelPos.x())
+                                                   .arg(InvertYAxisHelper(mapDocument()).pixelY(pixelPos.y())));
 }
 
 void AbstractObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
