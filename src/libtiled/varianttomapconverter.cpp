@@ -190,7 +190,26 @@ Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant
         exportValue.typeName = propertyVariantMap[QStringLiteral("type")].toString();
         exportValue.propertyTypeName = propertyVariantMap[QStringLiteral("propertytype")].toString();
 
-        properties[propertyName] = context.toPropertyValue(exportValue);
+        auto &value = properties[propertyName];
+
+        if (exportValue.typeName == QLatin1String("list")) {
+            const QVariantList values = exportValue.value.toList();
+            QVariantList convertedList;
+            convertedList.reserve(values.size());
+            for (const QVariant &value : values) {
+                const QVariantMap valueVariantMap = value.toMap();
+                ExportValue itemValue;
+                itemValue.value = valueVariantMap[QStringLiteral("value")];
+                itemValue.typeName = valueVariantMap[QStringLiteral("type")].toString();
+                itemValue.propertyTypeName = valueVariantMap[QStringLiteral("propertytype")].toString();
+
+                // todo: this doesn't support lists of lists
+                convertedList.append(context.toPropertyValue(itemValue));
+            }
+            value = convertedList;
+        } else {
+            value = context.toPropertyValue(exportValue);
+        }
     }
 
     return properties;

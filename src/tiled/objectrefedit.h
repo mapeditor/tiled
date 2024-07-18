@@ -20,7 +20,6 @@
 
 #pragma once
 
-#include "properties.h"
 #include "variantpropertymanager.h"
 
 #include <QWidget>
