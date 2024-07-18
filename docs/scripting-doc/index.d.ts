@@ -349,6 +349,7 @@ declare namespace Qt {
    * Returns a point with the specified `x` and `y` coordinates.
    */
   export function point(x: number, y: number): point;
+
   /**
    * Returns a rect with the top-left corner at `x`, `y` and the specified `width` and `height`.
    */
@@ -358,6 +359,7 @@ declare namespace Qt {
     width: number,
     height: number
   ): rect;
+
   /**
    * Returns a size with the specified `width` and `height`.
    */
@@ -379,6 +381,43 @@ declare namespace Qt {
   const AlignCenter: Alignment;
 
   /**
+   * Cursor shape. Can be used with {@link tiled.cursor} to create a system
+   * cursor.
+   */
+  type CursorShape = number;
+
+  const ArrowCursor: CursorShape;
+  const UpArrowCursor: CursorShape;
+  const CrossCursor: CursorShape;
+  const WaitCursor: CursorShape;
+  const IBeamCursor: CursorShape;
+  const SizeVerCursor: CursorShape;
+  const SizeHorCursor: CursorShape;
+  const SizeBDiagCursor: CursorShape;
+  const SizeFDiagCursor: CursorShape;
+  const SizeAllCursor: CursorShape;
+  const BlankCursor: CursorShape;
+  const SplitVCursor: CursorShape;
+  const SplitHCursor: CursorShape;
+  const PointingHandCursor: CursorShape;
+  const ForbiddenCursor: CursorShape;
+  const WhatsThisCursor: CursorShape;
+  const BusyCursor: CursorShape;
+  const OpenHandCursor: CursorShape;
+  const ClosedHandCursor: CursorShape;
+  const DragCopyCursor: CursorShape;
+  const DragMoveCursor: CursorShape;
+  const DragLinkCursor: CursorShape;
+
+  /**
+   * A mouse cursor.
+   *
+   * Can be created with {@link tiled.cursor} and assigned to {@link
+   * Tool.cursor}.
+   */
+  class QCursor {};
+
+  /**
    * The base type from which all Qt widgets derive.
    * Qt documentation: [QWidget](https://doc.qt.io/qt-6/qwidget.html)
    */
@@ -387,6 +426,7 @@ declare namespace Qt {
      * The toolTip displayed when the user mouses over this widget
      */
     toolTip: string;
+
     /**
      * Controls whether this widget is visible.
      * When toggling this property, the dialog layout will automatically adjust itself
@@ -394,22 +434,26 @@ declare namespace Qt {
      * Qt documentation: [QWidget::visible](https://doc.qt.io/qt-6/qwidget.html#visible-prop);
      */
     visible: boolean;
+
     /**
      * If false, the widget cannot be interacted with.
      * Qt documentation: [QWidget::enabled](https://doc.qt.io/qt-6/qwidget.html#enabled-prop)
      */
     enabled: boolean;
+
     /**
      * Set this property to override the style sheet for this widget.
      *
      * See https://doc.qt.io/qt-6/stylesheet.html and https://doc.qt.io/qt-6/stylesheet-examples.html for more information.
      */
     styleSheet: string;
+
     /**
      * You can use this property to prevent the widget from being resized to a width
      * below this amount.
      */
     minimumWidth: number;
+
     /**
      * You can use this property to prevent the widget from being resized to a height
      * below this amount.
@@ -484,60 +528,68 @@ declare namespace Qt {
      * Setting this property makes the line edit display a grayed-out placeholder text as long as the line edit is empty.
      */
     placeholderText: string;
+
     /**
      * This property holds the line edit's text.
      */
     text: string;
   }
 
+  /**
+   * A widget containing multiple lines of text that the user can edit.
+   * Qt documentation: [QTextEdit](https://doc.qt.io/qt-6/qtextedit.html)
+   */
+  class QTextEdit extends QWidget {
     /**
-     * A widget containing a multiple lines of text that the user can edit.
-     * Qt documentation: [QTextEdit](https://doc.qt.io/qt-6/qtextedit.html)
+     * This property holds whether the user can change the contents of the widget.
+     * If true, the user cannot change the text. Defaults to false.
      */
-     class QTextEdit extends QWidget {
-      /**
-       * This property holds whether the user can change the contents of the widget.
-       * If true, the user cannot change the text. Defaults to false.
-       */
-      readOnly: boolean;
-      /**
-       * This property holds the text editor's contents as plain text.
-       */
-      plainText: string;
-      /**
-       * Signal emitted when the text inside the QTextEdit is changed.
-       * Check the text with {@link plainText}, {@link html} or {@link markdown} when this is emitted.
-       */
-      textChanged: Signal<void>;
-      /**
-       * This property holds the text editor's contents as HTML
-       * See the supported HTML subset here:
-       * https://doc.qt.io/qt-6/richtext-html-subset.html
-       */
-      html: string;
-      /**
-       * This property provides a Markdown interface to the text of the text edit.
-       *
-       * See [QTextEdit::markdown](https://doc.qt.io/qt-6/qtextedit.html#markdown-prop) for details.
-       */
-      markdown: string;
-    }
+    readOnly: boolean;
 
-    type CheckState = number;
     /**
-    * The item is unchecked.
-    * Value = 0
-    */
-    const Unchecked: CheckState;
-    /**
-    * The item is partially checked.
-    * Value = 1.
-    */
-    const PartiallyChecked:CheckState;
-    /**
-     * Value = 2
+     * This property holds the text editor's contents as plain text.
      */
-    const Checked: CheckState;
+    plainText: string;
+
+    /**
+     * Signal emitted when the text inside the QTextEdit is changed.
+     * Check the text with {@link plainText}, {@link html} or {@link markdown} when this is emitted.
+     */
+    textChanged: Signal<void>;
+
+    /**
+     * This property holds the text editor's contents as HTML
+     * See the supported HTML subset here:
+     * https://doc.qt.io/qt-6/richtext-html-subset.html
+     */
+    html: string;
+
+    /**
+     * This property provides a Markdown interface to the text of the text edit.
+     *
+     * See [QTextEdit::markdown](https://doc.qt.io/qt-6/qtextedit.html#markdown-prop) for details.
+     */
+    markdown: string;
+  }
+
+  type CheckState = number;
+
+  /**
+   * The item is unchecked.
+   * Value = 0
+   */
+  const Unchecked: CheckState;
+
+  /**
+   * The item is partially checked.
+   * Value = 1.
+   */
+  const PartiallyChecked: CheckState;
+
+  /**
+   * Value = 2
+   */
+  const Checked: CheckState;
 
   /**
    * A check box widget which allows the user to toggle a value on and off.
@@ -637,11 +689,11 @@ declare namespace Qt {
     valueChanged: Signal<number>;
   }
 
-/**
- * An input widget which allows the user to set a floating point or integer
- * value by incrementing and decrementing it.
- * Qt documentation: [QDoubleSpinBox](https://doc.qt.io/qt-6/qdoublespinbox.html)
- */
+  /**
+   * An input widget which allows the user to set a floating point or integer
+   * value by incrementing and decrementing it.
+   * Qt documentation: [QDoubleSpinBox](https://doc.qt.io/qt-6/qdoublespinbox.html)
+   */
   class QDoubleSpinBox extends QWidget {
     /**
      * This property holds the minimum value of the spin box.
@@ -4118,6 +4170,14 @@ interface Tool extends ToolDefinition {
   statusInfo: string;
 
   /**
+   * The cursor used by this tool. This will be the cursor set on the viewport
+   * of the {@link MapView} while the tool is active.
+   *
+   * A {@link Qt.QCursor} value can be created with {@link tiled.cursor}.
+   */
+  cursor: Qt.QCursor;
+
+  /**
    * Whether this tool is enabled.
    */
   enabled: boolean;
@@ -4597,6 +4657,20 @@ declare namespace tiled {
    * @since 1.8
    */
   export function propertyValue(type: string, value: object | number | string): PropertyValue;
+
+  /**
+   * Creates a cursor with the given shape.
+   *
+   * @since 1.11.1
+   */
+  export function cursor(shape: Qt.CursorShape): Cursor;
+
+  /**
+   * Creates a cursor with the given image and the optional hotspot.
+   *
+   * @since 1.11.1
+   */
+  export function cursor(image: Image, hotX?: number, hotY?: number): Cursor;
 
   /**
    * Registers a new map format that can then be used to open and/or save
