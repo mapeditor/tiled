@@ -518,6 +518,9 @@ int main(int argc, char *argv[])
 
         if (!success) {
             qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to export map to target file.");
+            errorMsg = outputFormat->errorString();
+            if (!errorMsg.isEmpty())
+                qWarning().noquote() << errorMsg;
             return 1;
         }
         return 0;
@@ -563,6 +566,9 @@ int main(int argc, char *argv[])
 
         if (!success) {
             qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to export tileset to target file.");
+            errorMsg = outputFormat->errorString();
+            if (!errorMsg.isEmpty())
+                qWarning().noquote() << errorMsg;
             return 1;
         }
         return 0;
