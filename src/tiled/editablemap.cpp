@@ -26,6 +26,7 @@
 #include "automappingmanager.h"
 #include "changeevents.h"
 #include "changemapproperty.h"
+#include "changeselectedarea.h"
 #include "editablelayer.h"
 #include "editablemapobject.h"
 #include "editableselectedarea.h"
@@ -106,6 +107,13 @@ QList<QObject *> EditableMap::layers()
         editables.append(EditableLayer::get(this, layer));
 
     return editables;
+}
+
+RegionValueType EditableMap::selectedRegion() const
+{
+    if (auto document = mapDocument())
+        return RegionValueType(document->selectedArea());
+    return {};
 }
 
 EditableLayer *EditableMap::currentLayer()
@@ -599,6 +607,11 @@ void EditableMap::setLayerDataFormat(LayerDataFormat value)
         map()->setLayerDataFormat(static_cast<Map::LayerDataFormat>(value));
 }
 
+void EditableMap::setSelectedRegion(const RegionValueType &region)
+{
+    push(new ChangeSelectedArea(mapDocument(), region.region()));
+}
+
 void EditableMap::setCurrentLayer(EditableLayer *layer)
 {
     QList<QObject*> layers;
@@ -687,6 +700,7 @@ void EditableMap::setDocument(Document *document)
         connect(doc, &MapDocument::layerAdded, this, &EditableMap::attachLayer);
         connect(doc, &MapDocument::layerRemoved, this, &EditableMap::detachLayer);
 
+        connect(doc, &MapDocument::selectedAreaChanged, this, &EditableMap::selectedRegionChanged);
         connect(doc, &MapDocument::currentLayerChanged, this, &EditableMap::currentLayerChanged);
         connect(doc, &MapDocument::selectedLayersChanged, this, &EditableMap::selectedLayersChanged);
         connect(doc, &MapDocument::selectedObjectsChanged, this, &EditableMap::selectedObjectsChanged);
