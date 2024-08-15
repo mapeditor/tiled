@@ -549,6 +549,8 @@ Can contain any number: :ref:`tmx-object`
 -  **height:** The height of the object in pixels. (defaults to 0)
 -  **rotation:** The rotation of the object in degrees clockwise around (x, y). 
    (defaults to 0)
+-  **opacity:** The opacity of the object as a value from 0 to 1. (defaults
+   to 1)
 -  **gid:** A reference to a tile. (optional)
 -  **visible:** Whether the object is shown (1) or hidden (0). (defaults to
    1)

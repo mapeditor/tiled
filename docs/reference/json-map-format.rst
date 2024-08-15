@@ -216,6 +216,7 @@ Object
     polyline,         array,            "Array of :ref:`Points <json-point>`, in case the object is a polyline"
     properties,       array,            "Array of :ref:`Properties <json-property>`"
     rotation,         double,           "Angle in degrees clockwise"
+    opacity,          double,           "The opacity of the object as a value from 0 to 1. Defaults to 1."
     template,         string,           "Reference to a template file, in case object is a :doc:`template instance </manual/using-templates>`"
     text,             :ref:`json-object-text`, "Only used for text objects"
     type,             string,           "The class of the object (was saved as ``class`` in 1.9, optional)"
@@ -241,6 +242,7 @@ Object Example
           "value":12
         }],
       "rotation":0,
+      "opacity":1,
       "type":"npc",
       "visible":true,
       "width":0,
@@ -259,6 +261,7 @@ Ellipse Example
       "id":13,
       "name":"",
       "rotation":0,
+      "opacity":1,
       "type":"",
       "visible":true,
       "width":248,
@@ -276,6 +279,7 @@ Rectangle Example
       "id":14,
       "name":"",
       "rotation":0,
+      "opacity":1,
       "type":"",
       "visible":true,
       "width":368,
@@ -294,6 +298,7 @@ Point Example
       "name":"",
       "point":true,
       "rotation":0,
+      "opacity":1,
       "type":"",
       "visible":true,
       "width":0,
@@ -332,6 +337,7 @@ Polygon Example
         "y":-288
       }],
       "rotation":0,
+      "opacity":1,
       "type":"",
       "visible":true,
       "width":0,
@@ -374,6 +380,7 @@ Polyline Example
         "y":0
       }],
       "rotation":0,
+      "opacity":1,
       "type":"",
       "visible":true,
       "width":0,
@@ -396,6 +403,7 @@ Text Example
         "wrap":true
       },
       "rotation":0,
+      "opacity":1,
       "type":"",
       "visible":true,
       "width":248,
