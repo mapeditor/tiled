@@ -553,6 +553,8 @@ DynamicLibrary {
         "undodock.h",
         "utils.cpp",
         "utils.h",
+        "varianteditor.cpp",
+        "varianteditor.h",
         "varianteditorfactory.cpp",
         "varianteditorfactory.h",
         "variantpropertymanager.cpp",
