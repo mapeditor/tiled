@@ -6,7 +6,7 @@
     "url": "git+https://github.com/mapeditor/tiled.git"
   },
   "types": "./index.d.ts",
-  "version": "1.10.1",
+  "version": "1.11.0",
   "scripts": {
     "test": "tsc"
   },
