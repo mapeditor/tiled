@@ -117,11 +117,11 @@ public:
         PositionProperty        = 1 << 7,
         SizeProperty            = 1 << 8,
         RotationProperty        = 1 << 9,
-        CellProperty            = 1 << 10,
-        ShapeProperty           = 1 << 11,
-        TemplateProperty        = 1 << 12,
-        CustomProperties        = 1 << 13,
-        OpacityProperty         = 1 << 14,
+        OpacityProperty         = 1 << 10,
+        CellProperty            = 1 << 11,
+        ShapeProperty           = 1 << 12,
+        TemplateProperty        = 1 << 13,
+        CustomProperties        = 1 << 14,
         AllProperties           = 0xFF
     };
 
