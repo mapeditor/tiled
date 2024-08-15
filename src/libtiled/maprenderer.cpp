@@ -452,7 +452,9 @@ void CellRenderer::render(const Cell &cell, const QPointF &screenPos, const QSiz
     fragment.scaleX = size.width() / imageRect.width();
     fragment.scaleY = size.height() / imageRect.height();
     fragment.rotation = 0;
-    fragment.opacity = 1;
+//    fragment.opacity = 1;
+    // BONGO
+    fragment.opacity = cell.getOpacity();
 
     const auto fillMode = tile->tileset()->fillMode();
     if (fillMode == Tileset::PreserveAspectFit) {

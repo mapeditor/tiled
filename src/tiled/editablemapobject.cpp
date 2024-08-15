@@ -190,6 +190,12 @@ void EditableMapObject::setRotation(qreal rotation)
     setMapObjectProperty(MapObject::RotationProperty, rotation);
 }
 
+// BONGO
+void EditableMapObject::setOpacity(qreal opacity)
+{
+    setMapObjectProperty(MapObject::OpacityProperty, opacity);
+}
+
 void EditableMapObject::setVisible(bool visible)
 {
     setMapObjectProperty(MapObject::VisibleProperty, visible);

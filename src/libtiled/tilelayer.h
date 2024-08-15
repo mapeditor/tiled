@@ -123,6 +123,9 @@ public:
     void setRotatedHexagonal120(bool v) { v ? _flags |= RotatedHexagonal120 : _flags &= ~RotatedHexagonal120; }
 
     void rotate(RotateDirection direction);
+    // BONGO
+    float getOpacity() const { return _opacity; }
+    void setOpacity(float mOpacity) { _opacity = mOpacity; }
 
     bool checked() const { return _flags & Checked; }
     void setChecked(bool checked) { checked ? _flags |= Checked : _flags &= ~Checked; }
@@ -138,6 +141,8 @@ private:
     Tileset *_tileset = nullptr;
     int _tileId = -1;
     int _flags = 0;
+    //BONGO
+    float _opacity = 1.0;
 };
 
 inline Tile *Cell::tile() const

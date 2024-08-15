@@ -110,6 +110,8 @@ void MapObjectOutline::syncWithMapObject(const MapRenderer &renderer)
 
     setPos(pixelPos);
     setRotation(mObject->rotation());
+    // BONGO
+    setOpacity(mObject->opacity());
     setFlag(QGraphicsItem::ItemIgnoresTransformations,
             mObject->shape() == MapObject::Point);
 

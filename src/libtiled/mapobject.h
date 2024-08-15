@@ -121,6 +121,8 @@ public:
         ShapeProperty           = 1 << 11,
         TemplateProperty        = 1 << 12,
         CustomProperties        = 1 << 13,
+        // BONGO
+        OpacityProperty         = 1 << 14,
         AllProperties           = 0xFF
     };
 
@@ -200,6 +202,10 @@ public:
     qreal rotation() const;
     void setRotation(qreal rotation);
 
+    // BONGO
+    qreal opacity() const;
+    void setOpacity(qreal opacity);
+
     Alignment alignment(const Map *map = nullptr) const;
 
     bool isVisible() const;
@@ -247,6 +253,8 @@ private:
     const ObjectTemplate *mObjectTemplate = nullptr;
     ObjectGroup *mObjectGroup = nullptr;
     qreal mRotation = 0.0;
+    // BONGO
+    qreal mOpacity = 1.0;
     bool mVisible = true;
     bool mTemplateBase = false;
     ChangedProperties mChangedProperties;
@@ -478,6 +486,20 @@ inline qreal MapObject::rotation() const
  */
 inline void MapObject::setRotation(qreal rotation)
 { mRotation = rotation; }
+
+/**
+  * BONGO: Add Opacity for objects
+  * returns current opacity
+*/
+inline qreal MapObject::opacity() const
+{ return mOpacity; }
+
+/**
+  * BONGO: Add Opacity for objects
+  * sets new opacity
+*/
+inline void MapObject::setOpacity(qreal opacity)
+{ mOpacity = opacity; }
 
 inline bool MapObject::isVisible() const
 { return mVisible; }

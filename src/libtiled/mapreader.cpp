@@ -1222,6 +1222,13 @@ std::unique_ptr<MapObject> MapReaderPrivate::readObject()
         object->setPropertyChanged(MapObject::RotationProperty);
     }
 
+    // BONGO
+    const qreal opacity = atts.value(QLatin1String("opacity")).toDouble(&ok);
+    if (ok) {
+        object->setOpacity(opacity);
+        object->setPropertyChanged(MapObject::OpacityProperty);
+    }
+
     if (gid) {
         object->setCell(cellForGid(gid));
         object->setPropertyChanged(MapObject::CellProperty);

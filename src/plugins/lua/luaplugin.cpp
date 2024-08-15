@@ -730,6 +730,8 @@ void LuaWriter::writeMapObject(const Tiled::MapObject *mapObject)
     mWriter.writeKeyAndValue("width", mapObject->width());
     mWriter.writeKeyAndValue("height", mapObject->height());
     mWriter.writeKeyAndValue("rotation", mapObject->rotation());
+    // BONGO
+    mWriter.writeKeyAndValue("opacity", mapObject->opacity());
 
     if (!mapObject->cell().isEmpty())
         mWriter.writeKeyAndValue("gid", mGidMapper.cellToGid(mapObject->cell()));

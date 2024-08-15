@@ -845,6 +845,12 @@ void PropertyBrowser::addMapObjectProperties()
                                tr("Flipping"), groupProperty);
 
         flippingProperty->setAttribute(QLatin1String("flagNames"), mFlippingFlagNames);
+
+        // BONGO
+        QtVariantProperty *opacityProperty = addProperty(OpacityProperty, QMetaType::Double, tr("Opacity"), groupProperty);
+        opacityProperty->setAttribute(QLatin1String("minimum"), 0.0);
+        opacityProperty->setAttribute(QLatin1String("maximum"), 1.0);
+        opacityProperty->setAttribute(QLatin1String("singleStep"), 0.1);
     }
 
     if (mMapObjectFlags & ObjectIsText) {
@@ -1296,6 +1302,13 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
                                           val.toDouble());
         }
         break;
+    // BONGO
+    case OpacityProperty:{
+        command = new ChangeMapObject(mDocument, mapObject,
+                                      MapObject::OpacityProperty,
+                                      val.toReal());
+        break;
+    }
     case FlippingProperty: {
         const int flippingFlags = val.toInt();
 
@@ -1913,6 +1926,8 @@ void PropertyBrowser::updateProperties()
             if (mapObject->cell().flippedVertically())
                 flippingFlags |= 2;
             mIdToProperty[FlippingProperty]->setValue(flippingFlags);
+            // BONGO
+            mIdToProperty[OpacityProperty]->setValue(mapObject->opacity());
         }
 
         if (flags & ObjectIsText) {

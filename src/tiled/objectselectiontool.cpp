@@ -1657,7 +1657,9 @@ void ObjectSelectionTool::saveSelectionState()
             mapObject->position(),
             mapObject->size(),
             mapObject->polygon(),
-            mapObject->rotation()
+            mapObject->rotation(),
+            // BONGO
+            mapObject->opacity()
         };
         mMovingObjects.append(object);
     }
