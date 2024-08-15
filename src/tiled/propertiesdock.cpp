@@ -20,7 +20,7 @@
 
 #include "propertiesdock.h"
 
-#include "propertieswidget.h"
+#include "varianteditor.h"
 
 #include <QEvent>
 
@@ -28,26 +28,26 @@ namespace Tiled {
 
 PropertiesDock::PropertiesDock(QWidget *parent)
     : QDockWidget(parent)
-    , mPropertiesWidget(new PropertiesWidget(this))
+    , mPropertiesWidget(new VariantEditor(this))
 {
     setObjectName(QLatin1String("propertiesDock"));
     setWidget(mPropertiesWidget);
 
-    connect(mPropertiesWidget, &PropertiesWidget::bringToFront,
-            this, &PropertiesDock::bringToFront);
+    // connect(mPropertiesWidget, &PropertiesWidget::bringToFront,
+    //         this, &PropertiesDock::bringToFront);
 
     retranslateUi();
 }
 
 void PropertiesDock::setDocument(Document *document)
 {
-    mPropertiesWidget->setDocument(document);
+    // mPropertiesWidget->setDocument(document);
 }
 
 void PropertiesDock::selectCustomProperty(const QString &name)
 {
     bringToFront();
-    mPropertiesWidget->selectCustomProperty(name);
+    // mPropertiesWidget->selectCustomProperty(name);
 }
 
 bool PropertiesDock::event(QEvent *event)
