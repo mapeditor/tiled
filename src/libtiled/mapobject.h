@@ -485,16 +485,14 @@ inline void MapObject::setRotation(qreal rotation)
 { mRotation = rotation; }
 
 /**
-  * BONGO: Add Opacity for objects
-  * returns current opacity
-*/
+ * Returns the opacity of the object.
+ */
 inline qreal MapObject::opacity() const
 { return mOpacity; }
 
 /**
-  * BONGO: Add Opacity for objects
-  * sets new opacity
-*/
+ * Sets the opacity of the object.
+ */
 inline void MapObject::setOpacity(qreal opacity)
 { mOpacity = opacity; }
 

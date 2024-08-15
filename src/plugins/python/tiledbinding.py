@@ -280,7 +280,6 @@ cls_mapobject.add_method('cell', retval('const Tiled::Cell'), [])
 cls_mapobject.add_method('objectGroup', retval('Tiled::ObjectGroup*',reference_existing_object=True), [])
 cls_mapobject.add_method('rotation', 'double', [])
 cls_mapobject.add_method('setRotation', None, [('double','r')])
-# BONGO
 cls_mapobject.add_method('opacity', 'double', [])
 cls_mapobject.add_method('setOpacity', None, [('double','opacity')])
 cls_mapobject.add_method('isVisible', 'bool', [])
