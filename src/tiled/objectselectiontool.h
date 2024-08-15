@@ -167,7 +167,6 @@ private:
         QSizeF oldSize;
         QPolygonF oldPolygon;
         qreal oldRotation;
-        qreal oldOpacity;
     };
 
     QVector<MovingObject> mMovingObjects;
