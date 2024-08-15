@@ -63,7 +63,6 @@ class EditableMapObject : public EditableObject
     Q_PROPERTY(qreal height READ height WRITE setHeight)
     Q_PROPERTY(QSizeF size READ size WRITE setSize)
     Q_PROPERTY(qreal rotation READ rotation WRITE setRotation)
-    // BONGO
     Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible)
     Q_PROPERTY(QJSValue polygon READ polygon WRITE setPolygon)
@@ -116,7 +115,6 @@ public:
     qreal height() const;
     QSizeF size() const;
     qreal rotation() const;
-    // BONGO
     qreal opacity() const;
     bool isVisible() const;
     QJSValue polygon() const;
@@ -153,7 +151,6 @@ public slots:
     void setHeight(qreal height);
     void setSize(QSizeF size);
     void setRotation(qreal rotation);
-    // BONGO
     void setOpacity(qreal opacity);
     void setVisible(bool visible);
     void setPolygon(QJSValue polygon);
@@ -225,7 +222,6 @@ inline qreal EditableMapObject::rotation() const
     return mapObject()->rotation();
 }
 
-// BONGO
 inline qreal EditableMapObject::opacity() const
 {
     return mapObject()->opacity();

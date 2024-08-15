@@ -123,7 +123,7 @@ public:
     void setRotatedHexagonal120(bool v) { v ? _flags |= RotatedHexagonal120 : _flags &= ~RotatedHexagonal120; }
 
     void rotate(RotateDirection direction);
-    // BONGO
+
     float getOpacity() const { return _opacity; }
     void setOpacity(float mOpacity) { _opacity = mOpacity; }
 

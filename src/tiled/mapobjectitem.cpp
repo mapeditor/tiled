@@ -89,7 +89,6 @@ void MapObjectItem::syncWithMapObject()
 
     setPos(pixelPos);
     setRotation(mObject->rotation());
-    // BONGO
     setOpacity(mObject->opacity());
 
     if (mBoundingRect != bounds) {

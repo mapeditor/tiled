@@ -312,7 +312,6 @@ QVariant MapObject::mapObjectProperty(Property property) const
     case PositionProperty:      return mPos;
     case SizeProperty:          return mSize;
     case RotationProperty:      return mRotation;
-    // BONGO
     case OpacityProperty:       return mOpacity;
     case CellProperty:          Q_ASSERT(false); break;
     case ShapeProperty:         return mShape;
@@ -377,7 +376,6 @@ MapObject *MapObject::clone() const
     o->setShape(mShape);
     o->setCell(mCell);
     o->setRotation(mRotation);
-    // BONGO
     o->setOpacity(mOpacity);
     o->setVisible(mVisible);
     o->setChangedProperties(mChangedProperties);
@@ -394,7 +392,6 @@ void MapObject::copyPropertiesFrom(const MapObject *object)
     setShape(object->shape());
     setCell(object->cell());
     setRotation(object->rotation());
-    // BONGO
     setOpacity(object->opacity());
     setVisible(object->isVisible());
     setProperties(object->properties());
@@ -435,7 +432,6 @@ void MapObject::syncWithTemplate()
     if (!propertyChanged(MapObject::RotationProperty))
         setRotation(base->rotation());
 
-    // BONGO
     if (!propertyChanged(MapObject::OpacityProperty))
         setOpacity(base->opacity());
 

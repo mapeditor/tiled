@@ -121,7 +121,6 @@ public:
         ShapeProperty           = 1 << 11,
         TemplateProperty        = 1 << 12,
         CustomProperties        = 1 << 13,
-        // BONGO
         OpacityProperty         = 1 << 14,
         AllProperties           = 0xFF
     };
@@ -202,7 +201,6 @@ public:
     qreal rotation() const;
     void setRotation(qreal rotation);
 
-    // BONGO
     qreal opacity() const;
     void setOpacity(qreal opacity);
 
@@ -253,7 +251,6 @@ private:
     const ObjectTemplate *mObjectTemplate = nullptr;
     ObjectGroup *mObjectGroup = nullptr;
     qreal mRotation = 0.0;
-    // BONGO
     qreal mOpacity = 1.0;
     bool mVisible = true;
     bool mTemplateBase = false;

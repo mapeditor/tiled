@@ -722,7 +722,6 @@ std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap 
     const qreal width = variantMap[QStringLiteral("width")].toReal();
     const qreal height = variantMap[QStringLiteral("height")].toReal();
     const qreal rotation = variantMap[QStringLiteral("rotation")].toReal();
-    // BONGO
     const qreal opacity = variantMap[QStringLiteral("opacity")].toReal();
 
     QString className = variantMap[QStringLiteral("class")].toString();
@@ -740,7 +739,6 @@ std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap 
         object->setPropertyChanged(MapObject::RotationProperty);
     }
 
-    // BONGO
     if (variantMap.contains(QLatin1String("opacity"))) {
         object->setOpacity(opacity);
         object->setPropertyChanged(MapObject::OpacityProperty);
