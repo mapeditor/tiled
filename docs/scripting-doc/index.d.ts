@@ -3809,7 +3809,7 @@ declare class Tileset extends Asset {
    *
    * Optionally sets the source file of the image. This may be useful, but be careful since Tiled will try to reload the tileset from that source when the tileset parameters are changed.
    *
-   * @note Usually you'll just want to assign the image file name to the {@link image} property!
+   * @note Usually you'll just want to assign the image file name to the {@link imageFileName} property!
    *
    * @warning This function has no undo!
    */
