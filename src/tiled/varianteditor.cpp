@@ -20,6 +20,7 @@
 
 #include "varianteditor.h"
 #include "colorbutton.h"
+#include "compression.h"
 #include "map.h"
 #include "tiled.h"
 #include "utils.h"
@@ -204,6 +205,11 @@ public:
         auto editor = new QLineEdit(parent);
         editor->setText(value.toString());
         return editor;
+    }
+
+    QVariant value(QWidget *editor) const override
+    {
+        return static_cast<QLineEdit *>(editor)->text();
     }
 };
 
@@ -415,7 +421,12 @@ public:
         // This allows the combo box to shrink horizontally.
         editor->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
         editor->setModel(&m_enumNamesModel);
-        editor->setCurrentIndex(value.toInt());
+
+        if (m_enumValues.isEmpty())
+            editor->setCurrentIndex(value.toInt());
+        else
+            editor->setCurrentIndex(m_enumValues.indexOf(value.toInt()));
+
         return editor;
     }
 
@@ -424,8 +435,14 @@ public:
         m_enumNamesModel.setStringList(enumNames);
     }
 
+    void setEnumValues(const QList<int> &enumValues)
+    {
+        m_enumValues = enumValues;
+    }
+
 private:
     QStringListModel m_enumNamesModel;
+    QList<int> m_enumValues;
 };
 
 
@@ -437,11 +454,19 @@ VariantEditor::VariantEditor(QWidget *parent)
     m_gridLayout = new QGridLayout;
     verticalLayout->addLayout(m_gridLayout);
     verticalLayout->addStretch();
+    verticalLayout->setContentsMargins(0, 0, 0, 0);
 
     setWidget(m_widget);
     setWidgetResizable(true);
 
-    m_gridLayout->setSpacing(Utils::dpiScaled(2));
+    m_gridLayout->setContentsMargins(0, 0, 0, 0);
+    m_gridLayout->setSpacing(Utils::dpiScaled(3));
+
+    m_gridLayout->setColumnStretch(LabelColumn, 2);
+    m_gridLayout->setColumnStretch(WidgetColumn, 3);
+    m_gridLayout->setColumnMinimumWidth(LeftSpacing, Utils::dpiScaled(3));
+    m_gridLayout->setColumnMinimumWidth(MiddleSpacing, Utils::dpiScaled(2));
+    m_gridLayout->setColumnMinimumWidth(RightSpacing, Utils::dpiScaled(3));
 
     registerEditorFactory(QMetaType::QString, std::make_unique<StringEditorFactory>());
     registerEditorFactory(QMetaType::Int, std::make_unique<IntEditorFactory>());
@@ -470,12 +495,17 @@ VariantEditor::VariantEditor(QWidget *parent)
 
     auto orientationEditorFactory = std::make_unique<EnumEditorFactory>();
     orientationEditorFactory->setEnumNames({
-                                               tr("Unknown"),       // todo: hide this one
                                                tr("Orthogonal"),
                                                tr("Isometric"),
-                                               tr("Staggered"),
+                                               tr("Isometric (Staggered)"),
                                                tr("Hexagonal (Staggered)"),
                                            });
+    orientationEditorFactory->setEnumValues({
+                                                Map::Orthogonal,
+                                                Map::Isometric,
+                                                Map::Staggered,
+                                                Map::Hexagonal,
+                                            });
     registerEditorFactory(qMetaTypeId<Map::Orientation>(), std::move(orientationEditorFactory));
 
     auto staggerAxisEditorFactory = std::make_unique<EnumEditorFactory>();
@@ -492,15 +522,30 @@ VariantEditor::VariantEditor(QWidget *parent)
                                             });
     registerEditorFactory(qMetaTypeId<Map::StaggerIndex>(), std::move(staggerIndexEditorFactory));
 
+    QStringList layerFormatNames = {
+        QCoreApplication::translate("PreferencesDialog", "XML (deprecated)"),
+        QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"),
+        QCoreApplication::translate("PreferencesDialog", "Base64 (gzip compressed)"),
+        QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"),
+    };
+    QList<int> layerFormatValues = {
+        Map::XML,
+        Map::Base64,
+        Map::Base64Gzip,
+        Map::Base64Zlib,
+    };
+
+    if (compressionSupported(Zstandard)) {
+        layerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (Zstandard compressed)"));
+        layerFormatValues.append(Map::Base64Zstandard);
+    }
+
+    layerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "CSV"));
+    layerFormatValues.append(Map::CSV);
+
     auto layerFormatEditorFactory = std::make_unique<EnumEditorFactory>();
-    layerFormatEditorFactory->setEnumNames({
-                                               tr("XML (deprecated)"),
-                                               tr("Base64"),
-                                               tr("Base64Gzip"),
-                                               tr("Base64Zlib"),
-                                               tr("Base64Zstandard"),
-                                               tr("CSV"),
-                                           });
+    layerFormatEditorFactory->setEnumNames(layerFormatNames);
+    layerFormatEditorFactory->setEnumValues(layerFormatValues);
     registerEditorFactory(qMetaTypeId<Map::LayerDataFormat>(), std::move(layerFormatEditorFactory));
 
     auto renderOrderEditorFactory = std::make_unique<EnumEditorFactory>();
@@ -523,10 +568,6 @@ VariantEditor::VariantEditor(QWidget *parent)
     //              { QStringLiteral("Object Alignment"), QVariant::fromValue(TopLeft) },
     //          });
 
-    // m_gridLayout->setColumnStretch(0, 0);
-    // m_gridLayout->setColumnStretch(1, 0);
-    m_gridLayout->setColumnStretch(2, 1);
-    m_gridLayout->setColumnMinimumWidth(1, Utils::dpiScaled(10));
 
     // setValue(QVariantList {
     //              QVariant(QLatin1String("Hello")),
@@ -534,20 +575,26 @@ VariantEditor::VariantEditor(QWidget *parent)
     //              QVariant(3.14)
     //          });
 
+    addHeader(tr("Map"));
     addValue(tr("Class"), QString());
+    addSeparator();
     addValue(tr("Orientation"), QVariant::fromValue(Map::Hexagonal));
-    addValue(tr("Size"), QSize(20, 20));
-    addValue(tr("Tile Size"), QSize(14, 12));
     addValue(tr("Infinite"), false);
+    addValue(tr("Map Size"), QSize(20, 20));
+    addValue(tr("Tile Size"), QSize(14, 12));
     addValue(tr("Tile Side Length (Hex)"), 6);
     addValue(tr("Stagger Axis"), QVariant::fromValue(Map::StaggerY));
     addValue(tr("Stagger Index"), QVariant::fromValue(Map::StaggerEven));
+    addSeparator();
     addValue(tr("Parallax Origin"), QPointF());
+    addSeparator();
     addValue(tr("Tile Layer Format"), QVariant::fromValue(Map::Base64Zlib));
     addValue(tr("Output Chunk Size"), QSize(16, 16));
-    addValue(tr("Tile Render Order"), QVariant::fromValue(Map::RightDown));
     addValue(tr("Compression Level"), -1);
+    addSeparator();
+    addValue(tr("Tile Render Order"), QVariant::fromValue(Map::RightDown));
     addValue(tr("Background Color"), QColor());
+    addHeader(tr("Custom Properties"));
 }
 
 void VariantEditor::registerEditorFactory(int type, std::unique_ptr<EditorFactory> factory)
@@ -555,22 +602,51 @@ void VariantEditor::registerEditorFactory(int type, std::unique_ptr<EditorFactor
     m_factories[type] = std::move(factory);
 }
 
+void VariantEditor::addHeader(const QString &text)
+{
+    auto label = new ElidingLabel(text, m_widget);
+    auto boldFont = label->font();
+    boldFont.setBold(true);
+    label->setFont(boldFont);
+    label->setBackgroundRole(QPalette::Dark);
+    const int verticalMargin = Utils::dpiScaled(3);
+    const int horizontalMargin = Utils::dpiScaled(6);
+    label->setContentsMargins(horizontalMargin, verticalMargin,
+                              horizontalMargin, verticalMargin);
+
+    label->setAutoFillBackground(true);
+
+    m_gridLayout->addWidget(label, m_rowIndex, 0, 1, ColumnCount);
+    ++m_rowIndex;
+}
+
+void VariantEditor::addSeparator()
+{
+    auto separator = new QFrame(m_widget);
+    separator->setFrameShape(QFrame::HLine);
+    separator->setFrameShadow(QFrame::Plain);
+    separator->setForegroundRole(QPalette::Dark);
+    m_gridLayout->addWidget(separator, m_rowIndex, 0, 1, ColumnCount);
+    ++m_rowIndex;
+}
+
 void VariantEditor::addValue(const QString &name, const QVariant &value)
 {
     auto label = new LineEditLabel(name, m_widget);
-    label->setBuddy(new QLabel(m_widget));
-    m_gridLayout->addWidget(label, m_rowIndex, 0, Qt::AlignTop | Qt::AlignRight);
-    setValue(value);
+    // label->setBuddy(m_widget));  // todo: associate with widget somehow
+    label->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
+    m_gridLayout->addWidget(label, m_rowIndex, LabelColumn, Qt::AlignTop/* | Qt::AlignRight*/);
+    addValue(value);
 }
 
-void VariantEditor::setValue(const QVariant &value)
+void VariantEditor::addValue(const QVariant &value)
 {
     const int type = value.userType();
     switch (type) {
     case QMetaType::QVariantList: {
         const auto list = value.toList();
         for (const auto &item : list)
-            setValue(item);
+            addValue(item);
         break;
     }
     case QMetaType::QVariantMap: {
@@ -583,7 +659,8 @@ void VariantEditor::setValue(const QVariant &value)
         auto factory = m_factories.find(type);
         if (factory != m_factories.end()) {
             const auto editor = factory->second->createEditor(value, m_widget);
-            m_gridLayout->addWidget(editor, m_rowIndex, 2);
+            editor->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
+            m_gridLayout->addWidget(editor, m_rowIndex, WidgetColumn);
         } else {
             qDebug() << "No editor factory for type" << type;
         }

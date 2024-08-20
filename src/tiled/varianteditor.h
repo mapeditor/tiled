@@ -23,6 +23,7 @@
 #include <QCoreApplication>
 #include <QScrollArea>
 #include <QString>
+#include <QVariant>
 #include <QWidget>
 
 #include <memory>
@@ -39,6 +40,9 @@ class EditorFactory
 public:
     virtual QWidget *createEditor(const QVariant &value,
                                   QWidget *parent) = 0;
+
+    virtual QVariant value(QWidget *editor) const { return {}; }
+    virtual void setValue(QWidget *editor, const QVariant &value) {};
 };
 
 class VariantEditor : public QScrollArea
@@ -50,10 +54,21 @@ public:
 
     void registerEditorFactory(int type, std::unique_ptr<EditorFactory> factory);
 
+    void addHeader(const QString &text);
+    void addSeparator();
     void addValue(const QString &name, const QVariant &value);
-    void setValue(const QVariant &value);
+    void addValue(const QVariant &value);
 
 private:
+    enum Column {
+        LeftSpacing,
+        LabelColumn,
+        MiddleSpacing,
+        WidgetColumn,
+        RightSpacing,
+        ColumnCount,
+    };
+
     QWidget *m_widget;
     QGridLayout *m_gridLayout;
     int m_rowIndex = 0;
