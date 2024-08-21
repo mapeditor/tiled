@@ -18,6 +18,7 @@ Project {
     property bool sentry: false
     property bool dbus: true
     property string openSslPath: Environment.getEnv("OPENSSL_PATH")
+    property string pythonPkgConfigName: "python3-embed"
 
     references: [
         "dist/archive.qbs",

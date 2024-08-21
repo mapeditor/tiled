@@ -22,7 +22,7 @@ TiledPlugin {
 
     Probes.PkgConfigProbe {
         id: pkgConfigPython3
-        name: "python3-embed"
+        name: project.pythonPkgConfigName
         minVersion: "3.8"
     }
 
