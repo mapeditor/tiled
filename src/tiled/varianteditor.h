@@ -33,6 +33,25 @@ class QGridLayout;
 
 namespace Tiled {
 
+class Property : public QObject
+{
+    Q_OBJECT
+
+public:
+    Property(QObject *parent = nullptr)
+        : QObject(parent)
+    {
+    }
+
+    virtual QWidget *createEditor(QWidget *parent) = 0;
+
+    virtual QVariant value() const = 0;
+    virtual void setValue(const QVariant &value) = 0;
+
+signals:
+    void valueChanged(const QVariant &value);
+};
+
 class EditorFactory
 {
     Q_DECLARE_TR_FUNCTIONS(EditorFactory)
@@ -58,6 +77,7 @@ public:
     void addSeparator();
     void addValue(const QString &name, const QVariant &value);
     void addValue(const QVariant &value);
+    QWidget *createEditor(const QVariant &value);
 
 private:
     enum Column {
@@ -73,10 +93,6 @@ private:
     QGridLayout *m_gridLayout;
     int m_rowIndex = 0;
     std::unordered_map<int, std::unique_ptr<EditorFactory>> m_factories;
-
-    // QAbstractScrollArea interface
-protected:
-    QSize viewportSizeHint() const override;
 };
 
 } // namespace Tiled

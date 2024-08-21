@@ -317,36 +317,107 @@ public:
     }
 };
 
+class SizeEditor : public QWidget
+{
+public:
+    SizeEditor(QWidget *parent = nullptr)
+        : QWidget(parent)
+        , m_widthLabel(new QLabel(QStringLiteral("W"), this))
+        , m_heightLabel(new QLabel(QStringLiteral("H"), this))
+        , m_widthSpinBox(new SpinBox(this))
+        , m_heightSpinBox(new SpinBox(this))
+    {
+        m_widthLabel->setAlignment(Qt::AlignCenter);
+        m_heightLabel->setAlignment(Qt::AlignCenter);
+
+        auto layout = new QGridLayout(this);
+        layout->setContentsMargins(QMargins());
+        layout->setColumnStretch(1, 1);
+        layout->setColumnStretch(3, 1);
+        layout->setSpacing(Utils::dpiScaled(3));
+
+        const int horizontalMargin = Utils::dpiScaled(3);
+        m_widthLabel->setContentsMargins(horizontalMargin, 0, horizontalMargin, 0);
+        m_heightLabel->setContentsMargins(horizontalMargin, 0, horizontalMargin, 0);
+
+        layout->addWidget(m_widthLabel, 0, 0);
+        layout->addWidget(m_widthSpinBox, 0, 1);
+        layout->addWidget(m_heightLabel, 0, 2);
+        layout->addWidget(m_heightSpinBox, 0, 3);
+    }
+
+    void setValue(const QSize &size)
+    {
+        m_widthSpinBox->setValue(size.width());
+        m_heightSpinBox->setValue(size.height());
+    }
+
+    QSize value() const
+    {
+        return QSize(m_widthSpinBox->value(), m_heightSpinBox->value());
+    }
+
+private:
+    void resizeEvent(QResizeEvent *event) override
+    {
+        QWidget::resizeEvent(event);
+
+        const auto direction = event->size().width() < minimumHorizontalWidth()
+                ? Qt::Vertical : Qt::Horizontal;
+
+        if (m_direction != direction) {
+            m_direction = direction;
+
+            auto layout = qobject_cast<QGridLayout *>(this->layout());
+
+            // Remove all widgets from layout, without deleting them
+            layout->removeWidget(m_widthLabel);
+            layout->removeWidget(m_widthSpinBox);
+            layout->removeWidget(m_heightLabel);
+            layout->removeWidget(m_heightSpinBox);
+
+            if (direction == Qt::Horizontal) {
+                layout->addWidget(m_widthLabel, 0, 0);
+                layout->addWidget(m_widthSpinBox, 0, 1);
+                layout->addWidget(m_heightLabel, 0, 2);
+                layout->addWidget(m_heightSpinBox, 0, 3);
+                layout->setColumnStretch(3, 1);
+            } else {
+                layout->addWidget(m_widthLabel, 0, 0);
+                layout->addWidget(m_widthSpinBox, 0, 1);
+                layout->addWidget(m_heightLabel, 1, 0);
+                layout->addWidget(m_heightSpinBox, 1, 1);
+                layout->setColumnStretch(3, 0);
+            }
+
+            // this avoids flickering when the layout changes
+            layout->activate();
+        }
+    }
+
+    int minimumHorizontalWidth() const
+    {
+        return m_widthLabel->minimumSizeHint().width() +
+                m_widthSpinBox->minimumSizeHint().width() +
+                m_heightLabel->minimumSizeHint().width() +
+                m_heightSpinBox->minimumSizeHint().width() +
+                layout()->spacing() * 3;
+    }
+
+    Qt::Orientation m_direction = Qt::Horizontal;
+    QLabel *m_widthLabel;
+    QLabel *m_heightLabel;
+    SpinBox *m_widthSpinBox;
+    SpinBox *m_heightSpinBox;
+};
+
 class SizeEditorFactory : public EditorFactory
 {
 public:
     QWidget *createEditor(const QVariant &value, QWidget *parent) override
     {
-        auto editor = new QWidget(parent);
-        auto horizontalLayout = new QHBoxLayout(editor);
-        horizontalLayout->setContentsMargins(QMargins());
-
-        auto widthLabel = new QLabel(QStringLiteral("W"), editor);
-        widthLabel->setToolTip(tr("Width"));
-        horizontalLayout->addWidget(widthLabel, 0, Qt::AlignRight);
-
-        auto widthSpinBox = new SpinBox(editor);
-        widthLabel->setBuddy(widthSpinBox);
-        horizontalLayout->addWidget(widthSpinBox, 1);
-
-        auto heightLabel = new QLabel(QStringLiteral("H"), editor);
-        heightLabel->setToolTip(tr("Height"));
-        horizontalLayout->addWidget(heightLabel, 0, Qt::AlignRight);
-
-        auto heightSpinBox = new SpinBox(editor);
-        heightLabel->setBuddy(heightSpinBox);
-        horizontalLayout->addWidget(heightSpinBox, 1);
-
-        // horizontalLayout->addStretch();
-
-        widthSpinBox->setValue(value.toSize().width());
-        heightSpinBox->setValue(value.toSize().height());
-
+        auto editor = new SizeEditor(parent);
+        editor->setValue(value.toSize());
         return editor;
     }
 };
@@ -450,16 +521,17 @@ VariantEditor::VariantEditor(QWidget *parent)
     : QScrollArea(parent)
 {
     m_widget = new QWidget;
+    m_widget->setBackgroundRole(QPalette::Base);
     auto verticalLayout = new QVBoxLayout(m_widget);
     m_gridLayout = new QGridLayout;
     verticalLayout->addLayout(m_gridLayout);
     verticalLayout->addStretch();
-    verticalLayout->setContentsMargins(0, 0, 0, 0);
+    verticalLayout->setContentsMargins(QMargins());
 
     setWidget(m_widget);
     setWidgetResizable(true);
 
-    m_gridLayout->setContentsMargins(0, 0, 0, 0);
+    m_gridLayout->setContentsMargins(QMargins());
     m_gridLayout->setSpacing(Utils::dpiScaled(3));
 
     m_gridLayout->setColumnStretch(LabelColumn, 2);
@@ -605,9 +677,6 @@ void VariantEditor::registerEditorFactory(int type, std::unique_ptr<EditorFactor
 void VariantEditor::addHeader(const QString &text)
 {
     auto label = new ElidingLabel(text, m_widget);
-    auto boldFont = label->font();
-    boldFont.setBold(true);
-    label->setFont(boldFont);
     label->setBackgroundRole(QPalette::Dark);
     const int verticalMargin = Utils::dpiScaled(3);
     const int horizontalMargin = Utils::dpiScaled(6);
@@ -625,7 +694,7 @@ void VariantEditor::addSeparator()
     auto separator = new QFrame(m_widget);
     separator->setFrameShape(QFrame::HLine);
     separator->setFrameShadow(QFrame::Plain);
-    separator->setForegroundRole(QPalette::Dark);
+    separator->setForegroundRole(QPalette::Mid);
     m_gridLayout->addWidget(separator, m_rowIndex, 0, 1, ColumnCount);
     ++m_rowIndex;
 }
@@ -633,10 +702,12 @@ void VariantEditor::addSeparator()
 void VariantEditor::addValue(const QString &name, const QVariant &value)
 {
     auto label = new LineEditLabel(name, m_widget);
-    // label->setBuddy(m_widget));  // todo: associate with widget somehow
     label->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
     m_gridLayout->addWidget(label, m_rowIndex, LabelColumn, Qt::AlignTop/* | Qt::AlignRight*/);
-    addValue(value);
+    if (auto editor = createEditor(value)) {
+        m_gridLayout->addWidget(editor, m_rowIndex, WidgetColumn);
+    }
+    ++m_rowIndex;
 }
 
 void VariantEditor::addValue(const QVariant &value)
@@ -656,22 +727,28 @@ void VariantEditor::addValue(const QVariant &value)
         break;
     }
     default: {
-        auto factory = m_factories.find(type);
-        if (factory != m_factories.end()) {
-            const auto editor = factory->second->createEditor(value, m_widget);
-            editor->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
-            m_gridLayout->addWidget(editor, m_rowIndex, WidgetColumn);
-        } else {
+        if (auto editor = createEditor(value))
+            m_gridLayout->addWidget(editor, m_rowIndex, LabelColumn, 1, 3);
+        else
             qDebug() << "No editor factory for type" << type;
-        }
+
         ++m_rowIndex;
     }
     }
 }
 
-QSize VariantEditor::viewportSizeHint() const
+QWidget *VariantEditor::createEditor(const QVariant &value)
 {
-    return m_widget->minimumSizeHint();
+    const int type = value.userType();
+    auto factory = m_factories.find(type);
+    if (factory != m_factories.end()) {
+        const auto editor = factory->second->createEditor(value, m_widget);
+        editor->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
+        return editor;
+    } else {
+        qDebug() << "No editor factory for type" << type;
+    }
+    return nullptr;
 }
 
 } // namespace Tiled
