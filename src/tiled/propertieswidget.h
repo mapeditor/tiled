@@ -27,7 +27,7 @@ namespace Tiled {
 class Object;
 
 class Document;
-class PropertyBrowser;
+class VariantEditor;
 
 /**
  * The PropertiesWidget combines the PropertyBrowser with some controls that
@@ -74,7 +74,7 @@ private:
     void retranslateUi();
 
     Document *mDocument;
-    PropertyBrowser *mPropertyBrowser;
+    VariantEditor *mPropertyBrowser;
     QAction *mActionAddProperty;
     QAction *mActionRemoveProperty;
     QAction *mActionRenameProperty;

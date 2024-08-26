@@ -26,7 +26,7 @@ namespace Tiled {
 
 class Document;
 
-class VariantEditor;
+class PropertiesWidget;
 
 class PropertiesDock : public QDockWidget
 {
@@ -50,7 +50,7 @@ private:
     void bringToFront();
     void retranslateUi();
 
-    VariantEditor *mPropertiesWidget;
+    PropertiesWidget *mPropertiesWidget;
 };
 
 } // namespace Tiled
