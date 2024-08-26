@@ -22,13 +22,13 @@
 
 #include "actionmanager.h"
 #include "addpropertydialog.h"
+#include "changemapproperty.h"
 #include "changeproperties.h"
 #include "clipboardmanager.h"
 #include "mapdocument.h"
-#include "mapobject.h"
 #include "propertybrowser.h"
 #include "utils.h"
-#include "variantpropertymanager.h"
+#include "varianteditor.h"
 
 #include <QAction>
 #include <QCoreApplication>
@@ -46,7 +46,7 @@ namespace Tiled {
 PropertiesWidget::PropertiesWidget(QWidget *parent)
     : QWidget{parent}
     , mDocument(nullptr)
-    , mPropertyBrowser(new PropertyBrowser)
+    , mPropertyBrowser(new VariantEditor(this))
 {
     mActionAddProperty = new QAction(this);
     mActionAddProperty->setEnabled(false);
@@ -89,8 +89,8 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
     mPropertyBrowser->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(mPropertyBrowser, &PropertyBrowser::customContextMenuRequested,
             this, &PropertiesWidget::showContextMenu);
-    connect(mPropertyBrowser, &PropertyBrowser::selectedItemsChanged,
-            this, &PropertiesWidget::updateActions);
+    // connect(mPropertyBrowser, &PropertyBrowser::selectedItemsChanged,
+    //         this, &PropertiesWidget::updateActions);
 
     retranslateUi();
 }
@@ -110,7 +110,7 @@ void PropertiesWidget::setDocument(Document *document)
         mDocument->disconnect(this);
 
     mDocument = document;
-    mPropertyBrowser->setDocument(document);
+    // mPropertyBrowser->setDocument(document);
 
     if (document) {
         connect(document, &Document::currentObjectChanged,
@@ -131,7 +131,7 @@ void PropertiesWidget::setDocument(Document *document)
 
 void PropertiesWidget::selectCustomProperty(const QString &name)
 {
-    mPropertyBrowser->selectCustomProperty(name);
+    // mPropertyBrowser->selectCustomProperty(name);
 }
 
 static bool anyObjectHasProperty(const QList<Object*> &objects, const QString &name)
@@ -143,9 +143,76 @@ static bool anyObjectHasProperty(const QList<Object*> &objects, const QString &n
     return false;
 }
 
+class MapOrientationProperty : public EnumProperty
+{
+public:
+    MapOrientationProperty(MapDocument *mapDocument)
+        : EnumProperty(tr("Orientation"))
+        , mMapDocument(mapDocument)
+    {
+        setEnumNames({
+                         tr("Orthogonal"),
+                         tr("Isometric"),
+                         tr("Isometric (Staggered)"),
+                         tr("Hexagonal (Staggered)"),
+                     });
+        setEnumValues({
+                          Map::Orthogonal,
+                          Map::Isometric,
+                          Map::Staggered,
+                          Map::Hexagonal,
+                      });
+
+        connect(mMapDocument, &MapDocument::mapChanged,
+                this, &Property::valueChanged);
+    }
+
+    QVariant value() const override
+    {
+        return mMapDocument->map()->orientation();
+    }
+
+    void setValue(const QVariant &value) override
+    {
+        Map::Orientation orientation = static_cast<Map::Orientation>(value.toInt());
+        auto command = new ChangeMapProperty(mMapDocument, orientation);
+        mMapDocument->undoStack()->push(command);
+    }
+
+private:
+    MapDocument *mMapDocument;
+};
+
 void PropertiesWidget::currentObjectChanged(Object *object)
 {
-    mPropertyBrowser->setObject(object);
+    // mPropertyBrowser->setObject(object);
+    mPropertyBrowser->clear();
+
+    if (object) {
+        switch (object->typeId()) {
+        case Object::LayerType:
+        case Object::MapObjectType:
+            break;
+        case Object::MapType: {
+            Map *map = static_cast<Map*>(object);
+            mPropertyBrowser->addHeader(tr("Map"));
+            mPropertyBrowser->addProperty(new MapOrientationProperty(static_cast<MapDocument*>(mDocument)));
+
+            auto sizeProperty = new VariantProperty(tr("Map Size"), map->size());
+            sizeProperty->setEnabled(false);
+            mPropertyBrowser->addProperty(sizeProperty);
+
+            break;
+        }
+        case Object::TilesetType:
+        case Object::TileType:
+        case Object::WangSetType:
+        case Object::WangColorType:
+        case Object::ProjectType:
+        case Object::WorldType:
+            break;
+        }
+    }
 
     bool editingTileset = mDocument && mDocument->type() == Document::TilesetDocumentType;
     bool isTileset = object && object->isPartOfTileset();
@@ -157,6 +224,7 @@ void PropertiesWidget::currentObjectChanged(Object *object)
 
 void PropertiesWidget::updateActions()
 {
+#if 0
     const QList<QtBrowserItem*> items = mPropertyBrowser->selectedItems();
     bool allCustomProperties = !items.isEmpty() && mPropertyBrowser->allCustomPropertyItems(items);
     bool editingTileset = mDocument && mDocument->type() == Document::TilesetDocumentType;
@@ -176,6 +244,7 @@ void PropertiesWidget::updateActions()
 
     mActionRemoveProperty->setEnabled(canModify);
     mActionRenameProperty->setEnabled(canModify && items.size() == 1);
+#endif
 }
 
 void PropertiesWidget::cutProperties()
@@ -186,6 +255,7 @@ void PropertiesWidget::cutProperties()
 
 bool PropertiesWidget::copyProperties()
 {
+#if 0
     Object *object = mPropertyBrowser->object();
     if (!object)
         return false;
@@ -206,6 +276,7 @@ bool PropertiesWidget::copyProperties()
     }
 
     ClipboardManager::instance()->setProperties(properties);
+#endif
     return true;
 }
 
@@ -269,11 +340,12 @@ void PropertiesWidget::addProperty(const QString &name, const QVariant &value)
                                         name, value));
     }
 
-    mPropertyBrowser->editCustomProperty(name);
+    // mPropertyBrowser->editCustomProperty(name);
 }
 
 void PropertiesWidget::removeProperties()
 {
+#if 0
     Object *object = mDocument->currentObject();
     if (!object)
         return;
@@ -299,10 +371,12 @@ void PropertiesWidget::removeProperties()
     }
 
     undoStack->endMacro();
+#endif
 }
 
 void PropertiesWidget::renameProperty()
 {
+#if 0
     QtBrowserItem *item = mPropertyBrowser->currentItem();
     if (!mPropertyBrowser->isCustomPropertyItem(item))
         return;
@@ -317,10 +391,12 @@ void PropertiesWidget::renameProperty()
     dialog->setWindowTitle(QCoreApplication::translate("Tiled::PropertiesDock", "Rename Property"));
     connect(dialog, &QInputDialog::textValueSelected, this, &PropertiesWidget::renamePropertyTo);
     dialog->open();
+#endif
 }
 
 void PropertiesWidget::renamePropertyTo(const QString &name)
 {
+#if 0
     if (name.isEmpty())
         return;
 
@@ -334,10 +410,12 @@ void PropertiesWidget::renamePropertyTo(const QString &name)
 
     QUndoStack *undoStack = mDocument->undoStack();
     undoStack->push(new RenameProperty(mDocument, mDocument->currentObjects(), oldName, name));
+#endif
 }
 
 void PropertiesWidget::showContextMenu(const QPoint &pos)
 {
+#if 0
     const Object *object = mDocument->currentObject();
     if (!object)
         return;
@@ -474,6 +552,7 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
 
         undoStack->endMacro();
     }
+#endif
 }
 
 bool PropertiesWidget::event(QEvent *event)

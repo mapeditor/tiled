@@ -23,6 +23,7 @@
 #include <QCoreApplication>
 #include <QScrollArea>
 #include <QString>
+#include <QStringListModel>
 #include <QVariant>
 #include <QWidget>
 
@@ -36,20 +37,85 @@ namespace Tiled {
 class Property : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString name READ name CONSTANT)
+    Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
+    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 
 public:
-    Property(QObject *parent = nullptr)
+    Property(const QString &name, QObject *parent = nullptr)
         : QObject(parent)
-    {
-    }
+        , m_name(name)
+    {}
 
-    virtual QWidget *createEditor(QWidget *parent) = 0;
+    QString name() const { return m_name; }
+
+    bool isEnabled() const { return m_enabled; }
+    void setEnabled(bool enabled)
+    {
+        if (m_enabled != enabled) {
+            m_enabled = enabled;
+            emit enabledChanged(enabled);
+        }
+    }
 
     virtual QVariant value() const = 0;
     virtual void setValue(const QVariant &value) = 0;
 
+    virtual QWidget *createEditor(QWidget *parent) = 0;
+
 signals:
-    void valueChanged(const QVariant &value);
+    void valueChanged();
+    void enabledChanged(bool enabled);
+
+private:
+    QString m_name;
+    bool m_enabled = true;
+};
+
+class VariantProperty : public Property
+{
+    Q_OBJECT
+
+public:
+    VariantProperty(const QString &name, const QVariant &value, QObject *parent = nullptr)
+        : Property(name, parent)
+        , m_value(value)
+    {
+    }
+
+    QVariant value() const override { return m_value; }
+    void setValue(const QVariant &value) override;
+
+    QWidget *createEditor(QWidget *parent) override;
+
+private:
+    QVariant m_value;
+};
+
+class EnumProperty : public Property
+{
+    Q_OBJECT
+
+public:
+    EnumProperty(const QString &name, QObject *parent = nullptr)
+        : Property(name, parent)
+    {}
+
+    QWidget *createEditor(QWidget *parent) override;
+
+    void setEnumNames(const QStringList &enumNames)
+    {
+        m_enumNamesModel.setStringList(enumNames);
+    }
+
+    void setEnumValues(const QList<int> &enumValues)
+    {
+        m_enumValues = enumValues;
+    }
+
+private:
+    QStringListModel m_enumNamesModel;
+    QList<int> m_enumValues;
 };
 
 class EditorFactory
@@ -59,9 +125,6 @@ class EditorFactory
 public:
     virtual QWidget *createEditor(const QVariant &value,
                                   QWidget *parent) = 0;
-
-    virtual QVariant value(QWidget *editor) const { return {}; }
-    virtual void setValue(QWidget *editor, const QVariant &value) {};
 };
 
 class VariantEditor : public QScrollArea
@@ -73,13 +136,15 @@ public:
 
     void registerEditorFactory(int type, std::unique_ptr<EditorFactory> factory);
 
+    void clear();
     void addHeader(const QString &text);
     void addSeparator();
-    void addValue(const QString &name, const QVariant &value);
-    void addValue(const QVariant &value);
-    QWidget *createEditor(const QVariant &value);
+    void addProperty(Property *property);
+    // void addValue(const QVariant &value);
 
 private:
+    QWidget *createEditor(Property *property);
+
     enum Column {
         LeftSpacing,
         LabelColumn,
