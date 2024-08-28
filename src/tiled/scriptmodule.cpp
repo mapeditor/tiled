@@ -39,7 +39,6 @@
 #include "scriptmanager.h"
 #include "tilesetdocument.h"
 #include "tileseteditor.h"
-#include "world.h"
 #include "worlddocument.h"
 #include "worldmanager.h"
 
@@ -746,10 +745,8 @@ QList<QObject *> ScriptModule::worlds() const
     if (!documentManager)
         return worlds;
 
-    for (const World *world : WorldManager::instance().worlds()) {
-        WorldDocument *worldDocument = documentManager->ensureWorldDocument(world->fileName);
+    for (auto &worldDocument : WorldManager::instance().worlds())
         worlds.append(worldDocument->editable());
-    }
 
     return worlds;
 }
@@ -761,7 +758,8 @@ void ScriptModule::loadWorld(const QString &fileName) const
 
 void ScriptModule::unloadWorld(const QString &fileName) const
 {
-    WorldManager::instance().unloadWorld(fileName);
+    if (auto worldDocument = WorldManager::instance().findWorld(fileName))
+        WorldManager::instance().unloadWorld(worldDocument);
 }
 
 void ScriptModule::unloadAllWorlds() const

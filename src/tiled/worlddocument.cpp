@@ -29,16 +29,17 @@
 
 namespace Tiled {
 
-WorldDocument::WorldDocument(const QString &fileName, QObject *parent)
-    : Document(WorldDocumentType, fileName, parent)
+WorldDocument::WorldDocument(std::unique_ptr<World> world, QObject *parent)
+    : Document(WorldDocumentType, world->fileName, parent)
+    , mWorld(std::move(world))
 {
-    WorldManager &worldManager = WorldManager::instance();
-    connect(&worldManager, &WorldManager::worldsChanged,
-            this, &WorldDocument::onWorldsChanged);
-    connect(&worldManager, &WorldManager::worldReloaded,
-            this, &WorldDocument::onWorldReloaded);
-    connect(&worldManager, &WorldManager::worldSaved,
-            this, &WorldDocument::onWorldSaved);
+}
+
+WorldDocument::~WorldDocument()
+{
+    // The Editable needs to be deleted before the World, otherwise ~World()
+    // will delete it, whereas the editable is actually owned by the Document.
+    mEditable.reset();
 }
 
 QString WorldDocument::displayName() const
@@ -50,44 +51,60 @@ QString WorldDocument::displayName() const
     return displayName;
 }
 
-bool WorldDocument::save(const QString &fileName, QString *error)
+/**
+ * Saves the world. Does not support changing the file name!
+ */
+bool WorldDocument::save(const QString &/*fileName*/, QString *error)
 {
-    return WorldManager::instance().saveWorld(fileName, error);
+    if (!World::save(*mWorld, error))
+        return false;
+
+    undoStack()->setClean();
+
+    mLastSaved = QFileInfo(fileName()).lastModified();
+
+    emit saved();
+    return true;
 }
 
-void WorldDocument::onWorldsChanged()
+bool WorldDocument::canReload() const
 {
-    if (undoStack()->isClean())
-        updateIsModified(); // force, because map resize isn't affecting world undo stack
+    return !fileName().isEmpty();
 }
 
-void WorldDocument::onWorldReloaded(const QString &fileName)
+bool WorldDocument::reload(QString *error)
 {
-    if (this->fileName() == fileName)
+    if (!canReload())
+        return false;
+
+    if (auto world = World::load(fileName(), error)) {
+        // todo: consider replacing the world using an undo command
+        mWorld->clearErrorsAndWarnings();
+        mWorld = std::move(world);
         undoStack()->clear();
+        updateIsModified();
+
+        emit worldChanged();
+        return true;
+    }
+
+    return false;
 }
 
-void WorldDocument::onWorldSaved(const QString &fileName)
+WorldDocumentPtr WorldDocument::load(const QString &fileName, QString *error)
 {
-    if (this->fileName() != fileName)
-        return;
+    auto world = World::load(fileName, error);
+    if (!world)
+        return nullptr;
 
-    if (undoStack()->isClean())
-        updateIsModified(); // force, because map resize isn't affecting world undo stack
-    else
-        undoStack()->setClean();
-}
-
-bool WorldDocument::isModifiedImpl() const
-{
-    const World *world = WorldManager::instance().worlds().value(fileName());
-    return Document::isModifiedImpl() || (world && world->hasUnsavedChanges);
+    return WorldDocumentPtr::create(std::move(world));
 }
 
 std::unique_ptr<EditableAsset> WorldDocument::createEditable()
 {
     return std::make_unique<EditableWorld>(this, this);
 }
+
 } // namespace Tiled
 
 #include "moc_worlddocument.cpp"

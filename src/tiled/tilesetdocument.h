@@ -51,7 +51,7 @@ class TilesetDocument final : public Document
     Q_OBJECT
 
 public:
-    TilesetDocument(const SharedTileset &tileset);
+    explicit TilesetDocument(const SharedTileset &tileset);
     ~TilesetDocument() override;
 
     TilesetDocumentPtr sharedFromThis() { return qSharedPointerCast<TilesetDocument>(Document::sharedFromThis()); }

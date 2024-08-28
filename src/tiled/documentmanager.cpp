@@ -926,7 +926,9 @@ bool DocumentManager::reloadDocument(Document *document)
 {
     QString error;
 
-    if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
+    switch (document->type()) {
+    case Document::MapDocumentType: {
+        auto mapDocument = static_cast<MapDocument*>(document);
         if (!mapDocument->reload(&error)) {
             emit reloadError(tr("%1:\n\n%2").arg(document->fileName(), error));
             return false;
@@ -943,7 +945,10 @@ bool DocumentManager::reloadDocument(Document *document)
         if (findDocument(document) != -1)
             checkTilesetColumns(mapDocument);
 
-    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+        break;
+    }
+    case Document::TilesetDocumentType: {
+        auto tilesetDocument = static_cast<TilesetDocument*>(document);
         if (tilesetDocument->isEmbedded()) {
             // For embedded tilesets, we need to reload the map
             if (!reloadDocument(tilesetDocument->mapDocuments().first()))
@@ -954,9 +959,19 @@ bool DocumentManager::reloadDocument(Document *document)
         }
 
         tilesetDocument->setChangedOnDisk(false);
-    } else {
-        // We don't support reloading other document types at the moment
-        return false;
+        break;
+    }
+    case Document::WorldDocumentType: {
+        auto worldDocument = static_cast<WorldDocument*>(document);
+        if (!worldDocument->reload(&error)) {
+            emit reloadError(tr("%1:\n\n%2").arg(document->fileName(), error));
+            return false;
+        }
+        break;
+    }
+    case Document::ProjectDocumentType:
+        // We don't support reloading the project at the moment
+        break;
     }
 
     if (!isDocumentChangedOnDisk(currentDocument()))
@@ -1307,26 +1322,12 @@ void DocumentManager::unregisterDocument(Document *document)
         mDocumentByFileName.erase(i);
 }
 
-WorldDocument *DocumentManager::ensureWorldDocument(const QString &fileName)
-{
-    auto document = mWorldDocuments[fileName];
-    Q_ASSERT(document);
-    return document;
-}
-
 bool DocumentManager::isAnyWorldModified() const
 {
-    for (const World *world : WorldManager::instance().worlds())
-        if (isWorldModified(world->fileName))
+    for (auto &worldDocument : WorldManager::instance().worlds())
+        if (worldDocument->isModified())
             return true;
 
-    return false;
-}
-
-bool DocumentManager::isWorldModified(const QString &fileName) const
-{
-    if (const auto worldDocument = mWorldDocuments.value(fileName))
-        return worldDocument->isModified();
     return false;
 }
 
@@ -1354,22 +1355,15 @@ QString DocumentManager::fileDialogStartLocation() const
     return Preferences::homeLocation();
 }
 
-void DocumentManager::onWorldLoaded(const QString &worldFile)
+void DocumentManager::onWorldLoaded(WorldDocument *worldDocument)
 {
-    Q_ASSERT(!mWorldDocuments.contains(worldFile));
-
-    WorldDocument *worldDocument = new WorldDocument(worldFile);
-    mWorldDocuments.insert(worldFile, worldDocument);
     mUndoGroup->addStack(worldDocument->undoStack());
-
     emit documentOpened(worldDocument);
 }
 
-void DocumentManager::onWorldUnloaded(const QString &worldFile)
+void DocumentManager::onWorldUnloaded(WorldDocument *worldDocument)
 {
-    auto document = mWorldDocuments.take(worldFile);
-    Q_ASSERT(document);
-    delete document;
+    mUndoGroup->removeStack(worldDocument->undoStack());
 }
 
 static bool mayNeedColumnCountAdjustment(const Tileset &tileset)

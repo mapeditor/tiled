@@ -32,6 +32,7 @@
 #include "toolmanager.h"
 #include "utils.h"
 #include "world.h"
+#include "worlddocument.h"
 #include "zoomable.h"
 
 #include <QApplication>
@@ -102,15 +103,18 @@ void WorldMoveMapTool::keyPressed(QKeyEvent *event)
 
 void WorldMoveMapTool::moveMap(MapDocument *document, QPoint moveBy)
 {
+    auto worldDocument = worldForMap(document);
+    if (!worldDocument)
+        return;
+
+    const auto prevRect = worldDocument->world()->mapRect(document->fileName());
     QPoint offset = QPoint(document->map()->tileWidth() * static_cast<int>(moveBy.x()),
                            document->map()->tileHeight() * static_cast<int>(moveBy.y()));
     QRect rect = document->renderer()->mapBoundingRect();
-    if (const World *world = constWorld(document))
-        rect.moveTo(world->mapRect(document->fileName()).topLeft());
+    rect.moveTo(snapPoint(prevRect.topLeft() + offset, document));
 
-    rect.moveTo(snapPoint(rect.topLeft() + offset, document));
-
-    undoStack()->push(new SetMapRectCommand(document->fileName(), rect));
+    auto undoStack = worldDocument->undoStack();
+    undoStack->push(new SetMapRectCommand(worldDocument, document->fileName(), rect));
 
     if (document == mapDocument()) {
         // undo camera movement
@@ -148,8 +152,7 @@ void WorldMoveMapTool::mousePressed(QGraphicsSceneMouseEvent *event)
 void WorldMoveMapTool::mouseMoved(const QPointF &pos,
                                   Qt::KeyboardModifiers modifiers)
 {    
-    const World *world = constWorld(mDraggingMap);
-    if (!world || !mDraggingMap) {
+    if (!worldForMap(mDraggingMap) || !mDraggingMap) {
         AbstractWorldTool::mouseMoved(pos, modifiers);
         return;
     }
@@ -190,15 +193,20 @@ void WorldMoveMapTool::mouseReleased(QGraphicsSceneMouseEvent *event)
         mDraggingMapItem = nullptr;
 
         if (!mDragOffset.isNull()) {
-            QRect rect = draggedMap->renderer()->mapBoundingRect();
-            if (const World *world = constWorld(draggedMap))
-                rect.moveTo(world->mapRect(draggedMap->fileName()).topLeft());
-            rect.translate(mDragOffset);
+            if (auto worldDocument = worldForMap(draggedMap)) {
+                QRect rect = draggedMap->renderer()->mapBoundingRect();
 
-            undoStack()->push(new SetMapRectCommand(draggedMap->fileName(), rect));
-            if (draggedMap == mapDocument()) {
-                // undo camera movement
-                view->forceCenterOn(sceneViewRect.center() - mDragOffset);
+                auto world = worldDocument->world();
+                rect.moveTo(world->mapRect(draggedMap->fileName()).topLeft());
+                rect.translate(mDragOffset);
+
+                auto undoStack = worldDocument->undoStack();
+                undoStack->push(new SetMapRectCommand(worldDocument, draggedMap->fileName(), rect));
+
+                if (draggedMap == mapDocument()) {
+                    // undo camera movement
+                    view->forceCenterOn(sceneViewRect.center() - mDragOffset);
+                }
             }
         } else {
             // switch to the document

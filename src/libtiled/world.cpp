@@ -46,10 +46,7 @@ namespace Tiled {
 
 void World::setMapRect(int mapIndex, const QRect &rect)
 {
-    if (maps[mapIndex].rect != rect) {
-        maps[mapIndex].rect = rect;
-        hasUnsavedChanges = true;
-    }
+    maps[mapIndex].rect = rect;
 }
 
 void World::removeMap(int mapIndex)
@@ -379,8 +376,6 @@ bool World::save(World &world, QString *errorString)
 
     file.write(doc.toJson());
     file.close();
-
-    world.hasUnsavedChanges = false;
 
     return true;
 }

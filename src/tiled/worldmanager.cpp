@@ -22,21 +22,14 @@
 
 #include "world.h"
 
+#include <QFileInfo>
+
 namespace Tiled {
 
 WorldManager *WorldManager::mInstance;
 
-WorldManager::WorldManager()
-{
-    mIgnoreFileChangeEventForFile.clear();
-    connect(&mFileSystemWatcher, &FileSystemWatcher::pathsChanged,
-            this, &WorldManager::reloadWorldFiles);
-}
-
-WorldManager::~WorldManager()
-{
-    qDeleteAll(mWorlds);
-}
+WorldManager::WorldManager() = default;
+WorldManager::~WorldManager() = default;
 
 WorldManager &WorldManager::instance()
 {
@@ -52,38 +45,22 @@ void WorldManager::deleteInstance()
     mInstance = nullptr;
 }
 
-void WorldManager::reloadWorldFiles(const QStringList &fileNames)
+/**
+ * Returns a loaded world with the given \a fileName, or null if no such
+ * world is loaded.
+ */
+WorldDocumentPtr WorldManager::findWorld(const QString &fileName) const
 {
-    bool changed = false;
-
-    for (const QString &fileName : fileNames) {
-
-        if (mWorlds.contains(fileName)) {
-
-            if (mIgnoreFileChangeEventForFile == fileName) {
-                mIgnoreFileChangeEventForFile.clear();
-                continue;
-            }
-
-            if (auto world = World::load(fileName)) {
-                std::unique_ptr<World> oldWorld { mWorlds.take(fileName) };
-                oldWorld->clearErrorsAndWarnings();
-
-                mWorlds.insert(fileName, world.release());
-
-                changed = true;
-                emit worldReloaded(fileName);
-            }
-        }
-    }
-
-    if (changed)
-        emit worldsChanged();
+    const auto canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
+    for (auto &worldDocument : mWorldDocuments)
+        if (worldDocument->canonicalFilePath() == canonicalFilePath)
+            return worldDocument;
+    return {};
 }
 
-World *WorldManager::addEmptyWorld(const QString &fileName, QString *errorString)
+WorldDocumentPtr WorldManager::addEmptyWorld(const QString &fileName, QString *errorString)
 {
-    if (mWorlds.contains(fileName)) {
+    if (findWorld(fileName)) {
         if (errorString)
             *errorString = QLatin1String("World already loaded");
         return nullptr;
@@ -91,16 +68,20 @@ World *WorldManager::addEmptyWorld(const QString &fileName, QString *errorString
 
     auto world = std::make_unique<World>();
     world->fileName = fileName;
+    auto worldDocument = WorldDocumentPtr::create(std::move(world));
 
-    if (saveWorld(*world, errorString)) {
-        mWorlds.insert(fileName, world.release());
-        mFileSystemWatcher.addPath(fileName);
-        emit worldLoaded(fileName);
+    if (worldDocument->save(worldDocument->fileName(), errorString)) {
+        mWorldDocuments.append(worldDocument);
+
+        connect(worldDocument.data(), &WorldDocument::worldChanged,
+                this, [this] { emit worldsChanged(); });
+
+        emit worldLoaded(worldDocument.data());
         emit worldsChanged();
-        return mWorlds.value(fileName);
+        return worldDocument;
     }
 
-    return nullptr;
+    return {};
 }
 
 /**
@@ -109,32 +90,32 @@ World *WorldManager::addEmptyWorld(const QString &fileName, QString *errorString
  * \returns the world if it was loaded successfully, optionally setting
  *          \a errorString when not.
  */
-World *WorldManager::loadWorld(const QString &fileName, QString *errorString)
+WorldDocumentPtr WorldManager::loadWorld(const QString &fileName, QString *errorString)
 {
-    auto world = mWorlds.value(fileName);
-    if (!world) {
-        world = loadAndStoreWorld(fileName, errorString);
-        if (world)
+    auto worldDocument = findWorld(fileName);
+    if (!worldDocument) {
+        worldDocument = loadAndStoreWorld(fileName, errorString);
+        if (worldDocument)
             emit worldsChanged();
     }
-    return world;
+    return worldDocument;
 }
 
-World *WorldManager::loadAndStoreWorld(const QString &fileName, QString *errorString)
+WorldDocumentPtr WorldManager::loadAndStoreWorld(const QString &fileName, QString *errorString)
 {
-    auto world = World::load(fileName, errorString);
-    if (!world)
-        return nullptr;
+    auto worldDocument = findWorld(fileName);
+    if (!worldDocument) {
+        worldDocument = WorldDocument::load(fileName, errorString);
+        if (worldDocument) {
+            mWorldDocuments.append(worldDocument);
 
-    if (mWorlds.contains(fileName))
-        delete mWorlds.take(fileName);
-    else
-        mFileSystemWatcher.addPath(fileName);
+            connect(worldDocument.data(), &WorldDocument::worldChanged,
+                    this, [this] { emit worldsChanged(); });
 
-    mWorlds.insert(fileName, world.release());
-    emit worldLoaded(fileName);
-
-    return mWorlds.value(fileName);
+            emit worldLoaded(worldDocument.data());
+        }
+    }
+    return worldDocument;
 }
 
 /**
@@ -153,48 +134,24 @@ void WorldManager::loadWorlds(const QStringList &fileNames)
         emit worldsChanged();
 }
 
-bool WorldManager::saveWorld(const QString &fileName, QString *errorString)
+const QStringList WorldManager::worldFileNames() const
 {
-    World *savingWorld = nullptr;
-
-    for (auto world : std::as_const(mWorlds)) {
-        if (world->fileName == fileName) {
-            savingWorld = world;
-            break;
-        }
-    }
-
-    if (!savingWorld) {
-        if (errorString)
-            *errorString = tr("World not found");
-        return false;
-    }
-
-    return saveWorld(*savingWorld, errorString);
-}
-
-bool WorldManager::saveWorld(World &world, QString *errorString)
-{
-    mIgnoreFileChangeEventForFile = world.fileName;
-
-    if (World::save(world, errorString)) {
-        emit worldSaved(world.fileName);
-        return true;
-    }
-
-    return false;
+    QStringList fileNames;
+    for (auto &world : mWorldDocuments)
+        fileNames.append(world->fileName());
+    return fileNames;
 }
 
 /**
- * Unloads the world with the given \a fileName.
+ * Unloads the world with the given \a worldDocument.
  */
-void WorldManager::unloadWorld(const QString &fileName)
+void WorldManager::unloadWorld(const WorldDocumentPtr &worldDocument)
 {
-    std::unique_ptr<World> world { mWorlds.take(fileName) };
-    if (world) {
-        mFileSystemWatcher.removePath(fileName);
+    if (mWorldDocuments.removeOne(worldDocument)) {
+        worldDocument.data()->disconnect(this);
+
         emit worldsChanged();
-        emit worldUnloaded(fileName);
+        emit worldUnloaded(worldDocument.data());
     }
 }
 
@@ -204,87 +161,28 @@ void WorldManager::unloadWorld(const QString &fileName)
  */
 void WorldManager::unloadAllWorlds()
 {
-    if (mWorlds.isEmpty())
+    if (mWorldDocuments.isEmpty())
         return;
 
-    QMap<QString, World*> worlds;
-    worlds.swap(mWorlds);
+    QVector<WorldDocumentPtr> worldDocuments;
+    worldDocuments.swap(mWorldDocuments);
 
-    for (World *world : std::as_const(worlds)) {
-        emit worldUnloaded(world->fileName);
-        delete world;
+    for (auto &worldDocument : std::as_const(worldDocuments)) {
+        worldDocument.data()->disconnect(this);
+        emit worldUnloaded(worldDocument.data());
     }
 
-    mFileSystemWatcher.clear();
     emit worldsChanged();
 }
 
-const World *WorldManager::worldForMap(const QString &fileName) const
+WorldDocumentPtr WorldManager::worldForMap(const QString &fileName) const
 {
     if (!fileName.isEmpty())
-        for (auto world : mWorlds)
-            if (world->containsMap(fileName))
-                return world;
+        for (auto &worldDocument : mWorldDocuments)
+            if (worldDocument->world()->containsMap(fileName))
+                return worldDocument;
 
     return nullptr;
-}
-
-bool WorldManager::mapCanBeModified(const QString &fileName) const
-{
-    for (auto world : mWorlds) {
-        if (!world->canBeModified())
-            continue;
-
-        int index = world->mapIndex(fileName);
-        if (index >= 0)
-            return true;
-    }
-    return false;
-}
-
-void WorldManager::setMapRect(const QString &fileName, const QRect &rect)
-{
-    for (auto world : std::as_const(mWorlds)) {
-        int index = world->mapIndex(fileName);
-        if (index < 0)
-            continue;
-
-        world->setMapRect(index, rect);
-        emit worldsChanged();
-        break;
-    }
-}
-
-bool WorldManager::removeMap(const QString &fileName)
-{
-    for (auto world : std::as_const(mWorlds)) {
-        int index = world->mapIndex(fileName);
-        if (index < 0)
-            continue;
-
-        world->removeMap(index);
-        emit worldsChanged();
-        return true;
-    }
-
-    return false;
-}
-
-bool WorldManager::addMap(const QString &worldFileName, const QString &mapFileName, const QRect &rect)
-{
-    Q_ASSERT(!mapFileName.isEmpty());
-
-    if (worldForMap(mapFileName))
-        return false;
-
-    for (auto world : std::as_const(mWorlds)) {
-        if (world->fileName == worldFileName) {
-            world->addMap(mapFileName, rect);
-            emit worldsChanged();
-            return true;
-        }
-    }
-    return false;
 }
 
 } // namespace Tiled

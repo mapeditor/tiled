@@ -22,7 +22,7 @@
 
 #include "tilededitor_global.h"
 
-#include "filesystemwatcher.h"
+#include "worlddocument.h"
 
 #include <QMap>
 #include <QObject>
@@ -42,38 +42,28 @@ public:
     static WorldManager &instance();
     static void deleteInstance();
 
-    World *addEmptyWorld(const QString &fileName, QString *errorString);
-    World *loadWorld(const QString &fileName, QString *errorString = nullptr);
+    WorldDocumentPtr findWorld(const QString &fileName) const;
+
+    WorldDocumentPtr addEmptyWorld(const QString &fileName, QString *errorString);
+    WorldDocumentPtr loadWorld(const QString &fileName, QString *errorString = nullptr);
     void loadWorlds(const QStringList &fileNames);
-    void unloadWorld(const QString &fileName);
+    void unloadWorld(const WorldDocumentPtr &worldDocument);
     void unloadAllWorlds();
-    bool saveWorld(const QString &fileName, QString *errorString = nullptr);
 
-    const QMap<QString, World*> &worlds() const { return mWorlds; }
+    const QVector<WorldDocumentPtr> &worlds() const { return mWorldDocuments; }
+    const QStringList worldFileNames() const;
 
-    const World *worldForMap(const QString &fileName) const;
-
-    void setMapRect(const QString &fileName, const QRect &rect);
-    bool mapCanBeModified(const QString &fileName) const;
-    bool removeMap(const QString &fileName);
-    bool addMap(const QString &worldFileName, const QString &mapFileName, const QRect &rect);
+    WorldDocumentPtr worldForMap(const QString &fileName) const;
 
 signals:
     void worldsChanged();
-    void worldLoaded(const QString &fileName);
-    void worldReloaded(const QString &fileName);
-    void worldUnloaded(const QString &fileName);
-    void worldSaved(const QString &fileName);
+    void worldLoaded(WorldDocument *worldDocument);
+    void worldUnloaded(WorldDocument *worldDocument);
 
 private:
-    bool saveWorld(World &world, QString *errorString = nullptr);
-    World *loadAndStoreWorld(const QString &fileName, QString *errorString = nullptr);
-    void reloadWorldFiles(const QStringList &fileNames);
+    WorldDocumentPtr loadAndStoreWorld(const QString &fileName, QString *errorString = nullptr);
 
-    QMap<QString, World*> mWorlds;
-
-    FileSystemWatcher mFileSystemWatcher;
-    QString mIgnoreFileChangeEventForFile;
+    QVector<WorldDocumentPtr> mWorldDocuments;
 
     static WorldManager *mInstance;
 };

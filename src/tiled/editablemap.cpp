@@ -667,7 +667,7 @@ QSharedPointer<Document> EditableMap::createDocument()
 
     mSelectedArea = new EditableSelectedArea(document.data(), this);
 
-    QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
+    moveOwnershipToCpp();
 
     return document;
 }

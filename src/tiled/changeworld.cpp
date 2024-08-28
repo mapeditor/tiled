@@ -29,38 +29,50 @@
 
 namespace Tiled {
 
-AddMapCommand::AddMapCommand(const QString &worldName, const QString &mapName, const QRect &rect)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Add Map to World"))
-    , mWorldName(worldName)
+AddRemoveMapCommand::AddRemoveMapCommand(WorldDocument *worldDocument,
+                                         const QString &mapName,
+                                         const QRect &rect,
+                                         QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mWorldDocument(worldDocument)
     , mMapName(mapName)
     , mRect(rect)
 {
 }
 
-void AddMapCommand::undo()
+void AddRemoveMapCommand::addMap()
 {
-    WorldManager::instance().removeMap(mMapName);
+    auto world = mWorldDocument->world();
+    world->addMap(mMapName, mRect);
+    emit mWorldDocument->worldChanged();
 }
 
-void AddMapCommand::redo()
+void AddRemoveMapCommand::removeMap()
 {
-    WorldManager::instance().addMap(mWorldName, mMapName, mRect);
+    auto world = mWorldDocument->world();
+
+    const int index = world->mapIndex(mMapName);
+    if (index < 0)
+        return;
+
+    world->removeMap(index);
+    emit mWorldDocument->worldChanged();
 }
 
 
-RemoveMapCommand::RemoveMapCommand(const QString &mapName)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Remove Map from World"))
-    , mMapName(mapName)
+AddMapCommand::AddMapCommand(WorldDocument *worldDocument,
+                             const QString &mapName,
+                             const QRect &rect)
+    : AddRemoveMapCommand(worldDocument, mapName, rect)
 {
-    const WorldManager &manager = WorldManager::instance();
-    const World *world = manager.worldForMap(mMapName);
-    mPreviousRect = world->mapRect(mMapName);
-    mWorldName = world->fileName;
+    setText(QCoreApplication::translate("Undo Commands", "Add Map to World"));
 }
 
-void RemoveMapCommand::undo()
+
+RemoveMapCommand::RemoveMapCommand(WorldDocument *worldDocument, const QString &mapName)
+    : AddRemoveMapCommand(worldDocument, mapName, worldDocument->world()->mapRect(mapName))
 {
-    WorldManager::instance().addMap(mWorldName, mMapName, mPreviousRect);
+    setText(QCoreApplication::translate("Undo Commands", "Remove Map from World"));
 }
 
 void RemoveMapCommand::redo()
@@ -68,35 +80,39 @@ void RemoveMapCommand::redo()
     // ensure we're switching to a different map in case the current map is removed
     DocumentManager *manager = DocumentManager::instance();
     if (manager->currentDocument() && manager->currentDocument()->fileName() == mMapName) {
-        const World *world = WorldManager::instance().worldForMap(mMapName);
-        for (const WorldMapEntry &entry : world->allMaps()) {
+        for (const WorldMapEntry &entry : mWorldDocument->world()->allMaps()) {
             if (entry.fileName != mMapName) {
                 manager->switchToDocument(entry.fileName);
                 break;
             }
         }
     }
-    WorldManager::instance().removeMap(mMapName);
+
+    removeMap();
 }
 
 
-SetMapRectCommand::SetMapRectCommand(const QString &mapName, QRect rect)
+SetMapRectCommand::SetMapRectCommand(WorldDocument *worldDocument,
+                                     const QString &mapName,
+                                     const QRect &rect)
     : QUndoCommand(QCoreApplication::translate("Undo Commands", "Move Map"))
+    , mWorldDocument(worldDocument)
     , mMapName(mapName)
     , mRect(rect)
+    , mPreviousRect(mWorldDocument->world()->mapRect(mMapName))
 {
-    const WorldManager &manager = WorldManager::instance();
-    mPreviousRect = manager.worldForMap(mMapName)->mapRect(mMapName);
 }
 
-void SetMapRectCommand::undo()
+void SetMapRectCommand::setMapRect(const QRect &rect)
 {
-    WorldManager::instance().setMapRect(mMapName, mPreviousRect);
-}
+    auto world = mWorldDocument->world();
 
-void SetMapRectCommand::redo()
-{
-    WorldManager::instance().setMapRect(mMapName, mRect);
+    int index = world->mapIndex(mMapName);
+    if (index < 0)
+        return;
+
+    world->setMapRect(index, rect);
+    emit mWorldDocument->worldChanged();
 }
 
 } // namespace Tiled

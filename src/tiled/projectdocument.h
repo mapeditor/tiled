@@ -31,7 +31,7 @@ class ProjectDocument final : public Document
     Q_OBJECT
 
 public:
-    ProjectDocument(std::unique_ptr<Project> project, QObject *parent = nullptr);
+    explicit ProjectDocument(std::unique_ptr<Project> project, QObject *parent = nullptr);
     ~ProjectDocument() override;
 
     QString displayName() const override;
