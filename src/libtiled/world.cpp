@@ -268,7 +268,7 @@ std::unique_ptr<World> World::load(const QString &fileName,
     QDir dir = QFileInfo(fileName).dir();
     std::unique_ptr<World> world(new World);
 
-    world->fileName = QFileInfo(fileName).canonicalFilePath();
+    world->fileName = fileName;
 
     const QJsonArray maps = object.value(QLatin1String("maps")).toArray();
     for (const QJsonValue &value : maps) {

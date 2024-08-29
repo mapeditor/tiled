@@ -293,7 +293,7 @@ void MapScene::refreshScene()
     }
 
     const WorldManager &worldManager = WorldManager::instance();
-    const QString &currentMapFile = mMapDocument->canonicalFilePath();
+    const QString &currentMapFile = mMapDocument->fileName();
 
     if (auto worldDocument = worldManager.worldForMap(currentMapFile)) {
         const auto world = worldDocument->world();
