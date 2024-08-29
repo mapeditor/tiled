@@ -61,6 +61,9 @@ public:
     Q_INVOKABLE void removeMap(EditableMap *map);
 
     QSharedPointer<Document> createDocument() override;
+
+private:
+    void documentChanged(const ChangeEvent &event);
 };
 
 inline World *EditableWorld::world() const

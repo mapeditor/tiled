@@ -21,6 +21,7 @@
 
 #include "worlddocument.h"
 
+#include "changeevents.h"
 #include "editableworld.h"
 #include "worldmanager.h"
 
@@ -29,10 +30,30 @@
 
 namespace Tiled {
 
+class ReloadWorld : public QUndoCommand
+{
+public:
+    ReloadWorld(WorldDocument *worldDocument, std::unique_ptr<World> world)
+        : mWorldDocument(worldDocument)
+        , mWorld(std::move(world))
+    {
+        setText(QCoreApplication::translate("Undo Commands", "Reload World"));
+    }
+
+    void undo() override { mWorldDocument->swapWorld(mWorld); }
+    void redo() override { mWorldDocument->swapWorld(mWorld); }
+
+private:
+    WorldDocument *mWorldDocument;
+    std::unique_ptr<World> mWorld;
+};
+
+
 WorldDocument::WorldDocument(std::unique_ptr<World> world, QObject *parent)
     : Document(WorldDocumentType, world->fileName, parent)
     , mWorld(std::move(world))
 {
+    setCurrentObject(mWorld.get());
 }
 
 WorldDocument::~WorldDocument()
@@ -77,18 +98,17 @@ bool WorldDocument::reload(QString *error)
     if (!canReload())
         return false;
 
-    if (auto world = World::load(fileName(), error)) {
-        // todo: consider replacing the world using an undo command
-        mWorld->clearErrorsAndWarnings();
-        mWorld = std::move(world);
-        undoStack()->clear();
-        updateIsModified();
+    auto world = World::load(fileName(), error);
+    if (!world)
+        return false;
 
-        emit worldChanged();
-        return true;
-    }
+    undoStack()->push(new ReloadWorld(this, std::move(world)));
+    undoStack()->setClean();
 
-    return false;
+    mLastSaved = QFileInfo(fileName()).lastModified();
+    setChangedOnDisk(false);
+
+    return true;
 }
 
 WorldDocumentPtr WorldDocument::load(const QString &fileName, QString *error)
@@ -98,6 +118,22 @@ WorldDocumentPtr WorldDocument::load(const QString &fileName, QString *error)
         return nullptr;
 
     return WorldDocumentPtr::create(std::move(world));
+}
+
+void WorldDocument::swapWorld(std::unique_ptr<World> &other)
+{
+    setCurrentObject(nullptr);
+
+    emit changed(AboutToReloadEvent());
+
+    mWorld->clearErrorsAndWarnings();
+    mWorld.swap(other);
+    updateIsModified();
+
+    emit changed(ReloadEvent());
+
+    setCurrentObject(mWorld.get());
+    emit worldChanged();
 }
 
 std::unique_ptr<EditableAsset> WorldDocument::createEditable()

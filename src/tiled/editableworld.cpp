@@ -21,6 +21,7 @@
 
 #include "editableworld.h"
 
+#include "changeevents.h"
 #include "changeworld.h"
 #include "maprenderer.h"
 #include "scriptmanager.h"
@@ -142,6 +143,20 @@ QSharedPointer<Document> EditableWorld::createDocument()
     // We don't currently support opening a world in its own tab, which this
     // function is meant for.
     return nullptr;
+}
+
+void EditableWorld::documentChanged(const ChangeEvent &event)
+{
+    switch (event.type) {
+    case ChangeEvent::DocumentAboutToReload:
+        setObject(nullptr);
+        break;
+    case ChangeEvent::DocumentReloaded:
+        setObject(worldDocument()->world());
+        break;
+    default:
+        break;
+    }
 }
 
 } // namespace Tiled

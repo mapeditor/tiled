@@ -69,6 +69,8 @@ public:
 
     World *world() const { return mWorld.get(); }
 
+    void swapWorld(std::unique_ptr<World> &other);
+
 signals:
     void worldChanged();
 
