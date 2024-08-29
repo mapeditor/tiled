@@ -13,6 +13,7 @@
 * Fixed error reporting when exporting on the command-line (by Shuhei Nagasawa, #4015)
 * Fixed updating of object label when text changes without changing size
 * Fixed minimum value of spinbox in Tile Animation Editor
+* Fixed loading of custom property types in tilesets referenced by tile stamps (#4044)
 * AppImage: Updated to Sentry 0.7.13
 
 ### Tiled 1.11.0 (27 June 2024)
