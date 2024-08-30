@@ -22,22 +22,34 @@
 #include "colorbutton.h"
 #include "compression.h"
 #include "map.h"
-#include "tiled.h"
 #include "utils.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QComboBox>
-#include <QResizeEvent>
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPainter>
+#include <QResizeEvent>
 #include <QSpacerItem>
 #include <QSpinBox>
 #include <QStringListModel>
 
 namespace Tiled {
+
+AbstractProperty::AbstractProperty(const QString &name,
+                                   EditorFactory *editorFactory,
+                                   QObject *parent)
+    : Property(name, parent)
+    , m_editorFactory(editorFactory)
+{}
+
+QWidget *AbstractProperty::createEditor(QWidget *parent)
+{
+    return m_editorFactory->createEditor(this, parent);
+}
+
 
 class SpinBox : public QSpinBox
 {
@@ -201,8 +213,9 @@ private:
 class StringEditorFactory : public EditorFactory
 {
 public:
-    QWidget *createEditor(const QVariant &value, QWidget *parent) override
+    QWidget *createEditor(Property *property, QWidget *parent) override
     {
+        auto value = property->value();
         auto editor = new QLineEdit(parent);
         editor->setText(value.toString());
         return editor;
@@ -212,8 +225,9 @@ public:
 class IntEditorFactory : public EditorFactory
 {
 public:
-    QWidget *createEditor(const QVariant &value, QWidget *parent) override
+    QWidget *createEditor(Property *property, QWidget *parent) override
     {
+        auto value = property->value();
         auto editor = new SpinBox(parent);
         editor->setValue(value.toInt());
         return editor;
@@ -223,8 +237,9 @@ public:
 class FloatEditorFactory : public EditorFactory
 {
 public:
-    QWidget *createEditor(const QVariant &value, QWidget *parent) override
+    QWidget *createEditor(Property *property, QWidget *parent) override
     {
+        auto value = property->value();
         auto editor = new DoubleSpinBox(parent);
         editor->setValue(value.toDouble());
         return editor;
@@ -234,8 +249,9 @@ public:
 class BoolEditorFactory : public EditorFactory
 {
 public:
-    QWidget *createEditor(const QVariant &value, QWidget *parent) override
+    QWidget *createEditor(Property *property, QWidget *parent) override
     {
+        auto value = property->value();
         auto editor = new QCheckBox(parent);
         bool checked = value.toBool();
         editor->setChecked(checked);
@@ -252,8 +268,9 @@ public:
 class PointEditorFactory : public EditorFactory
 {
 public:
-    QWidget *createEditor(const QVariant &value, QWidget *parent) override
+    QWidget *createEditor(Property *property, QWidget *parent) override
     {
+        auto value = property->value();
         auto editor = new QWidget(parent);
         auto horizontalLayout = new QHBoxLayout(editor);
         horizontalLayout->setContentsMargins(QMargins());
@@ -282,8 +299,9 @@ public:
 class PointFEditorFactory : public EditorFactory
 {
 public:
-    QWidget *createEditor(const QVariant &value, QWidget *parent) override
+    QWidget *createEditor(Property *property, QWidget *parent) override
     {
+        auto value = property->value();
         auto editor = new QWidget(parent);
         auto horizontalLayout = new QHBoxLayout(editor);
         horizontalLayout->setContentsMargins(QMargins());
@@ -309,94 +327,29 @@ public:
     }
 };
 
-class SizeEditor : public QWidget
+/**
+ * A widget for editing a QSize value.
+ */
+class SizeEdit : public QWidget
 {
+    Q_OBJECT
+    Q_PROPERTY(QSize value READ value WRITE setValue NOTIFY valueChanged FINAL)
+
 public:
-    SizeEditor(QWidget *parent = nullptr)
-        : QWidget(parent)
-        , m_widthLabel(new QLabel(QStringLiteral("W"), this))
-        , m_heightLabel(new QLabel(QStringLiteral("H"), this))
-        , m_widthSpinBox(new SpinBox(this))
-        , m_heightSpinBox(new SpinBox(this))
-    {
-        m_widthLabel->setAlignment(Qt::AlignCenter);
-        m_heightLabel->setAlignment(Qt::AlignCenter);
+    SizeEdit(QWidget *parent = nullptr);
 
-        auto layout = new QGridLayout(this);
-        layout->setContentsMargins(QMargins());
-        layout->setColumnStretch(1, 1);
-        layout->setColumnStretch(3, 1);
-        layout->setSpacing(Utils::dpiScaled(3));
+    void setValue(const QSize &size);
+    QSize value() const;
 
-        const int horizontalMargin = Utils::dpiScaled(3);
-        m_widthLabel->setContentsMargins(horizontalMargin, 0, horizontalMargin, 0);
-        m_heightLabel->setContentsMargins(horizontalMargin, 0, horizontalMargin, 0);
-
-        layout->addWidget(m_widthLabel, 0, 0);
-        layout->addWidget(m_widthSpinBox, 0, 1);
-        layout->addWidget(m_heightLabel, 0, 2);
-        layout->addWidget(m_heightSpinBox, 0, 3);
-    }
-
-    void setValue(const QSize &size)
-    {
-        m_widthSpinBox->setValue(size.width());
-        m_heightSpinBox->setValue(size.height());
-    }
-
-    QSize value() const
-    {
-        return QSize(m_widthSpinBox->value(), m_heightSpinBox->value());
-    }
+signals:
+    void valueChanged();
 
 private:
-    void resizeEvent(QResizeEvent *event) override
-    {
-        QWidget::resizeEvent(event);
+    void resizeEvent(QResizeEvent *event) override;
 
-        const auto direction = event->size().width() < minimumHorizontalWidth()
-                ? Qt::Vertical : Qt::Horizontal;
+    int minimumHorizontalWidth() const;
 
-        if (m_direction != direction) {
-            m_direction = direction;
-
-            auto layout = qobject_cast<QGridLayout *>(this->layout());
-
-            // Remove all widgets from layout, without deleting them
-            layout->removeWidget(m_widthLabel);
-            layout->removeWidget(m_widthSpinBox);
-            layout->removeWidget(m_heightLabel);
-            layout->removeWidget(m_heightSpinBox);
-
-            if (direction == Qt::Horizontal) {
-                layout->addWidget(m_widthLabel, 0, 0);
-                layout->addWidget(m_widthSpinBox, 0, 1);
-                layout->addWidget(m_heightLabel, 0, 2);
-                layout->addWidget(m_heightSpinBox, 0, 3);
-                layout->setColumnStretch(3, 1);
-            } else {
-                layout->addWidget(m_widthLabel, 0, 0);
-                layout->addWidget(m_widthSpinBox, 0, 1);
-                layout->addWidget(m_heightLabel, 1, 0);
-                layout->addWidget(m_heightSpinBox, 1, 1);
-                layout->setColumnStretch(3, 0);
-            }
-
-            // this avoids flickering when the layout changes
-            layout->activate();
-        }
-    }
-
-    int minimumHorizontalWidth() const
-    {
-        return m_widthLabel->minimumSizeHint().width() +
-                m_widthSpinBox->minimumSizeHint().width() +
-                m_heightLabel->minimumSizeHint().width() +
-                m_heightSpinBox->minimumSizeHint().width() +
-                layout()->spacing() * 3;
-    }
-
-    Qt::Orientation m_direction = Qt::Horizontal;
+    Qt::Orientation m_orientation = Qt::Horizontal;
     QLabel *m_widthLabel;
     QLabel *m_heightLabel;
     SpinBox *m_widthSpinBox;
@@ -406,10 +359,21 @@ private:
 class SizeEditorFactory : public EditorFactory
 {
 public:
-    QWidget *createEditor(const QVariant &value, QWidget *parent) override
+    QWidget *createEditor(Property *property, QWidget *parent) override
     {
-        auto editor = new SizeEditor(parent);
-        editor->setValue(value.toSize());
+        auto editor = new SizeEdit(parent);
+        auto syncEditor = [property, editor]() {
+            const QSignalBlocker blocker(editor);
+            editor->setValue(property->value().toSize());
+        };
+        syncEditor();
+
+        QObject::connect(property, &Property::valueChanged, editor, syncEditor);
+        QObject::connect(editor, &SizeEdit::valueChanged, property,
+                         [property, editor]() {
+            property->setValue(editor->value());
+        });
+
         return editor;
     }
 };
@@ -417,8 +381,9 @@ public:
 class RectFEditorFactory : public EditorFactory
 {
 public:
-    QWidget *createEditor(const QVariant &value, QWidget *parent) override
+    QWidget *createEditor(Property *property, QWidget *parent) override
     {
+        auto value = property->value();
         auto editor = new QWidget(parent);
         auto gridLayout = new QGridLayout(editor);
         gridLayout->setContentsMargins(QMargins());
@@ -467,38 +432,25 @@ public:
 class ColorEditorFactory : public EditorFactory
 {
 public:
-    QWidget *createEditor(const QVariant &value, QWidget *parent) override
+    QWidget *createEditor(Property *property, QWidget *parent) override
     {
+        auto value = property->value();
         auto editor = new ColorButton(parent);
         editor->setColor(value.value<QColor>());
         return editor;
     }
 };
 
-class EnumEditorFactory : public EditorFactory
-{
-public:
-    QWidget *createEditor(const QVariant &value, QWidget *parent) override
-    {
-        return nullptr;
-    }
 
-    void setEnumNames(const QStringList &enumNames)
-    {
-        m_enumNamesModel.setStringList(enumNames);
-    }
+ValueProperty::ValueProperty(const QString &name,
+                             const QVariant &value,
+                             EditorFactory *editorFactory,
+                             QObject *parent)
+    : AbstractProperty(name, editorFactory, parent)
+    , m_value(value)
+{}
 
-    void setEnumValues(const QList<int> &enumValues)
-    {
-        m_enumValues = enumValues;
-    }
-
-private:
-    QStringListModel m_enumNamesModel;
-    QList<int> m_enumValues;
-};
-
-void VariantProperty::setValue(const QVariant &value)
+void ValueProperty::setValue(const QVariant &value)
 {
     if (m_value != value) {
         m_value = value;
@@ -506,41 +458,23 @@ void VariantProperty::setValue(const QVariant &value)
     }
 }
 
-QWidget *VariantProperty::createEditor(QWidget *parent)
-{
-    switch (m_value.userType()) {
-    case QMetaType::QSize:
-        return SizeEditorFactory().createEditor(m_value, parent);
-    default:
-        break;
-    }
 
-    return nullptr;
+EnumProperty::EnumProperty(const QString &name,
+                           const QStringList &enumNames,
+                           const QList<int> &enumValues,
+                           QObject *parent)
+    : AbstractProperty(name, &m_editorFactory, parent)
+    , m_editorFactory(enumNames, enumValues)
+{}
+
+void EnumProperty::setEnumNames(const QStringList &enumNames)
+{
+    m_editorFactory.setEnumNames(enumNames);
 }
 
-QWidget *EnumProperty::createEditor(QWidget *parent)
+void EnumProperty::setEnumValues(const QList<int> &enumValues)
 {
-    auto editor = new QComboBox(parent);
-    // This allows the combo box to shrink horizontally.
-    editor->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
-    editor->setModel(&m_enumNamesModel);
-
-    auto syncEditor = [editor, this]() {
-        const QSignalBlocker blocker(editor);
-        if (m_enumValues.isEmpty())
-            editor->setCurrentIndex(value().toInt());
-        else
-            editor->setCurrentIndex(m_enumValues.indexOf(value().toInt()));
-    };
-    syncEditor();
-
-    connect(this, &Property::valueChanged, editor, syncEditor);
-    connect(editor, qOverload<int>(&QComboBox::currentIndexChanged), this,
-            [this](int index) {
-                setValue(m_enumValues.isEmpty() ? index : m_enumValues.at(index));
-            });
-
-    return editor;
+    m_editorFactory.setEnumValues(enumValues);
 }
 
 
@@ -567,59 +501,35 @@ VariantEditor::VariantEditor(QWidget *parent)
     m_gridLayout->setColumnMinimumWidth(MiddleSpacing, Utils::dpiScaled(2));
     m_gridLayout->setColumnMinimumWidth(RightSpacing, Utils::dpiScaled(3));
 
-    registerEditorFactory(QMetaType::QString, std::make_unique<StringEditorFactory>());
-    registerEditorFactory(QMetaType::Int, std::make_unique<IntEditorFactory>());
-    registerEditorFactory(QMetaType::Double, std::make_unique<FloatEditorFactory>());
-    registerEditorFactory(QMetaType::Bool, std::make_unique<BoolEditorFactory>());
-    registerEditorFactory(QMetaType::QPoint, std::make_unique<PointEditorFactory>());
-    registerEditorFactory(QMetaType::QPointF, std::make_unique<PointFEditorFactory>());
-    registerEditorFactory(QMetaType::QSize, std::make_unique<SizeEditorFactory>());
-    registerEditorFactory(QMetaType::QRectF, std::make_unique<RectFEditorFactory>());
-    registerEditorFactory(QMetaType::QColor, std::make_unique<ColorEditorFactory>());
+    // auto alignmentEditorFactory = std::make_unique<EnumEditorFactory>();
+    // alignmentEditorFactory->setEnumNames({
+    //                                          tr("Unspecified"),
+    //                                          tr("Top Left"),
+    //                                          tr("Top"),
+    //                                          tr("Top Right"),
+    //                                          tr("Left"),
+    //                                          tr("Center"),
+    //                                          tr("Right"),
+    //                                          tr("Bottom Left"),
+    //                                          tr("Bottom"),
+    //                                          tr("Bottom Right"),
+    //                                      });
+    // registerEditorFactory(qMetaTypeId<Alignment>(), std::move(alignmentEditorFactory));
 
-    auto alignmentEditorFactory = std::make_unique<EnumEditorFactory>();
-    alignmentEditorFactory->setEnumNames({
-                                             tr("Unspecified"),
-                                             tr("Top Left"),
-                                             tr("Top"),
-                                             tr("Top Right"),
-                                             tr("Left"),
-                                             tr("Center"),
-                                             tr("Right"),
-                                             tr("Bottom Left"),
-                                             tr("Bottom"),
-                                             tr("Bottom Right"),
-                                         });
-    registerEditorFactory(qMetaTypeId<Alignment>(), std::move(alignmentEditorFactory));
 
-    auto orientationEditorFactory = std::make_unique<EnumEditorFactory>();
-    orientationEditorFactory->setEnumNames({
-                                               tr("Orthogonal"),
-                                               tr("Isometric"),
-                                               tr("Isometric (Staggered)"),
-                                               tr("Hexagonal (Staggered)"),
-                                           });
-    orientationEditorFactory->setEnumValues({
-                                                Map::Orthogonal,
-                                                Map::Isometric,
-                                                Map::Staggered,
-                                                Map::Hexagonal,
-                                            });
-    registerEditorFactory(qMetaTypeId<Map::Orientation>(), std::move(orientationEditorFactory));
+    // auto staggerAxisEditorFactory = std::make_unique<EnumEditorFactory>();
+    // staggerAxisEditorFactory->setEnumNames({
+    //                                            tr("X"),
+    //                                            tr("Y"),
+    //                                        });
+    // registerEditorFactory(qMetaTypeId<Map::StaggerAxis>(), std::move(staggerAxisEditorFactory));
 
-    auto staggerAxisEditorFactory = std::make_unique<EnumEditorFactory>();
-    staggerAxisEditorFactory->setEnumNames({
-                                               tr("X"),
-                                               tr("Y"),
-                                           });
-    registerEditorFactory(qMetaTypeId<Map::StaggerAxis>(), std::move(staggerAxisEditorFactory));
-
-    auto staggerIndexEditorFactory = std::make_unique<EnumEditorFactory>();
-    staggerIndexEditorFactory->setEnumNames({
-                                                tr("Odd"),
-                                                tr("Even"),
-                                            });
-    registerEditorFactory(qMetaTypeId<Map::StaggerIndex>(), std::move(staggerIndexEditorFactory));
+    // auto staggerIndexEditorFactory = std::make_unique<EnumEditorFactory>();
+    // staggerIndexEditorFactory->setEnumNames({
+    //                                             tr("Odd"),
+    //                                             tr("Even"),
+    //                                         });
+    // registerEditorFactory(qMetaTypeId<Map::StaggerIndex>(), std::move(staggerIndexEditorFactory));
 
     QStringList layerFormatNames = {
         QCoreApplication::translate("PreferencesDialog", "XML (deprecated)"),
@@ -642,19 +552,19 @@ VariantEditor::VariantEditor(QWidget *parent)
     layerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "CSV"));
     layerFormatValues.append(Map::CSV);
 
-    auto layerFormatEditorFactory = std::make_unique<EnumEditorFactory>();
-    layerFormatEditorFactory->setEnumNames(layerFormatNames);
-    layerFormatEditorFactory->setEnumValues(layerFormatValues);
-    registerEditorFactory(qMetaTypeId<Map::LayerDataFormat>(), std::move(layerFormatEditorFactory));
+    // auto layerFormatEditorFactory = std::make_unique<EnumEditorFactory>();
+    // layerFormatEditorFactory->setEnumNames(layerFormatNames);
+    // layerFormatEditorFactory->setEnumValues(layerFormatValues);
+    // registerEditorFactory(qMetaTypeId<Map::LayerDataFormat>(), std::move(layerFormatEditorFactory));
 
-    auto renderOrderEditorFactory = std::make_unique<EnumEditorFactory>();
-    renderOrderEditorFactory->setEnumNames({
-                                               tr("Right Down"),
-                                               tr("Right Up"),
-                                               tr("Left Down"),
-                                               tr("Left Up"),
-                                           });
-    registerEditorFactory(qMetaTypeId<Map::RenderOrder>(), std::move(renderOrderEditorFactory));
+    // auto renderOrderEditorFactory = std::make_unique<EnumEditorFactory>();
+    // renderOrderEditorFactory->setEnumNames({
+    //                                            tr("Right Down"),
+    //                                            tr("Right Up"),
+    //                                            tr("Left Down"),
+    //                                            tr("Left Up"),
+    //                                        });
+    // registerEditorFactory(qMetaTypeId<Map::RenderOrder>(), std::move(renderOrderEditorFactory));
 
     // setValue(QVariantMap {
     //              { QStringLiteral("Name"), QVariant(QLatin1String("Hello")) },
@@ -696,11 +606,6 @@ VariantEditor::VariantEditor(QWidget *parent)
     // addValue(tr("Tile Render Order"), QVariant::fromValue(Map::RightDown));
     // addValue(tr("Background Color"), QColor());
     // addHeader(tr("Custom Properties"));
-}
-
-void VariantEditor::registerEditorFactory(int type, std::unique_ptr<EditorFactory> factory)
-{
-    m_factories[type] = std::move(factory);
 }
 
 void VariantEditor::clear()
@@ -785,19 +690,229 @@ void VariantEditor::addValue(const QVariant &value)
 
 QWidget *VariantEditor::createEditor(Property *property)
 {
-    const auto editor = property->createEditor(m_widget);
-    // const auto value = property->value();
-    // const int type = value.userType();
-    // auto factory = m_factories.find(type);
-    // if (factory != m_factories.end()) {
-        // const auto editor = factory->second->createEditor(value, m_widget);
-    if (editor) {
+    if (const auto editor = property->createEditor(m_widget)) {
         editor->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
         return editor;
     } else {
         qDebug() << "No editor for property" << property->name();
     }
     return nullptr;
+}
+
+SizeEdit::SizeEdit(QWidget *parent)
+    : QWidget(parent)
+    , m_widthLabel(new QLabel(QStringLiteral("W"), this))
+    , m_heightLabel(new QLabel(QStringLiteral("H"), this))
+    , m_widthSpinBox(new SpinBox(this))
+    , m_heightSpinBox(new SpinBox(this))
+{
+    m_widthLabel->setAlignment(Qt::AlignCenter);
+    m_heightLabel->setAlignment(Qt::AlignCenter);
+
+    auto layout = new QGridLayout(this);
+    layout->setContentsMargins(QMargins());
+    layout->setColumnStretch(1, 1);
+    layout->setColumnStretch(3, 1);
+    layout->setSpacing(Utils::dpiScaled(3));
+
+    const int horizontalMargin = Utils::dpiScaled(3);
+    m_widthLabel->setContentsMargins(horizontalMargin, 0, horizontalMargin, 0);
+    m_heightLabel->setContentsMargins(horizontalMargin, 0, horizontalMargin, 0);
+
+    layout->addWidget(m_widthLabel, 0, 0);
+    layout->addWidget(m_widthSpinBox, 0, 1);
+    layout->addWidget(m_heightLabel, 0, 2);
+    layout->addWidget(m_heightSpinBox, 0, 3);
+
+    connect(m_widthSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &SizeEdit::valueChanged);
+    connect(m_heightSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &SizeEdit::valueChanged);
+}
+
+void SizeEdit::setValue(const QSize &size)
+{
+    m_widthSpinBox->setValue(size.width());
+    m_heightSpinBox->setValue(size.height());
+}
+
+QSize SizeEdit::value() const
+{
+    return QSize(m_widthSpinBox->value(), m_heightSpinBox->value());
+}
+
+void SizeEdit::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event);
+
+    const auto orientation = event->size().width() < minimumHorizontalWidth()
+            ? Qt::Vertical : Qt::Horizontal;
+
+    if (m_orientation != orientation) {
+        m_orientation = orientation;
+
+        auto layout = qobject_cast<QGridLayout *>(this->layout());
+
+        // Remove all widgets from layout, without deleting them
+        layout->removeWidget(m_widthLabel);
+        layout->removeWidget(m_widthSpinBox);
+        layout->removeWidget(m_heightLabel);
+        layout->removeWidget(m_heightSpinBox);
+
+        if (orientation == Qt::Horizontal) {
+            layout->addWidget(m_widthLabel, 0, 0);
+            layout->addWidget(m_widthSpinBox, 0, 1);
+            layout->addWidget(m_heightLabel, 0, 2);
+            layout->addWidget(m_heightSpinBox, 0, 3);
+            layout->setColumnStretch(3, 1);
+        } else {
+            layout->addWidget(m_widthLabel, 0, 0);
+            layout->addWidget(m_widthSpinBox, 0, 1);
+            layout->addWidget(m_heightLabel, 1, 0);
+            layout->addWidget(m_heightSpinBox, 1, 1);
+            layout->setColumnStretch(3, 0);
+        }
+
+        // this avoids flickering when the layout changes
+        layout->activate();
+    }
+}
+
+int SizeEdit::minimumHorizontalWidth() const
+{
+    return m_widthLabel->minimumSizeHint().width() +
+            m_widthSpinBox->minimumSizeHint().width() +
+            m_heightLabel->minimumSizeHint().width() +
+            m_heightSpinBox->minimumSizeHint().width() +
+            layout()->spacing() * 3;
+}
+
+
+EnumEditorFactory::EnumEditorFactory(const QStringList &enumNames,
+                                     const QList<int> &enumValues)
+    : m_enumNamesModel(enumNames)
+    , m_enumValues(enumValues)
+{}
+
+void EnumEditorFactory::setEnumNames(const QStringList &enumNames)
+{
+    m_enumNamesModel.setStringList(enumNames);
+}
+
+void EnumEditorFactory::setEnumValues(const QList<int> &enumValues)
+{
+    m_enumValues = enumValues;
+}
+
+QWidget *EnumEditorFactory::createEditor(Property *property, QWidget *parent)
+{
+    auto editor = new QComboBox(parent);
+    // This allows the combo box to shrink horizontally.
+    editor->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
+    editor->setModel(&m_enumNamesModel);
+
+    auto syncEditor = [property, editor, this]() {
+        const QSignalBlocker blocker(editor);
+        if (m_enumValues.isEmpty())
+            editor->setCurrentIndex(property->value().toInt());
+        else
+            editor->setCurrentIndex(m_enumValues.indexOf(property->value().toInt()));
+    };
+    syncEditor();
+
+    QObject::connect(property, &Property::valueChanged, editor, syncEditor);
+    QObject::connect(editor, qOverload<int>(&QComboBox::currentIndexChanged), property,
+                     [property, this](int index) {
+        property->setValue(m_enumValues.isEmpty() ? index : m_enumValues.at(index));
+    });
+
+    return editor;
+}
+
+
+ValueTypeEditorFactory::ValueTypeEditorFactory()
+{
+    // Register some useful default editor factories
+    registerEditorFactory(QMetaType::Bool, std::make_unique<BoolEditorFactory>());
+    registerEditorFactory(QMetaType::Double, std::make_unique<FloatEditorFactory>());
+    registerEditorFactory(QMetaType::Int, std::make_unique<IntEditorFactory>());
+    registerEditorFactory(QMetaType::QColor, std::make_unique<ColorEditorFactory>());
+    registerEditorFactory(QMetaType::QPoint, std::make_unique<PointEditorFactory>());
+    registerEditorFactory(QMetaType::QPointF, std::make_unique<PointFEditorFactory>());
+    registerEditorFactory(QMetaType::QRectF, std::make_unique<RectFEditorFactory>());
+    registerEditorFactory(QMetaType::QSize, std::make_unique<SizeEditorFactory>());
+    registerEditorFactory(QMetaType::QString, std::make_unique<StringEditorFactory>());
+}
+
+void ValueTypeEditorFactory::registerEditorFactory(int type, std::unique_ptr<EditorFactory> factory)
+{
+    m_factories[type] = std::move(factory);
+}
+
+QObjectProperty *ValueTypeEditorFactory::createQObjectProperty(QObject *qObject,
+                                                               const char *name,
+                                                               const QString &displayName)
+{
+    auto metaObject = qObject->metaObject();
+    auto propertyIndex = metaObject->indexOfProperty(name);
+    if (propertyIndex < 0)
+        return nullptr;
+
+    return new QObjectProperty(qObject,
+                               metaObject->property(propertyIndex),
+                               displayName.isEmpty() ? QString::fromUtf8(name)
+                                                     : displayName,
+                               this);
+}
+
+ValueProperty *ValueTypeEditorFactory::createProperty(const QString &name, const QVariant &value)
+{
+    const int type = value.userType();
+    auto factory = m_factories.find(type);
+    if (factory != m_factories.end())
+        return new ValueProperty(name, value, factory->second.get());
+    return nullptr;
+}
+
+QWidget *ValueTypeEditorFactory::createEditor(Property *property, QWidget *parent)
+{
+    const auto value = property->value();
+    const int type = value.userType();
+    auto factory = m_factories.find(type);
+    if (factory != m_factories.end())
+        return factory->second->createEditor(property, parent);
+    return nullptr;
+}
+
+
+QObjectProperty::QObjectProperty(QObject *object,
+                                 QMetaProperty property,
+                                 const QString &displayName,
+                                 EditorFactory *editorFactory,
+                                 QObject *parent)
+    : AbstractProperty(displayName, editorFactory, parent)
+    , m_object(object)
+    , m_property(property)
+{
+    // If the property has a notify signal, forward it to valueChanged
+    auto notify = property.notifySignal();
+    if (notify.isValid()) {
+        auto valuePropertyIndex = metaObject()->indexOfProperty("value");
+        auto valueProperty = metaObject()->property(valuePropertyIndex);
+        auto valueChanged = valueProperty.notifySignal();
+
+        connect(m_object, notify, this, valueChanged);
+    }
+
+    setEnabled(m_property.isWritable());
+}
+
+QVariant QObjectProperty::value() const
+{
+    return m_property.read(m_object);
+}
+
+void QObjectProperty::setValue(const QVariant &value)
+{
+    m_property.write(m_object, value);
 }
 
 } // namespace Tiled
