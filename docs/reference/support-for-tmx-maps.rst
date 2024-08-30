@@ -68,6 +68,7 @@ C++
 C#/.NET
 ~~~~~~~
 
+-  `DotTiled <https://github.com/dcronqvist/DotTiled>`__: A fast, memory-efficient, and easy to use .NET library for loading Tiled maps and tilesets with support for both TMX and JSON formats.
 -  `TiledCS <https://github.com/TheBoneJarmer/TiledCS>`__: A dotnet library for loading Tiled tilesets and maps (TMX/TSX or JSON).
 -  `MonoGame.Extended <https://github.com/craftworkgames/MonoGame.Extended>`__
    has a Tiled map loader and renderer that works with MonoGame on all
