@@ -21,6 +21,7 @@
 #pragma once
 
 #include <QCoreApplication>
+#include <QMetaProperty>
 #include <QScrollArea>
 #include <QString>
 #include <QStringListModel>
@@ -34,6 +35,9 @@ class QGridLayout;
 
 namespace Tiled {
 
+/**
+ * A property represents a named value that can create its own edit widget.
+ */
 class Property : public QObject
 {
     Q_OBJECT
@@ -47,7 +51,7 @@ public:
         , m_name(name)
     {}
 
-    QString name() const { return m_name; }
+    const QString &name() const { return m_name; }
 
     bool isEnabled() const { return m_enabled; }
     void setEnabled(bool enabled)
@@ -72,60 +76,167 @@ private:
     bool m_enabled = true;
 };
 
-class VariantProperty : public Property
+/**
+ * An editor factory is responsible for creating an editor widget for a given
+ * property. It can be used to share the configuration of editor widgets
+ * between different properties.
+ */
+class EditorFactory
 {
-    Q_OBJECT
+    Q_DECLARE_TR_FUNCTIONS(EditorFactory)
 
 public:
-    VariantProperty(const QString &name, const QVariant &value, QObject *parent = nullptr)
-        : Property(name, parent)
-        , m_value(value)
-    {
-    }
-
-    QVariant value() const override { return m_value; }
-    void setValue(const QVariant &value) override;
-
-    QWidget *createEditor(QWidget *parent) override;
-
-private:
-    QVariant m_value;
+    virtual QWidget *createEditor(Property *property, QWidget *parent) = 0;
 };
 
-class EnumProperty : public Property
+/**
+ * An editor factory that creates a combo box for enum properties.
+ */
+class EnumEditorFactory : public EditorFactory
 {
-    Q_OBJECT
-
 public:
-    EnumProperty(const QString &name, QObject *parent = nullptr)
-        : Property(name, parent)
-    {}
+    EnumEditorFactory(const QStringList &enumNames = {},
+                      const QList<int> &enumValues = {});
 
-    QWidget *createEditor(QWidget *parent) override;
+    void setEnumNames(const QStringList &enumNames);
+    void setEnumValues(const QList<int> &enumValues);
 
-    void setEnumNames(const QStringList &enumNames)
-    {
-        m_enumNamesModel.setStringList(enumNames);
-    }
-
-    void setEnumValues(const QList<int> &enumValues)
-    {
-        m_enumValues = enumValues;
-    }
+    QWidget *createEditor(Property *property, QWidget *parent) override;
 
 private:
     QStringListModel m_enumNamesModel;
     QList<int> m_enumValues;
 };
 
-class EditorFactory
+/**
+ * A property that uses an editor factory to create its editor, but does not
+ * store a value itself.
+ *
+ * The property does not take ownership of the editor factory.
+ */
+class AbstractProperty : public Property
 {
-    Q_DECLARE_TR_FUNCTIONS(EditorFactory)
+    Q_OBJECT
 
 public:
-    virtual QWidget *createEditor(const QVariant &value,
-                                  QWidget *parent) = 0;
+    AbstractProperty(const QString &name,
+                     EditorFactory *editorFactory,
+                     QObject *parent = nullptr);
+
+    QWidget *createEditor(QWidget *parent) override;
+
+private:
+    EditorFactory *m_editorFactory;
 };
+
+/**
+ * A property that stores a value of a given type and uses an editor factory to
+ * create its editor.
+ *
+ * The property does not take ownership of the editor factory.
+ */
+class ValueProperty : public AbstractProperty
+{
+    Q_OBJECT
+
+public:
+    ValueProperty(const QString &name,
+                  const QVariant &value,
+                  EditorFactory *editorFactory,
+                  QObject *parent = nullptr);
+
+    QVariant value() const override { return m_value; }
+    void setValue(const QVariant &value) override;
+
+private:
+    QVariant m_value;
+};
+
+/**
+ * A property that wraps a value of a QObject property and uses an editor
+ * factory to create its editor.
+ *
+ * The property does not take ownership of the editor factory.
+ */
+class QObjectProperty : public AbstractProperty
+{
+    Q_OBJECT
+
+public:
+    QObjectProperty(QObject *object,
+                    QMetaProperty property,
+                    const QString &displayName,
+                    EditorFactory *editorFactory,
+                    QObject *parent = nullptr);
+
+    QVariant value() const override;
+    void setValue(const QVariant &value) override;
+
+private:
+    QObject *m_object;
+    QMetaProperty m_property;
+};
+
+/**
+ * An editor factory that selects the appropriate editor factory based on the
+ * type of the property value.
+ *
+ * todo: rename to VariantEditorFactory when the old one is removed
+ */
+class ValueTypeEditorFactory : public EditorFactory
+{
+public:
+    ValueTypeEditorFactory();
+
+    /**
+     * Register an editor factory for a given type.
+     *
+     * When there is already an editor factory registered for the given type,
+     * it will be replaced.
+     */
+    void registerEditorFactory(int type, std::unique_ptr<EditorFactory> factory);
+
+    /**
+     * Creates a property that wraps a QObject property and will use the editor
+     * factory registered for the type of the value.
+     */
+    QObjectProperty *createQObjectProperty(QObject *qObject,
+                                           const char *name,
+                                           const QString &displayName = {});
+
+    /**
+     * Creates a property with the given name and value. The property will use
+     * the editor factory registered for the type of the value.
+     */
+    ValueProperty *createProperty(const QString &name, const QVariant &value);
+
+    QWidget *createEditor(Property *property, QWidget *parent) override;
+
+private:
+    std::unordered_map<int, std::unique_ptr<EditorFactory>> m_factories;
+};
+
+/**
+ * A property that wraps an enum value and uses an editor factory to create
+ * its editor.
+ */
+class EnumProperty : public AbstractProperty
+{
+    Q_OBJECT
+
+public:
+    EnumProperty(const QString &name,
+                 const QStringList &enumNames = {},
+                 const QList<int> &enumValues = {},
+                 QObject *parent = nullptr);
+
+    void setEnumNames(const QStringList &enumNames);
+    void setEnumValues(const QList<int> &enumValues);
+
+private:
+    EnumEditorFactory m_editorFactory;
+};
+
 
 class VariantEditor : public QScrollArea
 {
@@ -133,8 +244,6 @@ class VariantEditor : public QScrollArea
 
 public:
     VariantEditor(QWidget *parent = nullptr);
-
-    void registerEditorFactory(int type, std::unique_ptr<EditorFactory> factory);
 
     void clear();
     void addHeader(const QString &text);
@@ -157,7 +266,6 @@ private:
     QWidget *m_widget;
     QGridLayout *m_gridLayout;
     int m_rowIndex = 0;
-    std::unordered_map<int, std::unique_ptr<EditorFactory>> m_factories;
 };
 
 } // namespace Tiled

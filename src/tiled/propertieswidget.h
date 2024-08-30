@@ -22,11 +22,14 @@
 
 #include <QWidget>
 
+#include <memory>
+
 namespace Tiled {
 
 class Object;
 
 class Document;
+class ValueTypeEditorFactory;
 class VariantEditor;
 
 /**
@@ -75,6 +78,7 @@ private:
 
     Document *mDocument;
     VariantEditor *mPropertyBrowser;
+    std::unique_ptr<ValueTypeEditorFactory> mDefaultEditorFactory;
     QAction *mActionAddProperty;
     QAction *mActionRemoveProperty;
     QAction *mActionRenameProperty;

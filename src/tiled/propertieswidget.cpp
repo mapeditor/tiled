@@ -37,6 +37,7 @@
 #include <QInputDialog>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QPushButton>
 #include <QToolBar>
 #include <QUndoStack>
 #include <QVBoxLayout>
@@ -47,6 +48,7 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
     : QWidget{parent}
     , mDocument(nullptr)
     , mPropertyBrowser(new VariantEditor(this))
+    , mDefaultEditorFactory(std::make_unique<ValueTypeEditorFactory>())
 {
     mActionAddProperty = new QAction(this);
     mActionAddProperty->setEnabled(false);
@@ -145,6 +147,8 @@ static bool anyObjectHasProperty(const QList<Object*> &objects, const QString &n
 
 class MapOrientationProperty : public EnumProperty
 {
+    Q_OBJECT
+
 public:
     MapOrientationProperty(MapDocument *mapDocument)
         : EnumProperty(tr("Orientation"))
@@ -183,6 +187,98 @@ private:
     MapDocument *mMapDocument;
 };
 
+class MapSizeProperty : public AbstractProperty
+{
+    Q_OBJECT
+
+public:
+    MapSizeProperty(MapDocument *mapDocument, EditorFactory *editorFactory)
+        : AbstractProperty(tr("Map Size"), editorFactory)
+        , mMapDocument(mapDocument)
+    {
+        connect(mMapDocument, &MapDocument::mapChanged,
+                this, &Property::valueChanged);
+    }
+
+    QVariant value() const override { return mMapDocument->map()->size(); }
+    void setValue(const QVariant &) override {};
+
+    QWidget *createEditor(QWidget *parent) override
+    {
+        auto widget = new QWidget(parent);
+        auto layout = new QVBoxLayout(widget);
+        auto valueEdit = AbstractProperty::createEditor(widget);
+        auto resizeButton = new QPushButton(tr("Resize Map"), widget);
+
+        valueEdit->setEnabled(false);
+        layout->setContentsMargins(QMargins());
+        layout->addWidget(valueEdit);
+        layout->addWidget(resizeButton, 0, Qt::AlignLeft);
+
+        connect(resizeButton, &QPushButton::clicked, [] {
+            ActionManager::action("ResizeMap")->trigger();
+        });
+
+        return widget;
+    }
+
+private:
+    MapDocument *mMapDocument;
+};
+
+class TileSizeProperty : public AbstractProperty
+{
+    Q_OBJECT
+
+public:
+    TileSizeProperty(MapDocument *mapDocument, EditorFactory *editorFactory)
+        : AbstractProperty(tr("Tile Size"), editorFactory)
+        , mMapDocument(mapDocument)
+    {
+        connect(mMapDocument, &Document::changed,
+                this, &TileSizeProperty::onChanged);
+    }
+
+    QVariant value() const override
+    {
+        return mMapDocument->map()->tileSize();
+    }
+
+    void setValue(const QVariant &value) override
+    {
+        auto oldSize = mMapDocument->map()->tileSize();
+        auto newSize = value.toSize();
+
+        if (oldSize.width() != newSize.width()) {
+            auto command = new ChangeMapProperty(mMapDocument,
+                                                 Map::TileWidthProperty,
+                                                 newSize.width());
+            mMapDocument->undoStack()->push(command);
+        }
+
+        if (oldSize.height() != newSize.height()) {
+            auto command = new ChangeMapProperty(mMapDocument,
+                                                 Map::TileHeightProperty,
+                                                 newSize.height());
+            mMapDocument->undoStack()->push(command);
+        }
+    };
+
+private:
+    void onChanged(const ChangeEvent &event)
+    {
+        if (event.type != ChangeEvent::MapChanged)
+            return;
+
+        const auto property = static_cast<const MapChangeEvent&>(event).property;
+        if (property == Map::TileWidthProperty || property == Map::TileHeightProperty)
+            emit valueChanged();
+    }
+
+    MapDocument *mMapDocument;
+};
+
+
 void PropertiesWidget::currentObjectChanged(Object *object)
 {
     // mPropertyBrowser->setObject(object);
@@ -195,12 +291,22 @@ void PropertiesWidget::currentObjectChanged(Object *object)
             break;
         case Object::MapType: {
             Map *map = static_cast<Map*>(object);
-            mPropertyBrowser->addHeader(tr("Map"));
-            mPropertyBrowser->addProperty(new MapOrientationProperty(static_cast<MapDocument*>(mDocument)));
+            auto mapDocument = static_cast<MapDocument*>(mDocument);
 
-            auto sizeProperty = new VariantProperty(tr("Map Size"), map->size());
-            sizeProperty->setEnabled(false);
-            mPropertyBrowser->addProperty(sizeProperty);
+            mPropertyBrowser->addHeader(tr("Map"));
+            mPropertyBrowser->addProperty(new MapOrientationProperty(mapDocument));
+            mPropertyBrowser->addProperty(new MapSizeProperty(mapDocument, mDefaultEditorFactory.get()));
+            mPropertyBrowser->addProperty(new TileSizeProperty(mapDocument, mDefaultEditorFactory.get()));
+            // todo: infinite
+            // todo: hex side length
+            // todo: stagger axis
+            // todo: stagger index
+            // todo: parallax origin
+            // todo: layer data format
+            // todo: chunk size
+            // todo: tile render order
+            // todo: compression level
+            // todo: background color
 
             break;
         }
@@ -608,3 +714,4 @@ void PropertiesWidget::retranslateUi()
 } // namespace Tiled
 
 #include "moc_propertieswidget.cpp"
+#include "propertieswidget.moc"
