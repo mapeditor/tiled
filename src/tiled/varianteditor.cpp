@@ -49,7 +49,8 @@ AbstractProperty::AbstractProperty(const QString &name,
 
 QWidget *AbstractProperty::createEditor(QWidget *parent)
 {
-    return m_editorFactory->createEditor(this, parent);
+    return m_editorFactory ? m_editorFactory->createEditor(this, parent)
+                           : nullptr;
 }
 
 
@@ -316,7 +317,7 @@ VariantEditor::VariantEditor(QWidget *parent)
     m_gridLayout = new QGridLayout;
     verticalLayout->addLayout(m_gridLayout);
     verticalLayout->addStretch();
-    verticalLayout->setContentsMargins(QMargins());
+    verticalLayout->setContentsMargins(0, 0, 0, Utils::dpiScaled(6));
 
     setWidget(m_widget);
     setWidgetResizable(true);
@@ -329,71 +330,6 @@ VariantEditor::VariantEditor(QWidget *parent)
     m_gridLayout->setColumnMinimumWidth(LeftSpacing, Utils::dpiScaled(3));
     m_gridLayout->setColumnMinimumWidth(MiddleSpacing, Utils::dpiScaled(2));
     m_gridLayout->setColumnMinimumWidth(RightSpacing, Utils::dpiScaled(3));
-
-    // auto alignmentEditorFactory = std::make_unique<EnumEditorFactory>();
-    // alignmentEditorFactory->setEnumNames({
-    //                                          tr("Unspecified"),
-    //                                          tr("Top Left"),
-    //                                          tr("Top"),
-    //                                          tr("Top Right"),
-    //                                          tr("Left"),
-    //                                          tr("Center"),
-    //                                          tr("Right"),
-    //                                          tr("Bottom Left"),
-    //                                          tr("Bottom"),
-    //                                          tr("Bottom Right"),
-    //                                      });
-    // registerEditorFactory(qMetaTypeId<Alignment>(), std::move(alignmentEditorFactory));
-
-
-    // auto staggerAxisEditorFactory = std::make_unique<EnumEditorFactory>();
-    // staggerAxisEditorFactory->setEnumNames({
-    //                                            tr("X"),
-    //                                            tr("Y"),
-    //                                        });
-    // registerEditorFactory(qMetaTypeId<Map::StaggerAxis>(), std::move(staggerAxisEditorFactory));
-
-    // auto staggerIndexEditorFactory = std::make_unique<EnumEditorFactory>();
-    // staggerIndexEditorFactory->setEnumNames({
-    //                                             tr("Odd"),
-    //                                             tr("Even"),
-    //                                         });
-    // registerEditorFactory(qMetaTypeId<Map::StaggerIndex>(), std::move(staggerIndexEditorFactory));
-
-    QStringList layerFormatNames = {
-        QCoreApplication::translate("PreferencesDialog", "XML (deprecated)"),
-        QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"),
-        QCoreApplication::translate("PreferencesDialog", "Base64 (gzip compressed)"),
-        QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"),
-    };
-    QList<int> layerFormatValues = {
-        Map::XML,
-        Map::Base64,
-        Map::Base64Gzip,
-        Map::Base64Zlib,
-    };
-
-    if (compressionSupported(Zstandard)) {
-        layerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (Zstandard compressed)"));
-        layerFormatValues.append(Map::Base64Zstandard);
-    }
-
-    layerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "CSV"));
-    layerFormatValues.append(Map::CSV);
-
-    // auto layerFormatEditorFactory = std::make_unique<EnumEditorFactory>();
-    // layerFormatEditorFactory->setEnumNames(layerFormatNames);
-    // layerFormatEditorFactory->setEnumValues(layerFormatValues);
-    // registerEditorFactory(qMetaTypeId<Map::LayerDataFormat>(), std::move(layerFormatEditorFactory));
-
-    // auto renderOrderEditorFactory = std::make_unique<EnumEditorFactory>();
-    // renderOrderEditorFactory->setEnumNames({
-    //                                            tr("Right Down"),
-    //                                            tr("Right Up"),
-    //                                            tr("Left Down"),
-    //                                            tr("Left Up"),
-    //                                        });
-    // registerEditorFactory(qMetaTypeId<Map::RenderOrder>(), std::move(renderOrderEditorFactory));
 
     // setValue(QVariantMap {
     //              { QStringLiteral("Name"), QVariant(QLatin1String("Hello")) },
@@ -607,24 +543,23 @@ QObjectProperty *ValueTypeEditorFactory::createQObjectProperty(QObject *qObject,
                                this);
 }
 
-ValueProperty *ValueTypeEditorFactory::createProperty(const QString &name, const QVariant &value)
+ValueProperty *ValueTypeEditorFactory::createProperty(const QString &name,
+                                                      const QVariant &value)
 {
-    const int type = value.userType();
-    auto factory = m_factories.find(type);
-    if (factory != m_factories.end())
-        return new ValueProperty(name, value, factory->second.get());
-    return nullptr;
+    auto f = m_factories.find(value.userType());
+    return new ValueProperty(name, value,
+                             f != m_factories.end() ? f->second.get()
+                                                    : nullptr);
 }
 
 AbstractProperty *ValueTypeEditorFactory::createProperty(const QString &name,
                                                          std::function<QVariant ()> get,
                                                          std::function<void (const QVariant &)> set)
 {
-    const int type = get().userType();
-    auto factory = m_factories.find(type);
-    if (factory != m_factories.end())
-        return new GetSetProperty(name, get, set, factory->second.get());
-    return nullptr;
+    auto f = m_factories.find(get().userType());
+    return new GetSetProperty(name, get, set,
+                              f != m_factories.end() ? f->second.get()
+                                                     : nullptr);
 }
 
 QWidget *ValueTypeEditorFactory::createEditor(Property *property, QWidget *parent)

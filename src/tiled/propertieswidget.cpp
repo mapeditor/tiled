@@ -25,6 +25,7 @@
 #include "changemapproperty.h"
 #include "changeproperties.h"
 #include "clipboardmanager.h"
+#include "compression.h"
 #include "mapdocument.h"
 #include "propertybrowser.h"
 #include "utils.h"
@@ -93,6 +94,7 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
     // connect(mPropertyBrowser, &PropertyBrowser::selectedItemsChanged,
     //         this, &PropertiesWidget::updateActions);
 
+    registerEditorFactories();
     retranslateUi();
 }
 
@@ -303,6 +305,30 @@ public:
                         mMapDocument->undoStack()->push(command);
                     });
 
+        mStaggerAxisProperty = editorFactory->createProperty(
+                    tr("Stagger Axis"),
+                    [this]() {
+                        return QVariant::fromValue(mMapDocument->map()->staggerAxis());
+                    },
+                    [this](const QVariant &value) {
+                        auto command = new ChangeMapProperty(mMapDocument,
+                                                             Map::StaggerAxisProperty,
+                                                             value.toInt());
+                        mMapDocument->undoStack()->push(command);
+                    });
+
+        mStaggerIndexProperty = editorFactory->createProperty(
+                    tr("Stagger Index"),
+                    [this]() {
+                        return QVariant::fromValue(mMapDocument->map()->staggerIndex());
+                    },
+                    [this](const QVariant &value) {
+                        auto command = new ChangeMapProperty(mMapDocument,
+                                                             Map::StaggerIndexProperty,
+                                                             value.toInt());
+                        mMapDocument->undoStack()->push(command);
+                    });
+
         connect(mMapDocument, &MapDocument::changed,
                 this, &MapProperties::onMapChanged);
     }
@@ -315,8 +341,8 @@ public:
         editor->addProperty(mTileSizeProperty);
         editor->addProperty(mInfiniteProperty);
         editor->addProperty(mHexSideLengthProperty);
-        // editor->addProperty(mStaggerAxisProperty);
-        // editor->addProperty(mStaggerIndexProperty);
+        editor->addProperty(mStaggerAxisProperty);
+        editor->addProperty(mStaggerIndexProperty);
         // editor->addProperty(mParallaxOriginProperty);
         // editor->addProperty(mLayerDataFormatProperty);
         // editor->addProperty(mChunkSizeProperty);
@@ -341,8 +367,14 @@ private:
             emit mInfiniteProperty->valueChanged();
             break;
         case Map::HexSideLengthProperty:
+            emit mHexSideLengthProperty->valueChanged();
+            break;
         case Map::StaggerAxisProperty:
+            emit mStaggerAxisProperty->valueChanged();
+            break;
         case Map::StaggerIndexProperty:
+            emit mStaggerIndexProperty->valueChanged();
+            break;
         case Map::ParallaxOriginProperty:
         case Map::OrientationProperty:
             emit mOrientationProperty->valueChanged();
@@ -780,6 +812,77 @@ void PropertiesWidget::keyPressEvent(QKeyEvent *event)
     } else {
         QWidget::keyPressEvent(event);
     }
+}
+
+void PropertiesWidget::registerEditorFactories()
+{
+    registerEditorFactory(qMetaTypeId<Alignment>(),
+                          std::make_unique<EnumEditorFactory>(
+                              QStringList {
+                                  tr("Unspecified"),
+                                  tr("Top Left"),
+                                  tr("Top"),
+                                  tr("Top Right"),
+                                  tr("Left"),
+                                  tr("Center"),
+                                  tr("Right"),
+                                  tr("Bottom Left"),
+                                  tr("Bottom"),
+                                  tr("Bottom Right"),
+                              }));
+
+
+    registerEditorFactory(qMetaTypeId<Map::StaggerAxis>(),
+                          std::make_unique<EnumEditorFactory>(
+                              QStringList {
+                                  tr("X"),
+                                  tr("Y"),
+                              }));
+
+    registerEditorFactory(qMetaTypeId<Map::StaggerIndex>(),
+                          std::make_unique<EnumEditorFactory>(
+                              QStringList {
+                                  tr("Odd"),
+                                  tr("Even"),
+                              }));
+
+    QStringList layerFormatNames = {
+        QCoreApplication::translate("PreferencesDialog", "XML (deprecated)"),
+        QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"),
+        QCoreApplication::translate("PreferencesDialog", "Base64 (gzip compressed)"),
+        QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"),
+    };
+    QList<int> layerFormatValues = {
+        Map::XML,
+        Map::Base64,
+        Map::Base64Gzip,
+        Map::Base64Zlib,
+    };
+
+    if (compressionSupported(Zstandard)) {
+        layerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "Base64 (Zstandard compressed)"));
+        layerFormatValues.append(Map::Base64Zstandard);
+    }
+
+    layerFormatNames.append(QCoreApplication::translate("PreferencesDialog", "CSV"));
+    layerFormatValues.append(Map::CSV);
+
+    registerEditorFactory(qMetaTypeId<Map::LayerDataFormat>(),
+                          std::make_unique<EnumEditorFactory>(layerFormatNames, layerFormatValues));
+
+    registerEditorFactory(qMetaTypeId<Map::RenderOrder>(),
+                          std::make_unique<EnumEditorFactory>(
+                              QStringList {
+                                  tr("Right Down"),
+                                  tr("Right Up"),
+                                  tr("Left Down"),
+                                  tr("Left Up"),
+                              }));
+}
+
+void PropertiesWidget::registerEditorFactory(int type, std::unique_ptr<EditorFactory> factory)
+{
+    mDefaultEditorFactory->registerEditorFactory(type, std::move(factory));
 }
 
 void PropertiesWidget::retranslateUi()
