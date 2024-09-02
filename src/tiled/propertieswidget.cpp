@@ -46,7 +46,6 @@ namespace Tiled {
 
 PropertiesWidget::PropertiesWidget(QWidget *parent)
     : QWidget{parent}
-    , mDocument(nullptr)
     , mPropertyBrowser(new VariantEditor(this))
     , mDefaultEditorFactory(std::make_unique<ValueTypeEditorFactory>())
 {
@@ -150,8 +149,8 @@ class MapOrientationProperty : public EnumProperty
     Q_OBJECT
 
 public:
-    MapOrientationProperty(MapDocument *mapDocument)
-        : EnumProperty(tr("Orientation"))
+    MapOrientationProperty(MapDocument *mapDocument, QObject *parent = nullptr)
+        : EnumProperty(tr("Orientation"), parent)
         , mMapDocument(mapDocument)
     {
         setEnumNames({
@@ -166,9 +165,6 @@ public:
                           Map::Staggered,
                           Map::Hexagonal,
                       });
-
-        connect(mMapDocument, &MapDocument::mapChanged,
-                this, &Property::valueChanged);
     }
 
     QVariant value() const override
@@ -192,8 +188,9 @@ class MapSizeProperty : public AbstractProperty
     Q_OBJECT
 
 public:
-    MapSizeProperty(MapDocument *mapDocument, EditorFactory *editorFactory)
-        : AbstractProperty(tr("Map Size"), editorFactory)
+    MapSizeProperty(MapDocument *mapDocument, EditorFactory *editorFactory,
+                    QObject *parent = nullptr)
+        : AbstractProperty(tr("Map Size"), editorFactory, parent)
         , mMapDocument(mapDocument)
     {
         connect(mMapDocument, &MapDocument::mapChanged,
@@ -231,12 +228,12 @@ class TileSizeProperty : public AbstractProperty
     Q_OBJECT
 
 public:
-    TileSizeProperty(MapDocument *mapDocument, EditorFactory *editorFactory)
-        : AbstractProperty(tr("Tile Size"), editorFactory)
+    TileSizeProperty(MapDocument *mapDocument,
+                     EditorFactory *editorFactory,
+                     QObject *parent = nullptr)
+        : AbstractProperty(tr("Tile Size"), editorFactory, parent)
         , mMapDocument(mapDocument)
     {
-        connect(mMapDocument, &Document::changed,
-                this, &TileSizeProperty::onChanged);
     }
 
     QVariant value() const override
@@ -265,17 +262,114 @@ public:
     };
 
 private:
-    void onChanged(const ChangeEvent &event)
+    MapDocument *mMapDocument;
+};
+
+class MapProperties : public QObject
+{
+    Q_OBJECT
+
+public:
+    MapProperties(MapDocument *mapDocument,
+                  ValueTypeEditorFactory *editorFactory,
+                  QObject *parent = nullptr)
+        : QObject(parent)
+        , mMapDocument(mapDocument)
+        , mOrientationProperty(new MapOrientationProperty(mapDocument, this))
+        , mSizeProperty(new MapSizeProperty(mapDocument, editorFactory, this))
+        , mTileSizeProperty(new TileSizeProperty(mapDocument, editorFactory, this))
+    {
+        mInfiniteProperty = editorFactory->createProperty(
+                    tr("Infinite"),
+                    [this]() {
+                        return mMapDocument->map()->infinite();
+                    },
+                    [this](const QVariant &value) {
+                        auto command = new ChangeMapProperty(mMapDocument,
+                                                             Map::InfiniteProperty,
+                                                             value.toBool());
+                        mMapDocument->undoStack()->push(command);
+                    });
+
+        mHexSideLengthProperty = editorFactory->createProperty(
+                    tr("Hex Side Length"),
+                    [this]() {
+                        return mMapDocument->map()->hexSideLength();
+                    },
+                    [this](const QVariant &value) {
+                        auto command = new ChangeMapProperty(mMapDocument,
+                                                             Map::HexSideLengthProperty,
+                                                             value.toInt());
+                        mMapDocument->undoStack()->push(command);
+                    });
+
+        connect(mMapDocument, &MapDocument::changed,
+                this, &MapProperties::onMapChanged);
+    }
+
+    void populateEditor(VariantEditor *editor)
+    {
+        editor->addHeader(tr("Map"));
+        editor->addProperty(mOrientationProperty);
+        editor->addProperty(mSizeProperty);
+        editor->addProperty(mTileSizeProperty);
+        editor->addProperty(mInfiniteProperty);
+        editor->addProperty(mHexSideLengthProperty);
+        // editor->addProperty(mStaggerAxisProperty);
+        // editor->addProperty(mStaggerIndexProperty);
+        // editor->addProperty(mParallaxOriginProperty);
+        // editor->addProperty(mLayerDataFormatProperty);
+        // editor->addProperty(mChunkSizeProperty);
+        // editor->addProperty(mTileRenderOrderProperty);
+        // editor->addProperty(mCompressionLevelProperty);
+        // editor->addProperty(mBackgroundColorProperty);
+    }
+
+private:
+    void onMapChanged(const ChangeEvent &event)
     {
         if (event.type != ChangeEvent::MapChanged)
             return;
 
         const auto property = static_cast<const MapChangeEvent&>(event).property;
-        if (property == Map::TileWidthProperty || property == Map::TileHeightProperty)
-            emit valueChanged();
+        switch (property) {
+        case Map::TileWidthProperty:
+        case Map::TileHeightProperty:
+            emit mTileSizeProperty->valueChanged();
+            break;
+        case Map::InfiniteProperty:
+            emit mInfiniteProperty->valueChanged();
+            break;
+        case Map::HexSideLengthProperty:
+        case Map::StaggerAxisProperty:
+        case Map::StaggerIndexProperty:
+        case Map::ParallaxOriginProperty:
+        case Map::OrientationProperty:
+            emit mOrientationProperty->valueChanged();
+            break;
+        case Map::RenderOrderProperty:
+        case Map::BackgroundColorProperty:
+        case Map::LayerDataFormatProperty:
+        case Map::CompressionLevelProperty:
+        case Map::ChunkSizeProperty:
+            break;
+        }
     }
 
     MapDocument *mMapDocument;
+    Property *mOrientationProperty;
+    Property *mSizeProperty;
+    Property *mTileSizeProperty;
+    Property *mInfiniteProperty;
+    Property *mHexSideLengthProperty;
+    Property *mStaggerAxisProperty;
+    Property *mStaggerIndexProperty;
+    Property *mParallaxOriginProperty;
+    Property *mLayerDataFormatProperty;
+    Property *mChunkSizeProperty;
+    Property *mTileRenderOrderProperty;
+    Property *mCompressionLevelProperty;
+    Property *mBackgroundColorProperty;
 };
 
 
@@ -283,6 +377,8 @@ void PropertiesWidget::currentObjectChanged(Object *object)
 {
     // mPropertyBrowser->setObject(object);
     mPropertyBrowser->clear();
+    delete mPropertiesObject;
+    mPropertiesObject = nullptr;
 
     if (object) {
         switch (object->typeId()) {
@@ -290,24 +386,10 @@ void PropertiesWidget::currentObjectChanged(Object *object)
         case Object::MapObjectType:
             break;
         case Object::MapType: {
-            Map *map = static_cast<Map*>(object);
             auto mapDocument = static_cast<MapDocument*>(mDocument);
-
-            mPropertyBrowser->addHeader(tr("Map"));
-            mPropertyBrowser->addProperty(new MapOrientationProperty(mapDocument));
-            mPropertyBrowser->addProperty(new MapSizeProperty(mapDocument, mDefaultEditorFactory.get()));
-            mPropertyBrowser->addProperty(new TileSizeProperty(mapDocument, mDefaultEditorFactory.get()));
-            // todo: infinite
-            // todo: hex side length
-            // todo: stagger axis
-            // todo: stagger index
-            // todo: parallax origin
-            // todo: layer data format
-            // todo: chunk size
-            // todo: tile render order
-            // todo: compression level
-            // todo: background color
-
+            auto properties = new MapProperties(mapDocument, mDefaultEditorFactory.get(), this);
+            properties->populateEditor(mPropertyBrowser);
+            mPropertiesObject = properties;
             break;
         }
         case Object::TilesetType:
