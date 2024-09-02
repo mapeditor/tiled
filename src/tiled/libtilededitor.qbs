@@ -407,6 +407,8 @@ DynamicLibrary {
         "propertieswidget.h",
         "propertybrowser.cpp",
         "propertybrowser.h",
+        "propertyeditorwidgets.cpp",
+        "propertyeditorwidgets.h",
         "propertytypeseditor.cpp",
         "propertytypeseditor.h",
         "propertytypeseditor.ui",

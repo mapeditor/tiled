@@ -130,6 +130,31 @@ private:
 };
 
 /**
+ * A property that uses the given functions to get and set the value and uses
+ * an editor factory to create its editor.
+ *
+ * The property does not take ownership of the editor factory.
+ */
+class GetSetProperty : public AbstractProperty
+{
+    Q_OBJECT
+
+public:
+    GetSetProperty(const QString &name,
+                   std::function<QVariant()> get,
+                   std::function<void(const QVariant&)> set,
+                   EditorFactory *editorFactory,
+                   QObject *parent = nullptr);
+
+    QVariant value() const override { return m_get(); }
+    void setValue(const QVariant &value) override { m_set(value); }
+
+private:
+    std::function<QVariant()> m_get;
+    std::function<void(const QVariant&)> m_set;
+};
+
+/**
  * A property that stores a value of a given type and uses an editor factory to
  * create its editor.
  *
@@ -210,6 +235,15 @@ public:
      */
     ValueProperty *createProperty(const QString &name, const QVariant &value);
 
+    /**
+     * Creates a property with the given name and get/set functions. The
+     * property will use the editor factory registered for the type of the
+     * value.
+     */
+    AbstractProperty *createProperty(const QString &name,
+                                     std::function<QVariant()> get,
+                                     std::function<void(const QVariant&)> set);
+
     QWidget *createEditor(Property *property, QWidget *parent) override;
 
 private:
@@ -226,8 +260,6 @@ class EnumProperty : public AbstractProperty
 
 public:
     EnumProperty(const QString &name,
-                 const QStringList &enumNames = {},
-                 const QList<int> &enumValues = {},
                  QObject *parent = nullptr);
 
     void setEnumNames(const QStringList &enumNames);

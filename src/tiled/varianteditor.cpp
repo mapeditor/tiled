@@ -19,10 +19,12 @@
  */
 
 #include "varianteditor.h"
+
 #include "colorbutton.h"
 #include "compression.h"
 #include "map.h"
 #include "utils.h"
+#include "propertyeditorwidgets.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>
@@ -51,164 +53,17 @@ QWidget *AbstractProperty::createEditor(QWidget *parent)
 }
 
 
-class SpinBox : public QSpinBox
-{
-    Q_OBJECT
-
-public:
-    SpinBox(QWidget *parent = nullptr)
-        : QSpinBox(parent)
-    {
-        // Allow the full range by default.
-        setRange(std::numeric_limits<int>::lowest(),
-                 std::numeric_limits<int>::max());
-
-        // Allow the widget to shrink horizontally.
-        setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    }
-
-    QSize minimumSizeHint() const override
-    {
-        // Don't adjust the horizontal size hint based on the maximum value.
-        auto hint = QSpinBox::minimumSizeHint();
-        hint.setWidth(Utils::dpiScaled(50));
-        return hint;
-    }
-};
-
-/**
- * Strips a floating point number representation of redundant trailing zeros.
- * Examples:
- *
- *  0.01000 -> 0.01
- *  3.000   -> 3.0
- */
-QString removeRedundantTrialingZeros(const QString &text)
-{
-    const QString decimalPoint = QLocale::system().decimalPoint();
-    const auto decimalPointIndex = text.lastIndexOf(decimalPoint);
-    if (decimalPointIndex < 0) // return if there is no decimal point
-        return text;
-
-    const auto afterDecimalPoint = decimalPointIndex + decimalPoint.length();
-    int redundantZeros = 0;
-
-    for (int i = text.length() - 1; i > afterDecimalPoint && text.at(i) == QLatin1Char('0'); --i)
-        ++redundantZeros;
-
-    return text.left(text.length() - redundantZeros);
-}
-
-class DoubleSpinBox : public QDoubleSpinBox
-{
-    Q_OBJECT
-
-public:
-    DoubleSpinBox(QWidget *parent = nullptr)
-        : QDoubleSpinBox(parent)
-    {
-        // Allow the full range by default.
-        setRange(std::numeric_limits<double>::lowest(),
-                 std::numeric_limits<double>::max());
-
-        // Increase possible precision.
-        setDecimals(9);
-
-        // Allow the widget to shrink horizontally.
-        setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    }
-
-    QSize minimumSizeHint() const override
-    {
-        // Don't adjust the horizontal size hint based on the maximum value.
-        auto hint = QDoubleSpinBox::minimumSizeHint();
-        hint.setWidth(Utils::dpiScaled(50));
-        return hint;
-    }
-
-    // QDoubleSpinBox interface
-    QString textFromValue(double val) const override
-    {
-        auto text = QDoubleSpinBox::textFromValue(val);
-
-        // remove redundant trailing 0's in case of high precision
-        if (decimals() > 3)
-            return removeRedundantTrialingZeros(text);
-
-        return text;
-    }
-};
+GetSetProperty::GetSetProperty(const QString &name,
+                               std::function<QVariant ()> get,
+                               std::function<void (const QVariant &)> set,
+                               EditorFactory *editorFactory,
+                               QObject *parent)
+    : AbstractProperty(name, editorFactory, parent)
+    , m_get(std::move(get))
+    , m_set(std::move(set))
+{}
 
 
-// A label that elides its text if there is not enough space
-class ElidingLabel : public QLabel
-{
-    Q_OBJECT
-
-public:
-    explicit ElidingLabel(QWidget *parent = nullptr)
-        : ElidingLabel(QString(), parent)
-    {}
-
-    ElidingLabel(const QString &text, QWidget *parent = nullptr)
-        : QLabel(text, parent)
-    {
-        setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
-    }
-
-    QSize minimumSizeHint() const override
-    {
-        auto hint = QLabel::minimumSizeHint();
-        hint.setWidth(std::min(hint.width(), Utils::dpiScaled(30)));
-        return hint;
-    }
-
-    void paintEvent(QPaintEvent *) override
-    {
-        const int m = margin();
-        const QRect cr = contentsRect().adjusted(m, m, -m, -m);
-        const Qt::LayoutDirection dir = text().isRightToLeft() ? Qt::RightToLeft : Qt::LeftToRight;
-        const int align = QStyle::visualAlignment(dir, alignment());
-        const int flags = align | (dir == Qt::LeftToRight ? Qt::TextForceLeftToRight
-                                                          : Qt::TextForceRightToLeft);
-
-        QStyleOption opt;
-        opt.initFrom(this);
-
-        const auto elidedText = opt.fontMetrics.elidedText(text(), Qt::ElideRight, cr.width());
-
-        const bool isElided = elidedText != text();
-        if (isElided != m_isElided) {
-            m_isElided = isElided;
-            setToolTip(isElided ? text() : QString());
-        }
-
-        QPainter painter(this);
-        QWidget::style()->drawItemText(&painter, cr, flags, opt.palette, isEnabled(), elidedText, foregroundRole());
-    }
-
-private:
-    bool m_isElided = false;
-};
-
-// A label that matches its preferred height with that of a line edit
-class LineEditLabel : public ElidingLabel
-{
-    Q_OBJECT
-
-public:
-    using ElidingLabel::ElidingLabel;
-
-    QSize sizeHint() const override
-    {
-        auto hint = ElidingLabel::sizeHint();
-        hint.setHeight(lineEdit.sizeHint().height());
-        return hint;
-    }
-
-private:
-    QLineEdit lineEdit;
-};
 
 class StringEditorFactory : public EditorFactory
 {
@@ -251,14 +106,19 @@ class BoolEditorFactory : public EditorFactory
 public:
     QWidget *createEditor(Property *property, QWidget *parent) override
     {
-        auto value = property->value();
         auto editor = new QCheckBox(parent);
-        bool checked = value.toBool();
-        editor->setChecked(checked);
-        editor->setText(checked ? tr("On") : tr("Off"));
+        auto syncEditor = [=]() {
+            const QSignalBlocker blocker(editor);
+            bool checked = property->value().toBool();
+            editor->setChecked(checked);
+            editor->setText(checked ? tr("On") : tr("Off"));
+        };
+        syncEditor();
 
-        QObject::connect(editor, &QCheckBox::toggled, [editor](bool checked) {
+        QObject::connect(property, &Property::valueChanged, editor, syncEditor);
+        QObject::connect(editor, &QCheckBox::toggled, property, [=](bool checked) {
             editor->setText(checked ? QObject::tr("On") : QObject::tr("Off"));
+            property->setValue(checked);
         });
 
         return editor;
@@ -327,34 +187,6 @@ public:
     }
 };
 
-/**
- * A widget for editing a QSize value.
- */
-class SizeEdit : public QWidget
-{
-    Q_OBJECT
-    Q_PROPERTY(QSize value READ value WRITE setValue NOTIFY valueChanged FINAL)
-
-public:
-    SizeEdit(QWidget *parent = nullptr);
-
-    void setValue(const QSize &size);
-    QSize value() const;
-
-signals:
-    void valueChanged();
-
-private:
-    void resizeEvent(QResizeEvent *event) override;
-
-    int minimumHorizontalWidth() const;
-
-    Qt::Orientation m_orientation = Qt::Horizontal;
-    QLabel *m_widthLabel;
-    QLabel *m_heightLabel;
-    SpinBox *m_widthSpinBox;
-    SpinBox *m_heightSpinBox;
-};
 
 class SizeEditorFactory : public EditorFactory
 {
@@ -460,11 +292,8 @@ void ValueProperty::setValue(const QVariant &value)
 
 
 EnumProperty::EnumProperty(const QString &name,
-                           const QStringList &enumNames,
-                           const QList<int> &enumValues,
                            QObject *parent)
     : AbstractProperty(name, &m_editorFactory, parent)
-    , m_editorFactory(enumNames, enumValues)
 {}
 
 void EnumProperty::setEnumNames(const QStringList &enumNames)
@@ -699,91 +528,6 @@ QWidget *VariantEditor::createEditor(Property *property)
     return nullptr;
 }
 
-SizeEdit::SizeEdit(QWidget *parent)
-    : QWidget(parent)
-    , m_widthLabel(new QLabel(QStringLiteral("W"), this))
-    , m_heightLabel(new QLabel(QStringLiteral("H"), this))
-    , m_widthSpinBox(new SpinBox(this))
-    , m_heightSpinBox(new SpinBox(this))
-{
-    m_widthLabel->setAlignment(Qt::AlignCenter);
-    m_heightLabel->setAlignment(Qt::AlignCenter);
-
-    auto layout = new QGridLayout(this);
-    layout->setContentsMargins(QMargins());
-    layout->setColumnStretch(1, 1);
-    layout->setColumnStretch(3, 1);
-    layout->setSpacing(Utils::dpiScaled(3));
-
-    const int horizontalMargin = Utils::dpiScaled(3);
-    m_widthLabel->setContentsMargins(horizontalMargin, 0, horizontalMargin, 0);
-    m_heightLabel->setContentsMargins(horizontalMargin, 0, horizontalMargin, 0);
-
-    layout->addWidget(m_widthLabel, 0, 0);
-    layout->addWidget(m_widthSpinBox, 0, 1);
-    layout->addWidget(m_heightLabel, 0, 2);
-    layout->addWidget(m_heightSpinBox, 0, 3);
-
-    connect(m_widthSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &SizeEdit::valueChanged);
-    connect(m_heightSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &SizeEdit::valueChanged);
-}
-
-void SizeEdit::setValue(const QSize &size)
-{
-    m_widthSpinBox->setValue(size.width());
-    m_heightSpinBox->setValue(size.height());
-}
-
-QSize SizeEdit::value() const
-{
-    return QSize(m_widthSpinBox->value(), m_heightSpinBox->value());
-}
-
-void SizeEdit::resizeEvent(QResizeEvent *event)
-{
-    QWidget::resizeEvent(event);
-
-    const auto orientation = event->size().width() < minimumHorizontalWidth()
-            ? Qt::Vertical : Qt::Horizontal;
-
-    if (m_orientation != orientation) {
-        m_orientation = orientation;
-
-        auto layout = qobject_cast<QGridLayout *>(this->layout());
-
-        // Remove all widgets from layout, without deleting them
-        layout->removeWidget(m_widthLabel);
-        layout->removeWidget(m_widthSpinBox);
-        layout->removeWidget(m_heightLabel);
-        layout->removeWidget(m_heightSpinBox);
-
-        if (orientation == Qt::Horizontal) {
-            layout->addWidget(m_widthLabel, 0, 0);
-            layout->addWidget(m_widthSpinBox, 0, 1);
-            layout->addWidget(m_heightLabel, 0, 2);
-            layout->addWidget(m_heightSpinBox, 0, 3);
-            layout->setColumnStretch(3, 1);
-        } else {
-            layout->addWidget(m_widthLabel, 0, 0);
-            layout->addWidget(m_widthSpinBox, 0, 1);
-            layout->addWidget(m_heightLabel, 1, 0);
-            layout->addWidget(m_heightSpinBox, 1, 1);
-            layout->setColumnStretch(3, 0);
-        }
-
-        // this avoids flickering when the layout changes
-        layout->activate();
-    }
-}
-
-int SizeEdit::minimumHorizontalWidth() const
-{
-    return m_widthLabel->minimumSizeHint().width() +
-            m_widthSpinBox->minimumSizeHint().width() +
-            m_heightLabel->minimumSizeHint().width() +
-            m_heightSpinBox->minimumSizeHint().width() +
-            layout()->spacing() * 3;
-}
 
 
 EnumEditorFactory::EnumEditorFactory(const QStringList &enumNames,
@@ -872,6 +616,17 @@ ValueProperty *ValueTypeEditorFactory::createProperty(const QString &name, const
     return nullptr;
 }
 
+AbstractProperty *ValueTypeEditorFactory::createProperty(const QString &name,
+                                                         std::function<QVariant ()> get,
+                                                         std::function<void (const QVariant &)> set)
+{
+    const int type = get().userType();
+    auto factory = m_factories.find(type);
+    if (factory != m_factories.end())
+        return new GetSetProperty(name, get, set, factory->second.get());
+    return nullptr;
+}
+
 QWidget *ValueTypeEditorFactory::createEditor(Property *property, QWidget *parent)
 {
     const auto value = property->value();
@@ -918,4 +673,3 @@ void QObjectProperty::setValue(const QVariant &value)
 } // namespace Tiled
 
 #include "moc_varianteditor.cpp"
-#include "varianteditor.moc"

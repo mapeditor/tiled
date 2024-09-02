@@ -76,7 +76,8 @@ private:
 
     void retranslateUi();
 
-    Document *mDocument;
+    Document *mDocument = nullptr;
+    QObject *mPropertiesObject = nullptr;
     VariantEditor *mPropertyBrowser;
     std::unique_ptr<ValueTypeEditorFactory> mDefaultEditorFactory;
     QAction *mActionAddProperty;
