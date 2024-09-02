@@ -29,6 +29,7 @@ namespace Tiled {
 class Object;
 
 class Document;
+class EditorFactory;
 class ValueTypeEditorFactory;
 class VariantEditor;
 
@@ -61,6 +62,9 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
 
 private:
+    void registerEditorFactories();
+    void registerEditorFactory(int type, std::unique_ptr<EditorFactory> factory);
+
     void currentObjectChanged(Object *object);
     void updateActions();
 
