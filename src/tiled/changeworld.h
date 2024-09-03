@@ -26,43 +26,59 @@
 
 namespace Tiled {
 
-class AddMapCommand : public QUndoCommand
+class WorldDocument;
+
+class AddRemoveMapCommand : public QUndoCommand
 {
 public:
-    AddMapCommand(const QString &worldName, const QString &mapName, const QRect &rect);
+    AddRemoveMapCommand(WorldDocument *worldDocument,
+                        const QString &mapName,
+                        const QRect &rect,
+                        QUndoCommand *parent = nullptr);
 
-    void undo() override;
-    void redo() override;
+protected:
+    void addMap();
+    void removeMap();
 
-private:
-    QString mWorldName;
+    WorldDocument *mWorldDocument;
     QString mMapName;
     QRect mRect;
 };
 
-class RemoveMapCommand : public QUndoCommand
+class AddMapCommand : public AddRemoveMapCommand
 {
 public:
-    RemoveMapCommand(const QString &mapName);
+    AddMapCommand(WorldDocument *worldDocument,
+                  const QString &mapName,
+                  const QRect &rect);
 
-    void undo() override;
+    void undo() override { removeMap(); }
+    void redo() override { addMap(); }
+};
+
+class RemoveMapCommand : public AddRemoveMapCommand
+{
+public:
+    RemoveMapCommand(WorldDocument *worldDocument, const QString &mapName);
+
+    void undo() override { addMap(); }
     void redo() override;
-
-private:
-    QString mWorldName;
-    QString mMapName;
-    QRect mPreviousRect;
 };
 
 class SetMapRectCommand : public QUndoCommand
 {
 public:
-    SetMapRectCommand(const QString &mapName, QRect rect);
+    SetMapRectCommand(WorldDocument *worldDocument,
+                      const QString &mapName,
+                      const QRect &rect);
 
-    void undo() override;
-    void redo() override;
+    void undo() override { setMapRect(mPreviousRect); }
+    void redo() override { setMapRect(mRect); }
 
 private:
+    void setMapRect(const QRect &rect);
+
+    WorldDocument *mWorldDocument;
     QString mMapName;
     QRect mRect;
     QRect mPreviousRect;

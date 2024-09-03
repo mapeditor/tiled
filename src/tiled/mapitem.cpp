@@ -22,6 +22,7 @@
 
 #include "abstractworldtool.h"
 #include "changeevents.h"
+#include "changeworld.h"
 #include "documentmanager.h"
 #include "grouplayer.h"
 #include "grouplayeritem.h"
@@ -459,13 +460,15 @@ void MapItem::mapChanged()
 
     // When this map is part of a world, update that map's rect when necessary
     const QString &mapFileName = mapDocument()->fileName();
-    if (const World *world = WorldManager::instance().worldForMap(mapFileName)) {
+    if (auto worldDocument = WorldManager::instance().worldForMap(mapFileName)) {
+        World *world = worldDocument->world();
         if (world->canBeModified()) {
             const QRect currentRectInWorld = world->mapRect(mapFileName);
             QRect resizedRect = mapDocument()->renderer()->mapBoundingRect();
             if (currentRectInWorld.size() != resizedRect.size()) {
                 resizedRect.translate(currentRectInWorld.topLeft());
-                WorldManager::instance().setMapRect(mapFileName, resizedRect);
+                auto undoStack = worldDocument->undoStack();
+                undoStack->push(new SetMapRectCommand(worldDocument.data(), mapFileName, resizedRect));
             }
         }
     }

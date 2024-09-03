@@ -46,10 +46,7 @@ namespace Tiled {
 
 void World::setMapRect(int mapIndex, const QRect &rect)
 {
-    if (maps[mapIndex].rect != rect) {
-        maps[mapIndex].rect = rect;
-        hasUnsavedChanges = true;
-    }
+    maps[mapIndex].rect = rect;
 }
 
 void World::removeMap(int mapIndex)
@@ -271,7 +268,7 @@ std::unique_ptr<World> World::load(const QString &fileName,
     QDir dir = QFileInfo(fileName).dir();
     std::unique_ptr<World> world(new World);
 
-    world->fileName = QFileInfo(fileName).canonicalFilePath();
+    world->fileName = fileName;
 
     const QJsonArray maps = object.value(QLatin1String("maps")).toArray();
     for (const QJsonValue &value : maps) {
@@ -379,8 +376,6 @@ bool World::save(World &world, QString *errorString)
 
     file.write(doc.toJson());
     file.close();
-
-    world.hasUnsavedChanges = false;
 
     return true;
 }

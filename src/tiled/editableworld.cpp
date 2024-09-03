@@ -21,6 +21,7 @@
 
 #include "editableworld.h"
 
+#include "changeevents.h"
 #include "changeworld.h"
 #include "maprenderer.h"
 #include "scriptmanager.h"
@@ -33,13 +34,8 @@ namespace Tiled {
 EditableWorld::EditableWorld(WorldDocument *worldDocument, QObject *parent)
     : EditableAsset(nullptr, parent)
 {
-    setObject(WorldManager::instance().worlds().value(worldDocument->fileName()));
+    setObject(worldDocument->world());
     setDocument(worldDocument);
-}
-
-bool EditableWorld::containsMap(const QString &fileName) const
-{
-    return world()->containsMap(fileName);
 }
 
 bool EditableWorld::containsMap(EditableMap *map) const
@@ -56,26 +52,6 @@ bool EditableWorld::containsMap(EditableMap *map) const
     return containsMap(map->fileName());
 }
 
-QVector<WorldMapEntry> EditableWorld::maps() const
-{
-    return world()->maps;
-}
-
-QVector<WorldMapEntry> EditableWorld::mapsInRect(const QRect &rect) const
-{
-    return world()->mapsInRect(rect);
-}
-
-QVector<WorldMapEntry> EditableWorld::allMaps() const
-{
-    return world()->allMaps();
-}
-
-QVector<WorldPattern> EditableWorld::patterns() const
-{
-    return world()->patterns;
-}
-
 bool EditableWorld::isReadOnly() const
 {
     return !world()->canBeModified();
@@ -89,7 +65,7 @@ void EditableWorld::setMapRect(const QString &mapFileName, const QRect &rect)
         return;
     }
 
-    document()->undoStack()->push(new SetMapRectCommand(mapFileName, rect));
+    document()->undoStack()->push(new SetMapRectCommand(worldDocument(), mapFileName, rect));
 }
 
 void EditableWorld::setMapPos(EditableMap *map, int x, int y)
@@ -107,7 +83,7 @@ void EditableWorld::setMapPos(EditableMap *map, int x, int y)
 
     QRect rect = world()->maps.at(mapIndex).rect;
     rect.moveTo(x, y);
-    document()->undoStack()->push(new SetMapRectCommand(map->fileName(), rect));
+    document()->undoStack()->push(new SetMapRectCommand(worldDocument(), map->fileName(), rect));
 }
 
 void EditableWorld::addMap(const QString &mapFileName, const QRect &rect)
@@ -122,7 +98,7 @@ void EditableWorld::addMap(const QString &mapFileName, const QRect &rect)
         return;
     }
 
-    document()->undoStack()->push(new AddMapCommand(fileName(), mapFileName, rect));
+    document()->undoStack()->push(new AddMapCommand(worldDocument(), mapFileName, rect));
 }
 
 void EditableWorld::addMap(EditableMap *map, int x, int y)
@@ -149,7 +125,7 @@ void EditableWorld::removeMap(const QString &mapFileName)
         return;
     }
 
-    document()->undoStack()->push(new RemoveMapCommand(mapFileName));
+    document()->undoStack()->push(new RemoveMapCommand(worldDocument(), mapFileName));
 }
 
 void EditableWorld::removeMap(EditableMap *map)
@@ -167,6 +143,20 @@ QSharedPointer<Document> EditableWorld::createDocument()
     // We don't currently support opening a world in its own tab, which this
     // function is meant for.
     return nullptr;
+}
+
+void EditableWorld::documentChanged(const ChangeEvent &event)
+{
+    switch (event.type) {
+    case ChangeEvent::DocumentAboutToReload:
+        setObject(nullptr);
+        break;
+    case ChangeEvent::DocumentReloaded:
+        setObject(worldDocument()->world());
+        break;
+    default:
+        break;
+    }
 }
 
 } // namespace Tiled

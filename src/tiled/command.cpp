@@ -27,8 +27,6 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "projectmanager.h"
-#include "world.h"
-#include "worlddocument.h"  // used to know that WorldDocument is a Document
 #include "worldmanager.h"
 
 #include <QAction>
@@ -107,8 +105,8 @@ static QString replaceVariables(const QString &string, bool quoteValues = true)
                                 replaceString.arg(currentObject->id()));
         }
 
-        if (const World *world = WorldManager::instance().worldForMap(fileName)) {
-            finalString.replace(QLatin1String("%worldfile"), replaceString.arg(world->fileName));
+        if (auto worldDocument = WorldManager::instance().worldForMap(fileName)) {
+            finalString.replace(QLatin1String("%worldfile"), replaceString.arg(worldDocument->fileName()));
         }
     }
 
@@ -160,10 +158,8 @@ void Command::execute(bool inTerminal) const
 
         if (Document *document = DocumentManager::instance()->currentDocument()) {
             if (document->type() == Document::MapDocumentType) {
-                if (const World *world = WorldManager::instance().worldForMap(document->fileName())) {
-                    auto worldDocument = DocumentManager::instance()->ensureWorldDocument(world->fileName);
-                    DocumentManager::instance()->saveDocument(worldDocument);
-                }
+                if (auto worldDocument = WorldManager::instance().worldForMap(document->fileName()))
+                    DocumentManager::instance()->saveDocument(worldDocument.data());
             }
         }
     }

@@ -44,6 +44,7 @@ public:
     AssetType::Value assetType() const override { return AssetType::World; }
 
     World *world() const;
+    WorldDocument *worldDocument() const;
 
     QVector<WorldMapEntry> maps() const;
     QVector<WorldPattern> patterns() const;
@@ -60,11 +61,44 @@ public:
     Q_INVOKABLE void removeMap(EditableMap *map);
 
     QSharedPointer<Document> createDocument() override;
+
+private:
+    void documentChanged(const ChangeEvent &event);
 };
 
 inline World *EditableWorld::world() const
 {
     return static_cast<World*>(object());
+}
+
+inline WorldDocument *EditableWorld::worldDocument() const
+{
+    return static_cast<WorldDocument*>(document());
+}
+
+inline QVector<WorldMapEntry> EditableWorld::maps() const
+{
+    return world()->maps;
+}
+
+inline QVector<WorldPattern> EditableWorld::patterns() const
+{
+    return world()->patterns;
+}
+
+inline QVector<WorldMapEntry> EditableWorld::mapsInRect(const QRect &rect) const
+{
+    return world()->mapsInRect(rect);
+}
+
+inline QVector<WorldMapEntry> EditableWorld::allMaps() const
+{
+    return world()->allMaps();
+}
+
+inline bool EditableWorld::containsMap(const QString &fileName) const
+{
+    return world()->containsMap(fileName);
 }
 
 } // namespace Tiled

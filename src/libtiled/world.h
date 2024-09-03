@@ -80,7 +80,6 @@ public:
     QVector<WorldMapEntry> maps;
     QVector<WorldPattern> patterns;
     bool onlyShowAdjacentMaps = false;
-    bool hasUnsavedChanges = false;
 
     int mapIndex(const QString &fileName) const;
     void setMapRect(int mapIndex, const QRect &rect);

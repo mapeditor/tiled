@@ -3,6 +3,7 @@
 * Scripting: Added `FileFormat.nameFilter`
 * Scripting: Added `MapEditor.currentBrushChanged` signal
 * Scripting: Added `tiled.cursor` to create mouse cursor values
+* Fixed crash when accessing a world through a symlink (#4042)
 
 ### Tiled 1.11.0 (27 June 2024)
 
