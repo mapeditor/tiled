@@ -146,45 +146,6 @@ static bool anyObjectHasProperty(const QList<Object*> &objects, const QString &n
     return false;
 }
 
-class MapOrientationProperty : public EnumProperty
-{
-    Q_OBJECT
-
-public:
-    MapOrientationProperty(MapDocument *mapDocument, QObject *parent = nullptr)
-        : EnumProperty(tr("Orientation"), parent)
-        , mMapDocument(mapDocument)
-    {
-        setEnumNames({
-                         tr("Orthogonal"),
-                         tr("Isometric"),
-                         tr("Isometric (Staggered)"),
-                         tr("Hexagonal (Staggered)"),
-                     });
-        setEnumValues({
-                          Map::Orthogonal,
-                          Map::Isometric,
-                          Map::Staggered,
-                          Map::Hexagonal,
-                      });
-    }
-
-    QVariant value() const override
-    {
-        return mMapDocument->map()->orientation();
-    }
-
-    void setValue(const QVariant &value) override
-    {
-        Map::Orientation orientation = static_cast<Map::Orientation>(value.toInt());
-        auto command = new ChangeMapProperty(mMapDocument, orientation);
-        mMapDocument->undoStack()->push(command);
-    }
-
-private:
-    MapDocument *mMapDocument;
-};
-
 class MapSizeProperty : public AbstractProperty
 {
     Q_OBJECT
@@ -277,58 +238,128 @@ public:
                   QObject *parent = nullptr)
         : QObject(parent)
         , mMapDocument(mapDocument)
-        , mOrientationProperty(new MapOrientationProperty(mapDocument, this))
         , mSizeProperty(new MapSizeProperty(mapDocument, editorFactory, this))
         , mTileSizeProperty(new TileSizeProperty(mapDocument, editorFactory, this))
     {
+        mClassProperty = editorFactory->createProperty(
+                    tr("Class"),
+                    [this]() {
+                        return map()->className();
+                    },
+                    [this](const QVariant &value) {
+                        push(new ChangeClassName(mMapDocument, { map() },
+                                                 value.toString()));
+                    });
+
+        mOrientationProperty = editorFactory->createProperty(
+                    tr("Orientation"),
+                    [this]() {
+                        return QVariant::fromValue(map()->orientation());
+                    },
+                    [this](const QVariant &value) {
+                        auto orientation = static_cast<Map::Orientation>(value.toInt());
+                        push(new ChangeMapProperty(mMapDocument, orientation));
+                    });
+
         mInfiniteProperty = editorFactory->createProperty(
                     tr("Infinite"),
                     [this]() {
-                        return mMapDocument->map()->infinite();
+                        return map()->infinite();
                     },
                     [this](const QVariant &value) {
-                        auto command = new ChangeMapProperty(mMapDocument,
-                                                             Map::InfiniteProperty,
-                                                             value.toBool());
-                        mMapDocument->undoStack()->push(command);
+                        push(new ChangeMapProperty(mMapDocument,
+                                                   Map::InfiniteProperty,
+                                                   value.toInt()));
                     });
 
         mHexSideLengthProperty = editorFactory->createProperty(
                     tr("Hex Side Length"),
                     [this]() {
-                        return mMapDocument->map()->hexSideLength();
+                        return map()->hexSideLength();
                     },
                     [this](const QVariant &value) {
-                        auto command = new ChangeMapProperty(mMapDocument,
-                                                             Map::HexSideLengthProperty,
-                                                             value.toInt());
-                        mMapDocument->undoStack()->push(command);
+                        push(new ChangeMapProperty(mMapDocument,
+                                                   Map::HexSideLengthProperty,
+                                                   value.toInt()));
                     });
 
         mStaggerAxisProperty = editorFactory->createProperty(
                     tr("Stagger Axis"),
                     [this]() {
-                        return QVariant::fromValue(mMapDocument->map()->staggerAxis());
+                        return QVariant::fromValue(map()->staggerAxis());
                     },
                     [this](const QVariant &value) {
-                        auto command = new ChangeMapProperty(mMapDocument,
-                                                             Map::StaggerAxisProperty,
-                                                             value.toInt());
-                        mMapDocument->undoStack()->push(command);
+                        auto staggerAxis = static_cast<Map::StaggerAxis>(value.toInt());
+                        push(new ChangeMapProperty(mMapDocument, staggerAxis));
                     });
 
         mStaggerIndexProperty = editorFactory->createProperty(
                     tr("Stagger Index"),
                     [this]() {
-                        return QVariant::fromValue(mMapDocument->map()->staggerIndex());
+                        return QVariant::fromValue(map()->staggerIndex());
                     },
                     [this](const QVariant &value) {
-                        auto command = new ChangeMapProperty(mMapDocument,
-                                                             Map::StaggerIndexProperty,
-                                                             value.toInt());
-                        mMapDocument->undoStack()->push(command);
+                        auto staggerIndex = static_cast<Map::StaggerIndex>(value.toInt());
+                        push(new ChangeMapProperty(mMapDocument, staggerIndex));
                     });
 
+        mParallaxOriginProperty = editorFactory->createProperty(
+                    tr("Parallax Origin"),
+                    [this]() {
+                        return map()->parallaxOrigin();
+                    },
+                    [this](const QVariant &value) {
+                        push(new ChangeMapProperty(mMapDocument, value.value<QPointF>()));
+                    });
+
+        mLayerDataFormatProperty = editorFactory->createProperty(
+                    tr("Layer Data Format"),
+                    [this]() {
+                        return QVariant::fromValue(map()->layerDataFormat());
+                    },
+                    [this](const QVariant &value) {
+                        auto layerDataFormat = static_cast<Map::LayerDataFormat>(value.toInt());
+                        push(new ChangeMapProperty(mMapDocument, layerDataFormat));
+                    });
+
+        mChunkSizeProperty = editorFactory->createProperty(
+                    tr("Output Chunk Size"),
+                    [this]() {
+                        return map()->chunkSize();
+                    },
+                    [this](const QVariant &value) {
+                        push(new ChangeMapProperty(mMapDocument, value.toSize()));
+                    });
+
+        mRenderOrderProperty = editorFactory->createProperty(
+                    tr("Tile Render Order"),
+                    [this]() {
+                        return QVariant::fromValue(map()->renderOrder());
+                    },
+                    [this](const QVariant &value) {
+                        auto renderOrder = static_cast<Map::RenderOrder>(value.toInt());
+                        push(new ChangeMapProperty(mMapDocument, renderOrder));
+                    });
+
+        mCompressionLevelProperty = editorFactory->createProperty(
+                    tr("Compression Level"),
+                    [this]() {
+                        return map()->compressionLevel();
+                    },
+                    [this](const QVariant &value) {
+                        push(new ChangeMapProperty(mMapDocument, value.toInt()));
+                    });
+
+        mBackgroundColorProperty = editorFactory->createProperty(
+                    tr("Background Color"),
+                    [this]() {
+                        return map()->backgroundColor();
+                    },
+                    [this](const QVariant &value) {
+                        push(new ChangeMapProperty(mMapDocument, value.value<QColor>()));
+                    });
+
+        updateEnabledState();
         connect(mMapDocument, &MapDocument::changed,
                 this, &MapProperties::onMapChanged);
     }
@@ -336,19 +367,24 @@ public:
     void populateEditor(VariantEditor *editor)
     {
         editor->addHeader(tr("Map"));
+        editor->addProperty(mClassProperty);
+        editor->addSeparator();
         editor->addProperty(mOrientationProperty);
         editor->addProperty(mSizeProperty);
-        editor->addProperty(mTileSizeProperty);
         editor->addProperty(mInfiniteProperty);
+        editor->addProperty(mTileSizeProperty);
         editor->addProperty(mHexSideLengthProperty);
         editor->addProperty(mStaggerAxisProperty);
         editor->addProperty(mStaggerIndexProperty);
-        // editor->addProperty(mParallaxOriginProperty);
-        // editor->addProperty(mLayerDataFormatProperty);
-        // editor->addProperty(mChunkSizeProperty);
-        // editor->addProperty(mTileRenderOrderProperty);
-        // editor->addProperty(mCompressionLevelProperty);
-        // editor->addProperty(mBackgroundColorProperty);
+        editor->addSeparator();
+        editor->addProperty(mParallaxOriginProperty);
+        editor->addSeparator();
+        editor->addProperty(mLayerDataFormatProperty);
+        editor->addProperty(mChunkSizeProperty);
+        editor->addProperty(mCompressionLevelProperty);
+        editor->addSeparator();
+        editor->addProperty(mRenderOrderProperty);
+        editor->addProperty(mBackgroundColorProperty);
     }
 
 private:
@@ -376,19 +412,68 @@ private:
             emit mStaggerIndexProperty->valueChanged();
             break;
         case Map::ParallaxOriginProperty:
+            emit mParallaxOriginProperty->valueChanged();
+            break;
         case Map::OrientationProperty:
             emit mOrientationProperty->valueChanged();
             break;
         case Map::RenderOrderProperty:
+            emit mRenderOrderProperty->valueChanged();
+            break;
         case Map::BackgroundColorProperty:
+            emit mBackgroundColorProperty->valueChanged();
+            break;
         case Map::LayerDataFormatProperty:
+            emit mLayerDataFormatProperty->valueChanged();
+            break;
         case Map::CompressionLevelProperty:
+            emit mCompressionLevelProperty->valueChanged();
+            break;
         case Map::ChunkSizeProperty:
+            emit mChunkSizeProperty->valueChanged();
+            break;
+        }
+
+        updateEnabledState();
+    }
+
+    void updateEnabledState()
+    {
+        const auto orientation = map()->orientation();
+        const bool stagger = orientation == Map::Staggered || orientation == Map::Hexagonal;
+
+        mHexSideLengthProperty->setEnabled(orientation == Map::Hexagonal);
+        mStaggerAxisProperty->setEnabled(stagger);
+        mStaggerIndexProperty->setEnabled(stagger);
+        mRenderOrderProperty->setEnabled(orientation == Map::Orthogonal);
+        mChunkSizeProperty->setEnabled(map()->infinite());
+
+        switch (map()->layerDataFormat()) {
+        case Map::XML:
+        case Map::Base64:
+        case Map::CSV:
+            mCompressionLevelProperty->setEnabled(false);
+            break;
+        case Map::Base64Gzip:
+        case Map::Base64Zlib:
+        case Map::Base64Zstandard:
+            mCompressionLevelProperty->setEnabled(true);
             break;
         }
     }
 
+    void push(QUndoCommand *command)
+    {
+        mMapDocument->undoStack()->push(command);
+    }
+
+    Map *map() const
+    {
+        return mMapDocument->map();
+    }
+
     MapDocument *mMapDocument;
+    Property *mClassProperty;
     Property *mOrientationProperty;
     Property *mSizeProperty;
     Property *mTileSizeProperty;
@@ -399,7 +484,7 @@ private:
     Property *mParallaxOriginProperty;
     Property *mLayerDataFormatProperty;
     Property *mChunkSizeProperty;
-    Property *mTileRenderOrderProperty;
+    Property *mRenderOrderProperty;
     Property *mCompressionLevelProperty;
     Property *mBackgroundColorProperty;
 };
@@ -831,6 +916,21 @@ void PropertiesWidget::registerEditorFactories()
                                   tr("Bottom Right"),
                               }));
 
+    // We leave out the "Unknown" orientation, because it shouldn't occur here
+    registerEditorFactory(qMetaTypeId<Map::Orientation>(),
+                          std::make_unique<EnumEditorFactory>(
+                              QStringList {
+                                  tr("Orthogonal"),
+                                  tr("Isometric"),
+                                  tr("Isometric (Staggered)"),
+                                  tr("Hexagonal (Staggered)"),
+                              },
+                              QList<int> {
+                                  Map::Orthogonal,
+                                  Map::Isometric,
+                                  Map::Staggered,
+                                  Map::Hexagonal,
+                              }));
 
     registerEditorFactory(qMetaTypeId<Map::StaggerAxis>(),
                           std::make_unique<EnumEditorFactory>(

@@ -21,8 +21,6 @@
 #include "varianteditor.h"
 
 #include "colorbutton.h"
-#include "compression.h"
-#include "map.h"
 #include "utils.h"
 #include "propertyeditorwidgets.h"
 
@@ -71,9 +69,15 @@ class StringEditorFactory : public EditorFactory
 public:
     QWidget *createEditor(Property *property, QWidget *parent) override
     {
-        auto value = property->value();
         auto editor = new QLineEdit(parent);
-        editor->setText(value.toString());
+        auto syncEditor = [=] {
+            editor->setText(property->value().toString());
+        };
+        syncEditor();
+
+        QObject::connect(property, &Property::valueChanged, editor, syncEditor);
+        QObject::connect(editor, &QLineEdit::textEdited, property, &Property::setValue);
+
         return editor;
     }
 };
@@ -83,9 +87,17 @@ class IntEditorFactory : public EditorFactory
 public:
     QWidget *createEditor(Property *property, QWidget *parent) override
     {
-        auto value = property->value();
         auto editor = new SpinBox(parent);
-        editor->setValue(value.toInt());
+        auto syncEditor = [=] {
+            const QSignalBlocker blocker(editor);
+            editor->setValue(property->value().toInt());
+        };
+        syncEditor();
+
+        QObject::connect(property, &Property::valueChanged, editor, syncEditor);
+        QObject::connect(editor, qOverload<int>(&SpinBox::valueChanged),
+                         property, &Property::setValue);
+
         return editor;
     }
 };
@@ -95,9 +107,17 @@ class FloatEditorFactory : public EditorFactory
 public:
     QWidget *createEditor(Property *property, QWidget *parent) override
     {
-        auto value = property->value();
         auto editor = new DoubleSpinBox(parent);
-        editor->setValue(value.toDouble());
+        auto syncEditor = [=] {
+            const QSignalBlocker blocker(editor);
+            editor->setValue(property->value().toDouble());
+        };
+        syncEditor();
+
+        QObject::connect(property, &Property::valueChanged, editor, syncEditor);
+        QObject::connect(editor, qOverload<double>(&DoubleSpinBox::valueChanged),
+                         property, &Property::setValue);
+
         return editor;
     }
 };
@@ -108,7 +128,7 @@ public:
     QWidget *createEditor(Property *property, QWidget *parent) override
     {
         auto editor = new QCheckBox(parent);
-        auto syncEditor = [=]() {
+        auto syncEditor = [=] {
             const QSignalBlocker blocker(editor);
             bool checked = property->value().toBool();
             editor->setChecked(checked);
@@ -131,7 +151,6 @@ class PointEditorFactory : public EditorFactory
 public:
     QWidget *createEditor(Property *property, QWidget *parent) override
     {
-        auto value = property->value();
         auto editor = new QWidget(parent);
         auto horizontalLayout = new QHBoxLayout(editor);
         horizontalLayout->setContentsMargins(QMargins());
@@ -150,8 +169,23 @@ public:
         yLabel->setBuddy(ySpinBox);
         horizontalLayout->addWidget(ySpinBox, 1);
 
-        xSpinBox->setValue(value.toPoint().x());
-        ySpinBox->setValue(value.toPoint().y());
+        auto syncEditor = [=] {
+            const QSignalBlocker xBlocker(xSpinBox);
+            const QSignalBlocker yBlocker(ySpinBox);
+            const auto point = property->value().toPoint();
+            xSpinBox->setValue(point.x());
+            ySpinBox->setValue(point.y());
+        };
+        auto syncProperty = [=] {
+            property->setValue(QPoint(xSpinBox->value(), ySpinBox->value()));
+        };
+        syncEditor();
+
+        QObject::connect(property, &Property::valueChanged, editor, syncEditor);
+        QObject::connect(xSpinBox, qOverload<int>(&SpinBox::valueChanged),
+                         property, syncProperty);
+        QObject::connect(ySpinBox, qOverload<int>(&SpinBox::valueChanged),
+                         property, syncProperty);
 
         return editor;
     }
@@ -162,7 +196,6 @@ class PointFEditorFactory : public EditorFactory
 public:
     QWidget *createEditor(Property *property, QWidget *parent) override
     {
-        auto value = property->value();
         auto editor = new QWidget(parent);
         auto horizontalLayout = new QHBoxLayout(editor);
         horizontalLayout->setContentsMargins(QMargins());
@@ -181,8 +214,23 @@ public:
         yLabel->setBuddy(ySpinBox);
         horizontalLayout->addWidget(ySpinBox, 1);
 
-        xSpinBox->setValue(value.toPointF().x());
-        ySpinBox->setValue(value.toPointF().y());
+        auto syncEditor = [=] {
+            const QSignalBlocker xBlocker(xSpinBox);
+            const QSignalBlocker yBlocker(ySpinBox);
+            const auto point = property->value().toPointF();
+            xSpinBox->setValue(point.x());
+            ySpinBox->setValue(point.y());
+        };
+        auto syncProperty = [=] {
+            property->setValue(QPointF(xSpinBox->value(), ySpinBox->value()));
+        };
+        syncEditor();
+
+        QObject::connect(property, &Property::valueChanged, editor, syncEditor);
+        QObject::connect(xSpinBox, qOverload<double>(&DoubleSpinBox::valueChanged),
+                         property, syncProperty);
+        QObject::connect(ySpinBox, qOverload<double>(&DoubleSpinBox::valueChanged),
+                         property, syncProperty);
 
         return editor;
     }
@@ -195,7 +243,7 @@ public:
     QWidget *createEditor(Property *property, QWidget *parent) override
     {
         auto editor = new SizeEdit(parent);
-        auto syncEditor = [property, editor]() {
+        auto syncEditor = [property, editor] {
             const QSignalBlocker blocker(editor);
             editor->setValue(property->value().toSize());
         };
@@ -203,7 +251,7 @@ public:
 
         QObject::connect(property, &Property::valueChanged, editor, syncEditor);
         QObject::connect(editor, &SizeEdit::valueChanged, property,
-                         [property, editor]() {
+                         [property, editor] {
             property->setValue(editor->value());
         });
 
@@ -216,7 +264,6 @@ class RectFEditorFactory : public EditorFactory
 public:
     QWidget *createEditor(Property *property, QWidget *parent) override
     {
-        auto value = property->value();
         auto editor = new QWidget(parent);
         auto gridLayout = new QGridLayout(editor);
         gridLayout->setContentsMargins(QMargins());
@@ -252,11 +299,34 @@ public:
         heightLabel->setBuddy(heightSpinBox);
         gridLayout->addWidget(heightSpinBox, 1, 3);
 
-        const auto rect = value.toRectF();
-        xSpinBox->setValue(rect.x());
-        ySpinBox->setValue(rect.y());
-        widthSpinBox->setValue(rect.width());
-        heightSpinBox->setValue(rect.height());
+        auto syncEditor = [=] {
+            const QSignalBlocker xBlocker(xSpinBox);
+            const QSignalBlocker yBlocker(ySpinBox);
+            const QSignalBlocker widthBlocker(widthSpinBox);
+            const QSignalBlocker heightBlocker(heightSpinBox);
+            const auto rect = property->value().toRectF();
+            xSpinBox->setValue(rect.x());
+            ySpinBox->setValue(rect.y());
+            widthSpinBox->setValue(rect.width());
+            heightSpinBox->setValue(rect.height());
+        };
+        auto syncProperty = [=] {
+            property->setValue(QRectF(xSpinBox->value(),
+                                      ySpinBox->value(),
+                                      widthSpinBox->value(),
+                                      heightSpinBox->value()));
+        };
+        syncEditor();
+
+        QObject::connect(property, &Property::valueChanged, editor, syncEditor);
+        QObject::connect(xSpinBox, qOverload<double>(&DoubleSpinBox::valueChanged),
+                         property, syncProperty);
+        QObject::connect(ySpinBox, qOverload<double>(&DoubleSpinBox::valueChanged),
+                         property, syncProperty);
+        QObject::connect(widthSpinBox, qOverload<double>(&DoubleSpinBox::valueChanged),
+                         property, syncProperty);
+        QObject::connect(heightSpinBox, qOverload<double>(&DoubleSpinBox::valueChanged),
+                         property, syncProperty);
 
         return editor;
     }
@@ -267,9 +337,19 @@ class ColorEditorFactory : public EditorFactory
 public:
     QWidget *createEditor(Property *property, QWidget *parent) override
     {
-        auto value = property->value();
         auto editor = new ColorButton(parent);
-        editor->setColor(value.value<QColor>());
+        auto syncEditor = [=] {
+            const QSignalBlocker blocker(editor);
+            editor->setColor(property->value().value<QColor>());
+        };
+        syncEditor();
+
+        QObject::connect(property, &Property::valueChanged, editor, syncEditor);
+        QObject::connect(editor, &ColorButton::colorChanged, property,
+                         [property, editor] {
+            property->setValue(editor->color());
+        });
+
         return editor;
     }
 };
@@ -348,29 +428,6 @@ VariantEditor::VariantEditor(QWidget *parent)
     //              QVariant(10),
     //              QVariant(3.14)
     //          });
-
-    // addHeader(tr("Map"));
-    // addProperty(new VariantProperty(tr("Class"), QString()));
-    // addProperty(new VariantProperty(tr("Orientation"), QVariant::fromValue(Map::Hexagonal)));
-    // addValue(tr("Class"), QString());
-    // addSeparator();
-    // addValue(tr("Orientation"), QVariant::fromValue(Map::Hexagonal));
-    // addValue(tr("Infinite"), false);
-    // addValue(tr("Map Size"), QSize(20, 20));
-    // addValue(tr("Tile Size"), QSize(14, 12));
-    // addValue(tr("Tile Side Length (Hex)"), 6);
-    // addValue(tr("Stagger Axis"), QVariant::fromValue(Map::StaggerY));
-    // addValue(tr("Stagger Index"), QVariant::fromValue(Map::StaggerEven));
-    // addSeparator();
-    // addValue(tr("Parallax Origin"), QPointF());
-    // addSeparator();
-    // addValue(tr("Tile Layer Format"), QVariant::fromValue(Map::Base64Zlib));
-    // addValue(tr("Output Chunk Size"), QSize(16, 16));
-    // addValue(tr("Compression Level"), -1);
-    // addSeparator();
-    // addValue(tr("Tile Render Order"), QVariant::fromValue(Map::RightDown));
-    // addValue(tr("Background Color"), QColor());
-    // addHeader(tr("Custom Properties"));
 }
 
 void VariantEditor::clear()
@@ -489,7 +546,7 @@ QWidget *EnumEditorFactory::createEditor(Property *property, QWidget *parent)
     editor->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
     editor->setModel(&m_enumNamesModel);
 
-    auto syncEditor = [property, editor, this]() {
+    auto syncEditor = [property, editor, this] {
         const QSignalBlocker blocker(editor);
         if (m_enumValues.isEmpty())
             editor->setCurrentIndex(property->value().toInt());
