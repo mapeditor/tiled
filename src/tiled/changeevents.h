@@ -164,7 +164,7 @@ public:
 class ImageLayerChangeEvent : public LayerChangeEvent
 {
 public:
-    enum TileLayerProperty {
+    enum ImageLayerProperty {
         TransparentColorProperty    = 1 << 7,
         ImageSourceProperty         = 1 << 8,
         RepeatProperty              = 1 << 9,
