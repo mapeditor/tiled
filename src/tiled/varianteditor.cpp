@@ -146,6 +146,7 @@ public:
     }
 };
 
+// todo: implement responsive layout (see SizeEdit)
 class PointEditorFactory : public EditorFactory
 {
 public:
@@ -191,6 +192,7 @@ public:
     }
 };
 
+// todo: implement responsive layout (see SizeEdit)
 class PointFEditorFactory : public EditorFactory
 {
 public:
@@ -259,6 +261,7 @@ public:
     }
 };
 
+// todo: implement responsive layout (see SizeEdit)
 class RectFEditorFactory : public EditorFactory
 {
 public:
