@@ -27,11 +27,13 @@
 #include "clipboardmanager.h"
 #include "compression.h"
 #include "mapdocument.h"
+#include "preferences.h"
 #include "propertybrowser.h"
 #include "utils.h"
 #include "varianteditor.h"
 
 #include <QAction>
+#include <QComboBox>
 #include <QCoreApplication>
 #include <QEvent>
 #include <QFileInfo>
@@ -146,6 +148,77 @@ static bool anyObjectHasProperty(const QList<Object*> &objects, const QString &n
     return false;
 }
 
+static QStringList classNamesFor(const Object &object)
+{
+    QStringList names;
+    for (const auto type : Object::propertyTypes())
+        if (type->isClass())
+            if (static_cast<const ClassPropertyType*>(type)->isClassFor(object))
+                names.append(type->name);
+    return names;
+}
+
+class ClassProperty : public Property
+{
+    Q_OBJECT
+
+public:
+    ClassProperty(Document *document, Object *object, QObject *parent = nullptr)
+        : Property(tr("Class"), parent)
+        , mDocument(document)
+        , mObject(object)
+    {
+        connect(mDocument, &Document::changed,
+                this, &ClassProperty::onChanged);
+    }
+
+    QVariant value() const override { return mObject->className(); }
+    void setValue(const QVariant &value) override
+    {
+        QUndoStack *undoStack = mDocument->undoStack();
+        undoStack->push(new ChangeClassName(mDocument,
+                                            { mObject },    // todo: add support for changing multiple objects
+                                            value.toString()));
+    }
+
+    QWidget *createEditor(QWidget *parent) override
+    {
+        auto editor = new QComboBox(parent);
+        editor->setEditable(true);
+        editor->addItems(classNamesFor(*mObject));
+        auto syncEditor = [this, editor] {
+            const QSignalBlocker blocker(editor);
+            editor->setCurrentText(value().toString());
+        };
+        syncEditor();
+        connect(this, &Property::valueChanged, editor, syncEditor);
+        connect(editor, &QComboBox::currentTextChanged, this, &Property::setValue);
+        connect(Preferences::instance(), &Preferences::propertyTypesChanged,
+                editor, [this,editor] {
+            editor->clear();
+            editor->addItems(classNamesFor(*mObject));
+        });
+        return editor;
+    }
+
+private:
+    void onChanged(const ChangeEvent &event)
+    {
+        if (event.type != ChangeEvent::ObjectsChanged)
+            return;
+
+        const auto objectsEvent = static_cast<const ObjectsChangeEvent&>(event);
+        if (!objectsEvent.objects.contains(mObject))
+            return;
+
+        if (objectsEvent.properties & ObjectsChangeEvent::ClassProperty)
+            emit valueChanged();
+    }
+
+    Document *mDocument;
+    Object *mObject;
+};
+
 class MapSizeProperty : public AbstractProperty
 {
     Q_OBJECT
@@ -241,15 +314,7 @@ public:
         , mSizeProperty(new MapSizeProperty(mapDocument, editorFactory, this))
         , mTileSizeProperty(new TileSizeProperty(mapDocument, editorFactory, this))
     {
-        mClassProperty = editorFactory->createProperty(
-                    tr("Class"),
-                    [this]() {
-                        return map()->className();
-                    },
-                    [this](const QVariant &value) {
-                        push(new ChangeClassName(mMapDocument, { map() },
-                                                 value.toString()));
-                    });
+        mClassProperty = new ClassProperty(mMapDocument, mMapDocument->map());
 
         mOrientationProperty = editorFactory->createProperty(
                     tr("Orientation"),
