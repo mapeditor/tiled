@@ -29,6 +29,8 @@
 #include "mapdocument.h"
 #include "preferences.h"
 #include "propertybrowser.h"
+#include "tilesetchanges.h"
+#include "tilesetdocument.h"
 #include "utils.h"
 #include "varianteditor.h"
 
@@ -425,8 +427,8 @@ public:
                     });
 
         updateEnabledState();
-        connect(mMapDocument, &MapDocument::changed,
-                this, &MapProperties::onMapChanged);
+        connect(mMapDocument, &Document::changed,
+                this, &MapProperties::onChanged);
     }
 
     void populateEditor(VariantEditor *editor)
@@ -453,7 +455,7 @@ public:
     }
 
 private:
-    void onMapChanged(const ChangeEvent &event)
+    void onChanged(const ChangeEvent &event)
     {
         if (event.type != ChangeEvent::MapChanged)
             return;
@@ -554,10 +556,221 @@ private:
     Property *mBackgroundColorProperty;
 };
 
+class TilesetProperties : public QObject
+{
+    Q_OBJECT
+
+public:
+    TilesetProperties(TilesetDocument *tilesetDocument,
+                      ValueTypeEditorFactory *editorFactory,
+                      QObject *parent = nullptr)
+        : QObject(parent)
+        , mTilesetDocument(tilesetDocument)
+    {
+        mNameProperty = editorFactory->createProperty(
+                    tr("Name"),
+                    [this]() {
+                        return mTilesetDocument->tileset()->name();
+                    },
+                    [this](const QVariant &value) {
+                        push(new RenameTileset(mTilesetDocument, value.toString()));
+                    });
+
+        mClassProperty = new ClassProperty(tilesetDocument, tilesetDocument->tileset().data());
+
+        mObjectAlignmentProperty = editorFactory->createProperty(
+                    tr("Object Alignment"),
+                    [this]() {
+                        return QVariant::fromValue(tileset()->objectAlignment());
+                    },
+                    [this](const QVariant &value) {
+                        const auto objectAlignment = static_cast<Alignment>(value.toInt());
+                        push(new ChangeTilesetObjectAlignment(mTilesetDocument, objectAlignment));
+                    });
+
+        mTileOffsetProperty = editorFactory->createProperty(
+                    tr("Drawing Offset"),
+                    [this]() {
+                        return tileset()->tileOffset();
+                    },
+                    [this](const QVariant &value) {
+                        push(new ChangeTilesetTileOffset(mTilesetDocument, value.value<QPoint>()));
+                    });
+
+        mTileRenderSizeProperty = editorFactory->createProperty(
+                    tr("Tile Render Size"),
+                    [this]() {
+                        return QVariant::fromValue(tileset()->tileRenderSize());
+                    },
+                    [this](const QVariant &value) {
+                        const auto tileRenderSize = static_cast<Tileset::TileRenderSize>(value.toInt());
+                        push(new ChangeTilesetTileRenderSize(mTilesetDocument, tileRenderSize));
+                    });
+
+        mFillModeProperty = editorFactory->createProperty(
+                    tr("Fill Mode"),
+                    [this]() {
+                        return QVariant::fromValue(tileset()->fillMode());
+                    },
+                    [this](const QVariant &value) {
+                        const auto fillMode = static_cast<Tileset::FillMode>(value.toInt());
+                        push(new ChangeTilesetFillMode(mTilesetDocument, fillMode));
+                    });
+
+        mBackgroundColorProperty = editorFactory->createProperty(
+                    tr("Background Color"),
+                    [this]() {
+                        return tileset()->backgroundColor();
+                    },
+                    [this](const QVariant &value) {
+                        push(new ChangeTilesetBackgroundColor(mTilesetDocument, value.value<QColor>()));
+                    });
+
+        mOrientationProperty = editorFactory->createProperty(
+                    tr("Orientation"),
+                    [this]() {
+                        return QVariant::fromValue(tileset()->orientation());
+                    },
+                    [this](const QVariant &value) {
+                        const auto orientation = static_cast<Tileset::Orientation>(value.toInt());
+                        push(new ChangeTilesetOrientation(mTilesetDocument, orientation));
+                    });
+
+        mGridSizeProperty = editorFactory->createProperty(
+                    tr("Grid Size"),
+                    [this]() {
+                        return tileset()->gridSize();
+                    },
+                    [this](const QVariant &value) {
+                        push(new ChangeTilesetGridSize(mTilesetDocument, value.toSize()));
+                    });
+
+        // todo: needs 1 as minimum value
+        mColumnCountProperty = editorFactory->createProperty(
+                    tr("Columns"),
+                    [this]() {
+                        return tileset()->columnCount();
+                    },
+                    [this](const QVariant &value) {
+                        push(new ChangeTilesetColumnCount(mTilesetDocument, value.toInt()));
+                    });
+
+        // todo: this needs a custom widget
+        mAllowedTransformationsProperty = editorFactory->createProperty(
+                    tr("Allowed Transformations"),
+                    [this]() {
+                        return QVariant::fromValue(tileset()->transformationFlags());
+                    },
+                    [this](const QVariant &value) {
+                        const auto flags = static_cast<Tileset::TransformationFlags>(value.toInt());
+                        push(new ChangeTilesetTransformationFlags(mTilesetDocument, flags));
+                    });
+
+        // todo: this needs a custom widget
+        mImageProperty = editorFactory->createProperty(
+                    tr("Image"),
+                    [this]() {
+                        return tileset()->imageSource().toString();
+                    },
+                    [](const QVariant &) {
+                        // push(new ChangeTilesetImage(mTilesetDocument, value.toString()));
+                    });
+
+        updateEnabledState();
+        connect(mTilesetDocument, &Document::changed,
+                this, &TilesetProperties::onChanged);
+
+        connect(mTilesetDocument, &TilesetDocument::tilesetNameChanged,
+                mNameProperty, &Property::valueChanged);
+        connect(mTilesetDocument, &TilesetDocument::tilesetTileOffsetChanged,
+                mTileOffsetProperty, &Property::valueChanged);
+        connect(mTilesetDocument, &TilesetDocument::tilesetObjectAlignmentChanged,
+                mObjectAlignmentProperty, &Property::valueChanged);
+        connect(mTilesetDocument, &TilesetDocument::tilesetChanged,
+                this, &TilesetProperties::onTilesetChanged);
+    }
+
+    void populateEditor(VariantEditor *editor)
+    {
+        editor->addHeader(tr("Tileset"));
+        editor->addProperty(mNameProperty);
+        editor->addProperty(mClassProperty);
+        editor->addSeparator();
+        editor->addProperty(mObjectAlignmentProperty);
+        editor->addProperty(mTileOffsetProperty);
+        editor->addProperty(mTileRenderSizeProperty);
+        editor->addProperty(mFillModeProperty);
+        editor->addProperty(mBackgroundColorProperty);
+        editor->addProperty(mOrientationProperty);
+        editor->addProperty(mGridSizeProperty);
+        editor->addProperty(mColumnCountProperty);
+        editor->addProperty(mAllowedTransformationsProperty);
+        editor->addProperty(mImageProperty);
+    }
+
+private:
+    void onChanged(const ChangeEvent &event)
+    {
+        if (event.type != ChangeEvent::TilesetChanged)
+            return;
+
+        const auto property = static_cast<const TilesetChangeEvent&>(event).property;
+        switch (property) {
+        case Tileset::FillModeProperty:
+            emit mFillModeProperty->valueChanged();
+            break;
+        case Tileset::TileRenderSizeProperty:
+            emit mTileRenderSizeProperty->valueChanged();
+            break;
+        }
+    }
+
+    void onTilesetChanged(Tileset *)
+    {
+        // the following properties have no specific change events
+        emit mBackgroundColorProperty->valueChanged();
+        emit mOrientationProperty->valueChanged();
+        emit mGridSizeProperty->valueChanged();
+        emit mColumnCountProperty->valueChanged();
+        emit mAllowedTransformationsProperty->valueChanged();
+        emit mImageProperty->valueChanged();
+    }
+
+    void updateEnabledState()
+    {
+        const bool collection = tileset()->isCollection();
+        mImageProperty->setEnabled(!collection);
+        mColumnCountProperty->setEnabled(collection);
+    }
+
+    void push(QUndoCommand *command)
+    {
+        mTilesetDocument->undoStack()->push(command);
+    }
+
+    Tileset *tileset() const
+    {
+        return mTilesetDocument->tileset().data();
+    }
+
+    TilesetDocument *mTilesetDocument;
+    Property *mNameProperty;
+    Property *mClassProperty;
+    Property *mObjectAlignmentProperty;
+    Property *mTileOffsetProperty;
+    Property *mTileRenderSizeProperty;
+    Property *mFillModeProperty;
+    Property *mBackgroundColorProperty;
+    Property *mOrientationProperty;
+    Property *mGridSizeProperty;
+    Property *mColumnCountProperty;
+    Property *mAllowedTransformationsProperty;
+    Property *mImageProperty;
+};
+
 
 void PropertiesWidget::currentObjectChanged(Object *object)
 {
-    // mPropertyBrowser->setObject(object);
     mPropertyBrowser->clear();
     delete mPropertiesObject;
     mPropertiesObject = nullptr;
@@ -574,7 +787,13 @@ void PropertiesWidget::currentObjectChanged(Object *object)
             mPropertiesObject = properties;
             break;
         }
-        case Object::TilesetType:
+        case Object::TilesetType: {
+            auto tilesetDocument = static_cast<TilesetDocument*>(mDocument);
+            auto properties = new TilesetProperties(tilesetDocument,
+                                                    mDefaultEditorFactory.get(), this);
+            properties->populateEditor(mPropertyBrowser);
+            mPropertiesObject = properties;
+        }
         case Object::TileType:
         case Object::WangSetType:
         case Object::WangColorType:
@@ -1042,6 +1261,27 @@ void PropertiesWidget::registerEditorFactories()
                                   tr("Right Up"),
                                   tr("Left Down"),
                                   tr("Left Up"),
+                              }));
+
+    registerEditorFactory(qMetaTypeId<Tileset::Orientation>(),
+                          std::make_unique<EnumEditorFactory>(
+                              QStringList {
+                                  tr("Orthogonal"),
+                                  tr("Isometric"),
+                              }));
+
+    registerEditorFactory(qMetaTypeId<Tileset::TileRenderSize>(),
+                          std::make_unique<EnumEditorFactory>(
+                              QStringList {
+                                  tr("Tile Size"),
+                                  tr("Map Grid Size"),
+                              }));
+
+    registerEditorFactory(qMetaTypeId<Tileset::FillMode>(),
+                          std::make_unique<EnumEditorFactory>(
+                              QStringList {
+                                  tr("Stretch"),
+                                  tr("Preserve Aspect Ratio"),
                               }));
 }
 
