@@ -22,6 +22,7 @@
 
 #include "actionmanager.h"
 #include "addpropertydialog.h"
+#include "changelayer.h"
 #include "changemapproperty.h"
 #include "changeproperties.h"
 #include "clipboardmanager.h"
@@ -556,6 +557,138 @@ private:
     Property *mBackgroundColorProperty;
 };
 
+class LayerProperties : public QObject
+{
+    Q_OBJECT
+
+public:
+    LayerProperties(MapDocument *mapDocument, Layer *layer, ValueTypeEditorFactory *editorFactory, QObject *parent = nullptr)
+        : QObject(parent)
+        , mMapDocument(mapDocument)
+        , mLayer(layer)
+    {
+        // todo: would be nicer to avoid the SpinBox and use a custom widget
+        mIdProperty = editorFactory->createProperty(
+                    tr("ID"),
+                    [this]() { return mLayer->id(); },
+                    [](const QVariant &) {});
+        mIdProperty->setEnabled(false);
+
+        // todo: the below should be able to apply to all selected layers
+
+        mNameProperty = editorFactory->createProperty(
+                    tr("Name"),
+                    [this]() { return mLayer->name(); },
+                    [this](const QVariant &value) {
+                        push(new SetLayerName(mMapDocument, { mLayer }, value.toString()));
+                    });
+
+        mClassProperty = new ClassProperty(mMapDocument, mLayer);
+
+        mVisibleProperty = editorFactory->createProperty(
+                    tr("Visible"),
+                    [this]() { return mLayer->isVisible(); },
+                    [this](const QVariant &value) {
+                        push(new SetLayerVisible(mMapDocument, { mLayer }, value.toBool()));
+                    });
+
+        mLockedProperty = editorFactory->createProperty(
+                    tr("Locked"),
+                    [this]() { return mLayer->isLocked(); },
+                    [this](const QVariant &value) {
+                        push(new SetLayerLocked(mMapDocument, { mLayer }, value.toBool()));
+                    });
+
+        // todo: value should be between 0 and 1, and would be nice to use a slider (replacing the one in Layers view)
+        // todo: singleStep should be 0.1
+        mOpacityProperty = editorFactory->createProperty(
+                    tr("Opacity"),
+                    [this]() { return mLayer->opacity(); },
+                    [this](const QVariant &value) {
+                        push(new SetLayerOpacity(mMapDocument, { mLayer }, value.toReal()));
+                    });
+
+        mTintColorProperty = editorFactory->createProperty(
+                    tr("Tint Color"),
+                    [this]() { return mLayer->tintColor(); },
+                    [this](const QVariant &value) {
+                        push(new SetLayerTintColor(mMapDocument, { mLayer }, value.value<QColor>()));
+                    });
+
+        mOffsetProperty = editorFactory->createProperty(
+                    tr("Offset"),
+                    [this]() { return mLayer->offset(); },
+                    [this](const QVariant &value) {
+                        push(new SetLayerOffset(mMapDocument, { mLayer }, value.value<QPointF>()));
+                    });
+
+        // todo: singleStep should be 0.1
+        mParallaxFactorProperty = editorFactory->createProperty(
+                    tr("Parallax Factor"),
+                    [this]() { return mLayer->parallaxFactor(); },
+                    [this](const QVariant &value) {
+                        push(new SetLayerParallaxFactor(mMapDocument, { mLayer }, value.toPointF()));
+                    });
+
+        connect(mMapDocument, &Document::changed,
+                this, &LayerProperties::onChanged);
+    }
+
+    void populateEditor(VariantEditor *editor)
+    {
+        editor->addHeader(tr("Layer"));
+        editor->addProperty(mIdProperty);
+        editor->addProperty(mNameProperty);
+        editor->addProperty(mClassProperty);
+        editor->addSeparator();
+        editor->addProperty(mVisibleProperty);
+        editor->addProperty(mLockedProperty);
+        editor->addProperty(mOpacityProperty);
+        editor->addProperty(mTintColorProperty);
+        editor->addProperty(mOffsetProperty);
+        editor->addProperty(mParallaxFactorProperty);
+    }
+
+private:
+    void onChanged(const ChangeEvent &event)
+    {
+        if (event.type != ChangeEvent::LayerChanged)
+            return;
+
+        const auto properties = static_cast<const LayerChangeEvent&>(event).properties;
+        if (properties & LayerChangeEvent::VisibleProperty)
+            emit mVisibleProperty->valueChanged();
+        if (properties & LayerChangeEvent::LockedProperty)
+            emit mLockedProperty->valueChanged();
+        if (properties & LayerChangeEvent::OpacityProperty)
+            emit mOpacityProperty->valueChanged();
+        if (properties & LayerChangeEvent::TintColorProperty)
+            emit mTintColorProperty->valueChanged();
+        if (properties & LayerChangeEvent::OffsetProperty)
+            emit mOffsetProperty->valueChanged();
+        if (properties & LayerChangeEvent::ParallaxFactorProperty)
+            emit mParallaxFactorProperty->valueChanged();
+    }
+
+    void push(QUndoCommand *command)
+    {
+        mMapDocument->undoStack()->push(command);
+    }
+
+    MapDocument *mMapDocument;
+    Layer *mLayer;
+
+    Property *mIdProperty;
+    Property *mNameProperty;
+    Property *mClassProperty;
+    Property *mVisibleProperty;
+    Property *mLockedProperty;
+    Property *mOpacityProperty;
+    Property *mTintColorProperty;
+    Property *mOffsetProperty;
+    Property *mParallaxFactorProperty;
+};
+
 class TilesetProperties : public QObject
 {
     Q_OBJECT
@@ -777,7 +910,13 @@ void PropertiesWidget::currentObjectChanged(Object *object)
 
     if (object) {
         switch (object->typeId()) {
-        case Object::LayerType:
+        case Object::LayerType: {
+            auto mapDocument = static_cast<MapDocument*>(mDocument);
+            auto layer = static_cast<Layer*>(object);
+            auto properties = new LayerProperties(mapDocument, layer, mDefaultEditorFactory.get(), this);
+            properties->populateEditor(mPropertyBrowser);
+            mPropertiesObject = properties;
+        }
         case Object::MapObjectType:
             break;
         case Object::MapType: {
