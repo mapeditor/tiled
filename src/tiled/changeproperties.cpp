@@ -34,7 +34,7 @@ ChangeClassName::ChangeClassName(Document *document,
                                  QUndoCommand *parent)
     : ChangeValue(document, objects, className, parent)
 {
-    setText(QCoreApplication::translate("Undo Commands", "Change Type"));
+    setText(QCoreApplication::translate("Undo Commands", "Change Class"));
 }
 
 void ChangeClassName::undo()
