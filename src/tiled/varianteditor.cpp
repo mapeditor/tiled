@@ -21,6 +21,7 @@
 #include "varianteditor.h"
 
 #include "colorbutton.h"
+#include "fileedit.h"
 #include "utils.h"
 #include "propertyeditorwidgets.h"
 
@@ -80,6 +81,34 @@ public:
 
         return editor;
     }
+};
+
+class UrlEditorFactory : public EditorFactory
+{
+public:
+    QWidget *createEditor(Property *property, QWidget *parent) override
+    {
+        auto editor = new FileEdit(parent);
+        editor->setFilter(m_filter);
+
+        auto syncEditor = [=] {
+            editor->setFileUrl(property->value().toUrl());
+        };
+        syncEditor();
+
+        QObject::connect(property, &Property::valueChanged, editor, syncEditor);
+        QObject::connect(editor, &FileEdit::fileUrlChanged, property, &Property::setValue);
+
+        return editor;
+    }
+
+    void setFilter(const QString &filter)
+    {
+        m_filter = filter;
+    }
+
+private:
+    QString m_filter;
 };
 
 class IntEditorFactory : public EditorFactory
@@ -581,6 +610,7 @@ ValueTypeEditorFactory::ValueTypeEditorFactory()
     registerEditorFactory(QMetaType::QRectF, std::make_unique<RectFEditorFactory>());
     registerEditorFactory(QMetaType::QSize, std::make_unique<SizeEditorFactory>());
     registerEditorFactory(QMetaType::QString, std::make_unique<StringEditorFactory>());
+    registerEditorFactory(QMetaType::QUrl, std::make_unique<UrlEditorFactory>());
 }
 
 void ValueTypeEditorFactory::registerEditorFactory(int type, std::unique_ptr<EditorFactory> factory)

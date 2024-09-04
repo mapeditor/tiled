@@ -739,5 +739,9 @@ inline void Tileset::setTransformationFlags(TransformationFlags flags)
 
 Q_DECLARE_METATYPE(Tiled::Tileset*)
 Q_DECLARE_METATYPE(Tiled::SharedTileset)
+Q_DECLARE_METATYPE(Tiled::Tileset::Orientation)
+Q_DECLARE_METATYPE(Tiled::Tileset::TileRenderSize)
+Q_DECLARE_METATYPE(Tiled::Tileset::FillMode)
+Q_DECLARE_METATYPE(Tiled::Tileset::TransformationFlags)
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Tileset::TransformationFlags)

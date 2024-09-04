@@ -22,12 +22,15 @@
 
 #include "actionmanager.h"
 #include "addpropertydialog.h"
+#include "changeimagelayerproperty.h"
 #include "changelayer.h"
 #include "changemapproperty.h"
+#include "changeobjectgroupproperties.h"
 #include "changeproperties.h"
 #include "clipboardmanager.h"
 #include "compression.h"
 #include "mapdocument.h"
+#include "objectgroup.h"
 #include "preferences.h"
 #include "propertybrowser.h"
 #include "tilesetchanges.h"
@@ -568,6 +571,7 @@ public:
         , mLayer(layer)
     {
         // todo: would be nicer to avoid the SpinBox and use a custom widget
+        // might also be nice to embed this in the header instead of using a property
         mIdProperty = editorFactory->createProperty(
                     tr("ID"),
                     [this]() { return mLayer->id(); },
@@ -634,7 +638,7 @@ public:
                 this, &LayerProperties::onChanged);
     }
 
-    void populateEditor(VariantEditor *editor)
+    virtual void populateEditor(VariantEditor *editor)
     {
         editor->addHeader(tr("Layer"));
         editor->addProperty(mIdProperty);
@@ -649,24 +653,27 @@ public:
         editor->addProperty(mParallaxFactorProperty);
     }
 
-private:
-    void onChanged(const ChangeEvent &event)
+protected:
+    virtual void onChanged(const ChangeEvent &event)
     {
         if (event.type != ChangeEvent::LayerChanged)
             return;
 
-        const auto properties = static_cast<const LayerChangeEvent&>(event).properties;
-        if (properties & LayerChangeEvent::VisibleProperty)
+        const auto &layerChange = static_cast<const LayerChangeEvent&>(event);
+        if (layerChange.layer != mLayer)
+            return;
+
+        if (layerChange.properties & LayerChangeEvent::VisibleProperty)
             emit mVisibleProperty->valueChanged();
-        if (properties & LayerChangeEvent::LockedProperty)
+        if (layerChange.properties & LayerChangeEvent::LockedProperty)
             emit mLockedProperty->valueChanged();
-        if (properties & LayerChangeEvent::OpacityProperty)
+        if (layerChange.properties & LayerChangeEvent::OpacityProperty)
             emit mOpacityProperty->valueChanged();
-        if (properties & LayerChangeEvent::TintColorProperty)
+        if (layerChange.properties & LayerChangeEvent::TintColorProperty)
             emit mTintColorProperty->valueChanged();
-        if (properties & LayerChangeEvent::OffsetProperty)
+        if (layerChange.properties & LayerChangeEvent::OffsetProperty)
             emit mOffsetProperty->valueChanged();
-        if (properties & LayerChangeEvent::ParallaxFactorProperty)
+        if (layerChange.properties & LayerChangeEvent::ParallaxFactorProperty)
             emit mParallaxFactorProperty->valueChanged();
     }
 
@@ -687,6 +694,148 @@ private:
     Property *mTintColorProperty;
     Property *mOffsetProperty;
     Property *mParallaxFactorProperty;
+};
+
+class ImageLayerProperties : public LayerProperties
+{
+    Q_OBJECT
+
+public:
+    ImageLayerProperties(MapDocument *mapDocument, ImageLayer *layer, ValueTypeEditorFactory *editorFactory, QObject *parent = nullptr)
+        : LayerProperties(mapDocument, layer, editorFactory, parent)
+    {
+        // todo: set a file filter for selecting images (or map files?)
+        mImageProperty = editorFactory->createProperty(
+                    tr("Image Source"),
+                    [this]() { return imageLayer()->imageSource(); },
+                    [this](const QVariant &value) {
+                        push(new ChangeImageLayerImageSource(mMapDocument, { imageLayer() }, value.toUrl()));
+                    });
+
+        mTransparentColorProperty = editorFactory->createProperty(
+                    tr("Transparent Color"),
+                    [this]() { return imageLayer()->transparentColor(); },
+                    [this](const QVariant &value) {
+                        push(new ChangeImageLayerTransparentColor(mMapDocument, { imageLayer() }, value.value<QColor>()));
+                    });
+
+        // todo: consider merging Repeat X and Y into a single property
+        mRepeatXProperty = editorFactory->createProperty(
+                    tr("Repeat X"),
+                    [this]() { return imageLayer()->repeatX(); },
+                    [this](const QVariant &value) {
+                        push(new ChangeImageLayerRepeatX(mMapDocument, { imageLayer() }, value.toBool()));
+                    });
+
+        mRepeatYProperty = editorFactory->createProperty(
+                    tr("Repeat Y"),
+                    [this]() { return imageLayer()->repeatY(); },
+                    [this](const QVariant &value) {
+                        push(new ChangeImageLayerRepeatY(mMapDocument, { imageLayer() }, value.toBool()));
+                    });
+    }
+
+    void populateEditor(VariantEditor *editor) override
+    {
+        LayerProperties::populateEditor(editor);
+        editor->addHeader(tr("Image Layer"));
+        editor->addProperty(mImageProperty);
+        editor->addProperty(mTransparentColorProperty);
+        editor->addSeparator();
+        editor->addProperty(mRepeatXProperty);
+        editor->addProperty(mRepeatYProperty);
+    }
+
+private:
+    void onChanged(const ChangeEvent &event) override
+    {
+        LayerProperties::onChanged(event);
+
+        if (event.type != ChangeEvent::ImageLayerChanged)
+            return;
+
+        const auto &layerChange = static_cast<const ImageLayerChangeEvent&>(event);
+        if (layerChange.layer != mLayer)
+            return;
+
+        if (layerChange.properties & ImageLayerChangeEvent::ImageSourceProperty)
+            emit mImageProperty->valueChanged();
+        if (layerChange.properties & ImageLayerChangeEvent::TransparentColorProperty)
+            emit mTransparentColorProperty->valueChanged();
+        if (layerChange.properties & ImageLayerChangeEvent::RepeatProperty) {
+            emit mRepeatXProperty->valueChanged();
+            emit mRepeatYProperty->valueChanged();
+        }
+    }
+
+    ImageLayer *imageLayer() const
+    {
+        return static_cast<ImageLayer*>(mLayer);
+    }
+
+    Property *mImageProperty;
+    Property *mTransparentColorProperty;
+    Property *mRepeatXProperty;
+    Property *mRepeatYProperty;
+};
+
+class ObjectGroupProperties : public LayerProperties
+{
+    Q_OBJECT
+
+public:
+    ObjectGroupProperties(MapDocument *mapDocument, ObjectGroup *layer, ValueTypeEditorFactory *editorFactory, QObject *parent = nullptr)
+        : LayerProperties(mapDocument, layer, editorFactory, parent)
+    {
+        mColorProperty = editorFactory->createProperty(
+                    tr("Color"),
+                    [this]() { return objectGroup()->color(); },
+                    [this](const QVariant &value) {
+                        push(new ChangeObjectGroupColor(mMapDocument, { objectGroup() }, value.value<QColor>()));
+                    });
+
+        mDrawOrderProperty = editorFactory->createProperty(
+                    tr("Draw Order"),
+                    [this]() { return QVariant::fromValue(objectGroup()->drawOrder()); },
+                    [this](const QVariant &value) {
+                        ObjectGroup::DrawOrder drawOrder = static_cast<ObjectGroup::DrawOrder>(value.toInt());
+                        push(new ChangeObjectGroupDrawOrder(mMapDocument, { objectGroup() }, drawOrder));
+                    });
+    }
+
+    void populateEditor(VariantEditor *editor) override
+    {
+        LayerProperties::populateEditor(editor);
+        editor->addHeader(tr("Object Layer"));
+        editor->addProperty(mColorProperty);
+        editor->addProperty(mDrawOrderProperty);
+    }
+
+private:
+    void onChanged(const ChangeEvent &event) override
+    {
+        LayerProperties::onChanged(event);
+
+        if (event.type != ChangeEvent::ObjectGroupChanged)
+            return;
+
+        const auto &layerChange = static_cast<const ObjectGroupChangeEvent&>(event);
+        if (layerChange.objectGroup != objectGroup())
+            return;
+
+        if (layerChange.properties & ObjectGroupChangeEvent::ColorProperty)
+            emit mColorProperty->valueChanged();
+        if (layerChange.properties & ObjectGroupChangeEvent::DrawOrderProperty)
+            emit mDrawOrderProperty->valueChanged();
+    }
+
+    ObjectGroup *objectGroup() const
+    {
+        return static_cast<ObjectGroup*>(mLayer);
+    }
+
+    Property *mColorProperty;
+    Property *mDrawOrderProperty;
 };
 
 class TilesetProperties : public QObject
@@ -913,9 +1062,29 @@ void PropertiesWidget::currentObjectChanged(Object *object)
         case Object::LayerType: {
             auto mapDocument = static_cast<MapDocument*>(mDocument);
             auto layer = static_cast<Layer*>(object);
-            auto properties = new LayerProperties(mapDocument, layer, mDefaultEditorFactory.get(), this);
-            properties->populateEditor(mPropertyBrowser);
-            mPropertiesObject = properties;
+            LayerProperties *layerProperties = nullptr;
+
+            switch (layer->layerType()) {
+            case Layer::ImageLayerType:
+                layerProperties = new ImageLayerProperties(mapDocument,
+                                                           static_cast<ImageLayer*>(layer),
+                                                           mDefaultEditorFactory.get(), this);
+                break;
+            case Layer::ObjectGroupType:
+                layerProperties = new ObjectGroupProperties(mapDocument,
+                                                            static_cast<ObjectGroup*>(layer),
+                                                            mDefaultEditorFactory.get(), this);
+                break;
+            case Layer::TileLayerType:
+            case Layer::GroupLayerType:
+                layerProperties = new LayerProperties(mapDocument,
+                                                      layer,
+                                                      mDefaultEditorFactory.get(), this);
+                break;
+            }
+
+            layerProperties->populateEditor(mPropertyBrowser);
+            mPropertiesObject = layerProperties;
         }
         case Object::MapObjectType:
             break;
@@ -1421,6 +1590,13 @@ void PropertiesWidget::registerEditorFactories()
                               QStringList {
                                   tr("Stretch"),
                                   tr("Preserve Aspect Ratio"),
+                              }));
+
+    registerEditorFactory(qMetaTypeId<ObjectGroup::DrawOrder>(),
+                          std::make_unique<EnumEditorFactory>(
+                              QStringList {
+                                  tr("Top Down"),
+                                  tr("Index Order"),
                               }));
 }
 
