@@ -332,6 +332,7 @@ public:
     }
 };
 
+// todo: needs to handle invalid color (unset value)
 class ColorEditorFactory : public EditorFactory
 {
 public:
