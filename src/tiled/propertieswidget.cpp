@@ -24,6 +24,7 @@
 #include "addpropertydialog.h"
 #include "changeimagelayerproperty.h"
 #include "changelayer.h"
+#include "changemapobject.h"
 #include "changemapproperty.h"
 #include "changeobjectgroupproperties.h"
 #include "changeproperties.h"
@@ -31,6 +32,7 @@
 #include "compression.h"
 #include "mapdocument.h"
 #include "objectgroup.h"
+#include "objecttemplate.h"
 #include "preferences.h"
 #include "propertybrowser.h"
 #include "tilesetchanges.h"
@@ -307,21 +309,46 @@ private:
     MapDocument *mMapDocument;
 };
 
-class MapProperties : public QObject
+class ObjectProperties : public QObject
 {
     Q_OBJECT
 
 public:
-    MapProperties(MapDocument *mapDocument,
+    ObjectProperties(Document *document, Object *object, QObject *parent = nullptr)
+        : QObject(parent)
+        , mDocument(document)
+        , mObject(object)
+    {
+        mClassProperty = new ClassProperty(document, object, this);
+    }
+
+    virtual void populateEditor(VariantEditor *)
+    {
+        // nothing added here due to property grouping
+    }
+
+protected:
+    void push(QUndoCommand *command)
+    {
+        mDocument->undoStack()->push(command);
+    }
+
+    Document *mDocument;
+    Property *mClassProperty;
+    Object *mObject;
+};
+
+
+class MapProperties : public ObjectProperties
+{
+    Q_OBJECT
+
+public:
+    MapProperties(MapDocument *document,
                   ValueTypeEditorFactory *editorFactory,
                   QObject *parent = nullptr)
-        : QObject(parent)
-        , mMapDocument(mapDocument)
-        , mSizeProperty(new MapSizeProperty(mapDocument, editorFactory, this))
-        , mTileSizeProperty(new TileSizeProperty(mapDocument, editorFactory, this))
+        : ObjectProperties(document, document->map(), parent)
     {
-        mClassProperty = new ClassProperty(mMapDocument, mMapDocument->map());
-
         mOrientationProperty = editorFactory->createProperty(
                     tr("Orientation"),
                     [this]() {
@@ -329,8 +356,12 @@ public:
                     },
                     [this](const QVariant &value) {
                         auto orientation = static_cast<Map::Orientation>(value.toInt());
-                        push(new ChangeMapProperty(mMapDocument, orientation));
+                        push(new ChangeMapProperty(mapDocument(), orientation));
                     });
+
+        mSizeProperty = new MapSizeProperty(mapDocument(), editorFactory, this);
+
+        mTileSizeProperty = new TileSizeProperty(mapDocument(), editorFactory, this);
 
         mInfiniteProperty = editorFactory->createProperty(
                     tr("Infinite"),
@@ -338,7 +369,7 @@ public:
                         return map()->infinite();
                     },
                     [this](const QVariant &value) {
-                        push(new ChangeMapProperty(mMapDocument,
+                        push(new ChangeMapProperty(mapDocument(),
                                                    Map::InfiniteProperty,
                                                    value.toInt()));
                     });
@@ -349,7 +380,7 @@ public:
                         return map()->hexSideLength();
                     },
                     [this](const QVariant &value) {
-                        push(new ChangeMapProperty(mMapDocument,
+                        push(new ChangeMapProperty(mapDocument(),
                                                    Map::HexSideLengthProperty,
                                                    value.toInt()));
                     });
@@ -361,7 +392,7 @@ public:
                     },
                     [this](const QVariant &value) {
                         auto staggerAxis = static_cast<Map::StaggerAxis>(value.toInt());
-                        push(new ChangeMapProperty(mMapDocument, staggerAxis));
+                        push(new ChangeMapProperty(mapDocument(), staggerAxis));
                     });
 
         mStaggerIndexProperty = editorFactory->createProperty(
@@ -371,7 +402,7 @@ public:
                     },
                     [this](const QVariant &value) {
                         auto staggerIndex = static_cast<Map::StaggerIndex>(value.toInt());
-                        push(new ChangeMapProperty(mMapDocument, staggerIndex));
+                        push(new ChangeMapProperty(mapDocument(), staggerIndex));
                     });
 
         mParallaxOriginProperty = editorFactory->createProperty(
@@ -380,7 +411,7 @@ public:
                         return map()->parallaxOrigin();
                     },
                     [this](const QVariant &value) {
-                        push(new ChangeMapProperty(mMapDocument, value.value<QPointF>()));
+                        push(new ChangeMapProperty(mapDocument(), value.value<QPointF>()));
                     });
 
         mLayerDataFormatProperty = editorFactory->createProperty(
@@ -390,7 +421,7 @@ public:
                     },
                     [this](const QVariant &value) {
                         auto layerDataFormat = static_cast<Map::LayerDataFormat>(value.toInt());
-                        push(new ChangeMapProperty(mMapDocument, layerDataFormat));
+                        push(new ChangeMapProperty(mapDocument(), layerDataFormat));
                     });
 
         mChunkSizeProperty = editorFactory->createProperty(
@@ -399,7 +430,7 @@ public:
                         return map()->chunkSize();
                     },
                     [this](const QVariant &value) {
-                        push(new ChangeMapProperty(mMapDocument, value.toSize()));
+                        push(new ChangeMapProperty(mapDocument(), value.toSize()));
                     });
 
         mRenderOrderProperty = editorFactory->createProperty(
@@ -409,7 +440,7 @@ public:
                     },
                     [this](const QVariant &value) {
                         auto renderOrder = static_cast<Map::RenderOrder>(value.toInt());
-                        push(new ChangeMapProperty(mMapDocument, renderOrder));
+                        push(new ChangeMapProperty(mapDocument(), renderOrder));
                     });
 
         mCompressionLevelProperty = editorFactory->createProperty(
@@ -418,7 +449,7 @@ public:
                         return map()->compressionLevel();
                     },
                     [this](const QVariant &value) {
-                        push(new ChangeMapProperty(mMapDocument, value.toInt()));
+                        push(new ChangeMapProperty(mapDocument(), value.toInt()));
                     });
 
         mBackgroundColorProperty = editorFactory->createProperty(
@@ -427,15 +458,15 @@ public:
                         return map()->backgroundColor();
                     },
                     [this](const QVariant &value) {
-                        push(new ChangeMapProperty(mMapDocument, value.value<QColor>()));
+                        push(new ChangeMapProperty(mapDocument(), value.value<QColor>()));
                     });
 
         updateEnabledState();
-        connect(mMapDocument, &Document::changed,
+        connect(document, &Document::changed,
                 this, &MapProperties::onChanged);
     }
 
-    void populateEditor(VariantEditor *editor)
+    void populateEditor(VariantEditor *editor) override
     {
         editor->addHeader(tr("Map"));
         editor->addProperty(mClassProperty);
@@ -533,18 +564,16 @@ private:
         }
     }
 
-    void push(QUndoCommand *command)
+    MapDocument *mapDocument() const
     {
-        mMapDocument->undoStack()->push(command);
+        return static_cast<MapDocument*>(mDocument);
     }
 
     Map *map() const
     {
-        return mMapDocument->map();
+        return mapDocument()->map();
     }
 
-    MapDocument *mMapDocument;
-    Property *mClassProperty;
     Property *mOrientationProperty;
     Property *mSizeProperty;
     Property *mTileSizeProperty;
@@ -560,21 +589,19 @@ private:
     Property *mBackgroundColorProperty;
 };
 
-class LayerProperties : public QObject
+class LayerProperties : public ObjectProperties
 {
     Q_OBJECT
 
 public:
-    LayerProperties(MapDocument *mapDocument, Layer *layer, ValueTypeEditorFactory *editorFactory, QObject *parent = nullptr)
-        : QObject(parent)
-        , mMapDocument(mapDocument)
-        , mLayer(layer)
+    LayerProperties(MapDocument *document, Layer *object, ValueTypeEditorFactory *editorFactory, QObject *parent = nullptr)
+        : ObjectProperties(document, object, parent)
     {
         // todo: would be nicer to avoid the SpinBox and use a custom widget
         // might also be nice to embed this in the header instead of using a property
         mIdProperty = editorFactory->createProperty(
                     tr("ID"),
-                    [this]() { return mLayer->id(); },
+                    [this]() { return layer()->id(); },
                     [](const QVariant &) {});
         mIdProperty->setEnabled(false);
 
@@ -582,63 +609,61 @@ public:
 
         mNameProperty = editorFactory->createProperty(
                     tr("Name"),
-                    [this]() { return mLayer->name(); },
+                    [this]() { return layer()->name(); },
                     [this](const QVariant &value) {
-                        push(new SetLayerName(mMapDocument, { mLayer }, value.toString()));
+                        push(new SetLayerName(mapDocument(), { layer() }, value.toString()));
                     });
-
-        mClassProperty = new ClassProperty(mMapDocument, mLayer);
 
         mVisibleProperty = editorFactory->createProperty(
                     tr("Visible"),
-                    [this]() { return mLayer->isVisible(); },
+                    [this]() { return layer()->isVisible(); },
                     [this](const QVariant &value) {
-                        push(new SetLayerVisible(mMapDocument, { mLayer }, value.toBool()));
+                        push(new SetLayerVisible(mapDocument(), { layer() }, value.toBool()));
                     });
 
         mLockedProperty = editorFactory->createProperty(
                     tr("Locked"),
-                    [this]() { return mLayer->isLocked(); },
+                    [this]() { return layer()->isLocked(); },
                     [this](const QVariant &value) {
-                        push(new SetLayerLocked(mMapDocument, { mLayer }, value.toBool()));
+                        push(new SetLayerLocked(mapDocument(), { layer() }, value.toBool()));
                     });
 
         // todo: value should be between 0 and 1, and would be nice to use a slider (replacing the one in Layers view)
         // todo: singleStep should be 0.1
         mOpacityProperty = editorFactory->createProperty(
                     tr("Opacity"),
-                    [this]() { return mLayer->opacity(); },
+                    [this]() { return layer()->opacity(); },
                     [this](const QVariant &value) {
-                        push(new SetLayerOpacity(mMapDocument, { mLayer }, value.toReal()));
+                        push(new SetLayerOpacity(mapDocument(), { layer() }, value.toReal()));
                     });
 
         mTintColorProperty = editorFactory->createProperty(
                     tr("Tint Color"),
-                    [this]() { return mLayer->tintColor(); },
+                    [this]() { return layer()->tintColor(); },
                     [this](const QVariant &value) {
-                        push(new SetLayerTintColor(mMapDocument, { mLayer }, value.value<QColor>()));
+                        push(new SetLayerTintColor(mapDocument(), { layer() }, value.value<QColor>()));
                     });
 
         mOffsetProperty = editorFactory->createProperty(
                     tr("Offset"),
-                    [this]() { return mLayer->offset(); },
+                    [this]() { return layer()->offset(); },
                     [this](const QVariant &value) {
-                        push(new SetLayerOffset(mMapDocument, { mLayer }, value.value<QPointF>()));
+                        push(new SetLayerOffset(mapDocument(), { layer() }, value.value<QPointF>()));
                     });
 
         // todo: singleStep should be 0.1
         mParallaxFactorProperty = editorFactory->createProperty(
                     tr("Parallax Factor"),
-                    [this]() { return mLayer->parallaxFactor(); },
+                    [this]() { return layer()->parallaxFactor(); },
                     [this](const QVariant &value) {
-                        push(new SetLayerParallaxFactor(mMapDocument, { mLayer }, value.toPointF()));
+                        push(new SetLayerParallaxFactor(mapDocument(), { layer() }, value.toPointF()));
                     });
 
-        connect(mMapDocument, &Document::changed,
+        connect(document, &Document::changed,
                 this, &LayerProperties::onChanged);
     }
 
-    virtual void populateEditor(VariantEditor *editor)
+    void populateEditor(VariantEditor *editor) override
     {
         editor->addHeader(tr("Layer"));
         editor->addProperty(mIdProperty);
@@ -660,7 +685,7 @@ protected:
             return;
 
         const auto &layerChange = static_cast<const LayerChangeEvent&>(event);
-        if (layerChange.layer != mLayer)
+        if (layerChange.layer != layer())
             return;
 
         if (layerChange.properties & LayerChangeEvent::VisibleProperty)
@@ -677,17 +702,18 @@ protected:
             emit mParallaxFactorProperty->valueChanged();
     }
 
-    void push(QUndoCommand *command)
+    MapDocument *mapDocument() const
     {
-        mMapDocument->undoStack()->push(command);
+        return static_cast<MapDocument*>(mDocument);
     }
 
-    MapDocument *mMapDocument;
-    Layer *mLayer;
+    Layer *layer() const
+    {
+        return static_cast<Layer*>(mObject);
+    }
 
     Property *mIdProperty;
     Property *mNameProperty;
-    Property *mClassProperty;
     Property *mVisibleProperty;
     Property *mLockedProperty;
     Property *mOpacityProperty;
@@ -701,22 +727,22 @@ class ImageLayerProperties : public LayerProperties
     Q_OBJECT
 
 public:
-    ImageLayerProperties(MapDocument *mapDocument, ImageLayer *layer, ValueTypeEditorFactory *editorFactory, QObject *parent = nullptr)
-        : LayerProperties(mapDocument, layer, editorFactory, parent)
+    ImageLayerProperties(MapDocument *document, ImageLayer *object, ValueTypeEditorFactory *editorFactory, QObject *parent = nullptr)
+        : LayerProperties(document, object, editorFactory, parent)
     {
         // todo: set a file filter for selecting images (or map files?)
         mImageProperty = editorFactory->createProperty(
                     tr("Image Source"),
                     [this]() { return imageLayer()->imageSource(); },
                     [this](const QVariant &value) {
-                        push(new ChangeImageLayerImageSource(mMapDocument, { imageLayer() }, value.toUrl()));
+                        push(new ChangeImageLayerImageSource(mapDocument(), { imageLayer() }, value.toUrl()));
                     });
 
         mTransparentColorProperty = editorFactory->createProperty(
                     tr("Transparent Color"),
                     [this]() { return imageLayer()->transparentColor(); },
                     [this](const QVariant &value) {
-                        push(new ChangeImageLayerTransparentColor(mMapDocument, { imageLayer() }, value.value<QColor>()));
+                        push(new ChangeImageLayerTransparentColor(mapDocument(), { imageLayer() }, value.value<QColor>()));
                     });
 
         // todo: consider merging Repeat X and Y into a single property
@@ -724,14 +750,14 @@ public:
                     tr("Repeat X"),
                     [this]() { return imageLayer()->repeatX(); },
                     [this](const QVariant &value) {
-                        push(new ChangeImageLayerRepeatX(mMapDocument, { imageLayer() }, value.toBool()));
+                        push(new ChangeImageLayerRepeatX(mapDocument(), { imageLayer() }, value.toBool()));
                     });
 
         mRepeatYProperty = editorFactory->createProperty(
                     tr("Repeat Y"),
                     [this]() { return imageLayer()->repeatY(); },
                     [this](const QVariant &value) {
-                        push(new ChangeImageLayerRepeatY(mMapDocument, { imageLayer() }, value.toBool()));
+                        push(new ChangeImageLayerRepeatY(mapDocument(), { imageLayer() }, value.toBool()));
                     });
     }
 
@@ -755,7 +781,7 @@ private:
             return;
 
         const auto &layerChange = static_cast<const ImageLayerChangeEvent&>(event);
-        if (layerChange.layer != mLayer)
+        if (layerChange.layer != layer())
             return;
 
         if (layerChange.properties & ImageLayerChangeEvent::ImageSourceProperty)
@@ -770,7 +796,7 @@ private:
 
     ImageLayer *imageLayer() const
     {
-        return static_cast<ImageLayer*>(mLayer);
+        return static_cast<ImageLayer*>(mObject);
     }
 
     Property *mImageProperty;
@@ -784,14 +810,14 @@ class ObjectGroupProperties : public LayerProperties
     Q_OBJECT
 
 public:
-    ObjectGroupProperties(MapDocument *mapDocument, ObjectGroup *layer, ValueTypeEditorFactory *editorFactory, QObject *parent = nullptr)
-        : LayerProperties(mapDocument, layer, editorFactory, parent)
+    ObjectGroupProperties(MapDocument *document, ObjectGroup *object, ValueTypeEditorFactory *editorFactory, QObject *parent = nullptr)
+        : LayerProperties(document, object, editorFactory, parent)
     {
         mColorProperty = editorFactory->createProperty(
                     tr("Color"),
                     [this]() { return objectGroup()->color(); },
                     [this](const QVariant &value) {
-                        push(new ChangeObjectGroupColor(mMapDocument, { objectGroup() }, value.value<QColor>()));
+                        push(new ChangeObjectGroupColor(mapDocument(), { objectGroup() }, value.value<QColor>()));
                     });
 
         mDrawOrderProperty = editorFactory->createProperty(
@@ -799,7 +825,7 @@ public:
                     [this]() { return QVariant::fromValue(objectGroup()->drawOrder()); },
                     [this](const QVariant &value) {
                         ObjectGroup::DrawOrder drawOrder = static_cast<ObjectGroup::DrawOrder>(value.toInt());
-                        push(new ChangeObjectGroupDrawOrder(mMapDocument, { objectGroup() }, drawOrder));
+                        push(new ChangeObjectGroupDrawOrder(mapDocument(), { objectGroup() }, drawOrder));
                     });
     }
 
@@ -831,34 +857,31 @@ private:
 
     ObjectGroup *objectGroup() const
     {
-        return static_cast<ObjectGroup*>(mLayer);
+        return static_cast<ObjectGroup*>(mObject);
     }
 
     Property *mColorProperty;
     Property *mDrawOrderProperty;
 };
 
-class TilesetProperties : public QObject
+class TilesetProperties : public ObjectProperties
 {
     Q_OBJECT
 
 public:
-    TilesetProperties(TilesetDocument *tilesetDocument,
+    TilesetProperties(TilesetDocument *document,
                       ValueTypeEditorFactory *editorFactory,
                       QObject *parent = nullptr)
-        : QObject(parent)
-        , mTilesetDocument(tilesetDocument)
+        : ObjectProperties(document, document->tileset().data(), parent)
     {
         mNameProperty = editorFactory->createProperty(
                     tr("Name"),
                     [this]() {
-                        return mTilesetDocument->tileset()->name();
+                        return tilesetDocument()->tileset()->name();
                     },
                     [this](const QVariant &value) {
-                        push(new RenameTileset(mTilesetDocument, value.toString()));
+                        push(new RenameTileset(tilesetDocument(), value.toString()));
                     });
-
-        mClassProperty = new ClassProperty(tilesetDocument, tilesetDocument->tileset().data());
 
         mObjectAlignmentProperty = editorFactory->createProperty(
                     tr("Object Alignment"),
@@ -867,7 +890,7 @@ public:
                     },
                     [this](const QVariant &value) {
                         const auto objectAlignment = static_cast<Alignment>(value.toInt());
-                        push(new ChangeTilesetObjectAlignment(mTilesetDocument, objectAlignment));
+                        push(new ChangeTilesetObjectAlignment(tilesetDocument(), objectAlignment));
                     });
 
         mTileOffsetProperty = editorFactory->createProperty(
@@ -876,7 +899,7 @@ public:
                         return tileset()->tileOffset();
                     },
                     [this](const QVariant &value) {
-                        push(new ChangeTilesetTileOffset(mTilesetDocument, value.value<QPoint>()));
+                        push(new ChangeTilesetTileOffset(tilesetDocument(), value.value<QPoint>()));
                     });
 
         mTileRenderSizeProperty = editorFactory->createProperty(
@@ -886,7 +909,7 @@ public:
                     },
                     [this](const QVariant &value) {
                         const auto tileRenderSize = static_cast<Tileset::TileRenderSize>(value.toInt());
-                        push(new ChangeTilesetTileRenderSize(mTilesetDocument, tileRenderSize));
+                        push(new ChangeTilesetTileRenderSize(tilesetDocument(), tileRenderSize));
                     });
 
         mFillModeProperty = editorFactory->createProperty(
@@ -896,7 +919,7 @@ public:
                     },
                     [this](const QVariant &value) {
                         const auto fillMode = static_cast<Tileset::FillMode>(value.toInt());
-                        push(new ChangeTilesetFillMode(mTilesetDocument, fillMode));
+                        push(new ChangeTilesetFillMode(tilesetDocument(), fillMode));
                     });
 
         mBackgroundColorProperty = editorFactory->createProperty(
@@ -905,7 +928,7 @@ public:
                         return tileset()->backgroundColor();
                     },
                     [this](const QVariant &value) {
-                        push(new ChangeTilesetBackgroundColor(mTilesetDocument, value.value<QColor>()));
+                        push(new ChangeTilesetBackgroundColor(tilesetDocument(), value.value<QColor>()));
                     });
 
         mOrientationProperty = editorFactory->createProperty(
@@ -915,7 +938,7 @@ public:
                     },
                     [this](const QVariant &value) {
                         const auto orientation = static_cast<Tileset::Orientation>(value.toInt());
-                        push(new ChangeTilesetOrientation(mTilesetDocument, orientation));
+                        push(new ChangeTilesetOrientation(tilesetDocument(), orientation));
                     });
 
         mGridSizeProperty = editorFactory->createProperty(
@@ -924,7 +947,7 @@ public:
                         return tileset()->gridSize();
                     },
                     [this](const QVariant &value) {
-                        push(new ChangeTilesetGridSize(mTilesetDocument, value.toSize()));
+                        push(new ChangeTilesetGridSize(tilesetDocument(), value.toSize()));
                     });
 
         // todo: needs 1 as minimum value
@@ -934,7 +957,7 @@ public:
                         return tileset()->columnCount();
                     },
                     [this](const QVariant &value) {
-                        push(new ChangeTilesetColumnCount(mTilesetDocument, value.toInt()));
+                        push(new ChangeTilesetColumnCount(tilesetDocument(), value.toInt()));
                     });
 
         // todo: this needs a custom widget
@@ -945,7 +968,7 @@ public:
                     },
                     [this](const QVariant &value) {
                         const auto flags = static_cast<Tileset::TransformationFlags>(value.toInt());
-                        push(new ChangeTilesetTransformationFlags(mTilesetDocument, flags));
+                        push(new ChangeTilesetTransformationFlags(tilesetDocument(), flags));
                     });
 
         // todo: this needs a custom widget
@@ -955,20 +978,20 @@ public:
                         return tileset()->imageSource().toString();
                     },
                     [](const QVariant &) {
-                        // push(new ChangeTilesetImage(mTilesetDocument, value.toString()));
+                        // push(new ChangeTilesetImage(tilesetDocument(), value.toString()));
                     });
 
         updateEnabledState();
-        connect(mTilesetDocument, &Document::changed,
+        connect(tilesetDocument(), &Document::changed,
                 this, &TilesetProperties::onChanged);
 
-        connect(mTilesetDocument, &TilesetDocument::tilesetNameChanged,
+        connect(tilesetDocument(), &TilesetDocument::tilesetNameChanged,
                 mNameProperty, &Property::valueChanged);
-        connect(mTilesetDocument, &TilesetDocument::tilesetTileOffsetChanged,
+        connect(tilesetDocument(), &TilesetDocument::tilesetTileOffsetChanged,
                 mTileOffsetProperty, &Property::valueChanged);
-        connect(mTilesetDocument, &TilesetDocument::tilesetObjectAlignmentChanged,
+        connect(tilesetDocument(), &TilesetDocument::tilesetObjectAlignmentChanged,
                 mObjectAlignmentProperty, &Property::valueChanged);
-        connect(mTilesetDocument, &TilesetDocument::tilesetChanged,
+        connect(tilesetDocument(), &TilesetDocument::tilesetChanged,
                 this, &TilesetProperties::onTilesetChanged);
     }
 
@@ -1025,19 +1048,17 @@ private:
         mColumnCountProperty->setEnabled(collection);
     }
 
-    void push(QUndoCommand *command)
+    TilesetDocument *tilesetDocument() const
     {
-        mTilesetDocument->undoStack()->push(command);
+        return static_cast<TilesetDocument*>(mDocument);
     }
 
     Tileset *tileset() const
     {
-        return mTilesetDocument->tileset().data();
+        return tilesetDocument()->tileset().data();
     }
 
-    TilesetDocument *mTilesetDocument;
     Property *mNameProperty;
-    Property *mClassProperty;
     Property *mObjectAlignmentProperty;
     Property *mTileOffsetProperty;
     Property *mTileRenderSizeProperty;
@@ -1050,10 +1071,279 @@ private:
     Property *mImageProperty;
 };
 
+class MapObjectProperties : public ObjectProperties
+{
+    Q_OBJECT
+
+public:
+    MapObjectProperties(MapDocument *document, MapObject *object, ValueTypeEditorFactory *editorFactory, QObject *parent = nullptr)
+        : ObjectProperties(document, object, parent)
+        , mDegreesEditorFactory(std::make_unique<FloatEditorFactory>())
+    {
+        mDegreesEditorFactory->setSuffix(QStringLiteral("°"));
+
+        mIdProperty = editorFactory->createProperty(
+                    tr("ID"),
+                    [this]() { return mapObject()->id(); },
+                    [](const QVariant &) {});
+        mIdProperty->setEnabled(false);
+
+        mTemplateProperty = editorFactory->createProperty(
+                    tr("Template"),
+                    [this]() {
+                        if (auto objectTemplate = mapObject()->objectTemplate())
+                            return QUrl::fromLocalFile(objectTemplate->fileName());
+                        return QUrl();
+                    },
+                    [](const QVariant &) {});
+        mTemplateProperty->setEnabled(false);
+
+        mNameProperty = editorFactory->createProperty(
+                    tr("Name"),
+                    [this]() {
+                        return mapObject()->name();
+                    },
+                    [this](const QVariant &value) {
+                        changeMapObject(MapObject::NameProperty, value);
+                    });
+
+        mVisibleProperty = editorFactory->createProperty(
+                    tr("Visible"),
+                    [this]() {
+                        return mapObject()->isVisible();
+                    },
+                    [this](const QVariant &value) {
+                        changeMapObject(MapObject::VisibleProperty, value);
+                    });
+
+        mPositionProperty = editorFactory->createProperty(
+                    tr("Position"),
+                    [this]() {
+                        return mapObject()->position();
+                    },
+                    [this](const QVariant &value) {
+                        changeMapObject(MapObject::PositionProperty, value);
+                    });
+
+        mSizeProperty = editorFactory->createProperty(
+                    tr("Size"),
+                    [this]() {
+                        return mapObject()->size();
+                    },
+                    [this](const QVariant &value) {
+                        changeMapObject(MapObject::SizeProperty, value);
+                    });
+
+        mRotationProperty = new GetSetProperty(
+                    tr("Rotation"),
+                    [this]() {
+                        return mapObject()->rotation();
+                    },
+                    [this](const QVariant &value) {
+                        changeMapObject(MapObject::RotationProperty, value);
+                    },
+                    mDegreesEditorFactory.get(), this);
+
+        // todo: make this a custom widget with "Horizontal" and "Vertical" checkboxes
+        mFlippingProperty = editorFactory->createProperty(
+                    tr("Flipping"),
+                    [this]() {
+                        return mapObject()->cell().flags();
+                    },
+                    [this](const QVariant &value) {
+                        const int flippingFlags = value.toInt();
+
+                        MapObjectCell mapObjectCell;
+                        mapObjectCell.object = mapObject();
+                        mapObjectCell.cell = mapObject()->cell();
+                        mapObjectCell.cell.setFlippedHorizontally(flippingFlags & 1);
+                        mapObjectCell.cell.setFlippedVertically(flippingFlags & 2);
+
+                        auto command = new ChangeMapObjectCells(mDocument, { mapObjectCell });
+
+                        command->setText(QCoreApplication::translate("Undo Commands",
+                                                                     "Flip %n Object(s)",
+                                                                     nullptr,
+                                                                     mapDocument()->selectedObjects().size()));
+                        push(command);
+                    });
+
+        mTextProperty = editorFactory->createProperty(
+                    tr("Text"),
+                    [this]() {
+                        return mapObject()->textData().text;
+                    },
+                    [this](const QVariant &value) {
+                        changeMapObject(MapObject::TextProperty, value);
+                    });
+
+        mTextAlignmentProperty = editorFactory->createProperty(
+                    tr("Alignment"),
+                    [this]() {
+                        return QVariant::fromValue(mapObject()->textData().alignment);
+                    },
+                    [this](const QVariant &value) {
+                        changeMapObject(MapObject::TextAlignmentProperty, value);
+                    });
+
+        mTextFontProperty = editorFactory->createProperty(
+                    tr("Font"),
+                    [this]() {
+                        return mapObject()->textData().font;
+                    },
+                    [this](const QVariant &value) {
+                        changeMapObject(MapObject::TextFontProperty, value);
+                    });
+
+        mTextWordWrapProperty = editorFactory->createProperty(
+                    tr("Word Wrap"),
+                    [this]() {
+                        return mapObject()->textData().wordWrap;
+                    },
+                    [this](const QVariant &value) {
+                        changeMapObject(MapObject::TextWordWrapProperty, value);
+                    });
+
+        mTextColorProperty = editorFactory->createProperty(
+                    tr("Text Color"),
+                    [this]() {
+                        return mapObject()->textData().color;
+                    },
+                    [this](const QVariant &value) {
+                        changeMapObject(MapObject::TextColorProperty, value);
+                    });
+
+        connect(document, &Document::changed,
+                this, &MapObjectProperties::onChanged);
+
+        updateEnabledState();
+    }
+
+    void populateEditor(VariantEditor *editor) override
+    {
+        editor->addHeader(tr("Object"));
+        editor->addProperty(mIdProperty);
+        editor->addProperty(mTemplateProperty);
+        editor->addProperty(mNameProperty);
+        editor->addProperty(mClassProperty);
+        editor->addSeparator();
+
+        if (mapDocument()->allowHidingObjects())
+            editor->addProperty(mVisibleProperty);
+
+        editor->addProperty(mPositionProperty);
+
+        if (mapObject()->hasDimensions())
+            editor->addProperty(mSizeProperty);
+
+        if (mapObject()->canRotate())
+            editor->addProperty(mRotationProperty);
+
+        if (mapObject()->isTileObject()) {
+            editor->addSeparator();
+            editor->addProperty(mFlippingProperty);
+        }
+
+        if (mapObject()->shape() == MapObject::Text) {
+            editor->addSeparator();
+            editor->addProperty(mTextProperty);
+            editor->addProperty(mTextAlignmentProperty);
+            editor->addProperty(mTextFontProperty);
+            editor->addProperty(mTextWordWrapProperty);
+            editor->addProperty(mTextColorProperty);
+        }
+    }
+
+private:
+    void onChanged(const ChangeEvent &event)
+    {
+        if (event.type != ChangeEvent::MapObjectsChanged)
+            return;
+
+        const auto &change = static_cast<const MapObjectsChangeEvent&>(event);
+        if (!change.mapObjects.contains(mapObject()))
+            return;
+
+        if (change.properties & MapObject::NameProperty)
+            emit mNameProperty->valueChanged();
+        if (change.properties & MapObject::VisibleProperty)
+            emit mVisibleProperty->valueChanged();
+        if (change.properties & MapObject::PositionProperty)
+            emit mPositionProperty->valueChanged();
+        if (change.properties & MapObject::SizeProperty)
+            emit mSizeProperty->valueChanged();
+        if (change.properties & MapObject::RotationProperty)
+            emit mRotationProperty->valueChanged();
+        if (change.properties & MapObject::CellProperty)
+            emit mFlippingProperty->valueChanged();
+        if (change.properties & MapObject::TextProperty)
+            emit mTextProperty->valueChanged();
+        if (change.properties & MapObject::TextFontProperty)
+            emit mTextFontProperty->valueChanged();
+        if (change.properties & MapObject::TextAlignmentProperty)
+            emit mTextAlignmentProperty->valueChanged();
+        if (change.properties & MapObject::TextWordWrapProperty)
+            emit mTextWordWrapProperty->valueChanged();
+        if (change.properties & MapObject::TextColorProperty)
+            emit mTextColorProperty->valueChanged();
+    }
+
+    void updateEnabledState()
+    {
+        mVisibleProperty->setEnabled(mapDocument()->allowHidingObjects());
+        mSizeProperty->setEnabled(mapObject()->hasDimensions());
+        mRotationProperty->setEnabled(mapObject()->canRotate());
+        mFlippingProperty->setEnabled(mapObject()->isTileObject());
+
+        const bool isText = mapObject()->shape() == MapObject::Text;
+        mTextProperty->setEnabled(isText);
+        mTextAlignmentProperty->setEnabled(isText);
+        mTextFontProperty->setEnabled(isText);
+        mTextWordWrapProperty->setEnabled(isText);
+        mTextColorProperty->setEnabled(isText);
+    }
+
+    MapDocument *mapDocument() const
+    {
+        return static_cast<MapDocument*>(mDocument);
+    }
+
+    MapObject *mapObject() const
+    {
+        return static_cast<MapObject*>(mObject);
+    }
+
+    void changeMapObject(MapObject::Property property, const QVariant &value)
+    {
+        push(new ChangeMapObject(mapDocument(), mapObject(), property, value));
+    }
+
+    Property *mIdProperty;
+    Property *mTemplateProperty;
+    Property *mNameProperty;
+    Property *mVisibleProperty;
+    Property *mPositionProperty;
+    Property *mSizeProperty;
+    Property *mRotationProperty;
+
+    // for tile objects
+    Property *mFlippingProperty;
+
+    // for text objects
+    Property *mTextProperty;
+    Property *mTextAlignmentProperty;
+    Property *mTextFontProperty;
+    Property *mTextWordWrapProperty;
+    Property *mTextColorProperty;
+
+    std::unique_ptr<FloatEditorFactory> mDegreesEditorFactory;
+};
+
 
 void PropertiesWidget::currentObjectChanged(Object *object)
 {
     mPropertyBrowser->clear();
+
     delete mPropertiesObject;
     mPropertiesObject = nullptr;
 
@@ -1061,55 +1351,53 @@ void PropertiesWidget::currentObjectChanged(Object *object)
         switch (object->typeId()) {
         case Object::LayerType: {
             auto mapDocument = static_cast<MapDocument*>(mDocument);
-            auto layer = static_cast<Layer*>(object);
-            LayerProperties *layerProperties = nullptr;
 
-            switch (layer->layerType()) {
+            switch (static_cast<Layer*>(object)->layerType()) {
             case Layer::ImageLayerType:
-                layerProperties = new ImageLayerProperties(mapDocument,
-                                                           static_cast<ImageLayer*>(layer),
-                                                           mDefaultEditorFactory.get(), this);
+                mPropertiesObject = new ImageLayerProperties(mapDocument,
+                                                             static_cast<ImageLayer*>(object),
+                                                             mDefaultEditorFactory.get(), this);
                 break;
             case Layer::ObjectGroupType:
-                layerProperties = new ObjectGroupProperties(mapDocument,
-                                                            static_cast<ObjectGroup*>(layer),
-                                                            mDefaultEditorFactory.get(), this);
+                mPropertiesObject = new ObjectGroupProperties(mapDocument,
+                                                              static_cast<ObjectGroup*>(object),
+                                                              mDefaultEditorFactory.get(), this);
                 break;
             case Layer::TileLayerType:
             case Layer::GroupLayerType:
-                layerProperties = new LayerProperties(mapDocument,
-                                                      layer,
-                                                      mDefaultEditorFactory.get(), this);
+                mPropertiesObject = new LayerProperties(mapDocument,
+                                                        static_cast<ImageLayer*>(object),
+                                                        mDefaultEditorFactory.get(), this);
                 break;
             }
-
-            layerProperties->populateEditor(mPropertyBrowser);
-            mPropertiesObject = layerProperties;
+            break;
         }
         case Object::MapObjectType:
+            mPropertiesObject = new MapObjectProperties(static_cast<MapDocument*>(mDocument),
+                                                        static_cast<MapObject*>(object), mDefaultEditorFactory.get(), this);
             break;
-        case Object::MapType: {
-            auto mapDocument = static_cast<MapDocument*>(mDocument);
-            auto properties = new MapProperties(mapDocument, mDefaultEditorFactory.get(), this);
-            properties->populateEditor(mPropertyBrowser);
-            mPropertiesObject = properties;
+        case Object::MapType:
+            mPropertiesObject = new MapProperties(static_cast<MapDocument*>(mDocument),
+                                                  mDefaultEditorFactory.get(), this);
             break;
-        }
-        case Object::TilesetType: {
-            auto tilesetDocument = static_cast<TilesetDocument*>(mDocument);
-            auto properties = new TilesetProperties(tilesetDocument,
-                                                    mDefaultEditorFactory.get(), this);
-            properties->populateEditor(mPropertyBrowser);
-            mPropertiesObject = properties;
-        }
+        case Object::TilesetType:
+            mPropertiesObject = new TilesetProperties(static_cast<TilesetDocument*>(mDocument),
+                                                      mDefaultEditorFactory.get(), this);
+            break;
         case Object::TileType:
+            // todo
         case Object::WangSetType:
+            // todo
         case Object::WangColorType:
+            // todo
         case Object::ProjectType:
         case Object::WorldType:
             break;
         }
     }
+
+    if (mPropertiesObject)
+        mPropertiesObject->populateEditor(mPropertyBrowser);
 
     bool editingTileset = mDocument && mDocument->type() == Document::TilesetDocumentType;
     bool isTileset = object && object->isPartOfTileset();

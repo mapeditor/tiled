@@ -41,6 +41,9 @@ SpinBox::SpinBox(QWidget *parent)
     setRange(std::numeric_limits<int>::lowest(),
              std::numeric_limits<int>::max());
 
+    // Don't respond to keyboard input immediately.
+    setKeyboardTracking(false);
+
     // Allow the widget to shrink horizontally.
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 }
@@ -63,6 +66,9 @@ DoubleSpinBox::DoubleSpinBox(QWidget *parent)
 
     // Increase possible precision.
     setDecimals(9);
+
+    // Don't respond to keyboard input immediately.
+    setKeyboardTracking(false);
 
     // Allow the widget to shrink horizontally.
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
@@ -88,48 +94,30 @@ QString DoubleSpinBox::textFromValue(double val) const
 }
 
 
-SizeEdit::SizeEdit(QWidget *parent)
+ResponsivePairswiseWidget::ResponsivePairswiseWidget(QWidget *parent)
     : QWidget(parent)
-    , m_widthLabel(new QLabel(QStringLiteral("W"), this))
-    , m_heightLabel(new QLabel(QStringLiteral("H"), this))
-    , m_widthSpinBox(new SpinBox(this))
-    , m_heightSpinBox(new SpinBox(this))
 {
-    m_widthLabel->setAlignment(Qt::AlignCenter);
-    m_heightLabel->setAlignment(Qt::AlignCenter);
-
     auto layout = new QGridLayout(this);
     layout->setContentsMargins(QMargins());
     layout->setColumnStretch(1, 1);
-    layout->setColumnStretch(3, 1);
     layout->setSpacing(Utils::dpiScaled(3));
+}
 
+void ResponsivePairswiseWidget::setWidgetPairs(const QVector<WidgetPair> &widgetPairs)
+{
     const int horizontalMargin = Utils::dpiScaled(3);
-    m_widthLabel->setContentsMargins(horizontalMargin, 0, horizontalMargin, 0);
-    m_heightLabel->setContentsMargins(horizontalMargin, 0, horizontalMargin, 0);
 
-    layout->addWidget(m_widthLabel, 0, 0);
-    layout->addWidget(m_widthSpinBox, 0, 1);
-    layout->addWidget(m_heightLabel, 0, 2);
-    layout->addWidget(m_heightSpinBox, 0, 3);
+    for (auto &pair : widgetPairs) {
+        pair.label->setAlignment(Qt::AlignCenter);
+        pair.label->setContentsMargins(horizontalMargin, 0, horizontalMargin, 0);
+    }
 
-    connect(m_widthSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &SizeEdit::valueChanged);
-    connect(m_heightSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &SizeEdit::valueChanged);
+    m_widgetPairs = widgetPairs;
+
+    addWidgetsToLayout();
 }
 
-
-void SizeEdit::setValue(const QSize &size)
-{
-    m_widthSpinBox->setValue(size.width());
-    m_heightSpinBox->setValue(size.height());
-}
-
-QSize SizeEdit::value() const
-{
-    return QSize(m_widthSpinBox->value(), m_heightSpinBox->value());
-}
-
-void SizeEdit::resizeEvent(QResizeEvent *event)
+void ResponsivePairswiseWidget::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
 
@@ -139,40 +127,219 @@ void SizeEdit::resizeEvent(QResizeEvent *event)
     if (m_orientation != orientation) {
         m_orientation = orientation;
 
-        auto layout = qobject_cast<QGridLayout *>(this->layout());
+        auto layout = this->layout();
 
         // Remove all widgets from layout, without deleting them
-        layout->removeWidget(m_widthLabel);
-        layout->removeWidget(m_widthSpinBox);
-        layout->removeWidget(m_heightLabel);
-        layout->removeWidget(m_heightSpinBox);
-
-        if (orientation == Qt::Horizontal) {
-            layout->addWidget(m_widthLabel, 0, 0);
-            layout->addWidget(m_widthSpinBox, 0, 1);
-            layout->addWidget(m_heightLabel, 0, 2);
-            layout->addWidget(m_heightSpinBox, 0, 3);
-            layout->setColumnStretch(3, 1);
-        } else {
-            layout->addWidget(m_widthLabel, 0, 0);
-            layout->addWidget(m_widthSpinBox, 0, 1);
-            layout->addWidget(m_heightLabel, 1, 0);
-            layout->addWidget(m_heightSpinBox, 1, 1);
-            layout->setColumnStretch(3, 0);
+        for (auto &pair : m_widgetPairs) {
+            layout->removeWidget(pair.label);
+            layout->removeWidget(pair.widget);
         }
 
-        // this avoids flickering when the layout changes
+        addWidgetsToLayout();
+
+        // This avoids flickering when the layout changes
         layout->activate();
     }
 }
 
-int SizeEdit::minimumHorizontalWidth() const
+void ResponsivePairswiseWidget::addWidgetsToLayout()
 {
-    return m_widthLabel->minimumSizeHint().width() +
-            m_widthSpinBox->minimumSizeHint().width() +
-            m_heightLabel->minimumSizeHint().width() +
-            m_heightSpinBox->minimumSizeHint().width() +
-            layout()->spacing() * 3;
+    auto layout = qobject_cast<QGridLayout *>(this->layout());
+
+    const int maxColumns = m_orientation == Qt::Horizontal ? 4 : 2;
+    int row = 0;
+    int column = 0;
+
+    for (auto &pair : m_widgetPairs) {
+        layout->addWidget(pair.label, row, column);
+        layout->addWidget(pair.widget, row, column + 1);
+        column += 2;
+
+        if (column == maxColumns) {
+            column = 0;
+            ++row;
+        }
+    }
+
+    layout->setColumnStretch(3, m_orientation == Qt::Horizontal ? 1 : 0);
+}
+
+int ResponsivePairswiseWidget::minimumHorizontalWidth() const
+{
+    const int spacing = layout()->spacing();
+    int sum = 0;
+    int minimum = 0;
+    int index = 0;
+
+    for (auto &pair : m_widgetPairs) {
+        sum += (pair.label->minimumSizeHint().width() +
+                pair.widget->minimumSizeHint().width() +
+                spacing * 2);
+
+        if (++index % 2 == 0) {
+            minimum = std::max(sum - spacing, minimum);
+            sum = 0;
+        }
+    }
+
+    return minimum;
+}
+
+
+SizeEdit::SizeEdit(QWidget *parent)
+    : ResponsivePairswiseWidget(parent)
+    , m_widthLabel(new QLabel(QStringLiteral("W"), this))
+    , m_heightLabel(new QLabel(QStringLiteral("H"), this))
+    , m_widthSpinBox(new SpinBox(this))
+    , m_heightSpinBox(new SpinBox(this))
+{
+    setWidgetPairs({
+                       { m_widthLabel, m_widthSpinBox },
+                       { m_heightLabel, m_heightSpinBox },
+                   });
+
+    connect(m_widthSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &SizeEdit::valueChanged);
+    connect(m_heightSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &SizeEdit::valueChanged);
+}
+
+void SizeEdit::setValue(const QSize &size)
+{
+    m_widthSpinBox->setValue(size.width());
+    m_heightSpinBox->setValue(size.height());
+}
+
+QSize SizeEdit::value() const
+{
+    return QSize(m_widthSpinBox->value(),
+                 m_heightSpinBox->value());
+}
+
+
+SizeFEdit::SizeFEdit(QWidget *parent)
+    : ResponsivePairswiseWidget(parent)
+    , m_widthLabel(new QLabel(QStringLiteral("W"), this))
+    , m_heightLabel(new QLabel(QStringLiteral("H"), this))
+    , m_widthSpinBox(new DoubleSpinBox(this))
+    , m_heightSpinBox(new DoubleSpinBox(this))
+{
+    setWidgetPairs({
+                       { m_widthLabel, m_widthSpinBox },
+                       { m_heightLabel, m_heightSpinBox },
+                   });
+
+    connect(m_widthSpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &SizeFEdit::valueChanged);
+    connect(m_heightSpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &SizeFEdit::valueChanged);
+}
+
+void SizeFEdit::setValue(const QSizeF &size)
+{
+    m_widthSpinBox->setValue(size.width());
+    m_heightSpinBox->setValue(size.height());
+}
+
+QSizeF SizeFEdit::value() const
+{
+    return QSizeF(m_widthSpinBox->value(),
+                  m_heightSpinBox->value());
+}
+
+
+PointEdit::PointEdit(QWidget *parent)
+    : ResponsivePairswiseWidget(parent)
+    , m_xLabel(new QLabel(QStringLiteral("X"), this))
+    , m_yLabel(new QLabel(QStringLiteral("Y"), this))
+    , m_xSpinBox(new SpinBox(this))
+    , m_ySpinBox(new SpinBox(this))
+{
+    setWidgetPairs({
+                       { m_xLabel, m_xSpinBox },
+                       { m_yLabel, m_ySpinBox },
+                   });
+
+    connect(m_xSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &PointEdit::valueChanged);
+    connect(m_ySpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &PointEdit::valueChanged);
+}
+
+void PointEdit::setValue(const QPoint &point)
+{
+    m_xSpinBox->setValue(point.x());
+    m_ySpinBox->setValue(point.y());
+}
+
+QPoint PointEdit::value() const
+{
+    return QPoint(m_xSpinBox->value(),
+                  m_ySpinBox->value());
+}
+
+
+PointFEdit::PointFEdit(QWidget *parent)
+    : ResponsivePairswiseWidget(parent)
+    , m_xLabel(new QLabel(QStringLiteral("X"), this))
+    , m_yLabel(new QLabel(QStringLiteral("Y"), this))
+    , m_xSpinBox(new DoubleSpinBox(this))
+    , m_ySpinBox(new DoubleSpinBox(this))
+{
+    setWidgetPairs({
+                       { m_xLabel, m_xSpinBox },
+                       { m_yLabel, m_ySpinBox },
+                   });
+
+    connect(m_xSpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &PointFEdit::valueChanged);
+    connect(m_ySpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &PointFEdit::valueChanged);
+}
+
+void PointFEdit::setValue(const QPointF &point)
+{
+    m_xSpinBox->setValue(point.x());
+    m_ySpinBox->setValue(point.y());
+}
+
+QPointF PointFEdit::value() const
+{
+    return QPointF(m_xSpinBox->value(),
+                   m_ySpinBox->value());
+}
+
+
+RectFEdit::RectFEdit(QWidget *parent)
+    : ResponsivePairswiseWidget(parent)
+    , m_xLabel(new QLabel(QStringLiteral("X"), this))
+    , m_yLabel(new QLabel(QStringLiteral("Y"), this))
+    , m_widthLabel(new QLabel(QStringLiteral("W"), this))
+    , m_heightLabel(new QLabel(QStringLiteral("H"), this))
+    , m_xSpinBox(new DoubleSpinBox(this))
+    , m_ySpinBox(new DoubleSpinBox(this))
+    , m_widthSpinBox(new DoubleSpinBox(this))
+    , m_heightSpinBox(new DoubleSpinBox(this))
+{
+    setWidgetPairs({
+                       { m_xLabel, m_xSpinBox },
+                       { m_yLabel, m_ySpinBox },
+                       { m_widthLabel, m_widthSpinBox },
+                       { m_heightLabel, m_heightSpinBox },
+                   });
+
+    connect(m_xSpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &RectFEdit::valueChanged);
+    connect(m_ySpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &RectFEdit::valueChanged);
+    connect(m_widthSpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &RectFEdit::valueChanged);
+    connect(m_heightSpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &RectFEdit::valueChanged);
+}
+
+void RectFEdit::setValue(const QRectF &rect)
+{
+    m_xSpinBox->setValue(rect.x());
+    m_ySpinBox->setValue(rect.y());
+    m_widthSpinBox->setValue(rect.width());
+    m_heightSpinBox->setValue(rect.height());
+}
+
+QRectF RectFEdit::value() const
+{
+    return QRectF(m_xSpinBox->value(),
+                  m_ySpinBox->value(),
+                  m_widthSpinBox->value(),
+                  m_heightSpinBox->value());
 }
 
 

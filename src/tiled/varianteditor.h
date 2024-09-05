@@ -89,6 +89,21 @@ public:
     virtual QWidget *createEditor(Property *property, QWidget *parent) = 0;
 };
 
+struct IntEditorFactory : EditorFactory
+{
+    QWidget *createEditor(Property *property, QWidget *parent) override;
+};
+
+struct FloatEditorFactory : EditorFactory
+{
+    QWidget *createEditor(Property *property, QWidget *parent) override;
+
+    void setSuffix(const QString &suffix) { m_suffix = suffix; }
+
+private:
+    QString m_suffix;
+};
+
 /**
  * An editor factory that creates a combo box for enum properties.
  */
