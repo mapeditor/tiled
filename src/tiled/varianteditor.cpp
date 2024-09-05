@@ -28,6 +28,7 @@
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QComboBox>
+#include <QFontComboBox>
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -111,45 +112,41 @@ private:
     QString m_filter;
 };
 
-class IntEditorFactory : public EditorFactory
+QWidget *IntEditorFactory::createEditor(Property *property, QWidget *parent)
 {
-public:
-    QWidget *createEditor(Property *property, QWidget *parent) override
-    {
-        auto editor = new SpinBox(parent);
-        auto syncEditor = [=] {
-            const QSignalBlocker blocker(editor);
-            editor->setValue(property->value().toInt());
-        };
-        syncEditor();
+    auto editor = new SpinBox(parent);
+    auto syncEditor = [=] {
+        const QSignalBlocker blocker(editor);
+        editor->setValue(property->value().toInt());
+    };
+    syncEditor();
 
-        QObject::connect(property, &Property::valueChanged, editor, syncEditor);
-        QObject::connect(editor, qOverload<int>(&SpinBox::valueChanged),
-                         property, &Property::setValue);
+    QObject::connect(property, &Property::valueChanged, editor, syncEditor);
+    QObject::connect(editor, qOverload<int>(&SpinBox::valueChanged),
+                     property, &Property::setValue);
 
-        return editor;
-    }
-};
+    return editor;
+}
 
-class FloatEditorFactory : public EditorFactory
+
+QWidget *FloatEditorFactory::createEditor(Property *property, QWidget *parent)
 {
-public:
-    QWidget *createEditor(Property *property, QWidget *parent) override
-    {
-        auto editor = new DoubleSpinBox(parent);
-        auto syncEditor = [=] {
-            const QSignalBlocker blocker(editor);
-            editor->setValue(property->value().toDouble());
-        };
-        syncEditor();
+    auto editor = new DoubleSpinBox(parent);
+    editor->setSuffix(m_suffix);
 
-        QObject::connect(property, &Property::valueChanged, editor, syncEditor);
-        QObject::connect(editor, qOverload<double>(&DoubleSpinBox::valueChanged),
-                         property, &Property::setValue);
+    auto syncEditor = [=] {
+        const QSignalBlocker blocker(editor);
+        editor->setValue(property->value().toDouble());
+    };
+    syncEditor();
 
-        return editor;
-    }
-};
+    QObject::connect(property, &Property::valueChanged, editor, syncEditor);
+    QObject::connect(editor, qOverload<double>(&DoubleSpinBox::valueChanged),
+                     property, &Property::setValue);
+
+    return editor;
+}
+
 
 class BoolEditorFactory : public EditorFactory
 {
@@ -175,98 +172,49 @@ public:
     }
 };
 
-// todo: implement responsive layout (see SizeEdit)
 class PointEditorFactory : public EditorFactory
 {
 public:
     QWidget *createEditor(Property *property, QWidget *parent) override
     {
-        auto editor = new QWidget(parent);
-        auto horizontalLayout = new QHBoxLayout(editor);
-        horizontalLayout->setContentsMargins(QMargins());
-
-        auto xLabel = new QLabel(QStringLiteral("X"), editor);
-        horizontalLayout->addWidget(xLabel, 0, Qt::AlignRight);
-
-        auto xSpinBox = new SpinBox(editor);
-        xLabel->setBuddy(xSpinBox);
-        horizontalLayout->addWidget(xSpinBox, 1);
-
-        auto yLabel = new QLabel(QStringLiteral("Y"), editor);
-        horizontalLayout->addWidget(yLabel, 0, Qt::AlignRight);
-
-        auto ySpinBox = new SpinBox(editor);
-        yLabel->setBuddy(ySpinBox);
-        horizontalLayout->addWidget(ySpinBox, 1);
-
-        auto syncEditor = [=] {
-            const QSignalBlocker xBlocker(xSpinBox);
-            const QSignalBlocker yBlocker(ySpinBox);
-            const auto point = property->value().toPoint();
-            xSpinBox->setValue(point.x());
-            ySpinBox->setValue(point.y());
-        };
-        auto syncProperty = [=] {
-            property->setValue(QPoint(xSpinBox->value(), ySpinBox->value()));
+        auto editor = new PointEdit(parent);
+        auto syncEditor = [property, editor] {
+            const QSignalBlocker blocker(editor);
+            editor->setValue(property->value().toPoint());
         };
         syncEditor();
 
         QObject::connect(property, &Property::valueChanged, editor, syncEditor);
-        QObject::connect(xSpinBox, qOverload<int>(&SpinBox::valueChanged),
-                         property, syncProperty);
-        QObject::connect(ySpinBox, qOverload<int>(&SpinBox::valueChanged),
-                         property, syncProperty);
+        QObject::connect(editor, &PointEdit::valueChanged, property,
+                         [property, editor] {
+            property->setValue(editor->value());
+        });
 
         return editor;
     }
 };
 
-// todo: implement responsive layout (see SizeEdit)
 class PointFEditorFactory : public EditorFactory
 {
 public:
     QWidget *createEditor(Property *property, QWidget *parent) override
     {
-        auto editor = new QWidget(parent);
-        auto horizontalLayout = new QHBoxLayout(editor);
-        horizontalLayout->setContentsMargins(QMargins());
-
-        auto xLabel = new QLabel(QStringLiteral("X"), editor);
-        horizontalLayout->addWidget(xLabel, 0, Qt::AlignRight);
-
-        auto xSpinBox = new DoubleSpinBox(editor);
-        xLabel->setBuddy(xSpinBox);
-        horizontalLayout->addWidget(xSpinBox, 1);
-
-        auto yLabel = new QLabel(QStringLiteral("Y"), editor);
-        horizontalLayout->addWidget(yLabel, 0, Qt::AlignRight);
-
-        auto ySpinBox = new DoubleSpinBox(editor);
-        yLabel->setBuddy(ySpinBox);
-        horizontalLayout->addWidget(ySpinBox, 1);
-
-        auto syncEditor = [=] {
-            const QSignalBlocker xBlocker(xSpinBox);
-            const QSignalBlocker yBlocker(ySpinBox);
-            const auto point = property->value().toPointF();
-            xSpinBox->setValue(point.x());
-            ySpinBox->setValue(point.y());
-        };
-        auto syncProperty = [=] {
-            property->setValue(QPointF(xSpinBox->value(), ySpinBox->value()));
+        auto editor = new PointFEdit(parent);
+        auto syncEditor = [property, editor] {
+            const QSignalBlocker blocker(editor);
+            editor->setValue(property->value().toPointF());
         };
         syncEditor();
 
         QObject::connect(property, &Property::valueChanged, editor, syncEditor);
-        QObject::connect(xSpinBox, qOverload<double>(&DoubleSpinBox::valueChanged),
-                         property, syncProperty);
-        QObject::connect(ySpinBox, qOverload<double>(&DoubleSpinBox::valueChanged),
-                         property, syncProperty);
+        QObject::connect(editor, &PointFEdit::valueChanged, property,
+                         [property, editor] {
+            property->setValue(editor->value());
+        });
 
         return editor;
     }
 };
-
 
 class SizeEditorFactory : public EditorFactory
 {
@@ -290,75 +238,45 @@ public:
     }
 };
 
-// todo: implement responsive layout (see SizeEdit)
+class SizeFEditorFactory : public EditorFactory
+{
+public:
+    QWidget *createEditor(Property *property, QWidget *parent) override
+    {
+        auto editor = new SizeFEdit(parent);
+        auto syncEditor = [property, editor] {
+            const QSignalBlocker blocker(editor);
+            editor->setValue(property->value().toSizeF());
+        };
+        syncEditor();
+
+        QObject::connect(property, &Property::valueChanged, editor, syncEditor);
+        QObject::connect(editor, &SizeFEdit::valueChanged, property,
+                         [property, editor] {
+            property->setValue(editor->value());
+        });
+
+        return editor;
+    }
+};
+
 class RectFEditorFactory : public EditorFactory
 {
 public:
     QWidget *createEditor(Property *property, QWidget *parent) override
     {
-        auto editor = new QWidget(parent);
-        auto gridLayout = new QGridLayout(editor);
-        gridLayout->setContentsMargins(QMargins());
-        gridLayout->setColumnStretch(4, 1);
-
-        auto xLabel = new QLabel(QStringLiteral("X"), editor);
-        gridLayout->addWidget(xLabel, 0, 0, Qt::AlignRight);
-
-        auto xSpinBox = new DoubleSpinBox(editor);
-        xLabel->setBuddy(xSpinBox);
-        gridLayout->addWidget(xSpinBox, 0, 1);
-
-        auto yLabel = new QLabel(QStringLiteral("Y"), editor);
-        gridLayout->addWidget(yLabel, 0, 2, Qt::AlignRight);
-
-        auto ySpinBox = new DoubleSpinBox(editor);
-        yLabel->setBuddy(ySpinBox);
-        gridLayout->addWidget(ySpinBox, 0, 3);
-
-        auto widthLabel = new QLabel(QStringLiteral("W"), editor);
-        widthLabel->setToolTip(tr("Width"));
-        gridLayout->addWidget(widthLabel, 1, 0, Qt::AlignRight);
-
-        auto widthSpinBox = new DoubleSpinBox(editor);
-        widthLabel->setBuddy(widthSpinBox);
-        gridLayout->addWidget(widthSpinBox, 1, 1);
-
-        auto heightLabel = new QLabel(QStringLiteral("H"), editor);
-        heightLabel->setToolTip(tr("Height"));
-        gridLayout->addWidget(heightLabel, 1, 2, Qt::AlignRight);
-
-        auto heightSpinBox = new DoubleSpinBox(editor);
-        heightLabel->setBuddy(heightSpinBox);
-        gridLayout->addWidget(heightSpinBox, 1, 3);
-
-        auto syncEditor = [=] {
-            const QSignalBlocker xBlocker(xSpinBox);
-            const QSignalBlocker yBlocker(ySpinBox);
-            const QSignalBlocker widthBlocker(widthSpinBox);
-            const QSignalBlocker heightBlocker(heightSpinBox);
-            const auto rect = property->value().toRectF();
-            xSpinBox->setValue(rect.x());
-            ySpinBox->setValue(rect.y());
-            widthSpinBox->setValue(rect.width());
-            heightSpinBox->setValue(rect.height());
-        };
-        auto syncProperty = [=] {
-            property->setValue(QRectF(xSpinBox->value(),
-                                      ySpinBox->value(),
-                                      widthSpinBox->value(),
-                                      heightSpinBox->value()));
+        auto editor = new RectFEdit(parent);
+        auto syncEditor = [property, editor] {
+            const QSignalBlocker blocker(editor);
+            editor->setValue(property->value().toRectF());
         };
         syncEditor();
 
         QObject::connect(property, &Property::valueChanged, editor, syncEditor);
-        QObject::connect(xSpinBox, qOverload<double>(&DoubleSpinBox::valueChanged),
-                         property, syncProperty);
-        QObject::connect(ySpinBox, qOverload<double>(&DoubleSpinBox::valueChanged),
-                         property, syncProperty);
-        QObject::connect(widthSpinBox, qOverload<double>(&DoubleSpinBox::valueChanged),
-                         property, syncProperty);
-        QObject::connect(heightSpinBox, qOverload<double>(&DoubleSpinBox::valueChanged),
-                         property, syncProperty);
+        QObject::connect(editor, &RectFEdit::valueChanged, property,
+                         [property, editor] {
+            property->setValue(editor->value());
+        });
 
         return editor;
     }
@@ -382,6 +300,132 @@ public:
                          [property, editor] {
             property->setValue(editor->color());
         });
+
+        return editor;
+    }
+};
+
+class FontEditorFactory : public EditorFactory
+{
+public:
+    QWidget *createEditor(Property *property, QWidget *parent) override
+    {
+        auto editor = new QWidget(parent);
+        auto layout = new QVBoxLayout(editor);
+        auto fontComboBox = new QFontComboBox(editor);
+        auto sizeSpinBox = new QSpinBox(editor);
+        auto boldCheckBox = new QCheckBox(tr("Bold"), editor);
+        auto italicCheckBox = new QCheckBox(tr("Italic"), editor);
+        auto underlineCheckBox = new QCheckBox(tr("Underline"), editor);
+        auto strikeoutCheckBox = new QCheckBox(tr("Strikeout"), editor);
+        auto kerningCheckBox = new QCheckBox(tr("Kerning"), editor);
+        sizeSpinBox->setRange(1, 999);
+        sizeSpinBox->setSuffix(tr(" px"));
+        sizeSpinBox->setKeyboardTracking(false);
+        layout->setContentsMargins(QMargins());
+        layout->setSpacing(Utils::dpiScaled(3));
+        layout->addWidget(fontComboBox);
+        layout->addWidget(sizeSpinBox);
+        layout->addWidget(boldCheckBox);
+        layout->addWidget(italicCheckBox);
+        layout->addWidget(underlineCheckBox);
+        layout->addWidget(strikeoutCheckBox);
+        layout->addWidget(kerningCheckBox);
+
+        auto syncEditor = [=] {
+            const auto font = property->value().value<QFont>();
+            const QSignalBlocker fontBlocker(fontComboBox);
+            const QSignalBlocker sizeBlocker(sizeSpinBox);
+            const QSignalBlocker boldBlocker(boldCheckBox);
+            const QSignalBlocker italicBlocker(italicCheckBox);
+            const QSignalBlocker underlineBlocker(underlineCheckBox);
+            const QSignalBlocker strikeoutBlocker(strikeoutCheckBox);
+            const QSignalBlocker kerningBlocker(kerningCheckBox);
+            fontComboBox->setCurrentFont(font);
+            sizeSpinBox->setValue(font.pixelSize());
+            boldCheckBox->setChecked(font.bold());
+            italicCheckBox->setChecked(font.italic());
+            underlineCheckBox->setChecked(font.underline());
+            strikeoutCheckBox->setChecked(font.strikeOut());
+            kerningCheckBox->setChecked(font.kerning());
+        };
+
+        auto syncProperty = [=] {
+            auto font = fontComboBox->currentFont();
+            font.setPixelSize(sizeSpinBox->value());
+            font.setBold(boldCheckBox->isChecked());
+            font.setItalic(italicCheckBox->isChecked());
+            font.setUnderline(underlineCheckBox->isChecked());
+            font.setStrikeOut(strikeoutCheckBox->isChecked());
+            font.setKerning(kerningCheckBox->isChecked());
+            property->setValue(font);
+        };
+
+        syncEditor();
+
+        QObject::connect(property, &Property::valueChanged, fontComboBox, syncEditor);
+        QObject::connect(fontComboBox, &QFontComboBox::currentFontChanged, property, syncProperty);
+        QObject::connect(sizeSpinBox, qOverload<int>(&QSpinBox::valueChanged), property, syncProperty);
+        QObject::connect(boldCheckBox, &QCheckBox::toggled, property, syncProperty);
+        QObject::connect(italicCheckBox, &QCheckBox::toggled, property, syncProperty);
+        QObject::connect(underlineCheckBox, &QCheckBox::toggled, property, syncProperty);
+        QObject::connect(strikeoutCheckBox, &QCheckBox::toggled, property, syncProperty);
+        QObject::connect(kerningCheckBox, &QCheckBox::toggled, property, syncProperty);
+
+        return editor;
+    }
+};
+
+class AlignmentEditorFactory : public EditorFactory
+{
+public:
+    QWidget *createEditor(Property *property, QWidget *parent) override
+    {
+        auto editor = new QWidget(parent);
+        auto layout = new QGridLayout(editor);
+        layout->setContentsMargins(QMargins());
+        layout->setSpacing(Utils::dpiScaled(3));
+
+        auto horizontalLabel = new ElidingLabel(tr("Horizontal"), editor);
+        layout->addWidget(horizontalLabel, 0, 0);
+
+        auto verticalLabel = new ElidingLabel(tr("Vertical"), editor);
+        layout->addWidget(verticalLabel, 1, 0);
+
+        auto horizontalComboBox = new QComboBox(editor);
+        horizontalComboBox->addItem(tr("Left"), Qt::AlignLeft);
+        horizontalComboBox->addItem(tr("Center"), Qt::AlignHCenter);
+        horizontalComboBox->addItem(tr("Right"), Qt::AlignRight);
+        horizontalComboBox->addItem(tr("Justify"), Qt::AlignJustify);
+        layout->addWidget(horizontalComboBox, 0, 1);
+
+        auto verticalComboBox = new QComboBox(editor);
+        verticalComboBox->addItem(tr("Top"), Qt::AlignTop);
+        verticalComboBox->addItem(tr("Center"), Qt::AlignVCenter);
+        verticalComboBox->addItem(tr("Bottom"), Qt::AlignBottom);
+        layout->addWidget(verticalComboBox, 1, 1);
+
+        layout->setColumnStretch(1, 1);
+
+        auto syncEditor = [=] {
+            const QSignalBlocker horizontalBlocker(horizontalComboBox);
+            const QSignalBlocker verticalBlocker(verticalComboBox);
+            const auto alignment = property->value().value<Qt::Alignment>();
+            horizontalComboBox->setCurrentIndex(horizontalComboBox->findData(static_cast<int>(alignment & Qt::AlignHorizontal_Mask)));
+            verticalComboBox->setCurrentIndex(verticalComboBox->findData(static_cast<int>(alignment & Qt::AlignVertical_Mask)));
+        };
+
+        auto syncProperty = [=] {
+            const Qt::Alignment alignment(horizontalComboBox->currentData().toInt() |
+                                          verticalComboBox->currentData().toInt());
+            property->setValue(QVariant::fromValue(alignment));
+        };
+
+        syncEditor();
+
+        QObject::connect(property, &Property::valueChanged, editor, syncEditor);
+        QObject::connect(horizontalComboBox, qOverload<int>(&QComboBox::currentIndexChanged), property, syncProperty);
+        QObject::connect(verticalComboBox, qOverload<int>(&QComboBox::currentIndexChanged), property, syncProperty);
 
         return editor;
     }
@@ -425,7 +469,7 @@ VariantEditor::VariantEditor(QWidget *parent)
     : QScrollArea(parent)
 {
     m_widget = new QWidget;
-    m_widget->setBackgroundRole(QPalette::Base);
+    m_widget->setBackgroundRole(QPalette::AlternateBase);
     auto verticalLayout = new QVBoxLayout(m_widget);
     m_gridLayout = new QGridLayout;
     verticalLayout->addLayout(m_gridLayout);
@@ -555,7 +599,6 @@ QWidget *VariantEditor::createEditor(Property *property)
 }
 
 
-
 EnumEditorFactory::EnumEditorFactory(const QStringList &enumNames,
                                      const QList<int> &enumValues)
     : m_enumNamesModel(enumNames)
@@ -605,12 +648,15 @@ ValueTypeEditorFactory::ValueTypeEditorFactory()
     registerEditorFactory(QMetaType::Double, std::make_unique<FloatEditorFactory>());
     registerEditorFactory(QMetaType::Int, std::make_unique<IntEditorFactory>());
     registerEditorFactory(QMetaType::QColor, std::make_unique<ColorEditorFactory>());
+    registerEditorFactory(QMetaType::QFont, std::make_unique<FontEditorFactory>());
     registerEditorFactory(QMetaType::QPoint, std::make_unique<PointEditorFactory>());
     registerEditorFactory(QMetaType::QPointF, std::make_unique<PointFEditorFactory>());
     registerEditorFactory(QMetaType::QRectF, std::make_unique<RectFEditorFactory>());
     registerEditorFactory(QMetaType::QSize, std::make_unique<SizeEditorFactory>());
+    registerEditorFactory(QMetaType::QSizeF, std::make_unique<SizeFEditorFactory>());
     registerEditorFactory(QMetaType::QString, std::make_unique<StringEditorFactory>());
     registerEditorFactory(QMetaType::QUrl, std::make_unique<UrlEditorFactory>());
+    registerEditorFactory(qMetaTypeId<Qt::Alignment>(), std::make_unique<AlignmentEditorFactory>());
 }
 
 void ValueTypeEditorFactory::registerEditorFactory(int type, std::unique_ptr<EditorFactory> factory)

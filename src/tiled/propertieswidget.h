@@ -30,6 +30,7 @@ class Object;
 
 class Document;
 class EditorFactory;
+class ObjectProperties;
 class ValueTypeEditorFactory;
 class VariantEditor;
 
@@ -81,7 +82,7 @@ private:
     void retranslateUi();
 
     Document *mDocument = nullptr;
-    QObject *mPropertiesObject = nullptr;
+    ObjectProperties *mPropertiesObject = nullptr;
     VariantEditor *mPropertyBrowser;
     std::unique_ptr<ValueTypeEditorFactory> mDefaultEditorFactory;
     QAction *mActionAddProperty;
