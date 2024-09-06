@@ -20,7 +20,9 @@
 
 #include "wangcolormodel.h"
 
+#include "changeevents.h"
 #include "changewangcolordata.h"
+#include "mapdocument.h"
 #include "tileset.h"
 #include "tilesetdocument.h"
 #include "wangset.h"

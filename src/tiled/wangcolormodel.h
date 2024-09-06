@@ -28,6 +28,7 @@ namespace Tiled {
 
 class Tileset;
 
+class ChangeEvent;
 class TilesetDocument;
 
 class WangColorModel : public QAbstractListModel
