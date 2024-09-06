@@ -63,7 +63,7 @@ namespace Tiled {
 PropertiesWidget::PropertiesWidget(QWidget *parent)
     : QWidget{parent}
     , mPropertyBrowser(new VariantEditor(this))
-    , mDefaultEditorFactory(std::make_unique<ValueTypeEditorFactory>())
+    , mPropertyFactory(std::make_unique<PropertyFactory>())
 {
     mActionAddProperty = new QAction(this);
     mActionAddProperty->setEnabled(false);
@@ -307,11 +307,11 @@ class MapProperties : public ObjectProperties
 
 public:
     MapProperties(MapDocument *document,
-                  ValueTypeEditorFactory *editorFactory,
+                  PropertyFactory *propertyFactory,
                   QObject *parent = nullptr)
         : ObjectProperties(document, document->map(), parent)
     {
-        mOrientationProperty = editorFactory->createProperty(
+        mOrientationProperty = propertyFactory->createProperty(
                     tr("Orientation"),
                     [this]() {
                         return QVariant::fromValue(map()->orientation());
@@ -367,7 +367,7 @@ public:
                                                    value.toInt()));
                     });
 
-        mStaggerAxisProperty = editorFactory->createProperty(
+        mStaggerAxisProperty = propertyFactory->createProperty(
                     tr("Stagger Axis"),
                     [this]() {
                         return QVariant::fromValue(map()->staggerAxis());
@@ -377,7 +377,7 @@ public:
                         push(new ChangeMapProperty(mapDocument(), staggerAxis));
                     });
 
-        mStaggerIndexProperty = editorFactory->createProperty(
+        mStaggerIndexProperty = propertyFactory->createProperty(
                     tr("Stagger Index"),
                     [this]() {
                         return QVariant::fromValue(map()->staggerIndex());
@@ -387,7 +387,7 @@ public:
                         push(new ChangeMapProperty(mapDocument(), staggerIndex));
                     });
 
-        mParallaxOriginProperty = editorFactory->createProperty(
+        mParallaxOriginProperty = propertyFactory->createProperty(
                     tr("Parallax Origin"),
                     [this]() {
                         return map()->parallaxOrigin();
@@ -396,7 +396,7 @@ public:
                         push(new ChangeMapProperty(mapDocument(), value.value<QPointF>()));
                     });
 
-        mLayerDataFormatProperty = editorFactory->createProperty(
+        mLayerDataFormatProperty = propertyFactory->createProperty(
                     tr("Layer Data Format"),
                     [this]() {
                         return QVariant::fromValue(map()->layerDataFormat());
@@ -406,7 +406,7 @@ public:
                         push(new ChangeMapProperty(mapDocument(), layerDataFormat));
                     });
 
-        mChunkSizeProperty = editorFactory->createProperty(
+        mChunkSizeProperty = propertyFactory->createProperty(
                     tr("Output Chunk Size"),
                     [this]() {
                         return map()->chunkSize();
@@ -415,7 +415,7 @@ public:
                         push(new ChangeMapProperty(mapDocument(), value.toSize()));
                     });
 
-        mRenderOrderProperty = editorFactory->createProperty(
+        mRenderOrderProperty = propertyFactory->createProperty(
                     tr("Tile Render Order"),
                     [this]() {
                         return QVariant::fromValue(map()->renderOrder());
@@ -425,7 +425,7 @@ public:
                         push(new ChangeMapProperty(mapDocument(), renderOrder));
                     });
 
-        mCompressionLevelProperty = editorFactory->createProperty(
+        mCompressionLevelProperty = propertyFactory->createProperty(
                     tr("Compression Level"),
                     [this]() {
                         return map()->compressionLevel();
@@ -434,7 +434,7 @@ public:
                         push(new ChangeMapProperty(mapDocument(), value.toInt()));
                     });
 
-        mBackgroundColorProperty = editorFactory->createProperty(
+        mBackgroundColorProperty = propertyFactory->createProperty(
                     tr("Background Color"),
                     [this]() {
                         return map()->backgroundColor();
@@ -576,12 +576,12 @@ class LayerProperties : public ObjectProperties
     Q_OBJECT
 
 public:
-    LayerProperties(MapDocument *document, Layer *object, ValueTypeEditorFactory *editorFactory, QObject *parent = nullptr)
+    LayerProperties(MapDocument *document, Layer *object, PropertyFactory *propertyFactory, QObject *parent = nullptr)
         : ObjectProperties(document, object, parent)
     {
         // todo: would be nicer to avoid the SpinBox and use a custom widget
         // might also be nice to embed this in the header instead of using a property
-        mIdProperty = editorFactory->createProperty(
+        mIdProperty = propertyFactory->createProperty(
                     tr("ID"),
                     [this]() { return layer()->id(); },
                     [](const QVariant &) {});
@@ -589,21 +589,21 @@ public:
 
         // todo: the below should be able to apply to all selected layers
 
-        mNameProperty = editorFactory->createProperty(
+        mNameProperty = propertyFactory->createProperty(
                     tr("Name"),
                     [this]() { return layer()->name(); },
                     [this](const QVariant &value) {
                         push(new SetLayerName(mapDocument(), { layer() }, value.toString()));
                     });
 
-        mVisibleProperty = editorFactory->createProperty(
+        mVisibleProperty = propertyFactory->createProperty(
                     tr("Visible"),
                     [this]() { return layer()->isVisible(); },
                     [this](const QVariant &value) {
                         push(new SetLayerVisible(mapDocument(), { layer() }, value.toBool()));
                     });
 
-        mLockedProperty = editorFactory->createProperty(
+        mLockedProperty = propertyFactory->createProperty(
                     tr("Locked"),
                     [this]() { return layer()->isLocked(); },
                     [this](const QVariant &value) {
@@ -612,21 +612,21 @@ public:
 
         // todo: value should be between 0 and 1, and would be nice to use a slider (replacing the one in Layers view)
         // todo: singleStep should be 0.1
-        mOpacityProperty = editorFactory->createProperty(
+        mOpacityProperty = propertyFactory->createProperty(
                     tr("Opacity"),
                     [this]() { return layer()->opacity(); },
                     [this](const QVariant &value) {
                         push(new SetLayerOpacity(mapDocument(), { layer() }, value.toReal()));
                     });
 
-        mTintColorProperty = editorFactory->createProperty(
+        mTintColorProperty = propertyFactory->createProperty(
                     tr("Tint Color"),
                     [this]() { return layer()->tintColor(); },
                     [this](const QVariant &value) {
                         push(new SetLayerTintColor(mapDocument(), { layer() }, value.value<QColor>()));
                     });
 
-        mOffsetProperty = editorFactory->createProperty(
+        mOffsetProperty = propertyFactory->createProperty(
                     tr("Offset"),
                     [this]() { return layer()->offset(); },
                     [this](const QVariant &value) {
@@ -634,7 +634,7 @@ public:
                     });
 
         // todo: singleStep should be 0.1
-        mParallaxFactorProperty = editorFactory->createProperty(
+        mParallaxFactorProperty = propertyFactory->createProperty(
                     tr("Parallax Factor"),
                     [this]() { return layer()->parallaxFactor(); },
                     [this](const QVariant &value) {
@@ -709,18 +709,18 @@ class ImageLayerProperties : public LayerProperties
     Q_OBJECT
 
 public:
-    ImageLayerProperties(MapDocument *document, ImageLayer *object, ValueTypeEditorFactory *editorFactory, QObject *parent = nullptr)
-        : LayerProperties(document, object, editorFactory, parent)
+    ImageLayerProperties(MapDocument *document, ImageLayer *object, PropertyFactory *propertyFactory, QObject *parent = nullptr)
+        : LayerProperties(document, object, propertyFactory, parent)
     {
         // todo: set a file filter for selecting images (or map files?)
-        mImageProperty = editorFactory->createProperty(
+        mImageProperty = propertyFactory->createProperty(
                     tr("Image Source"),
                     [this]() { return imageLayer()->imageSource(); },
                     [this](const QVariant &value) {
                         push(new ChangeImageLayerImageSource(mapDocument(), { imageLayer() }, value.toUrl()));
                     });
 
-        mTransparentColorProperty = editorFactory->createProperty(
+        mTransparentColorProperty = propertyFactory->createProperty(
                     tr("Transparent Color"),
                     [this]() { return imageLayer()->transparentColor(); },
                     [this](const QVariant &value) {
@@ -728,14 +728,14 @@ public:
                     });
 
         // todo: consider merging Repeat X and Y into a single property
-        mRepeatXProperty = editorFactory->createProperty(
+        mRepeatXProperty = propertyFactory->createProperty(
                     tr("Repeat X"),
                     [this]() { return imageLayer()->repeatX(); },
                     [this](const QVariant &value) {
                         push(new ChangeImageLayerRepeatX(mapDocument(), { imageLayer() }, value.toBool()));
                     });
 
-        mRepeatYProperty = editorFactory->createProperty(
+        mRepeatYProperty = propertyFactory->createProperty(
                     tr("Repeat Y"),
                     [this]() { return imageLayer()->repeatY(); },
                     [this](const QVariant &value) {
@@ -792,17 +792,17 @@ class ObjectGroupProperties : public LayerProperties
     Q_OBJECT
 
 public:
-    ObjectGroupProperties(MapDocument *document, ObjectGroup *object, ValueTypeEditorFactory *editorFactory, QObject *parent = nullptr)
-        : LayerProperties(document, object, editorFactory, parent)
+    ObjectGroupProperties(MapDocument *document, ObjectGroup *object, PropertyFactory *propertyFactory, QObject *parent = nullptr)
+        : LayerProperties(document, object, propertyFactory, parent)
     {
-        mColorProperty = editorFactory->createProperty(
+        mColorProperty = propertyFactory->createProperty(
                     tr("Color"),
                     [this]() { return objectGroup()->color(); },
                     [this](const QVariant &value) {
                         push(new ChangeObjectGroupColor(mapDocument(), { objectGroup() }, value.value<QColor>()));
                     });
 
-        mDrawOrderProperty = editorFactory->createProperty(
+        mDrawOrderProperty = propertyFactory->createProperty(
                     tr("Draw Order"),
                     [this]() { return QVariant::fromValue(objectGroup()->drawOrder()); },
                     [this](const QVariant &value) {
@@ -852,11 +852,11 @@ class TilesetProperties : public ObjectProperties
 
 public:
     TilesetProperties(TilesetDocument *document,
-                      ValueTypeEditorFactory *editorFactory,
+                      PropertyFactory *propertyFactory,
                       QObject *parent = nullptr)
         : ObjectProperties(document, document->tileset().data(), parent)
     {
-        mNameProperty = editorFactory->createProperty(
+        mNameProperty = propertyFactory->createProperty(
                     tr("Name"),
                     [this]() {
                         return tilesetDocument()->tileset()->name();
@@ -865,7 +865,7 @@ public:
                         push(new RenameTileset(tilesetDocument(), value.toString()));
                     });
 
-        mObjectAlignmentProperty = editorFactory->createProperty(
+        mObjectAlignmentProperty = propertyFactory->createProperty(
                     tr("Object Alignment"),
                     [this]() {
                         return QVariant::fromValue(tileset()->objectAlignment());
@@ -875,7 +875,7 @@ public:
                         push(new ChangeTilesetObjectAlignment(tilesetDocument(), objectAlignment));
                     });
 
-        mTileOffsetProperty = editorFactory->createProperty(
+        mTileOffsetProperty = propertyFactory->createProperty(
                     tr("Drawing Offset"),
                     [this]() {
                         return tileset()->tileOffset();
@@ -884,7 +884,7 @@ public:
                         push(new ChangeTilesetTileOffset(tilesetDocument(), value.value<QPoint>()));
                     });
 
-        mTileRenderSizeProperty = editorFactory->createProperty(
+        mTileRenderSizeProperty = propertyFactory->createProperty(
                     tr("Tile Render Size"),
                     [this]() {
                         return QVariant::fromValue(tileset()->tileRenderSize());
@@ -894,7 +894,7 @@ public:
                         push(new ChangeTilesetTileRenderSize(tilesetDocument(), tileRenderSize));
                     });
 
-        mFillModeProperty = editorFactory->createProperty(
+        mFillModeProperty = propertyFactory->createProperty(
                     tr("Fill Mode"),
                     [this]() {
                         return QVariant::fromValue(tileset()->fillMode());
@@ -904,7 +904,7 @@ public:
                         push(new ChangeTilesetFillMode(tilesetDocument(), fillMode));
                     });
 
-        mBackgroundColorProperty = editorFactory->createProperty(
+        mBackgroundColorProperty = propertyFactory->createProperty(
                     tr("Background Color"),
                     [this]() {
                         return tileset()->backgroundColor();
@@ -913,7 +913,7 @@ public:
                         push(new ChangeTilesetBackgroundColor(tilesetDocument(), value.value<QColor>()));
                     });
 
-        mOrientationProperty = editorFactory->createProperty(
+        mOrientationProperty = propertyFactory->createProperty(
                     tr("Orientation"),
                     [this]() {
                         return QVariant::fromValue(tileset()->orientation());
@@ -923,7 +923,7 @@ public:
                         push(new ChangeTilesetOrientation(tilesetDocument(), orientation));
                     });
 
-        mGridSizeProperty = editorFactory->createProperty(
+        mGridSizeProperty = propertyFactory->createProperty(
                     tr("Grid Size"),
                     [this]() {
                         return tileset()->gridSize();
@@ -933,7 +933,7 @@ public:
                     });
 
         // todo: needs 1 as minimum value
-        mColumnCountProperty = editorFactory->createProperty(
+        mColumnCountProperty = propertyFactory->createProperty(
                     tr("Columns"),
                     [this]() {
                         return tileset()->columnCount();
@@ -943,7 +943,7 @@ public:
                     });
 
         // todo: this needs a custom widget
-        mAllowedTransformationsProperty = editorFactory->createProperty(
+        mAllowedTransformationsProperty = propertyFactory->createProperty(
                     tr("Allowed Transformations"),
                     [this]() {
                         return QVariant::fromValue(tileset()->transformationFlags());
@@ -954,7 +954,7 @@ public:
                     });
 
         // todo: this needs a custom widget
-        mImageProperty = editorFactory->createProperty(
+        mImageProperty = propertyFactory->createProperty(
                     tr("Image"),
                     [this]() {
                         return tileset()->imageSource().toString();
@@ -1058,7 +1058,7 @@ class MapObjectProperties : public ObjectProperties
     Q_OBJECT
 
 public:
-    MapObjectProperties(MapDocument *document, MapObject *object, ValueTypeEditorFactory *editorFactory, QObject *parent = nullptr)
+    MapObjectProperties(MapDocument *document, MapObject *object, PropertyFactory *propertyFactory, QObject *parent = nullptr)
         : ObjectProperties(document, object, parent)
     {
         mIdProperty = new IntProperty(
@@ -1075,7 +1075,7 @@ public:
                     });
         mTemplateProperty->setEnabled(false);
 
-        mNameProperty = editorFactory->createProperty(
+        mNameProperty = propertyFactory->createProperty(
                     tr("Name"),
                     [this]() {
                         return mapObject()->name();
@@ -1084,7 +1084,7 @@ public:
                         changeMapObject(MapObject::NameProperty, value);
                     });
 
-        mVisibleProperty = editorFactory->createProperty(
+        mVisibleProperty = propertyFactory->createProperty(
                     tr("Visible"),
                     [this]() {
                         return mapObject()->isVisible();
@@ -1093,7 +1093,7 @@ public:
                         changeMapObject(MapObject::VisibleProperty, value);
                     });
 
-        mPositionProperty = editorFactory->createProperty(
+        mPositionProperty = propertyFactory->createProperty(
                     tr("Position"),
                     [this]() {
                         return mapObject()->position();
@@ -1102,7 +1102,7 @@ public:
                         changeMapObject(MapObject::PositionProperty, value);
                     });
 
-        mSizeProperty = editorFactory->createProperty(
+        mSizeProperty = propertyFactory->createProperty(
                     tr("Size"),
                     [this]() {
                         return mapObject()->size();
@@ -1123,7 +1123,7 @@ public:
         mRotationProperty->setSuffix(QStringLiteral("°"));
 
         // todo: make this a custom widget with "Horizontal" and "Vertical" checkboxes
-        mFlippingProperty = editorFactory->createProperty(
+        mFlippingProperty = propertyFactory->createProperty(
                     tr("Flipping"),
                     [this]() {
                         return mapObject()->cell().flags();
@@ -1146,7 +1146,7 @@ public:
                         push(command);
                     });
 
-        mTextProperty = editorFactory->createProperty(
+        mTextProperty = propertyFactory->createProperty(
                     tr("Text"),
                     [this]() {
                         return mapObject()->textData().text;
@@ -1155,7 +1155,7 @@ public:
                         changeMapObject(MapObject::TextProperty, value);
                     });
 
-        mTextAlignmentProperty = editorFactory->createProperty(
+        mTextAlignmentProperty = propertyFactory->createProperty(
                     tr("Alignment"),
                     [this]() {
                         return QVariant::fromValue(mapObject()->textData().alignment);
@@ -1164,7 +1164,7 @@ public:
                         changeMapObject(MapObject::TextAlignmentProperty, value);
                     });
 
-        mTextFontProperty = editorFactory->createProperty(
+        mTextFontProperty = propertyFactory->createProperty(
                     tr("Font"),
                     [this]() {
                         return mapObject()->textData().font;
@@ -1173,7 +1173,7 @@ public:
                         changeMapObject(MapObject::TextFontProperty, value);
                     });
 
-        mTextWordWrapProperty = editorFactory->createProperty(
+        mTextWordWrapProperty = propertyFactory->createProperty(
                     tr("Word Wrap"),
                     [this]() {
                         return mapObject()->textData().wordWrap;
@@ -1182,7 +1182,7 @@ public:
                         changeMapObject(MapObject::TextWordWrapProperty, value);
                     });
 
-        mTextColorProperty = editorFactory->createProperty(
+        mTextColorProperty = propertyFactory->createProperty(
                     tr("Text Color"),
                     [this]() {
                         return mapObject()->textData().color;
@@ -1320,17 +1320,17 @@ class TileProperties : public ObjectProperties
     Q_OBJECT
 
 public:
-    TileProperties(Document *document, Tile *object, ValueTypeEditorFactory *editorFactory, QObject *parent = nullptr)
+    TileProperties(Document *document, Tile *object, PropertyFactory *propertyFactory, QObject *parent = nullptr)
         : ObjectProperties(document, object, parent)
     {
-        mIdProperty = editorFactory->createProperty(
+        mIdProperty = propertyFactory->createProperty(
                     tr("ID"),
                     [this]() { return tile()->id(); },
                     [](const QVariant &) {});
         mIdProperty->setEnabled(false);
 
         // todo: apply readableImageFormatsFilter
-        mImageProperty = editorFactory->createProperty(
+        mImageProperty = propertyFactory->createProperty(
                     tr("Image"),
                     [this]() { return tile()->imageSource(); },
                     [this](const QVariant &value) {
@@ -1339,7 +1339,7 @@ public:
                                                        value.toUrl()));
                     });
 
-        mRectangleProperty = editorFactory->createProperty(
+        mRectangleProperty = propertyFactory->createProperty(
                     tr("Rectangle"),
                     [this]() { return tile()->imageRect(); },
                     [this](const QVariant &value) {
@@ -1349,7 +1349,7 @@ public:
                     });
 
         // todo: minimum value should be 0
-        mProbabilityProperty = editorFactory->createProperty(
+        mProbabilityProperty = propertyFactory->createProperty(
                     tr("Probability"),
                     [this]() { return tile()->probability(); },
                     [this](const QVariant &value) {
@@ -1439,17 +1439,17 @@ class WangSetProperties : public ObjectProperties
 
 public:
     WangSetProperties(Document *document, WangSet *object,
-                      ValueTypeEditorFactory *editorFactory, QObject *parent = nullptr)
+                      PropertyFactory *propertyFactory, QObject *parent = nullptr)
         : ObjectProperties(document, object, parent)
     {
-        mNameProperty = editorFactory->createProperty(
+        mNameProperty = propertyFactory->createProperty(
                     tr("Name"),
                     [this]() { return wangSet()->name(); },
                     [this](const QVariant &value) {
                         push(new RenameWangSet(tilesetDocument(), wangSet(), value.toString()));
                     });
 
-        mTypeProperty = editorFactory->createProperty(
+        mTypeProperty = propertyFactory->createProperty(
                     tr("Type"),
                     [this]() { return QVariant::fromValue(wangSet()->type()); },
                     [this](const QVariant &value) {
@@ -1457,7 +1457,7 @@ public:
                     });
 
         // todo: keep between 0 and WangId::MAX_COLOR_COUNT
-        mColorCountProperty = editorFactory->createProperty(
+        mColorCountProperty = propertyFactory->createProperty(
                     tr("Color Count"),
                     [this]() { return wangSet()->colorCount(); },
                     [this](const QVariant &value) {
@@ -1536,17 +1536,17 @@ class WangColorProperties : public ObjectProperties
 
 public:
     WangColorProperties(Document *document, WangColor *object,
-                        ValueTypeEditorFactory *editorFactory, QObject *parent = nullptr)
+                        PropertyFactory *propertyFactory, QObject *parent = nullptr)
         : ObjectProperties(document, object, parent)
     {
-        mNameProperty = editorFactory->createProperty(
+        mNameProperty = propertyFactory->createProperty(
                     tr("Name"),
                     [this]() { return wangColor()->name(); },
                     [this](const QVariant &value) {
                         push(new ChangeWangColorName(tilesetDocument(), wangColor(), value.toString()));
                     });
 
-        mColorProperty = editorFactory->createProperty(
+        mColorProperty = propertyFactory->createProperty(
                     tr("Color"),
                     [this]() { return wangColor()->color(); },
                     [this](const QVariant &value) {
@@ -1554,7 +1554,7 @@ public:
                     });
 
         // todo: set 0.01 as minimum
-        mProbabilityProperty = editorFactory->createProperty(
+        mProbabilityProperty = propertyFactory->createProperty(
                     tr("Probability"),
                     [this]() { return wangColor()->probability(); },
                     [this](const QVariant &value) {
@@ -1643,48 +1643,48 @@ void PropertiesWidget::currentObjectChanged(Object *object)
             case Layer::ImageLayerType:
                 mPropertiesObject = new ImageLayerProperties(mapDocument,
                                                              static_cast<ImageLayer*>(object),
-                                                             mDefaultEditorFactory.get(), this);
+                                                             mPropertyFactory.get(), this);
                 break;
             case Layer::ObjectGroupType:
                 mPropertiesObject = new ObjectGroupProperties(mapDocument,
                                                               static_cast<ObjectGroup*>(object),
-                                                              mDefaultEditorFactory.get(), this);
+                                                              mPropertyFactory.get(), this);
                 break;
             case Layer::TileLayerType:
             case Layer::GroupLayerType:
                 mPropertiesObject = new LayerProperties(mapDocument,
                                                         static_cast<ImageLayer*>(object),
-                                                        mDefaultEditorFactory.get(), this);
+                                                        mPropertyFactory.get(), this);
                 break;
             }
             break;
         }
         case Object::MapObjectType:
             mPropertiesObject = new MapObjectProperties(static_cast<MapDocument*>(mDocument),
-                                                        static_cast<MapObject*>(object), mDefaultEditorFactory.get(), this);
+                                                        static_cast<MapObject*>(object), mPropertyFactory.get(), this);
             break;
         case Object::MapType:
             mPropertiesObject = new MapProperties(static_cast<MapDocument*>(mDocument),
-                                                  mDefaultEditorFactory.get(), this);
+                                                  mPropertyFactory.get(), this);
             break;
         case Object::TilesetType:
             mPropertiesObject = new TilesetProperties(static_cast<TilesetDocument*>(mDocument),
-                                                      mDefaultEditorFactory.get(), this);
+                                                      mPropertyFactory.get(), this);
             break;
         case Object::TileType:
             mPropertiesObject = new TileProperties(mDocument,
                                                    static_cast<Tile*>(object),
-                                                   mDefaultEditorFactory.get(), this);
+                                                   mPropertyFactory.get(), this);
             break;
         case Object::WangSetType:
             mPropertiesObject = new WangSetProperties(mDocument,
                                                       static_cast<WangSet*>(object),
-                                                      mDefaultEditorFactory.get(), this);
+                                                      mPropertyFactory.get(), this);
             break;
         case Object::WangColorType:
             mPropertiesObject = new WangColorProperties(mDocument,
                                                         static_cast<WangColor*>(object),
-                                                        mDefaultEditorFactory.get(), this);
+                                                        mPropertyFactory.get(), this);
             break;
         case Object::ProjectType:
         case Object::WorldType:
@@ -2203,7 +2203,7 @@ void PropertiesWidget::registerEditorFactories()
 
 void PropertiesWidget::registerEditorFactory(int type, std::unique_ptr<EditorFactory> factory)
 {
-    mDefaultEditorFactory->registerEditorFactory(type, std::move(factory));
+    mPropertyFactory->registerEditorFactory(type, std::move(factory));
 }
 
 void PropertiesWidget::retranslateUi()
