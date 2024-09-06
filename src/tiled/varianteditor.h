@@ -101,19 +101,129 @@ public:
     virtual QWidget *createEditor(Property *property, QWidget *parent) = 0;
 };
 
-struct IntEditorFactory : EditorFactory
+/**
+ * A helper class for creating a property that wraps a value of a given type.
+ */
+template <typename Type>
+class PropertyTemplate : public Property
 {
-    QWidget *createEditor(Property *property, QWidget *parent) override;
+public:
+    using ValueType = Type;
+
+    PropertyTemplate(const QString &name,
+                     std::function<Type()> get,
+                     std::function<void(const Type&)> set = {},
+                     QObject *parent = nullptr)
+        : Property(name, parent)
+        , m_get(std::move(get))
+        , m_set(std::move(set))
+    {}
+
+    QVariant value() const override
+    {
+        return QVariant::fromValue(m_get());
+    }
+
+    void setValue(const QVariant &value) override
+    {
+        if (m_set)
+            m_set(value.value<Type>());
+    }
+
+protected:
+    std::function<Type()> m_get;
+    std::function<void(const Type&)> m_set;
 };
 
-struct FloatEditorFactory : EditorFactory
+struct StringProperty : PropertyTemplate<QString>
 {
-    QWidget *createEditor(Property *property, QWidget *parent) override;
+    using PropertyTemplate::PropertyTemplate;
+    QWidget *createEditor(QWidget *parent) override;
+};
 
+struct UrlProperty : PropertyTemplate<QUrl>
+{
+    using PropertyTemplate::PropertyTemplate;
+    QWidget *createEditor(QWidget *parent) override;
+    void setFilter(const QString &filter) { m_filter = filter; }
+private:
+    QString m_filter;
+};
+
+struct IntProperty : PropertyTemplate<int>
+{
+    using PropertyTemplate::PropertyTemplate;
+    QWidget *createEditor(QWidget *parent) override;
+};
+
+struct FloatProperty : PropertyTemplate<double>
+{
+    using PropertyTemplate::PropertyTemplate;
+    QWidget *createEditor(QWidget *parent) override;
     void setSuffix(const QString &suffix) { m_suffix = suffix; }
-
 private:
     QString m_suffix;
+};
+
+struct BoolProperty : PropertyTemplate<bool>
+{
+    using PropertyTemplate::PropertyTemplate;
+    QWidget *createEditor(QWidget *parent) override;
+};
+
+struct PointProperty : PropertyTemplate<QPoint>
+{
+    using PropertyTemplate::PropertyTemplate;
+    QWidget *createEditor(QWidget *parent) override;
+};
+
+struct PointFProperty : PropertyTemplate<QPointF>
+{
+    using PropertyTemplate::PropertyTemplate;
+    QWidget *createEditor(QWidget *parent) override;
+};
+
+struct SizeProperty : PropertyTemplate<QSize>
+{
+    using PropertyTemplate::PropertyTemplate;
+    QWidget *createEditor(QWidget *parent) override;
+};
+
+struct SizeFProperty : PropertyTemplate<QSizeF>
+{
+    using PropertyTemplate::PropertyTemplate;
+    QWidget *createEditor(QWidget *parent) override;
+};
+
+struct RectProperty : PropertyTemplate<QRect>
+{
+    using PropertyTemplate::PropertyTemplate;
+    QWidget *createEditor(QWidget *parent) override;
+};
+
+struct RectFProperty : PropertyTemplate<QRectF>
+{
+    using PropertyTemplate::PropertyTemplate;
+    QWidget *createEditor(QWidget *parent) override;
+};
+
+// todo: needs to handle invalid color (unset value)
+struct ColorProperty : PropertyTemplate<QColor>
+{
+    using PropertyTemplate::PropertyTemplate;
+    QWidget *createEditor(QWidget *parent) override;
+};
+
+struct FontProperty : PropertyTemplate<QFont>
+{
+    using PropertyTemplate::PropertyTemplate;
+    QWidget *createEditor(QWidget *parent) override;
+};
+
+struct AlignmentProperty : PropertyTemplate<Qt::Alignment>
+{
+    using PropertyTemplate::PropertyTemplate;
+    QWidget *createEditor(QWidget *parent) override;
 };
 
 /**
@@ -269,9 +379,9 @@ public:
      * property will use the editor factory registered for the type of the
      * value.
      */
-    AbstractProperty *createProperty(const QString &name,
-                                     std::function<QVariant()> get,
-                                     std::function<void(const QVariant&)> set);
+    Property *createProperty(const QString &name,
+                             std::function<QVariant()> get,
+                             std::function<void(const QVariant&)> set);
 
     QWidget *createEditor(Property *property, QWidget *parent) override;
 

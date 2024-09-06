@@ -171,27 +171,27 @@ static QStringList classNamesFor(const Object &object)
     return names;
 }
 
-class ClassProperty : public Property
+// todo: add support for changing multiple objects
+class ClassProperty : public StringProperty
 {
     Q_OBJECT
 
 public:
     ClassProperty(Document *document, Object *object, QObject *parent = nullptr)
-        : Property(tr("Class"), parent)
+        : StringProperty(tr("Class"),
+                         [this] { return mObject->className(); },
+                         [this] (const QString &value) {
+                             QUndoStack *undoStack = mDocument->undoStack();
+                             undoStack->push(new ChangeClassName(mDocument,
+                                                                 { mObject },
+                                                                 value));
+                         },
+                         parent)
         , mDocument(document)
         , mObject(object)
     {
         connect(mDocument, &Document::changed,
                 this, &ClassProperty::onChanged);
-    }
-
-    QVariant value() const override { return mObject->className(); }
-    void setValue(const QVariant &value) override
-    {
-        QUndoStack *undoStack = mDocument->undoStack();
-        undoStack->push(new ChangeClassName(mDocument,
-                                            { mObject },    // todo: add support for changing multiple objects
-                                            value.toString()));
     }
 
     QWidget *createEditor(QWidget *parent) override
@@ -232,28 +232,27 @@ private:
     Object *mObject;
 };
 
-class MapSizeProperty : public AbstractProperty
+class MapSizeProperty : public SizeProperty
 {
     Q_OBJECT
 
 public:
-    MapSizeProperty(MapDocument *mapDocument, EditorFactory *editorFactory,
+    MapSizeProperty(MapDocument *mapDocument,
                     QObject *parent = nullptr)
-        : AbstractProperty(tr("Map Size"), editorFactory, parent)
+        : SizeProperty(tr("Map Size"),
+                       [this]{ return mMapDocument->map()->size(); }, {},
+                       parent)
         , mMapDocument(mapDocument)
     {
         connect(mMapDocument, &MapDocument::mapChanged,
                 this, &Property::valueChanged);
     }
 
-    QVariant value() const override { return mMapDocument->map()->size(); }
-    void setValue(const QVariant &) override {};
-
     QWidget *createEditor(QWidget *parent) override
     {
         auto widget = new QWidget(parent);
         auto layout = new QVBoxLayout(widget);
-        auto valueEdit = AbstractProperty::createEditor(widget);
+        auto valueEdit = SizeProperty::createEditor(widget);
         auto resizeButton = new QPushButton(tr("Resize Map"), widget);
 
         valueEdit->setEnabled(false);
@@ -267,48 +266,6 @@ public:
 
         return widget;
     }
-
-private:
-    MapDocument *mMapDocument;
-};
-
-class TileSizeProperty : public AbstractProperty
-{
-    Q_OBJECT
-
-public:
-    TileSizeProperty(MapDocument *mapDocument,
-                     EditorFactory *editorFactory,
-                     QObject *parent = nullptr)
-        : AbstractProperty(tr("Tile Size"), editorFactory, parent)
-        , mMapDocument(mapDocument)
-    {
-    }
-
-    QVariant value() const override
-    {
-        return mMapDocument->map()->tileSize();
-    }
-
-    void setValue(const QVariant &value) override
-    {
-        auto oldSize = mMapDocument->map()->tileSize();
-        auto newSize = value.toSize();
-
-        if (oldSize.width() != newSize.width()) {
-            auto command = new ChangeMapProperty(mMapDocument,
-                                                 Map::TileWidthProperty,
-                                                 newSize.width());
-            mMapDocument->undoStack()->push(command);
-        }
-
-        if (oldSize.height() != newSize.height()) {
-            auto command = new ChangeMapProperty(mMapDocument,
-                                                 Map::TileHeightProperty,
-                                                 newSize.height());
-            mMapDocument->undoStack()->push(command);
-        }
-    };
 
 private:
     MapDocument *mMapDocument;
@@ -364,22 +321,42 @@ public:
                         push(new ChangeMapProperty(mapDocument(), orientation));
                     });
 
-        mSizeProperty = new MapSizeProperty(mapDocument(), editorFactory, this);
+        mSizeProperty = new MapSizeProperty(mapDocument(), this);
 
-        mTileSizeProperty = new TileSizeProperty(mapDocument(), editorFactory, this);
+        mTileSizeProperty = new SizeProperty(
+                    tr("Tile Size"),
+                    [this] {
+                        return mapDocument()->map()->tileSize();
+                    },
+                    [this](const QSize &newSize) {
+                        const auto oldSize = mapDocument()->map()->tileSize();
 
-        mInfiniteProperty = editorFactory->createProperty(
+                        if (oldSize.width() != newSize.width()) {
+                            push(new ChangeMapProperty(mapDocument(),
+                                                       Map::TileWidthProperty,
+                                                       newSize.width()));
+                        }
+
+                        if (oldSize.height() != newSize.height()) {
+                            push(new ChangeMapProperty(mapDocument(),
+                                                       Map::TileHeightProperty,
+                                                       newSize.height()));
+                        }
+                    },
+                    this);
+
+        mInfiniteProperty = new BoolProperty(
                     tr("Infinite"),
                     [this]() {
                         return map()->infinite();
                     },
-                    [this](const QVariant &value) {
+                    [this](const bool &value) {
                         push(new ChangeMapProperty(mapDocument(),
                                                    Map::InfiniteProperty,
-                                                   value.toInt()));
+                                                   value ? 1 : 0));
                     });
 
-        mHexSideLengthProperty = editorFactory->createProperty(
+        mHexSideLengthProperty = new IntProperty(
                     tr("Hex Side Length"),
                     [this]() {
                         return map()->hexSideLength();
@@ -1083,24 +1060,19 @@ class MapObjectProperties : public ObjectProperties
 public:
     MapObjectProperties(MapDocument *document, MapObject *object, ValueTypeEditorFactory *editorFactory, QObject *parent = nullptr)
         : ObjectProperties(document, object, parent)
-        , mDegreesEditorFactory(std::make_unique<FloatEditorFactory>())
     {
-        mDegreesEditorFactory->setSuffix(QStringLiteral("°"));
-
-        mIdProperty = editorFactory->createProperty(
+        mIdProperty = new IntProperty(
                     tr("ID"),
-                    [this]() { return mapObject()->id(); },
-                    [](const QVariant &) {});
+                    [this]() { return mapObject()->id(); });
         mIdProperty->setEnabled(false);
 
-        mTemplateProperty = editorFactory->createProperty(
+        mTemplateProperty = new UrlProperty(
                     tr("Template"),
                     [this]() {
                         if (auto objectTemplate = mapObject()->objectTemplate())
                             return QUrl::fromLocalFile(objectTemplate->fileName());
                         return QUrl();
-                    },
-                    [](const QVariant &) {});
+                    });
         mTemplateProperty->setEnabled(false);
 
         mNameProperty = editorFactory->createProperty(
@@ -1139,15 +1111,16 @@ public:
                         changeMapObject(MapObject::SizeProperty, value);
                     });
 
-        mRotationProperty = new GetSetProperty(
+        mRotationProperty = new FloatProperty(
                     tr("Rotation"),
                     [this]() {
                         return mapObject()->rotation();
                     },
-                    [this](const QVariant &value) {
+                    [this](const qreal &value) {
                         changeMapObject(MapObject::RotationProperty, value);
                     },
-                    mDegreesEditorFactory.get(), this);
+                    this);
+        mRotationProperty->setSuffix(QStringLiteral("°"));
 
         // todo: make this a custom widget with "Horizontal" and "Vertical" checkboxes
         mFlippingProperty = editorFactory->createProperty(
@@ -1329,7 +1302,7 @@ private:
     Property *mVisibleProperty;
     Property *mPositionProperty;
     Property *mSizeProperty;
-    Property *mRotationProperty;
+    FloatProperty *mRotationProperty;
 
     // for tile objects
     Property *mFlippingProperty;
@@ -1340,8 +1313,6 @@ private:
     Property *mTextFontProperty;
     Property *mTextWordWrapProperty;
     Property *mTextColorProperty;
-
-    std::unique_ptr<FloatEditorFactory> mDegreesEditorFactory;
 };
 
 class TileProperties : public ObjectProperties
