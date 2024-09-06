@@ -260,6 +260,28 @@ public:
     }
 };
 
+class RectEditorFactory : public EditorFactory
+{
+public:
+    QWidget *createEditor(Property *property, QWidget *parent) override
+    {
+        auto editor = new RectEdit(parent);
+        auto syncEditor = [property, editor] {
+            const QSignalBlocker blocker(editor);
+            editor->setValue(property->value().toRect());
+        };
+        syncEditor();
+
+        QObject::connect(property, &Property::valueChanged, editor, syncEditor);
+        QObject::connect(editor, &RectEdit::valueChanged, property,
+                         [property, editor] {
+                             property->setValue(editor->value());
+                         });
+
+        return editor;
+    }
+};
+
 class RectFEditorFactory : public EditorFactory
 {
 public:
@@ -546,15 +568,20 @@ void VariantEditor::addProperty(Property *property)
 {
     auto label = new LineEditLabel(property->name(), m_widget);
     label->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
+    label->setToolTip(property->toolTip());
     label->setEnabled(property->isEnabled());
+    connect(property, &Property::toolTipChanged, label, &QWidget::setToolTip);
     connect(property, &Property::enabledChanged, label, &QLabel::setEnabled);
     m_gridLayout->addWidget(label, m_rowIndex, LabelColumn, Qt::AlignTop/* | Qt::AlignRight*/);
 
     if (auto editor = createEditor(property)) {
+        editor->setToolTip(property->toolTip());
         editor->setEnabled(property->isEnabled());
+        connect(property, &Property::toolTipChanged, editor, &QWidget::setToolTip);
         connect(property, &Property::enabledChanged, editor, &QWidget::setEnabled);
         m_gridLayout->addWidget(editor, m_rowIndex, WidgetColumn);
     }
+
     ++m_rowIndex;
 }
 
@@ -610,6 +637,12 @@ void EnumEditorFactory::setEnumNames(const QStringList &enumNames)
     m_enumNamesModel.setStringList(enumNames);
 }
 
+void EnumEditorFactory::setEnumIcons(const QMap<int, QIcon> &enumIcons)
+{
+    // todo: add support for showing these icons in the QComboBox
+    m_enumIcons = enumIcons;
+}
+
 void EnumEditorFactory::setEnumValues(const QList<int> &enumValues)
 {
     m_enumValues = enumValues;
@@ -651,6 +684,7 @@ ValueTypeEditorFactory::ValueTypeEditorFactory()
     registerEditorFactory(QMetaType::QFont, std::make_unique<FontEditorFactory>());
     registerEditorFactory(QMetaType::QPoint, std::make_unique<PointEditorFactory>());
     registerEditorFactory(QMetaType::QPointF, std::make_unique<PointFEditorFactory>());
+    registerEditorFactory(QMetaType::QRect, std::make_unique<RectEditorFactory>());
     registerEditorFactory(QMetaType::QRectF, std::make_unique<RectFEditorFactory>());
     registerEditorFactory(QMetaType::QSize, std::make_unique<SizeEditorFactory>());
     registerEditorFactory(QMetaType::QSizeF, std::make_unique<SizeFEditorFactory>());

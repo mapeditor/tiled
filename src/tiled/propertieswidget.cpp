@@ -28,6 +28,10 @@
 #include "changemapproperty.h"
 #include "changeobjectgroupproperties.h"
 #include "changeproperties.h"
+#include "changetile.h"
+#include "changetileimagesource.h"
+#include "changewangcolordata.h"
+#include "changewangsetdata.h"
 #include "clipboardmanager.h"
 #include "compression.h"
 #include "mapdocument.h"
@@ -39,6 +43,7 @@
 #include "tilesetdocument.h"
 #include "utils.h"
 #include "varianteditor.h"
+#include "wangoverlay.h"
 
 #include <QAction>
 #include <QComboBox>
@@ -1339,6 +1344,317 @@ private:
     std::unique_ptr<FloatEditorFactory> mDegreesEditorFactory;
 };
 
+class TileProperties : public ObjectProperties
+{
+    Q_OBJECT
+
+public:
+    TileProperties(Document *document, Tile *object, ValueTypeEditorFactory *editorFactory, QObject *parent = nullptr)
+        : ObjectProperties(document, object, parent)
+    {
+        mIdProperty = editorFactory->createProperty(
+                    tr("ID"),
+                    [this]() { return tile()->id(); },
+                    [](const QVariant &) {});
+        mIdProperty->setEnabled(false);
+
+        // todo: apply readableImageFormatsFilter
+        mImageProperty = editorFactory->createProperty(
+                    tr("Image"),
+                    [this]() { return tile()->imageSource(); },
+                    [this](const QVariant &value) {
+                        push(new ChangeTileImageSource(tilesetDocument(),
+                                                       tile(),
+                                                       value.toUrl()));
+                    });
+
+        mRectangleProperty = editorFactory->createProperty(
+                    tr("Rectangle"),
+                    [this]() { return tile()->imageRect(); },
+                    [this](const QVariant &value) {
+                        push(new ChangeTileImageRect(tilesetDocument(),
+                                                     { tile() },
+                                                     { value.toRect() }));
+                    });
+
+        // todo: minimum value should be 0
+        mProbabilityProperty = editorFactory->createProperty(
+                    tr("Probability"),
+                    [this]() { return tile()->probability(); },
+                    [this](const QVariant &value) {
+                        push(new ChangeTileProbability(tilesetDocument(),
+                                                       tilesetDocument()->selectedTiles(),
+                                                       value.toReal()));
+                    });
+        mProbabilityProperty->setToolTip(tr("Relative chance this tile will be picked"));
+
+        // annoying... maybe we should somehow always have the relevant TilesetDocument
+        if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+            connect(tilesetDocument, &TilesetDocument::tileImageSourceChanged,
+                    this, &TileProperties::tileImageSourceChanged);
+
+            connect(tilesetDocument, &TilesetDocument::tileProbabilityChanged,
+                    this, &TileProperties::tileProbabilityChanged);
+        } else if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
+            connect(mapDocument, &MapDocument::tileImageSourceChanged,
+                    this, &TileProperties::tileImageSourceChanged);
+
+            connect(mapDocument, &MapDocument::tileProbabilityChanged,
+                    this, &TileProperties::tileProbabilityChanged);
+        }
+
+        updateEnabledState();
+    }
+
+    void populateEditor(VariantEditor *editor) override
+    {
+        editor->addHeader(tr("Tile"));
+        editor->addProperty(mIdProperty);
+        editor->addProperty(mClassProperty);
+        editor->addSeparator();
+
+        if (!tile()->imageSource().isEmpty())
+            editor->addProperty(mImageProperty);
+
+        editor->addProperty(mRectangleProperty);
+        editor->addProperty(mProbabilityProperty);
+    }
+
+private:
+    void tileImageSourceChanged(Tile *tile)
+    {
+        if (tile != this->tile())
+            return;
+        emit mImageProperty->valueChanged();
+        emit mRectangleProperty->valueChanged();
+    }
+
+    void tileProbabilityChanged(Tile *tile)
+    {
+        if (tile != this->tile())
+            return;
+        emit mProbabilityProperty->valueChanged();
+    }
+
+    void updateEnabledState()
+    {
+        const bool hasTilesetDocument = tilesetDocument();
+        const auto isCollection = tile()->tileset()->isCollection();
+        mClassProperty->setEnabled(hasTilesetDocument);
+        mImageProperty->setEnabled(hasTilesetDocument && isCollection);
+        mRectangleProperty->setEnabled(hasTilesetDocument && isCollection);
+        mProbabilityProperty->setEnabled(hasTilesetDocument);
+    }
+
+    TilesetDocument *tilesetDocument() const
+    {
+        return qobject_cast<TilesetDocument*>(mDocument);
+    }
+
+    Tile *tile() const
+    {
+        return static_cast<Tile*>(mObject);
+    }
+
+    Property *mIdProperty;
+    Property *mImageProperty;
+    Property *mRectangleProperty;
+    Property *mProbabilityProperty;
+};
+
+class WangSetProperties : public ObjectProperties
+{
+    Q_OBJECT
+
+public:
+    WangSetProperties(Document *document, WangSet *object,
+                      ValueTypeEditorFactory *editorFactory, QObject *parent = nullptr)
+        : ObjectProperties(document, object, parent)
+    {
+        mNameProperty = editorFactory->createProperty(
+                    tr("Name"),
+                    [this]() { return wangSet()->name(); },
+                    [this](const QVariant &value) {
+                        push(new RenameWangSet(tilesetDocument(), wangSet(), value.toString()));
+                    });
+
+        mTypeProperty = editorFactory->createProperty(
+                    tr("Type"),
+                    [this]() { return QVariant::fromValue(wangSet()->type()); },
+                    [this](const QVariant &value) {
+                        push(new ChangeWangSetType(tilesetDocument(), wangSet(), static_cast<WangSet::Type>(value.toInt())));
+                    });
+
+        // todo: keep between 0 and WangId::MAX_COLOR_COUNT
+        mColorCountProperty = editorFactory->createProperty(
+                    tr("Color Count"),
+                    [this]() { return wangSet()->colorCount(); },
+                    [this](const QVariant &value) {
+                        push(new ChangeWangSetColorCount(tilesetDocument(),
+                                                         wangSet(),
+                                                         value.toInt()));
+                    });
+
+        connect(document, &Document::changed,
+                this, &WangSetProperties::onChanged);
+
+        updateEnabledState();
+    }
+
+    void populateEditor(VariantEditor *editor) override
+    {
+        editor->addHeader(tr("Terrain Set"));
+        editor->addProperty(mNameProperty);
+        editor->addProperty(mClassProperty);
+        editor->addSeparator();
+        editor->addProperty(mTypeProperty);
+        editor->addProperty(mColorCountProperty);
+    }
+
+private:
+    void onChanged(const ChangeEvent &event)
+    {
+        if (event.type != ChangeEvent::WangSetChanged)
+            return;
+
+        const auto &wangSetChange = static_cast<const WangSetChangeEvent&>(event);
+        if (wangSetChange.wangSet != wangSet())
+            return;
+
+        switch (wangSetChange.property) {
+        case WangSetChangeEvent::NameProperty:
+            emit mNameProperty->valueChanged();
+            break;
+        case WangSetChangeEvent::TypeProperty:
+            emit mTypeProperty->valueChanged();
+            break;
+        case WangSetChangeEvent::ImageProperty:
+            break;
+        case WangSetChangeEvent::ColorCountProperty:
+            emit mColorCountProperty->valueChanged();
+            break;
+        }
+    }
+
+    void updateEnabledState()
+    {
+        const bool hasTilesetDocument = tilesetDocument();
+        mNameProperty->setEnabled(hasTilesetDocument);
+        mTypeProperty->setEnabled(hasTilesetDocument);
+        mColorCountProperty->setEnabled(hasTilesetDocument);
+    }
+
+    TilesetDocument *tilesetDocument() const
+    {
+        return qobject_cast<TilesetDocument*>(mDocument);
+    }
+
+    WangSet *wangSet()
+    {
+        return static_cast<WangSet*>(mObject);
+    }
+
+    Property *mNameProperty;
+    Property *mTypeProperty;
+    Property *mColorCountProperty;
+};
+
+class WangColorProperties : public ObjectProperties
+{
+    Q_OBJECT
+
+public:
+    WangColorProperties(Document *document, WangColor *object,
+                        ValueTypeEditorFactory *editorFactory, QObject *parent = nullptr)
+        : ObjectProperties(document, object, parent)
+    {
+        mNameProperty = editorFactory->createProperty(
+                    tr("Name"),
+                    [this]() { return wangColor()->name(); },
+                    [this](const QVariant &value) {
+                        push(new ChangeWangColorName(tilesetDocument(), wangColor(), value.toString()));
+                    });
+
+        mColorProperty = editorFactory->createProperty(
+                    tr("Color"),
+                    [this]() { return wangColor()->color(); },
+                    [this](const QVariant &value) {
+                        push(new ChangeWangColorColor(tilesetDocument(), wangColor(), value.value<QColor>()));
+                    });
+
+        // todo: set 0.01 as minimum
+        mProbabilityProperty = editorFactory->createProperty(
+                    tr("Probability"),
+                    [this]() { return wangColor()->probability(); },
+                    [this](const QVariant &value) {
+                        push(new ChangeWangColorProbability(tilesetDocument(), wangColor(), value.toReal()));
+                    });
+
+        connect(document, &Document::changed,
+                this, &WangColorProperties::onChanged);
+
+        updateEnabledState();
+    }
+
+    void populateEditor(VariantEditor *editor) override
+    {
+        editor->addHeader(tr("Terrain"));
+        editor->addProperty(mNameProperty);
+        editor->addProperty(mClassProperty);
+        editor->addSeparator();
+        editor->addProperty(mColorProperty);
+        editor->addProperty(mProbabilityProperty);
+    }
+
+private:
+    void onChanged(const ChangeEvent &event)
+    {
+        if (event.type != ChangeEvent::WangColorChanged)
+            return;
+
+        const auto &wangColorChange = static_cast<const WangColorChangeEvent&>(event);
+        if (wangColorChange.wangColor != wangColor())
+            return;
+
+        switch (wangColorChange.property) {
+        case WangColorChangeEvent::NameProperty:
+            emit mNameProperty->valueChanged();
+            break;
+        case WangColorChangeEvent::ColorProperty:
+            emit mColorProperty->valueChanged();
+            break;
+        case WangColorChangeEvent::ImageProperty:
+            break;
+        case WangColorChangeEvent::ProbabilityProperty:
+            emit mProbabilityProperty->valueChanged();
+            break;
+        }
+    }
+
+    void updateEnabledState()
+    {
+        const bool hasTilesetDocument = tilesetDocument();
+        mNameProperty->setEnabled(hasTilesetDocument);
+        mClassProperty->setEnabled(hasTilesetDocument);
+        mColorProperty->setEnabled(hasTilesetDocument);
+        mProbabilityProperty->setEnabled(hasTilesetDocument);
+    }
+
+    TilesetDocument *tilesetDocument() const
+    {
+        return qobject_cast<TilesetDocument*>(mDocument);
+    }
+
+    WangColor *wangColor()
+    {
+        return static_cast<WangColor*>(mObject);
+    }
+
+    Property *mNameProperty;
+    Property *mColorProperty;
+    Property *mProbabilityProperty;
+};
+
 
 void PropertiesWidget::currentObjectChanged(Object *object)
 {
@@ -1385,13 +1701,23 @@ void PropertiesWidget::currentObjectChanged(Object *object)
                                                       mDefaultEditorFactory.get(), this);
             break;
         case Object::TileType:
-            // todo
+            mPropertiesObject = new TileProperties(mDocument,
+                                                   static_cast<Tile*>(object),
+                                                   mDefaultEditorFactory.get(), this);
+            break;
         case Object::WangSetType:
-            // todo
+            mPropertiesObject = new WangSetProperties(mDocument,
+                                                      static_cast<WangSet*>(object),
+                                                      mDefaultEditorFactory.get(), this);
+            break;
         case Object::WangColorType:
-            // todo
+            mPropertiesObject = new WangColorProperties(mDocument,
+                                                        static_cast<WangColor*>(object),
+                                                        mDefaultEditorFactory.get(), this);
+            break;
         case Object::ProjectType:
         case Object::WorldType:
+            // these types are currently not handled by the Properties dock
             break;
         }
     }
@@ -1886,6 +2212,22 @@ void PropertiesWidget::registerEditorFactories()
                                   tr("Top Down"),
                                   tr("Index Order"),
                               }));
+
+    auto wangSetTypeEditorFactory = std::make_unique<EnumEditorFactory>(
+                QStringList {
+                    tr("Corner"),
+                    tr("Edge"),
+                    tr("Mixed"),
+                });
+
+    QMap<int, QIcon> mWangSetIcons;
+    mWangSetIcons.insert(WangSet::Corner, wangSetIcon(WangSet::Corner));
+    mWangSetIcons.insert(WangSet::Edge, wangSetIcon(WangSet::Edge));
+    mWangSetIcons.insert(WangSet::Mixed, wangSetIcon(WangSet::Mixed));
+    wangSetTypeEditorFactory->setEnumIcons(mWangSetIcons);
+
+    registerEditorFactory(qMetaTypeId<WangSet::Type>(),
+                          std::move(wangSetTypeEditorFactory));
 }
 
 void PropertiesWidget::registerEditorFactory(int type, std::unique_ptr<EditorFactory> factory)

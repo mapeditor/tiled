@@ -75,6 +75,7 @@ void ColorButton::pickColor()
 
 void ColorButton::updateIcon()
 {
+    // todo: fix gray icon in disabled state (consider using opacity, and not using an icon at all)
     setIcon(Utils::colorIcon(mColor, iconSize()));
 }
 
