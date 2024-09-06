@@ -424,5 +424,6 @@ TILEDSHARED_EXPORT WangSet::Type wangSetTypeFromString(const QString &);
 
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::WangSet*)
 Q_DECLARE_METATYPE(Tiled::WangId)
+Q_DECLARE_METATYPE(Tiled::WangSet*)
+Q_DECLARE_METATYPE(Tiled::WangSet::Type)

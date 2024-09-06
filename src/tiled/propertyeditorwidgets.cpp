@@ -302,6 +302,47 @@ QPointF PointFEdit::value() const
 }
 
 
+RectEdit::RectEdit(QWidget *parent)
+    : ResponsivePairswiseWidget(parent)
+    , m_xLabel(new QLabel(QStringLiteral("X"), this))
+    , m_yLabel(new QLabel(QStringLiteral("Y"), this))
+    , m_widthLabel(new QLabel(QStringLiteral("W"), this))
+    , m_heightLabel(new QLabel(QStringLiteral("H"), this))
+    , m_xSpinBox(new SpinBox(this))
+    , m_ySpinBox(new SpinBox(this))
+    , m_widthSpinBox(new SpinBox(this))
+    , m_heightSpinBox(new SpinBox(this))
+{
+    setWidgetPairs({
+                    { m_xLabel, m_xSpinBox },
+                    { m_yLabel, m_ySpinBox },
+                    { m_widthLabel, m_widthSpinBox },
+                    { m_heightLabel, m_heightSpinBox },
+                    });
+
+    connect(m_xSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &RectEdit::valueChanged);
+    connect(m_ySpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &RectEdit::valueChanged);
+    connect(m_widthSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &RectEdit::valueChanged);
+    connect(m_heightSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &RectEdit::valueChanged);
+}
+
+void RectEdit::setValue(const QRect &rect)
+{
+    m_xSpinBox->setValue(rect.x());
+    m_ySpinBox->setValue(rect.y());
+    m_widthSpinBox->setValue(rect.width());
+    m_heightSpinBox->setValue(rect.height());
+}
+
+QRect RectEdit::value() const
+{
+    return QRect(m_xSpinBox->value(),
+                 m_ySpinBox->value(),
+                 m_widthSpinBox->value(),
+                 m_heightSpinBox->value());
+}
+
+
 RectFEdit::RectFEdit(QWidget *parent)
     : ResponsivePairswiseWidget(parent)
     , m_xLabel(new QLabel(QStringLiteral("X"), this))

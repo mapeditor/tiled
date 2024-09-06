@@ -42,6 +42,7 @@ class Property : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name CONSTANT)
+    Q_PROPERTY(QString toolTip READ toolTip WRITE setToolTip NOTIFY toolTipChanged)
     Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 
@@ -52,6 +53,15 @@ public:
     {}
 
     const QString &name() const { return m_name; }
+
+    const QString &toolTip() const { return m_toolTip; }
+    void setToolTip(const QString &toolTip)
+    {
+        if (m_toolTip != toolTip) {
+            m_toolTip = toolTip;
+            emit toolTipChanged(toolTip);
+        }
+    }
 
     bool isEnabled() const { return m_enabled; }
     void setEnabled(bool enabled)
@@ -68,11 +78,13 @@ public:
     virtual QWidget *createEditor(QWidget *parent) = 0;
 
 signals:
+    void toolTipChanged(const QString &toolTip);
     void valueChanged();
     void enabledChanged(bool enabled);
 
 private:
     QString m_name;
+    QString m_toolTip;
     bool m_enabled = true;
 };
 
@@ -114,12 +126,14 @@ public:
                       const QList<int> &enumValues = {});
 
     void setEnumNames(const QStringList &enumNames);
+    void setEnumIcons(const QMap<int, QIcon> &enumIcons);
     void setEnumValues(const QList<int> &enumValues);
 
     QWidget *createEditor(Property *property, QWidget *parent) override;
 
 private:
     QStringListModel m_enumNamesModel;
+    QMap<int, QIcon> m_enumIcons;
     QList<int> m_enumValues;
 };
 
@@ -198,7 +212,7 @@ private:
  *
  * The property does not take ownership of the editor factory.
  */
-class QObjectProperty : public AbstractProperty
+class QObjectProperty final : public AbstractProperty
 {
     Q_OBJECT
 

@@ -71,6 +71,7 @@ public:
 
 private:
     void emitDataChanged(WangColor *wangColor);
+    void emitToTilesetAndMaps(const ChangeEvent &event);
 
     TilesetDocument *mTilesetDocument;
     WangSet *mWangSet;

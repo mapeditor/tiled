@@ -167,6 +167,34 @@ private:
 };
 
 /**
+ * A widget for editing a QRect value.
+ */
+class RectEdit : public ResponsivePairswiseWidget
+{
+    Q_OBJECT
+    Q_PROPERTY(QRect value READ value WRITE setValue NOTIFY valueChanged FINAL)
+
+public:
+    RectEdit(QWidget *parent = nullptr);
+
+    void setValue(const QRect &size);
+    QRect value() const;
+
+signals:
+    void valueChanged();
+
+private:
+    QLabel *m_xLabel;
+    QLabel *m_yLabel;
+    QLabel *m_widthLabel;
+    QLabel *m_heightLabel;
+    SpinBox *m_xSpinBox;
+    SpinBox *m_ySpinBox;
+    SpinBox *m_widthSpinBox;
+    SpinBox *m_heightSpinBox;
+};
+
+/**
  * A widget for editing a QRectF value.
  */
 class RectFEdit : public ResponsivePairswiseWidget
