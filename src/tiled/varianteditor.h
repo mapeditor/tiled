@@ -89,19 +89,6 @@ private:
 };
 
 /**
- * An editor factory is responsible for creating an editor widget for a given
- * property. It can be used to share the configuration of editor widgets
- * between different properties.
- */
-class EditorFactory
-{
-    Q_DECLARE_TR_FUNCTIONS(EditorFactory)
-
-public:
-    virtual QWidget *createEditor(Property *property, QWidget *parent) = 0;
-};
-
-/**
  * A helper class for creating a property that wraps a value of a given type.
  */
 template <typename Type>
@@ -227,6 +214,19 @@ struct AlignmentProperty : PropertyTemplate<Qt::Alignment>
 };
 
 /**
+ * An editor factory is responsible for creating an editor widget for a given
+ * property. It can be used to share the configuration of editor widgets
+ * between different properties.
+ */
+class EditorFactory
+{
+    Q_DECLARE_TR_FUNCTIONS(EditorFactory)
+
+public:
+    virtual QWidget *createEditor(Property *property, QWidget *parent) = 0;
+};
+
+/**
  * An editor factory that creates a combo box for enum properties.
  */
 class EnumEditorFactory : public EditorFactory
@@ -316,41 +316,15 @@ private:
     QVariant m_value;
 };
 
-/**
- * A property that wraps a value of a QObject property and uses an editor
- * factory to create its editor.
- *
- * The property does not take ownership of the editor factory.
- */
-class QObjectProperty final : public AbstractProperty
-{
-    Q_OBJECT
-
-public:
-    QObjectProperty(QObject *object,
-                    QMetaProperty property,
-                    const QString &displayName,
-                    EditorFactory *editorFactory,
-                    QObject *parent = nullptr);
-
-    QVariant value() const override;
-    void setValue(const QVariant &value) override;
-
-private:
-    QObject *m_object;
-    QMetaProperty m_property;
-};
 
 /**
- * An editor factory that selects the appropriate editor factory based on the
- * type of the property value.
- *
- * todo: rename to VariantEditorFactory when the old one is removed
+ * A property factory that instantiates the appropriate property type based on
+ * the type of the property value.
  */
-class ValueTypeEditorFactory : public EditorFactory
+class PropertyFactory
 {
 public:
-    ValueTypeEditorFactory();
+    PropertyFactory() = default;
 
     /**
      * Register an editor factory for a given type.
@@ -361,12 +335,11 @@ public:
     void registerEditorFactory(int type, std::unique_ptr<EditorFactory> factory);
 
     /**
-     * Creates a property that wraps a QObject property and will use the editor
-     * factory registered for the type of the value.
+     * Creates a property that wraps a QObject property.
      */
-    QObjectProperty *createQObjectProperty(QObject *qObject,
-                                           const char *name,
-                                           const QString &displayName = {});
+    Property *createQObjectProperty(QObject *qObject,
+                                    const char *name,
+                                    const QString &displayName = {});
 
     /**
      * Creates a property with the given name and value. The property will use
@@ -382,8 +355,6 @@ public:
     Property *createProperty(const QString &name,
                              std::function<QVariant()> get,
                              std::function<void(const QVariant&)> set);
-
-    QWidget *createEditor(Property *property, QWidget *parent) override;
 
 private:
     std::unordered_map<int, std::unique_ptr<EditorFactory>> m_factories;

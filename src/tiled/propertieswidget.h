@@ -31,7 +31,7 @@ class Object;
 class Document;
 class EditorFactory;
 class ObjectProperties;
-class ValueTypeEditorFactory;
+class PropertyFactory;
 class VariantEditor;
 
 /**
@@ -84,7 +84,7 @@ private:
     Document *mDocument = nullptr;
     ObjectProperties *mPropertiesObject = nullptr;
     VariantEditor *mPropertyBrowser;
-    std::unique_ptr<ValueTypeEditorFactory> mDefaultEditorFactory;
+    std::unique_ptr<PropertyFactory> mPropertyFactory;
     QAction *mActionAddProperty;
     QAction *mActionRemoveProperty;
     QAction *mActionRenameProperty;

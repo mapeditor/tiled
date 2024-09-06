@@ -615,33 +615,48 @@ QWidget *EnumEditorFactory::createEditor(Property *property, QWidget *parent)
 }
 
 
-ValueTypeEditorFactory::ValueTypeEditorFactory()
-{
-}
-
-void ValueTypeEditorFactory::registerEditorFactory(int type, std::unique_ptr<EditorFactory> factory)
+void PropertyFactory::registerEditorFactory(int type, std::unique_ptr<EditorFactory> factory)
 {
     m_factories[type] = std::move(factory);
 }
 
-QObjectProperty *ValueTypeEditorFactory::createQObjectProperty(QObject *qObject,
-                                                               const char *name,
-                                                               const QString &displayName)
+Property *PropertyFactory::createQObjectProperty(QObject *qObject,
+                                                 const char *name,
+                                                 const QString &displayName)
 {
     auto metaObject = qObject->metaObject();
     auto propertyIndex = metaObject->indexOfProperty(name);
     if (propertyIndex < 0)
         return nullptr;
 
-    return new QObjectProperty(qObject,
-                               metaObject->property(propertyIndex),
-                               displayName.isEmpty() ? QString::fromUtf8(name)
-                                                     : displayName,
-                               this);
+    auto metaProperty = metaObject->property(propertyIndex);
+    auto property = createProperty(displayName.isEmpty() ? QString::fromUtf8(name)
+                                                         : displayName,
+                                   [=] {
+                                       return metaProperty.read(qObject);
+                                   },
+                                   [=] (const QVariant &value) {
+                                       metaProperty.write(qObject, value);
+                                   });
+
+    // If the property has a notify signal, forward it to valueChanged
+    auto notify = metaProperty.notifySignal();
+    if (notify.isValid()) {
+        auto propertyMetaObject = property->metaObject();
+        auto valuePropertyIndex = propertyMetaObject->indexOfProperty("value");
+        auto valueProperty = propertyMetaObject->property(valuePropertyIndex);
+        auto valueChanged = valueProperty.notifySignal();
+
+        QObject::connect(qObject, notify, property, valueChanged);
+    }
+
+    property->setEnabled(metaProperty.isWritable());
+
+    return property;
 }
 
-ValueProperty *ValueTypeEditorFactory::createProperty(const QString &name,
-                                                      const QVariant &value)
+ValueProperty *PropertyFactory::createProperty(const QString &name,
+                                               const QVariant &value)
 {
     auto f = m_factories.find(value.userType());
     return new ValueProperty(name, value,
@@ -659,9 +674,9 @@ Property *createTypedProperty(const QString &name,
                              [set = std::move(set)] (typename PropertyClass::ValueType v) { set(QVariant::fromValue(v)); });
 }
 
-Property *ValueTypeEditorFactory::createProperty(const QString &name,
-                                                 std::function<QVariant ()> get,
-                                                 std::function<void (const QVariant &)> set)
+Property *PropertyFactory::createProperty(const QString &name,
+                                          std::function<QVariant ()> get,
+                                          std::function<void (const QVariant &)> set)
 {
     const auto type = get().userType();
     switch (type) {
@@ -701,49 +716,6 @@ Property *ValueTypeEditorFactory::createProperty(const QString &name,
     return new GetSetProperty(name, get, set,
                               f != m_factories.end() ? f->second.get()
                                                      : nullptr);
-}
-
-QWidget *ValueTypeEditorFactory::createEditor(Property *property, QWidget *parent)
-{
-    const auto value = property->value();
-    const int type = value.userType();
-    auto factory = m_factories.find(type);
-    if (factory != m_factories.end())
-        return factory->second->createEditor(property, parent);
-    return nullptr;
-}
-
-
-QObjectProperty::QObjectProperty(QObject *object,
-                                 QMetaProperty property,
-                                 const QString &displayName,
-                                 EditorFactory *editorFactory,
-                                 QObject *parent)
-    : AbstractProperty(displayName, editorFactory, parent)
-    , m_object(object)
-    , m_property(property)
-{
-    // If the property has a notify signal, forward it to valueChanged
-    auto notify = property.notifySignal();
-    if (notify.isValid()) {
-        auto valuePropertyIndex = metaObject()->indexOfProperty("value");
-        auto valueProperty = metaObject()->property(valuePropertyIndex);
-        auto valueChanged = valueProperty.notifySignal();
-
-        connect(m_object, notify, this, valueChanged);
-    }
-
-    setEnabled(m_property.isWritable());
-}
-
-QVariant QObjectProperty::value() const
-{
-    return m_property.read(m_object);
-}
-
-void QObjectProperty::setValue(const QVariant &value)
-{
-    m_property.write(m_object, value);
 }
 
 } // namespace Tiled
