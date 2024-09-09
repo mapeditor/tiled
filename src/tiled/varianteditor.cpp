@@ -36,45 +36,19 @@
 #include <QResizeEvent>
 #include <QSpacerItem>
 #include <QSpinBox>
-#include <QStringListModel>
 
 namespace Tiled {
-
-AbstractProperty::AbstractProperty(const QString &name,
-                                   EditorFactory *editorFactory,
-                                   QObject *parent)
-    : Property(name, parent)
-    , m_editorFactory(editorFactory)
-{}
-
-QWidget *AbstractProperty::createEditor(QWidget *parent)
-{
-    return m_editorFactory ? m_editorFactory->createEditor(this, parent)
-                           : nullptr;
-}
-
-
-GetSetProperty::GetSetProperty(const QString &name,
-                               std::function<QVariant ()> get,
-                               std::function<void (const QVariant &)> set,
-                               EditorFactory *editorFactory,
-                               QObject *parent)
-    : AbstractProperty(name, editorFactory, parent)
-    , m_get(std::move(get))
-    , m_set(std::move(set))
-{}
-
 
 QWidget *StringProperty::createEditor(QWidget *parent)
 {
     auto editor = new QLineEdit(parent);
     auto syncEditor = [=] {
-        editor->setText(m_get());
+        editor->setText(value());
     };
     syncEditor();
 
     QObject::connect(this, &Property::valueChanged, editor, syncEditor);
-    QObject::connect(editor, &QLineEdit::textEdited, this, m_set);
+    QObject::connect(editor, &QLineEdit::textEdited, this, &StringProperty::setValue);
 
     return editor;
 }
@@ -85,12 +59,12 @@ QWidget *UrlProperty::createEditor(QWidget *parent)
     editor->setFilter(m_filter);
 
     auto syncEditor = [=] {
-        editor->setFileUrl(m_get());
+        editor->setFileUrl(value());
     };
     syncEditor();
 
     QObject::connect(this, &Property::valueChanged, editor, syncEditor);
-    QObject::connect(editor, &FileEdit::fileUrlChanged, this, m_set);
+    QObject::connect(editor, &FileEdit::fileUrlChanged, this, &UrlProperty::setValue);
 
     return editor;
 }
@@ -100,13 +74,13 @@ QWidget *IntProperty::createEditor(QWidget *parent)
     auto editor = new SpinBox(parent);
     auto syncEditor = [=] {
         const QSignalBlocker blocker(editor);
-        editor->setValue(m_get());
+        editor->setValue(value());
     };
     syncEditor();
 
     QObject::connect(this, &Property::valueChanged, editor, syncEditor);
     QObject::connect(editor, qOverload<int>(&SpinBox::valueChanged),
-                     this, m_set);
+                     this, &IntProperty::setValue);
 
     return editor;
 }
@@ -118,13 +92,13 @@ QWidget *FloatProperty::createEditor(QWidget *parent)
 
     auto syncEditor = [=] {
         const QSignalBlocker blocker(editor);
-        editor->setValue(m_get());
+        editor->setValue(value());
     };
     syncEditor();
 
     QObject::connect(this, &Property::valueChanged, editor, syncEditor);
     QObject::connect(editor, qOverload<double>(&DoubleSpinBox::valueChanged),
-                     this, m_set);
+                     this, &FloatProperty::setValue);
 
     return editor;
 }
@@ -134,7 +108,7 @@ QWidget *BoolProperty::createEditor(QWidget *parent)
     auto editor = new QCheckBox(parent);
     auto syncEditor = [=] {
         const QSignalBlocker blocker(editor);
-        bool checked = m_get();
+        bool checked = value();
         editor->setChecked(checked);
         editor->setText(checked ? tr("On") : tr("Off"));
     };
@@ -143,7 +117,7 @@ QWidget *BoolProperty::createEditor(QWidget *parent)
     QObject::connect(this, &Property::valueChanged, editor, syncEditor);
     QObject::connect(editor, &QCheckBox::toggled, this, [=](bool checked) {
         editor->setText(checked ? QObject::tr("On") : QObject::tr("Off"));
-        m_set(checked);
+        setValue(checked);
     });
 
     return editor;
@@ -154,14 +128,14 @@ QWidget *PointProperty::createEditor(QWidget *parent)
     auto editor = new PointEdit(parent);
     auto syncEditor = [this, editor] {
         const QSignalBlocker blocker(editor);
-        editor->setValue(m_get());
+        editor->setValue(value());
     };
     syncEditor();
 
     QObject::connect(this, &Property::valueChanged, editor, syncEditor);
     QObject::connect(editor, &PointEdit::valueChanged, this,
                      [this, editor] {
-        m_set(editor->value());
+        setValue(editor->value());
     });
 
     return editor;
@@ -172,14 +146,14 @@ QWidget *PointFProperty::createEditor(QWidget *parent)
     auto editor = new PointFEdit(parent);
     auto syncEditor = [this, editor] {
         const QSignalBlocker blocker(editor);
-        editor->setValue(this->value().toPointF());
+        editor->setValue(value());
     };
     syncEditor();
 
     QObject::connect(this, &Property::valueChanged, editor, syncEditor);
     QObject::connect(editor, &PointFEdit::valueChanged, this,
                      [this, editor] {
-        this->setValue(editor->value());
+        this->setVariantValue(editor->value());
     });
 
     return editor;
@@ -190,14 +164,14 @@ QWidget *SizeProperty::createEditor(QWidget *parent)
     auto editor = new SizeEdit(parent);
     auto syncEditor = [this, editor] {
         const QSignalBlocker blocker(editor);
-        editor->setValue(m_get());
+        editor->setValue(value());
     };
     syncEditor();
 
     QObject::connect(this, &Property::valueChanged, editor, syncEditor);
     QObject::connect(editor, &SizeEdit::valueChanged, this,
                      [this, editor] {
-        m_set(editor->value());
+        setValue(editor->value());
     });
 
     return editor;
@@ -208,14 +182,14 @@ QWidget *SizeFProperty::createEditor(QWidget *parent)
     auto editor = new SizeFEdit(parent);
     auto syncEditor = [this, editor] {
         const QSignalBlocker blocker(editor);
-        editor->setValue(this->value().toSizeF());
+        editor->setValue(value());
     };
     syncEditor();
 
     QObject::connect(this, &Property::valueChanged, editor, syncEditor);
     QObject::connect(editor, &SizeFEdit::valueChanged, this,
                      [this, editor] {
-        this->setValue(editor->value());
+        setValue(editor->value());
     });
 
     return editor;
@@ -226,15 +200,15 @@ QWidget *RectProperty::createEditor(QWidget *parent)
     auto editor = new RectEdit(parent);
     auto syncEditor = [this, editor] {
         const QSignalBlocker blocker(editor);
-        editor->setValue(this->value().toRect());
+        editor->setValue(value());
     };
     syncEditor();
 
     QObject::connect(this, &Property::valueChanged, editor, syncEditor);
     QObject::connect(editor, &RectEdit::valueChanged, this,
                      [this, editor] {
-                         this->setValue(editor->value());
-                     });
+        setValue(editor->value());
+    });
 
     return editor;
 }
@@ -244,14 +218,14 @@ QWidget *RectFProperty::createEditor(QWidget *parent)
     auto editor = new RectFEdit(parent);
     auto syncEditor = [this, editor] {
         const QSignalBlocker blocker(editor);
-        editor->setValue(this->value().toRectF());
+        editor->setValue(value());
     };
     syncEditor();
 
     QObject::connect(this, &Property::valueChanged, editor, syncEditor);
     QObject::connect(editor, &RectFEdit::valueChanged, this,
                      [this, editor] {
-        this->setValue(editor->value());
+        setValue(editor->value());
     });
 
     return editor;
@@ -263,14 +237,14 @@ QWidget *ColorProperty::createEditor(QWidget *parent)
     auto editor = new ColorButton(parent);
     auto syncEditor = [=] {
         const QSignalBlocker blocker(editor);
-        editor->setColor(this->value().value<QColor>());
+        editor->setColor(value());
     };
     syncEditor();
 
     QObject::connect(this, &Property::valueChanged, editor, syncEditor);
     QObject::connect(editor, &ColorButton::colorChanged, this,
                      [this, editor] {
-        this->setValue(editor->color());
+        setValue(editor->color());
     });
 
     return editor;
@@ -301,7 +275,7 @@ QWidget *FontProperty::createEditor(QWidget *parent)
     layout->addWidget(kerningCheckBox);
 
     auto syncEditor = [=] {
-        const auto font = this->value().value<QFont>();
+        const auto font = value();
         const QSignalBlocker fontBlocker(fontComboBox);
         const QSignalBlocker sizeBlocker(sizeSpinBox);
         const QSignalBlocker boldBlocker(boldCheckBox);
@@ -326,7 +300,7 @@ QWidget *FontProperty::createEditor(QWidget *parent)
         font.setUnderline(underlineCheckBox->isChecked());
         font.setStrikeOut(strikeoutCheckBox->isChecked());
         font.setKerning(kerningCheckBox->isChecked());
-        this->setValue(font);
+        setValue(font);
     };
 
     syncEditor();
@@ -343,7 +317,7 @@ QWidget *FontProperty::createEditor(QWidget *parent)
     return editor;
 }
 
-QWidget *AlignmentProperty::createEditor(QWidget *parent)
+QWidget *QtAlignmentProperty::createEditor(QWidget *parent)
 {
     auto editor = new QWidget(parent);
     auto layout = new QGridLayout(editor);
@@ -374,15 +348,14 @@ QWidget *AlignmentProperty::createEditor(QWidget *parent)
     auto syncEditor = [=] {
         const QSignalBlocker horizontalBlocker(horizontalComboBox);
         const QSignalBlocker verticalBlocker(verticalComboBox);
-        const auto alignment = this->value().value<Qt::Alignment>();
+        const auto alignment = value();
         horizontalComboBox->setCurrentIndex(horizontalComboBox->findData(static_cast<int>(alignment & Qt::AlignHorizontal_Mask)));
         verticalComboBox->setCurrentIndex(verticalComboBox->findData(static_cast<int>(alignment & Qt::AlignVertical_Mask)));
     };
 
     auto syncProperty = [=] {
-        const Qt::Alignment alignment(horizontalComboBox->currentData().toInt() |
-                                      verticalComboBox->currentData().toInt());
-        this->setValue(QVariant::fromValue(alignment));
+        setValue(Qt::Alignment(horizontalComboBox->currentData().toInt() |
+                               verticalComboBox->currentData().toInt()));
     };
 
     syncEditor();
@@ -392,39 +365,6 @@ QWidget *AlignmentProperty::createEditor(QWidget *parent)
     QObject::connect(verticalComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, syncProperty);
 
     return editor;
-}
-
-
-ValueProperty::ValueProperty(const QString &name,
-                             const QVariant &value,
-                             EditorFactory *editorFactory,
-                             QObject *parent)
-    : AbstractProperty(name, editorFactory, parent)
-    , m_value(value)
-{}
-
-void ValueProperty::setValue(const QVariant &value)
-{
-    if (m_value != value) {
-        m_value = value;
-        emit valueChanged();
-    }
-}
-
-
-EnumProperty::EnumProperty(const QString &name,
-                           QObject *parent)
-    : AbstractProperty(name, &m_editorFactory, parent)
-{}
-
-void EnumProperty::setEnumNames(const QStringList &enumNames)
-{
-    m_editorFactory.setEnumNames(enumNames);
-}
-
-void EnumProperty::setEnumValues(const QList<int> &enumValues)
-{
-    m_editorFactory.setEnumValues(enumValues);
 }
 
 
@@ -567,70 +507,45 @@ QWidget *VariantEditor::createEditor(Property *property)
 }
 
 
-EnumEditorFactory::EnumEditorFactory(const QStringList &enumNames,
-                                     const QList<int> &enumValues)
-    : m_enumNamesModel(enumNames)
-    , m_enumValues(enumValues)
-{}
-
-void EnumEditorFactory::setEnumNames(const QStringList &enumNames)
-{
-    m_enumNamesModel.setStringList(enumNames);
-}
-
-void EnumEditorFactory::setEnumIcons(const QMap<int, QIcon> &enumIcons)
-{
-    // todo: add support for showing these icons in the QComboBox
-    m_enumIcons = enumIcons;
-}
-
-void EnumEditorFactory::setEnumValues(const QList<int> &enumValues)
-{
-    m_enumValues = enumValues;
-}
-
-QWidget *EnumEditorFactory::createEditor(Property *property, QWidget *parent)
+QWidget *createEnumEditor(IntProperty *property, const EnumData &enumData, QWidget *parent)
 {
     auto editor = new QComboBox(parent);
     // This allows the combo box to shrink horizontally.
     editor->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
-    editor->setModel(&m_enumNamesModel);
 
-    auto syncEditor = [property, editor, this] {
+    for (qsizetype i = 0; i < enumData.names.size(); ++i) {
+        auto value = enumData.values.isEmpty() ? i : enumData.values.value(i);
+        editor->addItem(enumData.icons[value],
+                        enumData.names[i],
+                        value);
+    }
+
+    auto syncEditor = [property, editor] {
         const QSignalBlocker blocker(editor);
-        if (m_enumValues.isEmpty())
-            editor->setCurrentIndex(property->value().toInt());
-        else
-            editor->setCurrentIndex(m_enumValues.indexOf(property->value().toInt()));
+        editor->setCurrentIndex(editor->findData(property->value()));
     };
     syncEditor();
 
     QObject::connect(property, &Property::valueChanged, editor, syncEditor);
     QObject::connect(editor, qOverload<int>(&QComboBox::currentIndexChanged), property,
-                     [property, this](int index) {
-        property->setValue(m_enumValues.isEmpty() ? index : m_enumValues.at(index));
+                     [editor, property] {
+        property->setValue(editor->currentData().toInt());
     });
 
     return editor;
 }
 
-
-void PropertyFactory::registerEditorFactory(int type, std::unique_ptr<EditorFactory> factory)
-{
-    m_factories[type] = std::move(factory);
-}
-
 Property *PropertyFactory::createQObjectProperty(QObject *qObject,
-                                                 const char *name,
+                                                 const char *propertyName,
                                                  const QString &displayName)
 {
     auto metaObject = qObject->metaObject();
-    auto propertyIndex = metaObject->indexOfProperty(name);
+    auto propertyIndex = metaObject->indexOfProperty(propertyName);
     if (propertyIndex < 0)
         return nullptr;
 
     auto metaProperty = metaObject->property(propertyIndex);
-    auto property = createProperty(displayName.isEmpty() ? QString::fromUtf8(name)
+    auto property = createProperty(displayName.isEmpty() ? QString::fromUtf8(propertyName)
                                                          : displayName,
                                    [=] {
                                        return metaProperty.read(qObject);
@@ -653,15 +568,6 @@ Property *PropertyFactory::createQObjectProperty(QObject *qObject,
     property->setEnabled(metaProperty.isWritable());
 
     return property;
-}
-
-ValueProperty *PropertyFactory::createProperty(const QString &name,
-                                               const QVariant &value)
-{
-    auto f = m_factories.find(value.userType());
-    return new ValueProperty(name, value,
-                             f != m_factories.end() ? f->second.get()
-                                                    : nullptr);
 }
 
 template<typename PropertyClass>
@@ -708,14 +614,10 @@ Property *PropertyFactory::createProperty(const QString &name,
         return createTypedProperty<SizeFProperty>(name, get, set);
     default:
         if (type == qMetaTypeId<Qt::Alignment>())
-            return createTypedProperty<AlignmentProperty>(name, get, set);
+            return createTypedProperty<QtAlignmentProperty>(name, get, set);
     }
 
-    // Fall back to registered factories approach (still used for enums)
-    auto f = m_factories.find(get().userType());
-    return new GetSetProperty(name, get, set,
-                              f != m_factories.end() ? f->second.get()
-                                                     : nullptr);
+    return nullptr;
 }
 
 } // namespace Tiled
