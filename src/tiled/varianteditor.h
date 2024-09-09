@@ -128,6 +128,12 @@ struct StringProperty : PropertyTemplate<QString>
     QWidget *createEditor(QWidget *parent) override;
 };
 
+struct MultilineStringProperty : PropertyTemplate<QString>
+{
+    using PropertyTemplate::PropertyTemplate;
+    QWidget *createEditor(QWidget *parent) override;
+};
+
 struct UrlProperty : PropertyTemplate<QUrl>
 {
     using PropertyTemplate::PropertyTemplate;
@@ -141,14 +147,43 @@ struct IntProperty : PropertyTemplate<int>
 {
     using PropertyTemplate::PropertyTemplate;
     QWidget *createEditor(QWidget *parent) override;
+
+    void setMinimum(int minimum) { m_minimum = minimum; }
+    void setMaximum(int maximum) { m_maximum = maximum; }
+    void setSingleStep(int singleStep) { m_singleStep = singleStep; }
+    void setSuffix(const QString &suffix) { m_suffix = suffix; }
+    void setRange(int minimum, int maximum)
+    {
+        setMinimum(minimum);
+        setMaximum(maximum);
+    }
+
+private:
+    int m_minimum = std::numeric_limits<int>::min();
+    int m_maximum = std::numeric_limits<int>::max();
+    int m_singleStep = 1;
+    QString m_suffix;
 };
 
 struct FloatProperty : PropertyTemplate<double>
 {
     using PropertyTemplate::PropertyTemplate;
     QWidget *createEditor(QWidget *parent) override;
+
+    void setMinimum(double minimum) { m_minimum = minimum; }
+    void setMaximum(double maximum) { m_maximum = maximum; }
+    void setSingleStep(double singleStep) { m_singleStep = singleStep; }
     void setSuffix(const QString &suffix) { m_suffix = suffix; }
+    void setRange(double minimum, double maximum)
+    {
+        setMinimum(minimum);
+        setMaximum(maximum);
+    }
+
 private:
+    double m_minimum = -std::numeric_limits<double>::max();
+    double m_maximum = std::numeric_limits<double>::max();
+    double m_singleStep = 1.0;
     QString m_suffix;
 };
 
@@ -168,12 +203,22 @@ struct PointFProperty : PropertyTemplate<QPointF>
 {
     using PropertyTemplate::PropertyTemplate;
     QWidget *createEditor(QWidget *parent) override;
+
+    void setSingleStep(double singleStep) { m_singleStep = singleStep; }
+
+private:
+    double m_singleStep = 1.0;
 };
 
 struct SizeProperty : PropertyTemplate<QSize>
 {
     using PropertyTemplate::PropertyTemplate;
     QWidget *createEditor(QWidget *parent) override;
+
+    void setMinimum(int minimum) { m_minimum = minimum; }
+
+private:
+    int m_minimum;
 };
 
 struct SizeFProperty : PropertyTemplate<QSizeF>
@@ -184,8 +229,19 @@ struct SizeFProperty : PropertyTemplate<QSizeF>
 
 struct RectProperty : PropertyTemplate<QRect>
 {
+    Q_OBJECT
+
+public:
     using PropertyTemplate::PropertyTemplate;
     QWidget *createEditor(QWidget *parent) override;
+
+    void setConstraint(const QRect &constraint);
+
+signals:
+    void constraintChanged(const QRect &constraint);
+
+private:
+    QRect m_constraint;
 };
 
 struct RectFProperty : PropertyTemplate<QRectF>

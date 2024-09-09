@@ -472,6 +472,7 @@ public:
                         }
                     },
                     this);
+        mTileSizeProperty->setMinimum(1);
 
         mInfiniteProperty = new BoolProperty(
                     tr("Infinite"),
@@ -539,6 +540,7 @@ public:
                     [this](const QSize &value) {
                         push(new ChangeMapProperty(mapDocument(), value));
                     });
+        mChunkSizeProperty->setMinimum(CHUNK_SIZE_MIN);
 
         mRenderOrderProperty = new EnumProperty<Map::RenderOrder>(
                     tr("Tile Render Order"),
@@ -682,14 +684,14 @@ private:
 
     Property *mOrientationProperty;
     Property *mSizeProperty;
-    Property *mTileSizeProperty;
+    SizeProperty *mTileSizeProperty;
     Property *mInfiniteProperty;
     Property *mHexSideLengthProperty;
     Property *mStaggerAxisProperty;
     Property *mStaggerIndexProperty;
     Property *mParallaxOriginProperty;
     Property *mLayerDataFormatProperty;
-    Property *mChunkSizeProperty;
+    SizeProperty *mChunkSizeProperty;
     Property *mRenderOrderProperty;
     Property *mCompressionLevelProperty;
     Property *mBackgroundColorProperty;
@@ -733,14 +735,15 @@ public:
                         push(new SetLayerLocked(mapDocument(), { layer() }, value));
                     });
 
-        // todo: value should be between 0 and 1, and would be nice to use a slider (replacing the one in Layers view)
-        // todo: singleStep should be 0.1
+        // todo: would be nice to use a slider (replacing the one in Layers view)
         mOpacityProperty = new FloatProperty(
                     tr("Opacity"),
                     [this] { return layer()->opacity(); },
                     [this](const double &value) {
                         push(new SetLayerOpacity(mapDocument(), { layer() }, value));
                     });
+        mOpacityProperty->setRange(0.0, 1.0);
+        mOpacityProperty->setSingleStep(0.1);
 
         mTintColorProperty = new ColorProperty(
                     tr("Tint Color"),
@@ -756,13 +759,13 @@ public:
                         push(new SetLayerOffset(mapDocument(), { layer() }, value));
                     });
 
-        // todo: singleStep should be 0.1
         mParallaxFactorProperty = new PointFProperty(
                     tr("Parallax Factor"),
                     [this] { return layer()->parallaxFactor(); },
                     [this](const QPointF &value) {
                         push(new SetLayerParallaxFactor(mapDocument(), { layer() }, value));
                     });
+        mParallaxFactorProperty->setSingleStep(0.1);
 
         connect(document, &Document::changed,
                 this, &LayerProperties::onChanged);
@@ -821,10 +824,10 @@ protected:
     Property *mNameProperty;
     Property *mVisibleProperty;
     Property *mLockedProperty;
-    Property *mOpacityProperty;
+    FloatProperty *mOpacityProperty;
     Property *mTintColorProperty;
     Property *mOffsetProperty;
-    Property *mParallaxFactorProperty;
+    PointFProperty *mParallaxFactorProperty;
 };
 
 class ImageLayerProperties : public LayerProperties
@@ -835,13 +838,13 @@ public:
     ImageLayerProperties(MapDocument *document, ImageLayer *object, QObject *parent = nullptr)
         : LayerProperties(document, object, parent)
     {
-        // todo: set a file filter for selecting images (or map files?)
         mImageProperty = new UrlProperty(
                     tr("Image Source"),
                     [this] { return imageLayer()->imageSource(); },
                     [this](const QUrl &value) {
                         push(new ChangeImageLayerImageSource(mapDocument(), { imageLayer() }, value));
                     });
+        mImageProperty->setFilter(Utils::readableImageFormatsFilter());
 
         mTransparentColorProperty = new ColorProperty(
                     tr("Transparent Color"),
@@ -904,7 +907,7 @@ private:
         return static_cast<ImageLayer*>(mObject);
     }
 
-    Property *mImageProperty;
+    UrlProperty *mImageProperty;
     Property *mTransparentColorProperty;
     Property *mRepeatXProperty;
     Property *mRepeatYProperty;
@@ -1047,8 +1050,8 @@ public:
                     [this](const QSize &value) {
                         push(new ChangeTilesetGridSize(tilesetDocument(), value));
                     });
+        mGridSizeProperty->setMinimum(1);
 
-        // todo: needs 1 as minimum value
         mColumnCountProperty = new IntProperty(
                     tr("Columns"),
                     [this] {
@@ -1057,6 +1060,7 @@ public:
                     [this](const int &value) {
                         push(new ChangeTilesetColumnCount(tilesetDocument(), value));
                     });
+        mColumnCountProperty->setMinimum(1);
 
         // todo: this needs a custom widget
         mAllowedTransformationsProperty = new IntProperty(
@@ -1163,8 +1167,8 @@ private:
     Property *mFillModeProperty;
     Property *mBackgroundColorProperty;
     Property *mOrientationProperty;
-    Property *mGridSizeProperty;
-    Property *mColumnCountProperty;
+    SizeProperty *mGridSizeProperty;
+    IntProperty *mColumnCountProperty;
     Property *mAllowedTransformationsProperty;
     Property *mImageProperty;
 };
@@ -1262,8 +1266,7 @@ public:
                         push(command);
                     });
 
-        // todo: allow opening the multi-line text dialog
-        mTextProperty = new StringProperty(
+        mTextProperty = new MultilineStringProperty(
                     tr("Text"),
                     [this] {
                         return mapObject()->textData().text;
@@ -1446,7 +1449,6 @@ public:
                     [this] { return tile()->id(); });
         mIdProperty->setEnabled(false);
 
-        // todo: apply readableImageFormatsFilter
         mImageProperty = new UrlProperty(
                     tr("Image"),
                     [this] { return tile()->imageSource(); },
@@ -1455,6 +1457,7 @@ public:
                                                        tile(),
                                                        value));
                     });
+        mImageProperty->setFilter(Utils::readableImageFormatsFilter());
 
         mRectangleProperty = new RectProperty(
                     tr("Rectangle"),
@@ -1464,8 +1467,8 @@ public:
                                                      { tile() },
                                                      { value }));
                     });
+        mRectangleProperty->setConstraint(object->image().rect());
 
-        // todo: minimum value should be 0
         mProbabilityProperty = new FloatProperty(
                     tr("Probability"),
                     [this] { return tile()->probability(); },
@@ -1475,6 +1478,7 @@ public:
                                                        value));
                     });
         mProbabilityProperty->setToolTip(tr("Relative chance this tile will be picked"));
+        mProbabilityProperty->setMinimum(0.0);
 
         // annoying... maybe we should somehow always have the relevant TilesetDocument
         if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
@@ -1513,6 +1517,7 @@ private:
     {
         if (tile != this->tile())
             return;
+        mRectangleProperty->setConstraint(tile->image().rect());
         emit mImageProperty->valueChanged();
         emit mRectangleProperty->valueChanged();
     }
@@ -1545,9 +1550,9 @@ private:
     }
 
     Property *mIdProperty;
-    Property *mImageProperty;
-    Property *mRectangleProperty;
-    Property *mProbabilityProperty;
+    UrlProperty *mImageProperty;
+    RectProperty *mRectangleProperty;
+    FloatProperty *mProbabilityProperty;
 };
 
 class WangSetProperties : public ObjectProperties
@@ -1573,7 +1578,6 @@ public:
                         push(new ChangeWangSetType(tilesetDocument(), wangSet(), value));
                     });
 
-        // todo: keep between 0 and WangId::MAX_COLOR_COUNT
         mColorCountProperty = new IntProperty(
                     tr("Color Count"),
                     [this] { return wangSet()->colorCount(); },
@@ -1582,6 +1586,7 @@ public:
                                                          wangSet(),
                                                          value));
                     });
+        mColorCountProperty->setRange(0, WangId::MAX_COLOR_COUNT);
 
         connect(document, &Document::changed,
                 this, &WangSetProperties::onChanged);
@@ -1644,7 +1649,7 @@ private:
 
     Property *mNameProperty;
     Property *mTypeProperty;
-    Property *mColorCountProperty;
+    IntProperty *mColorCountProperty;
 };
 
 class WangColorProperties : public ObjectProperties
@@ -1670,13 +1675,13 @@ public:
                         push(new ChangeWangColorColor(tilesetDocument(), wangColor(), value));
                     });
 
-        // todo: set 0.01 as minimum
         mProbabilityProperty = new FloatProperty(
                     tr("Probability"),
                     [this] { return wangColor()->probability(); },
                     [this](const double &value) {
                         push(new ChangeWangColorProbability(tilesetDocument(), wangColor(), value));
                     });
+        mProbabilityProperty->setMinimum(0.01);
 
         connect(document, &Document::changed,
                 this, &WangColorProperties::onChanged);
@@ -1740,7 +1745,7 @@ private:
 
     Property *mNameProperty;
     Property *mColorProperty;
-    Property *mProbabilityProperty;
+    FloatProperty *mProbabilityProperty;
 };
 
 

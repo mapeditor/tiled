@@ -84,6 +84,8 @@ public:
     void setValue(const QSize &size);
     QSize value() const;
 
+    void setMinimum(int minimum);
+
 signals:
     void valueChanged();
 
@@ -156,6 +158,8 @@ public:
     void setValue(const QPointF &size);
     QPointF value() const;
 
+    void setSingleStep(double step);
+
 signals:
     void valueChanged();
 
@@ -179,6 +183,8 @@ public:
 
     void setValue(const QRect &size);
     QRect value() const;
+
+    void setConstraint(const QRect &constraint);
 
 signals:
     void valueChanged();

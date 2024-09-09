@@ -214,6 +214,12 @@ QSize SizeEdit::value() const
                  m_heightSpinBox->value());
 }
 
+void SizeEdit::setMinimum(int minimum)
+{
+    m_widthSpinBox->setMinimum(minimum);
+    m_heightSpinBox->setMinimum(minimum);
+}
+
 
 SizeFEdit::SizeFEdit(QWidget *parent)
     : ResponsivePairswiseWidget(parent)
@@ -301,6 +307,12 @@ QPointF PointFEdit::value() const
                    m_ySpinBox->value());
 }
 
+void PointFEdit::setSingleStep(double step)
+{
+    m_xSpinBox->setSingleStep(step);
+    m_ySpinBox->setSingleStep(step);
+}
+
 
 RectEdit::RectEdit(QWidget *parent)
     : ResponsivePairswiseWidget(parent)
@@ -319,6 +331,9 @@ RectEdit::RectEdit(QWidget *parent)
                     { m_widthLabel, m_widthSpinBox },
                     { m_heightLabel, m_heightSpinBox },
                     });
+
+    m_widthSpinBox->setMinimum(0);
+    m_heightSpinBox->setMinimum(0);
 
     connect(m_xSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &RectEdit::valueChanged);
     connect(m_ySpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &RectEdit::valueChanged);
@@ -340,6 +355,23 @@ QRect RectEdit::value() const
                  m_ySpinBox->value(),
                  m_widthSpinBox->value(),
                  m_heightSpinBox->value());
+}
+
+void RectEdit::setConstraint(const QRect &constraint)
+{
+    if (constraint.isNull()) {
+        m_xSpinBox->setRange(std::numeric_limits<int>::lowest(),
+                             std::numeric_limits<int>::max());
+        m_ySpinBox->setRange(std::numeric_limits<int>::lowest(),
+                             std::numeric_limits<int>::max());
+        m_widthSpinBox->setRange(0, std::numeric_limits<int>::max());
+        m_heightSpinBox->setRange(0, std::numeric_limits<int>::max());
+    } else {
+        m_xSpinBox->setRange(constraint.left(), constraint.right() + 1);
+        m_ySpinBox->setRange(constraint.top(), constraint.bottom() + 1);
+        m_widthSpinBox->setRange(0, constraint.width());
+        m_heightSpinBox->setRange(0, constraint.height());
+    }
 }
 
 
