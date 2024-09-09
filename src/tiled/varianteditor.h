@@ -28,9 +28,6 @@
 #include <QVariant>
 #include <QWidget>
 
-#include <memory>
-#include <unordered_map>
-
 class QGridLayout;
 
 namespace Tiled {
@@ -43,7 +40,7 @@ class Property : public QObject
     Q_OBJECT
     Q_PROPERTY(QString name READ name CONSTANT)
     Q_PROPERTY(QString toolTip READ toolTip WRITE setToolTip NOTIFY toolTipChanged)
-    Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
+    Q_PROPERTY(QVariant value READ variantValue WRITE setVariantValue NOTIFY valueChanged)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 
 public:
@@ -72,8 +69,8 @@ public:
         }
     }
 
-    virtual QVariant value() const = 0;
-    virtual void setValue(const QVariant &value) = 0;
+    virtual QVariant variantValue() const = 0;
+    virtual void setVariantValue(const QVariant &value) = 0;
 
     virtual QWidget *createEditor(QWidget *parent) = 0;
 
@@ -106,18 +103,21 @@ public:
         , m_set(std::move(set))
     {}
 
-    QVariant value() const override
+    Type value() const { return m_get(); }
+    void setValue(const Type &value) { m_set(value); }
+
+    QVariant variantValue() const override
     {
         return QVariant::fromValue(m_get());
     }
 
-    void setValue(const QVariant &value) override
+    void setVariantValue(const QVariant &value) override
     {
         if (m_set)
             m_set(value.value<Type>());
     }
 
-protected:
+private:
     std::function<Type()> m_get;
     std::function<void(const Type&)> m_set;
 };
@@ -207,113 +207,10 @@ struct FontProperty : PropertyTemplate<QFont>
     QWidget *createEditor(QWidget *parent) override;
 };
 
-struct AlignmentProperty : PropertyTemplate<Qt::Alignment>
+struct QtAlignmentProperty : PropertyTemplate<Qt::Alignment>
 {
     using PropertyTemplate::PropertyTemplate;
     QWidget *createEditor(QWidget *parent) override;
-};
-
-/**
- * An editor factory is responsible for creating an editor widget for a given
- * property. It can be used to share the configuration of editor widgets
- * between different properties.
- */
-class EditorFactory
-{
-    Q_DECLARE_TR_FUNCTIONS(EditorFactory)
-
-public:
-    virtual QWidget *createEditor(Property *property, QWidget *parent) = 0;
-};
-
-/**
- * An editor factory that creates a combo box for enum properties.
- */
-class EnumEditorFactory : public EditorFactory
-{
-public:
-    EnumEditorFactory(const QStringList &enumNames = {},
-                      const QList<int> &enumValues = {});
-
-    void setEnumNames(const QStringList &enumNames);
-    void setEnumIcons(const QMap<int, QIcon> &enumIcons);
-    void setEnumValues(const QList<int> &enumValues);
-
-    QWidget *createEditor(Property *property, QWidget *parent) override;
-
-private:
-    QStringListModel m_enumNamesModel;
-    QMap<int, QIcon> m_enumIcons;
-    QList<int> m_enumValues;
-};
-
-/**
- * A property that uses an editor factory to create its editor, but does not
- * store a value itself.
- *
- * The property does not take ownership of the editor factory.
- */
-class AbstractProperty : public Property
-{
-    Q_OBJECT
-
-public:
-    AbstractProperty(const QString &name,
-                     EditorFactory *editorFactory,
-                     QObject *parent = nullptr);
-
-    QWidget *createEditor(QWidget *parent) override;
-
-private:
-    EditorFactory *m_editorFactory;
-};
-
-/**
- * A property that uses the given functions to get and set the value and uses
- * an editor factory to create its editor.
- *
- * The property does not take ownership of the editor factory.
- */
-class GetSetProperty : public AbstractProperty
-{
-    Q_OBJECT
-
-public:
-    GetSetProperty(const QString &name,
-                   std::function<QVariant()> get,
-                   std::function<void(const QVariant&)> set,
-                   EditorFactory *editorFactory,
-                   QObject *parent = nullptr);
-
-    QVariant value() const override { return m_get(); }
-    void setValue(const QVariant &value) override { m_set(value); }
-
-private:
-    std::function<QVariant()> m_get;
-    std::function<void(const QVariant&)> m_set;
-};
-
-/**
- * A property that stores a value of a given type and uses an editor factory to
- * create its editor.
- *
- * The property does not take ownership of the editor factory.
- */
-class ValueProperty : public AbstractProperty
-{
-    Q_OBJECT
-
-public:
-    ValueProperty(const QString &name,
-                  const QVariant &value,
-                  EditorFactory *editorFactory,
-                  QObject *parent = nullptr);
-
-    QVariant value() const override { return m_value; }
-    void setValue(const QVariant &value) override;
-
-private:
-    QVariant m_value;
 };
 
 
@@ -327,56 +224,80 @@ public:
     PropertyFactory() = default;
 
     /**
-     * Register an editor factory for a given type.
-     *
-     * When there is already an editor factory registered for the given type,
-     * it will be replaced.
-     */
-    void registerEditorFactory(int type, std::unique_ptr<EditorFactory> factory);
-
-    /**
      * Creates a property that wraps a QObject property.
      */
     Property *createQObjectProperty(QObject *qObject,
-                                    const char *name,
+                                    const char *propertyName,
                                     const QString &displayName = {});
 
     /**
-     * Creates a property with the given name and value. The property will use
-     * the editor factory registered for the type of the value.
-     */
-    ValueProperty *createProperty(const QString &name, const QVariant &value);
-
-    /**
      * Creates a property with the given name and get/set functions. The
-     * property will use the editor factory registered for the type of the
-     * value.
+     * value type determines the kind of property that will be created.
      */
     Property *createProperty(const QString &name,
                              std::function<QVariant()> get,
                              std::function<void(const QVariant&)> set);
-
-private:
-    std::unordered_map<int, std::unique_ptr<EditorFactory>> m_factories;
 };
 
-/**
- * A property that wraps an enum value and uses an editor factory to create
- * its editor.
- */
-class EnumProperty : public AbstractProperty
+struct EnumData
 {
-    Q_OBJECT
+    EnumData(const QStringList &names,
+             const QList<int> &values = {},
+             const QMap<int, QIcon> &icons = {})
+        : names(names)
+        , values(values)
+        , icons(icons)
+    {}
 
+    QStringList names;
+    QList<int> values;          // optional
+    QMap<int, QIcon> icons;     // optional
+};
+
+template<typename>
+EnumData enumData()
+{
+    return {{}};
+}
+
+QWidget *createEnumEditor(IntProperty *property,
+                          const EnumData &enumData,
+                          QWidget *parent);
+
+/**
+ * A property that wraps an enum value and creates a combo box based on the
+ * given EnumData.
+ */
+template <typename Enum>
+class EnumProperty : public IntProperty
+{
 public:
     EnumProperty(const QString &name,
-                 QObject *parent = nullptr);
+                 std::function<Enum()> get,
+                 std::function<void(Enum)> set,
+                 QObject *parent = nullptr)
+        : IntProperty(name,
+                      [get] {
+                          return static_cast<int>(get());
+                      },
+                      set ? [set](const int &value){ set(static_cast<Enum>(value)); }
+                          : std::function<void(const int&)>(),
+                      parent)
+        , m_enumData(enumData<Enum>())
+    {}
 
-    void setEnumNames(const QStringList &enumNames);
-    void setEnumValues(const QList<int> &enumValues);
+    void setEnumData(const EnumData &enumData)
+    {
+        m_enumData = enumData;
+    }
+
+    QWidget *createEditor(QWidget *parent) override
+    {
+        return createEnumEditor(this, m_enumData, parent);
+    }
 
 private:
-    EnumEditorFactory m_editorFactory;
+    EnumData m_enumData;
 };
 
 

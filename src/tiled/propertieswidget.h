@@ -22,16 +22,12 @@
 
 #include <QWidget>
 
-#include <memory>
-
 namespace Tiled {
 
 class Object;
 
 class Document;
-class EditorFactory;
 class ObjectProperties;
-class PropertyFactory;
 class VariantEditor;
 
 /**
@@ -63,9 +59,6 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
 
 private:
-    void registerEditorFactories();
-    void registerEditorFactory(int type, std::unique_ptr<EditorFactory> factory);
-
     void currentObjectChanged(Object *object);
     void updateActions();
 
@@ -84,7 +77,6 @@ private:
     Document *mDocument = nullptr;
     ObjectProperties *mPropertiesObject = nullptr;
     VariantEditor *mPropertyBrowser;
-    std::unique_ptr<PropertyFactory> mPropertyFactory;
     QAction *mActionAddProperty;
     QAction *mActionRemoveProperty;
     QAction *mActionRenameProperty;
