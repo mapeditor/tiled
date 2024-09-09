@@ -37,6 +37,7 @@
 #include <QResizeEvent>
 #include <QSpacerItem>
 #include <QSpinBox>
+#include <QToolButton>
 
 namespace Tiled {
 
@@ -284,53 +285,78 @@ QWidget *ColorProperty::createEditor(QWidget *parent)
 QWidget *FontProperty::createEditor(QWidget *parent)
 {
     auto editor = new QWidget(parent);
-    auto layout = new QVBoxLayout(editor);
     auto fontComboBox = new QFontComboBox(editor);
+
     auto sizeSpinBox = new QSpinBox(editor);
-    auto boldCheckBox = new QCheckBox(tr("Bold"), editor);
-    auto italicCheckBox = new QCheckBox(tr("Italic"), editor);
-    auto underlineCheckBox = new QCheckBox(tr("Underline"), editor);
-    auto strikeoutCheckBox = new QCheckBox(tr("Strikeout"), editor);
-    auto kerningCheckBox = new QCheckBox(tr("Kerning"), editor);
     sizeSpinBox->setRange(1, 999);
     sizeSpinBox->setSuffix(tr(" px"));
     sizeSpinBox->setKeyboardTracking(false);
+
+    auto bold = new QToolButton(editor);
+    bold->setIcon(QIcon(QStringLiteral("://images/scalable/text-bold-symbolic.svg")));
+    bold->setToolTip(tr("Bold"));
+    bold->setCheckable(true);
+
+    auto italic = new QToolButton(editor);
+    italic->setIcon(QIcon(QStringLiteral("://images/scalable/text-italic-symbolic.svg")));
+    italic->setToolTip(tr("Italic"));
+    italic->setCheckable(true);
+
+    auto underline = new QToolButton(editor);
+    underline->setIcon(QIcon(QStringLiteral("://images/scalable/text-underline-symbolic.svg")));
+    underline->setToolTip(tr("Underline"));
+    underline->setCheckable(true);
+
+    auto strikeout = new QToolButton(editor);
+    strikeout->setIcon(QIcon(QStringLiteral("://images/scalable/text-strikethrough-symbolic.svg")));
+    strikeout->setToolTip(tr("Strikethrough"));
+    strikeout->setCheckable(true);
+
+    auto kerning = new QCheckBox(tr("Kerning"), editor);
+
+    auto layout = new QVBoxLayout(editor);
     layout->setContentsMargins(QMargins());
     layout->setSpacing(Utils::dpiScaled(3));
     layout->addWidget(fontComboBox);
     layout->addWidget(sizeSpinBox);
-    layout->addWidget(boldCheckBox);
-    layout->addWidget(italicCheckBox);
-    layout->addWidget(underlineCheckBox);
-    layout->addWidget(strikeoutCheckBox);
-    layout->addWidget(kerningCheckBox);
+
+    auto buttonsLayout = new QHBoxLayout;
+    buttonsLayout->setContentsMargins(QMargins());
+    buttonsLayout->addWidget(bold);
+    buttonsLayout->addWidget(italic);
+    buttonsLayout->addWidget(underline);
+    buttonsLayout->addWidget(strikeout);
+    buttonsLayout->addStretch();
+
+    layout->addLayout(buttonsLayout);
+    layout->addWidget(kerning);
 
     auto syncEditor = [=] {
         const auto font = value();
         const QSignalBlocker fontBlocker(fontComboBox);
         const QSignalBlocker sizeBlocker(sizeSpinBox);
-        const QSignalBlocker boldBlocker(boldCheckBox);
-        const QSignalBlocker italicBlocker(italicCheckBox);
-        const QSignalBlocker underlineBlocker(underlineCheckBox);
-        const QSignalBlocker strikeoutBlocker(strikeoutCheckBox);
-        const QSignalBlocker kerningBlocker(kerningCheckBox);
+        const QSignalBlocker boldBlocker(bold);
+        const QSignalBlocker italicBlocker(italic);
+        const QSignalBlocker underlineBlocker(underline);
+        const QSignalBlocker strikeoutBlocker(strikeout);
+        const QSignalBlocker kerningBlocker(kerning);
         fontComboBox->setCurrentFont(font);
         sizeSpinBox->setValue(font.pixelSize());
-        boldCheckBox->setChecked(font.bold());
-        italicCheckBox->setChecked(font.italic());
-        underlineCheckBox->setChecked(font.underline());
-        strikeoutCheckBox->setChecked(font.strikeOut());
-        kerningCheckBox->setChecked(font.kerning());
+        bold->setChecked(font.bold());
+        italic->setChecked(font.italic());
+        underline->setChecked(font.underline());
+        strikeout->setChecked(font.strikeOut());
+        kerning->setChecked(font.kerning());
     };
 
     auto syncProperty = [=] {
         auto font = fontComboBox->currentFont();
         font.setPixelSize(sizeSpinBox->value());
-        font.setBold(boldCheckBox->isChecked());
-        font.setItalic(italicCheckBox->isChecked());
-        font.setUnderline(underlineCheckBox->isChecked());
-        font.setStrikeOut(strikeoutCheckBox->isChecked());
-        font.setKerning(kerningCheckBox->isChecked());
+        font.setBold(bold->isChecked());
+        font.setItalic(italic->isChecked());
+        font.setUnderline(underline->isChecked());
+        font.setStrikeOut(strikeout->isChecked());
+        font.setKerning(kerning->isChecked());
         setValue(font);
     };
 
@@ -339,11 +365,11 @@ QWidget *FontProperty::createEditor(QWidget *parent)
     connect(this, &Property::valueChanged, fontComboBox, syncEditor);
     connect(fontComboBox, &QFontComboBox::currentFontChanged, this, syncProperty);
     connect(sizeSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, syncProperty);
-    connect(boldCheckBox, &QCheckBox::toggled, this, syncProperty);
-    connect(italicCheckBox, &QCheckBox::toggled, this, syncProperty);
-    connect(underlineCheckBox, &QCheckBox::toggled, this, syncProperty);
-    connect(strikeoutCheckBox, &QCheckBox::toggled, this, syncProperty);
-    connect(kerningCheckBox, &QCheckBox::toggled, this, syncProperty);
+    connect(bold, &QAbstractButton::toggled, this, syncProperty);
+    connect(italic, &QAbstractButton::toggled, this, syncProperty);
+    connect(underline, &QAbstractButton::toggled, this, syncProperty);
+    connect(strikeout, &QAbstractButton::toggled, this, syncProperty);
+    connect(kerning, &QAbstractButton::toggled, this, syncProperty);
 
     return editor;
 }
