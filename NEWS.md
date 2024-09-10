@@ -4,6 +4,7 @@
 * Scripting: Added `MapEditor.currentBrushChanged` signal
 * Scripting: Added `tiled.cursor` to create mouse cursor values
 * Fixed crash when accessing a world through a symlink (#4042)
+* Fixed error reporting when exporting on the command-line (by Shuhei Nagasawa, #4015)
 
 ### Tiled 1.11.0 (27 June 2024)
 
