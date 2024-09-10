@@ -2,7 +2,7 @@
  * Tiled can be extended with the use of JavaScript.
  *
  * Scripts can be used to implement {@link tiled.registerMapFormat | custom map formats},
- * {@link tiled.registerAction | custom actions} and {@link tiled.registerTool | new tools}.
+ * {@link tiled.registerAction | custom actions}, and {@link tiled.registerTool | new tools}.
  * Scripts can also {@link Signal | automate actions based on signals}.
  *
  * See the [Tiled Manual](https://doc.mapeditor.org/en/stable/manual/scripting) for more information on writing or installing extensions.
@@ -415,7 +415,7 @@ declare namespace Qt {
    * Can be created with {@link tiled.cursor} and assigned to {@link
    * Tool.cursor}.
    */
-  class QCursor {};
+  class QCursor {}
 
   /**
    * The base type from which all Qt widgets derive.
@@ -3904,7 +3904,7 @@ interface TileCollisionEditor {
   view : MapView
 
   /**
-   * Focuses the given object in the collision editor view and makes sure its
+   * Focuses the given object in the collision editor view and makes sure it is
    * visible in its objects list. Does not automatically select the object.
    */
   focusObject(object : MapObject) : void
@@ -4652,14 +4652,14 @@ declare namespace tiled {
    *
    * @since 1.11.1
    */
-  export function cursor(shape: Qt.CursorShape): Cursor;
+  export function cursor(shape: Qt.CursorShape): Qt.QCursor;
 
   /**
    * Creates a cursor with the given image and the optional hotspot.
    *
    * @since 1.11.1
    */
-  export function cursor(image: Image, hotX?: number, hotY?: number): Cursor;
+  export function cursor(image: Image, hotX?: number, hotY?: number): Qt.QCursor;
 
   /**
    * Registers a new map format that can then be used to open and/or save
