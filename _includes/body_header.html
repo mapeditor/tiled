@@ -2,8 +2,11 @@
     <nav class="headerbar container">
       <a href="/" class="headerbar-logo"><img src="/img/tiled-logo-white.png" class="logo" alt="Tiled logo" width="393" height="213" /></a>
       <div class="headerbar-content">
-        <!-- TODO: Make the documentation part of the website -->
-        <a class="header-item headerbar-button" href="https://doc.mapeditor.org/en/stable/">Docs</a>
+{% if page.title == "Docs" %}
+        <a class="header-item header-item-active headerbar-button" href="/docs">Docs</a>
+{% else %}
+        <a class="header-item headerbar-button" href="/docs">Docs</a>
+{% endif%}
 {% if page.title == "News" %}
         <a class="header-item header-item-active headerbar-button" href="/news">News</a>
 {% else %}

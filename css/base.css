@@ -99,8 +99,8 @@ iframe.video {
   box-sizing: content-box;
 }
 .svg-icon {
-  width: 2em;
-  height: 2em;
+  width: 1.5em;
+  height: 1.5em;
   fill: currentColor;
 }
 .svg-icon-small {
@@ -171,9 +171,8 @@ footer.media-content nav li {
   display: flex;
   color: #ececec;
   text-decoration: none;
-  justify-content: center;
   align-items: center;
-  padding: 0.25em;
+  padding: 0.5em 0.75em;
   margin-left: 0.7em;
   border: 2px solid transparent;
   border-radius: 5px;
@@ -192,10 +191,6 @@ footer.media-content nav li {
 .fab {
   vertical-align: -17%;
 }
-.headerbar-button {
-  padding-left: 1em;
-  padding-right: 1em;
-}
 
 .button-donate-heart {
   height: 1.1rem;
@@ -207,20 +202,20 @@ footer.media-content nav li {
   display: none;
   justify-content: center;
 }
-@media screen and (max-width: 700px) {
-  .headerbar-button {
-    padding: 0.25em;
-  }
-}
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 800px) {
   .headerbar .headerbar-social {
     display: none;
   }
+}
+@media screen and (max-width: 600px) {
   .external-navigation {
     display: flex;
   }
 }
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1100px) {
+  .headerbar .headerbar-social {
+    padding: 0.5em;
+  }
   .tooltiptext {
     display: none;
   }
@@ -322,15 +317,6 @@ section.media-content {
   width: 50%;
   transform: translate(-55%, -40%);
 }
-.button-download {
-  background-color: green;
-}
-.button-docs {
-  background-color: green;
-}
-.button-donate {
-  background-color: darkcyan;
-}
 .action-buttons {
   width: 100%;
   bottom: -30px;
@@ -347,12 +333,22 @@ section.media-content {
   padding: 0.5em 1em;
   border: 2px solid rgba(255,255,255,0.25);
   color: white;
+  background-color: #4e4e4e;
 }
 .action-button i {
   margin-right: 0.5em;
 }
 .action-button:hover {
   border: 2px solid white;
+}
+.button-download {
+  background-color: green;
+}
+.button-docs {
+  background-color: green;
+}
+.button-donate {
+  background-color: darkcyan;
 }
 @media screen and (max-width: 514px) {
   .header-logo {
