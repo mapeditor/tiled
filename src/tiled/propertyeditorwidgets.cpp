@@ -1,3 +1,23 @@
+/*
+ * propertyeditorwidgets.cpp
+ * Copyright 2024, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ *
+ * This file is part of Tiled.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "propertyeditorwidgets.h"
 
 #include "utils.h"
@@ -7,6 +27,7 @@
 #include <QResizeEvent>
 #include <QStyle>
 #include <QStyleOption>
+#include <QStylePainter>
 
 namespace Tiled {
 
@@ -455,6 +476,57 @@ void ElidingLabel::paintEvent(QPaintEvent *)
 
     QPainter painter(this);
     QWidget::style()->drawItemText(&painter, cr, flags, opt.palette, isEnabled(), elidedText, foregroundRole());
+}
+
+
+HeaderWidget::HeaderWidget(const QString &text, QWidget *parent)
+    : ElidingLabel(text, parent)
+{
+    setBackgroundRole(QPalette::Dark);
+    setForegroundRole(QPalette::BrightText);
+    setAutoFillBackground(true);
+
+    const int verticalMargin = Utils::dpiScaled(3);
+    const int horizontalMargin = Utils::dpiScaled(6);
+    const int branchIndicatorWidth = Utils::dpiScaled(14);
+    setContentsMargins(horizontalMargin + branchIndicatorWidth,
+                       verticalMargin, horizontalMargin, verticalMargin);
+}
+
+void HeaderWidget::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        m_checked = !m_checked;
+        emit toggled(m_checked);
+    }
+
+    ElidingLabel::mousePressEvent(event);
+}
+
+void HeaderWidget::paintEvent(QPaintEvent *)
+{
+    const QRect cr = contentsRect();
+    const Qt::LayoutDirection dir = text().isRightToLeft() ? Qt::RightToLeft : Qt::LeftToRight;
+    const int align = QStyle::visualAlignment(dir, {});
+    const int flags = align | (dir == Qt::LeftToRight ? Qt::TextForceLeftToRight
+                                                      : Qt::TextForceRightToLeft);
+
+    QStyleOption branchOption;
+    branchOption.initFrom(this);
+    branchOption.rect = QRect(0, 0, contentsMargins().left(), height());
+    branchOption.state = QStyle::State_Children;
+    if (m_checked)
+        branchOption.state |= QStyle::State_Open;
+
+    QStylePainter p(this);
+    p.drawPrimitive(QStyle::PE_IndicatorBranch, branchOption);
+
+    QStyleOption opt;
+    opt.initFrom(this);
+
+    const auto elidedText = opt.fontMetrics.elidedText(text(), Qt::ElideRight, cr.width());
+
+    p.drawItemText(cr, flags, opt.palette, isEnabled(), elidedText, foregroundRole());
 }
 
 

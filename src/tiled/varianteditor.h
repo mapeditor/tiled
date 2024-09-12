@@ -32,6 +32,8 @@ class QGridLayout;
 
 namespace Tiled {
 
+class HeaderWidget;
+
 /**
  * A property represents a named value that can create its own edit widget.
  */
@@ -40,10 +42,15 @@ class Property : public QObject
     Q_OBJECT
     Q_PROPERTY(QString name READ name CONSTANT)
     Q_PROPERTY(QString toolTip READ toolTip WRITE setToolTip NOTIFY toolTipChanged)
-    Q_PROPERTY(QVariant value READ variantValue WRITE setVariantValue NOTIFY valueChanged)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 
 public:
+    enum class DisplayMode {
+        Default,
+        Header,
+        Separator
+    };
+
     Property(const QString &name, QObject *parent = nullptr)
         : QObject(parent)
         , m_name(name)
@@ -52,25 +59,12 @@ public:
     const QString &name() const { return m_name; }
 
     const QString &toolTip() const { return m_toolTip; }
-    void setToolTip(const QString &toolTip)
-    {
-        if (m_toolTip != toolTip) {
-            m_toolTip = toolTip;
-            emit toolTipChanged(toolTip);
-        }
-    }
+    void setToolTip(const QString &toolTip);
 
     bool isEnabled() const { return m_enabled; }
-    void setEnabled(bool enabled)
-    {
-        if (m_enabled != enabled) {
-            m_enabled = enabled;
-            emit enabledChanged(enabled);
-        }
-    }
+    void setEnabled(bool enabled);
 
-    virtual QVariant variantValue() const = 0;
-    virtual void setVariantValue(const QVariant &value) = 0;
+    virtual DisplayMode displayMode() const { return DisplayMode::Default; }
 
     virtual QWidget *createEditor(QWidget *parent) = 0;
 
@@ -83,6 +77,42 @@ private:
     QString m_name;
     QString m_toolTip;
     bool m_enabled = true;
+};
+
+class Separator final : public Property
+{
+    Q_OBJECT
+
+public:
+    Separator(QObject *parent = nullptr)
+        : Property(QString(), parent)
+    {}
+
+    DisplayMode displayMode() const override { return DisplayMode::Separator; }
+
+    QWidget *createEditor(QWidget */*parent*/) override { return nullptr; }
+};
+
+class GroupProperty : public Property
+{
+    Q_OBJECT
+
+public:
+    GroupProperty(const QString &name, QObject *parent = nullptr)
+        : Property(name, parent)
+    {}
+
+    DisplayMode displayMode() const override { return DisplayMode::Header; }
+
+    QWidget *createEditor(QWidget *parent) override;
+
+    void addProperty(Property *property) { m_subProperties.append(property); }
+    void addSeparator() { m_subProperties.append(new Separator(this)); }
+
+    const QList<Property*> &subProperties() const { return m_subProperties; }
+
+private:
+    QList<Property*> m_subProperties;
 };
 
 /**
@@ -105,17 +135,6 @@ public:
 
     Type value() const { return m_get(); }
     void setValue(const Type &value) { m_set(value); }
-
-    QVariant variantValue() const override
-    {
-        return QVariant::fromValue(m_get());
-    }
-
-    void setVariantValue(const QVariant &value) override
-    {
-        if (m_set)
-            m_set(value.value<Type>());
-    }
 
 private:
     std::function<Type()> m_get;
@@ -357,7 +376,7 @@ private:
 };
 
 
-class VariantEditor : public QScrollArea
+class VariantEditor : public QWidget
 {
     Q_OBJECT
 
@@ -365,7 +384,7 @@ public:
     VariantEditor(QWidget *parent = nullptr);
 
     void clear();
-    void addHeader(const QString &text);
+    HeaderWidget *addHeader(const QString &text);
     void addSeparator();
     void addProperty(Property *property);
     // void addValue(const QVariant &value);
@@ -382,7 +401,6 @@ private:
         ColumnCount,
     };
 
-    QWidget *m_widget;
     QGridLayout *m_gridLayout;
     int m_rowIndex = 0;
 };

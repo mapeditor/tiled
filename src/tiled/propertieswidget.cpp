@@ -36,6 +36,7 @@
 #include "compression.h"
 #include "mapdocument.h"
 #include "objectgroup.h"
+#include "objectrefedit.h"
 #include "objecttemplate.h"
 #include "preferences.h"
 #include "propertybrowser.h"
@@ -43,6 +44,7 @@
 #include "tilesetdocument.h"
 #include "utils.h"
 #include "varianteditor.h"
+#include "variantpropertymanager.h"
 #include "wangoverlay.h"
 
 #include <QAction>
@@ -193,10 +195,47 @@ template<> EnumData enumData<WangSet::Type>()
 }
 
 
+class ObjectRefProperty : public PropertyTemplate<DisplayObjectRef>
+{
+    Q_OBJECT
+
+public:
+    using PropertyTemplate::PropertyTemplate;
+
+    QWidget *createEditor(QWidget *parent) override
+    {
+        auto editor = new ObjectRefEdit(parent);
+        auto syncEditor = [this, editor] {
+            const QSignalBlocker blocker(editor);
+            editor->setValue(value());
+        };
+        syncEditor();
+        connect(this, &Property::valueChanged, editor, syncEditor);
+        connect(editor, &ObjectRefEdit::valueChanged,
+                this, [this](const DisplayObjectRef &value) {
+            setValue(value);
+        });
+        return editor;
+    }
+};
+
+
 PropertiesWidget::PropertiesWidget(QWidget *parent)
     : QWidget{parent}
-    , mPropertyBrowser(new VariantEditor(this))
+    , mScrollArea(new QScrollArea(this))
 {
+    auto scrollWidget = new QWidget(mScrollArea);
+    scrollWidget->setBackgroundRole(QPalette::AlternateBase);
+
+    auto verticalLayout = new QVBoxLayout(scrollWidget);
+    mPropertyBrowser = new VariantEditor(scrollWidget);
+    verticalLayout->addWidget(mPropertyBrowser);
+    verticalLayout->addStretch();
+    verticalLayout->setContentsMargins(QMargins());
+
+    mScrollArea->setWidget(scrollWidget);
+    mScrollArea->setWidgetResizable(true);
+
     mActionAddProperty = new QAction(this);
     mActionAddProperty->setEnabled(false);
     mActionAddProperty->setIcon(QIcon(QLatin1String(":/images/16/add.png")));
@@ -231,7 +270,7 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(mPropertyBrowser);
+    layout->addWidget(mScrollArea);
     layout->addWidget(toolBar);
     setLayout(layout);
 
@@ -569,6 +608,26 @@ public:
                         push(new ChangeMapProperty(mapDocument(), value));
                     });
 
+        mMapProperties = new GroupProperty(tr("Map"));
+        mMapProperties->addProperty(mClassProperty);
+        mMapProperties->addSeparator();
+        mMapProperties->addProperty(mOrientationProperty);
+        mMapProperties->addProperty(mSizeProperty);
+        mMapProperties->addProperty(mInfiniteProperty);
+        mMapProperties->addProperty(mTileSizeProperty);
+        mMapProperties->addProperty(mHexSideLengthProperty);
+        mMapProperties->addProperty(mStaggerAxisProperty);
+        mMapProperties->addProperty(mStaggerIndexProperty);
+        mMapProperties->addSeparator();
+        mMapProperties->addProperty(mParallaxOriginProperty);
+        mMapProperties->addSeparator();
+        mMapProperties->addProperty(mLayerDataFormatProperty);
+        mMapProperties->addProperty(mChunkSizeProperty);
+        mMapProperties->addProperty(mCompressionLevelProperty);
+        mMapProperties->addSeparator();
+        mMapProperties->addProperty(mRenderOrderProperty);
+        mMapProperties->addProperty(mBackgroundColorProperty);
+
         updateEnabledState();
         connect(document, &Document::changed,
                 this, &MapProperties::onChanged);
@@ -576,25 +635,7 @@ public:
 
     void populateEditor(VariantEditor *editor) override
     {
-        editor->addHeader(tr("Map"));
-        editor->addProperty(mClassProperty);
-        editor->addSeparator();
-        editor->addProperty(mOrientationProperty);
-        editor->addProperty(mSizeProperty);
-        editor->addProperty(mInfiniteProperty);
-        editor->addProperty(mTileSizeProperty);
-        editor->addProperty(mHexSideLengthProperty);
-        editor->addProperty(mStaggerAxisProperty);
-        editor->addProperty(mStaggerIndexProperty);
-        editor->addSeparator();
-        editor->addProperty(mParallaxOriginProperty);
-        editor->addSeparator();
-        editor->addProperty(mLayerDataFormatProperty);
-        editor->addProperty(mChunkSizeProperty);
-        editor->addProperty(mCompressionLevelProperty);
-        editor->addSeparator();
-        editor->addProperty(mRenderOrderProperty);
-        editor->addProperty(mBackgroundColorProperty);
+        editor->addProperty(mMapProperties);
     }
 
 private:
@@ -682,6 +723,7 @@ private:
         return mapDocument()->map();
     }
 
+    GroupProperty *mMapProperties;
     Property *mOrientationProperty;
     Property *mSizeProperty;
     SizeProperty *mTileSizeProperty;
@@ -767,23 +809,25 @@ public:
                     });
         mParallaxFactorProperty->setSingleStep(0.1);
 
+        mLayerProperties = new GroupProperty(tr("Layer"));
+        mLayerProperties->addProperty(mIdProperty);
+        mLayerProperties->addProperty(mNameProperty);
+        mLayerProperties->addProperty(mClassProperty);
+        mLayerProperties->addSeparator();
+        mLayerProperties->addProperty(mVisibleProperty);
+        mLayerProperties->addProperty(mLockedProperty);
+        mLayerProperties->addProperty(mOpacityProperty);
+        mLayerProperties->addProperty(mTintColorProperty);
+        mLayerProperties->addProperty(mOffsetProperty);
+        mLayerProperties->addProperty(mParallaxFactorProperty);
+
         connect(document, &Document::changed,
                 this, &LayerProperties::onChanged);
     }
 
     void populateEditor(VariantEditor *editor) override
     {
-        editor->addHeader(tr("Layer"));
-        editor->addProperty(mIdProperty);
-        editor->addProperty(mNameProperty);
-        editor->addProperty(mClassProperty);
-        editor->addSeparator();
-        editor->addProperty(mVisibleProperty);
-        editor->addProperty(mLockedProperty);
-        editor->addProperty(mOpacityProperty);
-        editor->addProperty(mTintColorProperty);
-        editor->addProperty(mOffsetProperty);
-        editor->addProperty(mParallaxFactorProperty);
+        editor->addProperty(mLayerProperties);
     }
 
 protected:
@@ -820,6 +864,7 @@ protected:
         return static_cast<Layer*>(mObject);
     }
 
+    GroupProperty *mLayerProperties;
     Property *mIdProperty;
     Property *mNameProperty;
     Property *mVisibleProperty;
@@ -867,17 +912,19 @@ public:
                     [this](const bool &value) {
                         push(new ChangeImageLayerRepeatY(mapDocument(), { imageLayer() }, value));
                     });
+
+        mImageLayerProperties = new GroupProperty(tr("Image Layer"));
+        mImageLayerProperties->addProperty(mImageProperty);
+        mImageLayerProperties->addProperty(mTransparentColorProperty);
+        mImageLayerProperties->addSeparator();
+        mImageLayerProperties->addProperty(mRepeatXProperty);
+        mImageLayerProperties->addProperty(mRepeatYProperty);
     }
 
     void populateEditor(VariantEditor *editor) override
     {
         LayerProperties::populateEditor(editor);
-        editor->addHeader(tr("Image Layer"));
-        editor->addProperty(mImageProperty);
-        editor->addProperty(mTransparentColorProperty);
-        editor->addSeparator();
-        editor->addProperty(mRepeatXProperty);
-        editor->addProperty(mRepeatYProperty);
+        editor->addProperty(mImageLayerProperties);
     }
 
 private:
@@ -907,6 +954,7 @@ private:
         return static_cast<ImageLayer*>(mObject);
     }
 
+    GroupProperty *mImageLayerProperties;
     UrlProperty *mImageProperty;
     Property *mTransparentColorProperty;
     Property *mRepeatXProperty;
@@ -1083,6 +1131,21 @@ public:
                         // push(new ChangeTilesetImage(tilesetDocument(), value.toString()));
                     });
 
+        mTilesetProperties = new GroupProperty(tr("Tileset"));
+        mTilesetProperties->addProperty(mNameProperty);
+        mTilesetProperties->addProperty(mClassProperty);
+        mTilesetProperties->addSeparator();
+        mTilesetProperties->addProperty(mObjectAlignmentProperty);
+        mTilesetProperties->addProperty(mTileOffsetProperty);
+        mTilesetProperties->addProperty(mTileRenderSizeProperty);
+        mTilesetProperties->addProperty(mFillModeProperty);
+        mTilesetProperties->addProperty(mBackgroundColorProperty);
+        mTilesetProperties->addProperty(mOrientationProperty);
+        mTilesetProperties->addProperty(mGridSizeProperty);
+        mTilesetProperties->addProperty(mColumnCountProperty);
+        mTilesetProperties->addProperty(mAllowedTransformationsProperty);
+        mTilesetProperties->addProperty(mImageProperty);
+
         updateEnabledState();
         connect(tilesetDocument(), &Document::changed,
                 this, &TilesetProperties::onChanged);
@@ -1099,20 +1162,7 @@ public:
 
     void populateEditor(VariantEditor *editor)
     {
-        editor->addHeader(tr("Tileset"));
-        editor->addProperty(mNameProperty);
-        editor->addProperty(mClassProperty);
-        editor->addSeparator();
-        editor->addProperty(mObjectAlignmentProperty);
-        editor->addProperty(mTileOffsetProperty);
-        editor->addProperty(mTileRenderSizeProperty);
-        editor->addProperty(mFillModeProperty);
-        editor->addProperty(mBackgroundColorProperty);
-        editor->addProperty(mOrientationProperty);
-        editor->addProperty(mGridSizeProperty);
-        editor->addProperty(mColumnCountProperty);
-        editor->addProperty(mAllowedTransformationsProperty);
-        editor->addProperty(mImageProperty);
+        editor->addProperty(mTilesetProperties);
     }
 
 private:
@@ -1160,6 +1210,7 @@ private:
         return tilesetDocument()->tileset().data();
     }
 
+    GroupProperty *mTilesetProperties;
     Property *mNameProperty;
     Property *mObjectAlignmentProperty;
     Property *mTileOffsetProperty;
@@ -1312,6 +1363,38 @@ public:
                         changeMapObject(MapObject::TextColorProperty, value);
                     });
 
+        mObjectProperties = new GroupProperty(tr("Object"));
+        mObjectProperties->addProperty(mIdProperty);
+        mObjectProperties->addProperty(mTemplateProperty);
+        mObjectProperties->addProperty(mNameProperty);
+        mObjectProperties->addProperty(mClassProperty);
+        mObjectProperties->addSeparator();
+
+        if (mapDocument()->allowHidingObjects())
+            mObjectProperties->addProperty(mVisibleProperty);
+
+        mObjectProperties->addProperty(mPositionProperty);
+
+        if (mapObject()->hasDimensions())
+            mObjectProperties->addProperty(mSizeProperty);
+
+        if (mapObject()->canRotate())
+            mObjectProperties->addProperty(mRotationProperty);
+
+        if (mapObject()->isTileObject()) {
+            mObjectProperties->addSeparator();
+            mObjectProperties->addProperty(mFlippingProperty);
+        }
+
+        if (mapObject()->shape() == MapObject::Text) {
+            mObjectProperties->addSeparator();
+            mObjectProperties->addProperty(mTextProperty);
+            mObjectProperties->addProperty(mTextAlignmentProperty);
+            mObjectProperties->addProperty(mTextFontProperty);
+            mObjectProperties->addProperty(mTextWordWrapProperty);
+            mObjectProperties->addProperty(mTextColorProperty);
+        }
+
         connect(document, &Document::changed,
                 this, &MapObjectProperties::onChanged);
 
@@ -1320,37 +1403,7 @@ public:
 
     void populateEditor(VariantEditor *editor) override
     {
-        editor->addHeader(tr("Object"));
-        editor->addProperty(mIdProperty);
-        editor->addProperty(mTemplateProperty);
-        editor->addProperty(mNameProperty);
-        editor->addProperty(mClassProperty);
-        editor->addSeparator();
-
-        if (mapDocument()->allowHidingObjects())
-            editor->addProperty(mVisibleProperty);
-
-        editor->addProperty(mPositionProperty);
-
-        if (mapObject()->hasDimensions())
-            editor->addProperty(mSizeProperty);
-
-        if (mapObject()->canRotate())
-            editor->addProperty(mRotationProperty);
-
-        if (mapObject()->isTileObject()) {
-            editor->addSeparator();
-            editor->addProperty(mFlippingProperty);
-        }
-
-        if (mapObject()->shape() == MapObject::Text) {
-            editor->addSeparator();
-            editor->addProperty(mTextProperty);
-            editor->addProperty(mTextAlignmentProperty);
-            editor->addProperty(mTextFontProperty);
-            editor->addProperty(mTextWordWrapProperty);
-            editor->addProperty(mTextColorProperty);
-        }
+        editor->addProperty(mObjectProperties);
     }
 
 private:
@@ -1417,6 +1470,7 @@ private:
         push(new ChangeMapObject(mapDocument(), mapObject(), property, value));
     }
 
+    GroupProperty *mObjectProperties;
     Property *mIdProperty;
     Property *mTemplateProperty;
     Property *mNameProperty;
@@ -1480,6 +1534,17 @@ public:
         mProbabilityProperty->setToolTip(tr("Relative chance this tile will be picked"));
         mProbabilityProperty->setMinimum(0.0);
 
+        mTileProperties = new GroupProperty(tr("Tile"));
+        mTileProperties->addProperty(mIdProperty);
+        mTileProperties->addProperty(mClassProperty);
+        mTileProperties->addSeparator();
+
+        if (!tile()->imageSource().isEmpty())
+            mTileProperties->addProperty(mImageProperty);
+
+        mTileProperties->addProperty(mRectangleProperty);
+        mTileProperties->addProperty(mProbabilityProperty);
+
         // annoying... maybe we should somehow always have the relevant TilesetDocument
         if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
             connect(tilesetDocument, &TilesetDocument::tileImageSourceChanged,
@@ -1500,16 +1565,7 @@ public:
 
     void populateEditor(VariantEditor *editor) override
     {
-        editor->addHeader(tr("Tile"));
-        editor->addProperty(mIdProperty);
-        editor->addProperty(mClassProperty);
-        editor->addSeparator();
-
-        if (!tile()->imageSource().isEmpty())
-            editor->addProperty(mImageProperty);
-
-        editor->addProperty(mRectangleProperty);
-        editor->addProperty(mProbabilityProperty);
+        editor->addProperty(mTileProperties);
     }
 
 private:
@@ -1549,6 +1605,7 @@ private:
         return static_cast<Tile*>(mObject);
     }
 
+    GroupProperty *mTileProperties;
     Property *mIdProperty;
     UrlProperty *mImageProperty;
     RectProperty *mRectangleProperty;
@@ -1588,6 +1645,13 @@ public:
                     });
         mColorCountProperty->setRange(0, WangId::MAX_COLOR_COUNT);
 
+        mWangSetProperties = new GroupProperty(tr("Terrain Set"));
+        mWangSetProperties->addProperty(mNameProperty);
+        mWangSetProperties->addProperty(mClassProperty);
+        mWangSetProperties->addSeparator();
+        mWangSetProperties->addProperty(mTypeProperty);
+        mWangSetProperties->addProperty(mColorCountProperty);
+
         connect(document, &Document::changed,
                 this, &WangSetProperties::onChanged);
 
@@ -1596,12 +1660,7 @@ public:
 
     void populateEditor(VariantEditor *editor) override
     {
-        editor->addHeader(tr("Terrain Set"));
-        editor->addProperty(mNameProperty);
-        editor->addProperty(mClassProperty);
-        editor->addSeparator();
-        editor->addProperty(mTypeProperty);
-        editor->addProperty(mColorCountProperty);
+        editor->addProperty(mWangSetProperties);
     }
 
 private:
@@ -1647,6 +1706,7 @@ private:
         return static_cast<WangSet*>(mObject);
     }
 
+    GroupProperty *mWangSetProperties;
     Property *mNameProperty;
     Property *mTypeProperty;
     IntProperty *mColorCountProperty;
@@ -1683,6 +1743,13 @@ public:
                     });
         mProbabilityProperty->setMinimum(0.01);
 
+        mWangColorProperties = new GroupProperty(tr("Terrain"));
+        mWangColorProperties->addProperty(mNameProperty);
+        mWangColorProperties->addProperty(mClassProperty);
+        mWangColorProperties->addSeparator();
+        mWangColorProperties->addProperty(mColorProperty);
+        mWangColorProperties->addProperty(mProbabilityProperty);
+
         connect(document, &Document::changed,
                 this, &WangColorProperties::onChanged);
 
@@ -1691,12 +1758,7 @@ public:
 
     void populateEditor(VariantEditor *editor) override
     {
-        editor->addHeader(tr("Terrain"));
-        editor->addProperty(mNameProperty);
-        editor->addProperty(mClassProperty);
-        editor->addSeparator();
-        editor->addProperty(mColorProperty);
-        editor->addProperty(mProbabilityProperty);
+        editor->addProperty(mWangColorProperties);
     }
 
 private:
@@ -1743,6 +1805,7 @@ private:
         return static_cast<WangColor*>(mObject);
     }
 
+    GroupProperty *mWangColorProperties;
     Property *mNameProperty;
     Property *mColorProperty;
     FloatProperty *mProbabilityProperty;
@@ -1817,6 +1880,56 @@ void PropertiesWidget::currentObjectChanged(Object *object)
 
     if (mPropertiesObject)
         mPropertiesObject->populateEditor(mPropertyBrowser);
+
+    GroupProperty *customProperties = new GroupProperty(tr("Custom Properties"));
+
+    QMapIterator<QString, QVariant> it(object ? object->properties() : Properties());
+    PropertyFactory factory;
+
+    while (it.hasNext()) {
+        it.next();
+
+        const auto &name = it.key();
+        const auto &value = it.value();
+
+        Property *property = nullptr;
+
+        switch (value.userType()) {
+        case QMetaType::Bool:
+        case QMetaType::QColor:
+        case QMetaType::Double:
+        case QMetaType::Int:
+        case QMetaType::QString: {
+            auto get = [object, name] { return object->property(name); };
+            auto set = [this, object, name] (const QVariant &value) {
+                mDocument->undoStack()->push(new SetProperty(mDocument, { object }, name, value));
+            };
+            property = factory.createProperty(name, std::move(get), std::move(set));
+            break;
+        }
+        default:
+            if (value.userType() == filePathTypeId()) {
+                auto get = [object, name] { return object->property(name).value<FilePath>().url; };
+                auto set = [this, object, name](const QUrl &value) {
+                    mDocument->undoStack()->push(new SetProperty(mDocument, { object }, name, QVariant::fromValue(FilePath { value })));
+                };
+                property = new UrlProperty(name, get, set);
+            } else if (value.userType() == objectRefTypeId()) {
+                auto get = [this, object, name] { return DisplayObjectRef(object->property(name).value<ObjectRef>(), static_cast<MapDocument*>(mDocument)); };
+                auto set = [this, object, name](const DisplayObjectRef &value) {
+                    mDocument->undoStack()->push(new SetProperty(mDocument, { object }, name, QVariant::fromValue(value.ref)));
+                };
+                property = new ObjectRefProperty(name, get, set);
+            }
+            // todo: PropertyValue (enum and class values)
+            break;
+        }
+
+        if (property)
+            customProperties->addProperty(property);
+    }
+
+    mPropertyBrowser->addProperty(customProperties);
 
     bool editingTileset = mDocument && mDocument->type() == Document::TilesetDocumentType;
     bool isTileset = object && object->isPartOfTileset();
