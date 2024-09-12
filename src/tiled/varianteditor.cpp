@@ -41,6 +41,30 @@
 
 namespace Tiled {
 
+void Property::setToolTip(const QString &toolTip)
+{
+    if (m_toolTip != toolTip) {
+        m_toolTip = toolTip;
+        emit toolTipChanged(toolTip);
+    }
+}
+
+void Property::setEnabled(bool enabled)
+{
+    if (m_enabled != enabled) {
+        m_enabled = enabled;
+        emit enabledChanged(enabled);
+    }
+}
+
+QWidget *GroupProperty::createEditor(QWidget *parent)
+{
+    auto widget = new VariantEditor(parent);
+    for (auto property : std::as_const(m_subProperties))
+        widget->addProperty(property);
+    return widget;
+}
+
 QWidget *StringProperty::createEditor(QWidget *parent)
 {
     auto editor = new QLineEdit(parent);
@@ -176,7 +200,7 @@ QWidget *PointFProperty::createEditor(QWidget *parent)
 
     connect(this, &Property::valueChanged, editor, syncEditor);
     connect(editor, &PointFEdit::valueChanged, this, [this, editor] {
-        this->setVariantValue(editor->value());
+        this->setValue(editor->value());
     });
 
     return editor;
@@ -426,20 +450,11 @@ QWidget *QtAlignmentProperty::createEditor(QWidget *parent)
 
 
 VariantEditor::VariantEditor(QWidget *parent)
-    : QScrollArea(parent)
+    : QWidget(parent)
 {
-    m_widget = new QWidget;
-    m_widget->setBackgroundRole(QPalette::AlternateBase);
-    auto verticalLayout = new QVBoxLayout(m_widget);
-    m_gridLayout = new QGridLayout;
-    verticalLayout->addLayout(m_gridLayout);
-    verticalLayout->addStretch();
-    verticalLayout->setContentsMargins(0, 0, 0, Utils::dpiScaled(6));
+    m_gridLayout = new QGridLayout(this);
 
-    setWidget(m_widget);
-    setWidgetResizable(true);
-
-    m_gridLayout->setContentsMargins(QMargins());
+    m_gridLayout->setContentsMargins(0, 0, 0, Utils::dpiScaled(3));
     m_gridLayout->setSpacing(Utils::dpiScaled(3));
 
     m_gridLayout->setColumnStretch(LabelColumn, 2);
@@ -477,24 +492,20 @@ void VariantEditor::clear()
     m_rowIndex = 0;
 }
 
-void VariantEditor::addHeader(const QString &text)
+HeaderWidget *VariantEditor::addHeader(const QString &text)
 {
-    auto label = new ElidingLabel(text, m_widget);
-    label->setBackgroundRole(QPalette::Dark);
-    const int verticalMargin = Utils::dpiScaled(3);
-    const int horizontalMargin = Utils::dpiScaled(6);
-    label->setContentsMargins(horizontalMargin, verticalMargin,
-                              horizontalMargin, verticalMargin);
+    auto headerWidget = new HeaderWidget(text, this);
 
-    label->setAutoFillBackground(true);
+    m_gridLayout->addWidget(headerWidget, m_rowIndex, 0, 1, ColumnCount);
 
-    m_gridLayout->addWidget(label, m_rowIndex, 0, 1, ColumnCount);
     ++m_rowIndex;
+
+    return headerWidget;
 }
 
 void VariantEditor::addSeparator()
 {
-    auto separator = new QFrame(m_widget);
+    auto separator = new QFrame(this);
     separator->setFrameShape(QFrame::HLine);
     separator->setFrameShadow(QFrame::Plain);
     separator->setForegroundRole(QPalette::Mid);
@@ -504,23 +515,49 @@ void VariantEditor::addSeparator()
 
 void VariantEditor::addProperty(Property *property)
 {
-    auto label = new LineEditLabel(property->name(), m_widget);
-    label->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
-    label->setToolTip(property->toolTip());
-    label->setEnabled(property->isEnabled());
-    connect(property, &Property::toolTipChanged, label, &QWidget::setToolTip);
-    connect(property, &Property::enabledChanged, label, &QLabel::setEnabled);
-    m_gridLayout->addWidget(label, m_rowIndex, LabelColumn, Qt::AlignTop/* | Qt::AlignRight*/);
+    switch (property->displayMode()) {
+    case Property::DisplayMode::Default: {
+        auto label = new LineEditLabel(property->name(), this);
+        label->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
+        label->setToolTip(property->toolTip());
+        label->setEnabled(property->isEnabled());
+        connect(property, &Property::toolTipChanged, label, &QWidget::setToolTip);
+        connect(property, &Property::enabledChanged, label, &QLabel::setEnabled);
+        m_gridLayout->addWidget(label, m_rowIndex, LabelColumn, Qt::AlignTop/* | Qt::AlignRight*/);
 
-    if (auto editor = createEditor(property)) {
-        editor->setToolTip(property->toolTip());
-        editor->setEnabled(property->isEnabled());
-        connect(property, &Property::toolTipChanged, editor, &QWidget::setToolTip);
-        connect(property, &Property::enabledChanged, editor, &QWidget::setEnabled);
-        m_gridLayout->addWidget(editor, m_rowIndex, WidgetColumn);
+        if (auto editor = createEditor(property)) {
+            editor->setToolTip(property->toolTip());
+            editor->setEnabled(property->isEnabled());
+            connect(property, &Property::toolTipChanged, editor, &QWidget::setToolTip);
+            connect(property, &Property::enabledChanged, editor, &QWidget::setEnabled);
+            m_gridLayout->addWidget(editor, m_rowIndex, WidgetColumn);
+        }
+
+        ++m_rowIndex;
+        break;
     }
+    case Property::DisplayMode::Header: {
+        auto headerWidget = addHeader(property->name());
 
-    ++m_rowIndex;
+        if (auto editor = createEditor(property)) {
+            connect(headerWidget, &HeaderWidget::toggled,
+                    editor, [this, editor](bool checked) {
+                editor->setVisible(checked);
+
+                // needed to avoid flickering when hiding the editor
+                layout()->activate();
+            });
+
+            m_gridLayout->addWidget(editor, m_rowIndex, 0, 1, ColumnCount);
+            ++m_rowIndex;
+        }
+
+        break;
+    }
+    case Property::DisplayMode::Separator:
+        addSeparator();
+        break;
+    }
 }
 
 #if 0
@@ -554,7 +591,7 @@ void VariantEditor::addValue(const QVariant &value)
 
 QWidget *VariantEditor::createEditor(Property *property)
 {
-    if (const auto editor = property->createEditor(m_widget)) {
+    if (const auto editor = property->createEditor(this)) {
         editor->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
         return editor;
     } else {

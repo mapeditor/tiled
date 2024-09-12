@@ -22,6 +22,8 @@
 
 #include <QWidget>
 
+class QScrollArea;
+
 namespace Tiled {
 
 class Object;
@@ -76,6 +78,7 @@ private:
 
     Document *mDocument = nullptr;
     ObjectProperties *mPropertiesObject = nullptr;
+    QScrollArea *mScrollArea;
     VariantEditor *mPropertyBrowser;
     QAction *mActionAddProperty;
     QAction *mActionRemoveProperty;
