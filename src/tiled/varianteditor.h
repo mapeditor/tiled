@@ -28,7 +28,7 @@
 #include <QVariant>
 #include <QWidget>
 
-class QGridLayout;
+class QVBoxLayout;
 
 namespace Tiled {
 
@@ -47,6 +47,7 @@ class Property : public QObject
 public:
     enum class DisplayMode {
         Default,
+        NoLabel,
         Header,
         Separator
     };
@@ -209,6 +210,7 @@ private:
 struct BoolProperty : PropertyTemplate<bool>
 {
     using PropertyTemplate::PropertyTemplate;
+    DisplayMode displayMode() const override { return DisplayMode::NoLabel; }
     QWidget *createEditor(QWidget *parent) override;
 };
 
@@ -393,15 +395,11 @@ private:
     QWidget *createEditor(Property *property);
 
     enum Column {
-        LeftSpacing,
-        LabelColumn,
-        MiddleSpacing,
-        WidgetColumn,
-        RightSpacing,
-        ColumnCount,
+        LabelStretch = 2,
+        WidgetStretch = 3,
     };
 
-    QGridLayout *m_gridLayout;
+    QVBoxLayout *m_layout;
     int m_rowIndex = 0;
 };
 
