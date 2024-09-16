@@ -177,18 +177,14 @@ struct IntProperty : PropertyTemplate<int>
         setMinimum(minimum);
         setMaximum(maximum);
     }
+    void setSliderEnabled(bool enabled) { m_sliderEnabled = enabled; }
 
 protected:
     int m_minimum = std::numeric_limits<int>::min();
     int m_maximum = std::numeric_limits<int>::max();
     int m_singleStep = 1;
     QString m_suffix;
-};
-
-struct SliderProperty : IntProperty
-{
-    using IntProperty::IntProperty;
-    QWidget *createEditor(QWidget *parent) override;
+    bool m_sliderEnabled = false;
 };
 
 struct FloatProperty : PropertyTemplate<double>

@@ -822,13 +822,15 @@ public:
                         push(new SetLayerLocked(mapDocument(), { layer() }, value));
                     });
 
-        mOpacityProperty = new SliderProperty(
+        mOpacityProperty = new IntProperty(
                     tr("Opacity"),
                     [this] { return qRound(layer()->opacity() * 100); },
                     [this](const int &value) {
                         push(new SetLayerOpacity(mapDocument(), { layer() }, qreal(value) / 100));
                     });
         mOpacityProperty->setRange(0, 100);
+        mOpacityProperty->setSuffix(tr("%"));
+        mOpacityProperty->setSliderEnabled(true);
 
         mTintColorProperty = new ColorProperty(
                     tr("Tint Color"),
@@ -912,7 +914,7 @@ protected:
     Property *mNameProperty;
     Property *mVisibleProperty;
     Property *mLockedProperty;
-    SliderProperty *mOpacityProperty;
+    IntProperty *mOpacityProperty;
     Property *mTintColorProperty;
     Property *mOffsetProperty;
     PointFProperty *mParallaxFactorProperty;

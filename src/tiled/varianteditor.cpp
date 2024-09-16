@@ -112,40 +112,41 @@ QWidget *UrlProperty::createEditor(QWidget *parent)
 
 QWidget *IntProperty::createEditor(QWidget *parent)
 {
-    auto editor = new SpinBox(parent);
-    editor->setRange(m_minimum, m_maximum);
-    editor->setSingleStep(m_singleStep);
-    editor->setSuffix(m_suffix);
+    auto widget = new QWidget(parent);
+    auto layout = new QHBoxLayout(widget);
+    layout->setContentsMargins(QMargins());
 
-    auto syncEditor = [=] {
-        const QSignalBlocker blocker(editor);
-        editor->setValue(value());
-    };
-    syncEditor();
+    if (m_sliderEnabled) {
+        QSlider *slider = new QSlider(Qt::Horizontal, widget);
+        slider->setRange(m_minimum, m_maximum);
+        slider->setSingleStep(m_singleStep);
+        slider->setValue(value());
 
-    connect(this, &Property::valueChanged, editor, syncEditor);
-    connect(editor, qOverload<int>(&SpinBox::valueChanged),
+        layout->addWidget(slider);
+
+        connect(this, &Property::valueChanged, slider, [this, slider] {
+            const QSignalBlocker blocker(slider);
+            slider->setValue(value());
+        });
+        connect(slider, &QSlider::valueChanged, this, &IntProperty::setValue);
+    }
+
+    auto spinBox = new SpinBox(parent);
+    spinBox->setRange(m_minimum, m_maximum);
+    spinBox->setSingleStep(m_singleStep);
+    spinBox->setSuffix(m_suffix);
+    spinBox->setValue(value());
+
+    layout->addWidget(spinBox);
+
+    connect(this, &Property::valueChanged, spinBox, [this, spinBox] {
+        const QSignalBlocker blocker(spinBox);
+        spinBox->setValue(value());
+    });
+    connect(spinBox, qOverload<int>(&SpinBox::valueChanged),
             this, &IntProperty::setValue);
 
-    return editor;
-}
-
-QWidget *SliderProperty::createEditor(QWidget *parent)
-{
-    auto editor = new QSlider(Qt::Horizontal, parent);
-    editor->setRange(m_minimum, m_maximum);
-    editor->setSingleStep(m_singleStep);
-
-    auto syncEditor = [=] {
-        const QSignalBlocker blocker(editor);
-        editor->setValue(value());
-    };
-    syncEditor();
-
-    connect(this, &Property::valueChanged, editor, syncEditor);
-    connect(editor, &QSlider::valueChanged, this, &SliderProperty::setValue);
-
-    return editor;
+    return widget;
 }
 
 QWidget *FloatProperty::createEditor(QWidget *parent)
