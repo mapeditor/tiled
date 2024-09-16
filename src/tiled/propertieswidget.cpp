@@ -48,6 +48,7 @@
 #include "wangoverlay.h"
 
 #include <QAction>
+#include <QCheckBox>
 #include <QComboBox>
 #include <QCoreApplication>
 #include <QEvent>
@@ -220,6 +221,49 @@ public:
 };
 
 
+class ImageLayerRepeatProperty : public PropertyTemplate<ImageLayer::RepetitionFlags>
+{
+    Q_OBJECT
+
+public:
+    using PropertyTemplate::PropertyTemplate;
+
+    QWidget *createEditor(QWidget *parent) override
+    {
+        auto editor = new QWidget(parent);
+        auto layout = new QHBoxLayout(editor);
+        auto repeatX = new QCheckBox(tr("X"), editor);
+        auto repeatY = new QCheckBox(tr("Y"), editor);
+        layout->setContentsMargins(QMargins());
+        layout->addWidget(repeatX);
+        layout->addWidget(repeatY);
+
+        auto syncEditor = [=] {
+            const QSignalBlocker xBlocker(repeatX);
+            const QSignalBlocker yBlocker(repeatY);
+            const auto v = value();
+            repeatX->setChecked(v & ImageLayer::RepeatX);
+            repeatY->setChecked(v & ImageLayer::RepeatY);
+        };
+        auto syncProperty = [=] {
+            ImageLayer::RepetitionFlags v;
+            if (repeatX->isChecked())
+                v |= ImageLayer::RepeatX;
+            if (repeatY->isChecked())
+                v |= ImageLayer::RepeatY;
+            setValue(v);
+        };
+
+        syncEditor();
+
+        connect(this, &Property::valueChanged, editor, syncEditor);
+        connect(repeatX, &QCheckBox::toggled, this, syncProperty);
+        connect(repeatY, &QCheckBox::toggled, this, syncProperty);
+        return editor;
+    }
+};
+
+
 PropertiesWidget::PropertiesWidget(QWidget *parent)
     : QWidget{parent}
     , mScrollArea(new QScrollArea(this))
@@ -231,7 +275,7 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
     mPropertyBrowser = new VariantEditor(scrollWidget);
     verticalLayout->addWidget(mPropertyBrowser);
     verticalLayout->addStretch();
-    verticalLayout->setContentsMargins(QMargins());
+    verticalLayout->setContentsMargins(0, 0, 0, Utils::dpiScaled(4));
 
     mScrollArea->setWidget(scrollWidget);
     mScrollArea->setWidgetResizable(true);
@@ -401,6 +445,7 @@ private:
     Document *mDocument;
     Object *mObject;
 };
+
 
 class MapSizeProperty : public SizeProperty
 {
@@ -898,27 +943,23 @@ public:
                         push(new ChangeImageLayerTransparentColor(mapDocument(), { imageLayer() }, value));
                     });
 
-        // todo: consider merging Repeat X and Y into a single property
-        mRepeatXProperty = new BoolProperty(
-                    tr("Repeat X"),
-                    [this] { return imageLayer()->repeatX(); },
-                    [this](const bool &value) {
-                        push(new ChangeImageLayerRepeatX(mapDocument(), { imageLayer() }, value));
-                    });
-
-        mRepeatYProperty = new BoolProperty(
-                    tr("Repeat Y"),
-                    [this] { return imageLayer()->repeatY(); },
-                    [this](const bool &value) {
-                        push(new ChangeImageLayerRepeatY(mapDocument(), { imageLayer() }, value));
+        mRepeatProperty = new ImageLayerRepeatProperty(
+                    tr("Repeat"),
+                    [this] { return imageLayer()->repetition(); },
+                    [this](const ImageLayer::RepetitionFlags &value) {
+                        const bool repeatX = value & ImageLayer::RepeatX;
+                        const bool repeatY = value & ImageLayer::RepeatY;
+                        if (repeatX != imageLayer()->repeatX())
+                            push(new ChangeImageLayerRepeatX(mapDocument(), { imageLayer() }, repeatX));
+                        if (repeatY != imageLayer()->repeatY())
+                            push(new ChangeImageLayerRepeatY(mapDocument(), { imageLayer() }, repeatY));
                     });
 
         mImageLayerProperties = new GroupProperty(tr("Image Layer"));
         mImageLayerProperties->addProperty(mImageProperty);
         mImageLayerProperties->addProperty(mTransparentColorProperty);
         mImageLayerProperties->addSeparator();
-        mImageLayerProperties->addProperty(mRepeatXProperty);
-        mImageLayerProperties->addProperty(mRepeatYProperty);
+        mImageLayerProperties->addProperty(mRepeatProperty);
     }
 
     void populateEditor(VariantEditor *editor) override
@@ -944,8 +985,7 @@ private:
         if (layerChange.properties & ImageLayerChangeEvent::TransparentColorProperty)
             emit mTransparentColorProperty->valueChanged();
         if (layerChange.properties & ImageLayerChangeEvent::RepeatProperty) {
-            emit mRepeatXProperty->valueChanged();
-            emit mRepeatYProperty->valueChanged();
+            emit mRepeatProperty->valueChanged();
         }
     }
 
@@ -957,8 +997,7 @@ private:
     GroupProperty *mImageLayerProperties;
     UrlProperty *mImageProperty;
     Property *mTransparentColorProperty;
-    Property *mRepeatXProperty;
-    Property *mRepeatYProperty;
+    Property *mRepeatProperty;
 };
 
 class ObjectGroupProperties : public LayerProperties

@@ -474,8 +474,8 @@ void ElidingLabel::paintEvent(QPaintEvent *)
         setToolTip(isElided ? text() : QString());
     }
 
-    QPainter painter(this);
-    QWidget::style()->drawItemText(&painter, cr, flags, opt.palette, isEnabled(), elidedText, foregroundRole());
+    QStylePainter p(this);
+    p.drawItemText(cr, flags, opt.palette, isEnabled(), elidedText, foregroundRole());
 }
 
 
@@ -486,11 +486,10 @@ HeaderWidget::HeaderWidget(const QString &text, QWidget *parent)
     setForegroundRole(QPalette::BrightText);
     setAutoFillBackground(true);
 
-    const int verticalMargin = Utils::dpiScaled(3);
-    const int horizontalMargin = Utils::dpiScaled(6);
+    const int spacing = Utils::dpiScaled(4);
     const int branchIndicatorWidth = Utils::dpiScaled(14);
-    setContentsMargins(horizontalMargin + branchIndicatorWidth,
-                       verticalMargin, horizontalMargin, verticalMargin);
+    setContentsMargins(spacing + branchIndicatorWidth,
+                       spacing, spacing, spacing);
 }
 
 void HeaderWidget::mousePressEvent(QMouseEvent *event)
@@ -503,13 +502,9 @@ void HeaderWidget::mousePressEvent(QMouseEvent *event)
     ElidingLabel::mousePressEvent(event);
 }
 
-void HeaderWidget::paintEvent(QPaintEvent *)
+void HeaderWidget::paintEvent(QPaintEvent *event)
 {
-    const QRect cr = contentsRect();
-    const Qt::LayoutDirection dir = text().isRightToLeft() ? Qt::RightToLeft : Qt::LeftToRight;
-    const int align = QStyle::visualAlignment(dir, {});
-    const int flags = align | (dir == Qt::LeftToRight ? Qt::TextForceLeftToRight
-                                                      : Qt::TextForceRightToLeft);
+    ElidingLabel::paintEvent(event);
 
     QStyleOption branchOption;
     branchOption.initFrom(this);
@@ -520,13 +515,6 @@ void HeaderWidget::paintEvent(QPaintEvent *)
 
     QStylePainter p(this);
     p.drawPrimitive(QStyle::PE_IndicatorBranch, branchOption);
-
-    QStyleOption opt;
-    opt.initFrom(this);
-
-    const auto elidedText = opt.fontMetrics.elidedText(text(), Qt::ElideRight, cr.width());
-
-    p.drawItemText(cr, flags, opt.palette, isEnabled(), elidedText, foregroundRole());
 }
 
 
