@@ -681,7 +681,7 @@ Property *PropertyFactory::createProperty(const QString &name,
     const auto type = get().userType();
     switch (type) {
     case QMetaType::QString:
-        return createTypedProperty<StringProperty>(name, get, set);
+        return createTypedProperty<MultilineStringProperty>(name, get, set);
     case QMetaType::QUrl:
         return createTypedProperty<UrlProperty>(name, get, set);
     case QMetaType::Int:
