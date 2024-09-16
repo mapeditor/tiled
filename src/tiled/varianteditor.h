@@ -397,8 +397,8 @@ private:
     QWidget *createEditor(Property *property);
 
     enum Column {
-        LabelStretch = 2,
-        WidgetStretch = 3,
+        LabelStretch = 4,
+        WidgetStretch = 6,
     };
 
     QVBoxLayout *m_layout;

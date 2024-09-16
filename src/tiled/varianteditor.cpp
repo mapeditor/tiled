@@ -528,15 +528,19 @@ void VariantEditor::addProperty(Property *property)
     case Property::DisplayMode::Default:
     case Property::DisplayMode::NoLabel: {
         auto propertyLayout = new QHBoxLayout;
-        propertyLayout->setContentsMargins(spacing, 0, spacing, 0);
+        propertyLayout->setContentsMargins(0, 0, spacing, 0);
         propertyLayout->setSpacing(spacing);
+
+        // Property label indentation, which shrinks when there is very little space
+        propertyLayout->addSpacerItem(new QSpacerItem(branchIndicatorWidth + spacing, 0,
+                                                      QSizePolicy::Maximum));
+        propertyLayout->setStretch(0, 1);
 
         if (property->displayMode() == Property::DisplayMode::Default) {
             auto label = new LineEditLabel(property->name(), this);
             label->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
             label->setToolTip(property->toolTip());
             label->setEnabled(property->isEnabled());
-            label->setContentsMargins(branchIndicatorWidth, 0, 0, 0);
             connect(property, &Property::toolTipChanged, label, &QWidget::setToolTip);
             connect(property, &Property::enabledChanged, label, &QWidget::setEnabled);
             propertyLayout->addWidget(label, LabelStretch, Qt::AlignTop);
