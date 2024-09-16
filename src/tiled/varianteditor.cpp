@@ -130,6 +130,24 @@ QWidget *IntProperty::createEditor(QWidget *parent)
     return editor;
 }
 
+QWidget *SliderProperty::createEditor(QWidget *parent)
+{
+    auto editor = new QSlider(Qt::Horizontal, parent);
+    editor->setRange(m_minimum, m_maximum);
+    editor->setSingleStep(m_singleStep);
+
+    auto syncEditor = [=] {
+        const QSignalBlocker blocker(editor);
+        editor->setValue(value());
+    };
+    syncEditor();
+
+    connect(this, &Property::valueChanged, editor, syncEditor);
+    connect(editor, &QSlider::valueChanged, this, &SliderProperty::setValue);
+
+    return editor;
+}
+
 QWidget *FloatProperty::createEditor(QWidget *parent)
 {
     auto editor = new DoubleSpinBox(parent);

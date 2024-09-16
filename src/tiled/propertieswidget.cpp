@@ -822,15 +822,13 @@ public:
                         push(new SetLayerLocked(mapDocument(), { layer() }, value));
                     });
 
-        // todo: would be nice to use a slider (replacing the one in Layers view)
-        mOpacityProperty = new FloatProperty(
+        mOpacityProperty = new SliderProperty(
                     tr("Opacity"),
-                    [this] { return layer()->opacity(); },
-                    [this](const double &value) {
-                        push(new SetLayerOpacity(mapDocument(), { layer() }, value));
+                    [this] { return qRound(layer()->opacity() * 100); },
+                    [this](const int &value) {
+                        push(new SetLayerOpacity(mapDocument(), { layer() }, qreal(value) / 100));
                     });
-        mOpacityProperty->setRange(0.0, 1.0);
-        mOpacityProperty->setSingleStep(0.1);
+        mOpacityProperty->setRange(0, 100);
 
         mTintColorProperty = new ColorProperty(
                     tr("Tint Color"),
@@ -914,7 +912,7 @@ protected:
     Property *mNameProperty;
     Property *mVisibleProperty;
     Property *mLockedProperty;
-    FloatProperty *mOpacityProperty;
+    SliderProperty *mOpacityProperty;
     Property *mTintColorProperty;
     Property *mOffsetProperty;
     PointFProperty *mParallaxFactorProperty;
