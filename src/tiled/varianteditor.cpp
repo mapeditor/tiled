@@ -152,20 +152,16 @@ QWidget *FloatProperty::createEditor(QWidget *parent)
 
 QWidget *BoolProperty::createEditor(QWidget *parent)
 {
-    auto editor = new QCheckBox(parent);
+    auto editor = new QCheckBox(name(), parent);
     auto syncEditor = [=] {
         const QSignalBlocker blocker(editor);
         bool checked = value();
         editor->setChecked(checked);
-        editor->setText(checked ? tr("On") : tr("Off"));
     };
     syncEditor();
 
     connect(this, &Property::valueChanged, editor, syncEditor);
-    connect(editor, &QCheckBox::toggled, this, [=](bool checked) {
-        editor->setText(checked ? QObject::tr("On") : QObject::tr("Off"));
-        setValue(checked);
-    });
+    connect(editor, &QCheckBox::toggled, this, &BoolProperty::setValue);
 
     return editor;
 }
@@ -452,16 +448,10 @@ QWidget *QtAlignmentProperty::createEditor(QWidget *parent)
 VariantEditor::VariantEditor(QWidget *parent)
     : QWidget(parent)
 {
-    m_gridLayout = new QGridLayout(this);
+    m_layout = new QVBoxLayout(this);
 
-    m_gridLayout->setContentsMargins(0, 0, 0, Utils::dpiScaled(3));
-    m_gridLayout->setSpacing(Utils::dpiScaled(3));
-
-    m_gridLayout->setColumnStretch(LabelColumn, 2);
-    m_gridLayout->setColumnStretch(WidgetColumn, 3);
-    m_gridLayout->setColumnMinimumWidth(LeftSpacing, Utils::dpiScaled(3));
-    m_gridLayout->setColumnMinimumWidth(MiddleSpacing, Utils::dpiScaled(2));
-    m_gridLayout->setColumnMinimumWidth(RightSpacing, Utils::dpiScaled(3));
+    m_layout->setContentsMargins(QMargins());
+    m_layout->setSpacing(Utils::dpiScaled(4));
 
     // setValue(QVariantMap {
     //              { QStringLiteral("Name"), QVariant(QLatin1String("Hello")) },
@@ -485,7 +475,7 @@ VariantEditor::VariantEditor(QWidget *parent)
 void VariantEditor::clear()
 {
     QLayoutItem *item;
-    while ((item = m_gridLayout->takeAt(0))) {
+    while ((item = m_layout->takeAt(0))) {
         delete item->widget();
         delete item;
     }
@@ -496,9 +486,7 @@ HeaderWidget *VariantEditor::addHeader(const QString &text)
 {
     auto headerWidget = new HeaderWidget(text, this);
 
-    m_gridLayout->addWidget(headerWidget, m_rowIndex, 0, 1, ColumnCount);
-
-    ++m_rowIndex;
+    m_layout->addWidget(headerWidget);
 
     return headerWidget;
 }
@@ -509,31 +497,44 @@ void VariantEditor::addSeparator()
     separator->setFrameShape(QFrame::HLine);
     separator->setFrameShadow(QFrame::Plain);
     separator->setForegroundRole(QPalette::Mid);
-    m_gridLayout->addWidget(separator, m_rowIndex, 0, 1, ColumnCount);
-    ++m_rowIndex;
+    m_layout->addWidget(separator);
 }
 
 void VariantEditor::addProperty(Property *property)
 {
+    const int spacing = Utils::dpiScaled(4);
+    const int branchIndicatorWidth = Utils::dpiScaled(14);
+
     switch (property->displayMode()) {
-    case Property::DisplayMode::Default: {
-        auto label = new LineEditLabel(property->name(), this);
-        label->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
-        label->setToolTip(property->toolTip());
-        label->setEnabled(property->isEnabled());
-        connect(property, &Property::toolTipChanged, label, &QWidget::setToolTip);
-        connect(property, &Property::enabledChanged, label, &QLabel::setEnabled);
-        m_gridLayout->addWidget(label, m_rowIndex, LabelColumn, Qt::AlignTop/* | Qt::AlignRight*/);
+    case Property::DisplayMode::Default:
+    case Property::DisplayMode::NoLabel: {
+        auto propertyLayout = new QHBoxLayout;
+        propertyLayout->setContentsMargins(spacing, 0, spacing, 0);
+        propertyLayout->setSpacing(spacing);
+
+        if (property->displayMode() == Property::DisplayMode::Default) {
+            auto label = new LineEditLabel(property->name(), this);
+            label->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
+            label->setToolTip(property->toolTip());
+            label->setEnabled(property->isEnabled());
+            label->setContentsMargins(branchIndicatorWidth, 0, 0, 0);
+            connect(property, &Property::toolTipChanged, label, &QWidget::setToolTip);
+            connect(property, &Property::enabledChanged, label, &QWidget::setEnabled);
+            propertyLayout->addWidget(label, LabelStretch, Qt::AlignTop);
+        } else {
+            propertyLayout->addStretch(LabelStretch);
+        }
 
         if (auto editor = createEditor(property)) {
             editor->setToolTip(property->toolTip());
             editor->setEnabled(property->isEnabled());
             connect(property, &Property::toolTipChanged, editor, &QWidget::setToolTip);
             connect(property, &Property::enabledChanged, editor, &QWidget::setEnabled);
-            m_gridLayout->addWidget(editor, m_rowIndex, WidgetColumn);
+            propertyLayout->addWidget(editor, WidgetStretch);
         }
 
-        ++m_rowIndex;
+        m_layout->addLayout(propertyLayout);
+
         break;
     }
     case Property::DisplayMode::Header: {
@@ -548,8 +549,7 @@ void VariantEditor::addProperty(Property *property)
                 layout()->activate();
             });
 
-            m_gridLayout->addWidget(editor, m_rowIndex, 0, 1, ColumnCount);
-            ++m_rowIndex;
+            m_layout->addWidget(editor);
         }
 
         break;
