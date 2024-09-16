@@ -3,6 +3,7 @@
 * Scripting: Added `FileFormat.nameFilter`
 * Scripting: Added `MapEditor.currentBrushChanged` signal
 * Scripting: Added `tiled.cursor` to create mouse cursor values
+* Fixed saving/loading of custom properties set on worlds (#4025)
 * Fixed crash when accessing a world through a symlink (#4042)
 * Fixed error reporting when exporting on the command-line (by Shuhei Nagasawa, #4015)
 
