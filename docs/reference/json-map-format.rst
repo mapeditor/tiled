@@ -85,25 +85,27 @@ Layer
 
     chunks,           array,            "Array of :ref:`chunks <json-chunk>` (optional). ``tilelayer`` only."
     class,            string,           "The class of the layer (since 1.9, optional)"
-    compression,      string,           "``zlib``, ``gzip``, ``zstd`` (since Tiled 1.3) or empty (default). ``tilelayer`` only."
+    compression,      string,           "``zlib``, ``gzip``, ``zstd`` (since 1.3) or empty (default). ``tilelayer`` only."
     data,             array or string,  "Array of ``unsigned int`` (GIDs) or base64-encoded data. ``tilelayer`` only."
     draworder,        string,           "``topdown`` (default) or ``index``. ``objectgroup`` only."
     encoding,         string,           "``csv`` (default) or ``base64``. ``tilelayer`` only."
     height,           int,              "Row count. Same as map height for fixed-size maps. ``tilelayer`` only."
     id,               int,              "Incremental ID - unique across all layers"
     image,            string,           "Image used by this layer. ``imagelayer`` only."
+    imageheight,      int,              "Height of the image used by this layer. ``imagelayer`` only. (since 1.11.1)"
+    imagewidth,       int,              "Width of the image used by this layer. ``imagelayer`` only. (since 1.11.1)"
     layers,           array,            "Array of :ref:`layers <json-layer>`. ``group`` only."
-    locked,           bool,             "Whether layer is locked in the editor (default: false). (since Tiled 1.8.2)"
+    locked,           bool,             "Whether layer is locked in the editor (default: false). (since 1.8.2)"
     name,             string,           "Name assigned to this layer"
     objects,          array,            "Array of :ref:`objects <json-object>`. ``objectgroup`` only."
     offsetx,          double,           "Horizontal layer offset in pixels (default: 0)"
     offsety,          double,           "Vertical layer offset in pixels (default: 0)"
     opacity,          double,           "Value between 0 and 1"
-    parallaxx,        double,           "Horizontal :ref:`parallax factor <parallax-factor>` for this layer (default: 1). (since Tiled 1.5)"
-    parallaxy,        double,           "Vertical :ref:`parallax factor <parallax-factor>` for this layer (default: 1). (since Tiled 1.5)"
+    parallaxx,        double,           "Horizontal :ref:`parallax factor <parallax-factor>` for this layer (default: 1). (since 1.5)"
+    parallaxy,        double,           "Vertical :ref:`parallax factor <parallax-factor>` for this layer (default: 1). (since 1.5)"
     properties,       array,            "Array of :ref:`Properties <json-property>`"
-    repeatx,          bool,             "Whether the image drawn by this layer is repeated along the X axis. ``imagelayer`` only. (since Tiled 1.8)"
-    repeaty,          bool,             "Whether the image drawn by this layer is repeated along the Y axis. ``imagelayer`` only. (since Tiled 1.8)"
+    repeatx,          bool,             "Whether the image drawn by this layer is repeated along the X axis. ``imagelayer`` only. (since 1.8)"
+    repeaty,          bool,             "Whether the image drawn by this layer is repeated along the Y axis. ``imagelayer`` only. (since 1.8)"
     startx,           int,              "X coordinate where layer content starts (for infinite maps)"
     starty,           int,              "Y coordinate where layer content starts (for infinite maps)"
     tintcolor,        string,           "Hex-formatted :ref:`tint color <tint-color>` (#RRGGBB or #AARRGGBB) that is multiplied with any graphics drawn by this layer or any child layers (optional)."
@@ -735,6 +737,11 @@ A point on a polygon or a polyline, relative to the position of the object.
 
 Changelog
 ---------
+
+Tiled 1.11.1
+~~~~~~~~~~~~
+
+* Added ``imageheight`` and ``imagewidth`` properties to image layers.
 
 Tiled 1.10
 ~~~~~~~~~~

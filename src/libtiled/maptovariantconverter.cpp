@@ -693,6 +693,12 @@ QVariant MapToVariantConverter::toVariant(const ImageLayer &imageLayer) const
     const QString rel = toFileReference(imageLayer.imageSource(), mDir);
     imageLayerVariant[QStringLiteral("image")] = rel;
 
+    const QSize imageSize = imageLayer.image().size();
+    if (!imageSize.isNull()) {
+        imageLayerVariant[QStringLiteral("imagewidth")] = imageSize.width();
+        imageLayerVariant[QStringLiteral("imageheight")] = imageSize.height();
+    }
+
     const QColor transColor = imageLayer.transparentColor();
     if (transColor.isValid())
         imageLayerVariant[QStringLiteral("transparentcolor")] = transColor.name();
