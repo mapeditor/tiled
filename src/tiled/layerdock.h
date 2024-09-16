@@ -28,9 +28,7 @@
 #include <QToolButton>
 
 class QAbstractProxyModel;
-class QLabel;
 class QModelIndex;
-class QUndoStack;
 
 namespace Tiled {
 
@@ -58,20 +56,13 @@ protected:
     void changeEvent(QEvent *e) override;
 
 private:
-    void updateOpacitySlider();
-    void documentChanged(const ChangeEvent &change);
     void editLayerName();
-    void sliderValueChanged(int opacity);
 
     void retranslateUi();
 
-    QLabel *mOpacityLabel;
-    QSlider *mOpacitySlider;
     QToolButton *mNewLayerButton;
     LayerView *mLayerView;
     MapDocument *mMapDocument = nullptr;
-    bool mUpdatingSlider = false;
-    bool mChangingLayerOpacity = false;
 };
 
 /**
