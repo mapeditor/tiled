@@ -105,6 +105,7 @@ public:
     QSize value() const;
 
     void setMinimum(int minimum);
+    void setSuffix(const QString &suffix);
 
 signals:
     void valueChanged();
@@ -153,6 +154,8 @@ public:
 
     void setValue(const QPoint &size);
     QPoint value() const;
+
+    void setSuffix(const QString &suffix);
 
 signals:
     void valueChanged();

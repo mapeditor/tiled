@@ -42,6 +42,7 @@
 #include "propertybrowser.h"
 #include "tilesetchanges.h"
 #include "tilesetdocument.h"
+#include "tilesetparametersedit.h"
 #include "utils.h"
 #include "varianteditor.h"
 #include "variantpropertymanager.h"
@@ -349,6 +350,30 @@ public:
 };
 
 
+class TilesetImageProperty : public GroupProperty
+{
+    Q_OBJECT
+
+public:
+    TilesetImageProperty(TilesetDocument *tilesetDocument, QObject *parent)
+        : GroupProperty(tr("Tileset Image"), parent)
+        , mTilesetDocument(tilesetDocument)
+    {}
+
+    DisplayMode displayMode() const override { return DisplayMode::Default; }
+
+    QWidget *createEditor(QWidget *parent) override
+    {
+        auto editor = new TilesetParametersEdit(parent);
+        editor->setTilesetDocument(mTilesetDocument);
+        return editor;
+    }
+
+private:
+    TilesetDocument *mTilesetDocument;
+};
+
+
 PropertiesWidget::PropertiesWidget(QWidget *parent)
     : QWidget{parent}
     , mScrollArea(new QScrollArea(this))
@@ -642,6 +667,7 @@ public:
                     },
                     this);
         mTileSizeProperty->setMinimum(1);
+        mTileSizeProperty->setSuffix(tr(" px"));
 
         mInfiniteProperty = new BoolProperty(
                     tr("Infinite"),
@@ -664,6 +690,7 @@ public:
                                                    Map::HexSideLengthProperty,
                                                    value.toInt()));
                     });
+        mHexSideLengthProperty->setSuffix(tr(" px"));
 
         mStaggerAxisProperty = new EnumProperty<Map::StaggerAxis>(
                     tr("Stagger Axis"),
@@ -858,7 +885,7 @@ private:
     Property *mSizeProperty;
     SizeProperty *mTileSizeProperty;
     Property *mInfiniteProperty;
-    Property *mHexSideLengthProperty;
+    IntProperty *mHexSideLengthProperty;
     Property *mStaggerAxisProperty;
     Property *mStaggerIndexProperty;
     Property *mParallaxOriginProperty;
@@ -1180,6 +1207,7 @@ public:
                     [this](const QPoint &value) {
                         push(new ChangeTilesetTileOffset(tilesetDocument(), value));
                     });
+        mTileOffsetProperty->setSuffix(tr(" px"));
 
         mTileRenderSizeProperty = new EnumProperty<Tileset::TileRenderSize>(
                     tr("Tile Render Size"),
@@ -1226,6 +1254,7 @@ public:
                         push(new ChangeTilesetGridSize(tilesetDocument(), value));
                     });
         mGridSizeProperty->setMinimum(1);
+        mGridSizeProperty->setSuffix(tr(" px"));
 
         mColumnCountProperty = new IntProperty(
                     tr("Columns"),
@@ -1246,15 +1275,38 @@ public:
                         push(new ChangeTilesetTransformationFlags(tilesetDocument(), value));
                     });
 
-        // todo: this needs a custom widget
+        // todo: sub-properties are not displayed yet and image file name doesn't update in the TilesetParametersEdit
+        mTilesetImageProperty = new TilesetImageProperty(document, this);
+
         mImageProperty = new UrlProperty(
                     tr("Image"),
-                    [this] {
-                        return tileset()->imageSource();
-                    },
-                    [](const QUrl &) {
-                        // push(new ChangeTilesetImage(tilesetDocument(), value.toString()));
-                    });
+                    [this] { return tileset()->imageSource(); });
+
+        mTransparentColorProperty = new ColorProperty(
+                    tr("Transparent Color"),
+                    [this] { return tileset()->transparentColor(); });
+
+        mTileSizeProperty = new SizeProperty(
+                    tr("Tile Size"),
+                    [this] { return tileset()->tileSize(); });
+
+        mMarginProperty = new IntProperty(
+                    tr("Margin"),
+                    [this] { return tileset()->margin(); });
+
+        mTileSpacingProperty = new IntProperty(
+                    tr("Spacing"),
+                    [this] { return tileset()->tileSpacing(); });
+
+        mTileSizeProperty->setSuffix(tr(" px"));
+        mMarginProperty->setSuffix(tr(" px"));
+        mTileSpacingProperty->setSuffix(tr(" px"));
+
+        mTilesetImageProperty->addProperty(mImageProperty);
+        mTilesetImageProperty->addProperty(mTransparentColorProperty);
+        mTilesetImageProperty->addProperty(mTileSizeProperty);
+        mTilesetImageProperty->addProperty(mMarginProperty);
+        mTilesetImageProperty->addProperty(mTileSpacingProperty);
 
         mTilesetProperties = new GroupProperty(tr("Tileset"));
         mTilesetProperties->addProperty(mNameProperty);
@@ -1269,7 +1321,9 @@ public:
         mTilesetProperties->addProperty(mGridSizeProperty);
         mTilesetProperties->addProperty(mColumnCountProperty);
         mTilesetProperties->addProperty(mAllowedTransformationsProperty);
-        mTilesetProperties->addProperty(mImageProperty);
+
+        if (!tileset()->isCollection())
+            mTilesetProperties->addProperty(mTilesetImageProperty);
 
         updateEnabledState();
         connect(tilesetDocument(), &Document::changed,
@@ -1316,12 +1370,21 @@ private:
         emit mColumnCountProperty->valueChanged();
         emit mAllowedTransformationsProperty->valueChanged();
         emit mImageProperty->valueChanged();
+        emit mTransparentColorProperty->valueChanged();
+        emit mTileSizeProperty->valueChanged();
+        emit mMarginProperty->valueChanged();
+        emit mTileSpacingProperty->valueChanged();
     }
 
     void updateEnabledState()
     {
         const bool collection = tileset()->isCollection();
+        mTilesetImageProperty->setEnabled(!collection);
         mImageProperty->setEnabled(!collection);
+        mTransparentColorProperty->setEnabled(!collection);
+        mTileSizeProperty->setEnabled(!collection);
+        mMarginProperty->setEnabled(!collection);
+        mTileSpacingProperty->setEnabled(!collection);
         mColumnCountProperty->setEnabled(collection);
     }
 
@@ -1338,7 +1401,7 @@ private:
     GroupProperty *mTilesetProperties;
     Property *mNameProperty;
     Property *mObjectAlignmentProperty;
-    Property *mTileOffsetProperty;
+    PointProperty *mTileOffsetProperty;
     Property *mTileRenderSizeProperty;
     Property *mFillModeProperty;
     Property *mBackgroundColorProperty;
@@ -1346,7 +1409,12 @@ private:
     SizeProperty *mGridSizeProperty;
     IntProperty *mColumnCountProperty;
     Property *mAllowedTransformationsProperty;
+    GroupProperty *mTilesetImageProperty;
     Property *mImageProperty;
+    Property *mTransparentColorProperty;
+    SizeProperty *mTileSizeProperty;
+    IntProperty *mMarginProperty;
+    IntProperty *mTileSpacingProperty;
 };
 
 class MapObjectProperties : public ObjectProperties
@@ -2018,8 +2086,9 @@ void PropertiesWidget::currentObjectChanged(Object *object)
         const auto &value = it.value();
 
         Property *property = nullptr;
+        auto userType = value.userType();
 
-        switch (value.userType()) {
+        switch (userType) {
         case QMetaType::Bool:
         case QMetaType::QColor:
         case QMetaType::Double:
@@ -2033,20 +2102,44 @@ void PropertiesWidget::currentObjectChanged(Object *object)
             break;
         }
         default:
-            if (value.userType() == filePathTypeId()) {
+            if (userType == filePathTypeId()) {
                 auto get = [object, name] { return object->property(name).value<FilePath>().url; };
                 auto set = [this, object, name](const QUrl &value) {
                     mDocument->undoStack()->push(new SetProperty(mDocument, { object }, name, QVariant::fromValue(FilePath { value })));
                 };
                 property = new UrlProperty(name, get, set);
-            } else if (value.userType() == objectRefTypeId()) {
-                auto get = [this, object, name] { return DisplayObjectRef(object->property(name).value<ObjectRef>(), static_cast<MapDocument*>(mDocument)); };
+            } else if (userType == objectRefTypeId()) {
+                auto get = [this, object, name] {
+                    return DisplayObjectRef(object->property(name).value<ObjectRef>(),
+                                            static_cast<MapDocument*>(mDocument));
+                };
                 auto set = [this, object, name](const DisplayObjectRef &value) {
                     mDocument->undoStack()->push(new SetProperty(mDocument, { object }, name, QVariant::fromValue(value.ref)));
                 };
                 property = new ObjectRefProperty(name, get, set);
+            } else if (userType == propertyValueId()) {
+                auto propertyValue = value.value<PropertyValue>();
+                if (auto propertyType = propertyValue.type()) {
+                    switch (propertyType->type) {
+                    case PropertyType::PT_Invalid:
+                        break;
+                    case PropertyType::PT_Class:
+                        // todo: class values
+                        break;
+                    case PropertyType::PT_Enum:
+                        auto enumType = static_cast<const EnumPropertyType&>(*propertyType);
+                        // todo: support valuesAsFlags
+                        property = new EnumProperty<int>(
+                                    name,
+                                    [object, name] { return object->property(name).value<PropertyValue>().value.toInt(); },
+                                    [=](int value) {
+                                        mDocument->undoStack()->push(new SetProperty(mDocument, { object }, name, propertyType->wrap(value)));
+                                    });
+                        static_cast<EnumProperty<int>*>(property)->setEnumData(enumType.values);
+                        break;
+                    }
+                }
             }
-            // todo: PropertyValue (enum and class values)
             break;
         }
 

@@ -57,14 +57,6 @@ void Property::setEnabled(bool enabled)
     }
 }
 
-QWidget *GroupProperty::createEditor(QWidget *parent)
-{
-    auto widget = new VariantEditor(parent);
-    for (auto property : std::as_const(m_subProperties))
-        widget->addProperty(property);
-    return widget;
-}
-
 QWidget *StringProperty::createEditor(QWidget *parent)
 {
     auto editor = new QLineEdit(parent);
@@ -188,6 +180,8 @@ QWidget *BoolProperty::createEditor(QWidget *parent)
 QWidget *PointProperty::createEditor(QWidget *parent)
 {
     auto editor = new PointEdit(parent);
+    editor->setSuffix(m_suffix);
+
     auto syncEditor = [this, editor] {
         const QSignalBlocker blocker(editor);
         editor->setValue(value());
@@ -225,6 +219,7 @@ QWidget *SizeProperty::createEditor(QWidget *parent)
 {
     auto editor = new SizeEdit(parent);
     editor->setMinimum(m_minimum);
+    editor->setSuffix(m_suffix);
 
     auto syncEditor = [this, editor] {
         const QSignalBlocker blocker(editor);
@@ -549,7 +544,11 @@ void VariantEditor::addProperty(Property *property)
         auto headerWidget = new HeaderWidget(property->name(), this);
         m_layout->addWidget(headerWidget);
 
-        if (auto editor = createEditor(property)) {
+        if (auto groupProperty = dynamic_cast<GroupProperty *>(property)) {
+            auto editor = new VariantEditor(this);
+            for (auto property : groupProperty->subProperties())
+                editor->addProperty(property);
+
             connect(headerWidget, &HeaderWidget::toggled,
                     editor, [this, editor](bool checked) {
                 editor->setVisible(checked);
@@ -680,7 +679,7 @@ Property *createTypedProperty(const QString &name,
 {
     return new PropertyClass(name,
                              [get = std::move(get)] { return get().value<typename PropertyClass::ValueType>(); },
-                             [set = std::move(set)] (typename PropertyClass::ValueType v) { set(QVariant::fromValue(v)); });
+                             [set = std::move(set)] (const typename PropertyClass::ValueType &v) { set(QVariant::fromValue(v)); });
 }
 
 Property *PropertyFactory::createProperty(const QString &name,
