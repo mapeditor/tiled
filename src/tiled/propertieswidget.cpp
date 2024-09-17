@@ -58,6 +58,7 @@
 #include <QMenu>
 #include <QPushButton>
 #include <QToolBar>
+#include <QToolButton>
 #include <QUndoStack>
 #include <QVBoxLayout>
 
@@ -259,6 +260,90 @@ public:
         connect(this, &Property::valueChanged, editor, syncEditor);
         connect(repeatX, &QCheckBox::toggled, this, syncProperty);
         connect(repeatY, &QCheckBox::toggled, this, syncProperty);
+        return editor;
+    }
+};
+
+
+class TransformationFlagsProperty : public PropertyTemplate<Tileset::TransformationFlags>
+{
+    Q_OBJECT
+
+public:
+    using PropertyTemplate::PropertyTemplate;
+
+    QWidget *createEditor(QWidget *parent) override
+    {
+        QIcon flipHorizontalIcon(QLatin1String(":images/24/flip-horizontal.png"));
+        QIcon flipVerticalIcon(QLatin1String(":images/24/flip-vertical.png"));
+        QIcon rotateRightIcon(QLatin1String(":images/24/rotate-right.png"));
+
+        flipHorizontalIcon.addFile(QLatin1String(":images/32/flip-horizontal.png"));
+        flipVerticalIcon.addFile(QLatin1String(":images/32/flip-vertical.png"));
+        rotateRightIcon.addFile(QLatin1String(":images/32/rotate-right.png"));
+
+        auto editor = new QWidget(parent);
+
+        auto flipHorizontally = new QToolButton(editor);
+        flipHorizontally->setToolTip(tr("Flip Horizontally"));
+        flipHorizontally->setIcon(flipHorizontalIcon);
+        flipHorizontally->setCheckable(true);
+
+        auto flipVertically = new QToolButton(editor);
+        flipVertically->setToolTip(tr("Flip Vertically"));
+        flipVertically->setIcon(flipVerticalIcon);
+        flipVertically->setCheckable(true);
+
+        auto rotate = new QToolButton(editor);
+        rotate->setToolTip(tr("Rotate"));
+        rotate->setIcon(rotateRightIcon);
+        rotate->setCheckable(true);
+
+        auto preferUntransformed = new QCheckBox(tr("Prefer Untransformed"), editor);
+
+        auto horizontalLayout = new QHBoxLayout;
+        horizontalLayout->addWidget(flipHorizontally);
+        horizontalLayout->addWidget(flipVertically);
+        horizontalLayout->addWidget(rotate);
+        horizontalLayout->addStretch();
+
+        auto verticalLayout = new QVBoxLayout(editor);
+        verticalLayout->setContentsMargins(QMargins());
+        verticalLayout->setSpacing(Utils::dpiScaled(4));
+        verticalLayout->addLayout(horizontalLayout);
+        verticalLayout->addWidget(preferUntransformed);
+
+        auto syncEditor = [=] {
+            const QSignalBlocker horizontalBlocker(flipHorizontally);
+            const QSignalBlocker verticalBlocker(flipVertically);
+            const QSignalBlocker rotateBlocker(rotate);
+            const QSignalBlocker preferUntransformedBlocker(preferUntransformed);
+            const auto v = value();
+            flipHorizontally->setChecked(v & Tileset::AllowFlipHorizontally);
+            flipVertically->setChecked(v & Tileset::AllowFlipVertically);
+            rotate->setChecked(v & Tileset::AllowRotate);
+            preferUntransformed->setChecked(v & Tileset::PreferUntransformed);
+        };
+        auto syncProperty = [=] {
+            Tileset::TransformationFlags v;
+            if (flipHorizontally->isChecked())
+                v |= Tileset::AllowFlipHorizontally;
+            if (flipVertically->isChecked())
+                v |= Tileset::AllowFlipVertically;
+            if (rotate->isChecked())
+                v |= Tileset::AllowRotate;
+            if (preferUntransformed->isChecked())
+                v |= Tileset::PreferUntransformed;
+            setValue(v);
+        };
+
+        syncEditor();
+
+        connect(this, &Property::valueChanged, editor, syncEditor);
+        connect(flipHorizontally, &QAbstractButton::toggled, this, syncProperty);
+        connect(flipVertically, &QAbstractButton::toggled, this, syncProperty);
+        connect(rotate, &QAbstractButton::toggled, this, syncProperty);
+        connect(preferUntransformed, &QAbstractButton::toggled, this, syncProperty);
         return editor;
     }
 };
@@ -1149,15 +1234,13 @@ public:
                     });
         mColumnCountProperty->setMinimum(1);
 
-        // todo: this needs a custom widget
-        mAllowedTransformationsProperty = new IntProperty(
+        mAllowedTransformationsProperty = new TransformationFlagsProperty(
                     tr("Allowed Transformations"),
                     [this] {
-                        return static_cast<int>(tileset()->transformationFlags());
+                        return tileset()->transformationFlags();
                     },
-                    [this](const int &value) {
-                        const auto flags = static_cast<Tileset::TransformationFlags>(value);
-                        push(new ChangeTilesetTransformationFlags(tilesetDocument(), flags));
+                    [this](const Tileset::TransformationFlags &value) {
+                        push(new ChangeTilesetTransformationFlags(tilesetDocument(), value));
                     });
 
         // todo: this needs a custom widget

@@ -355,7 +355,7 @@ QWidget *FontProperty::createEditor(QWidget *parent)
 
     auto layout = new QVBoxLayout(editor);
     layout->setContentsMargins(QMargins());
-    layout->setSpacing(Utils::dpiScaled(3));
+    layout->setSpacing(Utils::dpiScaled(4));
     layout->addWidget(fontComboBox);
     layout->addWidget(sizeSpinBox);
 
@@ -418,7 +418,7 @@ QWidget *QtAlignmentProperty::createEditor(QWidget *parent)
     auto editor = new QWidget(parent);
     auto layout = new QGridLayout(editor);
     layout->setContentsMargins(QMargins());
-    layout->setSpacing(Utils::dpiScaled(3));
+    layout->setSpacing(Utils::dpiScaled(4));
 
     auto horizontalLabel = new ElidingLabel(tr("Horizontal"), editor);
     layout->addWidget(horizontalLabel, 0, 0);
