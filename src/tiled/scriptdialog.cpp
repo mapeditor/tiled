@@ -26,6 +26,7 @@
 #include "mainwindow.h"
 #include "scriptimage.h"
 #include "scriptmanager.h"
+#include "utils.h"
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -41,8 +42,6 @@
 #include <QSlider>
 #include <QTextEdit>
 
-#include <memory>
-
 static const int leftColumnStretch = 0;
 // stretch as much as we can so that the left column looks as close to zero width as possible when there is no content
 static const int rightColumnStretch = 1;
@@ -50,18 +49,6 @@ static const int rightColumnStretch = 1;
 namespace Tiled {
 
 QSet<ScriptDialog*> ScriptDialog::sDialogInstances;
-
-static void deleteAllFromLayout(QLayout *layout)
-{
-    while (QLayoutItem *item = layout->takeAt(0)) {
-        delete item->widget();
-
-        if (QLayout *layout = item->layout())
-            deleteAllFromLayout(layout);
-
-        delete item;
-    }
-}
 
 ScriptImageWidget::ScriptImageWidget(Tiled::ScriptImage *image, QWidget *parent)
     : QLabel(parent)
@@ -144,7 +131,7 @@ void ScriptDialog::initializeLayout()
 
 void ScriptDialog::clear()
 {
-    deleteAllFromLayout(layout());
+    Utils::deleteAllFromLayout(layout());
     initializeLayout();
 }
 

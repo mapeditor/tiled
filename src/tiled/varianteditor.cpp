@@ -493,21 +493,7 @@ VariantEditor::VariantEditor(QWidget *parent)
 
 void VariantEditor::clear()
 {
-    QLayoutItem *item;
-    while ((item = m_layout->takeAt(0))) {
-        delete item->widget();
-        delete item;
-    }
-    m_rowIndex = 0;
-}
-
-HeaderWidget *VariantEditor::addHeader(const QString &text)
-{
-    auto headerWidget = new HeaderWidget(text, this);
-
-    m_layout->addWidget(headerWidget);
-
-    return headerWidget;
+    Utils::deleteAllFromLayout(m_layout);
 }
 
 void VariantEditor::addSeparator()
@@ -521,7 +507,7 @@ void VariantEditor::addSeparator()
 
 void VariantEditor::addProperty(Property *property)
 {
-    const int spacing = Utils::dpiScaled(4);
+    const int spacing = m_layout->spacing();
     const int branchIndicatorWidth = Utils::dpiScaled(14);
 
     switch (property->displayMode()) {
@@ -529,10 +515,9 @@ void VariantEditor::addProperty(Property *property)
     case Property::DisplayMode::NoLabel: {
         auto propertyLayout = new QHBoxLayout;
         propertyLayout->setContentsMargins(0, 0, spacing, 0);
-        propertyLayout->setSpacing(spacing);
 
         // Property label indentation, which shrinks when there is very little space
-        propertyLayout->addSpacerItem(new QSpacerItem(branchIndicatorWidth + spacing, 0,
+        propertyLayout->addSpacerItem(new QSpacerItem(spacing + branchIndicatorWidth, 0,
                                                       QSizePolicy::Maximum));
         propertyLayout->setStretch(0, 1);
 
@@ -561,7 +546,8 @@ void VariantEditor::addProperty(Property *property)
         break;
     }
     case Property::DisplayMode::Header: {
-        auto headerWidget = addHeader(property->name());
+        auto headerWidget = new HeaderWidget(property->name(), this);
+        m_layout->addWidget(headerWidget);
 
         if (auto editor = createEditor(property)) {
             connect(headerWidget, &HeaderWidget::toggled,

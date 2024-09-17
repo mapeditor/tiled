@@ -388,7 +388,6 @@ public:
     VariantEditor(QWidget *parent = nullptr);
 
     void clear();
-    HeaderWidget *addHeader(const QString &text);
     void addSeparator();
     void addProperty(Property *property);
     // void addValue(const QVariant &value);
@@ -402,7 +401,6 @@ private:
     };
 
     QVBoxLayout *m_layout;
-    int m_rowIndex = 0;
 };
 
 } // namespace Tiled
