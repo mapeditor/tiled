@@ -241,6 +241,12 @@ void SizeEdit::setMinimum(int minimum)
     m_heightSpinBox->setMinimum(minimum);
 }
 
+void SizeEdit::setSuffix(const QString &suffix)
+{
+    m_widthSpinBox->setSuffix(suffix);
+    m_heightSpinBox->setSuffix(suffix);
+}
+
 
 SizeFEdit::SizeFEdit(QWidget *parent)
     : ResponsivePairswiseWidget(parent)
@@ -297,6 +303,12 @@ QPoint PointEdit::value() const
 {
     return QPoint(m_xSpinBox->value(),
                   m_ySpinBox->value());
+}
+
+void PointEdit::setSuffix(const QString &suffix)
+{
+    m_xSpinBox->setSuffix(suffix);
+    m_ySpinBox->setSuffix(suffix);
 }
 
 

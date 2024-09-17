@@ -90,7 +90,6 @@ public:
     {}
 
     DisplayMode displayMode() const override { return DisplayMode::Separator; }
-
     QWidget *createEditor(QWidget */*parent*/) override { return nullptr; }
 };
 
@@ -104,8 +103,7 @@ public:
     {}
 
     DisplayMode displayMode() const override { return DisplayMode::Header; }
-
-    QWidget *createEditor(QWidget *parent) override;
+    QWidget *createEditor(QWidget */* parent */) override { return nullptr; }
 
     void addProperty(Property *property) { m_subProperties.append(property); }
     void addSeparator() { m_subProperties.append(new Separator(this)); }
@@ -220,6 +218,11 @@ struct PointProperty : PropertyTemplate<QPoint>
 {
     using PropertyTemplate::PropertyTemplate;
     QWidget *createEditor(QWidget *parent) override;
+
+    void setSuffix(const QString &suffix) { m_suffix = suffix; }
+
+private:
+    QString m_suffix;
 };
 
 struct PointFProperty : PropertyTemplate<QPointF>
@@ -239,9 +242,11 @@ struct SizeProperty : PropertyTemplate<QSize>
     QWidget *createEditor(QWidget *parent) override;
 
     void setMinimum(int minimum) { m_minimum = minimum; }
+    void setSuffix(const QString &suffix) { m_suffix = suffix; }
 
 private:
     int m_minimum;
+    QString m_suffix;
 };
 
 struct SizeFProperty : PropertyTemplate<QSizeF>

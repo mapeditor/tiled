@@ -44,7 +44,7 @@ TilesetParametersEdit::TilesetParametersEdit(QWidget *parent)
 
     QToolButton *button = new QToolButton(this);
     button->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred));
-    button->setText(tr("Edit..."));
+    button->setText(tr("Edit Tileset"));
     layout->addWidget(mLabel);
     layout->addWidget(button);
 
