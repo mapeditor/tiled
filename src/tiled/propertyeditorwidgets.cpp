@@ -121,7 +121,7 @@ ResponsivePairswiseWidget::ResponsivePairswiseWidget(QWidget *parent)
     auto layout = new QGridLayout(this);
     layout->setContentsMargins(QMargins());
     layout->setColumnStretch(1, 1);
-    layout->setSpacing(Utils::dpiScaled(3));
+    layout->setSpacing(Utils::dpiScaled(4));
 }
 
 void ResponsivePairswiseWidget::setWidgetPairs(const QVector<WidgetPair> &widgetPairs)
