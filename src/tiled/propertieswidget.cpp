@@ -1106,14 +1106,16 @@ public:
                     [this](ObjectGroup::DrawOrder value) {
                         push(new ChangeObjectGroupDrawOrder(mapDocument(), { objectGroup() }, value));
                     });
+
+        mObjectGroupProperties = new GroupProperty(tr("Object Layer"));
+        mObjectGroupProperties->addProperty(mColorProperty);
+        mObjectGroupProperties->addProperty(mDrawOrderProperty);
     }
 
     void populateEditor(VariantEditor *editor) override
     {
         LayerProperties::populateEditor(editor);
-        editor->addHeader(tr("Object Layer"));
-        editor->addProperty(mColorProperty);
-        editor->addProperty(mDrawOrderProperty);
+        editor->addProperty(mObjectGroupProperties);
     }
 
 private:
@@ -1139,6 +1141,7 @@ private:
         return static_cast<ObjectGroup*>(mObject);
     }
 
+    GroupProperty *mObjectGroupProperties;
     Property *mColorProperty;
     Property *mDrawOrderProperty;
 };
