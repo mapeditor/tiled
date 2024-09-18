@@ -32,7 +32,7 @@ class QVBoxLayout;
 
 namespace Tiled {
 
-class HeaderWidget;
+class PropertyLabel;
 
 /**
  * A property represents a named value that can create its own edit widget.
@@ -133,7 +133,7 @@ public:
     {}
 
     Type value() const { return m_get(); }
-    void setValue(const Type &value) { m_set(value); }
+    void setValue(const Type &value) { if (m_set) m_set(value); }
 
 private:
     std::function<Type()> m_get;
@@ -409,6 +409,8 @@ public:
     void addProperty(Property *property);
     // void addValue(const QVariant &value);
 
+    void setLevel(int level) { m_level = level; }
+
 private:
     QWidget *createEditor(Property *property);
 
@@ -418,6 +420,7 @@ private:
     };
 
     QVBoxLayout *m_layout;
+    int m_level = 0;
 };
 
 } // namespace Tiled

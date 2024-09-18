@@ -502,31 +502,30 @@ void VariantEditor::addSeparator()
 
 void VariantEditor::addProperty(Property *property)
 {
-    const int spacing = m_layout->spacing();
-    const int branchIndicatorWidth = Utils::dpiScaled(14);
+    const auto displayMode = property->displayMode();
 
-    switch (property->displayMode()) {
-    case Property::DisplayMode::Default:
-    case Property::DisplayMode::NoLabel: {
+    if (displayMode == Property::DisplayMode::Separator) {
+        addSeparator();
+        return;
+    }
+
+    auto label = new PropertyLabel(m_level, this);
+
+    if (displayMode != Property::DisplayMode::NoLabel) {
+        label->setText(property->name());
+        label->setToolTip(property->toolTip());
+        label->setEnabled(property->isEnabled());
+        connect(property, &Property::toolTipChanged, label, &QWidget::setToolTip);
+        connect(property, &Property::enabledChanged, label, &QWidget::setEnabled);
+    }
+
+    if (displayMode == Property::DisplayMode::Header) {
+        label->setHeader(true);
+        m_layout->addWidget(label);
+    } else {
         auto propertyLayout = new QHBoxLayout;
-        propertyLayout->setContentsMargins(0, 0, spacing, 0);
-
-        // Property label indentation, which shrinks when there is very little space
-        propertyLayout->addSpacerItem(new QSpacerItem(spacing + branchIndicatorWidth, 0,
-                                                      QSizePolicy::Maximum));
-        propertyLayout->setStretch(0, 1);
-
-        if (property->displayMode() == Property::DisplayMode::Default) {
-            auto label = new LineEditLabel(property->name(), this);
-            label->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
-            label->setToolTip(property->toolTip());
-            label->setEnabled(property->isEnabled());
-            connect(property, &Property::toolTipChanged, label, &QWidget::setToolTip);
-            connect(property, &Property::enabledChanged, label, &QWidget::setEnabled);
-            propertyLayout->addWidget(label, LabelStretch, Qt::AlignTop);
-        } else {
-            propertyLayout->addStretch(LabelStretch);
-        }
+        propertyLayout->setContentsMargins(0, 0, m_layout->spacing(), 0);
+        propertyLayout->addWidget(label, LabelStretch, Qt::AlignTop);
 
         if (auto editor = createEditor(property)) {
             editor->setToolTip(property->toolTip());
@@ -537,34 +536,26 @@ void VariantEditor::addProperty(Property *property)
         }
 
         m_layout->addLayout(propertyLayout);
-
-        break;
     }
-    case Property::DisplayMode::Header: {
-        auto headerWidget = new HeaderWidget(property->name(), this);
-        m_layout->addWidget(headerWidget);
 
-        if (auto groupProperty = dynamic_cast<GroupProperty *>(property)) {
-            auto editor = new VariantEditor(this);
-            for (auto property : groupProperty->subProperties())
-                editor->addProperty(property);
+    if (auto groupProperty = dynamic_cast<GroupProperty *>(property)) {
+        label->setExpandable(true);
+        label->setExpanded(label->isHeader());
 
-            connect(headerWidget, &HeaderWidget::toggled,
-                    editor, [this, editor](bool checked) {
-                editor->setVisible(checked);
+        auto editor = new VariantEditor(this);
+        editor->setLevel(m_level + 1);
+        editor->setVisible(label->isExpanded());
+        for (auto property : groupProperty->subProperties())
+            editor->addProperty(property);
 
-                // needed to avoid flickering when hiding the editor
-                layout()->activate();
-            });
+        connect(label, &PropertyLabel::toggled, editor, [=](bool expanded) {
+            editor->setVisible(expanded);
 
-            m_layout->addWidget(editor);
-        }
+            // needed to avoid flickering when hiding the editor
+            layout()->activate();
+        });
 
-        break;
-    }
-    case Property::DisplayMode::Separator:
-        addSeparator();
-        break;
+        m_layout->addWidget(editor);
     }
 }
 
@@ -600,6 +591,7 @@ void VariantEditor::addValue(const QVariant &value)
 QWidget *VariantEditor::createEditor(Property *property)
 {
     if (const auto editor = property->createEditor(this)) {
+        editor->setMinimumWidth(Utils::dpiScaled(70));
         editor->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
         return editor;
     } else {
