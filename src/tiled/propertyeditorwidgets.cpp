@@ -491,38 +491,73 @@ void ElidingLabel::paintEvent(QPaintEvent *)
 }
 
 
-HeaderWidget::HeaderWidget(const QString &text, QWidget *parent)
-    : ElidingLabel(text, parent)
+PropertyLabel::PropertyLabel(int level, QWidget *parent)
+    : ElidingLabel(parent)
 {
-    setBackgroundRole(QPalette::Dark);
-    setForegroundRole(QPalette::BrightText);
-    setAutoFillBackground(true);
+    setMinimumWidth(Utils::dpiScaled(50));
+    setLevel(level);
+}
 
-    const int spacing = Utils::dpiScaled(4);
+void PropertyLabel::setLevel(int level)
+{
+    m_level = level;
+
+    const int spacing = Utils::dpiScaled(3);
     const int branchIndicatorWidth = Utils::dpiScaled(14);
-    setContentsMargins(spacing + branchIndicatorWidth,
+    setContentsMargins(spacing + branchIndicatorWidth * std::max(m_level, 1),
                        spacing, spacing, spacing);
 }
 
-void HeaderWidget::mousePressEvent(QMouseEvent *event)
+void PropertyLabel::setHeader(bool header)
 {
-    if (event->button() == Qt::LeftButton) {
-        m_checked = !m_checked;
-        emit toggled(m_checked);
+    if (m_header == header)
+        return;
+
+    m_header = header;
+    setBackgroundRole(header ? QPalette::Dark : QPalette::NoRole);
+    setForegroundRole(header ? QPalette::BrightText : QPalette::NoRole);
+    setAutoFillBackground(header);
+}
+
+void PropertyLabel::setExpandable(bool expandable)
+{
+    if (m_expandable == expandable)
+        return;
+
+    m_expandable = expandable;
+    update();
+}
+
+void PropertyLabel::setExpanded(bool expanded)
+{
+    if (m_expanded == expanded)
+        return;
+
+    m_expanded = expanded;
+    update();
+    emit toggled(m_expanded);
+}
+
+void PropertyLabel::mousePressEvent(QMouseEvent *event)
+{
+    if (m_expandable && event->button() == Qt::LeftButton) {
+        setExpanded(!m_expanded);
+        return;
     }
 
     ElidingLabel::mousePressEvent(event);
 }
 
-void HeaderWidget::paintEvent(QPaintEvent *event)
+void PropertyLabel::paintEvent(QPaintEvent *event)
 {
     ElidingLabel::paintEvent(event);
 
     QStyleOption branchOption;
     branchOption.initFrom(this);
     branchOption.rect = QRect(0, 0, contentsMargins().left(), height());
-    branchOption.state = QStyle::State_Children;
-    if (m_checked)
+    if (m_expandable)
+        branchOption.state |= QStyle::State_Children;
+    if (m_expanded)
         branchOption.state |= QStyle::State_Open;
 
     QStylePainter p(this);
@@ -530,7 +565,7 @@ void HeaderWidget::paintEvent(QPaintEvent *event)
 }
 
 
-QSize LineEditLabel::sizeHint() const
+QSize PropertyLabel::sizeHint() const
 {
     auto hint = ElidingLabel::sizeHint();
     hint.setHeight(m_lineEdit.sizeHint().height());

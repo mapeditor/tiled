@@ -1275,7 +1275,7 @@ public:
                         push(new ChangeTilesetTransformationFlags(tilesetDocument(), value));
                     });
 
-        // todo: sub-properties are not displayed yet and image file name doesn't update in the TilesetParametersEdit
+        // todo: image file name doesn't update in the TilesetParametersEdit
         mTilesetImageProperty = new TilesetImageProperty(document, this);
 
         mImageProperty = new UrlProperty(
@@ -1301,6 +1301,12 @@ public:
         mTileSizeProperty->setSuffix(tr(" px"));
         mMarginProperty->setSuffix(tr(" px"));
         mTileSpacingProperty->setSuffix(tr(" px"));
+
+        mImageProperty->setEnabled(false);
+        mTransparentColorProperty->setEnabled(false);
+        mTileSizeProperty->setEnabled(false);
+        mMarginProperty->setEnabled(false);
+        mTileSpacingProperty->setEnabled(false);
 
         mTilesetImageProperty->addProperty(mImageProperty);
         mTilesetImageProperty->addProperty(mTransparentColorProperty);
@@ -1379,12 +1385,6 @@ private:
     void updateEnabledState()
     {
         const bool collection = tileset()->isCollection();
-        mTilesetImageProperty->setEnabled(!collection);
-        mImageProperty->setEnabled(!collection);
-        mTransparentColorProperty->setEnabled(!collection);
-        mTileSizeProperty->setEnabled(!collection);
-        mMarginProperty->setEnabled(!collection);
-        mTileSpacingProperty->setEnabled(!collection);
         mColumnCountProperty->setEnabled(collection);
     }
 

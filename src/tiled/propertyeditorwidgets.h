@@ -274,40 +274,41 @@ private:
 };
 
 /**
- * A header widget that can be toggled.
+ * A property label widget, which can be a header or just be expandable.
  */
-class HeaderWidget : public ElidingLabel
+class PropertyLabel : public ElidingLabel
 {
     Q_OBJECT
 
 public:
-    HeaderWidget(const QString &text, QWidget *parent = nullptr);
+    PropertyLabel(int level, QWidget *parent = nullptr);
+
+    void setLevel(int level);
+
+    void setHeader(bool header);
+    bool isHeader() const { return m_header; }
+
+    void setExpandable(bool expandable);
+    bool isExpandable() const { return m_expandable; }
+
+    void setExpanded(bool expanded);
+    bool isExpanded() const { return m_expanded; }
+
+    QSize sizeHint() const override;
 
 signals:
-    void toggled(bool checked);
+    void toggled(bool expanded);
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
     void paintEvent(QPaintEvent *) override;
 
 private:
-    bool m_checked = true;
-};
-
-/**
- * A label that matches its preferred height with that of a line edit.
- */
-class LineEditLabel : public ElidingLabel
-{
-    Q_OBJECT
-
-public:
-    using ElidingLabel::ElidingLabel;
-
-    QSize sizeHint() const override;
-
-private:
     QLineEdit m_lineEdit;
+    int m_level = 0;
+    bool m_header = false;
+    bool m_expandable = false;
+    bool m_expanded = false;
 };
 
 } // namespace Tiled
