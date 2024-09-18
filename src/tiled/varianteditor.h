@@ -325,7 +325,7 @@ public:
 
 struct EnumData
 {
-    EnumData(const QStringList &names,
+    EnumData(const QStringList &names = {},
              const QList<int> &values = {},
              const QMap<int, QIcon> &icons = {})
         : names(names)
@@ -344,44 +344,56 @@ EnumData enumData()
     return {{}};
 }
 
-QWidget *createEnumEditor(IntProperty *property,
-                          const EnumData &enumData,
-                          QWidget *parent);
+/**
+ * A property that wraps an integer value and creates either a combo box or a
+ * list of checkboxes based on the given EnumData.
+ */
+class BaseEnumProperty : public IntProperty
+{
+    Q_OBJECT
+
+public:
+    using IntProperty::IntProperty;
+
+    void setEnumData(const EnumData &enumData) { m_enumData = enumData; }
+    void setFlags(bool flags) { m_flags = flags; }
+
+    QWidget *createEditor(QWidget *parent) override
+    {
+        return m_flags ? createFlagsEditor(parent)
+                       : createEnumEditor(parent);
+    }
+
+protected:
+    QWidget *createFlagsEditor(QWidget *parent);
+    QWidget *createEnumEditor(QWidget *parent);
+
+    EnumData m_enumData;
+    bool m_flags = false;
+};
 
 /**
- * A property that wraps an enum value and creates a combo box based on the
- * given EnumData.
+ * A property that wraps an enum value and automatically sets the EnumData
+ * based on the given type.
  */
 template <typename Enum>
-class EnumProperty : public IntProperty
+class EnumProperty : public BaseEnumProperty
 {
 public:
     EnumProperty(const QString &name,
                  std::function<Enum()> get,
                  std::function<void(Enum)> set,
                  QObject *parent = nullptr)
-        : IntProperty(name,
-                      [get] {
-                          return static_cast<int>(get());
-                      },
-                      set ? [set](const int &value){ set(static_cast<Enum>(value)); }
-                          : std::function<void(const int&)>(),
-                      parent)
-        , m_enumData(enumData<Enum>())
-    {}
-
-    void setEnumData(const EnumData &enumData)
+        : BaseEnumProperty(name,
+                           [get] {
+                               return static_cast<int>(get());
+                           },
+                           set ? [set](const int &value){ set(static_cast<Enum>(value)); }
+                               : std::function<void(const int&)>(),
+                           parent)
     {
-        m_enumData = enumData;
+        setEnumData(enumData<Enum>());
     }
-
-    QWidget *createEditor(QWidget *parent) override
-    {
-        return createEnumEditor(this, m_enumData, parent);
-    }
-
-private:
-    EnumData m_enumData;
 };
 
 

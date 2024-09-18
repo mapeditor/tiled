@@ -609,30 +609,71 @@ QWidget *VariantEditor::createEditor(Property *property)
 }
 
 
-QWidget *createEnumEditor(IntProperty *property, const EnumData &enumData, QWidget *parent)
+QWidget *BaseEnumProperty::createEnumEditor(QWidget *parent)
 {
     auto editor = new QComboBox(parent);
     // This allows the combo box to shrink horizontally.
     editor->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
 
-    for (qsizetype i = 0; i < enumData.names.size(); ++i) {
-        auto value = enumData.values.isEmpty() ? i : enumData.values.value(i);
-        editor->addItem(enumData.icons[value],
-                        enumData.names[i],
+    for (qsizetype i = 0; i < m_enumData.names.size(); ++i) {
+        auto value = m_enumData.values.value(i, i);
+        editor->addItem(m_enumData.icons[value],
+                        m_enumData.names[i],
                         value);
     }
 
-    auto syncEditor = [property, editor] {
+    auto syncEditor = [this, editor] {
         const QSignalBlocker blocker(editor);
-        editor->setCurrentIndex(editor->findData(property->value()));
+        editor->setCurrentIndex(editor->findData(value()));
     };
     syncEditor();
 
-    QObject::connect(property, &Property::valueChanged, editor, syncEditor);
-    QObject::connect(editor, qOverload<int>(&QComboBox::currentIndexChanged), property,
-                     [editor, property] {
-        property->setValue(editor->currentData().toInt());
+    QObject::connect(this, &Property::valueChanged, editor, syncEditor);
+    QObject::connect(editor, qOverload<int>(&QComboBox::currentIndexChanged), this,
+                     [editor, this] {
+        setValue(editor->currentData().toInt());
     });
+
+    return editor;
+}
+
+QWidget *BaseEnumProperty::createFlagsEditor(QWidget *parent)
+{
+    auto editor = new QWidget(parent);
+    auto layout = new QVBoxLayout(editor);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+
+    for (qsizetype i = 0; i < m_enumData.names.size(); ++i) {
+        auto checkBox = new QCheckBox(m_enumData.names[i], editor);
+        layout->addWidget(checkBox);
+
+        QObject::connect(checkBox, &QCheckBox::toggled, this, [=](bool checked) {
+            const auto enumItemValue = m_enumData.values.value(i, 1 << i);
+            int flags = value();
+            if (checked)
+                flags |= enumItemValue;
+            else
+                flags &= ~enumItemValue;
+            setValue(flags);
+        });
+    }
+
+    auto syncEditor = [=] {
+        for (int i = 0; i < layout->count(); ++i) {
+            auto checkBox = qobject_cast<QCheckBox *>(layout->itemAt(i)->widget());
+            if (checkBox) {
+                const auto enumItemValue = m_enumData.values.value(i, 1 << i);
+
+                QSignalBlocker blocker(checkBox);
+                checkBox->setChecked((value() & enumItemValue) == enumItemValue);
+            }
+        }
+    };
+
+    syncEditor();
+
+    QObject::connect(this, &Property::valueChanged, editor, syncEditor);
 
     return editor;
 }

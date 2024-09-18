@@ -2126,17 +2126,21 @@ void PropertiesWidget::currentObjectChanged(Object *object)
                     case PropertyType::PT_Class:
                         // todo: class values
                         break;
-                    case PropertyType::PT_Enum:
-                        auto enumType = static_cast<const EnumPropertyType&>(*propertyType);
-                        // todo: support valuesAsFlags
-                        property = new EnumProperty<int>(
+                    case PropertyType::PT_Enum: {
+                        auto enumProperty = new BaseEnumProperty(
                                     name,
                                     [object, name] { return object->property(name).value<PropertyValue>().value.toInt(); },
                                     [=](int value) {
                                         mDocument->undoStack()->push(new SetProperty(mDocument, { object }, name, propertyType->wrap(value)));
                                     });
-                        static_cast<EnumProperty<int>*>(property)->setEnumData(enumType.values);
+
+                        auto enumType = static_cast<const EnumPropertyType&>(*propertyType);
+                        enumProperty->setEnumData(enumType.values);
+                        enumProperty->setFlags(enumType.valuesAsFlags);
+
+                        property = enumProperty;
                         break;
+                    }
                     }
                 }
             }
