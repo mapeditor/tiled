@@ -124,6 +124,7 @@ iframe.video {
 }
 .headerbar-container {
   background-color: #1e1e22;
+  overflow: hidden;
 }
 footer.media-content {
   margin-top: 3em;
@@ -202,12 +203,23 @@ footer.media-content nav li {
   display: none;
   justify-content: center;
 }
+.main-sponsor {
+  display: none;
+  justify-content: center;
+  margin-top: 0.5em;
+}
+@media screen and (max-width: 600px) {
+  .headerbar .button-sponsor {
+    display: none;
+  }
+  .main-sponsor {
+    display: flex;
+  }
+}
 @media screen and (max-width: 800px) {
   .headerbar .headerbar-social {
     display: none;
   }
-}
-@media screen and (max-width: 600px) {
   .external-navigation {
     display: flex;
   }
@@ -571,6 +583,15 @@ a.showcase:hover {
 
 /* SPONSORS */
 
+.ad {
+  font-size: 80%;
+  color: darkgray;
+  border: 2px solid rgb(90, 90, 90);
+  border-radius: 5px;
+  margin-left: 0.5em;
+  margin-right: -0.3em;
+  padding: 0.125em 0.25em;
+}
 .sponsor {
   width: 19%;
   padding: 1%;
