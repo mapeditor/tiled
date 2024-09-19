@@ -49,7 +49,11 @@ parts:
       craftctl default
       craftctl set version="$(git describe | sed 's/v//')"
     override-build: |
+      qmake6 -version
+      qmake6 -query
       qbs setup-toolchains --detect
+      qbs setup-qt /usr/bin/qmake6 qt6
+      qbs config defaultProfile qt6
       qbs build --jobs "${CRAFT_PARALLEL_BUILD_COUNT}" --command-echo-mode command-line config:release qbs.installPrefix:"/usr" projects.Tiled.version:$(craftctl get version) projects.Tiled.useRPaths:false
       qbs install --install-root "${CRAFT_PART_INSTALL}" config:release
     parse-info:
