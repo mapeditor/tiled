@@ -5,6 +5,8 @@ base: core24
 
 grade: stable
 confinement: strict
+environment:
+  QT_PLUGIN_PATH: "$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET/qt6/plugins"
 
 apps:
   tiled:
@@ -54,23 +56,36 @@ parts:
       - usr/share/metainfo/org.mapeditor.Tiled.appdata.xml
     source: .
     build-packages:
+      - build-essential
+      - libzstd-dev
       - pkg-config
+      - qbs
+      - qt6-base-dev
+      - qt6-declarative-dev
+      - qt6-l10n-tools
+      - qt6-svg-dev
+      - zlib1g-dev
     # FIXME: Python plugin compiles and loads, but can't find platform libraries
     #  - python-dev
-      - qttools5-dev-tools
-      - qbs
-      - libqt5svg5-dev
-      - qtdeclarative5-dev
-      - zlib1g-dev
-      - libzstd-dev
     stage-packages:
-      - libqt5quick5
-      - qt5-image-formats-plugins
-      - qtwayland5
-    #  - libpython2.7
+      - adwaita-icon-theme
+      - dmz-cursor-theme
+      - fcitx-frontend-qt6
+      - libgdk-pixbuf2.0-0
+      - libqt6concurrent6t64
+      - libqt6gui6t64
+      - libqt6quick6
+      - libqt6svg6 # for loading icons which are svg
+      - libxkbcommon0
       - libzstd1
       - xkb-data
-    after: [desktop-qt5]
+      - light-themes
+      - locales-all
+      - qt6-image-formats-plugins
+      - qt6-wayland
+      - shared-mime-info
+      - xdg-user-dirs
+      #- libpython2.7
 
   qaseprite:
     source: https://github.com/mapeditor/qaseprite/releases/download/1.0/qaseprite-1.0-source.tar.gz
@@ -97,26 +112,4 @@ parts:
       - libxcursor1
       - libxi6
       - zlib1g
-    after: [desktop-qt5]
 
-  desktop-qt5:
-    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
-    source-subdir: qt
-    plugin: make
-    make-parameters: ["FLAVOR=qt5"]
-    build-packages:
-      - build-essential
-      - qtbase5-dev
-    stage-packages:
-      - libxkbcommon0
-      - dmz-cursor-theme
-      - light-themes
-      - adwaita-icon-theme
-      - shared-mime-info
-      - libqt5concurrent5
-      - libqt5gui5
-      - libqt5svg5 # for loading icon themes which are svg
-      - libgdk-pixbuf2.0-0
-      - locales-all
-      - xdg-user-dirs
-      - fcitx-frontend-qt5
