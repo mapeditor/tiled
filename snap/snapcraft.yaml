@@ -1,7 +1,7 @@
 name: tiled
 adopt-info: tiled
 license: GPL-2.0
-base: core22
+base: core24
 
 grade: stable
 confinement: strict
