@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick
 
 MouseArea {
     property var lastDragPos
@@ -6,9 +6,11 @@ MouseArea {
     signal dragged(var dx, var dy)
 
     hoverEnabled: true
-    onPressed: lastDragPos = mapToItem(null, mouse.x, mouse.y)
+    onPressed: function(mouse) {
+        lastDragPos = mapToItem(null, mouse.x, mouse.y)
+    }
 
-    onPositionChanged: {
+    onPositionChanged: function(mouse) {
         if (!pressed)
             return;
 
