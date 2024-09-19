@@ -4,7 +4,7 @@ DynamicLibrary {
 
     Depends { name: "libtiled" }
     Depends { name: "cpp" }
-    Depends { name: "Qt"; submodules: ["quick"]; versionAtLeast: "5.12" }
+    Depends { name: "Qt"; submodules: ["quick"]; versionAtLeast: "6.5" }
 
     cpp.cxxLanguageVersion: "c++17"
     cpp.cxxFlags: {
@@ -21,7 +21,7 @@ DynamicLibrary {
         "QT_NO_CAST_FROM_ASCII",
         "QT_NO_CAST_TO_ASCII",
         "QT_NO_URL_CAST_FROM_STRING",
-        "QT_DISABLE_DEPRECATED_BEFORE=QT_VERSION_CHECK(5,15,0)",
+        "QT_DISABLE_DEPRECATED_BEFORE=QT_VERSION_CHECK(6,5,0)",
         "QT_NO_DEPRECATED_WARNINGS",
         "QT_NO_FOREACH"
     ]
