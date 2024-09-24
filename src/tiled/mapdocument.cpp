@@ -326,6 +326,9 @@ void MapDocument::setSelectedLayers(const QList<Layer *> &layers)
 
     mSelectedLayers = layers;
     emit selectedLayersChanged();
+
+    if (currentObject() && currentObject()->typeId() == Object::LayerType)
+        emit currentObjectsChanged();
 }
 
 void MapDocument::switchCurrentLayer(Layer *layer)
@@ -1277,8 +1280,10 @@ void MapDocument::setSelectedObjects(const QList<MapObject *> &selectedObjects)
     // Make sure the current object is one of the selected ones
     if (!selectedObjects.isEmpty()) {
         if (currentObject() && currentObject()->typeId() == Object::MapObjectType) {
-            if (selectedObjects.contains(static_cast<MapObject*>(currentObject())))
+            if (selectedObjects.contains(static_cast<MapObject*>(currentObject()))) {
+                emit currentObjectsChanged();
                 return;
+            }
         }
 
         setCurrentObject(selectedObjects.first());
@@ -1730,8 +1735,11 @@ void MapDocument::deselectObjects(const QList<MapObject *> &objects)
         removedAboutToBeSelectedObjects += mAboutToBeSelectedObjects.removeAll(object);
     }
 
-    if (removedSelectedObjects > 0)
+    if (removedSelectedObjects > 0) {
         emit selectedObjectsChanged();
+        if (mCurrentObject && mCurrentObject->typeId() == Object::MapObjectType)
+            emit currentObjectsChanged();
+    }
     if (removedAboutToBeSelectedObjects > 0)
         emit aboutToBeSelectedObjectsChanged(mAboutToBeSelectedObjects);
 }

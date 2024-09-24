@@ -58,6 +58,7 @@
 #include <QKeyEvent>
 #include <QMenu>
 #include <QPushButton>
+#include <QScopedValueRollback>
 #include <QToolBar>
 #include <QToolButton>
 #include <QUndoStack>
@@ -374,8 +375,48 @@ private:
 };
 
 
+class CustomProperties : public GroupProperty
+{
+    Q_OBJECT
+
+public:
+    CustomProperties(QObject *parent = nullptr)
+        : GroupProperty(tr("Custom Properties"), parent)
+    {}
+
+    void setDocument(Document *document);
+
+private:
+    // todo: optimize
+    void propertyAdded(Object *, const QString &) { refresh(); }
+    void propertyRemoved(Object *, const QString &) { refresh(); }
+    void propertyChanged(Object *, const QString &) {
+        if (!mUpdating)
+            refresh();
+    }
+    void propertiesChanged(Object *) { refresh(); }
+
+    void refresh();
+
+    Property *createProperty(const QStringList &path,
+                             std::function<QVariant ()> get,
+                             std::function<void (const QVariant &)> set);
+
+    void createClassMembers(const QStringList &path, GroupProperty *groupProperty,
+                            const ClassPropertyType &classType,
+                            std::function<QVariant ()> get);
+
+    void setPropertyValue(const QStringList &path, const QVariant &value);
+
+    bool mUpdating = false;
+    Document *mDocument = nullptr;
+    Properties mProperties;
+};
+
+
 PropertiesWidget::PropertiesWidget(QWidget *parent)
     : QWidget{parent}
+    , mCustomProperties(new CustomProperties)
     , mScrollArea(new QScrollArea(this))
 {
     auto scrollWidget = new QWidget(mScrollArea);
@@ -453,6 +494,7 @@ void PropertiesWidget::setDocument(Document *document)
 
     mDocument = document;
     // mPropertyBrowser->setDocument(document);
+    mCustomProperties->setDocument(document);
 
     if (document) {
         connect(document, &Document::currentObjectChanged,
@@ -496,12 +538,12 @@ static QStringList classNamesFor(const Object &object)
 }
 
 // todo: add support for changing multiple objects
-class ClassProperty : public StringProperty
+class ClassNameProperty : public StringProperty
 {
     Q_OBJECT
 
 public:
-    ClassProperty(Document *document, Object *object, QObject *parent = nullptr)
+    ClassNameProperty(Document *document, Object *object, QObject *parent = nullptr)
         : StringProperty(tr("Class"),
                          [this] { return mObject->className(); },
                          [this] (const QString &value) {
@@ -515,7 +557,7 @@ public:
         , mObject(object)
     {
         connect(mDocument, &Document::changed,
-                this, &ClassProperty::onChanged);
+                this, &ClassNameProperty::onChanged);
     }
 
     QWidget *createEditor(QWidget *parent) override
@@ -606,7 +648,7 @@ public:
         , mDocument(document)
         , mObject(object)
     {
-        mClassProperty = new ClassProperty(document, object, this);
+        mClassProperty = new ClassNameProperty(document, object, this);
     }
 
     virtual void populateEditor(VariantEditor *)
@@ -2071,87 +2113,10 @@ void PropertiesWidget::currentObjectChanged(Object *object)
         }
     }
 
-    if (mPropertiesObject)
+    if (mPropertiesObject) {
         mPropertiesObject->populateEditor(mPropertyBrowser);
-
-    GroupProperty *customProperties = new GroupProperty(tr("Custom Properties"));
-
-    QMapIterator<QString, QVariant> it(object ? object->properties() : Properties());
-    PropertyFactory factory;
-
-    while (it.hasNext()) {
-        it.next();
-
-        const auto &name = it.key();
-        const auto &value = it.value();
-
-        Property *property = nullptr;
-        auto userType = value.userType();
-
-        switch (userType) {
-        case QMetaType::Bool:
-        case QMetaType::QColor:
-        case QMetaType::Double:
-        case QMetaType::Int:
-        case QMetaType::QString: {
-            auto get = [object, name] { return object->property(name); };
-            auto set = [this, object, name] (const QVariant &value) {
-                mDocument->undoStack()->push(new SetProperty(mDocument, { object }, name, value));
-            };
-            property = factory.createProperty(name, std::move(get), std::move(set));
-            break;
-        }
-        default:
-            if (userType == filePathTypeId()) {
-                auto get = [object, name] { return object->property(name).value<FilePath>().url; };
-                auto set = [this, object, name](const QUrl &value) {
-                    mDocument->undoStack()->push(new SetProperty(mDocument, { object }, name, QVariant::fromValue(FilePath { value })));
-                };
-                property = new UrlProperty(name, get, set);
-            } else if (userType == objectRefTypeId()) {
-                auto get = [this, object, name] {
-                    return DisplayObjectRef(object->property(name).value<ObjectRef>(),
-                                            static_cast<MapDocument*>(mDocument));
-                };
-                auto set = [this, object, name](const DisplayObjectRef &value) {
-                    mDocument->undoStack()->push(new SetProperty(mDocument, { object }, name, QVariant::fromValue(value.ref)));
-                };
-                property = new ObjectRefProperty(name, get, set);
-            } else if (userType == propertyValueId()) {
-                auto propertyValue = value.value<PropertyValue>();
-                if (auto propertyType = propertyValue.type()) {
-                    switch (propertyType->type) {
-                    case PropertyType::PT_Invalid:
-                        break;
-                    case PropertyType::PT_Class:
-                        // todo: class values
-                        break;
-                    case PropertyType::PT_Enum: {
-                        auto enumProperty = new BaseEnumProperty(
-                                    name,
-                                    [object, name] { return object->property(name).value<PropertyValue>().value.toInt(); },
-                                    [=](int value) {
-                                        mDocument->undoStack()->push(new SetProperty(mDocument, { object }, name, propertyType->wrap(value)));
-                                    });
-
-                        auto enumType = static_cast<const EnumPropertyType&>(*propertyType);
-                        enumProperty->setEnumData(enumType.values);
-                        enumProperty->setFlags(enumType.valuesAsFlags);
-
-                        property = enumProperty;
-                        break;
-                    }
-                    }
-                }
-            }
-            break;
-        }
-
-        if (property)
-            customProperties->addProperty(property);
+        mPropertyBrowser->addProperty(mCustomProperties);
     }
-
-    mPropertyBrowser->addProperty(customProperties);
 
     bool editingTileset = mDocument && mDocument->type() == Document::TilesetDocumentType;
     bool isTileset = object && object->isPartOfTileset();
@@ -2159,6 +2124,162 @@ void PropertiesWidget::currentObjectChanged(Object *object)
 
     mPropertyBrowser->setEnabled(object);
     mActionAddProperty->setEnabled(enabled);
+}
+
+
+void CustomProperties::setDocument(Document *document)
+{
+    if (mDocument == document)
+        return;
+
+    if (mDocument)
+        mDocument->disconnect(this);
+
+    mDocument = document;
+
+    if (document) {
+        connect(document, &Document::currentObjectsChanged, this, &CustomProperties::refresh);
+
+        connect(document, &Document::propertyAdded, this, &CustomProperties::propertyAdded);
+        connect(document, &Document::propertyRemoved, this, &CustomProperties::propertyRemoved);
+        connect(document, &Document::propertyChanged, this, &CustomProperties::propertyChanged);
+        connect(document, &Document::propertiesChanged, this, &CustomProperties::propertiesChanged);
+    }
+
+    refresh();
+}
+
+void CustomProperties::refresh()
+{
+    clear();
+
+    if (!mDocument || !mDocument->currentObject())
+        return;
+
+    mProperties = mDocument->currentObject()->properties();
+
+    QMapIterator<QString, QVariant> it(mProperties);
+    while (it.hasNext()) {
+        it.next();
+        const QString &name = it.key();
+
+        auto get = [=] { return mProperties.value(name); };
+        auto set = [=] (const QVariant &value) {
+            setPropertyValue({ name }, value);
+        };
+
+        if (auto property = createProperty({ name }, std::move(get), std::move(set)))
+            addProperty(property);
+    }
+}
+
+Property *CustomProperties::createProperty(const QStringList &path,
+                                           std::function<QVariant ()> get,
+                                           std::function<void (const QVariant &)> set)
+{
+    const auto value = get();
+    const auto type = value.userType();
+    const auto &name = path.last();
+
+    switch (type) {
+    case QMetaType::Bool:
+    case QMetaType::QColor:
+    case QMetaType::Double:
+    case QMetaType::Int:
+    case QMetaType::QString:
+        return PropertyFactory::createProperty(name, std::move(get), std::move(set));
+
+    default:
+        if (type == filePathTypeId()) {
+            auto getUrl = [get = std::move(get)] { return get().value<FilePath>().url; };
+            auto setUrl = [set = std::move(set)] (const QUrl &value) {
+                set(QVariant::fromValue(FilePath { value }));
+            };
+            return new UrlProperty(name, std::move(getUrl), std::move(setUrl));
+        }
+
+        if (type == objectRefTypeId()) {
+            auto getObjectRef = [get = std::move(get), this] {
+                return DisplayObjectRef(get().value<ObjectRef>(),
+                                        static_cast<MapDocument*>(mDocument));
+            };
+            auto setObjectRef = [set = std::move(set)](const DisplayObjectRef &value) {
+                set(QVariant::fromValue(value.ref));
+            };
+            return new ObjectRefProperty(name, std::move(getObjectRef), std::move(setObjectRef));
+        }
+
+        if (type == propertyValueId()) {
+            if (auto propertyType = value.value<PropertyValue>().type()) {
+                switch (propertyType->type) {
+                case PropertyType::PT_Invalid:
+                    break;
+                case PropertyType::PT_Class: {
+                    auto classType = static_cast<const ClassPropertyType&>(*propertyType);
+
+                    auto groupProperty = new GroupProperty(name);
+                    groupProperty->setHeader(false);
+
+                    createClassMembers(path, groupProperty, classType, std::move(get));
+
+                    return groupProperty;
+                }
+                case PropertyType::PT_Enum: {
+                    auto enumProperty = new BaseEnumProperty(
+                                name,
+                                [get = std::move(get)] { return get().value<PropertyValue>().value.toInt(); },
+                                [set = std::move(set), propertyType](int value) {
+                                    set(propertyType->wrap(value));
+                                });
+
+                    auto enumType = static_cast<const EnumPropertyType&>(*propertyType);
+                    enumProperty->setEnumData(enumType.values);
+                    enumProperty->setFlags(enumType.valuesAsFlags);
+
+                    return enumProperty;
+                }
+                }
+            }
+        }
+    }
+
+    return nullptr;
+}
+
+void CustomProperties::createClassMembers(const QStringList &path,
+                                          GroupProperty *groupProperty,
+                                          const ClassPropertyType &classType,
+                                          std::function<QVariant ()> get)
+{
+    // Create a sub-property for each member
+    QMapIterator<QString, QVariant> it(classType.members);
+    while (it.hasNext()) {
+        it.next();
+        const QString &name = it.key();
+
+        auto childPath = path;
+        childPath.append(name);
+
+        auto getMember = [=] {
+            auto def = classType.members.value(name);
+            return get().value<PropertyValue>().value.toMap().value(name, def);
+        };
+        auto setMember = [=] (const QVariant &value) {
+            setPropertyValue(childPath, value);
+        };
+
+        if (auto childProperty = createProperty(childPath, std::move(getMember), std::move(setMember)))
+            groupProperty->addProperty(childProperty);
+    }
+}
+
+void CustomProperties::setPropertyValue(const QStringList &path, const QVariant &value)
+{
+    const auto objects = mDocument->currentObjects();
+    if (!objects.isEmpty()) {
+        QScopedValueRollback<bool> updating(mUpdating, true);
+        mDocument->undoStack()->push(new SetProperty(mDocument, objects, path, value));
+    }
 }
 
 void PropertiesWidget::updateActions()

@@ -21,6 +21,7 @@
 #pragma once
 
 #include <QCoreApplication>
+#include <QHash>
 #include <QMetaProperty>
 #include <QScrollArea>
 #include <QString>
@@ -93,6 +94,10 @@ public:
     QWidget *createEditor(QWidget */*parent*/) override { return nullptr; }
 };
 
+/**
+ * A property that can have sub-properties. The GroupProperty owns the sub-
+ * properties and will delete them when it is deleted.
+ */
 class GroupProperty : public Property
 {
     Q_OBJECT
@@ -102,15 +107,36 @@ public:
         : Property(name, parent)
     {}
 
-    DisplayMode displayMode() const override { return DisplayMode::Header; }
+    ~GroupProperty() override { clear(); }
+
+    DisplayMode displayMode() const override
+    { return m_header ? DisplayMode::Header : DisplayMode::Default; }
+
     QWidget *createEditor(QWidget */* parent */) override { return nullptr; }
 
-    void addProperty(Property *property) { m_subProperties.append(property); }
-    void addSeparator() { m_subProperties.append(new Separator(this)); }
+    void setHeader(bool header) { m_header = header; }
+
+    void clear()
+    {
+        qDeleteAll(m_subProperties);
+        m_subProperties.clear();
+    }
+
+    void addProperty(Property *property)
+    {
+        m_subProperties.append(property);
+        emit propertyAdded(property);
+    }
+
+    void addSeparator() { addProperty(new Separator(this)); }
 
     const QList<Property*> &subProperties() const { return m_subProperties; }
 
+signals:
+    void propertyAdded(Property *property);
+
 private:
+    bool m_header = true;
     QList<Property*> m_subProperties;
 };
 
@@ -305,22 +331,20 @@ struct QtAlignmentProperty : PropertyTemplate<Qt::Alignment>
 class PropertyFactory
 {
 public:
-    PropertyFactory() = default;
-
     /**
      * Creates a property that wraps a QObject property.
      */
-    Property *createQObjectProperty(QObject *qObject,
-                                    const char *propertyName,
-                                    const QString &displayName = {});
+    static Property *createQObjectProperty(QObject *qObject,
+                                           const char *propertyName,
+                                           const QString &displayName = {});
 
     /**
      * Creates a property with the given name and get/set functions. The
      * value type determines the kind of property that will be created.
      */
-    Property *createProperty(const QString &name,
-                             std::function<QVariant()> get,
-                             std::function<void(const QVariant&)> set);
+    static Property *createProperty(const QString &name,
+                                    std::function<QVariant()> get,
+                                    std::function<void(const QVariant&)> set);
 };
 
 struct EnumData
@@ -405,21 +429,26 @@ public:
     VariantEditor(QWidget *parent = nullptr);
 
     void clear();
-    void addSeparator();
     void addProperty(Property *property);
+    void removeProperty(Property *property);
     // void addValue(const QVariant &value);
 
-    void setLevel(int level) { m_level = level; }
+    void setLevel(int level);
 
 private:
-    QWidget *createEditor(Property *property);
+    static constexpr int LabelStretch = 4;
+    static constexpr int WidgetStretch = 6;
 
-    enum Column {
-        LabelStretch = 4,
-        WidgetStretch = 6,
+    struct PropertyWidgets
+    {
+        PropertyLabel *label = nullptr;
+        QWidget *editor = nullptr;
+        QWidget *children = nullptr;
+        QLayout *layout = nullptr;
     };
 
     QVBoxLayout *m_layout;
+    QHash<Property*, PropertyWidgets> m_propertyWidgets;
     int m_level = 0;
 };
 
