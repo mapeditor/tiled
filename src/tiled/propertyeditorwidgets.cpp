@@ -552,9 +552,13 @@ void PropertyLabel::paintEvent(QPaintEvent *event)
 {
     ElidingLabel::paintEvent(event);
 
+    const int spacing = Utils::dpiScaled(3);
+    const int branchIndicatorWidth = Utils::dpiScaled(14);
+
     QStyleOption branchOption;
     branchOption.initFrom(this);
-    branchOption.rect = QRect(0, 0, contentsMargins().left(), height());
+    branchOption.rect = QRect(branchIndicatorWidth * std::max(m_level - 1, 0), 0,
+                              branchIndicatorWidth + spacing, height());
     if (m_expandable)
         branchOption.state |= QStyle::State_Children;
     if (m_expanded)

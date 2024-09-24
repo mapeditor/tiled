@@ -28,6 +28,7 @@ namespace Tiled {
 
 class Object;
 
+class CustomProperties;
 class Document;
 class ObjectProperties;
 class VariantEditor;
@@ -78,6 +79,7 @@ private:
 
     Document *mDocument = nullptr;
     ObjectProperties *mPropertiesObject = nullptr;
+    CustomProperties *mCustomProperties = nullptr;
     QScrollArea *mScrollArea;
     VariantEditor *mPropertyBrowser;
     QAction *mActionAddProperty;
