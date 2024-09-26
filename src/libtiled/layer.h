@@ -32,6 +32,7 @@
 #include "object.h"
 #include "tileset.h"
 
+#include <QPainter>
 #include <QPixmap>
 #include <QRect>
 #include <QSet>
@@ -192,6 +193,9 @@ public:
     QPointF parallaxFactor() const;
     QPointF effectiveParallaxFactor() const;
 
+    QPainter::CompositionMode compositionMode() const;
+    void setCompositionMode(QPainter::CompositionMode compositionMode);
+
     bool canMergeDown() const;
 
     virtual bool isEmpty() const = 0;
@@ -263,6 +267,7 @@ protected:
     int mY = 0;
     QPointF mOffset;
     QPointF mParallaxFactor = { 1.0, 1.0 };
+    QPainter::CompositionMode mCompositionMode = QPainter::CompositionMode_SourceOver;
     qreal mOpacity = 1.0;
     QColor mTintColor;
     bool mVisible = true;
@@ -305,6 +310,16 @@ inline void Layer::setParallaxFactor(const QPointF &factor)
 inline QPointF Layer::parallaxFactor() const
 {
     return mParallaxFactor;
+}
+
+inline QPainter::CompositionMode Layer::compositionMode() const
+{
+    return mCompositionMode;
+}
+
+inline void Layer::setCompositionMode(QPainter::CompositionMode compositionMode)
+{
+    mCompositionMode = compositionMode;
 }
 
 

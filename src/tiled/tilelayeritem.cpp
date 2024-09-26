@@ -68,5 +68,6 @@ void TileLayerItem::paint(QPainter *painter,
 {
     MapRenderer *renderer = mMapDocument->renderer();
     // TODO: Display a border around the layer when selected
+    painter->setCompositionMode(layer()->compositionMode());
     renderer->drawTileLayer(painter, tileLayer(), option->exposedRect);
 }

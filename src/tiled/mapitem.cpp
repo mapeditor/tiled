@@ -548,8 +548,10 @@ void MapItem::layerChanged(const LayerChangeEvent &change)
     QGraphicsItem *layerItem = mLayerItems.value(layer);
     Q_ASSERT(layerItem);
 
-    if (change.properties & LayerChangeEvent::TintColorProperty)
-        layerTintColorChanged(layer);
+    if (change.properties & (LayerChangeEvent::TintColorProperty |
+                             LayerChangeEvent::CompositionModeProperty)) {
+        updateLayerItems(layer);
+    }
 
     layerItem->setVisible(layer->isVisible());
 
@@ -584,7 +586,7 @@ void MapItem::layerChanged(const LayerChangeEvent &change)
     updateBoundingRect();   // possible layer offset change
 }
 
-void MapItem::layerTintColorChanged(Layer *layer)
+void MapItem::updateLayerItems(Layer *layer)
 {
     switch (layer->layerType()) {
     case Layer::TileLayerType:
@@ -600,7 +602,7 @@ void MapItem::layerTintColorChanged(Layer *layer)
     case Layer::GroupLayerType:
         // Recurse into group layers since tint color is inherited
         for (auto childLayer : static_cast<GroupLayer*>(layer)->layers())
-            layerTintColorChanged(childLayer);
+            updateLayerItems(childLayer);
         break;
     }
 }

@@ -26,6 +26,7 @@
 #include <QPointF>
 #include <QSize>
 #include <QColor>
+#include <QPainter>
 
 namespace Tiled {
 
@@ -151,6 +152,24 @@ public:
 private:
     QPointF getValue(const Layer *layer) const override;
     void setValue(Layer *layer, const QPointF &value) const override;
+};
+
+/**
+ * Used for changing the layer parallax factor.
+ */
+class SetLayerCompositionMode : public ChangeValue<Layer, QPainter::CompositionMode>
+{
+public:
+    SetLayerCompositionMode(Document *document,
+                            QList<Layer *> layers,
+                            QPainter::CompositionMode compositionMode,
+                            QUndoCommand *parent = nullptr);
+
+    int id() const override { return Cmd_ChangeLayerCompositionMode; }
+
+private:
+    QPainter::CompositionMode getValue(const Layer *layer) const override;
+    void setValue(Layer *layer, const QPainter::CompositionMode &value) const override;
 };
 
 /**
