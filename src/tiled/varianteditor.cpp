@@ -57,15 +57,26 @@ void Property::setEnabled(bool enabled)
     }
 }
 
+void StringProperty::setPlaceholderText(const QString &placeholderText)
+{
+    if (m_placeholderText != placeholderText) {
+        m_placeholderText = placeholderText;
+        emit placeholderTextChanged(placeholderText);
+    }
+}
+
 QWidget *StringProperty::createEditor(QWidget *parent)
 {
     auto editor = new QLineEdit(parent);
+    editor->setPlaceholderText(m_placeholderText);
+
     auto syncEditor = [=] {
         editor->setText(value());
     };
     syncEditor();
 
     connect(this, &Property::valueChanged, editor, syncEditor);
+    connect(this, &StringProperty::placeholderTextChanged, editor, &QLineEdit::setPlaceholderText);
     connect(editor, &QLineEdit::textEdited, this, &StringProperty::setValue);
 
     return editor;
@@ -74,6 +85,8 @@ QWidget *StringProperty::createEditor(QWidget *parent)
 QWidget *MultilineStringProperty::createEditor(QWidget *parent)
 {
     auto editor = new TextPropertyEdit(parent);
+    editor->lineEdit()->setPlaceholderText(placeholderText());
+
     auto syncEditor = [=] {
         const QSignalBlocker blocker(editor);
         editor->setText(value());
@@ -81,6 +94,8 @@ QWidget *MultilineStringProperty::createEditor(QWidget *parent)
     syncEditor();
 
     connect(this, &StringProperty::valueChanged, editor, syncEditor);
+    connect(this, &StringProperty::placeholderTextChanged,
+            editor->lineEdit(), &QLineEdit::setPlaceholderText);
     connect(editor, &TextPropertyEdit::textChanged, this, &StringProperty::setValue);
 
     return editor;
