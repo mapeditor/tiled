@@ -45,6 +45,8 @@ public:
 
     QString text() const;
 
+    QLineEdit *lineEdit() const { return mLineEdit; }
+
 public slots:
     void setText(const QString &text);
 

@@ -168,13 +168,25 @@ private:
 
 struct StringProperty : PropertyTemplate<QString>
 {
+    Q_OBJECT
+
+public:
     using PropertyTemplate::PropertyTemplate;
     QWidget *createEditor(QWidget *parent) override;
+
+    void setPlaceholderText(const QString &placeholderText);
+    const QString &placeholderText() const { return m_placeholderText; }
+
+signals:
+    void placeholderTextChanged(const QString &placeholderText);
+
+private:
+    QString m_placeholderText;
 };
 
-struct MultilineStringProperty : PropertyTemplate<QString>
+struct MultilineStringProperty : StringProperty
 {
-    using PropertyTemplate::PropertyTemplate;
+    using StringProperty::StringProperty;
     QWidget *createEditor(QWidget *parent) override;
 };
 

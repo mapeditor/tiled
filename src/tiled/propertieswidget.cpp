@@ -556,6 +556,8 @@ public:
         , mDocument(document)
         , mObject(object)
     {
+        updatePlaceholderText();
+
         connect(mDocument, &Document::changed,
                 this, &ClassNameProperty::onChanged);
     }
@@ -564,6 +566,7 @@ public:
     {
         auto editor = new QComboBox(parent);
         editor->setEditable(true);
+        editor->lineEdit()->setPlaceholderText(placeholderText());
         editor->addItems(classNamesFor(*mObject));
         auto syncEditor = [this, editor] {
             const QSignalBlocker blocker(editor);
@@ -571,11 +574,15 @@ public:
         };
         syncEditor();
         connect(this, &Property::valueChanged, editor, syncEditor);
+        connect(this, &StringProperty::placeholderTextChanged,
+                editor->lineEdit(), &QLineEdit::setPlaceholderText);
         connect(editor, &QComboBox::currentTextChanged, this, &StringProperty::setValue);
         connect(Preferences::instance(), &Preferences::propertyTypesChanged,
-                editor, [this,editor] {
+                editor, [=] {
+            const QSignalBlocker blocker(editor);
             editor->clear();
             editor->addItems(classNamesFor(*mObject));
+            syncEditor();
         });
         return editor;
     }
@@ -590,8 +597,18 @@ private:
         if (!objectsEvent.objects.contains(mObject))
             return;
 
-        if (objectsEvent.properties & ObjectsChangeEvent::ClassProperty)
+        if (objectsEvent.properties & ObjectsChangeEvent::ClassProperty) {
+            updatePlaceholderText();
             emit valueChanged();
+        }
+    }
+
+    void updatePlaceholderText()
+    {
+        if (mObject->typeId() == Object::MapObjectType && mObject->className().isEmpty())
+            setPlaceholderText(static_cast<MapObject*>(mObject)->effectiveClassName());
+        else
+            setPlaceholderText(QString());
     }
 
     Document *mDocument;
