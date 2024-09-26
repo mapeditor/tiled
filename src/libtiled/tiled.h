@@ -33,6 +33,7 @@
 #include <QColor>
 #include <QDir>
 #include <QMetaType>
+#include <QPainter>
 #include <QRectF>
 #include <QString>
 #include <QUrl>
@@ -131,6 +132,9 @@ TILEDSHARED_EXPORT Alignment alignmentFromString(const QString &);
 TILEDSHARED_EXPORT CompatibilityVersion versionFromString(const QString &);
 
 TILEDSHARED_EXPORT void increaseImageAllocationLimit(int mbLimit = 4096);
+
+TILEDSHARED_EXPORT QString compositionModeToString(QPainter::CompositionMode);
+TILEDSHARED_EXPORT QPainter::CompositionMode compositionModeFromString(const QString &);
 
 } // namespace Tiled
 

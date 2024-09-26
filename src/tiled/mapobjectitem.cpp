@@ -145,6 +145,8 @@ void MapObjectItem::paint(QPainter *painter,
     const QPointF pixelPos = renderer->pixelToScreenCoords(mObject->position());
 
     painter->translate(-pixelPos);
+    if (ObjectGroup *objectGroup = mObject->objectGroup())
+        painter->setCompositionMode(objectGroup->compositionMode());
     renderer->drawMapObject(painter, mObject, mColors);
     painter->translate(pixelPos);
 

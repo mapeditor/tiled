@@ -892,6 +892,9 @@ static void readLayerAttributes(Layer &layer,
         parallaxFactor.setY(factorY);
 
     layer.setParallaxFactor(parallaxFactor);
+
+    const auto mode = atts.value(QLatin1String("mode")).toString();
+    layer.setCompositionMode(compositionModeFromString(mode));
 }
 
 std::unique_ptr<TileLayer> MapReaderPrivate::readTileLayer()

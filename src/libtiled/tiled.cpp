@@ -231,3 +231,53 @@ void Tiled::increaseImageAllocationLimit(int mbLimit)
     Q_UNUSED(mbLimit);
 #endif
 }
+
+static constexpr struct CompositionModeMapping {
+    QPainter::CompositionMode mode;
+    const char *name;
+} compositionModeMapping[] = {
+    { QPainter::CompositionMode_SourceOver,         "source-over"       },
+    { QPainter::CompositionMode_DestinationOver,    "destination-over"  },
+    { QPainter::CompositionMode_Clear,              "clear"             },
+    { QPainter::CompositionMode_Source,             "source"            },
+    { QPainter::CompositionMode_Destination,        "destination"       },
+    { QPainter::CompositionMode_SourceIn,           "source-in"         },
+    { QPainter::CompositionMode_DestinationIn,      "destination-in"    },
+    { QPainter::CompositionMode_SourceOut,          "source-out"        },
+    { QPainter::CompositionMode_DestinationOut,     "destination-out"   },
+    { QPainter::CompositionMode_SourceAtop,         "source-atop"       },
+    { QPainter::CompositionMode_DestinationAtop,    "destination-atop"  },
+    { QPainter::CompositionMode_Xor,                "xor"               },
+    { QPainter::CompositionMode_Plus,               "plus"              },
+    { QPainter::CompositionMode_Multiply,           "multiply"          },
+    { QPainter::CompositionMode_Screen,             "screen"            },
+    { QPainter::CompositionMode_Overlay,            "overlay"           },
+    { QPainter::CompositionMode_Darken,             "darken"            },
+    { QPainter::CompositionMode_Lighten,            "lighten"           },
+    { QPainter::CompositionMode_ColorDodge,         "color-dodge"       },
+    { QPainter::CompositionMode_ColorBurn,          "color-burn"        },
+    { QPainter::CompositionMode_HardLight,          "hard-light"        },
+    { QPainter::CompositionMode_SoftLight,          "soft-light"        },
+    { QPainter::CompositionMode_Difference,         "difference"        },
+    { QPainter::CompositionMode_Exclusion,          "exclusion"         },
+    // RasterOp modes are not supported
+};
+
+QString Tiled::compositionModeToString(QPainter::CompositionMode mode)
+{
+    for (const auto &mapping : compositionModeMapping)
+        if (mapping.mode == mode)
+            return QString::fromLatin1(mapping.name);
+
+    return QString();
+}
+
+QPainter::CompositionMode Tiled::compositionModeFromString(const QString &name)
+{
+    if (!name.isEmpty())
+        for (const auto &mapping : compositionModeMapping)
+            if (QLatin1String(mapping.name) == name)
+                return mapping.mode;
+
+    return QPainter::CompositionMode_SourceOver;
+}

@@ -32,6 +32,7 @@ enum UndoCommands {
     Cmd_ChangeClassName,
     Cmd_ChangeImageLayerRepeatX,
     Cmd_ChangeImageLayerRepeatY,
+    Cmd_ChangeLayerCompositionMode,
     Cmd_ChangeLayerLocked,
     Cmd_ChangeLayerName,
     Cmd_ChangeLayerOffset,

@@ -195,6 +195,70 @@ template<> EnumData enumData<WangSet::Type>()
     return { names, {}, icons };
 }
 
+template<> EnumData enumData<QPainter::CompositionMode>()
+{
+    const QStringList names {
+        QCoreApplication::translate("CompositionMode", "Normal"), // Source Over
+
+        //svg 1.2 blend modes
+        QCoreApplication::translate("CompositionMode", "Plus"),
+        QCoreApplication::translate("CompositionMode", "Multiply"),
+        QCoreApplication::translate("CompositionMode", "Screen"),
+        QCoreApplication::translate("CompositionMode", "Overlay"),
+        QCoreApplication::translate("CompositionMode", "Darken"),
+        QCoreApplication::translate("CompositionMode", "Lighten"),
+        QCoreApplication::translate("CompositionMode", "Color Dodge"),
+        QCoreApplication::translate("CompositionMode", "Color Burn"),
+        QCoreApplication::translate("CompositionMode", "Hard Light"),
+        QCoreApplication::translate("CompositionMode", "Soft Light"),
+        QCoreApplication::translate("CompositionMode", "Difference"),
+        QCoreApplication::translate("CompositionMode", "Exclusion"),
+
+        QCoreApplication::translate("CompositionMode", "Destination Over"),
+        QCoreApplication::translate("CompositionMode", "Clear"),
+        QCoreApplication::translate("CompositionMode", "Source"),
+        QCoreApplication::translate("CompositionMode", "Destination"),
+        QCoreApplication::translate("CompositionMode", "Source In"),
+        QCoreApplication::translate("CompositionMode", "Destination In"),
+        QCoreApplication::translate("CompositionMode", "Source Out"),
+        QCoreApplication::translate("CompositionMode", "Destination Out"),
+        QCoreApplication::translate("CompositionMode", "Source Atop"),
+        QCoreApplication::translate("CompositionMode", "Destination Atop"),
+        QCoreApplication::translate("CompositionMode", "Xor"),
+    };
+    static const QList<int> values {
+        QPainter::CompositionMode_SourceOver,   // normal
+
+        //svg 1.2 blend modes
+        QPainter::CompositionMode_Plus,
+        QPainter::CompositionMode_Multiply,
+        QPainter::CompositionMode_Screen,
+        QPainter::CompositionMode_Overlay,
+        QPainter::CompositionMode_Darken,
+        QPainter::CompositionMode_Lighten,
+        QPainter::CompositionMode_ColorDodge,
+        QPainter::CompositionMode_ColorBurn,
+        QPainter::CompositionMode_HardLight,
+        QPainter::CompositionMode_SoftLight,
+        QPainter::CompositionMode_Difference,
+        QPainter::CompositionMode_Exclusion,
+
+        QPainter::CompositionMode_DestinationOver,
+        QPainter::CompositionMode_Clear,
+        QPainter::CompositionMode_Source,
+        QPainter::CompositionMode_Destination,
+        QPainter::CompositionMode_SourceIn,
+        QPainter::CompositionMode_DestinationIn,
+        QPainter::CompositionMode_SourceOut,
+        QPainter::CompositionMode_DestinationOut,
+        QPainter::CompositionMode_SourceAtop,
+        QPainter::CompositionMode_DestinationAtop,
+        QPainter::CompositionMode_Xor,
+    };
+
+    return { names, values };
+}
+
 
 class FlippingProperty : public IntProperty
 {
@@ -1037,6 +1101,15 @@ public:
                     });
         mParallaxFactorProperty->setSingleStep(0.1);
 
+        mCompositionModeProperty = new EnumProperty<QPainter::CompositionMode>(
+                    tr("Composition Mode"),
+                    [this] { return layer()->compositionMode(); },
+                    [this](QPainter::CompositionMode mode) {
+                        push(new SetLayerCompositionMode(mapDocument(),
+                                                         mapDocument()->selectedLayers(),
+                                                         mode));
+                    });
+
         mLayerProperties = new GroupProperty(tr("Layer"));
         mLayerProperties->addProperty(mIdProperty);
         mLayerProperties->addProperty(mNameProperty);
@@ -1048,6 +1121,7 @@ public:
         mLayerProperties->addProperty(mTintColorProperty);
         mLayerProperties->addProperty(mOffsetProperty);
         mLayerProperties->addProperty(mParallaxFactorProperty);
+        mLayerProperties->addProperty(mCompositionModeProperty);
 
         addProperty(mLayerProperties);
 
@@ -1114,6 +1188,7 @@ protected:
     Property *mTintColorProperty;
     Property *mOffsetProperty;
     PointFProperty *mParallaxFactorProperty;
+    BaseEnumProperty *mCompositionModeProperty;
 };
 
 class ImageLayerProperties : public LayerProperties
