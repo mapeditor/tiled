@@ -40,7 +40,7 @@ ColorButton::ColorButton(QWidget *parent)
 
 void ColorButton::setColor(const QColor &color)
 {
-    if (mColor == color || !color.isValid())
+    if (mColor == color)
         return;
 
     mColor = color;
@@ -77,6 +77,7 @@ void ColorButton::updateIcon()
 {
     // todo: fix gray icon in disabled state (consider using opacity, and not using an icon at all)
     setIcon(Utils::colorIcon(mColor, iconSize()));
+    setText(mColor.isValid() ? QString() : tr("Unset"));
 }
 
 #include "moc_colorbutton.cpp"

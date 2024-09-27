@@ -57,6 +57,14 @@ void Property::setEnabled(bool enabled)
     }
 }
 
+void Property::setModified(bool modified)
+{
+    if (m_modified != modified) {
+        m_modified = modified;
+        emit modifiedChanged(modified);
+    }
+}
+
 void StringProperty::setPlaceholderText(const QString &placeholderText)
 {
     if (m_placeholderText != placeholderText) {
@@ -183,10 +191,17 @@ QWidget *BoolProperty::createEditor(QWidget *parent)
         const QSignalBlocker blocker(editor);
         bool checked = value();
         editor->setChecked(checked);
+
+        // Reflect modified state on the checkbox, since we're not showing the
+        // property label.
+        auto font = editor->font();
+        font.setBold(isModified());
+        editor->setFont(font);
     };
     syncEditor();
 
     connect(this, &Property::valueChanged, editor, syncEditor);
+    connect(this, &Property::modifiedChanged, editor, syncEditor);
     connect(editor, &QCheckBox::toggled, this, &BoolProperty::setValue);
 
     return editor;
@@ -480,25 +495,7 @@ VariantEditor::VariantEditor(QWidget *parent)
     m_layout = new QVBoxLayout(this);
 
     m_layout->setContentsMargins(QMargins());
-    m_layout->setSpacing(Utils::dpiScaled(4));
-
-    // setValue(QVariantMap {
-    //              { QStringLiteral("Name"), QVariant(QLatin1String("Hello")) },
-    //              { QStringLiteral("Position"), QVariant(QPoint(15, 50)) },
-    //              { QStringLiteral("Size"), QVariant(QSize(35, 400)) },
-    //              { QStringLiteral("Rectangle"), QVariant(QRectF(15, 50, 35, 400)) },
-    //              { QStringLiteral("Margin"), QVariant(10) },
-    //              { QStringLiteral("Opacity"), QVariant(0.5) },
-    //              { QStringLiteral("Visible"), true },
-    //              { QStringLiteral("Object Alignment"), QVariant::fromValue(TopLeft) },
-    //          });
-
-
-    // setValue(QVariantList {
-    //              QVariant(QLatin1String("Hello")),
-    //              QVariant(10),
-    //              QVariant(3.14)
-    //          });
+    m_layout->setSpacing(0);
 }
 
 /**
@@ -510,10 +507,9 @@ void VariantEditor::clear()
     while (it.hasNext()) {
         it.next();
         auto &widgets = it.value();
-        delete widgets.label;
-        delete widgets.editor;
-        delete widgets.children;
+        Utils::deleteAllFromLayout(widgets.layout);
         delete widgets.layout;
+        delete widgets.children;
 
         it.key()->disconnect(this);
     }
@@ -533,68 +529,107 @@ void VariantEditor::addProperty(Property *property)
         removeProperty(static_cast<Property *>(object));
     });
 
+    const auto halfSpacing = Utils::dpiScaled(2);
+
+    widgets.layout = new QHBoxLayout;
+    widgets.layout->setSpacing(halfSpacing * 2);
+
     if (displayMode == Property::DisplayMode::Separator) {
         auto separator = new QFrame(this);
+        widgets.layout->setContentsMargins(0, halfSpacing, 0, halfSpacing);
         separator->setFrameShape(QFrame::HLine);
         separator->setFrameShadow(QFrame::Plain);
         separator->setForegroundRole(QPalette::Mid);
-        widgets.editor = separator;
-        m_layout->addWidget(widgets.editor);
+        widgets.layout->addWidget(separator);
+        m_layout->addLayout(widgets.layout);
         return;
     }
 
-    widgets.label = new PropertyLabel(m_level, this);
+    auto label = new PropertyLabel(m_level, this);
 
     if (displayMode != Property::DisplayMode::NoLabel) {
-        widgets.label->setText(property->name());
-        widgets.label->setToolTip(property->toolTip());
-        widgets.label->setEnabled(property->isEnabled());
-        connect(property, &Property::toolTipChanged, widgets.label, &QWidget::setToolTip);
-        connect(property, &Property::enabledChanged, widgets.label, &QWidget::setEnabled);
+        label->setText(property->name());
+        label->setToolTip(property->toolTip());
+        label->setEnabled(property->isEnabled());
+        label->setModified(property->isModified());
+        connect(property, &Property::toolTipChanged, label, &QWidget::setToolTip);
+        connect(property, &Property::enabledChanged, label, &QWidget::setEnabled);
+        connect(property, &Property::modifiedChanged, label, &PropertyLabel::setModified);
     }
 
     if (displayMode == Property::DisplayMode::Header)
-        widgets.label->setHeader(true);
+        label->setHeader(true);
+    else
+        widgets.layout->setContentsMargins(0, halfSpacing, halfSpacing * 2, halfSpacing);
 
-    if (const auto editor = property->createEditor(this)) {
-        auto propertyLayout = new QHBoxLayout;
-        propertyLayout->setContentsMargins(0, 0, m_layout->spacing(), 0);
+    widgets.layout->addWidget(label, LabelStretch, Qt::AlignTop);
 
-        editor->setMinimumWidth(Utils::dpiScaled(70));
+    QHBoxLayout *editorLayout = widgets.layout;
+    const auto editor = property->createEditor(this);
+
+    if (editor && property->actions()) {
+        editorLayout = new QHBoxLayout;
+        widgets.layout->addLayout(editorLayout, WidgetStretch);
+    }
+
+    if (editor) {
         editor->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
         editor->setToolTip(property->toolTip());
         editor->setEnabled(property->isEnabled());
         connect(property, &Property::toolTipChanged, editor, &QWidget::setToolTip);
         connect(property, &Property::enabledChanged, editor, &QWidget::setEnabled);
-        widgets.editor = editor;
 
-        propertyLayout->addWidget(widgets.label, LabelStretch, Qt::AlignTop);
-        propertyLayout->addWidget(widgets.editor, WidgetStretch);
-
-        widgets.layout = propertyLayout;
-        m_layout->addLayout(widgets.layout);
-    } else {
-        m_layout->addWidget(widgets.label);
+        editorLayout->addWidget(editor, WidgetStretch, Qt::AlignTop);
     }
 
+    if (property->actions()) {
+        if (property->actions() & Property::Reset) {
+            auto resetButton = new QToolButton;
+            resetButton->setToolTip(tr("Reset"));
+            resetButton->setAutoRaise(true);
+            resetButton->setEnabled(property->isModified());
+            Utils::setThemeIcon(resetButton, "edit-clear");
+            editorLayout->addWidget(resetButton, 0, Qt::AlignTop);
+            connect(resetButton, &QAbstractButton::clicked, property, &Property::resetRequested);
+            connect(property, &Property::modifiedChanged, resetButton, &QWidget::setEnabled);
+        }
+
+        if (property->actions() & Property::Remove) {
+            auto removeButton = new QToolButton;
+            removeButton->setToolTip(tr("Remove"));
+            removeButton->setAutoRaise(true);
+            Utils::setThemeIcon(removeButton, "remove");
+            editorLayout->addWidget(removeButton, 0, Qt::AlignTop);
+            connect(removeButton, &QAbstractButton::clicked, property, &Property::removeRequested);
+        }
+    }
+
+    m_layout->addLayout(widgets.layout);
+
     if (auto groupProperty = dynamic_cast<GroupProperty *>(property)) {
-        widgets.label->setExpandable(true);
-        widgets.label->setExpanded(widgets.label->isHeader());
+        label->setExpandable(true);
+        label->setExpanded(label->isHeader());
 
         auto children = new VariantEditor(this);
+        if (label->isHeader())
+            children->setContentsMargins(0, halfSpacing, 0, halfSpacing);
         children->setLevel(m_level + 1);
-        children->setVisible(widgets.label->isExpanded());
+        children->setVisible(label->isExpanded());
         for (auto property : groupProperty->subProperties())
             children->addProperty(property);
 
         connect(groupProperty, &GroupProperty::propertyAdded,
                 children, &VariantEditor::addProperty);
 
-        connect(widgets.label, &PropertyLabel::toggled, children, [=](bool expanded) {
+        connect(label, &PropertyLabel::toggled, children, [=](bool expanded) {
             children->setVisible(expanded);
 
             // needed to avoid flickering when hiding the editor
-            layout()->activate();
+            QWidget *widget = this;
+            while (widget && widget->layout()) {
+                widget->layout()->activate();
+                widget = widget->parentWidget();
+            }
         });
 
         widgets.children = children;
@@ -612,10 +647,9 @@ void VariantEditor::removeProperty(Property *property)
 
     if (it != m_propertyWidgets.end()) {
         auto &widgets = it.value();
-        delete widgets.label;
-        delete widgets.editor;
-        delete widgets.children;
+        Utils::deleteAllFromLayout(widgets.layout);
         delete widgets.layout;
+        delete widgets.children;
 
         m_propertyWidgets.erase(it);
     }
@@ -631,35 +665,6 @@ void VariantEditor::setLevel(int level)
                                     : QPalette::Base);
     setAutoFillBackground(m_level > 1);
 }
-
-#if 0
-void VariantEditor::addValue(const QVariant &value)
-{
-    const int type = value.userType();
-    switch (type) {
-    case QMetaType::QVariantList: {
-        const auto list = value.toList();
-        for (const auto &item : list)
-            addValue(item);
-        break;
-    }
-    case QMetaType::QVariantMap: {
-        const auto map = value.toMap();
-        for (auto it = map.constBegin(); it != map.constEnd(); ++it)
-            addValue(it.key(), it.value());
-        break;
-    }
-    default: {
-        if (auto editor = createEditor(value))
-            m_gridLayout->addWidget(editor, m_rowIndex, LabelColumn, 1, 3);
-        else
-            qDebug() << "No editor factory for type" << type;
-
-        ++m_rowIndex;
-    }
-    }
-}
-#endif
 
 
 QWidget *BaseEnumProperty::createEnumEditor(QWidget *parent)
@@ -731,9 +736,12 @@ QWidget *BaseEnumProperty::createFlagsEditor(QWidget *parent)
     return editor;
 }
 
-Property *PropertyFactory::createQObjectProperty(QObject *qObject,
-                                                 const char *propertyName,
-                                                 const QString &displayName)
+/**
+ * Creates a property that wraps a QObject property.
+ */
+Property *createQObjectProperty(QObject *qObject,
+                                const char *propertyName,
+                                const QString &displayName)
 {
     auto metaObject = qObject->metaObject();
     auto propertyIndex = metaObject->indexOfProperty(propertyName);
@@ -741,14 +749,15 @@ Property *PropertyFactory::createQObjectProperty(QObject *qObject,
         return nullptr;
 
     auto metaProperty = metaObject->property(propertyIndex);
-    auto property = createProperty(displayName.isEmpty() ? QString::fromUtf8(propertyName)
-                                                         : displayName,
-                                   [=] {
-                                       return metaProperty.read(qObject);
-                                   },
-                                   [=] (const QVariant &value) {
-                                       metaProperty.write(qObject, value);
-                                   });
+    auto property = createVariantProperty(
+                displayName.isEmpty() ? QString::fromUtf8(propertyName)
+                                      : displayName,
+                [=] {
+                    return metaProperty.read(qObject);
+                },
+                [=] (const QVariant &value) {
+                    metaProperty.write(qObject, value);
+                });
 
     // If the property has a notify signal, forward it to valueChanged
     auto notify = metaProperty.notifySignal();
@@ -776,9 +785,13 @@ Property *createTypedProperty(const QString &name,
                              [set = std::move(set)] (const typename PropertyClass::ValueType &v) { set(QVariant::fromValue(v)); });
 }
 
-Property *PropertyFactory::createProperty(const QString &name,
-                                          std::function<QVariant ()> get,
-                                          std::function<void (const QVariant &)> set)
+/**
+ * Creates a property with the given name and get/set functions. The
+ * value type determines the kind of property that will be created.
+ */
+Property *createVariantProperty(const QString &name,
+                                std::function<QVariant ()> get,
+                                std::function<void (const QVariant &)> set)
 {
     const auto type = get().userType();
     switch (type) {

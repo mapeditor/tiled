@@ -29,6 +29,7 @@
 #include <QVariant>
 #include <QWidget>
 
+class QHBoxLayout;
 class QVBoxLayout;
 
 namespace Tiled {
@@ -44,6 +45,7 @@ class Property : public QObject
     Q_PROPERTY(QString name READ name CONSTANT)
     Q_PROPERTY(QString toolTip READ toolTip WRITE setToolTip NOTIFY toolTipChanged)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
+    Q_PROPERTY(bool modified READ isModified WRITE setModified NOTIFY modifiedChanged)
 
 public:
     enum class DisplayMode {
@@ -52,6 +54,12 @@ public:
         Header,
         Separator
     };
+
+    enum Action {
+        Reset = 0x01,
+        Remove = 0x02,
+    };
+    Q_DECLARE_FLAGS(Actions, Action)
 
     Property(const QString &name, QObject *parent = nullptr)
         : QObject(parent)
@@ -66,6 +74,12 @@ public:
     bool isEnabled() const { return m_enabled; }
     void setEnabled(bool enabled);
 
+    bool isModified() const { return m_modified; }
+    void setModified(bool modified);
+
+    Actions actions() const { return m_actions; }
+    void setActions(Actions actions) { m_actions = actions; }
+
     virtual DisplayMode displayMode() const { return DisplayMode::Default; }
 
     virtual QWidget *createEditor(QWidget *parent) = 0;
@@ -74,11 +88,19 @@ signals:
     void toolTipChanged(const QString &toolTip);
     void valueChanged();
     void enabledChanged(bool enabled);
+    void modifiedChanged(bool modified);
+
+    void resetRequested();
+    void removeRequested();
 
 private:
+    friend class GroupProperty;
+
     QString m_name;
     QString m_toolTip;
     bool m_enabled = true;
+    bool m_modified = false;
+    Actions m_actions;
 };
 
 class Separator final : public Property
@@ -126,6 +148,12 @@ public:
     {
         m_subProperties.append(property);
         emit propertyAdded(property);
+    }
+
+    void deleteProperty(Property *property)
+    {
+        m_subProperties.removeOne(property);
+        delete property;
     }
 
     void addSeparator() { addProperty(new Separator(this)); }
@@ -336,28 +364,13 @@ struct QtAlignmentProperty : PropertyTemplate<Qt::Alignment>
 };
 
 
-/**
- * A property factory that instantiates the appropriate property type based on
- * the type of the property value.
- */
-class PropertyFactory
-{
-public:
-    /**
-     * Creates a property that wraps a QObject property.
-     */
-    static Property *createQObjectProperty(QObject *qObject,
-                                           const char *propertyName,
-                                           const QString &displayName = {});
+Property *createQObjectProperty(QObject *qObject,
+                                const char *propertyName,
+                                const QString &displayName = {});
 
-    /**
-     * Creates a property with the given name and get/set functions. The
-     * value type determines the kind of property that will be created.
-     */
-    static Property *createProperty(const QString &name,
-                                    std::function<QVariant()> get,
-                                    std::function<void(const QVariant&)> set);
-};
+Property *createVariantProperty(const QString &name,
+                                std::function<QVariant()> get,
+                                std::function<void(const QVariant&)> set);
 
 struct EnumData
 {
@@ -443,7 +456,6 @@ public:
     void clear();
     void addProperty(Property *property);
     void removeProperty(Property *property);
-    // void addValue(const QVariant &value);
 
     void setLevel(int level);
 
@@ -453,10 +465,8 @@ private:
 
     struct PropertyWidgets
     {
-        PropertyLabel *label = nullptr;
-        QWidget *editor = nullptr;
+        QHBoxLayout *layout = nullptr;
         QWidget *children = nullptr;
-        QLayout *layout = nullptr;
     };
 
     QVBoxLayout *m_layout;
@@ -465,3 +475,5 @@ private:
 };
 
 } // namespace Tiled
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Property::Actions)

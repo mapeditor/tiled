@@ -312,6 +312,9 @@ QIcon themeIcon(const QString &name)
 
 QIcon colorIcon(const QColor &color, QSize size)
 {
+    if (!color.isValid())
+        return QIcon();
+
     QPixmap pixmap(size);
     pixmap.fill(color);
 
