@@ -294,6 +294,8 @@ public:
     void setExpanded(bool expanded);
     bool isExpanded() const { return m_expanded; }
 
+    void setModified(bool modified);
+
     QSize sizeHint() const override;
 
 signals:

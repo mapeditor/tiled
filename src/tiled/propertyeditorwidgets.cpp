@@ -538,6 +538,13 @@ void PropertyLabel::setExpanded(bool expanded)
     emit toggled(m_expanded);
 }
 
+void PropertyLabel::setModified(bool modified)
+{
+    auto f = font();
+    f.setBold(modified);
+    setFont(f);
+}
+
 void PropertyLabel::mousePressEvent(QMouseEvent *event)
 {
     if (m_expandable && event->button() == Qt::LeftButton) {
@@ -566,6 +573,14 @@ void PropertyLabel::paintEvent(QPaintEvent *event)
 
     QStylePainter p(this);
     p.drawPrimitive(QStyle::PE_IndicatorBranch, branchOption);
+
+    if (m_header) {
+        const QColor color = static_cast<QRgb>(p.style()->styleHint(QStyle::SH_Table_GridLineColor, &branchOption));
+        p.save();
+        p.setPen(QPen(color));
+        p.drawLine(0, height() - 1, width(), height() - 1);
+        p.restore();
+    }
 }
 
 
