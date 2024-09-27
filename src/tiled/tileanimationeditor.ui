@@ -32,7 +32,7 @@
         <string> ms</string>
        </property>
        <property name="minimum">
-        <number>1</number>
+        <number>0</number>
        </property>
        <property name="maximum">
         <number>10000</number>

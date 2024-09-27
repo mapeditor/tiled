@@ -6,6 +6,7 @@
 * Fixed saving/loading of custom properties set on worlds (#4025)
 * Fixed crash when accessing a world through a symlink (#4042)
 * Fixed error reporting when exporting on the command-line (by Shuhei Nagasawa, #4015)
+* Fixed minimum value of spinbox in Tile Animation Editor
 
 ### Tiled 1.11.0 (27 June 2024)
 
