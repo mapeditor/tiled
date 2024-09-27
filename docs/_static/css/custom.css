@@ -6,6 +6,10 @@
     margin: 0px auto 5px auto;
 }
 
+.no-bottom-margin {
+    margin-bottom: 0 !important;
+}
+
 .future .topic-title {
     border-bottom: 2px solid rgb(255, 148, 90);
     padding-bottom: 4px;
