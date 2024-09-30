@@ -444,7 +444,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
 #endif
 
-#ifdef Q_OS_MAC
+#if defined(Q_OS_MAC) && QT_VERSION < QT_VERSION_CHECK(6, 7, 3)
     QCoreApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
 
