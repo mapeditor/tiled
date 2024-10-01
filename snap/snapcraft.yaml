@@ -1,7 +1,7 @@
 name: tiled
 adopt-info: tiled
 license: GPL-2.0
-base: core22
+base: core24
 
 grade: stable
 confinement: strict
@@ -85,7 +85,6 @@ parts:
       - dmz-cursor-theme
       - light-themes
       - adwaita-icon-theme
-      - gnome-themes-standard
       - shared-mime-info
       - libqt5concurrent5
       - libqt5gui5
