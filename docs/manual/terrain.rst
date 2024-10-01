@@ -108,7 +108,7 @@ as Terrain Image".
 .. note::
 
     .. image:: images/terrain/transition-to-empty.png
-       :alt: Transitioning to nothing
+       :alt: Set of forest tiles that transition to empty, where the parts of each tile that represent the forest are labelled with a red terrain, and the empty parts are not labelled.
        :align: right
        :scale: 60%
        :class: no-bottom-margin
