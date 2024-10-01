@@ -21,9 +21,9 @@
     <url>http://www.mapeditor.org/</url>
 
     <scm>
-        <url>https://github.com/bjorn/tiled</url>
-        <connection>scm:git:git://github.com/bjorn/tiled.git</connection>
-        <developerConnection>scm:git:git@github.com:bjorn/tiled.git</developerConnection>
+        <url>https://github.com/mapeditor/tiled</url>
+        <connection>scm:git:https://github.com/mapeditor/tiled.git</connection>
+        <developerConnection>scm:git:git@github.com:mapeditor/tiled.git</developerConnection>
     </scm>
 
     <dependencies>

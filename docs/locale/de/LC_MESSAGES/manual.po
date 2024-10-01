@@ -1639,7 +1639,7 @@ msgstr ""
 #: ../../manual/custom-properties.rst:171
 msgid ""
 "**Array properties**, which would be properties having a list of values "
-"(`#1493 <https://github.com/bjorn/tiled/issues/1493>`__)."
+"(`#1493 <https://github.com/mapeditor/tiled/issues/1493>`__)."
 msgstr ""
 
 #: ../../manual/custom-properties.rst:174
@@ -1647,7 +1647,7 @@ msgid ""
 "Apart from predefining properties based on object type, I'd like to add "
 "support for **predefining the properties for each data type**. So "
 "defining which custom properties are valid for maps, tilesets, layers, "
-"etc. (`#1410 <https://github.com/bjorn/tiled/issues/1410>`__)"
+"etc. (`#1410 <https://github.com/mapeditor/tiled/issues/1410>`__)"
 msgstr ""
 
 #: ../../manual/custom-properties.rst:179 ../../manual/editing-tilesets.rst:247
@@ -2286,7 +2286,7 @@ msgstr ""
 #: ../../manual/editing-tilesets.rst:235
 msgid ""
 "Make it easier to set up terrain (`#1729 "
-"<https://github.com/bjorn/tiled/issues/1729>`__)"
+"<https://github.com/mapeditor/tiled/issues/1729>`__)"
 msgstr ""
 
 #: ../../manual/editing-tilesets.rst:237
@@ -2296,13 +2296,13 @@ msgstr ""
 #: ../../manual/editing-tilesets.rst:239
 msgid ""
 "Allow setting collisions for multiple tiles at once (`#1322 "
-"<https://github.com/bjorn/tiled/issues/1322>`__)"
+"<https://github.com/mapeditor/tiled/issues/1322>`__)"
 msgstr ""
 
 #: ../../manual/editing-tilesets.rst:240
 msgid ""
 "Render tile collision shapes to the tileset view (`#1281 "
-"<https://github.com/bjorn/tiled/issues/1281>`__)"
+"<https://github.com/mapeditor/tiled/issues/1281>`__)"
 msgstr ""
 
 #: ../../manual/editing-tilesets.rst:242
@@ -2312,13 +2312,13 @@ msgstr ""
 #: ../../manual/editing-tilesets.rst:244
 msgid ""
 "Support multiple named animations per tile (`#986 "
-"<https://github.com/bjorn/tiled/issues/986>`__)"
+"<https://github.com/mapeditor/tiled/issues/986>`__)"
 msgstr ""
 
 #: ../../manual/editing-tilesets.rst:245
 msgid ""
 "Make it easier to define animations spanning multiple tiles (`#811 "
-"<https://github.com/bjorn/tiled/issues/811>`__)"
+"<https://github.com/mapeditor/tiled/issues/811>`__)"
 msgstr ""
 
 #: ../../manual/export.rst:18
@@ -4656,13 +4656,13 @@ msgstr ""
 #: ../../manual/layers.rst:221
 msgid ""
 "Ability to lock individual objects (`#828 "
-"<https://github.com/bjorn/tiled/issues/828>`__)."
+"<https://github.com/mapeditor/tiled/issues/828>`__)."
 msgstr ""
 
 #: ../../manual/layers.rst:223
 msgid ""
 "Moving certain map-global properties to the Tile Layer (`#149 "
-"<https://github.com/bjorn/tiled/issues/149>`__). It would be useful if "
+"<https://github.com/mapeditor/tiled/issues/149>`__). It would be useful if "
 "one map could accommodate layers of different tile sizes and maybe even "
 "of different orientation."
 msgstr ""
@@ -5193,14 +5193,14 @@ msgstr ""
 msgid ""
 "Some improvements could still be made to the support for editing polygons"
 " and polylines, like allowing to rotate and scale the selected nodes "
-"(`#1487 <https://github.com/bjorn/tiled/issues/1487>`__)."
+"(`#1487 <https://github.com/mapeditor/tiled/issues/1487>`__)."
 msgstr ""
 
 #: ../../manual/objects.rst:379
 msgid ""
 "The tools could put short usage instructions in the status bar, to help "
 "new users without requiring them to carefully read the manual (`#1855 "
-"<https://github.com/bjorn/tiled/issues/1855>`__)."
+"<https://github.com/mapeditor/tiled/issues/1855>`__)."
 msgstr ""
 
 #: ../../manual/preferences.rst:2
@@ -6814,26 +6814,26 @@ msgstr ""
 #: ../../manual/using-templates.rst:107
 msgid ""
 "Resetting overridden properties individually (`#1725 "
-"<https://github.com/bjorn/tiled/issues/1725>`__)."
+"<https://github.com/mapeditor/tiled/issues/1725>`__)."
 msgstr ""
 
 #: ../../manual/using-templates.rst:108
 msgid ""
 "Locking template properties (`#1726 "
-"<https://github.com/bjorn/tiled/issues/1726>`__)."
+"<https://github.com/mapeditor/tiled/issues/1726>`__)."
 msgstr ""
 
 #: ../../manual/using-templates.rst:109
 msgid ""
 "Handling wrong file paths (`#1732 "
-"<https://github.com/bjorn/tiled/issues/1732>`__)."
+"<https://github.com/mapeditor/tiled/issues/1732>`__)."
 msgstr ""
 
 #: ../../manual/using-templates.rst:110
 msgid ""
 "Managing the templates folder, e.g. moving, renaming or deleting a "
 "template or a sub-folder (`#1723 "
-"<https://github.com/bjorn/tiled/issues/1723>`__)."
+"<https://github.com/mapeditor/tiled/issues/1723>`__)."
 msgstr ""
 
 #: ../../manual/worlds.rst:6
@@ -8467,14 +8467,14 @@ msgstr ""
 #~ "**Enumerations**, where you can predefine "
 #~ "all possible values and it forms a"
 #~ " combo box (`#1211 "
-#~ "<https://github.com/bjorn/tiled/issues/1211>`__)."
+#~ "<https://github.com/mapeditor/tiled/issues/1211>`__)."
 #~ msgstr ""
 
 #~ msgid ""
 #~ "**Dictionary properties**, which would be "
 #~ "properties that can contain any number"
 #~ " of other properties as children "
-#~ "(`#489 <https://github.com/bjorn/tiled/issues/489>`__)."
+#~ "(`#489 <https://github.com/mapeditor/tiled/issues/489>`__)."
 #~ msgstr ""
 
 #~ msgid ""

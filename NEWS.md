@@ -497,12 +497,12 @@
 * Added Terrain Set type (Corner, Edge or Mixed)
 * Added support for rotating and flipping Terrain tiles (by Christof Petig, [#2912](https://github.com/mapeditor/tiled/pull/2912))
 * Added support for exporting to [RPTools MapTool](https://www.rptools.net/toolbox/maptool/) RpMap files (by Christof Petig, [#2926](https://github.com/mapeditor/tiled/pull/2926))
-* Added Ctrl+Shift to toggle Snap to Fine Grid (by sverx, [#2895](https://github.com/bjorn/tiled/pull/2895))
-* Eraser: Added Shift to erase on all layers (by Michael Aganier, [#2897](https://github.com/bjorn/tiled/pull/2897))
+* Added Ctrl+Shift to toggle Snap to Fine Grid (by sverx, [#2895](https://github.com/mapeditor/tiled/pull/2895))
+* Eraser: Added Shift to erase on all layers (by Michael Aganier, [#2897](https://github.com/mapeditor/tiled/pull/2897))
 * Automatically add .world extension to new World files
 * Shape Fill Tool now displays the size of the current shape ([#2808](https://github.com/mapeditor/tiled/issues/2808))
-* Tile Collision Editor: Added action to add an auto-detected bounding box collision rectangle (by Robin Macharg, [#1960](https://github.com/bjorn/tiled/pull/1960))
-* Tile Collision Editor: Added context menu action to copy selected collision objects to all other selected tiles (by Robin Macharg, [#1960](https://github.com/bjorn/tiled/pull/1960))
+* Tile Collision Editor: Added action to add an auto-detected bounding box collision rectangle (by Robin Macharg, [#1960](https://github.com/mapeditor/tiled/pull/1960))
+* Tile Collision Editor: Added context menu action to copy selected collision objects to all other selected tiles (by Robin Macharg, [#1960](https://github.com/mapeditor/tiled/pull/1960))
 * Tilesets view: Added "Edit Tileset" action to tab context menu
 * Tilesets view: Added "Add External Tileset" action to tilesets menu
 * Scripting: Added initial API for creating and modifying Terrain Sets
@@ -530,12 +530,12 @@
 * Fixed "AutoMap While Drawing" not applying when using Cut/Delete
 * Fixed path in AutoMap error message when rules file doesn't exist
 * Lua plugin: Don't embed external tilesets, unless enabled as export option ([#2120](https://github.com/mapeditor/tiled/issues/2120))
-* Python plugin: Added missing values to MapObject.Shape enum ([#2898](https://github.com/bjorn/tiled/issues/2898))
+* Python plugin: Added missing values to MapObject.Shape enum ([#2898](https://github.com/mapeditor/tiled/issues/2898))
 * Python plugin: Fixed linking issue when compiling against Python 3.8
 * CSV plugin: Include flipping flags in exported tile IDs
 * GMX plugin: Take tile object alignment into account
 * Linux: "Open Containing Folder" action now also selects the file
-* libtiled-java: Many updates (by Henri Viitanen, [#2207](https://github.com/bjorn/tiled/pull/2207))
+* libtiled-java: Many updates (by Henri Viitanen, [#2207](https://github.com/mapeditor/tiled/pull/2207))
 * Ported Tiled to Qt 6 (releases still use 5.15 for now)
 * Updated Bulgarian, Chinese (Simplified), Czech, Finnish, French, Portuguese, Portuguese (Portugal), Russian, Swedish and Turkish translations
 

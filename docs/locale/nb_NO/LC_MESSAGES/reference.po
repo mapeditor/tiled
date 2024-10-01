@@ -2006,7 +2006,7 @@ msgstr ""
 #: ../../reference/support-for-tmx-maps.rst:19
 msgid ""
 "For updates to this page please open a pull request or issue `on GitHub "
-"<https://github.com/bjorn/tiled/issues>`__, thanks!"
+"<https://github.com/mapeditor/tiled/issues>`__, thanks!"
 msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:23
@@ -2055,7 +2055,7 @@ msgstr ""
 #: ../../reference/support-for-tmx-maps.rst:41
 msgid ""
 "C++/Qt based libtiled, used by Tiled itself and included at `src/libtiled"
-" <https://github.com/bjorn/tiled/tree/master/src/libtiled>`__ (BSD)"
+" <https://github.com/mapeditor/tiled/tree/master/src/libtiled>`__ (BSD)"
 msgstr ""
 
 #: ../../reference/support-for-tmx-maps.rst:44
@@ -2230,7 +2230,7 @@ msgstr "Java"
 #: ../../reference/support-for-tmx-maps.rst:122
 msgid ""
 "A library for loading TMX files is included with Tiled at `util/java"
-"/libtiled-java <https://github.com/bjorn/tiled/tree/master/util/java"
+"/libtiled-java <https://github.com/mapeditor/tiled/tree/master/util/java"
 "/libtiled-java>`__."
 msgstr ""
 
@@ -5125,7 +5125,7 @@ msgstr ""
 #~ msgid ""
 #~ "*For updates to this page please "
 #~ "open a pull request or issue `on"
-#~ " github <https://github.com/bjorn/tiled/issues>`__, "
+#~ " github <https://github.com/mapeditor/tiled/issues>`__, "
 #~ "thanks!*"
 #~ msgstr ""
 

@@ -374,11 +374,11 @@ jump there by right-clicking the property and selecting *Go to Object*.
 
    -  Some improvements could still be made to the support for editing
       polygons and polylines, like allowing to rotate and scale the
-      selected nodes (`#1487 <https://github.com/bjorn/tiled/issues/1487>`__).
+      selected nodes (`#1487 <https://github.com/mapeditor/tiled/issues/1487>`__).
 
    -  The tools could put short usage instructions in the status bar,
       to help new users without requiring them to carefully read the
-      manual (`#1855 <https://github.com/bjorn/tiled/issues/1855>`__).
+      manual (`#1855 <https://github.com/mapeditor/tiled/issues/1855>`__).
 
    If you like any of these plans, please help me getting around to it
    faster by `sponsoring Tiled development <https://www.mapeditor.org/donate>`__. The
