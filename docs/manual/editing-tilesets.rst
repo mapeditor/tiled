@@ -232,17 +232,17 @@ changing the value in the :guilabel:`Frame Duration` field and then clicking
 
    **Terrain Sets**
 
-   - Make it easier to set up terrain (`#1729 <https://github.com/bjorn/tiled/issues/1729>`__)
+   - Make it easier to set up terrain (`#1729 <https://github.com/mapeditor/tiled/issues/1729>`__)
 
    **Tile Collision Editor**
 
-   - Allow setting collisions for multiple tiles at once (`#1322 <https://github.com/bjorn/tiled/issues/1322>`__)
-   - Render tile collision shapes to the tileset view (`#1281 <https://github.com/bjorn/tiled/issues/1281>`__)
+   - Allow setting collisions for multiple tiles at once (`#1322 <https://github.com/mapeditor/tiled/issues/1322>`__)
+   - Render tile collision shapes to the tileset view (`#1281 <https://github.com/mapeditor/tiled/issues/1281>`__)
 
    **Tile Animation Editor**
 
-   - Support multiple named animations per tile (`#986 <https://github.com/bjorn/tiled/issues/986>`__)
-   - Make it easier to define animations spanning multiple tiles (`#811 <https://github.com/bjorn/tiled/issues/811>`__)
+   - Support multiple named animations per tile (`#986 <https://github.com/mapeditor/tiled/issues/986>`__)
+   - Make it easier to define animations spanning multiple tiles (`#811 <https://github.com/mapeditor/tiled/issues/811>`__)
 
    If you like any of these plans, please help me getting around to it
    faster by `sponsoring Tiled development <https://www.mapeditor.org/donate>`__. The

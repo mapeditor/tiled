@@ -17,7 +17,7 @@ rather pass on having to write their own tile map renderer.
 .. note::
 
    For updates to this page please open a pull request or issue
-   `on GitHub <https://github.com/bjorn/tiled/issues>`__, thanks!
+   `on GitHub <https://github.com/mapeditor/tiled/issues>`__, thanks!
 
 Support by Language
 -------------------
@@ -39,7 +39,7 @@ C++
 
 -  `C++/TinyXML based tmxparser <https://github.com/sainteos/tmxparser>`__ (BSD)
 -  C++/Qt based libtiled, used by Tiled itself and included at
-   `src/libtiled <https://github.com/bjorn/tiled/tree/master/src/libtiled>`__
+   `src/libtiled <https://github.com/mapeditor/tiled/tree/master/src/libtiled>`__
    (BSD)
 -  `C++11x/TinyXml2
    libtmx-parser <https://github.com/halsafar/libtmx-parser>`__ by
@@ -123,7 +123,7 @@ Java
 ~~~~
 
 -  A library for loading TMX files is included with Tiled at
-   `util/java/libtiled-java <https://github.com/bjorn/tiled/tree/master/util/java/libtiled-java>`__.
+   `util/java/libtiled-java <https://github.com/mapeditor/tiled/tree/master/util/java/libtiled-java>`__.
 -  `TiledReader <http://www.alexheyman.org/tiledreader/>`__ is a simple TMX reader that conveys the information in Tiled files via a hand-crafted class structure, but does not load image data.
 -  Android-Specific:
 

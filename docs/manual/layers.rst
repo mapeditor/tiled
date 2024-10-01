@@ -219,9 +219,9 @@ which case it is inherited by all layers in the group.
    There are many ways in which the layers can be made more powerful:
 
    -  Ability to lock individual objects
-      (`#828 <https://github.com/bjorn/tiled/issues/828>`__).
+      (`#828 <https://github.com/mapeditor/tiled/issues/828>`__).
    -  Moving certain map-global properties to the Tile Layer
-      (`#149 <https://github.com/bjorn/tiled/issues/149>`__). It would be
+      (`#149 <https://github.com/mapeditor/tiled/issues/149>`__). It would be
       useful if one map could accommodate layers of different tile sizes
       and maybe even of different orientation.
 

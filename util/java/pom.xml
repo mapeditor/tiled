@@ -23,7 +23,7 @@
     <licenses>
         <license>
             <name>New BSD License</name>
-            <url>https://raw.githubusercontent.com/bjorn/tiled/master/LICENSE.BSD</url>
+            <url>https://raw.githubusercontent.com/mapeditor/tiled/master/LICENSE.BSD</url>
         </license>
     </licenses>
 
@@ -51,17 +51,17 @@
     </modules>
 
     <scm>
-        <url>https://github.com/bjorn/tiled</url>
-        <connection>scm:git:git://github.com/bjorn/tiled.git</connection>
-        <developerConnection>scm:git:git@github.com:bjorn/tiled.git</developerConnection>
+        <url>https://github.com/mapeditor/tiled</url>
+        <connection>scm:git:https://github.com/mapeditor/tiled.git</connection>
+        <developerConnection>scm:git:git@github.com:mapeditor/tiled.git</developerConnection>
     </scm>
     <issueManagement>
         <system>GitHub Issues</system>
-        <url>https://github.com/bjorn/tiled/issues</url>
+        <url>https://github.com/mapeditor/tiled/issues</url>
     </issueManagement>
     <ciManagement>
-        <system>Travis CI</system>
-        <url>https://travis-ci.org/bjorn/tiled</url>
+        <system>GitHub Actions</system>
+        <url>https://github.com/mapeditor/tiled/actions</url>
     </ciManagement>
     <distributionManagement>
         <snapshotRepository>

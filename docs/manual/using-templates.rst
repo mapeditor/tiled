@@ -104,7 +104,7 @@ use them, you can enable the *Detach templates* :ref:`export option
 .. topic:: Future Extensions
    :class: future
 
-    - Resetting overridden properties individually (`#1725 <https://github.com/bjorn/tiled/issues/1725>`__).
-    - Locking template properties (`#1726 <https://github.com/bjorn/tiled/issues/1726>`__).
+    - Resetting overridden properties individually (`#1725 <https://github.com/mapeditor/tiled/issues/1725>`__).
+    - Locking template properties (`#1726 <https://github.com/mapeditor/tiled/issues/1726>`__).
     - Managing the templates folder, e.g. moving, renaming or deleting a template or a sub-folder
-      (`#1723 <https://github.com/bjorn/tiled/issues/1723>`__).
+      (`#1723 <https://github.com/mapeditor/tiled/issues/1723>`__).

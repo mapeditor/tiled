@@ -19,7 +19,7 @@ cache:
 addons:
   coverity_scan:
     project:
-      name: bjorn/tiled
+      name: mapeditor/tiled
       description: A generic tile map editor
     notification_email: bjorn@lindeijer.nl
     build_command_prepend: qmake
