@@ -65,6 +65,14 @@ void Property::setModified(bool modified)
     }
 }
 
+void Property::setActions(Actions actions)
+{
+    if (m_actions != actions) {
+        m_actions = actions;
+        emit actionsChanged(actions);
+    }
+}
+
 void StringProperty::setPlaceholderText(const QString &placeholderText)
 {
     if (m_placeholderText != placeholderText) {
@@ -328,10 +336,12 @@ QWidget *RectFProperty::createEditor(QWidget *parent)
     return editor;
 }
 
-// todo: needs to handle invalid color (unset value)
+// todo: needs to allow setting color back to invalid (unset)
 QWidget *ColorProperty::createEditor(QWidget *parent)
 {
     auto editor = new ColorButton(parent);
+    editor->setShowAlphaChannel(m_alpha);
+
     auto syncEditor = [=] {
         const QSignalBlocker blocker(editor);
         editor->setColor(value());
@@ -507,8 +517,8 @@ void VariantEditor::clear()
     while (it.hasNext()) {
         it.next();
         auto &widgets = it.value();
-        Utils::deleteAllFromLayout(widgets.layout);
-        delete widgets.layout;
+        Utils::deleteAllFromLayout(widgets.rowLayout);
+        delete widgets.rowLayout;
         delete widgets.children;
 
         it.key()->disconnect(this);
@@ -531,97 +541,102 @@ void VariantEditor::addProperty(Property *property)
 
     const auto halfSpacing = Utils::dpiScaled(2);
 
-    widgets.layout = new QHBoxLayout;
-    widgets.layout->setSpacing(halfSpacing * 2);
+    widgets.rowLayout = new QHBoxLayout;
+    widgets.rowLayout->setSpacing(halfSpacing * 2);
 
     if (displayMode == Property::DisplayMode::Separator) {
         auto separator = new QFrame(this);
-        widgets.layout->setContentsMargins(0, halfSpacing, 0, halfSpacing);
+        widgets.rowLayout->setContentsMargins(0, halfSpacing, 0, halfSpacing);
         separator->setFrameShape(QFrame::HLine);
         separator->setFrameShadow(QFrame::Plain);
         separator->setForegroundRole(QPalette::Mid);
-        widgets.layout->addWidget(separator);
-        m_layout->addLayout(widgets.layout);
+        widgets.rowLayout->addWidget(separator);
+        m_layout->addLayout(widgets.rowLayout);
         return;
     }
 
-    auto label = new PropertyLabel(m_level, this);
+    widgets.label = new PropertyLabel(m_level, this);
 
     if (displayMode != Property::DisplayMode::NoLabel) {
-        label->setText(property->name());
-        label->setToolTip(property->toolTip());
-        label->setEnabled(property->isEnabled());
-        label->setModified(property->isModified());
-        connect(property, &Property::toolTipChanged, label, &QWidget::setToolTip);
-        connect(property, &Property::enabledChanged, label, &QWidget::setEnabled);
-        connect(property, &Property::modifiedChanged, label, &PropertyLabel::setModified);
+        widgets.label->setText(property->name());
+        widgets.label->setModified(property->isModified());
+        connect(property, &Property::modifiedChanged, widgets.label, &PropertyLabel::setModified);
     }
 
     if (displayMode == Property::DisplayMode::Header)
-        label->setHeader(true);
+        widgets.label->setHeader(true);
     else
-        widgets.layout->setContentsMargins(0, halfSpacing, halfSpacing * 2, halfSpacing);
+        widgets.rowLayout->setContentsMargins(0, halfSpacing, halfSpacing * 2, halfSpacing);
 
-    widgets.layout->addWidget(label, LabelStretch, Qt::AlignTop);
+    widgets.rowLayout->addWidget(widgets.label, LabelStretch, Qt::AlignTop);
 
-    QHBoxLayout *editorLayout = widgets.layout;
-    const auto editor = property->createEditor(this);
+    widgets.editorLayout = new QHBoxLayout;
+    widgets.editor = property->createEditor(this);
 
-    if (editor && property->actions()) {
-        editorLayout = new QHBoxLayout;
-        widgets.layout->addLayout(editorLayout, WidgetStretch);
+    if (widgets.editor) {
+        widgets.editor->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
+        widgets.editorLayout->addWidget(widgets.editor, EditorStretch, Qt::AlignTop);
+        widgets.rowLayout->addLayout(widgets.editorLayout, EditorStretch);
+    } else {
+        widgets.rowLayout->addLayout(widgets.editorLayout, 0);
     }
 
-    if (editor) {
-        editor->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
-        editor->setToolTip(property->toolTip());
-        editor->setEnabled(property->isEnabled());
-        connect(property, &Property::toolTipChanged, editor, &QWidget::setToolTip);
-        connect(property, &Property::enabledChanged, editor, &QWidget::setEnabled);
+    widgets.resetButton = new QToolButton(this);
+    widgets.resetButton->setToolTip(tr("Reset"));
+    widgets.resetButton->setAutoRaise(true);
+    widgets.resetButton->setEnabled(property->isModified());
+    Utils::setThemeIcon(widgets.resetButton, "edit-clear");
+    widgets.editorLayout->addWidget(widgets.resetButton, 0, Qt::AlignTop);
+    connect(widgets.resetButton, &QAbstractButton::clicked, property, &Property::resetRequested);
+    connect(property, &Property::modifiedChanged, widgets.resetButton, &QWidget::setEnabled);
 
-        editorLayout->addWidget(editor, WidgetStretch, Qt::AlignTop);
-    }
+    widgets.removeButton = new QToolButton(this);
+    widgets.removeButton->setToolTip(tr("Remove"));
+    widgets.removeButton->setAutoRaise(true);
+    Utils::setThemeIcon(widgets.removeButton, "remove");
+    widgets.editorLayout->addWidget(widgets.removeButton, 0, Qt::AlignTop);
+    connect(widgets.removeButton, &QAbstractButton::clicked, property, &Property::removeRequested);
 
-    if (property->actions()) {
-        if (property->actions() & Property::Reset) {
-            auto resetButton = new QToolButton;
-            resetButton->setToolTip(tr("Reset"));
-            resetButton->setAutoRaise(true);
-            resetButton->setEnabled(property->isModified());
-            Utils::setThemeIcon(resetButton, "edit-clear");
-            editorLayout->addWidget(resetButton, 0, Qt::AlignTop);
-            connect(resetButton, &QAbstractButton::clicked, property, &Property::resetRequested);
-            connect(property, &Property::modifiedChanged, resetButton, &QWidget::setEnabled);
-        }
+    widgets.addButton = new QToolButton(this);
+    widgets.addButton->setToolTip(tr("Add"));
+    widgets.addButton->setAutoRaise(true);
+    Utils::setThemeIcon(widgets.addButton, "add");
+    widgets.editorLayout->addWidget(widgets.addButton, 0, Qt::AlignTop);
+    connect(widgets.addButton, &QAbstractButton::clicked, property, &Property::addRequested);
 
-        if (property->actions() & Property::Remove) {
-            auto removeButton = new QToolButton;
-            removeButton->setToolTip(tr("Remove"));
-            removeButton->setAutoRaise(true);
-            Utils::setThemeIcon(removeButton, "remove");
-            editorLayout->addWidget(removeButton, 0, Qt::AlignTop);
-            connect(removeButton, &QAbstractButton::clicked, property, &Property::removeRequested);
-        }
-    }
+    updatePropertyEnabled(widgets, property->isEnabled());
+    updatePropertyToolTip(widgets, property->toolTip());
+    updatePropertyActions(widgets, property->actions());
 
-    m_layout->addLayout(widgets.layout);
+    connect(property, &Property::enabledChanged, this, [=] (bool enabled) {
+        updatePropertyEnabled(m_propertyWidgets[property], enabled);
+    });
+    connect(property, &Property::toolTipChanged, this, [=] (const QString &toolTip) {
+        updatePropertyToolTip(m_propertyWidgets[property], toolTip);
+    });
+    connect(property, &Property::actionsChanged, this, [=] (Property::Actions actions) {
+        updatePropertyActions(m_propertyWidgets[property], actions);
+    });
+
+    m_layout->addLayout(widgets.rowLayout);
 
     if (auto groupProperty = dynamic_cast<GroupProperty *>(property)) {
-        label->setExpandable(true);
-        label->setExpanded(label->isHeader());
+        widgets.label->setExpandable(true);
+        widgets.label->setExpanded(widgets.label->isHeader());
 
         auto children = new VariantEditor(this);
-        if (label->isHeader())
+        if (widgets.label->isHeader())
             children->setContentsMargins(0, halfSpacing, 0, halfSpacing);
         children->setLevel(m_level + 1);
-        children->setVisible(label->isExpanded());
+        children->setEnabled(property->isEnabled());
+        children->setVisible(widgets.label->isExpanded());
         for (auto property : groupProperty->subProperties())
             children->addProperty(property);
 
         connect(groupProperty, &GroupProperty::propertyAdded,
                 children, &VariantEditor::addProperty);
 
-        connect(label, &PropertyLabel::toggled, children, [=](bool expanded) {
+        connect(widgets.label, &PropertyLabel::toggled, children, [=](bool expanded) {
             children->setVisible(expanded);
 
             // needed to avoid flickering when hiding the editor
@@ -645,10 +660,10 @@ void VariantEditor::removeProperty(Property *property)
     auto it = m_propertyWidgets.constFind(property);
     Q_ASSERT(it != m_propertyWidgets.constEnd());
 
-    if (it != m_propertyWidgets.end()) {
+    if (it != m_propertyWidgets.constEnd()) {
         auto &widgets = it.value();
-        Utils::deleteAllFromLayout(widgets.layout);
-        delete widgets.layout;
+        Utils::deleteAllFromLayout(widgets.rowLayout);
+        delete widgets.rowLayout;
         delete widgets.children;
 
         m_propertyWidgets.erase(it);
@@ -664,6 +679,31 @@ void VariantEditor::setLevel(int level)
     setBackgroundRole((m_level % 2) ? QPalette::AlternateBase
                                     : QPalette::Base);
     setAutoFillBackground(m_level > 1);
+}
+
+void VariantEditor::updatePropertyEnabled(const PropertyWidgets &widgets, bool enabled)
+{
+    if (widgets.label)
+        widgets.label->setEnabled(enabled);
+    if (widgets.editor)
+        widgets.editor->setEnabled(enabled);
+    if (widgets.children)
+        widgets.children->setEnabled(enabled);
+}
+
+void VariantEditor::updatePropertyToolTip(const PropertyWidgets &widgets, const QString &toolTip)
+{
+    if (widgets.label)
+        widgets.label->setToolTip(toolTip);
+    if (widgets.editor)
+        widgets.editor->setToolTip(toolTip);
+}
+
+void VariantEditor::updatePropertyActions(const PropertyWidgets &widgets, Property::Actions actions)
+{
+    widgets.resetButton->setVisible(actions & Property::Action::Reset);
+    widgets.removeButton->setVisible(actions & Property::Action::Remove);
+    widgets.addButton->setVisible(actions & Property::Action::Add);
 }
 
 

@@ -30,6 +30,7 @@
 #include <QWidget>
 
 class QHBoxLayout;
+class QToolButton;
 class QVBoxLayout;
 
 namespace Tiled {
@@ -46,6 +47,7 @@ class Property : public QObject
     Q_PROPERTY(QString toolTip READ toolTip WRITE setToolTip NOTIFY toolTipChanged)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
     Q_PROPERTY(bool modified READ isModified WRITE setModified NOTIFY modifiedChanged)
+    Q_PROPERTY(Actions actions READ actions WRITE setActions NOTIFY actionsChanged)
 
 public:
     enum class DisplayMode {
@@ -55,9 +57,10 @@ public:
         Separator
     };
 
-    enum Action {
+    enum class Action {
         Reset = 0x01,
         Remove = 0x02,
+        Add = 0x04,
     };
     Q_DECLARE_FLAGS(Actions, Action)
 
@@ -78,7 +81,7 @@ public:
     void setModified(bool modified);
 
     Actions actions() const { return m_actions; }
-    void setActions(Actions actions) { m_actions = actions; }
+    void setActions(Actions actions);
 
     virtual DisplayMode displayMode() const { return DisplayMode::Default; }
 
@@ -89,9 +92,11 @@ signals:
     void valueChanged();
     void enabledChanged(bool enabled);
     void modifiedChanged(bool modified);
+    void actionsChanged(Actions actions);
 
     void resetRequested();
     void removeRequested();
+    void addRequested();
 
 private:
     friend class GroupProperty;
@@ -349,6 +354,11 @@ struct ColorProperty : PropertyTemplate<QColor>
 {
     using PropertyTemplate::PropertyTemplate;
     QWidget *createEditor(QWidget *parent) override;
+
+    void setAlpha(bool alpha) { m_alpha = alpha; }
+
+private:
+    bool m_alpha = true;
 };
 
 struct FontProperty : PropertyTemplate<QFont>
@@ -461,13 +471,23 @@ public:
 
 private:
     static constexpr int LabelStretch = 4;
-    static constexpr int WidgetStretch = 6;
+    static constexpr int EditorStretch = 6;
 
     struct PropertyWidgets
     {
-        QHBoxLayout *layout = nullptr;
+        QHBoxLayout *rowLayout = nullptr;
+        QHBoxLayout *editorLayout = nullptr;
+        PropertyLabel *label = nullptr;
+        QWidget *editor = nullptr;
+        QToolButton *resetButton = nullptr;
+        QToolButton *removeButton = nullptr;
+        QToolButton *addButton = nullptr;
         QWidget *children = nullptr;
     };
+
+    void updatePropertyEnabled(const PropertyWidgets &widgets, bool enabled);
+    void updatePropertyToolTip(const PropertyWidgets &widgets, const QString &toolTip);
+    void updatePropertyActions(const PropertyWidgets &widgets, Property::Actions actions);
 
     QVBoxLayout *m_layout;
     QHash<Property*, PropertyWidgets> m_propertyWidgets;

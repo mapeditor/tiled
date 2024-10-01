@@ -74,8 +74,8 @@ ScriptModule::ScriptModule(QObject *parent)
 
 ScriptModule::~ScriptModule()
 {
-    for (const auto &pair : mRegisteredActions)
-        ActionManager::unregisterAction(pair.second.get(), pair.first);
+    for (const auto &[id, action] : mRegisteredActions)
+        ActionManager::unregisterAction(action.get(), id);
 
     ActionManager::clearMenuExtensions();
 

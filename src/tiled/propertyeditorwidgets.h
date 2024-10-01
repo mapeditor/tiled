@@ -302,7 +302,7 @@ signals:
     void toggled(bool expanded);
 
 protected:
-    void mousePressEvent(QMouseEvent *event) override;
+    bool event(QEvent *event) override;
     void paintEvent(QPaintEvent *) override;
 
 private:
