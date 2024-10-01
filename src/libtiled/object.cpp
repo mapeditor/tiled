@@ -40,6 +40,17 @@ Object::~Object()
     delete mEditable;
 }
 
+const ClassPropertyType *Object::classType() const
+{
+    QString objectClassName = className();
+    if (objectClassName.isEmpty() && typeId() == Object::MapObjectType) {
+        auto mapObject = static_cast<const MapObject*>(this);
+        objectClassName = mapObject->effectiveClassName();
+    }
+
+    return propertyTypes().findClassFor(objectClassName, *this);
+}
+
 /**
  * Returns the value of the property \a name, taking into account that it may
  * be inherited from another object or from the class.
@@ -78,32 +89,36 @@ QVariant Object::resolvedProperty(const QString &name) const
 QVariantMap Object::resolvedProperties() const
 {
     QVariantMap allProperties;
+    Tiled::mergeProperties(allProperties, inheritedProperties());
+    return allProperties;
+}
+
+/**
+ * Computes the inherited properties for this object. This excludes the
+ * properties that are directly set on the object.
+ */
+QVariantMap Object::inheritedProperties() const
+{
+    QVariantMap inheritedProperties;
+
     // Insert properties into allProperties in the reverse order that
     // Object::resolvedProperty searches them, to make sure that the
     // same precedence is maintained.
 
-    QString objectClassName = className();
-    if (objectClassName.isEmpty() && typeId() == Object::MapObjectType) {
-        auto mapObject = static_cast<const MapObject*>(this);
-        objectClassName = mapObject->effectiveClassName();
-    }
-
-    if (auto type = propertyTypes().findClassFor(objectClassName, *this))
-        Tiled::mergeProperties(allProperties, type->members);
+    if (auto type = classType())
+        Tiled::mergeProperties(inheritedProperties, type->members);
 
     if (typeId() == Object::MapObjectType) {
         auto mapObject = static_cast<const MapObject*>(this);
 
         if (const Tile *tile = mapObject->cell().tile())
-            Tiled::mergeProperties(allProperties, tile->properties());
+            Tiled::mergeProperties(inheritedProperties, tile->properties());
 
         if (const MapObject *templateObject = mapObject->templateObject())
-            Tiled::mergeProperties(allProperties, templateObject->properties());
+            Tiled::mergeProperties(inheritedProperties, templateObject->properties());
     }
 
-    Tiled::mergeProperties(allProperties, properties());
-
-    return allProperties;
+    return inheritedProperties;
 }
 
 bool Object::setProperty(const QStringList &path, const QVariant &value)

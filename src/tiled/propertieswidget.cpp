@@ -418,10 +418,9 @@ class VariantMapProperty : public GroupProperty
 public:
     VariantMapProperty(const QString &name, QObject *parent = nullptr)
         : GroupProperty(name, parent)
-    {
-    }
+    {}
 
-    void setValue(const QVariantMap &value);
+    void setValue(const QVariantMap &value, const QVariantMap &suggestions = {});
     const QVariantMap &value() const { return mValue; }
 
 signals:
@@ -444,6 +443,7 @@ private:
     void emitValueChangedRecursively(Property *property);
 
     QVariantMap mValue;
+    QVariantMap mSuggestions;
     QHash<QString, Property*> mPropertyMap;
 };
 
@@ -464,7 +464,31 @@ public:
 
 private:
     // todo: optimize further
+    void onChanged(const ChangeEvent &change) {
+        if (change.type != ChangeEvent::ObjectsChanged)
+            return;
+
+        auto object = mDocument->currentObject();
+        if (!object)
+            return;
+
+        auto &objectsChange = static_cast<const ObjectsChangeEvent&>(change);
+
+        if (objectsChange.properties & ObjectsChangeEvent::ClassProperty) {
+            if (objectsChange.objects.contains(object)) {
+                refresh();
+            } else if (object->typeId() == Object::MapObjectType) {
+                auto mapObject = static_cast<MapObject*>(object);
+                if (auto tile = mapObject->cell().tile()) {
+                    if (mapObject->className().isEmpty() && objectsChange.objects.contains(tile))
+                        refresh();
+                }
+            }
+        }
+    }
     void propertyAdded(Object *object, const QString &) {
+        if (mUpdating)
+            return;
         if (!objectPropertiesRelevant(mDocument, object))
             return;
         refresh();
@@ -1196,6 +1220,7 @@ public:
                     [this](const QColor &value) {
                         push(new ChangeImageLayerTransparentColor(mapDocument(), { imageLayer() }, value));
                     });
+        mTransparentColorProperty->setAlpha(false);
 
         mRepeatProperty = new ImageLayerRepeatProperty(
                     tr("Repeat"),
@@ -1250,7 +1275,7 @@ private:
 
     GroupProperty *mImageLayerProperties;
     UrlProperty *mImageProperty;
-    Property *mTransparentColorProperty;
+    ColorProperty *mTransparentColorProperty;
     Property *mRepeatProperty;
 };
 
@@ -2227,19 +2252,24 @@ void PropertiesWidget::currentObjectChanged(Object *object)
 }
 
 
-void VariantMapProperty::setValue(const QVariantMap &value)
+void VariantMapProperty::setValue(const QVariantMap &value,
+                                  const QVariantMap &suggestions)
 {
     mValue = value;
+    mSuggestions = suggestions;
+
+    QVariantMap allProperties = mSuggestions;
+    mergeProperties(allProperties, mValue);
 
     clear();
 
-    QMapIterator<QString, QVariant> it(mValue);
+    QMapIterator<QString, QVariant> it(allProperties);
     while (it.hasNext()) {
         it.next();
         const QString &name = it.key();
 
         auto get = [=] {
-            return mValue.value(name);
+            return mValue.value(name, mSuggestions.value(name));
         };
         auto set = [=] (const QVariant &value) {
             mValue.insert(name, value);
@@ -2248,7 +2278,12 @@ void VariantMapProperty::setValue(const QVariantMap &value)
         };
 
         if (auto property = createProperty({ name }, std::move(get), std::move(set))) {
-            property->setActions(Property::Remove);
+            if (mValue.contains(name)) {
+                property->setActions(Property::Action::Remove);
+            } else {
+                property->setEnabled(false);
+                property->setActions(Property::Action::Add);
+            }
 
             updateModifiedRecursively(property, it.value());
 
@@ -2258,10 +2293,32 @@ void VariantMapProperty::setValue(const QVariantMap &value)
             connect(property, &Property::removeRequested, this, [=] {
                 mValue.remove(name);
 
-                if (auto property = mPropertyMap.take(name))
-                    deleteProperty(property);
+                if (!mSuggestions.contains(name)) {
+                    if (auto property = mPropertyMap.take(name))
+                        deleteProperty(property);
+                } else {
+                    if (auto property = mPropertyMap.value(name)) {
+                        property->setEnabled(false);
+                        property->setActions(Property::Action::Add);
+                        emitValueChangedRecursively(property);
+                        updateModifiedRecursively(property, mSuggestions.value(name));
+                    }
+                }
 
                 emit memberValueChanged({ name }, QVariant());
+                emit valueChanged();
+            });
+
+            connect(property, &Property::addRequested, this, [=] {
+                const auto memberValue = mSuggestions.value(name);
+                mValue.insert(name, memberValue);
+
+                if (auto property = mPropertyMap.value(name)) {
+                    property->setEnabled(true);
+                    property->setActions(Property::Action::Remove);
+                }
+
+                emit memberValueChanged({ name }, memberValue);
                 emit valueChanged();
             });
         }
@@ -2364,7 +2421,7 @@ void VariantMapProperty::createClassMembers(const QStringList &path,
         };
 
         if (auto childProperty = createProperty(childPath, std::move(getMember), setMember)) {
-            childProperty->setActions(Property::Reset);
+            childProperty->setActions(Property::Action::Reset);
             groupProperty->addProperty(childProperty);
 
             connect(childProperty, &Property::resetRequested, this, [=] {
@@ -2416,6 +2473,8 @@ void CustomProperties::setDocument(Document *document)
     mDocument = document;
 
     if (document) {
+        connect(document, &Document::changed, this, &CustomProperties::onChanged);
+
         connect(document, &Document::currentObjectsChanged, this, &CustomProperties::refresh);
 
         connect(document, &Document::propertyAdded, this, &CustomProperties::propertyAdded);
@@ -2429,10 +2488,14 @@ void CustomProperties::setDocument(Document *document)
 
 void CustomProperties::refresh()
 {
-    if (mDocument && mDocument->currentObject())
-        setValue(mDocument->currentObject()->properties());
-    else
+    if (!mDocument || !mDocument->currentObject()) {
         setValue({});
+        return;
+    }
+
+    // todo: gather the values from all selected objects
+    setValue(mDocument->currentObject()->properties(),
+             mDocument->currentObject()->inheritedProperties());
 }
 
 void CustomProperties::setPropertyValue(const QStringList &path, const QVariant &value)

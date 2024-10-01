@@ -164,8 +164,7 @@ void SetProperty::undo()
 
 void SetProperty::redo()
 {
-    const QList<Object*> &objects = mObjects;
-    for (Object *obj : objects)
+    for (Object *obj : std::as_const(mObjects))
         mDocument->setPropertyMember(obj, mPath, mValue);
 }
 
@@ -212,8 +211,7 @@ void RemoveProperty::undo()
 
 void RemoveProperty::redo()
 {
-    const QList<Object*> &objects = mObjects;
-    for (Object *obj : objects)
+    for (Object *obj : std::as_const(mObjects))
         mDocument->removeProperty(obj, mName);
 }
 

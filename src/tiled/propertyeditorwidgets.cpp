@@ -545,14 +545,19 @@ void PropertyLabel::setModified(bool modified)
     setFont(f);
 }
 
-void PropertyLabel::mousePressEvent(QMouseEvent *event)
+bool PropertyLabel::event(QEvent *event)
 {
-    if (m_expandable && event->button() == Qt::LeftButton) {
-        setExpanded(!m_expanded);
-        return;
+    // Handled here instead of in mousePressEvent because we want it to be
+    // expandable also when the label is disabled.
+    if (event->type() == QEvent::MouseButtonPress && m_expandable) {
+        auto mouseEvent = static_cast<QMouseEvent *>(event);
+        if (mouseEvent->button() == Qt::LeftButton) {
+            setExpanded(!m_expanded);
+            return true;
+        }
     }
 
-    ElidingLabel::mousePressEvent(event);
+    return ElidingLabel::event(event);
 }
 
 void PropertyLabel::paintEvent(QPaintEvent *event)
