@@ -71,8 +71,10 @@ parts:
       - libgdk-pixbuf2.0-0
       - libqt6concurrent6t64
       - libqt6gui6t64
+      - libqt6openglwidgets6t64
       - libqt6quick6
       - libqt6svg6 # for loading icons which are svg
+      - libqt6widgets6t64
       - libxkbcommon0
       - libzstd1
       - xkb-data
