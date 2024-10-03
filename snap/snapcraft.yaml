@@ -10,8 +10,6 @@ environment:
 
 apps:
   tiled:
-    command-chain: &command-chain
-      - bin/desktop-launch
     command: usr/bin/tiled
     common-id: org.mapeditor.Tiled.desktop
     plugs:
@@ -24,7 +22,6 @@ apps:
       - opengl
       - network
   tmxviewer:
-    command-chain: *command-chain
     command: usr/bin/tmxviewer
     plugs: &basic-plugs
       - desktop
@@ -34,11 +31,9 @@ apps:
       - home
       - removable-media
   tmxrasterizer:
-    command-chain: *command-chain
     command: usr/bin/tmxrasterizer
     plugs: *basic-plugs
   terraingenerator:
-    command-chain: *command-chain
     command: usr/bin/terraingenerator
     plugs: *basic-plugs
 
@@ -49,8 +44,6 @@ parts:
       craftctl default
       craftctl set version="$(git describe | sed 's/v//')"
     override-build: |
-      qmake6 -version
-      qmake6 -query
       qbs setup-toolchains --detect
       qbs setup-qt /usr/bin/qmake6 qt6
       qbs config defaultProfile qt6
