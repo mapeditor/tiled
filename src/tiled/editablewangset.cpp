@@ -154,6 +154,20 @@ void EditableWangSet::setColorImageTile(int colorIndex, EditableTile *imageTile)
         wangSet()->colorAt(colorIndex)->setImageId(name);
 }
 
+void EditableWangSet::setColorProbability(int colorIndex, qreal probability)
+{
+    if (colorIndex <= 0 || colorIndex > colorCount()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
+        return;
+    }
+
+    int tileId = imageTile ? imageTile->id() : -1;
+    if (auto doc = tilesetDocument())
+        asset()->push(new ChangeWangColorProbability(doc, wangSet()->colorAt(colorIndex).data(), probability));
+    else if (!checkReadOnly())
+        wangSet()->colorAt(colorIndex)->setProbability(probability);
+}
+
 void EditableWangSet::setType(EditableWangSet::Type type)
 {
     if (auto document = tilesetDocument()) {
