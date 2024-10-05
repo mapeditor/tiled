@@ -65,6 +65,7 @@ public:
 
     Q_INVOKABLE QString colorName(int colorIndex) const;
     Q_INVOKABLE void setColorName(int colorIndex, const QString &name);
+	Q_INVOKABLE void setColorImageTile(int colorIndex, Tiled::EditableTile *imageTile);
 
     Q_INVOKABLE Type effectiveTypeForColor(int color) const;
 
