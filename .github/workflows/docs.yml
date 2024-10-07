@@ -3,8 +3,6 @@ on:
   pull_request:
     paths:
     - 'docs/**'
-    paths-ignore:
-    - 'docs/scripting-doc/**'
 
 jobs:
   docs:
