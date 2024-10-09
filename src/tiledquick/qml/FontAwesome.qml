@@ -1,5 +1,5 @@
 pragma Singleton
-import QtQml 2.3
+import QtQml
 
 QtObject {
     readonly property string open: "\uE800"
