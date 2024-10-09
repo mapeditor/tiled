@@ -40,6 +40,7 @@ class TILED_EDITOR_EXPORT ProjectManager : public QObject
 
 public:
     explicit ProjectManager(QObject *parent = nullptr);
+    ~ProjectManager() override;
 
     static ProjectManager *instance();
 
