@@ -8,7 +8,7 @@ default/
 *.DS_Store
 
 # Qt Creator
-*.user
+*.user*
 *.creator.*
 *.autosave
 
