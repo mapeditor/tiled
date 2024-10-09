@@ -89,6 +89,7 @@ void MapObjectItem::syncWithMapObject()
 
     setPos(pixelPos);
     setRotation(mObject->rotation());
+    setOpacity(mObject->opacity());
 
     if (mBoundingRect != bounds) {
         // Notify the graphics scene about the geometry change in advance

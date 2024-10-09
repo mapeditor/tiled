@@ -1,5 +1,6 @@
 # General build artifacts
 default/
+build/
 
 # clangd cache
 .cache/
