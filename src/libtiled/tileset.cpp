@@ -35,6 +35,8 @@
 
 #include <QBitmap>
 
+#include "qtcompat_p.h"
+
 namespace Tiled {
 
 Tileset::Tileset(QString name, int tileWidth, int tileHeight,
@@ -100,6 +102,36 @@ void Tileset::setMargin(int margin)
 {
     Q_ASSERT(margin >= 0);
     mMargin = margin;
+}
+
+/**
+ * @see tileOffset
+ */
+void Tileset::setTileOffset(QPoint offset)
+{
+    if (mTileOffset == offset)
+        return;
+
+    mTileOffset = offset;
+    mDrawMarginsDirty = true;
+}
+
+QMargins Tileset::drawMargins() const
+{
+    if (mDrawMarginsDirty) {
+        QMargins margins;
+
+        for (const Tile *tile : mTiles) {
+            const auto offset = mTileOffset - tile->origin();
+            margins = margins | QMargins(-offset.x(), -offset.y(),
+                                         offset.x(), offset.y());
+        }
+
+        mDrawMargins = margins;
+        mDrawMarginsDirty = false;
+    }
+
+    return mDrawMargins;
 }
 
 /**

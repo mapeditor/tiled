@@ -1073,6 +1073,12 @@ void PropertyBrowser::addTileProperties()
     imageRectProperty->setEnabled(mTilesetDocument && tile->tileset()->isCollection());
     imageRectProperty->setAttribute(QLatin1String("constraint"), tile->image().rect());
 
+    QtVariantProperty *originProperty = addProperty(TileOriginProperty,
+                                                    QMetaType::QPoint,
+                                                    tr("Origin"),
+                                                    groupProperty);
+    originProperty->setEnabled(mTilesetDocument);
+
     addProperty(groupProperty);
 }
 
@@ -1626,6 +1632,13 @@ void PropertyBrowser::applyTileValue(PropertyId id, const QVariant &val)
                                                   tile, filePath.url));
         break;
     }
+    case TileOriginProperty: {
+        undoStack->push(new ChangeTileOrigin(mTilesetDocument,
+                                             mTilesetDocument->selectedTiles(),
+                                             val.toPoint()));
+        
+        break;
+    }
     default:
         break;
     }
@@ -2007,6 +2020,7 @@ void PropertyBrowser::updateProperties()
         if (QtVariantProperty *imageSourceProperty = mIdToProperty.value(ImageSourceProperty))
             imageSourceProperty->setValue(QVariant::fromValue(FilePath { tile->imageSource() }));
         mIdToProperty[ImageRectProperty]->setValue(tile->imageRect());
+        mIdToProperty[TileOriginProperty]->setValue(tile->origin());
         break;
     }
     case Object::WangSetType: {
