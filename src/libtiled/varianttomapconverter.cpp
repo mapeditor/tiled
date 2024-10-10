@@ -77,6 +77,7 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
     mapParameters.tileWidth = variantMap[QStringLiteral("tilewidth")].toInt();
     mapParameters.tileHeight = variantMap[QStringLiteral("tileheight")].toInt();
     mapParameters.infinite = variantMap[QStringLiteral("infinite")].toInt();
+    mapParameters.invertYAxis = variantMap[QStringLiteral("invertyaxis")].toInt();
     mapParameters.hexSideLength = variantMap[QStringLiteral("hexsidelength")].toInt();
     mapParameters.staggerAxis = staggerAxisFromString(staggerAxis);
     mapParameters.staggerIndex = staggerIndexFromString(staggerIndex);
