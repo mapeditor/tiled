@@ -420,7 +420,9 @@ public:
         : GroupProperty(name, parent)
     {}
 
-    void setValue(const QVariantMap &value, const QVariantMap &suggestions = {});
+    void setValue(const QVariantMap &value,
+                  const QVariantMap &suggestions = {});
+
     const QVariantMap &value() const { return mValue; }
 
 signals:
@@ -430,6 +432,10 @@ protected:
     Document *mDocument = nullptr;
 
 private:
+    bool createOrUpdateProperty(int index,
+                                const QString &name,
+                                const QVariant &oldValue,
+                                const QVariant &newValue);
     Property *createProperty(const QStringList &path,
                              std::function<QVariant ()> get,
                              std::function<void (const QVariant &)> set);
@@ -438,6 +444,9 @@ private:
                             GroupProperty *groupProperty,
                             const ClassPropertyType &classType,
                             std::function<QVariant ()> get);
+
+    void removeMember(const QString &name);
+    void addMember(const QString &name, const QVariant &value);
 
     void updateModifiedRecursively(Property *property, const QVariant &value);
     void emitValueChangedRecursively(Property *property);
@@ -463,7 +472,6 @@ public:
     void setDocument(Document *document);
 
 private:
-    // todo: optimize further
     void onChanged(const ChangeEvent &change) {
         if (change.type != ChangeEvent::ObjectsChanged)
             return;
@@ -486,6 +494,7 @@ private:
             }
         }
     }
+
     void propertyAdded(Object *object, const QString &) {
         if (mUpdating)
             return;
@@ -493,6 +502,7 @@ private:
             return;
         refresh();
     }
+
     void propertyRemoved(Object *object, const QString &) {
         if (mUpdating)
             return;
@@ -500,6 +510,7 @@ private:
             return;
         refresh();
     }
+
     void propertyChanged(Object *object, const QString &name) {
         if (mUpdating)
             return;
@@ -507,6 +518,7 @@ private:
             return;
         refresh();
     }
+
     void propertiesChanged(Object *object) {
         if (!objectPropertiesRelevant(mDocument, object))
             return;
@@ -2252,22 +2264,76 @@ void PropertiesWidget::currentObjectChanged(Object *object)
 }
 
 
+static bool isSameType(const QVariant &a, const QVariant &b)
+{
+    if (a.userType() != b.userType())
+        return false;
+
+    // Two PropertyValue values might still have different types
+    if (a.userType() == propertyValueId()) {
+        auto aTypeId = a.value<PropertyValue>().typeId;
+        auto bTypeId = b.value<PropertyValue>().typeId;
+        if (aTypeId != bTypeId)
+            return false;
+    }
+
+    return true;
+}
+
 void VariantMapProperty::setValue(const QVariantMap &value,
                                   const QVariantMap &suggestions)
 {
+    QVariantMap oldProperties = mSuggestions;
+    mergeProperties(oldProperties, mValue);
+
     mValue = value;
     mSuggestions = suggestions;
 
-    QVariantMap allProperties = mSuggestions;
-    mergeProperties(allProperties, mValue);
+    QVariantMap newProperties = suggestions;
+    mergeProperties(newProperties, value);
 
-    clear();
+    // First, delete all properties that are not in allProperties
+    for (auto it = mPropertyMap.begin(); it != mPropertyMap.end(); ) {
+        if (newProperties.contains(it.key())) {
+            ++it;
+        } else {
+            deleteProperty(it.value());
+            it = mPropertyMap.erase(it);
+        }
+    }
 
-    QMapIterator<QString, QVariant> it(allProperties);
+    int index = 0;
+
+    QMapIterator<QString, QVariant> it(newProperties);
     while (it.hasNext()) {
         it.next();
         const QString &name = it.key();
+        const auto &newValue = it.value();
+        const auto oldValue = oldProperties.value(name);
 
+        if (createOrUpdateProperty(index, name, oldValue, newValue))
+            ++index;
+    }
+
+    emit valueChanged();
+}
+
+bool VariantMapProperty::createOrUpdateProperty(int index,
+                                                const QString &name,
+                                                const QVariant &oldValue,
+                                                const QVariant &newValue)
+{
+    auto property = mPropertyMap.value(name);
+
+    // If it already exists, check whether we need to delete it
+    if (property && !isSameType(oldValue, newValue)) {
+        deleteProperty(property);
+        mPropertyMap.remove(name);
+        property = nullptr;
+    }
+
+    // Try to create the property if necessary
+    if (!property) {
         auto get = [=] {
             return mValue.value(name, mSuggestions.value(name));
         };
@@ -2277,54 +2343,38 @@ void VariantMapProperty::setValue(const QVariantMap &value,
             emit valueChanged();
         };
 
-        if (auto property = createProperty({ name }, std::move(get), std::move(set))) {
-            if (mValue.contains(name)) {
-                property->setActions(Property::Action::Remove);
-            } else {
-                property->setEnabled(false);
-                property->setActions(Property::Action::Add);
-            }
-
-            updateModifiedRecursively(property, it.value());
-
-            addProperty(property);
-            mPropertyMap.insert(name, property);
-
+        property = createProperty({ name }, std::move(get), std::move(set));
+        if (property) {
             connect(property, &Property::removeRequested, this, [=] {
-                mValue.remove(name);
-
-                if (!mSuggestions.contains(name)) {
-                    if (auto property = mPropertyMap.take(name))
-                        deleteProperty(property);
-                } else {
-                    if (auto property = mPropertyMap.value(name)) {
-                        property->setEnabled(false);
-                        property->setActions(Property::Action::Add);
-                        emitValueChangedRecursively(property);
-                        updateModifiedRecursively(property, mSuggestions.value(name));
-                    }
-                }
-
-                emit memberValueChanged({ name }, QVariant());
-                emit valueChanged();
+                removeMember(name);
             });
 
             connect(property, &Property::addRequested, this, [=] {
-                const auto memberValue = mSuggestions.value(name);
-                mValue.insert(name, memberValue);
-
-                if (auto property = mPropertyMap.value(name)) {
-                    property->setEnabled(true);
-                    property->setActions(Property::Action::Remove);
-                }
-
-                emit memberValueChanged({ name }, memberValue);
-                emit valueChanged();
+                addMember(name, mSuggestions.value(name));
             });
+
+            insertProperty(index, property);
+            mPropertyMap.insert(name, property);
+        } else {
+            qWarning() << "Failed to create property for" << name
+                       << "with type" << newValue.typeName();
         }
     }
 
-    emit valueChanged();
+    if (property) {
+        if (mValue.contains(name)) {
+            property->setEnabled(true);
+            property->setActions(Property::Action::Remove);
+        } else {
+            property->setEnabled(false);
+            property->setActions(Property::Action::Add);
+        }
+
+        updateModifiedRecursively(property, newValue);
+        emitValueChangedRecursively(property);
+    }
+
+    return true;
 }
 
 Property *VariantMapProperty::createProperty(const QStringList &path,
@@ -2430,6 +2480,41 @@ void VariantMapProperty::createClassMembers(const QStringList &path,
             });
         }
     }
+}
+
+void VariantMapProperty::removeMember(const QString &name)
+{
+    if (!mValue.contains(name))
+        return;
+
+    const auto oldValue = mValue.take(name);
+
+    if (!mSuggestions.contains(name)) {
+        if (auto property = mPropertyMap.take(name))
+            deleteProperty(property);
+    } else if (auto property = mPropertyMap.value(name)) {
+        const auto newValue = mSuggestions.value(name);
+        const int index = indexOfProperty(property);
+        createOrUpdateProperty(index, name, oldValue, newValue);
+    }
+
+    emit memberValueChanged({ name }, QVariant());
+    emit valueChanged();
+}
+
+void VariantMapProperty::addMember(const QString &name, const QVariant &value)
+{
+    const auto oldValue = mValue.value(name, mSuggestions.value(name));
+
+    mValue.insert(name, value);
+
+    if (auto property = mPropertyMap.value(name)) {
+        const int index = indexOfProperty(property);
+        createOrUpdateProperty(index, name, oldValue, value);
+    }
+
+    emit memberValueChanged({ name }, value);
+    emit valueChanged();
 }
 
 void VariantMapProperty::updateModifiedRecursively(Property *property,

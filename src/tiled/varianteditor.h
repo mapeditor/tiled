@@ -151,8 +151,13 @@ public:
 
     void addProperty(Property *property)
     {
-        m_subProperties.append(property);
-        emit propertyAdded(property);
+        insertProperty(m_subProperties.size(), property);
+    }
+
+    void insertProperty(int index, Property *property)
+    {
+        m_subProperties.insert(index, property);
+        emit propertyAdded(index, property);
     }
 
     void deleteProperty(Property *property)
@@ -161,12 +166,17 @@ public:
         delete property;
     }
 
+    int indexOfProperty(Property *property) const
+    {
+        return m_subProperties.indexOf(property);
+    }
+
     void addSeparator() { addProperty(new Separator(this)); }
 
     const QList<Property*> &subProperties() const { return m_subProperties; }
 
 signals:
-    void propertyAdded(Property *property);
+    void propertyAdded(int index, Property *property);
 
 private:
     bool m_header = true;
@@ -465,6 +475,7 @@ public:
 
     void clear();
     void addProperty(Property *property);
+    void insertProperty(int index, Property *property);
     void removeProperty(Property *property);
 
     void setLevel(int level);
@@ -475,7 +486,7 @@ private:
 
     struct PropertyWidgets
     {
-        QHBoxLayout *rowLayout = nullptr;
+        QLayout *layout = nullptr;
         QHBoxLayout *editorLayout = nullptr;
         PropertyLabel *label = nullptr;
         QWidget *editor = nullptr;
@@ -484,6 +495,8 @@ private:
         QToolButton *addButton = nullptr;
         QWidget *children = nullptr;
     };
+
+    QLayout *createPropertyLayout(Property *property);
 
     void updatePropertyEnabled(const PropertyWidgets &widgets, bool enabled);
     void updatePropertyToolTip(const PropertyWidgets &widgets, const QString &toolTip);
