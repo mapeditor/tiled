@@ -517,9 +517,8 @@ void VariantEditor::clear()
     while (it.hasNext()) {
         it.next();
         auto &widgets = it.value();
-        Utils::deleteAllFromLayout(widgets.rowLayout);
-        delete widgets.rowLayout;
-        delete widgets.children;
+        Utils::deleteAllFromLayout(widgets.layout);
+        delete widgets.layout;
 
         it.key()->disconnect(this);
     }
@@ -527,10 +526,52 @@ void VariantEditor::clear()
 }
 
 /**
- * Adds the given property to the editor. Does not take ownership of the
- * property.
+ * Adds the given property.
+ * Does not take ownership of the property.
  */
 void VariantEditor::addProperty(Property *property)
+{
+    m_layout->addLayout(createPropertyLayout(property));
+}
+
+/**
+ * Insert the given property at the given index.
+ * Does not take ownership of the property.
+ */
+void VariantEditor::insertProperty(int index, Property *property)
+{
+    m_layout->insertLayout(index, createPropertyLayout(property));
+}
+
+/**
+ * Removes the given property from the editor. The property is not deleted.
+ */
+void VariantEditor::removeProperty(Property *property)
+{
+    auto it = m_propertyWidgets.constFind(property);
+    Q_ASSERT(it != m_propertyWidgets.constEnd());
+
+    if (it != m_propertyWidgets.constEnd()) {
+        auto &widgets = it.value();
+        Utils::deleteAllFromLayout(widgets.layout);
+        delete widgets.layout;
+
+        m_propertyWidgets.erase(it);
+    }
+
+    property->disconnect(this);
+}
+
+void VariantEditor::setLevel(int level)
+{
+    m_level = level;
+
+    setBackgroundRole((m_level % 2) ? QPalette::AlternateBase
+                                    : QPalette::Base);
+    setAutoFillBackground(m_level > 1);
+}
+
+QLayout *VariantEditor::createPropertyLayout(Property *property)
 {
     auto &widgets = m_propertyWidgets[property];
     const auto displayMode = property->displayMode();
@@ -541,18 +582,19 @@ void VariantEditor::addProperty(Property *property)
 
     const auto halfSpacing = Utils::dpiScaled(2);
 
-    widgets.rowLayout = new QHBoxLayout;
-    widgets.rowLayout->setSpacing(halfSpacing * 2);
+    auto rowLayout = new QHBoxLayout;
+    rowLayout->setSpacing(halfSpacing * 2);
+
+    widgets.layout = rowLayout;
 
     if (displayMode == Property::DisplayMode::Separator) {
         auto separator = new QFrame(this);
-        widgets.rowLayout->setContentsMargins(0, halfSpacing, 0, halfSpacing);
+        rowLayout->setContentsMargins(0, halfSpacing, 0, halfSpacing);
         separator->setFrameShape(QFrame::HLine);
         separator->setFrameShadow(QFrame::Plain);
         separator->setForegroundRole(QPalette::Mid);
-        widgets.rowLayout->addWidget(separator);
-        m_layout->addLayout(widgets.rowLayout);
-        return;
+        rowLayout->addWidget(separator);
+        return widgets.layout;
     }
 
     widgets.label = new PropertyLabel(m_level, this);
@@ -566,9 +608,9 @@ void VariantEditor::addProperty(Property *property)
     if (displayMode == Property::DisplayMode::Header)
         widgets.label->setHeader(true);
     else
-        widgets.rowLayout->setContentsMargins(0, halfSpacing, halfSpacing * 2, halfSpacing);
+        rowLayout->setContentsMargins(0, halfSpacing, halfSpacing * 2, halfSpacing);
 
-    widgets.rowLayout->addWidget(widgets.label, LabelStretch, Qt::AlignTop);
+    rowLayout->addWidget(widgets.label, LabelStretch, Qt::AlignTop);
 
     widgets.editorLayout = new QHBoxLayout;
     widgets.editor = property->createEditor(this);
@@ -576,9 +618,9 @@ void VariantEditor::addProperty(Property *property)
     if (widgets.editor) {
         widgets.editor->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
         widgets.editorLayout->addWidget(widgets.editor, EditorStretch, Qt::AlignTop);
-        widgets.rowLayout->addLayout(widgets.editorLayout, EditorStretch);
+        rowLayout->addLayout(widgets.editorLayout, EditorStretch);
     } else {
-        widgets.rowLayout->addLayout(widgets.editorLayout, 0);
+        rowLayout->addLayout(widgets.editorLayout, 0);
     }
 
     widgets.resetButton = new QToolButton(this);
@@ -618,9 +660,9 @@ void VariantEditor::addProperty(Property *property)
         updatePropertyActions(m_propertyWidgets[property], actions);
     });
 
-    m_layout->addLayout(widgets.rowLayout);
-
     if (auto groupProperty = dynamic_cast<GroupProperty *>(property)) {
+        auto verticalLayout = new QVBoxLayout;
+
         widgets.label->setExpandable(true);
         widgets.label->setExpanded(widgets.label->isHeader());
 
@@ -634,7 +676,7 @@ void VariantEditor::addProperty(Property *property)
             children->addProperty(property);
 
         connect(groupProperty, &GroupProperty::propertyAdded,
-                children, &VariantEditor::addProperty);
+                children, &VariantEditor::insertProperty);
 
         connect(widgets.label, &PropertyLabel::toggled, children, [=](bool expanded) {
             children->setVisible(expanded);
@@ -647,38 +689,14 @@ void VariantEditor::addProperty(Property *property)
             }
         });
 
+        verticalLayout->addLayout(rowLayout);
+        verticalLayout->addWidget(children);
+
         widgets.children = children;
-        m_layout->addWidget(widgets.children);
-    }
-}
-
-/**
- * Removes the given property from the editor. The property is not deleted.
- */
-void VariantEditor::removeProperty(Property *property)
-{
-    auto it = m_propertyWidgets.constFind(property);
-    Q_ASSERT(it != m_propertyWidgets.constEnd());
-
-    if (it != m_propertyWidgets.constEnd()) {
-        auto &widgets = it.value();
-        Utils::deleteAllFromLayout(widgets.rowLayout);
-        delete widgets.rowLayout;
-        delete widgets.children;
-
-        m_propertyWidgets.erase(it);
+        widgets.layout = verticalLayout;
     }
 
-    property->disconnect(this);
-}
-
-void VariantEditor::setLevel(int level)
-{
-    m_level = level;
-
-    setBackgroundRole((m_level % 2) ? QPalette::AlternateBase
-                                    : QPalette::Base);
-    setAutoFillBackground(m_level > 1);
+    return widgets.layout;
 }
 
 void VariantEditor::updatePropertyEnabled(const PropertyWidgets &widgets, bool enabled)
