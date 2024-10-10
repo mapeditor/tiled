@@ -129,6 +129,7 @@ private:
     void onCurrentTilesetChanged();
     void selectionChanged();
     void currentChanged(const QModelIndex &index);
+    void restoreCurrentTile();
 
     void updateActions();
     void updateCurrentTiles();

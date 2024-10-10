@@ -325,9 +325,7 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
     mTilesetDocumentsFilterModel->setMapDocument(mapDocument);
 
     if (mMapDocument) {
-        if (Object *object = mMapDocument->currentObject())
-            if (object->typeId() == Object::TileType)
-                setCurrentTile(static_cast<Tile*>(object));
+        restoreCurrentTile();
 
         connect(mMapDocument, &MapDocument::tilesetAdded,
                 this, &TilesetDock::updateActions);
@@ -483,6 +481,23 @@ void TilesetDock::currentChanged(const QModelIndex &index)
 
     const TilesetModel *model = static_cast<const TilesetModel*>(index.model());
     setCurrentTile(model->tileAt(index));
+}
+
+void TilesetDock::restoreCurrentTile()
+{
+    if (!mMapDocument)
+        return;
+
+    if (auto object = mMapDocument->currentObject()) {
+        if (object->typeId() == Object::TileType) {
+            setCurrentTile(static_cast<Tile*>(object));
+            return;
+        }
+    }
+
+    if (auto view = currentTilesetView())
+        if (view->model())
+            currentChanged(view->selectionModel()->currentIndex());
 }
 
 void TilesetDock::updateActions()
