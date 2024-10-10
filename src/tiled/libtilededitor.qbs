@@ -39,7 +39,7 @@ DynamicLibrary {
         var defs = [
             "TILED_EDITOR_LIBRARY",
             "TILED_VERSION=" + project.version,
-            "QT_DISABLE_DEPRECATED_BEFORE=QT_VERSION_CHECK(5,15,0)",
+            "QT_DISABLE_DEPRECATED_BEFORE=0x050F00",
             "QT_NO_DEPRECATED_WARNINGS",
             "QT_NO_CAST_FROM_ASCII",
             "QT_NO_CAST_TO_ASCII",
