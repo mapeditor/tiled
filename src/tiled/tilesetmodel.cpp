@@ -21,7 +21,6 @@
 
 #include "tilesetmodel.h"
 
-#include "map.h"
 #include "relocatetiles.h"
 #include "tile.h"
 #include "tiled.h"
@@ -40,6 +39,8 @@ TilesetModel::TilesetModel(TilesetDocument *tilesetDocument, QObject *parent)
 
     connect(tilesetDocument, &TilesetDocument::tileImageSourceChanged,
             this, &TilesetModel::tileChanged);
+    connect(tilesetDocument, &TilesetDocument::tileWangSetChanged,
+            this, &TilesetModel::tilesChanged);
     connect(tilesetDocument, &TilesetDocument::tileAnimationChanged,
             this, &TilesetModel::tileChanged);
 }
