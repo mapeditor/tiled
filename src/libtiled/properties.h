@@ -91,7 +91,7 @@ class TILEDSHARED_EXPORT ObjectRef
     Q_PROPERTY(int id MEMBER id)
 
 public:
-    int id;
+    int id = 0;
 
     bool operator==(const ObjectRef &o) const
     { return id == o.id; }
@@ -185,13 +185,16 @@ TILEDSHARED_EXPORT void mergeProperties(Properties &target, const Properties &so
 TILEDSHARED_EXPORT QJsonArray propertiesToJson(const Properties &properties, const ExportContext &context = ExportContext());
 TILEDSHARED_EXPORT Properties propertiesFromJson(const QJsonArray &json, const ExportContext &context = ExportContext());
 
-TILEDSHARED_EXPORT int propertyValueId();
-TILEDSHARED_EXPORT int filePathTypeId();
-TILEDSHARED_EXPORT int objectRefTypeId();
+constexpr int propertyValueId() { return qMetaTypeId<PropertyValue>(); }
+constexpr int filePathTypeId() { return qMetaTypeId<FilePath>(); }
+constexpr int objectRefTypeId() { return qMetaTypeId<ObjectRef>(); }
 
 TILEDSHARED_EXPORT QString typeToName(int type);
 TILEDSHARED_EXPORT QString typeName(const QVariant &value);
+TILEDSHARED_EXPORT QString userTypeName(const QVariant &value);
 
 TILEDSHARED_EXPORT void initializeMetatypes();
+
+TILEDSHARED_EXPORT QVariantList possiblePropertyValues(const ClassPropertyType *parentClassType = nullptr);
 
 } // namespace Tiled

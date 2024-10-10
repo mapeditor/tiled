@@ -198,17 +198,27 @@ void PropertyTypesModel::importObjectTypes(const QVector<ObjectType> &objectType
     endResetModel();
 }
 
+QIcon PropertyTypesModel::iconForProperty(const QVariant &value)
+{
+    if (value.userType() == propertyValueId())
+        if (auto type = value.value<PropertyValue>().type())
+            return iconForPropertyType(type->type);
+
+    static const QIcon plain(QStringLiteral("://images/scalable/property-type-plain.svg"));
+    return plain;
+}
+
 QIcon PropertyTypesModel::iconForPropertyType(PropertyType::Type type)
 {
     switch (type) {
     case PropertyType::PT_Invalid:
         break;
     case PropertyType::PT_Class: {
-        static QIcon classIcon(QStringLiteral("://images/scalable/property-type-class.svg"));
+        static const QIcon classIcon(QStringLiteral("://images/scalable/property-type-class.svg"));
         return classIcon;
     }
     case PropertyType::PT_Enum: {
-        static QIcon enumIcon(QStringLiteral("://images/scalable/property-type-enum.svg"));
+        static const QIcon enumIcon(QStringLiteral("://images/scalable/property-type-enum.svg"));
         return enumIcon;
     }
     }
