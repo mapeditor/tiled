@@ -422,7 +422,7 @@ inline bool MapObject::hasDimensions() const
  * Returns true if this object can be rotated.
  */
 inline bool MapObject::canRotate() const
-{ return mShape != Point; }
+{ return true; }
 
 inline bool MapObject::isTileObject() const
 { return !mCell.isEmpty(); }
