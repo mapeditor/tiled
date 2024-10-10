@@ -135,8 +135,9 @@ private:
                         // preview of the selection
         Capture,        // right mouse pressed: capture a rectangle
         Paint,          // left mouse pressed: free painting
-        StartSet        // when you have defined a starting point,
+        StartSet,       // when you have defined a starting point,
                         // cancel with right click
+        PaintStartSet   // starting point set while painting
     };
 
     /**
