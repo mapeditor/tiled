@@ -501,11 +501,7 @@ PropertyLabel::PropertyLabel(int level, QWidget *parent)
 void PropertyLabel::setLevel(int level)
 {
     m_level = level;
-
-    const int spacing = Utils::dpiScaled(3);
-    const int branchIndicatorWidth = Utils::dpiScaled(14);
-    setContentsMargins(spacing + branchIndicatorWidth * std::max(m_level, 1),
-                       spacing, spacing, spacing);
+    updateContentMargins();
 }
 
 void PropertyLabel::setHeader(bool header)
@@ -517,6 +513,7 @@ void PropertyLabel::setHeader(bool header)
     setBackgroundRole(header ? QPalette::Dark : QPalette::NoRole);
     setForegroundRole(header ? QPalette::BrightText : QPalette::NoRole);
     setAutoFillBackground(header);
+    updateContentMargins();
 }
 
 void PropertyLabel::setExpandable(bool expandable)
@@ -588,12 +585,35 @@ void PropertyLabel::paintEvent(QPaintEvent *event)
     }
 }
 
+void PropertyLabel::updateContentMargins()
+{
+    const int spacing = Utils::dpiScaled(3);
+    const int branchIndicatorWidth = Utils::dpiScaled(14);
+    const int verticalSpacing = m_header ? spacing : 0;
+    setContentsMargins(spacing + branchIndicatorWidth * std::max(m_level, 1),
+                       verticalSpacing, spacing, verticalSpacing);
 
+}
+
+/**
+ * To fit better alongside other widgets without vertical centering, the size
+ * hint is adjusted to match that of a QLineEdit.
+ */
 QSize PropertyLabel::sizeHint() const
 {
-    auto hint = ElidingLabel::sizeHint();
-    hint.setHeight(m_lineEdit.sizeHint().height());
-    return hint;
+    constexpr int QLineEditPrivate_verticalMargin = 1;
+    constexpr int QLineEditPrivate_horizontalMargin = 2;
+
+    auto fm = fontMetrics();
+    auto cm = contentsMargins();
+    const int iconSize = style()->pixelMetric(QStyle::PM_SmallIconSize, nullptr, this);
+    int h = qMax(fm.height(), qMax(14, iconSize - 2)) + 2 * QLineEditPrivate_verticalMargin
+            + cm.top() + cm.bottom();
+    int w = fm.horizontalAdvance(u'x') * 17 + 2 * QLineEditPrivate_horizontalMargin
+            + cm.left() + cm.right();
+    QStyleOptionFrame opt;
+    initStyleOption(&opt);
+    return style()->sizeFromContents(QStyle::CT_LineEdit, &opt, QSize(w, h), this);
 }
 
 } // namespace Tiled
