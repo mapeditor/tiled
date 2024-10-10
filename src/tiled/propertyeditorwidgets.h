@@ -21,7 +21,6 @@
 #pragma once
 
 #include <QLabel>
-#include <QLineEdit>
 #include <QSpinBox>
 
 class QLabel;
@@ -306,7 +305,8 @@ protected:
     void paintEvent(QPaintEvent *) override;
 
 private:
-    QLineEdit m_lineEdit;
+    void updateContentMargins();
+
     int m_level = 0;
     bool m_header = false;
     bool m_expandable = false;
