@@ -58,6 +58,7 @@ class EditableMap final : public EditableAsset
     Q_PROPERTY(QList<QObject*> tilesets READ tilesets)
     Q_PROPERTY(QList<QObject*> layers READ layers)
     Q_PROPERTY(Tiled::EditableSelectedArea *selectedArea READ selectedArea CONSTANT)
+    Q_PROPERTY(Tiled::RegionValueType selectedRegion READ selectedRegion WRITE setSelectedRegion NOTIFY selectedRegionChanged)
     Q_PROPERTY(Tiled::EditableLayer* currentLayer READ currentLayer WRITE setCurrentLayer NOTIFY currentLayerChanged)
     Q_PROPERTY(QList<QObject*> selectedLayers READ selectedLayers WRITE setSelectedLayers NOTIFY selectedLayersChanged)
     Q_PROPERTY(QList<QObject*> selectedObjects READ selectedObjects WRITE setSelectedObjects NOTIFY selectedObjectsChanged)
@@ -134,6 +135,7 @@ public:
     QList<QObject*> tilesets() const;
     QList<QObject*> layers();
     EditableSelectedArea *selectedArea();
+    RegionValueType selectedRegion() const;
     EditableLayer *currentLayer();
     QList<QObject*> selectedLayers();
     QList<QObject*> selectedObjects();
@@ -193,6 +195,7 @@ public:
     void setRenderOrder(RenderOrder value);
     void setBackgroundColor(const QColor &value);
     void setLayerDataFormat(LayerDataFormat value);
+    void setSelectedRegion(const RegionValueType &region);
     void setCurrentLayer(EditableLayer *layer);
     void setSelectedLayers(const QList<QObject*> &layers);
     void setSelectedObjects(const QList<QObject*> &objects);
@@ -203,6 +206,7 @@ public:
     QSharedPointer<Document> createDocument() override;
 
 signals:
+    void selectedRegionChanged();
     void currentLayerChanged();
     void selectedLayersChanged();
     void selectedObjectsChanged();
