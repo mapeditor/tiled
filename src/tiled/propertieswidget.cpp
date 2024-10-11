@@ -416,9 +416,7 @@ class VariantMapProperty : public GroupProperty
     Q_OBJECT
 
 public:
-    VariantMapProperty(const QString &name, QObject *parent = nullptr)
-        : GroupProperty(name, parent)
-    {}
+    VariantMapProperty(const QString &name, QObject *parent = nullptr);
 
     void setValue(const QVariantMap &value,
                   const QVariantMap &suggestions = {});
@@ -451,6 +449,12 @@ private:
     void updateModifiedRecursively(Property *property, const QVariant &value);
     void emitValueChangedRecursively(Property *property);
 
+    void propertyTypesChanged();
+
+    void emitMemberValueChanged(const QStringList &path, const QVariant &value);
+
+    bool mEmittingValueChanged = false;
+    bool mPropertyTypesChanged = false;
     QVariantMap mValue;
     QVariantMap mSuggestions;
     QHash<QString, Property*> mPropertyMap;
@@ -2268,20 +2272,11 @@ void PropertiesWidget::currentObjectChanged(Object *object)
 }
 
 
-static bool isSameType(const QVariant &a, const QVariant &b)
+VariantMapProperty::VariantMapProperty(const QString &name, QObject *parent)
+    : GroupProperty(name, parent)
 {
-    if (a.userType() != b.userType())
-        return false;
-
-    // Two PropertyValue values might still have different types
-    if (a.userType() == propertyValueId()) {
-        auto aTypeId = a.value<PropertyValue>().typeId;
-        auto bTypeId = b.value<PropertyValue>().typeId;
-        if (aTypeId != bTypeId)
-            return false;
-    }
-
-    return true;
+    connect(Preferences::instance(), &Preferences::propertyTypesChanged,
+            this, &VariantMapProperty::propertyTypesChanged);
 }
 
 void VariantMapProperty::setValue(const QVariantMap &value,
@@ -2319,7 +2314,30 @@ void VariantMapProperty::setValue(const QVariantMap &value,
             ++index;
     }
 
+    QScopedValueRollback<bool> emittingValueChanged(mEmittingValueChanged, true);
     emit valueChanged();
+}
+
+static bool canReuseProperty(const QVariant &a,
+                             const QVariant &b,
+                             bool propertyTypesChanged)
+{
+    if (a.userType() != b.userType())
+        return false;
+
+    // Two PropertyValue values might still have different types
+    if (a.userType() == propertyValueId()) {
+        // Trigger re-creation of the property when the types have changed
+        if (propertyTypesChanged)
+            return false;
+
+        auto aTypeId = a.value<PropertyValue>().typeId;
+        auto bTypeId = b.value<PropertyValue>().typeId;
+        if (aTypeId != bTypeId)
+            return false;
+    }
+
+    return true;
 }
 
 bool VariantMapProperty::createOrUpdateProperty(int index,
@@ -2330,7 +2348,7 @@ bool VariantMapProperty::createOrUpdateProperty(int index,
     auto property = mPropertyMap.value(name);
 
     // If it already exists, check whether we need to delete it
-    if (property && !isSameType(oldValue, newValue)) {
+    if (property && !canReuseProperty(oldValue, newValue, mPropertyTypesChanged)) {
         deleteProperty(property);
         mPropertyMap.remove(name);
         property = nullptr;
@@ -2343,8 +2361,7 @@ bool VariantMapProperty::createOrUpdateProperty(int index,
         };
         auto set = [=] (const QVariant &value) {
             mValue.insert(name, value);
-            emit memberValueChanged({ name }, value);
-            emit valueChanged();
+            emitMemberValueChanged({ name }, value);
         };
 
         property = createProperty({ name }, std::move(get), std::move(set));
@@ -2469,8 +2486,7 @@ void VariantMapProperty::createClassMembers(const QStringList &path,
                 updateModifiedRecursively(mPropertyMap.value(topLevelName),
                                           mValue.value(topLevelName));
 
-                emit memberValueChanged(childPath, value);
-                emit valueChanged();
+                emitMemberValueChanged(childPath, value);
             }
         };
 
@@ -2502,8 +2518,7 @@ void VariantMapProperty::removeMember(const QString &name)
         createOrUpdateProperty(index, name, oldValue, newValue);
     }
 
-    emit memberValueChanged({ name }, QVariant());
-    emit valueChanged();
+    emitMemberValueChanged({ name }, QVariant());
 }
 
 void VariantMapProperty::addMember(const QString &name, const QVariant &value)
@@ -2517,8 +2532,7 @@ void VariantMapProperty::addMember(const QString &name, const QVariant &value)
         createOrUpdateProperty(index, name, oldValue, value);
     }
 
-    emit memberValueChanged({ name }, value);
-    emit valueChanged();
+    emitMemberValueChanged({ name }, value);
 }
 
 void VariantMapProperty::updateModifiedRecursively(Property *property,
@@ -2548,6 +2562,25 @@ void VariantMapProperty::emitValueChangedRecursively(Property *property)
     if (auto groupProperty = dynamic_cast<GroupProperty*>(property))
         for (auto subProperty : groupProperty->subProperties())
             emitValueChangedRecursively(subProperty);
+}
+
+void VariantMapProperty::propertyTypesChanged()
+{
+    // When this happens in response to emitting value changed, it means we
+    // have triggered a change in a class definition. In this case we should
+    // not update ourselves.
+    if (mEmittingValueChanged)
+        return;
+
+    QScopedValueRollback<bool> emittingValueChanged(mPropertyTypesChanged, true);
+    setValue(mValue, mSuggestions);
+}
+
+void VariantMapProperty::emitMemberValueChanged(const QStringList &path, const QVariant &value)
+{
+    QScopedValueRollback<bool> emittingValueChanged(mEmittingValueChanged, true);
+    emit memberValueChanged(path, value);
+    emit valueChanged();
 }
 
 
