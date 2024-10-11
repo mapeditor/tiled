@@ -1207,11 +1207,25 @@ public:
                     tr("Offset"),
                     [this] { return layer()->offset(); },
                     [this](const QPointF &value) {
-                        // todo: consider whether we can apply only the changed axis to the selected layers
-                        // this is what PropertyBrowser::applyLayerValue used to do
+                        const auto oldValue = layer()->offset();
+                        const bool changedX = oldValue.x() != value.x();
+                        const bool changedY = oldValue.y() != value.y();
+
+                        QVector<QPointF> offsets;
+                        for (const Layer *layer : mapDocument()->selectedLayers())
+                            offsets.append(layer->offset());
+
+                        if (changedX) {
+                            for (QPointF &offset : offsets)
+                                offset.setX(value.x());
+                        } else if (changedY) {
+                            for (QPointF &offset : offsets)
+                                offset.setY(value.y());
+                        }
+
                         push(new SetLayerOffset(mapDocument(),
                                                 mapDocument()->selectedLayers(),
-                                                value));
+                                                offsets));
                     });
 
         mParallaxFactorProperty = new PointFProperty(
@@ -1771,20 +1785,29 @@ public:
                         return mapObject()->cell().flags();
                     },
                     [this](const int &value) {
-                        const int flippingFlags = value;
+                        const int oldValue = mapObject()->cell().flags();
+                        const bool changedHorizontally = (oldValue & 1) != (value & 1);
+                        const bool changedVertically = (oldValue & 2) != (value & 2);
 
-                        MapObjectCell mapObjectCell;
-                        mapObjectCell.object = mapObject();
-                        mapObjectCell.cell = mapObject()->cell();
-                        mapObjectCell.cell.setFlippedHorizontally(flippingFlags & 1);
-                        mapObjectCell.cell.setFlippedVertically(flippingFlags & 2);
+                        QVector<MapObjectCell> objectChanges;
 
-                        auto command = new ChangeMapObjectCells(mDocument, { mapObjectCell });
+                        for (MapObject *object : mapDocument()->selectedObjects()) {
+                            MapObjectCell mapObjectCell;
+                            mapObjectCell.object = object;
+                            mapObjectCell.cell = object->cell();
+                            if (changedHorizontally)
+                                mapObjectCell.cell.setFlippedHorizontally(value & 1);
+                            if (changedVertically)
+                                mapObjectCell.cell.setFlippedVertically(value & 2);
+                            objectChanges.append(mapObjectCell);
+                        }
+
+                        auto command = new ChangeMapObjectCells(mDocument, objectChanges);
 
                         command->setText(QCoreApplication::translate("Undo Commands",
                                                                      "Flip %n Object(s)",
                                                                      nullptr,
-                                                                     mapDocument()->selectedObjects().size()));
+                                                                     objectChanges.size()));
                         push(command);
                     });
 
@@ -1938,7 +1961,29 @@ private:
 
     void changeMapObject(MapObject::Property property, const QVariant &value)
     {
-        push(new ChangeMapObject(mapDocument(), mapObject(), property, value));
+        // todo: when changing object position or size, only change the
+        // selected objects in the respective axis or dimension
+        QUndoCommand *command = new ChangeMapObject(mapDocument(), mapObject(),
+                                                    property, value);
+
+        if (mapDocument()->selectedObjects().size() == 1) {
+            push(command);
+            return;
+        }
+
+        auto undoStack = mDocument->undoStack();
+        undoStack->beginMacro(command->text());
+        undoStack->push(command);
+
+        for (MapObject *obj : mapDocument()->selectedObjects()) {
+            if (obj != mapObject()) {
+                QUndoCommand *cmd = new ChangeMapObject(mapDocument(), obj,
+                                                        property, value);
+                undoStack->push(cmd);
+            }
+        }
+
+        mDocument->undoStack()->endMacro();
     }
 
     GroupProperty *mObjectProperties;
