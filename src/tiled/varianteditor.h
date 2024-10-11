@@ -493,15 +493,18 @@ private:
     {
         QLayout *layout = nullptr;
         QHBoxLayout *editorLayout = nullptr;
+        QVBoxLayout *childrenLayout = nullptr;
         PropertyLabel *label = nullptr;
         QWidget *editor = nullptr;
         QToolButton *resetButton = nullptr;
         QToolButton *removeButton = nullptr;
         QToolButton *addButton = nullptr;
-        QWidget *children = nullptr;
+        VariantEditor *children = nullptr;
     };
 
     QLayout *createPropertyLayout(Property *property);
+
+    void setPropertyChildrenExpanded(GroupProperty *groupProperty, bool expanded);
 
     void updatePropertyEnabled(const PropertyWidgets &widgets, bool enabled);
     void updatePropertyToolTip(const PropertyWidgets &widgets, const QString &toolTip);

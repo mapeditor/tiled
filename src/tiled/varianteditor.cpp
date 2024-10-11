@@ -657,6 +657,19 @@ QLayout *VariantEditor::createPropertyLayout(Property *property)
     widgets.editorLayout->addWidget(widgets.addButton, 0, Qt::AlignTop);
     connect(widgets.addButton, &QAbstractButton::clicked, property, &Property::addRequested);
 
+    if (auto groupProperty = dynamic_cast<GroupProperty *>(property)) {
+        widgets.childrenLayout = new QVBoxLayout;
+        widgets.childrenLayout->addLayout(rowLayout);
+        widgets.layout = widgets.childrenLayout;
+
+        connect(widgets.label, &PropertyLabel::toggled, this, [=](bool expanded) {
+            setPropertyChildrenExpanded(groupProperty, expanded);
+        });
+
+        widgets.label->setExpandable(true);
+        widgets.label->setExpanded(widgets.label->isHeader());
+    }
+
     updatePropertyEnabled(widgets, property->isEnabled());
     updatePropertyToolTip(widgets, property->toolTip());
     updatePropertyActions(widgets, property->actions());
@@ -671,43 +684,43 @@ QLayout *VariantEditor::createPropertyLayout(Property *property)
         updatePropertyActions(m_propertyWidgets[property], actions);
     });
 
-    if (auto groupProperty = dynamic_cast<GroupProperty *>(property)) {
-        auto verticalLayout = new QVBoxLayout;
+    return widgets.layout;
+}
 
-        widgets.label->setExpandable(true);
-        widgets.label->setExpanded(widgets.label->isHeader());
+void VariantEditor::setPropertyChildrenExpanded(GroupProperty *groupProperty, bool expanded)
+{
+    auto &widgets = m_propertyWidgets[groupProperty];
 
-        auto children = new VariantEditor(this);
+    // Create the children editor on-demand
+    if (expanded && !widgets.children) {
+        const auto halfSpacing = Utils::dpiScaled(2);
+
+        widgets.children = new VariantEditor(this);
         if (widgets.label->isHeader())
-            children->setContentsMargins(0, halfSpacing, 0, halfSpacing);
-        children->setLevel(m_level + 1);
-        children->setEnabled(property->isEnabled());
-        children->setVisible(widgets.label->isExpanded());
+            widgets.children->setContentsMargins(0, halfSpacing, 0, halfSpacing);
+        widgets.children->setLevel(m_level + 1);
+        widgets.children->setEnabled(groupProperty->isEnabled());
         for (auto property : groupProperty->subProperties())
-            children->addProperty(property);
+            widgets.children->addProperty(property);
 
         connect(groupProperty, &GroupProperty::propertyAdded,
-                children, &VariantEditor::insertProperty);
+                widgets.children, &VariantEditor::insertProperty);
 
-        connect(widgets.label, &PropertyLabel::toggled, children, [=](bool expanded) {
-            children->setVisible(expanded);
+        widgets.childrenLayout->addWidget(widgets.children);
+    }
 
-            // needed to avoid flickering when hiding the editor
+    if (widgets.children) {
+        widgets.children->setVisible(expanded);
+
+        // needed to avoid flickering when hiding the editor
+        if (!expanded) {
             QWidget *widget = this;
             while (widget && widget->layout()) {
                 widget->layout()->activate();
                 widget = widget->parentWidget();
             }
-        });
-
-        verticalLayout->addLayout(rowLayout);
-        verticalLayout->addWidget(children);
-
-        widgets.children = children;
-        widgets.layout = verticalLayout;
+        }
     }
-
-    return widgets.layout;
 }
 
 void VariantEditor::updatePropertyEnabled(const PropertyWidgets &widgets, bool enabled)
