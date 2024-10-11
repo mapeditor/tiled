@@ -2615,9 +2615,19 @@ void CustomProperties::refresh()
         return;
     }
 
-    // todo: gather the values from all selected objects
-    setValue(mDocument->currentObject()->properties(),
-             mDocument->currentObject()->inheritedProperties());
+    const Properties &currentObjectProperties = mDocument->currentObject()->properties();
+
+    // Suggest properties from selected objects.
+    Properties suggestedProperties;
+    for (auto object : mDocument->currentObjects())
+        if (object != mDocument->currentObject())
+            mergeProperties(suggestedProperties, object->properties());
+
+    // Suggest properties inherited from the class, tile or template.
+    mergeProperties(suggestedProperties,
+                    mDocument->currentObject()->inheritedProperties());
+
+    setValue(currentObjectProperties, suggestedProperties);
 }
 
 void CustomProperties::setPropertyValue(const QStringList &path, const QVariant &value)
