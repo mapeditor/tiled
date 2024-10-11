@@ -291,8 +291,13 @@ private:
 struct BoolProperty : PropertyTemplate<bool>
 {
     using PropertyTemplate::PropertyTemplate;
-    DisplayMode displayMode() const override { return DisplayMode::NoLabel; }
+    DisplayMode displayMode() const override;
     QWidget *createEditor(QWidget *parent) override;
+
+    void setNameOnCheckBox(bool nameOnCheckBox) { m_nameOnCheckBox = nameOnCheckBox; }
+
+private:
+    bool m_nameOnCheckBox = false;
 };
 
 struct PointProperty : PropertyTemplate<QPoint>

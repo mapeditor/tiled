@@ -857,6 +857,7 @@ public:
                                                    Map::InfiniteProperty,
                                                    value ? 1 : 0));
                     });
+        mInfiniteProperty->setNameOnCheckBox(true);
 
         mHexSideLengthProperty = new IntProperty(
                     tr("Hex Side Length"),
@@ -1062,7 +1063,7 @@ private:
     Property *mOrientationProperty;
     Property *mSizeProperty;
     SizeProperty *mTileSizeProperty;
-    Property *mInfiniteProperty;
+    BoolProperty *mInfiniteProperty;
     IntProperty *mHexSideLengthProperty;
     Property *mStaggerAxisProperty;
     Property *mStaggerIndexProperty;
@@ -1104,6 +1105,7 @@ public:
                     [this](const bool &value) {
                         push(new SetLayerVisible(mapDocument(), { layer() }, value));
                     });
+        mVisibleProperty->setNameOnCheckBox(true);
 
         mLockedProperty = new BoolProperty(
                     tr("Locked"),
@@ -1111,6 +1113,7 @@ public:
                     [this](const bool &value) {
                         push(new SetLayerLocked(mapDocument(), { layer() }, value));
                     });
+        mLockedProperty->setNameOnCheckBox(true);
 
         mOpacityProperty = new IntProperty(
                     tr("Opacity"),
@@ -1202,8 +1205,8 @@ protected:
     GroupProperty *mLayerProperties;
     Property *mIdProperty;
     Property *mNameProperty;
-    Property *mVisibleProperty;
-    Property *mLockedProperty;
+    BoolProperty *mVisibleProperty;
+    BoolProperty *mLockedProperty;
     IntProperty *mOpacityProperty;
     Property *mTintColorProperty;
     Property *mOffsetProperty;
@@ -1635,6 +1638,7 @@ public:
                     [this](const bool &value) {
                         changeMapObject(MapObject::VisibleProperty, value);
                     });
+        mVisibleProperty->setNameOnCheckBox(true);
 
         mPositionProperty = new PointFProperty(
                     tr("Position"),
@@ -1846,7 +1850,7 @@ private:
     Property *mIdProperty;
     Property *mTemplateProperty;
     Property *mNameProperty;
-    Property *mVisibleProperty;
+    BoolProperty *mVisibleProperty;
     Property *mPositionProperty;
     Property *mSizeProperty;
     FloatProperty *mRotationProperty;
