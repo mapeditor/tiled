@@ -192,6 +192,11 @@ QWidget *FloatProperty::createEditor(QWidget *parent)
     return editor;
 }
 
+Property::DisplayMode BoolProperty::displayMode() const
+{
+    return m_nameOnCheckBox ? DisplayMode::NoLabel : DisplayMode::Default;
+}
+
 QWidget *BoolProperty::createEditor(QWidget *parent)
 {
     auto editor = new QCheckBox(name(), parent);
@@ -199,6 +204,8 @@ QWidget *BoolProperty::createEditor(QWidget *parent)
         const QSignalBlocker blocker(editor);
         bool checked = value();
         editor->setChecked(checked);
+        if (!m_nameOnCheckBox)
+            editor->setText(checked ? tr("On") : tr("Off"));
 
         // Reflect modified state on the checkbox, since we're not showing the
         // property label.
@@ -210,7 +217,11 @@ QWidget *BoolProperty::createEditor(QWidget *parent)
 
     connect(this, &Property::valueChanged, editor, syncEditor);
     connect(this, &Property::modifiedChanged, editor, syncEditor);
-    connect(editor, &QCheckBox::toggled, this, &BoolProperty::setValue);
+    connect(editor, &QCheckBox::toggled, this, [=](bool checked) {
+        if (!m_nameOnCheckBox)
+            editor->setText(checked ? QObject::tr("On") : QObject::tr("Off"));
+        setValue(checked);
+    });
 
     return editor;
 }
