@@ -20,7 +20,6 @@ default/
 *.ncb
 *.sdf
 *.opensdf
-*.vcxproj.user
 
 # CLion / JetBrains IDEs
 .idea/
