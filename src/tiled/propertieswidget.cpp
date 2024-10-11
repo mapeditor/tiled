@@ -1094,20 +1094,22 @@ public:
                     [this] { return layer()->id(); });
         mIdProperty->setEnabled(false);
 
-        // todo: the below should be able to apply to all selected layers
-
         mNameProperty = new StringProperty(
                     tr("Name"),
                     [this] { return layer()->name(); },
                     [this](const QString &value) {
-                        push(new SetLayerName(mapDocument(), { layer() }, value));
+                        push(new SetLayerName(mapDocument(),
+                                              mapDocument()->selectedLayers(),
+                                              value));
                     });
 
         mVisibleProperty = new BoolProperty(
                     tr("Visible"),
                     [this] { return layer()->isVisible(); },
                     [this](const bool &value) {
-                        push(new SetLayerVisible(mapDocument(), { layer() }, value));
+                        push(new SetLayerVisible(mapDocument(),
+                                                 mapDocument()->selectedLayers(),
+                                                 value));
                     });
         mVisibleProperty->setNameOnCheckBox(true);
 
@@ -1115,7 +1117,9 @@ public:
                     tr("Locked"),
                     [this] { return layer()->isLocked(); },
                     [this](const bool &value) {
-                        push(new SetLayerLocked(mapDocument(), { layer() }, value));
+                        push(new SetLayerLocked(mapDocument(),
+                                                mapDocument()->selectedLayers(),
+                                                value));
                     });
         mLockedProperty->setNameOnCheckBox(true);
 
@@ -1123,7 +1127,9 @@ public:
                     tr("Opacity"),
                     [this] { return qRound(layer()->opacity() * 100); },
                     [this](const int &value) {
-                        push(new SetLayerOpacity(mapDocument(), { layer() }, qreal(value) / 100));
+                        push(new SetLayerOpacity(mapDocument(),
+                                                 mapDocument()->selectedLayers(),
+                                                 qreal(value) / 100));
                     });
         mOpacityProperty->setRange(0, 100);
         mOpacityProperty->setSuffix(tr("%"));
@@ -1133,21 +1139,29 @@ public:
                     tr("Tint Color"),
                     [this] { return layer()->tintColor(); },
                     [this](const QColor &value) {
-                        push(new SetLayerTintColor(mapDocument(), { layer() }, value));
+                        push(new SetLayerTintColor(mapDocument(),
+                                                   mapDocument()->selectedLayers(),
+                                                   value));
                     });
 
         mOffsetProperty = new PointFProperty(
                     tr("Offset"),
                     [this] { return layer()->offset(); },
                     [this](const QPointF &value) {
-                        push(new SetLayerOffset(mapDocument(), { layer() }, value));
+                        // todo: consider whether we can apply only the changed axis to the selected layers
+                        // this is what PropertyBrowser::applyLayerValue used to do
+                        push(new SetLayerOffset(mapDocument(),
+                                                mapDocument()->selectedLayers(),
+                                                value));
                     });
 
         mParallaxFactorProperty = new PointFProperty(
                     tr("Parallax Factor"),
                     [this] { return layer()->parallaxFactor(); },
                     [this](const QPointF &value) {
-                        push(new SetLayerParallaxFactor(mapDocument(), { layer() }, value));
+                        push(new SetLayerParallaxFactor(mapDocument(),
+                                                        mapDocument()->selectedLayers(),
+                                                        value));
                     });
         mParallaxFactorProperty->setSingleStep(0.1);
 
@@ -1206,6 +1220,20 @@ protected:
         return static_cast<Layer*>(mObject);
     }
 
+    template <class T>
+    QList<T*> selectedLayersOfType(Layer::TypeFlag typeFlag)
+    {
+        if (mDocument)
+            return {};
+
+        QList<T*> result;
+        for (Layer *layer : mapDocument()->selectedLayers())
+            if (layer->layerType() == typeFlag)
+                result.append(static_cast<T*>(layer));
+
+        return result;
+    }
+
     GroupProperty *mLayerProperties;
     Property *mIdProperty;
     Property *mNameProperty;
@@ -1229,7 +1257,8 @@ public:
                     tr("Image Source"),
                     [this] { return imageLayer()->imageSource(); },
                     [this](const QUrl &value) {
-                        push(new ChangeImageLayerImageSource(mapDocument(), { imageLayer() }, value));
+                        const auto imageLayers = selectedLayersOfType<ImageLayer>(Layer::ImageLayerType);
+                        push(new ChangeImageLayerImageSource(mapDocument(), imageLayers, value));
                     });
         mImageProperty->setFilter(Utils::readableImageFormatsFilter());
 
@@ -1237,7 +1266,8 @@ public:
                     tr("Transparent Color"),
                     [this] { return imageLayer()->transparentColor(); },
                     [this](const QColor &value) {
-                        push(new ChangeImageLayerTransparentColor(mapDocument(), { imageLayer() }, value));
+                        const auto imageLayers = selectedLayersOfType<ImageLayer>(Layer::ImageLayerType);
+                        push(new ChangeImageLayerTransparentColor(mapDocument(), imageLayers, value));
                     });
         mTransparentColorProperty->setAlpha(false);
 
@@ -1247,10 +1277,11 @@ public:
                     [this](const ImageLayer::RepetitionFlags &value) {
                         const bool repeatX = value & ImageLayer::RepeatX;
                         const bool repeatY = value & ImageLayer::RepeatY;
+                        const auto imageLayers = selectedLayersOfType<ImageLayer>(Layer::ImageLayerType);
                         if (repeatX != imageLayer()->repeatX())
-                            push(new ChangeImageLayerRepeatX(mapDocument(), { imageLayer() }, repeatX));
+                            push(new ChangeImageLayerRepeatX(mapDocument(), imageLayers, repeatX));
                         if (repeatY != imageLayer()->repeatY())
-                            push(new ChangeImageLayerRepeatY(mapDocument(), { imageLayer() }, repeatY));
+                            push(new ChangeImageLayerRepeatY(mapDocument(), imageLayers, repeatY));
                     });
 
         mImageLayerProperties = new GroupProperty(tr("Image Layer"));
@@ -1310,14 +1341,16 @@ public:
                     tr("Color"),
                     [this] { return objectGroup()->color(); },
                     [this](const QColor &value) {
-                        push(new ChangeObjectGroupColor(mapDocument(), { objectGroup() }, value));
+                        const auto objectGroups = selectedLayersOfType<ObjectGroup>(Layer::ObjectGroupType);
+                        push(new ChangeObjectGroupColor(mapDocument(), objectGroups, value));
                     });
 
         mDrawOrderProperty = new EnumProperty<ObjectGroup::DrawOrder>(
                     tr("Draw Order"),
                     [this] { return objectGroup()->drawOrder(); },
                     [this](ObjectGroup::DrawOrder value) {
-                        push(new ChangeObjectGroupDrawOrder(mapDocument(), { objectGroup() }, value));
+                        const auto objectGroups = selectedLayersOfType<ObjectGroup>(Layer::ObjectGroupType);
+                        push(new ChangeObjectGroupDrawOrder(mapDocument(), objectGroups, value));
                     });
 
         mObjectGroupProperties = new GroupProperty(tr("Object Layer"));
