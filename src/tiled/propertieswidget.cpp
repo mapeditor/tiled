@@ -199,6 +199,65 @@ template<> EnumData enumData<WangSet::Type>()
 }
 
 
+class FlippingProperty : public IntProperty
+{
+    Q_OBJECT
+
+public:
+    using IntProperty::IntProperty;
+
+    QWidget *createEditor(QWidget *parent) override
+    {
+        QIcon flipHorizontalIcon(QLatin1String(":images/24/flip-horizontal.png"));
+        QIcon flipVerticalIcon(QLatin1String(":images/24/flip-vertical.png"));
+
+        flipHorizontalIcon.addFile(QLatin1String(":images/32/flip-horizontal.png"));
+        flipVerticalIcon.addFile(QLatin1String(":images/32/flip-vertical.png"));
+
+        auto editor = new QWidget(parent);
+
+        auto flipHorizontally = new QToolButton(editor);
+        flipHorizontally->setToolTip(tr("Flip Horizontally"));
+        flipHorizontally->setIcon(flipHorizontalIcon);
+        flipHorizontally->setCheckable(true);
+
+        auto flipVertically = new QToolButton(editor);
+        flipVertically->setToolTip(tr("Flip Vertically"));
+        flipVertically->setIcon(flipVerticalIcon);
+        flipVertically->setCheckable(true);
+
+        auto horizontalLayout = new QHBoxLayout(editor);
+        horizontalLayout->setContentsMargins(QMargins());
+        horizontalLayout->addWidget(flipHorizontally);
+        horizontalLayout->addWidget(flipVertically);
+        horizontalLayout->addStretch();
+
+        auto syncEditor = [=] {
+            const QSignalBlocker horizontalBlocker(flipHorizontally);
+            const QSignalBlocker verticalBlocker(flipVertically);
+            const auto v = value();
+            flipHorizontally->setChecked(v & Cell::FlippedHorizontally);
+            flipVertically->setChecked(v & Cell::FlippedVertically);
+        };
+        auto syncProperty = [=] {
+            int flags = 0;
+            if (flipHorizontally->isChecked())
+                flags |= Cell::FlippedHorizontally;
+            if (flipVertically->isChecked())
+                flags |= Cell::FlippedVertically;
+            setValue(flags);
+        };
+
+        syncEditor();
+
+        connect(this, &Property::valueChanged, editor, syncEditor);
+        connect(flipHorizontally, &QAbstractButton::toggled, this, syncProperty);
+        connect(flipVertically, &QAbstractButton::toggled, this, syncProperty);
+        return editor;
+    }
+};
+
+
 class ObjectRefProperty : public PropertyTemplate<DisplayObjectRef>
 {
     Q_OBJECT
@@ -1706,8 +1765,7 @@ public:
                     this);
         mRotationProperty->setSuffix(QStringLiteral("°"));
 
-        // todo: make this a custom widget with "Horizontal" and "Vertical" checkboxes
-        mFlippingProperty = new IntProperty(
+        mFlippingProperty = new FlippingProperty(
                     tr("Flipping"),
                     [this] {
                         return mapObject()->cell().flags();

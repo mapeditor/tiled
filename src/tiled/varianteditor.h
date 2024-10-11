@@ -364,7 +364,6 @@ struct RectFProperty : PropertyTemplate<QRectF>
     QWidget *createEditor(QWidget *parent) override;
 };
 
-// todo: needs to handle invalid color (unset value)
 struct ColorProperty : PropertyTemplate<QColor>
 {
     using PropertyTemplate::PropertyTemplate;
@@ -486,8 +485,8 @@ public:
     void setLevel(int level);
 
 private:
-    static constexpr int LabelStretch = 4;
-    static constexpr int EditorStretch = 6;
+    static constexpr int LabelStretch = 1;
+    static constexpr int EditorStretch = 1;
 
     struct PropertyWidgets
     {
