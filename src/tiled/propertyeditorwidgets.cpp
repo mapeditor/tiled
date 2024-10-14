@@ -459,6 +459,25 @@ ElidingLabel::ElidingLabel(const QString &text, QWidget *parent)
     setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
 }
 
+/**
+ * Sets a tool tip on the label.
+ *
+ * When a tool tip is set, it will be shown instead of the on-demand tool tip
+ * that shows the full text when the text is elided.
+ */
+void ElidingLabel::setToolTip(const QString &toolTip)
+{
+    if (m_toolTip == toolTip)
+        return;
+
+    m_toolTip = toolTip;
+
+    if (m_toolTip.isEmpty())
+        QLabel::setToolTip(m_isElided ? text() : QString());
+    else
+        QLabel::setToolTip(m_toolTip);
+}
+
 QSize ElidingLabel::minimumSizeHint() const
 {
     auto hint = QLabel::minimumSizeHint();
@@ -468,22 +487,23 @@ QSize ElidingLabel::minimumSizeHint() const
 
 void ElidingLabel::paintEvent(QPaintEvent *)
 {
-    const int m = margin();
-    const QRect cr = contentsRect().adjusted(m, m, -m, -m);
-    const Qt::LayoutDirection dir = text().isRightToLeft() ? Qt::RightToLeft : Qt::LeftToRight;
-    const int align = QStyle::visualAlignment(dir, alignment());
-    const int flags = align | (dir == Qt::LeftToRight ? Qt::TextForceLeftToRight
-                                                      : Qt::TextForceRightToLeft);
-
     QStyleOption opt;
     opt.initFrom(this);
+
+    const int m = margin();
+    const QRect cr = contentsRect().adjusted(m, m, -m, -m);
+    const int align = QStyle::visualAlignment(opt.direction, alignment());
+    const int flags = align | (opt.direction == Qt::LeftToRight ? Qt::TextForceLeftToRight
+                                                                : Qt::TextForceRightToLeft);
 
     const auto elidedText = opt.fontMetrics.elidedText(text(), Qt::ElideRight, cr.width());
     const bool isElided = elidedText != text();
 
     if (isElided != m_isElided) {
         m_isElided = isElided;
-        setToolTip(isElided ? text() : QString());
+
+        if (m_toolTip.isEmpty())
+            QLabel::setToolTip(m_isElided ? text() : QString());
     }
 
     QStylePainter p(this);
@@ -554,6 +574,9 @@ bool PropertyLabel::event(QEvent *event)
         }
     }
 
+    if (event->type() == QEvent::LayoutDirectionChange)
+        updateContentMargins();
+
     return ElidingLabel::event(event);
 }
 
@@ -563,11 +586,16 @@ void PropertyLabel::paintEvent(QPaintEvent *event)
 
     const int spacing = Utils::dpiScaled(3);
     const int branchIndicatorWidth = Utils::dpiScaled(14);
+    const int indent = branchIndicatorWidth * std::max(m_level - 1, 0);
 
     QStyleOption branchOption;
     branchOption.initFrom(this);
-    branchOption.rect = QRect(branchIndicatorWidth * std::max(m_level - 1, 0), 0,
-                              branchIndicatorWidth + spacing, height());
+    if (branchOption.direction == Qt::LeftToRight)
+        branchOption.rect = QRect(indent, 0,
+                                  branchIndicatorWidth + spacing, height());
+    else
+        branchOption.rect = QRect(width() - indent - branchIndicatorWidth - spacing, 0,
+                                  branchIndicatorWidth + spacing, height());
     if (m_expandable)
         branchOption.state |= QStyle::State_Children;
     if (m_expanded)
@@ -590,9 +618,12 @@ void PropertyLabel::updateContentMargins()
     const int spacing = Utils::dpiScaled(3);
     const int branchIndicatorWidth = Utils::dpiScaled(14);
     const int verticalSpacing = m_header ? spacing : 0;
-    setContentsMargins(spacing + branchIndicatorWidth * std::max(m_level, 1),
-                       verticalSpacing, spacing, verticalSpacing);
+    const int indent = branchIndicatorWidth * std::max(m_level, 1);
 
+    if (isLeftToRight())
+        setContentsMargins(spacing + indent, verticalSpacing, spacing, verticalSpacing);
+    else
+        setContentsMargins(spacing, verticalSpacing, spacing + indent, verticalSpacing);
 }
 
 /**

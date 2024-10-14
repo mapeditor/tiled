@@ -263,12 +263,15 @@ public:
     explicit ElidingLabel(QWidget *parent = nullptr);
     ElidingLabel(const QString &text, QWidget *parent = nullptr);
 
+    void setToolTip(const QString &toolTip);
+
     QSize minimumSizeHint() const override;
 
 protected:
     void paintEvent(QPaintEvent *) override;
 
 private:
+    QString m_toolTip;
     bool m_isElided = false;
 };
 
