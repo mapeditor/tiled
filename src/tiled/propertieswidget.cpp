@@ -2538,19 +2538,20 @@ Property *VariantMapProperty::createProperty(const QStringList &path,
                                              std::function<QVariant ()> get,
                                              std::function<void (const QVariant &)> set)
 {
+    Property *property = nullptr;
+
     const auto value = get();
     const auto type = value.userType();
     const auto &name = path.last();
+    QString typeName;
 
     if (type == filePathTypeId()) {
         auto getUrl = [get = std::move(get)] { return get().value<FilePath>().url; };
         auto setUrl = [set = std::move(set)] (const QUrl &value) {
             set(QVariant::fromValue(FilePath { value }));
         };
-        return new UrlProperty(name, std::move(getUrl), std::move(setUrl));
-    }
-
-    if (type == objectRefTypeId()) {
+        property = new UrlProperty(name, std::move(getUrl), std::move(setUrl));
+    } else if (type == objectRefTypeId()) {
         auto getObjectRef = [get = std::move(get), this] {
             return DisplayObjectRef(get().value<ObjectRef>(),
                                     static_cast<MapDocument*>(mDocument));
@@ -2558,10 +2559,8 @@ Property *VariantMapProperty::createProperty(const QStringList &path,
         auto setObjectRef = [set = std::move(set)](const DisplayObjectRef &value) {
             set(QVariant::fromValue(value.ref));
         };
-        return new ObjectRefProperty(name, std::move(getObjectRef), std::move(setObjectRef));
-    }
-
-    if (type == propertyValueId()) {
+        property = new ObjectRefProperty(name, std::move(getObjectRef), std::move(setObjectRef));
+    } else if (type == propertyValueId()) {
         const auto propertyValue = value.value<PropertyValue>();
         if (auto propertyType = propertyValue.type()) {
             switch (propertyType->type) {
@@ -2575,7 +2574,8 @@ Property *VariantMapProperty::createProperty(const QStringList &path,
 
                 createClassMembers(path, groupProperty, classType, std::move(get));
 
-                return groupProperty;
+                property = groupProperty;
+                break;
             }
             case PropertyType::PT_Enum: {
                 auto enumProperty = new BaseEnumProperty(
@@ -2589,13 +2589,28 @@ Property *VariantMapProperty::createProperty(const QStringList &path,
                 enumProperty->setEnumData(enumType.values);
                 enumProperty->setFlags(enumType.valuesAsFlags);
 
-                return enumProperty;
+                property = enumProperty;
+                break;
             }
             }
+
+            typeName = propertyType->name;
+        } else {
+            typeName = tr("Unknown type");
         }
+    } else {
+        property = createVariantProperty(name, std::move(get), std::move(set));
     }
 
-    return createVariantProperty(name, std::move(get), std::move(set));
+    if (property) {
+        if (typeName.isEmpty())
+            typeName = typeToName(type);
+
+        property->setToolTip(QStringLiteral("%1&nbsp;<span style=\"color: gray;\">:&nbsp;%2<span>")
+                             .arg(property->name(), typeName));
+    }
+
+    return property;
 }
 
 void VariantMapProperty::createClassMembers(const QStringList &path,

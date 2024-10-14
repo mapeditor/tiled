@@ -618,8 +618,10 @@ QLayout *VariantEditor::createPropertyLayout(Property *property)
 
     if (displayMode == Property::DisplayMode::Header)
         widgets.label->setHeader(true);
-    else
+    else if (isLeftToRight())
         rowLayout->setContentsMargins(0, halfSpacing, halfSpacing * 2, halfSpacing);
+    else
+        rowLayout->setContentsMargins(halfSpacing * 2, halfSpacing, 0, halfSpacing);
 
     rowLayout->addWidget(widgets.label, LabelStretch, Qt::AlignTop);
 
