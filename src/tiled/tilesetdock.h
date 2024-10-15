@@ -206,6 +206,7 @@ private:
 
     bool mEmittingStampCaptured = false;
     bool mSynchronizingSelection = false;
+    bool mNoChangeCurrentObject = false;
 };
 
 } // namespace Tiled

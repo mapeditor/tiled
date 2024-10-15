@@ -458,8 +458,10 @@ void TilesetDock::onCurrentTilesetChanged()
 
     view->zoomable()->setComboBox(mZoomComboBox);
 
-    if (const QItemSelectionModel *s = view->selectionModel())
+    if (const QItemSelectionModel *s = view->selectionModel()) {
+        QScopedValueRollback<bool> noChangeCurrentObject(mNoChangeCurrentObject, true);
         setCurrentTile(view->tilesetModel()->tileAt(s->currentIndex()));
+    }
 
     mDynamicWrappingToggle->setChecked(view->dynamicWrapping());
 
@@ -488,16 +490,12 @@ void TilesetDock::restoreCurrentTile()
     if (!mMapDocument)
         return;
 
-    if (auto object = mMapDocument->currentObject()) {
-        if (object->typeId() == Object::TileType) {
-            setCurrentTile(static_cast<Tile*>(object));
-            return;
+    if (auto view = currentTilesetView()) {
+        if (view->model()) {
+            QScopedValueRollback<bool> noChangeCurrentObject(mNoChangeCurrentObject, true);
+            currentChanged(view->selectionModel()->currentIndex());
         }
     }
-
-    if (auto view = currentTilesetView())
-        if (view->model())
-            currentChanged(view->selectionModel()->currentIndex());
 }
 
 void TilesetDock::updateActions()
@@ -844,7 +842,7 @@ void TilesetDock::setCurrentTile(Tile *tile)
     mCurrentTile = tile;
     emit currentTileChanged(tile);
 
-    if (mMapDocument && tile) {
+    if (mMapDocument && tile && !mNoChangeCurrentObject) {
         int tilesetIndex = indexOfTileset(tile->tileset());
         if (tilesetIndex != -1)
             mMapDocument->setCurrentObject(tile, mTilesetDocuments.at(tilesetIndex));
