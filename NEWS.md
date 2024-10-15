@@ -5,6 +5,7 @@
 * Scripting: Added `tiled.cursor` to create mouse cursor values
 * Fixed saving/loading of custom properties set on worlds (#4025)
 * Fixed crash when accessing a world through a symlink (#4042)
+* Fixed performance issue when tinting tiles from large tilesets
 * Fixed error reporting when exporting on the command-line (by Shuhei Nagasawa, #4015)
 * Fixed minimum value of spinbox in Tile Animation Editor
 
