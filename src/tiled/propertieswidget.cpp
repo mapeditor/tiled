@@ -2394,8 +2394,10 @@ void PropertiesWidget::currentObjectChanged(Object *object)
         }
     }
 
-    if (mPropertiesObject) {
-        mPropertiesObject->populateEditor(mPropertyBrowser);
+    if (object) {
+        if (mPropertiesObject)
+            mPropertiesObject->populateEditor(mPropertyBrowser);
+
         mPropertyBrowser->addProperty(mCustomProperties);
     }
 
