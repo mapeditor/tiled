@@ -1,6 +1,7 @@
 Sphinx >= 8, < 9
 docutils >= 0.20, < 0.22
 myst-parser >= 4.0
+sphinx-docsearch >= 0.1
 sphinx-reredirects >= 0.1
 sphinx-rtd-theme >= 3
 sphinx_design >= 0.6.1
