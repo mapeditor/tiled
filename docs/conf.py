@@ -35,8 +35,9 @@ import sphinx_rtd_theme
 extensions = [
     'myst_parser',
     'sphinx_design',
-    'sphinx_rtd_theme',
+    'sphinx_docsearch',
     'sphinx_reredirects',
+    'sphinx_rtd_theme',
 ]
 
 myst_enable_extensions = [
@@ -98,6 +99,10 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
+# Algolia DocSearch
+docsearch_app_id = "35BY1OSF18"
+docsearch_api_key = "3535ea3f554af15b8796f9f9c3339da7"
+docsearch_index_name = "mapeditor"
 
 # -- Options for HTML output ----------------------------------------------
 
