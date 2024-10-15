@@ -101,7 +101,7 @@ todo_include_todos = False
 
 # Algolia DocSearch
 docsearch_app_id = "35BY1OSF18"
-docsearch_api_key = "3535ea3f554af15b8796f9f9c3339da7"
+docsearch_api_key = "5e8eda6dd7fc14e4ae620ff5e0f4cbed"
 docsearch_index_name = "mapeditor"
 
 # -- Options for HTML output ----------------------------------------------
