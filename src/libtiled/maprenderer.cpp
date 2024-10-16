@@ -49,25 +49,33 @@ using namespace Tiled;
 
 struct TintedKey
 {
-    const qint64 key;
+    const qint64 pixmapKey;
+    const QRect rect;
     const QColor color;
 
     bool operator==(const TintedKey &o) const
     {
-        return key == o.key && color == o.color;
+        return pixmapKey == o.pixmapKey &&
+                rect == o.rect &&
+                color == o.color;
     }
 };
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 uint qHash(const TintedKey &key, uint seed) Q_DECL_NOTHROW
-#else
-size_t qHash(const TintedKey &key, size_t seed) Q_DECL_NOTHROW
-#endif
 {
-    auto h = ::qHash(key.key, seed);
+    auto h = ::qHash(key.pixmapKey, seed);
+    h = ::qHash(key.rect.topLeft(), h);
+    h = ::qHash(key.rect.bottomRight(), h);
     h = ::qHash(key.color.rgba(), h);
     return h;
 }
+#else
+size_t qHash(const TintedKey &key, size_t seed) Q_DECL_NOTHROW
+{
+    return qHashMulti(seed, key.pixmapKey, key.rect, key.color.rgba());
+}
+#endif
 
 // Borrowed from qpixmapcache.cpp
 static inline qsizetype cost(const QPixmap &pixmap)
@@ -80,19 +88,25 @@ static inline qsizetype cost(const QPixmap &pixmap)
     return static_cast<qsizetype>(qBound(1LL, costKb, costMax));
 }
 
-static QPixmap tinted(const QPixmap &pixmap, const QColor &color)
+static bool needsTint(const QColor &color)
 {
-    if (!color.isValid() || color == QColor(255, 255, 255, 255) || pixmap.isNull())
+    return color.isValid() &&
+            color != QColor(255, 255, 255, 255);
+}
+
+static QPixmap tinted(const QPixmap &pixmap, const QRect &rect, const QColor &color)
+{
+    if (pixmap.isNull() || !needsTint(color))
         return pixmap;
 
     // Cache for up to 100 MB of tinted pixmaps, since tinting is expensive
     static QCache<TintedKey, QPixmap> cache { 100 * 1024 };
 
-    const TintedKey tintedKey { pixmap.cacheKey(), color };
+    const TintedKey tintedKey { pixmap.cacheKey(), rect, color };
     if (auto cached = cache.object(tintedKey))
         return *cached;
 
-    QPixmap resultImage = pixmap;
+    QPixmap resultImage = pixmap.copy(rect);
     QPainter painter(&resultImage);
 
     QColor fullOpacity = color;
@@ -104,7 +118,7 @@ static QPixmap tinted(const QPixmap &pixmap, const QColor &color)
 
     // apply the original alpha to the final image
     painter.setCompositionMode(QPainter::CompositionMode_DestinationIn);
-    painter.drawPixmap(0, 0, pixmap);
+    painter.drawPixmap(resultImage.rect(), pixmap, rect);
 
     // apply the alpha of the tint color so that we can use it to make the image
     // transparent instead of just increasing or decreasing the tint effect
@@ -171,7 +185,9 @@ void MapRenderer::drawImageLayer(QPainter *painter,
                                  const QRectF &exposed) const
 {
     painter->save();
-    painter->setBrush(tinted(imageLayer->image(), imageLayer->effectiveTintColor()));
+    painter->setBrush(tinted(imageLayer->image(),
+                             imageLayer->image().rect(),
+                             imageLayer->effectiveTintColor()));
     painter->setPen(Qt::NoPen);
     if (exposed.isNull())
         painter->drawRect(boundingRect(imageLayer));
@@ -431,9 +447,12 @@ void CellRenderer::render(const Cell &cell, const QPointF &screenPos, const QSiz
         flush();
 
     const QPixmap &image = tile->image();
-    const QRect imageRect = tile->imageRect();
+    QRect imageRect = tile->imageRect();
     if (imageRect.isEmpty())
         return;
+
+    if (needsTint(mTintColor))
+        imageRect.moveTopLeft(QPoint(0, 0));
 
     const QPoint offset = tile->offset();
     const QPointF sizeHalf { size.width() / 2, size.height() / 2 };
@@ -520,7 +539,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &screenPos, const QSiz
                         fragment.width, fragment.height);
 
     mPainter->setTransform(transform);
-    mPainter->drawPixmap(target, tinted(image, mTintColor), source);
+    mPainter->drawPixmap(target, tinted(image, tile->imageRect(), mTintColor), source);
     mPainter->setTransform(oldTransform);
 
     // A bit of a hack to still draw tile collision shapes when requested
@@ -545,7 +564,9 @@ void CellRenderer::flush()
 
     mPainter->drawPixmapFragments(mFragments.constData(),
                                   mFragments.size(),
-                                  tinted(mTile->image(), mTintColor));
+                                  tinted(mTile->image(),
+                                         mTile->imageRect(),
+                                         mTintColor));
 
     if (mRenderer->flags().testFlag(ShowTileCollisionShapes)
             && mTile->objectGroup()
