@@ -124,7 +124,6 @@ html_static_path = ['_static']
 
 html_css_files = [
     'css/custom.css',
-    'https://cdn.jsdelivr.net/npm/@docsearch/css@3',
 ]
 
 # Custom sidebar templates, must be a dictionary that maps document names
