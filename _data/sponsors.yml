@@ -111,6 +111,11 @@
   url: https://aviators.com.br/
   banner: sponsors/aviators.png
 
+- name: Robot trading lpotouraine
+  url: https://lpotouraine.fr/blog/
+  banner: sponsors/lpotouraine.png
+  sponsor: https://opencollective.com/lpotouraine
+
 - name: Betwinner is an online bookmaker offering sports betting, casino games, and more.
   url: https://guidebook.betwinner.com/
   banner: sponsors/betwinner.png
