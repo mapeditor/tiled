@@ -504,6 +504,7 @@ private:
 
     void removeMember(const QString &name);
     void addMember(const QString &name, const QVariant &value);
+    void setClassMember(const QStringList &path, const QVariant &value);
 
     void updateModifiedRecursively(Property *property, const QVariant &value);
     void emitValueChangedRecursively(Property *property);
@@ -512,6 +513,11 @@ private:
 
     void emitMemberValueChanged(const QStringList &path, const QVariant &value);
 
+    void memberContextMenuRequested(Property *property, const QStringList &path, const QPoint &globalPos);
+
+    QIcon m_resetIcon;
+    QIcon m_removeIcon;
+    QIcon m_addIcon;
     bool mEmittingValueChanged = false;
     bool mPropertyTypesChanged = false;
     QVariantMap mValue;
@@ -2413,7 +2419,14 @@ void PropertiesWidget::currentObjectChanged(Object *object)
 
 VariantMapProperty::VariantMapProperty(const QString &name, QObject *parent)
     : GroupProperty(name, parent)
+    , m_resetIcon(QIcon(QStringLiteral(":/images/16/edit-clear.png")))
+    , m_removeIcon(QIcon(QStringLiteral(":/images/16/remove.png")))
+    , m_addIcon(QIcon(QStringLiteral(":/images/16/add.png")))
 {
+    m_resetIcon.addFile(QStringLiteral(":/images/24/edit-clear.png"));
+    m_removeIcon.addFile(QStringLiteral(":/images/22/remove.png"));
+    m_addIcon.addFile(QStringLiteral(":/images/22/add.png"));
+
     connect(Preferences::instance(), &Preferences::propertyTypesChanged,
             this, &VariantMapProperty::propertyTypesChanged);
 }
@@ -2620,6 +2633,10 @@ Property *VariantMapProperty::createProperty(const QStringList &path,
 
         property->setToolTip(QStringLiteral("%1&nbsp;<span style=\"color: gray;\">:&nbsp;%2<span>")
                              .arg(property->name(), typeName));
+
+        connect(property, &Property::contextMenuRequested, this, [=](const QPoint &globalPos) {
+            memberContextMenuRequested(property, path, globalPos);
+        });
     }
 
     return property;
@@ -2644,13 +2661,7 @@ void VariantMapProperty::createClassMembers(const QStringList &path,
             return get().value<PropertyValue>().value.toMap().value(name, def);
         };
         auto setMember = [=] (const QVariant &value) {
-            if (setPropertyMemberValue(mValue, childPath, value)) {
-                const auto &topLevelName = childPath.first();
-                updateModifiedRecursively(mPropertyMap.value(topLevelName),
-                                          mValue.value(topLevelName));
-
-                emitMemberValueChanged(childPath, value);
-            }
+            setClassMember(childPath, value);
         };
 
         if (auto childProperty = createProperty(childPath, std::move(getMember), setMember)) {
@@ -2698,10 +2709,22 @@ void VariantMapProperty::addMember(const QString &name, const QVariant &value)
     emitMemberValueChanged({ name }, value);
 }
 
+void VariantMapProperty::setClassMember(const QStringList &path, const QVariant &value)
+{
+    if (!setPropertyMemberValue(mValue, path, value))
+        return;
+
+    const auto &topLevelName = path.first();
+    updateModifiedRecursively(mPropertyMap.value(topLevelName),
+                              mValue.value(topLevelName));
+
+    emitMemberValueChanged(path, value);
+}
+
 void VariantMapProperty::updateModifiedRecursively(Property *property,
                                                    const QVariant &value)
 {
-    auto groupProperty = dynamic_cast<GroupProperty*>(property);
+    auto groupProperty = qobject_cast<GroupProperty*>(property);
     if (!groupProperty)
         return;
 
@@ -2722,7 +2745,7 @@ void VariantMapProperty::emitValueChangedRecursively(Property *property)
 {
     emit property->valueChanged();
 
-    if (auto groupProperty = dynamic_cast<GroupProperty*>(property))
+    if (auto groupProperty = qobject_cast<GroupProperty*>(property))
         for (auto subProperty : groupProperty->subProperties())
             emitValueChangedRecursively(subProperty);
 }
@@ -2744,6 +2767,49 @@ void VariantMapProperty::emitMemberValueChanged(const QStringList &path, const Q
     QScopedValueRollback<bool> emittingValueChanged(mEmittingValueChanged, true);
     emit memberValueChanged(path, value);
     emit valueChanged();
+}
+
+void VariantMapProperty::memberContextMenuRequested(Property *property, const QStringList &path, const QPoint &globalPos)
+{
+    QMenu menu;
+
+    // Add Expand All and Collapse All actions to group properties
+    if (auto groupProperty = qobject_cast<GroupProperty*>(property)) {
+        menu.addAction(tr("Expand All"), groupProperty, &GroupProperty::expandAll);
+        menu.addAction(tr("Collapse All"), groupProperty, &GroupProperty::collapseAll);
+    }
+
+    // Provide the Add, Remove and Reset actions also here
+    if (property->actions()) {
+        menu.addSeparator();
+
+        if (property->actions() & Property::Action::Add) {
+            QAction *add = menu.addAction(m_addIcon, tr("Add Property"), this, [this, name = path.first()] {
+                addMember(name, mSuggestions.value(name));
+            });
+            Utils::setThemeIcon(add, "add");
+        }
+        if (property->actions() & Property::Action::Remove) {
+            QAction *remove = menu.addAction(m_removeIcon, tr("Remove Property"), this, [this, name = path.first()] {
+                removeMember(name);
+            });
+            Utils::setThemeIcon(remove, "remove");
+        }
+        if (property->actions() & Property::Action::Reset) {
+            QAction *reset = menu.addAction(m_resetIcon, tr("Reset Member"), this, [=] {
+                setClassMember(path, QVariant());
+                emitValueChangedRecursively(property);
+            });
+            reset->setEnabled(property->isModified());
+            Utils::setThemeIcon(reset, "edit-clear");
+        }
+    }
+
+    // todo: Add "Convert" sub-menu
+    // todo: Add "Copy" and "Paste" actions
+
+    if (!menu.isEmpty())
+        menu.exec(globalPos);
 }
 
 

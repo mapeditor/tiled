@@ -22,6 +22,7 @@
 
 #include <QCoreApplication>
 #include <QHash>
+#include <QIcon>
 #include <QMetaProperty>
 #include <QScrollArea>
 #include <QString>
@@ -98,6 +99,8 @@ signals:
     void removeRequested();
     void addRequested();
 
+    void contextMenuRequested(const QPoint &globalPos);
+
 private:
     friend class GroupProperty;
 
@@ -146,6 +149,8 @@ public:
 
     bool isExpanded() const { return m_expanded; }
     void setExpanded(bool expanded);
+    void expandAll();
+    void collapseAll();
 
     void clear()
     {
@@ -515,6 +520,9 @@ private:
     void updatePropertyToolTip(const PropertyWidgets &widgets, const QString &toolTip);
     void updatePropertyActions(const PropertyWidgets &widgets, Property::Actions actions);
 
+    QIcon m_resetIcon;
+    QIcon m_removeIcon;
+    QIcon m_addIcon;
     QVBoxLayout *m_layout;
     QHash<Property*, PropertyWidgets> m_propertyWidgets;
     int m_level = 0;

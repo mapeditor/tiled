@@ -81,6 +81,22 @@ void GroupProperty::setExpanded(bool expanded)
     }
 }
 
+void GroupProperty::expandAll()
+{
+    setExpanded(true);
+    for (auto property : m_subProperties)
+        if (auto groupProperty = qobject_cast<GroupProperty *>(property))
+            groupProperty->expandAll();
+}
+
+void GroupProperty::collapseAll()
+{
+    setExpanded(false);
+    for (auto property : m_subProperties)
+        if (auto groupProperty = qobject_cast<GroupProperty *>(property))
+            groupProperty->collapseAll();
+}
+
 void StringProperty::setPlaceholderText(const QString &placeholderText)
 {
     if (m_placeholderText != placeholderText) {
@@ -520,7 +536,14 @@ QWidget *QtAlignmentProperty::createEditor(QWidget *parent)
 
 VariantEditor::VariantEditor(QWidget *parent)
     : QWidget(parent)
+    , m_resetIcon(QIcon(QStringLiteral(":/images/16/edit-clear.png")))
+    , m_removeIcon(QIcon(QStringLiteral(":/images/16/remove.png")))
+    , m_addIcon(QIcon(QStringLiteral(":/images/16/add.png")))
 {
+    m_resetIcon.addFile(QStringLiteral(":/images/24/edit-clear.png"));
+    m_removeIcon.addFile(QStringLiteral(":/images/22/remove.png"));
+    m_addIcon.addFile(QStringLiteral(":/images/22/add.png"));
+
     m_layout = new QVBoxLayout(this);
 
     m_layout->setContentsMargins(QMargins());
@@ -618,6 +641,9 @@ QLayout *VariantEditor::createPropertyLayout(Property *property)
 
     widgets.label = new PropertyLabel(m_level, this);
 
+    connect(widgets.label, &PropertyLabel::contextMenuRequested,
+            property, &Property::contextMenuRequested);
+
     if (displayMode != Property::DisplayMode::NoLabel) {
         widgets.label->setText(property->name());
         widgets.label->setModified(property->isModified());
@@ -646,6 +672,7 @@ QLayout *VariantEditor::createPropertyLayout(Property *property)
 
     widgets.resetButton = new QToolButton(this);
     widgets.resetButton->setToolTip(tr("Reset"));
+    widgets.resetButton->setIcon(m_resetIcon);
     widgets.resetButton->setAutoRaise(true);
     widgets.resetButton->setEnabled(property->isModified());
     Utils::setThemeIcon(widgets.resetButton, "edit-clear");
@@ -655,6 +682,7 @@ QLayout *VariantEditor::createPropertyLayout(Property *property)
 
     widgets.removeButton = new QToolButton(this);
     widgets.removeButton->setToolTip(tr("Remove"));
+    widgets.removeButton->setIcon(m_removeIcon);
     widgets.removeButton->setAutoRaise(true);
     Utils::setThemeIcon(widgets.removeButton, "remove");
     widgets.editorLayout->addWidget(widgets.removeButton, 0, Qt::AlignTop);
@@ -662,12 +690,13 @@ QLayout *VariantEditor::createPropertyLayout(Property *property)
 
     widgets.addButton = new QToolButton(this);
     widgets.addButton->setToolTip(tr("Add"));
+    widgets.addButton->setIcon(m_addIcon);
     widgets.addButton->setAutoRaise(true);
     Utils::setThemeIcon(widgets.addButton, "add");
     widgets.editorLayout->addWidget(widgets.addButton, 0, Qt::AlignTop);
     connect(widgets.addButton, &QAbstractButton::clicked, property, &Property::addRequested);
 
-    if (auto groupProperty = dynamic_cast<GroupProperty *>(property)) {
+    if (auto groupProperty = qobject_cast<GroupProperty *>(property)) {
         widgets.childrenLayout = new QVBoxLayout;
         widgets.childrenLayout->addLayout(rowLayout);
         widgets.layout = widgets.childrenLayout;

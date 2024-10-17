@@ -574,6 +574,11 @@ bool PropertyLabel::event(QEvent *event)
         }
     }
 
+    if (event->type() == QEvent::ContextMenu) {
+        emit contextMenuRequested(static_cast<QContextMenuEvent *>(event)->globalPos());
+        return true;
+    }
+
     if (event->type() == QEvent::LayoutDirectionChange)
         updateContentMargins();
 
