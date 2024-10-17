@@ -232,7 +232,7 @@ QTransform MapObjectItem::tileCollisionObjectsTransform(const Tile &tile) const
     if (mMapDocument->map()->orientation() == Map::Isometric)
         tileTransform.translate(-tile.width() / 2, 0.0);
 
-    tileTransform.translate(tileset->tileOffset().x(), tileset->tileOffset().y());
+    tileTransform.translate(tile.offset().x(), tile.offset().y());
 
     if (mObject->cell().flippedVertically()) {
         tileTransform.scale(1, -1);

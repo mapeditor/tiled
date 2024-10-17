@@ -305,6 +305,8 @@ static bool includeTile(const Tile *tile)
         return true;
     if (tile->isAnimated())
         return true;
+    if (!tile->origin().isNull())
+        return true;
     if (tile->probability() != 1.0)
         return true;
 
@@ -432,6 +434,14 @@ void LuaWriter::writeTileset(const Tileset &tileset,
                 mWriter.writeKeyAndValue("width", tileSize.width());
                 mWriter.writeKeyAndValue("height", tileSize.height());
             }
+        }
+
+        const QPoint origin = tile->origin();
+        if (!origin.isNull()) {
+            mWriter.writeStartTable("origin");
+            mWriter.writeKeyAndValue("x", origin.x());
+            mWriter.writeKeyAndValue("y", origin.y());
+            mWriter.writeEndTable();
         }
 
         if (tile->probability() != 1.0)
