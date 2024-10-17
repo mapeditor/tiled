@@ -517,6 +517,7 @@ private:
     QVariantMap mValue;
     QVariantMap mSuggestions;
     QHash<QString, Property*> mPropertyMap;
+    QSet<QStringList> mExpandedProperties;
 };
 
 
@@ -2575,6 +2576,15 @@ Property *VariantMapProperty::createProperty(const QStringList &path,
                 groupProperty->setHeader(false);
 
                 createClassMembers(path, groupProperty, classType, std::move(get));
+
+                groupProperty->setExpanded(mExpandedProperties.contains(path));
+
+                connect(groupProperty, &GroupProperty::expandedChanged, this, [=](bool expanded) {
+                    if (expanded)
+                        mExpandedProperties.insert(path);
+                    else
+                        mExpandedProperties.remove(path);
+                });
 
                 property = groupProperty;
                 break;
