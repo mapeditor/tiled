@@ -128,6 +128,7 @@ public:
 class GroupProperty : public Property
 {
     Q_OBJECT
+    Q_PROPERTY(bool expanded READ isExpanded WRITE setExpanded NOTIFY expandedChanged)
 
 public:
     GroupProperty(const QString &name, QObject *parent = nullptr)
@@ -142,6 +143,9 @@ public:
     QWidget *createEditor(QWidget */* parent */) override { return nullptr; }
 
     void setHeader(bool header) { m_header = header; }
+
+    bool isExpanded() const { return m_expanded; }
+    void setExpanded(bool expanded);
 
     void clear()
     {
@@ -176,10 +180,12 @@ public:
     const QList<Property*> &subProperties() const { return m_subProperties; }
 
 signals:
+    void expandedChanged(bool expanded);
     void propertyAdded(int index, Property *property);
 
 private:
     bool m_header = true;
+    bool m_expanded = true;
     QList<Property*> m_subProperties;
 };
 

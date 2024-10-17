@@ -73,6 +73,14 @@ void Property::setActions(Actions actions)
     }
 }
 
+void GroupProperty::setExpanded(bool expanded)
+{
+    if (m_expanded != expanded) {
+        m_expanded = expanded;
+        emit expandedChanged(expanded);
+    }
+}
+
 void StringProperty::setPlaceholderText(const QString &placeholderText)
 {
     if (m_placeholderText != placeholderText) {
@@ -664,12 +672,14 @@ QLayout *VariantEditor::createPropertyLayout(Property *property)
         widgets.childrenLayout->addLayout(rowLayout);
         widgets.layout = widgets.childrenLayout;
 
+        connect(groupProperty, &GroupProperty::expandedChanged, widgets.label, &PropertyLabel::setExpanded);
         connect(widgets.label, &PropertyLabel::toggled, this, [=](bool expanded) {
             setPropertyChildrenExpanded(groupProperty, expanded);
+            groupProperty->setExpanded(expanded);
         });
 
         widgets.label->setExpandable(true);
-        widgets.label->setExpanded(widgets.label->isHeader());
+        widgets.label->setExpanded(groupProperty->isExpanded());
     }
 
     updatePropertyEnabled(widgets, property->isEnabled());
