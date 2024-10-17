@@ -139,6 +139,7 @@ signals:
 
     void currentObjectSet(Object *object);
     void currentObjectChanged(Object *object);
+    void currentObjectsChanged();
 
     /**
      * Makes the Properties window visible and take focus.
