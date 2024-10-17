@@ -98,6 +98,8 @@ signals:
     void removeRequested();
     void addRequested();
 
+    void contextMenuRequested(const QPoint &globalPos);
+
 private:
     friend class GroupProperty;
 
@@ -146,6 +148,8 @@ public:
 
     bool isExpanded() const { return m_expanded; }
     void setExpanded(bool expanded);
+    void expandAll();
+    void collapseAll();
 
     void clear()
     {

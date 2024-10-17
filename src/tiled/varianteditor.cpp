@@ -81,6 +81,22 @@ void GroupProperty::setExpanded(bool expanded)
     }
 }
 
+void GroupProperty::expandAll()
+{
+    setExpanded(true);
+    for (auto property : m_subProperties)
+        if (auto groupProperty = qobject_cast<GroupProperty *>(property))
+            groupProperty->expandAll();
+}
+
+void GroupProperty::collapseAll()
+{
+    setExpanded(false);
+    for (auto property : m_subProperties)
+        if (auto groupProperty = qobject_cast<GroupProperty *>(property))
+            groupProperty->collapseAll();
+}
+
 void StringProperty::setPlaceholderText(const QString &placeholderText)
 {
     if (m_placeholderText != placeholderText) {
@@ -618,6 +634,9 @@ QLayout *VariantEditor::createPropertyLayout(Property *property)
 
     widgets.label = new PropertyLabel(m_level, this);
 
+    connect(widgets.label, &PropertyLabel::contextMenuRequested,
+            property, &Property::contextMenuRequested);
+
     if (displayMode != Property::DisplayMode::NoLabel) {
         widgets.label->setText(property->name());
         widgets.label->setModified(property->isModified());
@@ -667,7 +686,7 @@ QLayout *VariantEditor::createPropertyLayout(Property *property)
     widgets.editorLayout->addWidget(widgets.addButton, 0, Qt::AlignTop);
     connect(widgets.addButton, &QAbstractButton::clicked, property, &Property::addRequested);
 
-    if (auto groupProperty = dynamic_cast<GroupProperty *>(property)) {
+    if (auto groupProperty = qobject_cast<GroupProperty *>(property)) {
         widgets.childrenLayout = new QVBoxLayout;
         widgets.childrenLayout->addLayout(rowLayout);
         widgets.layout = widgets.childrenLayout;

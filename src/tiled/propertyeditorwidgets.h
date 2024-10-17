@@ -302,6 +302,7 @@ public:
 
 signals:
     void toggled(bool expanded);
+    void contextMenuRequested(const QPoint &globalPos);
 
 protected:
     bool event(QEvent *event) override;
