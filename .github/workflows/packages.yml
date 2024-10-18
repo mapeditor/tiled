@@ -354,72 +354,29 @@ jobs:
     name: Upload to GitHub releases
     runs-on: ubuntu-latest
     needs: [version, linux, macos, windows]
+    permissions:
+      contents: write
 
     if: github.repository == 'mapeditor/tiled' && github.event_name == 'push' && needs.version.outputs.release == 'true'
 
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     steps:
-    - name: Create release
-      id: create_release
-      uses: actions/create-release@v1
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Tiled ${{ needs.version.outputs.version }}
-        draft: true
-        prerelease: false
-
     - name: Download all artifacts
       uses: actions/download-artifact@v4
 
-    - name: Upload Windows 64-bit installer
-      uses: actions/upload-release-asset@v1
+    - name: Create release
+      id: create_release
+      uses: softprops/action-gh-release@v2
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Tiled-win64.msi/Tiled-${{ needs.version.outputs.version }}-win64.msi
-        asset_name: Tiled-${{ needs.version.outputs.version }}_Windows-10+_x86_64.msi
-        asset_content_type: application/x-msi
-
-    - name: Upload Windows 32-bit installer
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Tiled-win32.msi/Tiled-${{ needs.version.outputs.version }}-win32.msi
-        asset_name: Tiled-${{ needs.version.outputs.version }}_Windows-7-8_x86.msi
-        asset_content_type: application/x-msi
-
-    - name: Upload Linux AppImage (Qt5)
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Tiled-Qt5-x86_64.AppImage/Tiled-Qt5-x86_64.AppImage
-        asset_name: Tiled-${{ needs.version.outputs.version }}_Linux_Qt-5_x86_64.AppImage
-        asset_content_type: application/vnd.appimage
-
-    - name: Upload Linux AppImage (Qt6)
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Tiled-Qt6-x86_64.AppImage/Tiled-Qt6-x86_64.AppImage
-        asset_name: Tiled-${{ needs.version.outputs.version }}_Linux_Qt-6_x86_64.AppImage
-        asset_content_type: application/vnd.appimage
-
-    - name: Upload macOS app (10.12-10.15)
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Tiled_macOS-10.12-10.15.app/Tiled_macOS-10.12-10.15.zip
-        asset_name: Tiled-${{ needs.version.outputs.version }}_macOS-10.12-10.15.zip
-        asset_content_type: application/zip
-
-    - name: Upload macOS app (11+)
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Tiled_macOS-11+.app/Tiled_macOS-11+.zip
-        asset_name: Tiled-${{ needs.version.outputs.version }}_macOS-11+.zip
-        asset_content_type: application/zip
+        name: Tiled ${{ needs.version.outputs.version }}
+        draft: true
+        prerelease: false
+        files: |
+          Tiled-win64.msi/Tiled-${{ needs.version.outputs.version }}-win64.msi
+          Tiled-win32.msi/Tiled-${{ needs.version.outputs.version }}-win32.msi
+          Tiled-Qt5-x86_64.AppImage/Tiled-Qt5-x86_64.AppImage
+          Tiled-Qt6-x86_64.AppImage/Tiled-Qt6-x86_64.AppImage
+          Tiled_macOS-10.12-10.15.app/Tiled_macOS-10.12-10.15.zip
+          Tiled_macOS-11+.app/Tiled_macOS-11+.zip
 
   sentry:
     name: Create Sentry release
