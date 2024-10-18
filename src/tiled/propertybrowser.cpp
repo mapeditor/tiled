@@ -839,6 +839,11 @@ void PropertyBrowser::addMapObjectProperties()
     bool isPoint = mapObject->shape() == MapObject::Point;
     addProperty(RotationProperty, QMetaType::Double, tr("Rotation"), groupProperty)->setEnabled(!isPoint);
 
+    QtVariantProperty *opacityProperty = addProperty(OpacityProperty, QMetaType::Double, tr("Opacity"), groupProperty);
+    opacityProperty->setAttribute(QLatin1String("minimum"), 0.0);
+    opacityProperty->setAttribute(QLatin1String("maximum"), 1.0);
+    opacityProperty->setAttribute(QLatin1String("singleStep"), 0.1);
+
     if (mMapObjectFlags & ObjectHasTile) {
         QtVariantProperty *flippingProperty =
                 addProperty(FlippingProperty, VariantPropertyManager::flagTypeId(),
@@ -1296,6 +1301,12 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
                                           val.toDouble());
         }
         break;
+    case OpacityProperty:{
+        command = new ChangeMapObject(mDocument, mapObject,
+                                      MapObject::OpacityProperty,
+                                      val.toReal());
+        break;
+    }
     case FlippingProperty: {
         const int flippingFlags = val.toInt();
 
@@ -1905,6 +1916,7 @@ void PropertyBrowser::updateProperties()
         }
 
         mIdToProperty[RotationProperty]->setValue(mapObject->rotation());
+        mIdToProperty[OpacityProperty]->setValue(mapObject->opacity());
 
         if (flags & ObjectHasTile) {
             int flippingFlags = 0;

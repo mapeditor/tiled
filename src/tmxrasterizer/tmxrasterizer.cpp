@@ -85,6 +85,8 @@ void TmxRasterizer::drawMapLayers(const MapRenderer &renderer,
                         painter.translate(-origin);
                     }
 
+                    painter.setOpacity(object->opacity());
+
                     renderer.drawMapObject(&painter, object, object->effectiveColors());
 
                     if (object->rotation() != qreal(0))
