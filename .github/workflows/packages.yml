@@ -48,7 +48,7 @@ jobs:
         include:
         - qt_version: 5.15.2
           qt_version_major: 5
-        - qt_version: 6.7.3
+        - qt_version: 6.8.0
           qt_version_major: 6
 
     env:
@@ -194,7 +194,7 @@ jobs:
         - qt_version: 5.12.12
           version_suffix: "10.12-10.15"
           architectures: x86_64
-        - qt_version: 6.7.3
+        - qt_version: 6.8.0
           version_suffix: "11+"
           architectures: x86_64,arm64
 
@@ -287,20 +287,19 @@ jobs:
           mingw_version: 8.1.0
           mingw_component: mingw
           mingw_path: /c/Qt/Tools/mingw810_32/bin
-        - qt_version: 6.7.3
+        - qt_version: 6.8.0
           qt_version_major: 6
           qt_toolchain: win64_mingw
           arch: 64
           openssl_arch: x64
           filename_suffix: 'Windows-10+_x86_64'
-          mingw_version: 9.0.0
-          mingw_component: mingw90
-          mingw_path: /c/Qt/Tools/mingw1120_64/bin
+          mingw_version: 13.1.0
+          mingw_component: mingw1310
+          mingw_path: /c/Qt/Tools/mingw1310_64/bin
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
       MINGW_PATH: ${{ matrix.mingw_path }}
-      OPENSSL_VERSION: 1.1.1
 
     defaults:
       run:
@@ -314,7 +313,6 @@ jobs:
       run: |
         echo "QT_PATH=$(./dist/install-qt.sh --version ${{ matrix.qt_version }} --toolchain ${{ matrix.qt_toolchain }} qtbase qtdeclarative qtsvg qtimageformats qttools qttranslations)" >> $GITHUB_ENV
         ./dist/install-qt.sh --version ${{ matrix.mingw_version }} --toolchain win${{ matrix.arch }}_mingw ${{ matrix.mingw_component }}
-        echo "OPENSSL_PATH=$(./dist/install-qt.sh --version ${OPENSSL_VERSION} openssl --arch ${{ matrix.openssl_arch }})" >> $GITHUB_ENV
 
     - name: Install Qbs
       run: |

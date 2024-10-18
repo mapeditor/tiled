@@ -117,11 +117,6 @@
             <!-- OpenSSL is needed for Qt versions older than 6.2,
                  otherwise rely on the schannel backend -->
             <?if $(var.QtVersionMajor) < 6 or $(var.QtVersionMinor) < 2 ?>
-              <?ifdef OpenSsl102Dir ?>
-                <File Source="$(var.OpenSsl102Dir)\libeay32.dll" />
-                <File Source="$(var.OpenSsl102Dir)\ssleay32.dll" />
-              <?endif?>
-
               <?ifdef OpenSsl111Dir ?>
                 <?if $(var.Platform) = x64 ?>
                   <File Source="$(var.OpenSsl111Dir)\libcrypto-1_1-x64.dll" />
@@ -130,6 +125,11 @@
                   <File Source="$(var.OpenSsl111Dir)\libcrypto-1_1.dll" />
                   <File Source="$(var.OpenSsl111Dir)\libssl-1_1.dll" />
                 <?endif?>
+              <?endif?>
+
+              <?ifdef OpenSslv3Dir ?>
+                <File Source="$(var.OpenSslv3Dir)\libcrypto-3-x64.dll" />
+                <File Source="$(var.OpenSslv3Dir)\libssl-3-x64.dll" />
               <?endif?>
             <?endif?>
 
