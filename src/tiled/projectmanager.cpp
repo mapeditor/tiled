@@ -37,6 +37,11 @@ ProjectManager::ProjectManager(QObject *parent)
     ourInstance = this;
 }
 
+ProjectManager::~ProjectManager()
+{
+    ourInstance = nullptr;
+}
+
 /**
  * Replaces the current project with the given \a project.
  */
