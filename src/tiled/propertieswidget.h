@@ -22,12 +22,16 @@
 
 #include <QWidget>
 
+class QScrollArea;
+
 namespace Tiled {
 
 class Object;
 
+class CustomProperties;
 class Document;
-class PropertyBrowser;
+class ObjectProperties;
+class VariantEditor;
 
 /**
  * The PropertiesWidget combines the PropertyBrowser with some controls that
@@ -73,8 +77,11 @@ private:
 
     void retranslateUi();
 
-    Document *mDocument;
-    PropertyBrowser *mPropertyBrowser;
+    Document *mDocument = nullptr;
+    ObjectProperties *mPropertiesObject = nullptr;
+    CustomProperties *mCustomProperties = nullptr;
+    QScrollArea *mScrollArea;
+    VariantEditor *mPropertyBrowser;
     QAction *mActionAddProperty;
     QAction *mActionRemoveProperty;
     QAction *mActionRenameProperty;

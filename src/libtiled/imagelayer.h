@@ -46,6 +46,19 @@ namespace Tiled {
 class TILEDSHARED_EXPORT ImageLayer : public Layer
 {
 public:
+    enum Repetition {
+        /**
+         * Makes the image repeat along the X axis.
+         */
+        RepeatX = 0x1,
+
+        /**
+         * Makes the image repeat along the Y axis.
+         */
+        RepeatY = 0x2,
+    };
+    Q_DECLARE_FLAGS(RepetitionFlags, Repetition)
+
     ImageLayer(const QString &name, int x, int y);
     ~ImageLayer() override;
 
@@ -114,25 +127,13 @@ public:
      */
     bool isEmpty() const override;
 
-    /**
-     * Returns true if the image of this layer repeats along the X axis.
-     */
-    bool repeatX() const { return mRepeatX; }
+    bool repeatX() const { return mRepetition & RepeatX; }
+    bool repeatY() const { return mRepetition & RepeatY; }
+    RepetitionFlags repetition() const { return mRepetition; }
 
-    /**
-     * Returns true if the image of this layer repeats along the Y axis.
-     */
-    bool repeatY() const { return mRepeatY; }
-
-    /**
-     * Sets whether the image of this layer repeats along the X axis.
-     */
-    void setRepeatX(bool repeatX) { mRepeatX = repeatX; }
-
-    /**
-     * Sets whether the image of this layer repeats along the Y axis.
-     */
-    void setRepeatY(bool repeatY) { mRepeatY = repeatY; }
+    void setRepeatX(bool repeatX) { mRepetition.setFlag(RepeatX, repeatX); }
+    void setRepeatY(bool repeatY) { mRepetition.setFlag(RepeatY, repeatY); }
+    void setRepetition(RepetitionFlags repetition) { mRepetition = repetition; }
 
     ImageLayer *clone() const override;
 
@@ -143,8 +144,10 @@ private:
     QUrl mImageSource;
     QColor mTransparentColor;
     QPixmap mImage;
-    bool mRepeatX = false;
-    bool mRepeatY = false;
+    RepetitionFlags mRepetition;
 };
 
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::ImageLayer::RepetitionFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::ImageLayer::RepetitionFlags)

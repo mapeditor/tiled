@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="80" height="31" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#35495e" nextlayerid="9" nextobjectid="387">
+<map version="1.11" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="80" height="31" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#35495e" nextlayerid="10" nextobjectid="388">
  <tileset firstgid="1" source="objs.tsx"/>
  <objectgroup id="1" name="background">
   <object id="193" gid="6" x="0" y="1184" width="1280" height="416"/>
@@ -260,7 +260,7 @@
   <object id="340" gid="16" x="864" y="600" width="192" height="192"/>
  </objectgroup>
  <objectgroup id="6" name="game">
-  <object id="58" template="templates/hero.tx" x="288" y="448"/>
+  <object id="58" template="templates/hero.tx" gid="2147483670" x="288" y="448"/>
   <object id="111" template="templates/block.tx" x="2245" y="340"/>
   <object id="161" name="hey" type="blob" gid="3" x="464" y="768" width="96" height="64"/>
   <object id="160" type="blob" gid="2" x="846" y="756" width="96" height="64"/>
@@ -269,7 +269,11 @@
   <object id="192" type="coin" gid="17" x="96" y="416" width="64" height="64"/>
   <object id="231" template="templates/block.tx" x="488" y="448"/>
   <object id="285" type="coin" gid="17" x="1536" y="576" width="64" height="64"/>
+  <object id="387" x="240" y="48" width="96" height="21.7969">
+   <text wrap="1" color="#ffffff">Hello World</text>
+  </object>
  </objectgroup>
+ <imagelayer id="9" name="Bildebene 1"/>
  <objectgroup id="7" name="above">
   <object id="379" type="spikes" gid="51" x="1280" y="995" width="128" height="32"/>
   <object id="380" type="spikes" gid="51" x="1408" y="995" width="128" height="32"/>
