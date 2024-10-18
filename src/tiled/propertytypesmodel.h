@@ -20,7 +20,6 @@
 
 #pragma once
 
-#include "object.h"
 #include "properties.h"
 #include "propertytype.h"
 
@@ -57,6 +56,7 @@ public:
     void importPropertyTypes(PropertyTypes typesToImport);
     void importObjectTypes(const QVector<ObjectType> &objectTypes);
 
+    static QIcon iconForProperty(const QVariant &value);
     static QIcon iconForPropertyType(PropertyType::Type type);
 
 signals:

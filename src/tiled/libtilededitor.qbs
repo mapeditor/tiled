@@ -294,6 +294,8 @@ DynamicLibrary {
         "layermodel.h",
         "layeroffsettool.cpp",
         "layeroffsettool.h",
+        "listedit.cpp",
+        "listedit.h",
         "locatorwidget.cpp",
         "locatorwidget.h",
         "magicwandtool.h",
