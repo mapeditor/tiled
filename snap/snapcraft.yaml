@@ -69,6 +69,7 @@ parts:
       - dmz-cursor-theme
       - fcitx-frontend-qt6
       - libgdk-pixbuf2.0-0
+      - libproxy1v5
       - libqt6concurrent6t64
       - libqt6gui6t64
       - libqt6openglwidgets6t64
