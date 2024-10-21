@@ -102,7 +102,7 @@ Options
                     win64_msvc2019_64, win64_msvc2019_arm64
 
   --arch <arch>
-        The CPU architecture to use when installing openssl (x86 or x64).
+        The CPU architecture to use when installing opensslv3 (x86 or x64).
 
   --version <version>
         The desired Qt version. Currently supported are all versions
@@ -284,9 +284,9 @@ function compute_url(){
             echo "${BASE_URL}/${REMOTE_BASE}/${REMOTE_PATH}"
             return 0
         fi
-    elif [[ "${COMPONENT}" =~ "openssl" ]]; then
+    elif [[ "${COMPONENT}" =~ "opensslv3" ]]; then
         if [ -z "${ARCH}" ]; then
-            echo "No architecture specified for openssl (x86 or x64)." >&2
+            echo "No architecture specified for opensslv3 (x86 or x64)." >&2
             exit 1
         fi
 
@@ -305,6 +305,10 @@ function compute_url(){
         fi
 
         REMOTE_BASES=(
+            # New repository format (>=6.8.0)
+            "qt6_${VERSION//./}/qt6_${VERSION//./}/qt.qt6.${VERSION//./}.${TOOLCHAIN}"
+            "qt6_${VERSION//./}/qt6_${VERSION//./}/qt.qt6.${VERSION//./}.${COMPONENT}.${TOOLCHAIN}"
+            "qt6_${VERSION//./}/qt6_${VERSION//./}/qt.qt6.${VERSION//./}.addons.${COMPONENT}.${TOOLCHAIN}"
             # New repository format (>=6.0.0)
             "qt6_${VERSION//./}/qt.qt6.${VERSION//./}.${TOOLCHAIN}"
             "qt6_${VERSION//./}/qt.qt6.${VERSION//./}.${HOST_OS//_x64/}_${TOOLCHAIN}"
@@ -451,8 +455,8 @@ for COMPONENT in ${COMPONENTS}; do
         else
             echo "${UNPACK_DIR}/bin"
         fi
-    elif [[ "${COMPONENT}" =~ "openssl" ]]; then
-        echo "${INSTALL_DIR}/Tools/OpenSSL/Win_${ARCH}/bin"
+    elif [[ "${COMPONENT}" =~ "opensslv3" ]]; then
+        echo "${INSTALL_DIR}/Tools/OpenSSLv3/Win_${ARCH}/bin"
     fi
 
 done
