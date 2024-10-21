@@ -159,7 +159,7 @@ while [ $# -gt 0 ]; do
             shift
             ;;
         --toolchain)
-            TOOLCHAIN=$(echo $2 | tr '[A-Z]' '[a-z]')
+            TOOLCHAIN=$(echo $2 | tr '[:upper:]' '[:lower:]')
             shift
             ;;
         --arch)
@@ -207,6 +207,8 @@ case "$TARGET_PLATFORM" in
     ios)
         ;;
     desktop)
+        ;;
+    wasm)
         ;;
     *)
         echo "Error: TARGET_PLATFORM=${TARGET_PLATFORM} is not valid." >&2
@@ -305,10 +307,15 @@ function compute_url(){
         REMOTE_BASES=(
             # New repository format (>=6.0.0)
             "qt6_${VERSION//./}/qt.qt6.${VERSION//./}.${TOOLCHAIN}"
+            "qt6_${VERSION//./}/qt.qt6.${VERSION//./}.${HOST_OS//_x64/}_${TOOLCHAIN}"
             "qt6_${VERSION//./}/qt.qt6.${VERSION//./}.${COMPONENT}.${TOOLCHAIN}"
+            "qt6_${VERSION//./}/qt.qt6.${VERSION//./}.${COMPONENT}.${HOST_OS//_x64/}_${TOOLCHAIN}"
             "qt6_${VERSION//./}/qt.qt6.${VERSION//./}.addons.${COMPONENT}.${TOOLCHAIN}"
             "qt6_${VERSION//./}_${ANDROID_ARCH}/qt.qt6.${VERSION//./}.${TOOLCHAIN}"
             "qt6_${VERSION//./}_${ANDROID_ARCH}/qt.qt6.${VERSION//./}.${COMPONENT}.${TOOLCHAIN}"
+            "qt${VERSION//./_}/qt6_${VERSION//./}_${TOOLCHAIN}/qt.qt6.${VERSION//./}.${TOOLCHAIN}"
+            "qt${VERSION//./_}/qt6_${VERSION//./}_${TOOLCHAIN}/qt.qt6.${VERSION//./}.${COMPONENT}"
+            "qt${VERSION//./_}/qt6_${VERSION//./}_${TOOLCHAIN}/qt.qt6.${VERSION//./}.${COMPONENT}.${TOOLCHAIN}"
             # New repository format (>=5.9.6)
             "qt5_${VERSION//./}/qt.qt5.${VERSION//./}.${TOOLCHAIN}"
             "qt5_${VERSION//./}/qt.qt5.${VERSION//./}.${COMPONENT}.${TOOLCHAIN}"
@@ -348,6 +355,10 @@ for COMPONENT in ${COMPONENTS}; do
     if [ "$(version "${VERSION}")" -ge "$(version "6.0.0")" ]; then
         if [[ "${COMPONENT}" =~ "qtscript" ]] || [[ "${COMPONENT}" =~ "qtscxml" ]] || [[ "${COMPONENT}" =~ "qtx11extras" ]]; then
             echo "Component ${COMPONENT} was removed in Qt6, skipping" >&2
+            continue
+        fi
+        if [[ "${COMPONENT}" =~ "icu" ]] && [[ "${TARGET_PLATFORM}" =~ "wasm" ]]; then
+            echo "Component ${COMPONENT} is not present in Qt6 (${TARGET_PLATFORM}), skipping" >&2
             continue
         fi
     else
@@ -405,6 +416,13 @@ for COMPONENT in ${COMPONENTS}; do
             IOS_QMAKE_FILE="${UNPACK_DIR}/${VERSION}/${SUBDIR}/bin/qmake"
             QMAKE_FILE="${UNPACK_DIR}/${VERSION}/macos/bin/qmake"
             sed -i.bak "s|\/Users\/qt\/work\/install\/bin\/qmake|${QMAKE_FILE}|g" "${IOS_QMAKE_FILE}"
+        elif [ "${TARGET_PLATFORM}" == "wasm" ] && [ ! "${VERSION}" \< "6.0.0" ]; then
+            CONF_FILE="${UNPACK_DIR}/${VERSION}/${SUBDIR}/bin/target_qt.conf"
+            sed -i.bak "s|HostData=target|HostData=../$TOOLCHAIN|g" "${CONF_FILE}"
+            sed -i.bak "s|HostPrefix=..\/..\/|HostPrefix=..\/..\/gcc_64|g" "${CONF_FILE}"
+            WASM_QMAKE_FILE="${UNPACK_DIR}/${VERSION}/${SUBDIR}/bin/qmake"
+            QMAKE_FILE="${UNPACK_DIR}/${VERSION}/gcc_64/bin/qmake"
+            sed -i.bak "s|\/home\/qt\/work\/install\/bin\/qmake|${QMAKE_FILE}|g" "${WASM_QMAKE_FILE}"
         else
             CONF_FILE="${UNPACK_DIR}/${VERSION}/${SUBDIR}/bin/qt.conf"
             echo "[Paths]" > ${CONF_FILE}
