@@ -22,14 +22,8 @@ WindowsInstallerPackage {
     Depends { name: "Qt.core" }
 
     property string version: Environment.getEnv("TILED_MSI_VERSION") || project.version
-    property string bits: {
-        if (qbs.architecture === "x86_64")
-            return "64";
-        else
-            return "32";
-    }
 
-    targetName: "Tiled-" + project.version + "-win" + bits
+    targetName: "Tiled-" + project.version + "_" + qbs.architecture
 
     wix.defines: {
         var defs = [
@@ -68,6 +62,7 @@ WindowsInstallerPackage {
         if (project.openSslPath) {
             defs.push("OpenSsl111Dir=" + project.openSslPath);
         } else {
+            var bits = (qbs.architecture === "x86_64") ? "64" : "32;"
             var openSslDir = "C:\\OpenSSL-v111-Win" + bits
             if (File.exists(openSslDir))
                 defs.push("OpenSsl111Dir=" + openSslDir);
