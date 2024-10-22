@@ -91,9 +91,12 @@ public:
 
     QPoint offset() const;
 
+    QPoint origin() const;
+    void setOrigin(QPoint offset);
+
     // For Python API compatibility
     const QString &type() const { return className(); }
-    void setType(const QString &type) { setClassName(type); };
+    void setType(const QString &type) { setClassName(type); }
 
     qreal probability() const;
     void setProbability(qreal probability);
@@ -121,13 +124,14 @@ private:
     mutable std::optional<QPainterPath> mImageShape;   // cache
     QUrl mImageSource;
     QRect mImageRect;
+    QPoint mOrigin;
     LoadingStatus mImageStatus;
-    qreal mProbability;
+    qreal mProbability = 1.0;
     std::unique_ptr<ObjectGroup> mObjectGroup;
 
     QVector<Frame> mFrames;
-    int mCurrentFrameIndex;
-    int mUnusedTime;
+    int mCurrentFrameIndex = 0;
+    int mUnusedTime = 0;
 
     friend class Tileset; // To allow changing the tile id
 };
@@ -193,6 +197,14 @@ inline int Tile::height() const
 inline QSize Tile::size() const
 {
     return mImageRect.size();
+}
+
+/**
+ * Returns the origin of the tile (in pixels).
+ */
+inline QPoint Tile::origin() const
+{
+    return mOrigin;
 }
 
 /**
