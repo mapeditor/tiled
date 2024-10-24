@@ -55,12 +55,35 @@ static QString removeRedundantTrialingZeros(const QString &text)
 }
 
 
+ComboBox::ComboBox(QWidget *parent)
+    : QComboBox(parent)
+{
+    // Combo boxes in properties view don't adjust to their contents
+    setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
+
+    // Don't take focus by mouse wheel
+    if (focusPolicy() == Qt::WheelFocus)
+        setFocusPolicy(Qt::StrongFocus);
+}
+
+void ComboBox::wheelEvent(QWheelEvent *event)
+{
+    if (!hasFocus())
+        event->ignore();
+    else
+        QComboBox::wheelEvent(event);
+}
+
+
 SpinBox::SpinBox(QWidget *parent)
     : QSpinBox(parent)
 {
     // Allow the full range by default.
     setRange(std::numeric_limits<int>::lowest(),
              std::numeric_limits<int>::max());
+
+    // Don't take focus by mouse wheel
+    setFocusPolicy(Qt::StrongFocus);
 
     // Don't respond to keyboard input immediately.
     setKeyboardTracking(false);
@@ -77,6 +100,14 @@ QSize SpinBox::minimumSizeHint() const
     return hint;
 }
 
+void SpinBox::wheelEvent(QWheelEvent *event)
+{
+    if (!hasFocus())
+        event->ignore();
+    else
+        QSpinBox::wheelEvent(event);
+}
+
 
 DoubleSpinBox::DoubleSpinBox(QWidget *parent)
     : QDoubleSpinBox(parent)
@@ -87,6 +118,9 @@ DoubleSpinBox::DoubleSpinBox(QWidget *parent)
 
     // Increase possible precision.
     setDecimals(9);
+
+    // Don't take focus by mouse wheel
+    setFocusPolicy(Qt::StrongFocus);
 
     // Don't respond to keyboard input immediately.
     setKeyboardTracking(false);
@@ -112,6 +146,14 @@ QString DoubleSpinBox::textFromValue(double val) const
         return removeRedundantTrialingZeros(text);
 
     return text;
+}
+
+void DoubleSpinBox::wheelEvent(QWheelEvent *event)
+{
+    if (!hasFocus())
+        event->ignore();
+    else
+        QDoubleSpinBox::wheelEvent(event);
 }
 
 

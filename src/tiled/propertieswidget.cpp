@@ -40,6 +40,7 @@
 #include "objecttemplate.h"
 #include "preferences.h"
 #include "propertybrowser.h"
+#include "propertyeditorwidgets.h"
 #include "tilesetchanges.h"
 #include "tilesetdocument.h"
 #include "tilesetparametersedit.h"
@@ -50,7 +51,6 @@
 
 #include <QAction>
 #include <QCheckBox>
-#include <QComboBox>
 #include <QCoreApplication>
 #include <QEvent>
 #include <QFileInfo>
@@ -757,7 +757,7 @@ public:
 
     QWidget *createEditor(QWidget *parent) override
     {
-        auto editor = new QComboBox(parent);
+        auto editor = new ComboBox(parent);
         editor->setEditable(true);
         editor->lineEdit()->setPlaceholderText(placeholderText());
         editor->addItems(classNamesFor(*mObject));

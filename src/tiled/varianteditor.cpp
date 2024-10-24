@@ -28,7 +28,6 @@
 
 #include <QBoxLayout>
 #include <QCheckBox>
-#include <QComboBox>
 #include <QFontComboBox>
 #include <QGridLayout>
 #include <QLabel>
@@ -496,14 +495,14 @@ QWidget *QtAlignmentProperty::createEditor(QWidget *parent)
     auto verticalLabel = new ElidingLabel(tr("Vertical"), editor);
     layout->addWidget(verticalLabel, 1, 0);
 
-    auto horizontalComboBox = new QComboBox(editor);
+    auto horizontalComboBox = new ComboBox(editor);
     horizontalComboBox->addItem(tr("Left"), Qt::AlignLeft);
     horizontalComboBox->addItem(tr("Center"), Qt::AlignHCenter);
     horizontalComboBox->addItem(tr("Right"), Qt::AlignRight);
     horizontalComboBox->addItem(tr("Justify"), Qt::AlignJustify);
     layout->addWidget(horizontalComboBox, 0, 1);
 
-    auto verticalComboBox = new QComboBox(editor);
+    auto verticalComboBox = new ComboBox(editor);
     verticalComboBox->addItem(tr("Top"), Qt::AlignTop);
     verticalComboBox->addItem(tr("Center"), Qt::AlignVCenter);
     verticalComboBox->addItem(tr("Bottom"), Qt::AlignBottom);
@@ -792,9 +791,7 @@ void VariantEditor::updatePropertyActions(const PropertyWidgets &widgets, Proper
 
 QWidget *BaseEnumProperty::createEnumEditor(QWidget *parent)
 {
-    auto editor = new QComboBox(parent);
-    // This allows the combo box to shrink horizontally.
-    editor->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
+    auto editor = new ComboBox(parent);
 
     for (qsizetype i = 0; i < m_enumData.names.size(); ++i) {
         auto value = m_enumData.values.value(i, i);

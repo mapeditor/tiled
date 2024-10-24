@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include <QComboBox>
 #include <QLabel>
 #include <QSpinBox>
 
@@ -28,8 +29,23 @@ class QLabel;
 namespace Tiled {
 
 /**
+ * A combo box that doesn't respond to wheel events when not focused.
+ */
+class ComboBox : public QComboBox
+{
+    Q_OBJECT
+
+public:
+    ComboBox(QWidget *parent = nullptr);
+
+protected:
+    void wheelEvent(QWheelEvent *event) override;
+};
+
+/**
  * A spin box that allows the full range by default and shrinks horizontally.
- * It also doesn't adjust the horizontal size hint based on the maximum value.
+ * It also doesn't adjust the horizontal size hint based on the maximum value
+ * and doesn't respond to wheel events when not focused.
  */
 class SpinBox : public QSpinBox
 {
@@ -39,12 +55,15 @@ public:
     SpinBox(QWidget *parent = nullptr);
 
     QSize minimumSizeHint() const override;
+
+protected:
+    void wheelEvent(QWheelEvent *event) override;
 };
 
 /**
  * A double spin box that allows the full range by default and shrinks
  * horizontally. It also doesn't adjust the horizontal size hint based on the
- * maximum value.
+ * maximum value and doesn't respond to wheel events when not focused.
  *
  * The precision is increased to 9 decimal places. Redundant trailing 0's are
  * removed.
@@ -58,6 +77,9 @@ public:
 
     QSize minimumSizeHint() const override;
     QString textFromValue(double val) const override;
+
+protected:
+    void wheelEvent(QWheelEvent *event) override;
 };
 
 /**
