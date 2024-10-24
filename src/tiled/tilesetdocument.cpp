@@ -371,6 +371,9 @@ void TilesetDocument::setSelectedTiles(const QList<Tile*> &selectedTiles)
 {
     mSelectedTiles = selectedTiles;
     emit selectedTilesChanged();
+
+    if (currentObject() && currentObject()->typeId() == Object::TileType)
+        emit currentObjectsChanged();
 }
 
 QList<Object *> TilesetDocument::currentObjects() const

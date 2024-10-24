@@ -117,7 +117,7 @@ TextPropertyEdit::TextPropertyEdit(QWidget *parent)
     setFocusProxy(mLineEdit);
 
     QToolButton *button = new QToolButton(this);
-    button->setText(QStringLiteral("..."));
+    button->setText(QStringLiteral("…"));
     button->setAutoRaise(true);
 
     // Set a validator that replaces newline characters by literal "\\n".
