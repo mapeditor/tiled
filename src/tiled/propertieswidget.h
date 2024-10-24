@@ -71,8 +71,7 @@ private:
     void openAddPropertyDialog();
     void addProperty(const QString &name, const QVariant &value);
     void removeProperties();
-    void renameProperty();
-    void renamePropertyTo(const QString &name);
+    void renameProperty(const QString &name);
     void showContextMenu(const QPoint &pos);
 
     void retranslateUi();

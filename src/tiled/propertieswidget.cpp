@@ -483,6 +483,7 @@ public:
 
 signals:
     void memberValueChanged(const QStringList &path, const QVariant &value);
+    void renameRequested(const QString &name);
 
 protected:
     Document *mDocument = nullptr;
@@ -517,6 +518,7 @@ private:
     QIcon m_resetIcon;
     QIcon m_removeIcon;
     QIcon m_addIcon;
+    QIcon m_renameIcon;
     bool mEmittingValueChanged = false;
     bool mPropertyTypesChanged = false;
     QVariantMap mValue;
@@ -636,8 +638,8 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
     mActionRenameProperty = new QAction(this);
     mActionRenameProperty->setEnabled(false);
     mActionRenameProperty->setIcon(QIcon(QLatin1String(":/images/16/rename.png")));
-    connect(mActionRenameProperty, &QAction::triggered,
-            this, &PropertiesWidget::renameProperty);
+    // connect(mActionRenameProperty, &QAction::triggered,
+    //         this, &PropertiesWidget::renameProperty);
 
     Utils::setThemeIcon(mActionAddProperty, "add");
     Utils::setThemeIcon(mActionRemoveProperty, "remove");
@@ -663,6 +665,9 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
             this, &PropertiesWidget::showContextMenu);
     // connect(mPropertyBrowser, &PropertyBrowser::selectedItemsChanged,
     //         this, &PropertiesWidget::updateActions);
+
+    connect(mCustomProperties, &VariantMapProperty::renameRequested,
+            this, &PropertiesWidget::renameProperty);
 
     retranslateUi();
 }
@@ -2421,6 +2426,7 @@ VariantMapProperty::VariantMapProperty(const QString &name, QObject *parent)
     , m_resetIcon(QIcon(QStringLiteral(":/images/16/edit-clear.png")))
     , m_removeIcon(QIcon(QStringLiteral(":/images/16/remove.png")))
     , m_addIcon(QIcon(QStringLiteral(":/images/16/add.png")))
+    , m_renameIcon(QIcon(QLatin1String(":/images/16/rename.png")))
 {
     m_resetIcon.addFile(QStringLiteral(":/images/24/edit-clear.png"));
     m_removeIcon.addFile(QStringLiteral(":/images/22/remove.png"));
@@ -2793,6 +2799,11 @@ void VariantMapProperty::memberContextMenuRequested(Property *property, const QS
                 removeMember(name);
             });
             Utils::setThemeIcon(remove, "remove");
+
+            // If a property can be removed, it can also be renamed
+            menu.addAction(m_renameIcon, tr("Rename Property..."), this, [this, name = path.first()] {
+                emit renameRequested(name);
+            });
         }
         if (property->actions() & Property::Action::Reset) {
             QAction *reset = menu.addAction(m_resetIcon, tr("Reset Member"), this, [=] {
@@ -3023,43 +3034,26 @@ void PropertiesWidget::removeProperties()
 #endif
 }
 
-void PropertiesWidget::renameProperty()
+void PropertiesWidget::renameProperty(const QString &name)
 {
-#if 0
-    QtBrowserItem *item = mPropertyBrowser->currentItem();
-    if (!mPropertyBrowser->isCustomPropertyItem(item))
-        return;
-
-    const QString oldName = item->property()->propertyName();
-
     QInputDialog *dialog = new QInputDialog(mPropertyBrowser);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->setInputMode(QInputDialog::TextInput);
     dialog->setLabelText(QCoreApplication::translate("Tiled::PropertiesDock", "Name:"));
-    dialog->setTextValue(oldName);
+    dialog->setTextValue(name);
     dialog->setWindowTitle(QCoreApplication::translate("Tiled::PropertiesDock", "Rename Property"));
-    connect(dialog, &QInputDialog::textValueSelected, this, &PropertiesWidget::renamePropertyTo);
+
+    connect(dialog, &QInputDialog::textValueSelected, this, [=] (const QString &newName) {
+        if (newName.isEmpty())
+            return;
+        if (newName == name)
+            return;
+
+        QUndoStack *undoStack = mDocument->undoStack();
+        undoStack->push(new RenameProperty(mDocument, mDocument->currentObjects(), name, newName));
+    });
+
     dialog->open();
-#endif
-}
-
-void PropertiesWidget::renamePropertyTo(const QString &name)
-{
-#if 0
-    if (name.isEmpty())
-        return;
-
-    QtBrowserItem *item = mPropertyBrowser->currentItem();
-    if (!item)
-        return;
-
-    const QString oldName = item->property()->propertyName();
-    if (oldName == name)
-        return;
-
-    QUndoStack *undoStack = mDocument->undoStack();
-    undoStack->push(new RenameProperty(mDocument, mDocument->currentObjects(), oldName, name));
-#endif
 }
 
 void PropertiesWidget::showContextMenu(const QPoint &pos)
