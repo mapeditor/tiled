@@ -127,12 +127,14 @@ template<> EnumData enumData<Map::RenderOrder>()
 template<> EnumData enumData<Map::LayerDataFormat>()
 {
     QStringList names {
+        QCoreApplication::translate("PreferencesDialog", "CSV"),
         QCoreApplication::translate("PreferencesDialog", "XML (deprecated)"),
         QCoreApplication::translate("PreferencesDialog", "Base64 (uncompressed)"),
         QCoreApplication::translate("PreferencesDialog", "Base64 (gzip compressed)"),
         QCoreApplication::translate("PreferencesDialog", "Base64 (zlib compressed)"),
     };
     QList<int> values {
+        Map::CSV,
         Map::XML,
         Map::Base64,
         Map::Base64Gzip,
@@ -143,9 +145,6 @@ template<> EnumData enumData<Map::LayerDataFormat>()
         names.append(QCoreApplication::translate("PreferencesDialog", "Base64 (Zstandard compressed)"));
         values.append(Map::Base64Zstandard);
     }
-
-    names.append(QCoreApplication::translate("PreferencesDialog", "CSV"));
-    values.append(Map::CSV);
 
     return { names, values };
 }
