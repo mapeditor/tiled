@@ -162,7 +162,7 @@ std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
                 bool ok = tileset->loadFromImage(absoluteSource);
 
                 if (!ok) {
-                    mError = tr("Error loading tileset %1, which expands to %2. Path not found!")
+                    mError = tr("Error loading tileset image %1, which expands to %2!")
                             .arg(list.first().toString(), absoluteSource);
                     return nullptr;
                 } else {
