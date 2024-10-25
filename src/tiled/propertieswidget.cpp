@@ -763,7 +763,11 @@ public:
         editor->addItems(classNamesFor(*mObject));
         auto syncEditor = [this, editor] {
             const QSignalBlocker blocker(editor);
-            editor->setCurrentText(value());
+
+            // Avoid affecting cursor position when the text is the same
+            const auto v = value();
+            if (editor->currentText() != v)
+                editor->setCurrentText(v);
         };
         syncEditor();
         connect(this, &Property::valueChanged, editor, syncEditor);

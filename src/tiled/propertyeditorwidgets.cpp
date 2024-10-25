@@ -32,6 +32,20 @@
 namespace Tiled {
 
 /**
+ * Returns whether the given event is a shortcut override event for the undo or
+ * redo shortcuts. We generally want to use the global undo and redo shortcuts
+ * instead.
+ */
+static bool isUndoRedoShortcutOverride(QEvent *event)
+{
+    if (event->type() == QEvent::ShortcutOverride) {
+        auto ke = static_cast<QKeyEvent *>(event);
+        return (ke == QKeySequence::Redo || ke == QKeySequence::Undo);
+    }
+    return false;
+}
+
+/**
  * Strips a floating point number representation of redundant trailing zeros.
  * Examples:
  *
@@ -55,6 +69,15 @@ static QString removeRedundantTrialingZeros(const QString &text)
 }
 
 
+bool LineEdit::event(QEvent *event)
+{
+    if (isUndoRedoShortcutOverride(event))
+        return false;
+
+    return QLineEdit::event(event);
+}
+
+
 ComboBox::ComboBox(QWidget *parent)
     : QComboBox(parent)
 {
@@ -64,6 +87,14 @@ ComboBox::ComboBox(QWidget *parent)
     // Don't take focus by mouse wheel
     if (focusPolicy() == Qt::WheelFocus)
         setFocusPolicy(Qt::StrongFocus);
+}
+
+bool ComboBox::event(QEvent *event)
+{
+    if (isUndoRedoShortcutOverride(event))  // relevant when editable
+        return false;
+
+    return QComboBox::event(event);
 }
 
 void ComboBox::wheelEvent(QWheelEvent *event)
@@ -85,9 +116,6 @@ SpinBox::SpinBox(QWidget *parent)
     // Don't take focus by mouse wheel
     setFocusPolicy(Qt::StrongFocus);
 
-    // Don't respond to keyboard input immediately.
-    setKeyboardTracking(false);
-
     // Allow the widget to shrink horizontally.
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 }
@@ -98,6 +126,14 @@ QSize SpinBox::minimumSizeHint() const
     auto hint = QSpinBox::minimumSizeHint();
     hint.setWidth(Utils::dpiScaled(50));
     return hint;
+}
+
+bool SpinBox::event(QEvent *event)
+{
+    if (isUndoRedoShortcutOverride(event))  // relevant when editable
+        return false;
+
+    return QSpinBox::event(event);
 }
 
 void SpinBox::wheelEvent(QWheelEvent *event)
@@ -122,9 +158,6 @@ DoubleSpinBox::DoubleSpinBox(QWidget *parent)
     // Don't take focus by mouse wheel
     setFocusPolicy(Qt::StrongFocus);
 
-    // Don't respond to keyboard input immediately.
-    setKeyboardTracking(false);
-
     // Allow the widget to shrink horizontally.
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 }
@@ -146,6 +179,14 @@ QString DoubleSpinBox::textFromValue(double val) const
         return removeRedundantTrialingZeros(text);
 
     return text;
+}
+
+bool DoubleSpinBox::event(QEvent *event)
+{
+    if (isUndoRedoShortcutOverride(event))  // relevant when editable
+        return false;
+
+    return QDoubleSpinBox::event(event);
 }
 
 void DoubleSpinBox::wheelEvent(QWheelEvent *event)

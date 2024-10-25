@@ -106,11 +106,14 @@ void StringProperty::setPlaceholderText(const QString &placeholderText)
 
 QWidget *StringProperty::createEditor(QWidget *parent)
 {
-    auto editor = new QLineEdit(parent);
+    auto editor = new LineEdit(parent);
     editor->setPlaceholderText(m_placeholderText);
 
     auto syncEditor = [=] {
-        editor->setText(value());
+        // Avoid affecting cursor position when the text is the same
+        const QString v = value();
+        if (editor->text() != v)
+            editor->setText(v);
     };
     syncEditor();
 

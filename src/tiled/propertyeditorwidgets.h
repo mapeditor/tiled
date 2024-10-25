@@ -22,6 +22,7 @@
 
 #include <QComboBox>
 #include <QLabel>
+#include <QLineEdit>
 #include <QSpinBox>
 
 class QLabel;
@@ -29,7 +30,23 @@ class QLabel;
 namespace Tiled {
 
 /**
- * A combo box that doesn't respond to wheel events when not focused.
+ * A line edit that doesn't override global undo/redo shortcuts.
+ */
+class LineEdit : public QLineEdit
+{
+    Q_OBJECT
+
+public:
+    using QLineEdit::QLineEdit;
+
+protected:
+    bool event(QEvent *event) override;
+};
+
+
+/**
+ * A combo box that doesn't respond to wheel events when not focused and
+ * doesn't override global undo/redo shortcuts.
  */
 class ComboBox : public QComboBox
 {
@@ -39,6 +56,7 @@ public:
     ComboBox(QWidget *parent = nullptr);
 
 protected:
+    bool event(QEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
 };
 
@@ -57,6 +75,7 @@ public:
     QSize minimumSizeHint() const override;
 
 protected:
+    bool event(QEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
 };
 
@@ -79,6 +98,7 @@ public:
     QString textFromValue(double val) const override;
 
 protected:
+    bool event(QEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
 };
 
