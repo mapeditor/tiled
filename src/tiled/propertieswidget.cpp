@@ -1006,7 +1006,9 @@ public:
                         return map()->compressionLevel();
                     },
                     [this](const int &value) {
-                        push(new ChangeMapProperty(mapDocument(), value));
+                        push(new ChangeMapProperty(mapDocument(),
+                                                   Map::CompressionLevelProperty,
+                                                   value));
                     });
 
         mBackgroundColorProperty = new ColorProperty(
