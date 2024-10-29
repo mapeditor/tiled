@@ -135,7 +135,6 @@ DynamicLibrary {
         "changemapobject.h",
         "changemapobjectsorder.cpp",
         "changemapobjectsorder.h",
-        "changemapproperty.cpp",
         "changemapproperty.h",
         "changeobjectgroupproperties.cpp",
         "changeobjectgroupproperties.h",

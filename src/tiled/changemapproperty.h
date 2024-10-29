@@ -1,6 +1,7 @@
 /*
  * changemapproperty.h
  * Copyright 2012, Emmanuel Barroga emmanuelbarroga@gmail.com
+ * Copyright 2014-2024, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -26,164 +27,206 @@
 #include "mapdocument.h"
 
 #include <QColor>
+#include <QCoreApplication>
 
 namespace Tiled {
 
 class MapDocument;
 
-class ChangeMapBackgroundColor : public ChangeValue<Map, QColor>
+struct MapBackgroundColor
 {
-public:
-    ChangeMapBackgroundColor(MapDocument *document, const QColor &backgroundColor);
+    using Type = QColor;
 
-    int id() const override { return Cmd_ChangeMapBackgroundColor; }
+    static void set(Map *map, Type value)   { map->setBackgroundColor(value); }
+    static Type get(const Map *map)         { return map->backgroundColor(); }
+    static int undoId()                     { return Cmd_ChangeMapBackgroundColor; }
+    static Map::Property property()         { return Map::BackgroundColorProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Background Color");
+    }
+};
 
-private:
-    QColor getValue(const Map *map) const override;
-    void setValue(Map *map, const QColor &value) const override;
+struct MapChunkSize
+{
+    using Type = QSize;
+
+    static void set(Map *map, Type value)   { map->setChunkSize(value); }
+    static Type get(const Map *map)         { return map->chunkSize(); }
+    static int undoId()                     { return Cmd_ChangeMapChunkSize; }
+    static Map::Property property()         { return Map::ChunkSizeProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Chunk Size");
+    }
+};
+
+struct MapStaggerAxis
+{
+    using Type = Map::StaggerAxis;
+
+    static void set(Map *map, Type value)   { map->setStaggerAxis(value); }
+    static Type get(const Map *map)         { return map->staggerAxis(); }
+    static int undoId()                     { return Cmd_ChangeMapStaggerAxis; }
+    static Map::Property property()         { return Map::StaggerAxisProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Stagger Axis");
+    }
+};
+
+struct MapStaggerIndex
+{
+    using Type = Map::StaggerIndex;
+
+    static void set(Map *map, Type value)   { map->setStaggerIndex(value); }
+    static Type get(const Map *map)         { return map->staggerIndex(); }
+    static int undoId()                     { return Cmd_ChangeMapStaggerIndex; }
+    static Map::Property property()         { return Map::StaggerIndexProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Stagger Index");
+    }
+};
+
+struct MapParallaxOrigin
+{
+    using Type = QPointF;
+
+    static void set(Map *map, Type value)   { map->setParallaxOrigin(value); }
+    static Type get(const Map *map)         { return map->parallaxOrigin(); }
+    static int undoId()                     { return Cmd_ChangeMapParallaxOrigin; }
+    static Map::Property property()         { return Map::ParallaxOriginProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Parallax Origin");
+    }
+};
+
+struct MapOrientation
+{
+    using Type = Map::Orientation;
+
+    static void set(Map *map, Type value)   { map->setOrientation(value); }
+    static Type get(const Map *map)         { return map->orientation(); }
+    static int undoId()                     { return Cmd_ChangeMapOrientation; }
+    static Map::Property property()         { return Map::OrientationProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Orientation");
+    }
+};
+
+struct MapRenderOrder
+{
+    using Type = Map::RenderOrder;
+
+    static void set(Map *map, Type value)   { map->setRenderOrder(value); }
+    static Type get(const Map *map)         { return map->renderOrder(); }
+    static int undoId()                     { return Cmd_ChangeMapRenderOrder; }
+    static Map::Property property()         { return Map::RenderOrderProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Render Order");
+    }
+};
+
+struct MapLayerDataFormat
+{
+    using Type = Map::LayerDataFormat;
+
+    static void set(Map *map, Type value)   { map->setLayerDataFormat(value); }
+    static Type get(const Map *map)         { return map->layerDataFormat(); }
+    static int undoId()                     { return Cmd_ChangeMapLayerDataFormat; }
+    static Map::Property property()         { return Map::LayerDataFormatProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Layer Data Format");
+    }
+};
+
+struct MapTileSize
+{
+    using Type = QSize;
+
+    static void set(Map *map, Type value)   { map->setTileSize(value); }
+    static Type get(const Map *map)         { return map->tileSize(); }
+    static int undoId()                     { return Cmd_ChangeMapTileSize; }
+    static Map::Property property()         { return Map::TileSizeProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Tile Size");
+    }
+};
+
+struct MapInfinite
+{
+    using Type = bool;
+
+    static void set(Map *map, Type value)   { map->setInfinite(value); }
+    static Type get(const Map *map)         { return map->infinite(); }
+    static int undoId()                     { return Cmd_ChangeMapInfinite; }
+    static Map::Property property()         { return Map::InfiniteProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Infinite");
+    }
+};
+
+struct MapHexSideLength
+{
+    using Type = int;
+
+    static void set(Map *map, Type value)   { map->setHexSideLength(value); }
+    static Type get(const Map *map)         { return map->hexSideLength(); }
+    static int undoId()                     { return Cmd_ChangeMapHexSideLength; }
+    static Map::Property property()         { return Map::HexSideLengthProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Hex Side Length");
+    }
+};
+
+struct MapCompressionLevel
+{
+    using Type = int;
+
+    static void set(Map *map, Type value)   { map->setCompressionLevel(value); }
+    static Type get(const Map *map)         { return map->compressionLevel(); }
+    static int undoId()                     { return Cmd_ChangeMapCompressionLevel; }
+    static Map::Property property()         { return Map::CompressionLevelProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Compression Level");
+    }
 };
 
 
-class ChangeMapChunkSize : public ChangeValue<Map, QSize>
+template<typename Member>
+class ChangeMapProperty : public ChangeValue<Map, typename Member::Type>
 {
 public:
-    ChangeMapChunkSize(MapDocument *document, const QSize &chunkSize);
+    ChangeMapProperty(MapDocument *document, const typename Member::Type &value)
+        : ChangeValue<Map, typename Member::Type>(document, { document->map() }, value)
+    {
+        QUndoCommand::setText(Member::undoName());
+    }
 
-    int id() const override { return Cmd_ChangeMapChunkSize; }
+    int id() const override { return Member::undoId(); }
 
 private:
-    QSize getValue(const Map *map) const override;
-    void setValue(Map *map, const QSize &value) const override;
+    typename Member::Type getValue(const Map *map) const override
+    {
+        return Member::get(map);
+    }
+
+    void setValue(Map *map, const typename Member::Type &value) const override
+    {
+        Member::set(map, value);
+        emit ChangeValue<Map, typename Member::Type>::document()->changed(MapChangeEvent(Member::property()));
+    }
 };
 
 
-class ChangeMapStaggerAxis : public ChangeValue<Map, Map::StaggerAxis>
-{
-public:
-    ChangeMapStaggerAxis(MapDocument *document, Map::StaggerAxis staggerAxis);
-
-    int id() const override { return Cmd_ChangeMapStaggerAxis; }
-
-private:
-    Map::StaggerAxis getValue(const Map *map) const override;
-    void setValue(Map *map, const Map::StaggerAxis &value) const override;
-};
-
-
-class ChangeMapStaggerIndex : public ChangeValue<Map, Map::StaggerIndex>
-{
-public:
-    ChangeMapStaggerIndex(MapDocument *document, Map::StaggerIndex staggerIndex);
-
-    int id() const override { return Cmd_ChangeMapStaggerIndex; }
-
-private:
-    Map::StaggerIndex getValue(const Map *map) const override;
-    void setValue(Map *map, const Map::StaggerIndex &value) const override;
-};
-
-
-class ChangeMapParallaxOrigin : public ChangeValue<Map, QPointF>
-{
-public:
-    ChangeMapParallaxOrigin(MapDocument *document, const QPointF &parallaxOrigin);
-
-    int id() const override { return Cmd_ChangeMapParallaxOrigin; }
-
-private:
-    QPointF getValue(const Map *map) const override;
-    void setValue(Map *map, const QPointF &value) const override;
-};
-
-
-class ChangeMapOrientation : public ChangeValue<Map, Map::Orientation>
-{
-public:
-    ChangeMapOrientation(MapDocument *document, Map::Orientation orientation);
-
-    int id() const override { return Cmd_ChangeMapOrientation; }
-
-private:
-    Map::Orientation getValue(const Map *map) const override;
-    void setValue(Map *map, const Map::Orientation &value) const override;
-};
-
-
-class ChangeMapRenderOrder : public ChangeValue<Map, Map::RenderOrder>
-{
-public:
-    ChangeMapRenderOrder(MapDocument *document, Map::RenderOrder renderOrder);
-
-    int id() const override { return Cmd_ChangeMapRenderOrder; }
-
-private:
-    Map::RenderOrder getValue(const Map *map) const override;
-    void setValue(Map *map, const Map::RenderOrder &value) const override;
-};
-
-
-class ChangeMapLayerDataFormat : public ChangeValue<Map, Map::LayerDataFormat>
-{
-public:
-    ChangeMapLayerDataFormat(MapDocument *document, Map::LayerDataFormat layerDataFormat);
-
-    int id() const override { return Cmd_ChangeMapLayerDataFormat; }
-
-private:
-    Map::LayerDataFormat getValue(const Map *map) const override;
-    void setValue(Map *map, const Map::LayerDataFormat &value) const override;
-};
-
-
-class ChangeMapTileSize : public ChangeValue<Map, QSize>
-{
-public:
-    ChangeMapTileSize(MapDocument *document, const QSize &tileSize);
-
-    int id() const override { return Cmd_ChangeMapTileSize; }
-
-private:
-    QSize getValue(const Map *map) const override;
-    void setValue(Map *map, const QSize &value) const override;
-};
-
-
-class ChangeMapInfinite : public ChangeValue<Map, bool>
-{
-public:
-    ChangeMapInfinite(MapDocument *document, bool infinite);
-
-    int id() const override { return Cmd_ChangeMapInfinite; }
-
-private:
-    bool getValue(const Map *map) const override;
-    void setValue(Map *map, const bool &value) const override;
-};
-
-
-class ChangeMapHexSideLength : public ChangeValue<Map, int>
-{
-public:
-    ChangeMapHexSideLength(MapDocument *document, int hexSideLength);
-
-    int id() const override { return Cmd_ChangeMapHexSideLength; }
-
-private:
-    int getValue(const Map *map) const override;
-    void setValue(Map *map, const int &value) const override;
-};
-
-
-class ChangeMapCompressionLevel : public ChangeValue<Map, int>
-{
-public:
-    ChangeMapCompressionLevel(MapDocument *document, int compressionLevel);
-
-    int id() const override { return Cmd_ChangeMapCompressionLevel; }
-
-private:
-    int getValue(const Map *map) const override;
-    void setValue(Map *map, const int &value) const override;
-};
+using ChangeMapBackgroundColor  = ChangeMapProperty<MapBackgroundColor>;
+using ChangeMapChunkSize        = ChangeMapProperty<MapChunkSize>;
+using ChangeMapStaggerAxis      = ChangeMapProperty<MapStaggerAxis>;
+using ChangeMapStaggerIndex     = ChangeMapProperty<MapStaggerIndex>;
+using ChangeMapParallaxOrigin   = ChangeMapProperty<MapParallaxOrigin>;
+using ChangeMapOrientation      = ChangeMapProperty<MapOrientation>;
+using ChangeMapRenderOrder      = ChangeMapProperty<MapRenderOrder>;
+using ChangeMapLayerDataFormat  = ChangeMapProperty<MapLayerDataFormat>;
+using ChangeMapTileSize         = ChangeMapProperty<MapTileSize>;
+using ChangeMapInfinite         = ChangeMapProperty<MapInfinite>;
+using ChangeMapHexSideLength    = ChangeMapProperty<MapHexSideLength>;
+using ChangeMapCompressionLevel = ChangeMapProperty<MapCompressionLevel>;
 
 } // namespace Tiled
