@@ -20,111 +20,170 @@
 
 #pragma once
 
+#include "changeevents.h"
+#include "changevalue.h"
 #include "map.h"
+#include "mapdocument.h"
 
 #include <QColor>
-#include <QUndoCommand>
 
 namespace Tiled {
 
 class MapDocument;
 
-class ChangeMapProperty : public QUndoCommand
+class ChangeMapBackgroundColor : public ChangeValue<Map, QColor>
 {
 public:
-    /**
-     * Constructs a command that changes the value of the given property.
-     *
-     * Can only be used for the HexSideLength property.
-     *
-     * @param mapDocument       the map document of the map
-     * @param backgroundColor   the new color to apply for the background
-     */
-    ChangeMapProperty(MapDocument *mapDocument, Map::Property property, int value);
+    ChangeMapBackgroundColor(MapDocument *document, const QColor &backgroundColor);
 
-    /**
-     * Constructs a command that changes the map background color.
-     *
-     * @param mapDocument       the map document of the map
-     * @param backgroundColor   the new color to apply for the background
-     */
-    ChangeMapProperty(MapDocument *mapDocument, const QColor &backgroundColor);
-    
-    /**
-     * Constructs a command that changes the chunk size.
-     *
-     * @param mapDocument       the map document of the map
-     * @param chunkSize         the new chunk size to use for tile layers
-     */
-    ChangeMapProperty(MapDocument *mapDocument, QSize chunkSize);
-
-    /**
-     * Constructs a command that changes the map stagger axis.
-     *
-     * @param mapDocument       the map document of the map
-     * @param staggerAxis       the new map stagger axis
-     */
-    ChangeMapProperty(MapDocument *mapDocument, Map::StaggerAxis staggerAxis);
-
-    /**
-     * Constructs a command that changes the map stagger index.
-     *
-     * @param mapDocument       the map document of the map
-     * @param staggerIndex       the new map stagger index
-     */
-    ChangeMapProperty(MapDocument *mapDocument, Map::StaggerIndex staggerIndex);
-
-    /**
-     * Constructs a command that changes the parallax origin.
-     *
-     * @param mapDocument       the map document of the map
-     * @param parallaxOrigin    the new parallax origin
-     */
-    ChangeMapProperty(MapDocument *mapDocument, const QPointF &parallaxOrigin);
-
-    /**
-     * Constructs a command that changes the map orientation.
-     *
-     * @param mapDocument       the map document of the map
-     * @param orientation       the new map orientation
-     */
-    ChangeMapProperty(MapDocument *mapDocument, Map::Orientation orientation);
-
-    /**
-     * Constructs a command that changes the render order.
-     *
-     * @param mapDocument       the map document of the map
-     * @param renderOrder       the new map render order
-     */
-    ChangeMapProperty(MapDocument *mapDocument, Map::RenderOrder renderOrder);
-
-    /**
-     * Constructs a command that changes the layer data format.
-     *
-     * @param mapDocument       the map document of the map
-     * @param layerDataFormat   the new layer data format
-     */
-    ChangeMapProperty(MapDocument *mapDocument, Map::LayerDataFormat layerDataFormat);
-
-    void undo() override;
-    void redo() override;
+    int id() const override { return Cmd_ChangeMapBackgroundColor; }
 
 private:
-    void swap();
+    QColor getValue(const Map *map) const override;
+    void setValue(Map *map, const QColor &value) const override;
+};
 
-    MapDocument *mMapDocument;
-    Map::Property mProperty;
-    QColor mBackgroundColor;
-    QSize mChunkSize;
-    union {
-        int mIntValue;
-        Map::StaggerAxis mStaggerAxis;
-        Map::StaggerIndex mStaggerIndex;
-        QPointF mParallaxOrigin;
-        Map::Orientation mOrientation;
-        Map::RenderOrder mRenderOrder;
-        Map::LayerDataFormat mLayerDataFormat;
-    };
+
+class ChangeMapChunkSize : public ChangeValue<Map, QSize>
+{
+public:
+    ChangeMapChunkSize(MapDocument *document, const QSize &chunkSize);
+
+    int id() const override { return Cmd_ChangeMapChunkSize; }
+
+private:
+    QSize getValue(const Map *map) const override;
+    void setValue(Map *map, const QSize &value) const override;
+};
+
+
+class ChangeMapStaggerAxis : public ChangeValue<Map, Map::StaggerAxis>
+{
+public:
+    ChangeMapStaggerAxis(MapDocument *document, Map::StaggerAxis staggerAxis);
+
+    int id() const override { return Cmd_ChangeMapStaggerAxis; }
+
+private:
+    Map::StaggerAxis getValue(const Map *map) const override;
+    void setValue(Map *map, const Map::StaggerAxis &value) const override;
+};
+
+
+class ChangeMapStaggerIndex : public ChangeValue<Map, Map::StaggerIndex>
+{
+public:
+    ChangeMapStaggerIndex(MapDocument *document, Map::StaggerIndex staggerIndex);
+
+    int id() const override { return Cmd_ChangeMapStaggerIndex; }
+
+private:
+    Map::StaggerIndex getValue(const Map *map) const override;
+    void setValue(Map *map, const Map::StaggerIndex &value) const override;
+};
+
+
+class ChangeMapParallaxOrigin : public ChangeValue<Map, QPointF>
+{
+public:
+    ChangeMapParallaxOrigin(MapDocument *document, const QPointF &parallaxOrigin);
+
+    int id() const override { return Cmd_ChangeMapParallaxOrigin; }
+
+private:
+    QPointF getValue(const Map *map) const override;
+    void setValue(Map *map, const QPointF &value) const override;
+};
+
+
+class ChangeMapOrientation : public ChangeValue<Map, Map::Orientation>
+{
+public:
+    ChangeMapOrientation(MapDocument *document, Map::Orientation orientation);
+
+    int id() const override { return Cmd_ChangeMapOrientation; }
+
+private:
+    Map::Orientation getValue(const Map *map) const override;
+    void setValue(Map *map, const Map::Orientation &value) const override;
+};
+
+
+class ChangeMapRenderOrder : public ChangeValue<Map, Map::RenderOrder>
+{
+public:
+    ChangeMapRenderOrder(MapDocument *document, Map::RenderOrder renderOrder);
+
+    int id() const override { return Cmd_ChangeMapRenderOrder; }
+
+private:
+    Map::RenderOrder getValue(const Map *map) const override;
+    void setValue(Map *map, const Map::RenderOrder &value) const override;
+};
+
+
+class ChangeMapLayerDataFormat : public ChangeValue<Map, Map::LayerDataFormat>
+{
+public:
+    ChangeMapLayerDataFormat(MapDocument *document, Map::LayerDataFormat layerDataFormat);
+
+    int id() const override { return Cmd_ChangeMapLayerDataFormat; }
+
+private:
+    Map::LayerDataFormat getValue(const Map *map) const override;
+    void setValue(Map *map, const Map::LayerDataFormat &value) const override;
+};
+
+
+class ChangeMapTileSize : public ChangeValue<Map, QSize>
+{
+public:
+    ChangeMapTileSize(MapDocument *document, const QSize &tileSize);
+
+    int id() const override { return Cmd_ChangeMapTileSize; }
+
+private:
+    QSize getValue(const Map *map) const override;
+    void setValue(Map *map, const QSize &value) const override;
+};
+
+
+class ChangeMapInfinite : public ChangeValue<Map, bool>
+{
+public:
+    ChangeMapInfinite(MapDocument *document, bool infinite);
+
+    int id() const override { return Cmd_ChangeMapInfinite; }
+
+private:
+    bool getValue(const Map *map) const override;
+    void setValue(Map *map, const bool &value) const override;
+};
+
+
+class ChangeMapHexSideLength : public ChangeValue<Map, int>
+{
+public:
+    ChangeMapHexSideLength(MapDocument *document, int hexSideLength);
+
+    int id() const override { return Cmd_ChangeMapHexSideLength; }
+
+private:
+    int getValue(const Map *map) const override;
+    void setValue(Map *map, const int &value) const override;
+};
+
+
+class ChangeMapCompressionLevel : public ChangeValue<Map, int>
+{
+public:
+    ChangeMapCompressionLevel(MapDocument *document, int compressionLevel);
+
+    int id() const override { return Cmd_ChangeMapCompressionLevel; }
+
+private:
+    int getValue(const Map *map) const override;
+    void setValue(Map *map, const int &value) const override;
 };
 
 } // namespace Tiled

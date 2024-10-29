@@ -112,7 +112,6 @@ private:
     void refreshScene();
 
     void changeEvent(const ChangeEvent &change);
-    void mapChanged();
     void repaintTileset(Tileset *tileset);
 
     void tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset);

@@ -78,8 +78,7 @@ public:
     QString exportFormat;
 
     enum Property {
-        TileWidthProperty,
-        TileHeightProperty,
+        TileSizeProperty,
         InfiniteProperty,
         HexSideLengthProperty,
         StaggerAxisProperty,
@@ -212,6 +211,7 @@ public:
     void setTileHeight(int height);
 
     QSize tileSize() const;
+    void setTileSize(QSize size);
 
     bool infinite() const;
     void setInfinite(bool infinite);
@@ -453,6 +453,12 @@ inline void Map::setTileHeight(int height)
 inline QSize Map::tileSize() const
 {
     return QSize(mParameters.tileWidth, mParameters.tileHeight);
+}
+
+inline void Map::setTileSize(QSize size)
+{
+    mParameters.tileWidth = size.width();
+    mParameters.tileHeight = size.height();
 }
 
 inline bool Map::infinite() const

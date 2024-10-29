@@ -1147,18 +1147,16 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
 
     switch (id) {
     case TileWidthProperty:
-        command = new ChangeMapProperty(mMapDocument, Map::TileWidthProperty,
-                                        val.toInt());
+        command = new ChangeMapTileSize(mMapDocument, QSize(val.toInt(),
+                                                            mMapDocument->map()->tileHeight()));
         break;
     case TileHeightProperty:
-        command = new ChangeMapProperty(mMapDocument, Map::TileHeightProperty,
-                                        val.toInt());
+        command = new ChangeMapTileSize(mMapDocument, QSize(mMapDocument->map()->tileWidth(),
+                                                            val.toInt()));
         break;
     case InfiniteProperty: {
-        bool infinite = val.toInt();
-
-        auto changePropertyCommand = new ChangeMapProperty(mMapDocument, Map::InfiniteProperty,
-                                                           val.toInt());
+        const bool infinite = val.toInt();
+        auto changePropertyCommand = new ChangeMapInfinite(mMapDocument, infinite);
 
         QUndoStack *undoStack = mDocument->undoStack();
         undoStack->beginMacro(changePropertyCommand->text());
@@ -1184,54 +1182,53 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
     }
     case OrientationProperty: {
         Map::Orientation orientation = static_cast<Map::Orientation>(val.toInt() + 1);
-        command = new ChangeMapProperty(mMapDocument, orientation);
+        command = new ChangeMapOrientation(mMapDocument, orientation);
         break;
     }
     case HexSideLengthProperty: {
-        command = new ChangeMapProperty(mMapDocument, Map::HexSideLengthProperty,
-                                        val.toInt());
+        command = new ChangeMapHexSideLength(mMapDocument, val.toInt());
         break;
     }
     case StaggerAxisProperty: {
         Map::StaggerAxis staggerAxis = static_cast<Map::StaggerAxis>(val.toInt());
-        command = new ChangeMapProperty(mMapDocument, staggerAxis);
+        command = new ChangeMapStaggerAxis(mMapDocument, staggerAxis);
         break;
     }
     case StaggerIndexProperty: {
         Map::StaggerIndex staggerIndex = static_cast<Map::StaggerIndex>(val.toInt());
-        command = new ChangeMapProperty(mMapDocument, staggerIndex);
+        command = new ChangeMapStaggerIndex(mMapDocument, staggerIndex);
         break;
     }
     case ParallaxOriginProperty: {
-        command = new ChangeMapProperty(mMapDocument, val.value<QPointF>());
+        command = new ChangeMapParallaxOrigin(mMapDocument, val.value<QPointF>());
         break;
     }
     case LayerFormatProperty: {
         Map::LayerDataFormat format = mLayerFormatValues.at(val.toInt());
-        command = new ChangeMapProperty(mMapDocument, format);
+        command = new ChangeMapLayerDataFormat(mMapDocument, format);
         break;
     }
     case RenderOrderProperty: {
         Map::RenderOrder renderOrder = static_cast<Map::RenderOrder>(val.toInt());
-        command = new ChangeMapProperty(mMapDocument, renderOrder);
+        command = new ChangeMapRenderOrder(mMapDocument, renderOrder);
         break;
     }
     case BackgroundColorProperty:
-        command = new ChangeMapProperty(mMapDocument, val.value<QColor>());
+        command = new ChangeMapBackgroundColor(mMapDocument, val.value<QColor>());
         break;
     case CompressionLevelProperty:
-        command = new ChangeMapProperty(mMapDocument, Map::CompressionLevelProperty, val.toInt());
+        command = new ChangeMapCompressionLevel(mMapDocument, val.toInt());
         break;
     case ChunkWidthProperty: {
         QSize chunkSize = mMapDocument->map()->chunkSize();
         chunkSize.setWidth(val.toInt());
-        command = new ChangeMapProperty(mMapDocument, chunkSize);
+        command = new ChangeMapChunkSize(mMapDocument, chunkSize);
         break;
     }
     case ChunkHeightProperty: {
         QSize chunkSize = mMapDocument->map()->chunkSize();
         chunkSize.setHeight(val.toInt());
-        command = new ChangeMapProperty(mMapDocument, chunkSize);
+        command = new ChangeMapChunkSize(mMapDocument, chunkSize);
         break;
     }
     default:

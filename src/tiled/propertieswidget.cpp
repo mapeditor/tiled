@@ -896,7 +896,7 @@ public:
                         return map()->orientation();
                     },
                     [this](Map::Orientation value) {
-                        push(new ChangeMapProperty(mapDocument(), value));
+                        push(new ChangeMapOrientation(mapDocument(), value));
                     });
 
         mSizeProperty = new MapSizeProperty(mapDocument(), this);
@@ -907,19 +907,7 @@ public:
                         return mapDocument()->map()->tileSize();
                     },
                     [this](const QSize &newSize) {
-                        const auto oldSize = mapDocument()->map()->tileSize();
-
-                        if (oldSize.width() != newSize.width()) {
-                            push(new ChangeMapProperty(mapDocument(),
-                                                       Map::TileWidthProperty,
-                                                       newSize.width()));
-                        }
-
-                        if (oldSize.height() != newSize.height()) {
-                            push(new ChangeMapProperty(mapDocument(),
-                                                       Map::TileHeightProperty,
-                                                       newSize.height()));
-                        }
+                        push(new ChangeMapTileSize(mapDocument(), newSize));
                     },
                     this);
         mTileSizeProperty->setMinimum(1);
@@ -931,9 +919,7 @@ public:
                         return map()->infinite();
                     },
                     [this](const bool &value) {
-                        push(new ChangeMapProperty(mapDocument(),
-                                                   Map::InfiniteProperty,
-                                                   value ? 1 : 0));
+                        push(new ChangeMapInfinite(mapDocument(), value));
                     });
         mInfiniteProperty->setNameOnCheckBox(true);
 
@@ -942,10 +928,8 @@ public:
                     [this] {
                         return map()->hexSideLength();
                     },
-                    [this](const QVariant &value) {
-                        push(new ChangeMapProperty(mapDocument(),
-                                                   Map::HexSideLengthProperty,
-                                                   value.toInt()));
+                    [this](const int &value) {
+                        push(new ChangeMapHexSideLength(mapDocument(), value));
                     });
         mHexSideLengthProperty->setSuffix(tr(" px"));
 
@@ -955,7 +939,7 @@ public:
                         return map()->staggerAxis();
                     },
                     [this](Map::StaggerAxis value) {
-                        push(new ChangeMapProperty(mapDocument(), value));
+                        push(new ChangeMapStaggerAxis(mapDocument(), value));
                     });
 
         mStaggerIndexProperty = new EnumProperty<Map::StaggerIndex>(
@@ -964,7 +948,7 @@ public:
                         return map()->staggerIndex();
                     },
                     [this](Map::StaggerIndex value) {
-                        push(new ChangeMapProperty(mapDocument(), value));
+                        push(new ChangeMapStaggerIndex(mapDocument(), value));
                     });
 
         mParallaxOriginProperty = new PointFProperty(
@@ -973,7 +957,7 @@ public:
                         return map()->parallaxOrigin();
                     },
                     [this](const QPointF &value) {
-                        push(new ChangeMapProperty(mapDocument(), value));
+                        push(new ChangeMapParallaxOrigin(mapDocument(), value));
                     });
 
         mLayerDataFormatProperty = new EnumProperty<Map::LayerDataFormat>(
@@ -982,7 +966,16 @@ public:
                         return map()->layerDataFormat();
                     },
                     [this](Map::LayerDataFormat value) {
-                        push(new ChangeMapProperty(mapDocument(), value));
+                        push(new ChangeMapLayerDataFormat(mapDocument(), value));
+                    });
+
+        mCompressionLevelProperty = new IntProperty(
+                    tr("Compression Level"),
+                    [this] {
+                        return map()->compressionLevel();
+                    },
+                    [this](const int &value) {
+                        push(new ChangeMapCompressionLevel(mapDocument(), value));
                     });
 
         mChunkSizeProperty = new SizeProperty(
@@ -991,7 +984,7 @@ public:
                         return map()->chunkSize();
                     },
                     [this](const QSize &value) {
-                        push(new ChangeMapProperty(mapDocument(), value));
+                        push(new ChangeMapChunkSize(mapDocument(), value));
                     });
         mChunkSizeProperty->setMinimum(CHUNK_SIZE_MIN);
 
@@ -1001,18 +994,7 @@ public:
                         return map()->renderOrder();
                     },
                     [this](Map::RenderOrder value) {
-                        push(new ChangeMapProperty(mapDocument(), value));
-                    });
-
-        mCompressionLevelProperty = new IntProperty(
-                    tr("Compression Level"),
-                    [this] {
-                        return map()->compressionLevel();
-                    },
-                    [this](const int &value) {
-                        push(new ChangeMapProperty(mapDocument(),
-                                                   Map::CompressionLevelProperty,
-                                                   value));
+                        push(new ChangeMapRenderOrder(mapDocument(), value));
                     });
 
         mBackgroundColorProperty = new ColorProperty(
@@ -1021,7 +1003,7 @@ public:
                         return map()->backgroundColor();
                     },
                     [this](const QColor &value) {
-                        push(new ChangeMapProperty(mapDocument(), value));
+                        push(new ChangeMapBackgroundColor(mapDocument(), value));
                     });
 
         mMapProperties = new GroupProperty(tr("Map"));
@@ -1038,8 +1020,8 @@ public:
         mMapProperties->addProperty(mParallaxOriginProperty);
         mMapProperties->addSeparator();
         mMapProperties->addProperty(mLayerDataFormatProperty);
-        mMapProperties->addProperty(mChunkSizeProperty);
         mMapProperties->addProperty(mCompressionLevelProperty);
+        mMapProperties->addProperty(mChunkSizeProperty);
         mMapProperties->addSeparator();
         mMapProperties->addProperty(mRenderOrderProperty);
         mMapProperties->addProperty(mBackgroundColorProperty);
@@ -1062,8 +1044,7 @@ private:
 
         const auto property = static_cast<const MapChangeEvent&>(event).property;
         switch (property) {
-        case Map::TileWidthProperty:
-        case Map::TileHeightProperty:
+        case Map::TileSizeProperty:
             emit mTileSizeProperty->valueChanged();
             break;
         case Map::InfiniteProperty:
@@ -1149,9 +1130,9 @@ private:
     Property *mStaggerIndexProperty;
     Property *mParallaxOriginProperty;
     Property *mLayerDataFormatProperty;
+    Property *mCompressionLevelProperty;
     SizeProperty *mChunkSizeProperty;
     Property *mRenderOrderProperty;
-    Property *mCompressionLevelProperty;
     Property *mBackgroundColorProperty;
 };
 
