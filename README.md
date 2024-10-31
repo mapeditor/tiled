@@ -73,7 +73,6 @@ From the command-line, you may need to set up Qbs before you can build Tiled
 path):
 
     qbs setup-toolchains --detect     # setup toolchains
-    qbs setup-qt --detect             # setup Qt (not needed since Qbs 1.13)
     qbs                               # build Tiled
 
 You can now run Tiled as follows:
