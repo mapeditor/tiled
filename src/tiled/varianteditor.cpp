@@ -72,6 +72,17 @@ void Property::setActions(Actions actions)
     }
 }
 
+Property::DisplayMode GroupProperty::displayMode() const
+{
+    if (name().isEmpty())
+        return DisplayMode::ChildrenOnly;
+
+    if (m_header)
+        return DisplayMode::Header;
+
+    return DisplayMode::Default;
+}
+
 void GroupProperty::setExpanded(bool expanded)
 {
     if (m_expanded != expanded) {
@@ -626,6 +637,15 @@ QLayout *VariantEditor::createPropertyLayout(Property *property)
 
     const auto halfSpacing = Utils::dpiScaled(2);
 
+    if (displayMode == Property::DisplayMode::ChildrenOnly) {
+        if (auto groupProperty = qobject_cast<GroupProperty *>(property)) {
+            widgets.childrenLayout = new QVBoxLayout;
+            widgets.layout = widgets.childrenLayout;
+            setPropertyChildrenExpanded(groupProperty, true);
+            return widgets.layout;
+        }
+    }
+
     auto rowLayout = new QHBoxLayout;
     rowLayout->setSpacing(halfSpacing * 2);
 
@@ -739,9 +759,10 @@ void VariantEditor::setPropertyChildrenExpanded(GroupProperty *groupProperty, bo
         const auto halfSpacing = Utils::dpiScaled(2);
 
         widgets.children = new VariantEditor(this);
-        if (widgets.label->isHeader())
+        if (widgets.label && widgets.label->isHeader())
             widgets.children->setContentsMargins(0, halfSpacing, 0, halfSpacing);
-        widgets.children->setLevel(m_level + 1);
+        if (groupProperty->displayMode() != Property::DisplayMode::ChildrenOnly)
+            widgets.children->setLevel(m_level + 1);
         widgets.children->setEnabled(groupProperty->isEnabled());
         for (auto property : groupProperty->subProperties())
             widgets.children->addProperty(property);

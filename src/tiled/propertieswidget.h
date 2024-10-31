@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include <QMap>
 #include <QWidget>
 
 class QScrollArea;
@@ -79,6 +80,7 @@ private:
     Document *mDocument = nullptr;
     ObjectProperties *mPropertiesObject = nullptr;
     CustomProperties *mCustomProperties = nullptr;
+    QMap<int, bool> mExpandedStates;
     QScrollArea *mScrollArea;
     VariantEditor *mPropertyBrowser;
     QAction *mActionAddProperty;

@@ -604,114 +604,6 @@ private:
 };
 
 
-PropertiesWidget::PropertiesWidget(QWidget *parent)
-    : QWidget{parent}
-    , mCustomProperties(new CustomProperties)
-    , mScrollArea(new QScrollArea(this))
-{
-    auto scrollWidget = new QWidget(mScrollArea);
-    scrollWidget->setBackgroundRole(QPalette::AlternateBase);
-    scrollWidget->setMinimumWidth(Utils::dpiScaled(120));
-
-    auto verticalLayout = new QVBoxLayout(scrollWidget);
-    mPropertyBrowser = new VariantEditor(scrollWidget);
-    verticalLayout->addWidget(mPropertyBrowser);
-    verticalLayout->addStretch();
-    verticalLayout->setContentsMargins(0, 0, 0, Utils::dpiScaled(4));
-
-    mScrollArea->setWidget(scrollWidget);
-    mScrollArea->setWidgetResizable(true);
-
-    mActionAddProperty = new QAction(this);
-    mActionAddProperty->setEnabled(false);
-    mActionAddProperty->setIcon(QIcon(QLatin1String(":/images/16/add.png")));
-    connect(mActionAddProperty, &QAction::triggered,
-            this, &PropertiesWidget::openAddPropertyDialog);
-
-    mActionRemoveProperty = new QAction(this);
-    mActionRemoveProperty->setEnabled(false);
-    mActionRemoveProperty->setIcon(QIcon(QLatin1String(":/images/16/remove.png")));
-    mActionRemoveProperty->setShortcuts(QKeySequence::Delete);
-    connect(mActionRemoveProperty, &QAction::triggered,
-            this, &PropertiesWidget::removeProperties);
-
-    mActionRenameProperty = new QAction(this);
-    mActionRenameProperty->setEnabled(false);
-    mActionRenameProperty->setIcon(QIcon(QLatin1String(":/images/16/rename.png")));
-    // connect(mActionRenameProperty, &QAction::triggered,
-    //         this, &PropertiesWidget::renameProperty);
-
-    Utils::setThemeIcon(mActionAddProperty, "add");
-    Utils::setThemeIcon(mActionRemoveProperty, "remove");
-    Utils::setThemeIcon(mActionRenameProperty, "rename");
-
-    QToolBar *toolBar = new QToolBar;
-    toolBar->setFloatable(false);
-    toolBar->setMovable(false);
-    toolBar->setIconSize(Utils::smallIconSize());
-    toolBar->addAction(mActionAddProperty);
-    toolBar->addAction(mActionRemoveProperty);
-    toolBar->addAction(mActionRenameProperty);
-
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
-    layout->addWidget(mScrollArea);
-    layout->addWidget(toolBar);
-    setLayout(layout);
-
-    mPropertyBrowser->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(mPropertyBrowser, &PropertyBrowser::customContextMenuRequested,
-            this, &PropertiesWidget::showContextMenu);
-    // connect(mPropertyBrowser, &PropertyBrowser::selectedItemsChanged,
-    //         this, &PropertiesWidget::updateActions);
-
-    connect(mCustomProperties, &VariantMapProperty::renameRequested,
-            this, &PropertiesWidget::renameProperty);
-
-    retranslateUi();
-}
-
-PropertiesWidget::~PropertiesWidget()
-{
-    // Disconnect to avoid crashing due to signals emitted during destruction
-    mPropertyBrowser->disconnect(this);
-}
-
-void PropertiesWidget::setDocument(Document *document)
-{
-    if (mDocument == document)
-        return;
-
-    if (mDocument)
-        mDocument->disconnect(this);
-
-    mDocument = document;
-    // mPropertyBrowser->setDocument(document);
-    mCustomProperties->setDocument(document);
-
-    if (document) {
-        connect(document, &Document::currentObjectChanged,
-                this, &PropertiesWidget::currentObjectChanged);
-        connect(document, &Document::editCurrentObject,
-                this, &PropertiesWidget::bringToFront);
-
-        connect(document, &Document::propertyAdded,
-                this, &PropertiesWidget::updateActions);
-        connect(document, &Document::propertyRemoved,
-                this, &PropertiesWidget::updateActions);
-
-        currentObjectChanged(document->currentObject());
-    } else {
-        currentObjectChanged(nullptr);
-    }
-}
-
-void PropertiesWidget::selectCustomProperty(const QString &name)
-{
-    // mPropertyBrowser->selectCustomProperty(name);
-}
-
 static bool anyObjectHasProperty(const QList<Object*> &objects, const QString &name)
 {
     for (Object *obj : objects) {
@@ -852,22 +744,17 @@ private:
     MapDocument *mMapDocument;
 };
 
-class ObjectProperties : public QObject
+class ObjectProperties : public GroupProperty
 {
     Q_OBJECT
 
 public:
     ObjectProperties(Document *document, Object *object, QObject *parent = nullptr)
-        : QObject(parent)
+        : GroupProperty(parent)
         , mDocument(document)
         , mObject(object)
     {
         mClassProperty = new ClassNameProperty(document, object, this);
-    }
-
-    virtual void populateEditor(VariantEditor *)
-    {
-        // nothing added here due to property grouping
     }
 
 protected:
@@ -1026,14 +913,11 @@ public:
         mMapProperties->addProperty(mRenderOrderProperty);
         mMapProperties->addProperty(mBackgroundColorProperty);
 
+        addProperty(mMapProperties);
+
         updateEnabledState();
         connect(document, &Document::changed,
                 this, &MapProperties::onChanged);
-    }
-
-    void populateEditor(VariantEditor *editor) override
-    {
-        editor->addProperty(mMapProperties);
     }
 
 private:
@@ -1248,13 +1132,10 @@ public:
         mLayerProperties->addProperty(mOffsetProperty);
         mLayerProperties->addProperty(mParallaxFactorProperty);
 
+        addProperty(mLayerProperties);
+
         connect(document, &Document::changed,
                 this, &LayerProperties::onChanged);
-    }
-
-    void populateEditor(VariantEditor *editor) override
-    {
-        editor->addProperty(mLayerProperties);
     }
 
 protected:
@@ -1360,12 +1241,8 @@ public:
         mImageLayerProperties->addProperty(mTransparentColorProperty);
         mImageLayerProperties->addSeparator();
         mImageLayerProperties->addProperty(mRepeatProperty);
-    }
 
-    void populateEditor(VariantEditor *editor) override
-    {
-        LayerProperties::populateEditor(editor);
-        editor->addProperty(mImageLayerProperties);
+        addProperty(mImageLayerProperties);
     }
 
 private:
@@ -1427,12 +1304,8 @@ public:
         mObjectGroupProperties = new GroupProperty(tr("Object Layer"));
         mObjectGroupProperties->addProperty(mColorProperty);
         mObjectGroupProperties->addProperty(mDrawOrderProperty);
-    }
 
-    void populateEditor(VariantEditor *editor) override
-    {
-        LayerProperties::populateEditor(editor);
-        editor->addProperty(mObjectGroupProperties);
+        addProperty(mObjectGroupProperties);
     }
 
 private:
@@ -1621,6 +1494,8 @@ public:
         if (!tileset()->isCollection())
             mTilesetProperties->addProperty(mTilesetImageProperty);
 
+        addProperty(mTilesetProperties);
+
         updateEnabledState();
         connect(tilesetDocument(), &Document::changed,
                 this, &TilesetProperties::onChanged);
@@ -1633,11 +1508,6 @@ public:
                 mObjectAlignmentProperty, &Property::valueChanged);
         connect(tilesetDocument(), &TilesetDocument::tilesetChanged,
                 this, &TilesetProperties::onTilesetChanged);
-    }
-
-    void populateEditor(VariantEditor *editor)
-    {
-        editor->addProperty(mTilesetProperties);
     }
 
 private:
@@ -1887,15 +1757,12 @@ public:
             mObjectProperties->addProperty(mTextColorProperty);
         }
 
+        addProperty(mObjectProperties);
+
         connect(document, &Document::changed,
                 this, &MapObjectProperties::onChanged);
 
         updateEnabledState();
-    }
-
-    void populateEditor(VariantEditor *editor) override
-    {
-        editor->addProperty(mObjectProperties);
     }
 
 private:
@@ -2059,6 +1926,8 @@ public:
         mTileProperties->addProperty(mRectangleProperty);
         mTileProperties->addProperty(mProbabilityProperty);
 
+        addProperty(mTileProperties);
+
         // annoying... maybe we should somehow always have the relevant TilesetDocument
         if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
             connect(tilesetDocument, &TilesetDocument::tileImageSourceChanged,
@@ -2075,11 +1944,6 @@ public:
         }
 
         updateEnabledState();
-    }
-
-    void populateEditor(VariantEditor *editor) override
-    {
-        editor->addProperty(mTileProperties);
     }
 
 private:
@@ -2166,15 +2030,12 @@ public:
         mWangSetProperties->addProperty(mTypeProperty);
         mWangSetProperties->addProperty(mColorCountProperty);
 
+        addProperty(mWangSetProperties);
+
         connect(document, &Document::changed,
                 this, &WangSetProperties::onChanged);
 
         updateEnabledState();
-    }
-
-    void populateEditor(VariantEditor *editor) override
-    {
-        editor->addProperty(mWangSetProperties);
     }
 
 private:
@@ -2264,15 +2125,12 @@ public:
         mWangColorProperties->addProperty(mColorProperty);
         mWangColorProperties->addProperty(mProbabilityProperty);
 
+        addProperty(mWangColorProperties);
+
         connect(document, &Document::changed,
                 this, &WangColorProperties::onChanged);
 
         updateEnabledState();
-    }
-
-    void populateEditor(VariantEditor *editor) override
-    {
-        editor->addProperty(mWangColorProperties);
     }
 
 private:
@@ -2326,9 +2184,130 @@ private:
 };
 
 
+PropertiesWidget::PropertiesWidget(QWidget *parent)
+    : QWidget{parent}
+    , mCustomProperties(new CustomProperties)
+    , mScrollArea(new QScrollArea(this))
+{
+    auto scrollWidget = new QWidget(mScrollArea);
+    scrollWidget->setBackgroundRole(QPalette::AlternateBase);
+    scrollWidget->setMinimumWidth(Utils::dpiScaled(120));
+
+    auto verticalLayout = new QVBoxLayout(scrollWidget);
+    mPropertyBrowser = new VariantEditor(scrollWidget);
+    verticalLayout->addWidget(mPropertyBrowser);
+    verticalLayout->addStretch();
+    verticalLayout->setContentsMargins(0, 0, 0, Utils::dpiScaled(4));
+
+    mScrollArea->setWidget(scrollWidget);
+    mScrollArea->setWidgetResizable(true);
+
+    mActionAddProperty = new QAction(this);
+    mActionAddProperty->setEnabled(false);
+    mActionAddProperty->setIcon(QIcon(QLatin1String(":/images/16/add.png")));
+    connect(mActionAddProperty, &QAction::triggered,
+            this, &PropertiesWidget::openAddPropertyDialog);
+
+    mActionRemoveProperty = new QAction(this);
+    mActionRemoveProperty->setEnabled(false);
+    mActionRemoveProperty->setIcon(QIcon(QLatin1String(":/images/16/remove.png")));
+    mActionRemoveProperty->setShortcuts(QKeySequence::Delete);
+    connect(mActionRemoveProperty, &QAction::triggered,
+            this, &PropertiesWidget::removeProperties);
+
+    mActionRenameProperty = new QAction(this);
+    mActionRenameProperty->setEnabled(false);
+    mActionRenameProperty->setIcon(QIcon(QLatin1String(":/images/16/rename.png")));
+    // connect(mActionRenameProperty, &QAction::triggered,
+    //         this, &PropertiesWidget::renameProperty);
+
+    Utils::setThemeIcon(mActionAddProperty, "add");
+    Utils::setThemeIcon(mActionRemoveProperty, "remove");
+    Utils::setThemeIcon(mActionRenameProperty, "rename");
+
+    QToolBar *toolBar = new QToolBar;
+    toolBar->setFloatable(false);
+    toolBar->setMovable(false);
+    toolBar->setIconSize(Utils::smallIconSize());
+    toolBar->addAction(mActionAddProperty);
+    toolBar->addAction(mActionRemoveProperty);
+    toolBar->addAction(mActionRenameProperty);
+
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+    layout->addWidget(mScrollArea);
+    layout->addWidget(toolBar);
+    setLayout(layout);
+
+    mPropertyBrowser->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(mPropertyBrowser, &PropertyBrowser::customContextMenuRequested,
+            this, &PropertiesWidget::showContextMenu);
+    // connect(mPropertyBrowser, &PropertyBrowser::selectedItemsChanged,
+    //         this, &PropertiesWidget::updateActions);
+
+    connect(mCustomProperties, &VariantMapProperty::renameRequested,
+            this, &PropertiesWidget::renameProperty);
+
+    retranslateUi();
+}
+
+PropertiesWidget::~PropertiesWidget()
+{
+    // Disconnect to avoid crashing due to signals emitted during destruction
+    mPropertyBrowser->disconnect(this);
+}
+
+void PropertiesWidget::setDocument(Document *document)
+{
+    if (mDocument == document)
+        return;
+
+    if (mDocument)
+        mDocument->disconnect(this);
+
+    mDocument = document;
+    // mPropertyBrowser->setDocument(document);
+    mCustomProperties->setDocument(document);
+
+    if (document) {
+        connect(document, &Document::currentObjectChanged,
+                this, &PropertiesWidget::currentObjectChanged);
+        connect(document, &Document::editCurrentObject,
+                this, [this] {
+            if (mPropertiesObject)
+                mPropertiesObject->expandAll();
+            emit bringToFront();
+        });
+
+        connect(document, &Document::propertyAdded,
+                this, &PropertiesWidget::updateActions);
+        connect(document, &Document::propertyRemoved,
+                this, &PropertiesWidget::updateActions);
+
+        currentObjectChanged(document->currentObject());
+    } else {
+        currentObjectChanged(nullptr);
+    }
+}
+
+void PropertiesWidget::selectCustomProperty(const QString &name)
+{
+    // mPropertyBrowser->selectCustomProperty(name);
+}
+
 void PropertiesWidget::currentObjectChanged(Object *object)
 {
     mPropertyBrowser->clear();
+
+    // Remember the expanded states
+    if (mPropertiesObject) {
+        const auto &subProperties = mPropertiesObject->subProperties();
+        for (int i = 0; i < subProperties.size(); ++i) {
+            if (auto subGroupProperty = qobject_cast<GroupProperty*>(subProperties.at(i)))
+                mExpandedStates[i] = subGroupProperty->isExpanded();
+        }
+    }
 
     delete mPropertiesObject;
     mPropertiesObject = nullptr;
@@ -2392,9 +2371,18 @@ void PropertiesWidget::currentObjectChanged(Object *object)
         }
     }
 
+    // Restore the expanded states
+    if (mPropertiesObject) {
+        const auto &subProperties = mPropertiesObject->subProperties();
+        for (int i = 0; i < subProperties.size(); ++i) {
+            if (auto subGroupProperty = qobject_cast<GroupProperty*>(subProperties.at(i)))
+                subGroupProperty->setExpanded(mExpandedStates.value(i, true));
+        }
+    }
+
     if (object) {
         if (mPropertiesObject)
-            mPropertiesObject->populateEditor(mPropertyBrowser);
+            mPropertyBrowser->addProperty(mPropertiesObject);
 
         mPropertyBrowser->addProperty(mCustomProperties);
     }

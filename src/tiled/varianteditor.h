@@ -55,7 +55,8 @@ public:
         Default,
         NoLabel,
         Header,
-        Separator
+        Separator,
+        ChildrenOnly
     };
 
     enum class Action {
@@ -134,14 +135,20 @@ class GroupProperty : public Property
     Q_PROPERTY(bool expanded READ isExpanded WRITE setExpanded NOTIFY expandedChanged)
 
 public:
-    GroupProperty(const QString &name, QObject *parent = nullptr)
+    /**
+     * Creates an unnamed group, which will only display its children.
+     */
+    explicit GroupProperty(QObject *parent = nullptr)
+        : Property(QString(), parent)
+    {}
+
+    explicit GroupProperty(const QString &name, QObject *parent = nullptr)
         : Property(name, parent)
     {}
 
     ~GroupProperty() override { clear(); }
 
-    DisplayMode displayMode() const override
-    { return m_header ? DisplayMode::Header : DisplayMode::Default; }
+    DisplayMode displayMode() const override;
 
     QWidget *createEditor(QWidget */* parent */) override { return nullptr; }
 
