@@ -2795,6 +2795,8 @@ declare class Layer extends TiledObject {
  * get the {@link region} of this area, modify that region, and then assign it
  * back. The necessary methods have been added to the {@link region} type with
  * Tiled 1.8.
+ *
+ * @deprecated Use {@link region} instead.
  */
 interface SelectedArea {
   /**
@@ -2989,8 +2991,24 @@ declare class TileMap extends Asset {
 
   /**
    * The selected area of tiles.
+   *
+   * @deprecated Use {@link selectedRegion} instead, which returns {@link region}.
    */
   readonly selectedArea: SelectedArea;
+
+  /**
+   * The selected area of tiles.
+   *
+   * @since 1.11
+   */
+  selectedRegion : region
+
+  /**
+   * The selected area of tiles has changed.
+   *
+   * @since 1.11
+   */
+  selectedRegionChanged : Signal<null>;
 
   /**
    * The current layer.
