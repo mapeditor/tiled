@@ -349,7 +349,7 @@ struct SizeProperty : PropertyTemplate<QSize>
     void setSuffix(const QString &suffix) { m_suffix = suffix; }
 
 private:
-    int m_minimum;
+    int m_minimum = 0;
     QString m_suffix;
 };
 
