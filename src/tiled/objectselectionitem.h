@@ -57,6 +57,7 @@ public:
 
 private:
     QRectF mBoundingRect;
+    QString mText;
     QPointF mTextPos;
     const MapObject *mObject;
     QColor mColor;

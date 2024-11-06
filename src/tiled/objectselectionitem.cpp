@@ -183,8 +183,13 @@ void MapObjectLabel::syncWithMapObject(const MapRenderer &renderer)
     if (!nameVisible)
         return;
 
+    if (mText != mObject->name()) {
+        mText = mObject->name();
+        update();
+    }
+
     const QFontMetricsF metrics(scene() ? scene()->font() : QApplication::font());
-    QRectF boundingRect = metrics.boundingRect(mObject->name());
+    QRectF boundingRect = metrics.boundingRect(mText);
 
     const qreal margin = Utils::dpiScaled(labelMargin);
     const qreal distance = Utils::dpiScaled(labelDistance);
@@ -251,9 +256,9 @@ void MapObjectLabel::paint(QPainter *painter,
 
     painter->drawRoundedRect(mBoundingRect, 4, 4);
     painter->setPen(Qt::black);
-    painter->drawText(mTextPos + QPointF(1,1), mObject->name());
+    painter->drawText(mTextPos + QPointF(1,1), mText);
     painter->setPen(Qt::white);
-    painter->drawText(mTextPos, mObject->name());
+    painter->drawText(mTextPos, mText);
 }
 
 
