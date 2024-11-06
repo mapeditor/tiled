@@ -356,7 +356,7 @@ QSize DoubleSpinBox::minimumSizeHint() const
 {
     // Don't adjust the horizontal size hint based on the maximum value.
     auto hint = QDoubleSpinBox::minimumSizeHint();
-    hint.setWidth(Utils::dpiScaled(50));
+    hint.setWidth(Utils::dpiScaled(65));
     return hint;
 }
 

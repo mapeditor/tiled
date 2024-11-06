@@ -44,6 +44,7 @@
 #include "tilesetchanges.h"
 #include "tilesetdocument.h"
 #include "tilesetparametersedit.h"
+#include "transformmapobjects.h"
 #include "utils.h"
 #include "varianteditor.h"
 #include "variantpropertymanager.h"
@@ -1624,16 +1625,68 @@ public:
                         return mapObject()->position();
                     },
                     [this](const QPointF &value) {
-                        changeMapObject(MapObject::PositionProperty, value);
+                        const auto oldValue = mapObject()->position();
+                        const bool changedX = oldValue.x() != value.x();
+                        const bool changedY = oldValue.y() != value.y();
+
+                        auto objects = mapDocument()->selectedObjects();
+                        QVector<TransformState> states;
+                        states.reserve(objects.size());
+
+                        for (MapObject *object : objects) {
+                            states.append(TransformState(object));
+                            auto &state = states.last();
+
+                            auto position = state.position();
+
+                            if (changedX)
+                                position.setX(value.x());
+                            if (changedY)
+                                position.setY(value.y());
+
+                            state.setPosition(position);
+                        }
+
+                        push(new TransformMapObjects(mDocument, objects, states));
                     });
 
-        mSizeProperty = new SizeFProperty(
-                    tr("Size"),
+        mBoundsProperty = new RectFProperty(
+                    tr("Geometry"),
                     [this] {
-                        return mapObject()->size();
+                        return mapObject()->bounds();
                     },
-                    [this](const QSizeF &value) {
-                        changeMapObject(MapObject::SizeProperty, value);
+                    [this](const QRectF &value) {
+                        const auto oldValue = mapObject()->bounds();
+                        const bool changedX = oldValue.x() != value.x();
+                        const bool changedY = oldValue.y() != value.y();
+                        const bool changedWidth = oldValue.width() != value.width();
+                        const bool changedHeight = oldValue.height() != value.height();
+
+                        auto objects = mapDocument()->selectedObjects();
+                        QVector<TransformState> states;
+                        states.reserve(objects.size());
+
+                        for (MapObject *object : objects) {
+                            states.append(TransformState(object));
+                            auto &state = states.last();
+
+                            auto position = state.position();
+                            auto size = state.size();
+
+                            if (changedX)
+                                position.setX(value.x());
+                            if (changedY)
+                                position.setY(value.y());
+                            if (changedWidth && object->hasDimensions())
+                                size.setWidth(value.width());
+                            if (changedHeight && object->hasDimensions())
+                                size.setHeight(value.height());
+
+                            state.setPosition(position);
+                            state.setSize(size);
+                        }
+
+                        push(new TransformMapObjects(mDocument, objects, states));
                     });
 
         mRotationProperty = new FloatProperty(
@@ -1735,10 +1788,10 @@ public:
         if (mapDocument()->allowHidingObjects())
             mObjectProperties->addProperty(mVisibleProperty);
 
-        mObjectProperties->addProperty(mPositionProperty);
-
         if (mapObject()->hasDimensions())
-            mObjectProperties->addProperty(mSizeProperty);
+            mObjectProperties->addProperty(mBoundsProperty);
+        else
+            mObjectProperties->addProperty(mPositionProperty);
 
         if (mapObject()->canRotate())
             mObjectProperties->addProperty(mRotationProperty);
@@ -1779,10 +1832,12 @@ private:
             emit mNameProperty->valueChanged();
         if (change.properties & MapObject::VisibleProperty)
             emit mVisibleProperty->valueChanged();
-        if (change.properties & MapObject::PositionProperty)
+        if (change.properties & MapObject::PositionProperty) {
             emit mPositionProperty->valueChanged();
+            emit mBoundsProperty->valueChanged();
+        }
         if (change.properties & MapObject::SizeProperty)
-            emit mSizeProperty->valueChanged();
+            emit mBoundsProperty->valueChanged();
         if (change.properties & MapObject::RotationProperty)
             emit mRotationProperty->valueChanged();
         if (change.properties & MapObject::CellProperty)
@@ -1802,7 +1857,7 @@ private:
     void updateEnabledState()
     {
         mVisibleProperty->setEnabled(mapDocument()->allowHidingObjects());
-        mSizeProperty->setEnabled(mapObject()->hasDimensions());
+        mBoundsProperty->setEnabled(mapObject()->hasDimensions());
         mRotationProperty->setEnabled(mapObject()->canRotate());
         mFlippingProperty->setEnabled(mapObject()->isTileObject());
 
@@ -1826,8 +1881,6 @@ private:
 
     void changeMapObject(MapObject::Property property, const QVariant &value)
     {
-        // todo: when changing object position or size, only change the
-        // selected objects in the respective axis or dimension
         QUndoCommand *command = new ChangeMapObject(mapDocument(), mapObject(),
                                                     property, value);
 
@@ -1857,7 +1910,7 @@ private:
     Property *mNameProperty;
     BoolProperty *mVisibleProperty;
     Property *mPositionProperty;
-    Property *mSizeProperty;
+    Property *mBoundsProperty;
     FloatProperty *mRotationProperty;
 
     // for tile objects
