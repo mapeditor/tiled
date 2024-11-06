@@ -32,6 +32,187 @@
 namespace Tiled {
 
 /**
+ * A layout for label/widget pairs, wrapping them either two per row or each on
+ * their own row, depending on the available space.
+ *
+ * The labels are forced to width of the widest label, while the widgets share
+ * the remaining space.
+ */
+class PairwiseWrappingLayout : public QLayout
+{
+    Q_OBJECT
+
+public:
+    struct WidgetPair {
+        QLabel *label;
+        QWidget *widget;
+    };
+
+    PairwiseWrappingLayout(const QVector<WidgetPair> &widgetPairs,
+                           QWidget *parent);
+    ~PairwiseWrappingLayout();
+
+    void addItem(QLayoutItem *item) override
+    { m_items.append(item); }
+
+    Qt::Orientations expandingDirections() const override
+    { return {}; }
+
+    bool hasHeightForWidth() const override
+    { return true; }
+
+    int heightForWidth(int width) const override
+    { return doLayout(QRect(0, 0, width, 0), true); }
+
+    int count() const override
+    { return m_items.size(); }
+
+    QLayoutItem *itemAt(int index) const override
+    { return m_items.value(index); }
+
+    QSize minimumSize() const override;
+    void setGeometry(const QRect &rect) override;
+
+    QSize sizeHint() const override
+    { return minimumSize(); }
+
+    QLayoutItem *takeAt(int index) override;
+
+private:
+    int doLayout(const QRect &rect, bool testOnly) const;
+    int minimumTwoColumnWidth() const;
+
+    QList<QLayoutItem *> m_items;
+};
+
+PairwiseWrappingLayout::PairwiseWrappingLayout(const QVector<WidgetPair> &widgetPairs,
+                                               QWidget *parent)
+    : QLayout(parent)
+{
+    setContentsMargins(QMargins());
+    setSpacing(Utils::dpiScaled(2) * 2);
+
+    const int horizontalMargin = Utils::dpiScaled(3);
+
+    for (auto &pair : widgetPairs) {
+        pair.label->setAlignment(Qt::AlignCenter);
+        pair.label->setContentsMargins(horizontalMargin, 0, horizontalMargin, 0);
+        addWidget(pair.label);
+        addWidget(pair.widget);
+    }
+}
+
+PairwiseWrappingLayout::~PairwiseWrappingLayout()
+{
+    while (QLayoutItem *item = takeAt(0))
+        delete item;
+}
+
+QLayoutItem *PairwiseWrappingLayout::takeAt(int index)
+{
+    if (index >= 0 && index < m_items.size())
+        return m_items.takeAt(index);
+    return nullptr;
+}
+
+void PairwiseWrappingLayout::setGeometry(const QRect &rect)
+{
+    QLayout::setGeometry(rect);
+    doLayout(rect, false);
+}
+
+QSize PairwiseWrappingLayout::minimumSize() const
+{
+    QSize size;
+    size.setWidth(minimumTwoColumnWidth());
+    size.setHeight(doLayout(QRect(0, 0, size.width(), 0), true));
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    const auto margins = contentsMargins();
+    return QSize(size.width() + margins.left() + margins.right(),
+                 size.height() + margins.top() + margins.bottom());
+#else
+    return size.grownBy(contentsMargins());
+#endif
+}
+
+int PairwiseWrappingLayout::doLayout(const QRect &rect, bool testOnly) const
+{
+    const auto margins = contentsMargins();
+    const QRect effectiveRect = rect.marginsRemoved(margins);
+    const int spacing = QLayout::spacing();
+    const int columns = effectiveRect.width() < minimumTwoColumnWidth() ? 1 : 2;
+
+    // For simplicity, all lines will have the same height. Even columns will
+    // get their width from the widest label, whereas odd columns will share
+    // the remaining space.
+    int lineHeight = 0;
+    int maxLabelWidth = 0;
+    for (qsizetype i = 0; i < m_items.size(); ++i) {
+        const auto sizeHint = m_items.at(i)->minimumSize();
+        lineHeight = qMax(lineHeight, sizeHint.height());
+        if (i % 2 == 0)
+            maxLabelWidth = qMax(maxLabelWidth, sizeHint.width());
+    }
+
+    if (testOnly) {
+        const int lines = (m_items.size() / 2 + columns - 1) / columns;
+        return margins.top() + margins.bottom()
+                + lines * (lineHeight + spacing) - spacing;
+    }
+
+    int totalWidgetWidth = (effectiveRect.width() -
+                            maxLabelWidth * columns -
+                            spacing * (columns * 2 - 1));
+    QList<int> widgetWidths;
+    for (int i = columns; i > 0; --i) {
+        widgetWidths.append(totalWidgetWidth / i);
+        totalWidgetWidth -= widgetWidths.last();
+    }
+
+    int x = effectiveRect.x();
+    int y = effectiveRect.y();
+    for (qsizetype i = 0; i < m_items.size(); ++i) {
+        const int column = i / 2 % columns;
+        const QSize size((i % 2 == 0) ? maxLabelWidth
+                                      : widgetWidths.at(column),
+                         lineHeight);
+
+        m_items.at(i)->setGeometry(QRect(QPoint(x, y), size));
+        x += size.width() + spacing;
+
+        if (column == columns - 1 && (i % 2 == 1)) {
+            x = effectiveRect.x();
+            y += lineHeight + spacing;
+        }
+    }
+
+    return 0;
+}
+
+int PairwiseWrappingLayout::minimumTwoColumnWidth() const
+{
+    const int spacing = QLayout::spacing();
+    int sum = 0;
+    int minimum = 0;
+    int index = 0;
+
+    for (qsizetype i = 0; i < m_items.size() - 1; i += 2) {
+        sum += (m_items.at(i)->minimumSize().width() +
+                m_items.at(i + 1)->minimumSize().width() +
+                spacing * 2);
+
+        if (++index % 2 == 0) {
+            minimum = std::max(sum - spacing, minimum);
+            sum = 0;
+        }
+    }
+
+    return minimum;
+}
+
+
+/**
  * Returns whether the given event is a shortcut override event for the undo or
  * redo shortcuts. We generally want to use the global undo and redo shortcuts
  * instead.
@@ -198,109 +379,17 @@ void DoubleSpinBox::wheelEvent(QWheelEvent *event)
 }
 
 
-ResponsivePairswiseWidget::ResponsivePairswiseWidget(QWidget *parent)
-    : QWidget(parent)
-{
-    auto layout = new QGridLayout(this);
-    layout->setContentsMargins(QMargins());
-    layout->setColumnStretch(1, 1);
-    layout->setSpacing(Utils::dpiScaled(4));
-}
-
-void ResponsivePairswiseWidget::setWidgetPairs(const QVector<WidgetPair> &widgetPairs)
-{
-    const int horizontalMargin = Utils::dpiScaled(3);
-
-    for (auto &pair : widgetPairs) {
-        pair.label->setAlignment(Qt::AlignCenter);
-        pair.label->setContentsMargins(horizontalMargin, 0, horizontalMargin, 0);
-    }
-
-    m_widgetPairs = widgetPairs;
-
-    addWidgetsToLayout();
-}
-
-void ResponsivePairswiseWidget::resizeEvent(QResizeEvent *event)
-{
-    QWidget::resizeEvent(event);
-
-    const auto orientation = event->size().width() < minimumHorizontalWidth()
-            ? Qt::Vertical : Qt::Horizontal;
-
-    if (m_orientation != orientation) {
-        m_orientation = orientation;
-
-        auto layout = this->layout();
-
-        // Remove all widgets from layout, without deleting them
-        for (auto &pair : m_widgetPairs) {
-            layout->removeWidget(pair.label);
-            layout->removeWidget(pair.widget);
-        }
-
-        addWidgetsToLayout();
-
-        // This avoids flickering when the layout changes
-        layout->activate();
-    }
-}
-
-void ResponsivePairswiseWidget::addWidgetsToLayout()
-{
-    auto layout = qobject_cast<QGridLayout *>(this->layout());
-
-    const int maxColumns = m_orientation == Qt::Horizontal ? 4 : 2;
-    int row = 0;
-    int column = 0;
-
-    for (auto &pair : m_widgetPairs) {
-        layout->addWidget(pair.label, row, column);
-        layout->addWidget(pair.widget, row, column + 1);
-        column += 2;
-
-        if (column == maxColumns) {
-            column = 0;
-            ++row;
-        }
-    }
-
-    layout->setColumnStretch(3, m_orientation == Qt::Horizontal ? 1 : 0);
-}
-
-int ResponsivePairswiseWidget::minimumHorizontalWidth() const
-{
-    const int spacing = layout()->spacing();
-    int sum = 0;
-    int minimum = 0;
-    int index = 0;
-
-    for (auto &pair : m_widgetPairs) {
-        sum += (pair.label->minimumSizeHint().width() +
-                pair.widget->minimumSizeHint().width() +
-                spacing * 2);
-
-        if (++index % 2 == 0) {
-            minimum = std::max(sum - spacing, minimum);
-            sum = 0;
-        }
-    }
-
-    return minimum;
-}
-
-
 SizeEdit::SizeEdit(QWidget *parent)
-    : ResponsivePairswiseWidget(parent)
+    : QWidget(parent)
     , m_widthLabel(new QLabel(QStringLiteral("W"), this))
     , m_heightLabel(new QLabel(QStringLiteral("H"), this))
     , m_widthSpinBox(new SpinBox(this))
     , m_heightSpinBox(new SpinBox(this))
 {
-    setWidgetPairs({
-                       { m_widthLabel, m_widthSpinBox },
-                       { m_heightLabel, m_heightSpinBox },
-                   });
+    new PairwiseWrappingLayout({
+                                   { m_widthLabel, m_widthSpinBox },
+                                   { m_heightLabel, m_heightSpinBox },
+                               }, this);
 
     connect(m_widthSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &SizeEdit::valueChanged);
     connect(m_heightSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &SizeEdit::valueChanged);
@@ -332,16 +421,16 @@ void SizeEdit::setSuffix(const QString &suffix)
 
 
 SizeFEdit::SizeFEdit(QWidget *parent)
-    : ResponsivePairswiseWidget(parent)
+    : QWidget(parent)
     , m_widthLabel(new QLabel(QStringLiteral("W"), this))
     , m_heightLabel(new QLabel(QStringLiteral("H"), this))
     , m_widthSpinBox(new DoubleSpinBox(this))
     , m_heightSpinBox(new DoubleSpinBox(this))
 {
-    setWidgetPairs({
-                       { m_widthLabel, m_widthSpinBox },
-                       { m_heightLabel, m_heightSpinBox },
-                   });
+    new PairwiseWrappingLayout({
+                                   { m_widthLabel, m_widthSpinBox },
+                                   { m_heightLabel, m_heightSpinBox },
+                               }, this);
 
     connect(m_widthSpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &SizeFEdit::valueChanged);
     connect(m_heightSpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &SizeFEdit::valueChanged);
@@ -361,16 +450,16 @@ QSizeF SizeFEdit::value() const
 
 
 PointEdit::PointEdit(QWidget *parent)
-    : ResponsivePairswiseWidget(parent)
+    : QWidget(parent)
     , m_xLabel(new QLabel(QStringLiteral("X"), this))
     , m_yLabel(new QLabel(QStringLiteral("Y"), this))
     , m_xSpinBox(new SpinBox(this))
     , m_ySpinBox(new SpinBox(this))
 {
-    setWidgetPairs({
-                       { m_xLabel, m_xSpinBox },
-                       { m_yLabel, m_ySpinBox },
-                   });
+    new PairwiseWrappingLayout({
+                                   { m_xLabel, m_xSpinBox },
+                                   { m_yLabel, m_ySpinBox },
+                               }, this);
 
     connect(m_xSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &PointEdit::valueChanged);
     connect(m_ySpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &PointEdit::valueChanged);
@@ -396,16 +485,16 @@ void PointEdit::setSuffix(const QString &suffix)
 
 
 PointFEdit::PointFEdit(QWidget *parent)
-    : ResponsivePairswiseWidget(parent)
+    : QWidget(parent)
     , m_xLabel(new QLabel(QStringLiteral("X"), this))
     , m_yLabel(new QLabel(QStringLiteral("Y"), this))
     , m_xSpinBox(new DoubleSpinBox(this))
     , m_ySpinBox(new DoubleSpinBox(this))
 {
-    setWidgetPairs({
-                       { m_xLabel, m_xSpinBox },
-                       { m_yLabel, m_ySpinBox },
-                   });
+    new PairwiseWrappingLayout({
+                                   { m_xLabel, m_xSpinBox },
+                                   { m_yLabel, m_ySpinBox },
+                               }, this);
 
     connect(m_xSpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &PointFEdit::valueChanged);
     connect(m_ySpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &PointFEdit::valueChanged);
@@ -431,7 +520,7 @@ void PointFEdit::setSingleStep(double step)
 
 
 RectEdit::RectEdit(QWidget *parent)
-    : ResponsivePairswiseWidget(parent)
+    : QWidget(parent)
     , m_xLabel(new QLabel(QStringLiteral("X"), this))
     , m_yLabel(new QLabel(QStringLiteral("Y"), this))
     , m_widthLabel(new QLabel(QStringLiteral("W"), this))
@@ -441,12 +530,12 @@ RectEdit::RectEdit(QWidget *parent)
     , m_widthSpinBox(new SpinBox(this))
     , m_heightSpinBox(new SpinBox(this))
 {
-    setWidgetPairs({
-                    { m_xLabel, m_xSpinBox },
-                    { m_yLabel, m_ySpinBox },
-                    { m_widthLabel, m_widthSpinBox },
-                    { m_heightLabel, m_heightSpinBox },
-                    });
+    new PairwiseWrappingLayout({
+                                   { m_xLabel, m_xSpinBox },
+                                   { m_yLabel, m_ySpinBox },
+                                   { m_widthLabel, m_widthSpinBox },
+                                   { m_heightLabel, m_heightSpinBox },
+                               }, this);
 
     m_widthSpinBox->setMinimum(0);
     m_heightSpinBox->setMinimum(0);
@@ -492,7 +581,7 @@ void RectEdit::setConstraint(const QRect &constraint)
 
 
 RectFEdit::RectFEdit(QWidget *parent)
-    : ResponsivePairswiseWidget(parent)
+    : QWidget(parent)
     , m_xLabel(new QLabel(QStringLiteral("X"), this))
     , m_yLabel(new QLabel(QStringLiteral("Y"), this))
     , m_widthLabel(new QLabel(QStringLiteral("W"), this))
@@ -502,12 +591,12 @@ RectFEdit::RectFEdit(QWidget *parent)
     , m_widthSpinBox(new DoubleSpinBox(this))
     , m_heightSpinBox(new DoubleSpinBox(this))
 {
-    setWidgetPairs({
-                       { m_xLabel, m_xSpinBox },
-                       { m_yLabel, m_ySpinBox },
-                       { m_widthLabel, m_widthSpinBox },
-                       { m_heightLabel, m_heightSpinBox },
-                   });
+    new PairwiseWrappingLayout({
+                                   { m_xLabel, m_xSpinBox },
+                                   { m_yLabel, m_ySpinBox },
+                                   { m_widthLabel, m_widthSpinBox },
+                                   { m_heightLabel, m_heightSpinBox },
+                               }, this);
 
     connect(m_xSpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &RectFEdit::valueChanged);
     connect(m_ySpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &RectFEdit::valueChanged);
@@ -738,3 +827,4 @@ QSize PropertyLabel::sizeHint() const
 } // namespace Tiled
 
 #include "moc_propertyeditorwidgets.cpp"
+#include "propertyeditorwidgets.moc"
