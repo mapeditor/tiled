@@ -30,6 +30,20 @@ class QLabel;
 namespace Tiled {
 
 /**
+ * A slider that doesn't respond to wheel events when not focused.
+ */
+class Slider : public QSlider
+{
+    Q_OBJECT
+
+public:
+    using QSlider::QSlider;
+
+protected:
+    void wheelEvent(QWheelEvent *event) override;
+};
+
+/**
  * A line edit that doesn't override global undo/redo shortcuts.
  */
 class LineEdit : public QLineEdit
@@ -42,7 +56,6 @@ public:
 protected:
     bool event(QEvent *event) override;
 };
-
 
 /**
  * A combo box that doesn't respond to wheel events when not focused and

@@ -94,7 +94,7 @@ void GroupProperty::setExpanded(bool expanded)
 void GroupProperty::expandAll()
 {
     setExpanded(true);
-    for (auto property : m_subProperties)
+    for (auto property : std::as_const(m_subProperties))
         if (auto groupProperty = qobject_cast<GroupProperty *>(property))
             groupProperty->expandAll();
 }
@@ -102,7 +102,7 @@ void GroupProperty::expandAll()
 void GroupProperty::collapseAll()
 {
     setExpanded(false);
-    for (auto property : m_subProperties)
+    for (auto property : std::as_const(m_subProperties))
         if (auto groupProperty = qobject_cast<GroupProperty *>(property))
             groupProperty->collapseAll();
 }
@@ -177,7 +177,7 @@ QWidget *IntProperty::createEditor(QWidget *parent)
     layout->setContentsMargins(QMargins());
 
     if (m_sliderEnabled) {
-        QSlider *slider = new QSlider(Qt::Horizontal, widget);
+        auto slider = new Slider(Qt::Horizontal, widget);
         slider->setRange(m_minimum, m_maximum);
         slider->setSingleStep(m_singleStep);
         slider->setValue(value());

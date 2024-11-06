@@ -250,6 +250,15 @@ static QString removeRedundantTrialingZeros(const QString &text)
 }
 
 
+void Slider::wheelEvent(QWheelEvent *event)
+{
+    if (!hasFocus())
+        event->ignore();
+    else
+        QSlider::wheelEvent(event);
+}
+
+
 bool LineEdit::event(QEvent *event)
 {
     if (isUndoRedoShortcutOverride(event))
