@@ -558,6 +558,8 @@ DynamicLibrary {
         "varianteditor.h",
         "varianteditorfactory.cpp",
         "varianteditorfactory.h",
+        "variantmapproperty.cpp",
+        "variantmapproperty.h",
         "variantpropertymanager.cpp",
         "variantpropertymanager.h",
         "wangbrush.cpp",

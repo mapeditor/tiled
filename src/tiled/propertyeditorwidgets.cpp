@@ -772,7 +772,7 @@ void PropertyLabel::paintEvent(QPaintEvent *event)
 
     const int spacing = Utils::dpiScaled(3);
     const int branchIndicatorWidth = Utils::dpiScaled(14);
-    const int indent = branchIndicatorWidth * std::max(m_level - 1, 0);
+    const int indent = branchIndicatorWidth * m_level;
 
     QStyleOption branchOption;
     branchOption.initFrom(this);
@@ -804,7 +804,7 @@ void PropertyLabel::updateContentMargins()
     const int spacing = Utils::dpiScaled(3);
     const int branchIndicatorWidth = Utils::dpiScaled(14);
     const int verticalSpacing = m_header ? spacing : 0;
-    const int indent = branchIndicatorWidth * std::max(m_level, 1);
+    const int indent = branchIndicatorWidth * (m_level + 1);
 
     if (isLeftToRight())
         setContentsMargins(spacing + indent, verticalSpacing, spacing, verticalSpacing);

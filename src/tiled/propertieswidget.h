@@ -32,7 +32,7 @@ class Object;
 class CustomProperties;
 class Document;
 class ObjectProperties;
-class VariantEditor;
+class VariantEditorView;
 
 /**
  * The PropertiesWidget combines the PropertyBrowser with some controls that
@@ -81,8 +81,7 @@ private:
     ObjectProperties *mPropertiesObject = nullptr;
     CustomProperties *mCustomProperties = nullptr;
     QMap<int, bool> mExpandedStates;
-    QScrollArea *mScrollArea;
-    VariantEditor *mPropertyBrowser;
+    VariantEditorView *mPropertyBrowser;
     QAction *mActionAddProperty;
     QAction *mActionRemoveProperty;
     QAction *mActionRenameProperty;

@@ -621,9 +621,9 @@ void VariantEditor::setLevel(int level)
 {
     m_level = level;
 
-    setBackgroundRole((m_level % 2) ? QPalette::AlternateBase
-                                    : QPalette::Base);
-    setAutoFillBackground(m_level > 1);
+    setBackgroundRole((m_level % 2) ? QPalette::Base
+                                    : QPalette::AlternateBase);
+    setAutoFillBackground(m_level > 0);
 }
 
 QLayout *VariantEditor::createPropertyLayout(Property *property)
@@ -761,7 +761,7 @@ void VariantEditor::setPropertyChildrenExpanded(GroupProperty *groupProperty, bo
         widgets.children = new VariantEditor(this);
         if (widgets.label && widgets.label->isHeader())
             widgets.children->setContentsMargins(0, halfSpacing, 0, halfSpacing);
-        if (groupProperty->displayMode() != Property::DisplayMode::ChildrenOnly)
+        if (groupProperty->displayMode() == Property::DisplayMode::Default)
             widgets.children->setLevel(m_level + 1);
         widgets.children->setEnabled(groupProperty->isEnabled());
         for (auto property : groupProperty->subProperties())
@@ -971,6 +971,23 @@ Property *createVariantProperty(const QString &name,
     }
 
     return nullptr;
+}
+
+VariantEditorView::VariantEditorView(QWidget *parent)
+    : QScrollArea(parent)
+{
+    auto scrollWidget = new QWidget(this);
+    scrollWidget->setBackgroundRole(QPalette::AlternateBase);
+    scrollWidget->setMinimumWidth(Utils::dpiScaled(120));
+
+    auto verticalLayout = new QVBoxLayout(scrollWidget);
+    m_editor = new VariantEditor(scrollWidget);
+    verticalLayout->addWidget(m_editor);
+    verticalLayout->addStretch();
+    verticalLayout->setContentsMargins(QMargins());
+
+    setWidgetResizable(true);
+    setWidget(scrollWidget);
 }
 
 } // namespace Tiled

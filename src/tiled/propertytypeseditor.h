@@ -33,7 +33,6 @@ class QStringListModel;
 class QTreeView;
 
 class QtBrowserItem;
-class QtTreePropertyBrowser;
 
 namespace Ui {
 class PropertyTypesEditor;
@@ -42,8 +41,9 @@ class PropertyTypesEditor;
 namespace Tiled {
 
 class ColorButton;
-class CustomPropertiesHelper;
 class PropertyTypesModel;
+class VariantEditorView;
+class VariantMapProperty;
 
 struct PropertyTypesFilter
 {
@@ -106,8 +106,8 @@ private:
     void addMember(const QString &name, const QVariant &value = QVariant());
     void editMember(const QString &name);
     void removeMember();
-    void renameMember();
-    void renameMemberTo(const QString &name);
+    void renameMember(const QString &name);
+    void renameMemberTo(const QString &oldName, const QString &name);
 
     void importPropertyTypes();
     void exportPropertyTypes();
@@ -119,7 +119,7 @@ private:
     void colorChanged(const QColor &color);
     void setDrawFill(bool value);
     void setUsageFlags(int flags, bool value);
-    void memberValueChanged(const QStringList &path, const QVariant &value);
+    void classMembersChanged();
 
     void retranslateUi();
 
@@ -144,8 +144,8 @@ private:
     QCheckBox *mDrawFillCheckBox = nullptr;
     QCheckBox *mClassOfCheckBox = nullptr;
     QPushButton *mClassOfButton = nullptr;
-    QtTreePropertyBrowser *mMembersView = nullptr;
-    CustomPropertiesHelper *mPropertiesHelper = nullptr;
+    VariantEditorView *mMembersEditor = nullptr;
+    VariantMapProperty *mMembersProperty = nullptr;
 
     bool mSettingPrefPropertyTypes = false;
     bool mSettingName = false;

@@ -535,6 +535,23 @@ private:
     int m_level = 0;
 };
 
+class VariantEditorView : public QScrollArea
+{
+    Q_OBJECT
+
+public:
+    explicit VariantEditorView(QWidget *parent = nullptr);
+
+    void clear()
+    { m_editor->clear(); }
+
+    void addProperty(Property *property)
+    { m_editor->addProperty(property); }
+
+private:
+    VariantEditor *m_editor;
+};
+
 } // namespace Tiled
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Property::Actions)
