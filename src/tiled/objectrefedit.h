@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "variantpropertymanager.h"
+#include "objectrefdialog.h"
 
 #include <QWidget>
 

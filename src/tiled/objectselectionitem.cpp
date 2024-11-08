@@ -29,11 +29,11 @@
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "objectgroup.h"
+#include "objectrefdialog.h"
 #include "objectreferenceitem.h"
 #include "preferences.h"
 #include "tile.h"
 #include "utils.h"
-#include "variantpropertymanager.h"
 
 #include <QApplication>
 #include <QTimerEvent>

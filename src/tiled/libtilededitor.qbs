@@ -7,7 +7,6 @@ DynamicLibrary {
 
     Depends { name: "libtiled" }
     Depends { name: "translations" }
-    Depends { name: "qtpropertybrowser" }
     Depends { name: "qtsingleapplication" }
     Depends { name: "Qt"; submodules: ["core", "widgets", "concurrent", "qml", "svg"]; versionAtLeast: "5.12" }
     Depends { name: "Qt.openglwidgets"; condition: Qt.core.versionMajor >= 6; required: false }
@@ -552,12 +551,8 @@ DynamicLibrary {
         "utils.h",
         "varianteditor.cpp",
         "varianteditor.h",
-        "varianteditorfactory.cpp",
-        "varianteditorfactory.h",
         "variantmapproperty.cpp",
         "variantmapproperty.h",
-        "variantpropertymanager.cpp",
-        "variantpropertymanager.h",
         "wangbrush.cpp",
         "wangbrush.h",
         "wangcolormodel.cpp",

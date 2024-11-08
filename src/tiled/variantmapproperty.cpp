@@ -24,7 +24,6 @@
 #include "objectrefedit.h"
 #include "preferences.h"
 #include "utils.h"
-#include "variantpropertymanager.h"
 
 #include <QMenu>
 #include <QScopedValueRollback>
