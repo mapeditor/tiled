@@ -31,6 +31,7 @@ class Object;
 
 class CustomProperties;
 class Document;
+class GroupProperty;
 class ObjectProperties;
 class VariantEditorView;
 
@@ -51,6 +52,9 @@ public:
      * Sets the \a document on which this properties dock will act.
      */
     void setDocument(Document *document);
+
+    GroupProperty *customPropertiesGroup() const;
+    VariantEditorView *propertiesView() const { return mPropertyBrowser; }
 
 signals:
     void bringToFront();

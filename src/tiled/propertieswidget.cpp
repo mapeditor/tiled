@@ -2159,7 +2159,7 @@ private:
 
 PropertiesWidget::PropertiesWidget(QWidget *parent)
     : QWidget{parent}
-    , mCustomProperties(new CustomProperties)
+    , mCustomProperties(new CustomProperties(this))
     , mPropertyBrowser(new VariantEditorView(this))
 {
     mActionAddProperty = new QAction(this);
@@ -2249,6 +2249,11 @@ void PropertiesWidget::setDocument(Document *document)
     } else {
         currentObjectChanged(nullptr);
     }
+}
+
+GroupProperty *PropertiesWidget::customPropertiesGroup() const
+{
+    return mCustomProperties;
 }
 
 void PropertiesWidget::selectCustomProperty(const QString &name)

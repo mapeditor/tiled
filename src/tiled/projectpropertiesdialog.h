@@ -20,11 +20,7 @@
 
 #pragma once
 
-#include "tiled.h"
-
 #include <QDialog>
-
-class QtVariantProperty;
 
 namespace Ui {
 class ProjectPropertiesDialog;
@@ -32,8 +28,10 @@ class ProjectPropertiesDialog;
 
 namespace Tiled {
 
+class IntProperty;
 class Project;
 class ProjectDocument;
+class UrlProperty;
 
 class ProjectPropertiesDialog : public QDialog
 {
@@ -46,14 +44,15 @@ public:
     void accept() override;
 
 private:
+    Project &localProject();
+
     Ui::ProjectPropertiesDialog *ui;
 
     Project &mProject;
-    ProjectDocument *mPropertiesProjectDocument;
-    QList<CompatibilityVersion> mVersions;
-    QtVariantProperty *mCompatibilityVersionProperty;
-    QtVariantProperty *mExtensionPathProperty;
-    QtVariantProperty *mAutomappingRulesFileProperty;
+    ProjectDocument *mLocalProjectDocument;
+    IntProperty *mCompatibilityVersionProperty;
+    UrlProperty *mExtensionPathProperty;
+    UrlProperty *mAutomappingRulesFileProperty;
 };
 
 } // namespace Tiled

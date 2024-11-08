@@ -44,7 +44,7 @@ class PropertyLabel;
 class Property : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString name READ name CONSTANT)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString toolTip READ toolTip WRITE setToolTip NOTIFY toolTipChanged)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
     Q_PROPERTY(bool modified READ isModified WRITE setModified NOTIFY modifiedChanged)
@@ -72,6 +72,7 @@ public:
     {}
 
     const QString &name() const { return m_name; }
+    void setName(const QString &name);
 
     const QString &toolTip() const { return m_toolTip; }
     void setToolTip(const QString &toolTip);
@@ -90,6 +91,7 @@ public:
     virtual QWidget *createEditor(QWidget *parent) = 0;
 
 signals:
+    void nameChanged(const QString &name);
     void toolTipChanged(const QString &toolTip);
     void valueChanged();
     void enabledChanged(bool enabled);
@@ -256,8 +258,10 @@ struct UrlProperty : PropertyTemplate<QUrl>
     using PropertyTemplate::PropertyTemplate;
     QWidget *createEditor(QWidget *parent) override;
     void setFilter(const QString &filter) { m_filter = filter; }
+    void setIsDirectory(bool isDirectory) { m_isDirectory = isDirectory; }
 private:
     QString m_filter;
+    bool m_isDirectory = false;
 };
 
 struct IntProperty : PropertyTemplate<int>
@@ -523,6 +527,7 @@ private:
 
     void setPropertyChildrenExpanded(GroupProperty *groupProperty, bool expanded);
 
+    void updatePropertyName(const PropertyWidgets &widgets, const QString &name);
     void updatePropertyEnabled(const PropertyWidgets &widgets, bool enabled);
     void updatePropertyToolTip(const PropertyWidgets &widgets, const QString &toolTip);
     void updatePropertyActions(const PropertyWidgets &widgets, Property::Actions actions);

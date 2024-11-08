@@ -40,6 +40,14 @@
 
 namespace Tiled {
 
+void Property::setName(const QString &name)
+{
+    if (m_name != name) {
+        m_name = name;
+        emit nameChanged(name);
+    }
+}
+
 void Property::setToolTip(const QString &toolTip)
 {
     if (m_toolTip != toolTip) {
@@ -158,6 +166,7 @@ QWidget *UrlProperty::createEditor(QWidget *parent)
 {
     auto editor = new FileEdit(parent);
     editor->setFilter(m_filter);
+    editor->setIsDirectory(m_isDirectory);
 
     auto syncEditor = [=] {
         editor->setFileUrl(value());
@@ -737,6 +746,9 @@ QLayout *VariantEditor::createPropertyLayout(Property *property)
     updatePropertyToolTip(widgets, property->toolTip());
     updatePropertyActions(widgets, property->actions());
 
+    connect(property, &Property::nameChanged, this, [=] (const QString &name) {
+        updatePropertyName(m_propertyWidgets[property], name);
+    });
     connect(property, &Property::enabledChanged, this, [=] (bool enabled) {
         updatePropertyEnabled(m_propertyWidgets[property], enabled);
     });
@@ -785,6 +797,12 @@ void VariantEditor::setPropertyChildrenExpanded(GroupProperty *groupProperty, bo
             }
         }
     }
+}
+
+void VariantEditor::updatePropertyName(const PropertyWidgets &widgets, const QString &name)
+{
+    if (widgets.label)
+        widgets.label->setText(name);
 }
 
 void VariantEditor::updatePropertyEnabled(const PropertyWidgets &widgets, bool enabled)
