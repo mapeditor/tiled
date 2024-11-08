@@ -38,7 +38,6 @@
 #include "objectgroup.h"
 #include "objecttemplate.h"
 #include "preferences.h"
-#include "propertybrowser.h"
 #include "propertyeditorwidgets.h"
 #include "tilesetchanges.h"
 #include "tilesetdocument.h"
@@ -2202,7 +2201,7 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
     setLayout(layout);
 
     mPropertyBrowser->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(mPropertyBrowser, &PropertyBrowser::customContextMenuRequested,
+    connect(mPropertyBrowser, &QWidget::customContextMenuRequested,
             this, &PropertiesWidget::showContextMenu);
     // connect(mPropertyBrowser, &PropertyBrowser::selectedItemsChanged,
     //         this, &PropertiesWidget::updateActions);
