@@ -638,7 +638,7 @@ public:
                        parent)
         , mMapDocument(mapDocument)
     {
-        connect(mMapDocument, &MapDocument::mapChanged,
+        connect(mMapDocument, &MapDocument::mapResized,
                 this, &Property::valueChanged);
     }
 

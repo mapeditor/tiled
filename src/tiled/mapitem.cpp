@@ -155,7 +155,7 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(prefs, &Preferences::backgroundFadeColorChanged, this, [this] (QColor color) { mDarkRectangle->setBrush(color); });
 
     connect(mapDocument.data(), &Document::changed, this, &MapItem::documentChanged);
-    connect(mapDocument.data(), &MapDocument::mapChanged, this, &MapItem::mapChanged);
+    connect(mapDocument.data(), &MapDocument::mapResized, this, &MapItem::mapChanged);
     connect(mapDocument.data(), &MapDocument::regionChanged, this, &MapItem::repaintRegion);
     connect(mapDocument.data(), &MapDocument::tileLayerChanged, this, &MapItem::tileLayerChanged);
     connect(mapDocument.data(), &MapDocument::layerAdded, this, &MapItem::layerAdded);
@@ -389,6 +389,27 @@ void MapItem::documentChanged(const ChangeEvent &change)
             }
         }
 
+        break;
+    }
+    case ChangeEvent::MapChanged: {
+        auto &mapChange = static_cast<const MapChangeEvent&>(change);
+        switch (mapChange.property) {
+        case Map::TileSizeProperty:
+        case Map::InfiniteProperty:
+        case Map::HexSideLengthProperty:
+        case Map::StaggerAxisProperty:
+        case Map::StaggerIndexProperty:
+        case Map::ParallaxOriginProperty:
+        case Map::OrientationProperty:
+            mapChanged();
+            break;
+        case Map::RenderOrderProperty:
+        case Map::BackgroundColorProperty:
+        case Map::LayerDataFormatProperty:
+        case Map::CompressionLevelProperty:
+        case Map::ChunkSizeProperty:
+            break;
+        }
         break;
     }
     case ChangeEvent::LayerChanged:

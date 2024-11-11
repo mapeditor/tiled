@@ -95,7 +95,6 @@ private:
     void selectedObjectsChanged();
     void aboutToBeSelectedObjectsChanged();
     void hoveredMapObjectChanged(MapObject *object, MapObject *previous);
-    void mapChanged();
     void layerAdded(Layer *layer);
     void layerAboutToBeRemoved(GroupLayer *parentLayer, int index);
     void layerChanged(const LayerChangeEvent &event);
