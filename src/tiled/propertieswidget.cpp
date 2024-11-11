@@ -2538,7 +2538,8 @@ void PropertiesWidget::addProperty(const QString &name, const QVariant &value)
                                         name, value));
     }
 
-    // mPropertyBrowser->editCustomProperty(name);
+    if (auto property = mCustomProperties->property(name))
+        mPropertyBrowser->focusProperty(property);
 }
 
 void PropertiesWidget::removeProperties()

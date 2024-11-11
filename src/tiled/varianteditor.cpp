@@ -626,6 +626,38 @@ void VariantEditor::removeProperty(Property *property)
     property->disconnect(this);
 }
 
+/**
+ * Focuses the editor for the given property. Makes sure any parent group
+ * properties are expanded.
+ *
+ * When the given property is a group property, the group property is expanded
+ * and the first child property is focused.
+ */
+bool VariantEditor::focusProperty(Property *property)
+{
+    for (auto it = m_propertyWidgets.constBegin(); it != m_propertyWidgets.constEnd(); ++it) {
+        auto &widgets = it.value();
+
+        if (it.key() == property) {
+            if (widgets.editor)
+                widgets.editor->setFocus();
+            else if (auto groupProperty = qobject_cast<GroupProperty *>(it.key())) {
+                groupProperty->setExpanded(true);
+                if (widgets.children && !groupProperty->subProperties().isEmpty())
+                    widgets.children->focusProperty(groupProperty->subProperties().first());
+            }
+            return true;
+        } else if (auto groupProperty = qobject_cast<GroupProperty *>(it.key())) {
+            if (widgets.children && widgets.children->focusProperty(property)) {
+                groupProperty->setExpanded(true);
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 void VariantEditor::setLevel(int level)
 {
     m_level = level;
@@ -1006,6 +1038,11 @@ VariantEditorView::VariantEditorView(QWidget *parent)
 
     setWidgetResizable(true);
     setWidget(scrollWidget);
+}
+
+void VariantEditorView::focusProperty(Property *property)
+{
+    m_editor->focusProperty(property);
 }
 
 } // namespace Tiled

@@ -504,6 +504,8 @@ public:
     void insertProperty(int index, Property *property);
     void removeProperty(Property *property);
 
+    bool focusProperty(Property *property);
+
     void setLevel(int level);
 
 private:
@@ -552,6 +554,8 @@ public:
 
     void addProperty(Property *property)
     { m_editor->addProperty(property); }
+
+    void focusProperty(Property *property);
 
 private:
     VariantEditor *m_editor;
