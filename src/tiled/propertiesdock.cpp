@@ -21,8 +21,9 @@
 #include "propertiesdock.h"
 
 #include "propertieswidget.h"
+#include "varianteditor.h"
 
-#include <QEvent>
+#include <QKeyEvent>
 
 namespace Tiled {
 
@@ -55,6 +56,14 @@ bool PropertiesDock::event(QEvent *event)
     switch (event->type()) {
     case QEvent::LanguageChange:
         retranslateUi();
+        break;
+    case QEvent::ShortcutOverride:
+        if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Tab) {
+            if (!mPropertiesWidget->propertiesView()->hasFocus()) {
+                event->accept();
+                return true;
+            }
+        }
         break;
     default:
         break;
