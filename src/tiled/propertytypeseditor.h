@@ -104,7 +104,6 @@ private:
     void openClassOfPopup();
     void openAddMemberDialog();
     void addMember(const QString &name, const QVariant &value = QVariant());
-    void editMember(const QString &name);
     void removeMember();
     void renameMember(const QString &name);
     void renameMemberTo(const QString &oldName, const QString &name);

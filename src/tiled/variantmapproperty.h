@@ -39,6 +39,8 @@ public:
 
     const QVariantMap &value() const { return mValue; }
 
+    Property *property(const QString &name) const;
+
 signals:
     void memberValueChanged(const QStringList &path, const QVariant &value);
     void renameRequested(const QString &name);
@@ -85,5 +87,9 @@ private:
     QSet<QStringList> mExpandedProperties;
 };
 
+inline Property *VariantMapProperty::property(const QString &name) const
+{
+    return mPropertyMap.value(name);
+}
 
 } // namespace Tiled

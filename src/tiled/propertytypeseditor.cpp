@@ -572,6 +572,8 @@ void PropertyTypesEditor::openAddMemberDialog()
 
     if (dialog.exec() == AddPropertyDialog::Accepted)
         addMember(dialog.propertyName(), QVariant(dialog.propertyValue()));
+
+    activateWindow();
 }
 
 void PropertyTypesEditor::addMember(const QString &name, const QVariant &value)
@@ -593,21 +595,9 @@ void PropertyTypesEditor::addMember(const QString &name, const QVariant &value)
 
     applyMemberToSelectedType(name, value);
     updateDetails();
-    editMember(name);
-}
 
-void PropertyTypesEditor::editMember(const QString &name)
-{
-    // todo: VariantEditor needs to support focusing the widget of a specific property
-#if 0
-    QtVariantProperty *property = mPropertiesHelper->property(name);
-    if (!property)
-        return;
-
-    const QList<QtBrowserItem*> propertyItems = mMembersView->items(property);
-    if (!propertyItems.isEmpty())
-        mMembersView->editItem(propertyItems.first());
-#endif
+    if (auto property = mMembersProperty->property(name))
+        mMembersEditor->focusProperty(property);
 }
 
 void PropertyTypesEditor::removeMember()
