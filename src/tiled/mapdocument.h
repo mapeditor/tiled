@@ -322,9 +322,9 @@ signals:
     void mapObjectPicked(MapObject *object);
 
     /**
-     * Emitted when the map size or its tile size changes.
+     * Emitted when the map size changes.
      */
-    void mapChanged();
+    void mapResized();
 
     void layerAdded(Layer *layer);
     void layerAboutToBeRemoved(GroupLayer *parentLayer, int index);

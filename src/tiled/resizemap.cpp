@@ -56,7 +56,7 @@ void ResizeMap::swapSize()
     map->setHeight(mSize.height());
     mSize = oldSize;
 
-    emit mMapDocument->mapChanged();
+    emit mMapDocument->mapResized();
 }
 
 } // namespace Tiled
