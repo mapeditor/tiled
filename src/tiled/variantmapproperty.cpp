@@ -23,12 +23,23 @@
 #include "mapdocument.h"
 #include "objectrefedit.h"
 #include "preferences.h"
+#include "propertyeditorwidgets.h"
+#include "propertytypesmodel.h"
+#include "session.h"
 #include "utils.h"
 
+#include <QApplication>
+#include <QComboBox>
+#include <QKeyEvent>
 #include <QMenu>
 #include <QScopedValueRollback>
 
 namespace Tiled {
+
+namespace session {
+static SessionOption<QString> propertyType { "property.type", QStringLiteral("string") };
+} // namespace session
+
 
 class ObjectRefProperty : public PropertyTemplate<DisplayObjectRef>
 {
@@ -340,14 +351,20 @@ void VariantMapProperty::removeMember(const QString &name)
 
 void VariantMapProperty::addMember(const QString &name, const QVariant &value)
 {
-    const auto oldValue = mValue.value(name, mSuggestions.value(name));
-
-    mValue.insert(name, value);
+    int index = 0;
 
     if (auto property = mPropertyMap.value(name)) {
-        const int index = indexOfProperty(property);
-        createOrUpdateProperty(index, name, oldValue, value);
+        index = indexOfProperty(property);
+    } else for (auto it = mValue.keyBegin(); it != mValue.keyEnd(); ++it) {
+        if (*it < name)
+            ++index;
+        else
+            break;
     }
+
+    const auto oldValue = mValue.value(name, mSuggestions.value(name));
+    mValue.insert(name, value);
+    createOrUpdateProperty(index, name, oldValue, value);
 
     emitMemberValueChanged({ name }, value);
 }
@@ -458,6 +475,142 @@ void VariantMapProperty::memberContextMenuRequested(Property *property, const QS
 
     if (!menu.isEmpty())
         menu.exec(globalPos);
+}
+
+
+AddValueProperty::AddValueProperty(QObject *parent)
+    : Property(QString(), parent)
+    , m_plainTypeIcon(QStringLiteral("://images/scalable/property-type-plain.svg"))
+    , m_placeholderText(tr("Property name"))
+{
+    setActions(Action::AddDisabled);
+}
+
+void AddValueProperty::setPlaceholderText(const QString &text)
+{
+    if (m_placeholderText == text)
+        return;
+
+    m_placeholderText = text;
+    emit placeholderTextChanged(text);
+}
+
+QWidget *AddValueProperty::createLabel(int level, QWidget *parent)
+{
+    constexpr int QLineEditPrivate_horizontalMargin = 2;
+    const int spacing = Utils::dpiScaled(3);
+    const int branchIndicatorWidth = Utils::dpiScaled(14);
+    const int indent = branchIndicatorWidth * (level + 1);
+
+    auto nameEdit = new LineEdit(parent);
+    nameEdit->setText(name());
+    nameEdit->setPlaceholderText(m_placeholderText);
+
+    QStyleOptionFrame option;
+    option.initFrom(nameEdit);
+    const int frameWidth = nameEdit->style()->pixelMetric(QStyle::PM_DefaultFrameWidth, &option, nameEdit);
+    const int nativeMargin = QLineEditPrivate_horizontalMargin + frameWidth;
+
+    QMargins margins;
+
+    if (parent->isLeftToRight())
+        margins = QMargins(spacing + indent - nativeMargin, 0, spacing - nativeMargin, 0);
+    else
+        margins = QMargins(spacing - nativeMargin, 0, spacing + indent - nativeMargin, 0);
+
+    nameEdit->setContentsMargins(margins);
+
+    connect(nameEdit, &QLineEdit::textChanged, this, &Property::setName);
+    connect(nameEdit, &QLineEdit::returnPressed, this, [this] {
+        if (!name().isEmpty())
+            emit addRequested();
+    });
+    connect(this, &Property::nameChanged, this, [=](const QString &name) {
+        setActions(name.isEmpty() ? Action::AddDisabled : Action::Add);
+    });
+    connect(this, &AddValueProperty::placeholderTextChanged,
+            nameEdit, &QLineEdit::setPlaceholderText);
+
+    nameEdit->installEventFilter(this);
+
+    connect(qApp, &QApplication::focusChanged, nameEdit, [=] (QWidget *, QWidget *focusWidget) {
+        // Ignore focus in different windows (popups, dialogs, etc.)
+        if (!focusWidget || focusWidget->window() != parent->window())
+            return;
+
+        // Request removal if focus moved elsewhere
+        if (!parent->isAncestorOf(focusWidget))
+            emit removeRequested();
+    });
+
+    return nameEdit;
+}
+
+QWidget *AddValueProperty::createEditor(QWidget *parent)
+{
+    // Create combo box with property types
+    auto typeBox = new ComboBox(parent);
+
+    // Add possible types from QVariant
+    typeBox->addItem(m_plainTypeIcon, typeToName(QMetaType::Bool),      false);
+    typeBox->addItem(m_plainTypeIcon, typeToName(QMetaType::QColor),    QColor());
+    typeBox->addItem(m_plainTypeIcon, typeToName(QMetaType::Double),    0.0);
+    typeBox->addItem(m_plainTypeIcon, typeToName(filePathTypeId()),     QVariant::fromValue(FilePath()));
+    typeBox->addItem(m_plainTypeIcon, typeToName(QMetaType::Int),       0);
+    typeBox->addItem(m_plainTypeIcon, typeToName(objectRefTypeId()),    QVariant::fromValue(ObjectRef()));
+    typeBox->addItem(m_plainTypeIcon, typeToName(QMetaType::QString),   QString());
+
+    for (const auto propertyType : Object::propertyTypes()) {
+        // Avoid suggesting the creation of circular dependencies between types
+        if (m_parentClassType && !m_parentClassType->canAddMemberOfType(propertyType))
+            continue;
+
+        // Avoid suggesting classes not meant to be used as property value
+        if (propertyType->isClass())
+            if (!static_cast<const ClassPropertyType*>(propertyType)->isPropertyValueType())
+                continue;
+
+        const QVariant var = propertyType->wrap(propertyType->defaultValue());
+        const QIcon icon = PropertyTypesModel::iconForPropertyType(propertyType->type);
+        typeBox->addItem(icon, propertyType->name, var);
+    }
+
+    // Restore previously used type
+    typeBox->setCurrentText(session::propertyType);
+    if (typeBox->currentIndex() == -1)
+        typeBox->setCurrentIndex(typeBox->findData(QString()));
+
+    m_value = typeBox->currentData();
+
+    connect(typeBox, qOverload<int>(&QComboBox::currentIndexChanged), this, [=](int index) {
+        m_value = typeBox->itemData(index);
+        session::propertyType = typeBox->currentText();
+    });
+
+    typeBox->installEventFilter(this);
+
+    return typeBox;
+}
+
+bool AddValueProperty::eventFilter(QObject *watched, QEvent *event)
+{
+    switch (event->type()) {
+    case QEvent::KeyPress: {
+        // When Escape is pressed while the name edit or the type combo has
+        // focus, request the removal of this property.
+        auto keyEvent = static_cast<QKeyEvent*>(event);
+        bool isNameEdit = qobject_cast<QLineEdit*>(watched);
+        bool isTypeCombo = qobject_cast<QComboBox*>(watched);
+        if ((isNameEdit || isTypeCombo) && keyEvent->key() == Qt::Key_Escape) {
+            emit removeRequested();
+            return true;
+        }
+        break;
+    }
+    default:
+        break;
+    }
+    return false;
 }
 
 } // namespace Tiled

@@ -21,6 +21,7 @@
 #pragma once
 
 #include <QMap>
+#include <QPointer>
 #include <QWidget>
 
 class QScrollArea;
@@ -29,6 +30,7 @@ namespace Tiled {
 
 class Object;
 
+class AddValueProperty;
 class CustomProperties;
 class Document;
 class GroupProperty;
@@ -73,7 +75,7 @@ private:
     void cutProperties();
     bool copyProperties();
     void pasteProperties();
-    void openAddPropertyDialog();
+    void showAddValueProperty();
     void addProperty(const QString &name, const QVariant &value);
     void removeProperties();
     void renameProperty(const QString &name);
@@ -84,6 +86,7 @@ private:
     Document *mDocument = nullptr;
     ObjectProperties *mPropertiesObject = nullptr;
     CustomProperties *mCustomProperties = nullptr;
+    QPointer<AddValueProperty> mAddValueProperty;
     QMap<int, bool> mExpandedStates;
     VariantEditorView *mPropertyBrowser;
     QAction *mActionAddProperty;

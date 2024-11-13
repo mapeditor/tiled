@@ -309,7 +309,7 @@ class PropertyLabel : public ElidingLabel
     Q_OBJECT
 
 public:
-    PropertyLabel(int level, QWidget *parent = nullptr);
+    PropertyLabel(QWidget *parent = nullptr);
 
     void setLevel(int level);
 

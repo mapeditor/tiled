@@ -21,7 +21,6 @@
 #include "propertytypeseditor.h"
 #include "ui_propertytypeseditor.h"
 
-#include "addpropertydialog.h"
 #include "colorbutton.h"
 #include "objecttypes.h"
 #include "preferences.h"
@@ -567,13 +566,23 @@ void PropertyTypesEditor::openAddMemberDialog()
     if (!propertyType || !propertyType->isClass())
         return;
 
-    AddPropertyDialog dialog(static_cast<const ClassPropertyType*>(propertyType), this);
-    dialog.setWindowTitle(tr("Add Member"));
+    if (!mAddValueProperty) {
+        mAddValueProperty = new AddValueProperty(mMembersProperty);
+        mAddValueProperty->setPlaceholderText(tr("Member name"));
+        mAddValueProperty->setParentClassType(static_cast<const ClassPropertyType*>(propertyType));
 
-    if (dialog.exec() == AddPropertyDialog::Accepted)
-        addMember(dialog.propertyName(), QVariant(dialog.propertyValue()));
+        connect(mAddValueProperty, &Property::addRequested, this, [this] {
+            addMember(mAddValueProperty->name(), mAddValueProperty->value());
+            mMembersProperty->deleteProperty(mAddValueProperty);
+        });
+        connect(mAddValueProperty, &Property::removeRequested, this, [this] {
+            mMembersProperty->deleteProperty(mAddValueProperty);
+        });
 
-    activateWindow();
+        mMembersProperty->addProperty(mAddValueProperty);
+    }
+
+    mMembersEditor->focusProperty(mAddValueProperty, VariantEditor::FocusLabel);
 }
 
 void PropertyTypesEditor::addMember(const QString &name, const QVariant &value)
