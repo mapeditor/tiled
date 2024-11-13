@@ -692,15 +692,18 @@ void ElidingLabel::paintEvent(QPaintEvent *)
 }
 
 
-PropertyLabel::PropertyLabel(int level, QWidget *parent)
+PropertyLabel::PropertyLabel(QWidget *parent)
     : ElidingLabel(parent)
 {
     setMinimumWidth(Utils::dpiScaled(50));
-    setLevel(level);
+    updateContentMargins();
 }
 
 void PropertyLabel::setLevel(int level)
 {
+    if (m_level == level)
+        return;
+
     m_level = level;
     updateContentMargins();
 }

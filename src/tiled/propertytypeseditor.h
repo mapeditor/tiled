@@ -23,6 +23,7 @@
 #include "propertytype.h"
 
 #include <QDialog>
+#include <QPointer>
 
 class QCheckBox;
 class QComboBox;
@@ -40,6 +41,7 @@ class PropertyTypesEditor;
 
 namespace Tiled {
 
+class AddValueProperty;
 class ColorButton;
 class PropertyTypesModel;
 class VariantEditorView;
@@ -145,6 +147,7 @@ private:
     QPushButton *mClassOfButton = nullptr;
     VariantEditorView *mMembersEditor = nullptr;
     VariantMapProperty *mMembersProperty = nullptr;
+    QPointer<AddValueProperty> mAddValueProperty;
 
     bool mSettingPrefPropertyTypes = false;
     bool mSettingName = false;

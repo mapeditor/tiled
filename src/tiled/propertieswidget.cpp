@@ -21,7 +21,6 @@
 #include "propertieswidget.h"
 
 #include "actionmanager.h"
-#include "addpropertydialog.h"
 #include "changeimagelayerproperty.h"
 #include "changelayer.h"
 #include "changemapobject.h"
@@ -2166,18 +2165,20 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
     mActionAddProperty->setEnabled(false);
     mActionAddProperty->setIcon(QIcon(QLatin1String(":/images/16/add.png")));
     connect(mActionAddProperty, &QAction::triggered,
-            this, &PropertiesWidget::openAddPropertyDialog);
+            this, &PropertiesWidget::showAddValueProperty);
 
     mActionRemoveProperty = new QAction(this);
     mActionRemoveProperty->setEnabled(false);
     mActionRemoveProperty->setIcon(QIcon(QLatin1String(":/images/16/remove.png")));
     mActionRemoveProperty->setShortcuts(QKeySequence::Delete);
+    mActionRemoveProperty->setPriority(QAction::LowPriority);
     connect(mActionRemoveProperty, &QAction::triggered,
             this, &PropertiesWidget::removeProperties);
 
     mActionRenameProperty = new QAction(this);
     mActionRenameProperty->setEnabled(false);
     mActionRenameProperty->setIcon(QIcon(QLatin1String(":/images/16/rename.png")));
+    mActionRenameProperty->setPriority(QAction::LowPriority);
     // connect(mActionRenameProperty, &QAction::triggered,
     //         this, &PropertiesWidget::renameProperty);
 
@@ -2188,6 +2189,7 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
     QToolBar *toolBar = new QToolBar;
     toolBar->setFloatable(false);
     toolBar->setMovable(false);
+    toolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     toolBar->setIconSize(Utils::smallIconSize());
     toolBar->addAction(mActionAddProperty);
     toolBar->addAction(mActionRemoveProperty);
@@ -2516,11 +2518,23 @@ void PropertiesWidget::pasteProperties()
     }
 }
 
-void PropertiesWidget::openAddPropertyDialog()
+void PropertiesWidget::showAddValueProperty()
 {
-    AddPropertyDialog dialog(mPropertyBrowser);
-    if (dialog.exec() == AddPropertyDialog::Accepted)
-        addProperty(dialog.propertyName(), dialog.propertyValue());
+    if (!mAddValueProperty) {
+        mAddValueProperty = new AddValueProperty(mCustomProperties);
+
+        connect(mAddValueProperty, &Property::addRequested, this, [this] {
+            addProperty(mAddValueProperty->name(), mAddValueProperty->value());
+            mCustomProperties->deleteProperty(mAddValueProperty);
+        });
+        connect(mAddValueProperty, &Property::removeRequested, this, [this] {
+            mCustomProperties->deleteProperty(mAddValueProperty);
+        });
+
+        mCustomProperties->addProperty(mAddValueProperty);
+    }
+
+    mPropertyBrowser->focusProperty(mAddValueProperty, VariantEditor::FocusLabel);
 }
 
 void PropertiesWidget::addProperty(const QString &name, const QVariant &value)

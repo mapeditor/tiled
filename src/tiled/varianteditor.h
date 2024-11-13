@@ -20,13 +20,10 @@
 
 #pragma once
 
-#include <QCoreApplication>
 #include <QHash>
 #include <QIcon>
-#include <QMetaProperty>
 #include <QScrollArea>
 #include <QString>
-#include <QStringListModel>
 #include <QVariant>
 #include <QWidget>
 
@@ -63,6 +60,7 @@ public:
         Reset = 0x01,
         Remove = 0x02,
         Add = 0x04,
+        AddDisabled = Add | 0x08,
     };
     Q_DECLARE_FLAGS(Actions, Action)
 
@@ -88,6 +86,7 @@ public:
 
     virtual DisplayMode displayMode() const { return DisplayMode::Default; }
 
+    virtual QWidget *createLabel(int level, QWidget *parent);
     virtual QWidget *createEditor(QWidget *parent) = 0;
 
 signals:
@@ -152,6 +151,7 @@ public:
 
     DisplayMode displayMode() const override;
 
+    QWidget *createLabel(int level, QWidget *parent) override;
     QWidget *createEditor(QWidget */* parent */) override { return nullptr; }
 
     void setHeader(bool header) { m_header = header; }
@@ -504,7 +504,12 @@ public:
     void insertProperty(int index, Property *property);
     void removeProperty(Property *property);
 
-    bool focusProperty(Property *property);
+    enum FocusTarget {
+        FocusLabel,
+        FocusEditor,
+    };
+
+    QWidget *focusProperty(Property *property, FocusTarget target);
 
     void setLevel(int level);
 
@@ -514,10 +519,9 @@ private:
 
     struct PropertyWidgets
     {
-        QLayout *layout = nullptr;
-        QHBoxLayout *editorLayout = nullptr;
+        QWidget *rowWidget = nullptr;
         QVBoxLayout *childrenLayout = nullptr;
-        PropertyLabel *label = nullptr;
+        QWidget *label = nullptr;
         QWidget *editor = nullptr;
         QToolButton *resetButton = nullptr;
         QToolButton *removeButton = nullptr;
@@ -525,14 +529,13 @@ private:
         VariantEditor *children = nullptr;
     };
 
-    QLayout *createPropertyLayout(Property *property);
+    QWidget *createPropertyWidget(Property *property);
 
     void setPropertyChildrenExpanded(GroupProperty *groupProperty, bool expanded);
 
-    void updatePropertyName(const PropertyWidgets &widgets, const QString &name);
     void updatePropertyEnabled(const PropertyWidgets &widgets, bool enabled);
-    void updatePropertyToolTip(const PropertyWidgets &widgets, const QString &toolTip);
-    void updatePropertyActions(const PropertyWidgets &widgets, Property::Actions actions);
+    void updatePropertyActions(const PropertyWidgets &widgets,
+                               Property::Actions actions);
 
     QIcon m_resetIcon;
     QIcon m_removeIcon;
@@ -555,7 +558,11 @@ public:
     void addProperty(Property *property)
     { m_editor->addProperty(property); }
 
-    void focusProperty(Property *property);
+    void focusProperty(Property *property,
+                       VariantEditor::FocusTarget target = VariantEditor::FocusEditor);
+
+protected:
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
     VariantEditor *m_editor;

@@ -23,10 +23,15 @@
 #include "propertytype.h"
 #include "varianteditor.h"
 
+#include <QSet>
+
 namespace Tiled {
 
 class Document;
 
+/**
+ * A property that creates child properties based on a QVariantMap value.
+ */
 class VariantMapProperty : public GroupProperty
 {
     Q_OBJECT
@@ -90,6 +95,50 @@ private:
 inline Property *VariantMapProperty::property(const QString &name) const
 {
     return mPropertyMap.value(name);
+}
+
+
+/**
+ * A property that creates widgets for adding a value with a certain name and
+ * type.
+ */
+class AddValueProperty : public Property
+{
+    Q_OBJECT
+
+public:
+    AddValueProperty(QObject *parent = nullptr);
+
+    void setPlaceholderText(const QString &text);
+    void setParentClassType(const ClassPropertyType *parentClassType);
+
+    QVariant value() const;
+
+    QWidget *createLabel(int level, QWidget *parent) override;
+    QWidget *createEditor(QWidget *parent) override;
+
+signals:
+    void placeholderTextChanged(const QString &text);
+
+protected:
+    bool eventFilter(QObject *watched, QEvent *event) override;
+
+private:
+    QIcon m_plainTypeIcon;
+    QString m_placeholderText;
+    QVariant m_value;
+    bool m_hasFocus = false;
+    const ClassPropertyType *m_parentClassType = nullptr;
+};
+
+inline void AddValueProperty::setParentClassType(const ClassPropertyType *parentClassType)
+{
+    m_parentClassType = parentClassType;
+}
+
+inline QVariant AddValueProperty::value() const
+{
+    return m_value;
 }
 
 } // namespace Tiled
