@@ -61,6 +61,7 @@ class EditableTileset final : public EditableAsset
     Q_PROPERTY(bool collection READ isCollection)   // deprecated
     Q_PROPERTY(bool isCollection READ isCollection)
     Q_PROPERTY(QList<QObject*> selectedTiles READ selectedTiles WRITE setSelectedTiles)
+    Q_PROPERTY(Tileset::TransformationFlags transformationFlags READ transformationFlags WRITE setTransformationFlags)
 
 public:
     // Synchronized with Tiled::Alignment
@@ -130,6 +131,7 @@ public:
     QColor transparentColor() const;
     QColor backgroundColor() const;
     bool isCollection() const;
+    Tileset::TransformationFlags transformationFlags() const;
 
     Q_INVOKABLE void loadFromImage(Tiled::ScriptImage *image,
                                    const QString &source = QString());
@@ -173,6 +175,7 @@ public slots:
     void setOrientation(Orientation orientation);
     void setTransparentColor(const QColor &color);
     void setBackgroundColor(const QColor &color);
+    void setTransformationFlags(Tileset::TransformationFlags flags);
 
 protected:
     void setDocument(Document *document) override;
@@ -304,7 +307,10 @@ inline bool EditableTileset::isCollection() const
 {
     return tileset()->isCollection();
 }
-
+inline Tileset::TransformationFlags EditableTileset::transformationFlags() const
+{
+    return tileset()->transformationFlags();
+}
 inline Tileset *EditableTileset::tileset() const
 {
     return static_cast<Tileset*>(object());
