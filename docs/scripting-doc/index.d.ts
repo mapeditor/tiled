@@ -3670,6 +3670,12 @@ declare class Tileset extends Asset {
 
   static readonly Stretch: unique symbol;
   static readonly PreserveAspectFit: unique symbol;
+  
+  static readonly NoTransformation: unique symbol;
+  static readonly AllowFlipHorizontally: unique symbol;
+  static readonly AllowFlipVertically: unique symbol;
+  static readonly AllowRotate: unique symbol;
+  static readonly PreferUntransformed: unique symbol;
 
   /**
    * Name of the tileset.
@@ -3840,6 +3846,14 @@ declare class Tileset extends Asset {
    * Background color for this tileset in the Tilesets view.
    */
   backgroundColor: color;
+
+  /**
+   * Flags describing transformations of tiles in this tileset that will be 
+   * allowed when using the [Terrains](https://doc.mapeditor.org/en/stable/manual/terrain/#tile-transformations)
+   *  feature with this tileset. 
+   * 
+   */
+  transformationFlags: number;
 
   /**
    * Whether this tileset is a collection of images (same as checking whether image is an empty string).

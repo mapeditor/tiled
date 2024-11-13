@@ -100,6 +100,16 @@ public:
     };
     Q_ENUM(FillMode)
 
+    // Synchronized with Tileset::TransformationFlag
+    enum TransformationFlag {
+        NoTransformation        = 0,
+        AllowFlipHorizontally   = 1 << 0,
+        AllowFlipVertically     = 1 << 1,
+        AllowRotate             = 1 << 2,
+        PreferUntransformed     = 1 << 3,
+    };
+    Q_ENUM(TransformationFlag)
+
     Q_INVOKABLE explicit EditableTileset(const QString &name = QString(),
                                          QObject *parent = nullptr);
     explicit EditableTileset(const Tileset *tileset, QObject *parent = nullptr);
