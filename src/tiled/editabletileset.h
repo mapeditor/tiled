@@ -317,10 +317,12 @@ inline bool EditableTileset::isCollection() const
 {
     return tileset()->isCollection();
 }
+
 inline Tileset::TransformationFlags EditableTileset::transformationFlags() const
 {
     return tileset()->transformationFlags();
 }
+
 inline Tileset *EditableTileset::tileset() const
 {
     return static_cast<Tileset*>(object());

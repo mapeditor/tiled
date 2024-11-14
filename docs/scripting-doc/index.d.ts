@@ -3851,7 +3851,7 @@ declare class Tileset extends Asset {
    * Flags describing transformations of tiles in this tileset that will be 
    * allowed when using the [Terrains](https://doc.mapeditor.org/en/stable/manual/terrain/#tile-transformations)
    *  feature with this tileset. 
-   * 
+   * @since 1.11.1
    */
   transformationFlags: number;
 
