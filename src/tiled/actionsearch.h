@@ -1,6 +1,6 @@
 /*
  * actionsearch.h
- * Copyright 2022, Chris Boehm AKA dogboydog
+ * Copyright 2022, dogboydog
  * Copyright 2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
