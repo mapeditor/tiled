@@ -430,22 +430,46 @@ QWidget *RectFProperty::createEditor(QWidget *parent)
     return editor;
 }
 
-// todo: needs to allow setting color back to invalid (unset)
 QWidget *ColorProperty::createEditor(QWidget *parent)
 {
-    auto editor = new ColorButton(parent);
-    editor->setShowAlphaChannel(m_alpha);
+    auto editor = new QWidget(parent);
+    auto layout = new QHBoxLayout(editor);
+    layout->setContentsMargins(QMargins());
+    layout->setSpacing(0);
+
+    auto colorButton = new ColorButton(editor);
+    colorButton->setShowAlphaChannel(m_alpha);
+    colorButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+
+    QIcon resetIcon(QStringLiteral(":/images/16/edit-clear.png"));
+    resetIcon.addFile(QStringLiteral(":/images/24/edit-clear.png"));
+
+    auto resetButton = new QToolButton(editor);
+    resetButton->setIcon(resetIcon);
+    resetButton->setToolTip(tr("Clear Color"));
+    Utils::setThemeIcon(resetButton, "edit-clear");
+
+    layout->addWidget(colorButton);
+    layout->addWidget(resetButton);
 
     auto syncEditor = [=] {
-        const QSignalBlocker blocker(editor);
-        editor->setColor(value());
+        const QSignalBlocker blocker(colorButton);
+        auto v = value();
+        colorButton->setColor(v);
+        resetButton->setEnabled(v.isValid());
     };
     syncEditor();
 
-    connect(this, &Property::valueChanged, editor, syncEditor);
-    connect(editor, &ColorButton::colorChanged, this, [this, editor] {
-        setValue(editor->color());
+    connect(resetButton, &QToolButton::clicked, colorButton, [colorButton] {
+        colorButton->setColor(QColor());
     });
+    connect(this, &Property::valueChanged, colorButton, syncEditor);
+    connect(colorButton, &ColorButton::colorChanged, this, [=] {
+        resetButton->setEnabled(colorButton->color().isValid());
+        setValue(colorButton->color());
+    });
+
+    editor->setFocusProxy(colorButton);
 
     return editor;
 }
