@@ -1068,6 +1068,8 @@ protected:
         if (layerChange.layer != layer())
             return;
 
+        if (layerChange.properties & LayerChangeEvent::NameProperty)
+            emit mNameProperty->valueChanged();
         if (layerChange.properties & LayerChangeEvent::VisibleProperty)
             emit mVisibleProperty->valueChanged();
         if (layerChange.properties & LayerChangeEvent::LockedProperty)
