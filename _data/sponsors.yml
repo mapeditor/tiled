@@ -48,16 +48,6 @@
   banner: sponsors/tiktok-expert.png
   sponsor: https://opencollective.com/tt-expert-buy-tiktok-followers
 
-- name: Get real, active Instagram followers delivered straight to your account in minutes. Buy Instagram followers at Thunderclap.it starting just at $2.79
-  url: https://thunderclap.it/buy-instagram-followers
-  banner: sponsors/thunderclap-it.png
-  sponsor: https://opencollective.com/buy-instagram-followers-usa
-
-- name: Thunderclap.com is the best TikTok growth service provider, helping brands and creators build a targeted and engaged TikTok audience.
-  url: https://thunderclap.com/
-  banner: sponsors/thunderclap-com.png
-  sponsor: https://opencollective.com/thunderclapcom
-
 - name: Buyreviewz is the best online review service providing - 100% real and non-drop google reviews for local business profiles.
   url: https://buyreviewz.com/buy-google-reviews
   banner: sponsors/buyreviewz.png
@@ -66,40 +56,37 @@
 - name: buy instagram followers from skweezer.net
   url: https://skweezer.net/buy-instagram-followers
   banner: sponsors/skweezer.png
+  sponsor: private GitHub sponsor
 
 - name: Buy Instagram Likes - Real Likes & Instant Delivery!
   url: https://blastup.com/buy-instagram-likes
   banner: sponsors/blastup.png
+  sponsor: https://opencollective.com/blastup_com
 
 - name: get instagram followers
   url: https://www.socialwick.com/instagram/followers
   banner: sponsors/socialwick.png
   sponsor: https://www.patreon.com/user?u=95476966
 
-- name: Buy Instagram and TikTok followers on SocialBoosting!
-  url: https://www.socialboosting.com/buy-tiktok-followers
-  banner: sponsors/socialboosting.png
-
-- name: Boost Likes
-  url: https://boostlikes.co/buy-tiktok-followers-likes/
-  banner: sponsors/boost-likes.png
-
-- name: Buy Instagram Followers and Buy Instagram Likes with Instant Delivery
-  url: https://www.famety.com/
+- name: Famety - Buy Instagram Followers
+  url: https://www.famety.com/buy-tiktok-likes
   banner: sponsors/famety.png
-  sponsor: https://opencollective.com/fametycom
+  sponsor: https://opencollective.com/famety-buy-instagram-followers
 
 - name: Phone Tracker
   url: https://celltrackingapps.com/
   banner: sponsors/celltrackingapps.png
+  sponsor: https://www.patreon.com/user?u=76839189
 
 - name: Buy Youtube Views - Views4You
   url: https://views4you.com/buy-youtube-views/
   banner: sponsors/views4you.png
+  sponsor: https://opencollective.com/buy-youtube-views-views4you
 
 - name: Buy Youtube Views - SidesMedia
   url: https://sidesmedia.com/buy-youtube-views
   banner: sponsors/sidesmedia.png
+  sponsor: https://opencollective.com/sidesmedia-buy-youtube-views
 
 - name:
   url: https://aviators.com.br/
@@ -115,53 +102,40 @@
   banner: sponsors/betwinner.png
   sponsor: https://opencollective.com/guidebook_betwinner_com
 
-- name: At Graming, we offer top-notch quality TikTok views at the best prices! Check out our deals below and order now!
-  url: https://graming.com/tiktok-views/
-  banner: sponsors/graming.png
-  sponsor: https://opencollective.com/graming-tiktok-views
-
 - name: buy tiktok followers
   url: https://www.socialfollowers.uk/buy-tiktok-followers/
   banner: sponsors/socialfollowers.png
+  sponsor: https://github.com/hashcode5
 
 - name: Buy TikTok Likes
   url: https://buycheapestfollowers.com/buy-tiktok-likes
   banner: sponsors/thebestsolution.png
-
-- name: Buy Instagram Likes
-  url: https://twicsy.com/buy-instagram-likes
-  banner: sponsors/twicsy.png
-  sponsor: https://opencollective.com/twicsy
+  sponsor: https://opencollective.com/thebestsolution
 
 - name: C19
   url: https://www.c19.cl/
   banner: sponsors/c19.png
+  sponsor: https://opencollective.com/casino-online-chile
 
 - name: Research of Online Casinos Accepting Neosurf
   url: https://payid-pokies.net/payment/neosurf-casinos/
   banner: sponsors/neosurf-casinos.png
   sponsor: https://opencollective.com/neosurf-casinos
 
-- name: Play Crazy Time, a live dealer game show, at the best Evolution sites. Claim bonus offers and implement strategies to increase your winnings.
-  url: https://www.livecrazytime.org/
-  banner: sponsors/crazytime.png
+- name: OnlineCasinoProfy is your guide to the world of gambling
+  url: https://polskiekasynaonline24.com/
+  banner: sponsors/onlinecasinoprofy.png
+  sponsor: https://opencollective.com/onlinecasinoprofy
 
 - name: online casino buiten Nederland
   url: https://onlinecasinosspelen.com/buitenlandse-online-casinos
   banner: sponsors/online-casinos-spelen.png
   sponsor: https://www.patreon.com/OnlineCasinosSpelen
 
-- name: $10 Minimum Deposit Casinos in Canada
-  url: https://playcasinoscanada.com/casino-bonuses/10-minimum-deposit-casinos-in-canada/
-  banner: sponsors/playcasinoscanada.png
-
-- name: كازينو اون لاين
-  url: https://arabcasinohex.com/online-casino/
-  banner: sponsors/arabcasinohex.png
-
 - name: www.onlinecasinosdeutschland.de
   url: https://www.onlinecasinosdeutschland.de/
   banner: sponsors/onlinecasinosdeutschland.png
+  sponsor: https://opencollective.com/onlinecasinosdeutschland
 
 - name: Buy Instagram Followers Twicsy
   url: https://twicsy.com/buy-instagram-followers
@@ -171,35 +145,22 @@
 - name: Best Australian Online Casinos in 2024
   url: https://aussiecasinoreviewer.com/
   banner: sponsors/aussiecasinoreviewer.png
+  sponsor: https://opencollective.com/aussiecasinoreviewer
 
-- name: slots online empire
-  url: https://slotsempire.com/
-  banner: sponsors/slots-empire-casino.png
-
-- name: casino utan spelpaus
-  url: https://www.casinoutansvenskalicensen.se/
-  banner: sponsors/casino-utan-svensk-licens.png
-
-- name: crypto casino
-  url: https://bonusbitcoin.co/
-  banner: sponsors/bonus-bitcoin-co.png
-
-- name: Instagram Likes
-  url: https://goread.io/buy-instagram-likes
+- name: Goread.io
+  url: https://goread.io/buy-instagram-followers
   banner: sponsors/goread.png
+  sponsor: https://opencollective.com/goread_io
 
 - name: Buy Instagram views
   url: https://poprey.com/buy-instagram-views
   banner: sponsors/poprey.png
+  sponsor: https://opencollective.com/jean4
 
 - name: Inkedin - Gambling News & Updates
   url: https://inkedin.com/no-deposit-casino-sites/
   banner: sponsors/inkedin.png
   sponsor: https://www.patreon.com/user?u=35580326
-
-- name: Play Online Blackjack at reddogcasino.com
-  url: https://reddogcasino.com/en/games/blackjack
-  banner: sponsors/red-dog-casino.png
 
 - name: Line Awesome
   url: https://icons8.com/line-awesome
@@ -208,15 +169,12 @@
 - name: online pokies Australia
   url: https://www.auscasinos.org/online-pokies/
   banner: sponsors/auscasinos.png
+  sponsor: https://opencollective.com/auscasinos
 
 - name: Online Сasino Canada
   url: https://realcasinoscanada.com/
   banner: sponsors/realcasinoscanada.png
   sponsor: https://www.patreon.com/user?u=69233581
-
-- name: online slots UK
-  url: https://gamblizard.com/slots/
-  banner: sponsors/gamblizard.png
 
 - name: https://casinosfiables.ca/
   url: https://casinosfiables.ca/
