@@ -92,6 +92,7 @@ public:
 
     QAction *addTilesAction() const;
     QAction *removeTilesAction() const;
+    QAction *editTilesetParametersAction() const;
     QAction *relocateTilesAction() const;
     QAction *editCollisionAction() const;
     QAction *editWangSetsAction() const;
@@ -123,6 +124,8 @@ private:
     void selectedTilesChanged();
     void updateTilesetView(Tileset *tileset);
 
+    void editTilesetParameters();
+
     void openAddTilesDialog();
     void addTiles(const QList<QUrl> &urls);
     void removeTiles();
@@ -133,7 +136,7 @@ private:
 
     void setEditWang(bool editWang);
 
-    void updateAddRemoveActions();
+    void updateActions();
 
     void onCurrentWangSetChanged(WangSet *wangSet);
     void currentWangIdChanged(WangId wangId);
@@ -158,6 +161,7 @@ private:
 
     QAction *mAddTiles;
     QAction *mRemoveTiles;
+    QAction *mEditTilesetParameters;
     QAction *mRelocateTiles;
     QAction *mShowAnimationEditor;
     QAction *mDynamicWrappingToggle;
@@ -186,6 +190,11 @@ inline QAction *TilesetEditor::addTilesAction() const
 inline QAction *TilesetEditor::removeTilesAction() const
 {
     return mRemoveTiles;
+}
+
+inline QAction *TilesetEditor::editTilesetParametersAction() const
+{
+    return mEditTilesetParameters;
 }
 
 inline QAction *TilesetEditor::relocateTilesAction() const
