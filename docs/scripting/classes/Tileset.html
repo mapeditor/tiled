@@ -160,8 +160,12 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#tileSpacing" class="tsd-kind-icon">tile<wbr>Spacing</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#tileWidth" class="tsd-kind-icon">tile<wbr>Width</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#tiles" class="tsd-kind-icon">tiles</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#transformationFlags" class="tsd-kind-icon">transformation<wbr>Flags</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#transparentColor" class="tsd-kind-icon">transparent<wbr>Color</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Tileset.html#wangSets" class="tsd-kind-icon">wang<wbr>Sets</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#AllowFlipHorizontally" class="tsd-kind-icon">Allow<wbr>Flip<wbr>Horizontally</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#AllowFlipVertically" class="tsd-kind-icon">Allow<wbr>Flip<wbr>Vertically</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#AllowRotate" class="tsd-kind-icon">Allow<wbr>Rotate</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#Bottom" class="tsd-kind-icon">Bottom</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#BottomLeft" class="tsd-kind-icon">Bottom<wbr>Left</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#BottomRight" class="tsd-kind-icon">Bottom<wbr>Right</a></li>
@@ -169,7 +173,9 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#GridSize" class="tsd-kind-icon">Grid<wbr>Size</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#Isometric" class="tsd-kind-icon">Isometric</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#Left" class="tsd-kind-icon">Left</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#NoTransformation" class="tsd-kind-icon">No<wbr>Transformation</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#Orthogonal" class="tsd-kind-icon">Orthogonal</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#PreferUntransformed" class="tsd-kind-icon">Prefer<wbr>Untransformed</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#PreserveAspectFit" class="tsd-kind-icon">Preserve<wbr>Aspect<wbr>Fit</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#Right" class="tsd-kind-icon">Right</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Tileset.html#Stretch" class="tsd-kind-icon">Stretch</a></li>
@@ -746,6 +752,25 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="transformationFlags" class="tsd-anchor"></a>
+					<h3>transformation<wbr>Flags</h3>
+					<div class="tsd-signature tsd-kind-icon">transformation<wbr>Flags<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Flags describing transformations of tiles in this tileset that will be
+								allowed when using the <a href="https://doc.mapeditor.org/en/stable/manual/terrain/#tile-transformations">terrains feature</a>
+							with this tileset.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.11.1</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="transparentColor" class="tsd-anchor"></a>
 					<h3>transparent<wbr>Color</h3>
 					<div class="tsd-signature tsd-kind-icon">transparent<wbr>Color<span class="tsd-signature-symbol">:</span> <a href="../interfaces/color.html" class="tsd-signature-type" data-tsd-kind="Interface">color</a></div>
@@ -776,6 +801,27 @@
 							<p>Array of all Wang sets in this tileset.</p>
 						</div>
 					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="AllowFlipHorizontally" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Allow<wbr>Flip<wbr>Horizontally</h3>
+					<div class="tsd-signature tsd-kind-icon">Allow<wbr>Flip<wbr>Horizontally<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Tileset.html#AllowFlipHorizontally" class="tsd-signature-type" data-tsd-kind="Property">AllowFlipHorizontally</a></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="AllowFlipVertically" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Allow<wbr>Flip<wbr>Vertically</h3>
+					<div class="tsd-signature tsd-kind-icon">Allow<wbr>Flip<wbr>Vertically<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Tileset.html#AllowFlipVertically" class="tsd-signature-type" data-tsd-kind="Property">AllowFlipVertically</a></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="AllowRotate" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Allow<wbr>Rotate</h3>
+					<div class="tsd-signature tsd-kind-icon">Allow<wbr>Rotate<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Tileset.html#AllowRotate" class="tsd-signature-type" data-tsd-kind="Property">AllowRotate</a></div>
+					<aside class="tsd-sources">
+					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
 					<a name="Bottom" class="tsd-anchor"></a>
@@ -827,9 +873,23 @@
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="NoTransformation" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> No<wbr>Transformation</h3>
+					<div class="tsd-signature tsd-kind-icon">No<wbr>Transformation<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Tileset.html#NoTransformation" class="tsd-signature-type" data-tsd-kind="Property">NoTransformation</a></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
 					<a name="Orthogonal" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Orthogonal</h3>
 					<div class="tsd-signature tsd-kind-icon">Orthogonal<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Tileset.html#Orthogonal" class="tsd-signature-type" data-tsd-kind="Property">Orthogonal</a></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="PreferUntransformed" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Prefer<wbr>Untransformed</h3>
+					<div class="tsd-signature tsd-kind-icon">Prefer<wbr>Untransformed<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Tileset.html#PreferUntransformed" class="tsd-signature-type" data-tsd-kind="Property">PreferUntransformed</a></div>
 					<aside class="tsd-sources">
 					</aside>
 				</section>
@@ -1545,10 +1605,22 @@
 								<a href="Tileset.html#tiles" class="tsd-kind-icon">tiles</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Tileset.html#transformationFlags" class="tsd-kind-icon">transformation<wbr>Flags</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Tileset.html#transparentColor" class="tsd-kind-icon">transparent<wbr>Color</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Tileset.html#wangSets" class="tsd-kind-icon">wang<wbr>Sets</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="Tileset.html#AllowFlipHorizontally" class="tsd-kind-icon">Allow<wbr>Flip<wbr>Horizontally</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="Tileset.html#AllowFlipVertically" class="tsd-kind-icon">Allow<wbr>Flip<wbr>Vertically</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="Tileset.html#AllowRotate" class="tsd-kind-icon">Allow<wbr>Rotate</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
 								<a href="Tileset.html#Bottom" class="tsd-kind-icon">Bottom</a>
@@ -1572,7 +1644,13 @@
 								<a href="Tileset.html#Left" class="tsd-kind-icon">Left</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="Tileset.html#NoTransformation" class="tsd-kind-icon">No<wbr>Transformation</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
 								<a href="Tileset.html#Orthogonal" class="tsd-kind-icon">Orthogonal</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="Tileset.html#PreferUntransformed" class="tsd-kind-icon">Prefer<wbr>Untransformed</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
 								<a href="Tileset.html#PreserveAspectFit" class="tsd-kind-icon">Preserve<wbr>Aspect<wbr>Fit</a>

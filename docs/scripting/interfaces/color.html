@@ -92,14 +92,27 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>A color value.</p>
+						<p>A color value. Can be created using <a href="../modules/tiled.html#color">tiled.color</a>.</p>
 					</div>
-					<p>A color value can be converted to a string and can also be assigned using a
-						string. The string is a hexadecimal triplet or quad in the form &quot;#RRGGBB&quot;
-						and &quot;#AARRGGBB&quot; respectively. For example, the color red corresponds to a
-						triplet of &quot;#FF0000&quot; and a slightly transparent blue to a quad of
-					&quot;#800000FF&quot;.</p>
-					<p>Use <a href="../modules/tiled.html#color">tiled.color</a> to create a color value.</p>
+					<p>A color value can be converted to a string and a string can be assigned to
+						color properties. The string is a hexadecimal triplet or quad in the form
+						&quot;#RRGGBB&quot; and &quot;#AARRGGBB&quot; respectively. For example, the color red
+						corresponds to a triplet of &quot;#FF0000&quot; and a slightly transparent blue to a
+					quad of &quot;#800000FF&quot;.</p>
+					<p>When a color property is not set, it will have an invalid color value but
+						its string representation will be &quot;#000000&quot; (same as black). The only known
+						way to determine whether a specific color value is invalid is to compare it
+						with a known invalid color value. This can be created using for example
+					<code>tiled.color(&quot;invalid&quot;)</code>:</p>
+					<pre><code class="language-js"><span style="color: #C586C0">if</span><span style="color: #D4D4D4"> (</span><span style="color: #9CDCFE">color</span><span style="color: #D4D4D4"> == </span><span style="color: #CE9178">&quot;#000000&quot;</span><span style="color: #D4D4D4">)</span>
+<span style="color: #D4D4D4">   </span><span style="color: #9CDCFE">tiled</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">log</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&quot;The color is black or invalid.&quot;</span><span style="color: #D4D4D4">);</span>
+
+<span style="color: #C586C0">if</span><span style="color: #D4D4D4"> (</span><span style="color: #9CDCFE">color</span><span style="color: #D4D4D4"> === </span><span style="color: #9CDCFE">tiled</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">color</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&quot;invalid&quot;</span><span style="color: #D4D4D4">))</span>
+<span style="color: #D4D4D4">   </span><span style="color: #9CDCFE">tiled</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">log</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&quot;The color is invalid!&quot;</span><span style="color: #D4D4D4">);</span>
+
+<span style="color: #C586C0">if</span><span style="color: #D4D4D4"> (</span><span style="color: #9CDCFE">color</span><span style="color: #D4D4D4"> === </span><span style="color: #9CDCFE">tiled</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">color</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&quot;#000000&quot;</span><span style="color: #D4D4D4">))</span>
+<span style="color: #D4D4D4">   </span><span style="color: #9CDCFE">tiled</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">log</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&quot;The color is black!&quot;</span><span style="color: #D4D4D4">);</span>
+</code></pre>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
