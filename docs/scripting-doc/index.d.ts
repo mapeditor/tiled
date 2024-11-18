@@ -3630,15 +3630,30 @@ declare class WangSet extends TiledObject {
 }
 
 /**
- * A color value.
+ * A color value. Can be created using {@link tiled.color}.
  *
- * A color value can be converted to a string and can also be assigned using a
- * string. The string is a hexadecimal triplet or quad in the form "#RRGGBB"
- * and "#AARRGGBB" respectively. For example, the color red corresponds to a
- * triplet of "#FF0000" and a slightly transparent blue to a quad of
- * "#800000FF".
+ * A color value can be converted to a string and a string can be assigned to
+ * color properties. The string is a hexadecimal triplet or quad in the form
+ * "#RRGGBB" and "#AARRGGBB" respectively. For example, the color red
+ * corresponds to a triplet of "#FF0000" and a slightly transparent blue to a
+ * quad of "#800000FF".
  *
- * Use {@link tiled.color} to create a color value.
+ * When a color property is not set, it will have an invalid color value but
+ * its string representation will be "#000000" (same as black). The only known
+ * way to determine whether a specific color value is invalid is to compare it
+ * with a known invalid color value. This can be created using for example
+ * `tiled.color("invalid")`:
+ *
+ * ```js
+ * if (color == "#000000")
+ *    tiled.log("The color is black or invalid.");
+ *
+ * if (color === tiled.color("invalid"))
+ *    tiled.log("The color is invalid!");
+ *
+ * if (color === tiled.color("#000000"))
+ *    tiled.log("The color is black!");
+ * ```
  */
 interface color {}
 
@@ -3670,7 +3685,7 @@ declare class Tileset extends Asset {
 
   static readonly Stretch: unique symbol;
   static readonly PreserveAspectFit: unique symbol;
-  
+
   static readonly NoTransformation: unique symbol;
   static readonly AllowFlipHorizontally: unique symbol;
   static readonly AllowFlipVertically: unique symbol;
@@ -3850,7 +3865,7 @@ declare class Tileset extends Asset {
   /**
    * Flags describing transformations of tiles in this tileset that will be
    * allowed when using the [terrains feature](https://doc.mapeditor.org/en/stable/manual/terrain/#tile-transformations)
-   * with this tileset. 
+   * with this tileset.
    *
    * @since 1.11.1
    */
