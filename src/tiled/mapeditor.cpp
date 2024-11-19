@@ -1067,11 +1067,24 @@ EditableWangSet *MapEditor::currentWangSet() const
     return EditableWangSet::get(mWangDock->currentWangSet());
 }
 
+void MapEditor::setCurrentWangSet(EditableWangSet *wangSet)
+{
+    if (!wangSet) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
+    mWangDock->setCurrentWangSet(wangSet->wangSet());
+}
+
 int MapEditor::currentWangColorIndex() const
 {
     return mWangDock->currentWangColor();
 }
 
+void MapEditor::setCurrentWangColorIndex(int newIndex)
+{
+    mWangDock->setCurrentWangColor(newIndex);
+}
 AbstractTool *MapEditor::selectedTool() const
 {
     return mSelectedTool;

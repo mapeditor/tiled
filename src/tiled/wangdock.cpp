@@ -384,6 +384,17 @@ int WangDock::currentWangColor() const
     return color;
 }
 
+void WangDock::setCurrentWangColor(int colorIndex)
+{
+    const QModelIndex index = mWangColorModel->colorIndex(colorIndex);
+    if (!index.isValid())
+        return;
+    QItemSelectionModel *selectionModel = mWangColorView->selectionModel();
+    selectionModel->setCurrentIndex(index,
+                                        QItemSelectionModel::ClearAndSelect |
+                                        QItemSelectionModel::Rows );
+}
+
 void WangDock::editWangSetName(WangSet *wangSet)
 {
     const QModelIndex index = wangSetIndex(wangSet);
