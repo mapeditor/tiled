@@ -44,6 +44,10 @@ public:
 
     const QVariantMap &value() const { return mValue; }
 
+    void removeMember(const QString &name);
+    void addMember(const QString &name, const QVariant &value);
+    void setClassMember(const QStringList &path, const QVariant &value);
+
     Property *property(const QString &name) const;
 
 signals:
@@ -69,10 +73,6 @@ private:
                             GroupProperty *groupProperty,
                             const ClassPropertyType &classType,
                             std::function<QVariant ()> get);
-
-    void removeMember(const QString &name);
-    void addMember(const QString &name, const QVariant &value);
-    void setClassMember(const QStringList &path, const QVariant &value);
 
     void updateModifiedRecursively(Property *property, const QVariant &value);
     void emitValueChangedRecursively(Property *property);

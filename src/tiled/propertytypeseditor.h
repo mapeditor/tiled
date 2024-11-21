@@ -33,8 +33,6 @@ class QLineEdit;
 class QStringListModel;
 class QTreeView;
 
-class QtBrowserItem;
-
 namespace Ui {
 class PropertyTypesEditor;
 }
@@ -43,8 +41,8 @@ namespace Tiled {
 
 class AddValueProperty;
 class ColorButton;
+class PropertiesView;
 class PropertyTypesModel;
-class VariantEditorView;
 class VariantMapProperty;
 
 struct PropertyTypesFilter
@@ -81,7 +79,7 @@ private:
     PropertyType *selectedPropertyType() const;
     ClassPropertyType *selectedClassPropertyType() const;
 
-    void currentMemberItemChanged(QtBrowserItem *item);
+    void selectedMembersChanged();
 
     void propertyTypeNameChanged(const QModelIndex &index,
                                  const PropertyType &type);
@@ -107,6 +105,7 @@ private:
     void openAddMemberDialog();
     void addMember(const QString &name, const QVariant &value = QVariant());
     void removeMember();
+    void renameSelectedMember();
     void renameMember(const QString &name);
     void renameMemberTo(const QString &oldName, const QString &name);
 
@@ -145,7 +144,7 @@ private:
     QCheckBox *mDrawFillCheckBox = nullptr;
     QCheckBox *mClassOfCheckBox = nullptr;
     QPushButton *mClassOfButton = nullptr;
-    VariantEditorView *mMembersEditor = nullptr;
+    PropertiesView *mMembersView = nullptr;
     VariantMapProperty *mMembersProperty = nullptr;
     QPointer<AddValueProperty> mAddValueProperty;
 

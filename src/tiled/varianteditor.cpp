@@ -30,6 +30,7 @@
 #include <QCheckBox>
 #include <QFontComboBox>
 #include <QGridLayout>
+#include <QGuiApplication>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMetaProperty>
@@ -74,6 +75,14 @@ void Property::setModified(bool modified)
     }
 }
 
+void Property::setSelected(bool selected)
+{
+    if (m_selected != selected) {
+        m_selected = selected;
+        emit selectedChanged(selected);
+    }
+}
+
 void Property::setActions(Actions actions)
 {
     if (m_actions != actions) {
@@ -87,16 +96,15 @@ QWidget *Property::createLabel(int level, QWidget *parent)
     auto label = new PropertyLabel(parent);
     label->setLevel(level);
 
-    connect(label, &PropertyLabel::contextMenuRequested,
-            this, &Property::contextMenuRequested);
-
     if (displayMode() != Property::DisplayMode::NoLabel) {
         label->setText(name());
-        label->setModified(isModified());
         label->setToolTip(toolTip());
+        label->setModified(isModified());
+        label->setSelected(isSelected());
         connect(this, &Property::nameChanged, label, &PropertyLabel::setText);
         connect(this, &Property::toolTipChanged, label, &PropertyLabel::setToolTip);
         connect(this, &Property::modifiedChanged, label, &PropertyLabel::setModified);
+        connect(this, &Property::selectedChanged, label, &PropertyLabel::setSelected);
     }
 
     if (displayMode() == Property::DisplayMode::Header)
@@ -616,325 +624,6 @@ QWidget *QtAlignmentProperty::createEditor(QWidget *parent)
     return editor;
 }
 
-
-VariantEditor::VariantEditor(QWidget *parent)
-    : QWidget(parent)
-    , m_resetIcon(QIcon(QStringLiteral(":/images/16/edit-clear.png")))
-    , m_removeIcon(QIcon(QStringLiteral(":/images/16/remove.png")))
-    , m_addIcon(QIcon(QStringLiteral(":/images/16/add.png")))
-{
-    m_resetIcon.addFile(QStringLiteral(":/images/24/edit-clear.png"));
-    m_removeIcon.addFile(QStringLiteral(":/images/22/remove.png"));
-    m_addIcon.addFile(QStringLiteral(":/images/22/add.png"));
-
-    m_layout = new QVBoxLayout(this);
-
-    m_layout->setContentsMargins(QMargins());
-    m_layout->setSpacing(0);
-}
-
-/**
- * Removes all properties from the editor. The properties are not deleted.
- */
-void VariantEditor::clear()
-{
-    QHashIterator<Property *, PropertyWidgets> it(m_propertyWidgets);
-    while (it.hasNext()) {
-        it.next();
-        delete it.value().rowWidget;
-
-        it.key()->disconnect(this);
-    }
-    m_propertyWidgets.clear();
-}
-
-/**
- * Adds the given property.
- * Does not take ownership of the property.
- */
-void VariantEditor::addProperty(Property *property)
-{
-    m_layout->addWidget(createPropertyWidget(property));
-}
-
-/**
- * Insert the given property at the given index.
- * Does not take ownership of the property.
- */
-void VariantEditor::insertProperty(int index, Property *property)
-{
-    m_layout->insertWidget(index, createPropertyWidget(property));
-}
-
-/**
- * Removes the given property from the editor. The property is not deleted.
- */
-void VariantEditor::removeProperty(Property *property)
-{
-    auto it = m_propertyWidgets.constFind(property);
-    Q_ASSERT(it != m_propertyWidgets.constEnd());
-
-    if (it == m_propertyWidgets.constEnd())
-        return;
-
-    // Immediately remove from layout, but delete later to avoid deleting
-    // widgets while they are still handling events.
-    auto rowWidget = it.value().rowWidget;
-    m_layout->removeWidget(rowWidget);
-    rowWidget->deleteLater();
-
-    m_propertyWidgets.erase(it);
-
-    // This appears to be necessary to avoid flickering due to relayouting
-    // not being done before the next paint.
-    QWidget *widget = this;
-    while (widget && widget->layout()) {
-        widget->layout()->activate();
-        widget = widget->parentWidget();
-    }
-
-    property->disconnect(this);
-}
-
-/**
- * Focuses the editor or label for the given property. Makes sure any parent
- * group properties are expanded.
- *
- * When the given property is a group property, the group property is expanded
- * and the first child property is focused.
- *
- * Returns the focused widget or nullptr if the property was not found.
- */
-QWidget *VariantEditor::focusProperty(Property *property, FocusTarget target)
-{
-    for (auto it = m_propertyWidgets.constBegin(); it != m_propertyWidgets.constEnd(); ++it) {
-        auto &widgets = it.value();
-
-        if (it.key() == property) {
-            if (target == FocusEditor && widgets.editor) {
-                widgets.editor->setFocus();
-                return widgets.editor;
-            }
-            if (target == FocusLabel && widgets.label) {
-                widgets.label->setFocus();
-                return widgets.label;
-            }
-            if (auto groupProperty = qobject_cast<GroupProperty *>(it.key())) {
-                groupProperty->setExpanded(true);
-                if (widgets.children && !groupProperty->subProperties().isEmpty())
-                    widgets.children->focusProperty(groupProperty->subProperties().first(), target);
-                return widgets.children;
-            }
-            return nullptr;
-        } else if (auto groupProperty = qobject_cast<GroupProperty *>(it.key())) {
-            if (widgets.children) {
-                if (auto w = widgets.children->focusProperty(property, target)) {
-                    groupProperty->setExpanded(true);
-                    return w;
-                }
-            }
-        }
-    }
-
-    return nullptr;
-}
-
-void VariantEditor::setLevel(int level)
-{
-    m_level = level;
-
-    setBackgroundRole((m_level % 2) ? QPalette::Base
-                                    : QPalette::AlternateBase);
-    setAutoFillBackground(m_level > 0);
-}
-
-QWidget *VariantEditor::createPropertyWidget(Property *property)
-{
-    Q_ASSERT(!m_propertyWidgets.contains(property));
-
-    auto &widgets = m_propertyWidgets[property];
-    const auto displayMode = property->displayMode();
-
-    connect(property, &Property::destroyed, this, [this](QObject *object) {
-        removeProperty(static_cast<Property *>(object));
-    });
-
-    if (displayMode == Property::DisplayMode::ChildrenOnly) {
-        auto editor = new VariantEditor(this);
-        editor->setEnabled(property->isEnabled());
-
-        connect(property, &Property::enabledChanged,
-                editor, &QWidget::setEnabled);
-
-        if (auto groupProperty = qobject_cast<GroupProperty *>(property)) {
-            for (auto property : groupProperty->subProperties())
-                editor->addProperty(property);
-
-            connect(groupProperty, &GroupProperty::propertyAdded,
-                    editor, &VariantEditor::insertProperty);
-        }
-
-        widgets.rowWidget = editor;
-        return widgets.rowWidget;
-    }
-
-    const auto halfSpacing = Utils::dpiScaled(2);
-
-    auto rowWidget = new QWidget(this);
-    auto rowLayout = new QHBoxLayout(rowWidget);
-    rowLayout->setSpacing(halfSpacing * 2);
-    rowLayout->setContentsMargins(0, 0, 0, 0);
-
-    widgets.rowWidget = rowWidget;
-
-    if (displayMode == Property::DisplayMode::Separator) {
-        auto separator = new QFrame(rowWidget);
-        rowLayout->setContentsMargins(0, halfSpacing, 0, halfSpacing);
-        separator->setFrameShape(QFrame::HLine);
-        separator->setFrameShadow(QFrame::Plain);
-        separator->setForegroundRole(QPalette::Mid);
-        rowLayout->addWidget(separator);
-        return widgets.rowWidget;
-    }
-
-    widgets.label = property->createLabel(m_level, rowWidget);
-
-    if (displayMode != Property::DisplayMode::Header) {
-        if (isLeftToRight())
-            rowLayout->setContentsMargins(0, halfSpacing, halfSpacing * 2, halfSpacing);
-        else
-            rowLayout->setContentsMargins(halfSpacing * 2, halfSpacing, 0, halfSpacing);
-    }
-
-    if (widgets.label)
-        rowLayout->addWidget(widgets.label, LabelStretch, Qt::AlignTop);
-
-    auto editorLayout = new QHBoxLayout;
-    widgets.editor = property->createEditor(rowWidget);
-
-    if (widgets.editor) {
-        widgets.editor->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
-        editorLayout->addWidget(widgets.editor, EditorStretch, Qt::AlignTop);
-        rowLayout->addLayout(editorLayout, EditorStretch);
-    } else {
-        rowLayout->addLayout(editorLayout, 0);
-    }
-
-    widgets.resetButton = new QToolButton(rowWidget);
-    widgets.resetButton->setToolTip(tr("Reset"));
-    widgets.resetButton->setIcon(m_resetIcon);
-    widgets.resetButton->setAutoRaise(true);
-    widgets.resetButton->setEnabled(property->isModified());
-    Utils::setThemeIcon(widgets.resetButton, "edit-clear");
-    editorLayout->addWidget(widgets.resetButton, 0, Qt::AlignTop);
-    connect(widgets.resetButton, &QAbstractButton::clicked, property, &Property::resetRequested);
-    connect(property, &Property::modifiedChanged, widgets.resetButton, &QWidget::setEnabled);
-
-    widgets.removeButton = new QToolButton(rowWidget);
-    widgets.removeButton->setToolTip(tr("Remove"));
-    widgets.removeButton->setIcon(m_removeIcon);
-    widgets.removeButton->setAutoRaise(true);
-    Utils::setThemeIcon(widgets.removeButton, "remove");
-    editorLayout->addWidget(widgets.removeButton, 0, Qt::AlignTop);
-    connect(widgets.removeButton, &QAbstractButton::clicked, property, &Property::removeRequested);
-
-    widgets.addButton = new QToolButton(rowWidget);
-    widgets.addButton->setToolTip(tr("Add"));
-    widgets.addButton->setIcon(m_addIcon);
-    widgets.addButton->setAutoRaise(true);
-    widgets.addButton->setFocusPolicy(Qt::StrongFocus); // needed for AddValueProperty
-    Utils::setThemeIcon(widgets.addButton, "add");
-    editorLayout->addWidget(widgets.addButton, 0, Qt::AlignTop);
-    connect(widgets.addButton, &QAbstractButton::clicked, property, &Property::addRequested);
-
-    if (auto groupProperty = qobject_cast<GroupProperty *>(property)) {
-        auto containerWidget = new QWidget(this);
-        widgets.childrenLayout = new QVBoxLayout(containerWidget);
-        widgets.childrenLayout->setContentsMargins(0, 0, 0, 0);
-        widgets.childrenLayout->setSpacing(0);
-        widgets.childrenLayout->addWidget(rowWidget);
-
-        connect(groupProperty, &GroupProperty::expandedChanged, this, [=](bool expanded) {
-            setPropertyChildrenExpanded(groupProperty, expanded);
-        });
-
-        setPropertyChildrenExpanded(groupProperty, groupProperty->isExpanded());
-
-        widgets.rowWidget = containerWidget;
-    }
-
-    updatePropertyEnabled(widgets, property->isEnabled());
-    updatePropertyActions(widgets, property->actions());
-
-    connect(property, &Property::enabledChanged, this, [=] (bool enabled) {
-        updatePropertyEnabled(m_propertyWidgets[property], enabled);
-    });
-    connect(property, &Property::actionsChanged, this, [=] (Property::Actions actions) {
-        updatePropertyActions(m_propertyWidgets[property], actions);
-    });
-
-    return widgets.rowWidget;
-}
-
-void VariantEditor::setPropertyChildrenExpanded(GroupProperty *groupProperty, bool expanded)
-{
-    auto &widgets = m_propertyWidgets[groupProperty];
-
-    // Create the children editor on-demand
-    if (expanded && !widgets.children) {
-        const auto halfSpacing = Utils::dpiScaled(2);
-        const auto displayMode = groupProperty->displayMode();
-
-        widgets.children = new VariantEditor(widgets.childrenLayout->parentWidget());
-        if (widgets.label && displayMode == Property::DisplayMode::Header)
-            widgets.children->setContentsMargins(0, halfSpacing, 0, halfSpacing);
-        if (displayMode == Property::DisplayMode::Default)
-            widgets.children->setLevel(m_level + 1);
-        widgets.children->setEnabled(groupProperty->isEnabled());
-        for (auto property : groupProperty->subProperties())
-            widgets.children->addProperty(property);
-
-        connect(groupProperty, &GroupProperty::propertyAdded,
-                widgets.children, &VariantEditor::insertProperty);
-
-        widgets.childrenLayout->addWidget(widgets.children);
-    }
-
-    if (widgets.children) {
-        widgets.children->setVisible(expanded);
-
-        // needed to avoid flickering when hiding the editor
-        if (!expanded) {
-            QWidget *widget = widgets.childrenLayout->parentWidget();
-            while (widget && widget->layout()) {
-                widget->layout()->activate();
-                widget = widget->parentWidget();
-            }
-        }
-    }
-}
-
-void VariantEditor::updatePropertyEnabled(const PropertyWidgets &widgets, bool enabled)
-{
-    if (widgets.label)
-        widgets.label->setEnabled(enabled);
-    if (widgets.editor)
-        widgets.editor->setEnabled(enabled);
-    if (widgets.children)
-        widgets.children->setEnabled(enabled);
-}
-
-void VariantEditor::updatePropertyActions(const PropertyWidgets &widgets,
-                                          Property::Actions actions)
-{
-    widgets.resetButton->setVisible(actions.testFlag(Property::Action::Reset));
-    widgets.removeButton->setVisible(actions.testFlag(Property::Action::Remove));
-    widgets.addButton->setVisible(actions.testFlag(Property::Action::Add));
-
-    widgets.addButton->setEnabled(!actions.testFlag(Property::Action::AddDisabled));
-}
-
-
 QWidget *BaseEnumProperty::createEnumEditor(QWidget *parent)
 {
     auto editor = new ComboBox(parent);
@@ -1095,49 +784,651 @@ Property *createVariantProperty(const QString &name,
     return nullptr;
 }
 
-VariantEditorView::VariantEditorView(QWidget *parent)
+
+PropertiesView::PropertiesView(QWidget *parent)
     : QScrollArea(parent)
+    , m_resetIcon(QIcon(QStringLiteral(":/images/16/edit-clear.png")))
+    , m_removeIcon(QIcon(QStringLiteral(":/images/16/remove.png")))
+    , m_addIcon(QIcon(QStringLiteral(":/images/16/add.png")))
+    , m_rootLayout(new QVBoxLayout)
 {
+    m_resetIcon.addFile(QStringLiteral(":/images/24/edit-clear.png"));
+    m_removeIcon.addFile(QStringLiteral(":/images/22/remove.png"));
+    m_addIcon.addFile(QStringLiteral(":/images/22/add.png"));
+
     auto scrollWidget = new QWidget(this);
     scrollWidget->setBackgroundRole(QPalette::AlternateBase);
     scrollWidget->setMinimumWidth(Utils::dpiScaled(120));
 
     auto verticalLayout = new QVBoxLayout(scrollWidget);
-    m_editor = new VariantEditor(scrollWidget);
-    verticalLayout->addWidget(m_editor);
+    verticalLayout->addLayout(m_rootLayout);
     verticalLayout->addStretch();
     verticalLayout->setContentsMargins(QMargins());
+    verticalLayout->setSpacing(0);
 
     setWidgetResizable(true);
     setWidget(scrollWidget);
 }
 
-void VariantEditorView::focusProperty(Property *property,
-                                      VariantEditor::FocusTarget target)
+/**
+ * Sets the root property.
+ *
+ * The view does not take ownership of the property.
+ */
+void PropertiesView::setRootProperty(GroupProperty *root)
 {
-    if (auto widget = m_editor->focusProperty(property, target)) {
-        if (widget->isVisible()) {
-            ensureWidgetVisible(widget);
-        } else {
-            // Install event filter to detect when widget becomes visible
-            widget->installEventFilter(this);
+    if (m_root == root)
+        return;
+
+    QHashIterator<Property *, PropertyWidgets> it(m_propertyWidgets);
+    while (it.hasNext())
+        it.next().key()->disconnect(this);
+    m_propertyWidgets.clear();
+
+    Utils::deleteAllFromLayout(m_rootLayout);
+
+    m_root = root;
+
+    if (root)
+        createPropertyWidgets(root, widget(), 0, m_rootLayout, 0);
+}
+
+static Property *nextProperty(Property *property)
+{
+    if (auto groupProperty = qobject_cast<GroupProperty*>(property))
+        if (groupProperty->isExpanded() && !groupProperty->subProperties().isEmpty())
+            return groupProperty->subProperties().first();
+
+    while (auto parent = property->parentProperty()) {
+        const int index = parent->indexOfProperty(property);
+        if (index < parent->subProperties().size() - 1)
+            return parent->subProperties().at(index + 1);
+
+        property = parent;
+    }
+
+    return nullptr;
+}
+
+static Property *previousProperty(Property *property)
+{
+    auto parent = property->parentProperty();
+    if (!parent)
+        return nullptr;
+
+    const int index = parent->indexOfProperty(property);
+    if (index > 0) {
+        auto previous = parent->subProperties().at(index - 1);
+        while (auto groupProperty = qobject_cast<GroupProperty*>(previous)) {
+            if (groupProperty->isExpanded() && !groupProperty->subProperties().isEmpty())
+                previous = groupProperty->subProperties().last();
+            else
+                break;
         }
+        return previous;
+    }
+
+    return parent;
+}
+
+static void collectSelectedProperties(GroupProperty *groupProperty,
+                                      QList<Property *> &selected)
+{
+    for (auto property : groupProperty->subProperties()) {
+        if (property->isSelected())
+            selected.append(property);
+        if (auto childGroup = qobject_cast<GroupProperty *>(property))
+            collectSelectedProperties(childGroup, selected);
     }
 }
 
-bool VariantEditorView::eventFilter(QObject *watched, QEvent *event)
+static bool assignSelectedProperties(GroupProperty *groupProperty,
+                                     const QList<Property *> &selected)
+{
+    bool changed = false;
+
+    for (auto property : groupProperty->subProperties()) {
+        const bool isSelected = selected.contains(property);
+        changed |= isSelected != property->isSelected();
+
+        property->setSelected(isSelected);
+
+        if (auto childGroup = qobject_cast<GroupProperty *>(property))
+            changed |= assignSelectedProperties(childGroup, selected);
+    }
+
+    return changed;
+}
+
+static bool assignSelectedPropertiesRange(GroupProperty *root,
+                                          Property *a,
+                                          Property *b)
+{
+    bool changed = false;
+    bool selected = false;
+    Property *end = nullptr;
+
+    for (Property *cur = root; cur; cur = nextProperty(cur)) {
+        if (!end) {
+            if (cur == a) {
+                end = b;
+                selected = true;
+            } else if (cur == b) {
+                end = a;
+                selected = true;
+            }
+        }
+        if (cur->actions().testFlag(Property::Action::Select)) {
+            changed |= selected != cur->isSelected();
+            cur->setSelected(selected);
+        }
+        if (cur == end)
+            selected = false;
+    }
+
+    return changed;
+}
+
+QList<Property *> PropertiesView::selectedProperties() const
+{
+    QList<Property *> selected;
+    if (m_root)
+        collectSelectedProperties(m_root, selected);
+    return selected;
+}
+
+void PropertiesView::setSelectedProperties(const QList<Property *> &properties)
+{
+    if (m_root && assignSelectedProperties(m_root, properties))
+        emit selectedPropertiesChanged();
+}
+
+bool PropertiesView::focusProperty(Property *property, FocusTarget target)
+{
+    if (!property || !m_root)
+        return false;
+
+    const auto displayMode = property->displayMode();
+    if (displayMode == Property::DisplayMode::Separator ||
+        displayMode == Property::DisplayMode::ChildrenOnly)
+        return false;
+
+    auto widget = focusPropertyImpl(m_root, property, target);
+    if (!widget)
+        return false;
+
+    if (widget->isVisible()) {
+        const int margin = Utils::dpiScaled(10);
+        ensureWidgetVisible(widget, margin, margin);
+    } else {
+        // Install event filter to detect when widget becomes visible
+        widget->installEventFilter(this);
+    }
+
+    return true;
+}
+
+bool PropertiesView::eventFilter(QObject *watched, QEvent *event)
 {
     if (event->type() == QEvent::Show) {
         if (QPointer<QWidget> widget = qobject_cast<QWidget*>(watched)) {
             // Schedule after all pending events including layout
             QMetaObject::invokeMethod(this, [=] {
-                if (widget)
-                    ensureWidgetVisible(widget);
+                if (widget) {
+                    const int margin = Utils::dpiScaled(10);
+                    ensureWidgetVisible(widget, margin, margin);
+                }
             }, Qt::QueuedConnection);
             widget->removeEventFilter(this);
         }
     }
     return QScrollArea::eventFilter(watched, event);
+}
+
+void PropertiesView::keyPressEvent(QKeyEvent *event)
+{
+    auto propertyWidget = qobject_cast<PropertyWidget *>(focusWidget());
+    auto property = propertyWidget ? propertyWidget->property() : nullptr;
+    const auto key = event->key();
+    const bool shiftPressed = event->modifiers() & Qt::ShiftModifier;
+
+    auto focusAndSelect = [=] (Property *property) {
+        if (focusProperty(property, FocusRow))
+            setSelectedProperties({ property });
+    };
+
+    switch (key) {
+    case Qt::Key_Down:
+        if (focusNextPrevProperty(property, true, shiftPressed))
+            return;
+        break;
+    case Qt::Key_Up:
+        if (focusNextPrevProperty(property, false, shiftPressed))
+            return;
+        break;
+
+    case Qt::Key_Left:
+    case Qt::Key_Right:
+    case Qt::Key_Plus:
+    case Qt::Key_Minus:
+        if (auto groupProperty = qobject_cast<GroupProperty *>(property)) {
+            const bool expand =
+                    key == Qt::Key_Plus ||
+                    key == (isLeftToRight() ? Qt::Key_Right : Qt::Key_Left);
+
+            if (expand) {
+                if (event->modifiers() & Qt::ControlModifier) {
+                    groupProperty->expandAll();
+                } else if (groupProperty->isExpanded() && key != Qt::Key_Plus) {
+                    // If already expanded, focus first child
+                    if (!groupProperty->subProperties().isEmpty())
+                        focusNextPrevProperty(groupProperty, true, shiftPressed);
+                } else {
+                    groupProperty->setExpanded(true);
+                }
+            } else {
+                if (event->modifiers() & Qt::ControlModifier) {
+                    groupProperty->collapseAll();
+                } else if (!groupProperty->isExpanded() && key != Qt::Key_Minus) {
+                    // If already collapsed, focus parent
+                    focusAndSelect(groupProperty->parentProperty());
+                } else {
+                    groupProperty->setExpanded(false);
+                }
+            }
+        } else if (key == Qt::Key_Left || key == Qt::Key_Right) {
+            const bool focusParent = (key == Qt::Key_Left) ^ isRightToLeft();
+            if (focusParent && property)
+                focusAndSelect(property->parentProperty());
+        }
+        return;
+
+    case Qt::Key_Asterisk:
+        if (auto groupProperty = qobject_cast<GroupProperty *>(property))
+            groupProperty->expandAll();
+        return;
+    }
+
+    QScrollArea::keyPressEvent(event);
+}
+
+bool PropertiesView::focusNextPrevProperty(Property *property, bool next, bool shiftPressed)
+{
+    if (!property)
+        return false;
+
+    const auto nextPrev = next ? nextProperty : previousProperty;
+
+    while (Property *propertyToFocus = nextPrev(property)) {
+        switch (propertyToFocus->displayMode()) {
+        case Property::DisplayMode::Default:
+        case Property::DisplayMode::NoLabel:
+        case Property::DisplayMode::Header:
+            if (focusProperty(propertyToFocus, FocusRow)) {
+                if (!shiftPressed) {
+                    m_selectionStart = propertyToFocus;
+
+                    if (propertyToFocus->actions().testFlag(Property::Action::Select))
+                        setSelectedProperties({ propertyToFocus });
+                    else
+                        setSelectedProperties({});
+                } else {
+                    if (assignSelectedPropertiesRange(m_root, m_selectionStart, propertyToFocus))
+                        emit selectedPropertiesChanged();
+                }
+
+                return true;
+            }
+            return false;
+        case Property::DisplayMode::Separator:
+        case Property::DisplayMode::ChildrenOnly:
+            break;
+        }
+
+        property = propertyToFocus;
+    }
+
+    return false;
+}
+
+/**
+ * Removes the given property from the editor. The property is not deleted.
+ */
+void PropertiesView::removeProperty(Property *property)
+{
+    auto it = m_propertyWidgets.constFind(property);
+    Q_ASSERT(it != m_propertyWidgets.constEnd());
+
+    if (it == m_propertyWidgets.constEnd())
+        return;
+
+    // Immediately remove from layout, but delete later to avoid deleting
+    // widgets while they are still handling events.
+    auto rowWidget = it.value().rowWidget;
+
+    QWidget *widget = rowWidget->parentWidget();
+    QLayout *layout = widget->layout();
+    layout->removeWidget(rowWidget);
+
+    rowWidget->deleteLater();
+
+    m_propertyWidgets.erase(it);
+
+    // This appears to be necessary to avoid flickering due to relayouting
+    // not being done before the next paint.
+    while (widget && widget->layout()) {
+        widget->layout()->activate();
+        widget = widget->parentWidget();
+    }
+
+    property->disconnect(this);
+}
+
+/**
+ * Focuses the editor or label for the given property. Makes sure any parent
+ * group properties are expanded.
+ *
+ * When the given property is a group property, the group property is expanded
+ * and the first child property is focused.
+ *
+ * Returns the focused widget or nullptr if the property was not found.
+ */
+QWidget *PropertiesView::focusPropertyImpl(GroupProperty *group,
+                                           Property *property,
+                                           FocusTarget target)
+{
+    for (auto subProperty : group->subProperties()) {
+        auto widgetsIt = m_propertyWidgets.find(subProperty);
+        if (widgetsIt == m_propertyWidgets.end())
+            continue;
+
+        auto &widgets = *widgetsIt;
+
+        if (subProperty == property) {
+            if (target == PropertiesView::FocusRow) {
+                widgets.rowWidget->setFocus();
+                return widgets.rowWidget->focusWidget();
+            }
+            if (target == PropertiesView::FocusEditor && widgets.editor) {
+                widgets.editor->setFocus();
+                return widgets.editor;
+            }
+            if (target == PropertiesView::FocusLabel && widgets.label) {
+                widgets.label->setFocus();
+                return widgets.label;
+            }
+            if (auto groupProperty = qobject_cast<GroupProperty *>(subProperty)) {
+                groupProperty->setExpanded(true);
+                if (widgets.children && !groupProperty->subProperties().isEmpty())
+                    focusPropertyImpl(groupProperty, groupProperty->subProperties().first(), target);
+                return widgets.children;
+            }
+            return nullptr;
+        } else if (auto groupProperty = qobject_cast<GroupProperty *>(subProperty)) {
+            if (widgets.children) {
+                if (auto w = focusPropertyImpl(groupProperty, property, target)) {
+                    groupProperty->setExpanded(true);
+                    return w;
+                }
+            }
+        }
+    }
+
+    return nullptr;
+}
+
+void PropertiesView::createPropertyWidgets(Property *property, QWidget *parent, int level,
+                                           QVBoxLayout *layout, int index)
+{
+    auto widgets = createPropertyWidgets(property, parent, level);
+    m_propertyWidgets.insert(property, widgets);
+    layout->insertWidget(index, widgets.rowWidget);
+}
+
+PropertiesView::PropertyWidgets PropertiesView::createPropertyWidgets(Property *property,
+                                                                      QWidget *parent,
+                                                                      int level)
+{
+    Q_ASSERT(!m_propertyWidgets.contains(property));
+
+    PropertyWidgets widgets;
+    widgets.level = level;
+
+    const auto displayMode = property->displayMode();
+
+    connect(property, &Property::destroyed, this, [this](QObject *object) {
+        removeProperty(static_cast<Property *>(object));
+    });
+
+    if (displayMode == Property::DisplayMode::ChildrenOnly) {
+        QWidget *children;
+        if (auto groupProperty = qobject_cast<GroupProperty *>(property))
+            children = createChildrenWidget(groupProperty, parent, level);
+        else
+            children = new QWidget(parent);
+
+        widgets.children = children;
+        widgets.rowWidget = children;
+        return widgets;
+    }
+
+    const auto halfSpacing = Utils::dpiScaled(2);
+
+    if (displayMode == Property::DisplayMode::Separator) {
+        auto rowWidget = new QWidget(parent);
+        auto rowLayout = new QHBoxLayout(rowWidget);
+
+        auto separator = new QFrame(rowWidget);
+        rowLayout->setContentsMargins(0, halfSpacing, 0, halfSpacing);
+        separator->setFrameShape(QFrame::HLine);
+        separator->setFrameShadow(QFrame::Plain);
+        separator->setForegroundRole(QPalette::Mid);
+        rowLayout->addWidget(separator);
+
+        widgets.rowWidget = rowWidget;
+        return widgets;
+    }
+
+    auto rowWidget = new PropertyWidget(property, parent);
+    auto rowLayout = new QHBoxLayout(rowWidget);
+
+    widgets.rowWidget = rowWidget;
+
+    rowLayout->setSpacing(halfSpacing * 2);
+    rowLayout->setContentsMargins(0, 0, 0, 0);
+
+    rowWidget->setSelectable(property->actions().testFlag(Property::Action::Select));
+
+    connect(rowWidget, &PropertyWidget::clicked, this, [=](Qt::KeyboardModifiers modifiers) {
+        if (modifiers & Qt::ShiftModifier) {
+            // Select range between m_selectionStart and clicked property
+            if (assignSelectedPropertiesRange(m_root, m_selectionStart, property))
+                emit selectedPropertiesChanged();
+            return;
+        } else if (modifiers & Qt::ControlModifier) {
+            // Toggle selection
+            if (property->actions().testFlag(Property::Action::Select)) {
+                property->setSelected(!property->isSelected());
+                emit selectedPropertiesChanged();
+            }
+        } else {
+            // Select only the clicked property
+            if (property->actions().testFlag(Property::Action::Select))
+                setSelectedProperties({property});
+            else
+                setSelectedProperties({});
+        }
+
+        m_selectionStart = property;
+    });
+
+    widgets.label = property->createLabel(level, rowWidget);    // todo: fix level
+
+    if (displayMode != Property::DisplayMode::Header) {
+        if (isLeftToRight())
+            rowLayout->setContentsMargins(0, halfSpacing, halfSpacing * 2, halfSpacing);
+        else
+            rowLayout->setContentsMargins(halfSpacing * 2, halfSpacing, 0, halfSpacing);
+    }
+
+    if (widgets.label)
+        rowLayout->addWidget(widgets.label, LabelStretch, Qt::AlignTop);
+
+    auto editorLayout = new QHBoxLayout;
+    widgets.editor = property->createEditor(rowWidget);
+
+    if (widgets.editor) {
+        widgets.editor->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Fixed);
+        editorLayout->addWidget(widgets.editor, EditorStretch, Qt::AlignTop);
+        rowLayout->addLayout(editorLayout, EditorStretch);
+    } else {
+        rowLayout->addLayout(editorLayout, 0);
+    }
+
+    widgets.resetButton = new QToolButton(rowWidget);
+    widgets.resetButton->setToolTip(tr("Reset"));
+    widgets.resetButton->setIcon(m_resetIcon);
+    widgets.resetButton->setAutoRaise(true);
+    widgets.resetButton->setEnabled(property->isModified());
+    Utils::setThemeIcon(widgets.resetButton, "edit-clear");
+    editorLayout->addWidget(widgets.resetButton, 0, Qt::AlignTop);
+    connect(widgets.resetButton, &QAbstractButton::clicked, property, &Property::resetRequested);
+    connect(property, &Property::modifiedChanged, widgets.resetButton, &QWidget::setEnabled);
+
+    widgets.removeButton = new QToolButton(rowWidget);
+    widgets.removeButton->setToolTip(tr("Remove"));
+    widgets.removeButton->setIcon(m_removeIcon);
+    widgets.removeButton->setAutoRaise(true);
+    Utils::setThemeIcon(widgets.removeButton, "remove");
+    editorLayout->addWidget(widgets.removeButton, 0, Qt::AlignTop);
+    connect(widgets.removeButton, &QAbstractButton::clicked, property, &Property::removeRequested);
+
+    widgets.addButton = new QToolButton(rowWidget);
+    widgets.addButton->setToolTip(tr("Add"));
+    widgets.addButton->setIcon(m_addIcon);
+    widgets.addButton->setAutoRaise(true);
+    widgets.addButton->setFocusPolicy(Qt::StrongFocus); // needed for AddValueProperty
+    Utils::setThemeIcon(widgets.addButton, "add");
+    editorLayout->addWidget(widgets.addButton, 0, Qt::AlignTop);
+    connect(widgets.addButton, &QAbstractButton::clicked, property, &Property::addRequested);
+
+    if (auto groupProperty = qobject_cast<GroupProperty *>(property)) {
+        auto containerWidget = new QWidget(parent);
+        containerWidget->setFocusProxy(rowWidget);
+
+        auto containerLayout = new QVBoxLayout(containerWidget);
+        containerLayout->setContentsMargins(0, 0, 0, 0);
+        containerLayout->setSpacing(halfSpacing);
+        containerLayout->addWidget(rowWidget);
+
+        connect(groupProperty, &GroupProperty::expandedChanged, this, [=](bool expanded) {
+            // Need to operate on a copy, because the reference might get invalidated
+            PropertyWidgets widgets = m_propertyWidgets.value(groupProperty);
+            setPropertyChildrenExpanded(widgets, groupProperty, containerLayout, expanded);
+            m_propertyWidgets.insert(groupProperty, widgets);
+        });
+
+        setPropertyChildrenExpanded(widgets, groupProperty, containerLayout, groupProperty->isExpanded());
+
+        widgets.rowWidget = containerWidget;
+    }
+
+    updatePropertyEnabled(widgets, property->isEnabled());
+    updatePropertyActions(widgets, property->actions());
+
+    connect(property, &Property::enabledChanged, this, [=] (bool enabled) {
+        updatePropertyEnabled(m_propertyWidgets[property], enabled);
+    });
+    connect(property, &Property::actionsChanged, this, [=] (Property::Actions actions) {
+        updatePropertyActions(m_propertyWidgets[property], actions);
+    });
+
+    return widgets;
+}
+
+QWidget *PropertiesView::createChildrenWidget(GroupProperty *groupProperty,
+                                              QWidget *parent, int level)
+{
+    auto children = new QWidget(parent);
+    children->setEnabled(groupProperty->isEnabled());
+    children->setBackgroundRole((level % 2) ? QPalette::Base
+                                            : QPalette::AlternateBase);
+    children->setAutoFillBackground(level > 0);
+
+    auto layout = new QVBoxLayout(children);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+
+    connect(groupProperty, &Property::enabledChanged,
+            children, &QWidget::setEnabled);
+
+    for (auto property : groupProperty->subProperties())
+        createPropertyWidgets(property, children, level, layout, layout->count());
+
+    connect(groupProperty, &GroupProperty::propertyAdded,
+            this, [=](int index, Property *property) {
+        createPropertyWidgets(property, children, level, layout, index);
+    });
+
+    return children;
+}
+
+void PropertiesView::setPropertyChildrenExpanded(PropertyWidgets &widgets,
+                                                 GroupProperty *groupProperty,
+                                                 QVBoxLayout *rowVerticalLayout,
+                                                 bool expanded)
+{
+    // Create the children editor on-demand
+    if (expanded && !widgets.children) {
+        const auto displayMode = groupProperty->displayMode();
+        const auto level = displayMode == Property::DisplayMode::Default ? widgets.level + 1
+                                                                         : widgets.level;
+
+        widgets.children = createChildrenWidget(groupProperty, widgets.rowWidget, level);
+
+        const auto halfSpacing = Utils::dpiScaled(2);
+        const auto top = displayMode == Property::DisplayMode::Header ? 0 : halfSpacing;
+        const auto bottom = halfSpacing;
+        widgets.children->setContentsMargins(0, top, 0, bottom);
+
+        rowVerticalLayout->addWidget(widgets.children);
+    }
+
+    if (widgets.children) {
+        widgets.children->setVisible(expanded);
+
+        // needed to avoid flickering when hiding the editor
+        if (!expanded) {
+            QWidget *widget = widgets.rowWidget;
+            while (widget && widget->layout()) {
+                widget->layout()->activate();
+                widget = widget->parentWidget();
+            }
+        }
+    }
+}
+
+void PropertiesView::updatePropertyEnabled(const PropertyWidgets &widgets, bool enabled)
+{
+    if (widgets.label)
+        widgets.label->setEnabled(enabled);
+    if (widgets.editor)
+        widgets.editor->setEnabled(enabled);
+    if (widgets.children)
+        widgets.children->setEnabled(enabled);
+}
+
+void PropertiesView::updatePropertyActions(const PropertyWidgets &widgets,
+                                           Property::Actions actions)
+{
+    if (auto rowWidget = qobject_cast<PropertyWidget *>(widgets.rowWidget))
+        rowWidget->setSelectable(actions.testFlag(Property::Action::Select));
+
+    widgets.resetButton->setVisible(actions.testFlag(Property::Action::Reset));
+    widgets.removeButton->setVisible(actions.testFlag(Property::Action::Remove));
+    widgets.addButton->setVisible(actions.testFlag(Property::Action::Add));
+
+    widgets.addButton->setEnabled(!actions.testFlag(Property::Action::AddDisabled));
 }
 
 } // namespace Tiled

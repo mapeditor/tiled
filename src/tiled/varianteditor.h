@@ -22,6 +22,7 @@
 
 #include <QHash>
 #include <QIcon>
+#include <QPointer>
 #include <QScrollArea>
 #include <QString>
 #include <QVariant>
@@ -33,6 +34,7 @@ class QVBoxLayout;
 
 namespace Tiled {
 
+class GroupProperty;
 class PropertyLabel;
 
 /**
@@ -45,6 +47,7 @@ class Property : public QObject
     Q_PROPERTY(QString toolTip READ toolTip WRITE setToolTip NOTIFY toolTipChanged)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
     Q_PROPERTY(bool modified READ isModified WRITE setModified NOTIFY modifiedChanged)
+    Q_PROPERTY(bool selected READ isSelected WRITE setSelected NOTIFY selectedChanged)
     Q_PROPERTY(Actions actions READ actions WRITE setActions NOTIFY actionsChanged)
 
 public:
@@ -61,6 +64,7 @@ public:
         Remove = 0x02,
         Add = 0x04,
         AddDisabled = Add | 0x08,
+        Select = 0x10,
     };
     Q_DECLARE_FLAGS(Actions, Action)
 
@@ -81,8 +85,13 @@ public:
     bool isModified() const { return m_modified; }
     void setModified(bool modified);
 
+    bool isSelected() const { return m_selected; }
+    void setSelected(bool selected);
+
     Actions actions() const { return m_actions; }
     void setActions(Actions actions);
+
+    GroupProperty *parentProperty() const { return m_parent; }
 
     virtual DisplayMode displayMode() const { return DisplayMode::Default; }
 
@@ -95,6 +104,7 @@ signals:
     void valueChanged();
     void enabledChanged(bool enabled);
     void modifiedChanged(bool modified);
+    void selectedChanged(bool selected);
     void actionsChanged(Actions actions);
 
     void resetRequested();
@@ -110,7 +120,9 @@ private:
     QString m_toolTip;
     bool m_enabled = true;
     bool m_modified = false;
+    bool m_selected = false;
     Actions m_actions;
+    GroupProperty *m_parent = nullptr;
 };
 
 class Separator final : public Property
@@ -174,6 +186,8 @@ public:
 
     void insertProperty(int index, Property *property)
     {
+        property->m_parent = this;
+
         m_subProperties.insert(index, property);
         emit propertyAdded(index, property);
     }
@@ -436,7 +450,7 @@ struct EnumData
 template<typename>
 EnumData enumData()
 {
-    return {{}};
+    return {};
 }
 
 /**
@@ -492,80 +506,79 @@ public:
 };
 
 
-class VariantEditor : public QWidget
+/**
+ * A scrollable view that displays a tree of properties.
+ */
+class PropertiesView : public QScrollArea
 {
     Q_OBJECT
 
 public:
-    VariantEditor(QWidget *parent = nullptr);
+    explicit PropertiesView(QWidget *parent = nullptr);
 
-    void clear();
-    void addProperty(Property *property);
-    void insertProperty(int index, Property *property);
-    void removeProperty(Property *property);
+    void setRootProperty(GroupProperty *root);
+
+    QList<Property*> selectedProperties() const;
+    void setSelectedProperties(const QList<Property*> &properties);
 
     enum FocusTarget {
+        FocusRow,
         FocusLabel,
         FocusEditor,
     };
 
-    QWidget *focusProperty(Property *property, FocusTarget target);
+    bool focusProperty(Property *property, FocusTarget target = FocusEditor);
 
-    void setLevel(int level);
+signals:
+    void selectedPropertiesChanged();
+
+protected:
+    bool eventFilter(QObject *watched, QEvent *event) override;
+
+    void keyPressEvent(QKeyEvent *event) override;
 
 private:
-    static constexpr int LabelStretch = 1;
-    static constexpr int EditorStretch = 1;
+    bool focusNextPrevProperty(Property *property, bool next, bool shiftPressed);
+
+    void removeProperty(Property *property);
+
+    QWidget *focusPropertyImpl(GroupProperty *group, Property *property, FocusTarget target);
 
     struct PropertyWidgets
     {
-        QWidget *rowWidget = nullptr;
-        QVBoxLayout *childrenLayout = nullptr;
+        int level = 0;
+        QWidget *rowWidget = nullptr;               // The top-level widget for this property
         QWidget *label = nullptr;
         QWidget *editor = nullptr;
         QToolButton *resetButton = nullptr;
         QToolButton *removeButton = nullptr;
         QToolButton *addButton = nullptr;
-        VariantEditor *children = nullptr;
+        QWidget *children = nullptr;                // The widget that contains the children of a group property
     };
 
-    QWidget *createPropertyWidget(Property *property);
+    void createPropertyWidgets(Property *property, QWidget *parent, int level,
+                               QVBoxLayout *layout, int index);
+    PropertyWidgets createPropertyWidgets(Property *property, QWidget *parent, int level);
+    QWidget *createChildrenWidget(GroupProperty *groupProperty, QWidget *parent, int level);
 
-    void setPropertyChildrenExpanded(GroupProperty *groupProperty, bool expanded);
+    void setPropertyChildrenExpanded(PropertyWidgets &widgets,
+                                     GroupProperty *groupProperty, QVBoxLayout *rowVerticalLayout,
+                                     bool expanded);
 
     void updatePropertyEnabled(const PropertyWidgets &widgets, bool enabled);
     void updatePropertyActions(const PropertyWidgets &widgets,
                                Property::Actions actions);
 
+    static constexpr int LabelStretch = 1;
+    static constexpr int EditorStretch = 1;
+
     QIcon m_resetIcon;
     QIcon m_removeIcon;
     QIcon m_addIcon;
-    QVBoxLayout *m_layout;
+    QPointer<GroupProperty> m_root;
+    QVBoxLayout *m_rootLayout;
+    QPointer<Property> m_selectionStart;
     QHash<Property*, PropertyWidgets> m_propertyWidgets;
-    int m_level = 0;
-};
-
-class VariantEditorView : public QScrollArea
-{
-    Q_OBJECT
-
-public:
-    explicit VariantEditorView(QWidget *parent = nullptr);
-
-    void clear()
-    { m_editor->clear(); }
-
-    void addProperty(Property *property)
-    { m_editor->addProperty(property); }
-
-    void focusProperty(Property *property,
-                       VariantEditor::FocusTarget target = VariantEditor::FocusEditor);
-
-protected:
-    bool eventFilter(QObject *watched, QEvent *event) override;
-
-private:
-    VariantEditor *m_editor;
 };
 
 } // namespace Tiled

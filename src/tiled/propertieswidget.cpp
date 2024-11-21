@@ -2160,9 +2160,12 @@ private:
 
 PropertiesWidget::PropertiesWidget(QWidget *parent)
     : QWidget{parent}
-    , mCustomProperties(new CustomProperties(this))
-    , mPropertyBrowser(new VariantEditorView(this))
+    , mRootProperty(new GroupProperty())
+    , mCustomProperties(new CustomProperties(mRootProperty))
+    , mPropertiesView(new PropertiesView(this))
 {
+    mRootProperty->addProperty(mCustomProperties);
+
     mActionAddProperty = new QAction(this);
     mActionAddProperty->setEnabled(false);
     mActionAddProperty->setIcon(QIcon(QLatin1String(":/images/16/add.png")));
@@ -2181,8 +2184,8 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
     mActionRenameProperty->setEnabled(false);
     mActionRenameProperty->setIcon(QIcon(QLatin1String(":/images/16/rename.png")));
     mActionRenameProperty->setPriority(QAction::LowPriority);
-    // connect(mActionRenameProperty, &QAction::triggered,
-    //         this, &PropertiesWidget::renameProperty);
+    connect(mActionRenameProperty, &QAction::triggered,
+            this, &PropertiesWidget::renameSelectedProperty);
 
     Utils::setThemeIcon(mActionAddProperty, "add");
     Utils::setThemeIcon(mActionRemoveProperty, "remove");
@@ -2200,15 +2203,15 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(mPropertyBrowser);
+    layout->addWidget(mPropertiesView);
     layout->addWidget(toolBar);
     setLayout(layout);
 
-    mPropertyBrowser->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(mPropertyBrowser, &QWidget::customContextMenuRequested,
+    mPropertiesView->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(mPropertiesView, &QWidget::customContextMenuRequested,
             this, &PropertiesWidget::showContextMenu);
-    // connect(mPropertyBrowser, &PropertyBrowser::selectedItemsChanged,
-    //         this, &PropertiesWidget::updateActions);
+    connect(mPropertiesView, &PropertiesView::selectedPropertiesChanged,
+            this, &PropertiesWidget::updateActions);
 
     connect(mCustomProperties, &VariantMapProperty::renameRequested,
             this, &PropertiesWidget::renameProperty);
@@ -2219,7 +2222,7 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
 PropertiesWidget::~PropertiesWidget()
 {
     // Disconnect to avoid crashing due to signals emitted during destruction
-    mPropertyBrowser->disconnect(this);
+    mPropertiesView->disconnect(this);
 }
 
 void PropertiesWidget::setDocument(Document *document)
@@ -2261,25 +2264,25 @@ GroupProperty *PropertiesWidget::customPropertiesGroup() const
 
 void PropertiesWidget::selectCustomProperty(const QString &name)
 {
-    if (auto property = mCustomProperties->property(name))
-        mPropertyBrowser->focusProperty(property);
+    if (auto property = mCustomProperties->property(name)) {
+        mPropertiesView->focusProperty(property);
+        mPropertiesView->setSelectedProperties({ property });
+    }
 }
 
 void PropertiesWidget::currentObjectChanged(Object *object)
 {
-    mPropertyBrowser->clear();
-
-    // Remember the expanded states
     if (mPropertiesObject) {
+        // Remember the expanded states
         const auto &subProperties = mPropertiesObject->subProperties();
         for (int i = 0; i < subProperties.size(); ++i) {
             if (auto subGroupProperty = qobject_cast<GroupProperty*>(subProperties.at(i)))
                 mExpandedStates[i] = subGroupProperty->isExpanded();
         }
-    }
 
-    delete mPropertiesObject;
-    mPropertiesObject = nullptr;
+        mRootProperty->deleteProperty(mPropertiesObject);
+        mPropertiesObject = nullptr;
+    }
 
     if (object) {
         switch (object->typeId()) {
@@ -2347,20 +2350,17 @@ void PropertiesWidget::currentObjectChanged(Object *object)
             if (auto subGroupProperty = qobject_cast<GroupProperty*>(subProperties.at(i)))
                 subGroupProperty->setExpanded(mExpandedStates.value(i, true));
         }
+
+        mRootProperty->insertProperty(0, mPropertiesObject);
     }
 
-    if (object) {
-        if (mPropertiesObject)
-            mPropertyBrowser->addProperty(mPropertiesObject);
-
-        mPropertyBrowser->addProperty(mCustomProperties);
-    }
+    mPropertiesView->setRootProperty(object ? mRootProperty : nullptr);
 
     bool editingTileset = mDocument && mDocument->type() == Document::TilesetDocumentType;
     bool isTileset = object && object->isPartOfTileset();
     bool enabled = object && (!isTileset || editingTileset);
 
-    mPropertyBrowser->setEnabled(object);
+    mPropertiesView->setEnabled(object);
     mActionAddProperty->setEnabled(enabled);
 }
 
@@ -2430,18 +2430,16 @@ void CustomProperties::setPropertyValue(const QStringList &path, const QVariant 
 
 void PropertiesWidget::updateActions()
 {
-#if 0
-    const QList<QtBrowserItem*> items = mPropertyBrowser->selectedItems();
-    bool allCustomProperties = !items.isEmpty() && mPropertyBrowser->allCustomPropertyItems(items);
+    const auto properties = mPropertiesView->selectedProperties();
     bool editingTileset = mDocument && mDocument->type() == Document::TilesetDocumentType;
-    bool isTileset = mPropertyBrowser->object() && mPropertyBrowser->object()->isPartOfTileset();
-    bool canModify = allCustomProperties && (!isTileset || editingTileset);
+    bool isTileset = mDocument && mDocument->currentObject() && mDocument->currentObject()->isPartOfTileset();
+    bool canModify = !properties.isEmpty() && (!isTileset || editingTileset);
 
     // Disable remove and rename actions when none of the selected objects
     // actually have the selected property (it may be inherited).
     if (canModify) {
-        for (QtBrowserItem *item : items) {
-            if (!anyObjectHasProperty(mDocument->currentObjects(), item->property()->propertyName())) {
+        for (auto property : properties) {
+            if (!anyObjectHasProperty(mDocument->currentObjects(), property->name())) {
                 canModify = false;
                 break;
             }
@@ -2449,8 +2447,7 @@ void PropertiesWidget::updateActions()
     }
 
     mActionRemoveProperty->setEnabled(canModify);
-    mActionRenameProperty->setEnabled(canModify && items.size() == 1);
-#endif
+    mActionRenameProperty->setEnabled(canModify && properties.size() == 1);
 }
 
 void PropertiesWidget::cutProperties()
@@ -2461,19 +2458,15 @@ void PropertiesWidget::cutProperties()
 
 bool PropertiesWidget::copyProperties()
 {
-#if 0
-    Object *object = mPropertyBrowser->object();
+    Object *object = mDocument ? mDocument->currentObject() : nullptr;
     if (!object)
         return false;
 
     Properties properties;
 
-    const QList<QtBrowserItem*> items = mPropertyBrowser->selectedItems();
-    for (QtBrowserItem *item : items) {
-        if (!mPropertyBrowser->isCustomPropertyItem(item))
-            return false;
-
-        const QString name = item->property()->propertyName();
+    const auto selectedProperties = mPropertiesView->selectedProperties();
+    for (auto property : selectedProperties) {
+        const QString name = property->name();
         const QVariant value = object->property(name);
         if (!value.isValid())
             return false;
@@ -2482,7 +2475,7 @@ bool PropertiesWidget::copyProperties()
     }
 
     ClipboardManager::instance()->setProperties(properties);
-#endif
+
     return true;
 }
 
@@ -2540,7 +2533,7 @@ void PropertiesWidget::showAddValueProperty()
         mCustomProperties->addProperty(mAddValueProperty);
     }
 
-    mPropertyBrowser->focusProperty(mAddValueProperty, VariantEditor::FocusLabel);
+    mPropertiesView->focusProperty(mAddValueProperty, PropertiesView::FocusLabel);
 }
 
 void PropertiesWidget::addProperty(const QString &name, const QVariant &value)
@@ -2558,24 +2551,20 @@ void PropertiesWidget::addProperty(const QString &name, const QVariant &value)
                                         name, value));
     }
 
-    if (auto property = mCustomProperties->property(name))
-        mPropertyBrowser->focusProperty(property);
+    selectCustomProperty(name);
 }
 
 void PropertiesWidget::removeProperties()
 {
-#if 0
     Object *object = mDocument->currentObject();
     if (!object)
         return;
 
-    const QList<QtBrowserItem*> items = mPropertyBrowser->selectedItems();
-    if (items.isEmpty() || !mPropertyBrowser->allCustomPropertyItems(items))
-        return;
+    const auto properties = mPropertiesView->selectedProperties();
 
     QStringList propertyNames;
-    for (QtBrowserItem *item : items)
-        propertyNames.append(item->property()->propertyName());
+    for (auto property : properties)
+        propertyNames.append(property->name());
 
     QUndoStack *undoStack = mDocument->undoStack();
     undoStack->beginMacro(QCoreApplication::translate("Tiled::PropertiesDock",
@@ -2590,12 +2579,20 @@ void PropertiesWidget::removeProperties()
     }
 
     undoStack->endMacro();
-#endif
+}
+
+void PropertiesWidget::renameSelectedProperty()
+{
+    const auto properties = mPropertiesView->selectedProperties();
+    if (properties.size() != 1)
+        return;
+
+    renameProperty(properties.first()->name());
 }
 
 void PropertiesWidget::renameProperty(const QString &name)
 {
-    QInputDialog *dialog = new QInputDialog(mPropertyBrowser);
+    QInputDialog *dialog = new QInputDialog(mPropertiesView);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->setInputMode(QInputDialog::TextInput);
     dialog->setLabelText(QCoreApplication::translate("Tiled::PropertiesDock", "Name:"));

@@ -104,8 +104,8 @@ ProjectPropertiesDialog::ProjectPropertiesDialog(Project &project, QWidget *pare
     ui->propertiesWidget->customPropertiesGroup()->setName(QString());
 
     // Tweak margins
-    const auto margin = Utils::dpiScaled(3);
-    ui->propertiesWidget->propertiesView()->widget()->setContentsMargins(0, margin, 0, margin);
+    const auto halfSpacing = Utils::dpiScaled(2);
+    ui->propertiesWidget->propertiesView()->widget()->setContentsMargins(0, halfSpacing, 0, halfSpacing);
 
     ui->propertiesWidget->setDocument(mLocalProjectDocument);
 }

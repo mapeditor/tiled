@@ -221,8 +221,8 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
             this, &PropertyTypesEditor::openAddMemberDialog);
     connect(mRemoveMemberAction, &QAction::triggered,
             this, &PropertyTypesEditor::removeMember);
-    // connect(mRenameMemberAction, &QAction::triggered,
-    //         this, &PropertyTypesEditor::renameMember);
+    connect(mRenameMemberAction, &QAction::triggered,
+            this, &PropertyTypesEditor::renameSelectedMember);
 
     connect(mPropertyTypesModel, &PropertyTypesModel::nameChanged,
             this, &PropertyTypesEditor::propertyTypeNameChanged);
@@ -367,11 +367,12 @@ ClassPropertyType *PropertyTypesEditor::selectedClassPropertyType() const
     return static_cast<ClassPropertyType*>(propertyType);
 }
 
-void PropertyTypesEditor::currentMemberItemChanged(QtBrowserItem *item)
+void PropertyTypesEditor::selectedMembersChanged()
 {
-    // todo: change based on selection in VariantEditor
-    mRemoveMemberAction->setEnabled(item);
-    mRenameMemberAction->setEnabled(item);
+    const auto properties = mMembersView->selectedProperties();
+    const bool singlePropertySelected = properties.size() == 1;
+    mRemoveMemberAction->setEnabled(singlePropertySelected);
+    mRenameMemberAction->setEnabled(singlePropertySelected);
 }
 
 void PropertyTypesEditor::propertyTypeNameChanged(const QModelIndex &index, const PropertyType &type)
@@ -582,7 +583,7 @@ void PropertyTypesEditor::openAddMemberDialog()
         mMembersProperty->addProperty(mAddValueProperty);
     }
 
-    mMembersEditor->focusProperty(mAddValueProperty, VariantEditor::FocusLabel);
+    mMembersView->focusProperty(mAddValueProperty, PropertiesView::FocusLabel);
 }
 
 void PropertyTypesEditor::addMember(const QString &name, const QVariant &value)
@@ -605,23 +606,23 @@ void PropertyTypesEditor::addMember(const QString &name, const QVariant &value)
     applyMemberToSelectedType(name, value);
     updateDetails();
 
-    if (auto property = mMembersProperty->property(name))
-        mMembersEditor->focusProperty(property);
+    if (auto property = mMembersProperty->property(name)) {
+        mMembersView->focusProperty(property);
+        mMembersView->setSelectedProperties({ property });
+    }
 }
 
 void PropertyTypesEditor::removeMember()
 {
-    // todo: VariantEditor needs to support selection
-#if 0
-    QtBrowserItem *item = mMembersView->currentItem();
-    if (!item)
-        return;
-
     PropertyType *propertyType = selectedPropertyType();
     if (!propertyType || !propertyType->isClass())
         return;
 
-    const QString name = item->property()->propertyName();
+    const auto properties = mMembersView->selectedProperties();
+    if (properties.size() != 1)
+        return;
+
+    const QString name = properties.first()->name();
 
     if (!confirm(tr("Remove Member"),
                  tr("Are you sure you want to remove '%1' from class '%2'? This action cannot be undone.")
@@ -630,26 +631,30 @@ void PropertyTypesEditor::removeMember()
     }
 
     // Select a different item before removing the current one
-    QList<QtBrowserItem *> items = mMembersView->topLevelItems();
-    if (items.count() > 1) {
-        const int currentItemIndex = items.indexOf(item);
-        if (item == items.last())
-            mMembersView->setCurrentItem(items.at(currentItemIndex - 1));
+    const auto &subProperties = mMembersProperty->subProperties();
+    if (subProperties.size() > 1) {
+        const int currentIndex = subProperties.indexOf(properties.first());
+        if (currentIndex == subProperties.size() - 1)
+            subProperties[currentIndex - 1]->setSelected(true);
         else
-            mMembersView->setCurrentItem(items.at(currentItemIndex + 1));
+            subProperties[currentIndex + 1]->setSelected(true);
     }
 
-    mPropertiesHelper->deleteProperty(item->property());
+    mMembersProperty->removeMember(name);
+}
 
-    static_cast<ClassPropertyType&>(*propertyType).members.remove(name);
+void PropertyTypesEditor::renameSelectedMember()
+{
+    const auto properties = mMembersView->selectedProperties();
+    if (properties.size() != 1)
+        return;
 
-    applyPropertyTypes();
-#endif
+    renameMember(properties.first()->name());
 }
 
 void PropertyTypesEditor::renameMember(const QString &name)
 {
-    QInputDialog *dialog = new QInputDialog(mMembersEditor);
+    QInputDialog *dialog = new QInputDialog(mMembersView);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->setInputMode(QInputDialog::TextInput);
     dialog->setLabelText(tr("Name:"));
@@ -895,7 +900,7 @@ void PropertyTypesEditor::setCurrentPropertyType(PropertyType::Type type)
     mStorageTypeComboBox = nullptr;
     mValuesAsFlagsCheckBox = nullptr;
     mValuesView = nullptr;
-    mMembersEditor = nullptr;
+    mMembersView = nullptr;
 
     mAddValueAction->setEnabled(type == PropertyType::PT_Enum);
     mAddMemberAction->setEnabled(type == PropertyType::PT_Class);
@@ -938,21 +943,21 @@ void PropertyTypesEditor::addClassProperties()
     nameAndColor->addWidget(mColorButton);
     nameAndColor->addWidget(mDrawFillCheckBox);
 
-    mMembersEditor = new VariantEditorView(this);
+    mMembersView = new PropertiesView(this);
 
-    const auto margin = Utils::dpiScaled(3);
-    mMembersEditor->widget()->setContentsMargins(0, margin, 0, margin);
+    const auto halfSpacing = Utils::dpiScaled(2);
+    mMembersView->widget()->setContentsMargins(0, halfSpacing, 0, halfSpacing);
 
     mMembersProperty = new VariantMapProperty(QString(), this);
-    mMembersEditor->addProperty(mMembersProperty);
+    mMembersView->setRootProperty(mMembersProperty);
 
     connect(mMembersProperty, &VariantMapProperty::valueChanged,
             this, &PropertyTypesEditor::classMembersChanged);
     connect(mMembersProperty, &VariantMapProperty::renameRequested,
             this, &PropertyTypesEditor::renameMember);
 
-    // connect(mMembersView, &QtTreePropertyBrowser::currentItemChanged,
-    //         this, &PropertyTypesEditor::currentMemberItemChanged);
+    connect(mMembersView, &PropertiesView::selectedPropertiesChanged,
+            this, &PropertyTypesEditor::selectedMembersChanged);
 
     mUseAsPropertyCheckBox = new QCheckBox(tr("Property value"));
 
@@ -982,7 +987,7 @@ void PropertyTypesEditor::addClassProperties()
     auto membersWithToolBarLayout = new QVBoxLayout;
     membersWithToolBarLayout->setSpacing(0);
     membersWithToolBarLayout->setContentsMargins(0, 0, 0, 0);
-    membersWithToolBarLayout->addWidget(mMembersEditor);
+    membersWithToolBarLayout->addWidget(mMembersView);
     membersWithToolBarLayout->addWidget(membersToolBar);
 
     mDetailsLayout->addRow(tr("Name"), nameAndColor);

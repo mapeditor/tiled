@@ -191,10 +191,10 @@ bool VariantMapProperty::createOrUpdateProperty(int index,
     if (property) {
         if (mValue.contains(name)) {
             property->setEnabled(true);
-            property->setActions(Property::Action::Remove);
+            property->setActions(Property::Action::Select | Property::Action::Remove);
         } else {
             property->setEnabled(false);
-            property->setActions(Property::Action::Add);
+            property->setActions(Property::Action::Select | Property::Action::Add);
         }
 
         updateModifiedRecursively(property, newValue);
