@@ -759,18 +759,26 @@ QWidget *VariantEditor::createPropertyWidget(Property *property)
         removeProperty(static_cast<Property *>(object));
     });
 
-    const auto halfSpacing = Utils::dpiScaled(2);
-
     if (displayMode == Property::DisplayMode::ChildrenOnly) {
+        auto editor = new VariantEditor(this);
+        editor->setEnabled(property->isEnabled());
+
+        connect(property, &Property::enabledChanged,
+                editor, &QWidget::setEnabled);
+
         if (auto groupProperty = qobject_cast<GroupProperty *>(property)) {
-            auto containerWidget = new QWidget(this);
-            widgets.childrenLayout = new QVBoxLayout(containerWidget);
-            widgets.childrenLayout->setContentsMargins(0, 0, 0, 0);
-            setPropertyChildrenExpanded(groupProperty, true);
-            widgets.rowWidget = containerWidget;
-            return widgets.rowWidget;
+            for (auto property : groupProperty->subProperties())
+                editor->addProperty(property);
+
+            connect(groupProperty, &GroupProperty::propertyAdded,
+                    editor, &VariantEditor::insertProperty);
         }
+
+        widgets.rowWidget = editor;
+        return widgets.rowWidget;
     }
+
+    const auto halfSpacing = Utils::dpiScaled(2);
 
     auto rowWidget = new QWidget(this);
     auto rowLayout = new QHBoxLayout(rowWidget);
