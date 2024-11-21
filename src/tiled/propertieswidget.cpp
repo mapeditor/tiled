@@ -2231,7 +2231,6 @@ void PropertiesWidget::setDocument(Document *document)
         mDocument->disconnect(this);
 
     mDocument = document;
-    // mPropertyBrowser->setDocument(document);
     mCustomProperties->setDocument(document);
 
     if (document) {
@@ -2262,7 +2261,8 @@ GroupProperty *PropertiesWidget::customPropertiesGroup() const
 
 void PropertiesWidget::selectCustomProperty(const QString &name)
 {
-    // mPropertyBrowser->selectCustomProperty(name);
+    if (auto property = mCustomProperties->property(name))
+        mPropertyBrowser->focusProperty(property);
 }
 
 void PropertiesWidget::currentObjectChanged(Object *object)
@@ -2409,6 +2409,10 @@ void CustomProperties::refresh()
                     mDocument->currentObject()->inheritedProperties());
 
     setValue(currentObjectProperties, suggestedProperties);
+
+    const bool editingTileset = mDocument->type() == Document::TilesetDocumentType;
+    const bool partOfTileset = mDocument->currentObject()->isPartOfTileset();
+    setEnabled(!partOfTileset || editingTileset);
 }
 
 void CustomProperties::setPropertyValue(const QStringList &path, const QVariant &value)
