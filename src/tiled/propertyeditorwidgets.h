@@ -29,6 +29,8 @@ class QLabel;
 
 namespace Tiled {
 
+class Property;
+
 /**
  * A slider that doesn't respond to wheel events when not focused.
  */
@@ -291,6 +293,9 @@ public:
 
     void setToolTip(const QString &toolTip);
 
+    void setSelected(bool selected);
+    bool isSelected() const { return m_selected; }
+
     QSize minimumSizeHint() const override;
 
 protected:
@@ -299,6 +304,7 @@ protected:
 private:
     QString m_toolTip;
     bool m_isElided = false;
+    bool m_selected = false;
 };
 
 /**
@@ -328,7 +334,6 @@ public:
 
 signals:
     void toggled(bool expanded);
-    void contextMenuRequested(const QPoint &globalPos);
 
 protected:
     bool event(QEvent *event) override;
@@ -336,11 +341,44 @@ protected:
 
 private:
     void updateContentMargins();
+    QRect branchIndicatorRect() const;
 
     int m_level = 0;
     bool m_header = false;
     bool m_expandable = false;
     bool m_expanded = false;
+};
+
+/**
+ * A widget that represents a single property.
+ */
+class PropertyWidget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    PropertyWidget(Property *property, QWidget *parent = nullptr);
+
+    Property *property() const { return m_property; }
+
+    void setSelectable(bool selectable);
+    bool isSelectable() const { return m_selectable; }
+
+    void setSelected(bool selected);
+    bool isSelected() const { return m_selected; }
+
+signals:
+    void clicked(Qt::KeyboardModifiers modifiers);
+
+protected:
+    void paintEvent(QPaintEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent *event) override;
+
+private:
+    Property *m_property;
+    bool m_selectable = false;
+    bool m_selected = false;
 };
 
 } // namespace Tiled

@@ -35,10 +35,10 @@ class CustomProperties;
 class Document;
 class GroupProperty;
 class ObjectProperties;
-class VariantEditorView;
+class PropertiesView;
 
 /**
- * The PropertiesWidget combines the PropertyBrowser with some controls that
+ * The PropertiesWidget combines the PropertiesView with some controls that
  * allow adding and removing properties. It also implements cut, copy and paste
  * actions and the context menu.
  */
@@ -56,7 +56,7 @@ public:
     void setDocument(Document *document);
 
     GroupProperty *customPropertiesGroup() const;
-    VariantEditorView *propertiesView() const { return mPropertyBrowser; }
+    PropertiesView *propertiesView() const { return mPropertiesView; }
 
 signals:
     void bringToFront();
@@ -78,17 +78,19 @@ private:
     void showAddValueProperty();
     void addProperty(const QString &name, const QVariant &value);
     void removeProperties();
+    void renameSelectedProperty();
     void renameProperty(const QString &name);
     void showContextMenu(const QPoint &pos);
 
     void retranslateUi();
 
     Document *mDocument = nullptr;
+    GroupProperty *mRootProperty = nullptr;
     ObjectProperties *mPropertiesObject = nullptr;
     CustomProperties *mCustomProperties = nullptr;
     QPointer<AddValueProperty> mAddValueProperty;
     QMap<int, bool> mExpandedStates;
-    VariantEditorView *mPropertyBrowser;
+    PropertiesView *mPropertiesView;
     QAction *mActionAddProperty;
     QAction *mActionRemoveProperty;
     QAction *mActionRenameProperty;

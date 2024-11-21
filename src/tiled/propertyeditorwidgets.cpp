@@ -21,6 +21,7 @@
 #include "propertyeditorwidgets.h"
 
 #include "utils.h"
+#include "varianteditor.h"
 
 #include <QGridLayout>
 #include <QPainter>
@@ -659,6 +660,15 @@ void ElidingLabel::setToolTip(const QString &toolTip)
         QLabel::setToolTip(m_toolTip);
 }
 
+void ElidingLabel::setSelected(bool selected)
+{
+    if (m_selected == selected)
+        return;
+
+    m_selected = selected;
+    update();
+}
+
 QSize ElidingLabel::minimumSizeHint() const
 {
     auto hint = QLabel::minimumSizeHint();
@@ -688,7 +698,8 @@ void ElidingLabel::paintEvent(QPaintEvent *)
     }
 
     QStylePainter p(this);
-    p.drawItemText(cr, flags, opt.palette, isEnabled(), elidedText, foregroundRole());
+    QPalette::ColorRole role = m_selected ? QPalette::HighlightedText : foregroundRole();
+    p.drawItemText(cr, flags, opt.palette, isEnabled(), elidedText, role);
 }
 
 
@@ -748,23 +759,31 @@ void PropertyLabel::setModified(bool modified)
 
 bool PropertyLabel::event(QEvent *event)
 {
+    switch (event->type()) {
     // Handled here instead of in mousePressEvent because we want it to be
     // expandable also when the label is disabled.
-    if (event->type() == QEvent::MouseButtonPress && m_expandable) {
-        auto mouseEvent = static_cast<QMouseEvent *>(event);
-        if (mouseEvent->button() == Qt::LeftButton) {
-            setExpanded(!m_expanded);
-            return true;
+    case QEvent::MouseButtonPress: {
+        const auto pos = static_cast<QMouseEvent *>(event)->pos();
+        if (!isHeader() && !branchIndicatorRect().contains(pos))
+            break;
+    }
+        [[fallthrough]];
+    case QEvent::MouseButtonDblClick:
+        if (m_expandable) {
+            if (static_cast<QMouseEvent *>(event)->button() == Qt::LeftButton) {
+                setExpanded(!m_expanded);
+                return true;
+            }
         }
-    }
+        break;
 
-    if (event->type() == QEvent::ContextMenu) {
-        emit contextMenuRequested(static_cast<QContextMenuEvent *>(event)->globalPos());
-        return true;
-    }
-
-    if (event->type() == QEvent::LayoutDirectionChange)
+    case QEvent::LayoutDirectionChange:
         updateContentMargins();
+        break;
+
+    default:
+        break;
+    }
 
     return ElidingLabel::event(event);
 }
@@ -773,18 +792,12 @@ void PropertyLabel::paintEvent(QPaintEvent *event)
 {
     ElidingLabel::paintEvent(event);
 
-    const int spacing = Utils::dpiScaled(3);
-    const int branchIndicatorWidth = Utils::dpiScaled(14);
-    const int indent = branchIndicatorWidth * m_level;
-
     QStyleOption branchOption;
     branchOption.initFrom(this);
-    if (branchOption.direction == Qt::LeftToRight)
-        branchOption.rect = QRect(indent, 0,
-                                  branchIndicatorWidth + spacing, height());
-    else
-        branchOption.rect = QRect(width() - indent - branchIndicatorWidth - spacing, 0,
-                                  branchIndicatorWidth + spacing, height());
+    branchOption.rect = branchIndicatorRect();
+
+    if (isSelected())
+        branchOption.state |= QStyle::State_Selected;
     if (m_expandable)
         branchOption.state |= QStyle::State_Children;
     if (m_expanded)
@@ -815,6 +828,21 @@ void PropertyLabel::updateContentMargins()
         setContentsMargins(spacing, verticalSpacing, spacing + indent, verticalSpacing);
 }
 
+QRect PropertyLabel::branchIndicatorRect() const
+{
+    const int spacing = Utils::dpiScaled(3);
+    const int branchIndicatorWidth = Utils::dpiScaled(14);
+    const int indent = branchIndicatorWidth * m_level;
+
+    if (layoutDirection() == Qt::LeftToRight) {
+        return QRect(indent, 0,
+                     branchIndicatorWidth + spacing, height());
+    } else {
+        return QRect(width() - indent - branchIndicatorWidth - spacing, 0,
+                     branchIndicatorWidth + spacing, height());
+    }
+}
+
 /**
  * To fit better alongside other widgets without vertical centering, the size
  * hint is adjusted to match that of a QLineEdit.
@@ -834,6 +862,78 @@ QSize PropertyLabel::sizeHint() const
     QStyleOptionFrame opt;
     initStyleOption(&opt);
     return style()->sizeFromContents(QStyle::CT_LineEdit, &opt, QSize(w, h), this);
+}
+
+
+PropertyWidget::PropertyWidget(Property *property, QWidget *parent)
+    : QWidget(parent)
+    , m_property(property)
+{
+    setSelected(property->isSelected());
+
+    connect(property, &Property::selectedChanged, this, &PropertyWidget::setSelected);
+}
+
+void PropertyWidget::setSelectable(bool selectable)
+{
+    if (m_selectable == selectable)
+        return;
+
+    m_selectable = selectable;
+
+    if (!selectable)
+        setSelected(false);
+}
+
+void PropertyWidget::setSelected(bool selected)
+{
+    if (m_selected == selected)
+        return;
+
+    m_selected = selected;
+    update();
+}
+
+void PropertyWidget::paintEvent(QPaintEvent *event)
+{
+    QWidget::paintEvent(event);
+
+    const auto halfSpacing = Utils::dpiScaled(2);
+    const QRect r = rect().adjusted(halfSpacing, 0, -halfSpacing, 0);
+    QStylePainter painter(this);
+
+    if (isSelected())
+        painter.fillRect(r, palette().highlight());
+
+    if (hasFocus()) {
+        QStyleOptionFocusRect option;
+        option.initFrom(this);
+        option.rect = r;
+        option.backgroundColor = palette().color(backgroundRole());
+        option.state |= QStyle::State_KeyboardFocusChange;
+
+        painter.drawPrimitive(QStyle::PE_FrameFocusRect, option);
+    }
+}
+
+void PropertyWidget::mousePressEvent(QMouseEvent *event)
+{
+    // Not 100% correct hack to make sure only one property is selected when
+    // the context menu opens. Handling of the context menu should probably be
+    // moved elsewhere.
+    if (event->button() == Qt::RightButton)
+        emit clicked(Qt::NoModifier);
+    else
+        emit clicked(event->modifiers());
+
+    setFocus(Qt::MouseFocusReason);
+
+    QWidget::mousePressEvent(event);
+}
+
+void PropertyWidget::contextMenuEvent(QContextMenuEvent *event)
+{
+    emit m_property->contextMenuRequested(event->globalPos());
 }
 
 } // namespace Tiled
