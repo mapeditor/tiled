@@ -440,7 +440,7 @@ void VariantMapProperty::memberContextMenuRequested(Property *property, const QS
     }
 
     // Provide the Add, Remove and Reset actions also here
-    if (property->actions()) {
+    if (isEnabled() && property->actions()) {
         menu.addSeparator();
 
         if (property->actions() & Property::Action::Add) {
