@@ -6,7 +6,7 @@ tags: release
 topic_id: 1519
 ---
 
-While [work on the next feature release](http://discourse.mapeditor.org/c/development) of Tiled continues, also some bugfixes have accumulated. In addition, the releases are now built against Qt 5.6 (previously Qt 5.5), which fixed some issues as well. Here's the full list:
+While [work on the next feature release](https://discourse.mapeditor.org/c/development) of Tiled continues, also some bugfixes have accumulated. In addition, the releases are now built against Qt 5.6 (previously Qt 5.5), which fixed some issues as well. Here's the full list:
 
 * JSON plugin: Fixed loading of custom properties on terrains
 * Lua plugin: Fixed missing export of object layer drawing order ([#1289](https://github.com/bjorn/tiled/issues/1289))

@@ -18,7 +18,7 @@ So here's the full changelog:
 Go get it from the [Download page][4].
 
 
-  [1]: http://discourse.mapeditor.org/t/tiled-0-14-0-released/769
-  [2]: http://discourse.mapeditor.org/t/eyedropper-tool/755/12?u=bjorn
+  [1]: https://discourse.mapeditor.org/t/tiled-0-14-0-released/769
+  [2]: https://discourse.mapeditor.org/t/eyedropper-tool/755/12?u=bjorn
   [3]: https://github.com/bjorn/tiled/issues/1096
-  [4]: http://www.mapeditor.org/download
+  [4]: https://www.mapeditor.org/download

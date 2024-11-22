@@ -6,11 +6,11 @@ tags: release
 topic_id: 1001
 ---
 
-[Tiled 0.15.0](http://www.mapeditor.org/download) is out, so let's talk about what's new!
+[Tiled 0.15.0](https://www.mapeditor.org/download) is out, so let's talk about what's new!
 
 ### Changing and Correcting External Links
 
-Those who remember the [Tiled 0.14 release announcement](http://forum.mapeditor.org/t/tiled-0-14-0-released/769) may remember that I wanted the next release to be Tiled 1.0. We're not entirely there yet, but Tiled took a big step towards being more functionally complete.
+Those who remember the [Tiled 0.14 release announcement](https://discourse.mapeditor.org/t/tiled-0-14-0-released/769) may remember that I wanted the next release to be Tiled 1.0. We're not entirely there yet, but Tiled took a big step towards being more functionally complete.
 
 The most important changes regarding this made sure that you can now load maps that refer to files that are for whatever reason no longer accessible. Previously, you'd then have to fall back to correcting the map file by hand. Now Tiled will tell you about the problems it found and allows you to fix them:
 
@@ -75,4 +75,4 @@ Finally, it means to reach a stable basis upon which more cool functionality can
 
 ### Support Tiled Development <img src="/img/heart.png" style="width: 1em;" title=":heart:" class="emoji" alt=":heart:">
 
-Thanks to the support from [over 120 patrons](https://www.patreon.com/bjorn?ty=h), [3 sponsors](http://www.mapeditor.org/) and the occasional donation, I can currently afford to spend little over a day/week on Tiled development. If you're enjoying Tiled, please consider to support me with [a small recurring donation](https://www.patreon.com/bePatron?u=90066) to help things go much faster!
+Thanks to the support from [over 120 patrons](https://www.patreon.com/bjorn?ty=h), [3 sponsors](https://www.mapeditor.org/) and the occasional donation, I can currently afford to spend little over a day/week on Tiled development. If you're enjoying Tiled, please consider to support me with [a small recurring donation](https://www.patreon.com/bePatron?u=90066) to help things go much faster!

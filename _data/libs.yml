@@ -4,14 +4,14 @@
   wiki: https://github.com/bjorn/tiled/wiki/baylej-tmx
   updated: 28-11-2017
   notes: |
-    Reads TMX 1.0. Depends on [zlib](https://zlib.net/) and [libxml2](http://xmlsoft.org/).
-    Ships with examples for [Allegro 5](http://liballeg.org/) and [SDL 2](https://www.libsdl.org/).
+    Reads TMX 1.0. Depends on [zlib](https://zlib.net/) and [libxml2](https://gitlab.gnome.org/GNOME/libxml2).
+    Ships with examples for [Allegro 5](https://liballeg.org/) and [SDL 2](https://www.libsdl.org/).
 
 - language: C++
   name: sainteos/tmxparser
   url: https://github.com/sainteos/tmxparser
   updated: 28-11-2017
-  notes: C++11 library for parsing TMX maps. Depends on [zlib](https://zlib.net/) and [TinyXml](http://www.grinninglizard.com/tinyxml/).
+  notes: C++11 library for parsing TMX maps. Depends on [zlib](https://zlib.net/) and [TinyXml](https://github.com/leethomason/tinyxml2).
 
 - language: C++
   name: Tileson

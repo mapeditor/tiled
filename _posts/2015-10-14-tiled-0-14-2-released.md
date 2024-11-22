@@ -23,6 +23,6 @@ In the meantime I'm making progress on Tiled 1.0 relevant issues. You can follow
 
 
 
-  [1]: http://discourse.mapeditor.org/t/tiled-0-14-1-released/788
-  [2]: http://discourse.mapeditor.org/c/development
-  [3]: http://www.mapeditor.org/download
+  [1]: https://discourse.mapeditor.org/t/tiled-0-14-1-released/788
+  [2]: https://discourse.mapeditor.org/c/development
+  [3]: https://www.mapeditor.org/download

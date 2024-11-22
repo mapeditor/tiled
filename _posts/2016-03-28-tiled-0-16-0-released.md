@@ -42,7 +42,7 @@ It is now possible to reset color properties, for example clearing the Color val
 
 <img src="https://discourse.mapeditor.org/uploads/mapeditor/original/1X/d1db2ab3427954a394f98b487556e3ac965f54dd.png" width="369" height="210">
 
-An [eraser mode](http://discourse.mapeditor.org/t/february-2016-development-updates/1104/3?u=bjorn) was added to the Terrain Brush, accessible via a button at the bottom of the Terrains view.
+An [eraser mode](https://discourse.mapeditor.org/t/february-2016-development-updates/1104/3?u=bjorn) was added to the Terrain Brush, accessible via a button at the bottom of the Terrains view.
 
 When you try to open map files through the file manager, it will now try to reuse an existing Tiled instance rather than opening a new Tiled for each file. This also works with multiple files or for opening files from the command prompt.
 

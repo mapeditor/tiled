@@ -16,4 +16,4 @@ This small patch release ships with added Turkish translation and an updated Bra
 
 The [Tiled itch.io page](https://thorbjorn.itch.io/tiled) has been updated with the new download links.
 
-In the meantime, many features have been added on the development branch during [January](http://forum.mapeditor.org/t/january-2016-development-updates/1033) and [February](http://forum.mapeditor.org/t/february-2016-development-updates/1104). And since [editing of external tilesets](https://github.com/bjorn/tiled/issues/242) is becoming a huge change, I plan to make a Tiled 0.16 release available in the coming weeks, so stay tuned!
+In the meantime, many features have been added on the development branch during [January](https://discourse.mapeditor.org/t/january-2016-development-updates/1033) and [February](https://forum.mapeditor.org/t/february-2016-development-updates/1104). And since [editing of external tilesets](https://github.com/bjorn/tiled/issues/242) is becoming a huge change, I plan to make a Tiled 0.16 release available in the coming weeks, so stay tuned!

@@ -6,7 +6,7 @@ tags: release
 topic_id: 1333
 ---
 
-Today I noticed that the Windows packages for [Tiled 0.16.0](http://discourse.mapeditor.org/t/tiled-0-16-0-released/1206) did not actually have the auto-updater enabled. This bugfix release resolves that issue as well as fixing several small issues. It also includes an updated Turkish translation and a Norwegian Bokmål translation was added.
+Today I noticed that the Windows packages for [Tiled 0.16.0](https://discourse.mapeditor.org/t/tiled-0-16-0-released/1206) did not actually have the auto-updater enabled. This bugfix release resolves that issue as well as fixing several small issues. It also includes an updated Turkish translation and a Norwegian Bokmål translation was added.
 
 * Fixed auto-updater not enabled for Windows release ([f2bb1725](https://github.com/bjorn/tiled/commit/f2bb17256d81dc10f3580c196e394926af2c278b))
 * Fixed saving of object IDs assigned to tile collision shapes ([#1052](https://github.com/bjorn/tiled/issues/1052))

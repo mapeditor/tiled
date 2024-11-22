@@ -63,10 +63,10 @@ That's right, I'd like the next version of Tiled to be 1.0! It'll probably take 
 Of course, this is not to be seen as the end, but rather a beginning. This milestone is about providing a solid base upon which to build future changes. For changes planned beyond 1.0, check out the [Tiled roadmap][7].
 
 
-  [1]: http://www.mapeditor.org/download
+  [1]: https://www.mapeditor.org/download
   [2]: https://github.com/bjorn/tiled/issues/4
   [3]: http://opengameart.org/content/isometric-64x64-outside-tileset
-  [4]: http://forum.mapeditor.org/t/tiled-0-12-0-released/519
+  [4]: https://discourse.mapeditor.org/t/tiled-0-12-0-released/519
   [5]: https://github.com/bjorn/tiled/milestones/Tiled%201.0
   [6]: https://www.patreon.com/bjorn
   [7]: https://trello.com/b/yl3PAtN0/tiled-roadmap

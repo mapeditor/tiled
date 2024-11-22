@@ -6,7 +6,7 @@ tags: gsoc
 ---
 
 This year Tiled applied as an organization to [participate in the Google Summer
-of Code](http://discourse.mapeditor.org/t/google-summer-of-code-2017/1979) for
+of Code](https://discourse.mapeditor.org/t/google-summer-of-code-2017/1979) for
 _the first time_, thanks to Leon Moctezuma who helped a lot with the process. We
 were accepted by Google, after which many interested students approached us with
 their proposals and send in pull requests. Two more mentors joined the Tiled
@@ -27,7 +27,7 @@ selected tiles.
 
 Erik Schilling (Ablu) will be the primary mentor for Ketan and you can follow
 his progress in
-[this forum thread](http://discourse.mapeditor.org/t/general-improvements-and-bug-fixes-gsoc-17/2354).
+[this forum thread](https://discourse.mapeditor.org/t/general-improvements-and-bug-fixes-gsoc-17/2354).
 
 ### Ben Trotter (Bdtrotte)
 
@@ -42,7 +42,7 @@ will work to unlock the full potential of this system.
 
 Leon Moctezuma (leonidax) will be the primary mentor for Ben and you can follow
 his progress in
-[this forum thread](http://discourse.mapeditor.org/t/wang-tiles-and-filling-improvements/2339/1).
+[this forum thread](https://discourse.mapeditor.org/t/wang-tiles-and-filling-improvements/2339/1).
 
 ### Mohamed Ahmed Thabet (thabetx)
 
@@ -56,7 +56,7 @@ be a real time saver.
 
 Elvis Stansvik will be the primary mentor for Mohamed and you can follow his
 progress in [this forum
-thread](http://discourse.mapeditor.org/t/reusable-object-templates/2340/1).
+thread](https://discourse.mapeditor.org/t/reusable-object-templates/2340/1).
 
 ### Thanks to Everybody!
 

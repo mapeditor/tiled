@@ -81,7 +81,7 @@ Check out the [Tiled roadmap][7] board on Trello for an outlook to future releas
 If you want to help shape the next release, please give feedback, contribute patches or make translation updates. To help me get through the roadmap faster, please consider making [a small monthly donation][9] through Patreon. Thanks!
 
 
-  [1]: http://www.mapeditor.org/download
+  [1]: https://www.mapeditor.org/download
   [2]: https://www.patreon.com/bjorn
   [3]: https://github.com/IMMZ
   [4]: https://github.com/bjorn/tiled/issues/969

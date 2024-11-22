@@ -19,6 +19,6 @@ Meanwhile I've been making good progress towards Tiled 0.14, which will bring so
 Get the latest release from the [Download page][3].
 
 
-  [1]: http://forum.mapeditor.org/t/tiled-0-13-0-released/708
+  [1]: https://discourse.mapeditor.org/t/tiled-0-13-0-released/708
   [2]: http://www.patreon.com/bjorn
-  [3]: http://www.mapeditor.org/download
+  [3]: https://www.mapeditor.org/download
