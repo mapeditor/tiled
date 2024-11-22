@@ -48,6 +48,10 @@ ChangeMapProperty::ChangeMapProperty(MapDocument *mapDocument,
         setText(QCoreApplication::translate("Undo Commands",
                                             "Change Infinite Property"));
         break;
+    case Map::InvertYAxisProperty:
+        setText(QCoreApplication::translate("Undo Commands",
+                                            "Change Invert Y-Axis Property"));
+        break;
     case Map::HexSideLengthProperty:
         setText(QCoreApplication::translate("Undo Commands",
                                             "Change Hex Side Length"));
@@ -172,6 +176,12 @@ void ChangeMapProperty::swap()
         const int infinite = map->infinite();
         map->setInfinite(mIntValue);
         mIntValue = infinite;
+        break;
+    }
+    case Map::InvertYAxisProperty: {
+        const int invertYAxis = map->invertYAxis();
+        map->setInvertYAxis(mIntValue);
+        mIntValue = invertYAxis;
         break;
     }
     case Map::OrientationProperty: {

@@ -316,7 +316,7 @@ inline qreal MapObject::y() const
 { return mPos.y(); }
 
 /**
- * Sets the x position of this object.
+ * Sets the y position of this object.
  */
 inline void MapObject::setY(qreal y)
 { mPos.setY(y); }

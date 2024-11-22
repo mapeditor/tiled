@@ -40,7 +40,7 @@ SnapHelper::SnapHelper(const MapRenderer *renderer,
     if (modifiers & Qt::ControlModifier) {
         if (modifiers & Qt::ShiftModifier) {
             toggleFineSnap();
-        } else { 
+        } else {
             toggleSnap();
         }
     }
@@ -58,7 +58,7 @@ void SnapHelper::toggleSnap()
         break;
     }
 }
-  
+
 void SnapHelper::toggleFineSnap()
 {
     switch (mSnapMode) {
