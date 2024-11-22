@@ -4038,11 +4038,12 @@ interface TilesetEditor {
   readonly collisionEditor: TileCollisionEditor;
 
   /**
-   * Gets the currently selected {@link WangSet} in the "Terrain Sets" view.
+   * Get or set the currently selected {@link WangSet} in the "Terrain Sets" view.
    *
    * @since 1.9
+   * Writable since 1.11.1
    */
-  readonly currentWangSet: WangSet;
+  currentWangSet: WangSet;
 
   /**
    * The signal emitted when {@link currentWangSet} changes.
@@ -4057,8 +4058,9 @@ interface TilesetEditor {
    * has index 1.
    *
    * @since 1.9
+   * Writable since 1.11.1
    */
-  readonly currentWangColorIndex: number;
+   currentWangColorIndex: number;
 
   /**
    * The signal emitted when {@link currentWangColorIndex} changes.

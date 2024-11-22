@@ -42,9 +42,7 @@ WangColorModel::WangColorModel(TilesetDocument *tilesetDocument,
 
 QModelIndex WangColorModel::colorIndex(int color) const
 {
-    if (mWangSet)
-        Q_ASSERT(color <= mWangSet->colorCount());
-    else
+    if (!mWangSet || color > mWangSet->colorCount())
         return QModelIndex();
 
     return createIndex(color - 1, 0);

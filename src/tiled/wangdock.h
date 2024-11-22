@@ -62,7 +62,6 @@ public:
     WangSet *currentWangSet() const { return mCurrentWangSet; }
     WangId currentWangId() const { return mCurrentWangId; }
     int currentWangColor() const;
-    void setCurrentWangColor(int colorIndex);
     void editWangSetName(WangSet *wangSet);
     void editWangColorName(int colorIndex);
 

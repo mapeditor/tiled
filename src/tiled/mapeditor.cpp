@@ -1083,7 +1083,7 @@ int MapEditor::currentWangColorIndex() const
 
 void MapEditor::setCurrentWangColorIndex(int newIndex)
 {
-    mWangDock->setCurrentWangColor(newIndex);
+    mWangDock->onColorCaptured(newIndex);
 }
 AbstractTool *MapEditor::selectedTool() const
 {
