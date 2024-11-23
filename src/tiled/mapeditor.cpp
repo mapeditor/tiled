@@ -1083,6 +1083,8 @@ int MapEditor::currentWangColorIndex() const
 
 void MapEditor::setCurrentWangColorIndex(int newIndex)
 {
+    if(newIndex < 0 || newIndex > mWangDock->currentWangSet()->colorCount())
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "An invalid wang color index was provided"));
     mWangDock->onColorCaptured(newIndex);
 }
 AbstractTool *MapEditor::selectedTool() const
