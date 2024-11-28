@@ -789,6 +789,12 @@ declare namespace Qt {
     readonly checkedButton: QRadioButton | undefined;
 
     /**
+     * ID / index into {@link QButtonGroup.buttons} that is currently selected.
+     * If no radio button is selected, -1 will be returned.
+     */
+    readonly checkedIndex: number;
+
+    /**
      * Add multiple radio buttons to this group.
      * @param values - Each entry in the array is the text that will appear on the radio button.
      * @param toolTips Optional list of tooltips, where each entry is a tooltip that corresponds to the radio button in the list of values with the same index.
@@ -802,6 +808,11 @@ declare namespace Qt {
      */
     addItem(value: String, toolTip: string | undefined) : QRadioButton;
    
+    /**
+     * Signal emitted when any radio button in this QButtonGroup is selected or deselected. 
+     * If the button that causes the signal to be emitted is now selected, checked will be true.
+     */
+    readonly idToggled: Signal<[index: number, checked: boolean]>;
   }
 }
 

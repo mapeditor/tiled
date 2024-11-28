@@ -56,8 +56,9 @@ public:
 class ScriptButtonGroup : public QButtonGroup
 {
     Q_OBJECT
-    Q_PROPERTY(QList<QAbstractButton *> buttons READ buttons)
-    Q_PROPERTY(QAbstractButton * checkedButton READ checkedButton)
+    Q_PROPERTY(QList<QAbstractButton *> buttons READ buttons CONSTANT)
+    Q_PROPERTY(QAbstractButton * checkedButton READ checkedButton CONSTANT)
+    Q_PROPERTY(int checkedIndex READ checkedIndex CONSTANT)
 
 public:
     ScriptButtonGroup(QWidget * parent, QHBoxLayout *layout)
@@ -98,6 +99,11 @@ public:
     QAbstractButton * checkedButton() const
     {
         return QButtonGroup::checkedButton();
+    }
+
+    int checkedIndex() const
+    {
+        return QButtonGroup::checkedId();
     }
 
 private:
