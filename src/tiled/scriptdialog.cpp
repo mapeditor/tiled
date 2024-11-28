@@ -267,18 +267,15 @@ ScriptDialog::NewRowMode ScriptDialog::newRowMode() const
     return m_newRowMode;
 }
 
-ScriptButtonGroup *ScriptDialog::addRadioButtonGroup(const QString &labelText, const QStringList &values, const QString &toolTip)
+ScriptButtonGroup *ScriptDialog::addRadioButtonGroup(const QString &labelText, const QStringList &values, const QString &toolTip, const QStringList &buttonToolTips)
 {
     QGroupBox *groupParent = new QGroupBox(this);
-    groupParent->setFlat(true);
     QHBoxLayout *hBox = new QHBoxLayout(groupParent);
     ScriptButtonGroup *buttonGroup = new ScriptButtonGroup(groupParent, hBox);
-    buttonGroup->addItems(values);
+    buttonGroup->addItems(values, buttonToolTips);
     hBox->addStretch(rightColumnStretch);
     groupParent->setLayout(hBox);
-    if (!toolTip.isEmpty())
-        groupParent->setToolTip(toolTip);
-    addDialogWidget(groupParent, labelText);
+    addDialogWidget(groupParent, labelText, toolTip);
     return buttonGroup;
 }
 
@@ -293,7 +290,7 @@ int ScriptDialog::exec()
     return QDialog::exec();
 }
 
-QWidget *ScriptDialog::addDialogWidget(QWidget *widget, const QString &label)
+QWidget *ScriptDialog::addDialogWidget(QWidget *widget, const QString &label, const QString &labelToolTip)
 {
     determineWidgetGrouping(widget);
     if (m_widgetsInRow == 0)
@@ -307,6 +304,8 @@ QWidget *ScriptDialog::addDialogWidget(QWidget *widget, const QString &label)
 
     if (!label.isEmpty()) {
         QLabel *widgetLabel = newLabel(label);
+        if (!labelToolTip.isEmpty())
+            widgetLabel->setToolTip(labelToolTip);
         widgetLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
         widgetLabel->setBuddy(widget);
         m_rowLayout->addWidget(widgetLabel);
