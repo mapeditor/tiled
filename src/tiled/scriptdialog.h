@@ -109,7 +109,7 @@ public:
     Q_INVOKABLE QWidget *addFilePicker(const QString &labelText = QString());
     Q_INVOKABLE QWidget *addColorButton(const QString &labelText = QString());
     Q_INVOKABLE QWidget *addImage(const QString &labelText, Tiled::ScriptImage *image);
-    Q_INVOKABLE ScriptButtonGroup *addRadioButtonGroup(const QString &labelText, const QStringList &values);
+    Q_INVOKABLE ScriptButtonGroup *addRadioButtonGroup(const QString &labelText, const QStringList &values, const QString &toolTip);
     Q_INVOKABLE void clear();
     Q_INVOKABLE void addNewRow();
 

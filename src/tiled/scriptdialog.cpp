@@ -267,7 +267,7 @@ ScriptDialog::NewRowMode ScriptDialog::newRowMode() const
     return m_newRowMode;
 }
 
-ScriptButtonGroup *ScriptDialog::addRadioButtonGroup(const QString &labelText, const QStringList &values)
+ScriptButtonGroup *ScriptDialog::addRadioButtonGroup(const QString &labelText, const QStringList &values, const QString &toolTip)
 {
     QGroupBox *groupParent = new QGroupBox(this);
     groupParent->setFlat(true);
@@ -276,6 +276,8 @@ ScriptButtonGroup *ScriptDialog::addRadioButtonGroup(const QString &labelText, c
     buttonGroup->addItems(values);
     hBox->addStretch(rightColumnStretch);
     groupParent->setLayout(hBox);
+    if (!toolTip.isEmpty())
+        groupParent->setToolTip(toolTip);
     addDialogWidget(groupParent, labelText);
     return buttonGroup;
 }
