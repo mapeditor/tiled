@@ -22,6 +22,7 @@
 #pragma once
 
 #include "qboxlayout.h"
+#include <QAbstractButton>
 #include <QButtonGroup>
 #include <QLabel>
 #include <QDialog>
@@ -55,6 +56,8 @@ public:
 class ScriptButtonGroup : public QButtonGroup
 {
     Q_OBJECT
+    Q_PROPERTY(QList<QAbstractButton *> buttons READ buttons)
+    Q_PROPERTY(QAbstractButton * checkedButton READ checkedButton)
 
 public:
     ScriptButtonGroup(QWidget * parent, QHBoxLayout *layout)
@@ -64,13 +67,27 @@ public:
 
     Q_INVOKABLE void addItems(const QStringList &values)
     {
+        int nextIndex = QButtonGroup::buttons().length();
         for (const QString &value : values) {
-            QRadioButton radioButton = QRadioButton();
-            mLayout->addWidget(&radioButton);
-            radioButton.setText(value);
-            QButtonGroup::addButton(&radioButton);
+            QRadioButton *radioButton = new QRadioButton;
+            mLayout->addWidget(radioButton);
+            radioButton->setText(value);
+            QButtonGroup::addButton(radioButton, nextIndex);
+            nextIndex++;
         }
     }
+
+    QList<QAbstractButton *> buttons() const
+    {
+        return QButtonGroup::buttons();
+    }
+
+
+    QAbstractButton * checkedButton() const
+    {
+        return QButtonGroup::checkedButton();
+    }
+
 private:
     QHBoxLayout *mLayout;
 };
