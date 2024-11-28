@@ -21,8 +21,11 @@
 
 #pragma once
 
+#include "qboxlayout.h"
+#include <QButtonGroup>
 #include <QLabel>
 #include <QDialog>
+#include <QRadioButton>
 
 class QGridLayout;
 class QHBoxLayout;
@@ -49,6 +52,28 @@ public:
     void setImage(ScriptImage *image);
 };
 
+class ScriptButtonGroup : public QButtonGroup
+{
+    Q_OBJECT
+
+public:
+    ScriptButtonGroup(QWidget * parent, QHBoxLayout *layout)
+        : QButtonGroup(parent),
+        mLayout(layout)
+    {}
+
+    Q_INVOKABLE void addItems(const QStringList &values)
+    {
+        for (const QString &value : values) {
+            QRadioButton radioButton = QRadioButton();
+            mLayout->addWidget(&radioButton);
+            radioButton.setText(value);
+            QButtonGroup::addButton(&radioButton);
+        }
+    }
+private:
+    QHBoxLayout *mLayout;
+};
 
 class ScriptDialog : public QDialog
 {
@@ -84,6 +109,7 @@ public:
     Q_INVOKABLE QWidget *addFilePicker(const QString &labelText = QString());
     Q_INVOKABLE QWidget *addColorButton(const QString &labelText = QString());
     Q_INVOKABLE QWidget *addImage(const QString &labelText, Tiled::ScriptImage *image);
+    Q_INVOKABLE ScriptButtonGroup *addRadioButtonGroup(const QString &labelText, const QStringList &values);
     Q_INVOKABLE void clear();
     Q_INVOKABLE void addNewRow();
 

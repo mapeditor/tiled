@@ -31,6 +31,7 @@
 #include <QComboBox>
 #include <QCoreApplication>
 #include <QDoubleSpinBox>
+#include <QGroupBox>
 #include <QHBoxLayout>
 #include <QJSEngine>
 #include <QLineEdit>
@@ -104,7 +105,6 @@ public:
     Q_INVOKABLE void addItems(const QStringList &texts)
     { QComboBox::addItems(texts); }
 };
-
 
 ScriptDialog::ScriptDialog(const QString &title)
     : QDialog(MainWindow::maybeInstance())
@@ -265,6 +265,19 @@ QWidget *ScriptDialog::addColorButton(const QString &labelText)
 ScriptDialog::NewRowMode ScriptDialog::newRowMode() const
 {
     return m_newRowMode;
+}
+
+ScriptButtonGroup *ScriptDialog::addRadioButtonGroup(const QString &labelText, const QStringList &values)
+{
+    QGroupBox *groupParent = new QGroupBox(this);
+    groupParent->setFlat(true);
+    QHBoxLayout *hBox = new QHBoxLayout(groupParent);
+    ScriptButtonGroup *buttonGroup = new ScriptButtonGroup(groupParent, hBox);
+    buttonGroup->addItems(values);
+    hBox->addStretch(rightColumnStretch);
+    groupParent->setLayout(hBox);
+    addDialogWidget(groupParent, labelText);
+    return buttonGroup;
 }
 
 void ScriptDialog::setNewRowMode(NewRowMode mode)
