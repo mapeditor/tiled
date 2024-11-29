@@ -26,11 +26,11 @@
 #include "preferences.h"
 #include "project.h"
 #include "projectmanager.h"
+#include "propertiesview.h"
 #include "propertytypesmodel.h"
 #include "savefile.h"
 #include "session.h"
 #include "utils.h"
-#include "varianteditor.h"
 #include "variantmapproperty.h"
 
 #include <QCheckBox>

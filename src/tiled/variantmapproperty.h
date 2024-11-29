@@ -20,8 +20,8 @@
 
 #pragma once
 
+#include "propertiesview.h"
 #include "propertytype.h"
-#include "varianteditor.h"
 
 #include <QSet>
 

@@ -20,8 +20,8 @@
 
 #include "propertyeditorwidgets.h"
 
+#include "propertiesview.h"
 #include "utils.h"
-#include "varianteditor.h"
 
 #include <QGridLayout>
 #include <QPainter>

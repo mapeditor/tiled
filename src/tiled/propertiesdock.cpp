@@ -20,8 +20,8 @@
 
 #include "propertiesdock.h"
 
+#include "propertiesview.h"
 #include "propertieswidget.h"
-#include "varianteditor.h"
 
 #include <QKeyEvent>
 

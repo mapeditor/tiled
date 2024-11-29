@@ -1,5 +1,5 @@
 /*
- * varianteditor.h
+ * propertiesview.h
  * Copyright 2024, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
