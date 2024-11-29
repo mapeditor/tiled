@@ -21,12 +21,11 @@
 
 #pragma once
 
-#include "qboxlayout.h"
 #include <QAbstractButton>
+#include <QBoxLayout>
 #include <QButtonGroup>
-#include <QLabel>
 #include <QDialog>
-#include <QRadioButton>
+#include <QLabel>
 
 class QGridLayout;
 class QHBoxLayout;
@@ -53,6 +52,7 @@ public:
     void setImage(ScriptImage *image);
 };
 
+
 class ScriptButtonGroup : public QButtonGroup
 {
     Q_OBJECT
@@ -61,54 +61,20 @@ class ScriptButtonGroup : public QButtonGroup
     Q_PROPERTY(int checkedIndex READ checkedIndex CONSTANT)
 
 public:
-    ScriptButtonGroup(QWidget * parent, QHBoxLayout *layout)
-        : QButtonGroup(parent),
-        mLayout(layout)
+    ScriptButtonGroup(QWidget *parent, QHBoxLayout *layout)
+        : QButtonGroup(parent)
+        , mLayout(layout)
     {}
 
-    Q_INVOKABLE void addItems(const QStringList &values, const QStringList &toolTips)
-    {
-        int toolTipIndex = 0;
-        for (const QString &value : values) {
+    Q_INVOKABLE void addItems(const QStringList &values, const QStringList &toolTips);
+    Q_INVOKABLE QAbstractButton *addItem(const QString &value, const QString &toolTip = QString());
 
-            QString toolTip = toolTipIndex < toolTips.count() ?
-                                   toolTips.at(toolTipIndex) : QString();
-            addItem(value, toolTip);
-            toolTipIndex++;
-        }
-    }
-
-    Q_INVOKABLE QAbstractButton *addItem(const QString &value, const QString &toolTip = QString())
-    {
-        int nextIndex = QButtonGroup::buttons().length();
-        QRadioButton *radioButton = new QRadioButton;
-        mLayout->addWidget(radioButton);
-        radioButton->setText(value);
-        if (!toolTip.isEmpty())
-            radioButton->setToolTip(toolTip);
-        QButtonGroup::addButton(radioButton, nextIndex);
-        return radioButton;
-    }
-
-    QList<QAbstractButton *> buttons() const
-    {
-        return QButtonGroup::buttons();
-    }
-
-
-    QAbstractButton * checkedButton() const
-    {
-        return QButtonGroup::checkedButton();
-    }
-
-    int checkedIndex() const
-    {
-        return QButtonGroup::checkedId();
-    }
+    int checkedIndex() const { return QButtonGroup::checkedId(); }
 
 private:
     QHBoxLayout *mLayout;
 };
+
 
 class ScriptDialog : public QDialog
 {
@@ -144,7 +110,10 @@ public:
     Q_INVOKABLE QWidget *addFilePicker(const QString &labelText = QString());
     Q_INVOKABLE QWidget *addColorButton(const QString &labelText = QString());
     Q_INVOKABLE QWidget *addImage(const QString &labelText, Tiled::ScriptImage *image);
-    Q_INVOKABLE ScriptButtonGroup *addRadioButtonGroup(const QString &labelText, const QStringList &values, const QString &toolTip = QString(), const QStringList &buttonToolTips = QStringList());
+    Q_INVOKABLE ScriptButtonGroup *addRadioButtonGroup(const QString &labelText,
+                                                       const QStringList &values,
+                                                       const QString &toolTip = QString(),
+                                                       const QStringList &buttonToolTips = QStringList());
     Q_INVOKABLE void clear();
     Q_INVOKABLE void addNewRow();
 
@@ -159,7 +128,9 @@ private:
     QLabel *newLabel(const QString &labelText);
     void initializeLayout();
     void determineWidgetGrouping(QWidget *widget);
-    QWidget *addDialogWidget(QWidget * widget, const QString &label = QString(), const QString &labelToolTip = QString());
+    QWidget *addDialogWidget(QWidget * widget,
+                             const QString &label = QString(),
+                             const QString &labelToolTip = QString());
 
     int m_rowIndex = 0;
     int m_widgetsInRow = 0;

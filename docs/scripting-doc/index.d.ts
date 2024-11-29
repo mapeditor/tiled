@@ -770,14 +770,13 @@ declare namespace Qt {
    * 
    * @since 1.11.1
    */
-  class QRadioButton extends QAbstractButton { }
+  class QRadioButton extends QAbstractButton {}
 
   /**
    * A group of radio buttons where only one button can be selected.
    * @since 1.11.1
    */
   class QButtonGroup {
-    
     /**
      * Retrieve a list of buttons added to this QButtonGroup.
      */
@@ -796,17 +795,17 @@ declare namespace Qt {
 
     /**
      * Add multiple radio buttons to this group.
-     * @param values - Each entry in the array is the text that will appear on the radio button.
-     * @param toolTips Optional list of tooltips, where each entry is a tooltip that corresponds to the radio button in the list of values with the same index.
+     *
+     * Each entry in the values array is the text that will appear on the radio
+     * button. The optional list of tooltips specifies the tooltip for the
+     * radio buttons at each index.
      */
     addItems(values: string[], toolTips: string[] | undefined) :QRadioButton[];
 
     /**
-     * Add a single radio button to this group.
-     * @param values - The text that will appear on the radio button.
-     * @param toolTips Optional tooltip for the radio button.
+     * Add a radio button to this group with the given text and tooltip.
      */
-    addItem(value: String, toolTip: string | undefined) : QRadioButton;
+    addItem(text: string, toolTip: string | undefined) : QRadioButton;
    
     /**
      * Signal emitted when any radio button in this QButtonGroup is selected or deselected. 
@@ -5381,20 +5380,21 @@ declare class Dialog extends Qt.QWidget {
    */
   addFilePicker(labelText?: string): FileEdit;
 
-    /**
-   * Add a {@link QButtonGroup} widget which allows you to add multiple radio buttons,
-   * where only one radio button can be selected at a time. 
-   * 
-   * Each radio button is a {@link QAbstractButton}. You can force selection of a radio button by 
-   * setting checked = true, and also disable
+  /**
+   * Add a {@link QButtonGroup} widget which allows you to add multiple radio
+   * buttons, where only one radio button can be selected at a time.
+   *
+   * Each radio button is a {@link QAbstractButton}. You can force selection of
+   * a radio button by setting checked = true, and also disable
    *
    * @param labelText - If the labelText is non-empty, a label widget will be added to the left of
    *  the widget.
    * @param values - Each entry in the array is the text that will appear on the radio button.
    * @param labelToolTip - Optional tooltip for the label to the left of the radio button group.
    * @param buttonToolTips - Optional list of tooltips, where each entry is a tooltip that corresponds to the radio button in the list of values with the same index.
+   *
+   * @since 1.11.1
    */
-
   addRadioButtonGroup(labelText: string, values: string[], labelToolTip : string| undefined,  buttonToolTips : string[] | undefined): Qt.QButtonGroup;
 
   /**
