@@ -4038,10 +4038,9 @@ interface TilesetEditor {
   readonly collisionEditor: TileCollisionEditor;
 
   /**
-   * Get or set the currently selected {@link WangSet} in the "Terrain Sets" view.
+   * The currently selected {@link WangSet} in the "Terrain Sets" view.
    *
-   * @since 1.9
-   * Writable since 1.11.1
+   * @since 1.9 (writable since 1.11.1)
    */
   currentWangSet: WangSet;
 
@@ -4053,12 +4052,11 @@ interface TilesetEditor {
   readonly currentWangSetChanged: Signal<void>;
 
   /**
-   * Gets the currently selected Wang color index in the "Terrain Sets" view.
+   * The currently selected Wang color index in the "Terrain Sets" view.
    * The value 0 is used to represent the eraser mode, and the first Wang color
    * has index 1.
    *
-   * @since 1.9
-   * Writable since 1.11.1
+   * @since 1.9 (writable since 1.11.1)
    */
    currentWangColorIndex: number;
 

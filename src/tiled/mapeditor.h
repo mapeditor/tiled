@@ -121,6 +121,7 @@ public:
 
     EditableWangSet *currentWangSet() const;
     void setCurrentWangSet(EditableWangSet *wangSet);
+
     int currentWangColorIndex() const;
     void setCurrentWangColorIndex(int newIndex);
 
