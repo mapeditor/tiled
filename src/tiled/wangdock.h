@@ -88,7 +88,7 @@ public slots:
     void setCurrentWangSet(WangSet *wangSet);
     void onCurrentWangIdChanged(WangId wangId);
     void onWangIdUsedChanged(WangId wangId);
-    void onColorCaptured(int color);
+    void setCurrentWangColor(int color);
 
 protected:
     void changeEvent(QEvent *event) override;

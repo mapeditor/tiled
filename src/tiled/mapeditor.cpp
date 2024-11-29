@@ -281,7 +281,7 @@ MapEditor::MapEditor(QObject *parent)
     connect(mWangDock, &WangDock::wangColorChanged,
             mWangBrush, &WangBrush::setColor);
     connect(mWangBrush, &WangBrush::colorCaptured,
-            mWangDock, &WangDock::onColorCaptured);
+            mWangDock, &WangDock::setCurrentWangColor);
 
     connect(mTileStampsDock, &TileStampsDock::setStamp,
             this, &MapEditor::setStamp);
@@ -1067,9 +1067,31 @@ EditableWangSet *MapEditor::currentWangSet() const
     return EditableWangSet::get(mWangDock->currentWangSet());
 }
 
+void MapEditor::setCurrentWangSet(EditableWangSet *wangSet)
+{
+    if (!wangSet) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
+    mWangDock->setCurrentWangSet(wangSet->wangSet());
+}
+
 int MapEditor::currentWangColorIndex() const
 {
     return mWangDock->currentWangColor();
+}
+
+void MapEditor::setCurrentWangColorIndex(int newIndex)
+{
+    if (!mWangDock->currentWangSet()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "No current Wang set"));
+        return;
+    }
+    if (newIndex < 0 || newIndex > mWangDock->currentWangSet()->colorCount()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "An invalid index was provided"));
+        return;
+    }
+    mWangDock->setCurrentWangColor(newIndex);
 }
 
 AbstractTool *MapEditor::selectedTool() const

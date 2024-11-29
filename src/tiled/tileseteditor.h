@@ -57,8 +57,8 @@ class TilesetEditor final : public Editor
     Q_OBJECT
 
     Q_PROPERTY(Tiled::TileCollisionDock *collisionEditor READ collisionEditor CONSTANT)
-    Q_PROPERTY(Tiled::EditableWangSet *currentWangSet READ currentWangSet NOTIFY currentWangSetChanged)
-    Q_PROPERTY(int currentWangColorIndex READ currentWangColorIndex NOTIFY currentWangColorIndexChanged)
+    Q_PROPERTY(Tiled::EditableWangSet *currentWangSet READ currentWangSet  WRITE setCurrentWangSet NOTIFY currentWangSetChanged)
+    Q_PROPERTY(int currentWangColorIndex READ currentWangColorIndex WRITE setCurrentWangColorIndex  NOTIFY currentWangColorIndexChanged)
 
 public:
     explicit TilesetEditor(QObject *parent = nullptr);
@@ -101,7 +101,10 @@ public:
     TileCollisionDock *collisionEditor() const;
 
     EditableWangSet *currentWangSet() const;
+    void setCurrentWangSet(EditableWangSet *wangSet);
+
     int currentWangColorIndex() const;
+    void setCurrentWangColorIndex(int newIndex);
 
 signals:
     void currentTileChanged(Tile *tile);

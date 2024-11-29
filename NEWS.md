@@ -4,6 +4,7 @@
 * Scripting: Added `MapEditor.currentBrushChanged` signal
 * Scripting: Added `tiled.cursor` to create mouse cursor values
 * Scripting: Added `Tileset.transformationFlags` (#3753)
+* Scripting: Made `currentWangSet` and `currentWangColorIndex` properties writeable (#4105)
 * Fixed saving/loading of custom properties set on worlds (#4025)
 * Fixed issue with placing tile objects after switching maps (#3497)
 * Fixed crash when accessing a world through a symlink (#4042)
