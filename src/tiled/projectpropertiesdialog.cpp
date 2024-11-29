@@ -24,9 +24,9 @@
 #include "mapformat.h"
 #include "project.h"
 #include "projectdocument.h"
+#include "propertiesview.h"
 #include "tiled.h"
 #include "utils.h"
-#include "varianteditor.h"
 
 #include <QFormLayout>
 #include <QGroupBox>

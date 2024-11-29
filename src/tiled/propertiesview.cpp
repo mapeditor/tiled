@@ -1,5 +1,5 @@
 /*
- * varianteditor.cpp
+ * propertiesview.cpp
  * Copyright 2024, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -18,7 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "varianteditor.h"
+#include "propertiesview.h"
 
 #include "colorbutton.h"
 #include "fileedit.h"
@@ -1433,4 +1433,4 @@ void PropertiesView::updatePropertyActions(const PropertyWidgets &widgets,
 
 } // namespace Tiled
 
-#include "moc_varianteditor.cpp"
+#include "moc_propertiesview.cpp"
