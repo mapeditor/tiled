@@ -2480,13 +2480,13 @@ interface MapEditor {
   currentBrushChanged: Signal<void>;
 
   /**
-   * Gets the currently selected {@link WangSet} in the "Terrain Sets" view.
+   * The currently selected {@link WangSet} in the "Terrain Sets" view.
    *
    * See also {@link TileLayerWangEdit}.
    *
-   * @since 1.8
+   * @since 1.8 (writable since 1.11.1)
    */
-  readonly currentWangSet: WangSet;
+  currentWangSet: WangSet;
 
   /**
    * The signal emitted when {@link currentWangSet} changes.
@@ -2496,15 +2496,15 @@ interface MapEditor {
   readonly currentWangSetChanged: Signal<void>;
 
   /**
-   * Gets the currently selected Wang color index in the "Terrain Sets" view.
+   * The currently selected Wang color index in the "Terrain Sets" view.
    * The value 0 is used to represent the eraser mode, and the first Wang color
    * has index 1.
    *
    * See also {@link TileLayerWangEdit}.
    *
-   * @since 1.8
+   * @since 1.8 (writable since 1.11.1)
    */
-  readonly currentWangColorIndex: number;
+  currentWangColorIndex: number;
 
   /**
    * The signal emitted when {@link currentWangColorIndex} changes.

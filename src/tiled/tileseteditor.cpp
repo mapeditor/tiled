@@ -37,6 +37,7 @@
 #include "objecttemplate.h"
 #include "preferences.h"
 #include "propertiesdock.h"
+#include "scriptmanager.h"
 #include "session.h"
 #include "templatesdock.h"
 #include "tile.h"
@@ -510,9 +511,31 @@ EditableWangSet *TilesetEditor::currentWangSet() const
     return EditableWangSet::get(mWangDock->currentWangSet());
 }
 
+void TilesetEditor::setCurrentWangSet(EditableWangSet *wangSet)
+{
+    if (!wangSet) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
+    mWangDock->setCurrentWangSet(wangSet->wangSet());
+}
+
 int TilesetEditor::currentWangColorIndex() const
 {
     return mWangDock->currentWangColor();
+}
+
+void TilesetEditor::setCurrentWangColorIndex(int newIndex)
+{
+    if (!mWangDock->currentWangSet()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "No current Wang set"));
+        return;
+    }
+    if (newIndex < 0 || newIndex > mWangDock->currentWangSet()->colorCount()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "An invalid index was provided"));
+        return;
+    }
+    mWangDock->setCurrentWangColor(newIndex);
 }
 
 void TilesetEditor::currentWidgetChanged()
