@@ -678,7 +678,7 @@ void WangDock::onWangIdUsedChanged(WangId wangId)
         mWangTemplateView->update(index);
 }
 
-void WangDock::onColorCaptured(int color)
+void WangDock::setCurrentWangColor(int color)
 {
     const QModelIndex index = mWangColorModel->colorIndex(color);
 
