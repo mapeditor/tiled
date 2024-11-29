@@ -5387,11 +5387,15 @@ declare class Dialog extends Qt.QWidget {
    * Each radio button is a {@link QAbstractButton}. You can force selection of
    * a radio button by setting checked = true, and also disable
    *
-   * @param labelText - If the labelText is non-empty, a label widget will be added to the left of
-   *  the widget.
-   * @param values - Each entry in the array is the text that will appear on the radio button.
-   * @param labelToolTip - Optional tooltip for the label to the left of the radio button group.
-   * @param buttonToolTips - Optional list of tooltips, where each entry is a tooltip that corresponds to the radio button in the list of values with the same index.
+   * If the labelText is non-empty, a label widget will be added to the left of
+   * the widget.
+   * 
+   * Each entry in the values array is the text that will appear on the radio button.
+   * 
+   * labelToolTip is an optional tooltip for the label to the left of the radio button group.
+   * 
+   * buttonToolTips is an optional list of tooltips, where each entry is a tooltip that corresponds
+   * to the radio button in the list of values at each index.
    *
    * @since 1.11.1
    */
