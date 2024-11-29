@@ -29,10 +29,6 @@
 #include "preferences.h"
 #include "savefile.h"
 #include "stampbrush.h"
-#include "tilelayer.h"
-#include "tileselectiontool.h"
-#include "tileset.h"
-#include "tilesetmanager.h"
 #include "tilestampmodel.h"
 #include "toolmanager.h"
 #include "utils.h"
@@ -46,6 +42,8 @@
 
 using namespace Tiled;
 
+TileStampManager *TileStampManager::ourInstance;
+
 TileStampManager::TileStampManager(const ToolManager &toolManager,
                                    QObject *parent)
     : QObject(parent)
@@ -54,6 +52,9 @@ TileStampManager::TileStampManager(const ToolManager &toolManager,
     , mTileStampModel(new TileStampModel(this))
     , mToolManager(toolManager)
 {
+    Q_ASSERT(!ourInstance);
+    ourInstance = this;
+
     mRegisteredCb = stampsDirectory.onChange([this] { stampsDirectoryChanged(); });
 
     connect(mTileStampModel, &TileStampModel::stampAdded,
@@ -64,8 +65,6 @@ TileStampManager::TileStampManager(const ToolManager &toolManager,
             this, &TileStampManager::saveStamp);
     connect(mTileStampModel, &TileStampModel::stampRemoved,
             this, &TileStampManager::deleteStamp);
-
-    loadStamps();
 }
 
 TileStampManager::~TileStampManager()
@@ -73,6 +72,8 @@ TileStampManager::~TileStampManager()
     // needs to be over here where the TileStamp type is complete
 
     stampsDirectory.unregister(mRegisteredCb);
+
+    ourInstance = nullptr;
 }
 
 static TileStamp stampFromContext(AbstractTool *selectedTool)
