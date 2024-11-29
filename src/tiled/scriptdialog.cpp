@@ -300,7 +300,6 @@ ScriptButtonGroup *ScriptDialog::addRadioButtonGroup(const QString &labelText,
     QHBoxLayout *hBox = new QHBoxLayout(groupParent);
     ScriptButtonGroup *buttonGroup = new ScriptButtonGroup(groupParent, hBox);
     buttonGroup->addItems(values, buttonToolTips);
-    hBox->addStretch(rightColumnStretch);
     addDialogWidget(groupParent, labelText, toolTip);
     return buttonGroup;
 }
