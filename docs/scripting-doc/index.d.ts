@@ -763,11 +763,11 @@ declare namespace Qt {
 
   /**
    * This type is returned when calling {@link QButtonGroup.addItem} or {@link QButtonGroup.addItems}.
-   * 
+   *
    * You can set checked to true for a QRadioButton even if you have also set enabled to false on it,
-   * which could allow you to prevent the script user from selecting a radio button by clicking on it, 
+   * which could allow you to prevent the script user from selecting a radio button by clicking on it,
    * but still change the selection in your script.
-   * 
+   *
    * @since 1.11.1
    */
   class QRadioButton extends QAbstractButton {}
@@ -800,15 +800,15 @@ declare namespace Qt {
      * button. The optional list of tooltips specifies the tooltip for the
      * radio buttons at each index.
      */
-    addItems(values: string[], toolTips: string[] | undefined) :QRadioButton[];
+    addItems(values: string[], toolTips: string[] | undefined): QRadioButton[];
 
     /**
      * Add a radio button to this group with the given text and tooltip.
      */
-    addItem(text: string, toolTip: string | undefined) : QRadioButton;
-   
+    addItem(text: string, toolTip: string | undefined): QRadioButton;
+
     /**
-     * Signal emitted when any radio button in this QButtonGroup is selected or deselected. 
+     * Signal emitted when any radio button in this QButtonGroup is selected or deselected.
      * If the button that causes the signal to be emitted is now selected, checked will be true.
      */
     readonly idToggled: Signal<[index: number, checked: boolean]>;
@@ -5389,17 +5389,22 @@ declare class Dialog extends Qt.QWidget {
    *
    * If the labelText is non-empty, a label widget will be added to the left of
    * the widget.
-   * 
+   *
    * Each entry in the values array is the text that will appear on the radio button.
-   * 
+   *
    * labelToolTip is an optional tooltip for the label to the left of the radio button group.
-   * 
+   *
    * buttonToolTips is an optional list of tooltips, where each entry is a tooltip that corresponds
    * to the radio button in the list of values at each index.
    *
    * @since 1.11.1
    */
-  addRadioButtonGroup(labelText: string, values: string[], labelToolTip : string| undefined,  buttonToolTips : string[] | undefined): Qt.QButtonGroup;
+  addRadioButtonGroup(
+    labelText: string,
+    values: string[],
+    labelToolTip: string | undefined,
+    buttonToolTips: string[] | undefined,
+  ): Qt.QButtonGroup;
 
   /**
    * Erase all of the widgets that you have added to the dialog.
