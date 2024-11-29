@@ -760,6 +760,59 @@ declare namespace Qt {
    * Qt documentation [QFrame](https://doc.qt.io/qt-6/qframe.html)
    */
   class QFrame extends QWidget {}
+
+  /**
+   * This type is returned when calling {@link QButtonGroup.addItem} or {@link QButtonGroup.addItems}.
+   *
+   * You can set checked to true for a QRadioButton even if you have also set enabled to false on it,
+   * which could allow you to prevent the script user from selecting a radio button by clicking on it,
+   * but still change the selection in your script.
+   *
+   * @since 1.11.1
+   */
+  class QRadioButton extends QAbstractButton {}
+
+  /**
+   * A group of radio buttons where only one button can be selected.
+   * @since 1.11.1
+   */
+  class QButtonGroup {
+    /**
+     * Retrieve a list of buttons added to this QButtonGroup.
+     */
+    readonly buttons: QRadioButton[];
+
+    /**
+     * The radio button that is currently selected, if any.
+     */
+    readonly checkedButton: QRadioButton | undefined;
+
+    /**
+     * ID / index into {@link QButtonGroup.buttons} that is currently selected.
+     * If no radio button is selected, -1 will be returned.
+     */
+    readonly checkedIndex: number;
+
+    /**
+     * Add multiple radio buttons to this group.
+     *
+     * Each entry in the values array is the text that will appear on the radio
+     * button. The optional list of tooltips specifies the tooltip for the
+     * radio buttons at each index.
+     */
+    addItems(values: string[], toolTips: string[] | undefined): QRadioButton[];
+
+    /**
+     * Add a radio button to this group with the given text and tooltip.
+     */
+    addItem(text: string, toolTip: string | undefined): QRadioButton;
+
+    /**
+     * Signal emitted when any radio button in this QButtonGroup is selected or deselected.
+     * If the button that causes the signal to be emitted is now selected, checked will be true.
+     */
+    readonly idToggled: Signal<[index: number, checked: boolean]>;
+  }
 }
 
 /**
@@ -5326,6 +5379,32 @@ declare class Dialog extends Qt.QWidget {
    * the widget.
    */
   addFilePicker(labelText?: string): FileEdit;
+
+  /**
+   * Add a {@link QButtonGroup} widget which allows you to add multiple radio
+   * buttons, where only one radio button can be selected at a time.
+   *
+   * Each radio button is a {@link QAbstractButton}. You can force selection of
+   * a radio button by setting checked = true, and also disable
+   *
+   * If the labelText is non-empty, a label widget will be added to the left of
+   * the widget.
+   *
+   * Each entry in the values array is the text that will appear on the radio button.
+   *
+   * labelToolTip is an optional tooltip for the label to the left of the radio button group.
+   *
+   * buttonToolTips is an optional list of tooltips, where each entry is a tooltip that corresponds
+   * to the radio button in the list of values at each index.
+   *
+   * @since 1.11.1
+   */
+  addRadioButtonGroup(
+    labelText: string,
+    values: string[],
+    labelToolTip: string | undefined,
+    buttonToolTips: string[] | undefined,
+  ): Qt.QButtonGroup;
 
   /**
    * Erase all of the widgets that you have added to the dialog.
