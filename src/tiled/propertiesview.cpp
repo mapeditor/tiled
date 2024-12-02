@@ -447,7 +447,7 @@ QWidget *ColorProperty::createEditor(QWidget *parent)
 
     auto colorButton = new ColorButton(editor);
     colorButton->setShowAlphaChannel(m_alpha);
-    colorButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    colorButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
 
     QIcon resetIcon(QStringLiteral(":/images/16/edit-clear.png"));
     resetIcon.addFile(QStringLiteral(":/images/24/edit-clear.png"));
@@ -455,6 +455,7 @@ QWidget *ColorProperty::createEditor(QWidget *parent)
     auto resetButton = new QToolButton(editor);
     resetButton->setIcon(resetIcon);
     resetButton->setToolTip(tr("Clear Color"));
+    resetButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::MinimumExpanding);
     Utils::setThemeIcon(resetButton, "edit-clear");
 
     layout->addWidget(colorButton);
