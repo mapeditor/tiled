@@ -54,7 +54,6 @@ jobs:
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
       QT_VERSION: ${{ matrix.qt_version }}
-      QTCREATOR_VERSION: 14.0.2
 
     steps:
     - name: Checkout repository
@@ -75,12 +74,14 @@ jobs:
           libxcb-shape0 \
           libxcb-xinerama0 \
           libxkbcommon-x11-0 \
-          libzstd-dev
+          libzstd-dev \
+          qbs
 
     - name: Install Qt
       run: |
-        ./dist/install-qt.sh --version ${QT_VERSION} qtbase qtdeclarative qtsvg qtimageformats qttools qttranslations icu | tee -a $GITHUB_PATH
-        ./dist/install-qt.sh --version ${QTCREATOR_VERSION} qtcreator | tee -a $GITHUB_PATH
+        pip install aqtinstall
+        aqt install-qt linux desktop ${QT_VERSION} gcc_64 --outputdir /opt/Qt
+        echo "/opt/Qt/${QT_VERSION}/gcc_64/bin" | tee -a $GITHUB_PATH
 
     - name: Setup ccache
       uses: hendrikmuhs/ccache-action@v1
@@ -192,16 +193,17 @@ jobs:
       matrix:
         include:
         - qt_version: 5.12.12
+          qt_dir: "clang_64"
           version_suffix: "10.12-10.15"
           architectures: x86_64
         - qt_version: 6.8.1
+          qt_dir: "macos"
           version_suffix: "11+"
           architectures: x86_64,arm64
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
       QT_VERSION: ${{ matrix.qt_version }}
-      QTCREATOR_VERSION: 14.0.2
 
     steps:
     - name: Checkout repository
@@ -209,11 +211,13 @@ jobs:
 
     - name: Install Qt
       run: |
-        sudo ./dist/install-qt.sh --version ${QT_VERSION} qtbase qtdeclarative qtsvg qtimageformats qttools | tee -a $GITHUB_PATH
-        sudo ./dist/install-qt.sh --version ${QTCREATOR_VERSION} qtcreator | tee -a $GITHUB_PATH
+        sudo pip install aqtinstall
+        sudo aqt install-qt mac desktop ${QT_VERSION} clang_64 --outputdir /opt/Qt
+        echo "/opt/Qt/${QT_VERSION}/${{ matrix.qt_dir }}/bin" | tee -a $GITHUB_PATH
 
     - name: Setup Qbs
       run: |
+        brew install qbs
         qbs setup-toolchains --detect
         qbs config defaultProfile xcode
 
@@ -284,22 +288,23 @@ jobs:
           arch: 32
           openssl_arch: x86
           filename_suffix: 'Windows-7-8_x86'
-          mingw_version: 8.1.0
-          mingw_component: mingw
-          mingw_path: /c/Qt/Tools/mingw810_32/bin
+          mingw_component: tools_mingw
+          mingw_variant: qt.tools.win32_mingw810
+          mingw_dir: mingw810_32
         - qt_version: 6.8.1
           qt_version_major: 6
           qt_toolchain: win64_mingw
           arch: 64
           openssl_arch: x64
           filename_suffix: 'Windows-10+_x86_64'
-          mingw_version: 13.1.0
-          mingw_component: mingw1310
-          mingw_path: /c/Qt/Tools/mingw1310_64/bin
+          mingw_component: tools_mingw1310
+          mingw_variant: qt.tools.win64_mingw1310
+          mingw_dir: mingw1310_64
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
-      MINGW_PATH: ${{ matrix.mingw_path }}
+      MINGW_PATH: /c/Qt/Tools/${{ matrix.mingw_dir }}/bin
+      QT_PATH: "/c/Qt/${{ matrix.qt_version }}/${{ matrix.qt_toolchain }}/bin"
 
     defaults:
       run:
@@ -311,8 +316,9 @@ jobs:
 
     - name: Install Qt
       run: |
-        echo "QT_PATH=$(./dist/install-qt.sh --version ${{ matrix.qt_version }} --toolchain ${{ matrix.qt_toolchain }} qtbase qtdeclarative qtsvg qtimageformats qttools qttranslations)" >> $GITHUB_ENV
-        ./dist/install-qt.sh --version ${{ matrix.mingw_version }} --toolchain win${{ matrix.arch }}_mingw ${{ matrix.mingw_component }}
+        pip install aqtinstall
+        aqt install-qt windows desktop ${{ matrix.qt_version }} ${{ matrix.qt_toolchain }} --outputdir /c/Qt
+        aqt install-tool windows desktop ${{ matrix.mingw_component }} ${{ matrix.mingw_variant }} --outputdir /c/Qt
 
     - name: Install Qbs
       run: |
