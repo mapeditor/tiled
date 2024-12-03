@@ -2462,9 +2462,11 @@ bool PropertiesWidget::copyProperties()
     if (!object)
         return false;
 
-    Properties properties;
-
     const auto selectedProperties = mPropertiesView->selectedProperties();
+    if (selectedProperties.isEmpty())
+        return false;
+
+    Properties properties;
     for (auto property : selectedProperties) {
         const QString name = property->name();
         const QVariant value = object->property(name);
