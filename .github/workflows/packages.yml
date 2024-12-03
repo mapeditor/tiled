@@ -50,10 +50,12 @@ jobs:
           qt_version: 5.15.2
           qt_version_major: 5
           qt_arch: gcc_64
+          qbs_default_profile: gcc
         - ubuntu_version: 22.04
           qt_version: 6.8.1
           qt_version_major: 6
           qt_arch: linux_gcc_64
+          qbs_default_profile: x86_64-linux-gnu-gcc-11
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
@@ -101,7 +103,7 @@ jobs:
       run: |
         qbs --version
         qbs setup-toolchains --detect
-        qbs config defaultProfile x86_64-linux-gnu-gcc-10
+        qbs config defaultProfile $${{ matrix.qbs_default_profile }}
 
     - name: Build Sentry Native
       run: |
