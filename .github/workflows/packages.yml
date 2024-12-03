@@ -79,8 +79,7 @@ jobs:
 
     - name: Install Qt
       run: |
-        pip install -U pip
-        pip install -U aqtinstall
+        pip install aqtinstall>=3.1.19
         aqt install-qt linux desktop ${QT_VERSION} gcc_64 --outputdir /opt/Qt
         echo "/opt/Qt/${QT_VERSION}/gcc_64/bin" | tee -a $GITHUB_PATH
 
@@ -212,8 +211,7 @@ jobs:
 
     - name: Install Qt
       run: |
-        pip install -U pip
-        pip install -U aqtinstall
+        pip install aqtinstall>=3.1.19
         aqt install-qt mac desktop ${QT_VERSION} clang_64 --outputdir /opt/Qt
         echo "/opt/Qt/${QT_VERSION}/${{ matrix.qt_dir }}/bin" | tee -a $GITHUB_PATH
 
@@ -318,8 +316,7 @@ jobs:
 
     - name: Install Qt
       run: |
-        pip install -U pip
-        pip install -U aqtinstall
+        pip install aqtinstall>=3.1.19
         aqt install-qt windows desktop ${{ matrix.qt_version }} ${{ matrix.qt_toolchain }} --outputdir /c/Qt
         aqt install-tool windows desktop ${{ matrix.mingw_component }} ${{ matrix.mingw_variant }} --outputdir /c/Qt
 
