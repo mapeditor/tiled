@@ -79,7 +79,7 @@ jobs:
 
     - name: Install Qt
       run: |
-        pip install aqtinstall>=3.1.19
+        pip install --no-cache-dir aqtinstall>=3.1.19
         aqt install-qt linux desktop ${QT_VERSION} gcc_64 --outputdir /opt/Qt
         echo "/opt/Qt/${QT_VERSION}/gcc_64/bin" | tee -a $GITHUB_PATH
 
@@ -212,7 +212,7 @@ jobs:
     - name: Install Qt
       run: |
         pip install aqtinstall>=3.1.19
-        aqt install-qt mac desktop ${QT_VERSION} clang_64 --outputdir /opt/Qt
+        sudo aqt install-qt mac desktop ${QT_VERSION} clang_64 --outputdir /opt/Qt
         echo "/opt/Qt/${QT_VERSION}/${{ matrix.qt_dir }}/bin" | tee -a $GITHUB_PATH
 
     - name: Setup Qbs
@@ -285,6 +285,7 @@ jobs:
         - qt_version: 5.15.2
           qt_version_major: 5
           qt_toolchain: win32_mingw81
+          qt_dir: mingw81_32
           arch: 32
           openssl_arch: x86
           filename_suffix: 'Windows-7-8_x86'
@@ -294,6 +295,7 @@ jobs:
         - qt_version: 6.8.1
           qt_version_major: 6
           qt_toolchain: win64_mingw
+          qt_dir: mingw_64
           arch: 64
           openssl_arch: x64
           filename_suffix: 'Windows-10+_x86_64'
@@ -304,7 +306,7 @@ jobs:
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
       MINGW_PATH: /c/Qt/Tools/${{ matrix.mingw_dir }}/bin
-      QT_PATH: "/c/Qt/${{ matrix.qt_version }}/${{ matrix.qt_toolchain }}/bin"
+      QT_PATH: "/c/Qt/${{ matrix.qt_version }}/${{ matrix.qt_dir }}/bin"
 
     defaults:
       run:
