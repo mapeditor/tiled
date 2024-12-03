@@ -40,21 +40,28 @@ jobs:
 
   linux:
     name: Linux (AppImage, Qt ${{ matrix.qt_version_major }})
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-${{ matrix.ubuntu_version }}
     needs: version
 
     strategy:
       matrix:
         include:
-        - qt_version: 5.15.2
+        - ubuntu_version: 20.04
+          qt_version: 5.15.2
           qt_version_major: 5
-        - qt_version: 6.8.0
+          qt_arch: gcc_64
+          qt_install_args: ""
+          qbs_default_profile: gcc
+        - ubuntu_version: 22.04
+          qt_version: 6.8.1
           qt_version_major: 6
+          qt_arch: linux_gcc_64
+          qt_install_args: "--modules qtimageformats"
+          qbs_default_profile: x86_64-linux-gnu-gcc-11
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
       QT_VERSION: ${{ matrix.qt_version }}
-      QTCREATOR_VERSION: 14.0.2
 
     steps:
     - name: Checkout repository
@@ -75,12 +82,15 @@ jobs:
           libxcb-shape0 \
           libxcb-xinerama0 \
           libxkbcommon-x11-0 \
-          libzstd-dev
+          libzstd-dev \
+          qbs \
+          libfuse2
 
     - name: Install Qt
       run: |
-        ./dist/install-qt.sh --version ${QT_VERSION} qtbase qtdeclarative qtsvg qtimageformats qttools qttranslations icu | tee -a $GITHUB_PATH
-        ./dist/install-qt.sh --version ${QTCREATOR_VERSION} qtcreator | tee -a $GITHUB_PATH
+        pip install aqtinstall
+        aqt install-qt linux desktop ${QT_VERSION} ${{ matrix.qt_arch }} ${{ matrix.qt_install_args }} --outputdir /opt/Qt
+        echo "/opt/Qt/${QT_VERSION}/gcc_64/bin" | tee -a $GITHUB_PATH
 
     - name: Setup ccache
       uses: hendrikmuhs/ccache-action@v1
@@ -96,7 +106,7 @@ jobs:
       run: |
         qbs --version
         qbs setup-toolchains --detect
-        qbs config defaultProfile x86_64-linux-gnu-gcc-10
+        qbs config defaultProfile ${{ matrix.qbs_default_profile }}
 
     - name: Build Sentry Native
       run: |
@@ -192,16 +202,19 @@ jobs:
       matrix:
         include:
         - qt_version: 5.12.12
+          qt_dir: "clang_64"
+          qt_install_args: ""
           version_suffix: "10.12-10.15"
           architectures: x86_64
-        - qt_version: 6.8.0
+        - qt_version: 6.8.1
+          qt_dir: "macos"
+          qt_install_args: "--modules qtimageformats"
           version_suffix: "11+"
           architectures: x86_64,arm64
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
       QT_VERSION: ${{ matrix.qt_version }}
-      QTCREATOR_VERSION: 14.0.2
 
     steps:
     - name: Checkout repository
@@ -209,11 +222,13 @@ jobs:
 
     - name: Install Qt
       run: |
-        sudo ./dist/install-qt.sh --version ${QT_VERSION} qtbase qtdeclarative qtsvg qtimageformats qttools | tee -a $GITHUB_PATH
-        sudo ./dist/install-qt.sh --version ${QTCREATOR_VERSION} qtcreator | tee -a $GITHUB_PATH
+        pip install aqtinstall
+        sudo aqt install-qt mac desktop ${QT_VERSION} clang_64 ${{ matrix.qt_install_args }} --outputdir /opt/Qt
+        echo "/opt/Qt/${QT_VERSION}/${{ matrix.qt_dir }}/bin" | tee -a $GITHUB_PATH
 
     - name: Setup Qbs
       run: |
+        brew install qbs
         qbs setup-toolchains --detect
         qbs config defaultProfile xcode
 
@@ -280,26 +295,31 @@ jobs:
         include:
         - qt_version: 5.15.2
           qt_version_major: 5
-          qt_toolchain: win32_mingw81
+          qt_arch: win32_mingw81
+          qt_dir: mingw81_32
+          qt_install_args: ""
           arch: 32
           openssl_arch: x86
           filename_suffix: 'Windows-7-8_x86'
-          mingw_version: 8.1.0
-          mingw_component: mingw
-          mingw_path: /c/Qt/Tools/mingw810_32/bin
-        - qt_version: 6.8.0
+          mingw_component: tools_mingw
+          mingw_variant: qt.tools.win32_mingw810
+          mingw_dir: mingw810_32
+        - qt_version: 6.8.1
           qt_version_major: 6
-          qt_toolchain: win64_mingw
+          qt_arch: win64_mingw
+          qt_dir: mingw_64
+          qt_install_args: "--modules qtimageformats"
           arch: 64
           openssl_arch: x64
           filename_suffix: 'Windows-10+_x86_64'
-          mingw_version: 13.1.0
-          mingw_component: mingw1310
-          mingw_path: /c/Qt/Tools/mingw1310_64/bin
+          mingw_component: tools_mingw1310
+          mingw_variant: qt.tools.win64_mingw1310
+          mingw_dir: mingw1310_64
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
-      MINGW_PATH: ${{ matrix.mingw_path }}
+      MINGW_PATH: /c/Qt/Tools/${{ matrix.mingw_dir }}/bin
+      QT_PATH: "/c/Qt/${{ matrix.qt_version }}/${{ matrix.qt_dir }}/bin"
 
     defaults:
       run:
@@ -311,8 +331,9 @@ jobs:
 
     - name: Install Qt
       run: |
-        echo "QT_PATH=$(./dist/install-qt.sh --version ${{ matrix.qt_version }} --toolchain ${{ matrix.qt_toolchain }} qtbase qtdeclarative qtsvg qtimageformats qttools qttranslations)" >> $GITHUB_ENV
-        ./dist/install-qt.sh --version ${{ matrix.mingw_version }} --toolchain win${{ matrix.arch }}_mingw ${{ matrix.mingw_component }}
+        pip install aqtinstall
+        aqt install-qt windows desktop ${{ matrix.qt_version }} ${{ matrix.qt_arch }} ${{ matrix.qt_install_args }} --outputdir /c/Qt
+        aqt install-tool windows desktop ${{ matrix.mingw_component }} ${{ matrix.mingw_variant }} --outputdir /c/Qt
 
     - name: Install Qbs
       run: |
