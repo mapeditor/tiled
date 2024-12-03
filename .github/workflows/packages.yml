@@ -81,7 +81,8 @@ jobs:
           libxcb-xinerama0 \
           libxkbcommon-x11-0 \
           libzstd-dev \
-          qbs
+          qbs \
+          libfuse2
 
     - name: Install Qt
       run: |
