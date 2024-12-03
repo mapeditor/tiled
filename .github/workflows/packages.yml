@@ -103,7 +103,7 @@ jobs:
       run: |
         qbs --version
         qbs setup-toolchains --detect
-        qbs config defaultProfile $${{ matrix.qbs_default_profile }}
+        qbs config defaultProfile ${{ matrix.qbs_default_profile }}
 
     - name: Build Sentry Native
       run: |
