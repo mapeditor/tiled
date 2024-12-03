@@ -40,15 +40,17 @@ jobs:
 
   linux:
     name: Linux (AppImage, Qt ${{ matrix.qt_version_major }})
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-${{ matrix.ubuntu_version }}
     needs: version
 
     strategy:
       matrix:
         include:
-        - qt_version: 5.15.2
+        - ubuntu_version: 20.04
+          qt_version: 5.15.2
           qt_version_major: 5
-        - qt_version: 6.8.1
+        - ubuntu_version: 22.04
+          qt_version: 6.8.1
           qt_version_major: 6
 
     env:
@@ -79,7 +81,7 @@ jobs:
 
     - name: Install Qt
       run: |
-        pip install --no-cache-dir aqtinstall>=3.1.19
+        pip install aqtinstall
         aqt install-qt linux desktop ${QT_VERSION} gcc_64 --outputdir /opt/Qt
         echo "/opt/Qt/${QT_VERSION}/gcc_64/bin" | tee -a $GITHUB_PATH
 
@@ -211,7 +213,7 @@ jobs:
 
     - name: Install Qt
       run: |
-        pip install aqtinstall>=3.1.19
+        pip install aqtinstall
         sudo aqt install-qt mac desktop ${QT_VERSION} clang_64 --outputdir /opt/Qt
         echo "/opt/Qt/${QT_VERSION}/${{ matrix.qt_dir }}/bin" | tee -a $GITHUB_PATH
 
@@ -318,7 +320,7 @@ jobs:
 
     - name: Install Qt
       run: |
-        pip install aqtinstall>=3.1.19
+        pip install aqtinstall
         aqt install-qt windows desktop ${{ matrix.qt_version }} ${{ matrix.qt_toolchain }} --outputdir /c/Qt
         aqt install-tool windows desktop ${{ matrix.mingw_component }} ${{ matrix.mingw_variant }} --outputdir /c/Qt
 
