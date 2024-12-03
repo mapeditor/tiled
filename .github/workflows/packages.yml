@@ -80,7 +80,7 @@ jobs:
     - name: Install Qt
       run: |
         pip install -U pip
-        pip install aqtinstall
+        pip install -U aqtinstall
         aqt install-qt linux desktop ${QT_VERSION} gcc_64 --outputdir /opt/Qt
         echo "/opt/Qt/${QT_VERSION}/gcc_64/bin" | tee -a $GITHUB_PATH
 
@@ -212,9 +212,9 @@ jobs:
 
     - name: Install Qt
       run: |
-        sudo pip install -U pip
-        sudo pip install aqtinstall
-        sudo aqt install-qt mac desktop ${QT_VERSION} clang_64 --outputdir /opt/Qt
+        pip install -U pip
+        pip install -U aqtinstall
+        aqt install-qt mac desktop ${QT_VERSION} clang_64 --outputdir /opt/Qt
         echo "/opt/Qt/${QT_VERSION}/${{ matrix.qt_dir }}/bin" | tee -a $GITHUB_PATH
 
     - name: Setup Qbs
@@ -319,7 +319,7 @@ jobs:
     - name: Install Qt
       run: |
         pip install -U pip
-        pip install aqtinstall
+        pip install -U aqtinstall
         aqt install-qt windows desktop ${{ matrix.qt_version }} ${{ matrix.qt_toolchain }} --outputdir /c/Qt
         aqt install-tool windows desktop ${{ matrix.mingw_component }} ${{ matrix.mingw_variant }} --outputdir /c/Qt
 
