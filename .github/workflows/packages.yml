@@ -50,11 +50,13 @@ jobs:
           qt_version: 5.15.2
           qt_version_major: 5
           qt_arch: gcc_64
+          qt_install_args: ""
           qbs_default_profile: gcc
         - ubuntu_version: 22.04
           qt_version: 6.8.1
           qt_version_major: 6
           qt_arch: linux_gcc_64
+          qt_install_args: "--modules qtimageformats"
           qbs_default_profile: x86_64-linux-gnu-gcc-11
 
     env:
@@ -87,7 +89,7 @@ jobs:
     - name: Install Qt
       run: |
         pip install aqtinstall
-        aqt install-qt linux desktop ${QT_VERSION} ${{ matrix.qt_arch }} --modules qtimageformats --outputdir /opt/Qt
+        aqt install-qt linux desktop ${QT_VERSION} ${{ matrix.qt_arch }} ${{ matrix.qt_install_args }} --outputdir /opt/Qt
         echo "/opt/Qt/${QT_VERSION}/gcc_64/bin" | tee -a $GITHUB_PATH
 
     - name: Setup ccache
@@ -201,10 +203,12 @@ jobs:
         include:
         - qt_version: 5.12.12
           qt_dir: "clang_64"
+          qt_install_args: ""
           version_suffix: "10.12-10.15"
           architectures: x86_64
         - qt_version: 6.8.1
           qt_dir: "macos"
+          qt_install_args: "--modules qtimageformats"
           version_suffix: "11+"
           architectures: x86_64,arm64
 
@@ -219,7 +223,7 @@ jobs:
     - name: Install Qt
       run: |
         pip install aqtinstall
-        sudo aqt install-qt mac desktop ${QT_VERSION} clang_64 --modules qtimageformats --outputdir /opt/Qt
+        sudo aqt install-qt mac desktop ${QT_VERSION} clang_64 ${{ matrix.qt_install_args }} --outputdir /opt/Qt
         echo "/opt/Qt/${QT_VERSION}/${{ matrix.qt_dir }}/bin" | tee -a $GITHUB_PATH
 
     - name: Setup Qbs
@@ -293,6 +297,7 @@ jobs:
           qt_version_major: 5
           qt_arch: win32_mingw81
           qt_dir: mingw81_32
+          qt_install_args: ""
           arch: 32
           openssl_arch: x86
           filename_suffix: 'Windows-7-8_x86'
@@ -303,6 +308,7 @@ jobs:
           qt_version_major: 6
           qt_arch: win64_mingw
           qt_dir: mingw_64
+          qt_install_args: "--modules qtimageformats"
           arch: 64
           openssl_arch: x64
           filename_suffix: 'Windows-10+_x86_64'
@@ -326,7 +332,7 @@ jobs:
     - name: Install Qt
       run: |
         pip install aqtinstall
-        aqt install-qt windows desktop ${{ matrix.qt_version }} ${{ matrix.qt_arch }} --modules qtimageformats --outputdir /c/Qt
+        aqt install-qt windows desktop ${{ matrix.qt_version }} ${{ matrix.qt_arch }} ${{ matrix.qt_install_args }} --outputdir /c/Qt
         aqt install-tool windows desktop ${{ matrix.mingw_component }} ${{ matrix.mingw_variant }} --outputdir /c/Qt
 
     - name: Install Qbs
