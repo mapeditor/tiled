@@ -203,6 +203,8 @@ void MiniMapRenderer::renderToImage(QImage &image, RenderFlags renderFlags) cons
                             painter.translate(-origin);
                         }
 
+                        painter.setOpacity(object->opacity());
+
                         mRenderer->drawMapObject(&painter, object, object->effectiveColors());
 
                         if (object->rotation() != qreal(0))
