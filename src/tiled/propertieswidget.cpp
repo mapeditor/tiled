@@ -2516,6 +2516,20 @@ void PropertiesWidget::pasteProperties()
             undoStack->push(command);
 
         undoStack->endMacro();
+
+        // Make sure Custom Properties are expanded
+        mCustomProperties->setExpanded(true);
+    }
+
+    // Select the pasted properties
+    QList<Property*> selectedProperties;
+    for (const QString &name : pastedProperties.keys()) {
+        if (auto property = mCustomProperties->property(name))
+            selectedProperties.append(property);
+    }
+    if (!selectedProperties.isEmpty()) {
+        mPropertiesView->focusProperty(selectedProperties.first(), PropertiesView::FocusRow);
+        mPropertiesView->setSelectedProperties(selectedProperties);
     }
 }
 
