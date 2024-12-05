@@ -23,7 +23,6 @@
 
 #include "mapdocument.h"
 #include "mapobject.h"
-#include "objectrefdialog.h"
 #include "utils.h"
 
 #include <QHBoxLayout>

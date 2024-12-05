@@ -26,6 +26,7 @@
 #include "mainwindow.h"
 #include "scriptimage.h"
 #include "scriptmanager.h"
+#include "utils.h"
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -50,18 +51,6 @@ static const int rightColumnStretch = 1;
 namespace Tiled {
 
 QSet<ScriptDialog*> ScriptDialog::sDialogInstances;
-
-static void deleteAllFromLayout(QLayout *layout)
-{
-    while (QLayoutItem *item = layout->takeAt(0)) {
-        delete item->widget();
-
-        if (QLayout *layout = item->layout())
-            deleteAllFromLayout(layout);
-
-        delete item;
-    }
-}
 
 ScriptImageWidget::ScriptImageWidget(Tiled::ScriptImage *image, QWidget *parent)
     : QLabel(parent)
@@ -168,7 +157,7 @@ void ScriptDialog::initializeLayout()
 
 void ScriptDialog::clear()
 {
-    deleteAllFromLayout(layout());
+    Utils::deleteAllFromLayout(layout());
     initializeLayout();
 }
 

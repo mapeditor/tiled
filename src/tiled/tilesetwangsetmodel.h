@@ -98,6 +98,7 @@ private:
     void documentChanged(const ChangeEvent &event);
 
     void emitWangSetChange(WangSet *wangSet);
+    void emitToTilesetAndMaps(const ChangeEvent &event);
 
     TilesetDocument *mTilesetDocument;
 };

@@ -1,6 +1,7 @@
 /*
  * changemapproperty.h
  * Copyright 2012, Emmanuel Barroga emmanuelbarroga@gmail.com
+ * Copyright 2014-2024, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,111 +21,212 @@
 
 #pragma once
 
+#include "changeevents.h"
+#include "changevalue.h"
 #include "map.h"
+#include "mapdocument.h"
 
 #include <QColor>
-#include <QUndoCommand>
+#include <QCoreApplication>
 
 namespace Tiled {
 
 class MapDocument;
 
-class ChangeMapProperty : public QUndoCommand
+struct MapBackgroundColor
+{
+    using Type = QColor;
+
+    static void set(Map *map, Type value)   { map->setBackgroundColor(value); }
+    static Type get(const Map *map)         { return map->backgroundColor(); }
+    static int undoId()                     { return Cmd_ChangeMapBackgroundColor; }
+    static Map::Property property()         { return Map::BackgroundColorProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Background Color");
+    }
+};
+
+struct MapChunkSize
+{
+    using Type = QSize;
+
+    static void set(Map *map, Type value)   { map->setChunkSize(value); }
+    static Type get(const Map *map)         { return map->chunkSize(); }
+    static int undoId()                     { return Cmd_ChangeMapChunkSize; }
+    static Map::Property property()         { return Map::ChunkSizeProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Chunk Size");
+    }
+};
+
+struct MapStaggerAxis
+{
+    using Type = Map::StaggerAxis;
+
+    static void set(Map *map, Type value)   { map->setStaggerAxis(value); }
+    static Type get(const Map *map)         { return map->staggerAxis(); }
+    static int undoId()                     { return Cmd_ChangeMapStaggerAxis; }
+    static Map::Property property()         { return Map::StaggerAxisProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Stagger Axis");
+    }
+};
+
+struct MapStaggerIndex
+{
+    using Type = Map::StaggerIndex;
+
+    static void set(Map *map, Type value)   { map->setStaggerIndex(value); }
+    static Type get(const Map *map)         { return map->staggerIndex(); }
+    static int undoId()                     { return Cmd_ChangeMapStaggerIndex; }
+    static Map::Property property()         { return Map::StaggerIndexProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Stagger Index");
+    }
+};
+
+struct MapParallaxOrigin
+{
+    using Type = QPointF;
+
+    static void set(Map *map, Type value)   { map->setParallaxOrigin(value); }
+    static Type get(const Map *map)         { return map->parallaxOrigin(); }
+    static int undoId()                     { return Cmd_ChangeMapParallaxOrigin; }
+    static Map::Property property()         { return Map::ParallaxOriginProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Parallax Origin");
+    }
+};
+
+struct MapOrientation
+{
+    using Type = Map::Orientation;
+
+    static void set(Map *map, Type value)   { map->setOrientation(value); }
+    static Type get(const Map *map)         { return map->orientation(); }
+    static int undoId()                     { return Cmd_ChangeMapOrientation; }
+    static Map::Property property()         { return Map::OrientationProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Orientation");
+    }
+};
+
+struct MapRenderOrder
+{
+    using Type = Map::RenderOrder;
+
+    static void set(Map *map, Type value)   { map->setRenderOrder(value); }
+    static Type get(const Map *map)         { return map->renderOrder(); }
+    static int undoId()                     { return Cmd_ChangeMapRenderOrder; }
+    static Map::Property property()         { return Map::RenderOrderProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Render Order");
+    }
+};
+
+struct MapLayerDataFormat
+{
+    using Type = Map::LayerDataFormat;
+
+    static void set(Map *map, Type value)   { map->setLayerDataFormat(value); }
+    static Type get(const Map *map)         { return map->layerDataFormat(); }
+    static int undoId()                     { return Cmd_ChangeMapLayerDataFormat; }
+    static Map::Property property()         { return Map::LayerDataFormatProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Layer Data Format");
+    }
+};
+
+struct MapTileSize
+{
+    using Type = QSize;
+
+    static void set(Map *map, Type value)   { map->setTileSize(value); }
+    static Type get(const Map *map)         { return map->tileSize(); }
+    static int undoId()                     { return Cmd_ChangeMapTileSize; }
+    static Map::Property property()         { return Map::TileSizeProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Tile Size");
+    }
+};
+
+struct MapInfinite
+{
+    using Type = bool;
+
+    static void set(Map *map, Type value)   { map->setInfinite(value); }
+    static Type get(const Map *map)         { return map->infinite(); }
+    static int undoId()                     { return Cmd_ChangeMapInfinite; }
+    static Map::Property property()         { return Map::InfiniteProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Infinite");
+    }
+};
+
+struct MapHexSideLength
+{
+    using Type = int;
+
+    static void set(Map *map, Type value)   { map->setHexSideLength(value); }
+    static Type get(const Map *map)         { return map->hexSideLength(); }
+    static int undoId()                     { return Cmd_ChangeMapHexSideLength; }
+    static Map::Property property()         { return Map::HexSideLengthProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Hex Side Length");
+    }
+};
+
+struct MapCompressionLevel
+{
+    using Type = int;
+
+    static void set(Map *map, Type value)   { map->setCompressionLevel(value); }
+    static Type get(const Map *map)         { return map->compressionLevel(); }
+    static int undoId()                     { return Cmd_ChangeMapCompressionLevel; }
+    static Map::Property property()         { return Map::CompressionLevelProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Compression Level");
+    }
+};
+
+
+template<typename Member>
+class ChangeMapProperty : public ChangeValue<Map, typename Member::Type>
 {
 public:
-    /**
-     * Constructs a command that changes the value of the given property.
-     *
-     * Can only be used for the HexSideLength property.
-     *
-     * @param mapDocument       the map document of the map
-     * @param backgroundColor   the new color to apply for the background
-     */
-    ChangeMapProperty(MapDocument *mapDocument, Map::Property property, int value);
+    ChangeMapProperty(MapDocument *document, const typename Member::Type &value)
+        : ChangeValue<Map, typename Member::Type>(document, { document->map() }, value)
+    {
+        QUndoCommand::setText(Member::undoName());
+    }
 
-    /**
-     * Constructs a command that changes the map background color.
-     *
-     * @param mapDocument       the map document of the map
-     * @param backgroundColor   the new color to apply for the background
-     */
-    ChangeMapProperty(MapDocument *mapDocument, const QColor &backgroundColor);
-    
-    /**
-     * Constructs a command that changes the chunk size.
-     *
-     * @param mapDocument       the map document of the map
-     * @param chunkSize         the new chunk size to use for tile layers
-     */
-    ChangeMapProperty(MapDocument *mapDocument, QSize chunkSize);
-
-    /**
-     * Constructs a command that changes the map stagger axis.
-     *
-     * @param mapDocument       the map document of the map
-     * @param staggerAxis       the new map stagger axis
-     */
-    ChangeMapProperty(MapDocument *mapDocument, Map::StaggerAxis staggerAxis);
-
-    /**
-     * Constructs a command that changes the map stagger index.
-     *
-     * @param mapDocument       the map document of the map
-     * @param staggerIndex       the new map stagger index
-     */
-    ChangeMapProperty(MapDocument *mapDocument, Map::StaggerIndex staggerIndex);
-
-    /**
-     * Constructs a command that changes the parallax origin.
-     *
-     * @param mapDocument       the map document of the map
-     * @param parallaxOrigin    the new parallax origin
-     */
-    ChangeMapProperty(MapDocument *mapDocument, const QPointF &parallaxOrigin);
-
-    /**
-     * Constructs a command that changes the map orientation.
-     *
-     * @param mapDocument       the map document of the map
-     * @param orientation       the new map orientation
-     */
-    ChangeMapProperty(MapDocument *mapDocument, Map::Orientation orientation);
-
-    /**
-     * Constructs a command that changes the render order.
-     *
-     * @param mapDocument       the map document of the map
-     * @param renderOrder       the new map render order
-     */
-    ChangeMapProperty(MapDocument *mapDocument, Map::RenderOrder renderOrder);
-
-    /**
-     * Constructs a command that changes the layer data format.
-     *
-     * @param mapDocument       the map document of the map
-     * @param layerDataFormat   the new layer data format
-     */
-    ChangeMapProperty(MapDocument *mapDocument, Map::LayerDataFormat layerDataFormat);
-
-    void undo() override;
-    void redo() override;
+    int id() const override { return Member::undoId(); }
 
 private:
-    void swap();
+    typename Member::Type getValue(const Map *map) const override
+    {
+        return Member::get(map);
+    }
 
-    MapDocument *mMapDocument;
-    Map::Property mProperty;
-    QColor mBackgroundColor;
-    QSize mChunkSize;
-    union {
-        int mIntValue;
-        Map::StaggerAxis mStaggerAxis;
-        Map::StaggerIndex mStaggerIndex;
-        QPointF mParallaxOrigin;
-        Map::Orientation mOrientation;
-        Map::RenderOrder mRenderOrder;
-        Map::LayerDataFormat mLayerDataFormat;
-    };
+    void setValue(Map *map, const typename Member::Type &value) const override
+    {
+        Member::set(map, value);
+        emit ChangeValue<Map, typename Member::Type>::document()->changed(MapChangeEvent(Member::property()));
+    }
 };
+
+
+using ChangeMapBackgroundColor  = ChangeMapProperty<MapBackgroundColor>;
+using ChangeMapChunkSize        = ChangeMapProperty<MapChunkSize>;
+using ChangeMapStaggerAxis      = ChangeMapProperty<MapStaggerAxis>;
+using ChangeMapStaggerIndex     = ChangeMapProperty<MapStaggerIndex>;
+using ChangeMapParallaxOrigin   = ChangeMapProperty<MapParallaxOrigin>;
+using ChangeMapOrientation      = ChangeMapProperty<MapOrientation>;
+using ChangeMapRenderOrder      = ChangeMapProperty<MapRenderOrder>;
+using ChangeMapLayerDataFormat  = ChangeMapProperty<MapLayerDataFormat>;
+using ChangeMapTileSize         = ChangeMapProperty<MapTileSize>;
+using ChangeMapInfinite         = ChangeMapProperty<MapInfinite>;
+using ChangeMapHexSideLength    = ChangeMapProperty<MapHexSideLength>;
+using ChangeMapCompressionLevel = ChangeMapProperty<MapCompressionLevel>;
 
 } // namespace Tiled

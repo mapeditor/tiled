@@ -29,11 +29,11 @@
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "objectgroup.h"
+#include "objectrefdialog.h"
 #include "objectreferenceitem.h"
 #include "preferences.h"
 #include "tile.h"
 #include "utils.h"
-#include "variantpropertymanager.h"
 
 #include <QApplication>
 #include <QTimerEvent>
@@ -285,9 +285,6 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
     connect(mapDocument, &MapDocument::aboutToBeSelectedObjectsChanged,
             this, &ObjectSelectionItem::aboutToBeSelectedObjectsChanged);
 
-    connect(mapDocument, &MapDocument::mapChanged,
-            this, &ObjectSelectionItem::mapChanged);
-
     connect(mapDocument, &MapDocument::layerAdded,
             this, &ObjectSelectionItem::layerAdded);
 
@@ -408,6 +405,9 @@ void ObjectSelectionItem::changeEvent(const ChangeEvent &event)
         }
         break;
     }
+    case ChangeEvent::MapChanged:
+        updateItemPositions();
+        break;
     case ChangeEvent::LayerChanged:
         layerChanged(static_cast<const LayerChangeEvent&>(event));
         break;
@@ -496,11 +496,6 @@ void ObjectSelectionItem::hoveredMapObjectChanged(MapObject *object,
     } else {
         mHoveredMapObjectItem.reset();
     }
-}
-
-void ObjectSelectionItem::mapChanged()
-{
-    updateItemPositions();
 }
 
 static void collectObjects(const GroupLayer &groupLayer, QList<MapObject*> &objects, bool onlyVisibleLayers = false)
