@@ -70,8 +70,13 @@ class ComboBox : public QComboBox
 public:
     ComboBox(QWidget *parent = nullptr);
 
+signals:
+    /** This signal is emitted when the Return or Enter key is pressed. */
+    void returnPressed();
+
 protected:
     bool event(QEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
 };
 
