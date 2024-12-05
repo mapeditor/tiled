@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.11" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="5" height="3" tilewidth="16" tileheight="16" infinite="0" nextlayerid="12" nextobjectid="2">
+ <tileset firstgid="1" source="../spr_test_tileset.tsx"/>
+ <layer id="6" name="input_set" width="5" height="3">
+  <data encoding="csv">
+0,0,0,0,0,
+0,3,0,0,0,
+0,0,0,0,0
+</data>
+ </layer>
+ <layer id="2" name="output_set" width="5" height="3">
+  <data encoding="csv">
+0,0,0,0,0,
+0,0,0,4,0,
+0,0,0,0,0
+</data>
+ </layer>
+</map>

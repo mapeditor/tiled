@@ -6,6 +6,7 @@
 * Scripting: Added `Tileset.transformationFlags` (#3753)
 * Scripting: Added `Dialog.addRadioButtonGroup` for selecting one of a list of mutually exclusive options (#4107)
 * Scripting: Made `currentWangSet` and `currentWangColorIndex` properties writeable (#4105)
+* AutoMapping: Ignore rules with empty input or output regions (#3834)
 * Fixed saving/loading of custom properties set on worlds (#4025)
 * Fixed issue with placing tile objects after switching maps (#3497)
 * Fixed crash when accessing a world through a symlink (#4042)

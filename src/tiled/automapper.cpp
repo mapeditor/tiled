@@ -639,9 +639,16 @@ void AutoMapper::setupRules()
     mRules.reserve(combinedRegions.size());
 
     for (const QRegion &combinedRegion : combinedRegions) {
+        QRegion inputRegion = combinedRegion & regionInput;
+        QRegion outputRegion = combinedRegion & regionOutput;
+
+        // Skip rules where either input or output region is empty
+        if (inputRegion.isEmpty() || outputRegion.isEmpty())
+            continue;
+
         Rule &rule = mRules.emplace_back();
-        rule.inputRegion = combinedRegion & regionInput;
-        rule.outputRegion = combinedRegion & regionOutput;
+        rule.inputRegion = std::move(inputRegion);
+        rule.outputRegion = std::move(outputRegion);
         rule.options = mRuleOptions;
 
         for (const auto &optionsArea : setup.mRuleOptionsAreas)
@@ -1474,5 +1481,3 @@ void AutoMapper::addWarning(const QString &message, std::function<void ()> callb
 }
 
 } // namespace Tiled
-
-#include "moc_automapper.cpp"
