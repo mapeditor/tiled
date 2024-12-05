@@ -288,6 +288,18 @@ bool ComboBox::event(QEvent *event)
     return QComboBox::event(event);
 }
 
+void ComboBox::keyPressEvent(QKeyEvent *event)
+{
+    switch (event->key()) {
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
+        emit returnPressed();
+        return;
+    }
+
+    QComboBox::keyPressEvent(event);
+}
+
 void ComboBox::wheelEvent(QWheelEvent *event)
 {
     if (!hasFocus())

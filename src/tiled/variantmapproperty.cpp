@@ -586,6 +586,10 @@ QWidget *AddValueProperty::createEditor(QWidget *parent)
         m_value = typeBox->itemData(index);
         session::propertyType = typeBox->currentText();
     });
+    connect(typeBox, &ComboBox::returnPressed, this, [this] {
+        if (!name().isEmpty())
+            emit addRequested();
+    });
 
     typeBox->installEventFilter(this);
 
