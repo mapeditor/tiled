@@ -22,9 +22,6 @@
 #include "addpropertydialog.h"
 #include "ui_addpropertydialog.h"
 
-#include "documentmanager.h"
-#include "object.h"
-#include "preferences.h"
 #include "properties.h"
 #include "propertytypesmodel.h"
 #include "session.h"
@@ -57,30 +54,10 @@ void AddPropertyDialog::initialize(const Tiled::ClassPropertyType *parentClassTy
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
 
-    const QIcon plain(QStringLiteral("://images/scalable/property-type-plain.svg"));
-
-    // Add possible types from QVariant
-    mUi->typeBox->addItem(plain, typeToName(QMetaType::Bool),      false);
-    mUi->typeBox->addItem(plain, typeToName(QMetaType::QColor),    QColor());
-    mUi->typeBox->addItem(plain, typeToName(QMetaType::Double),    0.0);
-    mUi->typeBox->addItem(plain, typeToName(filePathTypeId()),     QVariant::fromValue(FilePath()));
-    mUi->typeBox->addItem(plain, typeToName(QMetaType::Int),       0);
-    mUi->typeBox->addItem(plain, typeToName(objectRefTypeId()),    QVariant::fromValue(ObjectRef()));
-    mUi->typeBox->addItem(plain, typeToName(QMetaType::QString),   QString());
-
-    for (const auto propertyType : Object::propertyTypes()) {
-        // Avoid suggesting the creation of circular dependencies between types
-        if (parentClassType && !parentClassType->canAddMemberOfType(propertyType))
-            continue;
-
-        // Avoid suggesting classes not meant to be used as property value
-        if (propertyType->isClass())
-            if (!static_cast<const ClassPropertyType*>(propertyType)->isPropertyValueType())
-                continue;
-
-        const QVariant var = propertyType->wrap(propertyType->defaultValue());
-        const QIcon icon = PropertyTypesModel::iconForPropertyType(propertyType->type);
-        mUi->typeBox->addItem(icon, propertyType->name, var);
+    const QVariantList values = possiblePropertyValues(parentClassType);
+    for (const auto &value : values) {
+        const QIcon icon = PropertyTypesModel::iconForProperty(value);
+        mUi->typeBox->addItem(icon, userTypeName(value), value);
     }
 
     mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);

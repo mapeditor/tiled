@@ -22,6 +22,7 @@
 #include "varianteditorfactory.h"
 
 #include "fileedit.h"
+#include "listedit.h"
 #include "objectrefedit.h"
 #include "textpropertyedit.h"
 #include "tilesetdocument.h"
@@ -44,10 +45,9 @@ public:
 
 signals:
     void resetProperty(QtProperty *property);
+    void removeProperty(QtProperty *property);
 
 private:
-    void buttonClicked();
-
     QtProperty *mProperty;
 };
 
@@ -64,19 +64,28 @@ ResetWidget::ResetWidget(QtProperty *property, QWidget *editor, QWidget *parent)
     resetButton->setToolTip(tr("Reset"));
     Utils::setThemeIcon(resetButton, "edit-clear");
 
+    auto removeButton = new QToolButton(this);
+    removeButton->setIcon(QIcon(QLatin1String(":/images/16/edit-delete.png")));
+    removeButton->setIconSize(Utils::smallIconSize());
+    removeButton->setAutoRaise(true);
+    removeButton->setToolTip(tr("Remove"));
+    Utils::setThemeIcon(removeButton, "edit-delete");
+
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(editor);
-    layout->addWidget(resetButton);
+    if (editor) {
+        layout->addWidget(editor, 1);
+        setFocusProxy(editor);
+    }
+    layout->addWidget(resetButton, 0, Qt::AlignRight);
+    layout->addWidget(removeButton, 0, Qt::AlignRight);
 
-    setFocusProxy(editor);
-
-    connect(resetButton, &QToolButton::clicked, this, &ResetWidget::buttonClicked);
-}
-
-void ResetWidget::buttonClicked()
-{
-    emit resetProperty(mProperty);
+    connect(resetButton, &QToolButton::clicked, this, [this] {
+        emit resetProperty(mProperty);
+    });
+    connect(removeButton, &QToolButton::clicked, this, [this] {
+        emit removeProperty(mProperty);
+    });
 }
 
 
@@ -89,6 +98,7 @@ VariantEditorFactory::~VariantEditorFactory()
     qDeleteAll(mTextPropertyEditToProperty.keys());
     qDeleteAll(mObjectRefEditToProperty.keys());
     qDeleteAll(mComboBoxToProperty.keys());
+    qDeleteAll(mListEditToProperty.keys());
 }
 
 void VariantEditorFactory::connectPropertyManager(QtVariantPropertyManager *manager)
@@ -145,6 +155,18 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
                 this, &VariantEditorFactory::slotEditorDestroyed);
 
         editor = tilesetEdit;
+    } else if (type == QMetaType::QVariantList) {
+        auto listEdit = new ListEdit(parent);
+        listEdit->setValue(manager->value(property).toList());
+        mCreatedListEdits[property].append(listEdit);
+        mListEditToProperty[listEdit] = property;
+
+        connect(listEdit, &ListEdit::valueChanged,
+                this, &VariantEditorFactory::listEditValueChanged);
+        connect(listEdit, &QObject::destroyed,
+                this, &VariantEditorFactory::slotEditorDestroyed);
+
+        editor = listEdit;
     } else if (type == QMetaType::QString) {
         bool multiline = manager->attributeValue(property, QLatin1String("multiline")).toBool();
         QStringList suggestions = manager->attributeValue(property, QLatin1String("suggestions")).toStringList();
@@ -181,12 +203,14 @@ QWidget *VariantEditorFactory::createEditor(QtVariantPropertyManager *manager,
     if (!editor)
         editor = QtVariantEditorFactory::createEditor(manager, property, parent);
 
-    if (type == QMetaType::QColor || type == VariantPropertyManager::displayObjectRefTypeId() || property->isModified()) {
+    if (true || type == QMetaType::QColor || type == VariantPropertyManager::displayObjectRefTypeId() || property->isModified()) {
         // Allow resetting color and object reference properties, or allow
         // unsetting a class member (todo: resolve conflict...).
         auto resetWidget = new ResetWidget(property, editor, parent);
         connect(resetWidget, &ResetWidget::resetProperty,
                 this, &VariantEditorFactory::resetProperty);
+        connect(resetWidget, &ResetWidget::removeProperty,
+                this, &VariantEditorFactory::removeProperty);
         editor = resetWidget;
     }
 
@@ -226,6 +250,10 @@ void VariantEditorFactory::slotPropertyChanged(QtProperty *property,
     else if (mCreatedObjectRefEdits.contains(property)) {
         for (ObjectRefEdit *objectRefEdit : std::as_const(mCreatedObjectRefEdits)[property])
             objectRefEdit->setValue(value.value<DisplayObjectRef>());
+    }
+    else if (mCreatedListEdits.contains(property)) {
+        for (ListEdit *listEdit : std::as_const(mCreatedListEdits)[property])
+            listEdit->setValue(value.toList());
     }
 }
 
@@ -304,72 +332,50 @@ void VariantEditorFactory::objectRefEditValueChanged(const DisplayObjectRef &val
     }
 }
 
+void VariantEditorFactory::listEditValueChanged(const QVariantList &value)
+{
+    auto listEdit = qobject_cast<ListEdit*>(sender());
+    Q_ASSERT(listEdit);
+    if (QtProperty *property = mListEditToProperty.value(listEdit)) {
+        QtVariantPropertyManager *manager = propertyManager(property);
+        if (!manager)
+            return;
+        manager->setValue(property, value);
+    }
+}
+
+template <typename T>
+static bool removeEditor(QMap<QtProperty *, QList<T *> > &map,
+                         QMap<T *, QtProperty *> &reverseMap,
+                         QObject *object)
+{
+    T *editor = static_cast<T*>(object);
+
+    if (QtProperty *property = reverseMap.value(editor)) {
+        map[property].removeAll(editor);
+        if (map[property].isEmpty())
+            map.remove(property);
+        reverseMap.remove(editor);
+        return true;
+    }
+
+    return false;
+}
+
 void VariantEditorFactory::slotEditorDestroyed(QObject *object)
 {
-    // Check if it was an ObjectRefEdit
-    {
-        auto objectRefEdit = static_cast<ObjectRefEdit*>(object);
-
-        if (QtProperty *property = mObjectRefEditToProperty.value(objectRefEdit)) {
-            mObjectRefEditToProperty.remove(objectRefEdit);
-            mCreatedObjectRefEdits[property].removeAll(objectRefEdit);
-            if (mCreatedObjectRefEdits[property].isEmpty())
-                mCreatedObjectRefEdits.remove(property);
-            return;
-        }
-    }
-
-    // Check if it was a FileEdit
-    {
-        auto fileEdit = static_cast<FileEdit*>(object);
-
-        if (QtProperty *property = mFileEditToProperty.value(fileEdit)) {
-            mFileEditToProperty.remove(fileEdit);
-            mCreatedFileEdits[property].removeAll(fileEdit);
-            if (mCreatedFileEdits[property].isEmpty())
-                mCreatedFileEdits.remove(property);
-            return;
-        }
-    }
-
-    // Check if it was a TilesetParametersEdit
-    {
-        auto tilesetEdit = static_cast<TilesetParametersEdit*>(object);
-
-        if (QtProperty *property = mTilesetEditToProperty.value(tilesetEdit)) {
-            mTilesetEditToProperty.remove(tilesetEdit);
-            mCreatedTilesetEdits[property].removeAll(tilesetEdit);
-            if (mCreatedTilesetEdits[property].isEmpty())
-                mCreatedTilesetEdits.remove(property);
-            return;
-        }
-    }
-
-    // Check if it was a TextPropertyEdit
-    {
-        auto textPropertyEdit = static_cast<TextPropertyEdit*>(object);
-
-        if (QtProperty *property = mTextPropertyEditToProperty.value(textPropertyEdit)) {
-            mTextPropertyEditToProperty.remove(textPropertyEdit);
-            mCreatedTextPropertyEdits[property].removeAll(textPropertyEdit);
-            if (mCreatedTextPropertyEdits[property].isEmpty())
-                mCreatedTextPropertyEdits.remove(property);
-            return;
-        }
-    }
-
-    // Check if it was a QComboBox
-    {
-        auto comboBox = static_cast<QComboBox*>(object);
-
-        if (QtProperty *property = mComboBoxToProperty.value(comboBox)) {
-            mComboBoxToProperty.remove(comboBox);
-            mCreatedComboBoxes[property].removeAll(comboBox);
-            if (mCreatedComboBoxes[property].isEmpty())
-                mCreatedComboBoxes.remove(property);
-            return;
-        }
-    }
+    if (removeEditor(mCreatedObjectRefEdits, mObjectRefEditToProperty, object))
+        return;
+    if (removeEditor(mCreatedFileEdits, mFileEditToProperty, object))
+        return;
+    if (removeEditor(mCreatedTilesetEdits, mTilesetEditToProperty, object))
+        return;
+    if (removeEditor(mCreatedTextPropertyEdits, mTextPropertyEditToProperty, object))
+        return;
+    if (removeEditor(mCreatedComboBoxes, mComboBoxToProperty, object))
+        return;
+    if (removeEditor(mCreatedListEdits, mListEditToProperty, object))
+        return;
 }
 
 } // namespace Tiled
