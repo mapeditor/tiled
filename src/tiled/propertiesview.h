@@ -29,6 +29,7 @@
 #include <QWidget>
 
 class QHBoxLayout;
+class QMenu;
 class QToolButton;
 class QVBoxLayout;
 
@@ -97,6 +98,7 @@ public:
 
     virtual QWidget *createLabel(int level, QWidget *parent);
     virtual QWidget *createEditor(QWidget *parent) = 0;
+    virtual void addContextMenuActions(QMenu *) {}
 
 signals:
     void nameChanged(const QString &name);
@@ -165,6 +167,7 @@ public:
 
     QWidget *createLabel(int level, QWidget *parent) override;
     QWidget *createEditor(QWidget */* parent */) override { return nullptr; }
+    void addContextMenuActions(QMenu *) override;
 
     void setHeader(bool header) { m_header = header; }
 
@@ -194,8 +197,21 @@ public:
 
     void deleteProperty(Property *property)
     {
-        m_subProperties.removeOne(property);
+        removeProperty(property);
         delete property;
+    }
+
+    /**
+     * Removes the given property from this group. Ownership of the property
+     * is transferred to the caller.
+     */
+    void removeProperty(Property *property)
+    {
+        if (!m_subProperties.removeOne(property))
+            return;
+
+        property->m_parent = nullptr;
+        emit propertyRemoved(property);
     }
 
     int indexOfProperty(Property *property) const
@@ -210,6 +226,7 @@ public:
 signals:
     void expandedChanged(bool expanded);
     void propertyAdded(int index, Property *property);
+    void propertyRemoved(Property *property);
 
 private:
     bool m_header = true;
@@ -270,9 +287,13 @@ struct MultilineStringProperty : StringProperty
 struct UrlProperty : PropertyTemplate<QUrl>
 {
     using PropertyTemplate::PropertyTemplate;
+
     QWidget *createEditor(QWidget *parent) override;
+    void addContextMenuActions(QMenu *) override;
+
     void setFilter(const QString &filter) { m_filter = filter; }
     void setIsDirectory(bool isDirectory) { m_isDirectory = isDirectory; }
+
 private:
     QString m_filter;
     bool m_isDirectory = false;
@@ -528,6 +549,7 @@ public:
     };
 
     bool focusProperty(Property *property, FocusTarget target = FocusEditor);
+    Property *focusedProperty() const;
 
 signals:
     void selectedPropertiesChanged();
@@ -535,12 +557,14 @@ signals:
 protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
 
+    void mousePressEvent(QMouseEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
 
 private:
     bool focusNextPrevProperty(Property *property, bool next, bool shiftPressed);
 
-    void removeProperty(Property *property);
+    void deletePropertyWidgets(Property *property);
+    void forgetProperty(Property *property);
 
     QWidget *focusPropertyImpl(GroupProperty *group, Property *property, FocusTarget target);
 

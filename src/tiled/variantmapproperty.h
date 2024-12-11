@@ -52,7 +52,6 @@ public:
 
 signals:
     void memberValueChanged(const QStringList &path, const QVariant &value);
-    void renameRequested(const QString &name);
 
 protected:
     virtual void propertyTypesChanged();
@@ -79,12 +78,6 @@ private:
 
     void emitMemberValueChanged(const QStringList &path, const QVariant &value);
 
-    void memberContextMenuRequested(Property *property, const QStringList &path, const QPoint &globalPos);
-
-    QIcon m_resetIcon;
-    QIcon m_removeIcon;
-    QIcon m_addIcon;
-    QIcon m_renameIcon;
     bool mEmittingValueChanged = false;
     QVariantMap mValue;
     QVariantMap mSuggestions;

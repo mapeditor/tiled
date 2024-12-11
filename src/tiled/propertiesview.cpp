@@ -28,11 +28,13 @@
 
 #include <QBoxLayout>
 #include <QCheckBox>
+#include <QFileInfo>
 #include <QFontComboBox>
 #include <QGridLayout>
 #include <QGuiApplication>
 #include <QLabel>
 #include <QLineEdit>
+#include <QMenu>
 #include <QMetaProperty>
 #include <QPainter>
 #include <QPointer>
@@ -136,6 +138,12 @@ QWidget *GroupProperty::createLabel(int level, QWidget *parent)
     return label;
 }
 
+void GroupProperty::addContextMenuActions(QMenu *menu)
+{
+    menu->addAction(tr("Expand All"), this, &GroupProperty::expandAll);
+    menu->addAction(tr("Collapse All"), this, &GroupProperty::collapseAll);
+}
+
 void GroupProperty::setExpanded(bool expanded)
 {
     if (m_expanded != expanded) {
@@ -222,6 +230,18 @@ QWidget *UrlProperty::createEditor(QWidget *parent)
     connect(editor, &FileEdit::fileUrlChanged, this, &UrlProperty::setValue);
 
     return editor;
+}
+
+void UrlProperty::addContextMenuActions(QMenu *menu)
+{
+    const QString localFile = value().toLocalFile();
+
+    if (!localFile.isEmpty()) {
+        Utils::addOpenContainingFolderAction(*menu, localFile);
+
+        if (QFileInfo { localFile }.isFile())
+            Utils::addOpenWithSystemEditorAction(*menu, localFile);
+    }
 }
 
 QWidget *IntProperty::createEditor(QWidget *parent)
@@ -969,6 +989,12 @@ bool PropertiesView::focusProperty(Property *property, FocusTarget target)
     return true;
 }
 
+Property *PropertiesView::focusedProperty() const
+{
+    auto propertyWidget = qobject_cast<PropertyWidget *>(focusWidget());
+    return propertyWidget ? propertyWidget->property() : nullptr;
+}
+
 bool PropertiesView::eventFilter(QObject *watched, QEvent *event)
 {
     if (event->type() == QEvent::Show) {
@@ -986,10 +1012,18 @@ bool PropertiesView::eventFilter(QObject *watched, QEvent *event)
     return QScrollArea::eventFilter(watched, event);
 }
 
+void PropertiesView::mousePressEvent(QMouseEvent *event)
+{
+    // If the view gets mouse press then no PropertyWidget was clicked
+    if (event->modifiers() == Qt::NoModifier)
+        setSelectedProperties({});
+
+    QScrollArea::mousePressEvent(event);
+}
+
 void PropertiesView::keyPressEvent(QKeyEvent *event)
 {
-    auto propertyWidget = qobject_cast<PropertyWidget *>(focusWidget());
-    auto property = propertyWidget ? propertyWidget->property() : nullptr;
+    auto property = focusedProperty();
     const auto key = event->key();
     const bool shiftPressed = event->modifiers() & Qt::ShiftModifier;
 
@@ -1092,10 +1126,7 @@ bool PropertiesView::focusNextPrevProperty(Property *property, bool next, bool s
     return false;
 }
 
-/**
- * Removes the given property from the editor. The property is not deleted.
- */
-void PropertiesView::removeProperty(Property *property)
+void PropertiesView::deletePropertyWidgets(Property *property)
 {
     auto it = m_propertyWidgets.constFind(property);
     Q_ASSERT(it != m_propertyWidgets.constEnd());
@@ -1113,7 +1144,7 @@ void PropertiesView::removeProperty(Property *property)
 
     rowWidget->deleteLater();
 
-    m_propertyWidgets.erase(it);
+    forgetProperty(property);
 
     // This appears to be necessary to avoid flickering due to relayouting
     // not being done before the next paint.
@@ -1121,8 +1152,21 @@ void PropertiesView::removeProperty(Property *property)
         widget->layout()->activate();
         widget = widget->parentWidget();
     }
+}
+
+void PropertiesView::forgetProperty(Property *property)
+{
+    m_propertyWidgets.remove(property);
+
+    if (property == m_selectionStart)
+        m_selectionStart = nullptr;
 
     property->disconnect(this);
+
+    if (GroupProperty *groupProperty = qobject_cast<GroupProperty *>(property)) {
+        for (auto subProperty : groupProperty->subProperties())
+            forgetProperty(subProperty);
+    }
 }
 
 /**
@@ -1197,10 +1241,6 @@ PropertiesView::PropertyWidgets PropertiesView::createPropertyWidgets(Property *
 
     const auto displayMode = property->displayMode();
 
-    connect(property, &Property::destroyed, this, [this](QObject *object) {
-        removeProperty(static_cast<Property *>(object));
-    });
-
     if (displayMode == Property::DisplayMode::ChildrenOnly) {
         QWidget *children;
         if (auto groupProperty = qobject_cast<GroupProperty *>(property))
@@ -1240,7 +1280,7 @@ PropertiesView::PropertyWidgets PropertiesView::createPropertyWidgets(Property *
 
     rowWidget->setSelectable(property->actions().testFlag(Property::Action::Select));
 
-    connect(rowWidget, &PropertyWidget::clicked, this, [=](Qt::KeyboardModifiers modifiers) {
+    connect(rowWidget, &PropertyWidget::mousePressed, this, [=](Qt::MouseButton button, Qt::KeyboardModifiers modifiers) {
         if (modifiers & Qt::ShiftModifier) {
             // Select range between m_selectionStart and clicked property
             if (assignSelectedPropertiesRange(m_root, m_selectionStart, property))
@@ -1254,10 +1294,12 @@ PropertiesView::PropertyWidgets PropertiesView::createPropertyWidgets(Property *
             }
         } else {
             // Select only the clicked property
-            if (property->actions().testFlag(Property::Action::Select))
-                setSelectedProperties({property});
-            else
+            if (property->actions().testFlag(Property::Action::Select)) {
+                if (button == Qt::LeftButton || !property->isSelected())
+                    setSelectedProperties({property});
+            } else {
                 setSelectedProperties({});
+            }
         }
 
         m_selectionStart = property;
@@ -1370,6 +1412,9 @@ QWidget *PropertiesView::createChildrenWidget(GroupProperty *groupProperty,
             this, [=](int index, Property *property) {
         createPropertyWidgets(property, children, level, layout, index);
     });
+
+    connect(groupProperty, &GroupProperty::propertyRemoved,
+            this, &PropertiesView::deletePropertyWidgets);
 
     return children;
 }
