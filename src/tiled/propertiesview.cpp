@@ -323,9 +323,16 @@ QWidget *BoolProperty::createEditor(QWidget *parent)
         auto font = editor->font();
         font.setBold(isModified());
         editor->setFont(font);
+
+        // Make sure the label remains readable when selected
+        auto pal = QGuiApplication::palette();
+        if (isSelected())
+            pal.setBrush(QPalette::WindowText, pal.brush(QPalette::HighlightedText));
+        editor->setPalette(pal);
     };
     syncEditor();
 
+    connect(this, &Property::selectedChanged, editor, syncEditor);
     connect(this, &Property::valueChanged, editor, syncEditor);
     connect(this, &Property::modifiedChanged, editor, syncEditor);
     connect(editor, &QCheckBox::toggled, this, [=](bool checked) {
