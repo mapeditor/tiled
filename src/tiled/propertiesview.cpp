@@ -1235,6 +1235,11 @@ void PropertiesView::createPropertyWidgets(Property *property, QWidget *parent, 
     auto widgets = createPropertyWidgets(property, parent, level);
     m_propertyWidgets.insert(property, widgets);
     layout->insertWidget(index, widgets.rowWidget);
+
+    if (index < layout->count() - 1 && !m_fixTabOrderScheduled) {
+        m_fixTabOrderScheduled = true;
+        QMetaObject::invokeMethod(this, &PropertiesView::fixTabOrder, Qt::QueuedConnection);
+    }
 }
 
 PropertiesView::PropertyWidgets PropertiesView::createPropertyWidgets(Property *property,
@@ -1482,6 +1487,44 @@ void PropertiesView::updatePropertyActions(const PropertyWidgets &widgets,
     widgets.addButton->setVisible(actions.testFlag(Property::Action::Add));
 
     widgets.addButton->setEnabled(!actions.testFlag(Property::Action::AddDisabled));
+}
+
+static void collectWidgetsInLayoutOrder(QList<QWidget *> &widgets, QLayout *layout)
+{
+    for (int i = 0; i < layout->count(); ++i) {
+        auto layoutItem = layout->itemAt(i);
+
+        if (auto widget = layoutItem->widget()) {
+            if (widget->focusPolicy() != Qt::NoFocus)
+                widgets.append(widget);
+
+            // Ignore children of compound widgets, fixes issue with Qt 5
+            // affecting for example the ColorProperty.
+            if (widget->focusProxy())
+                continue;
+
+            if (auto widgetLayout = widget->layout())
+                collectWidgetsInLayoutOrder(widgets, widgetLayout);
+
+        } else if (auto childLayout = layoutItem->layout()) {
+            collectWidgetsInLayoutOrder(widgets, childLayout);
+        }
+    }
+}
+
+void PropertiesView::fixTabOrder()
+{
+    m_fixTabOrderScheduled = false;
+
+    QList<QWidget *> focusOrder;
+    collectWidgetsInLayoutOrder(focusOrder, m_rootLayout);
+
+    QWidget *prev = nullptr;
+    for (const auto widget : std::as_const(focusOrder)) {
+        if (prev)
+            QWidget::setTabOrder(prev, widget);
+        prev = widget;
+    }
 }
 
 } // namespace Tiled

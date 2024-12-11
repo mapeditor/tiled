@@ -593,9 +593,12 @@ private:
     void updatePropertyActions(const PropertyWidgets &widgets,
                                Property::Actions actions);
 
+    void fixTabOrder();
+
     static constexpr int LabelStretch = 1;
     static constexpr int EditorStretch = 1;
 
+    bool m_fixTabOrderScheduled = false;
     QIcon m_resetIcon;
     QIcon m_removeIcon;
     QIcon m_addIcon;
