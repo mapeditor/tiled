@@ -63,20 +63,23 @@ public:
         });
         return editor;
     }
+
+    void addContextMenuActions(QMenu *menu) override
+    {
+        auto objectRef = value();
+        menu->addAction(QCoreApplication::translate("Tiled::PropertiesDock", "Go to Object"), [=] {
+            if (auto object = objectRef.object()) {
+                objectRef.mapDocument->setSelectedObjects({object});
+                emit objectRef.mapDocument->focusMapObjectRequested(object);
+            }
+        })->setEnabled(objectRef.object());
+    }
 };
 
 
 VariantMapProperty::VariantMapProperty(const QString &name, QObject *parent)
     : GroupProperty(name, parent)
-    , m_resetIcon(QIcon(QStringLiteral(":/images/16/edit-clear.png")))
-    , m_removeIcon(QIcon(QStringLiteral(":/images/16/remove.png")))
-    , m_addIcon(QIcon(QStringLiteral(":/images/16/add.png")))
-    , m_renameIcon(QIcon(QLatin1String(":/images/16/rename.png")))
 {
-    m_resetIcon.addFile(QStringLiteral(":/images/24/edit-clear.png"));
-    m_removeIcon.addFile(QStringLiteral(":/images/22/remove.png"));
-    m_addIcon.addFile(QStringLiteral(":/images/22/add.png"));
-
     connect(Preferences::instance(), &Preferences::propertyTypesChanged,
             this, &VariantMapProperty::propertyTypesChanged);
 }
@@ -287,10 +290,6 @@ Property *VariantMapProperty::createProperty(const QStringList &path,
 
         property->setToolTip(QStringLiteral("%1&nbsp;<span style=\"color: gray;\">:&nbsp;%2<span>")
                              .arg(property->name(), typeName));
-
-        connect(property, &Property::contextMenuRequested, this, [=](const QPoint &globalPos) {
-            memberContextMenuRequested(property, path, globalPos);
-        });
     }
 
     return property;
@@ -429,54 +428,6 @@ void VariantMapProperty::emitMemberValueChanged(const QStringList &path, const Q
     emit valueChanged();
 }
 
-void VariantMapProperty::memberContextMenuRequested(Property *property, const QStringList &path, const QPoint &globalPos)
-{
-    QMenu menu;
-
-    // Add Expand All and Collapse All actions to group properties
-    if (auto groupProperty = qobject_cast<GroupProperty*>(property)) {
-        menu.addAction(tr("Expand All"), groupProperty, &GroupProperty::expandAll);
-        menu.addAction(tr("Collapse All"), groupProperty, &GroupProperty::collapseAll);
-    }
-
-    // Provide the Add, Remove and Reset actions also here
-    if (isEnabled() && property->actions()) {
-        menu.addSeparator();
-
-        if (property->actions() & Property::Action::Add) {
-            QAction *add = menu.addAction(m_addIcon, tr("Add Property"), this, [this, name = path.first()] {
-                addMember(name, mSuggestions.value(name));
-            });
-            Utils::setThemeIcon(add, "add");
-        }
-        if (property->actions() & Property::Action::Remove) {
-            QAction *remove = menu.addAction(m_removeIcon, tr("Remove Property"), this, [this, name = path.first()] {
-                removeMember(name);
-            });
-            Utils::setThemeIcon(remove, "remove");
-
-            // If a property can be removed, it can also be renamed
-            menu.addAction(m_renameIcon, tr("Rename Property..."), this, [this, name = path.first()] {
-                emit renameRequested(name);
-            });
-        }
-        if (property->actions() & Property::Action::Reset) {
-            QAction *reset = menu.addAction(m_resetIcon, tr("Reset Member"), this, [=] {
-                setClassMember(path, QVariant());
-                emitValueChangedRecursively(property);
-            });
-            reset->setEnabled(property->isModified());
-            Utils::setThemeIcon(reset, "edit-clear");
-        }
-    }
-
-    // todo: Add "Convert" sub-menu
-    // todo: Add "Copy" and "Paste" actions
-
-    if (!menu.isEmpty())
-        menu.exec(globalPos);
-}
-
 
 AddValueProperty::AddValueProperty(QObject *parent)
     : Property(QString(), parent)
@@ -533,7 +484,7 @@ QWidget *AddValueProperty::createLabel(int level, QWidget *parent)
 
     nameEdit->installEventFilter(this);
 
-    connect(qApp, &QApplication::focusChanged, nameEdit, [=] (QWidget *, QWidget *focusWidget) {
+    connect(qApp, &QApplication::focusChanged, this, [=](QWidget *, QWidget *focusWidget) {
         // Ignore focus in different windows (popups, dialogs, etc.)
         if (!focusWidget || focusWidget->window() != parent->window())
             return;

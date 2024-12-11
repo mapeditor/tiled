@@ -84,6 +84,10 @@ private:
 
     void retranslateUi();
 
+    QIcon mResetIcon;
+    QIcon mRemoveIcon;
+    QIcon mAddIcon;
+    QIcon mRenameIcon;
     Document *mDocument = nullptr;
     GroupProperty *mRootProperty = nullptr;
     ObjectProperties *mPropertiesObject = nullptr;
