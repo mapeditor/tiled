@@ -23,6 +23,7 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QLineEdit>
+#include <QPointer>
 #include <QSpinBox>
 
 class QLabel;
@@ -373,15 +374,16 @@ public:
     bool isSelected() const { return m_selected; }
 
 signals:
-    void clicked(Qt::KeyboardModifiers modifiers);
+    void mousePressed(Qt::MouseButton button, Qt::KeyboardModifiers modifiers);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
-    void contextMenuEvent(QContextMenuEvent *event) override;
 
 private:
-    Property *m_property;
+    // Protected by QPointer because PropertyWidget might outlive the Property
+    // for a short moment, due to delayed widget deletion.
+    QPointer<Property> m_property;
     bool m_selectable = false;
     bool m_selected = false;
 };

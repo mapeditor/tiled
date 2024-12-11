@@ -953,8 +953,6 @@ void PropertyTypesEditor::addClassProperties()
 
     connect(mMembersProperty, &VariantMapProperty::valueChanged,
             this, &PropertyTypesEditor::classMembersChanged);
-    connect(mMembersProperty, &VariantMapProperty::renameRequested,
-            this, &PropertyTypesEditor::renameMember);
 
     connect(mMembersView, &PropertiesView::selectedPropertiesChanged,
             this, &PropertyTypesEditor::selectedMembersChanged);

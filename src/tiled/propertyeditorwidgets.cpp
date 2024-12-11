@@ -930,22 +930,8 @@ void PropertyWidget::paintEvent(QPaintEvent *event)
 
 void PropertyWidget::mousePressEvent(QMouseEvent *event)
 {
-    // Not 100% correct hack to make sure only one property is selected when
-    // the context menu opens. Handling of the context menu should probably be
-    // moved elsewhere.
-    if (event->button() == Qt::RightButton)
-        emit clicked(Qt::NoModifier);
-    else
-        emit clicked(event->modifiers());
-
     setFocus(Qt::MouseFocusReason);
-
-    QWidget::mousePressEvent(event);
-}
-
-void PropertyWidget::contextMenuEvent(QContextMenuEvent *event)
-{
-    emit m_property->contextMenuRequested(event->globalPos());
+    emit mousePressed(event->button(), event->modifiers());
 }
 
 } // namespace Tiled

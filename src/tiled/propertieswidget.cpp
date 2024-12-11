@@ -2160,21 +2160,29 @@ private:
 
 PropertiesWidget::PropertiesWidget(QWidget *parent)
     : QWidget{parent}
+    , mResetIcon(QIcon(QStringLiteral(":/images/16/edit-clear.png")))
+    , mRemoveIcon(QIcon(QStringLiteral(":/images/16/remove.png")))
+    , mAddIcon(QIcon(QStringLiteral(":/images/16/add.png")))
+    , mRenameIcon(QIcon(QLatin1String(":/images/16/rename.png")))
     , mRootProperty(new GroupProperty())
     , mCustomProperties(new CustomProperties(mRootProperty))
     , mPropertiesView(new PropertiesView(this))
 {
+    mResetIcon.addFile(QStringLiteral(":/images/24/edit-clear.png"));
+    mRemoveIcon.addFile(QStringLiteral(":/images/22/remove.png"));
+    mAddIcon.addFile(QStringLiteral(":/images/22/add.png"));
+
     mRootProperty->addProperty(mCustomProperties);
 
     mActionAddProperty = new QAction(this);
     mActionAddProperty->setEnabled(false);
-    mActionAddProperty->setIcon(QIcon(QLatin1String(":/images/16/add.png")));
+    mActionAddProperty->setIcon(mAddIcon);
     connect(mActionAddProperty, &QAction::triggered,
             this, &PropertiesWidget::showAddValueProperty);
 
     mActionRemoveProperty = new QAction(this);
     mActionRemoveProperty->setEnabled(false);
-    mActionRemoveProperty->setIcon(QIcon(QLatin1String(":/images/16/remove.png")));
+    mActionRemoveProperty->setIcon(mRemoveIcon);
     mActionRemoveProperty->setShortcuts(QKeySequence::Delete);
     mActionRemoveProperty->setPriority(QAction::LowPriority);
     connect(mActionRemoveProperty, &QAction::triggered,
@@ -2182,7 +2190,7 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
 
     mActionRenameProperty = new QAction(this);
     mActionRenameProperty->setEnabled(false);
-    mActionRenameProperty->setIcon(QIcon(QLatin1String(":/images/16/rename.png")));
+    mActionRenameProperty->setIcon(mRenameIcon);
     mActionRenameProperty->setPriority(QAction::LowPriority);
     connect(mActionRenameProperty, &QAction::triggered,
             this, &PropertiesWidget::renameSelectedProperty);
@@ -2212,9 +2220,6 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
             this, &PropertiesWidget::showContextMenu);
     connect(mPropertiesView, &PropertiesView::selectedPropertiesChanged,
             this, &PropertiesWidget::updateActions);
-
-    connect(mCustomProperties, &VariantMapProperty::renameRequested,
-            this, &PropertiesWidget::renameProperty);
 
     retranslateUi();
 }
@@ -2400,7 +2405,8 @@ void CustomProperties::refresh()
 
     // Suggest properties from selected objects.
     Properties suggestedProperties;
-    for (auto object : mDocument->currentObjects())
+    const auto currentObjects = mDocument->currentObjects();
+    for (auto object : currentObjects)
         if (object != mDocument->currentObject())
             mergeProperties(suggestedProperties, object->properties());
 
@@ -2630,48 +2636,47 @@ void PropertiesWidget::renameProperty(const QString &name)
 
 void PropertiesWidget::showContextMenu(const QPoint &pos)
 {
-#if 0
     const Object *object = mDocument->currentObject();
     if (!object)
         return;
 
-    const QList<QtBrowserItem *> items = mPropertyBrowser->selectedItems();
-    const bool customPropertiesSelected = !items.isEmpty() && mPropertyBrowser->allCustomPropertyItems(items);
+    const auto properties = mPropertiesView->selectedProperties();
+    const bool customPropertiesSelected = !properties.isEmpty();
 
     bool currentObjectHasAllProperties = true;
     QStringList propertyNames;
-    for (QtBrowserItem *item : items) {
-        const QString propertyName = item->property()->propertyName();
-        propertyNames.append(propertyName);
+    for (auto property : properties) {
+        propertyNames.append(property->name());
 
-        if (!object->hasProperty(propertyName))
+        if (!object->hasProperty(property->name()))
             currentObjectHasAllProperties = false;
     }
 
-    QMenu contextMenu(mPropertyBrowser);
+    QMenu contextMenu(mPropertiesView);
 
-    if (customPropertiesSelected && propertyNames.size() == 1) {
-        const auto value = object->resolvedProperty(propertyNames.first());
-        if (value.userType() == filePathTypeId()) {
-            const FilePath filePath = value.value<FilePath>();
-            const QString localFile = filePath.url.toLocalFile();
+    // Add properties specific to the just clicked property
+    if (auto focusedProperty = mPropertiesView->focusedProperty()) {
+        focusedProperty->addContextMenuActions(&contextMenu);
 
-            if (!localFile.isEmpty()) {
-                Utils::addOpenContainingFolderAction(contextMenu, localFile);
+        // Provide the Add, Remove and Reset actions also here
+        if (const auto actions = focusedProperty->actions()) {
+            if (!contextMenu.isEmpty())
+                contextMenu.addSeparator();
 
-                if (QFileInfo { localFile }.isFile())
-                    Utils::addOpenWithSystemEditorAction(contextMenu, localFile);
+            // Note: No "Remove" added here since it's covered below
+
+            if (actions.testFlag(Property::Action::Add)) {
+                QAction *add = contextMenu.addAction(mAddIcon, tr("Add"),
+                                                     focusedProperty, &Property::addRequested);
+                add->setEnabled(!actions.testFlag(Property::Action::AddDisabled));
+                Utils::setThemeIcon(add, "add");
             }
-        } else if (value.userType() == objectRefTypeId()) {
-            if (auto mapDocument = qobject_cast<MapDocument*>(mDocument)) {
-                const DisplayObjectRef objectRef(value.value<ObjectRef>(), mapDocument);
 
-                contextMenu.addAction(QCoreApplication::translate("Tiled::PropertiesDock", "Go to Object"), [=] {
-                    if (auto object = objectRef.object()) {
-                        objectRef.mapDocument->setSelectedObjects({object});
-                        emit objectRef.mapDocument->focusMapObjectRequested(object);
-                    }
-                })->setEnabled(objectRef.object());
+            if (actions.testFlag(Property::Action::Reset)) {
+                QAction *reset = contextMenu.addAction(mResetIcon, tr("Reset"),
+                                                       focusedProperty, &Property::resetRequested);
+                reset->setEnabled(focusedProperty->isModified());
+                Utils::setThemeIcon(reset, "edit-clear");
             }
         }
     }
@@ -2747,12 +2752,12 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
 
     ActionManager::applyMenuExtensions(&contextMenu, MenuIds::propertiesViewProperties);
 
-    const QPoint globalPos = mPropertyBrowser->mapToGlobal(pos);
+    const QPoint globalPos = mPropertiesView->mapToGlobal(pos);
     const QAction *selectedItem = contextMenu.exec(globalPos);
 
     if (selectedItem && convertMenu && selectedItem->parentWidget() == convertMenu) {
         QUndoStack *undoStack = mDocument->undoStack();
-        undoStack->beginMacro(QCoreApplication::translate("Tiled::PropertiesDock", "Convert Property/Properties", nullptr, items.size()));
+        undoStack->beginMacro(QCoreApplication::translate("Tiled::PropertiesDock", "Convert Property/Properties", nullptr, properties.size()));
 
         for (const QString &propertyName : propertyNames) {
             QVariant propertyValue = object->property(propertyName);
@@ -2766,8 +2771,16 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
         }
 
         undoStack->endMacro();
+
+        // Restore selected properties
+        QList<Property*> selectedProperties;
+        for (const QString &name : propertyNames) {
+            if (auto property = mCustomProperties->property(name))
+                selectedProperties.append(property);
+        }
+        if (!selectedProperties.isEmpty())
+            mPropertiesView->setSelectedProperties(selectedProperties);
     }
-#endif
 }
 
 bool PropertiesWidget::event(QEvent *event)
