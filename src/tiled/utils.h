@@ -33,6 +33,7 @@
 
 class QAction;
 class QKeyEvent;
+class QLayout;
 class QMenu;
 
 namespace Tiled {
@@ -110,6 +111,8 @@ std::unique_ptr<QSettings> jsonSettings(const QString &fileName);
 namespace Error {
 QString jsonParseError(QJsonParseError error);
 } // namespace Error
+
+void deleteAllFromLayout(QLayout *layout);
 
 } // namespace Utils
 } // namespace Tiled

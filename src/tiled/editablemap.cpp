@@ -495,7 +495,7 @@ void EditableMap::setSize(int width, int height)
 void EditableMap::setTileWidth(int value)
 {
     if (auto doc = mapDocument())
-        push(new ChangeMapProperty(doc, Map::TileWidthProperty, value));
+        push(new ChangeMapTileSize(doc, QSize(value, tileHeight())));
     else if (!checkReadOnly())
         map()->setTileWidth(value);
 }
@@ -503,7 +503,7 @@ void EditableMap::setTileWidth(int value)
 void EditableMap::setTileHeight(int value)
 {
     if (auto doc = mapDocument())
-        push(new ChangeMapProperty(doc, Map::TileHeightProperty, value));
+        push(new ChangeMapTileSize(doc, QSize(tileWidth(), value)));
     else if (!checkReadOnly())
         map()->setTileHeight(value);
 }
@@ -528,7 +528,7 @@ void EditableMap::setTileSize(int width, int height)
 void EditableMap::setInfinite(bool value)
 {
     if (auto doc = mapDocument())
-        push(new ChangeMapProperty(doc, Map::InfiniteProperty, value));
+        push(new ChangeMapInfinite(doc, value));
     else if (!checkReadOnly())
         map()->setInfinite(value);
 }
@@ -536,7 +536,7 @@ void EditableMap::setInfinite(bool value)
 void EditableMap::setHexSideLength(int value)
 {
     if (auto doc = mapDocument())
-        push(new ChangeMapProperty(doc, Map::HexSideLengthProperty, value));
+        push(new ChangeMapHexSideLength(doc, value));
     else if (!checkReadOnly())
         map()->setHexSideLength(value);
 }
@@ -544,7 +544,7 @@ void EditableMap::setHexSideLength(int value)
 void EditableMap::setStaggerAxis(StaggerAxis value)
 {
     if (auto doc = mapDocument())
-        push(new ChangeMapProperty(doc, static_cast<Map::StaggerAxis>(value)));
+        push(new ChangeMapStaggerAxis(doc, static_cast<Map::StaggerAxis>(value)));
     else if (!checkReadOnly())
         map()->setStaggerAxis(static_cast<Map::StaggerAxis>(value));
 }
@@ -552,7 +552,7 @@ void EditableMap::setStaggerAxis(StaggerAxis value)
 void EditableMap::setStaggerIndex(StaggerIndex value)
 {
     if (auto doc = mapDocument())
-        push(new ChangeMapProperty(doc, static_cast<Map::StaggerIndex>(value)));
+        push(new ChangeMapStaggerIndex(doc, static_cast<Map::StaggerIndex>(value)));
     else if (!checkReadOnly())
         map()->setStaggerIndex(static_cast<Map::StaggerIndex>(value));
 }
@@ -560,7 +560,7 @@ void EditableMap::setStaggerIndex(StaggerIndex value)
 void EditableMap::setParallaxOrigin(const QPointF &parallaxOrigin)
 {
     if (auto doc = mapDocument())
-        push(new ChangeMapProperty(doc, parallaxOrigin));
+        push(new ChangeMapParallaxOrigin(doc, parallaxOrigin));
     else if (!checkReadOnly())
         map()->setParallaxOrigin(parallaxOrigin);
 }
@@ -568,7 +568,7 @@ void EditableMap::setParallaxOrigin(const QPointF &parallaxOrigin)
 void EditableMap::setOrientation(Orientation value)
 {
     if (auto doc = mapDocument()) {
-        push(new ChangeMapProperty(doc, static_cast<Map::Orientation>(value)));
+        push(new ChangeMapOrientation(doc, static_cast<Map::Orientation>(value)));
     } else if (!checkReadOnly()) {
         map()->setOrientation(static_cast<Map::Orientation>(value));
         mRenderer.reset();
@@ -578,7 +578,7 @@ void EditableMap::setOrientation(Orientation value)
 void EditableMap::setRenderOrder(RenderOrder value)
 {
     if (auto doc = mapDocument())
-        push(new ChangeMapProperty(doc, static_cast<Map::RenderOrder>(value)));
+        push(new ChangeMapRenderOrder(doc, static_cast<Map::RenderOrder>(value)));
     else if (!checkReadOnly())
         map()->setRenderOrder(static_cast<Map::RenderOrder>(value));
 }
@@ -586,7 +586,7 @@ void EditableMap::setRenderOrder(RenderOrder value)
 void EditableMap::setBackgroundColor(const QColor &value)
 {
     if (auto doc = mapDocument())
-        push(new ChangeMapProperty(doc, value));
+        push(new ChangeMapBackgroundColor(doc, value));
     else if (!checkReadOnly())
         map()->setBackgroundColor(value);
 }
@@ -594,7 +594,7 @@ void EditableMap::setBackgroundColor(const QColor &value)
 void EditableMap::setLayerDataFormat(LayerDataFormat value)
 {
     if (auto doc = mapDocument())
-        push(new ChangeMapProperty(doc, static_cast<Map::LayerDataFormat>(value)));
+        push(new ChangeMapLayerDataFormat(doc, static_cast<Map::LayerDataFormat>(value)));
     else if (!checkReadOnly())
         map()->setLayerDataFormat(static_cast<Map::LayerDataFormat>(value));
 }

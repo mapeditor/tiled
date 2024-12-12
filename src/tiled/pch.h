@@ -40,8 +40,6 @@
 #include <QPlainTextEdit>
 #include <QFileDialog>
 
-#include <qtvariantproperty.h>
-
 // libtiled
 #include <layer.h>
 #include <mapdocument.h>

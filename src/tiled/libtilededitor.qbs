@@ -7,7 +7,6 @@ DynamicLibrary {
 
     Depends { name: "libtiled" }
     Depends { name: "translations" }
-    Depends { name: "qtpropertybrowser" }
     Depends { name: "qtsingleapplication" }
     Depends { name: "Qt"; submodules: ["core", "widgets", "concurrent", "qml", "svg"]; versionAtLeast: "5.12" }
     Depends { name: "Qt.openglwidgets"; condition: Qt.core.versionMajor >= 6; required: false }
@@ -95,9 +94,6 @@ DynamicLibrary {
         "actionmanager.h",
         "actionsearch.cpp",
         "actionsearch.h",
-        "addpropertydialog.cpp",
-        "addpropertydialog.h",
-        "addpropertydialog.ui",
         "addremovelayer.cpp",
         "addremovelayer.h",
         "addremovemapobject.cpp",
@@ -135,7 +131,6 @@ DynamicLibrary {
         "changemapobject.h",
         "changemapobjectsorder.cpp",
         "changemapobjectsorder.h",
-        "changemapproperty.cpp",
         "changemapproperty.h",
         "changeobjectgroupproperties.cpp",
         "changeobjectgroupproperties.h",
@@ -200,8 +195,6 @@ DynamicLibrary {
         "createtextobjecttool.h",
         "createtileobjecttool.cpp",
         "createtileobjecttool.h",
-        "custompropertieshelper.cpp",
-        "custompropertieshelper.h",
         "debugdrawitem.cpp",
         "debugdrawitem.h",
         "document.cpp",
@@ -403,10 +396,12 @@ DynamicLibrary {
         "projectpropertiesdialog.ui",
         "propertiesdock.cpp",
         "propertiesdock.h",
+        "propertiesview.cpp",
+        "propertiesview.h",
         "propertieswidget.cpp",
         "propertieswidget.h",
-        "propertybrowser.cpp",
-        "propertybrowser.h",
+        "propertyeditorwidgets.cpp",
+        "propertyeditorwidgets.h",
         "propertytypeseditor.cpp",
         "propertytypeseditor.h",
         "propertytypeseditor.ui",
@@ -553,10 +548,8 @@ DynamicLibrary {
         "undodock.h",
         "utils.cpp",
         "utils.h",
-        "varianteditorfactory.cpp",
-        "varianteditorfactory.h",
-        "variantpropertymanager.cpp",
-        "variantpropertymanager.h",
+        "variantmapproperty.cpp",
+        "variantmapproperty.h",
         "wangbrush.cpp",
         "wangbrush.h",
         "wangcolormodel.cpp",
