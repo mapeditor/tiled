@@ -50,13 +50,13 @@ jobs:
           qt_version: 5.15.2
           qt_version_major: 5
           qt_arch: gcc_64
-          qt_install_args: ""
+          qt_modules: ""
           qbs_default_profile: gcc
         - ubuntu_version: 22.04
           qt_version: 6.8.1
           qt_version_major: 6
           qt_arch: linux_gcc_64
-          qt_install_args: "--modules qtimageformats"
+          qt_modules: "qtimageformats"
           qbs_default_profile: x86_64-linux-gnu-gcc-11
 
     env:
@@ -87,10 +87,12 @@ jobs:
           libfuse2
 
     - name: Install Qt
-      run: |
-        pip install aqtinstall
-        aqt install-qt linux desktop ${QT_VERSION} ${{ matrix.qt_arch }} ${{ matrix.qt_install_args }} --outputdir /opt/Qt
-        echo "/opt/Qt/${QT_VERSION}/gcc_64/bin" | tee -a $GITHUB_PATH
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: ${{ matrix.qt_version }}
+        arch: ${{ matrix.qt_arch }}
+        modules: ${{ matrix.qt_modules }}
+        cache: true
 
     - name: Setup ccache
       uses: hendrikmuhs/ccache-action@v1
@@ -139,7 +141,7 @@ jobs:
         wget --no-verbose "https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage"
         chmod +x linuxdeploy*.AppImage
         export EXTRA_QT_PLUGINS=svg
-        export LD_LIBRARY_PATH=/opt/Qt/${QT_VERSION}/gcc_64/lib:$PWD/AppDir/usr/lib
+        export LD_LIBRARY_PATH=${QT_ROOT_DIR}/lib:$PWD/AppDir/usr/lib
         export OUTPUT=Tiled-${{ needs.version.outputs.version }}_Linux_Qt-${{ matrix.qt_version_major }}_x86_64.AppImage
         # Avoid shipping the debug information
         find AppDir -name \*.debug -delete
@@ -202,13 +204,11 @@ jobs:
       matrix:
         include:
         - qt_version: 5.12.12
-          qt_dir: "clang_64"
-          qt_install_args: ""
+          qt_modules: ""
           version_suffix: "10.12-10.15"
           architectures: x86_64
         - qt_version: 6.8.1
-          qt_dir: "macos"
-          qt_install_args: "--modules qtimageformats"
+          qt_modules: "qtimageformats"
           version_suffix: "11+"
           architectures: x86_64,arm64
 
@@ -221,10 +221,12 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Install Qt
-      run: |
-        pip install aqtinstall
-        sudo aqt install-qt mac desktop ${QT_VERSION} clang_64 ${{ matrix.qt_install_args }} --outputdir /opt/Qt
-        echo "/opt/Qt/${QT_VERSION}/${{ matrix.qt_dir }}/bin" | tee -a $GITHUB_PATH
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: ${{ matrix.qt_version }}
+        arch: clang_64
+        modules: ${{ matrix.qt_modules }}
+        cache: true
 
     - name: Setup Qbs
       run: |
@@ -296,8 +298,7 @@ jobs:
         - qt_version: 5.15.2
           qt_version_major: 5
           qt_arch: win32_mingw81
-          qt_dir: mingw81_32
-          qt_install_args: ""
+          qt_modules: ""
           arch: 32
           openssl_arch: x86
           filename_suffix: 'Windows-7-8_x86'
@@ -307,8 +308,7 @@ jobs:
         - qt_version: 6.8.1
           qt_version_major: 6
           qt_arch: win64_mingw
-          qt_dir: mingw_64
-          qt_install_args: "--modules qtimageformats"
+          qt_modules: "qtimageformats"
           arch: 64
           openssl_arch: x64
           filename_suffix: 'Windows-10+_x86_64'
@@ -318,8 +318,6 @@ jobs:
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
-      MINGW_PATH: /c/Qt/Tools/${{ matrix.mingw_dir }}/bin
-      QT_PATH: "/c/Qt/${{ matrix.qt_version }}/${{ matrix.qt_dir }}/bin"
 
     defaults:
       run:
@@ -330,10 +328,13 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Install Qt
-      run: |
-        pip install aqtinstall
-        aqt install-qt windows desktop ${{ matrix.qt_version }} ${{ matrix.qt_arch }} ${{ matrix.qt_install_args }} --outputdir /c/Qt
-        aqt install-tool windows desktop ${{ matrix.mingw_component }} ${{ matrix.mingw_variant }} --outputdir /c/Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: ${{ matrix.qt_version }}
+        arch: ${{ matrix.qt_arch }}
+        modules: ${{ matrix.qt_modules }}
+        tools: "${{ matrix.mingw_component }},${{ matrix.mingw_variant }}"
+        cache: true
 
     - name: Install Qbs
       run: |
@@ -341,13 +342,12 @@ jobs:
 
     - name: Setup Qbs
       run: |
-        qbs setup-toolchains ${MINGW_PATH}/*-w64-mingw32-gcc.exe mingw
-        qbs setup-qt ${QT_PATH}/qmake.exe qt
+        qbs setup-toolchains --detect
+        qbs setup-qt ${QT_ROOT_DIR}/bin/qmake.exe qt
         qbs config defaultProfile qt
 
     - name: Build Zstandard
       run: |
-        export PATH="${MINGW_PATH}:$PATH"
         git clone --depth 1 -b release https://github.com/facebook/zstd.git
         pushd zstd/lib
         CC=gcc mingw32-make -j2 libzstd.a
