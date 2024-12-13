@@ -82,6 +82,7 @@ jobs:
         arch: ${{ matrix.qt_arch }}
         modules: ${{ matrix.qt_modules }}
         tools: 'tools_qtcreator'
+        setup-python: false
         cache: true
 
     - name: Setup ccache
@@ -325,6 +326,7 @@ jobs:
         arch: ${{ matrix.qt_arch }}
         modules: ${{ matrix.qt_modules }}
         tools: "${{ matrix.mingw_component }},${{ matrix.mingw_variant }}"
+        setup-python: false
         cache: true
 
     - name: Install Qbs
