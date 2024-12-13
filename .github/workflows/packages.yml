@@ -326,6 +326,7 @@ jobs:
         arch: ${{ matrix.qt_arch }}
         modules: ${{ matrix.qt_modules }}
         tools: "${{ matrix.mingw_component }},${{ matrix.mingw_variant }}"
+        aqtversion: '==3.1.19'
         setup-python: false
         cache: true
 
