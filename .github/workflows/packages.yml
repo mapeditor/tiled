@@ -71,6 +71,7 @@ jobs:
       run: |
         sudo apt update
         sudo apt install \
+          libcurl4-openssl-dev \
           libzstd-dev \
           libfuse2
 
