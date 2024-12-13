@@ -336,6 +336,10 @@ jobs:
 
     - name: Setup Qbs
       run: |
+        export IQTA_TOOLS="${IQTA_TOOLS//D:/\/d}"
+        export IQTA_TOOLS="${IQTA_TOOLS//\\/\/}"
+        export QT_ROOT_DIR="${QT_ROOT_DIR//D:/\/d}"
+        export QT_ROOT_DIR="${QT_ROOT_DIR//\\/\/}"
         qbs setup-toolchains ${IQTA_TOOLS}/${{ matrix.mingw_dir }}/bin/*-w64-mingw32-gcc.exe mingw
         qbs setup-qt ${QT_ROOT_DIR}/bin/qmake.exe qt
         qbs config defaultProfile qt
