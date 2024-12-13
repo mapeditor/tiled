@@ -51,7 +51,7 @@ jobs:
           qt_version_major: 5
           qt_arch: gcc_64
           qt_modules: ""
-          qbs_default_profile: gcc
+          qbs_default_profile: x86_64-linux-gnu-gcc-10
         - ubuntu_version: 22.04
           qt_version: 6.8.1
           qt_version_major: 6
