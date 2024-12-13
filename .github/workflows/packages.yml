@@ -71,19 +71,7 @@ jobs:
       run: |
         sudo apt update
         sudo apt install \
-          libcurl4-openssl-dev \
-          libgl1-mesa-dev \
-          libxcb-cursor0 \
-          libxcb-icccm4 \
-          libxcb-image0 \
-          libxcb-keysyms1 \
-          libxcb-randr0 \
-          libxcb-render-util0 \
-          libxcb-shape0 \
-          libxcb-xinerama0 \
-          libxkbcommon-x11-0 \
           libzstd-dev \
-          qbs \
           libfuse2
 
     - name: Install Qt
@@ -92,6 +80,7 @@ jobs:
         version: ${{ matrix.qt_version }}
         arch: ${{ matrix.qt_arch }}
         modules: ${{ matrix.qt_modules }}
+        tools: 'tools_qtcreator'
         cache: true
 
     - name: Setup ccache
@@ -226,6 +215,7 @@ jobs:
         version: ${{ matrix.qt_version }}
         arch: clang_64
         modules: ${{ matrix.qt_modules }}
+        setup-python: false
         cache: true
 
     - name: Setup Qbs
