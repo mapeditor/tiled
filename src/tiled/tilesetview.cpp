@@ -831,7 +831,7 @@ void TilesetView::onChange(const ChangeEvent &change)
     case ChangeEvent::WangSetChanged: {
         auto &wangSetChange = static_cast<const WangSetChangeEvent&>(change);
         if (mEditWangSet && wangSetChange.wangSet == mWangSet &&
-                (wangSetChange.properties & WangSetChangeEvent::TypeProperty)) {
+                (wangSetChange.property == WangSetChangeEvent::TypeProperty)) {
             viewport()->update();
         }
         break;

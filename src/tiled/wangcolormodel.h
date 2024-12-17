@@ -28,6 +28,7 @@ namespace Tiled {
 
 class Tileset;
 
+class ChangeEvent;
 class TilesetDocument;
 
 class WangColorModel : public QAbstractListModel
@@ -71,6 +72,7 @@ public:
 
 private:
     void emitDataChanged(WangColor *wangColor);
+    void emitToTilesetAndMaps(const ChangeEvent &event);
 
     TilesetDocument *mTilesetDocument;
     WangSet *mWangSet;

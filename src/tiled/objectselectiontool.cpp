@@ -54,7 +54,6 @@
 #include <QUndoStack>
 
 #include <cmath>
-#include <float.h>
 
 using namespace Tiled;
 
@@ -335,8 +334,10 @@ ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
     else
         mSelectContained->setChecked(true);
 
-    connect(mSelectIntersected, &QAction::triggered, [this] { setSelectionMode(Qt::IntersectsItemShape); });
-    connect(mSelectContained, &QAction::triggered, [this] { setSelectionMode(Qt::ContainsItemShape); });
+    connect(mSelectIntersected, &QAction::triggered,
+            this, [this] { setSelectionMode(Qt::IntersectsItemShape); });
+    connect(mSelectContained, &QAction::triggered,
+            this, [this] { setSelectionMode(Qt::ContainsItemShape); });
 
     for (int i = 0; i < CornerAnchorCount; ++i)
         mRotateHandles[i] = new RotateHandle(static_cast<AnchorPosition>(i));
@@ -366,8 +367,6 @@ void ObjectSelectionTool::activate(MapScene *scene)
 
     updateHandlesAndOrigin();
 
-    connect(mapDocument(), &MapDocument::mapChanged,
-            this, &ObjectSelectionTool::updateHandlesAndOrigin);
     connect(mapDocument(), &MapDocument::selectedObjectsChanged,
             this, &ObjectSelectionTool::updateHandlesAndOrigin);
     connect(mapDocument(), &MapDocument::tilesetTilePositioningChanged,
@@ -390,8 +389,6 @@ void ObjectSelectionTool::deactivate(MapScene *scene)
     for (ResizeHandle *handle : mResizeHandles)
         scene->removeItem(handle);
 
-    disconnect(mapDocument(), &MapDocument::mapChanged,
-               this, &ObjectSelectionTool::updateHandlesAndOrigin);
     disconnect(mapDocument(), &MapDocument::selectedObjectsChanged,
                this, &ObjectSelectionTool::updateHandlesAndOrigin);
     disconnect(mapDocument(), &MapDocument::tilesetTilePositioningChanged,
@@ -779,6 +776,9 @@ void ObjectSelectionTool::changeEvent(const ChangeEvent &event)
         return;
 
     switch (event.type) {
+    case ChangeEvent::MapChanged:
+        updateHandlesAndOrigin();
+        break;
     case ChangeEvent::LayerChanged:
         if (static_cast<const LayerChangeEvent&>(event).properties & LayerChangeEvent::PositionProperties)
             updateHandlesAndOrigin();

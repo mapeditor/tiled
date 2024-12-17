@@ -484,7 +484,7 @@ void WangDock::documentChanged(const ChangeEvent &change)
         }
         break;
     case ChangeEvent::WangSetChanged:
-        if (static_cast<const WangSetChangeEvent&>(change).properties & WangSetChangeEvent::TypeProperty)
+        if (static_cast<const WangSetChangeEvent&>(change).property == WangSetChangeEvent::TypeProperty)
             mWangTemplateModel->wangSetChanged();
         break;
     default:

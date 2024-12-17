@@ -45,7 +45,7 @@ FileEdit::FileEdit(QWidget *parent)
     mOkTextColor = mLineEdit->palette().color(QPalette::Active, QPalette::Text);
 
     QToolButton *button = new QToolButton(this);
-    button->setText(QLatin1String("..."));
+    button->setText(QStringLiteral("…"));
     button->setAutoRaise(true);
     button->setToolTip(tr("Choose"));
     layout->addWidget(mLineEdit);

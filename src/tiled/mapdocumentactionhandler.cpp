@@ -24,6 +24,7 @@
 #include "actionmanager.h"
 #include "addremovelayer.h"
 #include "addremovemapobject.h"
+#include "changeevents.h"
 #include "changeselectedarea.h"
 #include "clipboardmanager.h"
 #include "documentmanager.h"
@@ -297,8 +298,12 @@ void MapDocumentActionHandler::setMapDocument(MapDocument *mapDocument)
                 this, &MapDocumentActionHandler::updateActions);
         connect(mapDocument, &MapDocument::selectedObjectsChanged,
                 this, &MapDocumentActionHandler::updateActions);
-        connect(mapDocument, &MapDocument::mapChanged,
-                this, &MapDocumentActionHandler::updateActions);
+        connect(mapDocument, &MapDocument::changed,
+                this, [this] (const ChangeEvent &change) {
+            if (change.type == ChangeEvent::MapChanged)
+                if (static_cast<const MapChangeEvent&>(change).property == Map::InfiniteProperty)
+                    updateActions();
+        });
     }
 }
 
