@@ -22,6 +22,7 @@
 #include "variantpropertymanager.h"
 
 #include "documentmanager.h"
+#include "listedit.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "mapobjectmodel.h"
@@ -91,7 +92,8 @@ bool VariantPropertyManager::isPropertyTypeSupported(int propertyType) const
             || propertyType == displayObjectRefTypeId()
             || propertyType == tilesetParametersTypeId()
             || propertyType == alignmentTypeId()
-            || propertyType == unstyledGroupTypeId())
+            || propertyType == unstyledGroupTypeId()
+            || propertyType == QMetaType::QVariantList)
         return true;
     return QtVariantPropertyManager::isPropertyTypeSupported(propertyType);
 }
@@ -108,6 +110,8 @@ int VariantPropertyManager::valueType(int propertyType) const
         return propertyType;
     if (propertyType == unstyledGroupTypeId())
         return QMetaType::QVariantMap; // allows storing any child values
+    if (propertyType == QMetaType::QVariantList)
+        return QMetaType::QVariantList;
     return QtVariantPropertyManager::valueType(propertyType);
 }
 
@@ -195,8 +199,8 @@ QString VariantPropertyManager::objectRefLabel(const MapObject &object)
 QString VariantPropertyManager::valueText(const QtProperty *property) const
 {
     if (mValues.contains(property)) {
-        QVariant value = mValues[property];
-        int typeId = propertyType(property);
+        const QVariant &value = mValues[property];
+        const int typeId = propertyType(property);
 
         if (typeId == displayObjectRefTypeId()) {
             const auto ref = value.value<DisplayObjectRef>();
@@ -227,6 +231,9 @@ QString VariantPropertyManager::valueText(const QtProperty *property) const
                 return tilesetDocument->tileset()->imageSource().fileName();
         }
 
+        if (typeId == QMetaType::QVariantList)
+            return ListEdit::valueText(value.toList());
+
         return value.toString();
     }
 
@@ -248,7 +255,7 @@ QString VariantPropertyManager::valueText(const QtProperty *property) const
 QIcon VariantPropertyManager::valueIcon(const QtProperty *property) const
 {
     if (mValues.contains(property)) {
-        const QVariant value = mValues[property];
+        const QVariant &value = mValues[property];
         const int typeId = propertyType(property);
 
         if (typeId == displayObjectRefTypeId()) {
@@ -257,7 +264,7 @@ QIcon VariantPropertyManager::valueIcon(const QtProperty *property) const
                 return ObjectIconManager::instance().iconForObject(*object);
         }
 
-        if (typeId == unstyledGroupTypeId())
+        if (typeId == unstyledGroupTypeId() || typeId == QMetaType::QVariantList)
             return QIcon();
 
         QString filePath;
@@ -371,7 +378,8 @@ void VariantPropertyManager::initializeProperty(QtProperty *property)
     if (type == filePathTypeId()
             || type == displayObjectRefTypeId()
             || type == tilesetParametersTypeId()
-            || type == unstyledGroupTypeId()) { // for storing hash map
+            || type == unstyledGroupTypeId()        // for storing hash map
+            || type == QMetaType::QVariantList) {   // for storing list of values
         mValues[property] = QVariant();
         if (type == filePathTypeId())
             mFilePathAttributes[property] = FilePathAttributes();
