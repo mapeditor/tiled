@@ -217,7 +217,6 @@ jobs:
         version: ${{ matrix.qt_version }}
         arch: clang_64
         modules: ${{ matrix.qt_modules }}
-        setup-python: false
         cache: true
 
     - name: Setup Qbs
@@ -235,7 +234,11 @@ jobs:
 
     - name: Build Tiled
       run: |
-        qbs install --install-root install config:release qbs.architectures:${{ matrix.architectures }} qbs.installPrefix:"" projects.Tiled.staticZstd:true
+        qbs install --install-root install config:release \
+          qbs.architectures:${{ matrix.architectures }} \
+          qbs.installPrefix:"" \
+          projects.Tiled.staticZstd:true \
+          products.python.condition:false
 
     - name: Deploy Qt
       run: |
