@@ -67,13 +67,23 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    - name: Checkout qaseprite
+      uses: actions/checkout@v4
+      with:
+        repository: mapeditor/qaseprite
+        path: qaseprite
+        submodules: 'recursive'
+
     - name: Install dependencies
       run: |
         sudo apt update
         sudo apt install \
           libcurl4-openssl-dev \
           libzstd-dev \
-          libfuse2
+          libfuse2 \
+          libxcursor-dev \
+          libxi-dev
+          
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
@@ -112,6 +122,13 @@ jobs:
         sudo cmake --install build --prefix /usr --config RelWithDebInfo
         popd
 
+    - name: Install qaseprite plugin
+      working-directory: qaseprite
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=Release
+        cmake --build build --config Release --target qaseprite
+        cmake --install build --config Release
+        
     - name: Build Tiled
       run: |
         qbs install --install-root AppDir config:release qbs.installPrefix:/usr projects.Tiled.sentry:true qbs.debugInformation:true modules.cpp.separateDebugInformation:true modules.cpp.compilerWrapper:ccache
