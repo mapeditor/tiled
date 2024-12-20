@@ -126,7 +126,7 @@ jobs:
       working-directory: qaseprite
       run: |
         cmake -B build -DCMAKE_BUILD_TYPE=Release
-        cmake --build build --config Release --target qaseprite
+        cmake --build build --config Release
         cmake --install build --config Release
         
     - name: Build Tiled
