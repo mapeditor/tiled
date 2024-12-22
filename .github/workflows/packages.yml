@@ -277,7 +277,7 @@ jobs:
           qbs.installPrefix:"" \
           projects.Tiled.staticZstd:true \
           products.python.condition:false
-          
+
     - name: Deploy Qt
       run: |
         macdeployqt install/Tiled.app -verbose=2
