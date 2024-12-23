@@ -215,6 +215,8 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
                      QString::number(map.tileHeight()));
     w.writeAttribute(QStringLiteral("infinite"),
                      QString::number(map.infinite()));
+    w.writeAttribute(QStringLiteral("invertyaxis"),
+                     QString::number(map.invertYAxis()));
 
     if (map.orientation() == Map::Hexagonal) {
         w.writeAttribute(QStringLiteral("hexsidelength"),
@@ -741,7 +743,12 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
 
     if (!mapObject.isTemplateBase()) {
         w.writeAttribute(QStringLiteral("x"), QString::number(pos.x()));
-        w.writeAttribute(QStringLiteral("y"), QString::number(pos.y()));
+
+        qreal y = pos.y();
+        if (mapObject.map()->invertYAxis())
+            y = mapObject.map()->height() * mapObject.map()->tileHeight() - y;
+
+        w.writeAttribute(QStringLiteral("y"), QString::number(y));
     }
 
     if (shouldWrite(true, isTemplateInstance, mapObject.propertyChanged(MapObject::SizeProperty))) {

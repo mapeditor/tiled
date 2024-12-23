@@ -57,6 +57,7 @@
 #include "wangcolormodel.h"
 #include "wangoverlay.h"
 #include "wangset.h"
+#include "invertyaxishelper.h"
 
 #include <QtGroupPropertyManager>
 
@@ -742,6 +743,7 @@ void PropertyBrowser::addMapProperties()
     auto tileWidthProperty = addProperty(TileWidthProperty, QMetaType::Int, tr("Tile Width"), groupProperty);
     auto tileHeightProperty = addProperty(TileHeightProperty, QMetaType::Int, tr("Tile Height"), groupProperty);
     addProperty(InfiniteProperty, QMetaType::Bool, tr("Infinite"), groupProperty);
+    addProperty(InvertYAxisProperty, QMetaType::Bool, tr("Invert Y-Axis"), groupProperty);
 
     tileWidthProperty->setAttribute(QStringLiteral("minimum"), 1);
     tileHeightProperty->setAttribute(QStringLiteral("minimum"), 1);
@@ -1182,6 +1184,10 @@ void PropertyBrowser::applyMapValue(PropertyId id, const QVariant &val)
         undoStack->endMacro();
         break;
     }
+    case InvertYAxisProperty: {
+        command = new ChangeMapProperty(mMapDocument, Map::InvertYAxisProperty, val.toInt());
+        break;
+    }
     case OrientationProperty: {
         Map::Orientation orientation = static_cast<Map::Orientation>(val.toInt() + 1);
         command = new ChangeMapProperty(mMapDocument, orientation);
@@ -1274,7 +1280,8 @@ QUndoCommand *PropertyBrowser::applyMapObjectValueTo(PropertyId id, const QVaria
     case YProperty: {
         command = new ChangeMapObject(mDocument, mapObject,
                                       MapObject::PositionProperty,
-                                      QPointF(mapObject->x(), val.toReal()));
+                                      QPointF(mapObject->x(),
+                                              InvertYAxisHelper(mMapDocument).pixelY(val.toReal())));
         break;
     }
     case WidthProperty: {
@@ -1857,6 +1864,7 @@ void PropertyBrowser::updateProperties()
         mIdToProperty[TileWidthProperty]->setValue(map->tileWidth());
         mIdToProperty[TileHeightProperty]->setValue(map->tileHeight());
         mIdToProperty[InfiniteProperty]->setValue(map->infinite());
+        mIdToProperty[InvertYAxisProperty]->setValue(map->invertYAxis());
         mIdToProperty[OrientationProperty]->setValue(map->orientation() - 1);
         mIdToProperty[HexSideLengthProperty]->setValue(map->hexSideLength());
         mIdToProperty[StaggerAxisProperty]->setValue(map->staggerAxis());
@@ -1897,7 +1905,7 @@ void PropertyBrowser::updateProperties()
         if (auto visibleProperty = mIdToProperty[VisibleProperty])
             visibleProperty->setValue(mapObject->isVisible());
         mIdToProperty[XProperty]->setValue(mapObject->x());
-        mIdToProperty[YProperty]->setValue(mapObject->y());
+        mIdToProperty[YProperty]->setValue(InvertYAxisHelper(mMapDocument).pixelY(mapObject->y()));
 
         if (flags & ObjectHasDimensions) {
             mIdToProperty[WidthProperty]->setValue(mapObject->width());

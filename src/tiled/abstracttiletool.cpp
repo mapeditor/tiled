@@ -21,6 +21,7 @@
 #include "abstracttiletool.h"
 
 #include "brushitem.h"
+#include "invertyaxishelper.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
@@ -196,7 +197,7 @@ void AbstractTileTool::updateStatusInfo()
 
         setStatusInfo(QStringLiteral("%1, %2 [%3]")
                       .arg(mTilePosition.x())
-                      .arg(mTilePosition.y())
+                      .arg(InvertYAxisHelper(mapDocument()).tileY(mTilePosition.y()))
                       .arg(tileIdString));
     } else {
         setStatusInfo(QString());

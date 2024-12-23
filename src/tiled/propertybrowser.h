@@ -148,6 +148,7 @@ private:
         WangColorProbabilityProperty,
         WangSetTypeProperty,
         InfiniteProperty,
+        InvertYAxisProperty,
         TemplateProperty,
         CompressionLevelProperty,
         ChunkWidthProperty,

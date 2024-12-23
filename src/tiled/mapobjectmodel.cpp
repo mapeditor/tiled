@@ -26,6 +26,7 @@
 #include "changemapobject.h"
 #include "changeproperties.h"
 #include "grouplayer.h"
+#include "invertyaxishelper.h"
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -172,7 +173,7 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
                 return QLatin1Char('(')
                         + QString::number(mapObject->x())
                         + QLatin1String(", ")
-                        + QString::number(mapObject->y())
+                        + QString::number(InvertYAxisHelper(mapDocument()).tileY(mapObject->y()))
                         + QLatin1Char(')');
             }
             break;
