@@ -25,14 +25,19 @@
 
 #include "wangset.h"
 
+class QMenu;
 class QModelIndex;
 class QPushButton;
+class QSortFilterProxyModel;
+class QStackedWidget;
 class QTabWidget;
 class QToolBar;
+class QToolButton;
 class QTreeView;
 
 namespace Tiled {
 
+class ChangeEvent;
 class Document;
 class HasChildrenFilterModel;
 class WangSetView;
@@ -56,10 +61,11 @@ public:
 
     WangSet *currentWangSet() const { return mCurrentWangSet; }
     WangId currentWangId() const { return mCurrentWangId; }
+    int currentWangColor() const;
 
     void editWangSetName(WangSet *wangSet);
+    void editWangColorName(int colorIndex);
 
-    void setTemplateView();
     void setColorView();
     void hideTemplateColorView();
 
@@ -70,36 +76,37 @@ signals:
     void currentWangSetChanged(WangSet *wangSet);
     void currentWangIdChanged(WangId wangId);
 
-    void addWangSetRequested();
+    void addWangSetRequested(WangSet::Type type);
+    void duplicateWangSetRequested();
     void removeWangSetRequested();
 
     void selectWangBrush();
     // When the color view selection changes.
-    // edges is false if this is a corner color.
-    void wangColorChanged(int color, bool edge);
+    void wangColorChanged(int color);
 
 public slots:
     void setCurrentWangSet(WangSet *wangSet);
     void onCurrentWangIdChanged(WangId wangId);
     void onWangIdUsedChanged(WangId wangId);
-    void onColorCaptured(int color, bool isEdge);
+    void setCurrentWangColor(int color);
 
 protected:
     void changeEvent(QEvent *event) override;
 
-private slots:
+private:
     void activateErase();
     void refreshCurrentWangSet();
     void refreshCurrentWangId();
     void refreshCurrentWangColor();
-    void wangSetChanged();
-    void indexPressed(const QModelIndex &index);
+    void wangColorIndexPressed(const QModelIndex &index);
+    void documentChanged(const ChangeEvent &change);
+    void wangSetChanged(WangSet *wangSet);
+    void wangSetIndexPressed(const QModelIndex &index);
     void expandRows(const QModelIndex &parent, int first, int last);
-    void addEdgeColor();
-    void addCornerColor();
+    void checkAnyWangSets();
+    void addColor();
     void removeColor();
 
-private:
     void updateAddColorStatus();
     void retranslateUi();
 
@@ -107,29 +114,35 @@ private:
 
     QToolBar *mWangSetToolBar;
     QToolBar *mWangColorToolBar;
-    QAction *mAddWangSet;
+    QToolButton *mNewWangSetButton;
+    QMenu *mNewWangSetMenu;
+    QAction *mAddCornerWangSet;
+    QAction *mAddEdgeWangSet;
+    QAction *mAddMixedWangSet;
+    QAction *mDuplicateWangSet;
     QAction *mRemoveWangSet;
-    QAction *mAddEdgeColor;
-    QAction *mAddCornerColor;
+    QAction *mAddColor;
     QAction *mRemoveColor;
 
-    Document *mDocument;
+    Document *mDocument = nullptr;
+    QStackedWidget *mStack;
     WangSetView *mWangSetView;
     QPushButton *mEraseWangIdsButton;
-    WangSet *mCurrentWangSet;
+    WangSet *mCurrentWangSet = nullptr;
     WangId mCurrentWangId;
     TilesetDocumentsFilterModel *mTilesetDocumentFilterModel;
     WangColorView *mWangColorView;
     WangColorModel *mWangColorModel;
-    HasChildrenFilterModel *mWangColorFilterModel;
+    QSortFilterProxyModel *mWangColorFilterModel;
     WangSetModel *mWangSetModel;
-    HasChildrenFilterModel *mProxyModel;
+    HasChildrenFilterModel *mWangSetProxyModel;
+    QWidget *mWangColorWidget;
     WangTemplateView *mWangTemplateView;
     WangTemplateModel *mWangTemplateModel;
     QTabWidget *mTemplateAndColorView;
     QWidget *mTemplateAndColorWidget;
 
-    bool mInitializing;
+    bool mInitializing = false;
 };
 
 } // namespace Tiled

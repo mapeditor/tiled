@@ -41,7 +41,7 @@ public:
                      const SharedTileset &tileset,
                      QUndoCommand *parent = nullptr);
 
-    ~AddRemoveTileset();
+    ~AddRemoveTileset() override;
 
 protected:
     void addTileset();

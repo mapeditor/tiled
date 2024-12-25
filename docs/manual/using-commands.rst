@@ -46,10 +46,10 @@ Shortcut
     A custom key sequence to trigger the command. You can use 'Clear'
     to reset the shortcut.
 
-Output in Debug Console
+Show output in Console view
     If this is enabled, then the output (stdout and stderr) of this
-    command will be displayed in the Debug Console. You can find the
-    Debug Console in *View > Views and Toolbars > Debug Console*.
+    command will be displayed in the Console. You can find the
+    Console in *View > Views and Toolbars > Console*.
 
 Save map before executing
     If this is enabled, then the current map will be saved before
@@ -69,19 +69,41 @@ In the executable, arguments and working directory fields, you can use
 the following variables:
 
 ``%mapfile``
-    the current maps full path.
+    the full path of the current file (either map or tileset).
 
 ``%mappath``
-    the full folder path in which the map is located. (since Tiled 0.18)
+    the path in which the current file is located.
 
-``%objecttype``
-    the type of the currently selected object, if any. (since Tiled 0.12)
+.. raw:: html
+
+   <div class="new new-prev">Since Tiled 1.4</div>
+
+``%projectpath``
+    the path in which the current project is located.
+
+``%objectclass``
+    the class of the currently selected object, if any (also available as
+    ``%objecttype`` for compatibility with Tiled < 1.9).
 
 ``%objectid``
-    the ID of the currently selected object, if any. (since Tiled 0.17)
+    the ID of the currently selected object, if any.
 
 ``%layername``
-    the name of the currently selected layer. (since Tiled 0.17)
+    the name of the currently selected layer.
+
+.. raw:: html
+
+   <div class="new new-prev">Since Tiled 1.6</div>
+
+``%tileid``
+    a comma-separated list with the IDs of the selected tiles, if any.
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.9</div>
+
+``%worldfile``
+    the full path of the world the current map is part of, if any.
 
 For the working directory field, you can additionally use the following
 variable:

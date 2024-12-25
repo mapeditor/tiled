@@ -1,7 +1,7 @@
 /*
  * changeobjectgroupproperties.h
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
- * Copyright 2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2010-2022, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -21,40 +21,49 @@
 
 #pragma once
 
+#include "changevalue.h"
 #include "objectgroup.h"
 
 #include <QColor>
-#include <QUndoCommand>
 
 namespace Tiled {
 
-class MapDocument;
-
-class ChangeObjectGroupProperties : public QUndoCommand
+class ChangeObjectGroupColor : public ChangeValue<ObjectGroup, QColor>
 {
 public:
     /**
-     * Constructs a new 'Change Object Layer Properties' command.
+     * Constructs a new 'Change Object Layer Color' command.
      *
-     * @param mapDocument     the map document of the object group's map
-     * @param objectGroup     the object group in to modify
+     * @param document        the document of the object groups
+     * @param objectGroups    the object groups to modify
      * @param newColor        the new color to apply
      */
-    ChangeObjectGroupProperties(MapDocument *mapDocument,
-                                ObjectGroup *objectGroup,
-                                const QColor &newColor,
-                                ObjectGroup::DrawOrder newDrawOrder);
-
-    void undo() override;
-    void redo() override;
+    ChangeObjectGroupColor(Document *document,
+                           QList<ObjectGroup *> objectGroups,
+                           const QColor &newColor);
 
 private:
-    MapDocument *mMapDocument;
-    ObjectGroup *mObjectGroup;
-    const QColor mUndoColor;
-    const QColor mRedoColor;
-    ObjectGroup::DrawOrder mUndoDrawOrder;
-    ObjectGroup::DrawOrder mRedoDrawOrder;
+    QColor getValue(const ObjectGroup *objectGroup) const override;
+    void setValue(ObjectGroup *objectGroup, const QColor &value) const override;
+};
+
+class ChangeObjectGroupDrawOrder : public ChangeValue<ObjectGroup, ObjectGroup::DrawOrder>
+{
+public:
+    /**
+     * Constructs a new 'Change Object Layer Draw Order' command.
+     *
+     * @param document        the document of the object groups
+     * @param objectGroups    the object groups to modify
+     * @param newDrawOrder    the new drawing order
+     */
+    ChangeObjectGroupDrawOrder(Document *document,
+                               QList<ObjectGroup *> objectGroups,
+                               ObjectGroup::DrawOrder newDrawOrder);
+
+private:
+    ObjectGroup::DrawOrder getValue(const ObjectGroup *objectGroup) const override;
+    void setValue(ObjectGroup *objectGroup, const ObjectGroup::DrawOrder &value) const override;
 };
 
 } // namespace Tiled

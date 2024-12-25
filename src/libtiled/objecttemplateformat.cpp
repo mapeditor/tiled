@@ -38,7 +38,7 @@ std::unique_ptr<ObjectTemplate> readObjectTemplate(const QString &fileName, QStr
         }
 
         if (objectTemplate)
-            objectTemplate->setFormat(format);
+            objectTemplate->setFormat(format->shortName());
 
         return objectTemplate;
     }
@@ -48,10 +48,13 @@ std::unique_ptr<ObjectTemplate> readObjectTemplate(const QString &fileName, QStr
 
 ObjectTemplateFormat *findSupportingTemplateFormat(const QString &fileName)
 {
-    for (ObjectTemplateFormat *format : PluginManager::objects<ObjectTemplateFormat>())
+    const auto formats = PluginManager::objects<ObjectTemplateFormat>();
+    for (ObjectTemplateFormat *format : formats)
         if (format->supportsFile(fileName))
             return format;
     return nullptr;
 }
 
 } // namespace Tiled
+
+#include "moc_objecttemplateformat.cpp"

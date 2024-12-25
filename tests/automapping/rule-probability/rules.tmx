@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="7" height="4" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="5">
+ <tileset firstgid="1" source="../spr_test_tileset.tsx"/>
+ <layer id="1" name="input_set" width="7" height="4">
+  <data encoding="csv">
+0,0,0,0,0,0,0,
+0,2,0,2,0,2,0,
+0,0,0,0,0,0,0,
+0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="2" name="output_auto" width="7" height="4">
+  <data encoding="csv">
+0,0,0,0,0,0,0,
+0,5,0,6,0,7,0,
+0,0,0,0,0,0,0,
+0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup color="#62a0ea" id="4" name="rule_options">
+  <object id="3" x="44" y="12" width="24" height="24">
+   <properties>
+    <property name="Probability" type="float" value="0.25"/>
+   </properties>
+  </object>
+  <object id="4" x="75" y="12" width="26" height="24">
+   <properties>
+    <property name="Probability" type="float" value="0.1"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

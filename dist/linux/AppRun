@@ -1,0 +1,54 @@
+#! /usr/bin/env bash
+
+
+# make sure errors in sourced scripts will cause this script to stop
+set -e
+
+this_dir="$(readlink -f "$(dirname "$0")")"
+bin_dir="/usr/bin"
+
+source "$this_dir"/apprun-hooks/"linuxdeploy-plugin-qt-hook.sh"
+
+my_help() {
+    echo "Usage (Meta):"
+    echo
+    echo "To run a specific sub-programm just call the AppImage"
+    echo "with the program name as the first parameter."
+    echo
+    echo "Available programs:"
+    echo '"tiled" (the main program. Default)'
+    echo '"terraingenerator"'
+    echo '"tmxrasterizer" (convert projects to images)'
+    echo '"tmxviewer" (view your projects)'
+    echo
+    echo "Example:"
+    echo "${0} tmxrasterizer --ignore-visibility"
+    echo
+    echo "Tiled help:"
+}
+
+case ${1} in
+    terraingenerator)
+        shift
+        exec "$this_dir"/${bin_dir}/terraingenerator "$@"
+        ;;
+    tiled)
+        shift
+        exec "$this_dir"/${bin_dir}/tiled "$@"
+        ;;
+    tmxrasterizer)
+        shift
+        exec "$this_dir"/${bin_dir}/tmxrasterizer "$@"
+        ;;
+    tmxviewer)
+        shift
+        exec "$this_dir"/${bin_dir}/tmxviewer "$@"
+        ;;
+    "--help")
+        my_help
+        exec "$this_dir"/${bin_dir}/tiled "--help"
+        ;;
+    *)
+        exec "$this_dir"/${bin_dir}/tiled "$@"
+        ;;
+esac

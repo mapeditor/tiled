@@ -1,47 +1,95 @@
 name: tiled
-version: git
-version-script: git describe | cut -c 2-
-summary: Your free, easy to use and flexible tile map editor.
-description: |
-  Tiled is a free software level editor. It supports editing tile maps in
-  various projections (orthogonal, isometric, hexagonal) and also supports
-  building levels with freely positioned, rotated or scaled images or
-  annotating them with objects of various shapes.
+adopt-info: tiled
+license: GPL-2.0
+base: core24
 
 grade: stable
 confinement: strict
 
 apps:
   tiled:
-    command: desktop-launch ${SNAP}/usr/bin/tiled
-    desktop: usr/share/applications/org.mapeditor.Tiled.desktop
-    plugs: [home, opengl, unity7, network]
+    command-chain: &command-chain
+      - bin/desktop-launch
+    command: usr/bin/tiled
+    common-id: org.mapeditor.Tiled.desktop
+    plugs:
+      - desktop
+      - desktop-legacy
+      - wayland
+      - unity7
+      - home
+      - removable-media
+      - opengl
+      - network
   tmxviewer:
-    command: desktop-launch ${SNAP}/usr/bin/tmxviewer
-    plugs: [home, unity7]
+    command-chain: *command-chain
+    command: usr/bin/tmxviewer
+    plugs: &basic-plugs
+      - desktop
+      - desktop-legacy
+      - wayland
+      - unity7
+      - home
+      - removable-media
   tmxrasterizer:
-    command: desktop-launch ${SNAP}/usr/bin/tmxrasterizer
-    plugs: [home, unity7]
+    command-chain: *command-chain
+    command: usr/bin/tmxrasterizer
+    plugs: *basic-plugs
   terraingenerator:
-    command: desktop-launch ${SNAP}/usr/bin/terraingenerator
-    plugs: [home, unity7]
-  automappingconverter:
-    command: desktop-launch ${SNAP}/usr/bin/automappingconverter
-    plugs: [home, unity7]
+    command-chain: *command-chain
+    command: usr/bin/terraingenerator
+    plugs: *basic-plugs
 
 parts:
   tiled:
-    plugin: qmake
-    qt-version: qt5
-    options:
-      - PREFIX=/usr
-      - CONFIG+=release
+    plugin: make
+    override-pull: |
+      craftctl default
+      craftctl set version="$(git describe | sed 's/v//')"
+    override-build: |
+      qbs setup-toolchains --detect
+      qbs build --jobs "${CRAFT_PARALLEL_BUILD_COUNT}" --command-echo-mode command-line config:release qbs.installPrefix:"/usr" projects.Tiled.version:$(craftctl get version) projects.Tiled.useRPaths:false
+      qbs install --install-root "${CRAFT_PART_INSTALL}" config:release
+    parse-info:
+      - usr/share/metainfo/org.mapeditor.Tiled.appdata.xml
     source: .
     build-packages:
+      - pkg-config
     # FIXME: Python plugin compiles and loads, but can't find platform libraries
-    #  - pkg-config
     #  - python-dev
       - qttools5-dev-tools
-    #stage-packages:
+      - qbs
+      - libqt5svg5-dev
+      - qtdeclarative5-dev
+      - zlib1g-dev
+      - libzstd-dev
+    stage-packages:
+      - libqt5quick5
+      - qt5-image-formats-plugins
+      - qtwayland5
     #  - libpython2.7
+      - libzstd1
     after: [desktop-qt5]
+
+  desktop-qt5:
+    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
+    source-subdir: qt
+    plugin: make
+    make-parameters: ["FLAVOR=qt5"]
+    build-packages:
+      - build-essential
+      - qtbase5-dev
+      - dpkg-dev
+    stage-packages:
+      - libxkbcommon0
+      - dmz-cursor-theme
+      - light-themes
+      - adwaita-icon-theme
+      - shared-mime-info
+      - libqt5concurrent5
+      - libqt5gui5
+      - libqt5svg5 # for loading icon themes which are svg
+      - libgdk-pixbuf2.0-0
+      - locales-all
+      - xdg-user-dirs
+      - fcitx-frontend-qt5

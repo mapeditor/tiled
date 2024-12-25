@@ -33,19 +33,18 @@ class ChangeTileWangId : public QUndoCommand
 {
 public:
     struct WangIdChange {
-        WangIdChange(WangId from, WangId to, Tile *tile)
+        WangIdChange(WangId from, WangId to, int tileId)
             : from(from)
             , to(to)
-            , tile(tile)
+            , tileId(tileId)
         {}
 
         WangIdChange()
-            : tile(nullptr)
         {}
 
         WangId from;
         WangId to;
-        Tile *tile;
+        int tileId = 0;
     };
 
     ChangeTileWangId();
@@ -65,7 +64,17 @@ public:
     int id() const override { return Cmd_ChangeTileWangId; }
     bool mergeWith(const QUndoCommand *other) override;
 
+    static QVector<WangIdChange> changesOnSetColorCount(const WangSet *wangSet,
+                                                        int colorCount);
+
+    static QVector<WangIdChange> changesOnRemoveColor(const WangSet *wangSet,
+                                                      int removedColor);
+
+    static void applyChanges(WangSet *wangSet, const QVector<WangIdChange> &changes);
+
 private:
+    Tile *findTile(int tileId) const;
+
     TilesetDocument *mTilesetDocument;
     WangSet *mWangSet;
     QVector<WangIdChange> mChanges;

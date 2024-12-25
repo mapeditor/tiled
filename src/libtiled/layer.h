@@ -38,6 +38,9 @@
 #include <QString>
 #include <QVector>
 
+#include <cstddef>
+#include <iterator>
+
 namespace Tiled {
 
 class GroupLayer;
@@ -51,14 +54,6 @@ class TileLayer;
  */
 class TILEDSHARED_EXPORT Layer : public Object
 {
-    Q_OBJECT
-
-    Q_PROPERTY(QString name READ name)
-    Q_PROPERTY(qreal opacity READ opacity)
-    Q_PROPERTY(bool visible READ isVisible)
-    Q_PROPERTY(bool locked READ isLocked)
-    Q_PROPERTY(QPointF offset READ offset)
-
 public:
     enum TypeFlag {
         TileLayerType   = 0x01,
@@ -80,6 +75,9 @@ public:
      */
     int id() const { return mId; }
     void setId(int id) { mId = id; }
+
+    const QColor &tintColor() const { return mTintColor; }
+    void setTintColor(const QColor &tintColor) { mTintColor = tintColor; }
 
     /**
      * Returns the type of this layer.
@@ -106,7 +104,15 @@ public:
      */
     void setOpacity(qreal opacity) { mOpacity = opacity; }
 
+    /**
+     * Returns the effective opacity of this layer
+     */
     qreal effectiveOpacity() const;
+
+    /**
+     * Returns the effective tint color of this layer
+     */
+    QColor effectiveTintColor() const;
 
     /**
      * Returns the visibility of this layer.
@@ -180,8 +186,11 @@ public:
 
     void setOffset(const QPointF &offset);
     QPointF offset() const;
-
     QPointF totalOffset() const;
+
+    void setParallaxFactor(const QPointF &factor);
+    QPointF parallaxFactor() const;
+    QPointF effectiveParallaxFactor() const;
 
     bool canMergeDown() const;
 
@@ -248,16 +257,18 @@ protected:
     Layer *initializeClone(Layer *clone) const;
 
     QString mName;
-    int mId;
+    int mId = 0;
     TypeFlag mLayerType;
-    int mX;
-    int mY;
+    int mX = 0;
+    int mY = 0;
     QPointF mOffset;
-    qreal mOpacity;
-    bool mVisible;
-    Map *mMap;
-    GroupLayer *mParentLayer;
-    bool mLocked;
+    QPointF mParallaxFactor = { 1.0, 1.0 };
+    qreal mOpacity = 1.0;
+    QColor mTintColor;
+    bool mVisible = true;
+    Map *mMap = nullptr;
+    GroupLayer *mParentLayer = nullptr;
+    bool mLocked = false;
 
     friend class Map;
     friend class GroupLayer;
@@ -280,6 +291,22 @@ inline QPointF Layer::offset() const
     return mOffset;
 }
 
+/**
+ * Sets the parallax factor of this layer.
+ */
+inline void Layer::setParallaxFactor(const QPointF &factor)
+{
+    mParallaxFactor = factor;
+}
+
+/**
+ * Returns the parallax factor of this layer.
+ */
+inline QPointF Layer::parallaxFactor() const
+{
+    return mParallaxFactor;
+}
+
 
 /**
  * An iterator for iterating over the layers of a map, in the order in which
@@ -292,10 +319,18 @@ inline QPointF Layer::offset() const
 class TILEDSHARED_EXPORT LayerIterator
 {
 public:
+    using iterator_category = std::forward_iterator_tag;
+    using difference_type   = std::ptrdiff_t;
+    using value_type        = Layer*;
+    using pointer           = value_type*;
+    using reference         = value_type&;
+
     LayerIterator(const Map *map, int layerTypes = Layer::AnyLayerType);
     LayerIterator(Layer *start);
 
     Layer *currentLayer() const;
+    void setCurrentLayer(Layer *layer);
+
     int currentSiblingIndex() const;
 
     bool hasNextSibling() const;
@@ -401,7 +436,9 @@ inline Layer *LayerIterator::operator->() const
 }
 
 
-TILEDSHARED_EXPORT int globalIndex(Layer *layer);
+TILEDSHARED_EXPORT int globalIndex(const Layer *layer);
 TILEDSHARED_EXPORT Layer *layerAtGlobalIndex(const Map *map, int index);
 
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::Layer*)

@@ -21,85 +21,222 @@
 #include "editablelayer.h"
 
 #include "changelayer.h"
+#include "editablegrouplayer.h"
+#include "editableimagelayer.h"
 #include "editablemap.h"
-#include "renamelayer.h"
-#include "scriptmanager.h"
+#include "editableobjectgroup.h"
+#include "editabletilelayer.h"
 
 namespace Tiled {
 
-EditableLayer::EditableLayer(EditableMap *map, Layer *layer, QObject *parent)
-    : QObject(parent)
-    , mMap(map)
-    , mLayer(layer)
+EditableLayer::EditableLayer(std::unique_ptr<Layer> layer, QObject *parent)
+    : EditableObject(nullptr, layer.get(), parent)
+{
+    mDetachedLayer = std::move(layer);
+}
+
+EditableLayer::EditableLayer(EditableAsset *asset, Layer *layer, QObject *parent)
+    : EditableObject(asset, layer, parent)
 {
 }
 
 EditableLayer::~EditableLayer()
 {
-    if (mMap)
-        mMap->mEditableLayers.remove(layer());
+    // Prevent owned object from trying to delete us again
+    if (mDetachedLayer)
+        setObject(nullptr);
 }
 
+EditableMap *EditableLayer::map() const
+{
+    return (asset() && asset()->isMap()) ? static_cast<EditableMap*>(asset())
+                                         : nullptr;
+}
+
+EditableGroupLayer *EditableLayer::parentLayer() const
+{
+    GroupLayer *parent = layer()->parentLayer();
+    return static_cast<EditableGroupLayer*>(EditableLayer::get(map(), parent));
+}
+
+bool EditableLayer::isSelected() const
+{
+    if (auto document = mapDocument())
+        return document->selectedLayers().contains(layer());
+    return false;
+}
+
+/**
+ * Turns this layer reference into a stand-alone copy of the layer it was
+ * referencing.
+ */
 void EditableLayer::detach()
 {
-    Q_ASSERT(mMap);
-    Q_ASSERT(mMap->mEditableLayers.contains(layer()));
+    Q_ASSERT(asset());
+    setAsset(nullptr);
 
-    mMap->mEditableLayers.remove(mLayer);
-    mMap = nullptr;
+    if (!moveOwnershipToJavaScript())
+        return;
 
-    mDetachedLayer.reset(mLayer->clone());
-    mLayer = mDetachedLayer.get();
+    mDetachedLayer.reset(layer()->clone());
+//    mDetachedLayer->resetIds();
+    setObject(mDetachedLayer.get());
 }
 
-void EditableLayer::attach(EditableMap *map)
+/**
+ * Turns this stand-alone layer into a reference, with the layer now owned by
+ * a map, group layer or tile (in case of object group).
+ *
+ * The given \a asset may be a nullptr in case the layer is added to a group
+ * layer which isn't part of a map.
+ *
+ * Returns nullptr if the editable wasn't owning its layer.
+ */
+Layer *EditableLayer::attach(EditableAsset *asset)
 {
-    Q_ASSERT(!mMap && map);
-    Q_ASSERT(!map->mEditableLayers.contains(layer()));
+    Q_ASSERT(!this->asset());
 
-    mMap = map;
-    mMap->mEditableLayers.insert(layer(), this);
-    mDetachedLayer.release();
+    setAsset(asset);
+    moveOwnershipToCpp();
+    return mDetachedLayer.release();
+}
+
+/**
+ * Take ownership of the referenced layer or delete it.
+ */
+void EditableLayer::hold(std::unique_ptr<Layer> layer)
+{
+    Q_ASSERT(!mDetachedLayer);  // can't already be holding the layer
+    Q_ASSERT(this->layer() == layer.get());
+
+    if (!moveOwnershipToJavaScript())
+        return;
+
+    setAsset(nullptr);
+    mDetachedLayer = std::move(layer);
+}
+
+EditableLayer *EditableLayer::get(EditableMap *map, Layer *layer)
+{
+    if (!layer)
+        return nullptr;
+
+    auto editable = find(layer);
+    if (editable)
+        return editable;
+
+    Q_ASSERT(!map || layer->map() == map->map());
+
+    switch (layer->layerType()) {
+    case Layer::TileLayerType:
+        editable = new EditableTileLayer(map, static_cast<TileLayer*>(layer));
+        break;
+    case Layer::ObjectGroupType:
+        editable = new EditableObjectGroup(map, static_cast<ObjectGroup*>(layer));
+        break;
+    case Layer::ImageLayerType:
+        editable = new EditableImageLayer(map, static_cast<ImageLayer*>(layer));
+        break;
+    case Layer::GroupLayerType:
+        editable = new EditableGroupLayer(map, static_cast<GroupLayer*>(layer));
+        break;
+    }
+
+    editable->moveOwnershipToCpp();
+
+    return editable;
+}
+
+void EditableLayer::release(Layer *layer)
+{
+    std::unique_ptr<Layer> owned { layer };
+    if (auto editable = EditableLayer::find(layer))
+        editable->hold(std::move(owned));
 }
 
 void EditableLayer::setName(const QString &name)
 {
-    if (mMap)
-        mMap->push(new RenameLayer(mMap->mapDocument(), mLayer, name));
-    else
-        mLayer->setName(name);
+    if (auto doc = document())
+        asset()->push(new SetLayerName(doc, { layer() }, name));
+    else if (!checkReadOnly())
+        layer()->setName(name);
 }
 
 void EditableLayer::setOpacity(qreal opacity)
 {
-    if (mMap)
-        mMap->push(new SetLayerOpacity(mMap->mapDocument(), mLayer, opacity));
-    else
-        mLayer->setOpacity(opacity);
+    if (auto doc = document())
+        asset()->push(new SetLayerOpacity(doc, { layer() }, opacity));
+    else if (!checkReadOnly())
+        layer()->setOpacity(opacity);
+}
+
+void EditableLayer::setTintColor(const QColor &color)
+{
+    if (auto doc = document())
+        asset()->push(new SetLayerTintColor(doc, { layer() }, color));
+    else if (!checkReadOnly())
+        layer()->setTintColor(color);
 }
 
 void EditableLayer::setVisible(bool visible)
 {
-    if (mMap)
-        mMap->push(new SetLayerVisible(mMap->mapDocument(), mLayer, visible));
-    else
-        mLayer->setVisible(visible);
+    if (auto doc = document())
+        asset()->push(new SetLayerVisible(doc, { layer() }, visible));
+    else if (!checkReadOnly())
+        layer()->setVisible(visible);
 }
 
 void EditableLayer::setLocked(bool locked)
 {
-    if (mMap)
-        mMap->push(new SetLayerLocked(mMap->mapDocument(), mLayer, locked));
-    else
-        mLayer->setLocked(locked);
+    if (auto doc = document())
+        asset()->push(new SetLayerLocked(doc, { layer() }, locked));
+    else if (!checkReadOnly())
+        layer()->setLocked(locked);
 }
 
 void EditableLayer::setOffset(QPointF offset)
 {
-    if (mMap)
-        mMap->push(new SetLayerOffset(mMap->mapDocument(), mLayer, offset));
-    else
-        mLayer->setOffset(offset);
+    if (auto doc = document())
+        asset()->push(new SetLayerOffset(doc, { layer() }, offset));
+    else if (!checkReadOnly())
+        layer()->setOffset(offset);
+}
+
+void EditableLayer::setParallaxFactor(QPointF factor)
+{
+    if (auto doc = document())
+        asset()->push(new SetLayerParallaxFactor(doc, { layer() }, factor));
+    else if (!checkReadOnly())
+        layer()->setParallaxFactor(factor);
+}
+
+void EditableLayer::setSelected(bool selected)
+{
+    auto document = mapDocument();
+    if (!document)
+        return;
+
+    if (selected) {
+        if (!document->selectedLayers().contains(layer())) {
+            auto layers = document->selectedLayers();
+            layers.append(layer());
+            document->switchSelectedLayers(layers);
+        }
+    } else {
+        int index = document->selectedLayers().indexOf(layer());
+        if (index != -1) {
+            auto layers = document->selectedLayers();
+            layers.removeAt(index);
+            document->switchSelectedLayers(layers);
+        }
+    }
+}
+
+MapDocument *EditableLayer::mapDocument() const
+{
+    return map() ? map()->mapDocument() : nullptr;
 }
 
 } // namespace Tiled
+
+#include "moc_editablelayer.cpp"

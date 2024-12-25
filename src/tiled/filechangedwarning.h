@@ -32,7 +32,7 @@ class FileChangedWarning : public QWidget
     Q_OBJECT
 
 public:
-    FileChangedWarning(QWidget *parent = nullptr);
+    explicit FileChangedWarning(QWidget *parent = nullptr);
 
 signals:
     void reload();

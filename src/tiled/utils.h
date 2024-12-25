@@ -20,8 +20,16 @@
 
 #pragma once
 
+#include "rangeset.h"
+
 #include <QIcon>
+#include <QJsonParseError>
+#include <QSettings>
 #include <QString>
+
+#include <memory>
+
+#include "qtcompat_p.h"
 
 class QAction;
 class QKeyEvent;
@@ -36,6 +44,12 @@ QString writableImageFormatsFilter();
 QStringList cleanFilterList(const QString &filter);
 bool fileNameMatchesNameFilter(const QString &fileName,
                                const QString &nameFilter);
+QString firstExtension(const QString &nameFilter);
+
+int matchingScore(const QStringList &words, QStringRef string);
+RangeSet<int> matchingRanges(const QStringList &words, QStringRef string);
+
+QIcon themeIcon(const QString &name);
 
 /**
  * Looks up the icon with the specified \a name from the system theme and set
@@ -47,22 +61,35 @@ bool fileNameMatchesNameFilter(const QString &fileName,
  * Does nothing when the platform is not Linux.
  */
 template <class T>
-void setThemeIcon(T *t, const char *name)
+void setThemeIcon(T *t, const QString &name)
 {
 #ifdef Q_OS_LINUX
-    QIcon themeIcon = QIcon::fromTheme(QLatin1String(name));
-    if (!themeIcon.isNull())
-        t->setIcon(themeIcon);
+    const QIcon icon = themeIcon(name);
+    if (!icon.isNull())
+        t->setIcon(icon);
 #else
     Q_UNUSED(t)
     Q_UNUSED(name)
 #endif
 }
 
+template <class T>
+void setThemeIcon(T *t, const char *name)
+{
+    setThemeIcon(t, QLatin1String(name));
+}
+
+QIcon colorIcon(const QColor &color, QSize size);
+
+QRect screenRect(const QWidget *widget);
+QRect popupGeometry(const QWidget *parent, QSize popupSize);
+
 void restoreGeometry(QWidget *widget);
 void saveGeometry(QWidget *widget);
 
+int defaultDpi();
 qreal defaultDpiScale();
+int dpiScaled(int value);
 qreal dpiScaled(qreal value);
 QSize dpiScaled(QSize value);
 QPoint dpiScaled(QPoint value);
@@ -74,6 +101,15 @@ bool isZoomOutShortcut(QKeyEvent *event);
 bool isResetZoomShortcut(QKeyEvent *event);
 
 void addFileManagerActions(QMenu &menu, const QString &fileName);
+void addOpenContainingFolderAction(QMenu &menu, const QString &fileName);
+void addOpenWithSystemEditorAction(QMenu &menu, const QString &fileName);
+
+QSettings::Format jsonSettingsFormat();
+std::unique_ptr<QSettings> jsonSettings(const QString &fileName);
+
+namespace Error {
+QString jsonParseError(QJsonParseError error);
+} // namespace Error
 
 } // namespace Utils
 } // namespace Tiled

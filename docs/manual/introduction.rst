@@ -20,7 +20,7 @@ distance and their rendering order can be configured.
 The primary tool for editing :ref:`tile layers <tile-layer-introduction>`
 is a stamp brush that allows efficient painting and copying of tile
 areas. It also supports drawing lines and circles. In addition, there
-are several selection tools and a tool that does :doc:`automatic terrain transitions <using-the-terrain-tool>`.
+are several selection tools and a tool that does :doc:`automatic terrain transitions <terrain>`.
 Finally, it can apply changes based on :doc:`pattern-matching <automapping>`
 to automate parts of your work.
 
@@ -32,17 +32,23 @@ is not limited to the tile grid and objects can also be scaled or
 rotated. Object layers offer a lot of flexibility to add almost any
 information to your level that your game needs.
 
-Other things worth mentioning are the support for adding custom map or
-tileset formats through plugins, the tile stamp memory, tile animation
-support and the tile collision editor.
+Other things worth mentioning are the support for adding custom map or tileset
+formats through plugins, :doc:`extending Tiled </manual/scripting>` with
+JavaScript, the tile stamp memory, :ref:`tile animation support
+<tile-animation-editor>` and the :ref:`tile collision editor
+<tile-collision-editor>`.
 
 .. _getting-started:
 
 Getting Started
 ---------------
 
-Creating a New Map
-~~~~~~~~~~~~~~~~~~
+.. raw:: html
+
+   <div class="new new-prev">Since Tiled 1.4</div>
+
+Setting up a New Project
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 When launching Tiled for the first time, we are greeted with the
 following window:
@@ -52,8 +58,33 @@ following window:
 
    Tiled Window
 
-The first thing we'll do is to start a new map with *File -> New -> New
-Map…* (``Ctrl+N``). The following dialog will pop up:
+To make all our assets readily accessible from the :guilabel:`Project` view,
+as well as to be able to quickly switch between multiple projects, it is
+recommended to first set up a :doc:`Tiled project <projects>`. This is however
+an entirely optional step that can be skipped when desired.
+
+Choose *File -> New -> New Project...* to create a new project file. It is
+recommended to save this file in the root of your project. The directory in
+which you store the project will be automatically added, so that its files are
+visible in the Project view.
+
+When necessary, you can add additional folders to the project or replace the
+one added by default. For example, you could choose to add several top-level
+folders like "tilesets", "maps", "templates", etc. Right-click in the
+Project view and choose *Add Folder to Project...* to add the
+relevant folders.
+
+.. hint::
+
+   You can press ``Ctrl+Shift+P`` to open the action search widget,
+   which can provide a faster way to get to actions than looking for them in
+   the menus!
+
+Creating a New Map
+~~~~~~~~~~~~~~~~~~
+
+To create a new map, choose *File -> New -> New Map…* (``Ctrl+N``). The
+following dialog will pop up:
 
 .. figure:: images/introduction/tiled-new-map.png
    :alt: New Map
@@ -66,6 +97,12 @@ format, tile render order (only supported for *Orthogonal* maps) and whether
 the map is :doc:`infinite <using-infinite-maps>` or not. All of these things
 can be changed later as needed, so it's not important to get it all right the
 first time.
+
+.. note::
+
+   If you set up a project, make sure to save the map to a folder that you had
+   added to your project. This will make it quickly accessible using *File ->
+   Open File in Project* (``Ctrl+P``).
 
 After saving our map, we'll see the tile grid and an initial tile layer
 will be added to the map. However, before we can start using any tiles

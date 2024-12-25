@@ -35,9 +35,15 @@ class EditableSelectedArea : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(QRect boundingRect READ boundingRect)
+
 public:
     explicit EditableSelectedArea(MapDocument *mapDocument,
                                   QObject *parent = nullptr);
+
+    QRect boundingRect() const;
+
+    Q_INVOKABLE Tiled::RegionValueType get() const;
 
 public slots:
     void set(const QRect &rect);
@@ -59,6 +65,11 @@ private:
     MapDocument * const mMapDocument;
 };
 
+
+inline QRect EditableSelectedArea::boundingRect() const
+{
+    return get().boundingRect();
+}
 
 inline void EditableSelectedArea::set(const QRectF &rect)
 {

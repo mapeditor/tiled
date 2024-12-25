@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.8" tiledversion="1.8.4" orientation="orthogonal" renderorder="right-down" width="4" height="4" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="2">
+ <properties>
+  <property name="MatchOutsideMap" type="bool" value="true"/>
+  <property name="NoOverlappingRules" type="bool" value="false"/>
+ </properties>
+ <tileset firstgid="1" source="../spr_test_tileset.tsx"/>
+ <tileset firstgid="17" source="../../../src/tiled/resources/automap-tiles.tsx"/>
+ <layer id="1" name="inputnot_in" width="4" height="4" tintcolor="#dca0a0">
+  <data encoding="csv">
+2,0,2,0,
+0,0,0,0,
+2,0,0,5,
+0,0,0,0
+</data>
+ </layer>
+ <layer id="5" name="inputnot_in" width="4" height="4" tintcolor="#dca0a0">
+  <data encoding="csv">
+3,0,3,0,
+0,0,0,0,
+5,0,0,3,
+0,0,0,0
+</data>
+ </layer>
+ <layer id="6" name="inputnot_in" width="4" height="4" tintcolor="#dca0a0">
+  <data encoding="csv">
+4,0,5,19,
+0,0,0,0,
+4,0,20,4,
+0,0,0,0
+</data>
+ </layer>
+ <layer id="2" name="output_out" width="4" height="4">
+  <data encoding="csv">
+6,0,7,0,
+0,0,0,0,
+8,0,0,9,
+0,0,0,0
+</data>
+ </layer>
+</map>

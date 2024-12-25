@@ -25,8 +25,6 @@
 #include "tilesetdocument.h"
 #include "tileset.h"
 
-#include <algorithm>
-
 namespace Tiled {
 
 TilesetDocumentsModel::TilesetDocumentsModel(QObject *parent)

@@ -1,44 +1,32 @@
 # General build artifacts
-build/
-bin/
-lib/
-Makefile*
-*.o
-*.qm
-*.moc
-moc_predefs.h
-moc_*.cpp
-ui_*.h
-qrc_*
-*.qmlc
 default/
-moc_predefs.h
 
-# Build artifacts on Windows
-*.dll
-*.obj
-*.a
-*.lib
-*.exp
-*.intermediate.manifest
-*.exe
-*.ilk
-*.pdb
-*uic_wrapper.bat
-
-# Build artifacts on Mac
-.qmake.stash
-translations/phony_target.app
+# clangd cache
+.cache/
 
 # Mac stuff
 *.DS_Store
 
-# IDE files
-*.pro.user*
-*.qbs.user*
+# Qt Creator
+*.user*
+*.creator.*
+*.autosave
+build/ 
 
-tests/mapreader/mapreader
-tests/staggeredrenderer/staggeredrenderer
+# Visual Studio
+*.sln
+*.suo
+*.vcxproj
+*.vcxproj.*
+*.ncb
+*.sdf
+*.opensdf
+
+# CLion / JetBrains IDEs
+.idea/
+*.iws
+*.iml
+*.ipr
 
 # Ronn html outputs
 man/*.1.html
@@ -48,13 +36,24 @@ html/
 docs/_build/html/
 docs/_build/gettext/.doctrees
 docs/_build/doctrees/
+docs/.venv/
 *.mo
+
+# tsdoc generation results
+docs/scripting-doc/out/
+docs/scripting-doc/node_modules
 
 # Work-in-progress worktrees
 wip/
+
+# Java stuff
 util/java/tmxviewer-java/target
 util/java/libtiled-java/target
 /util/java/target/
 
 # Linux perf/debugging
 gmon.out
+
+# Vim files
+*.swp
+*.swo

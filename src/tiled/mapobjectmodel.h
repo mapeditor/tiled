@@ -34,7 +34,27 @@ class MapObject;
 class Map;
 class ObjectGroup;
 
+class ChangeEvent;
 class MapDocument;
+
+class ObjectIconManager
+{
+public:
+    static const ObjectIconManager &instance();
+
+    const QIcon &iconForObject(const MapObject &object) const;
+
+private:
+    ObjectIconManager();
+
+    const QIcon mRectangleIcon;
+    const QIcon mImageIcon;
+    const QIcon mPolygonIcon;
+    const QIcon mPolylineIcon;
+    const QIcon mEllipseIcon;
+    const QIcon mTextIcon;
+    const QIcon mPointIcon;
+};
 
 /**
  * Provides a tree view on the objects present on a map. Also has member
@@ -52,7 +72,7 @@ public:
 
     enum Column {
         Name,
-        Type,
+        Class,
         Id,
         Position,
         LastColumn = Position,
@@ -86,36 +106,23 @@ public:
     void setMapDocument(MapDocument *mapDocument);
     MapDocument *mapDocument() const { return mMapDocument; }
 
-    void insertObject(ObjectGroup *og, int index, MapObject *o);
-    int removeObject(ObjectGroup *og, MapObject *o);
     void moveObjects(ObjectGroup *og, int from, int to, int count);
 
-    void setObjectPolygon(MapObject *o, const QPolygonF &polygon);
-    void setObjectPosition(MapObject *o, const QPointF &pos);
-    void setObjectSize(MapObject *o, const QSizeF &size);
-    void setObjectRotation(MapObject *o, qreal rotation);
-
-    void setObjectProperty(MapObject *o, MapObject::Property property, const QVariant &value);
-    void emitObjectsChanged(const QList<MapObject *> &objects,
-                            const QList<Column> &columns = QList<Column>(),
-                            const QVector<int> &roles = QVector<int>());
-    void emitObjectsChanged(const QList<MapObject*> &objects, Column column);
-
-signals:
-    void objectsAdded(const QList<MapObject *> &objects);
-    void objectsChanged(const QList<MapObject *> &objects);
-    void objectsTypeChanged(const QList<MapObject *> &objects);
-    void objectsRemoved(const QList<MapObject *> &objects);
-
-private slots:
-    void layerAdded(Layer *layer);
-    void layerChanged(Layer *layer);
-    void layerAboutToBeRemoved(GroupLayer *groupLayer, int index);
-    void tileTypeChanged(Tile *tile);
+    QIcon objectGroupIcon() const;
 
 private:
-    MapDocument *mMapDocument;
-    Map *mMap;
+    void layerAdded(Layer *layer);
+    void layerAboutToBeRemoved(GroupLayer *groupLayer, int index);
+    void classChanged(const QList<Object *> &objects);
+    void documentChanged(const ChangeEvent &change);
+
+    void emitDataChanged(const QList<MapObject *> &objects,
+                         const QVarLengthArray<Column, 3> &columns,
+                         const QVector<int> &roles = QVector<int>());
+
+    Map *map() const;
+
+    MapDocument *mMapDocument = nullptr;
 
     // cache
     mutable QMap<GroupLayer*, QList<Layer*>> mFilteredLayers;
@@ -123,5 +130,10 @@ private:
 
     QIcon mObjectGroupIcon;
 };
+
+inline QIcon MapObjectModel::objectGroupIcon() const
+{
+    return mObjectGroupIcon;
+}
 
 } // namespace Tiled

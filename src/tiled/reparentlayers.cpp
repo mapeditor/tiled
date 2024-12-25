@@ -23,9 +23,6 @@
 #include "grouplayer.h"
 #include "layermodel.h"
 #include "mapdocument.h"
-#include "map.h"
-
-#include "qtcompat_p.h"
 
 namespace Tiled {
 
@@ -49,7 +46,9 @@ ReparentLayers::ReparentLayers(MapDocument *mapDocument,
 void ReparentLayers::undo()
 {
     auto layerModel = mMapDocument->layerModel();
-    auto currentLayer = mMapDocument->currentLayer();
+
+    const auto currentLayer = mMapDocument->currentLayer();
+    const auto selectedLayers = mMapDocument->selectedLayers();
 
     for (int i = mUndoInfo.size() - 1; i >= 0; --i) {
         auto& undoInfo = mUndoInfo.at(i);
@@ -62,19 +61,22 @@ void ReparentLayers::undo()
     mUndoInfo.clear();
 
     mMapDocument->setCurrentLayer(currentLayer);
+    mMapDocument->setSelectedLayers(selectedLayers);
 }
 
 void ReparentLayers::redo()
 {
     auto layerModel = mMapDocument->layerModel();
-    auto currentLayer = mMapDocument->currentLayer();
+
+    const auto currentLayer = mMapDocument->currentLayer();
+    const auto selectedLayers = mMapDocument->selectedLayers();
 
     Q_ASSERT(mUndoInfo.isEmpty());
     mUndoInfo.reserve(mLayers.size());
 
     int index = mIndex;
 
-    for (auto layer : qAsConst(mLayers)) {
+    for (auto layer : std::as_const(mLayers)) {
         UndoInfo undoInfo;
         undoInfo.parent = layer->parentLayer();
         undoInfo.oldIndex = layer->siblingIndex();
@@ -94,6 +96,7 @@ void ReparentLayers::redo()
     }
 
     mMapDocument->setCurrentLayer(currentLayer);
+    mMapDocument->setSelectedLayers(selectedLayers);
 }
 
 } // namespace Tiled

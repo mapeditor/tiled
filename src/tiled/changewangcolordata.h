@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "undocommands.h"
+
 #include <QUndoCommand>
 
 #include <QColor>
@@ -39,6 +41,9 @@ public:
 
     void undo() override;
     void redo() override;
+
+    int id() const override { return Cmd_ChangeWangColorName; }
+    bool mergeWith(const QUndoCommand *other) override;
 
 private:
     TilesetDocument *mTilesetDocument;

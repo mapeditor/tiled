@@ -79,6 +79,16 @@
       <enum>QLayout::SetDefaultConstraint</enum>
      </property>
      <item>
+      <widget class="Tiled::NewVersionButton" name="newVersionButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer_3">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -97,12 +107,12 @@
      <item>
       <widget class="QPushButton" name="donateButton">
        <property name="text">
-        <string>Donate</string>
+        <string>Donate ↗</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="okButton">
        <property name="text">
         <string>OK</string>
        </property>
@@ -115,12 +125,19 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Tiled::NewVersionButton</class>
+   <extends>QToolButton</extends>
+   <header>newversionbutton.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="tiled.qrc"/>
  </resources>
  <connections>
   <connection>
-   <sender>pushButton</sender>
+   <sender>okButton</sender>
    <signal>clicked()</signal>
    <receiver>AboutDialog</receiver>
    <slot>close()</slot>

@@ -630,7 +630,6 @@ void QtAbstractPropertyManagerPrivate::propertyInserted(QtProperty *property,
     \o QtPointPropertyManager
     \o QtRectPropertyManager
     \o QtSizePropertyManager
-    \o QtSizePolicyPropertyManager
     \o QtStringPropertyManager
     \o QtTimePropertyManager
     \o QtVariantPropertyManager

@@ -3,14 +3,13 @@
   shipped when Tiled is distributed.
 */
 
-import qbs
 import qbs.File
 import qbs.FileInfo
 
 Product {
     name: "distribute"
     type: "installable"
-    builtByDefault: false
+    builtByDefault: (project.snapshot || project.release) && qbs.targetOS.contains("windows")
 
     Depends { name: "cpp" }
     Depends { name: "Qt.core" }
@@ -46,7 +45,7 @@ Product {
         }
         property string postfix: {
             var suffix = "";
-            if (qbs.targetOS.contains("windows") && qbs.debugInformation)
+            if (qbs.targetOS.contains("windows") && qbs.debugInformation && Qt.core.versionMajor < 6 && Qt.core.versionMinor < 15)
                 suffix += "d";
             return suffix + cpp.dynamicLibrarySuffix;
         }
@@ -54,10 +53,15 @@ Product {
             function addQtVersions(libs) {
                 var result = [];
                 for (i = 0; i < libs.length; ++i) {
-                    var major = libs[i] + "." + Qt.core.versionMajor;
+                    var lib = libs[i]
+                    var major = lib + "." + Qt.core.versionMajor;
                     var minor = major + "." + Qt.core.versionMinor;
                     var patch = minor + "." + Qt.core.versionPatch;
-                    result.push(libs[i], major, minor, patch);
+                    if (File.exists(minor))
+                        result.push(minor)
+                    if (File.exists(lib))
+                        result.push(lib)
+                    result.push(major, patch);
                 }
                 return result;
             }
@@ -65,29 +69,30 @@ Product {
             var list = [];
 
             if (!Qt.core.frameworkBuild) {
+                var major = Qt.core.versionMajor;
                 list.push(
-                    "Qt5Core" + postfix,
-                    "Qt5Gui" + postfix,
-                    "Qt5Network" + postfix,
-                    "Qt5Qml" + postfix,
-                    "Qt5Svg" + postfix,
-                    "Qt5Widgets" + postfix
+                    "Qt" + major + "Concurrent" + postfix,
+                    "Qt" + major + "Core" + postfix,
+                    "Qt" + major + "Gui" + postfix,
+                    "Qt" + major + "Network" + postfix,
+                    "Qt" + major + "Qml" + postfix,
+                    "Qt" + major + "Svg" + postfix,
+                    "Qt" + major + "Widgets" + postfix
                 );
+
+                if (major >= 6) {
+                    list.push(
+                        "Qt" + major + "OpenGL" + postfix,
+                        "Qt" + major + "OpenGLWidgets" + postfix
+                    );
+                }
             }
 
-            if (qbs.targetOS.contains("windows")) {
-                if (Qt.core.versionMinor < 7 &&
-                        !(Qt.core.versionMinor == 6 &&
-                          Qt.core.versionPatch >= 3)) {
-                    list.push("icuin54.dll",
-                              "icuuc54.dll",
-                              "icudt54.dll");
-                }
-            } else if (qbs.targetOS.contains("linux")) {
+            if (qbs.targetOS.contains("linux")) {
                 list = addQtVersions(list);
                 list = list.concat(addQtVersions([
-                    "Qt5DBus.so",
-                    "Qt5XcbQpa.so",
+                    "Qt" + major + "DBus.so",
+                    "Qt" + major + "XcbQpa.so",
                 ]))
 
                 if (File.exists(prefix + "icudata.so.56")) {
@@ -100,7 +105,7 @@ Product {
             return list;
         }
         qbs.install: true
-        qbs.installDir: qbs.targetOS.contains("windows") ? "" : "lib"
+        qbs.installDir: qbs.targetOS.contains("windows") ? "" : project.libDir
     }
 
     property var pluginFiles: {
@@ -127,6 +132,24 @@ Product {
             files.push("*d.dll");
         }
         return files;
+    }
+
+    Group {
+        name: "Qt Icon Engine Plugins"
+        prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/iconengines/")
+        files: pluginFiles
+        excludeFiles: pluginExcludeFiles
+        qbs.install: true
+        qbs.installDir: "plugins/iconengines"
+    }
+
+    Group {
+        name: "Qt Image Format Plugins"
+        prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/imageformats/")
+        files: pluginFiles
+        excludeFiles: pluginExcludeFiles
+        qbs.install: true
+        qbs.installDir: "plugins/imageformats"
     }
 
     Group {
@@ -157,12 +180,33 @@ Product {
     }
 
     Group {
-        name: "Qt Image Format Plugins"
-        prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/imageformats/")
+        name: "Qt Style Plugins"
+        prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/styles/")
         files: pluginFiles
         excludeFiles: pluginExcludeFiles
         qbs.install: true
-        qbs.installDir: "plugins/imageformats"
+        qbs.installDir: "plugins/styles"
+    }
+
+    Group {
+        name: "Qt TLS Plugins"
+        condition: Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 2;
+        prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/tls/")
+        files: {
+            if (qbs.targetOS.contains("windows")) {
+                if (qbs.debugInformation)
+                    return ["qschannelbackendd.dll"];
+                else
+                    return ["qschannelbackend.dll"];
+            } else if (qbs.targetOS.contains("macos")) {
+                return ["libqsecuretransportbackend.dylib"];
+            }
+
+            return pluginFiles;
+        }
+        excludeFiles: pluginExcludeFiles
+        qbs.install: true
+        qbs.installDir: "plugins/tls"
     }
 
     Group {
@@ -172,15 +216,6 @@ Product {
         files: pluginFiles
         qbs.install: true
         qbs.installDir: "plugins/xcbglintegrations"
-    }
-
-    Group {
-        name: "Qt Icon Engine Plugins"
-        condition: qbs.targetOS.contains("linux")
-        prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/iconengines/")
-        files: pluginFiles
-        qbs.install: true
-        qbs.installDir: "plugins/iconengines"
     }
 
     Group {
@@ -223,8 +258,11 @@ Product {
                              "pt",
                              "pt_PT",
                              "ru",
+                             "sv",
+                             "th",
                              "tr",
-                             "zh",
+                             "uk",
+                             "zh_CN",
                              "zh_TW"];
 
             var list = [];
@@ -257,18 +295,20 @@ Product {
                 return "C:/windows/SysWOW64/"
         }
         files: {
+            var list = []
             if (qbs.toolchain.contains("mingw")) {
-                return [
-                    "libgcc_s_dw2-1.dll",
-                    "libstdc++-6.dll",
-                    "libwinpthread-1.dll",
-                ]
+                list.push("libstdc++-6.dll",
+                          "libwinpthread-1.dll")
+
+                if (qbs.architecture == "x86_64")
+                    list.push("libgcc_s_seh-1.dll")
+                else
+                    list.push("libgcc_s_dw2-1.dll")
             } else {
-                return [
-                    "MSVCP120.DLL",
-                    "MSVCR120.DLL",
-                ]
+                list.push("MSVCP120.DLL",
+                          "MSVCR120.DLL")
             }
+            return list
         }
         qbs.install: true
         qbs.installDir: ""
@@ -276,18 +316,28 @@ Product {
 
     Group {
         name: "OpenSSL DLLs"
-        condition: qbs.targetOS.contains("windows") && File.exists(prefix)
+        condition: {
+            return qbs.targetOS.contains("windows") &&
+                    !(Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 2) &&
+                    File.exists(prefix)
+        }
 
         prefix: {
-            if (qbs.architecture === "x86_64")
-                return "C:/OpenSSL-Win64/"
-            else
-                return "C:/OpenSSL-Win32/"
+            if (project.openSslPath) {
+                return project.openSslPath + "/";
+            } else {
+                if (qbs.architecture === "x86_64")
+                    return "C:/OpenSSL-v111-Win64/"
+                else
+                    return "C:/OpenSSL-v111-Win32/"
+            }
         }
-        files: [
-            "libeay32.dll",
-            "ssleay32.dll",
-        ]
+        files: {
+            if (qbs.architecture === "x86_64")
+                return [ "libcrypto-1_1-x64.dll", "libssl-1_1-x64.dll" ]
+            else
+                return [ "libcrypto-1_1.dll", "libssl-1_1.dll" ]
+        }
         qbs.install: true
         qbs.installDir: ""
     }

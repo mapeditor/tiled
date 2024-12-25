@@ -1,0 +1,44 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2017, Tiled Documentation Writers
+# This file is distributed under the same license as the Tiled package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Tiled 1.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-03-10 11:19+0100\n"
+"PO-Revision-Date: 2022-02-14 22:39+0000\n"
+"Last-Translator: Tuomas Lähteenmäki <lahtis@gmail.com>\n"
+"Language: fi\n"
+"Language-Team: Finnish <https://hosted.weblate.org/projects/tiled"
+"/documentation-index/fi/>\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.11.0\n"
+
+#: ../../index.rst:10
+msgid "User Manual"
+msgstr "Käyttöohje"
+
+#: ../../index.rst:32
+msgid "Reference"
+msgstr "Viittaukset"
+
+#: ../../index.rst:2
+msgid "Tiled Documentation"
+msgstr "Tiled dokumentaatio"
+
+#: ../../index.rst:6
+#, fuzzy
+msgid ""
+"If you're not finding what you're looking for on these pages, please "
+"don't hesitate to ask questions on the `Tiled Forum "
+"<https://discourse.mapeditor.org>`_ or the `Tiled Discord "
+"<https://discord.gg/39wbTv7>`_."
+msgstr ""
+"Jos et löydä etsimääsi näiltä sivuilta, älä epäröi kysyä kysymyksiä "
+"`Tiled keskustelualueelta <https://discourse.mapeditor.org>`_."
+

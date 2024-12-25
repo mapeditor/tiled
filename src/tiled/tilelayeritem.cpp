@@ -20,12 +20,10 @@
 
 #include "tilelayeritem.h"
 
-#include "tile.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
 
-#include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
 using namespace Tiled;
@@ -43,19 +41,20 @@ void TileLayerItem::syncWithTileLayer()
 {
     prepareGeometryChange();
 
-    MapRenderer *renderer = mMapDocument->renderer();
-    QRectF boundingRect = renderer->boundingRect(tileLayer()->bounds());
+    QRect layerBounds = tileLayer()->bounds();
+    if (!mMapDocument->map()->infinite())
+        layerBounds &= tileLayer()->rect();
+
+    const MapRenderer *renderer = mMapDocument->renderer();
+    const QRect boundingRect = renderer->boundingRect(layerBounds);
 
     QMargins margins = tileLayer()->drawMargins();
     if (const Map *map = tileLayer()->map()) {
-        margins.setTop(margins.top() - map->tileHeight());
-        margins.setRight(margins.right() - map->tileWidth());
+        margins.setTop(qMax(0, margins.top() - map->tileHeight()));
+        margins.setRight(qMax(0, margins.right() - map->tileWidth()));
     }
 
-    mBoundingRect = boundingRect.adjusted(-margins.left(),
-                                          -margins.top(),
-                                          margins.right(),
-                                          margins.bottom());
+    mBoundingRect = boundingRect.marginsAdded(margins);
 }
 
 QRectF TileLayerItem::boundingRect() const

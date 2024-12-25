@@ -2,9 +2,9 @@
  * #%L
  * This file is part of libtiled-java.
  * %%
- * Copyright (C) 2004 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2004 - 2017 Adam Turk <aturk@biggeruniverse.com>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2004 - 2020 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2004 - 2020 Adam Turk <aturk@biggeruniverse.com>
+ * Copyright (C) 2016 - 2020 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -33,11 +33,9 @@ package org.mapeditor.io;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.GZIPInputStream;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -49,18 +47,18 @@ import javax.xml.stream.XMLStreamException;
 
 import org.mapeditor.core.Map;
 import org.mapeditor.core.TileSet;
+import org.mapeditor.util.StreamHelper;
 
 /**
  * The standard map reader for TMX files. Supports reading .tmx, .tmx.gz and
  * *.tsx files.
  *
- * @author Mike Thomas
- * @version 1.0.2
+ * @version 1.4.2
  */
 public class MapReader {
 
     /**
-     * <p>readMap.</p>
+     * readMap.
      *
      * @param in a {@link java.io.InputStream} object.
      * @param xmlPath a {@link java.lang.String} object.
@@ -73,7 +71,7 @@ public class MapReader {
     }
 
     /**
-     * <p>readMap.</p>
+     * readMap.
      *
      * @param filename a {@link java.lang.String} object.
      * @return a {@link org.mapeditor.core.Map} object.
@@ -83,21 +81,13 @@ public class MapReader {
         int fileSeparatorIndex = filename.lastIndexOf(File.separatorChar) + 1;
         String xmlPath = makeUrl(filename.substring(0, fileSeparatorIndex));
 
-        String xmlFile = makeUrl(filename);
-
-        URL url = new URL(xmlFile);
-        InputStream is = url.openStream();
-
-        // Wrap with GZIP decoder for .tmx.gz files
-        if (filename.endsWith(".gz")) {
-            is = new GZIPInputStream(is);
+        try (InputStream in = StreamHelper.openStream(filename)) {
+            return readMap(in, xmlPath);
         }
-
-        return readMap(is, xmlPath);
     }
 
     /**
-     * <p>readTileset.</p>
+     * readTileset.
      *
      * @param in a {@link java.io.InputStream} object.
      * @return a {@link org.mapeditor.core.TileSet} object.
@@ -107,16 +97,16 @@ public class MapReader {
     }
 
     /**
-     * <p>readTileset.</p>
+     * readTileset.
      *
      * @param filename a {@link java.lang.String} object.
      * @return a {@link org.mapeditor.core.TileSet} object.
      * @throws java.io.IOException if any.
      */
     public TileSet readTileset(String filename) throws IOException {
-        String xmlFile = makeUrl(filename);
-        URL url = new URL(xmlFile);
-        return readTileset(url.openStream());
+        try (InputStream in = StreamHelper.openStream(filename)) {
+            return readTileset(in);
+        }
     }
 
     private Map buildMap(Map map, String xmlPath) throws IOException {
@@ -148,7 +138,7 @@ public class MapReader {
     private <T> T unmarshal(InputStream in, Class<T> type) {
         try {
             XMLInputFactory factory = XMLInputFactory.newInstance();
-            XMLEventReader reader = factory.createXMLEventReader(in);
+            XMLEventReader reader = factory.createXMLEventReader(StreamHelper.buffered(in));
 
             JAXBContext context = JAXBContext.newInstance(type);
             Unmarshaller unmarshaller = context.createUnmarshaller();

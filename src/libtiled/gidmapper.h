@@ -53,7 +53,8 @@ public:
 
     QByteArray encodeLayerData(const TileLayer &tileLayer,
                                Map::LayerDataFormat format,
-                               QRect bounds = QRect()) const;
+                               QRect bounds = QRect(),
+                               int compressionLevel = -1) const;
 
     enum DecodeError {
         NoError = 0,
@@ -72,7 +73,7 @@ public:
 private:
     QMap<unsigned, SharedTileset> mFirstGidToTileset;
 
-    mutable unsigned mInvalidTile;
+    mutable unsigned mInvalidTile = 0;
 };
 
 

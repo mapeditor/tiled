@@ -1,6 +1,6 @@
 /*
  * changetile.cpp
- * Copyright 2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * Copyright 2015-2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,6 +20,7 @@
 
 #include "changetile.h"
 
+#include "mapdocument.h"
 #include "tile.h"
 #include "tilesetdocument.h"
 
@@ -27,25 +28,60 @@
 
 namespace Tiled {
 
-ChangeTileType::ChangeTileType(TilesetDocument *tilesetDocument,
-                               const QList<Tile *> &tiles,
-                               const QString &type)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Tile Type"))
-    , mTilesetDocument(tilesetDocument)
-    , mTiles(tiles)
+ChangeTileProbability::ChangeTileProbability(TilesetDocument *tilesetDocument,
+                                             const QList<Tile*>& tiles,
+                                             qreal probability,
+                                             QUndoCommand *parent)
+    : ChangeValue(tilesetDocument, tiles, probability, parent)
 {
-    mTypes.fill(type, tiles.size());
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Tile Probability"));
 }
 
-void ChangeTileType::swap()
+ChangeTileProbability::ChangeTileProbability(TilesetDocument *tilesetDocument,
+                                             const QList<Tile *> &tiles,
+                                             const QVector<qreal> &probabilities,
+                                             QUndoCommand *parent)
+    : ChangeValue(tilesetDocument, tiles, probabilities, parent)
 {
-    for (int i = 0, size = mTiles.size(); i < size; ++i) {
-        Tile *tile = mTiles.at(i);
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Tile Probability"));
+}
 
-        QString oldType = tile->type();
-        mTilesetDocument->setTileType(tile, mTypes.at(i));
-        mTypes[i] = oldType;
-    }
+qreal ChangeTileProbability::getValue(const Tile *tile) const
+{
+    return tile->probability();
+}
+
+void ChangeTileProbability::setValue(Tile *tile, const qreal &probability) const
+{
+    static_cast<TilesetDocument*>(document())->setTileProbability(tile, probability);
+}
+
+
+ChangeTileImageRect::ChangeTileImageRect(TilesetDocument *tilesetDocument,
+                                         const QList<Tile *> &tiles,
+                                         const QVector<QRect> &rects,
+                                         QUndoCommand *parent)
+    : ChangeValue(tilesetDocument, tiles, rects, parent)
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Image Rect"));
+}
+
+QRect ChangeTileImageRect::getValue(const Tile *tile) const
+{
+    return tile->imageRect();
+}
+
+void ChangeTileImageRect::setValue(Tile *tile, const QRect &rect) const
+{
+    tile->tileset()->setTileImageRect(tile, rect);
+
+    emit static_cast<TilesetDocument*>(document())->tileImageSourceChanged(tile);
+
+    for (MapDocument *mapDocument : static_cast<TilesetDocument*>(document())->mapDocuments())
+        emit mapDocument->tileImageSourceChanged(tile);
 }
 
 } // namespace Tiled

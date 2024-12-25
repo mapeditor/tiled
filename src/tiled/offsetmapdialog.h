@@ -49,24 +49,24 @@ public:
     bool wrapX() const;
     bool wrapY() const;
 
-private slots:
-    void boundsSelectionChanged();
+    enum BoundsSelection {
+        WholeMap,
+        CurrentSelectionArea
+    };
+
+    BoundsSelection boundsSelection() const;
 
 private:
+    void boundsSelectionChanged();
+
     enum LayerSelection {
         AllVisibleLayers,
         AllLayers,
         SelectedLayers
     };
 
-    enum BoundsSelection {
-        WholeMap,
-        CurrentSelectionArea
-    };
-
     LayerSelection layerSelection() const;
 
-    BoundsSelection boundsSelection() const;
     void setBoundsSelection(BoundsSelection boundsSelection);
 
     Ui::OffsetMapDialog *mUi;

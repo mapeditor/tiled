@@ -1,6 +1,6 @@
 .. raw:: html
 
-   <div class="new">New in Tiled 1.2</div>
+   <div class="new new-prev">Since Tiled 1.2</div>
 
 Working with Worlds
 ===================
@@ -21,12 +21,12 @@ do exactly that.
 Defining a World
 ----------------
 
-Currently no interface exists in Tiled to define a world, nor can it be
-edited. A world is defined in a ``.world`` file, which is a JSON file that
-tells Tiled which maps are part of the world and at what location.
+A world is defined in a ``.world`` file, which is a JSON file that
+tells Tiled which maps are part of the world and at what location. Worlds
+can be created by using the *World > New World...* action.
 
-Here is a simple example of a world definition, which defines the global
-position (in pixels) of three maps:
+You may also create `.world files` by hand. Here is a simple example of a
+world definition, which defines the global position (in pixels) of three maps:
 
 .. code:: json
 
@@ -51,7 +51,7 @@ position (in pixels) of three maps:
         "type": "world"
     }
 
-Once defined, a world needs to be loaded by choosing *Map > Load World...*
+Once defined, a world needs to be loaded by choosing *World > Load World...*
 from the menu. Multiple worlds can be loaded at the same time, and worlds will
 be automatically loaded again when Tiled is restarted.
 
@@ -63,12 +63,52 @@ same position.
 
 Worlds are reloaded automatically when their file is changed on disk.
 
+.. raw:: html
+
+   <div class="new new-prev">Since Tiled 1.4</div>
+
+Editing Worlds
+--------------
+
+Once you have loaded a world, you can select the 'World Tool' from the toolbar
+to add, remove and move maps within the world.
+
+Adding Maps
+    Click the 'Add the current map to a loaded world' button on the toolbar,
+    from the dropdown menu select the world you want to add it to. To add a
+    different map to the current world, you can use the 'Add another map to
+    the current world' button from the toolbar. Alternatively, both actions
+    can be accessed by right-clicking in the map editor.
+
+Removing Maps
+    Hit the 'Remove the current map from the current world' button on the 
+    toolbar. Alternatively, right-click a map in the map editor and select the
+    'Remove ... from World ...' action from the context menu.
+
+Moving Maps
+    Simply drag around maps within the map editor. You can abort moving a map
+    by hitting 'Escape' or by right-clicking.
+
+    Alternatively you can use the arrow keys to move the current selected map
+    - holding Shift will perform bigger steps.
+
+Saving World files
+    You can save manipulated world files by using the *World > Save World*
+    menu. Worlds will also automatically be saved if you launch any external
+    tool that has the 'Save Map Before Executing' option enabled.
+
 Using Pattern Matching
 ----------------------
 
 For projects where the maps follow a certain naming style that allows the
 location of each map in the world to be derived from the file name, a regular
 expression can be used in combination with a multiplier and an offset.
+
+.. note::
+
+    Currently no interface exists in Tiled to define a world using pattern
+    matching, nor can it be modified. World files with patterns have to be
+    manually edited.
 
 Here is an example:
 
@@ -95,6 +135,12 @@ added. The offset exists mainly to allow multiple sets of maps in the same
 world to be positioned relative to each other. The final value becomes the
 position (in pixels) of each map.
 
+.. figure:: images/world-alchemic-cutie.png
+   :alt: World of Alchemic Cutie
+
+   The island from `Alchemic Cutie <https://alchemiccutie.com/>`__, using
+   patterns to automatically show each map at the right location.
+
 A world definition can use a combination of manually defined maps and
 patterns.
 
@@ -116,5 +162,5 @@ values are in pixels.
 
 .. note::
 
-    In the future, I will probably change this option to allow specifying a
-    distance around the current map in which other maps are loaded.
+    In the future, a property could be added to allow specifying a distance
+    around the current map in which other maps are loaded.

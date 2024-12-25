@@ -43,18 +43,17 @@ AddRemoveLayer::AddRemoveLayer(MapDocument *mapDocument,
 
 AddRemoveLayer::~AddRemoveLayer()
 {
-    delete mLayer;
 }
 
 void AddRemoveLayer::addLayer()
 {
-    mMapDocument->layerModel()->insertLayer(mParentLayer, mIndex, mLayer);
-    mLayer = nullptr;
+    mMapDocument->layerModel()->insertLayer(mParentLayer, mIndex,
+                                            mLayer.release());
 }
 
 void AddRemoveLayer::removeLayer()
 {
-    mLayer = mMapDocument->layerModel()->takeLayerAt(mParentLayer, mIndex);
+    mLayer.reset(mMapDocument->layerModel()->takeLayerAt(mParentLayer, mIndex));
 }
 
 AddLayer::AddLayer(MapDocument *mapDocument,
@@ -63,6 +62,18 @@ AddLayer::AddLayer(MapDocument *mapDocument,
     : AddRemoveLayer(mapDocument, index, layer, parentLayer, parent)
 {
     setText(QCoreApplication::translate("Undo Commands", "Add Layer"));
+}
+
+void AddLayer::undo()
+{
+    removeLayer();
+    QUndoCommand::undo(); // undo child commands
+}
+
+void AddLayer::redo()
+{
+    QUndoCommand::redo(); // redo child commands
+    addLayer();
 }
 
 AddLayer *AddLayer::clone(QUndoCommand *parent) const
@@ -80,6 +91,18 @@ RemoveLayer::RemoveLayer(MapDocument *mapDocument,
     : AddRemoveLayer(mapDocument, index, nullptr, parentLayer, parent)
 {
     setText(QCoreApplication::translate("Undo Commands", "Remove Layer"));
+}
+
+void RemoveLayer::undo()
+{
+    addLayer();
+    QUndoCommand::undo(); // undo child commands
+}
+
+void RemoveLayer::redo()
+{
+    QUndoCommand::redo(); // redo child commands
+    removeLayer();
 }
 
 } // namespace Tiled

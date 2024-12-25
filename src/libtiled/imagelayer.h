@@ -45,8 +45,6 @@ namespace Tiled {
  */
 class TILEDSHARED_EXPORT ImageLayer : public Layer
 {
-    Q_OBJECT
-
 public:
     ImageLayer(const QString &name, int x, int y);
     ~ImageLayer() override;
@@ -106,14 +104,35 @@ public:
      * @return <code>true</code> if loading was successful, otherwise
      *         returns <code>false</code>
      */
-    bool loadFromImage(const QImage &image, const QUrl &source);
+    bool loadFromImage(const QPixmap &image, const QUrl &source);
     bool loadFromImage(const QImage &image, const QString &source);
     bool loadFromImage(const QUrl &url);
+    bool loadFromImage(const ImageReference &image);
 
     /**
      * Returns true if no image source has been set.
      */
     bool isEmpty() const override;
+
+    /**
+     * Returns true if the image of this layer repeats along the X axis.
+     */
+    bool repeatX() const { return mRepeatX; }
+
+    /**
+     * Returns true if the image of this layer repeats along the Y axis.
+     */
+    bool repeatY() const { return mRepeatY; }
+
+    /**
+     * Sets whether the image of this layer repeats along the X axis.
+     */
+    void setRepeatX(bool repeatX) { mRepeatX = repeatX; }
+
+    /**
+     * Sets whether the image of this layer repeats along the Y axis.
+     */
+    void setRepeatY(bool repeatY) { mRepeatY = repeatY; }
 
     ImageLayer *clone() const override;
 
@@ -124,6 +143,8 @@ private:
     QUrl mImageSource;
     QColor mTransparentColor;
     QPixmap mImage;
+    bool mRepeatX = false;
+    bool mRepeatY = false;
 };
 
 } // namespace Tiled

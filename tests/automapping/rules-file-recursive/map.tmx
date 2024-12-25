@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="3" height="3" tilewidth="32" tileheight="32" infinite="0" nextlayerid="2" nextobjectid="1">
+ <layer id="1" name="set" width="3" height="3">
+  <data encoding="csv">
+0,0,0,
+0,0,0,
+0,0,0
+</data>
+ </layer>
+</map>

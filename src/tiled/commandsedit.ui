@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CommandsEdit</class>
+ <widget class="QWidget" name="CommandsEdit">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>734</width>
+    <height>291</height>
+   </rect>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <widget class="Tiled::CommandTreeView" name="treeView">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="dragDropMode">
+      <enum>QAbstractItemView::DragDrop</enum>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::ExtendedSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="1" column="1" colspan="2">
+      <widget class="QLineEdit" name="argumentsEdit"/>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Executable:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="executableEdit">
+       <property name="inputMask">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QPushButton" name="exBrowseButton">
+       <property name="text">
+        <string>Browse...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Shortcut:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QKeySequenceEdit" name="keySequenceEdit">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QPushButton" name="clearButton">
+       <property name="text">
+        <string>Clear</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0" colspan="3">
+      <widget class="QCheckBox" name="saveBox">
+       <property name="text">
+        <string>&amp;Save before executing</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0" colspan="3">
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>0</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Arguments:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Working Directory:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="workingDirectoryEdit"/>
+     </item>
+     <item row="2" column="2">
+      <widget class="QPushButton" name="wdBrowseButton">
+       <property name="text">
+        <string>Browse...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0" colspan="3">
+      <widget class="QCheckBox" name="outputBox">
+       <property name="text">
+        <string>Show output in Console view</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Tiled::CommandTreeView</class>
+   <extends>QTreeView</extends>
+   <header>commanddialog.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>treeView</tabstop>
+  <tabstop>executableEdit</tabstop>
+  <tabstop>exBrowseButton</tabstop>
+  <tabstop>argumentsEdit</tabstop>
+  <tabstop>workingDirectoryEdit</tabstop>
+  <tabstop>wdBrowseButton</tabstop>
+  <tabstop>keySequenceEdit</tabstop>
+  <tabstop>clearButton</tabstop>
+  <tabstop>outputBox</tabstop>
+  <tabstop>saveBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>clearButton</sender>
+   <signal>clicked()</signal>
+   <receiver>keySequenceEdit</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>649</x>
+     <y>169</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>603</x>
+     <y>169</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

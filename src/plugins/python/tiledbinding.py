@@ -56,12 +56,14 @@ mod.add_include('"pythonplugin.h"')
 mod.add_include('"grouplayer.h"')
 mod.add_include('"imagelayer.h"')
 mod.add_include('"layer.h"')
+mod.add_include('"logginginterface.h"')
 mod.add_include('"map.h"')
 mod.add_include('"mapobject.h"')
 mod.add_include('"objectgroup.h"')
 mod.add_include('"tile.h"')
 mod.add_include('"tilelayer.h"')
 mod.add_include('"tileset.h"')
+mod.add_include('"tilesetmanager.h"')
 
 mod.header.writeln('#ifndef _MSC_VER')
 mod.header.writeln('#pragma GCC diagnostic ignored "-Wmissing-field-initializers"')
@@ -81,10 +83,17 @@ cls_properties.add_method('keys', 'QList<QString>', [])
 #cls_propsc = tiled.add_container('QMap<QString,QString>', ('QString','QString'), 'map', cls_properties)
 
 cls_object = tiled.add_class('Object')
+cls_object.add_method('className', 'QString', [])
+cls_object.add_method('setClassName', None, [('QString','n')])
 cls_object.add_method('properties', retval('Tiled::Properties','p'), [])
 cls_object.add_method('propertyAsString', 'QString', [('QString','prop')])
 cls_object.add_method('setProperty', None,
     [('QString','prop'),('QString','val')])
+cls_object.add_method('setProperty', None,
+    [('QString','prop'),('int','val')])
+cls_object.add_method('setProperty', None,
+    [('QString','prop'),('bool','val')])
+cls_object.add_method('propertyType', 'QString', [('QString','prop')])
 
 cls_tile = tiled.add_class('Tile', cls_object)
 cls_tile.add_method('id', 'int', [])
@@ -93,6 +102,7 @@ cls_tile.add_method('setImage', None, [('const QPixmap&','image')])
 cls_tile.add_method('width', 'int', [])
 cls_tile.add_method('height', 'int', [])
 cls_tile.add_method('size', 'QSize', [])
+cls_tile.add_method('type', 'QString', [])
 
 cls_tileset = tiled.add_class('Tileset', cls_object)
 cls_sharedtileset = tiled.add_class('SharedTileset')
@@ -135,6 +145,7 @@ cls_tileset.add_method('transparentColor', 'QColor', [])
 cls_tileset.add_method('imageSourceString', 'QString', [])
 cls_tileset.add_method('setImageSource', None, [('QString','source')])
 cls_tileset.add_method('isCollection', 'bool', [])
+cls_tileset.add_method('sharedPointer', 'Tiled::SharedTileset', [])
 
 cls_tile.add_constructor([param('const QPixmap&','image'), param('int','id'),
     param('Tileset*','tileset',transfer_ownership=False)])
@@ -247,7 +258,7 @@ cls_mapobject = tiled.add_class('MapObject', cls_object)
 cls_mapobject.add_constructor([])
 cls_mapobject.add_constructor([('QString','name'), ('QString','type'),
     ('QPointF','pos'), ('QSizeF','size') ])
-cls_mapobject.add_enum('Shape', ('Rectangle','Polygon','Polyline'))
+cls_mapobject.add_enum('Shape', ('Rectangle','Polygon','Polyline','Ellipse','Text','Point'))
 cls_mapobject.add_method('setPosition', None, [('QPointF','pos')])
 cls_mapobject.add_method('x', 'double', [])
 cls_mapobject.add_method('setX', None, [('double','x')])
@@ -275,6 +286,7 @@ cls_mapobject.add_method('name', 'QString', [])
 cls_mapobject.add_method('setName', None, [('QString','n')])
 cls_mapobject.add_method('type', 'QString', [])
 cls_mapobject.add_method('setType', None, [('QString','n')])
+cls_mapobject.add_method('effectiveType', 'QString', [])
 
 cls_objectgroup.add_constructor([('QString','name'), ('int','x'), ('int','y')])
 cls_objectgroup.add_method('addObject', None,
@@ -313,6 +325,8 @@ cls_layer.add_method('setX', None, [('int','x')])
 cls_layer.add_method('y', 'int', [])
 cls_layer.add_method('setY', None, [('int','y')])
 cls_layer.add_method('setPosition', None, [('int','x'),('int','y')])
+cls_layer.add_method('offset', 'QPointF', [])
+cls_layer.add_method('setOffset', None, [('QPointF','offset')])
 cls_layer.add_method('isTileLayer', 'bool', [])
 cls_layer.add_method('isObjectGroup', 'bool', [])
 cls_layer.add_method('isImageLayer', 'bool', [])
@@ -374,8 +388,17 @@ static bool loadTilesetFromFile(Tiled::Tileset *ts, const QString &file)
 }
 """)
 
+mod.add_function('loadTileset', 'Tiled::SharedTileset', [('QString','file')])
+
+mod.body.writeln("""
+static Tiled::SharedTileset loadTileset(const QString &file)
+{
+    return Tiled::TilesetManager::instance()->loadTileset(file);
+}
+""")
+
 """
- C++ class PythonScript is seen as Tiled.Plugin from Python script
+ C++ class PythonScript is seen as tiled.Plugin from Python script
  (naming describes the opposite side from either perspective)
 """
 cls_pp = mod.add_class('PythonScript',
@@ -384,12 +407,20 @@ cls_pp = mod.add_class('PythonScript',
     custom_name='Plugin')
 
 """
+ C++ class PythonTilesetScript is seen as tiled.TilesetPlugin from 
+ Python script (naming describes the opposite side from either perspective)
+"""
+cls_ptp = mod.add_class('PythonTilesetScript',
+    allow_subclassing=True,
+    foreign_cpp_namespace='Python',
+    custom_name='TilesetPlugin')
+
+"""
  PythonPlugin implements LoggingInterface for messaging to Tiled
 """
 cls_logi = tiled.add_class('LoggingInterface', destructor_visibility='private')
-cls_logi.add_enum('OutputType', ('INFO','ERROR'))
-cls_logi.add_method('log', 'void', [('OutputType','type'),('const QString','msg')],
-    is_virtual=True)
+cls_logi.add_enum('OutputType', ('INFO','WARNING','ERROR'))
+cls_logi.add_method('log', 'void', [('OutputType','type'),('const QString','msg')])
 
 
 with open('pythonbind.cpp','w') as fh:
@@ -427,9 +458,40 @@ int _wrap_convert_py2c__Tiled__Map___star__(PyObject *value, Tiled::Map * *addre
         Py_DECREF(py_retval);
         return 0;
     }
-    *address = tmp_Map->obj->clone();
+    *address = tmp_Map->obj->clone().release();
     Py_DECREF(py_retval);
     return 1;
+}
+
+int _wrap_convert_py2c__Tiled__SharedTileset___star__(PyObject *value, Tiled::SharedTileset * *address)
+{
+    PyObject *py_retval;
+    PyTiledSharedTileset *tmp_SharedTileset;
+
+    py_retval = Py_BuildValue((char *) "(O)", value);
+    if (!PyArg_ParseTuple(py_retval, (char *) "O!", &PyTiledSharedTileset_Type, &tmp_SharedTileset)) {
+        Py_DECREF(py_retval);
+        return 0;
+    }
+    *address = new Tiled::SharedTileset(*tmp_SharedTileset->obj);
+    Py_DECREF(py_retval);
+    return 1;
+}
+
+PyObject* _wrap_convert_c2py__Tiled__Tileset_const(Tiled::Tileset const *cvalue)
+{
+    PyObject *py_retval;
+    PyTiledTileset *py_Tileset;
+    
+    if (!cvalue) {
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
+    py_Tileset = PyObject_New(PyTiledTileset, &PyTiledTileset_Type);
+    py_Tileset->obj = (Tiled::Tileset *) cvalue;
+    py_Tileset->flags = PYBINDGEN_WRAPPER_FLAG_OBJECT_NOT_OWNED;
+    py_retval = Py_BuildValue((char *) "N", py_Tileset);
+    return py_retval;
 }
 """, file=fh)
     #mod.generate_c_to_python_type_converter(

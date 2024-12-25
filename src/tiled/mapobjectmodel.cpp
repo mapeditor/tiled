@@ -21,14 +21,15 @@
 
 #include "mapobjectmodel.h"
 
+#include "changeevents.h"
 #include "changelayer.h"
 #include "changemapobject.h"
+#include "changeproperties.h"
 #include "grouplayer.h"
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "objectgroup.h"
-#include "renamelayer.h"
 #include "invertyaxishelper.h"
 
 #include <QApplication>
@@ -37,13 +38,47 @@
 
 using namespace Tiled;
 
-MapObjectModel::MapObjectModel(QObject *parent):
-    QAbstractItemModel(parent),
-    mMapDocument(nullptr),
-    mMap(nullptr),
-    mObjectGroupIcon(QLatin1String(":/images/16x16/layer-object.png"))
+ObjectIconManager::ObjectIconManager()
+   : mRectangleIcon(QLatin1String(":images/24/object-rectangle.png"))
+   , mImageIcon(QLatin1String(":images/24/object-image.png"))
+   , mPolygonIcon(QLatin1String(":images/24/object-polygon.png"))
+   , mPolylineIcon(QLatin1String(":images/24/object-polyline.png"))
+   , mEllipseIcon(QLatin1String(":images/24/object-ellipse.png"))
+   , mTextIcon(QLatin1String(":images/24/object-text.png"))
+   , mPointIcon(QLatin1String(":images/24/object-point.png"))
+{}
+
+const ObjectIconManager &ObjectIconManager::instance()
 {
-    mObjectGroupIcon.addFile(QLatin1String(":images/32x32/layer-object.png"));
+    static ObjectIconManager objectIconManager;
+    return objectIconManager;
+}
+
+const QIcon &ObjectIconManager::iconForObject(const MapObject &object) const
+{
+    switch (object.shape()) {
+    case MapObject::Rectangle:
+        return object.isTileObject() ? mImageIcon : mRectangleIcon;
+    case MapObject::Polygon:
+        return mPolygonIcon;
+    case MapObject::Polyline:
+        return mPolylineIcon;
+    case MapObject::Ellipse:
+        return mEllipseIcon;
+    case MapObject::Text:
+        return mTextIcon;
+    case MapObject::Point:
+        return mPointIcon;
+    }
+    return mImageIcon;
+}
+
+
+MapObjectModel::MapObjectModel(QObject *parent)
+    : QAbstractItemModel(parent)
+    , mObjectGroupIcon(QLatin1String(":/images/16/layer-object.png"))
+{
+    mObjectGroupIcon.addFile(QLatin1String(":images/32/layer-object.png"));
 }
 
 QModelIndex MapObjectModel::index(int row, int column,
@@ -119,10 +154,19 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
         case Qt::DisplayRole:
         case Qt::EditRole:
             switch (index.column()) {
-            case Name:
-                return mapObject->name();
-            case Type:
-                return mapObject->effectiveType();
+            case Name: {
+                QString name = mapObject->name();
+
+                // Display the tile image file name as a fallback
+                if (name.isEmpty())
+                    if (Tile *tile = mapObject->cell().tile())
+                        if (!tile->imageSource().isEmpty())
+                            name = QFileInfo(tile->imageSource().fileName()).completeBaseName();
+
+                return name;
+            }
+            case Class:
+                return mapObject->effectiveClassName();
             case Id:
                 return mapObject->id();
             case Position:
@@ -133,14 +177,29 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
                         + QLatin1Char(')');
             }
             break;
-        case Qt::ForegroundRole:
-            if (index.column() == 1) {
-                const QPalette palette = QApplication::palette();
-                const auto typeColorGroup = mapObject->type().isEmpty() ? QPalette::Disabled
-                                                                        : QPalette::Active;
-                return palette.brush(typeColorGroup, QPalette::WindowText);
+        case Qt::DecorationRole:
+            if (index.column() == Name)
+                return ObjectIconManager::instance().iconForObject(*mapObject);
+            break;
+        case Qt::ForegroundRole: {
+            bool disabled = false;
+
+            switch (index.column()) {
+            case Name:
+                disabled = mapObject->name().isEmpty();
+                break;
+            case Class:
+                disabled = mapObject->className().isEmpty();
+                break;
             }
+
+            if (disabled) {
+                const QPalette palette = QApplication::palette();
+                return palette.brush(QPalette::Disabled, QPalette::WindowText);
+            }
+
             return QVariant();
+        }
         case Qt::CheckStateRole:
             if (index.column() > 0)
                 return QVariant();
@@ -151,6 +210,7 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
             return QVariant();
         }
     }
+
     if (Layer *layer = toLayer(index)) {
         switch (role) {
         case Qt::DisplayRole:
@@ -174,6 +234,7 @@ QVariant MapObjectModel::data(const QModelIndex &index, int role) const
             return QVariant();
         }
     }
+
     return QVariant();
 }
 
@@ -203,12 +264,9 @@ bool MapObjectModel::setData(const QModelIndex &index, const QVariant &value,
                                                MapObject::NameProperty, s));
                 undo->endMacro();
             }
-            if (index.column() == 1 && s != mapObject->type()) {
+            if (index.column() == 1 && s != mapObject->className()) {
                 QUndoStack *undo = mMapDocument->undoStack();
-                undo->beginMacro(tr("Change Object Type"));
-                undo->push(new ChangeMapObject(mMapDocument, mapObject,
-                                               MapObject::TypeProperty, s));
-                undo->endMacro();
+                undo->push(new ChangeClassName(mMapDocument, { mapObject }, s));
             }
             return true;
         }
@@ -222,17 +280,18 @@ bool MapObjectModel::setData(const QModelIndex &index, const QVariant &value,
             const bool visible = (c == Qt::Checked);
             if (visible != layer->isVisible()) {
                 QUndoCommand *command = new SetLayerVisible(mMapDocument,
-                                                            layer,
+                                                            { layer },
                                                             visible);
                 mMapDocument->undoStack()->push(command);
             }
             return true;
         }
         case Qt::EditRole: {
-            const QString newName = value.toString();
+            const QString newName = value.toString().trimmed();
             if (layer->name() != newName) {
-                RenameLayer *rename = new RenameLayer(mMapDocument, layer,
-                                                      newName);
+                SetLayerName *rename = new SetLayerName(mMapDocument,
+                                                        { layer },
+                                                        newName);
                 mMapDocument->undoStack()->push(rename);
             }
             return true;
@@ -249,7 +308,7 @@ Qt::ItemFlags MapObjectModel::flags(const QModelIndex &index) const
     if (index.column() == 0)
         rc |= Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
     else if (toMapObject(index)) {
-        if (index.column() == Type)// allow to edit only type column
+        if (index.column() == Class)    // allow to edit only class column
             rc |= Qt::ItemIsEditable;
     }
     return rc;
@@ -261,7 +320,7 @@ QVariant MapObjectModel::headerData(int section, Qt::Orientation orientation,
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal) {
         switch (section) {
         case Name: return tr("Name");
-        case Type: return tr("Type");
+        case Class: return tr("Class");
         case Id: return tr("ID");
         case Position: return tr("Position");
         }
@@ -271,13 +330,20 @@ QVariant MapObjectModel::headerData(int section, Qt::Orientation orientation,
 
 QModelIndex MapObjectModel::index(Layer *layer) const
 {
+    Q_ASSERT(layer);
     Q_ASSERT(layer->isObjectGroup() || layer->isGroupLayer());
+    Q_ASSERT(layer->map() == map());
+
     const int row = filteredChildLayers(layer->parentLayer()).indexOf(layer);
     return createIndex(row, 0, layer);
 }
 
 QModelIndex MapObjectModel::index(MapObject *mapObject, int column) const
 {
+    Q_ASSERT(mapObject);
+    Q_ASSERT(mapObject->objectGroup());
+    Q_ASSERT(mapObject->map() == map());
+
     const int row = mapObject->objectGroup()->objects().indexOf(mapObject);
     return createIndex(row, column, mapObject);
 }
@@ -346,21 +412,17 @@ void MapObjectModel::setMapDocument(MapDocument *mapDocument)
 
     beginResetModel();
     mMapDocument = mapDocument;
-    mMap = nullptr;
 
     mFilteredLayers.clear();
 
     if (mMapDocument) {
-        mMap = mMapDocument->map();
-
         connect(mMapDocument, &MapDocument::layerAdded,
                 this, &MapObjectModel::layerAdded);
-        connect(mMapDocument, &MapDocument::layerChanged,
-                this, &MapObjectModel::layerChanged);
         connect(mMapDocument, &MapDocument::layerAboutToBeRemoved,
                 this, &MapObjectModel::layerAboutToBeRemoved);
-        connect(mMapDocument, &MapDocument::tileTypeChanged,
-                this, &MapObjectModel::tileTypeChanged);
+
+        connect(mMapDocument, &Document::changed,
+                this, &MapObjectModel::documentChanged);
     }
 
     endResetModel();
@@ -369,6 +431,10 @@ void MapObjectModel::setMapDocument(MapDocument *mapDocument)
 void MapObjectModel::layerAdded(Layer *layer)
 {
     if (layer->isObjectGroup() || layer->isGroupLayer()) {
+        auto &filtered = filteredChildLayers(layer->parentLayer());
+        if (filtered.contains(layer))
+            return;
+
         const auto &siblings = layer->siblings();
 
         Layer *prev = nullptr;
@@ -380,7 +446,6 @@ void MapObjectModel::layerAdded(Layer *layer)
             }
         }
 
-        auto &filtered = filteredChildLayers(layer->parentLayer());
         int row = prev ? filtered.indexOf(prev) + 1 : 0;
 
         QModelIndex parent;
@@ -393,17 +458,9 @@ void MapObjectModel::layerAdded(Layer *layer)
     }
 }
 
-void MapObjectModel::layerChanged(Layer *layer)
-{
-    if (layer->isObjectGroup() || layer->isGroupLayer()) {
-        QModelIndex index = this->index(layer);
-        emit dataChanged(index, index);
-    }
-}
-
 void MapObjectModel::layerAboutToBeRemoved(GroupLayer *groupLayer, int index)
 {
-    const auto &layers = groupLayer ? groupLayer->layers() : mMap->layers();
+    const auto &layers = groupLayer ? groupLayer->layers() : map()->layers();
     Layer *layer = layers.at(index);
 
     if (layer->isObjectGroup() || layer->isGroupLayer()) {
@@ -418,53 +475,42 @@ void MapObjectModel::layerAboutToBeRemoved(GroupLayer *groupLayer, int index)
     }
 }
 
-void MapObjectModel::tileTypeChanged(Tile *tile)
+void MapObjectModel::classChanged(const QList<Object *> &objects)
 {
-    LayerIterator it(mMap);
+    if (objects.isEmpty())
+        return;
 
-    while (Layer *layer = it.next()) {
-        if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
+    const auto typeId = objects.first()->typeId();
+
+    QList<MapObject *> affectedObjects;
+    affectedObjects.reserve(objects.size());
+
+    if (typeId == Object::MapObjectType) {
+        for (Object *object : objects)
+            affectedObjects.append(static_cast<MapObject*>(object));
+    } else if (typeId == Object::TileType) {
+        for (const Layer *layer : map()->objectGroups()) {
+            auto objectGroup = static_cast<const ObjectGroup*>(layer);
             for (MapObject *mapObject : objectGroup->objects()) {
-                if (!mapObject->type().isEmpty())
-                    continue;
-
-                const auto &cell = mapObject->cell();
-                if (cell.tileset() == tile->tileset() && cell.tileId() == tile->id()) {
-                    QModelIndex index = this->index(mapObject, 1);
-                    emit dataChanged(index, index);
-                }
+                if (mapObject->className().isEmpty())
+                    if (auto tile = mapObject->cell().tile())
+                        if (objects.contains(tile))
+                            affectedObjects.append(mapObject);
             }
         }
     }
-}
 
-void MapObjectModel::emitObjectsChanged(const QList<MapObject *> &objects,
-                                        const QList<Column> &columns,
-                                        const QVector<int> &roles)
-{
-    emit objectsChanged(objects);
-    if (columns.isEmpty())
-        return;
+    QVarLengthArray<Column, 3> columns;
+    columns.append(MapObjectModel::Class);
 
-    auto minMaxPair = std::minmax_element(columns.begin(), columns.end());
-    for (auto object : objects) {
-        emit dataChanged(index(object, *minMaxPair.first),
-                         index(object, *minMaxPair.second),
-                         roles);
-    }
-}
-
-void MapObjectModel::emitObjectsChanged(const QList<MapObject *> &objects, Column column)
-{
-    emitObjectsChanged(objects,
-                       QList<MapObjectModel::Column>() << column);
+    emitDataChanged(affectedObjects, columns);
 }
 
 QList<Layer *> &MapObjectModel::filteredChildLayers(GroupLayer *parentLayer) const
 {
     if (!mFilteredLayers.contains(parentLayer)) {
         QList<Layer*> &filtered = mFilteredLayers[parentLayer];
-        const auto &layers = parentLayer ? parentLayer->layers() : mMap->layers();
+        const auto &layers = parentLayer ? parentLayer->layers() : map()->layers();
         for (Layer *layer : layers)
             if (layer->isObjectGroup() || layer->isGroupLayer())
                 filtered.append(layer);
@@ -472,28 +518,6 @@ QList<Layer *> &MapObjectModel::filteredChildLayers(GroupLayer *parentLayer) con
     }
 
     return mFilteredLayers[parentLayer];
-}
-
-void MapObjectModel::insertObject(ObjectGroup *og, int index, MapObject *o)
-{
-    const int row = (index >= 0) ? index : og->objectCount();
-    beginInsertRows(this->index(og), row, row);
-    og->insertObject(row, o);
-    endInsertRows();
-    emit objectsAdded(QList<MapObject*>() << o);
-}
-
-int MapObjectModel::removeObject(ObjectGroup *og, MapObject *o)
-{
-    QList<MapObject*> objects;
-    objects << o;
-
-    const int row = og->objects().indexOf(o);
-    beginRemoveRows(index(og), row, row);
-    og->removeObjectAt(row);
-    endRemoveRows();
-    emit objectsRemoved(objects);
-    return row;
 }
 
 void MapObjectModel::moveObjects(ObjectGroup *og, int from, int to, int count)
@@ -508,70 +532,93 @@ void MapObjectModel::moveObjects(ObjectGroup *og, int from, int to, int count)
     endMoveRows();
 }
 
-void MapObjectModel::setObjectPolygon(MapObject *o, const QPolygonF &polygon)
+void MapObjectModel::documentChanged(const ChangeEvent &change)
 {
-    if (o->polygon() == polygon)
-        return;
-
-    o->setPolygon(polygon);
-    emit objectsChanged(QList<MapObject*>() << o);
-}
-
-void MapObjectModel::setObjectPosition(MapObject *o, const QPointF &pos)
-{
-    if (o->position() == pos)
-        return;
-
-    o->setPosition(pos);
-    emit objectsChanged(QList<MapObject*>() << o);
-}
-
-void MapObjectModel::setObjectSize(MapObject *o, const QSizeF &size)
-{
-    if (o->size() == size)
-        return;
-
-    o->setSize(size);
-    emit objectsChanged(QList<MapObject*>() << o);
-}
-
-void MapObjectModel::setObjectRotation(MapObject *o, qreal rotation)
-{
-    if (o->rotation() == rotation)
-        return;
-
-    o->setRotation(rotation);
-    emit objectsChanged(QList<MapObject*>() << o);
-}
-
-void MapObjectModel::setObjectProperty(MapObject *o,
-                                       MapObject::Property property,
-                                       const QVariant &value)
-{
-    if (o->mapObjectProperty(property) == value)
-        return;
-
-    o->setMapObjectProperty(property, value);
-
-    QList<MapObject*> objects = QList<MapObject*>() << o;
-
     // Notify views about certain property changes
-    switch (property) {
-    case MapObject::NameProperty:
-    case MapObject::VisibleProperty: {
-        QModelIndex index = this->index(o, 0);
-        emit dataChanged(index, index);
+    switch (change.type) {
+    case ChangeEvent::DocumentAboutToReload:
+        beginResetModel();
+        break;
+    case ChangeEvent::DocumentReloaded:
+        mFilteredLayers.clear();
+        endResetModel();
+        break;
+    case ChangeEvent::ObjectsChanged: {
+        auto &objectsChange = static_cast<const ObjectsChangeEvent&>(change);
+        if (objectsChange.properties & ObjectsChangeEvent::ClassProperty)
+            classChanged(objectsChange.objects);
         break;
     }
-    case MapObject::TypeProperty: {
-        QModelIndex index = this->index(o, 1);
-        emit dataChanged(index, index);
-        emit objectsTypeChanged(objects);
+    case ChangeEvent::LayerChanged: {
+        auto &layerChange = static_cast<const LayerChangeEvent&>(change);
+
+        if (layerChange.properties & (LayerChangeEvent::NameProperty | LayerChangeEvent::VisibleProperty)) {
+            auto layer = layerChange.layer;
+            if (layer->isObjectGroup() || layer->isGroupLayer()) {
+                QModelIndex index = this->index(layer);
+                emit dataChanged(index, index);
+            }
+        }
+
+        break;
+    }
+    case ChangeEvent::MapObjectsAboutToBeRemoved:
+    case ChangeEvent::MapObjectsAdded:
+    case ChangeEvent::MapObjectsRemoved:
+        // handled individually instead
+        break;
+    case ChangeEvent::MapObjectAboutToBeAdded: {
+        auto &e = static_cast<const MapObjectEvent&>(change);
+        beginInsertRows(index(e.objectGroup), e.index, e.index);
+        break;
+    }
+    case ChangeEvent::MapObjectAboutToBeRemoved: {
+        auto &e = static_cast<const MapObjectEvent&>(change);
+        beginRemoveRows(index(e.objectGroup), e.index, e.index);
+        break;
+    }
+    case ChangeEvent::MapObjectAdded:
+        endInsertRows();
+        break;
+    case ChangeEvent::MapObjectRemoved:
+        endRemoveRows();
+        break;
+    case ChangeEvent::MapObjectsChanged: {
+        const auto &mapObjectChange = static_cast<const MapObjectsChangeEvent&>(change);
+
+        QVarLengthArray<Column, 3> columns;
+        if (mapObjectChange.properties & (MapObject::NameProperty | MapObject::VisibleProperty))
+            columns.append(MapObjectModel::Name);
+        if (mapObjectChange.properties & MapObject::PositionProperty)
+            columns.append(MapObjectModel::Position);
+
+        emitDataChanged(mapObjectChange.mapObjects, columns);
+
         break;
     }
     default:
         break;
     }
-
-    emit objectsChanged(objects);
 }
+
+void MapObjectModel::emitDataChanged(const QList<MapObject *> &objects,
+                                     const QVarLengthArray<Column, 3> &columns,
+                                     const QVector<int> &roles)
+{
+    if (columns.isEmpty())
+        return;
+
+    auto minMaxPair = std::minmax_element(columns.begin(), columns.end());
+    for (auto object : objects) {
+        emit dataChanged(index(object, *minMaxPair.first),
+                         index(object, *minMaxPair.second),
+                         roles);
+    }
+}
+
+Map *MapObjectModel::map() const
+{
+    return mMapDocument->map();
+}
+
+#include "moc_mapobjectmodel.cpp"

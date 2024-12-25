@@ -22,18 +22,17 @@
 
 #include "mapobject.h"
 #include "tilelayer.h"
+#include "undocommands.h"
 
 #include <QUndoCommand>
 #include <QVector>
 
 namespace Tiled {
 
-class MapObject;
 class ObjectTemplate;
 class Tile;
 
-class MapDocument;
-class MapObjectModel;
+class Document;
 
 class ChangeMapObject : public QUndoCommand
 {
@@ -42,7 +41,7 @@ public:
      * Creates an undo command that sets the given \a object's \a property to
      * \a value.
      */
-    ChangeMapObject(MapDocument *mapDocument,
+    ChangeMapObject(Document *document,
                     MapObject *object,
                     MapObject::Property property,
                     const QVariant &value);
@@ -50,10 +49,14 @@ public:
     void undo() override { swap(); }
     void redo() override { swap(); }
 
+    int id() const override { return Cmd_ChangeMapObject; }
+
+    bool mergeWith(const QUndoCommand *other) final;
+
 private:
     void swap();
 
-    MapDocument *mMapDocument;
+    Document *mDocument;
     MapObject *mMapObject;
     MapObject::Property mProperty;
     QVariant mValue;
@@ -75,7 +78,7 @@ public:
     /**
      * Creates an undo command that applies the given map object changes.
      */
-    ChangeMapObjectCells(MapDocument *mapDocument,
+    ChangeMapObjectCells(Document *document,
                          const QVector<MapObjectCell> &changes,
                          QUndoCommand *parent = nullptr);
 
@@ -85,14 +88,14 @@ public:
 private:
     void swap();
 
-    MapObjectModel *mMapObjectModel;
+    Document *mDocument;
     QVector<MapObjectCell> mChanges;
 };
 
 class ChangeMapObjectsTile : public QUndoCommand
 {
 public:
-    ChangeMapObjectsTile(MapDocument *mapDocument,
+    ChangeMapObjectsTile(Document *document,
                          const QList<MapObject *> &mapObjects,
                          Tile *tile);
 
@@ -103,12 +106,12 @@ private:
     void changeTiles();
     void restoreTiles();
 
-    MapDocument *mMapDocument;
+    Document *mDocument;
     const QList<MapObject *> mMapObjects;
     Tile * const mTile;
     QVector<Cell> mOldCells;
     QVector<bool> mUpdateSize;
-    QVector<bool> mOldChangeStates;
+    QVector<MapObject::ChangedProperties> mOldChangedProperties;
 };
 
 class DetachObjects : public QUndoCommand
@@ -118,7 +121,7 @@ public:
      * Creates an undo command that detaches the given template instances
      * from their templates.
      */
-    DetachObjects(MapDocument *mapDocument,
+    DetachObjects(Document *document,
                   const QList<MapObject *> &mapObjects,
                   QUndoCommand *parent = nullptr);
 
@@ -126,16 +129,17 @@ public:
     void undo() override;
 
 private:
-    MapDocument *mMapDocument;
+    Document *mDocument;
     const QList<MapObject*> mMapObjects;
     QVector<const ObjectTemplate*> mObjectTemplates;
+    QVector<QString> mClassNames;
     QVector<Properties> mProperties;
 };
 
 class ResetInstances : public QUndoCommand
 {
 public:
-    ResetInstances(MapDocument *mapDocument,
+    ResetInstances(Document *document,
                    const QList<MapObject *> &mapObjects,
                    QUndoCommand *parent = nullptr);
 
@@ -145,7 +149,7 @@ public:
     void undo() override;
 
 private:
-    MapDocument *mMapDocument;
+    Document *mDocument;
     const QList<MapObject*> mMapObjects;
     QList<MapObject*> mOldMapObjects;
 };
@@ -156,7 +160,7 @@ public:
     /**
      * Creates an undo command that replaces the given objects with a template
      */
-    ReplaceObjectsWithTemplate(MapDocument *mapDocument,
+    ReplaceObjectsWithTemplate(Document *document,
                                const QList<MapObject *> &mapObjects,
                                ObjectTemplate *objectTemplate,
                                QUndoCommand *parent = nullptr);
@@ -167,7 +171,7 @@ public:
     void undo() override;
 
 private:
-    MapDocument *mMapDocument;
+    Document *mDocument;
     const QList<MapObject*> mMapObjects;
     QList<MapObject*> mOldMapObjects;
     ObjectTemplate *mObjectTemplate;

@@ -26,12 +26,6 @@ namespace Lua {
 
 LuaTableWriter::LuaTableWriter(QIODevice *device)
     : m_device(device)
-    , m_indent(0)
-    , m_valueSeparator(',')
-    , m_suppressNewlines(false)
-    , m_newLine(true)
-    , m_valueWritten(false)
-    , m_error(false)
 {
 }
 
@@ -58,16 +52,28 @@ void LuaTableWriter::writeStartTable()
 void LuaTableWriter::writeStartReturnTable()
 {
     prepareNewLine();
-    write("return {");
+    write(m_minimize ? "return{" : "return {");
     ++m_indent;
     m_newLine = false;
     m_valueWritten = false;
 }
 
-void LuaTableWriter::writeStartTable(const QByteArray &name)
+void LuaTableWriter::writeStartTable(const char *name)
 {
     prepareNewLine();
-    write(name + " = {");
+    write(name);
+    write(m_minimize ? "={" : " = {");
+    ++m_indent;
+    m_newLine = false;
+    m_valueWritten = false;
+}
+
+void LuaTableWriter::writeStartTable(const QString &name)
+{
+    prepareNewLine();
+    write('[');
+    write(quote(name).toUtf8());
+    write(m_minimize ? "]={" : "] = {");
     ++m_indent;
     m_newLine = false;
     m_valueWritten = false;
@@ -107,7 +113,7 @@ void LuaTableWriter::writeKeyAndValue(const QByteArray &key,
 {
     prepareNewLine();
     write(key);
-    write(" = \"");
+    write(m_minimize ? "=\"" : " = \"");
     write(value);
     write('"');
     m_newLine = false;
@@ -119,7 +125,7 @@ void LuaTableWriter::writeKeyAndValue(const QByteArray &key,
 {
     prepareNewLine();
     write(key);
-    write(" = \"");
+    write(m_minimize ? "=\"" : " = \"");
     write(value);
     write('"');
     m_newLine = false;
@@ -132,17 +138,25 @@ void LuaTableWriter::writeQuotedKeyAndValue(const QString &key,
     prepareNewLine();
     write('[');
     write(quote(key).toUtf8());
-    write("] = ");
+    write(m_minimize ? "]=" : "] = ");
 
-    switch (value.type()) {
-    case QVariant::Int:
-    case QVariant::UInt:
-    case QVariant::LongLong:
-    case QVariant::ULongLong:
-    case QVariant::Double:
-    case QVariant::Bool:
+    switch (value.userType()) {
+    case QMetaType::Int:
+    case QMetaType::UInt:
+    case QMetaType::LongLong:
+    case QMetaType::ULongLong:
+    case QMetaType::Double:
+    case QMetaType::Bool:
         write(value.toString().toLatin1());
         break;
+    case QMetaType::QVariantMap: {
+        writeStartTable();
+        const auto map = value.toMap();
+        for (auto it = map.begin(); it != map.end(); ++it)
+            writeQuotedKeyAndValue(it.key(), it.value());
+        writeEndTable();
+        break;
+    }
     default:
         write(quote(value.toString()).toUtf8());
         break;
@@ -157,7 +171,7 @@ void LuaTableWriter::writeKeyAndUnquotedValue(const QByteArray &key,
 {
     prepareNewLine();
     write(key);
-    write(" = ");
+    write(m_minimize ? "=" : " = ");
     write(value);
     m_newLine = false;
     m_valueWritten = true;
@@ -174,9 +188,9 @@ QString LuaTableWriter::quote(const QString &str)
 
     for (const QChar c : str) {
         switch (c.unicode()) {
-        case '\\':  quoted.append(QLatin1String("\\\\"));  break;
-        case '"':   quoted.append(QLatin1String("\\\""));  break;
-        case '\n':  quoted.append(QLatin1String("\\n"));   break;
+        case '\\':  quoted.append(QStringLiteral("\\\\"));  break;
+        case '"':   quoted.append(QStringLiteral("\\\""));  break;
+        case '\n':  quoted.append(QStringLiteral("\\n"));   break;
         default:    quoted.append(c);
         }
     }
@@ -200,7 +214,8 @@ void LuaTableWriter::prepareNewValue()
         writeNewline();
     } else {
         write(m_valueSeparator);
-        write(' ');
+        if (!m_minimize)
+            write(' ');
     }
 }
 
@@ -213,11 +228,13 @@ void LuaTableWriter::writeIndent()
 void LuaTableWriter::writeNewline()
 {
     if (!m_newLine) {
-        if (m_suppressNewlines) {
-            write(' ');
-        } else {
-            write('\n');
-            writeIndent();
+        if (!m_minimize) {
+            if (m_suppressNewlines) {
+                write(' ');
+            } else {
+                write('\n');
+                writeIndent();
+            }
         }
         m_newLine = true;
     }

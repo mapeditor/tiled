@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.8" tiledversion="1.8.2" orientation="isometric" renderorder="right-down" width="10" height="10" tilewidth="64" tileheight="32" infinite="0" backgroundcolor="#c7c7c7" nextlayerid="8" nextobjectid="1">
+ <tileset firstgid="1" source="isometric_grass_and_water.tsx"/>
+ <layer id="2" name="set" width="10" height="10" offsetx="0" offsety="-16">
+  <data encoding="csv">
+1,1,1,1,1,1,1,1,1,1,
+1,1,1,1,1,1,1,1,1,1,
+1,1,23,1,1,23,23,23,23,23,
+1,23,1,1,23,23,1,1,23,23,
+1,1,1,23,23,23,1,1,23,23,
+1,1,23,23,23,23,1,1,1,1,
+1,1,23,23,23,1,1,1,23,1,
+1,1,23,23,23,1,1,1,23,1,
+1,1,23,23,23,1,1,1,1,1,
+1,23,23,23,23,23,1,1,1,1
+</data>
+ </layer>
+ <layer id="7" name="ground" width="10" height="10">
+  <data encoding="csv">
+1,1,1,1,1,1,1,1,1,0,
+1,5,6,1,5,13,13,13,13,0,
+5,21,7,5,9,11,15,12,23,0,
+8,7,5,9,23,14,1,16,23,0,
+1,5,9,23,23,14,1,8,15,0,
+1,16,23,23,11,7,1,5,6,0,
+1,16,23,23,14,1,1,16,14,0,
+1,16,23,23,14,1,1,8,7,0,
+5,9,23,23,10,6,1,1,1,0,
+0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+</map>

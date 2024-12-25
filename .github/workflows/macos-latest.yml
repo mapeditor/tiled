@@ -1,0 +1,55 @@
+name: Compile on latest macOS (Homebrew)
+
+on:
+  push:
+    paths-ignore:
+    - 'docs/**'
+    - '**.md'
+    - 'appveyor.yml'
+    - '.travis.yml'
+    branches-ignore: [snapshot]
+  pull_request:
+    paths-ignore:
+    - 'docs/**'
+    - '**.md'
+    - 'appveyor.yml'
+    - '.travis.yml'
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        brew install qbs
+
+    - name: Setup Qbs
+      run: |
+        qbs setup-toolchains --detect
+        qbs config defaultProfile xcode
+
+    - name: Build
+      run: |
+        export TILED_VERSION=$(git describe | cut -c 2-)
+        qbs build config:release qbs.installPrefix:"" projects.Tiled.version:$TILED_VERSION
+
+    - name: Package
+      run: |
+        export TILED_VERSION=$(git describe | cut -c 2-)
+        qbs install --install-root install config:release
+        macdeployqt install/Tiled.app -verbose=2
+        pushd install
+        ruby ../dist/macos/fixup-install-names.rb
+        ditto -c -k --sequesterRsrc --keepParent Tiled.app ../Tiled-$TILED_VERSION-macos.zip
+        popd
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Tiled.app
+        path: Tiled-*-macos.zip

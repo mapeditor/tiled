@@ -20,6 +20,7 @@
 
 #include "addremovetiles.h"
 
+#include "changetilewangid.h"
 #include "tile.h"
 #include "tilesetdocument.h"
 
@@ -68,6 +69,34 @@ RemoveTiles::RemoveTiles(TilesetDocument *tilesetDocument,
     : AddRemoveTiles(tilesetDocument, tiles, false)
 {
     setText(QCoreApplication::translate("Undo Commands", "Remove Tiles"));
+
+    // Remove these tiles from any Wang sets
+    QVector<ChangeTileWangId::WangIdChange> changes;
+    for (auto wangSet : tilesetDocument->tileset()->wangSets()) {
+        for (auto tile : tiles) {
+            if (auto wangId = wangSet->wangIdOfTile(tile))
+                changes.append(ChangeTileWangId::WangIdChange(wangId, WangId(), tile->id()));
+        }
+
+        if (!changes.isEmpty()) {
+            new ChangeTileWangId(tilesetDocument, wangSet, changes, this);
+            changes.clear();
+        }
+    }
+}
+
+void RemoveTiles::undo()
+{
+    // TODO: Restore removed tiles at the index they were removed from, instead
+    // of appending them to the end.
+    addTiles();
+    QUndoCommand::undo(); // undo child commands
+}
+
+void RemoveTiles::redo()
+{
+    QUndoCommand::redo(); // redo child commands
+    removeTiles();
 }
 
 } // namespace Tiled

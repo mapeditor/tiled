@@ -33,6 +33,8 @@ class ColorButton : public QToolButton
 {
     Q_OBJECT
 
+    Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
+
 public:
     ColorButton(QWidget *parent = nullptr);
 

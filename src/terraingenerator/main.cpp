@@ -21,7 +21,7 @@
 
 #include "mapreader.h"
 #include "mapwriter.h"
-#include "terrain.h"
+#include "wangset.h"
 #include "tile.h"
 #include "tileset.h"
 
@@ -41,18 +41,13 @@ namespace {
 
 struct CommandLineOptions {
     CommandLineOptions()
-        : showHelp(false)
-        , showVersion(false)
-        , overwrite(false)
-        , embedImage(false)
-        , columns(16)
     {}
 
-    bool showHelp;
-    bool showVersion;
-    bool overwrite;
-    bool embedImage;
-    int columns;
+    bool showHelp = false;
+    bool showVersion = false;
+    bool overwrite = false;
+    bool embedImage = false;
+    int columns = 16;
     QString target;
     QStringList sources;
     QStringList terrainPriority;
@@ -64,7 +59,7 @@ struct CommandLineOptions {
 static void showHelp()
 {
     // TODO: Make translatable
-    qWarning() <<
+    qInfo() <<
             "Usage: terraingenerator [options]\n\n"
             "Options:\n"
             "  -h --help        : Display this help.\n"
@@ -85,8 +80,8 @@ static void showHelp()
 
 static void showVersion()
 {
-    qWarning().noquote() << "Terrain Generator"
-                         << QCoreApplication::applicationVersion();
+    qInfo().noquote() << "Terrain Generator"
+                      << QCoreApplication::applicationVersion();
 }
 
 static bool parseCommandLineArguments(CommandLineOptions &options)
@@ -214,58 +209,29 @@ static bool parseCommandLineArguments(CommandLineOptions &options)
     return true;
 }
 
-static bool hasTerrain(const Tileset &tileset, const QString &name)
+static QString nameOf(int wangColor, const WangSet &wangSet)
 {
-    for (Terrain *terrain : tileset.terrains())
-        if (terrain->name() == name)
-            return true;
-
-    return false;
-}
-
-static unsigned short terrainId(const QString &name, const Tileset &tileset)
-{
-    for (Terrain *terrain : tileset.terrains())
-        if (terrain->name() == name)
-            return terrain->id();
-
-    return 0xFF;
-}
-
-static QString nameOf(Terrain *terrain)
-{
-    return terrain ? terrain->name() : QString();
+    return wangColor ? wangSet.colorAt(wangColor)->name() : QString();
 }
 
 struct TileTerrainNames
 {
-    TileTerrainNames() {}
+    explicit TileTerrainNames(const QString &terrain = QString())
+        : topLeft(terrain)
+        , topRight(terrain)
+        , bottomLeft(terrain)
+        , bottomRight(terrain)
+    {}
 
-    explicit TileTerrainNames(Tile *tile)
-        : topLeft(nameOf(tile->terrainAtCorner(0)))
-        , topRight(nameOf(tile->terrainAtCorner(1)))
-        , bottomLeft(nameOf(tile->terrainAtCorner(2)))
-        , bottomRight(nameOf(tile->terrainAtCorner(3)))
-    {
-    }
-
-    TileTerrainNames(QString topLeft,
-                     QString topRight,
-                     QString bottomLeft,
-                     QString bottomRight)
+    TileTerrainNames(const QString &topLeft,
+                     const QString &topRight,
+                     const QString &bottomLeft,
+                     const QString &bottomRight)
         : topLeft(topLeft)
         , topRight(topRight)
         , bottomLeft(bottomLeft)
         , bottomRight(bottomRight)
     {}
-
-    unsigned toTerrain(const Tileset &tileset) const
-    {
-        return makeTerrain(terrainId(topLeft, tileset),
-                           terrainId(topRight, tileset),
-                           terrainId(bottomLeft, tileset),
-                           terrainId(bottomRight, tileset));
-    }
 
     TileTerrainNames filter(const QString &terrainName) const
     {
@@ -306,6 +272,75 @@ struct TileTerrainNames
     QString bottomRight;
 };
 
+static TileTerrainNames terrainNames(const Tile *tile, const WangSet &wangSet)
+{
+    const WangId wangId = wangSet.wangIdOfTile(tile);
+    return TileTerrainNames(nameOf(wangId.indexColor(WangId::TopLeft), wangSet),
+                            nameOf(wangId.indexColor(WangId::TopRight), wangSet),
+                            nameOf(wangId.indexColor(WangId::BottomLeft), wangSet),
+                            nameOf(wangId.indexColor(WangId::BottomRight), wangSet));
+}
+
+struct TerrainSetBuilder
+{
+    TerrainSetBuilder(WangSet &wangSet)
+        : mWangSet(wangSet)
+    {}
+
+    bool hasTerrain(const QString &name) const
+    {
+        for (auto &color : mWangSet.colors())
+            if (color->name() == name)
+                return true;
+
+        return false;
+    }
+
+    WangColor *addTerrain(const WangColor *terrain)
+    {
+        auto newTerrain = QSharedPointer<WangColor>::create(0,
+                                                            terrain->name(),
+                                                            terrain->color(),
+                                                            -1,
+                                                            terrain->probability());
+        newTerrain->setProperties(terrain->properties());
+        mWangSet.addWangColor(newTerrain);
+        return newTerrain.data();
+    }
+
+    void setWangId(const Tile *tile, WangId wangId)
+    {
+        mWangSet.setWangId(tile->id(), wangId);
+    }
+
+    TileTerrainNames terrainNames(const Tile *tile) const
+    {
+        return ::terrainNames(tile, mWangSet);
+    }
+
+    WangId toWangId(const TileTerrainNames &names) const
+    {
+        WangId wangId;
+        wangId.setIndexColor(WangId::TopLeft, terrainId(names.topLeft));
+        wangId.setIndexColor(WangId::TopRight, terrainId(names.topRight));
+        wangId.setIndexColor(WangId::BottomLeft, terrainId(names.bottomLeft));
+        wangId.setIndexColor(WangId::BottomRight, terrainId(names.bottomRight));
+        return wangId;
+    }
+
+private:
+    unsigned terrainId(const QString &name) const
+    {
+        for (auto &color : mWangSet.colors())
+            if (color->name() == name)
+                return color->colorIndex();
+
+        return 0;
+    }
+
+    WangSet &mWangSet;
+};
+
 struct TerrainLessThan
 {
     bool operator () (const QString &terrainA, const QString &terrainB) const
@@ -334,11 +369,7 @@ static bool isEmpty(const QImage &image)
              image.format() == QImage::Format_ARGB32_Premultiplied);
 
     const QRgb *rgb = reinterpret_cast<const QRgb*>(image.constBits());
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-    const QRgb * const last = rgb + image.byteCount() / 4;
-#else
     const QRgb * const last = rgb + image.sizeInBytes() / 4;
-#endif
 
     for (; rgb != last; ++rgb)
         if (qAlpha(*rgb) > 0)
@@ -352,9 +383,9 @@ int main(int argc, char *argv[])
 {
     QGuiApplication a(argc, argv);
 
-    a.setOrganizationDomain(QLatin1String("mapeditor.org"));
-    a.setApplicationName(QLatin1String("TerrainGenerator"));
-    a.setApplicationVersion(QLatin1String("1.0"));
+    a.setOrganizationDomain(QStringLiteral("mapeditor.org"));
+    a.setApplicationName(QStringLiteral("TerrainGenerator"));
+    a.setApplicationVersion(QStringLiteral("1.0"));
 
     CommandLineOptions options;
 
@@ -419,13 +450,15 @@ int main(int argc, char *argv[])
     }
 
     // Read source tilesets.
-    for (const QString &sourceFileName : options.sources) {
+    for (const QString &sourceFileName : std::as_const(options.sources)) {
         SharedTileset source = reader.readTileset(sourceFileName);
         if (!source) {
             qCritical("Error reading source tileset '%s':\n%s",
                       qUtf8Printable(sourceFileName),
                       qUtf8Printable(reader.errorString()));
+            continue;
         }
+        source->setFileName(sourceFileName);
         sources.append(source);
     }
 
@@ -439,32 +472,46 @@ int main(int argc, char *argv[])
         targetTileset = Tileset::create(name, tileWidth, tileHeight);
     }
 
-    // Set up a mapping from terrain to tile, for quick lookup
-    QMap<TileTerrainNames, Tile*> terrainToTile;
-    for (const SharedTileset &tileset : sources)
-        for (Tile *tile : tileset->tiles())
-            if (tile->terrain() != 0xFFFFFFFF)
-                if (!terrainToTile.contains(TileTerrainNames(tile))) // TODO: Optimize
-                    terrainToTile.insert(TileTerrainNames(tile), tile);
+    // Create a WangSet if the target tileset doesn't have one yet
+    if (targetTileset->wangSetCount() == 0) {
+        targetTileset->addWangSet(std::make_unique<WangSet>(targetTileset.data(),
+                                                            QStringLiteral("Terrains"),
+                                                            WangSet::Corner));
+    }
 
-    // Set up the list of all terrains, mapped by name.
-    QMap<QString, Terrain*> terrains;
-    for (const SharedTileset &tileset : sources)
-        for (Terrain *terrain : tileset->terrains())
-            if (!terrains.contains(terrain->name()))
-                terrains.insert(terrain->name(), terrain);
+    // A mapping from terrain to tile, for quick lookup
+    QMap<TileTerrainNames, Tile*> terrainToTile;
+
+    // A list of all terrains, mapped by name.
+    QMap<QString, WangColor*> terrains;
+
+    for (const SharedTileset &tileset : sources) {
+        for (const auto &wangSet : tileset->wangSets()) {
+            for (Tile *tile : tileset->tiles()) {
+                if (WangId id = wangSet->wangIdOfTile(tile)) {
+                    TileTerrainNames names = ::terrainNames(tile, *wangSet);
+                    if (!terrainToTile.contains(names))
+                        terrainToTile.insert(names, tile);
+                }
+            }
+
+            for (const auto &color : wangSet->colors())
+                if (!terrains.contains(color->name()))
+                    terrains.insert(color->name(), color.data());
+        }
+    }
 
     // Check if there is anything to combine.
-    if (options.combineList.size() == 0) {
+    if (options.combineList.isEmpty()) {
         qWarning() << "No terrain specified to combine (-c option).";
     } else {
         // Dump the combine lists.
-        qWarning() << "Terrains to combine:";
-        for (const QStringList &combine : options.combineList) {
+        qInfo() << "Terrains to combine:";
+        for (const QStringList &combine : std::as_const(options.combineList)) {
             if (combine.isEmpty()) {
                 qCritical("Empty combine set");
             }
-            qWarning() << combine;
+            qInfo() << combine;
 
             // Make sure every terrain from this set was defined.
             for (const QString &terrainName : combine)
@@ -477,20 +524,22 @@ int main(int argc, char *argv[])
     // Setup terrain priorities.
     TerrainLessThan lessThan;
     int priority = 0;
-    for (const QString &terrainName : options.terrainPriority) {
+    for (const QString &terrainName : std::as_const(options.terrainPriority)) {
         lessThan.terrainPriority.insert(terrainName, priority);
         ++priority;
     }
 
-    qDebug() << "Terrains found:" << terrains.keys();
+    const auto terrainNames = terrains.keys();
+    qInfo() << "Terrains found:" << terrainNames;
 
     // Check if all terrains from priority list were found and loaded.
-    for (const QString &terrainName : lessThan.terrainPriority.keys())
+    const auto terrainsWithPriority = lessThan.terrainPriority.keys();
+    for (const QString &terrainName : terrainsWithPriority)
         if (!terrains.contains(terrainName))
             qWarning() << "Terrain" << terrainName << "from priority list not found.";
 
     // Add terrain names not specified from command line.
-    for (const QString &terrainName : terrains.keys()) {
+    for (const QString &terrainName : terrainNames) {
         if (!lessThan.terrainPriority.contains(terrainName)) {
             qWarning() << "No priority set for" << terrainName;
             lessThan.terrainPriority.insert(terrainName, priority);
@@ -498,40 +547,49 @@ int main(int argc, char *argv[])
         }
     }
 
+    // Currently we always choose the first terrain set
+    // TODO: Make this configurable
+    TerrainSetBuilder builder(*targetTileset->wangSet(0));
+
     // Add terrains that are not defined in the target tileset yet
     // TODO: This step should be more configurable
-    for (Terrain *terrain : terrains) {
-        if (!hasTerrain(*targetTileset, terrain->name())) {
-            Tile *terrainTile = terrain->imageTile();
-            QPixmap terrainImage = terrainTile->image();
+    QList<WangColor*> newTerrains;
+    for (WangColor *terrain : terrains)
+        if (!builder.hasTerrain(terrain->name()))
+            newTerrains.append(builder.addTerrain(terrain));
 
-            Tile *newTerrainTile = targetTileset->addTile(terrainImage);
-            newTerrainTile->setProperties(terrainTile->properties());
+    // Copy of and/or assign the tile images to each terrain
+    for (WangColor *newTerrain : newTerrains) {
+        const WangColor *sourceTerrain = terrains.value(newTerrain->name());
+        const WangSet *sourceWangSet = sourceTerrain->wangSet();
+        const Tileset *sourceTileset = sourceWangSet->tileset();
 
-            Terrain *newTerrain =  targetTileset->addTerrain(terrain->name(),
-                                                             newTerrainTile->id());
+        if (const Tile *sourceImageTile = sourceTileset->findTile(sourceTerrain->imageId())) {
+            qInfo() << "Copying terrain image for" << newTerrain->name();
+            Tile *newImageTile = targetTileset->addTile(sourceImageTile->image());
+            newImageTile->setProperties(sourceImageTile->properties());
+            newTerrain->setImageId(newImageTile->id());
 
-            // WARNING: This assumes the terrain tile has this terrain on all
-            // its corners.
-            newTerrainTile->setTerrain(makeTerrain(newTerrain->id()));
-            terrainToTile.insert(TileTerrainNames(newTerrainTile),
-                                 newTerrainTile);
+            const TileTerrainNames names = ::terrainNames(sourceImageTile, *sourceWangSet);
+            builder.setWangId(newImageTile, builder.toWangId(names));
+            if (!terrainToTile.contains(names))
+                terrainToTile.insert(names, newImageTile);
         }
     }
 
     // Prepare a list of terrain combinations.
     QVector<TileTerrainNames> process;
-    for (const QStringList &combine : options.combineList) {
-        QList<Terrain*> terrainList;
+    for (const QStringList &combine : std::as_const(options.combineList)) {
+        QList<WangColor*> terrainList;
         // Get the terrains to combine
         for (const QString &terrainName : combine)
             terrainList.append(terrains[terrainName]);
 
         // Construct a vector with all terrain combinations to process
-        for (Terrain *topLeft : terrainList) {
-            for (Terrain *topRight : terrainList) {
-                for (Terrain *bottomLeft : terrainList) {
-                    for (Terrain *bottomRight : terrainList) {
+        for (WangColor *topLeft : terrainList) {
+            for (WangColor *topRight : terrainList) {
+                for (WangColor *bottomLeft : terrainList) {
+                    for (WangColor *bottomRight : terrainList) {
                         process.append(TileTerrainNames(topLeft->name(),
                                                         topRight->name(),
                                                         bottomLeft->name(),
@@ -543,7 +601,7 @@ int main(int argc, char *argv[])
     }
 
     // Go through each combination of terrains and add the tile to the target
-    // tileset if it's not in there yet.
+    // terrain set if it's not in there yet.
     for (const TileTerrainNames &terrainNames : process) {
         Tile *tile = terrainToTile.value(terrainNames);
 
@@ -554,7 +612,7 @@ int main(int argc, char *argv[])
         Properties properties;
 
         if (!tile) {
-            qWarning() << "Generating" << terrainNames;
+            qInfo() << "Generating" << terrainNames;
 
             // Start a new image
             QImage tileImage = QImage(targetTileset->tileWidth(),
@@ -567,11 +625,12 @@ int main(int argc, char *argv[])
             std::sort(terrainList.begin(), terrainList.end(), lessThan);
 
             // Draw the lowest terrain to avoid pixel gaps
-            QString baseTerrain = terrainList.first();
-            QPixmap baseImage = terrains[baseTerrain]->imageTile()->image();
-            painter.drawPixmap(0, 0, baseImage);
+            const TileTerrainNames baseTerrain(terrainList.first());
+            Tile *baseTile = terrainToTile.value(baseTerrain);
+            if (baseTile)
+                painter.drawPixmap(0, 0, baseTile->image());
 
-            for (const QString &terrainName : terrainList) {
+            for (const QString &terrainName : std::as_const(terrainList)) {
                 TileTerrainNames filtered = terrainNames.filter(terrainName);
                 Tile *tile = terrainToTile.value(filtered);
                 if (!tile) {
@@ -580,20 +639,20 @@ int main(int argc, char *argv[])
                 }
 
                 painter.drawPixmap(0, 0, tile->image());
-                properties.merge(tile->properties());
+                mergeProperties(properties, tile->properties());
             }
 
             image = QPixmap::fromImage(tileImage);
         } else {
-            qWarning() << "Copying" << terrainNames << "from"
-                       << QFileInfo(tile->tileset()->fileName()).fileName();
+            qInfo() << "Copying" << terrainNames << "from"
+                    << QFileInfo(tile->tileset()->fileName()).fileName();
 
             image = tile->image();
             properties = tile->properties();
         }
 
         Tile *newTile = targetTileset->addTile(image);
-        newTile->setTerrain(terrainNames.toTerrain(*targetTileset));
+        builder.setWangId(newTile, builder.toWangId(terrainNames));
         newTile->setProperties(properties);
         terrainToTile.insert(terrainNames, newTile);
     }
@@ -611,7 +670,7 @@ int main(int argc, char *argv[])
         if (targetTileset->tileCount() % options.columns > 0)
             ++rows;
 
-        qWarning() << "Writing external tileset image.";
+        qInfo() << "Writing external tileset image.";
         // Save the target tileset image
         QImage image(targetTileset->tileWidth() * columns,
                      targetTileset->tileHeight() * rows,
@@ -627,7 +686,7 @@ int main(int argc, char *argv[])
         }
 
         QString imageFileName = QFileInfo(options.target).completeBaseName();
-        imageFileName += ".png";
+        imageFileName += QStringLiteral(".png");
         image.save(imageFileName);
 
         targetTileset->setImageSource(imageFileName);

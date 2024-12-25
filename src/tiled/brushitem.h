@@ -48,9 +48,10 @@ public:
     const SharedTileLayer &tileLayer() const;
 
     void setMap(const SharedMap &map);
+    void setMap(const SharedMap &map, const QRegion &region);
     const SharedMap &map() const;
 
-    void setTileLayerPosition(const QPoint &pos);
+    void setTileLayerPosition(QPoint pos);
 
     void setTileRegion(const QRegion &region);
     const QRegion &tileRegion() const;
@@ -64,7 +65,7 @@ public:
                QWidget *widget = nullptr) override;
 
 protected:
-    MapDocument *mapDocument() const  { return mMapDocument; }
+    MapDocument *mapDocument() const { return mMapDocument; }
 
 private:
     void updateBoundingRect();

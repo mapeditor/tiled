@@ -37,9 +37,9 @@ class ResizeDialog : public QDialog
 public:
     ResizeDialog(QWidget *parent = nullptr);
 
-    ~ResizeDialog();
+    ~ResizeDialog() override;
 
-    void setOldSize(const QSize &size);
+    void setOldSize(QSize size);
 
     QSize newSize() const;
     QPoint offset() const;
@@ -48,11 +48,9 @@ public:
 
     void setMiniMapRenderer(std::function<QImage (QSize)> renderer);
 
-private slots:
-    void removeObjectsToggled(bool removeObjects);
+private:
     void updateOffsetBounds(const QRect &bounds);
 
-private:
     Ui::ResizeDialog *mUi;
 };
 

@@ -20,10 +20,14 @@
 
 #pragma once
 
-#include <QObject>
-#include <QJSValue>
+#include "filesystemwatcher.h"
+#include "tilededitor_global.h"
 
-#include <memory>
+#include <QJSValue>
+#include <QObject>
+#include <QQmlError>
+#include <QScopedValueRollback>
+#include <QStringList>
 
 class QJSEngine;
 
@@ -31,13 +35,37 @@ namespace Tiled {
 
 class ScriptModule;
 
-class ScriptManager : public QObject
+/**
+ * Singleton for managing the script engine and module.
+ *
+ * Dependencies: ProjectManager, DocumentManager (optional)
+ */
+class TILED_EDITOR_EXPORT ScriptManager : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(bool projectExtensionsSuppressed READ projectExtensionsSuppressed NOTIFY projectExtensionsSuppressedChanged)
+
 public:
+    /**
+     * While a reset blocker instance exists, resetting of the script engine
+     * is suppressed. This avoids a crash when a reset happens while script
+     * execution is paused by a popup.
+     */
+    struct ResetBlocker : QScopedValueRollback<bool> {
+        ResetBlocker()
+            : QScopedValueRollback<bool>(ScriptManager::instance().mResetBlocked, true)
+        {}
+    };
+
     static ScriptManager &instance();
     static void deleteInstance();
+
+    void ensureInitialized();
+
+    void setScriptArguments(const QStringList &arguments);
+
+    const QString &extensionsPath() const;
 
     ScriptModule *module() const;
     QJSEngine *engine() const;
@@ -45,21 +73,62 @@ public:
     QJSValue evaluate(const QString &program,
                       const QString &fileName = QString(), int lineNumber = 1);
 
-    QJSValue evaluateFile(const QString &fileName);
+    void evaluateFileOrLoadModule(const QString &fileName);
 
-    void evaluateStartupScripts();
+    /**
+     * Create a new global identifier ($0, $1, $2, ...) for the value. Returns
+     * the name of the identifier.
+     */
+    QString createTempValue(const QJSValue &value);
 
+    bool checkError(QJSValue value, const QString &program = QString());
     void throwError(const QString &message);
+    void throwNullArgError(int argNumber);
+
+    void refreshExtensionsPaths();
+
+    bool projectExtensionsSuppressed() const;
+    void enableProjectExtensions();
+
+signals:
+    void projectExtensionsSuppressedChanged(bool);
 
 private:
     explicit ScriptManager(QObject *parent = nullptr);
+    ~ScriptManager() override = default;
 
-    QJSEngine *mEngine;
-    ScriptModule *mModule;
+    void reset();
+    void initialize();
 
-    static std::unique_ptr<ScriptManager> mInstance;
+    void onScriptWarnings(const QList<QQmlError> &warnings);
+
+    void scriptFilesChanged(const QStringList &scriptFiles);
+
+    void loadExtensions();
+    void loadExtension(const QString &path);
+
+    QJSValue evaluateFile(const QString &fileName);
+
+    QJSEngine *mEngine = nullptr;
+    ScriptModule *mModule = nullptr;
+    FileSystemWatcher mWatcher;
+    QString mExtensionsPath;
+    QStringList mExtensionsPaths;
+    int mTempCount = 0;
+    bool mProjectExtensionsSuppressed = false;
+
+    friend struct ResetBlocker;
+    bool mResetBlocked = false;
+    QTimer mResetTimer;
+
+    static ScriptManager *mInstance;
 };
 
+
+inline const QString &ScriptManager::extensionsPath() const
+{
+    return mExtensionsPath;
+}
 
 inline ScriptModule *ScriptManager::module() const
 {
@@ -69,6 +138,11 @@ inline ScriptModule *ScriptManager::module() const
 inline QJSEngine *ScriptManager::engine() const
 {
     return mEngine;
+}
+
+inline bool ScriptManager::projectExtensionsSuppressed() const
+{
+    return mProjectExtensionsSuppressed;
 }
 
 } // namespace Tiled

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>331</width>
-    <height>260</height>
+    <width>534</width>
+    <height>450</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -310,7 +310,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="tiled.qrc">
+         <iconset>
           <normaloff>:/images/16x16/stock-tool-color-picker-16.png</normaloff>:/images/16x16/stock-tool-color-picker-16.png</iconset>
         </property>
        </widget>
@@ -351,42 +351,8 @@
   <tabstop>margin</tabstop>
   <tabstop>spacing</tabstop>
  </tabstops>
- <resources>
-  <include location="tiled.qrc"/>
- </resources>
+ <resources/>
  <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>NewTilesetDialog</receiver>
-   <slot>tryAccept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>275</x>
-     <y>297</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>NewTilesetDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>343</x>
-     <y>297</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>useTransparentColor</sender>
    <signal>toggled(bool)</signal>
@@ -394,12 +360,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>179</x>
-     <y>191</y>
+     <x>208</x>
+     <y>282</y>
     </hint>
     <hint type="destinationlabel">
-     <x>209</x>
-     <y>193</y>
+     <x>292</x>
+     <y>281</y>
     </hint>
    </hints>
   </connection>

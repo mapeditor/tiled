@@ -1,0 +1,44 @@
+name: Compile on Ubuntu
+
+on:
+  push:
+    paths-ignore:
+    - 'docs/**'
+    - '**.md'
+    - 'appveyor.yml'
+    - '.travis.yml'
+    branches-ignore: [snapshot]
+  pull_request:
+    paths-ignore:
+    - 'docs/**'
+    - '**.md'
+    - 'appveyor.yml'
+    - '.travis.yml'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup ccache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        max-size: 250M
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install qtbase5-dev libqt5svg5-dev qttools5-dev-tools zlib1g-dev qtdeclarative5-dev qbs python3-dev
+
+    - name: Setup qbs
+      run: |
+        qbs --version
+        qbs setup-toolchains --detect
+
+    - name: Build
+      run: |
+        qbs build modules.cpp.compilerWrapper:ccache

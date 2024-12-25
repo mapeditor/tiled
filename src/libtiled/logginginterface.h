@@ -32,38 +32,199 @@
 #include "tiled_global.h"
 
 #include <QObject>
+#include <QPoint>
+#include <QWeakPointer>
+
+#include <functional>
 
 class QString;
 
 namespace Tiled {
 
+class Layer;
+class Map;
+class MapObject;
+class Object;
+class Tile;
+class Tileset;
+
+class TILEDSHARED_EXPORT Issue
+{
+public:
+    enum Severity {
+        Error,
+        Warning
+    };
+
+    Issue();
+    Issue(Severity severity,
+          const QString &text,
+          std::function<void ()> callback = std::function<void()>(),
+          const void *context = nullptr);
+
+    Severity severity() const { return mSeverity; }
+    QString text() const { return mText; }
+
+    std::function<void()> callback() const { return mCallback; }
+    void setCallback(std::function<void()> callback);
+
+    void setContext(const void *context) { mContext = context; }
+    const void *context() const { return mContext; }
+
+    unsigned id() const { return mId; }
+
+    void addOccurrence(const Issue &issue);
+    int occurrences() const { return mOccurrences; }
+
+    bool operator==(const Issue &o) const
+    {
+        return severity() == o.severity()
+                && text() == o.text();
+    }
+
+private:
+    Issue::Severity mSeverity = Issue::Error;
+    QString mText;
+    std::function<void()> mCallback;
+    const void *mContext = nullptr;
+
+    int mOccurrences = 1;
+    unsigned mId = 0;
+
+    static unsigned mNextIssueId;
+};
+
 /**
- * An object to be added by classes that want to write to the Console view.
+ * An interface for reporting issues.
+ *
+ * Normally you'd use the convenience functions in the Tiled namespace.
  */
 class TILEDSHARED_EXPORT LoggingInterface : public QObject
 {
     Q_OBJECT
 
+    explicit LoggingInterface(QObject *parent = nullptr);
+
 public:
-    explicit LoggingInterface(QObject *parent = nullptr)
-        : QObject(parent)
-    {}
+    static LoggingInterface &instance();
 
     enum OutputType {
-        INFO, ERROR
+        INFO,
+        WARNING,
+        ERROR
     };
 
-    void log(OutputType type, const QString &message)
-    {
-        if (type == INFO)
-            emit info(message);
-        else if (type == ERROR)
-            emit error(message);
-    }
+    void report(const Issue &issue);
+    void log(OutputType type, const QString &message);
 
 signals:
+    void issue(const Tiled::Issue &issue);
+
     void info(const QString &message);
+    void warning(const QString &message);
     void error(const QString &message);
+
+    void removeIssuesWithContext(const void *context);
 };
 
+inline void REPORT(const Issue &issue)
+{
+    LoggingInterface::instance().report(issue);
+}
+
+inline void INFO(const QString &message)
+{
+    LoggingInterface::instance().log(LoggingInterface::INFO, message);
+}
+
+inline void WARNING(const QString &message, std::function<void()> callback = std::function<void()>(), const void *context = nullptr)
+{
+    REPORT(Issue { Issue::Warning, message, std::move(callback), context });
+}
+
+inline void ERROR(const QString &message, std::function<void()> callback = std::function<void()>(), const void *context = nullptr)
+{
+    REPORT(Issue { Issue::Error, message, std::move(callback), context });
+}
+
+inline void INFO(QLatin1String message)
+{
+    INFO(QString(message));
+}
+
+inline void WARNING(QLatin1String message, std::function<void()> callback = std::function<void()>(), const void *context = nullptr)
+{
+    WARNING(QString(message), std::move(callback), context);
+}
+
+inline void ERROR(QLatin1String message, std::function<void()> callback = std::function<void()>(), const void *context = nullptr)
+{
+    ERROR(QString(message), std::move(callback), context);
+}
+
+template<typename Class>
+struct Activatable
+{
+    void operator() () const {
+        activated(*static_cast<const Class*>(this));
+    }
+
+    static inline std::function<void (const Class &)> activated;
+};
+
+struct TILEDSHARED_EXPORT OpenFile : Activatable<OpenFile>
+{
+    OpenFile(const QString &file);
+
+    QString file;
+};
+
+struct TILEDSHARED_EXPORT JumpToTile : Activatable<JumpToTile>
+{
+    JumpToTile(const Map *map, QPoint tilePos, const Layer *layer = nullptr);
+
+    QString mapFile;
+    QPoint tilePos;
+    int layerId = -1;
+};
+
+struct TILEDSHARED_EXPORT JumpToObject : Activatable<JumpToObject>
+{
+    JumpToObject(const MapObject *object);
+
+    QString mapFile;
+    int objectId;
+};
+
+struct TILEDSHARED_EXPORT SelectLayer : Activatable<SelectLayer>
+{
+    SelectLayer(const Layer *layer);
+
+    QString mapFile;
+    int layerId;
+};
+
+struct TILEDSHARED_EXPORT SelectCustomProperty : Activatable<SelectCustomProperty>
+{
+    SelectCustomProperty(QString fileName, QString propertyName, const Object *object);
+
+    QString fileName;
+    QString propertyName;
+    int objectType;         // see Object::TypeId
+    int id = -1;
+};
+
+struct TILEDSHARED_EXPORT SelectTile : Activatable<SelectTile>
+{
+    SelectTile(const Tile *tile);
+
+    QWeakPointer<Tileset> tileset;
+    QString tilesetFile;
+    int tileId;
+};
+
+#undef ACTIVATABLE
+
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::Issue)

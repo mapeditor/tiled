@@ -1,5 +1,3 @@
-import qbs 1.0
-
 StaticLibrary {
     name: "qtpropertybrowser"
 
@@ -7,7 +5,20 @@ StaticLibrary {
     Depends { name: "Qt"; submodules: ["widgets"] }
 
     cpp.includePaths: ["src"]
-    cpp.cxxLanguageVersion: "c++11"
+    cpp.cxxLanguageVersion: "c++17"
+    cpp.cxxFlags: {
+        var flags = base;
+        if (qbs.toolchain.contains("msvc")) {
+            if (Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 3)
+                flags.push("/permissive-");
+        } else if (qbs.toolchain.contains("mingw")) {
+            // needed to work around "too many sections" issue in qteditorfactory.cpp
+            if (Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 2)
+                flags.push("-Wa,-mbig-obj");
+        }
+        return flags;
+    }
+    cpp.visibility: "minimal"
 
     files: [
         "src/qtbuttonpropertybrowser.cpp",

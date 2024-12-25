@@ -55,7 +55,7 @@ namespace tbin
             std::string dataStr;
     };
 
-    typedef std::map< std::string, PropertyValue > Properties;
+    using Properties = std::map<std::string, PropertyValue>;
 }
 
 #endif // TBIN_PROPERTYVALUE_HPP

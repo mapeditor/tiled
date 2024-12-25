@@ -26,35 +26,61 @@
 
 namespace Tiled {
 
+class EditableTile;
+class EditableWangSet;
+class TileLayerEdit;
+class TileLayerWangEdit;
+
 class EditableTileLayer : public EditableLayer
 {
     Q_OBJECT
 
-    Q_PROPERTY(int width READ width)
-    Q_PROPERTY(int height READ height)
-    Q_PROPERTY(QSize size READ size)
-    Q_PROPERTY(Tiled::Cell cell READ cell)
+    Q_PROPERTY(int width READ width WRITE setWidth)
+    Q_PROPERTY(int height READ height WRITE setHeight)
+    Q_PROPERTY(QSize size READ size WRITE setSize)
 
 public:
+    Q_INVOKABLE explicit EditableTileLayer(const QString &name = QString(),
+                                           QSize size = QSize(0, 0),
+                                           QObject *parent = nullptr);
+
+    explicit EditableTileLayer(std::unique_ptr<TileLayer> tileLayer,
+                               QObject *parent = nullptr);
+
     explicit EditableTileLayer(EditableMap *map,
                                TileLayer *layer,
                                QObject *parent = nullptr);
+    ~EditableTileLayer() override;
 
     int width() const;
     int height() const;
     QSize size() const;
 
+    void setWidth(int width);
+    void setHeight(int height);
+    void setSize(QSize size);
+
+    Q_INVOKABLE void resize(QSize size, QPoint offset = QPoint());
+
     Q_INVOKABLE Tiled::RegionValueType region() const;
 
-    Tiled::Cell cell() const { return Tiled::Cell(); }
     Q_INVOKABLE Tiled::Cell cellAt(int x, int y) const;
+    Q_INVOKABLE int flagsAt(int x, int y) const;
+    Q_INVOKABLE Tiled::EditableTile *tileAt(int x, int y) const;
 
-signals:
+    Q_INVOKABLE Tiled::TileLayerEdit *edit();
+    Q_INVOKABLE Tiled::TileLayerWangEdit *wangEdit(Tiled::EditableWangSet *wangSet);
 
-public slots:
+    TileLayer *tileLayer() const;
 
 private:
-    TileLayer *tileLayer() const;
+    friend class TileLayerEdit;
+    friend class TileLayerWangEdit;
+
+    QList<TileLayerEdit*> mActiveEdits;
+    QList<TileLayerWangEdit*> mActiveWangEdits;
+
+    void applyChangesFrom(TileLayer *changes, bool mergeable);
 };
 
 
@@ -73,11 +99,19 @@ inline QSize EditableTileLayer::size() const
     return tileLayer()->size();
 }
 
+inline void EditableTileLayer::setWidth(int width)
+{
+    setSize(QSize(width, height()));
+}
+
+inline void EditableTileLayer::setHeight(int height)
+{
+    setSize(QSize(width(), height));
+}
+
 inline TileLayer *EditableTileLayer::tileLayer() const
 {
     return static_cast<TileLayer*>(layer());
 }
 
 } // namespace Tiled
-
-Q_DECLARE_METATYPE(Tiled::EditableTileLayer*)

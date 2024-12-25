@@ -35,7 +35,7 @@
 #include "tileanimationdriver.h"
 #include "tilesetformat.h"
 
-#include "qtcompat_p.h"
+#include <QDebug>
 
 namespace Tiled {
 
@@ -46,17 +46,12 @@ TilesetManager *TilesetManager::mInstance;
  */
 TilesetManager::TilesetManager():
     mWatcher(new FileSystemWatcher(this)),
-    mAnimationDriver(new TileAnimationDriver(this)),
-    mReloadTilesetsOnChange(false)
+    mAnimationDriver(new TileAnimationDriver(this))
 {
-    connect(mWatcher, &FileSystemWatcher::fileChanged,
-            this, &TilesetManager::fileChanged);
+    mWatcher->setEnabled(false);
 
-    mChangedFilesTimer.setInterval(500);
-    mChangedFilesTimer.setSingleShot(true);
-
-    connect(&mChangedFilesTimer, &QTimer::timeout,
-            this, &TilesetManager::fileChangedTimeout);
+    connect(mWatcher, &FileSystemWatcher::pathsChanged,
+            this, &TilesetManager::filesChanged);
 
     connect(mAnimationDriver, &TileAnimationDriver::update,
             this, &TilesetManager::advanceTileAnimations);
@@ -65,7 +60,10 @@ TilesetManager::TilesetManager():
 TilesetManager::~TilesetManager()
 {
     // Assert that there are no remaining tileset instances
-    Q_ASSERT(mTilesets.isEmpty());
+    if (!mTilesets.isEmpty()) {
+        qWarning() << "TilesetManager: There are still" << mTilesets.size()
+                   << "tilesets loaded at exit!";
+    }
 }
 
 /**
@@ -113,7 +111,7 @@ SharedTileset TilesetManager::findTileset(const QString &fileName) const
 {
     for (Tileset *tileset : mTilesets)
         if (tileset->fileName() == fileName)
-            return tileset->sharedPointer();
+            return tileset->sharedFromThis();
 
     return SharedTileset();
 }
@@ -159,7 +157,7 @@ void TilesetManager::reloadImages(Tileset *tileset)
             }
         }
         emit tilesetImagesChanged(tileset);
-    } else {
+    } else if (tileset->imageSource().isLocalFile()) {
         ImageCache::remove(tileset->imageSource().toLocalFile());
         if (tileset->loadImage())
             emit tilesetImagesChanged(tileset);
@@ -172,8 +170,12 @@ void TilesetManager::reloadImages(Tileset *tileset)
  */
 void TilesetManager::setReloadTilesetsOnChange(bool enabled)
 {
-    mReloadTilesetsOnChange = enabled;
-    // TODO: Clear the file system watcher when disabled
+    mWatcher->setEnabled(enabled);
+}
+
+bool TilesetManager::reloadTilesetsOnChange() const
+{
+    return mWatcher->isEnabled();
 }
 
 /**
@@ -182,10 +184,12 @@ void TilesetManager::setReloadTilesetsOnChange(bool enabled)
 void TilesetManager::setAnimateTiles(bool enabled)
 {
     // TODO: Avoid running the driver when there are no animated tiles
-    if (enabled)
+    if (enabled) {
         mAnimationDriver->start();
-    else
+    } else {
         mAnimationDriver->stop();
+        resetTileAnimations();
+    }
 }
 
 bool TilesetManager::animateTiles() const
@@ -205,45 +209,31 @@ void TilesetManager::tilesetImageSourceChanged(const Tileset &tileset,
         mWatcher->addPath(tileset.imageSource().toLocalFile());
 }
 
-void TilesetManager::fileChanged(const QString &path)
+void TilesetManager::filesChanged(const QStringList &fileNames)
 {
-    if (!mReloadTilesetsOnChange)
-        return;
-
-    /*
-     * Use a one-shot timer since GIMP (for example) seems to generate many
-     * file changes during a save, and some of the intermediate attempts to
-     * reload the tileset images actually fail (at least for .png files).
-     */
-    mChangedFiles.insert(path);
-    mChangedFilesTimer.start();
-}
-
-void TilesetManager::fileChangedTimeout()
-{
-    for (const QString &fileName : qAsConst(mChangedFiles))
+    for (const QString &fileName : fileNames)
         ImageCache::remove(fileName);
 
-    for (Tileset *tileset : qAsConst(mTilesets)) {
+    for (Tileset *tileset : std::as_const(mTilesets)) {
         const QString fileName = tileset->imageSource().toLocalFile();
-        if (mChangedFiles.contains(fileName))
+        if (fileNames.contains(fileName))
             if (tileset->loadImage())
                 emit tilesetImagesChanged(tileset);
     }
-
-    mChangedFiles.clear();
 }
 
 /**
- * Resets all tile animations. Used to keep animations synchronized when they
- * are edited.
+ * Resets all tile animations.
+ *
+ * Used when playback is disabled, as well as to keep animations synchronized
+ * when they are edited.
  */
 void TilesetManager::resetTileAnimations()
 {
     // TODO: This could be more optimal by keeping track of the list of
     // actually animated tiles
 
-    for (Tileset *tileset : qAsConst(mTilesets)) {
+    for (Tileset *tileset : std::as_const(mTilesets)) {
         bool imageChanged = false;
 
         for (Tile *tile : tileset->tiles())
@@ -259,7 +249,7 @@ void TilesetManager::advanceTileAnimations(int ms)
     // TODO: This could be more optimal by keeping track of the list of
     // actually animated tiles
 
-    for (Tileset *tileset : qAsConst(mTilesets)) {
+    for (Tileset *tileset : std::as_const(mTilesets)) {
         bool imageChanged = false;
 
         for (Tile *tile : tileset->tiles())
@@ -271,3 +261,5 @@ void TilesetManager::advanceTileAnimations(int ms)
 }
 
 } // namespace Tiled
+
+#include "moc_tilesetmanager.cpp"

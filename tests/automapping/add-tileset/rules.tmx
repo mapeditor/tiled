@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="3" height="3" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="5">
+ <tileset firstgid="1" source="../spr_test_tileset.tsx"/>
+ <tileset firstgid="17" source=":/automap-tiles.tsx"/>
+ <layer id="1" name="input_set" width="3" height="3">
+  <data encoding="csv">
+0,0,0,
+0,20,0,
+0,0,0
+</data>
+ </layer>
+ <layer id="2" name="output_auto" width="3" height="3">
+  <data encoding="csv">
+0,0,0,
+0,2,0,
+0,0,0
+</data>
+ </layer>
+</map>

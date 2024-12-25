@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILEDQUICK_TILEDQUICKPLUGIN_H
-#define TILEDQUICK_TILEDQUICKPLUGIN_H
+#pragma once
 
 #include <QQmlExtensionPlugin>
 
@@ -33,9 +32,7 @@ class TiledQuickPlugin : public QQmlExtensionPlugin
 #endif
 
 public:
-    void registerTypes(const char *uri);
+    void registerTypes(const char *uri) override;
 };
 
 } // namespace TiledQuick
-
-#endif // TILEDQUICK_TILEDQUICKPLUGIN_H

@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SWAPTILES_H
-#define SWAPTILES_H
+#pragma once
 
 #include "undocommands.h"
 
@@ -48,8 +47,8 @@ public:
               Tile *tile1,
               Tile *tile2);
 
-    void undo() { swap(); }
-    void redo() { swap(); }
+    void undo() override { swap(); }
+    void redo() override { swap(); }
 
 private:
     void swap();
@@ -60,5 +59,3 @@ private:
 };
 
 } // namespace Tiled
-
-#endif // SWAPTILES_H

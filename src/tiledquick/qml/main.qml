@@ -1,6 +1,7 @@
 import QtQuick 2.10
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
+import QtQuick.Window 2.11
 import org.mapeditor.Tiled 1.0 as Tiled
 import Qt.labs.settings 1.0
 import Qt.labs.platform 1.0 as Platform
@@ -28,6 +29,7 @@ ApplicationWindow {
         onAccepted: {
             mapLoader.source = fileDialog.file
             settings.mapsFolder = fileDialog.folder
+            fitMapInView(false);
         }
     }
 
@@ -46,8 +48,24 @@ ApplicationWindow {
         property alias windowWidth: window.width
         property alias windowHeight: window.height
         property alias windowVisibility: window.visibility
+
+        // TODO: Eventually should be remembered for each map
+        property alias mapScale: mapContainer.scale
+        property alias mapX: mapContainer.x
+        property alias mapY: mapContainer.y
     }
 
+    Shortcut {
+        sequence: "F11"
+        onActivated: {
+            if (window.visibility == ApplicationWindow.FullScreen)
+                window.visibility = ApplicationWindow.Windowed
+            else
+                window.visibility = ApplicationWindow.FullScreen
+        }
+    }
+
+    // File
     Action {
         id: openAction
         text: qsTr("Open...")
@@ -65,22 +83,24 @@ ApplicationWindow {
         onTriggered: Qt.quit()
     }
 
+    // View
+    Action {
+        id: fitMapInViewAction
+        text: qsTr("Fit Map In View")
+        shortcut: "Ctrl+/"
+        onTriggered: fitMapInView();
+    }
+
     menuBar: MenuBar {
         Menu {
             title: qsTr("File")
-            MenuItem {
-                action: openAction
-                text: qsTr("Open...")
-                onTriggered: {
-                    fileDialog.open()
-                }
-            }
+            MenuItem { action: openAction }
             MenuSeparator {}
-            MenuItem {
-                text: qsTr("Exit")
-                action: exitAction
-                onTriggered: Qt.quit()
-            }
+            MenuItem { action: exitAction }
+        }
+        Menu {
+            title: qsTr("View")
+            MenuItem { action: fitMapInViewAction }
         }
         Menu {
             title: qsTr("Help")
@@ -108,7 +128,11 @@ ApplicationWindow {
 
     Item {
         id: mapView
-        anchors.fill: parent
+
+        scale: 1 / Screen.devicePixelRatio
+        width: parent.width * Screen.devicePixelRatio
+        height: parent.height * Screen.devicePixelRatio
+        transformOrigin: Item.TopLeft
 
         Item {
             id: mapContainer
@@ -123,12 +147,6 @@ ApplicationWindow {
                 NumberAnimation { id: scaleAnimation; target: mapContainer; property: "scale"; easing.type: Easing.OutCubic; duration: 100 }
                 NumberAnimation { id: xAnimation; target: mapContainer; property: "x"; easing.type: Easing.OutCubic; duration: 100 }
                 NumberAnimation { id: yAnimation; target: mapContainer; property: "y"; easing.type: Easing.OutCubic; duration: 100 }
-            }
-
-            Component.onCompleted: {
-                containerAnimation.scale = mapContainer.scale
-                containerAnimation.x = mapContainer.x
-                containerAnimation.y = mapContainer.y
             }
 
             Tiled.MapItem {
@@ -150,26 +168,39 @@ ApplicationWindow {
         anchors.fill: parent
 
         onDragged: {
-            containerAnimation.stop()
-            containerAnimation.x += dx
-            containerAnimation.y += dy
-            containerAnimation.start()
+            dx *= Screen.devicePixelRatio
+            dy *= Screen.devicePixelRatio
+
+            if (containerAnimation.running) {
+                containerAnimation.stop()
+                containerAnimation.x += dx
+                containerAnimation.y += dy
+                mapContainer.x += dx
+                mapContainer.y += dy
+                containerAnimation.start()
+            } else {
+                mapContainer.x += dx
+                mapContainer.y += dy
+            }
         }
 
         onWheel: {
-            var scaleFactor = Math.pow(1.4, wheel.angleDelta.y / 120)
-            var scale = Math.min(8, Math.max(0.25, containerAnimation.scale * scaleFactor))
-            var anchor = mapToItem(mapContainer, wheel.x, wheel.y)
-            var oldScale = mapContainer.scale
-            var oldX = anchor.x * oldScale
-            var oldY = anchor.y * oldScale
-            var newX = anchor.x * scale
-            var newY = anchor.y * scale
+            const scaleFactor = Math.pow(1.4, wheel.angleDelta.y / 120)
+
+            let targetScale = containerAnimation.running ? containerAnimation.scale : mapContainer.scale
+            targetScale = Math.min(8, Math.max(0.25, targetScale * scaleFactor))
+
+            const anchor = mapToItem(mapContainer, wheel.x, wheel.y)
+            const oldScale = mapContainer.scale
+            const oldX = anchor.x * oldScale
+            const oldY = anchor.y * oldScale
+            const newX = anchor.x * targetScale
+            const newY = anchor.y * targetScale
 
             containerAnimation.stop()
             containerAnimation.x = mapContainer.x - (newX - oldX)
             containerAnimation.y = mapContainer.y - (newY - oldY)
-            containerAnimation.scale = scale
+            containerAnimation.scale = targetScale
             containerAnimation.start()
         }
     }
@@ -189,6 +220,29 @@ ApplicationWindow {
                     }
                 }
             }
+        }
+    }
+
+    function fitMapInView(animate = true) {
+        // The amount that the map would need to be scaled by to fit within the view.
+        let widthRatio = mapView.width / mapItem.width
+        let heightRatio = mapView.height / mapItem.height
+        // If we need to downscale the map to fit in the view, choose the lesser ratio
+        // because that will result in the largest downscaling, which ensures the map
+        // fits both vertically and horizontally.
+        // If we need to upscale, we also want to choose the smaller ratio, as we want
+        // both to fit.
+        let scale = Math.min(widthRatio, heightRatio)
+        containerAnimation.stop()
+        if (animate) {
+            containerAnimation.scale = scale
+            containerAnimation.x = (mapView.width / 2) - ((mapItem.width * scale) / 2)
+            containerAnimation.y = (mapView.height / 2) - ((mapItem.height * scale) / 2)
+            containerAnimation.start()
+        } else {
+            mapContainer.scale = scale
+            mapContainer.x = (mapView.width / 2) - ((mapItem.width * scale) / 2)
+            mapContainer.y = (mapView.height / 2) - ((mapItem.height * scale) / 2)
         }
     }
 }

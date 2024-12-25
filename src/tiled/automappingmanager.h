@@ -1,6 +1,7 @@
 /*
  * automappingmanager.h
- * Copyright 2010-2011, Stefan Beller, stefanbeller@googlemail.com
+ * Copyright 2010-2012, Stefan Beller <stefanbeller@googlemail.com>
+ * Copyright 2013-2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,15 +21,20 @@
 
 #pragma once
 
+#include "session.h"
+
+#include <QFileSystemWatcher>
 #include <QObject>
 #include <QRegion>
+#include <QRegularExpression>
 #include <QString>
-#include <QVector>
-#include <QFileSystemWatcher>
+
+#include <memory>
+#include <vector>
 
 namespace Tiled {
 
-class Layer;
+class TileLayer;
 
 class AutoMapper;
 class MapDocument;
@@ -40,20 +46,27 @@ class MapDocument;
 class AutomappingManager : public QObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(AutomappingManager)
 
 public:
-    /**
-     * Constructor.
-     */
     AutomappingManager(QObject *parent = nullptr);
+    ~AutomappingManager() override;
 
-    ~AutomappingManager();
+    void setMapDocument(MapDocument *mapDocument, const QString &rulesFile = QString());
 
-    void setMapDocument(MapDocument *mapDocument);
+    void refreshRulesFile(const QString &ruleFileOverride = QString());
 
     QString errorString() const { return mError; }
-
     QString warningString() const { return mWarning; }
+
+    /**
+     * This triggers an automapping on the current map document. Starts with
+     * the currently selected area, or the entire map if there is no selection.
+     */
+    void autoMap();
+    void autoMapRegion(const QRegion &region);
+
+    static SessionOption<bool> automappingWhileDrawing;
 
 signals:
     /**
@@ -66,40 +79,22 @@ signals:
      */
     void warningsOccurred(bool automatic);
 
-public slots:
-    /**
-     * This triggers an automapping on the current map document. Starts with
-     * the currently selected area, or the entire map if there is no selection.
-     */
-    void autoMap();
-
-private slots:
-    void onRegionEdited(const QRegion &where, Layer *touchedLayer);
+private:
+    void onRegionEdited(const QRegion &where, TileLayer *touchedLayer);
+    void onMapFileNameChanged();
     void onFileChanged();
 
-private:
-    Q_DISABLE_COPY(AutomappingManager)
-
-    /**
-     * This function parses a rules file.
-     * For each path which is a rule, (file extension is tmx) an AutoMapper
-     * object is setup.
-     *
-     * If a file extension is txt, this file will be opened and searched for
-     * rules again.
-     *
-     * @return if the loading was successful: return true if it succeeded.
-     */
     bool loadFile(const QString &filePath);
+    bool loadRulesFile(const QString &filePath);
+    bool loadRuleMap(const QString &filePath);
 
     /**
-     * Applies automapping to the Region \a where, considering only layer
-     * \a touchedLayer has changed.
-     * There will only those Automappers be used which have a rule layer
-     * touching the \a touchedLayer
-     * If layer is 0, all Automappers are used.
+     * Applies automapping to the region \a where.
+     *
+     * If a \a touchedLayer is given, only those AutoMappers will be used which
+     * have a rule layer matching the \a touchedLayer.
      */
-    void autoMapInternal(const QRegion &where, Layer *touchedLayer);
+    void autoMapInternal(const QRegion &where, const TileLayer *touchedLayer);
 
     /**
      * deletes all its data structures
@@ -109,19 +104,19 @@ private:
     /**
      * The current map document.
      */
-    MapDocument *mMapDocument;
+    MapDocument *mMapDocument = nullptr;
 
     /**
      * For each new file of rules a new AutoMapper is setup. In this vector we
      * can store all of the AutoMappers in order.
      */
-    QVector<AutoMapper*> mAutoMappers;
+    std::vector<std::unique_ptr<AutoMapper>> mAutoMappers;
 
     /**
      * This tells you if the rules for the current map document were already
      * loaded.
      */
-    bool mLoaded;
+    bool mLoaded = false;
 
     /**
      * Contains all errors which occurred until canceling.
@@ -137,7 +132,9 @@ private:
 
     QFileSystemWatcher mWatcher;
 
-    QString rulesFileName() const;
+    QString mRulesFile;
+    QRegularExpression mMapNameFilter;
+    bool mRulesFileOverride = false;
 };
 
 } // namespace Tiled

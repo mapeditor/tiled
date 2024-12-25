@@ -4,10 +4,16 @@ Working with Objects
 Using objects you can add a great deal of information to your map for
 use in your game. They can replace tedious alternatives like hardcoding
 coordinates (like spawn points) in your source code or maintaining
-additional data files for storing gameplay elements. With the addition
-of *tile objects*, they also became useful for graphical purposes and
-can in some cases replace tile layers entirely, as demonstrated by the
+additional data files for storing gameplay elements.
+
+By using *tile objects*, objects of various types can be made easy to
+recognize or they can be used for purely graphical purposes. In some cases
+they can replace the use of tile layers entirely, as demonstrated by the
 "Sticker Knight" example shipping with Tiled.
+
+All objects can have :doc:`custom properties <custom-properties>`, which can
+also be used to create :ref:`connections between objects
+<connecting-objects>`.
 
 To start using objects, add an :ref:`Object Layer <object-layer-introduction>`
 to your map.
@@ -19,7 +25,7 @@ Each type of object has its own placement tool.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.2</div>
+   <div class="new new-prev">Since Tiled 1.2</div>
 
 A preview is shown of the object you're about to place when you hover
 over the map. While placing an object, you can press ``Escape`` or
@@ -42,9 +48,9 @@ Place a rectangle by clicking-and-dragging in any direction. Holding
 ``Shift`` makes it square and holding ``Ctrl`` snaps its size to the
 tile size.
 
-If the rectangle is empty (width and height are both 0), it is rendered
-as a small square around its position. This is mainly to keep it visible
-and selectable.
+Rectangle objects have their origin in the top-left. However, if the rectangle
+is empty (width and height are both 0), it is rendered as a small square
+around its position. This is mainly to keep it visible and selectable.
 
 .. raw:: html
 
@@ -104,7 +110,7 @@ paths to be followed.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.2</div>
+   <div class="new new-prev">Since Tiled 1.2</div>
 
 You can extend an existing polyline at either end when it is selected,
 by clicking on the displayed dots. It is also possible to finish the
@@ -129,9 +135,8 @@ special information, like a chest with defined contents or an NPC with
 defined script.
 
 To place a tile object, first select the tile you want to place in the
-Tilesets view. Then use the Left mouse button on the map to start
-placing the object, move to position it based on the preview and release
-to finish placing the object.
+*Tilesets* view. Then use the Left mouse button on the map to start placing
+the object, move to position it and release to finish placing the object.
 
 .. raw:: html
 
@@ -139,8 +144,20 @@ to finish placing the object.
 
 To change the tile used by existing tile objects, select all the objects
 you want to change using the :ref:`select-objects-tool` tool and then
-right-click on a tile in the Tilesets view, and choose *Replace Tile of
+right-click on a tile in the *Tilesets* view, and choose *Replace Tile of
 Selected Objects*.
+
+.. raw:: html
+
+   <div class="new new-prev">Since Tiled 1.4</div>
+
+You can customize the alignment of tile objects using the *Object Alignment*
+property on the *Tileset*. For compatibility reasons this property is set to
+*Unspecified* by default, in which case tile objects are bottom-left aligned
+in all orientations except on *Isometric* maps, where they are bottom-center
+aligned. Setting this property to *Top Left* makes the alignment of tile
+objects consistent with that of :ref:`rectangle objects
+<insert-rectangle-tool>`.
 
 .. raw:: html
 
@@ -203,7 +220,7 @@ directly select the desired object.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.2</div>
+   <div class="new new-prev">Since Tiled 1.2</div>
 
 You can quickly switch to the :ref:`edit-polygons-tool` tool by
 double-clicking on the polygon or polyline you want to edit.
@@ -301,13 +318,53 @@ object in two polyline objects.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.2</div>
+   <div class="new new-prev">Since Tiled 1.2</div>
 
 It is possible to extend a polyline at either end, either by
 right-clicking those nodes and choosing "Extend Polyline", or by
 switching to the :ref:`insert-polygon-tool` tool and clicking on either
-end of an already selected polylines.
+end of an already selected polyline.
 
+
+.. raw:: html
+
+   <div class="new new-prev">Since Tiled 1.4</div>
+
+.. _connecting-objects:
+
+Connecting Objects
+------------------
+
+It can often be useful to connect one object with another, like when a switch
+should open a certain door or an NPC should follow a certain path. To do this,
+add a custom property of type ``object`` to the source object. This property
+can then be set to the desired target object in several ways.
+
+Make sure the property value is selected, as seen on the following screenshot:
+
+.. figure:: images/object-connection.png
+   :alt: Object Connection Property
+
+   Object Connection Property
+
+Then, you can set the connection by either:
+
+* Typing in the ID of the target object.
+
+* Clicking the icon with the window and magnifier, to open a dialog where you
+  can filter all objects on the map to find your target object.
+
+* Clicking the arrow icon and then clicking an object on the map to set it as
+  the target object.
+
+As shown on the screenshot above, any connections between objects are rendered
+as arrows, taking the color of their target object (defined as part of the
+:ref:`object class <custom-classes>` or by the color of the object
+layer). You can toggle the display of these arrows using *View -> Show Object
+References*.
+
+If you'd like to get to the target object, but it's very far away, you can
+jump there by right-clicking the property and selecting *Go to Object*.
 
 .. topic:: Future Extensions
    :class: future
@@ -317,13 +374,13 @@ end of an already selected polylines.
 
    -  Some improvements could still be made to the support for editing
       polygons and polylines, like allowing to rotate and scale the
-      selected nodes (`#1487 <https://github.com/bjorn/tiled/issues/1487>`__).
+      selected nodes (`#1487 <https://github.com/mapeditor/tiled/issues/1487>`__).
 
    -  The tools could put short usage instructions in the status bar,
       to help new users without requiring them to carefully read the
-      manual (`#1855 <https://github.com/bjorn/tiled/issues/1855>`__).
+      manual (`#1855 <https://github.com/mapeditor/tiled/issues/1855>`__).
 
    If you like any of these plans, please help me getting around to it
-   faster by `becoming a patron <https://www.patreon.com/bjorn>`__. The
+   faster by `sponsoring Tiled development <https://www.mapeditor.org/donate>`__. The
    more support I receive the more time I can afford to spend improving
    Tiled!

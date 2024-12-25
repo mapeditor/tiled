@@ -39,6 +39,7 @@ namespace Tiled {
 class TILEDSHARED_EXPORT ObjectTemplateFormat : public FileFormat
 {
     Q_OBJECT
+    Q_INTERFACES(Tiled::FileFormat)
 
 public:
     explicit ObjectTemplateFormat(QObject *parent = nullptr)

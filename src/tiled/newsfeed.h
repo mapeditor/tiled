@@ -44,11 +44,10 @@ class NewsFeed : public QObject
 {
     Q_OBJECT
 
-private:
-    NewsFeed();
-
 public:
-    static NewsFeed &instance();
+    NewsFeed(QObject *parent = nullptr);
+
+    void setEnabled(bool enabled);
 
     void refresh();
 
@@ -70,10 +69,9 @@ signals:
 protected:
     void timerEvent(QTimerEvent *event) override;
 
-private slots:
+private:
     void finished(QNetworkReply *reply);
 
-private:
     void setLastRead(const QDateTime &dateTime);
 
     QNetworkAccessManager *mNetworkAccessManager;

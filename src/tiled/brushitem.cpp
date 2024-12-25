@@ -73,11 +73,8 @@ void BrushItem::clear()
  */
 void BrushItem::setTileLayer(const SharedTileLayer &tileLayer)
 {
-    mTileLayer = tileLayer;
-    mRegion = tileLayer ? tileLayer->region() : QRegion();
-
-    updateBoundingRect();
-    update();
+    setTileLayer(tileLayer,
+                 tileLayer ? tileLayer->modifiedRegion() : QRegion());
 }
 
 /**
@@ -97,8 +94,13 @@ void BrushItem::setTileLayer(const SharedTileLayer &tileLayer,
 
 void BrushItem::setMap(const SharedMap &map)
 {
+    setMap(map, map->modifiedTileRegion());
+}
+
+void BrushItem::setMap(const SharedMap &map, const QRegion &region)
+{
     mMap = map;
-    mRegion = map->tileRegion();
+    mRegion = region;
 
     updateBoundingRect();
     update();
@@ -107,7 +109,7 @@ void BrushItem::setMap(const SharedMap &map)
 /**
  * Changes the position of the tile layer, if one is set.
  */
-void BrushItem::setTileLayerPosition(const QPoint &pos)
+void BrushItem::setTileLayerPosition(QPoint pos)
 {
     if (!mTileLayer)
         return;
@@ -151,6 +153,9 @@ void BrushItem::paint(QPainter *painter,
                       const QStyleOptionGraphicsItem *option,
                       QWidget *)
 {
+    if (!mMapDocument)
+        return;
+
     QColor insideMapHighlight = QApplication::palette().highlight().color();
     insideMapHighlight.setAlpha(64);
     QColor outsideMapHighlight = QColor(255, 0, 0, 64);
@@ -158,7 +163,9 @@ void BrushItem::paint(QPainter *painter,
     QRegion insideMapRegion = mRegion;
     QRegion outsideMapRegion;
 
-    if (!mMapDocument->currentLayer()->isUnlocked()) {
+    const auto currentLayer = mMapDocument->currentLayer();
+
+    if (currentLayer && !currentLayer->isUnlocked()) {
         qSwap(insideMapRegion, outsideMapRegion);
     } else if (!mMapDocument->map()->infinite()) {
         int mapWidth = mMapDocument->map()->width();
@@ -225,4 +232,7 @@ void BrushItem::updateBoundingRect()
                          qMin(0, -drawMargins.top()),
                          qMax(0, drawMargins.right()),
                          qMax(0, drawMargins.bottom()));
+
+    // Adjust for border drawn at tile selection edges
+    mBoundingRect.adjust(-1, -1, 1, 1);
 }

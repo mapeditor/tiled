@@ -36,7 +36,6 @@
 #include <QList>
 #include <QPixmap>
 #include <QPoint>
-#include <QPointer>
 #include <QSharedPointer>
 #include <QString>
 #include <QVector>
@@ -49,11 +48,9 @@ namespace Tiled {
 
 class Tile;
 class Tileset;
-class TilesetFormat;
-class Terrain;
 class WangSet;
 
-typedef QSharedPointer<Tileset> SharedTileset;
+using SharedTileset = QSharedPointer<Tileset>;
 
 /**
  * A tileset, representing a set of tiles.
@@ -63,15 +60,18 @@ typedef QSharedPointer<Tileset> SharedTileset;
  * addTile, insertTiles and removeTiles). These two use-cases are not meant to
  * be mixed.
  */
-class TILEDSHARED_EXPORT Tileset : public Object
+class TILEDSHARED_EXPORT Tileset : public Object, public QEnableSharedFromThis<Tileset>
 {
-    Q_OBJECT
-
 public:
+    // Used by TilesetChangeEvent
+    enum Property {
+        FillModeProperty,
+        TileRenderSizeProperty,
+    };
+
     /**
      * The orientation of the tileset determines the projection used in the
-     * TileCollisionDock and for the terrain information overlay of the
-     * TilesetView.
+     * TileCollisionDock and for the Wang color overlay of the TilesetView.
      */
     enum Orientation {
         Orthogonal,
@@ -79,9 +79,24 @@ public:
     };
 
     /**
-     * Creates a new tileset with the given parameters. Using this function
-     * makes sure the internal weak pointer is initialized, which enables the
-     * sharedPointer() function.
+     * The size to use when rendering tiles from this tileset on a tile layer.
+     */
+    enum TileRenderSize {
+        TileSize,
+        GridSize,
+    };
+
+    /**
+     * The fill mode to use when rendering tiles from this tileset. Only
+     * relevant when the tiles are not rendered at their native size.
+     */
+    enum FillMode {
+        Stretch,
+        PreserveAspectFit
+    };
+
+    /**
+     * Creates a new tileset with the given parameters.
      *
      * @param name        the name of the tileset
      * @param tileWidth   the width of the tiles in the tileset
@@ -89,21 +104,29 @@ public:
      * @param tileSpacing the spacing between the tiles in the tileset image
      * @param margin      the margin around the tiles in the tileset image
      */
-    static SharedTileset create(const QString &name,
-                                int tileWidth,
-                                int tileHeight,
-                                int tileSpacing = 0,
-                                int margin = 0);
+    template <typename... Args>
+    static SharedTileset create(Args && ...arguments)
+    {
+        return SharedTileset::create(std::forward<Args>(arguments)...);
+    }
 
 private:
+    friend SharedTileset;
+
     /**
-     * Private constructor. Use create() instead.
+     * Private constructor.
+     *
+     * Use Tileset::create() instead, which makes sure the internal weak
+     * pointer is initialized, which enables the sharedPointer() function.
      */
     Tileset(QString name, int tileWidth, int tileHeight,
             int tileSpacing = 0, int margin = 0);
 
 public:
-    ~Tileset();
+    QString exportFileName;
+    QString exportFormat;
+
+    ~Tileset() override;
 
     const QString &name() const;
     void setName(const QString &name);
@@ -112,8 +135,8 @@ public:
     void setFileName(const QString &fileName);
     bool isExternal() const;
 
-    void setFormat(TilesetFormat *format);
-    TilesetFormat *format() const;
+    void setFormat(const QString &format);
+    QString format() const;
 
     int tileWidth() const;
     int tileHeight() const;
@@ -127,6 +150,15 @@ public:
     int margin() const;
     void setMargin(int margin);
 
+    Alignment objectAlignment() const;
+    void setObjectAlignment(Alignment objectAlignment);
+
+    TileRenderSize tileRenderSize() const;
+    void setTileRenderSize(TileRenderSize tileRenderSize);
+
+    FillMode fillMode() const;
+    void setFillMode(FillMode fillMode);
+
     QPoint tileOffset() const;
     void setTileOffset(QPoint offset);
 
@@ -136,9 +168,11 @@ public:
     QSize gridSize() const;
     void setGridSize(QSize gridSize);
 
-    const QMap<int, Tile*> &tiles() const;
+    const QMap<int, Tile*> &tilesById() const;
+    const QList<Tile*> &tiles() const;
     inline Tile *findTile(int id) const;
     Tile *tileAt(int id) const { return findTile(id); } // provided for Python
+    int findTileLocation(Tile *tile) const;
     Tile *findOrCreateTile(int id);
     int tileCount() const;
 
@@ -164,6 +198,7 @@ public:
     bool loadFromImage(const QImage &image, const QString &source);
     bool loadFromImage(const QString &fileName);
     bool loadImage();
+    bool initializeTilesetTiles();
 
     SharedTileset findSimilarTileset(const QVector<SharedTileset> &tilesets) const;
 
@@ -172,36 +207,29 @@ public:
     void setImageSource(const QString &url);
     QString imageSourceString() const;
 
+    const QPixmap &image() const;
+
     bool isCollection() const;
 
     int columnCountForWidth(int width) const;
     int rowCountForHeight(int height) const;
 
-    const QList<Terrain*> &terrains() const;
-    int terrainCount() const;
-    Terrain *terrain(int index) const;
-
-    Terrain *addTerrain(const QString &name, int imageTileId);
-    void insertTerrain(int index, Terrain *terrain);
-    Terrain *takeTerrainAt(int index);
-    void swapTerrains(int index, int swapIndex);
-
-    int terrainTransitionPenalty(int terrainType0, int terrainType1) const;
-    int maximumTerrainDistance() const;
-
     const QList<WangSet*> &wangSets() const;
     int wangSetCount() const;
     WangSet *wangSet(int index) const;
 
-    void addWangSet(WangSet *wangSet);
-    void addWangSet(std::unique_ptr<WangSet> &&wangSet);
-    void insertWangSet(int index, WangSet *wangSet);
-    WangSet *takeWangSetAt(int index);
+    void addWangSet(std::unique_ptr<WangSet> wangSet);
+    void insertWangSet(int index, std::unique_ptr<WangSet> wangSet);
+    std::unique_ptr<WangSet> takeWangSetAt(int index);
 
-    Tile *addTile(const QPixmap &image, const QUrl &source = QUrl());
+    Tile *addTile(const QPixmap &image, const QUrl &source = QUrl(), const QRect &rect = QRect());
     void addTiles(const QList<Tile*> &tiles);
     void removeTiles(const QList<Tile *> &tiles);
     void deleteTile(int id);
+    QList<int> relocateTiles(const QList<Tile *> &tiles, int location);
+
+    bool anyTileOutOfOrder() const;
+    void resetTileOrder();
 
     void setNextTileId(int nextId);
     int nextTileId() const;
@@ -210,15 +238,33 @@ public:
     void setTileImage(Tile *tile,
                       const QPixmap &image,
                       const QUrl &source = QUrl());
+    void setTileImageRect(Tile *tile, const QRect &imageRect);
 
-    void markTerrainDistancesDirty();
+    /**
+     * @deprecated Only kept around for the Python API!
+     */
+    SharedTileset sharedPointer() const
+    { return const_cast<Tileset*>(this)->sharedFromThis(); }
 
-    SharedTileset sharedPointer() const;
+    void setOriginalTileset(const SharedTileset &original);
+    SharedTileset originalTileset();
 
     void setStatus(LoadingStatus status);
     void setImageStatus(LoadingStatus status);
     LoadingStatus status() const;
     LoadingStatus imageStatus() const;
+
+    enum TransformationFlag {
+        NoTransformation        = 0,
+        AllowFlipHorizontally   = 1 << 0,
+        AllowFlipVertically     = 1 << 1,
+        AllowRotate             = 1 << 2,
+        PreferUntransformed     = 1 << 3,
+    };
+    Q_DECLARE_FLAGS(TransformationFlags, TransformationFlag)
+
+    TransformationFlags transformationFlags() const;
+    void setTransformationFlags(TransformationFlags flags);
 
     void swap(Tileset &other);
 
@@ -241,34 +287,43 @@ public:
      */
     static Orientation orientationFromString(const QString &);
 
+    static QString tileRenderSizeToString(TileRenderSize tileRenderSize);
+    static TileRenderSize tileRenderSizeFromString(const QString &);
+
+    static QString fillModeToString(FillMode fillMode);
+    static FillMode fillModeFromString(const QString &);
+
 private:
+    void maybeUpdateTileSize(QSize oldSize, QSize newSize);
     void updateTileSize();
-    void recalculateTerrainDistances();
 
     QString mName;
     QString mFileName;
     ImageReference mImageReference;
+    QPixmap mImage;
     int mTileWidth;
     int mTileHeight;
     int mTileSpacing;
     int mMargin;
     QPoint mTileOffset;
-    Orientation mOrientation;
+    Alignment mObjectAlignment = Unspecified;
+    Orientation mOrientation = Orthogonal;
+    TileRenderSize mTileRenderSize = TileSize;
+    FillMode mFillMode = Stretch;
     QSize mGridSize;
-    int mColumnCount;
-    int mExpectedColumnCount;
-    int mExpectedRowCount;
-    int mNextTileId;
-    int mMaximumTerrainDistance;
-    QMap<int, Tile*> mTiles;
-    QList<Terrain*> mTerrainTypes;
+    int mColumnCount = 0;
+    int mExpectedColumnCount = 0;
+    int mExpectedRowCount = 0;
+    int mNextTileId = 0;
+    QMap<int, Tile*> mTilesById;
+    QList<Tile*> mTiles;
     QList<WangSet*> mWangSets;
-    bool mTerrainDistancesDirty;
-    LoadingStatus mStatus;
+    LoadingStatus mStatus = LoadingReady;
     QColor mBackgroundColor;
-    QPointer<TilesetFormat> mFormat;
+    QString mFormat;
+    TransformationFlags mTransformationFlags;
 
-    QWeakPointer<Tileset> mWeakPointer;
+    QWeakPointer<Tileset> mOriginalTileset;
 };
 
 
@@ -354,6 +409,42 @@ inline int Tileset::margin() const
 }
 
 /**
+ * Returns the alignment to use for tile objects.
+ */
+inline Alignment Tileset::objectAlignment() const
+{
+    return mObjectAlignment;
+}
+
+/**
+ * @see objectAlignment
+ */
+inline void Tileset::setObjectAlignment(Alignment objectAlignment)
+{
+    mObjectAlignment = objectAlignment;
+}
+
+inline Tileset::TileRenderSize Tileset::tileRenderSize() const
+{
+    return mTileRenderSize;
+}
+
+inline void Tileset::setTileRenderSize(TileRenderSize tileRenderSize)
+{
+    mTileRenderSize = tileRenderSize;
+}
+
+inline Tileset::FillMode Tileset::fillMode() const
+{
+    return mFillMode;
+}
+
+inline void Tileset::setFillMode(FillMode fillMode)
+{
+    mFillMode = fillMode;
+}
+
+/**
  * Returns the offset that is applied when drawing the tiles in this
  * tileset.
  */
@@ -403,10 +494,15 @@ inline void Tileset::setGridSize(QSize gridSize)
     mGridSize = gridSize;
 }
 
+inline const QMap<int, Tile *> &Tileset::tilesById() const
+{
+    return mTilesById;
+}
+
 /**
  * Returns a const reference to the tiles in this tileset.
  */
-inline const QMap<int, Tile *> &Tileset::tiles() const
+inline const QList<Tile*> &Tileset::tiles() const
 {
     return mTiles;
 }
@@ -417,7 +513,7 @@ inline const QMap<int, Tile *> &Tileset::tiles() const
  */
 inline Tile *Tileset::findTile(int id) const
 {
-    return mTiles.value(id);
+    return mTilesById.value(id);
 }
 
 /**
@@ -538,37 +634,19 @@ inline QString Tileset::imageSourceString() const
     return url.isLocalFile() ? url.toLocalFile() : url.toString();
 }
 
+inline const QPixmap &Tileset::image() const
+{
+    return mImage;
+}
+
 /**
  * Returns whether this tileset is a collection of images. In this case, the
- * tileset itself has no image source.
+ * tileset itself has no image source and the tileset image is also not
+ * embedded.
  */
 inline bool Tileset::isCollection() const
 {
-    return imageSource().isEmpty();
-}
-
-/**
- * Returns a const reference to the list of terrains in this tileset.
- */
-inline const QList<Terrain *> &Tileset::terrains() const
-{
-    return mTerrainTypes;
-}
-
-/**
- * Returns the number of terrain types in this tileset.
- */
-inline int Tileset::terrainCount() const
-{
-    return mTerrainTypes.size();
-}
-
-/**
- * Returns the terrain type at the given \a index.
- */
-inline Terrain *Tileset::terrain(int index) const
-{
-    return index >= 0 ? mTerrainTypes[index] : nullptr;
+    return imageSource().isEmpty() && image().isNull();
 }
 
 inline const QList<WangSet*> &Tileset::wangSets() const
@@ -612,19 +690,6 @@ inline int Tileset::takeNextTileId()
 }
 
 /**
- * Used by the Tile class when its terrain information changes.
- */
-inline void Tileset::markTerrainDistancesDirty()
-{
-    mTerrainDistancesDirty = true;
-}
-
-inline SharedTileset Tileset::sharedPointer() const
-{
-    return SharedTileset(mWeakPointer);
-}
-
-/**
  * Sets the status of this tileset.
  */
 inline void Tileset::setStatus(LoadingStatus status)
@@ -660,6 +725,19 @@ inline LoadingStatus Tileset::imageStatus() const
     return mImageReference.status;
 }
 
+inline Tileset::TransformationFlags Tileset::transformationFlags() const
+{
+    return mTransformationFlags;
+}
+
+inline void Tileset::setTransformationFlags(TransformationFlags flags)
+{
+    mTransformationFlags = flags;
+}
+
 } // namespace Tiled
 
+Q_DECLARE_METATYPE(Tiled::Tileset*)
 Q_DECLARE_METATYPE(Tiled::SharedTileset)
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Tileset::TransformationFlags)

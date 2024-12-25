@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="5" height="3" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="2">
+ <tileset firstgid="1" source="../spr_test_tileset.tsx"/>
+ <layer id="1" name="input_set" width="5" height="3">
+  <data encoding="csv">
+0,0,0,0,0,
+0,2,0,3,0,
+0,0,0,0,0
+</data>
+ </layer>
+ <layer id="2" name="output_set" width="5" height="3">
+  <data encoding="csv">
+0,0,0,0,0,
+0,3,0,4,0,
+0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup id="4" name="rule_options">
+  <object id="1" x="44" y="12" width="24" height="24">
+   <properties>
+    <property name="IgnoreLock" type="bool" value="true"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

@@ -51,7 +51,7 @@ public:
         : WritableMapFormat(parent)
     {}
 
-    bool write(const Tiled::Map *map, const QString &fileName) override;
+    bool write(const Tiled::Map *map, const QString &fileName, Options options) override;
 
     QString nameFilter() const override;
     QString shortName() const override;
@@ -71,7 +71,7 @@ public:
         : WritableTilesetFormat(parent)
     {}
 
-    bool write(const Tiled::Tileset &tileset, const QString &fileName) override;
+    bool write(const Tiled::Tileset &tileset, const QString &fileName, Options options) override;
 
     QString nameFilter() const override;
     QString shortName() const override;

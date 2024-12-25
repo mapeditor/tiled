@@ -22,13 +22,28 @@
 
 #include "id.h"
 
+#include <QHash>
 #include <QObject>
+#include <QVector>
+
+#include <memory>
 
 class QAction;
+class QMenu;
 
 namespace Tiled {
 
 class MainWindow;
+
+namespace MenuIds {
+
+constexpr char layerViewLayers[] = "LayerView.Layers";
+constexpr char mapViewObjects[] = "MapView.Objects";
+constexpr char projectViewFiles[] = "ProjectView.Files";
+constexpr char propertiesViewProperties[] = "PropertiesView.Properties";
+constexpr char tilesetViewTiles[] = "TilesetView.Tiles";
+
+} // namespace MenuId
 
 /**
  * Manager of global actions.
@@ -37,20 +52,72 @@ class ActionManager : public QObject
 {
     Q_OBJECT
 
+    explicit ActionManager(QObject *parent = nullptr);
+    ~ActionManager() override;
+
 public:
+    struct MenuItem {
+        Id action;
+        Id beforeAction;
+        bool isSeparator;
+    };
+
+    struct MenuExtension {
+        QVector<MenuItem> items;
+    };
+
+    static ActionManager *instance();
+
     static void registerAction(QAction *action, Id id);
+    static void unregisterAction(QAction *action, Id id);
+
+    static void registerMenu(QMenu *menu, Id id);
+    static void unregisterMenu(Id id);
+
+    static void registerMenuExtension(Id id, MenuExtension extension);
+    static void applyMenuExtensions(QMenu *menu, Id id);
+    static void clearMenuExtensions();
 
     static QAction *action(Id id);
     static QAction *findAction(Id id);
+    static QAction *findEnabledAction(Id id);
+
+    static bool hasMenu(Id id);
+
+    static QList<Id> actions();
+    static QList<Id> menus();
+
+    void setCustomShortcut(Id id, const QKeySequence &keySequence);
+    bool hasCustomShortcut(Id id) const;
+    void resetCustomShortcut(Id id);
+    void resetAllCustomShortcuts();
+    QList<QKeySequence> defaultShortcuts(Id id) const;
+
+    void setCustomShortcuts(const QHash<Id, QList<QKeySequence>> &shortcuts);
 
 signals:
-    void actionAdded(Id id);
+    void actionChanged(Id id);
+    void actionsChanged();
 
 private:
-    explicit ActionManager(QObject *parent = nullptr);
-    ~ActionManager();
+    void readCustomShortcuts();
+    void applyShortcut(QAction *action, const QKeySequence &shortcut);
+    void applyShortcuts(QAction *action, const QList<QKeySequence> &shortcuts);
+    void updateToolTipWithShortcut(QAction *action);
+    void applyMenuExtension(QMenu *menu, const MenuExtension &extension);
 
-    friend class Tiled::MainWindow;   // creation
+    QMultiHash<Id, QAction*> mIdToActions;
+    QHash<Id, QMenu*> mIdToMenu;
+    QHash<Id, QVector<MenuExtension>> mIdToMenuExtensions;
+    std::unique_ptr<QObject> mMenuSeparatorsParent;
+
+    QHash<Id, QList<QKeySequence>> mDefaultShortcuts;   // for resetting to default
+    QHash<Id, QKeySequence> mCustomShortcuts;
+    QHash<Id, QList<QKeySequence>> mLastKnownShortcuts; // for detecting shortcut changes
+
+    bool mApplyingShortcut = false;
+    bool mApplyingToolTipWithShortcut = false;
+    bool mResettingShortcut = false;
 };
 
 } // namespace Tiled

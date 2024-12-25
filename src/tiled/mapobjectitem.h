@@ -21,12 +21,16 @@
 
 #pragma once
 
+#include "mapobject.h"
+#include "preferences.h"
+
 #include <QCoreApplication>
 #include <QGraphicsItem>
 
 namespace Tiled {
 
 class MapObject;
+class Tile;
 
 class Handle;
 class MapDocument;
@@ -77,17 +81,13 @@ public:
      */
     void setPolygon(const QPolygonF &polygon);
 
-    /**
-     * A helper function to determine the color of a map object. The color is
-     * determined first of all by the object type, and otherwise by the group
-     * that the object is in. If still no color is defined, it defaults to
-     * gray.
-     */
-    static QColor objectColor(const MapObject *object);
+    static Preference<bool> preciseTileObjectSelection;
 
 private:
+    void expandBoundsToCoverTileCollisionObjects(QRectF &bounds);
+    QTransform tileCollisionObjectsTransform(const Tile &tile) const;
+
     MapDocument *mapDocument() const { return mMapDocument; }
-    QColor color() const { return mColor; }
 
     MapObject *mObject;
     MapDocument *mMapDocument;
@@ -95,7 +95,7 @@ private:
     /** Bounding rect cached, for adapting to geometry change correctly. */
     QRectF mBoundingRect;
     QPolygonF mPolygon; // Copy of the polygon, so we know when it changes
-    QColor mColor;      // Cached color of the object
+    MapObjectColors mColors; // Cached colors of the object
     bool mIsHoveredIndicator = false;
 };
 

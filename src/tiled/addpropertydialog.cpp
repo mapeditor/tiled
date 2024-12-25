@@ -22,51 +22,78 @@
 #include "addpropertydialog.h"
 #include "ui_addpropertydialog.h"
 
+#include "documentmanager.h"
+#include "object.h"
 #include "preferences.h"
 #include "properties.h"
+#include "propertytypesmodel.h"
+#include "session.h"
 #include "utils.h"
 
 #include <QPushButton>
-#include <QSettings>
 
 using namespace Tiled;
 
-static const char * const TYPE_KEY = "AddPropertyDialog/PropertyType";
+namespace session {
+static SessionOption<QString> propertyType { "property.type", QStringLiteral("string") };
+} // namespace session
 
 AddPropertyDialog::AddPropertyDialog(QWidget *parent)
     : QDialog(parent)
     , mUi(new Ui::AddPropertyDialog)
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-#endif
+    initialize(nullptr);
+}
 
+AddPropertyDialog::AddPropertyDialog(const ClassPropertyType *parentClassType, QWidget *parent)
+    : QDialog(parent)
+    , mUi(new Ui::AddPropertyDialog)
+{
+    initialize(parentClassType);
+}
+
+void AddPropertyDialog::initialize(const Tiled::ClassPropertyType *parentClassType)
+{
     mUi->setupUi(this);
     resize(Utils::dpiScaled(size()));
 
-    QString stringType = typeToName(QVariant::String);
+    const QIcon plain(QStringLiteral("://images/scalable/property-type-plain.svg"));
 
     // Add possible types from QVariant
-    mUi->typeBox->addItem(typeToName(QVariant::Bool),   false);
-    mUi->typeBox->addItem(typeToName(QVariant::Color),  QColor());
-    mUi->typeBox->addItem(typeToName(QVariant::Double), 0.0);
-    mUi->typeBox->addItem(typeToName(filePathTypeId()), QVariant::fromValue(FilePath()));
-    mUi->typeBox->addItem(typeToName(QVariant::Int),    0);
-    mUi->typeBox->addItem(stringType,                   QString());
+    mUi->typeBox->addItem(plain, typeToName(QMetaType::Bool),      false);
+    mUi->typeBox->addItem(plain, typeToName(QMetaType::QColor),    QColor());
+    mUi->typeBox->addItem(plain, typeToName(QMetaType::Double),    0.0);
+    mUi->typeBox->addItem(plain, typeToName(filePathTypeId()),     QVariant::fromValue(FilePath()));
+    mUi->typeBox->addItem(plain, typeToName(QMetaType::Int),       0);
+    mUi->typeBox->addItem(plain, typeToName(objectRefTypeId()),    QVariant::fromValue(ObjectRef()));
+    mUi->typeBox->addItem(plain, typeToName(QMetaType::QString),   QString());
+
+    for (const auto propertyType : Object::propertyTypes()) {
+        // Avoid suggesting the creation of circular dependencies between types
+        if (parentClassType && !parentClassType->canAddMemberOfType(propertyType))
+            continue;
+
+        // Avoid suggesting classes not meant to be used as property value
+        if (propertyType->isClass())
+            if (!static_cast<const ClassPropertyType*>(propertyType)->isPropertyValueType())
+                continue;
+
+        const QVariant var = propertyType->wrap(propertyType->defaultValue());
+        const QIcon icon = PropertyTypesModel::iconForPropertyType(propertyType->type);
+        mUi->typeBox->addItem(icon, propertyType->name, var);
+    }
 
     mUi->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
     // Restore previously used type
-    Preferences *prefs = Preferences::instance();
-    QSettings *s = prefs->settings();
-    QString lastType = s->value(QLatin1String(TYPE_KEY), stringType).toString();
-
-    mUi->typeBox->setCurrentText(lastType);
+    mUi->typeBox->setCurrentText(session::propertyType);
 
     connect(mUi->name, &QLineEdit::textChanged,
             this, &AddPropertyDialog::nameChanged);
     connect(mUi->typeBox, &QComboBox::currentTextChanged,
             this, &AddPropertyDialog::typeChanged);
+
+    mUi->name->setFocus();
 }
 
 AddPropertyDialog::~AddPropertyDialog()
@@ -91,7 +118,7 @@ void AddPropertyDialog::nameChanged(const QString &text)
 
 void AddPropertyDialog::typeChanged(const QString &text)
 {
-    Preferences *prefs = Preferences::instance();
-    QSettings *s = prefs->settings();
-    s->setValue(QLatin1String(TYPE_KEY), text);
+    session::propertyType = text;
 }
+
+#include "moc_addpropertydialog.cpp"

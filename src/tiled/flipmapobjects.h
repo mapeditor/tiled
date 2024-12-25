@@ -1,6 +1,6 @@
 /*
  * flipmapobjects.h
- * Copyright 2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2013-2022, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -24,17 +24,20 @@
 
 #include <QList>
 #include <QUndoCommand>
+#include <QVector>
 
 namespace Tiled {
 
-class MapDocument;
+class MapObject;
+class Document;
 
 class FlipMapObjects : public QUndoCommand
 {
 public:
-    FlipMapObjects(MapDocument *mapDocument,
+    FlipMapObjects(Document *document,
                    const QList<MapObject *> &mapObjects,
-                   FlipDirection flipDirection);
+                   FlipDirection flipDirection,
+                   QPointF flipOrigin);
 
     void undo() override { flip(); }
     void redo() override { flip(); }
@@ -42,15 +45,13 @@ public:
 private:
     void flip();
 
-    MapDocument *mMapDocument;
+    Document *mDocument;
     const QList<MapObject *> mMapObjects;
-    QPointF mObjectsCenter;
     FlipDirection mFlipDirection;
+    QPointF mFlipOrigin;
 
-    QVector<bool> mOldRotationStates;
-    QVector<bool> mNewRotationStates;
-    QVector<bool> mOldCellStates;
-    QVector<bool> mNewCellStates;
+    QVector<MapObject::ChangedProperties> mOldChangedProperties;
+    QVector<MapObject::ChangedProperties> mNewChangedProperties;
 };
 
 } // namespace Tiled

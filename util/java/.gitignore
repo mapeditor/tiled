@@ -1,2 +1,5 @@
-java-utils.iws
-out/
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr

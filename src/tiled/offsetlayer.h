@@ -39,8 +39,9 @@ class OffsetLayer : public QUndoCommand
 public:
     OffsetLayer(MapDocument *mapDocument,
                 Layer *layer,
-                const QPoint &offset,
+                QPoint offset,
                 const QRect &bounds,
+                bool wholeMap,
                 bool xWrap,
                 bool yWrap);
 
@@ -51,9 +52,9 @@ public:
 
 private:
     MapDocument *mMapDocument;
-    bool mDone;
+    bool mDone = false;
     Layer *mOriginalLayer;
-    Layer *mOffsetLayer;
+    Layer *mOffsetLayer = nullptr;
     QPointF mOldOffset;
     QPointF mNewOffset;
 };

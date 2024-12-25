@@ -18,8 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CAPTURESTAMPHELPER_H
-#define CAPTURESTAMPHELPER_H
+#pragma once
 
 #include "tilestamp.h"
 
@@ -35,7 +34,7 @@ public:
     CaptureStampHelper();
 
     void beginCapture(QPoint tilePosition);
-    TileStamp endCapture(const MapDocument &mapDocument, QPoint tilePosition);
+    TileStamp endCapture(MapDocument &mapDocument, QPoint tilePosition, bool cut);
 
     bool isActive() const { return mActive; }
     void reset();
@@ -48,5 +47,3 @@ private:
 };
 
 } // namespace Tiled
-
-#endif // CAPTURESTAMPHELPER_H

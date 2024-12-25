@@ -59,6 +59,7 @@
 #include <QStyleOption>
 #include <QPainter>
 #include <QMap>
+#include <QKeySequenceEdit>
 
 #if defined(Q_CC_MSVC)
 #    pragma warning(disable: 4786) /* MS VS 6: truncating debug info after 255 characters */
@@ -987,7 +988,7 @@ class QtLineEditFactoryPrivate : public EditorFactoryPrivate<QLineEdit>
 public:
 
     void slotPropertyChanged(QtProperty *property, const QString &value);
-    void slotRegExpChanged(QtProperty *property, const QRegExp &regExp);
+    void slotRegExpChanged(QtProperty *property, const QRegularExpression &regExp);
     void slotSetValue(const QString &value);
     void slotEchoModeChanged(QtProperty *, int);
     void slotReadOnlyChanged(QtProperty *, bool);
@@ -1011,7 +1012,7 @@ void QtLineEditFactoryPrivate::slotPropertyChanged(QtProperty *property,
 }
 
 void QtLineEditFactoryPrivate::slotRegExpChanged(QtProperty *property,
-            const QRegExp &regExp)
+            const QRegularExpression &regExp)
 {
     if (!m_createdEditors.contains(property))
         return;
@@ -1027,7 +1028,7 @@ void QtLineEditFactoryPrivate::slotRegExpChanged(QtProperty *property,
         const QValidator *oldValidator = editor->validator();
         QValidator *newValidator = 0;
         if (regExp.isValid()) {
-            newValidator = new QRegExpValidator(regExp, editor);
+            newValidator = new QRegularExpressionValidator(regExp, editor);
         }
         editor->setValidator(newValidator);
         if (oldValidator)
@@ -1127,8 +1128,8 @@ void QtLineEditFactory::connectPropertyManager(QtStringPropertyManager *manager)
 {
     connect(manager, SIGNAL(valueChanged(QtProperty *, const QString &)),
             this, SLOT(slotPropertyChanged(QtProperty *, const QString &)));
-    connect(manager, SIGNAL(regExpChanged(QtProperty *, const QRegExp &)),
-            this, SLOT(slotRegExpChanged(QtProperty *, const QRegExp &)));
+    connect(manager, SIGNAL(regExpChanged(QtProperty *, const QRegularExpression &)),
+            this, SLOT(slotRegExpChanged(QtProperty *, const QRegularExpression &)));
     connect(manager, SIGNAL(echoModeChanged(QtProperty*, int)),
             this, SLOT(slotEchoModeChanged(QtProperty *, int)));
     connect(manager, SIGNAL(readOnlyChanged(QtProperty*, bool)),
@@ -1147,9 +1148,9 @@ QWidget *QtLineEditFactory::createEditor(QtStringPropertyManager *manager,
     QLineEdit *editor = d_ptr->createEditor(property, parent);
     editor->setEchoMode((EchoMode)manager->echoMode(property));
     editor->setReadOnly(manager->isReadOnly(property));
-    QRegExp regExp = manager->regExp(property);
+    QRegularExpression regExp = manager->regExp(property);
     if (regExp.isValid()) {
-        QValidator *validator = new QRegExpValidator(regExp, editor);
+        QValidator *validator = new QRegularExpressionValidator(regExp, editor);
         editor->setValidator(validator);
     }
     editor->setText(manager->value(property));
@@ -1170,8 +1171,8 @@ void QtLineEditFactory::disconnectPropertyManager(QtStringPropertyManager *manag
 {
     disconnect(manager, SIGNAL(valueChanged(QtProperty *, const QString &)),
                 this, SLOT(slotPropertyChanged(QtProperty *, const QString &)));
-    disconnect(manager, SIGNAL(regExpChanged(QtProperty *, const QRegExp &)),
-                this, SLOT(slotRegExpChanged(QtProperty *, const QRegExp &)));
+    disconnect(manager, SIGNAL(regExpChanged(QtProperty *, const QRegularExpression &)),
+                this, SLOT(slotRegExpChanged(QtProperty *, const QRegularExpression &)));
     disconnect(manager, SIGNAL(echoModeChanged(QtProperty*,int)),
                 this, SLOT(slotEchoModeChanged(QtProperty *, int)));
     disconnect(manager, SIGNAL(readOnlyChanged(QtProperty*, bool)),
@@ -1538,7 +1539,7 @@ void QtDateTimeEditFactory::disconnectPropertyManager(QtDateTimePropertyManager 
 
 // QtKeySequenceEditorFactory
 
-class QtKeySequenceEditorFactoryPrivate : public EditorFactoryPrivate<QtKeySequenceEdit>
+class QtKeySequenceEditorFactoryPrivate : public EditorFactoryPrivate<QKeySequenceEdit>
 {
     QtKeySequenceEditorFactory *q_ptr;
     Q_DECLARE_PUBLIC(QtKeySequenceEditorFactory)
@@ -1554,9 +1555,9 @@ void QtKeySequenceEditorFactoryPrivate::slotPropertyChanged(QtProperty *property
     if (!m_createdEditors.contains(property))
         return;
 
-    QListIterator<QtKeySequenceEdit *> itEditor(m_createdEditors[property]);
+    QListIterator<QKeySequenceEdit *> itEditor(m_createdEditors[property]);
     while (itEditor.hasNext()) {
-        QtKeySequenceEdit *editor = itEditor.next();
+        QKeySequenceEdit *editor = itEditor.next();
         editor->blockSignals(true);
         editor->setKeySequence(value);
         editor->blockSignals(false);
@@ -1566,8 +1567,8 @@ void QtKeySequenceEditorFactoryPrivate::slotPropertyChanged(QtProperty *property
 void QtKeySequenceEditorFactoryPrivate::slotSetValue(const QKeySequence &value)
 {
     QObject *object = q_ptr->sender();
-    const  QMap<QtKeySequenceEdit *, QtProperty *>::ConstIterator ecend = m_editorToProperty.constEnd();
-    for (QMap<QtKeySequenceEdit *, QtProperty *>::ConstIterator itEditor =  m_editorToProperty.constBegin(); itEditor != ecend; ++itEditor)
+    const  QMap<QKeySequenceEdit *, QtProperty *>::ConstIterator ecend = m_editorToProperty.constEnd();
+    for (QMap<QKeySequenceEdit *, QtProperty *>::ConstIterator itEditor =  m_editorToProperty.constBegin(); itEditor != ecend; ++itEditor)
         if (itEditor.key() == object) {
             QtProperty *property = itEditor.value();
             QtKeySequencePropertyManager *manager = q_ptr->propertyManager(property);
@@ -1626,7 +1627,7 @@ void QtKeySequenceEditorFactory::connectPropertyManager(QtKeySequencePropertyMan
 QWidget *QtKeySequenceEditorFactory::createEditor(QtKeySequencePropertyManager *manager,
         QtProperty *property, QWidget *parent)
 {
-    QtKeySequenceEdit *editor = d_ptr->createEditor(property, parent);
+    QKeySequenceEdit *editor = d_ptr->createEditor(property, parent);
     editor->setKeySequence(manager->value(property));
 
     connect(editor, SIGNAL(keySequenceChanged(const QKeySequence &)),
@@ -1682,7 +1683,7 @@ QtCharEdit::QtCharEdit(QWidget *parent)
 {
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addWidget(m_lineEdit);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     m_lineEdit->installEventFilter(this);
     m_lineEdit->setReadOnly(true);
     m_lineEdit->setFocusProxy(this);
@@ -1747,7 +1748,7 @@ void QtCharEdit::handleKeyEvent(QKeyEvent *e)
     }
 
     const QString text = e->text();
-    if (text.count() != 1)
+    if (text.size() != 1)
         return;
 
     const QChar c = text.at(0);
@@ -1806,7 +1807,7 @@ void QtCharEdit::keyReleaseEvent(QKeyEvent *e)
 void QtCharEdit::paintEvent(QPaintEvent *)
 {
     QStyleOption opt;
-    opt.init(this);
+    opt.initFrom(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
@@ -2378,7 +2379,7 @@ bool QtColorEditWidget::eventFilter(QObject *obj, QEvent *ev)
 void QtColorEditWidget::paintEvent(QPaintEvent *)
 {
     QStyleOption opt;
-    opt.init(this);
+    opt.initFrom(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
@@ -2617,7 +2618,7 @@ bool QtFontEditWidget::eventFilter(QObject *obj, QEvent *ev)
 void QtFontEditWidget::paintEvent(QPaintEvent *)
 {
     QStyleOption opt;
-    opt.init(this);
+    opt.initFrom(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }

@@ -35,7 +35,6 @@ class Layer;
 class Map;
 class ObjectGroup;
 class ObjectTemplate;
-class Properties;
 class Tileset;
 class WangColor;
 
@@ -61,7 +60,7 @@ public:
      * Returns 0 in case of an error. The error can be obstained using
      * errorString().
      */
-    Map *toMap(const QVariant &variant, const QDir &mapDir);
+    std::unique_ptr<Map> toMap(const QVariant &variant, const QDir &mapDir);
 
     /**
      * Tries to convert the given \a variant to a Tileset instance. The
@@ -90,7 +89,7 @@ private:
                             const QVariant &propertyTypesVariant) const;
     SharedTileset toTileset(const QVariant &variant);
     std::unique_ptr<WangSet> toWangSet(const QVariantMap &variantMap, Tileset *tileset);
-    QSharedPointer<WangColor> toWangColor(const QVariantMap &variantMap, bool isEdge);
+    QSharedPointer<WangColor> toWangColor(const QVariantMap &variantMap);
     std::unique_ptr<ObjectTemplate> toObjectTemplate(const QVariant &variant);
     std::unique_ptr<Layer> toLayer(const QVariant &variant);
     std::unique_ptr<TileLayer> toTileLayer(const QVariantMap &variantMap);
@@ -102,6 +101,8 @@ private:
     QPolygonF toPolygon(const QVariant &variant) const;
     TextData toTextData(const QVariantMap &variant) const;
 
+    void readMapEditorSettings(Map &map, const QVariantMap &editorSettings);
+    void readTilesetEditorSettings(Tileset &tileset, const QVariantMap &editorSettings);
     bool readTileLayerData(TileLayer &tileLayer,
                            const QVariant &dataVariant,
                            Map::LayerDataFormat layerDataFormat,
@@ -110,7 +111,7 @@ private:
     Properties extractProperties(const QVariantMap &variantMap) const;
 
     Map *mMap;
-    QDir mMapDir;
+    QDir mDir;
     bool mReadingExternalTileset;
     GidMapper mGidMapper;
     QString mError;

@@ -1,0 +1,37 @@
+{
+  "name": "@mapeditor/tiled-api",
+  "description": "TypeScript definitions for the Tiled scripting API",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mapeditor/tiled.git"
+  },
+  "types": "./index.d.ts",
+  "version": "1.11.0",
+  "scripts": {
+    "test": "tsc"
+  },
+  "devDependencies": {
+    "typedoc": "^0.21.10",
+    "typescript": "^4.4.4"
+  },
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/bjorn"
+    },
+    {
+      "type": "opencollective",
+      "url": "https://opencollective.com/tiled"
+    },
+    {
+      "type": "patreon",
+      "url": "https://patreon.com/bjorn"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/mapeditor/tiled/issues"
+  },
+  "homepage": "https://www.mapeditor.org/",
+  "author": "",
+  "license": "MIT"
+}

@@ -21,6 +21,8 @@
 
 #include "tilesetchanges.h"
 
+#include "changeevents.h"
+#include "mapdocument.h"
 #include "tilesetdocument.h"
 #include "tilesetmanager.h"
 
@@ -47,6 +49,16 @@ void RenameTileset::redo()
     mTilesetDocument->setTilesetName(mNewName);
 }
 
+bool RenameTileset::mergeWith(const QUndoCommand *other)
+{
+    auto o = static_cast<const RenameTileset*>(other);
+    if (mTilesetDocument != o->mTilesetDocument)
+        return false;
+
+    mNewName = o->mNewName;
+    return true;
+}
+
 
 ChangeTilesetTileOffset::ChangeTilesetTileOffset(TilesetDocument *tilesetDocument,
                                                  QPoint tileOffset)
@@ -69,7 +81,7 @@ void ChangeTilesetTileOffset::redo()
 
 bool ChangeTilesetTileOffset::mergeWith(const QUndoCommand *other)
 {
-    const ChangeTilesetTileOffset *o = static_cast<const ChangeTilesetTileOffset*>(other);
+    auto o = static_cast<const ChangeTilesetTileOffset*>(other);
     if (mTilesetDocument != o->mTilesetDocument)
         return false;
 
@@ -191,6 +203,76 @@ void ChangeTilesetOrientation::swap()
 }
 
 
+ChangeTilesetObjectAlignment::ChangeTilesetObjectAlignment(TilesetDocument *tilesetDocument,
+                                                           Alignment objectAlignment)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Object Alignment"))
+    , mTilesetDocument(tilesetDocument)
+    , mObjectAlignment(objectAlignment)
+{
+}
+
+void ChangeTilesetObjectAlignment::swap()
+{
+    Tileset &tileset = *mTilesetDocument->tileset();
+
+    Alignment objectAlignment = tileset.objectAlignment();
+    mTilesetDocument->setTilesetObjectAlignment(mObjectAlignment);
+    mObjectAlignment = objectAlignment;
+}
+
+
+ChangeTilesetTileRenderSize::ChangeTilesetTileRenderSize(TilesetDocument *tilesetDocument,
+                                                         Tileset::TileRenderSize tileRenderSize)
+    : ChangeValue<Tileset, Tileset::TileRenderSize>(tilesetDocument,
+                                                    { tilesetDocument->tileset().data() },
+                                                    tileRenderSize)
+{
+    setText(QCoreApplication::translate("Undo Commands", "Change Tile Render Size"));
+}
+
+Tileset::TileRenderSize ChangeTilesetTileRenderSize::getValue(const Tileset *tileset) const
+{
+    return tileset->tileRenderSize();
+}
+
+void ChangeTilesetTileRenderSize::setValue(Tileset *tileset, const Tileset::TileRenderSize &tileRenderSize) const
+{
+    tileset->setTileRenderSize(tileRenderSize);
+
+    const TilesetChangeEvent event { tileset, Tileset::TileRenderSizeProperty };
+    emit document()->changed(event);
+
+    for (MapDocument *mapDocument : static_cast<TilesetDocument*>(document())->mapDocuments())
+        emit mapDocument->changed(event);
+}
+
+
+ChangeTilesetFillMode::ChangeTilesetFillMode(TilesetDocument *tilesetDocument,
+                                             Tileset::FillMode fillMode)
+    : ChangeValue<Tileset, Tileset::FillMode>(tilesetDocument,
+                                              { tilesetDocument->tileset().data() },
+                                              fillMode)
+{
+    setText(QCoreApplication::translate("Undo Commands", "Change Fill Mode"));
+}
+
+Tileset::FillMode ChangeTilesetFillMode::getValue(const Tileset *tileset) const
+{
+    return tileset->fillMode();
+}
+
+void ChangeTilesetFillMode::setValue(Tileset *tileset, const Tileset::FillMode &fillMode) const
+{
+    tileset->setFillMode(fillMode);
+
+    const TilesetChangeEvent event { tileset, Tileset::FillModeProperty };
+    emit document()->changed(event);
+
+    for (MapDocument *mapDocument : static_cast<TilesetDocument*>(document())->mapDocuments())
+        emit mapDocument->changed(event);
+}
+
+
 ChangeTilesetGridSize::ChangeTilesetGridSize(TilesetDocument *tilesetDocument,
                                              QSize gridSize)
     : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Grid Size"))
@@ -208,6 +290,25 @@ void ChangeTilesetGridSize::swap()
     mGridSize = gridSize;
 
     emit mTilesetDocument->tilesetChanged(&tileset);
+}
+
+
+ChangeTilesetTransformationFlags::ChangeTilesetTransformationFlags(TilesetDocument *tilesetDocument,
+                                                                   Tileset::TransformationFlags newValue)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change Tileset"))
+    , mTilesetDocument(tilesetDocument)
+    , mOldValue(tilesetDocument->tileset()->transformationFlags())
+    , mNewValue(newValue)
+{
+}
+
+void ChangeTilesetTransformationFlags::undo()
+{
+    mTilesetDocument->setTilesetTransformationFlags(mOldValue);
+}
+void ChangeTilesetTransformationFlags::redo()
+{
+    mTilesetDocument->setTilesetTransformationFlags(mNewValue);
 }
 
 } // namespace Tiled

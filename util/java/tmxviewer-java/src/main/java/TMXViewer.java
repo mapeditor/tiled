@@ -2,8 +2,8 @@
  * #%L
  * This file is part of tmxviewer-java.
  * %%
- * Copyright (C) 2010 - 2017 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright (C) 2016 - 2017 Mike Thomas <mikepthomas@outlook.com>
+ * Copyright (C) 2010 - 2020 Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright (C) 2016 - 2020 Mike Thomas <mikepthomas@outlook.com>
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:

@@ -38,7 +38,7 @@ public:
                    const QList<Tile*> &tiles,
                    bool add);
 
-    ~AddRemoveTiles();
+    ~AddRemoveTiles() override;
 
 protected:
     void addTiles();
@@ -75,11 +75,8 @@ public:
     RemoveTiles(TilesetDocument *tilesetDocument,
                 const QList<Tile *> &tiles);
 
-    void undo() override
-    { addTiles(); }
-
-    void redo() override
-    { removeTiles(); }
+    void undo() override;
+    void redo() override;
 };
 
 } // namespace Tiled

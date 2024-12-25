@@ -93,7 +93,6 @@ bool TileStampModel::setData(const QModelIndex &index, const QVariant &value, in
                 emit stampRenamed(stamp);
                 emit stampChanged(stamp);
                 return true;
-                break;
             default:
                 break;
             }
@@ -336,3 +335,5 @@ void TileStampModel::clear()
 }
 
 } // namespace Tiled
+
+#include "moc_tilestampmodel.cpp"

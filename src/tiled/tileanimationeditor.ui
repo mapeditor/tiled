@@ -32,7 +32,7 @@
         <string> ms</string>
        </property>
        <property name="minimum">
-        <number>1</number>
+        <number>0</number>
        </property>
        <property name="maximum">
         <number>10000</number>
@@ -128,7 +128,7 @@
       </widget>
       <widget class="QLabel" name="preview">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>1</verstretch>
         </sizepolicy>

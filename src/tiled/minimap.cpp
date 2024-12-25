@@ -67,11 +67,8 @@ void MiniMap::setMapDocument(MapDocument *map)
     if (mMapDocument) {
         mMapDocument->disconnect(this);
 
-        if (MapView *mapView = dm->viewForDocument(mMapDocument)) {
-            mapView->zoomable()->disconnect(this);
-            mapView->horizontalScrollBar()->disconnect(this);
-            mapView->verticalScrollBar()->disconnect(this);
-        }
+        if (MapView *mapView = dm->viewForDocument(mMapDocument))
+            mapView->disconnect(this);
     }
 
     mMapDocument = map;
@@ -80,11 +77,8 @@ void MiniMap::setMapDocument(MapDocument *map)
         connect(mMapDocument->undoStack(), &QUndoStack::indexChanged,
                 this, &MiniMap::scheduleMapImageUpdate);
 
-        if (MapView *mapView = dm->viewForDocument(mMapDocument)) {
-            connect(mapView->horizontalScrollBar(), &QAbstractSlider::valueChanged, this, [this] { update(); });
-            connect(mapView->verticalScrollBar(), &QAbstractSlider::valueChanged, this, [this] { update(); });
-            connect(mapView->zoomable(), &Zoomable::scaleChanged, this, [this] { update(); });
-        }
+        if (MapView *mapView = dm->viewForDocument(mMapDocument))
+            connect(mapView, &MapView::viewRectChanged, this, [this] { update(); });
     }
 
     scheduleMapImageUpdate();
@@ -153,8 +147,8 @@ void MiniMap::updateImageRect()
 
     // Scale and center the image
     const QRect r = contentsRect();
-    qreal scale = qMin((qreal) r.width() / imageRect.width(),
-                       (qreal) r.height() / imageRect.height());
+    qreal scale = qMin(static_cast<qreal>(r.width()) / imageRect.width(),
+                       static_cast<qreal>(r.height()) / imageRect.height());
     imageRect.setSize(imageRect.size() * scale);
     imageRect.moveCenter(r.center());
 
@@ -168,25 +162,26 @@ void MiniMap::renderMapToImage()
         return;
     }
 
-    MapRenderer *renderer = mMapDocument->renderer();
-#if QT_VERSION >= 0x050600
-    const QSize viewSize = contentsRect().size() * devicePixelRatioF();
-#else
-    const QSize viewSize = contentsRect().size() * devicePixelRatio();
-#endif
-    QSize mapSize = renderer->mapBoundingRect().size();
+    MiniMapRenderer miniMapRenderer(mMapDocument->map());
 
+    const QSize mapSize = miniMapRenderer.mapSize();
     if (mapSize.isEmpty()) {
         mMapImage = QImage();
         return;
     }
 
     // Determine the largest possible scale
-    qreal scale = qMin((qreal) viewSize.width() / mapSize.width(),
-                       (qreal) viewSize.height() / mapSize.height());
+    const QSize viewSize = contentsRect().size() * devicePixelRatioF();
+    qreal scale = qMin(static_cast<qreal>(viewSize.width()) / mapSize.width(),
+                       static_cast<qreal>(viewSize.height()) / mapSize.height());
+
+    QSize imageSize = mapSize * scale;
+
+    // Improve the quality if the image size is small
+    if (imageSize.width() < 512 && imageSize.height() < 512)
+        imageSize *= 2;
 
     // Allocate a new image when the size changed
-    const QSize imageSize = mapSize * scale;
     if (mMapImage.size() != imageSize) {
         mMapImage = QImage(imageSize, QImage::Format_ARGB32_Premultiplied);
         updateImageRect();
@@ -195,11 +190,10 @@ void MiniMap::renderMapToImage()
     if (imageSize.isEmpty())
         return;
 
-    MiniMapRenderer miniMapRenderer(mMapDocument->map());
     miniMapRenderer.renderToImage(mMapImage, mRenderFlags);
 }
 
-void MiniMap::centerViewOnLocalPixel(QPoint centerPos, int delta)
+void MiniMap::centerViewOnLocalPixel(const QPointF &centerPos, int delta)
 {
     MapView *mapView = DocumentManager::instance()->currentMapView();
     if (!mapView)
@@ -219,8 +213,12 @@ void MiniMap::redrawTimeout()
 
 void MiniMap::wheelEvent(QWheelEvent *event)
 {
-    if (event->orientation() == Qt::Vertical) {
-        centerViewOnLocalPixel(event->pos(), event->delta());
+    if (event->angleDelta().y()) {
+#if QT_VERSION < QT_VERSION_CHECK(5,14,0)
+        centerViewOnLocalPixel(event->pos(), event->angleDelta().y());
+#else
+        centerViewOnLocalPixel(event->position(), event->angleDelta().y());
+#endif
         return;
     }
 
@@ -299,14 +297,19 @@ QRect MiniMap::viewportRect() const
         return QRect(0, 0, 1, 1);
 
     const QRectF mapRect = mapView->mapScene()->mapBoundingRect();
-    const QRectF viewRect = mapView->mapToScene(mapView->viewport()->geometry()).boundingRect();
-    return QRect((viewRect.x() - mapRect.x()) / mapRect.width() * mImageRect.width() + mImageRect.x(),
-                 (viewRect.y() - mapRect.y()) / mapRect.height() * mImageRect.height() + mImageRect.y(),
-                 viewRect.width() / mapRect.width() * mImageRect.width(),
-                 viewRect.height() / mapRect.height() * mImageRect.height());
+    const QRectF viewRect = mapView->viewRect();
+    const QRectF ratioRect = QRectF((viewRect.x() - mapRect.x()) / mapRect.width(),
+                                    (viewRect.y() - mapRect.y()) / mapRect.height(),
+                                    viewRect.width() / mapRect.width(),
+                                    viewRect.height() / mapRect.height());
+
+    return QRect(ratioRect.x() * mImageRect.width() + mImageRect.x(),
+                 ratioRect.y() * mImageRect.height() + mImageRect.y(),
+                 ratioRect.width() * mImageRect.width(),
+                 ratioRect.height() * mImageRect.height());
 }
 
-QPointF MiniMap::mapToScene(QPoint p) const
+QPointF MiniMap::mapToScene(QPointF p) const
 {
     if (mImageRect.isEmpty())
         return QPointF();
@@ -320,3 +323,5 @@ QPointF MiniMap::mapToScene(QPoint p) const
     return QPointF(p.x() * (mapRect.width() / mImageRect.width()) + mapRect.x(),
                    p.y() * (mapRect.height() / mImageRect.height()) + mapRect.y());
 }
+
+#include "moc_minimap.cpp"

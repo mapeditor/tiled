@@ -28,16 +28,13 @@
 
 #include "tmxviewer.h"
 
-#include "hexagonalrenderer.h"
-#include "isometricrenderer.h"
 #include "map.h"
+#include "mapformat.h"
 #include "mapobject.h"
 #include "mapreader.h"
+#include "maprenderer.h"
 #include "objectgroup.h"
-#include "orthogonalrenderer.h"
-#include "staggeredrenderer.h"
 #include "tilelayer.h"
-#include "tileset.h"
 
 #include <QCoreApplication>
 #include <QDebug>
@@ -77,10 +74,8 @@ public:
 
     void paint(QPainter *p, const QStyleOptionGraphicsItem *, QWidget *) override
     {
-        const QColor &color = mMapObject->objectGroup()->color();
         p->translate(-pos());
-        mRenderer->drawMapObject(p, mMapObject,
-                                 color.isValid() ? color : Qt::darkGray);
+        mRenderer->drawMapObject(p, mMapObject, mMapObject->effectiveColors());
     }
 
 private:
@@ -199,28 +194,14 @@ bool TmxViewer::viewMap(const QString &fileName)
 
     mRenderer.reset();
 
-    MapReader reader;
-    mMap.reset(reader.readMap(fileName));
+    QString errorString;
+    mMap = Tiled::readMap(fileName, &errorString);
     if (!mMap) {
-        qWarning().noquote() << "Error:" << reader.errorString();
+        qWarning().noquote() << "Error:" << errorString;
         return false;
     }
 
-    switch (mMap->orientation()) {
-    case Map::Isometric:
-        mRenderer.reset(new IsometricRenderer(mMap.get()));
-        break;
-    case Map::Staggered:
-        mRenderer.reset(new StaggeredRenderer(mMap.get()));
-        break;
-    case Map::Hexagonal:
-        mRenderer.reset(new HexagonalRenderer(mMap.get()));
-        break;
-    case Map::Orthogonal:
-    default:
-        mRenderer.reset(new OrthogonalRenderer(mMap.get()));
-        break;
-    }
+    mRenderer = MapRenderer::create(mMap.get());
 
     mScene->addItem(new MapItem(mMap.get(), mRenderer.get()));
 

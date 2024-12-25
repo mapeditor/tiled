@@ -35,7 +35,7 @@ class ResizeMap : public QUndoCommand
 {
 public:
     ResizeMap(MapDocument *mapDocument,
-              const QSize &size,
+              QSize size,
               QUndoCommand *parent = nullptr);
 
     void undo() override;

@@ -18,13 +18,14 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TILECOLLISIONDOCK_H
-#define TILECOLLISIONDOCK_H
+#pragma once
 
 #include "clipboardmanager.h"
 #include "mapdocument.h"
 
 #include <QDockWidget>
+
+class QSplitter;
 
 namespace Tiled {
 
@@ -33,8 +34,10 @@ class Tile;
 class Tileset;
 
 class AbstractTool;
+class EditableMapObject;
 class MapScene;
 class MapView;
+class ObjectsView;
 class TilesetDocument;
 class ToolManager;
 
@@ -42,22 +45,41 @@ class TileCollisionDock : public QDockWidget
 {
     Q_OBJECT
 
+    Q_PROPERTY(QList<QObject*> selectedObjects READ selectedObjectsForScript WRITE setSelectedObjectsFromScript)
+    Q_PROPERTY(Tiled::MapView *view READ mapView CONSTANT)
+
+public:
     enum Operation {
         Cut,
         Delete
     };
 
-public:
+    enum ObjectsViewVisibility {
+        Hidden,
+        ShowRight,
+        ShowBottom
+    };
+    Q_ENUM(ObjectsViewVisibility)
+
     explicit TileCollisionDock(QWidget *parent = nullptr);
     ~TileCollisionDock() override;
+
+    void saveState();
+    void restoreState();
 
     void setTilesetDocument(TilesetDocument *tilesetDocument);
 
     MapDocument *dummyMapDocument() const;
+    MapView *mapView() const;
 
     ToolManager *toolManager() const;
 
     bool hasSelectedObjects() const;
+
+    QList<QObject*> selectedObjectsForScript() const;
+    void setSelectedObjectsFromScript(const QList<QObject*> &selectedObjects);
+
+    Q_INVOKABLE void focusObject(Tiled::EditableMapObject *object);
 
 signals:
     void dummyMapDocumentChanged(MapDocument *mapDocument);
@@ -73,36 +95,67 @@ public slots:
     void pasteInPlace();
     void paste(ClipboardManager::PasteFlags flags);
     void delete_(Operation operation = Delete);
+    void autoDetectMask();
 
 protected:
     void changeEvent(QEvent *e) override;
 
-private slots:
-    void setSelectedTool(AbstractTool*);
+private:
     void applyChanges();
+    void documentChanged(const ChangeEvent &change);
     void tileObjectGroupChanged(Tile*);
     void tilesetTileOffsetChanged(Tileset *tileset);
+    void tilesetChanged(Tileset *tileset);
 
     void selectedObjectsChanged();
     void setHasSelectedObjects(bool hasSelectedObjects);
 
-private:
+    void selectAll();
+
+    void duplicateObjects();
+    void removeObjects();
+    void moveObjectsUp();
+    void moveObjectsDown();
+    void objectProperties();
+
+    void setObjectsViewVisibility(ObjectsViewVisibility);
+
+    MapObject *clonedObjectForScriptObject(EditableMapObject *scriptObject);
+
     void retranslateUi();
 
-    Tile *mTile;
-    TilesetDocument *mTilesetDocument;
+    Tile *mTile = nullptr;
+    TilesetDocument *mTilesetDocument = nullptr;
     MapDocumentPtr mDummyMapDocument;
     MapScene *mMapScene;
     MapView *mMapView;
+    ObjectsView *mObjectsView;
+    QWidget *mObjectsWidget;
+    QSplitter *mObjectsViewSplitter;
+    QAction *mObjectsViewHiddenAction;
+    QAction *mObjectsViewShowRightAction;
+    QAction *mObjectsViewShowBottomAction;
     ToolManager *mToolManager;
-    bool mApplyingChanges;
-    bool mSynchronizing;
-    bool mHasSelectedObjects;
+    QAction *mActionAutoDetectMask;
+    QAction *mActionDuplicateObjects;
+    QAction *mActionRemoveObjects;
+    QAction *mActionMoveUp;
+    QAction *mActionMoveDown;
+    QAction *mActionObjectProperties;
+    bool mApplyingChanges = false;
+    bool mSynchronizing = false;
+    bool mHasSelectedObjects = false;
+    ObjectsViewVisibility mObjectsViewVisibility = Hidden;
 };
 
 inline MapDocument *TileCollisionDock::dummyMapDocument() const
 {
     return mDummyMapDocument.data();
+}
+
+inline MapView *TileCollisionDock::mapView() const
+{
+    return mMapView;
 }
 
 inline ToolManager *TileCollisionDock::toolManager() const
@@ -116,5 +169,3 @@ inline bool TileCollisionDock::hasSelectedObjects() const
 }
 
 } // namespace Tiled
-
-#endif // TILECOLLISIONDOCK_H

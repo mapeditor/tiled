@@ -43,11 +43,12 @@
 
 namespace Tiled {
 
-static QJsonObject toJson(const ObjectType &objectType, const QDir &fileDir)
+static QJsonObject toJson(const ObjectType &objectType, const ExportContext &context)
 {
     const QString NAME = QStringLiteral("name");
     const QString VALUE = QStringLiteral("value");
     const QString TYPE = QStringLiteral("type");
+    const QString PROPERTY_TYPE = QStringLiteral("propertytype");
     const QString COLOR = QStringLiteral("color");
     const QString PROPERTIES = QStringLiteral("properties");
 
@@ -63,15 +64,16 @@ static QJsonObject toJson(const ObjectType &objectType, const QDir &fileDir)
     while (it.hasNext()) {
         it.next();
 
-        int type = it.value().userType();
+        const auto exportValue = context.toExportValue(it.value());
 
-        const QString typeName = typeToName(type);
-        const QVariant exportValue = toExportValue(it.value(), fileDir);
+        QJsonObject propertyJson {
+            { NAME, it.key() },
+            { TYPE, exportValue.typeName },
+            { VALUE, QJsonValue::fromVariant(exportValue.value) },
+        };
 
-        QJsonObject propertyJson;
-        propertyJson.insert(NAME, it.key());
-        propertyJson.insert(TYPE, typeName);
-        propertyJson.insert(VALUE, QJsonValue::fromVariant(exportValue));
+        if (!exportValue.propertyTypeName.isEmpty())
+            propertyJson.insert(PROPERTY_TYPE, exportValue.propertyTypeName);
 
         propertiesJson.append(propertyJson);
     }
@@ -81,15 +83,15 @@ static QJsonObject toJson(const ObjectType &objectType, const QDir &fileDir)
     return json;
 }
 
-static QJsonArray toJson(const ObjectTypes &objectTypes, const QDir &fileDir)
+QJsonArray toJson(const ObjectTypes &objectTypes, const ExportContext &context)
 {
     QJsonArray json;
     for (const ObjectType &objectType : objectTypes)
-        json.append(toJson(objectType, fileDir));
+        json.append(toJson(objectType, context));
     return json;
 }
 
-static void fromJson(const QJsonObject &object, ObjectType &objectType, const QDir &fileDir)
+static void fromJson(const QJsonObject &object, ObjectType &objectType, const ExportContext &context)
 {
     objectType.name = object.value(QLatin1String("name")).toString();
 
@@ -101,28 +103,26 @@ static void fromJson(const QJsonObject &object, ObjectType &objectType, const QD
     for (const QJsonValue &property : properties) {
         const QJsonObject propertyObject = property.toObject();
         const QString name = propertyObject.value(QLatin1String("name")).toString();
-        const QString typeName = propertyObject.value(QLatin1String("type")).toString();
-        QVariant value = propertyObject.value(QLatin1String("value")).toVariant();
 
-        if (!typeName.isEmpty()) {
-            int type = nameToType(typeName);
-            value = fromExportValue(value, type, fileDir);
-        }
+        ExportValue exportValue;
+        exportValue.value = propertyObject.value(QLatin1String("value")).toVariant();
+        exportValue.typeName = propertyObject.value(QLatin1String("type")).toString();
+        exportValue.propertyTypeName = propertyObject.value(QLatin1String("propertytype")).toString();
 
-        objectType.defaultProperties.insert(name, value);
+        objectType.defaultProperties.insert(name, context.toPropertyValue(exportValue));
     }
 }
 
-static void fromJson(const QJsonArray &array, ObjectTypes &objectTypes, const QDir &fileDir)
+void fromJson(const QJsonArray &array, ObjectTypes &objectTypes, const ExportContext &context)
 {
     for (const QJsonValue &value : array) {
         objectTypes.append(ObjectType());
-        fromJson(value.toObject(), objectTypes.last(), fileDir);
+        fromJson(value.toObject(), objectTypes.last(), context);
     }
 }
 
 static void writeObjectTypesXml(QFileDevice *device,
-                                const QDir &fileDir,
+                                const ExportContext &context,
                                 const ObjectTypes &objectTypes)
 {
     QXmlStreamWriter writer(device);
@@ -131,26 +131,29 @@ static void writeObjectTypesXml(QFileDevice *device,
     writer.setAutoFormattingIndent(1);
 
     writer.writeStartDocument();
-    writer.writeStartElement(QLatin1String("objecttypes"));
+    writer.writeStartElement(QStringLiteral("objecttypes"));
 
     for (const ObjectType &objectType : objectTypes) {
-        writer.writeStartElement(QLatin1String("objecttype"));
-        writer.writeAttribute(QLatin1String("name"), objectType.name);
-        writer.writeAttribute(QLatin1String("color"), objectType.color.name());
+        writer.writeStartElement(QStringLiteral("objecttype"));
+        writer.writeAttribute(QStringLiteral("name"), objectType.name);
+        writer.writeAttribute(QStringLiteral("color"), objectType.color.name());
 
         QMapIterator<QString,QVariant> it(objectType.defaultProperties);
         while (it.hasNext()) {
             it.next();
 
-            int type = it.value().userType();
+            const auto exportValue = context.toExportValue(it.value());
 
-            writer.writeStartElement(QLatin1String("property"));
-            writer.writeAttribute(QLatin1String("name"), it.key());
-            writer.writeAttribute(QLatin1String("type"), typeToName(type));
+            writer.writeStartElement(QStringLiteral("property"));
+            writer.writeAttribute(QStringLiteral("name"), it.key());
+            writer.writeAttribute(QStringLiteral("type"), exportValue.typeName);
+
+            if (!exportValue.propertyTypeName.isEmpty())
+                writer.writeAttribute(QStringLiteral("propertytype"), exportValue.propertyTypeName);
 
             if (!it.value().isNull()) {
-                const QString value = toExportValue(it.value(), fileDir).toString();
-                writer.writeAttribute(QLatin1String("default"), value);
+                const QString value = exportValue.value.toString();
+                writer.writeAttribute(QStringLiteral("default"), value);
             }
 
             writer.writeEndElement();
@@ -165,27 +168,25 @@ static void writeObjectTypesXml(QFileDevice *device,
 
 static void readObjectTypePropertyXml(QXmlStreamReader &xml,
                                       Properties &props,
-                                      const QDir &fileDir)
+                                      const ExportContext &context)
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("property"));
 
     const QXmlStreamAttributes atts = xml.attributes();
-    QString name(atts.value(QLatin1String("name")).toString());
-    QString typeName(atts.value(QLatin1String("type")).toString());
-    QVariant defaultValue(atts.value(QLatin1String("default")).toString());
+    const QString name = atts.value(QLatin1String("name")).toString();
 
-    if (!typeName.isEmpty()) {
-        int type = nameToType(typeName);
-        defaultValue = fromExportValue(defaultValue, type, fileDir);
-    }
+    ExportValue exportValue;
+    exportValue.value = atts.value(QLatin1String("default")).toString();
+    exportValue.typeName = atts.value(QLatin1String("type")).toString();
+    exportValue.propertyTypeName = atts.value(QLatin1String("propertytype")).toString();
 
-    props.insert(name, defaultValue);
+    props.insert(name, context.toPropertyValue(exportValue));
 
     xml.skipCurrentElement();
 }
 
 static void readObjectTypesXml(QFileDevice *device,
-                               const QDir &fileDir,
+                               const ExportContext &context,
                                ObjectTypes &objectTypes,
                                QString &error)
 {
@@ -208,7 +209,7 @@ static void readObjectTypesXml(QFileDevice *device,
             Properties props;
             while (reader.readNextStartElement()) {
                 if (reader.name() == QLatin1String("property")){
-                    readObjectTypePropertyXml(reader, props, fileDir);
+                    readObjectTypePropertyXml(reader, props, context);
                 } else {
                     reader.skipCurrentElement();
                 }
@@ -253,16 +254,16 @@ bool ObjectTypesSerializer::writeObjectTypes(const QString &fileName,
         return false;
     }
 
-    const QDir fileDir(QFileInfo(fileName).path());
+    const ExportContext context(QFileInfo(fileName).path());
 
     Format format = mFormat;
     if (format == Autodetect)
         format = detectFormat(fileName);
 
     if (format == Xml) {
-        writeObjectTypesXml(file.device(), fileDir, objectTypes);
+        writeObjectTypesXml(file.device(), context, objectTypes);
     } else {
-        QJsonDocument document(toJson(objectTypes, fileDir));
+        QJsonDocument document(toJson(objectTypes, context));
         file.device()->write(document.toJson());
     }
 
@@ -275,7 +276,8 @@ bool ObjectTypesSerializer::writeObjectTypes(const QString &fileName,
 }
 
 bool ObjectTypesSerializer::readObjectTypes(const QString &fileName,
-                                            ObjectTypes &objectTypes)
+                                            ObjectTypes &objectTypes,
+                                            const ExportContext &context)
 {
     mError.clear();
 
@@ -286,14 +288,12 @@ bool ObjectTypesSerializer::readObjectTypes(const QString &fileName,
         return false;
     }
 
-    const QDir fileDir(QFileInfo(fileName).path());
-
     Format format = mFormat;
     if (format == Autodetect)
         format = detectFormat(fileName);
 
     if (format == Xml) {
-        readObjectTypesXml(&file, fileDir, objectTypes, mError);
+        readObjectTypesXml(&file, context, objectTypes, mError);
     } else {
         QJsonParseError jsonError;
         const QByteArray json = file.readAll();
@@ -301,10 +301,30 @@ bool ObjectTypesSerializer::readObjectTypes(const QString &fileName,
         if (document.isNull())
             mError = jsonError.errorString();
         else
-            fromJson(document.array(), objectTypes, fileDir);
+            fromJson(document.array(), objectTypes, context);
     }
 
     return mError.isEmpty();
+}
+
+/**
+ * Converts class property types to object types, for compatibility.
+ */
+ObjectTypes toObjectTypes(const PropertyTypes &propertyTypes)
+{
+    ObjectTypes objectTypes;
+
+    for (const PropertyType *type : std::as_const(propertyTypes)) {
+        if (!type->isClass())   // only classes supported
+            continue;
+
+        auto classType = static_cast<const ClassPropertyType*>(type);
+        objectTypes.append(ObjectType(classType->name,
+                                      classType->color,
+                                      classType->members));
+    }
+
+    return objectTypes;
 }
 
 } // namespace Tiled

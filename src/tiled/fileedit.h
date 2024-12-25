@@ -35,14 +35,25 @@ class FileEdit : public QWidget
 {
     Q_OBJECT
 
+    Q_PROPERTY(QString filter READ filter WRITE setFilter)
+    Q_PROPERTY(QUrl fileUrl READ fileUrl WRITE setFileUrl)
+    Q_PROPERTY(QString fileName READ fileName WRITE setFileName)
+    Q_PROPERTY(bool isDirectory READ isDirectory WRITE setIsDirectory)
+
 public:
     explicit FileEdit(QWidget *parent = nullptr);
 
     void setFileUrl(const QUrl &url);
     QUrl fileUrl() const;
 
+    void setFileName(const QString &fileName);
+    QString fileName() const;
+
     void setFilter(const QString &filter) { mFilter = filter; }
     QString filter() const { return mFilter; }
+
+    void setIsDirectory(bool isDirectory);
+    bool isDirectory() const;
 
 signals:
     void fileUrlChanged(const QUrl &url);
@@ -53,16 +64,27 @@ protected:
     void keyPressEvent(QKeyEvent *e) override;
     void keyReleaseEvent(QKeyEvent *e) override;
 
-private slots:
+private:
     void textEdited();
     void validate();
     void buttonClicked();
 
-private:
     QLineEdit *mLineEdit;
     QString mFilter;
+    bool mIsDirectory = false;
     QColor mOkTextColor;
     QColor mErrorTextColor;
 };
+
+
+inline void FileEdit::setIsDirectory(bool isDirectory)
+{
+    mIsDirectory = isDirectory;
+}
+
+inline bool FileEdit::isDirectory() const
+{
+    return mIsDirectory;
+}
 
 } // namespace Tiled

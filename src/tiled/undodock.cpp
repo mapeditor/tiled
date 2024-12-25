@@ -33,13 +33,13 @@ UndoDock::UndoDock(QWidget *parent)
     setObjectName(QLatin1String("undoViewDock"));
 
     mUndoView = new QUndoView(this);
-    QIcon cleanIcon(QLatin1String(":images/16x16/drive-harddisk.png"));
+    QIcon cleanIcon(QLatin1String(":images/16/drive-harddisk.png"));
     mUndoView->setCleanIcon(cleanIcon);
     mUndoView->setUniformItemSizes(true);
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(mUndoView);
 
     setWidget(widget);
@@ -68,3 +68,5 @@ void UndoDock::retranslateUi()
     setWindowTitle(tr("History"));
     mUndoView->setEmptyLabel(tr("<empty>"));
 }
+
+#include "moc_undodock.cpp"

@@ -20,35 +20,35 @@
 
 #include "shapefilltool.h"
 
-#include "addremovetileset.h"
+#include "actionmanager.h"
 #include "brushitem.h"
 #include "geometry.h"
 #include "mapdocument.h"
-#include "painttilelayer.h"
 #include "stampactions.h"
 
-#include <QApplication>
 #include <QActionGroup>
+#include <QApplication>
 #include <QToolBar>
+#include <QUndoStack>
 
 #include <memory>
 
 using namespace Tiled;
 
 ShapeFillTool::ShapeFillTool(QObject *parent)
-    : AbstractTileFillTool(tr("Shape Fill Tool"),
+    : AbstractTileFillTool("ShapeFillTool",
+                           tr("Shape Fill Tool"),
                            QIcon(QLatin1String(
-                                     ":images/22x22/rectangle-fill.png")),
-                           QKeySequence(tr("P")),
-                           nullptr,
+                                     ":images/22/rectangle-fill.png")),
+                           QKeySequence(Qt::Key_P),
                            parent)
     , mToolBehavior(Free)
     , mCurrentShape(Rect)
     , mRectFill(new QAction(this))
     , mCircleFill(new QAction(this))
 {
-    QIcon rectFillIcon(QLatin1String(":images/22x22/rectangle-fill.png"));
-    QIcon circleFillIcon(QLatin1String(":images/22x22/ellipse-fill.png"));
+    QIcon rectFillIcon(QLatin1String(":images/22/rectangle-fill.png"));
+    QIcon circleFillIcon(QLatin1String(":images/22/ellipse-fill.png"));
 
     mRectFill->setIcon(rectFillIcon);
     mRectFill->setCheckable(true);
@@ -57,26 +57,51 @@ ShapeFillTool::ShapeFillTool(QObject *parent)
     mCircleFill->setIcon(circleFillIcon);
     mCircleFill->setCheckable(true);
 
-    connect(mRectFill, &QAction::triggered,
+    ActionManager::registerAction(mRectFill, "ShapeFillTool.RectangleFill");
+    ActionManager::registerAction(mCircleFill, "ShapeFillTool.CircleFill");
+
+    connect(mRectFill, &QAction::triggered, this,
             [this] { setCurrentShape(Rect); });
-    connect(mCircleFill, &QAction::triggered,
+    connect(mCircleFill, &QAction::triggered, this,
             [this] { setCurrentShape(Circle); });
+
+    setActionsEnabled(false);
 
     ShapeFillTool::languageChanged();
 }
 
+void ShapeFillTool::activate(MapScene *scene)
+{
+    AbstractTileFillTool::activate(scene);
+    setActionsEnabled(true);
+}
+
+void ShapeFillTool::deactivate(MapScene *scene)
+{
+    setActionsEnabled(false);
+    AbstractTileFillTool::deactivate(scene);
+}
+
 void ShapeFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
+    // Right-click cancels drawing a shape
+    if (mToolBehavior == MakingShape && event->button() == Qt::RightButton) {
+        mToolBehavior = Free;
+        clearOverlay();
+        updateStatusInfo();
+        return;
+    }
+
     AbstractTileFillTool::mousePressed(event);
     if (event->isAccepted())
         return;
 
-    if (mToolBehavior != Free)
-        return;
-
-    if (event->button() == Qt::LeftButton) {
+    // Left-click starts drawing a shape
+    if (mToolBehavior == Free && event->button() == Qt::LeftButton) {
         mStartCorner = tilePosition();
         mToolBehavior = MakingShape;
+        updateFillOverlay();
+        updateStatusInfo();
     }
 }
 
@@ -98,15 +123,18 @@ void ShapeFillTool::mouseReleased(QGraphicsSceneMouseEvent *event)
             return;
 
         mapDocument()->undoStack()->beginMacro(QCoreApplication::translate("Undo Commands", "Shape Fill"));
-        mapDocument()->paintTileLayers(preview.data(), false, &mMissingTilesets);
+        mapDocument()->paintTileLayers(*preview, false, &mMissingTilesets);
         mapDocument()->undoStack()->endMacro();
 
         clearOverlay();
+        updateStatusInfo();
     }
 }
 
-void ShapeFillTool::modifiersChanged(Qt::KeyboardModifiers)
+void ShapeFillTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
+    mModifiers = modifiers;
+
     if (mToolBehavior == MakingShape)
         updateFillOverlay();
 }
@@ -114,10 +142,9 @@ void ShapeFillTool::modifiersChanged(Qt::KeyboardModifiers)
 void ShapeFillTool::languageChanged()
 {
     setName(tr("Shape Fill Tool"));
-    setShortcut(QKeySequence(tr("P")));
 
-    mRectFill->setToolTip(tr("Rectangle Fill"));
-    mCircleFill->setToolTip(tr("Circle Fill"));
+    mRectFill->setText(tr("Rectangle Fill"));
+    mCircleFill->setText(tr("Circle Fill"));
 
     mStampActions->languageChanged();
 }
@@ -134,12 +161,32 @@ void ShapeFillTool::populateToolBar(QToolBar *toolBar)
     toolBar->addActions(actionGroup->actions());
 }
 
-void ShapeFillTool::tilePositionChanged(const QPoint &tilePos)
+void ShapeFillTool::tilePositionChanged(QPoint tilePos)
 {
     if (mToolBehavior == MakingShape)
         updateFillOverlay();
     else
         AbstractTileFillTool::tilePositionChanged(tilePos);
+}
+
+void ShapeFillTool::updateStatusInfo()
+{
+    if (!isBrushVisible() || mToolBehavior != MakingShape) {
+        AbstractTileFillTool::updateStatusInfo();
+        return;
+    }
+
+    const QPoint pos = tilePosition();
+    setStatusInfo(tr("%1, %2 - %3: (%4 x %5)")
+                  .arg(pos.x()).arg(pos.y())
+                  .arg(mCurrentShape == Rect ? tr("Rectangle") : tr("Circle"))
+                  .arg(mFillBounds.width()).arg(mFillBounds.height()));
+}
+
+void ShapeFillTool::setActionsEnabled(bool enabled)
+{
+    mRectFill->setEnabled(enabled);
+    mCircleFill->setEnabled(enabled);
 }
 
 void ShapeFillTool::setCurrentShape(Shape shape)
@@ -149,29 +196,38 @@ void ShapeFillTool::setCurrentShape(Shape shape)
 
 void ShapeFillTool::updateFillOverlay()
 {
-    int width = tilePosition().x() - mStartCorner.x();
-    int height = tilePosition().y() - mStartCorner.y();
+    int dx = tilePosition().x() - mStartCorner.x();
+    int dy = tilePosition().y() - mStartCorner.y();
 
-    if (QApplication::keyboardModifiers() & Qt::ShiftModifier) {
-        int min = std::min(std::abs(width), std::abs(height));
-        width = ((width > 0) - (width < 0)) * min;
-        height = ((height > 0) - (height < 0)) * min;
+    if (mModifiers & Qt::ShiftModifier) {
+        const int min = std::min(std::abs(dx), std::abs(dy));
+        dx = ((dx > 0) - (dx < 0)) * min;
+        dy = ((dy > 0) - (dy < 0)) * min;
     }
 
-    int left = std::min(mStartCorner.x(), mStartCorner.x() + width);
-    int top = std::min(mStartCorner.y(), mStartCorner.y() + height);
+    const bool alt = mModifiers & Qt::AltModifier;
+    const QPoint p1 = alt ? mStartCorner - QPoint(dx, dy)
+                          : mStartCorner;
+    const QPoint p2 = mStartCorner + QPoint(dx, dy);
 
-    QRect boundingRect(left, top, std::abs(width), std::abs(height));
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    QRect area = QRect(p1, p2).normalized();
+    if (area.width() == 0)
+        area.adjust(-1, 0, 1, 0);
+    if (area.height() == 0)
+        area.adjust(0, -1, 0, 1);
+#else
+    QRect area = QRect::span(p1, p2);
+#endif
 
     switch (mCurrentShape) {
     case Rect:
-        updatePreview(boundingRect);
+        updatePreview(area);
         break;
     case Circle:
-        updatePreview(ellipseRegion(mStartCorner.x(),
-                                    mStartCorner.y(),
-                                    mStartCorner.x() + width,
-                                    mStartCorner.y() + height));
+        updatePreview(ellipseRegion(area));
         break;
     }
 }
+
+#include "moc_shapefilltool.cpp"

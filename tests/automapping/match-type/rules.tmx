@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.8" tiledversion="1.8.4" orientation="orthogonal" renderorder="right-down" width="7" height="4" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="2">
+ <properties>
+  <property name="NoOverlappingRules" type="bool" value="true"/>
+ </properties>
+ <tileset firstgid="1" source="../spr_test_tileset.tsx"/>
+ <tileset firstgid="17" source="../../../src/tiled/resources/automap-tiles.tsx"/>
+ <layer id="1" name="input_in" width="7" height="4">
+  <data encoding="csv">
+18,0,19,2,0,3,8,
+0,0,0,0,0,0,0,
+20,0,21,0,0,9,9,
+4,0,18,3,0,0,0
+</data>
+ </layer>
+ <layer id="6" name="input_in" width="7" height="4">
+  <data encoding="csv">
+0,0,0,0,0,17,0,
+0,0,0,0,0,0,0,
+0,0,0,0,0,17,0,
+0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="2" name="output_in" width="7" height="4">
+  <data encoding="csv">
+0,0,5,5,0,0,10,
+0,0,0,0,0,0,0,
+6,0,7,0,0,11,0,
+6,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup color="#ed333b" id="4" name="//comments"/>
+</map>

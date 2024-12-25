@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.8" tiledversion="1.8.2" orientation="isometric" renderorder="right-down" width="11" height="11" tilewidth="64" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="1">
+ <tileset firstgid="1" source="isometric_grass_and_water.tsx"/>
+ <layer id="1" name="input_set" width="11" height="11">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA2NkYGBgZIAARiS2OJq4OBKNTR4bm1iAy1xxNHFxHGK43EuqG7D5HdkORgbsbsAVDuS4gVA4MDKgxgc2fehqAbIRNfjkAQAA
+  </data>
+ </layer>
+ <layer id="4" name="output_ground" width="11" height="11">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA2NlQAA2JDY7EpuDgbaAE4nNhcTmRmLz0NgNvEhsPiQ2PxJbgMZuEEViiyGxxZHYjGSYCwBnqTqo5AEAAA==
+  </data>
+ </layer>
+</map>

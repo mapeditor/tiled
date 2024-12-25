@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>337</width>
-    <height>231</height>
+    <height>402</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -73,6 +73,13 @@
        <widget class="QCheckBox" name="drawTileGrid">
         <property name="text">
          <string>&amp;Draw tile grid</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="drawObjectLabels">
+        <property name="text">
+         <string>Draw object &amp;names</string>
         </property>
        </widget>
       </item>

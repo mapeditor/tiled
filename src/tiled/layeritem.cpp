@@ -30,7 +30,6 @@ LayerItem::LayerItem(Layer *layer, QGraphicsItem *parent)
 {
     setAcceptedMouseButtons(Qt::MouseButtons());
     setOpacity(layer->opacity());
-    setPos(layer->offset());
 }
 
 } // namespace Tiled

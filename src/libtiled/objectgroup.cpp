@@ -39,14 +39,13 @@
 
 using namespace Tiled;
 
-ObjectGroup::ObjectGroup()
-    : ObjectGroup(QString(), 0, 0)
+ObjectGroup::ObjectGroup(const QString &name)
+    : ObjectGroup(name, 0, 0)
 {
 }
 
 ObjectGroup::ObjectGroup(const QString &name, int x, int y)
     : Layer(ObjectGroupType, name, x, y)
-    , mDrawOrder(TopDownOrder)
 {
 }
 
@@ -57,13 +56,10 @@ ObjectGroup::~ObjectGroup()
 
 void ObjectGroup::addObject(MapObject *object)
 {
-    mObjects.append(object);
-    object->setObjectGroup(this);
-    if (mMap && object->id() == 0)
-        object->setId(mMap->takeNextObjectId());
+    insertObject(mObjects.size(), object);
 }
 
-void ObjectGroup::addObject(std::unique_ptr<MapObject> &&object)
+void ObjectGroup::addObject(std::unique_ptr<MapObject> object)
 {
     addObject(object.release());
 }
@@ -81,8 +77,8 @@ int ObjectGroup::removeObject(MapObject *object)
     const int index = mObjects.indexOf(object);
     Q_ASSERT(index != -1);
 
-    mObjects.removeAt(index);
-    object->setObjectGroup(nullptr);
+    removeObjectAt(index);
+
     return index;
 }
 
@@ -151,7 +147,7 @@ bool ObjectGroup::referencesTileset(const Tileset *tileset) const
 void ObjectGroup::replaceReferencesToTileset(Tileset *oldTileset,
                                              Tileset *newTileset)
 {
-    for (MapObject *object : mObjects) {
+    for (MapObject *object : std::as_const(mObjects)) {
         if (object->cell().tileset() == oldTileset) {
             Cell cell = object->cell();
             cell.setTile(newTileset, cell.tileId());
@@ -162,26 +158,25 @@ void ObjectGroup::replaceReferencesToTileset(Tileset *oldTileset,
 
 void ObjectGroup::offsetObjects(const QPointF &offset,
                                 const QRectF &bounds,
+                                bool wholeMap,
                                 bool wrapX, bool wrapY)
 {
     if (offset.isNull())
         return;
 
-    const bool boundsValid = bounds.isValid();
-
-    for (MapObject *object : mObjects) {
-        const QPointF objectCenter = object->bounds().center();
-        if (boundsValid && !bounds.contains(objectCenter))
+    for (MapObject *object : std::as_const(mObjects)) {
+        const QPointF objectCenter = object->boundsUseTile().center();
+        if (!wholeMap && !bounds.contains(objectCenter))
             continue;
 
         QPointF newCenter(objectCenter + offset);
 
-        if (wrapX && boundsValid) {
+        if (wrapX && bounds.width() > 0) {
             qreal nx = std::fmod(newCenter.x() - bounds.left(), bounds.width());
             newCenter.setX(bounds.left() + (nx < 0 ? bounds.width() + nx : nx));
         }
 
-        if (wrapY && boundsValid) {
+        if (wrapY && bounds.height() > 0) {
             qreal ny = std::fmod(newCenter.y() - bounds.top(), bounds.height());
             newCenter.setY(bounds.top() + (ny < 0 ? bounds.height() + ny : ny));
         }
@@ -218,17 +213,6 @@ ObjectGroup *ObjectGroup::clone() const
 }
 
 /**
- * Resets the ids of all objects to 0. Mostly used when new ids should be
- * assigned after the object group has been cloned.
- */
-void ObjectGroup::resetObjectIds()
-{
-    const QList<MapObject*> &objects = mObjects;
-    for (MapObject *object : objects)
-        object->resetId();
-}
-
-/**
  * Returns the highest object id in use by this object group, or 0 if no object
  * with assigned id exists.
  */
@@ -256,11 +240,11 @@ QString Tiled::drawOrderToString(ObjectGroup::DrawOrder drawOrder)
     switch (drawOrder) {
     default:
     case ObjectGroup::UnknownOrder:
-        return QLatin1String("unknown");
+        return QStringLiteral("unknown");
     case ObjectGroup::TopDownOrder:
-        return QLatin1String("topdown");
+        return QStringLiteral("topdown");
     case ObjectGroup::IndexOrder:
-        return QLatin1String("index");
+        return QStringLiteral("index");
     }
 }
 

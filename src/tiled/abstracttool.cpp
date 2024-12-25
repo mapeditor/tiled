@@ -28,16 +28,41 @@
 
 namespace Tiled {
 
-AbstractTool::AbstractTool(const QString &name, const QIcon &icon,
-                           const QKeySequence &shortcut, QObject *parent)
+AbstractTool::AbstractTool(Id id,
+                           const QString &name,
+                           const QIcon &icon,
+                           const QKeySequence &shortcut,
+                           QObject *parent)
     : QObject(parent)
     , mName(name)
     , mIcon(icon)
     , mShortcut(shortcut)
-    , mEnabled(false)
-    , mToolManager(nullptr)
-    , mMapDocument(nullptr)
+    , mId(id)
 {
+}
+
+void AbstractTool::setName(const QString &name)
+{
+    if (mName == name)
+        return;
+
+    mName = name;
+    emit changed();
+}
+
+void AbstractTool::setIcon(const QIcon &icon)
+{
+    mIcon = icon;
+    emit changed();
+}
+
+void AbstractTool::setShortcut(const QKeySequence &shortcut)
+{
+    if (mShortcut == shortcut)
+        return;
+
+    mShortcut = shortcut;
+    emit changed();
 }
 
 /**
@@ -71,6 +96,24 @@ void AbstractTool::setEnabled(bool enabled)
     emit enabledChanged(enabled);
 }
 
+void AbstractTool::setVisible(bool visible)
+{
+    if (mVisible == visible)
+        return;
+
+    mVisible = visible;
+    emit visibleChanged(visible);
+}
+
+void AbstractTool::setTargetLayerType(int targetLayerType)
+{
+    if (mTargetLayerType == targetLayerType)
+        return;
+
+    mTargetLayerType = targetLayerType;
+    updateEnabledState();
+}
+
 Tile *AbstractTool::tile() const
 {
     return toolManager()->tile();
@@ -79,6 +122,16 @@ Tile *AbstractTool::tile() const
 ObjectTemplate *AbstractTool::objectTemplate() const
 {
     return toolManager()->objectTemplate();
+}
+
+void AbstractTool::activate(MapScene *scene)
+{
+    mMapScene = scene;
+}
+
+void AbstractTool::deactivate(MapScene *)
+{
+    mMapScene = nullptr;
 }
 
 void AbstractTool::keyPressed(QKeyEvent *event)
@@ -97,10 +150,8 @@ void AbstractTool::setMapDocument(MapDocument *mapDocument)
         return;
 
     if (mMapDocument) {
-        disconnect(mMapDocument, &MapDocument::layerChanged,
-                   this, &AbstractTool::updateEnabledState);
-        disconnect(mMapDocument, &MapDocument::currentLayerChanged,
-                   this, &AbstractTool::updateEnabledState);
+        disconnect(mMapDocument, &MapDocument::changed,
+                   this, &AbstractTool::changeEvent);
     }
 
     MapDocument *oldDocument = mMapDocument;
@@ -108,17 +159,36 @@ void AbstractTool::setMapDocument(MapDocument *mapDocument)
     mapDocumentChanged(oldDocument, mMapDocument);
 
     if (mMapDocument) {
-        connect(mMapDocument, &MapDocument::layerChanged,
-                this, &AbstractTool::updateEnabledState);
-        connect(mMapDocument, &MapDocument::currentLayerChanged,
-                this, &AbstractTool::updateEnabledState);
+        connect(mMapDocument, &MapDocument::changed,
+                this, &AbstractTool::changeEvent);
     }
-    updateEnabledState();
+}
+
+void AbstractTool::changeEvent(const ChangeEvent &event)
+{
+    switch (event.type) {
+    case ChangeEvent::LayerChanged:
+        // Enabled state is not actually affected by layer properties, but
+        // this includes updating brush visibility...
+        updateEnabledState();
+        break;
+    default:
+        break;
+    }
 }
 
 void AbstractTool::updateEnabledState()
 {
-    setEnabled(mMapDocument != nullptr);
+    // By default, no tool is enabled when there is no map selected
+    bool enabled = mMapDocument != nullptr;
+
+    // If a target layer type is set, check if the current layer matches
+    if (mTargetLayerType) {
+        auto layer = currentLayer();
+        enabled &= layer && layer->layerType() & mTargetLayerType;
+    }
+
+    setEnabled(enabled);
 }
 
 Layer *AbstractTool::currentLayer() const
@@ -127,3 +197,5 @@ Layer *AbstractTool::currentLayer() const
 }
 
 } // namespace Tiled
+
+#include "moc_abstracttool.cpp"

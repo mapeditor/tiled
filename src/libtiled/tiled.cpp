@@ -1,6 +1,6 @@
 /*
  * tiled.cpp
- * Copyright 2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * Copyright 2017-2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -21,38 +21,79 @@
 #include "tiled.h"
 
 #include <QDir>
+#include <QImageReader>
 
-QPointF Tiled::alignmentOffset(const QRectF &r, Tiled::Alignment alignment)
+QPointF Tiled::alignmentOffset(const QSizeF &size, Alignment alignment)
 {
     switch (alignment) {
+    case Unspecified:   break;
     case TopLeft:       break;
-    case Top:           return QPointF(r.width() / 2, 0);
-    case TopRight:      return QPointF(r.width(), 0);
-    case Left:          return QPointF(0, r.height() / 2);
-    case Center:        return QPointF(r.width() / 2, r.height() / 2);
-    case Right:         return QPointF(r.width(), r.height() / 2);
-    case BottomLeft:    return QPointF(0, r.height());
-    case Bottom:        return QPointF(r.width() / 2, r.height());
-    case BottomRight:   return QPointF(r.width(), r.height());
+    case Top:           return QPointF(size.width() / 2, 0);
+    case TopRight:      return QPointF(size.width(), 0);
+    case Left:          return QPointF(0, size.height() / 2);
+    case Center:        return QPointF(size.width() / 2, size.height() / 2);
+    case Right:         return QPointF(size.width(), size.height() / 2);
+    case BottomLeft:    return QPointF(0, size.height());
+    case Bottom:        return QPointF(size.width() / 2, size.height());
+    case BottomRight:   return QPointF(size.width(), size.height());
     }
     return QPointF();
 }
 
-QString Tiled::toFileReference(const QUrl &url, const QDir &dir)
+Tiled::Alignment Tiled::flipAlignment(Alignment alignment, FlipDirection direction)
+{
+    switch (direction) {
+    case FlipHorizontally:
+        switch (alignment) {
+        case Unspecified:   Q_ASSERT(false); break;
+        case TopLeft:       return TopRight;
+        case Top:           return Top;
+        case TopRight:      return TopLeft;
+        case Left:          return Right;
+        case Center:        return Center;
+        case Right:         return Left;
+        case BottomLeft:    return BottomRight;
+        case Bottom:        return Bottom;
+        case BottomRight:   return BottomLeft;
+        }
+        break;
+    case FlipVertically:
+        switch (alignment) {
+        case Unspecified:   Q_ASSERT(false); break;
+        case TopLeft:       return BottomLeft;
+        case Top:           return Bottom;
+        case TopRight:      return BottomRight;
+        case Left:          return Left;
+        case Center:        return Center;
+        case Right:         return Right;
+        case BottomLeft:    return TopLeft;
+        case Bottom:        return Top;
+        case BottomRight:   return TopRight;
+        }
+        break;
+    }
+    return alignment;
+}
+
+QString Tiled::toFileReference(const QUrl &url, const QString &path)
 {
     if (url.isEmpty())
         return QString();
 
     if (url.isLocalFile()) {
-        // Local files are referred to by relative path
         QString localFile = url.toLocalFile();
-        return dir.relativeFilePath(localFile);
+
+        if (path.isEmpty())
+            return localFile;
+
+        // Local files can be referred to by relative path
+        return QDir(path).relativeFilePath(localFile);
     }
 
     return url.toString();
 }
 
-QUrl Tiled::toUrl(const QString &filePathOrUrl, const QDir &dir)
+QUrl Tiled::toUrl(const QString &filePathOrUrl, const QString &path)
 {
     if (filePathOrUrl.isEmpty())
         return QUrl();
@@ -64,12 +105,16 @@ QUrl Tiled::toUrl(const QString &filePathOrUrl, const QDir &dir)
             return url;
     }
 
-    // Resolve possible relative file reference
-    QString absolutePath = QDir::cleanPath(dir.filePath(filePathOrUrl));
-    if (absolutePath.startsWith(QLatin1String(":/")))
-        return QUrl(QLatin1String("qrc") + absolutePath);
+    QString filePath = filePathOrUrl;
 
-    return QUrl::fromLocalFile(absolutePath);
+    // Resolve possible relative file reference
+    if (!path.isEmpty())
+        filePath = QDir::cleanPath(QDir(path).filePath(filePath));
+
+    if (filePath.startsWith(QLatin1String(":/")))
+        return QUrl(QLatin1String("qrc") + filePath);
+
+    return QUrl::fromLocalFile(filePath);
 }
 
 /*
@@ -84,8 +129,11 @@ QString Tiled::urlToLocalFileOrQrc(const QUrl &url)
         return QString();
     }
 
+    if (url.scheme() == QLatin1String("ext"))
+        return url.toString();
+
 #if defined(Q_OS_ANDROID)
-    else if (url.scheme().compare(QLatin1String("assets"), Qt::CaseInsensitive) == 0) {
+    if (url.scheme().compare(QLatin1String("assets"), Qt::CaseInsensitive) == 0) {
         if (url.authority().isEmpty())
             return url.toString();
         return QString();
@@ -93,4 +141,93 @@ QString Tiled::urlToLocalFileOrQrc(const QUrl &url)
 #endif
 
     return url.toLocalFile();
+}
+
+QString Tiled::filePathRelativeTo(const QDir &dir, const QString &filePath)
+{
+    // We can't refer to files loaded from extensions or resources using relative paths
+    if (filePath.startsWith(QLatin1String("ext:")) ||
+            filePath.startsWith(QLatin1String(":"))) {
+        return filePath;
+    }
+
+    return dir.relativeFilePath(filePath);
+}
+
+QString Tiled::alignmentToString(Alignment alignment)
+{
+    switch (alignment) {
+    case Unspecified:
+        return QStringLiteral("unspecified");
+    case TopLeft:
+        return QStringLiteral("topleft");
+    case Top:
+        return QStringLiteral("top");
+    case TopRight:
+        return QStringLiteral("topright");
+    case Left:
+        return QStringLiteral("left");
+    case Center:
+        return QStringLiteral("center");
+    case Right:
+        return QStringLiteral("right");
+    case BottomLeft:
+        return QStringLiteral("bottomleft");
+    case Bottom:
+        return QStringLiteral("bottom");
+    case BottomRight:
+        return QStringLiteral("bottomright");
+    }
+    return QString();
+}
+
+Tiled::Alignment Tiled::alignmentFromString(const QString &string)
+{
+    if (string == QLatin1String("unspecified"))
+        return Unspecified;
+    else if (string == QLatin1String("topleft"))
+        return TopLeft;
+    else if (string == QLatin1String("top"))
+        return Top;
+    else if (string == QLatin1String("topright"))
+        return TopRight;
+    else if (string == QLatin1String("left"))
+        return Left;
+    else if (string == QLatin1String("center"))
+        return Center;
+    else if (string == QLatin1String("right"))
+        return Right;
+    else if (string == QLatin1String("bottomleft"))
+        return BottomLeft;
+    else if (string == QLatin1String("bottom"))
+        return Bottom;
+    else if (string == QLatin1String("bottomright"))
+        return BottomRight;
+
+    return Unspecified;
+}
+
+Tiled::CompatibilityVersion Tiled::versionFromString(const QString &string)
+{
+    if (string == QLatin1String("1.8"))
+        return Tiled_1_8;
+    else if (string == QLatin1String("1.9"))
+        return Tiled_1_9;
+    else if (string == QLatin1String("1.10"))
+        return Tiled_1_10;
+    else if (string == QLatin1String("latest"))
+        return Tiled_Latest;
+    return UnknownVersion;
+}
+
+void Tiled::increaseImageAllocationLimit(int mbLimit)
+{
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    // Adjust the allocation limit to accommodate larger images
+    const int currentLimit = QImageReader::allocationLimit();
+    if (currentLimit && currentLimit < mbLimit)
+        QImageReader::setAllocationLimit(mbLimit);
+#else
+    Q_UNUSED(mbLimit);
+#endif
 }

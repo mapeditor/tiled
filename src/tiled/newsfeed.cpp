@@ -25,43 +25,54 @@
 #include <QDebug>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
-#include <QSettings>
 #include <QTimerEvent>
 #include <QXmlStreamReader>
 
+#ifdef TILED_SNAPSHOT
+static const char feedUrl[] = "https://thorbjorn.itch.io/tiled/devlog.rss";
+#else
 static const char feedUrl[] = "https://www.mapeditor.org/rss.xml";
+#endif
 
 namespace Tiled {
 
-NewsFeed::NewsFeed()
-    : mNetworkAccessManager(new QNetworkAccessManager(this))
+NewsFeed::NewsFeed(QObject *parent)
+    : QObject(parent)
+    , mNetworkAccessManager(new QNetworkAccessManager(this))
 {
     connect(mNetworkAccessManager, &QNetworkAccessManager::finished,
             this, &NewsFeed::finished);
 
-    auto settings = Preferences::instance()->settings();
-    mLastRead = settings->value(QLatin1String("Install/NewsFeedLastRead")).toDateTime();
+    const auto preferences = Preferences::instance();
+    mLastRead = preferences->get<QDateTime>("Install/NewsFeedLastRead");
 
-    refresh();
-
-    // Refresh the news feed once every 4 hours
-    auto second = 1000;
-    auto minute = 60 * second;
-    auto hour = 60 * minute;
-    mRefreshTimer.start(4 * hour, Qt::VeryCoarseTimer, this);
+    setEnabled(preferences->displayNews());
+    connect(preferences, &Preferences::displayNewsChanged, this, &NewsFeed::setEnabled);
 }
 
-NewsFeed &NewsFeed::instance()
+void NewsFeed::setEnabled(bool enabled)
 {
-    static NewsFeed newsFeed;
-    return newsFeed;
+    if (mRefreshTimer.isActive() == enabled)
+        return;
+
+    if (enabled) {
+        refresh();
+
+        // Refresh the news feed once every 4 hours
+        auto second = 1000;
+        auto minute = 60 * second;
+        auto hour = 60 * minute;
+        mRefreshTimer.start(4 * hour, Qt::VeryCoarseTimer, this);
+    } else {
+        mRefreshTimer.stop();
+    }
 }
 
 /**
  * Requests the feed from the network.
  *
- * Normally does not need to be called. The feed is refreshed automatically on
- * startup and every 4 hours.
+ * Can be called to request a news feed update when automatic refresh
+ * has been disabled.
  */
 void NewsFeed::refresh()
 {
@@ -167,11 +178,13 @@ void NewsFeed::setLastRead(const QDateTime &dateTime)
 {
     mLastRead = dateTime;
 
-    auto settings = Preferences::instance()->settings();
-    settings->setValue(QLatin1String("Install/NewsFeedLastRead"),
-                       mLastRead.toString(Qt::ISODate));
+    auto preferences = Preferences::instance();
+    preferences->setValue(QLatin1String("Install/NewsFeedLastRead"),
+                          mLastRead.toString(Qt::ISODate));
 
     emit refreshed();
 }
 
 } // namespace Tiled
+
+#include "moc_newsfeed.cpp"

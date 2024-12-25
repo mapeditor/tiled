@@ -37,18 +37,20 @@
 
 namespace Tiled {
 
-Layer::Layer(TypeFlag type, const QString &name, int x, int y) :
-    Object(LayerType),
-    mName(name),
-    mId(0),
-    mLayerType(type),
-    mX(x),
-    mY(y),
-    mOpacity(1.0),
-    mVisible(true),
-    mMap(nullptr),
-    mParentLayer(nullptr),
-    mLocked(false)
+static QColor multiplyColors(QColor color1, QColor color2)
+{
+    return QColor::fromRgbF(color1.redF() * color2.redF(),
+                            color1.greenF() * color2.greenF(),
+                            color1.blueF() * color2.blueF(),
+                            color1.alphaF() * color2.alphaF());
+}
+
+Layer::Layer(TypeFlag type, const QString &name, int x, int y)
+    : Object(LayerType)
+    , mName(name)
+    , mLayerType(type)
+    , mX(x)
+    , mY(y)
 {
 }
 
@@ -63,6 +65,23 @@ qreal Layer::effectiveOpacity() const
     while ((layer = layer->parentLayer()))
         opacity *= layer->opacity();
     return opacity;
+}
+
+/**
+ * Returns the effective tint color, which is the tint color multiplied by the
+ * tint color of any parent layers.
+ */
+QColor Layer::effectiveTintColor() const
+{
+    auto tintColor = mTintColor.isValid() ? mTintColor
+                                          : QColor(255, 255, 255, 255);
+
+    const Layer *layer = this;
+    while ((layer = layer->parentLayer()))
+        if (layer->tintColor().isValid())
+            tintColor = multiplyColors(tintColor, layer->tintColor());
+
+    return tintColor;
 }
 
 /**
@@ -148,6 +167,17 @@ QPointF Layer::totalOffset() const
     return offset;
 }
 
+QPointF Layer::effectiveParallaxFactor() const
+{
+    auto factor = mParallaxFactor;
+    const Layer *layer = this;
+    while ((layer = layer->parentLayer())) {
+        factor.rx() *= layer->parallaxFactor().rx();
+        factor.ry() *= layer->parallaxFactor().ry();
+    }
+    return factor;
+}
+
 /**
  * Returns whether this layer can be merged down onto the layer below.
  */
@@ -165,7 +195,7 @@ bool Layer::canMergeDown() const
  * A helper function for initializing the members of the given instance to
  * those of this layer. Used by subclasses when cloning.
  *
- * Layer name, position and size are not cloned, since they are assumed to have
+ * Layer name, position and size are not copied, since they are assumed to have
  * already been passed to the constructor. Also, map ownership is not cloned,
  * since the clone is not added to the map.
  *
@@ -174,10 +204,14 @@ bool Layer::canMergeDown() const
  */
 Layer *Layer::initializeClone(Layer *clone) const
 {
-    // mId is not copied, will be assigned when layer is added to a map
+    clone->setClassName(className());
+    clone->mId = mId;
     clone->mOffset = mOffset;
+    clone->mParallaxFactor = mParallaxFactor;
     clone->mOpacity = mOpacity;
+    clone->mTintColor = mTintColor;
     clone->mVisible = mVisible;
+    clone->mLocked = mLocked;
     clone->setProperties(properties());
     return clone;
 }
@@ -202,6 +236,14 @@ GroupLayer *Layer::asGroupLayer()
     return isGroupLayer() ? static_cast<GroupLayer*>(this) : nullptr;
 }
 
+
+void LayerIterator::setCurrentLayer(Layer *layer)
+{
+    Q_ASSERT(!layer || layer->map() == mMap);
+
+    mCurrentLayer = layer;
+    mSiblingIndex = layer ? layer->siblingIndex() : -1;
+}
 
 Layer *LayerIterator::next()
 {
@@ -324,7 +366,7 @@ bool LayerIterator::operator==(const LayerIterator &other) const
  * Returns the global layer index for the given \a layer. Obtained by iterating
  * the layer's map while incrementing the index until layer is found.
  */
-int globalIndex(Layer *layer)
+int globalIndex(const Layer *layer)
 {
     if (!layer)
         return -1;

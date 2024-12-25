@@ -28,9 +28,14 @@
 
 #pragma once
 
+#include "mapobject.h"
 #include "tiled_global.h"
 
+#include <functional>
+#include <memory>
+
 #include <QPainter>
+#include <QPainterPath>
 
 namespace Tiled {
 
@@ -43,7 +48,9 @@ class TileLayer;
 class ImageLayer;
 
 enum RenderFlag {
-    ShowTileObjectOutlines = 0x1
+    ShowTileObjectOutlines = 0x1,
+    ShowTileCollisionShapes = 0x2,
+    ShowTileAnimations = 0x4,
 };
 
 Q_DECLARE_FLAGS(RenderFlags, RenderFlag)
@@ -56,11 +63,13 @@ Q_DECLARE_FLAGS(RenderFlags, RenderFlag)
 class TILEDSHARED_EXPORT MapRenderer
 {
 public:
+    enum CellType {
+        OrthogonalCells,
+        HexagonalCells
+    };
+
     MapRenderer(const Map *map)
         : mMap(map)
-        , mFlags(nullptr)
-        , mObjectLineWidth(2)
-        , mPainterScale(1)
     {}
 
     virtual ~MapRenderer();
@@ -74,7 +83,7 @@ public:
      * Returns the bounding rectangle in pixels of the map associated with
      * this renderer.
      */
-    virtual QRect mapBoundingRect() const = 0;
+    QRect mapBoundingRect() const;
 
     /**
      * Returns the bounding rectangle in pixels of the given \a rect given in
@@ -99,23 +108,40 @@ public:
 
     /**
      * Returns the shape in pixels of the given \a object. This is used for
-     * mouse interaction and should match the rendered object as closely as
-     * possible.
+     * rendering shape objects.
      */
     virtual QPainterPath shape(const MapObject *object) const = 0;
 
     /**
-     * Returns the shape of the given point \a object, conforming to the
-     * shape() method requirements.
+     * Returns the interaction shape in pixels of the given \a object. This is
+     * used for mouse interaction and should match the rendered object as
+     * closely as possible.
      */
-    QPainterPath pointShape(const MapObject *object) const;
+    virtual QPainterPath interactionShape(const MapObject *object) const = 0;
+
+    /**
+     * Returns the shape of a point object at the given \a position, conforming
+     * to the shape() method requirements.
+     */
+    QPainterPath pointShape(const QPointF &position) const;
+
+    /**
+     * Returns the interaction shape of the given point \a object, conforming
+     * to the interactionShape() method requirements.
+     */
+    QPainterPath pointInteractionShape(const MapObject *object) const;
 
     /**
      * Draws the tile grid in the specified \a rect using the given
      * \a painter.
      */
     virtual void drawGrid(QPainter *painter, const QRectF &rect,
-                          QColor gridColor = Qt::black) const = 0;
+                          QColor gridColor = Qt::black, QSize gridMajor = QSize()) const = 0;
+
+    virtual QPointF snapToGrid(const QPointF &pixelCoords,
+                               int subdivisions = 1) const;
+
+    using RenderTileCallback = std::function<void (QPoint, const QPointF &)>;
 
     /**
      * Draws the given \a layer using the given \a painter.
@@ -123,8 +149,22 @@ public:
      * Optionally, you can pass in the \a exposed rect (of pixels), so that
      * only tiles that can be visible in this area will be drawn.
      */
-    virtual void drawTileLayer(QPainter *painter, const TileLayer *layer,
-                               const QRectF &exposed = QRectF()) const = 0;
+    void drawTileLayer(QPainter *painter, const TileLayer *layer,
+                       const QRectF &exposed = QRectF()) const;
+
+    /**
+     * Calls the given \a renderTile callback for each tile in the given
+     * \a exposed rectangle.
+     *
+     * The callback takes two arguments:
+     *
+     * \list
+     * \li \c tilePos - The tile position of the cell being rendered.
+     * \li \c screenPos - The screen position of the cell being rendered.
+     * \endlist
+     */
+    virtual void drawTileLayer(const RenderTileCallback &renderTile,
+                               const QRectF &exposed) const = 0;
 
     /**
      * Draws the tile selection given by \a region in the specified \a color.
@@ -142,7 +182,7 @@ public:
      */
     virtual void drawMapObject(QPainter *painter,
                                const MapObject *object,
-                               const QColor &color) const = 0;
+                               const MapObjectColors &colors) const = 0;
 
     /**
      * Draws the a pin in the given \a color using the \a painter.
@@ -154,7 +194,7 @@ public:
      */
     void drawImageLayer(QPainter *painter,
                         const ImageLayer *imageLayer,
-                        const QRectF &exposed = QRectF());
+                        const QRectF &exposed = QRectF()) const;
 
     /**
      * Returns the tile coordinates matching the given pixel position.
@@ -231,17 +271,26 @@ public:
     RenderFlags flags() const { return mFlags; }
     void setFlags(RenderFlags flags) { mFlags = flags; }
 
+    CellType cellType() const { return mCellType; }
+
     static QPolygonF lineToPolygon(const QPointF &start, const QPointF &end);
 
+    static std::unique_ptr<MapRenderer> create(const Map *map);
+
 protected:
-    QPen makeGridPen(const QPaintDevice *device, QColor color) const;
+    void setupGridPens(const QPaintDevice *device, QColor color,
+                       QPen &gridPen, QPen &majorGridPen, int gridSize,
+                       QSize gridMajor) const;
+
+    void setCellType(CellType cellType) { mCellType = cellType; }
 
 private:
     const Map *mMap;
 
-    RenderFlags mFlags;
-    qreal mObjectLineWidth;
-    qreal mPainterScale;
+    RenderFlags mFlags = ShowTileAnimations;
+    CellType mCellType = OrthogonalCells;
+    qreal mObjectLineWidth = 2;
+    qreal mPainterScale = 1;
 };
 
 inline const Map *MapRenderer::map() const
@@ -277,28 +326,28 @@ class CellRenderer
 {
 public:
     enum Origin {
-        BottomLeft,
-        BottomCenter
+        TopLeft,
+        BottomLeft
     };
 
-    enum CellType {
-        OrthogonalCells,
-        HexagonalCells
-    };
-
-    explicit CellRenderer(QPainter *painter, CellType cellType = OrthogonalCells);
+    explicit CellRenderer(QPainter *painter, const MapRenderer *renderer,
+                          const QColor &tintColor);
 
     ~CellRenderer() { flush(); }
 
-    void render(const Cell &cell, const QPointF &pos, const QSizeF &size, Origin origin);
+    void render(const Cell &cell, const QPointF &pos, const QSizeF &size,
+                Origin origin = TopLeft);
     void flush();
 
 private:
+    void paintTileCollisionShapes();
+
     QPainter * const mPainter;
+    const MapRenderer * const mRenderer;
     const Tile *mTile;
     QVector<QPainter::PixmapFragment> mFragments;
     const bool mIsOpenGL;
-    const CellType mCellType;
+    const QColor mTintColor;
 };
 
 } // namespace Tiled

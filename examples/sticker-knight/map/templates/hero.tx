@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+ <tileset firstgid="1" source="../objs.tsx"/>
+ <object name="hero" type="hero" gid="22" width="128" height="160"/>
+</template>

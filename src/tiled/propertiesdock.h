@@ -21,17 +21,12 @@
 #pragma once
 
 #include <QDockWidget>
-#include <QVariant>
-
-class QtBrowserItem;
 
 namespace Tiled {
 
-class Object;
-class Tileset;
-
 class Document;
-class PropertyBrowser;
+
+class PropertiesWidget;
 
 class PropertiesDock : public QDockWidget
 {
@@ -46,34 +41,16 @@ public:
     void setDocument(Document *document);
 
 public slots:
-    void bringToFront();
+    void selectCustomProperty(const QString &name);
 
 protected:
     bool event(QEvent *event) override;
-    void keyPressEvent(QKeyEvent *event) override;
-
-private slots:
-    void currentObjectChanged(Object *object);
-    void updateActions();
-
-    void cutProperties();
-    bool copyProperties();
-    void pasteProperties();
-    void openAddPropertyDialog();
-    void addProperty(const QString &name, const QVariant &value);
-    void removeProperties();
-    void renameProperty();
-    void renamePropertyTo(const QString &name);
-    void showContextMenu(const QPoint& pos);
 
 private:
+    void bringToFront();
     void retranslateUi();
 
-    Document *mDocument;
-    PropertyBrowser *mPropertyBrowser;
-    QAction *mActionAddProperty;
-    QAction *mActionRemoveProperty;
-    QAction *mActionRenameProperty;
+    PropertiesWidget *mPropertiesWidget;
 };
 
 } // namespace Tiled

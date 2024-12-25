@@ -20,12 +20,20 @@
 
 #pragma once
 
+#include "preferences.h"
+
 #include <QGraphicsView>
 #include <QPinchGesture>
 
 namespace Tiled {
 
+class Layer;
+class MapObject;
+
+class MapDocument;
 class MapScene;
+class PannableViewHelper;
+class TileAnimationDriver;
 class Zoomable;
 
 /**
@@ -39,21 +47,14 @@ class MapView : public QGraphicsView
 {
     Q_OBJECT
 
-public:
-    /**
-     * Using Qt::WA_StaticContents gives a performance boost in certain
-     * resizing operations. There is however a problem with it when used in
-     * child windows, so this option allows it to be turned off in that case.
-     *
-     * See https://codereview.qt-project.org/#change,74595 for my attempt at
-     * fixing the problem in Qt.
-     */
-    enum Mode {
-        StaticContents,
-        NoStaticContents,
-    };
+    Q_PROPERTY(qreal scale READ scale WRITE setScale)
+    Q_PROPERTY(QPointF center READ viewCenter WRITE forceCenterOn)
 
-    MapView(QWidget *parent = nullptr, Mode mode = StaticContents);
+public:
+    static Preference<bool> ourAutoScrollingEnabled;
+    static Preference<bool> ourSmoothScrollingEnabled;
+
+    MapView(QWidget *parent = nullptr);
     ~MapView() override;
 
     void setScene(MapScene *scene);
@@ -61,46 +62,100 @@ public:
 
     Zoomable *zoomable() const { return mZoomable; }
 
-    bool handScrolling() const { return mHandScrolling; }
-    void setHandScrolling(bool handScrolling);
+    qreal scale() const;
+    void setScale(qreal scale);
 
-    void forceCenterOn(const QPointF &pos);
+    const QRectF &viewRect() const;
+    QPointF viewCenter() const;
+
+    void fitMapInView();
+
+    void setToolCursor(const QCursor &cursor);
+    void unsetToolCursor();
+
+    using QGraphicsView::centerOn;
+    Q_INVOKABLE void centerOn(qreal x, qreal y) { forceCenterOn(QPointF(x, y)); }
+
+    void forceCenterOn(QPointF pos);
+    void forceCenterOn(QPointF pos, const Layer &layer);
+
+    void setUseOpenGL(bool useOpenGL);
 
 protected:
     bool event(QEvent *event) override;
 
+    void paintEvent(QPaintEvent *event) override;
     void hideEvent(QHideEvent *) override;
     void resizeEvent(QResizeEvent *event) override;
 
     void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
 
     void wheelEvent(QWheelEvent *event) override;
 
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
 
     void focusInEvent(QFocusEvent *event) override;
 
     void handlePinchGesture(QPinchGesture *pinch);
 
-    void adjustCenterFromMousePosition(QPoint &mousePos);
+    void adjustCenterFromMousePosition(QPoint mousePos);
 
 signals:
     void focused();
-
-private slots:
-    void adjustScale(qreal scale);
-    void setUseOpenGL(bool useOpenGL);
-    void updateSceneRect(const QRectF &sceneRect);
-    void updateSceneRect(const QRectF &sceneRect, const QTransform &transform);
+    void viewRectChanged();
 
 private:
+    void adjustScale(qreal scale);
+    void updateSceneRect(const QRectF &sceneRect);
+    void updateSceneRect(const QRectF &sceneRect, const QTransform &transform);
+    void updateViewRect();
+    void focusMapObject(MapObject *mapObject);
+    void updateCursor();
+
+    enum PanDirectionFlag {
+        Left    = 0x1,
+        Right   = 0x2,
+        Up      = 0x4,
+        Down    = 0x8,
+    };
+    Q_DECLARE_FLAGS(PanDirections, PanDirectionFlag)
+
+    void setPanDirections(PanDirections directions);
+    void updatePanningDriverState();
+    void updatePanning(int deltaTime);
+
+    void scrollBy(QPoint distance);
+
+    void setMapDocument(MapDocument *mapDocument);
+
+    MapDocument *mMapDocument = nullptr;
     QPoint mLastMousePos;
+    QPoint mScrollStartPos;
     QPointF mLastMouseScenePos;
-    bool mHandScrolling;
-    Mode mMode;
+    PannableViewHelper *mPannableViewHelper;
+    std::unique_ptr<QCursor> mToolCursor;
+    bool mViewInitialized = false;
+    bool mHasInitialCenterPos = false;
+    QPointF mInitialCenterPos;
+    QRectF mViewRect;
     Zoomable *mZoomable;
+
+    PanDirections mPanDirections;
+    TileAnimationDriver *mPanningDriver;
 };
+
+/**
+ * Returns the part of the scene that is visible in this MapView.
+ */
+inline const QRectF &MapView::viewRect() const
+{
+    return mViewRect;
+}
+
+inline QPointF MapView::viewCenter() const
+{
+    return mViewRect.center();
+}
 
 } // namespace Tiled

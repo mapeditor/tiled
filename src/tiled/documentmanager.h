@@ -25,9 +25,11 @@
 #include "tilesetdocument.h"
 
 #include <QHash>
+#include <QIcon>
 #include <QList>
 #include <QObject>
 #include <QPointF>
+#include <QPointer>
 #include <QVector>
 
 class QTabWidget;
@@ -38,7 +40,6 @@ class QTabBar;
 namespace Tiled {
 
 class FileSystemWatcher;
-class ObjectTemplate;
 
 class AbstractTool;
 class BrokenLinksModel;
@@ -46,12 +47,13 @@ class BrokenLinksWidget;
 class Document;
 class Editor;
 class FileChangedWarning;
+class MainWindow;
 class MapDocument;
 class MapEditor;
-class MapScene;
 class MapView;
 class TilesetDocument;
 class TilesetDocumentsModel;
+class WorldDocument;
 
 /**
  * This class controls the open documents.
@@ -62,15 +64,21 @@ class DocumentManager : public QObject
 
     Q_PROPERTY(Document *currentDocument READ currentDocument NOTIFY currentDocumentChanged)
 
+    DocumentManager(QObject *parent = nullptr);
+    ~DocumentManager() override;
+
+    friend class MainWindow;
+    friend class Document;      // for file watching
+
 public:
     static DocumentManager *instance();
-    static void deleteInstance();
+    static DocumentManager *maybeInstance();
 
     QWidget *widget() const;
 
     void setEditor(Document::DocumentType documentType, Editor *editor);
     Editor *editor(Document::DocumentType documentType) const;
-    void deleteEditor(Document::DocumentType documentType);
+    void deleteEditors();
     QList<Editor*> editors() const;
 
     Editor *currentEditor() const;
@@ -89,10 +97,13 @@ public:
     int findDocument(Document *document) const;
 
     void switchToDocument(int index);
+    bool switchToDocument(const QString &fileName);
     bool switchToDocument(Document *document);
     void switchToDocument(MapDocument *mapDocument, QPointF viewCenter, qreal scale);
+    void switchToDocumentAndHandleSimiliarTileset(MapDocument *mapDocument, QPointF viewCenter, qreal scale);
 
     void addDocument(const DocumentPtr &document);
+    int insertDocument(int index, const DocumentPtr &document);
 
     bool isDocumentModified(Document *document) const;
 
@@ -100,6 +111,7 @@ public:
                              FileFormat *fileFormat = nullptr,
                              QString *error = nullptr);
 
+    bool saveDocument(Document *document);
     bool saveDocument(Document *document, const QString &fileName);
     bool saveDocumentAs(Document *document);
 
@@ -112,6 +124,7 @@ public:
 
     bool reloadCurrentDocument();
     bool reloadDocumentAt(int index);
+    bool reloadDocument(Document *document);
 
     void checkTilesetColumns(MapDocument *mapDocument);
     bool checkTilesetColumns(TilesetDocument *tilesetDocument);
@@ -123,17 +136,18 @@ public:
     TilesetDocument *findTilesetDocument(const SharedTileset &tileset) const;
     TilesetDocument *findTilesetDocument(const QString &fileName) const;
 
-    void openTileset(const SharedTileset &tileset);
-
-    void centerMapViewOn(qreal x, qreal y);
-    void centerMapViewOn(const QPointF &pos)
-    { centerMapViewOn(pos.x(), pos.y()); }
+    TilesetDocument *openTileset(const SharedTileset &tileset);
 
     void abortMultiDocumentClose();
+
+    bool isAnyWorldModified() const;
+
+    QString fileDialogStartLocation() const;
 
 signals:
     void documentCreated(Document *document);
     void documentOpened(Document *document);
+    void documentReloaded(Document *document);
     void documentAboutToBeSaved(Document *document);
     void documentSaved(Document *document);
 
@@ -141,6 +155,7 @@ signals:
     void fileOpenRequested(const QString &path);
     void fileSaveRequested();
     void templateOpenRequested(const QString &path);
+    void selectCustomPropertyRequested(const QString &name);
     void templateTilesetReplaced();
 
     /**
@@ -158,6 +173,8 @@ signals:
      */
     void documentAboutToClose(Document *document);
 
+    void currentEditorChanged(Editor *editor);
+
     /**
      * Emitted when an error occurred while reloading the map.
      */
@@ -174,42 +191,50 @@ public slots:
     void openFile(const QString &path);
     void saveFile();
 
-private slots:
+private:
+    void onWorldLoaded(WorldDocument *worldDocument);
+    void onWorldUnloaded(WorldDocument *worldDocument);
+
     void currentIndexChanged();
     void fileNameChanged(const QString &fileName,
                          const QString &oldFileName);
-    void modifiedChanged();
     void updateDocumentTab(Document *document);
+    void onDocumentChanged(const ChangeEvent &event);
     void onDocumentSaved();
     void documentTabMoved(int from, int to);
     void tabContextMenuRequested(const QPoint &pos);
 
     void tilesetAdded(int index, Tileset *tileset);
     void tilesetRemoved(Tileset *tileset);
-    void tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset);
 
     void tilesetNameChanged(Tileset *tileset);
 
+    void filesChanged(const QStringList &fileNames);
     void fileChanged(const QString &fileName);
     void hideChangedWarning();
 
     void tilesetImagesChanged(Tileset *tileset);
-
-private:
-    DocumentManager(QObject *parent = nullptr);
-    ~DocumentManager() override;
 
     bool askForAdjustment(const Tileset &tileset);
 
     void addToTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
     void removeFromTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
 
-    bool eventFilter(QObject *object, QEvent *event) override;
+    void updateSession() const;
+
+    MapDocument *openMapFile(const QString &path);
+    TilesetDocument *openTilesetFile(const QString &path);
+
+    void registerDocument(Document *document);
+    void unregisterDocument(Document *document);
+
+    QIcon mLockedIcon;
 
     QVector<DocumentPtr> mDocuments;
     TilesetDocumentsModel *mTilesetDocumentsModel;
 
-    QWidget *mWidget;
+    // Pointer becomes null when deleted as part of the UI, to prevent double-deletion
+    QPointer<QWidget> mWidget;
     QWidget *mNoEditorWidget;
     QTabBar *mTabBar;
     FileChangedWarning *mFileChangedWarning;
@@ -222,6 +247,7 @@ private:
 
     QUndoGroup *mUndoGroup;
     FileSystemWatcher *mFileSystemWatcher;
+    QHash<QString, Document*> mDocumentByFileName;
 
     static DocumentManager *mInstance;
 
@@ -237,6 +263,16 @@ private:
 inline QUndoGroup *DocumentManager::undoGroup() const
 {
     return mUndoGroup;
+}
+
+/**
+ * Save the given document to its existing file name.
+ *
+ * @return <code>true</code> on success, <code>false</code> on failure
+ */
+inline bool DocumentManager::saveDocument(Document *document)
+{
+    return saveDocument(document, document->fileName());
 }
 
 /**

@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "preferences.h"
+
 #include <QObject>
 
 class QToolBar;
@@ -43,7 +45,7 @@ public:
         DeleteAction        = 0x10
     };
     Q_DECLARE_FLAGS(StandardActions, StandardAction)
-    Q_FLAGS(StandardActions)
+    Q_FLAG(StandardActions)
 
     explicit Editor(QObject *parent = nullptr);
 
@@ -61,11 +63,17 @@ public:
 
     virtual QList<QToolBar*> toolBars() const = 0;
     virtual QList<QDockWidget*> dockWidgets() const = 0;
+    virtual QList<QWidget*> statusBarWidgets() const = 0;
+    virtual QList<QWidget*> permanentStatusBarWidgets() const = 0;
 
     virtual StandardActions enabledStandardActions() const = 0;
     virtual void performStandardAction(StandardAction action) = 0;
 
     virtual void resetLayout() = 0;
+
+    static Preference<bool> duplicateAddsCopy;
+
+    static QString nameOfDuplicate(const QString &name);
 
 signals:
     void enabledStandardActionsChanged();

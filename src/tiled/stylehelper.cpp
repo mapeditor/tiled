@@ -27,6 +27,9 @@
 #include <QPixmapCache>
 #include <QStyle>
 #include <QStyleFactory>
+#include <QStyleHints>
+
+#include <QtBoolPropertyManager>
 
 namespace Tiled {
 
@@ -42,35 +45,43 @@ static QPalette createPalette(const QColor &windowColor,
         return QColor::fromHsv(hue, sat, qBound(0, value, 255));
     };
 
+    auto fromValueHalfSat = [=](int value) {
+        return QColor::fromHsv(hue, sat / 2, qBound(0, value, 255));
+    };
+
     const bool isLight = windowValue > 128;
     const int baseValue = isLight ? windowValue + 48 : windowValue - 24;
+    const int textValue = isLight ? qMax(0, windowValue - 160)
+                                  : qMin(255, windowValue + 160);
 
-    const int lightTextValue = qMin(255, windowValue + 160);
-    const int darkTextValue = qMax(0, windowValue - 160);
-
-    const QColor lightText = QColor(lightTextValue, lightTextValue, lightTextValue);
-    const QColor darkText = QColor(darkTextValue, darkTextValue, darkTextValue);
-    const QColor lightDisabledText = QColor(lightTextValue, lightTextValue, lightTextValue, 128);
-    const QColor darkDisabledText = QColor(darkTextValue, darkTextValue, darkTextValue, 128);
+    const QColor text { textValue, textValue, textValue };
+    const QColor disabledText { textValue, textValue, textValue, 128 };
 
     QPalette palette(fromValue(windowValue));
-    palette.setColor(QPalette::Base, fromValue(baseValue));
-    palette.setColor(QPalette::AlternateBase, fromValue(baseValue - 10));
-    palette.setColor(QPalette::WindowText, isLight ? darkText : lightText);
-    palette.setColor(QPalette::ButtonText, isLight ? darkText : lightText);
-    palette.setColor(QPalette::Text, isLight ? darkText : lightText);
-    palette.setColor(QPalette::Light, fromValue(windowValue + 55));
-    palette.setColor(QPalette::Dark, fromValue(windowValue - 55));
+    palette.setColor(QPalette::Base, fromValueHalfSat(baseValue));
+    palette.setColor(QPalette::AlternateBase, fromValueHalfSat(baseValue - 10));
+    palette.setColor(QPalette::WindowText, text);
+    palette.setColor(QPalette::ButtonText, text);
+    palette.setColor(QPalette::Text, text);
+    palette.setColor(QPalette::Light, fromValueHalfSat(windowValue + 55));
+    palette.setColor(QPalette::Dark, fromValueHalfSat(windowValue - 55));
     palette.setColor(QPalette::Mid, fromValue(windowValue - 27));
     palette.setColor(QPalette::Midlight, fromValue(windowValue + 27));
 
-    palette.setColor(QPalette::Disabled, QPalette::WindowText, isLight ? darkDisabledText : lightDisabledText);
-    palette.setColor(QPalette::Disabled, QPalette::ButtonText, isLight ? darkDisabledText : lightDisabledText);
-    palette.setColor(QPalette::Disabled, QPalette::Text, isLight ? darkDisabledText : lightDisabledText);
+    palette.setColor(QPalette::Disabled, QPalette::WindowText, disabledText);
+    palette.setColor(QPalette::Disabled, QPalette::ButtonText, disabledText);
+    palette.setColor(QPalette::Disabled, QPalette::Text, disabledText);
 
     bool highlightIsDark = qGray(highlightColor.rgb()) < 120;
     palette.setColor(QPalette::Highlight, highlightColor);
     palette.setColor(QPalette::HighlightedText, highlightIsDark ? Qt::white : Qt::black);
+    palette.setColor(QPalette::PlaceholderText, disabledText);
+
+    if (!isLight) {
+        const QColor lightskyblue { 0x87, 0xce, 0xfa };
+        palette.setColor(QPalette::Link, lightskyblue);
+        palette.setColor(QPalette::LinkVisited, lightskyblue);
+    }
 
     return palette;
 }
@@ -84,13 +95,18 @@ void StyleHelper::initialize()
 StyleHelper::StyleHelper()
     : mDefaultStyle(QApplication::style()->objectName())
     , mDefaultPalette(QApplication::palette())
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+    , mDefaultShowShortcutsInContextMenus(QGuiApplication::styleHints()->showShortcutsInContextMenus())
+#endif
 {
     apply();
+    applyFont();
 
     Preferences *preferences = Preferences::instance();
     QObject::connect(preferences, &Preferences::applicationStyleChanged, this, &StyleHelper::apply);
     QObject::connect(preferences, &Preferences::baseColorChanged, this, &StyleHelper::apply);
     QObject::connect(preferences, &Preferences::selectionColorChanged, this, &StyleHelper::apply);
+    QObject::connect(preferences, &Preferences::applicationFontChanged, this, &StyleHelper::applyFont);
 }
 
 void StyleHelper::apply()
@@ -99,12 +115,14 @@ void StyleHelper::apply()
 
     QString desiredStyle;
     QPalette desiredPalette;
+    bool showShortcutsInContextMenus = true;
 
     switch (preferences->applicationStyle()) {
     default:
     case Preferences::SystemDefaultStyle:
         desiredStyle = defaultStyle();
         desiredPalette = defaultPalette();
+        showShortcutsInContextMenus = mDefaultShowShortcutsInContextMenus;
         break;
     case Preferences::FusionStyle:
         desiredStyle = QLatin1String("fusion");
@@ -117,6 +135,12 @@ void StyleHelper::apply()
                                        preferences->selectionColor());
         break;
     }
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+    QGuiApplication::styleHints()->setShowShortcutsInContextMenus(showShortcutsInContextMenus);
+#else
+    Q_UNUSED(showShortcutsInContextMenus)
+#endif
 
     if (QApplication::style()->objectName() != desiredStyle) {
         QStyle *style;
@@ -139,7 +163,26 @@ void StyleHelper::apply()
             style->setPalette(desiredPalette);
     }
 
+    QtBoolPropertyManager::resetIcons();
+
     emit styleApplied();
 }
 
+void StyleHelper::applyFont()
+{
+    Preferences *prefs = Preferences::instance();
+
+    if (prefs->useCustomFont()) {
+        if (!mDefaultFont.has_value())
+            mDefaultFont = QApplication::font();
+
+        QApplication::setFont(prefs->customFont());
+
+    } else if (mDefaultFont.has_value()) {
+        QApplication::setFont(*mDefaultFont);
+    }
+}
+
 } // namespace Tiled
+
+#include "moc_stylehelper.cpp"

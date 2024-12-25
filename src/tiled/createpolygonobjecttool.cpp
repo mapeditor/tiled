@@ -43,12 +43,10 @@
 #include <QPalette>
 #include <QUndoStack>
 
-#include "qtcompat_p.h"
-
 using namespace Tiled;
 
 CreatePolygonObjectTool::CreatePolygonObjectTool(QObject *parent)
-    : CreateObjectTool(parent)
+    : CreateObjectTool("CreatePolygonObjectTool", parent)
     , mOverlayPolygonObject(new MapObject)
     , mOverlayObjectGroup(new ObjectGroup)
     , mOverlayPolygonItem(nullptr)
@@ -57,14 +55,17 @@ CreatePolygonObjectTool::CreatePolygonObjectTool(QObject *parent)
     , mHoveredHandle(nullptr)
     , mClickedHandle(nullptr)
 {
+    mOverlayObjectGroup->setLocked(true);    // prevents selection of overlay object
     mOverlayObjectGroup->addObject(mOverlayPolygonObject);
 
     QColor highlight = QApplication::palette().highlight().color();
     mOverlayObjectGroup->setColor(highlight);
 
-    QIcon icon(QLatin1String(":images/24x24/insert-polygon.png"));
-    icon.addFile(QLatin1String(":images/48x48/insert-polygon.png"));
+    QIcon icon(QLatin1String(":images/24/insert-polygon.png"));
+    icon.addFile(QLatin1String(":images/48/insert-polygon.png"));
     setIcon(icon);
+
+    setShortcut(Qt::Key_P);
 
     languageChangedImpl();
 }
@@ -79,16 +80,13 @@ void CreatePolygonObjectTool::activate(MapScene *scene)
 
     updateHandles();
 
-    connect(mapDocument(), &MapDocument::objectsChanged,
-            this, &CreatePolygonObjectTool::objectsChanged);
     connect(mapDocument(), &MapDocument::selectedObjectsChanged,
-            this, &CreatePolygonObjectTool::updateHandles);
-    connect(mapDocument(), &MapDocument::objectsRemoved,
-            this, &CreatePolygonObjectTool::objectsRemoved);
-    connect(mapDocument(), &MapDocument::layerChanged,          // layer offset
             this, &CreatePolygonObjectTool::updateHandles);
     connect(mapDocument(), &MapDocument::layerRemoved,
             this, &CreatePolygonObjectTool::layerRemoved);
+
+    connect(scene, &MapScene::parallaxParametersChanged,
+            this, &CreatePolygonObjectTool::updateHandles);
 }
 
 void CreatePolygonObjectTool::deactivate(MapScene *scene)
@@ -96,16 +94,13 @@ void CreatePolygonObjectTool::deactivate(MapScene *scene)
     if (mMode == ExtendingAtBegin || mMode == ExtendingAtEnd)
         finishExtendingMapObject();
 
-    disconnect(mapDocument(), &MapDocument::objectsChanged,
-               this, &CreatePolygonObjectTool::objectsChanged);
     disconnect(mapDocument(), &MapDocument::selectedObjectsChanged,
-               this, &CreatePolygonObjectTool::updateHandles);
-    disconnect(mapDocument(), &MapDocument::objectsRemoved,
-               this, &CreatePolygonObjectTool::objectsRemoved);
-    disconnect(mapDocument(), &MapDocument::layerChanged,
                this, &CreatePolygonObjectTool::updateHandles);
     disconnect(mapDocument(), &MapDocument::layerRemoved,
                this, &CreatePolygonObjectTool::layerRemoved);
+
+    disconnect(scene, &MapScene::parallaxParametersChanged,
+               this, &CreatePolygonObjectTool::updateHandles);
 
     qDeleteAll(mHandles);
     mHandles.clear();
@@ -169,7 +164,6 @@ void CreatePolygonObjectTool::languageChanged()
 void CreatePolygonObjectTool::languageChangedImpl()
 {
     setName(tr("Insert Polygon"));
-    setShortcut(QKeySequence(tr("P")));
 }
 
 void CreatePolygonObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
@@ -186,11 +180,11 @@ void CreatePolygonObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos,
 
         QPointF objectScreenPos = renderer->pixelToScreenCoords(object->position());
         QTransform rotate = rotateAt(objectScreenPos, object->rotation());
-        QPointF totalOffset = object->objectGroup()->totalOffset();
+        QPointF totalOffset = mapScene()->absolutePositionForLayer(*object->objectGroup());
 
         QPointF pixelPos = object->polygon().at(pointIndex) + object->position();
         screenPos = rotate.map(renderer->pixelToScreenCoords(pixelPos));
-        screenPos += (totalOffset - mNewMapObjectItem->mapObject()->objectGroup()->totalOffset());
+        screenPos += (totalOffset - mapScene()->absolutePositionForLayer(*mNewMapObjectItem->mapObject()->objectGroup()));
     }
 
     // Take rotation of current object into account
@@ -274,10 +268,13 @@ void CreatePolygonObjectTool::applySegment()
                 otherPolygon.translate(clickedObject->position());
                 otherPolygon = renderer->pixelToScreenCoords(otherPolygon);
 
+                // FIXME: This doesn't correctly handle joining polylines while
+                // different parallax factors are active.
                 QPointF clickedObjectScreenPos = renderer->pixelToScreenCoords(clickedObject->position());
+                QPointF clickedObjectOffset = mapScene()->absolutePositionForLayer(*clickedObject->objectGroup());
                 QTransform clickedObjectRotate = rotateAt(clickedObjectScreenPos, clickedObject->rotation());
                 otherPolygon = clickedObjectRotate.map(otherPolygon);
-                otherPolygon.translate(clickedObject->objectGroup()->totalOffset() - newObject->objectGroup()->totalOffset());
+                otherPolygon.translate(clickedObjectOffset - newObject->objectGroup()->totalOffset());
 
                 QPointF objectScreenPos = renderer->pixelToScreenCoords(newObject->position());
                 QTransform rotate = rotateAt(objectScreenPos, -newObject->rotation());
@@ -299,7 +296,7 @@ void CreatePolygonObjectTool::applySegment()
             } else {
                 mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(),
                                                                    newObject,
-                                                                   newPolygon, newObject->polygon()));
+                                                                   newPolygon));
                 finishExtendingMapObject();
             }
 
@@ -310,7 +307,7 @@ void CreatePolygonObjectTool::applySegment()
         }
     }
 
-    QPolygonF current = newObject->polygon();
+    const QPolygonF current = newObject->polygon();
     QPolygonF next = mOverlayPolygonObject->polygon();
 
     // Ignore press when the mouse is still in the same place
@@ -332,7 +329,7 @@ void CreatePolygonObjectTool::applySegment()
     } else {
         mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(),
                                                            newObject,
-                                                           next, current));
+                                                           next));
     }
 
     // Add a new editable point to the overlay
@@ -434,7 +431,7 @@ void CreatePolygonObjectTool::updateHandles()
 
         QPointF objectScreenPos = renderer->pixelToScreenCoords(object->position());
         QTransform rotate = rotateAt(objectScreenPos, object->rotation());
-        QPointF totalOffset = object->objectGroup()->totalOffset();
+        QPointF totalOffset = mapScene()->absolutePositionForLayer(*object->objectGroup());
 
         auto createHandle = [&,object,renderer](int pointIndex) {
             PointHandle *handle = new PointHandle(object, pointIndex);
@@ -462,16 +459,22 @@ void CreatePolygonObjectTool::updateHandles()
         createHandles(mNewMapObjectItem->mapObject());
 }
 
-void CreatePolygonObjectTool::objectsChanged(const QList<MapObject *> &objects)
+void CreatePolygonObjectTool::objectsChanged(const MapObjectsChangeEvent &mapObjectsChangeEvent)
 {
     // Possibly the polygon of the object being extended changed
-    if (mNewMapObjectItem && objects.contains(mNewMapObjectItem->mapObject()))
+    if (mNewMapObjectItem && mapObjectsChangeEvent.mapObjects.contains(mNewMapObjectItem->mapObject()))
         synchronizeOverlayObject();
 
-    updateHandles();
+    constexpr auto propertiesAffectingHandles =
+            MapObject::PositionProperty |
+            MapObject::RotationProperty |
+            MapObject::ShapeProperty;
+
+    if (mapObjectsChangeEvent.properties & propertiesAffectingHandles)
+        updateHandles();
 }
 
-void CreatePolygonObjectTool::objectsRemoved(const QList<MapObject *> &objects)
+void CreatePolygonObjectTool::objectsAboutToBeRemoved(const QList<MapObject *> &objects)
 {
     // Check whether the object being extended was removed
     if (mNewMapObjectItem && objects.contains(mNewMapObjectItem->mapObject()))
@@ -573,7 +576,8 @@ void CreatePolygonObjectTool::extend(MapObject *mapObject, bool extendingFirst)
 
     mMode = extendingFirst ? ExtendingAtBegin : ExtendingAtEnd;
 
-    newMapObjectGroup()->setOffset(mapObject->objectGroup()->totalOffset());
+    QPointF offset = mapScene()->absolutePositionForLayer(*mapObject->objectGroup());
+    newMapObjectGroup()->setOffset(offset);
     objectGroupItem()->setPos(newMapObjectGroup()->offset());
 
     mNewMapObjectItem = new MapObjectItem(mapObject, mapDocument(), objectGroupItem());
@@ -592,6 +596,29 @@ void CreatePolygonObjectTool::extend(MapObject *mapObject, bool extendingFirst)
     updateHandles();
 }
 
+void CreatePolygonObjectTool::changeEvent(const ChangeEvent &event)
+{
+    CreateObjectTool::changeEvent(event);
+
+    if (!mapScene())
+        return;
+
+    switch (event.type) {
+    case ChangeEvent::LayerChanged:
+        if (static_cast<const LayerChangeEvent&>(event).properties & LayerChangeEvent::PositionProperties)
+            updateHandles();
+        break;
+    case ChangeEvent::MapObjectsChanged:
+        objectsChanged(static_cast<const MapObjectsChangeEvent&>(event));
+        break;
+    case ChangeEvent::MapObjectsAboutToBeRemoved:
+        objectsAboutToBeRemoved(static_cast<const MapObjectsEvent&>(event).mapObjects);
+        break;
+    default:
+        break;
+    }
+}
+
 void CreatePolygonObjectTool::setHoveredHandle(PointHandle *handle)
 {
     if (mHoveredHandle)
@@ -602,3 +629,5 @@ void CreatePolygonObjectTool::setHoveredHandle(PointHandle *handle)
     if (handle)
         handle->setHighlighted(true);
 }
+
+#include "moc_createpolygonobjecttool.cpp"

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Tiled::ShortcutSettingsPage</class>
+ <widget class="QWidget" name="Tiled::ShortcutSettingsPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>614</width>
+    <height>361</height>
+   </rect>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Keyboard Shortcuts</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0" colspan="6">
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="Tiled::FilterEdit" name="filterEdit">
+          <property name="placeholderText">
+           <string>Filter</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTreeView" name="shortcutsView">
+          <property name="rootIsDecorated">
+           <bool>false</bool>
+          </property>
+          <property name="uniformRowHeights">
+           <bool>true</bool>
+          </property>
+          <property name="itemsExpandable">
+           <bool>false</bool>
+          </property>
+          <property name="sortingEnabled">
+           <bool>true</bool>
+          </property>
+          <attribute name="headerStretchLastSection">
+           <bool>false</bool>
+          </attribute>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="3">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="4">
+       <widget class="QPushButton" name="importButton">
+        <property name="text">
+         <string>&amp;Import...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="conflictsLabel">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;Potential conflicts!&lt;/span&gt; &lt;a href=&quot;#show-conflicts&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Set Filter&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="5">
+       <widget class="QPushButton" name="exportButton">
+        <property name="text">
+         <string>&amp;Export...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QPushButton" name="resetButton">
+        <property name="text">
+         <string>&amp;Reset All</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Tiled::FilterEdit</class>
+   <extends>QLineEdit</extends>
+   <header>filteredit.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>filterEdit</tabstop>
+  <tabstop>shortcutsView</tabstop>
+  <tabstop>resetButton</tabstop>
+  <tabstop>importButton</tabstop>
+  <tabstop>exportButton</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

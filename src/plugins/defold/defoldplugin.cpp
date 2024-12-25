@@ -29,6 +29,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 
+#include <QCoreApplication>
 #include <QTextStream>
 
 #include <cmath>
@@ -42,6 +43,7 @@ static const char cell_t[] =
     tile: {{tile}}\n\
     h_flip: {{h_flip}}\n\
     v_flip: {{v_flip}}\n\
+    rotate90: {{rotate90}}\n\
   }\n";
 
 static const char layer_t[] =
@@ -69,23 +71,40 @@ static QString replaceTags(QString context, const QVariantHash &map)
     return context;
 }
 
+static void setCellProperties(QVariantHash &cellHash, const Tiled::Cell &cell)
+{
+    cellHash["tile"] = cell.tileId();
+
+    if (cell.flippedAntiDiagonally()) {
+        cellHash["h_flip"] = cell.flippedVertically() ? 1 : 0;
+        cellHash["v_flip"] = cell.flippedHorizontally() ? 0 : 1;
+        cellHash["rotate90"] = 1;
+    } else {
+        cellHash["h_flip"] = cell.flippedHorizontally() ? 1 : 0;
+        cellHash["v_flip"] = cell.flippedVertically() ? 1 : 0;
+        cellHash["rotate90"] = 0;
+    }
+}
+
+template <typename T>
+static T optionalProperty(const Tiled::Object *object, const QString &name, const T &def)
+{
+    const QVariant var = object->resolvedProperty(name);
+    return var.isValid() ? var.value<T>() : def;
+}
+
 DefoldPlugin::DefoldPlugin()
 {
 }
 
-QStringList DefoldPlugin::outputFiles(const Tiled::Map *, const QString &fileName) const
-{
-    return QStringList() << fileName;
-}
-
 QString DefoldPlugin::nameFilter() const
 {
-    return tr("Defold files (*.tilemap)");
+    return tr("Defold Tile Map (*.tilemap)");
 }
 
 QString DefoldPlugin::shortName() const
 {
-    return QLatin1String("defold");
+    return QStringLiteral("defold");
 }
 
 QString DefoldPlugin::errorString() const
@@ -93,16 +112,24 @@ QString DefoldPlugin::errorString() const
     return mError;
 }
 
-bool DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
+bool DefoldPlugin::write(const Tiled::Map *map, const QString &fileName, Options options)
 {
+    Q_UNUSED(options)
+
     QVariantHash map_h;
 
     QString layers;
     Tiled::LayerIterator it(map, Tiled::Layer::TileLayerType);
+    double z = 0.0;
+
     while (auto tileLayer = static_cast<Tiled::TileLayer*>(it.next())) {
+        // Defold exports the z value to be between -1 and 1, so these
+        // automatic increments should allow up to 10000 layers.
+        z = optionalProperty(tileLayer, QStringLiteral("z"), z + 0.0001);
+
         QVariantHash layer_h;
         layer_h["id"] = tileLayer->name();
-        layer_h["z"] = 0;
+        layer_h["z"] = z;
         layer_h["is_visible"] = tileLayer->isVisible() ? 1 : 0;
         QString cells;
 
@@ -114,9 +141,7 @@ bool DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
                 QVariantHash cell_h;
                 cell_h["x"] = x;
                 cell_h["y"] = tileLayer->height() - y - 1;
-                cell_h["tile"] = cell.tileId();
-                cell_h["h_flip"] = cell.flippedHorizontally() ? 1 : 0;
-                cell_h["v_flip"] = cell.flippedVertically() ? 1 : 0;
+                setCellProperties(cell_h, cell);
                 cells.append(replaceTags(QLatin1String(cell_t), cell_h));
             }
         }
@@ -126,12 +151,12 @@ bool DefoldPlugin::write(const Tiled::Map *map, const QString &fileName)
     map_h["layers"] = layers;
     map_h["material"] = "/builtins/materials/tile_map.material";
     map_h["blend_mode"] = "BLEND_MODE_ALPHA";
-    map_h["tile_set"] = "";
+    map_h["tile_set"] = map->property(QStringLiteral("tile_set")).toString();
 
     QString result = replaceTags(QLatin1String(map_t), map_h);
     Tiled::SaveFile mapFile(fileName);
     if (!mapFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        mError = tr("Could not open file for writing.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
     }
     QTextStream stream(mapFile.device());

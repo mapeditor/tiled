@@ -7,53 +7,37 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tiled 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-21 14:31+0100\n"
-"PO-Revision-Date: 2018-12-09 01:09+0000\n"
-"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"POT-Creation-Date: 2021-08-04 15:28+0200\n"
+"PO-Revision-Date: 2022-09-20 11:18+0000\n"
+"Last-Translator: Christian Pervoelz <cpervoelz@gmail.com>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/tiled/"
 "documentation-index/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.4-dev\n"
+"X-Generator: Weblate 4.14.1\n"
 "Generated-By: Babel 2.5.1\n"
+
+#: ../../index.rst:10
+msgid "User Manual"
+msgstr "Benutzerhandbuch"
+
+#: ../../index.rst:32
+msgid "Reference"
+msgstr "Referenz"
 
 #: ../../index.rst:2
 msgid "Tiled Documentation"
 msgstr "Tiled Dokumentation"
 
-#: ../../index.rst:5
+#: ../../index.rst:6
 msgid ""
-"If you're not finding what you're looking for in these pages, please "
-"don't hesitate to ask questions on the `Tiled Forum "
-"<http://discourse.mapeditor.org>`_."
+"If you're not finding what you're looking for on these pages, please don't "
+"hesitate to ask questions on the `Tiled Forum <https://discourse.mapeditor."
+"org>`_ or the `Tiled Discord <https://discord.gg/39wbTv7>`_."
 msgstr ""
 "Wenn Sie nicht gefunden haben wonach Sie suchen, zögern Sie bitte nicht im `"
-"Tiled Forum <http://discourse.mapeditor.org>`_ nachzufragen."
-
-#: ../../index.rst:8
-msgid "User Manual"
-msgstr "Benutzerhandbuch"
-
-#: ../../index.rst:29
-msgid "Reference"
-msgstr "Referenz"
-
-#~ msgid "Tiled Manual"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "This documentation is currently work-"
-#~ "in-progress. Initially the relevant pages"
-#~ " from the wiki have been ported "
-#~ "over, providing a limited amount of "
-#~ "documentation for specific Tiled features. "
-#~ "Over time, this should become the "
-#~ "place to refer to for any details"
-#~ " about using Tiled."
-#~ msgstr ""
-
-#~ msgid "Contents"
-#~ msgstr ""
+"Tiled Forum <https://discourse.mapeditor.org>` _ oder auf `Tiled Discord "
+"<https://discord.gg/39wbTv7>`_ nachzufragen."

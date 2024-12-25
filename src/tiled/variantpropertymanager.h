@@ -21,15 +21,40 @@
 
 #pragma once
 
+#include "properties.h"
+
 #include <QtVariantPropertyManager>
 
 #include <QFileIconProvider>
 
 namespace Tiled {
 
+class MapDocument;
+class MapObject;
+
+class DisplayObjectRef {
+public:
+    explicit DisplayObjectRef(ObjectRef ref = ObjectRef(),
+                              MapDocument *mapDocument = nullptr)
+        : ref(ref)
+        , mapDocument(mapDocument)
+    {}
+
+    bool operator==(const DisplayObjectRef &o) const
+    { return ref.id == o.ref.id && mapDocument == o.mapDocument; }
+
+    int id() const { return ref.id; }
+    MapObject *object() const;
+
+    ObjectRef ref;
+    MapDocument *mapDocument;
+};
+
+class UnstyledGroup {};
+
 /**
- * Extension of the QtVariantPropertyManager that adds support for a filePath
- * data type.
+ * Extension of the QtVariantPropertyManager that adds support for various
+ * additional types and attributes.
  */
 class VariantPropertyManager : public QtVariantPropertyManager
 {
@@ -37,6 +62,7 @@ class VariantPropertyManager : public QtVariantPropertyManager
 
 public:
     explicit VariantPropertyManager(QObject *parent = nullptr);
+    ~VariantPropertyManager() override;
 
     QVariant value(const QtProperty *property) const override;
     int valueType(int propertyType) const override;
@@ -49,6 +75,8 @@ public:
 
     static int tilesetParametersTypeId();
     static int alignmentTypeId();
+    static int displayObjectRefTypeId();
+    static int unstyledGroupTypeId();
 
 public slots:
     void setValue(QtProperty *property, const QVariant &val) override;
@@ -62,16 +90,19 @@ protected:
     void initializeProperty(QtProperty *property) override;
     void uninitializeProperty(QtProperty *property) override;
 
-private slots:
+private:
     void slotValueChanged(QtProperty *property, const QVariant &value);
     void slotPropertyDestroyed(QtProperty *property);
 
-private:
-    struct Data {
-        QVariant value;
+    static QString objectRefLabel(const MapObject &object);
+
+    QMap<const QtProperty *, QVariant> mValues;
+
+    struct FilePathAttributes {
         QString filter;
+        bool directory = false;
     };
-    QMap<const QtProperty *, Data> mValues;
+    QMap<const QtProperty *, FilePathAttributes> mFilePathAttributes;
 
     struct StringAttributes {
         QStringList suggestions;
@@ -86,12 +117,14 @@ private:
     QString indexHToString(int idx) const;
     QString indexVToString(int idx) const;
     QMap<const QtProperty *, Qt::Alignment> m_alignValues;
-    typedef QMap<QtProperty *, QtProperty *> PropertyToPropertyMap;
+    using PropertyToPropertyMap = QMap<QtProperty *, QtProperty *>;
     PropertyToPropertyMap m_propertyToAlignH;
     PropertyToPropertyMap m_propertyToAlignV;
     PropertyToPropertyMap m_alignHToProperty;
     PropertyToPropertyMap m_alignVToProperty;
 
+    const QString mFilterAttribute;
+    const QString mDirectoryAttribute;
     const QString mSuggestionsAttribute;
     const QString mMultilineAttribute;
     QIcon mImageMissingIcon;
@@ -99,3 +132,6 @@ private:
 };
 
 } // namespace Tiled
+
+Q_DECLARE_METATYPE(Tiled::DisplayObjectRef)
+Q_DECLARE_METATYPE(Tiled::UnstyledGroup)

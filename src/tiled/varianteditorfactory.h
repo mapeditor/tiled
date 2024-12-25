@@ -1,7 +1,7 @@
 /*
  * varianteditorfactory.h
  * Copyright (C) 2006 Trolltech ASA. All rights reserved. (GPLv2)
- * Copyright 2013, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ * Copyright 2013-2021, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -23,18 +23,23 @@
 
 #include <QtVariantEditorFactory>
 
+class QComboBox;
+
 namespace Tiled {
 
+class DisplayObjectRef;
 class FileEdit;
+class ObjectRefEdit;
 class TextPropertyEdit;
 class TilesetParametersEdit;
 
 /**
- * Extension of the QtVariantEditorFactory that adds support for a FileEdit,
- * used for editing file references.
+ * Extension of the QtVariantEditorFactory that adds support for:
  *
- * It also adds support for "suggestions" and "multiline" attributes for string
- * values.
+ * - An editor for editing file references
+ * - An editor with a button for changing tileset parameters
+ * - An editor for editing references to objects
+ * - "suggestions" and "multiline" attributes for string values.
  */
 class VariantEditorFactory : public QtVariantEditorFactory
 {
@@ -45,7 +50,7 @@ public:
         : QtVariantEditorFactory(parent)
     {}
 
-    ~VariantEditorFactory();
+    ~VariantEditorFactory() override;
 
 signals:
     void resetProperty(QtProperty *property);
@@ -57,16 +62,17 @@ protected:
                           QWidget *parent) override;
     void disconnectPropertyManager(QtVariantPropertyManager *manager) override;
 
-private slots:
+private:
     void slotPropertyChanged(QtProperty *property, const QVariant &value);
     void slotPropertyAttributeChanged(QtProperty *property,
                                       const QString &attribute,
                                       const QVariant &value);
     void fileEditFileUrlChanged(const QUrl &value);
     void textPropertyEditTextChanged(const QString &value);
+    void comboBoxPropertyEditTextChanged(const QString &value);
+    void objectRefEditValueChanged(const DisplayObjectRef &value);
     void slotEditorDestroyed(QObject *object);
 
-private:
     QMap<QtProperty *, QList<FileEdit *> > mCreatedFileEdits;
     QMap<FileEdit *, QtProperty *> mFileEditToProperty;
 
@@ -75,6 +81,12 @@ private:
 
     QMap<QtProperty *, QList<TextPropertyEdit *> > mCreatedTextPropertyEdits;
     QMap<TextPropertyEdit *, QtProperty *> mTextPropertyEditToProperty;
+
+    QMap<QtProperty *, QList<QComboBox *> > mCreatedComboBoxes;
+    QMap<QComboBox *, QtProperty *> mComboBoxToProperty;
+
+    QMap<QtProperty *, QList<ObjectRefEdit *> > mCreatedObjectRefEdits;
+    QMap<ObjectRefEdit *, QtProperty *> mObjectRefEditToProperty;
 };
 
 } // namespace Tiled

@@ -21,6 +21,7 @@
 
 #pragma once
 
+#include "session.h"
 #include "tilestamp.h"
 
 #include <QMap>
@@ -48,11 +49,13 @@ class TileStampManager : public QObject
 
 public:
     TileStampManager(const ToolManager &toolManager, QObject *parent = nullptr);
-    ~TileStampManager();
+    ~TileStampManager() override;
 
     static QList<Qt::Key> quickStampKeys();
 
     TileStampModel *tileStampModel() const;
+
+    SessionOption<QString> stampsDirectory;
 
 public slots:
     TileStamp createStamp();
@@ -75,16 +78,19 @@ private:
 
     void loadStamps();
 
-private slots:
+private:
     void stampAdded(TileStamp stamp);
     void stampRenamed(TileStamp stamp);
     void saveStamp(const TileStamp &stamp);
     void deleteStamp(const TileStamp &stamp);
 
-private:
+    QString stampFilePath(const QString &name);
+    QString findStampFileName(const QString &name, const QString &currentFileName = QString());
+
     QVector<TileStamp> mQuickStamps;
     QMap<QString, TileStamp> mStampsByName;
     TileStampModel *mTileStampModel;
+    Session::CallbackIterator mRegisteredCb;
 
     const ToolManager &mToolManager;
 };

@@ -26,12 +26,12 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef IMAGECACHE_H
-#define IMAGECACHE_H
+#pragma once
 
 #include "tiled_global.h"
 
 #include <QColor>
+#include <QDateTime>
 #include <QHash>
 #include <QImage>
 #include <QPixmap>
@@ -39,34 +39,33 @@
 
 namespace Tiled {
 
-struct TILEDSHARED_EXPORT TilesheetParameters
+struct LoadedImage
 {
-    QString fileName;
-    int tileWidth;
-    int tileHeight;
-    int spacing;
-    int margin;
-    QColor transparentColor;
+    LoadedImage();
+    LoadedImage(QImage image, const QDateTime &lastModified);
 
-    bool operator==(const TilesheetParameters &other) const;
+    operator const QImage &() const { return image; }
+
+    QImage image;
+    QDateTime lastModified;
 };
 
-uint TILEDSHARED_EXPORT qHash(const TilesheetParameters &key, uint seed = 0) Q_DECL_NOTHROW;
+struct LoadedPixmap;
+class Map;
 
 class TILEDSHARED_EXPORT ImageCache
 {
 public:
-    static QImage loadImage(const QString &fileName);
+    static LoadedImage loadImage(const QString &fileName);
     static QPixmap loadPixmap(const QString &fileName);
-    static QVector<QPixmap> cutTiles(const TilesheetParameters &parameters);
 
     static void remove(const QString &fileName);
 
-    static QHash<QString, QImage> sLoadedImages;
-    static QHash<QString, QPixmap> sLoadedPixmaps;
-    static QHash<TilesheetParameters, QVector<QPixmap>> sCutTiles;
+private:
+    static QImage renderMap(const QString &fileName);
+
+    static QHash<QString, LoadedImage> sLoadedImages;
+    static QHash<QString, LoadedPixmap> sLoadedPixmaps;
 };
 
 } // namespace Tiled
-
-#endif // IMAGECACHE_H

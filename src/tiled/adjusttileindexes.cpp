@@ -22,10 +22,9 @@
 
 #include "changemapobject.h"
 #include "changeproperties.h"
+#include "changetile.h"
 #include "changetileanimation.h"
 #include "changetileobjectgroup.h"
-#include "changetileprobability.h"
-#include "changetileterrain.h"
 #include "changetilewangid.h"
 #include "changewangcolordata.h"
 #include "changewangsetdata.h"
@@ -81,34 +80,22 @@ AdjustTileIndexes::AdjustTileIndexes(MapDocument *mapDocument,
             const QRegion region = tileLayer->region(isFromTileset).translated(-layer->position());
 
             if (!region.isEmpty()) {
-                const QRect boundingRect(region.boundingRect());
-                auto changedLayer = new TileLayer(QString(), 0, 0,
-                                                  boundingRect.width(),
-                                                  boundingRect.height());
+                TileLayer adjustedTileLayer;
 
-#if QT_VERSION < 0x050800
-                const auto rects = region.rects();
-                for (const QRect &rect : rects) {
-#else
                 for (const QRect &rect : region) {
-#endif
                     for (int x = rect.left(); x <= rect.right(); ++x) {
                         for (int y = rect.top(); y <= rect.bottom(); ++y) {
-                            Cell cell = adjustCell(tileLayer->cellAt(x, y));
-                            changedLayer->setCell(x - boundingRect.x(),
-                                                  y - boundingRect.y(),
-                                                  cell);
+                            const Cell cell = adjustCell(tileLayer->cellAt(x, y));
+                            adjustedTileLayer.setCell(x, y, cell);
                         }
                     }
                 }
 
                 new PaintTileLayer(mapDocument, tileLayer,
-                                   boundingRect.x() + tileLayer->x(),
-                                   boundingRect.y() + tileLayer->y(),
-                                   changedLayer,
+                                   0, 0,
+                                   &adjustedTileLayer,
+                                   region.translated(tileLayer->position()),
                                    this);
-
-                delete changedLayer;
             }
 
             break;
@@ -159,9 +146,9 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
     };
 
     // Adjust tile meta data
+    QMap<QString, QList<Object*>> tilesChangingClassByClass;
     QList<Tile*> tilesChangingProbability;
-    QList<qreal> tileProbabilities;
-    ChangeTileTerrain::Changes terrainChanges;
+    QVector<qreal> tileProbabilities;
     QSet<Tile*> tilesToReset;
 
     auto adjustAnimationFrames = [&](const QVector<Frame> &frames) -> QVector<Frame> {
@@ -177,7 +164,7 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
 
     auto applyMetaData = [&](Tile *toTile,
                              const Properties &properties,
-                             unsigned terrain,
+                             const QString &className,
                              qreal probability,
                              std::unique_ptr<ObjectGroup> objectGroup,
                              const QVector<Frame> &frames)
@@ -190,10 +177,8 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
                                  this);
         }
 
-        if (terrain != toTile->terrain()) {
-            terrainChanges.insert(toTile, ChangeTileTerrain::Change(toTile->terrain(),
-                                                                    terrain));
-        }
+        if (className != toTile->className())
+            tilesChangingClassByClass[className].append(toTile);
 
         if (probability != toTile->probability()) {
             tilesChangingProbability.append(toTile);
@@ -227,13 +212,13 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
 
         applyMetaData(toTile,
                       fromTile->properties(),
-                      fromTile->terrain(),
+                      fromTile->className(),
                       fromTile->probability(),
                       std::move(objectGroup),
                       adjustAnimationFrames(fromTile->frames()));
     };
 
-    QMapIterator<int, Tile *> iterator{tileset.tiles()};
+    QMapIterator<int, Tile *> iterator { tileset.tilesById() };
 
     if (newColumnCount > oldColumnCount) {
         // Increasing column count means information is copied to higher tiles,
@@ -250,7 +235,7 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
     QSetIterator<Tile*> resetIterator(tilesToReset);
     while (resetIterator.hasNext()) {
         applyMetaData(resetIterator.next(),
-                      Properties(), -1, 1.0, nullptr, QVector<Frame>());
+                      Properties(), QString(), 1.0, nullptr, QVector<Frame>());
     }
 
     // Translate tile references in Wang sets and Wang colors
@@ -263,13 +248,7 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
         }
 
         // WangColor tile images
-        for (const QSharedPointer<WangColor> &wangColor : wangSet->edgeColors()) {
-            if (Tile *fromTile = tileset.findTile(wangColor->imageId()))
-                if (Tile *newTile = adjustTile(fromTile))
-                    if (fromTile != newTile)
-                        new ChangeWangColorImage(tilesetDocument, wangColor.data(), newTile->id(), this);
-        }
-        for (const QSharedPointer<WangColor> &wangColor : wangSet->cornerColors()) {
+        for (const QSharedPointer<WangColor> &wangColor : wangSet->colors()) {
             if (Tile *fromTile = tileset.findTile(wangColor->imageId()))
                 if (Tile *newTile = adjustTile(fromTile))
                     if (fromTile != newTile)
@@ -279,29 +258,43 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
         QVector<ChangeTileWangId::WangIdChange> changes;
 
         // Move all WangIds to their new tiles
-        for (const WangTile &wangTile : wangSet->wangTilesByWangId()) {
-            if (Tile *fromTile = wangTile.tile()) {
+        QHashIterator<int, WangId> it(wangSet->wangIdByTileId());
+        while (it.hasNext()) {
+            it.next();
+
+            if (Tile *fromTile = tileset.findTile(it.key())) {
                 if (Tile *newTile = adjustTile(fromTile)) {
-                    WangId fromWangId = wangSet->wangIdOfTile(newTile);
-                    WangId toWangId = wangTile.wangId();
-                    changes.append(ChangeTileWangId::WangIdChange(fromWangId, toWangId, newTile));
+                    const WangId fromWangId = wangSet->wangIdOfTile(newTile);
+                    const WangId toWangId = it.value();
+                    changes.append(ChangeTileWangId::WangIdChange(fromWangId, toWangId, newTile->id()));
                 }
             }
         }
 
         // Clear WangIds from other tiles
-        for (const WangTile &wangTile : wangSet->wangTilesByWangId()) {
-            if (Tile *fromTile = wangTile.tile()) {
-                auto matchesTile = [fromTile](const ChangeTileWangId::WangIdChange &change) {
-                    return change.tile == fromTile;
+        it.toFront();
+        while (it.hasNext()) {
+            it.next();
+
+            if (Tile *fromTile = tileset.findTile(it.key())) {
+                auto matchesTile = [fromTileId = it.key()](const ChangeTileWangId::WangIdChange &change) {
+                    return change.tileId == fromTileId;
                 };
-                if (!std::any_of(changes.begin(), changes.end(), matchesTile))
-                    changes.append(ChangeTileWangId::WangIdChange(wangTile.wangId(), WangId(), fromTile));
+                if (!std::any_of(changes.begin(), changes.end(), matchesTile)) {
+                    const WangId fromWangId = it.value();
+                    changes.append(ChangeTileWangId::WangIdChange(fromWangId, WangId(), fromTile->id()));
+                }
             }
         }
 
         if (!changes.isEmpty())
             new ChangeTileWangId(tilesetDocument, wangSet, changes, this);
+    }
+
+    QMapIterator<QString, QList<Object*>> it(tilesChangingClassByClass);
+    while (it.hasNext()) {
+        it.next();
+        new ChangeClassName(tilesetDocument, it.value(), it.key(), this);
     }
 
     if (!tilesChangingProbability.isEmpty()) {
@@ -310,9 +303,6 @@ AdjustTileMetaData::AdjustTileMetaData(TilesetDocument *tilesetDocument)
                                   tileProbabilities,
                                   this);
     }
-
-    if (!terrainChanges.isEmpty())
-        new ChangeTileTerrain(tilesetDocument, terrainChanges, this);
 }
 
 } // namespace Tiled

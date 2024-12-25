@@ -1,0 +1,40 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, Tiled Documentation Writers
+# This file is distributed under the same license as the Tiled package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Tiled 1.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-06-10 10:03+0200\n"
+"PO-Revision-Date: 2021-05-10 08:32+0000\n"
+"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"Language-Team: Turkish <https://hosted.weblate.org/projects/tiled/"
+"documentation-index/tr/>\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.7-dev\n"
+
+#: ../../index.rst:8
+#: ../../index.rst:8
+msgid "User Manual"
+msgstr "Kullanıcı Kılavuzu"
+
+#: ../../index.rst:30
+#: ../../index.rst:30
+msgid "Reference"
+msgstr "Referans"
+
+#: ../../index.rst:2
+msgid "Tiled Documentation"
+msgstr "Tiled Belgelendirmesi"
+
+#: ../../index.rst:5
+msgid "If you're not finding what you're looking for in these pages, please don't hesitate to ask questions on the `Tiled Forum <http://discourse.mapeditor.org>`_."
+msgstr ""
+"Bu sayfalarda aradığınızı bulamıyorsanız, lütfen `Tiled Forum "
+"<https://discourse.mapeditor.org>`_ sayfasında soru sormaktan çekinmeyin."

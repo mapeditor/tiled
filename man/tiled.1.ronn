@@ -28,7 +28,7 @@ in C++, using the Qt application framework.
     Prints a list of supported export formats
 
 ## AUTHORS
-<https://github.com/bjorn/tiled/blob/master/AUTHORS>
+<https://github.com/mapeditor/tiled/blob/master/AUTHORS>
 
 ## SEE ALSO
 

@@ -1,4 +1,3 @@
-import qbs
 import qbs.Environment
 import qbs.File
 import qbs.FileInfo
@@ -7,8 +6,10 @@ import qbs.Utilities
 
 Probe {
     id: pythonDllProbe
+
     property string pythonDir: pythonInstallDir // Input
     property string buildVariant: qbs.buildVariant // Input
+    property string minVersion: "3.5" // Input
     property string fileNamePrefix // Output
 
     configure: {
@@ -43,9 +44,9 @@ Probe {
                         + output + "'");
                 return;
             }
-            if (Utilities.versionCompare(versionNumberString, "3.5") < 0) {
+            if (Utilities.versionCompare(versionNumberString, minVersion) < 0) {
                 printWarning("The Python installation at '" + pythonDir
-                             + "' has version " + versionNumberString + ", but 3.5 or higher "
+                             + "' has version " + versionNumberString + ", but " + minVersion + " or higher "
                              + "is required.");
                 return;
             }

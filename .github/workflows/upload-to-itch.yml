@@ -1,0 +1,67 @@
+name: Upload to itch.io
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        type: string
+      snapshot:
+        required: true
+        default: false
+        type: boolean
+
+jobs:
+  itch:
+    name: Upload to itch.io (${{ matrix.channel }})
+    runs-on: ubuntu-latest
+    needs: [version, linux, macos, windows]
+
+    if: github.repository == 'mapeditor/tiled' && github.event_name == 'push' && github.ref == 'refs/heads/snapshot'
+
+    strategy:
+      matrix:
+        include:
+        - channel: linux-64bit
+          artifact: Tiled-Qt6-x86_64.AppImage
+          prepare: chmod +x upload/Tiled-Qt6-x86_64.AppImage
+
+        - channel: macos
+          artifact: Tiled-macos.app
+          prepare: |
+            pushd upload
+            unzip Tiled-macos.zip
+            rm Tiled-macos.zip
+            popd
+
+        - channel: windows-32bit
+          artifact: Tiled-win32
+
+        - channel: windows-64bit
+          artifact: Tiled-win64
+
+    steps:
+    - name: Download artifact
+      id: download
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ matrix.artifact }}
+        path: upload
+
+    - name: Prepare artifact
+      if: matrix.prepare
+      run: ${{ matrix.prepare }}
+
+    - name: Download Butler
+      run: |
+        curl -JOL https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
+        unzip butler-linux-amd64.zip
+
+    - name: Push to itch.io
+      env:
+        BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIALS }}
+        TILED_VERSION: ${{ inputs.version }}
+      run: |
+        ITCH_CHANNEL=${{ matrix.channel }}
+        if [[ "${{ inputs.snapshot }}" == 'true' ]]; then ITCH_CHANNEL="${ITCH_CHANNEL}-snapshot" ; fi
+        ./butler push --userversion=${TILED_VERSION} upload thorbjorn/tiled:${ITCH_CHANNEL}

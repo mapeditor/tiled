@@ -21,26 +21,29 @@
 #include "preferencesdialog.h"
 #include "ui_preferencesdialog.h"
 
-#include "autoupdater.h"
+#include "abstractobjecttool.h"
+#include "editor.h"
 #include "languagemanager.h"
+#include "mapobjectitem.h"
+#include "mapview.h"
 #include "pluginlistmodel.h"
 #include "preferences.h"
+#include "scriptmanager.h"
+#ifdef TILED_SENTRY
+#include "sentryhelper.h"
+#endif
 
+#include <QDesktopServices>
 #include <QSortFilterProxyModel>
-
-#include "qtcompat_p.h"
 
 using namespace Tiled;
 
 PreferencesDialog::PreferencesDialog(QWidget *parent)
     : QDialog(parent)
-    , mUi(new Ui::PreferencesDialog)
+    , mUi(new ::Ui::PreferencesDialog)
     , mLanguages(LanguageManager::instance()->availableLanguages())
 {
     mUi->setupUi(this);
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-#endif
 
 #if defined(QT_NO_OPENGL)
     mUi->openGL->setEnabled(false);
@@ -48,26 +51,29 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     mUi->openGL->setEnabled(true);
 #endif
 
-    for (const QString &name : qAsConst(mLanguages)) {
+    for (const QString &name : std::as_const(mLanguages)) {
         QLocale locale(name);
-        QString string = QString(QLatin1String("%1 (%2)"))
-            .arg(QLocale::languageToString(locale.language()))
-            .arg(QLocale::countryToString(locale.country()));
+        QString string = QStringLiteral("%1 (%2)")
+            .arg(QLocale::languageToString(locale.language()),
+                 QLocale::countryToString(locale.country()));
         mUi->languageCombo->addItem(string, name);
     }
 
     mUi->languageCombo->model()->sort(0);
     mUi->languageCombo->insertItem(0, tr("System default"));
 
-    mUi->styleCombo->addItems(QStringList()
-                              << QApplication::translate("PreferencesDialog", "Native")
-                              << QApplication::translate("PreferencesDialog", "Tiled Fusion"));
+    mUi->styleCombo->addItems({ QApplication::translate("PreferencesDialog", "Native"),
+                                QApplication::translate("PreferencesDialog", "Tiled Fusion") });
 
     mUi->styleCombo->setItemData(0, Preferences::SystemDefaultStyle);
     mUi->styleCombo->setItemData(1, Preferences::TiledStyle);
 
-    PluginListModel *pluginListModel = new PluginListModel(this);
-    QSortFilterProxyModel *pluginProxyModel = new QSortFilterProxyModel(this);
+    mUi->objectSelectionBehaviorCombo->addItems({ tr("Select From Any Layer"),
+                                                  tr("Prefer Selected Layers"),
+                                                  tr("Selected Layers Only") });
+
+    auto *pluginListModel = new PluginListModel(this);
+    auto *pluginProxyModel = new QSortFilterProxyModel(this);
     pluginProxyModel->setSortLocaleAware(true);
     pluginProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
     pluginProxyModel->setSourceModel(pluginListModel);
@@ -79,14 +85,14 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
 
     auto *preferences = Preferences::instance();
 
-    connect(mUi->enableDtd, &QCheckBox::toggled,
-            preferences, &Preferences::setDtdEnabled);
     connect(mUi->reloadTilesetImages, &QCheckBox::toggled,
             preferences, &Preferences::setReloadTilesetsOnChanged);
-    connect(mUi->openLastFiles, &QCheckBox::toggled,
-            preferences, &Preferences::setOpenLastFilesOnStartup);
+    connect(mUi->restoreSession, &QCheckBox::toggled,
+            preferences, &Preferences::setRestoreSessionOnStartup);
     connect(mUi->safeSaving, &QCheckBox::toggled,
             preferences, &Preferences::setSafeSavingEnabled);
+    connect(mUi->exportOnSave, &QCheckBox::toggled,
+            preferences, &Preferences::setExportOnSave);
 
     connect(mUi->embedTilesets, &QCheckBox::toggled, preferences, [preferences] (bool value) {
         preferences->setExportOption(Preferences::EmbedTilesets, value);
@@ -97,36 +103,84 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     connect(mUi->resolveObjectTypesAndProperties, &QCheckBox::toggled, preferences, [preferences] (bool value) {
         preferences->setExportOption(Preferences::ResolveObjectTypesAndProperties, value);
     });
+    connect(mUi->minimizeOutput, &QCheckBox::toggled, preferences, [preferences] (bool value) {
+        preferences->setExportOption(Preferences::ExportMinimized, value);
+    });
+
+#ifdef TILED_SENTRY
+    connect(mUi->sendCrashReports, &QCheckBox::toggled, [] (bool value) {
+        Sentry::instance()->setUserConsent(value ? Sentry::ConsentGiven : Sentry::ConsentRevoked);
+    });
+    mUi->crashReportingLabel->setOpenExternalLinks(true);
+    mUi->crashReportingAndUpdates->setTitle(tr("Updates and Crash Reporting"));
+#else
+    mUi->sendCrashReports->setVisible(false);
+    mUi->crashReportingLabel->setVisible(false);
+#endif
 
     connect(mUi->languageCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, &PreferencesDialog::languageSelected);
     connect(mUi->gridColor, &ColorButton::colorChanged,
             preferences, &Preferences::setGridColor);
+    connect(mUi->backgroundFadeColor, &ColorButton::colorChanged,
+            preferences, &Preferences::setBackgroundFadeColor);
     connect(mUi->gridFine, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
             preferences, &Preferences::setGridFine);
+    connect(mUi->gridMajorX, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            preferences, &Preferences::setGridMajorX);
+    connect(mUi->gridMajorY, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            preferences, &Preferences::setGridMajorY);
     connect(mUi->objectLineWidth, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
             preferences, &Preferences::setObjectLineWidth);
+    connect(mUi->preciseTileObjectSelection, &QCheckBox::toggled,
+            this, [] (bool checked) { MapObjectItem::preciseTileObjectSelection = checked; });
     connect(mUi->openGL, &QCheckBox::toggled,
             preferences, &Preferences::setUseOpenGL);
     connect(mUi->wheelZoomsByDefault, &QCheckBox::toggled,
             preferences, &Preferences::setWheelZoomsByDefault);
-    connect(mUi->invertYAxis, &QCheckBox::toggled,
-            preferences, &Preferences::setInvertYAxis);
+    connect(mUi->autoScrolling, &QCheckBox::toggled,
+            this, [] (bool checked) { MapView::ourAutoScrollingEnabled = checked; });
+    connect(mUi->smoothScrolling, &QCheckBox::toggled,
+            this, [] (bool checked) { MapView::ourSmoothScrollingEnabled = checked; });
+    connect(mUi->duplicateAddsCopy, &QCheckBox::toggled,
+            this, [] (bool checked) { Editor::duplicateAddsCopy = checked; });
 
     connect(mUi->styleCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, &PreferencesDialog::styleComboChanged);
+    connect(mUi->objectSelectionBehaviorCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this, [] (int index) { AbstractObjectTool::ourSelectionBehavior = static_cast<AbstractObjectTool::SelectionBehavior>(index); });
     connect(mUi->baseColor, &ColorButton::colorChanged,
             preferences, &Preferences::setBaseColor);
     connect(mUi->selectionColor, &ColorButton::colorChanged,
             preferences, &Preferences::setSelectionColor);
 
-    connect(mUi->autoUpdateCheckBox, &QPushButton::toggled,
-            this, &PreferencesDialog::autoUpdateToggled);
-    connect(mUi->checkForUpdate, &QPushButton::clicked,
-            this, &PreferencesDialog::checkForUpdates);
+    connect(mUi->fontGroupBox, &QGroupBox::toggled,
+            preferences, &Preferences::setUseCustomFont);
+    connect(mUi->fontComboBox, &QFontComboBox::currentFontChanged,
+            preferences, &Preferences::setCustomFont);
+    connect(mUi->fontSize, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            this, [=] (int size) {
+        QFont font = mUi->fontComboBox->currentFont();
+        font.setPointSize(size);
+        mUi->fontComboBox->setCurrentFont(font);
+    });
+
+    connect(mUi->displayNewsCheckBox, &QCheckBox::toggled,
+            preferences, &Preferences::setDisplayNews);
+    connect(mUi->displayNewVersionCheckBox, &QCheckBox::toggled,
+            preferences, &Preferences::setCheckForUpdates);
 
     connect(pluginListModel, &PluginListModel::setPluginEnabled,
             preferences, &Preferences::setPluginEnabled);
+
+    const QString &extensionsPath = ScriptManager::instance().extensionsPath();
+    mUi->extensionsPathEdit->setText(extensionsPath);
+    mUi->openExtensionsPathButton->setEnabled(!extensionsPath.isEmpty());
+    connect(mUi->openExtensionsPathButton, &QPushButton::clicked, this, [=] {
+        QDesktopServices::openUrl(QUrl::fromLocalFile(extensionsPath));
+    });
+
+    resize(sizeHint());
 }
 
 PreferencesDialog::~PreferencesDialog()
@@ -159,19 +213,34 @@ void PreferencesDialog::fromPreferences()
 {
     const Preferences *prefs = Preferences::instance();
 
+    // General
     mUi->reloadTilesetImages->setChecked(prefs->reloadTilesetsOnChange());
-    mUi->enableDtd->setChecked(prefs->dtdEnabled());
-    mUi->openLastFiles->setChecked(prefs->openLastFilesOnStartup());
+    mUi->restoreSession->setChecked(prefs->restoreSessionOnStartup());
     mUi->safeSaving->setChecked(prefs->safeSavingEnabled());
+    mUi->exportOnSave->setChecked(prefs->exportOnSave());
 
     mUi->embedTilesets->setChecked(prefs->exportOption(Preferences::EmbedTilesets));
     mUi->detachTemplateInstances->setChecked(prefs->exportOption(Preferences::DetachTemplateInstances));
     mUi->resolveObjectTypesAndProperties->setChecked(prefs->exportOption(Preferences::ResolveObjectTypesAndProperties));
+    mUi->minimizeOutput->setChecked(prefs->exportOption(Preferences::ExportMinimized));
 
+#ifdef TILED_SENTRY
+    mUi->sendCrashReports->setChecked(Sentry::instance()->userConsent() == Sentry::ConsentGiven);
+#endif
+
+    // Interface
+    mUi->preciseTileObjectSelection->setChecked(MapObjectItem::preciseTileObjectSelection);
     if (mUi->openGL->isEnabled())
         mUi->openGL->setChecked(prefs->useOpenGL());
     mUi->wheelZoomsByDefault->setChecked(prefs->wheelZoomsByDefault());
-    mUi->invertYAxis->setChecked(prefs->invertYAxis());
+    mUi->autoScrolling->setChecked(MapView::ourAutoScrollingEnabled);
+    mUi->smoothScrolling->setChecked(MapView::ourSmoothScrollingEnabled);
+    mUi->duplicateAddsCopy->setChecked(Editor::duplicateAddsCopy);
+
+    const QFont customFont = prefs->customFont();
+    mUi->fontGroupBox->setChecked(prefs->useCustomFont());
+    mUi->fontComboBox->setCurrentFont(customFont);
+    mUi->fontSize->setValue(customFont.pointSize());
 
     // Not found (-1) ends up at index 0, system default
     int languageIndex = mUi->languageCombo->findData(prefs->language());
@@ -179,14 +248,23 @@ void PreferencesDialog::fromPreferences()
         languageIndex = 0;
     mUi->languageCombo->setCurrentIndex(languageIndex);
     mUi->gridColor->setColor(prefs->gridColor());
+    mUi->backgroundFadeColor->setColor(prefs->backgroundFadeColor());
     mUi->gridFine->setValue(prefs->gridFine());
+    mUi->gridMajorX->setValue(prefs->gridMajor().width());
+    mUi->gridMajorY->setValue(prefs->gridMajor().height());
     mUi->objectLineWidth->setValue(prefs->objectLineWidth());
 
+    // Updates
+    mUi->displayNewsCheckBox->setChecked(prefs->displayNews());
+    mUi->displayNewVersionCheckBox->setChecked(prefs->checkForUpdates());
+
+    // Theme
     int styleComboIndex = mUi->styleCombo->findData(prefs->applicationStyle());
     if (styleComboIndex == -1)
         styleComboIndex = 1;
 
     mUi->styleCombo->setCurrentIndex(styleComboIndex);
+    mUi->objectSelectionBehaviorCombo->setCurrentIndex(AbstractObjectTool::ourSelectionBehavior);
     mUi->baseColor->setColor(prefs->baseColor());
     mUi->selectionColor->setColor(prefs->selectionColor());
     bool systemStyle = prefs->applicationStyle() == Preferences::SystemDefaultStyle;
@@ -194,18 +272,6 @@ void PreferencesDialog::fromPreferences()
     mUi->baseColorLabel->setEnabled(!systemStyle);
     mUi->selectionColor->setEnabled(!systemStyle);
     mUi->selectionColorLabel->setEnabled(!systemStyle);
-
-    // Auto-updater settings
-    auto updater = AutoUpdater::instance();
-    mUi->autoUpdateCheckBox->setEnabled(updater);
-    mUi->checkForUpdate->setEnabled(updater);
-    if (updater) {
-        bool autoUpdateEnabled = updater->automaticallyChecksForUpdates();
-        auto lastChecked = updater->lastUpdateCheckDate();
-        auto lastCheckedString = lastChecked.toString(Qt::DefaultLocaleLongDate);
-        mUi->autoUpdateCheckBox->setChecked(autoUpdateEnabled);
-        mUi->lastAutoUpdateCheckLabel->setText(tr("Last checked: %1").arg(lastCheckedString));
-    }
 }
 
 void PreferencesDialog::retranslateUi()
@@ -214,6 +280,10 @@ void PreferencesDialog::retranslateUi()
 
     mUi->styleCombo->setItemText(0, QApplication::translate("PreferencesDialog", "Native"));
     mUi->styleCombo->setItemText(1, QApplication::translate("PreferencesDialog", "Tiled Fusion"));
+
+    mUi->objectSelectionBehaviorCombo->setItemText(0, tr("Select From Any Layer"));
+    mUi->objectSelectionBehaviorCombo->setItemText(1, tr("Prefer Selected Layers"));
+    mUi->objectSelectionBehaviorCombo->setItemText(3, tr("Selected Layers Only"));
 }
 
 void PreferencesDialog::styleComboChanged()
@@ -230,16 +300,4 @@ void PreferencesDialog::styleComboChanged()
     mUi->selectionColorLabel->setEnabled(!systemStyle);
 }
 
-void PreferencesDialog::autoUpdateToggled(bool checked)
-{
-    if (auto updater = AutoUpdater::instance())
-        updater->setAutomaticallyChecksForUpdates(checked);
-}
-
-void PreferencesDialog::checkForUpdates()
-{
-    if (auto updater = AutoUpdater::instance()) {
-        updater->checkForUpdates();
-        // todo: do something with the last checked label
-    }
-}
+#include "moc_preferencesdialog.cpp"

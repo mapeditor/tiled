@@ -35,7 +35,14 @@ private:
 
 void test_StaggeredRenderer::initTestCase()
 {
-    mMap = new Map(Map::Staggered, 10, 10, 64, 32);
+    Map::Parameters mapParameters;
+    mapParameters.orientation = Map::Staggered;
+    mapParameters.width = 10;
+    mapParameters.height = 10;
+    mapParameters.tileWidth = 64;
+    mapParameters.tileHeight = 32;
+
+    mMap = new Map(mapParameters);
     TileLayer *tileLayer = new TileLayer(QString(),
                                          0, 0,
                                          mMap->width(), mMap->height());
@@ -45,7 +52,7 @@ void test_StaggeredRenderer::initTestCase()
 void test_StaggeredRenderer::cleanupTestCase()
 {
     delete mMap;
-    mMap = 0;
+    mMap = nullptr;
 }
 
 void test_StaggeredRenderer::mapSize()

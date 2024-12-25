@@ -30,32 +30,57 @@ SnapHelper::SnapHelper(const MapRenderer *renderer,
     : mRenderer(renderer)
 {
     Preferences *preferences = Preferences::instance();
-    mSnapToGrid = preferences->snapToGrid();
-    mSnapToFineGrid = preferences->snapToFineGrid();
+    if (preferences->snapToGrid())
+        mSnapMode = SnapToGrid;
+    else if (preferences->snapToFineGrid())
+        mSnapMode = SnapToFineGrid;
+
     mSnapToPixels = preferences->snapToPixels();
 
-    if (modifiers & Qt::ControlModifier)
-        toggleSnap();
+    if (modifiers & Qt::ControlModifier) {
+        if (modifiers & Qt::ShiftModifier) {
+            toggleFineSnap();
+        } else { 
+            toggleSnap();
+        }
+    }
 }
 
 void SnapHelper::toggleSnap()
 {
-    mSnapToGrid = !mSnapToGrid;
-    mSnapToFineGrid = false;
+    switch (mSnapMode) {
+    case NoSnap:
+        mSnapMode = SnapToGrid;
+        break;
+    case SnapToGrid:
+    case SnapToFineGrid:
+        mSnapMode = NoSnap;
+        break;
+    }
+}
+  
+void SnapHelper::toggleFineSnap()
+{
+    switch (mSnapMode) {
+    case NoSnap:
+    case SnapToGrid:
+        mSnapMode = SnapToFineGrid;
+        break;
+    case SnapToFineGrid:
+        mSnapMode = SnapToGrid;
+        break;
+    }
 }
 
 void SnapHelper::snap(QPointF &pixelPos) const
 {
-    if (mSnapToFineGrid || mSnapToGrid) {
-        QPointF tileCoords = mRenderer->pixelToTileCoords(pixelPos);
-        if (mSnapToFineGrid) {
-            int gridFine = Preferences::instance()->gridFine();
-            tileCoords = (tileCoords * gridFine).toPoint();
-            tileCoords /= gridFine;
+    if (mSnapMode != NoSnap) {
+        if (mSnapMode == SnapToFineGrid) {
+            const int gridFine = Preferences::instance()->gridFine();
+            pixelPos = mRenderer->snapToGrid(pixelPos, gridFine);
         } else {
-            tileCoords = tileCoords.toPoint();
+            pixelPos = mRenderer->snapToGrid(pixelPos);
         }
-        pixelPos = mRenderer->tileToPixelCoords(tileCoords);
     } else if (mSnapToPixels) {
         QPointF screenPos = mRenderer->pixelToScreenCoords(pixelPos);
         pixelPos = mRenderer->screenToPixelCoords(screenPos.toPoint());

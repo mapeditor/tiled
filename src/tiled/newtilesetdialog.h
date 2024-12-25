@@ -46,7 +46,7 @@ public:
     };
 
     NewTilesetDialog(QWidget *parent = nullptr);
-    ~NewTilesetDialog();
+    ~NewTilesetDialog() override;
 
     void setImagePath(const QString &path);
     void setTileSize(QSize size);
@@ -57,7 +57,7 @@ public:
 
     bool editTilesetParameters(TilesetParameters &parameters);
 
-private slots:
+private:
     void browse();
     void nameEdited(const QString &name);
     void tilesetTypeChanged(int index);
@@ -67,7 +67,6 @@ private slots:
     void pickColorFromImage();
     void colorSelected(QColor);
 
-private:
     void setMode(Mode mode);
 
     Mode mMode;

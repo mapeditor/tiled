@@ -20,11 +20,55 @@
 
 #include "changeproperties.h"
 
-#include "document.h"
+#include "changeevents.h"
+#include "mapdocument.h"
+#include "tilesetdocument.h"
 
 #include <QCoreApplication>
 
-using namespace Tiled;
+namespace Tiled {
+
+ChangeClassName::ChangeClassName(Document *document,
+                                 const QList<Object *> &objects,
+                                 const QString &className,
+                                 QUndoCommand *parent)
+    : ChangeValue(document, objects, className, parent)
+{
+    setText(QCoreApplication::translate("Undo Commands", "Change Type"));
+}
+
+void ChangeClassName::undo()
+{
+    ChangeValue<Object, QString>::undo();
+    emitChangeEvent();
+}
+
+void ChangeClassName::redo()
+{
+    ChangeValue<Object, QString>::redo();
+    emitChangeEvent();
+}
+
+QString ChangeClassName::getValue(const Object *object) const
+{
+    return object->className();
+}
+
+void ChangeClassName::setValue(Object *object, const QString &className) const
+{
+    object->setClassName(className);
+}
+
+void ChangeClassName::emitChangeEvent()
+{
+    const ObjectsChangeEvent event(objects(), ObjectsChangeEvent::ClassProperty);
+    emit document()->changed(event);
+
+    if (document()->type() == Document::TilesetDocumentType)
+        for (MapDocument *mapDocument : static_cast<TilesetDocument*>(document())->mapDocuments())
+            emit mapDocument->changed(event);
+}
+
 
 ChangeProperties::ChangeProperties(Document *document,
                                    const QString &kind,
@@ -45,14 +89,25 @@ ChangeProperties::ChangeProperties(Document *document,
     }
 }
 
+void ChangeProperties::undo()
+{
+    swapProperties();
+}
+
 void ChangeProperties::redo()
 {
     swapProperties();
 }
 
-void ChangeProperties::undo()
+ChangeProperties *ChangeProperties::clone(QUndoCommand *parent) const
 {
-    swapProperties();
+    auto clone = new ChangeProperties(mDocument,
+                                      QString(),
+                                      mObject,
+                                      mNewProperties,
+                                      parent);
+    clone->setText(text());
+    return clone;
 }
 
 void ChangeProperties::swapProperties()
@@ -68,10 +123,20 @@ SetProperty::SetProperty(Document *document,
                          const QString &name,
                          const QVariant &value,
                          QUndoCommand *parent)
+    : SetProperty(document, objects, QStringList(name), value, parent)
+{
+}
+
+SetProperty::SetProperty(Document *document,
+                         const QList<Object *> &objects,
+                         const QStringList &path,
+                         const QVariant &value,
+                         QUndoCommand *parent)
     : QUndoCommand(parent)
     , mDocument(document)
     , mObjects(objects)
-    , mName(name)
+    , mName(path.first())
+    , mPath(path)
     , mValue(value)
 {
     for (Object *obj : objects) {
@@ -101,7 +166,26 @@ void SetProperty::redo()
 {
     const QList<Object*> &objects = mObjects;
     for (Object *obj : objects)
-        mDocument->setProperty(obj, mName, mValue);
+        mDocument->setPropertyMember(obj, mPath, mValue);
+}
+
+bool SetProperty::mergeWith(const QUndoCommand *other)
+{
+    // If the same property is changed of the same object, the commands can
+    // be trivially merged. The value is already changed on the object, and
+    // the old value already remembered on this undo command.
+    auto o = static_cast<const SetProperty*>(other);
+    if (mDocument == o->mDocument && mPath == o->mPath && mObjects == o->mObjects) {
+        mValue = o->mValue;
+
+        setObsolete(std::all_of(mProperties.cbegin(), mProperties.cend(),
+                                [this] (const ObjectProperty &p) {
+            return p.existed && p.previousValue == mValue;
+        }));
+
+        return true;
+    }
+    return false;
 }
 
 
@@ -156,3 +240,5 @@ RenameProperty::RenameProperty(Document *document,
         new SetProperty(document, objects, newName, value, this);
     }
 }
+
+} // namespace Tiled

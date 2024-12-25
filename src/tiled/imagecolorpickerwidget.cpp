@@ -24,14 +24,13 @@
 
 #include "utils.h"
 
-#include <QDesktopWidget>
 #include <QMouseEvent>
 
 using namespace Tiled;
 
-ImageColorPickerWidget::ImageColorPickerWidget(QWidget *parent) :
-    QFrame(parent, Qt::Popup),
-    mUi(new Ui::ImageColorPickerWidget)
+ImageColorPickerWidget::ImageColorPickerWidget(QWidget *parent)
+    : QFrame(parent, Qt::Popup)
+    , mUi(new Ui::ImageColorPickerWidget)
 {
     mUi->setupUi(this);
 
@@ -58,28 +57,46 @@ bool ImageColorPickerWidget::selectColor(const QString &image)
     mScaleX = 1;
     mScaleY = 1;
 
-    QRectF rct = QApplication::desktop()->availableGeometry(this);
-    double maxW = rct.width() * (2.0/3.0), maxH = rct.height() * (2.0/3.0);
+    const QRect screenRect = Utils::screenRect(parentWidget());
+    const int maxW = screenRect.width() * 2 / 3;
+    const int maxH = screenRect.height() * 2 / 3;
 
     if (mImage.width() > maxW || mImage.height() > maxH) {
-        pix = pix.scaled((int)maxW, (int)maxH, Qt::KeepAspectRatio);
-        mScaleX = (double)qMin(mImage.width(), pix.width()) / (double)qMax(mImage.width(), pix.width());
-        mScaleY = (double)qMin(mImage.height(), pix.height()) / (double)qMax(mImage.height(), pix.height());
+        pix = pix.scaled(maxW, maxH, Qt::KeepAspectRatio);
+        mScaleX = qMin<double>(mImage.width(), pix.width()) / qMax<double>(mImage.width(), pix.width());
+        mScaleY = qMin<double>(mImage.height(), pix.height()) / qMax<double>(mImage.height(), pix.height());
     }
+
+    mScaledImageSize = pix.size();
 
     mUi->imageArea->setPixmap(pix);
     mUi->imageArea->adjustSize();
+
+    // Center the widget on the screen of its parent
+    QRect desiredGeometry(QPoint(), sizeHint());
+    desiredGeometry.moveCenter(screenRect.center());
+    setGeometry(desiredGeometry);
 
     show();
 
     return true;
 }
 
-void ImageColorPickerWidget::onMouseMove(QMouseEvent* event)
+void ImageColorPickerWidget::onMouseMove(QMouseEvent *event)
 {
     if (!mImage.isNull()) {
-        mPreviewColor = mImage.pixel(event->pos().x() / mScaleX,
-                                     event->pos().y() / mScaleY);
+        QPoint imgPos = event->pos();
+
+        // Correct for centering of the image
+        imgPos.rx() -= (mUi->imageArea->width() - mScaledImageSize.width()) / 2;
+        imgPos.ry() -= (mUi->imageArea->height() - mScaledImageSize.height()) / 2;
+
+        // Correct for scaling of the image
+        imgPos.rx() /= mScaleX;
+        imgPos.ry() /= mScaleY;
+
+        // Contains check avoids Qt printing a warning when out of range
+        mPreviewColor = mImage.rect().contains(imgPos) ? mImage.pixel(imgPos) : QColor();
         if (!mPreviewColor.isValid())
             mPreviewColor = mSelectedColor;
 
@@ -91,7 +108,7 @@ void ImageColorPickerWidget::onMouseMove(QMouseEvent* event)
     }
 }
 
-void ImageColorPickerWidget::onMouseRelease(QMouseEvent * event)
+void ImageColorPickerWidget::onMouseRelease(QMouseEvent *event)
 {
     if (event->button() == Qt::MouseButton::LeftButton) {
         if (!mImage.isNull()) {
@@ -104,7 +121,4 @@ void ImageColorPickerWidget::onMouseRelease(QMouseEvent * event)
     }
 }
 
-void ImageColorPickerWidget::resizeEvent(QResizeEvent *)
-{
-    move(QApplication::desktop()->availableGeometry(parentWidget()).center() - rect().center());
-}
+#include "moc_imagecolorpickerwidget.cpp"

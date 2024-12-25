@@ -22,9 +22,11 @@
 
 #include "undocommands.h"
 
-#include <QHash>
 #include <QRegion>
 #include <QUndoCommand>
+
+#include <memory>
+#include <unordered_map>
 
 namespace Tiled {
 
@@ -42,18 +44,11 @@ class PaintTileLayer : public QUndoCommand
 {
 public:
     /**
-     * Constructor.
+     * Minimal constructor, to be used in combination with paint() or erase().
      *
      * @param mapDocument the map document that's being edited
-     * @param target      the target layer to paint on
-     * @param x           the x position of the paint location
-     * @param y           the y position of the paint location
-     * @param source      the source layer to paint on the target layer
      */
     PaintTileLayer(MapDocument *mapDocument,
-                   TileLayer *target,
-                   int x, int y,
-                   const TileLayer *source,
                    QUndoCommand *parent = nullptr);
 
     /**
@@ -80,6 +75,15 @@ public:
      */
     void setMergeable(bool mergeable);
 
+    void paint(TileLayer *target,
+               int x,
+               int y,
+               const TileLayer *source,
+               const QRegion &paintRegion);
+
+    void erase(TileLayer *target,
+               const QRegion &eraseRegion);
+
     void undo() override;
     void redo() override;
 
@@ -90,15 +94,18 @@ private:
     struct LayerData
     {
         void mergeWith(const LayerData &o);
+        void mergeWith(LayerData &&o);
 
-        TileLayer *mSource = nullptr;
-        TileLayer *mErased = nullptr;
-        int mX, mY;
+        std::unique_ptr<TileLayer> mSource;
+        std::unique_ptr<TileLayer> mErased;
         QRegion mPaintedRegion;
+
+    private:
+        void copy(const LayerData &o);
     };
 
     MapDocument *mMapDocument;
-    QHash<TileLayer*, LayerData> mLayerData;
+    std::unordered_map<TileLayer*, LayerData> mLayerData;
     bool mMergeable;
 };
 

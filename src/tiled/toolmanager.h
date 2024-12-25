@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "layer.h"
+
 #include <QActionGroup>
 #include <QObject>
 
@@ -27,8 +29,8 @@ class QAction;
 
 namespace Tiled {
 
-class Tile;
 class ObjectTemplate;
+class Tile;
 
 class AbstractTool;
 class MapDocument;
@@ -43,20 +45,26 @@ class MapDocument;
 class ToolManager : public QObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(ToolManager)
 
 public:
     ToolManager(QObject *parent = nullptr);
     ~ToolManager() override;
 
+    void setRegisterActions(bool enabled);
+
     void setMapDocument(MapDocument *mapDocument);
 
     QAction *registerTool(AbstractTool *tool);
+    void unregisterTool(AbstractTool *tool);
 
     bool selectTool(AbstractTool *tool);
     AbstractTool *selectedTool() const;
 
     template<typename Tool>
     Tool *findTool();
+
+    QAction *findAction(AbstractTool *tool) const;
 
     void retranslateTools();
 
@@ -84,24 +92,28 @@ signals:
 
 private slots:
     void actionTriggered(QAction *action);
+    void toolChanged();
     void toolEnabledChanged(bool enabled);
-    void selectEnabledTool();
+
+    void scheduleAutoSwitchTool();
+    void autoSwitchTool();
+
+    void currentLayerChanged(Layer *layer);
 
 private:
-    Q_DISABLE_COPY(ToolManager)
-
     AbstractTool *firstEnabledTool() const;
     void setSelectedTool(AbstractTool *tool);
 
     QActionGroup *mActionGroup;
-    AbstractTool *mSelectedTool;
-    AbstractTool *mDisabledTool;
-    AbstractTool *mPreviouslyDisabledTool;
-    MapDocument *mMapDocument;
-    Tile *mTile;
-    ObjectTemplate *mObjectTemplate;
+    AbstractTool *mSelectedTool = nullptr;
+    QHash<Layer::TypeFlag, AbstractTool *> mSelectedToolForLayerType;
+    MapDocument *mMapDocument = nullptr;
+    Tile *mTile = nullptr;
+    ObjectTemplate *mObjectTemplate = nullptr;
+    int mLayerType = 0;
 
-    bool mSelectEnabledToolPending;
+    bool mRegisterActions = true;
+    bool mAutoSwitchToolPending = false;
 };
 
 /**

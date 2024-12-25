@@ -42,8 +42,9 @@
 
 using namespace Tiled;
 
-CreateObjectTool::CreateObjectTool(QObject *parent)
-    : AbstractObjectTool(QString(),
+CreateObjectTool::CreateObjectTool(Id id, QObject *parent)
+    : AbstractObjectTool(id,
+                         QString(),
                          QIcon(),
                          QKeySequence(),
                          parent)
@@ -51,7 +52,8 @@ CreateObjectTool::CreateObjectTool(QObject *parent)
     , mNewMapObjectGroup(new ObjectGroup)
     , mObjectGroupItem(new ObjectGroupItem(mNewMapObjectGroup.get()))
 {
-    mObjectGroupItem->setZValue(10000); // same as the BrushItem
+    mNewMapObjectGroup->setLocked(true);    // prevents selection of preview object
+    mObjectGroupItem->setZValue(10000);     // same as the BrushItem
 }
 
 CreateObjectTool::~CreateObjectTool()
@@ -62,10 +64,14 @@ void CreateObjectTool::activate(MapScene *scene)
 {
     AbstractObjectTool::activate(scene);
     scene->addItem(mObjectGroupItem.get());
+
+    connect(scene, &MapScene::parallaxParametersChanged, this, &CreateObjectTool::updateNewObjectGroupItemPos);
 }
 
 void CreateObjectTool::deactivate(MapScene *scene)
 {
+    disconnect(scene, &MapScene::parallaxParametersChanged, this, &CreateObjectTool::updateNewObjectGroupItemPos);
+
     if (mNewMapObjectItem)
         cancelNewMapObject();
 
@@ -120,7 +126,7 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
         tryCreatePreview(pos, modifiers);
 
     if (mState == Preview || mState == CreatingObject) {
-        QPointF offset = mNewMapObjectItem->mapObject()->objectGroup()->totalOffset();
+        QPointF offset = mapScene()->absolutePositionForLayer(*mNewMapObjectItem->mapObject()->objectGroup());
         mouseMovedWhileCreatingObject(pos - offset, modifiers);
     }
 }
@@ -132,9 +138,10 @@ void CreateObjectTool::mouseMoved(const QPointF &pos,
 void CreateObjectTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::RightButton) {
-        if (mState == CreatingObject)
+        if (mState == CreatingObject) {
             cancelNewMapObject();
-        return;
+            return;
+        }
     }
 
     if (event->button() != Qt::LeftButton) {
@@ -173,22 +180,25 @@ void CreateObjectTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
 
     if (mState == Preview || mState == CreatingObject) {
         // The mouse didn't actually move, but the modifiers do affect the snapping
-        QPointF offset = mNewMapObjectItem->mapObject()->objectGroup()->totalOffset();
+        QPointF offset = mapScene()->absolutePositionForLayer(*mNewMapObjectItem->mapObject()->objectGroup());
         mouseMovedWhileCreatingObject(mLastScenePos - offset, modifiers);
     }
 }
 
-void CreateObjectTool::mapDocumentChanged(MapDocument *oldDocument,
-                                          MapDocument *newDocument)
+void CreateObjectTool::changeEvent(const ChangeEvent &event)
 {
-    if (oldDocument) {
-        disconnect(oldDocument, &MapDocument::objectGroupChanged,
-                   this, &CreateObjectTool::objectGroupChanged);
-    }
+    AbstractObjectTool::changeEvent(event);
 
-    if (newDocument) {
-        connect(newDocument, &MapDocument::objectGroupChanged,
-                this, &CreateObjectTool::objectGroupChanged);
+    switch (event.type) {
+    case ChangeEvent::LayerChanged:
+        if (static_cast<const LayerChangeEvent&>(event).properties & LayerChangeEvent::PositionProperties)
+            updateNewObjectGroupItemPos();
+        break;
+    case ChangeEvent::ObjectGroupChanged:
+        objectGroupChanged(static_cast<const ObjectGroupChangeEvent&>(event));
+        break;
+    default:
+        break;
     }
 }
 
@@ -213,13 +223,16 @@ void CreateObjectTool::updateEnabledState()
                 mNewMapObjectItem->syncWithMapObject();
             }
 
-            auto offset = objectGroup->totalOffset();
-            if (mNewMapObjectGroup->offset() != offset) {
+            const auto offset = objectGroup->totalOffset();
+            const auto parallaxFactor = objectGroup->effectiveParallaxFactor();
+            if (mNewMapObjectGroup->offset() != offset || mNewMapObjectGroup->parallaxFactor() != parallaxFactor) {
                 mNewMapObjectGroup->setOffset(offset);
-                mObjectGroupItem->setPos(offset);
+                mNewMapObjectGroup->setParallaxFactor(parallaxFactor);
+
+                updateNewObjectGroupItemPos();
 
                 // The mouse didn't actually move, but the offset affects the position
-                mouseMovedWhileCreatingObject(mLastScenePos - offset, mLastModifiers);
+                mouseMovedWhileCreatingObject(mLastScenePos - mObjectGroupItem->pos(), mLastModifiers);
             }
         }
     }
@@ -240,8 +253,9 @@ bool CreateObjectTool::startNewMapObject(const QPointF &pos,
 
     mNewMapObjectGroup->setColor(objectGroup->color());
     mNewMapObjectGroup->setOffset(objectGroup->totalOffset());
+    mNewMapObjectGroup->setParallaxFactor(objectGroup->effectiveParallaxFactor());
 
-    mObjectGroupItem->setPos(mNewMapObjectGroup->offset());
+    updateNewObjectGroupItemPos();
 
     mNewMapObjectItem = new MapObjectItem(newMapObject, mapDocument(), mObjectGroupItem.get());
     mNewMapObjectItem->setOpacity(0.5);
@@ -270,17 +284,23 @@ std::unique_ptr<MapObject> CreateObjectTool::clearNewMapObjectItem()
     return newMapObject;
 }
 
-void CreateObjectTool::objectGroupChanged(ObjectGroup *objectGroup)
+void CreateObjectTool::objectGroupChanged(const ObjectGroupChangeEvent &event)
 {
-    if (objectGroup != currentObjectGroup())
+    if (event.objectGroup != currentObjectGroup())
         return;
 
-    if (mNewMapObjectGroup->color() != objectGroup->color()) {
-        mNewMapObjectGroup->setColor(objectGroup->color());
+    if (event.properties & ObjectGroupChangeEvent::ColorProperty) {
+        mNewMapObjectGroup->setColor(event.objectGroup->color());
 
         if (mNewMapObjectItem)
             mNewMapObjectItem->syncWithMapObject();
     }
+}
+
+void CreateObjectTool::updateNewObjectGroupItemPos()
+{
+    if (mObjectGroupItem && mapScene())
+        mObjectGroupItem->setPos(mapScene()->absolutePositionForLayer(*mNewMapObjectGroup));
 }
 
 void CreateObjectTool::tryCreatePreview(const QPointF &scenePos,
@@ -291,7 +311,7 @@ void CreateObjectTool::tryCreatePreview(const QPointF &scenePos,
         return;
 
     const MapRenderer *renderer = mapDocument()->renderer();
-    const QPointF offsetPos = scenePos - objectGroup->totalOffset();
+    const QPointF offsetPos = scenePos - mapScene()->absolutePositionForLayer(*objectGroup);
 
     QPointF pixelCoords = renderer->screenToPixelCoords(offsetPos);
     SnapHelper(renderer, modifiers).snap(pixelCoords);
@@ -322,7 +342,7 @@ void CreateObjectTool::finishNewMapObject()
                                               newMapObject.get());
 
     if (Tileset *tileset = newMapObject.get()->cell().tileset()) {
-        SharedTileset sharedTileset = tileset->sharedPointer();
+        SharedTileset sharedTileset = tileset->sharedFromThis();
 
         // Make sure this tileset is part of the map
         if (!mapDocument()->map()->tilesets().contains(sharedTileset))
@@ -331,7 +351,7 @@ void CreateObjectTool::finishNewMapObject()
 
     mapDocument()->undoStack()->push(addObjectCommand);
 
-    mapDocument()->setSelectedObjects(QList<MapObject*>() << newMapObject.get());
+    mapDocument()->setSelectedObjects({newMapObject.get()});
     newMapObject.release();     // now owned by its object group
 
     mState = Idle;
@@ -351,3 +371,5 @@ void CreateObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt::Key
     mNewMapObjectItem->mapObject()->setPosition(pixelCoords);
     mNewMapObjectItem->syncWithMapObject();
 }
+
+#include "moc_createobjecttool.cpp"

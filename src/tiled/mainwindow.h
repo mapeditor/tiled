@@ -23,19 +23,20 @@
 
 #pragma once
 
-#include "clipboardmanager.h"
-#include "consoledock.h"
 #include "document.h"
 #include "preferences.h"
 #include "preferencesdialog.h"
+#include "project.h"
+#include "session.h"
+#include "tilededitor_global.h"
 
 #include <QMainWindow>
 #include <QPointer>
 #include <QSessionManager>
-#include <QSettings>
 
 class QComboBox;
 class QLabel;
+class QToolButton;
 
 namespace Ui {
 class MainWindow;
@@ -45,17 +46,25 @@ namespace Tiled {
 
 class FileFormat;
 class TileLayer;
-class Terrain;
 
-class ActionManager;
 class AutomappingManager;
+class ConsoleDock;
 class DocumentManager;
+class Editor;
+class IssuesDock;
+class LocatorSource;
+class LocatorWidget;
 class MapDocument;
 class MapDocumentActionHandler;
+class MapEditor;
 class MapScene;
 class MapView;
-class ObjectTypesEditor;
+class PropertyTypesEditor;
+class ProjectDock;
+class ProjectModel;
 class TilesetDocument;
+class TilesetEditor;
+class WorldDocument;
 class Zoomable;
 
 /**
@@ -64,15 +73,17 @@ class Zoomable;
  * Represents the main user interface, including the menu bar. It keeps track
  * of the current file and is also the entry point of all menu actions.
  */
-class MainWindow : public QMainWindow
+class TILED_EDITOR_EXPORT MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = 0);
+    MainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = {});
     ~MainWindow() override;
 
     void commitData(QSessionManager &manager);
+
+    void initializeSession();
 
     /**
      * Opens the given file. When opened successfully, the file is added to the
@@ -85,10 +96,10 @@ public:
      */
     bool openFile(const QString &fileName, FileFormat *fileFormat = nullptr);
 
-    /**
-     * Attempt to open the previously opened file.
-     */
-    void openLastFiles();
+    bool addRecentProjectsActions(QMenu *menu) const;
+
+    static MainWindow *instance();
+    static MainWindow *maybeInstance();
 
 protected:
     bool event(QEvent *event) override;
@@ -96,24 +107,34 @@ protected:
     void closeEvent(QCloseEvent *event) override;
     void changeEvent(QEvent *event) override;
 
-    void keyPressEvent(QKeyEvent *) override;
-    void keyReleaseEvent(QKeyEvent *) override;
-
     void dragEnterEvent(QDragEnterEvent *) override;
     void dropEvent(QDropEvent *) override;
 
-private slots:
+    void resizeEvent(QResizeEvent *) override;
+
+private:
     void newMap();
     void openFileDialog();
+    void openFileInProject();
+    void searchActions();
+    void showLocatorWidget(LocatorSource *source);
     bool saveFile();
     bool saveFileAs();
     void saveAll();
     void export_(); // 'export' is a reserved word
+    bool exportDocument(Document *document);
     void exportAs();
     void exportAsImage();
     void reload();
     void closeFile();
-    void closeAllFiles();
+    bool closeAllFiles();
+
+    bool openProjectFile(const QString &fileName);
+    void newProject();
+    bool closeProject();
+    bool switchProject(std::unique_ptr<Project> project);
+    void restoreSession();
+    void projectProperties();
 
     void cut();
     void copy();
@@ -121,18 +142,26 @@ private slots:
     void pasteInPlace();
     void delete_();
     void openPreferences();
+    void openCrashReporterPopup();
+    void openProjectExtensionsPopup();
+
+    void showPopup(QWidget *widget);
+    void updatePopupGeometry(QSize size);
 
     void labelVisibilityActionTriggered(QAction *action);
     void zoomIn();
     void zoomOut();
     void zoomNormal();
+    void fitInView();
     void setFullScreen(bool fullScreen);
     void toggleClearView(bool clearView);
+    void setLayoutLocked(bool locked);
     void resetToDefaultLayout();
 
     bool newTileset(const QString &path = QString());
     void reloadTilesetImages();
     void addExternalTileset();
+    void addAutomappingRulesTileset();
     void resizeMap();
     void offsetMap();
     void editMapProperties();
@@ -144,22 +173,26 @@ private slots:
     void updateZoomable();
     void updateZoomActions();
     void openDocumentation();
-    void becomePatron();
+    void openForum();
+    void showDonationPopup();
     void aboutTiled();
     void openRecentFile();
+    void reopenClosedFile();
+    void openRecentProject();
 
     void documentChanged(Document *document);
+    void documentSaved(Document *document);
     void closeDocument(int index);
+
+    void currentEditorChanged(Editor *editor);
 
     void reloadError(const QString &error);
     void autoMappingError(bool automatic);
     void autoMappingWarning(bool automatic);
 
-    void onObjectTypesEditorClosed();
-
+    void onPropertyTypesEditorClosed();
     void ensureHasBorderInFullScreen();
 
-private:
     /**
       * Asks the user whether the given \a mapDocument should be saved, when
       * necessary. If it needs to ask, also makes sure that it is the current
@@ -180,10 +213,14 @@ private:
       */
     bool confirmAllSave();
 
+    bool confirmSaveWorld(WorldDocument *worldDocument);
+
     void writeSettings();
     void readSettings();
+    void restoreLayout();
 
     void updateRecentFilesMenu();
+    void updateRecentProjectsMenu();
     void updateViewsAndToolbarsMenu();
 
     void retranslateUi();
@@ -191,14 +228,20 @@ private:
     void exportMapAs(MapDocument *mapDocument);
     void exportTilesetAs(TilesetDocument *tilesetDocument);
 
-    ActionManager *mActionManager;
+    QList<QDockWidget*> allDockWidgets() const;
+    QList<QToolBar*> allToolBars() const;
+
     Ui::MainWindow *mUi;
     Document *mDocument = nullptr;
     Zoomable *mZoomable = nullptr;
     MapDocumentActionHandler *mActionHandler;
     ConsoleDock *mConsoleDock;
-    ObjectTypesEditor *mObjectTypesEditor;
-    QSettings mSettings;
+    ProjectDock *mProjectDock;
+    IssuesDock *mIssuesDock;
+    PropertyTypesEditor *mPropertyTypesEditor;
+    QPointer<LocatorWidget> mLocatorWidget;
+    QPointer<QWidget> mPopupWidget;
+    double mPopupWidgetShowProgress = 1.0;
 
     QAction *mRecentFiles[Preferences::MaxRecentFiles];
 
@@ -207,18 +250,38 @@ private:
     QMenu *mGroupLayerMenu;
     QMenu *mViewsAndToolbarsMenu;
     QAction *mViewsAndToolbarsAction;
-    QAction *mShowObjectTypesEditor;
-
+    QAction *mShowPropertyTypesEditor;
     QAction *mResetToDefaultLayout;
+    QAction *mLockLayout;
 
     void setupQuickStamps();
 
     AutomappingManager *mAutomappingManager;
     DocumentManager *mDocumentManager;
+    MapEditor *mMapEditor;
+    TilesetEditor *mTilesetEditor;
+    QList<QWidget*> mEditorStatusBarWidgets;
+    QToolButton *mNewsButton;
 
     QPointer<PreferencesDialog> mPreferencesDialog;
 
     QMap<QMainWindow*, QByteArray> mMainWindowStates;
+    bool mHasRestoredLayout = false;
+
+    SessionOption<QStringList> mLoadedWorlds { "loadedWorlds" };
+
+    static MainWindow *mInstance;
 };
+
+inline MainWindow *MainWindow::instance()
+{
+    Q_ASSERT(mInstance);
+    return mInstance;
+}
+
+inline MainWindow *MainWindow::maybeInstance()
+{
+    return mInstance;
+}
 
 } // namespace Tiled

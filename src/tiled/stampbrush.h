@@ -34,7 +34,6 @@ class WangSet;
 
 class MapDocument;
 class StampActions;
-class WangFiller;
 
 /**
  * Implements a tile brush that acts like a stamp. It is able to paint a block
@@ -49,6 +48,7 @@ public:
     StampBrush(QObject *parent = nullptr);
     ~StampBrush() override;
 
+    void activate(MapScene *scene) override;
     void deactivate(MapScene *scene) override;
 
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
@@ -88,7 +88,7 @@ signals:
     void wangFillChanged(bool value);
 
 protected:
-    void tilePositionChanged(const QPoint &tilePos) override;
+    void tilePositionChanged(QPoint tilePos) override;
 
     void mapDocumentChanged(MapDocument *oldDocument,
                             MapDocument *newDocument) override;
@@ -107,6 +107,7 @@ private:
     void beginCapture();
     void endCapture();
 
+    void updateBrushBehavior();
     void updatePreview();
     void updatePreview(QPoint tilePos);
 
@@ -123,22 +124,27 @@ private:
      * There are several options how the stamp utility can be used.
      * It must be one of the following:
      */
-    enum BrushBehavior {
+    enum class BrushBehavior {
+        Neutral,        // nothing special
+        Line,           // hold shift: a line
+        Circle          // hold Shift + Ctrl: a circle
+    };
+
+    enum class BrushState {
         Free,           // nothing special: you can move the mouse,
                         // preview of the selection
-        Paint,          // left mouse pressed: free painting
         Capture,        // right mouse pressed: capture a rectangle
-        Line,           // hold shift: a line
-        LineStartSet,   // when you have defined a starting point,
+        Paint,          // left mouse pressed: free painting
+        StartSet        // when you have defined a starting point,
                         // cancel with right click
-        Circle,         // hold Shift + Ctrl: a circle
-        CircleMidSet
     };
 
     /**
      * This stores the current behavior.
      */
-    BrushBehavior mBrushBehavior;
+    BrushBehavior mBrushBehavior = BrushBehavior::Neutral;
+    BrushState mBrushState = BrushState::Free;
+    Qt::KeyboardModifiers mModifiers;
 
     /**
      * The starting position needed for drawing lines and circles.
@@ -147,13 +153,13 @@ private:
      */
     QPoint mStampReference;
 
-    bool mIsRandom;
+    bool mIsRandom = false;
     RandomPicker<Cell> mRandomCellPicker;
 
-    bool mIsWangFill;
-    WangSet *mWangSet;
+    bool mIsWangFill = false;
+    WangSet *mWangSet = nullptr;
 
-    bool mRandomCacheValid;
+    bool mRandomCacheValid = true;
     void updateRandomList();
     void invalidateRandomCache();
 

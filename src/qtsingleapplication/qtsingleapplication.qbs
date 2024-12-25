@@ -1,5 +1,3 @@
-import qbs 1.0
-
 StaticLibrary {
     name: "qtsingleapplication"
 
@@ -7,7 +5,16 @@ StaticLibrary {
     Depends { name: "Qt"; submodules: ["widgets", "network"]; versionAtLeast: "5.4" }
 
     cpp.includePaths: ["src"]
-    cpp.cxxLanguageVersion: "c++11"
+    cpp.cxxLanguageVersion: "c++17"
+    cpp.cxxFlags: {
+        var flags = base;
+        if (qbs.toolchain.contains("msvc")) {
+            if (Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 3)
+                flags.push("/permissive-");
+        }
+        return flags;
+    }
+    cpp.visibility: "minimal"
 
     files: [
         "src/qtlocalpeer.cpp",
@@ -18,7 +25,7 @@ StaticLibrary {
 
     Export {
         Depends { name: "cpp" }
-        Depends { name: "Qt.network" }
+        Depends { name: "Qt.widgets" }
         cpp.includePaths: "src"
     }
 }

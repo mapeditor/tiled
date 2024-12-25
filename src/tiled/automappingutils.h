@@ -1,6 +1,7 @@
 /*
  * automappingutils.h
- * Copyright 2012, Stefan Beller, stefanbeller@googlemail.com
+ * Copyright 2012, Stefan Beller <stefanbeller@googlemail.com>
+ * Copyright 2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -25,17 +26,17 @@
 namespace Tiled {
 
 class MapObject;
+class MapRenderer;
 class ObjectGroup;
 
-class MapDocument;
+QRect objectTileRect(const MapRenderer &renderer,
+                     const MapObject &object);
 
-const QList<MapObject*> objectsInRegion(const ObjectGroup *layer,
-                                        const QRegion &where);
+QList<MapObject*> objectsInRegion(const MapRenderer &renderer,
+                                  const ObjectGroup *layer,
+                                  const QRegion &where);
 
-void eraseRegionObjectGroup(MapDocument *mapDocument,
-                            ObjectGroup *layer,
-                            const QRegion &where);
-
-QRegion tileRegionOfObjectGroup(const ObjectGroup *layer);
+QRegion tileRegionOfObjectGroup(const MapRenderer &renderer,
+                                const ObjectGroup *objectGroup);
 
 } // namespace Tiled

@@ -24,6 +24,10 @@
 #include <QDialog>
 #include <QVariant>
 
+namespace Tiled {
+class ClassPropertyType;
+}
+
 namespace Ui {
 class AddPropertyDialog;
 }
@@ -34,15 +38,17 @@ class AddPropertyDialog : public QDialog
 
 public:
     explicit AddPropertyDialog(QWidget *parent = nullptr);
-    ~AddPropertyDialog();
+    AddPropertyDialog(const Tiled::ClassPropertyType *parentClassType, QWidget *parent = nullptr);
+    ~AddPropertyDialog() override;
 
     QString propertyName() const;
     QVariant propertyValue() const;
 
-private slots:
+private:
+    void initialize(const Tiled::ClassPropertyType *parentClassType);
+
     void nameChanged(const QString &text);
     void typeChanged(const QString &text);
 
-private:
     Ui::AddPropertyDialog *mUi;
 };

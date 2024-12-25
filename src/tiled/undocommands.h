@@ -29,13 +29,29 @@ namespace Tiled {
  * can be merged.
  */
 enum UndoCommands {
+    Cmd_ChangeClassName,
+    Cmd_ChangeImageLayerRepeatX,
+    Cmd_ChangeImageLayerRepeatY,
+    Cmd_ChangeLayerLocked,
+    Cmd_ChangeLayerName,
     Cmd_ChangeLayerOffset,
     Cmd_ChangeLayerOpacity,
-    Cmd_ChangeTileTerrain,
+    Cmd_ChangeLayerParallaxFactor,
+    Cmd_ChangeLayerTintColor,
+    Cmd_ChangeLayerVisible,
+    Cmd_ChangeMapObject,
+    Cmd_ChangeMapObjectTransform,
+    Cmd_ChangeSelectedArea,
+    Cmd_ChangeTileImageRect,
+    Cmd_ChangeTileProbability,
     Cmd_ChangeTileWangId,
+    Cmd_ChangeTilesetName,
     Cmd_ChangeTilesetTileOffset,
+    Cmd_ChangeWangColorName,
+    Cmd_ChangeWangSetName,
     Cmd_EraseTiles,
-    Cmd_PaintTileLayer
+    Cmd_PaintTileLayer,
+    Cmd_SetProperty,
 };
 
 /**

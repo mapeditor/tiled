@@ -32,18 +32,14 @@
 #include "mapobject.h"
 #include "tileset.h"
 
-#include <QPointer>
+#include <QDateTime>
 
 #include <memory>
 
 namespace Tiled {
 
-class ObjectTemplateFormat;
-
-class TILEDSHARED_EXPORT ObjectTemplate : public Object
+class TILEDSHARED_EXPORT ObjectTemplate
 {
-    Q_OBJECT
-
 public:
     ObjectTemplate();
     ObjectTemplate(const QString &fileName);
@@ -51,21 +47,25 @@ public:
 
     const MapObject *object() const;
     void setObject(const MapObject *object);
-    void setObject(std::unique_ptr<MapObject> &&object);
+    void setObject(std::unique_ptr<MapObject> object);
 
     const QString &fileName() const;
     void setFileName(const QString &fileName);
 
-    void setFormat(ObjectTemplateFormat *format);
-    ObjectTemplateFormat *format() const;
+    void setFormat(const QString &format);
+    QString format() const;
+
+    bool save();
+    QDateTime lastSaved() const;
 
     const SharedTileset &tileset() const;
 
 private:
     QString mFileName;
-    QPointer<ObjectTemplateFormat> mFormat;
+    QString mFormat;
     std::unique_ptr<MapObject> mObject;
     SharedTileset mTileset;
+    QDateTime mLastSaved;
 };
 
 inline const MapObject *ObjectTemplate::object() const
@@ -76,6 +76,15 @@ inline const QString &ObjectTemplate::fileName() const
 
 inline void ObjectTemplate::setFileName(const QString &fileName)
 { mFileName = fileName; }
+
+inline void ObjectTemplate::setFormat(const QString &format)
+{ mFormat = format; }
+
+inline QString ObjectTemplate::format() const
+{ return mFormat; }
+
+inline QDateTime ObjectTemplate::lastSaved() const
+{ return mLastSaved; }
 
 inline const SharedTileset &ObjectTemplate::tileset() const
 { return mTileset; }

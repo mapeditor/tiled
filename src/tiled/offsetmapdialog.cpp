@@ -34,9 +34,6 @@ OffsetMapDialog::OffsetMapDialog(MapDocument *mapDocument, QWidget *parent)
     , mMapDocument(mapDocument)
 {
     mUi->setupUi(this);
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-#endif
 
     if (mMapDocument->selectedArea().isEmpty()) {
         setBoundsSelection(WholeMap);
@@ -96,7 +93,7 @@ QRect OffsetMapDialog::affectedBoundingRect() const
     switch (boundsSelection()) {
     case WholeMap:
         if (!mMapDocument->map()->infinite())
-            boundingRect = QRect(QPoint(0, 0), mMapDocument->map()->size());
+            boundingRect = mMapDocument->map()->tileBoundingRect();
         break;
     case CurrentSelectionArea: {
         const QRegion &selection = mMapDocument->selectedArea();
@@ -176,3 +173,5 @@ void OffsetMapDialog::boundsSelectionChanged()
 }
 
 } // namespace Tiled
+
+#include "moc_offsetmapdialog.cpp"

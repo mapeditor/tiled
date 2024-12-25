@@ -20,57 +20,40 @@
 
 #pragma once
 
+#include "addremovemapobject.h"
+
 #include <QPolygonF>
 #include <QUndoCommand>
+
+#include <memory>
 
 namespace Tiled {
 
 class MapObject;
 
+class Document;
 class MapDocument;
 
 /**
  * Changes the polygon of a MapObject.
- *
- * This class expects the polygon to be already changed, and takes the previous
- * polygon in the constructor.
  */
 class ChangePolygon : public QUndoCommand
 {
 public:
-    ChangePolygon(MapDocument *mapDocument,
+    ChangePolygon(Document *document,
                   MapObject *mapObject,
-                  const QPolygonF &oldPolygon);
-
-    ChangePolygon(MapDocument *mapDocument,
-                  MapObject *mapObject,
-                  const QPolygonF &newPolygon,
-                  const QPolygonF &oldPolygon);
+                  const QPolygonF &newPolygon);
 
     void undo() override;
     void redo() override;
 
 private:
-    MapDocument *mMapDocument;
+    Document *mDocument;
     MapObject *mMapObject;
 
     QPolygonF mOldPolygon;
     QPolygonF mNewPolygon;
     bool mOldChangeState;
-};
-
-class TogglePolygonPolyline : public QUndoCommand
-{
-public:
-    TogglePolygonPolyline(MapObject *mapObject);
-
-    void undo() override { toggle(); }
-    void redo() override { toggle(); }
-
-private:
-    void toggle();
-
-    MapObject *mMapObject;
 };
 
 class SplitPolyline : public QUndoCommand
@@ -84,22 +67,14 @@ public:
     void undo() override;
     void redo() override;
 
-    /**
-     * Returns the new polyline object created due to the split.
-     *
-     * @warning Only valid after the command has been performed!
-     */
-    MapObject *secondPolyline() const { return mSecondPolyline; }
-
 private:
     MapDocument *mMapDocument;
     MapObject *mFirstPolyline;
     MapObject *mSecondPolyline;
+    std::unique_ptr<AddMapObjects> mAddSecondPolyline;
 
     int mEdgeIndex;
-    int mObjectIndex;
     bool mOldChangeState;
-    bool mOwnsSecondPolyline;
 };
 
 } // namespace Tiled

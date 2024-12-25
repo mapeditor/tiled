@@ -28,8 +28,9 @@
 #include "tilelayer.h"
 #include "compression.h"
 
-#include <QtEndian>
+#include <QCoreApplication>
 #include <QFile>
+#include <QtEndian>
 
 using namespace ReplicaIsland;
 
@@ -48,7 +49,7 @@ ReplicaIslandPlugin::ReplicaIslandPlugin()
 {
 }
 
-Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
+std::unique_ptr<Tiled::Map> ReplicaIslandPlugin::read(const QString &fileName)
 {
     using namespace Tiled;
 
@@ -70,13 +71,16 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
         return nullptr;
     }
 
-    // Create our map, setting width and height to 0 until we load a layer.
-    Map *map = new Map(Map::Orthogonal, 0, 0, 32, 32);
+    // Create our map, leaving width and height to 0 until we load a layer.
+    Map::Parameters mapParameters;
+    mapParameters.tileWidth = 32;
+    mapParameters.tileHeight = 32;
+    auto map = std::make_unique<Map>(mapParameters);
     map->setProperty("background_index", QString::number(backgroundIndex));
 
     // Load our Tilesets.
     QVector<SharedTileset> typeTilesets, tileIndexTilesets;
-    loadTilesetsFromResources(map, typeTilesets, tileIndexTilesets);
+    loadTilesetsFromResources(map.get(), typeTilesets, tileIndexTilesets);
 
     // Load each of our layers.
     for (quint8 i = 0; i < layerCount; i++) {
@@ -87,7 +91,6 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
         in >> type >> tileIndex >> scrollSpeed
            >> levelSignature >> width >> height;
         if (in.status() == QDataStream::ReadPastEnd || levelSignature != 42) {
-            delete map;
             mError = tr("Can't parse layer header!");
             return nullptr;
         }
@@ -98,7 +101,6 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
         if (map->height() == 0)
             map->setHeight(height);
         if (map->width() != width || map->height() != height) {
-            delete map;
             mError = tr("Inconsistent layer sizes!");
             return nullptr;
         }
@@ -119,7 +121,6 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
         QByteArray tileData(width*height, '\0');
         int bytesRead = in.readRawData(tileData.data(), tileData.size());
         if (bytesRead != tileData.size()) {
-            delete map;
             mError = tr("File ended in middle of layer!");
             return nullptr;
         }
@@ -139,7 +140,6 @@ Tiled::Map *ReplicaIslandPlugin::read(const QString &fileName)
 
     // Make sure we read the entire *.bin file.
     if (in.status() != QDataStream::Ok || !in.atEnd()) {
-        delete map;
         mError = tr("Unexpected data at end of file!");
         return nullptr;
     }
@@ -209,7 +209,7 @@ QString ReplicaIslandPlugin::nameFilter() const
 
 QString ReplicaIslandPlugin::shortName() const
 {
-    return QLatin1String("replicaisland");
+    return QStringLiteral("replicaisland");
 }
 
 bool ReplicaIslandPlugin::supportsFile(const QString &fileName) const
@@ -233,15 +233,16 @@ QString ReplicaIslandPlugin::errorString() const
     return mError;
 }
 
-// Writer
-bool ReplicaIslandPlugin::write(const Tiled::Map *map, const QString &fileName)
+bool ReplicaIslandPlugin::write(const Tiled::Map *map, const QString &fileName, Options options)
 {
+    Q_UNUSED(options)
+
     using namespace Tiled;
 
     // Open up a temporary file for saving the level.
     SaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly)) {
-        mError = tr("Could not open file for writing.");
+        mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
     }
 
@@ -279,7 +280,6 @@ bool ReplicaIslandPlugin::write(const Tiled::Map *map, const QString &fileName)
     return true;
 }
 
-// Write out a map layer.
 bool ReplicaIslandPlugin::writeLayer(QDataStream &out, Tiled::TileLayer *layer)
 {
     using namespace Tiled;

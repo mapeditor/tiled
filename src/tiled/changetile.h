@@ -1,6 +1,6 @@
 /*
  * changetile.h
- * Copyright 2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * Copyright 2015-2017, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,7 +20,9 @@
 
 #pragma once
 
-#include <QUndoCommand>
+#include "changevalue.h"
+#include "undocommands.h"
+
 #include <QVector>
 
 namespace Tiled {
@@ -29,25 +31,39 @@ class Tile;
 
 class TilesetDocument;
 
-class ChangeTileType : public QUndoCommand
+class ChangeTileProbability : public ChangeValue<Tile, qreal>
 {
 public:
-    /**
-     * Creates an undo command that sets the given \a tile's \a type.
-     */
-    ChangeTileType(TilesetDocument *tilesetDocument,
-                   const QList<Tile*> &tiles,
-                   const QString &type);
+    ChangeTileProbability(TilesetDocument *tilesetDocument,
+                          const QList<Tile*> &tiles,
+                          qreal probability,
+                          QUndoCommand *parent = nullptr);
 
-    void undo() override { swap(); }
-    void redo() override { swap(); }
+    ChangeTileProbability(TilesetDocument *tilesetDocument,
+                          const QList<Tile*> &tiles,
+                          const QVector<qreal> &probabilities,
+                          QUndoCommand *parent = nullptr);
 
-private:
-    void swap();
+    int id() const override { return Cmd_ChangeTileProbability; }
 
-    TilesetDocument *mTilesetDocument;
-    const QList<Tile*> mTiles;
-    QVector<QString> mTypes;
+protected:
+    qreal getValue(const Tile *tile) const override;
+    void setValue(Tile *tile, const qreal &probability) const override;
+};
+
+class ChangeTileImageRect : public ChangeValue<Tile, QRect>
+{
+public:
+    ChangeTileImageRect(TilesetDocument *tilesetDocument,
+                        const QList<Tile*> &tiles,
+                        const QVector<QRect> &rects,
+                        QUndoCommand *parent = nullptr);
+
+    int id() const override { return Cmd_ChangeTileImageRect; }
+
+protected:
+    QRect getValue(const Tile *tile) const override;
+    void setValue(Tile *tile, const QRect &rect) const override;
 };
 
 } // namespace Tiled
