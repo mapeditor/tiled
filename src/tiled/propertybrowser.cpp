@@ -57,7 +57,6 @@
 #include "wangcolormodel.h"
 #include "wangoverlay.h"
 #include "wangset.h"
-#include "invertyaxishelper.h"
 
 #include <QtGroupPropertyManager>
 
@@ -1898,7 +1897,7 @@ void PropertyBrowser::updateProperties()
         if (auto visibleProperty = mIdToProperty[VisibleProperty])
             visibleProperty->setValue(mapObject->isVisible());
         mIdToProperty[XProperty]->setValue(mapObject->x());
-        mIdToProperty[YProperty]->setValue(InvertYAxisHelper(mMapDocument).pixelY(mapObject->y()));
+        mIdToProperty[YProperty]->setValue(mapObject->y());
 
         if (flags & ObjectHasDimensions) {
             mIdToProperty[WidthProperty]->setValue(mapObject->width());
