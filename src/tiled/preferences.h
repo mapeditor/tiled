@@ -207,7 +207,6 @@ public slots:
     void setRestoreSessionOnStartup(bool enabled);
     void setPluginEnabled(const QString &fileName, bool enabled);
     void setWheelZoomsByDefault(bool mode);
-    void setInvertYAxis(bool enabled);
 
     void clearRecentFiles();
     void clearRecentProjects();
@@ -254,8 +253,6 @@ signals:
 
     void aboutToSwitchSession();
 
-    void invertYAxisChanged();
-
 private:
     void addToRecentFileList(const QString &fileName, QStringList &files);
 
@@ -299,11 +296,6 @@ template<typename T>
 void Preference<T>::set(const T &value)
 {
     Preferences::instance()->setValue(QLatin1String(mKey), value);
-}
-
-inline bool Preferences::invertYAxis() const
-{
-    return mInvertYAxis;
 }
 
 } // namespace Tiled
