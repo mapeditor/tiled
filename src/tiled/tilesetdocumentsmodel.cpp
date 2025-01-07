@@ -115,6 +115,9 @@ void TilesetDocumentsFilterModel::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument == mapDocument)
         return;
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
+    beginFilterChange();
+#endif
     mMapDocument = mapDocument;
     invalidateFilter();
 }
