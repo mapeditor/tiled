@@ -169,12 +169,14 @@ bool VariantMapProperty::createOrUpdateProperty(int index,
             return mValue.value(name, mSuggestions.value(name));
         };
         auto set = [=] (const QVariant &value) {
-            mValue.insert(name, value);
-            emitMemberValueChanged({ name }, value);
+            setMemberValue({ name }, value);
         };
 
         property = createProperty({ name }, std::move(get), std::move(set));
         if (property) {
+            connect(property, &Property::resetRequested, this, [=] {
+                removeMember(name);
+            });
             connect(property, &Property::removeRequested, this, [=] {
                 removeMember(name);
             });
@@ -192,13 +194,13 @@ bool VariantMapProperty::createOrUpdateProperty(int index,
     }
 
     if (property) {
-        if (mValue.contains(name)) {
-            property->setEnabled(true);
-            property->setActions(Property::Action::Select | Property::Action::Remove);
-        } else {
-            property->setEnabled(false);
-            property->setActions(Property::Action::Select | Property::Action::Add);
-        }
+        const bool present = mValue.contains(name);
+        const bool suggested = mSuggestions.contains(name);
+
+        property->setModified(suggested && present);
+        property->setActions(Property::Action::Select |
+                             (suggested ? Property::Action::Reset
+                                        : Property::Action::Remove));
 
         updateModifiedRecursively(property, newValue);
         emitValueChangedRecursively(property);
@@ -227,7 +229,7 @@ Property *VariantMapProperty::createProperty(const QStringList &path,
     } else if (type == objectRefTypeId()) {
         auto getObjectRef = [get = std::move(get), this] {
             return DisplayObjectRef(get().value<ObjectRef>(),
-                                    static_cast<MapDocument*>(mDocument));  // todo: shouldn't it be qobject_cast?
+                                    qobject_cast<MapDocument*>(mDocument));
         };
         auto setObjectRef = [set = std::move(set)](const DisplayObjectRef &value) {
             set(QVariant::fromValue(value.ref));
@@ -240,7 +242,7 @@ Property *VariantMapProperty::createProperty(const QStringList &path,
             case PropertyType::PT_Invalid:
                 break;
             case PropertyType::PT_Class: {
-                auto classType = static_cast<const ClassPropertyType&>(*propertyType);
+                auto &classType = static_cast<const ClassPropertyType&>(*propertyType);
 
                 auto groupProperty = new GroupProperty(name);
                 groupProperty->setHeader(false);
@@ -314,7 +316,7 @@ void VariantMapProperty::createClassMembers(const QStringList &path,
             return get().value<PropertyValue>().value.toMap().value(name, def);
         };
         auto setMember = [=] (const QVariant &value) {
-            setClassMember(childPath, value);
+            setMemberValue(childPath, value);
         };
 
         if (auto childProperty = createProperty(childPath, std::move(getMember), setMember)) {
@@ -368,14 +370,28 @@ void VariantMapProperty::addMember(const QString &name, const QVariant &value)
     emitMemberValueChanged({ name }, value);
 }
 
-void VariantMapProperty::setClassMember(const QStringList &path, const QVariant &value)
+void VariantMapProperty::setMemberValue(const QStringList &path, const QVariant &value)
 {
+    const auto &topLevelName = path.first();
+
+    // If we're setting a member of a class property that doesn't exist yet,
+    // we need to call addMember with the modified top-level value instead.
+    if (path.size() > 1 && !mValue.contains(topLevelName)) {
+        auto topLevelValue = mSuggestions.value(topLevelName);
+        if (setClassPropertyMemberValue(topLevelValue, 1, path, value))
+            addMember(topLevelName, topLevelValue);
+        return;
+    }
+
     if (!setPropertyMemberValue(mValue, path, value))
         return;
 
-    const auto &topLevelName = path.first();
-    updateModifiedRecursively(mPropertyMap.value(topLevelName),
-                              mValue.value(topLevelName));
+    auto property = mPropertyMap.value(topLevelName);
+    const bool present = mValue.contains(topLevelName);
+    const bool suggested = mSuggestions.contains(topLevelName);
+
+    property->setModified(suggested && present);
+    updateModifiedRecursively(property, mValue.value(topLevelName));
 
     emitMemberValueChanged(path, value);
 }

@@ -105,16 +105,16 @@ bool setPropertyMemberValue(Properties &properties,
     Q_ASSERT(!path.isEmpty());
 
     auto &topLevelName = path.first();
-    auto topLevelValue = properties.value(topLevelName);
 
     if (path.size() > 1) {
+        auto topLevelValue = properties.value(topLevelName);
         if (!setClassPropertyMemberValue(topLevelValue, 1, path, value))
             return false;
+        properties.insert(topLevelName, topLevelValue);
     } else {
-        topLevelValue = value;
+        properties.insert(topLevelName, value);
     }
 
-    properties.insert(topLevelName, topLevelValue);
     return true;
 }
 

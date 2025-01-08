@@ -46,7 +46,7 @@ public:
 
     void removeMember(const QString &name);
     void addMember(const QString &name, const QVariant &value);
-    void setClassMember(const QStringList &path, const QVariant &value);
+    void setMemberValue(const QStringList &path, const QVariant &value);
 
     Property *property(const QString &name) const;
 

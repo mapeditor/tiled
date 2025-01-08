@@ -435,9 +435,6 @@ static bool objectPropertiesRelevant(Document *document, Object *object)
         if (static_cast<MapObject*>(currentObject)->cell().tile() == object)
             return true;
 
-    if (document->currentObjects().contains(object))
-        return true;
-
     return false;
 }
 
@@ -2383,7 +2380,7 @@ void CustomProperties::setDocument(Document *document)
     if (document) {
         connect(document, &Document::changed, this, &CustomProperties::onChanged);
 
-        connect(document, &Document::currentObjectsChanged, this, &CustomProperties::refresh);
+        connect(document, &Document::currentObjectChanged, this, &CustomProperties::refresh);
 
         connect(document, &Document::propertyAdded, this, &CustomProperties::propertyAdded);
         connect(document, &Document::propertyRemoved, this, &CustomProperties::propertyRemoved);
@@ -2401,20 +2398,9 @@ void CustomProperties::refresh()
         return;
     }
 
-    const Properties &currentObjectProperties = mDocument->currentObject()->properties();
-
-    // Suggest properties from selected objects.
-    Properties suggestedProperties;
-    const auto currentObjects = mDocument->currentObjects();
-    for (auto object : currentObjects)
-        if (object != mDocument->currentObject())
-            mergeProperties(suggestedProperties, object->properties());
-
     // Suggest properties inherited from the class, tile or template.
-    mergeProperties(suggestedProperties,
-                    mDocument->currentObject()->inheritedProperties());
-
-    setValue(currentObjectProperties, suggestedProperties);
+    setValue(mDocument->currentObject()->properties(),
+             mDocument->currentObject()->inheritedProperties());
 
     const bool editingTileset = mDocument->type() == Document::TilesetDocumentType;
     const bool partOfTileset = mDocument->currentObject()->isPartOfTileset();
