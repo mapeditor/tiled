@@ -83,6 +83,9 @@ public:
     bool isEnabled() const { return m_enabled; }
     void setEnabled(bool enabled);
 
+    bool isDimmed() const { return m_dimmed; }
+    void setDimmed(bool dimmed);
+
     bool isModified() const { return m_modified; }
     void setModified(bool modified);
 
@@ -105,6 +108,7 @@ signals:
     void toolTipChanged(const QString &toolTip);
     void valueChanged();
     void enabledChanged(bool enabled);
+    void dimmedChanged(bool dimmed);
     void modifiedChanged(bool modified);
     void selectedChanged(bool selected);
     void actionsChanged(Actions actions);
@@ -121,6 +125,7 @@ private:
     QString m_name;
     QString m_toolTip;
     bool m_enabled = true;
+    bool m_dimmed = false;
     bool m_modified = false;
     bool m_selected = false;
     Actions m_actions;
@@ -589,7 +594,7 @@ private:
                                      GroupProperty *groupProperty, QVBoxLayout *rowVerticalLayout,
                                      bool expanded);
 
-    void updatePropertyEnabled(const PropertyWidgets &widgets, bool enabled);
+    void updatePropertyEnabled(const PropertyWidgets &widgets, Property *property);
     void updatePropertyActions(const PropertyWidgets &widgets,
                                Property::Actions actions);
 

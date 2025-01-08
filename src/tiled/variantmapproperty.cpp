@@ -198,6 +198,7 @@ bool VariantMapProperty::createOrUpdateProperty(int index,
         const bool suggested = mSuggestions.contains(name);
 
         property->setModified(suggested && present);
+        property->setDimmed(!present);
         property->setActions(Property::Action::Select |
                              (suggested ? Property::Action::Reset
                                         : Property::Action::Remove));
@@ -391,6 +392,7 @@ void VariantMapProperty::setMemberValue(const QStringList &path, const QVariant 
     const bool suggested = mSuggestions.contains(topLevelName);
 
     property->setModified(suggested && present);
+    property->setDimmed(!present);
     updateModifiedRecursively(property, mValue.value(topLevelName));
 
     emitMemberValueChanged(path, value);
@@ -408,8 +410,10 @@ void VariantMapProperty::updateModifiedRecursively(Property *property,
     for (auto subProperty : groupProperty->subProperties()) {
         const auto &name = subProperty->name();
         const bool isModified = classValue.contains(name);
+        const bool isDimmed = property->isDimmed();
 
-        if (subProperty->isModified() != isModified || subProperty->isModified()) {
+        if (subProperty->isModified() != isModified || subProperty->isDimmed() != isDimmed || isModified) {
+            subProperty->setDimmed(isDimmed);
             subProperty->setModified(isModified);
             updateModifiedRecursively(subProperty, classValue.value(name));
         }

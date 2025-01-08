@@ -69,6 +69,14 @@ void Property::setEnabled(bool enabled)
     }
 }
 
+void Property::setDimmed(bool dimmed)
+{
+    if (m_dimmed != dimmed) {
+        m_dimmed = dimmed;
+        emit dimmedChanged(dimmed);
+    }
+}
+
 void Property::setModified(bool modified)
 {
     if (m_modified != modified) {
@@ -1388,11 +1396,14 @@ PropertiesView::PropertyWidgets PropertiesView::createPropertyWidgets(Property *
         widgets.rowWidget = containerWidget;
     }
 
-    updatePropertyEnabled(widgets, property->isEnabled());
+    updatePropertyEnabled(widgets, property);
     updatePropertyActions(widgets, property->actions());
 
-    connect(property, &Property::enabledChanged, this, [=] (bool enabled) {
-        updatePropertyEnabled(m_propertyWidgets[property], enabled);
+    connect(property, &Property::enabledChanged, this, [=] {
+        updatePropertyEnabled(m_propertyWidgets[property], property);
+    });
+    connect(property, &Property::dimmedChanged, this, [=] {
+        updatePropertyEnabled(m_propertyWidgets[property], property);
     });
     connect(property, &Property::actionsChanged, this, [=] (Property::Actions actions) {
         updatePropertyActions(m_propertyWidgets[property], actions);
@@ -1466,10 +1477,11 @@ void PropertiesView::setPropertyChildrenExpanded(PropertyWidgets &widgets,
     }
 }
 
-void PropertiesView::updatePropertyEnabled(const PropertyWidgets &widgets, bool enabled)
+void PropertiesView::updatePropertyEnabled(const PropertyWidgets &widgets, Property *property)
 {
+    const bool enabled = property->isEnabled();
     if (widgets.label)
-        widgets.label->setEnabled(enabled);
+        widgets.label->setEnabled(enabled && !property->isDimmed());
     if (widgets.editor)
         widgets.editor->setEnabled(enabled);
     if (widgets.children)
