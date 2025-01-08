@@ -489,7 +489,7 @@ QWidget *ColorProperty::createEditor(QWidget *parent)
 
     auto resetButton = new QToolButton(editor);
     resetButton->setIcon(resetIcon);
-    resetButton->setToolTip(tr("Clear Color"));
+    resetButton->setToolTip(tr("Unset Color"));
     resetButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::MinimumExpanding);
     Utils::setThemeIcon(resetButton, "edit-clear");
 
