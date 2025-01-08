@@ -2391,6 +2391,81 @@ void CustomProperties::setDocument(Document *document)
     refresh();
 }
 
+static bool isAutomappingRulesMap(const MapDocument *mapDocument)
+{
+    if (!mapDocument)
+        return false;
+
+    bool hasInputLayer = false;
+    bool hasOutputLayer = false;
+
+    for (const Layer *layer : mapDocument->map()->allLayers()) {
+        if (layer->name().startsWith(QLatin1String("input"), Qt::CaseInsensitive))
+            hasInputLayer |= layer->isTileLayer();
+        else if (layer->name().startsWith(QLatin1String("output"), Qt::CaseInsensitive))
+            hasOutputLayer = true;
+    }
+
+    return hasInputLayer && hasOutputLayer;
+}
+
+static void addAutomappingProperties(Properties &properties, const Object *object)
+{
+    auto addRuleOptions = [&] {
+        mergeProperties(properties, QVariantMap {
+            { QStringLiteral("Probability"), 1.0 },
+            { QStringLiteral("ModX"), 1 },
+            { QStringLiteral("ModY"), 1 },
+            { QStringLiteral("OffsetX"), 0 },
+            { QStringLiteral("OffsetY"), 0 },
+            { QStringLiteral("NoOverlappingOutput"), false },
+            { QStringLiteral("Disabled"), false },
+            { QStringLiteral("IgnoreLock"), false },
+        });
+    };
+
+    switch (object->typeId()) {
+    case Object::LayerType: {
+        auto layer = static_cast<const Layer*>(object);
+
+        if (layer->name().startsWith(QLatin1String("input"), Qt::CaseInsensitive)) {
+            mergeProperties(properties, QVariantMap {
+                { QStringLiteral("AutoEmpty"), false },
+                { QStringLiteral("IgnoreHorizontalFlip"), false },
+                { QStringLiteral("IgnoreVerticalFlip"), false },
+                { QStringLiteral("IgnoreDiagonalFlip"), false },
+                // { QStringLiteral("IgnoreHexRotate120"), false },
+             });
+        } else if (layer->name().startsWith(QLatin1String("output"), Qt::CaseInsensitive)) {
+            mergeProperties(properties, QVariantMap {
+                { QStringLiteral("Probability"), 1.0 },
+            });
+        }
+        break;
+    }
+    case Object::MapType:
+        mergeProperties(properties, QVariantMap {
+            { QStringLiteral("DeleteTiles"), false },
+            { QStringLiteral("MatchOutsideMap"), false },
+            { QStringLiteral("OverflowBorder"), false },
+            { QStringLiteral("WrapBorder"), false },
+            { QStringLiteral("AutomappingRadius"), 0 },
+            { QStringLiteral("NoOverlappingOutput"), false },
+            { QStringLiteral("MatchInOrder"), false },
+        });
+        addRuleOptions();
+        break;
+    case Object::MapObjectType: {
+        if (auto objectGroup = static_cast<const MapObject*>(object)->objectGroup())
+            if (objectGroup->name().compare(QLatin1String("rule_options"), Qt::CaseInsensitive) == 0)
+                addRuleOptions();
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 void CustomProperties::refresh()
 {
     if (!mDocument || !mDocument->currentObject()) {
@@ -2398,9 +2473,16 @@ void CustomProperties::refresh()
         return;
     }
 
+    auto currentObject = mDocument->currentObject();
+
     // Suggest properties inherited from the class, tile or template.
-    setValue(mDocument->currentObject()->properties(),
-             mDocument->currentObject()->inheritedProperties());
+    Properties suggestedProperties = currentObject->inheritedProperties();
+
+    if (isAutomappingRulesMap(qobject_cast<const MapDocument*>(mDocument)))
+        addAutomappingProperties(suggestedProperties, currentObject);
+
+    setValue(currentObject->properties(),
+             suggestedProperties);
 
     const bool editingTileset = mDocument->type() == Document::TilesetDocumentType;
     const bool partOfTileset = mDocument->currentObject()->isPartOfTileset();
