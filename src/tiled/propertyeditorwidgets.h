@@ -26,6 +26,7 @@
 #include <QPointer>
 #include <QSpinBox>
 
+class QAction;
 class QLabel;
 
 namespace Tiled {
@@ -282,6 +283,38 @@ private:
     DoubleSpinBox *m_ySpinBox;
     DoubleSpinBox *m_widthSpinBox;
     DoubleSpinBox *m_heightSpinBox;
+};
+
+/**
+ * A widget for editing a QColor value.
+ */
+class ColorEdit : public LineEdit
+{
+    Q_OBJECT
+    Q_PROPERTY(QColor value READ value WRITE setValue NOTIFY valueEdited FINAL)
+
+public:
+    ColorEdit(QWidget *parent = nullptr);
+
+    void setValue(const QColor &color);
+    QColor value() const { return m_color; }
+
+    void setShowAlpha(bool enabled);
+
+signals:
+    void valueEdited();
+
+protected:
+    void contextMenuEvent(QContextMenuEvent *event) override;
+
+private:
+    void onTextEdited();
+    void pickColor();
+
+    QColor m_color;
+    bool m_showAlpha = false;
+    bool m_editingText = false;
+    QAction *m_colorIconAction;
 };
 
 /**

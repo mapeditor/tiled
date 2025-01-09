@@ -23,12 +23,18 @@
 #include "propertiesview.h"
 #include "utils.h"
 
+#include <QAction>
+#include <QColorDialog>
+#include <QFontDatabase>
 #include <QGridLayout>
+#include <QMenu>
 #include <QPainter>
 #include <QResizeEvent>
+#include <QScopedValueRollback>
 #include <QStyle>
 #include <QStyleOption>
 #include <QStylePainter>
+#include <QValidator>
 
 namespace Tiled {
 
@@ -640,6 +646,132 @@ QRectF RectFEdit::value() const
                   m_ySpinBox->value(),
                   m_widthSpinBox->value(),
                   m_heightSpinBox->value());
+}
+
+
+class ColorValidator : public QValidator
+{
+    Q_OBJECT
+
+public:
+    using QValidator::QValidator;
+
+    State validate(QString &input, int &) const override
+    {
+        if (isValidName(input))
+            return State::Acceptable;
+
+        return State::Intermediate;
+    }
+
+    void fixup(QString &input) const override
+    {
+        if (!isValidName(input) && isValidName(QLatin1Char('#') + input))
+            input.prepend(QLatin1Char('#'));
+    }
+
+    static bool isValidName(const QString &name)
+    {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 4, 0)
+        return QColor::isValidColorName(name);
+#else
+        return QColor::isValidColor(name);
+#endif
+    }
+};
+
+
+ColorEdit::ColorEdit(QWidget *parent)
+    : LineEdit(parent)
+{
+    setValidator(new ColorValidator(this));
+    setClearButtonEnabled(true);
+    setPlaceholderText(tr("Not set"));
+    setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+
+    m_colorIconAction = addAction(Utils::colorIcon(QColor(), Utils::smallIconSize()), QLineEdit::LeadingPosition);
+    m_colorIconAction->setText(tr("Pick Color"));
+    connect(m_colorIconAction, &QAction::triggered, this, &ColorEdit::pickColor);
+
+    connect(this, &QLineEdit::textEdited, this, &ColorEdit::onTextEdited);
+}
+
+void ColorEdit::setValue(const QColor &color)
+{
+    if (m_color == color)
+        return;
+
+    m_color = color;
+
+    if (!m_editingText) {
+        if (!color.isValid())
+            setText(QString());
+        else if (m_color.alpha() == 255)
+            setText(color.name(QColor::HexRgb));
+        else
+            setText(color.name(QColor::HexArgb));
+    }
+
+    m_colorIconAction->setIcon(Utils::colorIcon(color, Utils::smallIconSize()));
+
+    if (m_editingText)
+        emit valueEdited();
+}
+
+void ColorEdit::setShowAlpha(bool enabled)
+{
+    if (m_showAlpha == enabled)
+        return;
+
+    m_showAlpha = enabled;
+}
+
+void ColorEdit::contextMenuEvent(QContextMenuEvent *event)
+{
+    QPointer<QMenu> menu = createStandardContextMenu();
+    if (!menu)
+        return;
+
+    menu->addSeparator();
+    menu->addAction(tr("Pick Color"), this, &ColorEdit::pickColor);
+    menu->exec(event->globalPos());
+    delete static_cast<QMenu *>(menu);
+
+    event->accept();
+}
+
+void ColorEdit::onTextEdited()
+{
+    QScopedValueRollback<bool> editing(m_editingText, true);
+
+    const QString text = this->text();
+    QColor color;
+
+    if (!text.isEmpty()) {
+        if (ColorValidator::isValidName(text))
+            color = QColor(text);
+        else if (ColorValidator::isValidName(QLatin1Char('#') + text))
+            color = QColor(QLatin1Char('#') + text);
+        else
+            return;
+    }
+
+    setValue(color);
+}
+
+void ColorEdit::pickColor()
+{
+    QColorDialog::ColorDialogOptions options;
+    if (m_showAlpha)
+        options |= QColorDialog::ShowAlphaChannel;
+
+    const QColor newColor = QColorDialog::getColor(m_color, this, QString(),
+                                                   options);
+
+    if (newColor.isValid() && newColor != m_color) {
+        setValue(newColor);
+        emit valueEdited();
+    }
 }
 
 

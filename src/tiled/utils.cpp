@@ -312,11 +312,8 @@ QIcon themeIcon(const QString &name)
 
 QIcon colorIcon(const QColor &color, QSize size)
 {
-    if (!color.isValid())
-        return QIcon();
-
     QPixmap pixmap(size);
-    pixmap.fill(color);
+    pixmap.fill(color.isValid() ? color : Qt::transparent);
 
     QPainter painter(&pixmap);
     painter.setPen(QColor(0, 0, 0, 128));

@@ -20,7 +20,6 @@
 
 #include "propertiesview.h"
 
-#include "colorbutton.h"
 #include "fileedit.h"
 #include "textpropertyedit.h"
 #include "utils.h"
@@ -475,45 +474,21 @@ QWidget *RectFProperty::createEditor(QWidget *parent)
 
 QWidget *ColorProperty::createEditor(QWidget *parent)
 {
-    auto editor = new QWidget(parent);
-    auto layout = new QHBoxLayout(editor);
-    layout->setContentsMargins(QMargins());
-    layout->setSpacing(0);
-
-    auto colorButton = new ColorButton(editor);
-    colorButton->setShowAlphaChannel(m_alpha);
-    colorButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
-
-    QIcon resetIcon(QStringLiteral(":/images/16/edit-clear.png"));
-    resetIcon.addFile(QStringLiteral(":/images/24/edit-clear.png"));
-
-    auto resetButton = new QToolButton(editor);
-    resetButton->setIcon(resetIcon);
-    resetButton->setToolTip(tr("Unset Color"));
-    resetButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::MinimumExpanding);
-    Utils::setThemeIcon(resetButton, "edit-clear");
-
-    layout->addWidget(colorButton);
-    layout->addWidget(resetButton);
+    auto editor = new ColorEdit(parent);
+    editor->setShowAlpha(m_alpha);
 
     auto syncEditor = [=] {
-        const QSignalBlocker blocker(colorButton);
-        auto v = value();
-        colorButton->setColor(v);
-        resetButton->setEnabled(v.isValid());
+        // Not using QSignalBlocker, because the editor internally needs its
+        // textChanged signal to be emitted. Instead, we rely on 'valueEdited',
+        // which isn't emitted when setting the value like this.
+        editor->setValue(value());
     };
     syncEditor();
 
-    connect(resetButton, &QToolButton::clicked, colorButton, [colorButton] {
-        colorButton->setColor(QColor());
+    connect(this, &Property::valueChanged, editor, syncEditor);
+    connect(editor, &ColorEdit::valueEdited, this, [=] {
+        setValue(editor->value());
     });
-    connect(this, &Property::valueChanged, colorButton, syncEditor);
-    connect(colorButton, &ColorButton::colorChanged, this, [=] {
-        resetButton->setEnabled(colorButton->color().isValid());
-        setValue(colorButton->color());
-    });
-
-    editor->setFocusProxy(colorButton);
 
     return editor;
 }
