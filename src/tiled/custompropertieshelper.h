@@ -34,6 +34,9 @@ class MapDocument;
 class PropertyType;
 class VariantEditorFactory;
 
+/**
+ * Helper class for managing custom properties in a QtAbstractPropertyBrowser.
+ */
 class CustomPropertiesHelper : public QObject
 {
     Q_OBJECT
@@ -62,11 +65,19 @@ signals:
 private:
     QtVariantProperty *createPropertyInternal(const QString &name,
                                               const QVariant &value);
+    QtVariantProperty *createPropertyInternal(const QString &name,
+                                              int type,
+                                              const PropertyType *propertyType);
+    int propertyTypeForValue(const QVariant &value, const PropertyType* &propertyType) const;
     void deletePropertyInternal(QtProperty *property);
     void deleteSubProperties(QtProperty *property);
 
+    void applyValueChange(QtProperty *property, const QVariant &displayValue);
+    void applyChangeToChildren(QtProperty *property, const QVariant &displayValue);
+
     void onValueChanged(QtProperty *property, const QVariant &value);
     void resetProperty(QtProperty *property);
+    void removeProperty(QtProperty *property);
     void propertyTypesChanged();
 
     void setPropertyAttributes(QtVariantProperty *property,
@@ -74,6 +85,7 @@ private:
 
     const PropertyType *propertyType(QtProperty *property) const;
     QStringList propertyPath(QtProperty *property) const;
+    bool isPartOfList(QtProperty *property) const;
 
     QtAbstractPropertyBrowser *mPropertyBrowser;
     QtVariantPropertyManager *mPropertyManager;
@@ -83,6 +95,7 @@ private:
     QHash<QtProperty *, QtProperty *> mPropertyParents;
     bool mUpdating = false;
     bool mEmittingValueChanged = false;
+    bool mNoApplyToChildren = false;
 };
 
 inline bool CustomPropertiesHelper::hasProperty(QtProperty *property) const
