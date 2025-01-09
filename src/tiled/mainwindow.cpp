@@ -68,6 +68,7 @@
 #include "tilesetdocument.h"
 #include "tileseteditor.h"
 #include "tilesetmanager.h"
+#include "tilestampmanager.h"
 #include "tmxmapformat.h"
 #include "utils.h"
 #include "world.h"
@@ -1016,6 +1017,11 @@ void MainWindow::initializeSession()
     // been loaded, to avoid immediately having to reset the engine again after
     // adding the project's extension path.
     ScriptManager::instance().ensureInitialized();
+
+    // Load tile stamps (delayed so that potential custom types and file
+    // formats can be supported by stamps - which isn't perfect since there
+    // will still be issues when the project isn't open on startup)
+    TileStampManager::instance()->loadStamps();
 
     if (projectLoaded || Preferences::instance()->restoreSessionOnStartup())
         restoreSession();
