@@ -2827,15 +2827,23 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
         QUndoStack *undoStack = mDocument->undoStack();
         undoStack->beginMacro(QCoreApplication::translate("Tiled::PropertiesDock", "Convert Property/Properties", nullptr, properties.size()));
 
+        const int toType = selectedItem->data().toInt();
+
         for (const QString &propertyName : propertyNames) {
-            QVariant propertyValue = object->property(propertyName);
+            QList<Object*> objects;
+            QVariantList values;
 
-            int toType = selectedItem->data().toInt();
-            propertyValue.convert(toType);
+            for (auto obj : mDocument->currentObjects()) {
+                QVariant propertyValue = obj->property(propertyName);
+                if (propertyValue.convert(toType)) {
+                    objects.append(obj);
+                    values.append(propertyValue);
+                }
+            }
 
-            undoStack->push(new SetProperty(mDocument,
-                                            mDocument->currentObjects(),
-                                            propertyName, propertyValue));
+            undoStack->push(new SetProperty(mDocument, objects,
+                                            QStringList { propertyName },
+                                            values));
         }
 
         undoStack->endMacro();

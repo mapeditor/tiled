@@ -123,7 +123,8 @@ SetProperty::SetProperty(Document *document,
                          const QString &name,
                          const QVariant &value,
                          QUndoCommand *parent)
-    : SetProperty(document, objects, QStringList(name), value, parent)
+    : SetProperty(document, objects, QStringList(name), QVariantList { value },
+                  parent)
 {
 }
 
@@ -132,19 +133,24 @@ SetProperty::SetProperty(Document *document,
                          const QStringList &path,
                          const QVariant &value,
                          QUndoCommand *parent)
+    : SetProperty(document, objects, path, QVariantList { value }, parent)
+{
+}
+
+SetProperty::SetProperty(Document *document,
+                         const QList<Object *> &objects,
+                         const QStringList &path,
+                         const QVariantList &values,
+                         QUndoCommand *parent)
     : QUndoCommand(parent)
     , mDocument(document)
     , mObjects(objects)
     , mName(path.first())
     , mPath(path)
-    , mValue(value)
+    , mValues(values)
 {
-    for (Object *obj : objects) {
-        ObjectProperty prop;
-        prop.existed = obj->hasProperty(mName);
-        prop.previousValue = obj->property(mName);
-        mProperties.append(prop);
-    }
+    for (Object *obj : objects)
+        mPreviousValues.append(obj->property(mName));
 
     if (mObjects.size() > 1 || mObjects.at(0)->hasProperty(mName))
         setText(QCoreApplication::translate("Undo Commands", "Set Property"));
@@ -155,8 +161,8 @@ SetProperty::SetProperty(Document *document,
 void SetProperty::undo()
 {
     for (int i = 0; i < mObjects.size(); ++i) {
-        if (mProperties.at(i).existed)
-            mDocument->setProperty(mObjects.at(i), mName, mProperties.at(i).previousValue);
+        if (mPreviousValues.at(i).isValid())
+            mDocument->setProperty(mObjects.at(i), mName, mPreviousValues.at(i));
         else
             mDocument->removeProperty(mObjects.at(i), mName);
     }
@@ -164,8 +170,11 @@ void SetProperty::undo()
 
 void SetProperty::redo()
 {
-    for (Object *obj : std::as_const(mObjects))
-        mDocument->setPropertyMember(obj, mPath, mValue);
+    for (int i = 0; i < mObjects.size(); ++i) {
+        auto obj = mObjects.at(i);
+        auto &value = mValues.size() == 1 ? mValues.at(0) : mValues.at(i);
+        mDocument->setPropertyMember(obj, mPath, value);
+    }
 }
 
 bool SetProperty::mergeWith(const QUndoCommand *other)
@@ -175,12 +184,19 @@ bool SetProperty::mergeWith(const QUndoCommand *other)
     // the old value already remembered on this undo command.
     auto o = static_cast<const SetProperty*>(other);
     if (mDocument == o->mDocument && mPath == o->mPath && mObjects == o->mObjects) {
-        mValue = o->mValue;
+        mValues = o->mValues;
 
-        setObsolete(std::all_of(mProperties.cbegin(), mProperties.cend(),
-                                [this] (const ObjectProperty &p) {
-            return p.existed && p.previousValue == mValue;
-        }));
+        bool obsolete = true;
+        for (int i = 0; i < mObjects.size(); ++i) {
+            auto &previousValue = mPreviousValues[i];
+            auto &value = mValues.size() == 1 ? mValues.at(0) : mValues.at(i);
+            if (previousValue != value) {
+                obsolete = false;
+                break;
+            }
+        }
+
+        setObsolete(obsolete);
 
         return true;
     }
@@ -226,16 +242,22 @@ RenameProperty::RenameProperty(Document *document,
     // Remove the old name from all objects
     new RemoveProperty(document, objects, oldName, this);
 
+    QList<Object*> setOnObjects;
+    QVariantList values;
+
     // Different objects may have different values for the same property,
     // or may not have a value at all.
     for (Object *object : objects) {
         if (!object->hasProperty(oldName))
             continue;
 
-        const QList<Object*> objects { object };
-        const QVariant value = object->property(oldName);
+        setOnObjects.append(object);
+        values.append(object->property(oldName));
+    }
 
-        new SetProperty(document, objects, newName, value, this);
+    if (!setOnObjects.isEmpty()) {
+        new SetProperty(document, setOnObjects,
+                        QStringList { newName }, values, this);
     }
 }
 
