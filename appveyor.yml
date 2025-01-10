@@ -24,8 +24,8 @@ environment:
       PUSH_RELEASE: true
       ENABLE_ZSTD: true
       TILED_ITCH_CHANNEL: windows-64bit
-      CMAKE_C_COMPILER: x86_64-w64-mingw32-gcc.exe
-      CMAKE_CXX_COMPILER: x86_64-w64-mingw32-g++.exe
+      CC: x86_64-w64-mingw32-gcc.exe
+      CXX: x86_64-w64-mingw32-g++.exe
     - QTDIR: C:\Qt\5.15\mingw81_32
       PYTHONHOME: C:\Python38
       MINGW: C:\Qt\Tools\mingw810_32
@@ -33,8 +33,8 @@ environment:
       PUSH_RELEASE: true
       ENABLE_ZSTD: true
       TILED_ITCH_CHANNEL: windows-32bit
-      CMAKE_C_COMPILER: i686-w64-mingw32-gcc.exe
-      CMAKE_CXX_COMPILER: i686-w64-mingw32-g++.exe
+      CC: i686-w64-mingw32-gcc.exe
+      CXX: i686-w64-mingw32-g++.exe
 
 configuration: Release
 
