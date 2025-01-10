@@ -83,7 +83,7 @@ parts:
       - libxi-dev
       - zlib1g-dev
     stage-packages:
-      - libfreetype
+      - libfreetype6
       - libharfbuzz0b
       - libpixman-1-0
       - libxcursor1
