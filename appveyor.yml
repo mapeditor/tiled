@@ -47,8 +47,9 @@ build_script:
   - if defined TILED_SNAPSHOT set TILED_MSI_VERSION=%APPVEYOR_BUILD_VERSION%
   - if defined TILED_SNAPSHOT set TILED_ITCH_CHANNEL=%TILED_ITCH_CHANNEL%-snapshot
   - if not defined APPVEYOR_PULL_REQUEST_NUMBER if [%APPVEYOR_REPO_BRANCH%]==[snapshot] if defined PUSH_SNAPSHOT set PUSH_TO_ITCH=true
-  - echo Building zstd
-  - git clone --depth 1 -b release https://github.com/facebook/zstd.git
+  - if defined MINGW echo Building zstd
+  - if defined MINGW git clone --depth 1 -b release https://github.com/facebook/zstd.git
+  - if defined MINGW cd zstd/lib & set CC=gcc & mingw32-make -j2 libzstd.a & cd ../../
   - echo Building qaseprite
   - git clone --depth 1 --recurse-submodules https://github.com/mapeditor/qaseprite.git
   - cd qaseprite
