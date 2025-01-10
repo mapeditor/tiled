@@ -50,18 +50,13 @@ build_script:
   - echo Building zstd
   - git clone --depth 1 -b release https://github.com/facebook/zstd.git
   - if defined MINGW cd zstd/lib & set CC=gcc & mingw32-make -j2 libzstd.a & cd ../../
-  - echo Building qaseprite
-  - git clone --depth 1 https://github.com/mapeditor/qaseprite.git
-  - cd qaseprite
-  - cd aseprite
-  - patch -p1 < ..\aseprite-msvc-dynamic-runtime.patch
-  - cd laf
-  - patch -p1 < ..\..\laf-msvc-dynamic-runtime.patch
-  - cd ..\..
-  - cmake -B build -DCMAKE_BUILD_TYPE=Release -G "MinGW Makefiles"
-  - cmake --build build --config Release
-  - cmake --install build --config Release
-  - cd ..
+  - if defined MINGW echo Building qaseprite
+  - if defined MINGW git clone --depth 1 https://github.com/mapeditor/qaseprite.git
+  - if defined MINGW cd qaseprite
+  - if defined MINGW cmake -B build -DCMAKE_BUILD_TYPE=Release -G "MinGW Makefiles"
+  - if defined MINGW cmake --build build --config Release
+  - if defined MINGW cmake --install build --config Release
+  - if defined MINGW cd ..
   - echo Building Tiled %TILED_VERSION% (%TILED_ITCH_CHANNEL%) from %COMMITNOW%
   - qbs --version
   - qbs setup-toolchains --detect

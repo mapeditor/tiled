@@ -194,7 +194,9 @@
             </Directory>
             <Directory Id="imageFormatPlugins" Name="imageformats">
               <Component Id="ImageFormatPlugins" Guid="{C655A440-9F24-4489-8DB9-5A4EFF6EB5D7}">
-                <File Source="$(var.QtDir)\plugins\imageformats\libqaseprite.dll"/>
+                <?ifdef AsepriteImageFormatPlugin ?>
+                <File Source="$(var.QtDir)\plugins\imageformats\$(var.AsepriteImageFormatPlugin)"/>
+                <?endif?>
                 <File Source="$(var.QtDir)\plugins\imageformats\qgif.dll"/>
                 <File Source="$(var.QtDir)\plugins\imageformats\qjpeg.dll"/>
                 <File Source="$(var.QtDir)\plugins\imageformats\qsvg.dll"/>
