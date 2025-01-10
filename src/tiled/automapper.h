@@ -27,6 +27,7 @@
 #include "tilelayer.h"
 #include "tileset.h"
 
+#include <QCoreApplication>
 #include <QList>
 #include <QMap>
 #include <QRegion>
@@ -275,9 +276,9 @@ private:
  * - copy regions of Maps (multiple Layers, the layerlist is a
  *                         lookup-table for matching the Layers)
  */
-class TILED_EDITOR_EXPORT AutoMapper : public QObject
+class TILED_EDITOR_EXPORT AutoMapper
 {
-    Q_OBJECT
+    Q_DECLARE_TR_FUNCTIONS(Tiled::AutoMapper)
 
 public:
     struct Options
@@ -333,7 +334,7 @@ public:
      *                 AutoMapper takes ownership of this map.
      */
     AutoMapper(std::unique_ptr<Map> rulesMap, const QRegularExpression &mapNameFilter = {});
-    ~AutoMapper() override;
+    ~AutoMapper();
 
     QString rulesMapFileName() const;
     const QRegularExpression &mapNameFilter() const;
