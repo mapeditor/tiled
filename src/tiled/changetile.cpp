@@ -84,4 +84,47 @@ void ChangeTileImageRect::setValue(Tile *tile, const QRect &rect) const
         emit mapDocument->tileImageSourceChanged(tile);
 }
 
+
+ChangeTileOrigin::ChangeTileOrigin(TilesetDocument *tilesetDocument,
+                                   const QList<Tile *> &tiles,
+                                   const QPoint &origins,
+                                   QUndoCommand *parent)
+    : ChangeValue(tilesetDocument, tiles, origins, parent)
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Tile Origin"));
+}
+
+ChangeTileOrigin::ChangeTileOrigin(TilesetDocument *tilesetDocument,
+                                         const QList<Tile *> &tiles,
+                                         const QVector<QPoint> &origins,
+                                         QUndoCommand *parent)
+    : ChangeValue(tilesetDocument, tiles, origins, parent)
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Tile Origin"));
+}
+
+QPoint ChangeTileOrigin::getValue(const Tile *tile) const
+{
+    return tile->origin();
+}
+
+void ChangeTileOrigin::setValue(Tile *tile, const QPoint &origin) const
+{
+    tile->setOrigin(origin);
+
+    auto tilesetDocument = static_cast<TilesetDocument*>(document());
+
+    // Invalidate the draw margins of the maps using this tileset
+    for (MapDocument *mapDocument : tilesetDocument->mapDocuments())
+        mapDocument->map()->invalidateDrawMargins();
+
+    // Since we changed the offset we need to tell it to update any maps
+    emit tilesetDocument->tileImageSourceChanged(tile);
+
+    for (MapDocument *mapDocument : tilesetDocument->mapDocuments())
+        emit mapDocument->tileImageSourceChanged(tile);
+}
+
 } // namespace Tiled

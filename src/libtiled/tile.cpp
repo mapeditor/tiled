@@ -39,10 +39,7 @@ Tile::Tile(int id, Tileset *tileset):
     Object(TileType),
     mId(id),
     mTileset(tileset),
-    mImageStatus(LoadingReady),
-    mProbability(1.0),
-    mCurrentFrameIndex(0),
-    mUnusedTime(0)
+    mImageStatus(LoadingReady)
 {}
 
 Tile::Tile(const QPixmap &image, int id, Tileset *tileset):
@@ -50,10 +47,7 @@ Tile::Tile(const QPixmap &image, int id, Tileset *tileset):
     mId(id),
     mTileset(tileset),
     mImage(image),
-    mImageStatus(image.isNull() ? LoadingError : LoadingReady),
-    mProbability(1.0),
-    mCurrentFrameIndex(0),
-    mUnusedTime(0)
+    mImageStatus(image.isNull() ? LoadingError : LoadingReady)
 {}
 
 Tile::~Tile()
@@ -150,11 +144,22 @@ void Tile::setImageRect(const QRect &imageRect)
 }
 
 /**
- * Returns the drawing offset of the tile (in pixels).
+ * Returns the total drawing offset of the tile (in pixels).
  */
 QPoint Tile::offset() const
 {
-    return mTileset->tileOffset();
+    return mTileset->tileOffset() - mOrigin;
+}
+
+/**
+ * Sets the origin of this tile (in pixels).
+ */
+void Tile::setOrigin(QPoint offset)
+{
+    mOrigin = offset;
+
+    if (mTileset)
+        mTileset->invalidateDrawMargins();
 }
 
 /**
@@ -245,6 +250,7 @@ Tile *Tile::clone(Tileset *tileset) const
 
     c->mImageSource = mImageSource;
     c->mImageRect = mImageRect;
+    c->mOrigin = mOrigin;
     c->mImageStatus = mImageStatus;
     c->mProbability = mProbability;
 

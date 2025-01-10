@@ -178,8 +178,8 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
 //            return;
 //        }
 
-        const auto offset = tileset->tileOffset();
         const auto tile = tileset->findTile(cell.tileId());
+        const auto offset = tile ? tile->offset() : tileset->tileOffset();
         const QSize size = (tile && !tile->image().isNull()) ? tile->size() : mRenderer->map()->tileSize();
 
         TileData data;
@@ -272,7 +272,7 @@ QSGNode *TileItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeDat
         const int tileHeight = map->tileHeight();
 
         const QSize size = tile->size();
-        const QPoint offset = tileset->tileOffset();
+        const QPoint offset = tile->offset();
 
         QVector<TileData> data(1);
         data[0].x = mPosition.x() * tileWidth + offset.x();

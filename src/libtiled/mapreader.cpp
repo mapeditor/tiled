@@ -536,6 +536,11 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
     if (!probability.isEmpty())
         tile->setProbability(probability.toDouble());
 
+    // Read local tile offset
+    const QPoint origin(atts.value(QLatin1String("originx")).toInt(),
+                        atts.value(QLatin1String("originy")).toInt());
+    tile->setOrigin(origin);
+
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("properties")) {
             tile->mergeProperties(readProperties());

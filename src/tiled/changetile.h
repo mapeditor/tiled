@@ -24,6 +24,7 @@
 #include "undocommands.h"
 
 #include <QVector>
+#include <QPoint>
 
 namespace Tiled {
 
@@ -64,6 +65,26 @@ public:
 protected:
     QRect getValue(const Tile *tile) const override;
     void setValue(Tile *tile, const QRect &rect) const override;
+};
+
+class ChangeTileOrigin : public ChangeValue<Tile, QPoint>
+{
+public:
+    ChangeTileOrigin(TilesetDocument *tilesetDocument,
+                     const QList<Tile*> &tiles,
+                     const QPoint &origins,
+                     QUndoCommand *parent = nullptr);
+
+    ChangeTileOrigin(TilesetDocument *tilesetDocument,
+                     const QList<Tile*> &tiles,
+                     const QVector<QPoint> &origins,
+                     QUndoCommand *parent = nullptr);
+
+    int id() const override { return Cmd_ChangeTileOrigin; }
+
+protected:
+    QPoint getValue(const Tile *tile) const override;
+    void setValue(Tile *tile, const QPoint &origin) const override;
 };
 
 } // namespace Tiled

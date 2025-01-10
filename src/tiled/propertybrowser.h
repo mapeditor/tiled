@@ -139,6 +139,7 @@ private:
         TileRenderSizeProperty,
         FillModeProperty,
         TileOffsetProperty,
+        TileOriginProperty,
         MarginProperty,
         SpacingProperty,
         TileProbabilityProperty,

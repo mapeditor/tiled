@@ -292,6 +292,8 @@ static bool includeTile(const Tile *tile)
         return true;
     if (tile->isAnimated())
         return true;
+    if (!tile->origin().isNull())
+        return true;
     if (tile->probability() != 1.0)
         return true;
 
@@ -436,6 +438,11 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                 w.writeAttribute(FileFormat::classPropertyNameForObject(), tile->className());
             if (tile->probability() != 1.0)
                 w.writeAttribute(QStringLiteral("probability"), QString::number(tile->probability()));
+            const QPoint origin = tile->origin();
+            if (origin.x() != 0)
+                w.writeAttribute(QStringLiteral("originx"), QString::number(origin.x()));
+            if (origin.y() != 0)
+                w.writeAttribute(QStringLiteral("originy"), QString::number(origin.y()));
             if (!tile->properties().isEmpty())
                 writeProperties(w, tile->properties());
             if (isCollection)

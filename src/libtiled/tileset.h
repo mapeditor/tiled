@@ -162,6 +162,9 @@ public:
     QPoint tileOffset() const;
     void setTileOffset(QPoint offset);
 
+    QMargins drawMargins() const;
+    void invalidateDrawMargins();
+
     Orientation orientation() const;
     void setOrientation(Orientation orientation);
 
@@ -323,6 +326,9 @@ private:
     QString mFormat;
     TransformationFlags mTransformationFlags;
 
+    mutable QMargins mDrawMargins;
+    mutable bool mDrawMarginsDirty = true;
+
     QWeakPointer<Tileset> mOriginalTileset;
 };
 
@@ -453,12 +459,9 @@ inline QPoint Tileset::tileOffset() const
     return mTileOffset;
 }
 
-/**
- * @see tileOffset
- */
-inline void Tileset::setTileOffset(QPoint offset)
+inline void Tileset::invalidateDrawMargins()
 {
-    mTileOffset = offset;
+    mDrawMarginsDirty = true;
 }
 
 /**
