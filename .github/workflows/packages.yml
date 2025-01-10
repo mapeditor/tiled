@@ -83,7 +83,6 @@ jobs:
           libfuse2 \
           libxcursor-dev \
           libxi-dev
-          
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v4

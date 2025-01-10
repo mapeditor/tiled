@@ -74,6 +74,9 @@ parts:
   qaseprite:
     source: https://github.com/mapeditor/qaseprite.git
     plugin: cmake
+    override-build: |
+      export QT_PLUGIN_PATH=`qmake -query QT_INSTALL_PLUGINS`
+      craftctl default
     build-packages:
       - libfreetype-dev
       - libgl1-mesa-dev
