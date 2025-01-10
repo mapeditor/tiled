@@ -71,6 +71,26 @@ parts:
       - libzstd1
     after: [desktop-qt5]
 
+  qaseprite:
+    source: https://github.com/mapeditor/qaseprite.git
+    plugin: cmake
+    build-packages:
+      - libfreetype-dev
+      - libgl1-mesa-dev
+      - libharfbuzz-dev
+      - libpixman-1-dev
+      - libxcursor-dev
+      - libxi-dev
+      - zlib1g-dev
+    stage-packages:
+      - libfreetype
+      - libharfbuzz0b
+      - libpixman-1-0
+      - libxcursor1
+      - libxi6
+      - zlib1g
+    after: [desktop-qt5]
+
   desktop-qt5:
     source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
     source-subdir: qt
@@ -79,7 +99,6 @@ parts:
     build-packages:
       - build-essential
       - qtbase5-dev
-      - dpkg-dev
     stage-packages:
       - libxkbcommon0
       - dmz-cursor-theme
