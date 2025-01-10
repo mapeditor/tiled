@@ -400,15 +400,10 @@ jobs:
       working-directory: qaseprite 
       run: |
         pushd aseprite
-        patch -p1 < ../aseprite-fix-zlib-include.patch
         patch -p1 < ../aseprite-msvc-dynamic-runtime.patch
         popd
         pushd aseprite/laf
         patch -p1 < ../../laf-msvc-dynamic-runtime.patch
-        patch -p1 < ../../laf-include-cstdint.patch
-        popd
-        pushd aseprite/third_party/cityhash
-        patch -p1 < ../../../cityhash-fix-byteswap.patch
         popd
         cmake -B build -DCMAKE_BUILD_TYPE=Release -G "MinGW Makefiles"
         cmake --build build --config Release
