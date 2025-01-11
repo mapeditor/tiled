@@ -74,6 +74,12 @@ parts:
   qaseprite:
     source: https://github.com/mapeditor/qaseprite.git
     plugin: cmake
+    cmake-parameters:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DUSE_SHARED_ZLIB=on
+      - -DUSE_SHARED_PIXMAN=on
+      - -DUSE_SHARED_FREETYPE=on
+      - -DUSE_SHARED_HARFBUZZ=on
     build-packages:
       - libfreetype-dev
       - libgl1-mesa-dev

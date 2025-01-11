@@ -79,10 +79,14 @@ jobs:
         sudo apt update
         sudo apt install \
           libcurl4-openssl-dev \
-          libzstd-dev \
+          libfreetype-dev \
           libfuse2 \
+          libharfbuzz-dev \
+          libpixman-1-dev \
           libxcursor-dev \
-          libxi-dev
+          libxi-dev \
+          libzstd-dev \
+          zlib1g-dev
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
@@ -124,7 +128,11 @@ jobs:
     - name: Install qaseprite plugin
       working-directory: qaseprite
       run: |
-        cmake -B build -DCMAKE_BUILD_TYPE=Release
+        cmake -B build -DCMAKE_BUILD_TYPE=Release \
+          -DUSE_SHARED_ZLIB=on \
+          -DUSE_SHARED_PIXMAN=on \
+          -DUSE_SHARED_FREETYPE=on \
+          -DUSE_SHARED_HARFBUZZ=on
         cmake --build build --config Release
         cmake --install build --config Release
 
@@ -219,7 +227,6 @@ jobs:
           qt_modules: "qtimageformats"
           version_suffix: "11+"
           architectures: x86_64,arm64
-          # todo: cmake wants semicolon, qbs wants comma? 
           cmake_architectures: x86_64;arm64
 
     env:
