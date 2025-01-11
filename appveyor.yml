@@ -15,22 +15,21 @@ environment:
     - QTDIR: C:\Qt\6.8\msvc2022_64
       PYTHONHOME: C:\Python312-x64
       DEFAULT_PROFILE: MSVC2022-x64
-      PUSH_RELEASE: false
       ENABLE_ZSTD: false
     - QTDIR: C:\Qt\6.8\mingw_64
       PYTHONHOME: C:\Python312-x64
       MINGW: C:\Qt\Tools\mingw1310_64
       DEFAULT_PROFILE: x86_64-w64-mingw32-gcc-13_1_0
-      PUSH_RELEASE: true
       ENABLE_ZSTD: true
-      TILED_ITCH_CHANNEL: windows-64bit
+      CC: x86_64-w64-mingw32-gcc.exe
+      CXX: x86_64-w64-mingw32-g++.exe
     - QTDIR: C:\Qt\5.15\mingw81_32
       PYTHONHOME: C:\Python38
       MINGW: C:\Qt\Tools\mingw810_32
       DEFAULT_PROFILE: i686-w64-mingw32-gcc-8_1_0
-      PUSH_RELEASE: true
       ENABLE_ZSTD: true
-      TILED_ITCH_CHANNEL: windows-32bit
+      CC: i686-w64-mingw32-gcc.exe
+      CXX: i686-w64-mingw32-g++.exe
 
 configuration: Release
 
@@ -45,11 +44,23 @@ build_script:
   - if defined TILED_RELEASE set TILED_VERSION=%APPVEYOR_REPO_TAG_NAME:~1%
   - if defined TILED_SNAPSHOT set TILED_VERSION=%DATE:~10,4%.%DATE:~4,2%.%DATE:~7,2%
   - if defined TILED_SNAPSHOT set TILED_MSI_VERSION=%APPVEYOR_BUILD_VERSION%
-  - if defined TILED_SNAPSHOT set TILED_ITCH_CHANNEL=%TILED_ITCH_CHANNEL%-snapshot
-  - if not defined APPVEYOR_PULL_REQUEST_NUMBER if [%APPVEYOR_REPO_BRANCH%]==[snapshot] if defined PUSH_SNAPSHOT set PUSH_TO_ITCH=true
-  - echo Building Tiled %TILED_VERSION% (%TILED_ITCH_CHANNEL%) from %COMMITNOW%
-  - git clone --depth 1 -b release https://github.com/facebook/zstd.git
+  - if defined MINGW echo Building zstd
+  - if defined MINGW git clone --depth 1 -b release https://github.com/facebook/zstd.git
   - if defined MINGW cd zstd/lib & set CC=gcc & mingw32-make -j2 libzstd.a & cd ../../
+  - echo Building qaseprite
+  - git clone --depth 1 --recurse-submodules https://github.com/mapeditor/qaseprite.git
+  - cd qaseprite
+  - cd aseprite
+  - patch -p1 < ..\aseprite-msvc-dynamic-runtime.patch
+  - cd laf
+  - patch -p1 < ..\..\laf-msvc-dynamic-runtime.patch
+  - cd ..\..
+  - if defined MINGW cmake -B build -DCMAKE_BUILD_TYPE=Release -G "MinGW Makefiles"
+  - if not defined MINGW cmake -B build -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022"
+  - cmake --build build --config Release
+  - cmake --install build --config Release
+  - cd ..
+  - echo Building Tiled %TILED_VERSION% from %COMMITNOW%
   - qbs --version
   - qbs setup-toolchains --detect
   - qbs config defaultProfile %DEFAULT_PROFILE%
@@ -67,7 +78,6 @@ after_build:
   - cd archive*
   - move tiled-*.7z %APPVEYOR_BUILD_FOLDER%
   - cd ..\..
-  - if defined PUSH_TO_ITCH dist\win\push-to-itch.bat
 
 artifacts:
   - name: Installer

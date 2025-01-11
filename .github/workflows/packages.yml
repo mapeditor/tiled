@@ -67,13 +67,26 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    - name: Checkout qaseprite
+      uses: actions/checkout@v4
+      with:
+        repository: mapeditor/qaseprite
+        path: qaseprite
+        submodules: 'recursive'
+
     - name: Install dependencies
       run: |
         sudo apt update
         sudo apt install \
           libcurl4-openssl-dev \
+          libfreetype-dev \
+          libfuse2 \
+          libharfbuzz-dev \
+          libpixman-1-dev \
+          libxcursor-dev \
+          libxi-dev \
           libzstd-dev \
-          libfuse2
+          zlib1g-dev
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
@@ -111,6 +124,17 @@ jobs:
         cmake --build build --parallel
         sudo cmake --install build --prefix /usr --config RelWithDebInfo
         popd
+
+    - name: Install qaseprite plugin
+      working-directory: qaseprite
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=Release \
+          -DUSE_SHARED_ZLIB=on \
+          -DUSE_SHARED_PIXMAN=on \
+          -DUSE_SHARED_FREETYPE=on \
+          -DUSE_SHARED_HARFBUZZ=on
+        cmake --build build --config Release
+        cmake --install build --config Release
 
     - name: Build Tiled
       run: |
@@ -198,10 +222,12 @@ jobs:
           qt_modules: ""
           version_suffix: "10.12-10.15"
           architectures: x86_64
+          cmake_architectures: x86_64
         - qt_version: 6.8.1
           qt_modules: "qtimageformats"
           version_suffix: "11+"
           architectures: x86_64,arm64
+          cmake_architectures: x86_64;arm64
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
@@ -210,6 +236,13 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+
+    - name: Checkout qaseprite
+      uses: actions/checkout@v4
+      with:
+        repository: mapeditor/qaseprite
+        path: qaseprite
+        submodules: 'recursive'
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
@@ -231,6 +264,15 @@ jobs:
         pushd zstd/lib
         CFLAGS="-arch arm64 -arch x86_64" make libzstd.a
         popd
+
+    - name: Install qaseprite plugin
+      working-directory: qaseprite 
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=Release \
+          -DUSE_SHARED_ZLIB=on \
+          -DCMAKE_OSX_ARCHITECTURES='${{ matrix.cmake_architectures }}'
+        cmake --build build --config Release
+        sudo cmake --install build --config Release
 
     - name: Build Tiled
       run: |
@@ -322,6 +364,13 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    - name: Checkout qaseprite
+      uses: actions/checkout@v4
+      with:
+        repository: mapeditor/qaseprite
+        path: qaseprite
+        submodules: 'recursive'
+
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
@@ -353,6 +402,20 @@ jobs:
         pushd zstd/lib
         CC=gcc mingw32-make -j2 libzstd.a
         popd
+
+    - name: Install qaseprite plugin
+      working-directory: qaseprite 
+      run: |
+        pushd aseprite
+        patch -p1 < ../aseprite-msvc-dynamic-runtime.patch
+        popd
+        pushd aseprite/laf
+        patch -p1 < ../../laf-msvc-dynamic-runtime.patch
+        popd
+        cmake -B build -DCMAKE_BUILD_TYPE=Release -G "MinGW Makefiles"
+        cmake --build build --config Release
+        cmake --install build --config Release
+
 
     - name: Build Tiled
       run: |
