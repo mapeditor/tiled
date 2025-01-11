@@ -55,7 +55,7 @@ The [Automapping feature][Automapping] has been made more convenient with three 
 
 * **Always apply output sets with empty index**: When a rule has multiple variations, but part of its output should always be applied, now you can just leave out the "index" part of the relevant output layers. Previously this counted as a variation of its own.
 
-Finally, the Automapping feature no longer fails add new tilesets used by applied changes.
+Finally, the Automapping feature no longer fails to add new tilesets used by applied changes.
 
 ### Noteworthy Bugfixes
 
