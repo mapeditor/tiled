@@ -19,10 +19,11 @@
  </keywords>
  <content_rating type="oars-1.0" />
  <releases>
-  <release version="1.11.1" type="stable" date="2025-01-10">
-   <url>https://www.mapeditor.org/2025/01/10/tiled-1-11-1-released.html</url>
+  <release version="1.11.1" type="stable" date="2025-01-11">
+   <url>https://www.mapeditor.org/2025/01/11/tiled-1-11-1-released.html</url>
    <description>
     <ul>
+      <li>Releases now ship with support for loading Aseprite images (#4109)</li>
       <li>Scripting: Added FileFormat.nameFilter</li>
       <li>Scripting: Added MapEditor.currentBrushChanged signal</li>
       <li>Scripting: Added tiled.cursor to create mouse cursor values</li>

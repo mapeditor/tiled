@@ -1,5 +1,6 @@
-### Tiled 1.11.1 (10 Jan 2025)
+### Tiled 1.11.1 (11 Jan 2025)
 
+* Releases now ship with support for loading Aseprite images (#4109)
 * Scripting: Added `FileFormat.nameFilter`
 * Scripting: Added `MapEditor.currentBrushChanged` signal
 * Scripting: Added `tiled.cursor` to create mouse cursor values
