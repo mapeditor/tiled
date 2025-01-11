@@ -168,6 +168,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#addLabel" class="tsd-kind-icon">add<wbr>Label</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#addNewRow" class="tsd-kind-icon">add<wbr>New<wbr>Row</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#addNumberInput" class="tsd-kind-icon">add<wbr>Number<wbr>Input</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#addRadioButtonGroup" class="tsd-kind-icon">add<wbr>Radio<wbr>Button<wbr>Group</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#addSeparator" class="tsd-kind-icon">add<wbr>Separator</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#addSlider" class="tsd-kind-icon">add<wbr>Slider</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#addTextEdit" class="tsd-kind-icon">add<wbr>Text<wbr>Edit</a></li>
@@ -650,6 +651,38 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="addRadioButtonGroup" class="tsd-anchor"></a>
+					<h3>add<wbr>Radio<wbr>Button<wbr>Group</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Radio<wbr>Button<wbr>Group<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, labelToolTip<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span>, buttonToolTips<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QButtonGroup.html" class="tsd-signature-type" data-tsd-kind="Class">QButtonGroup</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Add a <a href="Qt.QButtonGroup.html">QButtonGroup</a> widget which allows you to add multiple radio
+									buttons, where only one radio button can be selected at a time.</p>
+								</div>
+								<p>Each radio button is a <a href="Qt.QAbstractButton.html">QAbstractButton</a>. You can force selection of
+								a radio button by setting checked = true, and also disable</p>
+								<p>If the labelText is non-empty, a label widget will be added to the left of
+								the widget.</p>
+								<p>Each entry in the values array is the text that will appear on the radio button.</p>
+								<p>labelToolTip is an optional tooltip for the label to the left of the radio button group.</p>
+								<p>buttonToolTips is an optional list of tooltips, where each entry is a tooltip that corresponds
+								to the radio button in the list of values at each index.</p>
+								<dl class="tsd-comment-tags">
+									<dt>since</dt>
+									<dd><p>1.11.1</p>
+									</dd>
+								</dl>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="addSeparator" class="tsd-anchor"></a>
 					<h3>add<wbr>Separator</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -929,6 +962,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="Dialog.html#addNumberInput" class="tsd-kind-icon">add<wbr>Number<wbr>Input</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Dialog.html#addRadioButtonGroup" class="tsd-kind-icon">add<wbr>Radio<wbr>Button<wbr>Group</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="Dialog.html#addSeparator" class="tsd-kind-icon">add<wbr>Separator</a>

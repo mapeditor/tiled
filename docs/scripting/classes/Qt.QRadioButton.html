@@ -12,7 +12,7 @@
 	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>MapEditor | Tiled Scripting API</title>
+	<title>QRadioButton | Tiled Scripting API</title>
 	<meta name="description" content="Documentation for Tiled Scripting API">
 	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
@@ -79,10 +79,13 @@
 					<a href="../index.html">Tiled Scripting API</a>
 				</li>
 				<li>
-					<a href="MapEditor.html">MapEditor</a>
+					<a href="../modules/Qt.html">Qt</a>
+				</li>
+				<li>
+					<a href="Qt.QRadioButton.html">QRadioButton</a>
 				</li>
 			</ul>
-			<h1>Interface MapEditor</h1>
+			<h1>Class QRadioButton</h1>
 		</div>
 	</div>
 </header>
@@ -92,16 +95,28 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>The map editor.</p>
+						<p>This type is returned when calling <a href="Qt.QButtonGroup.html#addItem">QButtonGroup.addItem</a> or <a href="Qt.QButtonGroup.html#addItems">QButtonGroup.addItems</a>.</p>
 					</div>
-					<p>Accessible through <a href="../modules/tiled.html#mapEditor">tiled.mapEditor</a>.</p>
+					<p>You can set checked to true for a QRadioButton even if you have also set enabled to false on it,
+						which could allow you to prevent the script user from selecting a radio button by clicking on it,
+					but still change the selection in your script.</p>
+					<dl class="tsd-comment-tags">
+						<dt>since</dt>
+						<dd><p>1.11.1</p>
+						</dd>
+					</dl>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">MapEditor</span>
+						<a href="Qt.QAbstractButton.html" class="tsd-signature-type" data-tsd-kind="Class">QAbstractButton</a>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">QRadioButton</span>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -109,148 +124,183 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
+						<section class="tsd-index-section tsd-is-inherited">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QRadioButton.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MapEditor.html#currentBrush" class="tsd-kind-icon">current<wbr>Brush</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MapEditor.html#currentBrushChanged" class="tsd-kind-icon">current<wbr>Brush<wbr>Changed</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MapEditor.html#currentMapView" class="tsd-kind-icon">current<wbr>Map<wbr>View</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MapEditor.html#currentWangColorIndex" class="tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MapEditor.html#currentWangColorIndexChanged" class="tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index<wbr>Changed</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MapEditor.html#currentWangSet" class="tsd-kind-icon">current<wbr>Wang<wbr>Set</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MapEditor.html#currentWangSetChanged" class="tsd-kind-icon">current<wbr>Wang<wbr>Set<wbr>Changed</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MapEditor.html#tilesetsView" class="tsd-kind-icon">tilesets<wbr>View</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QRadioButton.html#checkable" class="tsd-kind-icon">checkable</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QRadioButton.html#checked" class="tsd-kind-icon">checked</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QRadioButton.html#clicked" class="tsd-kind-icon">clicked</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QRadioButton.html#enabled" class="tsd-kind-icon">enabled</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QRadioButton.html#minimumHeight" class="tsd-kind-icon">minimum<wbr>Height</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QRadioButton.html#minimumWidth" class="tsd-kind-icon">minimum<wbr>Width</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QRadioButton.html#styleSheet" class="tsd-kind-icon">style<wbr>Sheet</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QRadioButton.html#text" class="tsd-kind-icon">text</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QRadioButton.html#toolTip" class="tsd-kind-icon">tool<wbr>Tip</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Qt.QRadioButton.html#visible" class="tsd-kind-icon">visible</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group ">
+			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">new QRadio<wbr>Button<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QRadioButton.html" class="tsd-signature-type" data-tsd-kind="Class">QRadioButton</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="Qt.QAbstractButton.html">QAbstractButton</a>.<a href="Qt.QAbstractButton.html#constructor">constructor</a></p>
+							</aside>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="currentBrush" class="tsd-anchor"></a>
-					<h3>current<wbr>Brush</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Brush<span class="tsd-signature-symbol">:</span> <a href="../classes/TileMap.html" class="tsd-signature-type" data-tsd-kind="Class">TileMap</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="checkable" class="tsd-anchor"></a>
+					<h3>checkable</h3>
+					<div class="tsd-signature tsd-kind-icon">checkable<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QAbstractButton.html">QAbstractButton</a>.<a href="Qt.QAbstractButton.html#checkable">checkable</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Get or set the currently used tile brush.</p>
+							<p>This property holds whether the button is checkable.</p>
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="currentBrushChanged" class="tsd-anchor"></a>
-					<h3>current<wbr>Brush<wbr>Changed</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Brush<wbr>Changed<span class="tsd-signature-symbol">:</span> <a href="Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="checked" class="tsd-anchor"></a>
+					<h3>checked</h3>
+					<div class="tsd-signature tsd-kind-icon">checked<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QAbstractButton.html">QAbstractButton</a>.<a href="Qt.QAbstractButton.html#checked">checked</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Signal emitted when the current brush has changed.</p>
-						</div>
-						<p>This signal is also emitted when assigning to <a href="MapEditor.html#currentBrush">currentBrush</a>, so be
-						careful not to cause an infinite loop.</p>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.11.1</p>
-							</dd>
-						</dl>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="currentMapView" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> current<wbr>Map<wbr>View</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Map<wbr>View<span class="tsd-signature-symbol">:</span> <a href="MapView.html" class="tsd-signature-type" data-tsd-kind="Interface">MapView</a></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Access the current map view.</p>
+							<p>This property holds whether the button is checked.</p>
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="currentWangColorIndex" class="tsd-anchor"></a>
-					<h3>current<wbr>Wang<wbr>Color<wbr>Index</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="clicked" class="tsd-anchor"></a>
+					<h3>clicked</h3>
+					<div class="tsd-signature tsd-kind-icon">clicked<span class="tsd-signature-symbol">:</span> <a href="../interfaces/Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QAbstractButton.html">QAbstractButton</a>.<a href="Qt.QAbstractButton.html#clicked">clicked</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The currently selected Wang color index in the &quot;Terrain Sets&quot; view.
-								The value 0 is used to represent the eraser mode, and the first Wang color
-							has index 1.</p>
+							<p>Signal emitted when the button is pressed.</p>
 						</div>
-						<p>See also <a href="TileLayerWangEdit.html">TileLayerWangEdit</a>.</p>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.8 (writable since 1.11.1)</p>
-							</dd>
-						</dl>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="currentWangColorIndexChanged" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> current<wbr>Wang<wbr>Color<wbr>Index<wbr>Changed</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index<wbr>Changed<span class="tsd-signature-symbol">:</span> <a href="Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="enabled" class="tsd-anchor"></a>
+					<h3>enabled</h3>
+					<div class="tsd-signature tsd-kind-icon">enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QAbstractButton.html">QAbstractButton</a>.<a href="Qt.QAbstractButton.html#enabled">enabled</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The signal emitted when <a href="MapEditor.html#currentWangColorIndex">currentWangColorIndex</a> changes.</p>
+							<p>If false, the widget cannot be interacted with.
+							Qt documentation: <a href="https://doc.qt.io/qt-6/qwidget.html#enabled-prop">QWidget::enabled</a></p>
 						</div>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.8</p>
-							</dd>
-						</dl>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="currentWangSet" class="tsd-anchor"></a>
-					<h3>current<wbr>Wang<wbr>Set</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Wang<wbr>Set<span class="tsd-signature-symbol">:</span> <a href="../classes/WangSet.html" class="tsd-signature-type" data-tsd-kind="Class">WangSet</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="minimumHeight" class="tsd-anchor"></a>
+					<h3>minimum<wbr>Height</h3>
+					<div class="tsd-signature tsd-kind-icon">minimum<wbr>Height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QAbstractButton.html">QAbstractButton</a>.<a href="Qt.QAbstractButton.html#minimumHeight">minimumHeight</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The currently selected <a href="../classes/WangSet.html">WangSet</a> in the &quot;Terrain Sets&quot; view.</p>
+							<p>You can use this property to prevent the widget from being resized to a height
+							below this amount.</p>
 						</div>
-						<p>See also <a href="TileLayerWangEdit.html">TileLayerWangEdit</a>.</p>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.8 (writable since 1.11.1)</p>
-							</dd>
-						</dl>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="currentWangSetChanged" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> current<wbr>Wang<wbr>Set<wbr>Changed</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Wang<wbr>Set<wbr>Changed<span class="tsd-signature-symbol">:</span> <a href="Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="minimumWidth" class="tsd-anchor"></a>
+					<h3>minimum<wbr>Width</h3>
+					<div class="tsd-signature tsd-kind-icon">minimum<wbr>Width<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QAbstractButton.html">QAbstractButton</a>.<a href="Qt.QAbstractButton.html#minimumWidth">minimumWidth</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The signal emitted when <a href="MapEditor.html#currentWangSet">currentWangSet</a> changes.</p>
+							<p>You can use this property to prevent the widget from being resized to a width
+							below this amount.</p>
 						</div>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.8</p>
-							</dd>
-						</dl>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="tilesetsView" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> tilesets<wbr>View</h3>
-					<div class="tsd-signature tsd-kind-icon">tilesets<wbr>View<span class="tsd-signature-symbol">:</span> <a href="TilesetsView.html" class="tsd-signature-type" data-tsd-kind="Interface">TilesetsView</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="styleSheet" class="tsd-anchor"></a>
+					<h3>style<wbr>Sheet</h3>
+					<div class="tsd-signature tsd-kind-icon">style<wbr>Sheet<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QAbstractButton.html">QAbstractButton</a>.<a href="Qt.QAbstractButton.html#styleSheet">styleSheet</a></p>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Access the Tilesets view.</p>
+							<p>Set this property to override the style sheet for this widget.</p>
+						</div>
+						<p>See <a href="https://doc.qt.io/qt-6/stylesheet.html">https://doc.qt.io/qt-6/stylesheet.html</a> and <a href="https://doc.qt.io/qt-6/stylesheet-examples.html">https://doc.qt.io/qt-6/stylesheet-examples.html</a> for more information.</p>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="text" class="tsd-anchor"></a>
+					<h3>text</h3>
+					<div class="tsd-signature tsd-kind-icon">text<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QAbstractButton.html">QAbstractButton</a>.<a href="Qt.QAbstractButton.html#text">text</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The text displayed on the surface of the button.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="toolTip" class="tsd-anchor"></a>
+					<h3>tool<wbr>Tip</h3>
+					<div class="tsd-signature tsd-kind-icon">tool<wbr>Tip<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QAbstractButton.html">QAbstractButton</a>.<a href="Qt.QAbstractButton.html#toolTip">toolTip</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The toolTip displayed when the user mouses over this widget</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="visible" class="tsd-anchor"></a>
+					<h3>visible</h3>
+					<div class="tsd-signature tsd-kind-icon">visible<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="Qt.QAbstractButton.html">QAbstractButton</a>.<a href="Qt.QAbstractButton.html#visible">visible</a></p>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Controls whether this widget is visible.
+								When toggling this property, the dialog layout will automatically adjust itself
+								based on the visible widgets.
+							Qt documentation: <a href="https://doc.qt.io/qt-6/qwidget.html#visible-prop">QWidget::visible</a>;</p>
 						</div>
 					</div>
 				</section>
@@ -262,38 +312,68 @@
 					<li class=" ">
 						<a href="../index.html">Exports</a>
 					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="../modules/Base64.html">Base64</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="../modules/File.html">File</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="../modules/FileInfo.html">File<wbr>Info</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="../modules/Geometry.html">Geometry</a>
+					</li>
+					<li class="current tsd-kind-namespace">
+						<a href="../modules/Qt.html">Qt</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="../modules/Tiled.html">Tiled</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="../modules/tiled.html">tiled</a>
+					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface">
-						<a href="MapEditor.html" class="tsd-kind-icon">Map<wbr>Editor</a>
+					<li class="current tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QRadioButton.html" class="tsd-kind-icon">QRadio<wbr>Button</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="MapEditor.html#currentBrush" class="tsd-kind-icon">current<wbr>Brush</a>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QRadioButton.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="MapEditor.html#currentBrushChanged" class="tsd-kind-icon">current<wbr>Brush<wbr>Changed</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QRadioButton.html#checkable" class="tsd-kind-icon">checkable</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="MapEditor.html#currentMapView" class="tsd-kind-icon">current<wbr>Map<wbr>View</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QRadioButton.html#checked" class="tsd-kind-icon">checked</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="MapEditor.html#currentWangColorIndex" class="tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QRadioButton.html#clicked" class="tsd-kind-icon">clicked</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="MapEditor.html#currentWangColorIndexChanged" class="tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index<wbr>Changed</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QRadioButton.html#enabled" class="tsd-kind-icon">enabled</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="MapEditor.html#currentWangSet" class="tsd-kind-icon">current<wbr>Wang<wbr>Set</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QRadioButton.html#minimumHeight" class="tsd-kind-icon">minimum<wbr>Height</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="MapEditor.html#currentWangSetChanged" class="tsd-kind-icon">current<wbr>Wang<wbr>Set<wbr>Changed</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QRadioButton.html#minimumWidth" class="tsd-kind-icon">minimum<wbr>Width</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="MapEditor.html#tilesetsView" class="tsd-kind-icon">tilesets<wbr>View</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QRadioButton.html#styleSheet" class="tsd-kind-icon">style<wbr>Sheet</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QRadioButton.html#text" class="tsd-kind-icon">text</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QRadioButton.html#toolTip" class="tsd-kind-icon">tool<wbr>Tip</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="Qt.QRadioButton.html#visible" class="tsd-kind-icon">visible</a>
 							</li>
 						</ul>
 					</li>

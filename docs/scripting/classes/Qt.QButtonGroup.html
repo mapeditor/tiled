@@ -12,7 +12,7 @@
 	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
 	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
 	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>MapEditor | Tiled Scripting API</title>
+	<title>QButtonGroup | Tiled Scripting API</title>
 	<meta name="description" content="Documentation for Tiled Scripting API">
 	<script async src="../assets/js/search.js" id="search-script"></script>
 </head>
@@ -79,10 +79,13 @@
 					<a href="../index.html">Tiled Scripting API</a>
 				</li>
 				<li>
-					<a href="MapEditor.html">MapEditor</a>
+					<a href="../modules/Qt.html">Qt</a>
+				</li>
+				<li>
+					<a href="Qt.QButtonGroup.html">QButtonGroup</a>
 				</li>
 			</ul>
-			<h1>Interface MapEditor</h1>
+			<h1>Class QButtonGroup</h1>
 		</div>
 	</div>
 </header>
@@ -92,16 +95,20 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>The map editor.</p>
+						<p>A group of radio buttons where only one button can be selected.</p>
 					</div>
-					<p>Accessible through <a href="../modules/tiled.html#mapEditor">tiled.mapEditor</a>.</p>
+					<dl class="tsd-comment-tags">
+						<dt>since</dt>
+						<dd><p>1.11.1</p>
+						</dd>
+					</dl>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">MapEditor</span>
+						<span class="target">QButtonGroup</span>
 					</li>
 				</ul>
 			</section>
@@ -110,149 +117,139 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="Qt.QButtonGroup.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MapEditor.html#currentBrush" class="tsd-kind-icon">current<wbr>Brush</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MapEditor.html#currentBrushChanged" class="tsd-kind-icon">current<wbr>Brush<wbr>Changed</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MapEditor.html#currentMapView" class="tsd-kind-icon">current<wbr>Map<wbr>View</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MapEditor.html#currentWangColorIndex" class="tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MapEditor.html#currentWangColorIndexChanged" class="tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index<wbr>Changed</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MapEditor.html#currentWangSet" class="tsd-kind-icon">current<wbr>Wang<wbr>Set</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MapEditor.html#currentWangSetChanged" class="tsd-kind-icon">current<wbr>Wang<wbr>Set<wbr>Changed</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="MapEditor.html#tilesetsView" class="tsd-kind-icon">tilesets<wbr>View</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QButtonGroup.html#buttons" class="tsd-kind-icon">buttons</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QButtonGroup.html#checkedButton" class="tsd-kind-icon">checked<wbr>Button</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QButtonGroup.html#checkedIndex" class="tsd-kind-icon">checked<wbr>Index</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Qt.QButtonGroup.html#idToggled" class="tsd-kind-icon">id<wbr>Toggled</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Qt.QButtonGroup.html#addItem" class="tsd-kind-icon">add<wbr>Item</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Qt.QButtonGroup.html#addItems" class="tsd-kind-icon">add<wbr>Items</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">new QButton<wbr>Group<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QButtonGroup.html" class="tsd-signature-type" data-tsd-kind="Class">QButtonGroup</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="currentBrush" class="tsd-anchor"></a>
-					<h3>current<wbr>Brush</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Brush<span class="tsd-signature-symbol">:</span> <a href="../classes/TileMap.html" class="tsd-signature-type" data-tsd-kind="Class">TileMap</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="buttons" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> buttons</h3>
+					<div class="tsd-signature tsd-kind-icon">buttons<span class="tsd-signature-symbol">:</span> <a href="Qt.QRadioButton.html" class="tsd-signature-type" data-tsd-kind="Class">QRadioButton</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Get or set the currently used tile brush.</p>
+							<p>Retrieve a list of buttons added to this QButtonGroup.</p>
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="currentBrushChanged" class="tsd-anchor"></a>
-					<h3>current<wbr>Brush<wbr>Changed</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Brush<wbr>Changed<span class="tsd-signature-symbol">:</span> <a href="Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="checkedButton" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> checked<wbr>Button</h3>
+					<div class="tsd-signature tsd-kind-icon">checked<wbr>Button<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><a href="Qt.QRadioButton.html" class="tsd-signature-type" data-tsd-kind="Class">QRadioButton</a></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Signal emitted when the current brush has changed.</p>
-						</div>
-						<p>This signal is also emitted when assigning to <a href="MapEditor.html#currentBrush">currentBrush</a>, so be
-						careful not to cause an infinite loop.</p>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.11.1</p>
-							</dd>
-						</dl>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="currentMapView" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> current<wbr>Map<wbr>View</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Map<wbr>View<span class="tsd-signature-symbol">:</span> <a href="MapView.html" class="tsd-signature-type" data-tsd-kind="Interface">MapView</a></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Access the current map view.</p>
+							<p>The radio button that is currently selected, if any.</p>
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="currentWangColorIndex" class="tsd-anchor"></a>
-					<h3>current<wbr>Wang<wbr>Color<wbr>Index</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="checkedIndex" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> checked<wbr>Index</h3>
+					<div class="tsd-signature tsd-kind-icon">checked<wbr>Index<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The currently selected Wang color index in the &quot;Terrain Sets&quot; view.
-								The value 0 is used to represent the eraser mode, and the first Wang color
-							has index 1.</p>
+							<p>ID / index into <a href="Qt.QButtonGroup.html#buttons">QButtonGroup.buttons</a> that is currently selected.
+							If no radio button is selected, -1 will be returned.</p>
 						</div>
-						<p>See also <a href="TileLayerWangEdit.html">TileLayerWangEdit</a>.</p>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.8 (writable since 1.11.1)</p>
-							</dd>
-						</dl>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="currentWangColorIndexChanged" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> current<wbr>Wang<wbr>Color<wbr>Index<wbr>Changed</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index<wbr>Changed<span class="tsd-signature-symbol">:</span> <a href="Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="idToggled" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> id<wbr>Toggled</h3>
+					<div class="tsd-signature tsd-kind-icon">id<wbr>Toggled<span class="tsd-signature-symbol">:</span> <a href="../interfaces/Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span>checked<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The signal emitted when <a href="MapEditor.html#currentWangColorIndex">currentWangColorIndex</a> changes.</p>
+							<p>Signal emitted when any radio button in this QButtonGroup is selected or deselected.
+							If the button that causes the signal to be emitted is now selected, checked will be true.</p>
 						</div>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.8</p>
-							</dd>
-						</dl>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="currentWangSet" class="tsd-anchor"></a>
-					<h3>current<wbr>Wang<wbr>Set</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Wang<wbr>Set<span class="tsd-signature-symbol">:</span> <a href="../classes/WangSet.html" class="tsd-signature-type" data-tsd-kind="Class">WangSet</a></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The currently selected <a href="../classes/WangSet.html">WangSet</a> in the &quot;Terrain Sets&quot; view.</p>
-						</div>
-						<p>See also <a href="TileLayerWangEdit.html">TileLayerWangEdit</a>.</p>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.8 (writable since 1.11.1)</p>
-							</dd>
-						</dl>
-					</div>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="addItem" class="tsd-anchor"></a>
+					<h3>add<wbr>Item</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Item<span class="tsd-signature-symbol">(</span>text<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, toolTip<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QRadioButton.html" class="tsd-signature-type" data-tsd-kind="Class">QRadioButton</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Add a radio button to this group with the given text and tooltip.</p>
+								</div>
+							</div>
+						</li>
+					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="currentWangSetChanged" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> current<wbr>Wang<wbr>Set<wbr>Changed</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Wang<wbr>Set<wbr>Changed<span class="tsd-signature-symbol">:</span> <a href="Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The signal emitted when <a href="MapEditor.html#currentWangSet">currentWangSet</a> changes.</p>
-						</div>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.8</p>
-							</dd>
-						</dl>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="tilesetsView" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> tilesets<wbr>View</h3>
-					<div class="tsd-signature tsd-kind-icon">tilesets<wbr>View<span class="tsd-signature-symbol">:</span> <a href="TilesetsView.html" class="tsd-signature-type" data-tsd-kind="Interface">TilesetsView</a></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Access the Tilesets view.</p>
-						</div>
-					</div>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="addItems" class="tsd-anchor"></a>
+					<h3>add<wbr>Items</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Items<span class="tsd-signature-symbol">(</span>values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, toolTips<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QRadioButton.html" class="tsd-signature-type" data-tsd-kind="Class">QRadioButton</a><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Add multiple radio buttons to this group.</p>
+								</div>
+								<p>Each entry in the values array is the text that will appear on the radio
+									button. The optional list of tooltips specifies the tooltip for the
+								radio buttons at each index.</p>
+							</div>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -262,38 +259,56 @@
 					<li class=" ">
 						<a href="../index.html">Exports</a>
 					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="../modules/Base64.html">Base64</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="../modules/File.html">File</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="../modules/FileInfo.html">File<wbr>Info</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="../modules/Geometry.html">Geometry</a>
+					</li>
+					<li class="current tsd-kind-namespace">
+						<a href="../modules/Qt.html">Qt</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="../modules/Tiled.html">Tiled</a>
+					</li>
+					<li class=" tsd-kind-namespace">
+						<a href="../modules/tiled.html">tiled</a>
+					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface">
-						<a href="MapEditor.html" class="tsd-kind-icon">Map<wbr>Editor</a>
+					<li class="current tsd-kind-class tsd-parent-kind-namespace">
+						<a href="Qt.QButtonGroup.html" class="tsd-kind-icon">QButton<wbr>Group</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="MapEditor.html#currentBrush" class="tsd-kind-icon">current<wbr>Brush</a>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="Qt.QButtonGroup.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="MapEditor.html#currentBrushChanged" class="tsd-kind-icon">current<wbr>Brush<wbr>Changed</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Qt.QButtonGroup.html#buttons" class="tsd-kind-icon">buttons</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="MapEditor.html#currentMapView" class="tsd-kind-icon">current<wbr>Map<wbr>View</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Qt.QButtonGroup.html#checkedButton" class="tsd-kind-icon">checked<wbr>Button</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="MapEditor.html#currentWangColorIndex" class="tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Qt.QButtonGroup.html#checkedIndex" class="tsd-kind-icon">checked<wbr>Index</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="MapEditor.html#currentWangColorIndexChanged" class="tsd-kind-icon">current<wbr>Wang<wbr>Color<wbr>Index<wbr>Changed</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Qt.QButtonGroup.html#idToggled" class="tsd-kind-icon">id<wbr>Toggled</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="MapEditor.html#currentWangSet" class="tsd-kind-icon">current<wbr>Wang<wbr>Set</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Qt.QButtonGroup.html#addItem" class="tsd-kind-icon">add<wbr>Item</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="MapEditor.html#currentWangSetChanged" class="tsd-kind-icon">current<wbr>Wang<wbr>Set<wbr>Changed</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="MapEditor.html#tilesetsView" class="tsd-kind-icon">tilesets<wbr>View</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Qt.QButtonGroup.html#addItems" class="tsd-kind-icon">add<wbr>Items</a>
 							</li>
 						</ul>
 					</li>
