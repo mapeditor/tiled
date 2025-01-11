@@ -3919,7 +3919,11 @@ declare class Tileset extends Asset {
    * Flags describing transformations of tiles in this tileset that will be
    * allowed when using the [terrains feature](https://doc.mapeditor.org/en/stable/manual/terrain/#tile-transformations)
    * with this tileset.
-   *
+   * 
+   * The flags are either some combination of {@link Tileset.AllowFlipHorizontally}, 
+   *  {@link Tileset.AllowFlipVertically}, {@link Tileset.AllowRotate}, and {@link Tileset.PreferUntransformed}, 
+   * or equal to {@link Tileset.NoTransformation}.
+   * 
    * @since 1.11.1
    */
   transformationFlags: number;
