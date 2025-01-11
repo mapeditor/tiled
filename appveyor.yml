@@ -15,11 +15,13 @@ environment:
     - QTDIR: C:\Qt\6.8\msvc2022_64
       PYTHONHOME: C:\Python312-x64
       DEFAULT_PROFILE: MSVC2022-x64
+      PUSH_RELEASE: false
       ENABLE_ZSTD: false
     - QTDIR: C:\Qt\6.8\mingw_64
       PYTHONHOME: C:\Python312-x64
       MINGW: C:\Qt\Tools\mingw1310_64
       DEFAULT_PROFILE: x86_64-w64-mingw32-gcc-13_1_0
+      PUSH_RELEASE: true
       ENABLE_ZSTD: true
       CC: x86_64-w64-mingw32-gcc.exe
       CXX: x86_64-w64-mingw32-g++.exe
@@ -27,6 +29,7 @@ environment:
       PYTHONHOME: C:\Python38
       MINGW: C:\Qt\Tools\mingw810_32
       DEFAULT_PROFILE: i686-w64-mingw32-gcc-8_1_0
+      PUSH_RELEASE: true
       ENABLE_ZSTD: true
       CC: i686-w64-mingw32-gcc.exe
       CXX: i686-w64-mingw32-g++.exe
