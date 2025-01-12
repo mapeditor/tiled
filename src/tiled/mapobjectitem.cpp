@@ -97,8 +97,7 @@ void MapObjectItem::syncWithMapObject()
     }
 
     setVisible(mObject->isVisible());
-    setFlag(QGraphicsItem::ItemIgnoresTransformations,
-            mObject->shape() == MapObject::Point);
+    setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
 }
 
 void MapObjectItem::setIsHoverIndicator(bool isHoverIndicator)

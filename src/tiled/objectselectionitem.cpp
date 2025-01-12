@@ -110,8 +110,7 @@ void MapObjectOutline::syncWithMapObject(const MapRenderer &renderer)
 
     setPos(pixelPos);
     setRotation(mObject->rotation());
-    setFlag(QGraphicsItem::ItemIgnoresTransformations,
-            mObject->shape() == MapObject::Point);
+    setFlag(QGraphicsItem::ItemIgnoresTransformations, false);
 
     if (mBoundingRect != bounds) {
         prepareGeometryChange();
@@ -208,13 +207,7 @@ void MapObjectLabel::syncWithMapObject(const MapRenderer &renderer)
     bounds = rotateAt(pos, mObject->rotation()).mapRect(bounds);
 
     // Center the object name on the object bounding box
-    if (mObject->shape() == MapObject::Point) {
-        // Use a local offset, since point objects don't scale with the view
-        boundingRect.translate(0, -bounds.height());
-        mTextPos.ry() -= bounds.height();
-    } else {
-        pos = { (bounds.left() + bounds.right()) / 2, bounds.top() };
-    }
+    pos = { (bounds.left() + bounds.right()) / 2, bounds.top() };
 
     if (auto mapScene = static_cast<MapScene*>(scene()))
         pos += mapScene->absolutePositionForLayer(*mObject->objectGroup());

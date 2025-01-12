@@ -199,13 +199,11 @@ QPointF ObjectReferenceItem::objectCenter(MapObject *object, const MapRenderer &
 {
     QPointF screenPos = renderer.pixelToScreenCoords(object->position());
 
-    if (object->shape() != MapObject::Point) {
-        QRectF bounds = object->screenBounds(renderer);
+    QRectF bounds = object->screenBounds(renderer);
 
-        // Adjust the bounding box for object rotation
-        bounds = rotateAt(screenPos, object->rotation()).mapRect(bounds);
-        screenPos = bounds.center();
-    }
+    // Adjust the bounding box for object rotation
+    bounds = rotateAt(screenPos, object->rotation()).mapRect(bounds);
+    screenPos = bounds.center();
 
     if (auto mapScene = qobject_cast<MapScene*>(scene()))
         screenPos += mapScene->absolutePositionForLayer(*object->objectGroup());
