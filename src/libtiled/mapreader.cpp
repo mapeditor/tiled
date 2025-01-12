@@ -1273,13 +1273,8 @@ QPolygonF MapReaderPrivate::readPolygon()
 
     const QXmlStreamAttributes atts = xml.attributes();
     const QString points = atts.value(QLatin1String("points")).toString();
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    const QStringList pointsList = points.split(QLatin1Char(' '),
-                                                QString::SkipEmptyParts);
-#else
     const QStringList pointsList = points.split(QLatin1Char(' '),
                                                 Qt::SkipEmptyParts);
-#endif
 
     QPolygonF polygon;
     bool ok = true;

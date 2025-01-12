@@ -214,11 +214,7 @@ void MiniMap::redrawTimeout()
 void MiniMap::wheelEvent(QWheelEvent *event)
 {
     if (event->angleDelta().y()) {
-#if QT_VERSION < QT_VERSION_CHECK(5,14,0)
-        centerViewOnLocalPixel(event->pos(), event->angleDelta().y());
-#else
         centerViewOnLocalPixel(event->position(), event->angleDelta().y());
-#endif
         return;
     }
 

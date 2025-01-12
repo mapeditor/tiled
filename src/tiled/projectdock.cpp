@@ -234,11 +234,7 @@ void ProjectView::setModel(QAbstractItemModel *model)
 
 void ProjectView::setExpandedPaths(const QStringList &paths)
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    mExpandedPaths = paths.toSet();
-#else
     mExpandedPaths = QSet<QString>(paths.begin(), paths.end());
-#endif
 }
 
 void ProjectView::addExpandedPath(const QString &path)
