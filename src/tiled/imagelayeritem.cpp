@@ -55,5 +55,6 @@ void ImageLayerItem::paint(QPainter *painter,
 {
     // TODO: Display a border around the layer when selected
     MapRenderer *renderer = mMapDocument->renderer();
+    painter->setCompositionMode(layer()->compositionMode());
     renderer->drawImageLayer(painter, imageLayer(), option->exposedRect);
 }

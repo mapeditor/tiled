@@ -190,6 +190,28 @@ void SetLayerParallaxFactor::setValue(Layer *layer, const QPointF &value) const
 }
 
 
+SetLayerCompositionMode::SetLayerCompositionMode(Document *document,
+                                                 QList<Layer *> layers,
+                                                 QPainter::CompositionMode compositionMode,
+                                                 QUndoCommand *parent)
+    : ChangeValue<Layer, QPainter::CompositionMode>(document, std::move(layers), compositionMode, parent)
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Layer Composition Mode"));
+}
+
+QPainter::CompositionMode SetLayerCompositionMode::getValue(const Layer *layer) const
+{
+    return layer->compositionMode();
+}
+
+void SetLayerCompositionMode::setValue(Layer *layer, const QPainter::CompositionMode &value) const
+{
+    layer->setCompositionMode(value);
+    emit document()->changed(LayerChangeEvent(layer, LayerChangeEvent::CompositionModeProperty));
+}
+
+
 SetTileLayerSize::SetTileLayerSize(Document *document,
                                    TileLayer *tileLayer,
                                    QSize size,
