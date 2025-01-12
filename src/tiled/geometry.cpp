@@ -204,14 +204,7 @@ static bool isCoherentTo(const QRect &rect, const QRegion &region)
 QVector<QRegion> coherentRegions(const QRegion &region)
 {
     QVector<QRegion> result;
-    QVector<QRect> rects;
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    rects.reserve(static_cast<int>(region.end() - region.begin()));
-    for (const QRect &rect : region)
-        rects.append(rect);
-#else
-    rects = QVector<QRect>(region.begin(), region.end());
-#endif
+    QVector<QRect> rects(region.begin(), region.end());
 
     while (!rects.isEmpty()) {
         QRegion newCoherentRegion = rects.takeLast();

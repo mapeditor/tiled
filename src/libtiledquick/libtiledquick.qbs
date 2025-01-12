@@ -4,7 +4,7 @@ DynamicLibrary {
 
     Depends { name: "libtiled" }
     Depends { name: "cpp" }
-    Depends { name: "Qt"; submodules: ["quick"]; versionAtLeast: "5.12" }
+    Depends { name: "Qt"; submodules: ["quick"]; versionAtLeast: "5.15" }
 
     cpp.cxxLanguageVersion: "c++17"
     cpp.cxxFlags: {

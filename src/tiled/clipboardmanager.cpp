@@ -108,11 +108,7 @@ Properties ClipboardManager::properties() const
     const QMimeData *mimeData = mClipboard->mimeData();
     const QByteArray data = mimeData->data(QLatin1String(PROPERTIES_MIMETYPE));
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    const QJsonArray array = QJsonDocument::fromBinaryData(data).array();
-#else
     const QJsonArray array = QCborValue::fromCbor(data).toArray().toJsonArray();
-#endif
 
     return propertiesFromJson(array);
 }
@@ -125,12 +121,7 @@ void ClipboardManager::setProperties(const Properties &properties)
     const QJsonDocument document(propertiesJson);
 
     mimeData->setText(QString::fromUtf8(document.toJson()));
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    mimeData->setData(QLatin1String(PROPERTIES_MIMETYPE), document.toBinaryData());
-#else
     mimeData->setData(QLatin1String(PROPERTIES_MIMETYPE), QCborArray::fromJsonArray(propertiesJson).toCborValue().toCbor());
-#endif
 
     mClipboard->setMimeData(mimeData);
 }

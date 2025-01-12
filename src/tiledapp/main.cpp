@@ -424,13 +424,11 @@ int main(int argc, char *argv[])
     }
 #endif
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
     QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::RoundPreferFloor);
 
     // High-DPI scaling is always enabled in Qt 6
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-#endif
 #endif
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)

@@ -218,9 +218,9 @@ jobs:
     strategy:
       matrix:
         include:
-        - qt_version: 5.12.12
+        - qt_version: 5.15.2
           qt_modules: ""
-          version_suffix: "10.12-10.15"
+          version_suffix: "10.13-10.15"
           architectures: x86_64
           cmake_architectures: x86_64
         - qt_version: 6.8.1
@@ -460,7 +460,7 @@ jobs:
           Tiled-${{ needs.version.outputs.version }}_Windows-7-8_x86.msi/*.msi
           Tiled-${{ needs.version.outputs.version }}_Linux_Qt-5_x86_64.AppImage/*.AppImage
           Tiled-${{ needs.version.outputs.version }}_Linux_Qt-6_x86_64.AppImage/*.AppImage
-          Tiled-${{ needs.version.outputs.version }}_macOS-10.12-10.15.app/*.zip
+          Tiled-${{ needs.version.outputs.version }}_macOS-10.13-10.15.app/*.zip
           Tiled-${{ needs.version.outputs.version }}_macOS-11+.app/*.zip
 
   sentry:

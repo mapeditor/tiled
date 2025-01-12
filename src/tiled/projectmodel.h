@@ -69,11 +69,7 @@ public:
         int offset;
         QString path;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-        QStringRef relativePath() const { return path.midRef(offset); }
-#else
         QStringView relativePath() const { return QStringView(path).mid(offset); }
-#endif
     };
 
     QVector<Match> findFiles(const QStringList &words) const;
