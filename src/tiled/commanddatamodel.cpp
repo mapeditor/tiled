@@ -462,11 +462,7 @@ bool CommandDataModel::move(int commandIndex, int newIndex)
 
     if (commandIndex - newIndex == 1 || newIndex - commandIndex == 1) {
         // Swapping is probably more efficient than removing/inserting
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-        qSwap(mCommands[commandIndex], mCommands[newIndex]);
-#else
         mCommands.swapItemsAt(commandIndex, newIndex);
-#endif
     } else {
         const Command command = mCommands.at(commandIndex);
         mCommands.removeAt(commandIndex);

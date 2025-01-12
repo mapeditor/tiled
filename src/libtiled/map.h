@@ -743,15 +743,7 @@ inline bool Map::LayerIteratorHelper::isEmpty() const
 
 inline QList<Layer *> Map::LayerIteratorHelper::toList() const
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
     return QList<Layer *>(begin(), end());
-#else
-    LayerIterator iterator(&mMap, mLayerTypes);
-    QList<Layer *> layers;
-    while (Layer *layer = iterator.next())
-        layers.append(layer);
-    return layers;
-#endif
 }
 
 

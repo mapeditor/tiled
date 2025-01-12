@@ -11,7 +11,7 @@ QtGuiApplication {
     Depends {
         name: "Qt"
         submodules: ["core", "quick", "widgets"]
-        versionAtLeast: "5.12"
+        versionAtLeast: "5.15"
     }
     Depends {
         name: "tiledquickplugin"

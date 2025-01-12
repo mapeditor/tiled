@@ -696,11 +696,7 @@ void TilesetView::wheelEvent(QWheelEvent *event)
 
     if ((wheelZoomsByDefault != control) && event->angleDelta().y()) {
 
-#if QT_VERSION < QT_VERSION_CHECK(5,14,0)
-        const QPointF &viewportPos = event->posF();
-#else
         const QPointF &viewportPos = event->position();
-#endif
         const QPointF contentPos(viewportPos.x() + hor->value(),
                                  viewportPos.y() + ver->value());
 

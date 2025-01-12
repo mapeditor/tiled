@@ -133,14 +133,7 @@ QSize PairwiseWrappingLayout::minimumSize() const
     QSize size;
     size.setWidth(minimumTwoColumnWidth());
     size.setHeight(doLayout(QRect(0, 0, size.width(), 0), true));
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    const auto margins = contentsMargins();
-    return QSize(size.width() + margins.left() + margins.right(),
-                 size.height() + margins.top() + margins.bottom());
-#else
     return size.grownBy(contentsMargins());
-#endif
 }
 
 int PairwiseWrappingLayout::doLayout(const QRect &rect, bool testOnly) const

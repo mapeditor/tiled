@@ -60,14 +60,7 @@ ScriptImageWidget::ScriptImageWidget(Tiled::ScriptImage *image, QWidget *parent)
 
 ScriptImage *ScriptImageWidget::image() const
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    if (auto p = pixmap())
-        return new ScriptImage(p->toImage());
-    else
-        return nullptr;
-#else
     return new ScriptImage(pixmap().toImage());
-#endif
 }
 
 void ScriptImageWidget::setImage(ScriptImage *image)

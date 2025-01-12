@@ -321,11 +321,7 @@ void LocatorWidget::setVisible(bool visible)
 void LocatorWidget::setFilterText(const QString &text)
 {
     const QString normalized = QDir::fromNativeSeparators(text);
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    const QStringList words = normalized.split(QLatin1Char(' '), QString::SkipEmptyParts);
-#else
     const QStringList words = normalized.split(QLatin1Char(' '), Qt::SkipEmptyParts);
-#endif
 
     mLocatorSource->setFilterWords(words);
 
