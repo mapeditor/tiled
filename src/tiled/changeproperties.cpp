@@ -152,10 +152,12 @@ SetProperty::SetProperty(Document *document,
     for (Object *obj : objects)
         mPreviousValues.append(obj->property(mName));
 
+    const auto fullName = mPath.join(QLatin1Char('.'));
+
     if (mObjects.size() > 1 || mObjects.at(0)->hasProperty(mName))
-        setText(QCoreApplication::translate("Undo Commands", "Set Property"));
+        setText(QCoreApplication::translate("Undo Commands", "Set Property '%1'").arg(fullName));
     else
-        setText(QCoreApplication::translate("Undo Commands", "Add Property"));
+        setText(QCoreApplication::translate("Undo Commands", "Add Property '%1'").arg(fullName));
 }
 
 void SetProperty::undo()
@@ -216,7 +218,7 @@ RemoveProperty::RemoveProperty(Document *document,
     for (Object *obj : objects)
         mPreviousValues.append(obj->property(mName));
 
-    setText(QCoreApplication::translate("Undo Commands", "Remove Property"));
+    setText(QCoreApplication::translate("Undo Commands", "Remove Property '%1'").arg(name));
 }
 
 void RemoveProperty::undo()
