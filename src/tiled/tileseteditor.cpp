@@ -33,8 +33,11 @@
 #include "maintoolbar.h"
 #include "mapdocument.h"
 #include "mapobject.h"
+#include "newtilesetdialog.h"
 #include "objectgroup.h"
-#include "objecttemplate.h"
+#if QT_VERSION < QT_VERSION_CHECK(6, 5, 0)
+#include "objecttemplate.h" // needed for static assert in QtCore/qmetatype.h
+#endif
 #include "preferences.h"
 #include "propertiesdock.h"
 #include "scriptmanager.h"
@@ -132,6 +135,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     , mWidgetStack(new QStackedWidget(mMainWindow))
     , mAddTiles(new QAction(this))
     , mRemoveTiles(new QAction(this))
+    , mEditTilesetParameters(new QAction(this))
     , mRelocateTiles(new QAction(this))
     , mShowAnimationEditor(new QAction(this))
     , mDynamicWrappingToggle(new QAction(this))
@@ -155,6 +159,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     ActionManager::registerAction(editWang, "EditWang");
     ActionManager::registerAction(mAddTiles, "AddTiles");
     ActionManager::registerAction(mRemoveTiles, "RemoveTiles");
+    ActionManager::registerAction(mEditTilesetParameters, "EditTilesetParameters");
     ActionManager::registerAction(mRelocateTiles, "RelocateTiles");
     ActionManager::registerAction(mShowAnimationEditor, "ShowAnimationEditor");
     ActionManager::registerAction(mDynamicWrappingToggle, "DynamicWrappingToggle");
@@ -199,6 +204,8 @@ TilesetEditor::TilesetEditor(QObject *parent)
 
     connect(mAddTiles, &QAction::triggered, this, &TilesetEditor::openAddTilesDialog);
     connect(mRemoveTiles, &QAction::triggered, this, &TilesetEditor::removeTiles);
+
+    connect(mEditTilesetParameters, &QAction::triggered, this, &TilesetEditor::editTilesetParameters);
 
     connect(mRelocateTiles, &QAction::toggled, this, &TilesetEditor::setRelocateTiles);
     connect(editCollision, &QAction::toggled, this, &TilesetEditor::setEditCollision);
@@ -250,7 +257,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     retranslateUi();
     connect(Preferences::instance(), &Preferences::languageChanged, this, &TilesetEditor::retranslateUi);
 
-    updateAddRemoveActions();
+    updateActions();
 }
 
 void TilesetEditor::saveState()
@@ -368,7 +375,7 @@ void TilesetEditor::setCurrentDocument(Document *document)
         currentChanged(QModelIndex());
     }
 
-    updateAddRemoveActions();
+    updateActions();
 }
 
 Document *TilesetEditor::currentDocument() const
@@ -550,7 +557,7 @@ void TilesetEditor::selectionChanged()
     if (!view)
         return;
 
-    updateAddRemoveActions();
+    updateActions();
 
     const QItemSelectionModel *s = view->selectionModel();
     const QModelIndexList indexes = s->selection().indexes();
@@ -680,6 +687,26 @@ void TilesetEditor::updateTilesetView(Tileset *tileset)
     model->tilesetChanged();
 }
 
+void TilesetEditor::editTilesetParameters()
+{
+    if (!mCurrentTilesetDocument)
+        return;
+    if (mCurrentTilesetDocument->tileset()->isCollection())
+        return;
+
+    TilesetParameters parameters(*mCurrentTilesetDocument->tileset());
+    NewTilesetDialog dialog(mMainWindow->window());
+
+    if (dialog.editTilesetParameters(parameters)) {
+        if (parameters != TilesetParameters(*mCurrentTilesetDocument->tileset())) {
+            auto command = new ChangeTilesetParameters(mCurrentTilesetDocument,
+                                                       parameters);
+
+            mCurrentTilesetDocument->undoStack()->push(command);
+        }
+    }
+}
+
 void TilesetEditor::setCurrentTile(Tile *tile)
 {
     if (mCurrentTile == tile)
@@ -698,6 +725,7 @@ void TilesetEditor::retranslateUi()
 
     mAddTiles->setText(tr("Add Tiles"));
     mRemoveTiles->setText(tr("Remove Tiles"));
+    mEditTilesetParameters->setText(tr("Edit Tileset Image Parameters..."));
     mRelocateTiles->setText(tr("Rearrange Tiles"));
     mShowAnimationEditor->setText(tr("Tile Animation Editor"));
     mDynamicWrappingToggle->setText(tr("Dynamically Wrap Tiles"));
@@ -1057,7 +1085,7 @@ void TilesetEditor::onAnimationEditorClosed()
     mShowAnimationEditor->setChecked(false);
 }
 
-void TilesetEditor::updateAddRemoveActions()
+void TilesetEditor::updateActions()
 {
     bool isCollection = false;
     bool hasSelection = false;
@@ -1069,6 +1097,8 @@ void TilesetEditor::updateAddRemoveActions()
 
     mAddTiles->setEnabled(isCollection);
     mRemoveTiles->setEnabled(isCollection && hasSelection);
+
+    mEditTilesetParameters->setEnabled(mCurrentTilesetDocument && !isCollection);
 }
 
 } // namespace Tiled
