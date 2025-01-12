@@ -104,8 +104,7 @@ ImageLayer *ImageLayer::initializeClone(ImageLayer *clone) const
     clone->mImageSource = mImageSource;
     clone->mTransparentColor = mTransparentColor;
     clone->mImage = mImage;
-    clone->mRepeatX = mRepeatX;
-    clone->mRepeatY = mRepeatY;
+    clone->mRepetition = mRepetition;
 
     return clone;
 }

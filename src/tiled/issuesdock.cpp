@@ -35,8 +35,6 @@
 #include <QStyledItemDelegate>
 #include <QVBoxLayout>
 
-#include <memory>
-
 namespace Tiled {
 
 class IssueFilterModel : public QSortFilterProxyModel
@@ -51,6 +49,9 @@ public:
         if (mShowWarnings == showWarnings)
             return;
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
+        beginFilterChange();
+#endif
         mShowWarnings = showWarnings;
         invalidateFilter();
     }

@@ -85,7 +85,11 @@ bool NewVersionChecker::isNewVersionAvailable() const
 
 void NewVersionChecker::timerEvent(QTimerEvent *event)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
+    if (event->matches(mRefreshTimer)) {
+#else
     if (event->timerId() == mRefreshTimer.timerId()) {
+#endif
         refresh();
         return;
     }

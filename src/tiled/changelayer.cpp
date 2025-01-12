@@ -23,7 +23,6 @@
 #include "changeevents.h"
 #include "document.h"
 #include "layer.h"
-#include "map.h"
 
 #include <QCoreApplication>
 

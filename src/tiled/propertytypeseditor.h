@@ -23,6 +23,7 @@
 #include "propertytype.h"
 
 #include <QDialog>
+#include <QPointer>
 
 class QCheckBox;
 class QComboBox;
@@ -32,18 +33,17 @@ class QLineEdit;
 class QStringListModel;
 class QTreeView;
 
-class QtBrowserItem;
-class QtTreePropertyBrowser;
-
 namespace Ui {
 class PropertyTypesEditor;
 }
 
 namespace Tiled {
 
+class AddValueProperty;
 class ColorButton;
-class CustomPropertiesHelper;
+class PropertiesView;
 class PropertyTypesModel;
+class VariantMapProperty;
 
 struct PropertyTypesFilter
 {
@@ -79,7 +79,7 @@ private:
     PropertyType *selectedPropertyType() const;
     ClassPropertyType *selectedClassPropertyType() const;
 
-    void currentMemberItemChanged(QtBrowserItem *item);
+    void selectedMembersChanged();
 
     void propertyTypeNameChanged(const QModelIndex &index,
                                  const PropertyType &type);
@@ -104,10 +104,10 @@ private:
     void openClassOfPopup();
     void openAddMemberDialog();
     void addMember(const QString &name, const QVariant &value = QVariant());
-    void editMember(const QString &name);
     void removeMember();
-    void renameMember();
-    void renameMemberTo(const QString &name);
+    void renameSelectedMember();
+    void renameMember(const QString &name);
+    void renameMemberTo(const QString &oldName, const QString &name);
 
     void importPropertyTypes();
     void exportPropertyTypes();
@@ -119,7 +119,7 @@ private:
     void colorChanged(const QColor &color);
     void setDrawFill(bool value);
     void setUsageFlags(int flags, bool value);
-    void memberValueChanged(const QStringList &path, const QVariant &value);
+    void classMembersChanged();
 
     void retranslateUi();
 
@@ -144,8 +144,9 @@ private:
     QCheckBox *mDrawFillCheckBox = nullptr;
     QCheckBox *mClassOfCheckBox = nullptr;
     QPushButton *mClassOfButton = nullptr;
-    QtTreePropertyBrowser *mMembersView = nullptr;
-    CustomPropertiesHelper *mPropertiesHelper = nullptr;
+    PropertiesView *mMembersView = nullptr;
+    VariantMapProperty *mMembersProperty = nullptr;
+    QPointer<AddValueProperty> mAddValueProperty;
 
     bool mSettingPrefPropertyTypes = false;
     bool mSettingName = false;

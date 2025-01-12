@@ -362,6 +362,12 @@ Icons from the Elementary icon theme (GPLv3)
 * src/tiled/images/32/dialog-error.png
 * src/tiled/images/32/dialog-warning.png
 
+Icons from the GNOME project (CC0 1.0 Universal)
+* src/tiled/resources/images/scalable/text-bold-symbolic.svg
+* src/tiled/resources/images/scalable/text-italic-symbolic.svg
+* src/tiled/resources/images/scalable/text-underline-symbolic.svg
+* src/tiled/resources/images/scalable/text-strikethrough-symbolic.svg
+
 
 Tilesets:
 

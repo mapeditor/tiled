@@ -20,17 +20,26 @@
 
 #pragma once
 
+#include <QIcon>
+#include <QMap>
+#include <QPointer>
 #include <QWidget>
+
+class QScrollArea;
 
 namespace Tiled {
 
 class Object;
 
+class AddValueProperty;
+class CustomProperties;
 class Document;
-class PropertyBrowser;
+class GroupProperty;
+class ObjectProperties;
+class PropertiesView;
 
 /**
- * The PropertiesWidget combines the PropertyBrowser with some controls that
+ * The PropertiesWidget combines the PropertiesView with some controls that
  * allow adding and removing properties. It also implements cut, copy and paste
  * actions and the context menu.
  */
@@ -46,6 +55,9 @@ public:
      * Sets the \a document on which this properties dock will act.
      */
     void setDocument(Document *document);
+
+    GroupProperty *customPropertiesGroup() const;
+    PropertiesView *propertiesView() const { return mPropertiesView; }
 
 signals:
     void bringToFront();
@@ -64,17 +76,26 @@ private:
     void cutProperties();
     bool copyProperties();
     void pasteProperties();
-    void openAddPropertyDialog();
+    void showAddValueProperty();
     void addProperty(const QString &name, const QVariant &value);
     void removeProperties();
-    void renameProperty();
-    void renamePropertyTo(const QString &name);
+    void renameSelectedProperty();
+    void renameProperty(const QString &name);
     void showContextMenu(const QPoint &pos);
 
     void retranslateUi();
 
-    Document *mDocument;
-    PropertyBrowser *mPropertyBrowser;
+    QIcon mResetIcon;
+    QIcon mRemoveIcon;
+    QIcon mAddIcon;
+    QIcon mRenameIcon;
+    Document *mDocument = nullptr;
+    GroupProperty *mRootProperty = nullptr;
+    ObjectProperties *mPropertiesObject = nullptr;
+    CustomProperties *mCustomProperties = nullptr;
+    QPointer<AddValueProperty> mAddValueProperty;
+    QMap<int, bool> mExpandedStates;
+    PropertiesView *mPropertiesView;
     QAction *mActionAddProperty;
     QAction *mActionRemoveProperty;
     QAction *mActionRenameProperty;

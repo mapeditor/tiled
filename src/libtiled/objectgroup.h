@@ -238,3 +238,4 @@ TILEDSHARED_EXPORT ObjectGroup::DrawOrder drawOrderFromString(const QString &);
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::ObjectGroup*)
+Q_DECLARE_METATYPE(Tiled::ObjectGroup::DrawOrder)

@@ -72,6 +72,8 @@ public:
     const QString &className() const;
     void setClassName(const QString &className);
 
+    const ClassPropertyType *classType() const;
+
     /**
      * Returns the properties of this object.
      */
@@ -111,6 +113,7 @@ public:
 
     QVariant resolvedProperty(const QString &name) const;
     QVariantMap resolvedProperties() const;
+    QVariantMap inheritedProperties() const;
 
     /**
      * Returns the value of the object's \a name property, as a string.

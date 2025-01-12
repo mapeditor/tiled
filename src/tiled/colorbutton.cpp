@@ -22,7 +22,6 @@
 
 #include "utils.h"
 
-#include <QColorDialog>
 #include <QEvent>
 #include <QStyle>
 
@@ -40,7 +39,7 @@ ColorButton::ColorButton(QWidget *parent)
 
 void ColorButton::setColor(const QColor &color)
 {
-    if (mColor == color || !color.isValid())
+    if (mColor == color)
         return;
 
     mColor = color;
@@ -68,14 +67,17 @@ void ColorButton::changeEvent(QEvent *e)
 
 void ColorButton::pickColor()
 {
-    const QColor newColor = QColorDialog::getColor(mColor, this);
+    const QColor newColor = QColorDialog::getColor(mColor, this, QString(),
+                                                   mDialogOptions);
     if (newColor.isValid())
         setColor(newColor);
 }
 
 void ColorButton::updateIcon()
 {
-    setIcon(Utils::colorIcon(mColor, iconSize()));
+    // todo: fix gray icon in disabled state (consider using opacity, and not using an icon at all)
+    setIcon(mColor.isValid() ? Utils::colorIcon(mColor, iconSize()) : QIcon());
+    setText(mColor.isValid() ? QString() : tr("Not set"));
 }
 
 #include "moc_colorbutton.cpp"

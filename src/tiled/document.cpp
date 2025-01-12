@@ -145,6 +145,7 @@ void Document::setCurrentObject(Object *object, Document *owningDocument)
 
     emit currentObjectSet(object);
     emit currentObjectChanged(object);
+    emit currentObjectsChanged();
 }
 
 /**

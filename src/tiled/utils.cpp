@@ -41,6 +41,8 @@
 #include <QImageWriter>
 #include <QJsonDocument>
 #include <QKeyEvent>
+#include <QLayout>
+#include <QLayoutItem>
 #include <QMainWindow>
 #include <QMenu>
 #include <QPainter>
@@ -311,7 +313,7 @@ QIcon themeIcon(const QString &name)
 QIcon colorIcon(const QColor &color, QSize size)
 {
     QPixmap pixmap(size);
-    pixmap.fill(color);
+    pixmap.fill(color.isValid() ? color : Qt::transparent);
 
     QPainter painter(&pixmap);
     painter.setPen(QColor(0, 0, 0, 128));
@@ -605,6 +607,21 @@ QString Error::jsonParseError(QJsonParseError error)
     return QCoreApplication::translate("File Errors",
                                        "JSON parse error at offset %1:\n%2.").arg(error.offset).arg(error.errorString());
 
+}
+
+/**
+ * Recursively deletes all items and their widgets from the given layout.
+ */
+void deleteAllFromLayout(QLayout *layout)
+{
+    while (QLayoutItem *item = layout->takeAt(0)) {
+        delete item->widget();
+
+        if (QLayout *layout = item->layout())
+            deleteAllFromLayout(layout);
+
+        delete item;
+    }
 }
 
 } // namespace Utils

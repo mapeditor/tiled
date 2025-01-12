@@ -29,8 +29,6 @@
 #include <QStyleFactory>
 #include <QStyleHints>
 
-#include <QtBoolPropertyManager>
-
 namespace Tiled {
 
 StyleHelper *StyleHelper::mInstance;
@@ -162,8 +160,6 @@ void StyleHelper::apply()
         if (auto *style = qobject_cast<TiledProxyStyle*>(QApplication::style()))
             style->setPalette(desiredPalette);
     }
-
-    QtBoolPropertyManager::resetIcons();
 
     emit styleApplied();
 }

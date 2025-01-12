@@ -102,8 +102,6 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         connect(mMapDocument, &MapDocument::changed,
                 this, &MapScene::changeEvent);
-        connect(mMapDocument, &MapDocument::mapChanged,
-                this, &MapScene::mapChanged);
         connect(mMapDocument, &MapDocument::tilesetTilePositioningChanged,
                 this, [this] { update(); });
         connect(mMapDocument, &MapDocument::tileImageSourceChanged,
@@ -405,10 +403,19 @@ MapItem *MapScene::takeOrCreateMapItem(const MapDocumentPtr &mapDocument, MapIte
 void MapScene::changeEvent(const ChangeEvent &change)
 {
     switch (change.type) {
-    case ChangeEvent::MapChanged:
-        if (static_cast<const MapChangeEvent&>(change).property == Map::ParallaxOriginProperty)
+    case ChangeEvent::MapChanged: {
+        switch (static_cast<const MapChangeEvent&>(change).property) {
+        case Map::ParallaxOriginProperty:
             emit parallaxParametersChanged();
+            break;
+        case Map::BackgroundColorProperty:
+            updateBackgroundColor();
+            break;
+        default:
+            break;
+        }
         break;
+    }
     case ChangeEvent::TilesetChanged:{
         auto &tilesetChange = static_cast<const TilesetChangeEvent&>(change);
         switch (tilesetChange.property) {
@@ -422,14 +429,6 @@ void MapScene::changeEvent(const ChangeEvent &change)
     default:
         break;
     }
-}
-
-/**
- * Updates the possibly changed background color.
- */
-void MapScene::mapChanged()
-{
-    updateBackgroundColor();
 }
 
 void MapScene::repaintTileset(Tileset *tileset)

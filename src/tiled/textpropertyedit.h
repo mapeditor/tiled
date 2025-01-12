@@ -38,11 +38,14 @@ QString escapeNewlines(const QString &string);
 class TextPropertyEdit : public QWidget
 {
     Q_OBJECT
+    Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged FINAL)
 
 public:
     explicit TextPropertyEdit(QWidget *parent = nullptr);
 
     QString text() const;
+
+    QLineEdit *lineEdit() const { return mLineEdit; }
 
 public slots:
     void setText(const QString &text);
