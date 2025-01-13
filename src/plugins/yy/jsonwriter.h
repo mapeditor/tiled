@@ -53,7 +53,7 @@ public:
 
     void writeStartArray()                      { writeStartScope(Array); }
     void writeStartArray(const char *name)      { writeStartScope(Array, name); }
-    void writeEndArray()                        { writeEndScope(Array); }
+    void writeEndArray(bool forceNewLine = false)   { writeEndScope(Array, forceNewLine); }
 
     void writeValue(int value);
     void writeValue(unsigned value);
@@ -83,7 +83,7 @@ public:
     void setMinimize(bool minimize);
     bool minimize() const;
 
-    void prepareNewLine();
+    void prepareNewLine(bool forceNewLine = false);
 
     bool hasError() const { return m_error; }
 
@@ -92,12 +92,12 @@ public:
 private:
     void writeStartScope(Scope scope);
     void writeStartScope(Scope scope, const char *name);
-    void writeEndScope(Scope scope);
+    void writeEndScope(Scope scope, bool forceNewLine = false);
 
     void prepareNewValue();
     void writeIndent();
 
-    void writeNewline();
+    void writeNewline(bool force = false);
     void writeKey(const char *key);
     void write(const char *bytes, qint64 length);
     void write(const char *bytes);
@@ -113,6 +113,7 @@ private:
     bool m_newLine { true };
     bool m_valueWritten { false };
     bool m_error { false };
+    int m_tileSerialiseWidth { 0 };
 };
 
 inline void JsonWriter::writeValue(int value)
