@@ -255,7 +255,7 @@ void JsonWriter::writeKey(const char *key)
     prepareNewLine();
     write('"');
     write(key);
-    write(m_minimize ? "\":" : "\": ");
+    write("\":");
 }
 
 void JsonWriter::write(const char *bytes, qint64 length)
