@@ -1,10 +1,10 @@
-import QtQuick 2.10
-import QtQuick.Controls 2.3
-import QtQuick.Layouts 1.3
-import QtQuick.Window 2.11
-import org.mapeditor.Tiled 1.0 as Tiled
-import Qt.labs.settings 1.0
-import Qt.labs.platform 1.0 as Platform
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import QtQuick.Window
+import QtQuick.Dialogs
+import org.mapeditor.Tiled as Tiled
+import QtCore
 
 // For access to FontAwesome Singleton
 import "."
@@ -23,20 +23,20 @@ ApplicationWindow {
         source: "fonts/fontawesome.ttf"
     }
 
-    Platform.FileDialog {
+    FileDialog {
         id: fileDialog
         nameFilters: [ "TMX files (*.tmx)", "All files (*)" ]
         onAccepted: {
-            mapLoader.source = fileDialog.file
-            settings.mapsFolder = fileDialog.folder
+            mapLoader.source = fileDialog.selectedFile
+            settings.mapsFolder = fileDialog.currentFolder
             fitMapInView(false);
         }
     }
 
-    Platform.MessageDialog {
+    MessageDialog {
         id: aboutBox
         title: "About Tiled Quick"
-        text: "This is an experimental Qt Quick version of Tiled,\na generic 2D map editor"
+        text: "This is an experimental Qt Quick version of Tiled, a generic 2D map editor"
     }
 
     Settings {
@@ -71,7 +71,7 @@ ApplicationWindow {
         text: qsTr("Open...")
         shortcut: StandardKey.Open
         onTriggered: {
-            fileDialog.folder = settings.mapsFolder
+            fileDialog.currentFolder = settings.mapsFolder
             fileDialog.open()
         }
     }
@@ -167,7 +167,7 @@ ApplicationWindow {
         id: singleFingerPanArea
         anchors.fill: parent
 
-        onDragged: {
+        onDragged: function(dx, dy) {
             dx *= Screen.devicePixelRatio
             dy *= Screen.devicePixelRatio
 
@@ -184,7 +184,7 @@ ApplicationWindow {
             }
         }
 
-        onWheel: {
+        onWheel: function(wheel) {
             const scaleFactor = Math.pow(1.4, wheel.angleDelta.y / 120)
 
             let targetScale = containerAnimation.running ? containerAnimation.scale : mapContainer.scale
