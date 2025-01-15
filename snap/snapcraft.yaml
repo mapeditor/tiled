@@ -15,6 +15,7 @@ apps:
     plugs:
       - desktop
       - desktop-legacy
+      - wayland
       - unity7
       - home
       - removable-media
@@ -26,6 +27,7 @@ apps:
     plugs: &basic-plugs
       - desktop
       - desktop-legacy
+      - wayland
       - unity7
       - home
       - removable-media
@@ -64,6 +66,7 @@ parts:
     stage-packages:
       - libqt5quick5
       - qt5-image-formats-plugins
+      - qtwayland5
     #  - libpython2.7
       - libzstd1
     after: [desktop-qt5]
