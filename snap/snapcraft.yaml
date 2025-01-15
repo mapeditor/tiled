@@ -69,6 +69,7 @@ parts:
       - qtwayland5
     #  - libpython2.7
       - libzstd1
+      - xkb-data
     after: [desktop-qt5]
 
   qaseprite:

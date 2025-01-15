@@ -2,6 +2,7 @@
 
 * Fixed crash while handling file reloads without any files opened
 * Fixed crash when closing the last file with multiple custom properties selected
+* snap: Fixed crash on startup on Wayland
 * AppImage: Updated to Sentry 0.7.19
 
 ### Tiled 1.11.1 (11 Jan 2025)
