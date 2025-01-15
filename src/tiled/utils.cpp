@@ -31,9 +31,6 @@
 #include <QDBusMessage>
 #endif
 #include <QDesktopServices>
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-#include <QDesktopWidget>
-#endif
 #include <QDir>
 #include <QFileInfo>
 #include <QGuiApplication>
@@ -48,9 +45,6 @@
 #include <QPainter>
 #include <QProcess>
 #include <QRegularExpression>
-#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
-#include <QRegExp>
-#endif
 #include <QScreen>
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0) && QT_VERSION < QT_VERSION_CHECK(6, 5, 1)
@@ -113,11 +107,7 @@ QStringList cleanFilterList(const QString &filter)
     QRegularExpressionMatch match = regexp.match(filter);
     if (match.hasMatch())
         f = match.captured(2);
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    return f.split(QLatin1Char(' '), QString::SkipEmptyParts);
-#else
     return f.split(QLatin1Char(' '), Qt::SkipEmptyParts);
-#endif
 }
 
 /**
@@ -127,25 +117,14 @@ QStringList cleanFilterList(const QString &filter)
 bool fileNameMatchesNameFilter(const QString &filePath,
                                const QString &nameFilter)
 {
-#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
-    QRegExp rx;
-    rx.setCaseSensitivity(Qt::CaseInsensitive);
-    rx.setPatternSyntax(QRegExp::Wildcard);
-#else
     QRegularExpression rx;
     rx.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
-#endif
 
     const QStringList filterList = cleanFilterList(nameFilter);
     const QString fileName = QFileInfo(filePath).fileName();
     for (const QString &filter : filterList) {
-#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
-        rx.setPattern(filter);
-        if (rx.exactMatch(fileName))
-#else
         rx.setPattern(QRegularExpression::wildcardToRegularExpression(filter));
         if (rx.match(fileName).hasMatch())
-#endif
             return true;
     }
     return false;
@@ -327,15 +306,11 @@ QIcon colorIcon(const QColor &color, QSize size)
  */
 QRect screenRect(const QWidget *widget)
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    return QApplication::desktop()->availableGeometry(widget);
-#else
     const QPoint center = widget->mapToGlobal(widget->rect().center());
     const QScreen *screen = widget->screen()->virtualSiblingAt(center);
     if (!screen)
         screen = widget->screen();
     return screen->availableGeometry();
-#endif
 }
 
 /**

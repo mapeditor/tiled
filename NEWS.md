@@ -1,3 +1,7 @@
+### Unreleased
+
+* Raised minimum supported Qt version from 5.12 to 5.15
+
 ### Tiled 1.11.1 (11 Jan 2025)
 
 * Releases now ship with support for loading Aseprite images (#4109)
