@@ -366,8 +366,8 @@ void test_Properties::enumWith31Flags()
     QVariant property1 = flagsAsString.toPropertyValue(QStringLiteral("1"), context);
     QVariant propertyAll = flagsAsString.toPropertyValue(allFlagsString, context);
 
-    QCOMPARE(property1, QVariant::fromValue(PropertyValue(1, flagsAsString.id)));
-    QCOMPARE(propertyAll, QVariant::fromValue(PropertyValue(allFlagsInt, flagsAsString.id)));
+    QCOMPARE(property1, QVariant::fromValue(PropertyValue { 1, flagsAsString.id }));
+    QCOMPARE(propertyAll, QVariant::fromValue(PropertyValue { allFlagsInt, flagsAsString.id }));
 
     ExportValue exportString1 = flagsAsString.toExportValue(property1.value<PropertyValue>().value, context);
     ExportValue exportStringAll = flagsAsString.toExportValue(propertyAll.value<PropertyValue>().value, context);
