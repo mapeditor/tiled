@@ -3,8 +3,10 @@ import qbs.Environment
 Project {
     name: "Tiled"
 
-    qbsSearchPaths: "qbs"
-    minimumQbsVersion: "1.13"
+    minimumQbsVersion: "1.21"
+
+    qbsModuleProviders: ["Qt", "qbspkgconfig"]
+    qbsSearchPaths: ["qbs"]
 
     property string version: Environment.getEnv("TILED_VERSION") || "1.11.1";
     property bool snapshot: Environment.getEnv("TILED_SNAPSHOT") == "true"

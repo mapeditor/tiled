@@ -6,6 +6,10 @@ DynamicLibrary {
 
     Depends { name: "cpp" }
     Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "5.12" }
+    Depends {
+        condition: !qbs.toolchain.contains("msvc")
+        name: "zlib"
+    }
 
     Probes.PkgConfigProbe {
         id: pkgConfigZstd
@@ -45,9 +49,6 @@ DynamicLibrary {
     }
     cpp.dynamicLibraries: {
         var libs = base;
-
-        if (!qbs.toolchain.contains("msvc"))
-            libs.push("z");
 
         if (pkgConfigZstd.found && !project.staticZstd)
             libs = libs.concat(pkgConfigZstd.libraries);
