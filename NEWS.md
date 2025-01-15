@@ -1,5 +1,6 @@
 ### Unreleased
 
+* snap: Fixed crash on startup on Wayland
 * Raised minimum supported Qt version from 5.12 to 5.15
 
 ### Tiled 1.11.1 (11 Jan 2025)
