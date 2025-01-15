@@ -1219,8 +1219,7 @@ static std::unique_ptr<GMRLayer> processImageLayer(const ImageLayer *imageLayer,
     gmrBackgroundLayer->animationSpeedType = optionalProperty(imageLayer, "animationSpeedType", gmrBackgroundLayer->animationSpeedType);
     gmrBackgroundLayer->userdefinedAnimFPS = imageLayer->resolvedProperty(QStringLiteral("animationFPS")).isValid();
 
-    // Workaround compilation issue with mingw49
-    return std::unique_ptr<GMRLayer>(std::move(gmrBackgroundLayer));
+    return gmrBackgroundLayer;
 }
 
 static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
