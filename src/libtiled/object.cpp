@@ -88,8 +88,8 @@ QVariant Object::resolvedProperty(const QString &name) const
 
 QVariantMap Object::resolvedProperties() const
 {
-    QVariantMap allProperties;
-    Tiled::mergeProperties(allProperties, inheritedProperties());
+    QVariantMap allProperties(inheritedProperties());
+    Tiled::mergeProperties(allProperties, properties());
     return allProperties;
 }
 
