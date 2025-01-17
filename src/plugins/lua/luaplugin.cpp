@@ -28,7 +28,6 @@
 #include "map.h"
 #include "mapobject.h"
 #include "objectgroup.h"
-#include "objecttemplate.h"
 #include "properties.h"
 #include "savefile.h"
 #include "tile.h"
