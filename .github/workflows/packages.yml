@@ -72,7 +72,7 @@ jobs:
       with:
         repository: mapeditor/qaseprite
         path: qaseprite
-        submodules: 'recursive'
+        ref: '1.0'
 
     - name: Install dependencies
       run: |
@@ -128,8 +128,10 @@ jobs:
     - name: Install qaseprite plugin
       working-directory: qaseprite
       run: |
+        ./update-submodules.sh --minimal
         cmake -B build -DCMAKE_BUILD_TYPE=Release \
           -DUSE_SHARED_ZLIB=on \
+          -DUSE_SHARED_LIBPNG=on \
           -DUSE_SHARED_PIXMAN=on \
           -DUSE_SHARED_FREETYPE=on \
           -DUSE_SHARED_HARFBUZZ=on
@@ -242,7 +244,7 @@ jobs:
       with:
         repository: mapeditor/qaseprite
         path: qaseprite
-        submodules: 'recursive'
+        ref: '1.0'
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
@@ -268,6 +270,7 @@ jobs:
     - name: Install qaseprite plugin
       working-directory: qaseprite 
       run: |
+        ./update-submodules.sh --no-zlib
         cmake -B build -DCMAKE_BUILD_TYPE=Release \
           -DUSE_SHARED_ZLIB=on \
           -DCMAKE_OSX_ARCHITECTURES='${{ matrix.cmake_architectures }}'
@@ -369,7 +372,7 @@ jobs:
       with:
         repository: mapeditor/qaseprite
         path: qaseprite
-        submodules: 'recursive'
+        ref: '1.0'
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
@@ -406,9 +409,7 @@ jobs:
     - name: Install qaseprite plugin
       working-directory: qaseprite 
       run: |
-        pushd aseprite
-        patch -p1 < ../aseprite-msvc-dynamic-runtime.patch
-        popd
+        ./update-submodules.sh
         pushd aseprite/laf
         patch -p1 < ../../laf-msvc-dynamic-runtime.patch
         popd
