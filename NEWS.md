@@ -1,5 +1,6 @@
 ### Tiled 1.11.2 (28 Jan 2025)
 
+* YY plugin: Fixed compatibility with GameMaker 2024 (#4132)
 * Fixed crash while handling file reloads without any files opened
 * Fixed crash when closing the last file with multiple custom properties selected
 * snap: Fixed crash on startup on Wayland
