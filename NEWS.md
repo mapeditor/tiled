@@ -1,5 +1,6 @@
 ### Unreleased
 
+* YY plugin: Fixed compatibility with GameMaker 2024 (#4132)
 * snap: Fixed crash on startup on Wayland
 * Raised minimum supported Qt version from 5.12 to 5.15
 
