@@ -236,18 +236,9 @@ static constexpr struct CompositionModeMapping {
     QPainter::CompositionMode mode;
     const char *name;
 } compositionModeMapping[] = {
-    { QPainter::CompositionMode_SourceOver,         "source-over"       },
-    { QPainter::CompositionMode_DestinationOver,    "destination-over"  },
-    { QPainter::CompositionMode_Clear,              "clear"             },
-    { QPainter::CompositionMode_Source,             "source"            },
-    { QPainter::CompositionMode_Destination,        "destination"       },
-    { QPainter::CompositionMode_SourceIn,           "source-in"         },
-    { QPainter::CompositionMode_DestinationIn,      "destination-in"    },
-    { QPainter::CompositionMode_SourceOut,          "source-out"        },
-    { QPainter::CompositionMode_DestinationOut,     "destination-out"   },
-    { QPainter::CompositionMode_SourceAtop,         "source-atop"       },
-    { QPainter::CompositionMode_DestinationAtop,    "destination-atop"  },
-    { QPainter::CompositionMode_Xor,                "xor"               },
+    { QPainter::CompositionMode_SourceOver,         "normal"            },
+
+    // For now we only support the SVG 1.2 blend modes
     { QPainter::CompositionMode_Plus,               "plus"              },
     { QPainter::CompositionMode_Multiply,           "multiply"          },
     { QPainter::CompositionMode_Screen,             "screen"            },
@@ -260,7 +251,6 @@ static constexpr struct CompositionModeMapping {
     { QPainter::CompositionMode_SoftLight,          "soft-light"        },
     { QPainter::CompositionMode_Difference,         "difference"        },
     { QPainter::CompositionMode_Exclusion,          "exclusion"         },
-    // RasterOp modes are not supported
 };
 
 QString Tiled::compositionModeToString(QPainter::CompositionMode mode)
