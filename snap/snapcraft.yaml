@@ -72,11 +72,12 @@ parts:
     after: [desktop-qt5]
 
   qaseprite:
-    source: https://github.com/mapeditor/qaseprite.git
+    source: https://github.com/mapeditor/qaseprite/releases/download/1.0/qaseprite-1.0-source.tar.gz
     plugin: cmake
     cmake-parameters:
       - -DCMAKE_BUILD_TYPE=Release
       - -DUSE_SHARED_ZLIB=on
+      - -DUSE_SHARED_LIBPNG=on
       - -DUSE_SHARED_PIXMAN=on
       - -DUSE_SHARED_FREETYPE=on
       - -DUSE_SHARED_HARFBUZZ=on
