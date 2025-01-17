@@ -21,6 +21,7 @@
 #pragma once
 
 #include "changevalue.h"
+#include "tiled.h"
 #include "undocommands.h"
 
 #include <QPointF>
@@ -157,19 +158,19 @@ private:
 /**
  * Used for changing the layer parallax factor.
  */
-class SetLayerCompositionMode : public ChangeValue<Layer, QPainter::CompositionMode>
+class SetLayerBlendMode : public ChangeValue<Layer, BlendMode>
 {
 public:
-    SetLayerCompositionMode(Document *document,
-                            QList<Layer *> layers,
-                            QPainter::CompositionMode compositionMode,
-                            QUndoCommand *parent = nullptr);
+    SetLayerBlendMode(Document *document,
+                      QList<Layer *> layers,
+                      BlendMode blendMode,
+                      QUndoCommand *parent = nullptr);
 
-    int id() const override { return Cmd_ChangeLayerCompositionMode; }
+    int id() const override { return Cmd_ChangeLayerBlendMode; }
 
 private:
-    QPainter::CompositionMode getValue(const Layer *layer) const override;
-    void setValue(Layer *layer, const QPainter::CompositionMode &value) const override;
+    BlendMode getValue(const Layer *layer) const override;
+    void setValue(Layer *layer, const BlendMode &value) const override;
 };
 
 /**

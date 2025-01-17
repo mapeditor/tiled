@@ -232,42 +232,41 @@ void Tiled::increaseImageAllocationLimit(int mbLimit)
 #endif
 }
 
-static constexpr struct CompositionModeMapping {
-    QPainter::CompositionMode mode;
+static constexpr struct BlendModeMapping {
+    Tiled::BlendMode mode;
     const char *name;
-} compositionModeMapping[] = {
-    { QPainter::CompositionMode_SourceOver,         "normal"            },
-
-    // For now we only support the SVG 1.2 blend modes
-    { QPainter::CompositionMode_Plus,               "plus"              },
-    { QPainter::CompositionMode_Multiply,           "multiply"          },
-    { QPainter::CompositionMode_Screen,             "screen"            },
-    { QPainter::CompositionMode_Overlay,            "overlay"           },
-    { QPainter::CompositionMode_Darken,             "darken"            },
-    { QPainter::CompositionMode_Lighten,            "lighten"           },
-    { QPainter::CompositionMode_ColorDodge,         "color-dodge"       },
-    { QPainter::CompositionMode_ColorBurn,          "color-burn"        },
-    { QPainter::CompositionMode_HardLight,          "hard-light"        },
-    { QPainter::CompositionMode_SoftLight,          "soft-light"        },
-    { QPainter::CompositionMode_Difference,         "difference"        },
-    { QPainter::CompositionMode_Exclusion,          "exclusion"         },
+} blendModeMapping[] = {
+    { Tiled::BlendMode::Inherit,    "inherit"       },
+    { Tiled::BlendMode::Normal,     "normal"        },
+    { Tiled::BlendMode::Plus,       "plus"          },
+    { Tiled::BlendMode::Multiply,   "multiply"      },
+    { Tiled::BlendMode::Screen,     "screen"        },
+    { Tiled::BlendMode::Overlay,    "overlay"       },
+    { Tiled::BlendMode::Darken,     "darken"        },
+    { Tiled::BlendMode::Lighten,    "lighten"       },
+    { Tiled::BlendMode::ColorDodge, "color-dodge"   },
+    { Tiled::BlendMode::ColorBurn,  "color-burn"    },
+    { Tiled::BlendMode::HardLight,  "hard-light"    },
+    { Tiled::BlendMode::SoftLight,  "soft-light"    },
+    { Tiled::BlendMode::Difference, "difference"    },
+    { Tiled::BlendMode::Exclusion,  "exclusion"     },
 };
 
-QString Tiled::compositionModeToString(QPainter::CompositionMode mode)
+QString Tiled::blendModeToString(BlendMode mode)
 {
-    for (const auto &mapping : compositionModeMapping)
+    for (const auto &mapping : blendModeMapping)
         if (mapping.mode == mode)
             return QString::fromLatin1(mapping.name);
 
     return QString();
 }
 
-QPainter::CompositionMode Tiled::compositionModeFromString(const QString &name)
+Tiled::BlendMode Tiled::blendModeFromString(const QString &name)
 {
     if (!name.isEmpty())
-        for (const auto &mapping : compositionModeMapping)
+        for (const auto &mapping : blendModeMapping)
             if (QLatin1String(mapping.name) == name)
                 return mapping.mode;
 
-    return QPainter::CompositionMode_SourceOver;
+    return BlendMode::Inherit;
 }

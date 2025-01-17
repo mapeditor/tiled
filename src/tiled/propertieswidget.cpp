@@ -195,39 +195,39 @@ template<> EnumData enumData<WangSet::Type>()
     return { names, {}, icons };
 }
 
-template<> EnumData enumData<QPainter::CompositionMode>()
+template<> EnumData enumData<BlendMode>()
 {
     const QStringList names {
-        QCoreApplication::translate("CompositionMode", "Normal"),
-        QCoreApplication::translate("CompositionMode", "Plus"),
-        QCoreApplication::translate("CompositionMode", "Multiply"),
-        QCoreApplication::translate("CompositionMode", "Screen"),
-        QCoreApplication::translate("CompositionMode", "Overlay"),
-        QCoreApplication::translate("CompositionMode", "Darken"),
-        QCoreApplication::translate("CompositionMode", "Lighten"),
-        QCoreApplication::translate("CompositionMode", "Color Dodge"),
-        QCoreApplication::translate("CompositionMode", "Color Burn"),
-        QCoreApplication::translate("CompositionMode", "Hard Light"),
-        QCoreApplication::translate("CompositionMode", "Soft Light"),
-        QCoreApplication::translate("CompositionMode", "Difference"),
-        QCoreApplication::translate("CompositionMode", "Exclusion"),
+        QCoreApplication::translate("BlendMode", "Inherit"),
+        QCoreApplication::translate("BlendMode", "Normal"),
+        QCoreApplication::translate("BlendMode", "Plus"),
+        QCoreApplication::translate("BlendMode", "Multiply"),
+        QCoreApplication::translate("BlendMode", "Screen"),
+        QCoreApplication::translate("BlendMode", "Overlay"),
+        QCoreApplication::translate("BlendMode", "Darken"),
+        QCoreApplication::translate("BlendMode", "Lighten"),
+        QCoreApplication::translate("BlendMode", "Color Dodge"),
+        QCoreApplication::translate("BlendMode", "Color Burn"),
+        QCoreApplication::translate("BlendMode", "Hard Light"),
+        QCoreApplication::translate("BlendMode", "Soft Light"),
+        QCoreApplication::translate("BlendMode", "Difference"),
+        QCoreApplication::translate("BlendMode", "Exclusion"),
     };
     static const QList<int> values {
-        QPainter::CompositionMode_SourceOver,
-
-        // For now we only support the SVG 1.2 blend modes
-        QPainter::CompositionMode_Plus,
-        QPainter::CompositionMode_Multiply,
-        QPainter::CompositionMode_Screen,
-        QPainter::CompositionMode_Overlay,
-        QPainter::CompositionMode_Darken,
-        QPainter::CompositionMode_Lighten,
-        QPainter::CompositionMode_ColorDodge,
-        QPainter::CompositionMode_ColorBurn,
-        QPainter::CompositionMode_HardLight,
-        QPainter::CompositionMode_SoftLight,
-        QPainter::CompositionMode_Difference,
-        QPainter::CompositionMode_Exclusion,
+        static_cast<int>(BlendMode::Inherit),
+        static_cast<int>(BlendMode::Normal),
+        static_cast<int>(BlendMode::Plus),
+        static_cast<int>(BlendMode::Multiply),
+        static_cast<int>(BlendMode::Screen),
+        static_cast<int>(BlendMode::Overlay),
+        static_cast<int>(BlendMode::Darken),
+        static_cast<int>(BlendMode::Lighten),
+        static_cast<int>(BlendMode::ColorDodge),
+        static_cast<int>(BlendMode::ColorBurn),
+        static_cast<int>(BlendMode::HardLight),
+        static_cast<int>(BlendMode::SoftLight),
+        static_cast<int>(BlendMode::Difference),
+        static_cast<int>(BlendMode::Exclusion),
     };
 
     return { names, values };
@@ -1040,13 +1040,13 @@ public:
                                                    value));
                     });
 
-        mCompositionModeProperty = new EnumProperty<QPainter::CompositionMode>(
+        mBlendModeProperty = new EnumProperty<BlendMode>(
                     tr("Blend Mode"),
-                    [this] { return layer()->compositionMode(); },
-                    [this](QPainter::CompositionMode mode) {
-                        push(new SetLayerCompositionMode(mapDocument(),
-                                                         mapDocument()->selectedLayers(),
-                                                         mode));
+                    [this] { return layer()->blendMode(); },
+                    [this](BlendMode mode) {
+                        push(new SetLayerBlendMode(mapDocument(),
+                                                   mapDocument()->selectedLayers(),
+                                                   mode));
                     });
 
         mOffsetProperty = new PointFProperty(
@@ -1093,7 +1093,7 @@ public:
         mLayerProperties->addProperty(mLockedProperty);
         mLayerProperties->addProperty(mOpacityProperty);
         mLayerProperties->addProperty(mTintColorProperty);
-        mLayerProperties->addProperty(mCompositionModeProperty);
+        mLayerProperties->addProperty(mBlendModeProperty);
         mLayerProperties->addProperty(mOffsetProperty);
         mLayerProperties->addProperty(mParallaxFactorProperty);
 
@@ -1123,8 +1123,8 @@ protected:
             emit mOpacityProperty->valueChanged();
         if (layerChange.properties & LayerChangeEvent::TintColorProperty)
             emit mTintColorProperty->valueChanged();
-        if (layerChange.properties & LayerChangeEvent::CompositionModeProperty)
-            emit mCompositionModeProperty->valueChanged();
+        if (layerChange.properties & LayerChangeEvent::BlendModeProperty)
+            emit mBlendModeProperty->valueChanged();
         if (layerChange.properties & LayerChangeEvent::OffsetProperty)
             emit mOffsetProperty->valueChanged();
         if (layerChange.properties & LayerChangeEvent::ParallaxFactorProperty)
@@ -1162,7 +1162,7 @@ protected:
     BoolProperty *mLockedProperty;
     IntProperty *mOpacityProperty;
     Property *mTintColorProperty;
-    BaseEnumProperty *mCompositionModeProperty;
+    BaseEnumProperty *mBlendModeProperty;
     Property *mOffsetProperty;
     PointFProperty *mParallaxFactorProperty;
 };

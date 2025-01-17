@@ -193,8 +193,9 @@ public:
     QPointF parallaxFactor() const;
     QPointF effectiveParallaxFactor() const;
 
+    BlendMode blendMode() const;
+    void setBlendMode(BlendMode mode);
     QPainter::CompositionMode compositionMode() const;
-    void setCompositionMode(QPainter::CompositionMode compositionMode);
 
     bool canMergeDown() const;
 
@@ -267,7 +268,7 @@ protected:
     int mY = 0;
     QPointF mOffset;
     QPointF mParallaxFactor = { 1.0, 1.0 };
-    QPainter::CompositionMode mCompositionMode = QPainter::CompositionMode_SourceOver;
+    BlendMode mBlendMode = BlendMode::Inherit;
     qreal mOpacity = 1.0;
     QColor mTintColor;
     bool mVisible = true;
@@ -312,14 +313,14 @@ inline QPointF Layer::parallaxFactor() const
     return mParallaxFactor;
 }
 
-inline QPainter::CompositionMode Layer::compositionMode() const
+inline BlendMode Layer::blendMode() const
 {
-    return mCompositionMode;
+    return mBlendMode;
 }
 
-inline void Layer::setCompositionMode(QPainter::CompositionMode compositionMode)
+inline void Layer::setBlendMode(BlendMode mode)
 {
-    mCompositionMode = compositionMode;
+    mBlendMode = mode;
 }
 
 

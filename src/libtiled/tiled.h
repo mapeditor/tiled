@@ -79,6 +79,27 @@ enum CompatibilityVersion {
     Tiled_Latest    = 65535,
 };
 
+// Except for Inherit, all values can be casted to QPainter::CompositionMode
+enum class BlendMode
+{
+    Inherit     = -1,
+    Normal      = QPainter::CompositionMode_SourceOver,
+
+    // For now we only support the SVG 1.2 blend modes
+    Plus        = QPainter::CompositionMode_Plus,
+    Multiply    = QPainter::CompositionMode_Multiply,
+    Screen      = QPainter::CompositionMode_Screen,
+    Overlay     = QPainter::CompositionMode_Overlay,
+    Darken      = QPainter::CompositionMode_Darken,
+    Lighten     = QPainter::CompositionMode_Lighten,
+    ColorDodge  = QPainter::CompositionMode_ColorDodge,
+    ColorBurn   = QPainter::CompositionMode_ColorBurn,
+    HardLight   = QPainter::CompositionMode_HardLight,
+    SoftLight   = QPainter::CompositionMode_SoftLight,
+    Difference  = QPainter::CompositionMode_Difference,
+    Exclusion   = QPainter::CompositionMode_Exclusion,
+};
+
 const int CHUNK_SIZE = 16;
 const int CHUNK_BITS = 4;
 const int CHUNK_SIZE_MIN = 4;
@@ -133,8 +154,8 @@ TILEDSHARED_EXPORT CompatibilityVersion versionFromString(const QString &);
 
 TILEDSHARED_EXPORT void increaseImageAllocationLimit(int mbLimit = 4096);
 
-TILEDSHARED_EXPORT QString compositionModeToString(QPainter::CompositionMode);
-TILEDSHARED_EXPORT QPainter::CompositionMode compositionModeFromString(const QString &);
+TILEDSHARED_EXPORT QString blendModeToString(BlendMode);
+TILEDSHARED_EXPORT BlendMode blendModeFromString(const QString &);
 
 } // namespace Tiled
 

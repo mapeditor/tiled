@@ -781,8 +781,8 @@ void LuaWriter::writeLayerProperties(const Layer *layer)
     if (layer->tintColor().isValid())
         writeColor("tintcolor", layer->tintColor());
 
-    if (layer->compositionMode() != QPainter::CompositionMode_SourceOver)
-        mWriter.writeKeyAndValue("mode", compositionModeToString(layer->compositionMode()));
+    if (layer->blendMode() != BlendMode::Inherit)
+        mWriter.writeKeyAndValue("mode", blendModeToString(layer->blendMode()));
 }
 
 void LuaWriter::writePolygon(const MapObject *mapObject)

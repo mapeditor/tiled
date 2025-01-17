@@ -190,25 +190,25 @@ void SetLayerParallaxFactor::setValue(Layer *layer, const QPointF &value) const
 }
 
 
-SetLayerCompositionMode::SetLayerCompositionMode(Document *document,
-                                                 QList<Layer *> layers,
-                                                 QPainter::CompositionMode compositionMode,
-                                                 QUndoCommand *parent)
-    : ChangeValue<Layer, QPainter::CompositionMode>(document, std::move(layers), compositionMode, parent)
+SetLayerBlendMode::SetLayerBlendMode(Document *document,
+                                     QList<Layer *> layers,
+                                     BlendMode mode,
+                                     QUndoCommand *parent)
+    : ChangeValue<Layer, BlendMode>(document, std::move(layers), mode, parent)
 {
     setText(QCoreApplication::translate("Undo Commands",
-                                        "Change Layer Composition Mode"));
+                                        "Change Layer Blend Mode"));
 }
 
-QPainter::CompositionMode SetLayerCompositionMode::getValue(const Layer *layer) const
+BlendMode SetLayerBlendMode::getValue(const Layer *layer) const
 {
-    return layer->compositionMode();
+    return layer->blendMode();
 }
 
-void SetLayerCompositionMode::setValue(Layer *layer, const QPainter::CompositionMode &value) const
+void SetLayerBlendMode::setValue(Layer *layer, const BlendMode &value) const
 {
-    layer->setCompositionMode(value);
-    emit document()->changed(LayerChangeEvent(layer, LayerChangeEvent::CompositionModeProperty));
+    layer->setBlendMode(value);
+    emit document()->changed(LayerChangeEvent(layer, LayerChangeEvent::BlendModeProperty));
 }
 
 

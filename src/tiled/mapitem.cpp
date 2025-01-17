@@ -549,7 +549,7 @@ void MapItem::layerChanged(const LayerChangeEvent &change)
     Q_ASSERT(layerItem);
 
     if (change.properties & (LayerChangeEvent::TintColorProperty |
-                             LayerChangeEvent::CompositionModeProperty)) {
+                             LayerChangeEvent::BlendModeProperty)) {
         updateLayerItems(layer);
     }
 

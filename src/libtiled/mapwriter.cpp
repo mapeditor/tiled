@@ -678,8 +678,8 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
     if (parallaxFactor.y() != 1.0)
         w.writeAttribute(QStringLiteral("parallaxy"), QString::number(parallaxFactor.y()));
 
-    if (layer.compositionMode() != QPainter::CompositionMode_SourceOver)
-        w.writeAttribute(QStringLiteral("mode"), compositionModeToString(layer.compositionMode()));
+    if (layer.blendMode() != BlendMode::Inherit)
+        w.writeAttribute(QStringLiteral("mode"), blendModeToString(layer.blendMode()));
 }
 
 void MapWriterPrivate::writeObjectGroup(QXmlStreamWriter &w,

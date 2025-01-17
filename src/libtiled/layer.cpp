@@ -178,6 +178,15 @@ QPointF Layer::effectiveParallaxFactor() const
     return factor;
 }
 
+QPainter::CompositionMode Layer::compositionMode() const
+{
+    if (mBlendMode != BlendMode::Inherit)
+        return static_cast<QPainter::CompositionMode>(mBlendMode);
+    if (mParentLayer)
+        return mParentLayer->compositionMode();
+    return QPainter::CompositionMode_SourceOver;
+}
+
 /**
  * Returns whether this layer can be merged down onto the layer below.
  */
@@ -209,7 +218,7 @@ Layer *Layer::initializeClone(Layer *clone) const
     clone->mOffset = mOffset;
     clone->mParallaxFactor = mParallaxFactor;
     clone->mOpacity = mOpacity;
-    clone->mCompositionMode = mCompositionMode;
+    clone->mBlendMode = mBlendMode;
     clone->mTintColor = mTintColor;
     clone->mVisible = mVisible;
     clone->mLocked = mLocked;
