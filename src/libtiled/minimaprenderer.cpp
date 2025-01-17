@@ -174,6 +174,7 @@ void MiniMapRenderer::renderToImage(QImage &image, RenderFlags renderFlags) cons
         const auto offset = layer->totalOffset();
 
         painter.setOpacity(layer->effectiveOpacity());
+        painter.setCompositionMode(layer->compositionMode());
         painter.translate(offset);
 
         switch (layer->layerType()) {

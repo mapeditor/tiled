@@ -59,6 +59,7 @@ void TmxRasterizer::drawMapLayers(const MapRenderer &renderer,
 
         const auto offset = layer->totalOffset() + mapOffset;
         painter.setOpacity(layer->effectiveOpacity());
+        painter.setCompositionMode(layer->compositionMode());
         painter.translate(offset);
 
         auto *tileLayer = dynamic_cast<const TileLayer*>(layer);
