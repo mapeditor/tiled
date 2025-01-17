@@ -51,11 +51,8 @@ build_script:
   - if defined MINGW git clone --depth 1 -b release https://github.com/facebook/zstd.git
   - if defined MINGW cd zstd/lib & set CC=gcc & mingw32-make -j2 libzstd.a & cd ../../
   - echo Building qaseprite
-  - git clone --depth 1 --recurse-submodules https://github.com/mapeditor/qaseprite.git
-  - cd qaseprite
-  - cd aseprite
-  - patch -p1 < ..\aseprite-msvc-dynamic-runtime.patch
-  - cd laf
+  - git clone --depth 1 --recurse-submodules --shallow-submodules --branch 1.0 https://github.com/mapeditor/qaseprite.git
+  - cd qaseprite\aseprite\laf
   - patch -p1 < ..\..\laf-msvc-dynamic-runtime.patch
   - cd ..\..
   - if defined MINGW cmake -B build -DCMAKE_BUILD_TYPE=Release -G "MinGW Makefiles"
