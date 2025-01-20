@@ -27,7 +27,6 @@
 #include <QPointF>
 #include <QSize>
 #include <QColor>
-#include <QPainter>
 
 namespace Tiled {
 

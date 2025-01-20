@@ -197,7 +197,7 @@ template<> EnumData enumData<WangSet::Type>()
 
 template<> EnumData enumData<BlendMode>()
 {
-    const QStringList names {
+    return {{
         QCoreApplication::translate("BlendMode", "Normal"),
         QCoreApplication::translate("BlendMode", "Add"),
         QCoreApplication::translate("BlendMode", "Multiply"),
@@ -211,24 +211,7 @@ template<> EnumData enumData<BlendMode>()
         QCoreApplication::translate("BlendMode", "Soft Light"),
         QCoreApplication::translate("BlendMode", "Difference"),
         QCoreApplication::translate("BlendMode", "Exclusion"),
-    };
-    static const QList<int> values {
-        static_cast<int>(BlendMode::Normal),
-        static_cast<int>(BlendMode::Add),
-        static_cast<int>(BlendMode::Multiply),
-        static_cast<int>(BlendMode::Screen),
-        static_cast<int>(BlendMode::Overlay),
-        static_cast<int>(BlendMode::Darken),
-        static_cast<int>(BlendMode::Lighten),
-        static_cast<int>(BlendMode::ColorDodge),
-        static_cast<int>(BlendMode::ColorBurn),
-        static_cast<int>(BlendMode::HardLight),
-        static_cast<int>(BlendMode::SoftLight),
-        static_cast<int>(BlendMode::Difference),
-        static_cast<int>(BlendMode::Exclusion),
-    };
-
-    return { names, values };
+    }};
 }
 
 

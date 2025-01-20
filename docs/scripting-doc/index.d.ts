@@ -2750,31 +2750,31 @@ declare class Tile extends TiledObject {
  * @since 1.12
  */
 declare enum BlendMode {
-    /** SVG equivalant: [src-over](https://www.w3.org/TR/SVGCompositing/#comp-op-src-over) */
+    /** SVG equivalent: [src-over](https://www.w3.org/TR/SVGCompositing/#comp-op-src-over) */
     Normal,
-    /** SVG equivalant: [plus](https://www.w3.org/TR/SVGCompositing/#comp-op-plus) */
+    /** SVG equivalent: [plus](https://www.w3.org/TR/SVGCompositing/#comp-op-plus) */
     Add,
-    /** SVG equivalant: [multiply](https://www.w3.org/TR/SVGCompositing/#comp-op-multiply) */
+    /** SVG equivalent: [multiply](https://www.w3.org/TR/SVGCompositing/#comp-op-multiply) */
     Multiply,
-    /** SVG equivalant: [screen](https://www.w3.org/TR/SVGCompositing/#comp-op-screen) */
+    /** SVG equivalent: [screen](https://www.w3.org/TR/SVGCompositing/#comp-op-screen) */
     Screen,
-    /** SVG equivalant: [overlay](https://www.w3.org/TR/SVGCompositing/#comp-op-overlay) */
+    /** SVG equivalent: [overlay](https://www.w3.org/TR/SVGCompositing/#comp-op-overlay) */
     Overlay,
-    /** SVG equivalant: [darken](https://www.w3.org/TR/SVGCompositing/#comp-op-darken) */
+    /** SVG equivalent: [darken](https://www.w3.org/TR/SVGCompositing/#comp-op-darken) */
     Darken,
-    /** SVG equivalant: [lighten](https://www.w3.org/TR/SVGCompositing/#comp-op-lighten) */
+    /** SVG equivalent: [lighten](https://www.w3.org/TR/SVGCompositing/#comp-op-lighten) */
     Lighten,
-    /** SVG equivalant: [color-dodge](https://www.w3.org/TR/SVGCompositing/#comp-op-color-dodge) */
+    /** SVG equivalent: [color-dodge](https://www.w3.org/TR/SVGCompositing/#comp-op-color-dodge) */
     ColorDodge,
-    /** SVG equivalant: [color-burn](https://www.w3.org/TR/SVGCompositing/#comp-op-color-burn) */
+    /** SVG equivalent: [color-burn](https://www.w3.org/TR/SVGCompositing/#comp-op-color-burn) */
     ColorBurn,
-    /** SVG equivalant: [hard-light](https://www.w3.org/TR/SVGCompositing/#comp-op-hard-light) */
+    /** SVG equivalent: [hard-light](https://www.w3.org/TR/SVGCompositing/#comp-op-hard-light) */
     HardLight,
-    /** SVG equivalant: [soft-light](https://www.w3.org/TR/SVGCompositing/#comp-op-soft-light) */
+    /** SVG equivalent: [soft-light](https://www.w3.org/TR/SVGCompositing/#comp-op-soft-light) */
     SoftLight,
-    /** SVG equivalant: [difference](https://www.w3.org/TR/SVGCompositing/#comp-op-difference) */
+    /** SVG equivalent: [difference](https://www.w3.org/TR/SVGCompositing/#comp-op-difference) */
     Difference,
-    /** SVG equivalant: [exclusion](https://www.w3.org/TR/SVGCompositing/#comp-op-exclusion) */
+    /** SVG equivalent: [exclusion](https://www.w3.org/TR/SVGCompositing/#comp-op-exclusion) */
     Exclusion
 }
 

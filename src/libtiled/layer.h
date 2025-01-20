@@ -323,6 +323,11 @@ inline void Layer::setBlendMode(BlendMode mode)
     mBlendMode = mode;
 }
 
+inline QPainter::CompositionMode Layer::compositionMode() const
+{
+    return static_cast<QPainter::CompositionMode>(mBlendMode);
+}
+
 
 /**
  * An iterator for iterating over the layers of a map, in the order in which

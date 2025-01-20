@@ -4,6 +4,11 @@ TMX Changelog
 Below are described the changes/additions that were made to the
 :doc:`tmx-map-format` for recent versions of Tiled.
 
+Tiled 1.12
+----------
+
+-  Added ``mode`` attribute on :ref:`tmx-layer` to specific its blend mode.
+
 Tiled 1.10
 ----------
 

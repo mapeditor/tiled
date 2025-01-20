@@ -178,11 +178,6 @@ QPointF Layer::effectiveParallaxFactor() const
     return factor;
 }
 
-QPainter::CompositionMode Layer::compositionMode() const
-{
-    return static_cast<QPainter::CompositionMode>(mBlendMode);
-}
-
 /**
  * Returns whether this layer can be merged down onto the layer below.
  */

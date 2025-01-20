@@ -96,6 +96,7 @@ Layer
     imagewidth,       int,              "Width of the image used by this layer. ``imagelayer`` only. (since 1.11.1)"
     layers,           array,            "Array of :ref:`layers <json-layer>`. ``group`` only."
     locked,           bool,             "Whether layer is locked in the editor (default: false). (since 1.8.2)"
+    mode,             string,           "The :ref:`blend mode <json-blend-mode>` to use when rendering the layer. (since 1.12)"
     name,             string,           "Name assigned to this layer"
     objects,          array,            "Array of :ref:`objects <json-object>`. ``objectgroup`` only."
     offsetx,          double,           "Horizontal layer offset in pixels (default: 0)"
@@ -167,6 +168,30 @@ Object Layer Example
       "x":0,
       "y":0
     }
+
+
+.. _json-blend-mode:
+
+Blend Mode
+~~~~~~~~~~
+
+The following values are supported for the ``mode`` property on
+:ref:`json-layer`:
+
+- ``normal`` (default)
+- ``add``
+- ``multiply``
+- ``screen``
+- ``overlay``
+- ``darken``
+- ``lighten``
+- ``color-dodge``
+- ``color-burn``
+- ``hard-light``
+- ``soft-light``
+- ``difference``
+- ``exclusion``
+
 
 .. _json-chunk:
 
@@ -737,6 +762,12 @@ A point on a polygon or a polyline, relative to the position of the object.
 
 Changelog
 ---------
+
+Tiled 1.12
+~~~~~~~~~~
+
+* Added ``mode`` property to :ref:`json-layer` to specify the blend mode to use
+  when rendering the layer.
 
 Tiled 1.11.1
 ~~~~~~~~~~~~
