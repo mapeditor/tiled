@@ -80,8 +80,7 @@ enum CompatibilityVersion {
 };
 
 // All values can be casted to QPainter::CompositionMode
-enum class BlendMode
-{
+enum class BlendMode {
     Normal      = QPainter::CompositionMode_SourceOver,
 
     // For now we only support the SVG 1.2 blend modes

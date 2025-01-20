@@ -2745,6 +2745,40 @@ declare class Tile extends TiledObject {
 }
 
 /**
+ * The various blend modes supported by Tiled.
+ *
+ * @since 1.12
+ */
+declare enum BlendMode {
+    /** SVG equivalant: [src-over](https://www.w3.org/TR/SVGCompositing/#comp-op-src-over) */
+    Normal,
+    /** SVG equivalant: [plus](https://www.w3.org/TR/SVGCompositing/#comp-op-plus) */
+    Plus,
+    /** SVG equivalant: [multiply](https://www.w3.org/TR/SVGCompositing/#comp-op-multiply) */
+    Multiply,
+    /** SVG equivalant: [screen](https://www.w3.org/TR/SVGCompositing/#comp-op-screen) */
+    Screen,
+    /** SVG equivalant: [overlay](https://www.w3.org/TR/SVGCompositing/#comp-op-overlay) */
+    Overlay,
+    /** SVG equivalant: [darken](https://www.w3.org/TR/SVGCompositing/#comp-op-darken) */
+    Darken,
+    /** SVG equivalant: [lighten](https://www.w3.org/TR/SVGCompositing/#comp-op-lighten) */
+    Lighten,
+    /** SVG equivalant: [color-dodge](https://www.w3.org/TR/SVGCompositing/#comp-op-color-dodge) */
+    ColorDodge,
+    /** SVG equivalant: [color-burn](https://www.w3.org/TR/SVGCompositing/#comp-op-color-burn) */
+    ColorBurn,
+    /** SVG equivalant: [hard-light](https://www.w3.org/TR/SVGCompositing/#comp-op-hard-light) */
+    HardLight,
+    /** SVG equivalant: [soft-light](https://www.w3.org/TR/SVGCompositing/#comp-op-soft-light) */
+    SoftLight,
+    /** SVG equivalant: [difference](https://www.w3.org/TR/SVGCompositing/#comp-op-difference) */
+    Difference,
+    /** SVG equivalant: [exclusion](https://www.w3.org/TR/SVGCompositing/#comp-op-exclusion) */
+    Exclusion
+}
+
+/**
  * The base class of the various supported layer types.
  */
 declare class Layer extends TiledObject {
@@ -2801,6 +2835,12 @@ declare class Layer extends TiledObject {
    * The parallax factor of this layer.
    */
   parallaxFactor: point;
+
+  /**
+   * The blend mode used when rendering images on this layer. Affects tile
+   * layers, tile objects and image layers.
+   */
+  blendMode: BlendMode;
 
   /**
    * Map that this layer is part of, or `null` in case of a standalone layer.

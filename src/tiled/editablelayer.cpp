@@ -210,6 +210,15 @@ void EditableLayer::setParallaxFactor(QPointF factor)
         layer()->setParallaxFactor(factor);
 }
 
+void EditableLayer::setBlendMode(BlendModeNS::Value mode)
+{
+    const auto blendMode = static_cast<BlendMode>(mode);
+    if (auto doc = document())
+        asset()->push(new SetLayerBlendMode(doc, { layer() }, blendMode));
+    else if (!checkReadOnly())
+        layer()->setBlendMode(blendMode);
+}
+
 void EditableLayer::setSelected(bool selected)
 {
     auto document = mapDocument();

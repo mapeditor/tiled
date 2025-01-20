@@ -105,6 +105,7 @@ ScriptManager::ScriptManager(QObject *parent)
     connect(&mResetTimer, &QTimer::timeout, this, &ScriptManager::reset);
 
     qRegisterMetaType<AssetType::Value>("AssetType");
+    qRegisterMetaType<BlendModeNS::Value>("BlendMode");
     qRegisterMetaType<Cell>();
     qRegisterMetaType<EditableAsset*>();
     qRegisterMetaType<EditableGroupLayer*>();
@@ -395,6 +396,7 @@ void ScriptManager::initialize()
     globalObject.setProperty(QStringLiteral("tiled"), engine->newQObject(mModule));
     globalObject.setProperty(QStringLiteral("Tiled"), engine->newQMetaObject<ScriptModule>());
     globalObject.setProperty(QStringLiteral("AssetType"), engine->newQMetaObject(&AssetType::staticMetaObject));
+    globalObject.setProperty(QStringLiteral("BlendMode"), engine->newQMetaObject(&BlendModeNS::staticMetaObject));
     globalObject.setProperty(QStringLiteral("GroupLayer"), engine->newQMetaObject<EditableGroupLayer>());
     globalObject.setProperty(QStringLiteral("Image"), engine->newQMetaObject<ScriptImage>());
     globalObject.setProperty(QStringLiteral("ImageLayer"), engine->newQMetaObject<EditableImageLayer>());
