@@ -180,11 +180,7 @@ QPointF Layer::effectiveParallaxFactor() const
 
 QPainter::CompositionMode Layer::compositionMode() const
 {
-    if (mBlendMode != BlendMode::Inherit)
-        return static_cast<QPainter::CompositionMode>(mBlendMode);
-    if (mParentLayer)
-        return mParentLayer->compositionMode();
-    return QPainter::CompositionMode_SourceOver;
+    return static_cast<QPainter::CompositionMode>(mBlendMode);
 }
 
 /**

@@ -781,7 +781,7 @@ void LuaWriter::writeLayerProperties(const Layer *layer)
     if (layer->tintColor().isValid())
         writeColor("tintcolor", layer->tintColor());
 
-    if (layer->blendMode() != BlendMode::Inherit)
+    if (layer->blendMode() != BlendMode::Normal)
         mWriter.writeKeyAndValue("mode", blendModeToString(layer->blendMode()));
 }
 

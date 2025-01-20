@@ -268,7 +268,7 @@ protected:
     int mY = 0;
     QPointF mOffset;
     QPointF mParallaxFactor = { 1.0, 1.0 };
-    BlendMode mBlendMode = BlendMode::Inherit;
+    BlendMode mBlendMode = BlendMode::Normal;
     qreal mOpacity = 1.0;
     QColor mTintColor;
     bool mVisible = true;

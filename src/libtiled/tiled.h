@@ -79,10 +79,9 @@ enum CompatibilityVersion {
     Tiled_Latest    = 65535,
 };
 
-// Except for Inherit, all values can be casted to QPainter::CompositionMode
+// All values can be casted to QPainter::CompositionMode
 enum class BlendMode
 {
-    Inherit     = -1,
     Normal      = QPainter::CompositionMode_SourceOver,
 
     // For now we only support the SVG 1.2 blend modes

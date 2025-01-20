@@ -198,7 +198,6 @@ template<> EnumData enumData<WangSet::Type>()
 template<> EnumData enumData<BlendMode>()
 {
     const QStringList names {
-        QCoreApplication::translate("BlendMode", "Inherit"),
         QCoreApplication::translate("BlendMode", "Normal"),
         QCoreApplication::translate("BlendMode", "Plus"),
         QCoreApplication::translate("BlendMode", "Multiply"),
@@ -214,7 +213,6 @@ template<> EnumData enumData<BlendMode>()
         QCoreApplication::translate("BlendMode", "Exclusion"),
     };
     static const QList<int> values {
-        static_cast<int>(BlendMode::Inherit),
         static_cast<int>(BlendMode::Normal),
         static_cast<int>(BlendMode::Plus),
         static_cast<int>(BlendMode::Multiply),

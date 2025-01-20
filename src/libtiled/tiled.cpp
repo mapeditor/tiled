@@ -236,7 +236,6 @@ static constexpr struct BlendModeMapping {
     Tiled::BlendMode mode;
     const char *name;
 } blendModeMapping[] = {
-    { Tiled::BlendMode::Inherit,    "inherit"       },
     { Tiled::BlendMode::Normal,     "normal"        },
     { Tiled::BlendMode::Plus,       "plus"          },
     { Tiled::BlendMode::Multiply,   "multiply"      },
@@ -268,5 +267,5 @@ Tiled::BlendMode Tiled::blendModeFromString(const QString &name)
             if (QLatin1String(mapping.name) == name)
                 return mapping.mode;
 
-    return BlendMode::Inherit;
+    return BlendMode::Normal;
 }
