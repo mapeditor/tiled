@@ -235,7 +235,7 @@ calculation details.
 Mode         SVG equivalent
 ===========  ===========================================================================
 Normal       `src-over <https://www.w3.org/TR/SVGCompositing/#comp-op-src-over>`__
-Plus         `plus <https://www.w3.org/TR/SVGCompositing/#comp-op-plus>`__
+Add          `plus <https://www.w3.org/TR/SVGCompositing/#comp-op-plus>`__
 Multiply     `multiply <https://www.w3.org/TR/SVGCompositing/#comp-op-multiply>`__
 Screen       `screen <https://www.w3.org/TR/SVGCompositing/#comp-op-screen>`__
 Overlay      `overlay <https://www.w3.org/TR/SVGCompositing/#comp-op-overlay>`__
@@ -248,6 +248,13 @@ Soft Light   `soft-light <https://www.w3.org/TR/SVGCompositing/#comp-op-soft-lig
 Difference   `difference <https://www.w3.org/TR/SVGCompositing/#comp-op-difference>`__
 Exclusion    `exclusion <https://www.w3.org/TR/SVGCompositing/#comp-op-exclusion>`__
 ===========  ===========================================================================
+
+In OpenGL, these blend modes can be implemented using ``glBlendEquation`` with
+values from the `KHR_blend_equation_advanced
+<https://registry.khronos.org/OpenGL/extensions/KHR/KHR_blend_equation_advanced.txt>`__
+extension. In Vulkan, they are part of the `VK_EXT_blend_operation_advanced
+<https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html#VK_EXT_blend_operation_advanced>`__
+extension.
 
 
 .. topic:: Future Extensions

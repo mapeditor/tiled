@@ -2753,7 +2753,7 @@ declare enum BlendMode {
     /** SVG equivalant: [src-over](https://www.w3.org/TR/SVGCompositing/#comp-op-src-over) */
     Normal,
     /** SVG equivalant: [plus](https://www.w3.org/TR/SVGCompositing/#comp-op-plus) */
-    Plus,
+    Add,
     /** SVG equivalant: [multiply](https://www.w3.org/TR/SVGCompositing/#comp-op-multiply) */
     Multiply,
     /** SVG equivalant: [screen](https://www.w3.org/TR/SVGCompositing/#comp-op-screen) */

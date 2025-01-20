@@ -84,7 +84,7 @@ enum class BlendMode {
     Normal      = QPainter::CompositionMode_SourceOver,
 
     // For now we only support the SVG 1.2 blend modes
-    Plus        = QPainter::CompositionMode_Plus,
+    Add         = QPainter::CompositionMode_Plus,
     Multiply    = QPainter::CompositionMode_Multiply,
     Screen      = QPainter::CompositionMode_Screen,
     Overlay     = QPainter::CompositionMode_Overlay,

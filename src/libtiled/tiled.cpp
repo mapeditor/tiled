@@ -237,7 +237,7 @@ static constexpr struct BlendModeMapping {
     const char *name;
 } blendModeMapping[] = {
     { Tiled::BlendMode::Normal,     "normal"        },
-    { Tiled::BlendMode::Plus,       "plus"          },
+    { Tiled::BlendMode::Add,        "add"           },
     { Tiled::BlendMode::Multiply,   "multiply"      },
     { Tiled::BlendMode::Screen,     "screen"        },
     { Tiled::BlendMode::Overlay,    "overlay"       },

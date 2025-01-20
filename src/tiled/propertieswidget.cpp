@@ -199,7 +199,7 @@ template<> EnumData enumData<BlendMode>()
 {
     const QStringList names {
         QCoreApplication::translate("BlendMode", "Normal"),
-        QCoreApplication::translate("BlendMode", "Plus"),
+        QCoreApplication::translate("BlendMode", "Add"),
         QCoreApplication::translate("BlendMode", "Multiply"),
         QCoreApplication::translate("BlendMode", "Screen"),
         QCoreApplication::translate("BlendMode", "Overlay"),
@@ -214,7 +214,7 @@ template<> EnumData enumData<BlendMode>()
     };
     static const QList<int> values {
         static_cast<int>(BlendMode::Normal),
-        static_cast<int>(BlendMode::Plus),
+        static_cast<int>(BlendMode::Add),
         static_cast<int>(BlendMode::Multiply),
         static_cast<int>(BlendMode::Screen),
         static_cast<int>(BlendMode::Overlay),

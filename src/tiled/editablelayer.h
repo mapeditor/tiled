@@ -37,7 +37,7 @@ namespace BlendModeNS {
 
     enum Value {
         Normal      = static_cast<int>(BlendMode::Normal),
-        Plus        = static_cast<int>(BlendMode::Plus),
+        Add         = static_cast<int>(BlendMode::Add),
         Multiply    = static_cast<int>(BlendMode::Multiply),
         Screen      = static_cast<int>(BlendMode::Screen),
         Overlay     = static_cast<int>(BlendMode::Overlay),
