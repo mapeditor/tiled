@@ -212,6 +212,43 @@ separate images for it.
 The tint color can also be set on a :ref:`Group Layer <group-layers>`, in
 which case it is inherited by all layers in the group.
 
+.. raw:: html
+
+   <div class="new">New in Tiled 1.12</div>
+
+.. _blend-mode:
+
+Blend Modes
+-----------
+
+Tiled provides support for several common blend modes (also called compositing
+operators) for layers. These modes allow you to modify the appearance of a
+layer by blending it with the layers beneath it in various ways. By default,
+layers in Tiled use the Normal blend mode.
+
+Below is the full list of blend modes available in Tiled, along with links to
+their equivalents in the `SVG Compositing Specification
+<https://www.w3.org/TR/SVGCompositing/>`__, where you can see examples and
+calculation details.
+
+===========  ===========================================================================
+Mode         SVG equivalent
+===========  ===========================================================================
+Normal       `src-over <https://www.w3.org/TR/SVGCompositing/#comp-op-src-over>`__
+Plus         `plus <https://www.w3.org/TR/SVGCompositing/#comp-op-plus>`__
+Multiply     `multiply <https://www.w3.org/TR/SVGCompositing/#comp-op-multiply>`__
+Screen       `screen <https://www.w3.org/TR/SVGCompositing/#comp-op-screen>`__
+Overlay      `overlay <https://www.w3.org/TR/SVGCompositing/#comp-op-overlay>`__
+Darken       `darken <https://www.w3.org/TR/SVGCompositing/#comp-op-darken>`__
+Lighten      `lighten <https://www.w3.org/TR/SVGCompositing/#comp-op-lighten>`__
+Color Dodge  `color-dodge <https://www.w3.org/TR/SVGCompositing/#comp-op-color-dodge>`__
+Color Burn   `color-burn <https://www.w3.org/TR/SVGCompositing/#comp-op-color-burn>`__
+Hard Light   `hard-light <https://www.w3.org/TR/SVGCompositing/#comp-op-hard-light>`__
+Soft Light   `soft-light <https://www.w3.org/TR/SVGCompositing/#comp-op-soft-light>`__
+Difference   `difference <https://www.w3.org/TR/SVGCompositing/#comp-op-difference>`__
+Exclusion    `exclusion <https://www.w3.org/TR/SVGCompositing/#comp-op-exclusion>`__
+===========  ===========================================================================
+
 
 .. topic:: Future Extensions
    :class: future
