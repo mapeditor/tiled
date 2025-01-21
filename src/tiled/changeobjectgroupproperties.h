@@ -42,6 +42,8 @@ public:
                            QList<ObjectGroup *> objectGroups,
                            const QColor &newColor);
 
+    int id() const override { return Cmd_ChangeObjectGroupColor; }
+
 private:
     QColor getValue(const ObjectGroup *objectGroup) const override;
     void setValue(ObjectGroup *objectGroup, const QColor &value) const override;
@@ -60,6 +62,8 @@ public:
     ChangeObjectGroupDrawOrder(Document *document,
                                QList<ObjectGroup *> objectGroups,
                                ObjectGroup::DrawOrder newDrawOrder);
+
+    int id() const override { return Cmd_ChangeObjectGroupDrawOrder; }
 
 private:
     ObjectGroup::DrawOrder getValue(const ObjectGroup *objectGroup) const override;

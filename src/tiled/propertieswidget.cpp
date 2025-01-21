@@ -1125,7 +1125,7 @@ protected:
     template <class T>
     QList<T*> selectedLayersOfType(Layer::TypeFlag typeFlag)
     {
-        if (mDocument)
+        if (!mDocument)
             return {};
 
         QList<T*> result;
@@ -1212,9 +1212,8 @@ private:
             emit mImageProperty->valueChanged();
         if (layerChange.properties & ImageLayerChangeEvent::TransparentColorProperty)
             emit mTransparentColorProperty->valueChanged();
-        if (layerChange.properties & ImageLayerChangeEvent::RepeatProperty) {
+        if (layerChange.properties & ImageLayerChangeEvent::RepeatProperty)
             emit mRepeatProperty->valueChanged();
-        }
     }
 
     ImageLayer *imageLayer() const

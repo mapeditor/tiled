@@ -39,6 +39,8 @@ public:
                                      QList<ImageLayer *> imageLayers,
                                      const QColor &newColor);
 
+    int id() const override { return Cmd_ChangeImageLayerTransparentColor; }
+
 private:
     QColor getValue(const ImageLayer *imageLayer) const override;
     void setValue(ImageLayer *imageLayer, const QColor &value) const override;
@@ -50,6 +52,8 @@ public:
     ChangeImageLayerImageSource(Document *document,
                                 QList<ImageLayer *> imageLayers,
                                 const QUrl &imageSource);
+
+    int id() const override { return Cmd_ChangeImageLayerImageSource; }
 
 private:
     QUrl getValue(const ImageLayer *imageLayer) const override;

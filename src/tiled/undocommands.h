@@ -30,8 +30,10 @@ namespace Tiled {
  */
 enum UndoCommands {
     Cmd_ChangeClassName,
+    Cmd_ChangeImageLayerImageSource,
     Cmd_ChangeImageLayerRepeatX,
     Cmd_ChangeImageLayerRepeatY,
+    Cmd_ChangeImageLayerTransparentColor,
     Cmd_ChangeLayerBlendMode,
     Cmd_ChangeLayerLocked,
     Cmd_ChangeLayerName,
@@ -54,6 +56,8 @@ enum UndoCommands {
     Cmd_ChangeMapStaggerAxis,
     Cmd_ChangeMapStaggerIndex,
     Cmd_ChangeMapTileSize,
+    Cmd_ChangeObjectGroupColor,
+    Cmd_ChangeObjectGroupDrawOrder,
     Cmd_ChangeSelectedArea,
     Cmd_ChangeTileImageRect,
     Cmd_ChangeTileProbability,
