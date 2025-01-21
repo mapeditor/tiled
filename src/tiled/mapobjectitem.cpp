@@ -141,6 +141,12 @@ void MapObjectItem::paint(QPainter *painter,
     if (mIsHoveredIndicator)
         painter->setOpacity(0.4);
 
+    auto mode = QPainter::CompositionMode_SourceOver;
+    if (ObjectGroup *objectGroup = mObject->objectGroup())
+        if (mObject->isTileObject())
+            mode = objectGroup->compositionMode();
+    painter->setCompositionMode(mode);
+
     // This is the same as pos(), except for hover indicators
     const QPointF pixelPos = renderer->pixelToScreenCoords(mObject->position());
 

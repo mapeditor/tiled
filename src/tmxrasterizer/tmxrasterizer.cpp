@@ -58,18 +58,18 @@ void TmxRasterizer::drawMapLayers(const MapRenderer &renderer,
             continue;
 
         const auto offset = layer->totalOffset() + mapOffset;
+        const auto compositionMode = layer->compositionMode();
+
         painter.setOpacity(layer->effectiveOpacity());
         painter.translate(offset);
 
-        auto *tileLayer = dynamic_cast<const TileLayer*>(layer);
-        auto *imageLayer = dynamic_cast<const ImageLayer*>(layer);
-        auto *objectGroup = dynamic_cast<const ObjectGroup*>(layer);
-
-        if (tileLayer) {
-            renderer.drawTileLayer(&painter, tileLayer);
-        } else if (imageLayer) {
-            renderer.drawImageLayer(&painter, imageLayer);
-        } else if (objectGroup) {
+        switch (layer->layerType()) {
+        case Layer::TileLayerType:
+            painter.setCompositionMode(compositionMode);
+            renderer.drawTileLayer(&painter, static_cast<const TileLayer*>(layer));
+            break;
+        case Layer::ObjectGroupType: {
+            const auto objectGroup = static_cast<const ObjectGroup*>(layer);
             QList<MapObject*> objects = objectGroup->objects();
 
             if (objectGroup->drawOrder() == ObjectGroup::TopDownOrder)
@@ -77,6 +77,11 @@ void TmxRasterizer::drawMapLayers(const MapRenderer &renderer,
 
             for (const MapObject *object : std::as_const(objects)) {
                 if (shouldDrawObject(object)) {
+                    if (object->isTileObject())
+                        painter.setCompositionMode(compositionMode);
+                    else
+                        painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+
                     if (object->rotation() != qreal(0)) {
                         QPointF origin = renderer.pixelToScreenCoords(object->position());
                         painter.save();
@@ -91,6 +96,15 @@ void TmxRasterizer::drawMapLayers(const MapRenderer &renderer,
                         painter.restore();
                 }
             }
+            break;
+        }
+        case Layer::ImageLayerType:
+            painter.setCompositionMode(compositionMode);
+            renderer.drawImageLayer(&painter, static_cast<const ImageLayer*>(layer));
+            break;
+        case Layer::GroupLayerType:
+            // Recursion handled by LayerIterator
+            break;
         }
 
         painter.translate(-offset);

@@ -428,6 +428,10 @@ tiles.
    (since 0.14)
 -  **parallaxx:** Horizontal :ref:`parallax factor <parallax-factor>` for this layer. Defaults to 1. (since 1.5)
 -  **parallaxy:** Vertical :ref:`parallax factor <parallax-factor>` for this layer. Defaults to 1. (since 1.5)
+-  **mode:** The blend mode to use when rendering the layer. Valid values are
+   ``normal``, ``add``, ``multiply``, ``screen``, ``overlay``, ``darken``, ``lighten``,
+   ``color-dodge``, ``color-burn``, ``hard-light``, ``soft-light``,
+   ``difference`` and ``exclusion`` (since 1.12, defaults to ``normal``).
 
 Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-data`
 

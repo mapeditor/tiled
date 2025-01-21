@@ -195,6 +195,25 @@ template<> EnumData enumData<WangSet::Type>()
     return { names, {}, icons };
 }
 
+template<> EnumData enumData<BlendMode>()
+{
+    return {{
+        QCoreApplication::translate("BlendMode", "Normal"),
+        QCoreApplication::translate("BlendMode", "Add"),
+        QCoreApplication::translate("BlendMode", "Multiply"),
+        QCoreApplication::translate("BlendMode", "Screen"),
+        QCoreApplication::translate("BlendMode", "Overlay"),
+        QCoreApplication::translate("BlendMode", "Darken"),
+        QCoreApplication::translate("BlendMode", "Lighten"),
+        QCoreApplication::translate("BlendMode", "Color Dodge"),
+        QCoreApplication::translate("BlendMode", "Color Burn"),
+        QCoreApplication::translate("BlendMode", "Hard Light"),
+        QCoreApplication::translate("BlendMode", "Soft Light"),
+        QCoreApplication::translate("BlendMode", "Difference"),
+        QCoreApplication::translate("BlendMode", "Exclusion"),
+    }};
+}
+
 
 class FlippingProperty : public IntProperty
 {
@@ -1002,6 +1021,15 @@ public:
                                                    value));
                     });
 
+        mBlendModeProperty = new EnumProperty<BlendMode>(
+                    tr("Blend Mode"),
+                    [this] { return layer()->blendMode(); },
+                    [this](BlendMode mode) {
+                        push(new SetLayerBlendMode(mapDocument(),
+                                                   mapDocument()->selectedLayers(),
+                                                   mode));
+                    });
+
         mOffsetProperty = new PointFProperty(
                     tr("Offset"),
                     [this] { return layer()->offset(); },
@@ -1046,6 +1074,7 @@ public:
         mLayerProperties->addProperty(mLockedProperty);
         mLayerProperties->addProperty(mOpacityProperty);
         mLayerProperties->addProperty(mTintColorProperty);
+        mLayerProperties->addProperty(mBlendModeProperty);
         mLayerProperties->addProperty(mOffsetProperty);
         mLayerProperties->addProperty(mParallaxFactorProperty);
 
@@ -1075,6 +1104,8 @@ protected:
             emit mOpacityProperty->valueChanged();
         if (layerChange.properties & LayerChangeEvent::TintColorProperty)
             emit mTintColorProperty->valueChanged();
+        if (layerChange.properties & LayerChangeEvent::BlendModeProperty)
+            emit mBlendModeProperty->valueChanged();
         if (layerChange.properties & LayerChangeEvent::OffsetProperty)
             emit mOffsetProperty->valueChanged();
         if (layerChange.properties & LayerChangeEvent::ParallaxFactorProperty)
@@ -1112,6 +1143,7 @@ protected:
     BoolProperty *mLockedProperty;
     IntProperty *mOpacityProperty;
     Property *mTintColorProperty;
+    BaseEnumProperty *mBlendModeProperty;
     Property *mOffsetProperty;
     PointFProperty *mParallaxFactorProperty;
 };

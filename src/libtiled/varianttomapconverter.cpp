@@ -619,6 +619,9 @@ std::unique_ptr<Layer> VariantToMapConverter::toLayer(const QVariant &variant)
             parallaxFactor.setY(factorY);
 
         layer->setParallaxFactor(parallaxFactor);
+
+        const auto mode = variantMap[QStringLiteral("mode")].toString();
+        layer->setBlendMode(blendModeFromString(mode));
     }
 
     return layer;

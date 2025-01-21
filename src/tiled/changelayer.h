@@ -21,6 +21,7 @@
 #pragma once
 
 #include "changevalue.h"
+#include "tiled.h"
 #include "undocommands.h"
 
 #include <QPointF>
@@ -151,6 +152,24 @@ public:
 private:
     QPointF getValue(const Layer *layer) const override;
     void setValue(Layer *layer, const QPointF &value) const override;
+};
+
+/**
+ * Used for changing the layer parallax factor.
+ */
+class SetLayerBlendMode : public ChangeValue<Layer, BlendMode>
+{
+public:
+    SetLayerBlendMode(Document *document,
+                      QList<Layer *> layers,
+                      BlendMode blendMode,
+                      QUndoCommand *parent = nullptr);
+
+    int id() const override { return Cmd_ChangeLayerBlendMode; }
+
+private:
+    BlendMode getValue(const Layer *layer) const override;
+    void setValue(Layer *layer, const BlendMode &value) const override;
 };
 
 /**

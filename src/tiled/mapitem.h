@@ -107,7 +107,7 @@ private:
     void layerAboutToBeRemoved(GroupLayer *parentLayer, int index);
     void layerRemoved(Layer *layer);
     void layerChanged(const LayerChangeEvent &change);
-    void layerTintColorChanged(Layer *layer);
+    void updateLayerItems(Layer *layer);
 
     void imageLayerChanged(ImageLayer *imageLayer);
 

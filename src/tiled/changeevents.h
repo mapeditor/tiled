@@ -128,7 +128,8 @@ public:
         LockedProperty          = 1 << 3,
         OffsetProperty          = 1 << 4,
         ParallaxFactorProperty  = 1 << 5,
-        TintColorProperty       = 1 << 6,
+        BlendModeProperty       = 1 << 6,
+        TintColorProperty       = 1 << 7,
         PositionProperties      = OffsetProperty | ParallaxFactorProperty,
         AllProperties           = 0xFF
     };

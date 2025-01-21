@@ -677,6 +677,9 @@ void MapWriterPrivate::writeLayerAttributes(QXmlStreamWriter &w,
         w.writeAttribute(QStringLiteral("parallaxx"), QString::number(parallaxFactor.x()));
     if (parallaxFactor.y() != 1.0)
         w.writeAttribute(QStringLiteral("parallaxy"), QString::number(parallaxFactor.y()));
+
+    if (layer.blendMode() != BlendMode::Normal)
+        w.writeAttribute(QStringLiteral("mode"), blendModeToString(layer.blendMode()));
 }
 
 void MapWriterPrivate::writeObjectGroup(QXmlStreamWriter &w,

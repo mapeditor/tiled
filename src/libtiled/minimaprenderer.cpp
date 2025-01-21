@@ -172,6 +172,7 @@ void MiniMapRenderer::renderToImage(QImage &image, RenderFlags renderFlags) cons
             continue;
 
         const auto offset = layer->totalOffset();
+        const auto compositionMode = layer->compositionMode();
 
         painter.setOpacity(layer->effectiveOpacity());
         painter.translate(offset);
@@ -179,6 +180,8 @@ void MiniMapRenderer::renderToImage(QImage &image, RenderFlags renderFlags) cons
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
             if (drawTileLayers) {
+                painter.setCompositionMode(compositionMode);
+
                 const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
                 mRenderer->drawTileLayer(&painter, tileLayer);
             }
@@ -195,6 +198,11 @@ void MiniMapRenderer::renderToImage(QImage &image, RenderFlags renderFlags) cons
 
                 for (const MapObject *object : std::as_const(objects)) {
                     if (object->isVisible()) {
+                        if (object->isTileObject())
+                            painter.setCompositionMode(compositionMode);
+                        else
+                            painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+
                         if (object->rotation() != qreal(0)) {
                             QPointF origin = mRenderer->pixelToScreenCoords(object->position());
                             painter.save();
@@ -214,6 +222,8 @@ void MiniMapRenderer::renderToImage(QImage &image, RenderFlags renderFlags) cons
         }
         case Layer::ImageLayerType: {
             if (drawImageLayers) {
+                painter.setCompositionMode(compositionMode);
+
                 const ImageLayer *imageLayer = static_cast<const ImageLayer*>(layer);
                 mRenderer->drawImageLayer(&painter, imageLayer);
             }

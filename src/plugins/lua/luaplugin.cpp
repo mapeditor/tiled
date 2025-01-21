@@ -28,7 +28,6 @@
 #include "map.h"
 #include "mapobject.h"
 #include "objectgroup.h"
-#include "objecttemplate.h"
 #include "properties.h"
 #include "savefile.h"
 #include "tile.h"
@@ -781,6 +780,9 @@ void LuaWriter::writeLayerProperties(const Layer *layer)
 
     if (layer->tintColor().isValid())
         writeColor("tintcolor", layer->tintColor());
+
+    if (layer->blendMode() != BlendMode::Normal)
+        mWriter.writeKeyAndValue("mode", blendModeToString(layer->blendMode()));
 }
 
 void LuaWriter::writePolygon(const MapObject *mapObject)

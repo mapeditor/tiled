@@ -190,6 +190,28 @@ void SetLayerParallaxFactor::setValue(Layer *layer, const QPointF &value) const
 }
 
 
+SetLayerBlendMode::SetLayerBlendMode(Document *document,
+                                     QList<Layer *> layers,
+                                     BlendMode mode,
+                                     QUndoCommand *parent)
+    : ChangeValue<Layer, BlendMode>(document, std::move(layers), mode, parent)
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Layer Blend Mode"));
+}
+
+BlendMode SetLayerBlendMode::getValue(const Layer *layer) const
+{
+    return layer->blendMode();
+}
+
+void SetLayerBlendMode::setValue(Layer *layer, const BlendMode &value) const
+{
+    layer->setBlendMode(value);
+    emit document()->changed(LayerChangeEvent(layer, LayerChangeEvent::BlendModeProperty));
+}
+
+
 SetTileLayerSize::SetTileLayerSize(Document *document,
                                    TileLayer *tileLayer,
                                    QSize size,

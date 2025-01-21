@@ -788,6 +788,9 @@ void MapToVariantConverter::addLayerAttributes(QVariantMap &layerVariant,
     if (layer.tintColor().isValid())
         layerVariant[QStringLiteral("tintcolor")] = colorToString(layer.tintColor());
 
+    if (layer.blendMode() != BlendMode::Normal)
+        layerVariant[QStringLiteral("mode")] = blendModeToString(layer.blendMode());
+
     addProperties(layerVariant, layer.properties());
 }
 
