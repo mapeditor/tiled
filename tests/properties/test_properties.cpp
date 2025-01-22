@@ -578,14 +578,14 @@ void test_Properties::cleanupTestCase()
 
 EnumPropertyType &test_Properties::addEnum(const QString &name)
 {
-    auto &type = mTypes.add(std::make_unique<EnumPropertyType>(name));
+    auto &type = mTypes.add(SharedPropertyType(new EnumPropertyType(name)));
     type.id = ++mNextId;
     return static_cast<EnumPropertyType&>(type);
 }
 
 ClassPropertyType &test_Properties::addClass(const QString &name)
 {
-    auto &type = mTypes.add(std::make_unique<ClassPropertyType>(name));
+    auto &type = mTypes.add(SharedPropertyType(new ClassPropertyType(name)));
     type.id = ++mNextId;
     return static_cast<ClassPropertyType&>(type);
 }

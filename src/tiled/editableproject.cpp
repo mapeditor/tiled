@@ -61,7 +61,7 @@ QStringList EditableProject::folders() const
 QVector<ScriptPropertyType *>EditableProject::propertyTypes() const
 {
     QVector<ScriptPropertyType*> scriptTypes;
-    for (const PropertyType *type : *project()->propertyTypes())
+    for (const auto &type : *project()->propertyTypes())
         scriptTypes.append(toScriptType(type));
     return scriptTypes;
 }
@@ -73,7 +73,7 @@ QSharedPointer<Document> EditableProject::createDocument()
     return nullptr;
 }
 
-ScriptPropertyType *EditableProject::toScriptType(const PropertyType *type) const
+ScriptPropertyType *EditableProject::toScriptType(const SharedPropertyType &type) const
 {
     if (!type)
         return nullptr;
@@ -82,9 +82,9 @@ ScriptPropertyType *EditableProject::toScriptType(const PropertyType *type) cons
     case PropertyType::PT_Invalid:
         break;
     case PropertyType::PT_Class:
-        return new ScriptClassPropertyType(static_cast<const ClassPropertyType *>(type));
+        return new ScriptClassPropertyType(qSharedPointerCast<ClassPropertyType>(type));
     case PropertyType::PT_Enum:
-        return new ScriptEnumPropertyType(static_cast<const EnumPropertyType *>(type));
+        return new ScriptEnumPropertyType(qSharedPointerCast<EnumPropertyType>(type));
     }
 
     return nullptr;
@@ -92,8 +92,14 @@ ScriptPropertyType *EditableProject::toScriptType(const PropertyType *type) cons
 
 ScriptPropertyType *EditableProject::findTypeByName(const QString &name)
 {
-    const PropertyType *type = project()->propertyTypes()->findTypeByName(name);
-    return toScriptType(type);
+    if (name.isEmpty())
+        return nullptr;
+
+    auto &types = *project()->propertyTypes();
+    auto it = std::find_if(types.begin(), types.end(), [&] (const SharedPropertyType &type) {
+        return type->name == name;
+    });
+    return it == types.end() ? nullptr : toScriptType(*it);
 }
 
 void EditableProject::removeTypeByName(const QString &name)

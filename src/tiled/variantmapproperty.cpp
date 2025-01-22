@@ -531,14 +531,14 @@ QWidget *AddValueProperty::createEditor(QWidget *parent)
     typeBox->addItem(m_plainTypeIcon, typeToName(objectRefTypeId()),    QVariant::fromValue(ObjectRef()));
     typeBox->addItem(m_plainTypeIcon, typeToName(QMetaType::QString),   QString());
 
-    for (const auto propertyType : Object::propertyTypes()) {
+    for (const auto &propertyType : Object::propertyTypes()) {
         // Avoid suggesting the creation of circular dependencies between types
-        if (m_parentClassType && !m_parentClassType->canAddMemberOfType(propertyType))
+        if (m_parentClassType && !m_parentClassType->canAddMemberOfType(propertyType.data()))
             continue;
 
         // Avoid suggesting classes not meant to be used as property value
         if (propertyType->isClass())
-            if (!static_cast<const ClassPropertyType*>(propertyType)->isPropertyValueType())
+            if (!static_cast<const ClassPropertyType&>(*propertyType).isPropertyValueType())
                 continue;
 
         const QVariant var = propertyType->wrap(propertyType->defaultValue());
