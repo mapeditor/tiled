@@ -531,6 +531,7 @@ QWidget *AddValueProperty::createEditor(QWidget *parent)
     typeBox->addItem(m_plainTypeIcon, typeToName(QMetaType::Int),       0);
     typeBox->addItem(m_plainTypeIcon, typeToName(objectRefTypeId()),    QVariant::fromValue(ObjectRef()));
     typeBox->addItem(m_plainTypeIcon, typeToName(QMetaType::QString),   QString());
+    typeBox->addItem(m_plainTypeIcon, typeToName(QMetaType::QVariantList),  QVariantList());
 
     for (const auto &propertyType : Object::propertyTypes()) {
         // Avoid suggesting the creation of circular dependencies between types

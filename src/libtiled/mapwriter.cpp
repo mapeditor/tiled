@@ -94,6 +94,8 @@ private:
     void writeGroupLayer(QXmlStreamWriter &w, const GroupLayer &groupLayer);
     void writeProperties(QXmlStreamWriter &w,
                          const Properties &properties);
+    void writeExportValue(QXmlStreamWriter &w,
+                          const QVariant &value, const ExportContext &context);
     void writeImage(QXmlStreamWriter &w,
                     const QUrl &source,
                     const QPixmap &image,
@@ -902,30 +904,48 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
         w.writeStartElement(QStringLiteral("property"));
         w.writeAttribute(QStringLiteral("name"), it.key());
 
-        const auto exportValue = context.toExportValue(it.value());
-        if (exportValue.typeName != QLatin1String("string"))
-            w.writeAttribute(QStringLiteral("type"), exportValue.typeName);
-        if (!exportValue.propertyTypeName.isEmpty())
-            w.writeAttribute(QStringLiteral("propertytype"), exportValue.propertyTypeName);
+        writeExportValue(w, it.value(), context);
 
-        // For class property values, write out the original value, so that the
-        // propertytype attribute can also be written for their members where
-        // applicable.
-        if (exportValue.value.userType() == QMetaType::QVariantMap) {
-            writeProperties(w, it.value().value<PropertyValue>().value.toMap());
-        } else {
-            const QString value = exportValue.value.toString();
-
-            if (value.contains(QLatin1Char('\n')))
-                w.writeCharacters(value);
-            else
-                w.writeAttribute(QStringLiteral("value"), value);
-        }
-
-        w.writeEndElement();
+        w.writeEndElement(); // </property>
     }
 
-    w.writeEndElement();
+    w.writeEndElement(); // </properties>
+}
+
+void MapWriterPrivate::writeExportValue(QXmlStreamWriter &w,
+                                        const QVariant &value,
+                                        const ExportContext &context)
+{
+    const auto exportValue = context.toExportValue(value);
+    if (exportValue.typeName != QLatin1String("string"))
+        w.writeAttribute(QStringLiteral("type"), exportValue.typeName);
+    if (!exportValue.propertyTypeName.isEmpty())
+        w.writeAttribute(QStringLiteral("propertytype"), exportValue.propertyTypeName);
+
+    switch (exportValue.value.userType()) {
+    case QMetaType::QVariantList: {
+        const auto values = exportValue.value.toList();
+        for (const QVariant &value : values) {
+            w.writeStartElement(QStringLiteral("item"));
+            writeExportValue(w, value, context);
+            w.writeEndElement(); // </item>
+        }
+        break;
+    }
+    case QMetaType::QVariantMap:
+        // Write out the original value, so that the propertytype attribute
+        // can also be written for their members where applicable.
+        writeProperties(w, value.value<PropertyValue>().value.toMap());
+        break;
+    default:
+        const QString value = exportValue.value.toString();
+
+        if (value.contains(QLatin1Char('\n')))
+            w.writeCharacters(value);
+        else
+            w.writeAttribute(QStringLiteral("value"), value);
+        break;
+    }
 }
 
 void MapWriterPrivate::writeImage(QXmlStreamWriter &w,
