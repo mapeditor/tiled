@@ -179,9 +179,9 @@ TILEDSHARED_EXPORT void mergeProperties(Properties &target, const Properties &so
 TILEDSHARED_EXPORT QJsonArray propertiesToJson(const Properties &properties, const ExportContext &context = ExportContext());
 TILEDSHARED_EXPORT Properties propertiesFromJson(const QJsonArray &json, const ExportContext &context = ExportContext());
 
-TILEDSHARED_EXPORT int propertyValueId();
-TILEDSHARED_EXPORT int filePathTypeId();
-TILEDSHARED_EXPORT int objectRefTypeId();
+constexpr int propertyValueId() { return qMetaTypeId<PropertyValue>(); }
+constexpr int filePathTypeId() { return qMetaTypeId<FilePath>(); }
+constexpr int objectRefTypeId() { return qMetaTypeId<ObjectRef>(); }
 
 TILEDSHARED_EXPORT QString typeToName(int type);
 TILEDSHARED_EXPORT QString typeName(const QVariant &value);
