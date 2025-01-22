@@ -828,11 +828,29 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
 
             QVariantMap propertyVariantMap;
             propertyVariantMap[QStringLiteral("name")] = it.key();
-            propertyVariantMap[QStringLiteral("value")] = exportValue.value;
             propertyVariantMap[QStringLiteral("type")] = exportValue.typeName;
-
             if (!exportValue.propertyTypeName.isEmpty())
                 propertyVariantMap[QStringLiteral("propertytype")] = exportValue.propertyTypeName;
+
+            if (exportValue.typeName == QLatin1String("list")) {
+                const QVariantList values = it.value().toList();
+                QVariantList valuesVariantList;
+
+                // todo: this doesn't support lists of lists
+                for (const QVariant &value : values) {
+                    QVariantMap valueVariantMap;
+                    const auto exportValue = context.toExportValue(value);
+                    valueVariantMap[QStringLiteral("value")] = exportValue.value;
+                    valueVariantMap[QStringLiteral("type")] = exportValue.typeName;
+                    if (!exportValue.propertyTypeName.isEmpty())
+                        valueVariantMap[QStringLiteral("propertytype")] = exportValue.propertyTypeName;
+                    valuesVariantList << valueVariantMap;
+                }
+
+                propertyVariantMap[QStringLiteral("value")] = valuesVariantList;
+            } else {
+                propertyVariantMap[QStringLiteral("value")] = exportValue.value;
+            }
 
             propertiesVariantList << propertyVariantMap;
         }

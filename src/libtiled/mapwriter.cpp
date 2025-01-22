@@ -908,24 +908,40 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
         if (!exportValue.propertyTypeName.isEmpty())
             w.writeAttribute(QStringLiteral("propertytype"), exportValue.propertyTypeName);
 
-        // For class property values, write out the original value, so that the
-        // propertytype attribute can also be written for their members where
-        // applicable.
-        if (exportValue.value.userType() == QMetaType::QVariantMap) {
+        switch (exportValue.value.userType()) {
+        case QMetaType::QVariantList: {
+            const auto values = exportValue.value.toList();
+            for (const QVariant &v : values) {
+                const auto exportValue = context.toExportValue(v);
+                w.writeStartElement(QStringLiteral("value"));
+                if (exportValue.typeName != QLatin1String("string"))
+                    w.writeAttribute(QStringLiteral("type"), exportValue.typeName);
+                if (!exportValue.propertyTypeName.isEmpty())
+                    w.writeAttribute(QStringLiteral("propertytype"), exportValue.propertyTypeName);
+                w.writeCharacters(exportValue.value.toString());
+                w.writeEndElement();
+            }
+            break;
+        }
+        case QMetaType::QVariantMap:
+            // Write out the original value, so that the propertytype attribute
+            // can also be written for their members where applicable.
             writeProperties(w, it.value().value<PropertyValue>().value.toMap());
-        } else {
+            break;
+        default:
             const QString value = exportValue.value.toString();
 
             if (value.contains(QLatin1Char('\n')))
                 w.writeCharacters(value);
             else
                 w.writeAttribute(QStringLiteral("value"), value);
+            break;
         }
 
-        w.writeEndElement();
+        w.writeEndElement(); // </property>
     }
 
-    w.writeEndElement();
+    w.writeEndElement(); // </properties>
 }
 
 void MapWriterPrivate::writeImage(QXmlStreamWriter &w,

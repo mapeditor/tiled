@@ -186,21 +186,6 @@ void aggregateProperties(AggregatedProperties &aggregated, const Properties &pro
     }
 }
 
-int propertyValueId()
-{
-    return qMetaTypeId<PropertyValue>();
-}
-
-int filePathTypeId()
-{
-    return qMetaTypeId<FilePath>();
-}
-
-int objectRefTypeId()
-{
-    return qMetaTypeId<ObjectRef>();
-}
-
 QString typeToName(int type)
 {
     // We can't handle the PropertyValue purely by its type ID, since we need to
@@ -216,6 +201,8 @@ QString typeToName(int type)
         return QStringLiteral("color");
     case QMetaType::QVariantMap:
         return QStringLiteral("class");
+    case QMetaType::QVariantList:
+        return QStringLiteral("list");
 
     default:
         if (type == filePathTypeId())
@@ -299,6 +286,7 @@ ExportValue ExportContext::toExportValue(const QVariant &value) const
     } else if (metaType == objectRefTypeId()) {
         exportValue.value = ObjectRef::toInt(value.value<ObjectRef>());
     } else {
+        // Other values, including lists, do not need special handling here
         exportValue.value = value;
     }
 
@@ -332,6 +320,9 @@ QVariant ExportContext::toPropertyValue(const QVariant &value, int metaType) con
 
     if (metaType == QMetaType::QVariantMap || metaType == propertyValueId())
         return value;   // should be covered by property type
+
+    if (metaType == QMetaType::QVariantList)
+        return value;   // list elements should be converted individually
 
     if (metaType == filePathTypeId()) {
         const QUrl url = toUrl(value.toString(), mPath);
