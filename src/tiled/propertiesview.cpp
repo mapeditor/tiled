@@ -22,9 +22,10 @@
 
 #include "expressionspinbox.h"
 #include "fileedit.h"
+#include "listedit.h"
+#include "propertyeditorwidgets.h"
 #include "textpropertyedit.h"
 #include "utils.h"
-#include "propertyeditorwidgets.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>
@@ -430,6 +431,23 @@ QWidget *SizeFProperty::createEditor(QWidget *parent)
     return editor;
 }
 
+QWidget *VariantListProperty::createEditor(QWidget *parent)
+{
+    auto editor = new ListEdit(parent);
+    auto syncEditor = [this, editor] {
+        const QSignalBlocker blocker(editor);
+        editor->setValue(value());
+    };
+    syncEditor();
+
+    connect(this, &Property::valueChanged, editor, syncEditor);
+    connect(editor, &ListEdit::valueChanged, this, [this, editor] {
+        setValue(editor->value());
+    });
+
+    return editor;
+}
+
 QWidget *RectProperty::createEditor(QWidget *parent)
 {
     auto editor = new RectEdit(parent);
@@ -793,6 +811,8 @@ Property *createVariantProperty(const QString &name,
         return createTypedProperty<SizeProperty>(name, get, set);
     case QMetaType::QSizeF:
         return createTypedProperty<SizeFProperty>(name, get, set);
+    case QMetaType::QVariantList:
+        return createTypedProperty<VariantListProperty>(name, get, set);
     default:
         if (type == qMetaTypeId<Qt::Alignment>())
             return createTypedProperty<QtAlignmentProperty>(name, get, set);
