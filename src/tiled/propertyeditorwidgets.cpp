@@ -412,8 +412,8 @@ SizeEdit::SizeEdit(QWidget *parent)
                                    { m_heightLabel, m_heightSpinBox },
                                }, this);
 
-    connect(m_widthSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &SizeEdit::valueChanged);
-    connect(m_heightSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &SizeEdit::valueChanged);
+    connect(m_widthSpinBox, &QSpinBox::valueChanged, this, &SizeEdit::valueChanged);
+    connect(m_heightSpinBox, &QSpinBox::valueChanged, this, &SizeEdit::valueChanged);
 }
 
 void SizeEdit::setValue(const QSize &size)
@@ -453,8 +453,8 @@ SizeFEdit::SizeFEdit(QWidget *parent)
                                    { m_heightLabel, m_heightSpinBox },
                                }, this);
 
-    connect(m_widthSpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &SizeFEdit::valueChanged);
-    connect(m_heightSpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &SizeFEdit::valueChanged);
+    connect(m_widthSpinBox, &QDoubleSpinBox::valueChanged, this, &SizeFEdit::valueChanged);
+    connect(m_heightSpinBox, &QDoubleSpinBox::valueChanged, this, &SizeFEdit::valueChanged);
 }
 
 void SizeFEdit::setValue(const QSizeF &size)
@@ -482,8 +482,8 @@ PointEdit::PointEdit(QWidget *parent)
                                    { m_yLabel, m_ySpinBox },
                                }, this);
 
-    connect(m_xSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &PointEdit::valueChanged);
-    connect(m_ySpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &PointEdit::valueChanged);
+    connect(m_xSpinBox, &QSpinBox::valueChanged, this, &PointEdit::valueChanged);
+    connect(m_ySpinBox, &QSpinBox::valueChanged, this, &PointEdit::valueChanged);
 }
 
 void PointEdit::setValue(const QPoint &point)
@@ -517,8 +517,8 @@ PointFEdit::PointFEdit(QWidget *parent)
                                    { m_yLabel, m_ySpinBox },
                                }, this);
 
-    connect(m_xSpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &PointFEdit::valueChanged);
-    connect(m_ySpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &PointFEdit::valueChanged);
+    connect(m_xSpinBox, &QDoubleSpinBox::valueChanged, this, &PointFEdit::valueChanged);
+    connect(m_ySpinBox, &QDoubleSpinBox::valueChanged, this, &PointFEdit::valueChanged);
 }
 
 void PointFEdit::setValue(const QPointF &point)
@@ -561,10 +561,10 @@ RectEdit::RectEdit(QWidget *parent)
     m_widthSpinBox->setMinimum(0);
     m_heightSpinBox->setMinimum(0);
 
-    connect(m_xSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &RectEdit::valueChanged);
-    connect(m_ySpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &RectEdit::valueChanged);
-    connect(m_widthSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &RectEdit::valueChanged);
-    connect(m_heightSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, &RectEdit::valueChanged);
+    connect(m_xSpinBox, &QSpinBox::valueChanged, this, &RectEdit::valueChanged);
+    connect(m_ySpinBox, &QSpinBox::valueChanged, this, &RectEdit::valueChanged);
+    connect(m_widthSpinBox, &QSpinBox::valueChanged, this, &RectEdit::valueChanged);
+    connect(m_heightSpinBox, &QSpinBox::valueChanged, this, &RectEdit::valueChanged);
 }
 
 void RectEdit::setValue(const QRect &rect)
@@ -619,10 +619,10 @@ RectFEdit::RectFEdit(QWidget *parent)
                                    { m_heightLabel, m_heightSpinBox },
                                }, this);
 
-    connect(m_xSpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &RectFEdit::valueChanged);
-    connect(m_ySpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &RectFEdit::valueChanged);
-    connect(m_widthSpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &RectFEdit::valueChanged);
-    connect(m_heightSpinBox, qOverload<double>(&QDoubleSpinBox::valueChanged), this, &RectFEdit::valueChanged);
+    connect(m_xSpinBox, &QDoubleSpinBox::valueChanged, this, &RectFEdit::valueChanged);
+    connect(m_ySpinBox, &QDoubleSpinBox::valueChanged, this, &RectFEdit::valueChanged);
+    connect(m_widthSpinBox, &QDoubleSpinBox::valueChanged, this, &RectFEdit::valueChanged);
+    connect(m_heightSpinBox, &QDoubleSpinBox::valueChanged, this, &RectFEdit::valueChanged);
 }
 
 void RectFEdit::setValue(const QRectF &rect)

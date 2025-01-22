@@ -998,7 +998,7 @@ void PropertyTypesEditor::addEnumProperties()
     mStorageTypeComboBox = new QComboBox(mUi->groupBox);
     mStorageTypeComboBox->addItems({ tr("String"), tr("Number") });
 
-    connect(mStorageTypeComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+    connect(mStorageTypeComboBox, &QComboBox::currentIndexChanged,
             this, [this] (int index) { if (index != -1) setStorageType(static_cast<EnumPropertyType::StorageType>(index)); });
 
     mValuesAsFlagsCheckBox = new QCheckBox(tr("Allow multiple values (flags)"), mUi->groupBox);

@@ -284,8 +284,7 @@ QWidget *IntProperty::createEditor(QWidget *parent)
         const QSignalBlocker blocker(spinBox);
         spinBox->setValue(value());
     });
-    connect(spinBox, qOverload<int>(&SpinBox::valueChanged),
-            this, &IntProperty::setValue);
+    connect(spinBox, &SpinBox::valueChanged, this, &IntProperty::setValue);
 
     return widget;
 }
@@ -304,7 +303,7 @@ QWidget *FloatProperty::createEditor(QWidget *parent)
     syncEditor();
 
     connect(this, &Property::valueChanged, editor, syncEditor);
-    connect(editor, qOverload<double>(&DoubleSpinBox::valueChanged),
+    connect(editor, &DoubleSpinBox::valueChanged,
             this, &FloatProperty::setValue);
 
     return editor;
@@ -575,7 +574,7 @@ QWidget *FontProperty::createEditor(QWidget *parent)
 
     connect(this, &Property::valueChanged, fontComboBox, syncEditor);
     connect(fontComboBox, &QFontComboBox::currentFontChanged, this, syncProperty);
-    connect(sizeSpinBox, qOverload<int>(&QSpinBox::valueChanged), this, syncProperty);
+    connect(sizeSpinBox, &QSpinBox::valueChanged, this, syncProperty);
     connect(bold, &QAbstractButton::toggled, this, syncProperty);
     connect(italic, &QAbstractButton::toggled, this, syncProperty);
     connect(underline, &QAbstractButton::toggled, this, syncProperty);
@@ -629,8 +628,8 @@ QWidget *QtAlignmentProperty::createEditor(QWidget *parent)
     syncEditor();
 
     connect(this, &Property::valueChanged, editor, syncEditor);
-    connect(horizontalComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, syncProperty);
-    connect(verticalComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, syncProperty);
+    connect(horizontalComboBox, &QComboBox::currentIndexChanged, this, syncProperty);
+    connect(verticalComboBox, &QComboBox::currentIndexChanged, this, syncProperty);
 
     return editor;
 }
@@ -653,7 +652,7 @@ QWidget *BaseEnumProperty::createEnumEditor(QWidget *parent)
     syncEditor();
 
     QObject::connect(this, &Property::valueChanged, editor, syncEditor);
-    QObject::connect(editor, qOverload<int>(&QComboBox::currentIndexChanged), this,
+    QObject::connect(editor, &QComboBox::currentIndexChanged, this,
                      [editor, this] {
         setValue(editor->currentData().toInt());
     });
