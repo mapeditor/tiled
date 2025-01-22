@@ -61,7 +61,7 @@ public:
     Q_INVOKABLE ScriptPropertyType *findTypeByName(const QString &name);
 
 private:
-    ScriptPropertyType *toScriptType(const PropertyType *type) const;
+    ScriptPropertyType *toScriptType(const SharedPropertyType &type) const;
     void applyPropertyChanges();
 };
 

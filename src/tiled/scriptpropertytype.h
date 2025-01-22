@@ -39,7 +39,7 @@ class ScriptPropertyType : public QObject
     Q_PROPERTY(QVariant defaultValue READ defaultValue)
 
 public:
-    ScriptPropertyType(const PropertyType *propertyType)
+    ScriptPropertyType(const SharedPropertyType &propertyType)
         : mType(propertyType)
     {}
 
@@ -49,7 +49,7 @@ public:
     QVariant defaultValue() { return mType->defaultValue(); }
 
 private:
-    const PropertyType *mType;
+    SharedPropertyType mType;
 };
 
 class ScriptEnumPropertyType : public ScriptPropertyType
@@ -60,7 +60,7 @@ class ScriptEnumPropertyType : public ScriptPropertyType
     Q_PROPERTY(QStringList values READ values)
 
 public:
-    ScriptEnumPropertyType(const EnumPropertyType *propertyType)
+    ScriptEnumPropertyType(const QSharedPointer<EnumPropertyType> &propertyType)
         : ScriptPropertyType(propertyType)
         , mEnumType(propertyType)
     {}
@@ -75,7 +75,7 @@ public:
     QStringList values() const { return mEnumType->values; }
 
 private:
-    const EnumPropertyType *mEnumType;
+    QSharedPointer<EnumPropertyType> mEnumType;
 };
 
 class ScriptClassPropertyType : public ScriptPropertyType
@@ -87,7 +87,7 @@ class ScriptClassPropertyType : public ScriptPropertyType
     Q_PROPERTY(int usageFlags READ usageFlags)
 
 public:
-    ScriptClassPropertyType(const ClassPropertyType *propertyType)
+    ScriptClassPropertyType(const QSharedPointer<ClassPropertyType> &propertyType)
         : ScriptPropertyType(propertyType)
         , mClassType(propertyType)
     {}
@@ -120,7 +120,7 @@ public:
     //void setUsageFlags(int value) { mClassType->setUsageFlags(value); }
 
 private:
-    const ClassPropertyType *mClassType;
+    QSharedPointer<ClassPropertyType> mClassType;
 };
 
 
