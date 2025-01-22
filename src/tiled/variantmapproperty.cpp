@@ -553,7 +553,7 @@ QWidget *AddValueProperty::createEditor(QWidget *parent)
 
     m_value = typeBox->currentData();
 
-    connect(typeBox, qOverload<int>(&QComboBox::currentIndexChanged), this, [=](int index) {
+    connect(typeBox, &QComboBox::currentIndexChanged, this, [=](int index) {
         m_value = typeBox->itemData(index);
         session::propertyType = typeBox->currentText();
     });
