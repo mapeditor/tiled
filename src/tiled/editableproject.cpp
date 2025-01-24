@@ -102,14 +102,15 @@ ScriptPropertyType *EditableProject::findTypeByName(const QString &name)
     return it == types.end() ? nullptr : toScriptType(*it);
 }
 
-void EditableProject::removeTypeByName(const QString &name)
+bool EditableProject::removeTypeByName(const QString &name)
 {
     int index = project()->propertyTypes()->findIndexByName(name);
     if (index < 0)
-        return;
+        return false;
 
     project()->propertyTypes()->removeAt(index);
     applyPropertyChanges();
+    return true;
 }
 
 void EditableProject::applyPropertyChanges()

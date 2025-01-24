@@ -18,6 +18,9 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "preferences.h"
+#include "project.h"
+#include "projectmanager.h"
 #include "scriptpropertytype.h"
 
 namespace Tiled {
@@ -35,6 +38,19 @@ void registerPropertyTypes(QJSEngine *jsEngine)
                                          jsEngine->newQMetaObject<ScriptClassPropertyType>());
 }
 
+/*
+ * Called when we make a change to a property type -
+ * this will reflect any property changes in the UI.
+ *
+ * TODO: Scheduling project save rather than every time
+ */
+void ScriptPropertyType::applyPropertyChanges()
+{
+    emit Preferences::instance()->propertyTypesChanged();
+
+    Project &project = ProjectManager::instance()->project();
+    project.save();
+}
 } // namespace Tiled
 
 #include "moc_scriptpropertytype.cpp"

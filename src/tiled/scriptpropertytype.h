@@ -33,7 +33,7 @@ namespace Tiled {
 class ScriptPropertyType : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString name READ name)
+    Q_PROPERTY(QString name READ name WRITE setName)
     Q_PROPERTY(bool isClass READ isClass)
     Q_PROPERTY(bool isEnum READ isEnum)
     Q_PROPERTY(QVariant defaultValue READ defaultValue)
@@ -44,10 +44,17 @@ public:
     {}
 
     const QString &name() const;
+    void setName(const QString &value)
+    {
+        mType->name =value;
+        applyPropertyChanges();
+    }
     bool isClass() const { return mType->isClass(); }
     bool isEnum() const { return mType->isEnum(); }
     QVariant defaultValue() { return mType->defaultValue(); }
 
+protected:
+    void applyPropertyChanges();
 private:
     SharedPropertyType mType;
 };
@@ -56,8 +63,8 @@ class ScriptEnumPropertyType : public ScriptPropertyType
 {
     Q_OBJECT
 
-    Q_PROPERTY(StorageType storageType READ storageType)
-    Q_PROPERTY(QStringList values READ values)
+    Q_PROPERTY(StorageType storageType READ storageType WRITE setStorageType)
+    Q_PROPERTY(QStringList values READ values WRITE setValues)
 
 public:
     ScriptEnumPropertyType(const QSharedPointer<EnumPropertyType> &propertyType)
@@ -72,8 +79,18 @@ public:
     Q_ENUM(StorageType);
 
     StorageType storageType() const { return static_cast<StorageType>(mEnumType->storageType); }
+    void setStorageType(StorageType value)
+    {
+        mEnumType->storageType = (EnumPropertyType::StorageType)value;
+        applyPropertyChanges();
+    }
     QStringList values() const { return mEnumType->values; }
-
+    void setValues(const QStringList &values)
+    {
+        mEnumType->values.clear();
+        mEnumType->values.append(values);
+        applyPropertyChanges();
+    }
 private:
     QSharedPointer<EnumPropertyType> mEnumType;
 };
@@ -81,10 +98,10 @@ private:
 class ScriptClassPropertyType : public ScriptPropertyType
 {
     Q_OBJECT
-    Q_PROPERTY(QColor color READ color)
+    Q_PROPERTY(QColor color READ color WRITE setColor)
     Q_PROPERTY(QVariantMap members READ members)
-    Q_PROPERTY(bool drawFill READ drawFill)
-    Q_PROPERTY(int usageFlags READ usageFlags)
+    Q_PROPERTY(bool drawFill READ drawFill WRITE setDrawFill)
+    Q_PROPERTY(int usageFlags READ usageFlags WRITE setUsageFlags)
 
 public:
     ScriptClassPropertyType(const QSharedPointer<ClassPropertyType> &propertyType)
@@ -111,13 +128,30 @@ public:
     Q_ENUM(ClassUsageFlag)
 
     QColor color() const { return mClassType->color; }
-    // TODO: " No viable overloaded '=' "
-    // void setColor(QColor &value) { mClassType->color = value; }
+
+    void setColor(QColor &value)
+    {
+        mClassType->color = value;
+        applyPropertyChanges();
+    }
     QVariantMap members() const {return mClassType->members; }
+    // todo add members, remove members
+
     bool drawFill() const { return mClassType->drawFill; }
-    // void setDrawFill(bool value) { mClassType->drawFill = value; }
+    void setDrawFill(bool value)
+    {
+        mClassType->drawFill = value;
+        applyPropertyChanges();
+    }
     int usageFlags() const { return mClassType->usageFlags; }
-    //void setUsageFlags(int value) { mClassType->setUsageFlags(value); }
+    void setUsageFlags(int value) {
+        // clear any existing values first so that we set to exactly
+        // the new value rather than just turning all flags in `value`
+        // on.
+        mClassType->setUsageFlags(ClassUsageFlag::AnyUsage, false);
+        mClassType->setUsageFlags(value, true);
+        applyPropertyChanges();
+    }
 
 private:
     QSharedPointer<ClassPropertyType> mClassType;

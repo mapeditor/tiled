@@ -57,7 +57,7 @@ public:
 
     QSharedPointer<Document> createDocument() override;
 
-    Q_INVOKABLE void removeTypeByName(const QString &name);
+    Q_INVOKABLE bool removeTypeByName(const QString &name);
     Q_INVOKABLE ScriptPropertyType *findTypeByName(const QString &name);
 
 private:
