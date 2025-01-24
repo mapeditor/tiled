@@ -1,3 +1,7 @@
+### Unreleased
+
+* Fixed potential crash when handling file reloads
+
 ### Tiled 1.11.1 (11 Jan 2025)
 
 * Releases now ship with support for loading Aseprite images (#4109)
