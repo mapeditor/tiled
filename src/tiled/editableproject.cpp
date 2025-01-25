@@ -112,7 +112,20 @@ bool EditableProject::removeTypeByName(const QString &name)
     applyPropertyChanges();
     return true;
 }
-
+ScriptPropertyType *EditableProject::addClassType(const QString &name)
+{
+    SharedPropertyType newClassType = SharedPropertyType(new ClassPropertyType(name));
+    project()->propertyTypes()->add(newClassType);
+    applyPropertyChanges();
+    return findTypeByName(name);
+}
+ScriptPropertyType *EditableProject::addEnumType(const QString &name)
+{
+    SharedPropertyType newEnumType = SharedPropertyType(new EnumPropertyType(name));
+    project()->propertyTypes()->add(newEnumType);
+    applyPropertyChanges();
+    return findTypeByName(name);
+}
 void EditableProject::applyPropertyChanges()
 {
     emit Preferences::instance()->propertyTypesChanged();
