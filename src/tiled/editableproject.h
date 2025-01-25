@@ -59,6 +59,8 @@ public:
 
     Q_INVOKABLE bool removeTypeByName(const QString &name);
     Q_INVOKABLE ScriptPropertyType *findTypeByName(const QString &name);
+    Q_INVOKABLE ScriptPropertyType *addClassType(const QString &name);
+    Q_INVOKABLE ScriptPropertyType *addEnumType(const QString &name);
 
 private:
     ScriptPropertyType *toScriptType(const SharedPropertyType &type) const;
