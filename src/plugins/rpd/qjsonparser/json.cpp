@@ -8,162 +8,9 @@
 ****************************************************************************/
 
 #include "json.h"
-#include "jsonparser.cpp"
 
-#include <QTextCodec>
+#include <QDebug>
 #include <qnumeric.h>
-
-/*!
-  \class JsonReader
-  \reentrant
-
-  \brief The JsonReader class provides a fast parser for reading
-  well-formed JSON into a QVariant.
-
-  The parser converts JSON types into QVariant types. For example, JSON
-  arrays are translated into QVariantList and JSON objects are translated 
-  into QVariantMap. For example,
-  \code
-  JsonReader reader;
-  if (reader.parse(QString("{ \"id\": 123, \"class\": \"JsonReader\", \"authors\": [\"Denis\",\"Ettrich\",\"Girish\"] }"))) {
-    QVariant result = reader.result();
-    QVariantMap map = result.toMap(); // the JSON object
-    qDebug() << map.count(); // 3
-    qDebug() << map["id"].toInt(); // 123
-    qDebug() << map["class"].toString(); // "JsonReader"
-    QVariantList list = map["authors"].toList();
-    qDebug() << list[2].toString(); // "Girish"
-  } else {
-    qDebug() << reader.errorString();
-  }
-  \endcode
-
-  As seen above, the reader converts the JSON into a QVariant with arbitrary nesting.
-  A complete listing of JSON to QVariant conversion is documented at parse().
-
-  JsonWriter can be used to convert a QVariant into JSON string.
-*/
-
-/*!
-  Constructs a JSON reader.
- */
-JsonReader::JsonReader()
-{
-}
-
-/*!
-  Destructor
- */
-JsonReader::~JsonReader()
-{
-}
-
-/*!
-  Parses the JSON \a ba as a QVariant.
-
-  If the parse succeeds, this function returns true and the QVariant can
-  be accessed using result(). If the parse fails, this function returns
-  false and the error message can be accessed using errorMessage().
-
-  The encoding of \ba is auto-detected based on the pattern of nulls in the
-  initial 4 octets as described in "Section 3. Encoding" of RFC 2647. If an 
-  encoding could not be auto-detected, this function assumes UTF-8.
-
-  The conversion from JSON type into QVariant type is as listed below:
-  \table
-  \row
-  \o false
-  \o QVariant::Bool with the value false.
-  \row
-  \o true
-  \o QVariant::Bool with the value true.
-  \row
-  \o null
-  \o QVariant::Invalid i.e QVariant()
-  \row
-  \o object
-  \o QVariant::Map i.e QVariantMap
-  \row
-  \o array
-  \o QVariant::List i.e QVariantList
-  \row
-  \o string
-  \o QVariant::String i.e QString
-  \row
-  \o number
-  \o QVariant::Double or QVariant::LongLong. If the JSON number contains a '.' or 'e' 
-     or 'E', QVariant::Double is used.
-  \endtable
-
-  The byte array \ba may or may not contain a BOM.
- */
-bool JsonReader::parse(const QByteArray &ba)
-{
-    QTextCodec *codec = QTextCodec::codecForUtfText(ba, 0); // try BOM detection
-    if (!codec) {
-        int mib = 106; // utf-8
-
-        if (ba.length() > 3) { // auto-detect
-            const char *data = ba.constData();
-            if (data[0] != 0) {
-                if (data[1] != 0)
-                    mib = 106; // utf-8
-                else if (data[2] != 0)
-                    mib = 1014; // utf16 le
-                else
-                    mib = 1019; // utf32 le
-            } else if (data[1] != 0)
-                mib = 1013; // utf16 be
-            else
-                mib = 1018; // utf32 be
-        }
-        codec = QTextCodec::codecForMib(mib);
-    }
-    QString str = codec->toUnicode(ba);
-    return parse(str);
-}
-
-/*!
-  Parses the JSON string \a str as a QVariant.
-
-  If the parse succeeds, this function returns true and the QVariant can
-  be accessed using result(). If the parse fails, this function returns
-  false and the error message can be accessed using errorMessage().
- */
-bool JsonReader::parse(const QString &str)
-{
-    JsonLexer lexer(str);
-    JsonParser parser;
-    if (!parser.parse(&lexer)) {
-        m_errorString = parser.errorMessage();
-        m_result = QVariant();
-        return false;
-    }
-    m_errorString.clear();
-    m_result = parser.result();
-    return true;
-}
-
-/*!
-  Returns the result of the last parse() call.
-
-  If parse() failed, this function returns an invalid QVariant.
- */
-QVariant JsonReader::result() const
-{
-    return m_result;
-}
-
-/*!
-  Returns the error message for the last parse() call.
-
-  If parse() succeeded, this functions return an empty string. The error message
-  should be used for debugging purposes only.
- */
-QString JsonReader::errorString() const
-{
-    return m_errorString;
-}
 
 /*!
   \class JsonWriter
@@ -198,7 +45,7 @@ QString JsonReader::errorString() const
   Creates a JsonWriter.
  */
 JsonWriter::JsonWriter()
-    : m_autoFormatting(false), m_autoFormattingIndent(4, QLatin1Char(' '))
+    : m_autoFormattingIndent(4, QLatin1Char(' '))
 {
 }
 
@@ -212,10 +59,10 @@ JsonWriter::~JsonWriter()
 /*!
   Enables auto formatting if \a enable is \c true, otherwise
   disables it.
- 
+
   When auto formatting is enabled, the writer automatically inserts
   spaces and new lines to make the output more human readable.
- 
+
   The default value is \c false.
  */
 void JsonWriter::setAutoFormatting(bool enable)
@@ -259,6 +106,14 @@ int JsonWriter::autoFormattingIndent() const
     return m_autoFormattingIndent.count(QLatin1Char(' ')) - m_autoFormattingIndent.count(QLatin1Char('\t'));
 }
 
+/*!
+  Will insert a newline while writing out arrays after every \a count elements.
+ */
+void JsonWriter::setAutoFormattingWrapArrayCount(int count)
+{
+    m_autoFormattingWrapArrayCount = count;
+}
+
 /*! \internal
   Inserts escape character \ for characters in string as described in JSON specification.
  */
@@ -299,19 +154,26 @@ static QString escape(const QVariant &variant)
 void JsonWriter::stringify(const QVariant &variant, int depth)
 {
     if (variant.type() == QVariant::List || variant.type() == QVariant::StringList) {
+        const QString indent = m_autoFormattingIndent.repeated(depth);
         m_result += QLatin1Char('[');
         QVariantList list = variant.toList();
         for (int i = 0; i < list.count(); i++) {
             if (i != 0) {
                 m_result += QLatin1Char(',');
-                if (m_autoFormatting)
-                    m_result += QLatin1Char(' ');
+                if (m_autoFormatting) {
+                    if (m_autoFormattingWrapArrayCount && i % m_autoFormattingWrapArrayCount == 0) {
+                        m_result += QLatin1Char('\n');
+                        m_result += indent;
+                    } else {
+                        m_result += QLatin1Char(' ');
+                    }
+                }
             }
             stringify(list[i], depth+1);
         }
         m_result += QLatin1Char(']');
     } else if (variant.type() == QVariant::Map) {
-        QString indent = m_autoFormattingIndent.repeated(depth);
+        const QString indent = m_autoFormattingIndent.repeated(depth);
         QVariantMap map = variant.toMap();
         if (m_autoFormatting && depth != 0) {
             m_result += QLatin1Char('\n');
@@ -369,7 +231,7 @@ void JsonWriter::stringify(const QVariant &variant, int depth)
     } else {
         if (!m_errorString.isEmpty())
             m_errorString.append(QLatin1Char('\n'));
-        QString msg = QString::fromLatin1("Unsupported type %1 (id: %2)").arg(QString::fromUtf8(variant.typeName())).arg(variant.userType());
+        QString msg = QStringLiteral("Unsupported type %1 (id: %2)").arg(QString::fromUtf8(variant.typeName())).arg(variant.userType());
         m_errorString.append(msg);
         qWarning() << "JsonWriter::stringify - " << msg;
         m_result += QLatin1String("null");
@@ -402,7 +264,7 @@ void JsonWriter::stringify(const QVariant &variant, int depth)
   \o QVariant::Invalid
   \o JSON null
   \row
-  \o QVariant::ULongLong, QVariant::LongLong, QVariant::Int, QVariant::UInt, 
+  \o QVariant::ULongLong, QVariant::LongLong, QVariant::Int, QVariant::UInt,
   \o JSON number
   \row
   \o QVariant::Char
@@ -443,4 +305,3 @@ QString JsonWriter::errorString() const
 {
     return m_errorString;
 }
-
