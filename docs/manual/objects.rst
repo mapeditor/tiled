@@ -267,7 +267,7 @@ Changing Stacking Order
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 If the active :ref:`Object Layer <object-layer-introduction>` has its Drawing
-Order property set to Manual (the default is Top Down), you can control
+Order property set to Index Order (the default is Top Down), you can control
 the stacking order of the selected objects within their object layer
 using the following keys:
 
