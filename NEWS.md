@@ -1,6 +1,7 @@
 ### Unreleased
 
 * Added support for SVG 1.2 / CSS blending modes to layers (#3932)
+* Added button to toggle Terrain Brush to full tile mode (by Finlay Pearson, #3407)
 * YY plugin: Fixed compatibility with GameMaker 2024 (#4132)
 * snap: Fixed crash on startup on Wayland
 * Raised minimum supported Qt version from 5.12 to 5.15
