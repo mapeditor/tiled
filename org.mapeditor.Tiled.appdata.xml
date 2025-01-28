@@ -23,8 +23,10 @@
    <url>https://www.mapeditor.org/2025/01/28/tiled-1-11-2-released.html</url>
    <description>
     <ul>
+      <li>YY plugin: Fixed compatibility with GameMaker 2024 (#4132)</li>
       <li>Fixed crash while handling file reloads without any files opened</li>
       <li>Fixed crash when closing the last file with multiple custom properties selected</li>
+      <li>snap: Fixed crash on startup on Wayland</li>
       <li>AppImage: Updated to Sentry 0.7.19</li>
     </ul>
    </description>
