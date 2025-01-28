@@ -1,6 +1,7 @@
 ### Unreleased
 
-* Fixed potential crash when handling file reloads
+* Fixed crash while handling file reloads without any files opened
+* Fixed crash when closing the last file with multiple custom properties selected
 
 ### Tiled 1.11.1 (11 Jan 2025)
 

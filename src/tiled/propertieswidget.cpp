@@ -161,7 +161,7 @@ void PropertiesWidget::updateActions()
     bool allCustomProperties = !items.isEmpty() && mPropertyBrowser->allCustomPropertyItems(items);
     bool editingTileset = mDocument && mDocument->type() == Document::TilesetDocumentType;
     bool isTileset = mPropertyBrowser->object() && mPropertyBrowser->object()->isPartOfTileset();
-    bool canModify = allCustomProperties && (!isTileset || editingTileset);
+    bool canModify = mDocument && allCustomProperties && (!isTileset || editingTileset);
 
     // Disable remove and rename actions when none of the selected objects
     // actually have the selected property (it may be inherited).
