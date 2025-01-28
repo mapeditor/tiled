@@ -974,8 +974,10 @@ bool DocumentManager::reloadDocument(Document *document)
         break;
     }
 
-    if (!isDocumentChangedOnDisk(currentDocument()))
-        mFileChangedWarning->setVisible(false);
+    // We may need to hide the file changed warning
+    if (auto current = currentDocument())
+        if (!isDocumentChangedOnDisk(current))
+            mFileChangedWarning->setVisible(false);
 
     emit documentReloaded(document);
 
@@ -1172,8 +1174,10 @@ void DocumentManager::fileChanged(const QString &fileName)
 
     document->setChangedOnDisk(true);
 
-    if (isDocumentChangedOnDisk(currentDocument()))
-        mFileChangedWarning->setVisible(true);
+    // We may need to show the file changed warning
+    if (auto current = currentDocument())
+        if (isDocumentChangedOnDisk(current))
+            mFileChangedWarning->setVisible(true);
 }
 
 void DocumentManager::hideChangedWarning()
