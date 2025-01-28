@@ -1,4 +1,4 @@
-### Unreleased
+### Tiled 1.11.2 (28 Jan 2025)
 
 * Fixed crash while handling file reloads without any files opened
 * Fixed crash when closing the last file with multiple custom properties selected
