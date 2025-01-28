@@ -26,7 +26,7 @@ as background layers.
    exporting from Tiled.
 
    In 2024, GameMaker made minor but incompatible changes to its file format.
-   Tiled 1.12 ships with an updated plugin that uses the new format.
+   Tiled 1.11.2 ships with an updated plugin that uses the new format.
 
 .. _yy-asset-references:
 
