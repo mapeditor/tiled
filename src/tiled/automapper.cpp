@@ -792,6 +792,8 @@ static bool isEmptyRegion(const TileLayer &tileLayer,
 
 /**
  * Sets up a small data structure for this rule that is optimized for matching.
+ *
+ * Returns false when the rule can never match.
  */
 bool AutoMapper::compileRule(QVector<RuleInputSet> &inputSets,
                              const Rule &rule,
@@ -876,6 +878,10 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
     QVector<MatchCell> &noneOf = compileContext.noneOf;
     QVector<MatchCell> &inputCells = compileContext.inputCells;
 
+    // An input set will not cause a match if it was left entirely empty, but
+    // an Ignore tile can still be used to create an always-matching rule.
+    bool hasIgnore = false;
+
     for (const InputConditions &conditions : inputSet.layers) {
         inputCells.clear();
         bool canMatch = true;
@@ -917,6 +923,7 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
                     negate = true;
                     break;
                 case MatchType::Ignore:
+                    hasIgnore = true;
                     break;
                 }
             }
@@ -949,6 +956,7 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
                     negate = true;
                     break;
                 case MatchType::Ignore:
+                    hasIgnore = true;
                     break;
                 }
             }
@@ -1012,7 +1020,7 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
             index.layers.append(layer);
     }
 
-    return true;
+    return !index.layers.isEmpty() || hasIgnore;
 }
 
 /**
@@ -1037,7 +1045,7 @@ bool AutoMapper::compileOutputSet(RuleOutputSet &index,
         case Layer::ObjectGroupType: {
             auto fromObjectGroup = static_cast<const ObjectGroup*>(from);
 
-            auto objects = objectsInRegion(*mRulesMapRenderer, fromObjectGroup, outputRegion);
+            const auto objects = objectsInRegion(*mRulesMapRenderer, fromObjectGroup, outputRegion);
             if (!objects.isEmpty()) {
                 QVector<const MapObject*> constObjects;
                 for (auto object : objects)

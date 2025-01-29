@@ -1,6 +1,7 @@
 ### Unreleased
 
 * Added support for SVG 1.2 / CSS blending modes to layers (#3932)
+* AutoMapping: Don't match rules based on empty input indexes
 * Raised minimum supported Qt version from 5.12 to 5.15
 
 ### Tiled 1.11.2 (28 Jan 2025)
