@@ -40,7 +40,7 @@ class AutoMapperWrapper : public PaintTileLayer
 {
 public:
     AutoMapperWrapper(MapDocument *mapDocument,
-                      const QVector<AutoMapper*> &autoMappers,
+                      const QVector<const AutoMapper *> &autoMappers,
                       const QRegion &where,
                       const TileLayer *touchedLayer = nullptr);
 };

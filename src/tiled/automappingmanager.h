@@ -82,7 +82,7 @@ signals:
 private:
     void onRegionEdited(const QRegion &where, TileLayer *touchedLayer);
     void onMapFileNameChanged();
-    void onFileChanged();
+    void onFileChanged(const QString &path);
 
     bool loadFile(const QString &filePath);
     bool loadRulesFile(const QString &filePath);
@@ -107,10 +107,19 @@ private:
     MapDocument *mMapDocument = nullptr;
 
     /**
-     * For each new file of rules a new AutoMapper is setup. In this vector we
-     * can store all of the AutoMappers in order.
+     * For each rule map referenced by the rules file a new AutoMapper is
+     * setup. In this map we store all loaded AutoMappers instances.
      */
-    std::vector<std::unique_ptr<AutoMapper>> mAutoMappers;
+    std::unordered_map<QString, std::unique_ptr<AutoMapper>> mLoadedAutoMappers;
+
+    /**
+     * The active list of AutoMapper instances, in the order they were
+     * encountered in the rules file.
+     *
+     * Some loaded rule maps might not be active, and some might be active
+     * multiple times.
+     */
+    std::vector<const AutoMapper*> mActiveAutoMappers;
 
     /**
      * This tells you if the rules for the current map document were already

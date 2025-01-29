@@ -351,7 +351,7 @@ public:
      * painful to keep these data structures up to date all time. (indices of
      * layers of the working map)
      */
-    void prepareAutoMap(AutoMappingContext &context);
+    void prepareAutoMap(AutoMappingContext &context) const;
 
     /**
      * Here is done all the AutoMapping.

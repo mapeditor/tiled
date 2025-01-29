@@ -674,7 +674,7 @@ void AutoMapper::setupRules()
 #endif
 }
 
-void AutoMapper::prepareAutoMap(AutoMappingContext &context)
+void AutoMapper::prepareAutoMap(AutoMappingContext &context) const
 {
     setupWorkMapLayers(context);
 
