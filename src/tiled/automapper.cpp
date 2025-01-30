@@ -143,10 +143,9 @@ AutoMappingContext::AutoMappingContext(MapDocument *mapDocument)
 }
 
 
-AutoMapper::AutoMapper(std::unique_ptr<Map> rulesMap, const QRegularExpression &mapNameFilter)
+AutoMapper::AutoMapper(std::unique_ptr<Map> rulesMap)
     : mRulesMap(std::move(rulesMap))
     , mRulesMapRenderer(MapRenderer::create(mRulesMap.get()))
-    , mMapNameFilter(mapNameFilter)
 {
     setupRuleMapProperties();
 
