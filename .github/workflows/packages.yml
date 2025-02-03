@@ -53,7 +53,7 @@ jobs:
           qt_modules: ""
           qbs_default_profile: x86_64-linux-gnu-gcc-10
         - ubuntu_version: 22.04
-          qt_version: 6.8.1
+          qt_version: 6.8.2
           qt_version_major: 6
           qt_arch: linux_gcc_64
           qt_modules: "qtimageformats"
@@ -225,7 +225,7 @@ jobs:
           version_suffix: "10.13-10.15"
           architectures: x86_64
           cmake_architectures: x86_64
-        - qt_version: 6.8.1
+        - qt_version: 6.8.2
           qt_modules: "qtimageformats"
           version_suffix: "11+"
           architectures: x86_64,arm64
@@ -345,7 +345,7 @@ jobs:
           mingw_component: tools_mingw
           mingw_variant: qt.tools.win32_mingw810
           mingw_dir: mingw810_32
-        - qt_version: 6.8.1
+        - qt_version: 6.8.2
           qt_version_major: 6
           qt_arch: win64_mingw
           qt_modules: "qtimageformats"
