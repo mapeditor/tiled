@@ -120,7 +120,7 @@ private:
      * pointer is initialized, which enables the sharedPointer() function.
      */
     Tileset(QString name, int tileWidth, int tileHeight,
-            int tileSpacing = 0, int margin = 0);
+            int tileSpacing = 0, int margin = 0, bool isAtlas = false);
 
 public:
     QString exportFileName;
@@ -137,6 +137,9 @@ public:
 
     void setFormat(const QString &format);
     QString format() const;
+
+    bool isAtlas() const { return mAtlas; }
+    void setAtlas(bool atlas) { mAtlas = atlas; }
 
     int tileWidth() const;
     int tileHeight() const;
@@ -235,6 +238,12 @@ public:
     int nextTileId() const;
     int takeNextTileId();
 
+    // Convert between pixel and grid coordinates
+    QPoint pixelToGrid(const QPoint &pixelPos) const;
+    QPoint gridToPixel(const QPoint &gridPos) const;
+    QRect pixelToGrid(const QRect &pixelRect) const;
+    QRect gridToPixel(const QRect &gridRect) const;
+
     void setTileImage(Tile *tile,
                       const QPixmap &image,
                       const QUrl &source = QUrl());
@@ -311,6 +320,7 @@ private:
     TileRenderSize mTileRenderSize = TileSize;
     FillMode mFillMode = Stretch;
     QSize mGridSize;
+    bool mAtlas;
     int mColumnCount = 0;
     int mExpectedColumnCount = 0;
     int mExpectedRowCount = 0;

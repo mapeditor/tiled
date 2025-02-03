@@ -413,7 +413,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                QSize(tileset.imageWidth(), tileset.imageHeight()));
 
     const bool isCollection = tileset.isCollection();
-    const bool includeAllTiles = isCollection || tileset.anyTileOutOfOrder();
+    const bool isAtlas = tileset.isAtlas();
+    const bool includeAllTiles = isCollection || isAtlas || tileset.anyTileOutOfOrder();
 
     for (const Tile *tile : tileset.tiles()) {
         if (includeAllTiles || includeTile(tile)) {
@@ -421,7 +422,7 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
             w.writeAttribute(QStringLiteral("id"), QString::number(tile->id()));
 
             const QRect &imageRect = tile->imageRect();
-            if (!imageRect.isNull() && imageRect != tile->image().rect() && isCollection) {
+            if (!imageRect.isNull() && imageRect != tile->image().rect() && (isCollection || isAtlas)) {
                 w.writeAttribute(QStringLiteral("x"),
                                  QString::number(imageRect.x()));
                 w.writeAttribute(QStringLiteral("y"),

@@ -71,6 +71,11 @@
         </item>
         <item>
          <property name="text">
+          <string>Tileset Grid Atlas</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
           <string>Collection of Images</string>
          </property>
         </item>

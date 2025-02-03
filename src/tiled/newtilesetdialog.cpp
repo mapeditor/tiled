@@ -47,6 +47,7 @@ static SessionOption<int> tilesetMargin { "tileset.margin" };
 
 enum TilesetType {
     TilesetImage,
+    TilesetAtlas,
     ImageCollection
 };
 
@@ -57,6 +58,8 @@ static TilesetType tilesetType(Ui::NewTilesetDialog *ui)
     case 0:
         return TilesetImage;
     case 1:
+        return TilesetAtlas;
+    case 2:
         return ImageCollection;
     }
 }
@@ -93,7 +96,7 @@ NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
     connect(mUi->buttonBox, &QDialogButtonBox::accepted, this, &NewTilesetDialog::tryAccept);
     connect(mUi->buttonBox, &QDialogButtonBox::rejected, this, &NewTilesetDialog::reject);
 
-    mUi->imageGroupBox->setVisible(session::tilesetType == 0);
+    mUi->imageGroupBox->setVisible(session::tilesetType < 2);
     updateOkButton();
 }
 
@@ -187,10 +190,11 @@ bool NewTilesetDialog::editTilesetParameters(TilesetParameters &parameters)
 void NewTilesetDialog::tryAccept()
 {
     const QString name = mUi->name->text();
+    const TilesetType type = tilesetType(mUi);
 
     SharedTileset tileset;
 
-    if (tilesetType(mUi) == TilesetImage) {
+    if (type == TilesetImage || type == TilesetAtlas) {
         const QString image = mUi->image->text();
         const bool useTransparentColor = mUi->useTransparentColor->isChecked();
         const QColor transparentColor = mUi->colorButton->color();
@@ -201,7 +205,8 @@ void NewTilesetDialog::tryAccept()
 
         tileset = Tileset::create(name,
                                   tileWidth, tileHeight,
-                                  spacing, margin);
+                                  spacing, margin,
+                                  type == TilesetAtlas);
 
         if (useTransparentColor)
             tileset->setTransparentColor(transparentColor);
@@ -281,7 +286,7 @@ void NewTilesetDialog::nameEdited(const QString &name)
 
 void NewTilesetDialog::tilesetTypeChanged(int index)
 {
-    mUi->imageGroupBox->setVisible(index == 0);
+    mUi->imageGroupBox->setVisible(index < 2);
     updateOkButton();
 }
 

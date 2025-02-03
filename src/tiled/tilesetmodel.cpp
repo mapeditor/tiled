@@ -32,6 +32,11 @@
 
 using namespace Tiled;
 
+inline uint qHash(const QPoint &p, uint seed = 0)
+{
+    return qHash(p.x(), seed) ^ qHash(p.y(), seed);
+}
+
 TilesetModel::TilesetModel(TilesetDocument *tilesetDocument, QObject *parent)
     : QAbstractListModel(parent)
     , mTilesetDocument(tilesetDocument)
@@ -44,10 +49,37 @@ TilesetModel::TilesetModel(TilesetDocument *tilesetDocument, QObject *parent)
             this, &TilesetModel::tileChanged);
 }
 
+QPoint TilesetModel::viewToAtlasCoords(int viewCol, int viewRow) const
+{
+    const int currentCols = columnCount();
+    const int atlasCols = tileset()->columnCount();
+    const int linearIndex = viewCol + viewRow * currentCols;
+    return QPoint(linearIndex % atlasCols,
+                 linearIndex / atlasCols);
+}
+
+QPoint TilesetModel::atlasToViewCoords(int atlasCol, int atlasRow) const
+{
+    const int currentCols = columnCount();
+    const int atlasCols = tileset()->columnCount();
+    const int linearIndex = atlasRow * atlasCols + atlasCol;
+    return QPoint(linearIndex % currentCols,
+                 linearIndex / currentCols);
+}
+
 int TilesetModel::rowCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
+
+    if (tileset()->isAtlas()) {
+        const int currentCols = columnCount();
+        if (currentCols <= 0)
+            return 1;
+
+        const int totalTiles = tileset()->rowCount() * tileset()->columnCount();
+        return (totalTiles + currentCols - 1) / currentCols;
+    }
 
     const int tileCount = mTileIds.size();
     const int columns = columnCount();
@@ -94,11 +126,62 @@ QVariant TilesetModel::headerData(int /* section */,
     return QVariant();
 }
 
+QSize TilesetModel::tileSpanSize(const QModelIndex &index) const
+{
+    if (!tileset()->isAtlas())
+        return QSize(1, 1);
+
+    if (Tile *tile = tileAt(index)) {
+        const int tileWidth = tileset()->tileWidth();
+        const int tileHeight = tileset()->tileHeight();
+        const QRect rect = tile->imageRect();
+        return QSize(
+            rect.width() / tileWidth,
+            rect.height() / tileHeight
+        );
+    }
+
+    return QSize(1, 1);
+}
+
+Tile *TilesetModel::findSpanningTile(const QModelIndex &index) const
+{
+    if (!tileset()->isAtlas())
+        return nullptr;
+
+    for (Tile *tile : tileset()->tiles()) {
+        // Use tileIndex to get normalized grid position
+        QModelIndex tilePos = tileIndex(tile);
+        QSize span = tileSpanSize(tilePos);
+
+        if (span.width() <= 1 && span.height() <= 1)
+            continue;
+
+        if (index.row() >= tilePos.row() && index.row() < tilePos.row() + span.height() &&
+            index.column() >= tilePos.column() && index.column() < tilePos.column() + span.width()) {
+            return tile;
+        }
+    }
+
+    return nullptr;
+}
+
 Qt::ItemFlags TilesetModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags defaultFlags = QAbstractListModel::flags(index);
-    defaultFlags |= Qt::ItemIsDropEnabled;
 
+    if (tileset()->isAtlas()) {
+        if (!index.isValid())
+            return defaultFlags;
+
+        // If this cell contains a tile's origin or we are relocating, it's selectable
+        if (mRelocating || tileAt(index))
+            return defaultFlags | Qt::ItemIsSelectable;
+
+        return defaultFlags & ~Qt::ItemIsSelectable;
+    }
+
+    defaultFlags |= Qt::ItemIsDropEnabled;
     if (index.isValid())
         defaultFlags |= Qt::ItemIsDragEnabled;
 
@@ -190,19 +273,27 @@ Tile *TilesetModel::tileAt(const QModelIndex &index) const
     if (!index.isValid())
         return nullptr;
 
-    const int tileIndex = index.column() + index.row() * columnCount();
+    if (tileset()->isAtlas()) {
+        const QPoint atlasPos = viewToAtlasCoords(index.column(), index.row());
+        return mTileGrid.value(atlasPos);
+    }
 
+    const int tileIndex = index.column() + index.row() * columnCount();
     if (tileIndex < mTileIds.size()) {
         const int tileId = mTileIds.at(tileIndex);
         return tileset()->findTile(tileId);
     }
-
     return nullptr;
 }
 
 QModelIndex TilesetModel::tileIndex(const Tile *tile) const
 {
     Q_ASSERT(tile->tileset() == tileset());
+    if (tileset()->isAtlas()) {
+        const QPoint tilePos = tileset()->pixelToGrid(tile->imageRect().topLeft());
+        const QPoint viewPos = atlasToViewCoords(tilePos.x(), tilePos.y());
+        return index(viewPos.y(), viewPos.x());
+    }
 
     const int columnCount = TilesetModel::columnCount();
 
@@ -274,6 +365,14 @@ void TilesetModel::tilesChanged(const QList<Tile *> &tiles)
 
 void TilesetModel::tileChanged(Tile *tile)
 {
+    if (tileset()->isAtlas()) {
+        const QPoint oldPos = mTileGrid.key(tile, QPoint(-1, -1));
+        if (oldPos != QPoint(-1, -1))
+            mTileGrid.remove(oldPos);
+        const QPoint newPos = tileset()->pixelToGrid(tile->imageRect().topLeft());
+        mTileGrid.insert(newPos, tile);
+    }
+
     const QModelIndex i = tileIndex(tile);
     emit dataChanged(i, i);
 }
@@ -281,8 +380,11 @@ void TilesetModel::tileChanged(Tile *tile)
 void TilesetModel::refreshTileIds()
 {
     mTileIds.clear();
-    for (Tile *tile : tileset()->tiles())
+    for (Tile *tile : tileset()->tiles()) {
         mTileIds.append(tile->id());
+        const QPoint pos = tileset()->pixelToGrid(tile->imageRect().topLeft());
+        mTileGrid.insert(pos, tile);
+    }
 }
 
 #include "moc_tilesetmodel.cpp"

@@ -21,6 +21,8 @@
 #include "tilesetview.h"
 
 #include "actionmanager.h"
+#include "addremovetiles.h"
+#include "changetile.h"
 #include "changeevents.h"
 #include "changetilewangid.h"
 #include "pannableviewhelper.h"
@@ -157,12 +159,20 @@ void TileDelegate::paint(QPainter *painter,
     else
         mTilesetView->imageMissingIcon().paint(painter, targetRect, Qt::AlignBottom | Qt::AlignLeft);
 
+    const auto highlight = option.palette.highlight();
+
+    // Draw grid lines when in rearranging mode
+    if (mTilesetView->isRelocateTiles()) {
+        const qreal opacity = painter->opacity();
+        painter->setOpacity(0.5);
+        painter->setPen(QPen(highlight, 1, Qt::SolidLine));
+        painter->drawRect(option.rect.adjusted(0, 0, -1, -1));
+        painter->setOpacity(opacity);
+    }
 
     // Overlay with film strip when animated
     if (mTilesetView->markAnimatedTiles() && tile->isAnimated())
         drawFilmStrip(painter, targetRect);
-
-    const auto highlight = option.palette.highlight();
 
     // Overlay with highlight color when selected
     if (option.state & QStyle::State_Selected) {
@@ -338,6 +348,7 @@ void TilesetView::setTilesetDocument(TilesetDocument *tilesetDocument)
         connect(mTilesetDocument, &Document::changed, this, &TilesetView::onChange);
         connect(mTilesetDocument, &TilesetDocument::tilesAdded, this, &TilesetView::refreshColumnCount);
         connect(mTilesetDocument, &TilesetDocument::tilesRemoved, this, &TilesetView::refreshColumnCount);
+        connect(mTilesetDocument, &TilesetDocument::tileImageSourceChanged, this, &TilesetView::refreshColumnCount);
     }
 }
 
@@ -406,6 +417,8 @@ bool TilesetView::dynamicWrapping() const
             return tilesetModel()->tileset()->isCollection();
         break;
     case WrapDynamic:
+        if (tilesetModel() && tilesetModel()->tileset()->isAtlas())
+            return !mRelocateTiles;
         return true;
     case WrapFixed:
         return false;
@@ -417,8 +430,10 @@ bool TilesetView::dynamicWrapping() const
 void TilesetView::setModel(QAbstractItemModel *model)
 {
     QTableView::setModel(model);
+
     updateBackgroundColor();
-    setVerticalScrollBarPolicy(dynamicWrapping() ? Qt::ScrollBarAlwaysOn : Qt::ScrollBarAsNeeded);
+    setVerticalScrollBarPolicy(dynamicWrapping() ? Qt::ScrollBarAlwaysOn
+                                                : Qt::ScrollBarAsNeeded);
     refreshColumnCount();
 }
 
@@ -504,11 +519,19 @@ void TilesetView::setRelocateTiles(bool enabled)
 
     mRelocateTiles = enabled;
 
+    if (TilesetModel *m = tilesetModel()) {
+        m->setRelocating(enabled);
+        if (m->tileset()->isAtlas()) {
+            enabled = false;
+        }
+    }
+
     if (enabled)
         setDragDropMode(QTableView::InternalMove);
     else
         setDragDropMode(QTableView::NoDragDrop);
 
+    refreshColumnCount();
     setMouseTracking(true);
     viewport()->update();
 }
@@ -566,7 +589,6 @@ void TilesetView::mousePressEvent(QMouseEvent *event)
     if (mEditWangSet) {
         if (event->button() == Qt::LeftButton)
             applyWangId();
-
         return;
     }
 
@@ -664,8 +686,11 @@ void TilesetView::mouseReleaseEvent(QMouseEvent *event)
     if (mEditWangSet) {
         if (event->button() == Qt::LeftButton)
             finishWangIdChange();
-
         return;
+    }
+
+    if (mRelocateTiles && tilesetModel() && tilesetModel()->tileset()->isAtlas()) {
+        handleAtlasMouseReleaseEvent(event);
     }
 
     QTableView::mouseReleaseEvent(event);
@@ -740,6 +765,10 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     const TilesetModel *model = tilesetModel();
     if (!model)
         return;
+
+    if (mRelocateTiles && model->tileset()->isAtlas()) {
+        return;
+    }
 
     Tile *tile = model->tileAt(index);
 
@@ -897,6 +926,7 @@ void TilesetView::refreshColumnCount()
 
     if (!dynamicWrapping()) {
         tilesetModel()->setColumnCountOverride(0);
+        updateAtlasSpans();
         return;
     }
 
@@ -906,6 +936,7 @@ void TilesetView::refreshColumnCount()
     const int scaledTileSize = std::max<int>(tileWidth * scale(), 1) + gridSpace;
     const int columnCount = std::max(maxSize.width() / scaledTileSize, 1);
     tilesetModel()->setColumnCountOverride(columnCount);
+    updateAtlasSpans();
 }
 
 void TilesetView::applyWangId()
@@ -973,6 +1004,244 @@ void TilesetView::updateBackgroundColor()
     QPalette p = palette();
     p.setColor(QPalette::Base, base);
     setPalette(p);
+}
+
+void TilesetView::updateAtlasSpans()
+{
+    if (TilesetModel *tilesetModel = qobject_cast<TilesetModel*>(model())) {
+        if (!tilesetModel->tileset()->isAtlas())
+            return;
+
+        clearSpans();
+
+        // Set up spans for atlas tiles
+        for (Tile *tile : tilesetModel->tileset()->tiles()) {
+            QModelIndex index = tilesetModel->tileIndex(tile);
+            if (!index.isValid())
+                continue;
+
+            QSize span = tilesetModel->tileSpanSize(index);
+            if (span.width() <= 0 || span.height() <= 0)
+                continue;
+
+            // Ensure span is within bounds and adjust to not overlap existing spans
+            int row = index.row();
+            int col = index.column();
+            int height = span.height();
+            int width = span.width();
+
+            // Adjust height and width to avoid overlap
+            for (int i = row; i < row + height; ++i) {
+                for (int j = col; j < col + width; ++j) {
+                    if (rowSpan(i, j) > 1)
+                        height = std::min(height, i - row);
+                    if (columnSpan(i, j) > 1)
+                        width = std::min(width, j - col);
+                }
+            }
+
+            if (width > 0 && height > 0 && (width != 1 || height != 1)) {
+                setSpan(row, col, height, width);
+            }
+        }
+    }
+}
+
+void TilesetView::handleAtlasMouseReleaseEvent(QMouseEvent *event)
+{
+    TilesetModel *m = tilesetModel();
+    const QModelIndexList selectedIndexes = selectionModel()->selectedIndexes();
+    if (selectedIndexes.isEmpty())
+        return;
+
+    if (event->button() == Qt::LeftButton) {
+        // Find the bounding rectangle of selection
+        int minRow = INT_MAX, maxRow = 0;
+        int minCol = INT_MAX, maxCol = 0;
+        for (const QModelIndex &index : selectedIndexes) {
+            minRow = std::min(minRow, index.row());
+            maxRow = std::max(maxRow, index.row());
+            minCol = std::min(minCol, index.column());
+            maxCol = std::max(maxCol, index.column());
+        }
+
+        mergeSpan(minRow, maxRow, minCol, maxCol);
+    } else if (event->button() == Qt::RightButton) {
+        QModelIndex index = selectedIndexes.first();
+        QPoint viewPos = event->pos();
+
+        if (Tile *spanTile = m->findSpanningTile(index)) {
+            QRect itemRect = visualRect(index);
+            const int tileWidth = m->tileset()->tileWidth() * scale();
+            const int tileHeight = m->tileset()->tileHeight() * scale();
+            const int col = (viewPos.x() - itemRect.left()) / tileWidth;
+            const int row = (viewPos.y() - itemRect.top()) / tileHeight;
+            splitSpan(spanTile, row, col);
+        } else if (Tile *tile = m->tileAt(index)) {
+            mTilesetDocument->undoStack()->push(new RemoveTiles(mTilesetDocument, QList<Tile*>() << tile));
+        }
+    } else {
+        return;
+    }
+
+    selectionModel()->clear();
+}
+
+void TilesetView::mergeSpan(int minRow, int maxRow, int minCol, int maxCol)
+{
+    TilesetModel *m = tilesetModel();
+    Tileset *tileset = m->tileset();
+
+    // Work in grid coordinates
+    const QPoint topLeft(minCol, minRow);
+    const QSize spanSize(maxCol - minCol + 1, maxRow - minRow + 1);
+
+    // Get the tile at the top-left position, if any
+    QModelIndex topLeftIndex = m->index(minRow, minCol);
+    Tile *targetTile = m->tileAt(topLeftIndex);
+
+    // Convert to pixel coordinates for the final imageRect
+    QRect mergeRect = tileset->gridToPixel(QRect(topLeft, spanSize));
+
+    // Collect all tiles within the merge rectangle except the target tile
+    QList<Tile*> tilesToRemove;
+    for (Tile *tile : tileset->tiles()) {
+        if (tile != targetTile && mergeRect.contains(tile->imageRect().topLeft())) {
+            tilesToRemove.append(tile);
+        }
+    }
+
+    // Remove the tiles that will be merged into the target
+    if (!tilesToRemove.isEmpty()) {
+        mTilesetDocument->undoStack()->beginMacro(tr("Merge Tiles"));
+        mTilesetDocument->undoStack()->push(new RemoveTiles(mTilesetDocument, tilesToRemove));
+    }
+
+    if (targetTile) {
+        // Extend the existing tile's span
+        mTilesetDocument->undoStack()->push(new ChangeTileImageRect(mTilesetDocument,
+                                                                   QList<Tile*>() << targetTile,
+                                                                   QVector<QRect>() << mergeRect));
+    } else {
+        // Create a new spanning tile
+        Tile *newTile = new Tile(tileset->takeNextTileId(), tileset);
+        newTile->setImageRect(mergeRect);
+        mTilesetDocument->undoStack()->push(new AddTiles(mTilesetDocument, QList<Tile*>() << newTile));
+    }
+
+    if (!tilesToRemove.isEmpty())
+        mTilesetDocument->undoStack()->endMacro();
+}
+
+void TilesetView::splitSpan(Tile *spanTile, int relativeRow, int relativeCol)
+{
+    TilesetModel *m = tilesetModel();
+    Tileset *tileset = m->tileset();
+
+    const QPoint spanTilePos = spanTile->imageRect().topLeft();
+    const QRect spanRect = tileset->pixelToGrid(spanTile->imageRect());
+    const QSize span = spanRect.size();
+
+    if (span.width() <= 0 || span.height() <= 0 ||
+        relativeCol < 0 || relativeCol >= span.width() ||
+        relativeRow < 0 || relativeRow >= span.height())
+        return;
+
+    // Calculate closest edge
+    const float relColRatio = (float)relativeCol / span.width();
+    const float relRowRatio = (float)relativeRow / span.height();
+    const float distToLeft = relColRatio;
+    const float distToRight = 1.0f - relColRatio;
+    const float distToTop = relRowRatio;
+    const float distToBottom = 1.0f - relRowRatio;
+    const float minDist = std::min({distToLeft, distToRight, distToTop, distToBottom});
+
+    // Calculate split rects in grid coordinates
+    QRect newSpanGridRect, splitGridRect;
+    if (minDist == distToLeft) {
+        // Split vertically at left side
+        const int splitX = spanRect.x() + relativeCol;
+        newSpanGridRect = QRect(splitX + 1, spanRect.y(),
+                               span.width() - relativeCol - 1, span.height());
+        splitGridRect = QRect(spanRect.x(), spanRect.y(),
+                            relativeCol + 1, span.height());
+    } else if (minDist == distToRight) {
+        // Split vertically at right side
+        const int splitX = spanRect.x() + relativeCol;
+        newSpanGridRect = QRect(spanRect.x(), spanRect.y(),
+                               relativeCol, span.height());
+        splitGridRect = QRect(splitX, spanRect.y(),
+                            span.width() - relativeCol, span.height());
+    } else if (minDist == distToTop) {
+        // Split horizontally at top
+        const int splitY = spanRect.y() + relativeRow;
+        newSpanGridRect = QRect(spanRect.x(), splitY + 1,
+                               span.width(), span.height() - relativeRow - 1);
+        splitGridRect = QRect(spanRect.x(), spanRect.y(),
+                            span.width(), relativeRow + 1);
+    } else {
+        // Split horizontally at bottom
+        const int splitY = spanRect.y() + relativeRow;
+        newSpanGridRect = QRect(spanRect.x(), spanRect.y(),
+                               span.width(), relativeRow);
+        splitGridRect = QRect(spanRect.x(), splitY,
+                            span.width(), span.height() - relativeRow);
+    }
+
+    QRect newSpanRect = tileset->gridToPixel(newSpanGridRect);
+    QRect splitRect = tileset->gridToPixel(splitGridRect);
+
+    mTilesetDocument->undoStack()->beginMacro(tr("Split Tiles"));
+
+    // Remove tiles in the new span area
+    QList<Tile*> tilesToRemove;
+    for (Tile *tile : tileset->tiles()) {
+        if (tile == spanTile)
+            continue;
+        if (newSpanRect.contains(tile->imageRect().topLeft()))
+            tilesToRemove.append(tile);
+    }
+    if (!tilesToRemove.isEmpty())
+        mTilesetDocument->undoStack()->push(new RemoveTiles(mTilesetDocument, tilesToRemove));
+
+    if (splitRect.contains(spanTilePos)) {
+        // Resize original tile to single tile
+        const QRect newSpanTileRect(spanTile->imageRect().topLeft(), tileset->tileSize());
+        mTilesetDocument->undoStack()->push(new ChangeTileImageRect(mTilesetDocument,
+                                                                   QList<Tile*>() << spanTile,
+                                                                   QVector<QRect>() << newSpanTileRect));
+
+        // Create new span in the remaining area
+        if (!newSpanGridRect.isEmpty()) {
+            Tile *newSpan = new Tile(tileset->takeNextTileId(), tileset);
+            newSpan->setImageRect(newSpanRect);
+            mTilesetDocument->undoStack()->push(new AddTiles(mTilesetDocument, QList<Tile*>() << newSpan));
+        }
+    } else {
+        // Adjust span to new size
+        mTilesetDocument->undoStack()->push(new ChangeTileImageRect(mTilesetDocument,
+                                                                   QList<Tile*>() << spanTile,
+                                                                   QVector<QRect>() << newSpanRect));
+    }
+
+    // Create individual tiles for split area
+    QList<Tile*> newTiles;
+    for (int r = 0; r < splitGridRect.height(); ++r) {
+        for (int c = 0; c < splitGridRect.width(); ++c) {
+            const QPoint gridPos(splitGridRect.x() + c, splitGridRect.y() + r);
+            if (tileset->pixelToGrid(spanTilePos) == gridPos)
+                continue;
+
+            Tile *newTile = new Tile(tileset->takeNextTileId(), tileset);
+            newTile->setImageRect(tileset->gridToPixel(QRect(gridPos, QSize(1, 1))));
+            newTiles.append(newTile);
+        }
+    }
+
+    if (!newTiles.isEmpty())
+        mTilesetDocument->undoStack()->push(new AddTiles(mTilesetDocument, newTiles));
+
+    mTilesetDocument->undoStack()->endMacro();
 }
 
 #include "moc_tilesetview.cpp"

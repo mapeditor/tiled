@@ -134,6 +134,11 @@ private:
     void finishWangIdChange();
     Tile *currentTile() const;
 
+    void updateAtlasSpans();
+    void handleAtlasMouseReleaseEvent(QMouseEvent *event);
+    void mergeSpan(int minRow, int maxRow, int minCol, int maxCol);
+    void splitSpan(Tile *spanTile, int relativeRow, int relativeCol);
+
     enum WangBehavior {
         AssignWholeId,      // Assigning templates
         AssignHoveredIndex, // Assigning color to hovered index
