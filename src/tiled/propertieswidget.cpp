@@ -1401,6 +1401,13 @@ public:
                         push(new RenameTileset(tilesetDocument(), value));
                     });
 
+        mAtlasProperty = new BoolProperty(
+                    tr("Atlas"),
+                    [this] {
+                        return tileset()->isAtlas();
+                    });
+        mAtlasProperty->setEnabled(false);
+
         mObjectAlignmentProperty = new EnumProperty<Alignment>(
                     tr("Object Alignment"),
                     [this] {
@@ -1527,6 +1534,7 @@ public:
 
         mTilesetProperties = new GroupProperty(tr("Tileset"));
         mTilesetProperties->addProperty(mNameProperty);
+        mTilesetProperties->addProperty(mAtlasProperty);
         mTilesetProperties->addProperty(mClassProperty);
         mTilesetProperties->addSeparator();
         mTilesetProperties->addProperty(mObjectAlignmentProperty);
@@ -1608,6 +1616,7 @@ private:
 
     GroupProperty *mTilesetProperties;
     Property *mNameProperty;
+    Property *mAtlasProperty;
     Property *mObjectAlignmentProperty;
     PointProperty *mTileOffsetProperty;
     Property *mTileRenderSizeProperty;
@@ -2083,9 +2092,10 @@ private:
     {
         const bool hasTilesetDocument = tilesetDocument();
         const auto isCollection = tile()->tileset()->isCollection();
+        const auto isAtlas = tile()->tileset()->isAtlas();
         mClassProperty->setEnabled(hasTilesetDocument);
         mImageProperty->setEnabled(hasTilesetDocument && isCollection);
-        mRectangleProperty->setEnabled(hasTilesetDocument && isCollection);
+        mRectangleProperty->setEnabled(hasTilesetDocument && (isCollection || isAtlas));
         mProbabilityProperty->setEnabled(hasTilesetDocument);
     }
 

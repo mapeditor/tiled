@@ -120,7 +120,7 @@ private:
      * pointer is initialized, which enables the sharedPointer() function.
      */
     Tileset(QString name, int tileWidth, int tileHeight,
-            int tileSpacing = 0, int margin = 0);
+            int tileSpacing = 0, int margin = 0, bool isAtlas = false);
 
 public:
     QString exportFileName;
@@ -137,6 +137,9 @@ public:
 
     void setFormat(const QString &format);
     QString format() const;
+
+    bool isAtlas() const { return mAtlas; }
+    void setAtlas(bool atlas) { mAtlas = atlas; }
 
     int tileWidth() const;
     int tileHeight() const;
@@ -198,7 +201,7 @@ public:
     bool loadFromImage(const QImage &image, const QString &source);
     bool loadFromImage(const QString &fileName);
     bool loadImage();
-    bool initializeTilesetTiles();
+    bool initializeTilesetTiles(bool forceGeneration=false);
 
     SharedTileset findSimilarTileset(const QVector<SharedTileset> &tilesets) const;
 
@@ -311,6 +314,7 @@ private:
     TileRenderSize mTileRenderSize = TileSize;
     FillMode mFillMode = Stretch;
     QSize mGridSize;
+    bool mAtlas;
     int mColumnCount = 0;
     int mExpectedColumnCount = 0;
     int mExpectedRowCount = 0;
