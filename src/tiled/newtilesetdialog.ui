@@ -68,10 +68,24 @@
          <property name="text">
           <string>Based on Tileset Image</string>
          </property>
+         <property name="toolTip">
+          <string>A single image containing a grid of fixed-size tiles</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Tileset Atlas</string>
+         </property>
+         <property name="toolTip">
+          <string>A single image with custom tile regions that can be rearranged (useful for varied tile sizes, y-sorting, etc.)</string>
+         </property>
         </item>
         <item>
          <property name="text">
           <string>Collection of Images</string>
+         </property>
+         <property name="toolTip">
+          <string>A collection of individual tile images</string>
          </property>
         </item>
        </widget>
@@ -161,7 +175,17 @@
         </property>
        </spacer>
       </item>
-      <item row="2" column="0" colspan="6">
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="generateGrid">
+        <property name="text">
+         <string>Generate tiles based on grid</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="6">
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="1" column="1">
          <widget class="Tiled::ExpressionSpinBox" name="tileHeight">
