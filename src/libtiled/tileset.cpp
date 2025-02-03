@@ -38,7 +38,7 @@
 namespace Tiled {
 
 Tileset::Tileset(QString name, int tileWidth, int tileHeight,
-                 int tileSpacing, int margin)
+                 int tileSpacing, int margin, bool isAtlas)
     : Object(TilesetType)
     , mName(std::move(name))
     , mTileWidth(tileWidth)
@@ -46,6 +46,7 @@ Tileset::Tileset(QString name, int tileWidth, int tileHeight,
     , mTileSpacing(tileSpacing)
     , mMargin(margin)
     , mGridSize(tileWidth, tileHeight)
+    , mAtlas(isAtlas)
 {
     Q_ASSERT(tileSpacing >= 0);
     Q_ASSERT(margin >= 0);
@@ -245,7 +246,7 @@ bool Tileset::loadImage()
     return initializeTilesetTiles();
 }
 
-bool Tileset::initializeTilesetTiles()
+bool Tileset::initializeTilesetTiles(bool forceGeneration)
 {
     if (mImage.isNull() || mTileWidth <= 0 || mTileHeight <= 0)
         return false;
@@ -253,40 +254,50 @@ bool Tileset::initializeTilesetTiles()
     if (mImageReference.transparentColor.isValid())
         mImage.setMask(mImage.createMaskFromColor(mImageReference.transparentColor));
 
-    QVector<QRect> tileRects;
-
-    for (int y = mMargin; y <= mImage.height() - mTileHeight; y += mTileHeight + mTileSpacing)
-        for (int x = mMargin; x <= mImage.width() - mTileWidth; x += mTileWidth + mTileSpacing)
-            tileRects.append(QRect(x, y, mTileWidth, mTileHeight));
-
-    for (int tileNum = 0; tileNum < tileRects.size(); ++tileNum) {
-        auto it = mTilesById.find(tileNum);
-        if (it != mTilesById.end()) {
-            it.value()->setImage(QPixmap());    // make sure it uses the tileset's image
-            it.value()->setImageRect(tileRects.at(tileNum));
-        } else {
-            auto tile = new Tile(tileNum, this);
-            tile->setImageRect(tileRects.at(tileNum));
-            mTilesById.insert(tileNum, tile);
-            mTiles.insert(tileNum, tile);
-        }
+    bool needsRectGeneration = true;
+    if (isAtlas()) {
+        needsRectGeneration = forceGeneration;
     }
 
-    QPixmap blank;
+    if (needsRectGeneration) {
+        QVector<QRect> tileRects;
 
-    // Blank out any remaining tiles to avoid confusion (todo: could be more clear)
-    for (Tile *tile : std::as_const(mTiles)) {
-        if (tile->id() >= tileRects.size()) {
-            if (blank.isNull()) {
-                blank = QPixmap(mTileWidth, mTileHeight);
-                blank.fill();
+        for (int y = mMargin; y <= mImage.height() - mTileHeight; y += mTileHeight + mTileSpacing)
+            for (int x = mMargin; x <= mImage.width() - mTileWidth; x += mTileWidth + mTileSpacing)
+                tileRects.append(QRect(x, y, mTileWidth, mTileHeight));
+
+        for (int tileNum = 0; tileNum < tileRects.size(); ++tileNum) {
+            auto it = mTilesById.find(tileNum);
+            if (it != mTilesById.end()) {
+                it.value()->setImage(QPixmap());    // make sure it uses the tileset's image
+                it.value()->setImageRect(tileRects.at(tileNum));
+            } else {
+                auto tile = new Tile(tileNum, this);
+                tile->setImageRect(tileRects.at(tileNum));
+                mTilesById.insert(tileNum, tile);
+                mTiles.insert(tileNum, tile);
             }
-            tile->setImage(blank);
-            tile->setImageRect(QRect(0, 0, mTileWidth, mTileHeight));
+        }
+
+        QPixmap blank;
+
+        // Blank out any remaining tiles to avoid confusion (todo: could be more clear)
+        if (!isAtlas()) {
+            for (Tile *tile : std::as_const(mTiles)) {
+                if (tile->id() >= tileRects.size()) {
+                    if (blank.isNull()) {
+                        blank = QPixmap(mTileWidth, mTileHeight);
+                        blank.fill();
+                    }
+                    tile->setImage(blank);
+                    tile->setImageRect(QRect(0, 0, mTileWidth, mTileHeight));
+                }
+            }
         }
     }
 
-    mNextTileId = std::max<int>(mNextTileId, tileRects.size());
+    for (Tile *tile : std::as_const(mTiles))
+        mNextTileId = std::max(mNextTileId, tile->id() + 1);
 
     mImageReference.size = mImage.size();
     mColumnCount = columnCountForWidth(mImageReference.size.width());
@@ -554,6 +565,9 @@ void Tileset::setTileImageRect(Tile *tile, const QRect &imageRect)
 
 void Tileset::maybeUpdateTileSize(QSize previousTileSize, QSize newTileSize)
 {
+    if (isAtlas())
+        return;
+
     if (previousTileSize == newTileSize)
         return;
 
@@ -681,6 +695,9 @@ SharedTileset Tileset::clone() const
  */
 void Tileset::updateTileSize()
 {
+    if (isAtlas())
+        return;
+
     int maxWidth = 0;
     int maxHeight = 0;
     for (Tile *tile : std::as_const(mTiles)) {
