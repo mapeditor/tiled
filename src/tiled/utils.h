@@ -29,8 +29,6 @@
 
 #include <memory>
 
-#include "qtcompat_p.h"
-
 class QAction;
 class QKeyEvent;
 class QLayout;
@@ -47,8 +45,8 @@ bool fileNameMatchesNameFilter(const QString &fileName,
                                const QString &nameFilter);
 QString firstExtension(const QString &nameFilter);
 
-int matchingScore(const QStringList &words, QStringRef string);
-RangeSet<int> matchingRanges(const QStringList &words, QStringRef string);
+int matchingScore(const QStringList &words, QStringView string);
+RangeSet<int> matchingRanges(const QStringList &words, QStringView string);
 
 QIcon themeIcon(const QString &name);
 

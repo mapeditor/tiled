@@ -155,7 +155,7 @@ struct Match {
  *
  * Attempts to make matching indexes sequential.
  */
-static bool matchingIndexes(const QString &word, QStringRef string, QVarLengthArray<Match, 16> &matchingIndexes)
+static bool matchingIndexes(const QString &word, QStringView string, QVarLengthArray<Match, 16> &matchingIndexes)
 {
     int index = 0;
 
@@ -195,7 +195,7 @@ static bool matchingIndexes(const QString &word, QStringRef string, QVarLengthAr
  *
  * A score of 0 indicates there is no match.
  */
-static int matchingScore(const QString &word, QStringRef string)
+static int matchingScore(const QString &word, QStringView string)
 {
     QVarLengthArray<Match, 16> indexes;
     if (!matchingIndexes(word, string, indexes))
@@ -218,7 +218,7 @@ static int matchingScore(const QString &word, QStringRef string)
     return score;
 }
 
-static bool matchingRanges(const QString &word, QStringRef string, int offset, RangeSet<int> &result)
+static bool matchingRanges(const QString &word, QStringView string, int offset, RangeSet<int> &result)
 {
     QVarLengthArray<Match, 16> indexes;
     if (!matchingIndexes(word, string, indexes))
@@ -230,7 +230,7 @@ static bool matchingRanges(const QString &word, QStringRef string, int offset, R
     return true;
 }
 
-int matchingScore(const QStringList &words, QStringRef string)
+int matchingScore(const QStringList &words, QStringView string)
 {
     const auto fileName = string.mid(string.lastIndexOf(QLatin1Char('/')) + 1);
 
@@ -251,7 +251,7 @@ int matchingScore(const QStringList &words, QStringRef string)
     return totalScore;
 }
 
-RangeSet<int> matchingRanges(const QStringList &words, QStringRef string)
+RangeSet<int> matchingRanges(const QStringList &words, QStringView string)
 {
     const int startOfFileName = string.lastIndexOf(QLatin1Char('/')) + 1;
     const auto fileName = string.mid(startOfFileName);

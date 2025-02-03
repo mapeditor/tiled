@@ -100,11 +100,7 @@ void FileMatchDelegate::paint(QPainter *painter,
 
     QString filePath = index.data().toString();
     const int lastSlash = filePath.lastIndexOf(QLatin1Char('/'));
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    const auto ranges = Utils::matchingRanges(mWords, &filePath);
-#else
     const auto ranges = Utils::matchingRanges(mWords, filePath);
-#endif
 
     filePath = QDir::toNativeSeparators(filePath);
 

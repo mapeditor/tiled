@@ -242,11 +242,10 @@ bool AutomappingManager::loadRulesFile(const QString &filePath)
         if (trimmedLine.startsWith(QLatin1Char('[')) && trimmedLine.endsWith(QLatin1Char(']'))) {
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
             auto filter = trimmedLine.mid(1, trimmedLine.length() - 2);
-            mMapNameFilter.setPattern(QRegularExpression::wildcardToRegularExpression(filter.toString()));
 #else
             auto filter = trimmedLine.sliced(1, trimmedLine.length() - 2);
-            mMapNameFilter.setPattern(QRegularExpression::wildcardToRegularExpression(filter));
 #endif
+            mMapNameFilter.setPattern(QRegularExpression::wildcardToRegularExpression(filter));
             continue;
         }
 

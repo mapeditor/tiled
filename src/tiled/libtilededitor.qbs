@@ -8,7 +8,7 @@ DynamicLibrary {
     Depends { name: "libtiled" }
     Depends { name: "translations" }
     Depends { name: "qtsingleapplication" }
-    Depends { name: "Qt"; submodules: ["core", "widgets", "concurrent", "qml", "svg"]; versionAtLeast: "5.15" }
+    Depends { name: "Qt"; submodules: ["core", "widgets", "concurrent", "qml", "svg"]; versionAtLeast: "5.15.2" }
     Depends { name: "Qt.openglwidgets"; condition: Qt.core.versionMajor >= 6; required: false }
     Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux") && project.dbus; required: false }
     Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") && Qt.core.versionMajor >= 6 }

@@ -321,7 +321,7 @@ unsigned WangId::toUint() const
     return id;
 }
 
-WangId WangId::fromString(QStringRef string, bool *ok)
+WangId WangId::fromString(QStringView string, bool *ok)
 {
     WangId id;
 

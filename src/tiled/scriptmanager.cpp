@@ -304,11 +304,7 @@ bool ScriptManager::checkError(QJSValue value, const QString &program)
     QString errorString = value.toString();
     QString stack = value.property(QStringLiteral("stack")).toString();
 
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
     const auto stackEntries = QStringView(stack).split(QLatin1Char('\n'));
-#else
-    const auto stackEntries = stack.splitRef(QLatin1Char('\n'));
-#endif
     if (stackEntries.size() > 0 && !stackEntries.first().startsWith(QLatin1String("%entry@"))) {
         // Add stack if there were more than one entries
         errorString.append(QLatin1Char('\n'));
