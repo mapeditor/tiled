@@ -21,6 +21,8 @@
 #include "tilesetview.h"
 
 #include "actionmanager.h"
+#include "addremovetiles.h"
+#include "changetile.h"
 #include "changeevents.h"
 #include "changetilewangid.h"
 #include "pannableviewhelper.h"
@@ -91,6 +93,9 @@ public:
     void paint(QPainter *painter, const QStyleOptionViewItem &option,
                const QModelIndex &index) const override;
 
+    void paintTile(QPainter *painter, const TilesetModel *model, Tile *tile,
+                   QRect targetRect, QBrush highlight, bool selected, bool hovered) const;
+
     QSize sizeHint(const QStyleOptionViewItem &option,
                    const QModelIndex &index) const override;
 
@@ -100,7 +105,7 @@ private:
     void drawWangOverlay(QPainter *painter,
                          const Tile *tile,
                          QRect targetRect,
-                         const QModelIndex &index) const;
+                         bool hovered) const;
 
     TilesetView *mTilesetView;
 };
@@ -110,7 +115,33 @@ void TileDelegate::paint(QPainter *painter,
                          const QModelIndex &index) const
 {
     const TilesetModel *model = static_cast<const TilesetModel*>(index.model());
-    const Tile *tile = model->tileAt(index);
+    if (!model)
+        return;
+
+    if (model->isFixedAtlas())
+        return;
+
+    Tile *tile = model->tileAt(index);
+    if (!tile)
+        return;
+
+    paintTile(painter,
+            model,
+            tile,
+            option.rect,
+            option.palette.highlight(),
+            option.state & QStyle::State_Selected,
+            mTilesetView->hoveredIndex() == index);
+}
+
+void TileDelegate::paintTile(QPainter *painter,
+                             const TilesetModel *model,
+                             Tile *tile,
+                             QRect targetRect,
+                             QBrush highlight,
+                             bool selected,
+                             bool hovered) const
+{
     if (!tile)
         return;
 
@@ -132,7 +163,7 @@ void TileDelegate::paint(QPainter *painter,
     }
 
     // Compute rectangle to draw the image in: bottom- and left-aligned
-    QRect targetRect = option.rect.adjusted(0, 0, -extra, -extra);
+    targetRect = targetRect.adjusted(0, 0, -extra, -extra);
 
     if (wrapping) {
         qreal scale = std::min(static_cast<qreal>(targetRect.width()) / tileSize.width(),
@@ -163,10 +194,8 @@ void TileDelegate::paint(QPainter *painter,
     if (mTilesetView->markAnimatedTiles() && tile->isAnimated())
         drawFilmStrip(painter, targetRect);
 
-    const auto highlight = option.palette.highlight();
-
     // Overlay with highlight color when selected
-    if (option.state & QStyle::State_Selected) {
+    if (selected) {
         const qreal opacity = painter->opacity();
         painter->setOpacity(0.5);
         painter->fillRect(targetRect, highlight);
@@ -174,7 +203,7 @@ void TileDelegate::paint(QPainter *painter,
     }
 
     if (mTilesetView->isEditWangSet())
-        drawWangOverlay(painter, tile, targetRect, index);
+        drawWangOverlay(painter, tile, targetRect, hovered);
 }
 
 QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
@@ -183,18 +212,20 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
     const TilesetModel *m = static_cast<const TilesetModel*>(index.model());
     const int extra = mTilesetView->drawGrid() ? 1 : 0;
     const qreal scale = mTilesetView->scale();
+    Tileset *tileset = m->tileset();
+
+    if (m->isFixedAtlas())
+        return QSize(tileset->imageWidth() * scale + extra,
+                     tileset->imageHeight() * scale + extra);
 
     if (const Tile *tile = m->tileAt(index)) {
-        if (mTilesetView->dynamicWrapping()) {
-            Tileset *tileset = tile->tileset();
-            return QSize(tileset->tileWidth() * scale + extra,
-                         tileset->tileHeight() * scale + extra);
-        }
+        if (mTilesetView->dynamicWrapping())
+            return QSize(mTilesetView->maxTileWidth() * scale + extra,
+                         mTilesetView->maxTileHeight() * scale + extra);
 
         QSize tileSize = tile->size();
 
         if (tile->image().isNull()) {
-            Tileset *tileset = m->tileset();
             if (tileset->isCollection()) {
                 tileSize = QSize(32, 32);
             } else {
@@ -248,7 +279,7 @@ void TileDelegate::drawFilmStrip(QPainter *painter, QRect targetRect)
 void TileDelegate::drawWangOverlay(QPainter *painter,
                                    const Tile *tile,
                                    QRect targetRect,
-                                   const QModelIndex &index) const
+                                   bool hovered) const
 {
     WangSet *wangSet = mTilesetView->wangSet();
     if (!wangSet)
@@ -265,7 +296,7 @@ void TileDelegate::drawWangOverlay(QPainter *painter,
                      *wangSet,
                      targetRect);
 
-    if (mTilesetView->hoveredIndex() == index) {
+    if (hovered) {
         qreal opacity = painter->opacity();
         painter->setOpacity(0.5);
         paintWangOverlay(painter, mTilesetView->wangId(),
@@ -283,6 +314,7 @@ void TileDelegate::drawWangOverlay(QPainter *painter,
 TilesetView::TilesetView(QWidget *parent)
     : QTableView(parent)
     , mZoomable(new Zoomable(this))
+    , mRubberBand(QRubberBand::Rectangle, this)
     , mImageMissingIcon(QStringLiteral("://images/32/image-missing.png"))
 {
     setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -348,6 +380,7 @@ void TilesetView::setTilesetDocument(TilesetDocument *tilesetDocument)
         connect(mTilesetDocument, &Document::changed, this, &TilesetView::onChange);
         connect(mTilesetDocument, &TilesetDocument::tilesAdded, this, &TilesetView::refreshColumnCount);
         connect(mTilesetDocument, &TilesetDocument::tilesRemoved, this, &TilesetView::refreshColumnCount);
+        connect(mTilesetDocument, &TilesetDocument::tileImageSourceChanged, this, &TilesetView::refreshColumnCount);
     }
 }
 
@@ -362,7 +395,7 @@ int TilesetView::sizeHintForColumn(int column) const
     const TilesetModel *model = tilesetModel();
     if (!model)
         return -1;
-    if (model->tileset()->isCollection())
+    if (model->tileset()->isCollection() || model->tileset()->isAtlas())
         return QTableView::sizeHintForColumn(column);
 
     const int gridSpace = mDrawGrid ? 1 : 0;
@@ -379,7 +412,7 @@ int TilesetView::sizeHintForRow(int row) const
     const TilesetModel *model = tilesetModel();
     if (!model)
         return -1;
-    if (model->tileset()->isCollection())
+    if (model->tileset()->isCollection() || model->tileset()->isAtlas())
         return QTableView::sizeHintForRow(row);
 
     const int gridSpace = mDrawGrid ? 1 : 0;
@@ -416,6 +449,8 @@ bool TilesetView::dynamicWrapping() const
             return tilesetModel()->tileset()->isCollection();
         break;
     case WrapDynamic:
+        if (tilesetModel() && tilesetModel()->tileset()->isAtlas())
+            return !mRelocateTiles;
         return true;
     case WrapFixed:
         return false;
@@ -514,11 +549,17 @@ void TilesetView::setRelocateTiles(bool enabled)
 
     mRelocateTiles = enabled;
 
+    if (TilesetModel *m = tilesetModel(); m && m->tileset()->isAtlas()) {
+        selectionModel()->clear();
+        enabled = false;
+    }
+
     if (enabled)
         setDragDropMode(QTableView::InternalMove);
     else
         setDragDropMode(QTableView::NoDragDrop);
 
+    refreshColumnCount();
     setMouseTracking(true);
     viewport()->update();
 }
@@ -552,8 +593,13 @@ void TilesetView::setWangId(WangId wangId)
     mWangId = wangId;
     mWangBehavior = AssignWholeId;
 
-    if (mEditWangSet && hoveredIndex().isValid())
-        update(hoveredIndex());
+    if (mEditWangSet && mHoveredIndex.isValid()) {
+        if (TilesetModel *m = tilesetModel(); m && m->isFixedAtlas()) {
+            viewport()->update();
+        } else {
+            update(mHoveredIndex);
+        }
+    }
 }
 
 /**
@@ -576,8 +622,45 @@ void TilesetView::mousePressEvent(QMouseEvent *event)
     if (mEditWangSet) {
         if (event->button() == Qt::LeftButton)
             applyWangId();
-
         return;
+    }
+
+    const TilesetModel *model = tilesetModel();
+    if (mRelocateTiles && model && model->tileset()->isAtlas()) {
+        if (event->button() == Qt::LeftButton || event->button() == Qt::RightButton) {
+            mSnapToGrid = !(event->modifiers() & Qt::ShiftModifier);
+
+            if (event->button() == Qt::LeftButton) {
+                mDraggedIndex = indexAt(event->pos());
+                Tile* tile = model->tileAt(mDraggedIndex);
+                if (mDraggedIndex.isValid() && tile) {
+                    QRect tileRect = tileToView(tile->imageRect());
+                    const int edge = 4 * scale();
+                    if (qAbs(event->pos().x() - tileRect.right()) < edge)
+                        mResizingEdge = 1;
+                    else if (qAbs(event->pos().y() - tileRect.bottom()) < edge)
+                        mResizingEdge = 2;
+                    else if (qAbs(event->pos().x() - tileRect.left()) < edge)
+                        mResizingEdge = 3;
+                    else if (qAbs(event->pos().y() - tileRect.top()) < edge)
+                        mResizingEdge = 4;
+                    else
+                        mResizingEdge = 0;
+
+                    mSelectionOffset = viewToTile(event->pos()) - tile->imageRect().topLeft();
+                    mRubberBand.setGeometry(tileRect);
+                    mRubberBand.show();
+                    event->accept();
+                    return;
+                }
+            }
+
+            mAtlasSelecting = true;
+            mSelectionOffset = viewToTile(event->pos());
+            updateAtlasSelection(mSelectionOffset);
+            event->accept();
+            return;
+        }
     }
 
     QTableView::mousePressEvent(event);
@@ -585,6 +668,98 @@ void TilesetView::mousePressEvent(QMouseEvent *event)
 
 void TilesetView::mouseMoveEvent(QMouseEvent *event)
 {
+    if (mAtlasSelecting) {
+        mSnapToGrid = !(event->modifiers() & Qt::ShiftModifier);
+        updateAtlasSelection(viewToTile(event->pos()));
+        event->accept();
+        return;
+    }
+
+    const TilesetModel *model = tilesetModel();
+    if (!model)
+        return;
+
+    const QModelIndex hoveredIndex = indexAt(event->pos());
+    if (hoveredIndex != mHoveredIndex) {
+        const QModelIndex previousHoveredIndex = mHoveredIndex;
+        mHoveredIndex = hoveredIndex;
+
+        if (model->tileset()->isAtlas()) {
+            viewport()->update();
+        } else {
+            if (previousHoveredIndex.isValid())
+                update(previousHoveredIndex);
+            if (mHoveredIndex.isValid())
+                update(mHoveredIndex);
+        }
+    }
+
+    if (mDraggedIndex.isValid()) {
+        mSnapToGrid = !(event->modifiers() & Qt::ShiftModifier);
+
+        if (Tile *tile = model->tileAt(mDraggedIndex)) {
+            QRect newRect = tile->imageRect();
+            QPoint pos = viewToTile(event->pos());
+
+            // Apply resize or move based on where we initially clicked
+            switch (mResizingEdge) {
+            case 1: // Right edge
+                newRect.setRight(pos.x());
+                break;
+            case 2: // Bottom edge
+                newRect.setBottom(pos.y());
+                break;
+            case 3: // Left edge
+                newRect.setLeft(pos.x());
+                break;
+            case 4: // Top edge
+                newRect.setTop(pos.y());
+                break;
+            default: // No edge - normal move
+                pos -= mSelectionOffset;
+                break;
+            }
+
+            if (mSnapToGrid) {
+                const int margin = model->tileset()->margin();
+                const int spacing = model->tileset()->tileSpacing();
+                const int tileWidth = model->tileset()->tileWidth();
+                const int tileHeight = model->tileset()->tileHeight();
+
+                if (mResizingEdge == 0) {
+                    pos.setX((qMax(pos.x() - margin, 0) / (tileWidth + spacing)) * (tileWidth + spacing) + margin);
+                    pos.setY((qMax(pos.y() - margin, 0) / (tileHeight + spacing)) * (tileHeight + spacing) + margin);
+                } else {
+                    // Calculate position relative to first tile (after margin)
+                    const int relLeft = qMax(newRect.left() - margin, 0);
+                    const int relTop = qMax(newRect.top() - margin, 0);
+                    const int relRight = qMax(newRect.right() - margin, 0);
+                    const int relBottom = qMax(newRect.bottom() - margin, 0);
+
+                    // Find closest tile positions
+                    const int tileLeft = relLeft / (tileWidth + spacing);
+                    const int tileTop = relTop / (tileHeight + spacing);
+                    const int tileRight = (relRight + spacing) / (tileWidth + spacing);
+                    const int tileBottom = (relBottom + spacing) / (tileHeight + spacing);
+
+                    // Convert back to absolute coordinates with margin
+                    newRect.setLeft(margin + tileLeft * (tileWidth + spacing));
+                    newRect.setTop(margin + tileTop * (tileHeight + spacing));
+                    newRect.setRight(margin + tileRight * (tileWidth + spacing) + tileWidth - 1);
+                    newRect.setBottom(margin + tileBottom * (tileHeight + spacing) + tileHeight - 1);
+                }
+            }
+
+            if (mResizingEdge == 0)
+                newRect.moveTopLeft(pos);
+
+            mRubberBand.setGeometry(tileToView(newRect));
+        }
+
+        event->accept();
+        return;
+    }
+
     if (!mEditWangSet) {
         QTableView::mouseMoveEvent(event);
         return;
@@ -594,10 +769,6 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
         return;
 
     const QPoint pos = event->pos();
-    const QModelIndex hoveredIndex = indexAt(pos);
-    const QModelIndex previousHoveredIndex = mHoveredIndex;
-    mHoveredIndex = hoveredIndex;
-
     WangId wangId;
 
     if (mWangBehavior == AssignWholeId) {
@@ -657,13 +828,9 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
         }
     }
 
-    if (previousHoveredIndex != mHoveredIndex || wangId != mWangId) {
+    if (wangId != mWangId) {
         mWangId = wangId;
-
-        if (previousHoveredIndex.isValid())
-            update(previousHoveredIndex);
-        if (mHoveredIndex.isValid())
-            update(mHoveredIndex);
+        viewport()->update();
     }
 
     if (event->buttons() & Qt::LeftButton)
@@ -672,14 +839,184 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
 
 void TilesetView::mouseReleaseEvent(QMouseEvent *event)
 {
+    const TilesetModel *model = tilesetModel();
+    if (!model)
+        return;
+
+    if (mDraggedIndex.isValid() && event->button() == Qt::LeftButton) {
+        if (Tile* tile = model->tileAt(mDraggedIndex))
+            mTilesetDocument->undoStack()->push(new ChangeTileImageRect(mTilesetDocument, { tile }, { viewToTile(mRubberBand.geometry()) }));
+
+        mDraggedIndex = QModelIndex();
+        mRubberBand.hide();
+        event->accept();
+        return;
+    }
+
+    if (mAtlasSelecting && (event->button() == Qt::LeftButton || event->button() == Qt::RightButton)) {
+        QRect tileRect = mRubberBand.geometry().isEmpty() ? QRect(mSelectionOffset, QSize(1, 1)) : viewToTile(mRubberBand.geometry());
+
+        if (event->button() == Qt::RightButton) {
+            QList<Tile*> tiles;
+            for (Tile *tile : tilesetModel()->tileset()->tiles()) {
+                if (tileRect.intersects(tile->imageRect()))
+                    tiles.append(tile);
+            }
+            mTilesetDocument->undoStack()->push(new RemoveTiles(mTilesetDocument, tiles));
+        } else {
+            Tile *newTile = new Tile(tilesetModel()->tileset()->takeNextTileId(), tilesetModel()->tileset());
+            newTile->setImageRect(tileRect);
+            mTilesetDocument->undoStack()->push(new AddTiles(mTilesetDocument, QList<Tile*>() << newTile));
+        }
+
+        mAtlasSelecting = false;
+        mRubberBand.hide();
+        event->accept();
+        return;
+    }
+
     if (mEditWangSet) {
         if (event->button() == Qt::LeftButton)
             finishWangIdChange();
-
         return;
     }
 
     QTableView::mouseReleaseEvent(event);
+}
+
+void TilesetView::paintEvent(QPaintEvent *event)
+{
+    QTableView::paintEvent(event);
+
+    TilesetModel *model = tilesetModel();
+    if (!model || !model->isFixedAtlas())
+        return;
+
+    QPainter painter(viewport());
+    const Tileset *tileset = model->tileset();
+
+    // Draw tileset background image when in relocate mode
+    if (mRelocateTiles) {
+        if (!tileset->imageSource().isEmpty()) {
+            const QRect sourceRect(0, 0, tileset->imageWidth(), tileset->imageHeight());
+            const QRect viewRect = tileToView(sourceRect);
+            painter.setOpacity(0.5);
+            painter.drawPixmap(viewRect, tileset->image(), sourceRect);
+            painter.setOpacity(1.0);
+        }
+    }
+
+    // Draw tiles
+    TileDelegate *delegate = static_cast<TileDelegate*>(itemDelegate());
+    QItemSelectionModel *s = selectionModel();
+
+    for (Tile *tile : tileset->tiles()) {
+        const QRect rect = tileToView(tile->imageRect());
+        const QModelIndex index = model->tileIndex(tile);
+        const bool selected = s->isSelected(index) || index == s->currentIndex();
+        delegate->paintTile(&painter, model, tile, rect, palette().highlight(), selected, mHoveredIndex == index);
+
+        // Draw grid
+        if (mDrawGrid) {
+            if (mRelocateTiles) {
+                painter.setPen(palette().highlight().color());
+            } else {
+                painter.setPen(palette().base().color());
+            }
+            painter.setBrush(Qt::NoBrush);
+            painter.drawRect(rect);
+        }
+
+        // Draw resize indicators
+        if (mRelocateTiles && (mDraggedIndex == index || (!mDraggedIndex.isValid() && mHoveredIndex == index))) {
+            const int indicatorSize = 4 * scale();
+            QColor indicatorColor = palette().highlight().color().lighter(150);
+            indicatorColor.setAlpha(180);  // Make slightly transparent
+            painter.setPen(Qt::NoPen);
+            painter.setBrush(indicatorColor);
+
+            // Top-left corner
+            painter.drawRect(QRect(rect.topLeft(), QSize(indicatorSize, indicatorSize)));
+
+            // Top-right corner
+            painter.drawRect(QRect(rect.topRight() - QPoint(indicatorSize, 0), QSize(indicatorSize, indicatorSize)));
+
+            // Bottom-left corner
+            painter.drawRect(QRect(rect.bottomLeft() - QPoint(0, indicatorSize), QSize(indicatorSize, indicatorSize)));
+
+            // Bottom-right corner
+            painter.drawRect(QRect(rect.bottomRight() - QPoint(indicatorSize, indicatorSize), QSize(indicatorSize, indicatorSize)));
+
+            // Reset painter state
+            painter.setPen(palette().base().color());
+            painter.setBrush(Qt::NoBrush);
+        }
+    }
+}
+
+QModelIndex TilesetView::indexAt(const QPoint &pos) const
+{
+    if (TilesetModel *m = tilesetModel(); m && m->isFixedAtlas()) {
+        const QPoint tilesetPos = viewToTile(pos);
+        for (Tile *tile : m->tileset()->tiles())
+            if (tile->imageRect().contains(tilesetPos))
+                return tilesetModel()->tileIndex(tile);
+        return QModelIndex();
+    }
+
+    return QTableView::indexAt(pos);
+}
+
+void TilesetView::scrollTo(const QModelIndex &index, ScrollHint hint)
+{
+    if (TilesetModel *m = tilesetModel(); m && m->isFixedAtlas()) {
+        return;
+    }
+
+    QTableView::scrollTo(index, hint);
+}
+
+void TilesetView::setSelection(const QRect &rect, QItemSelectionModel::SelectionFlags flags)
+{
+    const TilesetModel *model = tilesetModel();
+
+    if (!model || !model->isFixedAtlas()) {
+        QTableView::setSelection(rect, flags);
+        return;
+    }
+
+    // Select tiles based on position in the rect
+    const QRect tilesetRect = viewToTile(rect);
+    QItemSelection selection;
+    for (Tile *tile : model->tileset()->tiles()) {
+        if (tile->imageRect().intersects(tilesetRect)) {
+            const QModelIndex index = model->tileIndex(tile);
+            selection.select(index, index);
+        }
+    }
+    selectionModel()->select(selection, flags);
+}
+
+void TilesetView::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
+{
+    QTableView::selectionChanged(selected, deselected);
+
+    if (TilesetModel *m = tilesetModel(); m && m->isFixedAtlas())
+        viewport()->update();
+}
+
+QRect TilesetView::visualRect(const QModelIndex &index) const
+{
+    if (!index.isValid())
+        return QRect();
+
+    if (TilesetModel *m = tilesetModel(); m && m->isFixedAtlas()) {
+        if (Tile *tile = m->tileAt(index))
+            return tileToView(tile->imageRect());
+        return QRect();
+    }
+
+    return QTableView::visualRect(index);
 }
 
 void TilesetView::leaveEvent(QEvent *event)
@@ -687,7 +1024,16 @@ void TilesetView::leaveEvent(QEvent *event)
     if (mHoveredIndex.isValid()) {
         const QModelIndex previousHoveredIndex = mHoveredIndex;
         mHoveredIndex = QModelIndex();
-        update(previousHoveredIndex);
+        if (TilesetModel *m = tilesetModel(); m && m->isFixedAtlas()) {
+            viewport()->update();
+        } else {
+            update(previousHoveredIndex);
+        }
+    }
+
+    if (mDraggedIndex.isValid()) {
+        mDraggedIndex = QModelIndex();
+        mRubberBand.hide();
     }
 
     QTableView::leaveEvent(event);
@@ -751,6 +1097,10 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
     const TilesetModel *model = tilesetModel();
     if (!model)
         return;
+
+    if (mRelocateTiles && model->tileset()->isAtlas()) {
+        return;
+    }
 
     Tile *tile = model->tileAt(index);
 
@@ -903,18 +1253,31 @@ void TilesetView::adjustScale()
 
 void TilesetView::refreshColumnCount()
 {
-    if (!tilesetModel())
+    const TilesetModel *model = tilesetModel();
+    if (!model)
         return;
 
     if (!dynamicWrapping()) {
         tilesetModel()->setColumnCountOverride(0);
+        if (model->tileset()->isAtlas())
+            viewport()->update();
         return;
     }
 
     const QSize maxSize = maximumViewportSize();
     const int gridSpace = mDrawGrid ? 1 : 0;
-    const int tileWidth = tilesetModel()->tileset()->tileWidth();
-    const int scaledTileSize = std::max<int>(tileWidth * scale(), 1) + gridSpace;
+    if (model->tileset()->isAtlas()) {
+        mMaxTileWidth = 0;
+        mMaxTileHeight = 0;
+        for (Tile *tile : model->tileset()->tiles()) {
+            mMaxTileWidth = std::max(mMaxTileWidth, tile->imageRect().width());
+            mMaxTileHeight = std::max(mMaxTileHeight, tile->imageRect().height());
+        }
+    } else {
+        mMaxTileWidth = model->tileset()->tileWidth();
+        mMaxTileHeight = model->tileset()->tileHeight();
+    }
+    const int scaledTileSize = std::max<int>(mMaxTileWidth * scale(), 1) + gridSpace;
     const int columnCount = std::max(maxSize.width() / scaledTileSize, 1);
     tilesetModel()->setColumnCountOverride(columnCount);
 }
@@ -984,6 +1347,63 @@ void TilesetView::updateBackgroundColor()
     QPalette p = palette();
     p.setColor(QPalette::Base, base);
     setPalette(p);
+}
+
+QPoint TilesetView::viewToTile(const QPoint &viewPos) const
+{
+    const QPoint scrollPos(horizontalScrollBar()->value(),
+                          verticalScrollBar()->value());
+    return (viewPos + scrollPos) / scale();
+}
+
+QRect TilesetView::viewToTile(const QRect &viewRect) const
+{
+    const QPoint scrollPos(horizontalScrollBar()->value(),
+                          verticalScrollBar()->value());
+    return QRect((viewRect.topLeft() + scrollPos) / scale(),
+                 viewRect.size() / scale());
+}
+
+QRect TilesetView::tileToView(const QRect &tileRect) const
+{
+    const QPoint scrollPos(horizontalScrollBar()->value(),
+                          verticalScrollBar()->value());
+    return QRect((tileRect.topLeft() * scale()) - scrollPos,
+                 tileRect.size() * scale());
+}
+
+void TilesetView::updateAtlasSelection(const QPoint &currentPos)
+{
+    QRect selection = QRect(mSelectionOffset, currentPos).normalized();
+
+    if (mSnapToGrid) {
+        const TilesetModel *model = tilesetModel();
+        const int margin = model->tileset()->margin();
+        const int spacing = model->tileset()->tileSpacing();
+        const int tileWidth = model->tileset()->tileWidth();
+        const int tileHeight = model->tileset()->tileHeight();
+
+        // Calculate position relative to first tile (after margin)
+        const int relX = qMax(selection.left() - margin, 0);
+        const int relY = qMax(selection.top() - margin, 0);
+        const int relRight = qMax(selection.right() - margin, 0);
+        const int relBottom = qMax(selection.bottom() - margin, 0);
+
+        // Find closest tile positions
+        const int tileX = relX / (tileWidth + spacing);
+        const int tileY = relY / (tileHeight + spacing);
+        const int tileRight = (relRight + spacing) / (tileWidth + spacing);
+        const int tileBottom = (relBottom + spacing) / (tileHeight + spacing);
+
+        // Convert back to absolute coordinates with margin
+        selection.setLeft(margin + tileX * (tileWidth + spacing));
+        selection.setTop(margin + tileY * (tileHeight + spacing));
+        selection.setRight(margin + tileRight * (tileWidth + spacing) + tileWidth - 1);
+        selection.setBottom(margin + tileBottom * (tileHeight + spacing) + tileHeight - 1);
+    }
+
+    mRubberBand.setGeometry(tileToView(selection));
+    mRubberBand.show();
 }
 
 #include "moc_tilesetview.cpp"

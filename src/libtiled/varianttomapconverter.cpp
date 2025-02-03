@@ -251,6 +251,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     }
 
     const QString name = variantMap[QStringLiteral("name")].toString();
+    const bool atlas = variantMap[QStringLiteral("atlas")].toBool();
     const QString className = variantMap[QStringLiteral("class")].toString();
     const int tileWidth = variantMap[QStringLiteral("tilewidth")].toInt();
     const int tileHeight = variantMap[QStringLiteral("tileheight")].toInt();
@@ -275,7 +276,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
 
     SharedTileset tileset(Tileset::create(name,
                                           tileWidth, tileHeight,
-                                          spacing, margin));
+                                          spacing, margin, atlas));
 
     tileset->setClassName(className);
     tileset->setObjectAlignment(alignmentFromString(objectAlignment));
