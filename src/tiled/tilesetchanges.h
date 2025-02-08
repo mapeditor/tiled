@@ -74,10 +74,7 @@ private:
 
 struct TilesetParameters
 {
-    TilesetParameters()
-        : tileSpacing(0)
-        , margin(0)
-    {}
+    TilesetParameters() = default;
 
     explicit TilesetParameters(const Tileset &tileset);
 
@@ -86,8 +83,8 @@ struct TilesetParameters
     QUrl imageSource;
     QColor transparentColor;
     QSize tileSize;
-    int tileSpacing;
-    int margin;
+    int tileSpacing = 0;
+    int margin = 0;
 };
 
 class ChangeTilesetParameters : public QUndoCommand
