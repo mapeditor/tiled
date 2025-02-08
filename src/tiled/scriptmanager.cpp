@@ -49,6 +49,7 @@
 #include "scriptimage.h"
 #include "scriptmodule.h"
 #include "scriptprocess.h"
+#include "scriptpropertytype.h"
 #include "tilecollisiondock.h"
 #include "tilelayer.h"
 #include "tilelayeredit.h"
@@ -412,6 +413,7 @@ void ScriptManager::initialize()
     registerFileInfo(engine);
     registerGeometry(engine);
     registerProcess(engine);
+    registerPropertyTypes(engine);
     loadExtensions();
 }
 

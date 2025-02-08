@@ -422,14 +422,11 @@ void ClassPropertyType::setUsageFlags(int flags, bool value)
 
 // PropertyTypes
 
-PropertyTypes::~PropertyTypes()
-{
-    qDeleteAll(mTypes);
-}
+PropertyTypes::~PropertyTypes() = default;
 
 size_t PropertyTypes::count(PropertyType::Type type) const
 {
-    return std::count_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *propertyType) {
+    return std::count_if(begin(), end(), [&] (const SharedPropertyType &propertyType) {
         return propertyType->type == type;
     });
 }
@@ -445,13 +442,13 @@ void PropertyTypes::merge(PropertyTypes typesToMerge)
     QHash<int, QString> oldTypeIdToName;
     QList<ClassPropertyType*> classesToProcess;
 
-    for (const auto type : typesToMerge)
+    for (const auto &type : typesToMerge)
         oldTypeIdToName.insert(type->id, type->name);
 
     while (typesToMerge.count() > 0) {
         auto typeToImport = typesToMerge.takeAt(0);
         auto typeToImportUsageFlags = typeUsageFlags(*typeToImport);
-        auto existingIt = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
+        auto existingIt = std::find_if(begin(), end(), [&] (const SharedPropertyType &type) {
             // Consider same type only when name matches and usage flags overlap
             return type->name == typeToImport->name &&
                     (typeUsageFlags(*type) & typeToImportUsageFlags) != 0;
@@ -460,14 +457,14 @@ void PropertyTypes::merge(PropertyTypes typesToMerge)
         if (typeToImport->isClass())
             classesToProcess.append(static_cast<ClassPropertyType*>(typeToImport.get()));
 
-        if (existingIt != mTypes.end()) {
+        if (existingIt != end()) {
             // Existing types are replaced, but their ID is retained
             typeToImport->id = (*existingIt)->id;
-            delete std::exchange(*existingIt, typeToImport.release());
+            *existingIt = typeToImport;
         } else {
             // New types are added, but their ID is reset
             typeToImport->id = 0;
-            add(std::move(typeToImport));
+            add(typeToImport);
         }
     }
 
@@ -501,20 +498,36 @@ void PropertyTypes::mergeObjectTypes(const QVector<ObjectType> &objectTypes)
         propertyType->members = type.defaultProperties;
         propertyType->usageFlags = ClassPropertyType::MapObjectClass | ClassPropertyType::TileClass;
 
-        auto existingIt = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
+        auto existingIt = std::find_if(begin(), end(), [&] (const SharedPropertyType &type) {
             // Consider same type only when name matches and usage flags overlap
             return type->name == propertyType->name &&
                     (typeUsageFlags(*type) & propertyType->usageFlags) != 0;
         });
 
-        if (existingIt != mTypes.end()) {
+        if (existingIt != end()) {
             // Replace existing classes, but retain their ID
             propertyType->id = (*existingIt)->id;
-            delete std::exchange(*existingIt, propertyType.release());
+            *existingIt = SharedPropertyType(propertyType.release());
         } else {
-            add(std::move(propertyType));
+            add(SharedPropertyType(propertyType.release()));
         }
     }
+}
+
+/**
+ * Returns the index of the type of the given name, or -1 if no such type is
+ * found.
+ */
+int PropertyTypes::findIndexByName(const QString &name) const
+{
+    if (name.isEmpty())
+        return -1;
+
+    for (int i = 0; i < mTypes.count(); i++)
+        if (mTypes[i]->name == name)
+            return i;
+
+    return -1;
 }
 
 /**
@@ -523,10 +536,10 @@ void PropertyTypes::mergeObjectTypes(const QVector<ObjectType> &objectTypes)
  */
 const PropertyType *PropertyTypes::findTypeById(int typeId) const
 {
-    auto it = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
+    auto it = std::find_if(begin(), end(), [&] (const SharedPropertyType &type) {
         return type->id == typeId;
     });
-    return it == mTypes.end() ? nullptr : *it;
+    return it == end() ? nullptr : it->data();
 }
 
 /**
@@ -538,10 +551,10 @@ const PropertyType *PropertyTypes::findTypeByName(const QString &name, int usage
     if (name.isEmpty())
         return nullptr;
 
-    auto it = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
+    auto it = std::find_if(begin(), end(), [&] (const SharedPropertyType &type) {
         return type->name == name && (typeUsageFlags(*type) & usageFlags) != 0;
     });
-    return it == mTypes.end() ? nullptr : *it;
+    return it == end() ? nullptr : it->data();
 }
 
 const PropertyType *PropertyTypes::findPropertyValueType(const QString &name) const
@@ -554,10 +567,10 @@ const ClassPropertyType *PropertyTypes::findClassFor(const QString &name, const 
     if (name.isEmpty())
         return nullptr;
 
-    auto it = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
-        return type->name == name && type->isClass() && static_cast<const ClassPropertyType*>(type)->isClassFor(object);
+    auto it = std::find_if(begin(), end(), [&] (const SharedPropertyType &type) {
+        return type->name == name && type->isClass() && static_cast<const ClassPropertyType&>(*type).isClassFor(object);
     });
-    return static_cast<const ClassPropertyType*>(it == mTypes.end() ? nullptr : *it);
+    return static_cast<const ClassPropertyType*>(it == end() ? nullptr : it->data());
 }
 
 PropertyType *PropertyTypes::findTypeByNamePriv(const QString &name, int usageFlags)
@@ -578,11 +591,11 @@ void PropertyTypes::loadFromJson(const QJsonArray &list, const QString &path)
 
     for (const auto typeValue : list)
         if (auto propertyType = PropertyType::createFromJson(typeValue.toObject()))
-            add(std::move(propertyType));
+            add(SharedPropertyType(propertyType.release()));
 
-    for (PropertyType *type : mTypes)
+    for (auto &type : mTypes)
         if (type->isClass())
-            resolveMemberValues(static_cast<ClassPropertyType*>(type), context);
+            resolveMemberValues(static_cast<ClassPropertyType*>(type.data()), context);
 }
 
 void PropertyTypes::resolveMemberValues(ClassPropertyType *classType,
