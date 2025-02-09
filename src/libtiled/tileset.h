@@ -238,12 +238,6 @@ public:
     int nextTileId() const;
     int takeNextTileId();
 
-    // Convert between pixel and grid coordinates
-    QPoint pixelToGrid(const QPoint &pixelPos) const;
-    QPoint gridToPixel(const QPoint &gridPos) const;
-    QRect pixelToGrid(const QRect &pixelRect) const;
-    QRect gridToPixel(const QRect &gridRect) const;
-
     void setTileImage(Tile *tile,
                       const QPixmap &image,
                       const QUrl &source = QUrl());

@@ -272,16 +272,14 @@ bool Tileset::initializeTilesetTiles()
                 tileRects.append(QRect(x, y, mTileWidth, mTileHeight));
 
         for (int tileNum = 0; tileNum < tileRects.size(); ++tileNum) {
-            QRect rect = tileRects.at(tileNum);
-            const int tileId = tileNum;
-            auto it = mTilesById.find(tileId);
+            auto it = mTilesById.find(tileNum);
             if (it != mTilesById.end()) {
                 it.value()->setImage(QPixmap());    // make sure it uses the tileset's image
                 it.value()->setImageRect(tileRects.at(tileNum));
             } else {
-                auto tile = new Tile(tileId, this);
-                tile->setImageRect(rect);
-                mTilesById.insert(tileId, tile);
+                auto tile = new Tile(tileNum, this);
+                tile->setImageRect(tileRects.at(tileNum));
+                mTilesById.insert(tileNum, tile);
                 mTiles.insert(tileNum, tile);
             }
         }
@@ -716,42 +714,6 @@ void Tileset::updateTileSize()
     }
     mTileWidth = maxWidth;
     mTileHeight = maxHeight;
-}
-
-QPoint Tileset::pixelToGrid(const QPoint &pixelPos) const
-{
-    return QPoint(
-        (pixelPos.x() - mMargin) / (mTileWidth + mTileSpacing),
-        (pixelPos.y() - mMargin) / (mTileHeight + mTileSpacing)
-    );
-}
-
-QPoint Tileset::gridToPixel(const QPoint &gridPos) const
-{
-    return QPoint(
-        mMargin + gridPos.x() * (mTileWidth + mTileSpacing),
-        mMargin + gridPos.y() * (mTileHeight + mTileSpacing)
-    );
-}
-
-QRect Tileset::pixelToGrid(const QRect &pixelRect) const
-{
-    const QPoint topLeft = pixelToGrid(pixelRect.topLeft());
-    const QSize size(
-        pixelRect.width() / mTileWidth,
-        pixelRect.height() / mTileHeight
-    );
-    return QRect(topLeft, size);
-}
-
-QRect Tileset::gridToPixel(const QRect &gridRect) const
-{
-    const QPoint topLeft = gridToPixel(gridRect.topLeft());
-    return QRect(
-        topLeft.x(), topLeft.y(),
-        gridRect.width() * mTileWidth,
-        gridRect.height() * mTileHeight
-    );
 }
 
 QString Tileset::orientationToString(Tileset::Orientation orientation)

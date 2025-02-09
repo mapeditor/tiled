@@ -80,6 +80,8 @@ public:
                       int row, int column,
                       const QModelIndex &parent) override;
 
+    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
+
     /**
      * Returns the tile at the given index.
      */
@@ -103,11 +105,6 @@ public:
     void tilesetChanged();
 
     void setColumnCountOverride(int columnCount);
-
-    void setRelocating(bool relocating) { mRelocating = relocating; }
-
-    QSize tileSpanSize(const QModelIndex &index) const;
-    Tile *findSpanningTile(const QModelIndex &index) const;
 
 public slots:
     /**
@@ -133,14 +130,11 @@ private:
 
     void refreshTileIds();
 
-    QPoint viewToAtlasCoords(int viewCol, int viewRow) const;
-    QPoint atlasToViewCoords(int atlasCol, int atlasRow) const;
+    QPoint snapToGrid(const QPoint &pos) const;
 
     TilesetDocument *mTilesetDocument;
     QList<int> mTileIds;
-    QHash<QPoint, Tile*> mTileGrid;
     int mColumnCountOverride = 0;
-    bool mRelocating = false;
 };
 
 } // namespace Tiled

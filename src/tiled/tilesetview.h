@@ -117,6 +117,10 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
+    QModelIndex indexAt(const QPoint &pos) const override;
+    void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) override;
+    QRect visualRect(const QModelIndex &index) const override;
 
 private:
     void onChange(const ChangeEvent &change);
@@ -133,11 +137,10 @@ private:
     void applyWangId();
     void finishWangIdChange();
     Tile *currentTile() const;
-
-    void updateAtlasSpans();
-    void handleAtlasMouseReleaseEvent(QMouseEvent *event);
-    void mergeSpan(int minRow, int maxRow, int minCol, int maxCol);
-    void splitSpan(Tile *spanTile, int relativeRow, int relativeCol);
+    QPoint viewToTile(const QPoint &viewPos) const;
+    QRect viewToTile(const QRect &viewRect) const;
+    QRect tileToView(const QRect &tileRect) const;
+    void updateAtlasSelection(const QPoint &currentPos);
 
     enum WangBehavior {
         AssignWholeId,      // Assigning templates
@@ -163,6 +166,13 @@ private:
     int mWangColorIndex = 0;
     QModelIndex mHoveredIndex;
     bool mWangIdChanged = false;
+
+    bool mSnapToGrid = true;
+    bool mAtlasSelecting = false;
+    int mResizingEdge = 0;  // 0=none, 1=right, 2=bottom, 3=left, 4=top
+    QPoint mSelectionOffset;
+    QRubberBand mRubberBand;
+    QModelIndex mDraggedIndex;
 
     const QIcon mImageMissingIcon;
 };
