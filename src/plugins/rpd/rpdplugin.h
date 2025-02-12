@@ -46,18 +46,17 @@ public:
 
     explicit RpdMapFormat(SubFormat subFormat, QObject *parent = nullptr);
 
-
     bool write(const Tiled::Map *map, const QString &fileName, Options options = Options()) override;
-    QString shortName(void) const override;
+    QString shortName() const override;
     QString nameFilter() const override;
     QString errorString() const override;
 
 protected:
     QString mError;
     SubFormat mSubFormat;
+
 private:
     bool insertTilesetFile(Tiled::Layer &layer, const QString &tiles_name, QJsonObject &mapJson);
-
 };
 
 
@@ -74,7 +73,7 @@ public:
 
     bool write(const Tiled::Tileset &tileset, const QString &fileName, Options options = Options()) override;
 
-    QString shortName(void) const override;
+    QString shortName() const override;
     QString nameFilter() const override;
     QString errorString() const override;
 
