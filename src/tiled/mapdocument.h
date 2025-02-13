@@ -95,6 +95,8 @@ public:
     bool canReload() const override;
     bool reload(QString *error);
 
+    EditableAsset *editable() override;
+
     /**
      * Loads a map and returns a MapDocument instance on success. Returns null
      * on error and sets the \a error message.
@@ -382,7 +384,6 @@ public slots:
     void deselectObjects(const QList<MapObject*> &objects);
 
 protected:
-    std::unique_ptr<EditableAsset> createEditable() override;
 
 private:
     void onChanged(const ChangeEvent &change);

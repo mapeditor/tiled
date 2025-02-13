@@ -33,6 +33,13 @@ EditableAsset::EditableAsset(Object *object, QObject *parent)
 {
 }
 
+EditableAsset::~EditableAsset()
+{
+    // Prevent owned object from trying to delete us again
+    if (mDocument)
+        setObject(nullptr);
+}
+
 QString EditableAsset::fileName() const
 {
     if (document())
@@ -134,7 +141,7 @@ void EditableAsset::setDocument(Document *document)
                 this, &EditableAsset::modifiedChanged);
     }
 
-    mDocument = document;
+    mDocument = document->sharedFromThis();
 }
 
 } // namespace Tiled

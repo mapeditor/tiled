@@ -62,6 +62,9 @@ public:
 
     QSharedPointer<Document> createDocument() override;
 
+    static EditableWorld *find(World *world);
+    static EditableWorld *get(WorldDocument *worldDocument);
+
 private:
     void documentChanged(const ChangeEvent &event);
 };
@@ -69,6 +72,11 @@ private:
 inline World *EditableWorld::world() const
 {
     return static_cast<World*>(object());
+}
+
+inline EditableWorld *EditableWorld::find(World *world)
+{
+    return static_cast<EditableWorld*>(EditableObject::find(world));
 }
 
 inline WorldDocument *EditableWorld::worldDocument() const

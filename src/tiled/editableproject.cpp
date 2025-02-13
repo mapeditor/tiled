@@ -63,6 +63,18 @@ QSharedPointer<Document> EditableProject::createDocument()
     return nullptr;
 }
 
+EditableProject *EditableProject::get(ProjectDocument *projectDocument)
+{
+    if (!projectDocument)
+        return nullptr;
+
+    auto editable = find(&projectDocument->project());
+    if (editable)
+        return editable;
+
+    return new EditableProject(projectDocument);
+}
+
 } // namespace Tiled
 
 #include "moc_editableproject.cpp"

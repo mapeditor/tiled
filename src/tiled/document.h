@@ -28,8 +28,6 @@
 #include <QString>
 #include <QVariant>
 
-#include <memory>
-
 class QUndoStack;
 
 namespace Tiled {
@@ -97,8 +95,7 @@ public:
     QUndoStack *undoStack() const;
     bool isModified() const;
 
-    EditableAsset *editable();
-    void setEditable(std::unique_ptr<EditableAsset> editable);
+    virtual EditableAsset *editable() = 0;
 
     Object *currentObject() const { return mCurrentObject; }
     void setCurrentObject(Object *object);
@@ -154,7 +151,6 @@ signals:
     void ignoreBrokenLinksChanged(bool ignoreBrokenLinks);
 
 protected:
-    virtual std::unique_ptr<EditableAsset> createEditable() = 0;
     virtual bool isModifiedImpl() const;
 
     void updateIsModified();
@@ -167,8 +163,6 @@ protected:
 
     Object *mCurrentObject = nullptr;   /**< Current properties object. */
     Document *mCurrentObjectDocument = nullptr;
-
-    std::unique_ptr<EditableAsset> mEditable;
 
 private:
     void currentObjectDocumentChanged(const ChangeEvent &change);
