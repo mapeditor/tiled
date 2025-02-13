@@ -216,6 +216,9 @@ public:
 
     QSharedPointer<Document> createDocument() override;
 
+    static EditableMap *find(Map *map);
+    static EditableMap *get(MapDocument *mapDocument);
+
 signals:
     void currentLayerChanged();
     void selectedLayersChanged();
@@ -415,6 +418,11 @@ inline Map *EditableMap::map() const
 inline MapDocument *EditableMap::mapDocument() const
 {
     return static_cast<MapDocument*>(document());
+}
+
+inline EditableMap *EditableMap::find(Map *map)
+{
+    return static_cast<EditableMap*>(EditableObject::find(map));
 }
 
 } // namespace Tiled
