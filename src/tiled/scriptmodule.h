@@ -116,6 +116,7 @@ public:
     Q_INVOKABLE bool versionLessThan(const QString &a);
     Q_INVOKABLE bool versionLessThan(const QString &a, const QString &b);
 
+    Q_INVOKABLE Tiled::EditableAsset *load(const QString &fileName) const;
     Q_INVOKABLE Tiled::EditableAsset *open(const QString &fileName) const;
     Q_INVOKABLE bool close(Tiled::EditableAsset *asset) const;
     Q_INVOKABLE Tiled::EditableAsset *reload(Tiled::EditableAsset *asset) const;

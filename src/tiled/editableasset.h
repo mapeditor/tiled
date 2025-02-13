@@ -21,6 +21,7 @@
 #pragma once
 
 #include "editableobject.h"
+#include "document.h"
 
 #include <QJSValue>
 #include <QSharedPointer>
@@ -58,6 +59,7 @@ class EditableAsset : public EditableObject
 
 public:
     EditableAsset(Object *object, QObject *parent = nullptr);
+    ~EditableAsset() override;
 
     QString fileName() const;
     bool isReadOnly() const override = 0;
@@ -92,15 +94,13 @@ protected:
     virtual void setDocument(Document *document);
 
 private:
-    friend class Document;
-
-    Document *mDocument = nullptr;
+    DocumentPtr mDocument;
 };
 
 
 inline Document *EditableAsset::document() const
 {
-    return mDocument;
+    return mDocument.get();
 }
 
 } // namespace Tiled

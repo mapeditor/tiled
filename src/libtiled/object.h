@@ -165,6 +165,8 @@ public:
     static void setPropertyTypes(const SharedPropertyTypes &propertyTypes);
     static const PropertyTypes &propertyTypes();
 
+    QObject *editable() const { return mEditable; }
+
 private:
     const TypeId mTypeId;
     QString mClassName;

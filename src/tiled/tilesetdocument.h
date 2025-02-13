@@ -84,7 +84,7 @@ public:
     void swapTileset(SharedTileset &tileset);
     const SharedTileset &tileset() const;
 
-    EditableTileset *editable();
+    EditableTileset *editable() override;
 
     bool isEmbedded() const;
     void setClean();
@@ -164,9 +164,6 @@ signals:
      */
     void selectedTilesChanged();
 
-protected:
-    std::unique_ptr<EditableAsset> createEditable() override;
-
 private:
     void onPropertyAdded(Object *object, const QString &name);
     void onPropertyRemoved(Object *object, const QString &name);
@@ -190,11 +187,6 @@ private:
 inline const SharedTileset &TilesetDocument::tileset() const
 {
     return mTileset;
-}
-
-inline EditableTileset *TilesetDocument::editable()
-{
-    return static_cast<EditableTileset*>(Document::editable());
 }
 
 inline bool TilesetDocument::isEmbedded() const

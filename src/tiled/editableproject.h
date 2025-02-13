@@ -53,11 +53,19 @@ public:
     Project *project() const;
 
     QSharedPointer<Document> createDocument() override;
+
+    static EditableProject *find(Project *project);
+    static EditableProject *get(ProjectDocument *projectDocument);
 };
 
 inline Project *EditableProject::project() const
 {
     return static_cast<Project*>(object());
+}
+
+inline EditableProject *EditableProject::find(Project *project)
+{
+    return static_cast<EditableProject*>(EditableObject::find(project));
 }
 
 } // namespace Tiled
