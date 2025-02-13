@@ -37,13 +37,6 @@ ProjectDocument::ProjectDocument(std::unique_ptr<Project> project, QObject *pare
             this, [this] { mProject->save(); });
 }
 
-ProjectDocument::~ProjectDocument()
-{
-    // The Editable needs to be deleted before the Project, otherwise ~Object()
-    // will delete it, whereas the editable is actually owned by the Document.
-    mEditable.reset();
-}
-
 QString ProjectDocument::displayName() const
 {
     return mProject->fileName();
@@ -79,9 +72,9 @@ void ProjectDocument::setLastExportFileName(const QString &/* fileName */)
     // do nothing
 }
 
-std::unique_ptr<EditableAsset> ProjectDocument::createEditable()
+EditableAsset *ProjectDocument::editable()
 {
-    return std::make_unique<EditableProject>(this, this);
+    return EditableProject::get(this);
 }
 
 } // namespace Tiled

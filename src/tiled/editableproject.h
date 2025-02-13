@@ -62,6 +62,9 @@ public:
     Q_INVOKABLE ScriptPropertyType *addClassType(const QString &name);
     Q_INVOKABLE ScriptPropertyType *addEnumType(const QString &name);
 
+    static EditableProject *find(Project *project);
+    static EditableProject *get(ProjectDocument *projectDocument);
+
 private:
     ScriptPropertyType *toScriptType(const SharedPropertyType &type) const;
     ScriptPropertyType *addPropertyType(const SharedPropertyType &type);
@@ -71,6 +74,11 @@ private:
 inline Project *EditableProject::project() const
 {
     return static_cast<Project*>(object());
+}
+
+inline EditableProject *EditableProject::find(Project *project)
+{
+    return static_cast<EditableProject*>(EditableObject::find(project));
 }
 
 } // namespace Tiled

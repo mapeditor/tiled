@@ -34,6 +34,7 @@ namespace Tiled {
 EditableWorld::EditableWorld(WorldDocument *worldDocument, QObject *parent)
     : EditableAsset(nullptr, parent)
 {
+    setDocument(worldDocument);
     setObject(worldDocument->world());
     setDocument(worldDocument);
 }
@@ -157,6 +158,18 @@ void EditableWorld::documentChanged(const ChangeEvent &event)
     default:
         break;
     }
+}
+
+EditableWorld *EditableWorld::get(WorldDocument *worldDocument)
+{
+    if (!worldDocument)
+        return nullptr;
+
+    auto editable = find(worldDocument->world());
+    if (editable)
+        return editable;
+
+    return new EditableWorld(worldDocument);
 }
 
 } // namespace Tiled

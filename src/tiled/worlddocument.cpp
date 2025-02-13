@@ -56,13 +56,6 @@ WorldDocument::WorldDocument(std::unique_ptr<World> world, QObject *parent)
     setCurrentObject(mWorld.get());
 }
 
-WorldDocument::~WorldDocument()
-{
-    // The Editable needs to be deleted before the World, otherwise ~World()
-    // will delete it, whereas the editable is actually owned by the Document.
-    mEditable.reset();
-}
-
 QString WorldDocument::displayName() const
 {
     QString displayName = QFileInfo(fileName()).fileName();
@@ -136,9 +129,9 @@ void WorldDocument::swapWorld(std::unique_ptr<World> &other)
     emit worldChanged();
 }
 
-std::unique_ptr<EditableAsset> WorldDocument::createEditable()
+EditableAsset *WorldDocument::editable()
 {
-    return std::make_unique<EditableWorld>(this, this);
+    return EditableWorld::get(this);
 }
 
 } // namespace Tiled

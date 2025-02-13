@@ -67,12 +67,10 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset)
     Q_ASSERT(!sTilesetToDocument.contains(tileset));
     sTilesetToDocument.insert(tileset, this);
 
-    // If there already happens to be an editable for this tileset, take
-    // ownership of it.
-    if (auto editable = EditableTileset::find(tileset.data())) {
-        setEditable(std::unique_ptr<EditableAsset>(editable));
-        QQmlEngine::setObjectOwnership(editable, QQmlEngine::CppOwnership);
-    }
+    // If there already happens to be an editable for this tileset, make sure
+    // it knows about us.
+    if (auto editable = EditableTileset::find(tileset.data()))
+        editable->setDocument(this);
 
     mCurrentObject = tileset.data();
 
@@ -95,11 +93,6 @@ TilesetDocument::~TilesetDocument()
     IssuesModel::instance().removeIssuesWithContext(this);
 
     sTilesetToDocument.remove(mTileset);
-
-    // Needs to be deleted before the Tileset instance is deleted, because it
-    // may cause script values to detach from the map, in which case they'll
-    // need to be able to copy the data.
-    mEditable.reset();
 }
 
 bool TilesetDocument::save(const QString &fileName, QString *error)
@@ -260,19 +253,20 @@ void TilesetDocument::swapTileset(SharedTileset &tileset)
     setCurrentObject(mTileset.data());
     mWangColorModels.clear();
 
-    emit changed(AboutToReloadEvent());
+    // Delete the editable and have it deal with any child editables that were
+    // created, because their document and object references would no longer be
+    // valid after the swap.
+    delete mTileset->editable();
 
-    sTilesetToDocument.remove(mTileset);
     mTileset->swap(*tileset);
-    sTilesetToDocument.insert(mTileset, this);
 
     emit changed(ReloadEvent());
     emit tilesetChanged(mTileset.data());
 }
 
-std::unique_ptr<EditableAsset> TilesetDocument::createEditable()
+EditableTileset *TilesetDocument::editable()
 {
-    return std::make_unique<EditableTileset>(this, this);
+    return EditableTileset::get(mTileset.data());
 }
 
 /**

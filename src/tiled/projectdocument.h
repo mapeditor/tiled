@@ -32,7 +32,6 @@ class ProjectDocument final : public Document
 
 public:
     explicit ProjectDocument(std::unique_ptr<Project> project, QObject *parent = nullptr);
-    ~ProjectDocument() override;
 
     QString displayName() const override;
     FileFormat *writerFormat() const override;
@@ -41,7 +40,7 @@ public:
     FileFormat *exportFormat() const override;
     QString lastExportFileName() const override;
     void setLastExportFileName(const QString &fileName) override;
-    std::unique_ptr<EditableAsset> createEditable() override;
+    EditableAsset *editable() override;
 
     Project &project() { return *mProject; }
 
