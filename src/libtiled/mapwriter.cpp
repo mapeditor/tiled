@@ -337,6 +337,9 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
     if (margin != 0)
         w.writeAttribute(QStringLiteral("margin"), QString::number(margin));
 
+    if (tileset.isAtlas())
+        w.writeAttribute(QStringLiteral("atlas"), QString::number(tileset.isAtlas()));
+
     w.writeAttribute(QStringLiteral("tilecount"),
                      QString::number(tileset.tileCount()));
     w.writeAttribute(QStringLiteral("columns"),
