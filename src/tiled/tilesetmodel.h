@@ -106,6 +106,8 @@ public:
 
     void setColumnCountOverride(int columnCount);
 
+    QPoint snapToGrid(const QPoint &pos) const;
+
 public slots:
     /**
      * Should be called when anything changes about the given \a tiles that
@@ -130,11 +132,11 @@ private:
 
     void refreshTileIds();
 
-    QPoint snapToGrid(const QPoint &pos) const;
-
     TilesetDocument *mTilesetDocument;
     QList<int> mTileIds;
     int mColumnCountOverride = 0;
+    // Spatial index for atlas mode
+    QHash<QPoint, Tile*> mTileGrid;
 };
 
 } // namespace Tiled

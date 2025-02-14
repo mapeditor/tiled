@@ -555,16 +555,20 @@ void TilesetDock::updateCurrentTiles()
         if (maxY < index.row()) maxY = index.row();
     }
 
+    const TilesetModel *model = view->tilesetModel();
+    const QPoint min = model->snapToGrid(QPoint(minX, minY));
+    const QPoint max = model->snapToGrid(QPoint(maxX, maxY));
+
     // Create a tile layer from the current selection
     auto tileLayer = std::make_unique<TileLayer>(QString(), 0, 0,
-                                                 maxX - minX + 1,
-                                                 maxY - minY + 1);
+                                                 max.x() - min.x() + 1,
+                                                 max.y() - min.y() + 1);
 
-    const TilesetModel *model = view->tilesetModel();
     for (const QModelIndex &index : indexes) {
-        tileLayer->setCell(index.column() - minX,
-                           index.row() - minY,
-                           Cell(model->tileAt(index)));
+        Tile *tile = model->tileAt(index);
+        QPoint pos = model->snapToGrid(QPoint(index.column(), index.row()));
+        pos -= min;
+        tileLayer->setCell(pos.x(), pos.y(), Cell(tile));
     }
 
     setCurrentTiles(std::move(tileLayer));
