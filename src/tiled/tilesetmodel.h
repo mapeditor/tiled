@@ -106,6 +106,8 @@ public:
 
     void setColumnCountOverride(int columnCount);
 
+    bool isFixedAtlas() const;
+
     QPoint snapToGrid(const QPoint &pos) const;
 
 public slots:
@@ -135,8 +137,6 @@ private:
     TilesetDocument *mTilesetDocument;
     QList<int> mTileIds;
     int mColumnCountOverride = 0;
-    // Spatial index for atlas mode
-    QHash<QPoint, Tile*> mTileGrid;
 };
 
 } // namespace Tiled

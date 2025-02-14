@@ -119,6 +119,7 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
     QModelIndex indexAt(const QPoint &pos) const override;
+    void setSelection(const QRect &rect, QItemSelectionModel::SelectionFlags flags) override;
     void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) override;
     QRect visualRect(const QModelIndex &index) const override;
 

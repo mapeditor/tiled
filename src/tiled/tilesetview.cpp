@@ -935,6 +935,30 @@ QModelIndex TilesetView::indexAt(const QPoint &pos) const
     return QTableView::indexAt(pos);
 }
 
+void TilesetView::setSelection(const QRect &rect, QItemSelectionModel::SelectionFlags flags)
+{
+    if (!tilesetModel() || !tilesetModel()->tileset()->isAtlas() || dynamicWrapping()) {
+        QTableView::setSelection(rect, flags);
+        return;
+    }
+
+    // Convert view coordinates to tileset coordinates
+    const QRect tilesetRect = viewToTile(rect);
+
+    // Select all tiles that intersect with the rect
+    QItemSelection selection;
+    const TilesetModel *model = tilesetModel();
+
+    for (Tile *tile : model->tileset()->tiles()) {
+        if (tile->imageRect().intersects(tilesetRect)) {
+            const QModelIndex index = model->tileIndex(tile);
+            selection.select(index, index);
+        }
+    }
+
+    selectionModel()->select(selection, flags);
+}
+
 void TilesetView::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
 {
     QTableView::selectionChanged(selected, deselected);

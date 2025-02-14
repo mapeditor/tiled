@@ -542,20 +542,31 @@ void TilesetDock::updateCurrentTiles()
     if (indexes.isEmpty())
         return;
 
-    const QModelIndex &first = indexes.first();
-    int minX = first.column();
-    int maxX = first.column();
-    int minY = first.row();
-    int maxY = first.row();
-
-    for (const QModelIndex &index : indexes) {
-        if (minX > index.column()) minX = index.column();
-        if (maxX < index.column()) maxX = index.column();
-        if (minY > index.row()) minY = index.row();
-        if (maxY < index.row()) maxY = index.row();
-    }
+    int minX = INT_MAX;
+    int maxX = 0;
+    int minY = INT_MAX;
+    int maxY = 0;
 
     const TilesetModel *model = view->tilesetModel();
+    const bool isAtlas = model->isFixedAtlas();
+    for (const QModelIndex &index : indexes) {
+        int x = index.column();
+        int y = index.row();
+
+        if (isAtlas) {
+            if (Tile *tile = model->tileAt(index)) {
+                const QPoint pos = tile->imageRect().bottomLeft();
+                x = pos.x();
+                y = pos.y();
+            }
+        }
+
+        if (minX > x) minX = x;
+        if (maxX < x) maxX = x;
+        if (minY > y) minY = y;
+        if (maxY < y) maxY = y;
+    }
+
     const QPoint min = model->snapToGrid(QPoint(minX, minY));
     const QPoint max = model->snapToGrid(QPoint(maxX, maxY));
 
@@ -566,7 +577,8 @@ void TilesetDock::updateCurrentTiles()
 
     for (const QModelIndex &index : indexes) {
         Tile *tile = model->tileAt(index);
-        QPoint pos = model->snapToGrid(QPoint(index.column(), index.row()));
+        QPoint pos = isAtlas ? tile->imageRect().bottomLeft() : QPoint(index.column(), index.row());
+        pos = model->snapToGrid(pos);
         pos -= min;
         tileLayer->setCell(pos.x(), pos.y(), Cell(tile));
     }
