@@ -28,5 +28,5 @@ using ::endl;
 #endif
 
 #if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
-using QStringRef = QStringView;
+#define QStringRef QStringView
 #endif
