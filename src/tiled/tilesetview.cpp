@@ -899,7 +899,7 @@ void TilesetView::paintEvent(QPaintEvent *event)
     for (Tile *tile : model->tileset()->tiles()) {
         const QRect rect = tileToView(tile->imageRect());
         const QModelIndex index = model->tileIndex(tile);
-        const bool selected = s->isSelected(index);
+        const bool selected = s->isSelected(index) || index == s->currentIndex();
         delegate->paintTile(&painter, model, tile, rect, palette().highlight(), selected, mHoveredIndex == index);
 
         if (mDrawGrid) {
@@ -933,6 +933,14 @@ QModelIndex TilesetView::indexAt(const QPoint &pos) const
 
     // Use default behavior for non-atlas mode
     return QTableView::indexAt(pos);
+}
+
+void TilesetView::scrollTo(const QModelIndex &index, ScrollHint hint)
+{
+    if (!tilesetModel() || !tilesetModel()->tileset()->isAtlas() || dynamicWrapping()) {
+        QTableView::scrollTo(index, hint);
+        return;
+    }
 }
 
 void TilesetView::setSelection(const QRect &rect, QItemSelectionModel::SelectionFlags flags)
