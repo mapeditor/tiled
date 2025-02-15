@@ -30,7 +30,7 @@ RpdMapFormat::RpdMapFormat(SubFormat subFormat, QObject *parent)
 
 QString RpdMapFormat::shortName() const
 {
-    return "RPD";
+    return "rpd";
 }
 
 static QJsonArray packMapData(Tiled::TileLayer *layer)
