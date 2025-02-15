@@ -113,9 +113,8 @@ Qt::ItemFlags TilesetModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return defaultFlags;
 
-    if (isFixedAtlas())
-        if (!tileAt(index))
-            return defaultFlags & ~Qt::ItemIsSelectable;
+    if (isFixedAtlas() && !tileAt(index))
+        return defaultFlags & ~Qt::ItemIsSelectable;
 
     defaultFlags |= Qt::ItemIsDropEnabled;
     defaultFlags |= Qt::ItemIsDragEnabled;
