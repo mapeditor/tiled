@@ -668,6 +668,21 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
     if (!model)
         return;
 
+    const QModelIndex hoveredIndex = indexAt(event->pos());
+    if (hoveredIndex != mHoveredIndex) {
+        const QModelIndex previousHoveredIndex = mHoveredIndex;
+        mHoveredIndex = hoveredIndex;
+
+        if (model->tileset()->isAtlas()) {
+            viewport()->update();
+        } else {
+            if (previousHoveredIndex.isValid())
+                update(previousHoveredIndex);
+            if (mHoveredIndex.isValid())
+                update(mHoveredIndex);
+        }
+    }
+
     if (mDraggedIndex.isValid()) {
         mSnapToGrid = !(event->modifiers() & Qt::ShiftModifier);
 
@@ -739,10 +754,6 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
             return;
 
         const QPoint pos = event->pos();
-        const QModelIndex hoveredIndex = indexAt(pos);
-        const QModelIndex previousHoveredIndex = mHoveredIndex;
-        mHoveredIndex = hoveredIndex;
-
         WangId wangId;
 
         if (mWangBehavior == AssignWholeId) {
@@ -800,17 +811,9 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
             }
         }
 
-        if (previousHoveredIndex != mHoveredIndex || wangId != mWangId) {
+        if (wangId != mWangId) {
             mWangId = wangId;
-
-            if (model->tileset()->isAtlas()) {
-                viewport()->update();
-            } else {
-                if (previousHoveredIndex.isValid())
-                    update(previousHoveredIndex);
-                if (mHoveredIndex.isValid())
-                    update(mHoveredIndex);
-            }
+            viewport()->update();
         }
 
         if (event->buttons() & Qt::LeftButton)
@@ -901,13 +904,40 @@ void TilesetView::paintEvent(QPaintEvent *event)
         const bool selected = s->isSelected(index) || index == s->currentIndex();
         delegate->paintTile(&painter, model, tile, rect, palette().highlight(), selected, mHoveredIndex == index);
 
+        // Draw grid
         if (mDrawGrid) {
             if (mRelocateTiles) {
                 painter.setPen(palette().highlight().color());
             } else {
                 painter.setPen(palette().base().color());
             }
+            painter.setBrush(Qt::NoBrush);
             painter.drawRect(rect);
+        }
+
+        // Draw resize indicators
+        if (mRelocateTiles && (mDraggedIndex == index || (!mDraggedIndex.isValid() && mHoveredIndex == index))) {
+            const int indicatorSize = 4 * scale();
+            QColor indicatorColor = palette().highlight().color().lighter(150);
+            indicatorColor.setAlpha(180);  // Make slightly transparent
+            painter.setPen(Qt::NoPen);
+            painter.setBrush(indicatorColor);
+
+            // Top-left corner
+            painter.drawRect(QRect(rect.topLeft(), QSize(indicatorSize, indicatorSize)));
+
+            // Top-right corner
+            painter.drawRect(QRect(rect.topRight() - QPoint(indicatorSize, 0), QSize(indicatorSize, indicatorSize)));
+
+            // Bottom-left corner
+            painter.drawRect(QRect(rect.bottomLeft() - QPoint(0, indicatorSize), QSize(indicatorSize, indicatorSize)));
+
+            // Bottom-right corner
+            painter.drawRect(QRect(rect.bottomRight() - QPoint(indicatorSize, indicatorSize), QSize(indicatorSize, indicatorSize)));
+
+            // Reset painter state
+            painter.setPen(palette().base().color());
+            painter.setBrush(Qt::NoBrush);
         }
     }
 }
