@@ -14,6 +14,7 @@ Project {
         "python",
         "replicaisland",
         "rpmap",
+        "rpd",
         "tbin",
         "tengine",
         "tscn",
