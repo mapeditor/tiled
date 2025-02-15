@@ -157,7 +157,7 @@ bool RpdMapFormat::write(const Tiled::Map *map, const QString &fileName, Options
             QJsonArray decoDesc;
             QJsonArray decoName;
 
-            auto tilesets = layer->asTileLayer()->usedTilesets();
+            auto tilesets = layer->usedTilesets();
 
             auto decoTileset = tilesets.begin()->data();
 
