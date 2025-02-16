@@ -201,7 +201,7 @@ public:
     bool loadFromImage(const QImage &image, const QString &source);
     bool loadFromImage(const QString &fileName);
     bool loadImage();
-    bool initializeTilesetTiles();
+    bool initializeTilesetTiles(bool forceGeneration=false);
 
     SharedTileset findSimilarTileset(const QVector<SharedTileset> &tilesets) const;
 

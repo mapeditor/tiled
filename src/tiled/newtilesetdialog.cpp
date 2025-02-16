@@ -40,6 +40,7 @@ static SessionOption<int> tilesetType { "tileset.type" };
 static SessionOption<bool> embedInMap { "tileset.embedInMap" };
 static SessionOption<bool> useTransparentColor { "tileset.useTransparentColor" };
 static SessionOption<QColor> transparentColor { "tileset.transparentColor", Qt::magenta };
+static SessionOption<bool> generateGrid { "tileset.generateGrid", true };
 static SessionOption<QSize> tileSize { "tileset.tileSize", QSize(32, 32) };
 static SessionOption<int> tilesetSpacing { "tileset.spacing" };
 static SessionOption<int> tilesetMargin { "tileset.margin" };
@@ -77,6 +78,7 @@ NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
     mUi->embedded->setChecked(session::embedInMap);
     mUi->useTransparentColor->setChecked(session::useTransparentColor);
     mUi->colorButton->setColor(session::transparentColor);
+    mUi->generateGrid->setChecked(session::generateGrid);
     mUi->tileWidth->setValue(tileSize.width());
     mUi->tileHeight->setValue(tileSize.height());
     mUi->spacing->setValue(session::tilesetSpacing);
@@ -97,6 +99,7 @@ NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
     connect(mUi->buttonBox, &QDialogButtonBox::rejected, this, &NewTilesetDialog::reject);
 
     mUi->imageGroupBox->setVisible(session::tilesetType < 2);
+    mUi->generateGrid->setVisible(session::tilesetType == 1);
     updateOkButton();
 }
 
@@ -202,6 +205,7 @@ void NewTilesetDialog::tryAccept()
         const int tileHeight = mUi->tileHeight->value();
         const int spacing = mUi->spacing->value();
         const int margin = mUi->margin->value();
+        const bool generateGrid = mUi->generateGrid->isChecked();
 
         tileset = Tileset::create(name,
                                   tileWidth, tileHeight,
@@ -219,7 +223,11 @@ void NewTilesetDialog::tryAccept()
                 return;
             }
 
-            if (tileset->tileCount() == 0) {
+            if (tileset->isAtlas() && generateGrid) {
+                tileset->initializeTilesetTiles(true);
+            }
+
+            if (tileset->tileCount() == 0 && (!tileset->isAtlas() || generateGrid)) {
                 QMessageBox::critical(this, tr("Error"),
                                       tr("No tiles found in the tileset image "
                                          "when using the given tile size, "
@@ -287,6 +295,7 @@ void NewTilesetDialog::nameEdited(const QString &name)
 void NewTilesetDialog::tilesetTypeChanged(int index)
 {
     mUi->imageGroupBox->setVisible(index < 2);
+    mUi->generateGrid->setVisible(index == 1);
     updateOkButton();
 }
 

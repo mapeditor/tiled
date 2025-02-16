@@ -246,7 +246,7 @@ bool Tileset::loadImage()
     return initializeTilesetTiles();
 }
 
-bool Tileset::initializeTilesetTiles()
+bool Tileset::initializeTilesetTiles(bool forceGeneration)
 {
     if (mImage.isNull() || mTileWidth <= 0 || mTileHeight <= 0)
         return false;
@@ -256,12 +256,7 @@ bool Tileset::initializeTilesetTiles()
 
     bool needsRectGeneration = true;
     if (isAtlas()) {
-        for (Tile *tile : std::as_const(mTiles)) {
-            if (!tile->imageRect().isNull()) {
-                needsRectGeneration = false;
-                break;
-            }
-        }
+        needsRectGeneration = forceGeneration;
     }
 
     if (needsRectGeneration) {
