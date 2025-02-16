@@ -217,9 +217,9 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
                      tileset->imageHeight() * scale + extra);
 
     if (const Tile *tile = m->tileAt(index)) {
-        if (mTilesetView->dynamicWrapping() && !tileset->isAtlas())
-            return QSize(tileset->tileWidth() * scale + extra,
-                         tileset->tileHeight() * scale + extra);
+        if (mTilesetView->dynamicWrapping())
+            return QSize(mTilesetView->maxTileWidth() * scale + extra,
+                         mTilesetView->maxTileHeight() * scale + extra);
 
         QSize tileSize = tile->size();
 
@@ -1245,25 +1245,27 @@ void TilesetView::refreshColumnCount()
     if (!model)
         return;
 
-    if (model->tileset()->isAtlas())
-        viewport()->update();
-
     if (!dynamicWrapping()) {
         tilesetModel()->setColumnCountOverride(0);
+        if (model->tileset()->isAtlas())
+            viewport()->update();
         return;
     }
 
     const QSize maxSize = maximumViewportSize();
     const int gridSpace = mDrawGrid ? 1 : 0;
-    int tileWidth;
     if (model->tileset()->isAtlas()) {
-        tileWidth = 0;
-        for (Tile *tile : model->tileset()->tiles())
-            tileWidth = std::max(tileWidth, tile->imageRect().width());
+        mMaxTileWidth = 0;
+        mMaxTileHeight = 0;
+        for (Tile *tile : model->tileset()->tiles()) {
+            mMaxTileWidth = std::max(mMaxTileWidth, tile->imageRect().width());
+            mMaxTileHeight = std::max(mMaxTileHeight, tile->imageRect().height());
+        }
     } else {
-        tileWidth = model->tileset()->tileWidth();
+        mMaxTileWidth = model->tileset()->tileWidth();
+        mMaxTileHeight = model->tileset()->tileHeight();
     }
-    const int scaledTileSize = std::max<int>(tileWidth * scale(), 1) + gridSpace;
+    const int scaledTileSize = std::max<int>(mMaxTileWidth * scale(), 1) + gridSpace;
     const int columnCount = std::max(maxSize.width() / scaledTileSize, 1);
     tilesetModel()->setColumnCountOverride(columnCount);
 }

@@ -100,6 +100,9 @@ public:
 
     void updateBackgroundColor();
 
+    int maxTileWidth() const { return mMaxTileWidth; }
+    int maxTileHeight() const { return mMaxTileHeight; }
+
 signals:
     void wangSetImageSelected(Tile *tile);
     void wangColorImageSelected(Tile *tile, int index);
@@ -175,6 +178,8 @@ private:
     QPoint mSelectionOffset;
     QRubberBand mRubberBand;
     QModelIndex mDraggedIndex;
+    int mMaxTileWidth = 0;
+    int mMaxTileHeight = 0;
 
     const QIcon mImageMissingIcon;
 };
