@@ -1,5 +1,7 @@
 #include "rpdplugin.h"
 
+#include <logginginterface.h>
+
 #include "maptovariantconverter.h"
 #include "objectgroup.h"
 #include "savefile.h"
@@ -7,7 +9,7 @@
 
 #include "qjsonparser/json.h"
 
-#include <QFile>
+
 #include <QFileInfo>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -16,6 +18,21 @@
 #include <QtMath>
 
 namespace Rpd {
+
+const QString LAYER_LOGIC = "logic";
+const QString LAYER_BASE = "base";
+const QString LAYER_DECO = "deco";
+const QString LAYER_DECO2 = "deco2";
+const QString LAYER_ROOF_BASE = "roof_base";
+const QString LAYER_ROOF_DECO = "roof_deco";
+const QString LAYER_OBJECTS = "objects";
+
+const QString PROPERTY_TILES = "tiles";
+const QString PROPERTY_WATER = "water";
+
+const QString OBJECT_CLASS_MOB = "mob";
+const QString OBJECT_CLASS_ITEM = "item";
+const QString OBJECT_CLASS_OBJECT = "object";
 
 void RpdPlugin::initialize()
 {
@@ -64,8 +81,74 @@ bool RpdMapFormat::insertTilesetFile(Tiled::Layer &layer,
     return true;
 }
 
+bool RpdMapFormat::validateMap(const Tiled::Map *map) {
+    bool haveLogicLayer = false;
+
+    const QList<QString> tileLayers = {LAYER_LOGIC, LAYER_BASE, LAYER_DECO, LAYER_DECO2, LAYER_ROOF_BASE, LAYER_ROOF_DECO};
+    const QList<QString> objectLayers = {LAYER_OBJECTS};
+
+    for (Tiled::Layer *layer : map->layers()) {
+        if (layer->layerType() == Tiled::Layer::TileLayerType) {
+            if(layer->name() == LAYER_LOGIC) {
+                haveLogicLayer = true;
+                continue;
+            }
+            if(!tileLayers.contains(layer->name())) {
+                Tiled::WARNING(tr("You have an unknown tile layer (%1), it will be ignored\n").arg(layer->name()));
+            }
+        }
+
+        if (layer->layerType() == Tiled::Layer::ObjectGroupType) {
+            if(!objectLayers.contains(layer->name())) {
+                Tiled::WARNING(tr("You have an unknown object layer (%1), it will be ignored\n").arg(layer->name()));
+            }
+        }
+    }
+
+    if (!haveLogicLayer) {
+        mError = tr("You must have a layer with tile layer type and name 'logic'");
+        Tiled::ERROR(mError);
+        return false;
+    }
+
+    return true;
+}
+
+void RpdMapFormat::validateAndWritePrperties(const Tiled::Map *map, QJsonObject &mapJson) {
+
+    const QList<QString> knownStringProperties = {PROPERTY_TILES, PROPERTY_WATER};
+
+    for (const auto &[key, value] : map->properties().toStdMap()) {
+        if (value.canConvert<double>()) {
+            mapJson.insert(key, value.toDouble());
+            continue;
+        }
+
+        if (value.canConvert<QString>()) {
+            if(!knownStringProperties.contains(key)) {
+                Tiled::WARNING(tr("Dont know about property (%1) it probably will be ignored").arg(key));
+            }
+            mapJson.insert(key, value.toString());
+            continue;
+        }
+
+        Tiled::WARNING(tr("Dont know what to do with property (%1) it will be ignored").arg(key));
+    }
+
+    if (!mapJson.contains(PROPERTY_TILES))
+        mapJson.insert(PROPERTY_TILES, "tiles0_x.png");
+
+    if(!mapJson.contains(PROPERTY_WATER))
+        mapJson.insert(PROPERTY_WATER, "water0.png");
+}
+
 bool RpdMapFormat::write(const Tiled::Map *map, const QString &fileName, Options options)
 {
+
+    if (!validateMap(map)) {
+        return false;
+    }
+
     Tiled::SaveFile file(fileName);
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -75,20 +158,7 @@ bool RpdMapFormat::write(const Tiled::Map *map, const QString &fileName, Options
 
     QJsonObject mapJson;
 
-    for (const auto &[key, value] : map->properties().toStdMap()) {
-        if (value.canConvert<double>()) {
-            mapJson.insert(key, value.toDouble());
-            continue;
-        }
-
-        if (value.canConvert<QString>()) {
-            mapJson.insert(key, value.toString());
-            continue;
-        }
-
-        mError = tr("Dont know what to do with property (%1)").arg(key);
-        return false;
-    }
+    validateAndWritePrperties(map, mapJson);
 
     for (Tiled::Layer *layer : map->layers()) {
         if (layer->layerType() == Tiled::Layer::TileLayerType
@@ -96,7 +166,7 @@ bool RpdMapFormat::write(const Tiled::Map *map, const QString &fileName, Options
             return false;
         }
 
-        if (layer->name() == "logic") {
+        if (layer->name() == LAYER_LOGIC) {
             QJsonArray entrance;
             QJsonArray multiexit;
 
@@ -135,19 +205,19 @@ bool RpdMapFormat::write(const Tiled::Map *map, const QString &fileName, Options
             mapJson.insert("multiexit", multiexit);
         }
 
-        if (layer->name() == "base")
+        if (layer->name() == LAYER_BASE)
             mapJson.insert("baseTileVar", packMapData(layer->asTileLayer()));
 
-        if (layer->name() == "deco2")
+        if (layer->name() == LAYER_DECO2)
             mapJson.insert("deco2TileVar", packMapData(layer->asTileLayer()));
 
-        if (layer->name() == "roof_base")
+        if (layer->name() == LAYER_ROOF_BASE)
             mapJson.insert("roofBaseTileVar", packMapData(layer->asTileLayer()));
 
-        if (layer->name() == "roof_deco")
+        if (layer->name() == LAYER_ROOF_DECO)
             mapJson.insert("roofDecoTileVar", packMapData(layer->asTileLayer()));
 
-        if (layer->name() == "deco") {
+        if (layer->name() == LAYER_DECO) {
             mapJson.insert("decoTileVar", packMapData(layer->asTileLayer()));
             mapJson.insert("customTiles", true);
 
@@ -174,7 +244,7 @@ bool RpdMapFormat::write(const Tiled::Map *map, const QString &fileName, Options
             mapJson.insert("decoDesc", decoDesc);
         }
 
-        if (layer->name() == "objects") {
+        if (layer->name() == LAYER_OBJECTS) {
             QMap<QString, QJsonArray> objects;
 
             for (auto object : layer->asObjectGroup()->objects()) {
@@ -200,15 +270,10 @@ bool RpdMapFormat::write(const Tiled::Map *map, const QString &fileName, Options
                 objects[object->type()].append(desc);
             }
 
-            for (auto key : objects.keys())
+            for (const auto& key : objects.keys())
                 mapJson.insert(key + "s", objects[key]);
         }
     }
-
-    if (!mapJson.contains("tiles"))
-        mapJson.insert("tiles", "tiles0_x.png");
-
-    mapJson.insert("water", "water0.png");
 
     JsonWriter writer;
     writer.setAutoFormatting(!options.testFlag(WriteMinimized));

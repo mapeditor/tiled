@@ -57,6 +57,9 @@ protected:
 
 private:
     bool insertTilesetFile(Tiled::Layer &layer, const QString &tiles_name, QJsonObject &mapJson);
+    bool validateMap(const Tiled::Map *map);
+
+    void validateAndWritePrperties(const Tiled::Map *map, QJsonObject &mapJson);
 };
 
 
