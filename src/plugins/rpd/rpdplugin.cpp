@@ -112,19 +112,21 @@ bool RpdMapFormat::validateMap(const Tiled::Map *map) {
     const QList<QString> objectLayers = {LAYER_OBJECTS};
 
     for (Tiled::Layer *layer : map->layers()) {
-        if (layer->layerType() == Tiled::Layer::TileLayerType) {
-            if(layer->name() == LAYER_LOGIC) {
+        auto layerName = layer->name();
+
+        if (layer->isTileLayer()) {
+            if(layerName == LAYER_LOGIC) {
                 haveLogicLayer = true;
                 continue;
             }
-            if(!tileLayers.contains(layer->name())) {
-                Tiled::WARNING(tr("You have an unknown tile layer (%1), it will be ignored\n").arg(layer->name()));
+            if(!tileLayers.contains(layerName)) {
+                Tiled::WARNING(tr("You have an unknown tile layer (%1), it will be ignored\n").arg(layerName));
             }
         }
 
-        if (layer->layerType() == Tiled::Layer::ObjectGroupType) {
-            if(!objectLayers.contains(layer->name())) {
-                Tiled::WARNING(tr("You have an unknown object layer (%1), it will be ignored\n").arg(layer->name()));
+        if (layer->isObjectGroup()) {
+            if(!objectLayers.contains(layerName)) {
+                Tiled::WARNING(tr("You have an unknown object layer (%1), it will be ignored\n").arg(layerName));
             }
         }
     }
@@ -199,7 +201,7 @@ bool RpdMapFormat::write(const Tiled::Map *map, const QString &fileName, Options
     for (Tiled::Layer *layer : map->layers()) {
         auto layerName = layer->name();
 
-        if (layer->layerType() == Tiled::Layer::TileLayerType) {
+        if (layer->isTileLayer()) {
             if (!insertTilesetFile(*layer, QString("tiles_") + layer->name(), mapJson)) {
                 return false;
             }
@@ -229,7 +231,7 @@ bool RpdMapFormat::write(const Tiled::Map *map, const QString &fileName, Options
             }
         }
 
-        if (layer->layerType() == Tiled::Layer::ObjectGroupType) {
+        if (layer->isObjectGroup()) {
             auto objectLayer = layer->asObjectGroup();
             if (layerName == LAYER_OBJECTS) {
                 writeObjectLayer(mapJson, objectLayer);
