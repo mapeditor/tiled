@@ -59,7 +59,6 @@ const QString OBJECT_CLASS_OBJECT = "object";
 void RpdPlugin::initialize()
 {
     addObject(new RpdMapFormat(this));
-    addObject(new RpdTilesetFormat(this));
 }
 
 RpdMapFormat::RpdMapFormat(QObject *parent)
@@ -384,75 +383,6 @@ QString RpdMapFormat::nameFilter() const
 QString RpdMapFormat::errorString() const
 {
     return mError;
-}
-
-RpdTilesetFormat::RpdTilesetFormat(QObject *parent)
-    : Tiled::TilesetFormat(parent)
-{}
-
-Tiled::SharedTileset RpdTilesetFormat::read(const QString &fileName)
-{
-    Q_UNUSED(fileName)
-    return Tiled::SharedTileset();
-}
-
-bool RpdTilesetFormat::supportsFile(const QString &fileName) const
-{
-    Q_UNUSED(fileName)
-    return false;
-}
-
-bool RpdTilesetFormat::write(const Tiled::Tileset &tileset, const QString &fileName, Options options)
-{
-    Tiled::SaveFile file(fileName);
-
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        mError = tr("Could not open file for writing.");
-        return false;
-    }
-
-    Tiled::MapToVariantConverter converter;
-    QVariant variant = converter.toVariant(tileset, QFileInfo(fileName).dir());
-
-    JsonWriter writer;
-    writer.setAutoFormatting(!options.testFlag(WriteMinimized));
-
-    if (!writer.stringify(variant)) {
-        // This can only happen due to coding error
-        mError = writer.errorString();
-        return false;
-    }
-
-    QTextStream out(file.device());
-    out << writer.result();
-    out.flush();
-
-    if (file.error() != QFileDevice::NoError) {
-        mError = tr("Error while writing file:\n%1").arg(file.errorString());
-        return false;
-    }
-
-    if (!file.commit()) {
-        mError = file.errorString();
-        return false;
-    }
-
-    return true;
-}
-
-QString RpdTilesetFormat::nameFilter() const
-{
-    return tr("Json tileset files (*.json)");
-}
-
-QString RpdTilesetFormat::errorString() const
-{
-    return mError;
-}
-
-QString RpdTilesetFormat::shortName() const
-{
-    return "RPD";
 }
 
 } // namespace Rpd

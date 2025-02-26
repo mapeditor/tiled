@@ -82,27 +82,4 @@ private:
     static void writeObjectLayer(QJsonObject &mapJson, const Tiled::ObjectGroup *objectLayer) ;
 };
 
-
-class RPDSHARED_EXPORT RpdTilesetFormat : public Tiled::TilesetFormat
-{
-    Q_OBJECT
-    Q_INTERFACES(Tiled::TilesetFormat)
-
-public:
-    explicit RpdTilesetFormat(QObject *parent = nullptr);
-
-    Tiled::SharedTileset read(const QString &fileName) override;
-    bool supportsFile(const QString &fileName) const override;
-
-    bool write(const Tiled::Tileset &tileset, const QString &fileName, Options options = Options()) override;
-
-    QString shortName() const override;
-    QString nameFilter() const override;
-    QString errorString() const override;
-
-protected:
-    QString mError;
-};
-
 } // namespace Rpd
-
