@@ -78,7 +78,13 @@ private:
     bool insertTilesetFile(Tiled::Layer &layer, const QString &tiles_name, QJsonObject &mapJson);
     bool validateMap(const Tiled::Map *map);
 
-    void validateAndWritePrperties(const Tiled::Map *map, QJsonObject &mapJson);
+    static void validateAndWriteProperties(const Tiled::Map *map, QJsonObject &mapJson);
+
+    bool writeLogicLayer(QJsonObject &mapJson, Tiled::TileLayer *layer);
+
+    bool writeDecoLayer(QJsonObject &mapJson, Tiled::TileLayer *layer);
+
+    static void writeObjectLayer(QJsonObject &mapJson, const Tiled::ObjectGroup *objectLayer) ;
 };
 
 

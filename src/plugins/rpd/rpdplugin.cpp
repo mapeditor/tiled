@@ -37,6 +37,7 @@
 #include <QTextStream>
 #include <QtMath>
 
+
 namespace Rpd {
 
 const QString LAYER_LOGIC = "logic";
@@ -49,6 +50,7 @@ const QString LAYER_OBJECTS = "objects";
 
 const QString PROPERTY_TILES = "tiles";
 const QString PROPERTY_WATER = "water";
+const QString PROPERTY_COMPASS_TARGET = "compassTarget";
 
 const QString OBJECT_CLASS_MOB = "mob";
 const QString OBJECT_CLASS_ITEM = "item";
@@ -87,6 +89,7 @@ bool RpdMapFormat::insertTilesetFile(Tiled::Layer &layer,
 
     if (tilesets.isEmpty()) {
         mError = tr("You have an empty %1 layer, please fill it").arg(layer.name());
+        Tiled::ERROR(mError);
         return false;
     }
 
@@ -94,6 +97,7 @@ bool RpdMapFormat::insertTilesetFile(Tiled::Layer &layer,
         mError = tr("Only one tileset per layer supported (%1 layer) ->\n").arg(layer.name());
         for (const auto &tileset : tilesets)
             mError += "[" + tileset->name() + "]\n";
+        Tiled::ERROR(mError);
         return false;
     }
 
@@ -134,9 +138,9 @@ bool RpdMapFormat::validateMap(const Tiled::Map *map) {
     return true;
 }
 
-void RpdMapFormat::validateAndWritePrperties(const Tiled::Map *map, QJsonObject &mapJson) {
+void RpdMapFormat::validateAndWriteProperties(const Tiled::Map *map, QJsonObject &mapJson) {
 
-    const QList<QString> knownStringProperties = {PROPERTY_TILES, PROPERTY_WATER};
+    const QList<QString> knownStringProperties = {PROPERTY_TILES, PROPERTY_WATER, PROPERTY_COMPASS_TARGET};
 
     for (const auto &[key, value] : map->properties().toStdMap()) {
         if (value.canConvert<double>()) {
@@ -146,13 +150,26 @@ void RpdMapFormat::validateAndWritePrperties(const Tiled::Map *map, QJsonObject 
 
         if (value.canConvert<QString>()) {
             if(!knownStringProperties.contains(key)) {
-                Tiled::WARNING(tr("Dont know about property (%1) it probably will be ignored").arg(key));
+                Tiled::WARNING(tr("Don't know about property (%1) it probably will be ignored").arg(key));
             }
+
+            auto jsonCandidate = QJsonDocument::fromJson(value.toString().toUtf8());
+
+            if (jsonCandidate.isObject()) {
+                mapJson.insert(key, jsonCandidate.object());
+                continue;
+            }
+
+            if(jsonCandidate.isArray()) {
+                mapJson.insert(key, jsonCandidate.array());
+                continue;
+            }
+
             mapJson.insert(key, value.toString());
             continue;
         }
 
-        Tiled::WARNING(tr("Dont know what to do with property (%1) it will be ignored").arg(key));
+        Tiled::WARNING(tr("Don't know what to do with property (%1) it will be ignored").arg(key));
     }
 
     if (!mapJson.contains(PROPERTY_TILES))
@@ -164,7 +181,6 @@ void RpdMapFormat::validateAndWritePrperties(const Tiled::Map *map, QJsonObject 
 
 bool RpdMapFormat::write(const Tiled::Map *map, const QString &fileName, Options options)
 {
-
     if (!validateMap(map)) {
         return false;
     }
@@ -178,120 +194,46 @@ bool RpdMapFormat::write(const Tiled::Map *map, const QString &fileName, Options
 
     QJsonObject mapJson;
 
-    validateAndWritePrperties(map, mapJson);
+    validateAndWriteProperties(map, mapJson);
 
     for (Tiled::Layer *layer : map->layers()) {
-        if (layer->layerType() == Tiled::Layer::TileLayerType
-            && !insertTilesetFile(*layer, QString("tiles_") + layer->name(), mapJson)) {
-            return false;
-        }
+        auto layerName = layer->name();
 
-        if (layer->name() == LAYER_LOGIC) {
-            QJsonArray entrance;
-            QJsonArray multiexit;
-
-            mapJson.insert("width", layer->map()->width());
-            mapJson.insert("height", layer->map()->height());
-
-            mapJson.insert("map", packMapData(layer->asTileLayer()));
-
-            for (int i = 0; i < layer->map()->width(); ++i) {
-                for (int j = 0; j < layer->map()->height(); ++j) {
-                    int tileId = layer->asTileLayer()->cellAt(i, j).tileId();
-
-                    if (tileId < 0) {
-                        mError = tr("Hole in logic layer at (%1, %2)").arg(i).arg(j);
-                        return false;
-                    }
-
-                    switch (tileId) {
-                    case TileId::ENTRANCE:
-                        entrance.append(i);
-                        entrance.append(j);
-                        break;
-                    case TileId::EXIT:
-                    case TileId::LOCKED_EXIT:
-                    case TileId::UNLOCKED_EXIT: {
-                        QJsonArray exit;
-                        exit.append(i);
-                        exit.append(j);
-                        multiexit.append(exit);
-                    } break;
-                    }
-                }
-            }
-
-            mapJson.insert("entrance", entrance);
-            mapJson.insert("multiexit", multiexit);
-        }
-
-        if (layer->name() == LAYER_BASE)
-            mapJson.insert("baseTileVar", packMapData(layer->asTileLayer()));
-
-        if (layer->name() == LAYER_DECO2)
-            mapJson.insert("deco2TileVar", packMapData(layer->asTileLayer()));
-
-        if (layer->name() == LAYER_ROOF_BASE)
-            mapJson.insert("roofBaseTileVar", packMapData(layer->asTileLayer()));
-
-        if (layer->name() == LAYER_ROOF_DECO)
-            mapJson.insert("roofDecoTileVar", packMapData(layer->asTileLayer()));
-
-        if (layer->name() == LAYER_DECO) {
-            mapJson.insert("decoTileVar", packMapData(layer->asTileLayer()));
-            mapJson.insert("customTiles", true);
-
-            if (!insertTilesetFile(*layer, "tiles", mapJson))
+        if (layer->layerType() == Tiled::Layer::TileLayerType) {
+            if (!insertTilesetFile(*layer, QString("tiles_") + layer->name(), mapJson)) {
                 return false;
-
-            QJsonArray decoDesc;
-            QJsonArray decoName;
-
-            auto tilesets = layer->usedTilesets();
-
-            auto decoTileset = tilesets.begin()->data();
-
-            auto it = decoTileset->tiles().begin();
-            auto end = decoTileset->tiles().end();
-
-            while (it != end) {
-                decoDesc.append(((*it)->properties())["deco_desc"].toString());
-                decoName.append(((*it)->properties())["deco_name"].toString());
-                ++it;
             }
 
-            mapJson.insert("decoName", decoName);
-            mapJson.insert("decoDesc", decoDesc);
+            auto tileLayer = layer->asTileLayer();
+
+            if (layerName == LAYER_LOGIC) {
+                if (!writeLogicLayer(mapJson, tileLayer))
+                    return false;
+            }
+
+            if (layerName == LAYER_BASE)
+                mapJson.insert("baseTileVar", packMapData(tileLayer));
+
+            if (layerName == LAYER_DECO2)
+                mapJson.insert("deco2TileVar", packMapData(tileLayer));
+
+            if (layerName == LAYER_ROOF_BASE)
+                mapJson.insert("roofBaseTileVar", packMapData(tileLayer));
+
+            if (layerName == LAYER_ROOF_DECO)
+                mapJson.insert("roofDecoTileVar", packMapData(tileLayer));
+
+            if (layerName == LAYER_DECO) {
+                if (!writeDecoLayer(mapJson, tileLayer))
+                    return false;
+            }
         }
 
-        if (layer->name() == LAYER_OBJECTS) {
-            QMap<QString, QJsonArray> objects;
-
-            for (auto object : layer->asObjectGroup()->objects()) {
-                QJsonObject desc;
-
-                desc.insert("kind", object->name());
-
-                desc.insert("x", qFloor(object->x() / 16.));
-                desc.insert("y", qFloor(object->y() / 16.));
-
-                auto properties = object->properties();
-                for (auto i = properties.begin(); i != properties.end(); ++i) {
-                    auto jsonCandidate = QJsonDocument::fromJson(i.value().toString().toUtf8());
-
-                    if (jsonCandidate.isObject()) {
-                        desc.insert(i.key(), jsonCandidate.object());
-                        continue;
-                    }
-
-                    desc.insert(i.key(), i.value().toJsonValue());
-                }
-
-                objects[object->type()].append(desc);
+        if (layer->layerType() == Tiled::Layer::ObjectGroupType) {
+            auto objectLayer = layer->asObjectGroup();
+            if (layerName == LAYER_OBJECTS) {
+                writeObjectLayer(mapJson, objectLayer);
             }
-
-            for (const auto& key : objects.keys())
-                mapJson.insert(key + "s", objects[key]);
         }
     }
 
@@ -320,6 +262,117 @@ bool RpdMapFormat::write(const Tiled::Map *map, const QString &fileName, Options
     }
 
     return true;
+}
+
+void RpdMapFormat::writeObjectLayer(QJsonObject &mapJson, const Tiled::ObjectGroup *objectLayer) {
+
+    const QList <QString> knownObjectsKind = {OBJECT_CLASS_ITEM, OBJECT_CLASS_MOB, OBJECT_CLASS_OBJECT};
+    QMap<QString, QJsonArray> objects;
+
+    for (auto object: objectLayer->objects()) {
+        QJsonObject desc;
+
+        desc.insert("kind", object->name());
+
+        desc.insert("x", qFloor(object->x() / 16.));
+        desc.insert("y", qFloor(object->y() / 16.));
+
+        auto properties = object->properties();
+        for (auto i = properties.begin(); i != properties.end(); ++i) {
+            auto jsonCandidate = QJsonDocument::fromJson(i.value().toString().toUtf8());
+
+            if (jsonCandidate.isObject()) {
+                desc.insert(i.key(), jsonCandidate.object());
+                continue;
+            }
+
+            desc.insert(i.key(), i.value().toJsonValue());
+        }
+
+        if(!knownObjectsKind.contains(object->type())) {
+            Tiled::WARNING(tr("Don't know about object class (%1) it probably will be ignored").arg(object->type()));
+        }
+
+        objects[object->type()].append(desc);
+    }
+
+    for (const auto &key: objects.keys())
+        mapJson.insert(key + "s", objects[key]);
+
+}
+
+bool RpdMapFormat::writeDecoLayer(QJsonObject &mapJson, Tiled::TileLayer *layer) {
+    mapJson.insert("decoTileVar", packMapData(layer));
+    mapJson.insert("customTiles", true);
+
+    if (!insertTilesetFile(*layer, "tiles", mapJson))
+        return false;
+
+    QJsonArray decoDesc;
+    QJsonArray decoName;
+
+    auto tilesets = layer->usedTilesets();
+
+    auto decoTileset = tilesets.begin()->data();
+
+    auto it = decoTileset->tiles().begin();
+    auto end = decoTileset->tiles().end();
+
+    while (it != end) {
+        decoDesc.append(((*it)->properties())["deco_desc"].toString());
+        decoName.append(((*it)->properties())["deco_name"].toString());
+        ++it;
+    }
+
+    mapJson.insert("decoName", decoName);
+    mapJson.insert("decoDesc", decoDesc);
+    return true;
+}
+
+bool RpdMapFormat::writeLogicLayer(QJsonObject &mapJson, Tiled::TileLayer *layer) {
+    QJsonArray entrance;
+    QJsonArray multiexit;
+
+    mapJson.insert("width", layer->map()->width());
+    mapJson.insert("height", layer->map()->height());
+
+    mapJson.insert("map", packMapData(layer));
+
+    bool isOk = true;
+
+    for (int i = 0; i < layer->map()->width(); ++i) {
+        for (int j = 0; j < layer->map()->height(); ++j) {
+            int tileId = layer->cellAt(i, j).tileId();
+
+            if (tileId < 0) {
+                mError = tr("Hole in logic layer at (%1, %2)").arg(i).arg(j);
+                Tiled::ERROR(mError);
+                isOk = false;
+            }
+
+            switch (tileId) {
+                case ENTRANCE:
+                    entrance.append(i);
+                    entrance.append(j);
+                    break;
+                case EXIT:
+                case LOCKED_EXIT:
+                case UNLOCKED_EXIT: {
+                    QJsonArray exit;
+                    exit.append(i);
+                    exit.append(j);
+                    multiexit.append(exit);
+                } break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    mapJson.insert("entrance", entrance);
+    mapJson.insert("multiexit", multiexit);
+
+    return isOk;
 }
 
 QString RpdMapFormat::nameFilter() const
