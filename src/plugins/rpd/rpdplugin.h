@@ -52,10 +52,6 @@ class RPDSHARED_EXPORT RpdMapFormat : public Tiled::WritableMapFormat
     Q_INTERFACES(Tiled::MapFormat)
 
 public:
-    enum SubFormat {
-        Rpd
-    };
-
     enum TileId {
         ENTRANCE = 7,
         EXIT = 8,
@@ -63,7 +59,7 @@ public:
         UNLOCKED_EXIT = 26
     };
 
-    explicit RpdMapFormat(SubFormat subFormat, QObject *parent = nullptr);
+    explicit RpdMapFormat(QObject *parent = nullptr);
 
     bool write(const Tiled::Map *map, const QString &fileName, Options options = Options()) override;
     QString shortName() const override;
@@ -72,7 +68,6 @@ public:
 
 protected:
     QString mError;
-    SubFormat mSubFormat;
 
 private:
     bool insertTilesetFile(Tiled::Layer &layer, const QString &tiles_name, QJsonObject &mapJson);

@@ -58,13 +58,12 @@ const QString OBJECT_CLASS_OBJECT = "object";
 
 void RpdPlugin::initialize()
 {
-    addObject(new RpdMapFormat(RpdMapFormat::Rpd, this));
+    addObject(new RpdMapFormat(this));
     addObject(new RpdTilesetFormat(this));
 }
 
-RpdMapFormat::RpdMapFormat(SubFormat subFormat, QObject *parent)
+RpdMapFormat::RpdMapFormat(QObject *parent)
     : Tiled::WritableMapFormat(parent)
-    , mSubFormat(subFormat)
 {}
 
 QString RpdMapFormat::shortName() const
