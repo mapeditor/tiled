@@ -346,7 +346,7 @@ bool RpdMapFormat::writeLogicLayer(QJsonObject &mapJson, const Tiled::TileLayer 
             int tileId = layer.cellAt(i, j).tileId();
 
             if (tileId < 0) {
-                logError(tr("Hole in logic layer at (%1, %2)").arg(i).arg(j));
+                logError(tr("Hole in 'logic' layer at (%1, %2)").arg(i).arg(j));
                 isOk = false;
             }
 
