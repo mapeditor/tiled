@@ -67,19 +67,17 @@ public:
     QString errorString() const override;
 
 protected:
-    QString mError;
+    QString mLatestError;
 
 private:
-    bool insertTilesetFile(Tiled::Layer &layer, const QString &tiles_name, QJsonObject &mapJson);
+    bool insertTilesetFile(const Tiled::Layer &layer, const QString &tiles_name, QJsonObject &mapJson);
     bool validateMap(const Tiled::Map *map);
+    void validateAndWriteProperties(const Tiled::Map *map, QJsonObject &mapJson);
+    bool writeLogicLayer(QJsonObject &mapJson, const Tiled::TileLayer &layer);
+    bool writeDecoLayer(QJsonObject &mapJson, const Tiled::TileLayer &layer);
+    void writeObjectLayer(QJsonObject &mapJson, const Tiled::ObjectGroup &objectLayer);
 
-    static void validateAndWriteProperties(const Tiled::Map *map, QJsonObject &mapJson);
-
-    bool writeLogicLayer(QJsonObject &mapJson, Tiled::TileLayer *layer);
-
-    bool writeDecoLayer(QJsonObject &mapJson, Tiled::TileLayer *layer);
-
-    static void writeObjectLayer(QJsonObject &mapJson, const Tiled::ObjectGroup *objectLayer) ;
+    void logError(const QString &msg);
 };
 
 } // namespace Rpd
