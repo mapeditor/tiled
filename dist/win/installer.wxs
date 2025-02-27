@@ -176,6 +176,8 @@
                 <File Source="$(var.InstallRoot)\plugins\tiled\rpmap.dll" />
                 <?endif?>
 
+                <File Source="$(var.InstallRoot)\plugins\tiled\rpd.dll" />
+
                 <File Source="$(var.InstallRoot)\plugins\tiled\tbin.dll" />
                 <File Source="$(var.InstallRoot)\plugins\tiled\tengine.dll" />
                 <File Source="$(var.InstallRoot)\plugins\tiled\tscn.dll" />
