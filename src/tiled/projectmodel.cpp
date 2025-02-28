@@ -82,11 +82,7 @@ static void findFiles(const FolderEntry &entry, int offset, const QStringList &w
 {
     for (const auto &childEntry : entry.entries) {
         if (childEntry->entries.empty()) {
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
             const auto relativePath = QStringView(childEntry->filePath).mid(offset);
-#else
-            const auto relativePath = childEntry->filePath.midRef(offset);
-#endif
             const int totalScore = Utils::matchingScore(words, relativePath);
 
             if (totalScore > 0) {

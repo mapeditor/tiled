@@ -103,14 +103,14 @@ private:
     void readTileLayerData(TileLayer &tileLayer);
     void readTileLayerRect(TileLayer &tileLayer,
                            Map::LayerDataFormat layerDataFormat,
-                           QStringRef encoding,
+                           QStringView encoding,
                            QRect bounds);
     void decodeBinaryLayerData(TileLayer &tileLayer,
                                const QByteArray &data,
                                Map::LayerDataFormat format,
                                QRect bounds);
     void decodeCSVLayerData(TileLayer &tileLayer,
-                            QStringRef text,
+                            QStringView text,
                             QRect bounds);
 
     /**
@@ -511,9 +511,9 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
 
     // Read tile quadrant terrain ids as Wang IDs. This is possible because the
     // terrain types (loaded as WangSet) are always stored before the tiles.
-    const QStringRef terrain = atts.value(QLatin1String("terrain"));
+    const auto terrain = atts.value(QLatin1String("terrain"));
     if (!terrain.isEmpty() && tileset.wangSetCount() > 0) {
-        QVector<QStringRef> quadrants = terrain.split(QLatin1Char(','));
+        const auto quadrants = terrain.split(QLatin1Char(','));
         WangId wangId;
         if (quadrants.size() == 4) {
             for (int i = 0; i < 4; ++i) {
@@ -777,7 +777,7 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                 } else if (xml.name() == QLatin1String("wangtile")) {
                     const QXmlStreamAttributes tileAtts = xml.attributes();
                     const int tileId = tileAtts.value(QLatin1String("tileid")).toInt();
-                    const QStringRef wangIdString = tileAtts.value(QLatin1String("wangid"));
+                    const auto wangIdString = tileAtts.value(QLatin1String("wangid"));
 
                     bool ok = true;
                     WangId wangId;
@@ -965,7 +965,7 @@ void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer)
 
 void MapReaderPrivate::readTileLayerRect(TileLayer &tileLayer,
                                          Map::LayerDataFormat layerDataFormat,
-                                         QStringRef encoding,
+                                         QStringView encoding,
                                          QRect bounds)
 {
     Q_ASSERT(xml.isStartElement() && (xml.name() == QLatin1String("data") ||
@@ -1046,7 +1046,7 @@ void MapReaderPrivate::decodeBinaryLayerData(TileLayer &tileLayer,
 }
 
 void MapReaderPrivate::decodeCSVLayerData(TileLayer &tileLayer,
-                                          QStringRef text,
+                                          QStringView text,
                                           QRect bounds)
 {
     int currentIndex = 0;
@@ -1289,21 +1289,12 @@ QPolygonF MapReaderPrivate::readPolygon()
             break;
         }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
         const qreal x = QStringView(point).left(commaPos).toDouble(&ok);
         if (!ok)
             break;
         const qreal y = QStringView(point).mid(commaPos + 1).toDouble(&ok);
         if (!ok)
             break;
-#else
-        const qreal x = point.leftRef(commaPos).toDouble(&ok);
-        if (!ok)
-            break;
-        const qreal y = point.midRef(commaPos + 1).toDouble(&ok);
-        if (!ok)
-            break;
-#endif
 
         polygon.append(QPointF(x, y));
     }

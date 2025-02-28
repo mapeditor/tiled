@@ -2554,7 +2554,7 @@ void PropertiesWidget::updateActions()
     const auto properties = mPropertiesView->selectedProperties();
     bool editingTileset = mDocument && mDocument->type() == Document::TilesetDocumentType;
     bool isTileset = mDocument && mDocument->currentObject() && mDocument->currentObject()->isPartOfTileset();
-    bool canModify = !properties.isEmpty() && (!isTileset || editingTileset);
+    bool canModify = mDocument && !properties.isEmpty() && (!isTileset || editingTileset);
 
     // Disable remove and rename actions when none of the selected objects
     // actually have the selected property (it may be inherited).

@@ -171,12 +171,7 @@ QVariant EnumPropertyType::toPropertyValue(const QVariant &value, const ExportCo
         if (valuesAsFlags) {
             int flags = 0;
 
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-            const QVector<QStringRef> stringValues = stringValue.splitRef(QLatin1Char(','), Qt::SkipEmptyParts);
-#else
-            const QList<QStringView> stringValues = QStringView(stringValue).split(QLatin1Char(','), Qt::SkipEmptyParts);
-#endif
-
+            const auto stringValues = QStringView(stringValue).split(QLatin1Char(','), Qt::SkipEmptyParts);
             for (const auto &stringValue : stringValues) {
                 const int index = indexOf(values, stringValue);
 

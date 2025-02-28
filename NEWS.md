@@ -1,9 +1,17 @@
 ### Unreleased
 
 * Added support for SVG 1.2 / CSS blending modes to layers (#3932)
+* AutoMapping: Don't match rules based on empty input indexes
+* AutoMapping: Optimized reloading of rule maps and load rule maps on-demand
+* Raised minimum supported Qt version from 5.12 to 5.15.2
+
+### Tiled 1.11.2 (28 Jan 2025)
+
 * YY plugin: Fixed compatibility with GameMaker 2024 (#4132)
+* Fixed crash while handling file reloads without any files opened
+* Fixed crash when closing the last file with multiple custom properties selected
 * snap: Fixed crash on startup on Wayland
-* Raised minimum supported Qt version from 5.12 to 5.15
+* AppImage: Updated to Sentry 0.7.19
 
 ### Tiled 1.11.1 (11 Jan 2025)
 

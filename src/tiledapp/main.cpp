@@ -41,8 +41,6 @@
 #include <QJsonDocument>
 #include <QtPlugin>
 
-#include "qtcompat_p.h"
-
 #include <memory>
 
 #ifdef Q_OS_WIN

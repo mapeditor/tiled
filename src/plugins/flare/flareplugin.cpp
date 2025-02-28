@@ -36,9 +36,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QStringList>
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
 #include <QStringView>
-#endif
 #include <QTextStream>
 
 #include <memory>
@@ -88,12 +86,7 @@ std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
 
     while (!stream.atEnd()) {
         line = stream.readLine();
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
         const QStringView lineView(line);
-#else
-        const QStringRef lineView(&line);
-#endif
-
         if (!line.length())
             continue;
 

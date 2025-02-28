@@ -31,7 +31,6 @@
 #include <QList>
 #include <QMap>
 #include <QRegion>
-#include <QRegularExpression>
 #include <QSet>
 #include <QString>
 #include <QVector>
@@ -333,11 +332,10 @@ public:
      * @param rulesMap The map containing the AutoMapping rules. The
      *                 AutoMapper takes ownership of this map.
      */
-    AutoMapper(std::unique_ptr<Map> rulesMap, const QRegularExpression &mapNameFilter = {});
+    explicit AutoMapper(std::unique_ptr<Map> rulesMap);
     ~AutoMapper();
 
     QString rulesMapFileName() const;
-    const QRegularExpression &mapNameFilter() const;
 
     /**
      * Checks if the passed \a ruleLayerName is used as input layer in this
@@ -351,7 +349,7 @@ public:
      * painful to keep these data structures up to date all time. (indices of
      * layers of the working map)
      */
-    void prepareAutoMap(AutoMappingContext &context);
+    void prepareAutoMap(AutoMappingContext &context) const;
 
     /**
      * Here is done all the AutoMapping.
@@ -467,7 +465,6 @@ private:
      */
     const std::unique_ptr<Map> mRulesMap;
     const std::unique_ptr<MapRenderer> mRulesMapRenderer;
-    const QRegularExpression mMapNameFilter;
 
     RuleMapSetup mRuleMapSetup;
 
@@ -489,10 +486,5 @@ private:
 
     const TileLayer dummy;  // used in case input layers are missing
 };
-
-inline const QRegularExpression &AutoMapper::mapNameFilter() const
-{
-    return mMapNameFilter;
-}
 
 } // namespace Tiled
