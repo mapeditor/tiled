@@ -20,11 +20,11 @@
 
 #include "rpdplugin.h"
 
-#include "mapobject.h"
 #include "logginginterface.h"
-#include "tilelayer.h"
+#include "mapobject.h"
 #include "objectgroup.h"
 #include "savefile.h"
+#include "tilelayer.h"
 
 #include "qjsonparser/json.h"
 
@@ -33,8 +33,6 @@
 #include <QJsonObject>
 #include <QTextStream>
 #include <QtMath>
-
-
 
 namespace Rpd {
 
@@ -100,7 +98,8 @@ bool RpdMapFormat::insertTilesetFile(const Tiled::Layer &layer,
     return true;
 }
 
-bool RpdMapFormat::validateMap(const Tiled::Map *map) {
+bool RpdMapFormat::validateMap(const Tiled::Map *map)
+{
     bool haveLogicLayer = false;
 
     const QList<QString> tileLayers = {LAYER_LOGIC, LAYER_BASE, LAYER_DECO, LAYER_DECO2, LAYER_ROOF_BASE, LAYER_ROOF_DECO};
@@ -110,17 +109,17 @@ bool RpdMapFormat::validateMap(const Tiled::Map *map) {
         auto layerName = layer->name();
 
         if (layer->isTileLayer()) {
-            if(layerName == LAYER_LOGIC) {
+            if (layerName == LAYER_LOGIC) {
                 haveLogicLayer = true;
                 continue;
             }
-            if(!tileLayers.contains(layerName)) {
+            if (!tileLayers.contains(layerName)) {
                 Tiled::WARNING(tr("You have an unknown tile layer '%1', it will be ignored").arg(layerName));
             }
         }
 
         if (layer->isObjectGroup()) {
-            if(!objectLayers.contains(layerName)) {
+            if (!objectLayers.contains(layerName)) {
                 Tiled::WARNING(tr("You have an unknown object layer '%1', it will be ignored").arg(layerName));
             }
         }
@@ -134,8 +133,8 @@ bool RpdMapFormat::validateMap(const Tiled::Map *map) {
     return true;
 }
 
-void RpdMapFormat::validateAndWriteProperties(const Tiled::Map *map, QJsonObject &mapJson) {
-
+void RpdMapFormat::validateAndWriteProperties(const Tiled::Map *map, QJsonObject &mapJson)
+{
     const QList<QString> knownStringProperties = {PROPERTY_TILES, PROPERTY_WATER, PROPERTY_COMPASS_TARGET};
 
     for (const auto &[key, value] : map->properties().toStdMap()) {
@@ -145,7 +144,7 @@ void RpdMapFormat::validateAndWriteProperties(const Tiled::Map *map, QJsonObject
         }
 
         if (value.canConvert<QString>()) {
-            if(!knownStringProperties.contains(key)) {
+            if (!knownStringProperties.contains(key)) {
                 Tiled::WARNING(tr("Don't know about property '%1' it probably will be ignored by Remixed").arg(key));
             }
 
@@ -156,7 +155,7 @@ void RpdMapFormat::validateAndWriteProperties(const Tiled::Map *map, QJsonObject
                 continue;
             }
 
-            if(jsonCandidate.isArray()) {
+            if (jsonCandidate.isArray()) {
                 mapJson.insert(key, jsonCandidate.array());
                 continue;
             }
@@ -171,7 +170,7 @@ void RpdMapFormat::validateAndWriteProperties(const Tiled::Map *map, QJsonObject
     if (!mapJson.contains(PROPERTY_TILES))
         mapJson.insert(PROPERTY_TILES, "tiles0_x.png");
 
-    if(!mapJson.contains(PROPERTY_WATER))
+    if (!mapJson.contains(PROPERTY_WATER))
         mapJson.insert(PROPERTY_WATER, "water0.png");
 }
 
@@ -225,8 +224,7 @@ bool RpdMapFormat::write(const Tiled::Map *map, const QString &fileName, Options
             }
         }
 
-        if (layer->isObjectGroup()) {
-            auto objectLayer = layer->asObjectGroup();
+        if (auto objectLayer = layer->asObjectGroup()) {
             if (layerName == LAYER_OBJECTS) {
                 writeObjectLayer(mapJson, *objectLayer);
             }
@@ -265,7 +263,7 @@ void RpdMapFormat::writeObjectLayer(QJsonObject &mapJson, const Tiled::ObjectGro
     const QList <QString> knownObjectsKind = {OBJECT_CLASS_ITEM, OBJECT_CLASS_MOB, OBJECT_CLASS_OBJECT};
     QMap<QString, QJsonArray> objects;
 
-    for (auto object: objectLayer.objects()) {
+    for (auto object : objectLayer.objects()) {
         QJsonObject desc;
 
         desc.insert("kind", object->name());
@@ -285,24 +283,26 @@ void RpdMapFormat::writeObjectLayer(QJsonObject &mapJson, const Tiled::ObjectGro
             desc.insert(i.key(), i.value().toJsonValue());
         }
 
-        if(!knownObjectsKind.contains(object->type())) {
+        if (!knownObjectsKind.contains(object->type())) {
             Tiled::WARNING(tr("Don't know about object class '%1' it probably will be ignored by Remixed").arg(object->type()));
         }
 
         objects[object->type()].append(desc);
     }
 
-    for (const auto &key: objects.keys())
+    for (const auto &key : objects.keys())
         mapJson.insert(key + "s", objects[key]);
 
 }
 
-void RpdMapFormat::logError(const QString &msg) {
+void RpdMapFormat::logError(const QString &msg)
+{
     mLatestError = msg;
     Tiled::ERROR(mLatestError);
 }
 
-bool RpdMapFormat::writeDecoLayer(QJsonObject &mapJson, const Tiled::TileLayer &layer) {
+bool RpdMapFormat::writeDecoLayer(QJsonObject &mapJson, const Tiled::TileLayer &layer)
+{
     mapJson.insert("decoTileVar", packMapData(layer));
     mapJson.insert("customTiles", true);
 
@@ -330,7 +330,8 @@ bool RpdMapFormat::writeDecoLayer(QJsonObject &mapJson, const Tiled::TileLayer &
     return true;
 }
 
-bool RpdMapFormat::writeLogicLayer(QJsonObject &mapJson, const Tiled::TileLayer &layer) {
+bool RpdMapFormat::writeLogicLayer(QJsonObject &mapJson, const Tiled::TileLayer &layer)
+{
     QJsonArray entrance;
     QJsonArray multiexit;
 
@@ -351,20 +352,20 @@ bool RpdMapFormat::writeLogicLayer(QJsonObject &mapJson, const Tiled::TileLayer 
             }
 
             switch (tileId) {
-                case ENTRANCE:
-                    entrance.append(i);
-                    entrance.append(j);
-                    break;
-                case EXIT:
-                case LOCKED_EXIT:
-                case UNLOCKED_EXIT: {
-                    QJsonArray exit;
-                    exit.append(i);
-                    exit.append(j);
-                    multiexit.append(exit);
-                } break;
-                default:
-                    break;
+            case ENTRANCE:
+                entrance.append(i);
+                entrance.append(j);
+                break;
+            case EXIT:
+            case LOCKED_EXIT:
+            case UNLOCKED_EXIT: {
+                QJsonArray exit;
+                exit.append(i);
+                exit.append(j);
+                multiexit.append(exit);
+            } break;
+            default:
+                break;
             }
         }
     }

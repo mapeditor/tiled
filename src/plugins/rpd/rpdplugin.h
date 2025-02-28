@@ -25,7 +25,6 @@
 #include "layer.h"
 #include "mapformat.h"
 #include "plugin.h"
-#include "tilesetformat.h"
 
 #include <QObject>
 
