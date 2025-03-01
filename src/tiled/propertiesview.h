@@ -403,6 +403,12 @@ struct SizeFProperty : PropertyTemplate<QSizeF>
     QWidget *createEditor(QWidget *parent) override;
 };
 
+struct VariantListProperty : PropertyTemplate<QVariantList>
+{
+    using PropertyTemplate::PropertyTemplate;
+    QWidget *createEditor(QWidget *parent) override;
+};
+
 struct RectProperty : PropertyTemplate<QRect>
 {
     Q_OBJECT
