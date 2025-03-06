@@ -21,11 +21,13 @@
 #include "project.h"
 #include "properties.h"
 #include "savefile.h"
+#include "scriptmanager.h"
 
 #include <QDir>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QCoreApplication>
 
 namespace Tiled {
 
@@ -160,4 +162,9 @@ void Project::removeFolder(int index)
     mFolders.removeAt(index);
 }
 
+void Project::throwDuplicateNameError(const QString &name)
+{
+    ScriptManager::instance().throwError(QCoreApplication::translate("Error Renaming Type",
+                                                                     "The name '%1' is already in use.").arg(name));
+}
 } // namespace Tiled

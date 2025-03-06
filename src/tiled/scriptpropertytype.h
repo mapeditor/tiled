@@ -44,11 +44,7 @@ public:
     {}
 
     const QString &name() const;
-    void setName(const QString &value)
-    {
-        mType->name =value;
-        applyPropertyChanges();
-    }
+    void setName(const QString &name);
     bool isClass() const { return mType->isClass(); }
     bool isEnum() const { return mType->isEnum(); }
     QVariant defaultValue() { return mType->defaultValue(); }
@@ -135,7 +131,8 @@ public:
         applyPropertyChanges();
     }
     QVariantMap members() const {return mClassType->members; }
-    // todo add members, remove members
+    Q_INVOKABLE void removeMember(const QString& name);
+    Q_INVOKABLE void addMember(const QString &name);
 
     bool drawFill() const { return mClassType->drawFill; }
     void setDrawFill(bool value)
@@ -159,7 +156,6 @@ private:
 
 
 void registerPropertyTypes(QJSEngine *jsEngine);
-
 } // namespace Tiled
 
 Q_DECLARE_METATYPE(Tiled::ScriptPropertyType*)

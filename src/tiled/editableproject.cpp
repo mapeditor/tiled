@@ -114,6 +114,10 @@ bool EditableProject::removeTypeByName(const QString &name)
 }
 ScriptPropertyType *EditableProject::addClassType(const QString &name)
 {
+    if (project()->propertyTypes()->findTypeByName(name)) {
+        project()->throwDuplicateNameError(name);
+        return nullptr;
+    }
     SharedPropertyType newClassType = SharedPropertyType(new ClassPropertyType(name));
     project()->propertyTypes()->add(newClassType);
     applyPropertyChanges();
@@ -121,6 +125,10 @@ ScriptPropertyType *EditableProject::addClassType(const QString &name)
 }
 ScriptPropertyType *EditableProject::addEnumType(const QString &name)
 {
+    if (project()->propertyTypes()->findTypeByName(name)) {
+        project()->throwDuplicateNameError(name);
+        return nullptr;
+    }
     SharedPropertyType newEnumType = SharedPropertyType(new EnumPropertyType(name));
     project()->propertyTypes()->add(newEnumType);
     applyPropertyChanges();
