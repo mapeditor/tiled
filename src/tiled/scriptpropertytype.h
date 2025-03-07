@@ -27,6 +27,7 @@
 #include <QObject>
 
 namespace Tiled {
+
 /**
  * Scripting engine wrapper for PropertyType
  */
@@ -47,10 +48,11 @@ public:
     void setName(const QString &name);
     bool isClass() const { return mType->isClass(); }
     bool isEnum() const { return mType->isEnum(); }
-    QVariant defaultValue() { return mType->defaultValue(); }
+    QVariant defaultValue() { return mType->wrap(mType->defaultValue()); }
 
 protected:
     void applyPropertyChanges();
+
 private:
     SharedPropertyType mType;
 };
@@ -79,7 +81,7 @@ public:
 
     void setStorageType(StorageType value)
     {
-        mEnumType->storageType = (EnumPropertyType::StorageType)value;
+        mEnumType->storageType = static_cast<EnumPropertyType::StorageType>(value);
         applyPropertyChanges();
     }
 
@@ -87,8 +89,7 @@ public:
 
     void setValues(const QStringList &values)
     {
-        mEnumType->values.clear();
-        mEnumType->values.append(values);
+        mEnumType->values = values;
         applyPropertyChanges();
     }
 
@@ -160,8 +161,6 @@ private:
     QSharedPointer<ClassPropertyType> mClassType;
 };
 
-
 void registerPropertyTypes(QJSEngine *jsEngine);
-} // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::ScriptPropertyType*)
+} // namespace Tiled
