@@ -64,6 +64,7 @@ public:
 
 private:
     ScriptPropertyType *toScriptType(const SharedPropertyType &type) const;
+    ScriptPropertyType *addPropertyType(const SharedPropertyType &type);
     void applyPropertyChanges();
 };
 

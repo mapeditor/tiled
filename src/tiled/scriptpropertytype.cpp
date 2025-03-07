@@ -18,12 +18,14 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "scriptpropertytype.h"
+
 #include "preferences.h"
 #include "project.h"
 #include "projectmanager.h"
-#include <QCoreApplication>
-#include "scriptpropertytype.h"
 #include "scriptmanager.h"
+
+#include <QCoreApplication>
 
 namespace Tiled {
 
@@ -31,6 +33,7 @@ const QString &ScriptPropertyType::name() const
 {
     return mType->name;
 }
+
 void ScriptPropertyType::setName(const QString &name)
 {
     if (this->name() == name)
@@ -46,6 +49,7 @@ void ScriptPropertyType::setName(const QString &name)
     mType->name = name;
     applyPropertyChanges();
 }
+
 void registerPropertyTypes(QJSEngine *jsEngine)
 {
     jsEngine->globalObject().setProperty(QStringLiteral("EnumPropertyType"),
@@ -67,28 +71,35 @@ void ScriptPropertyType::applyPropertyChanges()
     Project &project = ProjectManager::instance()->project();
     project.save();
 }
-void ScriptClassPropertyType::addMember(const QString &name)
+
+void ScriptClassPropertyType::addMember(const QString &name, const QVariant &value)
 {
-    if (this->mClassType->members.contains(name))
+    if (mClassType->members.contains(name))
     {
-        ScriptManager::instance()
-        .throwError(QCoreApplication::translate("Script Errors", "A class member of the specified name '%1' already exists").arg(name));
+        ScriptManager::instance().throwError(
+            QCoreApplication::translate("Script Errors",
+                                        "A class member of the specified name '%1' already exists")
+                .arg(name));
         return;
     }
-    // todo, how will the user specify the type of a new member ? could be a primitive or a class
-    this->applyPropertyChanges();
+    mClassType->members.insert(name, value);
+    applyPropertyChanges();
 }
+
 void ScriptClassPropertyType::removeMember(const QString &name)
 {
-    if (!this->mClassType->members.contains(name))
+    if (!mClassType->members.contains(name))
     {
-        ScriptManager::instance()
-            .throwError(QCoreApplication::translate("Script Errors", "No class member of the specified name '%1' exists").arg(name));
+        ScriptManager::instance().throwError(
+            QCoreApplication::translate("Script Errors",
+                                        "No class member of the specified name '%1' exists")
+                .arg(name));
         return;
     }
-    this->mClassType->members.remove(name);
-    this->applyPropertyChanges();
+    mClassType->members.remove(name);
+    applyPropertyChanges();
 }
+
 } // namespace Tiled
 
 #include "moc_scriptpropertytype.cpp"

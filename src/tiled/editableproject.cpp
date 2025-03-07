@@ -23,7 +23,6 @@
 
 #include "preferences.h"
 #include "projectdocument.h"
-#include "projectmanager.h"
 
 namespace Tiled {
 
@@ -112,34 +111,33 @@ bool EditableProject::removeTypeByName(const QString &name)
     applyPropertyChanges();
     return true;
 }
+
 ScriptPropertyType *EditableProject::addClassType(const QString &name)
 {
-    if (project()->propertyTypes()->findTypeByName(name)) {
-        project()->throwDuplicateNameError(name);
-        return nullptr;
-    }
-    SharedPropertyType newClassType = SharedPropertyType(new ClassPropertyType(name));
-    project()->propertyTypes()->add(newClassType);
-    applyPropertyChanges();
-    return findTypeByName(name);
+    return addPropertyType(SharedPropertyType(new ClassPropertyType(name)));
 }
+
 ScriptPropertyType *EditableProject::addEnumType(const QString &name)
 {
-    if (project()->propertyTypes()->findTypeByName(name)) {
-        project()->throwDuplicateNameError(name);
+    return addPropertyType(SharedPropertyType(new EnumPropertyType(name)));
+}
+
+ScriptPropertyType *EditableProject::addPropertyType(const SharedPropertyType &type)
+{
+    if (project()->propertyTypes()->findTypeByName(type->name)) {
+        project()->throwDuplicateNameError(type->name);
         return nullptr;
     }
-    SharedPropertyType newEnumType = SharedPropertyType(new EnumPropertyType(name));
-    project()->propertyTypes()->add(newEnumType);
+    project()->propertyTypes()->add(type);
     applyPropertyChanges();
-    return findTypeByName(name);
+    return toScriptType(type);
 }
+
 void EditableProject::applyPropertyChanges()
 {
     emit Preferences::instance()->propertyTypesChanged();
 
-    Project &project = ProjectManager::instance()->project();
-    project.save();
+    project()->save();
 }
 
 } // namespace Tiled

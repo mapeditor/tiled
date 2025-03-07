@@ -67,6 +67,7 @@ public:
         : ScriptPropertyType(propertyType)
         , mEnumType(propertyType)
     {}
+
     // copied from propertytype.h
     enum StorageType {
         StringValue,
@@ -75,18 +76,22 @@ public:
     Q_ENUM(StorageType);
 
     StorageType storageType() const { return static_cast<StorageType>(mEnumType->storageType); }
+
     void setStorageType(StorageType value)
     {
         mEnumType->storageType = (EnumPropertyType::StorageType)value;
         applyPropertyChanges();
     }
+
     QStringList values() const { return mEnumType->values; }
+
     void setValues(const QStringList &values)
     {
         mEnumType->values.clear();
         mEnumType->values.append(values);
         applyPropertyChanges();
     }
+
 private:
     QSharedPointer<EnumPropertyType> mEnumType;
 };
@@ -132,7 +137,7 @@ public:
     }
     QVariantMap members() const {return mClassType->members; }
     Q_INVOKABLE void removeMember(const QString& name);
-    Q_INVOKABLE void addMember(const QString &name);
+    Q_INVOKABLE void addMember(const QString &name, const QVariant &value);
 
     bool drawFill() const { return mClassType->drawFill; }
     void setDrawFill(bool value)
@@ -140,6 +145,7 @@ public:
         mClassType->drawFill = value;
         applyPropertyChanges();
     }
+
     int usageFlags() const { return mClassType->usageFlags; }
     void setUsageFlags(int value) {
         // clear any existing values first so that we set to exactly
