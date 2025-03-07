@@ -46,14 +46,17 @@ public:
 
     const QString &name() const;
     void setName(const QString &name);
-    bool isClass() const { return mType->isClass(); }
-    bool isEnum() const { return mType->isEnum(); }
-    QVariant defaultValue() { return mType->wrap(mType->defaultValue()); }
+    bool isClass() const { return propertyType().isClass(); }
+    bool isEnum() const { return propertyType().isEnum(); }
+    QVariant defaultValue() { return propertyType().wrap(propertyType().defaultValue()); }
 
     static void throwDuplicateNameError(const QString &name);
 
 protected:
     void applyPropertyChanges();
+
+    PropertyType &propertyType() { return *mType; }
+    const PropertyType &propertyType() const { return *mType; }
 
 private:
     SharedPropertyType mType;
@@ -69,7 +72,6 @@ class ScriptEnumPropertyType : public ScriptPropertyType
 public:
     ScriptEnumPropertyType(const QSharedPointer<EnumPropertyType> &propertyType)
         : ScriptPropertyType(propertyType)
-        , mEnumType(propertyType)
     {}
 
     // Copied from EnumPropertyType
@@ -79,10 +81,10 @@ public:
     };
     Q_ENUM(StorageType);
 
-    StorageType storageType() const { return static_cast<StorageType>(mEnumType->storageType); }
+    StorageType storageType() const { return static_cast<StorageType>(enumType().storageType); }
     void setStorageType(StorageType value);
 
-    QStringList values() const { return mEnumType->values; }
+    QStringList values() const { return enumType().values; }
     void setValues(const QStringList &values);
 
     Q_INVOKABLE void addValue(const QString &name);
@@ -91,7 +93,15 @@ public:
     QString nameOf(const QVariant &value) const;
 
 private:
-    QSharedPointer<EnumPropertyType> mEnumType;
+    EnumPropertyType &enumType()
+    {
+        return static_cast<EnumPropertyType &>(propertyType());
+    }
+
+    const EnumPropertyType &enumType() const
+    {
+        return static_cast<const EnumPropertyType &>(propertyType());
+    }
 };
 
 class ScriptClassPropertyType : public ScriptPropertyType
@@ -105,7 +115,6 @@ class ScriptClassPropertyType : public ScriptPropertyType
 public:
     ScriptClassPropertyType(const QSharedPointer<ClassPropertyType> &propertyType)
         : ScriptPropertyType(propertyType)
-        , mClassType(propertyType)
     {}
 
     // Copied from ClassPropertyType
@@ -126,36 +135,44 @@ public:
     };
     Q_ENUM(ClassUsageFlag)
 
-    QColor color() const { return mClassType->color; }
+    QColor color() const { return classType().color; }
 
     void setColor(QColor &value)
     {
-        mClassType->color = value;
+        classType().color = value;
         applyPropertyChanges();
     }
-    QVariantMap members() const {return mClassType->members; }
+    QVariantMap members() const {return classType().members; }
     Q_INVOKABLE void removeMember(const QString& name);
     Q_INVOKABLE void addMember(const QString &name, const QVariant &value);
 
-    bool drawFill() const { return mClassType->drawFill; }
+    bool drawFill() const { return classType().drawFill; }
     void setDrawFill(bool value)
     {
-        mClassType->drawFill = value;
+        classType().drawFill = value;
         applyPropertyChanges();
     }
 
-    int usageFlags() const { return mClassType->usageFlags; }
+    int usageFlags() const { return classType().usageFlags; }
     void setUsageFlags(int value) {
         // clear any existing values first so that we set to exactly
         // the new value rather than just turning all flags in `value`
         // on.
-        mClassType->setUsageFlags(ClassUsageFlag::AnyUsage, false);
-        mClassType->setUsageFlags(value, true);
+        classType().setUsageFlags(ClassUsageFlag::AnyUsage, false);
+        classType().setUsageFlags(value, true);
         applyPropertyChanges();
     }
 
 private:
-    QSharedPointer<ClassPropertyType> mClassType;
+    ClassPropertyType &classType()
+    {
+        return static_cast<ClassPropertyType &>(propertyType());
+    }
+
+    const ClassPropertyType &classType() const
+    {
+        return static_cast<const ClassPropertyType &>(propertyType());
+    }
 };
 
 void registerPropertyTypes(QJSEngine *jsEngine);

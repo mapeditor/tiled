@@ -44,6 +44,7 @@ void ScriptPropertyType::setName(const QString &name)
         throwDuplicateNameError(name);
         return;
     }
+
     mType->name = name;
     applyPropertyChanges();
 }
@@ -70,26 +71,26 @@ void ScriptPropertyType::applyPropertyChanges()
 
 void ScriptEnumPropertyType::setStorageType(StorageType value)
 {
-    mEnumType->storageType = static_cast<EnumPropertyType::StorageType>(value);
+    enumType().storageType = static_cast<EnumPropertyType::StorageType>(value);
     applyPropertyChanges();
 }
 
 void ScriptEnumPropertyType::setValues(const QStringList &values)
 {
-    mEnumType->values = values;
+    enumType().values = values;
     applyPropertyChanges();
 }
 
 void ScriptEnumPropertyType::addValue(const QString &name)
 {
-    mEnumType->values.append(name);
+    enumType().values.append(name);
     applyPropertyChanges();
 }
 
 QString ScriptEnumPropertyType::nameOf(int value) const
 {
-    if (value >= 0 && value < mEnumType->values.size())
-        return mEnumType->values.at(value);
+    if (value >= 0 && value < enumType().values.size())
+        return enumType().values.at(value);
 
     return QString();
 }
@@ -97,7 +98,7 @@ QString ScriptEnumPropertyType::nameOf(int value) const
 QString ScriptEnumPropertyType::nameOf(const QVariant &value) const
 {
     const auto propertyValue = value.value<PropertyValue>();
-    if (propertyValue.typeId != mEnumType->id) {
+    if (propertyValue.typeId != enumType().id) {
         ScriptManager::instance().throwError(
             QCoreApplication::translate("Script Errors",
                                         "The specified value is not of the correct type"));
@@ -108,7 +109,7 @@ QString ScriptEnumPropertyType::nameOf(const QVariant &value) const
 
 void ScriptClassPropertyType::addMember(const QString &name, const QVariant &value)
 {
-    if (mClassType->members.contains(name))
+    if (classType().members.contains(name))
     {
         ScriptManager::instance().throwError(
             QCoreApplication::translate("Script Errors",
@@ -117,13 +118,13 @@ void ScriptClassPropertyType::addMember(const QString &name, const QVariant &val
         return;
     }
 
-    mClassType->members.insert(name, value);
+    classType().members.insert(name, value);
     applyPropertyChanges();
 }
 
 void ScriptClassPropertyType::removeMember(const QString &name)
 {
-    if (!mClassType->members.contains(name))
+    if (!classType().members.contains(name))
     {
         ScriptManager::instance().throwError(
             QCoreApplication::translate("Script Errors",
@@ -132,7 +133,7 @@ void ScriptClassPropertyType::removeMember(const QString &name)
         return;
     }
 
-    mClassType->members.remove(name);
+    classType().members.remove(name);
     applyPropertyChanges();
 }
 
