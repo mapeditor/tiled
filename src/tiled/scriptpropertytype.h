@@ -72,7 +72,7 @@ public:
         , mEnumType(propertyType)
     {}
 
-    // copied from propertytype.h
+    // Copied from EnumPropertyType
     enum StorageType {
         StringValue,
         IntValue
@@ -95,6 +95,12 @@ public:
         applyPropertyChanges();
     }
 
+    Q_INVOKABLE void addValue(const QString &name)
+    {
+        mEnumType->values.append(name);
+        applyPropertyChanges();
+    }
+
 private:
     QSharedPointer<EnumPropertyType> mEnumType;
 };
@@ -113,7 +119,7 @@ public:
         , mClassType(propertyType)
     {}
 
-    // TODO: a way to avoid duplicating this again? 
+    // Copied from ClassPropertyType
     enum ClassUsageFlag {
         PropertyValueType   = 0x001,
 

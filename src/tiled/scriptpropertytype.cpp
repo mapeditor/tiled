@@ -37,10 +37,8 @@ const QString &ScriptPropertyType::name() const
 void ScriptPropertyType::setName(const QString &name)
 {
     if (this->name() == name)
-    {
-        // nothing to do
         return;
-    }
+
     Project &project = ProjectManager::instance()->project();
     if (project.propertyTypes()->findTypeByName(name)) {
         throwDuplicateNameError(name);
@@ -54,14 +52,6 @@ void ScriptPropertyType::throwDuplicateNameError(const QString &name)
 {
     ScriptManager::instance().throwError(
         QCoreApplication::translate("Script Errors", "The name '%1' is already in use.").arg(name));
-}
-
-void registerPropertyTypes(QJSEngine *jsEngine)
-{
-    jsEngine->globalObject().setProperty(QStringLiteral("EnumPropertyType"),
-                                         jsEngine->newQMetaObject<ScriptEnumPropertyType>());
-    jsEngine->globalObject().setProperty(QStringLiteral("ClassPropertyType"),
-                                         jsEngine->newQMetaObject<ScriptClassPropertyType>());
 }
 
 /*
@@ -104,6 +94,14 @@ void ScriptClassPropertyType::removeMember(const QString &name)
     }
     mClassType->members.remove(name);
     applyPropertyChanges();
+}
+
+void registerPropertyTypes(QJSEngine *jsEngine)
+{
+    jsEngine->globalObject().setProperty(QStringLiteral("EnumPropertyType"),
+                                         jsEngine->newQMetaObject<ScriptEnumPropertyType>());
+    jsEngine->globalObject().setProperty(QStringLiteral("ClassPropertyType"),
+                                         jsEngine->newQMetaObject<ScriptClassPropertyType>());
 }
 
 } // namespace Tiled
