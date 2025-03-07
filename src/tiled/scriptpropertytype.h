@@ -80,26 +80,15 @@ public:
     Q_ENUM(StorageType);
 
     StorageType storageType() const { return static_cast<StorageType>(mEnumType->storageType); }
-
-    void setStorageType(StorageType value)
-    {
-        mEnumType->storageType = static_cast<EnumPropertyType::StorageType>(value);
-        applyPropertyChanges();
-    }
+    void setStorageType(StorageType value);
 
     QStringList values() const { return mEnumType->values; }
+    void setValues(const QStringList &values);
 
-    void setValues(const QStringList &values)
-    {
-        mEnumType->values = values;
-        applyPropertyChanges();
-    }
+    Q_INVOKABLE void addValue(const QString &name);
 
-    Q_INVOKABLE void addValue(const QString &name)
-    {
-        mEnumType->values.append(name);
-        applyPropertyChanges();
-    }
+    QString nameOf(int value) const;
+    QString nameOf(const QVariant &value) const;
 
 private:
     QSharedPointer<EnumPropertyType> mEnumType;

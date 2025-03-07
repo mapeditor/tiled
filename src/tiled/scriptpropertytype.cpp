@@ -68,6 +68,44 @@ void ScriptPropertyType::applyPropertyChanges()
     project.save();
 }
 
+void ScriptEnumPropertyType::setStorageType(StorageType value)
+{
+    mEnumType->storageType = static_cast<EnumPropertyType::StorageType>(value);
+    applyPropertyChanges();
+}
+
+void ScriptEnumPropertyType::setValues(const QStringList &values)
+{
+    mEnumType->values = values;
+    applyPropertyChanges();
+}
+
+void ScriptEnumPropertyType::addValue(const QString &name)
+{
+    mEnumType->values.append(name);
+    applyPropertyChanges();
+}
+
+QString ScriptEnumPropertyType::nameOf(int value) const
+{
+    if (value >= 0 && value < mEnumType->values.size())
+        return mEnumType->values.at(value);
+
+    return QString();
+}
+
+QString ScriptEnumPropertyType::nameOf(const QVariant &value) const
+{
+    const auto propertyValue = value.value<PropertyValue>();
+    if (propertyValue.typeId != mEnumType->id) {
+        ScriptManager::instance().throwError(
+            QCoreApplication::translate("Script Errors",
+                                        "The specified value is not of the correct type"));
+    }
+
+    return nameOf(propertyValue.value.toInt());
+}
+
 void ScriptClassPropertyType::addMember(const QString &name, const QVariant &value)
 {
     if (mClassType->members.contains(name))
@@ -78,6 +116,7 @@ void ScriptClassPropertyType::addMember(const QString &name, const QVariant &val
                 .arg(name));
         return;
     }
+
     mClassType->members.insert(name, value);
     applyPropertyChanges();
 }
@@ -92,6 +131,7 @@ void ScriptClassPropertyType::removeMember(const QString &name)
                 .arg(name));
         return;
     }
+
     mClassType->members.remove(name);
     applyPropertyChanges();
 }
