@@ -56,7 +56,6 @@ public:
     QString mAutomappingRulesFile;
     QVector<Command> mCommands;
     CompatibilityVersion mCompatibilityVersion = Tiled_Current;
-    void throwDuplicateNameError(const QString &name);
 
 private:
     QDateTime mLastSaved;

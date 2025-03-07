@@ -50,6 +50,8 @@ public:
     bool isEnum() const { return mType->isEnum(); }
     QVariant defaultValue() { return mType->wrap(mType->defaultValue()); }
 
+    static void throwDuplicateNameError(const QString &name);
+
 protected:
     void applyPropertyChanges();
 

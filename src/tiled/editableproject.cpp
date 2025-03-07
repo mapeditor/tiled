@@ -125,7 +125,7 @@ ScriptPropertyType *EditableProject::addEnumType(const QString &name)
 ScriptPropertyType *EditableProject::addPropertyType(const SharedPropertyType &type)
 {
     if (project()->propertyTypes()->findTypeByName(type->name)) {
-        project()->throwDuplicateNameError(type->name);
+        ScriptPropertyType::throwDuplicateNameError(type->name);
         return nullptr;
     }
     project()->propertyTypes()->add(type);

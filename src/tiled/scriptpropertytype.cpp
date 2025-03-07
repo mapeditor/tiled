@@ -43,11 +43,17 @@ void ScriptPropertyType::setName(const QString &name)
     }
     Project &project = ProjectManager::instance()->project();
     if (project.propertyTypes()->findTypeByName(name)) {
-        project.throwDuplicateNameError(name);
+        throwDuplicateNameError(name);
         return;
     }
     mType->name = name;
     applyPropertyChanges();
+}
+
+void ScriptPropertyType::throwDuplicateNameError(const QString &name)
+{
+    ScriptManager::instance().throwError(
+        QCoreApplication::translate("Script Errors", "The name '%1' is already in use.").arg(name));
 }
 
 void registerPropertyTypes(QJSEngine *jsEngine)
