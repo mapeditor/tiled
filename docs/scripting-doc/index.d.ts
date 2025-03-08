@@ -1162,6 +1162,17 @@ interface ClassPropertyTypeMembers {
  * Usage flags for a  {@link ClassPropertyType} control where the class can
  * be used. Restricting the usage flags for example could allow a class to only be used
  * for map objects, or only for tile layers. 
+ * Some combination of : {@link ClassPropertyType.PropertyValueType},
+ * {@link ClassPropertyType.LayerClass },
+* {@link ClassPropertyType.MapObjectClass},
+* {@link ClassPropertyType.MapClass},
+* {@link ClassPropertyType.TilesetClass},
+* {@link ClassPropertyType.TileClass },
+* {@link ClassPropertyType.WangSetClass},
+* {@link ClassPropertyType.WangColorClass},
+* {@link ClassPropertyType.ProjectClass},
+* {@link ClassPropertyType.AnyUsage }, and
+* {@link ClassPropertyType.AnyObjectClass }.
  * @since 1.11.3
  */
 type ClassUsageFlags  = number;
@@ -1196,67 +1207,20 @@ type ClassUsageFlags  = number;
      */
     drawFill : boolean;
 
-      /**
-       * Allow this class to be used as a property value, allowing you to nest
-       * all members of this class as child properties.
-       */
       PropertyValueType  : ClassUsageFlags;
-
-      /**
-       * Allow this class to be used as a type for map layers ({@link Layer}s or {@link ObjectGroup}s).
-       */
       LayerClass  : ClassUsageFlags;
-
-      /**
-       * Allow this class to be used as a type for {@link MapObject}s
-       */
       MapObjectClass : ClassUsageFlags;
-
-      /**
-       * Allow this class to be used as a type for {@link TileMap}s.
-       */
       MapClass : ClassUsageFlags;
-
-      /**
-       * Allow this class to be used as a type for Tilesets.
-       */
       TilesetClass : ClassUsageFlags;
-
-      /**
-       * Allow this class to be used as a type for tiles. 
-       */
       TileClass  : ClassUsageFlags;
-
-      /**
-       * Allow this class to be used as a type for {@link WangSet}s.
-       */
       WangSetClass : ClassUsageFlags;
-
-      /**
-       * Allow this class to be used as a type for terrain colors.
-       */
       WangColorClass : ClassUsageFlags;
-
-      /**
-       * Allow this class to be used as a custom type for {@link Project}s. 
-       */
       ProjectClass : ClassUsageFlags;
-
-      /**
-       * Allow all usage. Equivalent to turning all flags on. 
-       */
       AnyUsage  : ClassUsageFlags ;
-
-      /**
-       * Allow all usage except {@link PropertyValueType}.
-       */
       AnyObjectClass  : ClassUsageFlags ;
 
     /**
      * Get or set {@link ClassUsageFlags} used for this class type.
-     * You can also perform binary operations like &= or |= with this value,
-     * for example, to turn on usage for tilesets, keeping all other flags the same:
-     *  myClassType.usageFlags |= ClassPropertyType.TilesetClass;
      */
     usageFlags : number; 
 }
