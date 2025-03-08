@@ -1171,9 +1171,8 @@ interface ClassPropertyTypeMembers {
     readonly members : ClassPropertyTypeMembers;
     /**
      * Add a new member, providing its name and  default value. 
-     *  TODO: Type for  value?
      */
-    addMember(name: string, value: object) : void;
+    addMember(name: string, value: TiledObjectPropertyValue) : void;
     /**
      * Remove a member of this class by name.
      */
