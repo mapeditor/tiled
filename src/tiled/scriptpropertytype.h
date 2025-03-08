@@ -89,8 +89,8 @@ public:
 
     Q_INVOKABLE void addValue(const QString &name);
 
-    QString nameOf(int value) const;
-    QString nameOf(const QVariant &value) const;
+    Q_INVOKABLE QString nameOf(int value) const;
+    Q_INVOKABLE QString nameOf(const QVariant &value) const;
 
 private:
     EnumPropertyType &enumType()

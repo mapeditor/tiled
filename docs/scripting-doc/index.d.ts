@@ -1120,6 +1120,105 @@ type TiledObjectPropertyValue =
   | PropertyValue
   | undefined;
 
+  /**
+   * Indicates how the values for an {@link EnumPropertyType} are stored  when
+   * they are stored in maps and TileSets. 
+   * @since 1.11.3
+   */
+  declare enum StorageType {
+    StringValue,
+    IntValue
+}
+
+/**
+ * A custom property type defined to the project. 
+ * A type may be either an  {@link EnumPropertyType} or a {@link ClassPropertyType}.
+ * @since 1.11.3
+ */
+  declare class PropertyType {
+    /**
+     * Get or set the name of this type. Property type names must be unique in the project.
+     */
+    name : string;
+    /**
+     * Returns true if this is a {@link ClassPropertyType}.
+     */
+    isClass: boolean;
+
+    /**
+     * Returns true if this is a {@link EnumPropertyType}.
+     */
+    isEnum: boolean;
+
+    /**
+     * The default value for properties of this type. 
+     */
+    defaultValue : PropertyValue; 
+  }
+interface ClassPropertyTypeMembers {
+    [Key: string]: TiledObjectPropertyValue;
+}
+/**
+ * A [class](https://doc.mapeditor.org/en/stable/manual/custom-properties/#custom-classes) that 
+ * can be used  for custom properties.
+ * 
+ * @since 1.11.3
+ */
+  declare class ClassPropertyType extends PropertyType {
+    /**
+     * All members  defined for this class type.
+     */
+    readonly members : ClassPropertyTypeMembers;
+    /**
+     * Add a new member, providing its name and  default value. 
+     *  TODO: Type for  value?
+     */
+    addMember(name: string, value: object) : void;
+    /**
+     * Remove a member of this class by name.
+     */
+    removeMember(name: string) : void;
+}
+/**
+ *  An [enum](https://doc.mapeditor.org/en/stable/manual/custom-properties/#custom-enums) that
+ * can be used for custom properties. 
+ * 
+ * @since 1.11.3
+ */
+  declare class EnumPropertyType extends PropertyType {
+
+    /**
+     * Get or set how this enum will be serialized in map and tileset files.
+     */
+    storageType: StorageType;
+
+    /**
+     * Get or set  all possible display names for  values in this enum.
+     */
+    values: string[]; 
+
+    /**
+     * Get the display name of an enum value by its index in {@link values}, 
+     */
+    nameOf(value: number) : string;
+
+    /**
+     * Get the display name of  a property  value that is of this enum type. 
+     * For example, if you had an enum type called Biome, and a property called  biome on the map 
+     * of type Biome, you could get the enum name with the following script:
+     * 
+     *  var biomeType = tiled.project.findTypeByName('Biome');
+     *  var mapBiomeName = biomeType.nameOf(tiled.activeAsset.resolvedProperty('biome') );
+     * 
+     */
+    nameOf(value : TiledObjectPropertyValue) : string;
+
+    /**
+     * Add a new value to this enum
+     */
+    addValue(value: string): void;
+
+  }
 /**
  * An interface used to describe object properties.
  */
@@ -1302,6 +1401,38 @@ declare class Project extends TiledObject {
    * The path to the .tiled-project file.
    */
   readonly fileName: string;
+
+  /**
+   * A list of custom property types defined in the project in the View > 
+   * Custom Types Editor UI. 
+   * @since 1.11.3
+   */
+  readonly propertyTypes: PropertyType[]
+  
+  /**
+   * Remove a custom type from the project by name.
+   * @since 1.11.3
+   */
+  removeTypeByName(name: string) : boolean;
+  
+  /**
+   * Get a custom type from the project by name. If no type of the specified name
+   * exists, null will be returned.
+   * @since 1.11.3
+   */
+  findTypeByName(name: string) : PropertyType | null;
+
+  /**
+   * Add a new Class property type to the project with the specified name.
+   * @since 1.11.3
+   */
+  addClassType(name: string) : ClassPropertyType;
+
+  /**
+   * Add a new Enum property type to the project with the specified name.
+   * @since 1.11.3
+   */
+  addEnumType(name: string) : EnumPropertyType;
 }
 
 /**
