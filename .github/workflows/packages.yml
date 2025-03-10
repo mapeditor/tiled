@@ -474,11 +474,13 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Create Sentry release
-      uses: getsentry/action-release@v1
+      uses: getsentry/action-release@v3
       env:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       with:
         environment: releases
-        version: tiled@${{ needs.version.outputs.version }}
+        release: tiled@${{ needs.version.outputs.version }}
