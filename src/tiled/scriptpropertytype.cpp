@@ -107,32 +107,14 @@ QString ScriptEnumPropertyType::nameOf(const QVariant &value) const
     return nameOf(propertyValue.value.toInt());
 }
 
-void ScriptClassPropertyType::addMember(const QString &name, const QVariant &value)
+void ScriptClassPropertyType::setMember(const QString &name, const QVariant &value)
 {
-    if (classType().members.contains(name))
-    {
-        ScriptManager::instance().throwError(
-            QCoreApplication::translate("Script Errors",
-                                        "A class member of the specified name '%1' already exists")
-                .arg(name));
-        return;
-    }
-
     classType().members.insert(name, value);
     applyPropertyChanges();
 }
 
 void ScriptClassPropertyType::removeMember(const QString &name)
 {
-    if (!classType().members.contains(name))
-    {
-        ScriptManager::instance().throwError(
-            QCoreApplication::translate("Script Errors",
-                                        "No class member of the specified name '%1' exists")
-                .arg(name));
-        return;
-    }
-
     classType().members.remove(name);
     applyPropertyChanges();
 }

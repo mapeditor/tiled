@@ -1189,9 +1189,10 @@ type ClassUsageFlags  = number;
      */
     readonly members : ClassPropertyTypeMembers;
     /**
-     * Add a new member, providing its name and  default value. 
+     * Set a class member, providing its name and  default value. 
+     * If another member of the same name exists, it will be replaced with the new value.
      */
-    addMember(name: string, value: TiledObjectPropertyValue) : void;
+    setMember(name: string, value: TiledObjectPropertyValue) : void;
     /**
      * Remove a member of this class by name.
      */
