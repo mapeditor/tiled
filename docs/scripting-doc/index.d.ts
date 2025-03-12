@@ -1121,8 +1121,8 @@ type TiledObjectPropertyValue =
   | undefined;
 
 /**
- * Indicates how the values for an {@link EnumPropertyType} are stored  when
- * they are stored in maps and TileSets.
+ * Indicates how the values for an {@link EnumPropertyType} are stored when
+ * they are stored in maps and tilesets.
  * @since 1.12
  */
 declare enum StorageType {
@@ -1162,20 +1162,22 @@ interface ClassPropertyTypeMembers {
 }
 
 /**
- * Usage flags for a  {@link ClassPropertyType} control where the class can
+ * Usage flags for a {@link ClassPropertyType} control where the class can
  * be used. Restricting the usage flags for example could allow a class to only be used
- * for map objects, or only for tile layers.
- * Some combination of : {@link ClassPropertyType.PropertyValueType},
- * {@link ClassPropertyType.LayerClass },
+ * for map objects, only for layers or only as property value.
+ *
+ * Some combination of: {@link ClassPropertyType.PropertyValueType},
+ * {@link ClassPropertyType.LayerClass},
  * {@link ClassPropertyType.MapObjectClass},
  * {@link ClassPropertyType.MapClass},
  * {@link ClassPropertyType.TilesetClass},
- * {@link ClassPropertyType.TileClass },
+ * {@link ClassPropertyType.TileClass},
  * {@link ClassPropertyType.WangSetClass},
  * {@link ClassPropertyType.WangColorClass},
  * {@link ClassPropertyType.ProjectClass},
- * {@link ClassPropertyType.AnyUsage }, and
- * {@link ClassPropertyType.AnyObjectClass }.
+ * {@link ClassPropertyType.AnyUsage}, and
+ * {@link ClassPropertyType.AnyObjectClass}.
+ *
  * @since 1.12
  */
 type ClassUsageFlags = number;
@@ -1193,10 +1195,14 @@ declare class ClassPropertyType extends PropertyType {
   readonly members: ClassPropertyTypeMembers;
 
   /**
-   * Set a class member, providing its name and  default value.
+   * Set a class member, providing its name and default value.
    * If another member of the same name exists, it will be replaced with the new value.
+   *
+   * If a {@link PropertyType} is provided, the value will be the
+   * {@link PropertyType.defaultValue defaultValue} of that type.
    */
-  setMember(name: string, value: TiledObjectPropertyValue): void;
+  setMember(name: string, value: TiledObjectPropertyValue | PropertyType): void;
+
   /**
    * Remove a member of this class by name.
    */
@@ -1249,23 +1255,26 @@ declare class EnumPropertyType extends PropertyType {
   values: string[];
 
   /**
-   * Get the display name of an enum value by its index in {@link values},
+   * Get the display name of an enum value by its index in {@link values}.
    */
   nameOf(value: number): string;
 
   /**
-   * Get the display name of  a property  value that is of this enum type.
-   * For example, if you had an enum type called Biome, and a property called  biome on the map
-   * of type Biome, you could get the enum name with the following script:
+   * Get the display name of a property value that is of this enum type.
+   * For example, if you had a property called "biome" using a custom enum
+   * type on the current asset, you could get the name of the value with the
+   * following script:
    *
-   *  var biomeType = tiled.project.findTypeByName('Biome');
-   *  var mapBiomeName = biomeType.nameOf(tiled.activeAsset.resolvedProperty('biome') );
-   *
+   * ```js
+   * var biome = tiled.activeAsset.resolvedProperty('biome');
+   * var biomeType = tiled.project.findTypeByName(biome.typeName);
+   * var biomeName = biomeType.nameOf(biome);
+   * ```
    */
   nameOf(value: TiledObjectPropertyValue): string;
 
   /**
-   * Add a new value to this enum
+   * Add a new value to this enum.
    */
   addValue(value: string): void;
 }
