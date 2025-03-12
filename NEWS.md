@@ -2,6 +2,7 @@
 
 * Added support for SVG 1.2 / CSS blending modes to layers (#3932)
 * Added export plugin for Remixed Dungeon (by Mikhael Danilov, #4158)
+* Scripting: Added API for custom property types (with dogboydog, #3971)
 * AutoMapping: Don't match rules based on empty input indexes
 * AutoMapping: Optimized reloading of rule maps and load rule maps on-demand
 * Raised minimum supported Qt version from 5.12 to 5.15.2
