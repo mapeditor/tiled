@@ -1122,7 +1122,8 @@ type TiledObjectPropertyValue =
 
 /**
  * Indicates how the values for an {@link EnumPropertyType} are stored when
- * they are stored in maps and tilesets.
+ * they are saved in files.
+ *
  * @since 1.12
  */
 declare enum StorageType {
@@ -1131,13 +1132,14 @@ declare enum StorageType {
 }
 
 /**
- * A custom property type defined to the project.
- * A type may be either an  {@link EnumPropertyType} or a {@link ClassPropertyType}.
+ * A custom property type defined in the project.
+ * A type may be either an {@link EnumPropertyType} or a {@link ClassPropertyType}.
+ *
  * @since 1.12
  */
 declare class PropertyType {
   /**
-   * Get or set the name of this type. Property type names must be unique in the project.
+   * Get or set the name of this type. Must be unique in the project.
    */
   name: string;
 
@@ -1184,13 +1186,13 @@ type ClassUsageFlags = number;
 
 /**
  * A [class](https://doc.mapeditor.org/en/stable/manual/custom-properties/#custom-classes) that
- * can be used  for custom properties.
+ * can be used for custom properties.
  *
  * @since 1.12
  */
 declare class ClassPropertyType extends PropertyType {
   /**
-   * All members  defined for this class type.
+   * All members defined for this class type.
    */
   readonly members: ClassPropertyTypeMembers;
 
@@ -1462,14 +1464,16 @@ declare class Project extends TiledObject {
   readonly fileName: string;
 
   /**
-   * A list of custom property types defined in the project in the View >
-   * Custom Types Editor UI.
+   * A list of custom property types defined in the project in the _View >
+   * Custom Types Editor_ UI.
+   *
    * @since 1.12
    */
   readonly propertyTypes: PropertyType[];
 
   /**
-   * Remove a custom type from the project by name.
+   * Remove a custom type from the project by name. Returns whether the type was removed.
+   *
    * @since 1.12
    */
   removeTypeByName(name: string): boolean;
@@ -1477,18 +1481,21 @@ declare class Project extends TiledObject {
   /**
    * Get a custom type from the project by name. If no type of the specified name
    * exists, null will be returned.
+   *
    * @since 1.12
    */
   findTypeByName(name: string): PropertyType | null;
 
   /**
    * Add a new Class property type to the project with the specified name.
+   *
    * @since 1.12
    */
   addClassType(name: string): ClassPropertyType;
 
   /**
    * Add a new Enum property type to the project with the specified name.
+   *
    * @since 1.12
    */
   addEnumType(name: string): EnumPropertyType;
