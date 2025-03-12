@@ -143,7 +143,7 @@ public:
         applyPropertyChanges();
     }
     QVariantMap members() const {return classType().members; }
-    Q_INVOKABLE void removeMember(const QString& name);
+    Q_INVOKABLE void removeMember(const QString &name);
     Q_INVOKABLE void setMember(const QString &name, const QVariant &value);
 
     bool drawFill() const { return classType().drawFill; }

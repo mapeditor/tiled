@@ -20,6 +20,7 @@
 
 #include "scriptpropertytype.h"
 
+#include "editableobject.h"
 #include "preferences.h"
 #include "project.h"
 #include "projectmanager.h"
@@ -107,14 +108,25 @@ QString ScriptEnumPropertyType::nameOf(const QVariant &value) const
     return nameOf(propertyValue.value.toInt());
 }
 
+
 void ScriptClassPropertyType::setMember(const QString &name, const QVariant &value)
 {
-    classType().members.insert(name, value);
+    QVariant v;
+
+    if (auto scriptPropertyType = value.value<ScriptPropertyType *>())
+        v = scriptPropertyType->defaultValue();
+    else
+        v = EditableObject::propertyValueFromScript(value);
+
+    classType().members.insert(name, v);
     applyPropertyChanges();
 }
 
 void ScriptClassPropertyType::removeMember(const QString &name)
 {
+    if (!classType().members.contains(name))
+        return;
+
     classType().members.remove(name);
     applyPropertyChanges();
 }

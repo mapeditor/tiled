@@ -52,9 +52,9 @@ bool EditableObject::isReadOnly() const
 void EditableObject::setPropertyImpl(const QString &name, const QVariant &value)
 {
     if (Document *doc = document())
-        asset()->push(new SetProperty(doc, { mObject }, name, fromScript(value)));
+        asset()->push(new SetProperty(doc, { mObject }, name, propertyValueFromScript(value)));
     else
-        mObject->setProperty(name, fromScript(value));
+        mObject->setProperty(name, propertyValueFromScript(value));
 }
 
 void EditableObject::setPropertyImpl(const QStringList &path, const QVariant &value)
@@ -65,17 +65,17 @@ void EditableObject::setPropertyImpl(const QStringList &path, const QVariant &va
     }
 
     if (Document *doc = document())
-        asset()->push(new SetProperty(doc, { mObject }, path, fromScript(value)));
+        asset()->push(new SetProperty(doc, { mObject }, path, propertyValueFromScript(value)));
     else
-        mObject->setProperty(path, fromScript(value));
+        mObject->setProperty(path, propertyValueFromScript(value));
 }
 
 void EditableObject::setProperties(const QVariantMap &properties)
 {
     if (Document *doc = document())
-        asset()->push(new ChangeProperties(doc, QString(), mObject, fromScript(properties)));
+        asset()->push(new ChangeProperties(doc, QString(), mObject, propertyValueFromScript(properties)));
     else
-        mObject->setProperties(fromScript(properties));
+        mObject->setProperties(propertyValueFromScript(properties));
 }
 
 void EditableObject::removeProperty(const QString &name)
@@ -202,25 +202,6 @@ QVariant EditableObject::toScript(const QVariant &value) const
     return value;
 }
 
-QVariant EditableObject::fromScript(const QVariant &value) const
-{
-    const int type = value.userType();
-
-    if (type == QMetaType::QVariantMap)
-        return fromScript(value.toMap());
-
-    if (auto editableMapObject = value.value<EditableMapObject*>())
-        return QVariant::fromValue(ObjectRef { editableMapObject->id() });
-
-    if (type == propertyValueId()) {
-        auto propertyValue = value.value<PropertyValue>();
-        propertyValue.value = fromScript(propertyValue.value);
-        return QVariant::fromValue(propertyValue);
-    }
-
-    return value;
-}
-
 QVariantMap EditableObject::toScript(const QVariantMap &value) const
 {
     QVariantMap converted(value);
@@ -229,11 +210,30 @@ QVariantMap EditableObject::toScript(const QVariantMap &value) const
     return converted;
 }
 
-QVariantMap EditableObject::fromScript(const QVariantMap &value) const
+QVariant EditableObject::propertyValueFromScript(const QVariant &value)
+{
+    const int type = value.userType();
+
+    if (type == QMetaType::QVariantMap)
+        return propertyValueFromScript(value.toMap());
+
+    if (auto editableMapObject = value.value<EditableMapObject*>())
+        return QVariant::fromValue(ObjectRef { editableMapObject->id() });
+
+    if (type == propertyValueId()) {
+        auto propertyValue = value.value<PropertyValue>();
+        propertyValue.value = propertyValueFromScript(propertyValue.value);
+        return QVariant::fromValue(propertyValue);
+    }
+
+    return value;
+}
+
+QVariantMap EditableObject::propertyValueFromScript(const QVariantMap &value)
 {
     QVariantMap converted(value);
     for (auto i = converted.begin(); i != converted.end(); ++i)
-        i.value() = fromScript(i.value());
+        i.value() = propertyValueFromScript(i.value());
     return converted;
 }
 
