@@ -314,14 +314,14 @@ ObjectTypes toObjectTypes(const PropertyTypes &propertyTypes)
 {
     ObjectTypes objectTypes;
 
-    for (const PropertyType *type : std::as_const(propertyTypes)) {
+    for (const auto &type : std::as_const(propertyTypes)) {
         if (!type->isClass())   // only classes supported
             continue;
 
-        auto classType = static_cast<const ClassPropertyType*>(type);
-        objectTypes.append(ObjectType(classType->name,
-                                      classType->color,
-                                      classType->members));
+        auto &classType = static_cast<const ClassPropertyType&>(*type);
+        objectTypes.append(ObjectType(classType.name,
+                                      classType.color,
+                                      classType.members));
     }
 
     return objectTypes;

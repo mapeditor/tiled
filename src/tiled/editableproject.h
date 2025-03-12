@@ -23,6 +23,7 @@
 
 #include "editableasset.h"
 #include "project.h"
+#include "scriptpropertytype.h"
 
 #include <QObject>
 
@@ -38,6 +39,7 @@ class EditableProject final : public EditableAsset
     Q_PROPERTY(QString automappingRulesFile READ automappingRulesFile)
     Q_PROPERTY(QString fileName READ fileName)
     Q_PROPERTY(QStringList folders READ folders)
+    Q_PROPERTY(QVector<ScriptPropertyType *> propertyTypes READ propertyTypes)
 
 public:
     EditableProject(ProjectDocument *projectDocument, QObject *parent = nullptr);
@@ -49,10 +51,21 @@ public:
     QString automappingRulesFile() const;
     QString fileName() const;
     QStringList folders() const;
+    QVector<ScriptPropertyType*> propertyTypes() const;
 
     Project *project() const;
 
     QSharedPointer<Document> createDocument() override;
+
+    Q_INVOKABLE bool removeTypeByName(const QString &name);
+    Q_INVOKABLE ScriptPropertyType *findTypeByName(const QString &name);
+    Q_INVOKABLE ScriptPropertyType *addClassType(const QString &name);
+    Q_INVOKABLE ScriptPropertyType *addEnumType(const QString &name);
+
+private:
+    ScriptPropertyType *toScriptType(const SharedPropertyType &type) const;
+    ScriptPropertyType *addPropertyType(const SharedPropertyType &type);
+    void applyPropertyChanges();
 };
 
 inline Project *EditableProject::project() const

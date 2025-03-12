@@ -1121,6 +1121,166 @@ type TiledObjectPropertyValue =
   | undefined;
 
 /**
+ * Indicates how the values for an {@link EnumPropertyType} are stored when
+ * they are saved in files.
+ *
+ * @since 1.12
+ */
+declare enum StorageType {
+  StringValue,
+  IntValue,
+}
+
+/**
+ * A custom property type defined in the project.
+ * A type may be either an {@link EnumPropertyType} or a {@link ClassPropertyType}.
+ *
+ * @since 1.12
+ */
+declare class PropertyType {
+  /**
+   * Get or set the name of this type. Must be unique in the project.
+   */
+  name: string;
+
+  /**
+   * Returns true if this is a {@link ClassPropertyType}.
+   */
+  isClass: boolean;
+
+  /**
+   * Returns true if this is a {@link EnumPropertyType}.
+   */
+  isEnum: boolean;
+
+  /**
+   * The default value for properties of this type.
+   */
+  defaultValue: PropertyValue;
+}
+
+interface ClassPropertyTypeMembers {
+  [Key: string]: TiledObjectPropertyValue;
+}
+
+/**
+ * Usage flags for a {@link ClassPropertyType} control where the class can
+ * be used. Restricting the usage flags for example could allow a class to only be used
+ * for map objects, only for layers or only as property value.
+ *
+ * Some combination of: {@link ClassPropertyType.PropertyValueType},
+ * {@link ClassPropertyType.LayerClass},
+ * {@link ClassPropertyType.MapObjectClass},
+ * {@link ClassPropertyType.MapClass},
+ * {@link ClassPropertyType.TilesetClass},
+ * {@link ClassPropertyType.TileClass},
+ * {@link ClassPropertyType.WangSetClass},
+ * {@link ClassPropertyType.WangColorClass},
+ * {@link ClassPropertyType.ProjectClass},
+ * {@link ClassPropertyType.AnyUsage}, and
+ * {@link ClassPropertyType.AnyObjectClass}.
+ *
+ * @since 1.12
+ */
+type ClassUsageFlags = number;
+
+/**
+ * A [class](https://doc.mapeditor.org/en/stable/manual/custom-properties/#custom-classes) that
+ * can be used for custom properties.
+ *
+ * @since 1.12
+ */
+declare class ClassPropertyType extends PropertyType {
+  /**
+   * All members defined for this class type.
+   */
+  readonly members: ClassPropertyTypeMembers;
+
+  /**
+   * Set a class member, providing its name and default value.
+   * If another member of the same name exists, it will be replaced with the new value.
+   *
+   * If a {@link PropertyType} is provided, the value will be the
+   * {@link PropertyType.defaultValue defaultValue} of that type.
+   */
+  setMember(name: string, value: TiledObjectPropertyValue | PropertyType): void;
+
+  /**
+   * Remove a member of this class by name.
+   */
+  removeMember(name: string): void;
+
+  /**
+   * Get or set the color used for objects of this class type.
+   */
+  color: color;
+
+  /**
+   * Get or set whether objects of this class type will be rendered in the map
+   * with a fill color. If false, only an outline will be drawn for the object.
+   */
+  drawFill: boolean;
+
+  PropertyValueType: ClassUsageFlags;
+  LayerClass: ClassUsageFlags;
+  MapObjectClass: ClassUsageFlags;
+  MapClass: ClassUsageFlags;
+  TilesetClass: ClassUsageFlags;
+  TileClass: ClassUsageFlags;
+  WangSetClass: ClassUsageFlags;
+  WangColorClass: ClassUsageFlags;
+  ProjectClass: ClassUsageFlags;
+  AnyUsage: ClassUsageFlags;
+  AnyObjectClass: ClassUsageFlags;
+
+  /**
+   * Get or set {@link ClassUsageFlags} used for this class type.
+   */
+  usageFlags: number;
+}
+
+/**
+ * An [enum](https://doc.mapeditor.org/en/stable/manual/custom-properties/#custom-enums) that
+ * can be used for custom properties.
+ *
+ * @since 1.12
+ */
+declare class EnumPropertyType extends PropertyType {
+  /**
+   * Get or set how this enum will be serialized in map and tileset files.
+   */
+  storageType: StorageType;
+
+  /**
+   * Get or set  all possible display names for  values in this enum.
+   */
+  values: string[];
+
+  /**
+   * Get the display name of an enum value by its index in {@link values}.
+   */
+  nameOf(value: number): string;
+
+  /**
+   * Get the display name of a property value that is of this enum type.
+   * For example, if you had a property called "biome" using a custom enum
+   * type on the current asset, you could get the name of the value with the
+   * following script:
+   *
+   * ```js
+   * var biome = tiled.activeAsset.resolvedProperty('biome');
+   * var biomeType = tiled.project.findTypeByName(biome.typeName);
+   * var biomeName = biomeType.nameOf(biome);
+   * ```
+   */
+  nameOf(value: TiledObjectPropertyValue): string;
+
+  /**
+   * Add a new value to this enum.
+   */
+  addValue(value: string): void;
+}
+/**
  * An interface used to describe object properties.
  */
 interface TiledObjectProperties {
@@ -1302,6 +1462,43 @@ declare class Project extends TiledObject {
    * The path to the .tiled-project file.
    */
   readonly fileName: string;
+
+  /**
+   * A list of custom property types defined in the project in the _View >
+   * Custom Types Editor_ UI.
+   *
+   * @since 1.12
+   */
+  readonly propertyTypes: PropertyType[];
+
+  /**
+   * Remove a custom type from the project by name. Returns whether the type was removed.
+   *
+   * @since 1.12
+   */
+  removeTypeByName(name: string): boolean;
+
+  /**
+   * Get a custom type from the project by name. If no type of the specified name
+   * exists, null will be returned.
+   *
+   * @since 1.12
+   */
+  findTypeByName(name: string): PropertyType | null;
+
+  /**
+   * Add a new Class property type to the project with the specified name.
+   *
+   * @since 1.12
+   */
+  addClassType(name: string): ClassPropertyType;
+
+  /**
+   * Add a new Enum property type to the project with the specified name.
+   *
+   * @since 1.12
+   */
+  addEnumType(name: string): EnumPropertyType;
 }
 
 /**
@@ -2750,32 +2947,32 @@ declare class Tile extends TiledObject {
  * @since 1.12
  */
 declare enum BlendMode {
-    /** SVG equivalent: [src-over](https://www.w3.org/TR/SVGCompositing/#comp-op-src-over) */
-    Normal,
-    /** SVG equivalent: [plus](https://www.w3.org/TR/SVGCompositing/#comp-op-plus) */
-    Add,
-    /** SVG equivalent: [multiply](https://www.w3.org/TR/SVGCompositing/#comp-op-multiply) */
-    Multiply,
-    /** SVG equivalent: [screen](https://www.w3.org/TR/SVGCompositing/#comp-op-screen) */
-    Screen,
-    /** SVG equivalent: [overlay](https://www.w3.org/TR/SVGCompositing/#comp-op-overlay) */
-    Overlay,
-    /** SVG equivalent: [darken](https://www.w3.org/TR/SVGCompositing/#comp-op-darken) */
-    Darken,
-    /** SVG equivalent: [lighten](https://www.w3.org/TR/SVGCompositing/#comp-op-lighten) */
-    Lighten,
-    /** SVG equivalent: [color-dodge](https://www.w3.org/TR/SVGCompositing/#comp-op-color-dodge) */
-    ColorDodge,
-    /** SVG equivalent: [color-burn](https://www.w3.org/TR/SVGCompositing/#comp-op-color-burn) */
-    ColorBurn,
-    /** SVG equivalent: [hard-light](https://www.w3.org/TR/SVGCompositing/#comp-op-hard-light) */
-    HardLight,
-    /** SVG equivalent: [soft-light](https://www.w3.org/TR/SVGCompositing/#comp-op-soft-light) */
-    SoftLight,
-    /** SVG equivalent: [difference](https://www.w3.org/TR/SVGCompositing/#comp-op-difference) */
-    Difference,
-    /** SVG equivalent: [exclusion](https://www.w3.org/TR/SVGCompositing/#comp-op-exclusion) */
-    Exclusion
+  /** SVG equivalent: [src-over](https://www.w3.org/TR/SVGCompositing/#comp-op-src-over) */
+  Normal,
+  /** SVG equivalent: [plus](https://www.w3.org/TR/SVGCompositing/#comp-op-plus) */
+  Add,
+  /** SVG equivalent: [multiply](https://www.w3.org/TR/SVGCompositing/#comp-op-multiply) */
+  Multiply,
+  /** SVG equivalent: [screen](https://www.w3.org/TR/SVGCompositing/#comp-op-screen) */
+  Screen,
+  /** SVG equivalent: [overlay](https://www.w3.org/TR/SVGCompositing/#comp-op-overlay) */
+  Overlay,
+  /** SVG equivalent: [darken](https://www.w3.org/TR/SVGCompositing/#comp-op-darken) */
+  Darken,
+  /** SVG equivalent: [lighten](https://www.w3.org/TR/SVGCompositing/#comp-op-lighten) */
+  Lighten,
+  /** SVG equivalent: [color-dodge](https://www.w3.org/TR/SVGCompositing/#comp-op-color-dodge) */
+  ColorDodge,
+  /** SVG equivalent: [color-burn](https://www.w3.org/TR/SVGCompositing/#comp-op-color-burn) */
+  ColorBurn,
+  /** SVG equivalent: [hard-light](https://www.w3.org/TR/SVGCompositing/#comp-op-hard-light) */
+  HardLight,
+  /** SVG equivalent: [soft-light](https://www.w3.org/TR/SVGCompositing/#comp-op-soft-light) */
+  SoftLight,
+  /** SVG equivalent: [difference](https://www.w3.org/TR/SVGCompositing/#comp-op-difference) */
+  Difference,
+  /** SVG equivalent: [exclusion](https://www.w3.org/TR/SVGCompositing/#comp-op-exclusion) */
+  Exclusion,
 }
 
 /**
@@ -3959,11 +4156,11 @@ declare class Tileset extends Asset {
    * Flags describing transformations of tiles in this tileset that will be
    * allowed when using the [terrains feature](https://doc.mapeditor.org/en/stable/manual/terrain/#tile-transformations)
    * with this tileset.
-   * 
-   * The flags are either some combination of {@link Tileset.AllowFlipHorizontally}, 
-   *  {@link Tileset.AllowFlipVertically}, {@link Tileset.AllowRotate}, and {@link Tileset.PreferUntransformed}, 
+   *
+   * The flags are either some combination of {@link Tileset.AllowFlipHorizontally},
+   *  {@link Tileset.AllowFlipVertically}, {@link Tileset.AllowRotate}, and {@link Tileset.PreferUntransformed},
    * or equal to {@link Tileset.NoTransformation}.
-   * 
+   *
    * @since 1.11.1
    */
   transformationFlags: number;
@@ -4155,7 +4352,7 @@ interface TilesetEditor {
    *
    * @since 1.9 (writable since 1.11.1)
    */
-   currentWangColorIndex: number;
+  currentWangColorIndex: number;
 
   /**
    * The signal emitted when {@link currentWangColorIndex} changes.

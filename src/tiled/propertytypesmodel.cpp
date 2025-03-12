@@ -27,7 +27,7 @@
 
 using namespace Tiled;
 
-static bool propertyTypeLessThan(const PropertyType *a, const PropertyType *b)
+static bool propertyTypeLessThan(const SharedPropertyType &a, const SharedPropertyType &b)
 {
     return QString::localeAwareCompare(a->name, b->name) < 0;
 }
@@ -109,10 +109,10 @@ bool PropertyTypesModel::setPropertyTypeName(int row, const QString &name)
     if (!checkTypeNameUnused(name))
         return false;
 
-    const std::unique_ptr<PropertyType> typeWithName = std::make_unique<EnumPropertyType>(name.trimmed());
+    const SharedPropertyType typeWithName { new EnumPropertyType(name.trimmed()) };
     auto nextPropertyType = std::lower_bound(propertyTypes.begin(),
                                              propertyTypes.end(),
-                                             typeWithName.get(),
+                                             typeWithName,
                                              propertyTypeLessThan);
 
     const int newRow = nextPropertyType - propertyTypes.begin();
@@ -178,7 +178,7 @@ QModelIndex PropertyTypesModel::addPropertyType(std::unique_ptr<PropertyType> ty
     const int row = mPropertyTypes->count();
 
     beginInsertRows(QModelIndex(), row, row);
-    mPropertyTypes->add(std::move(type));
+    mPropertyTypes->add(SharedPropertyType(type.release()));
     endInsertRows();
 
     return index(row, 0);
@@ -237,7 +237,7 @@ QString PropertyTypesModel::nextPropertyTypeName(PropertyType::Type type) const
     do {
         name = baseText + QString::number(number++);
     } while (contains_where(*mPropertyTypes,
-                            [&] (const PropertyType *type) { return type->name == name; }));
+                            [&] (const SharedPropertyType &type) { return type->name == name; }));
 
     return name;
 }

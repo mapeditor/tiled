@@ -568,9 +568,9 @@ static bool anyObjectHasProperty(const QList<Object*> &objects, const QString &n
 static QStringList classNamesFor(const Object &object)
 {
     QStringList names;
-    for (const auto type : Object::propertyTypes())
+    for (const auto &type : Object::propertyTypes())
         if (type->isClass())
-            if (static_cast<const ClassPropertyType*>(type)->isClassFor(object))
+            if (static_cast<const ClassPropertyType&>(*type).isClassFor(object))
                 names.append(type->name);
     return names;
 }
