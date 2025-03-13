@@ -143,27 +143,36 @@ void Map::recomputeDrawMargins() const
     QMargins offsetMargins;
 
     for (const SharedTileset &tileset : mTilesets) {
-        const bool useGridSize = tileset->tileRenderSize() == Tileset::GridSize;
-        const QSize tileSize = useGridSize ? this->tileSize()
-                                           : tileset->tileSize();
+        if (tileset->isAtlas()) {
+            // For atlas tilesets, check all tile image rects
+            for (const Tile *tile : tileset->tiles()) {
+                const QRect rect = tile->imageRect();
+                maxTileSize = std::max(maxTileSize,
+                                     std::max(rect.width(), rect.height()));
+            }
+        } else {
+            const bool useGridSize = tileset->tileRenderSize() == Tileset::GridSize;
+            const QSize tileSize = useGridSize ? this->tileSize()
+                                             : tileset->tileSize();
 
-        maxTileSize = std::max(maxTileSize, std::max(tileSize.width(),
-                                                     tileSize.height()));
+            maxTileSize = std::max(maxTileSize, std::max(tileSize.width(),
+                                                        tileSize.height()));
+        }
 
         const QPoint offset = tileset->tileOffset();
         offsetMargins = maxMargins(QMargins(-offset.x(),
-                                            -offset.y(),
-                                            offset.x(),
-                                            offset.y()),
-                                   offsetMargins);
+                                          -offset.y(),
+                                          offset.x(),
+                                          offset.y()),
+                                 offsetMargins);
     }
 
     // We subtract the tile size of the map, since that part does not
     // contribute to additional margin.
     mDrawMargins = QMargins(offsetMargins.left(),
-                            offsetMargins.top() + maxTileSize - tileHeight(),
-                            offsetMargins.right() + maxTileSize - tileWidth(),
-                            offsetMargins.bottom());
+                          offsetMargins.top() + maxTileSize - tileHeight(),
+                          offsetMargins.right() + maxTileSize - tileWidth(),
+                          offsetMargins.bottom());
 
     mDrawMarginsDirty = false;
 }
