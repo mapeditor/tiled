@@ -186,21 +186,6 @@ void aggregateProperties(AggregatedProperties &aggregated, const Properties &pro
     }
 }
 
-int propertyValueId()
-{
-    return qMetaTypeId<PropertyValue>();
-}
-
-int filePathTypeId()
-{
-    return qMetaTypeId<FilePath>();
-}
-
-int objectRefTypeId()
-{
-    return qMetaTypeId<ObjectRef>();
-}
-
 QString typeToName(int type)
 {
     // We can't handle the PropertyValue purely by its type ID, since we need to
@@ -216,6 +201,8 @@ QString typeToName(int type)
         return QStringLiteral("color");
     case QMetaType::QVariantMap:
         return QStringLiteral("class");
+    case QMetaType::QVariantList:
+        return QStringLiteral("list");
 
     default:
         if (type == filePathTypeId())
@@ -240,6 +227,8 @@ static int nameToType(const QString &name)
         return objectRefTypeId();
     if (name == QLatin1String("class"))
         return QMetaType::QVariantMap;
+    if (name == QLatin1String("list"))
+        return QMetaType::QVariantList;
 
     return QVariant::nameToType(name.toLatin1().constData());
 }
@@ -248,6 +237,14 @@ QString typeName(const QVariant &value)
 {
     if (value.userType() == propertyValueId())
         return typeName(value.value<PropertyValue>().value);
+
+    return typeToName(value.userType());
+}
+
+QString userTypeName(const QVariant &value)
+{
+    if (value.userType() == propertyValueId())
+        return value.value<PropertyValue>().typeName();
 
     return typeToName(value.userType());
 }
@@ -299,6 +296,7 @@ ExportValue ExportContext::toExportValue(const QVariant &value) const
     } else if (metaType == objectRefTypeId()) {
         exportValue.value = ObjectRef::toInt(value.value<ObjectRef>());
     } else {
+        // Other values, including lists, do not need special handling here
         exportValue.value = value;
     }
 
@@ -333,6 +331,9 @@ QVariant ExportContext::toPropertyValue(const QVariant &value, int metaType) con
     if (metaType == QMetaType::QVariantMap || metaType == propertyValueId())
         return value;   // should be covered by property type
 
+    if (metaType == QMetaType::QVariantList)
+        return value;   // list elements should be converted individually
+
     if (metaType == filePathTypeId()) {
         const QUrl url = toUrl(value.toString(), mPath);
         return QVariant::fromValue(FilePath { url });
@@ -353,6 +354,35 @@ void initializeMetatypes()
 
     QMetaType::registerConverter<FilePath, QString>(&FilePath::toString);
     QMetaType::registerConverter<QString, FilePath>(&FilePath::fromString);
+}
+
+QVariantList possiblePropertyValues(const ClassPropertyType *parentClassType)
+{
+    QVariantList values;
+
+    values.append(false);                               // bool
+    values.append(QColor());                            // color
+    values.append(0.0);                                 // float
+    values.append(QVariant::fromValue(FilePath()));     // file
+    values.append(0);                                   // int
+    values.append(QVariant::fromValue(ObjectRef()));    // object
+    values.append(QString());                           // string
+    values.append(QVariant(QVariantList()));            // list
+
+    for (const auto &propertyType : Object::propertyTypes()) {
+        // Avoid suggesting the creation of circular dependencies between types
+        if (parentClassType && !parentClassType->canAddMemberOfType(propertyType.data()))
+            continue;
+
+        // Avoid suggesting classes not meant to be used as property value
+        if (propertyType->isClass())
+            if (!static_cast<const ClassPropertyType&>(*propertyType).isPropertyValueType())
+                continue;
+
+        values.append(propertyType->wrap(propertyType->defaultValue()));
+    }
+
+    return values;
 }
 
 } // namespace Tiled
