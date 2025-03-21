@@ -16,10 +16,15 @@ DynamicLibrary {
     cpp.cxxLanguageVersion: "c++17"
     cpp.cxxFlags: {
         var flags = base;
+
         if (qbs.toolchain.contains("msvc")) {
             if (Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 3)
                 flags.push("/permissive-");
         }
+
+        if (pkgConfigZstd.found)
+            flags = flags.concat(pkgConfigZstd.cflags);
+
         return flags;
     }
     cpp.visibility: "minimal"
@@ -69,9 +74,8 @@ DynamicLibrary {
 
     Properties {
         condition: pkgConfigZstd.found
-        cpp.cxxFlags: outer.concat(pkgConfigZstd.cflags)
-        cpp.libraryPaths: outer.concat(pkgConfigZstd.libraryPaths)
-        cpp.linkerFlags: outer.concat(pkgConfigZstd.linkerFlags)
+        cpp.libraryPaths: pkgConfigZstd.libraryPaths
+        cpp.linkerFlags: pkgConfigZstd.linkerFlags
     }
 
     // When libzstd was not found but staticZstd is enabled, assume that zstd
@@ -79,8 +83,8 @@ DynamicLibrary {
     // done by the autobuilds for Windows and macOS).
     Properties {
         condition: !pkgConfigZstd.found && project.staticZstd
-        cpp.libraryPaths: outer.concat(["../../zstd/lib"])
-        cpp.includePaths: outer.concat(["../../zstd/lib"])
+        cpp.libraryPaths: "../../zstd/lib"
+        cpp.includePaths: "../../zstd/lib"
     }
 
     Properties {
@@ -199,7 +203,7 @@ DynamicLibrary {
             submodules: ["gui"]
         }
 
-        cpp.includePaths: "."
+        cpp.includePaths: exportingProduct.sourceDirectory
     }
 
     install: !qbs.targetOS.contains("darwin")

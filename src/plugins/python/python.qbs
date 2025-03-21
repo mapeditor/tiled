@@ -15,8 +15,13 @@ TiledPlugin {
 
     cpp.cxxFlags: {
         var flags = base
+
         if (qbs.toolchain.contains("gcc") && !qbs.toolchain.contains("clang"))
             flags.push("-Wno-cast-function-type")
+
+        if (pkgConfigPython3.found)
+            flags = flags.concat(pkgConfigPython3.compilerFlags);
+
         return flags
     }
 
@@ -34,7 +39,6 @@ TiledPlugin {
 
     Properties {
         condition: pkgConfigPython3.found
-        cpp.cxxFlags: outer.concat(pkgConfigPython3.compilerFlags)
         cpp.defines: pkgConfigPython3.defines
         cpp.dynamicLibraries: pkgConfigPython3.libraries
         cpp.includePaths: pkgConfigPython3.includePaths

@@ -609,7 +609,7 @@ DynamicLibrary {
         Depends { name: "libtiled" }
         Depends { name: "qtsingleapplication" }
         Depends { name: "Qt"; submodules: ["qml"] }
-        cpp.includePaths: "."
+        cpp.includePaths: exportingProduct.sourceDirectory
     }
 
     install: !qbs.targetOS.contains("darwin")
