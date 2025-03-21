@@ -4,7 +4,7 @@ Project {
     name: "Tiled"
 
     qbsSearchPaths: "qbs"
-    minimumQbsVersion: "1.13"
+    minimumQbsVersion: "1.18"
 
     property string version: Environment.getEnv("TILED_VERSION") || "1.11.2";
     property bool snapshot: Environment.getEnv("TILED_SNAPSHOT") == "true"
