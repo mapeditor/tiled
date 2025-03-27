@@ -206,8 +206,8 @@ Chunks are used to store the tile layer data for
     :widths: 1, 1, 4
 
     data,             array or string,  "Array of ``unsigned int`` (GIDs) or base64-encoded data"
-    height,           int,              "Height in tiles"
-    width,            int,              "Width in tiles"
+    height,           int,              "Row count"
+    width,            int,              "Column count"
     x,                int,              "X coordinate in tiles"
     y,                int,              "Y coordinate in tiles"
 
@@ -217,11 +217,11 @@ Chunk Example
 .. code:: json
 
     {
-      "data":[1, 2, 1, 2, 3, 1, 3, 1, 2, 2, 3, 3, 4, 4, 4, 1, ],
-      "height":16,
-      "width":16,
+      "data":[1, 2, 1, 2, 3, 1, 3, 1, 2, 2, 3, 3, 4, 4, 4, 1],
+      "height":4,
+      "width":4,
       "x":0,
-      "y":-16,
+      "y":-16
     }
 
 .. _json-object:
