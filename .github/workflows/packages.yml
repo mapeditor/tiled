@@ -106,7 +106,7 @@ jobs:
     - name: Setup CMake
       uses: jwlawson/actions-setup-cmake@v2
       with:
-        cmake-version: '3.19'
+        cmake-version: '3.31'
 
     - name: Setup Qbs
       run: |
@@ -254,6 +254,11 @@ jobs:
         modules: ${{ matrix.qt_modules }}
         cache: true
 
+    - name: Setup CMake
+      uses: jwlawson/actions-setup-cmake@v2
+      with:
+        cmake-version: '3.31'
+
     - name: Setup Qbs
       run: |
         brew install qbs
@@ -268,7 +273,7 @@ jobs:
         popd
 
     - name: Install qaseprite plugin
-      working-directory: qaseprite 
+      working-directory: qaseprite
       run: |
         ./update-submodules.sh --no-zlib
         cmake -B build -DCMAKE_BUILD_TYPE=Release \
@@ -385,6 +390,11 @@ jobs:
         setup-python: false
         cache: true
 
+    - name: Setup CMake
+      uses: jwlawson/actions-setup-cmake@v2
+      with:
+        cmake-version: '3.31'
+
     - name: Install Qbs
       run: |
         choco install -y qbs --version ${QBS_VERSION}
@@ -407,7 +417,7 @@ jobs:
         popd
 
     - name: Install qaseprite plugin
-      working-directory: qaseprite 
+      working-directory: qaseprite
       run: |
         ./update-submodules.sh
         pushd aseprite/laf
