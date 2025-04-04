@@ -48,6 +48,8 @@ int TilesetModel::rowCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
+    if (isFixedAtlas())
+        return 1;
 
     const int tileCount = mTileIds.size();
     const int columns = columnCount();
@@ -66,6 +68,8 @@ int TilesetModel::columnCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
+    if (isFixedAtlas())
+        return 1;
     if (mColumnCountOverride > 0)
         return mColumnCountOverride;
     if (tileset()->columnCount())
@@ -73,6 +77,14 @@ int TilesetModel::columnCount(const QModelIndex &parent) const
     // TODO: Non-table tilesets should use a different model.
     // For now use an arbitrary number of columns.
     return 5;
+}
+
+QModelIndex TilesetModel::index(int row, int column, const QModelIndex &parent) const
+{
+    if (isFixedAtlas())
+        return createIndex(row, column);
+
+    return QAbstractListModel::index(row, column, parent);
 }
 
 QVariant TilesetModel::data(const QModelIndex &index, int role) const
@@ -97,10 +109,15 @@ QVariant TilesetModel::headerData(int /* section */,
 Qt::ItemFlags TilesetModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags defaultFlags = QAbstractListModel::flags(index);
-    defaultFlags |= Qt::ItemIsDropEnabled;
 
-    if (index.isValid())
-        defaultFlags |= Qt::ItemIsDragEnabled;
+    if (!index.isValid())
+        return defaultFlags;
+
+    if (isFixedAtlas() && !tileAt(index))
+        return defaultFlags & ~Qt::ItemIsSelectable;
+
+    defaultFlags |= Qt::ItemIsDropEnabled;
+    defaultFlags |= Qt::ItemIsDragEnabled;
 
     return defaultFlags;
 }
@@ -190,8 +207,10 @@ Tile *TilesetModel::tileAt(const QModelIndex &index) const
     if (!index.isValid())
         return nullptr;
 
-    const int tileIndex = index.column() + index.row() * columnCount();
+    if (isFixedAtlas())
+        return tileset()->findTile(index.row());
 
+    const int tileIndex = index.column() + index.row() * columnCount();
     if (tileIndex < mTileIds.size()) {
         const int tileId = mTileIds.at(tileIndex);
         return tileset()->findTile(tileId);
@@ -203,6 +222,9 @@ Tile *TilesetModel::tileAt(const QModelIndex &index) const
 QModelIndex TilesetModel::tileIndex(const Tile *tile) const
 {
     Q_ASSERT(tile->tileset() == tileset());
+
+    if (isFixedAtlas())
+        return index(tile->id(), 1);
 
     const int columnCount = TilesetModel::columnCount();
 
@@ -283,6 +305,23 @@ void TilesetModel::refreshTileIds()
     mTileIds.clear();
     for (Tile *tile : tileset()->tiles())
         mTileIds.append(tile->id());
+}
+
+bool TilesetModel::isFixedAtlas() const
+{
+    return tileset()->isAtlas() && mColumnCountOverride <= 0;
+}
+
+QPoint TilesetModel::snapToGrid(const QPoint &pos) const
+{
+    if (!isFixedAtlas())
+        return pos;
+
+    const int tileWidth = tileset()->tileWidth();
+    const int tileHeight = tileset()->tileHeight();
+    const int x = (pos.x() + tileWidth / 2) / tileWidth;
+    const int y = (pos.y() + tileHeight / 2) / tileHeight;
+    return QPoint(x, y);
 }
 
 #include "moc_tilesetmodel.cpp"
