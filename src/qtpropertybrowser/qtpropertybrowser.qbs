@@ -1,3 +1,5 @@
+import qbs.FileInfo
+
 StaticLibrary {
     name: "qtpropertybrowser"
 
@@ -41,6 +43,6 @@ StaticLibrary {
 
     Export {
         Depends { name: "cpp" }
-        cpp.includePaths: "src"
+        cpp.includePaths: FileInfo.joinPaths(exportingProduct.sourceDirectory, "src")
     }
 }

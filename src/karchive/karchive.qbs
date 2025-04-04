@@ -1,3 +1,5 @@
+import qbs.FileInfo
+
 StaticLibrary {
     condition: !qbs.toolchain.contains("msvc")
 
@@ -54,7 +56,7 @@ StaticLibrary {
 
     Export {
         Depends { name: "cpp" }
-        cpp.includePaths: "src"
+        cpp.includePaths: FileInfo.joinPaths(exportingProduct.sourceDirectory, "src")
         cpp.defines: [
             "KARCHIVE_NO_DEPRECATED",
             "KARCHIVE_STATIC_DEFINE",

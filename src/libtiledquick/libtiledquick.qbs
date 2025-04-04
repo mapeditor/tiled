@@ -59,7 +59,7 @@ DynamicLibrary {
             submodules: ["quick"]
         }
 
-        cpp.includePaths: "."
+        cpp.includePaths: exportingProduct.sourceDirectory
     }
 
     install: !qbs.targetOS.contains("darwin")

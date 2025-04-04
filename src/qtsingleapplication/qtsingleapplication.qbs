@@ -1,3 +1,5 @@
+import qbs.FileInfo
+
 StaticLibrary {
     name: "qtsingleapplication"
 
@@ -26,6 +28,6 @@ StaticLibrary {
     Export {
         Depends { name: "cpp" }
         Depends { name: "Qt.widgets" }
-        cpp.includePaths: "src"
+        cpp.includePaths: FileInfo.joinPaths(exportingProduct.sourceDirectory, "src")
     }
 }
