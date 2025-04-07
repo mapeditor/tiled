@@ -34,7 +34,7 @@ namespace Tiled {
 ListEdit::ListEdit(QWidget *parent)
     : QWidget{parent}
 {
-    QHBoxLayout *layout = new QHBoxLayout{this};
+    auto *layout = new QHBoxLayout{this};
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
 
@@ -83,8 +83,10 @@ QString ListEdit::valueText(const QVariantList &value)
 
 void ListEdit::addButtonClicked()
 {
-    if (mValue.isEmpty())
-        return mAddButton->showMenu();
+    if (mValue.isEmpty()) {
+        mAddButton->showMenu();
+        return;
+    }
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     mValue.append(QVariant(mValue.last().metaType()));
