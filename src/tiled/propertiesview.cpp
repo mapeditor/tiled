@@ -431,23 +431,6 @@ QWidget *SizeFProperty::createEditor(QWidget *parent)
     return editor;
 }
 
-QWidget *VariantListProperty::createEditor(QWidget *parent)
-{
-    auto editor = new ListEdit(parent);
-    auto syncEditor = [this, editor] {
-        const QSignalBlocker blocker(editor);
-        editor->setValue(value());
-    };
-    syncEditor();
-
-    connect(this, &Property::valueChanged, editor, syncEditor);
-    connect(editor, &ListEdit::valueChanged, this, [this, editor] {
-        setValue(editor->value());
-    });
-
-    return editor;
-}
-
 QWidget *RectProperty::createEditor(QWidget *parent)
 {
     auto editor = new RectEdit(parent);
@@ -811,8 +794,6 @@ Property *createVariantProperty(const QString &name,
         return createTypedProperty<SizeProperty>(name, get, set);
     case QMetaType::QSizeF:
         return createTypedProperty<SizeFProperty>(name, get, set);
-    case QMetaType::QVariantList:
-        return createTypedProperty<VariantListProperty>(name, get, set);
     default:
         if (type == qMetaTypeId<Qt::Alignment>())
             return createTypedProperty<QtAlignmentProperty>(name, get, set);
@@ -1179,7 +1160,7 @@ void PropertiesView::forgetProperty(Property *property)
 
     property->disconnect(this);
 
-    if (GroupProperty *groupProperty = qobject_cast<GroupProperty *>(property)) {
+    if (auto groupProperty = qobject_cast<GroupProperty *>(property)) {
         for (auto subProperty : groupProperty->subProperties())
             forgetProperty(subProperty);
     }
@@ -1225,7 +1206,9 @@ QWidget *PropertiesView::focusPropertyImpl(GroupProperty *group,
                 return widgets.children;
             }
             return nullptr;
-        } else if (auto groupProperty = qobject_cast<GroupProperty *>(subProperty)) {
+        }
+
+        if (auto groupProperty = qobject_cast<GroupProperty *>(subProperty)) {
             if (widgets.children) {
                 if (auto w = focusPropertyImpl(groupProperty, property, target)) {
                     groupProperty->setExpanded(true);
@@ -1307,7 +1290,9 @@ PropertiesView::PropertyWidgets PropertiesView::createPropertyWidgets(Property *
             if (assignSelectedPropertiesRange(m_root, m_selectionStart, property))
                 emit selectedPropertiesChanged();
             return;
-        } else if (modifiers & Qt::ControlModifier) {
+        }
+
+        if (modifiers & Qt::ControlModifier) {
             // Toggle selection
             if (property->actions().testFlag(Property::Action::Select)) {
                 property->setSelected(!property->isSelected());

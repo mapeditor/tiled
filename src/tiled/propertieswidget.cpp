@@ -2888,7 +2888,8 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
             QList<Object*> objects;
             QVariantList values;
 
-            for (auto obj : mDocument->currentObjects()) {
+            const auto currentObjects = mDocument->currentObjects();
+            for (auto obj : currentObjects) {
                 QVariant propertyValue = obj->property(propertyName);
                 if (propertyValue.convert(toType)) {
                     objects.append(obj);
