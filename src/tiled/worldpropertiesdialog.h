@@ -20,12 +20,12 @@
 
 #pragma once
 
-#include <QDialog>
-#include "world.h"
 #include "worlddocument.h"
 
+#include <QDialog>
+
 namespace Ui {
-    class WorldPropertiesDialog;
+class WorldPropertiesDialog;
 }
 
 namespace Tiled {
@@ -38,13 +38,9 @@ public:
     explicit WorldPropertiesDialog(WorldDocumentPtr world, QWidget *parent = nullptr);
     ~WorldPropertiesDialog() override;
 
-    void accept() override;
-
 private:
-
     Ui::WorldPropertiesDialog *ui;
-    WorldDocumentPtr mLocalWorldDocument;
-
+    WorldDocumentPtr mWorldDocument;
 };
 
 } // namespace Tiled
