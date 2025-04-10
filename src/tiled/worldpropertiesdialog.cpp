@@ -33,7 +33,7 @@ namespace Tiled {
 WorldPropertiesDialog::WorldPropertiesDialog(WorldDocumentPtr world, QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::WorldPropertiesDialog)
-    , mLocalWorldDocument(world)
+    , mWorldDocument(world)
 {
     ui->setupUi(this);
 
@@ -45,22 +45,13 @@ WorldPropertiesDialog::WorldPropertiesDialog(WorldDocumentPtr world, QWidget *pa
     const auto halfSpacing = Utils::dpiScaled(2);
     ui->propertiesWidget->propertiesView()->widget()->setContentsMargins(0, halfSpacing, 0, halfSpacing);
 
-    ui->propertiesWidget->setDocument(mLocalWorldDocument.get());
+    ui->propertiesWidget->setDocument(mWorldDocument.get());
 }
 
 WorldPropertiesDialog::~WorldPropertiesDialog()
 {
     delete ui;
 }
-
-void WorldPropertiesDialog::accept()
-{
-    // do I need local vs shared world pointer ? if not , don't need to override this
-    // mLocalWorldDocument->setProperties(world.properties());
-
-    QDialog::accept();
-}
-
 
 } // namespace Tiled
 
