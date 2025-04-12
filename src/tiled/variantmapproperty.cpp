@@ -529,16 +529,14 @@ void VariantListProperty::setValue(const QVariantList &value)
 
 void VariantListProperty::removeValueAt(int index)
 {
-    mValue.removeAt(index);
-    deleteProperty(index);
-
-    // Renumber the remaining list items
-    for (int i = index; i < mValue.size(); ++i) {
-        auto property = subProperties().at(i);
-        property->setName(QStringLiteral("[%1]").arg(i));
-    }
+    QVariantList value = mValue;
+    value.removeAt(index);
+    setValue(value);
 
     mSet(mValue);
+
+    QScopedValueRollback<bool> emittingValueChanged(mEmittingValueChanged, true);
+    emit valueChanged();
 }
 
 void VariantListProperty::addValue(const QVariant &value)
