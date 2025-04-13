@@ -1,0 +1,49 @@
+name: Bug report
+description: Create a report to help us improve
+labels: ['bug']
+
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+      placeholder: Tiled crashed when trying to…
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Steps to reproduce the behavior.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. See error.
+    validations:
+      required: true
+  - type: textarea
+    id: expectedbehavior
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+      placeholder: Instead of emitting an error, it would…
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: OS version
+      description: Your operating system and its version. Use https://whatsmyos.com/ if unsure.
+      placeholder: Windows 10
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Tiled version
+      description: Version of Tiled in use. You can get this from Help -> About Tiled.
+      placeholder: 1.0.0
+    validations:
+      required: true
