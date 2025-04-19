@@ -14,20 +14,7 @@
    <string>World Properties</string>
   </property>
   <layout class="QVBoxLayout" name="dialogLayout">
-   <item>
-    <widget class="QLabel" name="worldFilenameHeaderLabel">
-     <property name="text">
-      <string>World Filename</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="worldFilenameLabel">
-     <property name="text">
-      <string>filename</string>
-     </property>
-    </widget>
-   </item>
+
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
