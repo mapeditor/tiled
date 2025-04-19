@@ -37,7 +37,6 @@ WorldPropertiesDialog::WorldPropertiesDialog(WorldDocumentPtr world, QWidget *pa
 {
     ui->setupUi(this);
 
-    ui->worldFilenameLabel->setText(world->fileName());
     // Don't display the "Custom Properties" header
     ui->propertiesWidget->customPropertiesGroup()->setName(QString());
 

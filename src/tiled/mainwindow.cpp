@@ -1968,7 +1968,8 @@ void MainWindow::editWorldProperties()
 
     if (WorldPropertiesDialog(world, this).exec() == QDialog::Accepted) {
         QString saveError;
-        world->save(world->fileName(), &saveError); // my hero ...
+        if (!world->save(world->fileName(), &saveError)) // my hero ...
+            QMessageBox::critical(this, tr("Error Saving World"), saveError);
     }
 }
 void MainWindow::autoMappingError(bool automatic)
