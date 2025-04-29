@@ -95,7 +95,8 @@ public:
                    const QModelIndex &index) const override;
 
 private:
-    void drawFilmStrip(QPainter *painter, QRect targetRect) const;
+    static void drawFilmStrip(QPainter *painter, QRect targetRect);
+
     void drawWangOverlay(QPainter *painter,
                          const Tile *tile,
                          QRect targetRect,
@@ -210,7 +211,7 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
     return QSize(extra, extra);
 }
 
-void TileDelegate::drawFilmStrip(QPainter *painter, QRect targetRect) const
+void TileDelegate::drawFilmStrip(QPainter *painter, QRect targetRect)
 {
     painter->save();
 
@@ -300,6 +301,15 @@ TilesetView::TilesetView(QWidget *parent)
     vHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
     hHeader->setMinimumSectionSize(1);
     vHeader->setMinimumSectionSize(1);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
+    // Since Qt 6.9 we force header mode to "FlexibleWithSectionMemoryUsage",
+    // to avoid what appears to be a bug in that implementation regarding
+    // resizing of sections (https://github.com/mapeditor/tiled/issues/4191).
+    hHeader->setStretchLastSection(true);
+    vHeader->setStretchLastSection(true);
+    hHeader->setStretchLastSection(false);
+    vHeader->setStretchLastSection(false);
+#endif
 
     // Hardcode this view on 'left to right' since it doesn't work properly
     // for 'right to left' languages.
