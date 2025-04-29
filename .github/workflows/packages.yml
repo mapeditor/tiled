@@ -46,7 +46,7 @@ jobs:
     strategy:
       matrix:
         include:
-        - ubuntu_version: 20.04
+        - ubuntu_version: 22.04
           qt_version: 5.15.2
           qt_version_major: 5
           qt_arch: gcc_64
