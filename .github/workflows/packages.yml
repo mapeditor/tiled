@@ -16,6 +16,9 @@ on:
 
 env:
   QBS_VERSION: 2.4.1
+  CMAKE_VERSION: 3.31
+  QT5_VERSION: 5.15.2
+  QT6_VERSION: 6.8.2
   SENTRY_VERSION: 0.7.19
   SENTRY_ORG: mapeditor
   SENTRY_PROJECT: tiled
@@ -39,29 +42,12 @@ jobs:
         echo "release=${TILED_RELEASE}" >> $GITHUB_OUTPUT
 
   linux:
-    name: Linux (AppImage, Qt ${{ matrix.qt_version_major }})
-    runs-on: ubuntu-${{ matrix.ubuntu_version }}
+    name: Linux (AppImage)
+    runs-on: ubuntu-22.04
     needs: version
-
-    strategy:
-      matrix:
-        include:
-        - ubuntu_version: 22.04
-          qt_version: 5.15.2
-          qt_version_major: 5
-          qt_arch: gcc_64
-          qt_modules: ""
-          qbs_default_profile: x86_64-linux-gnu-gcc-10
-        - ubuntu_version: 22.04
-          qt_version: 6.8.2
-          qt_version_major: 6
-          qt_arch: linux_gcc_64
-          qt_modules: "qtimageformats"
-          qbs_default_profile: x86_64-linux-gnu-gcc-11
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
-      QT_VERSION: ${{ matrix.qt_version }}
 
     steps:
     - name: Checkout repository
@@ -91,9 +77,9 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
-        version: ${{ matrix.qt_version }}
-        arch: ${{ matrix.qt_arch }}
-        modules: ${{ matrix.qt_modules }}
+        version: ${{ env.QT6_VERSION }}
+        arch: linux_gcc_64
+        modules: "qtimageformats"
         tools: 'tools_qtcreator'
         setup-python: false
         cache: true
@@ -106,13 +92,13 @@ jobs:
     - name: Setup CMake
       uses: jwlawson/actions-setup-cmake@v2
       with:
-        cmake-version: '3.31'
+        cmake-version: '{{ env.CMAKE_VERSION }}'
 
     - name: Setup Qbs
       run: |
         qbs --version
         qbs setup-toolchains --detect
-        qbs config defaultProfile ${{ matrix.qbs_default_profile }}
+        qbs config defaultProfile x86_64-linux-gnu-gcc-11
 
     - name: Build Sentry Native
       run: |
@@ -159,7 +145,7 @@ jobs:
         chmod +x linuxdeploy*.AppImage
         export EXTRA_QT_PLUGINS=svg
         export LD_LIBRARY_PATH=${QT_ROOT_DIR}/lib:$PWD/AppDir/usr/lib
-        export OUTPUT=Tiled-${{ needs.version.outputs.version }}_Linux_Qt-${{ matrix.qt_version_major }}_x86_64.AppImage
+        export OUTPUT=Tiled-${{ needs.version.outputs.version }}_Linux_x86_64.AppImage
         # Avoid shipping the debug information
         find AppDir -name \*.debug -delete
         ./linuxdeploy-x86_64.AppImage --appdir AppDir --custom-apprun=dist/linux/AppRun --exclude-library "*libpython3*" --plugin qt
@@ -170,8 +156,8 @@ jobs:
     - name: Upload Tiled.AppImage
       uses: actions/upload-artifact@v4
       with:
-        name: Tiled-${{ needs.version.outputs.version }}_Linux_Qt-${{ matrix.qt_version_major }}_x86_64.AppImage
-        path: Tiled-${{ needs.version.outputs.version }}_Linux_Qt-${{ matrix.qt_version_major }}_x86_64.AppImage
+        name: Tiled-${{ needs.version.outputs.version }}_Linux_x86_64.AppImage
+        path: Tiled-${{ needs.version.outputs.version }}_Linux_x86_64.AppImage
 
   snap:
     name: Linux (snap)
@@ -220,12 +206,12 @@ jobs:
     strategy:
       matrix:
         include:
-        - qt_version: 5.15.2
+        - qt_version: ${{ env.QT5_VERSION }}
           qt_modules: ""
           version_suffix: "10.13-10.15"
           architectures: x86_64
           cmake_architectures: x86_64
-        - qt_version: 6.8.2
+        - qt_version: ${{ env.QT6_VERSION }}
           qt_modules: "qtimageformats"
           version_suffix: "11+"
           architectures: x86_64,arm64
@@ -233,7 +219,6 @@ jobs:
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
-      QT_VERSION: ${{ matrix.qt_version }}
 
     steps:
     - name: Checkout repository
@@ -257,7 +242,7 @@ jobs:
     - name: Setup CMake
       uses: jwlawson/actions-setup-cmake@v2
       with:
-        cmake-version: '3.31'
+        cmake-version: '{{ env.CMAKE_VERSION }}'
 
     - name: Setup Qbs
       run: |
@@ -342,7 +327,7 @@ jobs:
     strategy:
       matrix:
         include:
-        - qt_version: 5.15.2
+        - qt_version: ${{ env.QT5_VERSION }}
           qt_version_major: 5
           qt_arch: win32_mingw81
           qt_modules: ""
@@ -352,7 +337,7 @@ jobs:
           mingw_component: tools_mingw
           mingw_variant: qt.tools.win32_mingw810
           mingw_dir: mingw810_32
-        - qt_version: 6.8.2
+        - qt_version: ${{ env.QT6_VERSION }}
           qt_version_major: 6
           qt_arch: win64_mingw
           qt_modules: "qtimageformats"
@@ -395,11 +380,11 @@ jobs:
     - name: Setup CMake
       uses: jwlawson/actions-setup-cmake@v2
       with:
-        cmake-version: '3.31'
+        cmake-version: '{{ env.CMAKE_VERSION }}'
 
     - name: Install Qbs
       run: |
-        choco install -y qbs --version ${QBS_VERSION}
+        choco install -y qbs --version ${{ env.QBS_VERSION }}
 
     - name: Setup Qbs
       run: |
@@ -471,8 +456,7 @@ jobs:
         files: |
           Tiled-${{ needs.version.outputs.version }}_Windows-10+_x86_64.msi/*.msi
           Tiled-${{ needs.version.outputs.version }}_Windows-7-8_x86.msi/*.msi
-          Tiled-${{ needs.version.outputs.version }}_Linux_Qt-5_x86_64.AppImage/*.AppImage
-          Tiled-${{ needs.version.outputs.version }}_Linux_Qt-6_x86_64.AppImage/*.AppImage
+          Tiled-${{ needs.version.outputs.version }}_Linux_x86_64.AppImage/*.AppImage
           Tiled-${{ needs.version.outputs.version }}_macOS-10.13-10.15.app/*.zip
           Tiled-${{ needs.version.outputs.version }}_macOS-11+.app/*.zip
 
