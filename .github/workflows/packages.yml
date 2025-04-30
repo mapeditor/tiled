@@ -90,7 +90,7 @@ jobs:
     - name: Setup CMake
       uses: jwlawson/actions-setup-cmake@v2
       with:
-        cmake-version: '{{ env.CMAKE_VERSION }}'
+        cmake-version: '${{ env.CMAKE_VERSION }}'
 
     - name: Setup Qbs
       run: |
@@ -240,7 +240,7 @@ jobs:
     - name: Setup CMake
       uses: jwlawson/actions-setup-cmake@v2
       with:
-        cmake-version: '{{ env.CMAKE_VERSION }}'
+        cmake-version: '${{ env.CMAKE_VERSION }}'
 
     - name: Setup Qbs
       run: |
@@ -378,7 +378,7 @@ jobs:
     - name: Setup CMake
       uses: jwlawson/actions-setup-cmake@v2
       with:
-        cmake-version: '{{ env.CMAKE_VERSION }}'
+        cmake-version: '${{ env.CMAKE_VERSION }}'
 
     - name: Install Qbs
       run: |
