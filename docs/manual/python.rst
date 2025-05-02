@@ -48,9 +48,9 @@ There are several `example scripts`_ available in the repository.
     .. figure:: images/python-windows.png
 
     On Linux you will need to install the appropriate package. However,
-    currently Linux AppImage builds are done on Ubuntu 20.04 against Python
-    3.8, and you'd need to install the same version somehow (on Fedora you can
-    just install the ``python3.8`` package).
+    currently Linux AppImage builds are done on Ubuntu 22.04 against Python
+    3.10, and you'd need to install the same version (on Ubuntu likely
+    ``libpython3.10`` and on Fedora ``python3.10-libs``).
 
     The Python plugin is not available for macOS releases, nor in the Ubuntu
     snap.
