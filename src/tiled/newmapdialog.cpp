@@ -102,8 +102,6 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     mUi->tileWidth->setValue(session::mapTileWidth);
     mUi->tileHeight->setValue(session::mapTileHeight);
 
-    Session::current().set("Map/SizeTest", QSize(2, 4300));
-
     // Make the font of the pixel size label smaller
     QFont font = mUi->pixelSizeLabel->font();
     const qreal size = QFontInfo(font).pointSizeF();
