@@ -80,6 +80,8 @@ public:
                       int row, int column,
                       const QModelIndex &parent) override;
 
+    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
+
     /**
      * Returns the tile at the given index.
      */
@@ -103,6 +105,10 @@ public:
     void tilesetChanged();
 
     void setColumnCountOverride(int columnCount);
+
+    bool isFixedAtlas() const;
+
+    QPoint snapToGrid(const QPoint &pos) const;
 
 public slots:
     /**
