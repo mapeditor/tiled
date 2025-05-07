@@ -50,14 +50,23 @@ FilePath FilePath::fromString(const QString &string)
 }
 
 
-bool setClassPropertyMemberValue(QVariant &classValue,
-                                 int depth,
-                                 const QStringList &path,
-                                 const QVariant &value)
+PropertyPath toPropertyPath(const QStringList &path)
 {
-    if (depth >= path.size())
-        return false;   // hierarchy not deep enough for path
+    PropertyPath result;
+    result.reserve(path.size());
+    for (const QString &name : path)
+        result.append(name);
+    return result;
+}
 
+
+static bool setClassPropertyValue(QVariant &classValue,
+                                  const QString &memberName,
+                                  int depth,
+                                  const PropertyPath &path,
+                                  const QVariant &value,
+                                  bool allowReset)
+{
     if (classValue.userType() != propertyValueId())
         return false;   // invalid class value
 
@@ -66,7 +75,6 @@ bool setClassPropertyMemberValue(QVariant &classValue,
         return false;   // invalid class value
 
     QVariantMap classMembers = classPropertyValue.value.toMap();
-    const auto &memberName = path.at(depth);
     QVariant &member = classMembers[memberName];
 
     if (depth == path.size() - 1) {
@@ -79,8 +87,8 @@ bool setClassPropertyMemberValue(QVariant &classValue,
             if (type && type->isClass())
                 member = static_cast<const ClassPropertyType*>(type)->members.value(memberName);
         }
-        if (!setClassPropertyMemberValue(member, depth + 1, path, value))
-           return false;
+        if (!setNestedPropertyValue(member, depth + 1, path, value, true))
+            return false;
     }
 
     // Remove "unset" members (marked by invalid QVariant)
@@ -88,7 +96,7 @@ bool setClassPropertyMemberValue(QVariant &classValue,
         classMembers.remove(memberName);
 
     // Mark whole class as "unset" if it has no members left, unless at top level
-    if (!classMembers.isEmpty() || depth == 1) {
+    if (!classMembers.isEmpty() || !allowReset) {
         classPropertyValue.value = classMembers;
         classValue = QVariant::fromValue(classPropertyValue);
     } else {
@@ -98,17 +106,66 @@ bool setClassPropertyMemberValue(QVariant &classValue,
     return true;
 }
 
+static bool setListElementValue(QVariant &listValue,
+                                int index,
+                                int depth,
+                                const PropertyPath &path,
+                                const QVariant &value)
+{
+    if (listValue.userType() != QMetaType::QVariantList)
+        return false;   // invalid list value
+
+    auto list = listValue.value<QVariantList>();
+    if (index >= list.size())
+        return false;   // invalid list index
+
+    QVariant &member = list[index];
+
+    if (depth == path.size() - 1) {
+        member = value;
+    } else {
+        if (!setNestedPropertyValue(member, depth + 1, path, value, false))
+            return false;
+    }
+
+    listValue = list;
+    return true;
+}
+
+bool setNestedPropertyValue(QVariant &compoundValue,
+                            int depth,
+                            const PropertyPath &path,
+                            const QVariant &value,
+                            bool allowReset)
+{
+    if (depth >= path.size())
+        return false;   // hierarchy not deep enough for path
+
+    const auto &pathElement = path.at(depth);
+    switch (pathElement.index()) {
+    case 0: // member value (QString)
+        return setClassPropertyValue(compoundValue, std::get<0>(pathElement), depth, path, value, allowReset);
+    case 1: // list element (int)
+        return setListElementValue(compoundValue, std::get<1>(pathElement), depth, path, value);
+    }
+
+    return false;
+}
+
 bool setPropertyMemberValue(Properties &properties,
-                            const QStringList &path,
+                            const PropertyPath &path,
                             const QVariant &value)
 {
     Q_ASSERT(!path.isEmpty());
 
-    auto &topLevelName = path.first();
+    auto &topLevelEntry = path.first();
+    Q_ASSERT(std::holds_alternative<QString>(topLevelEntry));
+
+    auto &topLevelName = std::get<QString>(topLevelEntry);
 
     if (path.size() > 1) {
         auto topLevelValue = properties.value(topLevelName);
-        if (!setClassPropertyMemberValue(topLevelValue, 1, path, value))
+        if (!setNestedPropertyValue(topLevelValue, 1, path, value, false))
             return false;
         properties.insert(topLevelName, topLevelValue);
     } else {

@@ -154,7 +154,7 @@ public:
      *
      * Returns whether the property was set.
      */
-    bool setProperty(const QStringList &path, const QVariant &value);
+    bool setProperty(const PropertyPath &path, const QVariant &value);
 
     /**
      * Removes the property with the given \a name.

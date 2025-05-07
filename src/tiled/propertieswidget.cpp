@@ -550,7 +550,7 @@ private:
 
     void refresh();
 
-    void setPropertyValue(const QStringList &path, const QVariant &value);
+    void setPropertyValue(const PropertyPath &path, const QVariant &value);
 
     bool mUpdating = false;
 };
@@ -2544,15 +2544,17 @@ void CustomProperties::refresh()
     setEnabled(!partOfTileset || editingTileset);
 }
 
-void CustomProperties::setPropertyValue(const QStringList &path, const QVariant &value)
+void CustomProperties::setPropertyValue(const PropertyPath &path, const QVariant &value)
 {
     const auto objects = mDocument->currentObjects();
     if (!objects.isEmpty()) {
         QScopedValueRollback<bool> updating(mUpdating, true);
-        if (path.size() > 1 || value.isValid())
+        if (path.size() > 1 || value.isValid()) {
             mDocument->undoStack()->push(new SetProperty(mDocument, objects, path, value));
-        else
-            mDocument->undoStack()->push(new RemoveProperty(mDocument, objects, path.first()));
+        } else {
+            auto &name = std::get<QString>(path.first());
+            mDocument->undoStack()->push(new RemoveProperty(mDocument, objects, name));
+        }
     }
 }
 
@@ -2898,7 +2900,7 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
             }
 
             undoStack->push(new SetProperty(mDocument, objects,
-                                            QStringList { propertyName },
+                                            PropertyPath { propertyName },
                                             values));
         }
 
@@ -2919,7 +2921,7 @@ bool PropertiesWidget::event(QEvent *event)
 {
     switch (event->type()) {
     case QEvent::ShortcutOverride: {
-        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        auto *keyEvent = static_cast<QKeyEvent *>(event);
         if (keyEvent->matches(QKeySequence::Delete) || keyEvent->key() == Qt::Key_Backspace
                 || keyEvent->matches(QKeySequence::Cut)
                 || keyEvent->matches(QKeySequence::Copy)

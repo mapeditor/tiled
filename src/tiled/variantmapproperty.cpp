@@ -48,17 +48,28 @@ static void updateModifiedRecursively(Property *property, const QVariant &value)
     if (!groupProperty)
         return;
 
-    const QVariantMap classValue = value.value<PropertyValue>().value.toMap();
+    const bool isDimmed = property->isDimmed();
 
-    for (auto subProperty : groupProperty->subProperties()) {
-        const auto &name = subProperty->name();
-        const bool isModified = classValue.contains(name);
-        const bool isDimmed = property->isDimmed();
+    if (value.userType() == QMetaType::QVariantList) {
+        const QVariantList listValue = value.toList();
+        for (int i = 0; i < groupProperty->subProperties().size() && i < listValue.size(); ++i) {
+            auto subProperty = groupProperty->subProperties().at(i);
 
-        if (subProperty->isModified() != isModified || subProperty->isDimmed() != isDimmed || isModified) {
             subProperty->setDimmed(isDimmed);
-            subProperty->setModified(isModified);
-            updateModifiedRecursively(subProperty, classValue.value(name));
+            subProperty->setModified(false);
+            updateModifiedRecursively(subProperty, listValue.at(i));
+        }
+    } else {
+        const QVariantMap classValue = value.value<PropertyValue>().value.toMap();
+        for (auto subProperty : groupProperty->subProperties()) {
+            const auto &name = subProperty->name();
+            const bool isModified = classValue.contains(name);
+
+            if (subProperty->isModified() != isModified || subProperty->isDimmed() != isDimmed || isModified) {
+                subProperty->setDimmed(isDimmed);
+                subProperty->setModified(isModified);
+                updateModifiedRecursively(subProperty, classValue.value(name));
+            }
         }
     }
 }
@@ -296,8 +307,8 @@ bool VariantMapProperty::createOrUpdateProperty(int index,
         // the set function, so that we can include the path.
         if (auto classProperty = qobject_cast<ClassProperty*>(property)) {
             connect(classProperty, &ClassProperty::memberValueChanged,
-                    this, [=] (const QStringList &path, const QVariant &value) {
-                QStringList fullPath(name);
+                    this, [=] (const PropertyPath &path, const QVariant &value) {
+                PropertyPath fullPath = { name };
                 fullPath.append(path);
                 setMemberValue(fullPath, value);
             });
@@ -380,15 +391,20 @@ void VariantMapProperty::addMember(const QString &name, const QVariant &value)
     emitMemberValueChanged({ name }, value);
 }
 
-void VariantMapProperty::setMemberValue(const QStringList &path, const QVariant &value)
+void VariantMapProperty::setMemberValue(const PropertyPath &path, const QVariant &value)
 {
-    const auto &topLevelName = path.first();
+    Q_ASSERT(!path.isEmpty());
+
+    const auto &topLevelEntry = path.first();
+    Q_ASSERT(std::holds_alternative<QString>(topLevelEntry));
+
+    auto &topLevelName = std::get<QString>(topLevelEntry);
 
     // If we're setting a member of a class property that doesn't exist yet,
     // we need to call addMember with the modified top-level value instead.
     if (path.size() > 1 && !mValue.contains(topLevelName)) {
         auto topLevelValue = mSuggestions.value(topLevelName);
-        if (setClassPropertyMemberValue(topLevelValue, 1, path, value))
+        if (setNestedPropertyValue(topLevelValue, 1, path, value, false))
             addMember(topLevelName, topLevelValue);
         return;
     }
@@ -419,12 +435,13 @@ void VariantMapProperty::propertyTypesChanged()
     setValue(mValue, mSuggestions);
 }
 
-void VariantMapProperty::emitMemberValueChanged(const QStringList &path, const QVariant &value)
+void VariantMapProperty::emitMemberValueChanged(const PropertyPath &path, const QVariant &value)
 {
     QScopedValueRollback<bool> emittingValueChanged(mEmittingValueChanged, true);
     emit memberValueChanged(path, value);
     emit valueChanged();
 }
+
 
 ClassProperty::ClassProperty(const QString &name,
                              const ClassPropertyType &classType,
@@ -471,8 +488,8 @@ void ClassProperty::createMembers(const ClassPropertyType &classType)
                 connect(classProperty,
                         &ClassProperty::memberValueChanged,
                         this,
-                        [=](const QStringList &path, const QVariant &value) {
-                            QStringList fullPath(name);
+                        [=](const PropertyPath &path, const QVariant &value) {
+                            PropertyPath fullPath = { name };
                             fullPath.append(path);
                             emit memberValueChanged(fullPath, value);
                         });
@@ -546,6 +563,9 @@ void VariantListProperty::addValue(const QVariant &value)
     createOrUpdateProperty(mValue.size() - 1, QVariant(), value);
 
     mSet(mValue);
+
+    QScopedValueRollback<bool> emittingValueChanged(mEmittingValueChanged, true);
+    emit valueChanged();
 }
 
 QWidget *VariantListProperty::createEditor(QWidget *parent)
@@ -601,6 +621,11 @@ bool VariantListProperty::createOrUpdateProperty(int index,
         auto set = [=] (const QVariant &value) {
             mValue[index] = value;
             mSet(mValue);
+
+            updateModifiedRecursively(subProperties().at(index), mValue[index]);
+
+            QScopedValueRollback<bool> emittingValueChanged(mEmittingValueChanged, true);
+            emit valueChanged();
         };
 
         property = createProperty(QString(), std::move(get), std::move(set));
@@ -615,9 +640,15 @@ bool VariantListProperty::createOrUpdateProperty(int index,
             connect(classProperty,
                     &ClassProperty::memberValueChanged,
                     this,
-                    [=](const QStringList &path, const QVariant &value) {
-                        if (setClassPropertyMemberValue(mValue[index], 1, path, value))
+                    [=](const PropertyPath &path, const QVariant &value) {
+                        if (setNestedPropertyValue(mValue[index], 0, path, value, false)) {
                             mSet(mValue);
+
+                            updateModifiedRecursively(subProperties().at(index), mValue[index]);
+
+                            QScopedValueRollback<bool> emittingValueChanged(mEmittingValueChanged, true);
+                            emit valueChanged();
+                        }
                     });
         }
 
@@ -635,7 +666,6 @@ bool VariantListProperty::createOrUpdateProperty(int index,
         property->setName(QStringLiteral("[%1]").arg(index));
         property->setActions(Property::Action::Select | Property::Action::Remove);
         // updateModifiedRecursively(property, newValue);
-        qDebug() << "updateModifiedRecursively" << property->name() << newValue;
         emitValueChangedRecursively(property);
     }
 

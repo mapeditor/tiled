@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "properties.h"
 #include "propertiesview.h"
 #include "propertytype.h"
 
@@ -46,12 +47,12 @@ public:
 
     void removeMember(const QString &name);
     void addMember(const QString &name, const QVariant &value);
-    void setMemberValue(const QStringList &path, const QVariant &value);
+    void setMemberValue(const PropertyPath &path, const QVariant &value);
 
     Property *property(const QString &name) const;
 
 signals:
-    void memberValueChanged(const QStringList &path, const QVariant &value);
+    void memberValueChanged(const PropertyPath &path, const QVariant &value);
 
 protected:
     virtual void propertyTypesChanged();
@@ -65,7 +66,7 @@ private:
                                 const QVariant &oldValue,
                                 const QVariant &newValue);
 
-    void emitMemberValueChanged(const QStringList &path, const QVariant &value);
+    void emitMemberValueChanged(const PropertyPath &path, const QVariant &value);
 
     bool mEmittingValueChanged = false;
     QVariantMap mValue;
@@ -100,7 +101,7 @@ public:
     void setMemberValue(const QString &name, const QVariant &value);
 
 signals:
-    void memberValueChanged(const QStringList &path, const QVariant &value);
+    void memberValueChanged(const PropertyPath &path, const QVariant &value);
 
 private:
     void createMembers(const ClassPropertyType &classType);
