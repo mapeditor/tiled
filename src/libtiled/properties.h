@@ -85,7 +85,7 @@ class TILEDSHARED_EXPORT ObjectRef
     Q_PROPERTY(int id MEMBER id)
 
 public:
-    int id;
+    int id = 0;
 
     bool operator==(const ObjectRef &o) const
     { return id == o.id; }
@@ -164,28 +164,42 @@ using Properties = QVariantMap;
  */
 using AggregatedProperties = QMap<QString, AggregatedPropertyData>;
 
-TILEDSHARED_EXPORT bool setClassPropertyMemberValue(QVariant &classValue,
-                                                    int depth,
-                                                    const QStringList &path,
-                                                    const QVariant &value);
+/**
+ * A path element is either a name of a property or an index into an array.
+ */
+using PathElement = std::variant<QString, int>;
+using PropertyPath = QVector<PathElement>;
+
+TILEDSHARED_EXPORT PropertyPath toPropertyPath(const QStringList &path);
+
+TILEDSHARED_EXPORT bool setNestedPropertyValue(QVariant &compoundValue,
+                                               int depth,
+                                               const PropertyPath &path,
+                                               const QVariant &value,
+                                               bool allowReset);
 
 TILEDSHARED_EXPORT bool setPropertyMemberValue(Properties &properties,
-                                               const QStringList &path,
+                                               const PropertyPath &path,
                                                const QVariant &value);
 
 TILEDSHARED_EXPORT void aggregateProperties(AggregatedProperties &aggregated, const Properties &properties);
 TILEDSHARED_EXPORT void mergeProperties(Properties &target, const Properties &source);
 
-TILEDSHARED_EXPORT QJsonArray propertiesToJson(const Properties &properties, const ExportContext &context = ExportContext());
-TILEDSHARED_EXPORT Properties propertiesFromJson(const QJsonArray &json, const ExportContext &context = ExportContext());
+TILEDSHARED_EXPORT QJsonArray propertiesToJson(const Properties &properties,
+                                               const ExportContext &context = ExportContext());
+TILEDSHARED_EXPORT Properties propertiesFromJson(const QJsonArray &json,
+                                                 const ExportContext &context = ExportContext());
 
-TILEDSHARED_EXPORT int propertyValueId();
-TILEDSHARED_EXPORT int filePathTypeId();
-TILEDSHARED_EXPORT int objectRefTypeId();
+constexpr int propertyValueId() { return qMetaTypeId<PropertyValue>(); }
+constexpr int filePathTypeId() { return qMetaTypeId<FilePath>(); }
+constexpr int objectRefTypeId() { return qMetaTypeId<ObjectRef>(); }
 
 TILEDSHARED_EXPORT QString typeToName(int type);
 TILEDSHARED_EXPORT QString typeName(const QVariant &value);
+TILEDSHARED_EXPORT QString userTypeName(const QVariant &value);
 
 TILEDSHARED_EXPORT void initializeMetatypes();
+
+TILEDSHARED_EXPORT QVariantList possiblePropertyValues(const ClassPropertyType *parentClassType = nullptr);
 
 } // namespace Tiled

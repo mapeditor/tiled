@@ -21,9 +21,10 @@
 #include "propertiesview.h"
 
 #include "fileedit.h"
+#include "listedit.h"
+#include "propertyeditorwidgets.h"
 #include "textpropertyedit.h"
 #include "utils.h"
-#include "propertyeditorwidgets.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>
@@ -1152,7 +1153,7 @@ void PropertiesView::forgetProperty(Property *property)
 
     property->disconnect(this);
 
-    if (GroupProperty *groupProperty = qobject_cast<GroupProperty *>(property)) {
+    if (auto groupProperty = qobject_cast<GroupProperty *>(property)) {
         for (auto subProperty : groupProperty->subProperties())
             forgetProperty(subProperty);
     }
@@ -1198,7 +1199,9 @@ QWidget *PropertiesView::focusPropertyImpl(GroupProperty *group,
                 return widgets.children;
             }
             return nullptr;
-        } else if (auto groupProperty = qobject_cast<GroupProperty *>(subProperty)) {
+        }
+
+        if (auto groupProperty = qobject_cast<GroupProperty *>(subProperty)) {
             if (widgets.children) {
                 if (auto w = focusPropertyImpl(groupProperty, property, target)) {
                     groupProperty->setExpanded(true);
@@ -1280,7 +1283,9 @@ PropertiesView::PropertyWidgets PropertiesView::createPropertyWidgets(Property *
             if (assignSelectedPropertiesRange(m_root, m_selectionStart, property))
                 emit selectedPropertiesChanged();
             return;
-        } else if (modifiers & Qt::ControlModifier) {
+        }
+
+        if (modifiers & Qt::ControlModifier) {
             // Toggle selection
             if (property->actions().testFlag(Property::Action::Select)) {
                 property->setSelected(!property->isSelected());
