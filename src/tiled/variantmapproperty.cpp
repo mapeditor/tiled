@@ -50,7 +50,7 @@ static void updateModifiedRecursively(Property *property, const QVariant &value)
 
     const bool isDimmed = property->isDimmed();
 
-    if (value.typeId() == QMetaType::QVariantList) {
+    if (value.userType() == QMetaType::QVariantList) {
         const QVariantList listValue = value.toList();
         for (int i = 0; i < groupProperty->subProperties().size() && i < listValue.size(); ++i) {
             auto subProperty = groupProperty->subProperties().at(i);
