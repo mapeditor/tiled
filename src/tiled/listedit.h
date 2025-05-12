@@ -34,7 +34,7 @@ namespace Tiled {
 class ListEdit final : public QWidget
 {
     Q_OBJECT
-    Q_PROPERTY(QVariantList value READ value WRITE setValue NOTIFY valueChanged FINAL)
+    Q_PROPERTY(QVariantList value READ value WRITE setValue FINAL)
 
 public:
     explicit ListEdit(QWidget *parent = nullptr);
@@ -45,7 +45,7 @@ public:
     static QString valueText(const QVariantList &value);
 
 signals:
-    void valueChanged(const QVariantList &value);
+    void appendValue(const QVariant &value);
 
 private:
     void addButtonClicked();

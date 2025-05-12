@@ -90,15 +90,15 @@ class ClassProperty : public GroupProperty
 
 public:
     ClassProperty(const QString &name,
+                  const PropertyPath &path,
                   const ClassPropertyType &classType,
                   std::function<QVariantMap ()> get,
+                  std::function<void(const PropertyPath &path, const QVariant &value)> set,
                   QObject *parent = nullptr);
 
     DisplayMode displayMode() const override { return DisplayMode::Default; }
 
     QVariantMap value() const { return mGet(); }
-
-    void setMemberValue(const QString &name, const QVariant &value);
 
 signals:
     void memberValueChanged(const PropertyPath &path, const QVariant &value);
@@ -111,8 +111,11 @@ private:
                                 const QVariant &oldValue,
                                 const QVariant &newValue);
 
+    PropertyPath mPath;
     QHash<QString, Property*> mPropertyMap;
     std::function<QVariantMap ()> mGet;
+    std::function<void(const PropertyPath &path, const QVariant &value)> mSet;
+    bool mEmittingValueChanged = false;
 };
 
 
@@ -125,12 +128,13 @@ class VariantListProperty : public GroupProperty
 
 public:
     VariantListProperty(const QString &name,
-                        std::function<QVariantList ()> get,
-                        std::function<void(const QVariantList &)> set,
+                        const PropertyPath &path,
+                        std::function<QVariantList()> get,
+                        std::function<void(const PropertyPath &, const QVariant &)> set,
                         QObject *parent = nullptr);
 
     void setValue(const QVariantList &value);
-    const QVariantList &value() const { return mValue; }
+    QVariantList value() const { return mGet(); }
 
     void removeValueAt(int index);
     void addValue(const QVariant &value);
@@ -143,9 +147,10 @@ private:
                                 const QVariant &oldValue,
                                 const QVariant &newValue);
 
+    PropertyPath mPath;
     std::function<QVariantList ()> mGet;
-    std::function<void(const QVariantList &)> mSet;
-    QVariantList mValue;
+    std::function<void(const PropertyPath &path, const QVariant &value)> mSet;
+    QVariantList mOldValues;    // remembered solely so we know the types we created properties for
     bool mEmittingValueChanged = false;
 };
 
