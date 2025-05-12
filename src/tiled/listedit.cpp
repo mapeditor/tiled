@@ -63,9 +63,7 @@ ListEdit::ListEdit(QWidget *parent)
             this, &ListEdit::populateAddMenu);
 
     connect(mAddMenu, &QMenu::triggered, this, [this](QAction *action) {
-        mValue.append(action->data());
-        mLabel->setText(valueText(mValue));
-        emit valueChanged(mValue);
+        emit appendValue(action->data());
     });
 }
 
@@ -89,12 +87,11 @@ void ListEdit::addButtonClicked()
     }
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-    mValue.append(QVariant(mValue.last().metaType()));
+    QVariant value(mValue.last().metaType());
 #else
-    mValue.append(QVariant(mValue.last().userType(), nullptr));
+    QVariant value(mValue.last().userType(), nullptr);
 #endif
-    mLabel->setText(valueText(mValue));
-    emit valueChanged(mValue);
+    emit appendValue(value);
 }
 
 void ListEdit::populateAddMenu()
