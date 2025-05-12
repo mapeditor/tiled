@@ -24,6 +24,7 @@
 #include "mapdocument.h"
 #include "objectrefedit.h"
 #include "preferences.h"
+#include "properties.h"
 #include "propertyeditorwidgets.h"
 #include "propertytypesmodel.h"
 #include "session.h"
@@ -72,15 +73,6 @@ static void updateModifiedRecursively(Property *property, const QVariant &value)
             }
         }
     }
-}
-
-static void emitValueChangedRecursively(Property *property)
-{
-    emit property->valueChanged();
-
-    if (auto groupProperty = qobject_cast<GroupProperty*>(property))
-        for (auto subProperty : groupProperty->subProperties())
-            emitValueChangedRecursively(subProperty);
 }
 
 
@@ -192,9 +184,9 @@ static bool canReuseProperty(const QVariant &a,
     return true;
 }
 
-static Property *createProperty(const QString &name,
+static Property *createProperty(const PropertyPath &path,
                                 std::function<QVariant()> get,
-                                std::function<void(const QVariant &)> set)
+                                std::function<void(const PropertyPath &path, const QVariant &value)> set)
 {
     Property *property = nullptr;
 
@@ -202,13 +194,23 @@ static Property *createProperty(const QString &name,
     const auto type = value.userType();
     QString typeName;
 
+    // Create a name based on the last element in the path
+    QString name;
+    std::visit([&name](const auto &arg) {
+        using T = std::decay_t<decltype(arg)>;
+        if constexpr (std::is_same_v<T, QString>)
+            name = arg;
+        else if constexpr (std::is_same_v<T, int>)
+            name = QStringLiteral("[%1]").arg(arg);
+    }, path.last());
+
     if (type == QMetaType::QVariantList) {
         auto getList = [get = std::move(get)] { return get().toList(); };
-        property = new VariantListProperty(name, std::move(getList), std::move(set));
+        property = new VariantListProperty(name, path, std::move(getList), std::move(set));
     } else if (type == filePathTypeId()) {
         auto getUrl = [get = std::move(get)] { return get().value<FilePath>().url; };
-        auto setUrl = [set = std::move(set)] (const QUrl &value) {
-            set(QVariant::fromValue(FilePath { value }));
+        auto setUrl = [path, set = std::move(set)] (const QUrl &value) {
+            set(path, QVariant::fromValue(FilePath { value }));
         };
         property = new UrlProperty(name, std::move(getUrl), std::move(setUrl));
     } else if (type == objectRefTypeId()) {
@@ -216,8 +218,8 @@ static Property *createProperty(const QString &name,
             return DisplayObjectRef(get().value<ObjectRef>()/*,
                                     qobject_cast<MapDocument *>(mDocument)*/);
         };
-        auto setObjectRef = [set = std::move(set)](const DisplayObjectRef &value) {
-            set(QVariant::fromValue(value.ref));
+        auto setObjectRef = [path, set = std::move(set)](const DisplayObjectRef &value) {
+            set(path, QVariant::fromValue(value.ref));
         };
         property = new ObjectRefProperty(name, std::move(getObjectRef), std::move(setObjectRef));
     } else if (type == propertyValueId()) {
@@ -228,20 +230,17 @@ static Property *createProperty(const QString &name,
                 break;
             case PropertyType::PT_Class: {
                 auto &classType = static_cast<const ClassPropertyType&>(*propertyType);
-
-                // The ClassProperty does not use the set function, because we will instead handle
-                // its memberValueChanged signal to apply changes.
-                property = new ClassProperty(name, classType, [get = std::move(get)] {
+                property = new ClassProperty(name, path, classType, [get = std::move(get)] {
                     return get().value<PropertyValue>().value.toMap();
-                });
+                }, std::move(set));
                 break;
             }
             case PropertyType::PT_Enum: {
                 auto enumProperty = new BaseEnumProperty(
                     name,
                     [get = std::move(get)] { return get().value<PropertyValue>().value.toInt(); },
-                    [set = std::move(set), propertyType](int value) {
-                        set(propertyType->wrap(value));
+                    [path, set = std::move(set), propertyType](int value) {
+                        set(path, propertyType->wrap(value));
                     });
 
                 auto enumType = static_cast<const EnumPropertyType&>(*propertyType);
@@ -258,7 +257,11 @@ static Property *createProperty(const QString &name,
             typeName = QCoreApplication::translate("VariantMapProperty", "Unknown type");
         }
     } else {
-        property = createVariantProperty(name, std::move(get), std::move(set));
+        property = createVariantProperty(name,
+                                         std::move(get),
+                                         [path, set = std::move(set)](const QVariant &value) {
+                                             set(path, value);
+                                         });
     }
 
     if (property) {
@@ -294,26 +297,16 @@ bool VariantMapProperty::createOrUpdateProperty(int index,
 
     // Try to create the property if necessary
     if (!property) {
+        const PropertyPath path = { name };
+
         auto get = [=] {
             return mValue.value(name, mSuggestions.value(name));
         };
-        auto set = [=] (const QVariant &value) {
-            setMemberValue({ name }, value);
+        auto set = [this] (const PropertyPath &path, const QVariant &value) {
+            setMemberValue(path, value);
         };
 
-        property = createProperty(name, std::move(get), std::move(set));
-
-        // Changes to class properties are handled with a signal rather than
-        // the set function, so that we can include the path.
-        if (auto classProperty = qobject_cast<ClassProperty*>(property)) {
-            connect(classProperty, &ClassProperty::memberValueChanged,
-                    this, [=] (const PropertyPath &path, const QVariant &value) {
-                PropertyPath fullPath = { name };
-                fullPath.append(path);
-                setMemberValue(fullPath, value);
-            });
-        }
-
+        property = createProperty(path, std::move(get), std::move(set));
         if (property) {
             connect(property, &Property::resetRequested, this, [=] {
                 removeMember(name);
@@ -346,7 +339,7 @@ bool VariantMapProperty::createOrUpdateProperty(int index,
                                         : Property::Action::Remove));
 
         updateModifiedRecursively(property, newValue);
-        emitValueChangedRecursively(property);
+        emit property->valueChanged();
     }
 
     return true;
@@ -444,28 +437,23 @@ void VariantMapProperty::emitMemberValueChanged(const PropertyPath &path, const 
 
 
 ClassProperty::ClassProperty(const QString &name,
+                             const PropertyPath &path,
                              const ClassPropertyType &classType,
                              std::function<QVariantMap()> get,
+                             std::function<void(const PropertyPath &, const QVariant &)> set,
                              QObject *parent)
     : GroupProperty(name, parent)
+    , mPath(path)
     , mGet(std::move(get))
+    , mSet(std::move(set))
 {
     setHeader(false);
     createMembers(classType);
-}
 
-void ClassProperty::setMemberValue(const QString &name, const QVariant &value)
-{
-    // TODO: More specific signal
-    // if (auto childProperty = mPropertyMap.value(name))
-    //     emitValueChangedRecursively(childProperty);
-
-    // ClassProperty does not change its value directly, but instead sends this
-    // signal, making its handler responsible for applying the change. This is
-    // done because nested values need to be applied individually to each
-    // selected object.
-
-    // emit valueChanged();
+    connect(this, &Property::valueChanged, this, [this] {
+        for (auto subProperty : subProperties())
+            emit subProperty->valueChanged();
+    });
 }
 
 void ClassProperty::createMembers(const ClassPropertyType &classType)
@@ -476,41 +464,33 @@ void ClassProperty::createMembers(const ClassPropertyType &classType)
         it.next();
         const QString &name = it.key();
 
+        PropertyPath path = mPath;
+        path.append(name);
+
         auto getMember = [=] {
             return mGet().value(name, classType.members.value(name));
         };
-        auto setMember = [=] (const QVariant &value) {
-            emit memberValueChanged({ name }, value);
-        };
 
-        if (auto childProperty = createProperty(name, std::move(getMember), setMember)) {
-            if (auto classProperty = qobject_cast<ClassProperty*>(childProperty)) {
-                connect(classProperty,
-                        &ClassProperty::memberValueChanged,
-                        this,
-                        [=](const PropertyPath &path, const QVariant &value) {
-                            PropertyPath fullPath = { name };
-                            fullPath.append(path);
-                            emit memberValueChanged(fullPath, value);
-                        });
-            }
-
+        if (auto childProperty = createProperty(path, std::move(getMember), mSet)) {
             childProperty->setActions(Property::Action::Reset);
             addProperty(childProperty);
 
             connect(childProperty, &Property::resetRequested, this, [=] {
-                setMember(QVariant());
-                emitValueChangedRecursively(childProperty);
+                mSet(path, QVariant());
+                emit childProperty->valueChanged();
             });
         }
     }
 }
 
+
 VariantListProperty::VariantListProperty(const QString &name,
+                                         const PropertyPath &path,
                                          std::function<QVariantList()> get,
-                                         std::function<void(const QVariantList &)> set,
+                                         std::function<void(const PropertyPath &, const QVariant &)> set,
                                          QObject *parent)
     : GroupProperty(name, parent)
+    , mPath(path)
     , mGet(std::move(get))
     , mSet(std::move(set))
 {
@@ -527,15 +507,14 @@ VariantListProperty::VariantListProperty(const QString &name,
 
 void VariantListProperty::setValue(const QVariantList &value)
 {
-    QVariantList oldValue = mValue;
-    mValue = value;
-
     // First, make sure we don't have too many properties
-    while (mValue.size() < subProperties().size())
+    while (value.size() < subProperties().size())
         deleteProperty(subProperties().last());
 
-    for (int index = 0; index < mValue.size(); ++index)
-        createOrUpdateProperty(index, oldValue.value(index), mValue.at(index));
+    for (int index = 0; index < value.size(); ++index)
+        createOrUpdateProperty(index, mOldValues.value(index), value.at(index));
+
+    mOldValues = value;
 
     // // Don't emit valueChanged when we're just recreating properties with custom types
     // if (mPropertyTypesChanged)
@@ -547,25 +526,36 @@ void VariantListProperty::setValue(const QVariantList &value)
 
 void VariantListProperty::removeValueAt(int index)
 {
-    QVariantList value = mValue;
-    value.removeAt(index);
-    setValue(value);
+    QVariantList list = mGet();
+    if (index < 0 || index >= list.size())
+        return;
 
-    mSet(mValue);
+    list.removeAt(index);
 
-    QScopedValueRollback<bool> emittingValueChanged(mEmittingValueChanged, true);
-    emit valueChanged();
+    // We can't just delete the affected property, because the remaining
+    // properties would shift up while still referring to their original index.
+    mSet(mPath, list);
+    setValue(mGet());
 }
 
 void VariantListProperty::addValue(const QVariant &value)
 {
-    mValue.append(value);
-    createOrUpdateProperty(mValue.size() - 1, QVariant(), value);
+    QVariantList list = mGet();
+    list.append(value);
 
-    mSet(mValue);
+    mSet(mPath, list);
 
-    QScopedValueRollback<bool> emittingValueChanged(mEmittingValueChanged, true);
-    emit valueChanged();
+    if (mOldValues.size() == list.size() - 1) {
+        // Expected case, because mOldValues size should match
+        createOrUpdateProperty(list.size() - 1, QVariant(), value);
+        mOldValues = list;
+
+        QScopedValueRollback<bool> emittingValueChanged(mEmittingValueChanged, true);
+        emit valueChanged();
+    } else {
+        // Fall back to updating entire list in case something strange happened
+        setValue(mGet());
+    }
 }
 
 QWidget *VariantListProperty::createEditor(QWidget *parent)
@@ -578,8 +568,8 @@ QWidget *VariantListProperty::createEditor(QWidget *parent)
     syncEditor();
 
     connect(this, &Property::valueChanged, editor, syncEditor);
-    connect(editor, &ListEdit::valueChanged, this, [this, editor] {
-        setValue(editor->value());
+    connect(editor, &ListEdit::appendValue, this, [this] (const QVariant &value) {
+        addValue(value);
     });
 
     return editor;
@@ -615,43 +605,20 @@ bool VariantListProperty::createOrUpdateProperty(int index,
 
     // Try to create the property if necessary
     if (!property) {
+        PropertyPath path = mPath;
+        path.append(index);
+
         auto get = [=] {
-            return mValue.value(index);
-        };
-        auto set = [=] (const QVariant &value) {
-            mValue[index] = value;
-            mSet(mValue);
-
-            updateModifiedRecursively(subProperties().at(index), mValue[index]);
-
-            QScopedValueRollback<bool> emittingValueChanged(mEmittingValueChanged, true);
-            emit valueChanged();
+            return mGet().value(index);
         };
 
-        property = createProperty(QString(), std::move(get), std::move(set));
+        property = createProperty(path, std::move(get), mSet);
         if (!property) {
             qWarning() << "Failed to create property at" << index
                        << "with type" << newValue.typeName();
 
             property = new StringProperty(QString(), [] { return QString(); }, {}, this);
         }
-
-        if (auto classProperty = qobject_cast<ClassProperty*>(property)) {
-            connect(classProperty,
-                    &ClassProperty::memberValueChanged,
-                    this,
-                    [=](const PropertyPath &path, const QVariant &value) {
-                        if (setNestedPropertyValue(mValue[index], 0, path, value, false)) {
-                            mSet(mValue);
-
-                            updateModifiedRecursively(subProperties().at(index), mValue[index]);
-
-                            QScopedValueRollback<bool> emittingValueChanged(mEmittingValueChanged, true);
-                            emit valueChanged();
-                        }
-                    });
-        }
-
 
         connect(property, &Property::removeRequested, this, [this, property] {
             int currentIndex = subProperties().indexOf(property);
@@ -666,7 +633,7 @@ bool VariantListProperty::createOrUpdateProperty(int index,
         property->setName(QStringLiteral("[%1]").arg(index));
         property->setActions(Property::Action::Select | Property::Action::Remove);
         // updateModifiedRecursively(property, newValue);
-        emitValueChangedRecursively(property);
+        emit property->valueChanged();
     }
 
     return true;
