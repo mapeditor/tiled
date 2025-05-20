@@ -31,6 +31,7 @@
 #include "changetileimagesource.h"
 #include "changewangcolordata.h"
 #include "changewangsetdata.h"
+#include "changeworld.h"
 #include "clipboardmanager.h"
 #include "compression.h"
 #include "mapdocument.h"
@@ -2215,9 +2216,7 @@ public:
                     tr("Filename"),
             [this] { return  QUrl::fromLocalFile(mWorldDocument()->world()->fileName); },
                     [this](const QUrl &value) {
-                        // todo:   ability to change save path ?
-                        // const auto imageLayers = selectedLayersOfType<ImageLayer>(Layer::ImageLayerType);
-                        // push(new ChangeImageLayerImageSource(mapDocument(), imageLayers, value));
+                        push(new SetFileNameCommand(mWorldDocument(), value));
                     });
 
         mWorldProperties = new GroupProperty(tr("World Properties"));

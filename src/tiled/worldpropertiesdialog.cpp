@@ -45,6 +45,8 @@ WorldPropertiesDialog::WorldPropertiesDialog(WorldDocumentPtr world, QWidget *pa
     ui->propertiesWidget->propertiesView()->widget()->setContentsMargins(0, halfSpacing, 0, halfSpacing);
 
     ui->propertiesWidget->setDocument(mWorldDocument.get());
+    setWindowTitle(tr("WorldPropertiesDialog", "%s - World Properties")
+                    .arg(world->displayName()));
 }
 
 WorldPropertiesDialog::~WorldPropertiesDialog()
