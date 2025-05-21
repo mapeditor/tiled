@@ -1964,7 +1964,12 @@ void MainWindow::editWorldProperties()
 {
     if (WorldManager::instance().worlds().empty())
         return;
-    auto world = WorldManager::instance().worlds().first();
+    QSharedPointer<WorldDocument> world;
+    Document *currentDocument = DocumentManager::instance()->currentDocument();
+    if (currentDocument && currentDocument->type() == Document::MapDocumentType)
+        world = WorldManager::instance().worldForMap(currentDocument->fileName());
+    if (!world)
+        world = WorldManager::instance().worlds().first();
 
     if (WorldPropertiesDialog(world, this).exec() == QDialog::Accepted) {
         QString saveError;
