@@ -28,26 +28,6 @@
 
 namespace Tiled {
 
-static QString pathToString(const PropertyPath &path)
-{
-    QString result;
-    for (const auto &name : path) {
-        std::visit([&result](const auto &arg) {
-            if constexpr (std::is_same_v<decltype(arg), const QString &>) {
-                if (!result.isEmpty())
-                    result.append(QLatin1Char('.'));
-                result.append(arg);
-            } else {
-                result.append(QLatin1Char('['));
-                result.append(QString::number(arg));
-                result.append(QLatin1Char(']'));
-            }
-        }, name);
-    }
-    return result;
-}
-
-
 ChangeClassName::ChangeClassName(Document *document,
                                  const QList<Object *> &objects,
                                  const QString &className,
