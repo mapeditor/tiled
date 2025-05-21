@@ -171,6 +171,7 @@ using PathElement = std::variant<QString, int>;
 using PropertyPath = QVector<PathElement>;
 
 TILEDSHARED_EXPORT PropertyPath toPropertyPath(const QStringList &path);
+TILEDSHARED_EXPORT QString pathToString(const PropertyPath &path);
 
 TILEDSHARED_EXPORT bool setNestedPropertyValue(QVariant &compoundValue,
                                                int depth,

@@ -1363,6 +1363,8 @@ PropertiesView::PropertyWidgets PropertiesView::createPropertyWidgets(Property *
         containerLayout->setSpacing(halfSpacing);
         containerLayout->addWidget(rowWidget);
 
+        widgets.rowWidget = containerWidget;
+
         connect(groupProperty, &GroupProperty::expandedChanged, this, [=](bool expanded) {
             // Need to operate on a copy, because the reference might get invalidated
             PropertyWidgets widgets = m_propertyWidgets.value(groupProperty);
@@ -1371,8 +1373,6 @@ PropertiesView::PropertyWidgets PropertiesView::createPropertyWidgets(Property *
         });
 
         setPropertyChildrenExpanded(widgets, groupProperty, containerLayout, groupProperty->isExpanded());
-
-        widgets.rowWidget = containerWidget;
     }
 
     updatePropertyEnabled(widgets, property);
@@ -1389,6 +1389,14 @@ PropertiesView::PropertyWidgets PropertiesView::createPropertyWidgets(Property *
     });
 
     return widgets;
+}
+
+static void activateParentLayouts(QWidget *widget)
+{
+    while (widget && widget->layout()) {
+        widget->layout()->activate();
+        widget = widget->parentWidget();
+    }
 }
 
 QWidget *PropertiesView::createChildrenWidget(GroupProperty *groupProperty,
@@ -1443,16 +1451,12 @@ void PropertiesView::setPropertyChildrenExpanded(PropertyWidgets &widgets,
     }
 
     if (widgets.children) {
-        widgets.children->setVisible(expanded);
+        if (widgets.children->isHidden() == expanded)
+            widgets.children->setVisible(expanded);
 
-        // needed to avoid flickering when hiding the editor
-        if (!expanded) {
-            QWidget *widget = widgets.rowWidget;
-            while (widget && widget->layout()) {
-                widget->layout()->activate();
-                widget = widget->parentWidget();
-            }
-        }
+        // needed to avoid flickering when hiding the children
+        if (!expanded)
+            activateParentLayouts(widgets.children->parentWidget());
     }
 }
 
