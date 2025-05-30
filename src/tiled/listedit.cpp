@@ -86,12 +86,23 @@ void ListEdit::addButtonClicked()
         return;
     }
 
+    const auto &lastValue = mValue.last();
+    QVariant newValue;
+
+    if (lastValue.userType() == propertyValueId()) {
+        const auto propertyValue = lastValue.value<PropertyValue>();
+        if (auto type = propertyValue.type())
+            newValue = type->wrap(type->defaultValue());
+        else
+            newValue = QVariant::fromValue(PropertyValue { QVariant(), propertyValue.typeId });
+    } else {
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-    QVariant value(mValue.last().metaType());
+        newValue = QVariant(lastValue.metaType());
 #else
-    QVariant value(mValue.last().userType(), nullptr);
+        newValue = QVariant(lastValue.userType(), nullptr);
 #endif
-    emit appendValue(value);
+    }
+    emit appendValue(newValue);
 }
 
 void ListEdit::populateAddMenu()
