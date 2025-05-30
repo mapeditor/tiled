@@ -659,8 +659,8 @@ QWidget *BaseEnumProperty::createEnumEditor(QWidget *parent)
     };
     syncEditor();
 
-    QObject::connect(this, &Property::valueChanged, editor, syncEditor);
-    QObject::connect(editor, &QComboBox::currentIndexChanged, this,
+    connect(this, &Property::valueChanged, editor, syncEditor);
+    connect(editor, &QComboBox::currentIndexChanged, this,
                      [editor, this] {
         setValue(editor->currentData().toInt());
     });
@@ -700,11 +700,18 @@ QWidget *BaseEnumProperty::createFlagsEditor(QWidget *parent)
                 checkBox->setChecked((value() & enumItemValue) == enumItemValue);
             }
         }
+
+        // Make sure the labels remain readable when selected
+        auto pal = QGuiApplication::palette();
+        if (isSelected())
+            pal.setBrush(QPalette::WindowText, pal.brush(QPalette::HighlightedText));
+        editor->setPalette(pal);
     };
 
     syncEditor();
 
-    QObject::connect(this, &Property::valueChanged, editor, syncEditor);
+    connect(this, &Property::selectedChanged, editor, syncEditor);
+    connect(this, &Property::valueChanged, editor, syncEditor);
 
     return editor;
 }
