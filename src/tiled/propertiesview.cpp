@@ -176,6 +176,17 @@ void GroupProperty::collapseAll()
             groupProperty->collapseAll();
 }
 
+QList<Property *> GroupProperty::selectedSubProperties() const
+{
+    QList<Property *> selectedProperties;
+    for (auto property : std::as_const(m_subProperties)) {
+        if (property->isSelected())
+            selectedProperties.append(property);
+    }
+    return selectedProperties;
+}
+
+
 void StringProperty::setPlaceholderText(const QString &placeholderText)
 {
     if (m_placeholderText != placeholderText) {
