@@ -2212,27 +2212,11 @@ public:
    WorldProperties(Document *document, World *object, QObject *parent = nullptr)
         : ObjectProperties(document, object, parent)
     {
-        mFileNameProperty = new UrlProperty(
-                    tr("Filename"),
-            [this] { return  QUrl::fromLocalFile(mWorldDocument()->world()->fileName); },
-                    [this](const QUrl &value) {
-                        push(new SetFileNameCommand(mWorldDocument(), value));
-                    });
-
-        mWorldProperties = new GroupProperty(tr("World Properties"));
-        mWorldProperties->addProperty(mFileNameProperty);
-        mWorldProperties->addSeparator();
-        addProperty(mWorldProperties);
     }
 
 private:
-//     void onChanged(const ChangeEvent &event) override
-//     {
-// //  implement onChanged ?
-//     }
 
     GroupProperty *mWorldProperties;
-    UrlProperty *mFileNameProperty;
 
     WorldDocument *mWorldDocument () {
         return static_cast<WorldDocument *>(mDocument);
