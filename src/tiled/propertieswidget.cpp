@@ -2561,7 +2561,7 @@ void CustomProperties::setPropertyValue(const PropertyPath &path, const QVariant
 
 void PropertiesWidget::updateActions()
 {
-    const auto properties = mPropertiesView->selectedProperties();
+    const auto properties = mCustomProperties->selectedSubProperties();
     bool editingTileset = mDocument && mDocument->type() == Document::TilesetDocumentType;
     bool isTileset = mDocument && mDocument->currentObject() && mDocument->currentObject()->isPartOfTileset();
     bool canModify = mDocument && !properties.isEmpty() && (!isTileset || editingTileset);
@@ -2593,7 +2593,7 @@ bool PropertiesWidget::copyProperties()
     if (!object)
         return false;
 
-    const auto selectedProperties = mPropertiesView->selectedProperties();
+    const auto selectedProperties = mCustomProperties->selectedSubProperties();
     if (selectedProperties.isEmpty())
         return false;
 
@@ -2707,7 +2707,7 @@ void PropertiesWidget::removeProperties()
     if (!object)
         return;
 
-    const auto properties = mPropertiesView->selectedProperties();
+    const auto properties = mCustomProperties->selectedSubProperties();
 
     QStringList propertyNames;
     for (auto property : properties)
@@ -2730,7 +2730,7 @@ void PropertiesWidget::removeProperties()
 
 void PropertiesWidget::renameSelectedProperty()
 {
-    const auto properties = mPropertiesView->selectedProperties();
+    const auto properties = mCustomProperties->selectedSubProperties();
     if (properties.size() != 1)
         return;
 
@@ -2765,7 +2765,7 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
     if (!object)
         return;
 
-    const auto properties = mPropertiesView->selectedProperties();
+    const auto properties = mCustomProperties->selectedSubProperties();
     const bool customPropertiesSelected = !properties.isEmpty();
 
     bool currentObjectHasAllProperties = true;

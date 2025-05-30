@@ -237,6 +237,7 @@ public:
     void addSeparator() { addProperty(new Separator(this)); }
 
     const QList<Property*> &subProperties() const { return m_subProperties; }
+    QList<Property*> selectedSubProperties() const;
 
 signals:
     void expandedChanged(bool expanded);
