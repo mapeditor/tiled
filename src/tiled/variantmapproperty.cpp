@@ -190,6 +190,7 @@ bool VariantMapProperty::createOrUpdateProperty(int index,
         } else {
             qWarning() << "Failed to create property for" << name
                        << "with type" << newValue.typeName();
+            return false;
         }
     }
 
