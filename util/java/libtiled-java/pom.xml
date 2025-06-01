@@ -18,7 +18,7 @@
     <description>
         A small Java library to load Tiled maps.
     </description>
-    <url>http://www.mapeditor.org/</url>
+    <url>https://www.mapeditor.org/</url>
 
     <scm>
         <url>https://github.com/mapeditor/tiled</url>
