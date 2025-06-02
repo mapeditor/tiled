@@ -157,14 +157,7 @@
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>3.6.3</version>
                     <configuration>
-                        <additionalparam>-Xdoclint:none</additionalparam>
-                        <doclet>ch.raffael.doclets.pegdown.PegdownDoclet</doclet>
-                        <docletArtifact>
-                            <groupId>ch.raffael.pegdown-doclet</groupId>
-                            <artifactId>pegdown-doclet</artifactId>
-                            <version>1.3</version>
-                        </docletArtifact>
-                        <useStandardDocletOptions>true</useStandardDocletOptions>
+                        <doclint>none</doclint>
                     </configuration>
                 </plugin>
                 <plugin>
