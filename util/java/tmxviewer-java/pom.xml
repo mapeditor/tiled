@@ -18,7 +18,7 @@
     <description>
       A small example application that views Tiled maps using libtiled-java.
     </description>
-    <url>http://www.mapeditor.org/</url>
+    <url>https://www.mapeditor.org/</url>
 
     <scm>
         <url>https://github.com/mapeditor/tiled</url>
@@ -35,7 +35,7 @@
         <dependency>
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
-            <version>5.7.0</version>
+            <version>5.13.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -44,8 +44,12 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>3.5.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
