@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.mapeditor</groupId>
         <artifactId>tiled-parent</artifactId>
-        <version>1.4.2-SNAPSHOT</version>
+        <version>1.4.3</version>
     </parent>
 
     <artifactId>libtiled</artifactId>
@@ -214,13 +214,13 @@
         <profile>
             <id>java-11-profile</id>
             <activation>
-                <jdk>[1.9,)</jdk>
+                <jdk>[9,)</jdk>
             </activation>
             <dependencies>
                 <dependency>
                     <groupId>javax.xml.bind</groupId>
                     <artifactId>jaxb-api</artifactId>
-                    <version>2.4.0-b180830.0359</version>
+                    <version>2.3.1</version>
                 </dependency>
                 <dependency>
                     <groupId>javax.annotation</groupId>
@@ -230,7 +230,7 @@
                 <dependency>
                     <groupId>org.glassfish.jaxb</groupId>
                     <artifactId>jaxb-runtime</artifactId>
-                    <version>4.0.5</version>
+                    <version>2.3.9</version>
                 </dependency>
             </dependencies>
         </profile>
