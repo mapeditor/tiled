@@ -7,7 +7,7 @@
 
     <groupId>org.mapeditor</groupId>
     <artifactId>tiled-parent</artifactId>
-    <version>1.4.3</version>
+    <version>1.4.4-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Tiled</name>
