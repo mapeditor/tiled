@@ -74,6 +74,7 @@
 #include "world.h"
 #include "worlddocument.h"
 #include "worldmanager.h"
+#include "worldpropertiesdialog.h"
 #include "zoomable.h"
 
 #include <QActionGroup>
@@ -310,6 +311,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionSnapToGrid, "SnapToGrid");
     ActionManager::registerAction(mUi->actionSnapToPixels, "SnapToPixels");
     ActionManager::registerAction(mUi->actionTilesetProperties, "TilesetProperties");
+    ActionManager::registerAction(mUi->actionWorldProperties, "WorldProperties");
     ActionManager::registerAction(mUi->actionZoomIn, "ZoomIn");
     ActionManager::registerAction(mUi->actionZoomNormal, "ZoomNormal");
     ActionManager::registerAction(mUi->actionZoomOut, "ZoomOut");
@@ -678,7 +680,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     connect(mUi->actionTilesetProperties, &QAction::triggered,
             this, &MainWindow::editTilesetProperties);
-
+    connect(mUi->actionWorldProperties, &QAction::triggered,
+            this, &MainWindow::editWorldProperties);
+    mUi->actionWorldProperties->setDisabled(WorldManager::instance().worlds().empty());
+    connect(&WorldManager::instance(), &WorldManager::worldsChanged, this, [this] {
+        mUi->actionWorldProperties->setDisabled(WorldManager::instance().worlds().empty());
+    });
     connect(mUi->actionNewProject, &QAction::triggered, this, &MainWindow::newProject);
     connect(mUi->actionCloseProject, &QAction::triggered, this, &MainWindow::closeProject);
     connect(mUi->actionAddFolderToProject, &QAction::triggered, mProjectDock, &ProjectDock::addFolderToProject);
@@ -1953,7 +1960,23 @@ void MainWindow::editTilesetProperties()
     tilesetDocument->setCurrentObject(tilesetDocument->tileset().data());
     emit tilesetDocument->editCurrentObject();
 }
+void MainWindow::editWorldProperties()
+{
+    if (WorldManager::instance().worlds().empty())
+        return;
+    QSharedPointer<WorldDocument> world;
+    Document *currentDocument = DocumentManager::instance()->currentDocument();
+    if (currentDocument && currentDocument->type() == Document::MapDocumentType)
+        world = WorldManager::instance().worldForMap(currentDocument->fileName());
+    if (!world)
+        world = WorldManager::instance().worlds().first();
 
+    if (WorldPropertiesDialog(world, this).exec() == QDialog::Accepted) {
+        QString saveError;
+        if (!world->save(world->fileName(), &saveError)) // my hero ...
+            QMessageBox::critical(this, tr("Error Saving World"), saveError);
+    }
+}
 void MainWindow::autoMappingError(bool automatic)
 {
     QString error = mAutomappingManager->errorString();

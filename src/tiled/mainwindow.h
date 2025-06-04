@@ -168,6 +168,8 @@ private:
 
     void editTilesetProperties();
 
+    void editWorldProperties();
+
     void updateWindowTitle();
     void updateActions();
     void updateZoomable();

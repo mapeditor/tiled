@@ -14,7 +14,7 @@
    <bool>true</bool>
   </property>
   <property name="dockOptions">
-   <set>QMainWindow::AllowNestedDocks|QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
+   <set>QMainWindow::DockOption::AllowNestedDocks|QMainWindow::DockOption::AllowTabbedDocks|QMainWindow::DockOption::AnimatedDocks</set>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -38,7 +38,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -222,6 +222,7 @@
     <addaction name="menuUnloadWorld"/>
     <addaction name="menuSaveWorld"/>
     <addaction name="separator"/>
+    <addaction name="actionWorldProperties"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -251,7 +252,7 @@
     <string>&amp;Quit</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::QuitRole</enum>
+    <enum>QAction::MenuRole::QuitRole</enum>
    </property>
   </action>
   <action name="actionCopy">
@@ -287,7 +288,7 @@
     <string>&amp;About Tiled</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::AboutRole</enum>
+    <enum>QAction::MenuRole::AboutRole</enum>
    </property>
   </action>
   <action name="actionAboutQt">
@@ -295,7 +296,7 @@
     <string>About Qt</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::AboutQtRole</enum>
+    <enum>QAction::MenuRole::AboutQtRole</enum>
    </property>
   </action>
   <action name="actionResizeMap">
@@ -421,7 +422,7 @@
     <string>Pre&amp;ferences...</string>
    </property>
    <property name="menuRole">
-    <enum>QAction::PreferencesRole</enum>
+    <enum>QAction::MenuRole::PreferencesRole</enum>
    </property>
   </action>
   <action name="actionClearRecentFiles">
@@ -805,6 +806,21 @@
   <action name="actionUnloadAllWorlds">
    <property name="text">
     <string>Unload All Worlds</string>
+   </property>
+  </action>
+  <action name="actionWorldProperties">
+   <property name="icon">
+    <iconset resource="tiled.qrc">
+     <normaloff>:/images/16/document-properties.png</normaloff>:/images/16/document-properties.png</iconset>
+   </property>
+   <property name="text">
+    <string>World Properties...</string>
+   </property>
+   <property name="toolTip">
+    <string>World Properties</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
  </widget>

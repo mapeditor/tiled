@@ -31,6 +31,7 @@
 #include "changetileimagesource.h"
 #include "changewangcolordata.h"
 #include "changewangsetdata.h"
+#include "changeworld.h"
 #include "clipboardmanager.h"
 #include "compression.h"
 #include "mapdocument.h"
@@ -46,6 +47,8 @@
 #include "utils.h"
 #include "variantmapproperty.h"
 #include "wangoverlay.h"
+#include "world.h"
+#include "worlddocument.h"
 
 #include <QAction>
 #include <QCheckBox>
@@ -2201,6 +2204,25 @@ private:
     FloatProperty *mProbabilityProperty;
 };
 
+class WorldProperties : public ObjectProperties
+{
+    Q_OBJECT
+
+public:
+   WorldProperties(Document *document, World *object, QObject *parent = nullptr)
+        : ObjectProperties(document, object, parent)
+    {
+    }
+
+private:
+
+    GroupProperty *mWorldProperties;
+
+    WorldDocument *mWorldDocument () {
+        return static_cast<WorldDocument *>(mDocument);
+    }
+};
+
 
 PropertiesWidget::PropertiesWidget(QWidget *parent)
     : QWidget{parent}
@@ -2386,8 +2408,12 @@ void PropertiesWidget::currentObjectChanged(Object *object)
                                                         this);
             break;
         case Object::ProjectType:
+           // this type is currently not handled by the Properties dock
+            break;
         case Object::WorldType:
-            // these types are currently not handled by the Properties dock
+            mPropertiesObject = new WorldProperties(mDocument,
+                                                        static_cast<World*>(object),
+                                                        this);
             break;
         }
     }
