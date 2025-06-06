@@ -301,8 +301,8 @@ TilesetView::TilesetView(QWidget *parent)
     vHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
     hHeader->setMinimumSectionSize(1);
     vHeader->setMinimumSectionSize(1);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
-    // Since Qt 6.9 we force header mode to "FlexibleWithSectionMemoryUsage",
+#if QT_VERSION == QT_VERSION_CHECK(6, 9, 0)
+    // For Qt 6.9.0 we force header mode to "FlexibleWithSectionMemoryUsage",
     // to avoid what appears to be a bug in that implementation regarding
     // resizing of sections (https://github.com/mapeditor/tiled/issues/4191).
     hHeader->setStretchLastSection(true);
