@@ -206,6 +206,16 @@ public:
         delete property;
     }
 
+    void deleteProperty(int index)
+    {
+        auto property = m_subProperties.takeAt(index);
+
+        property->m_parent = nullptr;
+        emit propertyRemoved(property);
+
+        delete property;
+    }
+
     /**
      * Removes the given property from this group. Ownership of the property
      * is transferred to the caller.
@@ -227,6 +237,7 @@ public:
     void addSeparator() { addProperty(new Separator(this)); }
 
     const QList<Property*> &subProperties() const { return m_subProperties; }
+    QList<Property*> selectedSubProperties() const;
 
 signals:
     void expandedChanged(bool expanded);
@@ -474,10 +485,7 @@ struct EnumData
 };
 
 template<typename>
-EnumData enumData()
-{
-    return {};
-}
+EnumData enumData();
 
 /**
  * A property that wraps an integer value and creates either a combo box or a
@@ -594,9 +602,8 @@ private:
                                      GroupProperty *groupProperty, QVBoxLayout *rowVerticalLayout,
                                      bool expanded);
 
-    void updatePropertyEnabled(const PropertyWidgets &widgets, Property *property);
-    void updatePropertyActions(const PropertyWidgets &widgets,
-                               Property::Actions actions);
+    static void updatePropertyEnabled(const PropertyWidgets &widgets, Property *property);
+    static void updatePropertyActions(const PropertyWidgets &widgets, Property::Actions actions);
 
     void fixTabOrder();
 

@@ -123,36 +123,34 @@ SetProperty::SetProperty(Document *document,
                          const QString &name,
                          const QVariant &value,
                          QUndoCommand *parent)
-    : SetProperty(document, objects, QStringList(name), QVariantList { value },
+    : SetProperty(document, objects, PropertyPath { name }, QVariantList { value },
                   parent)
-{
-}
+{}
 
 SetProperty::SetProperty(Document *document,
                          const QList<Object *> &objects,
-                         const QStringList &path,
+                         const PropertyPath &path,
                          const QVariant &value,
                          QUndoCommand *parent)
     : SetProperty(document, objects, path, QVariantList { value }, parent)
-{
-}
+{}
 
 SetProperty::SetProperty(Document *document,
                          const QList<Object *> &objects,
-                         const QStringList &path,
+                         const PropertyPath &path,
                          const QVariantList &values,
                          QUndoCommand *parent)
     : QUndoCommand(parent)
     , mDocument(document)
     , mObjects(objects)
-    , mName(path.first())
+    , mName(std::get<QString>(path.first()))
     , mPath(path)
     , mValues(values)
 {
     for (Object *obj : objects)
         mPreviousValues.append(obj->property(mName));
 
-    const auto fullName = mPath.join(QLatin1Char('.'));
+    const auto fullName = pathToString(mPath);
 
     if (mObjects.size() > 1 || mObjects.at(0)->hasProperty(mName))
         setText(QCoreApplication::translate("Undo Commands", "Set Property '%1'").arg(fullName));
@@ -259,7 +257,7 @@ RenameProperty::RenameProperty(Document *document,
 
     if (!setOnObjects.isEmpty()) {
         new SetProperty(document, setOnObjects,
-                        QStringList { newName }, values, this);
+                        PropertyPath { newName }, values, this);
     }
 }
 

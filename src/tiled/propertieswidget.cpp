@@ -550,7 +550,7 @@ private:
 
     void refresh();
 
-    void setPropertyValue(const QStringList &path, const QVariant &value);
+    void setPropertyValue(const PropertyPath &path, const QVariant &value);
 
     bool mUpdating = false;
 };
@@ -2536,22 +2536,24 @@ void CustomProperties::refresh()
     setEnabled(!partOfTileset || editingTileset);
 }
 
-void CustomProperties::setPropertyValue(const QStringList &path, const QVariant &value)
+void CustomProperties::setPropertyValue(const PropertyPath &path, const QVariant &value)
 {
     const auto objects = mDocument->currentObjects();
     if (!objects.isEmpty()) {
         QScopedValueRollback<bool> updating(mUpdating, true);
-        if (path.size() > 1 || value.isValid())
+        if (path.size() > 1 || value.isValid()) {
             mDocument->undoStack()->push(new SetProperty(mDocument, objects, path, value));
-        else
-            mDocument->undoStack()->push(new RemoveProperty(mDocument, objects, path.first()));
+        } else {
+            auto &name = std::get<QString>(path.first());
+            mDocument->undoStack()->push(new RemoveProperty(mDocument, objects, name));
+        }
     }
 }
 
 
 void PropertiesWidget::updateActions()
 {
-    const auto properties = mPropertiesView->selectedProperties();
+    const auto properties = mCustomProperties->selectedSubProperties();
     bool editingTileset = mDocument && mDocument->type() == Document::TilesetDocumentType;
     bool isTileset = mDocument && mDocument->currentObject() && mDocument->currentObject()->isPartOfTileset();
     bool canModify = mDocument && !properties.isEmpty() && (!isTileset || editingTileset);
@@ -2583,7 +2585,7 @@ bool PropertiesWidget::copyProperties()
     if (!object)
         return false;
 
-    const auto selectedProperties = mPropertiesView->selectedProperties();
+    const auto selectedProperties = mCustomProperties->selectedSubProperties();
     if (selectedProperties.isEmpty())
         return false;
 
@@ -2697,7 +2699,7 @@ void PropertiesWidget::removeProperties()
     if (!object)
         return;
 
-    const auto properties = mPropertiesView->selectedProperties();
+    const auto properties = mCustomProperties->selectedSubProperties();
 
     QStringList propertyNames;
     for (auto property : properties)
@@ -2720,7 +2722,7 @@ void PropertiesWidget::removeProperties()
 
 void PropertiesWidget::renameSelectedProperty()
 {
-    const auto properties = mPropertiesView->selectedProperties();
+    const auto properties = mCustomProperties->selectedSubProperties();
     if (properties.size() != 1)
         return;
 
@@ -2755,7 +2757,7 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
     if (!object)
         return;
 
-    const auto properties = mPropertiesView->selectedProperties();
+    const auto properties = mCustomProperties->selectedSubProperties();
     const bool customPropertiesSelected = !properties.isEmpty();
 
     bool currentObjectHasAllProperties = true;
@@ -2880,7 +2882,8 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
             QList<Object*> objects;
             QVariantList values;
 
-            for (auto obj : mDocument->currentObjects()) {
+            const auto currentObjects = mDocument->currentObjects();
+            for (auto obj : currentObjects) {
                 QVariant propertyValue = obj->property(propertyName);
                 if (propertyValue.convert(toType)) {
                     objects.append(obj);
@@ -2889,7 +2892,7 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
             }
 
             undoStack->push(new SetProperty(mDocument, objects,
-                                            QStringList { propertyName },
+                                            PropertyPath { propertyName },
                                             values));
         }
 
@@ -2910,7 +2913,7 @@ bool PropertiesWidget::event(QEvent *event)
 {
     switch (event->type()) {
     case QEvent::ShortcutOverride: {
-        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        auto *keyEvent = static_cast<QKeyEvent *>(event);
         if (keyEvent->matches(QKeySequence::Delete) || keyEvent->key() == Qt::Key_Backspace
                 || keyEvent->matches(QKeySequence::Cut)
                 || keyEvent->matches(QKeySequence::Copy)

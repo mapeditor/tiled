@@ -21,9 +21,10 @@
 #include "propertiesview.h"
 
 #include "fileedit.h"
+#include "listedit.h"
+#include "propertyeditorwidgets.h"
 #include "textpropertyedit.h"
 #include "utils.h"
-#include "propertyeditorwidgets.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>
@@ -174,6 +175,17 @@ void GroupProperty::collapseAll()
         if (auto groupProperty = qobject_cast<GroupProperty *>(property))
             groupProperty->collapseAll();
 }
+
+QList<Property *> GroupProperty::selectedSubProperties() const
+{
+    QList<Property *> selectedProperties;
+    for (auto property : std::as_const(m_subProperties)) {
+        if (property->isSelected())
+            selectedProperties.append(property);
+    }
+    return selectedProperties;
+}
+
 
 void StringProperty::setPlaceholderText(const QString &placeholderText)
 {
@@ -651,8 +663,8 @@ QWidget *BaseEnumProperty::createEnumEditor(QWidget *parent)
     };
     syncEditor();
 
-    QObject::connect(this, &Property::valueChanged, editor, syncEditor);
-    QObject::connect(editor, &QComboBox::currentIndexChanged, this,
+    connect(this, &Property::valueChanged, editor, syncEditor);
+    connect(editor, &QComboBox::currentIndexChanged, this,
                      [editor, this] {
         setValue(editor->currentData().toInt());
     });
@@ -692,11 +704,18 @@ QWidget *BaseEnumProperty::createFlagsEditor(QWidget *parent)
                 checkBox->setChecked((value() & enumItemValue) == enumItemValue);
             }
         }
+
+        // Make sure the labels remain readable when selected
+        auto pal = QGuiApplication::palette();
+        if (isSelected())
+            pal.setBrush(QPalette::WindowText, pal.brush(QPalette::HighlightedText));
+        editor->setPalette(pal);
     };
 
     syncEditor();
 
-    QObject::connect(this, &Property::valueChanged, editor, syncEditor);
+    connect(this, &Property::selectedChanged, editor, syncEditor);
+    connect(this, &Property::valueChanged, editor, syncEditor);
 
     return editor;
 }
@@ -1152,7 +1171,7 @@ void PropertiesView::forgetProperty(Property *property)
 
     property->disconnect(this);
 
-    if (GroupProperty *groupProperty = qobject_cast<GroupProperty *>(property)) {
+    if (auto groupProperty = qobject_cast<GroupProperty *>(property)) {
         for (auto subProperty : groupProperty->subProperties())
             forgetProperty(subProperty);
     }
@@ -1198,7 +1217,9 @@ QWidget *PropertiesView::focusPropertyImpl(GroupProperty *group,
                 return widgets.children;
             }
             return nullptr;
-        } else if (auto groupProperty = qobject_cast<GroupProperty *>(subProperty)) {
+        }
+
+        if (auto groupProperty = qobject_cast<GroupProperty *>(subProperty)) {
             if (widgets.children) {
                 if (auto w = focusPropertyImpl(groupProperty, property, target)) {
                     groupProperty->setExpanded(true);
@@ -1280,7 +1301,9 @@ PropertiesView::PropertyWidgets PropertiesView::createPropertyWidgets(Property *
             if (assignSelectedPropertiesRange(m_root, m_selectionStart, property))
                 emit selectedPropertiesChanged();
             return;
-        } else if (modifiers & Qt::ControlModifier) {
+        }
+
+        if (modifiers & Qt::ControlModifier) {
             // Toggle selection
             if (property->actions().testFlag(Property::Action::Select)) {
                 property->setSelected(!property->isSelected());
@@ -1358,6 +1381,8 @@ PropertiesView::PropertyWidgets PropertiesView::createPropertyWidgets(Property *
         containerLayout->setSpacing(halfSpacing);
         containerLayout->addWidget(rowWidget);
 
+        widgets.rowWidget = containerWidget;
+
         connect(groupProperty, &GroupProperty::expandedChanged, this, [=](bool expanded) {
             // Need to operate on a copy, because the reference might get invalidated
             PropertyWidgets widgets = m_propertyWidgets.value(groupProperty);
@@ -1366,8 +1391,6 @@ PropertiesView::PropertyWidgets PropertiesView::createPropertyWidgets(Property *
         });
 
         setPropertyChildrenExpanded(widgets, groupProperty, containerLayout, groupProperty->isExpanded());
-
-        widgets.rowWidget = containerWidget;
     }
 
     updatePropertyEnabled(widgets, property);
@@ -1384,6 +1407,14 @@ PropertiesView::PropertyWidgets PropertiesView::createPropertyWidgets(Property *
     });
 
     return widgets;
+}
+
+static void activateParentLayouts(QWidget *widget)
+{
+    while (widget && widget->layout()) {
+        widget->layout()->activate();
+        widget = widget->parentWidget();
+    }
 }
 
 QWidget *PropertiesView::createChildrenWidget(GroupProperty *groupProperty,
@@ -1438,16 +1469,12 @@ void PropertiesView::setPropertyChildrenExpanded(PropertyWidgets &widgets,
     }
 
     if (widgets.children) {
-        widgets.children->setVisible(expanded);
+        if (widgets.children->isHidden() == expanded)
+            widgets.children->setVisible(expanded);
 
-        // needed to avoid flickering when hiding the editor
-        if (!expanded) {
-            QWidget *widget = widgets.rowWidget;
-            while (widget && widget->layout()) {
-                widget->layout()->activate();
-                widget = widget->parentWidget();
-            }
-        }
+        // needed to avoid flickering when hiding the children
+        if (!expanded)
+            activateParentLayouts(widgets.children->parentWidget());
     }
 }
 
