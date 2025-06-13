@@ -2236,7 +2236,7 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
     mActionRenameProperty->setEnabled(false);   
      mActionRenameProperty->setIcon(mRenameIcon);
     mActionRenameProperty->setPriority(QAction::LowPriority);
-    mActionRenameProperty->setShortcut(Qt::Key_F12);
+    mActionRenameProperty->setShortcut(Qt::Key_F2);
     ActionManager::registerAction(mActionRenameProperty, "RenameProperty");
     connect(mActionRenameProperty, &QAction::triggered,
             this, &PropertiesWidget::renameSelectedProperty);   
