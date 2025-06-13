@@ -682,7 +682,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, &MainWindow::editTilesetProperties);
     connect(mUi->actionWorldProperties, &QAction::triggered,
             this, &MainWindow::editWorldProperties);
-    mUi->actionWorldProperties->setDisabled(WorldManager::instance().worlds().empty());
+    mUi->actionWorldProperties->setEnabled(false);
     connect(&WorldManager::instance(), &WorldManager::worldsChanged, this, [this] {
         mUi->actionWorldProperties->setDisabled(WorldManager::instance().worlds().empty());
     });
@@ -1973,7 +1973,7 @@ void MainWindow::editWorldProperties()
 
     if (WorldPropertiesDialog(world, this).exec() == QDialog::Accepted) {
         QString saveError;
-        if (!world->save(world->fileName(), &saveError)) // my hero ...
+        if (!world->save(world->fileName(), &saveError))
             QMessageBox::critical(this, tr("Error Saving World"), saveError);
     }
 }

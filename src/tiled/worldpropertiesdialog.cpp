@@ -1,6 +1,6 @@
 /*
  * WorldPropertiesDialog.cpp
- * Copyright 2025, Thorbjørn Lindeijer <bjorn@lindeijer.nl>, dogboydog
+ * Copyright 2025, dogboydog
  *
  * This file is part of Tiled.
  *

@@ -2204,25 +2204,6 @@ private:
     FloatProperty *mProbabilityProperty;
 };
 
-class WorldProperties : public ObjectProperties
-{
-    Q_OBJECT
-
-public:
-   WorldProperties(Document *document, World *object, QObject *parent = nullptr)
-        : ObjectProperties(document, object, parent)
-    {
-    }
-
-private:
-
-    GroupProperty *mWorldProperties;
-
-    WorldDocument *mWorldDocument () {
-        return static_cast<WorldDocument *>(mDocument);
-    }
-};
-
 
 PropertiesWidget::PropertiesWidget(QWidget *parent)
     : QWidget{parent}
@@ -2411,9 +2392,7 @@ void PropertiesWidget::currentObjectChanged(Object *object)
            // this type is currently not handled by the Properties dock
             break;
         case Object::WorldType:
-            mPropertiesObject = new WorldProperties(mDocument,
-                                                        static_cast<World*>(object),
-                                                        this);
+            // this type is currently not handled by the Properties dock
             break;
         }
     }

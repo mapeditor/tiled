@@ -85,23 +85,4 @@ private:
     QRect mPreviousRect;
 };
 
-
-class SetFileNameCommand : public QUndoCommand
-{
-public:
-    SetFileNameCommand(WorldDocument *worldDocument,
-                      const QUrl &newName);
-
-    void undo() override { setFileName(mPreviousFileName); }
-    void redo() override { setFileName(mFileName); }
-
-private:
-    void setFileName(const QUrl &newName);
-
-    WorldDocument *mWorldDocument;
- 
-    QUrl mFileName;
-    QUrl mPreviousFileName;
-};
-
 } // namespace Tiled

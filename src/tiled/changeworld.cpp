@@ -116,21 +116,4 @@ void SetMapRectCommand::setMapRect(const QRect &rect)
     emit mWorldDocument->worldChanged();
 }
 
-
-SetFileNameCommand::SetFileNameCommand(WorldDocument *worldDocument,
-                                       const QUrl &newName)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Set File Name"))
-    , mWorldDocument(worldDocument)
-    , mFileName(newName)
-    , mPreviousFileName( QUrl::fromLocalFile(mWorldDocument->world()->fileName))
-{
-}
-
-void SetFileNameCommand::setFileName(const QUrl &newName)
-{
-    auto world = mWorldDocument->world();
-    world->fileName = newName.toLocalFile();
-    emit mWorldDocument->worldChanged();
-}
-
 } // namespace Tiled
