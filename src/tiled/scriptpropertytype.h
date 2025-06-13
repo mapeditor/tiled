@@ -1,6 +1,6 @@
 /*
  * scriptpropertytype.h
- * Copyright 2024, chris <dogboydog@users.noreply.github.com>
+ * Copyright 2024-2025, dogboydog
  *
  * This file is part of Tiled.
  *
