@@ -31,7 +31,6 @@
 #include "changetileimagesource.h"
 #include "changewangcolordata.h"
 #include "changewangsetdata.h"
-#include "changeworld.h"
 #include "clipboardmanager.h"
 #include "compression.h"
 #include "mapdocument.h"
@@ -47,8 +46,6 @@
 #include "utils.h"
 #include "variantmapproperty.h"
 #include "wangoverlay.h"
-#include "world.h"
-#include "worlddocument.h"
 
 #include <QAction>
 #include <QCheckBox>

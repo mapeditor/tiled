@@ -1962,6 +1962,7 @@ void MainWindow::editTilesetProperties()
     tilesetDocument->setCurrentObject(tilesetDocument->tileset().data());
     emit tilesetDocument->editCurrentObject();
 }
+
 void MainWindow::editWorldProperties()
 {
     if (WorldManager::instance().worlds().empty())
@@ -1975,6 +1976,7 @@ void MainWindow::editWorldProperties()
 
     WorldPropertiesDialog(world, this).exec();
 }
+
 void MainWindow::autoMappingError(bool automatic)
 {
     QString error = mAutomappingManager->errorString();

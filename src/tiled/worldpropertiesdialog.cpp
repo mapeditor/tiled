@@ -18,15 +18,12 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include "worldpropertiesdialog.h"
-#include "propertiesview.h"
 #include "ui_worldpropertiesdialog.h"
 
-#include "utils.h"
+#include "propertiesview.h"
 
-#include <QFormLayout>
-#include <QGroupBox>
+#include "utils.h"
 
 namespace Tiled {
 

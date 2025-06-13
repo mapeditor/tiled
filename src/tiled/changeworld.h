@@ -23,7 +23,6 @@
 
 #include <QRect>
 #include <QUndoCommand>
-#include <qurl.h>
 
 namespace Tiled {
 

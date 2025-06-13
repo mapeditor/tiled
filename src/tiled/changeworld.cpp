@@ -23,7 +23,6 @@
 
 #include "documentmanager.h"
 #include "world.h"
-#include "worlddocument.h"
 #include "worldmanager.h"
 
 #include <QCoreApplication>
