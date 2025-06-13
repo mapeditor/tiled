@@ -1,5 +1,5 @@
 /*
- * WorldPropertiesDialog.h
+ * worldpropertiesdialog.h
  * Copyright 2025, dogboydog
  *
  * This file is part of Tiled.

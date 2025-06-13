@@ -1,6 +1,6 @@
 /*
  * scriptpropertytype.cpp
- * Copyright 2024, dogboydog
+ * Copyright 2024-2025, dogboydog
  *
  * This file is part of Tiled.
  *

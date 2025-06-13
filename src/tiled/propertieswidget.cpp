@@ -2389,7 +2389,7 @@ void PropertiesWidget::currentObjectChanged(Object *object)
                                                         this);
             break;
         case Object::ProjectType:
-           // this type is currently not handled by the Properties dock
+            // this type is currently not handled by the Properties dock
             break;
         case Object::WorldType:
             // this type is currently not handled by the Properties dock

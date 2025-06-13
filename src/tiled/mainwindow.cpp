@@ -680,8 +680,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     connect(mUi->actionTilesetProperties, &QAction::triggered,
             this, &MainWindow::editTilesetProperties);
+
     connect(mUi->actionWorldProperties, &QAction::triggered,
             this, &MainWindow::editWorldProperties);
+
     mUi->actionWorldProperties->setEnabled(false);
     connect(&WorldManager::instance(), &WorldManager::worldsChanged, this, [this] {
         mUi->actionWorldProperties->setDisabled(WorldManager::instance().worlds().empty());
