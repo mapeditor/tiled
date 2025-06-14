@@ -578,6 +578,9 @@ DynamicLibrary {
         "worldmanager.h",
         "worldmovemaptool.cpp",
         "worldmovemaptool.h",
+        "worldpropertiesdialog.cpp",
+        "worldpropertiesdialog.h",
+        "worldpropertiesdialog.ui",
         "zoomable.cpp",
         "zoomable.h",
     ]
