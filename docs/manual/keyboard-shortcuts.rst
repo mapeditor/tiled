@@ -104,13 +104,13 @@ When an object layer is selected
 
 -  ``S`` - Activate :ref:`select-objects-tool`
 
-   -  ``PgUp`` - Raise selected objects (with Manual object drawing
+   -  ``PgUp`` - Raise selected objects (with Index Order object drawing
       order)
-   -  ``PgDown`` - Lower selected objects (with Manual object drawing
+   -  ``PgDown`` - Lower selected objects (with Index Order object drawing
       order)
-   -  ``Home`` - Move selected objects to Top (with Manual object
+   -  ``Home`` - Move selected objects to Top (with Index Order object
       drawing order)
-   -  ``End`` - Move selected objects to Bottom (with Manual object
+   -  ``End`` - Move selected objects to Bottom (with Index Order object
       drawing order)
 
 -  ``O`` - Activate :ref:`edit-polygons-tool`
