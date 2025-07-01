@@ -53,8 +53,6 @@ using namespace Tiled;
 
 ClipboardManager::ClipboardManager()
     : mClipboard(QApplication::clipboard())
-    , mHasMap(false)
-    , mHasProperties(false)
 {
     // Connection queued to avoid a potential crash in QXcbClipboard::mimeData
     // in direct response to QClipboard::emitChanged (see QTBUG-22552).
@@ -81,7 +79,7 @@ ClipboardManager *ClipboardManager::instance()
  */
 std::unique_ptr<Map> ClipboardManager::map() const
 {
-    const QMimeData *mimeData = mClipboard->mimeData();
+    const auto mimeData = mClipboard->mimeData();
     const QByteArray data = mimeData->data(QLatin1String(TMX_MIMETYPE));
     if (data.isEmpty())
         return nullptr;
@@ -97,7 +95,7 @@ void ClipboardManager::setMap(const Map &map)
 {
     TmxMapFormat format;
 
-    QMimeData *mimeData = new QMimeData;
+    auto mimeData = new QMimeData;
     mimeData->setData(QLatin1String(TMX_MIMETYPE), format.toByteArray(&map));
 
     mClipboard->setMimeData(mimeData);
@@ -105,25 +103,46 @@ void ClipboardManager::setMap(const Map &map)
 
 Properties ClipboardManager::properties() const
 {
-    const QMimeData *mimeData = mClipboard->mimeData();
+    auto mimeData = mClipboard->mimeData();
     const QByteArray data = mimeData->data(QLatin1String(PROPERTIES_MIMETYPE));
-
     const QJsonArray array = QCborValue::fromCbor(data).toArray().toJsonArray();
-
     return propertiesFromJson(array);
 }
 
 void ClipboardManager::setProperties(const Properties &properties)
 {
-    QMimeData *mimeData = new QMimeData;
+    auto mimeData = new QMimeData;
 
     const QJsonArray propertiesJson = propertiesToJson(properties);
     const QJsonDocument document(propertiesJson);
 
     mimeData->setText(QString::fromUtf8(document.toJson()));
-    mimeData->setData(QLatin1String(PROPERTIES_MIMETYPE), QCborArray::fromJsonArray(propertiesJson).toCborValue().toCbor());
+    mimeData->setData(QLatin1String(PROPERTIES_MIMETYPE),
+                      QCborArray::fromJsonArray(std::move(propertiesJson)).toCborValue().toCbor());
 
     mClipboard->setMimeData(mimeData);
+}
+
+void ClipboardManager::setListValues(const QVariantList &values)
+{
+    auto mimeData = new QMimeData;
+
+    const QJsonArray valuesJson = valuesToJson(values);
+    const QJsonDocument document(valuesJson);
+
+    mimeData->setText(QString::fromUtf8(document.toJson()));
+    mimeData->setData(QLatin1String(LIST_VALUES_MIMETYPE),
+                      QCborArray::fromJsonArray(std::move(valuesJson)).toCborValue().toCbor());
+
+    mClipboard->setMimeData(mimeData);
+}
+
+QVariantList ClipboardManager::listValues() const
+{
+    auto mimeData = mClipboard->mimeData();
+    const QByteArray data = mimeData->data(QLatin1String(LIST_VALUES_MIMETYPE));
+    const QJsonArray array = QCborValue::fromCbor(data).toArray().toJsonArray();
+    return valuesFromJson(array);
 }
 
 /**
@@ -163,7 +182,7 @@ bool ClipboardManager::copySelection(const MapDocument &mapDocument)
 
         if (objectGroupSelected) {
             // Create a new object group with clones of the selected objects
-            ObjectGroup *objectGroup = new ObjectGroup;
+            auto objectGroup = new ObjectGroup;
             for (const MapObject *mapObject : selectedObjects)
                 objectGroup->addObject(mapObject->clone());
             copyMap.addLayer(objectGroup);
@@ -252,10 +271,12 @@ void ClipboardManager::update()
 {
     bool hasMap = false;
     bool hasProperties = false;
+    bool hasListValues = false;
 
-    if (const QMimeData *data = mClipboard->mimeData()) {
+    if (const auto data = mClipboard->mimeData()) {
         hasMap = data->hasFormat(QLatin1String(TMX_MIMETYPE));
         hasProperties = data->hasFormat(QLatin1String(PROPERTIES_MIMETYPE));
+        hasListValues = data->hasFormat(QLatin1String(LIST_VALUES_MIMETYPE));
     }
 
     if (hasMap != mHasMap) {
@@ -266,6 +287,11 @@ void ClipboardManager::update()
     if (hasProperties != mHasProperties) {
         mHasProperties = hasProperties;
         emit hasPropertiesChanged();
+    }
+
+    if (hasListValues != mHasListValues) {
+        mHasListValues = hasListValues;
+        emit hasValuesChanged();
     }
 }
 

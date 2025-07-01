@@ -135,9 +135,12 @@ public:
 
     void setValue(const QVariantList &value);
     QVariantList value() const { return mGet(); }
+    QVariantList valuesAt(const QList<int> &indices) const;
 
     void removeValueAt(int index);
+    void removeValuesAt(const QList<int> &indices);
     void addValue(const QVariant &value);
+    void insertValuesAt(int index, const QVariantList &values);
 
     QWidget *createEditor(QWidget *parent) override;
     void addContextMenuActions(QMenu *menu) override;

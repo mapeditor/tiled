@@ -907,13 +907,35 @@ static Property *previousProperty(Property *property)
     return parent;
 }
 
+static Property *nextSiblingProperty(Property *property)
+{
+    if (auto parent = property->parentProperty()) {
+        const int index = parent->indexOfProperty(property);
+        if (index < parent->subProperties().size() - 1)
+            return parent->subProperties().at(index + 1);
+    }
+
+    return nullptr;
+}
+
+static Property *previousSiblingProperty(Property *property)
+{
+    if (auto parent = property->parentProperty()) {
+        const int index = parent->indexOfProperty(property);
+        if (index > 0)
+            return parent->subProperties().at(index - 1);
+    }
+
+    return nullptr;
+}
+
 static void collectSelectedProperties(GroupProperty *groupProperty,
                                       QList<Property *> &selected)
 {
     for (auto property : groupProperty->subProperties()) {
         if (property->isSelected())
             selected.append(property);
-        if (auto childGroup = qobject_cast<GroupProperty *>(property))
+        else if (auto childGroup = qobject_cast<GroupProperty *>(property))
             collectSelectedProperties(childGroup, selected);
     }
 }
@@ -940,31 +962,38 @@ static bool assignSelectedPropertiesRange(GroupProperty *root,
                                           Property *a,
                                           Property *b)
 {
+    const Property *parent = a ? a->parentProperty() : nullptr;
+
     bool changed = false;
-    bool selected = false;
+    bool inRange = false;
     Property *end = nullptr;
 
     for (Property *cur = root; cur; cur = nextProperty(cur)) {
         if (!end) {
             if (cur == a) {
                 end = b;
-                selected = true;
+                inRange = true;
             } else if (cur == b) {
                 end = a;
-                selected = true;
+                inRange = true;
             }
         }
         if (cur->actions().testFlag(Property::Action::Select)) {
+            const bool selected = cur->parentProperty() == parent && inRange;
             changed |= selected != cur->isSelected();
             cur->setSelected(selected);
         }
         if (cur == end)
-            selected = false;
+            inRange = false;
     }
 
     return changed;
 }
 
+/**
+ * Returns a list of selected properties. Child properties of a selected parent
+ * property are not included in the list.
+ */
 QList<Property *> PropertiesView::selectedProperties() const
 {
     QList<Property *> selected;
@@ -1044,7 +1073,8 @@ void PropertiesView::keyPressEvent(QKeyEvent *event)
 
     auto focusAndSelect = [=] (Property *property) {
         if (focusProperty(property, FocusRow))
-            setSelectedProperties({ property });
+            if (property->actions().testFlag(Property::Action::Select))
+                setSelectedProperties({ property });
     };
 
     switch (key) {
@@ -1072,7 +1102,7 @@ void PropertiesView::keyPressEvent(QKeyEvent *event)
                 } else if (groupProperty->isExpanded() && key != Qt::Key_Plus) {
                     // If already expanded, focus first child
                     if (!groupProperty->subProperties().isEmpty())
-                        focusNextPrevProperty(groupProperty, true, shiftPressed);
+                        focusNextPrevProperty(groupProperty, true, false);
                 } else {
                     groupProperty->setExpanded(true);
                 }
@@ -1107,23 +1137,25 @@ bool PropertiesView::focusNextPrevProperty(Property *property, bool next, bool s
     if (!property)
         return false;
 
-    const auto nextPrev = next ? nextProperty : previousProperty;
+    // If shift is pressed, we only select properties in the same group
+    const auto nextPrev = shiftPressed ? (next ? nextSiblingProperty : previousSiblingProperty)
+                                       : (next ? nextProperty : previousProperty);
 
-    while (Property *propertyToFocus = nextPrev(property)) {
-        switch (propertyToFocus->displayMode()) {
+    while ((property = nextPrev(property))) {
+        switch (property->displayMode()) {
         case Property::DisplayMode::Default:
         case Property::DisplayMode::NoLabel:
         case Property::DisplayMode::Header:
-            if (focusProperty(propertyToFocus, FocusRow)) {
+            if (focusProperty(property, FocusRow)) {
                 if (!shiftPressed) {
-                    m_selectionStart = propertyToFocus;
+                    m_selectionStart = property;
 
-                    if (propertyToFocus->actions().testFlag(Property::Action::Select))
-                        setSelectedProperties({ propertyToFocus });
+                    if (property->actions().testFlag(Property::Action::Select))
+                        setSelectedProperties({ property });
                     else
                         setSelectedProperties({});
                 } else {
-                    if (assignSelectedPropertiesRange(m_root, m_selectionStart, propertyToFocus))
+                    if (assignSelectedPropertiesRange(m_root, m_selectionStart, property))
                         emit selectedPropertiesChanged();
                 }
 
@@ -1134,8 +1166,6 @@ bool PropertiesView::focusNextPrevProperty(Property *property, bool next, bool s
         case Property::DisplayMode::ChildrenOnly:
             break;
         }
-
-        property = propertyToFocus;
     }
 
     return false;
@@ -1313,8 +1343,18 @@ PropertiesView::PropertyWidgets PropertiesView::createPropertyWidgets(Property *
         if (modifiers & Qt::ControlModifier) {
             // Toggle selection
             if (property->actions().testFlag(Property::Action::Select)) {
-                property->setSelected(!property->isSelected());
-                emit selectedPropertiesChanged();
+                if (property->isSelected()) {
+                    property->setSelected(false);
+                    emit selectedPropertiesChanged();
+                } else {
+                    // We can only add this property to the selection when any
+                    // existing selection has the same parent.
+                    auto selection = selectedProperties();
+                    if (selection.isEmpty() || selection.first()->parentProperty() == property->parentProperty()) {
+                        property->setSelected(true);
+                        emit selectedPropertiesChanged();
+                    }
+                }
             }
         } else {
             // Select only the clicked property
