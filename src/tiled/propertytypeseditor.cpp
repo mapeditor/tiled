@@ -369,7 +369,7 @@ ClassPropertyType *PropertyTypesEditor::selectedClassPropertyType() const
 
 void PropertyTypesEditor::selectedMembersChanged()
 {
-    const auto properties = mMembersView->selectedProperties();
+    const auto properties = mMembersProperty->selectedSubProperties();
     const bool singlePropertySelected = properties.size() == 1;
     mRemoveMemberAction->setEnabled(singlePropertySelected);
     mRenameMemberAction->setEnabled(singlePropertySelected);
@@ -618,7 +618,7 @@ void PropertyTypesEditor::removeMember()
     if (!propertyType || !propertyType->isClass())
         return;
 
-    const auto properties = mMembersView->selectedProperties();
+    const auto properties = mMembersProperty->selectedSubProperties();
     if (properties.size() != 1)
         return;
 
@@ -645,7 +645,7 @@ void PropertyTypesEditor::removeMember()
 
 void PropertyTypesEditor::renameSelectedMember()
 {
-    const auto properties = mMembersView->selectedProperties();
+    const auto properties = mMembersProperty->selectedSubProperties();
     if (properties.size() != 1)
         return;
 

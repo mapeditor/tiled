@@ -245,6 +245,42 @@ Properties propertiesFromJson(const QJsonArray &json, const ExportContext &conte
     return properties;
 }
 
+QJsonArray valuesToJson(const QVariantList &values, const ExportContext &context)
+{
+    QJsonArray json;
+
+    for (auto &value : values) {
+        const auto exportValue = context.toExportValue(value);
+
+        QJsonObject propertyObject;
+        propertyObject.insert(QLatin1String("value"), QJsonValue::fromVariant(exportValue.value));
+        propertyObject.insert(QLatin1String("type"), exportValue.typeName);
+        propertyObject.insert(QLatin1String("propertytype"), exportValue.propertyTypeName);
+
+        json.append(propertyObject);
+    }
+
+    return json;
+}
+
+QVariantList valuesFromJson(const QJsonArray &json, const ExportContext &context)
+{
+    QVariantList values;
+
+    for (const QJsonValue &value : json) {
+        const QJsonObject valueObject = value.toObject();
+
+        ExportValue exportValue;
+        exportValue.value = valueObject.value(QLatin1String("value")).toVariant();
+        exportValue.typeName = valueObject.value(QLatin1String("type")).toString();
+        exportValue.propertyTypeName = valueObject.value(QLatin1String("propertytype")).toString();
+
+        values.append(context.toPropertyValue(exportValue));
+    }
+
+    return values;
+}
+
 void aggregateProperties(AggregatedProperties &aggregated, const Properties &properties)
 {
     auto it = properties.constEnd();

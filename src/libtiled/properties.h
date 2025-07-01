@@ -121,8 +121,7 @@ private:
 class TILEDSHARED_EXPORT AggregatedPropertyData
 {
 public:
-    AggregatedPropertyData()
-    {}
+    AggregatedPropertyData() = default;
 
     explicit AggregatedPropertyData(const QVariant &value)
         : mValue(value)
@@ -190,6 +189,11 @@ TILEDSHARED_EXPORT QJsonArray propertiesToJson(const Properties &properties,
                                                const ExportContext &context = ExportContext());
 TILEDSHARED_EXPORT Properties propertiesFromJson(const QJsonArray &json,
                                                  const ExportContext &context = ExportContext());
+
+TILEDSHARED_EXPORT QJsonArray valuesToJson(const QVariantList &values,
+                                           const ExportContext &context = ExportContext());
+TILEDSHARED_EXPORT QVariantList valuesFromJson(const QJsonArray &json,
+                                               const ExportContext &context = ExportContext());
 
 constexpr int propertyValueId() { return qMetaTypeId<PropertyValue>(); }
 constexpr int filePathTypeId() { return qMetaTypeId<FilePath>(); }
