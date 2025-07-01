@@ -37,6 +37,7 @@ class Document;
 class GroupProperty;
 class ObjectProperties;
 class PropertiesView;
+class VariantListProperty;
 
 /**
  * The PropertiesWidget combines the PropertiesView with some controls that
@@ -70,15 +71,30 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
 
 private:
+    struct SelectionState
+    {
+        QStringList customPropertyNames;
+        bool currentObjectHasAllProperties = true;
+
+        VariantListProperty *listProperty = nullptr;
+        QList<int> selectedListItems;
+
+        bool canCopy() const;
+    };
+
+    SelectionState selectionState() const;
+
     void currentObjectChanged(Object *object);
     void updateActions();
 
-    void cutProperties();
-    bool copyProperties();
-    void pasteProperties();
+    void cut();
+    bool copy();
+    bool copyImpl(const SelectionState &state);
+    void paste();
     void showAddValueProperty();
     void addProperty(const QString &name, const QVariant &value);
-    void removeProperties();
+    void remove();
+    void removeImpl(const SelectionState &state);
     void renameSelectedProperty();
     void renameProperty(const QString &name);
     void showContextMenu(const QPoint &pos);
@@ -100,5 +116,15 @@ private:
     QAction *mActionRemoveProperty;
     QAction *mActionRenameProperty;
 };
+
+inline bool PropertiesWidget::copy()
+{
+    return copyImpl(selectionState());
+}
+
+inline void PropertiesWidget::remove()
+{
+    removeImpl(selectionState());
+}
 
 } // namespace Tiled

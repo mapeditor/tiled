@@ -524,6 +524,19 @@ void VariantListProperty::setValue(const QVariantList &value)
     emit valueChanged();
 }
 
+QVariantList VariantListProperty::valuesAt(const QList<int> &indices) const
+{
+    const QVariantList list = mGet();
+    QVariantList values;
+
+    for (int index : indices) {
+        if (index >= 0 && index < list.size())
+            values.append(list.at(index));
+    }
+
+    return values;
+}
+
 void VariantListProperty::removeValueAt(int index)
 {
     QVariantList list = mGet();
@@ -534,6 +547,24 @@ void VariantListProperty::removeValueAt(int index)
 
     // We can't just delete the affected property, because the remaining
     // properties would shift up while still referring to their original index.
+    mSet(mPath, list);
+    setValue(mGet());
+}
+
+void VariantListProperty::removeValuesAt(const QList<int> &indices)
+{
+    if (indices.isEmpty())
+        return;
+
+    QVariantList list = mGet();
+    QList<int> sortedIndex = indices;
+    std::sort(sortedIndex.begin(), sortedIndex.end(), std::greater<int>());
+
+    for (int i : sortedIndex) {
+        if (i >= 0 && i < list.size())
+            list.removeAt(i);
+    }
+
     mSet(mPath, list);
     setValue(mGet());
 }
@@ -556,6 +587,25 @@ void VariantListProperty::addValue(const QVariant &value)
         // Fall back to updating entire list in case something strange happened
         setValue(mGet());
     }
+}
+
+void VariantListProperty::insertValuesAt(int index, const QVariantList &values)
+{
+    if (values.isEmpty())
+        return;
+
+    QVariantList list = mGet();
+    if (index < 0 || index > list.size())
+        index = list.size();
+
+    // Insert the values at the specified index
+    for (const auto &value : values) {
+        list.insert(index, value);
+        ++index;
+    }
+
+    mSet(mPath, list);
+    setValue(mGet());
 }
 
 QWidget *VariantListProperty::createEditor(QWidget *parent)
@@ -632,7 +682,7 @@ bool VariantListProperty::createOrUpdateProperty(int index,
     if (property) {
         property->setName(QStringLiteral("[%1]").arg(index));
         property->setActions(Property::Action::Select | Property::Action::Remove);
-        // updateModifiedRecursively(property, newValue);
+        updateModifiedRecursively(property, newValue);
         emit property->valueChanged();
     }
 
