@@ -185,34 +185,34 @@ Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant
     for (const QVariant &propertyVariant : propertiesList) {
         const QVariantMap propertyVariantMap = propertyVariant.toMap();
         const QString propertyName = propertyVariantMap[QStringLiteral("name")].toString();
-        ExportValue exportValue;
-        exportValue.value = propertyVariantMap[QStringLiteral("value")];
-        exportValue.typeName = propertyVariantMap[QStringLiteral("type")].toString();
-        exportValue.propertyTypeName = propertyVariantMap[QStringLiteral("propertytype")].toString();
 
-        auto &value = properties[propertyName];
-
-        if (exportValue.typeName == QLatin1String("list")) {
-            const QVariantList values = exportValue.value.toList();
-            QVariantList convertedList;
-            convertedList.reserve(values.size());
-            for (const QVariant &value : values) {
-                const QVariantMap valueVariantMap = value.toMap();
-                ExportValue itemValue;
-                itemValue.value = valueVariantMap[QStringLiteral("value")];
-                itemValue.typeName = valueVariantMap[QStringLiteral("type")].toString();
-                itemValue.propertyTypeName = valueVariantMap[QStringLiteral("propertytype")].toString();
-
-                // todo: this doesn't support lists of lists
-                convertedList.append(context.toPropertyValue(itemValue));
-            }
-            value = convertedList;
-        } else {
-            value = context.toPropertyValue(exportValue);
-        }
+        properties[propertyName] = toPropertyValue(propertyVariantMap, context);
     }
 
     return properties;
+}
+
+QVariant VariantToMapConverter::toPropertyValue(const QVariantMap &valueVariantMap,
+                                                const ExportContext &context) const
+{
+    ExportValue exportValue;
+    exportValue.value = valueVariantMap[QStringLiteral("value")];
+    exportValue.typeName = valueVariantMap[QStringLiteral("type")].toString();
+    exportValue.propertyTypeName = valueVariantMap[QStringLiteral("propertytype")].toString();
+
+    if (exportValue.typeName == QLatin1String("list")) {
+        const QVariantList values = exportValue.value.toList();
+
+        QVariantList convertedList;
+        convertedList.reserve(values.size());
+
+        for (const QVariant &value : values)
+            convertedList.append(toPropertyValue(value.toMap(), context));
+
+        return convertedList;
+    }
+
+    return context.toPropertyValue(exportValue);
 }
 
 SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
