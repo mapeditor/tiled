@@ -475,7 +475,7 @@ static bool objectPropertiesRelevant(Document *document, Object *object)
     return false;
 }
 
-class CustomProperties : public VariantMapProperty
+class CustomProperties : public VariantMapProperty, public MapDocumentContext
 {
     Q_OBJECT
 
@@ -488,6 +488,11 @@ public:
     }
 
     void setDocument(Document *document);
+
+    MapDocument *mapDocument() const override
+    {
+        return qobject_cast<MapDocument*>(mDocument);
+    }
 
 protected:
     void propertyTypesChanged() override

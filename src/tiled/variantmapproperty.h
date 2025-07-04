@@ -29,6 +29,17 @@
 namespace Tiled {
 
 class Document;
+class MapDocument;
+
+/**
+ * An interface used by ObjectRefProperty to access the current MapDocument.
+ */
+class MapDocumentContext
+{
+public:
+    virtual ~MapDocumentContext() = default;
+    virtual MapDocument *mapDocument() const = 0;
+};
 
 /**
  * A property that creates child properties based on a QVariantMap value.

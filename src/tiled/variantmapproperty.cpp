@@ -76,7 +76,7 @@ static void updateModifiedRecursively(Property *property, const QVariant &value)
 }
 
 
-class ObjectRefProperty : public PropertyTemplate<DisplayObjectRef>
+class ObjectRefProperty : public PropertyTemplate<ObjectRef>
 {
     Q_OBJECT
 
@@ -88,26 +88,41 @@ public:
         auto editor = new ObjectRefEdit(parent);
         auto syncEditor = [this, editor] {
             const QSignalBlocker blocker(editor);
-            editor->setValue(value());
+            editor->setValue(displayValue());
         };
         syncEditor();
         connect(this, &Property::valueChanged, editor, syncEditor);
         connect(editor, &ObjectRefEdit::valueChanged,
                 this, [this](const DisplayObjectRef &value) {
-            setValue(value);
+            setValue(value.ref);
         });
         return editor;
     }
 
     void addContextMenuActions(QMenu *menu) override
     {
-        auto objectRef = value();
+        auto objectRef = displayValue();
         menu->addAction(QCoreApplication::translate("Tiled::PropertiesDock", "Go to Object"), [=] {
             if (auto object = objectRef.object()) {
                 objectRef.mapDocument->setSelectedObjects({object});
                 emit objectRef.mapDocument->focusMapObjectRequested(object);
             }
         })->setEnabled(objectRef.object());
+    }
+
+    DisplayObjectRef displayValue() const
+    {
+        return DisplayObjectRef { value(), findMapDocument() };
+    }
+
+private:
+    MapDocument *findMapDocument() const
+    {
+        for (auto parent = parentProperty(); parent; parent = parent->parentProperty()) {
+            if (auto context = dynamic_cast<MapDocumentContext*>(parent))
+                return context->mapDocument();
+        }
+        return nullptr;
     }
 };
 
@@ -215,11 +230,10 @@ static Property *createProperty(const PropertyPath &path,
         property = new UrlProperty(name, std::move(getUrl), std::move(setUrl));
     } else if (type == objectRefTypeId()) {
         auto getObjectRef = [get = std::move(get)/*, this*/] {
-            return DisplayObjectRef(get().value<ObjectRef>()/*,
-                                    qobject_cast<MapDocument *>(mDocument)*/);
+            return get().value<ObjectRef>();
         };
-        auto setObjectRef = [path, set = std::move(set)](const DisplayObjectRef &value) {
-            set(path, QVariant::fromValue(value.ref));
+        auto setObjectRef = [path, set = std::move(set)](const ObjectRef &value) {
+            set(path, QVariant::fromValue(value));
         };
         property = new ObjectRefProperty(name, std::move(getObjectRef), std::move(setObjectRef));
     } else if (type == propertyValueId()) {
