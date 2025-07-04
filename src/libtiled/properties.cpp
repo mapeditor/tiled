@@ -253,9 +253,13 @@ QJsonArray valuesToJson(const QVariantList &values, const ExportContext &context
         const auto exportValue = context.toExportValue(value);
 
         QJsonObject propertyObject;
-        propertyObject.insert(QLatin1String("value"), QJsonValue::fromVariant(exportValue.value));
         propertyObject.insert(QLatin1String("type"), exportValue.typeName);
         propertyObject.insert(QLatin1String("propertytype"), exportValue.propertyTypeName);
+
+        if (value.userType() == QMetaType::QVariantList)
+            propertyObject.insert(QLatin1String("value"), valuesToJson(value.toList(), context));
+        else
+            propertyObject.insert(QLatin1String("value"), QJsonValue::fromVariant(exportValue.value));
 
         json.append(propertyObject);
     }
@@ -383,23 +387,34 @@ ExportContext::ExportContext(const QString &path)
 
 ExportValue ExportContext::toExportValue(const QVariant &value) const
 {
-    ExportValue exportValue;
     const int metaType = value.userType();
+    Q_ASSERT(metaType != qMetaTypeId<ExportValue>());
 
     if (metaType == propertyValueId()) {
         const auto propertyValue = value.value<PropertyValue>();
 
-        if (const PropertyType *propertyType = mTypes.findTypeById(propertyValue.typeId)) {
-            exportValue = propertyType->toExportValue(propertyValue.value, *this);
-        } else {
-            // the type may have been deleted
-            exportValue = toExportValue(propertyValue.value);
-        }
+        if (const PropertyType *propertyType = mTypes.findTypeById(propertyValue.typeId))
+            return propertyType->toExportValue(propertyValue.value, *this);
 
-        return exportValue; // early out, we don't want to assign typeName again
+        // the type may have been deleted
+        return toExportValue(propertyValue.value);
     }
 
-    if (metaType == QMetaType::QColor) {
+    ExportValue exportValue;
+
+    if (metaType == QMetaType::QVariantList) {
+        QVariantList exportValues;
+        const auto list = value.toList();
+        exportValues.reserve(list.size());
+        if (mRecursiveBehavior == RecursiveBehavior::ValuesOnly) {
+            for (const QVariant &element : list)
+                exportValues.append(toExportValue(element).value);
+        } else {
+            for (const QVariant &element : list)
+                exportValues.append(QVariant::fromValue(toExportValue(element)));
+        }
+        exportValue.value = exportValues;
+    } else if (metaType == QMetaType::QColor) {
         const auto color = value.value<QColor>();
         exportValue.value = color.isValid() ? color.name(QColor::HexArgb) : QString();
     } else if (metaType == filePathTypeId()) {
@@ -408,7 +423,7 @@ ExportValue ExportContext::toExportValue(const QVariant &value) const
     } else if (metaType == objectRefTypeId()) {
         exportValue.value = ObjectRef::toInt(value.value<ObjectRef>());
     } else {
-        // Other values, including lists, do not need special handling here
+        // Other values do not need special handling here
         exportValue.value = value;
     }
 

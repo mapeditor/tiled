@@ -168,6 +168,7 @@ public:
 
     bool canAddMemberOfType(const PropertyType *propertyType) const;
     bool canAddMemberOfType(const PropertyType *propertyType, const PropertyTypes &types) const;
+    bool canAddMember(const QVariant &value, const PropertyTypes &types) const;
 
     bool isPropertyValueType() const { return usageFlags & PropertyValueType; }
     bool isClassFor(const Object &object) const;
@@ -219,6 +220,12 @@ public:
     Types::const_iterator end() const { return mTypes.end(); }
 
 private:
+    void ensureMembersResolvedHelper(const QVariant &value, const ExportContext &context);
+    void ensureMembersResolved(const QVariantMap &valueMap, const ExportContext &context);
+    void resolveValue(ClassPropertyType *classType, QVariant &value, const ExportContext &context);
+    QVariant resolveValue(ClassPropertyType *classType,
+                          const QVariantMap &map,
+                          const ExportContext &context);
     void resolveMemberValues(ClassPropertyType *classType, const ExportContext &context);
 
     PropertyType *findTypeByNamePriv(const QString &name, int usageFlags = ClassPropertyType::AnyUsage);
@@ -273,4 +280,5 @@ using SharedPropertyTypes = QSharedPointer<PropertyTypes>;
 
 } // namespace Tiled
 
+Q_DECLARE_METATYPE(Tiled::ExportValue);
 Q_DECLARE_METATYPE(Tiled::PropertyType*);

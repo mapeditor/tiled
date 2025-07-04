@@ -97,6 +97,12 @@ public:
 class TILEDSHARED_EXPORT ExportContext
 {
 public:
+    enum class RecursiveBehavior {
+        ValuesOnly,             // Lua and JSON1 formats (loses types in lists)
+        ListsAsExportValues,    // JSON2 format
+        ExportValuesOnly,       // XML format (keep superfluous types in classes)
+    };
+
     explicit ExportContext(const QString &path = QString());
     ExportContext(const PropertyTypes &types, const QString &path)
         : mTypes(types)
@@ -106,8 +112,12 @@ public:
     // need to prevent this one since we're only holding a reference to the types
     ExportContext(const PropertyTypes &&types, const QString &path) = delete;
 
+    void setRecursiveBehavior(RecursiveBehavior behavior)
+    { mRecursiveBehavior = behavior; }
+
     const PropertyTypes &types() const { return mTypes; }
     const QString &path() const { return mPath; }
+    RecursiveBehavior recursiveBehavior() const { return mRecursiveBehavior; }
 
     ExportValue toExportValue(const QVariant &value) const;
     QVariant toPropertyValue(const ExportValue &exportValue) const;
@@ -116,6 +126,7 @@ public:
 private:
     const PropertyTypes &mTypes;
     const QString mPath;
+    RecursiveBehavior mRecursiveBehavior = RecursiveBehavior::ListsAsExportValues;
 };
 
 class TILEDSHARED_EXPORT AggregatedPropertyData
