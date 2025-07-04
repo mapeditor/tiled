@@ -200,19 +200,29 @@ QVariant VariantToMapConverter::toPropertyValue(const QVariantMap &valueVariantM
     exportValue.typeName = valueVariantMap[QStringLiteral("type")].toString();
     exportValue.propertyTypeName = valueVariantMap[QStringLiteral("propertytype")].toString();
 
-    if (exportValue.typeName == QLatin1String("list")) {
-        const QVariantList values = exportValue.value.toList();
-
-        QVariantList convertedList;
-        convertedList.reserve(values.size());
-
-        for (const QVariant &value : values)
-            convertedList.append(toPropertyValue(value.toMap(), context));
-
-        return convertedList;
-    }
+    convertListValues(exportValue.value, context);
 
     return context.toPropertyValue(exportValue);
+}
+
+void VariantToMapConverter::convertListValues(QVariant &value, const ExportContext &context) const
+{
+    switch (value.userType()) {
+    case QMetaType::QVariantList: {
+        QVariantList list = value.toList();
+        for (QVariant &item : list)
+            item = toPropertyValue(item.toMap(), context);
+        value = std::move(list);
+        break;
+    }
+    case QMetaType::QVariantMap: {
+        QVariantMap map = value.toMap();
+        for (QVariant &value : map)
+            convertListValues(value, context);
+        value = std::move(map);
+        break;
+    }
+    }
 }
 
 SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
