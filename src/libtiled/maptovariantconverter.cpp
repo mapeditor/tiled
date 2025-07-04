@@ -800,9 +800,12 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
     if (properties.isEmpty())
         return;
 
-    const ExportContext context(mDir.path());
+    ExportContext context(mDir.path());
 
     if (mVersion == 1) {
+        // The JSON1 format can't support typed lists
+        context.setRecursiveBehavior(ExportContext::RecursiveBehavior::ValuesOnly);
+
         QVariantMap propertiesMap;
         QVariantMap propertyTypesMap;
 
@@ -824,7 +827,9 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
         Properties::const_iterator it = properties.constBegin();
         Properties::const_iterator it_end = properties.constEnd();
         for (; it != it_end; ++it) {
-            QVariantMap propertyVariantMap = toVariantMap(it.value(), context);
+            const auto exportValue = context.toExportValue(it.value());
+
+            QVariantMap propertyVariantMap = toVariantMap(exportValue);
             propertyVariantMap[QStringLiteral("name")] = it.key();
 
             propertiesVariantList << std::move(propertyVariantMap);
@@ -834,26 +839,40 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
     }
 }
 
-QVariantMap MapToVariantConverter::toVariantMap(const QVariant &propertyValue, const ExportContext &context) const
+QVariantMap MapToVariantConverter::toVariantMap(const ExportValue &exportValue) const
 {
-    const auto exportValue = context.toExportValue(propertyValue);
     QVariantMap propertyVariantMap;
 
+    QVariant value = exportValue.value;
+    exportValuesToVariantMap(value);
+
     propertyVariantMap[QStringLiteral("type")] = exportValue.typeName;
+    propertyVariantMap[QStringLiteral("value")] = value;
     if (!exportValue.propertyTypeName.isEmpty())
         propertyVariantMap[QStringLiteral("propertytype")] = exportValue.propertyTypeName;
 
-    if (exportValue.typeName == QLatin1String("list")) {
-        QVariantList valuesVariantList;
-
-        const QVariantList values = propertyValue.toList();
-        for (const QVariant &value : values)
-            valuesVariantList << toVariantMap(value, context);
-
-        propertyVariantMap[QStringLiteral("value")] = std::move(valuesVariantList);
-    } else {
-        propertyVariantMap[QStringLiteral("value")] = exportValue.value;
-    }
-
     return propertyVariantMap;
+}
+
+void MapToVariantConverter::exportValuesToVariantMap(QVariant &value) const
+{
+    switch (value.userType()) {
+    case QMetaType::QVariantMap: {
+        auto map = value.toMap();
+        for (auto &value : map)
+            exportValuesToVariantMap(value);
+        value = std::move(map);
+        break;
+    }
+    case QMetaType::QVariantList: {
+        auto list = value.toList();
+        for (QVariant &item : list)
+            item = toVariantMap(item.value<ExportValue>());
+        value = std::move(list);
+        break;
+    }
+    default:
+        // No conversion needed for other types
+        break;
+    }
 }
