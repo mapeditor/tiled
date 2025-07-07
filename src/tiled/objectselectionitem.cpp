@@ -856,17 +856,34 @@ void ObjectSelectionItem::addRemoveObjectHoverItems()
 }
 
 template <typename Callback>
+static void forEachObjectReference(const QVariant &value, Callback callback);
+
+template <typename Callback>
+static void forEachObjectReference(const QVariantList &list, Callback callback)
+{
+    for (const QVariant &item : list)
+        forEachObjectReference(item, callback);
+}
+
+template <typename Callback>
 static void forEachObjectReference(const Properties &properties, Callback callback)
 {
-    for (const QVariant &value : properties) {
-        if (value.userType() == objectRefTypeId()) {
-            callback(value.value<ObjectRef>());
-        } else if (value.userType() == propertyValueId()) {
-            const auto propertyValue = value.value<PropertyValue>();
-            if (auto type = propertyValue.type())
-                if (type->isClass())
-                    forEachObjectReference(propertyValue.value.toMap(), callback);
-        }
+    for (const QVariant &value : properties)
+        forEachObjectReference(value, callback);
+}
+
+template <typename Callback>
+static void forEachObjectReference(const QVariant &value, Callback callback)
+{
+    if (value.userType() == objectRefTypeId()) {
+        callback(value.value<ObjectRef>());
+    } else if (value.userType() == propertyValueId()) {
+        const auto propertyValue = value.value<PropertyValue>();
+        if (auto type = propertyValue.type())
+            if (type->isClass())
+                forEachObjectReference(propertyValue.value.toMap(), callback);
+    } else if (value.userType() == QMetaType::QVariantList) {
+        forEachObjectReference(value.value<QVariantList>(), callback);
     }
 }
 
