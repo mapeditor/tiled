@@ -45,7 +45,7 @@ namespace Tiled {
  * The labels are forced to width of the widest label, while the widgets share
  * the remaining space.
  */
-class PairwiseWrappingLayout : public QLayout
+class PairwiseWrappingLayout final : public QLayout
 {
     Q_OBJECT
 
@@ -819,7 +819,12 @@ void ElidingLabel::paintEvent(QPaintEvent *)
     opt.initFrom(this);
 
     const int m = margin();
-    const QRect cr = contentsRect().adjusted(m, m, -m, -m);
+    QRect cr = contentsRect();
+    if (opt.direction == Qt::LeftToRight)
+        cr.adjust(m + m_indent, m, -m, -m);
+    else
+        cr.adjust(m, m, -m - m_indent, -m);
+
     const int align = QStyle::visualAlignment(opt.direction, alignment());
     const int flags = align | (opt.direction == Qt::LeftToRight ? Qt::TextForceLeftToRight
                                                                 : Qt::TextForceRightToLeft);
@@ -957,12 +962,8 @@ void PropertyLabel::updateContentMargins()
     const int spacing = Utils::dpiScaled(3);
     const int branchIndicatorWidth = Utils::dpiScaled(14);
     const int verticalSpacing = m_header ? spacing : 0;
-    const int indent = branchIndicatorWidth * (m_level + 1);
-
-    if (isLeftToRight())
-        setContentsMargins(spacing + indent, verticalSpacing, spacing, verticalSpacing);
-    else
-        setContentsMargins(spacing, verticalSpacing, spacing + indent, verticalSpacing);
+    setIndent(branchIndicatorWidth * (m_level + 1));
+    setContentsMargins(spacing, verticalSpacing, spacing, verticalSpacing);
 }
 
 QRect PropertyLabel::branchIndicatorRect() const

@@ -341,10 +341,13 @@ public:
 protected:
     void paintEvent(QPaintEvent *) override;
 
+    void setIndent(int indent) { m_indent = indent; }
+
 private:
     QString m_toolTip;
     bool m_isElided = false;
     bool m_selected = false;
+    int m_indent;
 };
 
 /**
