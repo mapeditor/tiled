@@ -783,7 +783,7 @@
     <message>
         <location line="+8"/>
         <source>AutoMap While Drawing</source>
-        <translation>绘制时自动地图</translation>
+        <translation>绘制时自动映射</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -808,22 +808,22 @@
     <message>
         <location line="+8"/>
         <source>Add Automapping Rules Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>添加自动映射规则图块集</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Search Actions...</source>
-        <translation type="unfinished"></translation>
+        <translation>搜索动作...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Search actions available in Tiled</source>
-        <translation type="unfinished"></translation>
+        <translation>搜索在Tiled中可用的动作</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Unload All Worlds</source>
-        <translation type="unfinished"></translation>
+        <translation>卸载所有世界</translation>
     </message>
     <message>
         <location line="-97"/>
@@ -898,7 +898,7 @@
     <message>
         <location line="+136"/>
         <source>&amp;Unload World</source>
-        <translation type="unfinished">卸载世界</translation>
+        <translation>卸载世界</translation>
     </message>
     <message>
         <location line="-50"/>
@@ -1786,7 +1786,7 @@ Line %1, column %2</source>
     <message>
         <location line="+229"/>
         <source>Behavior</source>
-        <translation type="unfinished"></translation>
+        <translation>行为</translation>
     </message>
     <message>
         <location line="+67"/>
@@ -1807,12 +1807,12 @@ Line %1, column %2</source>
     <message>
         <location line="+74"/>
         <source>Use custom interface font</source>
-        <translation type="unfinished"></translation>
+        <translation>使用自定义界面字体</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Font:</source>
-        <translation type="unfinished"></translation>
+        <translation>字体:</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -2455,7 +2455,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/editableasset.cpp" line="+81"/>
         <source>Asset not associated with a file</source>
-        <translation type="unfinished"></translation>
+        <translation>资产未与文件关联</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -2632,17 +2632,17 @@ Line %1, column %2</source>
     <message>
         <location line="+18"/>
         <source>Can&apos;t set tile spacing on an image collection tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>无法在一个多图片集合上设置图块间距</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Can&apos;t set margin on an image collection tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>无法在一个多图片集合上设置边距</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Can&apos;t set column count for image-based tilesets</source>
-        <translation type="unfinished"></translation>
+        <translation>无法在一个基于整张图像的图块集上设置列数</translation>
     </message>
     <message>
         <location line="+96"/>
@@ -2683,7 +2683,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/scriptedtool.cpp" line="+239"/>
         <source>Could not find action &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>无法找到动作 &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -2952,17 +2952,17 @@ Line %1, column %2</source>
         <location line="+16"/>
         <location line="+44"/>
         <source>Map not found in this world</source>
-        <translation type="unfinished"></translation>
+        <translation>未在此世界中找到该地图</translation>
     </message>
     <message>
         <location line="-27"/>
         <source>Map is already part of a loaded world</source>
-        <translation type="unfinished"></translation>
+        <translation>地图已经是载入世界的一部分</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Can&apos;t add unsaved map to a world</source>
-        <translation type="unfinished"></translation>
+        <translation>无法将一个未保存的地图添加到世界</translation>
     </message>
     <message>
         <location filename="../src/tiled/tilelayerwangedit.cpp" line="+97"/>
@@ -4003,7 +4003,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/editor.cpp" line="+40"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>复制</translation>
     </message>
 </context>
 <context>
@@ -4231,7 +4231,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/actionsearch.cpp" line="+241"/>
         <source>Search actions...</source>
-        <translation type="unfinished"></translation>
+        <translation>搜索动作...</translation>
     </message>
 </context>
 <context>
@@ -4676,7 +4676,7 @@ Please select specific format.</source>
     <message>
         <location line="+193"/>
         <source>Group Layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">图层组 %1</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -5744,7 +5744,7 @@ Please select specific format.</source>
     <message>
         <location line="+6"/>
         <source>Tile Render Size</source>
-        <translation type="unfinished"></translation>
+        <translation>图块渲染尺寸</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -5865,7 +5865,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Preserve Aspect Ratio</source>
-        <translation type="unfinished"></translation>
+        <translation>保持纵横比</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -6168,7 +6168,7 @@ Please select specific format.</source>
     <message>
         <location line="+17"/>
         <source>Property value</source>
-        <translation type="unfinished"></translation>
+        <translation>属性值</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -6253,7 +6253,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/scriptdialog.cpp" line="+26"/>
         <source>Script</source>
-        <translation type="unfinished"></translation>
+        <translation>脚本</translation>
     </message>
 </context>
 <context>
@@ -6309,12 +6309,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/scriptmodule.cpp" line="+42"/>
         <source>Open Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>打开目录</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Open Files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">打开多文件</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -6324,7 +6324,7 @@ Please select specific format.</source>
     <message>
         <location line="+8"/>
         <source>Save File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">保存文件</translation>
     </message>
 </context>
 <context>
@@ -7197,7 +7197,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/worldmanager.cpp" line="+169"/>
         <source>World not found</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">世界未找到</translation>
     </message>
 </context>
 <context>
@@ -7474,7 +7474,7 @@ Please select specific format.</source>
     <message>
         <location line="+22"/>
         <source>Change Tile Render Size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">更改图块渲染尺寸</translation>
     </message>
     <message>
         <location line="+26"/>
@@ -7768,7 +7768,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapdocument.cpp" line="-1063"/>
         <source>Reload Map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">重新加载地图</translation>
     </message>
     <message numerus="yes">
         <location line="+720"/>
