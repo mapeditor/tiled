@@ -1,6 +1,6 @@
 /*
- * projectpropertiesdialog.h
- * Copyright 2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * listedit.h
+ * Copyright 2024, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
  *
@@ -20,39 +20,41 @@
 
 #pragma once
 
-#include <QDialog>
+#include <QWidget>
 
-namespace Ui {
-class ProjectPropertiesDialog;
-}
+class QLabel;
+class QMenu;
+class QToolButton;
 
 namespace Tiled {
 
-class Project;
-class ProjectDocument;
-struct IntProperty;
-struct UrlProperty;
-
-class ProjectPropertiesDialog : public QDialog
+/**
+ * The widget that enables the user to edit a list property.
+ */
+class ListEdit final : public QWidget
 {
     Q_OBJECT
+    Q_PROPERTY(QVariantList value READ value WRITE setValue FINAL)
 
 public:
-    explicit ProjectPropertiesDialog(Project &project, QWidget *parent = nullptr);
-    ~ProjectPropertiesDialog() override;
+    explicit ListEdit(QWidget *parent = nullptr);
 
-    void accept() override;
+    const QVariantList &value() const { return mValue; }
+    void setValue(const QVariantList &value);
+
+    static QString valueText(const QVariantList &value);
+
+signals:
+    void appendValue(const QVariant &value);
 
 private:
-    Project &localProject();
+    void addButtonClicked();
+    void populateAddMenu();
 
-    Ui::ProjectPropertiesDialog *ui;
-
-    Project &mProject;
-    ProjectDocument *mLocalProjectDocument;
-    IntProperty *mCompatibilityVersionProperty;
-    UrlProperty *mExtensionPathProperty;
-    UrlProperty *mAutomappingRulesFileProperty;
+    QLabel *mLabel;
+    QToolButton *mAddButton;
+    QMenu *mAddMenu;
+    QVariantList mValue;
 };
 
 } // namespace Tiled
