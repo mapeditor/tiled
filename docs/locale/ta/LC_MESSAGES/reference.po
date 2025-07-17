@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiled 1.10\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-10 11:19+0100\n"
-"PO-Revision-Date: 2025-06-15 02:01+0000\n"
+"PO-Revision-Date: 2025-07-18 15:38+0000\n"
 "Last-Translator: தமிழ்நேரம் <anishprabu.t@gmail.com>\n"
 "Language-Team: Tamil <https://hosted.weblate.org/projects/tiled/reference/ta/"
 ">\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 #: ../../reference/global-tile-ids.rst:2
 msgid "Global Tile IDs"
@@ -1085,7 +1085,7 @@ msgstr "ஃச் வடிவமைக்கப்பட்ட வண்ணம�
 
 #: ../../reference/json-map-format.rst:1
 msgid "``tileset`` (for tileset files, since 1.0)"
-msgstr "`` டைல்செட்`` (டைல்செட் கோப்புகளுக்கு, 1.0 முதல்)"
+msgstr "``ஓடுஅணி`` (1.0 முதல் ஓடுஅணி கோப்புகளுக்கு)"
 
 #: ../../reference/json-map-format.rst:1
 msgid "wangsets"
@@ -1311,7 +1311,7 @@ msgstr "மில்லி விநாடிகளில் பிரேம் 
 
 #: ../../reference/json-map-format.rst:1
 msgid "tileid"
-msgstr "ஓடுகள்"
+msgstr "ஓடுஐடி"
 
 #: ../../reference/json-map-format.rst:1
 msgid "Local tile ID representing this frame"
@@ -1605,7 +1605,7 @@ msgstr ""
 
 #: ../../reference/json-map-format.rst:798
 msgid ":ref:`json-wangcolor` can now store ``properties``."
-msgstr ":ref:`json-wangcolor` can now store ``properties``."
+msgstr ":ref:`json-wangcolor` இப்போது சேமிக்க முடியும் ``properties``."
 
 #: ../../reference/json-map-format.rst:800
 msgid "Added ``transformations`` property to :ref:`json-tileset` (see :ref:`json-tileset-transformations`)."
