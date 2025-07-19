@@ -289,6 +289,8 @@ DynamicLibrary {
         "layeroffsettool.h",
         "locatorwidget.cpp",
         "locatorwidget.h",
+        "tilelocator.cpp",
+        "tilelocator.h",
         "magicwandtool.h",
         "magicwandtool.cpp",
         "maintoolbar.cpp",
