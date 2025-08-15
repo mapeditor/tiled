@@ -304,7 +304,7 @@ jobs:
     - name: Sign, Notarize & Staple
       if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
       run: |
-        codesign --deep --force --verify --verbose --sign Lindeijer --options runtime install/Tiled.app
+        codesign --deep --force --verify --verbose --sign Lindeijer --options runtime --entitlements src/tiledapp/app.entitlements install/Tiled.app
         ditto -c -k --sequesterRsrc --keepParent install/Tiled.app Tiled_for_notarization.zip
         xcrun notarytool submit --apple-id ${{ secrets.NOTARIZATION_USERNAME }} --password ${{ secrets.NOTARIZATION_PASSWORD }} --team-id ${{ secrets.NOTARIZATION_TEAM }} --wait Tiled_for_notarization.zip
         xcrun stapler staple install/Tiled.app
