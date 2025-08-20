@@ -307,7 +307,7 @@ tiles (e.g. to extend a Wang set by transforming existing tiles).
    :ref:`tmx-wangtile`)
 -  **probability:** A percentage indicating the probability that this
    tile is chosen when it competes with others while editing with the
-   terrain tool. (defaults to 0)
+   terrain tool. (defaults to 1)
 -  **x:** The X position of the sub-rectangle representing this tile (default: 0)
 -  **y:** The Y position of the sub-rectangle representing this tile (default: 0)
 -  **width:** The width of the sub-rectangle representing this tile (defaults to the image width)
@@ -376,7 +376,7 @@ A color that can be used to define the corner and/or edge of a Wang tile.
 -  **color:** The color in ``#RRGGBB`` format (example: ``#c17d11``).
 -  **tile:** The tile ID of the tile representing this color.
 -  **probability:** The relative probability that this color is chosen
-   over others in case of multiple options. (defaults to 0)
+   over others in case of multiple options. (defaults to 1)
 
 Can contain at most one: :ref:`tmx-properties`
 
@@ -551,7 +551,7 @@ Can contain any number: :ref:`tmx-object`
 -  **y:** The y coordinate of the object in pixels. (defaults to 0)
 -  **width:** The width of the object in pixels. (defaults to 0)
 -  **height:** The height of the object in pixels. (defaults to 0)
--  **rotation:** The rotation of the object in degrees clockwise around (x, y). 
+-  **rotation:** The rotation of the object in degrees clockwise around (x, y).
    (defaults to 0)
 -  **gid:** A reference to a tile. (optional)
 -  **visible:** Whether the object is shown (1) or hidden (0). (defaults to
