@@ -588,7 +588,7 @@ Tile (Definition)
     width,            int,                "The width of the sub-rectangle representing this tile (defaults to the image width)"
     height,           int,                "The height of the sub-rectangle representing this tile (defaults to the image height)"
     objectgroup,      :ref:`json-layer`,  "Layer with type ``objectgroup``, when collision shapes are specified (optional)"
-    probability,      double,             "Percentage chance this tile is chosen when competing with others in the editor (optional)"
+    probability,      double,             "Percentage chance this tile is chosen when competing with others in the editor (default: 1)"
     properties,       array,              "Array of :ref:`Properties <json-property>`"
     terrain,          array,              "Index of terrain for each corner of tile (optional, replaced by :ref:`Wang sets <json-wangset>` since 1.5)"
     type,             string,             "The class of the tile (was saved as ``class`` in 1.9, optional)"
@@ -680,7 +680,7 @@ Wang Color
     class,            string,           "The class of the Wang color (since 1.9, optional)"
     color,            string,           "Hex-formatted color (#RRGGBB or #AARRGGBB)"
     name,             string,           "Name of the Wang color"
-    probability,      double,           "Probability used when randomizing"
+    probability,      double,           "Probability used when randomizing (default: 1)"
     properties,       array,            "Array of :ref:`Properties <json-property>` (since 1.5)"
     tile,             int,              "Local ID of tile representing the Wang color"
 
