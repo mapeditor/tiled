@@ -247,6 +247,8 @@ DynamicLibrary {
         "exportasimagedialog.ui",
         "exporthelper.cpp",
         "exporthelper.h",
+        "expressionspinbox.h",
+        "expressionspinbox.cpp",
         "filechangedwarning.cpp",
         "filechangedwarning.h",
         "fileedit.cpp",

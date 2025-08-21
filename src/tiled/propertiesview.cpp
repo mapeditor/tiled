@@ -20,6 +20,7 @@
 
 #include "propertiesview.h"
 
+#include "expressionspinbox.h"
 #include "fileedit.h"
 #include "textpropertyedit.h"
 #include "utils.h"
@@ -39,7 +40,6 @@
 #include <QPointer>
 #include <QResizeEvent>
 #include <QSpacerItem>
-#include <QSpinBox>
 #include <QToolButton>
 
 namespace Tiled {
@@ -272,7 +272,7 @@ QWidget *IntProperty::createEditor(QWidget *parent)
         connect(slider, &QSlider::valueChanged, this, &IntProperty::setValue);
     }
 
-    auto spinBox = new SpinBox(parent);
+    auto spinBox = new ExpressionSpinBox(parent);
     spinBox->setRange(m_minimum, m_maximum);
     spinBox->setSingleStep(m_singleStep);
     spinBox->setSuffix(m_suffix);
@@ -497,7 +497,7 @@ QWidget *FontProperty::createEditor(QWidget *parent)
     auto editor = new QWidget(parent);
     auto fontComboBox = new QFontComboBox(editor);
 
-    auto sizeSpinBox = new QSpinBox(editor);
+    auto sizeSpinBox = new ExpressionSpinBox(editor);
     sizeSpinBox->setRange(1, 999);
     sizeSpinBox->setSuffix(tr(" px"));
     sizeSpinBox->setKeyboardTracking(false);
