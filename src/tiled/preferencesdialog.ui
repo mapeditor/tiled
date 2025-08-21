@@ -15,12 +15,12 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="sizeConstraint">
-    <enum>QLayout::SetMinimumSize</enum>
+    <enum>QLayout::SizeConstraint::SetMinimumSize</enum>
    </property>
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="generalTab">
       <attribute name="title">
@@ -130,7 +130,7 @@
           <item>
            <spacer name="horizontalSpacer_3">
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -155,7 +155,7 @@
                <string>(&lt;a href=&quot;https://www.mapeditor.org/crash-reporting&quot;&gt;more information&lt;/a&gt;)</string>
               </property>
               <property name="textFormat">
-               <enum>Qt::RichText</enum>
+               <enum>Qt::TextFormat::RichText</enum>
               </property>
               <property name="buddy">
                <cstring>sendCrashReports</cstring>
@@ -170,7 +170,7 @@
        <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
-          <enum>Qt::Vertical</enum>
+          <enum>Qt::Orientation::Vertical</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -196,7 +196,7 @@
           <item row="4" column="3">
            <spacer name="horizontalSpacer_5">
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -209,7 +209,7 @@
           <item row="0" column="2" colspan="2">
            <spacer name="horizontalSpacer_2">
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -266,7 +266,7 @@
           <item row="4" column="1" colspan="2">
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
-             <widget class="QSpinBox" name="gridMajorX">
+             <widget class="Tiled::ExpressionSpinBox" name="gridMajorX">
               <property name="suffix">
                <string> tiles</string>
               </property>
@@ -286,7 +286,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QSpinBox" name="gridMajorY">
+             <widget class="Tiled::ExpressionSpinBox" name="gridMajorY">
               <property name="suffix">
                <string> tiles</string>
               </property>
@@ -321,7 +321,7 @@
            <widget class="QComboBox" name="languageCombo"/>
           </item>
           <item row="5" column="1" colspan="2">
-           <widget class="QDoubleSpinBox" name="objectLineWidth">
+           <widget class="Tiled::ExpressionDoubleSpinBox" name="objectLineWidth">
             <property name="suffix">
              <string> pixels</string>
             </property>
@@ -337,7 +337,7 @@
            </widget>
           </item>
           <item row="3" column="1" colspan="2">
-           <widget class="QSpinBox" name="gridFine">
+           <widget class="Tiled::ExpressionSpinBox" name="gridFine">
             <property name="minimum">
              <number>1</number>
             </property>
@@ -378,7 +378,7 @@
           <item row="0" column="2">
            <spacer name="horizontalSpacer_6">
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -429,7 +429,7 @@
        <item>
         <spacer name="verticalSpacer_3">
          <property name="orientation">
-          <enum>Qt::Vertical</enum>
+          <enum>Qt::Orientation::Vertical</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -460,10 +460,10 @@
           <item row="0" column="1">
            <spacer name="horizontalSpacer_4">
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
             <property name="sizeType">
-             <enum>QSizePolicy::Fixed</enum>
+             <enum>QSizePolicy::Policy::Fixed</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -502,7 +502,7 @@
           <item row="0" column="3">
            <spacer name="horizontalSpacer">
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -561,7 +561,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QSpinBox" name="fontSize">
+           <widget class="Tiled::ExpressionSpinBox" name="fontSize">
             <property name="minimum">
              <number>6</number>
             </property>
@@ -573,7 +573,7 @@
        <item>
         <spacer name="verticalSpacer_2">
          <property name="orientation">
-          <enum>Qt::Vertical</enum>
+          <enum>Qt::Orientation::Vertical</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -639,10 +639,10 @@
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Close</set>
+      <set>QDialogButtonBox::StandardButton::Close</set>
      </property>
     </widget>
    </item>
@@ -655,10 +655,20 @@
    <header>colorbutton.h</header>
   </customwidget>
   <customwidget>
+   <class>Tiled::ExpressionSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>expressionspinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>Tiled::ShortcutSettingsPage</class>
    <extends>QWidget</extends>
    <header>shortcutsettingspage.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Tiled::ExpressionDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>expressionspinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "expressionspinbox.h"
+
 #include <QComboBox>
 #include <QLabel>
 #include <QLineEdit>
@@ -87,7 +89,7 @@ protected:
  * It also doesn't adjust the horizontal size hint based on the maximum value
  * and doesn't respond to wheel events when not focused.
  */
-class SpinBox : public QSpinBox
+class SpinBox : public ExpressionSpinBox
 {
     Q_OBJECT
 
@@ -109,7 +111,7 @@ protected:
  * The precision is increased to 9 decimal places. Redundant trailing 0's are
  * removed.
  */
-class DoubleSpinBox : public QDoubleSpinBox
+class DoubleSpinBox : public ExpressionDoubleSpinBox
 {
     Q_OBJECT
 
@@ -171,8 +173,8 @@ signals:
 private:
     QLabel *m_widthLabel;
     QLabel *m_heightLabel;
-    DoubleSpinBox *m_widthSpinBox;
-    DoubleSpinBox *m_heightSpinBox;
+    ExpressionDoubleSpinBox *m_widthSpinBox;
+    ExpressionDoubleSpinBox *m_heightSpinBox;
 };
 
 /**
@@ -223,8 +225,8 @@ signals:
 private:
     QLabel *m_xLabel;
     QLabel *m_yLabel;
-    DoubleSpinBox *m_xSpinBox;
-    DoubleSpinBox *m_ySpinBox;
+    ExpressionDoubleSpinBox *m_xSpinBox;
+    ExpressionDoubleSpinBox *m_ySpinBox;
 };
 
 /**
@@ -279,10 +281,10 @@ private:
     QLabel *m_yLabel;
     QLabel *m_widthLabel;
     QLabel *m_heightLabel;
-    DoubleSpinBox *m_xSpinBox;
-    DoubleSpinBox *m_ySpinBox;
-    DoubleSpinBox *m_widthSpinBox;
-    DoubleSpinBox *m_heightSpinBox;
+    ExpressionDoubleSpinBox *m_xSpinBox;
+    ExpressionDoubleSpinBox *m_ySpinBox;
+    ExpressionDoubleSpinBox *m_widthSpinBox;
+    ExpressionDoubleSpinBox *m_heightSpinBox;
 };
 
 /**
