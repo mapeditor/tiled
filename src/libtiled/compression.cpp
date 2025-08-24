@@ -120,6 +120,8 @@ QByteArray Tiled::decompress(const QByteArray &data,
                     inflateEnd(&strm);
                     logZlibError(ret);
                     return QByteArray();
+                default:
+                    break;
             }
 
             if (ret != Z_STREAM_END) {
@@ -144,11 +146,16 @@ QByteArray Tiled::decompress(const QByteArray &data,
         return out;
 #ifdef TILED_ZSTD_SUPPORT
     } else if (method == Zstandard) {
-        size_t const dSize = ZSTD_decompress(out.data(), out.size(), data.constData(), data.size());
+        unsigned long const dBuffSize = expectedSize > 0 ? expectedSize : 10 * data.size();
+
+        out.resize(dBuffSize);
+
+        size_t const dSize = ZSTD_decompress(out.data(), dBuffSize, data.constData(), data.size());
         if (ZSTD_isError(dSize)) {
-            qDebug() << "error decoding:" << ZSTD_getErrorName(dSize);
+            qDebug() << "error decompressing:" << ZSTD_getErrorName(dSize);
             return QByteArray();
         }
+
         out.resize(dSize);
         return out;
 #endif
@@ -220,12 +227,11 @@ QByteArray Tiled::compress(const QByteArray &data,
 #ifdef TILED_ZSTD_SUPPORT
     } else if (method == Zstandard) {
         if (compressionLevel == -1)
-            compressionLevel = 6;
+            compressionLevel = 3; // ZSTD default
         else
-            compressionLevel = qBound(1, compressionLevel, 22);
+            compressionLevel = qBound(1, compressionLevel, 22); // ZSTD range
 
-        size_t const cBuffSize = ZSTD_compressBound(data.size());
-
+        const size_t cBuffSize = ZSTD_compressBound(data.size());
         QByteArray out;
         out.resize(cBuffSize);
 
@@ -237,7 +243,6 @@ QByteArray Tiled::compress(const QByteArray &data,
 
         out.resize(cSize);
         return out;
-#endif
     } else {
         qDebug() << "compression not supported:" << method;
         return QByteArray();
