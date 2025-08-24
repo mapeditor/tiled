@@ -21,7 +21,6 @@
 
 #include "tilesetmodel.h"
 
-#include "map.h"
 #include "relocatetiles.h"
 #include "tile.h"
 #include "tiled.h"
@@ -40,6 +39,8 @@ TilesetModel::TilesetModel(TilesetDocument *tilesetDocument, QObject *parent)
 
     connect(tilesetDocument, &TilesetDocument::tileImageSourceChanged,
             this, &TilesetModel::tileChanged);
+    connect(tilesetDocument, &TilesetDocument::tileWangSetChanged,
+            this, &TilesetModel::tilesChanged);
     connect(tilesetDocument, &TilesetDocument::tileAnimationChanged,
             this, &TilesetModel::tileChanged);
 }
@@ -135,7 +136,7 @@ QMimeData *TilesetModel::mimeData(const QModelIndexList &indexes) const
     if (encodedData.isEmpty())
         return nullptr;
 
-    QMimeData *mimeData = new QMimeData;
+    auto mimeData = new QMimeData;
     mimeData->setData(QLatin1String(TILES_MIMETYPE), encodedData);
     return mimeData;
 }

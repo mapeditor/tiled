@@ -289,11 +289,11 @@ void TilesetEditor::addDocument(Document *document)
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
-    auto *tilesetModel = new TilesetModel(tilesetDocument, view);
-    view->setModel(tilesetModel);
+    auto *tilesetModel = tilesetDocument->tilesetModel();
+    auto *selectionModel = tilesetDocument->tilesetSelectionModel();
 
-    connect(tilesetDocument, &TilesetDocument::tileWangSetChanged,
-            tilesetModel, &TilesetModel::tilesChanged);
+    view->setModel(tilesetModel);
+    view->setSelectionModel(selectionModel);
 
     connect(tilesetDocument, &TilesetDocument::tilesetChanged,
             this, &TilesetEditor::tilesetChanged);
@@ -305,9 +305,8 @@ void TilesetEditor::addDocument(Document *document)
     connect(view, &TilesetView::wangIdUsedChanged, mWangDock, &WangDock::onWangIdUsedChanged);
     connect(view, &TilesetView::currentWangIdChanged, mWangDock, &WangDock::onCurrentWangIdChanged);
 
-    QItemSelectionModel *s = view->selectionModel();
-    connect(s, &QItemSelectionModel::selectionChanged, this, &TilesetEditor::selectionChanged);
-    connect(s, &QItemSelectionModel::currentChanged, this, &TilesetEditor::currentChanged);
+    connect(selectionModel, &QItemSelectionModel::selectionChanged, this, &TilesetEditor::selectionChanged);
+    connect(selectionModel, &QItemSelectionModel::currentChanged, this, &TilesetEditor::currentChanged);
     connect(view, &TilesetView::pressed, this, &TilesetEditor::indexPressed);
 
     mViewForTileset.insert(tilesetDocument, view);
@@ -318,7 +317,7 @@ void TilesetEditor::addDocument(Document *document)
 
 void TilesetEditor::removeDocument(Document *document)
 {
-    TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document);
+    auto tilesetDocument = qobject_cast<TilesetDocument*>(document);
     Q_ASSERT(tilesetDocument);
     Q_ASSERT(mViewForTileset.contains(tilesetDocument));
 
