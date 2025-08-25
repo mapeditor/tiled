@@ -63,14 +63,6 @@ static QJSValue evaluate(SpinBox *spinBox, const QString &text)
     return ExpressionEvaluator::instance().evaluate(parseText);
 }
 
-template<typename SpinBox>
-static QValidator::State validate(SpinBox *spinBox, const QString &text)
-{
-    if (evaluate(spinBox, text).isNumber())
-        return QValidator::Acceptable;
-    return QValidator::Intermediate;
-}
-
 // ExpressionSpinBox
 
 ExpressionSpinBox::ExpressionSpinBox(QWidget *parent)
@@ -86,9 +78,9 @@ int ExpressionSpinBox::valueFromText(const QString &text) const
     return value();
 }
 
-QValidator::State ExpressionSpinBox::validate(QString &text, int &/*pos*/) const
+QValidator::State ExpressionSpinBox::validate(QString &/*text*/, int &/*pos*/) const
 {
-    return Tiled::validate(this, text);
+    return QValidator::Acceptable;
 }
 
 
@@ -107,9 +99,9 @@ double ExpressionDoubleSpinBox::valueFromText(const QString &text) const
     return value();
 }
 
-QValidator::State ExpressionDoubleSpinBox::validate(QString &text, int &/*pos*/) const
+QValidator::State ExpressionDoubleSpinBox::validate(QString &/*text*/, int &/*pos*/) const
 {
-    return Tiled::validate(this, text);
+    return QValidator::Acceptable;
 }
 
 } // namespace Tiled
