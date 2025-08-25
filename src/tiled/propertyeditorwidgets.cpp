@@ -309,7 +309,7 @@ void ComboBox::wheelEvent(QWheelEvent *event)
 
 
 SpinBox::SpinBox(QWidget *parent)
-    : QSpinBox(parent)
+    : ExpressionSpinBox(parent)
 {
     // Allow the full range by default.
     setRange(std::numeric_limits<int>::lowest(),
@@ -348,7 +348,7 @@ void SpinBox::wheelEvent(QWheelEvent *event)
 
 
 DoubleSpinBox::DoubleSpinBox(QWidget *parent)
-    : QDoubleSpinBox(parent)
+    : ExpressionDoubleSpinBox(parent)
 {
     // Allow the full range by default.
     setRange(std::numeric_limits<double>::lowest(),
