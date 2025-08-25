@@ -19,7 +19,8 @@
  */
 
 #include "expressionspinbox.h"
-#include <qqmlengine.h>
+
+#include <QJSEngine>
 
 namespace Tiled {
 
@@ -28,10 +29,7 @@ ExpressionEvaluator *ExpressionEvaluator::mInstance;
 ExpressionEvaluator &ExpressionEvaluator::instance()
 {
     if (!mInstance)
-    {
         mInstance = new ExpressionEvaluator;
-        mInstance->mEngine = new QQmlEngine(mInstance);
-    }
     return *mInstance;
 }
 
@@ -46,77 +44,62 @@ QJSValue ExpressionEvaluator::evaluate(const QString &program)
     return mEngine->evaluate(program);
 }
 
+ExpressionEvaluator::ExpressionEvaluator()
+    : mEngine(new QJSEngine(this))
+{}
+
+
+template<typename SpinBox>
+static QJSValue evaluate(SpinBox *spinBox, const QString &text)
+{
+    QString parseText = text;
+
+    if (const QString p = spinBox->prefix(); !p.isEmpty() && parseText.startsWith(p))
+        parseText.remove(0, p.length());
+
+    if (const QString s = spinBox->suffix(); !s.isEmpty() && parseText.endsWith(s))
+        parseText.chop(s.length());
+
+    return ExpressionEvaluator::instance().evaluate(parseText);
+}
+
 // ExpressionSpinBox
 
 ExpressionSpinBox::ExpressionSpinBox(QWidget *parent)
     : QSpinBox(parent)
-{
-
-}
-
-QJSValue ExpressionSpinBox::evaluate(const QString &text) const
-{
-    QString parseText = text;
-    if (!prefix().isEmpty())
-        parseText = parseText.replace(QRegularExpression(
-                                          QString(QLatin1String("^") + QRegularExpression::escape(prefix()))),
-                                      QString());
-    if (!suffix().isEmpty())
-        parseText = parseText.replace(QRegularExpression(
-                                          QString(QRegularExpression::escape(suffix())) + QLatin1String("$")),
-                                      QString());
-
-    return ExpressionEvaluator::instance().evaluate(parseText);
-}
+{}
 
 int ExpressionSpinBox::valueFromText(const QString &text) const
 {
-    int originalValue = value();
-    QJSValue result = this->evaluate(text);
+    const QJSValue result = evaluate(this, text);
     if (result.isNumber())
         return result.toNumber();
 
-    return originalValue;
+    return value();
 }
 
-QValidator::State ExpressionSpinBox::validate(QString &text, int &pos) const
+QValidator::State ExpressionSpinBox::validate(QString &/*text*/, int &/*pos*/) const
 {
     return QValidator::Acceptable;
 }
 
+
 // ExpressionDoubleSpinBox
+
 ExpressionDoubleSpinBox::ExpressionDoubleSpinBox(QWidget *parent)
     : QDoubleSpinBox(parent)
-{
-
-}
-
-QJSValue ExpressionDoubleSpinBox::evaluate(const QString &text) const
-{
-    QString parseText = text;
-    if (!prefix().isEmpty())
-        parseText = parseText.replace(QRegularExpression(
-                                          QString(QLatin1String("^") + QRegularExpression::escape(prefix()))),
-                                      QString());
-    if (!suffix().isEmpty())
-        parseText = parseText.replace(QRegularExpression(
-                                          QString(QRegularExpression::escape(suffix())) + QLatin1String("$")),
-                                      QString());
-
-    return ExpressionEvaluator::instance().evaluate(parseText);
-}
+{}
 
 double ExpressionDoubleSpinBox::valueFromText(const QString &text) const
 {
-    double originalValue = value();
-    QJSValue result = this->evaluate(text);
+    const QJSValue result = evaluate(this, text);
     if (result.isNumber())
         return result.toNumber();
 
-    return originalValue;
+    return value();
 }
 
-QValidator::State ExpressionDoubleSpinBox::validate(QString &text, int &pos) const
+QValidator::State ExpressionDoubleSpinBox::validate(QString &/*text*/, int &/*pos*/) const
 {
     return QValidator::Acceptable;
 }

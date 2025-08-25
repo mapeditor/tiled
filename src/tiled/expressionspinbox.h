@@ -20,10 +20,9 @@
 
 #pragma once
 
-#include <QImage>
 #include <QJSValue>
 #include <QObject>
-#include <qspinbox.h>
+#include <QSpinBox>
 
 namespace Tiled {
 
@@ -31,44 +30,47 @@ namespace Tiled {
  * @brief The ExpressionEvaluator class can evaluate simple Javascript expressions
  *        that do not require access to the Tiled scripting API, nor the Tiled project.
  */
-class ExpressionEvaluator : public QObject {
+class ExpressionEvaluator : public QObject
+{
     Q_OBJECT
 
 public:
-    QJSValue evaluate(const QString &program);
     static ExpressionEvaluator &instance();
     static void deleteInstance();
 
+    QJSValue evaluate(const QString &program);
+
 private:
+    ExpressionEvaluator();
+
     QJSEngine *mEngine = nullptr;
     static ExpressionEvaluator *mInstance;
-
 };
 
-class ExpressionSpinBox : public QSpinBox {
+
+class ExpressionSpinBox : public QSpinBox
+{
     Q_OBJECT
 
 public:
     ExpressionSpinBox(QWidget *parent);
 
 protected:
-    QJSValue evaluate(const QString &text) const;
     int valueFromText(const QString &text) const override;
     QValidator::State validate(QString &text, int &pos) const override;
-
 };
 
-class ExpressionDoubleSpinBox : public QDoubleSpinBox {
+
+class ExpressionDoubleSpinBox : public QDoubleSpinBox
+{
     Q_OBJECT
 
 public:
     ExpressionDoubleSpinBox(QWidget *parent);
 
 protected:
-    QJSValue evaluate(const QString &text) const;
     double valueFromText(const QString &text) const override;
     QValidator::State validate(QString &text, int &pos) const override;
-
 };
 
 } // namespace Tiled
