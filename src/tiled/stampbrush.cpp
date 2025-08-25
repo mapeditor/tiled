@@ -317,7 +317,7 @@ void StampBrush::beginCapture()
     mBrushState = BrushState::Capture;
     mCaptureStampHelper.beginCapture(tilePosition());
 
-    setStamp(TileStamp());
+    updatePreview();
 }
 
 void StampBrush::endCapture()
@@ -327,12 +327,12 @@ void StampBrush::endCapture()
 
     mBrushState = BrushState::Free;
 
-    const bool cut = mModifiers & Qt::ShiftModifier;
-    TileStamp stamp = mCaptureStampHelper.endCapture(*mapDocument(), tilePosition(), cut);
-    if (!stamp.isEmpty())
-        emit stampChanged(stamp);
-    else
-        updatePreview();
+    const bool allLayers = false;
+    const bool mergeable = false;
+    mapDocument()->eraseTileLayers(mCaptureStampHelper.capturedArea(tilePosition()),
+                                   allLayers, mergeable);
+
+    updatePreview();
 }
 
 /**
