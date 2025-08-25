@@ -173,8 +173,8 @@ signals:
 private:
     QLabel *m_widthLabel;
     QLabel *m_heightLabel;
-    ExpressionDoubleSpinBox *m_widthSpinBox;
-    ExpressionDoubleSpinBox *m_heightSpinBox;
+    DoubleSpinBox *m_widthSpinBox;
+    DoubleSpinBox *m_heightSpinBox;
 };
 
 /**
@@ -225,8 +225,8 @@ signals:
 private:
     QLabel *m_xLabel;
     QLabel *m_yLabel;
-    ExpressionDoubleSpinBox *m_xSpinBox;
-    ExpressionDoubleSpinBox *m_ySpinBox;
+    DoubleSpinBox *m_xSpinBox;
+    DoubleSpinBox *m_ySpinBox;
 };
 
 /**
@@ -281,10 +281,10 @@ private:
     QLabel *m_yLabel;
     QLabel *m_widthLabel;
     QLabel *m_heightLabel;
-    ExpressionDoubleSpinBox *m_xSpinBox;
-    ExpressionDoubleSpinBox *m_ySpinBox;
-    ExpressionDoubleSpinBox *m_widthSpinBox;
-    ExpressionDoubleSpinBox *m_heightSpinBox;
+    DoubleSpinBox *m_xSpinBox;
+    DoubleSpinBox *m_ySpinBox;
+    DoubleSpinBox *m_widthSpinBox;
+    DoubleSpinBox *m_heightSpinBox;
 };
 
 /**
