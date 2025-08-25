@@ -190,8 +190,7 @@ QWidget *StringProperty::createEditor(QWidget *parent)
 
     auto syncEditor = [=] {
         // Avoid affecting cursor position when the text is the same
-        const QString v = value();
-        if (editor->text() != v)
+        if (const auto v = value(); editor->text() != v)
             editor->setText(v);
     };
     syncEditor();
@@ -282,7 +281,8 @@ QWidget *IntProperty::createEditor(QWidget *parent)
 
     connect(this, &Property::valueChanged, spinBox, [this, spinBox] {
         const QSignalBlocker blocker(spinBox);
-        spinBox->setValue(value());
+        if (const auto v = value(); spinBox->value() != v)
+            spinBox->setValue(v);
     });
     connect(spinBox, &SpinBox::valueChanged, this, &IntProperty::setValue);
 
@@ -298,7 +298,8 @@ QWidget *FloatProperty::createEditor(QWidget *parent)
 
     auto syncEditor = [=] {
         const QSignalBlocker blocker(editor);
-        editor->setValue(value());
+        if (const auto v = value(); editor->value() != v)
+            editor->setValue(v);
     };
     syncEditor();
 
@@ -357,7 +358,8 @@ QWidget *PointProperty::createEditor(QWidget *parent)
 
     auto syncEditor = [this, editor] {
         const QSignalBlocker blocker(editor);
-        editor->setValue(value());
+        if (const auto v = value(); editor->value() != v)
+            editor->setValue(v);
     };
     syncEditor();
 
@@ -376,7 +378,8 @@ QWidget *PointFProperty::createEditor(QWidget *parent)
 
     auto syncEditor = [this, editor] {
         const QSignalBlocker blocker(editor);
-        editor->setValue(value());
+        if (const auto v = value(); editor->value() != v)
+            editor->setValue(v);
     };
     syncEditor();
 
@@ -396,7 +399,8 @@ QWidget *SizeProperty::createEditor(QWidget *parent)
 
     auto syncEditor = [this, editor] {
         const QSignalBlocker blocker(editor);
-        editor->setValue(value());
+        if (const auto v = value(); editor->value() != v)
+            editor->setValue(v);
     };
     syncEditor();
 
@@ -413,7 +417,8 @@ QWidget *SizeFProperty::createEditor(QWidget *parent)
     auto editor = new SizeFEdit(parent);
     auto syncEditor = [this, editor] {
         const QSignalBlocker blocker(editor);
-        editor->setValue(value());
+        if (const auto v = value(); editor->value() != v)
+            editor->setValue(v);
     };
     syncEditor();
 
@@ -432,7 +437,8 @@ QWidget *RectProperty::createEditor(QWidget *parent)
 
     auto syncEditor = [this, editor] {
         const QSignalBlocker blocker(editor);
-        editor->setValue(value());
+        if (const auto v = value(); editor->value() != v)
+            editor->setValue(v);
     };
     syncEditor();
 
@@ -459,7 +465,8 @@ QWidget *RectFProperty::createEditor(QWidget *parent)
     auto editor = new RectFEdit(parent);
     auto syncEditor = [this, editor] {
         const QSignalBlocker blocker(editor);
-        editor->setValue(value());
+        if (const auto v = value(); editor->value() != v)
+            editor->setValue(v);
     };
     syncEditor();
 
