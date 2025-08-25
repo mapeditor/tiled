@@ -390,6 +390,7 @@ SharedTileset MapReaderPrivate::readTileset()
         const QString className = atts.value(QLatin1String("class")).toString();
         const int tileSpacing = atts.value(QLatin1String("spacing")).toInt();
         const int margin = atts.value(QLatin1String("margin")).toInt();
+        const bool atlas = atts.value(QLatin1String("atlas")).toInt();
         const int columns = atts.value(QLatin1String("columns")).toInt();
         const QString backgroundColor = atts.value(QLatin1String("backgroundcolor")).toString();
         const QString alignment = atts.value(QLatin1String("objectalignment")).toString();
@@ -397,7 +398,7 @@ SharedTileset MapReaderPrivate::readTileset()
         const QString fillMode = atts.value(QLatin1String("fillmode")).toString();
 
         tileset = Tileset::create(name, tileWidth, tileHeight,
-                                  tileSpacing, margin);
+                                  tileSpacing, margin, atlas);
 
         tileset->setClassName(className);
         tileset->setColumnCount(columns);
