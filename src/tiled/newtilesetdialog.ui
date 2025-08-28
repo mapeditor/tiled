@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="sizeConstraint">
-    <enum>QLayout::SetMinAndMaxSize</enum>
+    <enum>QLayout::SizeConstraint::SetMinAndMaxSize</enum>
    </property>
    <item>
     <widget class="QGroupBox" name="tilesetGroupBox">
@@ -79,7 +79,7 @@
       <item row="1" column="2">
        <spacer name="horizontalSpacer_4">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -151,7 +151,7 @@
       <item row="1" column="4">
        <spacer name="horizontalSpacer_2">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -164,7 +164,7 @@
       <item row="2" column="0" colspan="6">
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="1" column="1">
-         <widget class="QSpinBox" name="tileHeight">
+         <widget class="Tiled::ExpressionSpinBox" name="tileHeight">
           <property name="suffix">
            <string> px</string>
           </property>
@@ -189,10 +189,10 @@
         <item row="1" column="2">
          <spacer name="horizontalSpacer">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeType">
-           <enum>QSizePolicy::Preferred</enum>
+           <enum>QSizePolicy::Policy::Preferred</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -203,7 +203,7 @@
          </spacer>
         </item>
         <item row="0" column="1">
-         <widget class="QSpinBox" name="tileWidth">
+         <widget class="Tiled::ExpressionSpinBox" name="tileWidth">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -232,7 +232,7 @@
          </widget>
         </item>
         <item row="0" column="4">
-         <widget class="QSpinBox" name="margin">
+         <widget class="Tiled::ExpressionSpinBox" name="margin">
           <property name="suffix">
            <string> px</string>
           </property>
@@ -248,7 +248,7 @@
          </widget>
         </item>
         <item row="1" column="4">
-         <widget class="QSpinBox" name="spacing">
+         <widget class="Tiled::ExpressionSpinBox" name="spacing">
           <property name="suffix">
            <string> px</string>
           </property>
@@ -283,7 +283,7 @@
         <item row="1" column="5">
          <spacer name="horizontalSpacer_3">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -321,10 +321,10 @@
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
      </property>
     </widget>
    </item>
@@ -335,6 +335,11 @@
    <class>Tiled::ColorButton</class>
    <extends>QToolButton</extends>
    <header>colorbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Tiled::ExpressionSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>expressionspinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

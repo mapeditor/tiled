@@ -22,6 +22,7 @@
 #include "scriptdialog.h"
 
 #include "colorbutton.h"
+#include "expressionspinbox.h"
 #include "fileedit.h"
 #include "mainwindow.h"
 #include "scriptimage.h"
@@ -31,7 +32,6 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QCoreApplication>
-#include <QDoubleSpinBox>
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QJSEngine>
@@ -228,7 +228,7 @@ QWidget *ScriptDialog::addImage(const QString &labelText, Tiled::ScriptImage *im
 
 QWidget *ScriptDialog::addNumberInput(const QString &labelText)
 {
-    return addDialogWidget(new QDoubleSpinBox(this), labelText);
+    return addDialogWidget(new ExpressionDoubleSpinBox(this), labelText);
 }
 
 QWidget *ScriptDialog::addSlider(const QString &labelText)
