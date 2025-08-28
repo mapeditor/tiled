@@ -97,18 +97,17 @@ WangBrush::WangBrush(QObject *parent)
     mToggleFillFullTiles = new QAction(this);
     mToggleFillFullTiles->setCheckable(true);
     mToggleFillFullTiles->setIcon(fillFullTilesIcon);
-    mToggleFillFullTiles->setText(tr("Fill Full Tiles"));
 
     ActionManager::registerAction(mToggleFillFullTiles, "ToggleFillFullTiles");
     connect(mToggleFillFullTiles, &QAction::triggered, this, [this](bool checked) {
         mIsTileMode = mIsTileModeDefault = checked;
         stateChanged();
     });
+
+    languageChanged();
 }
 
-WangBrush::~WangBrush()
-{
-}
+WangBrush::~WangBrush() = default;
 
 void WangBrush::activate(MapScene *scene)
 {
@@ -136,7 +135,9 @@ void WangBrush::mousePressed(QGraphicsSceneMouseEvent *event)
                 break;
             }
             return;
-        } else if (event->button() == Qt::RightButton && event->modifiers() == Qt::NoModifier) {
+        }
+
+        if (event->button() == Qt::RightButton && event->modifiers() == Qt::NoModifier) {
             switch (mBrushBehavior) {
             case Free:
                 captureHoverColor();

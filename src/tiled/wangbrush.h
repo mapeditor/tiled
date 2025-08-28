@@ -49,7 +49,7 @@ private:
     QRegion mInvalidTiles;
 };
 
-class WangBrush : public AbstractTileTool
+class WangBrush final : public AbstractTileTool
 {
     Q_OBJECT
 
