@@ -69,13 +69,13 @@ AbstractTileSelectionTool::AbstractTileSelectionTool(Id id,
     mActionGroup->addAction(mIntersect);
 
     connect(mReplace, &QAction::triggered,
-            [this] { mSelectionMode = mDefaultMode = Replace; });
+            this, [this] { mSelectionMode = mDefaultMode = Replace; });
     connect(mAdd, &QAction::triggered,
-            [this] { mSelectionMode = mDefaultMode = Add; });
+            this, [this] { mSelectionMode = mDefaultMode = Add; });
     connect(mSubtract, &QAction::triggered,
-            [this] { mSelectionMode = mDefaultMode = Subtract; });
+            this, [this] { mSelectionMode = mDefaultMode = Subtract; });
     connect(mIntersect, &QAction::triggered,
-            [this] { mSelectionMode = mDefaultMode = Intersect; });
+            this, [this] { mSelectionMode = mDefaultMode = Intersect; });
 
     AbstractTileSelectionTool::languageChanged();
 }

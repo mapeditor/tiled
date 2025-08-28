@@ -121,6 +121,7 @@ private:
     int mCurrentColor = 0;
     BrushMode mBrushMode = Idle;
     bool mIsTileMode = false;
+    bool mIsTileModeDefault = false;
     bool mRotationalSymmetry = false;
     bool mLineStartSet = false;
     BrushBehavior mBrushBehavior = Free;

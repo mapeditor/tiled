@@ -100,8 +100,8 @@ WangBrush::WangBrush(QObject *parent)
     mToggleFillFullTiles->setText(tr("Fill Full Tiles"));
 
     ActionManager::registerAction(mToggleFillFullTiles, "ToggleFillFullTiles");
-    connect(mToggleFillFullTiles, &QAction::toggled, this, [this](bool checked) {
-        mIsTileMode = checked;
+    connect(mToggleFillFullTiles, &QAction::triggered, this, [this](bool checked) {
+        mIsTileMode = mIsTileModeDefault = checked;
         stateChanged();
     });
 }
@@ -168,7 +168,7 @@ void WangBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
 void WangBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
     const bool isControlPressed = modifiers & Qt::ControlModifier;
-    const bool isTileMode = isControlPressed != mToggleFillFullTiles->isChecked();
+    const bool isTileMode = isControlPressed != mIsTileModeDefault;
     const bool rotationalSymmetry = modifiers & Qt::AltModifier;
     const bool lineMode = modifiers & Qt::ShiftModifier;
 
@@ -181,6 +181,7 @@ void WangBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 
     if (mIsTileMode != isTileMode) {
         mIsTileMode = isTileMode;
+        mToggleFillFullTiles->setChecked(mIsTileMode);
         changed = true;
     }
 
