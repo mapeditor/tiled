@@ -24,44 +24,21 @@
 
 namespace Tiled {
 
-ExpressionEvaluator *ExpressionEvaluator::mInstance;
-
-ExpressionEvaluator &ExpressionEvaluator::instance()
-{
-    if (!mInstance)
-        mInstance = new ExpressionEvaluator;
-    return *mInstance;
-}
+QJSEngine *ExpressionEvaluator::mEngine;
 
 void ExpressionEvaluator::deleteInstance()
 {
-    delete mInstance;
-    mInstance = nullptr;
+    delete mEngine;
+    mEngine = nullptr;
 }
 
 QJSValue ExpressionEvaluator::evaluate(const QString &program)
 {
+    if (!mEngine)
+        mEngine = new QJSEngine;
     return mEngine->evaluate(program);
 }
 
-ExpressionEvaluator::ExpressionEvaluator()
-    : mEngine(new QJSEngine(this))
-{}
-
-
-template<typename SpinBox>
-static QJSValue evaluate(SpinBox *spinBox, const QString &text)
-{
-    QString parseText = text;
-
-    if (const QString p = spinBox->prefix(); !p.isEmpty() && parseText.startsWith(p))
-        parseText.remove(0, p.length());
-
-    if (const QString s = spinBox->suffix(); !s.isEmpty() && parseText.endsWith(s))
-        parseText.chop(s.length());
-
-    return ExpressionEvaluator::instance().evaluate(parseText);
-}
 
 // ExpressionSpinBox
 
@@ -71,7 +48,7 @@ ExpressionSpinBox::ExpressionSpinBox(QWidget *parent)
 
 int ExpressionSpinBox::valueFromText(const QString &text) const
 {
-    const QJSValue result = evaluate(this, text);
+    const QJSValue result = ExpressionEvaluator::evaluate(text);
     if (result.isNumber())
         return result.toNumber();
 
@@ -83,6 +60,31 @@ QValidator::State ExpressionSpinBox::validate(QString &/*text*/, int &/*pos*/) c
     return QValidator::Acceptable;
 }
 
+void ExpressionSpinBox::focusInEvent(QFocusEvent *event)
+{
+    // Remember current prefix/suffix and remove them
+    mPrefix = prefix();
+    mSuffix = suffix();
+    if (!mPrefix.isEmpty())
+        setPrefix(QString());
+    if (!mSuffix.isEmpty())
+        setSuffix(QString());
+
+    QSpinBox::focusInEvent(event);
+}
+
+void ExpressionSpinBox::focusOutEvent(QFocusEvent *event)
+{
+    QSpinBox::focusOutEvent(event);
+
+    // Restore any previously removed prefix/suffix
+    if (!mPrefix.isEmpty())
+        setPrefix(mPrefix);
+    if (!mSuffix.isEmpty())
+        setSuffix(mSuffix);
+    mPrefix.clear();
+    mSuffix.clear();
+}
 
 // ExpressionDoubleSpinBox
 
@@ -92,7 +94,7 @@ ExpressionDoubleSpinBox::ExpressionDoubleSpinBox(QWidget *parent)
 
 double ExpressionDoubleSpinBox::valueFromText(const QString &text) const
 {
-    const QJSValue result = evaluate(this, text);
+    const QJSValue result = ExpressionEvaluator::evaluate(text);
     if (result.isNumber())
         return result.toNumber();
 
@@ -102,6 +104,32 @@ double ExpressionDoubleSpinBox::valueFromText(const QString &text) const
 QValidator::State ExpressionDoubleSpinBox::validate(QString &/*text*/, int &/*pos*/) const
 {
     return QValidator::Acceptable;
+}
+
+void ExpressionDoubleSpinBox::focusInEvent(QFocusEvent *event)
+{
+    // Remember current prefix/suffix and remove them
+    mPrefix = prefix();
+    mSuffix = suffix();
+    if (!mPrefix.isEmpty())
+        setPrefix(QString());
+    if (!mSuffix.isEmpty())
+        setSuffix(QString());
+
+    QDoubleSpinBox::focusInEvent(event);
+}
+
+void ExpressionDoubleSpinBox::focusOutEvent(QFocusEvent *event)
+{
+    QDoubleSpinBox::focusOutEvent(event);
+
+    // Restore any previously removed prefix/suffix
+    if (!mPrefix.isEmpty())
+        setPrefix(mPrefix);
+    if (!mSuffix.isEmpty())
+        setSuffix(mSuffix);
+    mPrefix.clear();
+    mSuffix.clear();
 }
 
 } // namespace Tiled
