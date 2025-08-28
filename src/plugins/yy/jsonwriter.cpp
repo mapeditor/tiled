@@ -26,8 +26,6 @@
 #include <QJsonValue>
 #include <QLocale>
 
-#include <cmath>
-
 namespace Yy {
 
 JsonWriter::JsonWriter(QIODevice *device)
@@ -141,7 +139,7 @@ void JsonWriter::writeValue(const QJsonValue &value)
         keys.sort(Qt::CaseInsensitive);
 
         writeStartObject();
-        for (const auto &key : keys) {
+        for (const auto &key : std::as_const(keys)) {
             const auto value = object.value(key);
 
             const bool writingTiles = key == QLatin1String("tiles");
