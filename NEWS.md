@@ -1,6 +1,6 @@
 ### Unreleased
 
-* Enabled entering Javascript expressions to modify the values in number inputs throughout the app, including in scripting Dialogs (with dogboydog, #4234)
+* Allow changing the values of number inputs using expressions (with dogboydog, #4234)
 * Added support for SVG 1.2 / CSS blending modes to layers (#3932)
 * Added export plugin for Remixed Dungeon (by Mikhael Danilov, #4158)
 * Added "World > World Properties" menu action (with dogboydog, #4190)

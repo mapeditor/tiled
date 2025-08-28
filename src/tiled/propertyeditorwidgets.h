@@ -26,7 +26,6 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPointer>
-#include <QSpinBox>
 
 class QAction;
 class QLabel;
