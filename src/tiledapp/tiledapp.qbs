@@ -10,6 +10,7 @@ TiledQtGuiApplication {
 
     Depends { name: "libtilededitor" }
     Depends { name: "ib"; condition: qbs.targetOS.contains("macos") }
+    Depends { name: "codesign"; condition: qbs.targetOS.contains("macos") }
     Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") && Qt.core.versionMajor >= 6 }
     Depends { name: "texttemplate"; condition: qbs.targetOS.contains("windows") }
 
@@ -43,6 +44,7 @@ TiledQtGuiApplication {
         condition: qbs.targetOS.contains("macos")
         cpp.frameworks: ["Foundation"]
         bundle.identifierPrefix: "org.mapeditor"
+        codesign.teamIdentifier: "QL3K47J68L"
         ib.appIconName: "tiled-icon-mac"
         targetName: "Tiled"
     }
@@ -72,10 +74,11 @@ TiledQtGuiApplication {
     }
 
     Group {
-        name: "macOS (Info.plist and icons)"
+        name: "macOS (Info.plist, icons and entitlements)"
         condition: qbs.targetOS.contains("macos")
         files: [
             "Info.plist",
+            "app.entitlements",
             "images/tiled.xcassets",
         ]
     }
