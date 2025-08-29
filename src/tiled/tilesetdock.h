@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include "filteredit.h"
 #include "tileset.h"
 
 #include <QAbstractItemModel>
@@ -175,11 +176,11 @@ private:
     void deleteTilesetView(int index);
     void moveTilesetView(int from, int to);
     void setupTilesetModel(TilesetView *view, TilesetDocument *tilesetDocument);
-
     MapDocument *mMapDocument = nullptr;
 
     QList<TilesetDocument *> mTilesetDocuments;
     TilesetDocumentsFilterModel *mTilesetDocumentsFilterModel;
+    FilterEdit *mTilesetFilterEdit;
 
     QTabBar *mTabBar;
     QStackedWidget *mSuperViewStack;

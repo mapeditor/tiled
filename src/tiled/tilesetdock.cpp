@@ -166,6 +166,7 @@ static void removeTileReferences(MapDocument *mapDocument,
 TilesetDock::TilesetDock(QWidget *parent)
     : QDockWidget(parent)
     , mTilesetDocumentsFilterModel(new TilesetDocumentsFilterModel(this))
+    , mTilesetFilterEdit(new FilterEdit)
     , mTabBar(new TabBar)
     , mSuperViewStack(new QStackedWidget)
     , mViewStack(new QStackedWidget)
@@ -192,6 +193,9 @@ TilesetDock::TilesetDock(QWidget *parent)
     ActionManager::registerAction(mSelectNextTileset, "SelectNextTileset");
     ActionManager::registerAction(mSelectPreviousTileset, "SelectPreviousTileset");
 
+    mTilesetFilterEdit->setFilteredView(mTabBar);
+    connect(mTilesetFilterEdit, &QLineEdit::textChanged,
+            mTilesetDocumentsFilterModel, &TilesetDocumentsFilterModel::setFilterText);
     mTabBar->setUsesScrollButtons(true);
     mTabBar->setExpanding(false);
     mTabBar->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -211,6 +215,7 @@ TilesetDock::TilesetDock(QWidget *parent)
     QVBoxLayout *vertical = new QVBoxLayout(w);
     vertical->setSpacing(0);
     vertical->setContentsMargins(0, 0, 0, 0);
+    vertical->addWidget(mTilesetFilterEdit);
     vertical->addLayout(horizontal);
     vertical->addWidget(mSuperViewStack);
 
@@ -861,6 +866,7 @@ void TilesetDock::retranslateUi()
     mSelectNextTileset->setText(tr("Select Next Tileset"));
     mSelectPreviousTileset->setText(tr("Select Previous Tileset"));
     mDynamicWrappingToggle->setText(tr("Dynamically Wrap Tiles"));
+    mTilesetFilterEdit->setPlaceholderText(tr("Filter"));
 }
 
 void TilesetDock::onTilesetRowsInserted(const QModelIndex &parent, int first, int last)
