@@ -194,6 +194,12 @@ TilesetDock::TilesetDock(QWidget *parent)
     ActionManager::registerAction(mSelectPreviousTileset, "SelectPreviousTileset");
 
     mTilesetFilterEdit->setFilteredView(mTabBar);
+
+    Preferences *prefs = Preferences::instance();
+    mTilesetFilterEdit->setVisible(prefs->showTilesetFilter());
+    connect(prefs, &Preferences::showTilesetFilterChanged,
+            this, [this] (bool checked) { mTilesetFilterEdit->setVisible(checked); }
+    );
     connect(mTilesetFilterEdit, &QLineEdit::textChanged,
             mTilesetDocumentsFilterModel, &TilesetDocumentsFilterModel::setFilterText);
     mTabBar->setUsesScrollButtons(true);
@@ -1229,6 +1235,7 @@ void TilesetDock::refreshTilesetMenu()
 
     mTilesetMenu->addSeparator();
     mTilesetMenu->addAction(ActionManager::action("AddExternalTileset"));
+    mTilesetMenu->addAction(ActionManager::action("ShowTilesetFilter"));
 }
 
 void TilesetDock::swapTiles(Tile *tileA, Tile *tileB)
