@@ -1234,8 +1234,8 @@ void TilesetDock::refreshTilesetMenu()
     }
 
     mTilesetMenu->addSeparator();
-    mTilesetMenu->addAction(ActionManager::action("AddExternalTileset"));
     mTilesetMenu->addAction(ActionManager::action("ShowTilesetFilter"));
+    mTilesetMenu->addAction(ActionManager::action("AddExternalTileset"));
 }
 
 void TilesetDock::swapTiles(Tile *tileA, Tile *tileB)
