@@ -122,6 +122,12 @@ void TilesetDocumentsFilterModel::setMapDocument(MapDocument *mapDocument)
     invalidateFilter();
 }
 
+void TilesetDocumentsFilterModel::setFilterText(QString filterText)
+{
+    mFilterText = filterText.trimmed();
+    invalidateFilter();
+}
+
 bool TilesetDocumentsFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
     const auto sm = sourceModel();
@@ -130,8 +136,10 @@ bool TilesetDocumentsFilterModel::filterAcceptsRow(int sourceRow, const QModelIn
     const TilesetDocument *tilesetDocument = variant.value<TilesetDocument *>();
     Q_ASSERT(tilesetDocument);
 
-    const bool accepted = !tilesetDocument->isEmbedded()
-            || tilesetDocument->mapDocuments().first() == mMapDocument;
+    const bool accepted = (!tilesetDocument->isEmbedded()
+             || tilesetDocument->mapDocuments().first() == mMapDocument)
+             && (mFilterText.isEmpty() || tilesetDocument->tileset()->name().contains(mFilterText, Qt::CaseInsensitive));
+
     return accepted;
 }
 
