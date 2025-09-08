@@ -3261,7 +3261,7 @@ declare class TileMap extends Asset {
     | typeof TileMap.CSV;
 
   /**
-   * The chunk size used when saving tile layers of this map. This is only used when saving infinite maps.
+   * The chunk size used when saving tile layers of infinite maps.
    *
    * @since 1.12
    */
