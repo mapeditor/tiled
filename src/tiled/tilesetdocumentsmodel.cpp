@@ -90,7 +90,7 @@ void TilesetDocumentsModel::tilesetNameChanged(Tileset *tileset)
 
 void TilesetDocumentsModel::tilesetFileNameChanged()
 {
-    TilesetDocument *tilesetDocument = static_cast<TilesetDocument*>(sender());
+    auto tilesetDocument = static_cast<TilesetDocument*>(sender());
     for (int i = 0; i < mTilesetDocuments.size(); ++i) {
         if (mTilesetDocuments.at(i) == tilesetDocument) {
             const QModelIndex dataIndex = index(i, 0, QModelIndex());
@@ -122,8 +122,11 @@ void TilesetDocumentsFilterModel::setMapDocument(MapDocument *mapDocument)
     invalidateFilter();
 }
 
-void TilesetDocumentsFilterModel::setFilterText(QString filterText)
+void TilesetDocumentsFilterModel::setFilterText(const QString &filterText)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
+    beginFilterChange();
+#endif
     mFilterText = filterText.trimmed();
     invalidateFilter();
 }

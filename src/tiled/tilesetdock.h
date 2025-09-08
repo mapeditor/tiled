@@ -176,6 +176,7 @@ private:
     void deleteTilesetView(int index);
     void moveTilesetView(int from, int to);
     void setupTilesetModel(TilesetView *view, TilesetDocument *tilesetDocument);
+
     MapDocument *mMapDocument = nullptr;
 
     QList<TilesetDocument *> mTilesetDocuments;
@@ -202,6 +203,7 @@ private:
     QToolButton *mTilesetMenuButton;
     QMenu *mTilesetMenu; //opens on click of mTilesetMenu
     QActionGroup *mTilesetActionGroup;
+    QAction *mShowTilesetFilter;
 
     QComboBox *mZoomComboBox;
 

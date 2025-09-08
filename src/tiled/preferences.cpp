@@ -145,12 +145,6 @@ bool Preferences::showTileObjectOutlines() const
     return get("Interface/ShowTileObjectOutlines", false);
 }
 
-bool Preferences::showTilesetFilter() const
-{
-    return get("Interface/ShowTilesetFilter", true);
-}
-
-
 bool Preferences::showTileAnimations() const
 {
     return get("Interface/ShowTileAnimations", true);
@@ -336,12 +330,6 @@ void Preferences::setShowTileCollisionShapes(bool enabled)
 {
     setValue(QLatin1String("Interface/ShowTileCollisionShapes"), enabled);
     emit showTileCollisionShapesChanged(enabled);
-}
-
-void Preferences::setShowTilesetFilter(bool enabled)
-{
-    setValue(QLatin1String("Interface/ShowTilesetFilter"), enabled);
-    emit showTilesetFilterChanged(enabled);
 }
 
 void Preferences::setShowObjectReferences(bool enabled)

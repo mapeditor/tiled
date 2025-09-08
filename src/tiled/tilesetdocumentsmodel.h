@@ -51,6 +51,7 @@ public:
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role) const override;
+
     const QVector<TilesetDocumentPtr> &tilesetDocuments() const;
 
     bool contains(TilesetDocument *tilesetDocument) const;
@@ -98,7 +99,8 @@ class TilesetDocumentsFilterModel : public QSortFilterProxyModel
 {
 public:
     TilesetDocumentsFilterModel(QObject *parent = nullptr);
-    void setFilterText(QString filterText);
+
+    void setFilterText(const QString &filterText);
     void setMapDocument(MapDocument *mapDocument);
 
 protected:

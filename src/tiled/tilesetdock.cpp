@@ -74,6 +74,10 @@
 
 using namespace Tiled;
 
+namespace preferences {
+static Preference<bool> showTilesetFilter { "Interface/ShowTilesetFilter" };
+} // namespace preferences
+
 namespace {
 
 class NoTilesetWidget : public QWidget
@@ -183,6 +187,7 @@ TilesetDock::TilesetDock(QWidget *parent)
     , mTilesetMenuButton(new TilesetMenuButton(this))
     , mTilesetMenu(new QMenu(this))
     , mTilesetActionGroup(new QActionGroup(this))
+    , mShowTilesetFilter(new QAction(this))
 {
     setObjectName(QLatin1String("TilesetDock"));
 
@@ -194,12 +199,15 @@ TilesetDock::TilesetDock(QWidget *parent)
     ActionManager::registerAction(mSelectPreviousTileset, "SelectPreviousTileset");
 
     mTilesetFilterEdit->setFilteredView(mTabBar);
+    mTilesetFilterEdit->setVisible(preferences::showTilesetFilter);
 
-    Preferences *prefs = Preferences::instance();
-    mTilesetFilterEdit->setVisible(prefs->showTilesetFilter());
-    connect(prefs, &Preferences::showTilesetFilterChanged,
-            this, [this] (bool checked) { mTilesetFilterEdit->setVisible(checked); }
-    );
+    mShowTilesetFilter->setCheckable(true);
+    mShowTilesetFilter->setChecked(preferences::showTilesetFilter);
+    connect(mShowTilesetFilter, &QAction::toggled,
+            this, [this] (bool checked) {
+        preferences::showTilesetFilter = checked;
+        mTilesetFilterEdit->setVisible(checked);
+    });
     connect(mTilesetFilterEdit, &QLineEdit::textChanged,
             mTilesetDocumentsFilterModel, &TilesetDocumentsFilterModel::setFilterText);
     mTabBar->setUsesScrollButtons(true);
@@ -309,9 +317,7 @@ TilesetDock::TilesetDock(QWidget *parent)
     updateActions();
 }
 
-TilesetDock::~TilesetDock()
-{
-}
+TilesetDock::~TilesetDock() = default;
 
 void TilesetDock::setMapDocument(MapDocument *mapDocument)
 {
@@ -873,6 +879,7 @@ void TilesetDock::retranslateUi()
     mSelectPreviousTileset->setText(tr("Select Previous Tileset"));
     mDynamicWrappingToggle->setText(tr("Dynamically Wrap Tiles"));
     mTilesetFilterEdit->setPlaceholderText(tr("Filter"));
+    mShowTilesetFilter->setText(tr("Show Tileset Filter"));
 }
 
 void TilesetDock::onTilesetRowsInserted(const QModelIndex &parent, int first, int last)
@@ -1234,7 +1241,7 @@ void TilesetDock::refreshTilesetMenu()
     }
 
     mTilesetMenu->addSeparator();
-    mTilesetMenu->addAction(ActionManager::action("ShowTilesetFilter"));
+    mTilesetMenu->addAction(mShowTilesetFilter);
     mTilesetMenu->addAction(ActionManager::action("AddExternalTileset"));
 }
 
