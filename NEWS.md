@@ -6,6 +6,7 @@
 * Added export plugin for Remixed Dungeon (by Mikhael Danilov, #4158)
 * Added "World > World Properties" menu action (with dogboydog, #4190)
 * Scripting: Added API for custom property types (with dogboydog, #3971)
+* Scripting: Added TileMap.chunkSize and TileMap.compressionLevel properties
 * AutoMapping: Don't match rules based on empty input indexes
 * AutoMapping: Optimized reloading of rule maps and load rule maps on-demand
 * Workaround tileset view layout regression in Qt 6.9

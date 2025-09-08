@@ -3261,6 +3261,24 @@ declare class TileMap extends Asset {
     | typeof TileMap.CSV;
 
   /**
+   * The chunk size used when saving tile layers of this map. This is only used when saving infinite maps.
+   *
+   * @since 1.12
+   */
+  chunkSize: size;
+
+  /**
+   * Compression level used for compressed tile layer data.
+   *
+   * For Zlib/Gzip, valid range is usually -1..9 (-1 uses the default level).
+   * For Zstandard, higher values increase compression at the cost of speed.
+   * Values outside the supported range may be clamped by the underlying library.
+   *
+   * @since 1.12
+   */
+  compressionLevel: number;
+
+  /**
    * Number of top-level layers the map has.
    */
   readonly layerCount: number;

@@ -54,6 +54,8 @@ class EditableMap final : public EditableAsset
     Q_PROPERTY(RenderOrder renderOrder READ renderOrder WRITE setRenderOrder)
     Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
     Q_PROPERTY(LayerDataFormat layerDataFormat READ layerDataFormat WRITE setLayerDataFormat)
+    Q_PROPERTY(QSize chunkSize READ chunkSize WRITE setChunkSize)
+    Q_PROPERTY(int compressionLevel READ compressionLevel WRITE setCompressionLevel)
     Q_PROPERTY(int layerCount READ layerCount)
     Q_PROPERTY(QList<QObject*> tilesets READ tilesets)
     Q_PROPERTY(QList<QObject*> layers READ layers)
@@ -130,6 +132,8 @@ public:
     RenderOrder renderOrder() const;
     QColor backgroundColor() const;
     LayerDataFormat layerDataFormat() const;
+    QSize chunkSize() const;
+    int compressionLevel() const;
     int layerCount() const;
     QList<QObject*> tilesets() const;
     QList<QObject*> layers();
@@ -193,6 +197,8 @@ public:
     void setRenderOrder(RenderOrder value);
     void setBackgroundColor(const QColor &value);
     void setLayerDataFormat(LayerDataFormat value);
+    void setChunkSize(const QSize &value);
+    void setCompressionLevel(int value);
     void setCurrentLayer(EditableLayer *layer);
     void setSelectedLayers(const QList<QObject*> &layers);
     void setSelectedObjects(const QList<QObject*> &objects);
@@ -306,6 +312,16 @@ inline QColor EditableMap::backgroundColor() const
 inline EditableMap::LayerDataFormat EditableMap::layerDataFormat() const
 {
     return static_cast<LayerDataFormat>(map()->layerDataFormat());
+}
+
+inline QSize EditableMap::chunkSize() const
+{
+    return map()->chunkSize();
+}
+
+inline int EditableMap::compressionLevel() const
+{
+    return map()->compressionLevel();
 }
 
 inline int EditableMap::layerCount() const
