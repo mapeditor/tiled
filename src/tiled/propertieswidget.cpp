@@ -99,8 +99,8 @@ template<> EnumData enumData<Map::Orientation>()
 template<> EnumData enumData<Map::StaggerAxis>()
 {
     return {{
-        QCoreApplication::translate("StaggerAxis", "X"),
-        QCoreApplication::translate("StaggerAxis", "Y")
+        QCoreApplication::translate("StaggerAxis", "X (Flat-top)"),
+        QCoreApplication::translate("StaggerAxis", "Y (Pointy-top)")
     }};
 }
 
