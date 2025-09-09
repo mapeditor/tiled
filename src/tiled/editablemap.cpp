@@ -599,6 +599,22 @@ void EditableMap::setLayerDataFormat(LayerDataFormat value)
         map()->setLayerDataFormat(static_cast<Map::LayerDataFormat>(value));
 }
 
+void EditableMap::setChunkSize(const QSize &value)
+{
+    if (auto doc = mapDocument())
+        push(new ChangeMapChunkSize(doc, value));
+    else if (!checkReadOnly())
+        map()->setChunkSize(value);
+}
+
+void EditableMap::setCompressionLevel(int value)
+{
+    if (auto doc = mapDocument())
+        push(new ChangeMapCompressionLevel(doc, value));
+    else if (!checkReadOnly())
+        map()->setCompressionLevel(value);
+}
+
 void EditableMap::setCurrentLayer(EditableLayer *layer)
 {
     QList<QObject*> layers;
