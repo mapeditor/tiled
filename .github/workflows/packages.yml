@@ -75,7 +75,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
-        version: 6.8.2
+        version: 6.9.2
         arch: linux_gcc_64
         modules: "qtimageformats"
         tools: 'tools_qtcreator'
@@ -209,7 +209,7 @@ jobs:
           version_suffix: "10.13-10.15"
           architectures: x86_64
           cmake_architectures: x86_64
-        - qt_version: 6.8.2
+        - qt_version: 6.9.2
           qt_modules: "qtimageformats"
           version_suffix: "11+"
           architectures: x86_64,arm64
@@ -247,8 +247,8 @@ jobs:
         brew install qbs
         qbs setup-toolchains --detect
         qbs setup-qt --detect
-        qbs config profiles.qt-6-8-2.baseProfile xcode
-        qbs config defaultProfile qt-6-8-2
+        qbs config profiles.qt-6-9-2.baseProfile xcode
+        qbs config defaultProfile qt-6-9-2
 
     - name: Build Zstandard
       run: |
@@ -335,7 +335,7 @@ jobs:
           mingw_component: tools_mingw
           mingw_variant: qt.tools.win32_mingw810
           mingw_dir: mingw810_32
-        - qt_version: 6.8.2
+        - qt_version: 6.9.2
           qt_version_major: 6
           qt_arch: win64_mingw
           qt_modules: "qtimageformats"
