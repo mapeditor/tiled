@@ -100,6 +100,7 @@ class TilesetDocumentsFilterModel : public QSortFilterProxyModel
 public:
     TilesetDocumentsFilterModel(QObject *parent = nullptr);
 
+    void setFilterText(const QString &filterText);
     void setMapDocument(MapDocument *mapDocument);
 
 protected:
@@ -107,6 +108,7 @@ protected:
 
 private:
     MapDocument *mMapDocument;
+    QString mFilterText;
 };
 
 } // namespace Tiled

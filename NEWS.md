@@ -1,5 +1,6 @@
 ### Unreleased
 
+* Allow filtering tilesets by name in the tileset dock (with dogboydog, #4239)
 * Allow changing the values of number inputs using expressions (with dogboydog, #4234)
 * Added support for SVG 1.2 / CSS blending modes to layers (#3932)
 * Added button to toggle Terrain Brush to full tile mode (by Finlay Pearson, #3407)
