@@ -75,7 +75,7 @@
 using namespace Tiled;
 
 namespace preferences {
-static Preference<bool> showTilesetFilter { "Interface/ShowTilesetFilter" };
+static Preference<bool> showTilesetFilter { "Interface/ShowTilesetFilter", true };
 } // namespace preferences
 
 namespace {
