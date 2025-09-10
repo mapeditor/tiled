@@ -2208,7 +2208,7 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
     , mRemoveIcon(QIcon(QStringLiteral(":/images/16/remove.png")))
     , mAddIcon(QIcon(QStringLiteral(":/images/16/add.png")))
     , mRenameIcon(QIcon(QLatin1String(":/images/16/rename.png")))
-    , mRootProperty(new GroupProperty())
+    , mRootProperty(new GroupProperty(this))
     , mCustomProperties(new CustomProperties(mRootProperty))
     , mPropertiesView(new PropertiesView(this))
 {
