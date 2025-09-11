@@ -2232,7 +2232,7 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
     mActionRemoveProperty->setPriority(QAction::LowPriority);
     connect(mActionRemoveProperty, &QAction::triggered,
             this, &PropertiesWidget::removeProperties);
-    this->addAction(mActionRemoveProperty);
+    addAction(mActionRemoveProperty);
 
     mActionRenameProperty = new QAction(this);
     mActionRenameProperty->setEnabled(false);
@@ -2243,7 +2243,8 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
     ActionManager::registerAction(mActionRenameProperty, "RenameProperty");
     connect(mActionRenameProperty, &QAction::triggered,
             this, &PropertiesWidget::renameSelectedProperty);
-    this->addAction(mActionRenameProperty);
+    addAction(mActionRenameProperty);
+
     Utils::setThemeIcon(mActionAddProperty, "add");
     Utils::setThemeIcon(mActionRemoveProperty, "remove");
     Utils::setThemeIcon(mActionRenameProperty, "rename");
