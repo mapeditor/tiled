@@ -146,10 +146,7 @@ jobs:
         export OUTPUT=Tiled-${{ needs.version.outputs.version }}_Linux_x86_64.AppImage
         # Avoid shipping the debug information
         find AppDir -name \*.debug -delete
-        ./linuxdeploy-x86_64.AppImage --appdir AppDir --custom-apprun=dist/linux/AppRun --exclude-library "*libpython3*" --plugin qt
-        # We don't need the bearer plugins (needed for Qt 5 only)
-        rm -rfv AppDir/usr/plugins/bearer
-        ./linuxdeploy-x86_64.AppImage --appdir AppDir --custom-apprun=dist/linux/AppRun --exclude-library "*libpython3*" --output appimage
+        ./linuxdeploy-x86_64.AppImage --appdir AppDir --custom-apprun=dist/linux/AppRun --exclude-library "*libpython3*" --plugin qt --output appimage
 
     - name: Upload Tiled.AppImage
       uses: actions/upload-artifact@v4
