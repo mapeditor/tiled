@@ -56,7 +56,7 @@ jobs:
       with:
         repository: mapeditor/qaseprite
         path: qaseprite
-        ref: '1.0.1'
+        ref: '1.0.3'
 
     - name: Install dependencies
       run: |
@@ -227,7 +227,7 @@ jobs:
       with:
         repository: mapeditor/qaseprite
         path: qaseprite
-        ref: '1.0.1'
+        ref: '1.0.3'
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
@@ -362,7 +362,7 @@ jobs:
       with:
         repository: mapeditor/qaseprite
         path: qaseprite
-        ref: '1.0.1'
+        ref: '1.0.3'
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
