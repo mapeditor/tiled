@@ -6,140 +6,236 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Tiled 1.10\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2023-03-10 11:19+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2025-09-17 07:56+0000\n"
+"Last-Translator: Walter Pagani <paganiwalter@gmail.com>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/tiled/manual/es/>"
+"\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: ../../manual/automapping.md:1
 msgid "Automapping"
-msgstr ""
+msgstr "Mapeo automático"
 
 #: ../../manual/automapping.md:3
 msgid "What is Automapping?"
-msgstr ""
+msgstr "¿Qué es el automapeo?"
 
 #: ../../manual/automapping.md:5
 msgid "Automapping can automatically place or replace tiles based on rules you define. It looks for tiles in your working map that match each rule's input, and if it finds any, it'll place the corresponding output. This enables complex or repetitive tile placement to be entirely automated, which can make decorating your levels much faster, and can help you automatically correct mistakes."
 msgstr ""
+"El mapeo automático puede colocar o reemplazar casillas automáticamente "
+"según las reglas que definas. Busca casillas en tu mapa de trabajo que "
+"coincidan con la entrada de cada regla y, si las encuentra, coloca la salida "
+"correspondiente. Esto permite automatizar por completo la colocación de "
+"casillas complejas o repetitivas, lo que agiliza mucho la decoración de tus "
+"niveles y te ayuda a corregir errores automáticamente."
 
 #: ../../manual/automapping.md:7
 msgid "Automapping can be applied manually via *Map > AutoMap*, or dynamically as you draw on the map if you enable *Map > AutoMap While Drawing*."
 msgstr ""
+"El mapeo automático se puede aplicar manualmente a través de *Mapa > "
+"AutoMapa*, o dinámicamente mientras dibuja en el mapa si habilita *Mapa > "
+"AutoMapa mientras dibuja*."
 
 #: ../../manual/automapping.md:10
 msgid "Automapping changed significantly in Tiled 1.9. It's 10-30x faster and setting up rules is more intuitive, but it behaves differently from the old system in some ways. Old rules should still behave the same, but you may want to take a look at the [section on updating your rules](#updating-rules). If you need help understanding your old rules, the [old documentation is available on GitHub](https://github.com/mapeditor/tiled/blob/685dbff38244776108b8ddbe669b4d8937752311/docs/manual/automapping.rst)."
 msgstr ""
+"El mapeo automático cambió significativamente en Tiled 1.9. Es entre 10 y 30 "
+"veces más rápido y la configuración de reglas es más intuitiva, pero su "
+"comportamiento es diferente al del sistema anterior en algunos aspectos. Las "
+"reglas antiguas deberían seguir funcionando igual, pero te recomendamos "
+"consultar la sección sobre cómo actualizar tus reglas. Si necesitas ayuda "
+"para comprender tus reglas antiguas, la documentación anterior está "
+"disponible en [GitHub](https://github.com/mapeditor/tiled/blob/"
+"685dbff38244776108b8ddbe669b4d8937752311/docs/manual/automapping.rst)."
 
 #: ../../manual/automapping.md:12
 msgid "If you are making new rules, make sure you *do not* have any “regions” layers. These will enable the old Automapping system, and the rules will likely not behave as you intend."
 msgstr ""
+"Si crea reglas nuevas, asegúrese de *no tener* capas de \"regiones\". Esto "
+"activará el antiguo sistema de mapeo automático y es probable que las reglas "
+"no se comporten como desea."
 
 #: ../../manual/automapping.md:15
 msgid "Setting Up the Rules File"
-msgstr ""
+msgstr "Configuración del archivo de reglas"
 
 #: ../../manual/automapping.md:17
 msgid "Automapping rules are defined in regular map files, which we’ll call **rule maps**. These files are then referenced by a text file, usually called `rules.txt`. The `rules.txt` can list any number of rule maps, in the order in which their rules should be applied."
 msgstr ""
+"Las reglas de mapeo automático se definen en archivos de mapas estándar, que "
+"llamaremos **mapas de reglas**. Estos archivos se referencian mediante un "
+"archivo de texto, generalmente llamado `rules.txt`. El `rules.txt` puede "
+"listar cualquier número de mapas de reglas, en el orden en que deben "
+"aplicarse."
 
 #: ../../manual/automapping.md:19
 msgid "There are two ways to make the rule maps defined in the `rules.txt` apply to a map:"
 msgstr ""
+"Hay dos formas de hacer que los mapas de reglas definidos en `rules.txt` se "
+"apliquen a un mapa:"
 
 #: ../../manual/automapping.md:21
 msgid "{bdg-secondary-line}`Since Tiled 1.4` Open *Project > Project Properties* and set the \"Automapping rules\" property to the `rules.txt` file that you created in your project. If you have only a single rule map, you can also refer to that map file directly."
 msgstr ""
+"{bdg-secondary-line}`Desde Tiled 1.4` Abra *Proyecto > Propiedades del "
+"Proyecto* y configure la propiedad \"Reglas de mapeo automático\" en el "
+"archivo `rules.txt` que creó en su proyecto. Si solo tiene un mapa de "
+"reglas, también puede consultarlo directamente."
 
 #: ../../manual/automapping.md:22
 msgid "Alternatively, you can save your `rules.txt` in the same directory as the map files to which you want the rules to apply. This can also be used to override the project-wide rules for a certain set of maps."
 msgstr ""
+"Como alternativa, puede guardar su archivo `rules.txt` en el mismo "
+"directorio que los archivos de mapas a los que desea aplicar las reglas. "
+"Esto también puede usarse para anular las reglas de todo el proyecto para un "
+"conjunto específico de mapas."
 
 #: ../../manual/automapping.md:24
 msgid "Each line in the `rules.txt` file is either:"
-msgstr ""
+msgstr "Cada línea del archivo `rules.txt` es:"
 
 #: ../../manual/automapping.md:26
 msgid "A path to a **rule map**."
-msgstr ""
+msgstr "Una ruta hacia un **mapa de reglas**."
 
 #: ../../manual/automapping.md:27
 msgid "A path to another `.txt` file which has the same syntax (e.g. in another directory)."
 msgstr ""
+"Una ruta a otro archivo `.txt` que tiene la misma sintaxis (por ejemplo, en "
+"otro directorio)."
 
 #: ../../manual/automapping.md:28
 msgid "{bdg-secondary-line}`Since Tiled 1.9` A map filename filter, enclosed in `[]` and using `*` as a wildcard."
 msgstr ""
+"{bdg-secondary-line}`Desde Tiled 1.9` Un filtro de nombre de archivo de "
+"mapa, encerrado entre `[]` y que utiliza `*` como comodín."
 
 #: ../../manual/automapping.md:29
 msgid "A comment, when the line starts with `#` or `//`."
-msgstr ""
+msgstr "Un comentario, cuando la línea comienza con `#` o `//`."
 
 #: ../../manual/automapping.md:31
 msgid "By default, all Automapping rules will run on any map you Automap. The map filename filters let you restrict which maps rules apply to. For example, any rule maps listed after `[town*]` will only apply to maps whose filenames start with “town”. To start applying rules to all maps again, you can use `[*]`, which will match any map name."
 msgstr ""
+"De forma predeterminada, todas las reglas de Automapping se ejecutarán en "
+"cualquier mapa que autografíes. Los filtros de nombre de archivo de mapa te "
+"permiten restringir a qué mapas se aplican las reglas. Por ejemplo, "
+"cualquier mapa de regla que aparezca después de `[ciudad*]` solo se aplicará "
+"a los mapas cuyos nombres de archivo empiecen por \"ciudad\". Para volver a "
+"aplicar las reglas a todos los mapas, puedes usar `[*]`, que coincidirá con "
+"cualquier nombre de mapa."
 
 #: ../../manual/automapping.md:33
 msgid "Setting Up a Rule Map"
-msgstr ""
+msgstr "Configuración de un mapa de reglas"
 
 #: ../../manual/automapping.md:35
 msgid "A **rule map** is a standard map file, which can be read and written by Tiled (usually in TMX or TMJ format). A rule map can define any number of rules. At a minimum, a rule map contains:"
 msgstr ""
+"Un **mapa de reglas** es un archivo de mapa estándar, que Tiled puede leer y "
+"escribir (generalmente en formato TMX o TMJ). Un mapa de reglas puede "
+"definir cualquier número de reglas. Como mínimo, un mapa de reglas contiene:"
 
 #: ../../manual/automapping.md:37
 msgid "One or more `input` layers, describing which kind of pattern(s) the working map will be searched for."
 msgstr ""
+"Una o más capas de `entrada` que describen qué tipo de patrón(es) se "
+"buscarán en el mapa de trabajo."
 
 #: ../../manual/automapping.md:38
 msgid "One or more `output` layers, describing how the working map is changed when an input pattern is found."
 msgstr ""
+"Una o más capas de `salida`, que describen cómo se cambia el mapa de trabajo "
+"cuando se encuentra un patrón de entrada."
 
 #: ../../manual/automapping.md:40
 msgid "In addition, custom properties on the rule map, its layers and on objects can be used to fine-tune the overall behavior or the behavior of specific rules."
 msgstr ""
+"Además, se pueden usar propiedades personalizadas en el mapa de reglas, sus "
+"capas y en los objetos para ajustar el comportamiento general o el "
+"comportamiento de reglas específicas."
 
 #: ../../manual/automapping.md:42
 msgid "Every contiguous region of tiles on the `input` and `output` layers is a rule. Tiles are considered contiguous if they're next to each other vertically, horizontally, or diagonally (8-way connectivity). You can include many rules in one map, as long as you leave space between them. By default all the rules will match simultaneously, and apply their outputs in order from top to bottom, left to right - rules with smaller Y value come first, and if there are rules at the same Y value, then the rules with smaller X come first. If you want the rules to match in order and take previous rules' output into account, you can use the [`MatchInOrder` map property](#MatchInOrder)."
 msgstr ""
+"Cada región contigua de mosaicos en las capas de `entrada` y `salida` es una "
+"regla. Los mosaicos se consideran contiguos si están uno junto al otro "
+"vertical, horizontal o diagonalmente (conectividad de 8 vías). Se pueden "
+"incluir varias reglas en un mapa, siempre que se deje espacio entre ellas. "
+"Por defecto, todas las reglas coincidirán simultáneamente y aplicarán sus "
+"resultados en orden de arriba a abajo y de izquierda a derecha: las reglas "
+"con el valor Y menor se priorizan, y si hay reglas con el mismo valor Y, las "
+"reglas con el valor X menor se priorizan. Si se desea que las reglas "
+"coincidan en orden y se tengan en cuenta los resultados de las reglas "
+"anteriores, se puede usar la propiedad de mapa [`MatchInOrder`]"
+"(#MatchInOrder)."
 
 #: ../../manual/automapping.md:44
 msgid "Defining Inputs"
-msgstr ""
+msgstr "Definición de entradas"
 
 #: ../../manual/automapping.md:46
 msgid "The `input` layers define the pattern(s) of tiles that a rule will look for. These are Tile Layers, and their names must follow this scheme:"
 msgstr ""
+"Las capas de `entrada` definen el patrón de mosaicos que buscará una regla. "
+"Estas son capas de mosaicos, y sus nombres deben seguir este esquema:"
 
 #: ../../manual/automapping.md:52
 msgid "After the first underscore there will be the **name** of the target input layer. For example, `input_Ground` will look for tiles on a layer called *Ground*. The input layer name can include more underscores, so `input_test_case` will look for tiles on a layer called *test\\_case*. If the working map includes multiple layers by this name, the bottom-most one will be used. If the working map does not contain the named target layer, the rule checks against a dummy empty layer."
 msgstr ""
+"Después del primer guion bajo, aparecerá el **nombre** de la capa de entrada "
+"de destino. Por ejemplo, `input_Ground` buscará mosaicos en una capa llamada "
+"*Ground*. El nombre de la capa de entrada puede incluir más guiones bajos, "
+"por lo que `input_test_case` buscará mosaicos en una capa llamada *"
+"test\\_case*. Si el mapa de trabajo incluye varias capas con este nombre, se "
+"usará la inferior. Si el mapa de trabajo no contiene la capa de destino "
+"nombrada, la regla compara la capa vacía ficticia."
 
 #: ../../manual/automapping.md:54
 msgid "The **not** is optional. If present, it inverts the layer's meaning, so instead of matching the tiles on the layer, Tiled will match anything but those tiles."
 msgstr ""
+"El **no** es opcional. Si está presente, invierte el significado de la capa; "
+"por lo tanto, en lugar de coincidir con los mosaicos de la capa, Tiled "
+"coincidirá con cualquier mosaico excepto con esos."
 
 #: ../../manual/automapping.md:56
 msgid "The **index** is optional. Indices on `input` layers allow you to create rules that match any of several completely separate inputs. Any inputs with the same index are treated as part of the same condition, and each different index is its own independent set of conditions. Any of these conditions being matched will count as a match for the rule. An index can be empty, or it can be any string that doesn't start with `not` and doesn't contain any underscores."
 msgstr ""
+"El **índice** es opcional. Los índices en las capas de `entrada` permiten "
+"crear reglas que coincidan con cualquiera de varias entradas completamente "
+"independientes. Cualquier entrada con el mismo índice se considera parte de "
+"la misma condición, y cada índice diferente constituye su propio conjunto de "
+"condiciones. Cualquier coincidencia de estas condiciones se considerará una "
+"coincidencia para la regla. Un índice puede estar vacío o ser cualquier "
+"cadena que no empiece por `not` ni contenga guiones bajos."
 
 #: ../../manual/automapping.md:58
 msgid "Multiple input layers having the same name and index is explicitly allowed and is intended. Having multiple input layers of the same name and index allows you to define different possible tiles per coordinate as input, and any combination of those tiles will count as a match."
 msgstr ""
+"Se permite explícitamente y de forma intencionada tener varias capas de "
+"entrada con el mismo nombre e índice. Tener varias capas de entrada con el "
+"mismo nombre e índice permite definir diferentes posibles mosaicos por "
+"coordenada como entrada, y cualquier combinación de estos mosaicos se "
+"considerará una coincidencia."
 
 #: ../../manual/automapping.md:60
 msgid "Input Example"
-msgstr ""
+msgstr "Ejemplo de entrada"
 
 #: ../../manual/automapping.md:62
 msgid "Let's say you want to match two-tile areas of the ground, perhaps to randomise them. You might want to match any combination of grass and flower tiles, but only whole two-tile rocks. You can achieve this like so:"
 msgstr ""
+"Digamos que quieres combinar áreas de dos casillas del suelo, quizás para "
+"aleatorizarlas. Podrías combinar cualquier combinación de casillas de césped "
+"y flores, pero solo rocas enteras de dos casillas. Puedes lograrlo así:"
 
 #: ../../manual/automapping.md:9
 #: ../../manual/automapping.md:267
@@ -147,7 +243,7 @@ msgstr ""
 #: ../../manual/automapping.md:323
 #: ../../manual/automapping.md:345
 msgid "Tile Layer"
-msgstr ""
+msgstr "Capa de mosaico"
 
 #: ../../manual/automapping.md:9
 #: ../../manual/automapping.md:267
@@ -157,21 +253,21 @@ msgstr ""
 #: ../../manual/editing-tilesets.rst:51
 #: ../../manual/using-commands.rst:33
 msgid "Name"
-msgstr ""
+msgstr "Nombre"
 
 #: ../../manual/automapping.md:9
 msgid "![Two grass tiles.](images/automapping/automap_input1.png)"
-msgstr ""
+msgstr "![Dos mosaicos de césped.](images/automapping/automap_input1.png)"
 
 #: ../../manual/automapping.md:66
 #: ../../manual/automapping.md:72
 #: ../../manual/automapping.md:359
 msgid "Two grass tiles."
-msgstr ""
+msgstr "Dos baldosas de césped."
 
 #: ../../manual/automapping.md:9
 msgid "input**1**_Ground"
-msgstr ""
+msgstr "entrada**1**_Tierra"
 
 #: ../../manual/automapping.md:9
 msgid "![Two flower tiles.](images/automapping/automap_input2.png)"
