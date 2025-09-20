@@ -15,6 +15,7 @@ General
 -  ``Ctrl + O`` - Open any file or project
 -  ``Ctrl + P`` - Open a file in the current project
 -  ``Ctrl + Shift + P`` - Search for available actions
+-  ``Ctrl + Shift + G`` - Jump to tile coordinates
 -  ``Ctrl + Shift + T`` - Reopen a recently closed file
 -  ``Ctrl + S`` - Save current document
 -  ``Ctrl + Shift + S`` - Save current document to another file
