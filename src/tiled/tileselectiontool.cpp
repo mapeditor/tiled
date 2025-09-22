@@ -22,10 +22,8 @@
 
 #include "brushitem.h"
 #include "changeselectedarea.h"
-#include "map.h"
 #include "mapdocument.h"
 #include "mapscene.h"
-#include "tilelayer.h"
 
 #include <QApplication>
 
@@ -38,8 +36,6 @@ TileSelectionTool::TileSelectionTool(QObject *parent)
                                       ":images/22/stock-tool-rect-select.png")),
                                 QKeySequence(Qt::Key_R),
                                 parent)
-    , mMouseDown(false)
-    , mSelecting(false)
 {
     setTilePositionMethod(OnTiles);
 }
@@ -86,6 +82,8 @@ void TileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
 
     if (button == Qt::LeftButton) {
         mMouseDown = true;
+        mForceSquare = false;
+        mExpandFromCenter = false;
         mMouseScreenStart = event->screenPos();
         mSelectionStart = tilePosition();
         brushItem()->setTileRegion(QRegion());
@@ -99,7 +97,9 @@ void TileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
             mMouseDown = false; // Avoid restarting select on move
             brushItem()->setTileRegion(QRegion());
             return;
-        } else if (event->modifiers() == Qt::NoModifier) {
+        }
+
+        if (event->modifiers() == Qt::NoModifier) {
             clearSelection();
             return;
         }
@@ -142,6 +142,38 @@ void TileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     mMouseDown = false;
 }
 
+void TileSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
+{
+    if (mMouseDown) {
+        // When the mouse is down, we no longer change the selection mode. Instead:
+        //
+        // * The Shift modifier can be used to force a 1:1 aspect ratio
+        // * The Control modifier can be used to expand from the center
+        //
+        // Only a change in modifier state has an effect because we don't want
+        // modifiers that were already held when starting the selection to
+        // affect these options, since at that point they were used to set the
+        // selection mode.
+
+        const bool shift = modifiers & Qt::ShiftModifier;
+        const bool ctrl = modifiers & Qt::ControlModifier;
+
+        if (shift != (mLastModifiers & Qt::ShiftModifier))
+            mForceSquare = shift;
+
+        if (ctrl != (mLastModifiers & Qt::ControlModifier))
+            mExpandFromCenter = ctrl;
+
+        tilePositionChanged(tilePosition());
+        updateStatusInfo();
+
+    } else {
+        AbstractTileSelectionTool::modifiersChanged(modifiers);
+    }
+
+    mLastModifiers = modifiers;
+}
+
 void TileSelectionTool::languageChanged()
 {
     setName(tr("Rectangular Select"));
@@ -151,15 +183,29 @@ void TileSelectionTool::languageChanged()
 
 QRect TileSelectionTool::selectedArea() const
 {
+    QPoint startPos = mSelectionStart;
+    QPoint endPos = tilePosition();
+    QPoint delta = endPos - startPos;
+
+    if (mForceSquare) {
+        const int size = qMax(qAbs(delta.x()), qAbs(delta.y()));
+        delta.setX((delta.x() < 0) ? -size : size);
+        delta.setY((delta.y() < 0) ? -size : size);
+        endPos = startPos + delta;
+    }
+
+    if (mExpandFromCenter)
+        startPos -= delta;
+
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QRect area = QRect(mSelectionStart, tilePosition()).normalized();
+    QRect area = QRect(startPos, endPos).normalized();
     if (area.width() == 0)
         area.adjust(-1, 0, 1, 0);
     if (area.height() == 0)
         area.adjust(0, -1, 0, 1);
     return area;
 #else
-    return QRect::span(mSelectionStart, tilePosition());
+    return QRect::span(startPos, endPos);
 #endif
 }
 
