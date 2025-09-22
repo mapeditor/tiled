@@ -119,6 +119,7 @@ void StampBrush::mousePressed(QGraphicsSceneMouseEvent *event)
     if (brushItem()->isVisible()) {
         if (event->button() == Qt::LeftButton) {
             switch (mBrushState) {
+            case BrushState::PaintStartSet: // shouldn't occur
             case BrushState::StartSet:
                 doPaint();
                 mStampReference = tilePosition();
@@ -134,7 +135,10 @@ void StampBrush::mousePressed(QGraphicsSceneMouseEvent *event)
                 case BrushBehavior::Line:
                 case BrushBehavior::Circle:
                     mStampReference = tilePosition();
-                    mBrushState = BrushState::StartSet;
+                    if (mBrushState == BrushState::Paint)
+                        mBrushState = BrushState::PaintStartSet;
+                    else
+                        mBrushState = BrushState::StartSet;
                     break;
                 }
                 break;
@@ -142,11 +146,15 @@ void StampBrush::mousePressed(QGraphicsSceneMouseEvent *event)
                 break;
             }
             return;
-        } else if (event->button() == Qt::RightButton &&
-                   !(event->modifiers() & Qt::ControlModifier))
-        {
-            beginCapture();
-            return;
+        } else if (event->button() == Qt::RightButton) {
+            if (mBrushState == BrushState::StartSet || mBrushState == BrushState::PaintStartSet) {
+                mBrushState = BrushState::Free;
+                updatePreview();
+                return;
+            } else if (!(event->modifiers() & Qt::ControlModifier)) {
+                beginCapture();
+                return;
+            }
         }
     }
 
@@ -156,11 +164,14 @@ void StampBrush::mousePressed(QGraphicsSceneMouseEvent *event)
 void StampBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
     switch (mBrushState) {
+    case BrushState::PaintStartSet:
     case BrushState::StartSet:
         if (event->button() == Qt::LeftButton) {
             if (mStampReference != tilePosition()) {
                 doPaint();
                 mBrushState = BrushState::Free;
+            } else {
+                mBrushState = BrushState::StartSet;
             }
         }
         break;
@@ -178,8 +189,7 @@ void StampBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
             updatePreview();
         }
         break;
-    default:
-        // do nothing?
+    case BrushState::Free:
         break;
     }
 }
@@ -196,14 +206,23 @@ void StampBrush::updateBrushBehavior()
     BrushState brushState = mBrushState;
 
     if (mModifiers & Qt::ShiftModifier) {
-        if (mModifiers & Qt::ControlModifier)
+        if (mModifiers & Qt::ControlModifier) {
             brushBehavior = BrushBehavior::Circle;
-        else
+        } else {
             brushBehavior = BrushBehavior::Line;
+        }
+        if (brushState == BrushState::Paint) {
+            mStampReference = tilePosition();
+            brushState = BrushState::PaintStartSet;
+        }
     } else {
         brushBehavior = BrushBehavior::Neutral;
         if (brushState == BrushState::StartSet)
             brushState = BrushState::Free;
+        else if (brushState == BrushState::PaintStartSet) {
+            doPaint();
+            brushState = BrushState::Paint;
+        }
     }
 
     if (brushBehavior != mBrushBehavior || brushState != mBrushState) {
@@ -602,6 +621,7 @@ void StampBrush::updatePreview(QPoint tilePos)
     } else {
         switch (mBrushState) {
         case BrushState::StartSet:
+        case BrushState::PaintStartSet:
             if (mBrushBehavior == BrushBehavior::Circle) {
                 drawPreviewLayer(pointsOnEllipse(mStampReference,
                                                  qAbs(mStampReference.x() - tilePos.x()),
