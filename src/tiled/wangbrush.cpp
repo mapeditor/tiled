@@ -340,7 +340,6 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
         mWangIndex = wangIndex;
         mPrevPaintPoint = std::exchange(mPaintPoint, tilePos);
         stateChanged();
-        updateStatusInfo();
     }
 }
 
@@ -366,27 +365,57 @@ void WangBrush::mapDocumentChanged(MapDocument *oldDocument, MapDocument *newDoc
 
 void WangBrush::updateStatusInfo()
 {
-    if (brushItem()->isVisible()) {
-        QString wangColor;
-        if (mWangSet && mCurrentColor && mCurrentColor <= mWangSet->colorCount())
-            wangColor = mWangSet->colorAt(mCurrentColor)->name();
-
-        if (!wangColor.isEmpty())
-            wangColor = QStringLiteral(" [%1]").arg(wangColor);
-
-        QString extraInfo;
-        if (!static_cast<WangBrushItem*>(brushItem())->isValid())
-            extraInfo = QStringLiteral(" (%1)")
-                        .arg(tr("Missing terrain transition"));
-
-        setStatusInfo(QStringLiteral("%1, %2%3%4")
-                      .arg(mPaintPoint.x())
-                      .arg(mPaintPoint.y())
-                      .arg(wangColor, extraInfo));
-
-    } else {
+    if (!brushItem()->isVisible()) {
         setStatusInfo(QString());
+        return;
     }
+
+    QString coordsString;
+    if (mRotationalSymmetry) {
+        if (const Map *map = mapDocument()->map()) {
+            const int mirrorX = map->width() - mPaintPoint.x();
+            const int mirrorY = map->height() - mPaintPoint.y();
+            coordsString = tr("%1, %2 and %3, %4")
+                    .arg(mPaintPoint.x())
+                    .arg(mPaintPoint.y())
+                    .arg(mirrorX)
+                    .arg(mirrorY);
+        }
+    }
+    if (coordsString.isEmpty()) {
+        coordsString = QStringLiteral("%1, %2")
+                    .arg(mPaintPoint.x())
+                    .arg(mPaintPoint.y());
+    }
+
+    QString wangColor;
+    if (mWangSet && mCurrentColor && mCurrentColor <= mWangSet->colorCount())
+        wangColor = mWangSet->colorAt(mCurrentColor)->name();
+
+    if (!wangColor.isEmpty())
+        wangColor = QStringLiteral(" [%1]").arg(wangColor);
+
+    QString lineInfo;
+    if (mBrushBehavior == Line) {
+        if (mLineStartSet) {
+            const bool thin = !mIsTileMode && mBrushMode != PaintEdgeAndCorner;
+            const int length = pointsOnLine(mLineStartPos, mPaintPoint, thin).size();
+            lineInfo = QStringLiteral(" - Draw line (length: %1)").arg(length);
+        } else {
+            lineInfo = QStringLiteral(" - Draw line");
+        }
+    }
+
+    QString extraInfo;
+    if (!static_cast<WangBrushItem*>(brushItem())->isValid())
+        extraInfo = QStringLiteral(" (%1)")
+                    .arg(tr("Missing terrain transition"));
+
+    setStatusInfo(QStringLiteral("%1%2%3%4")
+                    .arg(coordsString)
+                    .arg(wangColor)
+                    .arg(lineInfo)
+                    .arg(extraInfo));
 }
 
 void WangBrush::wangSetChanged(const WangSet *wangSet)
@@ -587,6 +616,7 @@ void WangBrush::updateBrush()
 
     // set the new tile layer as the brush
     brushItem()->setTileLayer(stamp, brushRegion);
+    updateStatusInfo();
 }
 
 void WangBrush::updateBrushAt(WangFiller &filler, QPoint pos)
