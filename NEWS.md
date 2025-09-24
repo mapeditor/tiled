@@ -5,7 +5,7 @@
 * Added support for SVG 1.2 / CSS blending modes to layers (#3932)
 * Added button to toggle Terrain Brush to full tile mode (by Finlay Pearson, #3407)
 * Added square selection and expand-from-center to Rectangular Select tool (#4201)
-* Added status bar info for various Stamp Brush modes (#3092)
+* Added status bar info for various Stamp and Terrain Brush modes (#3092, #4201)
 * Added export plugin for Remixed Dungeon (by Mikhael Danilov, #4158)
 * Added "World > World Properties" menu action (with dogboydog, #4190)
 * Scripting: Added API for custom property types (with dogboydog, #3971)
@@ -465,7 +465,7 @@
 * Added basic "major grid" option with stronger lines (with Ilya Arkhanhelsky, #3032)
 * Added ability to rearrange tiles in a tileset (with José Miguel Sánchez García, #2983)
 * Added option to choose background fade color (with SchmidtWC, #3031)
-* Added portable mode, enabled when a "tiled.ini" is detected alongside the Tiled executable (#2945) 
+* Added portable mode, enabled when a "tiled.ini" is detected alongside the Tiled executable (#2945)
 * Disable project extensions by default, for security reasons (#3058)
 * Render selection preview and hovered item highlight above labels (#3036)
 * Changed the donation reminder to be non-modal
