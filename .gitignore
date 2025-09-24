@@ -3,6 +3,7 @@ default/
 
 # clangd cache
 .cache/
+compile_commands.json
 
 # Mac stuff
 *.DS_Store
