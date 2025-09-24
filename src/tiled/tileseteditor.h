@@ -20,7 +20,6 @@
 
 #pragma once
 
-#include "clipboardmanager.h"
 #include "editor.h"
 #include "wangset.h"
 

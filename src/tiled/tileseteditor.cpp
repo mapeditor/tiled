@@ -166,6 +166,8 @@ TilesetEditor::TilesetEditor(QObject *parent)
 
     mAddTiles->setIcon(QIcon(QLatin1String(":images/16/add.png")));
     mRemoveTiles->setIcon(QIcon(QLatin1String(":images/16/remove.png")));
+    mRemoveTiles->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    mRemoveTiles->setShortcuts(QKeySequence::Delete);
     mRelocateTiles->setIcon(QIcon(QLatin1String(":images/22/stock-tool-move-22.png")));
     mRelocateTiles->setCheckable(true);
     mRelocateTiles->setIconVisibleInMenu(false);
@@ -178,6 +180,10 @@ TilesetEditor::TilesetEditor(QObject *parent)
     editWang->setIconVisibleInMenu(false);
     mDynamicWrappingToggle->setCheckable(true);
     mDynamicWrappingToggle->setIcon(QIcon(QLatin1String("://images/scalable/wrap.svg")));
+
+    // The shortcut set on the 'Remove Tiles' action should only be active
+    // while the tileset view is focused, to avoid ambiguities.
+    mWidgetStack->addAction(mRemoveTiles);
 
     Utils::setThemeIcon(mAddTiles, "add");
     Utils::setThemeIcon(mRemoveTiles, "remove");
@@ -318,7 +324,7 @@ void TilesetEditor::addDocument(Document *document)
 
 void TilesetEditor::removeDocument(Document *document)
 {
-    TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document);
+    auto tilesetDocument = qobject_cast<TilesetDocument*>(document);
     Q_ASSERT(tilesetDocument);
     Q_ASSERT(mViewForTileset.contains(tilesetDocument));
 

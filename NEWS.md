@@ -8,6 +8,7 @@
 * Added status bar info for various Stamp and Terrain Brush modes (#3092, #4201)
 * Added export plugin for Remixed Dungeon (by Mikhael Danilov, #4158)
 * Added "World > World Properties" menu action (with dogboydog, #4190)
+* Added Delete shortcut to Remove Tiles action by default and avoid ambiguity (#4201)
 * Scripting: Added API for custom property types (with dogboydog, #3971)
 * Scripting: Added TileMap.chunkSize and TileMap.compressionLevel properties
 * AutoMapping: Don't match rules based on empty input indexes
