@@ -156,16 +156,26 @@ There are various tile selection tools that all work in similar fashion:
 -  |stock-tool-by-color-select| **Select Same Tile** allows selection of
    same-tiles across the entire layer (shortcut: ``S``)
 
-By default, each of these tools replaces the currently selected area.
-The following modifiers can be used to change this behavior:
+By default, each of these tools replaces the currently selected area. The
+following modifiers can be used to change the selection mode before starting
+the selection:
 
--  Holding ``Shift`` expands the current selection with the new area
--  Holding ``Ctrl`` subtracts the new area from the current selection
--  Holding ``Ctrl`` and ``Shift`` selects the intersection of the new
+-  Hold ``Shift`` to expand the current selection with the new area
+-  Hold ``Ctrl`` to subtract the new area from the current selection
+-  Hold ``Ctrl`` and ``Shift`` to select the intersection of the new
    area with the current selection
 
 You can also lock into one of these modes (Add, Subtract or Intersect)
 by clicking on one of the tool buttons in the Tool Options toolbar.
+
+.. raw:: html
+
+   <div class="new">Since Tiled 1.12</div>
+
+While selecting an area, the following modifiers can be used:
+
+- Hold ``Shift`` to constrain the selection to a square.
+- Hold ``Ctrl`` to expand the selection from the starting location.
 
 Managing Tile Stamps
 --------------------

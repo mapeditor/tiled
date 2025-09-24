@@ -35,6 +35,8 @@ public:
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
 
+    void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
+
     void languageChanged() override;
 
 protected:
@@ -49,8 +51,11 @@ private:
 
     QPoint mMouseScreenStart;
     QPoint mSelectionStart;
-    bool mMouseDown;
-    bool mSelecting;
+    bool mMouseDown = false;
+    bool mSelecting = false;
+    bool mForceSquare = false;
+    bool mExpandFromCenter = false;
+    Qt::KeyboardModifiers mLastModifiers = Qt::NoModifier;
 };
 
 } // namespace Tiled
