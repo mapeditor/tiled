@@ -175,7 +175,7 @@ template<> EnumData enumData<ObjectGroup::DrawOrder>()
 {
     return {{
         QCoreApplication::translate("ObjectGroup", "Top Down"),
-        QCoreApplication::translate("ObjectGroup", "Index Order"),
+        QCoreApplication::translate("ObjectGroup", "Manual"),
     }};
 }
 

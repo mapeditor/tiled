@@ -266,7 +266,7 @@ You can also rotate the selected objects in 90-degree steps by pressing
 Changing Stacking Order
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-If the active :ref:`Object Layer <object-layer-introduction>` has its Drawing
+If the active :ref:`Object Layer <object-layer-introduction>` has its Draw
 Order property set to Manual (the default is Top Down), you can control
 the stacking order of the selected objects within their object layer
 using the following keys:
