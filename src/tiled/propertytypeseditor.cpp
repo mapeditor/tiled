@@ -399,7 +399,7 @@ void PropertyTypesEditor::applyMemberToSelectedType(const QString &name, const Q
 void PropertyTypesEditor::applyPropertyTypes()
 {
     QScopedValueRollback<bool> settingPrefPropertyTypes(mSettingPrefPropertyTypes, true);
-    emit Preferences::instance()->propertyTypesChanged();
+    Preferences::instance()->emitPropertyTypesChanged();
 
     Project &project = ProjectManager::instance()->project();
     project.save();

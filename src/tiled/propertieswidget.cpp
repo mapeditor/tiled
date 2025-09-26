@@ -497,7 +497,6 @@ public:
 protected:
     void propertyTypesChanged() override
     {
-        QScopedValueRollback<bool> propertyTypesChanged(mPropertyTypesChanged, true);
         refresh();
     }
 

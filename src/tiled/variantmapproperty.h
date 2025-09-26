@@ -69,7 +69,6 @@ protected:
     virtual void propertyTypesChanged();
 
     Document *mDocument = nullptr;
-    bool mPropertyTypesChanged = false;
 
 private:
     bool createOrUpdateProperty(int index,

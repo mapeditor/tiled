@@ -170,7 +170,7 @@ void VariantMapProperty::setValue(const QVariantMap &value,
     }
 
     // Don't emit valueChanged when we're just recreating properties with custom types
-    if (mPropertyTypesChanged)
+    if (Preferences::instance()->isEmittingPropertyTypesChanged())
         return;
 
     QScopedValueRollback<bool> emittingValueChanged(mEmittingValueChanged, true);
@@ -178,8 +178,7 @@ void VariantMapProperty::setValue(const QVariantMap &value,
 }
 
 static bool canReuseProperty(const QVariant &a,
-                             const QVariant &b,
-                             bool propertyTypesChanged)
+                             const QVariant &b)
 {
     if (a.userType() != b.userType())
         return false;
@@ -187,7 +186,7 @@ static bool canReuseProperty(const QVariant &a,
     // Two PropertyValue values might still have different types
     if (a.userType() == propertyValueId()) {
         // Trigger re-creation of the property when the types have changed
-        if (propertyTypesChanged)
+        if (Preferences::instance()->isEmittingPropertyTypesChanged())
             return false;
 
         auto aTypeId = a.value<PropertyValue>().typeId;
@@ -303,7 +302,7 @@ bool VariantMapProperty::createOrUpdateProperty(int index,
     auto property = mPropertyMap.value(name);
 
     // If it already exists, check whether we need to delete it
-    if (property && !canReuseProperty(oldValue, newValue, mPropertyTypesChanged)) {
+    if (property && !canReuseProperty(oldValue, newValue)) {
         deleteProperty(property);
         mPropertyMap.remove(name);
         property = nullptr;
@@ -438,7 +437,6 @@ void VariantMapProperty::propertyTypesChanged()
     if (mEmittingValueChanged)
         return;
 
-    QScopedValueRollback<bool> propertyTypesChanged(mPropertyTypesChanged, true);
     setValue(mValue, mSuggestions);
 }
 
@@ -662,7 +660,7 @@ bool VariantListProperty::createOrUpdateProperty(int index,
     auto property = subProperties().value(index);
 
     // If it already exists, check whether we need to delete it
-    if (property && !canReuseProperty(oldValue, newValue, false/*mPropertyTypesChanged*/)) {
+    if (property && !canReuseProperty(oldValue, newValue)) {
         deleteProperty(property);
         property = nullptr;
     }
