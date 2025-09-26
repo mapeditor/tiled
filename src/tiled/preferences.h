@@ -180,6 +180,9 @@ public:
     QString dataLocation() const;
     QString configLocation() const;
 
+    void emitPropertyTypesChanged();
+    bool isEmittingPropertyTypesChanged() const;
+
     static QString startupProject();
     static void setStartupProject(const QString &filePath);
     static void setStartupSession(const QString &filePath);
@@ -241,6 +244,7 @@ signals:
 
     void languageChanged();
 
+    // Call emitPropertyTypesChanged() to emit this signal!
     void propertyTypesChanged();
 
     void isPatronChanged();
@@ -257,6 +261,7 @@ private:
     void addToRecentFileList(const QString &fileName, QStringList &files);
 
     bool mPortable = false;
+    bool mEmittingPropertyTypesChanged = false;
 
     QString mObjectTypesFile;
 
@@ -264,6 +269,11 @@ private:
     static QString mStartupProject;
     static QString mStartupSession;
 };
+
+inline bool Preferences::isEmittingPropertyTypesChanged() const
+{
+    return mEmittingPropertyTypesChanged;
+}
 
 
 template<typename T>
@@ -278,8 +288,8 @@ public:
     inline T get() const;
     inline void set(const T &value);
 
-    inline operator T() const { return get(); }
-    inline Preference &operator =(const T &value) { set(value); return *this; }
+    operator T() const { return get(); }
+    Preference &operator =(const T &value) { set(value); return *this; }
 
 private:
     const char * const mKey;
