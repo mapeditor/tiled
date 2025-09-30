@@ -109,7 +109,7 @@ void ListEdit::populateAddMenu()
 {
     mAddMenu->clear();
 
-    const QVariantList values = possiblePropertyValues(nullptr);
+    const QVariantList values = possiblePropertyValues(mParentClassType);
     for (const auto &value : values) {
         const QIcon icon = PropertyTypesModel::iconForProperty(value);
         auto action = mAddMenu->addAction(icon, userTypeName(value));

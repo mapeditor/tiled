@@ -28,6 +28,8 @@ class QToolButton;
 
 namespace Tiled {
 
+class ClassPropertyType;
+
 /**
  * The widget that enables the user to edit a list property.
  */
@@ -41,6 +43,7 @@ public:
 
     const QVariantList &value() const { return mValue; }
     void setValue(const QVariantList &value);
+    void setParentClassType(const ClassPropertyType *type) { mParentClassType = type; }
 
     static QString valueText(const QVariantList &value);
 
@@ -55,6 +58,7 @@ private:
     QToolButton *mAddButton;
     QMenu *mAddMenu;
     QVariantList mValue;
+    const ClassPropertyType *mParentClassType = nullptr;
 };
 
 } // namespace Tiled

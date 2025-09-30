@@ -36,6 +36,7 @@ class QVBoxLayout;
 namespace Tiled {
 
 class GroupProperty;
+class PropertiesView;
 class PropertyLabel;
 
 /**
@@ -96,6 +97,7 @@ public:
     void setActions(Actions actions);
 
     GroupProperty *parentProperty() const { return m_parent; }
+    PropertiesView *propertiesView() const { return m_view; }
 
     virtual DisplayMode displayMode() const { return DisplayMode::Default; }
 
@@ -121,6 +123,8 @@ signals:
 
 private:
     friend class GroupProperty;
+    friend class PropertiesView;
+    void setPropertiesView(PropertiesView *view) { m_view = view; }
 
     QString m_name;
     QString m_toolTip;
@@ -130,6 +134,7 @@ private:
     bool m_selected = false;
     Actions m_actions;
     GroupProperty *m_parent = nullptr;
+    QPointer<PropertiesView> m_view;
 };
 
 class Separator final : public Property

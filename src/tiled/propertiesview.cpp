@@ -1207,6 +1207,7 @@ void PropertiesView::forgetProperty(Property *property)
         m_selectionStart = nullptr;
 
     property->disconnect(this);
+    property->setPropertiesView(nullptr);
 
     if (auto groupProperty = qobject_cast<GroupProperty *>(property)) {
         for (auto subProperty : groupProperty->subProperties())
@@ -1287,6 +1288,8 @@ PropertiesView::PropertyWidgets PropertiesView::createPropertyWidgets(Property *
                                                                       int level)
 {
     Q_ASSERT(!m_propertyWidgets.contains(property));
+
+    property->setPropertiesView(this);
 
     PropertyWidgets widgets;
     widgets.level = level;

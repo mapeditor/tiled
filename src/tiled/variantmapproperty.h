@@ -180,7 +180,6 @@ public:
     AddValueProperty(QObject *parent = nullptr);
 
     void setPlaceholderText(const QString &text);
-    void setParentClassType(const ClassPropertyType *parentClassType);
 
     QVariant value() const;
 
@@ -196,13 +195,7 @@ protected:
 private:
     QString m_placeholderText;
     QVariant m_value;
-    const ClassPropertyType *m_parentClassType = nullptr;
 };
-
-inline void AddValueProperty::setParentClassType(const ClassPropertyType *parentClassType)
-{
-    m_parentClassType = parentClassType;
-}
 
 inline QVariant AddValueProperty::value() const
 {

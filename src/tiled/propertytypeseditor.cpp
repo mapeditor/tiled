@@ -26,7 +26,6 @@
 #include "preferences.h"
 #include "project.h"
 #include "projectmanager.h"
-#include "propertiesview.h"
 #include "propertytypesmodel.h"
 #include "savefile.h"
 #include "session.h"
@@ -570,7 +569,6 @@ void PropertyTypesEditor::openAddMemberDialog()
     if (!mAddValueProperty) {
         mAddValueProperty = new AddValueProperty(mMembersProperty);
         mAddValueProperty->setPlaceholderText(tr("Member name"));
-        mAddValueProperty->setParentClassType(static_cast<const ClassPropertyType*>(propertyType));
 
         connect(mAddValueProperty, &Property::addRequested, this, [this] {
             addMember(mAddValueProperty->name(), mAddValueProperty->value());
@@ -836,6 +834,7 @@ void PropertyTypesEditor::updateDetails()
         mDrawFillCheckBox->setChecked(classType.drawFill);
         updateClassUsageDetails(classType);
 
+        mMembersView->setCurrentEditedClassType(&classType);
         mMembersProperty->setValue(classType.members);
         break;
     }
@@ -943,7 +942,7 @@ void PropertyTypesEditor::addClassProperties()
     nameAndColor->addWidget(mColorButton);
     nameAndColor->addWidget(mDrawFillCheckBox);
 
-    mMembersView = new PropertiesView(this);
+    mMembersView = new ClassMembersView(this);
 
     const auto halfSpacing = Utils::dpiScaled(2);
     mMembersView->widget()->setContentsMargins(0, halfSpacing, 0, halfSpacing);

@@ -22,6 +22,8 @@
 
 #include "propertytype.h"
 
+#include "propertiesview.h"
+
 #include <QDialog>
 #include <QPointer>
 
@@ -41,7 +43,6 @@ namespace Tiled {
 
 class AddValueProperty;
 class ColorButton;
-class PropertiesView;
 class PropertyTypesModel;
 class VariantMapProperty;
 
@@ -54,6 +55,18 @@ struct PropertyTypesFilter
     const QString objectTypesXmlFilter;
     QString filters;
     QString selectedFilter;
+};
+
+class ClassMembersView : public PropertiesView
+{
+public:
+    using PropertiesView::PropertiesView;
+
+    void setCurrentEditedClassType(const ClassPropertyType *t) { m_current = t; }
+    const ClassPropertyType *currentEditedClassType() const { return m_current; }
+
+private:
+    const ClassPropertyType *m_current = nullptr;
 };
 
 class PropertyTypesEditor : public QDialog
@@ -144,7 +157,7 @@ private:
     QCheckBox *mDrawFillCheckBox = nullptr;
     QCheckBox *mClassOfCheckBox = nullptr;
     QPushButton *mClassOfButton = nullptr;
-    PropertiesView *mMembersView = nullptr;
+    ClassMembersView *mMembersView = nullptr;
     VariantMapProperty *mMembersProperty = nullptr;
     QPointer<AddValueProperty> mAddValueProperty;
 

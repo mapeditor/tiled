@@ -25,7 +25,9 @@
 #include "objectrefedit.h"
 #include "preferences.h"
 #include "properties.h"
+#include "propertiesview.h"
 #include "propertyeditorwidgets.h"
+#include "propertytypeseditor.h"
 #include "propertytypesmodel.h"
 #include "session.h"
 #include "utils.h"
@@ -620,11 +622,19 @@ void VariantListProperty::insertValuesAt(int index, const QVariantList &values)
     setValue(mGet());
 }
 
+static const ClassPropertyType *currentEditedClassType(PropertiesView *propertiesView)
+{
+    if (auto membersView = dynamic_cast<ClassMembersView*>(propertiesView))
+        return membersView->currentEditedClassType();
+    return nullptr;
+}
+
 QWidget *VariantListProperty::createEditor(QWidget *parent)
 {
     auto editor = new ListEdit(parent);
     auto syncEditor = [this, editor] {
         const QSignalBlocker blocker(editor);
+        editor->setParentClassType(currentEditedClassType(propertiesView()));
         editor->setValue(value());
     };
     syncEditor();
@@ -641,7 +651,8 @@ void VariantListProperty::addContextMenuActions(QMenu *menu)
 {
     auto addMenu = menu->addMenu(tr("Add Value"));
 
-    const QVariantList values = possiblePropertyValues(nullptr);
+    const ClassPropertyType *classType = currentEditedClassType(propertiesView());
+    const QVariantList values = possiblePropertyValues(classType);
     for (const auto &value : values) {
         const QIcon icon = PropertyTypesModel::iconForProperty(value);
         auto action = addMenu->addAction(icon, userTypeName(value));
@@ -774,7 +785,8 @@ QWidget *AddValueProperty::createEditor(QWidget *parent)
     // Create combo box with property types
     auto typeBox = new ComboBox(parent);
 
-    const QVariantList values = possiblePropertyValues(m_parentClassType);
+    const ClassPropertyType *classType = currentEditedClassType(propertiesView());
+    const QVariantList values = possiblePropertyValues(classType);
     for (const auto &value : values) {
         const QIcon icon = PropertyTypesModel::iconForProperty(value);
         typeBox->addItem(icon, userTypeName(value), value);
