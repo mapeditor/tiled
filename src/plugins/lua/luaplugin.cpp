@@ -272,7 +272,8 @@ void LuaWriter::writeProperties(const Properties &properties)
 {
     mWriter.writeStartTable("properties");
 
-    const ExportContext context(mDir.path());
+    ExportContext context(mDir.path());
+    context.setRecursiveBehavior(ExportContext::RecursiveBehavior::ValuesOnly);
 
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();

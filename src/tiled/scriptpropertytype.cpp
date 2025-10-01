@@ -64,7 +64,7 @@ void ScriptPropertyType::throwDuplicateNameError(const QString &name)
  */
 void ScriptPropertyType::applyPropertyChanges()
 {
-    emit Preferences::instance()->propertyTypesChanged();
+    Preferences::instance()->emitPropertyTypesChanged();
 
     Project &project = ProjectManager::instance()->project();
     project.save();

@@ -30,6 +30,7 @@
 #include <QApplication>
 #include <QDir>
 #include <QFileInfo>
+#include <QScopedValueRollback>
 #include <QStandardPaths>
 #include <QVariantMap>
 
@@ -542,7 +543,7 @@ void Preferences::setUseOpenGL(bool useOpenGL)
 void Preferences::setPropertyTypes(const SharedPropertyTypes &propertyTypes)
 {
     Object::setPropertyTypes(propertyTypes);
-    emit propertyTypesChanged();
+    emitPropertyTypesChanged();
 }
 
 QDate Preferences::firstRun() const
@@ -774,6 +775,14 @@ QString Preferences::configLocation() const
         return QFileInfo(fileName()).path();
 
     return QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
+}
+
+void Preferences::emitPropertyTypesChanged()
+{
+    Q_ASSERT(!mEmittingPropertyTypesChanged);
+
+    QScopedValueRollback<bool> emitting(mEmittingPropertyTypesChanged, true);
+    emit propertyTypesChanged();
 }
 
 QString Preferences::startupProject()
