@@ -68,15 +68,24 @@
          <property name="text">
           <string>Based on Tileset Image</string>
          </property>
+         <property name="toolTip">
+          <string>A single image containing a grid of fixed-size tiles</string>
+         </property>
         </item>
         <item>
          <property name="text">
           <string>Tileset Atlas</string>
          </property>
+         <property name="toolTip">
+          <string>A single image with custom tile regions that can be rearranged (useful for varied tile sizes, y-sorting, etc.)</string>
+         </property>
         </item>
         <item>
          <property name="text">
           <string>Collection of Images</string>
+         </property>
+         <property name="toolTip">
+          <string>A collection of individual tile images</string>
          </property>
         </item>
        </widget>
