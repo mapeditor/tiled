@@ -48,10 +48,7 @@ class TILEDSHARED_EXPORT VariantToMapConverter
     Q_DECLARE_TR_FUNCTIONS(MapReader)
 
 public:
-    VariantToMapConverter()
-        : mMap(nullptr)
-        , mReadingExternalTileset(false)
-    {}
+    VariantToMapConverter() = default;
 
     /**
      * Tries to convert the given \a variant to a Map instance. The \a mapDir
@@ -87,6 +84,10 @@ public:
 private:
     Properties toProperties(const QVariant &propertiesVariant,
                             const QVariant &propertyTypesVariant) const;
+    QVariant toPropertyValue(const QVariantMap &valueVariantMap,
+                             const ExportContext &context) const;
+    void convertListValues(QVariant &value, const ExportContext &context) const;
+
     SharedTileset toTileset(const QVariant &variant);
     std::unique_ptr<WangSet> toWangSet(const QVariantMap &variantMap, Tileset *tileset);
     QSharedPointer<WangColor> toWangColor(const QVariantMap &variantMap);
@@ -110,9 +111,9 @@ private:
 
     Properties extractProperties(const QVariantMap &variantMap) const;
 
-    Map *mMap;
+    Map *mMap = nullptr;
     QDir mDir;
-    bool mReadingExternalTileset;
+    bool mReadingExternalTileset = false;
     GidMapper mGidMapper;
     QString mError;
 };

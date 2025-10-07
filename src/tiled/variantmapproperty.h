@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "properties.h"
 #include "propertiesview.h"
 #include "propertytype.h"
 
@@ -28,6 +29,17 @@
 namespace Tiled {
 
 class Document;
+class MapDocument;
+
+/**
+ * An interface used by ObjectRefProperty to access the current MapDocument.
+ */
+class MapDocumentContext
+{
+public:
+    virtual ~MapDocumentContext() = default;
+    virtual MapDocument *mapDocument() const = 0;
+};
 
 /**
  * A property that creates child properties based on a QVariantMap value.
@@ -46,37 +58,25 @@ public:
 
     void removeMember(const QString &name);
     void addMember(const QString &name, const QVariant &value);
-    void setMemberValue(const QStringList &path, const QVariant &value);
+    void setMemberValue(const PropertyPath &path, const QVariant &value);
 
     Property *property(const QString &name) const;
 
 signals:
-    void memberValueChanged(const QStringList &path, const QVariant &value);
+    void memberValueChanged(const PropertyPath &path, const QVariant &value);
 
 protected:
     virtual void propertyTypesChanged();
 
     Document *mDocument = nullptr;
-    bool mPropertyTypesChanged = false;
 
 private:
     bool createOrUpdateProperty(int index,
                                 const QString &name,
                                 const QVariant &oldValue,
                                 const QVariant &newValue);
-    Property *createProperty(const QStringList &path,
-                             std::function<QVariant ()> get,
-                             std::function<void (const QVariant &)> set);
 
-    void createClassMembers(const QStringList &path,
-                            GroupProperty *groupProperty,
-                            const ClassPropertyType &classType,
-                            std::function<QVariant ()> get);
-
-    void updateModifiedRecursively(Property *property, const QVariant &value);
-    void emitValueChangedRecursively(Property *property);
-
-    void emitMemberValueChanged(const QStringList &path, const QVariant &value);
+    void emitMemberValueChanged(const PropertyPath &path, const QVariant &value);
 
     bool mEmittingValueChanged = false;
     QVariantMap mValue;
@@ -92,6 +92,83 @@ inline Property *VariantMapProperty::property(const QString &name) const
 
 
 /**
+ * A property that creates child properties based on a ClassPropertyType.
+ */
+class ClassProperty : public GroupProperty
+{
+    Q_OBJECT
+
+public:
+    ClassProperty(const QString &name,
+                  const PropertyPath &path,
+                  const ClassPropertyType &classType,
+                  std::function<QVariantMap ()> get,
+                  std::function<void(const PropertyPath &path, const QVariant &value)> set,
+                  QObject *parent = nullptr);
+
+    DisplayMode displayMode() const override { return DisplayMode::Default; }
+
+    QVariantMap value() const { return mGet(); }
+
+signals:
+    void memberValueChanged(const PropertyPath &path, const QVariant &value);
+
+private:
+    void createMembers(const ClassPropertyType &classType);
+
+    bool createOrUpdateProperty(int index,
+                                const QString &name,
+                                const QVariant &oldValue,
+                                const QVariant &newValue);
+
+    PropertyPath mPath;
+    QHash<QString, Property*> mPropertyMap;
+    std::function<QVariantMap ()> mGet;
+    std::function<void(const PropertyPath &path, const QVariant &value)> mSet;
+    bool mEmittingValueChanged = false;
+};
+
+
+/**
+ * A property that creates child properties based on a QVariantList value.
+ */
+class VariantListProperty : public GroupProperty
+{
+    Q_OBJECT
+
+public:
+    VariantListProperty(const QString &name,
+                        const PropertyPath &path,
+                        std::function<QVariantList()> get,
+                        std::function<void(const PropertyPath &, const QVariant &)> set,
+                        QObject *parent = nullptr);
+
+    void setValue(const QVariantList &value);
+    QVariantList value() const { return mGet(); }
+    QVariantList valuesAt(const QList<int> &indices) const;
+
+    void removeValueAt(int index);
+    void removeValuesAt(const QList<int> &indices);
+    void addValue(const QVariant &value);
+    void insertValuesAt(int index, const QVariantList &values);
+
+    QWidget *createEditor(QWidget *parent) override;
+    void addContextMenuActions(QMenu *menu) override;
+
+private:
+    bool createOrUpdateProperty(int index,
+                                const QVariant &oldValue,
+                                const QVariant &newValue);
+
+    PropertyPath mPath;
+    std::function<QVariantList ()> mGet;
+    std::function<void(const PropertyPath &path, const QVariant &value)> mSet;
+    QVariantList mOldValues;    // remembered solely so we know the types we created properties for
+    bool mEmittingValueChanged = false;
+};
+
+
+/**
  * A property that creates widgets for adding a value with a certain name and
  * type.
  */
@@ -103,7 +180,6 @@ public:
     AddValueProperty(QObject *parent = nullptr);
 
     void setPlaceholderText(const QString &text);
-    void setParentClassType(const ClassPropertyType *parentClassType);
 
     QVariant value() const;
 
@@ -117,17 +193,9 @@ protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
-    QIcon m_plainTypeIcon;
     QString m_placeholderText;
     QVariant m_value;
-    bool m_hasFocus = false;
-    const ClassPropertyType *m_parentClassType = nullptr;
 };
-
-inline void AddValueProperty::setParentClassType(const ClassPropertyType *parentClassType)
-{
-    m_parentClassType = parentClassType;
-}
 
 inline QVariant AddValueProperty::value() const
 {

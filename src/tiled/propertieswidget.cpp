@@ -62,6 +62,8 @@
 #include <QUndoStack>
 #include <QVBoxLayout>
 
+#include <algorithm>
+
 namespace Tiled {
 
 template<> EnumData enumData<Alignment>()
@@ -473,7 +475,7 @@ static bool objectPropertiesRelevant(Document *document, Object *object)
     return false;
 }
 
-class CustomProperties : public VariantMapProperty
+class CustomProperties : public VariantMapProperty, public MapDocumentContext
 {
     Q_OBJECT
 
@@ -487,10 +489,14 @@ public:
 
     void setDocument(Document *document);
 
+    MapDocument *mapDocument() const override
+    {
+        return qobject_cast<MapDocument*>(mDocument);
+    }
+
 protected:
     void propertyTypesChanged() override
     {
-        QScopedValueRollback<bool> propertyTypesChanged(mPropertyTypesChanged, true);
         refresh();
     }
 
@@ -550,7 +556,7 @@ private:
 
     void refresh();
 
-    void setPropertyValue(const QStringList &path, const QVariant &value);
+    void setPropertyValue(const PropertyPath &path, const QVariant &value);
 
     bool mUpdating = false;
 };
@@ -2231,7 +2237,7 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
     mActionRemoveProperty->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     mActionRemoveProperty->setPriority(QAction::LowPriority);
     connect(mActionRemoveProperty, &QAction::triggered,
-            this, &PropertiesWidget::removeProperties);
+            this, &PropertiesWidget::remove);
     addAction(mActionRemoveProperty);
 
     mActionRenameProperty = new QAction(this);
@@ -2249,7 +2255,7 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
     Utils::setThemeIcon(mActionRemoveProperty, "remove");
     Utils::setThemeIcon(mActionRenameProperty, "rename");
 
-    QToolBar *toolBar = new QToolBar;
+    auto toolBar = new QToolBar;
     toolBar->setFloatable(false);
     toolBar->setMovable(false);
     toolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
@@ -2258,7 +2264,7 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
     toolBar->addAction(mActionRemoveProperty);
     toolBar->addAction(mActionRenameProperty);
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
+    auto layout = new QVBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(mPropertiesView);
@@ -2544,22 +2550,24 @@ void CustomProperties::refresh()
     setEnabled(!partOfTileset || editingTileset);
 }
 
-void CustomProperties::setPropertyValue(const QStringList &path, const QVariant &value)
+void CustomProperties::setPropertyValue(const PropertyPath &path, const QVariant &value)
 {
     const auto objects = mDocument->currentObjects();
     if (!objects.isEmpty()) {
         QScopedValueRollback<bool> updating(mUpdating, true);
-        if (path.size() > 1 || value.isValid())
+        if (path.size() > 1 || value.isValid()) {
             mDocument->undoStack()->push(new SetProperty(mDocument, objects, path, value));
-        else
-            mDocument->undoStack()->push(new RemoveProperty(mDocument, objects, path.first()));
+        } else {
+            auto &name = std::get<QString>(path.first());
+            mDocument->undoStack()->push(new RemoveProperty(mDocument, objects, name));
+        }
     }
 }
 
 
 void PropertiesWidget::updateActions()
 {
-    const auto properties = mPropertiesView->selectedProperties();
+    const auto properties = mCustomProperties->selectedSubProperties();
     bool editingTileset = mDocument && mDocument->type() == Document::TilesetDocumentType;
     bool isTileset = mDocument && mDocument->currentObject() && mDocument->currentObject()->isPartOfTileset();
     bool canModify = mDocument && !properties.isEmpty() && (!isTileset || editingTileset);
@@ -2579,25 +2587,29 @@ void PropertiesWidget::updateActions()
     mActionRenameProperty->setEnabled(canModify && properties.size() == 1);
 }
 
-void PropertiesWidget::cutProperties()
+void PropertiesWidget::cut()
 {
-    if (copyProperties())
-        removeProperties();
+    const SelectionState state = selectionState();
+    if (copyImpl(state))
+        removeImpl(state);
 }
 
-bool PropertiesWidget::copyProperties()
+bool PropertiesWidget::copyImpl(const SelectionState &state)
 {
+    if (state.listProperty) {
+        const auto values = state.listProperty->valuesAt(state.selectedListItems);
+        if (!values.isEmpty()) {
+            ClipboardManager::instance()->setListValues(values);
+            return true;
+        }
+    }
+
     Object *object = mDocument ? mDocument->currentObject() : nullptr;
     if (!object)
         return false;
 
-    const auto selectedProperties = mPropertiesView->selectedProperties();
-    if (selectedProperties.isEmpty())
-        return false;
-
     Properties properties;
-    for (auto property : selectedProperties) {
-        const QString name = property->name();
+    for (auto &name : state.customPropertyNames) {
         const QVariant value = object->property(name);
         if (!value.isValid())
             return false;
@@ -2605,14 +2617,50 @@ bool PropertiesWidget::copyProperties()
         properties.insert(name, value);
     }
 
+    if (properties.isEmpty())
+        return false;
+
     ClipboardManager::instance()->setProperties(properties);
 
     return true;
 }
 
-void PropertiesWidget::pasteProperties()
+void PropertiesWidget::paste()
 {
     auto clipboardManager = ClipboardManager::instance();
+    auto focusedProperty = mPropertiesView->focusedProperty();
+
+    if (clipboardManager->hasListValues() && focusedProperty) {
+        // Either the focused property or its parent should be a list
+        // property to paste list values into.
+        auto listProperty = qobject_cast<VariantListProperty*>(focusedProperty);
+        int insertionIndex = -1;
+        if (!listProperty) {
+            listProperty = qobject_cast<VariantListProperty*>(focusedProperty->parentProperty());
+            if (listProperty)
+                insertionIndex = listProperty->indexOfProperty(focusedProperty) + 1;
+        }
+
+        const auto values = clipboardManager->listValues();
+        if (listProperty && !values.isEmpty()) {
+            if (insertionIndex == -1)
+                insertionIndex = listProperty->value().size();
+
+            listProperty->insertValuesAt(insertionIndex, values);
+
+            // Select the newly added list entries
+            QList<Property*> selectedProperties;
+            for (int i = 0; i < values.size(); ++i) {
+                if (auto property = listProperty->subProperties().value(insertionIndex + i))
+                    selectedProperties.append(property);
+            }
+            if (!selectedProperties.isEmpty()) {
+                mPropertiesView->focusProperty(selectedProperties.last(), PropertiesView::FocusRow);
+                mPropertiesView->setSelectedProperties(selectedProperties);
+            }
+            return;
+        }
+    }
 
     Properties pastedProperties = clipboardManager->properties();
     if (pastedProperties.isEmpty())
@@ -2699,36 +2747,53 @@ void PropertiesWidget::addProperty(const QString &name, const QVariant &value)
     selectCustomProperty(name);
 }
 
-void PropertiesWidget::removeProperties()
+void PropertiesWidget::removeImpl(const SelectionState &state)
 {
-    Object *object = mDocument->currentObject();
-    if (!object)
+    if (state.listProperty) {
+        state.listProperty->removeValuesAt(state.selectedListItems);
+
+        // After removing list values, select the value after the last removed
+        // one. If there is no value after, select the value before, or the
+        // list property itself.
+        QList<Property *> selectedProperties;
+        const auto &subProps = state.listProperty->subProperties();
+        const auto maxIt = std::max_element(state.selectedListItems.begin(),
+                                            state.selectedListItems.end());
+        if (maxIt != state.selectedListItems.end()) {
+            const int selectIndex = *maxIt - state.selectedListItems.size() + 1;
+            Property *property = subProps.value(selectIndex);
+            if (!property)
+                property = subProps.value(selectIndex - 1);
+            if (!property)
+                property = state.listProperty;
+            if (property) {
+                if (mPropertiesView->focusProperty(property, PropertiesView::FocusRow))
+                    if (property->actions().testFlag(Property::Action::Select))
+                        selectedProperties.append(property);
+            }
+        }
+        mPropertiesView->setSelectedProperties(selectedProperties);
         return;
-
-    const auto properties = mPropertiesView->selectedProperties();
-
-    QStringList propertyNames;
-    for (auto property : properties)
-        propertyNames.append(property->name());
+    }
+    if (state.customPropertyNames.isEmpty())
+        return;
 
     QUndoStack *undoStack = mDocument->undoStack();
     undoStack->beginMacro(QCoreApplication::translate("Tiled::PropertiesDock",
                                                       "Remove Property/Properties",
                                                       nullptr,
-                                                      propertyNames.size()));
+                                                      state.customPropertyNames.size()));
 
-    for (const QString &name : propertyNames) {
-        undoStack->push(new RemoveProperty(mDocument,
-                                           mDocument->currentObjects(),
-                                           name));
-    }
+    const auto objects = mDocument->currentObjects();
+    for (const QString &name : state.customPropertyNames)
+        undoStack->push(new RemoveProperty(mDocument, objects, name));
 
     undoStack->endMacro();
 }
 
 void PropertiesWidget::renameSelectedProperty()
 {
-    const auto properties = mPropertiesView->selectedProperties();
+    const auto properties = mCustomProperties->selectedSubProperties();
     if (properties.size() != 1)
         return;
 
@@ -2737,7 +2802,7 @@ void PropertiesWidget::renameSelectedProperty()
 
 void PropertiesWidget::renameProperty(const QString &name)
 {
-    QInputDialog *dialog = new QInputDialog(mPropertiesView);
+    auto dialog = new QInputDialog(mPropertiesView);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->setInputMode(QInputDialog::TextInput);
     dialog->setLabelText(QCoreApplication::translate("Tiled::PropertiesDock", "Name:"));
@@ -2757,6 +2822,40 @@ void PropertiesWidget::renameProperty(const QString &name)
     dialog->open();
 }
 
+bool PropertiesWidget::SelectionState::canCopy() const
+{
+    return (!customPropertyNames.isEmpty() && currentObjectHasAllProperties)
+           || !selectedListItems.isEmpty();
+}
+
+PropertiesWidget::SelectionState PropertiesWidget::selectionState() const
+{
+    SelectionState state;
+
+    if (!mDocument)
+        return state;
+
+    const Object *object = mDocument->currentObject();
+    if (!object)
+        return state;
+
+    const auto properties = mPropertiesView->selectedProperties();
+
+    for (auto property : properties) {
+        if (property->parentProperty() == mCustomProperties) {
+            state.customPropertyNames.append(property->name());
+            state.currentObjectHasAllProperties &= object->hasProperty(property->name());
+        } else if (auto list = qobject_cast<VariantListProperty*>(property->parentProperty())) {
+            if (!state.listProperty)
+                state.listProperty = list;
+            if (list == state.listProperty)
+                state.selectedListItems.append(list->indexOfProperty(property));
+        }
+    }
+
+    return state;
+}
+
 void PropertiesWidget::showContextMenu(const QPoint &pos)
 {
     const Object *object = mDocument->currentObject();
@@ -2764,24 +2863,18 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
         return;
 
     const auto properties = mPropertiesView->selectedProperties();
-    const bool customPropertiesSelected = !properties.isEmpty();
 
-    bool currentObjectHasAllProperties = true;
-    QStringList propertyNames;
-    for (auto property : properties) {
-        propertyNames.append(property->name());
-
-        if (!object->hasProperty(property->name()))
-            currentObjectHasAllProperties = false;
-    }
+    const SelectionState state = selectionState();
+    const bool customPropertiesSelected = !state.customPropertyNames.isEmpty();
+    auto focusedProperty = mPropertiesView->focusedProperty();
 
     QMenu contextMenu(mPropertiesView);
 
     // Add properties specific to the just clicked property
-    if (auto focusedProperty = mPropertiesView->focusedProperty()) {
+    if (focusedProperty) {
         focusedProperty->addContextMenuActions(&contextMenu);
 
-        // Provide the Add, Remove and Reset actions also here
+        // Provide the Add and Reset actions also here
         if (const auto actions = focusedProperty->actions()) {
             if (!contextMenu.isEmpty())
                 contextMenu.addSeparator();
@@ -2807,9 +2900,9 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
     if (!contextMenu.isEmpty())
         contextMenu.addSeparator();
 
-    QAction *cutAction = contextMenu.addAction(QCoreApplication::translate("Tiled::PropertiesDock", "Cu&t"), this, &PropertiesWidget::cutProperties);
-    QAction *copyAction = contextMenu.addAction(QCoreApplication::translate("Tiled::PropertiesDock", "&Copy"), this, &PropertiesWidget::copyProperties);
-    QAction *pasteAction = contextMenu.addAction(QCoreApplication::translate("Tiled::PropertiesDock", "&Paste"), this, &PropertiesWidget::pasteProperties);
+    QAction *cutAction = contextMenu.addAction(QCoreApplication::translate("Tiled::PropertiesDock", "Cu&t"), this, &PropertiesWidget::cut);
+    QAction *copyAction = contextMenu.addAction(QCoreApplication::translate("Tiled::PropertiesDock", "&Copy"), this, &PropertiesWidget::copy);
+    QAction *pasteAction = contextMenu.addAction(QCoreApplication::translate("Tiled::PropertiesDock", "&Paste"), this, &PropertiesWidget::paste);
     contextMenu.addSeparator();
     QMenu *convertMenu = nullptr;
 
@@ -2817,19 +2910,28 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
         convertMenu = contextMenu.addMenu(QCoreApplication::translate("Tiled::PropertiesDock", "Convert To"));
         contextMenu.addAction(mActionRemoveProperty);
         contextMenu.addAction(mActionRenameProperty);
-    } else {
+    } else if (state.selectedListItems.isEmpty()) {
         contextMenu.addAction(mActionAddProperty);
     }
 
+    const bool listValueSelected = state.listProperty != nullptr;
+    const bool listPropertySelected = qobject_cast<VariantListProperty *>(focusedProperty);
+    auto clipboard = ClipboardManager::instance();
+
+    const bool copyEnabled = state.canCopy();
+    const bool pasteEnabled = clipboard->hasProperties()
+                              || (clipboard->hasListValues()
+                                  && (listValueSelected || listPropertySelected));
+
     cutAction->setShortcuts(QKeySequence::Cut);
     cutAction->setIcon(QIcon(QLatin1String(":/images/16/edit-cut.png")));
-    cutAction->setEnabled(customPropertiesSelected && currentObjectHasAllProperties);
+    cutAction->setEnabled(copyEnabled);
     copyAction->setShortcuts(QKeySequence::Copy);
     copyAction->setIcon(QIcon(QLatin1String(":/images/16/edit-copy.png")));
-    copyAction->setEnabled(customPropertiesSelected && currentObjectHasAllProperties);
+    copyAction->setEnabled(copyEnabled);
     pasteAction->setShortcuts(QKeySequence::Paste);
     pasteAction->setIcon(QIcon(QLatin1String(":/images/16/edit-paste.png")));
-    pasteAction->setEnabled(ClipboardManager::instance()->hasProperties());
+    pasteAction->setEnabled(pasteEnabled);
 
     Utils::setThemeIcon(cutAction, "edit-cut");
     Utils::setThemeIcon(copyAction, "edit-copy");
@@ -2852,7 +2954,7 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
             bool someDifferentType = false;
             bool allCanConvert = true;
 
-            for (const QString &propertyName : propertyNames) {
+            for (const QString &propertyName : state.customPropertyNames) {
                 QVariant propertyValue = object->property(propertyName);
 
                 if (propertyValue.userType() != toType)
@@ -2884,11 +2986,12 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
 
         const int toType = selectedItem->data().toInt();
 
-        for (const QString &propertyName : propertyNames) {
+        for (const QString &propertyName : state.customPropertyNames) {
             QList<Object*> objects;
             QVariantList values;
 
-            for (auto obj : mDocument->currentObjects()) {
+            const auto currentObjects = mDocument->currentObjects();
+            for (auto obj : currentObjects) {
                 QVariant propertyValue = obj->property(propertyName);
                 if (propertyValue.convert(toType)) {
                     objects.append(obj);
@@ -2897,7 +3000,7 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
             }
 
             undoStack->push(new SetProperty(mDocument, objects,
-                                            QStringList { propertyName },
+                                            PropertyPath { propertyName },
                                             values));
         }
 
@@ -2905,7 +3008,7 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
 
         // Restore selected properties
         QList<Property*> selectedProperties;
-        for (const QString &name : propertyNames) {
+        for (const QString &name : state.customPropertyNames) {
             if (auto property = mCustomProperties->property(name))
                 selectedProperties.append(property);
         }
@@ -2918,7 +3021,7 @@ bool PropertiesWidget::event(QEvent *event)
 {
     switch (event->type()) {
     case QEvent::ShortcutOverride: {
-        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        auto *keyEvent = static_cast<QKeyEvent *>(event);
         if (keyEvent->matches(QKeySequence::Delete) || keyEvent->key() == Qt::Key_Backspace
                 || keyEvent->matches(QKeySequence::Cut)
                 || keyEvent->matches(QKeySequence::Copy)
@@ -2941,13 +3044,13 @@ bool PropertiesWidget::event(QEvent *event)
 void PropertiesWidget::keyPressEvent(QKeyEvent *event)
 {
     if (event->matches(QKeySequence::Delete) || event->key() == Qt::Key_Backspace) {
-        removeProperties();
+        remove();
     } else if (event->matches(QKeySequence::Cut)) {
-        cutProperties();
+        cut();
     } else if (event->matches(QKeySequence::Copy)) {
-        copyProperties();
+        copy();
     } else if (event->matches(QKeySequence::Paste)) {
-        pasteProperties();
+        paste();
     } else {
         QWidget::keyPressEvent(event);
     }

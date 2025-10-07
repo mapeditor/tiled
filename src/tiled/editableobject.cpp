@@ -65,9 +65,10 @@ void EditableObject::setPropertyImpl(const QStringList &path, const QVariant &va
     }
 
     if (Document *doc = document())
-        asset()->push(new SetProperty(doc, { mObject }, path, propertyValueFromScript(value)));
+        // todo: add support for array indices in path
+        asset()->push(new SetProperty(doc, { mObject }, toPropertyPath(path), propertyValueFromScript(value)));
     else
-        mObject->setProperty(path, propertyValueFromScript(value));
+        mObject->setProperty(toPropertyPath(path), propertyValueFromScript(value));
 }
 
 void EditableObject::setProperties(const QVariantMap &properties)

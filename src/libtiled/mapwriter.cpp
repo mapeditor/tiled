@@ -94,6 +94,7 @@ private:
     void writeGroupLayer(QXmlStreamWriter &w, const GroupLayer &groupLayer);
     void writeProperties(QXmlStreamWriter &w,
                          const Properties &properties);
+    void writeExportValue(QXmlStreamWriter &w, const ExportValue &value);
     void writeImage(QXmlStreamWriter &w,
                     const QUrl &source,
                     const QPixmap &image,
@@ -893,8 +894,8 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
 
     w.writeStartElement(QStringLiteral("properties"));
 
-    const ExportContext context(mUseAbsolutePaths ? QString()
-                                                  : mDir.path());
+    ExportContext context(mUseAbsolutePaths ? QString() : mDir.path());
+    context.setRecursiveBehavior(ExportContext::RecursiveBehavior::ExportValuesOnly);
 
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
@@ -902,30 +903,59 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
         w.writeStartElement(QStringLiteral("property"));
         w.writeAttribute(QStringLiteral("name"), it.key());
 
-        const auto exportValue = context.toExportValue(it.value());
-        if (exportValue.typeName != QLatin1String("string"))
-            w.writeAttribute(QStringLiteral("type"), exportValue.typeName);
-        if (!exportValue.propertyTypeName.isEmpty())
-            w.writeAttribute(QStringLiteral("propertytype"), exportValue.propertyTypeName);
+        writeExportValue(w, context.toExportValue(it.value()));
 
-        // For class property values, write out the original value, so that the
-        // propertytype attribute can also be written for their members where
-        // applicable.
-        if (exportValue.value.userType() == QMetaType::QVariantMap) {
-            writeProperties(w, it.value().value<PropertyValue>().value.toMap());
-        } else {
-            const QString value = exportValue.value.toString();
-
-            if (value.contains(QLatin1Char('\n')))
-                w.writeCharacters(value);
-            else
-                w.writeAttribute(QStringLiteral("value"), value);
-        }
-
-        w.writeEndElement();
+        w.writeEndElement(); // </property>
     }
 
-    w.writeEndElement();
+    w.writeEndElement(); // </properties>
+}
+
+void MapWriterPrivate::writeExportValue(QXmlStreamWriter &w, const ExportValue &exportValue)
+{
+    if (exportValue.typeName != QLatin1String("string"))
+        w.writeAttribute(QStringLiteral("type"), exportValue.typeName);
+    if (!exportValue.propertyTypeName.isEmpty())
+        w.writeAttribute(QStringLiteral("propertytype"), exportValue.propertyTypeName);
+
+    switch (exportValue.value.userType()) {
+    case QMetaType::QVariantList: {
+        const auto values = exportValue.value.toList();
+        for (const QVariant &value : values) {
+            w.writeStartElement(QStringLiteral("item"));
+            writeExportValue(w, value.value<ExportValue>());
+            w.writeEndElement(); // </item>
+        }
+        break;
+    }
+    case QMetaType::QVariantMap: {
+        const auto map = exportValue.value.toMap();
+        if (map.isEmpty())
+            break;
+
+        w.writeStartElement(QStringLiteral("properties"));
+        Properties::const_iterator it = map.constBegin();
+        Properties::const_iterator it_end = map.constEnd();
+        for (; it != it_end; ++it) {
+            w.writeStartElement(QStringLiteral("property"));
+            w.writeAttribute(QStringLiteral("name"), it.key());
+
+            writeExportValue(w, it.value().value<ExportValue>());
+
+            w.writeEndElement(); // </property>
+        }
+        w.writeEndElement(); // </properties>
+        break;
+    }
+    default:
+        const QString value = exportValue.value.toString();
+
+        if (value.contains(QLatin1Char('\n')))
+            w.writeCharacters(value);
+        else
+            w.writeAttribute(QStringLiteral("value"), value);
+        break;
+    }
 }
 
 void MapWriterPrivate::writeImage(QXmlStreamWriter &w,

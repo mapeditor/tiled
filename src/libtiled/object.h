@@ -126,6 +126,8 @@ public:
 
     /**
      * Returns the type of the object's \a name property, as a string.
+     *
+     * This function exists only for the Python plugin.
      */
     QString propertyType(const QString &name) const
     { return typeName(mProperties.value(name)); }
@@ -152,7 +154,7 @@ public:
      *
      * Returns whether the property was set.
      */
-    bool setProperty(const QStringList &path, const QVariant &value);
+    bool setProperty(const PropertyPath &path, const QVariant &value);
 
     /**
      * Removes the property with the given \a name.

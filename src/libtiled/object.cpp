@@ -121,7 +121,7 @@ QVariantMap Object::inheritedProperties() const
     return inheritedProperties;
 }
 
-bool Object::setProperty(const QStringList &path, const QVariant &value)
+bool Object::setProperty(const PropertyPath &path, const QVariant &value)
 {
     return setPropertyMemberValue(mProperties, path, value);
 }
