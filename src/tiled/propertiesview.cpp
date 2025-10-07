@@ -283,7 +283,7 @@ QWidget *IntProperty::createEditor(QWidget *parent)
         connect(slider, &QSlider::valueChanged, this, &IntProperty::setValue);
     }
 
-    auto spinBox = new ExpressionSpinBox(parent);
+    auto spinBox = new SpinBox(parent);
     spinBox->setRange(m_minimum, m_maximum);
     spinBox->setSingleStep(m_singleStep);
     spinBox->setSuffix(m_suffix);
@@ -516,7 +516,7 @@ QWidget *FontProperty::createEditor(QWidget *parent)
     auto editor = new QWidget(parent);
     auto fontComboBox = new QFontComboBox(editor);
 
-    auto sizeSpinBox = new ExpressionSpinBox(editor);
+    auto sizeSpinBox = new SpinBox(editor);
     sizeSpinBox->setRange(1, 999);
     sizeSpinBox->setSuffix(tr(" px"));
     sizeSpinBox->setKeyboardTracking(false);
