@@ -27,6 +27,7 @@
 #include <QAction>
 #include <QActionGroup>
 #include <QApplication>
+#include <QKeyEvent>
 #include <QToolBar>
 
 using namespace Tiled;
@@ -132,6 +133,20 @@ void AbstractTileSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers
     case Subtract:  mSubtract->setChecked(true); break;
     case Intersect: mIntersect->setChecked(true); break;
     }
+}
+
+void AbstractTileSelectionTool::keyPressed(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Escape) {
+        MapDocument *document = mapDocument();
+        if (document && !document->selectedArea().isEmpty()) {
+            QUndoCommand *cmd = new ChangeSelectedArea(document, QRegion());
+            document->undoStack()->push(cmd);
+            return;
+        }
+    }
+
+    AbstractTileTool::keyPressed(event);
 }
 
 void AbstractTileSelectionTool::languageChanged()
