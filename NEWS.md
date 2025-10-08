@@ -15,6 +15,7 @@
 * Scripting: Added TileMap.chunkSize and TileMap.compressionLevel properties
 * AutoMapping: Don't match rules based on empty input indexes
 * AutoMapping: Optimized reloading of rule maps and load rule maps on-demand
+* Windows: Fixed issue with opening Tile Animation Editor (#4223)
 * Workaround tileset view layout regression in Qt 6.9
 * Raised minimum supported Qt version from 5.12 to 5.15.2
 
