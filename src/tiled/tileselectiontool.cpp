@@ -26,6 +26,7 @@
 #include "mapscene.h"
 
 #include <QApplication>
+#include <QKeyEvent>
 
 using namespace Tiled;
 
@@ -172,6 +173,22 @@ void TileSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
     }
 
     mLastModifiers = modifiers;
+}
+
+void TileSelectionTool::keyPressed(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Escape) {
+        if (mSelecting) {
+            // Cancel the ongoing selection
+            mSelecting = false;
+            mMouseDown = false;
+            brushItem()->setTileRegion(QRegion());
+            updateStatusInfo();
+            return;
+        }
+    }
+
+    AbstractTileSelectionTool::keyPressed(event);
 }
 
 void TileSelectionTool::languageChanged()
