@@ -150,6 +150,7 @@ private:
     void setWangColorImage(Tile *tile, int index);
     void setWangColorColor(WangColor *wangColor, const QColor &color);
 
+    void setAnimationEditorVisible(bool visible);
     void onAnimationEditorClosed();
 
     void setCurrentTile(Tile *tile);
@@ -175,7 +176,7 @@ private:
     WangDock *mWangDock;
     QComboBox *mZoomComboBox;
     QLabel *mStatusInfoLabel;
-    TileAnimationEditor *mTileAnimationEditor;
+    TileAnimationEditor *mTileAnimationEditor = nullptr;
 
     QHash<TilesetDocument*, TilesetView*> mViewForTileset;
     TilesetDocument *mCurrentTilesetDocument = nullptr;

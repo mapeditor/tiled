@@ -146,7 +146,6 @@ TilesetEditor::TilesetEditor(QObject *parent)
     , mWangDock(new WangDock(mMainWindow))
     , mZoomComboBox(new QComboBox)
     , mStatusInfoLabel(new QLabel)
-    , mTileAnimationEditor(new TileAnimationEditor(mMainWindow))
 {
     mMainWindow->setDockOptions(mMainWindow->dockOptions() | QMainWindow::GroupedDragging);
     mMainWindow->setDockNestingEnabled(true);
@@ -216,7 +215,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     connect(mRelocateTiles, &QAction::toggled, this, &TilesetEditor::setRelocateTiles);
     connect(editCollision, &QAction::toggled, this, &TilesetEditor::setEditCollision);
     connect(editWang, &QAction::toggled, this, &TilesetEditor::setEditWang);
-    connect(mShowAnimationEditor, &QAction::toggled, mTileAnimationEditor, &TileAnimationEditor::setVisible);
+    connect(mShowAnimationEditor, &QAction::toggled, this, &TilesetEditor::setAnimationEditorVisible);
     connect(mDynamicWrappingToggle, &QAction::toggled, this, [this] (bool checked) {
         if (TilesetView *view = currentTilesetView()) {
             view->setDynamicWrapping(checked);
@@ -225,8 +224,6 @@ TilesetEditor::TilesetEditor(QObject *parent)
             Session::current().setFileStateValue(fileName, QLatin1String("dynamicWrapping"), checked);
         }
     });
-
-    connect(mTileAnimationEditor, &TileAnimationEditor::closed, this, &TilesetEditor::onAnimationEditorClosed);
 
     connect(mWangDock, &WangDock::currentWangSetChanged, this, &TilesetEditor::onCurrentWangSetChanged);
     connect(mWangDock, &WangDock::currentWangIdChanged, this, &TilesetEditor::currentWangIdChanged);
@@ -239,7 +236,6 @@ TilesetEditor::TilesetEditor(QObject *parent)
     connect(DocumentManager::instance(), &DocumentManager::selectCustomPropertyRequested,
             mPropertiesDock, &PropertiesDock::selectCustomProperty);
 
-    connect(this, &TilesetEditor::currentTileChanged, mTileAnimationEditor, &TileAnimationEditor::setTile);
     connect(this, &TilesetEditor::currentTileChanged, mTileCollisionDock, &TileCollisionDock::setTile);
     connect(this, &TilesetEditor::currentTileChanged, mTemplatesDock, &TemplatesDock::setTile);
 
@@ -366,7 +362,8 @@ void TilesetEditor::setCurrentDocument(Document *document)
 
     mPropertiesDock->setDocument(document);
     mUndoDock->setStack(document ? document->undoStack() : nullptr);
-    mTileAnimationEditor->setTilesetDocument(tilesetDocument);
+    if (mTileAnimationEditor)
+        mTileAnimationEditor->setTilesetDocument(tilesetDocument);
     mTileCollisionDock->setTilesetDocument(tilesetDocument);
     mWangDock->setDocument(document);
 
@@ -1084,6 +1081,24 @@ void TilesetEditor::setWangColorColor(WangColor *wangColor, const QColor &color)
     mCurrentTilesetDocument->undoStack()->push(new ChangeWangColorColor(mCurrentTilesetDocument,
                                                                         wangColor,
                                                                         color));
+}
+
+void TilesetEditor::setAnimationEditorVisible(bool visible)
+{
+    if (visible && !mTileAnimationEditor) {
+        mTileAnimationEditor = new TileAnimationEditor(mMainWindow);
+        mTileAnimationEditor->setTilesetDocument(mCurrentTilesetDocument);
+        mTileAnimationEditor->setTile(mCurrentTile);
+
+        connect(mTileAnimationEditor, &TileAnimationEditor::closed,
+                this, &TilesetEditor::onAnimationEditorClosed);
+
+        connect(this, &TilesetEditor::currentTileChanged,
+                mTileAnimationEditor, &TileAnimationEditor::setTile);
+    }
+
+    if (mTileAnimationEditor)
+        mTileAnimationEditor->setVisible(visible);
 }
 
 void TilesetEditor::onAnimationEditorClosed()
