@@ -388,6 +388,13 @@ Monkey X
    rendering TMX files. Supports orthogonal and isometric maps as both
    CSV and Base64 (uncompressed).
 
+NICO Game Framework
+~~~~~~~~~~~~~~~~~~~
+
+-  `NICO <https://github.com/ftsf/nico>`__ is a game framework for the Nim
+   programming language that supports loading and saving Tiled maps in JSON format
+   (see the `Tilemap API documentation <https://github.com/ftsf/nico/blob/main/API.md#tilemap>`__).
+
 Node.js
 ~~~~~~~
 
