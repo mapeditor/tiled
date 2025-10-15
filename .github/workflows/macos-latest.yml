@@ -26,7 +26,8 @@ jobs:
 
     - name: Install dependencies
       run: |
-        brew install qbs
+        brew update
+        brew install qbs qttools
 
     - name: Setup Qbs
       run: |
