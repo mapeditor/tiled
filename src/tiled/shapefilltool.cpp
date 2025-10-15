@@ -28,10 +28,9 @@
 
 #include <QActionGroup>
 #include <QApplication>
+#include <QKeyEvent>
 #include <QToolBar>
 #include <QUndoStack>
-
-#include <memory>
 
 using namespace Tiled;
 
@@ -86,9 +85,7 @@ void ShapeFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     // Right-click cancels drawing a shape
     if (mToolBehavior == MakingShape && event->button() == Qt::RightButton) {
-        mToolBehavior = Free;
-        clearOverlay();
-        updateStatusInfo();
+        cancelMakingShape();
         return;
     }
 
@@ -139,6 +136,18 @@ void ShapeFillTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
         updateFillOverlay();
 }
 
+void ShapeFillTool::keyPressed(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Escape) {
+        if (mToolBehavior == MakingShape) {
+            cancelMakingShape();
+            return;
+        }
+    }
+
+    AbstractTileFillTool::keyPressed(event);
+}
+
 void ShapeFillTool::languageChanged()
 {
     setName(tr("Shape Fill Tool"));
@@ -153,7 +162,7 @@ void ShapeFillTool::populateToolBar(QToolBar *toolBar)
 {
     AbstractTileFillTool::populateToolBar(toolBar);
 
-    QActionGroup *actionGroup = new QActionGroup(toolBar);
+    auto *actionGroup = new QActionGroup(toolBar);
     actionGroup->addAction(mRectFill);
     actionGroup->addAction(mCircleFill);
 
@@ -192,6 +201,13 @@ void ShapeFillTool::setActionsEnabled(bool enabled)
 void ShapeFillTool::setCurrentShape(Shape shape)
 {
     mCurrentShape = shape;
+}
+
+void ShapeFillTool::cancelMakingShape()
+{
+    mToolBehavior = Free;
+    clearOverlay();
+    updateStatusInfo();
 }
 
 void ShapeFillTool::updateFillOverlay()
