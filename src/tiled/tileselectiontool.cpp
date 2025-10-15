@@ -188,7 +188,7 @@ void TileSelectionTool::keyPressed(QKeyEvent *event)
         }
     }
 
-    AbstractTileSelectionTool::keyPressed(event);
+    AbstractTileTool::keyPressed(event);
 }
 
 void TileSelectionTool::languageChanged()

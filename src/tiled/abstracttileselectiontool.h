@@ -46,8 +46,6 @@ public:
 
     void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
 
-    void keyPressed(QKeyEvent *event) override;
-
     void languageChanged() override;
 
     void populateToolBar(QToolBar *toolBar) override;
