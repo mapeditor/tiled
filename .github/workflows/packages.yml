@@ -2,6 +2,10 @@ name: Build Packages
 
 on:
   push:
+    branches:
+      - master
+    tags:
+      - '*'
     paths-ignore:
     - 'docs/**'
     - '**.md'
