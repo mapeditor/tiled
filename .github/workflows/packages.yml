@@ -241,6 +241,7 @@ jobs:
 
     - name: Setup Qbs
       run: |
+        brew update
         brew install qbs
         qbs setup-toolchains --detect
         qbs setup-qt --detect
