@@ -2,6 +2,10 @@ name: Compile on Ubuntu
 
 on:
   push:
+    branches:
+      - master
+    tags:
+      - '*'
     paths-ignore:
     - 'docs/**'
     - '**.md'

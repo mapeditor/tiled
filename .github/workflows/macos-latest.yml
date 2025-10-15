@@ -2,6 +2,10 @@ name: Compile on latest macOS (Homebrew)
 
 on:
   push:
+    branches:
+      - master
+    tags:
+      - '*'
     paths-ignore:
     - 'docs/**'
     - '**.md'
