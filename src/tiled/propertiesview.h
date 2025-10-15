@@ -22,6 +22,7 @@
 
 #include <QHash>
 #include <QIcon>
+#include <QMap>
 #include <QPointer>
 #include <QScrollArea>
 #include <QString>
@@ -503,7 +504,8 @@ class BaseEnumProperty : public IntProperty
 public:
     using IntProperty::IntProperty;
 
-    void setEnumData(const EnumData &enumData) { m_enumData = enumData; }
+    void setEnumData(const EnumData &enumData);
+    void setEnumNames(const QStringList &names);
     void setFlags(bool flags) { m_flags = flags; }
 
     QWidget *createEditor(QWidget *parent) override
@@ -511,6 +513,9 @@ public:
         return m_flags ? createFlagsEditor(parent)
                        : createEnumEditor(parent);
     }
+
+signals:
+    void enumDataChanged(const EnumData &enumData);
 
 protected:
     QWidget *createFlagsEditor(QWidget *parent);
