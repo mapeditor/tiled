@@ -374,6 +374,19 @@ void TilesetEditor::setCurrentDocument(Document *document)
 
         currentChanged(tilesetView->currentIndex());
         selectionChanged();
+        setRelocateTiles(mRelocateTiles->isChecked());
+
+        // Use detailed tooltip for atlas tileset
+        if (tilesetDocument && tilesetDocument->tileset()->isAtlas()) {
+            mRelocateTiles->setToolTip(tr("Rearrange Tiles") + QLatin1String("\n\n") +
+                                        tr("Left-click and drag to move tiles") + QLatin1String("\n") +
+                                        tr("Left-click tile corners to resize") + QLatin1String("\n") +
+                                        tr("Left-click and drag empty space to create new tiles") + QLatin1String("\n") +
+                                        tr("Right-click and drag to delete tiles") + QLatin1String("\n") +
+                                        tr("Hold Shift to disable grid snapping"));
+        } else {
+            mRelocateTiles->setToolTip(tr("Rearrange Tiles"));
+        }
     } else {
         currentChanged(QModelIndex());
     }
@@ -953,6 +966,20 @@ void TilesetEditor::setRelocateTiles(bool relocateTiles)
     if (relocateTiles) {
         mWangDock->setVisible(false);
         mTileCollisionDock->setVisible(false);
+
+        // Only show rearrange mode hint for atlas tilesets
+        if (mCurrentTilesetDocument && mCurrentTilesetDocument->tileset()->isAtlas()) {
+            mStatusInfoLabel->setText(tr("Rearrange Mode: Left-click to move/resize tiles | Right-click to delete | Shift to disable snapping"));
+        } else {
+            mStatusInfoLabel->clear();
+        }
+    } else {
+        // Restore atlas hint if we're viewing an atlas tileset
+        if (mCurrentTilesetDocument && mCurrentTilesetDocument->tileset()->isAtlas()) {
+            mStatusInfoLabel->setText(tr("Atlas Tileset: Use 'Rearrange Tiles' mode to customize tile regions"));
+        } else {
+            mStatusInfoLabel->clear();
+        }
     }
 }
 

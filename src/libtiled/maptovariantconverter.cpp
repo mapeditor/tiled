@@ -185,6 +185,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
     tilesetVariant[QStringLiteral("name")] = tileset.name();
     if (!tileset.className().isEmpty())
         tilesetVariant[QStringLiteral("class")] = tileset.className();
+    tilesetVariant[QStringLiteral("atlas")] = tileset.isAtlas();
     tilesetVariant[QStringLiteral("tilewidth")] = tileset.tileWidth();
     tilesetVariant[QStringLiteral("tileheight")] = tileset.tileHeight();
     tilesetVariant[QStringLiteral("spacing")] = tileset.tileSpacing();
@@ -302,14 +303,13 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
                 tileVariant[QStringLiteral("imagewidth")] = imageSize.width();
                 tileVariant[QStringLiteral("imageheight")] = imageSize.height();
             }
-
-            const QRect &imageRect = tile->imageRect();
-            if (!imageRect.isNull() && imageRect != tile->image().rect() && tileset.isCollection()) {
-                tileVariant[QStringLiteral("x")] = imageRect.x();
-                tileVariant[QStringLiteral("y")] = imageRect.y();
-                tileVariant[QStringLiteral("width")] = imageRect.width();
-                tileVariant[QStringLiteral("height")] = imageRect.height();
-            }
+        }
+        const QRect &imageRect = tile->imageRect();
+        if (!imageRect.isNull() && imageRect != tile->image().rect() && (tileset.isCollection() || tileset.isAtlas())) {
+            tileVariant[QStringLiteral("x")] = imageRect.x();
+            tileVariant[QStringLiteral("y")] = imageRect.y();
+            tileVariant[QStringLiteral("width")] = imageRect.width();
+            tileVariant[QStringLiteral("height")] = imageRect.height();
         }
         if (tile->objectGroup())
             tileVariant[QStringLiteral("objectgroup")] = toVariant(*tile->objectGroup());
