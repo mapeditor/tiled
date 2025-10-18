@@ -2323,10 +2323,11 @@ GroupProperty *PropertiesWidget::customPropertiesGroup() const
     return mCustomProperties;
 }
 
-void PropertiesWidget::selectCustomProperty(const QString &name)
+void PropertiesWidget::selectCustomProperty(const QString &name, bool focus)
 {
     if (auto property = mCustomProperties->property(name)) {
-        mPropertiesView->focusProperty(property);
+        if (focus)
+            mPropertiesView->focusProperty(property);
         mPropertiesView->setSelectedProperties({ property });
     }
 }
@@ -2715,8 +2716,10 @@ void PropertiesWidget::showAddValueProperty()
     if (!mAddValueProperty) {
         mAddValueProperty = new AddValueProperty(mCustomProperties);
 
-        connect(mAddValueProperty, &Property::addRequested, this, [this] {
-            addProperty(mAddValueProperty->name(), mAddValueProperty->value());
+        connect(mAddValueProperty, &Property::addRequested, this, [this] (bool focus) {
+            const auto &name = mAddValueProperty->name();
+            addProperty(name, mAddValueProperty->value());
+            selectCustomProperty(name, focus);
             mCustomProperties->deleteProperty(mAddValueProperty);
         });
         connect(mAddValueProperty, &Property::removeRequested, this, [this] {
@@ -2743,8 +2746,6 @@ void PropertiesWidget::addProperty(const QString &name, const QVariant &value)
                                         mDocument->currentObjects(),
                                         name, value));
     }
-
-    selectCustomProperty(name);
 }
 
 void PropertiesWidget::removeImpl(const SelectionState &state)
@@ -2883,7 +2884,9 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
 
             if (actions.testFlag(Property::Action::Add)) {
                 QAction *add = contextMenu.addAction(mAddIcon, tr("Add"),
-                                                     focusedProperty, &Property::addRequested);
+                                                     focusedProperty, [focusedProperty] {
+                    emit focusedProperty->addRequested();
+                });
                 add->setEnabled(!actions.testFlag(Property::Action::AddDisabled));
                 Utils::setThemeIcon(add, "add");
             }

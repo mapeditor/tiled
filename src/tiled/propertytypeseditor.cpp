@@ -570,8 +570,16 @@ void PropertyTypesEditor::openAddMemberDialog()
         mAddValueProperty = new AddValueProperty(mMembersProperty);
         mAddValueProperty->setPlaceholderText(tr("Member name"));
 
-        connect(mAddValueProperty, &Property::addRequested, this, [this] {
-            addMember(mAddValueProperty->name(), mAddValueProperty->value());
+        connect(mAddValueProperty, &Property::addRequested, this, [this] (bool focus) {
+            const auto &name = mAddValueProperty->name();
+            addMember(name, mAddValueProperty->value());
+
+            if (auto property = mMembersProperty->property(name)) {
+                if (focus)
+                    mMembersView->focusProperty(property);
+                mMembersView->setSelectedProperties({ property });
+            }
+
             mMembersProperty->deleteProperty(mAddValueProperty);
         });
         connect(mAddValueProperty, &Property::removeRequested, this, [this] {
@@ -603,11 +611,6 @@ void PropertyTypesEditor::addMember(const QString &name, const QVariant &value)
 
     applyMemberToSelectedType(name, value);
     updateDetails();
-
-    if (auto property = mMembersProperty->property(name)) {
-        mMembersView->focusProperty(property);
-        mMembersView->setSelectedProperties({ property });
-    }
 }
 
 void PropertyTypesEditor::removeMember()

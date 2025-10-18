@@ -64,7 +64,7 @@ signals:
     void bringToFront();
 
 public slots:
-    void selectCustomProperty(const QString &name);
+    void selectCustomProperty(const QString &name, bool focus = true);
 
 protected:
     bool event(QEvent *event) override;

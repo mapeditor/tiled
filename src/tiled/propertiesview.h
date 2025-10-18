@@ -117,7 +117,7 @@ signals:
 
     void resetRequested();
     void removeRequested();
-    void addRequested();
+    void addRequested(bool focus = true);
 
     void contextMenuRequested(const QPoint &globalPos);
 
