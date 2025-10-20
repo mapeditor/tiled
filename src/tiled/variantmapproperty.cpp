@@ -772,9 +772,13 @@ QWidget *AddValueProperty::createLabel(int level, QWidget *parent)
         if (!focusWidget || focusWidget->window() != parent->window())
             return;
 
-        // Request removal if focus moved elsewhere
-        if (!parent->isAncestorOf(focusWidget))
-            emit removeRequested();
+        // Request add or removal if focus moved elsewhere
+        if (!parent->isAncestorOf(focusWidget)) {
+            if (!name().isEmpty())
+                emit addRequested(false);   // add without focusing, in response to focus out
+            else
+                emit removeRequested();
+        }
     });
 
     return nameEdit;

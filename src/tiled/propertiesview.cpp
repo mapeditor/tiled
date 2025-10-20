@@ -1420,7 +1420,8 @@ PropertiesView::PropertyWidgets PropertiesView::createPropertyWidgets(Property *
     widgets.addButton->setFocusPolicy(Qt::StrongFocus); // needed for AddValueProperty
     Utils::setThemeIcon(widgets.addButton, "add");
     editorLayout->addWidget(widgets.addButton, 0, Qt::AlignTop);
-    connect(widgets.addButton, &QAbstractButton::clicked, property, &Property::addRequested);
+    connect(widgets.addButton, &QAbstractButton::clicked,
+            property, [property] { emit property->addRequested(); });
 
     if (auto groupProperty = qobject_cast<GroupProperty *>(property)) {
         auto containerWidget = new QWidget(parent);
