@@ -82,29 +82,12 @@ AbstractTileSelectionTool::AbstractTileSelectionTool(Id id,
 
 void AbstractTileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    const Qt::MouseButton button = event->button();
+    const auto button = event->button();
+    const auto modifiers = event->modifiers();
 
-    if (button == Qt::LeftButton || (button == Qt::RightButton && event->modifiers() == Qt::NoModifier)) {
-        MapDocument *document = mapDocument();
-        QRegion selection;
-
-        // Left button modifies selection, right button clears selection
-        if (button == Qt::LeftButton) {
-            selection = document->selectedArea();
-
-            switch (mSelectionMode) {
-            case Replace:   selection = mSelectedRegion; break;
-            case Add:       selection += mSelectedRegion; break;
-            case Subtract:  selection -= mSelectedRegion; break;
-            case Intersect: selection &= mSelectedRegion; break;
-            }
-        }
-
-        if (selection != document->selectedArea()) {
-            QUndoCommand *cmd = new ChangeSelectedArea(document, selection);
-            document->undoStack()->push(cmd);
-        }
-
+    // Right mouse button clears selection
+    if (button == Qt::RightButton && modifiers == Qt::NoModifier) {
+        changeSelectedArea(QRegion());
         return;
     }
 
@@ -148,6 +131,44 @@ void AbstractTileSelectionTool::populateToolBar(QToolBar *toolBar)
     toolBar->addAction(mAdd);
     toolBar->addAction(mSubtract);
     toolBar->addAction(mIntersect);
+}
+
+const QRegion &AbstractTileSelectionTool::selectionPreviewRegion() const
+{
+    return brushItem()->tileRegion();
+}
+
+void AbstractTileSelectionTool::setSelectionPreview(const QRegion &region)
+{
+    brushItem()->setTileRegion(region);
+}
+
+void AbstractTileSelectionTool::applySelectionPreview()
+{
+    MapDocument *document = mapDocument();
+    if (!document)
+        return;
+
+    auto selectedArea = document->selectedArea();
+
+    switch (mSelectionMode) {
+    case Replace:   selectedArea = selectionPreviewRegion(); break;
+    case Add:       selectedArea += selectionPreviewRegion(); break;
+    case Subtract:  selectedArea -= selectionPreviewRegion(); break;
+    case Intersect: selectedArea &= selectionPreviewRegion(); break;
+    }
+
+    changeSelectedArea(selectedArea);
+}
+
+void AbstractTileSelectionTool::changeSelectedArea(const QRegion &region)
+{
+    MapDocument *document = mapDocument();
+    if (!document || document->selectedArea() == region)
+        return;
+
+    QUndoCommand *cmd = new ChangeSelectedArea(document, region);
+    document->undoStack()->push(cmd);
 }
 
 // Override to ignore whether the current layer is a visible tile layer

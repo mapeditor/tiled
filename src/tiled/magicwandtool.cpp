@@ -23,7 +23,6 @@
 
 #include "magicwandtool.h"
 
-#include "brushitem.h"
 #include "tilepainter.h"
 
 using namespace Tiled;
@@ -46,8 +45,7 @@ void MagicWandTool::tilePositionChanged(QPoint tilePos)
         return;
 
     TilePainter regionComputer(mapDocument(), tileLayer);
-    setSelectedRegion(regionComputer.computeFillRegion(tilePos));
-    brushItem()->setTileRegion(selectedRegion());
+    setSelectionPreview(regionComputer.computeFillRegion(tilePos));
 }
 
 void MagicWandTool::languageChanged()
@@ -55,6 +53,16 @@ void MagicWandTool::languageChanged()
     setName(tr("Magic Wand"));
 
     AbstractTileSelectionTool::languageChanged();
+}
+
+void MagicWandTool::mousePressed(QGraphicsSceneMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        applySelectionPreview();
+        return;
+    }
+
+    AbstractTileSelectionTool::mousePressed(event);
 }
 
 #include "moc_magicwandtool.cpp"

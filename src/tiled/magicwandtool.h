@@ -26,8 +26,6 @@
 
 #include "abstracttileselectiontool.h"
 
-#include "tilelayer.h"
-
 namespace Tiled {
 
 class MapDocument;
@@ -43,6 +41,8 @@ public:
     MagicWandTool(QObject *parent = nullptr);
 
     void languageChanged() override;
+
+    void mousePressed(QGraphicsSceneMouseEvent *event) override;
 
 protected:
     void tilePositionChanged(QPoint tilePos) override;
