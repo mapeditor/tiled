@@ -728,6 +728,9 @@ void ObjectSelectionTool::mouseDoubleClicked(QGraphicsSceneMouseEvent *event)
 {
     mousePressed(event);
 
+    if (event->modifiers() & Qt::AltModifier)
+        return; // Don't interfere with Alt+click (handled in mouseReleased)
+
     if (mClickedObject && (mClickedObject->shape() == MapObject::Polygon ||
                            mClickedObject->shape() == MapObject::Polyline)) {
         toolManager()->selectTool(toolManager()->findTool<EditPolygonTool>());
