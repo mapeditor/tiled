@@ -60,16 +60,17 @@ protected:
 
     SelectionMode selectionMode() const { return mSelectionMode; }
 
-    QRegion selectedRegion() const { return mSelectedRegion; }
-    void setSelectedRegion(QRegion region) { mSelectedRegion = region; }
+    const QRegion &selectionPreviewRegion() const;
+    void setSelectionPreview(const QRegion &region);
+    void applySelectionPreview();
+
+    void changeSelectedArea(const QRegion &region);
 
     void updateBrushVisibility() override;
 
 private:
     SelectionMode mSelectionMode;
     SelectionMode mDefaultMode;
-
-    QRegion mSelectedRegion;
 
     QAction *mReplace;
     QAction *mAdd;

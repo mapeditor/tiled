@@ -40,10 +40,19 @@ class SelectSameTileTool : public AbstractTileSelectionTool
 public:
     SelectSameTileTool(QObject *parent = nullptr);
 
+    void mousePressed(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleased(QGraphicsSceneMouseEvent *event) override;
+
+    void keyPressed(QKeyEvent *event) override;
+
     void languageChanged() override;
 
 protected:
     void tilePositionChanged(QPoint tilePos) override;
+
+private:
+    QVector<Cell> mMatchCells;
+    bool mMouseDown = false;
 };
 
 } // namespace Tiled

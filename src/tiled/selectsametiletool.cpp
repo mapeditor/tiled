@@ -20,9 +20,11 @@
 
 #include "selectsametiletool.h"
 
-#include "brushitem.h"
 #include "map.h"
 #include "mapdocument.h"
+
+#include <QGraphicsSceneMouseEvent>
+#include <QKeyEvent>
 
 using namespace Tiled;
 
@@ -43,23 +45,87 @@ void SelectSameTileTool::tilePositionChanged(QPoint tilePos)
     if (!tileLayer)
         return;
 
-    const bool infinite = mapDocument()->map()->infinite();
+    // Reset the list when the left mouse button isn't pressed
+    if (!mMouseDown)
+        mMatchCells.clear();
 
+    const bool infinite = mapDocument()->map()->infinite();
     QRegion resultRegion;
+
     if (infinite || tileLayer->contains(tilePos)) {
-        const Cell &matchCell = tileLayer->cellAt(tilePos);
-        if (matchCell.isEmpty()) {
-            // Due to the way TileLayer::region only iterates allocated chunks,
-            // and because of different desired behavior for infinite vs. fixed
-            // maps we need a special handling when matching the empty cell.
-            resultRegion = infinite ? tileLayer->bounds() : tileLayer->rect();
-            resultRegion -= tileLayer->region();
-        } else {
-            resultRegion = tileLayer->region([&] (const Cell &cell) { return cell == matchCell; });
+        const Cell &currentCell = tileLayer->cellAt(tilePos);
+        if (!mMatchCells.contains(currentCell))
+            mMatchCells.append(currentCell);
+
+        resultRegion = tileLayer->region(
+            [&](const Cell &cell) { return mMatchCells.contains(cell); });
+
+        // Due to the way TileLayer::region only iterates allocated chunks, and
+        // because of different desired behavior for infinite vs. fixed maps we
+        // need a special handling when matching the empty cell.
+        const bool hasEmptyCell = std::any_of(mMatchCells.begin(),
+                                              mMatchCells.end(),
+                                              [](const Cell &cell) { return cell.isEmpty(); });
+        if (hasEmptyCell) {
+            QRegion emptyRegion = infinite ? tileLayer->bounds() : tileLayer->rect();
+            emptyRegion -= tileLayer->region();
+
+            resultRegion += emptyRegion;
         }
     }
-    setSelectedRegion(resultRegion);
-    brushItem()->setTileRegion(selectedRegion());
+
+    setSelectionPreview(resultRegion);
+}
+
+void SelectSameTileTool::mousePressed(QGraphicsSceneMouseEvent *event)
+{
+    const auto button = event->button();
+    const auto modifiers = event->modifiers();
+
+    if (button == Qt::LeftButton) {
+        mMouseDown = true;
+        return;
+    }
+
+    // Right mouse button cancels selection
+    if (mMouseDown && button == Qt::RightButton && modifiers == Qt::NoModifier) {
+        mMouseDown = false;
+        setSelectionPreview(QRegion());
+        return;
+    }
+
+    // Let the base class handle other actions
+    AbstractTileSelectionTool::mousePressed(event);
+}
+
+void SelectSameTileTool::mouseReleased(QGraphicsSceneMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton && mMouseDown) {
+        mMouseDown = false;
+
+        applySelectionPreview();
+
+        // Refresh selection preview based on current tile only
+        tilePositionChanged(tilePosition());
+        return;
+    }
+
+    AbstractTileSelectionTool::mouseReleased(event);
+}
+
+void SelectSameTileTool::keyPressed(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Escape) {
+        if (mMouseDown) {
+            // Cancel the ongoing selection
+            mMouseDown = false;
+            mMatchCells.clear();
+            setSelectionPreview(QRegion());
+            return;
+        }
+    }
+
+    AbstractTileSelectionTool::keyPressed(event);
 }
 
 void SelectSameTileTool::languageChanged()
