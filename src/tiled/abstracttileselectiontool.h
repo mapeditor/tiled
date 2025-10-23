@@ -46,6 +46,8 @@ public:
 
     void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
 
+    void keyPressed(QKeyEvent *event) override;
+
     void languageChanged() override;
 
     void populateToolBar(QToolBar *toolBar) override;
@@ -67,6 +69,8 @@ protected:
     void changeSelectedArea(const QRegion &region);
 
     void updateBrushVisibility() override;
+
+    bool mMouseDown = false;
 
 private:
     SelectionMode mSelectionMode;

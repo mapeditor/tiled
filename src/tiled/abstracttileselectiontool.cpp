@@ -27,6 +27,7 @@
 #include <QAction>
 #include <QActionGroup>
 #include <QApplication>
+#include <QKeyEvent>
 #include <QToolBar>
 
 using namespace Tiled;
@@ -85,8 +86,20 @@ void AbstractTileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
     const auto button = event->button();
     const auto modifiers = event->modifiers();
 
-    // Right mouse button clears selection
+    if (button == Qt::LeftButton) {
+        mMouseDown = true;
+        return;
+    }
+
     if (button == Qt::RightButton && modifiers == Qt::NoModifier) {
+        // Right mouse button cancels selection
+        if (mMouseDown) {
+            mMouseDown = false;
+            setSelectionPreview(QRegion());
+            return;
+        }
+
+        // Right mouse button clears selection
         changeSelectedArea(QRegion());
         return;
     }
@@ -94,8 +107,16 @@ void AbstractTileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
     AbstractTileTool::mousePressed(event);
 }
 
-void AbstractTileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *)
+void AbstractTileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
+    if (event->button() == Qt::LeftButton && mMouseDown) {
+        mMouseDown = false;
+
+        applySelectionPreview();
+
+        // Refresh selection preview based on current tile only
+        tilePositionChanged(tilePosition());
+    }
 }
 
 void AbstractTileSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
@@ -115,6 +136,20 @@ void AbstractTileSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers
     case Subtract:  mSubtract->setChecked(true); break;
     case Intersect: mIntersect->setChecked(true); break;
     }
+}
+
+void AbstractTileSelectionTool::keyPressed(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Escape) {
+        if (mMouseDown) {
+            // Cancel the ongoing selection
+            mMouseDown = false;
+            setSelectionPreview(QRegion());
+            return;
+        }
+    }
+
+    AbstractTileTool::keyPressed(event);
 }
 
 void AbstractTileSelectionTool::languageChanged()

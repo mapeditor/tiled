@@ -49,11 +49,8 @@ protected:
 private:
     QRect selectedArea() const;
 
-    void clearSelection();
-
     QPoint mMouseScreenStart;
     QPoint mSelectionStart;
-    bool mMouseDown = false;
     bool mSelecting = false;
     bool mForceSquare = false;
     bool mExpandFromCenter = false;
