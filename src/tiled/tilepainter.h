@@ -57,12 +57,6 @@ public:
     Cell cellAt(QPoint pos) const;
 
     /**
-     * Sets the cell at the given coordinates. The coordinates are relative to
-     * the map origin.
-     */
-    void setCell(int x, int y, const Cell &cell);
-
-    /**
      * Sets the cells at the given coordinates to the cells in the given tile
      * layer. The coordinates \a x and \a y are relative to the map origin.
      *
@@ -97,16 +91,11 @@ public:
     QRegion computePaintableFillRegion(QPoint fillOrigin) const;
 
     /**
-     * Computes a fill region made up of all cells of the same type as that
-     * at \a fillOrigin that are connected. Does not take into account the
-     * current selection.
+     * Computes a fill region starting at \a fillOrigin containing all
+     * connected cells for which the given \a condition returns true. Does not
+     * take into account the current selection.
      */
-    QRegion computeFillRegion(QPoint fillOrigin) const;
-
-    /**
-     * Returns true if the given cell is drawable.
-     */
-    bool isDrawable(int x, int y) const;
+    QRegion computeFillRegion(QPoint fillOrigin, std::function<bool(const Cell &)> condition) const;
 
 private:
     QRegion paintableRegion(const QRegion &region) const;

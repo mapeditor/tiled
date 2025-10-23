@@ -20,10 +20,7 @@
 
 #include "tileselectiontool.h"
 
-#include "brushitem.h"
-#include "changeselectedarea.h"
 #include "mapdocument.h"
-#include "mapscene.h"
 
 #include <QApplication>
 #include <QKeyEvent>
@@ -44,7 +41,7 @@ TileSelectionTool::TileSelectionTool(QObject *parent)
 void TileSelectionTool::tilePositionChanged(QPoint)
 {
     if (mSelecting)
-        brushItem()->setTileRegion(selectedArea());
+        setSelectionPreview(selectedArea());
 }
 
 void TileSelectionTool::updateStatusInfo()
@@ -87,7 +84,7 @@ void TileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
         mExpandFromCenter = false;
         mMouseScreenStart = event->screenPos();
         mSelectionStart = tilePosition();
-        brushItem()->setTileRegion(QRegion());
+        setSelectionPreview(QRegion());
         return;
     }
 
@@ -96,12 +93,12 @@ void TileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
             // Cancel selecting
             mSelecting = false;
             mMouseDown = false; // Avoid restarting select on move
-            brushItem()->setTileRegion(QRegion());
+            setSelectionPreview(QRegion());
             return;
         }
 
         if (event->modifiers() == Qt::NoModifier) {
-            clearSelection();
+            changeSelectedArea(QRegion());
             return;
         }
     }
@@ -117,27 +114,12 @@ void TileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     if (mSelecting) {
         mSelecting = false;
 
-        MapDocument *document = mapDocument();
-        QRegion selection = document->selectedArea();
-        const QRect area = selectedArea();
-
-        switch (selectionMode()) {
-        case Replace:   selection = area; break;
-        case Add:       selection += area; break;
-        case Subtract:  selection -= area; break;
-        case Intersect: selection &= area; break;
-        }
-
-        if (selection != document->selectedArea()) {
-            QUndoCommand *cmd = new ChangeSelectedArea(document, selection);
-            document->undoStack()->push(cmd);
-        }
-
-        brushItem()->setTileRegion(QRegion());
+        applySelectionPreview();
+        setSelectionPreview(QRegion());
         updateStatusInfo();
     } else if (mMouseDown) {
         // Clicked without dragging and not cancelled
-        clearSelection();
+        changeSelectedArea(QRegion());
     }
 
     mMouseDown = false;
@@ -182,7 +164,7 @@ void TileSelectionTool::keyPressed(QKeyEvent *event)
             // Cancel the ongoing selection
             mSelecting = false;
             mMouseDown = false;
-            brushItem()->setTileRegion(QRegion());
+            setSelectionPreview(QRegion());
             updateStatusInfo();
             return;
         }
@@ -224,15 +206,6 @@ QRect TileSelectionTool::selectedArea() const
 #else
     return QRect::span(startPos, endPos);
 #endif
-}
-
-void TileSelectionTool::clearSelection()
-{
-    MapDocument *document = mapDocument();
-    if (!document->selectedArea().isEmpty()) {
-        QUndoCommand *cmd = new ChangeSelectedArea(document, QRegion());
-        document->undoStack()->push(cmd);
-    }
 }
 
 #include "moc_tileselectiontool.cpp"

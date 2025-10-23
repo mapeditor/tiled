@@ -24,7 +24,6 @@
 #include "mapdocument.h"
 
 #include <QGraphicsSceneMouseEvent>
-#include <QKeyEvent>
 
 using namespace Tiled;
 
@@ -75,57 +74,6 @@ void SelectSameTileTool::tilePositionChanged(QPoint tilePos)
     }
 
     setSelectionPreview(resultRegion);
-}
-
-void SelectSameTileTool::mousePressed(QGraphicsSceneMouseEvent *event)
-{
-    const auto button = event->button();
-    const auto modifiers = event->modifiers();
-
-    if (button == Qt::LeftButton) {
-        mMouseDown = true;
-        return;
-    }
-
-    // Right mouse button cancels selection
-    if (mMouseDown && button == Qt::RightButton && modifiers == Qt::NoModifier) {
-        mMouseDown = false;
-        setSelectionPreview(QRegion());
-        return;
-    }
-
-    // Let the base class handle other actions
-    AbstractTileSelectionTool::mousePressed(event);
-}
-
-void SelectSameTileTool::mouseReleased(QGraphicsSceneMouseEvent *event)
-{
-    if (event->button() == Qt::LeftButton && mMouseDown) {
-        mMouseDown = false;
-
-        applySelectionPreview();
-
-        // Refresh selection preview based on current tile only
-        tilePositionChanged(tilePosition());
-        return;
-    }
-
-    AbstractTileSelectionTool::mouseReleased(event);
-}
-
-void SelectSameTileTool::keyPressed(QKeyEvent *event)
-{
-    if (event->key() == Qt::Key_Escape) {
-        if (mMouseDown) {
-            // Cancel the ongoing selection
-            mMouseDown = false;
-            mMatchCells.clear();
-            setSelectionPreview(QRegion());
-            return;
-        }
-    }
-
-    AbstractTileSelectionTool::keyPressed(event);
 }
 
 void SelectSameTileTool::languageChanged()

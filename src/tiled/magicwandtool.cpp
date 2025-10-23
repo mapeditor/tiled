@@ -44,8 +44,21 @@ void MagicWandTool::tilePositionChanged(QPoint tilePos)
     if (!tileLayer)
         return;
 
-    TilePainter regionComputer(mapDocument(), tileLayer);
-    setSelectionPreview(regionComputer.computeFillRegion(tilePos));
+    // Reset the list when the left mouse button isn't pressed
+    if (!mMouseDown)
+        mMatchCells.clear();
+
+    TilePainter tilePainter(mapDocument(), tileLayer);
+
+    const Cell targetCell = tilePainter.cellAt(tilePos);
+    if (!mMatchCells.contains(targetCell))
+        mMatchCells.append(targetCell);
+
+    const auto condition = [&](const Cell &cell) {
+        return mMatchCells.contains(cell);
+    };
+
+    setSelectionPreview(tilePainter.computeFillRegion(tilePos, condition));
 }
 
 void MagicWandTool::languageChanged()
@@ -53,16 +66,6 @@ void MagicWandTool::languageChanged()
     setName(tr("Magic Wand"));
 
     AbstractTileSelectionTool::languageChanged();
-}
-
-void MagicWandTool::mousePressed(QGraphicsSceneMouseEvent *event)
-{
-    if (event->button() == Qt::LeftButton) {
-        applySelectionPreview();
-        return;
-    }
-
-    AbstractTileSelectionTool::mousePressed(event);
 }
 
 #include "moc_magicwandtool.cpp"
