@@ -24,14 +24,12 @@
 
 #include "abstracttilefilltool.h"
 #include "tilelayer.h"
-#include "tilestamp.h"
 
 namespace Tiled {
 
 class WangSet;
 
 class MapDocument;
-class StampActions;
 
 /**
  * Implements a tool that bucket fills (flood fills) a region with a repeatable
@@ -46,6 +44,9 @@ public:
     ~BucketFillTool() override;
 
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleased(QGraphicsSceneMouseEvent *event) override;
+
+    void keyPressed(QKeyEvent *event) override;
 
     void modifiersChanged(Qt::KeyboardModifiers) override;
 
@@ -69,7 +70,9 @@ private:
      */
     FillMethod mLastFillMethod;
 
+    bool mMouseDown = false;
     QRegion mFillRegion;
+    QVector<Cell> mMatchCells;
 
     void makeConnections();
 };

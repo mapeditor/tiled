@@ -85,10 +85,11 @@ public:
     void erase(const QRegion &region);
 
     /**
-     * Computes the paintable fill region made up of all cells of the same type
-     * as that at \a fillOrigin that are connected.
+     * Computes the paintable fill region starting at \a fillOrigin containing
+     * all connected cells for which the given \a condition returns true.
      */
-    QRegion computePaintableFillRegion(QPoint fillOrigin) const;
+    QRegion computePaintableFillRegion(QPoint fillOrigin,
+                                       std::function<bool(const Cell &)> condition) const;
 
     /**
      * Computes a fill region starting at \a fillOrigin containing all

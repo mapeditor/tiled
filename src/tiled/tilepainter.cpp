@@ -292,7 +292,8 @@ static QRegion fillRegion(const TileLayer &layer,
     return fillRegion;
 }
 
-QRegion TilePainter::computePaintableFillRegion(QPoint fillOrigin) const
+QRegion TilePainter::computePaintableFillRegion(QPoint fillOrigin,
+                                                std::function<bool(const Cell &)> condition) const
 {
     const Map *map = mMapDocument->map();
     const QRegion &selection = mMapDocument->selectedArea();
@@ -304,14 +305,10 @@ QRegion TilePainter::computePaintableFillRegion(QPoint fillOrigin) const
     else
         bounds = mTileLayer->rect();
 
-    // Cache cell that we will match other cells against
-    fillOrigin -= mTileLayer->position();
-    const Cell matchCell = mTileLayer->cellAt(fillOrigin);
-
     QRegion region = fillRegion(*mTileLayer,
                                 bounds.translated(-mTileLayer->position()),
-                                fillOrigin,
-                                [&](const Cell &cell) { return cell == matchCell; },
+                                fillOrigin - mTileLayer->position(),
+                                condition,
                                 map->orientation(), map->staggerAxis(), map->staggerIndex());
 
     region.translate(mTileLayer->position());

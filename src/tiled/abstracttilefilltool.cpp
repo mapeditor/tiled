@@ -26,6 +26,7 @@
 #include "wangfiller.h"
 
 #include <QAction>
+#include <QUndoStack>
 
 using namespace Tiled;
 
@@ -57,9 +58,7 @@ AbstractTileFillTool::AbstractTileFillTool(Id id,
             [this] { emit stampChanged(mStamp.rotated(RotateRight)); });
 }
 
-AbstractTileFillTool::~AbstractTileFillTool()
-{
-}
+AbstractTileFillTool::~AbstractTileFillTool() = default;
 
 void AbstractTileFillTool::activate(MapScene *scene)
 {
@@ -232,6 +231,19 @@ void AbstractTileFillTool::updatePreview(const QRegion &fillRegion)
 
     brushItem()->setMap(preview);
     mPreviewMap = preview;
+}
+
+bool AbstractTileFillTool::applyPreview(const QString &text)
+{
+    auto preview = mPreviewMap;
+    if (!preview)
+        return false;
+
+    auto undoStack = mapDocument()->undoStack();
+    undoStack->beginMacro(text);
+    mapDocument()->paintTileLayers(*preview, false, &mMissingTilesets);
+    undoStack->endMacro();
+    return true;
 }
 
 void AbstractTileFillTool::clearOverlay()
