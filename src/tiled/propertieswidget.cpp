@@ -101,8 +101,8 @@ template<> EnumData enumData<Map::Orientation>()
 template<> EnumData enumData<Map::StaggerAxis>()
 {
     return {{
-        QCoreApplication::translate("StaggerAxis", "X"),
-        QCoreApplication::translate("StaggerAxis", "Y")
+        QCoreApplication::translate("StaggerAxis", "X (Flat-top)"),
+        QCoreApplication::translate("StaggerAxis", "Y (Pointy-top)")
     }};
 }
 
@@ -871,9 +871,11 @@ public:
         mMapProperties->addProperty(mRenderOrderProperty);
         mMapProperties->addProperty(mBackgroundColorProperty);
 
+        updateStaggerAxisLabels();
+        updateEnabledState();
+
         addProperty(mMapProperties);
 
-        updateEnabledState();
         connect(document, &Document::changed,
                 this, &MapProperties::onChanged);
     }
@@ -905,6 +907,7 @@ private:
             emit mParallaxOriginProperty->valueChanged();
             break;
         case Map::OrientationProperty:
+            updateStaggerAxisLabels();
             emit mOrientationProperty->valueChanged();
             break;
         case Map::RenderOrderProperty:
@@ -952,6 +955,24 @@ private:
         }
     }
 
+    void updateStaggerAxisLabels()
+    {
+        switch (map()->orientation()) {
+        case Map::Hexagonal:
+            mStaggerAxisProperty->setEnumNames({
+                tr("X (Flat-top)"),
+                tr("Y (Pointy-top)")
+            });
+            break;
+        default:
+            mStaggerAxisProperty->setEnumNames({
+                tr("X"),
+                tr("Y")
+            });
+            break;
+        }
+    }
+
     MapDocument *mapDocument() const
     {
         return static_cast<MapDocument*>(mDocument);
@@ -968,7 +989,7 @@ private:
     SizeProperty *mTileSizeProperty;
     BoolProperty *mInfiniteProperty;
     IntProperty *mHexSideLengthProperty;
-    Property *mStaggerAxisProperty;
+    BaseEnumProperty *mStaggerAxisProperty;
     Property *mStaggerIndexProperty;
     Property *mParallaxOriginProperty;
     Property *mLayerDataFormatProperty;
