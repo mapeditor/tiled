@@ -26,6 +26,7 @@ env:
   SENTRY_PROJECT: tiled
   TILED_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') }}
   TILED_SNAPSHOT: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+  SIGNING_ENABLED: ${{ secrets.SIGNING_ENABLED }}
 
 jobs:
   version:
@@ -286,14 +287,14 @@ jobs:
 
     - name: Create Certificate File
       id: certificateFile
-      if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
+      if: env.SIGNING_ENABLED == 'true'
       uses: timheuer/base64-to-file@v1
       with:
         fileName: 'certificate.p12'
         encodedString: ${{ secrets.MACOS_CERTIFICATE }}
 
     - name: Import Certificate
-      if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
+      if: env.SIGNING_ENABLED == 'true'
       run: |
         security create-keychain -p ${{ secrets.KEYCHAIN_PWD }} mapeditor/tiled
         security default-keychain -s mapeditor/tiled
@@ -302,7 +303,7 @@ jobs:
         security set-key-partition-list -S 'apple-tool:,apple:' -s -k ${{ secrets.KEYCHAIN_PWD }} mapeditor/tiled
 
     - name: Sign, Notarize & Staple
-      if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
+      if: env.SIGNING_ENABLED == 'true'
       run: |
         codesign --deep --force --verify --verbose --sign Lindeijer --options runtime --entitlements src/tiledapp/app.entitlements install/Tiled.app
         ditto -c -k --sequesterRsrc --keepParent install/Tiled.app Tiled_for_notarization.zip
