@@ -249,8 +249,8 @@ jobs:
         brew install qbs
         qbs setup-toolchains --detect
         qbs setup-qt --detect
-        qbs config profiles.qt-6-9-2.baseProfile xcode
-        qbs config defaultProfile qt-6-9-2
+        qbs config profiles.qt-6-9-3.baseProfile xcode
+        qbs config defaultProfile qt-6-9-3
 
     - name: Build Zstandard
       run: |
