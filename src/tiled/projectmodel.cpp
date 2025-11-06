@@ -517,7 +517,7 @@ void FolderScanner::scan(FolderEntry &folder, QSet<QString> &visitedFolders) con
 
     QFileInfoList list;
     if (useNaturalSorting) {
-        // Get unsorted list and apply natural (numberic) sorting with QCollator
+        // Get unsorted list and apply natural (numeric) sorting with QCollator
         list = QDir(folder.filePath).entryInfoList(mNameFilters, filters, QDir::NoSort);
 
         QCollator collator;
