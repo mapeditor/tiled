@@ -115,4 +115,51 @@ void SetMapRectCommand::setMapRect(const QRect &rect)
     emit mWorldDocument->worldChanged();
 }
 
+bool SetMapRectCommand::mergeWith(const QUndoCommand *other)
+{
+    auto o = static_cast<const SetMapRectCommand *>(other);
+    if (mWorldDocument != o->mWorldDocument || mMapName != o->mMapName)
+        return false;
+
+    mRect = o->mRect;
+    setObsolete(childCount() == 0 && mRect == mPreviousRect);
+    return true;
+}
+
+
+SetMapPosInLoadedWorld::SetMapPosInLoadedWorld(const QString &worldFileName,
+                                               const QString &mapName,
+                                               const QPoint &from,
+                                               const QPoint &to,
+                                               QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mWorldFileName(worldFileName)
+    , mMapName(mapName)
+    , mFrom(from)
+    , mTo(to)
+{}
+
+void SetMapPosInLoadedWorld::setRect(QPoint pos)
+{
+    auto worldDoc = WorldManager::instance().findWorld(mWorldFileName);
+    if (!worldDoc)
+        return;
+
+    auto world = worldDoc->world();
+    const int idx = world->mapIndex(mMapName);
+    if (idx < 0)
+        return;
+
+    // Only apply when the current position matches the expected state, to
+    // avoid clobbering manual world moves
+    QRect rect = world->mapRect(mMapName);
+    const QPoint expectedPos = (pos == mTo) ? mFrom : mTo;
+    if (rect.topLeft() != expectedPos)
+        return;
+
+    rect.moveTo(pos);
+
+    worldDoc->undoStack()->push(new SetMapRectCommand(worldDoc.data(), mMapName, rect));
+}
+
 } // namespace Tiled

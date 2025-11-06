@@ -24,8 +24,6 @@
 #include "document.h"
 #include "editableasset.h"
 
-class WorldManager;
-
 namespace Tiled {
 
 class World;
