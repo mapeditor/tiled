@@ -23,8 +23,10 @@
 #include "containerhelpers.h"
 #include "fileformat.h"
 #include "pluginmanager.h"
+#include "preferences.h"
 #include "utils.h"
 
+#include <QCollator>
 #include <QDir>
 #include <QFileInfo>
 #include <QMimeData>
@@ -125,6 +127,9 @@ ProjectModel::ProjectModel(QObject *parent)
 
     connect(&mWatcher, &FileSystemWatcher::pathsChanged,
             this, &ProjectModel::pathsChanged);
+
+    connect(Preferences::instance(), &Preferences::naturalSortingChanged,
+            this, &ProjectModel::refreshFolders);
 }
 
 ProjectModel::~ProjectModel()
@@ -507,9 +512,28 @@ void FolderScanner::scan(FolderEntry &folder, QSet<QString> &visitedFolders) con
         return;
 #endif
 
-    constexpr QDir::SortFlags sortFlags { QDir::Name | QDir::LocaleAware | QDir::DirsFirst };
     constexpr QDir::Filters filters { QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot };
-    const auto list = QDir(folder.filePath).entryInfoList(mNameFilters, filters, sortFlags);
+    const bool useNaturalSorting = Preferences::instance()->naturalSorting();
+
+    QFileInfoList list;
+    if (useNaturalSorting) {
+        // Get unsorted list and apply natural (numberic) sorting with QCollator
+        list = QDir(folder.filePath).entryInfoList(mNameFilters, filters, QDir::NoSort);
+
+        QCollator collator;
+        collator.setNumericMode(true);
+        collator.setCaseSensitivity(Qt::CaseInsensitive);
+
+        std::stable_sort(list.begin(), list.end(), [&collator](const QFileInfo &a, const QFileInfo &b) {
+            if (a.isDir() != b.isDir())
+                return a.isDir();
+            return collator.compare(a.fileName(), b.fileName()) < 0;
+        });
+    } else {
+        // Original (alphabetical) sorting behavior
+        constexpr QDir::SortFlags sortFlags { QDir::Name | QDir::LocaleAware | QDir::DirsFirst };
+        list = QDir(folder.filePath).entryInfoList(mNameFilters, filters, sortFlags);
+    }
 
     for (const auto &fileInfo : list) {
         auto entry = std::make_unique<FolderEntry>(fileInfo.filePath(), &folder);

@@ -64,6 +64,16 @@
             </property>
            </widget>
           </item>
+          <item row="4" column="0">
+           <widget class="QCheckBox" name="naturalSorting">
+            <property name="toolTip">
+             <string>Sort files numerically (d3, d20) instead of alphabetically (d20, d3)</string>
+            </property>
+            <property name="text">
+             <string>Use natural sorting in Projects view</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
