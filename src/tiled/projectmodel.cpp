@@ -127,9 +127,6 @@ ProjectModel::ProjectModel(QObject *parent)
 
     connect(&mWatcher, &FileSystemWatcher::pathsChanged,
             this, &ProjectModel::pathsChanged);
-
-    connect(Preferences::instance(), &Preferences::naturalSortingChanged,
-            this, &ProjectModel::refreshFolders);
 }
 
 ProjectModel::~ProjectModel()
@@ -515,27 +512,9 @@ void FolderScanner::scan(FolderEntry &folder, QSet<QString> &visitedFolders) con
 #endif
 
     constexpr QDir::Filters filters { QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot };
-    const bool useNaturalSorting = Preferences::instance()->naturalSorting();
-
-    QFileInfoList list;
-    if (useNaturalSorting) {
-        // Get unsorted list and apply natural (numeric) sorting with QCollator
-        list = QDir(folder.filePath).entryInfoList(mNameFilters, filters, QDir::NoSort);
-
-        QCollator collator;
-        collator.setNumericMode(true);
-        collator.setCaseSensitivity(Qt::CaseInsensitive);
-
-        std::stable_sort(list.begin(), list.end(), [&collator](const QFileInfo &a, const QFileInfo &b) {
-            if (a.isDir() != b.isDir())
-                return a.isDir();
-            return collator.compare(a.fileName(), b.fileName()) < 0;
-        });
-    } else {
-        // Original (alphabetical) sorting behavior
-        constexpr QDir::SortFlags sortFlags { QDir::Name | QDir::LocaleAware | QDir::DirsFirst };
-        list = QDir(folder.filePath).entryInfoList(mNameFilters, filters, sortFlags);
-    }
+    
+    // Get unsorted list - sorting is handled by ProjectProxyModel
+    const auto list = QDir(folder.filePath).entryInfoList(mNameFilters, filters, QDir::NoSort);
 
     for (const auto &fileInfo : list) {
         auto entry = std::make_unique<FolderEntry>(fileInfo.filePath(), &folder);
@@ -564,27 +543,33 @@ void FolderScanner::scan(FolderEntry &folder, QSet<QString> &visitedFolders) con
 ProjectProxyModel::ProjectProxyModel(QObject *parent)
     : QSortFilterProxyModel(parent)
 {
+    mCollator.setNumericMode(true);
+    mCollator.setCaseSensitivity(Qt::CaseInsensitive);
+
     setSortLocaleAware(true);
     sort(0);
+
+    // Re-sort when natural sorting preference changes (no rescan!)
+    connect(Preferences::instance(), &Preferences::naturalSortingChanged,
+            this, [this] { invalidate(); });
 }
 
 bool ProjectProxyModel::lessThan(const QModelIndex &left,
                                  const QModelIndex &right) const
 {
-    // Get isDir flags for both items
     const bool leftIsDir = sourceModel()->data(left, ProjectModel::IsDirRole).toBool();
     const bool rightIsDir = sourceModel()->data(right, ProjectModel::IsDirRole).toBool();
 
-    // Directories always come before files
     if (leftIsDir != rightIsDir)
         return leftIsDir;
 
-    // Get file names for comparison
     const QString leftName = sourceModel()->data(left, Qt::DisplayRole).toString();
     const QString rightName = sourceModel()->data(right, Qt::DisplayRole).toString();
 
-    // For Phase 1, just use case-insensitive alphabetic comparison
-    // (Phase 2 will add natural sorting based on preference)
+    // Use natural (numeric) sorting if enabled, otherwise alphabetic
+    if (Preferences::instance()->naturalSorting())
+        return mCollator.compare(leftName, rightName) < 0;
+
     return leftName.compare(rightName, Qt::CaseInsensitive) < 0;
 }
 

@@ -24,6 +24,7 @@
 #include "projectdocument.h"
 
 #include <QAbstractListModel>
+#include <QCollator>
 #include <QFileIconProvider>
 #include <QSortFilterProxyModel>
 #include <QThread>
@@ -147,6 +148,9 @@ public:
 protected:
     bool lessThan(const QModelIndex &left,
                   const QModelIndex &right) const override;
+
+private:
+    QCollator mCollator;
 };
 
 } // namespace Tiled
