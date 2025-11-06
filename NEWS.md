@@ -14,6 +14,7 @@
 * Allow canceling Select Same Tile, Magic Wand and Bucket Fill operations with right-click and Escape
 * Allow dragging over multiple tiles with Select Same Tile, Magic Wand and Bucket Fill tools (#4276)
 * Don't switch to Edit Polygons tool on double-click with Alt pressed
+* Adjust world map position when resizing a map with offset (#4270)
 * Added export plugin for Remixed Dungeon (by Mikhael Danilov, #4158)
 * Added "World > World Properties" menu action (with dogboydog, #4190)
 * Added Delete shortcut to Remove Tiles action by default and avoid ambiguity (#4201)

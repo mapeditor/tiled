@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include "undocommands.h"
+
 #include <QRect>
 #include <QUndoCommand>
 
@@ -75,6 +77,9 @@ public:
     void undo() override { setMapRect(mPreviousRect); }
     void redo() override { setMapRect(mRect); }
 
+    int id() const override { return Cmd_SetMapRect; }
+    bool mergeWith(const QUndoCommand *other) override;
+
 private:
     void setMapRect(const QRect &rect);
 
@@ -82,6 +87,34 @@ private:
     QString mMapName;
     QRect mRect;
     QRect mPreviousRect;
+};
+
+/**
+ * Undo command that safely updates a world's map rect if that world is loaded.
+ *
+ * This undo command is used as part of resizing a map. It modifies the world
+ * using SetMapRectCommand, which obsoletes itself when this command changes the
+ * value back on undo.
+ */
+class SetMapPosInLoadedWorld : public QUndoCommand
+{
+public:
+    SetMapPosInLoadedWorld(const QString &worldFileName,
+                           const QString &mapName,
+                           const QPoint &from,
+                           const QPoint &to,
+                           QUndoCommand *parent = nullptr);
+
+    void undo() override { setRect(mFrom); }
+    void redo() override { setRect(mTo); }
+
+private:
+    void setRect(QPoint pos);
+
+    QString mWorldFileName;
+    QString mMapName;
+    QPoint mFrom;
+    QPoint mTo;
 };
 
 } // namespace Tiled

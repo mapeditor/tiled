@@ -68,6 +68,7 @@ enum UndoCommands {
     Cmd_ChangeWangSetName,
     Cmd_EraseTiles,
     Cmd_PaintTileLayer,
+    Cmd_SetMapRect,
     Cmd_SetProperty,
 };
 
