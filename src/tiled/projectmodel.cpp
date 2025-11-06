@@ -512,7 +512,6 @@ void FolderScanner::scan(FolderEntry &folder, QSet<QString> &visitedFolders) con
 #endif
 
     constexpr QDir::Filters filters { QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot };
-    
     // Get unsorted list - sorting is handled by ProjectProxyModel
     const auto list = QDir(folder.filePath).entryInfoList(mNameFilters, filters, QDir::NoSort);
 
@@ -549,7 +548,6 @@ ProjectProxyModel::ProjectProxyModel(QObject *parent)
     setSortLocaleAware(true);
     sort(0);
 
-    // Re-sort when natural sorting preference changes (no rescan!)
     connect(Preferences::instance(), &Preferences::naturalSortingChanged,
             this, [this] { invalidate(); });
 }
@@ -566,7 +564,6 @@ bool ProjectProxyModel::lessThan(const QModelIndex &left,
     const QString leftName = sourceModel()->data(left, Qt::DisplayRole).toString();
     const QString rightName = sourceModel()->data(right, Qt::DisplayRole).toString();
 
-    // Use natural (numeric) sorting if enabled, otherwise alphabetic
     if (Preferences::instance()->naturalSorting())
         return mCollator.compare(leftName, rightName) < 0;
 
