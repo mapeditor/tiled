@@ -318,6 +318,8 @@ QVariant ProjectModel::data(const QModelIndex &index, int role) const
     }
     case Qt::ToolTipRole:
         return entry->filePath;
+    case IsDirRole:
+        return entry->isDir;
     }
 
     return QVariant();
@@ -537,6 +539,7 @@ void FolderScanner::scan(FolderEntry &folder, QSet<QString> &visitedFolders) con
 
     for (const auto &fileInfo : list) {
         auto entry = std::make_unique<FolderEntry>(fileInfo.filePath(), &folder);
+        entry->isDir = fileInfo.isDir();
 
         if (fileInfo.isDir()) {
             const QString canonicalPath = fileInfo.canonicalFilePath();
@@ -554,6 +557,35 @@ void FolderScanner::scan(FolderEntry &folder, QSet<QString> &visitedFolders) con
 
         folder.entries.push_back(std::move(entry));
     }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+ProjectProxyModel::ProjectProxyModel(QObject *parent)
+    : QSortFilterProxyModel(parent)
+{
+    setSortLocaleAware(true);
+    sort(0);
+}
+
+bool ProjectProxyModel::lessThan(const QModelIndex &left,
+                                 const QModelIndex &right) const
+{
+    // Get isDir flags for both items
+    const bool leftIsDir = sourceModel()->data(left, ProjectModel::IsDirRole).toBool();
+    const bool rightIsDir = sourceModel()->data(right, ProjectModel::IsDirRole).toBool();
+
+    // Directories always come before files
+    if (leftIsDir != rightIsDir)
+        return leftIsDir;
+
+    // Get file names for comparison
+    const QString leftName = sourceModel()->data(left, Qt::DisplayRole).toString();
+    const QString rightName = sourceModel()->data(right, Qt::DisplayRole).toString();
+
+    // For Phase 1, just use case-insensitive alphabetic comparison
+    // (Phase 2 will add natural sorting based on preference)
+    return leftName.compare(rightName, Qt::CaseInsensitive) < 0;
 }
 
 } // namespace Tiled

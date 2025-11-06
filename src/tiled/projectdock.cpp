@@ -83,6 +83,7 @@ private:
     void restoreExpanded(const QModelIndex &parent);
 
     ProjectModel *mProjectModel;
+    ProjectProxyModel *mProxyModel;
     QSet<QString> mExpandedPaths;
     QString mSelectedPath;
     int mScrollBarValue = 0;
@@ -193,27 +194,33 @@ ProjectView::ProjectView(QWidget *parent)
     setDefaultDropAction(Qt::MoveAction);
     setDragDropMode(QAbstractItemView::DragOnly);
 
-    auto model = ProjectManager::instance()->projectModel();
-    setModel(model);
+    mProjectModel = ProjectManager::instance()->projectModel();
+    mProxyModel = new ProjectProxyModel(this);
+    mProxyModel->setSourceModel(mProjectModel);
+    setModel(mProxyModel);
 
     connect(this, &QAbstractItemView::activated,
             this, &ProjectView::onActivated);
 
-    connect(model, &QAbstractItemModel::rowsInserted,
+    connect(mProxyModel, &QAbstractItemModel::rowsInserted,
             this, &ProjectView::onRowsInserted);
 
     connect(this, &QTreeView::expanded,
-            this, [=] (const QModelIndex &index) { mExpandedPaths.insert(model->filePath(index)); });
+            this, [=] (const QModelIndex &index) {
+        mExpandedPaths.insert(mProjectModel->filePath(mProxyModel->mapToSource(index)));
+    });
     connect(this, &QTreeView::collapsed,
-            this, [=] (const QModelIndex &index) { mExpandedPaths.remove(model->filePath(index)); });
+            this, [=] (const QModelIndex &index) {
+        mExpandedPaths.remove(mProjectModel->filePath(mProxyModel->mapToSource(index)));
+    });
 
     // Reselect a previously selected path and restore scrollbar after refresh
-    connect(model, &ProjectModel::aboutToRefresh,
+    connect(mProjectModel, &ProjectModel::aboutToRefresh,
             this, [=] {
-        mSelectedPath = model->filePath(currentIndex());
+        mSelectedPath = mProjectModel->filePath(mProxyModel->mapToSource(currentIndex()));
         mScrollBarValue = verticalScrollBar()->value();
     });
-    connect(model, &ProjectModel::refreshed,
+    connect(mProjectModel, &ProjectModel::refreshed,
             this, [=] {
         selectPath(mSelectedPath);
         verticalScrollBar()->setValue(mScrollBarValue);
@@ -227,7 +234,13 @@ QSize ProjectView::sizeHint() const
 
 void ProjectView::setModel(QAbstractItemModel *model)
 {
-    mProjectModel = qobject_cast<ProjectModel*>(model);
+    // If setting a proxy model, extract the source ProjectModel
+    if (auto proxy = qobject_cast<ProjectProxyModel*>(model)) {
+        mProxyModel = proxy;
+        mProjectModel = qobject_cast<ProjectModel*>(proxy->sourceModel());
+    } else {
+        mProjectModel = qobject_cast<ProjectModel*>(model);
+    }
     Q_ASSERT(mProjectModel);
     QTreeView::setModel(model);
 }
@@ -244,9 +257,11 @@ void ProjectView::addExpandedPath(const QString &path)
 
 void ProjectView::selectPath(const QString &path)
 {
-    auto index = model()->index(path);
-    if (index.isValid())
-        setCurrentIndex(index);
+    auto sourceIndex = mProjectModel->index(path);
+    if (sourceIndex.isValid()) {
+        auto proxyIndex = mProxyModel->mapFromSource(sourceIndex);
+        setCurrentIndex(proxyIndex);
+    }
 }
 
 void ProjectView::contextMenuEvent(QContextMenuEvent *event)
