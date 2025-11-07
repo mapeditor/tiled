@@ -258,8 +258,8 @@ void ProjectView::addExpandedPath(const QString &path)
 void ProjectView::selectPath(const QString &path)
 {
     auto sourceIndex = mProjectModel->index(path);
-    if (sourceIndex.isValid()) {
-        auto proxyIndex = mProxyModel->mapFromSource(sourceIndex);
+    auto proxyIndex = mProxyModel->mapFromSource(sourceIndex);
+    if (proxyIndex.isValid()) {
         setCurrentIndex(proxyIndex);
     }
 }
