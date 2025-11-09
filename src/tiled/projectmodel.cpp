@@ -546,7 +546,8 @@ ProjectProxyModel::ProjectProxyModel(QObject *parent)
     mCollator.setNumericMode(prefs->naturalSorting());
     mCollator.setCaseSensitivity(Qt::CaseInsensitive);
 
-    sort(0);    // Enable sorting on column 0
+    // Enable sorting on col 0, which in Project views is the file/folder names
+    sort(0);
 
     connect(prefs, &Preferences::naturalSortingChanged,
             this, [this](bool enabled) {
