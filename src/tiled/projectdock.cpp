@@ -62,7 +62,6 @@ public:
      */
     QSize sizeHint() const override;
 
-    void setModel(QAbstractItemModel *model) override;
     ProjectModel *model() const { return mProjectModel; }
 
     // TODO: Add 'select by file name'
@@ -230,19 +229,6 @@ ProjectView::ProjectView(QWidget *parent)
 QSize ProjectView::sizeHint() const
 {
     return Utils::dpiScaled(QSize(250, 200));
-}
-
-void ProjectView::setModel(QAbstractItemModel *model)
-{
-    // If setting a proxy model, extract the source ProjectModel
-    if (auto proxy = qobject_cast<ProjectProxyModel*>(model)) {
-        mProxyModel = proxy;
-        mProjectModel = qobject_cast<ProjectModel*>(proxy->sourceModel());
-    } else {
-        mProjectModel = qobject_cast<ProjectModel*>(model);
-    }
-    Q_ASSERT(mProjectModel);
-    QTreeView::setModel(model);
 }
 
 void ProjectView::setExpandedPaths(const QStringList &paths)
