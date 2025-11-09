@@ -542,14 +542,17 @@ void FolderScanner::scan(FolderEntry &folder, QSet<QString> &visitedFolders) con
 ProjectProxyModel::ProjectProxyModel(QObject *parent)
     : QSortFilterProxyModel(parent)
 {
-    mCollator.setNumericMode(true);
+    auto prefs = Preferences::instance();
+    mCollator.setNumericMode(prefs->naturalSorting());
     mCollator.setCaseSensitivity(Qt::CaseInsensitive);
 
-    setSortLocaleAware(true);
-    sort(0);
+    sort(0);    // Enable sorting on column 0
 
-    connect(Preferences::instance(), &Preferences::naturalSortingChanged,
-            this, [this] { invalidate(); });
+    connect(prefs, &Preferences::naturalSortingChanged,
+            this, [this](bool enabled) {
+        mCollator.setNumericMode(enabled);
+        invalidate();
+    });
 }
 
 bool ProjectProxyModel::lessThan(const QModelIndex &left,
@@ -564,10 +567,7 @@ bool ProjectProxyModel::lessThan(const QModelIndex &left,
     const QString leftName = sourceModel()->data(left, Qt::DisplayRole).toString();
     const QString rightName = sourceModel()->data(right, Qt::DisplayRole).toString();
 
-    if (Preferences::instance()->naturalSorting())
-        return mCollator.compare(leftName, rightName) < 0;
-
-    return leftName.compare(rightName, Qt::CaseInsensitive) < 0;
+    return mCollator.compare(leftName, rightName) < 0;
 }
 
 } // namespace Tiled
