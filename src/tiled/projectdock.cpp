@@ -327,19 +327,22 @@ void ProjectView::onActivated(const QModelIndex &index)
 
 void ProjectView::onRowsInserted(const QModelIndex &parent)
 {
-    if (parent.isValid())
-        restoreExpanded(parent);
+    if (parent.isValid()) {
+        auto sourceParent = mProxyModel->mapToSource(parent);
+        restoreExpanded(sourceParent);
+    }
 }
 
 void ProjectView::restoreExpanded(const QModelIndex &parent)
 {
-    const QString path = model()->filePath(parent);
+    const QString path = mProjectModel->filePath(parent);
 
     if (mExpandedPaths.contains(path)) {
-        setExpanded(parent, true);
+        auto proxyParent = mProxyModel->mapFromSource(parent);
+        setExpanded(proxyParent, true);
 
-        for (int row = 0, count = model()->rowCount(parent); row < count; ++row)
-            restoreExpanded(model()->index(row, 0, parent));
+        for (int row = 0, count = mProjectModel->rowCount(parent); row < count; ++row)
+            restoreExpanded(mProjectModel->index(row, 0, parent));
     }
 }
 
