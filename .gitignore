@@ -15,6 +15,7 @@ compile_commands.json
 build/ 
 
 # Visual Studio
+.vscode/
 *.sln
 *.suo
 *.vcxproj
