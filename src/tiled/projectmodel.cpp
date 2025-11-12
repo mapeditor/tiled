@@ -20,13 +20,11 @@
 
 #include "projectmodel.h"
 
-#include "containerhelpers.h"
 #include "fileformat.h"
 #include "pluginmanager.h"
 #include "preferences.h"
 #include "utils.h"
 
-#include <QCollator>
 #include <QDir>
 #include <QFileInfo>
 #include <QMimeData>
@@ -105,7 +103,7 @@ static void findFiles(const FolderEntry &entry, int offset, const QStringList &w
 ProjectModel::ProjectModel(QObject *parent)
     : QAbstractItemModel(parent)
 {
-    FolderScanner *scanner = new FolderScanner;
+    auto scanner = new FolderScanner;
     scanner->moveToThread(&mScanningThread);
     connect(&mScanningThread, &QThread::finished, scanner, &QObject::deleteLater);
     connect(this, &ProjectModel::nameFiltersChanged, scanner, &FolderScanner::setNameFilters);
@@ -352,7 +350,7 @@ QMimeData *ProjectModel::mimeData(const QModelIndexList &indexes) const
     if (urls.isEmpty())
         return nullptr;
 
-    QMimeData *data = new QMimeData;
+    auto data = new QMimeData;
     data->setUrls(urls);
     return data;
 }
