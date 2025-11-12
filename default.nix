@@ -1,14 +1,9 @@
 with (import <nixpkgs> {});
-let
-  gh-pages = ruby.withPackages (ps: with ps; [
-    github-pages
-    jekyll-redirect-from
-    webrick
-  ]);
-in
-  mkShell {
-    buildInputs = [ gh-pages ];
-    shellHook = ''
-      jekyll serve --drafts --livereload
-    '';
-  }
+mkShell {
+  buildInputs = [ ruby bundler ];
+  shellHook = ''
+    bundle config set path 'vendor/bundle'
+    bundle install
+    bundle exec jekyll serve --drafts --livereload
+  '';
+}
