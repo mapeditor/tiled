@@ -64,8 +64,6 @@ public:
 
     ProjectModel *projectModel() const { return mProjectModel; }
 
-    // TODO: Add 'select by file name'
-
     QStringList expandedPaths() const { return mExpandedPaths.values(); }
     void setExpandedPaths(const QStringList &paths);
     void addExpandedPath(const QString &path);
