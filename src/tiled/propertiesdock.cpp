@@ -188,7 +188,7 @@ void PropertiesDock::updateTabs()
     mTabBar->setTabVisible(TileTab, tilesSelected);
     mTabBar->setTabVisible(WangSetTab, wangSetSelected);
     mTabBar->setTabVisible(WangColorTab, wangColorSelected || wangSetSelected);
-    mTabBar->tabRect(0); // Force recalculation of tab sizes
+    mTabBar->setTabButton(0, QTabBar::LeftSide, nullptr);   // Force recalculation of tab sizes
 
     int currentIndex = -1;
     if (currentObject) {
