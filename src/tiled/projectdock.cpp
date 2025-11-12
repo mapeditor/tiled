@@ -209,13 +209,9 @@ ProjectView::ProjectView(QWidget *parent)
             this, &ProjectView::onRowsInserted);
 
     connect(this, &QTreeView::expanded,
-            this, [=] (const QModelIndex &index) {
-        mExpandedPaths.insert(filePath(index));
-    });
+            this, [=] (const QModelIndex &index) { mExpandedPaths.insert(filePath(index)); });
     connect(this, &QTreeView::collapsed,
-            this, [=] (const QModelIndex &index) {
-        mExpandedPaths.remove(filePath(index));
-    });
+            this, [=] (const QModelIndex &index) { mExpandedPaths.remove(filePath(index)); });
 
     // Reselect a previously selected path and restore scrollbar after refresh
     connect(mProjectModel, &ProjectModel::aboutToRefresh,

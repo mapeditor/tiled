@@ -64,16 +64,6 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
-           <widget class="QCheckBox" name="naturalSorting">
-            <property name="toolTip">
-             <string>Sort files numerically (d3, d20) instead of alphabetically (d20, d3)</string>
-            </property>
-            <property name="text">
-             <string>Use natural sorting in Projects view</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </widget>
        </item>
@@ -270,6 +260,16 @@
            <widget class="QCheckBox" name="openGL">
             <property name="text">
              <string>Hardware &amp;accelerated drawing (OpenGL)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0" colspan="2">
+           <widget class="QCheckBox" name="naturalSorting">
+            <property name="toolTip">
+             <string>Sort files numerically (d3, d20) instead of alphabetically (d20, d3)</string>
+            </property>
+            <property name="text">
+             <string>Use natural sorting in Projects view</string>
             </property>
            </widget>
           </item>
@@ -702,6 +702,7 @@
   <tabstop>gridMajorY</tabstop>
   <tabstop>objectLineWidth</tabstop>
   <tabstop>openGL</tabstop>
+  <tabstop>naturalSorting</tabstop>
   <tabstop>objectSelectionBehaviorCombo</tabstop>
   <tabstop>preciseTileObjectSelection</tabstop>
   <tabstop>wheelZoomsByDefault</tabstop>
