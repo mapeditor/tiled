@@ -664,7 +664,7 @@ bool Preferences::restoreSessionOnStartup() const
 
 bool Preferences::naturalSorting() const
 {
-    return get("Project/NaturalSorting", false);
+    return get("Project/NaturalSorting", true);
 }
 
 void Preferences::setNaturalSorting(bool enabled)
