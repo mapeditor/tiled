@@ -62,7 +62,7 @@ public:
      */
     QSize sizeHint() const override;
 
-    ProjectModel *model() const { return mProjectModel; }
+    ProjectModel *projectModel() const { return mProjectModel; }
 
     // TODO: Add 'select by file name'
 
@@ -71,6 +71,8 @@ public:
     void addExpandedPath(const QString &path);
 
     void selectPath(const QString &path);
+
+    QString filePath(const QModelIndex &index) const;
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
@@ -111,8 +113,10 @@ ProjectDock::ProjectDock(QWidget *parent)
     connect(mProjectView->selectionModel(), &QItemSelectionModel::currentRowChanged,
             this, &ProjectDock::onCurrentRowChanged);
 
-    connect(mProjectView->model(), &ProjectModel::folderAdded, this, &ProjectDock::folderAdded);
-    connect(mProjectView->model(), &ProjectModel::folderRemoved, this, &ProjectDock::folderRemoved);
+    // Forwarding signals
+    auto projectModel = mProjectView->projectModel();
+    connect(projectModel, &ProjectModel::folderAdded, this, &ProjectDock::folderAdded);
+    connect(projectModel, &ProjectModel::folderRemoved, this, &ProjectDock::folderRemoved);
 }
 
 void ProjectDock::addFolderToProject()
@@ -134,7 +138,7 @@ void ProjectDock::addFolderToProject()
     if (folder.isEmpty())
         return;
 
-    mProjectView->model()->addFolder(folder);
+    mProjectView->projectModel()->addFolder(folder);
     mProjectView->addExpandedPath(folder);
 
     project.save();
@@ -142,7 +146,7 @@ void ProjectDock::addFolderToProject()
 
 void ProjectDock::refreshProjectFolders()
 {
-    mProjectView->model()->refreshFolders();
+    mProjectView->projectModel()->refreshFolders();
 }
 
 void ProjectDock::setExpandedPaths(const QStringList &expandedPaths)
@@ -167,7 +171,7 @@ void ProjectDock::onCurrentRowChanged(const QModelIndex &current)
     if (!current.isValid())
         return;
 
-    const auto filePath = mProjectView->model()->filePath(current);
+    const auto filePath = mProjectView->filePath(current);
     if (QFileInfo { filePath }.isFile())
         emit fileSelected(filePath);
 }
@@ -206,17 +210,17 @@ ProjectView::ProjectView(QWidget *parent)
 
     connect(this, &QTreeView::expanded,
             this, [=] (const QModelIndex &index) {
-        mExpandedPaths.insert(mProjectModel->filePath(mProxyModel->mapToSource(index)));
+        mExpandedPaths.insert(filePath(index));
     });
     connect(this, &QTreeView::collapsed,
             this, [=] (const QModelIndex &index) {
-        mExpandedPaths.remove(mProjectModel->filePath(mProxyModel->mapToSource(index)));
+        mExpandedPaths.remove(filePath(index));
     });
 
     // Reselect a previously selected path and restore scrollbar after refresh
     connect(mProjectModel, &ProjectModel::aboutToRefresh,
             this, [=] {
-        mSelectedPath = mProjectModel->filePath(mProxyModel->mapToSource(currentIndex()));
+        mSelectedPath = filePath(currentIndex());
         mScrollBarValue = verticalScrollBar()->value();
     });
     connect(mProjectModel, &ProjectModel::refreshed,
@@ -243,32 +247,36 @@ void ProjectView::addExpandedPath(const QString &path)
 
 void ProjectView::selectPath(const QString &path)
 {
-    auto sourceIndex = mProjectModel->index(path);
-    auto proxyIndex = mProxyModel->mapFromSource(sourceIndex);
-    if (proxyIndex.isValid()) {
+    const auto sourceIndex = mProjectModel->index(path);
+    const auto proxyIndex = mProxyModel->mapFromSource(sourceIndex);
+    if (proxyIndex.isValid())
         setCurrentIndex(proxyIndex);
-    }
+}
+
+QString ProjectView::filePath(const QModelIndex &index) const
+{
+    return mProjectModel->filePath(mProxyModel->mapToSource(index));
 }
 
 void ProjectView::contextMenuEvent(QContextMenuEvent *event)
 {
-    const QModelIndex index = indexAt(event->pos());
+    const auto index = indexAt(event->pos());
 
     QMenu menu;
 
     if (index.isValid()) {
-        const auto filePath = model()->filePath(index);
+        const auto path = filePath(index);
 
-        Utils::addFileManagerActions(menu, filePath);
+        Utils::addFileManagerActions(menu, path);
 
-        if (QFileInfo { filePath }.isFile()) {
-            Utils::addOpenWithSystemEditorAction(menu, filePath);
+        if (QFileInfo { path }.isFile()) {
+            Utils::addOpenWithSystemEditorAction(menu, path);
 
             auto mapDocumentActionHandler = MapDocumentActionHandler::instance();
             auto mapDocument = mapDocumentActionHandler->mapDocument();
 
             // Add template-specific actions
-            auto objectTemplate = TemplateManager::instance()->loadObjectTemplate(filePath);
+            auto objectTemplate = TemplateManager::instance()->loadObjectTemplate(path);
             if (objectTemplate->object()) {
                 menu.addSeparator();
                 menu.addAction(tr("Select Template Instances"), [=] {
@@ -276,7 +284,7 @@ void ProjectView::contextMenuEvent(QContextMenuEvent *event)
                 })->setEnabled(mapDocument != nullptr);
             }
             // Add tileset-specific actions
-            else if (auto tileset = TilesetManager::instance()->loadTileset(filePath)) {
+            else if (auto tileset = TilesetManager::instance()->loadTileset(path)) {
                 if (mapDocument) {
                     auto documentManager = DocumentManager::instance();
                     auto mapEditor = static_cast<MapEditor*>(documentManager->editor(Document::MapDocumentType));
@@ -302,8 +310,8 @@ void ProjectView::contextMenuEvent(QContextMenuEvent *event)
         if (!index.parent().isValid()) {
             menu.addSeparator();
             auto removeFolder = menu.addAction(tr("&Remove Folder from Project"), [=] {
-                model()->removeFolder(index.row());
-                model()->project().save();
+                projectModel()->removeFolder(index.row());
+                projectModel()->project().save();
             });
             Utils::setThemeIcon(removeFolder, "list-remove");
         }
@@ -320,29 +328,26 @@ void ProjectView::contextMenuEvent(QContextMenuEvent *event)
 
 void ProjectView::onActivated(const QModelIndex &index)
 {
-    const QString path = model()->filePath(index);
+    const QString path = filePath(index);
     if (QFileInfo(path).isFile())
         DocumentManager::instance()->openFile(path);
 }
 
 void ProjectView::onRowsInserted(const QModelIndex &parent)
 {
-    if (parent.isValid()) {
-        auto sourceParent = mProxyModel->mapToSource(parent);
-        restoreExpanded(sourceParent);
-    }
+    if (parent.isValid())
+        restoreExpanded(parent);
 }
 
 void ProjectView::restoreExpanded(const QModelIndex &parent)
 {
-    const QString path = mProjectModel->filePath(parent);
+    const QString path = filePath(parent);
 
     if (mExpandedPaths.contains(path)) {
-        auto proxyParent = mProxyModel->mapFromSource(parent);
-        setExpanded(proxyParent, true);
+        setExpanded(parent, true);
 
-        for (int row = 0, count = mProjectModel->rowCount(parent); row < count; ++row)
-            restoreExpanded(mProjectModel->index(row, 0, parent));
+        for (int row = 0, count = model()->rowCount(parent); row < count; ++row)
+            restoreExpanded(model()->index(row, 0, parent));
     }
 }
 
