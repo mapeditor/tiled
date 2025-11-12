@@ -96,6 +96,8 @@
 #include <QUndoView>
 #include <QVariantAnimation>
 
+#include <QProcess>
+
 #ifdef Q_OS_WIN
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QWindow>
@@ -525,6 +527,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerMenu(mNewLayerMenu, "NewLayer");
     ActionManager::registerMenu(mGroupLayerMenu, "GroupLayer");
 
+    connect(mUi->actionRunClient, &QAction::triggered, this, &MainWindow::onRunClient);
     connect(mUi->actionNewMap, &QAction::triggered, this, &MainWindow::newMap);
     connect(mUi->actionNewTileset, &QAction::triggered, this, [this] { newTileset(); });
     connect(mUi->actionOpen, &QAction::triggered, this, &MainWindow::openFileDialog);
@@ -2211,6 +2214,18 @@ void MainWindow::updateActions()
     mShowPropertyTypesEditor->setEnabled(hasProject);
 }
 
+void MainWindow::onRunClient()
+{
+    QMessageBox::information(this, tr("Debug"), tr("onRunClient() slot triggered;"));
+
+    const QString programPath = QString::fromUtf8(
+        "C:\\Users\\samth\\Downloads\\Game-Engines-25-26-Ionix-2\\bin"
+            "\\Debug-x86_64-windows\\Client\\Client.exe"
+        );
+    bool started = QProcess::startDetached(programPath);
+    if (!started)
+        QMessageBox::warning(this, tr("Error"), tr("Failed to launch Client.exe"));
+}
 void MainWindow::updateZoomable()
 {
     Zoomable *zoomable = nullptr;

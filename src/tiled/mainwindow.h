@@ -112,6 +112,9 @@ protected:
 
     void resizeEvent(QResizeEvent *) override;
 
+private slots:
+    void onRunClient();
+
 private:
     void newMap();
     void openFileDialog();
