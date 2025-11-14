@@ -64,6 +64,8 @@
 
 #include <algorithm>
 
+#include <QDialogButtonBox>
+
 namespace Tiled {
 
 template<> EnumData enumData<Alignment>()
@@ -2719,8 +2721,7 @@ void PropertiesWidget::showAddValueProperty()
     QLabel *ChooseComponentLabel;
     QLabel *DensityLabel;
     QLabel *FrictionLabel;
-    QPushButton *ConfirmAddProperty;
-    QPushButton *CancelAddProperty;
+
     QComboBox *ObjectComponents;
     QCheckBox *GravityCheckbox;
     QCheckBox *IsTriggerCheckbox;
@@ -2731,19 +2732,23 @@ void PropertiesWidget::showAddValueProperty()
     QVBoxLayout *LabelLayout;
     QVBoxLayout *PropertyValueLayout;
 
-    QHBoxLayout *ConfirmPropertyLayout;
+    QVBoxLayout *ButtonBoxLayout;
+    QDialogButtonBox *ButtonBox;
+
+
 
     //define dialog window
     PropertyWindow = new QDialog();
     PropertyWindow->resize(300, 300);
     PropertyWindow->show();
 
+    ButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel,Qt::Horizontal, PropertyWindow);
+
     //define layoutbox
     RigidbodyLayout = new QHBoxLayout(PropertyWindow);
     LabelLayout = new QVBoxLayout(PropertyWindow);
     PropertyValueLayout = new QVBoxLayout(PropertyWindow);
-    ConfirmPropertyLayout = new QHBoxLayout(PropertyWindow);
-
+    ButtonBoxLayout = new QVBoxLayout(PropertyWindow);
 
     //defines the labels
     ChooseComponentLabel = new QLabel(QString::fromStdString("Choose a component:"), PropertyWindow);
@@ -2765,10 +2770,6 @@ void PropertiesWidget::showAddValueProperty()
     //defines the checkboxes for istrigger and gravity
     GravityCheckbox = new QCheckBox(PropertyWindow);
     IsTriggerCheckbox = new QCheckBox(PropertyWindow);
-
-    //defines the confirm and cancel button at the bottom
-    ConfirmAddProperty = new QPushButton(QString::fromStdString("OK"), PropertyWindow);
-    CancelAddProperty = new QPushButton(QString::fromStdString("Cancel"), PropertyWindow);
 
     //define location for choosing components
     ChooseComponentLabel->setGeometry(10, 5, 200, 20);
@@ -2794,16 +2795,9 @@ void PropertiesWidget::showAddValueProperty()
     RigidbodyLayout->setSpacing(20);
     RigidbodyLayout->setAlignment(Qt::AlignLeft);
 
-    //temp show confirm buttons
-    ConfirmAddProperty->setGeometry(110, 260, 80, 20);
-    CancelAddProperty->setGeometry(200, 260, 80, 20);
-    ConfirmAddProperty->show();
-    CancelAddProperty->show();
+    ButtonBoxLayout->addWidget(ButtonBox, 5, Qt::AlignLeft);
 
-
-    //adding confirm buttons into seperate layout(not working)
-    ConfirmPropertyLayout->addWidget(ConfirmAddProperty, 0, Qt::AlignRight);
-    ConfirmPropertyLayout->addWidget(CancelAddProperty, 0, Qt::AlignRight);
+    RigidbodyLayout->addLayout(ButtonBoxLayout);
 /*
     ConfirmPropertyLayout->addWidget(ConfirmAddProperty);
     ConfirmPropertyLayout->addWidget(CancelAddProperty);
