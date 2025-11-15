@@ -1,15 +1,31 @@
 #ifndef CONTENTBROWSERDOCK_H
 #define CONTENTBROWSERDOCK_H
 
-#include <QWidget>
+#include <QDockWidget>
 
-class contentbrowserdock : public QWidget
+class QFileSystemModel;
+class QTreeView;
+class QLineEdit;
+class QSortFilterProxyModel;
+
+namespace Tiled {
+
+class ContentBrowserDock : public QDockWidget
 {
     Q_OBJECT
 public:
-    explicit contentbrowserdock(QWidget *parent = nullptr);
+    explicit ContentBrowserDock(QWidget *parent = nullptr);
 
-signals:
+private slots:
+    void onFilterChanged(const QString &text);
+
+private:
+    QFileSystemModel       *mFileModel;
+    QSortFilterProxyModel  *mProxyModel;
+    QTreeView              *mTreeView;
+    QLineEdit              *mFilterEdit;
 };
 
-#endif // CONTENTBROWSERDOCK_H
+}
+
+#endif
