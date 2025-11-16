@@ -2732,26 +2732,23 @@ void PropertiesWidget::showAddValueProperty()
     QVBoxLayout *LabelLayout;
     QVBoxLayout *PropertyValueLayout;
 
-    QVBoxLayout *ButtonBoxLayout;
     QDialogButtonBox *ButtonBox;
-
-
+    QVBoxLayout *MainLayout;
 
     //define dialog window
     PropertyWindow = new QDialog();
-    PropertyWindow->resize(300, 300);
-    PropertyWindow->show();
+    PropertyWindow->resize(400, 200);   // Had some strange formatting issue with the margins here so lowered to y:200 for a tight fit in the end
 
     ButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel,Qt::Horizontal, PropertyWindow);
 
     //define layoutbox
-    RigidbodyLayout = new QHBoxLayout(PropertyWindow);
-    LabelLayout = new QVBoxLayout(PropertyWindow);
-    PropertyValueLayout = new QVBoxLayout(PropertyWindow);
-    ButtonBoxLayout = new QVBoxLayout(PropertyWindow);
+    RigidbodyLayout = new QHBoxLayout(); // Passing the PropertyWindow will install the layout on that widget - don't need to pass PropertyWindow in as it will break the layout.
+    LabelLayout = new QVBoxLayout();
+    PropertyValueLayout = new QVBoxLayout();
+    MainLayout = new QVBoxLayout(PropertyWindow);
 
     //defines the labels
-    ChooseComponentLabel = new QLabel(QString::fromStdString("Choose a component:"), PropertyWindow);
+    ChooseComponentLabel = new QLabel(QString::fromStdString("Choose a component:"), PropertyWindow); // Passing PropertyWindow in here doesn't seem to matter - presumablyy due to it being a label and not a layout.
     GravityCheckboxLabel = new QLabel(QString::fromStdString("Gravity:"), PropertyWindow);
     IsTriggerCheckboxLabel = new QLabel(QString::fromStdString("IsTrigger:"), PropertyWindow);
     DensityLabel = new QLabel(QString::fromStdString("Density:"), PropertyWindow);
@@ -2768,74 +2765,38 @@ void PropertiesWidget::showAddValueProperty()
     Friction = new QSpinBox();
 
     //defines the checkboxes for istrigger and gravity
-    GravityCheckbox = new QCheckBox(PropertyWindow);
+    GravityCheckbox = new QCheckBox(PropertyWindow); 
     IsTriggerCheckbox = new QCheckBox(PropertyWindow);
 
-    //define location for choosing components
-    ChooseComponentLabel->setGeometry(10, 5, 200, 20);
-    ObjectComponents->setGeometry(10, 25, 280, 30);
-
-    ChooseComponentLabel->show();
-    ObjectComponents->show();
-
     //adding all widgets of rigidbody into layout
-    LabelLayout->addWidget(DensityLabel, 0, Qt::AlignLeft);
-    LabelLayout->addWidget(FrictionLabel, 0, Qt::AlignLeft);
-    LabelLayout->addWidget(GravityCheckboxLabel, 0, Qt::AlignLeft);
-    LabelLayout->addWidget(IsTriggerCheckboxLabel, 0, Qt::AlignLeft);
+    LabelLayout->addWidget(DensityLabel); // Just use single paramater constructor and pass in DensityLabel (layout handled automatically) - Do same for all entries down to and including line 2789
+    LabelLayout->addWidget(FrictionLabel);
+    LabelLayout->addWidget(GravityCheckboxLabel);
+    LabelLayout->addWidget(IsTriggerCheckboxLabel);
 
-    PropertyValueLayout->addWidget(Density, 0, Qt::AlignLeft);
-    PropertyValueLayout->addWidget(Friction, 0, Qt::AlignLeft);
-    PropertyValueLayout->addWidget(GravityCheckbox, 0, Qt::AlignLeft);
-    PropertyValueLayout->addWidget(IsTriggerCheckbox, 0, Qt::AlignLeft);
+    PropertyValueLayout->addWidget(Density);
+    PropertyValueLayout->addWidget(Friction);
+    PropertyValueLayout->addWidget(GravityCheckbox);
+    PropertyValueLayout->addWidget(IsTriggerCheckbox);
 
     RigidbodyLayout->addLayout(LabelLayout);
     RigidbodyLayout->addLayout(PropertyValueLayout);
 
-    RigidbodyLayout->setSpacing(20);
-    RigidbodyLayout->setAlignment(Qt::AlignLeft);
+    /* 
+    - This is where the new layout (QVBoxLayout) comes in. Create a new QVBoxLayout* named mainLayout or similar.
+    - add your widgets to the layout as you usually do
+    - use the QVBoxLayout::setContentsMargins method to adjust margins
+    - call that setLayout method I mentioned in an earlier comment and show() the PropertyWindow
+    */
 
-    ButtonBoxLayout->addWidget(ButtonBox, 5, Qt::AlignLeft);
+    MainLayout->addWidget(ChooseComponentLabel);
+    MainLayout->addWidget(ObjectComponents);
+    MainLayout->addLayout(RigidbodyLayout);
+    MainLayout->addWidget(ButtonBox);
 
-    RigidbodyLayout->addLayout(ButtonBoxLayout);
-/*
-    ConfirmPropertyLayout->addWidget(ConfirmAddProperty);
-    ConfirmPropertyLayout->addWidget(CancelAddProperty);
+    MainLayout->setContentsMargins(10,10,10,10);
 
-    DensityLayout->addWidget(DensityLabel, 0, Qt::AlignLeft);
-    DensityLayout->addWidget(Density, 0, Qt::AlignLeft);
-    FrictionLayout->addWidget(FrictionLabel, 0, Qt::AlignLeft);
-    FrictionLayout->addWidget(Friction, 0, Qt::AlignLeft);
-    GravityLayout->addWidget(GravityCheckboxLabel, 0, Qt::AlignLeft);
-    GravityLayout->addWidget(GravityCheckbox, 0, Qt::AlignLeft);
-    IsTriggerLayout->addWidget(IsTriggerCheckboxLabel, 0, Qt::AlignLeft);
-    IsTriggerLayout->addWidget(IsTriggerCheckbox, 0, Qt::AlignLeft);
-    RigidbodyLayout->addLayout(DensityLayout);
-    RigidbodyLayout->addLayout(FrictionLayout);
-    RigidbodyLayout->addLayout(GravityLayout);
-    RigidbodyLayout->addLayout(IsTriggerLayout);
-    RigidbodyLayout->setSpacing(20);
-    RigidbodyLayout->setAlignment(Qt::AlignLeft);
-
-    //set the location of the widgets:
-
-    GravityCheckboxLabel->setGeometry(10, 130, 60, 20);
-    IsTriggerCheckboxLabel->setGeometry(10, 160, 60, 20);
-
-    //Rigidbody
-    GravityCheckbox->setGeometry(80, 130, 20, 20);
-    IsTriggerCheckbox->setGeometry(80, 160, 20, 20);
-
-    //needs to change if object component is changed
-    GravityCheckbox->show();
-    GravityCheckboxLabel->show();
-    IsTriggerCheckbox->show();
-    IsTriggerCheckboxLabel->show();
-    DensityLabel->show();
-    Density->show();
-    FrictionLabel->show();
-    Friction->show();
-*/
+    PropertyWindow->show(); // This should go at the end of this method
 /*
     if (!mAddValueProperty) {
         mAddValueProperty = new AddValueProperty(mCustomProperties);
