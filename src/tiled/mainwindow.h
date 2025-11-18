@@ -23,6 +23,7 @@
 
 #pragma once
 
+#include "contentbrowserdock.h"
 #include "document.h"
 #include "preferences.h"
 #include "preferencesdialog.h"
@@ -243,6 +244,7 @@ private:
     ConsoleDock *mConsoleDock;
     ProjectDock *mProjectDock;
     IssuesDock *mIssuesDock;
+    ContentBrowserDock *mContentBrowserDock = nullptr;
     PropertyTypesEditor *mPropertyTypesEditor;
     QPointer<LocatorWidget> mLocatorWidget;
     QPointer<QWidget> mPopupWidget;
