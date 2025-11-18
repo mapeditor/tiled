@@ -2725,8 +2725,8 @@ void PropertiesWidget::showAddValueProperty()
     QComboBox *ObjectComponents;
     QCheckBox *GravityCheckbox;
     QCheckBox *IsTriggerCheckbox;
-    QSpinBox *Density;
-    QSpinBox *Friction;
+    QDoubleSpinBox *Density;
+    QDoubleSpinBox *Friction;
 
     QHBoxLayout *RigidbodyLayout;
     QVBoxLayout *LabelLayout;
@@ -2763,8 +2763,10 @@ void PropertiesWidget::showAddValueProperty()
     ObjectComponents->addItem(QString::fromStdString("BoxComponent"));
 
     //defines the spinboxes for density and friction
-    Density = new QSpinBox();
-    Friction = new QSpinBox();
+    Density = new QDoubleSpinBox();
+    Friction = new QDoubleSpinBox();
+    Density->setSingleStep(0.01);
+    Friction->setSingleStep(0.01);
 
     //defines the checkboxes for istrigger and gravity
     GravityCheckbox = new QCheckBox();
@@ -2799,14 +2801,17 @@ void PropertiesWidget::showAddValueProperty()
     MainLayout->addWidget(ButtonBox);
 
     MainLayout->setContentsMargins(10,10,10,10);
-
     PropertyWindow->show(); // This should go at the end of this method
 
-    connect(ButtonBox, &QDialogButtonBox::accepted, this, [&]{
-
+    connect(ButtonBox, &QDialogButtonBox::accepted, this, [=]{
+        addProperty(QString::fromStdString("Density"), Density->value());
+        addProperty(QString::fromStdString("Friction"), Friction->value());
+        addProperty(QString::fromStdString("Gravity"), GravityCheckbox->isChecked());
+        addProperty(QString::fromStdString("IsTrigger"), IsTriggerCheckbox->isChecked());
+        PropertyWindow->accept();
     });
 
-
+}
 
 /*
     if (!mAddValueProperty) {
@@ -2827,7 +2832,7 @@ void PropertiesWidget::showAddValueProperty()
 
     mPropertiesView->focusProperty(mAddValueProperty, PropertiesView::FocusLabel);
 */
-}
+
 
 void PropertiesWidget::addProperty(const QString &name, const QVariant &value)
 {
