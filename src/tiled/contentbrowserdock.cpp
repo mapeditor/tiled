@@ -39,7 +39,7 @@ ContentBrowserDock::ContentBrowserDock(QWidget *parent)
     mProxyModel->setFilterKeyColumn(0);
 
 
-    mTreeView = new QTreeView(this);
+    setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);    mTreeView = new QTreeView(this);
     mTreeView->setModel(mProxyModel);
     mTreeView->setHeaderHidden(true);
     mTreeView->setSelectionMode(QAbstractItemView::SingleSelection);

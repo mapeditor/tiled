@@ -386,6 +386,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mProjectDock = new ProjectDock(this);   // uses some actions registered above
     mConsoleDock = new ConsoleDock(this);
     mIssuesDock = new IssuesDock(this);
+
     mContentBrowserDock = new ContentBrowserDock(this);
 
     addDockWidget(Qt::LeftDockWidgetArea, mProjectDock);
@@ -2146,6 +2147,7 @@ void MainWindow::updateViewsAndToolbarsMenu()
     mViewsAndToolbarsMenu->addAction(mProjectDock->toggleViewAction());
     mViewsAndToolbarsMenu->addAction(mConsoleDock->toggleViewAction());
     mViewsAndToolbarsMenu->addAction(mIssuesDock->toggleViewAction());
+    mViewsAndToolbarsMenu->addAction(mContentBrowserDock->toggleViewAction());
 
     if (Editor *editor = mDocumentManager->currentEditor()) {
         mViewsAndToolbarsMenu->addSeparator();
