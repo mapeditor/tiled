@@ -38,7 +38,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>25</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -185,6 +185,7 @@
     <addaction name="separator"/>
     <addaction name="actionFullScreen"/>
     <addaction name="actionClearView"/>
+    <addaction name="actionShow_Content_Browser"/>
    </widget>
    <widget class="QMenu" name="menuTileset">
     <property name="title">
@@ -833,6 +834,14 @@
   <action name="actionRunClient">
    <property name="text">
     <string>Run client</string>
+   </property>
+  </action>
+  <action name="actionShow_Content_Browser">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Content Browser</string>
    </property>
   </action>
  </widget>
