@@ -35,6 +35,7 @@
 #include "automappingmanager.h"
 #include "commandmanager.h"
 #include "consoledock.h"
+#include "contentbrowserdock.h"
 #include "documentmanager.h"
 #include "donationpopup.h"
 #include "exportasimagedialog.h"
@@ -385,10 +386,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mProjectDock = new ProjectDock(this);   // uses some actions registered above
     mConsoleDock = new ConsoleDock(this);
     mIssuesDock = new IssuesDock(this);
+    mContentBrowserDock = new ContentBrowserDock(this);
 
     addDockWidget(Qt::LeftDockWidgetArea, mProjectDock);
     addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
     addDockWidget(Qt::BottomDockWidgetArea, mIssuesDock);
+    addDockWidget(Qt::LeftDockWidgetArea, mContentBrowserDock);
     tabifyDockWidget(mConsoleDock, mIssuesDock);
 
     mConsoleDock->setVisible(false);
