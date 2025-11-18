@@ -2734,6 +2734,7 @@ void PropertiesWidget::showAddValueProperty()
 
     QDialogButtonBox *ButtonBox;
     QVBoxLayout *MainLayout;
+    QVBoxLayout *TopRow;
 
     //define dialog window
     PropertyWindow = new QDialog();
@@ -2745,14 +2746,15 @@ void PropertiesWidget::showAddValueProperty()
     RigidbodyLayout = new QHBoxLayout(); // Passing the PropertyWindow will install the layout on that widget - don't need to pass PropertyWindow in as it will break the layout.
     LabelLayout = new QVBoxLayout();
     PropertyValueLayout = new QVBoxLayout();
+    TopRow = new QVBoxLayout();
     MainLayout = new QVBoxLayout(PropertyWindow);
 
     //defines the labels
-    ChooseComponentLabel = new QLabel(QString::fromStdString("Choose a component:"), PropertyWindow); // Passing PropertyWindow in here doesn't seem to matter - presumablyy due to it being a label and not a layout.
-    GravityCheckboxLabel = new QLabel(QString::fromStdString("Gravity:"), PropertyWindow);
-    IsTriggerCheckboxLabel = new QLabel(QString::fromStdString("IsTrigger:"), PropertyWindow);
-    DensityLabel = new QLabel(QString::fromStdString("Density:"), PropertyWindow);
-    FrictionLabel = new QLabel(QString::fromStdString("Friction:"), PropertyWindow);
+    ChooseComponentLabel = new QLabel(QString::fromStdString("Choose a component:")); // Passing PropertyWindow in here doesn't seem to matter - presumablyy due to it being a label and not a layout.
+    GravityCheckboxLabel = new QLabel(QString::fromStdString("Gravity:"));
+    IsTriggerCheckboxLabel = new QLabel(QString::fromStdString("IsTrigger:"));
+    DensityLabel = new QLabel(QString::fromStdString("Density:"));
+    FrictionLabel = new QLabel(QString::fromStdString("Friction:"));
 
     //defines the dropdown menu
     ObjectComponents = new QComboBox(PropertyWindow);
@@ -2765,8 +2767,8 @@ void PropertiesWidget::showAddValueProperty()
     Friction = new QSpinBox();
 
     //defines the checkboxes for istrigger and gravity
-    GravityCheckbox = new QCheckBox(PropertyWindow); 
-    IsTriggerCheckbox = new QCheckBox(PropertyWindow);
+    GravityCheckbox = new QCheckBox();
+    IsTriggerCheckbox = new QCheckBox();
 
     //adding all widgets of rigidbody into layout
     LabelLayout->addWidget(DensityLabel); // Just use single paramater constructor and pass in DensityLabel (layout handled automatically) - Do same for all entries down to and including line 2789
@@ -2782,6 +2784,9 @@ void PropertiesWidget::showAddValueProperty()
     RigidbodyLayout->addLayout(LabelLayout);
     RigidbodyLayout->addLayout(PropertyValueLayout);
 
+    TopRow->addWidget(ChooseComponentLabel);
+    TopRow->addWidget(ObjectComponents);
+
     /* 
     - This is where the new layout (QVBoxLayout) comes in. Create a new QVBoxLayout* named mainLayout or similar.
     - add your widgets to the layout as you usually do
@@ -2789,14 +2794,20 @@ void PropertiesWidget::showAddValueProperty()
     - call that setLayout method I mentioned in an earlier comment and show() the PropertyWindow
     */
 
-    MainLayout->addWidget(ChooseComponentLabel);
-    MainLayout->addWidget(ObjectComponents);
+    MainLayout->addLayout(TopRow);
     MainLayout->addLayout(RigidbodyLayout);
     MainLayout->addWidget(ButtonBox);
 
     MainLayout->setContentsMargins(10,10,10,10);
 
     PropertyWindow->show(); // This should go at the end of this method
+
+    connect(ButtonBox, &QDialogButtonBox::accepted, this, [&]{
+
+    });
+
+
+
 /*
     if (!mAddValueProperty) {
         mAddValueProperty = new AddValueProperty(mCustomProperties);
