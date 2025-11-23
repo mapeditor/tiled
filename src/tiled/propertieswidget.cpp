@@ -51,12 +51,14 @@
 #include <QCheckBox>
 #include <QCoreApplication>
 #include <QEvent>
+#include <QFileDialog>
 #include <QFileInfo>
 #include <QInputDialog>
 #include <QKeyEvent>
 #include <QMenu>
 #include <QPushButton>
 #include <QScopedValueRollback>
+#include <QStackedLayout>
 #include <QToolBar>
 #include <QToolButton>
 #include <QUndoStack>
@@ -2716,78 +2718,245 @@ void PropertiesWidget::paste()
 void PropertiesWidget::showAddValueProperty()
 {
     QDialog *PropertyWindow;
-    QLabel *GravityCheckboxLabel;
-    QLabel *IsTriggerCheckboxLabel;
-    QLabel *ChooseComponentLabel;
-    QLabel *DensityLabel;
-    QLabel *FrictionLabel;
 
     QComboBox *ObjectComponents;
-    QCheckBox *GravityCheckbox;
-    QCheckBox *IsTriggerCheckbox;
-    QDoubleSpinBox *Density;
-    QDoubleSpinBox *Friction;
+    QLabel *ChooseComponentLabel;
 
+    QStackedLayout *ComponentLayout;
     QHBoxLayout *RigidbodyLayout;
-    QVBoxLayout *LabelLayout;
-    QVBoxLayout *PropertyValueLayout;
+    QHBoxLayout *BoxColliderLayout;
+    QHBoxLayout *SpriteComponentLayout;
+    QHBoxLayout *AudioPlayerComponentLayout;
+
+    //Rigidbody label
+    QLabel *RB_GravityLabel;
+    QLabel *RB_IsTriggerLabel;
+    QLabel *RB_DensityLabel;
+    QLabel *RB_FrictionLabel;
+    QLabel *RB_BodyTypeLabel;
+
+    //Rigidbody content
+    QCheckBox *RB_Gravity;
+    QCheckBox *RB_IsTrigger;
+    QDoubleSpinBox *RB_Density;
+    QDoubleSpinBox *RB_Friction;
+    QSpinBox *RB_BodyType;
+
+    //BoxCollider label
+    QLabel *BC_SizeXLabel;
+    QLabel *BC_SizeYLabel;
+    QLabel *BC_OffsetXLabel;
+    QLabel *BC_OffsetYLabel;
+    QLabel *BC_AngleLabel;
+    QLabel *BC_IsTriggerLabel;
+
+    //BoxCollider content
+    QDoubleSpinBox *BC_SizeX;
+    QDoubleSpinBox *BC_SizeY;
+    QDoubleSpinBox *BC_OffsetX;
+    QDoubleSpinBox *BC_OffsetY;
+    QDoubleSpinBox *BC_Angle;
+    QCheckBox *BC_IsTrigger;
+
+    //SpriteComponent label
+    QLabel *SC_WidthLabel;
+    QLabel *SC_HeightLabel;
+    QLabel *SC_ZOrderLabel;
+
+    //SpriteComponent content
+    QSpinBox *SC_Width;
+    QSpinBox *SC_Height;
+    QSpinBox *SC_ZOrder;
+
+    //AudioPlayerComponent label
+    QLabel *APC_BrowseAudioFileLabel;
+    QLabel *APC_PlayOnAwakeLabel;
+
+    //AudioPlayerComponent content
+    QPushButton *APC_BrowseAudioFile;
+    QCheckBox *APC_PlayOnAwake;
+
+    //Rigidbody layout
+    QVBoxLayout *RB_LabelLayout;
+    QVBoxLayout *RB_PropertyValueLayout;
+
+    //BoxCollider layout
+    QVBoxLayout *BC_LabelLayout;
+    QVBoxLayout *BC_PropertyValueLayout;
+
+    //SpriteComponent layout
+    QVBoxLayout *SC_LabelLayout;
+    QVBoxLayout *SC_PropertyValueLayout;
+
+    //AudioPlayerComponent layout
+    QVBoxLayout *APC_LabelLayout;
+    QVBoxLayout *APC_PropertyValueLayout;
 
     QDialogButtonBox *ButtonBox;
     QVBoxLayout *MainLayout;
     QVBoxLayout *TopRow;
 
-    //define dialog window
+    //placeholders to put into stackedlayout
+    QWidget *StackedRigidBody;
+    QWidget *StackedBoxCollider;
+    QWidget *StackedSpriteComponent;
+    QWidget *StackedAudioPlayerComponent;
+
+    StackedRigidBody = new QWidget();
+    StackedBoxCollider = new QWidget();
+    StackedSpriteComponent = new QWidget();
+    StackedAudioPlayerComponent = new QWidget();
+
+    //defines dialog window
     PropertyWindow = new QDialog();
     PropertyWindow->resize(400, 200);   // Had some strange formatting issue with the margins here so lowered to y:200 for a tight fit in the end
 
     ButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel,Qt::Horizontal, PropertyWindow);
 
-    //define layoutbox
+    //defines layoutbox
     RigidbodyLayout = new QHBoxLayout(); // Passing the PropertyWindow will install the layout on that widget - don't need to pass PropertyWindow in as it will break the layout.
-    LabelLayout = new QVBoxLayout();
-    PropertyValueLayout = new QVBoxLayout();
+    RB_LabelLayout = new QVBoxLayout();
+    RB_PropertyValueLayout = new QVBoxLayout();
+    BoxColliderLayout = new QHBoxLayout();
+    BC_LabelLayout = new QVBoxLayout();
+    BC_PropertyValueLayout = new QVBoxLayout();
+    SpriteComponentLayout = new QHBoxLayout();
+    SC_LabelLayout = new QVBoxLayout();
+    SC_PropertyValueLayout = new QVBoxLayout();
+    AudioPlayerComponentLayout = new QHBoxLayout();
+    APC_LabelLayout = new QVBoxLayout();
+    APC_PropertyValueLayout = new QVBoxLayout();
+
     TopRow = new QVBoxLayout();
     MainLayout = new QVBoxLayout(PropertyWindow);
+    ComponentLayout = new QStackedLayout();
 
-    //defines the labels
-    ChooseComponentLabel = new QLabel(QString::fromStdString("Choose a component:")); // Passing PropertyWindow in here doesn't seem to matter - presumablyy due to it being a label and not a layout.
-    GravityCheckboxLabel = new QLabel(QString::fromStdString("Gravity:"));
-    IsTriggerCheckboxLabel = new QLabel(QString::fromStdString("IsTrigger:"));
-    DensityLabel = new QLabel(QString::fromStdString("Density:"));
-    FrictionLabel = new QLabel(QString::fromStdString("Friction:"));
-
-    //defines the dropdown menu
+    //defines TopRow Widgets
+    ChooseComponentLabel = new QLabel(QString::fromStdString("Choose a component:"));
     ObjectComponents = new QComboBox(PropertyWindow);
 
     ObjectComponents->addItem(QString::fromStdString("RigidBody"));
-    ObjectComponents->addItem(QString::fromStdString("BoxComponent"));
+    ObjectComponents->addItem(QString::fromStdString("Box Collider"));
+    ObjectComponents->addItem(QString::fromStdString("Sprite Component"));
+    ObjectComponents->addItem(QString::fromStdString("Audio Player Component"));
 
-    //defines the spinboxes for density and friction
-    Density = new QDoubleSpinBox();
-    Friction = new QDoubleSpinBox();
-    Density->setSingleStep(0.01);
-    Friction->setSingleStep(0.01);
+    //Rigidbody labels
+    RB_GravityLabel = new QLabel(QString::fromStdString("Gravity:"));
+    RB_IsTriggerLabel = new QLabel(QString::fromStdString("IsTrigger:"));
+    RB_DensityLabel = new QLabel(QString::fromStdString("Density:"));
+    RB_FrictionLabel = new QLabel(QString::fromStdString("Friction:"));
+    RB_BodyTypeLabel = new QLabel(QString::fromStdString("Body Type:"));
 
-    //defines the checkboxes for istrigger and gravity
-    GravityCheckbox = new QCheckBox();
-    IsTriggerCheckbox = new QCheckBox();
+    //Rigidbody content
+    RB_Density = new QDoubleSpinBox();
+    RB_Friction = new QDoubleSpinBox();
+    RB_Density->setSingleStep(0.01);
+    RB_Friction->setSingleStep(0.01);
+    RB_Gravity = new QCheckBox();
+    RB_IsTrigger = new QCheckBox();
+    RB_BodyType = new QSpinBox();
+    RB_BodyType->setMaximum(2);
+    RB_BodyType->setMinimum(0);
 
-    //adding all widgets of rigidbody into layout
-    LabelLayout->addWidget(DensityLabel); // Just use single paramater constructor and pass in DensityLabel (layout handled automatically) - Do same for all entries down to and including line 2789
-    LabelLayout->addWidget(FrictionLabel);
-    LabelLayout->addWidget(GravityCheckboxLabel);
-    LabelLayout->addWidget(IsTriggerCheckboxLabel);
+    //BoxCollider labels
+    BC_SizeXLabel = new QLabel(QString::fromStdString("Size X:"));
+    BC_SizeYLabel = new QLabel(QString::fromStdString("Size Y:"));
+    BC_OffsetXLabel = new QLabel(QString::fromStdString("Offset X:"));
+    BC_OffsetYLabel = new QLabel(QString::fromStdString("Offset Y:"));
+    BC_AngleLabel = new QLabel(QString::fromStdString("Angle:"));
+    BC_IsTriggerLabel = new QLabel(QString::fromStdString("IsTrigger:"));
 
-    PropertyValueLayout->addWidget(Density);
-    PropertyValueLayout->addWidget(Friction);
-    PropertyValueLayout->addWidget(GravityCheckbox);
-    PropertyValueLayout->addWidget(IsTriggerCheckbox);
+    //BoxCollider content
+    BC_SizeX = new QDoubleSpinBox();
+    BC_SizeY = new QDoubleSpinBox();
+    BC_OffsetX = new QDoubleSpinBox();
+    BC_OffsetY = new QDoubleSpinBox();
+    BC_Angle = new QDoubleSpinBox();
+    BC_IsTrigger = new QCheckBox();
 
-    RigidbodyLayout->addLayout(LabelLayout);
-    RigidbodyLayout->addLayout(PropertyValueLayout);
+    BC_SizeX->setSingleStep(0.01);
+    BC_SizeY->setSingleStep(0.01);
+    BC_OffsetX->setSingleStep(0.01);
+    BC_OffsetY->setSingleStep(0.01);
+    BC_Angle->setSingleStep(0.01);
 
+    //SpriteComponent label
+    SC_WidthLabel = new QLabel(QString::fromStdString("Width:"));
+    SC_HeightLabel = new QLabel(QString::fromStdString("Height:"));
+    SC_ZOrderLabel = new QLabel(QString::fromStdString("Z Order:"));
+
+    //SpriteComponent content
+    SC_Width = new QSpinBox();
+    SC_Height = new QSpinBox();
+    SC_ZOrder = new QSpinBox();
+
+    //AudioPlayerComponent label
+    APC_BrowseAudioFileLabel = new QLabel(QString::fromStdString("Browse audio File:"));
+    APC_PlayOnAwakeLabel = new QLabel(QString::fromStdString("Play on Awake:"));
+
+    //AudioPlayerComponent content
+    APC_BrowseAudioFile = new QPushButton(QString::fromStdString("Browse"));
+    APC_PlayOnAwake = new QCheckBox();
+
+    //TopRow layout
     TopRow->addWidget(ChooseComponentLabel);
     TopRow->addWidget(ObjectComponents);
+
+    //adding all widgets of rigidbody into layout
+    RB_LabelLayout->addWidget(RB_DensityLabel); // Just use single paramater constructor and pass in DensityLabel (layout handled automatically) - Do same for all entries down to and including line 2789
+    RB_LabelLayout->addWidget(RB_FrictionLabel);
+    RB_LabelLayout->addWidget(RB_GravityLabel);
+    RB_LabelLayout->addWidget(RB_IsTriggerLabel);
+    RB_LabelLayout->addWidget(RB_BodyTypeLabel);
+
+    RB_PropertyValueLayout->addWidget(RB_Density);
+    RB_PropertyValueLayout->addWidget(RB_Friction);
+    RB_PropertyValueLayout->addWidget(RB_Gravity);
+    RB_PropertyValueLayout->addWidget(RB_IsTrigger);
+    RB_PropertyValueLayout->addWidget(RB_BodyType);
+
+    RigidbodyLayout->addLayout(RB_LabelLayout);
+    RigidbodyLayout->addLayout(RB_PropertyValueLayout);
+
+    //BoxComponent layout
+    BC_LabelLayout->addWidget(BC_SizeXLabel);
+    BC_LabelLayout->addWidget(BC_SizeYLabel);
+    BC_LabelLayout->addWidget(BC_OffsetXLabel);
+    BC_LabelLayout->addWidget(BC_OffsetYLabel);
+    BC_LabelLayout->addWidget(BC_AngleLabel);
+    BC_LabelLayout->addWidget(BC_IsTriggerLabel);
+
+    BC_PropertyValueLayout->addWidget(BC_SizeX);
+    BC_PropertyValueLayout->addWidget(BC_SizeY);
+    BC_PropertyValueLayout->addWidget(BC_OffsetX);
+    BC_PropertyValueLayout->addWidget(BC_OffsetY);
+    BC_PropertyValueLayout->addWidget(BC_Angle);
+    BC_PropertyValueLayout->addWidget(BC_IsTrigger);
+
+    BoxColliderLayout->addLayout(BC_LabelLayout);
+    BoxColliderLayout->addLayout(BC_PropertyValueLayout);
+
+    //SpriteComponent layout
+    SC_LabelLayout->addWidget(SC_WidthLabel);
+    SC_LabelLayout->addWidget(SC_HeightLabel);
+    SC_LabelLayout->addWidget(SC_ZOrderLabel);
+
+    SC_PropertyValueLayout->addWidget(SC_Width);
+    SC_PropertyValueLayout->addWidget(SC_Height);
+    SC_PropertyValueLayout->addWidget(SC_ZOrder);
+
+    SpriteComponentLayout->addLayout(SC_LabelLayout);
+    SpriteComponentLayout->addLayout(SC_PropertyValueLayout);
+
+    //AudioPlayerComponent layout
+    APC_LabelLayout->addWidget(APC_BrowseAudioFileLabel);
+    APC_LabelLayout->addWidget(APC_PlayOnAwakeLabel);
+
+    APC_PropertyValueLayout->addWidget(APC_BrowseAudioFile);
+    APC_PropertyValueLayout->addWidget(APC_PlayOnAwake);
+
+    AudioPlayerComponentLayout->addLayout(APC_LabelLayout);
+    AudioPlayerComponentLayout->addLayout(APC_PropertyValueLayout);
 
     /* 
     - This is where the new layout (QVBoxLayout) comes in. Create a new QVBoxLayout* named mainLayout or similar.
@@ -2796,21 +2965,62 @@ void PropertiesWidget::showAddValueProperty()
     - call that setLayout method I mentioned in an earlier comment and show() the PropertyWindow
     */
 
-    MainLayout->addLayout(TopRow);
-    MainLayout->addLayout(RigidbodyLayout);
-    MainLayout->addWidget(ButtonBox);
+    StackedRigidBody->setLayout(RigidbodyLayout);
+    StackedBoxCollider->setLayout(BoxColliderLayout);
+    StackedSpriteComponent->setLayout(SpriteComponentLayout);
+    StackedAudioPlayerComponent->setLayout(AudioPlayerComponentLayout);
 
+    ComponentLayout->addWidget(StackedRigidBody);
+    ComponentLayout->addWidget(StackedBoxCollider);
+    ComponentLayout->addWidget(StackedSpriteComponent);
+    ComponentLayout->addWidget(StackedAudioPlayerComponent);
+
+    MainLayout->addLayout(TopRow);
+    MainLayout->addLayout(ComponentLayout);
+    MainLayout->addWidget(ButtonBox);
     MainLayout->setContentsMargins(10,10,10,10);
-    PropertyWindow->show(); // This should go at the end of this method
+
+    connect(ObjectComponents, QOverload<int>::of(&QComboBox::activated), ComponentLayout,&QStackedLayout::setCurrentIndex);
+
+    auto APC_AudioFilePath = connect(APC_BrowseAudioFile, &QPushButton::clicked, this, [=]{
+                            QFileDialog::getOpenFileName(this,
+                            tr("Open Audio File"),
+                            tr("/home"),
+                            tr("Audio Files (*.mp3 *.wav);;All Files (*)"));
+    });
 
     connect(ButtonBox, &QDialogButtonBox::accepted, this, [=]{
-        addProperty(QString::fromStdString("Density"), Density->value());
-        addProperty(QString::fromStdString("Friction"), Friction->value());
-        addProperty(QString::fromStdString("Gravity"), GravityCheckbox->isChecked());
-        addProperty(QString::fromStdString("IsTrigger"), IsTriggerCheckbox->isChecked());
+        switch(ComponentLayout->currentIndex()){
+            case 0:
+                addProperty(QString::fromStdString("Rigidbody.Density"), RB_Density->value());
+                addProperty(QString::fromStdString("Rigidbody.Friction"), RB_Friction->value());
+                addProperty(QString::fromStdString("Rigidbody.Gravity"), RB_Gravity->isChecked());
+                addProperty(QString::fromStdString("Rigidbody.IsTrigger"), RB_IsTrigger->isChecked());
+                addProperty(QString::fromStdString("RigidBody.BodyType"), RB_BodyType->value());
+                break;
+            case 1:
+                addProperty(QString::fromStdString("BoxCollider.Size X"), BC_SizeX->value());
+                addProperty(QString::fromStdString("BoxCollider.Size Y"), BC_SizeY->value());
+                addProperty(QString::fromStdString("BoxCollider.Offset X"), BC_OffsetX->value());
+                addProperty(QString::fromStdString("BoxCollider.Offset Y"), BC_OffsetY->value());
+                addProperty(QString::fromStdString("BoxCollider.Angle"), BC_Angle->value());
+                addProperty(QString::fromStdString("BoxCollider.IsTrigger"), BC_IsTrigger->isChecked());
+                break;
+            case 2:
+                addProperty(QString::fromStdString("SpriteComponent.Width"), SC_Width->value());
+                addProperty(QString::fromStdString("SpriteComponent.Height"), SC_Height->value());
+                addProperty(QString::fromStdString("SpriteComponent.ZOrder"), SC_ZOrder->value());
+                break;
+            case 3:
+                QString APC_AudioFilePath;
+                addProperty(QString::fromStdString("AudioPlayerComponent.PlayOnAwake"), APC_PlayOnAwake->isChecked());
+                addProperty(QString::fromStdString("AudioPlayerComponent.AudioFilePath"), APC_AudioFilePath);
+                break;
+            }
         PropertyWindow->accept();
     });
 
+    PropertyWindow->show(); // This should go at the end of this method
 }
 
 /*
