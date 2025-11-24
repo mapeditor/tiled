@@ -23,6 +23,7 @@
 #include "addremovetileset.h"
 #include "bucketfilltool.h"
 #include "changeselectedarea.h"
+#include "createcapsuleobjecttool.h"
 #include "createellipseobjecttool.h"
 #include "createobjecttool.h"
 #include "createpointobjecttool.h"
@@ -179,6 +180,7 @@ MapEditor::MapEditor(QObject *parent)
     CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
     CreateObjectTool *pointObjectsTool = new CreatePointObjectTool(this);
     CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
+    CreateObjectTool *capsuleObjectsTool = new CreateCapsuleObjectTool(this);
     CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
     CreateObjectTool *textObjectsTool = new CreateTextObjectTool(this);
 
@@ -197,6 +199,7 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addAction(mToolManager->registerTool(rectangleObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(pointObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
+    mToolsToolBar->addAction(mToolManager->registerTool(capsuleObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(tileObjectsTool));
     mToolsToolBar->addAction(mToolManager->registerTool(templatesTool));

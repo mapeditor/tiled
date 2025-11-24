@@ -52,6 +52,7 @@ private:
     const QIcon mPolygonIcon;
     const QIcon mPolylineIcon;
     const QIcon mEllipseIcon;
+    const QIcon mCapsuleIcon;
     const QIcon mTextIcon;
     const QIcon mPointIcon;
 };

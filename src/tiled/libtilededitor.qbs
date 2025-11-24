@@ -178,6 +178,8 @@ DynamicLibrary {
         "commandsedit.ui",
         "consoledock.cpp",
         "consoledock.h",
+        "createcapsuleobjecttool.cpp",
+        "createcapsuleobjecttool.h",
         "createellipseobjecttool.cpp",
         "createellipseobjecttool.h",
         "createobjecttool.cpp",
