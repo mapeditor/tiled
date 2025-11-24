@@ -32,7 +32,7 @@ CreateCapsuleObjectTool::CreateCapsuleObjectTool(QObject *parent)
     QIcon icon(QLatin1String(":images/24/insert-ellipse.png"));
     icon.addFile(QLatin1String(":images/48/insert-ellipse.png"));
     setIcon(icon);
-    setShortcut(Qt::Key_C);
+    //setShortcut(Qt::Key_C);
     Utils::setThemeIcon(this, "insert-ellipse");
     languageChangedImpl();
 }
