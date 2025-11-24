@@ -35,7 +35,6 @@
 #include "objectgroup.h"
 
 #include <QtCore/qmath.h>
-#include <QtMath>
 
 using namespace Tiled;
 
