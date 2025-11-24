@@ -35,6 +35,7 @@
 #include "objectgroup.h"
 
 #include <QtCore/qmath.h>
+#include <QtMath>
 
 using namespace Tiled;
 
@@ -77,6 +78,7 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
 
         switch (object->shape()) {
         case MapObject::Ellipse:
+        case MapObject::Capsule:
         case MapObject::Rectangle:
             if (bounds.isNull()) {
                 boundingRect = bounds.adjusted(-10 - extraSpace,
@@ -172,6 +174,14 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
             path.addEllipse(bounds);
         break;
     }
+    case MapObject::Capsule: {
+        qreal rad = qMin(
+            qFabs(bounds.top() - bounds.bottom()),
+            qFabs(bounds.left() - bounds.right())
+        ) / 2;
+        path.addRoundedRect(bounds, rad, rad, Qt::SizeMode::AbsoluteSize);
+        break;
+    }
     case MapObject::Point:
         path = pointShape(object->position());
         break;
@@ -203,6 +213,7 @@ QPainterPath OrthogonalRenderer::interactionShape(const MapObject *object) const
     case MapObject::Rectangle:
     case MapObject::Polygon:
     case MapObject::Ellipse:
+    case MapObject::Capsule:
     case MapObject::Text:
         path = shape(object);
         break;
@@ -398,6 +409,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
                 ((bounds.width() == qreal(0)) ^ (bounds.height() == qreal(0)))) {
             shape = MapObject::Rectangle;
         }
+        // TODO maybe also capsule needs this
 
         switch (shape) {
         case MapObject::Rectangle: {
@@ -455,6 +467,25 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             painter->setPen(linePen);
             painter->setBrush(fillBrush);
             painter->drawEllipse(bounds);
+            break;
+        }
+
+        case MapObject::Capsule: {
+            if (bounds.isNull())
+                bounds = QRectF(QPointF(-10, -10), QSizeF(20, 20));
+
+            qreal rad = qMin(
+                qFabs(bounds.top() - bounds.bottom()),
+                qFabs(bounds.left() - bounds.right())
+            ) / 2;
+
+            // Draw the shadow
+            painter->setPen(shadowPen);
+            painter->drawRoundedRect(bounds.translated(shadowOffset), rad, rad);
+
+            painter->setPen(linePen);
+            painter->setBrush(fillBrush);
+            painter->drawRoundedRect(bounds, rad, rad);
             break;
         }
 

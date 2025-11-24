@@ -120,6 +120,17 @@ QPainterPath IsometricRenderer::shape(const MapObject *object) const
     QPainterPath path;
 
     switch (object->shape()) {
+    case MapObject::Capsule: {
+        QRectF bounds = object->bounds();
+        bounds.translate(-alignmentOffset(bounds, object->alignment(map())));
+        qreal rad = qMin(
+            qFabs(bounds.top() - bounds.bottom()),
+            qFabs(bounds.left() - bounds.right())
+        ) / 2;
+        path.addRoundedRect(bounds, rad, rad, Qt::SizeMode::AbsoluteSize);
+        path = transform().map(path);
+        break;
+    }
     case MapObject::Ellipse: {
         QRectF bounds = object->bounds();
         bounds.translate(-alignmentOffset(bounds, object->alignment(map())));
@@ -166,7 +177,8 @@ QPainterPath IsometricRenderer::interactionShape(const MapObject *object) const
     } else {
         switch (object->shape()) {
         case MapObject::Rectangle:
-        case MapObject::Ellipse: {
+        case MapObject::Ellipse:
+        case MapObject::Capsule: {
             QRectF bounds = object->bounds();
             bounds.translate(-alignmentOffset(bounds, object->alignment(map())));
 
@@ -404,6 +416,20 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         // TODO: Do something sensible to make null-sized objects usable
 
         switch (object->shape()) {
+        case MapObject::Capsule: {
+            const QPolygonF rect = pixelRectToScreenPolygon(bounds);
+            const QPainterPath capsule = shape(object);
+
+            painter->drawPath(capsule.translated(shadowOffset));
+            painter->drawPolygon(rect.translated(shadowOffset));
+
+            painter->setPen(colorPen);
+            painter->drawPolygon(rect);
+
+            painter->setBrush(brush);
+            painter->drawPath(capsule);
+            break;
+        }
         case MapObject::Ellipse: {
             const QPolygonF rect = pixelRectToScreenPolygon(bounds);
             const QPainterPath ellipse = shape(object);
