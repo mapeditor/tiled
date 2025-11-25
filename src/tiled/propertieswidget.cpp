@@ -2729,6 +2729,7 @@ void PropertiesWidget::showAddValueProperty()
     QHBoxLayout *AudioPlayerComponentLayout;
 
     //Rigidbody label
+    QLabel *RB_EntityIDLabel;
     QLabel *RB_GravityLabel;
     QLabel *RB_IsTriggerLabel;
     QLabel *RB_DensityLabel;
@@ -2736,6 +2737,7 @@ void PropertiesWidget::showAddValueProperty()
     QLabel *RB_BodyTypeLabel;
 
     //Rigidbody content
+    QSpinBox *RB_EntityID;
     QCheckBox *RB_Gravity;
     QCheckBox *RB_IsTrigger;
     QDoubleSpinBox *RB_Density;
@@ -2743,6 +2745,7 @@ void PropertiesWidget::showAddValueProperty()
     QSpinBox *RB_BodyType;
 
     //BoxCollider label
+    QLabel *BC_EntityIDLabel;
     QLabel *BC_SizeXLabel;
     QLabel *BC_SizeYLabel;
     QLabel *BC_OffsetXLabel;
@@ -2751,6 +2754,7 @@ void PropertiesWidget::showAddValueProperty()
     QLabel *BC_IsTriggerLabel;
 
     //BoxCollider content
+    QSpinBox *BC_EntityID;
     QDoubleSpinBox *BC_SizeX;
     QDoubleSpinBox *BC_SizeY;
     QDoubleSpinBox *BC_OffsetX;
@@ -2759,20 +2763,24 @@ void PropertiesWidget::showAddValueProperty()
     QCheckBox *BC_IsTrigger;
 
     //SpriteComponent label
+    QLabel *SC_EntityIDLabel;
     QLabel *SC_WidthLabel;
     QLabel *SC_HeightLabel;
     QLabel *SC_ZOrderLabel;
 
     //SpriteComponent content
+    QSpinBox *SC_EntityID;
     QSpinBox *SC_Width;
     QSpinBox *SC_Height;
     QSpinBox *SC_ZOrder;
 
     //AudioPlayerComponent label
+    QLabel *APC_EntityIDLabel;
     QLabel *APC_BrowseAudioFileLabel;
     QLabel *APC_PlayOnAwakeLabel;
 
     //AudioPlayerComponent content
+    QSpinBox *APC_EntityID;
     QPushButton *APC_BrowseAudioFile;
     QCheckBox *APC_PlayOnAwake;
 
@@ -2843,6 +2851,7 @@ void PropertiesWidget::showAddValueProperty()
     ObjectComponents->addItem(QString::fromStdString("Audio Player Component"));
 
     //Rigidbody labels
+    RB_EntityIDLabel = new QLabel(QString::fromStdString("ID Entity:"));
     RB_GravityLabel = new QLabel(QString::fromStdString("Gravity:"));
     RB_IsTriggerLabel = new QLabel(QString::fromStdString("IsTrigger:"));
     RB_DensityLabel = new QLabel(QString::fromStdString("Density:"));
@@ -2850,6 +2859,9 @@ void PropertiesWidget::showAddValueProperty()
     RB_BodyTypeLabel = new QLabel(QString::fromStdString("Body Type:"));
 
     //Rigidbody content
+    RB_EntityID = new QSpinBox();
+    RB_EntityID->setEnabled(false);
+
     RB_Density = new QDoubleSpinBox();
     RB_Friction = new QDoubleSpinBox();
     RB_Density->setSingleStep(0.01);
@@ -2861,6 +2873,7 @@ void PropertiesWidget::showAddValueProperty()
     RB_BodyType->setMinimum(0);
 
     //BoxCollider labels
+    BC_EntityIDLabel = new QLabel(QString::fromStdString("ID Entity:"));
     BC_SizeXLabel = new QLabel(QString::fromStdString("Size X:"));
     BC_SizeYLabel = new QLabel(QString::fromStdString("Size Y:"));
     BC_OffsetXLabel = new QLabel(QString::fromStdString("Offset X:"));
@@ -2869,6 +2882,9 @@ void PropertiesWidget::showAddValueProperty()
     BC_IsTriggerLabel = new QLabel(QString::fromStdString("IsTrigger:"));
 
     //BoxCollider content
+    BC_EntityID = new QSpinBox();
+    BC_EntityID->setEnabled(false);
+
     BC_SizeX = new QDoubleSpinBox();
     BC_SizeY = new QDoubleSpinBox();
     BC_OffsetX = new QDoubleSpinBox();
@@ -2883,20 +2899,28 @@ void PropertiesWidget::showAddValueProperty()
     BC_Angle->setSingleStep(0.01);
 
     //SpriteComponent label
+    SC_EntityIDLabel = new QLabel(QString::fromStdString("ID Entity:"));
     SC_WidthLabel = new QLabel(QString::fromStdString("Width:"));
     SC_HeightLabel = new QLabel(QString::fromStdString("Height:"));
     SC_ZOrderLabel = new QLabel(QString::fromStdString("Z Order:"));
 
     //SpriteComponent content
+    SC_EntityID = new QSpinBox();
+    SC_EntityID->setEnabled(false);
+
     SC_Width = new QSpinBox();
     SC_Height = new QSpinBox();
     SC_ZOrder = new QSpinBox();
 
     //AudioPlayerComponent label
+    APC_EntityIDLabel = new QLabel(QString::fromStdString("ID Entity:"));
     APC_BrowseAudioFileLabel = new QLabel(QString::fromStdString("Browse audio File:"));
     APC_PlayOnAwakeLabel = new QLabel(QString::fromStdString("Play on Awake:"));
 
     //AudioPlayerComponent content
+    APC_EntityID = new QSpinBox();
+    APC_EntityID->setEnabled(false);
+
     APC_BrowseAudioFile = new QPushButton(QString::fromStdString("Browse"));
     APC_PlayOnAwake = new QCheckBox();
     QLabel *AudioFilePath;
@@ -2907,12 +2931,14 @@ void PropertiesWidget::showAddValueProperty()
     TopRow->addWidget(ObjectComponents);
 
     //adding all widgets of rigidbody into layout
+    RB_LabelLayout->addWidget(RB_EntityIDLabel);
     RB_LabelLayout->addWidget(RB_DensityLabel); // Just use single paramater constructor and pass in DensityLabel (layout handled automatically) - Do same for all entries down to and including line 2789
     RB_LabelLayout->addWidget(RB_FrictionLabel);
     RB_LabelLayout->addWidget(RB_GravityLabel);
     RB_LabelLayout->addWidget(RB_IsTriggerLabel);
     RB_LabelLayout->addWidget(RB_BodyTypeLabel);
 
+    RB_PropertyValueLayout->addWidget(RB_EntityID);
     RB_PropertyValueLayout->addWidget(RB_Density);
     RB_PropertyValueLayout->addWidget(RB_Friction);
     RB_PropertyValueLayout->addWidget(RB_Gravity);
@@ -2923,6 +2949,7 @@ void PropertiesWidget::showAddValueProperty()
     RigidbodyLayout->addLayout(RB_PropertyValueLayout);
 
     //BoxComponent layout
+    BC_LabelLayout->addWidget(BC_EntityIDLabel);
     BC_LabelLayout->addWidget(BC_SizeXLabel);
     BC_LabelLayout->addWidget(BC_SizeYLabel);
     BC_LabelLayout->addWidget(BC_OffsetXLabel);
@@ -2930,6 +2957,7 @@ void PropertiesWidget::showAddValueProperty()
     BC_LabelLayout->addWidget(BC_AngleLabel);
     BC_LabelLayout->addWidget(BC_IsTriggerLabel);
 
+    BC_PropertyValueLayout->addWidget(BC_EntityID);
     BC_PropertyValueLayout->addWidget(BC_SizeX);
     BC_PropertyValueLayout->addWidget(BC_SizeY);
     BC_PropertyValueLayout->addWidget(BC_OffsetX);
@@ -2941,10 +2969,12 @@ void PropertiesWidget::showAddValueProperty()
     BoxColliderLayout->addLayout(BC_PropertyValueLayout);
 
     //SpriteComponent layout
+    SC_LabelLayout->addWidget(SC_EntityIDLabel);
     SC_LabelLayout->addWidget(SC_WidthLabel);
     SC_LabelLayout->addWidget(SC_HeightLabel);
     SC_LabelLayout->addWidget(SC_ZOrderLabel);
 
+    SC_PropertyValueLayout->addWidget(SC_EntityID);
     SC_PropertyValueLayout->addWidget(SC_Width);
     SC_PropertyValueLayout->addWidget(SC_Height);
     SC_PropertyValueLayout->addWidget(SC_ZOrder);
@@ -2953,8 +2983,11 @@ void PropertiesWidget::showAddValueProperty()
     SpriteComponentLayout->addLayout(SC_PropertyValueLayout);
 
     //AudioPlayerComponent layout
+    APC_LabelLayout->addWidget(APC_EntityIDLabel);
     APC_LabelLayout->addWidget(APC_BrowseAudioFileLabel);
     APC_LabelLayout->addWidget(APC_PlayOnAwakeLabel);
+
+    APC_PropertyValueLayout->addWidget(APC_EntityID);
 
     APC_BrowseButtonLayout->addWidget(APC_BrowseAudioFile);
     APC_BrowseButtonLayout->addWidget(AudioFilePath);
@@ -2964,7 +2997,6 @@ void PropertiesWidget::showAddValueProperty()
 
     AudioPlayerComponentLayout->addLayout(APC_LabelLayout);
     AudioPlayerComponentLayout->addLayout(APC_PropertyValueLayout);
-
 
     /* 
     - This is where the new layout (QVBoxLayout) comes in. Create a new QVBoxLayout* named mainLayout or similar.
@@ -2986,7 +3018,7 @@ void PropertiesWidget::showAddValueProperty()
     MainLayout->addLayout(TopRow);
     MainLayout->addLayout(ComponentLayout);
     MainLayout->addWidget(ButtonBox);
-    MainLayout->setContentsMargins(5,5,5,5);
+    MainLayout->setContentsMargins(10,10,10,10);
 
     connect(ObjectComponents, QOverload<int>::of(&QComboBox::activated), ComponentLayout,&QStackedLayout::setCurrentIndex);
 
@@ -2999,14 +3031,6 @@ void PropertiesWidget::showAddValueProperty()
             AudioFilePath->setText(APC_AudioFilePath);
         }
     });
-
-    /*const auto APC_AudioFilePath = connect(APC_BrowseAudioFile, &QPushButton::clicked, this, [=]{
-                            QFileDialog::getOpenFileName(this,
-                            tr("Open Audio File"),
-                            tr("/home"),
-                            tr("Audio Files (*.mp3 *.wav);;All Files (*)"));
-    });
-    */
 
     connect(ButtonBox, &QDialogButtonBox::accepted, this, [=]{
         switch(ComponentLayout->currentIndex()){
