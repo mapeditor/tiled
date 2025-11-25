@@ -662,6 +662,17 @@ bool Preferences::restoreSessionOnStartup() const
     return get("Startup/RestorePreviousSession", true);
 }
 
+bool Preferences::naturalSorting() const
+{
+    return get("Project/NaturalSorting", true);
+}
+
+void Preferences::setNaturalSorting(bool enabled)
+{
+    setValue(QLatin1String("Project/NaturalSorting"), enabled);
+    emit naturalSortingChanged(enabled);
+}
+
 void Preferences::addToRecentFileList(const QString &fileName, QStringList& files)
 {
     // Remember the file by its absolute file path (not the canonical one,
