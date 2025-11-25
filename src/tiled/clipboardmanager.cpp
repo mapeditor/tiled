@@ -47,7 +47,7 @@
 
 #include <algorithm>
 
-static const char * const TMX_MIMETYPE = "text/tmx";
+static const char * const TMX_MIMETYPE = "text/plain";
 
 using namespace Tiled;
 
