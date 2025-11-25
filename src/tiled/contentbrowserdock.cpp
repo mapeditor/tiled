@@ -39,31 +39,15 @@ ContentBrowserDock::ContentBrowserDock(QWidget *parent)
     };
     mFileModel->setNameFilters(nameFilters);
 
+    setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);    mTreeView = new QTreeView(this);
 
     mTreeProxy = new QSortFilterProxyModel(this);
     mTreeProxy->setSourceModel(mFileModel);
     mTreeProxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-
-    setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);    mTreeView = new QTreeView(this);
-    mTreeView->setModel(mProxyModel);
-    mTreeView->setHeaderHidden(true);
-    mTreeView->setSelectionMode(QAbstractItemView::SingleSelection);
-    mTreeView->setDragEnabled(true);
-    mTreeView->setDragDropMode(QAbstractItemView::DragOnly);
-=======
     mDetailsProxy = new QSortFilterProxyModel(this);
     mDetailsProxy->setSourceModel(mFileModel);
     mDetailsProxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
->>>>>>> Stashed changes
-=======
-    mDetailsProxy = new QSortFilterProxyModel(this);
-    mDetailsProxy->setSourceModel(mFileModel);
-    mDetailsProxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
->>>>>>> Stashed changes
-
 
     mFilterEdit = new QLineEdit(this);
     mFilterEdit->setPlaceholderText(tr("Filter assets..."));
