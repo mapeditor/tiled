@@ -45,6 +45,7 @@ ContentBrowserDock::ContentBrowserDock(QWidget *parent)
     mTreeProxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
     setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);    mTreeView = new QTreeView(this);
     mTreeView->setModel(mProxyModel);
@@ -52,6 +53,11 @@ ContentBrowserDock::ContentBrowserDock(QWidget *parent)
     mTreeView->setSelectionMode(QAbstractItemView::SingleSelection);
     mTreeView->setDragEnabled(true);
     mTreeView->setDragDropMode(QAbstractItemView::DragOnly);
+=======
+    mDetailsProxy = new QSortFilterProxyModel(this);
+    mDetailsProxy->setSourceModel(mFileModel);
+    mDetailsProxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
+>>>>>>> Stashed changes
 =======
     mDetailsProxy = new QSortFilterProxyModel(this);
     mDetailsProxy->setSourceModel(mFileModel);
