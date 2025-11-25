@@ -38,7 +38,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -849,8 +849,26 @@
  <resources>
   <include location="../../build/Desktop_Qt_6_10_0_MSVC2022_64bit-Debug/Debug_Desktop__c61b1b0652b21d46/libtilededitor.877b2b3a/tilededitor.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>menuBar</sender>
+   <signal>triggered(QAction*)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onSaveJson()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>26</x>
+     <y>17</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>60</x>
+     <y>94</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
  <slots>
   <slot>onRunClient()</slot>
+  <slot>onSaveJson()</slot>
  </slots>
 </ui>

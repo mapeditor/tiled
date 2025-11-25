@@ -78,6 +78,27 @@
 #include "worldpropertiesdialog.h"
 #include "zoomable.h"
 
+#include "mapdocument.h"
+#include "mapformat.h"
+#include "exporthelper.h"          // ← THIS WAS MISSING
+#include "exporthelper.h"
+#include "pluginmanager.h"   // gives you PluginManager::loadedPlugins()
+#include "../plugins/json1/jsonplugin.h" // For JsonMapFormat — this is the key header!
+#include "map.h"              // For Map
+#include "tilelayer.h"        // For TileLayer
+#include <QJsonDocument>      // Qt JSON
+#include <QJsonObject>        // Qt JSON
+#include <QJsonArray>         // Qt JSON
+#include <QFile>              // For file writing
+#include <QMessageBox>        // For errors
+
+#include "mapdocument.h"
+#include "mapformat.h"
+#include "exporthelper.h"
+#include "pluginmanager.h"
+#include <QMessageBox>
+#include <QFile>
+#include <QProcess>
 #include <QActionGroup>
 #include <QCloseEvent>
 #include <QDesktopServices>
@@ -2223,6 +2244,8 @@ void MainWindow::onRunClient()
 {
     QMessageBox::information(this, tr("Debug"), tr("onRunClient() slot triggered;"));
 
+    exportAsJson();
+
     const QString programPath = QString::fromUtf8(
         "C:\\Users\\samth\\Downloads\\Game-Engines-25-26-Ionix-2\\bin"
             "\\Debug-x86_64-windows\\Client\\Client.exe"
@@ -2231,6 +2254,95 @@ void MainWindow::onRunClient()
     if (!started)
         QMessageBox::warning(this, tr("Error"), tr("Failed to launch Client.exe"));
 }
+
+void MainWindow::exportAsJson()
+{
+    // --- 1. Get the map (this part already works) ---
+    Tiled::MapDocument* mapDoc = qobject_cast<Tiled::MapDocument*>(
+        Tiled::DocumentManager::instance()->currentDocument());
+
+    if (!mapDoc || !mapDoc->map()) {
+        QMessageBox::warning(this, QStringLiteral("Export"), QStringLiteral("No map open!"));
+        return;
+    }
+
+    Tiled::Map* map = mapDoc->map();
+
+    // --- 2. Build the JSON (exactly the same as before) ---
+    QJsonObject root;
+    root[QStringLiteral("width")]       = map->width();
+    root[QStringLiteral("height")]      = map->height();
+    root[QStringLiteral("tilewidth")]   = map->tileWidth();
+    root[QStringLiteral("tileheight")]  = map->tileHeight();
+    root[QStringLiteral("orientation")] = QStringLiteral("orthogonal");
+    root[QStringLiteral("renderorder")] = QStringLiteral("right-down");
+    root[QStringLiteral("version")]     = 1.10;
+    root[QStringLiteral("tiledversion")]= QStringLiteral("1.2");
+
+    QJsonArray layersArray;
+    for (Tiled::Layer* layer : map->layers()) {
+        if (Tiled::TileLayer* tl = layer->asTileLayer()) {
+            QJsonObject layerObj;
+            layerObj[QStringLiteral("name")]     = tl->name();
+            layerObj[QStringLiteral("type")]     = QStringLiteral("tilelayer");
+            layerObj[QStringLiteral("width")]    = tl->width();
+            layerObj[QStringLiteral("height")]   = tl->height();
+            layerObj[QStringLiteral("visible")]  = tl->isVisible();
+            layerObj[QStringLiteral("opacity")]  = tl->opacity();
+            layerObj[QStringLiteral("x")]        = tl->x();
+            layerObj[QStringLiteral("y")]        = tl->y();
+
+            QJsonArray data;
+            for (int y = 0; y < tl->height(); ++y) {
+                for (int x = 0; x < tl->width(); ++x) {
+                    Tiled::Cell cell = tl->cellAt(x, y);
+                    unsigned int gid = cell.isEmpty() ? 0 : cell.tileId();
+                    if (cell.flippedHorizontally())   gid |= (1U << 31);
+                    if (cell.flippedVertically())     gid |= (1U << 30);
+                    if (cell.flippedAntiDiagonally()) gid |= (1U << 29);
+                    data.append(static_cast<qint64>(gid));
+                }
+            }
+            layerObj[QStringLiteral("data")] = data;
+            layersArray.append(layerObj);
+        }
+    }
+    root[QStringLiteral("layers")] = layersArray;
+
+    // --- 3. THE REAL FIX FOR THE WRITE PROBLEM ---
+    // Use a path that is GUARANTEED to be writable:
+    QString targetPath = QDir::currentPath() + QStringLiteral("/current_map.json");
+
+    // OPTIONAL: use your original path, but make sure the folder exists first
+    // QString targetPath = QStringLiteral("C:/Ionix2/GameData/current_map.json");
+    // QDir().mkpath(QFileInfo(targetPath).absolutePath());   // creates folder if missing
+
+    QFile file(targetPath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        // This message now tells you the EXACT problem
+        QMessageBox::critical(this,
+                              QStringLiteral("Export Failed"),
+                              QStringLiteral("Cannot open file for writing!\n")
+                                  + QStringLiteral("Path: ") + targetPath
+                                  + QStringLiteral("\nError: ") + file.errorString());
+        return;
+    }
+
+    QJsonDocument doc(root);
+    qint64 bytes = file.write(doc.toJson(QJsonDocument::Compact));
+    file.close();
+
+    if (bytes == -1) {
+        QMessageBox::critical(this, QStringLiteral("Export Failed"),
+                              QStringLiteral("Write failed after opening!\nPath: ") + targetPath);
+    } else {
+        // SUCCESS — show the exact path so you know where it went
+        QMessageBox::information(this, QStringLiteral("Export Success"),
+                                 QStringLiteral("Map exported successfully!\n") + targetPath);
+    }
+}
+
+
 void MainWindow::updateZoomable()
 {
     Zoomable *zoomable = nullptr;
