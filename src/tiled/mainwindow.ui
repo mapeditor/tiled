@@ -38,7 +38,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -231,6 +231,12 @@
     </property>
     <addaction name="actionRunClient"/>
    </widget>
+   <widget class="QMenu" name="menuEntity">
+    <property name="title">
+     <string>Entity</string>
+    </property>
+    <addaction name="actionCreate_Entity"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
@@ -238,8 +244,9 @@
    <addaction name="menuMap"/>
    <addaction name="menuTileset"/>
    <addaction name="menuProject"/>
-   <addaction name="menuHelp"/>
+   <addaction name="menuEntity"/>
    <addaction name="menuBuild"/>
+   <addaction name="menuHelp"/>
   </widget>
   <action name="actionOpen">
    <property name="text">
@@ -844,6 +851,11 @@
     <string>Show Content Browser</string>
    </property>
   </action>
+  <action name="actionCreate_Entity">
+   <property name="text">
+    <string>Create Entity</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
@@ -852,5 +864,6 @@
  <connections/>
  <slots>
   <slot>onRunClient()</slot>
+  <slot>onCreateEntity()</slot>
  </slots>
 </ui>
