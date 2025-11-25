@@ -2791,6 +2791,7 @@ void PropertiesWidget::showAddValueProperty()
     //AudioPlayerComponent layout
     QVBoxLayout *APC_LabelLayout;
     QVBoxLayout *APC_PropertyValueLayout;
+    QHBoxLayout *APC_BrowseButtonLayout;
 
     QDialogButtonBox *ButtonBox;
     QVBoxLayout *MainLayout;
@@ -2826,6 +2827,7 @@ void PropertiesWidget::showAddValueProperty()
     AudioPlayerComponentLayout = new QHBoxLayout();
     APC_LabelLayout = new QVBoxLayout();
     APC_PropertyValueLayout = new QVBoxLayout();
+    APC_BrowseButtonLayout = new QHBoxLayout();
 
     TopRow = new QVBoxLayout();
     MainLayout = new QVBoxLayout(PropertyWindow);
@@ -2897,6 +2899,8 @@ void PropertiesWidget::showAddValueProperty()
     //AudioPlayerComponent content
     APC_BrowseAudioFile = new QPushButton(QString::fromStdString("Browse"));
     APC_PlayOnAwake = new QCheckBox();
+    QLabel *AudioFilePath;
+    AudioFilePath = new QLabel();
 
     //TopRow layout
     TopRow->addWidget(ChooseComponentLabel);
@@ -2952,11 +2956,15 @@ void PropertiesWidget::showAddValueProperty()
     APC_LabelLayout->addWidget(APC_BrowseAudioFileLabel);
     APC_LabelLayout->addWidget(APC_PlayOnAwakeLabel);
 
-    APC_PropertyValueLayout->addWidget(APC_BrowseAudioFile);
+    APC_BrowseButtonLayout->addWidget(APC_BrowseAudioFile);
+    APC_BrowseButtonLayout->addWidget(AudioFilePath);
+
+    APC_PropertyValueLayout->addLayout(APC_BrowseButtonLayout);
     APC_PropertyValueLayout->addWidget(APC_PlayOnAwake);
 
     AudioPlayerComponentLayout->addLayout(APC_LabelLayout);
     AudioPlayerComponentLayout->addLayout(APC_PropertyValueLayout);
+
 
     /* 
     - This is where the new layout (QVBoxLayout) comes in. Create a new QVBoxLayout* named mainLayout or similar.
@@ -2978,16 +2986,27 @@ void PropertiesWidget::showAddValueProperty()
     MainLayout->addLayout(TopRow);
     MainLayout->addLayout(ComponentLayout);
     MainLayout->addWidget(ButtonBox);
-    MainLayout->setContentsMargins(10,10,10,10);
+    MainLayout->setContentsMargins(5,5,5,5);
 
     connect(ObjectComponents, QOverload<int>::of(&QComboBox::activated), ComponentLayout,&QStackedLayout::setCurrentIndex);
 
-    auto APC_AudioFilePath = connect(APC_BrowseAudioFile, &QPushButton::clicked, this, [=]{
+    connect(APC_BrowseAudioFile, &QPushButton::clicked, [=]{
+        QString APC_AudioFilePath = QFileDialog::getOpenFileName(PropertyWindow, QString::fromStdString("Choose Audio File"),
+                                                tr("/home"),
+                                                tr("Audio File (*.mp3 *.wav)"));
+        if (!APC_AudioFilePath.isEmpty())
+        {
+            AudioFilePath->setText(APC_AudioFilePath);
+        }
+    });
+
+    /*const auto APC_AudioFilePath = connect(APC_BrowseAudioFile, &QPushButton::clicked, this, [=]{
                             QFileDialog::getOpenFileName(this,
                             tr("Open Audio File"),
                             tr("/home"),
                             tr("Audio Files (*.mp3 *.wav);;All Files (*)"));
     });
+    */
 
     connect(ButtonBox, &QDialogButtonBox::accepted, this, [=]{
         switch(ComponentLayout->currentIndex()){
@@ -3012,9 +3031,8 @@ void PropertiesWidget::showAddValueProperty()
                 addProperty(QString::fromStdString("SpriteComponent.ZOrder"), SC_ZOrder->value());
                 break;
             case 3:
-                QString APC_AudioFilePath;
                 addProperty(QString::fromStdString("AudioPlayerComponent.PlayOnAwake"), APC_PlayOnAwake->isChecked());
-                addProperty(QString::fromStdString("AudioPlayerComponent.AudioFilePath"), APC_AudioFilePath);
+                addProperty(QString::fromStdString("AudioPlayerComponent.AudioFilePath"), AudioFilePath->text());
                 break;
             }
         PropertyWindow->accept();
