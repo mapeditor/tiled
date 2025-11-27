@@ -174,11 +174,12 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
         break;
     }
     case MapObject::Capsule: {
-        qreal rad = qMin(
-            qFabs(bounds.top() - bounds.bottom()),
-            qFabs(bounds.left() - bounds.right())
-        ) / 2;
-        path.addRoundedRect(bounds, rad, rad, Qt::SizeMode::AbsoluteSize);
+        const qreal rad = std::min(std::abs(bounds.height()),
+                                   std::abs(bounds.width())) / 2;
+        if (rad == 0.)
+            path.addEllipse(bounds.topLeft(), 10, 10);
+        else
+            path.addRoundedRect(bounds, rad, rad, Qt::SizeMode::AbsoluteSize);
         break;
     }
     case MapObject::Point:
@@ -473,10 +474,8 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             if (bounds.isNull())
                 bounds = QRectF(QPointF(-10, -10), QSizeF(20, 20));
 
-            qreal rad = qMin(
-                qFabs(bounds.top() - bounds.bottom()),
-                qFabs(bounds.left() - bounds.right())
-            ) / 2;
+            const qreal rad = std::min(std::abs(bounds.height()),
+                                       std::abs(bounds.width())) / 2;
 
             // Draw the shadow
             painter->setPen(shadowPen);
