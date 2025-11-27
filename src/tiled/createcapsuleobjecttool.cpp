@@ -1,6 +1,6 @@
 /*
  * createcapsuleobjecttool.cpp
- * Copyright 2025, TODO
+ * Copyright 2025, Jocelyn <jschrepp2121@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -50,7 +50,7 @@ void CreateCapsuleObjectTool::languageChangedImpl()
 
 MapObject *CreateCapsuleObjectTool::createNewMapObject()
 {
-    MapObject *newMapObject = new MapObject;
+    auto newMapObject = new MapObject;
     newMapObject->setShape(MapObject::Capsule);
     return newMapObject;
 }

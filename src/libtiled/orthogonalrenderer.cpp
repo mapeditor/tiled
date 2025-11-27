@@ -405,11 +405,10 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
         // CoreGraphics when drawing the path requested by the
         // QCoreGraphicsPaintEngine. Draw them as rectangle instead.
         MapObject::Shape shape = object->shape();
-        if (shape == MapObject::Ellipse &&
+        if ((shape == MapObject::Ellipse || shape == MapObject::Capsule) &&
                 ((bounds.width() == qreal(0)) ^ (bounds.height() == qreal(0)))) {
             shape = MapObject::Rectangle;
         }
-        // TODO maybe also capsule needs this
 
         switch (shape) {
         case MapObject::Rectangle: {

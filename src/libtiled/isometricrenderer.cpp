@@ -123,10 +123,8 @@ QPainterPath IsometricRenderer::shape(const MapObject *object) const
     case MapObject::Capsule: {
         QRectF bounds = object->bounds();
         bounds.translate(-alignmentOffset(bounds, object->alignment(map())));
-        qreal rad = qMin(
-            qFabs(bounds.top() - bounds.bottom()),
-            qFabs(bounds.left() - bounds.right())
-        ) / 2;
+        const qreal rad = std::min(std::abs(bounds.height()),
+                                   std::abs(bounds.width())) / 2;
         path.addRoundedRect(bounds, rad, rad, Qt::SizeMode::AbsoluteSize);
         path = transform().map(path);
         break;
@@ -416,32 +414,19 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         // TODO: Do something sensible to make null-sized objects usable
 
         switch (object->shape()) {
+        case MapObject::Ellipse:
         case MapObject::Capsule: {
             const QPolygonF rect = pixelRectToScreenPolygon(bounds);
-            const QPainterPath capsule = shape(object);
+            const QPainterPath path = shape(object);
 
-            painter->drawPath(capsule.translated(shadowOffset));
+            painter->drawPath(path.translated(shadowOffset));
             painter->drawPolygon(rect.translated(shadowOffset));
 
             painter->setPen(colorPen);
             painter->drawPolygon(rect);
 
             painter->setBrush(brush);
-            painter->drawPath(capsule);
-            break;
-        }
-        case MapObject::Ellipse: {
-            const QPolygonF rect = pixelRectToScreenPolygon(bounds);
-            const QPainterPath ellipse = shape(object);
-
-            painter->drawPath(ellipse.translated(shadowOffset));
-            painter->drawPolygon(rect.translated(shadowOffset));
-
-            painter->setPen(colorPen);
-            painter->drawPolygon(rect);
-
-            painter->setBrush(brush);
-            painter->drawPath(ellipse);
+            painter->drawPath(path);
             break;
         }
         case MapObject::Point:

@@ -492,8 +492,8 @@ void MapObject::flipInScreenCoordinates(FlipDirection direction, const QPointF &
 }
 
 /**
- * Rectangles, ellipses, capsules and polygons are flipped in "pixel space", the
- * coordinate space before isometric projection.
+ * Rectangles, ellipses, capsules and polygons are flipped in "pixel space",
+ * the coordinate space before isometric projection.
  *
  * NOTE: No attempt to handle rotated shapes on isometric maps is made. The
  * expectation is that due to their weird handling, nobody really does that
