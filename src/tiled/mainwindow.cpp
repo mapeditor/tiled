@@ -2263,19 +2263,26 @@ void MainWindow::exportAsJson()
     if (!doc)
          QMessageBox::warning(this, tr("Error"), tr("No Map Selected"));
 
+    qDebug() << "doc:" << doc;
+
     const QString path = QStringLiteral("C:/Ionix2/GameData/current_map.json");
     QDir().mkpath(QFileInfo(path).absolutePath());
 
-    // Create a JSON exporter
-    //Json::JsonMapFormat jsonFormat(Json::JsonMapFormat::Json);
+    Tiled::MapFormat *tmj = nullptr;
 
-    // Export the map
-    //if (!jsonFormat.write(doc->map(), path, {})) {
-       // QMessageBox::critical(this,
-                              //tr("Export Error"),
-                              //jsonFormat.errorString());
-    //}
+    const auto formats = Tiled::PluginManager::objects<Tiled::MapFormat>();
+    for(auto f : formats){
+        if(f->shortName() == QStringLiteral("json")){
+            tmj = f;
+            break;
+        }
+    }
+
+    if(tmj&&doc)
+        tmj->write(doc->map(),path,{});
+    qDebug() << "TMJ export done.";
 }
+
 
 
 void MainWindow::updateZoomable()
