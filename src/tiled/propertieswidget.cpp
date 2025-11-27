@@ -47,6 +47,7 @@
 #include "variantmapproperty.h"
 #include "wangoverlay.h"
 
+#include <ObjectReferenceItem.h>
 #include <QAction>
 #include <QCheckBox>
 #include <QCoreApplication>
@@ -3031,6 +3032,7 @@ void PropertiesWidget::showAddValueProperty()
             AudioFilePath->setText(APC_AudioFilePath);
         }
     });
+
 
     connect(ButtonBox, &QDialogButtonBox::accepted, this, [=]{
         switch(ComponentLayout->currentIndex()){
