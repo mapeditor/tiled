@@ -29,11 +29,11 @@ CreateCapsuleObjectTool::CreateCapsuleObjectTool(QObject *parent)
     : CreateScalableObjectTool("CreateCapsuleObjectTool",
                                parent)
 {
-    QIcon icon(QLatin1String(":images/24/insert-ellipse.png"));
-    icon.addFile(QLatin1String(":images/48/insert-ellipse.png"));
+    QIcon icon(QLatin1String(":images/24/insert-capsule.png"));
+    icon.addFile(QLatin1String(":images/48/insert-capsule.png"));
     setIcon(icon);
     //setShortcut(Qt::Key_C);
-    Utils::setThemeIcon(this, "insert-ellipse");
+    Utils::setThemeIcon(this, "insert-capsule");
     languageChangedImpl();
 }
 
