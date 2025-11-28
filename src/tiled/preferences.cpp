@@ -447,6 +447,17 @@ void Preferences::setSafeSavingEnabled(bool enabled)
     SaveFile::setSafeSavingEnabled(enabled);
 }
 
+bool Preferences::enableTextPaste() const
+{
+    return get("Storage/enableTextPaste", false);
+}
+
+void Preferences::setEnableTextPaste(bool enabled)
+{
+    setValue(QLatin1String("Storage/enableTextPaste"), enabled);
+    emit enableTextPasteChanged(enabled);
+}
+
 bool Preferences::exportOnSave() const
 {
     return get("Storage/ExportOnSave", false);

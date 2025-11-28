@@ -64,6 +64,16 @@
             </property>
            </widget>
           </item>
+           <item row="4" column="0">
+           <widget class="QCheckBox" name="enableTextPaste">
+            <property name="toolTip">
+             <string>Enable to copy TMX as text from other programs.</string>
+            </property>
+            <property name="text">
+             <string>Set clipboard to use plain text</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -687,6 +697,8 @@
   <tabstop>restoreSession</tabstop>
   <tabstop>safeSaving</tabstop>
   <tabstop>exportOnSave</tabstop>
+  <tabstop>enableTextPaste</tabstop>
+
   <tabstop>embedTilesets</tabstop>
   <tabstop>detachTemplateInstances</tabstop>
   <tabstop>resolveObjectTypesAndProperties</tabstop>
