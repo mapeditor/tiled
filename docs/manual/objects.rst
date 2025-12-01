@@ -92,7 +92,7 @@ Insert Capsule
 No default shortcut |insert-capsule|
 
 Capsules work the same way as `rectangles <#insert-rectangle>`__, except
-that they are rendered as an capsule. Useful for when your area or
+that they are rendered as a capsule. Useful for when your area or
 collision shape needs to represent a circle or capsule.
 
 .. _insert-polygon-tool:

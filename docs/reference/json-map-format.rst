@@ -233,7 +233,7 @@ Object
     :header: Field, Type, Description
     :widths: 1, 1, 4
 
-    capsule,          bool,             "Used to mark an object as an capsule"
+    capsule,          bool,             "Used to mark an object as a capsule"
     ellipse,          bool,             "Used to mark an object as an ellipse"
     gid,              int,              "Global tile ID, only if object represents a tile"
     height,           double,           "Height in pixels."
