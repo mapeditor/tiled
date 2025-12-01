@@ -793,6 +793,10 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
         if (shouldWrite(true, isTemplateInstance, mapObject.propertyChanged(MapObject::ShapeProperty)))
             w.writeEmptyElement(QLatin1String("ellipse"));
         break;
+    case MapObject::Capsule:
+        if (shouldWrite(true, isTemplateInstance, mapObject.propertyChanged(MapObject::ShapeProperty)))
+            w.writeEmptyElement(QLatin1String("capsule"));
+        break;
     case MapObject::Text: {
         if (shouldWrite(true, isTemplateInstance,
                         mapObject.propertyChanged(MapObject::TextProperty) ||

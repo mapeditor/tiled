@@ -1252,6 +1252,10 @@ std::unique_ptr<MapObject> MapReaderPrivate::readObject()
             xml.skipCurrentElement();
             object->setShape(MapObject::Ellipse);
             object->setPropertyChanged(MapObject::ShapeProperty);
+        } else if (xml.name() == QLatin1String("capsule")) {
+            xml.skipCurrentElement();
+            object->setShape(MapObject::Capsule);
+            object->setPropertyChanged(MapObject::ShapeProperty);
         } else if (xml.name() == QLatin1String("text")) {
             object->setTextData(readObjectText());
             object->setShape(MapObject::Text);

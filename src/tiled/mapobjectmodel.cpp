@@ -43,6 +43,7 @@ ObjectIconManager::ObjectIconManager()
    , mPolygonIcon(QLatin1String(":images/24/object-polygon.png"))
    , mPolylineIcon(QLatin1String(":images/24/object-polyline.png"))
    , mEllipseIcon(QLatin1String(":images/24/object-ellipse.png"))
+   , mCapsuleIcon(QLatin1String(":images/24/object-capsule.png"))
    , mTextIcon(QLatin1String(":images/24/object-text.png"))
    , mPointIcon(QLatin1String(":images/24/object-point.png"))
 {}
@@ -64,6 +65,8 @@ const QIcon &ObjectIconManager::iconForObject(const MapObject &object) const
         return mPolylineIcon;
     case MapObject::Ellipse:
         return mEllipseIcon;
+    case MapObject::Capsule:
+        return mCapsuleIcon;
     case MapObject::Text:
         return mTextIcon;
     case MapObject::Point:

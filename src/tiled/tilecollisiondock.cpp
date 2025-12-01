@@ -23,6 +23,7 @@
 #include "actionmanager.h"
 #include "addremovemapobject.h"
 #include "changetileobjectgroup.h"
+#include "createcapsuleobjecttool.h"
 #include "createellipseobjecttool.h"
 #include "createobjecttool.h"
 #include "createpointobjecttool.h"
@@ -92,6 +93,7 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     CreateObjectTool *rectangleObjectsTool = new CreateRectangleObjectTool(this);
     CreateObjectTool *pointObjectsTool = new CreatePointObjectTool(this);
     CreateObjectTool *ellipseObjectsTool = new CreateEllipseObjectTool(this);
+    CreateObjectTool *capsuleObjectsTool = new CreateCapsuleObjectTool(this);
     CreateObjectTool *polygonObjectsTool = new CreatePolygonObjectTool(this);
     CreateObjectTool *templatesTool = new CreateTemplateTool(this);
 
@@ -116,6 +118,7 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     toolsToolBar->addAction(mToolManager->registerTool(rectangleObjectsTool));
     toolsToolBar->addAction(mToolManager->registerTool(pointObjectsTool));
     toolsToolBar->addAction(mToolManager->registerTool(ellipseObjectsTool));
+    toolsToolBar->addAction(mToolManager->registerTool(capsuleObjectsTool));
     toolsToolBar->addAction(mToolManager->registerTool(polygonObjectsTool));
     toolsToolBar->addAction(mToolManager->registerTool(templatesTool));
     toolsToolBar->addSeparator();
