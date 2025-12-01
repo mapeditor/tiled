@@ -89,7 +89,7 @@ collision shape needs to represent a circle or ellipse.
 Insert Capsule
 ~~~~~~~~~~~~~~
 
-No default shortcut |insert-capsule|
+Shortcut: ``Shift+C`` |insert-capsule|
 
 Capsules work the same way as `rectangles <#insert-rectangle>`__, except
 that they are rendered as a capsule. Useful for when your area or

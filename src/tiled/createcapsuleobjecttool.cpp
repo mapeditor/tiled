@@ -32,7 +32,7 @@ CreateCapsuleObjectTool::CreateCapsuleObjectTool(QObject *parent)
     QIcon icon(QLatin1String(":images/24/insert-capsule.png"));
     icon.addFile(QLatin1String(":images/48/insert-capsule.png"));
     setIcon(icon);
-    //setShortcut(Qt::Key_C);
+    setShortcut(Qt::SHIFT + Qt::Key_C);
     Utils::setThemeIcon(this, "insert-capsule");
     languageChangedImpl();
 }
