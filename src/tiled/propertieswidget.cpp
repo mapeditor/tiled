@@ -2728,6 +2728,7 @@ void PropertiesWidget::showAddValueProperty()
     QHBoxLayout *BoxColliderLayout;
     QHBoxLayout *SpriteComponentLayout;
     QHBoxLayout *AudioPlayerComponentLayout;
+    QHBoxLayout *AnimatorComponentLayout;
 
     //Rigidbody label
     QLabel *RB_EntityIDLabel;
@@ -2787,6 +2788,24 @@ void PropertiesWidget::showAddValueProperty()
     QPushButton *APC_BrowseAudioFile;
     QCheckBox *APC_PlayOnAwake;
 
+    //AnimatorComponent layout
+    QLabel *AC_EntityIDLabel;
+    QLabel *AC_FrameSizeLabel;
+    QLabel *AC_BrowseTextureFileLabel;
+    QLabel *AC_WidthLabel;
+    QLabel *AC_HeightLabel;
+    QLabel *AC_RowsLabel;
+    QLabel *AC_ColumnsLabel;
+
+    //AnimatorComponent content
+    QSpinBox *AC_EntityID;
+    QSpinBox *AC_FrameSize;
+    QPushButton *AC_BrowseTextureFile;
+    QDoubleSpinBox *AC_Width;
+    QDoubleSpinBox *AC_Height;
+    QSpinBox *AC_Rows;
+    QSpinBox *AC_Columns;
+
     //Rigidbody layout
     QVBoxLayout *RB_LabelLayout;
     QVBoxLayout *RB_PropertyValueLayout;
@@ -2809,16 +2828,23 @@ void PropertiesWidget::showAddValueProperty()
     QVBoxLayout *MainLayout;
     QVBoxLayout *TopRow;
 
+    //Animator Layout
+    QVBoxLayout *AC_LabelLayout;
+    QVBoxLayout *AC_PropertyValueLayout;
+    QHBoxLayout *AC_BrowseButtonLayout;
+
     //placeholders to put into stackedlayout
     QWidget *StackedRigidBody;
     QWidget *StackedBoxCollider;
     QWidget *StackedSpriteComponent;
     QWidget *StackedAudioPlayerComponent;
+    QWidget *StackedAnimatorComponent;
 
     StackedRigidBody = new QWidget();
     StackedBoxCollider = new QWidget();
     StackedSpriteComponent = new QWidget();
     StackedAudioPlayerComponent = new QWidget();
+    StackedAnimatorComponent = new QWidget();
 
     //defines dialog window
     PropertyWindow = new QDialog();
@@ -2841,6 +2867,10 @@ void PropertiesWidget::showAddValueProperty()
     APC_LabelLayout = new QVBoxLayout();
     APC_PropertyValueLayout = new QVBoxLayout();
     APC_BrowseButtonLayout = new QHBoxLayout();
+    AnimatorComponentLayout = new QHBoxLayout();
+    AC_LabelLayout = new QVBoxLayout();
+    AC_PropertyValueLayout = new QVBoxLayout();
+    AC_BrowseButtonLayout = new QHBoxLayout();
 
     TopRow = new QVBoxLayout();
     MainLayout = new QVBoxLayout(PropertyWindow);
@@ -2854,6 +2884,7 @@ void PropertiesWidget::showAddValueProperty()
     ObjectComponents->addItem(QString::fromStdString("Box Collider"));
     ObjectComponents->addItem(QString::fromStdString("Sprite Component"));
     ObjectComponents->addItem(QString::fromStdString("Audio Player Component"));
+    ObjectComponents->addItem(QString::fromStdString("Animator Component"));
 
     //Rigidbody labels
     RB_EntityIDLabel = new QLabel(QString::fromStdString("ID Entity:"));
@@ -2934,6 +2965,28 @@ void PropertiesWidget::showAddValueProperty()
     APC_PlayOnAwake = new QCheckBox();
     QLabel *AudioFilePath;
     AudioFilePath = new QLabel();
+
+    //AnimatorComponent Label
+    AC_EntityIDLabel = new QLabel(QString::fromStdString("ID Entity:"));
+    AC_FrameSizeLabel = new QLabel(QString::fromStdString("Frame Size:"));
+    AC_BrowseTextureFileLabel = new QLabel(QString::fromStdString("Browse Texture File:"));
+    AC_WidthLabel = new QLabel(QString::fromStdString("Width:"));
+    AC_HeightLabel = new QLabel(QString::fromStdString("Height:"));
+    AC_RowsLabel = new QLabel(QString::fromStdString("Number of rows:"));
+    AC_ColumnsLabel = new QLabel(QString::fromStdString("Number of columns:"));
+
+    //AnimatorComponent Content
+    AC_EntityID = new QSpinBox();
+    AC_EntityID->setEnabled(false);
+
+    AC_FrameSize = new QSpinBox();
+    AC_BrowseTextureFile = new QPushButton(QString::fromStdString("Browse"));
+    QLabel *TextureFilePath;
+    TextureFilePath = new QLabel();
+    AC_Width = new QDoubleSpinBox();
+    AC_Height = new QDoubleSpinBox();
+    AC_Rows = new QSpinBox();
+    AC_Columns = new QSpinBox();
 
     //TopRow layout
     TopRow->addWidget(ChooseComponentLabel);
@@ -3016,6 +3069,31 @@ void PropertiesWidget::showAddValueProperty()
     AudioPlayerComponentLayout->addLayout(APC_LabelLayout);
     AudioPlayerComponentLayout->addLayout(APC_PropertyValueLayout);
 
+    //adding all widgets of animator to layout
+    AC_LabelLayout->addWidget(AC_EntityIDLabel);
+    AC_LabelLayout->addWidget(AC_FrameSizeLabel);
+    AC_LabelLayout->addWidget(AC_BrowseTextureFileLabel);
+
+    AC_LabelLayout->addWidget(AC_WidthLabel);
+    AC_LabelLayout->addWidget(AC_HeightLabel);
+    AC_LabelLayout->addWidget(AC_RowsLabel);
+    AC_LabelLayout->addWidget(AC_ColumnsLabel);
+
+    AC_PropertyValueLayout->addWidget(AC_EntityID);
+    AC_PropertyValueLayout->addWidget(AC_FrameSize);
+
+    AC_PropertyValueLayout->addWidget(AC_BrowseTextureFile);
+    AC_BrowseButtonLayout->addWidget(AC_BrowseTextureFile);
+    AC_BrowseButtonLayout->addWidget(TextureFilePath);
+
+    AC_PropertyValueLayout->addWidget(AC_Width);
+    AC_PropertyValueLayout->addWidget(AC_Height);
+    AC_PropertyValueLayout->addWidget(AC_Rows);
+    AC_PropertyValueLayout->addWidget(AC_Columns);
+
+    AnimatorComponentLayout->addLayout(AC_LabelLayout);
+    AnimatorComponentLayout->addLayout(AC_PropertyValueLayout);
+
     /* 
     - This is where the new layout (QVBoxLayout) comes in. Create a new QVBoxLayout* named mainLayout or similar.
     - add your widgets to the layout as you usually do
@@ -3027,11 +3105,13 @@ void PropertiesWidget::showAddValueProperty()
     StackedBoxCollider->setLayout(BoxColliderLayout);
     StackedSpriteComponent->setLayout(SpriteComponentLayout);
     StackedAudioPlayerComponent->setLayout(AudioPlayerComponentLayout);
+    StackedAnimatorComponent->setLayout(AnimatorComponentLayout);
 
     ComponentLayout->addWidget(StackedRigidBody);
     ComponentLayout->addWidget(StackedBoxCollider);
     ComponentLayout->addWidget(StackedSpriteComponent);
     ComponentLayout->addWidget(StackedAudioPlayerComponent);
+    ComponentLayout->addWidget(StackedAnimatorComponent);
 
     MainLayout->addLayout(TopRow);
     MainLayout->addLayout(ComponentLayout);
@@ -3060,6 +3140,15 @@ void PropertiesWidget::showAddValueProperty()
         }
     });
 
+    connect(AC_BrowseTextureFile, &QPushButton::clicked, [=]{
+        QString AC_TextureFilePath = QFileDialog::getOpenFileName(PropertyWindow, QString::fromStdString("Choose Texture File"),
+                                                                 tr("/home"),
+                                                                 tr("Audio File (*.png, *.jpg)"));
+        if (!AC_TextureFilePath.isEmpty())
+        {
+            TextureFilePath->setText(AC_TextureFilePath);
+        }
+    });
 
     connect(ButtonBox, &QDialogButtonBox::accepted, this, [=]{
         switch(ComponentLayout->currentIndex()){
@@ -3088,6 +3177,13 @@ void PropertiesWidget::showAddValueProperty()
                 addProperty(QString::fromStdString("AudioPlayerComponent.PlayOnAwake"), APC_PlayOnAwake->isChecked());
                 addProperty(QString::fromStdString("AudioPlayerComponent.AudioFilePath"), AudioFilePath->text());
                 break;
+            case 4:
+                addProperty(QString::fromStdString("AnimatorComponent.FrameSize"), AC_FrameSize->value());
+                addProperty(QString::fromStdString("AnimatorComponent.TextureFilePath"), TextureFilePath->text());
+                addProperty(QString::fromStdString("AnimatorComponent.Width"), AC_Width->value());
+                addProperty(QString::fromStdString("AnimatorComponent.Height"), AC_Height->value());
+                addProperty(QString::fromStdString("AnimatorComponent.Rows"), AC_Rows->value());
+                addProperty(QString::fromStdString("AnimatorComponent.Columns"), AC_Columns->value());
             }
         PropertyWindow->accept();
     });
