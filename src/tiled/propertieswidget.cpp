@@ -3051,12 +3051,12 @@ void PropertiesWidget::showAddValueProperty()
     });
 
     connect(SC_BrowseSpriteFile, &QPushButton::clicked, [=]{
-        QString APC_AudioFilePath = QFileDialog::getOpenFileName(PropertyWindow, QString::fromStdString("Choose Sprite File"),
+        QString SC_SpriteFilePath = QFileDialog::getOpenFileName(PropertyWindow, QString::fromStdString("Choose Sprite File"),
                                                                  tr("/home"),
-                                                                 tr("Audio File (*.png, *.jpg)"));
-        if (!APC_AudioFilePath.isEmpty())
+                                                                 tr("Sprite File (*.png, *.jpg)"));
+        if (!SC_SpriteFilePath.isEmpty())
         {
-            AudioFilePath->setText(APC_AudioFilePath);
+            SpriteFilePath->setText(SC_SpriteFilePath);
         }
     });
 
