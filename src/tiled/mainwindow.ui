@@ -241,6 +241,8 @@
     <property name="title">
      <string>UI</string>
     </property>
+    <addaction name="actionLabel"/>
+    <addaction name="actionButton"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -860,6 +862,19 @@
   <action name="actionCreate_Entity">
    <property name="text">
     <string>Create Entity</string>
+   </property>
+  </action>
+  <action name="actionLabel">
+   <property name="text">
+    <string>Label</string>
+   </property>
+  </action>
+  <action name="actionButton">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Button</string>
    </property>
   </action>
  </widget>
