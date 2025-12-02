@@ -102,6 +102,7 @@
 #include <QActionGroup>
 #include <QCloseEvent>
 #include <QDesktopServices>
+#include <QDialog>
 #include <QFileDialog>
 #include <QLabel>
 #include <QMessageBox>
@@ -553,6 +554,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerMenu(mGroupLayerMenu, "GroupLayer");
 
     connect(mUi->actionRunClient, &QAction::triggered, this, &MainWindow::onRunClient);
+    connect(mUi->actionCreate_Entity, &QAction::triggered, this, &MainWindow::onCreateEntity);
     connect(mUi->actionNewMap, &QAction::triggered, this, &MainWindow::newMap);
     connect(mUi->actionNewTileset, &QAction::triggered, this, [this] { newTileset(); });
     connect(mUi->actionOpen, &QAction::triggered, this, &MainWindow::openFileDialog);
@@ -2255,6 +2257,7 @@ void MainWindow::onRunClient()
         QMessageBox::warning(this, tr("Error"), tr("Failed to launch Client.exe"));
 }
 
+
 void MainWindow::exportAsJson()
 {
     auto* doc = qobject_cast<Tiled::MapDocument*>(
@@ -2283,6 +2286,43 @@ void MainWindow::exportAsJson()
     qDebug() << "TMJ export done.";
 }
 
+
+
+
+void MainWindow::onCreateEntity()
+{
+    MapDocument *mMapDocument;
+
+    QDialog *InvalidLayer;
+    QVBoxLayout *InvalidLayerLayout;
+    QLabel *InvalidLayerLabel;
+
+    QDialog *CreateObject;
+    QLabel *CreateObjectLabel;
+    QVBoxLayout *CreateObjectLayout;
+
+    Layer *CurrentLayer;
+
+    InvalidLayer = new QDialog();
+    CreateObject = new QDialog();
+
+    InvalidLayerLabel = new QLabel(QString::fromStdString("Invalid Layer!"));
+    CreateObjectLabel = new QLabel(QString::fromStdString("Object Name:"));
+
+    InvalidLayerLayout = new QVBoxLayout(InvalidLayer);
+    CreateObjectLayout = new QVBoxLayout(CreateObject);
+
+    InvalidLayerLayout->addWidget(InvalidLayerLabel);
+    CreateObjectLayout->addWidget(CreateObjectLabel);
+
+    if(true){
+        CreateObject->show();
+    }
+    else
+    {
+        InvalidLayer->show();
+    }
+}
 
 
 void MainWindow::updateZoomable()
