@@ -454,6 +454,9 @@ int main(int argc, char *argv[])
     Tiled::increaseImageAllocationLimit();
 
     TiledApplication a(argc, argv);
+    a.setApplicationDisplayName(u"Ionix"_qs);           // Best & modern way (Qt 6.0+)
+    a.setApplicationName(u"Ionix"_qs);                  // Optional, for consistency
+    a.setOrganizationName(u"Ionix"_qs);                 // Optional
 
 #ifdef TILED_SENTRY
     Sentry sentry;
