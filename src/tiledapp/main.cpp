@@ -457,6 +457,20 @@ int main(int argc, char *argv[])
     a.setApplicationDisplayName(u"Ionix"_qs);           // Best & modern way (Qt 6.0+)
     a.setApplicationName(u"Ionix"_qs);                  // Optional, for consistency
     a.setOrganizationName(u"Ionix"_qs);                 // Optional
+    qApp->setStyleSheet(
+        uR"(
+        QMainWindow, QWidget {
+            background-color: #1e2127;
+            color: white;
+        }
+        MapView, Tiled--MapScene {
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFklEQVQoU42PQc7AQAzD5hS7bW4bL8EF9wIAG0UTpAAAAABJRU5ErkJggg==');
+            background-repeat: repeat;
+        }
+    )"_qs
+        );
+
+
 
 #ifdef TILED_SENTRY
     Sentry sentry;
