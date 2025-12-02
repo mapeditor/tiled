@@ -2240,6 +2240,57 @@ void MainWindow::updateActions()
     mShowPropertyTypesEditor->setEnabled(hasProject);
 }
 
+void MainWindow::onCreateEntity()
+{
+
+    MapDocument *mMapDocument = dynamic_cast<MapDocument*>(DocumentManager::instance()->currentDocument());
+    Layer* CurrentLayer = nullptr;
+
+    if(mMapDocument)
+    {
+        CurrentLayer = mMapDocument->currentLayer();
+    }
+
+    QDialog *InvalidLayer;
+    QVBoxLayout *InvalidLayerLayout;
+    QLabel *InvalidLayerLabel;
+
+    QDialog *CreateObject;
+    QLabel *CreateObjectLabel;
+    QLineEdit *CreateObjectName;
+    QVBoxLayout *CreateObjectLayout;
+    QDialogButtonBox *CreateObjectConfirm;
+
+    InvalidLayer = new QDialog();
+    CreateObject = new QDialog();
+
+    InvalidLayerLabel = new QLabel(QString::fromStdString("Invalid Layer!"));
+    CreateObjectLabel = new QLabel(QString::fromStdString("Object Name:"));
+    CreateObjectName = new QLineEdit();
+    CreateObjectConfirm = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel,Qt::Horizontal, CreateObject);
+
+
+    InvalidLayerLayout = new QVBoxLayout(InvalidLayer);
+    CreateObjectLayout = new QVBoxLayout(CreateObject);
+
+    InvalidLayerLayout->addWidget(InvalidLayerLabel);
+    CreateObjectLayout->addWidget(CreateObjectLabel);
+    CreateObjectLayout->addWidget(CreateObjectName);
+    CreateObjectLayout->addWidget(CreateObjectConfirm);
+
+    if(CurrentLayer && CurrentLayer->layerType() == Layer::ObjectGroupType){
+        connect(CreateObjectConfirm, &QDialogButtonBox::accepted, this, [=]{
+
+        });
+        CreateObject->show();
+    }
+    else
+    {
+        InvalidLayer->show();
+    }
+}
+
+
 void MainWindow::onRunClient()
 {
     QMessageBox::information(this, tr("Debug"), tr("onRunClient() slot triggered;"));
@@ -2282,7 +2333,6 @@ void MainWindow::exportAsJson()
         tmj->write(doc->map(),path,{});
     qDebug() << "TMJ export done.";
 }
-
 
 
 void MainWindow::updateZoomable()
