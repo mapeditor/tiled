@@ -38,7 +38,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>25</height>
+     <height>17</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -231,6 +231,13 @@
     </property>
     <addaction name="actionRunClient"/>
    </widget>
+   <widget class="QMenu" name="menuUI">
+    <property name="title">
+     <string>UI</string>
+    </property>
+    <addaction name="actionlabel"/>
+    <addaction name="actionbutton"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
@@ -240,6 +247,7 @@
    <addaction name="menuProject"/>
    <addaction name="menuHelp"/>
    <addaction name="menuBuild"/>
+   <addaction name="menuUI"/>
   </widget>
   <action name="actionOpen">
    <property name="text">
@@ -842,6 +850,16 @@
    </property>
    <property name="text">
     <string>Show Content Browser</string>
+   </property>
+  </action>
+  <action name="actionlabel">
+   <property name="text">
+    <string>label</string>
+   </property>
+  </action>
+  <action name="actionbutton">
+   <property name="text">
+    <string>button</string>
    </property>
   </action>
  </widget>

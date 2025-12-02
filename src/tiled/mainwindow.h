@@ -175,6 +175,7 @@ private:
     void editTilesetProperties();
 
     void editWorldProperties();
+    void onAddLabelTriggered();
 
     void updateWindowTitle();
     void updateActions();
