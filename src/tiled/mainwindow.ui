@@ -231,6 +231,12 @@
     </property>
     <addaction name="actionRunClient"/>
    </widget>
+   <widget class="QMenu" name="menuEntity">
+    <property name="title">
+     <string>Entity</string>
+    </property>
+    <addaction name="actionCreate_Entity"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
@@ -240,6 +246,7 @@
    <addaction name="menuProject"/>
    <addaction name="menuHelp"/>
    <addaction name="menuBuild"/>
+   <addaction name="menuEntity"/>
   </widget>
   <action name="actionOpen">
    <property name="text">
@@ -842,6 +849,11 @@
    </property>
    <property name="text">
     <string>Show Content Browser</string>
+   </property>
+  </action>
+  <action name="actionCreate_Entity">
+   <property name="text">
+    <string>Create Entity</string>
    </property>
   </action>
  </widget>
