@@ -2321,16 +2321,15 @@ void MainWindow::updateZoomActions()
 
 void MainWindow::openDocumentation()
 {
-#ifdef TILED_SNAPSHOT
-    QDesktopServices::openUrl(QUrl(QLatin1String("https://docs.mapeditor.org/en/latest/")));
-#else
-    QDesktopServices::openUrl(QUrl(QLatin1String("https://docs.mapeditor.org")));
-#endif
+    QDesktopServices::openUrl(QUrl::fromLocalFile(
+        QStringLiteral("C:\\Users\\22466273\\OneDrive - MMU\\Documents\\GitHub\\Ionix2-Map-Editor\\Index.html")
+        ));
 }
 
 void MainWindow::openForum()
 {
     QDesktopServices::openUrl(QUrl(QLatin1String("https://discourse.mapeditor.org")));
+
 }
 
 void MainWindow::writeSettings()
