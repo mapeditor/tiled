@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ionix Engine Lua API Reference (2025)</title>
+<style>
+:root {
+  --bg: #000;
+  --text-primary: #00b7ff;
+  --text-secondary: #3399ff;
+  --accent: #58a6ff;
+  --border: #112244;
+  --table-bg: #020b14;
+  --section-bg: #010409;
+  --header-bg: #010f1e;
+}
+body {
+  font-family: Consolas, monospace;
+  background: var(--bg);
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.6;
+}
+header {
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--accent);
+  text-align: center;
+  padding: 2rem 1rem;
+  box-shadow: 0 0 10px #0055ff33;
+}
+header h1 { color: var(--accent); margin: 0; }
+header p { color: var(--text-secondary); font-style: italic; }
+main { max-width: 1100px; margin: auto; padding: 2rem; }
+section {
+  margin-bottom: 3rem;
+  background: var(--section-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 0 15px #00336633;
+}
+h2, h3 {
+  color: var(--text-secondary);
+  border-left: 4px solid var(--accent);
+  padding-left: 8px;
+  margin-top: 0;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background: var(--table-bg);
+  box-shadow: 0 0 10px #00225533;
+}
+th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
+th { color: var(--accent); background-color: #001a33; }
+code { color: var(--accent); background: #001a33; padding: 2px 5px; border-radius: 4px; }
+footer {
+  text-align: center;
+  padding: 1rem;
+  border-top: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  background: var(--header-bg);
+  box-shadow: 0 0 10px #00448833;
+  cursor: pointer;
+}
+.hidden-gif {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0.1);
+  opacity: 0;
+  width: 800px;
+  transition: all .8s ease-in-out;
+  pointer-events: none;
+  z-index: 50;
+}
+.hidden-gif.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Ionix Engine Lua API</h1>
+  <p>Full Lua scripting reference (2025 build — all modules)</p>
+</header>
+
+<main>
+
+<!-- ================= LIFECYCLE ================= -->
+<section>
+  <h2>Lifecycle Hooks</h2>
+  <table>
+    <tr><th>Hook</th><th>Description</th></tr>
+    <tr><td><code>OnStart()</code></td><td>Called when the script initializes.</td></tr>
+    <tr><td><code>OnUpdate()</code></td><td>Called every frame update.</td></tr>
+    <tr><td><code>OnShutdown()</code></td><td>Called before the application closes.</td></tr>
+  </table>
+</section>
+
+<!-- ================= WINDOW ================= -->
+<section>
+  <h2>Window</h2>
+  <table>
+    <tr><th>Function</th><th>Description</th></tr>
+    <tr><td><code>Window.get_title()</code></td><td>Returns the current window title string.</td></tr>
+    <tr><td><code>Window.get_width()</code></td><td>Window width in pixels.</td></tr>
+    <tr><td><code>Window.get_height()</code></td><td>Window height in pixels.</td></tr>
+  </table>
+</section>
+
+<!-- ================= INPUT ================= -->
+<section>
+  <h2>Input</h2>
+  <h3>Keyboard</h3>
+  <table>
+    <tr><th>Function</th><th>Description</th></tr>
+    <tr><td><code>Input.get_key_down(Keys.code)</code></td><td>Returns <code>true</code> if the key was pressed this frame.</td></tr>
+    <tr><td><code>Input.get_key_up(Keys.code)</code></td><td>Returns <code>true</code> if the key was released this frame.</td></tr>
+    <tr><td><code>Input.get_key_held(Keys.code)</code></td><td>Returns <code>true</code> while the key is held down.</td></tr>
+  </table>
+  <p>
+    Key constants include: <code>Keys.ionix_a</code>–<code>Keys.ionix_z</code>, 
+    <code>Keys.ionix_1</code>–<code>Keys.ionix_0</code>, 
+    <code>Keys.ionix_space</code>, <code>Keys.ionix_escape</code>, 
+    <code>Keys.ionix_return</code>, <code>Keys.ionix_tab</code>, 
+    <code>Keys.ionix_lctrl</code>, <code>Keys.ionix_lshift</code>,
+    <code>Keys.ionix_lalt</code>, etc.
+  </p>
+
+  <h3>Mouse</h3>
+  <table>
+    <tr><th>Function</th><th>Description</th></tr>
+    <tr><td><code>Input.get_mouse_x()</code></td><td>Returns mouse X position in window space.</td></tr>
+    <tr><td><code>Input.get_mouse_y()</code></td><td>Returns mouse Y position in window space.</td></tr>
+    <tr><td><code>Input.get_mouse_button_down(button)</code></td><td>Returns <code>true</code> if the mouse button was pressed this frame.</td></tr>
+    <tr><td><code>Input.get_mouse_button_up(button)</code></td><td>Returns <code>true</code> if the mouse button was released this frame.</td></tr>
+  </table>
+  <p>
+    Typical mouse button codes are: <code>1</code> = left, <code>2</code> = middle, <code>3</code> = right.
+  </p>
+
+  <h3>Gamepad / Controller</h3>
+  <table>
+    <tr><th>Function</th><th>Description</th></tr>
+    <tr><td><code>Input.get_button_down(index, Buttons.code)</code></td><td>Returns <code>true</code> if the controller button is pressed on controller at <code>index</code>.</td></tr>
+    <tr><td><code>Input.get_left_stick_x(index)</code></td><td>Left stick X axis in the range [-1, 1] (rounded to 2 decimals).</td></tr>
+    <tr><td><code>Input.get_left_stick_y(index)</code></td><td>Left stick Y axis in the range [-1, 1] (rounded to 2 decimals).</td></tr>
+    <tr><td><code>Input.get_right_stick_x(index)</code></td><td>Right stick X axis in the range [-1, 1] (rounded to 2 decimals).</td></tr>
+    <tr><td><code>Input.get_right_stick_y(index)</code></td><td>Right stick Y axis in the range [-1, 1] (rounded to 2 decimals).</td></tr>
+    <tr><td><code>Input.get_left_trigger(index)</code></td><td>Left trigger value in the range [0, 1] (rounded to 2 decimals).</td></tr>
+    <tr><td><code>Input.get_right_trigger(index)</code></td><td>Right trigger value in the range [0, 1] (rounded to 2 decimals).</td></tr>
+  </table>
+  <p>
+    Button constants include: <code>Buttons.ionix_a</code>, <code>Buttons.ionix_b</code>, 
+    <code>Buttons.ionix_x</code>, <code>Buttons.ionix_y</code>, 
+    <code>Buttons.ionix_start</code>, <code>Buttons.ionix_back</code>,
+    <code>Buttons.ionix_dpad_up</code>, <code>Buttons.ionix_dpad_down</code>,
+    <code>Buttons.ionix_dpad_left</code>, <code>Buttons.ionix_dpad_right</code>,
+    <code>Buttons.ionix_left_shoulder</code>, <code>Buttons.ionix_right_shoulder</code>,
+    <code>Buttons.ionix_left_stick</code>, <code>Buttons.ionix_right_stick</code>.
+  </p>
+</section>
+
+<!-- ================= MAFS ================= -->
+<section>
+  <h2>Mafs (Math Library)</h2>
+  <table>
+    <tr><th>Function</th><th>Description</th></tr>
+    <tr><td><code>Mafs.clamp(x, min, max)</code></td><td>Clamp value within [min, max].</td></tr>
+    <tr><td><code>Mafs.abs(x)</code></td><td>Absolute value.</td></tr>
+    <tr><td><code>Mafs.min(x, minVal)</code></td><td>Return the smaller of x and minVal.</td></tr>
+    <tr><td><code>Mafs.max(x, maxVal)</code></td><td>Return the larger of x and maxVal.</td></tr>
+    <tr><td><code>Mafs.round(x)</code></td><td>Rounds to nearest integer.</td></tr>
+    <tr><td><code>Mafs.log(x)</code></td><td>Natural logarithm.</td></tr>
+    <tr><td><code>Mafs.log_10(x)</code></td><td>Base-10 logarithm.</td></tr>
+    <tr><td><code>Mafs.log_custom(x, base)</code></td><td>Logarithm with custom base.</td></tr>
+    <tr><td><code>Mafs.square_root(x)</code></td><td>Square root.</td></tr>
+    <tr><td><code>Mafs.mod(x, y)</code></td><td>Modulo operation (x % y).</td></tr>
+    <tr><td><code>Mafs.div(x, y)</code></td><td>Division helper (x / y).</td></tr>
+    <tr><td><code>Mafs.lerp(a, b, t)</code></td><td>Linear interpolation between a and b by t.</td></tr>
+    <tr><td><code>Mafs.sin(x)</code></td><td>Sine (x in radians).</td></tr>
+    <tr><td><code>Mafs.cos(x)</code></td><td>Cosine (x in radians).</td></tr>
+    <tr><td><code>Mafs.tan(x)</code></td><td>Tangent (x in radians).</td></tr>
+    <tr><td><code>Mafs.pi()</code></td><td>Returns π.</td></tr>
+    <tr><td><code>Mafs.vector2(x, y)</code></td><td>Create a 2D vector.</td></tr>
+    <tr><td><code>Mafs.vector2_x(vec2)</code></td><td>Get x component of a 2D vector.</td></tr>
+    <tr><td><code>Mafs.vector2_y(vec2)</code></td><td>Get y component of a 2D vector.</td></tr>
+    <tr><td><code>Mafs.vector3(x, y, z)</code></td><td>Create a 3D vector.</td></tr>
+    <tr><td><code>Mafs.vector3_x(vec3)</code></td><td>Get x component of a 3D vector.</td></tr>
+    <tr><td><code>Mafs.vector3_y(vec3)</code></td><td>Get y component of a 3D vector.</td></tr>
+    <tr><td><code>Mafs.vector3_z(vec3)</code></td><td>Get z component of a 3D vector.</td></tr>
+    <tr><td><code>Mafs.sqr_magnitude_vector2(vec2)</code></td><td>Squared length of a 2D vector.</td></tr>
+    <tr><td><code>Mafs.sqr_magnitude_vector3(vec3)</code></td><td>Squared length of a 3D vector.</td></tr>
+    <tr><td><code>Mafs.delta_time()</code></td><td>Time in seconds between the last two frames.</td></tr>
+    <tr><td><code>Mafs.time()</code></td><td>Time in seconds since the application started.</td></tr>
+  </table>
+</section>
+
+<!-- ================= GRAPHICS / TEXTURE / SPRITE ================= -->
+<section>
+  <h2>Graphics &amp; Textures</h2>
+  <h3>Texture</h3>
+  <table>
+    <tr><th>Function</th><th>Description</th></tr>
+    <tr>
+      <td><code>Texture.add_texture(path, alias)</code></td>
+      <td>Register a texture from file at <code>path</code> with an alias string used by sprites.</td>
+    </tr>
+  </table>
+
+  <h3>Sprite</h3>
+  <p>
+    Sprite functions operate on a <code>SpriteComponent</code> instance, usually obtained via 
+    <code>Entity.get_sprite_component(entity)</code>.
+  </p>
+  <table>
+    <tr><th>Function</th><th>Description</th></tr>
+    <tr><td><code>Sprite.current_frame(sprite)</code></td><td>Get the current animation frame index.</td></tr>
+    <tr><td><code>Sprite.end_frame(sprite)</code></td><td>Get the final frame index for playback.</td></tr>
+    <tr><td><code>Sprite.rows(sprite)</code></td><td>Get number of rows in the sprite sheet.</td></tr>
+    <tr><td><code>Sprite.columns(sprite)</code></td><td>Get number of columns in the sprite sheet.</td></tr>
+    <tr><td><code>Sprite.width(sprite)</code></td><td>Get the sprite frame width in pixels.</td></tr>
+    <tr><td><code>Sprite.height(sprite)</code></td><td>Get the sprite frame height in pixels.</td></tr>
+    <tr><td><code>Sprite.zed_order(sprite)</code></td><td>Get draw order (z-index) of the sprite.</td></tr>
+    <tr><td><code>Sprite.total_frames(sprite)</code></td><td>Get total number of frames in the animation.</td></tr>
+    <tr><td><code>Sprite.current_column(sprite)</code></td><td>Get the current column in the sprite sheet.</td></tr>
+    <tr><td><code>Sprite.current_row(sprite)</code></td><td>Get the current row in the sprite sheet.</td></tr>
+
+    <tr><td><code>Sprite.set_current_frame(sprite, frame)</code></td><td>Set the current frame index.</td></tr>
+    <tr><td><code>Sprite.set_end_frame(sprite, frame)</code></td><td>Set the end frame index for playback.</td></tr>
+    <tr><td><code>Sprite.set_rows(sprite, rows)</code></td><td>Set number of rows in the sprite sheet.</td></tr>
+    <tr><td><code>Sprite.set_columns(sprite, cols)</code></td><td>Set number of columns in the sprite sheet.</td></tr>
+    <tr><td><code>Sprite.set_width(sprite, width)</code></td><td>Set the sprite frame width in pixels.</td></tr>
+    <tr><td><code>Sprite.set_height(sprite, height)</code></td><td>Set the sprite frame height in pixels.</td></tr>
+    <tr><td><code>Sprite.set_zed_order(sprite, order)</code></td><td>Set draw order (z-index) of the sprite.</td></tr>
+
+    <tr><td><code>Sprite.get_playback_mode(sprite)</code></td><td>Get the current playback mode as an integer enum.</td></tr>
+    <tr><td><code>Sprite.set_playback_mode(sprite, mode)</code></td><td>Set the playback mode using an integer enum.</td></tr>
+  </table>
+</section>
+
+<!-- ================= ENTITY ================= -->
+<section>
+  <h2>Entity</h2>
+  <p>
+    The <code>Entity</code> table is used to create entities and attach/retrieve components.
+  </p>
+  <table>
+    <tr><th>Function</th><th>Description</th></tr>
+    <tr>
+      <td><code>Entity.create_entity()</code></td>
+      <td>Create a new entity and return a reference to it.</td>
+    </tr>
+    <tr>
+      <td><code>Entity.get_entity_pos(entity)</code></td>
+      <td>Get the entity's position as a 2D vector (x, y).</td>
+    </tr>
+    <tr>
+      <td><code>Entity.set_entity_pos(entity, x, y)</code></td>
+      <td>Set the entity's position.</td>
+    </tr>
+    <tr>
+      <td><code>Entity.add_sprite_component(entity, alias, width, height, zOrder)</code></td>
+      <td>Add a <code>SpriteComponent</code> to the entity using a texture alias and basic sprite layout.</td>
+    </tr>
+    <tr>
+      <td><code>Entity.add_audio_component(entity[, clip, playOnAwake])</code></td>
+      <td>
+        Add an <code>AudioPlayer</code> component to the entity. Optional:
+        <code>clip</code> (string) and <code>playOnAwake</code> (bool, default false).
+      </td>
+    </tr>
+    <tr>
+      <td><code>Entity.add_fysics_component(entity)</code></td>
+      <td>Add a <code>FysicsBody</code> component to the entity.</td>
+    </tr>
+    <tr>
+      <td><code>Entity.get_sprite_component(entity)</code></td>
+      <td>Get the entity's <code>SpriteComponent</code> (or <code>nil</code> if missing).</td>
+    </tr>
+    <tr>
+      <td><code>Entity.get_audio_component(entity)</code></td>
+      <td>Get the entity's <code>AudioPlayer</code> component (or <code>nil</code> if missing).</td>
+    </tr>
+    <tr>
+      <td><code>Entity.get_fysics_component(entity)</code></td>
+      <td>Get the entity's <code>FysicsBody</code> component (or <code>nil</code> if missing).</td>
+    </tr>
+    <tr>
+      <td><code>Entity.has_sprite_component(entity)</code></td>
+      <td>Returns <code>true</code> if the entity has a <code>SpriteComponent</code>.</td>
+    </tr>
+    <tr>
+      <td><code>Entity.has_audio_component(entity)</code></td>
+      <td>Returns <code>true</code> if the entity has an <code>AudioPlayer</code> component.</td>
+    </tr>
+    <tr>
+      <td><code>Entity.has_fysics_component(entity)</code></td>
+      <td>Returns <code>true</code> if the entity has a <code>FysicsBody</code> component.</td>
+    </tr>
+  </table>
+</section>
+
+<!-- ================= FYSICS ================= -->
+<section>
+  <h2>Fysics (2D Physics)</h2>
+  <p>
+    The <code>Fysics</code> table manipulates the <code>FysicsBody</code> component attached to an entity.
+    These functions assume the entity has a FysicsBody (see <code>Entity.add_fysics_component</code>).
+  </p>
+  <table>
+    <tr><th>Function</th><th>Description</th></tr>
+    <tr><td><code>Fysics.get_pos(entity)</code></td><td>Get the body's world position as a vector.</td></tr>
+    <tr><td><code>Fysics.set_pos(entity, x, y)</code></td><td>Set the body's world position.</td></tr>
+    <tr><td><code>Fysics.get_angle(entity)</code></td><td>Get body rotation in radians.</td></tr>
+    <tr><td><code>Fysics.set_angle(entity, radians)</code></td><td>Set body rotation in radians.</td></tr>
+    <tr><td><code>Fysics.get_linear_velocity(entity)</code></td><td>Get linear velocity vector.</td></tr>
+    <tr><td><code>Fysics.set_linear_velocity(entity, x, y)</code></td><td>Set linear velocity.</td></tr>
+    <tr><td><code>Fysics.get_angular_velocity(entity)</code></td><td>Get angular velocity (radians/sec).</td></tr>
+    <tr><td><code>Fysics.set_angular_velocity(entity, value)</code></td><td>Set angular velocity.</td></tr>
+    <tr><td><code>Fysics.get_awake(entity)</code></td><td>Returns <code>true</code> if the body is awake.</td></tr>
+    <tr><td><code>Fysics.set_awake(entity, flag)</code></td><td>Set whether the body is awake.</td></tr>
+    <tr><td><code>Fysics.rotate_pos(entity, angle)</code></td><td>Rotate the body's position around its origin by <code>angle</code> (radians).</td></tr>
+    <tr><td><code>Fysics.get_linear_damping(entity)</code></td><td>Get linear damping factor.</td></tr>
+    <tr><td><code>Fysics.set_linear_damping(entity, damping)</code></td><td>Set linear damping.</td></tr>
+    <tr><td><code>Fysics.get_angular_damping(entity)</code></td><td>Get angular damping factor.</td></tr>
+    <tr><td><code>Fysics.set_angular_damping(entity, damping)</code></td><td>Set angular damping.</td></tr>
+    <tr><td><code>Fysics.get_allow_sleep(entity)</code></td><td>Returns <code>true</code> if the body is allowed to sleep.</td></tr>
+    <tr><td><code>Fysics.set_allow_sleep(entity, flag)</code></td><td>Enable or disable sleeping.</td></tr>
+    <tr><td><code>Fysics.get_fixed_rotation(entity)</code></td><td>Returns <code>true</code> if rotation is locked.</td></tr>
+    <tr><td><code>Fysics.set_fixed_rotation(entity, flag)</code></td><td>Lock/unlock rotation.</td></tr>
+    <tr><td><code>Fysics.get_is_bullet(entity)</code></td><td>Returns <code>true</code> if the body is treated as a bullet (continuous collision).</td></tr>
+    <tr><td><code>Fysics.set_is_bullet(entity, flag)</code></td><td>Enable/disable bullet mode.</td></tr>
+    <tr><td><code>Fysics.add_force(entity, force, point)</code></td><td>Add a force vector at a specific world point.</td></tr>
+    <tr><td><code>Fysics.add_force_to_center(entity, force)</code></td><td>Add a force vector at the center of mass.</td></tr>
+    <tr><td><code>Fysics.add_impulse(entity, impulse, point)</code></td><td>Apply an impulse at a world point.</td></tr>
+    <tr><td><code>Fysics.add_impulse_to_center(entity, impulse)</code></td><td>Apply an impulse at the center of mass.</td></tr>
+    <tr><td><code>Fysics.add_torque(entity, torque)</code></td><td>Apply torque to the body.</td></tr>
+    <tr><td><code>Fysics.add_angular_impulse(entity, torque)</code></td><td>Apply an angular impulse to the body.</td></tr>
+    <tr><td><code>Fysics.clear_forces(entity)</code></td><td>Clear all forces/torques applied to the body.</td></tr>
+  </table>
+</section>
+
+<!-- ================= UI ================= -->
+<section>
+  <h2>UI</h2>
+  <p>
+    The <code>UI</code> table offers both immediate-mode drawing and managed UI elements via the UIManager.
+  </p>
+  <table>
+    <tr><th>Function</th><th>Description</th></tr>
+    <tr>
+      <td><code>UI.Add_label(x, y, w, h, text)</code></td>
+      <td>Add a managed label at (x, y) with size (w, h) and the given text.</td>
+    </tr>
+    <tr>
+      <td><code>UI.draw_label(text, w, h, x, y, font)</code></td>
+      <td>Draw a label immediately at (x, y) with size (w, h). <code>font</code> is currently unused/placeholder.</td>
+    </tr>
+    <tr>
+      <td><code>UI.draw_button(text, w, h, x, y)</code></td>
+      <td>Draw a button immediately; returns <code>true</code> if clicked this frame.</td>
+    </tr>
+    <tr>
+      <td><code>UI.add_button(x, y, w, h, text, onClickFn)</code></td>
+      <td>
+        Add a managed button at (x, y) with size (w, h). When clicked, calls the provided 
+        Lua callback <code>onClickFn()</code>.
+      </td>
+    </tr>
+    <tr>
+      <td><code>UI.add_slider(label, value, w, h, x, y, min, max)</code></td>
+      <td>
+        Draw a slider and return the updated value. Label is shown next to the slider;
+        value is clamped between <code>min</code> and <code>max</code>.
+      </td>
+    </tr>
+  </table>
+</section>
+
+<!-- ================= AUDIO ================= -->
+<section>
+  <h2>Audio</h2>
+  <p>
+    Audio is controlled through an <code>AudioPlayer</code> component attached to an entity.
+    In Lua this is exposed via the <code>AudioComponent</code> table. A typical flow:
+  </p>
+  <pre><code>
+local e = Entity.create_entity()
+Entity.add_audio_component(e, "some_clip_alias", false)
+local audio = Entity.get_audio_component(e)
+
+-- Then call AudioComponent functions with this entity:
+AudioComponent.play(e)
+  </code></pre>
+
+  <h3>AudioComponent</h3>
+  <table>
+    <tr><th>Function</th><th>Description</th></tr>
+    <tr>
+      <td><code>AudioComponent.play(entity[, fadeMs[, loops]])</code></td>
+      <td>
+        Play the attached audio. If only <code>entity</code> is provided, plays normally.
+        If <code>fadeMs</code> is given, fades in over that many milliseconds.
+        If <code>loops</code> is also provided, plays with the specified loop count.
+      </td>
+    </tr>
+    <tr>
+      <td><code>AudioComponent.pause(entity)</code></td>
+      <td>Pause playback.</td>
+    </tr>
+    <tr>
+      <td><code>AudioComponent.resume(entity)</code></td>
+      <td>Resume playback if paused.</td>
+    </tr>
+    <tr>
+      <td><code>AudioComponent.terminate(entity)</code></td>
+      <td>Stop playback completely.</td>
+    </tr>
+    <tr>
+      <td><code>AudioComponent.is_playing(entity)</code></td>
+      <td>Returns <code>true</code> if audio is currently playing.</td>
+    </tr>
+    <tr>
+      <td><code>AudioComponent.play_one_shot(entity, clipName, volumeScale)</code></td>
+      <td>
+        Play a one-shot sound by name with a volume scale factor (e.g. 1.0 = normal, 0.5 = half volume).
+      </td>
+    </tr>
+    <tr>
+      <td><code>AudioComponent.change_volume(entity, value)</code></td>
+      <td>
+        Set the volume. Typical internal range is <code>0–128</code>, where 0 is silent and 128 is max.
+      </td>
+    </tr>
+    <tr>
+      <td><code>AudioComponent.toggle_mute(entity)</code></td>
+      <td>Toggle mute on/off for this audio component.</td>
+    </tr>
+    <tr>
+      <td><code>AudioComponent.get_volume(entity)</code></td>
+      <td>Get the current volume value.</td>
+    </tr>
+    <tr>
+      <td><code>AudioComponent.get_mute(entity)</code></td>
+      <td>Returns <code>true</code> if audio is currently muted.</td>
+    </tr>
+    <tr>
+      <td><code>AudioComponent.get_clip(entity)</code></td>
+      <td>Get the current sound clip alias assigned to this component.</td>
+    </tr>
+    <tr>
+      <td><code>AudioComponent.get_play_on_awake(entity)</code></td>
+      <td>Returns <code>true</code> if the clip will auto-play when the component is created.</td>
+    </tr>
+  </table>
+</section>
+
+</main>
+
+<footer id="footer-easteregg">
+  © 2025 Ionix Engine Lua API — Made by <strong>Peter &amp; ChatGPT</strong>
+</footer>
+
+<img src="Client/Assets/horse-fat.gif" class="hidden-gif" id="easter-egg-gif"/>
+<audio id="easter-egg-audio" src="Client/Assets/test.wav" preload="auto"></audio>
+
+<script>
+const footer = document.getElementById('footer-easteregg');
+const gif = document.getElementById('easter-egg-gif');
+const audio = document.getElementById('easter-egg-audio');
+
+footer.addEventListener('mouseenter', () => {
+  gif.classList.add('show');
+  audio.currentTime = 0;
+  audio.play().catch(() => {});
+});
+
+footer.addEventListener('mouseleave', () => {
+  gif.classList.remove('show');
+  audio.pause();
+});
+</script>
+
+</body>
+</html>

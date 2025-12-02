@@ -28,6 +28,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "addremovemapobject.h"
 #include "aboutdialog.h"
 #include "actionmanager.h"
 #include "actionsearch.h"
@@ -552,6 +553,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerMenu(mNewLayerMenu, "NewLayer");
     ActionManager::registerMenu(mGroupLayerMenu, "GroupLayer");
     connect(mUi->actionlabel, &QAction::triggered, this, &MainWindow::onAddLabelTriggered);
+
+    connect(mUi->actionCreate_Entity, &QAction::triggered, this, &MainWindow::onCreateEntity);
+    
     connect(mUi->actionRunClient, &QAction::triggered, this, &MainWindow::onRunClient);
     connect(mUi->actionNewMap, &QAction::triggered, this, &MainWindow::newMap);
     connect(mUi->actionNewTileset, &QAction::triggered, this, [this] { newTileset(); });
@@ -2280,7 +2284,10 @@ void MainWindow::onCreateEntity()
 
     if(CurrentLayer && CurrentLayer->layerType() == Layer::ObjectGroupType){
         connect(CreateObjectConfirm, &QDialogButtonBox::accepted, this, [=]{
+            MapObject *NewMapObject;
+            NewMapObject = new MapObject();
 
+            CreateObject->accept();
         });
         CreateObject->show();
     }
@@ -2375,16 +2382,15 @@ void MainWindow::updateZoomActions()
 
 void MainWindow::openDocumentation()
 {
-#ifdef TILED_SNAPSHOT
-    QDesktopServices::openUrl(QUrl(QLatin1String("https://docs.mapeditor.org/en/latest/")));
-#else
-    QDesktopServices::openUrl(QUrl(QLatin1String("https://docs.mapeditor.org")));
-#endif
+    QDesktopServices::openUrl(QUrl::fromLocalFile(
+        QStringLiteral("C:\\Users\\22466273\\OneDrive - MMU\\Documents\\GitHub\\Ionix2-Map-Editor\\Index.html")
+        ));
 }
 
 void MainWindow::openForum()
 {
     QDesktopServices::openUrl(QUrl(QLatin1String("https://discourse.mapeditor.org")));
+
 }
 
 void MainWindow::writeSettings()
