@@ -83,6 +83,11 @@
   banner: sponsors/betpokies.png
   sponsor: https://opencollective.com/fast-payout-casinos-nz
 
+- name: iDealeCasinos
+  url: https://idealecasinos.com/
+  banner: sponsors/idealecasinos.png
+  sponsor: https://github.com/iDealeCasinos
+
 - name: POLi Pay Casinos
   url: https://betpokies.co.nz/casinos/poli
   banner: sponsors/betpokies.co.nz.png
