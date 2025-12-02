@@ -20,8 +20,6 @@
 
 #pragma once
 
-#include "project.h"
-
 #include <QDockWidget>
 
 namespace Tiled {

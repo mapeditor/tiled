@@ -164,6 +164,9 @@ public:
     void setLastSession(const QString &fileName);
     bool restoreSessionOnStartup() const;
 
+    bool naturalSorting() const;
+    void setNaturalSorting(bool enabled);
+
     bool checkForUpdates() const;
     void setCheckForUpdates(bool on);
 
@@ -251,6 +254,8 @@ signals:
 
     void recentFilesChanged();
     void recentProjectsChanged();
+
+    void naturalSortingChanged(bool enabled);
 
     void checkForUpdatesChanged(bool on);
     void displayNewsChanged(bool on);
