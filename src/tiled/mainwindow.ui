@@ -38,7 +38,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>25</height>
+     <height>17</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -237,6 +237,11 @@
     </property>
     <addaction name="actionCreate_Entity"/>
    </widget>
+   <widget class="QMenu" name="menuUI">
+    <property name="title">
+     <string>UI</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
@@ -246,6 +251,7 @@
    <addaction name="menuProject"/>
    <addaction name="menuEntity"/>
    <addaction name="menuBuild"/>
+   <addaction name="menuUI"/>
    <addaction name="menuHelp"/>
   </widget>
   <action name="actionOpen">
