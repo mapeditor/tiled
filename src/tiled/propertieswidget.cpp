@@ -2768,12 +2768,14 @@ void PropertiesWidget::showAddValueProperty()
     QLabel *SC_WidthLabel;
     QLabel *SC_HeightLabel;
     QLabel *SC_ZOrderLabel;
+    QLabel *SC_BrowseSpriteFileLabel;
 
     //SpriteComponent content
     QSpinBox *SC_EntityID;
     QSpinBox *SC_Width;
     QSpinBox *SC_Height;
     QSpinBox *SC_ZOrder;
+    QPushButton *SC_BrowseSpriteFile;
 
     //AudioPlayerComponent label
     QLabel *APC_EntityIDLabel;
@@ -2796,6 +2798,7 @@ void PropertiesWidget::showAddValueProperty()
     //SpriteComponent layout
     QVBoxLayout *SC_LabelLayout;
     QVBoxLayout *SC_PropertyValueLayout;
+    QHBoxLayout *SC_BrowseButtonLayout;
 
     //AudioPlayerComponent layout
     QVBoxLayout *APC_LabelLayout;
@@ -2833,6 +2836,7 @@ void PropertiesWidget::showAddValueProperty()
     SpriteComponentLayout = new QHBoxLayout();
     SC_LabelLayout = new QVBoxLayout();
     SC_PropertyValueLayout = new QVBoxLayout();
+    SC_BrowseButtonLayout = new QHBoxLayout();
     AudioPlayerComponentLayout = new QHBoxLayout();
     APC_LabelLayout = new QVBoxLayout();
     APC_PropertyValueLayout = new QVBoxLayout();
@@ -2904,6 +2908,7 @@ void PropertiesWidget::showAddValueProperty()
     SC_WidthLabel = new QLabel(QString::fromStdString("Width:"));
     SC_HeightLabel = new QLabel(QString::fromStdString("Height:"));
     SC_ZOrderLabel = new QLabel(QString::fromStdString("Z Order:"));
+    SC_BrowseSpriteFileLabel = new QLabel(QString::fromStdString("Browse Sprite File:"));
 
     //SpriteComponent content
     SC_EntityID = new QSpinBox();
@@ -2912,6 +2917,9 @@ void PropertiesWidget::showAddValueProperty()
     SC_Width = new QSpinBox();
     SC_Height = new QSpinBox();
     SC_ZOrder = new QSpinBox();
+    SC_BrowseSpriteFile = new QPushButton(QString::fromStdString("Browse"));
+    QLabel *SpriteFilePath;
+    SpriteFilePath = new QLabel();
 
     //AudioPlayerComponent label
     APC_EntityIDLabel = new QLabel(QString::fromStdString("ID Entity:"));
@@ -2974,14 +2982,23 @@ void PropertiesWidget::showAddValueProperty()
     SC_LabelLayout->addWidget(SC_WidthLabel);
     SC_LabelLayout->addWidget(SC_HeightLabel);
     SC_LabelLayout->addWidget(SC_ZOrderLabel);
+    SC_LabelLayout->addWidget(SC_BrowseSpriteFileLabel);
 
     SC_PropertyValueLayout->addWidget(SC_EntityID);
     SC_PropertyValueLayout->addWidget(SC_Width);
     SC_PropertyValueLayout->addWidget(SC_Height);
     SC_PropertyValueLayout->addWidget(SC_ZOrder);
 
+    SC_BrowseButtonLayout->addWidget(SC_BrowseSpriteFile);
+    SC_BrowseButtonLayout->addWidget(SpriteFilePath);
+
+    SC_PropertyValueLayout->addLayout(SC_BrowseButtonLayout);
+
+    SC_BrowseButtonLayout->addWidget(SC_BrowseSpriteFile);
+
     SpriteComponentLayout->addLayout(SC_LabelLayout);
     SpriteComponentLayout->addLayout(SC_PropertyValueLayout);
+
 
     //AudioPlayerComponent layout
     APC_LabelLayout->addWidget(APC_EntityIDLabel);
@@ -3026,7 +3043,17 @@ void PropertiesWidget::showAddValueProperty()
     connect(APC_BrowseAudioFile, &QPushButton::clicked, [=]{
         QString APC_AudioFilePath = QFileDialog::getOpenFileName(PropertyWindow, QString::fromStdString("Choose Audio File"),
                                                 tr("/home"),
-                                                tr("Audio File (*.mp3 *.wav)"));
+                                                tr("Audio File (*.wav)"));
+        if (!APC_AudioFilePath.isEmpty())
+        {
+            AudioFilePath->setText(APC_AudioFilePath);
+        }
+    });
+
+    connect(SC_BrowseSpriteFile, &QPushButton::clicked, [=]{
+        QString APC_AudioFilePath = QFileDialog::getOpenFileName(PropertyWindow, QString::fromStdString("Choose Sprite File"),
+                                                                 tr("/home"),
+                                                                 tr("Audio File (*.png, *.jpg)"));
         if (!APC_AudioFilePath.isEmpty())
         {
             AudioFilePath->setText(APC_AudioFilePath);
@@ -3055,6 +3082,7 @@ void PropertiesWidget::showAddValueProperty()
                 addProperty(QString::fromStdString("SpriteComponent.Width"), SC_Width->value());
                 addProperty(QString::fromStdString("SpriteComponent.Height"), SC_Height->value());
                 addProperty(QString::fromStdString("SpriteComponent.ZOrder"), SC_ZOrder->value());
+                addProperty(QString::fromStdString("SpriteComponent.SpriteFilePath"), SpriteFilePath->text());
                 break;
             case 3:
                 addProperty(QString::fromStdString("AudioPlayerComponent.PlayOnAwake"), APC_PlayOnAwake->isChecked());
