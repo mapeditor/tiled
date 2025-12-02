@@ -116,6 +116,7 @@ protected:
 private slots:
     void onRunClient();
     void onCreateEntity();
+    void exportAsJson();
 
 private:
     void newMap();
