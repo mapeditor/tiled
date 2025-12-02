@@ -622,6 +622,10 @@ QVariant MapToVariantConverter::toVariant(const MapObject &object) const
         if (notTemplateInstance || object.propertyChanged(MapObject::ShapeProperty))
             objectVariant[QStringLiteral("ellipse")] = true;
         break;
+    case MapObject::Capsule:
+        if (notTemplateInstance || object.propertyChanged(MapObject::ShapeProperty))
+            objectVariant[QStringLiteral("capsule")] = true;
+        break;
     case MapObject::Text:
         if (notTemplateInstance || (object.propertyChanged(MapObject::TextProperty) ||
                                     object.propertyChanged(MapObject::TextFontProperty) ||

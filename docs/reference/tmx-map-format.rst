@@ -578,9 +578,9 @@ properties from the specified template, properties saved with the object
 will have higher priority, i.e. they will override the template
 properties.
 
-Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-ellipse` (since
-0.9), :ref:`tmx-point` (since 1.1), :ref:`tmx-polygon`, :ref:`tmx-polyline`,
-:ref:`tmx-text` (since 1.0)
+Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-ellipse` (since 0.9),
+:ref:`tmx-capsule` (since 1.12), :ref:`tmx-point` (since 1.1),
+:ref:`tmx-polygon`, :ref:`tmx-polyline`, :ref:`tmx-text` (since 1.0)
 
 .. _tmx-ellipse:
 
@@ -590,6 +590,15 @@ Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-ellipse` (since
 Used to mark an object as an ellipse. The existing ``x``, ``y``,
 ``width`` and ``height`` attributes are used to determine the size of
 the ellipse.
+
+.. _tmx-capsule:
+
+<capsule>
+~~~~~~~~~
+
+Used to mark an object as a capsule. The existing ``x``, ``y``,
+``width`` and ``height`` attributes are used to determine the size of
+the capsule.
 
 .. _tmx-point:
 

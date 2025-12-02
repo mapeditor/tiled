@@ -178,8 +178,8 @@ DynamicLibrary {
         "commandsedit.ui",
         "consoledock.cpp",
         "consoledock.h",
-        "contentbrowserdock.cpp",
-        "contentbrowserdock.h",
+        "createcapsuleobjecttool.cpp",
+        "createcapsuleobjecttool.h",
         "createellipseobjecttool.cpp",
         "createellipseobjecttool.h",
         "createobjecttool.cpp",
@@ -621,8 +621,6 @@ DynamicLibrary {
         Depends { name: "Qt"; submodules: ["qml"] }
         cpp.includePaths: exportingProduct.sourceDirectory
     }
-
-    Depends { name: "Qt.widgets" }
 
     install: !qbs.targetOS.contains("darwin")
     installDir: {
