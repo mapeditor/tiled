@@ -77,7 +77,6 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
 
         switch (object->shape()) {
         case MapObject::Ellipse:
-        case MapObject::Capsule:
         case MapObject::Rectangle:
             if (bounds.isNull()) {
                 boundingRect = bounds.adjusted(-10 - extraSpace,
@@ -173,15 +172,6 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
             path.addEllipse(bounds);
         break;
     }
-    case MapObject::Capsule: {
-        const qreal rad = std::min(std::abs(bounds.height()),
-                                   std::abs(bounds.width())) / 2;
-        if (rad == 0.)
-            path.addEllipse(bounds.topLeft(), 10, 10);
-        else
-            path.addRoundedRect(bounds, rad, rad, Qt::SizeMode::AbsoluteSize);
-        break;
-    }
     case MapObject::Point:
         path = pointShape(object->position());
         break;
@@ -213,7 +203,6 @@ QPainterPath OrthogonalRenderer::interactionShape(const MapObject *object) const
     case MapObject::Rectangle:
     case MapObject::Polygon:
     case MapObject::Ellipse:
-    case MapObject::Capsule:
     case MapObject::Text:
         path = shape(object);
         break;
@@ -405,7 +394,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
         // CoreGraphics when drawing the path requested by the
         // QCoreGraphicsPaintEngine. Draw them as rectangle instead.
         MapObject::Shape shape = object->shape();
-        if ((shape == MapObject::Ellipse || shape == MapObject::Capsule) &&
+        if (shape == MapObject::Ellipse &&
                 ((bounds.width() == qreal(0)) ^ (bounds.height() == qreal(0)))) {
             shape = MapObject::Rectangle;
         }
@@ -466,23 +455,6 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
             painter->setPen(linePen);
             painter->setBrush(fillBrush);
             painter->drawEllipse(bounds);
-            break;
-        }
-
-        case MapObject::Capsule: {
-            if (bounds.isNull())
-                bounds = QRectF(QPointF(-10, -10), QSizeF(20, 20));
-
-            const qreal rad = std::min(std::abs(bounds.height()),
-                                       std::abs(bounds.width())) / 2;
-
-            // Draw the shadow
-            painter->setPen(shadowPen);
-            painter->drawRoundedRect(bounds.translated(shadowOffset), rad, rad);
-
-            painter->setPen(linePen);
-            painter->setBrush(fillBrush);
-            painter->drawRoundedRect(bounds, rad, rad);
             break;
         }
 

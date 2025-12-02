@@ -806,7 +806,6 @@ std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap 
     const QVariant polylineVariant = variantMap[QStringLiteral("polyline")];
     const QVariant polygonVariant = variantMap[QStringLiteral("polygon")];
     const QVariant ellipseVariant = variantMap[QStringLiteral("ellipse")];
-    const QVariant capsuleVariant = variantMap[QStringLiteral("capsule")];
     const QVariant pointVariant = variantMap[QStringLiteral("point")];
     const QVariant textVariant = variantMap[QStringLiteral("text")];
 
@@ -822,10 +821,6 @@ std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap 
     }
     if (ellipseVariant.toBool()) {
         object->setShape(MapObject::Ellipse);
-        object->setPropertyChanged(MapObject::ShapeProperty);
-    }
-    if (capsuleVariant.toBool()) {
-        object->setShape(MapObject::Capsule);
         object->setPropertyChanged(MapObject::ShapeProperty);
     }
     if (pointVariant.toBool()) {

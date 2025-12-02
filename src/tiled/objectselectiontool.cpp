@@ -828,7 +828,6 @@ static QRectF pixelBounds(const MapObject *object)
 
     switch (object->shape()) {
     case MapObject::Ellipse:
-    case MapObject::Capsule:
     case MapObject::Rectangle:
     case MapObject::Point: {
         QRectF bounds(object->bounds());
@@ -865,7 +864,6 @@ static bool canResizeAbsolute(const MapObject *object)
     switch (object->shape()) {
     case MapObject::Rectangle:
     case MapObject::Ellipse:
-    case MapObject::Capsule:
     case MapObject::Text:
         return true;
     case MapObject::Point:
@@ -916,7 +914,6 @@ static QRectF objectBounds(const MapObject *object,
     } else {
         switch (object->shape()) {
         case MapObject::Ellipse:
-        case MapObject::Capsule:
         case MapObject::Rectangle: {
             QRectF bounds(object->bounds());
             align(bounds, object->alignment());

@@ -178,7 +178,6 @@ QRectF MapObject::screenBounds(const MapRenderer &renderer) const
     } else {
         switch (mShape) {
         case MapObject::Ellipse:
-        case MapObject::Capsule:
         case MapObject::Rectangle: {
             QRectF bounds(this->bounds());
             align(bounds, alignment(renderer.map()));
@@ -492,8 +491,8 @@ void MapObject::flipInScreenCoordinates(FlipDirection direction, const QPointF &
 }
 
 /**
- * Rectangles, ellipses, capsules and polygons are flipped in "pixel space",
- * the coordinate space before isometric projection.
+ * Rectangles, ellipses and polygons are flipped in "pixel space", the
+ * coordinate space before isometric projection.
  *
  * NOTE: No attempt to handle rotated shapes on isometric maps is made. The
  * expectation is that due to their weird handling, nobody really does that

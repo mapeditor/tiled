@@ -708,8 +708,6 @@ static const char *toString(MapObject::Shape shape)
         return "polyline";
     case MapObject::Ellipse:
         return "ellipse";
-    case MapObject::Capsule:
-        return "capsule";
     case MapObject::Text:
         return "text";
     case MapObject::Point:
@@ -741,7 +739,6 @@ void LuaWriter::writeMapObject(const Tiled::MapObject *mapObject)
     switch (mapObject->shape()) {
     case MapObject::Rectangle:
     case MapObject::Ellipse:
-    case MapObject::Capsule:
     case MapObject::Point:
         break;
     case MapObject::Polygon:
