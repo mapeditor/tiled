@@ -28,6 +28,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "addremovemapobject.h"
 #include "aboutdialog.h"
 #include "actionmanager.h"
 #include "actionsearch.h"
@@ -552,6 +553,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerMenu(mNewLayerMenu, "NewLayer");
     ActionManager::registerMenu(mGroupLayerMenu, "GroupLayer");
 
+    connect(mUi->actionCreate_Entity, &QAction::triggered, this, &MainWindow::onCreateEntity);
     connect(mUi->actionRunClient, &QAction::triggered, this, &MainWindow::onRunClient);
     connect(mUi->actionNewMap, &QAction::triggered, this, &MainWindow::newMap);
     connect(mUi->actionNewTileset, &QAction::triggered, this, [this] { newTileset(); });
@@ -2240,6 +2242,60 @@ void MainWindow::updateActions()
     mShowPropertyTypesEditor->setEnabled(hasProject);
 }
 
+void MainWindow::onCreateEntity()
+{
+
+    MapDocument *mMapDocument = dynamic_cast<MapDocument*>(DocumentManager::instance()->currentDocument());
+    Layer* CurrentLayer = nullptr;
+
+    if(mMapDocument)
+    {
+        CurrentLayer = mMapDocument->currentLayer();
+    }
+
+    QDialog *InvalidLayer;
+    QVBoxLayout *InvalidLayerLayout;
+    QLabel *InvalidLayerLabel;
+
+    QDialog *CreateObject;
+    QLabel *CreateObjectLabel;
+    QLineEdit *CreateObjectName;
+    QVBoxLayout *CreateObjectLayout;
+    QDialogButtonBox *CreateObjectConfirm;
+
+    InvalidLayer = new QDialog();
+    CreateObject = new QDialog();
+
+    InvalidLayerLabel = new QLabel(QString::fromStdString("Invalid Layer!"));
+    CreateObjectLabel = new QLabel(QString::fromStdString("Object Name:"));
+    CreateObjectName = new QLineEdit();
+    CreateObjectConfirm = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel,Qt::Horizontal, CreateObject);
+
+
+    InvalidLayerLayout = new QVBoxLayout(InvalidLayer);
+    CreateObjectLayout = new QVBoxLayout(CreateObject);
+
+    InvalidLayerLayout->addWidget(InvalidLayerLabel);
+    CreateObjectLayout->addWidget(CreateObjectLabel);
+    CreateObjectLayout->addWidget(CreateObjectName);
+    CreateObjectLayout->addWidget(CreateObjectConfirm);
+
+    if(CurrentLayer && CurrentLayer->layerType() == Layer::ObjectGroupType){
+        connect(CreateObjectConfirm, &QDialogButtonBox::accepted, this, [=]{
+            MapObject *NewMapObject;
+            NewMapObject = new MapObject();
+
+            CreateObject->accept();
+        });
+        CreateObject->show();
+    }
+    else
+    {
+        InvalidLayer->show();
+    }
+}
+
+
 void MainWindow::onRunClient()
 {
     QMessageBox::information(this, tr("Debug"), tr("onRunClient() slot triggered;"));
@@ -2284,7 +2340,6 @@ void MainWindow::exportAsJson()
 }
 
 
-
 void MainWindow::updateZoomable()
 {
     Zoomable *zoomable = nullptr;
@@ -2321,16 +2376,15 @@ void MainWindow::updateZoomActions()
 
 void MainWindow::openDocumentation()
 {
-#ifdef TILED_SNAPSHOT
-    QDesktopServices::openUrl(QUrl(QLatin1String("https://docs.mapeditor.org/en/latest/")));
-#else
-    QDesktopServices::openUrl(QUrl(QLatin1String("https://docs.mapeditor.org")));
-#endif
+    QDesktopServices::openUrl(QUrl::fromLocalFile(
+        QStringLiteral("C:\\Users\\22466273\\OneDrive - MMU\\Documents\\GitHub\\Ionix2-Map-Editor\\Index.html")
+        ));
 }
 
 void MainWindow::openForum()
 {
     QDesktopServices::openUrl(QUrl(QLatin1String("https://discourse.mapeditor.org")));
+
 }
 
 void MainWindow::writeSettings()

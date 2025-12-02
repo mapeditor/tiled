@@ -38,7 +38,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>25</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -50,7 +50,7 @@
       <string>&amp;Recent Files</string>
      </property>
      <property name="icon">
-      <iconset resource="../../build/Desktop_Qt_6_10_0_MSVC2022_64bit-Debug/Debug_Desktop__c61b1b0652b21d46/libtilededitor.877b2b3a/tilededitor.qrc">
+      <iconset resource="../../build/Desktop_Qt_6_10_1_MSVC2022_64bit-Debug/Debug_Desktop__61a5fcfdbe8ce821/libtilededitor.877b2b3a/tilededitor.qrc">
        <normaloff>:/images/16/document-open-recent.png</normaloff>:/images/16/document-open-recent.png</iconset>
      </property>
      <property name="toolTipsVisible">
@@ -121,10 +121,7 @@
      <string>&amp;Help</string>
     </property>
     <addaction name="actionDocumentation"/>
-    <addaction name="actionForum"/>
     <addaction name="separator"/>
-    <addaction name="actionDonate"/>
-    <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuMap">
     <property name="title">
@@ -231,6 +228,12 @@
     </property>
     <addaction name="actionRunClient"/>
    </widget>
+   <widget class="QMenu" name="menuEntity">
+    <property name="title">
+     <string>Entity</string>
+    </property>
+    <addaction name="actionCreate_Entity"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
@@ -240,6 +243,7 @@
    <addaction name="menuProject"/>
    <addaction name="menuHelp"/>
    <addaction name="menuBuild"/>
+   <addaction name="menuEntity"/>
   </widget>
   <action name="actionOpen">
    <property name="text">
@@ -253,7 +257,7 @@
   </action>
   <action name="actionQuit">
    <property name="icon">
-    <iconset resource="../../build/Desktop_Qt_6_10_0_MSVC2022_64bit-Debug/Debug_Desktop__c61b1b0652b21d46/libtilededitor.877b2b3a/tilededitor.qrc">
+    <iconset resource="../../build/Desktop_Qt_6_10_1_MSVC2022_64bit-Debug/Debug_Desktop__61a5fcfdbe8ce821/libtilededitor.877b2b3a/tilededitor.qrc">
      <normaloff>:/images/16/application-exit.png</normaloff>:/images/16/application-exit.png</iconset>
    </property>
    <property name="text">
@@ -268,7 +272,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../build/Desktop_Qt_6_10_0_MSVC2022_64bit-Debug/Debug_Desktop__c61b1b0652b21d46/libtilededitor.877b2b3a/tilededitor.qrc">
+    <iconset resource="../../build/Desktop_Qt_6_10_1_MSVC2022_64bit-Debug/Debug_Desktop__61a5fcfdbe8ce821/libtilededitor.877b2b3a/tilededitor.qrc">
      <normaloff>:/images/16/edit-copy.png</normaloff>:/images/16/edit-copy.png</iconset>
    </property>
    <property name="text">
@@ -280,7 +284,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../build/Desktop_Qt_6_10_0_MSVC2022_64bit-Debug/Debug_Desktop__c61b1b0652b21d46/libtilededitor.877b2b3a/tilededitor.qrc">
+    <iconset resource="../../build/Desktop_Qt_6_10_1_MSVC2022_64bit-Debug/Debug_Desktop__61a5fcfdbe8ce821/libtilededitor.877b2b3a/tilededitor.qrc">
      <normaloff>:/images/16/edit-paste.png</normaloff>:/images/16/edit-paste.png</iconset>
    </property>
    <property name="text">
@@ -289,7 +293,7 @@
   </action>
   <action name="actionAbout">
    <property name="icon">
-    <iconset resource="../../build/Desktop_Qt_6_10_0_MSVC2022_64bit-Debug/Debug_Desktop__c61b1b0652b21d46/libtilededitor.877b2b3a/tilededitor.qrc">
+    <iconset resource="../../build/Desktop_Qt_6_10_1_MSVC2022_64bit-Debug/Debug_Desktop__61a5fcfdbe8ce821/libtilededitor.877b2b3a/tilededitor.qrc">
      <normaloff>:/images/16/help-about.png</normaloff>:/images/16/help-about.png</iconset>
    </property>
    <property name="text">
@@ -309,7 +313,7 @@
   </action>
   <action name="actionResizeMap">
    <property name="icon">
-    <iconset resource="../../build/Desktop_Qt_6_10_0_MSVC2022_64bit-Debug/Debug_Desktop__c61b1b0652b21d46/libtilededitor.877b2b3a/tilededitor.qrc">
+    <iconset resource="../../build/Desktop_Qt_6_10_1_MSVC2022_64bit-Debug/Debug_Desktop__61a5fcfdbe8ce821/libtilededitor.877b2b3a/tilededitor.qrc">
      <normaloff>:/images/16/document-page-setup.png</normaloff>:/images/16/document-page-setup.png</iconset>
    </property>
    <property name="text">
@@ -318,7 +322,7 @@
   </action>
   <action name="actionMapProperties">
    <property name="icon">
-    <iconset resource="../../build/Desktop_Qt_6_10_0_MSVC2022_64bit-Debug/Debug_Desktop__c61b1b0652b21d46/libtilededitor.877b2b3a/tilededitor.qrc">
+    <iconset resource="../../build/Desktop_Qt_6_10_1_MSVC2022_64bit-Debug/Debug_Desktop__61a5fcfdbe8ce821/libtilededitor.877b2b3a/tilededitor.qrc">
      <normaloff>:/images/16/document-properties.png</normaloff>:/images/16/document-properties.png</iconset>
    </property>
    <property name="text">
@@ -346,7 +350,7 @@
   </action>
   <action name="actionSaveAs">
    <property name="icon">
-    <iconset resource="../../build/Desktop_Qt_6_10_0_MSVC2022_64bit-Debug/Debug_Desktop__c61b1b0652b21d46/libtilededitor.877b2b3a/tilededitor.qrc">
+    <iconset resource="../../build/Desktop_Qt_6_10_1_MSVC2022_64bit-Debug/Debug_Desktop__61a5fcfdbe8ce821/libtilededitor.877b2b3a/tilededitor.qrc">
      <normaloff>:/images/16/document-save-as.png</normaloff>:/images/16/document-save-as.png</iconset>
    </property>
    <property name="text">
@@ -363,7 +367,7 @@
   </action>
   <action name="actionClose">
    <property name="icon">
-    <iconset resource="../../build/Desktop_Qt_6_10_0_MSVC2022_64bit-Debug/Debug_Desktop__c61b1b0652b21d46/libtilededitor.877b2b3a/tilededitor.qrc">
+    <iconset resource="../../build/Desktop_Qt_6_10_1_MSVC2022_64bit-Debug/Debug_Desktop__61a5fcfdbe8ce821/libtilededitor.877b2b3a/tilededitor.qrc">
      <normaloff>:/images/16/window-close.png</normaloff>:/images/16/window-close.png</iconset>
    </property>
    <property name="text">
@@ -372,7 +376,7 @@
   </action>
   <action name="actionZoomIn">
    <property name="icon">
-    <iconset resource="../../build/Desktop_Qt_6_10_0_MSVC2022_64bit-Debug/Debug_Desktop__c61b1b0652b21d46/libtilededitor.877b2b3a/tilededitor.qrc">
+    <iconset resource="../../build/Desktop_Qt_6_10_1_MSVC2022_64bit-Debug/Debug_Desktop__61a5fcfdbe8ce821/libtilededitor.877b2b3a/tilededitor.qrc">
      <normaloff>:/images/16/zoom-in.png</normaloff>:/images/16/zoom-in.png</iconset>
    </property>
    <property name="text">
@@ -381,7 +385,7 @@
   </action>
   <action name="actionZoomOut">
    <property name="icon">
-    <iconset resource="../../build/Desktop_Qt_6_10_0_MSVC2022_64bit-Debug/Debug_Desktop__c61b1b0652b21d46/libtilededitor.877b2b3a/tilededitor.qrc">
+    <iconset resource="../../build/Desktop_Qt_6_10_1_MSVC2022_64bit-Debug/Debug_Desktop__61a5fcfdbe8ce821/libtilededitor.877b2b3a/tilededitor.qrc">
      <normaloff>:/images/16/zoom-out.png</normaloff>:/images/16/zoom-out.png</iconset>
    </property>
    <property name="text">
@@ -393,7 +397,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../build/Desktop_Qt_6_10_0_MSVC2022_64bit-Debug/Debug_Desktop__c61b1b0652b21d46/libtilededitor.877b2b3a/tilededitor.qrc">
+    <iconset resource="../../build/Desktop_Qt_6_10_1_MSVC2022_64bit-Debug/Debug_Desktop__61a5fcfdbe8ce821/libtilededitor.877b2b3a/tilededitor.qrc">
      <normaloff>:/images/16/zoom-original.png</normaloff>:/images/16/zoom-original.png</iconset>
    </property>
    <property name="text">
@@ -413,7 +417,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../build/Desktop_Qt_6_10_0_MSVC2022_64bit-Debug/Debug_Desktop__c61b1b0652b21d46/libtilededitor.877b2b3a/tilededitor.qrc">
+    <iconset resource="../../build/Desktop_Qt_6_10_1_MSVC2022_64bit-Debug/Debug_Desktop__61a5fcfdbe8ce821/libtilededitor.877b2b3a/tilededitor.qrc">
      <normaloff>:/images/16/edit-cut.png</normaloff>:/images/16/edit-cut.png</iconset>
    </property>
    <property name="text">
@@ -435,7 +439,7 @@
   </action>
   <action name="actionClearRecentFiles">
    <property name="icon">
-    <iconset resource="../../build/Desktop_Qt_6_10_0_MSVC2022_64bit-Debug/Debug_Desktop__c61b1b0652b21d46/libtilededitor.877b2b3a/tilededitor.qrc">
+    <iconset resource="../../build/Desktop_Qt_6_10_1_MSVC2022_64bit-Debug/Debug_Desktop__61a5fcfdbe8ce821/libtilededitor.877b2b3a/tilededitor.qrc">
      <normaloff>:/images/16/edit-clear.png</normaloff>:/images/16/edit-clear.png</iconset>
    </property>
    <property name="text">
@@ -476,7 +480,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../build/Desktop_Qt_6_10_0_MSVC2022_64bit-Debug/Debug_Desktop__c61b1b0652b21d46/libtilededitor.877b2b3a/tilededitor.qrc">
+    <iconset resource="../../build/Desktop_Qt_6_10_1_MSVC2022_64bit-Debug/Debug_Desktop__61a5fcfdbe8ce821/libtilededitor.877b2b3a/tilededitor.qrc">
      <normaloff>:/images/16/edit-delete.png</normaloff>:/images/16/edit-delete.png</iconset>
    </property>
    <property name="text">
@@ -549,7 +553,7 @@
   </action>
   <action name="actionDocumentation">
    <property name="text">
-    <string>User Manual ↗</string>
+    <string>About Ionix ↗</string>
    </property>
   </action>
   <action name="actionNoLabels">
@@ -624,7 +628,7 @@
   </action>
   <action name="actionTilesetProperties">
    <property name="icon">
-    <iconset resource="../../build/Desktop_Qt_6_10_0_MSVC2022_64bit-Debug/Debug_Desktop__c61b1b0652b21d46/libtilededitor.877b2b3a/tilededitor.qrc">
+    <iconset resource="../../build/Desktop_Qt_6_10_1_MSVC2022_64bit-Debug/Debug_Desktop__61a5fcfdbe8ce821/libtilededitor.877b2b3a/tilededitor.qrc">
      <normaloff>:/images/16/document-properties.png</normaloff>:/images/16/document-properties.png</iconset>
    </property>
    <property name="text">
@@ -699,7 +703,7 @@
   </action>
   <action name="actionFitInView">
    <property name="icon">
-    <iconset resource="../../build/Desktop_Qt_6_10_0_MSVC2022_64bit-Debug/Debug_Desktop__c61b1b0652b21d46/libtilededitor.877b2b3a/tilededitor.qrc">
+    <iconset resource="../../build/Desktop_Qt_6_10_1_MSVC2022_64bit-Debug/Debug_Desktop__61a5fcfdbe8ce821/libtilededitor.877b2b3a/tilededitor.qrc">
      <normaloff>:/images/16/zoom-fit-best.png</normaloff>:/images/16/zoom-fit-best.png</iconset>
    </property>
    <property name="text">
@@ -721,7 +725,7 @@
   </action>
   <action name="actionClearRecentProjects">
    <property name="icon">
-    <iconset resource="../../build/Desktop_Qt_6_10_0_MSVC2022_64bit-Debug/Debug_Desktop__c61b1b0652b21d46/libtilededitor.877b2b3a/tilededitor.qrc">
+    <iconset resource="../../build/Desktop_Qt_6_10_1_MSVC2022_64bit-Debug/Debug_Desktop__61a5fcfdbe8ce821/libtilededitor.877b2b3a/tilededitor.qrc">
      <normaloff>:/images/16/edit-clear.png</normaloff>:/images/16/edit-clear.png</iconset>
    </property>
    <property name="text">
@@ -756,7 +760,7 @@
   </action>
   <action name="actionProjectProperties">
    <property name="icon">
-    <iconset resource="../../build/Desktop_Qt_6_10_0_MSVC2022_64bit-Debug/Debug_Desktop__c61b1b0652b21d46/libtilededitor.877b2b3a/tilededitor.qrc">
+    <iconset resource="../../build/Desktop_Qt_6_10_1_MSVC2022_64bit-Debug/Debug_Desktop__61a5fcfdbe8ce821/libtilededitor.877b2b3a/tilededitor.qrc">
      <normaloff>:/images/16/document-properties.png</normaloff>:/images/16/document-properties.png</iconset>
    </property>
    <property name="text">
@@ -818,7 +822,7 @@
   </action>
   <action name="actionWorldProperties">
    <property name="icon">
-    <iconset resource="../../build/Desktop_Qt_6_10_0_MSVC2022_64bit-Debug/Debug_Desktop__c61b1b0652b21d46/libtilededitor.877b2b3a/tilededitor.qrc">
+    <iconset resource="../../build/Desktop_Qt_6_10_1_MSVC2022_64bit-Debug/Debug_Desktop__61a5fcfdbe8ce821/libtilededitor.877b2b3a/tilededitor.qrc">
      <normaloff>:/images/16/document-properties.png</normaloff>:/images/16/document-properties.png</iconset>
    </property>
    <property name="text">
@@ -844,10 +848,15 @@
     <string>Show Content Browser</string>
    </property>
   </action>
+  <action name="actionCreate_Entity">
+   <property name="text">
+    <string>Create Entity</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="../../build/Desktop_Qt_6_10_0_MSVC2022_64bit-Debug/Debug_Desktop__c61b1b0652b21d46/libtilededitor.877b2b3a/tilededitor.qrc"/>
+  <include location="../../build/Desktop_Qt_6_10_1_MSVC2022_64bit-Debug/Debug_Desktop__61a5fcfdbe8ce821/libtilededitor.877b2b3a/tilededitor.qrc"/>
  </resources>
  <connections>
   <connection>
