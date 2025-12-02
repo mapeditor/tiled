@@ -22,10 +22,12 @@
 
 #include "documentmanager.h"
 #include "filteredit.h"
+#include "preferences.h"
 #include "projectmanager.h"
 #include "utils.h"
 
 #include <QApplication>
+#include <QCollator>
 #include <QDir>
 #include <QKeyEvent>
 #include <QPainter>
@@ -376,13 +378,17 @@ void FileLocatorSource::setFilterWords(const QStringList &words)
     auto projectModel = ProjectManager::instance()->projectModel();
     auto matches = projectModel->findFiles(words);
 
-    std::stable_sort(matches.begin(), matches.end(), [] (const ProjectModel::Match &a, const ProjectModel::Match &b) {
+    QCollator collator;
+    collator.setCaseSensitivity(Qt::CaseInsensitive);
+    collator.setNumericMode(Preferences::instance()->naturalSorting());
+
+    std::stable_sort(matches.begin(), matches.end(), [&] (const ProjectModel::Match &a, const ProjectModel::Match &b) {
         // Sort based on score first
         if (a.score != b.score)
             return a.score > b.score;
 
         // If score is the same, sort alphabetically
-        return a.relativePath().compare(b.relativePath(), Qt::CaseInsensitive) < 0;
+        return collator.compare(a.relativePath(), b.relativePath()) < 0;
     });
 
     mDelegate->setWords(words);

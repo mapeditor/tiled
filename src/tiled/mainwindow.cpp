@@ -78,10 +78,30 @@
 #include "worldpropertiesdialog.h"
 #include "zoomable.h"
 
+#include "mapdocument.h"
+#include "mapformat.h"
+#include "exporthelper.h"          // ← THIS WAS MISSING
+#include "exporthelper.h"
+#include "pluginmanager.h"   // gives you PluginManager::loadedPlugins()
+#include "../plugins/json1/jsonplugin.h" // For JsonMapFormat — this is the key header!
+#include "map.h"              // For Map
+#include "tilelayer.h"        // For TileLayer
+#include <QJsonDocument>      // Qt JSON
+#include <QJsonObject>        // Qt JSON
+#include <QJsonArray>         // Qt JSON
+#include <QFile>              // For file writing
+#include <QMessageBox>        // For errors
+
+#include "mapdocument.h"
+#include "mapformat.h"
+#include "exporthelper.h"
+#include "pluginmanager.h"
+#include <QMessageBox>
+#include <QFile>
+#include <QProcess>
 #include <QActionGroup>
 #include <QCloseEvent>
 #include <QDesktopServices>
-#include <QDialog>
 #include <QFileDialog>
 #include <QLabel>
 #include <QMessageBox>
@@ -533,7 +553,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerMenu(mGroupLayerMenu, "GroupLayer");
 
     connect(mUi->actionRunClient, &QAction::triggered, this, &MainWindow::onRunClient);
-    connect(mUi->actionCreate_Entity, &QAction::triggered, this, &MainWindow::onCreateEntity);
     connect(mUi->actionNewMap, &QAction::triggered, this, &MainWindow::newMap);
     connect(mUi->actionNewTileset, &QAction::triggered, this, [this] { newTileset(); });
     connect(mUi->actionOpen, &QAction::triggered, this, &MainWindow::openFileDialog);
@@ -2276,6 +2295,8 @@ void MainWindow::onRunClient()
 {
     QMessageBox::information(this, tr("Debug"), tr("onRunClient() slot triggered;"));
 
+    exportAsJson();
+
     const QString programPath = QString::fromUtf8(
         "C:\\Users\\samth\\Downloads\\Game-Engines-25-26-Ionix-2\\bin"
             "\\Debug-x86_64-windows\\Client\\Client.exe"
@@ -2283,6 +2304,34 @@ void MainWindow::onRunClient()
     bool started = QProcess::startDetached(programPath);
     if (!started)
         QMessageBox::warning(this, tr("Error"), tr("Failed to launch Client.exe"));
+}
+
+void MainWindow::exportAsJson()
+{
+    auto* doc = qobject_cast<Tiled::MapDocument*>(
+        Tiled::DocumentManager::instance()->currentDocument());
+
+    if (!doc)
+         QMessageBox::warning(this, tr("Error"), tr("No Map Selected"));
+
+    qDebug() << "doc:" << doc;
+
+    const QString path = QStringLiteral("C:/Ionix2/GameData/current_map.json");
+    QDir().mkpath(QFileInfo(path).absolutePath());
+
+    Tiled::MapFormat *tmj = nullptr;
+
+    const auto formats = Tiled::PluginManager::objects<Tiled::MapFormat>();
+    for(auto f : formats){
+        if(f->shortName() == QStringLiteral("json")){
+            tmj = f;
+            break;
+        }
+    }
+
+    if(tmj&&doc)
+        tmj->write(doc->map(),path,{});
+    qDebug() << "TMJ export done.";
 }
 
 
