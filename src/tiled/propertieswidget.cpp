@@ -3133,7 +3133,7 @@ void PropertiesWidget::showAddValueProperty()
     connect(SC_BrowseSpriteFile, &QPushButton::clicked, [=]{
         QString SC_SpriteFilePath = QFileDialog::getOpenFileName(PropertyWindow, QString::fromStdString("Choose Sprite File"),
                                                                  tr("/home"),
-                                                                 tr("Sprite File (*.png, *.jpg)"));
+                                                                 tr("Sprite File (*.png *.jpg)"));
         if (!SC_SpriteFilePath.isEmpty())
         {
             SpriteFilePath->setText(SC_SpriteFilePath);
@@ -3143,7 +3143,7 @@ void PropertiesWidget::showAddValueProperty()
     connect(AC_BrowseTextureFile, &QPushButton::clicked, [=]{
         QString AC_TextureFilePath = QFileDialog::getOpenFileName(PropertyWindow, QString::fromStdString("Choose Texture File"),
                                                                  tr("/home"),
-                                                                 tr("Audio File (*.png, *.jpg)"));
+                                                                 tr("Image File (*.png *.jpg)"));
         if (!AC_TextureFilePath.isEmpty())
         {
             TextureFilePath->setText(AC_TextureFilePath);
