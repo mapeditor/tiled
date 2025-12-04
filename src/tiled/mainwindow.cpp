@@ -552,8 +552,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerMenu(mLayerMenu, "Layer");
     ActionManager::registerMenu(mNewLayerMenu, "NewLayer");
     ActionManager::registerMenu(mGroupLayerMenu, "GroupLayer");
+    connect(mUi->actionlabel, &QAction::triggered, this, &MainWindow::onAddLabelTriggered);
 
     connect(mUi->actionCreate_Entity, &QAction::triggered, this, &MainWindow::onCreateEntity);
+    
     connect(mUi->actionRunClient, &QAction::triggered, this, &MainWindow::onRunClient);
     connect(mUi->actionNewMap, &QAction::triggered, this, &MainWindow::newMap);
     connect(mUi->actionNewTileset, &QAction::triggered, this, [this] { newTileset(); });
@@ -2293,6 +2295,10 @@ void MainWindow::onCreateEntity()
     {
         InvalidLayer->show();
     }
+}
+
+void MainWindow::onAddLabelTriggered(){
+
 }
 
 
