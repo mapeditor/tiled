@@ -1,14 +1,23 @@
 import qbs.FileInfo
+import qbs.Utilities
 
 StaticLibrary {
-    condition: !qbs.toolchain.contains("msvc")
+    builtByDefault: false   // only when needed by RpMap plugin
+    condition: {
+        if (qbs.toolchain.contains("msvc"))
+            return false;
+
+        if (Utilities.versionCompare(Qt.core.version, "6.8") < 0)
+            return false;
+
+        return true;
+    }
 
     Depends { name: "cpp" }
-    Depends { name: "Qt.core"; versionAtLeast: "5.12" }
+    Depends { name: "Qt.core"; versionAtLeast: "6.8" }
 
     cpp.includePaths: [ "src" ]
     cpp.defines: [
-        "KARCHIVE_NO_DEPRECATED",
         "KARCHIVE_STATIC_DEFINE",
         "QT_NO_CAST_FROM_ASCII",
     ]
@@ -33,12 +42,12 @@ StaticLibrary {
         "src/kcompressiondevice_p.h",
         "src/kfilterbase.cpp",
         "src/kfilterbase.h",
-        "src/kfilterdev.cpp",
-        "src/kfilterdev.h",
         "src/kgzipfilter.cpp",
         "src/kgzipfilter.h",
         "src/klimitediodevice.cpp",
         "src/klimitediodevice_p.h",
+        "src/klzfilter.cpp",
+        "src/klzfilter.h",
         "src/knonefilter.cpp",
         "src/knonefilter.h",
         "src/krcc.cpp",
@@ -48,6 +57,8 @@ StaticLibrary {
 //        "src/kxzfilter.cpp",
         "src/kxzfilter.h",
         "src/kzipfileentry.h",
+        "src/kzstdfilter.cpp",
+        "src/kzstdfilter.h",
         "src/kzip.cpp",
         "src/kzip.h",
         "src/loggingcategory.cpp",

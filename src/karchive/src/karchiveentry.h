@@ -14,85 +14,102 @@
 
 #include <karchive_export.h>
 
+#include <QDateTime>
+#include <QString>
+
 #ifdef Q_OS_WIN
 #include <qplatformdefs.h> // mode_t
 #endif
 
 class KArchiveDirectory;
 class KArchiveFile;
+class KArchive;
 
 class KArchiveEntryPrivate;
-/**
- * @class KArchiveEntry karchiveentry.h KArchiveEntry
+/*!
+ * \class KArchiveEntry
+ * \inmodule KArchive
  *
- * A base class for entries in an KArchive.
- * @short Base class for the archive-file's directory structure.
+ * \brief Base class for the archive-file's directory structure.
  *
- * @see KArchiveFile
- * @see KArchiveDirectory
+ * \sa KArchiveFile
+ * \sa KArchiveDirectory
  */
 class KARCHIVE_EXPORT KArchiveEntry
 {
 public:
-    /**
+    /*!
      * Creates a new entry.
-     * @param archive the entries archive
-     * @param name the name of the entry
-     * @param access the permissions in unix format
-     * @param date the date (in seconds since 1970)
-     * @param user the user that owns the entry
-     * @param group the group that owns the entry
-     * @param symlink the symlink, or QString()
+     *
+     * \a archive the entries archive
+     *
+     * \a name the name of the entry
+     *
+     * \a access the permissions in unix format
+     *
+     * \a date the date (in seconds since 1970)
+     *
+     * \a user the user that owns the entry
+     *
+     * \a group the group that owns the entry
+     *
+     * \a symlink the symlink, or QString()
      */
-    KArchiveEntry(KArchive *archive, const QString &name, int access, const QDateTime &date,
-                  const QString &user, const QString &group,
-                  const QString &symlink);
+    KArchiveEntry(KArchive *archive, const QString &name, int access, const QDateTime &date, const QString &user, const QString &group, const QString &symlink);
 
     virtual ~KArchiveEntry();
 
-    /**
+    /*!
      * Creation date of the file.
-     * @return the creation date
+     *
+     * Returns the creation date
      */
     QDateTime date() const;
 
-    /**
+    /*!
      * Name of the file without path.
-     * @return the file name without path
+     *
+     * Returns the file name without path
      */
     QString name() const;
-    /**
+    /*!
      * The permissions and mode flags as returned by the stat() function
      * in st_mode.
-     * @return the permissions
+     *
+     * Returns the permissions
      */
     mode_t permissions() const;
-    /**
+    /*!
      * User who created the file.
-     * @return the owner of the file
+     *
+     * Returns the owner of the file
      */
     QString user() const;
-    /**
+    /*!
      * Group of the user who created the file.
-     * @return the group of the file
+     *
+     * Returns the group of the file
      */
     QString group() const;
 
-    /**
+    /*!
      * Symlink if there is one.
-     * @return the symlink, or QString()
+     *
+     * Returns the symlink, or QString()
      */
     QString symLinkTarget() const;
 
-    /**
+    /*!
      * Checks whether the entry is a file.
-     * @return true if this entry is a file
+     *
+     * Returns true if this entry is a file
      */
     virtual bool isFile() const;
 
-    /**
+    /*!
      * Checks whether the entry is a directory.
-     * @return true if this entry is a directory
+     *
+     * Returns true if this entry is a directory
      */
     virtual bool isDirectory() const;
 
@@ -101,6 +118,7 @@ protected:
 
 protected:
     virtual void virtual_hook(int id, void *data);
+
 private:
     KArchiveEntryPrivate *const d;
 };

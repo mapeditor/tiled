@@ -13,9 +13,10 @@ class KFilterBasePrivate
 public:
     KFilterBasePrivate()
         : m_flags(KFilterBase::WithHeaders)
-        ,  m_dev(nullptr)
+        , m_dev(nullptr)
         , m_bAutoDel(false)
-    {}
+    {
+    }
     KFilterBase::FilterFlags m_flags;
     QIODevice *m_dev;
     bool m_bAutoDel;

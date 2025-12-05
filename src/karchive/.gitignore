@@ -16,6 +16,13 @@ Makefile
 avail
 random_seed
 /build*/
+/.vscode/
 CMakeLists.txt.user*
 *.unc-backup*
 .cmake/
+/.clang-format
+/compile_commands.json
+.clangd
+.idea
+/cmake-build*
+.cache

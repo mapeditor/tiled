@@ -9,18 +9,18 @@
 
 #include "kfilterbase.h"
 
-/**
- * Internal class used by KFilterDev
+/*!
+ * Internal class used by KCompressionDevice
  *
  * This header is not installed.
  *
- * @internal
+ * \internal
  */
 class KGzipFilter : public KFilterBase
 {
 public:
     KGzipFilter();
-    virtual ~KGzipFilter();
+    ~KGzipFilter() override;
 
     bool init(int mode) override;
 
@@ -30,11 +30,11 @@ public:
     // - Gzip header, implemented here by readHeader
     //
     // (1) as written out by compress()/compress2()
-    // (2) see http://www.zlib.net/zlib_faq.html#faq39
+    // (2) see https://www.zlib.net/zlib_faq.html#faq39
     enum Flag {
         RawDeflate = 0, // raw deflate data
         ZlibHeader = 1, // zlib headers (HTTP deflate)
-        GZipHeader = 2
+        GZipHeader = 2,
     };
     bool init(int mode, Flag flag); // for direct users of KGzipFilter
     int mode() const override;
@@ -45,8 +45,8 @@ public:
     void writeFooter();
     void setOutBuffer(char *data, uint maxlen) override;
     void setInBuffer(const char *data, uint size) override;
-    int  inBufferAvailable() const override;
-    int  outBufferAvailable() const override;
+    int inBufferAvailable() const override;
+    int outBufferAvailable() const override;
     Result uncompress() override;
     Result compress(bool finish) override;
 
