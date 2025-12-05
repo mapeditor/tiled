@@ -7,7 +7,7 @@
 #  define KARCHIVE_NO_EXPORT
 #else
 #  ifndef KARCHIVE_EXPORT
-#    ifdef KF5Archive_EXPORTS
+#    ifdef KF6Archive_EXPORTS
         /* We are building this library */
 #      define KARCHIVE_EXPORT __attribute__((visibility("default")))
 #    else
@@ -33,15 +33,15 @@
 #  define KARCHIVE_DECL_DEPRECATED_NO_EXPORT KARCHIVE_NO_EXPORT KARCHIVE_DECL_DEPRECATED
 #endif
 
+/* NOLINTNEXTLINE(readability-avoid-unconditional-preprocessor-if) */
 #if 0 /* DEFINE_NO_DEPRECATED */
 #  ifndef KARCHIVE_NO_DEPRECATED
 #    define KARCHIVE_NO_DEPRECATED
 #  endif
 #endif
+#include <karchive_version.h>
 
 #define KARCHIVE_DECL_DEPRECATED_TEXT(text) __attribute__ ((__deprecated__(text)))
-
-#define ECM_GENERATEEXPORTHEADER_VERSION_VALUE(major, minor, patch) ((major<<16)|(minor<<8)|(patch))
 
 /* Take any defaults from group settings */
 #if !defined(KARCHIVE_NO_DEPRECATED) && !defined(KARCHIVE_DISABLE_DEPRECATED_BEFORE_AND_AT)
@@ -86,7 +86,7 @@
 #define KARCHIVE_BUILD_DEPRECATED_SINCE(major, minor) 1
 
 #ifdef KARCHIVE_NO_DEPRECATED
-#  define KARCHIVE_DISABLE_DEPRECATED_BEFORE_AND_AT 0x54c00
+#  define KARCHIVE_DISABLE_DEPRECATED_BEFORE_AND_AT KARCHIVE_VERSION
 #endif
 #ifdef KARCHIVE_NO_DEPRECATED_WARNINGS
 #  define KARCHIVE_DEPRECATED_WARNINGS_SINCE 0
@@ -96,7 +96,7 @@
 #  ifdef KARCHIVE_DISABLE_DEPRECATED_BEFORE_AND_AT
 #    define KARCHIVE_DEPRECATED_WARNINGS_SINCE KARCHIVE_DISABLE_DEPRECATED_BEFORE_AND_AT
 #  else
-#    define KARCHIVE_DEPRECATED_WARNINGS_SINCE 0x54c00
+#    define KARCHIVE_DEPRECATED_WARNINGS_SINCE KARCHIVE_VERSION
 #  endif
 #endif
 
@@ -105,18 +105,25 @@
 #endif
 
 #ifdef KARCHIVE_DEPRECATED
-#  define KARCHIVE_ENABLE_DEPRECATED_SINCE(major, minor) (ECM_GENERATEEXPORTHEADER_VERSION_VALUE(major, minor, 0) > KARCHIVE_DISABLE_DEPRECATED_BEFORE_AND_AT)
+#  define KARCHIVE_ENABLE_DEPRECATED_SINCE(major, minor) (((major<<16)|(minor<<8)) > KARCHIVE_DISABLE_DEPRECATED_BEFORE_AND_AT)
 #else
 #  define KARCHIVE_ENABLE_DEPRECATED_SINCE(major, minor) 0
 #endif
 
-#if KARCHIVE_DEPRECATED_WARNINGS_SINCE >= 0x50000
-#  define KARCHIVE_DEPRECATED_VERSION_5_0(text) KARCHIVE_DECL_DEPRECATED_TEXT(text)
+#if KARCHIVE_DEPRECATED_WARNINGS_SINCE >= 0x60d00
+#  define KARCHIVE_DEPRECATED_VERSION_6_13(text) KARCHIVE_DECL_DEPRECATED_TEXT(text)
 #else
-#  define KARCHIVE_DEPRECATED_VERSION_5_0(text)
+#  define KARCHIVE_DEPRECATED_VERSION_6_13(text)
 #endif
-#define KARCHIVE_DEPRECATED_VERSION_5(minor, text)      KARCHIVE_DEPRECATED_VERSION_5_##minor(text)
+#define KARCHIVE_DEPRECATED_VERSION_6(minor, text)      KARCHIVE_DEPRECATED_VERSION_6_##minor(text)
 #define KARCHIVE_DEPRECATED_VERSION(major, minor, text) KARCHIVE_DEPRECATED_VERSION_##major(minor, "Since "#major"."#minor". " text)
 #define KARCHIVE_DEPRECATED_VERSION_BELATED(major, minor, textmajor, textminor, text) KARCHIVE_DEPRECATED_VERSION_##major(minor, "Since "#textmajor"."#textminor". " text)
+#if defined(__cpp_enumerator_attributes) && __cpp_enumerator_attributes >= 201411
+#  define KARCHIVE_ENUMERATOR_DEPRECATED_VERSION(major, minor, text) KARCHIVE_DEPRECATED_VERSION(major, minor, text)
+#  define KARCHIVE_ENUMERATOR_DEPRECATED_VERSION_BELATED(major, minor, textmajor, textminor, text) KARCHIVE_DEPRECATED_VERSION_BELATED(major, minor, textmajor, textminor, text)
+#else
+#  define KARCHIVE_ENUMERATOR_DEPRECATED_VERSION(major, minor, text)
+#  define KARCHIVE_ENUMERATOR_DEPRECATED_VERSION_BELATED(major, minor, textmajor, textminor, text)
+#endif
 
 #endif /* KARCHIVE_EXPORT_H */

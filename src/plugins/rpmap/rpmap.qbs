@@ -1,5 +1,15 @@
+import qbs.Utilities
+
 TiledPlugin {
-    condition: !qbs.toolchain.contains("msvc")
+    condition: {
+        if (qbs.toolchain.contains("msvc"))
+            return false;
+
+        if (Utilities.versionCompare(Qt.core.version, "6.8") < 0)
+            return false;
+
+        return true;
+    }
 
     Depends { name: "Qt.core" }
     Depends { name: "karchive" }

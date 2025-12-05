@@ -13,15 +13,15 @@
 
 #include "kfilterbase.h"
 
-/**
- * Internal class used by KFilterDev
- * @internal
+/*!
+ * Internal class used by KCompressionDevice
+ * \internal
  */
 class KBzip2Filter : public KFilterBase
 {
 public:
     KBzip2Filter();
-    virtual ~KBzip2Filter();
+    ~KBzip2Filter() override;
 
     bool init(int) override;
     int mode() const override;
@@ -29,7 +29,7 @@ public:
     void reset() override;
     bool readHeader() override
     {
-        return true;    // bzip2 handles it by itself ! Cool !
+        return true; // bzip2 handles it by itself ! Cool !
     }
     bool writeHeader(const QByteArray &) override
     {
@@ -37,10 +37,11 @@ public:
     }
     void setOutBuffer(char *data, uint maxlen) override;
     void setInBuffer(const char *data, uint size) override;
-    int  inBufferAvailable() const override;
-    int  outBufferAvailable() const override;
+    int inBufferAvailable() const override;
+    int outBufferAvailable() const override;
     Result uncompress() override;
     Result compress(bool finish) override;
+
 private:
     class Private;
     Private *const d;

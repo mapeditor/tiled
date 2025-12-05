@@ -1,7 +1,8 @@
-import qbs.FileInfo
-import qbs.File
-import qbs.TextFile
 import qbs.Environment
+import qbs.File
+import qbs.FileInfo
+import qbs.TextFile
+import qbs.Utilities
 
 WindowsInstallerPackage {
     builtByDefault: project.windowsInstaller
@@ -55,7 +56,8 @@ WindowsInstallerPackage {
         if (pythonHome && File.exists(pythonHome))
             defs.push("Python");
 
-        var rpMapEnabled = !qbs.toolchain.contains("msvc")
+        var rpMapEnabled = !qbs.toolchain.contains("msvc") &&
+                Utilities.versionCompare(Qt.core.version, "6.8") >= 0;
         if (rpMapEnabled)
             defs.push("RpMap");
 

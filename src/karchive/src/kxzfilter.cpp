@@ -10,7 +10,6 @@
 #include "kxzfilter.h"
 #include "loggingcategory.h"
 
-
 #if HAVE_XZ_SUPPORT
 extern "C" {
 #include <lzma.h>
@@ -26,7 +25,7 @@ public:
     Private()
         : isInitialized(false)
     {
-        memset(&zStream, 0, sizeof (zStream));
+        memset(&zStream, 0, sizeof(zStream));
         mode = 0;
     }
 
@@ -48,7 +47,7 @@ KXzFilter::~KXzFilter()
 
 bool KXzFilter::init(int mode)
 {
-    QVector<unsigned char> props;
+    QList<unsigned char> props;
     return init(mode, AUTO, props);
 }
 
@@ -59,7 +58,7 @@ static void freeFilters(lzma_filter filters[])
     }
 }
 
-bool KXzFilter::init(int mode, Flag flag, const QVector<unsigned char> &properties)
+bool KXzFilter::init(int mode, Flag flag, const QList<unsigned char> &properties)
 {
     if (d->isInitialized) {
         terminate();
@@ -70,15 +69,18 @@ bool KXzFilter::init(int mode, Flag flag, const QVector<unsigned char> &properti
     d->zStream.next_in = nullptr;
     d->zStream.avail_in = 0;
     if (mode == QIODevice::ReadOnly) {
-        // TODO when we can depend on Qt 5.12 Use a QScopeGuard to call freeFilters
         lzma_filter filters[5];
+        const auto filtersCleanupGuard = qScopeGuard([&filters] {
+            freeFilters(filters);
+        });
+
         filters[0].id = LZMA_VLI_UNKNOWN;
 
         switch (flag) {
         case AUTO:
             /* We set the memlimit for decompression to 100MiB which should be
-            * more than enough to be sufficient for level 9 which requires 65 MiB.
-            */
+             * more than enough to be sufficient for level 9 which requires 65 MiB.
+             */
             result = lzma_auto_decoder(&d->zStream, 100 << 20, 0);
             if (result != LZMA_OK) {
                 qCWarning(KArchiveLog) << "lzma_auto_decoder returned" << result;
@@ -91,16 +93,18 @@ bool KXzFilter::init(int mode, Flag flag, const QVector<unsigned char> &properti
             filters[1].id = LZMA_VLI_UNKNOWN;
             filters[1].options = nullptr;
 
-            Q_ASSERT(properties.size() == 5);
+            if (properties.size() != 5) {
+                qCWarning(KArchiveLog) << "KXzFilter::init: LZMA unexpected number of properties" << properties.size();
+                return false;
+            }
             unsigned char props[5];
             for (int i = 0; i < properties.size(); ++i) {
                 props[i] = properties[i];
             }
 
-            result = lzma_properties_decode(&filters[0], nullptr, props, sizeof (props));
+            result = lzma_properties_decode(&filters[0], nullptr, props, sizeof(props));
             if (result != LZMA_OK) {
                 qCWarning(KArchiveLog) << "lzma_properties_decode returned" << result;
-                freeFilters(filters);
                 return false;
             }
             break;
@@ -111,14 +115,16 @@ bool KXzFilter::init(int mode, Flag flag, const QVector<unsigned char> &properti
             filters[1].id = LZMA_VLI_UNKNOWN;
             filters[1].options = nullptr;
 
-            Q_ASSERT(properties.size() == 1);
+            if (properties.size() != 1) {
+                qCWarning(KArchiveLog) << "KXzFilter::init: LZMA2 unexpected number of properties" << properties.size();
+                return false;
+            }
             unsigned char props[1];
             props[0] = properties[0];
 
-            result = lzma_properties_decode(&filters[0], nullptr, props, sizeof (props));
+            result = lzma_properties_decode(&filters[0], nullptr, props, sizeof(props));
             if (result != LZMA_OK) {
                 qCWarning(KArchiveLog) << "lzma_properties_decode returned" << result;
-                freeFilters(filters);
                 return false;
             }
             break;
@@ -127,14 +133,12 @@ bool KXzFilter::init(int mode, Flag flag, const QVector<unsigned char> &properti
             filters[0].id = LZMA_FILTER_X86;
             filters[0].options = nullptr;
 
-            unsigned char props[5] = { 0x5d, 0x00, 0x00, 0x08, 0x00 }
-            ;
+            unsigned char props[5] = {0x5d, 0x00, 0x00, 0x08, 0x00};
             filters[1].id = LZMA_FILTER_LZMA1;
             filters[1].options = nullptr;
-            result = lzma_properties_decode(&filters[1], nullptr, props, sizeof (props));
+            result = lzma_properties_decode(&filters[1], nullptr, props, sizeof(props));
             if (result != LZMA_OK) {
                 qCWarning(KArchiveLog) << "lzma_properties_decode1 returned" << result;
-                freeFilters(filters);
                 return false;
             }
 
@@ -148,7 +152,7 @@ bool KXzFilter::init(int mode, Flag flag, const QVector<unsigned char> &properti
         case ARM:
         case ARMTHUMB:
         case SPARC:
-            //qCDebug(KArchiveLog) << "flag" << flag << "props size" << properties.size();
+            // qCDebug(KArchiveLog) << "flag" << flag << "props size" << properties.size();
             break;
         }
 
@@ -156,11 +160,9 @@ bool KXzFilter::init(int mode, Flag flag, const QVector<unsigned char> &properti
             result = lzma_raw_decoder(&d->zStream, filters);
             if (result != LZMA_OK) {
                 qCWarning(KArchiveLog) << "lzma_raw_decoder returned" << result;
-                freeFilters(filters);
                 return false;
             }
         }
-        freeFilters(filters);
 
     } else if (mode == QIODevice::WriteOnly) {
         if (flag == AUTO) {
@@ -183,7 +185,7 @@ bool KXzFilter::init(int mode, Flag flag, const QVector<unsigned char> &properti
             return false;
         }
     } else {
-        //qCWarning(KArchiveLog) << "Unsupported mode " << mode << ". Only QIODevice::ReadOnly and QIODevice::WriteOnly supported";
+        // qCWarning(KArchiveLog) << "Unsupported mode " << mode << ". Only QIODevice::ReadOnly and QIODevice::WriteOnly supported";
         return false;
     }
     d->mode = mode;
@@ -201,7 +203,7 @@ bool KXzFilter::terminate()
     if (d->mode == QIODevice::ReadOnly || d->mode == QIODevice::WriteOnly) {
         lzma_end(&d->zStream);
     } else {
-        //qCWarning(KArchiveLog) << "Unsupported mode " << d->mode << ". Only QIODevice::ReadOnly and QIODevice::WriteOnly supported";
+        // qCWarning(KArchiveLog) << "Unsupported mode " << d->mode << ". Only QIODevice::ReadOnly and QIODevice::WriteOnly supported";
         return false;
     }
     d->isInitialized = false;
@@ -210,7 +212,7 @@ bool KXzFilter::terminate()
 
 void KXzFilter::reset()
 {
-    //qCDebug(KArchiveLog) << "KXzFilter::reset";
+    // qCDebug(KArchiveLog) << "KXzFilter::reset";
     // liblzma doesn't have a reset call...
     terminate();
     init(d->mode);
@@ -240,7 +242,7 @@ int KXzFilter::outBufferAvailable() const
 
 KXzFilter::Result KXzFilter::uncompress()
 {
-    //qCDebug(KArchiveLog) << "Calling lzma_code with avail_in=" << inBufferAvailable() << " avail_out =" << outBufferAvailable();
+    // qCDebug(KArchiveLog) << "Calling lzma_code with avail_in=" << inBufferAvailable() << " avail_out =" << outBufferAvailable();
     lzma_ret result;
     result = lzma_code(&d->zStream, LZMA_RUN);
 
@@ -261,21 +263,21 @@ KXzFilter::Result KXzFilter::uncompress()
 
 KXzFilter::Result KXzFilter::compress(bool finish)
 {
-    //qCDebug(KArchiveLog) << "Calling lzma_code with avail_in=" << inBufferAvailable() << " avail_out=" << outBufferAvailable();
+    // qCDebug(KArchiveLog) << "Calling lzma_code with avail_in=" << inBufferAvailable() << " avail_out=" << outBufferAvailable();
     lzma_ret result = lzma_code(&d->zStream, finish ? LZMA_FINISH : LZMA_RUN);
     switch (result) {
     case LZMA_OK:
         return KFilterBase::Ok;
         break;
     case LZMA_STREAM_END:
-        //qCDebug(KArchiveLog) << "  lzma_code returned " << result;
+        // qCDebug(KArchiveLog) << "  lzma_code returned " << result;
         return KFilterBase::End;
         break;
     default:
-        //qCDebug(KArchiveLog) << "  lzma_code returned " << result;
+        // qCDebug(KArchiveLog) << "  lzma_code returned " << result;
         return KFilterBase::Error;
         break;
     }
 }
 
-#endif  /* HAVE_XZ_SUPPORT */
+#endif /* HAVE_XZ_SUPPORT */

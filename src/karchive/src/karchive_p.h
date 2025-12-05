@@ -12,6 +12,10 @@
 
 #include <QSaveFile>
 
+// Documentation says that QByteArray should be able to hold up to 2^63 on 64 bit platforms
+// but practice says it aborts with something like 2314885530818453536, so go with MAX_INT for now
+static constexpr int kMaxQByteArraySize = std::numeric_limits<int>::max() - 32;
+
 class KArchivePrivate
 {
     Q_DECLARE_TR_FUNCTIONS(KArchivePrivate)
@@ -19,17 +23,15 @@ class KArchivePrivate
 public:
     KArchivePrivate(KArchive *parent)
         : q(parent)
-        , rootDir(nullptr)
-        , saveFile(nullptr)
-        , dev(nullptr)
-        , fileName()
-        , mode(QIODevice::NotOpen)
-        , deviceOwned(false)
     {
     }
     ~KArchivePrivate()
     {
-        delete saveFile;
+        if (deviceOwned) {
+            delete dev; // we created it ourselves in open()
+            dev = nullptr;
+        }
+
         delete rootDir;
     }
 
@@ -43,17 +45,17 @@ public:
 
     void abortWriting();
 
-    static QDateTime time_tToDateTime(uint time_t);
+    static QDateTime time_tToDateTime(uint seconds);
 
-    KArchiveDirectory *findOrCreate(const QString &path, int recursionCounter);
+    KArchiveDirectory *findOrCreateDirectory(const QStringView path);
 
-    KArchive *q;
-    KArchiveDirectory *rootDir;
-    QSaveFile *saveFile;
-    QIODevice *dev;
+    KArchive *q = nullptr;
+    KArchiveDirectory *rootDir = nullptr;
+    std::unique_ptr<QSaveFile> saveFile;
+    QIODevice *dev = nullptr;
     QString fileName;
-    QIODevice::OpenMode mode;
-    bool deviceOwned; // if true, we (KArchive) own dev and must delete it
+    QIODevice::OpenMode mode = QIODevice::NotOpen;
+    bool deviceOwned = false; // if true, we (KArchive) own dev and must delete it
     QString errorStr{tr("Unknown error")};
 };
 

@@ -1,36 +1,36 @@
 /* This file is part of the KDE libraries
-   SPDX-FileCopyrightText: 2011 Mario Bensi <mbensi@ipsquad.net>
-
-   Based on kbzip2filter:
-   SPDX-FileCopyrightText: 2000, 2009 David Faure <faure@kde.org>
+   SPDX-FileCopyrightText: 2025 Azhar Momin <azhar.momin@kdemail.net>
 
    SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
-#ifndef __knonefilter__h
-#define __knonefilter__h
+#ifndef KLZFILTER_H
+#define KLZFILTER_H
+
+#include <config-compression.h>
+
+#if HAVE_XZ_SUPPORT
 
 #include "kfilterbase.h"
 
-/*!
+/**
  * Internal class used by KCompressionDevice
- *
- * This header is not installed.
- *
- * \internal
+ * @internal
  */
-class KNoneFilter : public KFilterBase
+class KLzFilter : public KFilterBase
 {
 public:
-    KNoneFilter();
-    ~KNoneFilter() override;
+    KLzFilter();
+    ~KLzFilter() override;
 
     bool init(int mode) override;
     int mode() const override;
     bool terminate() override;
     void reset() override;
-    bool readHeader() override; // this is about the GZIP header
-    bool writeHeader(const QByteArray &fileName) override;
+    bool readHeader() override;
+    bool readTrailer();
+    bool writeHeader(const QByteArray &) override;
+    bool writeTrailer();
     void setOutBuffer(char *data, uint maxlen) override;
     void setInBuffer(const char *data, uint size) override;
     int inBufferAvailable() const override;
@@ -39,10 +39,10 @@ public:
     Result compress(bool finish) override;
 
 private:
-    Result copyData();
-
     class Private;
-    Private *const d;
+    const std::unique_ptr<Private> d;
 };
 
-#endif
+#endif // HAVE_XZ_SUPPORT
+
+#endif // KLZFILTER_H

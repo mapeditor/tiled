@@ -1,52 +1,37 @@
 /* This file is part of the KDE libraries
-   SPDX-FileCopyrightText: 2007-2008 Per Øyvind Karlsen <peroyvind@mandriva.org>
-
-   Based on kbzip2filter:
-   SPDX-FileCopyrightText: 2000 David Faure <faure@kde.org>
+   SPDX-FileCopyrightText: 2021 Albert Astals Cid <aacid@kde.org>
 
    SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
-#ifndef KXZFILTER_H
-#define KXZFILTER_H
+#ifndef KZSTDFILTER_H
+#define KZSTDFILTER_H
 
 #include <config-compression.h>
 
-#if HAVE_XZ_SUPPORT
+#if HAVE_ZSTD_SUPPORT
 
 #include "kfilterbase.h"
+
+#include <memory>
 
 /*!
  * Internal class used by KCompressionDevice
  * \internal
  */
-class KXzFilter : public KFilterBase
+class KZstdFilter : public KFilterBase
 {
 public:
-    KXzFilter();
-    ~KXzFilter() override;
+    KZstdFilter();
+    ~KZstdFilter() override;
 
     bool init(int) override;
-
-    enum Flag {
-        AUTO = 0,
-        LZMA = 1,
-        LZMA2 = 2,
-        BCJ = 3, // X86
-        POWERPC = 4,
-        IA64 = 5,
-        ARM = 6,
-        ARMTHUMB = 7,
-        SPARC = 8,
-    };
-
-    virtual bool init(int, Flag flag, const QList<unsigned char> &props);
     int mode() const override;
     bool terminate() override;
     void reset() override;
     bool readHeader() override
     {
-        return true; // lzma handles it by itself ! Cool !
+        return true;
     }
     bool writeHeader(const QByteArray &) override
     {
@@ -61,9 +46,9 @@ public:
 
 private:
     class Private;
-    Private *const d;
+    const std::unique_ptr<Private> d;
 };
 
 #endif
 
-#endif // KXZFILTER_H
+#endif
