@@ -120,6 +120,8 @@
 #include <QVariantAnimation>
 
 #include <QProcess>
+#include <objectGroup.h>
+
 
 #ifdef Q_OS_WIN
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -552,8 +554,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerMenu(mLayerMenu, "Layer");
     ActionManager::registerMenu(mNewLayerMenu, "NewLayer");
     ActionManager::registerMenu(mGroupLayerMenu, "GroupLayer");
+    connect(mUi->actionlabel, &QAction::triggered, this, &MainWindow::onAddLabelTriggered);
 
     connect(mUi->actionCreate_Entity, &QAction::triggered, this, &MainWindow::onCreateEntity);
+    
     connect(mUi->actionRunClient, &QAction::triggered, this, &MainWindow::onRunClient);
     connect(mUi->actionNewMap, &QAction::triggered, this, &MainWindow::newMap);
     connect(mUi->actionNewTileset, &QAction::triggered, this, [this] { newTileset(); });
@@ -2242,9 +2246,15 @@ void MainWindow::updateActions()
     mShowPropertyTypesEditor->setEnabled(hasProject);
 }
 
+int MainWindow::EntityID = 0;
+
+int MainWindow::nextEntityID(){
+    EntityID += 1;
+    return EntityID;
+}
+
 void MainWindow::onCreateEntity()
 {
-
     MapDocument *mMapDocument = dynamic_cast<MapDocument*>(DocumentManager::instance()->currentDocument());
     Layer* CurrentLayer = nullptr;
 
@@ -2280,10 +2290,23 @@ void MainWindow::onCreateEntity()
     CreateObjectLayout->addWidget(CreateObjectName);
     CreateObjectLayout->addWidget(CreateObjectConfirm);
 
+    connect(CreateObjectConfirm, &QDialogButtonBox::rejected, this, [=]{
+        CreateObject->reject();
+    });
+
     if(CurrentLayer && CurrentLayer->layerType() == Layer::ObjectGroupType){
+        ObjectGroup *objectGroup = dynamic_cast<ObjectGroup*>(CurrentLayer);
         connect(CreateObjectConfirm, &QDialogButtonBox::accepted, this, [=]{
-            MapObject *NewMapObject;
-            NewMapObject = new MapObject();
+
+            auto *NewMapObject = new Tiled::MapObject;
+            NewMapObject->setName(CreateObjectName->text());
+            NewMapObject->setPosition(QPointF(0,0));
+
+            int entityid = MainWindow::nextEntityID();
+            NewMapObject->setProperty(QString::fromStdString("EntityID"), entityid);
+
+            auto *CreateObjectcmd = new Tiled::AddMapObjects(mMapDocument, objectGroup, NewMapObject);
+            mMapDocument->undoStack()->push(CreateObjectcmd);
 
             CreateObject->accept();
         });
@@ -2293,6 +2316,10 @@ void MainWindow::onCreateEntity()
     {
         InvalidLayer->show();
     }
+}
+
+void MainWindow::onAddLabelTriggered(){
+
 }
 
 

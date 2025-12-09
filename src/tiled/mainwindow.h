@@ -102,6 +102,8 @@ public:
     static MainWindow *instance();
     static MainWindow *maybeInstance();
 
+    static int EntityID;
+
 protected:
     bool event(QEvent *event) override;
 
@@ -175,6 +177,7 @@ private:
     void editTilesetProperties();
 
     void editWorldProperties();
+    void onAddLabelTriggered();
 
     void updateWindowTitle();
     void updateActions();
@@ -235,6 +238,8 @@ private:
 
     void exportMapAs(MapDocument *mapDocument);
     void exportTilesetAs(TilesetDocument *tilesetDocument);
+
+    int nextEntityID();
 
     QList<QDockWidget*> allDockWidgets() const;
     QList<QToolBar*> allToolBars() const;
