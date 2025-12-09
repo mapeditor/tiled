@@ -3118,15 +3118,19 @@ void PropertiesWidget::showAddValueProperty()
     MainLayout->addWidget(ButtonBox);
     MainLayout->setContentsMargins(10,10,10,10);
 
+    QDir relativeFilePath(QString::fromStdString("Game-Engines-25-26-Ionix-2/Assets"));
+
     connect(ObjectComponents, QOverload<int>::of(&QComboBox::activated), ComponentLayout,&QStackedLayout::setCurrentIndex);
 
     connect(APC_BrowseAudioFile, &QPushButton::clicked, [=]{
         QString APC_AudioFilePath = QFileDialog::getOpenFileName(PropertyWindow, QString::fromStdString("Choose Audio File"),
-                                                tr("/home"),
+                                                QString::fromStdString("/Game-Engines-25-26-Ionix-2/Assets"),
                                                 tr("Audio File (*.wav)"));
+
         if (!APC_AudioFilePath.isEmpty())
         {
             AudioFilePath->setText(APC_AudioFilePath);
+
         }
     });
 
@@ -3153,6 +3157,8 @@ void PropertiesWidget::showAddValueProperty()
         PropertyWindow->reject();
     });
 
+    //QDir(AudioFilePath->text()).dirName()
+
     connect(ButtonBox, &QDialogButtonBox::accepted, this, [=]{
         switch(ComponentLayout->currentIndex()){
             case 0:
@@ -3174,15 +3180,15 @@ void PropertiesWidget::showAddValueProperty()
                 addProperty(QString::fromStdString("SpriteComponent.Width"), SC_Width->value());
                 addProperty(QString::fromStdString("SpriteComponent.Height"), SC_Height->value());
                 addProperty(QString::fromStdString("SpriteComponent.ZOrder"), SC_ZOrder->value());
-                addProperty(QString::fromStdString("SpriteComponent.SpriteFilePath"), SpriteFilePath->text());
+                addProperty(QString::fromStdString("SpriteComponent.SpriteFilePath"), relativeFilePath.relativeFilePath(SpriteFilePath->text()));
                 break;
             case 3:
                 addProperty(QString::fromStdString("AudioPlayerComponent.PlayOnAwake"), APC_PlayOnAwake->isChecked());
-                addProperty(QString::fromStdString("AudioPlayerComponent.AudioFilePath"), AudioFilePath->text());
+                addProperty(QString::fromStdString("AudioPlayerComponent.AudioFilePath"), relativeFilePath.relativeFilePath(AudioFilePath->text()));
                 break;
             case 4:
                 addProperty(QString::fromStdString("AnimatorComponent.FrameSize"), AC_FrameSize->value());
-                addProperty(QString::fromStdString("AnimatorComponent.TextureFilePath"), TextureFilePath->text());
+                addProperty(QString::fromStdString("AnimatorComponent.TextureFilePath"), relativeFilePath.relativeFilePath(TextureFilePath->text()));
                 addProperty(QString::fromStdString("AnimatorComponent.Width"), AC_Width->value());
                 addProperty(QString::fromStdString("AnimatorComponent.Height"), AC_Height->value());
                 addProperty(QString::fromStdString("AnimatorComponent.Rows"), AC_Rows->value());
