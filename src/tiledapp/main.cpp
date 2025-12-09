@@ -135,7 +135,7 @@ static void initializePluginsAndExtensions()
 
 static void applyDarkTheme()
 {
-    g_darkTheme = true;
+    //g_darkTheme = true;
     qApp->setStyleSheet(
         uR"(
             QMainWindow, QWidget {
@@ -173,7 +173,7 @@ static void applyDarkTheme()
 
 static void applyLightTheme()
 {
-    g_darkTheme = false;
+    //g_darkTheme = false;
     qApp->setStyleSheet(
         uR"(
             QMainWindow, QWidget {
