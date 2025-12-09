@@ -3149,6 +3149,9 @@ void PropertiesWidget::showAddValueProperty()
             TextureFilePath->setText(AC_TextureFilePath);
         }
     });
+    connect(ButtonBox,&QDialogButtonBox::rejected, this, [=]{
+        PropertyWindow->reject();
+    });
 
     connect(ButtonBox, &QDialogButtonBox::accepted, this, [=]{
         switch(ComponentLayout->currentIndex()){

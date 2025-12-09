@@ -2290,6 +2290,10 @@ void MainWindow::onCreateEntity()
     CreateObjectLayout->addWidget(CreateObjectName);
     CreateObjectLayout->addWidget(CreateObjectConfirm);
 
+    connect(CreateObjectConfirm, &QDialogButtonBox::rejected, this, [=]{
+        CreateObject->reject();
+    });
+
     if(CurrentLayer && CurrentLayer->layerType() == Layer::ObjectGroupType){
         ObjectGroup *objectGroup = dynamic_cast<ObjectGroup*>(CurrentLayer);
         connect(CreateObjectConfirm, &QDialogButtonBox::accepted, this, [=]{
