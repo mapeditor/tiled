@@ -33,6 +33,7 @@
 #include "tile.h"
 #include "tilelayer.h"
 #include "tmxmapformat.h"
+#include "preferences.h"
 
 #include <QApplication>
 #include <QClipboard>
@@ -47,7 +48,6 @@
 
 #include <algorithm>
 
-static const char * const TMX_MIMETYPE = "text/tmx";
 
 using namespace Tiled;
 
@@ -59,6 +59,9 @@ ClipboardManager::ClipboardManager()
     connect(mClipboard, &QClipboard::dataChanged,
             this, &ClipboardManager::update,
             Qt::QueuedConnection);
+
+    connect(Preferences::instance(), &Preferences::enableTextPasteChanged,
+            this, &ClipboardManager::update);
 
     update();
 }
@@ -79,6 +82,12 @@ ClipboardManager *ClipboardManager::instance()
  */
 std::unique_ptr<Map> ClipboardManager::map() const
 {
+
+    const char* TMX_MIMETYPE =
+    Preferences::instance()->enableTextPaste()
+        ? "text/plain"
+        : "text/tmx";
+
     const auto mimeData = mClipboard->mimeData();
     const QByteArray data = mimeData->data(QLatin1String(TMX_MIMETYPE));
     if (data.isEmpty())
@@ -94,6 +103,11 @@ std::unique_ptr<Map> ClipboardManager::map() const
 void ClipboardManager::setMap(const Map &map)
 {
     TmxMapFormat format;
+
+    const char* TMX_MIMETYPE =
+    Preferences::instance()->enableTextPaste()
+        ? "text/plain"
+        : "text/tmx";
 
     auto mimeData = new QMimeData;
     mimeData->setData(QLatin1String(TMX_MIMETYPE), format.toByteArray(&map));
@@ -274,6 +288,12 @@ void ClipboardManager::update()
     bool hasListValues = false;
 
     if (const auto data = mClipboard->mimeData()) {
+        
+        const char* TMX_MIMETYPE =
+        Preferences::instance()->enableTextPaste()
+            ? "text/plain"
+            : "text/tmx";
+
         hasMap = data->hasFormat(QLatin1String(TMX_MIMETYPE));
         hasProperties = data->hasFormat(QLatin1String(PROPERTIES_MIMETYPE));
         hasListValues = data->hasFormat(QLatin1String(LIST_VALUES_MIMETYPE));
