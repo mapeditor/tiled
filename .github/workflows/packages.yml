@@ -445,7 +445,7 @@ jobs:
 
     steps:
     - name: Download all artifacts
-      uses: actions/download-artifact@v6
+      uses: actions/download-artifact@v7
 
     - name: Create release
       id: create_release
