@@ -165,6 +165,7 @@
      <addaction name="actionSnapToPixels"/>
     </widget>
     <addaction name="actionSearchActions"/>
+    <addaction name="actionJumpToTile"/>
     <addaction name="actionShowGrid"/>
     <addaction name="actionShowTileObjectOutlines"/>
     <addaction name="actionShowObjectReferences"/>
@@ -801,6 +802,17 @@
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+Shift+P</string>
+   </property>
+  </action>
+  <action name="actionJumpToTile">
+   <property name="text">
+    <string>Jump to Tile...</string>
+   </property>
+   <property name="toolTip">
+    <string>Jump to a specific tile coordinate</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">Ctrl+Shift+G</string>
    </property>
   </action>
   <action name="actionUnloadAllWorlds">
