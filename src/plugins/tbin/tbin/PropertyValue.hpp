@@ -30,7 +30,7 @@
 //#include <SFML/Config.hpp>
 #include <string>
 
-#include "FakeSfml.hpp"
+#include "Vector2i.hpp"
 
 namespace tbin
 {
@@ -49,7 +49,7 @@ namespace tbin
             union
             {
                 bool b;
-                sf::Int32 i;
+                int32_t i;
                 float f;
             } data;
             std::string dataStr;

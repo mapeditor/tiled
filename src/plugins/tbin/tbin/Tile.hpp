@@ -29,7 +29,7 @@
 //#include <SFML/Config.hpp>
 #include <vector>
 
-#include "FakeSfml.hpp"
+#include "Vector2i.hpp"
 #include "PropertyValue.hpp"
 
 namespace tbin
@@ -48,13 +48,13 @@ namespace tbin
             
             struct
             {
-                sf::Int32 tileIndex;
-                sf::Uint8 blendMode;
+                int32_t tileIndex = -1;
+                uint8_t blendMode = 0;
             } staticData;
             
             struct
             {
-                sf::Int32 frameInterval;
+                int32_t frameInterval = 0;
                 std::vector< Tile > frames;
             } animatedData;
             

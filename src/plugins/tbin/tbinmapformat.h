@@ -21,39 +21,36 @@
 #pragma once
 
 #include "tbin_global.h"
-#include "tbin/PropertyValue.hpp"
 
 #include "mapformat.h"
-#include "plugin.h"
-#include "properties.h"
 
 #include <QObject>
 
-namespace Tiled
-{
-    class Object;
-    class Cell;
-    class Map;
-}
-
-namespace tbin
-{
-    class Map;
+namespace Tiled {
+class Map;
 }
 
 namespace Tbin {
 
-class TBINSHARED_EXPORT TbinPlugin : public Tiled::Plugin
+class TBINSHARED_EXPORT TbinMapFormat : public Tiled::MapFormat
 {
     Q_OBJECT
-    Q_INTERFACES(Tiled::Plugin)
-    Q_PLUGIN_METADATA(IID "org.mapeditor.Plugin" FILE "plugin.json")
+    Q_INTERFACES(Tiled::MapFormat)
 
 public:
-    void initialize() override;
+    TbinMapFormat(QObject *parent = nullptr);
 
-    static std::unique_ptr< Tiled::Map > fromTbin( const tbin::Map& tmap, const QDir fileDir );
-    static tbin::Map toTbin( const Tiled::Map* map, const QDir fileDir );
+    std::unique_ptr<Tiled::Map> read(const QString &fileName) override;
+    bool supportsFile(const QString &fileName) const override;
+
+    bool write(const Tiled::Map *map, const QString &fileName, Options options) override;
+
+    QString nameFilter() const override;
+    QString shortName() const override;
+    QString errorString() const override;
+
+protected:
+    QString mError;
 };
 
 } // namespace Tbin

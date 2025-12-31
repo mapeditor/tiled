@@ -29,7 +29,7 @@
 //#include <SFML/System/Vector2.hpp>
 #include <string>
 
-#include "FakeSfml.hpp"
+#include "Vector2i.hpp"
 #include "PropertyValue.hpp"
 
 namespace tbin
@@ -40,10 +40,10 @@ namespace tbin
             std::string id;
             std::string desc;
             std::string image;
-            sf::Vector2i sheetSize;
-            sf::Vector2i tileSize;
-            sf::Vector2i margin;
-            sf::Vector2i spacing;
+            tbin::Vector2i sheetSize;
+            tbin::Vector2i tileSize;
+            tbin::Vector2i margin;
+            tbin::Vector2i spacing;
             Properties props;
     };
 }
