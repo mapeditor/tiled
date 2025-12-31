@@ -26,6 +26,7 @@
 #ifndef TBIN_PROPERTYVALUE_HPP
 #define TBIN_PROPERTYVALUE_HPP
 
+#include <cstdlib>
 #include <map>
 //#include <SFML/Config.hpp>
 #include <string>

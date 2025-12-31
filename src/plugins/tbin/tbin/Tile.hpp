@@ -26,6 +26,7 @@
 #ifndef TBIN_TILE_HPP
 #define TBIN_TILE_HPP
 
+#include <cstdlib>
 //#include <SFML/Config.hpp>
 #include <vector>
 

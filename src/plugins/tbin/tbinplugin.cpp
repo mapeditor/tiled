@@ -33,6 +33,8 @@
 #include "tiled.h"
 #include "tilelayer.h"
 
+#include <cmath>
+
 #include <QCoreApplication>
 #include <QDir>
 #include <QStringView>
