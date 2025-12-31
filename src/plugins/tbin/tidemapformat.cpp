@@ -558,13 +558,13 @@ QString TideMapFormat::shortName() const
 
 bool TideMapFormat::supportsFile(const QString &fileName) const
 {
-    std::ifstream file(fileName.toStdString(), std::ios::in | std::ios::binary);
-    if (!file)
+    QFile file( fileName );
+    if ( !file.exists() || !file.open( QFile::ReadOnly | QFile::Text ) )
         return false;
 
     // Not sure what a better way of doing this would be without pre-parsing the entire file...
-    std::string magic(5, '\0');
-    file.read(&magic[0], static_cast<std::streamsize>(magic.length()));
+    QTextStream text( &file );
+    QString magic = text.read( 5 );
 
     return magic == "<?xml" || magic == "<Map ";
 }
