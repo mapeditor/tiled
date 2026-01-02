@@ -107,6 +107,11 @@ static QPixmap tinted(const QPixmap &pixmap, const QRect &rect, const QColor &co
         return *cached;
 
     QPixmap resultImage = pixmap.copy(rect);
+
+    // tinting with a non-fully opaque color needs an alpha channel to work properly
+    if (color.alpha()<255 && !resultImage.hasAlphaChannel())
+        resultImage = QPixmap::fromImage(resultImage.toImage().convertedTo(QImage::Format_ARGB32_Premultiplied), Qt::NoOpaqueDetection);
+
     QPainter painter(&resultImage);
 
     QColor fullOpacity = color;
