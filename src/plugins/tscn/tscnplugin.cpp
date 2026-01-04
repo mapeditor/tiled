@@ -34,6 +34,7 @@
 #include <QFileInfo>
 #include <QMap>
 #include <QRegularExpression>
+#include <QSet>
 
 #include <iostream>
 #include <map>
@@ -854,6 +855,45 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
     device->write("\n");
 }
 
+static void writeTileMapMetadata(const Properties &mapProperties, AssetInfo &assetInfo, QFileDevice *device)
+{
+    QSet<QString> sanitizedNames;
+    sanitizedNames.reserve(mapProperties.size());
+
+    // Write all properties to the file with the format
+    // metadata/$name = $value
+    Properties::const_iterator it = mapProperties.begin();
+    const Properties::const_iterator it_end = mapProperties.end();
+    for (; it != it_end; ++it) {
+        const QString &name = it.key();
+        const QVariant &value = it.value();
+        const auto type = variantType(value);
+
+        if (type == TYPE_NIL) {
+            Tiled::WARNING(TscnPlugin::tr("Godot exporter does not support property type of '%1'").arg(name));
+            continue;
+        }
+
+        const QString sanitizedName = sanitizeSpecialChars(name);
+
+        if (sanitizedName.isEmpty()) {
+            Tiled::WARNING(TscnPlugin::tr("Unable to export map property '%1': sanitized name is empty").arg(name));
+            continue;
+        }
+
+        // Check that we haven't already written a property with a sanitizedName that matches the one we are processing.
+        if (sanitizedNames.contains(sanitizedName)) {
+            Tiled::WARNING(TscnPlugin::tr("Unable to export map property '%1': sanitized name collision '%2'").arg(name, sanitizedName));
+            continue;
+        }
+        sanitizedNames.insert(sanitizedName);
+
+        // Godot uses "metadata/" prefix for custom node properties in .tscn files
+        device->write(formatByteString("metadata/%1 = ", sanitizedName));
+        writePropertyValue(device, value, assetInfo.resRoot);
+        device->write("\n");
+    }
+}
 
 bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
 {
@@ -934,6 +974,12 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
             device->write("tile_set = ExtResource(\"TileSet_0\")\n");
 
         device->write("format = 2\n");
+
+        // Write map custom properties as node metadata
+        Properties mapProperties = map->properties();
+        if (!mapProperties.isEmpty()) {
+            writeTileMapMetadata(mapProperties, assetInfo, device);
+        }
 
         // Tile packing format:
         // DestLocation, SrcX, SrcY
