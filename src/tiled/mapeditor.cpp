@@ -62,6 +62,7 @@
 #include "templatesdock.h"
 #include "tile.h"
 #include "tileselectiontool.h"
+#include "tilemovetool.h"
 #include "tilesetdock.h"
 #include "tilesetdocument.h"
 #include "tilesetformat.h"
@@ -192,6 +193,7 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addAction(mToolManager->registerTool(new TileSelectionTool(this)));
     mToolsToolBar->addAction(mToolManager->registerTool(new MagicWandTool(this)));
     mToolsToolBar->addAction(mToolManager->registerTool(new SelectSameTileTool(this)));
+    mToolsToolBar->addAction(mToolManager->registerTool(new TileMoveTool(this)));
     mToolsToolBar->addSeparator();
     mToolsToolBar->addAction(mToolManager->registerTool(new ObjectSelectionTool(this)));
     mToolsToolBar->addAction(mToolManager->registerTool(new ObjectReferenceTool(this)));
