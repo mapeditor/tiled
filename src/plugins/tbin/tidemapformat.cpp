@@ -334,7 +334,7 @@ bool TideMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
     Q_UNUSED(options)
     
     QFile file( fileName );
-    if ( !file.exists() || !file.open( QFile::WriteOnly | QFile::Text | QFile::Truncate ) )
+    if ( !file.open( QFile::WriteOnly | QFile::Text | QFile::Truncate ) )
     {
         mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
