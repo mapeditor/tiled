@@ -7,7 +7,7 @@ tBIN and tIDE
 -------------
 
 The tBIN map format is a binary format used by the `tIDE Tile Map Editor`_,
-while the tIDE map format is an XML-based format by it as well.
+while the tIDE map format is an XML-based format used by it as well.
 tIDE was used by `Stardew Valley`_, a successful game that spawned many
 `community mods <https://www.nexusmods.com/stardewvalley/?>`__.
 
