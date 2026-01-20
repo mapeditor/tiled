@@ -4,7 +4,7 @@
    <div class="new new-prev">tIDE since Tiled 1.12</div>
 
 tBIN and tIDE
-----
+-------------
 
 The tBIN map format is a binary format used by the `tIDE Tile Map Editor`_,
 while the tIDE map format is an XML-based format by it as well.
