@@ -1,7 +1,7 @@
 #ifndef FAKESFML_HPP
 #define FAKESFML_HPP
 
-#include <cstdlib>
+#include <cstdint>
 
 namespace tbin
 {
