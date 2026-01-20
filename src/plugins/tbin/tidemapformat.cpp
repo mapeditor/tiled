@@ -158,10 +158,10 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
                             qsizetype marginSep = marginStr.indexOf( " x " );
                             qsizetype spacingSep = spacingStr.indexOf( " x " );
 
-                            ts.sheetSize = tbin::Vector2i( sheetSizeStr.sliced( 0, sheetSizeSep ).toInt(), sheetSizeStr.sliced( sheetSizeSep + 3 ).toInt() );
-                            ts.tileSize = tbin::Vector2i( tileSizeStr.sliced( 0, tileSizeSep ).toInt(), tileSizeStr.sliced( tileSizeSep + 3 ).toInt() );
-                            ts.margin = tbin::Vector2i( marginStr.sliced( 0, marginSep ).toInt(), marginStr.sliced( marginSep + 3 ).toInt() );
-                            ts.spacing = tbin::Vector2i( spacingStr.sliced( 0, spacingSep ).toInt(), spacingStr.sliced( spacingSep + 3 ).toInt() );
+                            ts.sheetSize = tbin::Vector2i( sheetSizeStr.mid( 0, sheetSizeSep ).toInt(), sheetSizeStr.mid( sheetSizeSep + 3 ).toInt() );
+                            ts.tileSize = tbin::Vector2i( tileSizeStr.mid( 0, tileSizeSep ).toInt(), tileSizeStr.mid( tileSizeSep + 3 ).toInt() );
+                            ts.margin = tbin::Vector2i( marginStr.mid( 0, marginSep ).toInt(), marginStr.mid( marginSep + 3 ).toInt() );
+                            ts.spacing = tbin::Vector2i( spacingStr.mid( 0, spacingSep ).toInt(), spacingStr.mid( spacingSep + 3 ).toInt() );
 
                             xml.skipCurrentElement();
                         }
@@ -203,8 +203,8 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
                             qsizetype layerSizeSep = layerSizeStr.indexOf( " x " );
                             qsizetype tileSizeSep = tileSizeStr.indexOf( " x " );
 
-                            layer.layerSize = tbin::Vector2i( layerSizeStr.sliced( 0, layerSizeSep ).toInt(), layerSizeStr.sliced( layerSizeSep + 3 ).toInt() );
-                            layer.tileSize = tbin::Vector2i( tileSizeStr.sliced( 0, tileSizeSep ).toInt(), tileSizeStr.sliced( tileSizeSep + 3 ).toInt() );
+                            layer.layerSize = tbin::Vector2i( layerSizeStr.mid( 0, layerSizeSep ).toInt(), layerSizeStr.mid( layerSizeSep + 3 ).toInt() );
+                            layer.tileSize = tbin::Vector2i( tileSizeStr.mid( 0, tileSizeSep ).toInt(), tileSizeStr.mid( tileSizeSep + 3 ).toInt() );
                             
                             xml.skipCurrentElement();
                         }
@@ -355,7 +355,7 @@ bool TideMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
             for ( const auto& prop : props )
             {
                 xml.writeStartElement( "Property" );
-                xml.writeAttribute( "Key", prop.first );
+                xml.writeAttribute( "Key", QString(prop.first.c_str()) );
                 switch ( prop.second.type )
                 {
                     case tbin::PropertyValue::Bool:
@@ -372,7 +372,7 @@ bool TideMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                         break;
                     case tbin::PropertyValue::String:
                         xml.writeAttribute( "Type", "String" );
-                        xml.writeCDATA( prop.second.dataStr );
+                        xml.writeCDATA( QString(prop.second.dataStr.c_str()) );
                         break;
                     default:
                         throw std::invalid_argument( "Unknown property type" );
@@ -385,10 +385,10 @@ bool TideMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
         xml.writeStartDocument();
         xml.writeStartElement( "Map" );
         {
-            xml.writeAttribute( "Id", tmap.id );
+            xml.writeAttribute( "Id", QString(tmap.id.c_str()) );
             
             xml.writeStartElement( "Description" );
-            xml.writeCDATA( tmap.desc );
+            xml.writeCDATA( QString(tmap.desc.c_str()) );
             xml.writeEndElement();
 
             xml.writeStartElement("TileSheets");
@@ -396,21 +396,21 @@ bool TideMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                 for ( const auto& ts : tmap.tilesheets )
                 {
                     xml.writeStartElement( "TileSheet" );
-                    xml.writeAttribute( "Id", ts.id );
+                    xml.writeAttribute( "Id", QString(ts.id.c_str()) );
                     
                     xml.writeStartElement( "Description" );
-                    xml.writeCDATA( ts.desc );
+                    xml.writeCDATA( QString(ts.desc.c_str()) );
                     xml.writeEndElement();
 
                     xml.writeStartElement( "ImageSource" );
-                    xml.writeCDATA( ts.image );
+                    xml.writeCDATA( QString(ts.image.c_str()) );
                     xml.writeEndElement();
 
                     xml.writeEmptyElement( "Alignment" );
-                    xml.writeAttribute( "SheetSize", QStringLiteral( "%1 x %2" ).arg( ts.sheetSize.x ).arg( ts.sheetSize.y ).toStdString() );
-                    xml.writeAttribute( "TileSize",  QStringLiteral( "%1 x %2" ).arg( ts.tileSize.x  ).arg( ts.tileSize.y  ).toStdString() );
-                    xml.writeAttribute( "Margin",    QStringLiteral( "%1 x %2" ).arg( ts.margin.x    ).arg( ts.margin.y    ).toStdString() );
-                    xml.writeAttribute( "Spacing",   QStringLiteral( "%1 x %2" ).arg( ts.spacing.x   ).arg( ts.spacing.y   ).toStdString() );
+                    xml.writeAttribute( "SheetSize", QStringLiteral( "%1 x %2" ).arg( ts.sheetSize.x ).arg( ts.sheetSize.y ) );
+                    xml.writeAttribute( "TileSize",  QStringLiteral( "%1 x %2" ).arg( ts.tileSize.x  ).arg( ts.tileSize.y  ) );
+                    xml.writeAttribute( "Margin",    QStringLiteral( "%1 x %2" ).arg( ts.margin.x    ).arg( ts.margin.y    ) );
+                    xml.writeAttribute( "Spacing",   QStringLiteral( "%1 x %2" ).arg( ts.spacing.x   ).arg( ts.spacing.y   ) );
                     
                     writeProps( ts.props );
 
@@ -424,16 +424,16 @@ bool TideMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                 for ( const auto& layer : tmap.layers )
                 {
                     xml.writeStartElement( "Layer" );
-                    xml.writeAttribute( "Id", layer.id );
+                    xml.writeAttribute( "Id", QString(layer.id.c_str()) );
                     xml.writeAttribute( "Visible", layer.visible ? "True" : "False" );
                     
                     xml.writeStartElement( "Description" );
-                    xml.writeCDATA( layer.desc );
+                    xml.writeCDATA( QString(layer.desc.c_str()) );
                     xml.writeEndElement();
 
                     xml.writeEmptyElement( "Dimensions" );
-                    xml.writeAttribute( "LayerSize", QStringLiteral( "%1 x %2" ).arg( layer.layerSize.x ).arg( layer.layerSize.y ).toStdString() );
-                    xml.writeAttribute( "TileSize",  QStringLiteral( "%1 x %2" ).arg( layer.tileSize.x  ).arg( layer.tileSize.y  ).toStdString() );
+                    xml.writeAttribute( "LayerSize", QStringLiteral( "%1 x %2" ).arg( layer.layerSize.x ).arg( layer.layerSize.y ) );
+                    xml.writeAttribute( "TileSize",  QStringLiteral( "%1 x %2" ).arg( layer.tileSize.x  ).arg( layer.tileSize.y  ) );
                     
                     auto writeStaticTile = [&xml, &writeProps](const tbin::Tile& tile, std::string& lastTilesheet)
                     {
@@ -467,7 +467,7 @@ bool TideMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                             if ( tile.tilesheet != "" && tile.tilesheet != lastTilesheet )
                             {
                                 xml.writeEmptyElement( "TileSheet" );
-                                xml.writeAttribute( "Ref", tile.tilesheet );
+                                xml.writeAttribute( "Ref", QString(tile.tilesheet.c_str()) );
                                 lastTilesheet = tile.tilesheet;
                             }
 
@@ -507,7 +507,7 @@ bool TideMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                                     if ( tile.tilesheet != "" && tile.tilesheet != lastTilesheet )
                                     {
                                         xml.writeEmptyElement( "TileSheet" );
-                                        xml.writeAttribute( "Ref", tile.tilesheet );
+                                        xml.writeAttribute( "Ref", QString(tile.tilesheet.c_str()) );
                                         lastTilesheet = tile.tilesheet;
                                     }
                                     writeStaticTile( tile, lastTilesheet );
