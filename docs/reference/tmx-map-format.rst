@@ -48,7 +48,7 @@ in what changed between Tiled versions.
    1.0.1). May be a date (for snapshot builds). (optional)
 -  **class:** The class of this map (since 1.9, defaults to "").
 -  **orientation:** Map orientation. Tiled supports "orthogonal",
-   "isometric", "staggered" and "hexagonal" (since 0.11).
+   "isometric", "oblique", "staggered" and "hexagonal" (since 0.11).
 -  **renderorder:** The order in which tiles on tile layers are rendered.
    Valid values are ``right-down`` (the default), ``right-up``,
    ``left-down`` and ``left-up``. In all cases, the map is drawn
@@ -59,6 +59,8 @@ in what changed between Tiled versions.
 -  **height:** The map height in tiles.
 -  **tilewidth:** The width of a tile.
 -  **tileheight:** The height of a tile.
+-  **skewx:** For oblique maps, the pixel offset per tile row.
+-  **skewy:** For oblique maps, the pixel offset per tile column.
 -  **hexsidelength:** Only for hexagonal maps. Determines the width or
    height (depending on the staggered axis) of the tile's edge, in
    pixels.
@@ -98,7 +100,8 @@ order in which these layers appear is the order in which the layers are
 rendered by Tiled.
 
 The ``staggered`` orientation refers to an isometric map using staggered
-axes.
+axes. The ``oblique`` orientation uses a skewed grid of parallelogram-shaped
+tiles.
 
 The tilesets used by the map should always be listed before the layers.
 

@@ -88,11 +88,13 @@ template<> EnumData enumData<Map::Orientation>()
     return {{
         QCoreApplication::translate("Tiled::NewMapDialog", "Orthogonal"),
         QCoreApplication::translate("Tiled::NewMapDialog", "Isometric"),
+        QCoreApplication::translate("Tiled::NewMapDialog", "Oblique"),
         QCoreApplication::translate("Tiled::NewMapDialog", "Isometric (Staggered)"),
         QCoreApplication::translate("Tiled::NewMapDialog", "Hexagonal (Staggered)")
     }, {
         Map::Orthogonal,
         Map::Isometric,
+        Map::Oblique,
         Map::Staggered,
         Map::Hexagonal,
     }};
@@ -796,6 +798,16 @@ public:
                         push(new ChangeMapStaggerIndex(mapDocument(), value));
                     });
 
+        mSkewProperty = new PointProperty(
+                    tr("Skew"),
+                    [this] {
+                        return QPoint(map()->skewX(), map()->skewY());
+                    },
+                    [this](const QPoint &value) {
+                        push(new ChangeMapSkew(mapDocument(), value));
+                    });
+        mSkewProperty->setSuffix(tr(" px"));
+
         mParallaxOriginProperty = new PointFProperty(
                     tr("Parallax Origin"),
                     [this] {
@@ -861,6 +873,7 @@ public:
         mMapProperties->addProperty(mHexSideLengthProperty);
         mMapProperties->addProperty(mStaggerAxisProperty);
         mMapProperties->addProperty(mStaggerIndexProperty);
+        mMapProperties->addProperty(mSkewProperty);
         mMapProperties->addSeparator();
         mMapProperties->addProperty(mParallaxOriginProperty);
         mMapProperties->addSeparator();
@@ -901,6 +914,9 @@ private:
         case Map::StaggerIndexProperty:
             emit mStaggerIndexProperty->valueChanged();
             break;
+        case Map::SkewProperty:
+            emit mSkewProperty->valueChanged();
+            break;
         case Map::ParallaxOriginProperty:
             emit mParallaxOriginProperty->valueChanged();
             break;
@@ -935,7 +951,9 @@ private:
         mHexSideLengthProperty->setEnabled(orientation == Map::Hexagonal);
         mStaggerAxisProperty->setEnabled(stagger);
         mStaggerIndexProperty->setEnabled(stagger);
-        mRenderOrderProperty->setEnabled(orientation == Map::Orthogonal);
+        mSkewProperty->setEnabled(orientation == Map::Oblique);
+        mRenderOrderProperty->setEnabled(orientation == Map::Orthogonal ||
+                                         orientation == Map::Oblique);
         mChunkSizeProperty->setEnabled(map()->infinite());
 
         switch (map()->layerDataFormat()) {
@@ -970,6 +988,7 @@ private:
     IntProperty *mHexSideLengthProperty;
     Property *mStaggerAxisProperty;
     Property *mStaggerIndexProperty;
+    PointProperty *mSkewProperty;
     Property *mParallaxOriginProperty;
     Property *mLayerDataFormatProperty;
     Property *mCompressionLevelProperty;

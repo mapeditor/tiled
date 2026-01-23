@@ -399,6 +399,7 @@ void MapItem::documentChanged(const ChangeEvent &change)
         case Map::HexSideLengthProperty:
         case Map::StaggerAxisProperty:
         case Map::StaggerIndexProperty:
+        case Map::SkewProperty:
         case Map::ParallaxOriginProperty:
         case Map::OrientationProperty:
             mapChanged();
@@ -485,9 +486,9 @@ void MapItem::mapChanged()
         World *world = worldDocument->world();
         if (world->canBeModified()) {
             const QRect currentRectInWorld = world->mapRect(mapFileName);
-            QRect resizedRect = mapDocument()->renderer()->mapBoundingRect();
-            if (currentRectInWorld.size() != resizedRect.size()) {
-                resizedRect.translate(currentRectInWorld.topLeft());
+            const QSize newSize = mapDocument()->renderer()->mapBoundingRect().size();
+            if (currentRectInWorld.size() != newSize) {
+                const QRect resizedRect(currentRectInWorld.topLeft(), newSize);
                 auto undoStack = worldDocument->undoStack();
                 undoStack->push(new SetMapRectCommand(worldDocument.data(), mapFileName, resizedRect));
             }

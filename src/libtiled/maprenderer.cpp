@@ -32,6 +32,7 @@
 #include "isometricrenderer.h"
 #include "map.h"
 #include "mapobject.h"
+#include "obliquerenderer.h"
 #include "objectgroup.h"
 #include "orthogonalrenderer.h"
 #include "staggeredrenderer.h"
@@ -350,6 +351,8 @@ std::unique_ptr<MapRenderer> MapRenderer::create(const Map *map)
         return std::make_unique<StaggeredRenderer>(map);
     case Map::Hexagonal:
         return std::make_unique<HexagonalRenderer>(map);
+    case Map::Oblique:
+        return std::make_unique<ObliqueRenderer>(map);
     default:
         return std::make_unique<OrthogonalRenderer>(map);
     }

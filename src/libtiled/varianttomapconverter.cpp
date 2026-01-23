@@ -80,6 +80,8 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
     mapParameters.hexSideLength = variantMap[QStringLiteral("hexsidelength")].toInt();
     mapParameters.staggerAxis = staggerAxisFromString(staggerAxis);
     mapParameters.staggerIndex = staggerIndexFromString(staggerIndex);
+    mapParameters.skewX = variantMap[QStringLiteral("skewx")].toInt();
+    mapParameters.skewY = variantMap[QStringLiteral("skewy")].toInt();
 
     bool ok;
     const qreal parallaxOriginX = variantMap[QStringLiteral("parallaxoriginx")].toDouble(&ok);

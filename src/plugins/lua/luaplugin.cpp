@@ -245,6 +245,11 @@ void LuaWriter::writeMap(const Map *map)
         mWriter.writeEndTable();
     }
 
+    if (map->skewX())
+        mWriter.writeKeyAndValue("skewx", map->skewX());
+    if (map->skewY())
+        mWriter.writeKeyAndValue("skewy", map->skewY());
+
     const QColor &backgroundColor = map->backgroundColor();
     if (backgroundColor.isValid())
         writeColor("backgroundcolor", backgroundColor);

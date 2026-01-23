@@ -100,6 +100,11 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
         mapVariant[QStringLiteral("staggerindex")] = staggerIndexToString(map.staggerIndex());
     }
 
+    if (map.skewX())
+        mapVariant[QStringLiteral("skewx")] = map.skewX();
+    if (map.skewY())
+        mapVariant[QStringLiteral("skewy")] = map.skewY();
+
     if (!map.parallaxOrigin().isNull()) {
         mapVariant[QStringLiteral("parallaxoriginx")] = map.parallaxOrigin().x();
         mapVariant[QStringLiteral("parallaxoriginy")] = map.parallaxOrigin().y();

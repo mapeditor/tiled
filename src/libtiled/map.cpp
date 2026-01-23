@@ -578,6 +578,8 @@ QString Tiled::orientationToString(Map::Orientation orientation)
         return QStringLiteral("staggered");
     case Map::Hexagonal:
         return QStringLiteral("hexagonal");
+    case Map::Oblique:
+        return QStringLiteral("oblique");
     }
     return QString();
 }
@@ -593,6 +595,8 @@ Map::Orientation Tiled::orientationFromString(const QString &string)
         orientation = Map::Staggered;
     } else if (string == QLatin1String("hexagonal")) {
         orientation = Map::Hexagonal;
+    } else if (string == QLatin1String("oblique")) {
+        orientation = Map::Oblique;
     }
     return orientation;
 }

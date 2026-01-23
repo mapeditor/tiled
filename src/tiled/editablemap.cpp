@@ -557,6 +557,22 @@ void EditableMap::setStaggerIndex(StaggerIndex value)
         map()->setStaggerIndex(static_cast<Map::StaggerIndex>(value));
 }
 
+void EditableMap::setSkewX(int value)
+{
+    if (auto doc = mapDocument())
+        push(new ChangeMapSkew(doc, QPoint(value, map()->skewY())));
+    else if (!checkReadOnly())
+        map()->setSkewX(value);
+}
+
+void EditableMap::setSkewY(int value)
+{
+    if (auto doc = mapDocument())
+        push(new ChangeMapSkew(doc, QPoint(map()->skewX(), value)));
+    else if (!checkReadOnly())
+        map()->setSkewY(value);
+}
+
 void EditableMap::setParallaxOrigin(const QPointF &parallaxOrigin)
 {
     if (auto doc = mapDocument())
