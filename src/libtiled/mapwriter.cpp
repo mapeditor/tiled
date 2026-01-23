@@ -229,6 +229,13 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
                          staggerIndexToString(map.staggerIndex()));
     }
 
+    if (map.orientation() == Map::Oblique) {
+        w.writeAttribute(QStringLiteral("skewx"),
+                         QString::number(map.skewX()));
+        w.writeAttribute(QStringLiteral("skewy"),
+                         QString::number(map.skewY()));
+    }
+
     if (!map.parallaxOrigin().isNull()) {
         w.writeAttribute(QStringLiteral("parallaxoriginx"), QString::number(map.parallaxOrigin().x()));
         w.writeAttribute(QStringLiteral("parallaxoriginy"), QString::number(map.parallaxOrigin().y()));

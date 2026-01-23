@@ -245,6 +245,11 @@ void LuaWriter::writeMap(const Map *map)
         mWriter.writeEndTable();
     }
 
+    if (map->orientation() == Map::Oblique) {
+        mWriter.writeKeyAndValue("skewx", map->skewX());
+        mWriter.writeKeyAndValue("skewy", map->skewY());
+    }
+
     const QColor &backgroundColor = map->backgroundColor();
     if (backgroundColor.isValid())
         writeColor("backgroundcolor", backgroundColor);
