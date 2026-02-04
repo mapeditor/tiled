@@ -237,7 +237,6 @@ jobs:
         version: ${{ matrix.qt_version }}
         arch: clang_64
         modules: ${{ matrix.qt_modules }}
-        tools: 'tools_qtcreator'
         cache: true
 
     - name: Setup CMake
@@ -247,11 +246,13 @@ jobs:
 
     - name: Setup Qbs
       run: |
-        qbs --version
-        qbs setup-toolchains --detect
-        qbs setup-qt --detect
-        qbs config profiles.qt-6-9-3.baseProfile xcode
-        qbs config defaultProfile qt-6-9-3
+        brew update
+        brew install qbs
+        /opt/homebrew/Cellar/qbs/3.1.2/bin/qbs --version
+        /opt/homebrew/Cellar/qbs/3.1.2/bin/qbs setup-toolchains --detect
+        /opt/homebrew/Cellar/qbs/3.1.2/bin/qbs setup-qt --detect
+        /opt/homebrew/Cellar/qbs/3.1.2/bin/qbs config profiles.qt-6-9-3.baseProfile xcode
+        /opt/homebrew/Cellar/qbs/3.1.2/bin/qbs config defaultProfile qt-6-9-3
 
     - name: Build Zstandard
       run: |
@@ -272,7 +273,7 @@ jobs:
 
     - name: Build Tiled
       run: |
-        qbs install --install-root install config:release \
+        /opt/homebrew/Cellar/qbs/3.1.2/bin/qbs install --install-root install config:release \
           qbs.architectures:${{ matrix.architectures }} \
           qbs.installPrefix:"" \
           projects.Tiled.staticZstd:true \
