@@ -206,7 +206,7 @@ as they depend on the system.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.10</div>
+   <div class="new new-prev">Since Tiled 1.10</div>
 
 Custom Interface Font
 ~~~~~~~~~~~~~~~~~~~~~

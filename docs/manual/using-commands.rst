@@ -100,7 +100,7 @@ the following variables:
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.9</div>
+   <div class="new new-prev">Since Tiled 1.9</div>
 
 ``%worldfile``
     the full path of the world the current map is part of, if any.
