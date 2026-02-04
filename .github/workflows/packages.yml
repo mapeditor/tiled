@@ -247,6 +247,7 @@ jobs:
 
     - name: Setup Qbs
       run: |
+        qbs --version
         qbs setup-toolchains --detect
         qbs setup-qt --detect
         qbs config profiles.qt-6-9-3.baseProfile xcode
