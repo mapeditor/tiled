@@ -2,7 +2,7 @@
 
 .. raw:: html
 
-    <div class="new">New in Tiled 1.10</div>
+    <div class="new new-prev">Since Tiled 1.10</div>
 
 Godot 4
 =======
@@ -64,7 +64,7 @@ Tile Properties
 
 .. raw:: html
 
-    <div class="new">New in Tiled 1.10.2</div>
+    <div class="new new-prev">Since Tiled 1.10.2</div>
 
 All custom properties set on tiles will get exported as `Custom Data Layers
 <https://docs.godotengine.org/en/stable/tutorials/2d/using_tilesets.html#assigning-custom-metadata-to-the-tileset-s-tiles>`__
@@ -93,7 +93,7 @@ overwritten every time the map is exported.
 
 .. raw:: html
 
-   <div class="new">Since Tiled 1.11</div>
+   <div class="new">New in Tiled 1.11</div>
 
 Object Properties
 ~~~~~~~~~~~~~~~~~

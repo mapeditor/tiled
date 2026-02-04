@@ -81,7 +81,7 @@ collision shape needs to represent a circle or ellipse.
 
 .. raw:: html
 
-   <div class="new">Since Tiled 1.12</div>
+   <div class="new">New in Tiled 1.12</div>
 
 
 .. _insert-capsule-tool:
