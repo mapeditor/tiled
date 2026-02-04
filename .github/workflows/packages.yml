@@ -237,6 +237,7 @@ jobs:
         version: ${{ matrix.qt_version }}
         arch: clang_64
         modules: ${{ matrix.qt_modules }}
+        tools: 'tools_qtcreator'
         cache: true
 
     - name: Setup CMake
@@ -246,8 +247,6 @@ jobs:
 
     - name: Setup Qbs
       run: |
-        brew update
-        brew install qbs
         qbs setup-toolchains --detect
         qbs setup-qt --detect
         qbs config profiles.qt-6-9-3.baseProfile xcode
