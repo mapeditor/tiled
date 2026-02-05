@@ -187,8 +187,7 @@ void Zoomable::setComboBox(QComboBox *comboBox)
         for (qreal scale : std::as_const(mZoomFactors))
             mComboBox->addItem(scaleToString(scale), scale);
         syncComboBox();
-        connect(mComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::activated),
-                this, &Zoomable::comboActivated);
+        connect(mComboBox, &QComboBox::activated, this, &Zoomable::comboActivated);
 
         mComboBox->setEditable(true);
         mComboBox->setInsertPolicy(QComboBox::NoInsert);
