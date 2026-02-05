@@ -707,10 +707,26 @@ bool DocumentManager::saveDocument(Document *document, const QString &fileName)
 
         msgBox.exec();
 
+        //cleanup after resolving recreated-file conflict
+        const auto clearRecreatedState = [this](Document *doc) {
+            mRecreatedDocuments.remove(doc);
+            const int idx = findDocument(doc);
+            if (idx != -1) {
+                mTabBar->setTabRecreated(idx, false);
+                updateDocumentTab(doc);
+            }
+            doc->setChangedOnDisk(false);
+            if (doc == currentDocument())
+                mFileChangedWarning->setVisible(false);
+        };
+
         if (msgBox.clickedButton() == reloadButton) {
             reloadDocument(document);
+            clearRecreatedState(document);
             return false;
-        } else if (msgBox.clickedButton() != overwriteButton) {
+        } else if (msgBox.clickedButton() == overwriteButton) {
+            clearRecreatedState(document);
+        } else {
             return false;
         }
     }
@@ -1016,7 +1032,11 @@ bool DocumentManager::reloadDocument(Document *document)
 
     mRecreatedDocuments.remove(document);
 
-    // We may need to hide the file changed warning
+    
+    const int index = findDocument(document);
+    if (index != -1)
+        mTabBar->setTabRecreated(index, false);
+
     if (auto current = currentDocument())
         if (!isDocumentChangedOnDisk(current))
             mFileChangedWarning->setVisible(false);
@@ -1056,6 +1076,9 @@ void DocumentManager::currentIndexChanged()
             showWarning = true;
         } else if (mRecreatedDocuments.contains(document)) {
             mFileChangedWarning->setState(FileChangedWarning::FileRecreated);
+            const int index = findDocument(document);
+            if (index != -1)
+                mTabBar->setTabRecreated(index, true);
             showWarning = true;
         } else if (changed) {
             mFileChangedWarning->setState(FileChangedWarning::FileChanged);
@@ -1135,6 +1158,11 @@ void DocumentManager::onDocumentSaved()
 
     document->setChangedOnDisk(false);
     mRecreatedDocuments.remove(document);
+
+    const int index = findDocument(document);
+    if (index != -1) {
+        mTabBar->setTabRecreated(index, false);
+    }
 
     if (document == currentDocument())
         mFileChangedWarning->setVisible(false);
@@ -1294,6 +1322,9 @@ void DocumentManager::fileChanged(const QString &fileName)
 
         if (currentDocument() == document) {
             mFileChangedWarning->setState(FileChangedWarning::FileRecreated);
+            const int index = findDocument(document);
+            if (index != -1)
+                mTabBar->setTabRecreated(index, true);
             mFileChangedWarning->setVisible(true);
         }
         return;
@@ -1332,6 +1363,12 @@ void DocumentManager::hideChangedWarning()
     document->setChangedOnDisk(false);
     mRecreatedDocuments.remove(document);
     mFileChangedWarning->setVisible(false);
+
+    
+    const int index = findDocument(document);
+    if (index != -1)
+     mTabBar->setTabRecreated(index, false);
+    
 }
 
 void DocumentManager::markDocumentAsDeleted(Document *document, bool deleted)
