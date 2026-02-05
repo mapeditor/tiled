@@ -33,6 +33,8 @@ class TabBar : public QTabBar
 {
 public:
     explicit TabBar(QWidget *parent = nullptr);
+    void setTabDeleted(int index, bool deleted);
+    bool isTabDeleted(int index) const;
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
@@ -40,8 +42,17 @@ protected:
 
     void wheelEvent(QWheelEvent *event) override;
 
+protected:
+    void tabInserted(int index) override;
+    void tabRemoved(int index) override;
+
 private:
     int mPressedIndex = -1;
+
+    // QWidget interface
+protected:
+    void paintEvent(QPaintEvent *event) override;
+    QSet<int> mDeletedTabs;
 };
 
 } // namespace Tiled
