@@ -248,11 +248,13 @@ jobs:
       run: |
         brew update
         brew install qbs
-        /opt/homebrew/Cellar/qbs/3.1.2/bin/qbs --version
-        /opt/homebrew/Cellar/qbs/3.1.2/bin/qbs setup-toolchains --detect
-        /opt/homebrew/Cellar/qbs/3.1.2/bin/qbs setup-qt --detect
-        /opt/homebrew/Cellar/qbs/3.1.2/bin/qbs config profiles.qt-6-9-3.baseProfile xcode
-        /opt/homebrew/Cellar/qbs/3.1.2/bin/qbs config defaultProfile qt-6-9-3
+        export PATH="$(brew --prefix qbs)/bin:$PATH"
+        echo "$(brew --prefix qbs)/bin" >> "$GITHUB_PATH"
+        qbs --version
+        qbs setup-toolchains --detect
+        qbs setup-qt --detect
+        qbs config profiles.qt-6-9-3.baseProfile xcode
+        qbs config defaultProfile qt-6-9-3
 
     - name: Build Zstandard
       run: |
@@ -273,7 +275,7 @@ jobs:
 
     - name: Build Tiled
       run: |
-        /opt/homebrew/Cellar/qbs/3.1.2/bin/qbs install --install-root install config:release \
+        qbs install --install-root install config:release \
           qbs.architectures:${{ matrix.architectures }} \
           qbs.installPrefix:"" \
           projects.Tiled.staticZstd:true \
