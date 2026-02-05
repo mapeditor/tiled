@@ -55,10 +55,15 @@
 #include <QDialogButtonBox>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QFile>
+#include <QTemporaryFile>
+#include <QCryptographicHash>
+#include <QDir>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMenu>
 #include <QMessageBox>
+#include <QPushButton>
 #include <QScrollBar>
 #include <QStackedLayout>
 #include <QTabBar>
@@ -115,6 +120,17 @@ DocumentManager::DocumentManager(QObject *parent)
 
     connect(mFileChangedWarning, &FileChangedWarning::reload, this, &DocumentManager::reloadCurrentDocument);
     connect(mFileChangedWarning, &FileChangedWarning::ignore, this, &DocumentManager::hideChangedWarning);
+    connect(mFileChangedWarning, &FileChangedWarning::restore, this, [this] {
+        if (auto doc = currentDocument()) {
+            mRestoringDocuments.insert(doc);
+            if (!saveDocument(doc, doc->fileName()))
+                mRestoringDocuments.remove(doc);
+        }
+    });
+    connect(mFileChangedWarning, &FileChangedWarning::saveAs, this, [this] {
+        if (auto doc = currentDocument()) saveDocumentAs(doc);
+    });
+    connect(mFileChangedWarning, &FileChangedWarning::closeDocument, this, &DocumentManager::closeCurrentDocument);
 
     connect(this, &DocumentManager::templateTilesetReplaced,
             mBrokenLinksModel, &BrokenLinksModel::refresh);
@@ -678,6 +694,27 @@ bool DocumentManager::saveDocument(Document *document, const QString &fileName)
     if (fileName.isEmpty())
         return false;
 
+    if (document->changedOnDisk() || mRecreatedDocuments.contains(document)) {
+        QMessageBox msgBox(mWidget->window());
+        msgBox.setWindowTitle(tr("File Conflict"));
+        msgBox.setText(tr("The file '%1' has been modified on disk by another program.").arg(document->displayName()));
+        msgBox.setInformativeText(tr("Do you want to overwrite it with your changes or reload the disk version?"));
+        msgBox.setIcon(QMessageBox::Warning);
+
+        QPushButton *overwriteButton = msgBox.addButton(tr("Override"), QMessageBox::AcceptRole);
+        QPushButton *reloadButton = msgBox.addButton(tr("Reload Disk Version"), QMessageBox::DestructiveRole);
+        msgBox.addButton(QMessageBox::Cancel);
+
+        msgBox.exec();
+
+        if (msgBox.clickedButton() == reloadButton) {
+            reloadDocument(document);
+            return false;
+        } else if (msgBox.clickedButton() != overwriteButton) {
+            return false;
+        }
+    }
+
     emit documentAboutToBeSaved(document);
 
     QString error;
@@ -865,6 +902,9 @@ void DocumentManager::closeDocumentAt(int index)
 
     emit documentAboutToClose(document.data());
 
+    // Clean up deleted documents tracking
+    mDeletedDocuments.remove(document.data());
+
     mDocuments.removeAt(index);
     mTabBar->removeTab(index);
 
@@ -974,6 +1014,8 @@ bool DocumentManager::reloadDocument(Document *document)
         break;
     }
 
+    mRecreatedDocuments.remove(document);
+
     // We may need to hide the file changed warning
     if (auto current = currentDocument())
         if (!isDocumentChangedOnDisk(current))
@@ -1007,7 +1049,20 @@ void DocumentManager::currentIndexChanged()
         emit currentEditorChanged(editor);
     }
 
-    mFileChangedWarning->setVisible(changed);
+    bool showWarning = false;
+    if (document) {
+        if (isDocumentDeleted(document)) {
+            mFileChangedWarning->setState(FileChangedWarning::FileDeleted);
+            showWarning = true;
+        } else if (mRecreatedDocuments.contains(document)) {
+            mFileChangedWarning->setState(FileChangedWarning::FileRecreated);
+            showWarning = true;
+        } else if (changed) {
+            mFileChangedWarning->setState(FileChangedWarning::FileChanged);
+            showWarning = true;
+        }
+    }
+    mFileChangedWarning->setVisible(showWarning);
 
     mBrokenLinksModel->setDocument(document);
 
@@ -1045,6 +1100,9 @@ void DocumentManager::updateDocumentTab(Document *document)
     if (document->isReadOnly())
         tabToolTip = tr("%1 [read-only]").arg(tabToolTip);
 
+    if (isDocumentDeleted(document))
+        tabToolTip = tr("%1 [deleted]").arg(tabToolTip);
+
     mTabBar->setTabIcon(index, tabIcon);
     mTabBar->setTabText(index, tabText);
     mTabBar->setTabToolTip(index, tabToolTip);
@@ -1075,16 +1133,22 @@ void DocumentManager::onDocumentSaved()
 {
     Document *document = static_cast<Document*>(sender());
 
-    if (document->changedOnDisk()) {
-        document->setChangedOnDisk(false);
-        if (!isDocumentModified(currentDocument()))
-            mFileChangedWarning->setVisible(false);
-    }
+    document->setChangedOnDisk(false);
+    mRecreatedDocuments.remove(document);
+
+    if (document == currentDocument())
+        mFileChangedWarning->setVisible(false);
 }
 
 void DocumentManager::documentTabMoved(int from, int to)
 {
     mDocuments.move(from, to);
+   
+    bool fromWasDeleted = mTabBar->isTabDeleted(from);
+    bool toWasDeleted = mTabBar->isTabDeleted(to);
+    
+    mTabBar->setTabDeleted(from, toWasDeleted);
+    mTabBar->setTabDeleted(to, fromWasDeleted);
 }
 
 void DocumentManager::tabContextMenuRequested(const QPoint &pos)
@@ -1105,6 +1169,16 @@ void DocumentManager::tabContextMenuRequested(const QPoint &pos)
     Utils::addFileManagerActions(menu, fileDocument->fileName());
 
     menu.addSeparator();
+
+    if (isDocumentDeleted(const_cast<Document*>(fileDocument))) {
+        menu.addAction(tr("Restore File"), [this, fileDocument] {
+            saveDocument(const_cast<Document*>(fileDocument), fileDocument->fileName());
+        });
+        menu.addAction(tr("Save As..."), [this, fileDocument] {
+            saveDocumentAs(const_cast<Document*>(fileDocument));
+        });
+        menu.addSeparator();
+    }
 
     QAction *closeTab = menu.addAction(tr("Close"), [this, index] {
         documentCloseRequested(index);
@@ -1147,6 +1221,9 @@ void DocumentManager::filesChanged(const QStringList &fileNames)
 {
     for (const QString &fileName : fileNames)
         fileChanged(fileName);
+
+    // Check if any deleted files have been restored
+    checkForRestoredFiles();
 }
 
 void DocumentManager::fileChanged(const QString &fileName)
@@ -1158,9 +1235,73 @@ void DocumentManager::fileChanged(const QString &fileName)
     }
 
     const QFileInfo fileInfo { fileName };
+    const bool fileExists = fileInfo.exists();
+    const bool wasDeleted = isDocumentDeleted(document);
 
     // Always update potentially changed read-only state
     document->setReadOnly(fileInfo.exists() && !fileInfo.isWritable());
+
+    // Handle file deletion/restoration
+    if (!fileExists && !wasDeleted) {
+        // File was deleted  mark tab as deleted instead of showing error dialog
+        markDocumentAsDeleted(document, true);
+
+        // Watch the parent directory to detect when file is restored
+        // (QFileSystemWatcher doesn't reliably watch non-existent files)
+        QFileInfo dirInfo(fileName);
+        QString parentDir = dirInfo.absolutePath();
+        if (!parentDir.isEmpty()) {
+            //so we watch the parent directory to detect if the file is restored
+            mFileSystemWatcher->addPath(parentDir);
+        }
+
+        return;
+    } else if (fileExists && wasDeleted) {
+        // File was restored  unmark as deleted and check if we need to reload
+        markDocumentAsDeleted(document, false);
+
+        // Make sure we're watching the file again (not just the directory)
+        mFileSystemWatcher->removePath(fileName);
+        mFileSystemWatcher->addPath(fileName);
+
+        // We can stop watching the parent directory now that the file is back
+        QFileInfo dirInfo(fileName);
+        QString parentDir = dirInfo.absolutePath();
+        if (!parentDir.isEmpty()) {
+            mFileSystemWatcher->removePath(parentDir);
+        }
+
+        if (mRestoringDocuments.contains(document)) {
+            mRestoringDocuments.remove(document);
+            document->setChangedOnDisk(false);
+            if (currentDocument() == document)
+                mFileChangedWarning->setVisible(false);
+            return;
+        }
+
+        // Check if the restored file is identical to the one we have in memory.
+        if (isRestoredFileIdentical(document, fileName)) {
+            mRecreatedDocuments.remove(document);
+            document->setChangedOnDisk(false);
+            if (currentDocument() == document)
+                mFileChangedWarning->setVisible(false);
+            return;
+        }
+
+        // Mark as recreated and changed on disk to trigger warning
+        mRecreatedDocuments.insert(document);
+        document->setChangedOnDisk(true);
+
+        if (currentDocument() == document) {
+            mFileChangedWarning->setState(FileChangedWarning::FileRecreated);
+            mFileChangedWarning->setVisible(true);
+        }
+        return;
+    } else if (!fileExists) {
+        return;
+    }
+
+    // File exists and wasn't deleted  handle normal file modification
 
     // Ignore change event when it seems to be our own save
     if (fileInfo.lastModified() == document->lastSaved())
@@ -1189,8 +1330,83 @@ void DocumentManager::hideChangedWarning()
     }
 
     document->setChangedOnDisk(false);
+    mRecreatedDocuments.remove(document);
     mFileChangedWarning->setVisible(false);
 }
+
+void DocumentManager::markDocumentAsDeleted(Document *document, bool deleted)
+{
+    const int index = findDocument(document);
+    if (index == -1)
+        return;
+
+    if (deleted) {
+        mDeletedDocuments.insert(document);
+        mTabBar->setTabDeleted(index, true);
+        if (document == currentDocument()) {
+            mFileChangedWarning->setState(FileChangedWarning::FileDeleted);
+            mFileChangedWarning->setVisible(true);
+        }
+    } else {
+        mDeletedDocuments.remove(document);
+        mTabBar->setTabDeleted(index, false);
+    }
+    updateDocumentTab(document);
+}
+
+bool DocumentManager::isDocumentDeleted(Document *document) const
+{
+    return mDeletedDocuments.contains(document);
+}
+
+void DocumentManager::checkForRestoredFiles()
+{
+    // Check all deleted documents to see if their files have been restored
+    QSet<Document*> restoredDocuments;
+
+    for (Document* document : mDeletedDocuments) {
+        const QString fileName = document->canonicalFilePath();
+        if (!fileName.isEmpty() && QFileInfo(fileName).exists()) {
+            restoredDocuments.insert(document);
+        }
+    }
+
+    // Process restored files
+    for (Document* document : restoredDocuments) {
+        const QString fileName = document->canonicalFilePath();
+
+        // Trigger the normal file change handling for restoration
+        // (fileChanged will handle re-adding to watcher)
+        fileChanged(fileName);
+    }
+}
+
+
+
+bool DocumentManager::timestampMatches(const QFileInfo &fileInfo, Document *document) const
+{
+    return (fileInfo.lastModified() == document->lastSaved() ||
+            qAbs(fileInfo.lastModified().toMSecsSinceEpoch() - document->lastSaved().toMSecsSinceEpoch()) < 2000);
+}
+
+bool DocumentManager::isRestoredFileIdentical(Document *document, const QString &fileName) const
+{
+    if (!document)
+        return false;
+
+    if (isDocumentModified(document))
+        return false;
+
+    QFileInfo fileInfo(fileName);
+    if (!fileInfo.exists())
+        return false;
+
+    return timestampMatches(fileInfo, document);
+}
+
+
+
+
 
 TilesetDocument* DocumentManager::findTilesetDocument(const SharedTileset &tileset) const
 {

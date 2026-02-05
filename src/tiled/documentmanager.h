@@ -35,11 +35,11 @@
 class QTabWidget;
 class QUndoGroup;
 class QStackedLayout;
-class QTabBar;
 
 namespace Tiled {
 
 class FileSystemWatcher;
+class TabBar;
 
 class AbstractTool;
 class BrokenLinksModel;
@@ -213,6 +213,14 @@ private:
     void fileChanged(const QString &fileName);
     void hideChangedWarning();
 
+    void markDocumentAsDeleted(Document *document, bool deleted);
+    bool isDocumentDeleted(Document *document) const;
+    void checkForRestoredFiles();
+
+    // Helpers for restored-file verification
+    bool isRestoredFileIdentical(Document *document, const QString &fileName) const;
+    bool timestampMatches(const QFileInfo &fileInfo, Document *document) const;
+
     void tilesetImagesChanged(Tileset *tileset);
 
     bool askForAdjustment(const Tileset &tileset);
@@ -236,7 +244,7 @@ private:
     // Pointer becomes null when deleted as part of the UI, to prevent double-deletion
     QPointer<QWidget> mWidget;
     QWidget *mNoEditorWidget;
-    QTabBar *mTabBar;
+    TabBar *mTabBar;
     FileChangedWarning *mFileChangedWarning;
     BrokenLinksModel *mBrokenLinksModel;
     BrokenLinksWidget *mBrokenLinksWidget;
@@ -248,6 +256,9 @@ private:
     QUndoGroup *mUndoGroup;
     FileSystemWatcher *mFileSystemWatcher;
     QHash<QString, Document*> mDocumentByFileName;
+    QSet<Document*> mDeletedDocuments;
+    QSet<Document*> mRecreatedDocuments;
+    QSet<Document*> mRestoringDocuments;
 
     static DocumentManager *mInstance;
 
