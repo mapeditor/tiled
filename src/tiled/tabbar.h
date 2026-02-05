@@ -35,12 +35,15 @@ public:
     explicit TabBar(QWidget *parent = nullptr);
     void setTabDeleted(int index, bool deleted);
     bool isTabDeleted(int index) const;
+    void setTabRecreated(int index, bool recreated);
+    bool isTabRecreated(int index) const;
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 
     void wheelEvent(QWheelEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
 
 protected:
     void tabInserted(int index) override;
@@ -48,11 +51,8 @@ protected:
 
 private:
     int mPressedIndex = -1;
-
-    // QWidget interface
-protected:
-    void paintEvent(QPaintEvent *event) override;
     QSet<int> mDeletedTabs;
+    QSet<int> mRecreatedTabs;
 };
 
 } // namespace Tiled
