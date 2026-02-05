@@ -108,11 +108,11 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     font.setPointSizeF(size - 1);
     mUi->pixelSizeLabel->setFont(font);
 
-    connect(mUi->mapWidth, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &NewMapDialog::refreshPixelSize);
-    connect(mUi->mapHeight, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &NewMapDialog::refreshPixelSize);
-    connect(mUi->tileWidth, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &NewMapDialog::refreshPixelSize);
-    connect(mUi->tileHeight, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &NewMapDialog::refreshPixelSize);
-    connect(mUi->orientation, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &NewMapDialog::refreshPixelSize);
+    connect(mUi->mapWidth, &QSpinBox::valueChanged, this, &NewMapDialog::refreshPixelSize);
+    connect(mUi->mapHeight, &QSpinBox::valueChanged, this, &NewMapDialog::refreshPixelSize);
+    connect(mUi->tileWidth, &QSpinBox::valueChanged, this, &NewMapDialog::refreshPixelSize);
+    connect(mUi->tileHeight, &QSpinBox::valueChanged, this, &NewMapDialog::refreshPixelSize);
+    connect(mUi->orientation, &QComboBox::currentIndexChanged, this, &NewMapDialog::refreshPixelSize);
     connect(mUi->fixedSize, &QAbstractButton::toggled, this, &NewMapDialog::updateWidgets);
 
     if (session::fixedSize)

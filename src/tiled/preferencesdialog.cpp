@@ -120,19 +120,19 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     mUi->crashReportingLabel->setVisible(false);
 #endif
 
-    connect(mUi->languageCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+    connect(mUi->languageCombo, &QComboBox::currentIndexChanged,
             this, &PreferencesDialog::languageSelected);
     connect(mUi->gridColor, &ColorButton::colorChanged,
             preferences, &Preferences::setGridColor);
     connect(mUi->backgroundFadeColor, &ColorButton::colorChanged,
             preferences, &Preferences::setBackgroundFadeColor);
-    connect(mUi->gridFine, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+    connect(mUi->gridFine, &QSpinBox::valueChanged,
             preferences, &Preferences::setGridFine);
-    connect(mUi->gridMajorX, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+    connect(mUi->gridMajorX, &QSpinBox::valueChanged,
             preferences, &Preferences::setGridMajorX);
-    connect(mUi->gridMajorY, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+    connect(mUi->gridMajorY, &QSpinBox::valueChanged,
             preferences, &Preferences::setGridMajorY);
-    connect(mUi->objectLineWidth, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+    connect(mUi->objectLineWidth, &QDoubleSpinBox::valueChanged,
             preferences, &Preferences::setObjectLineWidth);
     connect(mUi->preciseTileObjectSelection, &QCheckBox::toggled,
             this, [] (bool checked) { MapObjectItem::preciseTileObjectSelection = checked; });
@@ -147,9 +147,9 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     connect(mUi->duplicateAddsCopy, &QCheckBox::toggled,
             this, [] (bool checked) { Editor::duplicateAddsCopy = checked; });
 
-    connect(mUi->styleCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+    connect(mUi->styleCombo, &QComboBox::currentIndexChanged,
             this, &PreferencesDialog::styleComboChanged);
-    connect(mUi->objectSelectionBehaviorCombo, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+    connect(mUi->objectSelectionBehaviorCombo, &QComboBox::currentIndexChanged,
             this, [] (int index) { AbstractObjectTool::ourSelectionBehavior = static_cast<AbstractObjectTool::SelectionBehavior>(index); });
     connect(mUi->baseColor, &ColorButton::colorChanged,
             preferences, &Preferences::setBaseColor);
@@ -160,8 +160,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             preferences, &Preferences::setUseCustomFont);
     connect(mUi->fontComboBox, &QFontComboBox::currentFontChanged,
             preferences, &Preferences::setCustomFont);
-    connect(mUi->fontSize, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
-            this, [=] (int size) {
+    connect(mUi->fontSize, &QSpinBox::valueChanged, this, [=](int size) {
         QFont font = mUi->fontComboBox->currentFont();
         font.setPointSize(size);
         mUi->fontComboBox->setCurrentFont(font);
