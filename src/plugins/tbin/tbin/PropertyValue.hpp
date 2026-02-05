@@ -1,6 +1,6 @@
 /*
  * TBIN
- * Copyright 2017, Chase Warrington <spacechase0.and.cat@gmail.com>
+ * Copyright 2017, Casey Warrington <spacechase0.and.cat@gmail.com>
  *
  * MIT License
  *
@@ -26,11 +26,12 @@
 #ifndef TBIN_PROPERTYVALUE_HPP
 #define TBIN_PROPERTYVALUE_HPP
 
+#include <cstdint>
 #include <map>
 //#include <SFML/Config.hpp>
 #include <string>
 
-#include "FakeSfml.hpp"
+#include "Vector2i.hpp"
 
 namespace tbin
 {
@@ -49,7 +50,7 @@ namespace tbin
             union
             {
                 bool b;
-                sf::Int32 i;
+                int32_t i;
                 float f;
             } data;
             std::string dataStr;
