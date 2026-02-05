@@ -559,4 +559,16 @@ public class TileLayer extends TileLayerData {
         return getBounds().contains(x, y) &&
                 (flags[y][x] & (int)TMXMapReader.FLIPPED_DIAGONALLY_FLAG) != 0;
     }
+
+    /**
+     * Check if tile at (x, y) is rotated 120 degrees (hexagonal maps)
+     *
+     * @param x Tile-space x coordinate
+     * @param y Tile-space y coordinate
+     * @return <code>true</code> if tile at (x, y) has hexagonal 120 rotation flag
+     */
+    public boolean isRotatedHexagonal120(int x, int y) {
+        return getBounds().contains(x, y) &&
+                (flags[y][x] & (int)TMXMapReader.ROTATED_HEXAGONAL_120_FLAG) != 0;
+    }
 }
