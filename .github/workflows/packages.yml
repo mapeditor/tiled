@@ -248,6 +248,9 @@ jobs:
       run: |
         brew update
         brew install qbs
+        export PATH="$(brew --prefix qbs)/bin:$PATH"
+        echo "$(brew --prefix qbs)/bin" >> "$GITHUB_PATH"
+        qbs --version
         qbs setup-toolchains --detect
         qbs setup-qt --detect
         qbs config profiles.qt-6-9-3.baseProfile xcode
