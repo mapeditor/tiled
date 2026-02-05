@@ -280,11 +280,8 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
 #endif
     }
 
-    connect(this, &QProcess::errorOccurred,
-            this, &CommandProcess::handleProcessError);
-
-    connect(this, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
-            this, &QObject::deleteLater);
+    connect(this, &QProcess::errorOccurred, this, &CommandProcess::handleProcessError);
+    connect(this, &QProcess::finished, this, &QObject::deleteLater);
 
     if (showOutput) {
         Tiled::INFO(tr("Executing: %1").arg(mFinalCommand));

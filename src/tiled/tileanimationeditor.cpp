@@ -312,7 +312,7 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     connect(mPreviewAnimationDriver, &TileAnimationDriver::update,
             this, &TileAnimationEditor::advancePreviewAnimation);
 
-    connect(mUi->frameTime, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+    connect(mUi->frameTime, &QSpinBox::valueChanged,
             this, &TileAnimationEditor::setDefaultFrameTime);
 
     connect(mUi->setFrameTimeButton, &QAbstractButton::clicked,
