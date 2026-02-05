@@ -138,6 +138,8 @@ DynamicLibrary {
         "mapwriter.h",
         "minimaprenderer.cpp",
         "minimaprenderer.h",
+        "obliquerenderer.cpp",
+        "obliquerenderer.h",
         "object.cpp",
         "object.h",
         "objectgroup.cpp",

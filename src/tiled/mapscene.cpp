@@ -411,6 +411,9 @@ void MapScene::changeEvent(const ChangeEvent &change)
         case Map::BackgroundColorProperty:
             updateBackgroundColor();
             break;
+        case Map::RenderOrderProperty:
+            update();
+            break;
         default:
             break;
         }
