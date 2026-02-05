@@ -952,7 +952,8 @@ private:
         mStaggerAxisProperty->setEnabled(stagger);
         mStaggerIndexProperty->setEnabled(stagger);
         mSkewProperty->setEnabled(orientation == Map::Oblique);
-        mRenderOrderProperty->setEnabled(orientation == Map::Orthogonal);
+        mRenderOrderProperty->setEnabled(orientation == Map::Orthogonal ||
+                                         orientation == Map::Oblique);
         mChunkSizeProperty->setEnabled(map()->infinite());
 
         switch (map()->layerDataFormat()) {
