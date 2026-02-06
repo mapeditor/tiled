@@ -21,6 +21,7 @@
 #pragma once
 
 #include <QTabBar>
+#include <QSet>
 
 namespace Tiled {
 
