@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg  PUBLIC '-//W3C//DTD SVG 1.1//EN'  'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>
+<svg enable-background="new 0 0 24 24" version="1.1" viewBox="0 0 24 24" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+<g opacity=".55">
+	<rect x="4" y="4" width="16" height="16" fill="#214A88"/>
+	<rect x="5" y="5" width="4" height="4" fill="#719FCF"/>
+	<rect x="10" y="5" width="4" height="4" fill="#719FCF"/>
+	<rect x="15" y="5" width="4" height="4" fill="#719FCF"/>
+	<rect x="15" y="10" width="4" height="4" fill="#719FCF"/>
+	<rect x="15" y="15" width="4" height="4" fill="#719FCF"/>
+	<rect x="10" y="15" width="4" height="4" fill="#719FCF"/>
+	<rect x="5" y="15" width="4" height="4" fill="#719FCF"/>
+	<rect x="5" y="10" width="4" height="4" fill="#719FCF"/>
+	<rect x="6" y="6" width="2" height="2" fill="#507FB7"/>
+	<rect x="11" y="6" width="2" height="2" fill="#507FB7"/>
+	<rect x="16" y="6" width="2" height="2" fill="#507FB7"/>
+	<rect x="16" y="11" width="2" height="2" fill="#507FB7"/>
+	<rect x="16" y="16" width="2" height="2" fill="#507FB7"/>
+	<rect x="11" y="16" width="2" height="2" fill="#507FB7"/>
+	<rect x="6" y="16" width="2" height="2" fill="#507FB7"/>
+	<rect x="6" y="11" width="2" height="2" fill="#507FB7"/>
+</g>
+	<rect x="9" y="9" width="6" height="6" fill="#214A88"/>
+	<rect x="10" y="10" width="4" height="4" fill="#719FCF"/>
+	<rect x="11" y="11" width="2" height="2" fill="#3465A5"/>
+</svg>

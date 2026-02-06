@@ -57,10 +57,14 @@ void Eraser::mousePressed(QGraphicsSceneMouseEvent *event)
         if (event->button() == Qt::LeftButton) {
             mMode = Erase;
             doErase(false);
+            updateStatusInfo();
             return;
-        } else if (event->button() == Qt::RightButton && !(event->modifiers() & Qt::ControlModifier)) {
+        }
+
+        if (event->button() == Qt::RightButton && !(event->modifiers() & Qt::ControlModifier)) {
             mStart = tilePosition();
             mMode = RectangleErase;
+            updateStatusInfo();
             return;
         }
     }
@@ -82,6 +86,7 @@ void Eraser::mouseReleased(QGraphicsSceneMouseEvent *event)
             doErase(false);
             mMode = Nothing;
             brushItem()->setTileRegion(eraseArea());
+            updateStatusInfo();
         }
         break;
     }
@@ -128,6 +133,27 @@ QRect Eraser::eraseArea() const
     }
 
     return QRect(tilePosition(), QSize(1, 1));
+}
+
+void Eraser::updateStatusInfo()
+{
+    if (!isBrushVisible()) {
+        AbstractTileTool::updateStatusInfo();
+        return;
+    }
+
+    if (mMode == RectangleErase) {
+        const QPoint pos = tilePosition();
+        const QRect rect = eraseArea();
+        setStatusInfo(tr("%1, %2 - Erase area (%4 x %5)")
+                          .arg(pos.x())
+                          .arg(pos.y())
+                          .arg(rect.width())
+                          .arg(rect.height()));
+        return;
+    }
+
+    AbstractTileTool::updateStatusInfo();
 }
 
 #include "moc_eraser.cpp"

@@ -50,14 +50,42 @@ FilePath FilePath::fromString(const QString &string)
 }
 
 
-bool setClassPropertyMemberValue(QVariant &classValue,
-                                 int depth,
-                                 const QStringList &path,
-                                 const QVariant &value)
+PropertyPath toPropertyPath(const QStringList &path)
 {
-    if (depth >= path.size())
-        return false;   // hierarchy not deep enough for path
+    PropertyPath result;
+    result.reserve(path.size());
+    for (const QString &name : path)
+        result.append(name);
+    return result;
+}
 
+QString pathToString(const PropertyPath &path)
+{
+    QString result;
+    for (const auto &name : path) {
+        std::visit([&result](const auto &arg) {
+            if constexpr (std::is_same_v<decltype(arg), const QString &>) {
+                if (!result.isEmpty())
+                    result.append(QLatin1Char('.'));
+                result.append(arg);
+            } else {
+                result.append(QLatin1Char('['));
+                result.append(QString::number(arg));
+                result.append(QLatin1Char(']'));
+            }
+        }, name);
+    }
+    return result;
+}
+
+
+static bool setClassPropertyValue(QVariant &classValue,
+                                  const QString &memberName,
+                                  int depth,
+                                  const PropertyPath &path,
+                                  const QVariant &value,
+                                  bool allowReset)
+{
     if (classValue.userType() != propertyValueId())
         return false;   // invalid class value
 
@@ -66,7 +94,6 @@ bool setClassPropertyMemberValue(QVariant &classValue,
         return false;   // invalid class value
 
     QVariantMap classMembers = classPropertyValue.value.toMap();
-    const auto &memberName = path.at(depth);
     QVariant &member = classMembers[memberName];
 
     if (depth == path.size() - 1) {
@@ -79,8 +106,8 @@ bool setClassPropertyMemberValue(QVariant &classValue,
             if (type && type->isClass())
                 member = static_cast<const ClassPropertyType*>(type)->members.value(memberName);
         }
-        if (!setClassPropertyMemberValue(member, depth + 1, path, value))
-           return false;
+        if (!setNestedPropertyValue(member, depth + 1, path, value, true))
+            return false;
     }
 
     // Remove "unset" members (marked by invalid QVariant)
@@ -88,7 +115,7 @@ bool setClassPropertyMemberValue(QVariant &classValue,
         classMembers.remove(memberName);
 
     // Mark whole class as "unset" if it has no members left, unless at top level
-    if (!classMembers.isEmpty() || depth == 1) {
+    if (!classMembers.isEmpty() || !allowReset) {
         classPropertyValue.value = classMembers;
         classValue = QVariant::fromValue(classPropertyValue);
     } else {
@@ -98,17 +125,66 @@ bool setClassPropertyMemberValue(QVariant &classValue,
     return true;
 }
 
+static bool setListElementValue(QVariant &listValue,
+                                int index,
+                                int depth,
+                                const PropertyPath &path,
+                                const QVariant &value)
+{
+    if (listValue.userType() != QMetaType::QVariantList)
+        return false;   // invalid list value
+
+    auto list = listValue.value<QVariantList>();
+    if (index >= list.size())
+        return false;   // invalid list index
+
+    QVariant &member = list[index];
+
+    if (depth == path.size() - 1) {
+        member = value;
+    } else {
+        if (!setNestedPropertyValue(member, depth + 1, path, value, false))
+            return false;
+    }
+
+    listValue = list;
+    return true;
+}
+
+bool setNestedPropertyValue(QVariant &compoundValue,
+                            int depth,
+                            const PropertyPath &path,
+                            const QVariant &value,
+                            bool allowReset)
+{
+    if (depth >= path.size())
+        return false;   // hierarchy not deep enough for path
+
+    const auto &pathElement = path.at(depth);
+    switch (pathElement.index()) {
+    case 0: // member value (QString)
+        return setClassPropertyValue(compoundValue, std::get<0>(pathElement), depth, path, value, allowReset);
+    case 1: // list element (int)
+        return setListElementValue(compoundValue, std::get<1>(pathElement), depth, path, value);
+    }
+
+    return false;
+}
+
 bool setPropertyMemberValue(Properties &properties,
-                            const QStringList &path,
+                            const PropertyPath &path,
                             const QVariant &value)
 {
     Q_ASSERT(!path.isEmpty());
 
-    auto &topLevelName = path.first();
+    auto &topLevelEntry = path.first();
+    Q_ASSERT(std::holds_alternative<QString>(topLevelEntry));
+
+    auto &topLevelName = std::get<QString>(topLevelEntry);
 
     if (path.size() > 1) {
         auto topLevelValue = properties.value(topLevelName);
-        if (!setClassPropertyMemberValue(topLevelValue, 1, path, value))
+        if (!setNestedPropertyValue(topLevelValue, 1, path, value, false))
             return false;
         properties.insert(topLevelName, topLevelValue);
     } else {
@@ -169,6 +245,46 @@ Properties propertiesFromJson(const QJsonArray &json, const ExportContext &conte
     return properties;
 }
 
+QJsonArray valuesToJson(const QVariantList &values, const ExportContext &context)
+{
+    QJsonArray json;
+
+    for (auto &value : values) {
+        const auto exportValue = context.toExportValue(value);
+
+        QJsonObject propertyObject;
+        propertyObject.insert(QLatin1String("type"), exportValue.typeName);
+        propertyObject.insert(QLatin1String("propertytype"), exportValue.propertyTypeName);
+
+        if (value.userType() == QMetaType::QVariantList)
+            propertyObject.insert(QLatin1String("value"), valuesToJson(value.toList(), context));
+        else
+            propertyObject.insert(QLatin1String("value"), QJsonValue::fromVariant(exportValue.value));
+
+        json.append(propertyObject);
+    }
+
+    return json;
+}
+
+QVariantList valuesFromJson(const QJsonArray &json, const ExportContext &context)
+{
+    QVariantList values;
+
+    for (const QJsonValue &value : json) {
+        const QJsonObject valueObject = value.toObject();
+
+        ExportValue exportValue;
+        exportValue.value = valueObject.value(QLatin1String("value")).toVariant();
+        exportValue.typeName = valueObject.value(QLatin1String("type")).toString();
+        exportValue.propertyTypeName = valueObject.value(QLatin1String("propertytype")).toString();
+
+        values.append(context.toPropertyValue(exportValue));
+    }
+
+    return values;
+}
+
 void aggregateProperties(AggregatedProperties &aggregated, const Properties &properties)
 {
     auto it = properties.constEnd();
@@ -186,21 +302,6 @@ void aggregateProperties(AggregatedProperties &aggregated, const Properties &pro
     }
 }
 
-int propertyValueId()
-{
-    return qMetaTypeId<PropertyValue>();
-}
-
-int filePathTypeId()
-{
-    return qMetaTypeId<FilePath>();
-}
-
-int objectRefTypeId()
-{
-    return qMetaTypeId<ObjectRef>();
-}
-
 QString typeToName(int type)
 {
     // We can't handle the PropertyValue purely by its type ID, since we need to
@@ -216,6 +317,8 @@ QString typeToName(int type)
         return QStringLiteral("color");
     case QMetaType::QVariantMap:
         return QStringLiteral("class");
+    case QMetaType::QVariantList:
+        return QStringLiteral("list");
 
     default:
         if (type == filePathTypeId())
@@ -240,6 +343,8 @@ static int nameToType(const QString &name)
         return objectRefTypeId();
     if (name == QLatin1String("class"))
         return QMetaType::QVariantMap;
+    if (name == QLatin1String("list"))
+        return QMetaType::QVariantList;
 
     return QVariant::nameToType(name.toLatin1().constData());
 }
@@ -248,6 +353,14 @@ QString typeName(const QVariant &value)
 {
     if (value.userType() == propertyValueId())
         return typeName(value.value<PropertyValue>().value);
+
+    return typeToName(value.userType());
+}
+
+QString userTypeName(const QVariant &value)
+{
+    if (value.userType() == propertyValueId())
+        return value.value<PropertyValue>().typeName();
 
     return typeToName(value.userType());
 }
@@ -274,23 +387,34 @@ ExportContext::ExportContext(const QString &path)
 
 ExportValue ExportContext::toExportValue(const QVariant &value) const
 {
-    ExportValue exportValue;
     const int metaType = value.userType();
+    Q_ASSERT(metaType != qMetaTypeId<ExportValue>());
 
     if (metaType == propertyValueId()) {
         const auto propertyValue = value.value<PropertyValue>();
 
-        if (const PropertyType *propertyType = mTypes.findTypeById(propertyValue.typeId)) {
-            exportValue = propertyType->toExportValue(propertyValue.value, *this);
-        } else {
-            // the type may have been deleted
-            exportValue = toExportValue(propertyValue.value);
-        }
+        if (const PropertyType *propertyType = mTypes.findTypeById(propertyValue.typeId))
+            return propertyType->toExportValue(propertyValue.value, *this);
 
-        return exportValue; // early out, we don't want to assign typeName again
+        // the type may have been deleted
+        return toExportValue(propertyValue.value);
     }
 
-    if (metaType == QMetaType::QColor) {
+    ExportValue exportValue;
+
+    if (metaType == QMetaType::QVariantList) {
+        QVariantList exportValues;
+        const auto list = value.toList();
+        exportValues.reserve(list.size());
+        if (mRecursiveBehavior == RecursiveBehavior::ValuesOnly) {
+            for (const QVariant &element : list)
+                exportValues.append(toExportValue(element).value);
+        } else {
+            for (const QVariant &element : list)
+                exportValues.append(QVariant::fromValue(toExportValue(element)));
+        }
+        exportValue.value = exportValues;
+    } else if (metaType == QMetaType::QColor) {
         const auto color = value.value<QColor>();
         exportValue.value = color.isValid() ? color.name(QColor::HexArgb) : QString();
     } else if (metaType == filePathTypeId()) {
@@ -299,6 +423,7 @@ ExportValue ExportContext::toExportValue(const QVariant &value) const
     } else if (metaType == objectRefTypeId()) {
         exportValue.value = ObjectRef::toInt(value.value<ObjectRef>());
     } else {
+        // Other values do not need special handling here
         exportValue.value = value;
     }
 
@@ -333,6 +458,9 @@ QVariant ExportContext::toPropertyValue(const QVariant &value, int metaType) con
     if (metaType == QMetaType::QVariantMap || metaType == propertyValueId())
         return value;   // should be covered by property type
 
+    if (metaType == QMetaType::QVariantList)
+        return value;   // list elements should be converted individually
+
     if (metaType == filePathTypeId()) {
         const QUrl url = toUrl(value.toString(), mPath);
         return QVariant::fromValue(FilePath { url });
@@ -353,6 +481,35 @@ void initializeMetatypes()
 
     QMetaType::registerConverter<FilePath, QString>(&FilePath::toString);
     QMetaType::registerConverter<QString, FilePath>(&FilePath::fromString);
+}
+
+QVariantList possiblePropertyValues(const ClassPropertyType *parentClassType)
+{
+    QVariantList values;
+
+    values.append(false);                               // bool
+    values.append(QColor());                            // color
+    values.append(0.0);                                 // float
+    values.append(QVariant::fromValue(FilePath()));     // file
+    values.append(0);                                   // int
+    values.append(QVariant::fromValue(ObjectRef()));    // object
+    values.append(QString());                           // string
+    values.append(QVariant(QVariantList()));            // list
+
+    for (const auto &propertyType : Object::propertyTypes()) {
+        // Avoid suggesting the creation of circular dependencies between types
+        if (parentClassType && !parentClassType->canAddMemberOfType(propertyType.data()))
+            continue;
+
+        // Avoid suggesting classes not meant to be used as property value
+        if (propertyType->isClass())
+            if (!static_cast<const ClassPropertyType&>(*propertyType).isPropertyValueType())
+                continue;
+
+        values.append(propertyType->wrap(propertyType->defaultValue()));
+    }
+
+    return values;
 }
 
 } // namespace Tiled

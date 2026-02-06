@@ -65,9 +65,7 @@ StampBrush::StampBrush(QObject *parent)
             [this] { emit stampChanged(mStamp.rotated(RotateRight)); });
 }
 
-StampBrush::~StampBrush()
-{
-}
+StampBrush::~StampBrush() = default;
 
 void StampBrush::activate(MapScene *scene)
 {
@@ -114,6 +112,45 @@ void StampBrush::tilePositionChanged(QPoint pos)
     mPrevTilePosition = pos;
 }
 
+void StampBrush::updateStatusInfo()
+{
+    if (!isBrushVisible()) {
+        AbstractTileTool::updateStatusInfo();
+        return;
+    }
+
+    const QPoint pos = tilePosition();
+    QString actionText;
+
+    if (mBrushState == BrushState::Capture) {
+        const QRect area = mCaptureStampHelper.capturedArea(pos);
+        actionText = tr("Capture area (%3 x %4)")
+                         .arg(area.width())
+                         .arg(area.height());
+    } else if (mBrushState == BrushState::StartSet) {
+        if (mBrushBehavior == BrushBehavior::Line) {
+            const int length = std::max(std::abs(pos.x() - mStampReference.x()),
+                                        std::abs(pos.y() - mStampReference.y())) + 1;
+            actionText = tr("Draw line (length: %3)").arg(length);
+        } else if (mBrushBehavior == BrushBehavior::Circle) {
+            const int rx = std::abs(pos.x() - mStampReference.x());
+            const int ry = std::abs(pos.y() - mStampReference.y());
+            const int w = rx * 2 + 1;
+            const int h = ry * 2 + 1;
+            actionText = tr("Draw ellipse (size: %3 x %4)").arg(w).arg(h);
+        }
+    }
+
+    if (!actionText.isEmpty()) {
+        setStatusInfo(tr("%1, %2 - %3")
+                          .arg(pos.x()).arg(pos.y())
+                          .arg(actionText));
+        return;
+    }
+
+    AbstractTileTool::updateStatusInfo();
+}
+
 void StampBrush::mousePressed(QGraphicsSceneMouseEvent *event)
 {
     if (brushItem()->isVisible()) {
@@ -135,6 +172,7 @@ void StampBrush::mousePressed(QGraphicsSceneMouseEvent *event)
                 case BrushBehavior::Circle:
                     mStampReference = tilePosition();
                     mBrushState = BrushState::StartSet;
+                    updateStatusInfo();
                     break;
                 }
                 break;
@@ -142,9 +180,10 @@ void StampBrush::mousePressed(QGraphicsSceneMouseEvent *event)
                 break;
             }
             return;
-        } else if (event->button() == Qt::RightButton &&
-                   !(event->modifiers() & Qt::ControlModifier))
-        {
+        }
+
+        if (event->button() == Qt::RightButton &&
+                   !(event->modifiers() & Qt::ControlModifier)) {
             beginCapture();
             return;
         }
@@ -161,6 +200,7 @@ void StampBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
             if (mStampReference != tilePosition()) {
                 doPaint();
                 mBrushState = BrushState::Free;
+                updateStatusInfo();
             }
         }
         break;
@@ -210,6 +250,7 @@ void StampBrush::updateBrushBehavior()
         mBrushBehavior = brushBehavior;
         mBrushState = brushState;
         updatePreview();
+        updateStatusInfo();
     }
 }
 
@@ -333,6 +374,8 @@ void StampBrush::endCapture()
         emit stampChanged(stamp);
     else
         updatePreview();
+
+    updateStatusInfo(); // restore default status info
 }
 
 /**

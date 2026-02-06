@@ -20,9 +20,10 @@
 
 #include "selectsametiletool.h"
 
-#include "brushitem.h"
 #include "map.h"
 #include "mapdocument.h"
+
+#include <QGraphicsSceneMouseEvent>
 
 using namespace Tiled;
 
@@ -43,23 +44,36 @@ void SelectSameTileTool::tilePositionChanged(QPoint tilePos)
     if (!tileLayer)
         return;
 
-    const bool infinite = mapDocument()->map()->infinite();
+    // Reset the list when the left mouse button isn't pressed
+    if (!mMouseDown)
+        mMatchCells.clear();
 
+    const bool infinite = mapDocument()->map()->infinite();
     QRegion resultRegion;
+
     if (infinite || tileLayer->contains(tilePos)) {
-        const Cell &matchCell = tileLayer->cellAt(tilePos);
-        if (matchCell.isEmpty()) {
-            // Due to the way TileLayer::region only iterates allocated chunks,
-            // and because of different desired behavior for infinite vs. fixed
-            // maps we need a special handling when matching the empty cell.
-            resultRegion = infinite ? tileLayer->bounds() : tileLayer->rect();
-            resultRegion -= tileLayer->region();
-        } else {
-            resultRegion = tileLayer->region([&] (const Cell &cell) { return cell == matchCell; });
+        const Cell &currentCell = tileLayer->cellAt(tilePos);
+        if (!mMatchCells.contains(currentCell))
+            mMatchCells.append(currentCell);
+
+        resultRegion = tileLayer->region(
+            [&](const Cell &cell) { return mMatchCells.contains(cell); });
+
+        // Due to the way TileLayer::region only iterates allocated chunks, and
+        // because of different desired behavior for infinite vs. fixed maps we
+        // need a special handling when matching the empty cell.
+        const bool hasEmptyCell = std::any_of(mMatchCells.begin(),
+                                              mMatchCells.end(),
+                                              [](const Cell &cell) { return cell.isEmpty(); });
+        if (hasEmptyCell) {
+            QRegion emptyRegion = infinite ? tileLayer->bounds() : tileLayer->rect();
+            emptyRegion -= tileLayer->region();
+
+            resultRegion += emptyRegion;
         }
     }
-    setSelectedRegion(resultRegion);
-    brushItem()->setTileRegion(selectedRegion());
+
+    setSelectionPreview(resultRegion);
 }
 
 void SelectSameTileTool::languageChanged()

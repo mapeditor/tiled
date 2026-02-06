@@ -8,7 +8,8 @@ DynamicLibrary {
     Depends { name: "libtiled" }
     Depends { name: "translations" }
     Depends { name: "qtsingleapplication" }
-    Depends { name: "Qt"; submodules: ["core", "widgets", "concurrent", "qml", "svg"]; versionAtLeast: "5.15.2" }
+    Depends { name: "Qt"; submodules: ["core", "widgets", "concurrent", "qml"]; versionAtLeast: "5.15.2" }
+    Depends { name: "Qt.svg"; condition: qbs.targetOS.contains("macos") }
     Depends { name: "Qt.openglwidgets"; condition: Qt.core.versionMajor >= 6; required: false }
     Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux") && project.dbus; required: false }
     Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") && Qt.core.versionMajor >= 6 }
@@ -177,6 +178,8 @@ DynamicLibrary {
         "commandsedit.ui",
         "consoledock.cpp",
         "consoledock.h",
+        "createcapsuleobjecttool.cpp",
+        "createcapsuleobjecttool.h",
         "createellipseobjecttool.cpp",
         "createellipseobjecttool.h",
         "createobjecttool.cpp",
@@ -246,6 +249,8 @@ DynamicLibrary {
         "exportasimagedialog.ui",
         "exporthelper.cpp",
         "exporthelper.h",
+        "expressionspinbox.cpp",
+        "expressionspinbox.h",
         "filechangedwarning.cpp",
         "filechangedwarning.h",
         "fileedit.cpp",
@@ -287,6 +292,8 @@ DynamicLibrary {
         "layermodel.h",
         "layeroffsettool.cpp",
         "layeroffsettool.h",
+        "listedit.cpp",
+        "listedit.h",
         "locatorwidget.cpp",
         "locatorwidget.h",
         "magicwandtool.h",

@@ -2,12 +2,15 @@ name: Compile on Ubuntu
 
 on:
   push:
+    branches:
+      - master
+    tags:
+      - '*'
     paths-ignore:
     - 'docs/**'
     - '**.md'
     - 'appveyor.yml'
     - '.travis.yml'
-    branches-ignore: [snapshot]
   pull_request:
     paths-ignore:
     - 'docs/**'
@@ -22,7 +25,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Setup ccache
       uses: hendrikmuhs/ccache-action@v1
@@ -32,7 +35,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install qtbase5-dev libqt5svg5-dev qttools5-dev-tools zlib1g-dev qtdeclarative5-dev qbs python3-dev
+        sudo apt install qtbase5-dev libqt5svg5 qttools5-dev-tools zlib1g-dev qtdeclarative5-dev qbs python3-dev
 
     - name: Setup qbs
       run: |

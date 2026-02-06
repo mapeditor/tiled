@@ -31,6 +31,7 @@
 #include "mapscene.h"
 #include "painttilelayer.h"
 #include "tilelayer.h"
+#include "actionmanager.h"
 
 #include <QStyleOptionGraphicsItem>
 #include <QtMath>
@@ -88,11 +89,25 @@ WangBrush::WangBrush(QObject *parent)
                        new WangBrushItem,
                        parent)
 {
+    // Set up toolbar action for toggling fill full tiles mode,
+    // which basically makes the brush bigger.
+
+    QIcon fillFullTilesIcon(QLatin1String(":images/scalable/fill-full-tiles.svg"));
+
+    mToggleFillFullTiles = new QAction(this);
+    mToggleFillFullTiles->setCheckable(true);
+    mToggleFillFullTiles->setIcon(fillFullTilesIcon);
+
+    ActionManager::registerAction(mToggleFillFullTiles, "ToggleFillFullTiles");
+    connect(mToggleFillFullTiles, &QAction::triggered, this, [this](bool checked) {
+        mIsTileMode = mIsTileModeDefault = checked;
+        stateChanged();
+    });
+
+    languageChanged();
 }
 
-WangBrush::~WangBrush()
-{
-}
+WangBrush::~WangBrush() = default;
 
 void WangBrush::activate(MapScene *scene)
 {
@@ -120,7 +135,9 @@ void WangBrush::mousePressed(QGraphicsSceneMouseEvent *event)
                 break;
             }
             return;
-        } else if (event->button() == Qt::RightButton && event->modifiers() == Qt::NoModifier) {
+        }
+
+        if (event->button() == Qt::RightButton && event->modifiers() == Qt::NoModifier) {
             switch (mBrushBehavior) {
             case Free:
                 captureHoverColor();
@@ -151,7 +168,8 @@ void WangBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
 
 void WangBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
-    const bool isTileMode = modifiers & Qt::ControlModifier;
+    const bool isControlPressed = modifiers & Qt::ControlModifier;
+    const bool isTileMode = isControlPressed != mIsTileModeDefault;
     const bool rotationalSymmetry = modifiers & Qt::AltModifier;
     const bool lineMode = modifiers & Qt::ShiftModifier;
 
@@ -164,6 +182,7 @@ void WangBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 
     if (mIsTileMode != isTileMode) {
         mIsTileMode = isTileMode;
+        mToggleFillFullTiles->setChecked(mIsTileMode);
         changed = true;
     }
 
@@ -179,6 +198,7 @@ void WangBrush::modifiersChanged(Qt::KeyboardModifiers modifiers)
 void WangBrush::languageChanged()
 {
     setName(tr("Terrain Brush"));
+    mToggleFillFullTiles->setText(tr("Fill Full Tiles"));
 }
 
 void WangBrush::setColor(int color)
@@ -320,7 +340,6 @@ void WangBrush::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
         mWangIndex = wangIndex;
         mPrevPaintPoint = std::exchange(mPaintPoint, tilePos);
         stateChanged();
-        updateStatusInfo();
     }
 }
 
@@ -346,27 +365,57 @@ void WangBrush::mapDocumentChanged(MapDocument *oldDocument, MapDocument *newDoc
 
 void WangBrush::updateStatusInfo()
 {
-    if (brushItem()->isVisible()) {
-        QString wangColor;
-        if (mWangSet && mCurrentColor && mCurrentColor <= mWangSet->colorCount())
-            wangColor = mWangSet->colorAt(mCurrentColor)->name();
-
-        if (!wangColor.isEmpty())
-            wangColor = QStringLiteral(" [%1]").arg(wangColor);
-
-        QString extraInfo;
-        if (!static_cast<WangBrushItem*>(brushItem())->isValid())
-            extraInfo = QStringLiteral(" (%1)")
-                        .arg(tr("Missing terrain transition"));
-
-        setStatusInfo(QStringLiteral("%1, %2%3%4")
-                      .arg(mPaintPoint.x())
-                      .arg(mPaintPoint.y())
-                      .arg(wangColor, extraInfo));
-
-    } else {
+    if (!brushItem()->isVisible()) {
         setStatusInfo(QString());
+        return;
     }
+
+    QString coordsString;
+    if (mRotationalSymmetry) {
+        if (const Map *map = mapDocument()->map()) {
+            const int mirrorX = map->width() - mPaintPoint.x();
+            const int mirrorY = map->height() - mPaintPoint.y();
+            coordsString = tr("%1, %2 and %3, %4")
+                    .arg(mPaintPoint.x())
+                    .arg(mPaintPoint.y())
+                    .arg(mirrorX)
+                    .arg(mirrorY);
+        }
+    }
+    if (coordsString.isEmpty()) {
+        coordsString = QStringLiteral("%1, %2")
+                    .arg(mPaintPoint.x())
+                    .arg(mPaintPoint.y());
+    }
+
+    QString wangColor;
+    if (mWangSet && mCurrentColor && mCurrentColor <= mWangSet->colorCount())
+        wangColor = mWangSet->colorAt(mCurrentColor)->name();
+
+    if (!wangColor.isEmpty())
+        wangColor = QStringLiteral(" [%1]").arg(wangColor);
+
+    QString lineInfo;
+    if (mBrushBehavior == Line) {
+        if (mLineStartSet) {
+            const bool thin = !mIsTileMode && mBrushMode != PaintEdgeAndCorner;
+            const int length = pointsOnLine(mLineStartPos, mPaintPoint, thin).size();
+            lineInfo = QStringLiteral(" - Draw line (length: %1)").arg(length);
+        } else {
+            lineInfo = QStringLiteral(" - Draw line");
+        }
+    }
+
+    QString extraInfo;
+    if (!static_cast<WangBrushItem*>(brushItem())->isValid())
+        extraInfo = QStringLiteral(" (%1)")
+                    .arg(tr("Missing terrain transition"));
+
+    setStatusInfo(QStringLiteral("%1%2%3%4")
+                    .arg(coordsString)
+                    .arg(wangColor)
+                    .arg(lineInfo)
+                    .arg(extraInfo));
 }
 
 void WangBrush::wangSetChanged(const WangSet *wangSet)
@@ -567,6 +616,7 @@ void WangBrush::updateBrush()
 
     // set the new tile layer as the brush
     brushItem()->setTileLayer(stamp, brushRegion);
+    updateStatusInfo();
 }
 
 void WangBrush::updateBrushAt(WangFiller &filler, QPoint pos)
@@ -668,6 +718,11 @@ void WangBrush::updateBrushAt(WangFiller &filler, QPoint pos)
             break;
         }
     }
+}
+
+void WangBrush::populateToolBar(QToolBar *toolbar)
+{
+    toolbar->addAction(mToggleFillFullTiles);
 }
 
 } // namespace Tiled

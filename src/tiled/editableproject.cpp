@@ -135,7 +135,7 @@ ScriptPropertyType *EditableProject::addPropertyType(const SharedPropertyType &t
 
 void EditableProject::applyPropertyChanges()
 {
-    emit Preferences::instance()->propertyTypesChanged();
+    Preferences::instance()->emitPropertyTypesChanged();
 
     project()->save();
 }

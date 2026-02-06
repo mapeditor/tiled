@@ -728,6 +728,9 @@ void ObjectSelectionTool::mouseDoubleClicked(QGraphicsSceneMouseEvent *event)
 {
     mousePressed(event);
 
+    if (event->modifiers() & Qt::AltModifier)
+        return; // Don't interfere with Alt+click (handled in mouseReleased)
+
     if (mClickedObject && (mClickedObject->shape() == MapObject::Polygon ||
                            mClickedObject->shape() == MapObject::Polyline)) {
         toolManager()->selectTool(toolManager()->findTool<EditPolygonTool>());
@@ -825,6 +828,7 @@ static QRectF pixelBounds(const MapObject *object)
 
     switch (object->shape()) {
     case MapObject::Ellipse:
+    case MapObject::Capsule:
     case MapObject::Rectangle:
     case MapObject::Point: {
         QRectF bounds(object->bounds());
@@ -861,6 +865,7 @@ static bool canResizeAbsolute(const MapObject *object)
     switch (object->shape()) {
     case MapObject::Rectangle:
     case MapObject::Ellipse:
+    case MapObject::Capsule:
     case MapObject::Text:
         return true;
     case MapObject::Point:
@@ -911,6 +916,7 @@ static QRectF objectBounds(const MapObject *object,
     } else {
         switch (object->shape()) {
         case MapObject::Ellipse:
+        case MapObject::Capsule:
         case MapObject::Rectangle: {
             QRectF bounds(object->bounds());
             align(bounds, object->alignment());

@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: Tiled 1.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-10 11:19+0100\n"
-"PO-Revision-Date: 2022-02-23 23:56+0000\n"
-"Last-Translator: Tuomas Lähteenmäki <lahtis@gmail.com>\n"
+"PO-Revision-Date: 2025-01-17 15:51+0000\n"
+"Last-Translator: Ricky Tigg <ricky.tigg@gmail.com>\n"
+"Language-Team: Finnish <https://hosted.weblate.org/projects/tiled/reference/"
+"fi/>\n"
 "Language: fi\n"
-"Language-Team: Finnish "
-"<https://hosted.weblate.org/projects/tiled/reference/fi/>\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.10-dev\n"
 "Generated-By: Babel 2.11.0\n"
 
 #: ../../reference/global-tile-ids.rst:2
@@ -1799,14 +1800,12 @@ msgid ""
 msgstr ""
 
 #: ../../reference/json-map-format.rst:859
-#, fuzzy
 msgid ""
 ":doc:`Templates </manual/using-templates>` were added. Templates can be "
 "stored as JSON files with an :ref:`json-objecttemplate` object."
 msgstr ""
-":doc:`Malleja </manual/using-templates>` lisättiin, malli on "
-":ref:`ulkoinen tiedosto <tmx-template-files>`, johon "
-"malliinstanssiobjektit viittaavat:"
+":doc:`Mallit </manual/using-templates>` lisättiin. Mallit voidaan tallentaa "
+"JSON-tiedostoina :ref:`json-objecttemplate` -objektin kanssa."
 
 #: ../../reference/json-map-format.rst:862
 msgid ""
@@ -6293,4 +6292,3 @@ msgstr ""
 #~ "3.0 Unported License "
 #~ "<http://creativecommons.org/licenses/by-sa/3.0/>`__."
 #~ msgstr ""
-

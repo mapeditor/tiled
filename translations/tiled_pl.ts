@@ -60,7 +60,7 @@
     <message>
         <location line="-33"/>
         <source>Failed to load project &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie udało się załadować projektu &apos;%1&apos;.</translation>
     </message>
     <message>
         <location line="+44"/>

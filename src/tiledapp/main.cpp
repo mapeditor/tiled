@@ -422,6 +422,13 @@ int main(int argc, char *argv[])
     }
 #endif
 
+    // Disable JIT compilation in the Qt Quick V4 engine on macOS, since it
+    // triggers a crash in code-signed releases. This is resolved by adding the
+    // com.apple.security.cs.allow-jit entitlement since Qt 6.8.2.
+#if defined(Q_OS_MAC) && !defined(QT_DEBUG) && QT_VERSION < QT_VERSION_CHECK(6, 8, 2)
+    qputenv("QV4_FORCE_INTERPRETER", "1");
+#endif
+
     QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::RoundPreferFloor);
 
     // High-DPI scaling is always enabled in Qt 6

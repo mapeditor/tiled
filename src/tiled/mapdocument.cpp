@@ -31,6 +31,7 @@
 #include "changemapobjectsorder.h"
 #include "changeproperties.h"
 #include "changeselectedarea.h"
+#include "changeworld.h"
 #include "containerhelpers.h"
 #include "editablemap.h"
 #include "editor.h"
@@ -60,6 +61,9 @@
 #include "tilelayer.h"
 #include "tilesetdocument.h"
 #include "transformmapobjects.h"
+#include "world.h"
+#include "worlddocument.h"
+#include "worldmanager.h"
 
 #include <QFileInfo>
 #include <QRect>
@@ -395,7 +399,7 @@ void MapDocument::resizeMap(QSize size, QPoint offset, bool removeObjects)
     const QPointF pixelOffset = origin - newOrigin;
 
     // Resize the map and each layer
-    QUndoCommand *command = new QUndoCommand(tr("Resize Map"));
+    auto command = new QUndoCommand(tr("Resize Map"));
 
     QList<MapObject *> objectsToRemove;
     QList<MapObject *> objectsToMove;
@@ -404,12 +408,12 @@ void MapDocument::resizeMap(QSize size, QPoint offset, bool removeObjects)
     while (Layer *layer = iterator.next()) {
         switch (layer->layerType()) {
         case Layer::TileLayerType: {
-            TileLayer *tileLayer = static_cast<TileLayer*>(layer);
+            auto tileLayer = static_cast<TileLayer*>(layer);
             new ResizeTileLayer(this, tileLayer, size, offset, command);
             break;
         }
         case Layer::ObjectGroupType: {
-            ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer);
+            auto objectGroup = static_cast<ObjectGroup*>(layer);
 
             for (MapObject *o : objectGroup->objects()) {
                 // Remove objects that will fall outside of the map
@@ -450,6 +454,23 @@ void MapDocument::resizeMap(QSize size, QPoint offset, bool removeObjects)
     new ResizeMap(this, size, command);
     new ChangeSelectedArea(this, movedSelection, command);
 
+    // Adjust world position if this map is part of any loaded worlds
+    if (!pixelOffset.isNull()) {
+        const QString &mapName = fileName();
+        const QPoint offsetPixels = pixelOffset.toPoint();
+
+        for (const auto &worldDocument : WorldManager::instance().worlds()) {
+            auto world = worldDocument->world();
+            const int mapIdx = world->mapIndex(mapName);
+            if (mapIdx < 0)
+                continue; // also skips maps matched via pattern
+
+            const QPoint prevPos = world->mapRect(mapName).topLeft();
+            const QPoint newPos = prevPos - offsetPixels;
+            new SetMapPosInLoadedWorld(worldDocument->fileName(), mapName, prevPos, newPos, command);
+        }
+    }
+
     undoStack()->push(command);
 
     // TODO: Handle layers that don't match the map size correctly
@@ -460,8 +481,7 @@ void MapDocument::autocropMap()
     if (!mCurrentLayer || !mCurrentLayer->isTileLayer())
         return;
 
-    TileLayer *tileLayer = static_cast<TileLayer*>(mCurrentLayer);
-
+    auto tileLayer = static_cast<TileLayer*>(mCurrentLayer);
     const QRect bounds = tileLayer->region().boundingRect();
     if (bounds.isNull())
         return;
@@ -1072,12 +1092,12 @@ void MapDocument::paintTileLayers(const Map &map, bool mergeable,
         if (!mMap->infinite() && !target->rect().intersects(source->bounds()))
             continue;
 
-        PaintTileLayer *paintCommand = new PaintTileLayer(this,
-                                                          target,
-                                                          source->x(),
-                                                          source->y(),
-                                                          source,
-                                                          paintRegion);
+        auto paintCommand = new PaintTileLayer(this,
+                                               target,
+                                               source->x(),
+                                               source->y(),
+                                               source,
+                                               paintRegion);
 
         if (missingTilesets && !missingTilesets->isEmpty()) {
             for (const SharedTileset &tileset : std::as_const(*missingTilesets)) {
@@ -1615,7 +1635,7 @@ void MapDocument::checkIssues()
 
     LayerIterator it(map());
     for (Layer *layer : map()->objectGroups()) {
-        ObjectGroup *objectGroup = static_cast<ObjectGroup*>(layer->asObjectGroup());
+        auto objectGroup = static_cast<ObjectGroup*>(layer->asObjectGroup());
         for (MapObject *mapObject : *objectGroup) {
             if (const ObjectTemplate *objectTemplate = mapObject->objectTemplate())
                 if (!objectTemplate->object())

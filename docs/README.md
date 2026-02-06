@@ -11,29 +11,19 @@ This guide covers how to generate the Tiled documentation on various platforms u
 
 It's recommended to use a virtual environment to isolate the project dependencies. Here's how to set it up:
 
-### Windows
-
-1. Open Command Prompt and navigate to the project directory.
-2. Create a virtual environment named ".venv":
-   ```cmd
-   python -m venv .venv
-   ```
-3. Activate the virtual environment:
-   ```cmd
-   .venv\Scripts\activate
-   ```
-
 ### Linux (Ubuntu, Fedora, RHEL, CentOS) and macOS
 
-1. Open a terminal and navigate to the project directory.
-2. Create a virtual environment named ".venv":
-   ```bash
-   python3 -m venv .venv
-   ```
-3. Activate the virtual environment:
-   ```bash
-   source .venv/bin/activate
-   ```
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+### Windows
+
+```cmd
+python -m venv .venv
+.venv\Scripts\activate
+```
 
 ## Installing Dependencies
 
@@ -56,6 +46,10 @@ On Windows, use:
 ```cmd
 make.bat html
 ```
+
+### Using a Different Language
+
+Add `O=-Dlanguage=<language>` to the above command, where `<language>` should be replaced by a language code like `fr`, `de`, etc.
 
 ## Updating Translation Files
 

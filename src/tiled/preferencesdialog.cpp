@@ -93,6 +93,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             preferences, &Preferences::setSafeSavingEnabled);
     connect(mUi->exportOnSave, &QCheckBox::toggled,
             preferences, &Preferences::setExportOnSave);
+    connect(mUi->naturalSorting, &QCheckBox::toggled,
+            preferences, &Preferences::setNaturalSorting);
 
     connect(mUi->embedTilesets, &QCheckBox::toggled, preferences, [preferences] (bool value) {
         preferences->setExportOption(Preferences::EmbedTilesets, value);
@@ -218,6 +220,7 @@ void PreferencesDialog::fromPreferences()
     mUi->restoreSession->setChecked(prefs->restoreSessionOnStartup());
     mUi->safeSaving->setChecked(prefs->safeSavingEnabled());
     mUi->exportOnSave->setChecked(prefs->exportOnSave());
+    mUi->naturalSorting->setChecked(prefs->naturalSorting());
 
     mUi->embedTilesets->setChecked(prefs->exportOption(Preferences::EmbedTilesets));
     mUi->detachTemplateInstances->setChecked(prefs->exportOption(Preferences::DetachTemplateInstances));

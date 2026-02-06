@@ -9,6 +9,16 @@ Tiled 1.12
 
 -  Added ``mode`` attribute on :ref:`tmx-layer` to specific its blend mode.
 
+-  Added capsule object shape. Same parameters as rectangular objects,
+   but marked as capsule with a child element:
+
+   .. code:: xml
+
+      <object name="..." x="..." y="...">
+        <capsule/>
+      </object>
+
+
 Tiled 1.10
 ----------
 

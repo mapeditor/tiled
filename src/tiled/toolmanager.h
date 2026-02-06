@@ -106,6 +106,7 @@ private:
 
     QActionGroup *mActionGroup;
     AbstractTool *mSelectedTool = nullptr;
+    AbstractTool *mPreviousSelectedTool = nullptr;
     QHash<Layer::TypeFlag, AbstractTool *> mSelectedToolForLayerType;
     MapDocument *mMapDocument = nullptr;
     Tile *mTile = nullptr;
