@@ -920,6 +920,8 @@ void DocumentManager::closeDocumentAt(int index)
 
     // Clean up deleted documents tracking
     mDeletedDocuments.remove(document.data());
+    mRecreatedDocuments.remove(document.data());
+    mRestoringDocuments.remove(document.data());
 
     mDocuments.removeAt(index);
     mTabBar->removeTab(index);
@@ -1177,6 +1179,12 @@ void DocumentManager::documentTabMoved(int from, int to)
     
     mTabBar->setTabDeleted(from, toWasDeleted);
     mTabBar->setTabDeleted(to, fromWasDeleted);
+
+    bool fromWasRecreated = mTabBar->isTabRecreated(from);
+    bool toWasRecreated = mTabBar->isTabRecreated(to);
+
+    mTabBar->setTabRecreated(from, toWasRecreated);
+    mTabBar->setTabRecreated(to, fromWasRecreated);
 }
 
 void DocumentManager::tabContextMenuRequested(const QPoint &pos)
