@@ -1266,7 +1266,6 @@ void DocumentManager::fileChanged(const QString &fileName)
 {
     const auto document = mDocumentByFileName.value(fileName);
     if (!document) {
-        qWarning() << "Document not found for changed file:" << fileName;
         return;
     }
 
@@ -1409,9 +1408,9 @@ void DocumentManager::checkForRestoredFiles()
     // Check all deleted documents to see if their files have been restored
     QSet<Document*> restoredDocuments;
 
-    for (Document* document : mDeletedDocuments) {
+    for (Document* document : std::as_const(mDeletedDocuments)) {
         const QString fileName = document->canonicalFilePath();
-        if (!fileName.isEmpty() && QFileInfo(fileName).exists()) {
+        if (!fileName.isEmpty() && QFileInfo::exists(fileName)) {
             restoredDocuments.insert(document);
         }
     }

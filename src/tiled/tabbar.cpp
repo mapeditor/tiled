@@ -101,7 +101,7 @@ void TabBar::tabInserted(int index)
 
     // Shift deleted tab indices that are >= the inserted index
     QSet<int> newDeletedTabs;
-    for (int deletedIndex : mDeletedTabs) {
+    for (int deletedIndex : std::as_const(mDeletedTabs)) {
         if (deletedIndex >= index) {
             newDeletedTabs.insert(deletedIndex + 1);
         } else {
@@ -112,7 +112,7 @@ void TabBar::tabInserted(int index)
 
     // Shift recreated tab indices that are >= the inserted index
     QSet<int> newRecreatedTabs;
-    for (int recreatedIndex : mRecreatedTabs) {
+    for (int recreatedIndex : std::as_const(mRecreatedTabs)) {
         if (recreatedIndex >= index) {
             newRecreatedTabs.insert(recreatedIndex + 1);
         } else {
@@ -128,7 +128,7 @@ void TabBar::tabRemoved(int index)
 
     // Remove the deleted tab if it was at this index and shift others
     QSet<int> newDeletedTabs;
-    for (int deletedIndex : mDeletedTabs) {
+    for (int deletedIndex : std::as_const(mDeletedTabs)) {
         if (deletedIndex == index) {
             // This deleted tab was removed, don't add it back
             continue;
@@ -142,7 +142,7 @@ void TabBar::tabRemoved(int index)
 
     // Remove the recreated tab if it was at this index and shift others
     QSet<int> newRecreatedTabs;
-    for (int recreatedIndex : mRecreatedTabs) {
+    for (int recreatedIndex : std::as_const(mRecreatedTabs)) {
         if (recreatedIndex == index) {
             continue;
         } else if (recreatedIndex > index) {
