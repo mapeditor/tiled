@@ -6,7 +6,7 @@
     <message>
         <location filename="../src/tiled/aboutdialog.ui" line="+14"/>
         <source>About Tiled</source>
-        <translation>เกี่ยวกับไทล์</translation>
+        <translation>เกี่ยวกับ Tiled</translation>
     </message>
     <message>
         <location line="+96"/>
@@ -59,7 +59,7 @@
     <message>
         <location line="-33"/>
         <source>Failed to load project &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>โหลดโปรเจกต์ &apos;%1&apos; ล้มเหลว</translation>
     </message>
     <message>
         <location line="+44"/>
@@ -74,7 +74,7 @@
     <message>
         <location line="+111"/>
         <source>Project file expected: --project &lt;.tiled-project file&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>ต้องการไฟล์โปรเจกต์: --project &lt;ไฟล์.tiled-project&gt;</translation>
     </message>
     <message>
         <location line="+75"/>
@@ -84,7 +84,7 @@
     <message>
         <location line="+7"/>
         <source>Unknown version: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่รู้จักเวอร์ชั่น: %1</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -94,12 +94,12 @@
     <message>
         <location line="+124"/>
         <source>Failed to load source map.</source>
-        <translation>ไม่สามารถโหลดแผนที่ต้นฉบับ</translation>
+        <translation>ไม่สามารถโหลดแมพต้นฉบับ</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Failed to export map to target file.</source>
-        <translation>การส่งออกแผนที่ไปยังไฟล์เป้าหมายผิดพลาด</translation>
+        <translation>การส่งออกแมพไปยังไฟล์เป้าหมายผิดพลาด</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -316,7 +316,7 @@
     <message>
         <location filename="../src/plugins/defold/defoldplugin.cpp" line="+102"/>
         <source>Defold Tile Map (*.tilemap)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์ไทล์แมพ Defold (*.tilemap)</translation>
     </message>
 </context>
 <context>
@@ -324,7 +324,7 @@
     <message>
         <location filename="../src/plugins/defoldcollection/defoldcollectionplugin.cpp" line="+153"/>
         <source>Defold Collection (*.collection)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์คอลเล็กชัน Defold (*.collection)</translation>
     </message>
 </context>
 <context>
@@ -332,22 +332,22 @@
     <message>
         <location filename="../src/tiled/donationpopup.cpp" line="+42"/>
         <source>Please consider supporting Tiled development with a small monthly donation.</source>
-        <translation type="unfinished"></translation>
+        <translation>ลองพิจารณาที่จะช่วยสนับสนุนการพัฒนาโปรแกรม Tiled แบบรายเดือนเพียงเล็กน้อยหน่อยนะ</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;บริจาค ↗</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>I&apos;m a &amp;supporter!</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;ฉันเป็นผู้สนับสนุน!</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Maybe later</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;ไว้คราวหน้า</translation>
     </message>
 </context>
 <context>
@@ -489,17 +489,17 @@
     <message>
         <location filename="../src/tiled/propertytypeseditor.cpp" line="-621"/>
         <source>Custom Types files (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์ประเภทแบบกำหนดเอง (*.json)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Object Types JSON (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์ประเภทวัตถุ JSON (*.json)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Object Types XML (*.xml)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์ประเภทวัตถุ XML (*.xml)</translation>
     </message>
 </context>
 <context>
@@ -557,7 +557,7 @@
     <message>
         <location line="+15"/>
         <source>JSON map files (*.tmj *.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์แมพ JSON (*.tmj *.json)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -594,7 +594,7 @@
     <message>
         <location line="+14"/>
         <source>JSON template files (*.tj *.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์เทมเพลต JSON (*.tj *.json)</translation>
     </message>
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
@@ -621,7 +621,7 @@
     <message>
         <location line="+14"/>
         <source>JSON tileset files (*.tsj *.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์ไทล์เซต JSON (*.tsj *.json)</translation>
     </message>
     <message>
         <location filename="../src/plugins/json1/jsonplugin.cpp" line="+14"/>
@@ -780,7 +780,7 @@
     <message>
         <location line="+142"/>
         <source>Support Tiled Development ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>ช่วยสนับสนุนการพัฒนาโปรแกรม Tiled ↗</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -790,7 +790,7 @@
     <message>
         <location line="+127"/>
         <source>For Hovered Object</source>
-        <translation type="unfinished"></translation>
+        <translation>แสดงเมื่อกำลังจะเลือก</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -805,27 +805,27 @@
     <message>
         <location line="+8"/>
         <source>Highlight Hovered Object</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฮไลท์วัตถุที่กำลังจะเลือก</translation>
     </message>
     <message>
         <location line="+103"/>
         <source>&amp;New Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;โปรเจกต์ใหม่...</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Add Automapping Rules Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>เพิ่มไทล์เซตสำหรับการตั้งกฏไทล์เซต</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Search Actions...</source>
-        <translation type="unfinished"></translation>
+        <translation>ค้นหาคำสั่ง...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Search actions available in Tiled</source>
-        <translation type="unfinished"></translation>
+        <translation>ค้นหาคำสั่งในโปรแกรม Tiled</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -915,7 +915,7 @@
     <message>
         <location line="+8"/>
         <source>Paste &amp;in Place</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;วางที่เดิม</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -935,7 +935,7 @@
     <message>
         <location line="+5"/>
         <source>Pre&amp;ferences...</source>
-        <translation>ค่ากำหนด ...</translation>
+        <translation>&amp;ตั้งค่า...</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -980,12 +980,12 @@
     <message>
         <location line="+31"/>
         <source>&amp;Open File or Project...</source>
-        <translation>เปิดไฟล์หหรือโปรเจกต์ ...</translation>
+        <translation>เปิดไฟล์หรือโปรเจกต์...</translation>
     </message>
     <message>
         <location line="+79"/>
         <source>Map &amp;Properties...</source>
-        <translation>คุณสมบัติแผนที่...</translation>
+        <translation>คุณสมบัติของแมพ...</translation>
     </message>
     <message>
         <location line="+83"/>
@@ -1000,7 +1000,7 @@
     <message>
         <location line="+16"/>
         <source>&amp;Snap to Grid</source>
-        <translation>สแนปเส้นกริด</translation>
+        <translation>สแนปกับเส้นกริด</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1030,7 +1030,7 @@
     <message>
         <location line="+8"/>
         <source>Snap to &amp;Fine Grid</source>
-        <translation>สแนปกับกริดละเอียด</translation>
+        <translation>&amp;สแนประหว่างกริด</translation>
     </message>
     <message>
         <location line="+8"/>
@@ -1045,7 +1045,7 @@
     <message>
         <location line="+174"/>
         <source>Show Tile Collision Shapes</source>
-        <translation type="unfinished"></translation>
+        <translation>แสดงรูปร่างขอบเขตการชนของไทล์</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1080,7 +1080,7 @@
     <message>
         <location line="+8"/>
         <source>Clear View</source>
-        <translation type="unfinished"></translation>
+        <translation>แบบโล่ง</translation>
     </message>
     <message>
         <location filename="../src/tiled/propertybrowser.cpp" line="+945"/>
@@ -1246,7 +1246,7 @@ Line %1, column %2</source>
         <location line="+34"/>
         <location line="+77"/>
         <source>Width:</source>
-        <translation>กว้าง:</translation>
+        <translation>ความกว้าง:</translation>
     </message>
     <message>
         <location line="-93"/>
@@ -1258,7 +1258,7 @@ Line %1, column %2</source>
     <message>
         <location line="-38"/>
         <source>Fixed</source>
-        <translation>คงที่</translation>
+        <translation>กำหนดเอง</translation>
     </message>
     <message>
         <location line="+54"/>
@@ -1269,7 +1269,7 @@ Line %1, column %2</source>
     <message>
         <location line="-42"/>
         <source>Infinite</source>
-        <translation>ไม่มีที่สิ้นสุด</translation>
+        <translation>ไม่จำกัด</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1320,7 +1320,7 @@ Line %1, column %2</source>
     <message>
         <location line="+40"/>
         <source>Based on Tileset Image</source>
-        <translation type="unfinished"></translation>
+        <translation>อิงตามรูปภาพไทล์เซ็ต</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1422,7 +1422,7 @@ Line %1, column %2</source>
     <message>
         <location line="+30"/>
         <source>Recent Projects</source>
-        <translation type="unfinished"></translation>
+        <translation>โปรเจกต์ล่าสุด</translation>
     </message>
     <message>
         <location line="+83"/>
@@ -1602,7 +1602,7 @@ Line %1, column %2</source>
         <location line="+4"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="-4"/>
         <source>Base64 (Zstandard compressed)</source>
-        <translation>ฐาน64 (บีบอัดแบบ Zstandard )</translation>
+        <translation>ฐาน64 (บีบอัดแบบ Zstandard)</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -1677,7 +1677,7 @@ Line %1, column %2</source>
     <message>
         <location line="+14"/>
         <source>Detach templates</source>
-        <translation type="unfinished"></translation>
+        <translation>แยกเทมเพลตออก</translation>
     </message>
     <message>
         <location line="-7"/>
@@ -1692,7 +1692,7 @@ Line %1, column %2</source>
     <message>
         <location line="+71"/>
         <source>Fine grid divisions:</source>
-        <translation type="unfinished"></translation>
+        <translation>จำนวนสแนประหว่างกริด:</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -1702,7 +1702,7 @@ Line %1, column %2</source>
     <message>
         <location line="-277"/>
         <source>Restore previous session on startup</source>
-        <translation type="unfinished"></translation>
+        <translation>จำพื้นที่ทำงานสำหรับครั้งถัดไป</translation>
     </message>
     <message>
         <location line="+51"/>
@@ -1717,17 +1717,17 @@ Line %1, column %2</source>
     <message>
         <location line="+200"/>
         <source>Object line width:</source>
-        <translation>ความกว้างเส้นออบเจกต์:</translation>
+        <translation>ความหนาเส้นวัตถุ:</translation>
     </message>
     <message>
         <location line="+98"/>
         <source>Mouse wheel &amp;zooms by default</source>
-        <translation>ใช้ลูกกลิ้งเมาส์ในการซูม</translation>
+        <translation>ใช้ลูกกลิ้งเมาส์ในการซูมเข้าออก</translation>
     </message>
     <message>
         <location line="-253"/>
         <source>Enable sending anonymous crash reports</source>
-        <translation>เปิดใช้งานการส่งรายงานข้อขัดข้องโดยไม่ระบุชื่อ</translation>
+        <translation>เปิดใช้งานรายงานปัญหาแบบไม่เปิดเผยตัวตน</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1737,7 +1737,7 @@ Line %1, column %2</source>
     <message>
         <location line="+206"/>
         <source>Object selection behavior:</source>
-        <translation type="unfinished"></translation>
+        <translation>วิธีการเลือกวัตถุ:</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -1747,7 +1747,7 @@ Line %1, column %2</source>
     <message>
         <location line="+7"/>
         <source>Use s&amp;mooth scrolling</source>
-        <translation>ใช้การเลื่อนแบบสมูท</translation>
+        <translation>ขยับจอด้วยลูกศรแบบลื่นไหล</translation>
     </message>
     <message>
         <location line="-144"/>
@@ -1758,17 +1758,17 @@ Line %1, column %2</source>
     <message>
         <location line="-39"/>
         <source>Background fade color:</source>
-        <translation type="unfinished"></translation>
+        <translation>สีการจางพื้นหลัง:</translation>
     </message>
     <message>
         <location line="-27"/>
         <source>Major grid:</source>
-        <translation type="unfinished"></translation>
+        <translation>ขนาดเส้นกริดแบ่งเขต:</translation>
     </message>
     <message>
         <location line="+59"/>
         <source>by</source>
-        <translation type="unfinished"></translation>
+        <translation>คูณ</translation>
     </message>
     <message>
         <location line="-165"/>
@@ -1778,17 +1778,17 @@ Line %1, column %2</source>
     <message>
         <location line="+7"/>
         <source>Highlight new version in status bar</source>
-        <translation>แสดงเวอร์ชันใหม่ในแถบสถานะ</translation>
+        <translation>แจ้งเตือนเวอร์ชันใหม่ในแถบสถานะ</translation>
     </message>
     <message>
         <location line="+229"/>
         <source>Behavior</source>
-        <translation type="unfinished"></translation>
+        <translation>การทำงาน</translation>
     </message>
     <message>
         <location line="+67"/>
         <source>Add &quot;Copy&quot; when duplicating</source>
-        <translation type="unfinished"></translation>
+        <translation>จำ &quot;คัดลอก&quot; เมื่อมีการทำซ้ำ</translation>
     </message>
     <message>
         <location line="+24"/>
@@ -1804,12 +1804,12 @@ Line %1, column %2</source>
     <message>
         <location line="+74"/>
         <source>Use custom interface font</source>
-        <translation type="unfinished"></translation>
+        <translation>ใช้ฟอนต์แบบกำหนดเอง</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Font:</source>
-        <translation type="unfinished"></translation>
+        <translation>ฟอนต์:</translation>
     </message>
     <message>
         <location line="+59"/>
@@ -1830,7 +1830,7 @@ Line %1, column %2</source>
         <location filename="../src/tiled/preferencesdialog.cpp" line="+65"/>
         <location line="+216"/>
         <source>Native</source>
-        <translation type="unfinished"></translation>
+        <translation>ดั้งเดิม</translation>
     </message>
     <message>
         <location line="-215"/>
@@ -1841,7 +1841,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/preferencesdialog.ui" line="-146"/>
         <source>Selection color:</source>
-        <translation>สีที่เลือก:</translation>
+        <translation>สีเมื่อเลือก:</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1861,7 +1861,7 @@ Line %1, column %2</source>
     <message>
         <location line="+281"/>
         <source>Pixel-perfect tile object selection</source>
-        <translation type="unfinished"></translation>
+        <translation>เลือกวัตถุไทล์แบบพิกเซลเพอร์เฟค</translation>
     </message>
     <message>
         <location line="+196"/>
@@ -1887,12 +1887,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/propertytypeseditor.ui" line="+14"/>
         <source>Custom Types Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>ตัวจัดการประเภทแบบกำหนดเอง</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Custom Types</source>
-        <translation type="unfinished"></translation>
+        <translation>ประเภทแบบกำหนดเอง</translation>
     </message>
 </context>
 <context>
@@ -1931,22 +1931,22 @@ Line %1, column %2</source>
     <message>
         <location line="+334"/>
         <source>-- Using script %1 to read %2</source>
-        <translation type="unfinished">--ใช้สคริปต์ %1 เพื่ออ่าน %2</translation>
+        <translation>-- ใช้สคริปต์ %1 เพื่ออ่าน %2</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>-- Using script %1 to write %2</source>
-        <translation type="unfinished">--ใช้สคริปต์ %1 เพื่อเขียน %2</translation>
+        <translation>-- ใช้สคริปต์ %1 เพื่อเขียน %2</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Uncaught exception in script. Please check console.</source>
-        <translation type="unfinished">ข้อยกเว้นที่ไม่ถูกตรวจจับในสคริปต์ โปรดตรวจสอบคอนโซล</translation>
+        <translation>ข้อยกเว้นที่ไม่ถูกตรวจจับในสคริปต์ โปรดตรวจสอบในคอนโซล</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Script returned false. Please check console.</source>
-        <translation type="unfinished">สคริปต์คืนค่าเท็จ โปรดตรวจสอบคอนโซล</translation>
+        <translation>สคริปต์คืนค่าเป็นเท็จ โปรดตรวจสอบในคอนโซล</translation>
     </message>
 </context>
 <context>
@@ -2027,7 +2027,7 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>Up Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>ลูกศรขึ้น</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2790,17 +2790,17 @@ Line %1, column %2</source>
     <message>
         <location line="+118"/>
         <source>Could not remove file &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่สามารถลบไฟล์ &apos;%1&apos;: %2 ได้</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Could not copy file &apos;%1&apos; to &apos;%2&apos;: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่สามารถคัดลอกไฟล์ &apos;%1&apos; to &apos;%2&apos;: %3 ได้</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Could not move &apos;%1&apos; to &apos;%2&apos;: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่สามารถย้ายไฟล์ &apos;%1&apos; to &apos;%2&apos;: %3 ได้</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3117,7 +3117,7 @@ Line %1, column %2</source>
     <message>
         <location line="-357"/>
         <source>Apply Collision Shapes</source>
-        <translation type="unfinished"></translation>
+        <translation>กำหนดรูปร่างขอบเขตการชน</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -3406,7 +3406,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/automappingmanager.cpp" line="+115"/>
         <source>No AutoMapping rules provided. Save the map or refer to a rule file in the project properties.</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่มีการตั้งกฏการออโต้แมพไว้ บันทึกแมพหรือเลือกไฟล์กฏในหน้าคุณสมบัติโปรเจคต์</translation>
     </message>
     <message>
         <location line="+48"/>
@@ -3416,12 +3416,12 @@ Line %1, column %2</source>
     <message>
         <location line="+34"/>
         <source>No rules file found at &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่มีไฟล์กฏที่ &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Error opening rules file &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>เกิดข้อผิดพลาดในการเปิดไฟล์กฏ &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -3487,7 +3487,7 @@ Line %1, column %2</source>
     <message>
         <location line="+1"/>
         <source>One or more referenced files could not be found. You can help locate them below.</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่พบไฟล์อ้างอิงหนึ่งไฟล์หรือมากกว่า คุณสามารถช่วยค้นหาไฟล์เหล่านี้ได้จากด้านล่าง</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3545,7 +3545,7 @@ Line %1, column %2</source>
     <message>
         <location line="+24"/>
         <source>Error Reading Object Template</source>
-        <translation type="unfinished"></translation>
+        <translation>อ่านไฟล์เทมเพลตวัตถุไม่สำเร็จ</translation>
     </message>
 </context>
 <context>
@@ -3609,7 +3609,7 @@ Line %1, column %2</source>
     <message>
         <location line="+2"/>
         <source>Show or hide this command in the command list</source>
-        <translation type="unfinished"></translation>
+        <translation>แสดงหรือซ่อนคำสั่งนี้ในรายชื่อคำสั่ง</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -3703,7 +3703,7 @@ Line %1, column %2</source>
     <message>
         <location line="+10"/>
         <source>Unable to add executable permissions to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่สามารถเพิ่มสิทธิ์การดำเนินคำสั่งให้กับ %1 ได้</translation>
     </message>
     <message>
         <location line="+20"/>
@@ -3733,7 +3733,7 @@ Line %1, column %2</source>
     <message>
         <location line="+8"/>
         <source>Error Executing %1</source>
-        <translation type="unfinished"></translation>
+        <translation>เกิดข้อผิดพลาดดำเนินการคำสั่ง %1</translation>
     </message>
 </context>
 <context>
@@ -3845,12 +3845,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/document.cpp" line="+106"/>
         <source>Custom property &apos;%1&apos; refers to non-existing file &apos;%2&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>คุณสมบัติแบบกำหนดเอง &apos;%1&apos; กำลังอิงถึงไฟล์ที่ไม่มีอยู่ &apos;%2&apos;</translation>
     </message>
     <message>
         <location filename="../src/tiled/capturestamphelper.cpp" line="+63"/>
         <source>Cut</source>
-        <translation type="unfinished">ตัด</translation>
+        <translation>ตัด</translation>
     </message>
 </context>
 <context>
@@ -3882,7 +3882,7 @@ Line %1, column %2</source>
     <message>
         <location line="+77"/>
         <source>%1 [read-only]</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 [อ่านเท่านั้น]</translation>
     </message>
     <message>
         <location line="+63"/>
@@ -3954,13 +3954,13 @@ Line %1, column %2</source>
     <message>
         <location line="-22"/>
         <source>Split Segment</source>
-        <translation type="unfinished"></translation>
+        <translation>แบ่งครึ่ง</translation>
     </message>
     <message numerus="yes">
         <location line="+259"/>
         <source>Move %n Node(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>ย้ายโหนด %n</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -3975,19 +3975,19 @@ Line %1, column %2</source>
         <location line="-89"/>
         <location line="+293"/>
         <source>Join Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>รวมโหนด</translation>
     </message>
     <message>
         <location line="-292"/>
         <location line="+327"/>
         <source>Split Segments</source>
-        <translation type="unfinished"></translation>
+        <translation>แบ่งครึ่ง</translation>
     </message>
     <message>
         <location line="-326"/>
         <location line="+392"/>
         <source>Delete Segment</source>
-        <translation type="unfinished"></translation>
+        <translation>ลบ</translation>
     </message>
     <message>
         <location line="-361"/>
@@ -4000,7 +4000,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/editor.cpp" line="+40"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>คัดลอก</translation>
     </message>
 </context>
 <context>
@@ -4228,7 +4228,7 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/actionsearch.cpp" line="+241"/>
         <source>Search actions...</source>
-        <translation type="unfinished"></translation>
+        <translation>ค้นหาคำสั่ง...</translation>
     </message>
 </context>
 <context>
@@ -4291,7 +4291,7 @@ Do you want to replace it?</source>
         <location line="+1"/>
         <location filename="../src/tiled/editormanager.cpp" line="+1"/>
         <source>The file extension does not match the chosen file type.</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์ส่วนเสริมไม่ตรงกับประเภทไฟล์ที่เลือกไว้</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -4338,12 +4338,12 @@ Please select specific format.</source>
     <message>
         <location line="+157"/>
         <source>Undo</source>
-        <translation>ทำกลับ</translation>
+        <translation>ย้อนกลับ</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>คืนกลับ</translation>
     </message>
     <message>
         <location line="+151"/>
@@ -4389,13 +4389,13 @@ Please select specific format.</source>
         <location line="-1530"/>
         <location line="+1531"/>
         <source>Reset to Default Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>คืนค่าพื้นที่ทำงานเริ่มต้น</translation>
     </message>
     <message>
         <location line="-1530"/>
         <location line="+1531"/>
         <source>Lock Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>ล็อคพื้นที่ทำงาน</translation>
     </message>
     <message>
         <location line="-1244"/>
@@ -4433,12 +4433,12 @@ Please select specific format.</source>
     <message>
         <location line="+36"/>
         <source>Unsaved Changes to World</source>
-        <translation type="unfinished"></translation>
+        <translation>การเปลี่ยนแปลงที่ยังไม่ได้บันทึกของโลก</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>There are unsaved changes to world &quot;%1&quot;. Do you want to save the world now?</source>
-        <translation type="unfinished"></translation>
+        <translation>การเปลี่ยนแปลงที่ยังไม่ได้บันทึกของโลก &quot;%1&quot; บันทึกเลยไหม?</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -4449,7 +4449,7 @@ Please select specific format.</source>
     <message>
         <location line="-10"/>
         <source>Error Exporting Map</source>
-        <translation type="unfinished"></translation>
+        <translation>ส่งออกแมพล้มเหลว</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -4475,7 +4475,7 @@ Please select specific format.</source>
     <message>
         <location line="+15"/>
         <source>New Project</source>
-        <translation type="unfinished"></translation>
+        <translation>โปรเจคต์ใหม่</translation>
     </message>
     <message>
         <location line="+19"/>
@@ -4510,7 +4510,7 @@ Please select specific format.</source>
     <message>
         <location line="+3"/>
         <source>&amp;Enable Extensions</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;เปิดส่วนเสริม</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4525,12 +4525,12 @@ Please select specific format.</source>
     <message>
         <location line="+121"/>
         <source>Automatic Mapping Error</source>
-        <translation type="unfinished"></translation>
+        <translation>ออโต้แมพไม่สำเร็จ</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Automatic Mapping Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>คำเตือนในการออโต้แมพ</translation>
     </message>
     <message>
         <location line="+314"/>
@@ -4673,7 +4673,7 @@ Please select specific format.</source>
     <message>
         <location line="+193"/>
         <source>Group Layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>กลุ่มเลเยอร์ %1</translation>
     </message>
     <message>
         <location line="+29"/>
@@ -4741,12 +4741,12 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>&amp;Crop to Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;ครอบแผนที่จากที่เลือก</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Autocrop</source>
-        <translation type="unfinished"></translation>
+        <translation>ครอบแผนที่อัตโนมัติ</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -4818,17 +4818,17 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Select All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>เลือกเลเยอร์ทั้งหมด</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>R&amp;aise Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;นำเลเยอร์ขึ้นบน</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Lower Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;นำเลเยอร์ลงล่าง</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4906,7 +4906,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/mapeditor.cpp" line="+709"/>
         <source>Paste in Place</source>
-        <translation type="unfinished"></translation>
+        <translation>วางที่เดิม</translation>
     </message>
     <message>
         <location line="+200"/>
@@ -4957,12 +4957,12 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>คลาส</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>ID</source>
-        <translation>ID</translation>
+        <translation>ไอดี</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4975,7 +4975,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/minimapdock.cpp" line="+59"/>
         <source>Mini-map</source>
-        <translation type="unfinished"></translation>
+        <translation>มินิแมพ</translation>
     </message>
 </context>
 <context>
@@ -4984,7 +4984,7 @@ Please select specific format.</source>
         <location filename="../src/tiled/newmapdialog.cpp" line="-86"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="-42"/>
         <source>Orthogonal</source>
-        <translation type="unfinished"></translation>
+        <translation>สี่เหลี่ยม</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4996,13 +4996,13 @@ Please select specific format.</source>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Isometric (Staggered)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไอโซเมตริก (แบบเหลื่อมกันได้)</translation>
     </message>
     <message>
         <location line="+1"/>
         <location filename="../src/tiled/propertybrowser.cpp" line="+1"/>
         <source>Hexagonal (Staggered)</source>
-        <translation type="unfinished"></translation>
+        <translation>หกเหลี่ยม (แบบเหลื่อมกันได้)</translation>
     </message>
     <message>
         <location line="+88"/>
@@ -5031,12 +5031,12 @@ Please select specific format.</source>
     <message>
         <location line="-6"/>
         <source>Failed to load tileset image &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>โหลดรูปภาพไทล์เซ็ต &apos;%1&apos; ไม่สำเร็จ</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>No tiles found in the tileset image when using the given tile size, margin and spacing!</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่พบไทล์เลย กำหนดระยะห่างและระยะขอบเยอะเกินไป!</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -5047,7 +5047,7 @@ Please select specific format.</source>
         <location line="+31"/>
         <location line="+2"/>
         <source>&amp;OK</source>
-        <translation>โอเค</translation>
+        <translation>&amp;ตกลง</translation>
     </message>
     <message>
         <location line="-2"/>
@@ -5060,7 +5060,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/newversionbutton.cpp" line="+44"/>
         <source>Up to date</source>
-        <translation>ล่าสุด</translation>
+        <translation>เวอร์ชั่นล่าสุดแล้ว</translation>
     </message>
     <message>
         <location line="+30"/>
@@ -5274,12 +5274,12 @@ Please select specific format.</source>
         <location line="-212"/>
         <location line="+213"/>
         <source>Selected Layers Only</source>
-        <translation>เเลเยอร์ที่เลือกเท่านั้น</translation>
+        <translation>เลเยอร์ที่เลือกเท่านั้น</translation>
     </message>
     <message>
         <location line="-171"/>
         <source>Updates and Crash Reporting</source>
-        <translation type="unfinished"></translation>
+        <translation>อัปเดตและรายงานปัญหา</translation>
     </message>
 </context>
 <context>
@@ -5308,32 +5308,32 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/projectpropertiesdialog.cpp" line="-17"/>
         <source>Tiled 1.8</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiled 1.8</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tiled 1.9</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiled 1.9</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Tiled 1.10</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiled 1.10</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Latest</source>
-        <translation type="unfinished"></translation>
+        <translation>ล่าสุด</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Compatibility Version</source>
-        <translation type="unfinished"></translation>
+        <translation>เวอร์ชั่นที่สามารถใช้งานได้</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Extensions Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>ตำแหน่งไฟล์ส่วนเสริม</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -5348,7 +5348,7 @@ Please select specific format.</source>
     <message>
         <location line="+3"/>
         <source>Paths &amp;&amp; Files</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;ตำแหน่งและไฟล์</translation>
     </message>
 </context>
 <context>
@@ -5366,7 +5366,7 @@ Please select specific format.</source>
     <message>
         <location line="+4"/>
         <source>Add Tileset to Map</source>
-        <translation type="unfinished"></translation>
+        <translation>เพิ่มไทล์เซ็ตลงแผนที่</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -5521,12 +5521,12 @@ Please select specific format.</source>
     <message>
         <location line="+5"/>
         <source>Parallax Origin</source>
-        <translation type="unfinished"></translation>
+        <translation>จุดศูนย์กลางพารัลแลกซ์</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Tile Layer Format</source>
-        <translation type="unfinished"></translation>
+        <translation>รูปแบบข้อมูลไทล์</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -5564,7 +5564,7 @@ Please select specific format.</source>
         <location line="+44"/>
         <location line="+182"/>
         <source>ID</source>
-        <translation>ID</translation>
+        <translation>ไอดี</translation>
     </message>
     <message>
         <location line="-225"/>
@@ -5842,17 +5842,17 @@ Please select specific format.</source>
     <message>
         <location line="+29"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>คลาส</translation>
     </message>
     <message>
         <location line="+1042"/>
         <source>Tile Size</source>
-        <translation type="unfinished"></translation>
+        <translation>ขนาดไทล์</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Map Grid Size</source>
-        <translation type="unfinished"></translation>
+        <translation>ขนาดกริดของแมพ</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -6054,12 +6054,12 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Terrain</source>
-        <translation type="unfinished">เทอเรนจ์</translation>
+        <translation>ภูมิประเทศ</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Terrain Set</source>
-        <translation type="unfinished">เทอเรนจ์เซต</translation>
+        <translation>ชุดภูมิประเทศ</translation>
     </message>
     <message>
         <location line="+156"/>
@@ -6339,17 +6339,17 @@ Please select specific format.</source>
         <location filename="../src/tiled/shapefilltool.cpp" line="+40"/>
         <location line="+104"/>
         <source>Shape Fill Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>วาดรูปทรง</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Rectangle Fill</source>
-        <translation>เติมแบบสี่เหลี่ยมผืนผ้า</translation>
+        <translation>วาดแบบสี่เหลี่ยม</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Circle Fill</source>
-        <translation>เติมแบบวงกลม</translation>
+        <translation>วาดแบบวงกลม</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -6377,7 +6377,7 @@ Please select specific format.</source>
     <message>
         <location line="+7"/>
         <source>Reset shortcut to default</source>
-        <translation type="unfinished"></translation>
+        <translation>คืนค่าปุ่มลัดเป็นเริ่มต้น</translation>
     </message>
 </context>
 <context>
@@ -6468,7 +6468,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Terrain Fill Mode</source>
-        <translation>โหมดเทเทอเรนจ์</translation>
+        <translation>โหมดเทภูมิประเทศ</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6595,7 +6595,7 @@ Please select specific format.</source>
     <message>
         <location line="+108"/>
         <source>Detect Bounding Box</source>
-        <translation type="unfinished"></translation>
+        <translation>สร้างตามขอบเขต</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -6846,7 +6846,7 @@ Please select specific format.</source>
     <message>
         <location line="-196"/>
         <source>Rearrange Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>จัดเรียงไทล์</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6856,7 +6856,7 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Dynamically Wrap Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>จัดเรียงแบบยืดหยุ่น</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -6907,12 +6907,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilesetview.cpp" line="+759"/>
         <source>Use as Terrain Set Image</source>
-        <translation>ใช้เป็นรูปเทอเรนจ์เซต</translation>
+        <translation>ใช้เป็นรูปของชุดภูมิประเทศ</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Use as Terrain Image</source>
-        <translation>ใช้เป็นรูปเทอเรนจ์</translation>
+        <translation>ใช้เป็นรูปของภูมิประเทศ</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -6932,7 +6932,7 @@ Please select specific format.</source>
     <message>
         <location line="+8"/>
         <source>Select &amp;All Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;เลือกไทล์ทั้งหมด</translation>
     </message>
 </context>
 <context>
@@ -7051,12 +7051,12 @@ Please select specific format.</source>
         <location filename="../src/tiled/wangbrush.cpp" line="+84"/>
         <location line="+97"/>
         <source>Terrain Brush</source>
-        <translation>แปรงวาดเทอเรนจ์</translation>
+        <translation>แปรงวาดภูมิประเทศ</translation>
     </message>
     <message>
         <location line="+179"/>
         <source>Missing terrain transition</source>
-        <translation>ไม่มีทรานสิชันของเทอเรนจ์</translation>
+        <translation>ไม่พบการเชื่อมกันของภูมิประเทศ</translation>
     </message>
 </context>
 <context>
@@ -7073,7 +7073,7 @@ Please select specific format.</source>
         <location filename="../src/tiled/wangdock.cpp" line="+199"/>
         <location line="+386"/>
         <source>Terrains</source>
-        <translation>เทอเรนจ์</translation>
+        <translation>ภูมิประเทศ</translation>
     </message>
     <message>
         <location line="-385"/>
@@ -7084,17 +7084,17 @@ Please select specific format.</source>
     <message>
         <location line="-13"/>
         <source>Terrain Sets</source>
-        <translation>เทอเรนจ์เซต</translation>
+        <translation>ชุดภูมิประเทศ</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Erase Terrain</source>
-        <translation>ลบเทอเรนจ์</translation>
+        <translation>ลบภูมิประเทศ</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Terrain Set</source>
-        <translation>เพิ่มเทอเรนจ์เซต</translation>
+        <translation>เพิ่มชุดภูมิประเทศ</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -7114,22 +7114,22 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Duplicate Terrain Set</source>
-        <translation>ทำซ้ำเทอเรนจ์เซต</translation>
+        <translation>ทำซ้ำชุดภูมิประเทศ</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Terrain Set</source>
-        <translation>ลบเทอเรนจ์เซต</translation>
+        <translation>ลบชุดภูมิประเทศ</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add Terrain</source>
-        <translation>เพิ่มเทอเรนจ์</translation>
+        <translation>เพิ่มภูมิประเทศ</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove Terrain</source>
-        <translation>ลบเทอเรนจ์</translation>
+        <translation>ลบภูมิประเทศ</translation>
     </message>
 </context>
 <context>
@@ -7137,7 +7137,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/wangsetview.cpp" line="+116"/>
         <source>Terrain Set &amp;Properties...</source>
-        <translation>คุณสมบัติเทอเรนจ์เซต</translation>
+        <translation>&amp;คุณสมบัติของชุดภูมิประเทศ...</translation>
     </message>
 </context>
 <context>
@@ -7243,82 +7243,82 @@ Please select specific format.</source>
     <message>
         <location line="+165"/>
         <source>Cannot export tileset &apos;%1&apos; because the Godot exporter does not support collection-type tilesets.</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่สามารถส่งออกไทล์เซต &apos;%1&apos; ได้ เพราะส่งออกแบบ Godot ไม่รองรับชุดประเภทของไทล์เซตนี้</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Godot exporter does not support property type of &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Godot exporter ไม่รองรับประเภทคุณสมบัติ &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Inconsistent type for property &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>ประเภทคุณสมบัติ &apos;%1&apos; ไม่สอดคล้อง</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>Only objects with the resPath property will be exported</source>
-        <translation type="unfinished"></translation>
+        <translation>เฉพาะวัตถุที่มีข้อมูลคุณสมบัติ resPath เท่านั้นที่จะถูกส่งออก</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>resPath must be in the form of &apos;res://&lt;filename&gt;.tscn&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>resPath จะต้องอยู่ในรูปของ &apos;res://&lt;ชื่อไฟล์&gt;.tscn&apos; เท่านั้น</translation>
     </message>
     <message>
         <location line="+58"/>
         <source>The Godot exporter does not yet support image layers</source>
-        <translation type="unfinished"></translation>
+        <translation>ส่งออกแบบ Godot ยังไม่รองรับเลเยอร์แบบรูปภาพ</translation>
     </message>
     <message>
         <location line="+81"/>
         <source>Godot exporter only supports collisions that are rectangles or polygons.</source>
-        <translation type="unfinished"></translation>
+        <translation>ส่งออกแบบ Godot รองรับรูปร่างขอบเขตการชนแบบสี่เหลี่ยมหรือหลายเหลี่ยมเท่านั้น</translation>
     </message>
     <message>
         <location line="+90"/>
         <source>Godot exporter does not support property of type &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>ส่งออกแบบ Godot ไม่รองรับประเภทคุณสมบัติ &apos;%1&apos;</translation>
     </message>
     <message>
         <location line="+97"/>
         <source>exportAlternates is deprecated. Godot 4.2 supports native tile rotation. Tileset: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>exportAlternates ไม่รองรับแล้ว Godot 4.2 รองรับการหมุนไทล์แบบดั้งเดิม ชุดไทล์: %1</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Tile animations must flow left-to-right, top-to-bottom, with no skipped tiles.</source>
-        <translation type="unfinished"></translation>
+        <translation>แอนิเมชั่นไทล์ต้องวิ่งจาก ซ้ายไปขวา บนลงล่าง และห้ามข้ามไทล์</translation>
     </message>
     <message>
         <location line="+102"/>
         <source>Godot only supports hexagonal maps where the Hex Side Length is exactly half its height. For a tile height of %1, the Hex Side Length should be set to %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Godot รองรับเฉพาะแมพแบบหกเหลี่ยมที่ความยาวด้านของข้างเท่ากับครึ่งนึงของความสูงของมันเท่านั้น สำหรับไทล์ที่สูง %1 ควรจะตั้งเป็น %2</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Unsupported tile orientation.</source>
-        <translation type="unfinished"></translation>
+        <translation>ตำแหน่งของไทล์ไม่รองรับ</translation>
     </message>
     <message>
         <location line="+78"/>
         <source>tilesetResPath must be in the form of &apos;res://&lt;filename&gt;.tres&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>tilesetResPath ต้องอยู่ในรูปของ &apos;res://&lt;ชื่อไฟล์&gt;.tres&apos; เท่านั้น</translation>
     </message>
     <message>
         <location line="+80"/>
         <source>Cannot use tile %1 from tileset %2 because it is reserved as an animation frame.</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่สามารถใช้ไทล์ %1 จากชุดไทล์ %2 ได้ เพราะมันถูกตั้งให้เป็นเฟรมของแอนิเมชัน</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Hex tiles that are rotated by 120° degrees are not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>ไทล์หกเหลี่ยมที่หมุน 120° องศาไม่รองรับ</translation>
     </message>
     <message>
         <location line="+92"/>
         <source>Godot 4 Scene files (*.tscn)</source>
-        <translation type="unfinished"></translation>
+        <translation>ไฟล์ฉาก Godot 4 (*.tscn)</translation>
     </message>
 </context>
 <context>
@@ -7371,7 +7371,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/changeproperties.cpp" line="+37"/>
         <source>Change Type</source>
-        <translation type="unfinished"></translation>
+        <translation>เปลี่ยนประเภท</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -7477,7 +7477,7 @@ Please select specific format.</source>
     <message>
         <location line="+22"/>
         <source>Change Tile Render Size</source>
-        <translation type="unfinished"></translation>
+        <translation>เปลี่ยนขนาดการแสดงผลไทล์</translation>
     </message>
     <message>
         <location line="+26"/>
@@ -7654,12 +7654,12 @@ Please select specific format.</source>
     <message>
         <location line="+4"/>
         <source>Change Infinite Property</source>
-        <translation type="unfinished"></translation>
+        <translation>เปลี่ยนคุณสมบัติไม่จำกัด</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Change Hex Side Length</source>
-        <translation type="unfinished"></translation>
+        <translation>เปลี่ยนความยาวด้านหกเหลี่ยม</translation>
     </message>
     <message>
         <location line="+4"/>
@@ -7690,7 +7690,7 @@ Please select specific format.</source>
     <message>
         <location line="+10"/>
         <source>Change Parallax Origin</source>
-        <translation type="unfinished"></translation>
+        <translation>เปลี่ยนจุดศูนย์กลางพารัลแลกซ์</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -7761,25 +7761,25 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/shapefilltool.cpp" line="-57"/>
         <source>Shape Fill</source>
-        <translation type="unfinished"></translation>
+        <translation>วาดรูปทรง</translation>
     </message>
     <message>
         <location filename="../src/tiled/mapdocument.cpp" line="-1063"/>
         <source>Reload Map</source>
-        <translation type="unfinished"></translation>
+        <translation>โหลดแมพใหม่</translation>
     </message>
     <message numerus="yes">
         <location line="+720"/>
         <source>Raise %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>ยกเลเยอร์ %n ขึ้น</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+27"/>
         <source>Lower %n Layer(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>ยกเลเยอร์ %n ลง</numerusform>
         </translation>
     </message>
     <message>
@@ -7790,74 +7790,74 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/addremovewangset.cpp" line="+62"/>
         <source>Add Terrain Set</source>
-        <translation>เพิ่มเทอเรนจ์เซต</translation>
+        <translation>เพิ่มชุดภูมิประเทศ</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Remove Terrain Set</source>
-        <translation>ลบเทอเรนจ์เซต</translation>
+        <translation>ลบชุดภูมิประเทศ</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetilewangid.cpp" line="+35"/>
         <location line="+12"/>
         <location line="+14"/>
         <source>Change Tile Terrain</source>
-        <translation>เปลี่ยนเทอเรนจ์ไทล์</translation>
+        <translation>เปลี่ยนไทล์ภูมิประเทศ</translation>
     </message>
     <message>
         <location filename="../src/tiled/changewangcolordata.cpp" line="+38"/>
         <source>Change Terrain Name</source>
-        <translation>เปลี่ยนชื่อเทอเรนจ์</translation>
+        <translation>เปลี่ยนชื่อภูมิประเทศ</translation>
     </message>
     <message>
         <location line="+36"/>
         <source>Change Terrain Image</source>
-        <translation>เปลี่ยนรูปเทอเรนจ์</translation>
+        <translation>เปลี่ยนรูปภาพภูมิประเทศ</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Change Terrain Color</source>
-        <translation>เปลี่ยนสีเทอเรนจ์</translation>
+        <translation>เปลี่ยนสีภูมิประเทศ</translation>
     </message>
     <message>
         <location line="+24"/>
         <source>Change Terrain Probability</source>
-        <translation>เปลี่ยนความน่าจะเป็นเทอเรนจ์</translation>
+        <translation>เปลี่ยนความน่าจะเป็นภูมิประเทศ</translation>
     </message>
     <message>
         <location filename="../src/tiled/changewangsetdata.cpp" line="+36"/>
         <source>Change Terrain Set Name</source>
-        <translation>เปลี่ยนชื่อเทอเรนจ์เซต</translation>
+        <translation>เปลี่ยนชื่อชุดภูมิประเทศ</translation>
     </message>
     <message>
         <location line="+40"/>
         <source>Change Terrain Set Type</source>
-        <translation>เปลี่ยนประเภทเทอเรนจ์เซต</translation>
+        <translation>เปลี่ยนประเภทชุดภูมิประเทศ</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Change Terrain Count</source>
-        <translation>เปลี่ยนจำนวนเทอเรนจ์</translation>
+        <translation>เปลี่ยนจำนวนภูมิประเทศ</translation>
     </message>
     <message>
         <location line="+48"/>
         <source>Remove Terrain</source>
-        <translation>ลบเทอเรนจ์</translation>
+        <translation>ลบภูมิประเทศ</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>Set Terrain Set Image</source>
-        <translation>ตั้งรูปเทอเรนจ์เซต</translation>
+        <translation>ตั้งรูปภาพชุดภูมิประเทศ</translation>
     </message>
     <message>
         <location filename="../src/tiled/relocatetiles.cpp" line="+33"/>
         <source>Relocate Tile</source>
-        <translation type="unfinished"></translation>
+        <translation>ย้ายไทล์</translation>
     </message>
     <message>
         <location filename="../src/tiled/changeimagelayerproperty.cpp" line="+38"/>
         <source>Change Transparent Color</source>
-        <translation type="unfinished"></translation>
+        <translation>เปลี่ยนสีโปร่งใส</translation>
     </message>
     <message>
         <location line="+25"/>
@@ -8003,17 +8003,17 @@ Please select specific format.</source>
     <message>
         <location line="+3"/>
         <source>Don&apos;t render tile layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่ต้องแสดงผลเลเยอร์ไทล์</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Don&apos;t render object layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่ต้องแสดงผลเลเยอร์วัตถุ</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Don&apos;t render image layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่ต้องแสดงผลเลเยอร์รูปภาพ</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -8117,7 +8117,7 @@ Please select specific format.</source>
         <location line="+65"/>
         <location filename="../src/tiledquick/qml/main.qml" line="+142"/>
         <source>No map file loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>ไม่มีไฟล์แมพที่โหลดไว้</translation>
     </message>
     <message>
         <location filename="../src/tiledquick/qml/main.qml" line="-132"/>
@@ -8127,7 +8127,7 @@ Please select specific format.</source>
     <message>
         <location line="+8"/>
         <source>Fit Map In View</source>
-        <translation type="unfinished"></translation>
+        <translation>ปรับขนาดแมพให้พอดีกับมุมมอง</translation>
     </message>
     <message>
         <location line="+7"/>

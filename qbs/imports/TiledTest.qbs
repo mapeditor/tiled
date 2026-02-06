@@ -2,6 +2,7 @@ import qbs.FileInfo
 
 CppApplication {
     type: base.concat("autotest")
+    install: false
 
     Depends { name: "libtiled" }
     Depends { name: "Qt.testlib" }

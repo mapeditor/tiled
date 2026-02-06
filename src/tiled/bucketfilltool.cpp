@@ -30,9 +30,7 @@
 #include "stampactions.h"
 
 #include <QCoreApplication>
-#include <QUndoStack>
-
-#include <memory>
+#include <QKeyEvent>
 
 using namespace Tiled;
 
@@ -47,9 +45,7 @@ BucketFillTool::BucketFillTool(QObject *parent)
 {
 }
 
-BucketFillTool::~BucketFillTool()
-{
-}
+BucketFillTool::~BucketFillTool() = default;
 
 void BucketFillTool::tilePositionChanged(QPoint tilePos)
 {
@@ -70,8 +66,6 @@ void BucketFillTool::tilePositionChanged(QPoint tilePos)
     bool shiftPressed = mModifiers & Qt::ShiftModifier;
     bool fillRegionChanged = false;
 
-    TilePainter regionComputer(mapDocument(), tileLayer);
-
     // This clears the connections so we don't get callbacks
     clearConnections(mapDocument());
 
@@ -88,24 +82,37 @@ void BucketFillTool::tilePositionChanged(QPoint tilePos)
 
         // Get the new fill region
         if (!shiftPressed) {
+            TilePainter regionComputer(mapDocument(), tileLayer);
+
             // If not holding shift, a region is computed from the current pos
             bool computeRegion = true;
 
+            if (!mMouseDown)
+                mMatchCells.clear();
+
+            const auto matchCell = regionComputer.cellAt(tilePos);
+            if (!mMatchCells.contains(matchCell))
+                mMatchCells.append(matchCell);
+
             // If the stamp is a single layer with a single tile, ignore that tile when making the region
-            if (mFillMethod != WangFill && mStamp.variations().size() == 1) {
+            if (mFillMethod != WangFill && mStamp.variations().size() == 1 && mMatchCells.size() == 1) {
                 const TileStampVariation &variation = mStamp.variations().first();
                 if (variation.map->layerCount() == 1) {
                     auto stampLayer = static_cast<TileLayer*>(variation.map->layerAt(0));
                     if (stampLayer->size() == QSize(1, 1) &&
-                            stampLayer->cellAt(0, 0) == regionComputer.cellAt(tilePos))
+                            stampLayer->cellAt(0, 0) == mMatchCells.first())
                         computeRegion = false;
                 }
             }
 
-            if (computeRegion)
-                mFillRegion = regionComputer.computePaintableFillRegion(tilePos);
-            else
+            if (computeRegion) {
+                const auto condition = [&](const Cell &cell) {
+                    return mMatchCells.contains(cell);
+                };
+                mFillRegion = regionComputer.computePaintableFillRegion(tilePos, condition);
+            } else {
                 mFillRegion = QRegion();
+            }
         } else {
             // If holding shift, the region is the selection bounds
             mFillRegion = mapDocument()->selectedArea();
@@ -143,35 +150,69 @@ void BucketFillTool::tilePositionChanged(QPoint tilePos)
 
 void BucketFillTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
+    // Right mouse button cancels the fill
+    if (mMouseDown && event->button() == Qt::RightButton) {
+        mMouseDown = false;
+        clearOverlay();
+        return;
+    }
+
     AbstractTileFillTool::mousePressed(event);
     if (event->isAccepted())
         return;
 
     if (event->button() != Qt::LeftButton)
         return;
-    if (mFillRegion.isEmpty())
-        return;
     if (!brushItem()->isVisible())
         return;
 
-    auto preview = mPreviewMap;
-    if (!preview)
-        return;
+    mMouseDown = true;
 
-    mapDocument()->undoStack()->beginMacro(QCoreApplication::translate("Undo Commands", "Fill Area"));
-    mapDocument()->paintTileLayers(*preview, false, &mMissingTilesets);
-    mapDocument()->undoStack()->endMacro();
+    // Apply the fill directly when filling the selection
+    const bool fillSelection = mModifiers & Qt::ShiftModifier;
+    if (fillSelection) {
+        mMouseDown = false;
+
+        if (!mFillRegion.isEmpty())
+            applyPreview(QCoreApplication::translate("Undo Commands", "Fill Selection"));
+    }
+}
+
+void BucketFillTool::mouseReleased(QGraphicsSceneMouseEvent *event)
+{
+    // Apply the fill when left mouse button is released
+    if (event->button() == Qt::LeftButton && mMouseDown) {
+        mMouseDown = false;
+
+        if (!mFillRegion.isEmpty())
+            applyPreview(QCoreApplication::translate("Undo Commands", "Fill Area"));
+        return;
+    }
+
+    AbstractTileFillTool::mouseReleased(event);
+}
+
+void BucketFillTool::keyPressed(QKeyEvent *event)
+{
+    // Escape key cancels the fill
+    if (event->key() == Qt::Key_Escape) {
+        if (mMouseDown) {
+            mMouseDown = false;
+            clearOverlay();
+            return;
+        }
+    }
+
+    AbstractTileFillTool::keyPressed(event);
 }
 
 void BucketFillTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
     mModifiers = modifiers;
 
-    // Don't need to recalculate fill region if there was no fill region
-    if (!mPreviewMap)
-        return;
-
-    tilePositionChanged(tilePosition());
+    const bool fillSelection = mModifiers & Qt::ShiftModifier;
+    if (mLastShiftStatus != fillSelection)
+        tilePositionChanged(tilePosition());
 }
 
 void BucketFillTool::languageChanged()

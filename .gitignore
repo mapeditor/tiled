@@ -3,6 +3,7 @@ default/
 
 # clangd cache
 .cache/
+compile_commands.json
 
 # Mac stuff
 *.DS_Store
@@ -14,6 +15,7 @@ default/
 build/ 
 
 # Visual Studio
+.vscode/
 *.sln
 *.suo
 *.vcxproj

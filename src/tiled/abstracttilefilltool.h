@@ -93,6 +93,7 @@ protected:
     virtual void clearConnections(MapDocument *mapDocument) = 0;
 
     void updatePreview(const QRegion &fillRegion);
+    bool applyPreview(const QString &text);
 
     void clearOverlay();
 

@@ -11,7 +11,7 @@
     <message>
         <location line="+96"/>
         <source>Donate ↗</source>
-        <translation type="unfinished"></translation>
+        <translation>Donar ↗</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -60,7 +60,7 @@
     <message>
         <location line="-33"/>
         <source>Failed to load project &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo cargar el proyecto &apos;%1&apos;.</translation>
     </message>
     <message>
         <location line="+44"/>
@@ -85,7 +85,7 @@
     <message>
         <location line="+7"/>
         <source>Unknown version: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Versión desconocida: %1</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -110,23 +110,23 @@
     <message>
         <location line="+22"/>
         <source>Failed to load source tileset.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo cargar el conjunto de mosaicos de origen.</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Failed to export tileset to target file.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo exportar el conjunto de mosaicos al archivo de destino.</translation>
     </message>
     <message>
         <location line="-276"/>
         <location line="+290"/>
         <source>Project file &apos;%1&apos; not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se encontró el archivo de proyecto &apos;%1&apos;.</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Session file &apos;%1&apos; not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se encontró el archivo de sesión &apos;%1&apos;.</translation>
     </message>
 </context>
 <context>
@@ -134,7 +134,7 @@
     <message>
         <location filename="../src/tiled/commanddialog.ui" line="+14"/>
         <source>Edit Commands</source>
-        <translation type="unfinished">Editar Ordenes</translation>
+        <translation>Comandos de edición</translation>
     </message>
     <message>
         <location line="+43"/>
@@ -162,17 +162,17 @@
     <message>
         <location line="+5"/>
         <source>Project file to load</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivo de proyecto para cargar</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified map file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar el archivo de mapa especificado al destino</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Export the specified tileset file to target</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportar el archivo de conjunto de mosaicos especificado al destino</translation>
     </message>
     <message>
         <location line="+10"/>

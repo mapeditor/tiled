@@ -41,6 +41,8 @@ public:
 
     void modifiersChanged(Qt::KeyboardModifiers) override;
 
+    void keyPressed(QKeyEvent *event) override;
+
     void languageChanged() override;
 
     void populateToolBar(QToolBar *toolBar) override;
@@ -73,6 +75,7 @@ private:
     void setActionsEnabled(bool enabled);
 
     void setCurrentShape(Shape shape);
+    void cancelMakingShape();
     void updateFillOverlay();
 };
 

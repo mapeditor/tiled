@@ -112,7 +112,7 @@ public:
      */
     SetProperty(Document *document,
                 const QList<Object*> &objects,
-                const QStringList &path,
+                const PropertyPath &path,
                 const QVariant &value,
                 QUndoCommand *parent = nullptr);
 
@@ -126,7 +126,7 @@ public:
      */
     SetProperty(Document *document,
                 const QList<Object*> &objects,
-                const QStringList &path,
+                const PropertyPath &path,
                 const QVariantList &values,
                 QUndoCommand *parent = nullptr);
 
@@ -141,7 +141,7 @@ private:
     Document *mDocument;
     QList<Object*> mObjects;
     QString mName;
-    QStringList mPath;
+    PropertyPath mPath;
     QVariantList mValues;
     QVariantList mPreviousValues;
 };

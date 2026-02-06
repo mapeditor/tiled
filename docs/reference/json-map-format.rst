@@ -233,6 +233,7 @@ Object
     :header: Field, Type, Description
     :widths: 1, 1, 4
 
+    capsule,          bool,             "Used to mark an object as a capsule"
     ellipse,          bool,             "Used to mark an object as an ellipse"
     gid,              int,              "Global tile ID, only if object represents a tile"
     height,           double,           "Height in pixels."
@@ -492,10 +493,10 @@ Tileset
     wangsets,         array,            "Array of :ref:`Wang sets <json-wangset>` (since 1.1.5)"
 
 Each tileset has a ``firstgid`` (first global ID) property which
-tells you the global ID of its first tile (the one with local 
-tile ID 0). This allows you to map the global IDs back to the 
-right tileset, and then calculate the local tile ID by 
-subtracting the ``firstgid`` from the global tile ID. The first 
+tells you the global ID of its first tile (the one with local
+tile ID 0). This allows you to map the global IDs back to the
+right tileset, and then calculate the local tile ID by
+subtracting the ``firstgid`` from the global tile ID. The first
 tileset always has a ``firstgid`` value of 1.
 
 .. _json-tileset-grid:
@@ -588,7 +589,7 @@ Tile (Definition)
     width,            int,                "The width of the sub-rectangle representing this tile (defaults to the image width)"
     height,           int,                "The height of the sub-rectangle representing this tile (defaults to the image height)"
     objectgroup,      :ref:`json-layer`,  "Layer with type ``objectgroup``, when collision shapes are specified (optional)"
-    probability,      double,             "Percentage chance this tile is chosen when competing with others in the editor (optional)"
+    probability,      double,             "Percentage chance this tile is chosen when competing with others in the editor (default: 1)"
     properties,       array,              "Array of :ref:`Properties <json-property>`"
     terrain,          array,              "Index of terrain for each corner of tile (optional, replaced by :ref:`Wang sets <json-wangset>` since 1.5)"
     type,             string,             "The class of the tile (was saved as ``class`` in 1.9, optional)"
@@ -680,7 +681,7 @@ Wang Color
     class,            string,           "The class of the Wang color (since 1.9, optional)"
     color,            string,           "Hex-formatted color (#RRGGBB or #AARRGGBB)"
     name,             string,           "Name of the Wang color"
-    probability,      double,           "Probability used when randomizing"
+    probability,      double,           "Probability used when randomizing (default: 1)"
     properties,       array,            "Array of :ref:`Properties <json-property>` (since 1.5)"
     tile,             int,              "Local ID of tile representing the Wang color"
 
@@ -768,6 +769,8 @@ Tiled 1.12
 
 * Added ``mode`` property to :ref:`json-layer` to specify the blend mode to use
   when rendering the layer.
+
+* Added ``capsule`` property to :ref:`json-object`.
 
 Tiled 1.11.1
 ~~~~~~~~~~~~

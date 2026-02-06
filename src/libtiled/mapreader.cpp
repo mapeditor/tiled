@@ -137,6 +137,7 @@ private:
 
     Properties readProperties();
     void readProperty(Properties *properties, const ExportContext &context);
+    QVariant readPropertyValue(const ExportContext &context);
 
     MapReader *p;
 
@@ -1251,6 +1252,10 @@ std::unique_ptr<MapObject> MapReaderPrivate::readObject()
             xml.skipCurrentElement();
             object->setShape(MapObject::Ellipse);
             object->setPropertyChanged(MapObject::ShapeProperty);
+        } else if (xml.name() == QLatin1String("capsule")) {
+            xml.skipCurrentElement();
+            object->setShape(MapObject::Capsule);
+            object->setPropertyChanged(MapObject::ShapeProperty);
         } else if (xml.name() == QLatin1String("text")) {
             object->setTextData(readObjectText());
             object->setShape(MapObject::Text);
@@ -1437,12 +1442,21 @@ void MapReaderPrivate::readProperty(Properties *properties, const ExportContext 
     const QXmlStreamAttributes atts = xml.attributes();
     QString propertyName = atts.value(QLatin1String("name")).toString();
 
+    properties->insert(propertyName, readPropertyValue(context));
+}
+
+QVariant MapReaderPrivate::readPropertyValue(const ExportContext &context)
+{
+    const QXmlStreamAttributes atts = xml.attributes();
+
     ExportValue exportValue;
     exportValue.typeName = atts.value(QLatin1String("type")).toString();
     exportValue.propertyTypeName = atts.value(QLatin1String("propertytype")).toString();
 
     const QString propertyValue = atts.value(QLatin1String("value")).toString();
     exportValue.value = propertyValue;
+
+    QVariantList values;
 
     while (xml.readNext() != QXmlStreamReader::Invalid) {
         if (xml.isEndElement()) {
@@ -1453,12 +1467,17 @@ void MapReaderPrivate::readProperty(Properties *properties, const ExportContext 
         } else if (xml.isStartElement()) {
             if (xml.name() == QLatin1String("properties"))
                 exportValue.value = readProperties();
+            else if (xml.name() == QLatin1String("item"))
+                values.append(readPropertyValue(context));
             else
                 readUnknownElement();
         }
     }
 
-    properties->insert(propertyName, context.toPropertyValue(exportValue));
+    if (exportValue.typeName == QLatin1String("list"))
+        exportValue.value = values;
+
+    return context.toPropertyValue(exportValue);
 }
 
 

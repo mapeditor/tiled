@@ -26,7 +26,6 @@
 #include "preferences.h"
 #include "project.h"
 #include "projectmanager.h"
-#include "propertiesview.h"
 #include "propertytypesmodel.h"
 #include "savefile.h"
 #include "session.h"
@@ -369,7 +368,7 @@ ClassPropertyType *PropertyTypesEditor::selectedClassPropertyType() const
 
 void PropertyTypesEditor::selectedMembersChanged()
 {
-    const auto properties = mMembersView->selectedProperties();
+    const auto properties = mMembersProperty->selectedSubProperties();
     const bool singlePropertySelected = properties.size() == 1;
     mRemoveMemberAction->setEnabled(singlePropertySelected);
     mRenameMemberAction->setEnabled(singlePropertySelected);
@@ -399,7 +398,7 @@ void PropertyTypesEditor::applyMemberToSelectedType(const QString &name, const Q
 void PropertyTypesEditor::applyPropertyTypes()
 {
     QScopedValueRollback<bool> settingPrefPropertyTypes(mSettingPrefPropertyTypes, true);
-    emit Preferences::instance()->propertyTypesChanged();
+    Preferences::instance()->emitPropertyTypesChanged();
 
     Project &project = ProjectManager::instance()->project();
     project.save();
@@ -570,10 +569,17 @@ void PropertyTypesEditor::openAddMemberDialog()
     if (!mAddValueProperty) {
         mAddValueProperty = new AddValueProperty(mMembersProperty);
         mAddValueProperty->setPlaceholderText(tr("Member name"));
-        mAddValueProperty->setParentClassType(static_cast<const ClassPropertyType*>(propertyType));
 
-        connect(mAddValueProperty, &Property::addRequested, this, [this] {
-            addMember(mAddValueProperty->name(), mAddValueProperty->value());
+        connect(mAddValueProperty, &Property::addRequested, this, [this] (bool focus) {
+            const auto &name = mAddValueProperty->name();
+            addMember(name, mAddValueProperty->value());
+
+            if (auto property = mMembersProperty->property(name)) {
+                if (focus)
+                    mMembersView->focusProperty(property);
+                mMembersView->setSelectedProperties({ property });
+            }
+
             mMembersProperty->deleteProperty(mAddValueProperty);
         });
         connect(mAddValueProperty, &Property::removeRequested, this, [this] {
@@ -605,11 +611,6 @@ void PropertyTypesEditor::addMember(const QString &name, const QVariant &value)
 
     applyMemberToSelectedType(name, value);
     updateDetails();
-
-    if (auto property = mMembersProperty->property(name)) {
-        mMembersView->focusProperty(property);
-        mMembersView->setSelectedProperties({ property });
-    }
 }
 
 void PropertyTypesEditor::removeMember()
@@ -618,7 +619,7 @@ void PropertyTypesEditor::removeMember()
     if (!propertyType || !propertyType->isClass())
         return;
 
-    const auto properties = mMembersView->selectedProperties();
+    const auto properties = mMembersProperty->selectedSubProperties();
     if (properties.size() != 1)
         return;
 
@@ -645,7 +646,7 @@ void PropertyTypesEditor::removeMember()
 
 void PropertyTypesEditor::renameSelectedMember()
 {
-    const auto properties = mMembersView->selectedProperties();
+    const auto properties = mMembersProperty->selectedSubProperties();
     if (properties.size() != 1)
         return;
 
@@ -836,6 +837,7 @@ void PropertyTypesEditor::updateDetails()
         mDrawFillCheckBox->setChecked(classType.drawFill);
         updateClassUsageDetails(classType);
 
+        mMembersView->setCurrentEditedClassType(&classType);
         mMembersProperty->setValue(classType.members);
         break;
     }
@@ -943,7 +945,7 @@ void PropertyTypesEditor::addClassProperties()
     nameAndColor->addWidget(mColorButton);
     nameAndColor->addWidget(mDrawFillCheckBox);
 
-    mMembersView = new PropertiesView(this);
+    mMembersView = new ClassMembersView(this);
 
     const auto halfSpacing = Utils::dpiScaled(2);
     mMembersView->widget()->setContentsMargins(0, halfSpacing, 0, halfSpacing);

@@ -28,10 +28,11 @@ class ProjectPropertiesDialog;
 
 namespace Tiled {
 
-class IntProperty;
 class Project;
 class ProjectDocument;
-class UrlProperty;
+
+struct IntProperty;
+struct UrlProperty;
 
 class ProjectPropertiesDialog : public QDialog
 {

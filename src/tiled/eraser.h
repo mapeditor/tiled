@@ -43,6 +43,7 @@ public:
 
 protected:
     void tilePositionChanged(QPoint tilePos) override;
+    void updateStatusInfo() override;
 
 private:
     void doErase(bool continuation);

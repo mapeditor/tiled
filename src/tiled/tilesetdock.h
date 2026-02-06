@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include "filteredit.h"
 #include "tileset.h"
 
 #include <QAbstractItemModel>
@@ -180,6 +181,7 @@ private:
 
     QList<TilesetDocument *> mTilesetDocuments;
     TilesetDocumentsFilterModel *mTilesetDocumentsFilterModel;
+    FilterEdit *mTilesetFilterEdit;
 
     QTabBar *mTabBar;
     QStackedWidget *mSuperViewStack;
@@ -201,6 +203,7 @@ private:
     QToolButton *mTilesetMenuButton;
     QMenu *mTilesetMenu; //opens on click of mTilesetMenu
     QActionGroup *mTilesetActionGroup;
+    QAction *mShowTilesetFilter;
 
     QComboBox *mZoomComboBox;
 

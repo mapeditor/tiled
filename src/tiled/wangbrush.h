@@ -26,6 +26,8 @@
 #include "wangfiller.h"
 #include "wangset.h"
 
+#include <QToolBar>
+
 namespace Tiled {
 
 class WangBrushItem : public BrushItem
@@ -47,7 +49,7 @@ private:
     QRegion mInvalidTiles;
 };
 
-class WangBrush : public AbstractTileTool
+class WangBrush final : public AbstractTileTool
 {
     Q_OBJECT
 
@@ -73,6 +75,8 @@ public:
     void languageChanged() override;
 
     void setColor(int color);
+
+    void populateToolBar(QToolBar *toolbar) override;
 
 signals:
     void colorCaptured(int color);
@@ -117,9 +121,11 @@ private:
     int mCurrentColor = 0;
     BrushMode mBrushMode = Idle;
     bool mIsTileMode = false;
+    bool mIsTileModeDefault = false;
     bool mRotationalSymmetry = false;
     bool mLineStartSet = false;
     BrushBehavior mBrushBehavior = Free;
+    QAction *mToggleFillFullTiles;
 };
 
 } // namespace Tiled

@@ -120,6 +120,15 @@ QPainterPath IsometricRenderer::shape(const MapObject *object) const
     QPainterPath path;
 
     switch (object->shape()) {
+    case MapObject::Capsule: {
+        QRectF bounds = object->bounds();
+        bounds.translate(-alignmentOffset(bounds, object->alignment(map())));
+        const qreal rad = std::min(std::abs(bounds.height()),
+                                   std::abs(bounds.width())) / 2;
+        path.addRoundedRect(bounds, rad, rad, Qt::SizeMode::AbsoluteSize);
+        path = transform().map(path);
+        break;
+    }
     case MapObject::Ellipse: {
         QRectF bounds = object->bounds();
         bounds.translate(-alignmentOffset(bounds, object->alignment(map())));
@@ -166,7 +175,8 @@ QPainterPath IsometricRenderer::interactionShape(const MapObject *object) const
     } else {
         switch (object->shape()) {
         case MapObject::Rectangle:
-        case MapObject::Ellipse: {
+        case MapObject::Ellipse:
+        case MapObject::Capsule: {
             QRectF bounds = object->bounds();
             bounds.translate(-alignmentOffset(bounds, object->alignment(map())));
 
@@ -404,18 +414,19 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         // TODO: Do something sensible to make null-sized objects usable
 
         switch (object->shape()) {
-        case MapObject::Ellipse: {
+        case MapObject::Ellipse:
+        case MapObject::Capsule: {
             const QPolygonF rect = pixelRectToScreenPolygon(bounds);
-            const QPainterPath ellipse = shape(object);
+            const QPainterPath path = shape(object);
 
-            painter->drawPath(ellipse.translated(shadowOffset));
+            painter->drawPath(path.translated(shadowOffset));
             painter->drawPolygon(rect.translated(shadowOffset));
 
             painter->setPen(colorPen);
             painter->drawPolygon(rect);
 
             painter->setBrush(brush);
-            painter->drawPath(ellipse);
+            painter->drawPath(path);
             break;
         }
         case MapObject::Point:

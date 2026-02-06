@@ -90,6 +90,8 @@ signals:
 protected:
     void tilePositionChanged(QPoint tilePos) override;
 
+    void updateStatusInfo() override;
+
     void mapDocumentChanged(MapDocument *oldDocument,
                             MapDocument *newDocument) override;
 

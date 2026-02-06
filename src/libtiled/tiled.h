@@ -107,6 +107,7 @@ static const char TILES_MIMETYPE[] = "application/vnd.tile.list";
 static const char FRAMES_MIMETYPE[] = "application/vnd.frame.list";
 static const char LAYERS_MIMETYPE[] = "application/vnd.layer.list";
 static const char PROPERTIES_MIMETYPE[] = "application/vnd.properties.list";
+static const char LIST_VALUES_MIMETYPE[] = "application/vnd.list-values.list";
 
 TILEDSHARED_EXPORT QPointF alignmentOffset(const QSizeF &size, Alignment alignment);
 TILEDSHARED_EXPORT Alignment flipAlignment(Alignment alignment, FlipDirection direction);

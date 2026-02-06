@@ -20,6 +20,7 @@
 
 #include "tiledapplication.h"
 
+#include "expressionspinbox.h"
 #include "languagemanager.h"
 #include "newsfeed.h"
 #include "newversionchecker.h"
@@ -64,6 +65,7 @@ TiledApplication::~TiledApplication()
     TilesetManager::deleteInstance();
     Preferences::deleteInstance();
     PluginManager::deleteInstance();
+    ExpressionEvaluator::deleteInstance();
     Session::deinitialize();
 }
 
