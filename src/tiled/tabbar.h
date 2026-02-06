@@ -21,6 +21,7 @@
 #pragma once
 
 #include <QTabBar>
+#include <QSet>
 
 namespace Tiled {
 
@@ -33,15 +34,26 @@ class TabBar : public QTabBar
 {
 public:
     explicit TabBar(QWidget *parent = nullptr);
+    void setTabDeleted(int index, bool deleted);
+    bool isTabDeleted(int index) const;
+    void setTabRecreated(int index, bool recreated);
+    bool isTabRecreated(int index) const;
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 
     void wheelEvent(QWheelEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
+
+protected:
+    void tabInserted(int index) override;
+    void tabRemoved(int index) override;
 
 private:
     int mPressedIndex = -1;
+    QSet<int> mDeletedTabs;
+    QSet<int> mRecreatedTabs;
 };
 
 } // namespace Tiled
