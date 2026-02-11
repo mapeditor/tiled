@@ -31,9 +31,11 @@ jobs:
       run: |
         brew update
         brew install qbs qttools
+        echo "$(brew --prefix qbs)/bin" >> "$GITHUB_PATH"
 
     - name: Setup Qbs
       run: |
+        qbs --version
         qbs setup-toolchains --detect
         qbs config defaultProfile xcode
 
