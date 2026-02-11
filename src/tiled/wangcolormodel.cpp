@@ -39,15 +39,16 @@ WangColorModel::WangColorModel(TilesetDocument *tilesetDocument,
     : QAbstractListModel(parent)
     , mTilesetDocument(tilesetDocument)
     , mWangSet(wangSet)
+    , mEraserIcon(QLatin1String(":images/22/stock-tool-eraser.png"))
 {
 }
 
-QModelIndex WangColorModel::colorIndex(int color) const
+QModelIndex WangColorModel::colorModelIndex(int color) const
 {
-    if (!mWangSet || color > mWangSet->colorCount())
+    if (!mWangSet || color < 0 || color > mWangSet->colorCount())
         return QModelIndex();
 
-    return createIndex(color - 1, 0);
+    return createIndex(color, 0);
 }
 
 int WangColorModel::rowCount(const QModelIndex &parent) const
@@ -55,7 +56,7 @@ int WangColorModel::rowCount(const QModelIndex &parent) const
     if (!mWangSet || parent.isValid())
         return 0;
 
-    return mWangSet->colorCount();
+    return mWangSet->colorCount() + 1;
 }
 
 int WangColorModel::columnCount(const QModelIndex &parent) const
@@ -68,15 +69,25 @@ QVariant WangColorModel::data(const QModelIndex &index, int role) const
     if (!mWangSet)
         return QVariant();
 
+    const int colorIndex = index.row();
+
     switch (role) {
+    case WangColorIndexRole:
+        return colorIndex;
     case Qt::DisplayRole:
     case Qt::EditRole:
+        if (colorIndex == 0)
+            return QCoreApplication::translate("Tiled::WangDock", "Erase Terrain");
         return wangColorAt(index)->name();
     case Qt::DecorationRole:
-        if (Tile *tile =  mWangSet->tileset()->findTile(wangColorAt(index)->imageId()))
+        if (colorIndex == 0)
+            return mEraserIcon;
+        if (Tile *tile = mWangSet->tileset()->findTile(wangColorAt(index)->imageId()))
             return tile->image().copy(tile->imageRect());
         break;
     case ColorRole:
+        if (colorIndex == 0)
+            return QVariant();
         return wangColorAt(index)->color();
     }
 
@@ -86,10 +97,13 @@ QVariant WangColorModel::data(const QModelIndex &index, int role) const
 bool WangColorModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (role == Qt::EditRole) {
+        const auto wangColor = wangColorAt(index);
+        if (!wangColor)
+            return false;
+
         const QString newName = value.toString();
-        WangColor *wangColor = wangColorAt(index).data();
         if (wangColor->name() != newName) {
-            auto command = new ChangeWangColorName(mTilesetDocument, wangColor, newName);
+            auto command = new ChangeWangColorName(mTilesetDocument, wangColor.data(), newName);
             mTilesetDocument->undoStack()->push(command);
         }
 
@@ -101,7 +115,11 @@ bool WangColorModel::setData(const QModelIndex &index, const QVariant &value, in
 
 Qt::ItemFlags WangColorModel::flags(const QModelIndex &index) const
 {
-    return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+    Qt::ItemFlags flags = QAbstractItemModel::flags(index);
+    if (index.row() == 0)
+        return flags;
+
+    return flags | Qt::ItemIsEditable;
 }
 
 void WangColorModel::resetModel()
@@ -110,20 +128,12 @@ void WangColorModel::resetModel()
     endResetModel();
 }
 
-int WangColorModel::colorAt(const QModelIndex &index) const
-{
-    if (!index.isValid())
-        return 0;
-
-    return index.row() + 1;
-}
-
 QSharedPointer<WangColor> WangColorModel::wangColorAt(const QModelIndex &index) const
 {
-    if (!index.isValid())
+    if (!index.isValid() || index.row() == 0)
         return QSharedPointer<WangColor>();
 
-    return mWangSet->colorAt(colorAt(index));
+    return mWangSet->colorAt(index.row());
 }
 
 void WangColorModel::setName(WangColor *wangColor, const QString &name)
@@ -156,7 +166,7 @@ void WangColorModel::setProbability(WangColor *wangColor, qreal probability)
 
 void WangColorModel::emitDataChanged(WangColor *wangColor)
 {
-    const QModelIndex i = colorIndex(wangColor->colorIndex());
+    const QModelIndex i = colorModelIndex(wangColor->colorIndex());
     emit dataChanged(i, i);
 }
 

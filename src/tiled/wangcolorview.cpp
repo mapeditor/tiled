@@ -46,10 +46,12 @@ protected:
     void initStyleOption(QStyleOptionViewItem *option, const QModelIndex &index) const override;
 };
 
+} // anonymous namespace
+
 void WangColorDelegate::initStyleOption(QStyleOptionViewItem *option, const QModelIndex &index) const
 {
     QSize decorationSize = option->decorationSize;
-    QPixmap tileImage = index.data(Qt::DecorationRole).value<QPixmap>();
+    auto tileImage = index.data(Qt::DecorationRole).value<QPixmap>();
 
     QPixmap pixmap(decorationSize);
     pixmap.fill(Qt::transparent);
@@ -73,26 +75,28 @@ void WangColorDelegate::initStyleOption(QStyleOptionViewItem *option, const QMod
     }
 
     // Draw the Wang color on top
-    const QColor wangColor = index.data(WangColorModel::ColorRole).value<QColor>();
-    const QPointF topRight = QPointF(pixmap.width() * 0.75, 0);
-    const QPointF bottomLeft = QPointF(0, pixmap.height() * 0.75);
-    painter.setBrush(wangColor);
-    painter.setPen(Qt::NoPen);
-    painter.drawPolygon(QVector<QPointF> { QPointF(), topRight, bottomLeft });
-    QColor border(Qt::black);
-    border.setAlpha(128);
-    painter.setPen(QPen(border, 2.0));
-    painter.drawLine(topRight, bottomLeft);
+    const auto wangColor = index.data(WangColorModel::ColorRole).value<QColor>();
+    if (wangColor.isValid()) {
+        const QPointF topRight = QPointF(pixmap.width() * 0.75, 0);
+        const QPointF bottomLeft = QPointF(0, pixmap.height() * 0.75);
+        painter.setBrush(wangColor);
+        painter.setPen(Qt::NoPen);
+        painter.drawPolygon(QVector<QPointF> { QPointF(), topRight, bottomLeft });
+        QColor border(Qt::black);
+        border.setAlpha(128);
+        painter.setPen(QPen(border, 2.0));
+        painter.drawLine(topRight, bottomLeft);
+    }
 
     QStyledItemDelegate::initStyleOption(option, index);
 
     // Reset the icon
     option->features |= QStyleOptionViewItem::HasDecoration;
     option->decorationSize = decorationSize;
-    option->icon = pixmap;
+    if (wangColor.isValid())
+        option->icon = pixmap;
 }
 
-} // anonymous namespace
 
 WangColorView::WangColorView(QWidget *parent)
     : QTreeView(parent)
@@ -105,9 +109,7 @@ WangColorView::WangColorView(QWidget *parent)
     setItemDelegate(new WangColorDelegate(this));
 }
 
-WangColorView::~WangColorView()
-{
-}
+WangColorView::~WangColorView() = default;
 
 void WangColorView::setTileSize(QSize size)
 {
@@ -138,6 +140,8 @@ void WangColorView::contextMenuEvent(QContextMenuEvent *event)
 
     const QModelIndex index = proxyModel->mapToSource(filterModelIndex);
     mClickedWangColor = wangColorModel->wangColorAt(index);
+    if (!mClickedWangColor)
+        return;
 
     QMenu menu;
 
@@ -150,7 +154,7 @@ void WangColorView::contextMenuEvent(QContextMenuEvent *event)
 
 void WangColorView::pickColor()
 {
-    QColorDialog *colorPicker = new QColorDialog(this);
+    auto colorPicker = new QColorDialog(this);
     colorPicker->setAttribute(Qt::WA_DeleteOnClose);
     colorPicker->setCurrentColor(mClickedWangColor->color());
     connect(colorPicker, &QColorDialog::colorSelected,

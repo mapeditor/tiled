@@ -41,7 +41,6 @@
 #include <QAction>
 #include <QEvent>
 #include <QBoxLayout>
-#include <QPushButton>
 #include <QSortFilterProxyModel>
 #include <QSplitter>
 #include <QTabWidget>
@@ -232,16 +231,6 @@ WangDock::WangDock(QWidget *parent)
     connect(mWangColorView, &QAbstractItemView::pressed,
             this, &WangDock::wangColorIndexPressed);
 
-    mEraseWangIdsButton = new QPushButton(this);
-    mEraseWangIdsButton->setIconSize(Utils::smallIconSize());
-    mEraseWangIdsButton->setIcon(QIcon(QLatin1String(":images/22/stock-tool-eraser.png")));
-    mEraseWangIdsButton->setCheckable(true);
-    mEraseWangIdsButton->setAutoExclusive(true);
-    mEraseWangIdsButton->setChecked(mCurrentWangId.isEmpty());
-
-    connect(mEraseWangIdsButton, &QPushButton::clicked,
-            this, &WangDock::activateErase);
-
     // WangSet layout
 
     QHBoxLayout *wangSetHorizontal = new QHBoxLayout;
@@ -271,22 +260,12 @@ WangDock::WangDock(QWidget *parent)
     mTemplateAndColorView->addTab(mWangColorWidget, tr("Terrains"));
     mTemplateAndColorView->addTab(mWangTemplateView, tr("Patterns"));
 
-    QHBoxLayout *templateAndColorHorizontal = new QHBoxLayout;
-    templateAndColorHorizontal->addWidget(mEraseWangIdsButton);
-    templateAndColorHorizontal->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding));
-
-    mTemplateAndColorWidget = new QWidget;
-    QVBoxLayout *templateAndColorVertical = new QVBoxLayout(mTemplateAndColorWidget);
-    templateAndColorVertical->setContentsMargins(0, 0, 0, 0);
-    templateAndColorVertical->addWidget(mTemplateAndColorView);
-    templateAndColorVertical->addLayout(templateAndColorHorizontal);
-
     // Splitter combining the WangSet and WangColor views
 
     QSplitter *wangViews = new QSplitter;
     wangViews->setOrientation(Qt::Vertical);
     wangViews->addWidget(wangSetWidget);
-    wangViews->addWidget(mTemplateAndColorWidget);
+    wangViews->addWidget(mTemplateAndColorView);
     wangViews->setCollapsible(1, false);
 
     // View stack for showing the "No Terrain Sets defined" widget
@@ -374,14 +353,7 @@ int WangDock::currentWangColor() const
 {
     QItemSelectionModel *selectionModel = mWangColorView->selectionModel();
     const auto currentIndex = selectionModel->currentIndex();
-    int color = 0;
-
-    if (currentIndex.isValid()) {
-        QModelIndex index = static_cast<QAbstractProxyModel*>(mWangColorView->model())->mapToSource(currentIndex);
-        color = mWangColorModel->colorAt(index);
-    }
-
-    return color;
+    return currentIndex.data(WangColorModel::WangColorIndexRole).toInt();
 }
 
 void WangDock::editWangSetName(WangSet *wangSet)
@@ -398,7 +370,7 @@ void WangDock::editWangSetName(WangSet *wangSet)
 
 void WangDock::editWangColorName(int colorIndex)
 {
-    const QModelIndex index = mWangColorModel->colorIndex(colorIndex);
+    const QModelIndex index = mWangColorModel->colorModelIndex(colorIndex);
     if (!index.isValid())
         return;
 
@@ -443,8 +415,6 @@ void WangDock::refreshCurrentWangId()
 
     mCurrentWangId = wangId;
 
-    mEraseWangIdsButton->setChecked(!mCurrentWangId);
-
     emit currentWangIdChanged(mCurrentWangId);
 }
 
@@ -452,14 +422,13 @@ void WangDock::refreshCurrentWangColor()
 {
     const int color = currentWangColor();
 
-    mEraseWangIdsButton->setChecked(color == 0);
     mRemoveColor->setEnabled(color != 0);
     emit wangColorChanged(color);
 }
 
 void WangDock::wangColorIndexPressed(const QModelIndex &index)
 {
-    const int color = mWangColorModel->colorAt(index);
+    const int color = index.data(WangColorModel::WangColorIndexRole).toInt();
     if (!color)
         return;
 
@@ -555,8 +524,7 @@ void WangDock::removeColor()
         return;
 
     const QItemSelectionModel *selectionModel = mWangColorView->selectionModel();
-    const QModelIndex index = static_cast<QAbstractProxyModel*>(mWangColorView->model())->mapToSource(selectionModel->currentIndex());
-    const int color = mWangColorModel->colorAt(index);
+    const int color = selectionModel->currentIndex().data(WangColorModel::WangColorIndexRole).toInt();
     tilesetDocument->undoStack()->push(new RemoveWangSetColor(tilesetDocument,
                                                               mCurrentWangSet,
                                                               color));
@@ -591,18 +559,19 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
 
     mRemoveColor->setEnabled(false);
 
-    activateErase();
+    // Automatically select the 'No Terrain' entry
+    if (mWangColorModel)
+        mWangColorView->setCurrentIndex(mWangColorFilterModel->index(0, 0));
+
+    // Select the empty template
+    mWangTemplateView->selectionModel()->setCurrentIndex(mWangTemplateModel->wangIdIndex(WangId()),
+                                                         QItemSelectionModel::SelectCurrent);
 
     if (wangSet) {
         mWangSetView->setCurrentIndex(wangSetIndex(wangSet));
 
         if (!mWangTemplateView->isVisible() && !mWangColorView->isVisible())
             setColorView();
-
-        if (wangSet->colorCount() > 0 && !mWangTemplateView->isVisible()) {
-            const QModelIndex index = mWangColorModel->colorIndex(1);
-            mWangColorView->setCurrentIndex(static_cast<QAbstractProxyModel*>(mWangColorView->model())->mapFromSource(index));
-        }
 
         updateAddColorStatus();
     } else {
@@ -621,20 +590,6 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
     mRemoveWangSet->setEnabled(wangSet);
 }
 
-void WangDock::activateErase()
-{
-    mEraseWangIdsButton->setChecked(true);
-
-    mCurrentWangId = WangId();
-
-    mWangTemplateView->selectionModel()->clearCurrentIndex();
-    mWangTemplateView->selectionModel()->clearSelection();
-    mWangColorView->selectionModel()->clearCurrentIndex();
-    mWangColorView->selectionModel()->clearSelection();
-
-    emit wangColorChanged(0);
-}
-
 void WangDock::updateAddColorStatus()
 {
     mAddColor->setEnabled(mCurrentWangSet->colorCount() < WangId::MAX_COLOR_COUNT);
@@ -644,7 +599,6 @@ void WangDock::retranslateUi()
 {
     setWindowTitle(tr("Terrain Sets"));
 
-    mEraseWangIdsButton->setText(tr("Erase Terrain"));
     mNewWangSetButton->setToolTip(tr("Add Terrain Set"));
     mAddCornerWangSet->setText(tr("New Corner Set"));
     mAddEdgeWangSet->setText(tr("New Edge Set"));
@@ -680,7 +634,7 @@ void WangDock::onWangIdUsedChanged(WangId wangId)
 
 void WangDock::setCurrentWangColor(int color)
 {
-    const QModelIndex index = mWangColorModel->colorIndex(color);
+    const QModelIndex index = mWangColorModel->colorModelIndex(color);
 
     if (index.isValid()) {
         mWangColorView->setCurrentIndex(static_cast<QAbstractProxyModel*>(mWangColorView->model())->mapFromSource(index));
@@ -693,12 +647,13 @@ void WangDock::setCurrentWangColor(int color)
 void WangDock::onCurrentWangIdChanged(WangId wangId)
 {
     const QModelIndex index = mWangTemplateModel->wangIdIndex(wangId);
+    QItemSelectionModel *selectionModel = mWangTemplateView->selectionModel();
+
     if (!index.isValid()) {
-        activateErase();
+        selectionModel->clearCurrentIndex();
+        selectionModel->clearSelection();
         return;
     }
-
-    QItemSelectionModel *selectionModel = mWangTemplateView->selectionModel();
 
     //this emits current changed, and thus updates the wangId and such.
     selectionModel->setCurrentIndex(index, QItemSelectionModel::SelectCurrent);
@@ -706,14 +661,14 @@ void WangDock::onCurrentWangIdChanged(WangId wangId)
 
 void WangDock::setColorView()
 {
-    mTemplateAndColorWidget->setVisible(true);
+    mTemplateAndColorView->setVisible(true);
     mTemplateAndColorView->setCurrentWidget(mWangColorWidget);
     retranslateUi();
 }
 
 void WangDock::hideTemplateColorView()
 {
-    mTemplateAndColorWidget->setVisible(false);
+    mTemplateAndColorView->setVisible(false);
 }
 
 #include "wangdock.moc"

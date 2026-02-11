@@ -23,6 +23,7 @@
 #include "wangset.h"
 
 #include <QAbstractListModel>
+#include <QIcon>
 
 namespace Tiled {
 
@@ -38,13 +39,14 @@ class WangColorModel : public QAbstractListModel
 public:
     enum UserRoles {
         ColorRole = Qt::UserRole,
+        WangColorIndexRole,
     };
 
     WangColorModel(TilesetDocument *tilesetDocument,
                    WangSet *wangSet,
                    QObject *parent = nullptr);
 
-    QModelIndex colorIndex(int color) const;
+    QModelIndex colorModelIndex(int color) const;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -61,8 +63,7 @@ public:
 
     void resetModel();
 
-    int colorAt(const QModelIndex &index) const;
-
+    // Returns null for the "No Terrain" entry.
     QSharedPointer<WangColor> wangColorAt(const QModelIndex &index) const;
 
     void setName(WangColor *wangColor, const QString &name);
@@ -76,6 +77,7 @@ private:
 
     TilesetDocument *mTilesetDocument;
     WangSet *mWangSet;
+    QIcon mEraserIcon;
 };
 
 } // namespace Tiled
