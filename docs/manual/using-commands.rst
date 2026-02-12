@@ -4,9 +4,9 @@ Using Commands
 The Command Button allows you to create and run shell commands (other
 programs) from Tiled.
 
-You may setup as many commands as you like. This is useful if you edit
+You may set up as many commands as you like. This is useful if you edit
 maps for multiple games and you want to set up a command for each game.
-Or you could setup multiple commands for the same game that load
+Or you could set up multiple commands for the same game that load
 different checkpoints or configurations.
 
 The Command Button
