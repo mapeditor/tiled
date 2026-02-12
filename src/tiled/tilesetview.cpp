@@ -585,24 +585,29 @@ void TilesetView::mousePressEvent(QMouseEvent *event)
 
 void TilesetView::mouseMoveEvent(QMouseEvent *event)
 {
-    if (mEditWangSet) {
-        if (!mWangSet)
-            return;
+    if (!mEditWangSet) {
+        QTableView::mouseMoveEvent(event);
+        return;
+    }
 
-        const QPoint pos = event->pos();
-        const QModelIndex hoveredIndex = indexAt(pos);
-        const QModelIndex previousHoveredIndex = mHoveredIndex;
-        mHoveredIndex = hoveredIndex;
+    if (!mWangSet)
+        return;
 
-        WangId wangId;
+    const QPoint pos = event->pos();
+    const QModelIndex hoveredIndex = indexAt(pos);
+    const QModelIndex previousHoveredIndex = mHoveredIndex;
+    mHoveredIndex = hoveredIndex;
 
-        if (mWangBehavior == AssignWholeId) {
-            wangId = mWangId;
-        } else {
-            QRect tileRect = visualRect(mHoveredIndex);
-            QTransform transform;
-            setupTilesetGridTransform(*tilesetDocument()->tileset(), transform, tileRect);
+    WangId wangId;
 
+    if (mWangBehavior == AssignWholeId) {
+        wangId = mWangId;
+    } else {
+        QRect tileRect = visualRect(mHoveredIndex);
+        QTransform transform;
+        setupTilesetGridTransform(*tilesetDocument()->tileset(), transform, tileRect);
+
+        if (!tileRect.isEmpty()) {
             const auto mappedPos = transform.inverted().map(pos);
             QPoint tileLocalPos = mappedPos - tileRect.topLeft();
             QPointF tileLocalPosF((qreal) tileLocalPos.x() / tileRect.width(),
@@ -650,23 +655,19 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
                                                             : WangId::INDEX_MASK);
             }
         }
-
-        if (previousHoveredIndex != mHoveredIndex || wangId != mWangId) {
-            mWangId = wangId;
-
-            if (previousHoveredIndex.isValid())
-                update(previousHoveredIndex);
-            if (mHoveredIndex.isValid())
-                update(mHoveredIndex);
-        }
-
-        if (event->buttons() & Qt::LeftButton)
-            applyWangId();
-
-        return;
     }
 
-    QTableView::mouseMoveEvent(event);
+    if (previousHoveredIndex != mHoveredIndex || wangId != mWangId) {
+        mWangId = wangId;
+
+        if (previousHoveredIndex.isValid())
+            update(previousHoveredIndex);
+        if (mHoveredIndex.isValid())
+            update(mHoveredIndex);
+    }
+
+    if (event->buttons() & Qt::LeftButton)
+        applyWangId();
 }
 
 void TilesetView::mouseReleaseEvent(QMouseEvent *event)
