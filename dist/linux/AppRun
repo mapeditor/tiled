@@ -7,7 +7,10 @@ set -e
 this_dir="$(readlink -f "$(dirname "$0")")"
 bin_dir="/usr/bin"
 
-source "$this_dir"/apprun-hooks/"linuxdeploy-plugin-qt-hook.sh"
+# this hook only exists for the Qt 5 AppImage
+if [ -f "$this_dir"/apprun-hooks/"linuxdeploy-plugin-qt-hook.sh" ]; then
+    source "$this_dir"/apprun-hooks/"linuxdeploy-plugin-qt-hook.sh"
+fi
 
 my_help() {
     echo "Usage (Meta):"
