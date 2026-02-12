@@ -346,11 +346,11 @@ void MapDocument::switchCurrentLayer(Layer *layer)
 
 void MapDocument::switchSelectedLayers(const QList<Layer *> &layers)
 {
-    setSelectedLayers(layers);
-
     // Automatically make sure the current layer is one of the selected ones
     if (!layers.contains(mCurrentLayer))
         setCurrentLayer(layers.isEmpty() ? nullptr : layers.first());
+
+    setSelectedLayers(layers);
 }
 
 /**
