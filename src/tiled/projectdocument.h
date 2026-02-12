@@ -1,6 +1,6 @@
 /*
  * projectdocument.h
- * Copyright 2023, Chris Boehm AKA dogboydog
+ * Copyright 2023, dogboydog
  * Copyright 2023, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -31,7 +31,7 @@ class ProjectDocument final : public Document
     Q_OBJECT
 
 public:
-    ProjectDocument(std::unique_ptr<Project> project, QObject *parent = nullptr);
+    explicit ProjectDocument(std::unique_ptr<Project> project, QObject *parent = nullptr);
     ~ProjectDocument() override;
 
     QString displayName() const override;

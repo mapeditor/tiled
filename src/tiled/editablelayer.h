@@ -31,6 +31,28 @@ class EditableGroupLayer;
 class EditableMap;
 class MapDocument;
 
+// A copy of the BlendMode enum for the scripting API
+namespace BlendModeNS {
+    Q_NAMESPACE
+
+    enum Value {
+        Normal      = static_cast<int>(BlendMode::Normal),
+        Add         = static_cast<int>(BlendMode::Add),
+        Multiply    = static_cast<int>(BlendMode::Multiply),
+        Screen      = static_cast<int>(BlendMode::Screen),
+        Overlay     = static_cast<int>(BlendMode::Overlay),
+        Darken      = static_cast<int>(BlendMode::Darken),
+        Lighten     = static_cast<int>(BlendMode::Lighten),
+        ColorDodge  = static_cast<int>(BlendMode::ColorDodge),
+        ColorBurn   = static_cast<int>(BlendMode::ColorBurn),
+        HardLight   = static_cast<int>(BlendMode::HardLight),
+        SoftLight   = static_cast<int>(BlendMode::SoftLight),
+        Difference  = static_cast<int>(BlendMode::Difference),
+        Exclusion   = static_cast<int>(BlendMode::Exclusion),
+    };
+    Q_ENUM_NS(Value)
+}
+
 class EditableLayer : public EditableObject
 {
     Q_OBJECT
@@ -43,6 +65,7 @@ class EditableLayer : public EditableObject
     Q_PROPERTY(bool locked READ isLocked WRITE setLocked)
     Q_PROPERTY(QPointF offset READ offset WRITE setOffset)
     Q_PROPERTY(QPointF parallaxFactor READ parallaxFactor WRITE setParallaxFactor)
+    Q_PROPERTY(BlendModeNS::Value blendMode READ blendMode WRITE setBlendMode)
     Q_PROPERTY(Tiled::EditableMap *map READ map)
     Q_PROPERTY(Tiled::EditableGroupLayer *parentLayer READ parentLayer)
     Q_PROPERTY(bool selected READ isSelected WRITE setSelected)
@@ -77,6 +100,7 @@ public:
     bool isLocked() const;
     QPointF offset() const;
     QPointF parallaxFactor() const;
+    BlendModeNS::Value blendMode() const;
     EditableMap *map() const;
     EditableGroupLayer *parentLayer() const;
     bool isSelected() const;
@@ -104,6 +128,7 @@ public slots:
     void setLocked(bool locked);
     void setOffset(QPointF offset);
     void setParallaxFactor(QPointF factor);
+    void setBlendMode(BlendModeNS::Value mode);
     void setSelected(bool selected);
 
 protected:
@@ -153,6 +178,11 @@ inline QPointF EditableLayer::offset() const
 inline QPointF EditableLayer::parallaxFactor() const
 {
     return layer()->parallaxFactor();
+}
+
+inline BlendModeNS::Value EditableLayer::blendMode() const
+{
+    return static_cast<BlendModeNS::Value>(layer()->blendMode());
 }
 
 inline bool EditableLayer::isTileLayer() const

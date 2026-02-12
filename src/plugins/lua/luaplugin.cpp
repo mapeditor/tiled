@@ -28,7 +28,6 @@
 #include "map.h"
 #include "mapobject.h"
 #include "objectgroup.h"
-#include "objecttemplate.h"
 #include "properties.h"
 #include "savefile.h"
 #include "tile.h"
@@ -246,6 +245,11 @@ void LuaWriter::writeMap(const Map *map)
         mWriter.writeEndTable();
     }
 
+    if (map->skewX())
+        mWriter.writeKeyAndValue("skewx", map->skewX());
+    if (map->skewY())
+        mWriter.writeKeyAndValue("skewy", map->skewY());
+
     const QColor &backgroundColor = map->backgroundColor();
     if (backgroundColor.isValid())
         writeColor("backgroundcolor", backgroundColor);
@@ -273,7 +277,8 @@ void LuaWriter::writeProperties(const Properties &properties)
 {
     mWriter.writeStartTable("properties");
 
-    const ExportContext context(mDir.path());
+    ExportContext context(mDir.path());
+    context.setRecursiveBehavior(ExportContext::RecursiveBehavior::ValuesOnly);
 
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
@@ -708,6 +713,8 @@ static const char *toString(MapObject::Shape shape)
         return "polyline";
     case MapObject::Ellipse:
         return "ellipse";
+    case MapObject::Capsule:
+        return "capsule";
     case MapObject::Text:
         return "text";
     case MapObject::Point:
@@ -740,6 +747,7 @@ void LuaWriter::writeMapObject(const Tiled::MapObject *mapObject)
     switch (mapObject->shape()) {
     case MapObject::Rectangle:
     case MapObject::Ellipse:
+    case MapObject::Capsule:
     case MapObject::Point:
         break;
     case MapObject::Polygon:
@@ -782,6 +790,9 @@ void LuaWriter::writeLayerProperties(const Layer *layer)
 
     if (layer->tintColor().isValid())
         writeColor("tintcolor", layer->tintColor());
+
+    if (layer->blendMode() != BlendMode::Normal)
+        mWriter.writeKeyAndValue("mode", blendModeToString(layer->blendMode()));
 }
 
 void LuaWriter::writePolygon(const MapObject *mapObject)

@@ -29,10 +29,9 @@
 
 #include <memory>
 
-#include "qtcompat_p.h"
-
 class QAction;
 class QKeyEvent;
+class QLayout;
 class QMenu;
 
 namespace Tiled {
@@ -46,8 +45,8 @@ bool fileNameMatchesNameFilter(const QString &fileName,
                                const QString &nameFilter);
 QString firstExtension(const QString &nameFilter);
 
-int matchingScore(const QStringList &words, QStringRef string);
-RangeSet<int> matchingRanges(const QStringList &words, QStringRef string);
+int matchingScore(const QStringList &words, QStringView string);
+RangeSet<int> matchingRanges(const QStringList &words, QStringView string);
 
 QIcon themeIcon(const QString &name);
 
@@ -110,6 +109,8 @@ std::unique_ptr<QSettings> jsonSettings(const QString &fileName);
 namespace Error {
 QString jsonParseError(QJsonParseError error);
 } // namespace Error
+
+void deleteAllFromLayout(QLayout *layout);
 
 } // namespace Utils
 } // namespace Tiled

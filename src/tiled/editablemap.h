@@ -49,11 +49,15 @@ class EditableMap final : public EditableAsset
     Q_PROPERTY(int hexSideLength READ hexSideLength WRITE setHexSideLength)
     Q_PROPERTY(StaggerAxis staggerAxis READ staggerAxis WRITE setStaggerAxis)
     Q_PROPERTY(StaggerIndex staggerIndex READ staggerIndex WRITE setStaggerIndex)
+    Q_PROPERTY(int skewX READ skewX WRITE setSkewX)
+    Q_PROPERTY(int skewY READ skewY WRITE setSkewY)
     Q_PROPERTY(QPointF parallaxOrigin READ parallaxOrigin WRITE setParallaxOrigin)
     Q_PROPERTY(Orientation orientation READ orientation WRITE setOrientation)
     Q_PROPERTY(RenderOrder renderOrder READ renderOrder WRITE setRenderOrder)
     Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
     Q_PROPERTY(LayerDataFormat layerDataFormat READ layerDataFormat WRITE setLayerDataFormat)
+    Q_PROPERTY(QSize chunkSize READ chunkSize WRITE setChunkSize)
+    Q_PROPERTY(int compressionLevel READ compressionLevel WRITE setCompressionLevel)
     Q_PROPERTY(int layerCount READ layerCount)
     Q_PROPERTY(QList<QObject*> tilesets READ tilesets)
     Q_PROPERTY(QList<QObject*> layers READ layers)
@@ -69,7 +73,8 @@ public:
         Orthogonal,
         Isometric,
         Staggered,
-        Hexagonal
+        Hexagonal,
+        Oblique
     };
     Q_ENUM(Orientation)
 
@@ -125,11 +130,15 @@ public:
     int hexSideLength() const;
     StaggerAxis staggerAxis() const;
     StaggerIndex staggerIndex() const;
+    int skewX() const;
+    int skewY() const;
     QPointF parallaxOrigin() const;
     Orientation orientation() const;
     RenderOrder renderOrder() const;
     QColor backgroundColor() const;
     LayerDataFormat layerDataFormat() const;
+    QSize chunkSize() const;
+    int compressionLevel() const;
     int layerCount() const;
     QList<QObject*> tilesets() const;
     QList<QObject*> layers();
@@ -188,11 +197,15 @@ public:
     void setHexSideLength(int value);
     void setStaggerAxis(StaggerAxis value);
     void setStaggerIndex(StaggerIndex value);
+    void setSkewX(int value);
+    void setSkewY(int value);
     void setParallaxOrigin(const QPointF &parallaxOrigin);
     void setOrientation(Orientation value);
     void setRenderOrder(RenderOrder value);
     void setBackgroundColor(const QColor &value);
     void setLayerDataFormat(LayerDataFormat value);
+    void setChunkSize(const QSize &value);
+    void setCompressionLevel(int value);
     void setCurrentLayer(EditableLayer *layer);
     void setSelectedLayers(const QList<QObject*> &layers);
     void setSelectedObjects(const QList<QObject*> &objects);
@@ -283,6 +296,16 @@ inline EditableMap::StaggerIndex EditableMap::staggerIndex() const
     return static_cast<StaggerIndex>(map()->staggerIndex());
 }
 
+inline int EditableMap::skewX() const
+{
+    return map()->skewX();
+}
+
+inline int EditableMap::skewY() const
+{
+    return map()->skewY();
+}
+
 inline QPointF EditableMap::parallaxOrigin() const
 {
     return map()->parallaxOrigin();
@@ -306,6 +329,16 @@ inline QColor EditableMap::backgroundColor() const
 inline EditableMap::LayerDataFormat EditableMap::layerDataFormat() const
 {
     return static_cast<LayerDataFormat>(map()->layerDataFormat());
+}
+
+inline QSize EditableMap::chunkSize() const
+{
+    return map()->chunkSize();
+}
+
+inline int EditableMap::compressionLevel() const
+{
+    return map()->compressionLevel();
 }
 
 inline int EditableMap::layerCount() const

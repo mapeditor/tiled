@@ -5,7 +5,7 @@ DynamicLibrary {
     cpp.dynamicLibraryPrefix: "lib"
 
     Depends { name: "cpp" }
-    Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "5.12" }
+    Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "5.15.2" }
 
     Probes.PkgConfigProbe {
         id: pkgConfigZstd
@@ -16,10 +16,15 @@ DynamicLibrary {
     cpp.cxxLanguageVersion: "c++17"
     cpp.cxxFlags: {
         var flags = base;
+
         if (qbs.toolchain.contains("msvc")) {
             if (Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 3)
                 flags.push("/permissive-");
         }
+
+        if (pkgConfigZstd.found)
+            flags = flags.concat(pkgConfigZstd.cflags);
+
         return flags;
     }
     cpp.visibility: "minimal"
@@ -30,7 +35,7 @@ DynamicLibrary {
             "QT_NO_CAST_FROM_ASCII",
             "QT_NO_CAST_TO_ASCII",
             "QT_NO_URL_CAST_FROM_STRING",
-            "QT_DISABLE_DEPRECATED_BEFORE=QT_VERSION_CHECK(5,15,0)",
+            "QT_DISABLE_DEPRECATED_BEFORE=0x050F00",
             "QT_NO_DEPRECATED_WARNINGS",
             "_USE_MATH_DEFINES",
         ]
@@ -69,9 +74,8 @@ DynamicLibrary {
 
     Properties {
         condition: pkgConfigZstd.found
-        cpp.cxxFlags: outer.concat(pkgConfigZstd.cflags)
-        cpp.libraryPaths: outer.concat(pkgConfigZstd.libraryPaths)
-        cpp.linkerFlags: outer.concat(pkgConfigZstd.linkerFlags)
+        cpp.libraryPaths: pkgConfigZstd.libraryPaths
+        cpp.linkerFlags: pkgConfigZstd.linkerFlags
     }
 
     // When libzstd was not found but staticZstd is enabled, assume that zstd
@@ -79,8 +83,8 @@ DynamicLibrary {
     // done by the autobuilds for Windows and macOS).
     Properties {
         condition: !pkgConfigZstd.found && project.staticZstd
-        cpp.libraryPaths: outer.concat(["../../zstd/lib"])
-        cpp.includePaths: outer.concat(["../../zstd/lib"])
+        cpp.libraryPaths: "../../zstd/lib"
+        cpp.includePaths: "../../zstd/lib"
     }
 
     Properties {
@@ -134,6 +138,8 @@ DynamicLibrary {
         "mapwriter.h",
         "minimaprenderer.cpp",
         "minimaprenderer.h",
+        "obliquerenderer.cpp",
+        "obliquerenderer.h",
         "object.cpp",
         "object.h",
         "objectgroup.cpp",
@@ -199,7 +205,7 @@ DynamicLibrary {
             submodules: ["gui"]
         }
 
-        cpp.includePaths: "."
+        cpp.includePaths: exportingProduct.sourceDirectory
     }
 
     install: !qbs.targetOS.contains("darwin")

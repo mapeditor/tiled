@@ -1,6 +1,6 @@
 /*
  * editableproject.cpp
- * Copyright 2023, Chris Boehm AKA dogboydog
+ * Copyright 2023, dogboydog
  * Copyright 2023, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -21,6 +21,7 @@
 
 #include "editableproject.h"
 
+#include "preferences.h"
 #include "projectdocument.h"
 
 namespace Tiled {
@@ -29,6 +30,11 @@ EditableProject::EditableProject(ProjectDocument *projectDocument, QObject *pare
     : EditableAsset(&projectDocument->project(), parent)
 {
     setDocument(projectDocument);
+}
+
+bool EditableProject::isReadOnly() const
+{
+    return false;
 }
 
 QString EditableProject::extensionsPath() const
@@ -51,9 +57,12 @@ QStringList EditableProject::folders() const
     return project()->folders();
 }
 
-bool EditableProject::isReadOnly() const
+QVector<ScriptPropertyType *>EditableProject::propertyTypes() const
 {
-    return false;
+    QVector<ScriptPropertyType*> scriptTypes;
+    for (const auto &type : *project()->propertyTypes())
+        scriptTypes.append(toScriptType(type));
+    return scriptTypes;
 }
 
 QSharedPointer<Document> EditableProject::createDocument()
@@ -61,6 +70,74 @@ QSharedPointer<Document> EditableProject::createDocument()
     // We don't currently support opening a project in a tab, which this
     // function is meant for.
     return nullptr;
+}
+
+ScriptPropertyType *EditableProject::toScriptType(const SharedPropertyType &type) const
+{
+    if (!type)
+        return nullptr;
+
+    switch (type->type) {
+    case PropertyType::PT_Invalid:
+        break;
+    case PropertyType::PT_Class:
+        return new ScriptClassPropertyType(qSharedPointerCast<ClassPropertyType>(type));
+    case PropertyType::PT_Enum:
+        return new ScriptEnumPropertyType(qSharedPointerCast<EnumPropertyType>(type));
+    }
+
+    return nullptr;
+}
+
+ScriptPropertyType *EditableProject::findTypeByName(const QString &name)
+{
+    if (name.isEmpty())
+        return nullptr;
+
+    auto &types = *project()->propertyTypes();
+    auto it = std::find_if(types.begin(), types.end(), [&] (const SharedPropertyType &type) {
+        return type->name == name;
+    });
+    return it == types.end() ? nullptr : toScriptType(*it);
+}
+
+bool EditableProject::removeTypeByName(const QString &name)
+{
+    int index = project()->propertyTypes()->findIndexByName(name);
+    if (index < 0)
+        return false;
+
+    project()->propertyTypes()->removeAt(index);
+    applyPropertyChanges();
+    return true;
+}
+
+ScriptPropertyType *EditableProject::addClassType(const QString &name)
+{
+    return addPropertyType(SharedPropertyType(new ClassPropertyType(name)));
+}
+
+ScriptPropertyType *EditableProject::addEnumType(const QString &name)
+{
+    return addPropertyType(SharedPropertyType(new EnumPropertyType(name)));
+}
+
+ScriptPropertyType *EditableProject::addPropertyType(const SharedPropertyType &type)
+{
+    if (project()->propertyTypes()->findTypeByName(type->name)) {
+        ScriptPropertyType::throwDuplicateNameError(type->name);
+        return nullptr;
+    }
+    project()->propertyTypes()->add(type);
+    applyPropertyChanges();
+    return toScriptType(type);
+}
+
+void EditableProject::applyPropertyChanges()
+{
+    Preferences::instance()->emitPropertyTypesChanged();
+
+    project()->save();
 }
 
 } // namespace Tiled

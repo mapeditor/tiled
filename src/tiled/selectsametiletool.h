@@ -18,9 +18,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #pragma once
-
 
 #include "abstracttileselectiontool.h"
 
@@ -33,7 +31,7 @@ class MapDocument;
 /**
  * Implements a tool that selects a region with all similar tiles on the layer.
  */
-class SelectSameTileTool : public AbstractTileSelectionTool
+class SelectSameTileTool final : public AbstractTileSelectionTool
 {
     Q_OBJECT
 
@@ -44,6 +42,9 @@ public:
 
 protected:
     void tilePositionChanged(QPoint tilePos) override;
+
+private:
+    QVector<Cell> mMatchCells;
 };
 
 } // namespace Tiled

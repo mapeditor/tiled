@@ -1,7 +1,7 @@
 name: tiled
 adopt-info: tiled
 license: GPL-2.0
-base: core22
+base: core24
 
 grade: stable
 confinement: strict
@@ -69,6 +69,34 @@ parts:
       - qtwayland5
     #  - libpython2.7
       - libzstd1
+      - xkb-data
+    after: [desktop-qt5]
+
+  qaseprite:
+    source: https://github.com/mapeditor/qaseprite/releases/download/1.0.3/qaseprite-1.0.3-source.tar.gz
+    plugin: cmake
+    cmake-parameters:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DUSE_SHARED_ZLIB=on
+      - -DUSE_SHARED_LIBPNG=on
+      - -DUSE_SHARED_PIXMAN=on
+      - -DUSE_SHARED_FREETYPE=on
+      - -DUSE_SHARED_HARFBUZZ=on
+    build-packages:
+      - libfreetype-dev
+      - libgl1-mesa-dev
+      - libharfbuzz-dev
+      - libpixman-1-dev
+      - libxcursor-dev
+      - libxi-dev
+      - zlib1g-dev
+    stage-packages:
+      - libfreetype6
+      - libharfbuzz0b
+      - libpixman-1-0
+      - libxcursor1
+      - libxi6
+      - zlib1g
     after: [desktop-qt5]
 
   desktop-qt5:
@@ -79,13 +107,11 @@ parts:
     build-packages:
       - build-essential
       - qtbase5-dev
-      - dpkg-dev
     stage-packages:
       - libxkbcommon0
       - dmz-cursor-theme
       - light-themes
       - adwaita-icon-theme
-      - gnome-themes-standard
       - shared-mime-info
       - libqt5concurrent5
       - libqt5gui5

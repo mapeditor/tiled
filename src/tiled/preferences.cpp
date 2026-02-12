@@ -30,6 +30,7 @@
 #include <QApplication>
 #include <QDir>
 #include <QFileInfo>
+#include <QScopedValueRollback>
 #include <QStandardPaths>
 #include <QVariantMap>
 
@@ -542,7 +543,7 @@ void Preferences::setUseOpenGL(bool useOpenGL)
 void Preferences::setPropertyTypes(const SharedPropertyTypes &propertyTypes)
 {
     Object::setPropertyTypes(propertyTypes);
-    emit propertyTypesChanged();
+    emitPropertyTypesChanged();
 }
 
 QDate Preferences::firstRun() const
@@ -661,6 +662,17 @@ bool Preferences::restoreSessionOnStartup() const
     return get("Startup/RestorePreviousSession", true);
 }
 
+bool Preferences::naturalSorting() const
+{
+    return get("Project/NaturalSorting", true);
+}
+
+void Preferences::setNaturalSorting(bool enabled)
+{
+    setValue(QLatin1String("Project/NaturalSorting"), enabled);
+    emit naturalSortingChanged(enabled);
+}
+
 void Preferences::addToRecentFileList(const QString &fileName, QStringList& files)
 {
     // Remember the file by its absolute file path (not the canonical one,
@@ -774,6 +786,14 @@ QString Preferences::configLocation() const
         return QFileInfo(fileName()).path();
 
     return QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
+}
+
+void Preferences::emitPropertyTypesChanged()
+{
+    Q_ASSERT(!mEmittingPropertyTypesChanged);
+
+    QScopedValueRollback<bool> emitting(mEmittingPropertyTypesChanged, true);
+    emit propertyTypesChanged();
 }
 
 QString Preferences::startupProject()

@@ -21,7 +21,6 @@
 #pragma once
 
 #include "properties.h"
-#include "variantpropertymanager.h"
 
 #include <QDialog>
 #include <QTreeView>
@@ -36,6 +35,25 @@ class MapObject;
 class MapDocument;
 class ImmutableMapObjectProxyModel;
 class Tile;
+
+class DisplayObjectRef
+{
+public:
+    explicit DisplayObjectRef(ObjectRef ref = ObjectRef(),
+                              MapDocument *mapDocument = nullptr)
+        : ref(ref)
+        , mapDocument(mapDocument)
+    {}
+
+    bool operator==(const DisplayObjectRef &o) const
+    { return ref.id == o.ref.id && mapDocument == o.mapDocument; }
+
+    int id() const { return ref.id; }
+    MapObject *object() const;
+
+    ObjectRef ref;
+    MapDocument *mapDocument;
+};
 
 class ObjectsTreeView : public QTreeView
 {

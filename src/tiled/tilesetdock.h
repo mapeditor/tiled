@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include "filteredit.h"
 #include "tileset.h"
 
 #include <QAbstractItemModel>
@@ -129,6 +130,7 @@ private:
     void onCurrentTilesetChanged();
     void selectionChanged();
     void currentChanged(const QModelIndex &index);
+    void restoreCurrentTile();
 
     void updateActions();
     void updateCurrentTiles();
@@ -179,6 +181,7 @@ private:
 
     QList<TilesetDocument *> mTilesetDocuments;
     TilesetDocumentsFilterModel *mTilesetDocumentsFilterModel;
+    FilterEdit *mTilesetFilterEdit;
 
     QTabBar *mTabBar;
     QStackedWidget *mSuperViewStack;
@@ -200,11 +203,13 @@ private:
     QToolButton *mTilesetMenuButton;
     QMenu *mTilesetMenu; //opens on click of mTilesetMenu
     QActionGroup *mTilesetActionGroup;
+    QAction *mShowTilesetFilter;
 
     QComboBox *mZoomComboBox;
 
     bool mEmittingStampCaptured = false;
     bool mSynchronizingSelection = false;
+    bool mNoChangeCurrentObject = false;
 };
 
 } // namespace Tiled

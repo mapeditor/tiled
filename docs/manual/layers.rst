@@ -212,6 +212,50 @@ separate images for it.
 The tint color can also be set on a :ref:`Group Layer <group-layers>`, in
 which case it is inherited by all layers in the group.
 
+.. raw:: html
+
+   <div class="new">New in Tiled 1.12</div>
+
+.. _blend-mode:
+
+Blend Modes
+-----------
+
+Tiled provides support for several common blend modes (also called compositing
+operators) for layers. These modes allow you to modify the appearance of a
+layer by blending it with the layers beneath it in various ways. By default,
+layers in Tiled use the Normal blend mode.
+
+Below is the full list of blend modes available in Tiled, along with links to
+their equivalents in the `SVG Compositing Specification
+<https://www.w3.org/TR/SVGCompositing/>`__, where you can see examples and
+calculation details.
+
+===========  ===========================================================================
+Mode         SVG equivalent
+===========  ===========================================================================
+Normal       `src-over <https://www.w3.org/TR/SVGCompositing/#comp-op-src-over>`__
+Add          `plus <https://www.w3.org/TR/SVGCompositing/#comp-op-plus>`__
+Multiply     `multiply <https://www.w3.org/TR/SVGCompositing/#comp-op-multiply>`__
+Screen       `screen <https://www.w3.org/TR/SVGCompositing/#comp-op-screen>`__
+Overlay      `overlay <https://www.w3.org/TR/SVGCompositing/#comp-op-overlay>`__
+Darken       `darken <https://www.w3.org/TR/SVGCompositing/#comp-op-darken>`__
+Lighten      `lighten <https://www.w3.org/TR/SVGCompositing/#comp-op-lighten>`__
+Color Dodge  `color-dodge <https://www.w3.org/TR/SVGCompositing/#comp-op-color-dodge>`__
+Color Burn   `color-burn <https://www.w3.org/TR/SVGCompositing/#comp-op-color-burn>`__
+Hard Light   `hard-light <https://www.w3.org/TR/SVGCompositing/#comp-op-hard-light>`__
+Soft Light   `soft-light <https://www.w3.org/TR/SVGCompositing/#comp-op-soft-light>`__
+Difference   `difference <https://www.w3.org/TR/SVGCompositing/#comp-op-difference>`__
+Exclusion    `exclusion <https://www.w3.org/TR/SVGCompositing/#comp-op-exclusion>`__
+===========  ===========================================================================
+
+In OpenGL, these blend modes can be implemented using ``glBlendEquation`` with
+values from the `KHR_blend_equation_advanced
+<https://registry.khronos.org/OpenGL/extensions/KHR/KHR_blend_equation_advanced.txt>`__
+extension. In Vulkan, they are part of the `VK_EXT_blend_operation_advanced
+<https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/vkspec.html#VK_EXT_blend_operation_advanced>`__
+extension.
+
 
 .. topic:: Future Extensions
    :class: future
@@ -219,9 +263,9 @@ which case it is inherited by all layers in the group.
    There are many ways in which the layers can be made more powerful:
 
    -  Ability to lock individual objects
-      (`#828 <https://github.com/bjorn/tiled/issues/828>`__).
+      (`#828 <https://github.com/mapeditor/tiled/issues/828>`__).
    -  Moving certain map-global properties to the Tile Layer
-      (`#149 <https://github.com/bjorn/tiled/issues/149>`__). It would be
+      (`#149 <https://github.com/mapeditor/tiled/issues/149>`__). It would be
       useful if one map could accommodate layers of different tile sizes
       and maybe even of different orientation.
 

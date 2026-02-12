@@ -78,12 +78,12 @@ public:
     QString exportFormat;
 
     enum Property {
-        TileWidthProperty,
-        TileHeightProperty,
+        TileSizeProperty,
         InfiniteProperty,
         HexSideLengthProperty,
         StaggerAxisProperty,
         StaggerIndexProperty,
+        SkewProperty,
         ParallaxOriginProperty,
         OrientationProperty,
         RenderOrderProperty,
@@ -98,14 +98,16 @@ public:
      * Orthogonal map is using rectangular tiles that are aligned on a
      * straight grid. An Isometric map uses diamond shaped tiles that are
      * aligned on an isometric projected grid. A Hexagonal map uses hexagon
-     * shaped tiles that fit into each other by shifting every other row.
+     * shaped tiles that fit into each other by shifting every other row. An
+     * Oblique map uses a skewed grid of parallelogram-shaped tiles.
      */
     enum Orientation {
         Unknown,
         Orthogonal,
         Isometric,
         Staggered,
-        Hexagonal
+        Hexagonal,
+        Oblique
     };
 
     /**
@@ -161,6 +163,8 @@ public:
         int hexSideLength = 0;
         StaggerAxis staggerAxis = StaggerY;
         StaggerIndex staggerIndex = StaggerOdd;
+        int skewX = 0;
+        int skewY = 0;
         QPointF parallaxOrigin;
         QColor backgroundColor;
     };
@@ -212,6 +216,7 @@ public:
     void setTileHeight(int height);
 
     QSize tileSize() const;
+    void setTileSize(QSize size);
 
     bool infinite() const;
     void setInfinite(bool infinite);
@@ -225,6 +230,12 @@ public:
     StaggerIndex staggerIndex() const;
     void setStaggerIndex(StaggerIndex staggerIndex);
     void invertStaggerIndex();
+
+    int skewX() const;
+    void setSkewX(int skewX);
+
+    int skewY() const;
+    void setSkewY(int skewY);
 
     QPointF parallaxOrigin() const;
     void setParallaxOrigin(const QPointF &parallaxOrigin);
@@ -455,6 +466,12 @@ inline QSize Map::tileSize() const
     return QSize(mParameters.tileWidth, mParameters.tileHeight);
 }
 
+inline void Map::setTileSize(QSize size)
+{
+    mParameters.tileWidth = size.width();
+    mParameters.tileHeight = size.height();
+}
+
 inline bool Map::infinite() const
 {
     return mParameters.infinite;
@@ -498,6 +515,26 @@ inline void Map::setStaggerIndex(StaggerIndex staggerIndex)
 inline void Map::invertStaggerIndex()
 {
     mParameters.staggerIndex = static_cast<StaggerIndex>(!mParameters.staggerIndex);
+}
+
+inline int Map::skewX() const
+{
+    return mParameters.skewX;
+}
+
+inline void Map::setSkewX(int skewX)
+{
+    mParameters.skewX = skewX;
+}
+
+inline int Map::skewY() const
+{
+    return mParameters.skewY;
+}
+
+inline void Map::setSkewY(int skewY)
+{
+    mParameters.skewY = skewY;
 }
 
 inline QPointF Map::parallaxOrigin() const
@@ -737,15 +774,7 @@ inline bool Map::LayerIteratorHelper::isEmpty() const
 
 inline QList<Layer *> Map::LayerIteratorHelper::toList() const
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
     return QList<Layer *>(begin(), end());
-#else
-    LayerIterator iterator(&mMap, mLayerTypes);
-    QList<Layer *> layers;
-    while (Layer *layer = iterator.next())
-        layers.append(layer);
-    return layers;
-#endif
 }
 
 
@@ -791,3 +820,5 @@ Q_DECLARE_METATYPE(Tiled::Map*)
 Q_DECLARE_METATYPE(Tiled::Map::Orientation)
 Q_DECLARE_METATYPE(Tiled::Map::LayerDataFormat)
 Q_DECLARE_METATYPE(Tiled::Map::RenderOrder)
+Q_DECLARE_METATYPE(Tiled::Map::StaggerAxis)
+Q_DECLARE_METATYPE(Tiled::Map::StaggerIndex)

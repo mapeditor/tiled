@@ -1,5 +1,17 @@
 ## Changelog
 
+### 1.11.0
+
+- Added the new API from Tiled 1.10.2 and 1.11.0
+- Documented FileEdit.isDirectory / filter and fix @link tags (#3777)
+- Split ToolDefinition from Tool for registerTool function
+- Clarify how to erase tiles and highlight it in the Tool.preview
+- Extended docs for TileLayerEdit.apply and MapObject.textAlignment
+- Fixed missing "| null" in a few more places
+- Fixed hidden doc for Dialog.exec() (#3837)
+- Fixed the type of FilePath.url and ImageLayer.imageSource
+- Link Tile.frames from Tile.animated
+
 ### 1.10.1
 
 - Added the new API from Tiled 1.10.1

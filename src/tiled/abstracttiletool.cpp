@@ -21,6 +21,7 @@
 #include "abstracttiletool.h"
 
 #include "brushitem.h"
+#include "changeselectedarea.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
@@ -150,6 +151,20 @@ void AbstractTileTool::mousePressed(QGraphicsSceneMouseEvent *event)
     }
 
     event->ignore();
+}
+
+void AbstractTileTool::keyPressed(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Escape) {
+        MapDocument *document = mapDocument();
+        if (document && !document->selectedArea().isEmpty()) {
+            QUndoCommand *cmd = new ChangeSelectedArea(document, QRegion());
+            document->undoStack()->push(cmd);
+            return;
+        }
+    }
+
+    AbstractTool::keyPressed(event);
 }
 
 void AbstractTileTool::mapDocumentChanged(MapDocument *oldDocument,

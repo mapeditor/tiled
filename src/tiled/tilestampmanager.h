@@ -51,11 +51,15 @@ public:
     TileStampManager(const ToolManager &toolManager, QObject *parent = nullptr);
     ~TileStampManager() override;
 
+    static TileStampManager *instance();
+
     static QList<Qt::Key> quickStampKeys();
 
     TileStampModel *tileStampModel() const;
 
     SessionOption<QString> stampsDirectory;
+
+    void loadStamps();
 
 public slots:
     TileStamp createStamp();
@@ -76,8 +80,6 @@ private:
     void eraseQuickStamp(int index);
     void setQuickStamp(int index, TileStamp stamp);
 
-    void loadStamps();
-
 private:
     void stampAdded(TileStamp stamp);
     void stampRenamed(TileStamp stamp);
@@ -93,8 +95,15 @@ private:
     Session::CallbackIterator mRegisteredCb;
 
     const ToolManager &mToolManager;
+
+    static TileStampManager *ourInstance;
 };
 
+
+inline TileStampManager *TileStampManager::instance()
+{
+    return ourInstance;
+}
 
 /**
  * Returns the keys used for quickly accessible tile stamps.

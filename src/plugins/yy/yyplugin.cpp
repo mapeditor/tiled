@@ -91,6 +91,7 @@ enum ResourceType
     GMRPathLayerType,
     GMRSpriteGraphicType,
     GMRTileLayerType,
+    GMRoomType,
 };
 
 static const char *resourceTypeStr(ResourceType type)
@@ -107,10 +108,54 @@ static const char *resourceTypeStr(ResourceType type)
     case GMRPathLayerType:          return "GMRPathLayer";
     case GMRSpriteGraphicType:      return "GMRSpriteGraphic";
     case GMRTileLayerType:          return "GMRTileLayer";
+    case GMRoomType:                return "GMRoom";
     }
 
     return "Unknown";
 }
+
+static const char *resourceTypeTagValue(ResourceType type)
+{
+    switch (type) {
+    case GMOverriddenPropertyType:  return "v1";
+    case GMPathType:                return "";
+    case GMRAssetLayerType:         return "";
+    case GMRBackgroundLayerType:    return "";
+    case GMRGraphicType:            return "";
+    case GMRInstanceLayerType:      return "";
+    case GMRInstanceType:           return "v1";
+    case GMRLayerType:              return "";
+    case GMRPathLayerType:          return "";
+    case GMRSpriteGraphicType:      return "";
+    case GMRTileLayerType:          return "";
+    case GMRoomType:                return "v1";
+    }
+
+    return "";
+}
+
+static QJsonValue idValue(const QString &id, const QString &scope)
+{
+    if (id.isEmpty())
+        return QJsonValue(QJsonValue::Null);
+
+    return QJsonObject {
+        { "name", id },
+        { "path", QStringLiteral("%1/%2/%2.yy").arg(scope, id) }
+    };
+}
+
+static unsigned colorToAbgr(const QColor &color)
+{
+    const QRgb rgba = color.rgba();
+    return qRgba(qBlue(rgba), qGreen(rgba), qRed(rgba), qAlpha(rgba));
+}
+
+static double colorToAbgrF(const QColor &color)
+{
+    return colorToAbgr(color);
+}
+
 
 struct GMRView
 {
@@ -118,35 +163,83 @@ struct GMRView
     bool visible = false;
     int xview = 0;
     int yview = 0;
-    int wview = 1366;
+    int wview = 1024;
     int hview = 768;
     int xport = 0;
     int yport = 0;
-    int wport = 1366;
+    int wport = 1024;
     int hport = 768;
     int hborder = 32;
     int vborder = 32;
     int hspeed = -1;
     int vspeed = -1;
     QString objectId;
+
+    QJsonObject toJson() const;
 };
+
+QJsonObject GMRView::toJson() const
+{
+    return {
+        { "inherit", inherit },
+        { "visible", visible },
+        { "xview", xview },
+        { "yview", yview },
+        { "wview", wview },
+        { "hview", hview },
+        { "xport", xport },
+        { "yport", yport },
+        { "wport", wport },
+        { "hport", hport },
+        { "hborder", hborder },
+        { "vborder", vborder },
+        { "hspeed", hspeed },
+        { "vspeed", vspeed },
+        { "objectId", idValue(objectId, QStringLiteral("objects")) }
+    };
+}
+
 
 struct GMResource
 {
     GMResource(ResourceType type) : resourceType(type) {}
     virtual ~GMResource() = default;
 
-    QString resourceVersion = QStringLiteral("1.0");
+    virtual QJsonObject toJson() const;
+
+    QString resourceVersion = QStringLiteral("2.0");
     QString name;
     QStringList tags;
     ResourceType resourceType;
 };
+
+QJsonObject GMResource::toJson() const
+{
+    QJsonObject json;
+
+    const char *type = resourceTypeStr(resourceType);
+
+    json[QByteArray("$") + type] = resourceTypeTagValue(resourceType);
+    json["%Name"] = name;
+    json["resourceVersion"] = resourceVersion;
+    json["name"] = name;
+
+    if (!tags.isEmpty())
+        json["tags"] = QJsonArray::fromStringList(tags);
+
+    json["resourceType"] = type;
+
+    return json;
+}
+
 
 struct GMRGraphic final : GMResource
 {
     GMRGraphic(bool isSprite)
         : GMResource(isSprite ? GMRSpriteGraphicType : GMRGraphicType)
     {}
+
+    QJsonObject toJson() const override;
 
     QString spriteId;
 
@@ -181,18 +274,79 @@ struct GMRGraphic final : GMResource
     double y = 0.0;
 };
 
+QJsonObject GMRGraphic::toJson() const
+{
+    QJsonObject json = GMResource::toJson();
+
+    json["spriteId"] = idValue(spriteId, QStringLiteral("sprites"));
+
+    if (resourceType == GMRSpriteGraphicType) {
+        json["headPosition"] = headPosition;
+        json["rotation"] = rotation;
+        json["scaleX"] = scaleX;
+        json["scaleY"] = scaleY;
+        json["animationSpeed"] = animationSpeed;
+    } else {
+        json["w"] = w;
+        json["h"] = h;
+        json["u0"] = u0;
+        json["v0"] = v0;
+        json["u1"] = u1;
+        json["v1"] = v1;
+    }
+
+    json["colour"] = colorToAbgrF(colour);
+
+    if (inheritedItemId.isEmpty()) {
+        json["inheritedItemId"] = QJsonValue(QJsonValue::Null);
+    } else {
+        json["inheritedItemId"] = QJsonObject {
+            { "name", inheritedItemId },
+            { "path", inheritedItemPath }
+        };
+    }
+
+    json["frozen"] = frozen;
+    json["ignore"] = ignore;
+    json["inheritItemSettings"] = inheritItemSettings;
+    json["x"] = x;
+    json["y"] = y;
+
+    return json;
+}
+
+
 struct GMOverriddenProperty final : GMResource
 {
     GMOverriddenProperty() : GMResource(GMOverriddenPropertyType) {}
+
+    QJsonObject toJson() const override;
 
     QString propertyId;
     QString objectId;
     QString value;
 };
 
+QJsonObject GMOverriddenProperty::toJson() const
+{
+    QJsonObject json = GMResource::toJson();
+
+    json["propertyId"] = QJsonObject {
+        { "name", propertyId },
+        { "path", QStringLiteral("%1/%2/%2.yy").arg(QStringLiteral("objects"), objectId) }
+    };
+    json["objectId"] = idValue(objectId, QStringLiteral("objects"));
+    json["value"] = value;
+
+    return json;
+}
+
+
 struct GMRInstance final : GMResource
 {
     GMRInstance() : GMResource(GMRInstanceType) {}
+
+    QJsonObject toJson() const override;
 
     std::vector<GMOverriddenProperty> properties;
     bool isDnd = false;
@@ -214,9 +368,52 @@ struct GMRInstance final : GMResource
     double y = 0.0;
 };
 
+QJsonObject GMRInstance::toJson() const
+{
+    QJsonObject json = GMResource::toJson();
+
+    QJsonArray propertiesJson;
+    for (const GMOverriddenProperty &prop : properties)
+        propertiesJson.append(prop.toJson());
+    json["properties"] = propertiesJson;
+
+    json["isDnd"] = isDnd;
+
+    json["objectId"] = idValue(objectId, QStringLiteral("objects"));
+
+    json["inheritCode"] = inheritCode;
+    json["hasCreationCode"] = hasCreationCode;
+    json["colour"] = colorToAbgrF(colour);
+    json["rotation"] = rotation;
+    json["scaleX"] = scaleX;
+    json["scaleY"] = scaleY;
+    json["imageIndex"] = imageIndex;
+    json["imageSpeed"] = imageSpeed;
+
+    if (inheritedItemId.isEmpty()) {
+        json["inheritedItemId"] = QJsonValue(QJsonValue::Null);
+    } else {
+        json["inheritedItemId"] = QJsonObject {
+            { "name", inheritedItemId },
+            { "path", inheritedItemPath }
+        };
+    }
+
+    json["frozen"] = frozen;
+    json["ignore"] = ignore;
+    json["inheritItemSettings"] = inheritItemSettings;
+    json["x"] = x;
+    json["y"] = y;
+
+    return json;
+}
+
+
 struct GMPath final : GMResource
 {
     GMPath() : GMResource(GMPathType) {}
+
+    QJsonObject toJson() const override;
 
     int kind = 0;
     bool closed = false;
@@ -224,9 +421,40 @@ struct GMPath final : GMResource
     QVector<QPointF> points;
 };
 
+QJsonObject GMPath::toJson() const
+{
+    QJsonObject json = GMResource::toJson();
+
+    json["kind"] = kind;
+    json["closed"] = closed;
+    json["precision"] = precision;
+
+    // todo:
+    // "parent":{
+    //   "name":"Rooms",
+    //   "path":"folders/Rooms.yy",
+    // },
+
+    QJsonArray pointsJson;
+    for (const QPointF &point : points) {
+        pointsJson.append(QJsonObject {
+                              { "speed", 100.0 },
+                              { "x", point.x() },
+                              { "y", point.y() }
+                          });
+    }
+
+    json["points"] = pointsJson;
+
+    return json;
+}
+
+
 struct GMRLayer : GMResource
 {
     GMRLayer(ResourceType type = GMRLayerType) : GMResource(type) {}
+
+    QJsonObject toJson() const override;
 
     bool visible = true;
     int depth = 0;
@@ -239,9 +467,39 @@ struct GMRLayer : GMResource
     bool hierarchyFrozen = false;
 };
 
+QJsonObject GMRLayer::toJson() const
+{
+    QJsonObject json = GMResource::toJson();
+
+    json["visible"] = visible;
+    json["depth"] = depth;
+    json["userdefinedDepth"] = userdefinedDepth;
+    json["inheritLayerDepth"] = inheritLayerDepth;
+    json["inheritLayerSettings"] = inheritLayerSettings;
+    json["inheritSubLayers"] = true;
+    json["inheritVisibility"] = true;
+    json["gridX"] = gridX;
+    json["gridY"] = gridY;
+    json["effectEnabled"] = true;
+    json["effectType"] = QJsonValue(QJsonValue::Null);
+
+    QJsonArray layersJson;
+    for (const std::unique_ptr<GMRLayer> &layer : layers)
+        layersJson.append(layer->toJson());
+
+    json["layers"] = layersJson;
+    json["hierarchyFrozen"] = hierarchyFrozen;
+    json["properties"] = QJsonArray();
+
+    return json;
+}
+
+
 struct GMRTileLayer final : GMRLayer
 {
     GMRTileLayer() : GMRLayer(GMRTileLayerType) {}
+
+    QJsonObject toJson() const override;
 
     QString tilesetId;
     int x = 0;
@@ -251,31 +509,100 @@ struct GMRTileLayer final : GMRLayer
     std::vector<unsigned> tiles;
 };
 
+QJsonObject GMRTileLayer::toJson() const
+{
+    QJsonObject json = GMRLayer::toJson();
+
+    json["tilesetId"] = idValue(tilesetId, QStringLiteral("tilesets"));
+    json["x"] = x;
+    json["y"] = y;
+
+    QJsonArray tilesJson;
+    for (size_t index = 0; index < tiles.size(); ++index)
+        tilesJson.append((double) tiles.at(index));
+
+    json["tiles"] = QJsonObject {
+        { "SerialiseWidth", SerialiseWidth },
+        { "SerialiseHeight", SerialiseHeight },
+        { "TileSerialiseData", tilesJson }
+    };
+
+    return json;
+}
+
+
 struct GMRAssetLayer final : GMRLayer
 {
     GMRAssetLayer() : GMRLayer(GMRAssetLayerType) {}
 
+    QJsonObject toJson() const override;
+
     std::vector<GMRGraphic> assets;
 };
+
+QJsonObject GMRAssetLayer::toJson() const
+{
+    QJsonObject json = GMRLayer::toJson();
+
+    QJsonArray assetsJson;
+    for (const auto &asset : assets)
+        assetsJson.append(asset.toJson());
+
+    json["assets"] = assetsJson;
+
+    return json;
+}
+
 
 struct GMRInstanceLayer final : GMRLayer
 {
     GMRInstanceLayer() : GMRLayer(GMRInstanceLayerType) {}
 
+    QJsonObject toJson() const override;
+
     std::vector<GMRInstance> instances;
 };
+
+QJsonObject GMRInstanceLayer::toJson() const
+{
+    QJsonObject json = GMRLayer::toJson();
+
+    QJsonArray instancesJson;
+    for (const auto &instance : instances)
+        instancesJson.append(instance.toJson());
+
+    json["instances"] = instancesJson;
+
+    return json;
+}
+
 
 struct GMRPathLayer final : GMRLayer
 {
     GMRPathLayer() : GMRLayer(GMRPathLayerType) {}
 
+    QJsonObject toJson() const;
+
     QString pathId;
     QColor colour = Qt::red;
 };
 
+QJsonObject GMRPathLayer::toJson() const
+{
+    QJsonObject json = GMRLayer::toJson();
+
+    json["pathId"] = idValue(pathId, QStringLiteral("paths"));
+    json["colour"] = colorToAbgrF(colour);
+
+    return json;
+}
+
+
 struct GMRBackgroundLayer final : GMRLayer
 {
     GMRBackgroundLayer() : GMRLayer(GMRBackgroundLayerType) {}
+
+    QJsonObject toJson() const;
 
     QString spriteId;
     QColor colour = Qt::white;
@@ -291,6 +618,27 @@ struct GMRBackgroundLayer final : GMRLayer
     bool userdefinedAnimFPS = false;
 };
 
+QJsonObject GMRBackgroundLayer::toJson() const
+{
+    QJsonObject json = GMRLayer::toJson();
+
+    json["spriteId"] = idValue(spriteId, QStringLiteral("sprites"));
+    json["colour"] = colorToAbgrF(colour);
+    json["x"] = x;
+    json["y"] = y;
+    json["htiled"] = htiled;
+    json["vtiled"] = vtiled;
+    json["hspeed"] = hspeed;
+    json["vspeed"] = vspeed;
+    json["stretch"] = stretch;
+    json["animationFPS"] = animationFPS;
+    json["animationSpeedType"] = animationSpeedType;
+    json["userdefinedAnimFPS"] = userdefinedAnimFPS;
+
+    return json;
+}
+
+
 struct InstanceCreation
 {
     QString name;
@@ -300,11 +648,120 @@ struct InstanceCreation
     { return creationOrder < other.creationOrder; }
 };
 
+
+struct GMRoom final : GMResource
+{
+    GMRoom() : GMResource(GMRoomType) {}
+
+    QJsonObject toJson() const override;
+
+    bool isDnd = false;
+    double volume = 1.0;
+    std::vector<GMRView> views;
+    std::vector<std::unique_ptr<GMRLayer>> layers;
+    bool inheritLayers = false;
+    QString creationCodeFile;
+    bool inheritCode = false;
+    std::vector<InstanceCreation> instanceCreationOrder;
+    bool inheritCreationOrder = false;
+
+    struct {
+        bool inheritRoomSettings = false;
+        int Width = 0;
+        int Height = 0;
+        bool persistent = false;
+    } roomSettings;
+
+    struct {
+        bool inheritViewSettings = false;
+        bool enableViews = false;
+        bool clearViewBackground = false;
+        bool clearDisplayBuffer = false;
+    } viewSettings;
+
+    struct {
+        bool inheritPhysicsSettings = false;
+        bool PhysicsWorld = false;
+        double PhysicsWorldGravityX = 0.0;
+        double PhysicsWorldGravityY = 10.0;
+        double PhysicsWorldPixToMetres = 0.1;
+    } physicsSettings;
+
+    QString parent = QStringLiteral("Rooms");
+    QString roomPathInProject;
+};
+
+QJsonObject GMRoom::toJson() const
+{
+    QJsonObject json = GMResource::toJson();
+
+    json["isDnd"] = isDnd;
+    json["volume"] = volume;
+    json["parentRoom"] = QJsonValue(QJsonValue::Null);  // TODO: Provide a way to set this?
+
+    QJsonArray viewsJson;
+    for (const GMRView &view : views)
+        viewsJson.append(view.toJson());
+
+    json["views"] = viewsJson;
+
+    QJsonArray layersJson;
+    for (const auto &layer : layers)
+        layersJson.append(layer->toJson());
+
+    json["layers"] = layersJson;
+
+    json["inheritLayers"] = inheritLayers;
+    json["creationCodeFile"] = creationCodeFile;
+    json["inheritCode"] = inheritCode;
+
+    QJsonArray instanceCreationOrderJson;
+    for (const InstanceCreation &creation : instanceCreationOrder) {
+        instanceCreationOrderJson.append(QJsonObject {
+            { "name", creation.name },
+            { "path", roomPathInProject }
+        });
+    }
+
+    json["instanceCreationOrder"] = instanceCreationOrderJson;
+    json["inheritCreationOrder"] = inheritCreationOrder;
+    json["sequenceId"] = QJsonValue(QJsonValue::Null);
+
+    json["roomSettings"] = QJsonObject {
+        { "inheritRoomSettings", roomSettings.inheritRoomSettings },
+        { "Width", roomSettings.Width },
+        { "Height", roomSettings.Height },
+        { "persistent", roomSettings.persistent }
+    };
+
+    json["viewSettings"] = QJsonObject {
+        { "inheritViewSettings", viewSettings.inheritViewSettings },
+        { "enableViews", viewSettings.enableViews },
+        { "clearViewBackground", viewSettings.clearViewBackground },
+        { "clearDisplayBuffer", viewSettings.clearDisplayBuffer }
+    };
+
+    json["physicsSettings"] = QJsonObject {
+        { "inheritPhysicsSettings", physicsSettings.inheritPhysicsSettings },
+        { "PhysicsWorld", physicsSettings.PhysicsWorld },
+        { "PhysicsWorldGravityX", physicsSettings.PhysicsWorldGravityX },
+        { "PhysicsWorldGravityY", physicsSettings.PhysicsWorldGravityY },
+        { "PhysicsWorldPixToMetres", physicsSettings.PhysicsWorldPixToMetres }
+    };
+
+    json["parent"] = QJsonObject {
+        { "name", QFileInfo(parent).fileName() },
+        { "path", QStringLiteral("folders/%1.yy").arg(parent) }
+    };
+
+    return json;
+}
+
+
 struct Context
 {
-    std::vector<GMRView> views;
+    GMRoom room;
     std::vector<GMPath> paths;
-    std::vector<InstanceCreation> instanceCreationOrder;
     std::unique_ptr<MapRenderer> renderer;
     ExportContext exportContext;
 
@@ -354,6 +811,14 @@ private:
 } // namespace Yy
 
 template <typename T>
+static void readProperty(const Object *object, const QString &name, T &out)
+{
+    const QVariant var = object->resolvedProperty(name);
+    if (var.isValid())
+        out = var.value<T>();
+}
+
+template <typename T>
 static T optionalProperty(const Object *object, const QString &name, const T &def)
 {
     const QVariant var = object->resolvedProperty(name);
@@ -367,65 +832,11 @@ static T takeProperty(Properties &properties, const QString &name, const T &def)
     return var.isValid() ? var.value<T>() : def;
 }
 
-template <typename T>
-static void writeProperty(JsonWriter &json,
-                          const Object *object,
-                          const QString &propertyName,
-                          const char *memberName,
-                          const T &def)
-{
-    const T value = optionalProperty(object, propertyName, def);
-    json.writeMember(memberName, value);
-}
-
-template <typename T>
-static void writeProperty(JsonWriter &json,
-                          const Object *object,
-                          const char *name,
-                          const T &def)
-{
-    writeProperty(json, object, QString::fromLatin1(name), name, def);
-}
-
 static QStringList readTags(const Object *object)
 {
     const QString tags = optionalProperty(object, "tags", QString());
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    const QStringList tagList = tags.split(QLatin1Char(','), QString::SkipEmptyParts);
-#else
     const QStringList tagList = tags.split(QLatin1Char(','), Qt::SkipEmptyParts);
-#endif
     return tagList;
-}
-
-static void writeTags(JsonWriter &json, const QStringList &tags)
-{
-    json.writeMember("tags", QJsonArray::fromStringList(tags));
-}
-
-static void writeTags(JsonWriter &json, const Object *object)
-{
-    writeTags(json, readTags(object));
-}
-
-static void writeResourceProperties(JsonWriter &json, const GMResource &resource)
-{
-    json.writeMember("resourceVersion", resource.resourceVersion);
-    json.writeMember("name", resource.name);
-    writeTags(json, resource.tags);
-    json.writeMember("resourceType", resourceTypeStr(resource.resourceType));
-}
-
-static void writeId(JsonWriter &json, const char *member, const QString &id, const QString &scope)
-{
-    if (id.isEmpty()) {
-        json.writeMember(member, QJsonValue(QJsonValue::Null));
-    } else {
-        json.writeStartObject(member);
-        json.writeMember("name", id);
-        json.writeMember("path", QStringLiteral("%1/%2/%2.yy").arg(scope, id));
-        json.writeEndObject();
-    }
 }
 
 static QString spriteId(const Object *object, const QUrl &imageUrl, Context &context)
@@ -436,15 +847,6 @@ static QString spriteId(const Object *object, const QUrl &imageUrl, Context &con
         return var.value<QString>();
     else
         return context.resourceId(imageUrl.path());
-}
-
-static unsigned colorToAbgr(const QColor &color)
-{
-    const QRgb rgba = color.rgba();
-    return ((qAlpha(rgba) & 0xffu) << 24) |
-            ((qBlue(rgba) & 0xffu) << 16) |
-            ((qGreen(rgba) & 0xffu) << 8) |
-            (qRed(rgba) & 0xffu);
 }
 
 static QString toOverriddenPropertyValue(const QVariant &value, Context &context)
@@ -471,208 +873,6 @@ static QString toOverriddenPropertyValue(const QVariant &value, Context &context
         return exportValue.value.toString();
     }
     }
-}
-
-static void writeLayers(JsonWriter &json, const std::vector<std::unique_ptr<GMRLayer>> &layers)
-{
-    json.writeStartArray("layers");
-
-    for (const std::unique_ptr<GMRLayer> &layer : layers) {
-        json.prepareNewLine();
-        json.writeStartObject();
-
-        switch (layer->resourceType) {
-        case GMRAssetLayerType: {
-            auto &assetLayer = static_cast<const GMRAssetLayer&>(*layer);
-
-            json.writeStartArray("assets");
-
-            for (const auto &asset : assetLayer.assets) {
-                json.prepareNewLine();
-                json.writeStartObject();
-                const bool wasMinimize = json.minimize();
-                json.setMinimize(true);
-
-                writeId(json, "spriteId", asset.spriteId, QStringLiteral("sprites"));
-
-                if (asset.resourceType == GMRSpriteGraphicType) {
-                    json.writeMember("headPosition", asset.headPosition);
-                    json.writeMember("rotation", asset.rotation);
-                    json.writeMember("scaleX", asset.scaleX);
-                    json.writeMember("scaleY", asset.scaleY);
-                    json.writeMember("animationSpeed", asset.animationSpeed);
-                } else {
-                    json.writeMember("w", asset.w);
-                    json.writeMember("h", asset.h);
-                    json.writeMember("u0", asset.u0);
-                    json.writeMember("v0", asset.v0);
-                    json.writeMember("u1", asset.u1);
-                    json.writeMember("v1", asset.v1);
-                }
-                json.writeMember("colour", colorToAbgr(asset.colour));
-                if (asset.inheritedItemId.isEmpty()) {
-                    json.writeMember("inheritedItemId", QJsonValue(QJsonValue::Null));
-                } else {
-                    json.writeStartObject("inheritedItemId");
-                    json.writeMember("name", asset.inheritedItemId);
-                    json.writeMember("path", asset.inheritedItemPath);
-                    json.writeEndObject();
-                }
-                json.writeMember("frozen", asset.frozen);
-                json.writeMember("ignore", asset.ignore);
-                json.writeMember("inheritItemSettings", asset.inheritItemSettings);
-                json.writeMember("x", asset.x);
-                json.writeMember("y", asset.y);
-
-                writeResourceProperties(json, asset);
-
-                json.writeEndObject();
-                json.setMinimize(wasMinimize);
-            }
-
-            json.writeEndArray(); // assets
-            break;
-        }
-        case GMRBackgroundLayerType: {
-            auto &backgroundLayer = static_cast<const GMRBackgroundLayer&>(*layer);
-
-            writeId(json, "spriteId", backgroundLayer.spriteId, QStringLiteral("sprites"));
-
-            json.writeMember("colour", colorToAbgr(backgroundLayer.colour));
-            json.writeMember("x", backgroundLayer.x);
-            json.writeMember("y", backgroundLayer.y);
-            json.writeMember("htiled", backgroundLayer.htiled);
-            json.writeMember("vtiled", backgroundLayer.vtiled);
-            json.writeMember("hspeed", backgroundLayer.hspeed);
-            json.writeMember("vspeed", backgroundLayer.vspeed);
-            json.writeMember("stretch", backgroundLayer.stretch);
-            json.writeMember("animationFPS", backgroundLayer.animationFPS);
-            json.writeMember("animationSpeedType", backgroundLayer.animationSpeedType);
-            json.writeMember("userdefinedAnimFPS", backgroundLayer.userdefinedAnimFPS);
-            break;
-        }
-        case GMRInstanceLayerType: {
-            auto &instanceLayer = static_cast<const GMRInstanceLayer&>(*layer);
-            json.writeStartArray("instances");
-
-            for (const auto &instance : instanceLayer.instances) {
-                json.prepareNewLine();
-                json.writeStartObject();
-                const bool wasMinimize = json.minimize();
-                json.setMinimize(true);
-
-                json.writeStartArray("properties");
-                for (const GMOverriddenProperty &prop : instance.properties) {
-                    json.writeStartObject();
-
-                    json.writeStartObject("propertyId");
-                    json.writeMember("name", prop.propertyId);
-                    json.writeMember("path", QStringLiteral("%1/%2/%2.yy").arg(QStringLiteral("objects"), prop.objectId));
-                    json.writeEndObject();  // propertyId
-
-                    writeId(json, "objectId", prop.objectId, "objects");
-
-                    json.writeMember("value", prop.value);
-
-                    writeResourceProperties(json, prop);
-
-                    json.writeEndObject();
-                }
-                json.writeEndArray();   // properties
-
-                json.writeMember("isDnd", instance.isDnd);
-
-                writeId(json, "objectId", instance.objectId, QStringLiteral("objects"));
-
-                json.writeMember("inheritCode", instance.inheritCode);
-                json.writeMember("hasCreationCode", instance.hasCreationCode);
-                json.writeMember("colour", colorToAbgr(instance.colour));
-                json.writeMember("rotation", instance.rotation);
-                json.writeMember("scaleX", instance.scaleX);
-                json.writeMember("scaleY", instance.scaleY);
-                json.writeMember("imageIndex", instance.imageIndex);
-                json.writeMember("imageSpeed", instance.imageSpeed);
-                if (instance.inheritedItemId.isEmpty()) {
-                    json.writeMember("inheritedItemId", QJsonValue(QJsonValue::Null));
-                } else {
-                    json.writeStartObject("inheritedItemId");
-                    json.writeMember("name", instance.inheritedItemId);
-                    json.writeMember("path", instance.inheritedItemPath);
-                    json.writeEndObject();
-                }
-                json.writeMember("frozen", instance.frozen);
-                json.writeMember("ignore", instance.ignore);
-                json.writeMember("inheritItemSettings", instance.inheritItemSettings);
-                json.writeMember("x", instance.x);
-                json.writeMember("y", instance.y);
-
-                writeResourceProperties(json, instance);
-
-                json.writeEndObject();
-                json.setMinimize(wasMinimize);
-            }
-
-            json.writeEndArray(); // instances
-            break;
-        }
-        case GMRPathLayerType: {
-            auto &pathLayer = static_cast<const GMRPathLayer&>(*layer);
-
-            writeId(json, "pathId", pathLayer.pathId, QStringLiteral("paths"));
-
-            json.writeMember("colour", colorToAbgr(pathLayer.colour));
-            break;
-        }
-        case GMRTileLayerType: {
-            auto &tileLayer = static_cast<const GMRTileLayer&>(*layer);
-
-            writeId(json, "tilesetId", tileLayer.tilesetId, QStringLiteral("tilesets"));
-
-            json.writeMember("x", tileLayer.x);
-            json.writeMember("y", tileLayer.y);
-
-            json.writeStartObject("tiles");
-            json.writeMember("SerialiseWidth", tileLayer.SerialiseWidth);
-            json.writeMember("SerialiseHeight", tileLayer.SerialiseHeight);
-            json.writeStartArray("TileSerialiseData");
-
-            size_t index = 0;
-
-            for (int y = 0; y < tileLayer.SerialiseHeight; ++y) {
-                json.prepareNewLine();
-
-                for (int x = 0; x < tileLayer.SerialiseWidth; ++x) {
-                    json.writeValue(tileLayer.tiles.at(index));
-                    ++index;
-                }
-            }
-
-            json.writeEndArray();   // TileSerialiseData
-            json.writeEndObject();  // tiles
-            break;
-        }
-        default:
-            break;
-        }
-
-        json.writeMember("visible", layer->visible);
-        json.writeMember("depth", layer->depth);
-        json.writeMember("userdefinedDepth", layer->userdefinedDepth);
-        json.writeMember("inheritLayerDepth", layer->inheritLayerDepth);
-        json.writeMember("inheritLayerSettings", layer->inheritLayerSettings);
-        json.writeMember("gridX", layer->gridX);
-        json.writeMember("gridY", layer->gridY);
-
-        writeLayers(json, layer->layers);
-
-        json.writeMember("hierarchyFrozen", layer->hierarchyFrozen);
-
-        writeResourceProperties(json, *layer);
-
-        json.writeEndObject();
-    }
-
-    json.writeEndArray();   // layers
 }
 
 static void fillTileLayer(GMRTileLayer &gmrTileLayer, const TileLayer *tileLayer, const Tileset *tileset)
@@ -829,7 +1029,7 @@ static void createAssetsFromTiles(std::vector<GMRGraphic> &assets,
 
         g.colour = color;
         g.frozen = frozen;
-        g.ignore = optionalProperty(tileLayer, "ignore", g.ignore);
+        readProperty(tileLayer, "ignore", g.ignore);
         g.x = pos.x();
         g.y = pos.y() - size.height();
 
@@ -930,15 +1130,16 @@ static std::unique_ptr<GMRLayer> processObjectGroup(const ObjectGroup *objectGro
 
         if (className == QLatin1String("view")) {
             // GM only has 8 views so drop anything more than that
-            if (context.views.size() > 7) {
+            if (context.room.views.size() > 7) {
                 Tiled::ERROR(QLatin1String("YY plugin: Can't export more than 8 views."),
                              Tiled::JumpToObject { mapObject });
                 continue;
             }
 
-            GMRView &view = context.views.emplace_back();
+            // Last view in Object layer is the first view in the room
+            GMRView &view = context.room.views.emplace_back();
 
-            view.inherit = optionalProperty(mapObject, "inherit", false);
+            readProperty(mapObject, "inherit", view.inherit);
             view.visible = mapObject->isVisible();
             // Note: GM only supports ints for positioning
             // so views could be off if user doesn't align to whole number
@@ -955,7 +1156,7 @@ static std::unique_ptr<GMRLayer> processObjectGroup(const ObjectGroup *objectGro
             view.vborder = qRound(optionalProperty(mapObject, "vborder", 32.0));
             view.hspeed = qRound(optionalProperty(mapObject, "hspeed", -1.0));
             view.vspeed = qRound(optionalProperty(mapObject, "vspeed", -1.0));
-            view.objectId = optionalProperty(mapObject, "objectId", QString());
+            readProperty(mapObject, "objectId", view.objectId);
         }
         else if (!className.isEmpty())
         {
@@ -1028,7 +1229,7 @@ static std::unique_ptr<GMRLayer> processObjectGroup(const ObjectGroup *objectGro
             instance.tags = readTags(mapObject);
             props.remove(QStringLiteral("tags"));
 
-            InstanceCreation &instanceCreation = context.instanceCreationOrder.emplace_back();
+            InstanceCreation &instanceCreation = context.room.instanceCreationOrder.emplace_back();
             instanceCreation.name = instance.name;
             instanceCreation.creationOrder = takeProperty(props, "creationOrder", 0);
 
@@ -1077,8 +1278,8 @@ static std::unique_ptr<GMRLayer> processObjectGroup(const ObjectGroup *objectGro
                 }
 
                 // Allow overriding the scale using custom properties
-                g.scaleX = optionalProperty(mapObject, "scaleX", g.scaleX);
-                g.scaleY = optionalProperty(mapObject, "scaleY", g.scaleY);
+                readProperty(mapObject, "scaleX", g.scaleX);
+                readProperty(mapObject, "scaleY", g.scaleY);
 
                 g.animationSpeed = optionalProperty(mapObject, "animationSpeed", 1.0);
             } else {
@@ -1212,15 +1413,14 @@ static std::unique_ptr<GMRLayer> processImageLayer(const ImageLayer *imageLayer,
     gmrBackgroundLayer->htiled = optionalProperty(imageLayer, "htiled", imageLayer->repeatX());
     gmrBackgroundLayer->vtiled = optionalProperty(imageLayer, "vtiled", imageLayer->repeatY());
 
-    gmrBackgroundLayer->hspeed = optionalProperty(imageLayer, "hspeed", gmrBackgroundLayer->hspeed);
-    gmrBackgroundLayer->vspeed = optionalProperty(imageLayer, "vspeed", gmrBackgroundLayer->vspeed);
-    gmrBackgroundLayer->stretch = optionalProperty(imageLayer, "stretch", gmrBackgroundLayer->stretch);
-    gmrBackgroundLayer->animationFPS = optionalProperty(imageLayer, "animationFPS", gmrBackgroundLayer->animationFPS);
-    gmrBackgroundLayer->animationSpeedType = optionalProperty(imageLayer, "animationSpeedType", gmrBackgroundLayer->animationSpeedType);
+    readProperty(imageLayer, "hspeed", gmrBackgroundLayer->hspeed);
+    readProperty(imageLayer, "vspeed", gmrBackgroundLayer->vspeed);
+    readProperty(imageLayer, "stretch", gmrBackgroundLayer->stretch);
+    readProperty(imageLayer, "animationFPS", gmrBackgroundLayer->animationFPS);
+    readProperty(imageLayer, "animationSpeedType", gmrBackgroundLayer->animationSpeedType);
     gmrBackgroundLayer->userdefinedAnimFPS = imageLayer->resolvedProperty(QStringLiteral("animationFPS")).isValid();
 
-    // Workaround compilation issue with mingw49
-    return std::unique_ptr<GMRLayer>(std::move(gmrBackgroundLayer));
+    return gmrBackgroundLayer;
 }
 
 static void processLayers(std::vector<std::unique_ptr<GMRLayer>> &gmrLayers,
@@ -1344,146 +1544,72 @@ YyPlugin::YyPlugin()
 
 bool YyPlugin::write(const Map *map, const QString &fileName, Options options)
 {
-    // Not using SaveFile here, because GameMaker's reload functionality does
-    // not work correctly when the file is replaced.
-    QFile file(fileName);
+    SaveFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         mError = QCoreApplication::translate("File Errors", "Could not open file for writing.");
         return false;
     }
 
-    const QString baseName = QFileInfo(fileName).completeBaseName();
-
-    JsonWriter json(&file);
-
-    json.setMinimize(options.testFlag(WriteMinimized));
-
-    json.writeStartObject();
-
-    writeProperty(json, map, "isDnd", false);
-    writeProperty(json, map, "volume", 1.0);
-    json.writeMember("parentRoom", QJsonValue(QJsonValue::Null));    // TODO: Provide a way to set this?
-
     Context context;
     context.renderer = MapRenderer::create(map);
+    GMRoom &room = context.room;
 
-    std::vector<std::unique_ptr<GMRLayer>> layers;
-    processLayers(layers, map->layers(), context);
+    room.name = QFileInfo(fileName).completeBaseName();;
+    room.roomPathInProject = QStringLiteral("rooms/%1/%1.yy").arg(room.name);
+
+    readProperty(map, QStringLiteral("name"), room.name);
+    readProperty(map, QStringLiteral("isDnd"), room.isDnd);
+    readProperty(map, QStringLiteral("volume"), room.volume);
+
+    processLayers(room.layers, map->layers(), context);
 
     // If a valid background color is set, create a background layer with this color.
     if (map->backgroundColor().isValid()) {
         auto gmrBackgroundLayer = std::make_unique<GMRBackgroundLayer>();
         gmrBackgroundLayer->name = QStringLiteral("Background_Color");
         gmrBackgroundLayer->colour = map->backgroundColor();
-        layers.push_back(std::move(gmrBackgroundLayer));
+        room.layers.push_back(std::move(gmrBackgroundLayer));
     }
 
-    autoAssignDepth(layers);
+    autoAssignDepth(room.layers);
 
-    const bool enableViews = !context.views.empty();
+    room.viewSettings.enableViews = !room.views.empty();
+    room.views.resize(8);    // GameMaker always stores 8 views
 
-    // Write out views
-    // Last view in Object layer is the first view in the room
-    json.writeStartArray("views");
-    context.views.resize(8);    // GameMaker always stores 8 views
-    for (const GMRView &view : std::as_const(context.views)) {
-        json.prepareNewLine();
-        json.writeStartObject();
-        const bool wasMinimize = json.minimize();
-        json.setMinimize(true);
+    std::stable_sort(room.instanceCreationOrder.begin(),
+                     room.instanceCreationOrder.end());
 
-        json.writeMember("inherit", view.inherit);
-        json.writeMember("visible", view.visible);
-        json.writeMember("xview", view.xview);
-        json.writeMember("yview", view.yview);
-        json.writeMember("wview", view.wview);
-        json.writeMember("hview", view.hview);
-        json.writeMember("xport", view.xport);
-        json.writeMember("yport", view.yport);
-        json.writeMember("wport", view.wport);
-        json.writeMember("hport", view.hport);
-        json.writeMember("hborder", view.hborder);
-        json.writeMember("vborder", view.vborder);
-        json.writeMember("hspeed", view.hspeed);
-        json.writeMember("vspeed", view.vspeed);
+    readProperty(map, QStringLiteral("inheritLayers"), room.inheritLayers);
+    readProperty(map, QStringLiteral("creationCodeFile"), room.creationCodeFile);
+    readProperty(map, QStringLiteral("inheritCode"), room.inheritCode);
+    readProperty(map, QStringLiteral("inheritCreationOrder"), room.inheritCreationOrder);
 
-        writeId(json, "objectId", view.objectId, "objects");
+    readProperty(map, QStringLiteral("inheritRoomSettings"), room.roomSettings.inheritRoomSettings);
+    room.roomSettings.Width = map->tileWidth() * map->width();
+    room.roomSettings.Height = map->tileHeight() * map->height();
+    readProperty(map, QStringLiteral("persistent"), room.roomSettings.persistent);
 
-        json.writeEndObject();
-        json.setMinimize(wasMinimize);
-    }
+    readProperty(map, QStringLiteral("inheritViewSettings"), room.viewSettings.inheritViewSettings);
+    readProperty(map, QStringLiteral("enableViews"), room.viewSettings.enableViews);
+    readProperty(map, QStringLiteral("clearViewBackground"), room.viewSettings.clearViewBackground);
+    readProperty(map, QStringLiteral("clearDisplayBuffer"), room.viewSettings.clearDisplayBuffer);
 
-    json.writeEndArray();   // views
+    readProperty(map, QStringLiteral("inheritPhysicsSettings"), room.physicsSettings.inheritPhysicsSettings);
+    readProperty(map, QStringLiteral("PhysicsWorld"), room.physicsSettings.PhysicsWorld);
+    readProperty(map, QStringLiteral("PhysicsWorldGravityX"), room.physicsSettings.PhysicsWorldGravityX);
+    readProperty(map, QStringLiteral("PhysicsWorldGravityY"), room.physicsSettings.PhysicsWorldGravityY);
+    readProperty(map, QStringLiteral("PhysicsWorldPixToMetres"), room.physicsSettings.PhysicsWorldPixToMetres);
 
-    writeLayers(json, layers);
+    readProperty(map, QStringLiteral("parent"), room.parent);
 
-    writeProperty(json, map, "inheritLayers", false);
-    writeProperty(json, map, "creationCodeFile", QString());
-    writeProperty(json, map, "inheritCode", false);
+    room.tags = readTags(map);
 
-    const QString currentRoomPath = QStringLiteral("rooms/%1/%1.yy").arg(baseName);
-
-    std::stable_sort(context.instanceCreationOrder.begin(),
-                     context.instanceCreationOrder.end());
-
-    json.writeStartArray("instanceCreationOrder");
-    for (const auto &creation : context.instanceCreationOrder) {
-        json.prepareNewLine();
-        json.writeStartObject();
-        const bool wasMinimize = json.minimize();
-        json.setMinimize(true);
-        json.writeMember("name", creation.name);
-        json.writeMember("path", currentRoomPath);
-        json.writeEndObject();
-        json.setMinimize(wasMinimize);
-    }
-    json.writeEndArray();
-
-    writeProperty(json, map, "inheritCreationOrder", false);
-    json.writeMember("sequenceId", QJsonValue(QJsonValue::Null));
-
-    const int mapPixelWidth = map->tileWidth() * map->width();
-    const int mapPixelHeight = map->tileHeight() * map->height();
-
-    json.writeStartObject("roomSettings");
-    writeProperty(json, map, "inheritRoomSettings", false);
-    json.writeMember("Width", mapPixelWidth);
-    json.writeMember("Height", mapPixelHeight);
-    writeProperty(json, map, "persistent", false);
-    json.writeEndObject();
-
-    json.writeStartObject("viewSettings");
-    writeProperty(json, map, "inheritViewSettings", false);
-    writeProperty(json, map, "enableViews", enableViews);
-    writeProperty(json, map, "clearViewBackground", false);
-    writeProperty(json, map, "clearDisplayBuffer", true);
-    json.writeEndObject();
-
-    json.writeStartObject("physicsSettings");
-    writeProperty(json, map, "inheritPhysicsSettings", false);
-    writeProperty(json, map, "PhysicsWorld", false);
-    writeProperty(json, map, "PhysicsWorldGravityX", 0.0);
-    writeProperty(json, map, "PhysicsWorldGravityY", 10.0);
-    writeProperty(json, map, "PhysicsWorldPixToMetres", 0.1);
-    json.writeEndObject();
-
-    json.writeStartObject("parent");
-    const QString parent = optionalProperty(map, "parent", QStringLiteral("Rooms"));
-    json.writeMember("name", QFileInfo(parent).fileName());
-    json.writeMember("path", QStringLiteral("folders/%1.yy").arg(parent));
-    json.writeEndObject();
-
-    writeProperty(json, map, "resourceVersion", QString("1.0"));
-    writeProperty(json, map, "name", baseName);
-    writeTags(json, map);
-    json.writeMember("resourceType", "GMRoom");
-
-    json.writeEndObject();
+    JsonWriter json(file.device());
+    json.setMinimize(options.testFlag(WriteMinimized));
+    json.writeValue(room.toJson());
     json.writeEndDocument();
 
-    file.flush();
-
-    if (file.error() != QFileDevice::NoError) {
+    if (!file.commit()) {
         mError = file.errorString();
         return false;
     }

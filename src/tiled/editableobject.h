@@ -81,6 +81,9 @@ public:
 
     static EditableObject *find(Object *object);
 
+    static QVariant propertyValueFromScript(const QVariant &value);
+    static QVariantMap propertyValueFromScript(const QVariantMap &value);
+
 public slots:
     void setClassName(const QString &type);
 
@@ -93,9 +96,7 @@ private:
     void setPropertyImpl(const QStringList &path, const QVariant &value);
 
     QVariant toScript(const QVariant &value) const;
-    QVariant fromScript(const QVariant &value) const;
     QVariantMap toScript(const QVariantMap &value) const;
-    QVariantMap fromScript(const QVariantMap &value) const;
 
     EditableAsset *mAsset;
     Object *mObject;

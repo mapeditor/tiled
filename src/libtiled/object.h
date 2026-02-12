@@ -72,6 +72,8 @@ public:
     const QString &className() const;
     void setClassName(const QString &className);
 
+    const ClassPropertyType *classType() const;
+
     /**
      * Returns the properties of this object.
      */
@@ -111,6 +113,7 @@ public:
 
     QVariant resolvedProperty(const QString &name) const;
     QVariantMap resolvedProperties() const;
+    QVariantMap inheritedProperties() const;
 
     /**
      * Returns the value of the object's \a name property, as a string.
@@ -123,6 +126,8 @@ public:
 
     /**
      * Returns the type of the object's \a name property, as a string.
+     *
+     * This function exists only for the Python plugin.
      */
     QString propertyType(const QString &name) const
     { return typeName(mProperties.value(name)); }
@@ -149,7 +154,7 @@ public:
      *
      * Returns whether the property was set.
      */
-    bool setProperty(const QStringList &path, const QVariant &value);
+    bool setProperty(const PropertyPath &path, const QVariant &value);
 
     /**
      * Removes the property with the given \a name.

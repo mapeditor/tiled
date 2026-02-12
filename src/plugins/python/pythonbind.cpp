@@ -7707,6 +7707,10 @@ inittiled_Tiled(void)
         tmp_value = PyLong_FromLong(Tiled::MapObject::Ellipse);
         PyDict_SetItemString((PyObject*) PyTiledMapObject_Type.tp_dict, "Ellipse", tmp_value);
         Py_DECREF(tmp_value);
+         // Tiled::MapObject::Capsule
+        tmp_value = PyLong_FromLong(Tiled::MapObject::Capsule);
+        PyDict_SetItemString((PyObject*) PyTiledMapObject_Type.tp_dict, "Capsule", tmp_value);
+        Py_DECREF(tmp_value);
          // Tiled::MapObject::Text
         tmp_value = PyLong_FromLong(Tiled::MapObject::Text);
         PyDict_SetItemString((PyObject*) PyTiledMapObject_Type.tp_dict, "Text", tmp_value);

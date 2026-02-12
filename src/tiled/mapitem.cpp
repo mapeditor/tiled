@@ -22,6 +22,7 @@
 
 #include "abstractworldtool.h"
 #include "changeevents.h"
+#include "changeworld.h"
 #include "documentmanager.h"
 #include "grouplayer.h"
 #include "grouplayeritem.h"
@@ -154,7 +155,7 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(prefs, &Preferences::backgroundFadeColorChanged, this, [this] (QColor color) { mDarkRectangle->setBrush(color); });
 
     connect(mapDocument.data(), &Document::changed, this, &MapItem::documentChanged);
-    connect(mapDocument.data(), &MapDocument::mapChanged, this, &MapItem::mapChanged);
+    connect(mapDocument.data(), &MapDocument::mapResized, this, &MapItem::mapChanged);
     connect(mapDocument.data(), &MapDocument::regionChanged, this, &MapItem::repaintRegion);
     connect(mapDocument.data(), &MapDocument::tileLayerChanged, this, &MapItem::tileLayerChanged);
     connect(mapDocument.data(), &MapDocument::layerAdded, this, &MapItem::layerAdded);
@@ -390,6 +391,28 @@ void MapItem::documentChanged(const ChangeEvent &change)
 
         break;
     }
+    case ChangeEvent::MapChanged: {
+        auto &mapChange = static_cast<const MapChangeEvent&>(change);
+        switch (mapChange.property) {
+        case Map::TileSizeProperty:
+        case Map::InfiniteProperty:
+        case Map::HexSideLengthProperty:
+        case Map::StaggerAxisProperty:
+        case Map::StaggerIndexProperty:
+        case Map::SkewProperty:
+        case Map::ParallaxOriginProperty:
+        case Map::OrientationProperty:
+            mapChanged();
+            break;
+        case Map::RenderOrderProperty:
+        case Map::BackgroundColorProperty:
+        case Map::LayerDataFormatProperty:
+        case Map::CompressionLevelProperty:
+        case Map::ChunkSizeProperty:
+            break;
+        }
+        break;
+    }
     case ChangeEvent::LayerChanged:
         layerChanged(static_cast<const LayerChangeEvent&>(change));
         break;
@@ -459,13 +482,15 @@ void MapItem::mapChanged()
 
     // When this map is part of a world, update that map's rect when necessary
     const QString &mapFileName = mapDocument()->fileName();
-    if (const World *world = WorldManager::instance().worldForMap(mapFileName)) {
+    if (auto worldDocument = WorldManager::instance().worldForMap(mapFileName)) {
+        World *world = worldDocument->world();
         if (world->canBeModified()) {
             const QRect currentRectInWorld = world->mapRect(mapFileName);
-            QRect resizedRect = mapDocument()->renderer()->mapBoundingRect();
-            if (currentRectInWorld.size() != resizedRect.size()) {
-                resizedRect.translate(currentRectInWorld.topLeft());
-                WorldManager::instance().setMapRect(mapFileName, resizedRect);
+            const QSize newSize = mapDocument()->renderer()->mapBoundingRect().size();
+            if (currentRectInWorld.size() != newSize) {
+                const QRect resizedRect(currentRectInWorld.topLeft(), newSize);
+                auto undoStack = worldDocument->undoStack();
+                undoStack->push(new SetMapRectCommand(worldDocument.data(), mapFileName, resizedRect));
             }
         }
     }
@@ -524,8 +549,10 @@ void MapItem::layerChanged(const LayerChangeEvent &change)
     QGraphicsItem *layerItem = mLayerItems.value(layer);
     Q_ASSERT(layerItem);
 
-    if (change.properties & LayerChangeEvent::TintColorProperty)
-        layerTintColorChanged(layer);
+    if (change.properties & (LayerChangeEvent::TintColorProperty |
+                             LayerChangeEvent::BlendModeProperty)) {
+        updateLayerItems(layer);
+    }
 
     layerItem->setVisible(layer->isVisible());
 
@@ -560,7 +587,7 @@ void MapItem::layerChanged(const LayerChangeEvent &change)
     updateBoundingRect();   // possible layer offset change
 }
 
-void MapItem::layerTintColorChanged(Layer *layer)
+void MapItem::updateLayerItems(Layer *layer)
 {
     switch (layer->layerType()) {
     case Layer::TileLayerType:
@@ -576,7 +603,7 @@ void MapItem::layerTintColorChanged(Layer *layer)
     case Layer::GroupLayerType:
         // Recurse into group layers since tint color is inherited
         for (auto childLayer : static_cast<GroupLayer*>(layer)->layers())
-            layerTintColorChanged(childLayer);
+            updateLayerItems(childLayer);
         break;
     }
 }

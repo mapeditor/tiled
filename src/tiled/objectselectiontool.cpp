@@ -54,7 +54,6 @@
 #include <QUndoStack>
 
 #include <cmath>
-#include <float.h>
 
 using namespace Tiled;
 
@@ -335,8 +334,10 @@ ObjectSelectionTool::ObjectSelectionTool(QObject *parent)
     else
         mSelectContained->setChecked(true);
 
-    connect(mSelectIntersected, &QAction::triggered, [this] { setSelectionMode(Qt::IntersectsItemShape); });
-    connect(mSelectContained, &QAction::triggered, [this] { setSelectionMode(Qt::ContainsItemShape); });
+    connect(mSelectIntersected, &QAction::triggered,
+            this, [this] { setSelectionMode(Qt::IntersectsItemShape); });
+    connect(mSelectContained, &QAction::triggered,
+            this, [this] { setSelectionMode(Qt::ContainsItemShape); });
 
     for (int i = 0; i < CornerAnchorCount; ++i)
         mRotateHandles[i] = new RotateHandle(static_cast<AnchorPosition>(i));
@@ -366,8 +367,6 @@ void ObjectSelectionTool::activate(MapScene *scene)
 
     updateHandlesAndOrigin();
 
-    connect(mapDocument(), &MapDocument::mapChanged,
-            this, &ObjectSelectionTool::updateHandlesAndOrigin);
     connect(mapDocument(), &MapDocument::selectedObjectsChanged,
             this, &ObjectSelectionTool::updateHandlesAndOrigin);
     connect(mapDocument(), &MapDocument::tilesetTilePositioningChanged,
@@ -390,8 +389,6 @@ void ObjectSelectionTool::deactivate(MapScene *scene)
     for (ResizeHandle *handle : mResizeHandles)
         scene->removeItem(handle);
 
-    disconnect(mapDocument(), &MapDocument::mapChanged,
-               this, &ObjectSelectionTool::updateHandlesAndOrigin);
     disconnect(mapDocument(), &MapDocument::selectedObjectsChanged,
                this, &ObjectSelectionTool::updateHandlesAndOrigin);
     disconnect(mapDocument(), &MapDocument::tilesetTilePositioningChanged,
@@ -731,6 +728,9 @@ void ObjectSelectionTool::mouseDoubleClicked(QGraphicsSceneMouseEvent *event)
 {
     mousePressed(event);
 
+    if (event->modifiers() & Qt::AltModifier)
+        return; // Don't interfere with Alt+click (handled in mouseReleased)
+
     if (mClickedObject && (mClickedObject->shape() == MapObject::Polygon ||
                            mClickedObject->shape() == MapObject::Polyline)) {
         toolManager()->selectTool(toolManager()->findTool<EditPolygonTool>());
@@ -779,6 +779,9 @@ void ObjectSelectionTool::changeEvent(const ChangeEvent &event)
         return;
 
     switch (event.type) {
+    case ChangeEvent::MapChanged:
+        updateHandlesAndOrigin();
+        break;
     case ChangeEvent::LayerChanged:
         if (static_cast<const LayerChangeEvent&>(event).properties & LayerChangeEvent::PositionProperties)
             updateHandlesAndOrigin();
@@ -825,6 +828,7 @@ static QRectF pixelBounds(const MapObject *object)
 
     switch (object->shape()) {
     case MapObject::Ellipse:
+    case MapObject::Capsule:
     case MapObject::Rectangle:
     case MapObject::Point: {
         QRectF bounds(object->bounds());
@@ -861,6 +865,7 @@ static bool canResizeAbsolute(const MapObject *object)
     switch (object->shape()) {
     case MapObject::Rectangle:
     case MapObject::Ellipse:
+    case MapObject::Capsule:
     case MapObject::Text:
         return true;
     case MapObject::Point:
@@ -911,6 +916,7 @@ static QRectF objectBounds(const MapObject *object,
     } else {
         switch (object->shape()) {
         case MapObject::Ellipse:
+        case MapObject::Capsule:
         case MapObject::Rectangle: {
             QRectF bounds(object->bounds());
             align(bounds, object->alignment());

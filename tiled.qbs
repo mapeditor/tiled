@@ -4,9 +4,9 @@ Project {
     name: "Tiled"
 
     qbsSearchPaths: "qbs"
-    minimumQbsVersion: "1.13"
+    minimumQbsVersion: "1.18"
 
-    property string version: Environment.getEnv("TILED_VERSION") || "1.11.0";
+    property string version: Environment.getEnv("TILED_VERSION") || "1.11.2";
     property bool snapshot: Environment.getEnv("TILED_SNAPSHOT") == "true"
     property bool release: Environment.getEnv("TILED_RELEASE") == "true"
     property string libDir: "lib"
@@ -18,6 +18,7 @@ Project {
     property bool sentry: false
     property bool dbus: true
     property string openSslPath: Environment.getEnv("OPENSSL_PATH")
+    property string pythonPkgConfigName: "python3-embed"
 
     references: [
         "dist/archive.qbs",
@@ -28,7 +29,6 @@ Project {
         "src/libtiled",
         "src/libtiledquick",
         "src/plugins",
-        "src/qtpropertybrowser",
         "src/qtsingleapplication",
         "src/terraingenerator",
         "src/tiled/libtilededitor.qbs",

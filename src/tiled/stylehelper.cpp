@@ -29,8 +29,6 @@
 #include <QStyleFactory>
 #include <QStyleHints>
 
-#include <QtBoolPropertyManager>
-
 namespace Tiled {
 
 StyleHelper *StyleHelper::mInstance;
@@ -95,9 +93,7 @@ void StyleHelper::initialize()
 StyleHelper::StyleHelper()
     : mDefaultStyle(QApplication::style()->objectName())
     , mDefaultPalette(QApplication::palette())
-#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     , mDefaultShowShortcutsInContextMenus(QGuiApplication::styleHints()->showShortcutsInContextMenus())
-#endif
 {
     apply();
     applyFont();
@@ -136,11 +132,7 @@ void StyleHelper::apply()
         break;
     }
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
     QGuiApplication::styleHints()->setShowShortcutsInContextMenus(showShortcutsInContextMenus);
-#else
-    Q_UNUSED(showShortcutsInContextMenus)
-#endif
 
     if (QApplication::style()->objectName() != desiredStyle) {
         QStyle *style;
@@ -162,8 +154,6 @@ void StyleHelper::apply()
         if (auto *style = qobject_cast<TiledProxyStyle*>(QApplication::style()))
             style->setPalette(desiredPalette);
     }
-
-    QtBoolPropertyManager::resetIcons();
 
     emit styleApplied();
 }

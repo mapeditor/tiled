@@ -22,14 +22,8 @@ WindowsInstallerPackage {
     Depends { name: "Qt.core" }
 
     property string version: Environment.getEnv("TILED_MSI_VERSION") || project.version
-    property string bits: {
-        if (qbs.architecture === "x86_64")
-            return "64";
-        else
-            return "32";
-    }
 
-    targetName: "Tiled-" + project.version + "-win" + bits
+    targetName: "Tiled-" + project.version + "_" + qbs.architecture
 
     wix.defines: {
         var defs = [
@@ -65,12 +59,20 @@ WindowsInstallerPackage {
         if (rpMapEnabled)
             defs.push("RpMap");
 
-        if (project.openSslPath) {
-            defs.push("OpenSsl111Dir=" + project.openSslPath);
-        } else {
-            var openSslDir = "C:\\OpenSSL-v111-Win" + bits
-            if (File.exists(openSslDir))
-                defs.push("OpenSsl111Dir=" + openSslDir);
+        var imageFormatsPath = FileInfo.joinPaths(Qt.core.pluginPath, "imageformats")
+        if (File.exists(FileInfo.joinPaths(imageFormatsPath, "qaseprite.dll")))
+            defs.push("AsepriteImageFormatPlugin=qaseprite.dll");
+
+        // Since Qt 6.2 we rely on the schannel backend.
+        if (Qt.core.versionMajor < 6 || Qt.core.versionMinor < 2) {
+            if (project.openSslPath) {
+                defs.push("OpenSsl111Dir=" + project.openSslPath);
+            } else {
+                var bits = (qbs.architecture === "x86_64") ? "64" : "32;"
+                var openSslDir = "C:\\OpenSSL-v111-Win" + bits
+                if (File.exists(openSslDir))
+                    defs.push("OpenSsl111Dir=" + openSslDir);
+            }
         }
 
         return defs;

@@ -33,10 +33,14 @@
 #include "maintoolbar.h"
 #include "mapdocument.h"
 #include "mapobject.h"
+#include "newtilesetdialog.h"
 #include "objectgroup.h"
-#include "objecttemplate.h"
+#if QT_VERSION < QT_VERSION_CHECK(6, 5, 0)
+#include "objecttemplate.h" // needed for static assert in QtCore/qmetatype.h
+#endif
 #include "preferences.h"
 #include "propertiesdock.h"
+#include "scriptmanager.h"
 #include "session.h"
 #include "templatesdock.h"
 #include "tile.h"
@@ -131,6 +135,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     , mWidgetStack(new QStackedWidget(mMainWindow))
     , mAddTiles(new QAction(this))
     , mRemoveTiles(new QAction(this))
+    , mEditTilesetParameters(new QAction(this))
     , mRelocateTiles(new QAction(this))
     , mShowAnimationEditor(new QAction(this))
     , mDynamicWrappingToggle(new QAction(this))
@@ -141,7 +146,6 @@ TilesetEditor::TilesetEditor(QObject *parent)
     , mWangDock(new WangDock(mMainWindow))
     , mZoomComboBox(new QComboBox)
     , mStatusInfoLabel(new QLabel)
-    , mTileAnimationEditor(new TileAnimationEditor(mMainWindow))
 {
     mMainWindow->setDockOptions(mMainWindow->dockOptions() | QMainWindow::GroupedDragging);
     mMainWindow->setDockNestingEnabled(true);
@@ -154,12 +158,15 @@ TilesetEditor::TilesetEditor(QObject *parent)
     ActionManager::registerAction(editWang, "EditWang");
     ActionManager::registerAction(mAddTiles, "AddTiles");
     ActionManager::registerAction(mRemoveTiles, "RemoveTiles");
+    ActionManager::registerAction(mEditTilesetParameters, "EditTilesetParameters");
     ActionManager::registerAction(mRelocateTiles, "RelocateTiles");
     ActionManager::registerAction(mShowAnimationEditor, "ShowAnimationEditor");
     ActionManager::registerAction(mDynamicWrappingToggle, "DynamicWrappingToggle");
 
     mAddTiles->setIcon(QIcon(QLatin1String(":images/16/add.png")));
     mRemoveTiles->setIcon(QIcon(QLatin1String(":images/16/remove.png")));
+    mRemoveTiles->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    mRemoveTiles->setShortcuts(QKeySequence::Delete);
     mRelocateTiles->setIcon(QIcon(QLatin1String(":images/22/stock-tool-move-22.png")));
     mRelocateTiles->setCheckable(true);
     mRelocateTiles->setIconVisibleInMenu(false);
@@ -172,6 +179,10 @@ TilesetEditor::TilesetEditor(QObject *parent)
     editWang->setIconVisibleInMenu(false);
     mDynamicWrappingToggle->setCheckable(true);
     mDynamicWrappingToggle->setIcon(QIcon(QLatin1String("://images/scalable/wrap.svg")));
+
+    // The shortcut set on the 'Remove Tiles' action should only be active
+    // while the tileset view is focused, to avoid ambiguities.
+    mWidgetStack->addAction(mRemoveTiles);
 
     Utils::setThemeIcon(mAddTiles, "add");
     Utils::setThemeIcon(mRemoveTiles, "remove");
@@ -199,10 +210,12 @@ TilesetEditor::TilesetEditor(QObject *parent)
     connect(mAddTiles, &QAction::triggered, this, &TilesetEditor::openAddTilesDialog);
     connect(mRemoveTiles, &QAction::triggered, this, &TilesetEditor::removeTiles);
 
+    connect(mEditTilesetParameters, &QAction::triggered, this, &TilesetEditor::editTilesetParameters);
+
     connect(mRelocateTiles, &QAction::toggled, this, &TilesetEditor::setRelocateTiles);
     connect(editCollision, &QAction::toggled, this, &TilesetEditor::setEditCollision);
     connect(editWang, &QAction::toggled, this, &TilesetEditor::setEditWang);
-    connect(mShowAnimationEditor, &QAction::toggled, mTileAnimationEditor, &TileAnimationEditor::setVisible);
+    connect(mShowAnimationEditor, &QAction::toggled, this, &TilesetEditor::setAnimationEditorVisible);
     connect(mDynamicWrappingToggle, &QAction::toggled, this, [this] (bool checked) {
         if (TilesetView *view = currentTilesetView()) {
             view->setDynamicWrapping(checked);
@@ -211,8 +224,6 @@ TilesetEditor::TilesetEditor(QObject *parent)
             Session::current().setFileStateValue(fileName, QLatin1String("dynamicWrapping"), checked);
         }
     });
-
-    connect(mTileAnimationEditor, &TileAnimationEditor::closed, this, &TilesetEditor::onAnimationEditorClosed);
 
     connect(mWangDock, &WangDock::currentWangSetChanged, this, &TilesetEditor::onCurrentWangSetChanged);
     connect(mWangDock, &WangDock::currentWangIdChanged, this, &TilesetEditor::currentWangIdChanged);
@@ -225,7 +236,6 @@ TilesetEditor::TilesetEditor(QObject *parent)
     connect(DocumentManager::instance(), &DocumentManager::selectCustomPropertyRequested,
             mPropertiesDock, &PropertiesDock::selectCustomProperty);
 
-    connect(this, &TilesetEditor::currentTileChanged, mTileAnimationEditor, &TileAnimationEditor::setTile);
     connect(this, &TilesetEditor::currentTileChanged, mTileCollisionDock, &TileCollisionDock::setTile);
     connect(this, &TilesetEditor::currentTileChanged, mTemplatesDock, &TemplatesDock::setTile);
 
@@ -249,7 +259,7 @@ TilesetEditor::TilesetEditor(QObject *parent)
     retranslateUi();
     connect(Preferences::instance(), &Preferences::languageChanged, this, &TilesetEditor::retranslateUi);
 
-    updateAddRemoveActions();
+    updateActions();
 }
 
 void TilesetEditor::saveState()
@@ -310,7 +320,7 @@ void TilesetEditor::addDocument(Document *document)
 
 void TilesetEditor::removeDocument(Document *document)
 {
-    TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(document);
+    auto tilesetDocument = qobject_cast<TilesetDocument*>(document);
     Q_ASSERT(tilesetDocument);
     Q_ASSERT(mViewForTileset.contains(tilesetDocument));
 
@@ -352,7 +362,8 @@ void TilesetEditor::setCurrentDocument(Document *document)
 
     mPropertiesDock->setDocument(document);
     mUndoDock->setStack(document ? document->undoStack() : nullptr);
-    mTileAnimationEditor->setTilesetDocument(tilesetDocument);
+    if (mTileAnimationEditor)
+        mTileAnimationEditor->setTilesetDocument(tilesetDocument);
     mTileCollisionDock->setTilesetDocument(tilesetDocument);
     mWangDock->setDocument(document);
 
@@ -367,7 +378,7 @@ void TilesetEditor::setCurrentDocument(Document *document)
         currentChanged(QModelIndex());
     }
 
-    updateAddRemoveActions();
+    updateActions();
 }
 
 Document *TilesetEditor::currentDocument() const
@@ -510,9 +521,31 @@ EditableWangSet *TilesetEditor::currentWangSet() const
     return EditableWangSet::get(mWangDock->currentWangSet());
 }
 
+void TilesetEditor::setCurrentWangSet(EditableWangSet *wangSet)
+{
+    if (!wangSet) {
+        ScriptManager::instance().throwNullArgError(0);
+        return;
+    }
+    mWangDock->setCurrentWangSet(wangSet->wangSet());
+}
+
 int TilesetEditor::currentWangColorIndex() const
 {
     return mWangDock->currentWangColor();
+}
+
+void TilesetEditor::setCurrentWangColorIndex(int newIndex)
+{
+    if (!mWangDock->currentWangSet()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "No current Wang set"));
+        return;
+    }
+    if (newIndex < 0 || newIndex > mWangDock->currentWangSet()->colorCount()) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "An invalid index was provided"));
+        return;
+    }
+    mWangDock->setCurrentWangColor(newIndex);
 }
 
 void TilesetEditor::currentWidgetChanged()
@@ -527,7 +560,7 @@ void TilesetEditor::selectionChanged()
     if (!view)
         return;
 
-    updateAddRemoveActions();
+    updateActions();
 
     const QItemSelectionModel *s = view->selectionModel();
     const QModelIndexList indexes = s->selection().indexes();
@@ -657,6 +690,26 @@ void TilesetEditor::updateTilesetView(Tileset *tileset)
     model->tilesetChanged();
 }
 
+void TilesetEditor::editTilesetParameters()
+{
+    if (!mCurrentTilesetDocument)
+        return;
+    if (mCurrentTilesetDocument->tileset()->isCollection())
+        return;
+
+    TilesetParameters parameters(*mCurrentTilesetDocument->tileset());
+    NewTilesetDialog dialog(mMainWindow->window());
+
+    if (dialog.editTilesetParameters(parameters)) {
+        if (parameters != TilesetParameters(*mCurrentTilesetDocument->tileset())) {
+            auto command = new ChangeTilesetParameters(mCurrentTilesetDocument,
+                                                       parameters);
+
+            mCurrentTilesetDocument->undoStack()->push(command);
+        }
+    }
+}
+
 void TilesetEditor::setCurrentTile(Tile *tile)
 {
     if (mCurrentTile == tile)
@@ -675,6 +728,7 @@ void TilesetEditor::retranslateUi()
 
     mAddTiles->setText(tr("Add Tiles"));
     mRemoveTiles->setText(tr("Remove Tiles"));
+    mEditTilesetParameters->setText(tr("Edit Tileset Image Parameters..."));
     mRelocateTiles->setText(tr("Rearrange Tiles"));
     mShowAnimationEditor->setText(tr("Tile Animation Editor"));
     mDynamicWrappingToggle->setText(tr("Dynamically Wrap Tiles"));
@@ -1029,12 +1083,30 @@ void TilesetEditor::setWangColorColor(WangColor *wangColor, const QColor &color)
                                                                         color));
 }
 
+void TilesetEditor::setAnimationEditorVisible(bool visible)
+{
+    if (visible && !mTileAnimationEditor) {
+        mTileAnimationEditor = new TileAnimationEditor(mMainWindow);
+        mTileAnimationEditor->setTilesetDocument(mCurrentTilesetDocument);
+        mTileAnimationEditor->setTile(mCurrentTile);
+
+        connect(mTileAnimationEditor, &TileAnimationEditor::closed,
+                this, &TilesetEditor::onAnimationEditorClosed);
+
+        connect(this, &TilesetEditor::currentTileChanged,
+                mTileAnimationEditor, &TileAnimationEditor::setTile);
+    }
+
+    if (mTileAnimationEditor)
+        mTileAnimationEditor->setVisible(visible);
+}
+
 void TilesetEditor::onAnimationEditorClosed()
 {
     mShowAnimationEditor->setChecked(false);
 }
 
-void TilesetEditor::updateAddRemoveActions()
+void TilesetEditor::updateActions()
 {
     bool isCollection = false;
     bool hasSelection = false;
@@ -1046,6 +1118,8 @@ void TilesetEditor::updateAddRemoveActions()
 
     mAddTiles->setEnabled(isCollection);
     mRemoveTiles->setEnabled(isCollection && hasSelection);
+
+    mEditTilesetParameters->setEnabled(mCurrentTilesetDocument && !isCollection);
 }
 
 } // namespace Tiled

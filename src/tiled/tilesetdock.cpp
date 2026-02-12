@@ -74,6 +74,10 @@
 
 using namespace Tiled;
 
+namespace preferences {
+static Preference<bool> showTilesetFilter { "Interface/ShowTilesetFilter", true };
+} // namespace preferences
+
 namespace {
 
 class NoTilesetWidget : public QWidget
@@ -166,6 +170,7 @@ static void removeTileReferences(MapDocument *mapDocument,
 TilesetDock::TilesetDock(QWidget *parent)
     : QDockWidget(parent)
     , mTilesetDocumentsFilterModel(new TilesetDocumentsFilterModel(this))
+    , mTilesetFilterEdit(new FilterEdit)
     , mTabBar(new TabBar)
     , mSuperViewStack(new QStackedWidget)
     , mViewStack(new QStackedWidget)
@@ -182,6 +187,7 @@ TilesetDock::TilesetDock(QWidget *parent)
     , mTilesetMenuButton(new TilesetMenuButton(this))
     , mTilesetMenu(new QMenu(this))
     , mTilesetActionGroup(new QActionGroup(this))
+    , mShowTilesetFilter(new QAction(this))
 {
     setObjectName(QLatin1String("TilesetDock"));
 
@@ -192,6 +198,18 @@ TilesetDock::TilesetDock(QWidget *parent)
     ActionManager::registerAction(mSelectNextTileset, "SelectNextTileset");
     ActionManager::registerAction(mSelectPreviousTileset, "SelectPreviousTileset");
 
+    mTilesetFilterEdit->setFilteredView(mTabBar);
+    mTilesetFilterEdit->setVisible(preferences::showTilesetFilter);
+
+    mShowTilesetFilter->setCheckable(true);
+    mShowTilesetFilter->setChecked(preferences::showTilesetFilter);
+    connect(mShowTilesetFilter, &QAction::toggled,
+            this, [this] (bool checked) {
+        preferences::showTilesetFilter = checked;
+        mTilesetFilterEdit->setVisible(checked);
+    });
+    connect(mTilesetFilterEdit, &QLineEdit::textChanged,
+            mTilesetDocumentsFilterModel, &TilesetDocumentsFilterModel::setFilterText);
     mTabBar->setUsesScrollButtons(true);
     mTabBar->setExpanding(false);
     mTabBar->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -211,6 +229,7 @@ TilesetDock::TilesetDock(QWidget *parent)
     QVBoxLayout *vertical = new QVBoxLayout(w);
     vertical->setSpacing(0);
     vertical->setContentsMargins(0, 0, 0, 0);
+    vertical->addWidget(mTilesetFilterEdit);
     vertical->addLayout(horizontal);
     vertical->addWidget(mSuperViewStack);
 
@@ -298,9 +317,7 @@ TilesetDock::TilesetDock(QWidget *parent)
     updateActions();
 }
 
-TilesetDock::~TilesetDock()
-{
-}
+TilesetDock::~TilesetDock() = default;
 
 void TilesetDock::setMapDocument(MapDocument *mapDocument)
 {
@@ -325,9 +342,7 @@ void TilesetDock::setMapDocument(MapDocument *mapDocument)
     mTilesetDocumentsFilterModel->setMapDocument(mapDocument);
 
     if (mMapDocument) {
-        if (Object *object = mMapDocument->currentObject())
-            if (object->typeId() == Object::TileType)
-                setCurrentTile(static_cast<Tile*>(object));
+        restoreCurrentTile();
 
         connect(mMapDocument, &MapDocument::tilesetAdded,
                 this, &TilesetDock::updateActions);
@@ -460,8 +475,10 @@ void TilesetDock::onCurrentTilesetChanged()
 
     view->zoomable()->setComboBox(mZoomComboBox);
 
-    if (const QItemSelectionModel *s = view->selectionModel())
+    if (const QItemSelectionModel *s = view->selectionModel()) {
+        QScopedValueRollback<bool> noChangeCurrentObject(mNoChangeCurrentObject, true);
         setCurrentTile(view->tilesetModel()->tileAt(s->currentIndex()));
+    }
 
     mDynamicWrappingToggle->setChecked(view->dynamicWrapping());
 
@@ -483,6 +500,19 @@ void TilesetDock::currentChanged(const QModelIndex &index)
 
     const TilesetModel *model = static_cast<const TilesetModel*>(index.model());
     setCurrentTile(model->tileAt(index));
+}
+
+void TilesetDock::restoreCurrentTile()
+{
+    if (!mMapDocument)
+        return;
+
+    if (auto view = currentTilesetView()) {
+        if (view->model()) {
+            QScopedValueRollback<bool> noChangeCurrentObject(mNoChangeCurrentObject, true);
+            currentChanged(view->selectionModel()->currentIndex());
+        }
+    }
 }
 
 void TilesetDock::updateActions()
@@ -829,7 +859,7 @@ void TilesetDock::setCurrentTile(Tile *tile)
     mCurrentTile = tile;
     emit currentTileChanged(tile);
 
-    if (mMapDocument && tile) {
+    if (mMapDocument && tile && !mNoChangeCurrentObject) {
         int tilesetIndex = indexOfTileset(tile->tileset());
         if (tilesetIndex != -1)
             mMapDocument->setCurrentObject(tile, mTilesetDocuments.at(tilesetIndex));
@@ -848,6 +878,8 @@ void TilesetDock::retranslateUi()
     mSelectNextTileset->setText(tr("Select Next Tileset"));
     mSelectPreviousTileset->setText(tr("Select Previous Tileset"));
     mDynamicWrappingToggle->setText(tr("Dynamically Wrap Tiles"));
+    mTilesetFilterEdit->setPlaceholderText(tr("Filter"));
+    mShowTilesetFilter->setText(tr("Show Tileset Filter"));
 }
 
 void TilesetDock::onTilesetRowsInserted(const QModelIndex &parent, int first, int last)
@@ -1209,6 +1241,7 @@ void TilesetDock::refreshTilesetMenu()
     }
 
     mTilesetMenu->addSeparator();
+    mTilesetMenu->addAction(mShowTilesetFilter);
     mTilesetMenu->addAction(ActionManager::action("AddExternalTileset"));
 }
 

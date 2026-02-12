@@ -36,9 +36,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QStringList>
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
 #include <QStringView>
-#endif
 #include <QTextStream>
 
 #include <memory>
@@ -88,12 +86,7 @@ std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
 
     while (!stream.atEnd()) {
         line = stream.readLine();
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
         const QStringView lineView(line);
-#else
-        const QStringRef lineView(&line);
-#endif
-
         if (!line.length())
             continue;
 
@@ -162,7 +155,7 @@ std::unique_ptr<Tiled::Map> FlarePlugin::read(const QString &fileName)
                 bool ok = tileset->loadFromImage(absoluteSource);
 
                 if (!ok) {
-                    mError = tr("Error loading tileset %1, which expands to %2. Path not found!")
+                    mError = tr("Error loading tileset image %1, which expands to %2!")
                             .arg(list.first().toString(), absoluteSource);
                     return nullptr;
                 } else {

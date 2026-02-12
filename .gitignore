@@ -4,12 +4,32 @@ build/
 
 # clangd cache
 .cache/
+compile_commands.json
 
 # Mac stuff
 *.DS_Store
 
-# IDE files
-*.qbs.user*
+# Qt Creator
+*.user*
+*.creator.*
+*.autosave
+build/ 
+
+# Visual Studio
+.vscode/
+*.sln
+*.suo
+*.vcxproj
+*.vcxproj.*
+*.ncb
+*.sdf
+*.opensdf
+
+# CLion / JetBrains IDEs
+.idea/
+*.iws
+*.iml
+*.ipr
 
 # Ronn html outputs
 man/*.1.html
@@ -19,6 +39,7 @@ html/
 docs/_build/html/
 docs/_build/gettext/.doctrees
 docs/_build/doctrees/
+docs/.venv/
 *.mo
 
 # tsdoc generation results

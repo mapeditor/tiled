@@ -392,6 +392,14 @@ void EditableTileset::setBackgroundColor(const QColor &color)
         tileset()->setBackgroundColor(color);
 }
 
+void EditableTileset::setTransformationFlags(Tileset::TransformationFlags flags)
+{
+    if (auto doc = tilesetDocument())
+        push(new ChangeTilesetTransformationFlags(doc, flags));
+    else if (!checkReadOnly())
+        tileset()->setTransformationFlags(flags);
+}
+
 void EditableTileset::setDocument(Document *document)
 {
     Q_ASSERT(!document || document->type() == Document::TilesetDocumentType);

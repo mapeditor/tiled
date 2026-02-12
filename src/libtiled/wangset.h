@@ -37,8 +37,6 @@
 #include <QString>
 #include <QList>
 
-#include "qtcompat_p.h"
-
 namespace Tiled {
 
 class TILEDSHARED_EXPORT WangId
@@ -134,7 +132,7 @@ public:
     static WangId fromUint(unsigned id);
     unsigned toUint() const;
 
-    static WangId fromString(QStringRef string, bool *ok = nullptr);
+    static WangId fromString(QStringView string, bool *ok = nullptr);
     QString toString() const;
 
 private:
@@ -424,5 +422,6 @@ TILEDSHARED_EXPORT WangSet::Type wangSetTypeFromString(const QString &);
 
 } // namespace Tiled
 
-Q_DECLARE_METATYPE(Tiled::WangSet*)
 Q_DECLARE_METATYPE(Tiled::WangId)
+Q_DECLARE_METATYPE(Tiled::WangSet*)
+Q_DECLARE_METATYPE(Tiled::WangSet::Type)

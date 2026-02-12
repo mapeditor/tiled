@@ -68,11 +68,13 @@
 #include "tilesetdocument.h"
 #include "tileseteditor.h"
 #include "tilesetmanager.h"
+#include "tilestampmanager.h"
 #include "tmxmapformat.h"
 #include "utils.h"
 #include "world.h"
 #include "worlddocument.h"
 #include "worldmanager.h"
+#include "worldpropertiesdialog.h"
 #include "zoomable.h"
 
 #include <QActionGroup>
@@ -309,6 +311,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionSnapToGrid, "SnapToGrid");
     ActionManager::registerAction(mUi->actionSnapToPixels, "SnapToPixels");
     ActionManager::registerAction(mUi->actionTilesetProperties, "TilesetProperties");
+    ActionManager::registerAction(mUi->actionWorldProperties, "WorldProperties");
     ActionManager::registerAction(mUi->actionZoomIn, "ZoomIn");
     ActionManager::registerAction(mUi->actionZoomNormal, "ZoomNormal");
     ActionManager::registerAction(mUi->actionZoomOut, "ZoomOut");
@@ -599,22 +602,22 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         if (!WorldManager::instance().loadWorld(worldFile, &errorString))
             QMessageBox::critical(this, tr("Error Loading World"), errorString);
         else
-            mLoadedWorlds = WorldManager::instance().worlds().keys();
+            mLoadedWorlds = WorldManager::instance().worldFileNames();
     });
     connect(mUi->menuUnloadWorld, &QMenu::aboutToShow, this, [this] {
         mUi->menuUnloadWorld->clear();
 
-        for (const World *world : WorldManager::instance().worlds()) {
-            QString text = world->fileName;
-            if (mDocumentManager->isWorldModified(world->fileName))
+        for (auto &worldDocument : WorldManager::instance().worlds()) {
+            QString text = worldDocument->fileName();
+            if (worldDocument->isModified())
                 text.append(QLatin1Char('*'));
 
-            mUi->menuUnloadWorld->addAction(text, this, [this, fileName = world->fileName] {
-                if (!confirmSaveWorld(fileName))
+            mUi->menuUnloadWorld->addAction(text, this, [this, worldDocument] {
+                if (!confirmSaveWorld(worldDocument.data()))
                     return;
 
-                WorldManager::instance().unloadWorld(fileName);
-                mLoadedWorlds = WorldManager::instance().worlds().keys();
+                WorldManager::instance().unloadWorld(worldDocument);
+                mLoadedWorlds = WorldManager::instance().worldFileNames();
             });
         }
         if (WorldManager::instance().worlds().count() >= 2) {
@@ -646,18 +649,17 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         if (!WorldManager::instance().addEmptyWorld(worldFile, &errorString))
             QMessageBox::critical(this, tr("Error Creating World"), errorString);
         else
-            mLoadedWorlds = WorldManager::instance().worlds().keys();
+            mLoadedWorlds = WorldManager::instance().worldFileNames();
     });
     connect(mUi->menuSaveWorld, &QMenu::aboutToShow, this, [this] {
         mUi->menuSaveWorld->clear();
 
-        for (const World *world : WorldManager::instance().worlds()) {
-            auto worldDocument = mDocumentManager->ensureWorldDocument(world->fileName);
-            if (!worldDocument->isModified())
+        for (auto &world : WorldManager::instance().worlds()) {
+            if (!world->isModified())
                 continue;
 
-            mUi->menuSaveWorld->addAction(world->fileName, this, [this, worldDocument] {
-                mDocumentManager->saveDocument(worldDocument);
+            mUi->menuSaveWorld->addAction(world->fileName(), this, [this, world] {
+                mDocumentManager->saveDocument(world.data());
             });
         }
     });
@@ -679,6 +681,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionTilesetProperties, &QAction::triggered,
             this, &MainWindow::editTilesetProperties);
 
+    connect(mUi->actionWorldProperties, &QAction::triggered,
+            this, &MainWindow::editWorldProperties);
+
+    mUi->actionWorldProperties->setEnabled(false);
+    connect(&WorldManager::instance(), &WorldManager::worldsChanged, this, [this] {
+        mUi->actionWorldProperties->setDisabled(WorldManager::instance().worlds().empty());
+    });
     connect(mUi->actionNewProject, &QAction::triggered, this, &MainWindow::newProject);
     connect(mUi->actionCloseProject, &QAction::triggered, this, &MainWindow::closeProject);
     connect(mUi->actionAddFolderToProject, &QAction::triggered, mProjectDock, &ProjectDock::addFolderToProject);
@@ -809,6 +818,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->menuTileset->insertSeparator(mUi->actionTilesetProperties);
     mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->addTilesAction());
     mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->removeTilesAction());
+    mUi->menuTileset->insertSeparator(mUi->actionTilesetProperties);
+    mUi->menuTileset->insertAction(mUi->actionTilesetProperties, mTilesetEditor->editTilesetParametersAction());
     mUi->menuTileset->insertSeparator(mUi->actionTilesetProperties);
 
     connect(mViewsAndToolbarsMenu, &QMenu::aboutToShow,
@@ -1018,6 +1029,11 @@ void MainWindow::initializeSession()
     // adding the project's extension path.
     ScriptManager::instance().ensureInitialized();
 
+    // Load tile stamps (delayed so that potential custom types and file
+    // formats can be supported by stamps - which isn't perfect since there
+    // will still be issues when the project isn't open on startup)
+    TileStampManager::instance()->loadStamps();
+
     if (projectLoaded || Preferences::instance()->restoreSessionOnStartup())
         restoreSession();
 }
@@ -1036,21 +1052,21 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
         auto &worldManager = WorldManager::instance();
 
         QString errorString;
-        World *world = worldManager.loadWorld(fileName, &errorString);
-        if (!world) {
+        WorldDocumentPtr worldDocument = worldManager.loadWorld(fileName, &errorString);
+        if (!worldDocument) {
             QMessageBox::critical(this, tr("Error Loading World"), errorString);
             return false;
         } else {
-            mLoadedWorlds = worldManager.worlds().keys();
+            mLoadedWorlds = worldManager.worldFileNames();
 
             Document *document = mDocumentManager->currentDocument();
             if (document && document->type() == Document::MapDocumentType)
-                if (worldManager.worldForMap(document->fileName()) == world)
+                if (worldManager.worldForMap(document->fileName()) == worldDocument)
                     return true;
 
             // Try to open the first map in the world, if the current map
             // isn't already part of this world.
-            return openFile(world->firstMap());
+            return openFile(worldDocument->world()->firstMap());
         }
     }
 
@@ -1212,12 +1228,11 @@ void MainWindow::saveAll()
         }
     }
 
-    for (const World *world : WorldManager::instance().worlds()) {
-        auto worldDocument = mDocumentManager->ensureWorldDocument(world->fileName);
+    for (auto &worldDocument : WorldManager::instance().worlds()) {
         if (!worldDocument->isModified())
             continue;
 
-        if (!mDocumentManager->saveDocument(worldDocument))
+        if (!mDocumentManager->saveDocument(worldDocument.data()))
             return;
     }
 }
@@ -1253,27 +1268,26 @@ bool MainWindow::confirmAllSave()
             return false;
     }
 
-    for (const World *world : WorldManager::instance().worlds())
-        if (!confirmSaveWorld(world->fileName))
+    for (auto &worldDocument : WorldManager::instance().worlds())
+        if (!confirmSaveWorld(worldDocument.data()))
             return false;
 
     return true;
 }
 
-bool MainWindow::confirmSaveWorld(const QString &fileName)
+bool MainWindow::confirmSaveWorld(WorldDocument *worldDocument)
 {
-    auto worldDocument = mDocumentManager->ensureWorldDocument(fileName);
     if (!worldDocument->isModified())
         return true;
 
     int ret = QMessageBox::warning(
             this, tr("Unsaved Changes to World"),
-            tr("There are unsaved changes to world \"%1\". Do you want to save the world now?").arg(fileName),
+            tr("There are unsaved changes to world \"%1\". Do you want to save the world now?").arg(worldDocument->fileName()),
             QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
 
     switch (ret) {
     case QMessageBox::Save:
-        return mDocumentManager->saveDocument(worldDocument, fileName);
+        return mDocumentManager->saveDocument(worldDocument);
     case QMessageBox::Discard:
         return true;
     case QMessageBox::Cancel:
@@ -1947,6 +1961,20 @@ void MainWindow::editTilesetProperties()
 
     tilesetDocument->setCurrentObject(tilesetDocument->tileset().data());
     emit tilesetDocument->editCurrentObject();
+}
+
+void MainWindow::editWorldProperties()
+{
+    if (WorldManager::instance().worlds().empty())
+        return;
+    QSharedPointer<WorldDocument> world;
+    Document *currentDocument = DocumentManager::instance()->currentDocument();
+    if (currentDocument && currentDocument->type() == Document::MapDocumentType)
+        world = WorldManager::instance().worldForMap(currentDocument->fileName());
+    if (!world)
+        world = WorldManager::instance().worlds().first();
+
+    WorldPropertiesDialog(world, this).exec();
 }
 
 void MainWindow::autoMappingError(bool automatic)

@@ -143,10 +143,9 @@ AutoMappingContext::AutoMappingContext(MapDocument *mapDocument)
 }
 
 
-AutoMapper::AutoMapper(std::unique_ptr<Map> rulesMap, const QRegularExpression &mapNameFilter)
+AutoMapper::AutoMapper(std::unique_ptr<Map> rulesMap)
     : mRulesMap(std::move(rulesMap))
     , mRulesMapRenderer(MapRenderer::create(mRulesMap.get()))
-    , mMapNameFilter(mapNameFilter)
 {
     setupRuleMapProperties();
 
@@ -639,9 +638,16 @@ void AutoMapper::setupRules()
     mRules.reserve(combinedRegions.size());
 
     for (const QRegion &combinedRegion : combinedRegions) {
+        QRegion inputRegion = combinedRegion & regionInput;
+        QRegion outputRegion = combinedRegion & regionOutput;
+
+        // Skip rules where either input or output region is empty
+        if (inputRegion.isEmpty() || outputRegion.isEmpty())
+            continue;
+
         Rule &rule = mRules.emplace_back();
-        rule.inputRegion = combinedRegion & regionInput;
-        rule.outputRegion = combinedRegion & regionOutput;
+        rule.inputRegion = std::move(inputRegion);
+        rule.outputRegion = std::move(outputRegion);
         rule.options = mRuleOptions;
 
         for (const auto &optionsArea : setup.mRuleOptionsAreas)
@@ -667,7 +673,7 @@ void AutoMapper::setupRules()
 #endif
 }
 
-void AutoMapper::prepareAutoMap(AutoMappingContext &context)
+void AutoMapper::prepareAutoMap(AutoMappingContext &context) const
 {
     setupWorkMapLayers(context);
 
@@ -785,6 +791,8 @@ static bool isEmptyRegion(const TileLayer &tileLayer,
 
 /**
  * Sets up a small data structure for this rule that is optimized for matching.
+ *
+ * Returns false when the rule can never match.
  */
 bool AutoMapper::compileRule(QVector<RuleInputSet> &inputSets,
                              const Rule &rule,
@@ -869,6 +877,10 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
     QVector<MatchCell> &noneOf = compileContext.noneOf;
     QVector<MatchCell> &inputCells = compileContext.inputCells;
 
+    // An input set will not cause a match if it was left entirely empty, but
+    // an Ignore tile can still be used to create an always-matching rule.
+    bool hasIgnore = false;
+
     for (const InputConditions &conditions : inputSet.layers) {
         inputCells.clear();
         bool canMatch = true;
@@ -910,6 +922,7 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
                     negate = true;
                     break;
                 case MatchType::Ignore:
+                    hasIgnore = true;
                     break;
                 }
             }
@@ -942,6 +955,7 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
                     negate = true;
                     break;
                 case MatchType::Ignore:
+                    hasIgnore = true;
                     break;
                 }
             }
@@ -1005,7 +1019,7 @@ bool AutoMapper::compileInputSet(RuleInputSet &index,
             index.layers.append(layer);
     }
 
-    return true;
+    return !index.layers.isEmpty() || hasIgnore;
 }
 
 /**
@@ -1030,7 +1044,7 @@ bool AutoMapper::compileOutputSet(RuleOutputSet &index,
         case Layer::ObjectGroupType: {
             auto fromObjectGroup = static_cast<const ObjectGroup*>(from);
 
-            auto objects = objectsInRegion(*mRulesMapRenderer, fromObjectGroup, outputRegion);
+            const auto objects = objectsInRegion(*mRulesMapRenderer, fromObjectGroup, outputRegion);
             if (!objects.isEmpty()) {
                 QVector<const MapObject*> constObjects;
                 for (auto object : objects)
@@ -1474,5 +1488,3 @@ void AutoMapper::addWarning(const QString &message, std::function<void ()> callb
 }
 
 } // namespace Tiled
-
-#include "moc_automapper.cpp"

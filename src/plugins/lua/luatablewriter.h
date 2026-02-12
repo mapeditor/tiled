@@ -62,6 +62,7 @@ public:
     void writeKeyAndValue(const QByteArray &key, const QString &value);
 
     void writeQuotedKeyAndValue(const QString &key, const QVariant &value);
+    void writeVariantValue(const QVariant &value);
     void writeKeyAndUnquotedValue(const QByteArray &key,
                                   const QByteArray &value);
 

@@ -172,12 +172,12 @@ The behavior of your rules can be modified by properties on the rules map, input
 
 (DeleteTiles)=
 DeleteTiles
-: This is a boolean map property: it can be `true` or `false`. When `true`, if rules of this rule map get applied at some location in your map, all existing tiles in the input region are deleted before applying the output. The usual way to erase tiles via Automapping is to output the [Empty]{.tile .empty} [special tile](#specialtiles), but this property can save you time your rules do a lot of deletions on certain layers.
+: This is a boolean map property. When this property is `true`, the area covered by tiles in input layers is erased from the output layers before applying the rules. This property is mostly provided for backwards compatibility, because since Tiled 1.9 tiles can be erased by outputting the [Empty]{.tile .empty} [special tile](#specialtiles), which is more explicit and more flexible.
 
-  Despite the name, this property affects output Object Layers too, deleting any Objects that fully or partially overlap the input region of any rule that matches. This is currently the only way to delete Objects via Automapping.
+  Despite the name, this property affects output Object Layers too, deleting any Objects that fully or partially overlap the erased region. This is currently the only way to delete Objects via Automapping.
 
   :::{warning}
-  Objects are only deleted when they overlap tiles in the input region. All the caveats of outputting objects also apply, see the [warning in the Defining Outputs section](#objectRegion).
+  All the caveats of outputting objects also apply when deleting them, see the [warning in the Defining Outputs section](#objectRegion).
   :::
 
 (AutomappingRadius)=
@@ -230,7 +230,7 @@ IgnoreHexRotate120
 : This boolean layer property can be added to `input` and `inputnot` layers to also match 120-degree rotated tiles on hexagonal maps. However, note that Automapping currently does not really work for hexagonal maps since it does not take into account the staggered axis.
 
 (outputProbability)=
-Probability {bdg-primary}`New in Tiled 1.10`
+Probability {bdg-secondary-line}`Since Tiled 1.10`
 : This float layer property can be added to `output` layers to control the probability that a given output index will be chosen. The probabilities for each output index are relative to one another, and default to 1.0. For example, if you have outputA with probability 2 and outputB with probability 0.5, A will be chosen four times as often as B. If multiple output layers with the same index have their **Probability** set, the last (top-most) layer's probability will be used.
 
 {bdg-secondary-line}`Since Tiled 1.9`
@@ -265,7 +265,7 @@ NoOverlappingOutput
 : When set to `true`, the output of a rule is not allowed to overlap other outputs of the same rule (defaults to `false`).
 
 (IgnoreLock)=
-IgnoreLock {bdg-primary}`New in Tiled 1.10`
+IgnoreLock {bdg-secondary-line}`Since Tiled 1.10`
 : Since Tiled 1.10, Automapping rules no longer modify locked layers. Set this property to `true` to ignore the lock. This can be useful when you have layers that are only changed by rules and want to keep them locked.
 
 All these options can also be set on the rule map itself, in which case they apply as defaults for all rules, which can then be overridden for specific rules by placing rectangle objects.
@@ -410,10 +410,8 @@ In Tiled 1.9.x, the presence of `regions` layers did not imply **MatchInOrder**.
 
 If you'd like to instead update your rules to not rely on any legacy behavior, that can be as simple as deleting your `regions` layer(s), or it might take some extra work, depending on how exactly your rules are set up:
 
-* If your rules rely on being applied in a set order, set the [**MatchInOrder**](#MatchInOrder) map property to `true`.
+* If your rules need to take the output of other rules in the same rules map into account, set the [**MatchInOrder**](#MatchInOrder) map property to `true`.
 * When deleting your `regions` layers, make sure you weren't relying on them to connect otherwise disconnected areas of tiles. If you were, use the [Ignore]{.tile .ignore} [special tile](#specialtiles) to connect them on one of the `input` layers, so that Tiled knows they're part of the same rule. To make sure the rules behave exactly the same, fill in any part that was previously part of the input region.
-
-* If were using the [**DeleteTiles**](#DeleteTiles) map property to erase tiles from the output layer, you can keep using this property. If you want to make your rule more visually clear, however, you should unset the **DeleteTiles** property, and instead use the [Empty]{.tile .empty} [special tile](#specialtiles) in all the output cells you want to delete from.
 
 * If were using the [**StrictEmpty**](#AutoEmpty) map property to look for empty input tiles, you should now use the Empty special tile instead in the cells you want to check for being empty. You can also continue use the **StrictEmpty** property (or its newer alias, **AutoEmpty**), as long as at least one other input layer is not empty at those locations.
 

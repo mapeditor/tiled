@@ -9,15 +9,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Build documentation
-      uses: Algo-ryth-mix/sphinx-action@master
+      uses: ammaraskar/sphinx-action@8.2.3
       with:
         docs-folder: "docs/"
 
     - name: Upload documentation
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: Tiled-Manual-HTML
         path: docs/_build/html/

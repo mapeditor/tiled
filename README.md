@@ -45,7 +45,7 @@ Compiling Tiled
 Before you can compile Tiled, you must ensure the Qt (>= 5.12) development
 libraries have been installed as well as the Qbs build tool:
 
-* On Ubuntu/Debian: `sudo apt install qtbase5-dev libqt5svg5-dev qttools5-dev-tools zlib1g-dev qtdeclarative5-dev qbs`
+* On Ubuntu/Debian: `sudo apt install qtbase5-dev libqt5svg5 qttools5-dev-tools zlib1g-dev qtdeclarative5-dev qbs`
 * On Fedora:        `sudo dnf builddep tiled`
 * On Arch Linux:    `sudo pacman -S qt qt5-tools qbs`
 * On macOS with [Homebrew](https://brew.sh/):
@@ -73,7 +73,6 @@ From the command-line, you may need to set up Qbs before you can build Tiled
 path):
 
     qbs setup-toolchains --detect     # setup toolchains
-    qbs setup-qt --detect             # setup Qt (not needed since Qbs 1.13)
     qbs                               # build Tiled
 
 You can now run Tiled as follows:

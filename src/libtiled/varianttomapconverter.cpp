@@ -80,6 +80,8 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
     mapParameters.hexSideLength = variantMap[QStringLiteral("hexsidelength")].toInt();
     mapParameters.staggerAxis = staggerAxisFromString(staggerAxis);
     mapParameters.staggerIndex = staggerIndexFromString(staggerIndex);
+    mapParameters.skewX = variantMap[QStringLiteral("skewx")].toInt();
+    mapParameters.skewY = variantMap[QStringLiteral("skewy")].toInt();
 
     bool ok;
     const qreal parallaxOriginX = variantMap[QStringLiteral("parallaxoriginx")].toDouble(&ok);
@@ -185,15 +187,44 @@ Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant
     for (const QVariant &propertyVariant : propertiesList) {
         const QVariantMap propertyVariantMap = propertyVariant.toMap();
         const QString propertyName = propertyVariantMap[QStringLiteral("name")].toString();
-        ExportValue exportValue;
-        exportValue.value = propertyVariantMap[QStringLiteral("value")];
-        exportValue.typeName = propertyVariantMap[QStringLiteral("type")].toString();
-        exportValue.propertyTypeName = propertyVariantMap[QStringLiteral("propertytype")].toString();
 
-        properties[propertyName] = context.toPropertyValue(exportValue);
+        properties[propertyName] = toPropertyValue(propertyVariantMap, context);
     }
 
     return properties;
+}
+
+QVariant VariantToMapConverter::toPropertyValue(const QVariantMap &valueVariantMap,
+                                                const ExportContext &context) const
+{
+    ExportValue exportValue;
+    exportValue.value = valueVariantMap[QStringLiteral("value")];
+    exportValue.typeName = valueVariantMap[QStringLiteral("type")].toString();
+    exportValue.propertyTypeName = valueVariantMap[QStringLiteral("propertytype")].toString();
+
+    convertListValues(exportValue.value, context);
+
+    return context.toPropertyValue(exportValue);
+}
+
+void VariantToMapConverter::convertListValues(QVariant &value, const ExportContext &context) const
+{
+    switch (value.userType()) {
+    case QMetaType::QVariantList: {
+        QVariantList list = value.toList();
+        for (QVariant &item : list)
+            item = toPropertyValue(item.toMap(), context);
+        value = std::move(list);
+        break;
+    }
+    case QMetaType::QVariantMap: {
+        QVariantMap map = value.toMap();
+        for (QVariant &value : map)
+            convertListValues(value, context);
+        value = std::move(map);
+        break;
+    }
+    }
 }
 
 SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
@@ -619,6 +650,9 @@ std::unique_ptr<Layer> VariantToMapConverter::toLayer(const QVariant &variant)
             parallaxFactor.setY(factorY);
 
         layer->setParallaxFactor(parallaxFactor);
+
+        const auto mode = variantMap[QStringLiteral("mode")].toString();
+        layer->setBlendMode(blendModeFromString(mode));
     }
 
     return layer;
@@ -780,6 +814,7 @@ std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap 
     const QVariant polylineVariant = variantMap[QStringLiteral("polyline")];
     const QVariant polygonVariant = variantMap[QStringLiteral("polygon")];
     const QVariant ellipseVariant = variantMap[QStringLiteral("ellipse")];
+    const QVariant capsuleVariant = variantMap[QStringLiteral("capsule")];
     const QVariant pointVariant = variantMap[QStringLiteral("point")];
     const QVariant textVariant = variantMap[QStringLiteral("text")];
 
@@ -795,6 +830,10 @@ std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap 
     }
     if (ellipseVariant.toBool()) {
         object->setShape(MapObject::Ellipse);
+        object->setPropertyChanged(MapObject::ShapeProperty);
+    }
+    if (capsuleVariant.toBool()) {
+        object->setShape(MapObject::Capsule);
         object->setPropertyChanged(MapObject::ShapeProperty);
     }
     if (pointVariant.toBool()) {

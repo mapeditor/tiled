@@ -29,11 +29,11 @@
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "objectgroup.h"
+#include "objectrefdialog.h"
 #include "objectreferenceitem.h"
 #include "preferences.h"
 #include "tile.h"
 #include "utils.h"
-#include "variantpropertymanager.h"
 
 #include <QApplication>
 #include <QTimerEvent>
@@ -183,8 +183,13 @@ void MapObjectLabel::syncWithMapObject(const MapRenderer &renderer)
     if (!nameVisible)
         return;
 
+    if (mText != mObject->name()) {
+        mText = mObject->name();
+        update();
+    }
+
     const QFontMetricsF metrics(scene() ? scene()->font() : QApplication::font());
-    QRectF boundingRect = metrics.boundingRect(mObject->name());
+    QRectF boundingRect = metrics.boundingRect(mText);
 
     const qreal margin = Utils::dpiScaled(labelMargin);
     const qreal distance = Utils::dpiScaled(labelDistance);
@@ -251,9 +256,9 @@ void MapObjectLabel::paint(QPainter *painter,
 
     painter->drawRoundedRect(mBoundingRect, 4, 4);
     painter->setPen(Qt::black);
-    painter->drawText(mTextPos + QPointF(1,1), mObject->name());
+    painter->drawText(mTextPos + QPointF(1,1), mText);
     painter->setPen(Qt::white);
-    painter->drawText(mTextPos, mObject->name());
+    painter->drawText(mTextPos, mText);
 }
 
 
@@ -279,9 +284,6 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
             this, &ObjectSelectionItem::selectedObjectsChanged);
     connect(mapDocument, &MapDocument::aboutToBeSelectedObjectsChanged,
             this, &ObjectSelectionItem::aboutToBeSelectedObjectsChanged);
-
-    connect(mapDocument, &MapDocument::mapChanged,
-            this, &ObjectSelectionItem::mapChanged);
 
     connect(mapDocument, &MapDocument::layerAdded,
             this, &ObjectSelectionItem::layerAdded);
@@ -403,6 +405,9 @@ void ObjectSelectionItem::changeEvent(const ChangeEvent &event)
         }
         break;
     }
+    case ChangeEvent::MapChanged:
+        updateItemPositions();
+        break;
     case ChangeEvent::LayerChanged:
         layerChanged(static_cast<const LayerChangeEvent&>(event));
         break;
@@ -491,11 +496,6 @@ void ObjectSelectionItem::hoveredMapObjectChanged(MapObject *object,
     } else {
         mHoveredMapObjectItem.reset();
     }
-}
-
-void ObjectSelectionItem::mapChanged()
-{
-    updateItemPositions();
 }
 
 static void collectObjects(const GroupLayer &groupLayer, QList<MapObject*> &objects, bool onlyVisibleLayers = false)
@@ -856,17 +856,34 @@ void ObjectSelectionItem::addRemoveObjectHoverItems()
 }
 
 template <typename Callback>
+static void forEachObjectReference(const QVariant &value, Callback callback);
+
+template <typename Callback>
+static void forEachObjectReference(const QVariantList &list, Callback callback)
+{
+    for (const QVariant &item : list)
+        forEachObjectReference(item, callback);
+}
+
+template <typename Callback>
 static void forEachObjectReference(const Properties &properties, Callback callback)
 {
-    for (const QVariant &value : properties) {
-        if (value.userType() == objectRefTypeId()) {
-            callback(value.value<ObjectRef>());
-        } else if (value.userType() == propertyValueId()) {
-            const auto propertyValue = value.value<PropertyValue>();
-            if (auto type = propertyValue.type())
-                if (type->isClass())
-                    forEachObjectReference(propertyValue.value.toMap(), callback);
-        }
+    for (const QVariant &value : properties)
+        forEachObjectReference(value, callback);
+}
+
+template <typename Callback>
+static void forEachObjectReference(const QVariant &value, Callback callback)
+{
+    if (value.userType() == objectRefTypeId()) {
+        callback(value.value<ObjectRef>());
+    } else if (value.userType() == propertyValueId()) {
+        const auto propertyValue = value.value<PropertyValue>();
+        if (auto type = propertyValue.type())
+            if (type->isClass())
+                forEachObjectReference(propertyValue.value.toMap(), callback);
+    } else if (value.userType() == QMetaType::QVariantList) {
+        forEachObjectReference(value.value<QVariantList>(), callback);
     }
 }
 

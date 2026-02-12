@@ -102,8 +102,6 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     if (mMapDocument) {
         connect(mMapDocument, &MapDocument::changed,
                 this, &MapScene::changeEvent);
-        connect(mMapDocument, &MapDocument::mapChanged,
-                this, &MapScene::mapChanged);
         connect(mMapDocument, &MapDocument::tilesetTilePositioningChanged,
                 this, [this] { update(); });
         connect(mMapDocument, &MapDocument::tileImageSourceChanged,
@@ -293,9 +291,10 @@ void MapScene::refreshScene()
     }
 
     const WorldManager &worldManager = WorldManager::instance();
-    const QString &currentMapFile = mMapDocument->canonicalFilePath();
+    const QString &currentMapFile = mMapDocument->fileName();
 
-    if (const World *world = worldManager.worldForMap(currentMapFile)) {
+    if (auto worldDocument = worldManager.worldForMap(currentMapFile)) {
+        const auto world = worldDocument->world();
         const QPoint currentMapPosition = world->mapRect(currentMapFile).topLeft();
         auto const contextMaps = world->contextMaps(currentMapFile);
 
@@ -404,10 +403,22 @@ MapItem *MapScene::takeOrCreateMapItem(const MapDocumentPtr &mapDocument, MapIte
 void MapScene::changeEvent(const ChangeEvent &change)
 {
     switch (change.type) {
-    case ChangeEvent::MapChanged:
-        if (static_cast<const MapChangeEvent&>(change).property == Map::ParallaxOriginProperty)
+    case ChangeEvent::MapChanged: {
+        switch (static_cast<const MapChangeEvent&>(change).property) {
+        case Map::ParallaxOriginProperty:
             emit parallaxParametersChanged();
+            break;
+        case Map::BackgroundColorProperty:
+            updateBackgroundColor();
+            break;
+        case Map::RenderOrderProperty:
+            update();
+            break;
+        default:
+            break;
+        }
         break;
+    }
     case ChangeEvent::TilesetChanged:{
         auto &tilesetChange = static_cast<const TilesetChangeEvent&>(change);
         switch (tilesetChange.property) {
@@ -421,14 +432,6 @@ void MapScene::changeEvent(const ChangeEvent &change)
     default:
         break;
     }
-}
-
-/**
- * Updates the possibly changed background color.
- */
-void MapScene::mapChanged()
-{
-    updateBackgroundColor();
 }
 
 void MapScene::repaintTileset(Tileset *tileset)

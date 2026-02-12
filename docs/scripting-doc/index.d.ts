@@ -2,7 +2,7 @@
  * Tiled can be extended with the use of JavaScript.
  *
  * Scripts can be used to implement {@link tiled.registerMapFormat | custom map formats},
- * {@link tiled.registerAction | custom actions} and {@link tiled.registerTool | new tools}.
+ * {@link tiled.registerAction | custom actions}, and {@link tiled.registerTool | new tools}.
  * Scripts can also {@link Signal | automate actions based on signals}.
  *
  * See the [Tiled Manual](https://doc.mapeditor.org/en/stable/manual/scripting) for more information on writing or installing extensions.
@@ -71,63 +71,63 @@ interface region {
    *
    * @since 1.8
    */
-  readonly rects : rect[];
+  readonly rects: rect[];
 
   /**
    * Returns whether this region contains the given point.
    *
    * @since 1.8
    */
-  contains(x : number, y : number) : boolean;
+  contains(x: number, y: number): boolean;
 
   /**
    * Returns whether this region contains the given point.
    *
    * @since 1.8
    */
-  contains(point : point) : boolean;
+  contains(point: point): boolean;
 
   /**
    * Adds the given rectangle to this region.
    *
    * @since 1.8
    */
-  add(rect : rect) : void;
+  add(rect: rect): void;
 
   /**
    * Adds the given region to this region.
    *
    * @since 1.8
    */
-  add(region : region) : void;
+  add(region: region): void;
 
   /**
    * Subtracts the given rectangle from this region.
    *
    * @since 1.8
    */
-  subtract(rect : rect) : void;
+  subtract(rect: rect): void;
 
   /**
    * Subtracts the given region from this region.
    *
    * @since 1.8
    */
-  subtract(region : region) : void;
+  subtract(region: region): void;
 
   /**
    * Sets the selected area to the intersection of the current selected area and the given rectangle.
    *
    * @since 1.8
    */
-  intersect(rect : rect) : void;
+  intersect(rect: rect): void;
 
   /**
    * Sets the selected area to the intersection of the current selected area and the given region.
    *
    * @since 1.8
    */
-  intersect(region : region) : void;
+  intersect(region: region): void;
 
   /**
    * Returns this region as an array of contiguous regions, based on 8-way
@@ -138,7 +138,7 @@ interface region {
    *
    * @since 1.10
    */
-  contiguousRegions() : region[];
+  contiguousRegions(): region[];
 }
 
 /**
@@ -271,7 +271,7 @@ interface MenuSeparator {
  * An item in a menu, which is either an action or a separator. Used with
  * {@link tiled.extendMenu}.
  */
-type MenuItem = MenuAction|MenuSeparator
+type MenuItem = MenuAction | MenuSeparator;
 
 /**
  * Used as the value for custom 'file' properties.
@@ -357,7 +357,7 @@ declare namespace Qt {
     x: number,
     y: number,
     width: number,
-    height: number
+    height: number,
   ): rect;
 
   /**
@@ -415,7 +415,7 @@ declare namespace Qt {
    * Can be created with {@link tiled.cursor} and assigned to {@link
    * Tool.cursor}.
    */
-  class QCursor {};
+  class QCursor {}
 
   /**
    * The base type from which all Qt widgets derive.
@@ -620,7 +620,7 @@ declare namespace Qt {
     /**
      * Index into the list of possible values that the user has selected.
      */
-    currentIndex : number;
+    currentIndex: number;
 
     /**
      * Signal emitted when the user selects a different option. Provides the index
@@ -639,19 +639,19 @@ declare namespace Qt {
     /**
      * Removes all items from the combo box.
      */
-    clear() : void;
+    clear(): void;
 
     /**
      * Adds the given items to the combo box.
      *
      * @since 1.10
      */
-    addItems(texts : string[]) : void;
+    addItems(texts: string[]): void;
   }
   /**
    * A label  widget which displays text to the user
    */
-   class QLabel extends QWidget {
+  class QLabel extends QWidget {
     /**
      * The text currently being displayed on the label.
      */
@@ -663,7 +663,6 @@ declare namespace Qt {
    * Qt documentation: [QSlider](https://doc.qt.io/qt-6/qslider.html)
    */
   class QSlider extends QWidget {
-
     /**
      * The minimum value that can be set by the slider.
      */
@@ -754,14 +753,65 @@ declare namespace Qt {
   /**
    * A button which the user can push.
    */
-  class QPushButton extends QAbstractButton {
-  }
+  class QPushButton extends QAbstractButton {}
 
   /**
    * This type is returned in mainWidget when calling {@link Dialog.addSeparator}.
    * Qt documentation [QFrame](https://doc.qt.io/qt-6/qframe.html)
    */
-  class QFrame extends QWidget {
+  class QFrame extends QWidget {}
+
+  /**
+   * This type is returned when calling {@link QButtonGroup.addItem} or {@link QButtonGroup.addItems}.
+   *
+   * You can set checked to true for a QRadioButton even if you have also set enabled to false on it,
+   * which could allow you to prevent the script user from selecting a radio button by clicking on it,
+   * but still change the selection in your script.
+   *
+   * @since 1.11.1
+   */
+  class QRadioButton extends QAbstractButton {}
+
+  /**
+   * A group of radio buttons where only one button can be selected.
+   * @since 1.11.1
+   */
+  class QButtonGroup {
+    /**
+     * Retrieve a list of buttons added to this QButtonGroup.
+     */
+    readonly buttons: QRadioButton[];
+
+    /**
+     * The radio button that is currently selected, if any.
+     */
+    readonly checkedButton: QRadioButton | undefined;
+
+    /**
+     * ID / index into {@link QButtonGroup.buttons} that is currently selected.
+     * If no radio button is selected, -1 will be returned.
+     */
+    readonly checkedIndex: number;
+
+    /**
+     * Add multiple radio buttons to this group.
+     *
+     * Each entry in the values array is the text that will appear on the radio
+     * button. The optional list of tooltips specifies the tooltip for the
+     * radio buttons at each index.
+     */
+    addItems(values: string[], toolTips: string[] | undefined): QRadioButton[];
+
+    /**
+     * Add a radio button to this group with the given text and tooltip.
+     */
+    addItem(text: string, toolTip: string | undefined): QRadioButton;
+
+    /**
+     * Signal emitted when any radio button in this QButtonGroup is selected or deselected.
+     * If the button that causes the signal to be emitted is now selected, checked will be true.
+     */
+    readonly idToggled: Signal<[index: number, checked: boolean]>;
   }
 }
 
@@ -797,7 +847,14 @@ declare class TextFile {
   /**
    * Opens a text file in the given mode.
    */
-  constructor(filePath: string, mode?: typeof TextFile.ReadOnly | typeof TextFile.WriteOnly | typeof TextFile.ReadWrite | typeof TextFile.Append);
+  constructor(
+    filePath: string,
+    mode?:
+      | typeof TextFile.ReadOnly
+      | typeof TextFile.WriteOnly
+      | typeof TextFile.ReadWrite
+      | typeof TextFile.Append,
+  );
 
   /**
    * Reads one line of text from the file and returns it. The returned string does not contain the
@@ -826,13 +883,13 @@ declare class TextFile {
   public writeLine(text: string): void;
 
   /**
-    * Commits all written text to disk and closes the file. Should be called when writing to files in WriteOnly mode. Failing to call this function will result in cancelling the operation, unless safe writing to files is disabled.
-    */
+   * Commits all written text to disk and closes the file. Should be called when writing to files in WriteOnly mode. Failing to call this function will result in cancelling the operation, unless safe writing to files is disabled.
+   */
   public commit(): void;
 
   /**
-    * Closes the file. It is recommended to always call this function as soon as you are finished with the file.
-    */
+   * Closes the file. It is recommended to always call this function as soon as you are finished with the file.
+   */
   public close(): void;
 }
 
@@ -869,7 +926,13 @@ declare class BinaryFile {
   /**
    * Opens a binary file in the given mode.
    */
-  constructor(filePath: string, mode?: typeof BinaryFile.ReadOnly | typeof BinaryFile.WriteOnly | typeof BinaryFile.ReadWrite);
+  constructor(
+    filePath: string,
+    mode?:
+      | typeof BinaryFile.ReadOnly
+      | typeof BinaryFile.WriteOnly
+      | typeof BinaryFile.ReadWrite,
+  );
 
   /**
    * Sets the file size (in bytes). If `size` is larger than the file currently is, the new bytes
@@ -980,24 +1043,24 @@ interface Action {
  * henceforth be referred to as a layer.
  */
 declare class ObjectGroup extends Layer {
-  static readonly UnknownOrder: unique symbol
-  static readonly TopDownOrder: unique symbol
-  static readonly IndexOrder: unique symbol
+  static readonly UnknownOrder: unique symbol;
+  static readonly TopDownOrder: unique symbol;
+  static readonly IndexOrder: unique symbol;
 
   /**
    * Array of all objects on this layer.
    */
-  readonly objects : MapObject[]
+  readonly objects: MapObject[];
 
   /**
    * Number of objects on this layer.
    */
-  readonly objectCount : number
+  readonly objectCount: number;
 
   /**
    * Color of shape and point objects on this layer (when not set by object type).
    */
-  color : color
+  color: color;
 
   /**
    * The objects can either be drawn top down (sorted by their y-coordinate) or
@@ -1007,50 +1070,221 @@ declare class ObjectGroup extends Layer {
    *
    * @since 1.8
    */
-  drawOrder : typeof ObjectGroup.TopDownOrder | typeof ObjectGroup.IndexOrder | typeof ObjectGroup.UnknownOrder;
+  drawOrder:
+    | typeof ObjectGroup.TopDownOrder
+    | typeof ObjectGroup.IndexOrder
+    | typeof ObjectGroup.UnknownOrder;
 
   /**
    * Constructs a new object layer, which can be added to a TileMap.
    */
-  constructor(name? : string)
+  constructor(name?: string);
 
   /**
    * Returns a reference to the object at the given index. When the object is removed, the reference turns into a standalone copy of the object.
    */
-  objectAt(index : number) : MapObject
+  objectAt(index: number): MapObject;
 
   /**
    * Removes the object at the given index.
    */
-  removeObjectAt(index : number) : void
+  removeObjectAt(index: number): void;
 
   /**
    * Removes the given object from this layer. The object reference turns into a standalone copy of the object.
    */
-  removeObject(object : MapObject) : void
+  removeObject(object: MapObject): void;
 
   /**
    * Inserts the object at the given index. The object can’t already be part of a layer.
    */
-  insertObjectAt(index : number, object : MapObject) : void
+  insertObjectAt(index: number, object: MapObject): void;
 
   /**
    * Adds the given object to the layer. The object can’t already be part of a layer.
    */
-  addObject(object : MapObject) : void
-
+  addObject(object: MapObject): void;
 }
 
 /**
  * A type alias used to describe the possible values in object properties.
  */
-type TiledObjectPropertyValue = number | string | boolean | color | ObjectRef | FilePath | MapObject | PropertyValue | undefined
+type TiledObjectPropertyValue =
+  | number
+  | string
+  | boolean
+  | color
+  | ObjectRef
+  | FilePath
+  | MapObject
+  | PropertyValue
+  | undefined;
 
+/**
+ * Indicates how the values for an {@link EnumPropertyType} are stored when
+ * they are saved in files.
+ *
+ * @since 1.12
+ */
+declare enum StorageType {
+  StringValue,
+  IntValue,
+}
+
+/**
+ * A custom property type defined in the project.
+ * A type may be either an {@link EnumPropertyType} or a {@link ClassPropertyType}.
+ *
+ * @since 1.12
+ */
+declare class PropertyType {
+  /**
+   * Get or set the name of this type. Must be unique in the project.
+   */
+  name: string;
+
+  /**
+   * Returns true if this is a {@link ClassPropertyType}.
+   */
+  isClass: boolean;
+
+  /**
+   * Returns true if this is a {@link EnumPropertyType}.
+   */
+  isEnum: boolean;
+
+  /**
+   * The default value for properties of this type.
+   */
+  defaultValue: PropertyValue;
+}
+
+interface ClassPropertyTypeMembers {
+  [Key: string]: TiledObjectPropertyValue;
+}
+
+/**
+ * Usage flags for a {@link ClassPropertyType} control where the class can
+ * be used. Restricting the usage flags for example could allow a class to only be used
+ * for map objects, only for layers or only as property value.
+ *
+ * Some combination of: {@link ClassPropertyType.PropertyValueType},
+ * {@link ClassPropertyType.LayerClass},
+ * {@link ClassPropertyType.MapObjectClass},
+ * {@link ClassPropertyType.MapClass},
+ * {@link ClassPropertyType.TilesetClass},
+ * {@link ClassPropertyType.TileClass},
+ * {@link ClassPropertyType.WangSetClass},
+ * {@link ClassPropertyType.WangColorClass},
+ * {@link ClassPropertyType.ProjectClass},
+ * {@link ClassPropertyType.AnyUsage}, and
+ * {@link ClassPropertyType.AnyObjectClass}.
+ *
+ * @since 1.12
+ */
+type ClassUsageFlags = number;
+
+/**
+ * A [class](https://doc.mapeditor.org/en/stable/manual/custom-properties/#custom-classes) that
+ * can be used for custom properties.
+ *
+ * @since 1.12
+ */
+declare class ClassPropertyType extends PropertyType {
+  /**
+   * All members defined for this class type.
+   */
+  readonly members: ClassPropertyTypeMembers;
+
+  /**
+   * Set a class member, providing its name and default value.
+   * If another member of the same name exists, it will be replaced with the new value.
+   *
+   * If a {@link PropertyType} is provided, the value will be the
+   * {@link PropertyType.defaultValue defaultValue} of that type.
+   */
+  setMember(name: string, value: TiledObjectPropertyValue | PropertyType): void;
+
+  /**
+   * Remove a member of this class by name.
+   */
+  removeMember(name: string): void;
+
+  /**
+   * Get or set the color used for objects of this class type.
+   */
+  color: color;
+
+  /**
+   * Get or set whether objects of this class type will be rendered in the map
+   * with a fill color. If false, only an outline will be drawn for the object.
+   */
+  drawFill: boolean;
+
+  PropertyValueType: ClassUsageFlags;
+  LayerClass: ClassUsageFlags;
+  MapObjectClass: ClassUsageFlags;
+  MapClass: ClassUsageFlags;
+  TilesetClass: ClassUsageFlags;
+  TileClass: ClassUsageFlags;
+  WangSetClass: ClassUsageFlags;
+  WangColorClass: ClassUsageFlags;
+  ProjectClass: ClassUsageFlags;
+  AnyUsage: ClassUsageFlags;
+  AnyObjectClass: ClassUsageFlags;
+
+  /**
+   * Get or set {@link ClassUsageFlags} used for this class type.
+   */
+  usageFlags: number;
+}
+
+/**
+ * An [enum](https://doc.mapeditor.org/en/stable/manual/custom-properties/#custom-enums) that
+ * can be used for custom properties.
+ *
+ * @since 1.12
+ */
+declare class EnumPropertyType extends PropertyType {
+  /**
+   * Get or set how this enum will be serialized in map and tileset files.
+   */
+  storageType: StorageType;
+
+  /**
+   * Get or set  all possible display names for  values in this enum.
+   */
+  values: string[];
+
+  /**
+   * Get the display name of an enum value by its index in {@link values}.
+   */
+  nameOf(value: number): string;
+
+  /**
+   * Get the display name of a property value that is of this enum type.
+   * For example, if you had a property called "biome" using a custom enum
+   * type on the current asset, you could get the name of the value with the
+   * following script:
+   *
+   * ```js
+   * var biome = tiled.activeAsset.resolvedProperty('biome');
+   * var biomeType = tiled.project.findTypeByName(biome.typeName);
+   * var biomeName = biomeType.nameOf(biome);
+   * ```
+   */
+  nameOf(value: TiledObjectPropertyValue): string;
+
+  /**
+   * Add a new value to this enum.
+   */
+  addValue(value: string): void;
+}
 /**
  * An interface used to describe object properties.
  */
 interface TiledObjectProperties {
-  [name: string]: TiledObjectPropertyValue
+  [name: string]: TiledObjectPropertyValue;
 }
 
 /**
@@ -1144,7 +1378,13 @@ declare class TiledObject {
    * @since 1.10
    * @deprecated Use {@link setProperty} with a value created by {@link tiled.color} instead.
    */
-  setColorProperty(name: string, red: number, green: number, blue: number, alpha?: number): void;
+  setColorProperty(
+    name: string,
+    red: number,
+    green: number,
+    blue: number,
+    alpha?: number,
+  ): void;
 
   /**
    * Sets the value of the custom property with the given name to the given
@@ -1222,6 +1462,43 @@ declare class Project extends TiledObject {
    * The path to the .tiled-project file.
    */
   readonly fileName: string;
+
+  /**
+   * A list of custom property types defined in the project in the _View >
+   * Custom Types Editor_ UI.
+   *
+   * @since 1.12
+   */
+  readonly propertyTypes: PropertyType[];
+
+  /**
+   * Remove a custom type from the project by name. Returns whether the type was removed.
+   *
+   * @since 1.12
+   */
+  removeTypeByName(name: string): boolean;
+
+  /**
+   * Get a custom type from the project by name. If no type of the specified name
+   * exists, null will be returned.
+   *
+   * @since 1.12
+   */
+  findTypeByName(name: string): PropertyType | null;
+
+  /**
+   * Add a new Class property type to the project with the specified name.
+   *
+   * @since 1.12
+   */
+  addClassType(name: string): ClassPropertyType;
+
+  /**
+   * Add a new Enum property type to the project with the specified name.
+   *
+   * @since 1.12
+   */
+  addEnumType(name: string): EnumPropertyType;
 }
 
 /**
@@ -1233,13 +1510,13 @@ declare class WorldMapEntry {
   /**
    * File name of the map.
    */
-  fileName : string;
+  fileName: string;
 
   /**
    * A rect describing the location and dimensions of the map within the World.
    */
-  rect : rect;
-} 
+  rect: rect;
+}
 
 /**
  * Patterns added to a {@link World}, which are used to automatically match
@@ -1250,7 +1527,7 @@ declare class WorldMapEntry {
  * @since 1.11
  */
 declare class WorldPattern {
-  /** 
+  /**
    * The regular expression pattern used to match maps in the world.
    */
   regExp: RegExp;
@@ -1268,7 +1545,7 @@ declare class WorldPattern {
   multiplierY: number;
 
   /**
-   * After calculating the map's position in the world using x and y in its 
+   * After calculating the map's position in the world using x and y in its
    * regular expression and the associated multipliers, this offset is added
    * to determine the final position.
    */
@@ -1289,6 +1566,8 @@ declare class WorldPattern {
  * A world defined in a .world file, which is a JSON file that tells
  * Tiled which maps are part of the world and at what location.
  *
+ * You can access the currently loaded worlds using {@link tiled.worlds}.
+ *
  * See the [Working with
  * Worlds](https://doc.mapeditor.org/en/stable/manual/worlds/) page in the
  * manual for more information.
@@ -1300,41 +1579,41 @@ declare class World extends Asset {
    * The maps that are explicitly added to this world. It does not include
    * those maps which match due to patterns defined on the world.
    */
-  readonly maps : WorldMapEntry[];
+  readonly maps: WorldMapEntry[];
 
   /**
    * The patterns that are configured for this map. These patterns will be used
    * to automatically match maps in your project.
    */
-  readonly patterns : WorldPattern[];
+  readonly patterns: WorldPattern[];
 
   /**
    * Returns all maps that are part of this world, either directly referenced
    * or matched by one of the patterns.
    */
-  allMaps() : WorldMapEntry[];
+  allMaps(): WorldMapEntry[];
 
   /**
    * Returns any maps that intersect with the given {@link rect}. This is a
    * filtered version of the results from {@link allMaps}.
    */
-  mapsInRect(rect : rect) : WorldMapEntry[];
+  mapsInRect(rect: rect): WorldMapEntry[];
 
   /**
    * Returns true if this world contains a map with the given fileName.
    */
-  containsMap(fileName : string) : boolean;
+  containsMap(fileName: string): boolean;
 
   /**
    * Returns true if this world contains the given map.
    */
-  containsMap(map : TileMap) : boolean;
+  containsMap(map: TileMap): boolean;
 
   /**
    * Change the position and size (in pixels) of the map with the given
    * fileName within this world.
    */
-  setMapRect(fileName: string, rect : rect): void;
+  setMapRect(fileName: string, rect: rect): void;
 
   /**
    * Change the position (in pixels) of the given map within this world.
@@ -1372,37 +1651,37 @@ interface Font {
   /**
    * The font family.
    */
-  family : string
+  family: string;
 
   /**
    * Font size in pixels.
    */
-  pixelSize : number
+  pixelSize: number;
 
   /**
    * Whether the font is bold.
    */
-  bold : boolean
+  bold: boolean;
 
   /**
    * Whether the font is italic.
    */
-  italic : boolean
+  italic: boolean;
 
   /**
    * Whether the text is underlined.
    */
-  underline : boolean
+  underline: boolean;
 
   /**
    * Whether the text is striked through.
    */
-  strikeOut : boolean
+  strikeOut: boolean;
 
   /**
    * Whether to use kerning when rendering the text.
    */
-  kerning : boolean
+  kerning: boolean;
 }
 
 /**
@@ -1410,18 +1689,24 @@ interface Font {
  *
  * Accessible like `MapObject.Rectangle`, `MapObject.Polygon`, etc.
  */
-type MapObjectShape = typeof MapObject.Rectangle | typeof MapObject.Polygon | typeof MapObject.Polyline | typeof MapObject.Ellipse | typeof MapObject.Text | typeof MapObject.Point;
+type MapObjectShape =
+  | typeof MapObject.Rectangle
+  | typeof MapObject.Polygon
+  | typeof MapObject.Polyline
+  | typeof MapObject.Ellipse
+  | typeof MapObject.Text
+  | typeof MapObject.Point;
 
 /**
  * An object that can be part of an {@link ObjectGroup}.
  */
 declare class MapObject extends TiledObject {
-  static readonly Rectangle: unique symbol
-  static readonly Polygon: unique symbol
-  static readonly Polyline: unique symbol
-  static readonly Ellipse: unique symbol
-  static readonly Text: unique symbol
-  static readonly Point: unique symbol
+  static readonly Rectangle: unique symbol;
+  static readonly Polygon: unique symbol;
+  static readonly Polyline: unique symbol;
+  static readonly Ellipse: unique symbol;
+  static readonly Text: unique symbol;
+  static readonly Point: unique symbol;
 
   /**
    * Unique (map-wide) ID of the object.
@@ -1550,12 +1835,12 @@ declare class MapObject extends TiledObject {
   /**
    * Constructs a new map object, which can be added to an {@link ObjectGroup}.
    */
-  constructor(name? : string)
+  constructor(name?: string);
 
   /**
    * Constructs a new map object of the given shape, which can be added to an {@link ObjectGroup}.
    */
-  constructor(shape: MapObjectShape, name? : string)
+  constructor(shape: MapObjectShape, name?: string);
 }
 
 /**
@@ -1716,7 +2001,7 @@ interface MapFormat extends FileFormat {
    *
    * This function will throw an error if reading is not supported.
    */
-  read(fileName : string) : TileMap
+  read(fileName: string): TileMap;
 
   /**
    * Writes the given map to a file.
@@ -1725,7 +2010,7 @@ interface MapFormat extends FileFormat {
    *
    * If there is an error writing the file, it will return a description of the error; otherwise, it will return "".
    */
-  write(map : TileMap, fileName : string) : string
+  write(map: TileMap, fileName: string): string;
 }
 
 /**
@@ -1741,7 +2026,7 @@ interface TilesetFormat extends FileFormat {
    *
    * This function will throw an error if reading is not supported.
    */
-  read(fileName : string) : Tileset
+  read(fileName: string): Tileset;
 
   /**
    * Writes the given tileset to a file.
@@ -1750,7 +2035,7 @@ interface TilesetFormat extends FileFormat {
    *
    * If there is an error writing the file, it will return a description of the error; otherwise, it will return "".
    */
-  write(tileset : Tileset, fileName : string) : string
+  write(tileset: Tileset, fileName: string): string;
 }
 
 /**
@@ -1796,7 +2081,11 @@ declare namespace Geometry {
    * When the `manhattan` option (named after "Manhattan distance") is set to
    * `true`, the points on the line can't take diagonal steps.
    */
-  export function pointsOnLine(a: point, b: point, manhattan?: boolean): point[];
+  export function pointsOnLine(
+    a: point,
+    b: point,
+    manhattan?: boolean,
+  ): point[];
 
   /**
    * Returns a lists of points on an ellipse, with `center` as the midpoint
@@ -1804,18 +2093,27 @@ declare namespace Geometry {
    *
    * May return duplicate points.
    */
-  export function pointsOnEllipse(center: point, radiusX: number, radiusY: number): point[];
+  export function pointsOnEllipse(
+    center: point,
+    radiusX: number,
+    radiusY: number,
+  ): point[];
 
   /**
    * Returns an elliptical region based on the given bounding rectangle.
    */
-  export function ellipseRegion(rect: rect): region
+  export function ellipseRegion(rect: rect): region;
 
   /**
    * Returns an elliptical region based on a bounding rectangle given by x0,y0
    * (top-left) and x1,y1 (bottom-right), inclusive.
    */
-  export function ellipseRegion(x0: number, y0: number, x1: number, y1: number): region
+  export function ellipseRegion(
+    x0: number,
+    y0: number,
+    x1: number,
+    y1: number,
+  ): region;
 }
 
 /**
@@ -1881,7 +2179,7 @@ declare namespace FileInfo {
   /**
    * Concatenates the given paths using the `/` character.
    */
-  export function joinPaths(...paths:string[]) : string;
+  export function joinPaths(...paths: string[]): string;
 
   /**
    * Returns the part of `filePath` that is not the file name, that is,
@@ -1917,38 +2215,38 @@ declare namespace FileInfo {
  * @since 1.8
  */
 declare namespace File {
-  export const Dirs: 0x001
-  export const Files: 0x002
-  export const Drives: 0x004
-  export const NoSymLinks: 0x008
-  export const AllEntries: 0x007
-  export const TypeMask: 0x00f
-  export const Readable: 0x010
-  export const Writable: 0x020
-  export const Executable: 0x040
-  export const PermissionMask: 0x070
-  export const Modified: 0x080
-  export const Hidden: 0x100
-  export const System: 0x200
-  export const AccessMask: 0x3F0
-  export const AllDirs: 0x400
-  export const CaseSensitive: 0x800
-  export const NoDot: 0x2000
-  export const NoDotDot: 0x4000
-  export const NoDotAndDotDot: 0x6000
-  export const NoFilter: -1
-  export const Name: 0x00
-  export const Time: 0x01
-  export const Size: 0x02
-  export const Unsorted: 0x03
-  export const SortByMask: 0x03
-  export const DirsFirst: 0x04
-  export const Reversed: 0x08
-  export const IgnoreCase: 0x10
-  export const DirsLast: 0x20
-  export const LocaleAware: 0x40
-  export const Type: 0x80
-  export const NoSort: -1
+  export const Dirs: 0x001;
+  export const Files: 0x002;
+  export const Drives: 0x004;
+  export const NoSymLinks: 0x008;
+  export const AllEntries: 0x007;
+  export const TypeMask: 0x00f;
+  export const Readable: 0x010;
+  export const Writable: 0x020;
+  export const Executable: 0x040;
+  export const PermissionMask: 0x070;
+  export const Modified: 0x080;
+  export const Hidden: 0x100;
+  export const System: 0x200;
+  export const AccessMask: 0x3f0;
+  export const AllDirs: 0x400;
+  export const CaseSensitive: 0x800;
+  export const NoDot: 0x2000;
+  export const NoDotDot: 0x4000;
+  export const NoDotAndDotDot: 0x6000;
+  export const NoFilter: -1;
+  export const Name: 0x00;
+  export const Time: 0x01;
+  export const Size: 0x02;
+  export const Unsorted: 0x03;
+  export const SortByMask: 0x03;
+  export const DirsFirst: 0x04;
+  export const Reversed: 0x08;
+  export const IgnoreCase: 0x10;
+  export const DirsLast: 0x20;
+  export const LocaleAware: 0x40;
+  export const Type: 0x80;
+  export const NoSort: -1;
 
   /**
    * Copies `sourceFilePath` to `targetFilePath`. Any directory components
@@ -1964,7 +2262,7 @@ declare namespace File {
    * destination file timestamp. If you want to replace the newer file, you need to
    * remove it first via {@link File.remove}.
    */
-   export function copy(sourceFilePath: string, targetFilePath: string): boolean;
+  export function copy(sourceFilePath: string, targetFilePath: string): boolean;
 
   /**
    * Returns true if and only if there is a file at `filePath`.
@@ -1979,7 +2277,11 @@ declare namespace File {
    * The values for `filters` are equivalent to Qt's `QDir::Filter`. The `sortFlags`
    * are equivalent to `QDir::SortFlags`.
    */
-  export function directoryEntries(path: string, filters?: number, sortFlags?: number): string[];
+  export function directoryEntries(
+    path: string,
+    filters?: number,
+    sortFlags?: number,
+  ): string[];
 
   /**
    * Returns the time of last modification for the file at `filePath`. The
@@ -2003,7 +2305,11 @@ declare namespace File {
    * If a file with the name `targetFile` already exists, and overwrite is `false`,
    * `move()` returns `false` (that is, the file will not be overwritten).
    */
-  export function move(sourceFile: string, targetFile: string, overwrite?: boolean): boolean;
+  export function move(
+    sourceFile: string,
+    targetFile: string,
+    overwrite?: boolean,
+  ): boolean;
 
   /**
    * Removes the file at `filePath`. In case of a directory, it will be removed
@@ -2026,12 +2332,12 @@ declare class GroupLayer extends Layer {
    *
    * @since 1.8
    */
-  readonly layers: Layer[]
+  readonly layers: Layer[];
 
   /**
    * Constructs a new group layer.
    */
-  constructor(name? : string)
+  constructor(name?: string);
 
   /**
    * Returns a reference to the child layer at the given index.
@@ -2043,7 +2349,7 @@ declare class GroupLayer extends Layer {
    * layer still exists and this group layer isn't already standalone,
    * that reference becomes a standalone copy of the layer.
    */
-  removeLayerAt(index: number): void
+  removeLayerAt(index: number): void;
 
   /**
    * Removes the given layer from the group. If this group wasn't
@@ -2080,43 +2386,43 @@ declare class GroupLayer extends Layer {
  * @since 1.5
  */
 declare class Image {
-  static readonly Format_Invalid: unique symbol
-  static readonly Format_Mono: unique symbol
-  static readonly Format_MonoLSB: unique symbol
-  static readonly Format_Indexed8: unique symbol
-  static readonly Format_RGB32: unique symbol
-  static readonly Format_ARGB32: unique symbol
-  static readonly Format_ARGB32_Premultiplied: unique symbol
-  static readonly Format_RGB16: unique symbol
-  static readonly Format_ARGB8565_Premultiplied: unique symbol
-  static readonly Format_RGB666: unique symbol
-  static readonly Format_ARGB6666_Premultiplied: unique symbol
-  static readonly Format_RGB555: unique symbol
-  static readonly Format_ARGB8555_Premultiplied: unique symbol
-  static readonly Format_RGB888: unique symbol
-  static readonly Format_RGB444: unique symbol
-  static readonly Format_ARGB4444_Premultiplied: unique symbol
-  static readonly Format_RGBX8888: unique symbol
-  static readonly Format_RGBA8888: unique symbol
-  static readonly Format_RGBA8888_Premultiplied: unique symbol
-  static readonly Format_BGR30: unique symbol
-  static readonly Format_A2BGR30_Premultiplied: unique symbol
-  static readonly Format_RGB30: unique symbol
-  static readonly Format_A2RGB30_Premultiplied: unique symbol
-  static readonly Format_Alpha8: unique symbol
-  static readonly Format_Grayscale8: unique symbol
-  static readonly Format_RGBX64: unique symbol
-  static readonly Format_RGBA64: unique symbol
-  static readonly Format_RGBA64_Premultiplied: unique symbol
-  static readonly Format_Grayscale16: unique symbol
-  static readonly Format_BGR888: unique symbol
+  static readonly Format_Invalid: unique symbol;
+  static readonly Format_Mono: unique symbol;
+  static readonly Format_MonoLSB: unique symbol;
+  static readonly Format_Indexed8: unique symbol;
+  static readonly Format_RGB32: unique symbol;
+  static readonly Format_ARGB32: unique symbol;
+  static readonly Format_ARGB32_Premultiplied: unique symbol;
+  static readonly Format_RGB16: unique symbol;
+  static readonly Format_ARGB8565_Premultiplied: unique symbol;
+  static readonly Format_RGB666: unique symbol;
+  static readonly Format_ARGB6666_Premultiplied: unique symbol;
+  static readonly Format_RGB555: unique symbol;
+  static readonly Format_ARGB8555_Premultiplied: unique symbol;
+  static readonly Format_RGB888: unique symbol;
+  static readonly Format_RGB444: unique symbol;
+  static readonly Format_ARGB4444_Premultiplied: unique symbol;
+  static readonly Format_RGBX8888: unique symbol;
+  static readonly Format_RGBA8888: unique symbol;
+  static readonly Format_RGBA8888_Premultiplied: unique symbol;
+  static readonly Format_BGR30: unique symbol;
+  static readonly Format_A2BGR30_Premultiplied: unique symbol;
+  static readonly Format_RGB30: unique symbol;
+  static readonly Format_A2RGB30_Premultiplied: unique symbol;
+  static readonly Format_Alpha8: unique symbol;
+  static readonly Format_Grayscale8: unique symbol;
+  static readonly Format_RGBX64: unique symbol;
+  static readonly Format_RGBA64: unique symbol;
+  static readonly Format_RGBA64_Premultiplied: unique symbol;
+  static readonly Format_Grayscale16: unique symbol;
+  static readonly Format_BGR888: unique symbol;
 
-  static readonly IgnoreAspectRatio: unique symbol
-  static readonly KeepAspectRatio: unique symbol
-  static readonly KeepAspectRatioByExpanding: unique symbol
+  static readonly IgnoreAspectRatio: unique symbol;
+  static readonly KeepAspectRatio: unique symbol;
+  static readonly KeepAspectRatioByExpanding: unique symbol;
 
-  static readonly FastTransformation: unique symbol
-  static readonly SmoothTransformation: unique symbol
+  static readonly FastTransformation: unique symbol;
+  static readonly SmoothTransformation: unique symbol;
 
   /**
    * Width of the image in pixels.
@@ -2157,12 +2463,7 @@ declare class Image {
    * Constructs an image from the given data, interpreting it in the
    * specified format and size. The format is defined by one of the `Image.Format_` values.
    */
-  constructor(
-    data: ArrayBuffer,
-    width: number,
-    height: number,
-    format: number
-    );
+  constructor(data: ArrayBuffer, width: number, height: number, format: number);
 
   /**
    * Constructs an image from the given data, interpreting it in the
@@ -2175,8 +2476,8 @@ declare class Image {
     width: number,
     height: number,
     bytesPerLine: number,
-    format: number
-    );
+    format: number,
+  );
 
   /**
    * Construct an image by loading it from the given file name. When no
@@ -2236,12 +2537,12 @@ declare class Image {
    *
    * When no format is given it will be auto-detected based on the file extension.
    */
-  save(fileName : string, format? : string, quality? : number) : boolean
+  save(fileName: string, format?: string, quality?: number): boolean;
 
   /**
    * Saves the image to an ArrayBuffer in the given format (can be "bmp", png", etc.).
    */
-  saveToData(format : string, quality? : number) : ArrayBuffer
+  saveToData(format: string, quality?: number): ArrayBuffer;
 
   /**
    * Returns the 32-bit color value at the given index in the color
@@ -2264,7 +2565,7 @@ declare class Image {
    * Sets the color at the given index in the color table to a color (supports
    * values like "#rrggbb" or those created by {@link tiled.color}).
    */
-  setColor(index: number, color: color) : void;
+  setColor(index: number, color: color): void;
 
   /**
    * Sets the color table given by an array of either 32-bit color values
@@ -2279,26 +2580,34 @@ declare class Image {
    *
    * @since 1.11
    */
-  copy(rect?: rect) : Image;
+  copy(rect?: rect): Image;
 
   /**
    * Copies the given rectangle to a new image object.
    */
-  copy(x: number, y: number, width: number, height: number) : Image;
+  copy(x: number, y: number, width: number, height: number): Image;
 
   /**
    * Returns a scaled copy of this image. Default `aspectRatioMode`
    * behavior is to ignore the aspect ratio. Default `mode` is a fast
    * transformation.
    */
-  scaled(width: number, height: number,
-         aspectRatioMode?: typeof Image.IgnoreAspectRatio  | typeof Image.KeepAspectRatio  | typeof Image.KeepAspectRatioByExpanding,
-         transformationMode?: typeof Image.FastTransformation  | typeof Image.SmoothTransformation): Image;
+  scaled(
+    width: number,
+    height: number,
+    aspectRatioMode?:
+      | typeof Image.IgnoreAspectRatio
+      | typeof Image.KeepAspectRatio
+      | typeof Image.KeepAspectRatioByExpanding,
+    transformationMode?:
+      | typeof Image.FastTransformation
+      | typeof Image.SmoothTransformation,
+  ): Image;
 
   /**
    * Returns a mirrored copy of this image.
    */
-  mirrored(horizontal: boolean, vertical: boolean) : Image;
+  mirrored(horizontal: boolean, vertical: boolean): Image;
 }
 
 /**
@@ -2355,7 +2664,7 @@ declare class ImageLayer extends Layer {
   /**
    * Constructs a new image layer.
    */
-  constructor(name? : string);
+  constructor(name?: string);
 
   /**
    * Sets the image for this layer to the given image, optionally also setting
@@ -2363,7 +2672,7 @@ declare class ImageLayer extends Layer {
    *
    * @warning This function has no undo!
    */
-  setImage(image: Image, source?: string) : void;
+  setImage(image: Image, source?: string): void;
 }
 
 /**
@@ -2408,7 +2717,7 @@ interface MapEditor {
   /**
    * Get or set the currently used tile brush.
    */
-  currentBrush : TileMap
+  currentBrush: TileMap;
 
   /**
    * Signal emitted when the current brush has changed.
@@ -2418,16 +2727,16 @@ interface MapEditor {
    *
    * @since 1.11.1
    */
-  currentBrushChanged : Signal<void>;
+  currentBrushChanged: Signal<void>;
 
   /**
-   * Gets the currently selected {@link WangSet} in the "Terrain Sets" view.
+   * The currently selected {@link WangSet} in the "Terrain Sets" view.
    *
    * See also {@link TileLayerWangEdit}.
    *
-   * @since 1.8
+   * @since 1.8 (writable since 1.11.1)
    */
-  readonly currentWangSet: WangSet
+  currentWangSet: WangSet;
 
   /**
    * The signal emitted when {@link currentWangSet} changes.
@@ -2437,15 +2746,15 @@ interface MapEditor {
   readonly currentWangSetChanged: Signal<void>;
 
   /**
-   * Gets the currently selected Wang color index in the "Terrain Sets" view.
+   * The currently selected Wang color index in the "Terrain Sets" view.
    * The value 0 is used to represent the eraser mode, and the first Wang color
    * has index 1.
    *
    * See also {@link TileLayerWangEdit}.
    *
-   * @since 1.8
+   * @since 1.8 (writable since 1.11.1)
    */
-  readonly currentWangColorIndex: number
+  currentWangColorIndex: number;
 
   /**
    * The signal emitted when {@link currentWangColorIndex} changes.
@@ -2457,12 +2766,12 @@ interface MapEditor {
   /**
    * Access the current map view.
    */
-  readonly currentMapView : MapView
+  readonly currentMapView: MapView;
 
   /**
    * Access the Tilesets view.
    */
-  readonly tilesetsView: TilesetsView
+  readonly tilesetsView: TilesetsView;
 }
 
 /**
@@ -2474,7 +2783,7 @@ interface TilesetsView {
   /**
    * Access or change the currently displayed tileset.
    */
-  currentTileset: Tileset
+  currentTileset: Tileset;
 
   /**
    * The signal emitted when {@link currentTileset} changes.
@@ -2489,7 +2798,7 @@ interface TilesetsView {
    * See {@link MapEditor.currentBrush} for the current tile brush, which is
    * usually more useful than the list of selected tiles.
    */
-  selectedTiles: Tile[]
+  selectedTiles: Tile[];
 }
 
 /**
@@ -2501,42 +2810,42 @@ interface frame {
   /**
    * The local tile ID used to represent the frame.
    */
-  tileId : number
+  tileId: number;
 
   /**
    * Duration of the frame in milliseconds.
    */
-  duration : number
+  duration: number;
 }
 
 /**
  * A single tile in a tileset.
  */
 declare class Tile extends TiledObject {
-  static readonly FlippedHorizontally: 0x01
-  static readonly FlippedVertically: 0x02
-  static readonly FlippedAntiDiagonally: 0x04
-  static readonly RotatedHexagonal120: 0x08
+  static readonly FlippedHorizontally: 0x01;
+  static readonly FlippedVertically: 0x02;
+  static readonly FlippedAntiDiagonally: 0x04;
+  static readonly RotatedHexagonal120: 0x08;
 
   /**
    * ID of this tile within its tileset.
    */
-  readonly id : number
+  readonly id: number;
 
   /**
    * Width of the tile in pixels.
    */
-  readonly width : number
+  readonly width: number;
 
   /**
    * Height of the tile in pixels.
    */
-  readonly height : number
+  readonly height: number;
 
   /**
    * Size of the tile in pixels.
    */
-  readonly size : size
+  readonly size: size;
 
   /**
    * Type of the tile.
@@ -2548,7 +2857,7 @@ declare class Tile extends TiledObject {
   /**
    * File name of the tile image (when the tile is part of an image collection tileset).
    */
-  imageFileName : string
+  imageFileName: string;
 
   /**
    * Returns the image of this tile, or the image of its tileset if it doesn't
@@ -2582,34 +2891,34 @@ declare class Tile extends TiledObject {
    *
    * @since 1.9
    */
-  imageRect: rect
+  imageRect: rect;
 
   /**
    * Probability that the tile gets chosen relative to other tiles.
    */
-  probability : number
+  probability: number;
 
   /**
    * The ObjectGroup associated with the tile in case collision shapes were defined. Returns null if no collision shapes were defined for this tile.
    */
-  objectGroup : ObjectGroup
+  objectGroup: ObjectGroup;
 
   /**
    * This tile’s animation as an array of frames.
    */
-  frames : frame[]
+  frames: frame[];
 
   /**
    * Indicates whether this tile is animated.
    *
    * @see {@link frames} for the animation frames.
    */
-  readonly animated : boolean
+  readonly animated: boolean;
 
   /**
    * The tileset of the tile.
    */
-  readonly tileset : Tileset
+  readonly tileset: Tileset;
 
   /**
    * Sets the image of this tile, optionally also setting its file name. The
@@ -2629,17 +2938,51 @@ declare class Tile extends TiledObject {
    *
    * @warning This function has no undo!
    */
-  setImage(image : Image, source?: string) : void
+  setImage(image: Image, source?: string): void;
+}
+
+/**
+ * The various blend modes supported by Tiled.
+ *
+ * @since 1.12
+ */
+declare enum BlendMode {
+  /** SVG equivalent: [src-over](https://www.w3.org/TR/SVGCompositing/#comp-op-src-over) */
+  Normal,
+  /** SVG equivalent: [plus](https://www.w3.org/TR/SVGCompositing/#comp-op-plus) */
+  Add,
+  /** SVG equivalent: [multiply](https://www.w3.org/TR/SVGCompositing/#comp-op-multiply) */
+  Multiply,
+  /** SVG equivalent: [screen](https://www.w3.org/TR/SVGCompositing/#comp-op-screen) */
+  Screen,
+  /** SVG equivalent: [overlay](https://www.w3.org/TR/SVGCompositing/#comp-op-overlay) */
+  Overlay,
+  /** SVG equivalent: [darken](https://www.w3.org/TR/SVGCompositing/#comp-op-darken) */
+  Darken,
+  /** SVG equivalent: [lighten](https://www.w3.org/TR/SVGCompositing/#comp-op-lighten) */
+  Lighten,
+  /** SVG equivalent: [color-dodge](https://www.w3.org/TR/SVGCompositing/#comp-op-color-dodge) */
+  ColorDodge,
+  /** SVG equivalent: [color-burn](https://www.w3.org/TR/SVGCompositing/#comp-op-color-burn) */
+  ColorBurn,
+  /** SVG equivalent: [hard-light](https://www.w3.org/TR/SVGCompositing/#comp-op-hard-light) */
+  HardLight,
+  /** SVG equivalent: [soft-light](https://www.w3.org/TR/SVGCompositing/#comp-op-soft-light) */
+  SoftLight,
+  /** SVG equivalent: [difference](https://www.w3.org/TR/SVGCompositing/#comp-op-difference) */
+  Difference,
+  /** SVG equivalent: [exclusion](https://www.w3.org/TR/SVGCompositing/#comp-op-exclusion) */
+  Exclusion,
 }
 
 /**
  * The base class of the various supported layer types.
  */
 declare class Layer extends TiledObject {
-  static readonly TileLayerType: number
-  static readonly ObjectGroupType: number
-  static readonly ImageLayerType: number
-  static readonly GroupLayerType: number
+  static readonly TileLayerType: number;
+  static readonly ObjectGroupType: number;
+  static readonly ImageLayerType: number;
+  static readonly GroupLayerType: number;
 
   /**
    * Unique (map-wide) ID of the layer
@@ -2689,6 +3032,12 @@ declare class Layer extends TiledObject {
    * The parallax factor of this layer.
    */
   parallaxFactor: point;
+
+  /**
+   * The blend mode used when rendering images on this layer. Affects tile
+   * layers, tile objects and image layers.
+   */
+  blendMode: BlendMode;
 
   /**
    * Map that this layer is part of, or `null` in case of a standalone layer.
@@ -2746,47 +3095,47 @@ interface SelectedArea {
   /**
    * Returns the selected region.
    */
-  get() : region
+  get(): region;
 
   /**
    * Sets the selected area to the given rectangle.
    */
-  set(rect : rect) : void
+  set(rect: rect): void;
 
   /**
    * Sets the selected area to the given region.
    */
-  set(region : region) : void
+  set(region: region): void;
 
   /**
    * Adds the given rectangle to the selected area.
    */
-  add(rect : rect) : void
+  add(rect: rect): void;
 
   /**
    * Adds the given region to the selected area.
    */
-  add(region : region) : void
+  add(region: region): void;
 
   /**
    * Subtracts the given rectangle from the selected area.
    */
-  subtract(rect : rect) : void
+  subtract(rect: rect): void;
 
   /**
    * Subtracts the given region from the selected area.
    */
-  subtract(region : region) : void
+  subtract(region: region): void;
 
   /**
    * Sets the selected area to the intersection of the current selected area and the given rectangle.
    */
-  intersect(rect : rect) : void
+  intersect(rect: rect): void;
 
   /**
    * Sets the selected area to the intersection of the current selected area and the given region.
    */
-  intersect(region : region) : void
+  intersect(region: region): void;
 }
 
 /**
@@ -2800,129 +3149,161 @@ interface SelectedArea {
  * the tile layers are rendered.
  */
 declare class TileMap extends Asset {
-  static readonly Unknown: unique symbol
-  static readonly Orthogonal: unique symbol
-  static readonly Isometric: unique symbol
-  static readonly Staggered: unique symbol
-  static readonly Hexagonal: unique symbol
+  static readonly Unknown: unique symbol;
+  static readonly Orthogonal: unique symbol;
+  static readonly Isometric: unique symbol;
+  static readonly Staggered: unique symbol;
+  static readonly Hexagonal: unique symbol;
 
-  static readonly XML: unique symbol
-  static readonly Base64: unique symbol
-  static readonly Base64Gzip: unique symbol
-  static readonly Base64Zlib: unique symbol
-  static readonly Base64Zstandard: unique symbol
-  static readonly CSV: unique symbol
+  static readonly XML: unique symbol;
+  static readonly Base64: unique symbol;
+  static readonly Base64Gzip: unique symbol;
+  static readonly Base64Zlib: unique symbol;
+  static readonly Base64Zstandard: unique symbol;
+  static readonly CSV: unique symbol;
 
-  static readonly RightDown: unique symbol
-  static readonly RightUp: unique symbol
-  static readonly LeftDown: unique symbol
-  static readonly LeftUp: unique symbol
+  static readonly RightDown: unique symbol;
+  static readonly RightUp: unique symbol;
+  static readonly LeftDown: unique symbol;
+  static readonly LeftUp: unique symbol;
 
-  static readonly StaggerX: unique symbol
-  static readonly StaggerY: unique symbol
+  static readonly StaggerX: unique symbol;
+  static readonly StaggerY: unique symbol;
 
-  static readonly StaggerOdd: unique symbol
-  static readonly StaggerEven: unique symbol
-
+  static readonly StaggerOdd: unique symbol;
+  static readonly StaggerEven: unique symbol;
 
   /**
    * Width of the map in tiles (only relevant for non-infinite maps).
    */
-  width : number
+  width: number;
 
   /**
    * Height of the map in tiles (only relevant for non-infinite maps).
    */
-  height : number
+  height: number;
 
   /**
    * Size of the map in tiles (only relevant for non-infinite maps).
    */
-  readonly size : size
+  readonly size: size;
 
   /**
    * Tile width (used by tile layers).
    */
-  tileWidth : number
+  tileWidth: number;
 
   /**
    * Tile height (used by tile layers).
    */
-  tileHeight : number
+  tileHeight: number;
 
   /**
    * Whether this map is infinite.
    */
-  infinite : boolean
+  infinite: boolean;
 
   /**
    * Length of the side of a hexagonal tile (used by tile layers on hexagonal maps).
    */
-  hexSideLength : number
+  hexSideLength: number;
 
   /**
    * For staggered and hexagonal maps, determines which axis (X or Y) is staggered.
    */
-  staggerAxis : typeof TileMap.StaggerX | typeof TileMap.StaggerY
+  staggerAxis: typeof TileMap.StaggerX | typeof TileMap.StaggerY;
 
   /**
    * The parallax origin used for reference when applying the respective parallax factor.
    *
    * @since 1.8
    */
-  parallaxOrigin : point
+  parallaxOrigin: point;
 
   /**
    * General map orientation
    */
-  orientation : typeof TileMap.Orthogonal | typeof TileMap.Isometric | typeof TileMap.Staggered | typeof TileMap.Hexagonal | typeof TileMap.Unknown
+  orientation:
+    | typeof TileMap.Orthogonal
+    | typeof TileMap.Isometric
+    | typeof TileMap.Staggered
+    | typeof TileMap.Hexagonal
+    | typeof TileMap.Unknown;
 
   /**
    * Tile rendering order (only implemented for orthogonal maps)
    */
-  renderOrder : typeof TileMap.RightDown | typeof TileMap.RightUp | typeof TileMap.LeftDown | typeof TileMap.LeftUp
+  renderOrder:
+    | typeof TileMap.RightDown
+    | typeof TileMap.RightUp
+    | typeof TileMap.LeftDown
+    | typeof TileMap.LeftUp;
 
   /**
    * For staggered and hexagonal maps, determines whether the even or odd indexes along the staggered axis are shifted.
    */
-  staggerIndex : typeof TileMap.StaggerOdd | typeof TileMap.StaggerEven
+  staggerIndex: typeof TileMap.StaggerOdd | typeof TileMap.StaggerEven;
 
   /**
    * Background color of the map.
    */
-  backgroundColor : color
+  backgroundColor: color;
 
   /**
    * The format in which the layer data is stored, taken into account by TMX, JSON and Lua map formats.
    */
-  layerDataFormat : typeof TileMap.XML | typeof TileMap.Base64 | typeof TileMap.Base64Gzip | typeof TileMap.Base64Zlib | typeof TileMap.Base64Zstandard | typeof TileMap.CSV
+  layerDataFormat:
+    | typeof TileMap.XML
+    | typeof TileMap.Base64
+    | typeof TileMap.Base64Gzip
+    | typeof TileMap.Base64Zlib
+    | typeof TileMap.Base64Zstandard
+    | typeof TileMap.CSV;
+
+  /**
+   * The chunk size used when saving tile layers of infinite maps.
+   *
+   * @since 1.12
+   */
+  chunkSize: size;
+
+  /**
+   * Compression level used for compressed tile layer data.
+   *
+   * For Zlib/Gzip, valid range is usually -1..9 (-1 uses the default level).
+   * For Zstandard, higher values increase compression at the cost of speed.
+   * Values outside the supported range may be clamped by the underlying library.
+   *
+   * @since 1.12
+   */
+  compressionLevel: number;
 
   /**
    * Number of top-level layers the map has.
    */
-  readonly layerCount : number
+  readonly layerCount: number;
 
   /**
    * The list of tilesets referenced by this map. To determine which tilesets are actually used, call {@link usedTilesets}.
    */
-  readonly tilesets : Tileset[]
+  readonly tilesets: Tileset[];
 
   /**
    * The top-level layers of this map. To access nested layers, use {@link GroupLayer.layers}.
    *
    * @since 1.8
    */
-  readonly layers: Layer[]
+  readonly layers: Layer[];
 
   /**
    * The selected area of tiles.
    */
-  readonly selectedArea : SelectedArea
+  readonly selectedArea: SelectedArea;
 
   /**
    * The current layer.
    */
-  currentLayer : Layer
+  currentLayer: Layer;
 
   /**
    * The signal emitted when {@link currentLayer} changes.
@@ -2935,7 +3316,7 @@ declare class TileMap extends Asset {
    * The order of the layers is always bottom to top, with selected group
    * layers coming after any of their selected children.
    */
-  selectedLayers : Layer[]
+  selectedLayers: Layer[];
 
   /**
    * The signal emitted when {@link selectedLayers} changes.
@@ -2948,7 +3329,7 @@ declare class TileMap extends Asset {
    * The order of the objects is their display order (when {@link
    * ObjectGroup.IndexOrder} is used).
    */
-  selectedObjects : MapObject[]
+  selectedObjects: MapObject[];
 
   /**
    * The signal emitted when {@link selectedObjects} changes.
@@ -3040,7 +3421,7 @@ declare class TileMap extends Asset {
    *
    * @since 1.8
    */
-  public removeObjects(objects : MapObject[]): void;
+  public removeObjects(objects: MapObject[]): void;
 
   /**
    * Merges the tile layers in the given map with this one. If only a single
@@ -3146,7 +3527,7 @@ declare class TileMap extends Asset {
    * This signal is not emitted on undo/redo, nor after changes made in
    * scripts. It receives the affected {@link TileLayer} as a second parameter.
    */
-  readonly regionEdited : Signal<region>;
+  readonly regionEdited: Signal<region>;
 }
 
 /**
@@ -3156,32 +3537,32 @@ interface cell {
   /**
    * The local tile ID of the tile, or -1 if the cell is empty.
    */
-  tileId : number
+  tileId: number;
 
   /**
    * Whether the cell is empty.
    */
-  empty : boolean
+  empty: boolean;
 
   /**
    * Whether the tile is flipped horizontally.
    */
-  flippedHorizontally : boolean
+  flippedHorizontally: boolean;
 
   /**
    * Whether the tile is flipped vertically.
    */
-  flippedVertically : boolean
+  flippedVertically: boolean;
 
   /**
    * Whether the tile is flipped anti-diagonally.
    */
-  flippedAntiDiagonally : boolean
+  flippedAntiDiagonally: boolean;
 
   /**
    * Whether the tile is rotated by 120 degrees (for hexagonal maps, the anti-diagonal flip is interpreted as a 60-degree rotation).
    */
-  rotatedHexagonal120 : boolean
+  rotatedHexagonal120: boolean;
 }
 
 /**
@@ -3197,38 +3578,38 @@ declare class TileLayer extends Layer {
   /**
    * Width of the layer in tiles (only relevant for non-infinite maps).
    */
-  width : number
+  width: number;
 
   /**
    * Height of the layer in tiles (only relevant for non-infinite maps).
    */
-  height : number
+  height: number;
 
   /**
    * Size of the layer in tiles (only relevant for non-infinite maps).
    */
-  size : size
+  size: size;
 
   /**
    * Constructs a new tile layer, which can be added to a {@link TileMap}.
    */
-  constructor(name? : string)
+  constructor(name?: string);
 
   /**
    * Returns the region of the layer that is covered with tiles.
    */
-  region() : region
+  region(): region;
 
   /**
    * Resizes the layer, erasing the part of the contents that falls outside of the layer’s new size.
    * The offset parameter can be used to shift the contents by a certain distance in tiles before applying the resize.
    */
-  resize(size : size, offset : point) : void
+  resize(size: size, offset: point): void;
 
   /**
    * Returns the value of the cell at the given position. Can be used to query the flags and the tile ID, but does not currently allow getting a tile reference (see {@link tileAt}).
    */
-  cellAt(x : number, y : number) : cell
+  cellAt(x: number, y: number): cell;
 
   /**
    * Returns the flags used for the tile at the given position.
@@ -3237,17 +3618,17 @@ declare class TileLayer extends Layer {
    * {@link Tile.FlippedVertically}, {@link Tile.FlippedAntiDiagonally} and
    * {@link Tile.RotatedHexagonal120}.
    */
-  flagsAt(x : number, y : number) : number
+  flagsAt(x: number, y: number): number;
 
   /**
    * Returns the tile used at the given position, or null for empty spaces.
    */
-  tileAt(x : number, y : number) : Tile | null
+  tileAt(x: number, y: number): Tile | null;
 
   /**
    * Returns an object that enables making modifications to the tile layer.
    */
-  edit() : TileLayerEdit
+  edit(): TileLayerEdit;
 
   /**
    * Returns an object that enables making modifications to the tile layer
@@ -3255,7 +3636,7 @@ declare class TileLayer extends Layer {
    *
    * @since 1.10.2
    */
-  wangEdit(wangSet: WangSet) : TileLayerWangEdit
+  wangEdit(wangSet: WangSet): TileLayerWangEdit;
 }
 
 /**
@@ -3269,13 +3650,13 @@ interface TileLayerEdit {
   /**
    * The target layer of this edit object.
    */
-  readonly target : TileLayer
+  readonly target: TileLayer;
 
   /**
    * Whether applied edits are mergeable with previous edits. Starts out as
    * `false` and is automatically set to `true` by {@link apply}.
    */
-  mergeable : boolean
+  mergeable: boolean;
 
   /**
    * Sets the tile at the given location, optionally specifying tile flags (any
@@ -3290,7 +3671,7 @@ interface TileLayerEdit {
    * to enable erasing tiles and highlighting the erased area, respectively
    * (since Tiled 1.10.2).
    */
-  setTile(x : number, y : number, tile : Tile | null, flags? : number) : void
+  setTile(x: number, y: number, tile: Tile | null, flags?: number): void;
 
   /**
    * Applies the changes made through this object to the target layer. This
@@ -3302,7 +3683,7 @@ interface TileLayerEdit {
    * whether the edit will be merged or not, set the {@link mergeable} property
    * before calling {@link apply}.
    */
-  apply() : void
+  apply(): void;
 }
 
 /**
@@ -3319,17 +3700,17 @@ interface TileLayerEdit {
  * @since 1.10.2
  */
 declare enum WangIndex {
-  Top         = 0,
-  TopRight    = 1,
-  Right       = 2,
+  Top = 0,
+  TopRight = 1,
+  Right = 2,
   BottomRight = 3,
-  Bottom      = 4,
-  BottomLeft  = 5,
-  Left        = 6,
-  TopLeft     = 7,
-  NumCorners  = 4,
-  NumEdges    = 4,
-  NumIndexes  = 8,
+  Bottom = 4,
+  BottomLeft = 5,
+  Left = 6,
+  TopLeft = 7,
+  NumCorners = 4,
+  NumEdges = 4,
+  NumIndexes = 8,
 }
 
 /**
@@ -3355,32 +3736,32 @@ interface TileLayerWangEdit {
   /**
    * The target layer of this edit object.
    */
-  readonly target : TileLayer
+  readonly target: TileLayer;
 
   /**
    * The Wang set that will be used when {@link apply} or {@link generate} is
    * called.
    */
-  readonly wangSet : WangSet
+  readonly wangSet: WangSet;
 
   /**
    * Whether applied edits are mergeable with previous edits. Starts out as
    * `false` and is automatically set to `true` by {@link apply}.
    */
-  mergeable : boolean
+  mergeable: boolean;
 
   /**
    * Whether neighboring tiles will be corrected to match up with any marked
    * changes once {@link apply} is called. This can cause a larger area to get
    * modified. Defaults to `false`.
    */
-  correctionsEnabled : boolean
+  correctionsEnabled: boolean;
 
   /**
    * Whether the empty tile is considered when looking for matching tiles.
    * Defaults to `true`.
    */
-  erasingEnabled : boolean
+  erasingEnabled: boolean;
 
   /**
    * Sets the desired color for the given Wang index at the given location.
@@ -3390,7 +3771,7 @@ interface TileLayerWangEdit {
    * or {@link setEdge} when that is desired or set {@link correctionsEnabled}
    * to `true`.
    */
-  setWangIndex(x : number, y : number, wangIndex: WangIndex, color : number) : void
+  setWangIndex(x: number, y: number, wangIndex: WangIndex, color: number): void;
 
   /**
    * Sets the desired color for the given Wang index at the given location.
@@ -3400,7 +3781,7 @@ interface TileLayerWangEdit {
    * or {@link setEdge} when that is desired or set {@link correctionsEnabled}
    * to `true`.
    */
-  setWangIndex(pos : point, wangIndex: WangIndex, color : number) : void
+  setWangIndex(pos: point, wangIndex: WangIndex, color: number): void;
 
   /**
    * Sets the desired color for the given corner at the given vertex location.
@@ -3411,7 +3792,7 @@ interface TileLayerWangEdit {
    *
    * Changing the color of a corner affects all 4 tiles meeting at that corner.
    */
-  setCorner(x : number, y : number, color : number) : void
+  setCorner(x: number, y: number, color: number): void;
 
   /**
    * Sets the desired color for the given corner at the given vertex location.
@@ -3422,7 +3803,7 @@ interface TileLayerWangEdit {
    *
    * Changing the color of a corner affects all 4 tiles meeting at that corner.
    */
-  setCorner(pos : point, color : number) : void
+  setCorner(pos: point, color: number): void;
 
   /**
    * Sets the desired color for the given edge at the given location. Only the
@@ -3431,7 +3812,7 @@ interface TileLayerWangEdit {
    *
    * Changing the color of an edge affects the 2 tiles connected by that edge.
    */
-  setEdge(x : number, y : number, edge: WangIndex, color : number) : void
+  setEdge(x: number, y: number, edge: WangIndex, color: number): void;
 
   /**
    * Sets the desired color for the given edge at the given location. Only the
@@ -3440,7 +3821,7 @@ interface TileLayerWangEdit {
    *
    * Changing the color of an edge affects the 2 tiles connected by that edge.
    */
-  setEdge(pos : point, edge: WangIndex, color : number) : void
+  setEdge(pos: point, edge: WangIndex, color: number): void;
 
   /**
    * Applies the changes made through this object to the target layer. This
@@ -3448,7 +3829,7 @@ interface TileLayerWangEdit {
    *
    * Alternatively, get a copy of the modifications using {@link generate}.
    */
-  apply() : void
+  apply(): void;
 
   /**
    * Applies the changes made through this object to a new layer and returns
@@ -3469,7 +3850,7 @@ interface TileLayerWangEdit {
    * Alternatively, you can apply the changes directly to the target layer
    * using {@link apply}.
    */
-  generate() : TileLayer
+  generate(): TileLayer;
 }
 
 /**
@@ -3488,27 +3869,27 @@ declare class WangSet extends TiledObject {
   /**
    * Name of the Wang set.
    */
-  name : string
+  name: string;
 
   /**
    * Type of the Wang set.
    */
-  type : typeof WangSet.Edge | typeof WangSet.Corner | typeof WangSet.Mixed;
+  type: typeof WangSet.Edge | typeof WangSet.Corner | typeof WangSet.Mixed;
 
   /**
    * The tile used to represent the Wang set.
    */
-  imageTile : Tile
+  imageTile: Tile;
 
   /**
    * The number of colors used by this Wang set.
    */
-  colorCount : number
+  colorCount: number;
 
   /**
    * The tileset to which this Wang set belongs.
    */
-  readonly tileset : Tileset
+  readonly tileset: Tileset;
 
   /**
    * Returns the current Wang ID associated with the given tile.
@@ -3516,7 +3897,7 @@ declare class WangSet extends TiledObject {
    * The Wang ID is given by an array of 8 numbers, indicating the colors associated with each index in the following order: [Top, TopRight, Right, BottomRight, Bottom, BottomLeft, Left, TopLeft] (see {@link WangIndex}).
    * A value of 0 indicates that no color is associated with a given index.
    */
-  public wangId(tile : Tile) : number[]
+  public wangId(tile: Tile): number[];
 
   /**
    * Sets the Wang ID associated with the given tile.
@@ -3526,21 +3907,21 @@ declare class WangSet extends TiledObject {
    *
    * Make sure the Wang set color count is set before calling this function, because it will raise an error when the Wang ID refers to non-existing colors.
    */
-  public setWangId(tile : Tile, wangId : number[]) : void
+  public setWangId(tile: Tile, wangId: number[]): void;
 
   /**
    * Returns the name of the Wang color at the given index.
    *
    * @since 1.8
    */
-  public colorName(colorIndex: number) : string
+  public colorName(colorIndex: number): string;
 
   /**
    * Sets the name of the Wang color at the given index.
    *
    * @since 1.8
    */
-  public setColorName(colorIndex: number, name: string) : void
+  public setColorName(colorIndex: number, name: string): void;
 
   /**
    * Returns the effective WangSet type for the given color.
@@ -3551,19 +3932,36 @@ declare class WangSet extends TiledObject {
    *
    * @since 1.10.2
    */
-  public effectiveTypeForColor(color : number) : typeof WangSet.Edge | typeof WangSet.Corner | typeof WangSet.Mixed
+  public effectiveTypeForColor(
+    color: number,
+  ): typeof WangSet.Edge | typeof WangSet.Corner | typeof WangSet.Mixed;
 }
 
 /**
- * A color value.
+ * A color value. Can be created using {@link tiled.color}.
  *
- * A color value can be converted to a string and can also be assigned using a
- * string. The string is a hexadecimal triplet or quad in the form "#RRGGBB"
- * and "#AARRGGBB" respectively. For example, the color red corresponds to a
- * triplet of "#FF0000" and a slightly transparent blue to a quad of
- * "#800000FF".
+ * A color value can be converted to a string and a string can be assigned to
+ * color properties. The string is a hexadecimal triplet or quad in the form
+ * "#RRGGBB" and "#AARRGGBB" respectively. For example, the color red
+ * corresponds to a triplet of "#FF0000" and a slightly transparent blue to a
+ * quad of "#800000FF".
  *
- * Use {@link tiled.color} to create a color value.
+ * When a color property is not set, it will have an invalid color value but
+ * its string representation will be "#000000" (same as black). The only known
+ * way to determine whether a specific color value is invalid is to compare it
+ * with a known invalid color value. This can be created using for example
+ * `tiled.color("invalid")`:
+ *
+ * ```js
+ * if (color == "#000000")
+ *    tiled.log("The color is black or invalid.");
+ *
+ * if (color === tiled.color("invalid"))
+ *    tiled.log("The color is invalid!");
+ *
+ * if (color === tiled.color("#000000"))
+ *    tiled.log("The color is black!");
+ * ```
  */
 interface color {}
 
@@ -3576,30 +3974,36 @@ interface color {}
  * {@link Tile.setImage}.
  */
 declare class Tileset extends Asset {
-  static readonly Unspecified: unique symbol
-  static readonly TopLeft: unique symbol
-  static readonly Top: unique symbol
-  static readonly TopRight: unique symbol
-  static readonly Left: unique symbol
-  static readonly Center: unique symbol
-  static readonly Right: unique symbol
-  static readonly BottomLeft: unique symbol
-  static readonly Bottom: unique symbol
-  static readonly BottomRight: unique symbol
+  static readonly Unspecified: unique symbol;
+  static readonly TopLeft: unique symbol;
+  static readonly Top: unique symbol;
+  static readonly TopRight: unique symbol;
+  static readonly Left: unique symbol;
+  static readonly Center: unique symbol;
+  static readonly Right: unique symbol;
+  static readonly BottomLeft: unique symbol;
+  static readonly Bottom: unique symbol;
+  static readonly BottomRight: unique symbol;
 
-  static readonly Orthogonal: unique symbol
-  static readonly Isometric: unique symbol
+  static readonly Orthogonal: unique symbol;
+  static readonly Isometric: unique symbol;
 
-  static readonly TileSize: unique symbol
-  static readonly GridSize: unique symbol
+  static readonly TileSize: unique symbol;
+  static readonly GridSize: unique symbol;
 
-  static readonly Stretch: unique symbol
-  static readonly PreserveAspectFit: unique symbol
+  static readonly Stretch: unique symbol;
+  static readonly PreserveAspectFit: unique symbol;
+
+  static readonly NoTransformation: unique symbol;
+  static readonly AllowFlipHorizontally: unique symbol;
+  static readonly AllowFlipVertically: unique symbol;
+  static readonly AllowRotate: unique symbol;
+  static readonly PreferUntransformed: unique symbol;
 
   /**
    * Name of the tileset.
    */
-  name : string
+  name: string;
 
   /**
    * The file name of the image used by this tileset. Empty in case of image collection tilesets.
@@ -3612,27 +4016,27 @@ declare class Tileset extends Asset {
    *
    * @since 1.11
    */
-  imageFileName : string
+  imageFileName: string;
 
   /**
    * @deprecated Use {@link imageFileName} instead.
    */
-  image : string
+  image: string;
 
   /**
    * Array of all tiles in this tileset. Note that the index of a tile in this array does not always match with its ID.
    */
-  readonly tiles : Tile[]
+  readonly tiles: Tile[];
 
   /**
    * Array of all Wang sets in this tileset.
    */
-  readonly wangSets : WangSet[]
+  readonly wangSets: WangSet[];
 
   /**
    * The number of tiles in this tileset.
    */
-  readonly tileCount : number
+  readonly tileCount: number;
 
   /**
    * The number of tile columns in this tileset.
@@ -3643,12 +4047,12 @@ declare class Tileset extends Asset {
    *
    * @since 1.9
    */
-  columnCount : number
+  columnCount: number;
 
   /**
    * The ID of the next tile that would be added to this tileset. All existing tiles have IDs that are lower than this ID.
    */
-  readonly nextTileId : number
+  readonly nextTileId: number;
 
   /**
    * Tile width for tiles in this tileset in pixels.
@@ -3657,7 +4061,7 @@ declare class Tileset extends Asset {
    * all its tiles. When setting up a tileset, you'll want to set this property
    * before setting the {@link image} property.
    */
-  tileWidth : number
+  tileWidth: number;
 
   /**
    * Tile Height for tiles in this tileset in pixels.
@@ -3666,7 +4070,7 @@ declare class Tileset extends Asset {
    * all its tiles. When setting up a tileset, you'll want to set this property
    * before setting the {@link image} property.
    */
-  tileHeight : number
+  tileHeight: number;
 
   /**
    * Tile size for tiles in this tileset in pixels.
@@ -3675,22 +4079,22 @@ declare class Tileset extends Asset {
    * all its tiles. When setting up a tileset, you'll want to set this property
    * before setting the {@link image} property.
    */
-  tileSize : size
+  tileSize: size;
 
   /**
    * Width of the tileset image in pixels.
    */
-  readonly imageWidth : number
+  readonly imageWidth: number;
 
   /**
    * Height of the tileset image in pixels.
    */
-  readonly imageHeight : number
+  readonly imageHeight: number;
 
   /**
    * Size of the tileset image in pixels.
    */
-  readonly imageSize : size
+  readonly imageSize: size;
 
   /**
    * Spacing between tiles in this tileset in pixels.
@@ -3699,7 +4103,7 @@ declare class Tileset extends Asset {
    * all its tiles. When setting up a tileset, you'll want to set this property
    * before setting the {@link image} property.
    */
-  tileSpacing : number
+  tileSpacing: number;
 
   /**
    * Margin around the tileset in pixels (only used at the top and left sides of the tileset image).
@@ -3708,19 +4112,29 @@ declare class Tileset extends Asset {
    * all its tiles. When setting up a tileset, you'll want to set this property
    * before setting the {@link image} property.
    */
-  margin : number
+  margin: number;
 
   /**
    * The alignment to use for tile objects (when Unspecified, uses Bottom alignment on isometric maps and BottomLeft alignment for all other maps).
    */
-  objectAlignment : typeof Tileset.Unspecified | typeof Tileset.TopLeft | typeof Tileset.Top | typeof Tileset.TopRight | typeof Tileset.Left | typeof Tileset.Center | typeof Tileset.Right | typeof Tileset.BottomLeft | typeof Tileset.Bottom | typeof Tileset.BottomRight
+  objectAlignment:
+    | typeof Tileset.Unspecified
+    | typeof Tileset.TopLeft
+    | typeof Tileset.Top
+    | typeof Tileset.TopRight
+    | typeof Tileset.Left
+    | typeof Tileset.Center
+    | typeof Tileset.Right
+    | typeof Tileset.BottomLeft
+    | typeof Tileset.Bottom
+    | typeof Tileset.BottomRight;
 
   /**
    * The size to use when rendering tiles from this tileset on a tile layer.
    *
    * @since 1.9
    */
-  tileRenderSize: typeof Tileset.GridSize | typeof Tileset.TileSize
+  tileRenderSize: typeof Tileset.GridSize | typeof Tileset.TileSize;
 
   /**
    * The fill mode to use when rendering tiles from this tileset. Only relevant
@@ -3728,17 +4142,17 @@ declare class Tileset extends Asset {
    *
    * @since 1.9
    */
-  fillMode : typeof Tileset.Stretch | typeof Tileset.PreserveAspectFit
+  fillMode: typeof Tileset.Stretch | typeof Tileset.PreserveAspectFit;
 
   /**
    * Offset in pixels that is applied when tiles from this tileset are rendered.
    */
-  tileOffset : point
+  tileOffset: point;
 
   /**
    * The orientation of this tileset (used when rendering overlays and in the tile collision editor).
    */
-  orientation : typeof Tileset.Orthogonal | typeof Tileset.Isometric
+  orientation: typeof Tileset.Orthogonal | typeof Tileset.Isometric;
 
   /**
    * Color used as transparent color when rendering tiles from this tileset.
@@ -3754,21 +4168,34 @@ declare class Tileset extends Asset {
   /**
    * Background color for this tileset in the Tilesets view.
    */
-  backgroundColor : color
+  backgroundColor: color;
+
+  /**
+   * Flags describing transformations of tiles in this tileset that will be
+   * allowed when using the [terrains feature](https://doc.mapeditor.org/en/stable/manual/terrain/#tile-transformations)
+   * with this tileset.
+   *
+   * The flags are either some combination of {@link Tileset.AllowFlipHorizontally},
+   *  {@link Tileset.AllowFlipVertically}, {@link Tileset.AllowRotate}, and {@link Tileset.PreferUntransformed},
+   * or equal to {@link Tileset.NoTransformation}.
+   *
+   * @since 1.11.1
+   */
+  transformationFlags: number;
 
   /**
    * Whether this tileset is a collection of images (same as checking whether image is an empty string).
    *
    * @deprecated Use {@link isCollection} instead.
    */
-  readonly collection : boolean
+  readonly collection: boolean;
 
   /**
    * Whether this tileset is a collection of images (same as checking whether image is an empty string).
    *
    * @since 1.10
    */
-  readonly isCollection : boolean
+  readonly isCollection: boolean;
 
   /**
    * Selected tiles in the tileset editor.
@@ -3776,19 +4203,19 @@ declare class Tileset extends Asset {
    * See {@link TilesetsView.selectedTiles} for getting the selected tiles in
    * the Tilesets view.
    */
-  selectedTiles : Tile[]
+  selectedTiles: Tile[];
 
   /**
    * Constructs a new Tileset.
    */
-  constructor(name? : string)
+  constructor(name?: string);
 
   /**
    * Returns a reference to the tile with the given ID. Raises an error if no such tile exists. When the tile gets removed from the tileset, the reference changes to a standalone copy of the tile.
    *
    * Note that the tiles in a tileset are only guaranteed to have consecutive IDs for tileset-image based tilesets. For image collection tilesets there will be gaps when tiles have been removed from the tileset.
    */
-  public tile(id : number) : Tile
+  public tile(id: number): Tile;
 
   /**
    * Returns a reference to the tile with the given ID, or `null` if no such tile exists. When the tile gets removed from the tileset, the reference changes to a standalone copy of the tile.
@@ -3797,43 +4224,46 @@ declare class Tileset extends Asset {
    *
    * @since 1.9.2
    */
-  public findTile(id : number) : Tile | null
+  public findTile(id: number): Tile | null;
 
   /**
    * Sets the tile size for this tileset. If an image has been specified as well, the tileset will be (re)loaded. Can’t be used on image collection tilesets.
    */
-  public setTileSize(width : number, height : number) : void
+  public setTileSize(width: number, height: number): void;
 
   /**
    * Creates the tiles in this tileset by cutting them out of the given image, using the current tile size, tile spacing and margin parameters. These values should be set before calling this function.
    *
    * Optionally sets the source file of the image. This may be useful, but be careful since Tiled will try to reload the tileset from that source when the tileset parameters are changed.
    *
-   * @note Usually you'll just want to assign the image file name to the {@link image} property!
+   * @note Usually you'll just want to assign the image file name to the {@link imageFileName} property!
    *
    * @warning This function has no undo!
    */
-  public loadFromImage(image : Image, source?: string) : void
+  public loadFromImage(image: Image, source?: string): void;
 
   /**
    * Adds a new tile to this tileset and returns it. Only works for image collection tilesets.
    */
-  public addTile() : Tile
+  public addTile(): Tile;
 
   /**
    * Removes the given tiles from this tileset. Only works for image collection tilesets.
    */
-  public removeTiles(tiles : Tile[]) : void
+  public removeTiles(tiles: Tile[]): void;
 
   /**
    * Add a new Wang set to this tileset with the given name and type.
    */
-  public addWangSet(name : string, type : typeof WangSet.Edge | typeof WangSet.Corner | typeof WangSet.Mixed) : WangSet
+  public addWangSet(
+    name: string,
+    type: typeof WangSet.Edge | typeof WangSet.Corner | typeof WangSet.Mixed,
+  ): WangSet;
 
   /**
    * Removes the given Wang set from this tileset.
    */
-  public removeWangSet(wangSet : WangSet) : void
+  public removeWangSet(wangSet: WangSet): void;
 }
 
 /**
@@ -3864,7 +4294,7 @@ interface ScriptedTilesetFormat {
    * Can use {@link TextFile} or {@link BinaryFile} to write the file.
    * When a non-empty string is returned, it is shown as error message.
    */
-  write?(tileset: Tileset, fileName: string) : string | undefined;
+  write?(tileset: Tileset, fileName: string): string | undefined;
 }
 
 /**
@@ -3874,18 +4304,18 @@ interface MapView {
   /**
    * The scale of the view.
    */
-  scale : number
+  scale: number;
 
   /**
    * The center of the view.
    */
-  center : point
+  center: point;
 
   /**
    * Centers the view at the given location in screen coordinates. Same as
    * assigning to the center property.
    */
-  centerOn(x : number, y : number) : void
+  centerOn(x: number, y: number): void;
 }
 
 /**
@@ -3896,18 +4326,18 @@ interface TileCollisionEditor {
   /**
    * Selected objects.
    */
-  selectedObjects : MapObject[]
+  selectedObjects: MapObject[];
 
   /**
    * The map view used by the Collision Editor.
    */
-  view : MapView
+  view: MapView;
 
   /**
-   * Focuses the given object in the collision editor view and makes sure its
+   * Focuses the given object in the collision editor view and makes sure it is
    * visible in its objects list. Does not automatically select the object.
    */
-  focusObject(object : MapObject) : void
+  focusObject(object: MapObject): void;
 }
 
 /**
@@ -3917,14 +4347,14 @@ interface TilesetEditor {
   /**
    * Access the collision editor within the tileset editor.
    */
-  readonly collisionEditor : TileCollisionEditor
+  readonly collisionEditor: TileCollisionEditor;
 
   /**
-   * Gets the currently selected {@link WangSet} in the "Terrain Sets" view.
+   * The currently selected {@link WangSet} in the "Terrain Sets" view.
    *
-   * @since 1.9
+   * @since 1.9 (writable since 1.11.1)
    */
-  readonly currentWangSet: WangSet
+  currentWangSet: WangSet;
 
   /**
    * The signal emitted when {@link currentWangSet} changes.
@@ -3934,13 +4364,13 @@ interface TilesetEditor {
   readonly currentWangSetChanged: Signal<void>;
 
   /**
-   * Gets the currently selected Wang color index in the "Terrain Sets" view.
+   * The currently selected Wang color index in the "Terrain Sets" view.
    * The value 0 is used to represent the eraser mode, and the first Wang color
    * has index 1.
    *
-   * @since 1.9
+   * @since 1.9 (writable since 1.11.1)
    */
-  readonly currentWangColorIndex: number
+  currentWangColorIndex: number;
 
   /**
    * The signal emitted when {@link currentWangColorIndex} changes.
@@ -4059,17 +4489,35 @@ interface ToolDefinition {
   /**
    * Called when a mouse button was pressed.
    */
-  mousePressed?(this: Tool, button: number, x: number, y: number, modifiers: number): void;
+  mousePressed?(
+    this: Tool,
+    button: number,
+    x: number,
+    y: number,
+    modifiers: number,
+  ): void;
 
   /**
    * Called when a mouse button was released.
    */
-  mouseReleased?(this: Tool, button: number, x: number, y: number, modifiers: number): void;
+  mouseReleased?(
+    this: Tool,
+    button: number,
+    x: number,
+    y: number,
+    modifiers: number,
+  ): void;
 
   /**
    * Called when a mouse button was double-clicked.
    */
-  mouseDoubleClicked?(this: Tool, button: number, x: number, y: number, modifiers: number): void;
+  mouseDoubleClicked?(
+    this: Tool,
+    button: number,
+    x: number,
+    y: number,
+    modifiers: number,
+  ): void;
 
   /**
    * Called when the active modifier keys changed.
@@ -4407,7 +4855,11 @@ declare namespace tiled {
    *
    * @since 1.10.2
    */
-  export function promptOpenFiles(defaultDir?: string, filters?: FileFilter, title?: string): string[];
+  export function promptOpenFiles(
+    defaultDir?: string,
+    filters?: FileFilter,
+    title?: string,
+  ): string[];
 
   /**
    * Shows a dialog which asks the user to choose an existing file.
@@ -4419,7 +4871,11 @@ declare namespace tiled {
    *
    * @since 1.10.2
    */
-  export function promptOpenFile(defaultDir?: string, filters?: FileFilter, title?: string): string;
+  export function promptOpenFile(
+    defaultDir?: string,
+    filters?: FileFilter,
+    title?: string,
+  ): string;
 
   /**
    * Shows a dialog which asks the user to choose a destination for saving a file.
@@ -4432,7 +4888,11 @@ declare namespace tiled {
    *
    * @since 1.10.2
    */
-  export function promptSaveFile(defaultDir?: string, filters?: string, title?: string): string;
+  export function promptSaveFile(
+    defaultDir?: string,
+    filters?: string,
+    title?: string,
+  ): string;
 
   /**
    * Outputs the given text in the Console window as regular text.
@@ -4479,10 +4939,7 @@ declare namespace tiled {
    * The "CustomAction" will need to have been registered before using
    * {@link registerAction | tiled.registerAction()}.
    */
-  export function extendMenu(
-    shortName: string,
-    menu: MenuItem[]
-  ): void;
+  export function extendMenu(shortName: string, menu: MenuItem[]): void;
 
   /**
    * Registers a new action with the given `id` and `callback` (which is
@@ -4505,7 +4962,7 @@ declare namespace tiled {
    */
   export function registerAction(
     id: string,
-    callback: (action: Action) => void
+    callback: (action: Action) => void,
   ): Action;
 
   /**
@@ -4581,7 +5038,9 @@ declare namespace tiled {
    * Returns the tileset format object that can read the given file, or
     `undefined` if no object was found.
    */
-  export function tilesetFormatForFile(fileName: string): TilesetFormat | undefined;
+  export function tilesetFormatForFile(
+    fileName: string,
+  ): TilesetFormat | undefined;
 
   /**
    * Returns the map format object with the given name, or
@@ -4645,21 +5104,28 @@ declare namespace tiled {
    *
    * @since 1.8
    */
-  export function propertyValue(type: string, value: object | number | string): PropertyValue;
+  export function propertyValue(
+    type: string,
+    value: object | number | string,
+  ): PropertyValue;
 
   /**
    * Creates a cursor with the given shape.
    *
    * @since 1.11.1
    */
-  export function cursor(shape: Qt.CursorShape): Cursor;
+  export function cursor(shape: Qt.CursorShape): Qt.QCursor;
 
   /**
    * Creates a cursor with the given image and the optional hotspot.
    *
    * @since 1.11.1
    */
-  export function cursor(image: Image, hotX?: number, hotY?: number): Cursor;
+  export function cursor(
+    image: Image,
+    hotX?: number,
+    hotY?: number,
+  ): Qt.QCursor;
 
   /**
    * Registers a new map format that can then be used to open and/or save
@@ -4710,7 +5176,7 @@ declare namespace tiled {
    */
   export function registerMapFormat(
     shortName: string,
-    mapFormat: ScriptedMapFormat
+    mapFormat: ScriptedMapFormat,
   ): void;
 
   /**
@@ -4719,7 +5185,7 @@ declare namespace tiled {
    */
   export function registerTilesetFormat(
     shortName: string,
-    tilesetFormat: ScriptedTilesetFormat
+    tilesetFormat: ScriptedTilesetFormat,
   ): void;
 
   /**
@@ -4737,7 +5203,11 @@ declare namespace tiled {
    *
    * @since 1.10
    */
-  export function compress(data: ArrayBuffer | string, method?: Tiled.CompressionMethod, compressionLevel?: number): ArrayBuffer;
+  export function compress(
+    data: ArrayBuffer | string,
+    method?: Tiled.CompressionMethod,
+    compressionLevel?: number,
+  ): ArrayBuffer;
 
   /**
    * Decompresses the given data using the given compression method.
@@ -4746,7 +5216,10 @@ declare namespace tiled {
    *
    * @since 1.10
    */
-  export function decompress(data: ArrayBuffer | string, method?: Tiled.CompressionMethod): ArrayBuffer;
+  export function decompress(
+    data: ArrayBuffer | string,
+    method?: Tiled.CompressionMethod,
+  ): ArrayBuffer;
 
   /**
    * A new asset has been created.
@@ -4790,31 +5263,31 @@ declare namespace tiled {
    * A list of all currently loaded {@link World|worlds}.
    * @since 1.11
    */
-  export const worlds : World[];
+  export const worlds: World[];
 
   /**
    * Load a world contained in a .world file in the path fileName.
    * @since 1.11
    */
-  export function loadWorld(fileName : string) : void;
+  export function loadWorld(fileName: string): void;
 
   /**
    * Unload a world contained in a .world file in the path fileName.
    * @since 1.11
    */
-  export function unloadWorld(fileName : string) : void;
+  export function unloadWorld(fileName: string): void;
 
   /**
    * Unload all currently loaded worlds.
    * @since 1.11
    */
-  export function unloadAllWorlds() : void;
+  export function unloadAllWorlds(): void;
 
   /**
    * Signal emitted when any world is loaded, unloaded, reloaded or changed.
    * @since 1.11
    */
-  export const worldsChanged : Signal<void>;
+  export const worldsChanged: Signal<void>;
 }
 
 /**
@@ -4826,99 +5299,99 @@ declare class Process {
   /**
    * The directory the process will be started in. This only has an effect if set before the process is started.
    */
-  workingDirectory : string
+  workingDirectory: string;
 
   /**
    * True if there is no more data to be read from the process output, otherwise false.
    */
-  readonly atEnd : boolean
+  readonly atEnd: boolean;
 
   /**
    * The exit code of the process. This is needed for retrieving the exit code from processes started via start(), rather than exec().
    */
-  readonly exitCode : number
+  readonly exitCode: number;
 
   /**
    * The text codec. The codec is used for reading and writing from and to the process, respectively. Common codecs are supported, for example: “UTF-8”, “UTF-16”, and “ISO 8859-1”.
    */
-  codec: string
+  codec: string;
 
   /**
    * Allocates and returns a new Process object.
    */
-  constructor()
+  constructor();
 
   /**
    * Frees the resources associated with the process. It is recommended to always call this function as soon as you are finished with the process.
    */
-  close() : void
+  close(): void;
 
   /**
    * Schedules the stdin channel of process to be closed. The channel will close once all data has been written to the process. After calling this function, any attempts to write to the process will do nothing.
    */
-  closeWriteChannel() : void
+  closeWriteChannel(): void;
 
   /**
    * Executes the program at filePath with the given argument list and blocks until the process is finished. If an error occurs (for example, there is no executable file at filePath) and throwOnError is true (the default), then a JavaScript exception will be thrown. Otherwise, -1 will be returned in case of an error. The normal return code is the exit code of the process.
    */
-  exec(filePath : string, arguments : string[] , throwOnError? : boolean) : number
+  exec(filePath: string, args: string[], throwOnError?: boolean): number;
 
   /**
    * Returns the value of the variable varName in the process’ environment.
    */
-  getEnv(name : string) : string
+  getEnv(name: string): string;
 
   /**
    * Kills the process, causing it to exit immediately.
    */
-  kill() : void
+  kill(): void;
 
   /**
    * Reads and returns one line of text from the process output, without the newline character(s).
    */
-  readLine() : string
+  readLine(): string;
 
   /**
    * Reads and returns all data from the process’ standard error channel.
    */
-  readStdErr() : string
+  readStdErr(): string;
 
   /**
    * Reads and returns all data from the process’ standard output channel.
    */
-  readStdOut() : string
+  readStdOut(): string;
 
   /**
    * Sets the value of variable varName to varValue in the process environment. This only has an effect if called before the process is started.
    */
-  setEnv(varName : string, varValue : string) : string
+  setEnv(varName: string, varValue: string): string;
 
   /**
    * Starts the program at filePath with the given list of arguments. Returns true if the process could be started and false otherwise.
    *
    * Note: This call returns right after starting the process and should be used only if you need to interact with the process while it is running. Most of the time, you want to use exec() instead.
    */
-  start(filePath : string, arguments : string[]) : boolean
+  start(filePath: string, args: string[]): boolean;
 
   /**
    * Tries to terminate the process. This is not guaranteed to make the process exit immediately; if you need that, use kill().
    */
-  terminate() : void
+  terminate(): void;
 
   /**
    * Blocks until the process has finished or timeout milliseconds have passed (default is 30000). Returns true if the process has finished and false if the operation has timed out. Calling this function only makes sense for processes started via start() (as opposed to exec()).
    */
-  waitForFinished( msecs?:number ) : boolean
+  waitForFinished(msecs?: number): boolean;
 
   /**
    * Writes text into the process’ input channel.
    */
-  write(text : string) : void
+  write(text: string): void;
 
   /**
    * Writes text, followed by a newline character, into the process’ input channel.
    */
-  writeLine(text : string) : void
+  writeLine(text: string): void;
 }
 
 /**
@@ -5004,12 +5477,12 @@ declare class Dialog extends Qt.QWidget {
   /**
    * The dialog was rejected. Value is 0.
    */
-  static readonly Rejected: unique symbol
+  static readonly Rejected: unique symbol;
 
   /**
    * The dialog was accepted. Value is 1.
    */
-  static readonly Accepted: unique symbol
+  static readonly Accepted: unique symbol;
 
   /**
    * Create a new dialog with the given window title.
@@ -5017,7 +5490,6 @@ declare class Dialog extends Qt.QWidget {
    * When not given the title defaults to "Script".
    */
   constructor(windowTitle?: string);
-
 
   /**
    * The default row layout mode.
@@ -5050,7 +5522,10 @@ declare class Dialog extends Qt.QWidget {
    * Controls the automatic widget placement behavior of the dialog.
    * Defaults to {@link SameWidgetRows}.
    */
-  newRowMode: typeof Dialog.SingleWidgetRows | typeof Dialog.SameWidgetRows | typeof Dialog.ManualRows;
+  newRowMode:
+    | typeof Dialog.SingleWidgetRows
+    | typeof Dialog.SameWidgetRows
+    | typeof Dialog.ManualRows;
 
   /**
    * Call this to force the next widget to go on a new row,
@@ -5066,19 +5541,19 @@ declare class Dialog extends Qt.QWidget {
    * to the full width of the dialog. Otherwise, it will be confined to the
    * left-hand column of the dialog.
    */
-  addHeading(labelText:string, maxWidth?: boolean): Qt.QLabel;
+  addHeading(labelText: string, maxWidth?: boolean): Qt.QLabel;
 
   /**
    * Add a label to the dialog with the given test. A label will always be the
    * first widget in a row.
    */
-  addLabel(labelText:string): Qt.QLabel;
+  addLabel(labelText: string): Qt.QLabel;
 
   /**
    * Adds a separator line with optional label to the dialog.
    * Used to visually split up sections of the dialog.
    */
-  addSeparator(labelText?:string): Qt.QFrame;
+  addSeparator(labelText?: string): Qt.QFrame;
 
   /**
    * Adds an image widget that can display an image in a dialog.
@@ -5163,6 +5638,32 @@ declare class Dialog extends Qt.QWidget {
    * the widget.
    */
   addFilePicker(labelText?: string): FileEdit;
+
+  /**
+   * Add a {@link QButtonGroup} widget which allows you to add multiple radio
+   * buttons, where only one radio button can be selected at a time.
+   *
+   * Each radio button is a {@link QAbstractButton}. You can force selection of
+   * a radio button by setting checked = true, and also disable
+   *
+   * If the labelText is non-empty, a label widget will be added to the left of
+   * the widget.
+   *
+   * Each entry in the values array is the text that will appear on the radio button.
+   *
+   * labelToolTip is an optional tooltip for the label to the left of the radio button group.
+   *
+   * buttonToolTips is an optional list of tooltips, where each entry is a tooltip that corresponds
+   * to the radio button in the list of values at each index.
+   *
+   * @since 1.11.1
+   */
+  addRadioButtonGroup(
+    labelText: string,
+    values: string[],
+    labelToolTip: string | undefined,
+    buttonToolTips: string[] | undefined,
+  ): Qt.QButtonGroup;
 
   /**
    * Erase all of the widgets that you have added to the dialog.

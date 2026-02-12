@@ -48,7 +48,7 @@ in what changed between Tiled versions.
    1.0.1). May be a date (for snapshot builds). (optional)
 -  **class:** The class of this map (since 1.9, defaults to "").
 -  **orientation:** Map orientation. Tiled supports "orthogonal",
-   "isometric", "staggered" and "hexagonal" (since 0.11).
+   "isometric", "oblique", "staggered" and "hexagonal" (since 0.11).
 -  **renderorder:** The order in which tiles on tile layers are rendered.
    Valid values are ``right-down`` (the default), ``right-up``,
    ``left-down`` and ``left-up``. In all cases, the map is drawn
@@ -59,6 +59,8 @@ in what changed between Tiled versions.
 -  **height:** The map height in tiles.
 -  **tilewidth:** The width of a tile.
 -  **tileheight:** The height of a tile.
+-  **skewx:** For oblique maps, the pixel offset per tile row.
+-  **skewy:** For oblique maps, the pixel offset per tile column.
 -  **hexsidelength:** Only for hexagonal maps. Determines the width or
    height (depending on the staggered axis) of the tile's edge, in
    pixels.
@@ -98,7 +100,8 @@ order in which these layers appear is the order in which the layers are
 rendered by Tiled.
 
 The ``staggered`` orientation refers to an isometric map using staggered
-axes.
+axes. The ``oblique`` orientation uses a skewed grid of parallelogram-shaped
+tiles.
 
 The tilesets used by the map should always be listed before the layers.
 
@@ -307,7 +310,7 @@ tiles (e.g. to extend a Wang set by transforming existing tiles).
    :ref:`tmx-wangtile`)
 -  **probability:** A percentage indicating the probability that this
    tile is chosen when it competes with others while editing with the
-   terrain tool. (defaults to 0)
+   terrain tool. (defaults to 1)
 -  **x:** The X position of the sub-rectangle representing this tile (default: 0)
 -  **y:** The Y position of the sub-rectangle representing this tile (default: 0)
 -  **width:** The width of the sub-rectangle representing this tile (defaults to the image width)
@@ -376,7 +379,7 @@ A color that can be used to define the corner and/or edge of a Wang tile.
 -  **color:** The color in ``#RRGGBB`` format (example: ``#c17d11``).
 -  **tile:** The tile ID of the tile representing this color.
 -  **probability:** The relative probability that this color is chosen
-   over others in case of multiple options. (defaults to 0)
+   over others in case of multiple options. (defaults to 1)
 
 Can contain at most one: :ref:`tmx-properties`
 
@@ -428,6 +431,10 @@ tiles.
    (since 0.14)
 -  **parallaxx:** Horizontal :ref:`parallax factor <parallax-factor>` for this layer. Defaults to 1. (since 1.5)
 -  **parallaxy:** Vertical :ref:`parallax factor <parallax-factor>` for this layer. Defaults to 1. (since 1.5)
+-  **mode:** The blend mode to use when rendering the layer. Valid values are
+   ``normal``, ``add``, ``multiply``, ``screen``, ``overlay``, ``darken``, ``lighten``,
+   ``color-dodge``, ``color-burn``, ``hard-light``, ``soft-light``,
+   ``difference`` and ``exclusion`` (since 1.12, defaults to ``normal``).
 
 Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-data`
 
@@ -547,7 +554,7 @@ Can contain any number: :ref:`tmx-object`
 -  **y:** The y coordinate of the object in pixels. (defaults to 0)
 -  **width:** The width of the object in pixels. (defaults to 0)
 -  **height:** The height of the object in pixels. (defaults to 0)
--  **rotation:** The rotation of the object in degrees clockwise around (x, y). 
+-  **rotation:** The rotation of the object in degrees clockwise around (x, y).
    (defaults to 0)
 -  **opacity:** The opacity of the object as a value from 0 to 1. (defaults
    to 1)
@@ -576,9 +583,9 @@ properties from the specified template, properties saved with the object
 will have higher priority, i.e. they will override the template
 properties.
 
-Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-ellipse` (since
-0.9), :ref:`tmx-point` (since 1.1), :ref:`tmx-polygon`, :ref:`tmx-polyline`,
-:ref:`tmx-text` (since 1.0)
+Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-ellipse` (since 0.9),
+:ref:`tmx-capsule` (since 1.12), :ref:`tmx-point` (since 1.1),
+:ref:`tmx-polygon`, :ref:`tmx-polyline`, :ref:`tmx-text` (since 1.0)
 
 .. _tmx-ellipse:
 
@@ -588,6 +595,15 @@ Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-ellipse` (since
 Used to mark an object as an ellipse. The existing ``x``, ``y``,
 ``width`` and ``height`` attributes are used to determine the size of
 the ellipse.
+
+.. _tmx-capsule:
+
+<capsule>
+~~~~~~~~~
+
+Used to mark an object as a capsule. The existing ``x``, ``y``,
+``width`` and ``height`` attributes are used to determine the size of
+the capsule.
 
 .. _tmx-point:
 

@@ -154,9 +154,10 @@ ExportValue EnumPropertyType::toExportValue(const QVariant &value, const ExportC
             }
 
             return PropertyType::toExportValue(stringValue, context);
-        } else if (intValue >= 0 && intValue < values.size()) {
-            return PropertyType::toExportValue(values.at(intValue), context);
         }
+
+        if (intValue >= 0 && intValue < values.size())
+            return PropertyType::toExportValue(values.at(intValue), context);
     }
 
     return PropertyType::toExportValue(value, context);
@@ -171,14 +172,7 @@ QVariant EnumPropertyType::toPropertyValue(const QVariant &value, const ExportCo
         if (valuesAsFlags) {
             int flags = 0;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-            const QVector<QStringRef> stringValues = stringValue.splitRef(QLatin1Char(','), QString::SkipEmptyParts);
-#elif QT_VERSION < QT_VERSION_CHECK(6,0,0)
-            const QVector<QStringRef> stringValues = stringValue.splitRef(QLatin1Char(','), Qt::SkipEmptyParts);
-#else
-            const QList<QStringView> stringValues = QStringView(stringValue).split(QLatin1Char(','), Qt::SkipEmptyParts);
-#endif
-
+            const auto stringValues = QStringView(stringValue).split(QLatin1Char(','), Qt::SkipEmptyParts);
             for (const auto &stringValue : stringValues) {
                 const int index = indexOf(values, stringValue);
 
@@ -248,12 +242,12 @@ ExportValue ClassPropertyType::toExportValue(const QVariant &value, const Export
 {
     Properties properties = value.toMap();
 
-    QMutableMapIterator<QString, QVariant> it(properties);
-    while (it.hasNext()) {
-        it.next();
-
-        ExportValue exportValue = context.toExportValue(it.value());
-        it.setValue(exportValue.value);
+    for (auto &value : properties) {
+        ExportValue exportValue = context.toExportValue(value);
+        if (context.recursiveBehavior() == ExportContext::RecursiveBehavior::ExportValuesOnly)
+            value = QVariant::fromValue(std::move(exportValue));
+        else
+            value = exportValue.value;
     }
 
     return PropertyType::toExportValue(properties, context);
@@ -280,7 +274,7 @@ QVariant ClassPropertyType::toPropertyValue(const QVariant &value, const ExportC
 
         // Wrap the value in its custom property type when applicable
         if (classMember.userType() == propertyValueId()) {
-            const PropertyValue classMemberValue = classMember.value<PropertyValue>();
+            const auto classMemberValue = classMember.value<PropertyValue>();
             if (const PropertyType *propertyType = context.types().findTypeById(classMemberValue.typeId))
                 propertyValue = propertyType->toPropertyValue(propertyValue, context);
         }
@@ -311,6 +305,43 @@ static const struct  {
     { ClassPropertyType::ProjectClass,          QLatin1String("project") },
 };
 
+QJsonValue exportValueToJson(const ExportValue &exportValue)
+{
+    switch (exportValue.value.userType()) {
+    case QMetaType::QVariantList: {
+        // We have to include the type and possibly propertyType for each value
+        // in the list so that we know the type of the values when loading the
+        // list.
+        QJsonArray jsonArray;
+        const auto list = exportValue.value.toList();
+        for (const auto &item : list) {
+            const auto itemExportValue = item.value<ExportValue>();
+            QJsonObject member {
+               { QStringLiteral("type"), itemExportValue.typeName },
+               { QStringLiteral("value"), exportValueToJson(itemExportValue) },
+            };
+
+            if (!itemExportValue.propertyTypeName.isEmpty())
+                member.insert(QStringLiteral("propertyType"), itemExportValue.propertyTypeName);
+
+            jsonArray.append(member);
+        }
+        return jsonArray;
+    }
+    case QMetaType::QVariantMap: {
+        // For classes we only store the values, because the type of the
+        // members is defined by the class.
+        QJsonObject jsonObject;
+        const auto map = exportValue.value.toMap();
+        for (auto it = map.constBegin(); it != map.constEnd(); ++it)
+            jsonObject.insert(it.key(), exportValueToJson(it.value().value<ExportValue>()));
+        return jsonObject;
+    }
+    default:
+        return QJsonValue::fromVariant(exportValue.value);
+    }
+}
+
 QJsonObject ClassPropertyType::toJson(const ExportContext &context) const
 {
     QJsonArray members;
@@ -324,7 +355,7 @@ QJsonObject ClassPropertyType::toJson(const ExportContext &context) const
         QJsonObject member {
             { QStringLiteral("name"), it.key() },
             { QStringLiteral("type"), exportValue.typeName },
-            { QStringLiteral("value"), QJsonValue::fromVariant(exportValue.value) },
+            { QStringLiteral("value"), exportValueToJson(exportValue) },
         };
 
         if (!exportValue.propertyTypeName.isEmpty())
@@ -400,15 +431,28 @@ bool ClassPropertyType::canAddMemberOfType(const PropertyType *propertyType, con
     // Can't add if any member of the added class can't be added to this type
     auto classType = static_cast<const ClassPropertyType*>(propertyType);
     for (auto &member : classType->members) {
-        if (member.userType() != propertyValueId())
-            continue;
-
-        auto propertyType = types.findTypeById(member.value<PropertyValue>().typeId);
-        if (!propertyType)
-            continue;
-
-        if (!canAddMemberOfType(propertyType))
+        if (!canAddMember(member, types))
             return false;
+    }
+
+    return true;
+}
+
+bool ClassPropertyType::canAddMember(const QVariant &member, const PropertyTypes &types) const
+{
+    if (member.userType() == propertyValueId()) {
+        auto propertyType = types.findTypeById(member.value<PropertyValue>().typeId);
+        return !propertyType || canAddMemberOfType(propertyType, types);
+    }
+
+    if (member.userType() == QMetaType::QVariantList) {
+        const auto list = member.value<QVariantList>();
+        for (const auto &item : list) {
+            if (!canAddMember(item, types))
+                return false;
+        }
+    } else if (member.userType() == QMetaType::QVariantMap) {
+        return false; // Nested class members are not supported
     }
 
     return true;
@@ -429,14 +473,11 @@ void ClassPropertyType::setUsageFlags(int flags, bool value)
 
 // PropertyTypes
 
-PropertyTypes::~PropertyTypes()
-{
-    qDeleteAll(mTypes);
-}
+PropertyTypes::~PropertyTypes() = default;
 
 size_t PropertyTypes::count(PropertyType::Type type) const
 {
-    return std::count_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *propertyType) {
+    return std::count_if(begin(), end(), [&] (const SharedPropertyType &propertyType) {
         return propertyType->type == type;
     });
 }
@@ -452,13 +493,13 @@ void PropertyTypes::merge(PropertyTypes typesToMerge)
     QHash<int, QString> oldTypeIdToName;
     QList<ClassPropertyType*> classesToProcess;
 
-    for (const auto type : typesToMerge)
+    for (const auto &type : typesToMerge)
         oldTypeIdToName.insert(type->id, type->name);
 
     while (typesToMerge.count() > 0) {
         auto typeToImport = typesToMerge.takeAt(0);
         auto typeToImportUsageFlags = typeUsageFlags(*typeToImport);
-        auto existingIt = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
+        auto existingIt = std::find_if(begin(), end(), [&] (const SharedPropertyType &type) {
             // Consider same type only when name matches and usage flags overlap
             return type->name == typeToImport->name &&
                     (typeUsageFlags(*type) & typeToImportUsageFlags) != 0;
@@ -467,14 +508,14 @@ void PropertyTypes::merge(PropertyTypes typesToMerge)
         if (typeToImport->isClass())
             classesToProcess.append(static_cast<ClassPropertyType*>(typeToImport.get()));
 
-        if (existingIt != mTypes.end()) {
+        if (existingIt != end()) {
             // Existing types are replaced, but their ID is retained
             typeToImport->id = (*existingIt)->id;
-            delete std::exchange(*existingIt, typeToImport.release());
+            *existingIt = typeToImport;
         } else {
             // New types are added, but their ID is reset
             typeToImport->id = 0;
-            add(std::move(typeToImport));
+            add(typeToImport);
         }
     }
 
@@ -485,7 +526,7 @@ void PropertyTypes::merge(PropertyTypes typesToMerge)
             QVariant &classMember = it.next().value();
 
             if (classMember.userType() == propertyValueId()) {
-                PropertyValue classMemberValue = classMember.value<PropertyValue>();
+                auto classMemberValue = classMember.value<PropertyValue>();
 
                 const QString typeName = oldTypeIdToName.value(classMemberValue.typeId);
                 auto type = findPropertyValueType(typeName);
@@ -508,20 +549,36 @@ void PropertyTypes::mergeObjectTypes(const QVector<ObjectType> &objectTypes)
         propertyType->members = type.defaultProperties;
         propertyType->usageFlags = ClassPropertyType::MapObjectClass | ClassPropertyType::TileClass;
 
-        auto existingIt = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
+        auto existingIt = std::find_if(begin(), end(), [&] (const SharedPropertyType &type) {
             // Consider same type only when name matches and usage flags overlap
             return type->name == propertyType->name &&
                     (typeUsageFlags(*type) & propertyType->usageFlags) != 0;
         });
 
-        if (existingIt != mTypes.end()) {
+        if (existingIt != end()) {
             // Replace existing classes, but retain their ID
             propertyType->id = (*existingIt)->id;
-            delete std::exchange(*existingIt, propertyType.release());
+            *existingIt = SharedPropertyType(propertyType.release());
         } else {
-            add(std::move(propertyType));
+            add(SharedPropertyType(propertyType.release()));
         }
     }
+}
+
+/**
+ * Returns the index of the type of the given name, or -1 if no such type is
+ * found.
+ */
+int PropertyTypes::findIndexByName(const QString &name) const
+{
+    if (name.isEmpty())
+        return -1;
+
+    for (int i = 0; i < mTypes.count(); i++)
+        if (mTypes[i]->name == name)
+            return i;
+
+    return -1;
 }
 
 /**
@@ -530,10 +587,10 @@ void PropertyTypes::mergeObjectTypes(const QVector<ObjectType> &objectTypes)
  */
 const PropertyType *PropertyTypes::findTypeById(int typeId) const
 {
-    auto it = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
+    auto it = std::find_if(begin(), end(), [&] (const SharedPropertyType &type) {
         return type->id == typeId;
     });
-    return it == mTypes.end() ? nullptr : *it;
+    return it == end() ? nullptr : it->data();
 }
 
 /**
@@ -545,10 +602,10 @@ const PropertyType *PropertyTypes::findTypeByName(const QString &name, int usage
     if (name.isEmpty())
         return nullptr;
 
-    auto it = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
+    auto it = std::find_if(begin(), end(), [&] (const SharedPropertyType &type) {
         return type->name == name && (typeUsageFlags(*type) & usageFlags) != 0;
     });
-    return it == mTypes.end() ? nullptr : *it;
+    return it == end() ? nullptr : it->data();
 }
 
 const PropertyType *PropertyTypes::findPropertyValueType(const QString &name) const
@@ -561,10 +618,10 @@ const ClassPropertyType *PropertyTypes::findClassFor(const QString &name, const 
     if (name.isEmpty())
         return nullptr;
 
-    auto it = std::find_if(mTypes.begin(), mTypes.end(), [&] (const PropertyType *type) {
-        return type->name == name && type->isClass() && static_cast<const ClassPropertyType*>(type)->isClassFor(object);
+    auto it = std::find_if(begin(), end(), [&] (const SharedPropertyType &type) {
+        return type->name == name && type->isClass() && static_cast<const ClassPropertyType&>(*type).isClassFor(object);
     });
-    return static_cast<const ClassPropertyType*>(it == mTypes.end() ? nullptr : *it);
+    return static_cast<const ClassPropertyType*>(it == end() ? nullptr : it->data());
 }
 
 PropertyType *PropertyTypes::findTypeByNamePriv(const QString &name, int usageFlags)
@@ -585,13 +642,112 @@ void PropertyTypes::loadFromJson(const QJsonArray &list, const QString &path)
 
     for (const auto typeValue : list)
         if (auto propertyType = PropertyType::createFromJson(typeValue.toObject()))
-            add(std::move(propertyType));
+            add(SharedPropertyType(propertyType.release()));
 
-    for (PropertyType *type : mTypes)
+    for (auto &type : mTypes)
         if (type->isClass())
-            resolveMemberValues(static_cast<ClassPropertyType*>(type), context);
+            resolveMemberValues(static_cast<ClassPropertyType*>(type.data()), context);
 }
 
+/**
+ * Recursive helper function for resolving class members.
+ */
+void PropertyTypes::ensureMembersResolvedHelper(const QVariant &value, const ExportContext &context)
+{
+    switch (value.userType()) {
+    case QMetaType::QVariantMap: {
+        const auto members = value.toMap();
+        for (const auto &value : members)
+            ensureMembersResolvedHelper(value, context);
+        break;
+    }
+    case QMetaType::QVariantList: {
+        // In case we find a list of values, recursively look for class references
+        const auto list = value.toList();
+        for (const auto &item : list)
+            ensureMembersResolved(item.toMap(), context);
+        break;
+    }
+    }
+}
+
+/**
+ * Ensures that the members are resolved for any class referenced by the given
+ * the given value. It does this recursively for any child values as well.
+ */
+void PropertyTypes::ensureMembersResolved(const QVariantMap &valueMap, const ExportContext &context)
+{
+    // In case we find a class reference, make sure that class is resolved
+    const QString propertyTypeName = valueMap.value(QStringLiteral("propertyType")).toString();
+    if (auto propertyType = findPropertyValueTypePriv(propertyTypeName))
+        if (propertyType->isClass())
+            resolveMemberValues(static_cast<ClassPropertyType*>(propertyType), context);
+
+    ensureMembersResolvedHelper(valueMap.value(QStringLiteral("value")), context);
+}
+
+void PropertyTypes::resolveValue(ClassPropertyType *classType,
+                                 QVariant &value,
+                                 const ExportContext &context)
+{
+    switch (value.userType()) {
+    case QMetaType::QVariantMap: {
+        // If the value is a map, we need to recursively search for lists so
+        // that we can resolve their values, as well as exclude members that
+        // would cause circular references.
+        QVariantMap valueMap = value.toMap();
+        for (auto &value : valueMap)
+            resolveValue(classType, value, context);
+        value = valueMap;
+        break;
+    }
+    case QMetaType::QVariantList: {
+        // If the value is a list, we need to ensure that all values in the
+        // list are resolved.
+        const QVariantList list = value.toList();
+        QVariantList resolvedList;
+        for (auto &item : list) {
+            const auto resolvedValue = resolveValue(classType, item.toMap(), context);
+            if (resolvedValue.isValid())
+                resolvedList.append(resolvedValue);
+        }
+        value = resolvedList;
+        break;
+    }
+    }
+}
+
+QVariant PropertyTypes::resolveValue(ClassPropertyType *classType,
+                                     const QVariantMap &map,
+                                     const ExportContext &context)
+{
+    ExportValue exportValue;
+    exportValue.value = map.value(QStringLiteral("value"));
+    exportValue.typeName = map.value(QStringLiteral("type")).toString();
+    exportValue.propertyTypeName = map.value(QStringLiteral("propertyType")).toString();
+
+    // Remove any members that would result in a circular reference
+    if (auto propertyType = findPropertyValueType(exportValue.propertyTypeName)) {
+        if (!classType->canAddMemberOfType(propertyType, *this)) {
+            Tiled::ERROR(QStringLiteral("Can't load value of type '%1' as part of class '%2' since "
+                                        "it would cause a circular reference")
+                             .arg(exportValue.propertyTypeName, classType->name));
+            return QVariant();
+        }
+    }
+
+    resolveValue(classType, exportValue.value, context);
+    return context.toPropertyValue(exportValue);
+}
+
+/**
+ * Resolves the member values of a class type, replacing the QVariantMap values
+ * in classType->members with the resolved values.
+ *
+ * It necessarily makes sure any members of classes referenced by any values in
+ * this class are resolved first because ClassPropertyType::toPropertyValue
+ * relies on these members to know their type.
+ */
 void PropertyTypes::resolveMemberValues(ClassPropertyType *classType,
                                         const ExportContext &context)
 {
@@ -603,45 +759,32 @@ void PropertyTypes::resolveMemberValues(ClassPropertyType *classType,
     // Before we can resolve the member values, we need to make sure all
     // classes we depend on have resolved member values (recursively, because
     // ExportContext::toPropertyValue works recursively too).
-    QMapIterator<QString, QVariant> constIt(classType->members);
-    while (constIt.hasNext()) {
-        constIt.next();
-
-        const QVariantMap map = constIt.value().toMap();
-        const QString propertyTypeName = map.value(QStringLiteral("propertyType")).toString();
-        if (auto propertyType = findPropertyValueTypePriv(propertyTypeName))
-            if (propertyType->isClass())
-                resolveMemberValues(static_cast<ClassPropertyType*>(propertyType), context);
-    }
+    for (auto &value : classType->members)
+        ensureMembersResolved(value.toMap(), context);
 
     // Now resolve the member values
     QMutableMapIterator<QString, QVariant> it(classType->members);
     while (it.hasNext()) {
         it.next();
 
-        const QVariantMap map = it.value().toMap();
-        ExportValue exportValue;
-        exportValue.value = map.value(QStringLiteral("value"));
-        exportValue.typeName = map.value(QStringLiteral("type")).toString();
-        exportValue.propertyTypeName = map.value(QStringLiteral("propertyType")).toString();
+        const auto resolvedValue = resolveValue(classType, it.value().toMap(), context);
 
         // Remove any members that would result in a circular reference
-        if (auto propertyType = findPropertyValueType(exportValue.propertyTypeName)) {
-            if (!classType->canAddMemberOfType(propertyType, *this)) {
-                Tiled::ERROR(QStringLiteral("Removed member '%1' from class '%2' since it would cause a circular reference")
-                             .arg(it.key(), classType->name));
-                it.remove();
-                continue;
-            }
+        if (!resolvedValue.isValid()) {
+            Tiled::ERROR(QStringLiteral("Removed member '%1' from class '%2' since it would cause a circular reference")
+                         .arg(it.key(), classType->name));
+            it.remove();
+            continue;
         }
 
-        it.setValue(context.toPropertyValue(exportValue));
+        it.setValue(resolvedValue);
     }
 }
 
 QJsonArray PropertyTypes::toJson(const QString &path) const
 {
-    const ExportContext context(*this, path);
+    ExportContext context(*this, path);
+    context.setRecursiveBehavior(ExportContext::RecursiveBehavior::ExportValuesOnly);
 
     QJsonArray propertyTypesJson;
     for (const auto &type : mTypes)

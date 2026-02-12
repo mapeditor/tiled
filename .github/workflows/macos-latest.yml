@@ -2,12 +2,15 @@ name: Compile on latest macOS (Homebrew)
 
 on:
   push:
+    branches:
+      - master
+    tags:
+      - '*'
     paths-ignore:
     - 'docs/**'
     - '**.md'
     - 'appveyor.yml'
     - '.travis.yml'
-    branches-ignore: [snapshot]
   pull_request:
     paths-ignore:
     - 'docs/**'
@@ -22,14 +25,17 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Install dependencies
       run: |
-        brew install qbs
+        brew update
+        brew install qbs qttools
+        echo "$(brew --prefix qbs)/bin" >> "$GITHUB_PATH"
 
     - name: Setup Qbs
       run: |
+        qbs --version
         qbs setup-toolchains --detect
         qbs config defaultProfile xcode
 
@@ -49,7 +55,7 @@ jobs:
         popd
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: Tiled.app
         path: Tiled-*-macos.zip

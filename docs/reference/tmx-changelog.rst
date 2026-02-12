@@ -4,6 +4,25 @@ TMX Changelog
 Below are described the changes/additions that were made to the
 :doc:`tmx-map-format` for recent versions of Tiled.
 
+Tiled 1.12
+----------
+
+-  Added ``mode`` attribute on :ref:`tmx-layer` to specific its blend mode.
+
+-  Added ``oblique`` to the supported values for the ``orientation`` attribute
+   on the :ref:`tmx-map` element, along with the ``skewx`` and ``skewy``
+   attributes for configuring the per-row/column skew in pixels.
+
+-  Added capsule object shape. Same parameters as rectangular objects,
+   but marked as capsule with a child element:
+
+   .. code:: xml
+
+      <object name="..." x="..." y="...">
+        <capsule/>
+      </object>
+
+
 Tiled 1.10
 ----------
 

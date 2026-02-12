@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Tiled 1.7\n"
 "Report-Msgid-Bugs-To: bjorn@lindeijer.nl\n"
 "POT-Creation-Date: 2021-09-07 13:45+0200\n"
-"PO-Revision-Date: 2021-11-19 06:51+0000\n"
-"Last-Translator: Yusuf Yavuzyigit <yusufyavuzyigit25@gmail.com>\n"
+"PO-Revision-Date: 2024-07-02 15:09+0000\n"
+"Last-Translator: Zoda <ustunsoykerem23@gmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/tiled/manual/tr/>"
 "\n"
 "Language: tr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.9.1-dev\n"
+"X-Generator: Weblate 5.7-dev\n"
 
 #: ../../manual/automapping.rst:3
 msgid "Automapping"
@@ -66,18 +66,21 @@ msgstr ""
 #: ../../manual/automapping.rst:26
 msgid "`Tiled Map Editor Tutorial Part Three: AutoMap (YouTube) <https://youtu.be/A_A6rz7cvG4>`__"
 msgstr ""
+"`Tile Map Editörü Eğitimi Bölüm 3`: AutoMap (Youtube) <https://youtu.be/"
+"A_A6rz7cvG4>`__"
 
 #: ../../manual/automapping.rst:30
 msgid "Setting it Up"
-msgstr ""
+msgstr "Ayarlanıyor"
 
 #: ../../manual/automapping.rst:32
 msgid "The Automapping feature looks for a text file called 'rules.txt' in the folder where the current map is located. Each line in this text file is either"
 msgstr ""
 
 #: ../../manual/automapping.rst:36
+#, fuzzy
 msgid "a path to a **rulefile**"
-msgstr ""
+msgstr "**rulefile**'a bir dizin"
 
 #: ../../manual/automapping.rst:37
 msgid "or a path to another textfile which has the same syntax (i.e. in another directory)"
@@ -125,7 +128,7 @@ msgstr ""
 
 #: ../../manual/automapping.rst:75
 msgid "Multiple Rules in One Rulefile"
-msgstr ""
+msgstr "Tek Rulefile dosyasında birden fazla kural"
 
 #: ../../manual/automapping.rst:77
 msgid "Multiple rules are possible in one rulemap. However, if you want to have the rules applied in a certain sequence, you should use multiple **rulefiles** and define the sequence within the **rules.txt** file. As of now there also is a certain sequence within one rulemapfile. Generally speaking the regions with small y value come first. If there are regions at the same y value, then the x value is taken into account. On orthogonal maps this ordering scheme is the same as for reading in most western countries (Left to right, top to bottom). The order within one rulemap may be changed later, once tiled is capable of utilizing multiple threads/processors. So if you want to rely on a certain sequence, use different rulemaps and order these in the rules.txt"
@@ -133,11 +136,12 @@ msgstr ""
 
 #: ../../manual/automapping.rst:90
 msgid "Definition of Inputs"
-msgstr ""
+msgstr "Girdilerin tanımı"
 
 #: ../../manual/automapping.rst:92
+#, fuzzy
 msgid "Inputs are generally defined by tile layers which name follows this scheme:"
-msgstr ""
+msgstr "Girdiler genellikle desen katmanları tarafından belirlenir."
 
 #: ../../manual/automapping.rst:95
 msgid "**input[not][index]\\_name**"
@@ -161,15 +165,15 @@ msgstr ""
 
 #: ../../manual/automapping.rst:114
 msgid "index must not contain an underscore."
-msgstr ""
+msgstr "index alt çizgi içermemelidir."
 
 #: ../../manual/automapping.rst:115
 msgid "index must not start with *not*."
-msgstr ""
+msgstr "index bir *not* ile başlamamalı."
 
 #: ../../manual/automapping.rst:116
 msgid "index may be empty."
-msgstr ""
+msgstr "index boş olabilir."
 
 #: ../../manual/automapping.rst:118
 msgid "If there are tiles in the standard input layers one of these tiles must be there to match the rule. The optional **[not]** inverts the meaning of that layer. So if there are **inputnot** layers, the tiles placed on them, must not occur in the working map at the examined region to make a rule match. Within one rule you can combine the usage of both input and inputnot layers to make rules input conditions as accurate as you need or as fuzzy as you need."
@@ -177,7 +181,7 @@ msgstr ""
 
 #: ../../manual/automapping.rst:127
 msgid "Definition of Outputs"
-msgstr ""
+msgstr "Çıktıların tanımlanması"
 
 #: ../../manual/automapping.rst:129
 msgid "Outputs are generally defined by layers whichs name follows this scheme:"
@@ -206,7 +210,7 @@ msgstr ""
 #: ../../manual/automapping.rst:156
 #: ../../manual/export-gmx.rst:102
 msgid "Map Properties"
-msgstr ""
+msgstr "Harita Özellikleri"
 
 #: ../../manual/automapping.rst:158
 msgid "The following map properties can be used to customize the behavior of the rules in a **rulefile**:"
@@ -814,15 +818,15 @@ msgid "There are several types of custom properties I'd like to add:"
 msgstr ""
 
 #: ../../manual/custom-properties.rst:134
-msgid "**Enumerations**, where you can predefine all possible values and it forms a combo box (`#1211 <https://github.com/bjorn/tiled/issues/1211>`__)."
+msgid "**Enumerations**, where you can predefine all possible values and it forms a combo box (`#1211 <https://github.com/mapeditor/tiled/issues/1211>`__)."
 msgstr ""
 
 #: ../../manual/custom-properties.rst:137
-msgid "**Array properties**, which would be properties having a list of values (`#1493 <https://github.com/bjorn/tiled/issues/1493>`__)."
+msgid "**Array properties**, which would be properties having a list of values (`#1493 <https://github.com/mapeditor/tiled/issues/1493>`__)."
 msgstr ""
 
 #: ../../manual/custom-properties.rst:139
-msgid "**Dictionary properties**, which would be properties that can contain any number of other properties as children (`#489 <https://github.com/bjorn/tiled/issues/489>`__)."
+msgid "**Dictionary properties**, which would be properties that can contain any number of other properties as children (`#489 <https://github.com/mapeditor/tiled/issues/489>`__)."
 msgstr ""
 
 #: ../../manual/custom-properties.rst:143
@@ -830,7 +834,7 @@ msgid "It would also be nice to add support for **limiting property values**, li
 msgstr ""
 
 #: ../../manual/custom-properties.rst:147
-msgid "Apart from predefining properties based on object type, I'd like to add support for **predefining the properties for each data type**. So defining which custom properties are valid for maps, tilesets, layers, etc. (`#1410 <https://github.com/bjorn/tiled/issues/1410>`__)"
+msgid "Apart from predefining properties based on object type, I'd like to add support for **predefining the properties for each data type**. So defining which custom properties are valid for maps, tilesets, layers, etc. (`#1410 <https://github.com/mapeditor/tiled/issues/1410>`__)"
 msgstr ""
 
 #: ../../manual/custom-properties.rst:152
@@ -1247,7 +1251,7 @@ msgid "**Terrain Sets**"
 msgstr ""
 
 #: ../../manual/editing-tilesets.rst:235
-msgid "Make it easier to set up terrain (`#1729 <https://github.com/bjorn/tiled/issues/1729>`__)"
+msgid "Make it easier to set up terrain (`#1729 <https://github.com/mapeditor/tiled/issues/1729>`__)"
 msgstr ""
 
 #: ../../manual/editing-tilesets.rst:237
@@ -1255,11 +1259,11 @@ msgid "**Tile Collision Editor**"
 msgstr ""
 
 #: ../../manual/editing-tilesets.rst:239
-msgid "Allow setting collisions for multiple tiles at once (`#1322 <https://github.com/bjorn/tiled/issues/1322>`__)"
+msgid "Allow setting collisions for multiple tiles at once (`#1322 <https://github.com/mapeditor/tiled/issues/1322>`__)"
 msgstr ""
 
 #: ../../manual/editing-tilesets.rst:240
-msgid "Render tile collision shapes to the tileset view (`#1281 <https://github.com/bjorn/tiled/issues/1281>`__)"
+msgid "Render tile collision shapes to the tileset view (`#1281 <https://github.com/mapeditor/tiled/issues/1281>`__)"
 msgstr ""
 
 #: ../../manual/editing-tilesets.rst:242
@@ -1267,11 +1271,11 @@ msgid "**Tile Animation Editor**"
 msgstr ""
 
 #: ../../manual/editing-tilesets.rst:244
-msgid "Support multiple named animations per tile (`#986 <https://github.com/bjorn/tiled/issues/986>`__)"
+msgid "Support multiple named animations per tile (`#986 <https://github.com/mapeditor/tiled/issues/986>`__)"
 msgstr ""
 
 #: ../../manual/editing-tilesets.rst:245
-msgid "Make it easier to define animations spanning multiple tiles (`#811 <https://github.com/bjorn/tiled/issues/811>`__)"
+msgid "Make it easier to define animations spanning multiple tiles (`#811 <https://github.com/mapeditor/tiled/issues/811>`__)"
 msgstr ""
 
 #: ../../manual/export.rst:18
@@ -2785,11 +2789,11 @@ msgid "There are many ways in which the layers can be made more powerful:"
 msgstr ""
 
 #: ../../manual/layers.rst:189
-msgid "Ability to lock individual objects (`#828 <https://github.com/bjorn/tiled/issues/828>`__)."
+msgid "Ability to lock individual objects (`#828 <https://github.com/mapeditor/tiled/issues/828>`__)."
 msgstr ""
 
 #: ../../manual/layers.rst:191
-msgid "Moving certain map-global properties to the Tile Layer (`#149 <https://github.com/bjorn/tiled/issues/149>`__). It would be useful if one map could accommodate layers of different tile sizes and maybe even of different orientation."
+msgid "Moving certain map-global properties to the Tile Layer (`#149 <https://github.com/mapeditor/tiled/issues/149>`__). It would be useful if one map could accommodate layers of different tile sizes and maybe even of different orientation."
 msgstr ""
 
 #: ../../manual/objects.rst:2
@@ -3138,11 +3142,11 @@ msgid "Here are some ideas about improvements that could be made to the above to
 msgstr ""
 
 #: ../../manual/objects.rst:375
-msgid "Some improvements could still be made to the support for editing polygons and polylines, like allowing to rotate and scale the selected nodes (`#1487 <https://github.com/bjorn/tiled/issues/1487>`__)."
+msgid "Some improvements could still be made to the support for editing polygons and polylines, like allowing to rotate and scale the selected nodes (`#1487 <https://github.com/mapeditor/tiled/issues/1487>`__)."
 msgstr ""
 
 #: ../../manual/objects.rst:379
-msgid "The tools could put short usage instructions in the status bar, to help new users without requiring them to carefully read the manual (`#1855 <https://github.com/bjorn/tiled/issues/1855>`__)."
+msgid "The tools could put short usage instructions in the status bar, to help new users without requiring them to carefully read the manual (`#1855 <https://github.com/mapeditor/tiled/issues/1855>`__)."
 msgstr ""
 
 #: ../../manual/preferences.rst:2
@@ -4223,19 +4227,19 @@ msgid "If your map loader does not support object templates, but you'd still lik
 msgstr ""
 
 #: ../../manual/using-templates.rst:107
-msgid "Resetting overridden properties individually (`#1725 <https://github.com/bjorn/tiled/issues/1725>`__)."
+msgid "Resetting overridden properties individually (`#1725 <https://github.com/mapeditor/tiled/issues/1725>`__)."
 msgstr ""
 
 #: ../../manual/using-templates.rst:108
-msgid "Locking template properties (`#1726 <https://github.com/bjorn/tiled/issues/1726>`__)."
+msgid "Locking template properties (`#1726 <https://github.com/mapeditor/tiled/issues/1726>`__)."
 msgstr ""
 
 #: ../../manual/using-templates.rst:109
-msgid "Handling wrong file paths (`#1732 <https://github.com/bjorn/tiled/issues/1732>`__)."
+msgid "Handling wrong file paths (`#1732 <https://github.com/mapeditor/tiled/issues/1732>`__)."
 msgstr ""
 
 #: ../../manual/using-templates.rst:110
-msgid "Managing the templates folder, e.g. moving, renaming or deleting a template or a sub-folder (`#1723 <https://github.com/bjorn/tiled/issues/1723>`__)."
+msgid "Managing the templates folder, e.g. moving, renaming or deleting a template or a sub-folder (`#1723 <https://github.com/mapeditor/tiled/issues/1723>`__)."
 msgstr ""
 
 #: ../../manual/worlds.rst:6

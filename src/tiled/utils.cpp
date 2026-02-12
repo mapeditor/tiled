@@ -31,9 +31,6 @@
 #include <QDBusMessage>
 #endif
 #include <QDesktopServices>
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-#include <QDesktopWidget>
-#endif
 #include <QDir>
 #include <QFileInfo>
 #include <QGuiApplication>
@@ -41,14 +38,13 @@
 #include <QImageWriter>
 #include <QJsonDocument>
 #include <QKeyEvent>
+#include <QLayout>
+#include <QLayoutItem>
 #include <QMainWindow>
 #include <QMenu>
 #include <QPainter>
 #include <QProcess>
 #include <QRegularExpression>
-#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
-#include <QRegExp>
-#endif
 #include <QScreen>
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0) && QT_VERSION < QT_VERSION_CHECK(6, 5, 1)
@@ -111,11 +107,7 @@ QStringList cleanFilterList(const QString &filter)
     QRegularExpressionMatch match = regexp.match(filter);
     if (match.hasMatch())
         f = match.captured(2);
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    return f.split(QLatin1Char(' '), QString::SkipEmptyParts);
-#else
     return f.split(QLatin1Char(' '), Qt::SkipEmptyParts);
-#endif
 }
 
 /**
@@ -125,25 +117,14 @@ QStringList cleanFilterList(const QString &filter)
 bool fileNameMatchesNameFilter(const QString &filePath,
                                const QString &nameFilter)
 {
-#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
-    QRegExp rx;
-    rx.setCaseSensitivity(Qt::CaseInsensitive);
-    rx.setPatternSyntax(QRegExp::Wildcard);
-#else
     QRegularExpression rx;
     rx.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
-#endif
 
     const QStringList filterList = cleanFilterList(nameFilter);
     const QString fileName = QFileInfo(filePath).fileName();
     for (const QString &filter : filterList) {
-#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
-        rx.setPattern(filter);
-        if (rx.exactMatch(fileName))
-#else
         rx.setPattern(QRegularExpression::wildcardToRegularExpression(filter));
         if (rx.match(fileName).hasMatch())
-#endif
             return true;
     }
     return false;
@@ -174,7 +155,7 @@ struct Match {
  *
  * Attempts to make matching indexes sequential.
  */
-static bool matchingIndexes(const QString &word, QStringRef string, QVarLengthArray<Match, 16> &matchingIndexes)
+static bool matchingIndexes(const QString &word, QStringView string, QVarLengthArray<Match, 16> &matchingIndexes)
 {
     int index = 0;
 
@@ -214,7 +195,7 @@ static bool matchingIndexes(const QString &word, QStringRef string, QVarLengthAr
  *
  * A score of 0 indicates there is no match.
  */
-static int matchingScore(const QString &word, QStringRef string)
+static int matchingScore(const QString &word, QStringView string)
 {
     QVarLengthArray<Match, 16> indexes;
     if (!matchingIndexes(word, string, indexes))
@@ -237,7 +218,7 @@ static int matchingScore(const QString &word, QStringRef string)
     return score;
 }
 
-static bool matchingRanges(const QString &word, QStringRef string, int offset, RangeSet<int> &result)
+static bool matchingRanges(const QString &word, QStringView string, int offset, RangeSet<int> &result)
 {
     QVarLengthArray<Match, 16> indexes;
     if (!matchingIndexes(word, string, indexes))
@@ -249,7 +230,7 @@ static bool matchingRanges(const QString &word, QStringRef string, int offset, R
     return true;
 }
 
-int matchingScore(const QStringList &words, QStringRef string)
+int matchingScore(const QStringList &words, QStringView string)
 {
     const auto fileName = string.mid(string.lastIndexOf(QLatin1Char('/')) + 1);
 
@@ -270,7 +251,7 @@ int matchingScore(const QStringList &words, QStringRef string)
     return totalScore;
 }
 
-RangeSet<int> matchingRanges(const QStringList &words, QStringRef string)
+RangeSet<int> matchingRanges(const QStringList &words, QStringView string)
 {
     const int startOfFileName = string.lastIndexOf(QLatin1Char('/')) + 1;
     const auto fileName = string.mid(startOfFileName);
@@ -311,7 +292,7 @@ QIcon themeIcon(const QString &name)
 QIcon colorIcon(const QColor &color, QSize size)
 {
     QPixmap pixmap(size);
-    pixmap.fill(color);
+    pixmap.fill(color.isValid() ? color : Qt::transparent);
 
     QPainter painter(&pixmap);
     painter.setPen(QColor(0, 0, 0, 128));
@@ -325,15 +306,11 @@ QIcon colorIcon(const QColor &color, QSize size)
  */
 QRect screenRect(const QWidget *widget)
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    return QApplication::desktop()->availableGeometry(widget);
-#else
     const QPoint center = widget->mapToGlobal(widget->rect().center());
     const QScreen *screen = widget->screen()->virtualSiblingAt(center);
     if (!screen)
         screen = widget->screen();
     return screen->availableGeometry();
-#endif
 }
 
 /**
@@ -605,6 +582,21 @@ QString Error::jsonParseError(QJsonParseError error)
     return QCoreApplication::translate("File Errors",
                                        "JSON parse error at offset %1:\n%2.").arg(error.offset).arg(error.errorString());
 
+}
+
+/**
+ * Recursively deletes all items and their widgets from the given layout.
+ */
+void deleteAllFromLayout(QLayout *layout)
+{
+    while (QLayoutItem *item = layout->takeAt(0)) {
+        delete item->widget();
+
+        if (QLayout *layout = item->layout())
+            deleteAllFromLayout(layout);
+
+        delete item;
+    }
 }
 
 } // namespace Utils

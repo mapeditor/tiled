@@ -86,6 +86,7 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
 
     mUi->orientation->addItem(tr("Orthogonal"), QVariant::fromValue(Map::Orthogonal));
     mUi->orientation->addItem(tr("Isometric"), QVariant::fromValue(Map::Isometric));
+    mUi->orientation->addItem(tr("Oblique"), QVariant::fromValue(Map::Oblique));
     mUi->orientation->addItem(tr("Isometric (Staggered)"), QVariant::fromValue(Map::Staggered));
     mUi->orientation->addItem(tr("Hexagonal (Staggered)"), QVariant::fromValue(Map::Hexagonal));
 
@@ -102,19 +103,17 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
     mUi->tileWidth->setValue(session::mapTileWidth);
     mUi->tileHeight->setValue(session::mapTileHeight);
 
-    Session::current().set("Map/SizeTest", QSize(2, 4300));
-
     // Make the font of the pixel size label smaller
     QFont font = mUi->pixelSizeLabel->font();
     const qreal size = QFontInfo(font).pointSizeF();
     font.setPointSizeF(size - 1);
     mUi->pixelSizeLabel->setFont(font);
 
-    connect(mUi->mapWidth, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &NewMapDialog::refreshPixelSize);
-    connect(mUi->mapHeight, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &NewMapDialog::refreshPixelSize);
-    connect(mUi->tileWidth, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &NewMapDialog::refreshPixelSize);
-    connect(mUi->tileHeight, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &NewMapDialog::refreshPixelSize);
-    connect(mUi->orientation, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &NewMapDialog::refreshPixelSize);
+    connect(mUi->mapWidth, &QSpinBox::valueChanged, this, &NewMapDialog::refreshPixelSize);
+    connect(mUi->mapHeight, &QSpinBox::valueChanged, this, &NewMapDialog::refreshPixelSize);
+    connect(mUi->tileWidth, &QSpinBox::valueChanged, this, &NewMapDialog::refreshPixelSize);
+    connect(mUi->tileHeight, &QSpinBox::valueChanged, this, &NewMapDialog::refreshPixelSize);
+    connect(mUi->orientation, &QComboBox::currentIndexChanged, this, &NewMapDialog::refreshPixelSize);
     connect(mUi->fixedSize, &QAbstractButton::toggled, this, &NewMapDialog::updateWidgets);
 
     if (session::fixedSize)
@@ -151,6 +150,9 @@ MapDocumentPtr NewMapDialog::createMap()
     mapParameters.tileWidth = session::mapTileWidth;
     mapParameters.tileHeight = session::mapTileHeight;
     mapParameters.infinite = !session::fixedSize;
+
+    if (mapParameters.orientation == Map::Oblique)
+        mapParameters.skewX = mapParameters.tileWidth / 2;
 
     auto map = std::make_unique<Map>(mapParameters);
 
@@ -192,6 +194,8 @@ void NewMapDialog::refreshPixelSize()
     mapParameters.height = mUi->mapHeight->value();
     mapParameters.tileWidth = mUi->tileWidth->value();
     mapParameters.tileHeight = mUi->tileHeight->value();
+    if (mapParameters.orientation == Map::Oblique)
+        mapParameters.skewX = mapParameters.tileWidth / 2;
 
     const Map map(mapParameters);
     const QSize size = MapRenderer::create(&map)->mapBoundingRect().size();

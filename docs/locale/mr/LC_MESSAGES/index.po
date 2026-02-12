@@ -8,28 +8,34 @@ msgstr ""
 "Project-Id-Version: Tiled 1.7\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-04 15:28+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2025-02-02 19:01+0000\n"
+"Last-Translator: Prachi Joshi <josprachi@yahoo.com>\n"
+"Language-Team: Marathi <https://hosted.weblate.org/projects/tiled/"
+"documentation-index/mr/>\n"
 "Language: mr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #: ../../index.rst:10
 #: ../../index.rst:10
 msgid "User Manual"
-msgstr ""
+msgstr "वापरकर्ता मॅन्युअल"
 
 #: ../../index.rst:32
 #: ../../index.rst:32
 msgid "Reference"
-msgstr ""
+msgstr "संदर्भ"
 
 #: ../../index.rst:2
 msgid "Tiled Documentation"
-msgstr ""
+msgstr "Tiled चे दस्तऐवजीकरण"
 
 #: ../../index.rst:6
 msgid "If you're not finding what you're looking for on these pages, please don't hesitate to ask questions on the `Tiled Forum <https://discourse.mapeditor.org>`_ or the `Tiled Discord <https://discord.gg/39wbTv7>`_."
 msgstr ""
+"तुम्ही या पानांवर जे शोधत आहात ते तुम्हाला सापडत नसल्यास, कृपया `टाईल्ड फोरम "
+"<https://discourse.mapeditor.org>`_ किंवा `टाईल्ड डिसकॉर्ड <https: //discord.gg/"
+"39wbTv7>`_वर प्रश्न विचारण्यास अजिबात संकोच करू नका."

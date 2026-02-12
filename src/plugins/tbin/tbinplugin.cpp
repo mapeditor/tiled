@@ -33,9 +33,7 @@
 
 #include <QCoreApplication>
 #include <QDir>
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
 #include <QStringView>
-#endif
 
 #include <cmath>
 #include <fstream>
@@ -183,11 +181,7 @@ std::unique_ptr<Tiled::Map> TbinMapFormat::read(const QString &fileName)
                     continue;
 
                 const QString name = QString::fromStdString(prop.first);
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
                 const auto strs = QStringView(name).split(QLatin1Char('@'));
-#else
-                const auto strs = name.splitRef('@');
-#endif
                 if (strs[1] == QLatin1String("TileIndex")) {
                     int index = strs[2].toInt();
                     tbin::Properties dummyProps;

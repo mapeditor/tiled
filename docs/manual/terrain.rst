@@ -107,9 +107,21 @@ as Terrain Image".
 
 .. note::
 
+    .. image:: images/terrain/transition-to-empty.png
+       :alt: Set of forest tiles that transition to empty, where the parts of each tile that represent the forest are labelled with a red terrain, and the empty parts are not labelled.
+       :align: right
+       :scale: 60%
+       :class: no-bottom-margin
+
     We generally don't need to define an explicit terrain for "empty tiles".
     If you have tiles transitioning to nothing, it should be enough to not
     mark those areas.
+
+    (Example © Game Shovel LLC, license: MIT)
+
+    .. raw:: html
+
+       <div style="clear: both"></div>
 
 With our terrains set up we're ready to mark each of our tiles.
 

@@ -38,6 +38,14 @@
 
 namespace Tiled {
 
+MapObject *DisplayObjectRef::object() const
+{
+    if (!mapDocument || ref.id <= 0)
+        return nullptr;
+    return mapDocument->map()->findObjectById(ref.id);
+}
+
+
 class ImmutableMapObjectProxyModel : public ReversingProxyModel
 {
 public:

@@ -37,7 +37,7 @@ to switch to the :ref:`select-objects-tool` tool.
 Insert Rectangle
 ~~~~~~~~~~~~~~~~
 
-Shortcut: ``R``
+Shortcut: ``R`` |insert-rectangle|
 
 The rectangle was the first type of object supported by Tiled, which is why
 objects are rectangles by default in the :doc:`/reference/tmx-map-format`. They
@@ -61,7 +61,7 @@ around its position. This is mainly to keep it visible and selectable.
 Insert Point
 ~~~~~~~~~~~~~~
 
-Shortcut: ``I``
+Shortcut: ``I`` |insert-point|
 
 Points are the simplest objects you can place on a map. They only represent a
 location, and cannot be resized or rotated. Simply click on the map to position
@@ -72,18 +72,35 @@ a point object.
 Insert Ellipse
 ~~~~~~~~~~~~~~
 
-Shortcut: ``C``
+Shortcut: ``C`` |insert-ellipse|
 
 Ellipses work the same way as `rectangles <#insert-rectangle>`__, except
 that they are rendered as an ellipse. Useful for when your area or
 collision shape needs to represent a circle or ellipse.
+
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.12</div>
+
+
+.. _insert-capsule-tool:
+
+Insert Capsule
+~~~~~~~~~~~~~~
+
+Shortcut: ``Shift+C`` |insert-capsule|
+
+Capsules work the same way as `rectangles <#insert-rectangle>`__, except
+that they are rendered as a capsule. Useful for when your area or
+collision shape needs to represent a circle or capsule.
 
 .. _insert-polygon-tool:
 
 Insert Polygon
 ~~~~~~~~~~~~~~
 
-Shortcut: ``P``
+Shortcut: ``P`` |insert-polygon|
 
 Polygons are the most flexible way of defining the shape of an area.
 They are most commonly used for defining collision shapes.
@@ -125,7 +142,7 @@ The :ref:`edit-polygons-tool` tool is used to edit polylines as well.
 Insert Tile
 ~~~~~~~~~~~
 
-Shortcut: ``T``
+Shortcut: ``T`` |insert-tile|
 
 Tiles can be inserted as objects to have full flexibility in placing,
 scaling and rotating the tile image on your map. Like all objects, tile
@@ -168,7 +185,7 @@ objects consistent with that of :ref:`rectangle objects
 Insert Template
 ~~~~~~~~~~~~~~~
 
-Shortcut: ``V``
+Shortcut: ``V`` |insert-template|
 
 Can be used to quickly insert multiple instances of the template
 selected in the Templates view. See :ref:`creating-template-instances`.
@@ -178,7 +195,7 @@ selected in the Templates view. See :ref:`creating-template-instances`.
 Insert Text
 ~~~~~~~~~~~
 
-Shortcut: ``X``
+Shortcut: ``X`` |insert-text|
 
 Text objects can be used to add arbitrary multi-line text to your maps.
 You can configure various font properties and the wrapping / clipping
@@ -190,7 +207,7 @@ the game.
 Select Objects
 --------------
 
-Shortcut: ``S``
+Shortcut: ``S`` |tool-select-objects|
 
 When you're not inserting new objects, you're generally using the Select
 Objects tool. It packs a lot of functionality, which is outlined below.
@@ -266,7 +283,7 @@ You can also rotate the selected objects in 90-degree steps by pressing
 Changing Stacking Order
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-If the active :ref:`Object Layer <object-layer-introduction>` has its Drawing
+If the active :ref:`Object Layer <object-layer-introduction>` has its Draw
 Order property set to Manual (the default is Top Down), you can control
 the stacking order of the selected objects within their object layer
 using the following keys:
@@ -374,13 +391,24 @@ jump there by right-clicking the property and selecting *Go to Object*.
 
    -  Some improvements could still be made to the support for editing
       polygons and polylines, like allowing to rotate and scale the
-      selected nodes (`#1487 <https://github.com/bjorn/tiled/issues/1487>`__).
+      selected nodes (`#1487 <https://github.com/mapeditor/tiled/issues/1487>`__).
 
    -  The tools could put short usage instructions in the status bar,
       to help new users without requiring them to carefully read the
-      manual (`#1855 <https://github.com/bjorn/tiled/issues/1855>`__).
+      manual (`#1855 <https://github.com/mapeditor/tiled/issues/1855>`__).
 
    If you like any of these plans, please help me getting around to it
    faster by `sponsoring Tiled development <https://www.mapeditor.org/donate>`__. The
    more support I receive the more time I can afford to spend improving
    Tiled!
+
+
+.. |tool-select-objects| image:: ../../src/tiled/resources/images/22/tool-select-objects.png
+.. |insert-rectangle| image:: ../../src/tiled/resources/images/24/insert-rectangle.png
+.. |insert-point| image:: ../../src/tiled/resources/images/24/insert-point.png
+.. |insert-ellipse| image:: ../../src/tiled/resources/images/24/insert-ellipse.png
+.. |insert-capsule| image:: ../../src/tiled/resources/images/24/insert-capsule.png
+.. |insert-polygon| image:: ../../src/tiled/resources/images/24/insert-polygon.png
+.. |insert-tile| image:: ../../src/tiled/resources/images/24/insert-image.png
+.. |insert-template| image:: ../../src/tiled/resources/images/24/insert-template.png
+.. |insert-text| image:: ../../src/tiled/resources/images/24/insert-text.png

@@ -21,7 +21,7 @@
      </property>
      <layout class="QGridLayout" name="_6">
       <item row="0" column="1">
-       <widget class="QSpinBox" name="widthSpinBox">
+       <widget class="Tiled::ExpressionSpinBox" name="widthSpinBox">
         <property name="suffix">
          <string> tiles</string>
         </property>
@@ -54,7 +54,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QSpinBox" name="heightSpinBox">
+       <widget class="Tiled::ExpressionSpinBox" name="heightSpinBox">
         <property name="suffix">
          <string> tiles</string>
         </property>
@@ -86,7 +86,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QSpinBox" name="offsetXSpinBox">
+       <widget class="Tiled::ExpressionSpinBox" name="offsetXSpinBox">
         <property name="suffix">
          <string> tiles</string>
         </property>
@@ -109,7 +109,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QSpinBox" name="offsetYSpinBox">
+       <widget class="Tiled::ExpressionSpinBox" name="offsetYSpinBox">
         <property name="suffix">
          <string> tiles</string>
         </property>
@@ -133,10 +133,10 @@
       </sizepolicy>
      </property>
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::Shape::StyledPanel</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
+      <enum>QFrame::Shadow::Raised</enum>
      </property>
      <layout class="QVBoxLayout" name="_5">
       <item>
@@ -158,16 +158,21 @@
    <item row="3" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>Tiled::ExpressionSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>expressionspinbox.h</header>
+  </customwidget>
   <customwidget>
    <class>Tiled::ResizeHelper</class>
    <extends>QWidget</extends>

@@ -2,6 +2,10 @@ name: Build Packages
 
 on:
   push:
+    branches:
+      - master
+    tags:
+      - '*'
     paths-ignore:
     - 'docs/**'
     - '**.md'
@@ -15,12 +19,14 @@ on:
     - '.travis.yml'
 
 env:
-  QBS_VERSION: 2.3.1
-  SENTRY_VERSION: 0.7.6
+  QBS_VERSION: 2.4.1
+  CMAKE_VERSION: 3.31
+  SENTRY_VERSION: 0.7.19
   SENTRY_ORG: mapeditor
   SENTRY_PROJECT: tiled
   TILED_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') }}
   TILED_SNAPSHOT: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+  SIGNING_ENABLED: ${{ secrets.SIGNING_ENABLED }}
 
 jobs:
   version:
@@ -39,48 +45,47 @@ jobs:
         echo "release=${TILED_RELEASE}" >> $GITHUB_OUTPUT
 
   linux:
-    name: Linux (AppImage, Qt ${{ matrix.qt_version_major }})
-    runs-on: ubuntu-20.04
+    name: Linux (AppImage)
+    runs-on: ubuntu-22.04
     needs: version
-
-    strategy:
-      matrix:
-        include:
-        - qt_version: 5.15.2
-          qt_version_major: 5
-        - qt_version: 6.7.2
-          qt_version_major: 6
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
-      QT_VERSION: ${{ matrix.qt_version }}
-      QTCREATOR_VERSION: 13.0.2
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
+
+    - name: Checkout qaseprite
+      uses: actions/checkout@v6
+      with:
+        repository: mapeditor/qaseprite
+        path: qaseprite
+        ref: '1.0.3'
 
     - name: Install dependencies
       run: |
         sudo apt update
         sudo apt install \
           libcurl4-openssl-dev \
-          libgl1-mesa-dev \
-          libxcb-cursor0 \
-          libxcb-icccm4 \
-          libxcb-image0 \
-          libxcb-keysyms1 \
-          libxcb-randr0 \
-          libxcb-render-util0 \
-          libxcb-shape0 \
-          libxcb-xinerama0 \
-          libxkbcommon-x11-0 \
-          libzstd-dev
+          libfreetype-dev \
+          libfuse2 \
+          libharfbuzz-dev \
+          libpixman-1-dev \
+          libxcursor-dev \
+          libxi-dev \
+          libzstd-dev \
+          zlib1g-dev
 
     - name: Install Qt
-      run: |
-        ./dist/install-qt.sh --version ${QT_VERSION} qtbase qtdeclarative qtsvg qtimageformats qttools qttranslations icu | tee -a $GITHUB_PATH
-        ./dist/install-qt.sh --version ${QTCREATOR_VERSION} qtcreator | tee -a $GITHUB_PATH
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: 6.9.3
+        arch: linux_gcc_64
+        modules: "qtimageformats"
+        tools: 'tools_qtcreator'
+        setup-python: false
+        cache: true
 
     - name: Setup ccache
       uses: hendrikmuhs/ccache-action@v1
@@ -90,13 +95,13 @@ jobs:
     - name: Setup CMake
       uses: jwlawson/actions-setup-cmake@v2
       with:
-        cmake-version: '3.19'
+        cmake-version: '${{ env.CMAKE_VERSION }}'
 
     - name: Setup Qbs
       run: |
         qbs --version
         qbs setup-toolchains --detect
-        qbs config defaultProfile x86_64-linux-gnu-gcc-10
+        qbs config defaultProfile x86_64-linux-gnu-gcc-11
 
     - name: Build Sentry Native
       run: |
@@ -108,6 +113,19 @@ jobs:
         cmake --build build --parallel
         sudo cmake --install build --prefix /usr --config RelWithDebInfo
         popd
+
+    - name: Install qaseprite plugin
+      working-directory: qaseprite
+      run: |
+        ./update-submodules.sh --minimal
+        cmake -B build -DCMAKE_BUILD_TYPE=Release \
+          -DUSE_SHARED_ZLIB=on \
+          -DUSE_SHARED_LIBPNG=on \
+          -DUSE_SHARED_PIXMAN=on \
+          -DUSE_SHARED_FREETYPE=on \
+          -DUSE_SHARED_HARFBUZZ=on
+        cmake --build build --config Release
+        cmake --install build --config Release
 
     - name: Build Tiled
       run: |
@@ -129,20 +147,17 @@ jobs:
         wget --no-verbose "https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage"
         chmod +x linuxdeploy*.AppImage
         export EXTRA_QT_PLUGINS=svg
-        export LD_LIBRARY_PATH=/opt/Qt/${QT_VERSION}/gcc_64/lib:$PWD/AppDir/usr/lib
-        export OUTPUT=Tiled-Qt${{ matrix.qt_version_major }}-x86_64.AppImage
+        export LD_LIBRARY_PATH=${QT_ROOT_DIR}/lib:$PWD/AppDir/usr/lib
+        export OUTPUT=Tiled-${{ needs.version.outputs.version }}_Linux_x86_64.AppImage
         # Avoid shipping the debug information
         find AppDir -name \*.debug -delete
-        ./linuxdeploy-x86_64.AppImage --appdir AppDir --custom-apprun=dist/linux/AppRun --exclude-library "*libpython3*" --plugin qt
-        # We don't need the bearer plugins (needed for Qt 5 only)
-        rm -rfv AppDir/usr/plugins/bearer
-        ./linuxdeploy-x86_64.AppImage --appdir AppDir --custom-apprun=dist/linux/AppRun --exclude-library "*libpython3*" --output appimage
+        ./linuxdeploy-x86_64.AppImage --appdir AppDir --custom-apprun=dist/linux/AppRun --exclude-library "*libpython3*" --plugin qt --output appimage
 
     - name: Upload Tiled.AppImage
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
-        name: Tiled-Qt${{ matrix.qt_version_major }}-x86_64.AppImage
-        path: Tiled-Qt${{ matrix.qt_version_major }}-x86_64.AppImage
+        name: Tiled-${{ needs.version.outputs.version }}_Linux_x86_64.AppImage
+        path: Tiled-${{ needs.version.outputs.version }}_Linux_x86_64.AppImage
 
   snap:
     name: Linux (snap)
@@ -154,7 +169,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         fetch-depth: 0
 
@@ -169,7 +184,7 @@ jobs:
       uses: snapcore/action-build@v1
 
     - name: Upload snap artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: tiled_amd64.snap
         path: tiled_*_amd64.snap
@@ -191,31 +206,55 @@ jobs:
     strategy:
       matrix:
         include:
-        - qt_version: 5.12.12
-          version_suffix: "10.12-10.15"
+        - qt_version: 5.15.2
+          qt_modules: ""
+          version_suffix: "10.13-10.15"
           architectures: x86_64
-        - qt_version: 6.7.2
+          cmake_architectures: x86_64
+        - qt_version: 6.9.3
+          qt_modules: "qtimageformats"
           version_suffix: "11+"
           architectures: x86_64,arm64
+          cmake_architectures: x86_64;arm64
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
-      QT_VERSION: ${{ matrix.qt_version }}
-      QTCREATOR_VERSION: 13.0.2
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
+
+    - name: Checkout qaseprite
+      uses: actions/checkout@v6
+      with:
+        repository: mapeditor/qaseprite
+        path: qaseprite
+        ref: '1.0.3'
 
     - name: Install Qt
-      run: |
-        sudo ./dist/install-qt.sh --version ${QT_VERSION} qtbase qtdeclarative qtsvg qtimageformats qttools | tee -a $GITHUB_PATH
-        sudo ./dist/install-qt.sh --version ${QTCREATOR_VERSION} qtcreator | tee -a $GITHUB_PATH
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: ${{ matrix.qt_version }}
+        arch: clang_64
+        modules: ${{ matrix.qt_modules }}
+        cache: true
+
+    - name: Setup CMake
+      uses: jwlawson/actions-setup-cmake@v2
+      with:
+        cmake-version: '${{ env.CMAKE_VERSION }}'
 
     - name: Setup Qbs
       run: |
+        brew update
+        brew install qbs
+        export PATH="$(brew --prefix qbs)/bin:$PATH"
+        echo "$(brew --prefix qbs)/bin" >> "$GITHUB_PATH"
+        qbs --version
         qbs setup-toolchains --detect
-        qbs config defaultProfile xcode
+        qbs setup-qt --detect
+        qbs config profiles.qt-6-9-3.baseProfile xcode
+        qbs config defaultProfile qt-6-9-3
 
     - name: Build Zstandard
       run: |
@@ -224,9 +263,23 @@ jobs:
         CFLAGS="-arch arm64 -arch x86_64" make libzstd.a
         popd
 
+    - name: Install qaseprite plugin
+      working-directory: qaseprite
+      run: |
+        ./update-submodules.sh --no-zlib
+        cmake -B build -DCMAKE_BUILD_TYPE=Release \
+          -DUSE_SHARED_ZLIB=on \
+          -DCMAKE_OSX_ARCHITECTURES='${{ matrix.cmake_architectures }}'
+        cmake --build build --config Release
+        sudo cmake --install build --config Release
+
     - name: Build Tiled
       run: |
-        qbs install --install-root install config:release qbs.architectures:${{ matrix.architectures }} qbs.installPrefix:"" projects.Tiled.staticZstd:true
+        qbs install --install-root install config:release \
+          qbs.architectures:${{ matrix.architectures }} \
+          qbs.installPrefix:"" \
+          projects.Tiled.staticZstd:true \
+          products.python.condition:false
 
     - name: Deploy Qt
       run: |
@@ -237,14 +290,14 @@ jobs:
 
     - name: Create Certificate File
       id: certificateFile
-      if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
+      if: env.SIGNING_ENABLED == 'true'
       uses: timheuer/base64-to-file@v1
       with:
         fileName: 'certificate.p12'
         encodedString: ${{ secrets.MACOS_CERTIFICATE }}
 
     - name: Import Certificate
-      if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
+      if: env.SIGNING_ENABLED == 'true'
       run: |
         security create-keychain -p ${{ secrets.KEYCHAIN_PWD }} mapeditor/tiled
         security default-keychain -s mapeditor/tiled
@@ -253,22 +306,22 @@ jobs:
         security set-key-partition-list -S 'apple-tool:,apple:' -s -k ${{ secrets.KEYCHAIN_PWD }} mapeditor/tiled
 
     - name: Sign, Notarize & Staple
-      if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
+      if: env.SIGNING_ENABLED == 'true'
       run: |
-        codesign --deep --force --verify --verbose --sign Lindeijer --options runtime install/Tiled.app
+        codesign --deep --force --verify --verbose --sign Lindeijer --options runtime --entitlements src/tiledapp/app.entitlements install/Tiled.app
         ditto -c -k --sequesterRsrc --keepParent install/Tiled.app Tiled_for_notarization.zip
         xcrun notarytool submit --apple-id ${{ secrets.NOTARIZATION_USERNAME }} --password ${{ secrets.NOTARIZATION_PASSWORD }} --team-id ${{ secrets.NOTARIZATION_TEAM }} --wait Tiled_for_notarization.zip
         xcrun stapler staple install/Tiled.app
 
     - name: Create Archive
       run: |
-        ditto -c -k --sequesterRsrc --keepParent install/Tiled.app Tiled_macOS-${{ matrix.version_suffix }}.zip
+        ditto -c -k --sequesterRsrc --keepParent install/Tiled.app Tiled-${{ needs.version.outputs.version }}_macOS-${{ matrix.version_suffix }}.zip
 
     - name: Upload Tiled.app
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
-        name: Tiled_macOS-${{ matrix.version_suffix }}.app
-        path: Tiled_macOS-${{ matrix.version_suffix }}.zip
+        name: Tiled-${{ needs.version.outputs.version }}_macOS-${{ matrix.version_suffix }}.app
+        path: Tiled-${{ needs.version.outputs.version }}_macOS-${{ matrix.version_suffix }}.zip
 
   windows:
     name: Windows (${{ matrix.arch }}-bit, Qt ${{ matrix.qt_version_major }})
@@ -280,25 +333,27 @@ jobs:
         include:
         - qt_version: 5.15.2
           qt_version_major: 5
-          qt_toolchain: win32_mingw81
+          qt_arch: win32_mingw81
+          qt_modules: ""
           arch: 32
           openssl_arch: x86
-          mingw_version: 8.1.0
-          mingw_component: mingw
-          mingw_path: /c/Qt/Tools/mingw810_32/bin
-        - qt_version: 6.7.2
+          filename_suffix: 'Windows-7-8_x86'
+          mingw_component: tools_mingw
+          mingw_variant: qt.tools.win32_mingw810
+          mingw_dir: mingw810_32
+        - qt_version: 6.9.3
           qt_version_major: 6
-          qt_toolchain: win64_mingw
+          qt_arch: win64_mingw
+          qt_modules: "qtimageformats"
           arch: 64
           openssl_arch: x64
-          mingw_version: 9.0.0
-          mingw_component: mingw90
-          mingw_path: /c/Qt/Tools/mingw1120_64/bin
+          filename_suffix: 'Windows-10+_x86_64'
+          mingw_component: tools_mingw1310
+          mingw_variant: qt.tools.win64_mingw1310
+          mingw_dir: mingw1310_64
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
-      MINGW_PATH: ${{ matrix.mingw_path }}
-      OPENSSL_VERSION: 1.1.1
 
     defaults:
       run:
@@ -306,120 +361,108 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
+
+    - name: Checkout qaseprite
+      uses: actions/checkout@v6
+      with:
+        repository: mapeditor/qaseprite
+        path: qaseprite
+        ref: '1.0.3'
 
     - name: Install Qt
-      run: |
-        echo "QT_PATH=$(./dist/install-qt.sh --version ${{ matrix.qt_version }} --toolchain ${{ matrix.qt_toolchain }} qtbase qtdeclarative qtsvg qtimageformats qttools qttranslations)" >> $GITHUB_ENV
-        ./dist/install-qt.sh --version ${{ matrix.mingw_version }} --toolchain win${{ matrix.arch }}_mingw ${{ matrix.mingw_component }}
-        echo "OPENSSL_PATH=$(./dist/install-qt.sh --version ${OPENSSL_VERSION} openssl --arch ${{ matrix.openssl_arch }})" >> $GITHUB_ENV
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: ${{ matrix.qt_version }}
+        arch: ${{ matrix.qt_arch }}
+        modules: ${{ matrix.qt_modules }}
+        tools: "${{ matrix.mingw_component }},${{ matrix.mingw_variant }}"
+        aqtversion: '==3.1.19'
+        setup-python: false
+        cache: true
+
+    - name: Setup CMake
+      uses: jwlawson/actions-setup-cmake@v2
+      with:
+        cmake-version: '${{ env.CMAKE_VERSION }}'
 
     - name: Install Qbs
       run: |
-        choco install -y qbs --version ${QBS_VERSION}
+        choco install -y qbs --version ${{ env.QBS_VERSION }}
 
     - name: Setup Qbs
       run: |
-        qbs setup-toolchains ${MINGW_PATH}/*-w64-mingw32-gcc.exe mingw
-        qbs setup-qt ${QT_PATH}/qmake.exe qt
+        export IQTA_TOOLS="${IQTA_TOOLS//D:/\/d}"
+        export IQTA_TOOLS="${IQTA_TOOLS//\\/\/}"
+        export QT_ROOT_DIR="${QT_ROOT_DIR//D:/\/d}"
+        export QT_ROOT_DIR="${QT_ROOT_DIR//\\/\/}"
+        qbs setup-toolchains ${IQTA_TOOLS}/${{ matrix.mingw_dir }}/bin/*-w64-mingw32-gcc.exe mingw
+        qbs setup-qt ${QT_ROOT_DIR}/bin/qmake.exe qt
         qbs config defaultProfile qt
 
     - name: Build Zstandard
       run: |
-        export PATH="${MINGW_PATH}:$PATH"
         git clone --depth 1 -b release https://github.com/facebook/zstd.git
         pushd zstd/lib
         CC=gcc mingw32-make -j2 libzstd.a
         popd
 
+    - name: Install qaseprite plugin
+      working-directory: qaseprite
+      run: |
+        ./update-submodules.sh
+        pushd aseprite/laf
+        patch -p1 < ../../laf-msvc-dynamic-runtime.patch
+        popd
+        cmake -B build -DCMAKE_BUILD_TYPE=Release -G "MinGW Makefiles"
+        cmake --build build --config Release
+        cmake --install build --config Release
+
+
     - name: Build Tiled
       run: |
         export TILED_MSI_VERSION=1.4.${GITHUB_RUN_NUMBER}
         qbs build config:release projects.Tiled.windowsInstaller:true projects.Tiled.staticZstd:true
-        mv release/installer*/Tiled-*.msi .
+        mv release/installer*/Tiled-*.msi ./Tiled-${{ needs.version.outputs.version }}_${{ matrix.filename_suffix }}.msi
 
     - name: Upload Tiled installer
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
-        name: Tiled-win${{ matrix.arch }}.msi
-        path: Tiled-*.msi
+        name: Tiled-${{ needs.version.outputs.version }}_${{ matrix.filename_suffix }}.msi
+        path: Tiled-${{ needs.version.outputs.version }}_*.msi
 
     - name: Upload Tiled archive
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
-        name: Tiled-win${{ matrix.arch }}
+        name: Tiled-${{ needs.version.outputs.version }}_${{ matrix.filename_suffix }}.zip
         path: release/install-root/*
 
   github:
     name: Upload to GitHub releases
     runs-on: ubuntu-latest
     needs: [version, linux, macos, windows]
+    permissions:
+      contents: write
 
     if: github.repository == 'mapeditor/tiled' && github.event_name == 'push' && needs.version.outputs.release == 'true'
 
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v7
+
     - name: Create release
       id: create_release
-      uses: actions/create-release@v1
+      uses: softprops/action-gh-release@v2
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Tiled ${{ needs.version.outputs.version }}
+        name: Tiled ${{ needs.version.outputs.version }}
         draft: true
         prerelease: false
-
-    - name: Download all artifacts
-      uses: actions/download-artifact@v4
-
-    - name: Upload Windows 64-bit installer
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Tiled-win64.msi/Tiled-${{ needs.version.outputs.version }}-win64.msi
-        asset_name: Tiled-${{ needs.version.outputs.version }}_Windows-10+_x86_64.msi
-        asset_content_type: application/x-msi
-
-    - name: Upload Windows 32-bit installer
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Tiled-win32.msi/Tiled-${{ needs.version.outputs.version }}-win32.msi
-        asset_name: Tiled-${{ needs.version.outputs.version }}_Windows-7-8_x86.msi
-        asset_content_type: application/x-msi
-
-    - name: Upload Linux AppImage (Qt5)
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Tiled-Qt5-x86_64.AppImage/Tiled-Qt5-x86_64.AppImage
-        asset_name: Tiled-${{ needs.version.outputs.version }}_Linux_Qt-5_x86_64.AppImage
-        asset_content_type: application/vnd.appimage
-
-    - name: Upload Linux AppImage (Qt6)
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Tiled-Qt6-x86_64.AppImage/Tiled-Qt6-x86_64.AppImage
-        asset_name: Tiled-${{ needs.version.outputs.version }}_Linux_Qt-6_x86_64.AppImage
-        asset_content_type: application/vnd.appimage
-
-    - name: Upload macOS app (10.12-10.15)
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Tiled_macOS-10.12-10.15.app/Tiled_macOS-10.12-10.15.zip
-        asset_name: Tiled-${{ needs.version.outputs.version }}_macOS-10.12-10.15.zip
-        asset_content_type: application/zip
-
-    - name: Upload macOS app (11+)
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: Tiled_macOS-11+.app/Tiled_macOS-11+.zip
-        asset_name: Tiled-${{ needs.version.outputs.version }}_macOS-11+.zip
-        asset_content_type: application/zip
+        files: |
+          Tiled-${{ needs.version.outputs.version }}_Windows-10+_x86_64.msi/*.msi
+          Tiled-${{ needs.version.outputs.version }}_Windows-7-8_x86.msi/*.msi
+          Tiled-${{ needs.version.outputs.version }}_Linux_x86_64.AppImage/*.AppImage
+          Tiled-${{ needs.version.outputs.version }}_macOS-10.13-10.15.app/*.zip
+          Tiled-${{ needs.version.outputs.version }}_macOS-11+.app/*.zip
 
   sentry:
     name: Create Sentry release
@@ -430,12 +473,14 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
 
     - name: Create Sentry release
-      uses: getsentry/action-release@v1
+      uses: getsentry/action-release@v3
       env:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       with:
         environment: releases
-        version: tiled@${{ needs.version.outputs.version }}
+        release: tiled@${{ needs.version.outputs.version }}

@@ -231,3 +231,41 @@ void Tiled::increaseImageAllocationLimit(int mbLimit)
     Q_UNUSED(mbLimit);
 #endif
 }
+
+static constexpr struct BlendModeMapping {
+    Tiled::BlendMode mode;
+    const char *name;
+} blendModeMapping[] = {
+    { Tiled::BlendMode::Normal,     "normal"        },
+    { Tiled::BlendMode::Add,        "add"           },
+    { Tiled::BlendMode::Multiply,   "multiply"      },
+    { Tiled::BlendMode::Screen,     "screen"        },
+    { Tiled::BlendMode::Overlay,    "overlay"       },
+    { Tiled::BlendMode::Darken,     "darken"        },
+    { Tiled::BlendMode::Lighten,    "lighten"       },
+    { Tiled::BlendMode::ColorDodge, "color-dodge"   },
+    { Tiled::BlendMode::ColorBurn,  "color-burn"    },
+    { Tiled::BlendMode::HardLight,  "hard-light"    },
+    { Tiled::BlendMode::SoftLight,  "soft-light"    },
+    { Tiled::BlendMode::Difference, "difference"    },
+    { Tiled::BlendMode::Exclusion,  "exclusion"     },
+};
+
+QString Tiled::blendModeToString(BlendMode mode)
+{
+    for (const auto &mapping : blendModeMapping)
+        if (mapping.mode == mode)
+            return QString::fromLatin1(mapping.name);
+
+    return QString();
+}
+
+Tiled::BlendMode Tiled::blendModeFromString(const QString &name)
+{
+    if (!name.isEmpty())
+        for (const auto &mapping : blendModeMapping)
+            if (QLatin1String(mapping.name) == name)
+                return mapping.mode;
+
+    return BlendMode::Normal;
+}

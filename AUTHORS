@@ -338,10 +338,10 @@ Most of the icons are from the GNOME and GIMP icon themes (GPL)
 
 Some Icons are Copyright (C) Yusuke Kamiyamane. All rights reserved.
 Licensed under a Creative Commons Attribution 3.0 license.
-See http://p.yusukekamiyamane.com/
+See https://p.yusukekamiyamane.com/
 
 The dice icon is based on an SVG by Steaphan Greene that I found on Wikipedia:
-http://en.wikipedia.org/wiki/File:2-Dice-Icon.svg
+https://en.wikipedia.org/wiki/File:2-Dice-Icon.svg
 
 Inkscape icons by Barbara Muraus, Jakub Steiner and Josh Andler (CC-BY-SA 3.0)
 * src/tiled/images/14/hidden.png
@@ -362,6 +362,12 @@ Icons from the Elementary icon theme (GPLv3)
 * src/tiled/images/32/dialog-error.png
 * src/tiled/images/32/dialog-warning.png
 
+Icons from the GNOME project (CC0 1.0 Universal)
+* src/tiled/resources/images/scalable/text-bold-symbolic.svg
+* src/tiled/resources/images/scalable/text-italic-symbolic.svg
+* src/tiled/resources/images/scalable/text-underline-symbolic.svg
+* src/tiled/resources/images/scalable/text-strikethrough-symbolic.svg
+
 
 Tilesets:
 
@@ -370,7 +376,7 @@ isometric_grass_and_water.png - (C) Clint Bellanger, released as GPL2, GPL3, CC-
 tmw_desert_spacing.png - (C) The Mana World Development Team, GPL
 sewer_tileset.png - (C) Blues Brothers RPG developers, GPL
 Replica Island - (C) Chris Pruett and Genki Mine, Apache (except hotspots.png)
-hexmini.png - Public Domain, http://opengameart.org/content/pixel-hex-tilesets-enhanced
-buch-outdoor.png - (C) Michele "Buch" Bucelli, CC-BY 3.0, http://opengameart.org/users/buch
-examples/sticker-knight - (C) Ponywolf, CC0, http://opengameart.org/content/sticker-knight-platformer
+hexmini.png - Public Domain, https://opengameart.org/content/pixel-hex-tilesets-enhanced
+buch-outdoor.png - (C) Michele "Buch" Bucelli, CC-BY 3.0, https://opengameart.org/users/buch
+examples/sticker-knight - (C) Ponywolf, CC0, https://opengameart.org/content/sticker-knight-platformer
 wangblob.png, CC0, https://opengameart.org/content/seamless-tileset-template-ii

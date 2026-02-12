@@ -155,6 +155,7 @@ public:
     int usageFlags = AnyUsage;
     bool memberValuesResolved = true;
     bool drawFill = true;
+
     ClassPropertyType(const QString &name) : PropertyType(PT_Class, name) {}
 
     ExportValue toExportValue(const QVariant &value, const ExportContext &) const override;
@@ -167,6 +168,7 @@ public:
 
     bool canAddMemberOfType(const PropertyType *propertyType) const;
     bool canAddMemberOfType(const PropertyType *propertyType, const PropertyTypes &types) const;
+    bool canAddMember(const QVariant &value, const PropertyTypes &types) const;
 
     bool isPropertyValueType() const { return usageFlags & PropertyValueType; }
     bool isClassFor(const Object &object) const;
@@ -174,12 +176,14 @@ public:
     void setUsageFlags(int flags, bool value);
 };
 
+using SharedPropertyType = QSharedPointer<PropertyType>;
+
 /**
  * Container class for property types.
  */
 class TILEDSHARED_EXPORT PropertyTypes
 {
-    using Types = QVector<PropertyType*>;
+    using Types = QVector<SharedPropertyType>;
 
 public:
     PropertyTypes() = default;
@@ -188,16 +192,18 @@ public:
 
     PropertyTypes& operator=(PropertyTypes&& other) = default;
 
-    PropertyType &add(std::unique_ptr<PropertyType> type);
+    PropertyType &add(const SharedPropertyType &type);
     void clear();
     size_t count() const;
     size_t count(PropertyType::Type type) const;
     void removeAt(int index);
-    std::unique_ptr<PropertyType> takeAt(int index);
+    SharedPropertyType takeAt(int index);
     PropertyType &typeAt(int index);
     void moveType(int from, int to);
     void merge(PropertyTypes types);
     void mergeObjectTypes(const QVector<ObjectType> &objectTypes);
+
+    int findIndexByName(const QString &name) const;
 
     const PropertyType *findTypeById(int typeId) const;
     const PropertyType *findTypeByName(const QString &name, int usageFlags = ClassPropertyType::AnyUsage) const;
@@ -214,6 +220,12 @@ public:
     Types::const_iterator end() const { return mTypes.end(); }
 
 private:
+    void ensureMembersResolvedHelper(const QVariant &value, const ExportContext &context);
+    void ensureMembersResolved(const QVariantMap &valueMap, const ExportContext &context);
+    void resolveValue(ClassPropertyType *classType, QVariant &value, const ExportContext &context);
+    QVariant resolveValue(ClassPropertyType *classType,
+                          const QVariantMap &map,
+                          const ExportContext &context);
     void resolveMemberValues(ClassPropertyType *classType, const ExportContext &context);
 
     PropertyType *findTypeByNamePriv(const QString &name, int usageFlags = ClassPropertyType::AnyUsage);
@@ -223,14 +235,14 @@ private:
     int mNextId = 0;
 };
 
-inline PropertyType &PropertyTypes::add(std::unique_ptr<PropertyType> type)
+inline PropertyType &PropertyTypes::add(const SharedPropertyType &type)
 {
     if (type->id == 0)
         type->id = ++mNextId;
     else
         mNextId = std::max(mNextId, type->id);
 
-    mTypes.append(type.release());
+    mTypes.append(type);
     return *mTypes.last();
 }
 
@@ -246,12 +258,12 @@ inline size_t PropertyTypes::count() const
 
 inline void PropertyTypes::removeAt(int index)
 {
-    delete mTypes.takeAt(index);
+    mTypes.removeAt(index);
 }
 
-inline std::unique_ptr<PropertyType> PropertyTypes::takeAt(int index)
+inline SharedPropertyType PropertyTypes::takeAt(int index)
 {
-    return std::unique_ptr<PropertyType> { mTypes.takeAt(index) };
+    return mTypes.takeAt(index);
 }
 
 inline PropertyType &PropertyTypes::typeAt(int index)
@@ -268,4 +280,5 @@ using SharedPropertyTypes = QSharedPointer<PropertyTypes>;
 
 } // namespace Tiled
 
+Q_DECLARE_METATYPE(Tiled::ExportValue);
 Q_DECLARE_METATYPE(Tiled::PropertyType*);

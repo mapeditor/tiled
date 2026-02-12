@@ -87,6 +87,7 @@ public:
         Polygon,
         Polyline,
         Ellipse,
+        Capsule,
         Text,
         Point,
     };

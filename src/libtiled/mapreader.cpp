@@ -103,14 +103,14 @@ private:
     void readTileLayerData(TileLayer &tileLayer);
     void readTileLayerRect(TileLayer &tileLayer,
                            Map::LayerDataFormat layerDataFormat,
-                           QStringRef encoding,
+                           QStringView encoding,
                            QRect bounds);
     void decodeBinaryLayerData(TileLayer &tileLayer,
                                const QByteArray &data,
                                Map::LayerDataFormat format,
                                QRect bounds);
     void decodeCSVLayerData(TileLayer &tileLayer,
-                            QStringRef text,
+                            QStringView text,
                             QRect bounds);
 
     /**
@@ -137,6 +137,7 @@ private:
 
     Properties readProperties();
     void readProperty(Properties *properties, const ExportContext &context);
+    QVariant readPropertyValue(const ExportContext &context);
 
     MapReader *p;
 
@@ -269,6 +270,10 @@ std::unique_ptr<Map> MapReaderPrivate::readMap()
     mapParameters.staggerIndex = staggerIndexFromString(staggerIndex);
 
     bool ok;
+    if (const int skewX = atts.value(QLatin1String("skewx")).toInt(&ok); ok)
+        mapParameters.skewX = skewX;
+    if (const int skewY = atts.value(QLatin1String("skewy")).toInt(&ok); ok)
+        mapParameters.skewY = skewY;
     if (const qreal parallaxOriginX = atts.value(QLatin1String("parallaxoriginx")).toDouble(&ok); ok)
         mapParameters.parallaxOrigin.setX(parallaxOriginX);
     if (const qreal parallaxOriginY = atts.value(QLatin1String("parallaxoriginy")).toDouble(&ok); ok)
@@ -511,9 +516,9 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
 
     // Read tile quadrant terrain ids as Wang IDs. This is possible because the
     // terrain types (loaded as WangSet) are always stored before the tiles.
-    const QStringRef terrain = atts.value(QLatin1String("terrain"));
+    const auto terrain = atts.value(QLatin1String("terrain"));
     if (!terrain.isEmpty() && tileset.wangSetCount() > 0) {
-        QVector<QStringRef> quadrants = terrain.split(QLatin1Char(','));
+        const auto quadrants = terrain.split(QLatin1Char(','));
         WangId wangId;
         if (quadrants.size() == 4) {
             for (int i = 0; i < 4; ++i) {
@@ -777,7 +782,7 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                 } else if (xml.name() == QLatin1String("wangtile")) {
                     const QXmlStreamAttributes tileAtts = xml.attributes();
                     const int tileId = tileAtts.value(QLatin1String("tileid")).toInt();
-                    const QStringRef wangIdString = tileAtts.value(QLatin1String("wangid"));
+                    const auto wangIdString = tileAtts.value(QLatin1String("wangid"));
 
                     bool ok = true;
                     WangId wangId;
@@ -892,6 +897,9 @@ static void readLayerAttributes(Layer &layer,
         parallaxFactor.setY(factorY);
 
     layer.setParallaxFactor(parallaxFactor);
+
+    const auto mode = atts.value(QLatin1String("mode")).toString();
+    layer.setBlendMode(blendModeFromString(mode));
 }
 
 std::unique_ptr<TileLayer> MapReaderPrivate::readTileLayer()
@@ -962,7 +970,7 @@ void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer)
 
 void MapReaderPrivate::readTileLayerRect(TileLayer &tileLayer,
                                          Map::LayerDataFormat layerDataFormat,
-                                         QStringRef encoding,
+                                         QStringView encoding,
                                          QRect bounds)
 {
     Q_ASSERT(xml.isStartElement() && (xml.name() == QLatin1String("data") ||
@@ -1043,7 +1051,7 @@ void MapReaderPrivate::decodeBinaryLayerData(TileLayer &tileLayer,
 }
 
 void MapReaderPrivate::decodeCSVLayerData(TileLayer &tileLayer,
-                                          QStringRef text,
+                                          QStringView text,
                                           QRect bounds)
 {
     int currentIndex = 0;
@@ -1254,6 +1262,10 @@ std::unique_ptr<MapObject> MapReaderPrivate::readObject()
             xml.skipCurrentElement();
             object->setShape(MapObject::Ellipse);
             object->setPropertyChanged(MapObject::ShapeProperty);
+        } else if (xml.name() == QLatin1String("capsule")) {
+            xml.skipCurrentElement();
+            object->setShape(MapObject::Capsule);
+            object->setPropertyChanged(MapObject::ShapeProperty);
         } else if (xml.name() == QLatin1String("text")) {
             object->setTextData(readObjectText());
             object->setShape(MapObject::Text);
@@ -1279,13 +1291,8 @@ QPolygonF MapReaderPrivate::readPolygon()
 
     const QXmlStreamAttributes atts = xml.attributes();
     const QString points = atts.value(QLatin1String("points")).toString();
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    const QStringList pointsList = points.split(QLatin1Char(' '),
-                                                QString::SkipEmptyParts);
-#else
     const QStringList pointsList = points.split(QLatin1Char(' '),
                                                 Qt::SkipEmptyParts);
-#endif
 
     QPolygonF polygon;
     bool ok = true;
@@ -1297,21 +1304,12 @@ QPolygonF MapReaderPrivate::readPolygon()
             break;
         }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
         const qreal x = QStringView(point).left(commaPos).toDouble(&ok);
         if (!ok)
             break;
         const qreal y = QStringView(point).mid(commaPos + 1).toDouble(&ok);
         if (!ok)
             break;
-#else
-        const qreal x = point.leftRef(commaPos).toDouble(&ok);
-        if (!ok)
-            break;
-        const qreal y = point.midRef(commaPos + 1).toDouble(&ok);
-        if (!ok)
-            break;
-#endif
 
         polygon.append(QPointF(x, y));
     }
@@ -1454,12 +1452,21 @@ void MapReaderPrivate::readProperty(Properties *properties, const ExportContext 
     const QXmlStreamAttributes atts = xml.attributes();
     QString propertyName = atts.value(QLatin1String("name")).toString();
 
+    properties->insert(propertyName, readPropertyValue(context));
+}
+
+QVariant MapReaderPrivate::readPropertyValue(const ExportContext &context)
+{
+    const QXmlStreamAttributes atts = xml.attributes();
+
     ExportValue exportValue;
     exportValue.typeName = atts.value(QLatin1String("type")).toString();
     exportValue.propertyTypeName = atts.value(QLatin1String("propertytype")).toString();
 
     const QString propertyValue = atts.value(QLatin1String("value")).toString();
     exportValue.value = propertyValue;
+
+    QVariantList values;
 
     while (xml.readNext() != QXmlStreamReader::Invalid) {
         if (xml.isEndElement()) {
@@ -1470,12 +1477,17 @@ void MapReaderPrivate::readProperty(Properties *properties, const ExportContext 
         } else if (xml.isStartElement()) {
             if (xml.name() == QLatin1String("properties"))
                 exportValue.value = readProperties();
+            else if (xml.name() == QLatin1String("item"))
+                values.append(readPropertyValue(context));
             else
                 readUnknownElement();
         }
     }
 
-    properties->insert(propertyName, context.toPropertyValue(exportValue));
+    if (exportValue.typeName == QLatin1String("list"))
+        exportValue.value = values;
+
+    return context.toPropertyValue(exportValue);
 }
 
 

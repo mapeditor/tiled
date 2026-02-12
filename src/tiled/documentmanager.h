@@ -140,9 +140,7 @@ public:
 
     void abortMultiDocumentClose();
 
-    WorldDocument *ensureWorldDocument(const QString &fileName);
     bool isAnyWorldModified() const;
-    bool isWorldModified(const QString &fileName) const;
 
     QString fileDialogStartLocation() const;
 
@@ -194,8 +192,8 @@ public slots:
     void saveFile();
 
 private:
-    void onWorldLoaded(const QString &worldFile);
-    void onWorldUnloaded(const QString &worldFile);
+    void onWorldLoaded(WorldDocument *worldDocument);
+    void onWorldUnloaded(WorldDocument *worldDocument);
 
     void currentIndexChanged();
     void fileNameChanged(const QString &fileName,
@@ -233,7 +231,6 @@ private:
     QIcon mLockedIcon;
 
     QVector<DocumentPtr> mDocuments;
-    QMap<QString, WorldDocument*> mWorldDocuments;
     TilesetDocumentsModel *mTilesetDocumentsModel;
 
     // Pointer becomes null when deleted as part of the UI, to prevent double-deletion

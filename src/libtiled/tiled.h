@@ -33,6 +33,7 @@
 #include <QColor>
 #include <QDir>
 #include <QMetaType>
+#include <QPainter>
 #include <QRectF>
 #include <QString>
 #include <QUrl>
@@ -78,6 +79,25 @@ enum CompatibilityVersion {
     Tiled_Latest    = 65535,
 };
 
+// All values can be casted to QPainter::CompositionMode
+enum class BlendMode {
+    Normal      = QPainter::CompositionMode_SourceOver,
+
+    // For now we only support the SVG 1.2 blend modes
+    Add         = QPainter::CompositionMode_Plus,
+    Multiply    = QPainter::CompositionMode_Multiply,
+    Screen      = QPainter::CompositionMode_Screen,
+    Overlay     = QPainter::CompositionMode_Overlay,
+    Darken      = QPainter::CompositionMode_Darken,
+    Lighten     = QPainter::CompositionMode_Lighten,
+    ColorDodge  = QPainter::CompositionMode_ColorDodge,
+    ColorBurn   = QPainter::CompositionMode_ColorBurn,
+    HardLight   = QPainter::CompositionMode_HardLight,
+    SoftLight   = QPainter::CompositionMode_SoftLight,
+    Difference  = QPainter::CompositionMode_Difference,
+    Exclusion   = QPainter::CompositionMode_Exclusion,
+};
+
 const int CHUNK_SIZE = 16;
 const int CHUNK_BITS = 4;
 const int CHUNK_SIZE_MIN = 4;
@@ -87,6 +107,7 @@ static const char TILES_MIMETYPE[] = "application/vnd.tile.list";
 static const char FRAMES_MIMETYPE[] = "application/vnd.frame.list";
 static const char LAYERS_MIMETYPE[] = "application/vnd.layer.list";
 static const char PROPERTIES_MIMETYPE[] = "application/vnd.properties.list";
+static const char LIST_VALUES_MIMETYPE[] = "application/vnd.list-values.list";
 
 TILEDSHARED_EXPORT QPointF alignmentOffset(const QSizeF &size, Alignment alignment);
 TILEDSHARED_EXPORT Alignment flipAlignment(Alignment alignment, FlipDirection direction);
@@ -131,6 +152,9 @@ TILEDSHARED_EXPORT Alignment alignmentFromString(const QString &);
 TILEDSHARED_EXPORT CompatibilityVersion versionFromString(const QString &);
 
 TILEDSHARED_EXPORT void increaseImageAllocationLimit(int mbLimit = 4096);
+
+TILEDSHARED_EXPORT QString blendModeToString(BlendMode);
+TILEDSHARED_EXPORT BlendMode blendModeFromString(const QString &);
 
 } // namespace Tiled
 

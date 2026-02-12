@@ -41,8 +41,6 @@
 #include <QJsonDocument>
 #include <QtPlugin>
 
-#include "qtcompat_p.h"
-
 #include <memory>
 
 #ifdef Q_OS_WIN
@@ -424,13 +422,18 @@ int main(int argc, char *argv[])
     }
 #endif
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    // Disable JIT compilation in the Qt Quick V4 engine on macOS, since it
+    // triggers a crash in code-signed releases. This is resolved by adding the
+    // com.apple.security.cs.allow-jit entitlement since Qt 6.8.2.
+#if defined(Q_OS_MAC) && !defined(QT_DEBUG) && QT_VERSION < QT_VERSION_CHECK(6, 8, 2)
+    qputenv("QV4_FORCE_INTERPRETER", "1");
+#endif
+
     QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::RoundPreferFloor);
 
     // High-DPI scaling is always enabled in Qt 6
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-#endif
 #endif
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -444,7 +447,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
 #endif
 
-#ifdef Q_OS_MAC
+#if defined(Q_OS_MAC) && QT_VERSION < QT_VERSION_CHECK(6, 7, 3)
     QCoreApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
 
@@ -518,6 +521,9 @@ int main(int argc, char *argv[])
 
         if (!success) {
             qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to export map to target file.");
+            errorMsg = outputFormat->errorString();
+            if (!errorMsg.isEmpty())
+                qWarning().noquote() << errorMsg;
             return 1;
         }
         return 0;
@@ -563,6 +569,9 @@ int main(int argc, char *argv[])
 
         if (!success) {
             qWarning().noquote() << QCoreApplication::translate("Command line", "Failed to export tileset to target file.");
+            errorMsg = outputFormat->errorString();
+            if (!errorMsg.isEmpty())
+                qWarning().noquote() << errorMsg;
             return 1;
         }
         return 0;

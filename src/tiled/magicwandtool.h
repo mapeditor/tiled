@@ -23,7 +23,6 @@
 
 #pragma once
 
-
 #include "abstracttileselectiontool.h"
 
 #include "tilelayer.h"
@@ -35,7 +34,7 @@ class MapDocument;
 /**
  * Implements a tool that selects a region of connected similar tiles on the layer.
  */
-class MagicWandTool : public AbstractTileSelectionTool
+class MagicWandTool final : public AbstractTileSelectionTool
 {
     Q_OBJECT
 
@@ -46,6 +45,9 @@ public:
 
 protected:
     void tilePositionChanged(QPoint tilePos) override;
+
+private:
+    QVector<Cell> mMatchCells;
 };
 
 } // namespace Tiled

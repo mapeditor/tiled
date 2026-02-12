@@ -4,11 +4,11 @@
 
     <div class="new new-prev">Since Tiled 1.5</div>
 
-GameMaker Studio 2.3
-====================
+GameMaker
+=========
 
-GameMaker Studio 2.3 uses a JSON-based format to store its rooms, and Tiled
-ships with a plugin to export maps in this format.
+GameMaker uses a JSON-based format to store its rooms, and Tiled ships with a
+plugin to export maps in this format.
 
 This plugin will do its best to export the map as accurately as possible,
 mapping Tiled's various features to the matching GameMaker features.
@@ -20,13 +20,13 @@ as background layers.
 
 .. warning::
 
-   Since GameMaker's "Add Existing" action doesn't work at this point in time
-   (2.3.1) the easiest way to export a Tiled map to your GameMaker Project is
-   to overwrite an already existing ``room.yy`` file.
+   Since it's not possible to add a room to a project by selecting a .yy file,
+   the easiest way to export a Tiled map to your GameMaker project is to create
+   a new room in GameMaker and then overwrite its ``room.yy`` file when
+   exporting from Tiled.
 
-   Starting with Tiled 1.8, it is no longer necessary to deactivate the "Use
-   safe writing of files" option, since the GameMaker export now ignores it to
-   avoid reload issues in GameMaker.
+   In 2024, GameMaker made minor but incompatible changes to its file format.
+   Tiled 1.11.2 ships with an updated plugin that uses the new format.
 
 .. _yy-asset-references:
 

@@ -7,9 +7,9 @@ DynamicLibrary {
 
     Depends { name: "libtiled" }
     Depends { name: "translations" }
-    Depends { name: "qtpropertybrowser" }
     Depends { name: "qtsingleapplication" }
-    Depends { name: "Qt"; submodules: ["core", "widgets", "concurrent", "qml", "svg"]; versionAtLeast: "5.12" }
+    Depends { name: "Qt"; submodules: ["core", "widgets", "concurrent", "qml"]; versionAtLeast: "5.15.2" }
+    Depends { name: "Qt.svg"; condition: qbs.targetOS.contains("macos") }
     Depends { name: "Qt.openglwidgets"; condition: Qt.core.versionMajor >= 6; required: false }
     Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux") && project.dbus; required: false }
     Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") && Qt.core.versionMajor >= 6 }
@@ -39,7 +39,7 @@ DynamicLibrary {
         var defs = [
             "TILED_EDITOR_LIBRARY",
             "TILED_VERSION=" + project.version,
-            "QT_DISABLE_DEPRECATED_BEFORE=QT_VERSION_CHECK(5,15,0)",
+            "QT_DISABLE_DEPRECATED_BEFORE=0x050F00",
             "QT_NO_DEPRECATED_WARNINGS",
             "QT_NO_CAST_FROM_ASCII",
             "QT_NO_CAST_TO_ASCII",
@@ -95,9 +95,6 @@ DynamicLibrary {
         "actionmanager.h",
         "actionsearch.cpp",
         "actionsearch.h",
-        "addpropertydialog.cpp",
-        "addpropertydialog.h",
-        "addpropertydialog.ui",
         "addremovelayer.cpp",
         "addremovelayer.h",
         "addremovemapobject.cpp",
@@ -135,7 +132,6 @@ DynamicLibrary {
         "changemapobject.h",
         "changemapobjectsorder.cpp",
         "changemapobjectsorder.h",
-        "changemapproperty.cpp",
         "changemapproperty.h",
         "changeobjectgroupproperties.cpp",
         "changeobjectgroupproperties.h",
@@ -182,6 +178,8 @@ DynamicLibrary {
         "commandsedit.ui",
         "consoledock.cpp",
         "consoledock.h",
+        "createcapsuleobjecttool.cpp",
+        "createcapsuleobjecttool.h",
         "createellipseobjecttool.cpp",
         "createellipseobjecttool.h",
         "createobjecttool.cpp",
@@ -200,8 +198,6 @@ DynamicLibrary {
         "createtextobjecttool.h",
         "createtileobjecttool.cpp",
         "createtileobjecttool.h",
-        "custompropertieshelper.cpp",
-        "custompropertieshelper.h",
         "debugdrawitem.cpp",
         "debugdrawitem.h",
         "document.cpp",
@@ -253,6 +249,8 @@ DynamicLibrary {
         "exportasimagedialog.ui",
         "exporthelper.cpp",
         "exporthelper.h",
+        "expressionspinbox.cpp",
+        "expressionspinbox.h",
         "filechangedwarning.cpp",
         "filechangedwarning.h",
         "fileedit.cpp",
@@ -294,6 +292,8 @@ DynamicLibrary {
         "layermodel.h",
         "layeroffsettool.cpp",
         "layeroffsettool.h",
+        "listedit.cpp",
+        "listedit.h",
         "locatorwidget.cpp",
         "locatorwidget.h",
         "magicwandtool.h",
@@ -403,10 +403,12 @@ DynamicLibrary {
         "projectpropertiesdialog.ui",
         "propertiesdock.cpp",
         "propertiesdock.h",
+        "propertiesview.cpp",
+        "propertiesview.h",
         "propertieswidget.cpp",
         "propertieswidget.h",
-        "propertybrowser.cpp",
-        "propertybrowser.h",
+        "propertyeditorwidgets.cpp",
+        "propertyeditorwidgets.h",
         "propertytypeseditor.cpp",
         "propertytypeseditor.h",
         "propertytypeseditor.ui",
@@ -463,6 +465,8 @@ DynamicLibrary {
         "scriptmodule.h",
         "scriptprocess.cpp",
         "scriptprocess.h",
+        "scriptpropertytype.cpp",
+        "scriptpropertytype.h",
         "selectionrectangle.cpp",
         "selectionrectangle.h",
         "selectsametiletool.cpp",
@@ -553,10 +557,8 @@ DynamicLibrary {
         "undodock.h",
         "utils.cpp",
         "utils.h",
-        "varianteditorfactory.cpp",
-        "varianteditorfactory.h",
-        "variantpropertymanager.cpp",
-        "variantpropertymanager.h",
+        "variantmapproperty.cpp",
+        "variantmapproperty.h",
         "wangbrush.cpp",
         "wangbrush.h",
         "wangcolormodel.cpp",
@@ -583,6 +585,9 @@ DynamicLibrary {
         "worldmanager.h",
         "worldmovemaptool.cpp",
         "worldmovemaptool.h",
+        "worldpropertiesdialog.cpp",
+        "worldpropertiesdialog.h",
+        "worldpropertiesdialog.ui",
         "zoomable.cpp",
         "zoomable.h",
     ]
@@ -614,7 +619,7 @@ DynamicLibrary {
         Depends { name: "libtiled" }
         Depends { name: "qtsingleapplication" }
         Depends { name: "Qt"; submodules: ["qml"] }
-        cpp.includePaths: "."
+        cpp.includePaths: exportingProduct.sourceDirectory
     }
 
     install: !qbs.targetOS.contains("darwin")

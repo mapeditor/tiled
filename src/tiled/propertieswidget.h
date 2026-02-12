@@ -20,17 +20,27 @@
 
 #pragma once
 
+#include <QIcon>
+#include <QMap>
+#include <QPointer>
 #include <QWidget>
+
+class QScrollArea;
 
 namespace Tiled {
 
 class Object;
 
+class AddValueProperty;
+class CustomProperties;
 class Document;
-class PropertyBrowser;
+class GroupProperty;
+class ObjectProperties;
+class PropertiesView;
+class VariantListProperty;
 
 /**
- * The PropertiesWidget combines the PropertyBrowser with some controls that
+ * The PropertiesWidget combines the PropertiesView with some controls that
  * allow adding and removing properties. It also implements cut, copy and paste
  * actions and the context menu.
  */
@@ -47,37 +57,74 @@ public:
      */
     void setDocument(Document *document);
 
+    GroupProperty *customPropertiesGroup() const;
+    PropertiesView *propertiesView() const { return mPropertiesView; }
+
 signals:
     void bringToFront();
 
 public slots:
-    void selectCustomProperty(const QString &name);
+    void selectCustomProperty(const QString &name, bool focus = true);
 
 protected:
     bool event(QEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
 
 private:
+    struct SelectionState
+    {
+        QStringList customPropertyNames;
+        bool currentObjectHasAllProperties = true;
+
+        VariantListProperty *listProperty = nullptr;
+        QList<int> selectedListItems;
+
+        bool canCopy() const;
+    };
+
+    SelectionState selectionState() const;
+
     void currentObjectChanged(Object *object);
     void updateActions();
 
-    void cutProperties();
-    bool copyProperties();
-    void pasteProperties();
-    void openAddPropertyDialog();
+    void cut();
+    bool copy();
+    bool copyImpl(const SelectionState &state);
+    void paste();
+    void showAddValueProperty();
     void addProperty(const QString &name, const QVariant &value);
-    void removeProperties();
-    void renameProperty();
-    void renamePropertyTo(const QString &name);
+    void remove();
+    void removeImpl(const SelectionState &state);
+    void renameSelectedProperty();
+    void renameProperty(const QString &name);
     void showContextMenu(const QPoint &pos);
 
     void retranslateUi();
 
-    Document *mDocument;
-    PropertyBrowser *mPropertyBrowser;
+    QIcon mResetIcon;
+    QIcon mRemoveIcon;
+    QIcon mAddIcon;
+    QIcon mRenameIcon;
+    Document *mDocument = nullptr;
+    GroupProperty *mRootProperty = nullptr;
+    ObjectProperties *mPropertiesObject = nullptr;
+    CustomProperties *mCustomProperties = nullptr;
+    QPointer<AddValueProperty> mAddValueProperty;
+    QMap<int, bool> mExpandedStates;
+    PropertiesView *mPropertiesView;
     QAction *mActionAddProperty;
     QAction *mActionRemoveProperty;
     QAction *mActionRenameProperty;
 };
+
+inline bool PropertiesWidget::copy()
+{
+    return copyImpl(selectionState());
+}
+
+inline void PropertiesWidget::remove()
+{
+    removeImpl(selectionState());
+}
 
 } // namespace Tiled

@@ -27,10 +27,10 @@
 #include "tilelayer.h"
 #include "tileset.h"
 
+#include <QCoreApplication>
 #include <QList>
 #include <QMap>
 #include <QRegion>
-#include <QRegularExpression>
 #include <QSet>
 #include <QString>
 #include <QVector>
@@ -275,9 +275,9 @@ private:
  * - copy regions of Maps (multiple Layers, the layerlist is a
  *                         lookup-table for matching the Layers)
  */
-class TILED_EDITOR_EXPORT AutoMapper : public QObject
+class TILED_EDITOR_EXPORT AutoMapper
 {
-    Q_OBJECT
+    Q_DECLARE_TR_FUNCTIONS(Tiled::AutoMapper)
 
 public:
     struct Options
@@ -332,11 +332,10 @@ public:
      * @param rulesMap The map containing the AutoMapping rules. The
      *                 AutoMapper takes ownership of this map.
      */
-    AutoMapper(std::unique_ptr<Map> rulesMap, const QRegularExpression &mapNameFilter = {});
-    ~AutoMapper() override;
+    explicit AutoMapper(std::unique_ptr<Map> rulesMap);
+    ~AutoMapper();
 
     QString rulesMapFileName() const;
-    const QRegularExpression &mapNameFilter() const;
 
     /**
      * Checks if the passed \a ruleLayerName is used as input layer in this
@@ -350,7 +349,7 @@ public:
      * painful to keep these data structures up to date all time. (indices of
      * layers of the working map)
      */
-    void prepareAutoMap(AutoMappingContext &context);
+    void prepareAutoMap(AutoMappingContext &context) const;
 
     /**
      * Here is done all the AutoMapping.
@@ -466,7 +465,6 @@ private:
      */
     const std::unique_ptr<Map> mRulesMap;
     const std::unique_ptr<MapRenderer> mRulesMapRenderer;
-    const QRegularExpression mMapNameFilter;
 
     RuleMapSetup mRuleMapSetup;
 
@@ -488,10 +486,5 @@ private:
 
     const TileLayer dummy;  // used in case input layers are missing
 };
-
-inline const QRegularExpression &AutoMapper::mapNameFilter() const
-{
-    return mMapNameFilter;
-}
 
 } // namespace Tiled

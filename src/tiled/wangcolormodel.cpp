@@ -20,7 +20,9 @@
 
 #include "wangcolormodel.h"
 
+#include "changeevents.h"
 #include "changewangcolordata.h"
+#include "mapdocument.h"
 #include "tileset.h"
 #include "tilesetdocument.h"
 #include "wangset.h"
@@ -42,9 +44,7 @@ WangColorModel::WangColorModel(TilesetDocument *tilesetDocument,
 
 QModelIndex WangColorModel::colorIndex(int color) const
 {
-    if (mWangSet)
-        Q_ASSERT(color <= mWangSet->colorCount());
-    else
+    if (!mWangSet || color > mWangSet->colorCount())
         return QModelIndex();
 
     return createIndex(color - 1, 0);
@@ -130,30 +130,45 @@ void WangColorModel::setName(WangColor *wangColor, const QString &name)
 {
     wangColor->setName(name);
     emitDataChanged(wangColor);
+    emitToTilesetAndMaps(WangColorChangeEvent(wangColor, WangColorChangeEvent::NameProperty));
 }
 
 void WangColorModel::setImage(WangColor *wangColor, int imageId)
 {
     wangColor->setImageId(imageId);
     emitDataChanged(wangColor);
+    emitToTilesetAndMaps(WangColorChangeEvent(wangColor, WangColorChangeEvent::ImageProperty));
 }
 
 void WangColorModel::setColor(WangColor *wangColor, const QColor &color)
 {
     wangColor->setColor(color);
     emitDataChanged(wangColor);
+    emitToTilesetAndMaps(WangColorChangeEvent(wangColor, WangColorChangeEvent::ColorProperty));
 }
 
 void WangColorModel::setProbability(WangColor *wangColor, qreal probability)
 {
     wangColor->setProbability(probability);
     // no data changed signal because probability not exposed by model
+    emitToTilesetAndMaps(WangColorChangeEvent(wangColor, WangColorChangeEvent::ProbabilityProperty));
 }
 
 void WangColorModel::emitDataChanged(WangColor *wangColor)
 {
     const QModelIndex i = colorIndex(wangColor->colorIndex());
     emit dataChanged(i, i);
+}
+
+void WangColorModel::emitToTilesetAndMaps(const ChangeEvent &event)
+{
+    emit mTilesetDocument->changed(event);
+
+    // todo: this doesn't work reliably because it only reaches maps that use
+    // the tileset, whereas the Properties view can be showing stuff from any
+    // tileset.
+    for (MapDocument *mapDocument : mTilesetDocument->mapDocuments())
+        emit mapDocument->changed(event);
 }
 
 #include "moc_wangcolormodel.cpp"

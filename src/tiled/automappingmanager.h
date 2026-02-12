@@ -30,7 +30,7 @@
 #include <QString>
 
 #include <memory>
-#include <vector>
+#include <unordered_map>
 
 namespace Tiled {
 
@@ -38,6 +38,12 @@ class TileLayer;
 
 class AutoMapper;
 class MapDocument;
+
+struct RuleMapReference
+{
+    QString filePath;
+    QRegularExpression mapNameFilter;
+};
 
 /**
  * This class is a superior class to the AutoMapper and AutoMapperWrapper class.
@@ -82,11 +88,13 @@ signals:
 private:
     void onRegionEdited(const QRegion &where, TileLayer *touchedLayer);
     void onMapFileNameChanged();
-    void onFileChanged();
+    void onFileChanged(const QString &path);
+
+    const AutoMapper *findAutoMapper(const QString &filePath);
 
     bool loadFile(const QString &filePath);
     bool loadRulesFile(const QString &filePath);
-    bool loadRuleMap(const QString &filePath);
+    std::unique_ptr<AutoMapper> loadRuleMap(const QString &filePath);
 
     /**
      * Applies automapping to the region \a where.
@@ -107,10 +115,19 @@ private:
     MapDocument *mMapDocument = nullptr;
 
     /**
-     * For each new file of rules a new AutoMapper is setup. In this vector we
-     * can store all of the AutoMappers in order.
+     * For each rule map referenced by the rules file a new AutoMapper is
+     * setup. In this map we store all loaded AutoMappers instances.
      */
-    std::vector<std::unique_ptr<AutoMapper>> mAutoMappers;
+    std::unordered_map<QString, std::unique_ptr<AutoMapper>> mLoadedAutoMappers;
+
+    /**
+     * The active list of rule map references, in the order they were
+     * encountered in the rules file.
+     *
+     * Some loaded rule maps might not be active, and some might be active
+     * multiple times.
+     */
+    QVector<RuleMapReference> mRuleMapReferences;
 
     /**
      * This tells you if the rules for the current map document were already

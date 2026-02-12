@@ -43,12 +43,7 @@ Product {
                 return Qt.core.libPath + "/lib"
             }
         }
-        property string postfix: {
-            var suffix = "";
-            if (qbs.targetOS.contains("windows") && qbs.debugInformation && Qt.core.versionMajor < 6 && Qt.core.versionMinor < 15)
-                suffix += "d";
-            return suffix + cpp.dynamicLibrarySuffix;
-        }
+        property string postfix: cpp.dynamicLibrarySuffix
         files: {
             function addQtVersions(libs) {
                 var result = [];
@@ -110,7 +105,7 @@ Product {
 
     property var pluginFiles: {
         if (qbs.targetOS.contains("windows")) {
-            if (qbs.debugInformation)
+            if (qbs.debugInformation && qbs.toolchain.contains("msvc"))
                 return ["*d.dll"];
             else
                 return ["*.dll"];
@@ -122,7 +117,7 @@ Product {
 
     property var pluginExcludeFiles: {
         var files = ["*.pdb"];
-        if (!(qbs.targetOS.contains("windows") && qbs.debugInformation)) {
+        if (!(qbs.toolchain.contains("msvc") && qbs.debugInformation)) {
             // Exclude debug DLLs.
             //
             // This also excludes the qdirect2d.dll platform plugin, but I'm
@@ -194,7 +189,7 @@ Product {
         prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/tls/")
         files: {
             if (qbs.targetOS.contains("windows")) {
-                if (qbs.debugInformation)
+                if (qbs.debugInformation && qbs.toolchain.contains("msvc"))
                     return ["qschannelbackendd.dll"];
                 else
                     return ["qschannelbackend.dll"];

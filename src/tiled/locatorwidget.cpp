@@ -22,10 +22,12 @@
 
 #include "documentmanager.h"
 #include "filteredit.h"
+#include "preferences.h"
 #include "projectmanager.h"
 #include "utils.h"
 
 #include <QApplication>
+#include <QCollator>
 #include <QDir>
 #include <QKeyEvent>
 #include <QPainter>
@@ -100,11 +102,7 @@ void FileMatchDelegate::paint(QPainter *painter,
 
     QString filePath = index.data().toString();
     const int lastSlash = filePath.lastIndexOf(QLatin1Char('/'));
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    const auto ranges = Utils::matchingRanges(mWords, &filePath);
-#else
     const auto ranges = Utils::matchingRanges(mWords, filePath);
-#endif
 
     filePath = QDir::toNativeSeparators(filePath);
 
@@ -321,11 +319,7 @@ void LocatorWidget::setVisible(bool visible)
 void LocatorWidget::setFilterText(const QString &text)
 {
     const QString normalized = QDir::fromNativeSeparators(text);
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    const QStringList words = normalized.split(QLatin1Char(' '), QString::SkipEmptyParts);
-#else
     const QStringList words = normalized.split(QLatin1Char(' '), Qt::SkipEmptyParts);
-#endif
 
     mLocatorSource->setFilterWords(words);
 
@@ -384,13 +378,17 @@ void FileLocatorSource::setFilterWords(const QStringList &words)
     auto projectModel = ProjectManager::instance()->projectModel();
     auto matches = projectModel->findFiles(words);
 
-    std::stable_sort(matches.begin(), matches.end(), [] (const ProjectModel::Match &a, const ProjectModel::Match &b) {
+    QCollator collator;
+    collator.setCaseSensitivity(Qt::CaseInsensitive);
+    collator.setNumericMode(Preferences::instance()->naturalSorting());
+
+    std::stable_sort(matches.begin(), matches.end(), [&] (const ProjectModel::Match &a, const ProjectModel::Match &b) {
         // Sort based on score first
         if (a.score != b.score)
             return a.score > b.score;
 
         // If score is the same, sort alphabetically
-        return a.relativePath().compare(b.relativePath(), Qt::CaseInsensitive) < 0;
+        return collator.compare(a.relativePath(), b.relativePath()) < 0;
     });
 
     mDelegate->setWords(words);

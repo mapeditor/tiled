@@ -20,10 +20,6 @@
 
 #include "tiledproxystyle.h"
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-#include "utils.h"
-#endif
-
 #include <QAbstractScrollArea>
 #include <QApplication>
 #include <QComboBox>
@@ -131,15 +127,10 @@ static const qreal baseDpi = 96;
 
 static qreal dpi(const QStyleOption *option)
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
     // Expect that QStyleOption::QFontMetrics::QFont has the correct DPI set
     if (option)
         return option->fontMetrics.fontDpi();
     return baseDpi;
-#else
-    Q_UNUSED(option)
-    return Utils::defaultDpi();
-#endif
 }
 
 static qreal dpiScaled(qreal value, qreal dpi)
@@ -820,11 +811,8 @@ void TiledProxyStyle::drawControl(ControlElement element,
 
             QRect textRect(xpos, y + windowsItemVMargin, w - xm - windowsRightBorder - tab + 1, h - 2 * windowsItemVMargin);
             QRect vTextRect = visualRect(opt->direction, menuitem->rect, textRect);
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
             QStringView s(menuitem->text);
-#else
-            QStringRef s(&menuitem->text);
-#endif
+
             if (!s.isEmpty()) {                     // draw text
                 p->save();
                 int t = s.indexOf(QLatin1Char('\t'));

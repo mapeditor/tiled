@@ -23,7 +23,6 @@
 
 #include "magicwandtool.h"
 
-#include "brushitem.h"
 #include "tilepainter.h"
 
 using namespace Tiled;
@@ -45,9 +44,21 @@ void MagicWandTool::tilePositionChanged(QPoint tilePos)
     if (!tileLayer)
         return;
 
-    TilePainter regionComputer(mapDocument(), tileLayer);
-    setSelectedRegion(regionComputer.computeFillRegion(tilePos));
-    brushItem()->setTileRegion(selectedRegion());
+    // Reset the list when the left mouse button isn't pressed
+    if (!mMouseDown)
+        mMatchCells.clear();
+
+    TilePainter tilePainter(mapDocument(), tileLayer);
+
+    const Cell targetCell = tilePainter.cellAt(tilePos);
+    if (!mMatchCells.contains(targetCell))
+        mMatchCells.append(targetCell);
+
+    const auto condition = [&](const Cell &cell) {
+        return mMatchCells.contains(cell);
+    };
+
+    setSelectionPreview(tilePainter.computeFillRegion(tilePos, condition));
 }
 
 void MagicWandTool::languageChanged()

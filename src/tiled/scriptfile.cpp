@@ -345,11 +345,7 @@ static bool copyRecursively(const QString &srcFilePath,
         return false;
     }
 #ifdef Q_OS_UNIX
-#if QT_VERSION < QT_VERSION_CHECK(5,14,0)
-    if (srcFileInfo.isSymLink()) {
-#else
     if (srcFileInfo.isSymbolicLink()) {
-#endif
         // For now, disable symlink preserving copying on Windows.
         // MS did a good job to prevent people from using symlinks - even if they are supported.
         if (!createSymLink(storedLinkTarget(srcFilePath), tgtFilePath)) {
@@ -784,11 +780,8 @@ void registerFile(QJSEngine *jsEngine)
 {
     QJSValue globalObject = jsEngine->globalObject();
     globalObject.setProperty(QStringLiteral("File"), jsEngine->newQObject(new ScriptFile));
-
-#if QT_VERSION >= 0x050800
     globalObject.setProperty(QStringLiteral("TextFile"), jsEngine->newQMetaObject<ScriptTextFile>());
     globalObject.setProperty(QStringLiteral("BinaryFile"), jsEngine->newQMetaObject<ScriptBinaryFile>());
-#endif
 }
 
 } // namespace Tiled

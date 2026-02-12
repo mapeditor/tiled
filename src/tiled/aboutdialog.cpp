@@ -51,7 +51,7 @@ AboutDialog::AboutDialog(QWidget *parent): QDialog(parent)
             "<p align=\"center\">You may modify and redistribute this program under the terms of the GPL (version 2 or later). "
             "A copy of the GPL is contained in the 'COPYING' file distributed with Tiled.</p>\n"
             "<p align=\"center\"><a href=\"https://www.mapeditor.org/\">https://www.mapeditor.org/</a></p>\n")
-            .arg(QApplication::applicationVersion(), QStringLiteral("2024"));
+            .arg(QApplication::applicationVersion(), QStringLiteral("2025"));
 
     textBrowser->setHtml(html);
 

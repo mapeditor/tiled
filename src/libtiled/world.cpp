@@ -46,10 +46,7 @@ namespace Tiled {
 
 void World::setMapRect(int mapIndex, const QRect &rect)
 {
-    if (maps[mapIndex].rect != rect) {
-        maps[mapIndex].rect = rect;
-        hasUnsavedChanges = true;
-    }
+    maps[mapIndex].rect = rect;
 }
 
 void World::removeMap(int mapIndex)
@@ -106,14 +103,8 @@ QRect World::mapRect(const QString &fileName) const
     for (const WorldPattern &pattern : patterns) {
         QRegularExpressionMatch match = pattern.regexp.match(fileName);
         if (match.hasMatch()) {
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
             const int x = match.capturedView(1).toInt();
             const int y = match.capturedView(2).toInt();
-#else
-            const int x = match.capturedRef(1).toInt();
-            const int y = match.capturedRef(2).toInt();
-#endif
-
             return QRect(QPoint(x * pattern.multiplierX,
                                 y * pattern.multiplierY) + pattern.offset,
                          pattern.mapSize);
@@ -135,13 +126,8 @@ QVector<WorldMapEntry> World::allMaps() const
             for (const QString &fileName : entries) {
                 QRegularExpressionMatch match = pattern.regexp.match(fileName);
                 if (match.hasMatch()) {
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
                     const int x = match.capturedView(1).toInt();
                     const int y = match.capturedView(2).toInt();
-#else
-                    const int x = match.capturedRef(1).toInt();
-                    const int y = match.capturedRef(2).toInt();
-#endif
 
                     WorldMapEntry entry;
                     entry.fileName = dir.filePath(fileName);
@@ -271,7 +257,7 @@ std::unique_ptr<World> World::load(const QString &fileName,
     QDir dir = QFileInfo(fileName).dir();
     std::unique_ptr<World> world(new World);
 
-    world->fileName = QFileInfo(fileName).canonicalFilePath();
+    world->fileName = fileName;
 
     const QJsonArray maps = object.value(QLatin1String("maps")).toArray();
     for (const QJsonValue &value : maps) {
@@ -313,6 +299,10 @@ std::unique_ptr<World> World::load(const QString &fileName,
         else
             world->patterns.append(pattern);
     }
+
+    const QJsonArray properties = object.value(QLatin1String("properties")).toArray();
+    const ExportContext context(dir.path());
+    world->setProperties(propertiesFromJson(properties, context));
 
     world->onlyShowAdjacentMaps = object.value(QLatin1String("onlyShowAdjacentMaps")).toBool();
 
@@ -360,11 +350,16 @@ bool World::save(World &world, QString *errorString)
         patterns.append(jsonPattern);
     }
 
+    const ExportContext context(worldDir.path());
+    const QJsonArray properties = propertiesToJson(world.properties(), context);
+
     QJsonObject document;
     if (!maps.isEmpty())
         document.insert(QLatin1String("maps"), maps);
     if (!patterns.isEmpty())
         document.insert(QLatin1String("patterns"), patterns);
+    if (!properties.isEmpty())
+        document.insert(QLatin1String("properties"), properties);
     document.insert(QLatin1String("type"), QLatin1String("world"));
     document.insert(QLatin1String("onlyShowAdjacentMaps"), world.onlyShowAdjacentMaps);
 
@@ -379,8 +374,6 @@ bool World::save(World &world, QString *errorString)
 
     file.write(doc.toJson());
     file.close();
-
-    world.hasUnsavedChanges = false;
 
     return true;
 }

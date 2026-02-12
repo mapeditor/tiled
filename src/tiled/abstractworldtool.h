@@ -30,6 +30,7 @@ namespace Tiled {
 class World;
 
 class SelectionRectangle;
+class WorldDocument;
 
 /**
  * A convenient base class for tools that work on object layers. Implements
@@ -74,8 +75,8 @@ protected:
     void addAnotherMapToWorldAtCenter();
     void addAnotherMapToWorld(QPoint insertPos);
     void removeCurrentMapFromWorld();
-    void removeFromWorld(const QString &mapFileName);
-    void addToWorld(const World *world);
+    void removeFromWorld(WorldDocument *worldDocument, const QString &mapFileName);
+    void addToWorld(WorldDocument *worldDocument);
 
     QPoint snapPoint(QPoint point, MapDocument *document) const;
 
@@ -85,7 +86,7 @@ protected:
 
     bool mapCanBeMoved(MapDocument *mapDocument) const;
     QRect mapRect(MapDocument *mapDocument) const;
-    const World *constWorld(MapDocument *mapDocument) const;
+    WorldDocument *worldForMap(MapDocument *mapDocument) const;
 
     void showContextMenu(QGraphicsSceneMouseEvent *);
 

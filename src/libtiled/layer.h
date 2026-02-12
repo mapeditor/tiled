@@ -32,6 +32,7 @@
 #include "object.h"
 #include "tileset.h"
 
+#include <QPainter>
 #include <QPixmap>
 #include <QRect>
 #include <QSet>
@@ -192,6 +193,10 @@ public:
     QPointF parallaxFactor() const;
     QPointF effectiveParallaxFactor() const;
 
+    BlendMode blendMode() const;
+    void setBlendMode(BlendMode mode);
+    QPainter::CompositionMode compositionMode() const;
+
     bool canMergeDown() const;
 
     virtual bool isEmpty() const = 0;
@@ -263,6 +268,7 @@ protected:
     int mY = 0;
     QPointF mOffset;
     QPointF mParallaxFactor = { 1.0, 1.0 };
+    BlendMode mBlendMode = BlendMode::Normal;
     qreal mOpacity = 1.0;
     QColor mTintColor;
     bool mVisible = true;
@@ -305,6 +311,21 @@ inline void Layer::setParallaxFactor(const QPointF &factor)
 inline QPointF Layer::parallaxFactor() const
 {
     return mParallaxFactor;
+}
+
+inline BlendMode Layer::blendMode() const
+{
+    return mBlendMode;
+}
+
+inline void Layer::setBlendMode(BlendMode mode)
+{
+    mBlendMode = mode;
+}
+
+inline QPainter::CompositionMode Layer::compositionMode() const
+{
+    return static_cast<QPainter::CompositionMode>(mBlendMode);
 }
 
 

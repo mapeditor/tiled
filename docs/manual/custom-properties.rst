@@ -51,7 +51,7 @@ quickly jump to the referenced object.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.8</div>
+   <div class="new new-prev">Since Tiled 1.8</div>
 
 .. _custom-property-types:
 
@@ -105,7 +105,7 @@ names. Classes can have members referring to other classes.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.9</div>
+   <div class="new new-prev">Since Tiled 1.9</div>
 
 Each data type has a "Class" property, which can be used to refer to a custom
 class. The members of this class will then be directly available as custom
@@ -170,12 +170,12 @@ those values if you need to.
       minimum or maximum value, the precision or a different default value.
 
    -  **Array properties**, which would be properties having a list of
-      values (`#1493 <https://github.com/bjorn/tiled/issues/1493>`__).
+      values (`#1493 <https://github.com/mapeditor/tiled/issues/1493>`__).
 
    Apart from predefining properties based on object type, I'd like to add
    support for **predefining the properties for each data type**. So
    defining which custom properties are valid for maps, tilesets, layers,
-   etc. (`#1410 <https://github.com/bjorn/tiled/issues/1410>`__)
+   etc. (`#1410 <https://github.com/mapeditor/tiled/issues/1410>`__)
 
    If you like any of these plans, please help me getting around to it
    faster by `sponsoring Tiled development <https://www.mapeditor.org/donate>`__. The

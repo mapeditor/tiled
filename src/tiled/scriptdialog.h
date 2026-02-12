@@ -1,6 +1,6 @@
 /*
  * scriptdialog.h
- * Copyright 2022, Chris Boehm AKA dogboydog
+ * Copyright 2022, dogboydog
  * Copyright 2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -21,8 +21,11 @@
 
 #pragma once
 
-#include <QLabel>
+#include <QAbstractButton>
+#include <QBoxLayout>
+#include <QButtonGroup>
 #include <QDialog>
+#include <QLabel>
 
 class QGridLayout;
 class QHBoxLayout;
@@ -47,6 +50,29 @@ public:
 
     ScriptImage *image() const;
     void setImage(ScriptImage *image);
+};
+
+
+class ScriptButtonGroup : public QButtonGroup
+{
+    Q_OBJECT
+    Q_PROPERTY(QList<QAbstractButton *> buttons READ buttons CONSTANT)
+    Q_PROPERTY(QAbstractButton * checkedButton READ checkedButton CONSTANT)
+    Q_PROPERTY(int checkedIndex READ checkedIndex CONSTANT)
+
+public:
+    ScriptButtonGroup(QWidget *parent, QHBoxLayout *layout)
+        : QButtonGroup(parent)
+        , mLayout(layout)
+    {}
+
+    Q_INVOKABLE void addItems(const QStringList &values, const QStringList &toolTips);
+    Q_INVOKABLE QAbstractButton *addItem(const QString &value, const QString &toolTip = QString());
+
+    int checkedIndex() const { return QButtonGroup::checkedId(); }
+
+private:
+    QHBoxLayout *mLayout;
 };
 
 
@@ -84,6 +110,10 @@ public:
     Q_INVOKABLE QWidget *addFilePicker(const QString &labelText = QString());
     Q_INVOKABLE QWidget *addColorButton(const QString &labelText = QString());
     Q_INVOKABLE QWidget *addImage(const QString &labelText, Tiled::ScriptImage *image);
+    Q_INVOKABLE ScriptButtonGroup *addRadioButtonGroup(const QString &labelText,
+                                                       const QStringList &values,
+                                                       const QString &toolTip = QString(),
+                                                       const QStringList &buttonToolTips = QStringList());
     Q_INVOKABLE void clear();
     Q_INVOKABLE void addNewRow();
 
@@ -98,7 +128,9 @@ private:
     QLabel *newLabel(const QString &labelText);
     void initializeLayout();
     void determineWidgetGrouping(QWidget *widget);
-    QWidget *addDialogWidget(QWidget * widget, const QString &label = QString());
+    QWidget *addDialogWidget(QWidget * widget,
+                             const QString &label = QString(),
+                             const QString &labelToolTip = QString());
 
     int m_rowIndex = 0;
     int m_widgetsInRow = 0;

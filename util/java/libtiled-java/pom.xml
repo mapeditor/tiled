@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.mapeditor</groupId>
         <artifactId>tiled-parent</artifactId>
-        <version>1.4.2-SNAPSHOT</version>
+        <version>1.4.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>libtiled</artifactId>
@@ -18,25 +18,45 @@
     <description>
         A small Java library to load Tiled maps.
     </description>
-    <url>http://www.mapeditor.org/</url>
+    <url>https://www.mapeditor.org/</url>
 
     <scm>
-        <url>https://github.com/bjorn/tiled</url>
-        <connection>scm:git:git://github.com/bjorn/tiled.git</connection>
-        <developerConnection>scm:git:git@github.com:bjorn/tiled.git</developerConnection>
+        <url>https://github.com/mapeditor/tiled</url>
+        <connection>scm:git:https://github.com/mapeditor/tiled.git</connection>
+        <developerConnection>scm:git:git@github.com:mapeditor/tiled.git</developerConnection>
     </scm>
 
     <dependencies>
         <dependency>
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
-            <version>5.7.0</version>
+            <version>5.13.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.4.1</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.5.4</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
@@ -55,7 +75,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.6</version>
+                <version>0.8.13</version>
                 <executions>
                     <execution>
                         <goals>
@@ -67,7 +87,7 @@
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
                 <artifactId>maven-jaxb2-plugin</artifactId>
-                <version>0.14.0</version>
+                <version>0.15.3</version>
                 <configuration>
                     <args>
                         <arg>-Xannotate</arg>
@@ -144,10 +164,10 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <configuration>
                     <executable>jar</executable>
-                    <workingDirectory>target/generated-test-resources</workingDirectory>
+                    <workingDirectory>target/test-classes</workingDirectory>
                     <arguments>
                         <argument>cf</argument>
                         <argument>resources.jar</argument>
@@ -166,27 +186,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.2.0</version>
-                <executions>
-                    <execution>
-                        <id>add-test-resources</id>
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                            <goal>add-test-resource</goal>
-                        </goals>
-                        <configuration>
-                            <resources>
-                                <resource>
-                                    <directory>target/generated-test-resources</directory>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
@@ -194,7 +193,7 @@
         <profile>
             <id>java-11-profile</id>
             <activation>
-                <jdk>[1.9,)</jdk>
+                <jdk>[9,)</jdk>
             </activation>
             <dependencies>
                 <dependency>
@@ -210,7 +209,7 @@
                 <dependency>
                     <groupId>org.glassfish.jaxb</groupId>
                     <artifactId>jaxb-runtime</artifactId>
-                    <version>2.3.3</version>
+                    <version>2.3.9</version>
                 </dependency>
             </dependencies>
         </profile>

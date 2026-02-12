@@ -1,6 +1,6 @@
 /*
  * scriptdialog.cpp
- * Copyright 2022, Chris Boehm AKA dogboydog
+ * Copyright 2022, dogboydog
  * Copyright 2022, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
  *
  * This file is part of Tiled.
@@ -22,26 +22,27 @@
 #include "scriptdialog.h"
 
 #include "colorbutton.h"
+#include "expressionspinbox.h"
 #include "fileedit.h"
 #include "mainwindow.h"
 #include "scriptimage.h"
 #include "scriptmanager.h"
+#include "utils.h"
 
 #include <QCheckBox>
 #include <QComboBox>
 #include <QCoreApplication>
-#include <QDoubleSpinBox>
+#include <QGroupBox>
 #include <QHBoxLayout>
 #include <QJSEngine>
 #include <QLineEdit>
 #include <QPixmap>
 #include <QPushButton>
+#include <QRadioButton>
 #include <QSet>
 #include <QSize>
 #include <QSlider>
 #include <QTextEdit>
-
-#include <memory>
 
 static const int leftColumnStretch = 0;
 // stretch as much as we can so that the left column looks as close to zero width as possible when there is no content
@@ -51,18 +52,6 @@ namespace Tiled {
 
 QSet<ScriptDialog*> ScriptDialog::sDialogInstances;
 
-static void deleteAllFromLayout(QLayout *layout)
-{
-    while (QLayoutItem *item = layout->takeAt(0)) {
-        delete item->widget();
-
-        if (QLayout *layout = item->layout())
-            deleteAllFromLayout(layout);
-
-        delete item;
-    }
-}
-
 ScriptImageWidget::ScriptImageWidget(Tiled::ScriptImage *image, QWidget *parent)
     : QLabel(parent)
 {
@@ -71,14 +60,7 @@ ScriptImageWidget::ScriptImageWidget(Tiled::ScriptImage *image, QWidget *parent)
 
 ScriptImage *ScriptImageWidget::image() const
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    if (auto p = pixmap())
-        return new ScriptImage(p->toImage());
-    else
-        return nullptr;
-#else
     return new ScriptImage(pixmap().toImage());
-#endif
 }
 
 void ScriptImageWidget::setImage(ScriptImage *image)
@@ -104,6 +86,30 @@ public:
     Q_INVOKABLE void addItems(const QStringList &texts)
     { QComboBox::addItems(texts); }
 };
+
+
+void ScriptButtonGroup::addItems(const QStringList &values, const QStringList &toolTips)
+{
+    int toolTipIndex = 0;
+    for (const QString &value : values) {
+        addItem(value, toolTips.value(toolTipIndex));
+        toolTipIndex++;
+    }
+}
+
+QAbstractButton *ScriptButtonGroup::addItem(const QString &value, const QString &toolTip)
+{
+    QRadioButton *radioButton = new QRadioButton(mLayout->parentWidget());
+    radioButton->setText(value);
+    if (!toolTip.isEmpty())
+        radioButton->setToolTip(toolTip);
+
+    mLayout->addWidget(radioButton);
+
+    QButtonGroup::addButton(radioButton, QButtonGroup::buttons().length());
+
+    return radioButton;
+}
 
 
 ScriptDialog::ScriptDialog(const QString &title)
@@ -144,7 +150,7 @@ void ScriptDialog::initializeLayout()
 
 void ScriptDialog::clear()
 {
-    deleteAllFromLayout(layout());
+    Utils::deleteAllFromLayout(layout());
     initializeLayout();
 }
 
@@ -222,7 +228,7 @@ QWidget *ScriptDialog::addImage(const QString &labelText, Tiled::ScriptImage *im
 
 QWidget *ScriptDialog::addNumberInput(const QString &labelText)
 {
-    return addDialogWidget(new QDoubleSpinBox(this), labelText);
+    return addDialogWidget(new ExpressionDoubleSpinBox(this), labelText);
 }
 
 QWidget *ScriptDialog::addSlider(const QString &labelText)
@@ -267,6 +273,19 @@ ScriptDialog::NewRowMode ScriptDialog::newRowMode() const
     return m_newRowMode;
 }
 
+ScriptButtonGroup *ScriptDialog::addRadioButtonGroup(const QString &labelText,
+                                                     const QStringList &values,
+                                                     const QString &toolTip,
+                                                     const QStringList &buttonToolTips)
+{
+    QGroupBox *groupParent = new QGroupBox(this);
+    QHBoxLayout *hBox = new QHBoxLayout(groupParent);
+    ScriptButtonGroup *buttonGroup = new ScriptButtonGroup(groupParent, hBox);
+    buttonGroup->addItems(values, buttonToolTips);
+    addDialogWidget(groupParent, labelText, toolTip);
+    return buttonGroup;
+}
+
 void ScriptDialog::setNewRowMode(NewRowMode mode)
 {
     m_newRowMode = mode;
@@ -278,7 +297,9 @@ int ScriptDialog::exec()
     return QDialog::exec();
 }
 
-QWidget *ScriptDialog::addDialogWidget(QWidget *widget, const QString &label)
+QWidget *ScriptDialog::addDialogWidget(QWidget *widget,
+                                       const QString &label,
+                                       const QString &labelToolTip)
 {
     determineWidgetGrouping(widget);
     if (m_widgetsInRow == 0)
@@ -292,6 +313,8 @@ QWidget *ScriptDialog::addDialogWidget(QWidget *widget, const QString &label)
 
     if (!label.isEmpty()) {
         QLabel *widgetLabel = newLabel(label);
+        if (!labelToolTip.isEmpty())
+            widgetLabel->setToolTip(labelToolTip);
         widgetLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
         widgetLabel->setBuddy(widget);
         m_rowLayout->addWidget(widgetLabel);

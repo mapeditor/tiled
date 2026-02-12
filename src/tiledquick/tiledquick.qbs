@@ -1,17 +1,19 @@
 import qbs.Environment
 import qbs.File
+import qbs.Utilities
 
 QtGuiApplication {
     name: "tiledquick"
     targetName: name
     builtByDefault: Environment.getEnv("BUILD_TILEDQUICK") == "true"
+    condition: Utilities.versionCompare(Qt.core.version, "6.5") >= 0
 
     readonly property bool qtcRunnable: builtByDefault
 
     Depends {
         name: "Qt"
         submodules: ["core", "quick", "widgets"]
-        versionAtLeast: "5.12"
+        versionAtLeast: "6.5"
     }
     Depends {
         name: "tiledquickplugin"
@@ -23,12 +25,16 @@ QtGuiApplication {
     cpp.cxxLanguageVersion: "c++17"
     cpp.cxxFlags: {
         var flags = base;
-        if (qbs.toolchain.contains("msvc")) {
-            if (Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 3)
-                flags.push("/permissive-");
-        }
+        if (qbs.toolchain.contains("msvc"))
+            flags.push("/permissive-");
         return flags;
     }
+    cpp.defines: [
+        "QT_DISABLE_DEPRECATED_BEFORE=QT_VERSION_CHECK(6,5,0)",
+        "QT_NO_DEPRECATED_WARNINGS",
+        "QT_NO_FOREACH",
+        "QT_NO_URL_CAST_FROM_STRING"
+    ]
 
     files: [
         "fonts/fonts.qrc",

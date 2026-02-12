@@ -60,6 +60,8 @@ public:
     void mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers) override;
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
 
+    void keyPressed(QKeyEvent *event) override;
+
 protected:
     void mapDocumentChanged(MapDocument *oldDocument,
                             MapDocument *newDocument) override;

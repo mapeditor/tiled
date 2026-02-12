@@ -20,7 +20,6 @@
 
 #pragma once
 
-#include "clipboardmanager.h"
 #include "editor.h"
 #include "wangset.h"
 
@@ -57,8 +56,8 @@ class TilesetEditor final : public Editor
     Q_OBJECT
 
     Q_PROPERTY(Tiled::TileCollisionDock *collisionEditor READ collisionEditor CONSTANT)
-    Q_PROPERTY(Tiled::EditableWangSet *currentWangSet READ currentWangSet NOTIFY currentWangSetChanged)
-    Q_PROPERTY(int currentWangColorIndex READ currentWangColorIndex NOTIFY currentWangColorIndexChanged)
+    Q_PROPERTY(Tiled::EditableWangSet *currentWangSet READ currentWangSet  WRITE setCurrentWangSet NOTIFY currentWangSetChanged)
+    Q_PROPERTY(int currentWangColorIndex READ currentWangColorIndex WRITE setCurrentWangColorIndex  NOTIFY currentWangColorIndexChanged)
 
 public:
     explicit TilesetEditor(QObject *parent = nullptr);
@@ -92,6 +91,7 @@ public:
 
     QAction *addTilesAction() const;
     QAction *removeTilesAction() const;
+    QAction *editTilesetParametersAction() const;
     QAction *relocateTilesAction() const;
     QAction *editCollisionAction() const;
     QAction *editWangSetsAction() const;
@@ -101,7 +101,10 @@ public:
     TileCollisionDock *collisionEditor() const;
 
     EditableWangSet *currentWangSet() const;
+    void setCurrentWangSet(EditableWangSet *wangSet);
+
     int currentWangColorIndex() const;
+    void setCurrentWangColorIndex(int newIndex);
 
 signals:
     void currentTileChanged(Tile *tile);
@@ -123,6 +126,8 @@ private:
     void selectedTilesChanged();
     void updateTilesetView(Tileset *tileset);
 
+    void editTilesetParameters();
+
     void openAddTilesDialog();
     void addTiles(const QList<QUrl> &urls);
     void removeTiles();
@@ -133,7 +138,7 @@ private:
 
     void setEditWang(bool editWang);
 
-    void updateAddRemoveActions();
+    void updateActions();
 
     void onCurrentWangSetChanged(WangSet *wangSet);
     void currentWangIdChanged(WangId wangId);
@@ -145,6 +150,7 @@ private:
     void setWangColorImage(Tile *tile, int index);
     void setWangColorColor(WangColor *wangColor, const QColor &color);
 
+    void setAnimationEditorVisible(bool visible);
     void onAnimationEditorClosed();
 
     void setCurrentTile(Tile *tile);
@@ -158,6 +164,7 @@ private:
 
     QAction *mAddTiles;
     QAction *mRemoveTiles;
+    QAction *mEditTilesetParameters;
     QAction *mRelocateTiles;
     QAction *mShowAnimationEditor;
     QAction *mDynamicWrappingToggle;
@@ -169,7 +176,7 @@ private:
     WangDock *mWangDock;
     QComboBox *mZoomComboBox;
     QLabel *mStatusInfoLabel;
-    TileAnimationEditor *mTileAnimationEditor;
+    TileAnimationEditor *mTileAnimationEditor = nullptr;
 
     QHash<TilesetDocument*, TilesetView*> mViewForTileset;
     TilesetDocument *mCurrentTilesetDocument = nullptr;
@@ -186,6 +193,11 @@ inline QAction *TilesetEditor::addTilesAction() const
 inline QAction *TilesetEditor::removeTilesAction() const
 {
     return mRemoveTiles;
+}
+
+inline QAction *TilesetEditor::editTilesetParametersAction() const
+{
+    return mEditTilesetParameters;
 }
 
 inline QAction *TilesetEditor::relocateTilesAction() const

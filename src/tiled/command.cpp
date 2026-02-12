@@ -27,8 +27,6 @@
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "projectmanager.h"
-#include "world.h"
-#include "worlddocument.h"  // used to know that WorldDocument is a Document
 #include "worldmanager.h"
 
 #include <QAction>
@@ -107,8 +105,8 @@ static QString replaceVariables(const QString &string, bool quoteValues = true)
                                 replaceString.arg(currentObject->id()));
         }
 
-        if (const World *world = WorldManager::instance().worldForMap(fileName)) {
-            finalString.replace(QLatin1String("%worldfile"), replaceString.arg(world->fileName));
+        if (auto worldDocument = WorldManager::instance().worldForMap(fileName)) {
+            finalString.replace(QLatin1String("%worldfile"), replaceString.arg(worldDocument->fileName()));
         }
     }
 
@@ -160,10 +158,8 @@ void Command::execute(bool inTerminal) const
 
         if (Document *document = DocumentManager::instance()->currentDocument()) {
             if (document->type() == Document::MapDocumentType) {
-                if (const World *world = WorldManager::instance().worldForMap(document->fileName())) {
-                    auto worldDocument = DocumentManager::instance()->ensureWorldDocument(world->fileName);
-                    DocumentManager::instance()->saveDocument(worldDocument);
-                }
+                if (auto worldDocument = WorldManager::instance().worldForMap(document->fileName()))
+                    DocumentManager::instance()->saveDocument(worldDocument.data());
             }
         }
     }
@@ -284,11 +280,8 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
 #endif
     }
 
-    connect(this, &QProcess::errorOccurred,
-            this, &CommandProcess::handleProcessError);
-
-    connect(this, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
-            this, &QObject::deleteLater);
+    connect(this, &QProcess::errorOccurred, this, &CommandProcess::handleProcessError);
+    connect(this, &QProcess::finished, this, &QObject::deleteLater);
 
     if (showOutput) {
         Tiled::INFO(tr("Executing: %1").arg(mFinalCommand));
@@ -301,9 +294,7 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
     if (!finalWorkingDirectory.trimmed().isEmpty())
         setWorkingDirectory(finalWorkingDirectory);
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    start(mFinalCommand);
-#elif QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QStringList args = QProcess::splitCommand(mFinalCommand);
     const QString executable = args.takeFirst();
     start(executable, args);

@@ -20,9 +20,9 @@
 
 #include "projectmodel.h"
 
-#include "containerhelpers.h"
 #include "fileformat.h"
 #include "pluginmanager.h"
+#include "preferences.h"
 #include "utils.h"
 
 #include <QDir>
@@ -82,11 +82,7 @@ static void findFiles(const FolderEntry &entry, int offset, const QStringList &w
 {
     for (const auto &childEntry : entry.entries) {
         if (childEntry->entries.empty()) {
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
             const auto relativePath = QStringView(childEntry->filePath).mid(offset);
-#else
-            const auto relativePath = childEntry->filePath.midRef(offset);
-#endif
             const int totalScore = Utils::matchingScore(words, relativePath);
 
             if (totalScore > 0) {
@@ -107,7 +103,7 @@ static void findFiles(const FolderEntry &entry, int offset, const QStringList &w
 ProjectModel::ProjectModel(QObject *parent)
     : QAbstractItemModel(parent)
 {
-    FolderScanner *scanner = new FolderScanner;
+    auto scanner = new FolderScanner;
     scanner->moveToThread(&mScanningThread);
     connect(&mScanningThread, &QThread::finished, scanner, &QObject::deleteLater);
     connect(this, &ProjectModel::nameFiltersChanged, scanner, &FolderScanner::setNameFilters);
@@ -317,6 +313,8 @@ QVariant ProjectModel::data(const QModelIndex &index, int role) const
     }
     case Qt::ToolTipRole:
         return entry->filePath;
+    case IsDirRole:
+        return entry->isDir;
     }
 
     return QVariant();
@@ -352,7 +350,7 @@ QMimeData *ProjectModel::mimeData(const QModelIndexList &indexes) const
     if (urls.isEmpty())
         return nullptr;
 
-    QMimeData *data = new QMimeData;
+    auto data = new QMimeData;
     data->setUrls(urls);
     return data;
 }
@@ -511,12 +509,13 @@ void FolderScanner::scan(FolderEntry &folder, QSet<QString> &visitedFolders) con
         return;
 #endif
 
-    constexpr QDir::SortFlags sortFlags { QDir::Name | QDir::LocaleAware | QDir::DirsFirst };
     constexpr QDir::Filters filters { QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot };
-    const auto list = QDir(folder.filePath).entryInfoList(mNameFilters, filters, sortFlags);
+    // Get unsorted list - sorting is handled by ProjectProxyModel
+    const auto list = QDir(folder.filePath).entryInfoList(mNameFilters, filters, QDir::NoSort);
 
     for (const auto &fileInfo : list) {
         auto entry = std::make_unique<FolderEntry>(fileInfo.filePath(), &folder);
+        entry->isDir = fileInfo.isDir();
 
         if (fileInfo.isDir()) {
             const QString canonicalPath = fileInfo.canonicalFilePath();
@@ -534,6 +533,40 @@ void FolderScanner::scan(FolderEntry &folder, QSet<QString> &visitedFolders) con
 
         folder.entries.push_back(std::move(entry));
     }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+ProjectProxyModel::ProjectProxyModel(QObject *parent)
+    : QSortFilterProxyModel(parent)
+{
+    auto prefs = Preferences::instance();
+    mCollator.setNumericMode(prefs->naturalSorting());
+    mCollator.setCaseSensitivity(Qt::CaseInsensitive);
+
+    // Enable sorting on col 0, which in Project views is the file/folder names
+    sort(0);
+
+    connect(prefs, &Preferences::naturalSortingChanged,
+            this, [this](bool enabled) {
+        mCollator.setNumericMode(enabled);
+        invalidate();
+    });
+}
+
+bool ProjectProxyModel::lessThan(const QModelIndex &left,
+                                 const QModelIndex &right) const
+{
+    const bool leftIsDir = sourceModel()->data(left, ProjectModel::IsDirRole).toBool();
+    const bool rightIsDir = sourceModel()->data(right, ProjectModel::IsDirRole).toBool();
+
+    if (leftIsDir != rightIsDir)
+        return leftIsDir;
+
+    const QString leftName = sourceModel()->data(left, Qt::DisplayRole).toString();
+    const QString rightName = sourceModel()->data(right, Qt::DisplayRole).toString();
+
+    return mCollator.compare(leftName, rightName) < 0;
 }
 
 } // namespace Tiled

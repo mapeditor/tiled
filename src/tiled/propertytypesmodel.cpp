@@ -27,7 +27,7 @@
 
 using namespace Tiled;
 
-static bool propertyTypeLessThan(const PropertyType *a, const PropertyType *b)
+static bool propertyTypeLessThan(const SharedPropertyType &a, const SharedPropertyType &b)
 {
     return QString::localeAwareCompare(a->name, b->name) < 0;
 }
@@ -109,10 +109,10 @@ bool PropertyTypesModel::setPropertyTypeName(int row, const QString &name)
     if (!checkTypeNameUnused(name))
         return false;
 
-    const std::unique_ptr<PropertyType> typeWithName = std::make_unique<EnumPropertyType>(name.trimmed());
+    const SharedPropertyType typeWithName { new EnumPropertyType(name.trimmed()) };
     auto nextPropertyType = std::lower_bound(propertyTypes.begin(),
                                              propertyTypes.end(),
-                                             typeWithName.get(),
+                                             typeWithName,
                                              propertyTypeLessThan);
 
     const int newRow = nextPropertyType - propertyTypes.begin();
@@ -178,7 +178,7 @@ QModelIndex PropertyTypesModel::addPropertyType(std::unique_ptr<PropertyType> ty
     const int row = mPropertyTypes->count();
 
     beginInsertRows(QModelIndex(), row, row);
-    mPropertyTypes->add(std::move(type));
+    mPropertyTypes->add(SharedPropertyType(type.release()));
     endInsertRows();
 
     return index(row, 0);
@@ -198,17 +198,27 @@ void PropertyTypesModel::importObjectTypes(const QVector<ObjectType> &objectType
     endResetModel();
 }
 
+QIcon PropertyTypesModel::iconForProperty(const QVariant &value)
+{
+    if (value.userType() == propertyValueId())
+        if (auto type = value.value<PropertyValue>().type())
+            return iconForPropertyType(type->type);
+
+    static const QIcon plain(QStringLiteral("://images/scalable/property-type-plain.svg"));
+    return plain;
+}
+
 QIcon PropertyTypesModel::iconForPropertyType(PropertyType::Type type)
 {
     switch (type) {
     case PropertyType::PT_Invalid:
         break;
     case PropertyType::PT_Class: {
-        static QIcon classIcon(QStringLiteral("://images/scalable/property-type-class.svg"));
+        static const QIcon classIcon(QStringLiteral("://images/scalable/property-type-class.svg"));
         return classIcon;
     }
     case PropertyType::PT_Enum: {
-        static QIcon enumIcon(QStringLiteral("://images/scalable/property-type-enum.svg"));
+        static const QIcon enumIcon(QStringLiteral("://images/scalable/property-type-enum.svg"));
         return enumIcon;
     }
     }
@@ -237,7 +247,7 @@ QString PropertyTypesModel::nextPropertyTypeName(PropertyType::Type type) const
     do {
         name = baseText + QString::number(number++);
     } while (contains_where(*mPropertyTypes,
-                            [&] (const PropertyType *type) { return type->name == name; }));
+                            [&] (const SharedPropertyType &type) { return type->name == name; }));
 
     return name;
 }

@@ -34,9 +34,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QStringList>
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
 #include <QStringView>
-#endif
 #include <QTextStream>
 #include <QXmlStreamWriter>
 #include <QUuid>

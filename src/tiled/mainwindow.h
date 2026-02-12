@@ -64,6 +64,7 @@ class ProjectDock;
 class ProjectModel;
 class TilesetDocument;
 class TilesetEditor;
+class WorldDocument;
 class Zoomable;
 
 /**
@@ -167,6 +168,8 @@ private:
 
     void editTilesetProperties();
 
+    void editWorldProperties();
+
     void updateWindowTitle();
     void updateActions();
     void updateZoomable();
@@ -212,7 +215,7 @@ private:
       */
     bool confirmAllSave();
 
-    bool confirmSaveWorld(const QString &fileName);
+    bool confirmSaveWorld(WorldDocument *worldDocument);
 
     void writeSettings();
     void readSettings();

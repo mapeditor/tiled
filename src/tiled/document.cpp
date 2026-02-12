@@ -145,6 +145,7 @@ void Document::setCurrentObject(Object *object, Document *owningDocument)
 
     emit currentObjectSet(object);
     emit currentObjectChanged(object);
+    emit currentObjectsChanged();
 }
 
 /**
@@ -267,19 +268,25 @@ void Document::setProperty(Object *object,
 }
 
 void Document::setPropertyMember(Object *object,
-                                 const QStringList &path,
+                                 const PropertyPath &path,
                                  const QVariant &value)
 {
     Q_ASSERT(!path.isEmpty());
-    auto &topLevelName = path.first();
 
-    if (path.size() == 1)
-        return setProperty(object, topLevelName, value);
+    const auto &topLevelEntry = path.first();
+    Q_ASSERT(std::holds_alternative<QString>(topLevelEntry));
+
+    auto &topLevelName = std::get<QString>(topLevelEntry);
+
+    if (path.size() == 1) {
+        setProperty(object, topLevelName, value);
+        return;
+    }
 
     // Take the resolved property since we may not have this property yet
     // when we want to override it with a changed member.
     auto topLevelValue = object->resolvedProperty(topLevelName);
-    if (!setClassPropertyMemberValue(topLevelValue, 1, path, value))
+    if (!setNestedPropertyValue(topLevelValue, 1, path, value, false))
         return;
 
     setProperty(object, topLevelName, topLevelValue);

@@ -61,6 +61,7 @@ public:
         WangSetRemoved,
         WangSetChanged,
         WangColorAboutToBeRemoved,
+        WangColorChanged,
     } type;
 
 protected:
@@ -127,7 +128,8 @@ public:
         LockedProperty          = 1 << 3,
         OffsetProperty          = 1 << 4,
         ParallaxFactorProperty  = 1 << 5,
-        TintColorProperty       = 1 << 6,
+        BlendModeProperty       = 1 << 6,
+        TintColorProperty       = 1 << 7,
         PositionProperties      = OffsetProperty | ParallaxFactorProperty,
         AllProperties           = 0xFF
     };
@@ -164,7 +166,7 @@ public:
 class ImageLayerChangeEvent : public LayerChangeEvent
 {
 public:
-    enum TileLayerProperty {
+    enum ImageLayerProperty {
         TransparentColorProperty    = 1 << 7,
         ImageSourceProperty         = 1 << 8,
         RepeatProperty              = 1 << 9,
@@ -277,17 +279,20 @@ class WangSetChangeEvent : public ChangeEvent
 {
 public:
     enum WangSetProperty {
-        TypeProperty            = 1 << 0,
+        NameProperty,
+        TypeProperty,
+        ImageProperty,
+        ColorCountProperty,
     };
 
-    WangSetChangeEvent(WangSet *wangSet, int properties)
+    WangSetChangeEvent(WangSet *wangSet, WangSetProperty property)
         : ChangeEvent(WangSetChanged)
         , wangSet(wangSet)
-        , properties(properties)
+        , property(property)
     {}
 
     WangSet *wangSet;
-    int properties;
+    WangSetProperty property;
 };
 
 class WangColorEvent : public ChangeEvent
@@ -301,6 +306,26 @@ public:
 
     WangSet *wangSet;
     int color;
+};
+
+class WangColorChangeEvent : public ChangeEvent
+{
+public:
+    enum WangColorProperty {
+        NameProperty,
+        ColorProperty,
+        ImageProperty,
+        ProbabilityProperty,
+    };
+
+    WangColorChangeEvent(WangColor *wangColor, WangColorProperty property)
+        : ChangeEvent(WangColorChanged)
+        , wangColor(wangColor)
+        , property(property)
+    {}
+
+    WangColor *wangColor;
+    WangColorProperty property;
 };
 
 } // namespace Tiled

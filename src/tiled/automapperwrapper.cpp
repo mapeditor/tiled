@@ -36,7 +36,7 @@
 using namespace Tiled;
 
 AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
-                                     const QVector<AutoMapper *> &autoMappers,
+                                     const QVector<const AutoMapper *> &autoMappers,
                                      const QRegion &where,
                                      const TileLayer *touchedLayer)
     : PaintTileLayer(mapDocument)

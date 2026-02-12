@@ -57,6 +57,10 @@ public:
     Properties properties() const;
     void setProperties(const Properties &properties);
 
+    bool hasListValues() const;
+    void setListValues(const QVariantList &values);
+    QVariantList listValues() const;
+
     bool copySelection(const MapDocument &mapDocument);
 
     enum PasteFlag {
@@ -75,13 +79,15 @@ public:
 signals:
     void hasMapChanged();
     void hasPropertiesChanged();
+    void hasValuesChanged();
 
 private:
     void update();
 
     QClipboard *mClipboard;
-    bool mHasMap;
-    bool mHasProperties;
+    bool mHasMap = false;
+    bool mHasProperties = false;
+    bool mHasListValues = false;
 };
 
 /**
@@ -98,6 +104,14 @@ inline bool ClipboardManager::hasMap() const
 inline bool ClipboardManager::hasProperties() const
 {
     return mHasProperties;
+}
+
+/**
+ * Returns whether the clipboard holds some property values.
+ */
+inline bool ClipboardManager::hasListValues() const
+{
+    return mHasListValues;
 }
 
 } // namespace Tiled

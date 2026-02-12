@@ -1,8 +1,65 @@
 ### Unreleased
 
+* Rewritten Properties view to enable direct widget interaction (#4045)
+* Added support for lists in custom properties (#1493)
+* Added capsule object shape (by Jocelyn, #2153)
+* Added Oblique map orientation, skewing X and/or Y axis (#2917)
+* Allow filtering tilesets by name in the tileset dock (with dogboydog, #4239)
+* Allow changing the values of number inputs using expressions (with dogboydog, #4234)
+* Added support for SVG 1.2 / CSS blending modes to layers (#3932)
+* Added support for natural sorting of project files (by Edgar Jr. San Martin, #4284)
+* Added button to toggle Terrain Brush to full tile mode (by Finlay Pearson, #3407)
+* Added square selection and expand-from-center to Rectangular Select tool (#4201)
+* Added status info for various Stamp Brush, Terrain Brush and Eraser modes (#3092, #4201)
+* Added Escape to clear tile selection when any tile related tool is selected (#4243)
+* Added Escape to cancel tile selection and shape drawing operations
+* Made the shortcut for current tool switch to previous tool (#4280)
+* Allow canceling Select Same Tile, Magic Wand and Bucket Fill operations with right-click and Escape
+* Allow dragging over multiple tiles with Select Same Tile, Magic Wand and Bucket Fill tools (#4276)
+* Don't switch to Edit Polygons tool on double-click with Alt pressed
+* Adjust world map position when resizing a map with offset (#4270)
+* Added export plugin for Remixed Dungeon (by Mikhael Danilov, #4158)
+* Added "World > World Properties" menu action (with dogboydog, #4190)
+* Added Delete shortcut to Remove Tiles action by default and avoid ambiguity (#4201)
+* Fixed alpha component of tint color not applying correctly to opaque images (by Roland Helmerichs, #4310)
+* Scripting: Added API for custom property types (with dogboydog, #3971)
+* Scripting: Added TileMap.chunkSize and TileMap.compressionLevel properties
+* AutoMapping: Don't match rules based on empty input indexes
+* AutoMapping: Optimized reloading of rule maps and load rule maps on-demand
+* Windows: Fixed issue with opening Tile Animation Editor (#4223)
+* macOS: Fixed crash when JS code is JIT-compiled (#4218)
+* Workaround tileset view layout regression in Qt 6.9
+* Raised minimum supported Qt version from 5.12 to 5.15.2
+
+### Tiled 1.11.2 (28 Jan 2025)
+
+* YY plugin: Fixed compatibility with GameMaker 2024 (#4132)
+* Fixed crash while handling file reloads without any files opened
+* Fixed crash when closing the last file with multiple custom properties selected
+* snap: Fixed crash on startup on Wayland
+* AppImage: Updated to Sentry 0.7.19
+
+### Tiled 1.11.1 (11 Jan 2025)
+
+* Releases now ship with support for loading Aseprite images (#4109)
 * Scripting: Added `FileFormat.nameFilter`
 * Scripting: Added `MapEditor.currentBrushChanged` signal
 * Scripting: Added `tiled.cursor` to create mouse cursor values
+* Scripting: Added `Tileset.transformationFlags` (#3753)
+* Scripting: Added `Dialog.addRadioButtonGroup` for selecting one of a list of mutually exclusive options (#4107)
+* Scripting: Made `currentWangSet` and `currentWangColorIndex` properties writeable (#4105)
+* AutoMapping: Ignore rules with empty input or output regions (#3834)
+* Fixed saving/loading of custom properties set on worlds (#4025)
+* Fixed issue with placing tile objects after switching maps (#3497)
+* Fixed crash when accessing a world through a symlink (#4042)
+* Fixed performance issue when tinting tiles from large tilesets
+* Fixed error reporting when exporting on the command-line (by Shuhei Nagasawa, #4015)
+* Fixed updating of object label when text changes without changing size
+* Fixed minimum value of spinbox in Tile Animation Editor
+* Fixed loading of custom property types in tilesets referenced by tile stamps (#4044)
+* Fixed compile against Qt 6.8
+* snap: Updated to core24
+* AppImage: Updated to Sentry 0.7.13
 
 ### Tiled 1.11.0 (27 June 2024)
 
@@ -424,7 +481,7 @@
 * Added basic "major grid" option with stronger lines (with Ilya Arkhanhelsky, #3032)
 * Added ability to rearrange tiles in a tileset (with José Miguel Sánchez García, #2983)
 * Added option to choose background fade color (with SchmidtWC, #3031)
-* Added portable mode, enabled when a "tiled.ini" is detected alongside the Tiled executable (#2945) 
+* Added portable mode, enabled when a "tiled.ini" is detected alongside the Tiled executable (#2945)
 * Disable project extensions by default, for security reasons (#3058)
 * Render selection preview and hovered item highlight above labels (#3036)
 * Changed the donation reminder to be non-modal
@@ -493,12 +550,12 @@
 * Added Terrain Set type (Corner, Edge or Mixed)
 * Added support for rotating and flipping Terrain tiles (by Christof Petig, [#2912](https://github.com/mapeditor/tiled/pull/2912))
 * Added support for exporting to [RPTools MapTool](https://www.rptools.net/toolbox/maptool/) RpMap files (by Christof Petig, [#2926](https://github.com/mapeditor/tiled/pull/2926))
-* Added Ctrl+Shift to toggle Snap to Fine Grid (by sverx, [#2895](https://github.com/bjorn/tiled/pull/2895))
-* Eraser: Added Shift to erase on all layers (by Michael Aganier, [#2897](https://github.com/bjorn/tiled/pull/2897))
+* Added Ctrl+Shift to toggle Snap to Fine Grid (by sverx, [#2895](https://github.com/mapeditor/tiled/pull/2895))
+* Eraser: Added Shift to erase on all layers (by Michael Aganier, [#2897](https://github.com/mapeditor/tiled/pull/2897))
 * Automatically add .world extension to new World files
 * Shape Fill Tool now displays the size of the current shape ([#2808](https://github.com/mapeditor/tiled/issues/2808))
-* Tile Collision Editor: Added action to add an auto-detected bounding box collision rectangle (by Robin Macharg, [#1960](https://github.com/bjorn/tiled/pull/1960))
-* Tile Collision Editor: Added context menu action to copy selected collision objects to all other selected tiles (by Robin Macharg, [#1960](https://github.com/bjorn/tiled/pull/1960))
+* Tile Collision Editor: Added action to add an auto-detected bounding box collision rectangle (by Robin Macharg, [#1960](https://github.com/mapeditor/tiled/pull/1960))
+* Tile Collision Editor: Added context menu action to copy selected collision objects to all other selected tiles (by Robin Macharg, [#1960](https://github.com/mapeditor/tiled/pull/1960))
 * Tilesets view: Added "Edit Tileset" action to tab context menu
 * Tilesets view: Added "Add External Tileset" action to tilesets menu
 * Scripting: Added initial API for creating and modifying Terrain Sets
@@ -526,12 +583,12 @@
 * Fixed "AutoMap While Drawing" not applying when using Cut/Delete
 * Fixed path in AutoMap error message when rules file doesn't exist
 * Lua plugin: Don't embed external tilesets, unless enabled as export option ([#2120](https://github.com/mapeditor/tiled/issues/2120))
-* Python plugin: Added missing values to MapObject.Shape enum ([#2898](https://github.com/bjorn/tiled/issues/2898))
+* Python plugin: Added missing values to MapObject.Shape enum ([#2898](https://github.com/mapeditor/tiled/issues/2898))
 * Python plugin: Fixed linking issue when compiling against Python 3.8
 * CSV plugin: Include flipping flags in exported tile IDs
 * GMX plugin: Take tile object alignment into account
 * Linux: "Open Containing Folder" action now also selects the file
-* libtiled-java: Many updates (by Henri Viitanen, [#2207](https://github.com/bjorn/tiled/pull/2207))
+* libtiled-java: Many updates (by Henri Viitanen, [#2207](https://github.com/mapeditor/tiled/pull/2207))
 * Ported Tiled to Qt 6 (releases still use 5.15 for now)
 * Updated Bulgarian, Chinese (Simplified), Czech, Finnish, French, Portuguese, Portuguese (Portugal), Russian, Swedish and Turkish translations
 

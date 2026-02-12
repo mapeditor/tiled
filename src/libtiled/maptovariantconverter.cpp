@@ -100,6 +100,11 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
         mapVariant[QStringLiteral("staggerindex")] = staggerIndexToString(map.staggerIndex());
     }
 
+    if (map.skewX())
+        mapVariant[QStringLiteral("skewx")] = map.skewX();
+    if (map.skewY())
+        mapVariant[QStringLiteral("skewy")] = map.skewY();
+
     if (!map.parallaxOrigin().isNull()) {
         mapVariant[QStringLiteral("parallaxoriginx")] = map.parallaxOrigin().x();
         mapVariant[QStringLiteral("parallaxoriginy")] = map.parallaxOrigin().y();
@@ -625,6 +630,10 @@ QVariant MapToVariantConverter::toVariant(const MapObject &object) const
         if (notTemplateInstance || object.propertyChanged(MapObject::ShapeProperty))
             objectVariant[QStringLiteral("ellipse")] = true;
         break;
+    case MapObject::Capsule:
+        if (notTemplateInstance || object.propertyChanged(MapObject::ShapeProperty))
+            objectVariant[QStringLiteral("capsule")] = true;
+        break;
     case MapObject::Text:
         if (notTemplateInstance || (object.propertyChanged(MapObject::TextProperty) ||
                                     object.propertyChanged(MapObject::TextFontProperty) ||
@@ -695,6 +704,12 @@ QVariant MapToVariantConverter::toVariant(const ImageLayer &imageLayer) const
 
     const QString rel = toFileReference(imageLayer.imageSource(), mDir);
     imageLayerVariant[QStringLiteral("image")] = rel;
+
+    const QSize imageSize = imageLayer.image().size();
+    if (!imageSize.isNull()) {
+        imageLayerVariant[QStringLiteral("imagewidth")] = imageSize.width();
+        imageLayerVariant[QStringLiteral("imageheight")] = imageSize.height();
+    }
 
     const QColor transColor = imageLayer.transparentColor();
     if (transColor.isValid())
@@ -785,6 +800,9 @@ void MapToVariantConverter::addLayerAttributes(QVariantMap &layerVariant,
     if (layer.tintColor().isValid())
         layerVariant[QStringLiteral("tintcolor")] = colorToString(layer.tintColor());
 
+    if (layer.blendMode() != BlendMode::Normal)
+        layerVariant[QStringLiteral("mode")] = blendModeToString(layer.blendMode());
+
     addProperties(layerVariant, layer.properties());
 }
 
@@ -794,9 +812,12 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
     if (properties.isEmpty())
         return;
 
-    const ExportContext context(mDir.path());
+    ExportContext context(mDir.path());
 
     if (mVersion == 1) {
+        // The JSON1 format can't support typed lists
+        context.setRecursiveBehavior(ExportContext::RecursiveBehavior::ValuesOnly);
+
         QVariantMap propertiesMap;
         QVariantMap propertyTypesMap;
 
@@ -810,8 +831,8 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
             // TODO: Support custom property types in json1? Maybe with a customPropertyTypesMap...
         }
 
-        variantMap[QStringLiteral("properties")] = propertiesMap;
-        variantMap[QStringLiteral("propertytypes")] = propertyTypesMap;
+        variantMap[QStringLiteral("properties")] = std::move(propertiesMap);
+        variantMap[QStringLiteral("propertytypes")] = std::move(propertyTypesMap);
     } else {
         QVariantList propertiesVariantList;
 
@@ -820,17 +841,50 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
         for (; it != it_end; ++it) {
             const auto exportValue = context.toExportValue(it.value());
 
-            QVariantMap propertyVariantMap;
+            QVariantMap propertyVariantMap = toVariantMap(exportValue);
             propertyVariantMap[QStringLiteral("name")] = it.key();
-            propertyVariantMap[QStringLiteral("value")] = exportValue.value;
-            propertyVariantMap[QStringLiteral("type")] = exportValue.typeName;
 
-            if (!exportValue.propertyTypeName.isEmpty())
-                propertyVariantMap[QStringLiteral("propertytype")] = exportValue.propertyTypeName;
-
-            propertiesVariantList << propertyVariantMap;
+            propertiesVariantList << std::move(propertyVariantMap);
         }
 
         variantMap[QStringLiteral("properties")] = propertiesVariantList;
+    }
+}
+
+QVariantMap MapToVariantConverter::toVariantMap(const ExportValue &exportValue) const
+{
+    QVariantMap propertyVariantMap;
+
+    QVariant value = exportValue.value;
+    exportValuesToVariantMap(value);
+
+    propertyVariantMap[QStringLiteral("type")] = exportValue.typeName;
+    propertyVariantMap[QStringLiteral("value")] = value;
+    if (!exportValue.propertyTypeName.isEmpty())
+        propertyVariantMap[QStringLiteral("propertytype")] = exportValue.propertyTypeName;
+
+    return propertyVariantMap;
+}
+
+void MapToVariantConverter::exportValuesToVariantMap(QVariant &value) const
+{
+    switch (value.userType()) {
+    case QMetaType::QVariantMap: {
+        auto map = value.toMap();
+        for (auto &value : map)
+            exportValuesToVariantMap(value);
+        value = std::move(map);
+        break;
+    }
+    case QMetaType::QVariantList: {
+        auto list = value.toList();
+        for (QVariant &item : list)
+            item = toVariantMap(item.value<ExportValue>());
+        value = std::move(list);
+        break;
+    }
+    default:
+        // No conversion needed for other types
+        break;
     }
 }

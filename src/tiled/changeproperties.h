@@ -101,6 +101,7 @@ public:
                 const QString &name,
                 const QVariant &value,
                 QUndoCommand *parent = nullptr);
+
     /**
      * Constructs a new 'Set Property' command.
      *
@@ -111,8 +112,22 @@ public:
      */
     SetProperty(Document *document,
                 const QList<Object*> &objects,
-                const QStringList &path,
+                const PropertyPath &path,
                 const QVariant &value,
+                QUndoCommand *parent = nullptr);
+
+    /**
+     * Constructs a new 'Set Property' command.
+     *
+     * @param document      the document owning the objects
+     * @param objects       the objects of which the property should be changed
+     * @param path          the path to a property member
+     * @param values        the new values of the property, one for each object
+     */
+    SetProperty(Document *document,
+                const QList<Object*> &objects,
+                const PropertyPath &path,
+                const QVariantList &values,
                 QUndoCommand *parent = nullptr);
 
     void undo() override;
@@ -123,16 +138,12 @@ public:
     bool mergeWith(const QUndoCommand *other) final;
 
 private:
-    struct ObjectProperty {
-        QVariant previousValue;
-        bool existed;
-    };
-    QVector<ObjectProperty> mProperties;
     Document *mDocument;
     QList<Object*> mObjects;
     QString mName;
-    QStringList mPath;
-    QVariant mValue;
+    PropertyPath mPath;
+    QVariantList mValues;
+    QVariantList mPreviousValues;
 };
 
 class RemoveProperty : public QUndoCommand

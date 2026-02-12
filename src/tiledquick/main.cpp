@@ -1,20 +1,14 @@
 #include <QApplication>
 #include <QQmlApplicationEngine>
+#include <QSurfaceFormat>
 
 int main(int argc, char *argv[])
 {
     QCoreApplication::setOrganizationDomain("mapeditor.org");
     QCoreApplication::setApplicationName("TiledQuick");
 
-    // High-DPI scaling is always enabled in Qt 6
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-#endif
-
-    // We don't need the scaling factor to be rounded
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
-    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
-#endif
+    // Not rounding causes pixel movement during panning and window resizing
+    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::RoundPreferFloor);
 
     QApplication app(argc, argv);
 
@@ -25,9 +19,14 @@ int main(int argc, char *argv[])
     qmlDir += QStringLiteral("/../qml");
 #endif
 
+    QSurfaceFormat format = QSurfaceFormat::defaultFormat();
+    // format.setSamples(8);       // Increase quality of lines and edges when UI is scaled down
+    format.setSwapInterval(0);  // Disable vsync
+    QSurfaceFormat::setDefaultFormat(format);
+
     QQmlApplicationEngine engine;
     engine.addImportPath(qmlDir);
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
-    return app.exec();
+    return QApplication::exec();
 }
