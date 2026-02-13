@@ -83,6 +83,8 @@ public:
     void setRelocateTiles(bool enabled);
     bool isRelocateTiles() const { return mRelocateTiles; }
 
+    bool isSnapToGrid() const { return mSnapToGrid; }
+
     void setEditWangSet(bool enabled);
     bool isEditWangSet() const { return mEditWangSet; }
 
@@ -109,6 +111,7 @@ signals:
     void wangIdUsedChanged(WangId wangId);
     void currentWangIdChanged(WangId wangId);
     void swapTilesRequested(Tile *tileA, Tile *tileB);
+    void snapToGridChanged(bool enabled);
 
 protected:
     bool event(QEvent *event) override;
@@ -174,7 +177,7 @@ private:
 
     bool mSnapToGrid = true;
     bool mAtlasSelecting = false;
-    int mResizingEdge = 0;  // 0=none, 1=right, 2=bottom, 3=left, 4=top
+    int mResizingEdge = 0;  // 0=none, 1=right, 2=bottom, 3=left, 4=top, 5=top-left, 6=top-right, 7=bottom-left, 8=bottom-right
     QPoint mSelectionOffset;
     QRubberBand mRubberBand;
     QModelIndex mDraggedIndex;

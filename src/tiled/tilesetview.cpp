@@ -533,6 +533,17 @@ void TilesetView::keyPressEvent(QKeyEvent *event)
         }
     }
 
+    // Toggle grid snapping with Shift key in atlas relocate mode
+    if (event->key() == Qt::Key_Shift && !event->isAutoRepeat()) {
+        const TilesetModel *model = tilesetModel();
+        if (mRelocateTiles && model && model->tileset()->isAtlas()) {
+            mSnapToGrid = !mSnapToGrid;
+            emit snapToGridChanged(mSnapToGrid);
+            event->accept();
+            return;
+        }
+    }
+
     // Ignore space, because we'd like to use it for panning
     if (event->key() == Qt::Key_Space) {
         event->ignore();
@@ -628,24 +639,35 @@ void TilesetView::mousePressEvent(QMouseEvent *event)
     const TilesetModel *model = tilesetModel();
     if (mRelocateTiles && model && model->tileset()->isAtlas()) {
         if (event->button() == Qt::LeftButton || event->button() == Qt::RightButton) {
-            mSnapToGrid = !(event->modifiers() & Qt::ShiftModifier);
-
             if (event->button() == Qt::LeftButton) {
                 mDraggedIndex = indexAt(event->pos());
                 Tile* tile = model->tileAt(mDraggedIndex);
                 if (mDraggedIndex.isValid() && tile) {
                     QRect tileRect = tileToView(tile->imageRect());
                     const int edge = 4 * scale();
-                    if (qAbs(event->pos().x() - tileRect.right()) < edge)
-                        mResizingEdge = 1;
-                    else if (qAbs(event->pos().y() - tileRect.bottom()) < edge)
-                        mResizingEdge = 2;
-                    else if (qAbs(event->pos().x() - tileRect.left()) < edge)
-                        mResizingEdge = 3;
-                    else if (qAbs(event->pos().y() - tileRect.top()) < edge)
-                        mResizingEdge = 4;
+                    bool nearLeft = qAbs(event->pos().x() - tileRect.left()) < edge;
+                    bool nearRight = qAbs(event->pos().x() - tileRect.right()) < edge;
+                    bool nearTop = qAbs(event->pos().y() - tileRect.top()) < edge;
+                    bool nearBottom = qAbs(event->pos().y() - tileRect.bottom()) < edge;
+
+                    if (nearTop && nearLeft)
+                        mResizingEdge = 5; // Top-left corner
+                    else if (nearTop && nearRight)
+                        mResizingEdge = 6; // Top-right corner
+                    else if (nearBottom && nearLeft)
+                        mResizingEdge = 7; // Bottom-left corner
+                    else if (nearBottom && nearRight)
+                        mResizingEdge = 8; // Bottom-right corner
+                    else if (nearRight)
+                        mResizingEdge = 1; // Right edge
+                    else if (nearBottom)
+                        mResizingEdge = 2; // Bottom edge
+                    else if (nearLeft)
+                        mResizingEdge = 3; // Left edge
+                    else if (nearTop)
+                        mResizingEdge = 4; // Top edge
                     else
-                        mResizingEdge = 0;
+                        mResizingEdge = 0; // None (move)
 
                     mSelectionOffset = viewToTile(event->pos()) - tile->imageRect().topLeft();
                     mRubberBand.setGeometry(tileRect);
@@ -669,7 +691,6 @@ void TilesetView::mousePressEvent(QMouseEvent *event)
 void TilesetView::mouseMoveEvent(QMouseEvent *event)
 {
     if (mAtlasSelecting) {
-        mSnapToGrid = !(event->modifiers() & Qt::ShiftModifier);
         updateAtlasSelection(viewToTile(event->pos()));
         event->accept();
         return;
@@ -695,8 +716,6 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
     }
 
     if (mDraggedIndex.isValid()) {
-        mSnapToGrid = !(event->modifiers() & Qt::ShiftModifier);
-
         if (Tile *tile = model->tileAt(mDraggedIndex)) {
             QRect newRect = tile->imageRect();
             QPoint pos = viewToTile(event->pos());
@@ -714,6 +733,22 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
                 break;
             case 4: // Top edge
                 newRect.setTop(pos.y());
+                break;
+            case 5: // Top-left corner
+                newRect.setLeft(pos.x());
+                newRect.setTop(pos.y());
+                break;
+            case 6: // Top-right corner
+                newRect.setRight(pos.x());
+                newRect.setTop(pos.y());
+                break;
+            case 7: // Bottom-left corner
+                newRect.setLeft(pos.x());
+                newRect.setBottom(pos.y());
+                break;
+            case 8: // Bottom-right corner
+                newRect.setRight(pos.x());
+                newRect.setBottom(pos.y());
                 break;
             default: // No edge - normal move
                 pos -= mSelectionOffset;
@@ -844,8 +879,12 @@ void TilesetView::mouseReleaseEvent(QMouseEvent *event)
         return;
 
     if (mDraggedIndex.isValid() && event->button() == Qt::LeftButton) {
-        if (Tile* tile = model->tileAt(mDraggedIndex))
-            mTilesetDocument->undoStack()->push(new ChangeTileImageRect(mTilesetDocument, { tile }, { viewToTile(mRubberBand.geometry()) }));
+        if (Tile* tile = model->tileAt(mDraggedIndex)) {
+            // Only undo if the rect actually changed
+            QRect newRect = viewToTile(mRubberBand.geometry());
+            if (newRect != tile->imageRect())
+                mTilesetDocument->undoStack()->push(new ChangeTileImageRect(mTilesetDocument, { tile }, { newRect }));
+        }
 
         mDraggedIndex = QModelIndex();
         mRubberBand.hide();

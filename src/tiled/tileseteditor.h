@@ -135,6 +135,7 @@ private:
     void setRelocateTiles(bool relocateTiles);
     void setEditCollision(bool editCollision);
     void hasSelectedCollisionObjectsChanged();
+    void updateStatusMessage();
 
     void setEditWang(bool editWang);
 
