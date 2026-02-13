@@ -198,7 +198,7 @@ When in Rearrange Tiles mode, the following mouse controls are available:
 * **Left-click and drag on a tile corner** - Resizes the tile
 * **Left-click and drag on empty space** - Creates a new tile region
 * **Right-click and drag** - Deletes all tiles overlapping the selection area
-* **Hold Shift** - Disables grid snapping for precise positioning
+* **Press Shift** - Toggles grid snapping
 
 This is particularly useful for:
 
