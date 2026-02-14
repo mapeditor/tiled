@@ -17,7 +17,6 @@ be used in any map. Tilesets can be modified at any time.
 [![Snap](https://snapcraft.io/tiled/badge.svg)](https://snapcraft.io/tiled)
 [![Translation status](https://hosted.weblate.org/widgets/tiled/-/shields-badge.svg)](https://hosted.weblate.org/engage/tiled/?utm_source=widget)
 [![Open Source Helpers](https://www.codetriage.com/mapeditor/tiled/badges/users.svg)](https://www.codetriage.com/mapeditor/tiled)
-[![Maven Central Version](https://img.shields.io/maven-central/v/org.mapeditor/libtiled?label=libtiled-java)](https://central.sonatype.com/artifact/org.mapeditor/libtiled)
 
 Installing Tiled
 -------------------------------------------------------------------------------
