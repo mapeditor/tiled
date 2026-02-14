@@ -997,9 +997,11 @@ QModelIndex TilesetView::indexAt(const QPoint &pos) const
 {
     if (TilesetModel *m = tilesetModel(); m && m->isFixedAtlas()) {
         const QPoint tilesetPos = viewToTile(pos);
-        for (Tile *tile : m->tileset()->tiles())
-            if (tile->imageRect().contains(tilesetPos))
-                return tilesetModel()->tileIndex(tile);
+        // Iterate in reverse order to match rendering order
+        const QList<Tile*> &tiles = m->tileset()->tiles();
+        for (int i = tiles.size() - 1; i >= 0; --i)
+            if (tiles[i]->imageRect().contains(tilesetPos))
+                return tilesetModel()->tileIndex(tiles[i]);
         return QModelIndex();
     }
 
