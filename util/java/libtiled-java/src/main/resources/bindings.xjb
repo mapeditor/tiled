@@ -29,10 +29,10 @@
   #L%
   -->
 <jxb:bindings xmlns:xs="http://www.w3.org/2001/XMLSchema"
-              xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
-              xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
-              xmlns:annox="http://annox.dev.java.net"
-              jxb:version="2.1"
+              xmlns:jxb="https://jakarta.ee/xml/ns/jaxb"
+              xmlns:xjc="https://jakarta.ee/xml/ns/jaxb/xjc"
+              xmlns:annox="urn:jaxb.jvnet.org:annox"
+              jxb:version="3.0"
               jxb:extensionBindingPrefixes="xjc annox">
     <jxb:bindings schemaLocation="map.xsd" node="/xs:schema">
 

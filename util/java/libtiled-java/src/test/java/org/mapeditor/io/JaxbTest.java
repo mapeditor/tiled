@@ -36,10 +36,11 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.zip.InflaterInputStream;
 
-import javax.xml.bind.DatatypeConverter;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import java.util.Base64;
+
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import javax.xml.stream.XMLStreamException;
 
 import org.junit.Test;
@@ -69,7 +70,7 @@ public class JaxbTest {
         Data data = layer.getData();
         if (Compression.ZLIB.equals(data.getCompression())) {
             String enc = data.getValue();
-            byte[] dec = DatatypeConverter.parseBase64Binary(enc);
+            byte[] dec = Base64.getDecoder().decode(enc);
             InputStream bais = new ByteArrayInputStream(dec);
             InputStream is = new InflaterInputStream(bais);
 
