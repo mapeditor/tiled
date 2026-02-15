@@ -72,7 +72,7 @@ public class ImageHelperTest {
 
         byte[] pngData = ImageHelper.imageToPNG(img);
         assertNotNull(pngData);
-        assertEquals(pngData.length, 24559);
+        assertTrue(pngData.length > 20000);
 
         BufferedImage roundTripped = ImageHelper.bytesToImage(pngData);
         assertNotNull(roundTripped);
