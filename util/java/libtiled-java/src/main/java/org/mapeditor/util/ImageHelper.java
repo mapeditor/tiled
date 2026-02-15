@@ -30,10 +30,8 @@
  */
 package org.mapeditor.util;
 
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -81,24 +79,6 @@ public class ImageHelper {
      * @throws java.io.IOException if any.
      */
     public static BufferedImage bytesToImage(byte[] imageData) throws IOException {
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
-        Image toolkitImage = toolkit.createImage(imageData);
-        int width = toolkitImage.getWidth(null);
-        int height = toolkitImage.getHeight(null);
-
-        // Deriving a scaled instance, even if it has the same
-        // size, somehow makes drawing of the tiles a lot
-        // faster on various systems (seen on Linux, Windows
-        // and MacOS X).
-        toolkitImage = toolkitImage.getScaledInstance(width, height,
-                Image.SCALE_FAST);
-
-        BufferedImage img = new BufferedImage(width, height,
-                BufferedImage.TYPE_INT_ARGB);
-        Graphics g = img.getGraphics();
-        g.drawImage(toolkitImage, 0, 0, null);
-        g.dispose();
-
-        return img;
+        return ImageIO.read(new ByteArrayInputStream(imageData));
     }
 }
