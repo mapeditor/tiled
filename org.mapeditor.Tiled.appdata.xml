@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component type="desktop">
+<component type="desktop-application">
  <id>org.mapeditor.Tiled.desktop</id>
  <metadata_license>CC0-1.0</metadata_license>
  <project_license>GPL-2.0+ and BSD-2-Clause</project_license>
@@ -377,14 +377,20 @@
  </description>
  <screenshots>
   <!-- GPL 2 by TMW -->
-  <screenshot type="default" width="800" height="600">
+  <screenshot type="default">
     <image>https://www.mapeditor.org/img/appdata/screenshot_objects.png</image>
+    <caption>Use Objects to Annotate Levels with Game Logic</caption>
   </screenshot>
   <!-- CC BY SA 3.0 By Clint Bellanger -->
-  <screenshot width="800" height="600">
+  <screenshot>
     <image>https://www.mapeditor.org/img/appdata/screenshot_terrain.png</image>
+    <caption>Use Terrains to Speed Up Tile Placement</caption>
   </screenshot>
  </screenshots>
+ <branding>
+   <color type="primary" scheme_preference="light">#1a5fb4</color>
+   <color type="primary" scheme_preference="dark">#223369</color>
+ </branding>
  <kudos>
    <kudo>ModernToolkit</kudo>
    <kudo>UserDocs</kudo>
@@ -400,13 +406,10 @@
    <binary>tiled</binary>
    <id>tiled.desktop</id>
  </provides>
- <requires>
+ <supports>
+  <display_length compare="ge">768</display_length>
   <control>pointing</control>
   <control>keyboard</control>
- </requires>
- <supports>
-  <control>tablet</control>
-  <control>touch</control>
  </supports>
  <translation type="qt">tiled</translation>
  <update_contact>tingping@fedoraproject.org</update_contact>
