@@ -60,6 +60,8 @@ build_script:
   - echo Building Tiled %TILED_VERSION% from %COMMITNOW%
   - qbs build config:release projects.Tiled.windowsInstaller:true projects.Tiled.staticZstd:%ENABLE_ZSTD%
   - cd util\java
+  - set JAVA_HOME=C:\Program Files\Java\jdk21
+  - set PATH=%JAVA_HOME%\bin;%PATH%
   - mvn --version
   - mvn clean install
   - cd ..\..

@@ -50,10 +50,11 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
 import javax.imageio.ImageIO;
-import javax.xml.bind.DatatypeConverter;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+import java.util.Base64;
+
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -206,7 +207,7 @@ public class TMXMapReader {
                     if (cdata != null) {
                         String sdata = cdata.getNodeValue();
                         String enc = sdata.trim();
-                        byte[] dec = DatatypeConverter.parseBase64Binary(enc);
+                        byte[] dec = Base64.getDecoder().decode(enc);
                         img = ImageHelper.bytesToImage(dec);
                     }
                     break;
@@ -669,7 +670,7 @@ public class TMXMapReader {
                     Node cdata = child.getFirstChild();
                     if (cdata != null) {
                         String enc = cdata.getNodeValue().trim();
-                        byte[] dec = DatatypeConverter.parseBase64Binary(enc);
+                        byte[] dec = Base64.getDecoder().decode(enc);
                         ByteArrayInputStream bais = new ByteArrayInputStream(dec);
                         InputStream is;
 

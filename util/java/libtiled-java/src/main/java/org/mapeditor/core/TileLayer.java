@@ -37,8 +37,8 @@ import java.awt.Rectangle;
 import java.awt.geom.Area;
 import java.util.HashMap;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 /**
  * A TileLayer is a specialized Layer, used for tracking two dimensional tile
