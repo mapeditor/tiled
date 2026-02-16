@@ -24,6 +24,7 @@
 * Fixed alpha component of tint color not applying correctly to opaque images (by Roland Helmerichs, #4310)
 * Scripting: Added API for custom property types (with dogboydog, #3971)
 * Scripting: Added TileMap.chunkSize and TileMap.compressionLevel properties
+* Scripting: Added MapEditor.selectedTool and MapEditor.tool
 * AutoMapping: Don't match rules based on empty input indexes
 * AutoMapping: Optimized reloading of rule maps and load rule maps on-demand
 * Windows: Fixed issue with opening Tile Animation Editor (#4223)
