@@ -253,6 +253,7 @@ public:
 
     MapObject *hoveredMapObject() const { return mHoveredMapObject; }
     void setHoveredMapObject(MapObject *object);
+    MapObject *lastFocusedMapObject() const { return mLastFocusedMapObject; }
 
     void unifyTilesets(Map &map);
     void unifyTilesets(Map &map, QVector<SharedTileset> &missingTilesets) const;
@@ -413,6 +414,7 @@ private:
     QList<MapObject*> mSelectedObjects;
     QList<MapObject*> mAboutToBeSelectedObjects;
     MapObject *mHoveredMapObject;       /**< Map object with mouse on top. */
+    MapObject *mLastFocusedMapObject = nullptr; /**< Last MapObject that was focused/current. */
     std::unique_ptr<MapRenderer> mRenderer;
     Layer *mCurrentLayer = nullptr;
     MapObjectModel *mMapObjectModel;

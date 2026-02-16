@@ -20,7 +20,6 @@
 
 #include "propertiesview.h"
 
-#include "expressionspinbox.h"
 #include "fileedit.h"
 #include "listedit.h"
 #include "propertyeditorwidgets.h"
@@ -1171,6 +1170,14 @@ bool PropertiesView::focusNextPrevProperty(Property *property, bool next, bool s
     return false;
 }
 
+static void activateParentLayouts(QWidget *widget)
+{
+    while (widget && widget->layout()) {
+        widget->layout()->activate();
+        widget = widget->parentWidget();
+    }
+}
+
 void PropertiesView::deletePropertyWidgets(Property *property)
 {
     auto it = m_propertyWidgets.constFind(property);
@@ -1193,10 +1200,7 @@ void PropertiesView::deletePropertyWidgets(Property *property)
 
     // This appears to be necessary to avoid flickering due to relayouting
     // not being done before the next paint.
-    while (widget && widget->layout()) {
-        widget->layout()->activate();
-        widget = widget->parentWidget();
-    }
+    activateParentLayouts(widget);
 }
 
 void PropertiesView::forgetProperty(Property *property)
@@ -1458,14 +1462,6 @@ PropertiesView::PropertyWidgets PropertiesView::createPropertyWidgets(Property *
     });
 
     return widgets;
-}
-
-static void activateParentLayouts(QWidget *widget)
-{
-    while (widget && widget->layout()) {
-        widget->layout()->activate();
-        widget = widget->parentWidget();
-    }
 }
 
 QWidget *PropertiesView::createChildrenWidget(GroupProperty *groupProperty,

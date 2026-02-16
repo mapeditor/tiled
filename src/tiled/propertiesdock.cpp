@@ -21,10 +21,11 @@
 #include "propertiesdock.h"
 
 #include "mapdocument.h"
-#include "mapobject.h"
+#include "mapobject.h"  // necessary to know MapObject* is an Object*
 #include "propertiesview.h"
 #include "propertieswidget.h"
 #include "tilesetdocument.h"
+#include "wangset.h"
 
 #include <QKeyEvent>
 #include <QTabBar>
@@ -156,65 +157,94 @@ void PropertiesDock::retranslateUi()
 
 void PropertiesDock::updateTabs()
 {
-    const bool isMap = mDocument && mDocument->type() == Document::MapDocumentType;
-    const bool isTileset = mDocument && mDocument->type() == Document::TilesetDocumentType;
-    const auto currentObject = mDocument ? mDocument->currentObject() : nullptr;
-
-    bool layersSelected = false;
-    bool objectsSelected = false;
-    bool tilesSelected = false;
-    bool wangSetSelected = false;
-    bool wangColorSelected = false;
-
-    if (isMap) {
-        const auto mapDocument = static_cast<MapDocument *>(mDocument);
-        layersSelected = !mapDocument->selectedLayers().isEmpty();
-        objectsSelected = !mapDocument->selectedObjects().isEmpty();
-    }
-
-    if (isTileset) {
-        const auto tilesetDocument = static_cast<TilesetDocument *>(mDocument);
-        tilesSelected = !tilesetDocument->selectedTiles().isEmpty();
-
-        // todo: keep track of selected wang set and color in TilesetDocument
-        wangSetSelected = currentObject && currentObject->typeId() == Object::WangSetType;
-        wangColorSelected = currentObject && currentObject->typeId() == Object::WangColorType;
-    }
-
-    mTabBar->setTabVisible(MapTab, isMap);
-    mTabBar->setTabVisible(LayerTab, layersSelected);
-    mTabBar->setTabVisible(MapObjectTab, objectsSelected);
-    mTabBar->setTabVisible(TilesetTab, isTileset);
-    mTabBar->setTabVisible(TileTab, tilesSelected);
-    mTabBar->setTabVisible(WangSetTab, wangSetSelected);
-    mTabBar->setTabVisible(WangColorTab, wangColorSelected || wangSetSelected);
-    mTabBar->setTabButton(0, QTabBar::LeftSide, nullptr);   // Force recalculation of tab sizes
-
+    int visibleTabs = 0;
     int currentIndex = -1;
-    if (currentObject) {
-        switch (currentObject->typeId()) {
-        case Object::LayerType:     currentIndex = LayerTab; break;
-        case Object::MapObjectType: currentIndex = MapObjectTab; break;
-        case Object::MapType:       currentIndex = MapTab; break;
-        case Object::TilesetType:   currentIndex = TilesetTab; break;
-        case Object::TileType:      currentIndex = TileTab; break;
-        case Object::WangSetType:   currentIndex = WangSetTab; break;
-        case Object::WangColorType: currentIndex = WangColorTab; break;
 
-        case Object::ProjectType:
-        case Object::WorldType:
-            currentIndex = -1; break;
+    if (mDocument) {
+        // Determine the visible tabs based on selections
+        switch (mDocument->type()) {
+        case Document::MapDocumentType: {
+            const auto mapDocument = static_cast<MapDocument *>(mDocument);
+            visibleTabs |= Object::MapType;
+
+            if (!mapDocument->selectedLayers().isEmpty())
+                visibleTabs |= Object::LayerType;
+            if (!mapDocument->selectedObjects().isEmpty())
+                visibleTabs |= Object::MapObjectType;
             break;
         }
+        case Document::TilesetDocumentType: {
+            const auto tilesetDocument = static_cast<TilesetDocument *>(mDocument);
+            visibleTabs |= Object::TilesetType;
+
+            if (!tilesetDocument->selectedTiles().isEmpty())
+                visibleTabs |= Object::TileType;
+            if (tilesetDocument->selectedWangSet())
+                visibleTabs |= Object::WangSetType;
+            if (tilesetDocument->selectedWangColor() != 0)
+                visibleTabs |= Object::WangColorType;
+            break;
+        }
+
+        case Document::WorldDocumentType:
+        case Document::ProjectDocumentType:
+            break;
+        }
+
+        // Determine the current tab
+        if (const auto currentObject = mDocument->currentObject()) {
+            // Current tab might need to be made temporarily visible
+            visibleTabs |= currentObject->typeId();
+
+            switch (currentObject->typeId()) {
+            case Object::LayerType:     currentIndex = LayerTab;        break;
+            case Object::MapObjectType: currentIndex = MapObjectTab;    break;
+            case Object::MapType:       currentIndex = MapTab;          break;
+            case Object::TilesetType:   currentIndex = TilesetTab;      break;
+            case Object::TileType:      currentIndex = TileTab;         break;
+            case Object::WangSetType:   currentIndex = WangSetTab;      break;
+            case Object::WangColorType: currentIndex = WangColorTab;    break;
+
+            // These types use their own property dialog
+            case Object::ProjectType:
+            case Object::WorldType:
+                currentIndex = -1; break;
+                break;
+            }
+        }
+
+        // If no object is selected, try to select the Map or Tileset tab.
+        if (currentIndex == -1) {
+            if (visibleTabs & Object::MapType)
+                currentIndex = MapTab;
+            else if (visibleTabs & Object::TilesetType)
+                currentIndex = TilesetTab;
+        }
     }
-    if (currentIndex == -1) {
-        if (isMap)
-            currentIndex = MapTab;
-        else if (isTileset)
-            currentIndex = TilesetTab;
-    }
-    if (currentIndex != -1 && !mTabBar->isTabVisible(currentIndex))
-        currentIndex = -1;
+
+    mTabBar->setTabVisible(MapTab, visibleTabs & Object::MapType);
+    mTabBar->setTabVisible(LayerTab, visibleTabs & Object::LayerType);
+    mTabBar->setTabVisible(MapObjectTab, visibleTabs & Object::MapObjectType);
+    mTabBar->setTabVisible(TilesetTab, visibleTabs & Object::TilesetType);
+    mTabBar->setTabVisible(TileTab, visibleTabs & Object::TileType);
+    mTabBar->setTabVisible(WangSetTab, visibleTabs & Object::WangSetType);
+    mTabBar->setTabVisible(WangColorTab, visibleTabs & Object::WangColorType);
+
+    // Until Qt 6.7, the QTabBar wasn't checking the tab visibility when handling the mouse wheel
+    // (fixed in qtbase commit 83e92e25573f98e7530a3dfcaf02910f3932107f)
+#if QT_VERSION < QT_VERSION_CHECK(6, 7, 0)
+    mTabBar->setTabEnabled(MapTab, visibleTabs & Object::MapType);
+    mTabBar->setTabEnabled(LayerTab, visibleTabs & Object::LayerType);
+    mTabBar->setTabEnabled(MapObjectTab, visibleTabs & Object::MapObjectType);
+    mTabBar->setTabEnabled(TilesetTab, visibleTabs & Object::TilesetType);
+    mTabBar->setTabEnabled(TileTab, visibleTabs & Object::TileType);
+    mTabBar->setTabEnabled(WangSetTab, visibleTabs & Object::WangSetType);
+    mTabBar->setTabEnabled(WangColorTab, visibleTabs & Object::WangColorType);
+#endif
+
+    // Force relayouting of tabs, because Qt fails to do so (tested on 5.15 and 6.10)
+    mTabBar->setTabButton(0, QTabBar::LeftSide, nullptr);
+
     mTabBar->setCurrentIndex(currentIndex);
 }
 
@@ -233,11 +263,14 @@ void PropertiesDock::tabChanged(int index)
         }
         break;
     case MapObjectTab:
-        // todo: keep track of last focused object
         if (auto mapDocument = qobject_cast<MapDocument *>(mDocument)) {
-            auto selectedObjects = mapDocument->selectedObjects();
-            if (!selectedObjects.isEmpty())
-                mapDocument->setCurrentObject(selectedObjects.first());
+            if (auto last = mapDocument->lastFocusedMapObject())
+                mapDocument->setCurrentObject(last);
+            else {
+                auto selectedObjects = mapDocument->selectedObjects();
+                if (!selectedObjects.isEmpty())
+                    mapDocument->setCurrentObject(selectedObjects.first());
+            }
         }
         break;
     case TilesetTab: {
@@ -246,15 +279,30 @@ void PropertiesDock::tabChanged(int index)
         break;
     }
     case TileTab:
-        // todo: keep track of last focused tile
         if (auto tilesetDocument = qobject_cast<TilesetDocument *>(mDocument)) {
-            auto selectedTiles = tilesetDocument->selectedTiles();
-            if (!selectedTiles.isEmpty())
-                tilesetDocument->setCurrentObject(selectedTiles.first());
+            if (auto last = tilesetDocument->lastFocusedTile())
+                tilesetDocument->setCurrentObject(last);
+            else {
+                auto selectedTiles = tilesetDocument->selectedTiles();
+                if (!selectedTiles.isEmpty())
+                    tilesetDocument->setCurrentObject(selectedTiles.first());
+            }
         }
+        break;
     case WangSetTab:
+        if (auto tilesetDocument = qobject_cast<TilesetDocument *>(mDocument)) {
+            if (auto wangSet = tilesetDocument->selectedWangSet())
+                tilesetDocument->setCurrentObject(wangSet);
+        }
+        break;
     case WangColorTab:
-        // todo: keep track of selected wang set and color
+        if (auto tilesetDocument = qobject_cast<TilesetDocument *>(mDocument)) {
+            if (auto wangSet = tilesetDocument->selectedWangSet()) {
+                const int color = tilesetDocument->selectedWangColor();
+                if (color > 0)
+                    tilesetDocument->setCurrentObject(wangSet->colorAt(color).data());
+            }
+        }
         break;
     }
 }
