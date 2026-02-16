@@ -155,14 +155,9 @@ AutoMapper::AutoMapper(std::unique_ptr<Map> rulesMap)
 
 AutoMapper::~AutoMapper() = default;
 
-QString AutoMapper::rulesMapFileName() const
+const QString &AutoMapper::rulesMapFileName() const
 {
     return mRulesMap->fileName;
-}
-
-bool AutoMapper::ruleLayerNameUsed(const QString &ruleLayerName) const
-{
-    return mRuleMapSetup.mInputLayerNames.contains(ruleLayerName);
 }
 
 template<typename Type>
@@ -1365,9 +1360,6 @@ void AutoMapper::copyMapRegion(const Rule &rule, QPoint offset,
 
         if (!rule.options.ignoreLock && !toTileLayer->isUnlocked())
             continue;
-
-        if (!context.touchedTileLayers.isEmpty())
-            appendUnique<const TileLayer*>(context.touchedTileLayers, toTileLayer);
 
         for (const QRect &rect : rule.outputRegion) {
             copyTileRegion(tileOutput.tileLayer, rect, toTileLayer,
