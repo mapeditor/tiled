@@ -450,6 +450,7 @@ void TilesetDocument::setSelectedWangSet(WangSet *wangSet)
     if (mSelectedWangSet == wangSet)
         return;
 
+    qDebug() << "TilesetDocument::setSelectedWangSet(" << (wangSet ? wangSet->name() : QStringLiteral("nullptr")) << ")";
     mSelectedWangSet = wangSet;
     mSelectedWangColor = 0;
     emit selectedWangSetChanged(mSelectedWangSet);
@@ -460,6 +461,7 @@ void TilesetDocument::setSelectedWangColor(int color)
     if (mSelectedWangColor == color)
         return;
 
+    qDebug() << "TilesetDocument::setSelectedWangColor(" << color << ")";
     mSelectedWangColor = color;
     emit selectedWangColorChanged(mSelectedWangColor);
 }

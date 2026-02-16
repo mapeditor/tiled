@@ -297,8 +297,10 @@ void PropertiesDock::tabChanged(int index)
         break;
     case WangColorTab:
         if (auto tilesetDocument = qobject_cast<TilesetDocument *>(mDocument)) {
+            qDebug() << "Switching to WangColor tab" << tilesetDocument;
             if (auto wangSet = tilesetDocument->selectedWangSet()) {
                 const int color = tilesetDocument->selectedWangColor();
+                qDebug() << "  with WangSet" << wangSet->name() << "and color index" << color;
                 if (color > 0)
                     tilesetDocument->setCurrentObject(wangSet->colorAt(color).data());
             }
