@@ -657,26 +657,52 @@ QWidget *BaseEnumProperty::createEnumEditor(QWidget *parent)
 {
     auto editor = new ComboBox(parent);
 
-    for (qsizetype i = 0; i < m_enumData.names.size(); ++i) {
-        auto value = m_enumData.values.value(i, i);
-        editor->addItem(m_enumData.icons[value],
-                        m_enumData.names[i],
-                        value);
-    }
+    auto setupEditor = [this, editor] {
+        const QSignalBlocker blocker(editor);
+        editor->clear();
+
+        for (qsizetype i = 0; i < m_enumData.names.size(); ++i) {
+            auto value = m_enumData.values.value(i, i);
+            editor->addItem(m_enumData.icons[value],
+                            m_enumData.names[i],
+                            value);
+        }
+    };
 
     auto syncEditor = [this, editor] {
         const QSignalBlocker blocker(editor);
         editor->setCurrentIndex(editor->findData(value()));
     };
+
+    setupEditor();
     syncEditor();
 
     connect(this, &Property::valueChanged, editor, syncEditor);
+    connect(this, &BaseEnumProperty::enumDataChanged, editor, [=] {
+        setupEditor();
+        syncEditor();
+    });
     connect(editor, &QComboBox::currentIndexChanged, this,
-                     [editor, this] {
+            [editor, this] {
         setValue(editor->currentData().toInt());
     });
 
     return editor;
+}
+
+void BaseEnumProperty::setEnumData(const EnumData &enumData)
+{
+    m_enumData = enumData;
+    emit enumDataChanged(m_enumData);
+}
+
+void BaseEnumProperty::setEnumNames(const QStringList &names)
+{
+    if (m_enumData.names == names)
+        return;
+
+    m_enumData.names = names;
+    emit enumDataChanged(m_enumData);
 }
 
 QWidget *BaseEnumProperty::createFlagsEditor(QWidget *parent)
