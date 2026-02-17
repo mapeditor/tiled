@@ -30,10 +30,13 @@
  */
 package org.mapeditor.core;
 
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -54,7 +57,7 @@ public class MapObject extends MapObjectData implements Cloneable {
     private Shape shape = new Rectangle();
     private String imageSource;
     private Image image;
-    private Image scaledImage;
+    private BufferedImage scaledImage;
     private Tile tile;
     private boolean flipHorizontal;
     private boolean flipVertical;
@@ -234,10 +237,15 @@ public class MapObject extends MapObjectData implements Cloneable {
         final int zoomedWidth = (int) (getWidth() * zoom);
         final int zoomedHeight = (int) (getHeight() * zoom);
 
-        if (scaledImage == null || scaledImage.getWidth(null) != zoomedWidth
-                || scaledImage.getHeight(null) != zoomedHeight) {
-            scaledImage = image.getScaledInstance(zoomedWidth, zoomedHeight,
-                    Image.SCALE_SMOOTH);
+        if (scaledImage == null || scaledImage.getWidth() != zoomedWidth
+                || scaledImage.getHeight() != zoomedHeight) {
+            scaledImage = new BufferedImage(zoomedWidth, zoomedHeight,
+                    BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g = scaledImage.createGraphics();
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                    RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g.drawImage(image, 0, 0, zoomedWidth, zoomedHeight, null);
+            g.dispose();
         }
 
         return scaledImage;
