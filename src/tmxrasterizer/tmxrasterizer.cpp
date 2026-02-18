@@ -60,7 +60,8 @@ void TmxRasterizer::drawMapLayers(const MapRenderer &renderer,
         const auto offset = layer->totalOffset() + mapOffset;
         const auto compositionMode = layer->compositionMode();
 
-        painter.setOpacity(layer->effectiveOpacity());
+        const auto layerOpacity = layer->effectiveOpacity();
+        painter.setOpacity(layerOpacity);
         painter.translate(offset);
 
         switch (layer->layerType()) {
@@ -90,7 +91,7 @@ void TmxRasterizer::drawMapLayers(const MapRenderer &renderer,
                         painter.translate(-origin);
                     }
 
-                    painter.setOpacity(object->opacity());
+                    painter.setOpacity(layerOpacity * object->opacity());
 
                     renderer.drawMapObject(&painter, object, object->effectiveColors());
 
