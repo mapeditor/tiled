@@ -765,6 +765,10 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     if (shouldWrite(rotation != 0.0, isTemplateInstance, mapObject.propertyChanged(MapObject::RotationProperty)))
         w.writeAttribute(QStringLiteral("rotation"), QString::number(rotation));
 
+    const qreal opacity = mapObject.opacity();
+    if (shouldWrite(opacity != 1.0, isTemplateInstance, mapObject.propertyChanged(MapObject::OpacityProperty)))
+        w.writeAttribute(QStringLiteral("opacity"), QString::number(opacity));
+
     if (shouldWrite(!mapObject.isVisible(), isTemplateInstance, mapObject.propertyChanged(MapObject::VisibleProperty)))
         w.writeAttribute(QStringLiteral("visible"), QLatin1String(mapObject.isVisible() ? "1" : "0"));
 

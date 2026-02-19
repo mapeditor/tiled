@@ -591,6 +591,9 @@ QVariant MapToVariantConverter::toVariant(const MapObject &object) const
     if (notTemplateInstance || object.propertyChanged(MapObject::RotationProperty))
         objectVariant[QStringLiteral("rotation")] = object.rotation();
 
+    if (notTemplateInstance || object.propertyChanged(MapObject::OpacityProperty))
+        objectVariant[QStringLiteral("opacity")] = object.opacity();
+
     if (notTemplateInstance || object.propertyChanged(MapObject::VisibleProperty))
         objectVariant[QStringLiteral("visible")] = object.isVisible();
 

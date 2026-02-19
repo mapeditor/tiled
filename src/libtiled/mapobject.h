@@ -118,10 +118,11 @@ public:
         PositionProperty        = 1 << 7,
         SizeProperty            = 1 << 8,
         RotationProperty        = 1 << 9,
-        CellProperty            = 1 << 10,
-        ShapeProperty           = 1 << 11,
-        TemplateProperty        = 1 << 12,
-        CustomProperties        = 1 << 13,
+        OpacityProperty         = 1 << 10,
+        CellProperty            = 1 << 11,
+        ShapeProperty           = 1 << 12,
+        TemplateProperty        = 1 << 13,
+        CustomProperties        = 1 << 14,
         AllProperties           = 0xFF
     };
 
@@ -201,6 +202,9 @@ public:
     qreal rotation() const;
     void setRotation(qreal rotation);
 
+    qreal opacity() const;
+    void setOpacity(qreal opacity);
+
     Alignment alignment(const Map *map = nullptr) const;
 
     bool isVisible() const;
@@ -248,6 +252,7 @@ private:
     const ObjectTemplate *mObjectTemplate = nullptr;
     ObjectGroup *mObjectGroup = nullptr;
     qreal mRotation = 0.0;
+    qreal mOpacity = 1.0;
     bool mVisible = true;
     bool mTemplateBase = false;
     ChangedProperties mChangedProperties;
@@ -479,6 +484,18 @@ inline qreal MapObject::rotation() const
  */
 inline void MapObject::setRotation(qreal rotation)
 { mRotation = rotation; }
+
+/**
+ * Returns the opacity of the object.
+ */
+inline qreal MapObject::opacity() const
+{ return mOpacity; }
+
+/**
+ * Sets the opacity of the object.
+ */
+inline void MapObject::setOpacity(qreal opacity)
+{ mOpacity = opacity; }
 
 inline bool MapObject::isVisible() const
 { return mVisible; }

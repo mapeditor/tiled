@@ -65,6 +65,7 @@ public:
 
         setPos(pixelPos);
         setRotation(mapObject->rotation());
+        setOpacity(mapObject->opacity());
     }
 
     QRectF boundingRect() const override

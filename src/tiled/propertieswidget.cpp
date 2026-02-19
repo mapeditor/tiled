@@ -1630,6 +1630,17 @@ public:
                     });
         mVisibleProperty->setNameOnCheckBox(true);
 
+        mOpacityProperty = new IntProperty(
+                    tr("Opacity"),
+                    [this] { return qRound(mapObject()->opacity() * 100); },
+                    [this](const int &value) {
+                        changeMapObject(MapObject::OpacityProperty,
+                                        qreal(value) / 100);
+                    });
+        mOpacityProperty->setRange(0, 100);
+        mOpacityProperty->setSuffix(tr("%"));
+        mOpacityProperty->setSliderEnabled(true);
+
         mPositionProperty = new PointFProperty(
                     tr("Position"),
                     [this] {
@@ -1799,6 +1810,8 @@ public:
         if (mapDocument()->allowHidingObjects())
             mObjectProperties->addProperty(mVisibleProperty);
 
+        mObjectProperties->addProperty(mOpacityProperty);
+
         if (mapObject()->hasDimensions())
             mObjectProperties->addProperty(mBoundsProperty);
         else
@@ -1843,6 +1856,8 @@ private:
             emit mNameProperty->valueChanged();
         if (change.properties & MapObject::VisibleProperty)
             emit mVisibleProperty->valueChanged();
+        if (change.properties & MapObject::OpacityProperty)
+            emit mOpacityProperty->valueChanged();
         if (change.properties & MapObject::PositionProperty) {
             emit mPositionProperty->valueChanged();
             emit mBoundsProperty->valueChanged();
@@ -1920,6 +1935,7 @@ private:
     Property *mTemplateProperty;
     Property *mNameProperty;
     BoolProperty *mVisibleProperty;
+    IntProperty *mOpacityProperty;
     Property *mPositionProperty;
     Property *mBoundsProperty;
     FloatProperty *mRotationProperty;
