@@ -23,7 +23,7 @@ from pybindgen import *
 import pybindgen.typehandlers.base as typehandlers
 from pybindgen.typehandlers.base import ForwardWrapperBase, PointerParameter
 
-"""
+r"""
 class QFlagsTransformation(typehandlers.TypeTransformation):
   def __init__(self):
     self.rx = re.compile(r'(?:::)?QFlags<\s*(\w+)\s*>')
