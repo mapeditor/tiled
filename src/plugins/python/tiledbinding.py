@@ -258,7 +258,7 @@ cls_mapobject = tiled.add_class('MapObject', cls_object)
 cls_mapobject.add_constructor([])
 cls_mapobject.add_constructor([('QString','name'), ('QString','type'),
     ('QPointF','pos'), ('QSizeF','size') ])
-cls_mapobject.add_enum('Shape', ('Rectangle','Polygon','Polyline','Ellipse','Text','Point'))
+cls_mapobject.add_enum('Shape', ('Rectangle','Polygon','Polyline','Ellipse','Capsule','Text','Point'))
 cls_mapobject.add_method('setPosition', None, [('QPointF','pos')])
 cls_mapobject.add_method('x', 'double', [])
 cls_mapobject.add_method('setX', None, [('double','x')])
