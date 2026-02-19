@@ -22,6 +22,8 @@ Tiled 1.12
         <capsule/>
       </object>
 
+-  Added ``opacity`` attribute to :ref:`tmx-object` to specificy its opacity.
+
 
 Tiled 1.10
 ----------
