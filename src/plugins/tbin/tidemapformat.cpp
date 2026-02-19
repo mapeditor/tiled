@@ -25,27 +25,18 @@
 
 #include "logginginterface.h"
 #include "map.h"
-#include "mapobject.h"
-#include "objectgroup.h"
-#include "savefile.h"
-#include "tile.h"
-#include "tiled.h"
-#include "tilelayer.h"
 
 #include <QCoreApplication>
 #include <QDir>
 #include <QStringView>
 #include <QXmlStreamReader>
 
-#include <cmath>
-#include <fstream>
-#include <map>
 #include <memory>
-#include <sstream>
 
 namespace Tbin {
 
-TideMapFormat::TideMapFormat(QObject *)
+TideMapFormat::TideMapFormat(QObject *parent)
+    : Tiled::MapFormat(parent)
 {
 }
 
@@ -82,7 +73,7 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
                 if ( xml.name() == "Property" )
                 {
                     const QXmlStreamAttributes attrs = xml.attributes();
-                    
+
                     const std::string key = attrs.value( "Key" ).toString().toStdString();
                     const QString type = attrs.value( "Type" ).toString();
                     const QString value = xml.readElementText();
@@ -119,14 +110,12 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
 
         while ( xml.readNextStartElement() )
         {
-            auto name = xml.name();
             if ( xml.name() == QLatin1String( "Description" ) )
                 tmap.desc = xml.readElementText().toStdString();
             else if ( xml.name() == "TileSheets" )
             {
                 while ( xml.readNextStartElement() )
                 {
-                    auto name2 = xml.name();
                     if ( xml.name() != "TileSheet" )
                     {
                         xml.skipCurrentElement();
@@ -134,10 +123,10 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
                     }
 
                     const QXmlStreamAttributes tsAttrs = xml.attributes();
-                    
+
                     tbin::TileSheet ts;
                     ts.id = tsAttrs.value( "Id" ).toString().toStdString();
-                    
+
                     while ( xml.readNextStartElement() )
                     {
                         if ( xml.name() == QLatin1String( "Description" ) )
@@ -183,7 +172,7 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
                         continue;
                     }
                     const QXmlStreamAttributes layerAttrs = xml.attributes();
-                    
+
                     tbin::Layer layer;
                     layer.id = layerAttrs.value( "Id" ).toString().toStdString();
                     auto vis = layerAttrs.value( "Visible" ).toString().toStdString();
@@ -205,7 +194,7 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
 
                             layer.layerSize = tbin::Vector2i( layerSizeStr.mid( 0, layerSizeSep ).toInt(), layerSizeStr.mid( layerSizeSep + 3 ).toInt() );
                             layer.tileSize = tbin::Vector2i( tileSizeStr.mid( 0, tileSizeSep ).toInt(), tileSizeStr.mid( tileSizeSep + 3 ).toInt() );
-                            
+
                             xml.skipCurrentElement();
                         }
                         else if ( xml.name() == "TileArray" )
@@ -213,7 +202,7 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
                             tbin::Tile nullTile;
                             nullTile.staticData.tileIndex = -1;
                             layer.tiles.resize( layer.layerSize.x * layer.layerSize.y, nullTile );
-                            
+
                             auto readStaticTile = [&xml, &readProps](const std::string& tilesheetToUse)-> tbin::Tile
                             {
                                 const QXmlStreamAttributes tileAttrs = xml.attributes();
@@ -222,7 +211,7 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
                                 tile.tilesheet = tilesheetToUse;
                                 tile.staticData.tileIndex = tileAttrs.value( "Index" ).toString().toInt();
                                 tile.staticData.blendMode = tileAttrs.value( "BlendMode" ).toString() == "Alpha" ? 0 : 1;
-                                
+
                                 // tIDE (the xTile tile editor) uses a self-closing element when there are no properties.
                                 // However, Qt seems to represent these simply as empty elements when reading.
                                 // We can just iterate as normal for reading.
@@ -267,7 +256,7 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
 
                                         tbin::Tile tile;
                                         tile.animatedData.frameInterval = tileAttrs.value( "Interval" ).toString().toInt();
-                                        
+
                                         while ( xml.readNextStartElement() )
                                         {
                                             if (xml.name() == "Frames" )
@@ -332,7 +321,7 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
 bool TideMapFormat::write(const Tiled::Map *map, const QString &fileName, Options options)
 {
     Q_UNUSED(options)
-    
+
     QFile file( fileName );
     if ( !file.open( QFile::WriteOnly | QFile::Text | QFile::Truncate ) )
     {
@@ -386,7 +375,7 @@ bool TideMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
         xml.writeStartElement( "Map" );
         {
             xml.writeAttribute( "Id", QString(tmap.id.c_str()) );
-            
+
             xml.writeStartElement( "Description" );
             xml.writeCDATA( QString(tmap.desc.c_str()) );
             xml.writeEndElement();
@@ -397,7 +386,7 @@ bool TideMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                 {
                     xml.writeStartElement( "TileSheet" );
                     xml.writeAttribute( "Id", QString(ts.id.c_str()) );
-                    
+
                     xml.writeStartElement( "Description" );
                     xml.writeCDATA( QString(ts.desc.c_str()) );
                     xml.writeEndElement();
@@ -411,7 +400,7 @@ bool TideMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                     xml.writeAttribute( "TileSize",  QStringLiteral( "%1 x %2" ).arg( ts.tileSize.x  ).arg( ts.tileSize.y  ) );
                     xml.writeAttribute( "Margin",    QStringLiteral( "%1 x %2" ).arg( ts.margin.x    ).arg( ts.margin.y    ) );
                     xml.writeAttribute( "Spacing",   QStringLiteral( "%1 x %2" ).arg( ts.spacing.x   ).arg( ts.spacing.y   ) );
-                    
+
                     writeProps( ts.props );
 
                     xml.writeEndElement();
@@ -426,7 +415,7 @@ bool TideMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                     xml.writeStartElement( "Layer" );
                     xml.writeAttribute( "Id", QString(layer.id.c_str()) );
                     xml.writeAttribute( "Visible", layer.visible ? "True" : "False" );
-                    
+
                     xml.writeStartElement( "Description" );
                     xml.writeCDATA( QString(layer.desc.c_str()) );
                     xml.writeEndElement();
@@ -434,7 +423,7 @@ bool TideMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                     xml.writeEmptyElement( "Dimensions" );
                     xml.writeAttribute( "LayerSize", QStringLiteral( "%1 x %2" ).arg( layer.layerSize.x ).arg( layer.layerSize.y ) );
                     xml.writeAttribute( "TileSize",  QStringLiteral( "%1 x %2" ).arg( layer.tileSize.x  ).arg( layer.tileSize.y  ) );
-                    
+
                     auto writeStaticTile = [&xml, &writeProps](const tbin::Tile& tile, std::string& lastTilesheet)
                     {
                         if ( tile.props.size() == 0 )
@@ -499,7 +488,7 @@ bool TideMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                             {
                                 xml.writeStartElement( "Animated" );
                                 xml.writeAttribute( "Interval", QString::number( tile.animatedData.frameInterval ) );
-                                
+
                                 xml.writeStartElement( "Frames" );
                                 std::string lastTilesheet; // Shadowing the previous declaration intentionally, because we explicitly do not want to use/affect it
                                 for ( const auto& tile : tile.animatedData.frames )
@@ -513,7 +502,7 @@ bool TideMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                                     writeStaticTile( tile, lastTilesheet );
                                 }
                                 xml.writeEndElement();
-                                
+
                                 if ( tile.props.size() > 0 )
                                     writeProps(tile.props);
 
@@ -530,7 +519,7 @@ bool TideMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                 }
             }
             xml.writeEndElement();
-            
+
             writeProps(tmap.props);
         }
         xml.writeEndElement();

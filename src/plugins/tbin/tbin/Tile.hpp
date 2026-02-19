@@ -30,7 +30,6 @@
 //#include <SFML/Config.hpp>
 #include <vector>
 
-#include "Vector2i.hpp"
 #include "PropertyValue.hpp"
 
 namespace tbin
@@ -44,26 +43,25 @@ namespace tbin
                 Static,
                 Animated,
             };
-            
+
             std::string tilesheet;
-            
+
             struct
             {
                 int32_t tileIndex = -1;
                 uint8_t blendMode = 0;
             } staticData;
-            
+
             struct
             {
                 int32_t frameInterval = 0;
                 std::vector< Tile > frames;
             } animatedData;
-            
+
             Properties props;
-            
+
             inline bool isNullTile() const { return staticData.tileIndex == -1 && animatedData.frames.size() == 0; }
     };
 }
 
 #endif // TBIN_TILE_HPP
-                    

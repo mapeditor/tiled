@@ -21,7 +21,6 @@
 #pragma once
 
 #include "tbin_global.h"
-#include "tbin/PropertyValue.hpp"
 
 #include "mapformat.h"
 #include "plugin.h"

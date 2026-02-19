@@ -31,8 +31,6 @@
 //#include <SFML/Config.hpp>
 #include <string>
 
-#include "Vector2i.hpp"
-
 namespace tbin
 {
     struct PropertyValue

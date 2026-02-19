@@ -28,7 +28,6 @@
 #include "map.h"
 #include "mapobject.h"
 #include "objectgroup.h"
-#include "savefile.h"
 #include "tile.h"
 #include "tiled.h"
 #include "tilelayer.h"
@@ -243,7 +242,7 @@ std::unique_ptr< Tiled::Map > TbinPlugin::fromTbin( const tbin::Map& tmap, const
                 objects->addObject(std::move(obj));
             }
         }
-        
+
         bool doMergePass = true;
         while ( doMergePass )
         {
@@ -262,7 +261,7 @@ std::unique_ptr< Tiled::Map > TbinPlugin::fromTbin( const tbin::Map& tmap, const
                     int myY = (int) obj->y() / tlayer.tileSize.y;
                     int myWidth = (int) obj->width() / tlayer.tileSize.x;
                     int myHeight = (int) obj->height() / tlayer.tileSize.y;
-                    
+
                     int otherX = (int) otherObj->x() / tlayer.tileSize.x;
                     int otherY = (int) otherObj->y() / tlayer.tileSize.y;
                     int otherWidth = (int) otherObj->width() / tlayer.tileSize.x;
@@ -287,7 +286,7 @@ std::unique_ptr< Tiled::Map > TbinPlugin::fromTbin( const tbin::Map& tmap, const
 
                     if ( !tryMerge )
                         continue;
-                    
+
                     Tiled::Properties& myProps = obj->properties();
                     Tiled::Properties& otherProps = otherObj->properties();
 
@@ -304,7 +303,7 @@ std::unique_ptr< Tiled::Map > TbinPlugin::fromTbin( const tbin::Map& tmap, const
 
                     if ( anyMissingOrNonmatching )
                         continue;
-                    
+
                     // Merge what we can
                     for ( const auto& propKey : otherProps.keys() )
                     {
@@ -321,7 +320,7 @@ std::unique_ptr< Tiled::Map > TbinPlugin::fromTbin( const tbin::Map& tmap, const
                     // If there's nothing left in this object after merging, remove it
                     if ( obj->properties().size() == 0 )
                         objects->removeObject( obj );
-                    
+
                     break;
                 }
             }
@@ -336,7 +335,7 @@ std::unique_ptr< Tiled::Map > TbinPlugin::fromTbin( const tbin::Map& tmap, const
 tbin::Map TbinPlugin::toTbin( const Tiled::Map* map, const QDir fileDir )
 {
     tbin::Map tmap;
-    
+
     //tmap.id = map->name();
     tiledToTbinProperties(map->properties(), tmap.props, fileDir);
 

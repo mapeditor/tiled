@@ -25,26 +25,18 @@
 
 #include "logginginterface.h"
 #include "map.h"
-#include "mapobject.h"
-#include "objectgroup.h"
-#include "savefile.h"
-#include "tile.h"
-#include "tiled.h"
-#include "tilelayer.h"
 
 #include <QCoreApplication>
 #include <QDir>
 #include <QStringView>
 
-#include <cmath>
 #include <fstream>
-#include <map>
 #include <memory>
-#include <sstream>
 
 namespace Tbin {
 
-TbinMapFormat::TbinMapFormat(QObject *)
+TbinMapFormat::TbinMapFormat(QObject *parent)
+    : Tiled::MapFormat(parent)
 {
 }
 
@@ -85,7 +77,7 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
         }
         tmap.saveToStream(file);
         file.close();
-        
+
         return true;
     }
     catch (std::exception& e)
