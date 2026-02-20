@@ -424,7 +424,7 @@ bool TideMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                     xml.writeAttribute( "LayerSize", QStringLiteral( "%1 x %2" ).arg( layer.layerSize.x ).arg( layer.layerSize.y ) );
                     xml.writeAttribute( "TileSize",  QStringLiteral( "%1 x %2" ).arg( layer.tileSize.x  ).arg( layer.tileSize.y  ) );
 
-                    auto writeStaticTile = [&xml, &writeProps](const tbin::Tile& tile, std::string& lastTilesheet)
+                    auto writeStaticTile = [&xml, &writeProps](const tbin::Tile& tile)
                     {
                         if ( tile.props.size() == 0 )
                             xml.writeEmptyElement( "Static" );
@@ -447,8 +447,6 @@ bool TideMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                     std::string lastTilesheet;
                     for ( int iy = 0; iy < layer.layerSize.y; ++iy )
                     {
-                        if ( iy == 1 )
-                            iy = iy;
                         xml.writeStartElement( "Row" );
                         for ( int ix = 0; ix < layer.layerSize.x; ++ix )
                         {
@@ -478,11 +476,7 @@ bool TideMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                             }
                             else if ( tile.staticData.tileIndex != -1 )
                             {
-                                if ( tile.staticData.tileIndex == 175 )
-                                {
-                                    ix = ix;
-                                }
-                                writeStaticTile( tile, lastTilesheet );
+                                writeStaticTile( tile );
                             }
                             else if ( tile.animatedData.frames.size() > 0 )
                             {
@@ -499,7 +493,7 @@ bool TideMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
                                         xml.writeAttribute( "Ref", QString(tile.tilesheet.c_str()) );
                                         lastTilesheet = tile.tilesheet;
                                     }
-                                    writeStaticTile( tile, lastTilesheet );
+                                    writeStaticTile( tile );
                                 }
                                 xml.writeEndElement();
 
