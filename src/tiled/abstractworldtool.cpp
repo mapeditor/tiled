@@ -35,6 +35,7 @@
 
 #include <QAction>
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QKeyEvent>
 #include <QMenu>
 #include <QMessageBox>
@@ -215,6 +216,30 @@ void AbstractWorldTool::showContextMenu(QGraphicsSceneMouseEvent *event)
                            .arg(targetDocument->displayName(),
                                 currentWorldDocument->displayName()),
                            this, [=] { removeFromWorld(currentWorldDocument, targetFilename); });
+        }
+
+        // "Set Label..." targets the hovered map (or current if no other map hovered)
+        MapDocument *labelTarget = (targetDocument && worldForMap(targetDocument)) ? targetDocument : mapDocument();
+        if (auto labelWorldDoc = worldForMap(labelTarget)) {
+            const QString labelTargetFileName = labelTarget->fileName();
+            const QString labelTargetDisplayName = labelTarget->displayName();
+            menu.addSeparator();
+            menu.addAction(tr("Set Label for \"%1\"...").arg(labelTargetDisplayName),
+                           this, [=] {
+                const World *world = labelWorldDoc->world();
+                const int idx = world->mapIndex(labelTargetFileName);
+                const QString currentLabel = (idx >= 0) ? world->maps.at(idx).label : QString();
+                bool ok = false;
+                const QString newLabel = QInputDialog::getText(
+                    MainWindow::instance(),
+                    tr("Set Map Label"),
+                    tr("Label for \"%1\":").arg(labelTargetDisplayName),
+                    QLineEdit::Normal,
+                    currentLabel,
+                    &ok);
+                if (ok)
+                    labelWorldDoc->undoStack()->push(new SetMapLabelCommand(labelWorldDoc, labelTargetFileName, newLabel));
+            });
         }
     } else {
         populateAddToWorldMenu(menu);

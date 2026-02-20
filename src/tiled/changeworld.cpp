@@ -127,6 +127,29 @@ bool SetMapRectCommand::mergeWith(const QUndoCommand *other)
 }
 
 
+SetMapLabelCommand::SetMapLabelCommand(WorldDocument *worldDocument,
+                                       const QString &mapName,
+                                       const QString &label)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Set Map Label"))
+    , mWorldDocument(worldDocument)
+    , mMapName(mapName)
+    , mLabel(label)
+{
+    const int index = worldDocument->world()->mapIndex(mapName);
+    mPreviousLabel = (index >= 0) ? worldDocument->world()->maps.at(index).label : QString();
+}
+
+void SetMapLabelCommand::setLabel(const QString &label)
+{
+    auto world = mWorldDocument->world();
+    const int index = world->mapIndex(mMapName);
+    if (index < 0)
+        return;
+    world->setMapLabel(index, label);
+    emit mWorldDocument->worldChanged();
+}
+
+
 SetMapPosInLoadedWorld::SetMapPosInLoadedWorld(const QString &worldFileName,
                                                const QString &mapName,
                                                const QPoint &from,

@@ -89,6 +89,25 @@ private:
     QRect mPreviousRect;
 };
 
+class SetMapLabelCommand : public QUndoCommand
+{
+public:
+    SetMapLabelCommand(WorldDocument *worldDocument,
+                       const QString &mapName,
+                       const QString &label);
+
+    void undo() override { setLabel(mPreviousLabel); }
+    void redo() override { setLabel(mLabel); }
+
+private:
+    void setLabel(const QString &label);
+
+    WorldDocument *mWorldDocument;
+    QString mMapName;
+    QString mLabel;
+    QString mPreviousLabel;
+};
+
 /**
  * Undo command that safely updates a world's map rect if that world is loaded.
  *
