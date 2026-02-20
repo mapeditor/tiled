@@ -139,6 +139,8 @@
     <addaction name="actionAutoMap"/>
     <addaction name="actionAutoMapWhileDrawing"/>
     <addaction name="separator"/>
+    <addaction name="actionGoToTile"/>
+    <addaction name="separator"/>
     <addaction name="actionMapProperties"/>
    </widget>
    <widget class="QMenu" name="menuView">
@@ -821,6 +823,14 @@
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionGoToTile">
+   <property name="text">
+    <string>Go to &amp;Tile...</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">Ctrl+Shift+G</string>
    </property>
   </action>
  </widget>
