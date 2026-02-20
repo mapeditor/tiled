@@ -24,6 +24,7 @@
 * Scripting: Added TileMap.chunkSize and TileMap.compressionLevel properties
 * AutoMapping: Don't match rules based on empty input indexes
 * AutoMapping: Optimized reloading of rule maps and load rule maps on-demand
+* tBIN plugin: Added support for the tIDE XML format (by Casey Warrington, #4308)
 * Windows: Fixed issue with opening Tile Animation Editor (#4223)
 * macOS: Fixed crash when JS code is JIT-compiled (#4218)
 * Workaround tileset view layout regression in Qt 6.9
