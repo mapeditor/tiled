@@ -99,12 +99,26 @@ void TransformMapObjects::redo()
 
 bool TransformMapObjects::mergeWith(const QUndoCommand *other)
 {
-    // Don't merge when the other command affects different properties
     auto o = static_cast<const TransformMapObjects*>(other);
-    if (mChangedProperties != o->mChangedProperties)
+
+    auto dominantType = [](MapObject::ChangedProperties p) {
+        if (p & MapObject::RotationProperty)
+            return 0;
+        if (p & (MapObject::SizeProperty | MapObject::ShapeProperty))
+            return 1;
+        if (p & MapObject::PositionProperty)
+            return 2;
+        return 3;
+    };
+
+    if (dominantType(mChangedProperties) != dominantType(o->mChangedProperties))
         return false;
 
-    return ChangeValue<MapObject, TransformState>::mergeWith(other);
+    if (!ChangeValue<MapObject, TransformState>::mergeWith(other))
+        return false;
+
+    mChangedProperties |= o->mChangedProperties;
+    return true;
 }
 
 TransformState TransformMapObjects::getValue(const MapObject *mapObject) const
