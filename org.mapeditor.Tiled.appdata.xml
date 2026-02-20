@@ -379,10 +379,12 @@
   <!-- GPL 2 by TMW -->
   <screenshot type="default" width="800" height="600">
     <image>https://www.mapeditor.org/img/appdata/screenshot_objects.png</image>
+    <caption>Annotate your map with objects</caption>
   </screenshot>
   <!-- CC BY SA 3.0 By Clint Bellanger -->
   <screenshot width="800" height="600">
     <image>https://www.mapeditor.org/img/appdata/screenshot_terrain.png</image>
+    <caption>Automate placement of terrain transitions</caption>
   </screenshot>
  </screenshots>
  <kudos>
