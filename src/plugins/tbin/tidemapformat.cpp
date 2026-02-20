@@ -51,8 +51,7 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
 
     try
     {
-        QXmlStreamReader xml;
-        xml.setDevice( &file );
+        QXmlStreamReader xml( &file );
         if ( !xml.readNextStartElement() || xml.name() != QLatin1String( "Map" ) )
         {
             mError = QCoreApplication::translate("File Errors", "Not a tide file.");
@@ -542,14 +541,11 @@ QString TideMapFormat::shortName() const
 bool TideMapFormat::supportsFile(const QString &fileName) const
 {
     QFile file( fileName );
-    if ( !file.exists() || !file.open( QFile::ReadOnly | QFile::Text ) )
+    if ( !file.open( QFile::ReadOnly | QFile::Text ) )
         return false;
 
-    // Not sure what a better way of doing this would be without pre-parsing the entire file...
-    QTextStream text( &file );
-    QString magic = text.read( 5 );
-
-    return magic == "<?xml" || magic == "<Map ";
+    QXmlStreamReader xml(&file);
+    return xml.readNextStartElement() && xml.name() == QLatin1String("Map");
 }
 
 QString TideMapFormat::errorString() const
