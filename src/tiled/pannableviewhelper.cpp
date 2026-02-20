@@ -21,11 +21,11 @@
 #include "pannableviewhelper.h"
 
 #include "flexiblescrollbar.h"
-#include "mainwindow.h"
 #include "mapview.h"
 
 #include <QApplication>
 #include <QMouseEvent>
+#include <QWidget>
 
 namespace Tiled {
 
@@ -53,16 +53,24 @@ private:
     SpaceBarEventFilter(QObject *parent = nullptr)
         : QObject(parent)
     {
-        MainWindow::instance()->installEventFilter(this);
+        // Install on qApp so Space is detected regardless of which widget
+        // currently has keyboard focus (e.g. the Layers dock tree view).
+        qApp->installEventFilter(this);
     }
 
-    bool eventFilter(QObject*, QEvent *event) override
+    bool eventFilter(QObject *watched, QEvent *event) override
     {
         switch (event->type()) {
         case QEvent::KeyPress:
         case QEvent::KeyRelease: {
             auto keyEvent = static_cast<QKeyEvent*>(event);
             if (keyEvent->key() == Qt::Key_Space && !keyEvent->isAutoRepeat()) {
+                // Don't intercept Space typed into text-input widgets such as
+                // QLineEdit or QPlainTextEdit (identified by WA_InputMethodEnabled).
+                if (auto *widget = qobject_cast<QWidget*>(watched)) {
+                    if (widget->testAttribute(Qt::WA_InputMethodEnabled))
+                        break;
+                }
                 const bool isPressed = event->type() == QEvent::KeyPress;
                 if (mSpacePressed != isPressed) {
                     mSpacePressed = isPressed;
