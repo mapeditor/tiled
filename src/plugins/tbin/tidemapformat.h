@@ -1,6 +1,6 @@
 /*
  * TBIN Tiled Plugin
- * Copyright 2017, Casey Warrington <spacechase0.and.cat@gmail.com>
+ * Copyright 2026, ConcernedApe LLC <contact@stardewvalley.net>
  *
  * This file is part of Tiled.
  *
