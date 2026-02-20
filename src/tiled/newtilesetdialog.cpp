@@ -35,15 +35,17 @@
 
 using namespace Tiled;
 
+namespace Tiled {
 namespace session {
 static SessionOption<int> tilesetType { "tileset.type" };
 static SessionOption<bool> embedInMap { "tileset.embedInMap" };
 static SessionOption<bool> useTransparentColor { "tileset.useTransparentColor" };
 static SessionOption<QColor> transparentColor { "tileset.transparentColor", Qt::magenta };
-static SessionOption<QSize> tileSize { "tileset.tileSize", QSize(32, 32) };
+SessionOption<QSize> tileSize { "tileset.tileSize", QSize(32, 32) };
 static SessionOption<int> tilesetSpacing { "tileset.spacing" };
 static SessionOption<int> tilesetMargin { "tileset.margin" };
 } // namespace session
+} // namespace Tiled
 
 enum TilesetType {
     TilesetImage,

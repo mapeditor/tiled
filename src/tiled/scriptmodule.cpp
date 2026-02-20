@@ -37,6 +37,7 @@
 #include "scriptfileformatwrappers.h"
 #include "scriptimage.h"
 #include "scriptmanager.h"
+#include "scriptpreferences.h"
 #include "tilesetdocument.h"
 #include "tileseteditor.h"
 #include "worlddocument.h"
@@ -238,6 +239,13 @@ MapEditor *ScriptModule::mapEditor() const
     if (auto documentManager = DocumentManager::maybeInstance())
         return static_cast<MapEditor*>(documentManager->editor(Document::MapDocumentType));
     return nullptr;
+}
+
+ScriptPreferences *ScriptModule::preferences() const
+{
+    if (!mPreferences)
+        mPreferences = new ScriptPreferences(const_cast<ScriptModule*>(this));
+    return mPreferences;
 }
 
 QColor ScriptModule::color(const QString &name) const

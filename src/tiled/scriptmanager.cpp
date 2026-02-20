@@ -48,6 +48,7 @@
 #include "scriptgeometry.h"
 #include "scriptimage.h"
 #include "scriptmodule.h"
+#include "scriptpreferences.h"
 #include "scriptprocess.h"
 #include "scriptpropertytype.h"
 #include "tilecollisiondock.h"
@@ -136,6 +137,7 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<ScriptTilesetFormatWrapper*>();
     qRegisterMetaType<ScriptImage*>();
     qRegisterMetaType<WangIndex::Value>("WangIndex");
+    qRegisterMetaType<ScriptPreferences*>();
 
     connect(&mWatcher, &FileSystemWatcher::pathsChanged,
             this, &ScriptManager::scriptFilesChanged);
@@ -406,6 +408,7 @@ void ScriptManager::initialize()
     globalObject.setProperty(QStringLiteral("Tileset"), engine->newQMetaObject<EditableTileset>());
     globalObject.setProperty(QStringLiteral("WangIndex"), engine->newQMetaObject(&WangIndex::staticMetaObject));
     globalObject.setProperty(QStringLiteral("WangSet"), engine->newQMetaObject<EditableWangSet>());
+    globalObject.setProperty(QStringLiteral("Preferences"), engine->newQMetaObject<ScriptPreferences>());
 
     registerBase64(engine);
     registerDialog(engine);
