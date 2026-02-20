@@ -530,7 +530,7 @@ bool TideMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
 
 QString TideMapFormat::nameFilter() const
 {
-    return tr("Tide map files (*.tide)");
+    return tr("tIDE map files (*.tide)");
 }
 
 QString TideMapFormat::shortName() const

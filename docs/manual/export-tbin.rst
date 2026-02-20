@@ -1,7 +1,7 @@
 .. raw:: html
 
    <div class="new new-prev">tBIN since Tiled 1.1</div>
-   <div class="new new-prev">tIDE since Tiled 1.12</div>
+   <div class="new">tIDE new in Tiled 1.12</div>
 
 tBIN and tIDE
 -------------
@@ -20,7 +20,7 @@ what you are doing.
 
 .. note::
 
-   There is only one plugin, called `tbin`. Despite its name, it enables 
+   There is only one plugin, called `tbin`. Despite its name, it enables
    support for both tBIN and tIDE maps.
 
 .. note::

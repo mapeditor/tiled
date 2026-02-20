@@ -89,7 +89,7 @@ bool TbinMapFormat::write(const Tiled::Map *map, const QString &fileName, Option
 
 QString TbinMapFormat::nameFilter() const
 {
-    return tr("Tbin map files (*.tbin)");
+    return tr("tIDE binary map files (*.tbin)");
 }
 
 QString TbinMapFormat::shortName() const
