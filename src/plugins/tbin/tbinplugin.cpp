@@ -393,7 +393,7 @@ tbin::Map TbinPlugin::toTbin( const Tiled::Map* map, const QDir fileDir )
                         ttile.tilesheet = tile->tileset()->name().toStdString();
                         if (tile->frames().size() == 0) {
                             ttile.staticData.tileIndex = tile->id();
-                            ttile.staticData.blendMode = 0;
+                            ttile.staticData.blendMode = layer->blendMode() == Tiled::BlendMode::Normal ? 0 : 1;
                         }
                         else {
                             ttile.animatedData.frameInterval = tile->frames().at(0).duration;
@@ -407,7 +407,7 @@ tbin::Map TbinPlugin::toTbin( const Tiled::Map* map, const QDir fileDir )
                                 tbin::Tile tframe;
                                 tframe.tilesheet = ttile.tilesheet;
                                 tframe.staticData.tileIndex = frame.tileId;
-                                tframe.staticData.blendMode = 0;
+                                tframe.staticData.blendMode = layer->blendMode() == Tiled::BlendMode::Normal ? 0 : 1;
                                 ttile.animatedData.frames.push_back(tframe);
                             }
                         }
