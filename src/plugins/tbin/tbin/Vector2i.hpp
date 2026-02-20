@@ -1,5 +1,5 @@
-#ifndef FAKESFML_HPP
-#define FAKESFML_HPP
+#ifndef TBIN_VECTOR2I_HPP
+#define TBIN_VECTOR2I_HPP
 
 #include <cstdint>
 
@@ -15,4 +15,4 @@ namespace tbin
     };
 }
 
-#endif // FAKESFML_HPP
+#endif // TBIN_VECTOR2I_HPP
