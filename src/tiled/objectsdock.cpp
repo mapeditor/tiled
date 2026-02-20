@@ -173,6 +173,7 @@ void ObjectsDock::retranslateUi()
     mActionObjectProperties->setText(tr("Object Properties"));
     mActionMoveUp->setText(tr("Move Objects Up"));
     mActionMoveDown->setText(tr("Move Objects Down"));
+    mActionMoveToGroup->setText(tr("Move Objects to Layer"));
 
     updateActions();
 }
