@@ -138,7 +138,7 @@ void TbinPlugin::initialize()
     addObject(new TideMapFormat(this));
 }
 
-std::unique_ptr< Tiled::Map > TbinPlugin::fromTbin( const tbin::Map& tmap, const QDir fileDir )
+std::unique_ptr< Tiled::Map > TbinPlugin::fromTbin( const tbin::Map& tmap, const QDir &fileDir )
 {
     std::unique_ptr<Tiled::Map> map;
 
@@ -332,7 +332,7 @@ std::unique_ptr< Tiled::Map > TbinPlugin::fromTbin( const tbin::Map& tmap, const
     return map;
 }
 
-tbin::Map TbinPlugin::toTbin( const Tiled::Map* map, const QDir fileDir )
+tbin::Map TbinPlugin::toTbin( const Tiled::Map* map, const QDir &fileDir )
 {
     tbin::Map tmap;
 

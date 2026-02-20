@@ -51,8 +51,8 @@ class TBINSHARED_EXPORT TbinPlugin : public Tiled::Plugin
 public:
     void initialize() override;
 
-    static std::unique_ptr< Tiled::Map > fromTbin( const tbin::Map& tmap, const QDir fileDir );
-    static tbin::Map toTbin( const Tiled::Map* map, const QDir fileDir );
+    static std::unique_ptr< Tiled::Map > fromTbin( const tbin::Map& tmap, const QDir &fileDir );
+    static tbin::Map toTbin( const Tiled::Map* map, const QDir &fileDir );
 };
 
 } // namespace Tbin
