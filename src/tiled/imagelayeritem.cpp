@@ -69,7 +69,7 @@ void ImageLayerItem::paint(QPainter *painter,
         while (mapRoot->parentItem())
             mapRoot = mapRoot->parentItem();
 
-        const QRectF clipBounds = mapFromItem(mapRoot, mapBounds);
+        const QRectF clipBounds = mapRectFromItem(mapRoot, mapBounds);
         painter->setClipRect(clipBounds, Qt::IntersectClip);
     }
 

@@ -147,7 +147,7 @@ void MapObjectItem::paint(QPainter *painter,
         while (mapRoot->parentItem())
             mapRoot = mapRoot->parentItem();
 
-        const QRectF clipBounds = mapFromItem(mapRoot, Internal::effectiveClipBounds(*renderer));
+        const QRectF clipBounds = mapRectFromItem(mapRoot, Internal::effectiveClipBounds(*renderer));
         painter->save();
         painter->setClipRect(clipBounds, Qt::IntersectClip);
     }

@@ -179,10 +179,7 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(mapDocument.data(), &MapDocument::tilesetReplaced, this, &MapItem::tilesetReplaced);
     connect(mapDocument.data(), &MapDocument::objectsInserted, this, &MapItem::objectsInserted);
     connect(mapDocument.data(), &MapDocument::objectsIndexChanged, this, &MapItem::objectsIndexChanged);
-    connect(mapDocument.data(), &Document::propertiesChanged, this, [this] (Object *object) {
-        if (object != mapDocument()->map())
-            return;
-
+    const auto refreshClipDependentItems = [this] {
         for (LayerItem *item : std::as_const(mLayerItems)) {
             if (item->layer()->isTileLayer() || item->layer()->isImageLayer())
                 item->update();
@@ -190,6 +187,30 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
 
         for (MapObjectItem *item : std::as_const(mObjectItems))
             item->syncWithMapObject();
+    };
+
+    connect(mapDocument.data(), &Document::propertyChanged, this,
+            [this, refreshClipDependentItems] (Object *object, const QString &) {
+        if (object == this->mapDocument()->map())
+            refreshClipDependentItems();
+    });
+
+    connect(mapDocument.data(), &Document::propertyAdded, this,
+            [this, refreshClipDependentItems] (Object *object, const QString &) {
+        if (object == this->mapDocument()->map())
+            refreshClipDependentItems();
+    });
+
+    connect(mapDocument.data(), &Document::propertyRemoved, this,
+            [this, refreshClipDependentItems] (Object *object, const QString &) {
+        if (object == this->mapDocument()->map())
+            refreshClipDependentItems();
+    });
+
+    connect(mapDocument.data(), &Document::propertiesChanged, this,
+            [this, refreshClipDependentItems] (Object *object) {
+        if (object == this->mapDocument()->map())
+            refreshClipDependentItems();
     });
 
     updateBoundingRect();
