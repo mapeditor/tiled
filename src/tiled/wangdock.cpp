@@ -429,11 +429,10 @@ void WangDock::refreshCurrentWangColor()
 void WangDock::wangColorIndexPressed(const QModelIndex &index)
 {
     const int color = index.data(WangColorModel::WangColorIndexRole).toInt();
-    if (!color)
-        return;
-
-    WangColor *currentWangColor = mCurrentWangSet->colorAt(color).data();
-    mDocument->setCurrentObject(currentWangColor, mWangColorModel->tilesetDocument());
+    if (color) {
+        WangColor *currentWangColor = mCurrentWangSet->colorAt(color).data();
+        mDocument->setCurrentObject(currentWangColor, mWangColorModel->tilesetDocument());
+    }
 
     emit selectWangBrush();
 }
