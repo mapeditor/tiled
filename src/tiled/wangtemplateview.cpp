@@ -61,19 +61,26 @@ private:
     WangTemplateView *mWangTemplateView;
 };
 
+} // anonymous namespace
+
 void WangTemplateDelegate::paint(QPainter *painter,
                                  const QStyleOptionViewItem &option,
                                  const QModelIndex &index) const
 {
-    const WangTemplateModel *model = static_cast<const WangTemplateModel*>(index.model());
+    const auto *model = static_cast<const WangTemplateModel*>(index.model());
     const WangId wangId = model->wangIdAt(index);
-    if (!wangId)
-        return;
 
     painter->setClipRect(option.rect);
 
-    if (WangSet *wangSet = mWangTemplateView->wangSet())
-        paintWangOverlay(painter, wangId, *wangSet, option.rect, WO_Outline);
+    if (WangSet *wangSet = mWangTemplateView->wangSet()) {
+        if (wangId && wangId != wangSet->typeMask()) {
+            paintWangOverlay(painter, wangId, *wangSet, option.rect, WO_Outline);
+        } else {
+            painter->setBrush(Qt::NoBrush);
+            painter->setPen(QPen(option.palette.mid().color(), 1, Qt::DashLine));
+            painter->drawRect(option.rect.adjusted(3, 3, -4, -4));
+        }
+    }
 
     // Highlight currently selected tile.
     if (mWangTemplateView->currentIndex() == index) {
@@ -84,7 +91,7 @@ void WangTemplateDelegate::paint(QPainter *painter,
     }
 
     // Shade tile if used already
-    if (mWangTemplateView->wangIdIsUsed(wangId)) {
+    if (wangId && mWangTemplateView->wangIdIsUsed(wangId)) {
         painter->setBrush(QColor(0,0,0,100));
         painter->setPen(Qt::NoPen);
         painter->drawRect(option.rect.adjusted(2,2,-2,-2));
@@ -100,7 +107,6 @@ QSize WangTemplateDelegate::sizeHint(const QStyleOptionViewItem &option, const Q
                  32 * mWangTemplateView->scale());
 }
 
-} // anonymous namespace
 
 WangTemplateView::WangTemplateView(QWidget *parent)
     : QListView(parent)
@@ -140,7 +146,7 @@ bool WangTemplateView::wangIdIsUsed(WangId wangId) const
 bool WangTemplateView::event(QEvent *event)
 {
     if (event->type() == QEvent::Gesture) {
-        QGestureEvent *gestureEvent = static_cast<QGestureEvent *>(event);
+        auto gestureEvent = static_cast<QGestureEvent *>(event);
         if (QGesture *gesture = gestureEvent->gesture(Qt::PinchGesture))
             mZoomable->handlePinchGesture(static_cast<QPinchGesture *>(gesture));
     } else if (event->type() == QEvent::ShortcutOverride) {
@@ -170,7 +176,7 @@ void WangTemplateView::keyPressEvent(QKeyEvent *event)
         mZoomable->resetZoom();
         return;
     }
-    return QListView::keyPressEvent(event);
+    QListView::keyPressEvent(event);
 }
 
 void WangTemplateView::wheelEvent(QWheelEvent *event)

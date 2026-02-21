@@ -29,13 +29,13 @@
 #pragma once
 
 #include "tile.h"
-#include "tileset.h"
 #include "tilelayer.h"
+#include "tileset.h"
 
 #include <QHash>
+#include <QList>
 #include <QMultiHash>
 #include <QString>
-#include <QList>
 
 namespace Tiled {
 
@@ -79,12 +79,14 @@ public:
 
         MaskEdges       = MaskTop | MaskRight | MaskBottom | MaskLeft,
         MaskCorners     = MaskTopRight | MaskBottomRight | MaskBottomLeft | MaskTopLeft,
+
+        MaskAll         = MaskEdges | MaskCorners,
     };
 
     constexpr WangId(quint64 id = 0) : mId(id) {}
 
     constexpr operator quint64() const { return mId; }
-    inline void setId(quint64 id) { mId = id; }
+    void setId(quint64 id) { mId = id; }
 
     bool isEmpty() const { return mId == 0; }
 
@@ -256,7 +258,7 @@ public:
             const QString &name,
             Type type,
             int imageTileId = -1);
-    ~WangSet();
+    ~WangSet() override;
 
     Tileset *tileset() const;
     void setTileset(Tileset *tileset);
