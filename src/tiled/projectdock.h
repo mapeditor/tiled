@@ -21,6 +21,9 @@
 #pragma once
 
 #include <QDockWidget>
+#include <QModelIndex>
+
+class QAction;
 
 namespace Tiled {
 
@@ -54,6 +57,8 @@ private:
     void retranslateUi();
 
     ProjectView *mProjectView;
+    QAction *mCollapseAllAction;
+    QAction *mExpandToCurrentAction;
 };
 
 } // namespace Tiled
