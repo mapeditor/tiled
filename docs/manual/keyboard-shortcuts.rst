@@ -37,6 +37,7 @@ General
 -  ``Ctrl + V`` - Paste (tiles, objects or properties)
 -  ``Del`` - Delete (tiles, objects, properties or layers)
 -  ``Ctrl + G`` - Toggle displaying of the tile grid
+-  ``Ctrl + Shift + G`` - Go to a tile by its coordinates
 -  ``H`` - Toggle highlighting of the current layer
 -  ``Ctrl + M`` - Invokes :doc:`automapping`
 -  ``Alt + C`` - Copy current position of mouse cursor to clipboard (in
