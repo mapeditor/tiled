@@ -482,6 +482,8 @@ void TileLocatorSource::activate(const QModelIndex &)
 
     if (auto mapView = dm->currentMapView())
         mapView->forceCenterOn(pixelPos);
+
+    mapDoc->setSelectedArea(QRegion(QRect(x, y, 1, 1)));
 }
 
 } // namespace Tiled
