@@ -35,6 +35,7 @@
 #include "tilesetmanager.h"
 #include "utils.h"
 
+#include <QAction>
 #include <QBoxLayout>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -42,6 +43,7 @@
 #include <QMouseEvent>
 #include <QScrollBar>
 #include <QSet>
+#include <QToolBar>
 #include <QTreeView>
 #include <QUndoStack>
 
@@ -65,10 +67,13 @@ public:
     ProjectModel *projectModel() const { return mProjectModel; }
 
     QStringList expandedPaths() const { return mExpandedPaths.values(); }
+    QStringList savedExpandedPaths() const;
     void setExpandedPaths(const QStringList &paths);
     void addExpandedPath(const QString &path);
 
     void selectPath(const QString &path);
+    void expandToPath(const QString &filePath);
+    void restoreSavedExpandedPaths();
 
     QString filePath(const QModelIndex &index) const;
 
@@ -84,6 +89,8 @@ private:
     ProjectModel *mProjectModel;
     ProjectProxyModel *mProxyModel;
     QSet<QString> mExpandedPaths;
+    QSet<QString> mSavedExpandedPaths;
+    bool mHasSavedExpandedPaths = false;
     QString mSelectedPath;
     int mScrollBarValue = 0;
 };
@@ -92,21 +99,65 @@ private:
 ProjectDock::ProjectDock(QWidget *parent)
     : QDockWidget(parent)
     , mProjectView(new ProjectView)
+    , mCollapseAllAction(nullptr)
+    , mExpandToCurrentAction(nullptr)
 {
     setObjectName(QLatin1String("ProjectDock"));
+
+    auto toolBar = new QToolBar;
+    toolBar->setIconSize(Utils::smallIconSize());
+
+    mCollapseAllAction = new QAction(this);
+    mCollapseAllAction->setIcon(QIcon::fromTheme(
+        QLatin1String("collapse-all"),
+        QIcon(QLatin1String(":/images/16/go-up.png"))));
+    connect(mCollapseAllAction, &QAction::triggered, this, [=] {
+        mProjectView->collapseAll();
+        mProjectView->setExpandedPaths({});
+    });
+    toolBar->addAction(mCollapseAllAction);
+
+    mExpandToCurrentAction = new QAction(this);
+    mExpandToCurrentAction->setCheckable(true);
+    mExpandToCurrentAction->setIcon(QIcon::fromTheme(
+        QLatin1String("expand-to-current"),
+        QIcon(QLatin1String(":/images/scalable/highlight-current-layer-16.svg"))));
+    connect(mExpandToCurrentAction, &QAction::toggled, this, [=](bool checked) {
+        if (checked) {
+            auto doc = DocumentManager::instance()->currentDocument();
+            if (doc)
+                mProjectView->expandToPath(doc->fileName());
+        } else {
+            mProjectView->restoreSavedExpandedPaths();
+        }
+    });
+    toolBar->addAction(mExpandToCurrentAction);
+
+    connect(DocumentManager::instance(), &DocumentManager::currentDocumentChanged,
+            this, [=](Document *doc) {
+        if (!mExpandToCurrentAction->isChecked())
+            return;
+        if (doc)
+            mProjectView->expandToPath(doc->fileName());
+    });
 
     auto widget = new QWidget(this);
     auto layout = new QVBoxLayout(widget);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
 
+    layout->addWidget(toolBar);
     layout->addWidget(mProjectView);
 
     setWidget(widget);
     retranslateUi();
 
     connect(Preferences::instance(), &Preferences::aboutToSwitchSession,
-            this, [this] { Session::current().expandedProjectPaths = mProjectView->expandedPaths(); });
+            this, [=] {
+        Session::current().expandedProjectPaths = mExpandToCurrentAction->isChecked()
+            ? mProjectView->savedExpandedPaths()
+            : mProjectView->expandedPaths();
+    });
 
     connect(mProjectView->selectionModel(), &QItemSelectionModel::currentRowChanged,
             this, &ProjectDock::onCurrentRowChanged);
@@ -182,6 +233,14 @@ void ProjectDock::selectFile(const QString &filePath)
 void ProjectDock::retranslateUi()
 {
     setWindowTitle(tr("Project"));
+    if (mCollapseAllAction) {
+        mCollapseAllAction->setText(tr("Collapse All"));
+        mCollapseAllAction->setToolTip(tr("Collapse all folders in the project view."));
+    }
+    if (mExpandToCurrentAction) {
+        mExpandToCurrentAction->setText(tr("Only Expand to Current"));
+        mExpandToCurrentAction->setToolTip(tr("Shows only the folder path of the active file. Restores the previous expansion state when disabled."));
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -245,6 +304,60 @@ void ProjectView::selectPath(const QString &path)
     const auto proxyIndex = mProxyModel->mapFromSource(sourceIndex);
     if (proxyIndex.isValid())
         setCurrentIndex(proxyIndex);
+}
+
+void ProjectView::expandToPath(const QString &filePath)
+{
+    const QModelIndex sourceIndex = mProjectModel->index(filePath);
+    if (!sourceIndex.isValid())
+        return;
+
+    QList<QModelIndex> ancestorProxyIndexes;
+    QModelIndex ancestor = mProjectModel->parent(sourceIndex);
+    while (ancestor.isValid()) {
+        ancestorProxyIndexes.prepend(mProxyModel->mapFromSource(ancestor));
+        ancestor = mProjectModel->parent(ancestor);
+    }
+
+    if (!mHasSavedExpandedPaths) {
+        mSavedExpandedPaths = mExpandedPaths;
+        mHasSavedExpandedPaths = true;
+    }
+
+    collapseAll();
+    mExpandedPaths.clear();
+
+    for (const QModelIndex &idx : ancestorProxyIndexes)
+        if (idx.isValid())
+            expand(idx);
+
+    const QModelIndex proxyIndex = mProxyModel->mapFromSource(sourceIndex);
+    if (proxyIndex.isValid()) {
+        setCurrentIndex(proxyIndex);
+        scrollTo(proxyIndex);
+    }
+}
+
+void ProjectView::restoreSavedExpandedPaths()
+{
+    if (!mHasSavedExpandedPaths)
+        return;
+
+    collapseAll();
+    mExpandedPaths.clear();
+    mExpandedPaths = mSavedExpandedPaths;
+    mSavedExpandedPaths.clear();
+    mHasSavedExpandedPaths = false;
+
+    const int topLevel = mProxyModel->rowCount();
+    for (int i = 0; i < topLevel; ++i)
+        restoreExpanded(mProxyModel->index(i, 0));
+}
+
+QStringList ProjectView::savedExpandedPaths() const
+{
+    return mHasSavedExpandedPaths ? mSavedExpandedPaths.values()
+                                  : mExpandedPaths.values();
 }
 
 QString ProjectView::filePath(const QModelIndex &index) const
