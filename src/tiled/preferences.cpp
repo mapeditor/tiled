@@ -166,6 +166,11 @@ bool Preferences::parallaxEnabled() const
     return get("Interface/ParallaxEnabled", true);
 }
 
+bool Preferences::showViewport() const
+{
+    return get("Interface/ShowViewport", false);
+}
+
 bool Preferences::snapToGrid() const
 {
     return get("Interface/SnapToGrid", false);
@@ -343,6 +348,12 @@ void Preferences::setParallaxEnabled(bool enabled)
 {
     setValue(QLatin1String("Interface/ParallaxEnabled"), enabled);
     emit parallaxEnabledChanged(enabled);
+}
+
+void Preferences::setShowViewport(bool enabled)
+{
+    setValue(QLatin1String("Interface/ShowViewport"), enabled);
+    emit showViewportChanged(enabled);
 }
 
 void Preferences::setSnapToGrid(bool snapToGrid)
