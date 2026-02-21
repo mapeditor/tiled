@@ -465,6 +465,8 @@ DynamicLibrary {
         "scriptmodule.h",
         "scriptprocess.cpp",
         "scriptprocess.h",
+        "scriptsession.cpp",
+        "scriptsession.h",
         "scriptpropertytype.cpp",
         "scriptpropertytype.h",
         "selectionrectangle.cpp",
