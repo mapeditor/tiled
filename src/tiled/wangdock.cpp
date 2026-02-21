@@ -240,7 +240,7 @@ WangDock::WangDock(QWidget *parent)
     mEraseWangIdsButton->setChecked(mCurrentWangId.isEmpty());
 
     connect(mEraseWangIdsButton, &QPushButton::clicked,
-            this, &WangDock::activateErase);
+            this, &WangDock::eraseWangIdsClicked);
 
     // WangSet layout
 
@@ -619,6 +619,12 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
 
     mDuplicateWangSet->setEnabled(wangSet);
     mRemoveWangSet->setEnabled(wangSet);
+}
+
+void WangDock::eraseWangIdsClicked()
+{
+    activateErase();
+    emit selectWangBrush();
 }
 
 void WangDock::activateErase()
