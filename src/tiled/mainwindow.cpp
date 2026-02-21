@@ -859,6 +859,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QShortcut *switchToLeftDocument1 = new QShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_Tab, this);
     connect(switchToLeftDocument1, &QShortcut::activated,
             mDocumentManager, &DocumentManager::switchToLeftDocument);
+#ifdef Q_OS_MAC
+    QShortcut *switchToLeftDocument2 = new QShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_BracketLeft, this);
+    connect(switchToLeftDocument2, &QShortcut::activated,
+            mDocumentManager, &DocumentManager::switchToLeftDocument);
+#endif
 
     QShortcut *switchToRightDocument = new QShortcut(Qt::ALT + Qt::Key_Right, this);
     connect(switchToRightDocument, &QShortcut::activated,
@@ -866,6 +871,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QShortcut *switchToRightDocument1 = new QShortcut(Qt::CTRL + Qt::Key_Tab, this);
     connect(switchToRightDocument1, &QShortcut::activated,
             mDocumentManager, &DocumentManager::switchToRightDocument);
+#ifdef Q_OS_MAC
+    QShortcut *switchToRightDocument2 = new QShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_BracketRight, this);
+    connect(switchToRightDocument2, &QShortcut::activated,
+            mDocumentManager, &DocumentManager::switchToRightDocument);
+#endif
 
     connect(qApp, &QApplication::commitDataRequest, this, &MainWindow::commitData);
 
