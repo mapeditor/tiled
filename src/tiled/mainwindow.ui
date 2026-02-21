@@ -155,6 +155,14 @@
      <addaction name="separator"/>
      <addaction name="actionLabelForHoveredObject"/>
     </widget>
+    <widget class="QMenu" name="menuObjectBounds">
+     <property name="title">
+      <string>Object Bounds</string>
+     </property>
+     <addaction name="actionShowAllObjects"/>
+     <addaction name="actionClipObjectsToMapBounds"/>
+     <addaction name="actionHideOutOfBoundsObjects"/>
+    </widget>
     <widget class="QMenu" name="menuSnapping">
      <property name="title">
       <string>Snapping</string>
@@ -166,9 +174,11 @@
     </widget>
     <addaction name="actionSearchActions"/>
     <addaction name="actionShowGrid"/>
+    <addaction name="actionClipMapToBounds"/>
     <addaction name="actionShowTileObjectOutlines"/>
     <addaction name="actionShowObjectReferences"/>
     <addaction name="menuShowObjectNames"/>
+    <addaction name="menuObjectBounds"/>
     <addaction name="actionShowTileAnimations"/>
     <addaction name="actionShowTileCollisionShapes"/>
     <addaction name="actionEnableWorlds"/>
@@ -334,6 +344,14 @@
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+G</string>
+   </property>
+  </action>
+  <action name="actionClipMapToBounds">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Clip Map to &amp;Bounds</string>
    </property>
   </action>
   <action name="actionSaveAs">
@@ -550,6 +568,30 @@
    </property>
    <property name="text">
     <string>&amp;Never</string>
+   </property>
+  </action>
+  <action name="actionShowAllObjects">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show All</string>
+   </property>
+  </action>
+  <action name="actionClipObjectsToMapBounds">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Clip to Map Bounds</string>
+   </property>
+  </action>
+  <action name="actionHideOutOfBoundsObjects">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Hide Out-of-Bounds</string>
    </property>
   </action>
   <action name="actionLabelsForSelectedObjects">

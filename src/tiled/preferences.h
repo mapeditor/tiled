@@ -56,6 +56,7 @@ private:
 
 public:
     bool showGrid() const;
+    bool clipMapToBounds() const;
     bool showTileObjectOutlines() const;
     bool showTileAnimations() const;
     bool showTileCollisionShapes() const;
@@ -73,6 +74,15 @@ public:
     bool highlightCurrentLayer() const;
     bool highlightHoveredObject() const;
     bool showTilesetGrid() const;
+
+    enum ObjectBoundsVisibility {
+        ShowAllObjects,
+        ClipObjectsToMapBounds,
+        HideOutOfBoundsObjects
+    };
+
+    ObjectBoundsVisibility objectBoundsVisibility() const;
+    void setObjectBoundsVisibility(ObjectBoundsVisibility visibility);
 
     enum ObjectLabelVisiblity {
         NoObjectLabels,
@@ -192,6 +202,7 @@ public:
 
 public slots:
     void setShowGrid(bool showGrid);
+    void setClipMapToBounds(bool enabled);
     void setShowTileObjectOutlines(bool enabled);
     void setShowTileAnimations(bool enabled);
     void setShowTileCollisionShapes(bool enabled);
@@ -219,6 +230,7 @@ public slots:
 
 signals:
     void showGridChanged(bool showGrid);
+    void clipMapToBoundsChanged(bool enabled);
     void showTileObjectOutlinesChanged(bool enabled);
     void showTileAnimationsChanged(bool enabled);
     void showTileCollisionShapesChanged(bool enabled);
@@ -235,6 +247,7 @@ signals:
     void highlightCurrentLayerChanged(bool highlight);
     void highlightHoveredObjectChanged(bool highlight);
     void showTilesetGridChanged(bool showTilesetGrid);
+    void objectBoundsVisibilityChanged(ObjectBoundsVisibility visibility);
     void objectLabelVisibilityChanged(ObjectLabelVisiblity);
     void labelForHoveredObjectChanged(bool enabled);
 

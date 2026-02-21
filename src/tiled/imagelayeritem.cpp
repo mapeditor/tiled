@@ -21,8 +21,10 @@
 
 #include "imagelayeritem.h"
 
+#include "mapclipbounds.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
+#include "preferences.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -53,8 +55,25 @@ void ImageLayerItem::paint(QPainter *painter,
                            const QStyleOptionGraphicsItem *option,
                            QWidget *)
 {
-    // TODO: Display a border around the layer when selected
     MapRenderer *renderer = mMapDocument->renderer();
+
+    painter->save();
+
+    // TODO: Display a border around the layer when selected
     painter->setCompositionMode(layer()->compositionMode());
+
+    if (Preferences::instance()->clipMapToBounds()) {
+        const QRectF mapBounds = Internal::effectiveClipBounds(*renderer);
+
+        QGraphicsItem *mapRoot = this;
+        while (mapRoot->parentItem())
+            mapRoot = mapRoot->parentItem();
+
+        const QRectF clipBounds = mapFromItem(mapRoot, mapBounds);
+        painter->setClipRect(clipBounds, Qt::IntersectClip);
+    }
+
     renderer->drawImageLayer(painter, imageLayer(), option->exposedRect);
+
+    painter->restore();
 }

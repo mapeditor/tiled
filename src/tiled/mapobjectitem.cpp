@@ -23,6 +23,7 @@
 #include "mapobjectitem.h"
 
 #include "geometry.h"
+#include "mapclipbounds.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
 #include "mapscene.h"
@@ -97,7 +98,12 @@ void MapObjectItem::syncWithMapObject()
         mBoundingRect = bounds;
     }
 
-    setVisible(mObject->isVisible());
+    bool visible = mObject->isVisible();
+    if (visible && Preferences::instance()->objectBoundsVisibility() == Preferences::HideOutOfBoundsObjects) {
+        visible = mObject->screenBounds(*renderer).intersects(Internal::effectiveClipBounds(*renderer));
+    }
+
+    setVisible(visible);
     setFlag(QGraphicsItem::ItemIgnoresTransformations,
             mObject->shape() == MapObject::Point);
 }
@@ -133,6 +139,18 @@ void MapObjectItem::paint(QPainter *painter,
 {
     const auto renderer = mMapDocument->renderer();
     const qreal painterScale = renderer->painterScale();
+    const auto boundsVisibility = Preferences::instance()->objectBoundsVisibility();
+    const bool clipToBounds = boundsVisibility == Preferences::ClipObjectsToMapBounds;
+
+    if (clipToBounds) {
+        QGraphicsItem *mapRoot = this;
+        while (mapRoot->parentItem())
+            mapRoot = mapRoot->parentItem();
+
+        const QRectF clipBounds = mapFromItem(mapRoot, Internal::effectiveClipBounds(*renderer));
+        painter->save();
+        painter->setClipRect(clipBounds, Qt::IntersectClip);
+    }
 
     const qreal previousOpacity = painter->opacity();
 
@@ -190,6 +208,9 @@ void MapObjectItem::paint(QPainter *painter,
     }
 
     renderer->setPainterScale(painterScale);
+
+    if (clipToBounds)
+        painter->restore();
 }
 
 void MapObjectItem::setPolygon(const QPolygonF &polygon)

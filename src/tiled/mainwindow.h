@@ -149,6 +149,7 @@ private:
     void updatePopupGeometry(QSize size);
 
     void labelVisibilityActionTriggered(QAction *action);
+    void objectBoundsVisibilityActionTriggered(QAction *action);
     void zoomIn();
     void zoomOut();
     void zoomNormal();
