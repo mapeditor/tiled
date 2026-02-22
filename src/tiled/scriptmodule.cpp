@@ -584,9 +584,9 @@ QByteArray ScriptModule::decompress(const QByteArray &data, CompressionMethod me
 
 void ScriptModule::trigger(const QByteArray &actionName) const
 {
-    if (QAction *action = ActionManager::findAction(actionName))
+    if (QAction *action = ActionManager::findEnabledAction(actionName))
         action->trigger();
-    else
+    else if (!ActionManager::findAction(actionName))
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Unknown action"));
 }
 
