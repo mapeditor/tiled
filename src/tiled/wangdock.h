@@ -94,6 +94,7 @@ protected:
     void changeEvent(QEvent *event) override;
 
 private:
+    void eraseWangIdsClicked();
     void activateErase();
     void refreshCurrentWangSet();
     void refreshCurrentWangId();
