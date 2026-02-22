@@ -27,6 +27,8 @@
 
 #include "tilelayer.h"
 
+class QToolBar;
+
 namespace Tiled {
 
 class MapDocument;
@@ -42,12 +44,16 @@ public:
     MagicWandTool(QObject *parent = nullptr);
 
     void languageChanged() override;
+    void populateToolBar(QToolBar *toolBar) override;
 
 protected:
     void tilePositionChanged(QPoint tilePos) override;
 
 private:
+    void setContiguous(bool contiguous);
+
     QVector<Cell> mMatchCells;
+    bool mContiguous = true;
 };
 
 } // namespace Tiled
