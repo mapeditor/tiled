@@ -1372,7 +1372,7 @@ void DocumentManager::onWorldUnloaded(WorldDocument *worldDocument)
 
 static bool mayNeedColumnCountAdjustment(const Tileset &tileset)
 {
-    if (tileset.isCollection())
+    if (tileset.isCollection() || tileset.isAtlas())
         return false;
     if (tileset.imageStatus() != LoadingReady)
         return false;

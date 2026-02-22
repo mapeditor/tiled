@@ -83,6 +83,8 @@ public:
     void setRelocateTiles(bool enabled);
     bool isRelocateTiles() const { return mRelocateTiles; }
 
+    bool isSnapToGrid() const { return mSnapToGrid; }
+
     void setEditWangSet(bool enabled);
     bool isEditWangSet() const { return mEditWangSet; }
 
@@ -100,12 +102,16 @@ public:
 
     void updateBackgroundColor();
 
+    int maxTileWidth() const { return mMaxTileWidth; }
+    int maxTileHeight() const { return mMaxTileHeight; }
+
 signals:
     void wangSetImageSelected(Tile *tile);
     void wangColorImageSelected(Tile *tile, int index);
     void wangIdUsedChanged(WangId wangId);
     void currentWangIdChanged(WangId wangId);
     void swapTilesRequested(Tile *tileA, Tile *tileB);
+    void snapToGridChanged(bool enabled);
 
 protected:
     bool event(QEvent *event) override;
@@ -117,6 +123,12 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
+    QModelIndex indexAt(const QPoint &pos) const override;
+    void scrollTo(const QModelIndex &index, ScrollHint hint = EnsureVisible) override;
+    void setSelection(const QRect &rect, QItemSelectionModel::SelectionFlags flags) override;
+    void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) override;
+    QRect visualRect(const QModelIndex &index) const override;
 
 private:
     void onChange(const ChangeEvent &change);
@@ -133,6 +145,10 @@ private:
     void applyWangId();
     void finishWangIdChange();
     Tile *currentTile() const;
+    QPoint viewToTile(const QPoint &viewPos) const;
+    QRect viewToTile(const QRect &viewRect) const;
+    QRect tileToView(const QRect &tileRect) const;
+    void updateAtlasSelection(const QPoint &currentPos);
 
     enum WangBehavior {
         AssignWholeId,      // Assigning templates
@@ -158,6 +174,15 @@ private:
     int mWangColorIndex = 0;
     QModelIndex mHoveredIndex;
     bool mWangIdChanged = false;
+
+    bool mSnapToGrid = true;
+    bool mAtlasSelecting = false;
+    int mResizingEdge = 0;  // 0=none, 1=right, 2=bottom, 3=left, 4=top, 5=top-left, 6=top-right, 7=bottom-left, 8=bottom-right
+    QPoint mSelectionOffset;
+    QRubberBand mRubberBand;
+    QModelIndex mDraggedIndex;
+    int mMaxTileWidth = 0;
+    int mMaxTileHeight = 0;
 
     const QIcon mImageMissingIcon;
 };

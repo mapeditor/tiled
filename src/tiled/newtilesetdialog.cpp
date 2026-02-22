@@ -40,6 +40,7 @@ static SessionOption<int> tilesetType { "tileset.type" };
 static SessionOption<bool> embedInMap { "tileset.embedInMap" };
 static SessionOption<bool> useTransparentColor { "tileset.useTransparentColor" };
 static SessionOption<QColor> transparentColor { "tileset.transparentColor", Qt::magenta };
+static SessionOption<bool> generateGrid { "tileset.generateGrid", true };
 static SessionOption<QSize> tileSize { "tileset.tileSize", QSize(32, 32) };
 static SessionOption<int> tilesetSpacing { "tileset.spacing" };
 static SessionOption<int> tilesetMargin { "tileset.margin" };
@@ -47,6 +48,7 @@ static SessionOption<int> tilesetMargin { "tileset.margin" };
 
 enum TilesetType {
     TilesetImage,
+    TilesetAtlas,
     ImageCollection
 };
 
@@ -57,6 +59,8 @@ static TilesetType tilesetType(Ui::NewTilesetDialog *ui)
     case 0:
         return TilesetImage;
     case 1:
+        return TilesetAtlas;
+    case 2:
         return ImageCollection;
     }
 }
@@ -74,6 +78,7 @@ NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
     mUi->embedded->setChecked(session::embedInMap);
     mUi->useTransparentColor->setChecked(session::useTransparentColor);
     mUi->colorButton->setColor(session::transparentColor);
+    mUi->generateGrid->setChecked(session::generateGrid);
     mUi->tileWidth->setValue(tileSize.width());
     mUi->tileHeight->setValue(tileSize.height());
     mUi->spacing->setValue(session::tilesetSpacing);
@@ -93,7 +98,8 @@ NewTilesetDialog::NewTilesetDialog(QWidget *parent) :
     connect(mUi->buttonBox, &QDialogButtonBox::accepted, this, &NewTilesetDialog::tryAccept);
     connect(mUi->buttonBox, &QDialogButtonBox::rejected, this, &NewTilesetDialog::reject);
 
-    mUi->imageGroupBox->setVisible(session::tilesetType == 0);
+    mUi->imageGroupBox->setVisible(session::tilesetType < 2);
+    mUi->generateGrid->setVisible(session::tilesetType == 1);
     updateOkButton();
 }
 
@@ -187,10 +193,11 @@ bool NewTilesetDialog::editTilesetParameters(TilesetParameters &parameters)
 void NewTilesetDialog::tryAccept()
 {
     const QString name = mUi->name->text();
+    const TilesetType type = tilesetType(mUi);
 
     SharedTileset tileset;
 
-    if (tilesetType(mUi) == TilesetImage) {
+    if (type == TilesetImage || type == TilesetAtlas) {
         const QString image = mUi->image->text();
         const bool useTransparentColor = mUi->useTransparentColor->isChecked();
         const QColor transparentColor = mUi->colorButton->color();
@@ -198,10 +205,12 @@ void NewTilesetDialog::tryAccept()
         const int tileHeight = mUi->tileHeight->value();
         const int spacing = mUi->spacing->value();
         const int margin = mUi->margin->value();
+        const bool generateGrid = mUi->generateGrid->isChecked();
 
         tileset = Tileset::create(name,
                                   tileWidth, tileHeight,
-                                  spacing, margin);
+                                  spacing, margin,
+                                  type == TilesetAtlas);
 
         if (useTransparentColor)
             tileset->setTransparentColor(transparentColor);
@@ -214,7 +223,11 @@ void NewTilesetDialog::tryAccept()
                 return;
             }
 
-            if (tileset->tileCount() == 0) {
+            if (tileset->isAtlas() && generateGrid) {
+                tileset->initializeTilesetTiles(true);
+            }
+
+            if (tileset->tileCount() == 0 && (!tileset->isAtlas() || generateGrid)) {
                 QMessageBox::critical(this, tr("Error"),
                                       tr("No tiles found in the tileset image "
                                          "when using the given tile size, "
@@ -281,7 +294,8 @@ void NewTilesetDialog::nameEdited(const QString &name)
 
 void NewTilesetDialog::tilesetTypeChanged(int index)
 {
-    mUi->imageGroupBox->setVisible(index == 0);
+    mUi->imageGroupBox->setVisible(index < 2);
+    mUi->generateGrid->setVisible(index == 1);
     updateOkButton();
 }
 
@@ -299,7 +313,7 @@ void NewTilesetDialog::updateOkButton()
         text = tr("&OK");
     }
 
-    if (tilesetType(mUi) == TilesetImage)
+    if (tilesetType(mUi) == TilesetImage || tilesetType(mUi) == TilesetAtlas)
         enabled &= !mUi->image->text().isEmpty();
 
     okButton->setEnabled(enabled);

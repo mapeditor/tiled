@@ -306,6 +306,7 @@ void TilesetEditor::addDocument(Document *document)
     connect(view, &TilesetView::wangColorImageSelected, this, &TilesetEditor::setWangColorImage);
     connect(view, &TilesetView::wangIdUsedChanged, mWangDock, &WangDock::onWangIdUsedChanged);
     connect(view, &TilesetView::currentWangIdChanged, mWangDock, &WangDock::onCurrentWangIdChanged);
+    connect(view, &TilesetView::snapToGridChanged, this, &TilesetEditor::updateStatusMessage);
 
     QItemSelectionModel *s = view->selectionModel();
     connect(s, &QItemSelectionModel::selectionChanged, this, &TilesetEditor::selectionChanged);
@@ -374,6 +375,19 @@ void TilesetEditor::setCurrentDocument(Document *document)
 
         currentChanged(tilesetView->currentIndex());
         selectionChanged();
+        setRelocateTiles(mRelocateTiles->isChecked());
+
+        // Use detailed tooltip for atlas tileset
+        if (tilesetDocument && tilesetDocument->tileset()->isAtlas()) {
+            mRelocateTiles->setToolTip(tr("Rearrange Tiles") + QLatin1String("\n\n") +
+                                        tr("Left-click and drag to move tiles") + QLatin1String("\n") +
+                                        tr("Left-click tile corners to resize") + QLatin1String("\n") +
+                                        tr("Left-click and drag empty space to create new tiles") + QLatin1String("\n") +
+                                        tr("Right-click and drag to delete tiles") + QLatin1String("\n") +
+                                        tr("Press Shift to toggle grid snapping"));
+        } else {
+            mRelocateTiles->setToolTip(tr("Rearrange Tiles"));
+        }
     } else {
         currentChanged(QModelIndex());
     }
@@ -953,6 +967,24 @@ void TilesetEditor::setRelocateTiles(bool relocateTiles)
     if (relocateTiles) {
         mWangDock->setVisible(false);
         mTileCollisionDock->setVisible(false);
+    }
+
+    updateStatusMessage();
+}
+
+void TilesetEditor::updateStatusMessage()
+{
+    if (!mCurrentTilesetDocument || !mCurrentTilesetDocument->tileset()->isAtlas()) {
+        mStatusInfoLabel->clear();
+        return;
+    }
+
+    if (mRelocateTiles->isChecked()) {
+        TilesetView *view = currentTilesetView();
+        QString snapStatus = (view && view->isSnapToGrid()) ? tr("[ON]") : tr("[OFF]");
+        mStatusInfoLabel->setText(tr("Rearrange Mode: Left-click to move/resize tiles | Right-click to delete | Shift to toggle snapping %1").arg(snapStatus));
+    } else {
+        mStatusInfoLabel->setText(tr("Atlas Tileset: Use 'Rearrange Tiles' mode to customize tile regions"));
     }
 }
 
