@@ -421,6 +421,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionShowObjectReferences->setChecked(preferences->showObjectReferences());
     mUi->actionShowTileAnimations->setChecked(preferences->showTileAnimations());
     mUi->actionShowTileCollisionShapes->setChecked(preferences->showTileCollisionShapes());
+    mUi->actionShowViewport->setChecked(preferences->showViewport());
     mUi->actionEnableParallax->setChecked(preferences->parallaxEnabled());
     mUi->actionSnapToGrid->setChecked(preferences->snapToGrid());
     mUi->actionSnapToFineGrid->setChecked(preferences->snapToFineGrid());
@@ -560,6 +561,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             preferences, &Preferences::setShowTileAnimations);
     connect(mUi->actionShowTileCollisionShapes, &QAction::toggled,
             preferences, &Preferences::setShowTileCollisionShapes);
+    connect(mUi->actionShowViewport, &QAction::toggled,
+            preferences, &Preferences::setShowViewport);
     connect(mUi->actionEnableParallax, &QAction::toggled,
             preferences, &Preferences::setParallaxEnabled);
     connect(mUi->actionSnapToGrid, &QAction::toggled,

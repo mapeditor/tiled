@@ -90,7 +90,8 @@ public:
         BackgroundColorProperty,
         LayerDataFormatProperty,
         CompressionLevelProperty,
-        ChunkSizeProperty
+        ChunkSizeProperty,
+        ViewportSizeProperty
     };
 
     /**
@@ -174,6 +175,7 @@ public:
         int compressionLevel = -1;
         QSize chunkSize = QSize(CHUNK_SIZE, CHUNK_SIZE);
         LayerDataFormat layerDataFormat = Base64Zlib;
+        QSize viewportSize;  // Camera bounds / in-game viewport size (0,0 = disabled)
     };
 
     Map();
@@ -296,6 +298,9 @@ public:
 
     QSize chunkSize() const;
     void setChunkSize(QSize size);
+
+    QSize viewportSize() const;
+    void setViewportSize(QSize size);
     
     bool isTilesetUsed(const Tileset *tileset) const;
 
@@ -677,6 +682,20 @@ inline QSize Map::chunkSize() const
 inline void Map::setChunkSize(QSize size)
 {
     mEditorSettings.chunkSize = size;
+}
+
+/**
+ * Returns the viewport size (camera bounds) for this map.
+ * A size of (0,0) means no viewport is defined.
+ */
+inline QSize Map::viewportSize() const
+{
+    return mEditorSettings.viewportSize;
+}
+
+inline void Map::setViewportSize(QSize size)
+{
+    mEditorSettings.viewportSize = size;
 }
 
 /**
