@@ -38,6 +38,7 @@ class Document;
 class EditableAsset;
 class MapEditor;
 class ScriptImage;
+class ScriptSession;
 class ScriptMapFormatWrapper;
 class ScriptTilesetFormatWrapper;
 class ScriptedAction;
@@ -75,6 +76,8 @@ class ScriptModule : public QObject
     Q_PROPERTY(Tiled::TilesetEditor *tilesetEditor READ tilesetEditor)
     Q_PROPERTY(QList<QObject*> worlds READ worlds)
 
+    Q_PROPERTY(Tiled::ScriptSession *session READ session)
+
 public:
     ScriptModule(QObject *parent = nullptr);
     ~ScriptModule() override;
@@ -104,6 +107,8 @@ public:
 
     TilesetEditor *tilesetEditor() const;
     MapEditor *mapEditor() const;
+
+    ScriptSession *session() const;
 
     Q_INVOKABLE QColor color(const QString &name) const;
     Q_INVOKABLE QColor color(float r, float g, float b, float a = 1.0f) const;
@@ -194,6 +199,7 @@ private:
     std::map<Id, std::unique_ptr<ScriptedTool>> mRegisteredTools;
 
     QStringList mScriptArguments;
+    ScriptSession *mSession = nullptr;
 };
 
 inline bool ScriptModule::versionLessThan(const QString &a)

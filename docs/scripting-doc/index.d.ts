@@ -4632,6 +4632,53 @@ declare namespace Tiled {
   const Zstandard: CompressionMethod;
 }
 
+
+/**
+ * Provides access to session-specific settings. The session stores
+ * per-project preferences like last-used tile sizes, open files, and
+ * file states.
+ *
+ * Values are accessed by their string key (e.g. `"map.tileWidth"`).
+ *
+ * @since 1.12
+ */
+interface Session {
+  /**
+   * Path to the current session file.
+   */
+  readonly fileName: string;
+
+  /**
+   * Returns the session value for the given key, or `defaultValue` if
+   * the key is not set.
+   */
+  get(key: string, defaultValue?: any): any;
+
+  /**
+   * Sets the session value for the given key.
+   */
+  set(key: string, value: any): void;
+
+  /**
+   * Returns whether the given key is present in the session.
+   */
+  isSet(key: string): boolean;
+
+  /**
+   * Returns the per-file state for the given file name.
+   */
+  fileState(fileName: string): { [key: string]: any };
+
+  /**
+   * Sets the per-file state for the given file name.
+   */
+  setFileState(fileName: string, fileState: { [key: string]: any }): void;
+
+  /**
+   * Sets a single value in the per-file state for the given file name.
+   */
+  setFileStateValue(fileName: string, name: string, value: any): void;
+}
 /**
  * The `tiled` module is the main entry point and provides properties,
  * functions and signals which are documented below.
@@ -4766,6 +4813,18 @@ declare namespace tiled {
    * Access the editor used when editing tilesets.
    */
   export const tilesetEditor: TilesetEditor;
+
+  /**
+   * Provides access to the current session, allowing scripts to read and
+   * write session-specific settings like last-used tile size.
+   *
+   * In command-line mode (`--evaluate`), no session may be available. In
+   * that case, methods return safe defaults (empty strings, default
+   * values, etc.).
+   *
+   * @since 1.12
+   */
+  export const session: Session;
 
   /**
    * This function can be used to trigger any registered action. This

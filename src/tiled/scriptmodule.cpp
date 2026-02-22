@@ -37,6 +37,7 @@
 #include "scriptfileformatwrappers.h"
 #include "scriptimage.h"
 #include "scriptmanager.h"
+#include "scriptsession.h"
 #include "tilesetdocument.h"
 #include "tileseteditor.h"
 #include "worlddocument.h"
@@ -56,6 +57,7 @@ namespace Tiled {
 
 ScriptModule::ScriptModule(QObject *parent)
     : QObject(parent)
+    , mSession(new ScriptSession(this))
 {
     // If the script module is only created for command-line use, there will
     // not be a DocumentManager instance.
@@ -238,6 +240,11 @@ MapEditor *ScriptModule::mapEditor() const
     if (auto documentManager = DocumentManager::maybeInstance())
         return static_cast<MapEditor*>(documentManager->editor(Document::MapDocumentType));
     return nullptr;
+}
+
+ScriptSession *ScriptModule::session() const
+{
+    return mSession;
 }
 
 QColor ScriptModule::color(const QString &name) const
