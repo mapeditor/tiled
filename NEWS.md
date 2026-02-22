@@ -29,6 +29,7 @@
 * AutoMapping: Optimized reloading of rule maps and load rule maps on-demand
 * tBIN plugin: Added support for the tIDE XML format (by Casey Warrington, #4308)
 * Windows: Fixed issue with opening Tile Animation Editor (#4223)
+* macOS: Add Cmd+Shift+[ and Cmd+Shift+] shortcuts to switch tabs (by Oval, #4344)
 * macOS: Fixed crash when JS code is JIT-compiled (#4218)
 * Workaround tileset view layout regression in Qt 6.9
 * Raised minimum supported Qt version from 5.12 to 5.15.2
