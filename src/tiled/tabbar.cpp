@@ -22,12 +22,44 @@
 
 #include <QMouseEvent>
 #include <QWheelEvent>
+#include <QPainter>
+#include <QStyleOptionTab>
 
 namespace Tiled {
 
 TabBar::TabBar(QWidget *parent)
     : QTabBar(parent)
 {}
+
+void TabBar::setTabDeleted(int index, bool deleted)
+{
+    if (deleted)
+        mDeletedTabs.insert(index);
+    else
+        mDeletedTabs.remove(index);
+
+    update();
+}
+
+bool TabBar::isTabDeleted(int index) const
+{
+    return mDeletedTabs.contains(index);
+}
+
+void TabBar::setTabRecreated(int index, bool recreated)
+{
+    if (recreated)
+        mRecreatedTabs.insert(index);
+    else
+        mRecreatedTabs.remove(index);
+
+    update();
+}
+
+bool TabBar::isTabRecreated(int index) const
+{
+    return mRecreatedTabs.contains(index);
+}
 
 void TabBar::mousePressEvent(QMouseEvent *event)
 {
@@ -60,6 +92,107 @@ void TabBar::wheelEvent(QWheelEvent *event)
         index += event->angleDelta().y() > 0 ? -1 : 1;
         if (index >= 0 && index < count())
             setCurrentIndex(index);
+    }
+}
+
+void TabBar::tabInserted(int index)
+{
+    QTabBar::tabInserted(index);
+
+    // Shift deleted tab indices that are >= the inserted index
+    QSet<int> newDeletedTabs;
+    for (int deletedIndex : std::as_const(mDeletedTabs)) {
+        if (deletedIndex >= index) {
+            newDeletedTabs.insert(deletedIndex + 1);
+        } else {
+            newDeletedTabs.insert(deletedIndex);
+        }
+    }
+    mDeletedTabs = newDeletedTabs;
+
+    // Shift recreated tab indices that are >= the inserted index
+    QSet<int> newRecreatedTabs;
+    for (int recreatedIndex : std::as_const(mRecreatedTabs)) {
+        if (recreatedIndex >= index) {
+            newRecreatedTabs.insert(recreatedIndex + 1);
+        } else {
+            newRecreatedTabs.insert(recreatedIndex);
+        }
+    }
+    mRecreatedTabs = newRecreatedTabs;
+}
+
+void TabBar::tabRemoved(int index)
+{
+    QTabBar::tabRemoved(index);
+
+    // Remove the deleted tab if it was at this index and shift others
+    QSet<int> newDeletedTabs;
+    for (int deletedIndex : std::as_const(mDeletedTabs)) {
+        if (deletedIndex == index) {
+            // This deleted tab was removed, don't add it back
+            continue;
+        } else if (deletedIndex > index) {
+            newDeletedTabs.insert(deletedIndex - 1);
+        } else {
+            newDeletedTabs.insert(deletedIndex);
+        }
+    }
+    mDeletedTabs = newDeletedTabs;
+
+    // Remove the recreated tab if it was at this index and shift others
+    QSet<int> newRecreatedTabs;
+    for (int recreatedIndex : std::as_const(mRecreatedTabs)) {
+        if (recreatedIndex == index) {
+            continue;
+        } else if (recreatedIndex > index) {
+            newRecreatedTabs.insert(recreatedIndex - 1);
+        } else {
+            newRecreatedTabs.insert(recreatedIndex);
+        }
+    }
+    mRecreatedTabs = newRecreatedTabs;
+}
+
+
+
+void TabBar::paintEvent(QPaintEvent *event)
+{
+    if (mDeletedTabs.isEmpty() && mRecreatedTabs.isEmpty()) {
+        QTabBar::paintEvent(event);
+        return;
+    }
+
+    QPainter painter(this);
+    QStyleOptionTab opt;
+
+    for (int i = 0; i < count(); ++i) {
+        initStyleOption(&opt, i);
+
+        if (mDeletedTabs.contains(i)) {
+            opt.palette.setColor(QPalette::Text, Qt::red);
+            style()->drawControl(QStyle::CE_TabBarTab, &opt, &painter, this);
+
+            painter.save();
+            QRect textRect = style()->subElementRect(QStyle::SE_TabBarTabText, &opt, this);
+            QFont font = painter.font();
+            font.setStrikeOut(true);
+            painter.setFont(font);
+            painter.setPen(Qt::red);
+            painter.drawText(textRect, Qt::AlignCenter, tabText(i));
+            painter.restore();
+        } else if (mRecreatedTabs.contains(i)) {
+            opt.palette.setColor(QPalette::Text, QColor(184, 134, 11));
+            style()->drawControl(QStyle::CE_TabBarTab, &opt, &painter, this);
+
+            painter.save();
+            QRect textRect = style()->subElementRect(QStyle::SE_TabBarTabText, &opt, this);
+            painter.setPen(QColor(218, 165, 32));
+            painter.drawText(textRect, Qt::AlignCenter, tabText(i));
+            painter.restore();
+        } else {
+            style()->drawControl(QStyle::CE_TabBarTab, &opt, &painter, this);
+        }
     }
 }
 

@@ -32,16 +32,29 @@ class FileChangedWarning : public QWidget
     Q_OBJECT
 
 public:
+    enum State {
+        FileChanged,
+        FileDeleted,
+        FileRecreated
+    };
+
     explicit FileChangedWarning(QWidget *parent = nullptr);
+
+    void setState(State state);
 
 signals:
     void reload();
     void ignore();
+    void restore();
+    void saveAs();
+    void closeDocument();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
+    void setupButtonsForState(State state);
+
     QLabel *mLabel;
     QDialogButtonBox *mButtons;
 };
