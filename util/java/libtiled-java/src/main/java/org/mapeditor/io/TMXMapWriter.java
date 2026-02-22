@@ -42,16 +42,14 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
 
-import java.util.Base64;
+import com.github.luben.zstd.ZstdOutputStream;
 
 import org.mapeditor.core.AnimatedTile;
+import org.mapeditor.core.ImageLayer;
 import org.mapeditor.core.MapLayer;
 import org.mapeditor.core.Map;
 import org.mapeditor.core.MapObject;
@@ -59,10 +57,17 @@ import org.mapeditor.core.ObjectGroup;
 import org.mapeditor.core.Group;
 import org.mapeditor.core.Orientation;
 import org.mapeditor.core.Properties;
+import org.mapeditor.core.Property;
+import org.mapeditor.core.Animation;
+import org.mapeditor.core.Frame;
 import org.mapeditor.core.Sprite;
 import org.mapeditor.core.Tile;
 import org.mapeditor.core.TileLayer;
 import org.mapeditor.core.TileSet;
+import org.mapeditor.core.WangColor;
+import org.mapeditor.core.WangSet;
+import org.mapeditor.core.WangSets;
+import org.mapeditor.core.WangTile;
 import org.mapeditor.io.xml.XMLWriter;
 
 /**
@@ -84,10 +89,38 @@ public class TMXMapWriter {
         @Deprecated
         public static final String LAYER_COMPRESSION_METHOD_GZIP = "gzip";
         public static final String LAYER_COMPRESSION_METHOD_ZLIB = "zlib";
+        public static final String LAYER_COMPRESSION_METHOD_ZSTD = "zstd";
 
         public String layerCompressionMethod = LAYER_COMPRESSION_METHOD_ZLIB;
     }
     public Settings settings = new Settings();
+
+    private static boolean hasAnimation(Tile tile) {
+        if (tile instanceof AnimatedTile) return true;
+        Animation anim = tile.getAnimation();
+        return anim != null && anim.getFrame() != null && !anim.getFrame().isEmpty();
+    }
+
+    private static boolean isNonEmpty(String s) {
+        return s != null && !s.isEmpty();
+    }
+
+    private static long buildFlipFlags(MapObject obj) {
+        long flags = 0;
+        if (obj.getFlipHorizontal()) flags |= TMXMapReader.FLIPPED_HORIZONTALLY_FLAG;
+        if (obj.getFlipVertical())   flags |= TMXMapReader.FLIPPED_VERTICALLY_FLAG;
+        if (obj.getFlipDiagonal())   flags |= TMXMapReader.FLIPPED_DIAGONALLY_FLAG;
+        return flags;
+    }
+
+    private static boolean tileNeedsWrite(Tile tile, boolean checkSource) {
+        return !tile.getProperties().isEmpty()
+                || isNonEmpty(tile.getType())
+                || (checkSource && tile.getSource() != null)
+                || (tile.getProbability() != null && tile.getProbability() != 1.0)
+                || tile.getCollisionObjectGroup() != null
+                || hasAnimation(tile);
+    }
 
     /**
      * Saves a map to an XML file.
@@ -176,9 +209,9 @@ public class TMXMapWriter {
 //        w.writeDocType("map", null, "http://mapeditor.org/dtd/1.0/map.dtd");
         w.startElement("map");
 
-        w.writeAttribute("version", "1.2");
+        w.writeAttribute("version", "1.11");
 
-        if (!map.getTiledversion().isEmpty()) {
+        if (isNonEmpty(map.getTiledversion())) {
             w.writeAttribute("tiledversion", map.getTiledversion());
         }
 
@@ -191,17 +224,45 @@ public class TMXMapWriter {
         w.writeAttribute("tileheight", map.getTileHeight());
         w.writeAttribute("infinite", map.getInfinite());
 
+        if (isNonEmpty(map.getBackgroundcolor())) {
+            w.writeAttribute("backgroundcolor", map.getBackgroundcolor());
+        }
+
+        if (map.getCompressionlevel() != null && map.getCompressionlevel() >= 0) {
+            w.writeAttribute("compressionlevel", map.getCompressionlevel());
+        }
+
+        if (map.getParallaxoriginx() != null && map.getParallaxoriginx() != 0.0) {
+            w.writeAttribute("parallaxoriginx", map.getParallaxoriginx());
+        }
+
+        if (map.getParallaxoriginy() != null && map.getParallaxoriginy() != 0.0) {
+            w.writeAttribute("parallaxoriginy", map.getParallaxoriginy());
+        }
+
+        if (isNonEmpty(map.getClassName())) {
+            w.writeAttribute("class", map.getClassName());
+        }
+
         w.writeAttribute("nextlayerid", map.getNextlayerid());
         w.writeAttribute("nextobjectid", map.getNextobjectid());
 
-        switch (orientation) {
-            case HEXAGONAL:
-                w.writeAttribute("hexsidelength", map.getHexSideLength());
-            case STAGGERED:
-                w.writeAttribute("staggeraxis", map.getStaggerAxis().value());
-                w.writeAttribute("staggerindex", map.getStaggerIndex().value());
+        if (orientation == Orientation.HEXAGONAL) {
+            w.writeAttribute("hexsidelength", map.getHexSideLength());
+        }
+        if (orientation == Orientation.HEXAGONAL || orientation == Orientation.STAGGERED) {
+            w.writeAttribute("staggeraxis", map.getStaggerAxis().value());
+            w.writeAttribute("staggerindex", map.getStaggerIndex().value());
         }
 
+        if (map.getSkewx() != null && map.getSkewx() != 0) {
+            w.writeAttribute("skewx", map.getSkewx());
+        }
+        if (map.getSkewy() != null && map.getSkewy() != 0) {
+            w.writeAttribute("skewy", map.getSkewy());
+        }
+
+        writeEditorSettings(map, w);
         writeProperties(map.getProperties(), w);
 
         firstGidPerTileset = new HashMap<>();
@@ -212,15 +273,7 @@ public class TMXMapWriter {
             firstgid += tileset.getMaxTileId() + 1;
         }
 
-        for (MapLayer layer : map.getLayers()) {
-            if (layer instanceof TileLayer) {
-                writeMapLayer((TileLayer) layer, w, wp);
-            } else if (layer instanceof ObjectGroup) {
-                writeObjectGroup((ObjectGroup) layer, w, wp);
-            } else if (layer instanceof Group) {
-                writeGroup((Group) layer, w, wp);
-            }
-        }
+        writeLayers(map.getLayers(), w, wp);
         firstGidPerTileset = null;
 
         w.endElement();
@@ -231,15 +284,48 @@ public class TMXMapWriter {
 
         writeLayerAttributes(group, w);
         writeProperties(group.getProperties(), w);
+        writeLayers(group.getLayers(), w, wp);
+        w.endElement();
+    }
 
-        for (MapLayer layer : group.getLayers()) {
+    private void writeLayers(List<MapLayer> layers, XMLWriter w, String wp) throws IOException {
+        for (MapLayer layer : layers) {
             if (layer instanceof TileLayer) {
                 writeMapLayer((TileLayer) layer, w, wp);
             } else if (layer instanceof ObjectGroup) {
                 writeObjectGroup((ObjectGroup) layer, w, wp);
+            } else if (layer instanceof ImageLayer) {
+                writeImageLayer((ImageLayer) layer, w, wp);
             } else if (layer instanceof Group) {
                 writeGroup((Group) layer, w, wp);
-            } // TODO: Image Layer writing
+            }
+        }
+    }
+
+    private void writeEditorSettings(Map map, XMLWriter w) throws IOException {
+        boolean hasChunkSize = (map.getEditorChunkWidth() != null && map.getEditorChunkHeight() != null);
+        boolean hasExport = isNonEmpty(map.getExportTarget());
+
+        if (!hasChunkSize && !hasExport) {
+            return;
+        }
+
+        w.startElement("editorsettings");
+
+        if (hasChunkSize) {
+            w.startElement("chunksize");
+            w.writeAttribute("width", map.getEditorChunkWidth());
+            w.writeAttribute("height", map.getEditorChunkHeight());
+            w.endElement();
+        }
+
+        if (hasExport) {
+            w.startElement("export");
+            w.writeAttribute("target", map.getExportTarget());
+            if (isNonEmpty(map.getExportFormat())) {
+                w.writeAttribute("format", map.getExportFormat());
+            }
+            w.endElement();
         }
 
         w.endElement();
@@ -248,22 +334,26 @@ public class TMXMapWriter {
     private void writeProperties(Properties props, XMLWriter w) throws
             IOException {
         if (props != null && !props.isEmpty()) {
-            final Set<Object> propertyKeys = new TreeSet<>();
-            propertyKeys.addAll(props.keySet());
             w.startElement("properties");
-            for (Object propertyKey : propertyKeys) {
-                final String key = (String) propertyKey;
-                final String property = props.getProperty(key);
+            for (Property prop : props.getProperties()) {
+                final String key = prop.getName();
+                final String value = prop.getValue();
                 w.startElement("property");
                 w.writeAttribute("name", key);
-                if (property.indexOf('\n') == -1) {
-                    if ("true".equals(property) || "false".equals(property)) {
-                        w.writeAttribute("type", "bool");
-                    }
-                    w.writeAttribute("value", property);
-                } else {
+                if (prop.getType() != null) {
+                    w.writeAttribute("type", prop.getType().value());
+                } else if (value != null && value.indexOf('\n') == -1
+                        && ("true".equals(value) || "false".equals(value))) {
+                    w.writeAttribute("type", "bool");
+                }
+                if (prop.getPropertyTypeName() != null && !prop.getPropertyTypeName().isEmpty()) {
+                    w.writeAttribute("propertytype", prop.getPropertyTypeName());
+                }
+                if (value != null && value.indexOf('\n') == -1) {
+                    w.writeAttribute("value", value);
+                } else if (value != null) {
                     // Save multiline values as character data
-                    w.writeCDATA(property);
+                    w.writeCDATA(value);
                 }
                 w.endElement();
             }
@@ -309,6 +399,10 @@ public class TMXMapWriter {
             w.writeAttribute("name", name);
         }
 
+        if (isNonEmpty(set.getClassName())) {
+            w.writeAttribute("class", set.getClassName());
+        }
+
         if (tileBitmapFile != null) {
             w.writeAttribute("tilewidth", set.getTileWidth());
             w.writeAttribute("tileheight", set.getTileHeight());
@@ -321,7 +415,51 @@ public class TMXMapWriter {
             if (tileMargin != 0) {
                 w.writeAttribute("margin", tileMargin);
             }
+
+            w.writeAttribute("tilecount", set.size());
+            w.writeAttribute("columns", set.getColumns());
         }
+
+        if (isNonEmpty(set.getObjectalignment())) {
+            w.writeAttribute("objectalignment", set.getObjectalignment());
+        }
+        if (isNonEmpty(set.getTilerendersize())) {
+            w.writeAttribute("tilerendersize", set.getTilerendersize());
+        }
+        if (isNonEmpty(set.getFillmode())) {
+            w.writeAttribute("fillmode", set.getFillmode());
+        }
+        if (isNonEmpty(set.getBackgroundcolor())) {
+            w.writeAttribute("backgroundcolor", set.getBackgroundcolor());
+        }
+
+        if (set.getTileoffset() != null) {
+            org.mapeditor.core.TileOffset tileOffset = set.getTileoffset();
+            if ((tileOffset.getX() != null && tileOffset.getX() != 0)
+                    || (tileOffset.getY() != null && tileOffset.getY() != 0)) {
+                w.startElement("tileoffset");
+                w.writeAttribute("x", tileOffset.getX() != null ? tileOffset.getX() : 0);
+                w.writeAttribute("y", tileOffset.getY() != null ? tileOffset.getY() : 0);
+                w.endElement();
+            }
+        }
+
+        if (set.getGrid() != null) {
+            org.mapeditor.core.Grid grid = set.getGrid();
+            w.startElement("grid");
+            if (grid.getOrientation() != null) {
+                w.writeAttribute("orientation", grid.getOrientation().value());
+            }
+            if (grid.getWidth() != null) {
+                w.writeAttribute("width", grid.getWidth());
+            }
+            if (grid.getHeight() != null) {
+                w.writeAttribute("height", grid.getHeight());
+            }
+            w.endElement();
+        }
+
+        writeProperties(set.getProperties(), w);
 
         if (tileBitmapFile != null) {
             w.startElement("image");
@@ -332,21 +470,37 @@ public class TMXMapWriter {
                 w.writeAttribute("trans", Integer.toHexString(
                         trans.getRGB()).substring(2));
             }
+
+            if (set.getImageData() != null) {
+                if (set.getImageData().getWidth() != null) {
+                    w.writeAttribute("width", set.getImageData().getWidth());
+                }
+                if (set.getImageData().getHeight() != null) {
+                    w.writeAttribute("height", set.getImageData().getHeight());
+                }
+            }
             w.endElement();
 
             // Write tile properties when necessary.
             for (Tile tile : set) {
                 // todo: move the null check back into the iterator?
-                if (tile != null
-                        && (!tile.getProperties().isEmpty()
-                        || !tile.getType().isEmpty())) {
+                if (tile != null && tileNeedsWrite(tile, false)) {
                     w.startElement("tile");
                     w.writeAttribute("id", tile.getId());
-                    if (!tile.getType().isEmpty()) {
+                    if (isNonEmpty(tile.getType())) {
                         w.writeAttribute("type", tile.getType());
+                    }
+                    if (tile.getProbability() != null && tile.getProbability() != 1.0) {
+                        w.writeAttribute("probability", tile.getProbability());
                     }
                     if (!tile.getProperties().isEmpty()) {
                         writeProperties(tile.getProperties(), w);
+                    }
+                    if (tile.getCollisionObjectGroup() != null) {
+                        writeObjectGroup(tile.getCollisionObjectGroup(), w, wp);
+                    }
+                    if (hasAnimation(tile)) {
+                        writeAnimation(tile, w);
                     }
                     w.endElement();
                 }
@@ -354,13 +508,8 @@ public class TMXMapWriter {
         } else {
             // Check to see if there is a need to write tile elements
             boolean needWrite = false;
-
-            // As long as one has properties, they all need to be written.
-            // TODO: This shouldn't be necessary
             for (Tile tile : set) {
-                if (!tile.getProperties().isEmpty()
-                        || !tile.getType().isEmpty()
-                        || tile.getSource() != null) {
+                if (tileNeedsWrite(tile, true)) {
                     needWrite = true;
                     break;
                 }
@@ -380,6 +529,120 @@ public class TMXMapWriter {
                 }
             }
         }
+
+        if (set.getTransformations() != null) {
+            org.mapeditor.core.Transformations trans = set.getTransformations();
+            w.startElement("transformations");
+            if (trans.isHflip() != null) {
+                w.writeAttribute("hflip", trans.isHflip() ? "1" : "0");
+            }
+            if (trans.isVflip() != null) {
+                w.writeAttribute("vflip", trans.isVflip() ? "1" : "0");
+            }
+            if (trans.isRotate() != null) {
+                w.writeAttribute("rotate", trans.isRotate() ? "1" : "0");
+            }
+            if (trans.isPreferuntransformed() != null) {
+                w.writeAttribute("preferuntransformed", trans.isPreferuntransformed() ? "1" : "0");
+            }
+            w.endElement();
+        }
+
+        if (set.getWangsets() != null) {
+            WangSets wangSets = set.getWangsets();
+            if (!wangSets.getWangset().isEmpty()) {
+                w.startElement("wangsets");
+                for (WangSet ws : wangSets.getWangset()) {
+                    w.startElement("wangset");
+                    if (ws.getName() != null) {
+                        w.writeAttribute("name", ws.getName());
+                    }
+                    if (isNonEmpty(ws.getType())) {
+                        w.writeAttribute("type", ws.getType());
+                    }
+                    if (ws.getTile() != null) {
+                        w.writeAttribute("tile", ws.getTile());
+                    }
+                    if (isNonEmpty(ws.getClassName())) {
+                        w.writeAttribute("class", ws.getClassName());
+                    }
+                    // Write unified wangcolor elements
+                    for (WangColor wc : ws.getWangcolor()) {
+                        w.startElement("wangcolor");
+                        if (wc.getName() != null) {
+                            w.writeAttribute("name", wc.getName());
+                        }
+                        if (isNonEmpty(wc.getClassName())) {
+                            w.writeAttribute("class", wc.getClassName());
+                        }
+                        if (wc.getColor() != null) {
+                            w.writeAttribute("color", wc.getColor());
+                        }
+                        if (wc.getTile() != null) {
+                            w.writeAttribute("tile", wc.getTile());
+                        }
+                        if (wc.getProbability() != null) {
+                            w.writeAttribute("probability", wc.getProbability());
+                        }
+                        if (wc.getProperties() != null && !wc.getProperties().isEmpty()) {
+                            writeProperties(wc.getProperties(), w);
+                        }
+                        w.endElement();
+                    }
+                    // Write wangtile elements
+                    for (WangTile wt : ws.getWangtile()) {
+                        w.startElement("wangtile");
+                        if (wt.getTileid() != null) {
+                            w.writeAttribute("tileid", wt.getTileid());
+                        }
+                        if (wt.getWangid() != null) {
+                            w.writeAttribute("wangid", wt.getWangid());
+                        }
+                        w.endElement();
+                    }
+                    // Write wangset properties
+                    if (ws.getProperties() != null && !ws.getProperties().isEmpty()) {
+                        writeProperties(ws.getProperties(), w);
+                    }
+                    w.endElement();
+                }
+                w.endElement();
+            }
+        }
+
+        w.endElement();
+    }
+
+    private void writeImageLayer(ImageLayer il, XMLWriter w, String wp)
+            throws IOException {
+        w.startElement("imagelayer");
+
+        writeLayerAttributes(il, w);
+
+        if (il.isRepeatx() != null && il.isRepeatx()) {
+            w.writeAttribute("repeatx", "1");
+        }
+        if (il.isRepeaty() != null && il.isRepeaty()) {
+            w.writeAttribute("repeaty", "1");
+        }
+
+        writeProperties(il.getProperties(), w);
+
+        if (il.getImage() != null && il.getImage().getSource() != null) {
+            w.startElement("image");
+            w.writeAttribute("source", getRelativePath(wp, il.getImage().getSource()));
+            if (il.getImage().getWidth() != null) {
+                w.writeAttribute("width", il.getImage().getWidth());
+            }
+            if (il.getImage().getHeight() != null) {
+                w.writeAttribute("height", il.getImage().getHeight());
+            }
+            if (il.getImage().getTrans() != null) {
+                w.writeAttribute("trans", il.getImage().getTrans());
+            }
+            w.endElement();
+        }
+
         w.endElement();
     }
 
@@ -387,7 +650,7 @@ public class TMXMapWriter {
             throws IOException {
         w.startElement("objectgroup");
 
-        if (o.getColor() != null && o.getColor().isEmpty()) {
+        if (isNonEmpty(o.getColor())) {
             w.writeAttribute("color", o.getColor());
         }
         if (o.getDraworder() != null && !o.getDraworder().equalsIgnoreCase("topdown")) {
@@ -396,9 +659,8 @@ public class TMXMapWriter {
         writeLayerAttributes(o, w);
         writeProperties(o.getProperties(), w);
 
-        Iterator<MapObject> itr = o.getObjects().iterator();
-        while (itr.hasNext()) {
-            writeMapObject(itr.next(), w, wp);
+        for (MapObject mo : o.getObjects()) {
+            writeMapObject(mo, w, wp);
         }
 
         w.endElement();
@@ -450,6 +712,26 @@ public class TMXMapWriter {
         if (l.getLocked() != null && l.getLocked() != 0) {
             w.writeAttribute("locked", l.getLocked());
         }
+
+        if (isNonEmpty(l.getTintcolor())) {
+            w.writeAttribute("tintcolor", l.getTintcolor());
+        }
+
+        if (l.getParallaxx() != null && l.getParallaxx() != 1.0) {
+            w.writeAttribute("parallaxx", l.getParallaxx());
+        }
+
+        if (l.getParallaxy() != null && l.getParallaxy() != 1.0) {
+            w.writeAttribute("parallaxy", l.getParallaxy());
+        }
+
+        if (isNonEmpty(l.getClassName())) {
+            w.writeAttribute("class", l.getClassName());
+        }
+
+        if (isNonEmpty(l.getMode()) && !"normal".equalsIgnoreCase(l.getMode())) {
+            w.writeAttribute("mode", l.getMode());
+        }
     }
 
     /**
@@ -465,76 +747,68 @@ public class TMXMapWriter {
         writeLayerAttributes(l, w);
         writeProperties(l.getProperties(), w);
 
-        final TileLayer tl = l;
         w.startElement("data");
         if (ENCODE_LAYER_DATA) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            OutputStream out;
-
             w.writeAttribute("encoding", "base64");
-
-            DeflaterOutputStream dos;
             if (COMPRESS_LAYER_DATA) {
-                if (Settings.LAYER_COMPRESSION_METHOD_ZLIB.equalsIgnoreCase(settings.layerCompressionMethod)) {
-                    dos = new DeflaterOutputStream(baos);
-                } else if (Settings.LAYER_COMPRESSION_METHOD_GZIP.equalsIgnoreCase(settings.layerCompressionMethod)) {
-                    dos = new GZIPOutputStream(baos);
-                } else {
-                    throw new IOException("Unrecognized compression method \"" + settings.layerCompressionMethod + "\" for map layer " + l.getName());
-                }
-                out = dos;
                 w.writeAttribute("compression", settings.layerCompressionMethod);
-            } else {
-                out = baos;
+            }
+        }
+
+        boolean isInfinite = l.getMap() != null
+                && l.getMap().getInfinite() != null
+                && l.getMap().getInfinite() != 0;
+
+        if (isInfinite) {
+            int chunkW = 16;
+            int chunkH = 16;
+            if (l.getMap().getEditorChunkWidth() != null && l.getMap().getEditorChunkWidth() > 0) {
+                chunkW = l.getMap().getEditorChunkWidth();
+            }
+            if (l.getMap().getEditorChunkHeight() != null && l.getMap().getEditorChunkHeight() > 0) {
+                chunkH = l.getMap().getEditorChunkHeight();
             }
 
-            for (int y = 0; y < l.getHeight(); y++) {
-                for (int x = 0; x < l.getWidth(); x++) {
-                    Tile tile = tl.getTileAt(x + bounds.x,
-                            y + bounds.y);
-                    int gid = 0;
+            int startCX = Math.floorDiv(bounds.x, chunkW) * chunkW;
+            int startCY = Math.floorDiv(bounds.y, chunkH) * chunkH;
+            int endX = bounds.x + bounds.width;
+            int endY = bounds.y + bounds.height;
 
-                    if (tile != null) {
-                        gid = getGid(tile);
-                        gid |= tl.getFlagsAt(x, y);
+            for (int cy = startCY; cy < endY; cy += chunkH) {
+                for (int cx = startCX; cx < endX; cx += chunkW) {
+                    boolean hasData = false;
+                    chunkCheck:
+                    for (int y = cy; y < cy + chunkH; y++) {
+                        for (int x = cx; x < cx + chunkW; x++) {
+                            if (l.getTileAt(x, y) != null) {
+                                hasData = true;
+                                break chunkCheck;
+                            }
+                        }
                     }
+                    if (!hasData) continue;
 
-                    out.write(gid & LAST_BYTE);
-                    out.write(gid >> Byte.SIZE & LAST_BYTE);
-                    out.write(gid >> Byte.SIZE * 2 & LAST_BYTE);
-                    out.write(gid >> Byte.SIZE * 3 & LAST_BYTE);
-                }
-            }
+                    w.startElement("chunk");
+                    w.writeAttribute("x", cx);
+                    w.writeAttribute("y", cy);
+                    w.writeAttribute("width", chunkW);
+                    w.writeAttribute("height", chunkH);
 
-            if (COMPRESS_LAYER_DATA && dos != null) {
-                dos.finish();
-            }
+                    writeLayerDataRect(l, w, cx, cy, chunkW, chunkH);
 
-            byte[] dec = baos.toByteArray();
-            w.writeCDATA(Base64.getEncoder().encodeToString(dec));
-        } else {
-            for (int y = 0; y < l.getHeight(); y++) {
-                for (int x = 0; x < l.getWidth(); x++) {
-                    Tile tile = tl.getTileAt(x + bounds.x, y + bounds.y);
-                    int gid = 0;
-
-                    if (tile != null) {
-                        gid = getGid(tile);
-                    }
-
-                    w.startElement("tile");
-                    w.writeAttribute("gid", gid);
                     w.endElement();
                 }
             }
+        } else {
+            writeLayerDataRect(l, w, bounds.x, bounds.y, bounds.width, bounds.height);
         }
         w.endElement();
 
         boolean tilePropertiesElementStarted = false;
 
-        for (int y = 0; y < l.getHeight(); y++) {
-            for (int x = 0; x < l.getWidth(); x++) {
-                Properties tip = tl.getTileInstancePropertiesAt(x, y);
+        for (int y = 0; y < bounds.height; y++) {
+            for (int x = 0; x < bounds.width; x++) {
+                Properties tip = l.getTileInstancePropertiesAt(x, y);
 
                 if (tip != null && !tip.isEmpty()) {
                     if (!tilePropertiesElementStarted) {
@@ -560,6 +834,72 @@ public class TMXMapWriter {
         w.endElement();
     }
 
+    private void writeLayerDataRect(TileLayer tl, XMLWriter w, int startX, int startY, int rectWidth, int rectHeight) throws IOException {
+        if (ENCODE_LAYER_DATA) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            OutputStream out;
+
+            OutputStream compressedOut = null;
+            if (COMPRESS_LAYER_DATA) {
+                if (Settings.LAYER_COMPRESSION_METHOD_ZLIB.equalsIgnoreCase(settings.layerCompressionMethod)) {
+                    compressedOut = new DeflaterOutputStream(baos);
+                } else if (Settings.LAYER_COMPRESSION_METHOD_GZIP.equalsIgnoreCase(settings.layerCompressionMethod)) {
+                    compressedOut = new GZIPOutputStream(baos);
+                } else if (Settings.LAYER_COMPRESSION_METHOD_ZSTD.equalsIgnoreCase(settings.layerCompressionMethod)) {
+                    compressedOut = new ZstdOutputStream(baos);
+                } else {
+                    throw new IOException("Unrecognized compression method \"" + settings.layerCompressionMethod + "\"");
+                }
+                out = compressedOut;
+            } else {
+                out = baos;
+            }
+
+            for (int y = startY; y < startY + rectHeight; y++) {
+                for (int x = startX; x < startX + rectWidth; x++) {
+                    Tile tile = tl.getTileAt(x, y);
+                    int gid = 0;
+
+                    if (tile != null) {
+                        gid = getGid(tile);
+                        gid |= tl.getFlagsAt(x, y);
+                    }
+
+                    out.write(gid & LAST_BYTE);
+                    out.write(gid >> Byte.SIZE & LAST_BYTE);
+                    out.write(gid >> Byte.SIZE * 2 & LAST_BYTE);
+                    out.write(gid >> Byte.SIZE * 3 & LAST_BYTE);
+                }
+            }
+
+            if (COMPRESS_LAYER_DATA && compressedOut != null) {
+                if (compressedOut instanceof DeflaterOutputStream) {
+                    ((DeflaterOutputStream) compressedOut).finish();
+                } else {
+                    compressedOut.close();
+                }
+            }
+
+            byte[] dec = baos.toByteArray();
+            w.writeCDATA(java.util.Base64.getEncoder().encodeToString(dec));
+        } else {
+            for (int y = startY; y < startY + rectHeight; y++) {
+                for (int x = startX; x < startX + rectWidth; x++) {
+                    Tile tile = tl.getTileAt(x, y);
+                    int gid = 0;
+
+                    if (tile != null) {
+                        gid = getGid(tile);
+                    }
+
+                    w.startElement("tile");
+                    w.writeAttribute("gid", gid);
+                    w.endElement();
+                }
+            }
+        }
+    }
+
     /**
      * Used to write tile elements for tilesets not based on a tileset image.
      *
@@ -571,8 +911,25 @@ public class TMXMapWriter {
         w.startElement("tile");
         w.writeAttribute("id", tile.getId());
 
-        if (!tile.getType().isEmpty()) {
+        if (tile.getImageX() != null) {
+            w.writeAttribute("x", tile.getImageX());
+        }
+        if (tile.getImageY() != null) {
+            w.writeAttribute("y", tile.getImageY());
+        }
+        if (tile.getImageWidth() != null) {
+            w.writeAttribute("width", tile.getImageWidth());
+        }
+        if (tile.getImageHeight() != null) {
+            w.writeAttribute("height", tile.getImageHeight());
+        }
+
+        if (isNonEmpty(tile.getType())) {
             w.writeAttribute("type", tile.getType());
+        }
+
+        if (tile.getProbability() != null && tile.getProbability() != 1.0) {
+            w.writeAttribute("probability", tile.getProbability());
         }
 
         if (!tile.getProperties().isEmpty()) {
@@ -583,8 +940,12 @@ public class TMXMapWriter {
             writeImage(tile, w, wp);
         }
 
-        if (tile instanceof AnimatedTile) {
-            writeAnimation(((AnimatedTile) tile).getSprite(), w);
+        if (tile.getCollisionObjectGroup() != null) {
+            writeObjectGroup(tile.getCollisionObjectGroup(), w, wp);
+        }
+
+        if (hasAnimation(tile)) {
+            writeAnimation(tile, w);
         }
 
         w.endElement();
@@ -598,21 +959,36 @@ public class TMXMapWriter {
         w.endElement();
     }
 
-    private void writeAnimation(Sprite s, XMLWriter w) throws IOException {
-        w.startElement("animation");
-        for (int k = 0; k < s.getTotalKeys(); k++) {
-            Sprite.KeyFrame key = s.getKey(k);
-            w.startElement("keyframe");
-            w.writeAttribute("name", key.getName());
-            for (int it = 0; it < key.getTotalFrames(); it++) {
-                Tile stile = key.getFrame(it);
-                w.startElement("tile");
-                w.writeAttribute("gid", getGid(stile));
+    private void writeAnimation(Tile tile, XMLWriter w) throws IOException {
+        Animation anim = tile.getAnimation();
+        if (anim != null && anim.getFrame() != null && !anim.getFrame().isEmpty()) {
+            w.startElement("animation");
+            for (Frame frame : anim.getFrame()) {
+                w.startElement("frame");
+                w.writeAttribute("tileid", frame.getTileid());
+                w.writeAttribute("duration", frame.getDuration());
                 w.endElement();
             }
             w.endElement();
+        } else if (tile instanceof AnimatedTile) {
+            Sprite s = ((AnimatedTile) tile).getSprite();
+            if (s != null) {
+                w.startElement("animation");
+                for (int k = 0; k < s.getTotalKeys(); k++) {
+                    Sprite.KeyFrame key = s.getKey(k);
+                    for (int it = 0; it < key.getTotalFrames(); it++) {
+                        Tile stile = key.getFrame(it);
+                        if (stile != null) {
+                            w.startElement("frame");
+                            w.writeAttribute("tileid", stile.getId());
+                            w.writeAttribute("duration", 100);
+                            w.endElement();
+                        }
+                    }
+                }
+                w.endElement();
+            }
         }
-        w.endElement();
     }
 
     private void writeMapObject(MapObject mapObject, XMLWriter w, String wp)
@@ -620,25 +996,22 @@ public class TMXMapWriter {
         w.startElement("object");
         w.writeAttribute("id", mapObject.getId());
 
+        if (isNonEmpty(mapObject.getTemplate())) {
+            w.writeAttribute("template", mapObject.getTemplate());
+        }
+
         long gid = 0;
         if (mapObject.getTile() != null) {
             Tile t = mapObject.getTile();
-            gid = firstGidPerTileset.get(t.getTileSet()) + t.getId();
+            Integer firstGid = firstGidPerTileset.get(t.getTileSet());
+            if (firstGid != null) {
+                gid = firstGid + t.getId();
+            }
         } else if (mapObject.getGid() != null) {
             gid = mapObject.getGid();
         }
 
-        if (mapObject.getFlipHorizontal()) {
-            gid |= TMXMapReader.FLIPPED_HORIZONTALLY_FLAG;
-        }
-
-        if (mapObject.getFlipVertical()) {
-            gid |= TMXMapReader.FLIPPED_VERTICALLY_FLAG;
-        }
-
-        if (mapObject.getFlipDiagonal()) {
-            gid |= TMXMapReader.FLIPPED_DIAGONALLY_FLAG;
-        }
+        gid |= buildFlipFlags(mapObject);
 
         if (gid != 0) {
             w.writeAttribute("gid", gid);
@@ -648,35 +1021,94 @@ public class TMXMapWriter {
             w.writeAttribute("name", mapObject.getName());
         }
 
-        if (mapObject.getType().length() != 0) {
+        if (!mapObject.getType().isEmpty()) {
             w.writeAttribute("type", mapObject.getType());
         }
 
         w.writeAttribute("x", mapObject.getX());
         w.writeAttribute("y", mapObject.getY());
 
-        // TODO: Implement Polygon, Ellipse & Polyline too
-        boolean isPoint = mapObject.getPoint() != null;
-        if (isPoint) {
-            w.startElement("point");
-            w.endElement();
+        if (mapObject.getWidth() != null && mapObject.getWidth() != 0) {
+            w.writeAttribute("width", mapObject.getWidth());
         }
-        else {
-            if (mapObject.getWidth() != 0) {
-                w.writeAttribute("width", mapObject.getWidth());
-            }
-            if (mapObject.getHeight() != 0) {
-                w.writeAttribute("height", mapObject.getHeight());
-            }
+        if (mapObject.getHeight() != null && mapObject.getHeight() != 0) {
+            w.writeAttribute("height", mapObject.getHeight());
         }
 
         if (mapObject.getRotation() != 0) {
             w.writeAttribute("rotation", mapObject.getRotation());
         }
 
+        if (mapObject.isVisible() != null && !mapObject.isVisible()) {
+            w.writeAttribute("visible", "0");
+        }
+
         writeProperties(mapObject.getProperties(), w);
 
-        if (mapObject.getImageSource().length() > 0) {
+        if (mapObject.getPoint() != null) {
+            w.startElement("point");
+            w.endElement();
+        } else if (mapObject.getEllipse() != null) {
+            w.startElement("ellipse");
+            w.endElement();
+        } else if (mapObject.getPolygon() != null) {
+            w.startElement("polygon");
+            if (mapObject.getPolygon().getPoints() != null) {
+                w.writeAttribute("points", mapObject.getPolygon().getPoints());
+            }
+            w.endElement();
+        } else if (mapObject.getPolyline() != null) {
+            w.startElement("polyline");
+            if (mapObject.getPolyline().getPoints() != null) {
+                w.writeAttribute("points", mapObject.getPolyline().getPoints());
+            }
+            w.endElement();
+        } else if (mapObject.getText() != null) {
+            org.mapeditor.core.Text text = mapObject.getText();
+            w.startElement("text");
+            if (text.getFontfamily() != null) {
+                w.writeAttribute("fontfamily", text.getFontfamily());
+            }
+            if (text.getPixelsize() != null) {
+                w.writeAttribute("pixelsize", text.getPixelsize());
+            }
+            if (text.isWrap()) {
+                w.writeAttribute("wrap", "1");
+            }
+            if (text.getColor() != null) {
+                w.writeAttribute("color", text.getColor());
+            }
+            if (text.isBold()) {
+                w.writeAttribute("bold", "1");
+            }
+            if (text.isItalic()) {
+                w.writeAttribute("italic", "1");
+            }
+            if (text.isUnderline()) {
+                w.writeAttribute("underline", "1");
+            }
+            if (text.isStrikeout()) {
+                w.writeAttribute("strikeout", "1");
+            }
+            if (!text.isKerning()) {
+                w.writeAttribute("kerning", "0");
+            }
+            if (text.getHalign() != org.mapeditor.core.HorizontalAlignment.LEFT) {
+                w.writeAttribute("halign", text.getHalign().value());
+            }
+            if (text.getValign() != org.mapeditor.core.VerticalAlignment.TOP) {
+                w.writeAttribute("valign", text.getValign().value());
+            }
+            if (text.getValue() != null) {
+                w.writeCDATA(text.getValue());
+            }
+            w.endElement();
+        } else if (mapObject.getCapsule() != null) {
+            w.startElement("capsule");
+            w.endElement();
+        }
+
+        if (!mapObject.getImageSource().isEmpty()) {
             w.startElement("image");
             w.writeAttribute("source",
                     getRelativePath(wp, mapObject.getImageSource()));

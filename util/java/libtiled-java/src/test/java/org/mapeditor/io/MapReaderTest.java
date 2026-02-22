@@ -40,8 +40,11 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import org.mapeditor.core.Map;
+import org.mapeditor.core.MapObject;
 import org.mapeditor.core.ObjectGroup;
 import org.mapeditor.core.Orientation;
+import org.mapeditor.core.Properties;
+import org.mapeditor.core.PropertyType;
 import org.mapeditor.core.StaggerAxis;
 import org.mapeditor.core.StaggerIndex;
 import org.mapeditor.core.TileLayer;
@@ -205,6 +208,23 @@ public class MapReaderTest {
     @Test(expected = IOException.class)
     public void testErrorReadingImageJar() throws Exception {
         new TMXMapReader().readMap(getJarURL("desert_missing_image/desert.tmx"));
+    }
+
+    @Test
+    public void testUnsupportedImageFormat() throws Exception {
+        URL url = getUrlFromResources("unsupported_image/desert.tmx");
+        Map map = new TMXMapReader().readMap(url.getPath());
+        assertNotNull(map);
+        assertEquals(2, map.getWidth());
+        assertEquals(2, map.getHeight());
+    }
+
+    @Test
+    public void testUnsupportedImageFormatJar() throws Exception {
+        Map map = new TMXMapReader().readMap(getJarURL("unsupported_image/desert.tmx"));
+        assertNotNull(map);
+        assertEquals(2, map.getWidth());
+        assertEquals(2, map.getHeight());
     }
 
     @Test(expected = IOException.class)
@@ -393,5 +413,277 @@ public class MapReaderTest {
 
         Map map = new TMXMapReader().readMap(in, parentDirectory);
         assertEquals(1, map.getTileSets().size());
+    }
+
+    @Test
+    public void testReadingModernFeatures() throws Exception {
+        URL url = getUrlFromResources("modern_features/modern_features.tmx");
+        Map map = new TMXMapReader().readMap(url.getPath());
+
+        // Map-level attributes
+        assertEquals(Orientation.ORTHOGONAL, map.getOrientation());
+        assertEquals("1.10", map.getVersion());
+        assertEquals(3, map.getWidth());
+        assertEquals(3, map.getHeight());
+        assertEquals(32, map.getTileWidth());
+        assertEquals(32, map.getTileHeight());
+        assertEquals(6, map.getCompressionlevel().intValue());
+        assertEquals(100.0, map.getParallaxoriginx(), 0.001);
+        assertEquals(200.0, map.getParallaxoriginy(), 0.001);
+        assertEquals(4, map.getLayerCount());
+
+        // Map-level properties with types
+        Properties mapProps = map.getProperties();
+        assertNotNull(mapProps);
+        assertEquals("true", mapProps.getProperty("boolProp"));
+        assertEquals("42", mapProps.getProperty("intProp"));
+        assertEquals("3.14", mapProps.getProperty("floatProp"));
+        assertEquals("#ff00ff00", mapProps.getProperty("colorProp"));
+        assertEquals("test.png", mapProps.getProperty("fileProp"));
+        assertEquals("hello", mapProps.getProperty("stringProp"));
+
+        // Layer 0: tintcolor and parallax
+        TileLayer tintedLayer = (TileLayer) map.getLayer(0);
+        assertEquals("TintedLayer", tintedLayer.getName());
+        assertEquals("#dca0a0", tintedLayer.getTintcolor());
+        assertEquals(0.5, tintedLayer.getParallaxx(), 0.001);
+        assertEquals(0.75, tintedLayer.getParallaxy(), 0.001);
+
+        // Layer 1: no tintcolor, no parallax
+        TileLayer normalLayer = (TileLayer) map.getLayer(1);
+        assertEquals("NormalLayer", normalLayer.getName());
+        assertNull(normalLayer.getTintcolor());
+
+        // Layer 2: opacity + tintcolor
+        TileLayer halfOpacity = (TileLayer) map.getLayer(2);
+        assertEquals("HalfOpacity", halfOpacity.getName());
+        assertEquals(0.5f, halfOpacity.getOpacity(), 0.01);
+        assertEquals("#80ff0000", halfOpacity.getTintcolor());
+
+        // Layer 3: ObjectGroup with template objects
+        ObjectGroup templateOG = (ObjectGroup) map.getLayer(3);
+        assertEquals("TemplateObjects", templateOG.getName());
+        assertEquals(2, templateOG.getObjects().size());
+
+        // Object 1: template with no overrides
+        MapObject obj1 = templateOG.getObjects().get(0);
+        assertEquals("templates/rect_template.tx", obj1.getTemplate());
+        assertEquals("block", obj1.getName());
+        assertEquals("solid", obj1.getType());
+        assertEquals(100.0, obj1.getX(), 0.001);
+        assertEquals(200.0, obj1.getY(), 0.001);
+        assertEquals(64.0, obj1.getWidth(), 0.001);
+        assertEquals(64.0, obj1.getHeight(), 0.001);
+        assertEquals("true", obj1.getProperties().getProperty("collision"));
+
+        // Object 2: template with name override and property override
+        MapObject obj2 = templateOG.getObjects().get(1);
+        assertEquals("templates/rect_template.tx", obj2.getTemplate());
+        assertEquals("override_block", obj2.getName());
+        assertEquals("solid", obj2.getType());
+        assertEquals(300.0, obj2.getX(), 0.001);
+        assertEquals(400.0, obj2.getY(), 0.001);
+        assertEquals(64.0, obj2.getWidth(), 0.001);
+        assertEquals(64.0, obj2.getHeight(), 0.001);
+        // collision overridden from true to false
+        assertEquals("false", obj2.getProperties().getProperty("collision"));
+        // color is TMX-only property
+        assertEquals("red", obj2.getProperties().getProperty("color"));
+    }
+
+    @Test
+    public void testReadingInfiniteMap() throws Exception {
+        URL url = getUrlFromResources("infinite/infinite.tmx");
+        Map map = new TMXMapReader().readMap(url.getPath());
+
+        assertEquals(Orientation.ORTHOGONAL, map.getOrientation());
+        assertEquals("1.8", map.getVersion());
+        assertEquals(1, map.getInfinite().intValue());
+        assertEquals(1, map.getLayerCount());
+
+        // Layer should span from (-16,-16) to (16,16) = 32x32 tiles
+        TileLayer layer = (TileLayer) map.getLayer(0);
+        assertEquals("ChunkLayer", layer.getName());
+        assertEquals(32, layer.getWidth());
+        assertEquals(32, layer.getHeight());
+
+        // Verify attributes are preserved after TileLayer recreation for infinite maps
+        assertEquals(Integer.valueOf(10), layer.getOffsetX());
+        assertEquals(Integer.valueOf(20), layer.getOffsetY());
+        assertEquals("MyLayerClass", layer.getClassName());
+    }
+
+    @Test
+    public void testModernFeaturesRoundTrip() throws Exception {
+        URL url = getUrlFromResources("modern_features/modern_features.tmx");
+        TMXMapReader reader = new TMXMapReader();
+        Map original = reader.readMap(url.getPath());
+
+        // Write to byte array
+        java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+        TMXMapWriter writer = new TMXMapWriter();
+        writer.writeMap(original, baos);
+
+        // Read back using the original file's directory for relative path resolution
+        java.io.ByteArrayInputStream bais = new java.io.ByteArrayInputStream(baos.toByteArray());
+        TMXMapReader reader2 = new TMXMapReader();
+        String searchDir = new File(url.getFile()).getParent();
+        Map reread = reader2.readMap(bais, searchDir);
+
+        // Verify key map attributes preserved
+        assertEquals(original.getWidth(), reread.getWidth());
+        assertEquals(original.getHeight(), reread.getHeight());
+        assertEquals(original.getLayerCount(), reread.getLayerCount());
+
+        // Verify template objects in round-trip
+        ObjectGroup origOG = (ObjectGroup) original.getLayer(3);
+        ObjectGroup rereadOG = (ObjectGroup) reread.getLayer(3);
+        assertEquals(origOG.getObjects().size(), rereadOG.getObjects().size());
+
+        // First template object
+        MapObject origObj1 = origOG.getObjects().get(0);
+        MapObject rereadObj1 = rereadOG.getObjects().get(0);
+        assertEquals(origObj1.getName(), rereadObj1.getName());
+        assertEquals(origObj1.getType(), rereadObj1.getType());
+        assertEquals(origObj1.getWidth(), rereadObj1.getWidth());
+        assertEquals(origObj1.getHeight(), rereadObj1.getHeight());
+        assertEquals(origObj1.getTemplate(), rereadObj1.getTemplate());
+        assertEquals(origObj1.getProperties().getProperty("collision"),
+                     rereadObj1.getProperties().getProperty("collision"));
+
+        // Second template object (with overrides)
+        MapObject origObj2 = origOG.getObjects().get(1);
+        MapObject rereadObj2 = rereadOG.getObjects().get(1);
+        assertEquals("override_block", rereadObj2.getName());
+        assertEquals("solid", rereadObj2.getType());
+        assertEquals(origObj2.getTemplate(), rereadObj2.getTemplate());
+        assertEquals("false", rereadObj2.getProperties().getProperty("collision"));
+        assertEquals("red", rereadObj2.getProperties().getProperty("color"));
+    }
+
+    @Test
+    public void testInfiniteMapRoundTrip() throws Exception {
+        URL url = getUrlFromResources("infinite/infinite.tmx");
+        TMXMapReader reader = new TMXMapReader();
+        Map original = reader.readMap(url.getPath());
+
+        // Write to byte array
+        java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+        TMXMapWriter writer = new TMXMapWriter();
+        writer.writeMap(original, baos);
+
+        // Read back
+        java.io.ByteArrayInputStream bais = new java.io.ByteArrayInputStream(baos.toByteArray());
+        String searchDir = new File(url.getFile()).getParent();
+        Map reread = new TMXMapReader().readMap(bais, searchDir);
+
+        TileLayer origLayer = (TileLayer) original.getLayer(0);
+        TileLayer rereadLayer = (TileLayer) reread.getLayer(0);
+
+        assertEquals(origLayer.getName(), rereadLayer.getName());
+        assertEquals(origLayer.getOffsetX(), rereadLayer.getOffsetX());
+        assertEquals(origLayer.getOffsetY(), rereadLayer.getOffsetY());
+        assertEquals(origLayer.getClassName(), rereadLayer.getClassName());
+    }
+
+    @Test
+    public void testReadingSvgTileset() throws Exception {
+        URL url = getUrlFromResources("svg_tileset/svg_tileset.tmx");
+        Map map = new TMXMapReader().readMap(url.getPath());
+        checkSvgTileset(map);
+    }
+
+    @Test
+    public void testReadingSvgTilesetJar() throws Exception {
+        Map map = new TMXMapReader().readMap(getJarURL("svg_tileset/svg_tileset.tmx"));
+        checkSvgTileset(map);
+    }
+
+    private void checkSvgTileset(final Map map) {
+        assertNotNull(map);
+        assertEquals(2, map.getWidth());
+        assertEquals(2, map.getHeight());
+        assertEquals(32, map.getTileWidth());
+        assertEquals(32, map.getTileHeight());
+        assertEquals(1, map.getLayerCount());
+
+        TileSet tileset = map.getTileSets().get(0);
+        assertEquals("SvgTileset", tileset.getName());
+        assertEquals(2, tileset.size());
+
+        TileLayer layer = (TileLayer) map.getLayer(0);
+        assertNotNull(layer.getTileAt(0, 0));
+        assertNotNull(layer.getTileAt(1, 0));
+    }
+
+    @Test
+    public void testStickerKnightTemplates() throws Exception {
+        File sandboxFile = new File("../../../examples/sticker-knight/map/sandbox.tmx");
+        org.junit.Assume.assumeTrue("Skipping: sticker-knight not found", sandboxFile.exists());
+
+        Map map = new TMXMapReader().readMap(sandboxFile.getCanonicalPath());
+
+        // Find the "game" object group
+        ObjectGroup gameGroup = null;
+        for (int i = 0; i < map.getLayerCount(); i++) {
+            if (map.getLayer(i) instanceof ObjectGroup) {
+                ObjectGroup og = (ObjectGroup) map.getLayer(i);
+                if ("game".equals(og.getName())) {
+                    gameGroup = og;
+                    break;
+                }
+            }
+        }
+        assertNotNull("game object group should exist", gameGroup);
+
+        // Find specific template objects
+        MapObject hero = findObjectById(gameGroup, 58);
+        MapObject block = findObjectById(gameGroup, 111);
+        MapObject diamond = findObjectById(gameGroup, 190);
+
+        // Verify hero template resolution
+        assertNotNull("hero object should exist", hero);
+        assertEquals("templates/hero.tx", hero.getTemplate());
+        assertEquals("hero", hero.getName());
+        assertEquals("hero", hero.getType());
+        assertEquals(45.0, hero.getX(), 0.001);
+        assertEquals(979.5, hero.getY(), 0.001);
+        assertEquals(128.0, hero.getWidth(), 0.001);
+        assertEquals(160.0, hero.getHeight(), 0.001);
+        assertNotNull("hero should have a tile", hero.getTile());
+
+        // Verify block template resolution
+        assertNotNull("block object should exist", block);
+        assertEquals("templates/block.tx", block.getTemplate());
+        assertEquals("block", block.getName());
+        assertEquals(594.0, block.getX(), 0.001);
+        assertEquals(571.0, block.getY(), 0.001);
+        assertEquals(96.0, block.getWidth(), 0.001);
+        assertEquals(96.0, block.getHeight(), 0.001);
+        assertNotNull("block should have a tile", block.getTile());
+        // Check block properties inherited from template
+        assertNotNull(block.getProperties());
+        assertEquals("dynamic", block.getProperties().getProperty("bodyType"));
+        assertEquals("2", block.getProperties().getProperty("density"));
+        assertEquals("0.45", block.getProperties().getProperty("friction"));
+
+        // Verify diamond template resolution
+        assertNotNull("diamond object should exist", diamond);
+        assertEquals("templates/diamond.tx", diamond.getTemplate());
+        assertEquals("coin", diamond.getType());
+        assertEquals(238.0, diamond.getX(), 0.001);
+        assertEquals(947.5, diamond.getY(), 0.001);
+        assertEquals(64.0, diamond.getWidth(), 0.001);
+        assertEquals(64.0, diamond.getHeight(), 0.001);
+        assertNotNull("diamond should have a tile", diamond.getTile());
+    }
+
+    private static MapObject findObjectById(ObjectGroup group, int id) {
+        for (MapObject obj : group.getObjects()) {
+            if (obj.getId() == id) {
+                return obj;
+            }
+        }
+        return null;
     }
 }

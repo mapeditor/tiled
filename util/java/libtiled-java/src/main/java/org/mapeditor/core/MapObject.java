@@ -40,7 +40,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
+import org.mapeditor.util.ImageHelper;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 
@@ -72,8 +73,6 @@ public class MapObject extends MapObjectData implements Cloneable {
         this.name = "";
         this.type = "";
         this.imageSource = "";
-        this.flipHorizontal = false;
-        this.flipVertical = false;
     }
 
     /**
@@ -182,9 +181,9 @@ public class MapObject extends MapObjectData implements Cloneable {
         imageSource = source;
 
         // Attempt to read the image
-        if (imageSource.length() > 0) {
+        if (!imageSource.isEmpty()) {
             try {
-                image = ImageIO.read(new File(imageSource));
+                image = ImageHelper.readImage(new File(imageSource));
             } catch (IOException e) {
                 image = null;
             }

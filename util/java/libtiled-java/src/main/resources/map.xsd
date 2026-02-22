@@ -162,6 +162,16 @@ POSSIBILITY OF SUCH DAMAGE.
         </xs:simpleContent>
     </xs:complexType>
 
+    <xs:complexType name="Capsule">
+        <xs:annotation>
+            <xs:documentation>
+                Used to mark an object as a capsule shape.
+
+                @since 1.11
+            </xs:documentation>
+        </xs:annotation>
+    </xs:complexType>
+
     <xs:complexType name="Ellipse">
         <xs:annotation>
             <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#ellipse">
@@ -342,6 +352,26 @@ POSSIBILITY OF SUCH DAMAGE.
                 <xs:sequence>
                     <xs:element name="image" type="Image" maxOccurs="1"/>
                 </xs:sequence>
+                <xs:attribute name="repeatx" type="xs:boolean">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Whether the image drawn by this layer is repeated
+                            along the X axis.
+
+                            @since 1.8
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="repeaty" type="xs:boolean">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Whether the image drawn by this layer is repeated
+                            along the Y axis.
+
+                            @since 1.8
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -449,6 +479,52 @@ POSSIBILITY OF SUCH DAMAGE.
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="tintcolor" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    A tint color that is multiplied with any tiles drawn by
+                    this layer in `#AARRGGBB` or `#RRGGBB` format.
+
+                    @since 1.0
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="parallaxx" type="xs:double">
+            <xs:annotation>
+                <xs:documentation>
+                    Horizontal parallax scrolling factor. Defaults to 1.
+
+                    @since 1.5
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="parallaxy" type="xs:double">
+            <xs:annotation>
+                <xs:documentation>
+                    Vertical parallax scrolling factor. Defaults to 1.
+
+                    @since 1.5
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="class" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The class of the layer (optional).
+
+                    @since 1.9
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="mode" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The blend mode used when rendering this layer. Defaults to "normal".
+
+                    @since 1.11
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="Map">
@@ -478,7 +554,7 @@ POSSIBILITY OF SUCH DAMAGE.
             </xs:choice>
         </xs:sequence>
 
-        <xs:attribute name="version" type="xs:string" fixed="1.0">
+        <xs:attribute name="version" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
                     The TMX format version. Was "1.0" so far, and will be
@@ -614,6 +690,61 @@ POSSIBILITY OF SUCH DAMAGE.
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="parallaxoriginx" type="xs:double">
+            <xs:annotation>
+                <xs:documentation>
+                    X coordinate of the parallax origin in pixels. Defaults to 0.
+
+                    @since 1.8
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="parallaxoriginy" type="xs:double">
+            <xs:annotation>
+                <xs:documentation>
+                    Y coordinate of the parallax origin in pixels. Defaults to 0.
+
+                    @since 1.8
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="compressionlevel" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The compression level to use for tile layer data.
+                    Defaults to -1 (use algorithm default).
+
+                    @since 1.3
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="skewx" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The skew in the X direction for oblique maps. Defaults to 0.
+
+                    @since 1.11
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="skewy" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The skew in the Y direction for oblique maps. Defaults to 0.
+
+                    @since 1.11
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="class" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The class of the map (optional).
+
+                    @since 1.9
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="Object">
@@ -658,6 +789,13 @@ POSSIBILITY OF SUCH DAMAGE.
                 <xs:annotation>
                     <xs:documentation>
                         @since 1.0
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="capsule" type="Capsule">
+                <xs:annotation>
+                    <xs:documentation>
+                        @since 1.11
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
@@ -876,6 +1014,15 @@ POSSIBILITY OF SUCH DAMAGE.
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="propertytype" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The name of the custom property type, when applicable.
+
+                    @since 1.8
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="Template">
@@ -958,7 +1105,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
-                <xs:attribute name="wrap" type="xs:boolean">
+                <xs:attribute name="wrap" type="xs:boolean" default="false">
                     <xs:annotation>
                         <xs:documentation>
                             Whether word wrapping is enabled (1) or disabled
@@ -974,7 +1121,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
-                <xs:attribute name="bold" type="xs:boolean">
+                <xs:attribute name="bold" type="xs:boolean" default="false">
                     <xs:annotation>
                         <xs:documentation>
                             Whether the font is bold (1) or not (0). Defaults to
@@ -982,7 +1129,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
-                <xs:attribute name="italic" type="xs:boolean">
+                <xs:attribute name="italic" type="xs:boolean" default="false">
                     <xs:annotation>
                         <xs:documentation>
                             Whether the font is italic (1) or not (0). Defaults
@@ -990,7 +1137,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
-                <xs:attribute name="underline" type="xs:boolean">
+                <xs:attribute name="underline" type="xs:boolean" default="false">
                     <xs:annotation>
                         <xs:documentation>
                             Whether a line should be drawn below the text (1) or
@@ -998,7 +1145,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
-                <xs:attribute name="strikeout" type="xs:boolean">
+                <xs:attribute name="strikeout" type="xs:boolean" default="false">
                     <xs:annotation>
                         <xs:documentation>
                             Whether a line should be drawn through the text (1)
@@ -1006,7 +1153,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
-                <xs:attribute name="kerning" type="xs:boolean">
+                <xs:attribute name="kerning" type="xs:boolean" default="true">
                     <xs:annotation>
                         <xs:documentation>
                             Whether kerning should be used while rendering the
@@ -1014,7 +1161,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
-                <xs:attribute name="halign" type="HorizontalAlignment">
+                <xs:attribute name="halign" type="HorizontalAlignment" default="left">
                     <xs:annotation>
                         <xs:documentation>
                             Horizontal alignment of the text within the object
@@ -1022,11 +1169,11 @@ POSSIBILITY OF SUCH DAMAGE.
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
-                <xs:attribute name="valign" type="VerticalAlignment">
+                <xs:attribute name="valign" type="VerticalAlignment" default="top">
                     <xs:annotation>
                         <xs:documentation>
                             Vertical alignment of the text within the object
-                            (`left` (default), `center` or `right`)
+                            (`top` (default), `center` or `bottom`)
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
@@ -1081,6 +1228,16 @@ POSSIBILITY OF SUCH DAMAGE.
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="class" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The class of the tile (renamed from type in Tiled 1.9,
+                    reverted in 1.10). (optional)
+
+                    @since 1.9
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="terrain" type="xs:string">
             <xs:annotation>
                 <xs:documentation>
@@ -1102,6 +1259,42 @@ POSSIBILITY OF SUCH DAMAGE.
                     terrain tool. (optional)
 
                     @since 0.9
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="x" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The X coordinate of the sub-rectangle in the tile image.
+                    Used for collection tilesets where each tile references
+                    a sub-region of an image. (optional)
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="y" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The Y coordinate of the sub-rectangle in the tile image.
+                    Used for collection tilesets where each tile references
+                    a sub-region of an image. (optional)
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="width" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The width of the sub-rectangle in the tile image.
+                    Used for collection tilesets where each tile references
+                    a sub-region of an image. (optional)
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="height" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The height of the sub-rectangle in the tile image.
+                    Used for collection tilesets where each tile references
+                    a sub-region of an image. (optional)
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
@@ -1199,6 +1392,13 @@ POSSIBILITY OF SUCH DAMAGE.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
+            <xs:element name="transformations" type="Transformations" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        @since 1.5
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
         </xs:sequence>
 
         <xs:attribute name="firstgid" type="xs:int">
@@ -1275,6 +1475,51 @@ POSSIBILITY OF SUCH DAMAGE.
                     displaying the tileset.
 
                     @since 0.15
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="objectalignment" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    Controls the alignment for tile objects.
+
+                    @since 1.4
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="tilerendersize" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The size to use when rendering tiles from this tileset
+                    on a tile layer. Can be "tile" (default) or "grid".
+
+                    @since 1.9
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="fillmode" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The fill mode to use when rendering tiles from this
+                    tileset. Can be "stretch" (default) or "preserve-aspect-fit".
+
+                    @since 1.9
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="class" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The class of this tileset (optional).
+
+                    @since 1.9
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="backgroundcolor" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The background color of the tileset (optional).
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
@@ -1356,6 +1601,100 @@ POSSIBILITY OF SUCH DAMAGE.
         </xs:attribute>
     </xs:complexType>
 
+    <xs:complexType name="Transformations">
+        <xs:annotation>
+            <xs:documentation>
+                Stores transformations that can be applied to tiles in a
+                tileset.
+
+                @since 1.5
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:attribute name="hflip" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    Whether tiles can be flipped horizontally.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="vflip" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    Whether tiles can be flipped vertically.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="rotate" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    Whether tiles can be rotated in 90 degree increments.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="preferuntransformed" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation>
+                    Whether untransformed tiles are preferred.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="WangColor">
+        <xs:annotation>
+            <xs:documentation>
+                A color that can be used to define a corner and/or edge of
+                a Wang tile.
+
+                @since 1.5
+            </xs:documentation>
+        </xs:annotation>
+
+        <xs:sequence>
+            <xs:element name="properties" type="Properties" minOccurs="0"/>
+        </xs:sequence>
+
+        <xs:attribute name="name" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The name of this color.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="class" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The class of this color (optional).
+
+                    @since 1.9
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="color" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The color in `#RRGGBB` format.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="tile" type="xs:int">
+            <xs:annotation>
+                <xs:documentation>
+                    The tile ID of the tile representing this color.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="probability" type="xs:double">
+            <xs:annotation>
+                <xs:documentation>
+                    The relative probability that this color is chosen
+                    over others in case of multiple options.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
     <xs:complexType name="WangSet">
         <xs:annotation>
             <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#wangset">
@@ -1365,9 +1704,11 @@ POSSIBILITY OF SUCH DAMAGE.
         </xs:annotation>
 
         <xs:sequence>
+            <xs:element name="wangcolor" type="WangColor" maxOccurs="unbounded"/>
             <xs:element name="wangcornercolor" type="WangCornerColor" maxOccurs="unbounded"/>
             <xs:element name="wangedgecolor" type="WangEdgeColor" maxOccurs="unbounded"/>
             <xs:element name="wangtile" type="WangTile" maxOccurs="unbounded"/>
+            <xs:element name="properties" type="Properties" minOccurs="0"/>
         </xs:sequence>
 
         <xs:attribute name="name" type="xs:string">
@@ -1381,6 +1722,25 @@ POSSIBILITY OF SUCH DAMAGE.
             <xs:annotation>
                 <xs:documentation>
                     The tile ID of the tile representing this Wang set.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="type" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The type of the Wang set. Can be "corner", "edge" or
+                    "mixed".
+
+                    @since 1.5
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="class" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>
+                    The class of this Wang set (optional).
+
+                    @since 1.9
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
@@ -1435,6 +1795,13 @@ POSSIBILITY OF SUCH DAMAGE.
                 </xs:annotation>
             </xs:enumeration>
             <xs:enumeration value="zlib"/>
+            <xs:enumeration value="zstd">
+                <xs:annotation>
+                    <xs:documentation>
+                        @since 1.3
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
         </xs:restriction>
     </xs:simpleType>
 
@@ -1468,6 +1835,13 @@ POSSIBILITY OF SUCH DAMAGE.
                 <xs:annotation>
                     <xs:documentation>
                         @since 0.11
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="oblique">
+                <xs:annotation>
+                    <xs:documentation>
+                        @since 1.11
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
@@ -1531,6 +1905,25 @@ POSSIBILITY OF SUCH DAMAGE.
                         the location of the map file.
 
                         @since 0.17
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="object">
+                <xs:annotation>
+                    <xs:documentation>
+                        Object properties store a reference to an object by
+                        its id.
+
+                        @since 1.4
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="class">
+                <xs:annotation>
+                    <xs:documentation>
+                        Class properties store a nested set of properties.
+
+                        @since 1.8
                     </xs:documentation>
                 </xs:annotation>
             </xs:enumeration>
