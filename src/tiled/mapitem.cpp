@@ -45,6 +45,7 @@
 
 #include <QCursor>
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsSimpleTextItem>
 #include <QPen>
 #include <QStyleOptionGraphicsItem>
 #include <QWidget>
@@ -187,6 +188,23 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(prefs, &Preferences::gridColorChanged, this, updateBorder);
 
     mBorderRectangle->setZValue(10000 - 3);
+
+    // Label shown above the map when a label is set in the world file
+    mLabelItem = new QGraphicsSimpleTextItem(this);
+    mLabelItem->setFlag(QGraphicsItem::ItemIgnoresTransformations);
+    mLabelItem->setZValue(10001);
+    mLabelItem->setVisible(false);
+
+    // Update label whenever any loaded world changes
+    for (auto &worldDoc : WorldManager::instance().worlds())
+        connect(worldDoc.data(), &WorldDocument::worldChanged, this, &MapItem::updateLabel);
+    connect(&WorldManager::instance(), &WorldManager::worldLoaded,
+            this, [this](WorldDocument *worldDoc) {
+        connect(worldDoc, &WorldDocument::worldChanged, this, &MapItem::updateLabel);
+        updateLabel();
+    });
+
+    updateLabel();
 
     if (displayMode == ReadOnly) {
         setDisplayMode(displayMode);
@@ -851,6 +869,34 @@ void MapItem::deleteLayerItems(Layer *layer)
     }
 
     delete mLayerItems.take(layer);
+}
+
+void MapItem::updateLabel()
+{
+    if (!mLabelItem)
+        return;
+
+    const QString &mapFileName = mMapDocument->fileName();
+    QString label;
+
+    if (auto worldDoc = WorldManager::instance().worldForMap(mapFileName)) {
+        for (const auto &entry : worldDoc->world()->maps) {
+            if (entry.fileName == mapFileName) {
+                label = entry.label;
+                break;
+            }
+        }
+    }
+
+    if (label.isEmpty()) {
+        mLabelItem->setVisible(false);
+    } else {
+        mLabelItem->setText(label);
+        // Position the label at the top-left corner of the map boundary
+        const QRect border = mapDocument()->renderer()->mapBoundingRect();
+        mLabelItem->setPos(border.topLeft());
+        mLabelItem->setVisible(true);
+    }
 }
 
 void MapItem::updateBoundingRect()
