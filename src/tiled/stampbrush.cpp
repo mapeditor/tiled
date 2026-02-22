@@ -54,6 +54,8 @@ StampBrush::StampBrush(QObject *parent)
 
     connect(mStampActions->random(), &QAction::toggled, this, &StampBrush::randomChanged);
     connect(mStampActions->wangFill(), &QAction::toggled, this, &StampBrush::wangFillChanged);
+    connect(mStampActions->eraseEmpty(), &QAction::toggled, this, &StampBrush::setEraseEmpty);
+    connect(this, &StampBrush::eraseEmptyChanged, mStampActions->eraseEmpty(), &QAction::setChecked);
 
     connect(mStampActions->flipHorizontal(), &QAction::triggered, this,
             [this] { emit stampChanged(mStamp.flipped(FlipHorizontally)); });
@@ -323,7 +325,7 @@ void StampBrush::setStamp(const TileStamp &stamp)
 
 void StampBrush::populateToolBar(QToolBar *toolBar)
 {
-    mStampActions->populateToolBar(toolBar, mIsRandom, mIsWangFill);
+    mStampActions->populateToolBar(toolBar, mIsRandom, mIsWangFill, mIsEraseEmpty);
 }
 
 void StampBrush::setWangSet(WangSet *wangSet)
@@ -392,6 +394,25 @@ void StampBrush::doPaint(int flags, QHash<TileLayer*, QRegion> *paintedRegions)
     SharedMap preview = mPreviewMap;
     if (!preview)
         return;
+    /** 
+    * when erasing empty tiles, mark all empty cells in the preview as
+    *
+    * checked so that modifiedTileRegion() includes them in the paint
+    *
+    * region, causing them to overwrite existing tiles on the target layer.
+    */
+    if (mIsEraseEmpty) {
+        for (auto layer : preview->tileLayers()) {
+            auto tileLayer = static_cast<TileLayer*>(layer);
+            for (auto it = tileLayer->begin(); it != tileLayer->end(); ++it) {
+                if (it.value().isEmpty()) {
+                    Cell cell = it.value();
+                    cell.setChecked(true);
+                    tileLayer->setCell(it.key().x(), it.key().y(), cell);
+                }
+            }
+        }
+    }
 
     mapDocument()->paintTileLayers(*preview,
                                    (flags & Mergeable) == Mergeable,
@@ -560,7 +581,15 @@ void StampBrush::drawPreviewLayer(const QVector<QPoint> &points)
             if (regionCache.contains(map)) {
                 stampRegion = regionCache.value(map);
             } else {
-                stampRegion = map->modifiedTileRegion();
+                /** 
+                * When erasing empty tiles, the full stamp bounds is the
+                *
+                * region, not just the non-empty tile positions.
+                */
+                if (mIsEraseEmpty)
+                    stampRegion = map->tileBoundingRect();
+                else
+                    stampRegion = map->modifiedTileRegion();
                 regionCache.insert(map, stampRegion);
             }
 
@@ -668,8 +697,17 @@ void StampBrush::updatePreview(QPoint tilePos)
             break;
         }
 
-        if (mPreviewMap)
-            tileRegion = mPreviewMap->modifiedTileRegion();
+        if (mPreviewMap) {
+            /** 
+            * When erasing empty tiles, show the full stamp bounds so the
+            *
+            * user can see where empty cells will erase.
+            */
+            if (mIsEraseEmpty)
+                tileRegion = mPreviewMap->tileBoundingRect();
+            else
+                tileRegion = mPreviewMap->modifiedTileRegion();
+        }
 
         if (tileRegion.isEmpty())
             tileRegion = QRect(tilePos, tilePos);
@@ -705,6 +743,17 @@ void StampBrush::setWangFill(bool value)
         mIsRandom = false;
         mStampActions->random()->setChecked(false);
     }
+
+    updatePreview();
+}
+
+void StampBrush::setEraseEmpty(bool value)
+{
+    if (mIsEraseEmpty == value)
+        return;
+
+    mIsEraseEmpty = value;
+    emit eraseEmptyChanged(value);
 
     updatePreview();
 }
