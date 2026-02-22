@@ -454,7 +454,7 @@ public:
     void rotateHexagonal(RotateDirection direction, Map *map);
 
     /**
-     * Computes and returns the set of tilesets used by this tile layer.
+     * Returns the set of tilesets used by this tile layer.
      */
     QSet<SharedTileset> usedTilesets() const override;
 
@@ -532,12 +532,16 @@ protected:
     TileLayer *initializeClone(TileLayer *clone) const;
 
 private:
+    void addTilesetRef(Tileset *tileset);
+    void removeTilesetRef(Tileset *tileset);
+    void rebuildTilesetRefs() const;
+
     int mWidth;
     int mHeight;
     QHash<QPoint, Chunk> mChunks;
     QRect mBounds;
+    mutable QHash<Tileset*, int> mTilesetRefCounts;
     mutable QSet<SharedTileset> mUsedTilesets;
-    mutable bool mUsedTilesetsDirty;
 };
 
 inline QPoint TileLayer::iterator::key() const
