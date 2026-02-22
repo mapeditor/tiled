@@ -88,10 +88,10 @@ public:
     explicit NoTilesetWidget(QWidget *parent = nullptr)
         : QWidget(parent)
     {
-        QPushButton *newTilesetButton = new QPushButton(this);
+        auto newTilesetButton = new QPushButton(this);
         newTilesetButton->setText(tr("New Tileset..."));
 
-        QGridLayout *gridLayout = new QGridLayout(this);
+        auto gridLayout = new QGridLayout(this);
         gridLayout->addWidget(newTilesetButton, 0, 0, Qt::AlignCenter);
 
         connect(newTilesetButton, &QPushButton::clicked, [] {
@@ -219,14 +219,14 @@ TilesetDock::TilesetDock(QWidget *parent)
     connect(mTabBar, &QWidget::customContextMenuRequested,
             this, &TilesetDock::tabContextMenuRequested);
 
-    QWidget *w = new QWidget(this);
+    auto w = new QWidget(this);
 
-    QHBoxLayout *horizontal = new QHBoxLayout;
+    auto horizontal = new QHBoxLayout;
     horizontal->setSpacing(0);
     horizontal->addWidget(mTabBar);
     horizontal->addWidget(mTilesetMenuButton);
 
-    QVBoxLayout *vertical = new QVBoxLayout(w);
+    auto vertical = new QVBoxLayout(w);
     vertical->setSpacing(0);
     vertical->setContentsMargins(0, 0, 0, 0);
     vertical->addWidget(mTilesetFilterEdit);
@@ -498,7 +498,7 @@ void TilesetDock::currentChanged(const QModelIndex &index)
     if (!index.isValid())
         return;
 
-    const TilesetModel *model = static_cast<const TilesetModel*>(index.model());
+    auto model = static_cast<const TilesetModel*>(index.model());
     setCurrentTile(model->tileAt(index));
 }
 
@@ -600,7 +600,7 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
 
     mTilesetDocuments.insert(index, tilesetDocument);
 
-    TilesetView *view = new TilesetView;
+    auto view = new TilesetView;
 
     // Hides the "New Tileset..." special view if it is shown.
     mSuperViewStack->setCurrentIndex(1);
@@ -928,7 +928,7 @@ void TilesetDock::onTilesetLayoutChanged(const QList<QPersistentModelIndex> &par
     for (int i = 0, rows = mTilesetDocumentsFilterModel->rowCount(); i < rows; ++i) {
         const QModelIndex index = mTilesetDocumentsFilterModel->index(i, 0);
         const QVariant var = mTilesetDocumentsFilterModel->data(index, TilesetDocumentsModel::TilesetDocumentRole);
-        TilesetDocument *tilesetDocument = var.value<TilesetDocument*>();
+        auto tilesetDocument = var.value<TilesetDocument*>();
         int currentIndex = mTilesetDocuments.indexOf(tilesetDocument);
         if (currentIndex != i) {
             Q_ASSERT(currentIndex > i);
@@ -1094,12 +1094,14 @@ TilesetView *TilesetDock::tilesetViewAt(int index) const
 
 void TilesetDock::setupTilesetModel(TilesetView *view, TilesetDocument *tilesetDocument)
 {
-    view->setModel(new TilesetModel(tilesetDocument, view));
+    QItemSelectionModel *selectionModel = tilesetDocument->tilesetSelectionModel();
 
-    QItemSelectionModel *s = view->selectionModel();
-    connect(s, &QItemSelectionModel::selectionChanged,
+    view->setModel(tilesetDocument->tilesetModel());
+    view->setSelectionModel(selectionModel);
+
+    connect(selectionModel, &QItemSelectionModel::selectionChanged,
             this, &TilesetDock::selectionChanged);
-    connect(s, &QItemSelectionModel::currentChanged,
+    connect(selectionModel, &QItemSelectionModel::currentChanged,
             this, &TilesetDock::currentChanged);
     connect(view, &TilesetView::pressed,
             this, &TilesetDock::indexPressed);
@@ -1214,7 +1216,7 @@ void TilesetDock::embedTileset()
 
 void TilesetDock::tilesetFileNameChanged(const QString &fileName)
 {
-    TilesetDocument *tilesetDocument = static_cast<TilesetDocument*>(sender());
+    auto tilesetDocument = static_cast<TilesetDocument*>(sender());
 
     const int index = mTilesetDocuments.indexOf(tilesetDocument);
     Q_ASSERT(index != -1);
