@@ -43,6 +43,7 @@
 #include "issuesdock.h"
 #include "layer.h"
 #include "locatorwidget.h"
+#include "tilelocator.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
@@ -289,6 +290,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionOpen, "Open");
     ActionManager::registerAction(mUi->actionOpenFileInProject, "OpenFileInProject");
     ActionManager::registerAction(mUi->actionSearchActions, "SearchActions");
+    ActionManager::registerAction(mUi->actionJumpToTile, "JumpToTile");
     ActionManager::registerAction(mUi->actionPaste, "Paste");
     ActionManager::registerAction(mUi->actionPasteInPlace, "PasteInPlace");
     ActionManager::registerAction(mUi->actionPreferences, "Preferences");
@@ -530,6 +532,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionOpen, &QAction::triggered, this, &MainWindow::openFileDialog);
     connect(mUi->actionOpenFileInProject, &QAction::triggered, this, &MainWindow::openFileInProject);
     connect(mUi->actionSearchActions, &QAction::triggered, this, &MainWindow::searchActions);
+    connect(mUi->actionJumpToTile, &QAction::triggered, this, &MainWindow::jumpToTile);
     connect(mUi->actionReopenClosedFile, &QAction::triggered, this, &MainWindow::reopenClosedFile);
     connect(mUi->actionClearRecentFiles, &QAction::triggered, preferences, &Preferences::clearRecentFiles);
     connect(mUi->actionSave, &QAction::triggered, this, &MainWindow::saveFile);
@@ -1152,6 +1155,11 @@ void MainWindow::openFileInProject()
 void MainWindow::searchActions()
 {
     showLocatorWidget(new ActionLocatorSource);
+}
+
+void MainWindow::jumpToTile()
+{
+    showLocatorWidget(new TileLocatorSource);
 }
 
 void MainWindow::showLocatorWidget(LocatorSource *source)
