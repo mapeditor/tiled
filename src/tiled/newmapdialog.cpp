@@ -36,6 +36,7 @@
 
 using namespace Tiled;
 
+namespace Tiled {
 namespace session {
 static SessionOption<Map::Orientation> mapOrientation { "map.orientation", Map::Orthogonal };
 static SessionOption<Map::LayerDataFormat> layerDataFormat { "map.layerDataFormat", Map::CSV };
@@ -43,9 +44,10 @@ static SessionOption<Map::RenderOrder> renderOrder { "map.renderOrder", Map::Rig
 static SessionOption<bool> fixedSize { "map.fixedSize", true };
 static SessionOption<int> mapWidth { "map.width", 30 };
 static SessionOption<int> mapHeight { "map.height", 20 };
-static SessionOption<int> mapTileWidth { "map.tileWidth", 32 };
-static SessionOption<int> mapTileHeight { "map.tileHeight", 32 };
+SessionOption<int> mapTileWidth { "map.tileWidth", 32 };
+SessionOption<int> mapTileHeight { "map.tileHeight", 32 };
 } // namespace session
+} // namespace Tiled
 
 
 template<typename Type>

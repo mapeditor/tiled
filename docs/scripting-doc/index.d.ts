@@ -2709,6 +2709,36 @@ interface ScriptedMapFormat {
 }
 
 /**
+ * Provides access to user preferences, particularly tile size defaults used
+ * in the New Map and New Tileset dialogs.
+ *
+ * Accessible through {@link tiled.preferences}.
+ *
+ * @since 1.12
+ */
+interface Preferences {
+  /**
+   * The default tile width for new maps.
+   */
+  mapTileWidth: number;
+
+  /**
+   * The default tile height for new maps.
+   */
+  mapTileHeight: number;
+
+  /**
+   * The default tile width for new tilesets.
+   */
+  tilesetTileWidth: number;
+
+  /**
+   * The default tile height for new tilesets.
+   */
+  tilesetTileHeight: number;
+}
+
+/**
  * The map editor.
  *
  * Accessible through {@link tiled.mapEditor}.
@@ -4766,6 +4796,13 @@ declare namespace tiled {
    * Access the editor used when editing tilesets.
    */
   export const tilesetEditor: TilesetEditor;
+
+  /**
+   * Access user preferences, particularly tile size defaults.
+   *
+   * @since 1.12
+   */
+  export const preferences: Preferences;
 
   /**
    * This function can be used to trigger any registered action. This
