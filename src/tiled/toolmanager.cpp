@@ -181,6 +181,17 @@ bool ToolManager::selectTool(AbstractTool *tool)
     return tool == nullptr;
 }
 
+AbstractTool *ToolManager::findTool(Id id)
+{
+    const auto actions = mActionGroup->actions();
+    for (QAction *action : actions) {
+        AbstractTool *abstractTool = action->data().value<AbstractTool*>();
+        if (abstractTool->id() == id)
+            return abstractTool;
+    }
+    return nullptr;
+}
+
 QAction *ToolManager::findAction(AbstractTool *tool) const
 {
     const auto actions = mActionGroup->actions();

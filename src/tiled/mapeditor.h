@@ -26,7 +26,6 @@
 
 #include "clipboardmanager.h"
 #include "editor.h"
-#include "tiled.h"
 #include "tileset.h"
 
 #include <memory>
@@ -77,6 +76,7 @@ class MapEditor final : public Editor
     Q_PROPERTY(Tiled::EditableWangSet *currentWangSet READ currentWangSet WRITE setCurrentWangSet NOTIFY currentWangSetChanged)
     Q_PROPERTY(int currentWangColorIndex READ currentWangColorIndex WRITE setCurrentWangColorIndex NOTIFY currentWangColorIndexChanged)
     Q_PROPERTY(Tiled::MapView *currentMapView READ currentMapView CONSTANT)
+    Q_PROPERTY(Tiled::AbstractTool *selectedTool READ selectedTool WRITE setSelectedTool NOTIFY selectedToolChanged)
 
 public:
     explicit MapEditor(QObject *parent = nullptr);
@@ -131,14 +131,18 @@ public:
     QAction *actionSelectPreviousTileset() const;
 
     AbstractTool *selectedTool() const;
+    void setSelectedTool(AbstractTool *tool);
+
+    Q_INVOKABLE AbstractTool *tool(const QByteArray &id) const;
 
 signals:
     void currentBrushChanged();
     void currentWangSetChanged();
     void currentWangColorIndexChanged(int colorIndex);
+    void selectedToolChanged(AbstractTool *tool);
 
 private:
-    void setSelectedTool(AbstractTool *tool);
+    void onSelectedToolChanged(AbstractTool *tool);
     void currentDocumentChanged(Document *document);
     void updateActiveUndoStack();
 
@@ -222,6 +226,11 @@ inline MapView *MapEditor::viewForDocument(MapDocument *mapDocument) const
 inline MapView *MapEditor::currentMapView() const
 {
     return viewForDocument(mCurrentMapDocument);
+}
+
+inline AbstractTool *MapEditor::selectedTool() const
+{
+    return mSelectedTool;
 }
 
 } // namespace Tiled

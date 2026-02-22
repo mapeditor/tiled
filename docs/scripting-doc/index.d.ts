@@ -2772,6 +2772,29 @@ interface MapEditor {
    * Access the Tilesets view.
    */
   readonly tilesetsView: TilesetsView;
+
+  /**
+   * Get or set the currently selected tool.
+   *
+   * @since 1.12
+   */
+  selectedTool: Tool | null;
+
+  /**
+   * Signal emitted when {@link selectedTool} changes.
+   *
+   * @since 1.12
+   */
+  readonly selectedToolChanged: Signal<Tool | null>;
+
+  /**
+   * Returns the tool with the given ID, or `null` if no tool was found.
+   *
+   * The ID is the `shortName` used with {@link tiled.registerTool}.
+   *
+   * @since 1.12
+   */
+  tool(id: string): Tool | null;
 }
 
 /**
