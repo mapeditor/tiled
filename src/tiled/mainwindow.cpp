@@ -242,6 +242,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerMenu(mUi->menuMap, "Map");
     ActionManager::registerMenu(mUi->menuUnloadWorld, "UnloadWorld");
     ActionManager::registerMenu(mUi->menuView, "View");
+    ActionManager::registerMenu(mUi->menuObjectBounds, "ObjectBounds");
     ActionManager::registerMenu(mUi->menuShowObjectNames, "ShowObjectNames");
     ActionManager::registerMenu(mUi->menuSnapping, "Snapping");
     ActionManager::registerMenu(mUi->menuTileset, "Tileset");
@@ -255,6 +256,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionAutoMapWhileDrawing, "AutoMapWhileDrawing");
     ActionManager::registerAction(mUi->actionClearRecentFiles, "ClearRecentFiles");
     ActionManager::registerAction(mUi->actionClearRecentProjects, "ClearRecentProjects");
+    ActionManager::registerAction(mUi->actionClipMapToBounds, "ClipMapToBounds");
     ActionManager::registerAction(mUi->actionClearView, "ClearView");
     ActionManager::registerAction(mUi->actionClose, "Close");
     ActionManager::registerAction(mUi->actionCloseAll, "CloseAll");
@@ -277,6 +279,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionLabelForHoveredObject, "LabelForHoveredObject");
     ActionManager::registerAction(mUi->actionLabelsForAllObjects, "LabelsForAllObjects");
     ActionManager::registerAction(mUi->actionLabelsForSelectedObjects, "LabelsForSelectedObjects");
+    ActionManager::registerAction(mUi->actionShowAllObjects, "ShowAllObjects");
+    ActionManager::registerAction(mUi->actionClipObjectsToMapBounds, "ClipObjectsToMapBounds");
+    ActionManager::registerAction(mUi->actionHideOutOfBoundsObjects, "HideOutOfBoundsObjects");
     ActionManager::registerAction(mUi->actionLoadWorld, "LoadWorld");
     ActionManager::registerAction(mUi->actionUnloadAllWorlds, "UnloadAllWorlds");
     ActionManager::registerAction(mUi->actionMapProperties, "MapProperties");
@@ -417,6 +422,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionSnapToPixels->setActionGroup(snappingGroup);
 
     mUi->actionShowGrid->setChecked(preferences->showGrid());
+    mUi->actionClipMapToBounds->setChecked(preferences->clipMapToBounds());
     mUi->actionShowTileObjectOutlines->setChecked(preferences->showTileObjectOutlines());
     mUi->actionShowObjectReferences->setChecked(preferences->showObjectReferences());
     mUi->actionShowTileAnimations->setChecked(preferences->showTileAnimations());
@@ -443,6 +449,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionLabelsForSelectedObjects->setActionGroup(objectLabelVisibilityGroup);
     mUi->actionLabelsForAllObjects->setActionGroup(objectLabelVisibilityGroup);
 
+    QActionGroup *objectBoundsVisibilityGroup = new QActionGroup(this);
+    mUi->actionShowAllObjects->setActionGroup(objectBoundsVisibilityGroup);
+    mUi->actionClipObjectsToMapBounds->setActionGroup(objectBoundsVisibilityGroup);
+    mUi->actionHideOutOfBoundsObjects->setActionGroup(objectBoundsVisibilityGroup);
+
     switch (preferences->objectLabelVisibility()) {
     case Preferences::NoObjectLabels:
         mUi->actionNoLabels->setChecked(true);
@@ -455,8 +466,22 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         break;
     }
 
+    switch (preferences->objectBoundsVisibility()) {
+    case Preferences::ShowAllObjects:
+        mUi->actionShowAllObjects->setChecked(true);
+        break;
+    case Preferences::ClipObjectsToMapBounds:
+        mUi->actionClipObjectsToMapBounds->setChecked(true);
+        break;
+    case Preferences::HideOutOfBoundsObjects:
+        mUi->actionHideOutOfBoundsObjects->setChecked(true);
+        break;
+    }
+
     connect(objectLabelVisibilityGroup, &QActionGroup::triggered,
             this, &MainWindow::labelVisibilityActionTriggered);
+    connect(objectBoundsVisibilityGroup, &QActionGroup::triggered,
+            this, &MainWindow::objectBoundsVisibilityActionTriggered);
 
     mUi->actionLabelForHoveredObject->setChecked(preferences->labelForHoveredObject());
     connect(mUi->actionLabelForHoveredObject, &QAction::triggered,
@@ -552,6 +577,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     connect(mUi->actionShowGrid, &QAction::toggled,
             preferences, &Preferences::setShowGrid);
+    connect(mUi->actionClipMapToBounds, &QAction::toggled,
+            preferences, &Preferences::setClipMapToBounds);
     connect(mUi->actionShowTileObjectOutlines, &QAction::toggled,
             preferences, &Preferences::setShowTileObjectOutlines);
     connect(mUi->actionShowObjectReferences, &QAction::toggled,
@@ -1684,6 +1711,18 @@ void MainWindow::labelVisibilityActionTriggered(QAction *action)
         visibility = Preferences::AllObjectLabels;
 
     Preferences::instance()->setObjectLabelVisibility(visibility);
+}
+
+void MainWindow::objectBoundsVisibilityActionTriggered(QAction *action)
+{
+    Preferences::ObjectBoundsVisibility visibility = Preferences::ShowAllObjects;
+
+    if (action == mUi->actionClipObjectsToMapBounds)
+        visibility = Preferences::ClipObjectsToMapBounds;
+    else if (action == mUi->actionHideOutOfBoundsObjects)
+        visibility = Preferences::HideOutOfBoundsObjects;
+
+    Preferences::instance()->setObjectBoundsVisibility(visibility);
 }
 
 void MainWindow::zoomIn()

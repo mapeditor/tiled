@@ -33,6 +33,7 @@
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "mapview.h"
+#include "object.h"
 #include "objectgroupitem.h"
 #include "objectselectionitem.h"
 #include "preferences.h"
@@ -151,6 +152,16 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(prefs, &Preferences::objectLineWidthChanged, this, &MapItem::setObjectLineWidth);
     connect(prefs, &Preferences::showTileObjectOutlinesChanged, this, &MapItem::setShowTileObjectOutlines);
     connect(prefs, &Preferences::highlightCurrentLayerChanged, this, &MapItem::updateSelectedLayersHighlight);
+    connect(prefs, &Preferences::clipMapToBoundsChanged, this, [this] {
+        for (LayerItem *item : std::as_const(mLayerItems)) {
+            if (item->layer()->isTileLayer() || item->layer()->isImageLayer())
+                item->update();
+        }
+    });
+    connect(prefs, &Preferences::objectBoundsVisibilityChanged, this, [this] {
+        for (MapObjectItem *item : std::as_const(mObjectItems))
+            item->syncWithMapObject();
+    });
     connect(prefs, &Preferences::propertyTypesChanged, this, &MapItem::syncAllObjectItems);
     connect(prefs, &Preferences::backgroundFadeColorChanged, this, [this] (QColor color) { mDarkRectangle->setBrush(color); });
 
@@ -168,6 +179,39 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(mapDocument.data(), &MapDocument::tilesetReplaced, this, &MapItem::tilesetReplaced);
     connect(mapDocument.data(), &MapDocument::objectsInserted, this, &MapItem::objectsInserted);
     connect(mapDocument.data(), &MapDocument::objectsIndexChanged, this, &MapItem::objectsIndexChanged);
+    const auto refreshClipDependentItems = [this] {
+        for (LayerItem *item : std::as_const(mLayerItems)) {
+            if (item->layer()->isTileLayer() || item->layer()->isImageLayer())
+                item->update();
+        }
+
+        for (MapObjectItem *item : std::as_const(mObjectItems))
+            item->syncWithMapObject();
+    };
+
+    connect(mapDocument.data(), &Document::propertyChanged, this,
+            [this, refreshClipDependentItems] (Object *object, const QString &) {
+        if (object == this->mapDocument()->map())
+            refreshClipDependentItems();
+    });
+
+    connect(mapDocument.data(), &Document::propertyAdded, this,
+            [this, refreshClipDependentItems] (Object *object, const QString &) {
+        if (object == this->mapDocument()->map())
+            refreshClipDependentItems();
+    });
+
+    connect(mapDocument.data(), &Document::propertyRemoved, this,
+            [this, refreshClipDependentItems] (Object *object, const QString &) {
+        if (object == this->mapDocument()->map())
+            refreshClipDependentItems();
+    });
+
+    connect(mapDocument.data(), &Document::propertiesChanged, this,
+            [this, refreshClipDependentItems] (Object *object) {
+        if (object == this->mapDocument()->map())
+            refreshClipDependentItems();
+    });
 
     updateBoundingRect();
 
