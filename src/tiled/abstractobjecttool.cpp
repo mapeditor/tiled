@@ -157,6 +157,14 @@ void AbstractObjectTool::keyPressed(QKeyEvent *event)
     case Qt::Key_PageDown:  lower(); return;
     case Qt::Key_Home:      raiseToTop(); return;
     case Qt::Key_End:       lowerToBottom(); return;
+    case Qt::Key_X:         flipHorizontally(); return;
+    case Qt::Key_Y:         flipVertically(); return;
+    case Qt::Key_Z:
+        if (event->modifiers() & Qt::ShiftModifier)
+            rotateLeft();
+        else
+            rotateRight();
+        return;
     case Qt::Key_D:
         if (event->modifiers() & Qt::ControlModifier) {
             duplicateObjects();
