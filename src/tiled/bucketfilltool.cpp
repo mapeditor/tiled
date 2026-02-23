@@ -24,13 +24,17 @@
 #include "bucketfilltool.h"
 
 #include "brushitem.h"
+#include "map.h"
 #include "tilepainter.h"
 #include "tilelayer.h"
 #include "mapdocument.h"
 #include "stampactions.h"
 
+#include <algorithm>
+#include <QCheckBox>
 #include <QCoreApplication>
 #include <QKeyEvent>
+#include <QToolBar>
 
 using namespace Tiled;
 
@@ -72,13 +76,16 @@ void BucketFillTool::tilePositionChanged(QPoint tilePos)
     // Optimization: we don't need to recalculate the fill area
     // if the new mouse position is still over the filled region
     // and the shift modifier hasn't changed.
-    if (!mFillRegion.contains(tilePos) || shiftPressed != mLastShiftStatus) {
+    if (!mFillRegion.contains(tilePos) ||
+            shiftPressed != mLastShiftStatus ||
+            mContiguous != mLastContiguousStatus) {
 
         // Clear overlay to make way for a new one
         AbstractTileFillTool::clearOverlay();
 
         // Cache information about how the fill region was created
         mLastShiftStatus = shiftPressed;
+        mLastContiguousStatus = mContiguous;
 
         // Get the new fill region
         if (!shiftPressed) {
@@ -109,7 +116,31 @@ void BucketFillTool::tilePositionChanged(QPoint tilePos)
                 const auto condition = [&](const Cell &cell) {
                     return mMatchCells.contains(cell);
                 };
-                mFillRegion = regionComputer.computePaintableFillRegion(tilePos, condition);
+                if (mContiguous) {
+                    mFillRegion = regionComputer.computePaintableFillRegion(tilePos, condition);
+                } else {
+                    const bool infinite = mapDocument()->map()->infinite();
+                    const QPoint localPos = tilePos - tileLayer->position();
+                    QRegion resultRegion;
+
+                    if (infinite || tileLayer->contains(localPos)) {
+                        resultRegion = tileLayer->region(condition);
+
+                        const bool hasEmptyCell = std::any_of(mMatchCells.begin(),
+                                                              mMatchCells.end(),
+                                                              [](const Cell &cell) { return cell.isEmpty(); });
+                        if (hasEmptyCell) {
+                            QRegion emptyRegion = infinite ? tileLayer->bounds() : tileLayer->rect();
+                            emptyRegion -= tileLayer->region();
+                            resultRegion += emptyRegion;
+                        }
+                    }
+
+                    if (const QRegion &selection = mapDocument()->selectedArea(); !selection.isEmpty())
+                        resultRegion &= selection;
+
+                    mFillRegion = resultRegion;
+                }
             } else {
                 mFillRegion = QRegion();
             }
@@ -220,6 +251,26 @@ void BucketFillTool::languageChanged()
     setName(tr("Bucket Fill Tool"));
 
     mStampActions->languageChanged();
+}
+
+void BucketFillTool::populateToolBar(QToolBar *toolBar)
+{
+    AbstractTileFillTool::populateToolBar(toolBar);
+
+    auto contiguousCheckBox = new QCheckBox(tr("Contiguous"), toolBar);
+    contiguousCheckBox->setChecked(mContiguous);
+    connect(contiguousCheckBox, &QCheckBox::toggled, this, &BucketFillTool::setContiguous);
+    toolBar->addWidget(contiguousCheckBox);
+}
+
+void BucketFillTool::setContiguous(bool contiguous)
+{
+    if (mContiguous == contiguous)
+        return;
+
+    mContiguous = contiguous;
+    mMatchCells.clear();
+    tilePositionChanged(tilePosition());
 }
 
 void BucketFillTool::clearOverlay()
