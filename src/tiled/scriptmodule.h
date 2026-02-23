@@ -38,8 +38,8 @@ class Document;
 class EditableAsset;
 class MapEditor;
 class ScriptImage;
-class ScriptSession;
 class ScriptMapFormatWrapper;
+class ScriptSession;
 class ScriptTilesetFormatWrapper;
 class ScriptedAction;
 class ScriptedMapFormat;
@@ -71,12 +71,11 @@ class ScriptModule : public QObject
     Q_PROPERTY(Tiled::EditableAsset *activeAsset READ activeAsset WRITE setActiveAsset NOTIFY activeAssetChanged)
     Q_PROPERTY(QList<QObject*> openAssets READ openAssets)
     Q_PROPERTY(Tiled::EditableAsset *project READ project)
+    Q_PROPERTY(Tiled::ScriptSession *session READ session)
 
     Q_PROPERTY(Tiled::MapEditor *mapEditor READ mapEditor)
     Q_PROPERTY(Tiled::TilesetEditor *tilesetEditor READ tilesetEditor)
     Q_PROPERTY(QList<QObject*> worlds READ worlds)
-
-    Q_PROPERTY(Tiled::ScriptSession *session READ session)
 
 public:
     ScriptModule(QObject *parent = nullptr);
