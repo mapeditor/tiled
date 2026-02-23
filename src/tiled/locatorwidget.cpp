@@ -439,7 +439,7 @@ void TileLocatorSource::setFilterWords(const QStringList &words)
     int x = 0;
     int y = 0;
 
-    QString input = words.join(QLatin1Char(' '));
+    QString input = words.join();
     input.remove(QLatin1Char(' '));
 
     const int commaIndex = input.indexOf(QLatin1Char(','));
