@@ -118,6 +118,7 @@ public:
     explicit EditableMap(std::unique_ptr<Map> map, QObject *parent = nullptr);
     ~EditableMap() override;
 
+    QString fileName() const override;
     bool isReadOnly() const override;
     AssetType::Value assetType() const override { return AssetType::TileMap; }
 

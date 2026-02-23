@@ -88,6 +88,13 @@ EditableMap::~EditableMap()
         setObject(nullptr);
 }
 
+QString EditableMap::fileName() const
+{
+    if (auto doc = mapDocument())
+        return doc->fileName();
+    return map()->fileName;
+}
+
 QList<QObject *> EditableMap::tilesets() const
 {
     QList<QObject *> editableTilesets;
