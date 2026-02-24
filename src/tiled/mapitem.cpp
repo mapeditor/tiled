@@ -236,6 +236,7 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(prefs, &Preferences::highlightCurrentLayerChanged, this, &MapItem::updateSelectedLayersHighlight);
     connect(prefs, &Preferences::propertyTypesChanged, this, &MapItem::syncAllObjectItems);
     connect(prefs, &Preferences::backgroundFadeColorChanged, this, [this] (QColor color) { mDarkRectangle->setBrush(color); });
+    connect(prefs, &Preferences::showMapLabelsChanged, this, &MapItem::updateLabel);
 
     connect(mapDocument.data(), &Document::changed, this, &MapItem::documentChanged);
     connect(mapDocument.data(), &MapDocument::mapResized, this, &MapItem::mapChanged);
@@ -959,8 +960,8 @@ void MapItem::updateLabel()
     const QString &mapFileName = mMapDocument->fileName();
     auto worldDoc = WorldManager::instance().worldForMap(mapFileName);
 
-    // Only show labels for maps that are part of a world
-    if (!worldDoc) {
+    // Only show labels for maps that are part of a world, and when enabled
+    if (!worldDoc || !Preferences::instance()->showMapLabels()) {
         mLabelItem->setVisible(false);
         return;
     }

@@ -302,6 +302,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionSaveAll, "SaveAll");
     ActionManager::registerAction(mUi->actionSaveAs, "SaveAs");
     ActionManager::registerAction(mUi->actionShowGrid, "ShowGrid");
+    ActionManager::registerAction(mUi->actionShowMapLabels, "ShowMapLabels");
     ActionManager::registerAction(mUi->actionShowObjectReferences, "ShowObjectReferences");
     ActionManager::registerAction(mUi->actionShowTileAnimations, "ShowTileAnimations");
     ActionManager::registerAction(mUi->actionShowTileCollisionShapes, "ShowTileCollisionShapes");
@@ -421,6 +422,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionShowObjectReferences->setChecked(preferences->showObjectReferences());
     mUi->actionShowTileAnimations->setChecked(preferences->showTileAnimations());
     mUi->actionShowTileCollisionShapes->setChecked(preferences->showTileCollisionShapes());
+    mUi->actionShowMapLabels->setChecked(preferences->showMapLabels());
     mUi->actionEnableParallax->setChecked(preferences->parallaxEnabled());
     mUi->actionSnapToGrid->setChecked(preferences->snapToGrid());
     mUi->actionSnapToFineGrid->setChecked(preferences->snapToFineGrid());
@@ -560,6 +562,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             preferences, &Preferences::setShowTileAnimations);
     connect(mUi->actionShowTileCollisionShapes, &QAction::toggled,
             preferences, &Preferences::setShowTileCollisionShapes);
+    connect(mUi->actionShowMapLabels, &QAction::toggled,
+            preferences, &Preferences::setShowMapLabels);
     connect(mUi->actionEnableParallax, &QAction::toggled,
             preferences, &Preferences::setParallaxEnabled);
     connect(mUi->actionSnapToGrid, &QAction::toggled,

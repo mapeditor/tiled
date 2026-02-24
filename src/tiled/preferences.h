@@ -86,6 +86,9 @@ public:
     bool labelForHoveredObject() const;
     void setLabelForHoveredObject(bool enabled);
 
+    bool showMapLabels() const;
+    void setShowMapLabels(bool enabled);
+
     enum ApplicationStyle {
         SystemDefaultStyle,
         FusionStyle,
@@ -237,6 +240,7 @@ signals:
     void showTilesetGridChanged(bool showTilesetGrid);
     void objectLabelVisibilityChanged(ObjectLabelVisiblity);
     void labelForHoveredObjectChanged(bool enabled);
+    void showMapLabelsChanged(bool enabled);
 
     void applicationStyleChanged(ApplicationStyle);
     void baseColorChanged(const QColor &baseColor);
