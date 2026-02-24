@@ -23,6 +23,7 @@
 * Added "World > World Properties" menu action (with dogboydog, #4190)
 * Added Delete shortcut to Remove Tiles action by default and avoid ambiguity (#4201)
 * Fixed alpha component of tint color not applying correctly to opaque images (by Roland Helmerichs, #4310)
+* Fixed panning with space bar not always working on first click (with Oval, #4338)
 * Scripting: Added API for custom property types (with dogboydog, #3971)
 * Scripting: Added TileMap.chunkSize and TileMap.compressionLevel properties
 * AutoMapping: Don't match rules based on empty input indexes
