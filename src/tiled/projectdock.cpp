@@ -72,6 +72,8 @@ public:
     void setExpandedPaths(const QStringList &paths);
     void addExpandedPath(const QString &path);
 
+    void setCollapseAllAction(QAction *action) { mCollapseAllAction = action; }
+
     void selectPath(const QString &path);
     void expandToPath(const QString &filePath);
     void restoreSavedExpandedPaths();
@@ -91,6 +93,7 @@ private:
     ProjectProxyModel *mProxyModel;
     QSet<QString> mExpandedPaths;
     std::optional<QSet<QString>> mSavedExpandedPaths;
+    QAction *mCollapseAllAction = nullptr;
     QString mSelectedPath;
     int mScrollBarValue = 0;
 };
@@ -106,9 +109,7 @@ ProjectDock::ProjectDock(QWidget *parent)
     toolBar->setIconSize(Utils::smallIconSize());
 
     mCollapseAllAction = new QAction(this);
-    mCollapseAllAction->setIcon(QIcon::fromTheme(
-        QLatin1String("collapse-all"),
-        QIcon(QLatin1String(":/images/16/go-up.png"))));
+    mCollapseAllAction->setIcon(QIcon(QLatin1String(":/images/scalable/chevrons-down-up.svg")));
     connect(mCollapseAllAction, &QAction::triggered, this, [=] {
         mProjectView->collapseAll();
         mProjectView->setExpandedPaths({});
@@ -117,9 +118,7 @@ ProjectDock::ProjectDock(QWidget *parent)
 
     mExpandToCurrentAction = new QAction(this);
     mExpandToCurrentAction->setCheckable(true);
-    mExpandToCurrentAction->setIcon(QIcon::fromTheme(
-        QLatin1String("expand-to-current"),
-        QIcon(QLatin1String(":/images/scalable/highlight-current-layer-16.svg"))));
+    mExpandToCurrentAction->setIcon(QIcon(QLatin1String(":/images/scalable/focus.svg")));
     connect(mExpandToCurrentAction, &QAction::toggled, this, [=](bool checked) {
         if (checked) {
             auto doc = DocumentManager::instance()->currentDocument();
@@ -138,6 +137,8 @@ ProjectDock::ProjectDock(QWidget *parent)
         if (doc)
             mProjectView->expandToPath(doc->fileName());
     });
+
+    mProjectView->setCollapseAllAction(mCollapseAllAction);
 
     auto widget = new QWidget(this);
     auto layout = new QVBoxLayout(widget);
@@ -402,6 +403,9 @@ void ProjectView::contextMenuEvent(QContextMenuEvent *event)
             Utils::setThemeIcon(removeFolder, "list-remove");
         }
     } else {
+        menu.addAction(mCollapseAllAction);
+
+        menu.addSeparator();
         menu.addAction(ActionManager::action("AddFolderToProject"));
         menu.addAction(ActionManager::action("RefreshProjectFolders"));
     }
