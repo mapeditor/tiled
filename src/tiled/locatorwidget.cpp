@@ -19,15 +19,17 @@
  */
 
 #include "locatorwidget.h"
-
 #include "documentmanager.h"
 #include "filteredit.h"
 #include "map.h"
 #include "mapdocument.h"
+#include "mapitem.h"
 #include "maprenderer.h"
+#include "mapscene.h"
 #include "mapview.h"
 #include "preferences.h"
 #include "projectmanager.h"
+#include "tilehighlightitem.h"
 #include "utils.h"
 
 #include <QApplication>
@@ -435,9 +437,9 @@ void TileLocatorSource::setFilterWords(const QStringList &words)
 {
     bool validX = false;
     bool validY = false;
-    bool valid = false;
     int x = 0;
     int y = 0;
+    mHasValidCoord = false;
 
     QString input = words.join();
     input.remove(QLatin1Char(' '));
@@ -446,18 +448,17 @@ void TileLocatorSource::setFilterWords(const QStringList &words)
     if (commaIndex >= 0 && commaIndex < input.size() - 1) {
         x = input.left(commaIndex).toInt(&validX);
         y = input.mid(commaIndex + 1).toInt(&validY);
-        valid = validX && validY;
+        mHasValidCoord = validX && validY;
     }
 
-    if (!valid && words.size() == 2) {
+    if (!mHasValidCoord && words.size() == 2) {
         x = words.at(0).toInt(&validX);
         y = words.at(1).toInt(&validY);
-        valid = validX && validY;
+        mHasValidCoord = validX && validY;
     }
 
     beginResetModel();
-    mHasValidCoord = valid;
-    if (valid) {
+    if (mHasValidCoord) {
         mTileX = x;
         mTileY = y;
         mDisplayText = QCoreApplication::translate(
@@ -474,18 +475,30 @@ void TileLocatorSource::activate(const QModelIndex &)
         return;
 
     const auto *map = mapDoc->map();
+    if (map->width() < 1 || map->height() < 1)
+        return;
+
     const int x = qBound(0, mTileX, map->width() - 1);
     const int y = qBound(0, mTileY, map->height() - 1);
 
     auto renderer = mapDoc->renderer();
     QPointF pixelPos = renderer->tileToPixelCoords(x + 0.5, y + 0.5);
 
-    if (auto mapView = dm->currentMapView())
+    if (auto mapView = dm->currentMapView()) {
         mapView->forceCenterOn(pixelPos);
 
-    mapDoc->setSelectedArea(QRegion(QRect(x, y, 1, 1)));
+        if (auto mapScene = mapView->mapScene()) {
+            if (MapItem *mapItem = mapScene->mapItem(mapDoc)) {
+                if (mapDoc->currentLayer()) {
+                    auto *highlight = new TileHighlightItem(mapDoc, x, y, mapItem);
+                    highlight->setZValue(10003);
+                    highlight->startBlink();
+                }
+            }
+        }
+    }
 }
 
-} // namespace Tiled
+} 
 
 #include "moc_locatorwidget.cpp"
