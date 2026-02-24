@@ -5544,10 +5544,12 @@ declare class Dialog extends Qt.QWidget {
   addHeading(labelText: string, maxWidth?: boolean): Qt.QLabel;
 
   /**
-   * Add a label to the dialog with the given test. A label will always be the
+   * Add a label to the dialog with the given text. A label will always be the
    * first widget in a row.
+   *
+   * The optional toolTip parameter sets a tooltip on the label widget.
    */
-  addLabel(labelText: string): Qt.QLabel;
+  addLabel(labelText: string, toolTip?: string): Qt.QLabel;
 
   /**
    * Adds a separator line with optional label to the dialog.
@@ -5557,40 +5559,54 @@ declare class Dialog extends Qt.QWidget {
 
   /**
    * Adds an image widget that can display an image in a dialog.
+   *
+   * The optional toolTip parameter sets a tooltip on the image widget.
    */
-  addImage(labelText: string, image: Image): ImageWidget;
+  addImage(labelText: string, image: Image, toolTip?: string): ImageWidget;
 
   /**
-   * Add a {@link Qt.QSlider} widget to the dialog to allow a user to type a
+   * Add a {@link Qt.QDoubleSpinBox} widget to the dialog to allow a user to type a
    * numerical value or use up and down controls on the widget to manipulate
    * the value.
    *
    * This can be used to enter integer or decimal values.
+   *
+   * The optional defaultValue parameter sets the initial value of the spin box.
+   *
+   * The optional toolTip parameter sets a tooltip on the widget.
    */
-  addNumberInput(labelText?: string): Qt.QDoubleSpinBox;
+  addNumberInput(labelText?: string, defaultValue?: number, toolTip?: string): Qt.QDoubleSpinBox;
 
   /**
    * Add a {@link Qt.QSlider} widget to the dialog to allow a user to
    * slide a handle within a number range.
    *
    * This can only be used to enter integer-type values.
+   *
+   * The optional defaultValue parameter sets the initial value of the slider.
+   *
+   * The optional toolTip parameter sets a tooltip on the widget.
    */
-  addSlider(labelText?: string): Qt.QSlider;
+  addSlider(labelText?: string, defaultValue?: number, toolTip?: string): Qt.QSlider;
 
   /**
    * Add a {@link Qt.QCheckBox} widget with the given text to the dialog.
    * Allows a user to toggle a boolean value.
    *
    * If the defaultValue parameter is true the checkbox is checked by default.
+   *
+   * The optional toolTip parameter sets a tooltip on the widget.
    */
-  addCheckBox(text?: string, defaultValue?: boolean): Qt.QCheckBox;
+  addCheckBox(text?: string, defaultValue?: boolean, toolTip?: string): Qt.QCheckBox;
 
   /**
    * Add a {@link Qt.QPushButton} widget with the given text to the dialog.
    * Allows the user to press a button that you can respond to the clicked
    * signal of.
+   *
+   * The optional toolTip parameter sets a tooltip on the widget.
    */
-  addButton(text?: string): Qt.QPushButton;
+  addButton(text?: string, toolTip?: string): Qt.QPushButton;
 
   /**
    * Add a {@link Qt.QLineEdit} widget to the dialog to allow the user to enter
@@ -5599,8 +5615,10 @@ declare class Dialog extends Qt.QWidget {
    *
    * If the labelText is non-empty, a label widget will be added to the left of
    * the widget.
+   *
+   * The optional toolTip parameter sets a tooltip on the widget.
    */
-  addTextInput(labelText?: string, defaultValue?: string): Qt.QLineEdit;
+  addTextInput(labelText?: string, defaultValue?: string, toolTip?: string): Qt.QLineEdit;
 
   /**
    * Add a {@link Qt.QTextEdit} widget to the dialog to allow the user to edit
@@ -5610,8 +5628,10 @@ declare class Dialog extends Qt.QWidget {
    *
    * If the labelText is non-empty, a label widget will be added to the left of
    * the widget.
+   *
+   * The optional toolTip parameter sets a tooltip on the widget.
    */
-  addTextEdit(labelText?: string, defaultValue?: string): Qt.QTextEdit;
+  addTextEdit(labelText?: string, defaultValue?: string, toolTip?: string): Qt.QTextEdit;
 
   /**
    * Add a {@link Qt.QComboBox} widget (also known as a dropdown) allowing the
@@ -5619,16 +5639,25 @@ declare class Dialog extends Qt.QWidget {
    *
    * If the labelText is non-empty, a label widget will be added to the left of
    * the widget.
+   *
+   * The optional defaultIndex parameter sets the initially selected index (0-based).
+   *
+   * The optional toolTip parameter sets a tooltip on the widget.
    */
-  addComboBox(labelText: string, values: string[]): Qt.QComboBox;
+  addComboBox(labelText: string, values: string[], defaultIndex?: number, toolTip?: string): Qt.QComboBox;
 
   /**
    * Add a {@link ColorButton} widget that allows the user to pick a color.
    *
    * If the labelText is non-empty, a label widget will be added to the left of
    * the widget.
+   *
+   * The optional defaultValue parameter sets the initial color. Pass `undefined`
+   * to skip setting a default color while still providing a toolTip.
+   *
+   * The optional toolTip parameter sets a tooltip on the widget.
    */
-  addColorButton(labelText?: string): ColorButton;
+  addColorButton(labelText?: string, defaultValue?: color, toolTip?: string): ColorButton;
 
   /**
    * Add a {@link FileEdit} widget with a button which opens a file picker
@@ -5636,8 +5665,12 @@ declare class Dialog extends Qt.QWidget {
    *
    * If the labelText is non-empty, a label widget will be added to the left of
    * the widget.
+   *
+   * The optional defaultValue parameter sets the initial file path.
+   *
+   * The optional toolTip parameter sets a tooltip on the widget.
    */
-  addFilePicker(labelText?: string): FileEdit;
+  addFilePicker(labelText?: string, defaultValue?: string, toolTip?: string): FileEdit;
 
   /**
    * Add a {@link QButtonGroup} widget which allows you to add multiple radio
