@@ -309,15 +309,9 @@ void ProjectView::selectPath(const QString &path)
 void ProjectView::expandToPath(const QString &filePath)
 {
     const QModelIndex sourceIndex = mProjectModel->index(filePath);
-    if (!sourceIndex.isValid())
+    const QModelIndex proxyIndex = mProxyModel->mapFromSource(sourceIndex);
+    if (!proxyIndex.isValid())
         return;
-
-    QList<QModelIndex> ancestorProxyIndexes;
-    QModelIndex ancestor = mProjectModel->parent(sourceIndex);
-    while (ancestor.isValid()) {
-        ancestorProxyIndexes.prepend(mProxyModel->mapFromSource(ancestor));
-        ancestor = mProjectModel->parent(ancestor);
-    }
 
     if (!mHasSavedExpandedPaths) {
         mSavedExpandedPaths = mExpandedPaths;
@@ -327,15 +321,10 @@ void ProjectView::expandToPath(const QString &filePath)
     collapseAll();
     mExpandedPaths.clear();
 
-    for (const QModelIndex &idx : ancestorProxyIndexes)
-        if (idx.isValid())
-            expand(idx);
-
-    const QModelIndex proxyIndex = mProxyModel->mapFromSource(sourceIndex);
-    if (proxyIndex.isValid()) {
-        setCurrentIndex(proxyIndex);
+    if (currentIndex() == proxyIndex)
         scrollTo(proxyIndex);
-    }
+    else
+        setCurrentIndex(proxyIndex);
 }
 
 void ProjectView::restoreSavedExpandedPaths()
