@@ -35,6 +35,7 @@
 #include "tilesetmanager.h"
 #include "utils.h"
 
+#include <optional>
 #include <QAction>
 #include <QBoxLayout>
 #include <QFileDialog>
@@ -89,8 +90,7 @@ private:
     ProjectModel *mProjectModel;
     ProjectProxyModel *mProxyModel;
     QSet<QString> mExpandedPaths;
-    QSet<QString> mSavedExpandedPaths;
-    bool mHasSavedExpandedPaths = false;
+    std::optional<QSet<QString>> mSavedExpandedPaths;
     QString mSelectedPath;
     int mScrollBarValue = 0;
 };
@@ -99,8 +99,6 @@ private:
 ProjectDock::ProjectDock(QWidget *parent)
     : QDockWidget(parent)
     , mProjectView(new ProjectView)
-    , mCollapseAllAction(nullptr)
-    , mExpandToCurrentAction(nullptr)
 {
     setObjectName(QLatin1String("ProjectDock"));
 
@@ -146,8 +144,8 @@ ProjectDock::ProjectDock(QWidget *parent)
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
 
-    layout->addWidget(toolBar);
     layout->addWidget(mProjectView);
+    layout->addWidget(toolBar);
 
     setWidget(widget);
     retranslateUi();
@@ -233,14 +231,10 @@ void ProjectDock::selectFile(const QString &filePath)
 void ProjectDock::retranslateUi()
 {
     setWindowTitle(tr("Project"));
-    if (mCollapseAllAction) {
-        mCollapseAllAction->setText(tr("Collapse All"));
-        mCollapseAllAction->setToolTip(tr("Collapse all folders in the project view."));
-    }
-    if (mExpandToCurrentAction) {
-        mExpandToCurrentAction->setText(tr("Only Expand to Current"));
-        mExpandToCurrentAction->setToolTip(tr("Shows only the folder path of the active file. Restores the previous expansion state when disabled."));
-    }
+    mCollapseAllAction->setText(tr("Collapse All"));
+    mCollapseAllAction->setToolTip(tr("Collapse all folders in the project view."));
+    mExpandToCurrentAction->setText(tr("Only Expand to Current"));
+    mExpandToCurrentAction->setToolTip(tr("Shows only the folder path of the active file. Restores the previous expansion state when disabled."));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -313,10 +307,8 @@ void ProjectView::expandToPath(const QString &filePath)
     if (!proxyIndex.isValid())
         return;
 
-    if (!mHasSavedExpandedPaths) {
+    if (!mSavedExpandedPaths.has_value())
         mSavedExpandedPaths = mExpandedPaths;
-        mHasSavedExpandedPaths = true;
-    }
 
     collapseAll();
     mExpandedPaths.clear();
@@ -329,14 +321,13 @@ void ProjectView::expandToPath(const QString &filePath)
 
 void ProjectView::restoreSavedExpandedPaths()
 {
-    if (!mHasSavedExpandedPaths)
+    if (!mSavedExpandedPaths.has_value())
         return;
 
     collapseAll();
     mExpandedPaths.clear();
-    mExpandedPaths = mSavedExpandedPaths;
-    mSavedExpandedPaths.clear();
-    mHasSavedExpandedPaths = false;
+    mExpandedPaths = mSavedExpandedPaths.value();
+    mSavedExpandedPaths = std::nullopt;
 
     const int topLevel = mProxyModel->rowCount();
     for (int i = 0; i < topLevel; ++i)
@@ -345,8 +336,7 @@ void ProjectView::restoreSavedExpandedPaths()
 
 QStringList ProjectView::savedExpandedPaths() const
 {
-    return mHasSavedExpandedPaths ? mSavedExpandedPaths.values()
-                                  : mExpandedPaths.values();
+    return mSavedExpandedPaths.value_or(mExpandedPaths).values();
 }
 
 QString ProjectView::filePath(const QModelIndex &index) const

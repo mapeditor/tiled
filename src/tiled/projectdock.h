@@ -57,8 +57,8 @@ private:
     void retranslateUi();
 
     ProjectView *mProjectView;
-    QAction *mCollapseAllAction;
-    QAction *mExpandToCurrentAction;
+    QAction *mCollapseAllAction = nullptr;
+    QAction *mExpandToCurrentAction = nullptr;
 };
 
 } // namespace Tiled
