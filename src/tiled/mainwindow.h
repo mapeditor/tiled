@@ -174,6 +174,7 @@ private:
     void updateActions();
     void updateZoomable();
     void updateZoomActions();
+    void refreshAllIconSizes();
     void openDocumentation();
     void openForum();
     void showDonationPopup();

@@ -243,6 +243,17 @@ void Preferences::setLabelForHoveredObject(bool enabled)
     emit labelForHoveredObjectChanged(enabled);
 }
 
+Preferences::IconSize Preferences::iconSize() const
+{
+    return static_cast<IconSize>(get<int>("Interface/IconSize", SmallIconSize));
+}
+
+void Preferences::setIconSize(IconSize size)
+{
+    setValue(QLatin1String("Interface/IconSize"), size);
+    emit iconSizeChanged(size);
+}
+
 Preferences::ApplicationStyle Preferences::applicationStyle() const
 {
 #if defined(Q_OS_MAC)

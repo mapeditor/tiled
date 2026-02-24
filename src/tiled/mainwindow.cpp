@@ -886,6 +886,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(preferences, &Preferences::useOpenGLChanged, this, &MainWindow::ensureHasBorderInFullScreen);
 #endif
 
+    connect(preferences, &Preferences::iconSizeChanged, this, &MainWindow::refreshAllIconSizes);
+
     connect(preferences, &Preferences::recentFilesChanged, this, &MainWindow::updateRecentFilesMenu);
     connect(preferences, &Preferences::recentProjectsChanged, this, &MainWindow::updateRecentProjectsMenu);
 
@@ -2035,6 +2037,27 @@ void MainWindow::ensureHasBorderInFullScreen()
 
     hasBorderInFullScreen = true;
 #endif
+}
+
+void MainWindow::refreshAllIconSizes()
+{
+    const QSize iconSize = Utils::smallIconSize();
+
+    for (QToolBar *toolBar : findChildren<QToolBar *>())
+        toolBar->setIconSize(iconSize);
+
+    for (QWidget *widget : findChildren<QWidget *>()) {
+        if (widget->inherits("QToolButton")) {
+            auto *toolButton = static_cast<QToolButton *>(widget);
+            if (toolButton->popupMode() == QToolButton::InstantPopup)
+                continue;
+            QAction *action = toolButton->defaultAction();
+            if (action && !action->icon().isNull()) {
+                QIcon icon = action->icon();
+                toolButton->setIcon(icon);
+            }
+        }
+    }
 }
 
 void MainWindow::openRecentFile()
