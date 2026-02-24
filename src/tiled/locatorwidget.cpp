@@ -430,7 +430,7 @@ QAbstractItemDelegate *TileLocatorSource::delegate() const
 
 QString TileLocatorSource::placeholderText() const
 {
-    return QCoreApplication::translate("Tiled::LocatorWidget", tr("Go to tile: x, y"));
+    return QCoreApplication::translate("Tiled::LocatorWidget", "Go to tile: x, y");
 }
 
 void TileLocatorSource::setFilterWords(const QStringList &words)
@@ -441,9 +441,7 @@ void TileLocatorSource::setFilterWords(const QStringList &words)
     int y = 0;
     mHasValidCoord = false;
 
-    QString input = words.join();
-    input.remove(QLatin1Char(' '));
-
+    QString input = words.join(QLatin1String(""));
     const int commaIndex = input.indexOf(QLatin1Char(','));
     if (commaIndex >= 0 && commaIndex < input.size() - 1) {
         x = input.left(commaIndex).toInt(&validX);
