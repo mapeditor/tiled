@@ -21,11 +21,13 @@
 #include "pannableviewhelper.h"
 
 #include "flexiblescrollbar.h"
+#include "mainwindow.h"
 #include "mapview.h"
 
 #include <QApplication>
 #include <QMouseEvent>
-#include <QWidget>
+#include <QPointer>
+#include <QWindow>
 
 namespace Tiled {
 
@@ -53,24 +55,26 @@ private:
     SpaceBarEventFilter(QObject *parent = nullptr)
         : QObject(parent)
     {
-        // Install on qApp so Space is detected regardless of which widget
-        // currently has keyboard focus (e.g. the Layers dock tree view).
-        qApp->installEventFilter(this);
+        // Install on MainWindow to detect window handle changes
+        MainWindow::instance()->installEventFilter(this);
+
+        // Install on window handle to detect Space key state changes
+        installOnWindowHandle();
     }
 
     bool eventFilter(QObject *watched, QEvent *event) override
     {
+        if (watched == MainWindow::instance()) {
+            if (event->type() == QEvent::WinIdChange)
+                installOnWindowHandle();
+            return false;
+        }
+
         switch (event->type()) {
         case QEvent::KeyPress:
         case QEvent::KeyRelease: {
             auto keyEvent = static_cast<QKeyEvent*>(event);
             if (keyEvent->key() == Qt::Key_Space && !keyEvent->isAutoRepeat()) {
-                // Don't intercept Space typed into text-input widgets such as
-                // QLineEdit or QPlainTextEdit (identified by WA_InputMethodEnabled).
-                if (auto *widget = qobject_cast<QWidget*>(watched)) {
-                    if (widget->testAttribute(Qt::WA_InputMethodEnabled))
-                        break;
-                }
                 const bool isPressed = event->type() == QEvent::KeyPress;
                 if (mSpacePressed != isPressed) {
                     mSpacePressed = isPressed;
@@ -80,13 +84,28 @@ private:
             break;
         }
         default:
-        break;
+            break;
         }
 
         return false;
     }
 
+    void installOnWindowHandle()
+    {
+        auto *windowHandle = MainWindow::instance()->windowHandle();
+        if (mWindowHandle == windowHandle)
+            return;
+
+        if (mWindowHandle)
+            mWindowHandle->removeEventFilter(this);
+
+        mWindowHandle = windowHandle;
+        if (mWindowHandle)
+            mWindowHandle->installEventFilter(this);
+    }
+
     bool mSpacePressed = false;
+    QPointer<QWindow> mWindowHandle;
 };
 
 
