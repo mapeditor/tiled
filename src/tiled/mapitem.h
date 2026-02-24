@@ -27,8 +27,6 @@
 
 #include <memory>
 
-class QGraphicsSimpleTextItem;
-
 namespace Tiled {
 
 class ImageLayer;
@@ -41,6 +39,7 @@ class Tileset;
 
 class BorderItem;
 class LayerChangeEvent;
+class MapLabelItem;
 class LayerItem;
 class MapObjectItem;
 class MapScene;
@@ -140,7 +139,7 @@ private:
     MapDocumentPtr mMapDocument;
     QGraphicsRectItem *mDarkRectangle;
     QGraphicsRectItem *mBorderRectangle;
-    QGraphicsSimpleTextItem *mLabelItem = nullptr;
+    MapLabelItem *mLabelItem = nullptr;
     std::unique_ptr<TileSelectionItem> mTileSelectionItem;
     std::unique_ptr<TileGridItem> mTileGridItem;
     std::unique_ptr<ObjectSelectionItem> mObjectSelectionItem;

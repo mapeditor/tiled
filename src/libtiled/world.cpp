@@ -49,11 +49,6 @@ void World::setMapRect(int mapIndex, const QRect &rect)
     maps[mapIndex].rect = rect;
 }
 
-void World::setMapLabel(int mapIndex, const QString &label)
-{
-    maps[mapIndex].label = label;
-}
-
 void World::removeMap(int mapIndex)
 {
     maps.removeAt(mapIndex);
@@ -274,7 +269,6 @@ std::unique_ptr<World> World::load(const QString &fileName,
                          mapObject.value(QLatin1String("y")).toInt(),
                          mapObject.value(QLatin1String("width")).toInt(),
                          mapObject.value(QLatin1String("height")).toInt());
-        map.label = mapObject.value(QLatin1String("label")).toString();
 
         world->maps.append(map);
     }
@@ -333,8 +327,6 @@ bool World::save(World &world, QString *errorString)
         jsonMap.insert(QLatin1String("y"), map.rect.y());
         jsonMap.insert(QLatin1String("width"), map.rect.width());
         jsonMap.insert(QLatin1String("height"), map.rect.height());
-        if (!map.label.isEmpty())
-            jsonMap.insert(QLatin1String("label"), map.label);
         maps.append(jsonMap);
     }
 

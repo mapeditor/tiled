@@ -46,12 +46,10 @@ class TILEDSHARED_EXPORT WorldMapEntry
     Q_GADGET
     Q_PROPERTY(QString fileName MEMBER fileName)
     Q_PROPERTY(QRect rect MEMBER rect)
-    Q_PROPERTY(QString label MEMBER label)
 
 public:
     QString fileName;
     QRect rect;
-    QString label;
 };
 
 class TILEDSHARED_EXPORT WorldPattern
@@ -85,7 +83,6 @@ public:
 
     int mapIndex(const QString &fileName) const;
     void setMapRect(int mapIndex, const QRect &rect);
-    void setMapLabel(int mapIndex, const QString &label);
     void addMap(const QString &fileName, const QRect &rect);
     void removeMap(int mapIndex);
     bool containsMap(const QString &fileName) const;
