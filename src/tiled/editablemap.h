@@ -161,7 +161,7 @@ public:
 
     Q_INVOKABLE void removeObjects(const QList<QObject*> &objects);
 
-    Q_INVOKABLE void merge(Tiled::EditableMap *editableMap, bool canJoin = false);
+    Q_INVOKABLE void merge(Tiled::EditableMap *editableMap, bool canJoin = false, bool notify = true);
 
     Q_INVOKABLE void resize(QSize size,
                             QPoint offset = QPoint(),

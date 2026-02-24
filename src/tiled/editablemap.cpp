@@ -373,7 +373,7 @@ void EditableMap::removeObjects(const QList<QObject*> &objects)
  *
  * @warning Currently only supports tile layers!
  */
-void EditableMap::merge(EditableMap *editableMap, bool canJoin)
+void EditableMap::merge(EditableMap *editableMap, bool canJoin, bool notify)
 {
     if (!editableMap) {
         ScriptManager::instance().throwNullArgError(0);
@@ -394,7 +394,7 @@ void EditableMap::merge(EditableMap *editableMap, bool canJoin)
 
     QVector<SharedTileset> missingTilesets;
     mapDocument()->unifyTilesets(*map, missingTilesets);
-    mapDocument()->paintTileLayers(*map, canJoin, &missingTilesets);
+    mapDocument()->paintTileLayers(*map, canJoin, &missingTilesets, nullptr, notify);
 }
 
 /**

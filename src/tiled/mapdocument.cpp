@@ -1050,7 +1050,8 @@ QList<TileLayer *> MapDocument::findTargetLayers(const QList<const TileLayer *> 
  */
 void MapDocument::paintTileLayers(const Map &map, bool mergeable,
                                   QVector<SharedTileset> *missingTilesets,
-                                  QHash<TileLayer*, QRegion> *paintedRegions)
+                                  QHash<TileLayer*, QRegion> *paintedRegions,
+                                  bool notify)
 {
     struct PaintPair {
         const TileLayer *source;
@@ -1142,7 +1143,7 @@ void MapDocument::paintTileLayers(const Map &map, bool mergeable,
         mergeable = true; // further paints are always mergeable
     }
 
-    if (!paintedRegions) {
+    if (!paintedRegions && notify) {
         QHashIterator<TileLayer*, QRegion> ri(regions);
         while (ri.hasNext()) {
             TileLayer *layer = ri.next().key();
