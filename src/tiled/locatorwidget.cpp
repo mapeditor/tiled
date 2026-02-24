@@ -428,7 +428,7 @@ QAbstractItemDelegate *TileLocatorSource::delegate() const
 
 QString TileLocatorSource::placeholderText() const
 {
-    return QCoreApplication::translate("Tiled::LocatorWidget", "x, y");
+    return QCoreApplication::translate("Tiled::LocatorWidget", tr("Go to tile: x, y"));
 }
 
 void TileLocatorSource::setFilterWords(const QStringList &words)
