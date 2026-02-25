@@ -64,7 +64,7 @@ private:
 
     bool eventFilter(QObject *watched, QEvent *event) override
     {
-        if (watched == MainWindow::instance()) {
+        if (watched == MainWindow::maybeInstance()) {
             if (event->type() == QEvent::WinIdChange)
                 installOnWindowHandle();
             return false;
