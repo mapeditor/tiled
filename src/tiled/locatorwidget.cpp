@@ -19,6 +19,7 @@
  */
 
 #include "locatorwidget.h"
+
 #include "documentmanager.h"
 #include "filteredit.h"
 #include "map.h"
@@ -413,13 +414,13 @@ TileLocatorSource::TileLocatorSource(QObject *parent)
 
 int TileLocatorSource::rowCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : (mHasValidCoord ? 1 : 0);
+    return (!parent.isValid() && mHasValidCoord) ? 1 : 0;
 }
 
 QVariant TileLocatorSource::data(const QModelIndex &index, int role) const
 {
     if (role == Qt::DisplayRole && index.row() == 0 && mHasValidCoord)
-        return mDisplayText;
+        return tr("Go to tile (%1, %2)").arg(mTileX).arg(mTileY);
     return QVariant();
 }
 
@@ -430,7 +431,7 @@ QAbstractItemDelegate *TileLocatorSource::delegate() const
 
 QString TileLocatorSource::placeholderText() const
 {
-    return QCoreApplication::translate("Tiled::LocatorWidget", "Go to tile: x, y");
+    return tr("Go to tile: x, y");
 }
 
 void TileLocatorSource::setFilterWords(const QStringList &words)
@@ -439,64 +440,62 @@ void TileLocatorSource::setFilterWords(const QStringList &words)
     bool validY = false;
     int x = 0;
     int y = 0;
-    mHasValidCoord = false;
 
-    QString input = words.join(QLatin1String(""));
+    const QString input = words.join(QStringView());
     const int commaIndex = input.indexOf(QLatin1Char(','));
     if (commaIndex >= 0 && commaIndex < input.size() - 1) {
-        x = input.left(commaIndex).toInt(&validX);
-        y = input.mid(commaIndex + 1).toInt(&validY);
-        mHasValidCoord = validX && validY;
+        x = QStringView(input).left(commaIndex).toInt(&validX);
+        y = QStringView(input).mid(commaIndex + 1).toInt(&validY);
     }
 
-    if (!mHasValidCoord && words.size() == 2) {
+    if (!(validX && validY) && words.size() == 2) {
         x = words.at(0).toInt(&validX);
         y = words.at(1).toInt(&validY);
-        mHasValidCoord = validX && validY;
     }
 
     beginResetModel();
-    if (mHasValidCoord) {
-        mTileX = x;
-        mTileY = y;
-        mDisplayText = QCoreApplication::translate(
-            "Tiled::LocatorWidget", "Go to tile (%1, %2)").arg(x).arg(y);
-    }
+    mHasValidCoord = validX && validY;
+    mTileX = x;
+    mTileY = y;
     endResetModel();
 }
 
 void TileLocatorSource::activate(const QModelIndex &)
 {
-    auto dm = DocumentManager::instance();
-    auto mapDoc = qobject_cast<MapDocument*>(dm->currentDocument());
-    if (!mapDoc)
+    auto documentManager = DocumentManager::instance();
+    auto mapDocument = qobject_cast<MapDocument*>(documentManager->currentDocument());
+    if (!mapDocument)
         return;
 
-    const auto *map = mapDoc->map();
+    const auto *map = mapDocument->map();
     if (map->width() < 1 || map->height() < 1)
+        return;
+
+    auto mapView = documentManager->currentMapView();
+    if (!mapView)
         return;
 
     const int x = qBound(0, mTileX, map->width() - 1);
     const int y = qBound(0, mTileY, map->height() - 1);
 
-    auto renderer = mapDoc->renderer();
+    auto renderer = mapDocument->renderer();
     QPointF pixelPos = renderer->tileToPixelCoords(x + 0.5, y + 0.5);
 
-    if (auto mapView = dm->currentMapView()) {
-        mapView->forceCenterOn(pixelPos);
+    if (Layer *layer = mapDocument->currentLayer()) {
+        mapView->forceCenterOn(pixelPos, *layer);
 
         if (auto mapScene = mapView->mapScene()) {
-            if (MapItem *mapItem = mapScene->mapItem(mapDoc)) {
-                if (mapDoc->currentLayer()) {
-                    auto *highlight = new TileHighlightItem(mapDoc, x, y, mapItem);
-                    highlight->setZValue(10003);
-                    highlight->startBlink();
-                }
+            if (MapItem *mapItem = mapScene->mapItem(mapDocument)) {
+                auto *highlight = new TileHighlightItem(mapDocument, x, y, mapItem);
+                highlight->setZValue(10003);
+                highlight->startBlink();
             }
         }
+    } else {
+        mapView->forceCenterOn(pixelPos);
     }
 }
 
-} 
+} // namespace Tiled
 
 #include "moc_locatorwidget.cpp"

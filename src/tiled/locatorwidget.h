@@ -107,7 +107,6 @@ private:
     bool mHasValidCoord = false;
     int mTileX = 0;
     int mTileY = 0;
-    QString mDisplayText;
 };
 
 } // namespace Tiled

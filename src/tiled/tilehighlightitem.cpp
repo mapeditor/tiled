@@ -1,6 +1,6 @@
 /*
  * tilehighlightitem.cpp
- * Copyright 2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * Copyright 2026, PoonamMehan <poonammehan655@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -52,8 +52,8 @@ void TileHighlightItem::startBlink()
 {
     updatePosition();
 
-    const int blinkDuration = 120;
-    const int blinkCount = 3;
+    constexpr int blinkDuration = 120;
+    constexpr int blinkCount = 3;
 
     auto *group = new QSequentialAnimationGroup(this);
     for (int i = 0; i < blinkCount; ++i) {

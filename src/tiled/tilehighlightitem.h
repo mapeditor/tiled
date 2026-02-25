@@ -1,6 +1,6 @@
 /*
  * tilehighlightitem.h
- * Copyright 2020, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * Copyright 2026, PoonamMehan <poonammehan655@gmail.com>
  *
  * This file is part of Tiled.
  *
