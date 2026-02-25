@@ -129,9 +129,10 @@ private:
     QLabel *newLabel(const QString &labelText);
     void initializeLayout();
     void determineWidgetGrouping(QWidget *widget);
-    QWidget *addDialogWidget(QWidget * widget,
+    QWidget *addDialogWidget(QWidget *widget,
                              const QString &label = QString(),
-                             const QString &labelToolTip = QString());
+                             const QString &labelToolTip = QString(),
+                             const QString &widgetToolTip = QString());
 
     int m_rowIndex = 0;
     int m_widgetsInRow = 0;
