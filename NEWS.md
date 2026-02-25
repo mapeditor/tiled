@@ -14,6 +14,7 @@
 * Added status info for various Stamp Brush, Terrain Brush and Eraser modes (#3092, #4201)
 * Added Escape to clear tile selection when any tile related tool is selected (#4243)
 * Added Escape to cancel tile selection and shape drawing operations
+* Added a "Go to Tile" action to jump to specific coordinates (by PoonamMehan, #4348)
 * Made the shortcut for current tool switch to previous tool (#4280)
 * Allow canceling Select Same Tile, Magic Wand and Bucket Fill operations with right-click and Escape
 * Allow dragging over multiple tiles with Select Same Tile, Magic Wand and Bucket Fill tools (#4276)
