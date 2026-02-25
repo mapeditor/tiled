@@ -35,7 +35,6 @@
 #include "tilesetmanager.h"
 #include "utils.h"
 
-#include <optional>
 #include <QAction>
 #include <QBoxLayout>
 #include <QFileDialog>
@@ -68,15 +67,15 @@ public:
     ProjectModel *projectModel() const { return mProjectModel; }
 
     QStringList expandedPaths() const { return mExpandedPaths.values(); }
-    QStringList savedExpandedPaths() const;
     void setExpandedPaths(const QStringList &paths);
     void addExpandedPath(const QString &path);
 
     void setCollapseAllAction(QAction *action) { mCollapseAllAction = action; }
+    void setExpandToCurrentActive(bool active) { mExpandToCurrentActive = active; }
 
     void selectPath(const QString &path);
     void expandToPath(const QString &filePath);
-    void restoreSavedExpandedPaths();
+    void restoreExpandedPaths();
 
     QString filePath(const QModelIndex &index) const;
 
@@ -92,8 +91,8 @@ private:
     ProjectModel *mProjectModel;
     ProjectProxyModel *mProxyModel;
     QSet<QString> mExpandedPaths;
-    std::optional<QSet<QString>> mSavedExpandedPaths;
     QAction *mCollapseAllAction = nullptr;
+    bool mExpandToCurrentActive = false;
     QString mSelectedPath;
     int mScrollBarValue = 0;
 };
@@ -120,12 +119,13 @@ ProjectDock::ProjectDock(QWidget *parent)
     mExpandToCurrentAction->setCheckable(true);
     mExpandToCurrentAction->setIcon(QIcon(QLatin1String(":/images/scalable/focus.svg")));
     connect(mExpandToCurrentAction, &QAction::toggled, this, [=](bool checked) {
+        mProjectView->setExpandToCurrentActive(checked);
         if (checked) {
             auto doc = DocumentManager::instance()->currentDocument();
             if (doc)
                 mProjectView->expandToPath(doc->fileName());
         } else {
-            mProjectView->restoreSavedExpandedPaths();
+            mProjectView->restoreExpandedPaths();
         }
     });
     toolBar->addAction(mExpandToCurrentAction);
@@ -153,9 +153,7 @@ ProjectDock::ProjectDock(QWidget *parent)
 
     connect(Preferences::instance(), &Preferences::aboutToSwitchSession,
             this, [=] {
-        Session::current().expandedProjectPaths = mExpandToCurrentAction->isChecked()
-            ? mProjectView->savedExpandedPaths()
-            : mProjectView->expandedPaths();
+        Session::current().expandedProjectPaths = mProjectView->expandedPaths();
     });
 
     connect(mProjectView->selectionModel(), &QItemSelectionModel::currentRowChanged,
@@ -261,9 +259,15 @@ ProjectView::ProjectView(QWidget *parent)
             this, &ProjectView::onRowsInserted);
 
     connect(this, &QTreeView::expanded,
-            this, [=] (const QModelIndex &index) { mExpandedPaths.insert(filePath(index)); });
+            this, [=] (const QModelIndex &index) {
+        if (!mExpandToCurrentActive)
+            mExpandedPaths.insert(filePath(index));
+    });
     connect(this, &QTreeView::collapsed,
-            this, [=] (const QModelIndex &index) { mExpandedPaths.remove(filePath(index)); });
+            this, [=] (const QModelIndex &index) {
+        if (!mExpandToCurrentActive)
+            mExpandedPaths.remove(filePath(index));
+    });
 
     // Reselect a previously selected path and restore scrollbar after refresh
     connect(mProjectModel, &ProjectModel::aboutToRefresh,
@@ -308,11 +312,7 @@ void ProjectView::expandToPath(const QString &filePath)
     if (!proxyIndex.isValid())
         return;
 
-    if (!mSavedExpandedPaths.has_value())
-        mSavedExpandedPaths = mExpandedPaths;
-
     collapseAll();
-    mExpandedPaths.clear();
 
     if (currentIndex() == proxyIndex)
         scrollTo(proxyIndex);
@@ -320,24 +320,13 @@ void ProjectView::expandToPath(const QString &filePath)
         setCurrentIndex(proxyIndex);
 }
 
-void ProjectView::restoreSavedExpandedPaths()
+void ProjectView::restoreExpandedPaths()
 {
-    if (!mSavedExpandedPaths.has_value())
-        return;
-
     collapseAll();
-    mExpandedPaths.clear();
-    mExpandedPaths = mSavedExpandedPaths.value();
-    mSavedExpandedPaths = std::nullopt;
 
     const int topLevel = mProxyModel->rowCount();
     for (int i = 0; i < topLevel; ++i)
         restoreExpanded(mProxyModel->index(i, 0));
-}
-
-QStringList ProjectView::savedExpandedPaths() const
-{
-    return mSavedExpandedPaths.value_or(mExpandedPaths).values();
 }
 
 QString ProjectView::filePath(const QModelIndex &index) const

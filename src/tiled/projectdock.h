@@ -44,6 +44,7 @@ public:
 
     void setExpandedPaths(const QStringList &expandedPaths);
 
+
 signals:
     void folderAdded(const QString &path);
     void folderRemoved(const QString &path);
