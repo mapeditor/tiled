@@ -52,4 +52,4 @@ private:
     QRectF mBoundingRect;
 };
 
-}
+} // namespace Tiled
