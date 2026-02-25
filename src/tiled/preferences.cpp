@@ -401,7 +401,7 @@ void Preferences::setSnapMode(SnapMode snapMode)
     emit snapToGridChanged(snapMode == SnapToGridMode);
     emit snapToFineGridChanged(snapMode == SnapToFineGridMode);
     emit snapToPixelsChanged(snapMode == SnapToPixelsMode);
-1}
+}
 
 void Preferences::setSnapToGrid(bool snapToGrid)
 {
