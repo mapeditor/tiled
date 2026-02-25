@@ -30,12 +30,19 @@ SnapHelper::SnapHelper(const MapRenderer *renderer,
     : mRenderer(renderer)
 {
     Preferences *preferences = Preferences::instance();
-    if (preferences->snapToGrid())
+    switch (preferences->snapMode()) {
+    case Preferences::SnapToGridMode:
         mSnapMode = SnapToGrid;
-    else if (preferences->snapToFineGrid())
+        break;
+    case Preferences::SnapToFineGridMode:
         mSnapMode = SnapToFineGrid;
-
-    mSnapToPixels = preferences->snapToPixels();
+        break;
+    case Preferences::SnapToPixelsMode:
+        mSnapToPixels = true;
+        break;
+    case Preferences::NoSnap:
+        break;
+    }
 
     if (modifiers & Qt::ControlModifier) {
         if (modifiers & Qt::ShiftModifier) {

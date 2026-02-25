@@ -85,6 +85,7 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QRegularExpression>
+#include <QSignalBlocker>
 #include <QShortcut>
 #include <QStandardPaths>
 #include <QStatusBar>
@@ -412,6 +413,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             mTilesetEditor->templatesDock(), &TemplatesDock::tryOpenTemplate);
 
     auto snappingGroup = new QActionGroup(this);
+    snappingGroup->setExclusive(true);
     mUi->actionSnapNothing->setActionGroup(snappingGroup);
     mUi->actionSnapToGrid->setActionGroup(snappingGroup);
     mUi->actionSnapToFineGrid->setActionGroup(snappingGroup);
@@ -423,11 +425,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionShowTileAnimations->setChecked(preferences->showTileAnimations());
     mUi->actionShowTileCollisionShapes->setChecked(preferences->showTileCollisionShapes());
     mUi->actionEnableParallax->setChecked(preferences->parallaxEnabled());
-    mUi->actionSnapToGrid->setChecked(preferences->snapToGrid());
-    mUi->actionSnapToFineGrid->setChecked(preferences->snapToFineGrid());
-    mUi->actionSnapToPixels->setChecked(preferences->snapToPixels());
+    updateSnappingActions(preferences->snapMode());
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
     mUi->actionHighlightHoveredObject->setChecked(preferences->highlightHoveredObject());
+    connect(preferences, &Preferences::snapModeChanged, this, &MainWindow::updateSnappingActions);
+    connect(mUi->menuSnapping, &QMenu::aboutToShow, this, [this, preferences] {
+        preferences->sync();
+        updateSnappingActions(preferences->snapMode());
+    });
 
     bindToOption(mUi->actionAutoMapWhileDrawing, AutomappingManager::automappingWhileDrawing);
     bindToOption(mUi->actionEnableWorlds, MapScene::enableWorlds);
@@ -564,12 +569,22 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             preferences, &Preferences::setShowTileCollisionShapes);
     connect(mUi->actionEnableParallax, &QAction::toggled,
             preferences, &Preferences::setParallaxEnabled);
-    connect(mUi->actionSnapToGrid, &QAction::toggled,
-            preferences, &Preferences::setSnapToGrid);
-    connect(mUi->actionSnapToFineGrid, &QAction::toggled,
-            preferences, &Preferences::setSnapToFineGrid);
-    connect(mUi->actionSnapToPixels, &QAction::toggled,
-            preferences, &Preferences::setSnapToPixels);
+    connect(mUi->actionSnapNothing, &QAction::toggled, preferences, [preferences](bool checked) {
+        if (checked)
+            preferences->setSnapMode(Preferences::NoSnap);
+    });
+    connect(mUi->actionSnapToGrid, &QAction::toggled, preferences, [preferences](bool checked) {
+        if (checked)
+            preferences->setSnapMode(Preferences::SnapToGridMode);
+    });
+    connect(mUi->actionSnapToFineGrid, &QAction::toggled, preferences, [preferences](bool checked) {
+        if (checked)
+            preferences->setSnapMode(Preferences::SnapToFineGridMode);
+    });
+    connect(mUi->actionSnapToPixels, &QAction::toggled, preferences, [preferences](bool checked) {
+        if (checked)
+            preferences->setSnapMode(Preferences::SnapToPixelsMode);
+    });
     connect(mUi->actionHighlightCurrentLayer, &QAction::toggled,
             preferences, &Preferences::setHighlightCurrentLayer);
     connect(mUi->actionHighlightHoveredObject, &QAction::toggled,
@@ -964,6 +979,13 @@ void MainWindow::changeEvent(QEvent *event)
         break;
     case QEvent::WindowStateChange:
         mUi->actionFullScreen->setChecked(isFullScreen());
+        break;
+    case QEvent::ActivationChange:
+        if (isActiveWindow()) {
+            Preferences *preferences = Preferences::instance();
+            preferences->sync();
+            updateSnappingActions(preferences->snapMode());
+        }
         break;
     default:
         break;
@@ -2014,6 +2036,19 @@ void MainWindow::autoMappingWarning(bool automatic)
             QMessageBox::warning(this, tr("Automatic Mapping Warning"), warning);
         }
     }
+}
+
+void MainWindow::updateSnappingActions(Preferences::SnapMode mode)
+{
+    const QSignalBlocker blockSnapNothing(mUi->actionSnapNothing);
+    const QSignalBlocker blockSnapToGrid(mUi->actionSnapToGrid);
+    const QSignalBlocker blockSnapToFineGrid(mUi->actionSnapToFineGrid);
+    const QSignalBlocker blockSnapToPixels(mUi->actionSnapToPixels);
+
+    mUi->actionSnapNothing->setChecked(mode == Preferences::NoSnap);
+    mUi->actionSnapToGrid->setChecked(mode == Preferences::SnapToGridMode);
+    mUi->actionSnapToFineGrid->setChecked(mode == Preferences::SnapToFineGridMode);
+    mUi->actionSnapToPixels->setChecked(mode == Preferences::SnapToPixelsMode);
 }
 
 void MainWindow::onPropertyTypesEditorClosed()

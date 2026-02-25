@@ -48,7 +48,7 @@ private:
     };
 
     SnapMode mSnapMode = NoSnap;
-    bool mSnapToPixels;
+    bool mSnapToPixels = false;
 };
 
 } // namespace Tiled

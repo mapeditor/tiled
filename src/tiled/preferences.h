@@ -61,6 +61,13 @@ public:
     bool showTileCollisionShapes() const;
     bool showObjectReferences() const;
     bool parallaxEnabled() const;
+    enum SnapMode {
+        NoSnap = 0,
+        SnapToGridMode = 1,
+        SnapToFineGridMode = 2,
+        SnapToPixelsMode = 3
+    };
+    SnapMode snapMode() const;
     bool snapToGrid() const;
     bool snapToFineGrid() const;
     bool snapToPixels() const;
@@ -197,6 +204,7 @@ public slots:
     void setShowTileCollisionShapes(bool enabled);
     void setShowObjectReferences(bool enabled);
     void setParallaxEnabled(bool enabled);
+    void setSnapMode(SnapMode snapMode);
     void setSnapToGrid(bool snapToGrid);
     void setSnapToFineGrid(bool snapToFineGrid);
     void setSnapToPixels(bool snapToPixels);
@@ -224,6 +232,7 @@ signals:
     void showTileCollisionShapesChanged(bool enabled);
     void showObjectReferencesChanged(bool enabled);
     void parallaxEnabledChanged(bool enabled);
+    void snapModeChanged(SnapMode snapMode);
     void snapToGridChanged(bool snapToGrid);
     void snapToFineGridChanged(bool snapToFineGrid);
     void snapToPixelsChanged(bool snapToPixels);
