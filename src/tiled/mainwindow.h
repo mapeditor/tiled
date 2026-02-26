@@ -117,6 +117,7 @@ private:
     void openFileDialog();
     void openFileInProject();
     void searchActions();
+    void goToTile();
     void showLocatorWidget(LocatorSource *source);
     bool saveFile();
     bool saveFileAs();

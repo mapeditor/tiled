@@ -14,6 +14,7 @@
 * Added status info for various Stamp Brush, Terrain Brush and Eraser modes (#3092, #4201)
 * Added Escape to clear tile selection when any tile related tool is selected (#4243)
 * Added Escape to cancel tile selection and shape drawing operations
+* Added a "Go to Tile" action to jump to specific coordinates (by PoonamMehan, #4348)
 * Made the shortcut for current tool switch to previous tool (#4280)
 * Allow canceling Select Same Tile, Magic Wand and Bucket Fill operations with right-click and Escape
 * Allow dragging over multiple tiles with Select Same Tile, Magic Wand and Bucket Fill tools (#4276)
@@ -22,13 +23,17 @@
 * Added export plugin for Remixed Dungeon (by Mikhael Danilov, #4158)
 * Added "World > World Properties" menu action (with dogboydog, #4190)
 * Added Delete shortcut to Remove Tiles action by default and avoid ambiguity (#4201)
+* Fixed tileset tabs to fall back to filename in case of unnamed tilesets (by Sid, #4360)
 * Fixed alpha component of tint color not applying correctly to opaque images (by Roland Helmerichs, #4310)
+* Fixed panning with space bar not always working on first click (with Oval, #4338)
 * Scripting: Added API for custom property types (with dogboydog, #3971)
 * Scripting: Added TileMap.chunkSize and TileMap.compressionLevel properties
+* Scripting: Added tiled.session to read and write session properties (by Kanishka, #4345)
 * AutoMapping: Don't match rules based on empty input indexes
 * AutoMapping: Optimized reloading of rule maps and load rule maps on-demand
 * tBIN plugin: Added support for the tIDE XML format (by Casey Warrington, #4308)
 * Windows: Fixed issue with opening Tile Animation Editor (#4223)
+* macOS: Add Cmd+Shift+[ and Cmd+Shift+] shortcuts to switch tabs (by Oval, #4344)
 * macOS: Fixed crash when JS code is JIT-compiled (#4218)
 * Workaround tileset view layout regression in Qt 6.9
 * Raised minimum supported Qt version from 5.12 to 5.15.2

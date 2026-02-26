@@ -274,6 +274,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionFullScreen, "FullScreen");
     ActionManager::registerAction(mUi->actionHighlightCurrentLayer, "HighlightCurrentLayer");
     ActionManager::registerAction(mUi->actionHighlightHoveredObject, "HighlightHoveredObject");
+    ActionManager::registerAction(mUi->actionGoToTile, "GoToTile");
     ActionManager::registerAction(mUi->actionLabelForHoveredObject, "LabelForHoveredObject");
     ActionManager::registerAction(mUi->actionLabelsForAllObjects, "LabelsForAllObjects");
     ActionManager::registerAction(mUi->actionLabelsForSelectedObjects, "LabelsForSelectedObjects");
@@ -530,6 +531,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionOpen, &QAction::triggered, this, &MainWindow::openFileDialog);
     connect(mUi->actionOpenFileInProject, &QAction::triggered, this, &MainWindow::openFileInProject);
     connect(mUi->actionSearchActions, &QAction::triggered, this, &MainWindow::searchActions);
+    connect(mUi->actionGoToTile, &QAction::triggered, this, &MainWindow::goToTile);
     connect(mUi->actionReopenClosedFile, &QAction::triggered, this, &MainWindow::reopenClosedFile);
     connect(mUi->actionClearRecentFiles, &QAction::triggered, preferences, &Preferences::clearRecentFiles);
     connect(mUi->actionSave, &QAction::triggered, this, &MainWindow::saveFile);
@@ -856,14 +858,22 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QShortcut *switchToLeftDocument = new QShortcut(Qt::ALT + Qt::Key_Left, this);
     connect(switchToLeftDocument, &QShortcut::activated,
             mDocumentManager, &DocumentManager::switchToLeftDocument);
+#ifdef Q_OS_MAC
+    QShortcut *switchToLeftDocument1 = new QShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_BracketLeft, this);
+#else
     QShortcut *switchToLeftDocument1 = new QShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_Tab, this);
+#endif
     connect(switchToLeftDocument1, &QShortcut::activated,
             mDocumentManager, &DocumentManager::switchToLeftDocument);
 
     QShortcut *switchToRightDocument = new QShortcut(Qt::ALT + Qt::Key_Right, this);
     connect(switchToRightDocument, &QShortcut::activated,
             mDocumentManager, &DocumentManager::switchToRightDocument);
+#ifdef Q_OS_MAC
+    QShortcut *switchToRightDocument1 = new QShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_BracketRight, this);
+#else
     QShortcut *switchToRightDocument1 = new QShortcut(Qt::CTRL + Qt::Key_Tab, this);
+#endif
     connect(switchToRightDocument1, &QShortcut::activated,
             mDocumentManager, &DocumentManager::switchToRightDocument);
 
@@ -1144,6 +1154,11 @@ void MainWindow::openFileInProject()
 void MainWindow::searchActions()
 {
     showLocatorWidget(new ActionLocatorSource);
+}
+
+void MainWindow::goToTile()
+{
+    showLocatorWidget(new TileLocatorSource);
 }
 
 void MainWindow::showLocatorWidget(LocatorSource *source)
@@ -2197,6 +2212,7 @@ void MainWindow::updateActions()
     mUi->actionOffsetMap->setEnabled(mapDocument);
     mUi->actionMapProperties->setEnabled(mapDocument);
     mUi->actionAutoMap->setEnabled(mapDocument);
+    mUi->actionGoToTile->setEnabled(mapDocument);
 
     mUi->menuTileset->menuAction()->setVisible(tilesetDocument);
     mUi->actionTilesetProperties->setEnabled(tilesetDocument);

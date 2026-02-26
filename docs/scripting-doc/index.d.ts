@@ -415,7 +415,7 @@ declare namespace Qt {
    * Can be created with {@link tiled.cursor} and assigned to {@link
    * Tool.cursor}.
    */
-  class QCursor {}
+  class QCursor { }
 
   /**
    * The base type from which all Qt widgets derive.
@@ -753,13 +753,13 @@ declare namespace Qt {
   /**
    * A button which the user can push.
    */
-  class QPushButton extends QAbstractButton {}
+  class QPushButton extends QAbstractButton { }
 
   /**
    * This type is returned in mainWidget when calling {@link Dialog.addSeparator}.
    * Qt documentation [QFrame](https://doc.qt.io/qt-6/qframe.html)
    */
-  class QFrame extends QWidget {}
+  class QFrame extends QWidget { }
 
   /**
    * This type is returned when calling {@link QButtonGroup.addItem} or {@link QButtonGroup.addItems}.
@@ -770,7 +770,7 @@ declare namespace Qt {
    *
    * @since 1.11.1
    */
-  class QRadioButton extends QAbstractButton {}
+  class QRadioButton extends QAbstractButton { }
 
   /**
    * A group of radio buttons where only one button can be selected.
@@ -3963,7 +3963,7 @@ declare class WangSet extends TiledObject {
  *    tiled.log("The color is black!");
  * ```
  */
-interface color {}
+interface color { }
 
 /**
  * A container for tiles that can be used by a map.
@@ -4632,6 +4632,96 @@ declare namespace Tiled {
   const Zstandard: CompressionMethod;
 }
 
+
+/**
+ * Provides access to session-specific settings. The session stores
+ * per-project preferences like last-used tile sizes, open files, and
+ * file states.
+ *
+ * Values are accessed by their string key (e.g. `"map.tileWidth"`).
+ *
+ * ### Known Session Properties
+ *
+ * | Key | Type | Default | Description |
+ * |-----|------|---------|-------------|
+ * | `"map.orientation"` | `number` (Map.Orientation) | `Map.Orthogonal` | Last used map orientation |
+ * | `"map.layerDataFormat"` | `number` (Map.LayerDataFormat) | `Map.CSV` | Last used layer data format |
+ * | `"map.renderOrder"` | `number` (Map.RenderOrder) | `Map.RightDown` | Last used render order |
+ * | `"map.fixedSize"` | `boolean` | `true` | Whether new maps use a fixed size |
+ * | `"map.width"` | `number` | `30` | Last used map width (in tiles) |
+ * | `"map.height"` | `number` | `20` | Last used map height (in tiles) |
+ * | `"map.tileWidth"` | `number` | `32` | Last used tile width (in pixels) |
+ * | `"map.tileHeight"` | `number` | `32` | Last used tile height (in pixels) |
+ * | `"map.lastUsedFormat"` | `string` | `""` | Last used map format |
+ * | `"map.lastUsedExportFilter"` | `string` | `""` | Last used map export filter |
+ * | `"tileset.type"` | `number` | `0` | Last used tileset type |
+ * | `"tileset.embedInMap"` | `boolean` | `false` | Whether to embed tileset in map |
+ * | `"tileset.useTransparentColor"` | `boolean` | `false` | Whether to use a transparent color |
+ * | `"tileset.transparentColor"` | `color` | magenta | Transparent color for tilesets |
+ * | `"tileset.tileSize"` | `size` | `{width: 32, height: 32}` | Last used tileset tile size |
+ * | `"tileset.spacing"` | `number` | `0` | Last used tileset spacing |
+ * | `"tileset.margin"` | `number` | `0` | Last used tileset margin |
+ * | `"tileset.lastUsedFilter"` | `string` | `""` | Last used tileset file filter |
+ * | `"tileset.lastUsedFormat"` | `string` | `""` | Last used tileset format |
+ * | `"resizeMap.removeObjects"` | `boolean` | `true` | Remove objects when resizing |
+ * | `"exportAsImage.visibleLayersOnly"` | `boolean` | `true` | Export only visible layers |
+ * | `"exportAsImage.useCurrentScale"` | `boolean` | `false` | Use current scale for export |
+ * | `"exportAsImage.drawTileGrid"` | `boolean` | `false` | Draw tile grid in export |
+ * | `"exportAsImage.drawObjectLabels"` | `boolean` | `false` | Draw object labels in export |
+ * | `"exportAsImage.includeBackgroundColor"` | `boolean` | `false` | Include background color in export |
+ * | `"automapping.whileDrawing"` | `boolean` | `false` | Automap while drawing |
+ * | `"mapScene.enableWorlds"` | `boolean` | `true` | Enable worlds in map scene |
+ * | `"textEdit.monospace"` | `boolean` | `true` | Use monospace font in text editor |
+ * | `"frame.defaultDuration"` | `number` | `100` | Default animation frame duration |
+ * | `"console.history"` | `string[]` | `[]` | Console command history |
+ * | `"property.type"` | `string` | `"string"` | Last used property type |
+ * | `"file.lastUsedOpenFilter"` | `string` | `""` | Last used file open filter |
+ * | `"loadedWorlds"` | `string[]` | `[]` | List of currently loaded world files |
+ * | `"lastUsedTilesetExportFilter"` | `string` | `""` | Last used tileset export filter |
+ * | `"stampsFolder"` | `string` | `"<dataDir>/stamps"` | Directory for tile stamps |
+ *
+ * @since 1.12
+ */
+interface Session {
+  /**
+   * Path to the current session file.
+   */
+  readonly fileName: string;
+
+  /**
+   * Returns the session value for the given key, or `defaultValue` if
+   * the key is not set.
+   */
+  get(key: string, defaultValue?: any): any;
+
+  /**
+   * Sets the session value for the given key.
+   */
+  set(key: string, value: any): void;
+
+  /**
+   * Returns whether the given key is present in the session.
+   */
+  isSet(key: string): boolean;
+
+  /**
+   * Returns the per-file state for the given file name.
+   */
+  fileState(fileName: string): { [key: string]: any };
+
+  /**
+   * Sets the per-file state for the given file name.
+   *
+   * **Warning:** This replaces the entire per-file state for the given file.
+   * To set only a single value, use {@link setFileStateValue} instead.
+   */
+  setFileState(fileName: string, fileState: { [key: string]: any }): void;
+
+  /**
+   * Sets a single value in the per-file state for the given file name.
+   */
+  setFileStateValue(fileName: string, name: string, value: any): void;
+}
 /**
  * The `tiled` module is the main entry point and provides properties,
  * functions and signals which are documented below.
@@ -4766,6 +4856,18 @@ declare namespace tiled {
    * Access the editor used when editing tilesets.
    */
   export const tilesetEditor: TilesetEditor;
+
+  /**
+   * Provides access to the current session, allowing scripts to read and
+   * write session-specific settings like last-used tile size.
+   *
+   * In command-line mode (`--evaluate`), no session may be available. In
+   * that case, methods return safe defaults (empty strings, default
+   * values, etc.).
+   *
+   * @since 1.12
+   */
+  export const session: Session;
 
   /**
    * This function can be used to trigger any registered action. This
