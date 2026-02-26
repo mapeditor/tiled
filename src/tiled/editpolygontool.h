@@ -136,6 +136,7 @@ private:
     QPointF mLastMousePos;
     QPoint mScreenStart;
     Qt::KeyboardModifiers mModifiers;
+    bool mMergeableTransform = false;
 
     /// The list of handles associated with each selected map object
     QHash<MapObject*, QList<PointHandle*> > mHandles;

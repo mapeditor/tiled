@@ -114,6 +114,11 @@ public:
 
     bool hasAnyChanges() const;
 
+    /**
+     * Sets whether this undo command can be merged with an existing command.
+     */
+    void setMergeable(bool mergeable);
+
     int id() const override { return Cmd_ChangeMapObjectTransform; }
 
     void undo() override;
@@ -126,11 +131,17 @@ private:
     void setValue(MapObject *mapObject, const TransformState &value) const override;
 
     MapObject::ChangedProperties mChangedProperties;
+    bool mMergeable = false;
 };
 
 inline bool TransformMapObjects::hasAnyChanges() const
 {
     return mChangedProperties;
+}
+
+inline void TransformMapObjects::setMergeable(bool mergeable)
+{
+    mMergeable = mergeable;
 }
 
 } // namespace Tiled
