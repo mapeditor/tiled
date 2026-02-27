@@ -14,8 +14,6 @@ cache:
   - C:\Qt\Tools\mingw1310_64 -> appveyor.yml
 
 environment:
-  BUTLER_API_KEY:
-    secure: j7JM5L6KeqpnQukzJLsm7J6oV92SpmyEZLSoED1pZ3gQ79VIkdxtbQmTkqUNZPsz
   matrix:
     - QT_VERSION: 6.10.1
       QT_ARCH: win64_msvc2022_64
@@ -33,7 +31,7 @@ environment:
       MINGW: C:\Qt\Tools\mingw810_32
       MINGW_COMPONENT: tools_mingw
       MINGW_VARIANT: qt.tools.win32_mingw810
-      PUSH_RELEASE: false
+      PUSH_RELEASE: true
       ENABLE_ZSTD: true
       CC: i686-w64-mingw32-gcc.exe
       CXX: i686-w64-mingw32-g++.exe
@@ -54,21 +52,18 @@ configuration: Release
 
 install:
   - choco install -y qbs --version 3.1.1
-  - set PATH=%PYTHONHOME%;%PATH%
+  - set PATH=%PYTHONHOME%;%PYTHONHOME%\Scripts;%PATH%
   - python -m pip install aqtinstall
-  - if not exist %QTDIR%\bin\qmake.exe if "%QT_MODULES%"=="" (python -m aqt install-qt -O C:\Qt windows desktop %QT_VERSION% %QT_ARCH%) else (python -m aqt install-qt -O C:\Qt windows desktop %QT_VERSION% %QT_ARCH% -m %QT_MODULES%)
-  - if defined MINGW if not exist %MINGW%\bin\%CC% python -m aqt install-tool -O C:\Qt windows desktop %MINGW_COMPONENT% %MINGW_VARIANT%
-  - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin
+  - if not exist %QTDIR%\bin\qmake.exe if "%QT_MODULES%"=="" (aqt install-qt -O C:\Qt windows desktop %QT_VERSION% %QT_ARCH%) else (aqt install-qt -O C:\Qt windows desktop %QT_VERSION% %QT_ARCH% -m %QT_MODULES%)
+  - if defined MINGW if not exist %MINGW%\bin\%CC% aqt install-tool -O C:\Qt windows desktop %MINGW_COMPONENT% %MINGW_VARIANT%
+  - set PATH=%QTDIR%\bin;%MINGW%\bin;%PATH%
 
 before_build:
   - qbs --version
-  - qbs setup-toolchains --detect
   - if defined MINGW qbs setup-toolchains %MINGW%\bin\%CC% mingw
-  - if defined MINGW qbs setup-qt %QTDIR%\bin\qmake.exe qt
-  - if defined MINGW qbs config defaultProfile qt
-  - if not defined MINGW qbs setup-qt %QTDIR%\bin\qmake.exe qt-msvc
-  - if not defined MINGW qbs config profiles.qt-msvc.baseProfile %DEFAULT_PROFILE%
-  - if not defined MINGW qbs config defaultProfile qt-msvc
+  - if defined MINGW qbs config defaultProfile mingw
+  - if defined DEFAULT_PROFILE qbs setup-toolchains --detect
+  - if defined DEFAULT_PROFILE qbs config defaultProfile %DEFAULT_PROFILE%
 
 build_script:
   - FOR /F "tokens=*" %%i in ('git describe') do SET COMMITNOW=%%i
