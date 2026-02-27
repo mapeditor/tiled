@@ -20,6 +20,8 @@
 
 #include "zoomable.h"
 
+#include "preferences.h"
+
 #include <QComboBox>
 #include <QLineEdit>
 #include <QPinchGesture>
@@ -139,6 +141,11 @@ void Zoomable::handlePinchGesture(QPinchGesture *pinch)
     case Qt::GestureCanceled:
         break;
     }
+}
+
+bool Zoomable::smoothTransform() const
+{
+    return Preferences::instance()->smoothTransform(mScale != qreal(1) && mScale < qreal(2));
 }
 
 void Zoomable::zoomIn()

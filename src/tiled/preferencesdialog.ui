@@ -273,6 +273,19 @@
             </property>
            </widget>
           </item>
+          <item row="8" column="0">
+           <widget class="QLabel" name="textureFilteringLabel">
+            <property name="text">
+             <string>Texture filtering:</string>
+            </property>
+            <property name="buddy">
+             <cstring>textureFilteringCombo</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="1" colspan="2">
+           <widget class="QComboBox" name="textureFilteringCombo"/>
+          </item>
           <item row="4" column="1" colspan="2">
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
@@ -703,6 +716,7 @@
   <tabstop>objectLineWidth</tabstop>
   <tabstop>openGL</tabstop>
   <tabstop>naturalSorting</tabstop>
+  <tabstop>textureFilteringCombo</tabstop>
   <tabstop>objectSelectionBehaviorCombo</tabstop>
   <tabstop>preciseTileObjectSelection</tabstop>
   <tabstop>wheelZoomsByDefault</tabstop>

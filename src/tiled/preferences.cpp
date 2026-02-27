@@ -259,6 +259,30 @@ void Preferences::setObjectLabelVisibility(ObjectLabelVisiblity visibility)
     emit objectLabelVisibilityChanged(visibility);
 }
 
+Preferences::TextureFiltering Preferences::textureFiltering() const
+{
+    return static_cast<TextureFiltering>(get<int>("Interface/TextureFiltering", TextureFilteringAuto));
+}
+
+void Preferences::setTextureFiltering(TextureFiltering filtering)
+{
+    setValue(QLatin1String("Interface/TextureFiltering"), filtering);
+    emit textureFilteringChanged(filtering);
+}
+
+bool Preferences::smoothTransform(bool scaleIsSmooth) const
+{
+    switch (textureFiltering()) {
+    case TextureFilteringNearest:
+        return false;
+    case TextureFilteringSmooth:
+        return true;
+    case TextureFilteringAuto:
+    default:
+        return scaleIsSmooth;
+    }
+}
+
 bool Preferences::labelForHoveredObject() const
 {
     return get("Interface/LabelForHoveredObject", false);

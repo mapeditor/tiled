@@ -322,6 +322,8 @@ TilesetView::TilesetView(QWidget *parent)
 
     connect(prefs, &Preferences::showTilesetGridChanged,
             this, &TilesetView::setDrawGrid);
+    connect(prefs, &Preferences::textureFilteringChanged,
+            this, [this] { viewport()->update(); });
 
     connect(StyleHelper::instance(), &StyleHelper::styleApplied,
             this, &TilesetView::updateBackgroundColor);

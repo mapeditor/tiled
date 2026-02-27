@@ -71,6 +71,9 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     mUi->objectSelectionBehaviorCombo->addItems({ tr("Select From Any Layer"),
                                                   tr("Prefer Selected Layers"),
                                                   tr("Selected Layers Only") });
+    mUi->textureFilteringCombo->addItems({ tr("Auto"),
+                                           tr("Nearest Neighbor"),
+                                           tr("Smooth") });
 
     auto *pluginListModel = new PluginListModel(this);
     auto *pluginProxyModel = new QSortFilterProxyModel(this);
@@ -95,6 +98,10 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             preferences, &Preferences::setExportOnSave);
     connect(mUi->naturalSorting, &QCheckBox::toggled,
             preferences, &Preferences::setNaturalSorting);
+    connect(mUi->textureFilteringCombo, &QComboBox::currentIndexChanged,
+            this, [] (int index) {
+        Preferences::instance()->setTextureFiltering(static_cast<Preferences::TextureFiltering>(index));
+    });
 
     connect(mUi->embedTilesets, &QCheckBox::toggled, preferences, [preferences] (bool value) {
         preferences->setExportOption(Preferences::EmbedTilesets, value);
@@ -238,6 +245,7 @@ void PreferencesDialog::fromPreferences()
     mUi->autoScrolling->setChecked(MapView::ourAutoScrollingEnabled);
     mUi->smoothScrolling->setChecked(MapView::ourSmoothScrollingEnabled);
     mUi->duplicateAddsCopy->setChecked(Editor::duplicateAddsCopy);
+    mUi->textureFilteringCombo->setCurrentIndex(prefs->textureFiltering());
 
     const QFont customFont = prefs->customFont();
     mUi->fontGroupBox->setChecked(prefs->useCustomFont());
@@ -286,6 +294,9 @@ void PreferencesDialog::retranslateUi()
     mUi->objectSelectionBehaviorCombo->setItemText(0, tr("Select From Any Layer"));
     mUi->objectSelectionBehaviorCombo->setItemText(1, tr("Prefer Selected Layers"));
     mUi->objectSelectionBehaviorCombo->setItemText(3, tr("Selected Layers Only"));
+    mUi->textureFilteringCombo->setItemText(0, tr("Auto"));
+    mUi->textureFilteringCombo->setItemText(1, tr("Nearest Neighbor"));
+    mUi->textureFilteringCombo->setItemText(2, tr("Smooth"));
 }
 
 void PreferencesDialog::styleComboChanged()

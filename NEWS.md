@@ -1,5 +1,6 @@
 ### Unreleased
 
+* Added texture filtering preference: Auto, Nearest Neighbor, Smooth (#3801)
 * Added 'Collapse All' action and 'Only Expand to Current' mode to Project view (with rhythmcache, #4346)
 
 ### Tiled 1.12.0 (13 March 2026)
