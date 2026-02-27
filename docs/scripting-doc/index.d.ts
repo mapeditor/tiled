@@ -2788,13 +2788,35 @@ interface MapEditor {
   readonly selectedToolChanged: Signal<Tool | null>;
 
   /**
-   * Returns the tool with the given ID, or `null` if no tool was found.
+   * Returns the tool with the given `shortName`, or `null` if no tool was found.
    *
-   * The ID is the `shortName` used with {@link tiled.registerTool}.
+   * Can be used to retrieve tools registered with {@link tiled.registerTool}
+   * as well as the built-in tools:
+   *
+   * - BucketFillTool
+   * - CreateCapsuleObjectTool
+   * - CreateEllipseObjectTool
+   * - CreatePointObjectTool
+   * - CreatePolygonObjectTool
+   * - CreateRectangleObjectTool
+   * - CreateTemplateTool
+   * - CreateTileObjectTool
+   * - EditPolygonTool
+   * - EraserTool
+   * - LayerOffsetTool
+   * - MagicWandTool
+   * - ObjectReferenceTool (hidden)
+   * - ObjectSelectionTool
+   * - SelectSameTileTool
+   * - ShapeFillTool
+   * - StampTool
+   * - TileSelectionTool
+   * - WangTool
+   * - WorldMoveMapTool
    *
    * @since 1.12
    */
-  tool(id: string): Tool | null;
+  tool(shortName: string): Tool | null;
 }
 
 /**
