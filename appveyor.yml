@@ -27,7 +27,7 @@ environment:
       QT_ARCH: win32_mingw81
       QT_MODULES:
       QTDIR: C:\Qt\5.15.2\mingw81_32
-      PYTHONHOME: C:\Python312-x64
+      PYTHONHOME: C:\Python312
       MINGW: C:\Qt\Tools\mingw810_32
       MINGW_COMPONENT: tools_mingw
       MINGW_VARIANT: qt.tools.win32_mingw810
