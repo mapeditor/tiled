@@ -53,10 +53,11 @@ environment:
 configuration: Release
 
 install:
-  - choco install -y qbs --version 2.4.1
-  - py -m pip install aqtinstall
-  - if not exist %QTDIR%\bin\qmake.exe if "%QT_MODULES%"=="" (py -m aqt install-qt -O C:\Qt windows desktop %QT_VERSION% %QT_ARCH%) else (py -m aqt install-qt -O C:\Qt windows desktop %QT_VERSION% %QT_ARCH% -m %QT_MODULES%)
-  - if defined MINGW if not exist %MINGW%\bin\%CC% py -m aqt install-tool -O C:\Qt windows desktop %MINGW_COMPONENT% %MINGW_VARIANT%
+  - choco install -y qbs --version 3.1.1
+  - set PATH=%PYTHONHOME%;%PATH%
+  - python -m pip install aqtinstall
+  - if not exist %QTDIR%\bin\qmake.exe if "%QT_MODULES%"=="" (python -m aqt install-qt -O C:\Qt windows desktop %QT_VERSION% %QT_ARCH%) else (python -m aqt install-qt -O C:\Qt windows desktop %QT_VERSION% %QT_ARCH% -m %QT_MODULES%)
+  - if defined MINGW if not exist %MINGW%\bin\%CC% python -m aqt install-tool -O C:\Qt windows desktop %MINGW_COMPONENT% %MINGW_VARIANT%
   - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin
 
 before_build:
