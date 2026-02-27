@@ -113,8 +113,41 @@ void CreatePolygonObjectTool::deactivate(MapScene *scene)
 
 void CreatePolygonObjectTool::keyPressed(QKeyEvent *event)
 {
-    // TODO: Backspace for going back one step (and possibly override undo shortcut)
     // TODO: Modifier for finishing as polygon (Shift+Enter)
+    if (event->key() == Qt::Key_Backspace && state() == CreatingObject) {
+        MapObject *newObject = mNewMapObjectItem->mapObject();
+        QPolygonF currentPolygon = newObject->polygon();
+
+        // If only the starting point remains, cancel the whole operation
+        if (currentPolygon.size() <= 1) {
+            cancelNewMapObject();
+            return;
+        }
+
+        // Remove the last added point (or first, when extending from the beginning)
+        if (mMode == ExtendingAtBegin)
+            currentPolygon.removeFirst();
+        else
+            currentPolygon.removeLast();
+
+        // Apply the change to the object
+        if (mMode == Creating) {
+            mNewMapObjectItem->setPolygon(currentPolygon);
+
+            // Update handles if we can no longer close as polygon
+            if (currentPolygon.size() <= 2)
+                updateHandles();
+        } else {
+            mapDocument()->undoStack()->push(
+                new ChangePolygon(mapDocument(), newObject, currentPolygon));
+            updateHandles();
+        }
+
+        // Rebuild the overlay to reflect the removed point
+        synchronizeOverlayObject();
+        return;
+    }
+
     CreateObjectTool::keyPressed(event);
 }
 
