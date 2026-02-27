@@ -48,6 +48,7 @@
 * Workaround tileset view layout regression in Qt 6.9
 * Raised minimum supported Qt version from 5.12 to 5.15.2
 * AppImage: Updated to Sentry 0.12.8
+* Updated Bulgarian translation
 
 ### Tiled 1.11.2 (28 January 2025)
 
