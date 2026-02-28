@@ -21,6 +21,7 @@
 
 #pragma once
 
+#include "editormanager.h"
 #include "mapdocument.h"
 #include "tilesetdocument.h"
 
@@ -68,7 +69,6 @@ class DocumentManager : public QObject
     ~DocumentManager() override;
 
     friend class MainWindow;
-    friend class Document;      // for file watching
 
 public:
     static DocumentManager *instance();
@@ -86,7 +86,7 @@ public:
     void saveState();
     void restoreState();
 
-    QUndoGroup *undoGroup() const;
+    QUndoGroup *undoGroup() const; 
 
     Document *currentDocument() const;
 
@@ -196,6 +196,10 @@ private:
     void onWorldUnloaded(WorldDocument *worldDocument);
 
     void currentIndexChanged();
+    void onEditorManagerDocumentOpened(Document *document);
+    void onEditorManagerCurrentDocumentChanged(Document *document);
+    void onEditorManagerDocumentAboutToClose(Document *document);
+
     void fileNameChanged(const QString &fileName,
                          const QString &oldFileName);
     void updateDocumentTab(Document *document);
@@ -225,9 +229,6 @@ private:
     MapDocument *openMapFile(const QString &path);
     TilesetDocument *openTilesetFile(const QString &path);
 
-    void registerDocument(Document *document);
-    void unregisterDocument(Document *document);
-
     QIcon mLockedIcon;
 
     QVector<DocumentPtr> mDocuments;
@@ -245,10 +246,6 @@ private:
 
     QHash<Document::DocumentType, Editor*> mEditorForType;
 
-    QUndoGroup *mUndoGroup;
-    FileSystemWatcher *mFileSystemWatcher;
-    QHash<QString, Document*> mDocumentByFileName;
-
     static DocumentManager *mInstance;
 
     bool mMultiDocumentClose;
@@ -262,7 +259,7 @@ private:
  */
 inline QUndoGroup *DocumentManager::undoGroup() const
 {
-    return mUndoGroup;
+    return EditorManager::instance()->undoGroup();
 }
 
 /**
@@ -280,7 +277,7 @@ inline bool DocumentManager::saveDocument(Document *document)
  */
 inline const QVector<DocumentPtr> &DocumentManager::documents() const
 {
-    return mDocuments;
+    return EditorManager::instance()->documents();
 }
 
 inline TilesetDocumentsModel *DocumentManager::tilesetDocumentsModel() const

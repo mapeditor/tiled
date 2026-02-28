@@ -21,6 +21,7 @@
 
 #include "documentmanager.h"
 
+#include "editormanager.h"
 #include "abstracttool.h"
 #include "adjusttileindexes.h"
 #include "brokenlinks.h"
@@ -93,8 +94,6 @@ DocumentManager::DocumentManager(QObject *parent)
     , mBrokenLinksModel(new BrokenLinksModel(this))
     , mBrokenLinksWidget(new BrokenLinksWidget(mBrokenLinksModel, mWidget))
     , mMapEditor(nullptr) // todo: look into removing this
-    , mUndoGroup(new QUndoGroup(this))
-    , mFileSystemWatcher(new FileSystemWatcher(this))
     , mMultiDocumentClose(false)
 {
     Q_ASSERT(!mInstance);
@@ -139,8 +138,22 @@ DocumentManager::DocumentManager(QObject *parent)
     connect(mTabBar, &QWidget::customContextMenuRequested,
             this, &DocumentManager::tabContextMenuRequested);
 
-    connect(mFileSystemWatcher, &FileSystemWatcher::pathsChanged,
+    connect(EditorManager::instance()->fileSystemWatcher(), &FileSystemWatcher::pathsChanged,
             this, &DocumentManager::filesChanged);
+
+    connect(EditorManager::instance(), &EditorManager::documentOpened,
+            this, &DocumentManager::onEditorManagerDocumentOpened);
+    connect(EditorManager::instance(), &EditorManager::currentDocumentChanged,
+            this, &DocumentManager::onEditorManagerCurrentDocumentChanged);
+    connect(EditorManager::instance(), &EditorManager::documentAboutToClose,
+            this, &DocumentManager::onEditorManagerDocumentAboutToClose);
+    connect(EditorManager::instance(), &EditorManager::tilesetDocumentAdded,
+            this, [this](TilesetDocument *tilesetDocument) {
+        if (!mTilesetDocumentsModel->contains(tilesetDocument)) {
+            mTilesetDocumentsModel->append(tilesetDocument);
+            emit tilesetDocumentAdded(tilesetDocument);
+        }
+    });
 
     connect(mBrokenLinksModel, &BrokenLinksModel::hasBrokenLinksChanged,
             mBrokenLinksWidget, &BrokenLinksWidget::setVisible);
@@ -190,11 +203,11 @@ DocumentManager::DocumentManager(QObject *parent)
 
     SelectCustomProperty::activated = [this] (const SelectCustomProperty &select) {
         openFile(select.fileName);
-        const int i = findDocument(select.fileName);
+        const int i = EditorManager::instance()->findDocument(select.fileName);
         if (i == -1)
             return;
 
-        auto doc = mDocuments.at(i).data();
+        auto doc = EditorManager::instance()->documents().at(i).data();
         Object *obj = nullptr;
 
         switch (doc->type()) {
@@ -290,7 +303,7 @@ DocumentManager::DocumentManager(QObject *parent)
 DocumentManager::~DocumentManager()
 {
     // All documents should be closed gracefully beforehand
-    Q_ASSERT(mDocuments.isEmpty());
+    Q_ASSERT(EditorManager::instance()->documents().isEmpty());
     Q_ASSERT(mTilesetDocumentsModel->rowCount() == 0);
     delete mWidget;
 
@@ -364,7 +377,10 @@ Document *DocumentManager::currentDocument() const
     if (index == -1)
         return nullptr;
 
-    return mDocuments.at(index).data();
+    const auto &docs = EditorManager::instance()->documents();
+    if (index >= docs.size())
+        return nullptr;
+    return docs.at(index).data();
 }
 
 /**
@@ -390,21 +406,12 @@ MapView *DocumentManager::viewForDocument(MapDocument *mapDocument) const
  */
 int DocumentManager::findDocument(const QString &fileName) const
 {
-    const QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
-    if (canonicalFilePath.isEmpty()) // file doesn't exist
-        return -1;
-
-    for (int i = 0; i < mDocuments.size(); ++i) {
-        if (mDocuments.at(i)->canonicalFilePath() == canonicalFilePath)
-            return i;
-    }
-
-    return -1;
+    return EditorManager::instance()->findDocument(fileName);
 }
 
 int DocumentManager::findDocument(Document *document) const
 {
-    return indexOf(mDocuments, document);
+    return EditorManager::instance()->findDocument(document);
 }
 
 /**
@@ -542,8 +549,7 @@ void DocumentManager::saveFile()
  */
 void DocumentManager::addDocument(const DocumentPtr &document)
 {
-    const int index = insertDocument(mDocuments.size(), document);
-    switchToDocument(index);
+    EditorManager::instance()->addDocument(document);
 
     if (mBrokenLinksModel->hasBrokenLinks())
         mBrokenLinksWidget->show();
@@ -551,51 +557,74 @@ void DocumentManager::addDocument(const DocumentPtr &document)
 
 int DocumentManager::insertDocument(int index, const DocumentPtr &document)
 {
-    Q_ASSERT(document);
-    Q_ASSERT(!mDocuments.contains(document));
+    EditorManager::instance()->insertDocument(index, document);
+    return index;
+}
 
-    mDocuments.insert(index, document);
-    mUndoGroup->addStack(document->undoStack());
+void DocumentManager::onEditorManagerDocumentOpened(Document *document)
+{
+    const int index = EditorManager::instance()->findDocument(document);
+    if (index < 0)
+        return;
 
-    Document *documentPtr = document.data();
-
-    if (auto mapDocument = qobject_cast<MapDocument*>(documentPtr)) {
-        for (const SharedTileset &tileset : mapDocument->map()->tilesets())
-            addToTilesetDocument(tileset, mapDocument);
-    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(documentPtr)) {
-        // We may have opened a bare tileset that wasn't seen before
-        if (!mTilesetDocumentsModel->contains(tilesetDocument)) {
-            mTilesetDocumentsModel->append(tilesetDocument);
-            emit tilesetDocumentAdded(tilesetDocument);
-        }
-    }
 
     if (Editor *editor = mEditorForType.value(document->type()))
-        editor->addDocument(documentPtr);
+        editor->addDocument(document);
 
-    // Connect before adding the tab, so that we handle the 'changed' signal
-    // first, since we may be creating TilesetDocument instances for tilesets
-    // used by a reloaded map (design not ideal...).
-    connect(documentPtr, &Document::fileNameChanged, this, &DocumentManager::fileNameChanged);
-    connect(documentPtr, &Document::modifiedChanged, this, [=] { updateDocumentTab(documentPtr); });
-    connect(documentPtr, &Document::isReadOnlyChanged, this, [=] { updateDocumentTab(documentPtr); });
-    connect(documentPtr, &Document::changed, this, &DocumentManager::onDocumentChanged);
-    connect(documentPtr, &Document::saved, this, &DocumentManager::onDocumentSaved);
+    connect(document, &Document::fileNameChanged, this, &DocumentManager::fileNameChanged);
+    connect(document, &Document::modifiedChanged, this, [=] { updateDocumentTab(document); });
+    connect(document, &Document::isReadOnlyChanged, this, [=] { updateDocumentTab(document); });
+    connect(document, &Document::changed, this, &DocumentManager::onDocumentChanged);
+    connect(document, &Document::saved, this, &DocumentManager::onDocumentSaved);
 
     mTabBar->insertTab(index, QString());
-    updateDocumentTab(documentPtr);
+    updateDocumentTab(document);
 
-    if (auto *mapDocument = qobject_cast<MapDocument*>(documentPtr)) {
+    if (auto *mapDocument = qobject_cast<MapDocument*>(document)) {
         connect(mapDocument, &MapDocument::tilesetAdded, this, &DocumentManager::tilesetAdded);
         connect(mapDocument, &MapDocument::tilesetRemoved, this, &DocumentManager::tilesetRemoved);
     }
 
-    if (auto *tilesetDocument = qobject_cast<TilesetDocument*>(documentPtr))
+    if (auto *tilesetDocument = qobject_cast<TilesetDocument*>(document))
         connect(tilesetDocument, &TilesetDocument::tilesetNameChanged, this, &DocumentManager::tilesetNameChanged);
 
-    emit documentOpened(documentPtr);
+    if (EditorManager::instance()->currentDocument() == document)
+        mTabBar->setCurrentIndex(index);
+}
 
-    return index;
+void DocumentManager::onEditorManagerCurrentDocumentChanged(Document *document)
+{
+    if (!document) {
+        mTabBar->setCurrentIndex(-1);
+        return;
+    }
+    const int index = EditorManager::instance()->findDocument(document);
+    if (index >= 0 && mTabBar->currentIndex() != index)
+        mTabBar->setCurrentIndex(index);
+}
+
+void DocumentManager::onEditorManagerDocumentAboutToClose(Document *document)
+{
+    const int index = EditorManager::instance()->findDocument(document);
+    if (index < 0)
+        return;
+
+    document->disconnect(this);
+
+    if (Editor *editor = mEditorForType.value(document->type()))
+        editor->removeDocument(document);
+
+    if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+        if (tilesetDocument->mapDocuments().isEmpty()) {
+            mTilesetDocumentsModel->remove(tilesetDocument);
+            emit tilesetDocumentRemoved(tilesetDocument);
+        }
+    }
+
+    mTabBar->removeTab(index);
+
+    if (!document->fileName().isEmpty())
+        Preferences::instance()->addRecentFile(document->fileName());
 }
 
 /**
@@ -634,38 +663,7 @@ DocumentPtr DocumentManager::loadDocument(const QString &fileName,
                                           FileFormat *fileFormat,
                                           QString *error)
 {
-    // Try to find it in already loaded documents
-    QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
-    if (Document *doc = mDocumentByFileName.value(canonicalFilePath))
-        return doc->sharedFromThis();
-
-    if (!fileFormat) {
-        // Try to find a plugin that implements support for this format
-        fileFormat = PluginManager::find<FileFormat>([&](FileFormat *format) {
-            return format->hasCapabilities(FileFormat::Read) && format->supportsFile(fileName);
-        });
-    }
-
-    if (!fileFormat) {
-        if (error)
-            *error = tr("Unrecognized file format.");
-        return DocumentPtr();
-    }
-
-    DocumentPtr document;
-
-    if (MapFormat *mapFormat = qobject_cast<MapFormat*>(fileFormat)) {
-        document = MapDocument::load(fileName, mapFormat, error);
-    } else if (TilesetFormat *tilesetFormat = qobject_cast<TilesetFormat*>(fileFormat)) {
-        // It could be, that we have already loaded this tileset while loading some map.
-        if (auto tilesetDocument = findTilesetDocument(fileName)) {
-            document = tilesetDocument->sharedFromThis();
-        } else {
-            document = TilesetDocument::load(fileName, tilesetFormat, error);
-        }
-    }
-
-    return document;
+    return EditorManager::instance()->loadDocument(fileName, fileFormat, error);
 }
 
 /**
@@ -675,20 +673,12 @@ DocumentPtr DocumentManager::loadDocument(const QString &fileName,
  */
 bool DocumentManager::saveDocument(Document *document, const QString &fileName)
 {
-    if (fileName.isEmpty())
-        return false;
-
-    emit documentAboutToBeSaved(document);
-
     QString error;
-    if (!document->save(fileName, &error)) {
+    if (!EditorManager::instance()->saveDocument(document, fileName, &error)) {
         switchToDocument(document);
         QMessageBox::critical(mWidget->window(), QCoreApplication::translate("Tiled::MainWindow", "Error Saving File"), error);
         return false;
     }
-
-    emit documentSaved(document);
-
     return true;
 }
 
@@ -812,8 +802,7 @@ void DocumentManager::closeCurrentDocument()
  */
 void DocumentManager::closeAllDocuments()
 {
-    while (!mDocuments.isEmpty())
-        closeCurrentDocument();
+    EditorManager::instance()->closeAllDocuments();
 }
 
 /**
@@ -857,34 +846,11 @@ void DocumentManager::closeDocumentsToRight(int index)
  * Closes the document at the given \a index. Will not ask the user whether
  * to save any changes!
  *
- * The file is added to the list of recent files.
+ * The file is added to the list of recent files (in onEditorManagerDocumentAboutToClose).
  */
 void DocumentManager::closeDocumentAt(int index)
 {
-    auto document = mDocuments.at(index);       // keeps alive and may delete
-
-    emit documentAboutToClose(document.data());
-
-    mDocuments.removeAt(index);
-    mTabBar->removeTab(index);
-
-    document->disconnect(this);
-
-    if (Editor *editor = mEditorForType.value(document->type()))
-        editor->removeDocument(document.data());
-
-    if (auto mapDocument = qobject_cast<MapDocument*>(document.data())) {
-        for (const SharedTileset &tileset : mapDocument->map()->tilesets())
-            removeFromTilesetDocument(tileset, mapDocument);
-    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document.data())) {
-        if (tilesetDocument->mapDocuments().isEmpty()) {
-            mTilesetDocumentsModel->remove(tilesetDocument);
-            emit tilesetDocumentRemoved(tilesetDocument);
-        }
-    }
-
-    if (!document->fileName().isEmpty())
-        Preferences::instance()->addRecentFile(document->fileName());
+    EditorManager::instance()->closeDocumentAt(index);
 }
 
 /**
@@ -910,8 +876,10 @@ bool DocumentManager::reloadCurrentDocument()
  */
 bool DocumentManager::reloadDocumentAt(int index)
 {
-    const auto document = mDocuments.at(index);
-    return reloadDocument(document.data());
+    const auto &docs = EditorManager::instance()->documents();
+    if (index < 0 || index >= docs.size())
+        return false;
+    return reloadDocument(docs.at(index).data());
 }
 
 /**
@@ -924,62 +892,18 @@ bool DocumentManager::reloadDocumentAt(int index)
  */
 bool DocumentManager::reloadDocument(Document *document)
 {
-    QString error;
+    if (!EditorManager::instance()->reloadDocument(document))
+        return false;
 
-    switch (document->type()) {
-    case Document::MapDocumentType: {
-        auto mapDocument = static_cast<MapDocument*>(document);
-        if (!mapDocument->reload(&error)) {
-            emit reloadError(tr("%1:\n\n%2").arg(document->fileName(), error));
-            return false;
-        }
-
-        const bool isCurrent = document == currentDocument();
-        if (isCurrent) {
-            if (mBrokenLinksModel->hasBrokenLinks())
-                mBrokenLinksWidget->show();
-        }
-
-        // Only check tileset columns for open maps since for other maps we
-        // may not have TilesetDocument instances created for their tilesets.
+    if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
+        if (document == currentDocument() && mBrokenLinksModel->hasBrokenLinks())
+            mBrokenLinksWidget->show();
         if (findDocument(document) != -1)
             checkTilesetColumns(mapDocument);
-
-        break;
     }
-    case Document::TilesetDocumentType: {
-        auto tilesetDocument = static_cast<TilesetDocument*>(document);
-        if (tilesetDocument->isEmbedded()) {
-            // For embedded tilesets, we need to reload the map
-            if (!reloadDocument(tilesetDocument->mapDocuments().first()))
-                return false;
-        } else if (!tilesetDocument->reload(&error)) {
-            emit reloadError(tr("%1:\n\n%2").arg(document->fileName(), error));
-            return false;
-        }
-
-        tilesetDocument->setChangedOnDisk(false);
-        break;
-    }
-    case Document::WorldDocumentType: {
-        auto worldDocument = static_cast<WorldDocument*>(document);
-        if (!worldDocument->reload(&error)) {
-            emit reloadError(tr("%1:\n\n%2").arg(document->fileName(), error));
-            return false;
-        }
-        break;
-    }
-    case Document::ProjectDocumentType:
-        // We don't support reloading the project at the moment
-        break;
-    }
-
-    // We may need to hide the file changed warning
     if (auto current = currentDocument())
         if (!isDocumentChangedOnDisk(current))
             mFileChangedWarning->setVisible(false);
-
-    emit documentReloaded(document);
 
     return true;
 }
@@ -987,6 +911,7 @@ bool DocumentManager::reloadDocument(Document *document)
 void DocumentManager::currentIndexChanged()
 {
     auto document = currentDocument();
+    EditorManager::instance()->setCurrentDocument(document);
     Editor *editor = nullptr;
     bool changed = false;
 
@@ -1084,7 +1009,8 @@ void DocumentManager::onDocumentSaved()
 
 void DocumentManager::documentTabMoved(int from, int to)
 {
-    mDocuments.move(from, to);
+
+    EditorManager::instance()->moveDocument(from, to);
 }
 
 void DocumentManager::tabContextMenuRequested(const QPoint &pos)
@@ -1095,7 +1021,7 @@ void DocumentManager::tabContextMenuRequested(const QPoint &pos)
 
     QMenu menu(mTabBar->window());
 
-    const Document *fileDocument = mDocuments.at(index).data();
+    const Document *fileDocument = EditorManager::instance()->documents().at(index).data();
     if (fileDocument->type() == Document::TilesetDocumentType) {
         auto tilesetDocument = static_cast<const TilesetDocument*>(fileDocument);
         if (tilesetDocument->isEmbedded())
@@ -1151,7 +1077,7 @@ void DocumentManager::filesChanged(const QStringList &fileNames)
 
 void DocumentManager::fileChanged(const QString &fileName)
 {
-    const auto document = mDocumentByFileName.value(fileName);
+    const auto document = EditorManager::instance()->documentForFileName(fileName);
     if (!document) {
         qWarning() << "Document not found for changed file:" << fileName;
         return;
@@ -1194,22 +1120,12 @@ void DocumentManager::hideChangedWarning()
 
 TilesetDocument* DocumentManager::findTilesetDocument(const SharedTileset &tileset) const
 {
-    return TilesetDocument::findDocumentForTileset(tileset);
+    return EditorManager::instance()->findTilesetDocument(tileset);
 }
 
 TilesetDocument* DocumentManager::findTilesetDocument(const QString &fileName) const
 {
-    const QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
-    if (canonicalFilePath.isEmpty()) // file doesn't exist
-        return nullptr;
-
-    for (const auto &tilesetDocument : mTilesetDocumentsModel->tilesetDocuments()) {
-        QString name = tilesetDocument->fileName();
-        if (!name.isEmpty() && QFileInfo(name).canonicalFilePath() == canonicalFilePath)
-            return tilesetDocument.data();
-    }
-
-    return nullptr;
+    return EditorManager::instance()->findTilesetDocument(fileName);
 }
 
 /**
@@ -1217,58 +1133,23 @@ TilesetDocument* DocumentManager::findTilesetDocument(const QString &fileName) c
  */
 TilesetDocument *DocumentManager::openTileset(const SharedTileset &tileset)
 {
-    TilesetDocumentPtr tilesetDocument;
-    if (auto existingTilesetDocument = findTilesetDocument(tileset))
-        tilesetDocument = existingTilesetDocument->sharedFromThis();
-    else
-        tilesetDocument = TilesetDocumentPtr::create(tileset);
-
-    if (!switchToDocument(tilesetDocument.data()))
-        addDocument(tilesetDocument);
-
-    return tilesetDocument.data();
+    return EditorManager::instance()->openTileset(tileset);
 }
 
 void DocumentManager::addToTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument)
 {
-    if (auto existingTilesetDocument = findTilesetDocument(tileset)) {
-        existingTilesetDocument->addMapDocument(mapDocument);
-    } else {
-        // Create TilesetDocument instance when it doesn't exist yet
-        auto tilesetDocument = TilesetDocumentPtr::create(tileset);
-        tilesetDocument->addMapDocument(mapDocument);
-
-        mTilesetDocumentsModel->append(tilesetDocument.data());
-        emit tilesetDocumentAdded(tilesetDocument.data());
-    }
+    EditorManager::instance()->addToTilesetDocument(tileset, mapDocument);
 }
 
 void DocumentManager::removeFromTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument)
 {
-    auto tilesetDocument = findTilesetDocument(tileset);
-    auto tilesetDocumentPtr = tilesetDocument->sharedFromThis();    // keeps alive and may delete
-
-    tilesetDocument->removeMapDocument(mapDocument);
-
-    bool unused = tilesetDocument->mapDocuments().isEmpty();
-    bool external = tilesetDocument->tileset()->isExternal();
-    int index = findDocument(tilesetDocument);
-
-    // Remove the TilesetDocument when its tileset is no longer reachable
-    if (unused && !(index >= 0 && external)) {
-        if (index != -1) {
-            closeDocumentAt(index);
-        } else {
-            mTilesetDocumentsModel->remove(tilesetDocument);
-            emit tilesetDocumentRemoved(tilesetDocument);
-        }
-    }
+    EditorManager::instance()->removeFromTilesetDocument(tileset, mapDocument);
 }
 
 void DocumentManager::updateSession() const
 {
     QStringList fileList;
-    for (const auto &document : mDocuments) {
+    for (const auto &document : EditorManager::instance()->documents()) {
         if (!document->fileName().isEmpty())
             fileList.append(document->fileName());
     }
@@ -1283,48 +1164,19 @@ void DocumentManager::updateSession() const
 MapDocument *DocumentManager::openMapFile(const QString &path)
 {
     openFile(path);
-    const int i = findDocument(path);
-    return i == -1 ? nullptr : qobject_cast<MapDocument*>(mDocuments.at(i).data());
+    const int i = EditorManager::instance()->findDocument(path);
+    const auto &docs = EditorManager::instance()->documents();
+    return i == -1 || i >= docs.size() ? nullptr : qobject_cast<MapDocument*>(docs.at(i).data());
 }
 
 TilesetDocument *DocumentManager::openTilesetFile(const QString &path)
 {
     openFile(path);
-    const int i = findDocument(path);
-    return i == -1 ? nullptr : qobject_cast<TilesetDocument*>(mDocuments.at(i).data());
+    const int i = EditorManager::instance()->findDocument(path);
+    const auto &docs = EditorManager::instance()->documents();
+    return i == -1 || i >= docs.size() ? nullptr : qobject_cast<TilesetDocument*>(docs.at(i).data());
 }
 
-void DocumentManager::registerDocument(Document *document)
-{
-    const QString &canonicalPath = document->canonicalFilePath();
-    if (canonicalPath.isEmpty())
-        return;
-
-    // Always add path because FileSystemWatcher handles duplicates
-    mFileSystemWatcher->addPath(canonicalPath);
-
-    const auto i = mDocumentByFileName.constFind(canonicalPath);
-    if (i != mDocumentByFileName.constEnd()) {
-        qWarning() << "Document already registered:" << canonicalPath;
-        return;
-    }
-
-    mDocumentByFileName.insert(canonicalPath, document);
-}
-
-void DocumentManager::unregisterDocument(Document *document)
-{
-    const QString &canonicalPath = document->canonicalFilePath();
-    if (canonicalPath.isEmpty())
-        return;
-
-    // Always remove path because FileSystemWatcher handles duplicates
-    mFileSystemWatcher->removePath(canonicalPath);
-
-    const auto i = mDocumentByFileName.constFind(canonicalPath);
-    if (i != mDocumentByFileName.constEnd() && *i == document)
-        mDocumentByFileName.erase(i);
-}
 
 bool DocumentManager::isAnyWorldModified() const
 {
@@ -1361,13 +1213,13 @@ QString DocumentManager::fileDialogStartLocation() const
 
 void DocumentManager::onWorldLoaded(WorldDocument *worldDocument)
 {
-    mUndoGroup->addStack(worldDocument->undoStack());
+    EditorManager::instance()->undoGroup()->addStack(worldDocument->undoStack());
     emit documentOpened(worldDocument);
 }
 
 void DocumentManager::onWorldUnloaded(WorldDocument *worldDocument)
 {
-    mUndoGroup->removeStack(worldDocument->undoStack());
+    EditorManager::instance()->undoGroup()->removeStack(worldDocument->undoStack());
 }
 
 static bool mayNeedColumnCountAdjustment(const Tileset &tileset)
@@ -1394,7 +1246,7 @@ void DocumentManager::tilesetImagesChanged(Tileset *tileset)
     SharedTileset sharedTileset = tileset->sharedFromThis();
     QList<Document*> affectedDocuments;
 
-    for (const auto &document : std::as_const(mDocuments)) {
+    for (const auto &document : std::as_const(EditorManager::instance()->documents())) {
         if (auto mapDocument = qobject_cast<MapDocument*>(document.data())) {
             if (mapDocument->map()->tilesets().contains(sharedTileset))
                 affectedDocuments.append(document.data());
