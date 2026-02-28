@@ -30,10 +30,10 @@
 #include "mapdocument.h"
 #include "stampactions.h"
 
-#include <algorithm>
 #include <QCheckBox>
 #include <QCoreApplication>
 #include <QKeyEvent>
+#include <QSignalBlocker>
 #include <QToolBar>
 
 using namespace Tiled;
@@ -68,6 +68,7 @@ void BucketFillTool::tilePositionChanged(QPoint tilePos)
         return;
 
     bool shiftPressed = mModifiers & Qt::ShiftModifier;
+    const bool contiguous = effectiveContiguous();
     bool fillRegionChanged = false;
 
     // This clears the connections so we don't get callbacks
@@ -78,14 +79,14 @@ void BucketFillTool::tilePositionChanged(QPoint tilePos)
     // and the shift modifier hasn't changed.
     if (!mFillRegion.contains(tilePos) ||
             shiftPressed != mLastShiftStatus ||
-            mContiguous != mLastContiguousStatus) {
+            contiguous != mLastContiguousStatus) {
 
         // Clear overlay to make way for a new one
         AbstractTileFillTool::clearOverlay();
 
         // Cache information about how the fill region was created
         mLastShiftStatus = shiftPressed;
-        mLastContiguousStatus = mContiguous;
+        mLastContiguousStatus = contiguous;
 
         // Get the new fill region
         if (!shiftPressed) {
@@ -116,28 +117,14 @@ void BucketFillTool::tilePositionChanged(QPoint tilePos)
                 const auto condition = [&](const Cell &cell) {
                     return mMatchCells.contains(cell);
                 };
-                if (mContiguous) {
+                if (contiguous) {
                     mFillRegion = regionComputer.computePaintableFillRegion(tilePos, condition);
                 } else {
-                    const bool infinite = mapDocument()->map()->infinite();
                     const QPoint localPos = tilePos - tileLayer->position();
                     QRegion resultRegion;
 
-                    if (infinite || tileLayer->contains(localPos)) {
-                        resultRegion = tileLayer->region(condition);
-
-                        const bool hasEmptyCell = std::any_of(mMatchCells.begin(),
-                                                              mMatchCells.end(),
-                                                              [](const Cell &cell) { return cell.isEmpty(); });
-                        if (hasEmptyCell) {
-                            QRegion emptyRegion = infinite ? tileLayer->bounds() : tileLayer->rect();
-                            emptyRegion -= tileLayer->region();
-                            resultRegion += emptyRegion;
-                        }
-                    }
-
-                    if (const QRegion &selection = mapDocument()->selectedArea(); !selection.isEmpty())
-                        resultRegion &= selection;
+                    if (mapDocument()->map()->infinite() || tileLayer->contains(localPos))
+                        resultRegion = regionComputer.computePaintableRegion(condition);
 
                     mFillRegion = resultRegion;
                 }
@@ -242,7 +229,11 @@ void BucketFillTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
     mModifiers = modifiers;
 
     const bool fillSelection = mModifiers & Qt::ShiftModifier;
-    if (mLastShiftStatus != fillSelection)
+    const bool contiguous = effectiveContiguous();
+
+    updateContiguousCheckBox();
+
+    if (mLastShiftStatus != fillSelection || mLastContiguousStatus != contiguous)
         tilePositionChanged(tilePosition());
 }
 
@@ -257,20 +248,38 @@ void BucketFillTool::populateToolBar(QToolBar *toolBar)
 {
     AbstractTileFillTool::populateToolBar(toolBar);
 
-    auto contiguousCheckBox = new QCheckBox(tr("Contiguous"), toolBar);
-    contiguousCheckBox->setChecked(mContiguous);
-    connect(contiguousCheckBox, &QCheckBox::toggled, this, &BucketFillTool::setContiguous);
-    toolBar->addWidget(contiguousCheckBox);
+    mContiguousCheckBox = new QCheckBox(tr("Contiguous"), toolBar);
+    updateContiguousCheckBox();
+    connect(mContiguousCheckBox, &QCheckBox::toggled, this, &BucketFillTool::setContiguous);
+    toolBar->addWidget(mContiguousCheckBox);
 }
 
 void BucketFillTool::setContiguous(bool contiguous)
 {
-    if (mContiguous == contiguous)
+    const bool persistentContiguous = (mModifiers & Qt::AltModifier) ? !contiguous : contiguous;
+
+    if (mContiguous == persistentContiguous)
         return;
 
-    mContiguous = contiguous;
+    mContiguous = persistentContiguous;
+
+    updateContiguousCheckBox();
     mMatchCells.clear();
     tilePositionChanged(tilePosition());
+}
+
+bool BucketFillTool::effectiveContiguous() const
+{
+    return mContiguous != static_cast<bool>(mModifiers & Qt::AltModifier);
+}
+
+void BucketFillTool::updateContiguousCheckBox()
+{
+    if (!mContiguousCheckBox)
+        return;
+
+    const QSignalBlocker blocker(mContiguousCheckBox);
+    mContiguousCheckBox->setChecked(effectiveContiguous());
 }
 
 void BucketFillTool::clearOverlay()

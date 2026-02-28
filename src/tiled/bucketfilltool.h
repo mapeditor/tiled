@@ -25,6 +25,9 @@
 #include "abstracttilefilltool.h"
 #include "tilelayer.h"
 
+#include <QPointer>
+
+class QCheckBox;
 class QToolBar;
 
 namespace Tiled {
@@ -61,10 +64,12 @@ protected:
 
 private:
     void setContiguous(bool contiguous);
+    bool effectiveContiguous() const;
+    void updateContiguousCheckBox();
     void clearOverlay();
 
-    Qt::KeyboardModifiers mModifiers;
-    bool mLastShiftStatus;
+    Qt::KeyboardModifiers mModifiers = Qt::NoModifier;
+    bool mLastShiftStatus = false;
     bool mLastContiguousStatus = true;
 
     /**
@@ -79,6 +84,7 @@ private:
     QRegion mFillRegion;
     QVector<Cell> mMatchCells;
     bool mContiguous = true;
+    QPointer<QCheckBox> mContiguousCheckBox;
 
     void makeConnections();
 };
