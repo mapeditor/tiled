@@ -141,6 +141,11 @@ bool Preferences::showGrid() const
     return get("Interface/ShowGrid", true);
 }
 
+bool Preferences::showMapRulers() const
+{
+    return get("Interface/ShowMapRulers", false);
+}
+
 bool Preferences::showTileObjectOutlines() const
 {
     return get("Interface/ShowTileObjectOutlines", false);
@@ -312,6 +317,12 @@ void Preferences::setShowGrid(bool showGrid)
 {
     setValue(QLatin1String("Interface/ShowGrid"), showGrid);
     emit showGridChanged(showGrid);
+}
+
+void Preferences::setShowMapRulers(bool enabled)
+{
+    setValue(QLatin1String("Interface/ShowMapRulers"), enabled);
+    emit showMapRulersChanged(enabled);
 }
 
 void Preferences::setShowTileObjectOutlines(bool enabled)

@@ -20,6 +20,7 @@
 
 #include "mapview.h"
 
+#include "changeevents.h"
 #include "flexiblescrollbar.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -36,6 +37,7 @@
 #include <QCursor>
 #include <QGesture>
 #include <QGestureEvent>
+#include <QPainter>
 #include <QPinchGesture>
 #include <QScrollBar>
 #include <QWheelEvent>
@@ -117,6 +119,27 @@ MapView::MapView(QWidget *parent)
 
         setInteractive(mode == PannableViewHelper::NoPanning);
         updatePanningDriverState();
+    });
+
+    // Update view when preferences change
+    Preferences *prefs = Preferences::instance();
+    connect(prefs, &Preferences::showViewportChanged,
+            this, [this] { viewport()->update(); });
+    connect(prefs, &Preferences::showMapRulersChanged, this, [this] {
+        if (scene())
+            scene()->invalidate(sceneRect(), QGraphicsScene::ForegroundLayer);
+    });
+    connect(prefs, &Preferences::gridColorChanged, this, [this] {
+        if (scene() && prefs->showMapRulers())
+            scene()->invalidate(sceneRect(), QGraphicsScene::ForegroundLayer);
+    });
+    connect(prefs, &Preferences::gridMajorChanged, this, [this] {
+        if (scene() && prefs->showMapRulers())
+            scene()->invalidate(sceneRect(), QGraphicsScene::ForegroundLayer);
+    });
+    connect(prefs, &Preferences::gridFineChanged, this, [this] {
+        if (scene() && prefs->showMapRulers())
+            scene()->invalidate(sceneRect(), QGraphicsScene::ForegroundLayer);
     });
 }
 
@@ -355,6 +378,14 @@ void MapView::setMapDocument(MapDocument *mapDocument)
     if (mapDocument) {
         connect(mapDocument, &MapDocument::focusMapObjectRequested,
                 this, &MapView::focusMapObject);
+        connect(mapDocument, &MapDocument::changed,
+                this, [this](const ChangeEvent &event) {
+            if (event.type == ChangeEvent::MapChanged) {
+                const auto &mapEvent = static_cast<const MapChangeEvent&>(event);
+                if (mapEvent.property == Map::ViewportSizeProperty)
+                    viewport()->update();
+            }
+        });
     }
 }
 
@@ -478,6 +509,149 @@ void MapView::paintEvent(QPaintEvent *event)
         scene->setPainterScale(scale());
 
     QGraphicsView::paintEvent(event);
+
+    // Draw viewport overlay if enabled
+    if (mMapDocument && Preferences::instance()->showViewport()) {
+        const QSize viewportSize = mMapDocument->map()->viewportSize();
+        if (!viewportSize.isEmpty() && viewportSize.width() > 0 && viewportSize.height() > 0) {
+            QPainter painter(viewport());
+            painter.setRenderHint(QPainter::Antialiasing);
+
+            // Calculate viewport rectangle in scene coordinates
+            const QRectF viewportRect = mapToScene(viewport()->rect()).boundingRect();
+            const QPointF center = viewportRect.center();
+            
+            // Create the viewport bounds rectangle centered in view
+            const qreal halfWidth = viewportSize.width() / 2.0;
+            const qreal halfHeight = viewportSize.height() / 2.0;
+            const QRectF cameraBounds(center.x() - halfWidth, center.y() - halfHeight,
+                                     viewportSize.width(), viewportSize.height());
+
+            // Transform to viewport coordinates
+            const QRectF viewportBoundsInView = mapFromScene(cameraBounds).boundingRect();
+
+            // Draw the viewport rectangle
+            painter.setPen(QPen(QColor(255, 0, 0, 180), 2.0));
+            painter.setBrush(Qt::NoBrush);
+            painter.drawRect(viewportBoundsInView);
+        }
+    }
+}
+
+void MapView::drawForeground(QPainter *painter, const QRectF &rect)
+{
+    QGraphicsView::drawForeground(painter, rect);
+
+    Preferences *prefs = Preferences::instance();
+    if (!prefs->showMapRulers())
+        return;
+
+    MapScene *scene = mapScene();
+    if (!scene || !scene->mapDocument())
+        return;
+
+    MapDocument *mapDocument = scene->mapDocument();
+    const Map *map = mapDocument->map();
+    MapRenderer *renderer = mapDocument->renderer();
+
+    // Get the visible tile range
+    QRect visibleTileRect = renderer->pixelToTileCoords(rect).toAlignedRect();
+
+    // Clamp to map bounds for finite maps
+    if (!map->infinite()) {
+        visibleTileRect = visibleTileRect.intersected(QRect(0, 0, map->width(), map->height()));
+    }
+
+    // Use grid preferences for tick spacing
+    const QSize gridMajor = prefs->gridMajor();
+    const int gridFine = prefs->gridFine();
+    
+    const QColor rulerColor = prefs->gridColor();
+    const QColor bgColor = QColor(0, 0, 0, 180);
+    const int rulerWidth = 20;
+
+    painter->setRenderHint(QPainter::Antialiasing, false);
+
+    // Get viewport rect in scene coordinates
+    QRectF viewportRect = mapToScene(viewport()->rect()).boundingRect();
+
+    // Draw horizontal ruler (top, X axis)
+    QRectF horizontalRulerRect(viewportRect.left(), viewportRect.top(),
+                               viewportRect.width(), rulerWidth);
+    painter->fillRect(horizontalRulerRect, bgColor);
+
+    painter->setPen(rulerColor);
+    painter->drawLine(horizontalRulerRect.bottomLeft(), horizontalRulerRect.bottomRight());
+
+    // Draw vertical ruler (left, Y axis)
+    QRectF verticalRulerRect(viewportRect.left(), viewportRect.top(),
+                             rulerWidth, viewportRect.height());
+    painter->fillRect(verticalRulerRect, bgColor);
+
+    painter->setPen(rulerColor);
+    painter->drawLine(verticalRulerRect.topRight(), verticalRulerRect.bottomRight());
+
+    // Draw corner square
+    painter->fillRect(QRectF(viewportRect.left(), viewportRect.top(), rulerWidth, rulerWidth), bgColor);
+
+    // Draw X axis ticks and labels
+    QFont font = painter->font();
+    font.setPixelSize(10);
+    painter->setFont(font);
+
+    for (int x = visibleTileRect.left(); x <= visibleTileRect.right(); ++x) {
+        QPointF tilePos = renderer->tileToPixelCoords(x, 0);
+
+        if (tilePos.x() < viewportRect.left() || tilePos.x() > viewportRect.right())
+            continue;
+
+        bool isMajor = (x % gridMajor.width()) == 0;
+        bool isFine = (x % gridFine) == 0;
+
+        if (isMajor) {
+            painter->setPen(rulerColor);
+            painter->drawLine(QPointF(tilePos.x(), viewportRect.top() + rulerWidth - 6),
+                            QPointF(tilePos.x(), viewportRect.top() + rulerWidth));
+
+            QString label = QString::number(x);
+            QRectF textRect(tilePos.x() - 20, viewportRect.top(), 40, rulerWidth - 6);
+            painter->drawText(textRect, Qt::AlignCenter, label);
+        } else if (isFine) {
+            painter->setPen(QPen(rulerColor, 1));
+            painter->drawLine(QPointF(tilePos.x(), viewportRect.top() + rulerWidth - 3),
+                            QPointF(tilePos.x(), viewportRect.top() + rulerWidth));
+        }
+    }
+
+    // Draw Y axis ticks and labels
+    for (int y = visibleTileRect.top(); y <= visibleTileRect.bottom(); ++y) {
+        QPointF tilePos = renderer->tileToPixelCoords(0, y);
+
+        if (tilePos.y() < viewportRect.top() || tilePos.y() > viewportRect.bottom())
+            continue;
+
+        bool isMajor = (y % gridMajor.height()) == 0;
+        bool isFine = (y % gridFine) == 0;
+
+        if (isMajor) {
+            painter->setPen(rulerColor);
+            painter->drawLine(QPointF(viewportRect.left() + rulerWidth - 6, tilePos.y()),
+                            QPointF(viewportRect.left() + rulerWidth, tilePos.y()));
+
+            QString label = QString::number(y);
+            QRectF textRect(viewportRect.left(), tilePos.y() - 10, rulerWidth - 6, 20);
+            painter->save();
+            painter->translate(textRect.center());
+            painter->rotate(-90);
+            painter->translate(-textRect.center());
+            painter->drawText(textRect, Qt::AlignCenter, label);
+            painter->restore();
+        } else if (isFine) {
+            painter->setPen(QPen(rulerColor, 1));
+            painter->drawLine(QPointF(viewportRect.left() + rulerWidth - 3, tilePos.y()),
+                            QPointF(viewportRect.left() + rulerWidth, tilePos.y()));
+        }
+    }
 }
 
 void MapView::hideEvent(QHideEvent *event)

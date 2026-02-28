@@ -56,6 +56,7 @@ private:
 
 public:
     bool showGrid() const;
+    bool showMapRulers() const;
     bool showTileObjectOutlines() const;
     bool showTileAnimations() const;
     bool showTileCollisionShapes() const;
@@ -192,6 +193,7 @@ public:
 
 public slots:
     void setShowGrid(bool showGrid);
+    void setShowMapRulers(bool enabled);
     void setShowTileObjectOutlines(bool enabled);
     void setShowTileAnimations(bool enabled);
     void setShowTileCollisionShapes(bool enabled);
@@ -219,6 +221,7 @@ public slots:
 
 signals:
     void showGridChanged(bool showGrid);
+    void showMapRulersChanged(bool enabled);
     void showTileObjectOutlinesChanged(bool enabled);
     void showTileAnimationsChanged(bool enabled);
     void showTileCollisionShapesChanged(bool enabled);
