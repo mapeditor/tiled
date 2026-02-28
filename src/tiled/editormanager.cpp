@@ -65,11 +65,6 @@ void EditorManager::deleteInstance()
     mInstance = nullptr;
 }
 
-EditorManager::~EditorManager()
-{
-    mInstance = nullptr;
-}
-
 Document *EditorManager::currentDocument() const
 {
     if (mCurrentIndex < 0 || mCurrentIndex >= mDocuments.size())
