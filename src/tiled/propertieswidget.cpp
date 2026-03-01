@@ -887,12 +887,11 @@ public:
         mMapProperties->addProperty(mSkewProperty);
         mMapProperties->addSeparator();
         mMapProperties->addProperty(mParallaxOriginProperty);
+        mMapProperties->addProperty(mViewportSizeProperty);
         mMapProperties->addSeparator();
         mMapProperties->addProperty(mLayerDataFormatProperty);
         mMapProperties->addProperty(mCompressionLevelProperty);
         mMapProperties->addProperty(mChunkSizeProperty);
-        mMapProperties->addSeparator();
-        mMapProperties->addProperty(mViewportSizeProperty);
         mMapProperties->addSeparator();
         mMapProperties->addProperty(mRenderOrderProperty);
         mMapProperties->addProperty(mBackgroundColorProperty);

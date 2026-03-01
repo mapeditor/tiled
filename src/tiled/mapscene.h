@@ -47,6 +47,7 @@ class MapDocument;
 class MapObjectItem;
 class MapScene;
 class ObjectGroupItem;
+class ViewportOverlayItem;
 
 /**
  * A graphics scene that represents the contents of a map.
@@ -133,6 +134,7 @@ private:
     QHash<MapDocument*, MapItem*> mMapItems;
     AbstractTool *mSelectedTool = nullptr;
     DebugDrawItem *mDebugDrawItem = nullptr;
+    ViewportOverlayItem *mViewportOverlayItem = nullptr;
     bool mUnderMouse = false;
     bool mShowTileCollisionShapes = false;
     bool mParallaxEnabled = true;

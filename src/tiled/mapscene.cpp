@@ -33,11 +33,13 @@
 #include "maprenderer.h"
 #include "objectgroup.h"
 #include "objecttemplate.h"
+#include "preferences.h"
 #include "snaphelper.h"
 #include "stylehelper.h"
 #include "templatemanager.h"
 #include "tilesetmanager.h"
 #include "toolmanager.h"
+#include "viewportoverlayitem.h"
 #include "world.h"
 #include "worldmanager.h"
 
@@ -80,6 +82,17 @@ MapScene::MapScene(QObject *parent)
     mDebugDrawItem = new DebugDrawItem;
     addItem(mDebugDrawItem);
 #endif
+
+    // Create viewport overlay item
+    mViewportOverlayItem = new ViewportOverlayItem(nullptr);
+    addItem(mViewportOverlayItem);
+    
+    // Update viewport overlay when preference changes
+    connect(Preferences::instance(), &Preferences::showViewportChanged,
+            this, [this] {
+        if (mViewportOverlayItem && mMapDocument)
+            mViewportOverlayItem->syncWithMapDocument();
+    });
 }
 
 MapScene::~MapScene()
@@ -108,6 +121,13 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, [this] { update(); });
         connect(mMapDocument, &MapDocument::tilesetReplaced,
                 this, &MapScene::tilesetReplaced);
+    }
+
+    // Update viewport overlay with new map document
+    if (mViewportOverlayItem) {
+        delete mViewportOverlayItem;
+        mViewportOverlayItem = new ViewportOverlayItem(mMapDocument);
+        addItem(mViewportOverlayItem);
     }
 
     refreshScene();
@@ -413,6 +433,10 @@ void MapScene::changeEvent(const ChangeEvent &change)
             break;
         case Map::RenderOrderProperty:
             update();
+            break;
+        case Map::ViewportSizeProperty:
+            if (mViewportOverlayItem)
+                mViewportOverlayItem->syncWithMapDocument();
             break;
         default:
             break;

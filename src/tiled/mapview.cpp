@@ -20,7 +20,6 @@
 
 #include "mapview.h"
 
-#include "changeevents.h"
 #include "flexiblescrollbar.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -37,7 +36,6 @@
 #include <QCursor>
 #include <QGesture>
 #include <QGestureEvent>
-#include <QPainter>
 #include <QPinchGesture>
 #include <QScrollBar>
 #include <QWheelEvent>
@@ -120,10 +118,6 @@ MapView::MapView(QWidget *parent)
         setInteractive(mode == PannableViewHelper::NoPanning);
         updatePanningDriverState();
     });
-
-    // Repaint when viewport visibility changes
-    connect(Preferences::instance(), &Preferences::showViewportChanged,
-            this, [this] { viewport()->update(); });
 }
 
 MapView::~MapView()
@@ -361,14 +355,6 @@ void MapView::setMapDocument(MapDocument *mapDocument)
     if (mapDocument) {
         connect(mapDocument, &MapDocument::focusMapObjectRequested,
                 this, &MapView::focusMapObject);
-        connect(mapDocument, &MapDocument::changed,
-                this, [this](const ChangeEvent &event) {
-            if (event.type == ChangeEvent::MapChanged) {
-                const auto &mapEvent = static_cast<const MapChangeEvent&>(event);
-                if (mapEvent.property == Map::ViewportSizeProperty)
-                    viewport()->update();
-            }
-        });
     }
 }
 
@@ -492,33 +478,6 @@ void MapView::paintEvent(QPaintEvent *event)
         scene->setPainterScale(scale());
 
     QGraphicsView::paintEvent(event);
-
-    // Draw viewport overlay if enabled
-    if (mMapDocument && Preferences::instance()->showViewport()) {
-        const QSize viewportSize = mMapDocument->map()->viewportSize();
-        if (!viewportSize.isEmpty() && viewportSize.width() > 0 && viewportSize.height() > 0) {
-            QPainter painter(viewport());
-            painter.setRenderHint(QPainter::Antialiasing);
-
-            // Calculate viewport rectangle in scene coordinates
-            const QRectF viewportRect = mapToScene(viewport()->rect()).boundingRect();
-            const QPointF center = viewportRect.center();
-            
-            // Create the viewport bounds rectangle centered in view
-            const qreal halfWidth = viewportSize.width() / 2.0;
-            const qreal halfHeight = viewportSize.height() / 2.0;
-            const QRectF cameraBounds(center.x() - halfWidth, center.y() - halfHeight,
-                                     viewportSize.width(), viewportSize.height());
-
-            // Transform to viewport coordinates
-            const QRectF viewportBoundsInView = mapFromScene(cameraBounds).boundingRect();
-
-            // Draw the viewport rectangle
-            painter.setPen(QPen(QColor(255, 0, 0, 180), 2.0));
-            painter.setBrush(Qt::NoBrush);
-            painter.drawRect(viewportBoundsInView);
-        }
-    }
 }
 
 void MapView::hideEvent(QHideEvent *event)
