@@ -1,6 +1,6 @@
 /*
  * TBIN
- * Copyright 2017, Chase Warrington <spacechase0.and.cat@gmail.com>
+ * Copyright 2017, Casey Warrington <spacechase0.and.cat@gmail.com>
  *
  * MIT License
  *
@@ -30,7 +30,7 @@
 #include <string>
 #include <vector>
 
-#include "FakeSfml.hpp"
+#include "Vector2i.hpp"
 #include "PropertyValue.hpp"
 #include "Tile.hpp"
 
@@ -42,8 +42,8 @@ namespace tbin
             std::string id;
             bool visible;
             std::string desc;
-            sf::Vector2i layerSize;
-            sf::Vector2i tileSize;
+            tbin::Vector2i layerSize;
+            tbin::Vector2i tileSize;
             Properties props;
             std::vector< Tile > tiles;
     };
