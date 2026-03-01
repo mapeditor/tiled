@@ -38,7 +38,6 @@
 
 #include <algorithm>
 #include <random>
-#include <map>
 
 namespace Tiled {
 
@@ -859,12 +858,36 @@ bool AutoMapper::compileRule(
 {
 	CompileContext compileContext;
 
+	// The intended behaviour for the wildcardInputSet input set is to be expanded to all other input sets,
+	// so that if we have
+	//  input_Ground   <- wildcard
+	//  input1_Ground
+	//  input1_Detail
+	//  input2_Detail
+	// the wildcard provides ways to match the Ground layer to both input1 and input2,
+	// but the detail layer is still required to match before we can be sure that the rule matches.
+	// Notice that input2 did not specify a Ground layer, but the wildcard forces it to be included in input2 as well.
+	//
+	// If the wildcard matches, there are two possible optimizations:
+	//  1) we can avoid checking input sets that don't contain new layers
+	//  2) for the input sets that do contain new layers, we can skip checking the layers that were already included in the wildcard.
+	// If the wildcard does not fully match, it may still be that some of its layers do match.
+	// In this case, we can avoid checking those layers in the other input sets
+	//
+	// Right now we simply add the wildcard layers to each other input sets.
+	// This may look to be inefficient, but it isn't necessarily so.
+	// If most cells in the target map won't match, then this implementation should be more efficient than performing
+	// step-by-step matching as described above. For cells that do match, this may be less efficient, but whether this is
+	// a problem depends on how many layers the wildcard contains and how expensive it is to check those layers.
+	// 
+	// I've left at the bottom of this file a tentative implementation for the optimization described above.
+	// To work properly, input sets must be compiled both with and without the wildcard, so that we can check whether the wildcard fully matches or not.
 	auto mergeInputConditions = [] (const InputSet &base, const InputSet &wildcard) {
 		InputSet merged(base.name);
 		merged.layers = base.layers;
 
 		for (const InputConditions &wildConditions : wildcard.layers)
-		{
+	{
 			// Check if this layer is already present in the merged set
 			auto it = std::find_if(merged.layers.begin(), merged.layers.end(), [&] (const InputConditions &conditions) {
 				return conditions.layerName == wildConditions.layerName;
@@ -909,14 +932,14 @@ bool AutoMapper::compileRule(
 			if (&inputSet == wildcardSet)
 				continue;
 
-            // Merge current input set and the wildcard
+			// Merge current input set and the wildcard
 			const auto mergedSet = mergeInputConditions(inputSet, *wildcardSet);
 
-            // Compile the resulting input set
+			// Compile the resulting input set
 			RuleInputSet index;
 			if (compileInputSet(index, mergedSet, rule.inputRegion, compileContext, context))
 				inputSets.push_back(std::move(index));
-		}
+	}
 	}
 	else
 	{
@@ -1330,7 +1353,7 @@ static bool matchInputIndex(const RuleInputSet &inputSet, QPoint offset, AutoMap
 {
 	qsizetype nextPos = 0;
 	qsizetype nextCell = 0;
-	
+
 	// Loop over all layers in this input set, and check the conditions for each position in each layer
 	for (const RuleInputLayer &layer : inputSet.layers)
 	{
@@ -1338,11 +1361,11 @@ static bool matchInputIndex(const RuleInputSet &inputSet, QPoint offset, AutoMap
 		{
 			const RuleInputLayerPos &pos = inputSet.positions[p];
 			const Cell &cell = getCell(pos.x + offset.x(), pos.y + offset.y(), *layer.targetLayer);
-	
+
 			// Match may succeed if any of the "any" tiles are seen, or when
 			// there are no "any" tiles for this location.
 			bool anyMatch = !pos.anyCount;
-	
+
 			for (auto c = std::exchange(nextCell, nextCell + pos.anyCount); c < nextCell; ++c)
 			{
 				const MatchCell &desired = inputSet.cells[c];
@@ -1352,11 +1375,11 @@ static bool matchInputIndex(const RuleInputSet &inputSet, QPoint offset, AutoMap
 					break;
 				}
 			}
-	
+
 			// If we did not found a match for this layer, the rule does not match at this location
 			if (!anyMatch)
 				return false;
-	
+
 			// Match fails as soon as any of the "none" tiles is seen
 			for (auto c = std::exchange(nextCell, nextCell + pos.noneCount); c < nextCell; ++c)
 			{
@@ -1366,7 +1389,7 @@ static bool matchInputIndex(const RuleInputSet &inputSet, QPoint offset, AutoMap
 			}
 		}
 	}
-	
+
 	return true;
 } // matchInputIndex
 
@@ -1665,3 +1688,93 @@ void AutoMapper::addWarning(const QString &message, std::function<void ()> callb
 }
 
 } // namespace Tiled
+
+
+#if 0
+// See comments inside AutoMapper::compileRule
+static bool matchRuleAtOffset(
+	QVector<Tiled::RuleInputSet>& inputSets,
+	Tiled::RuleInputSet* wildcardInputSet,
+	QPoint offset,
+	Tiled::AutoMapper::GetCell getCell)
+{
+	// If a required input set is specified, check it first
+	if (wildcardInputSet)
+	{
+		const QVector<Tiled::RuleInputLayer> tmp = std::move(wildcardInputSet->layers);
+		QVector<Tiled::RuleInputLayer> wildMatchingLayers;
+		QVector<Tiled::RuleInputLayer> wildNonMatchingLayers;
+		for (const auto& layer : tmp)
+		{
+			wildcardInputSet->layers = { layer };
+			if (matchInputIndex(*wildcardInputSet, offset, getCell))
+				wildMatchingLayers.append(layer);
+			else
+				wildNonMatchingLayers.append(layer);
+		}
+		const bool wild_match = wildNonMatchingLayers.isEmpty();
+		wildcardInputSet->layers = std::move(tmp); // Restore the original layers of the wildcard input set
+
+		// If the wildcard is the only input set, we can return immediately
+		if (inputSets.size() == 1)
+			return wild_match;
+
+		// Loop over all other input sets:
+		//  1) remove the layers that were already matched by the wildcard
+		//  2) add the wildcard layers that did not match
+		bool new_layers = false;
+		for (Tiled::RuleInputSet& inputSet : inputSets)
+		{
+			if (&inputSet == wildcardInputSet)
+				continue;
+
+			// Store the layers of this input to restore them later
+			const QVector<Tiled::RuleInputLayer> tmp = std::move(inputSet.layers);
+			for (const Tiled::RuleInputLayer& layer : tmp)
+			{
+				// If this layer wasn't already matched by the wildcard, we need to check it
+				if (std::none_of(wildMatchingLayers.cbegin(), wildMatchingLayers.cend(),
+					[&layer](const Tiled::RuleInputLayer& wild_layer) { return wild_layer.targetLayer == layer.targetLayer; }))
+				{
+					// Add the new layer
+					inputSet.layers.append(layer);
+					new_layers = true;
+				}
+			}
+
+			// Add the layers from the wildcard that did not match, since they are still required to match for this input set
+			for (const Tiled::RuleInputLayer& layer : wildNonMatchingLayers)
+			{
+				if (std::none_of(inputSet.layers.cbegin(), inputSet.layers.cend(),
+					[&layer](const Tiled::RuleInputLayer& existing_layer) { return existing_layer.targetLayer == layer.targetLayer; }))
+				{
+					inputSet.layers.append(layer);
+				}
+			}
+
+			// If we have some new layers, check the rule.
+			// Note: if all layers from the wildcard did match and this set did not provide new layers, then
+			//  inputSet.layers will be empty and we already know we have a match from the wildcard.
+			const bool match = inputSet.layers.isEmpty() || matchInputIndex(inputSet, offset, getCell);
+
+			// Restore the original layers of this input set
+			inputSet.layers = std::move(tmp);
+
+			// If we've found an input set that matches, we can stop checking and return true.
+			if (match)
+				return true;
+		}
+
+		// If none of the other input sets matched and they contained new layers, the rule does not match at this location
+		if (new_layers)
+			return false;
+
+		// If there were no new layers, the rule matches if and only if the wildcard matches
+		return wild_match;
+	}
+
+	// If there's no wildcard, just behave as usual
+	return std::any_of(inputSets.begin(), inputSets.end(),
+		[=](const Tiled::RuleInputSet& index) { return matchInputIndex(index, offset, getCell); });
+} // matchRuleAtOffset
+#endif
