@@ -24,6 +24,7 @@
 #include "layerdock.h"
 
 #include "actionmanager.h"
+#include "scriptmanager.h"
 #include "layer.h"
 #include "layermodel.h"
 #include "map.h"
@@ -122,6 +123,24 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
         mLayerView->header()->resizeSection(1, iconSectionWidth);
         mLayerView->header()->resizeSection(2, iconSectionWidth);
     }
+}
+
+bool LayerDock::isExpanded(EditableGroupLayer *layer) const
+{
+    if (!layer) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
+        return false;
+    }
+    return isExpanded(static_cast<GroupLayer*>(layer->layer()));
+}
+
+void LayerDock::setExpanded(EditableGroupLayer *layer, bool expanded)
+{
+    if (!layer) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
+        return;
+    }
+    setExpanded(static_cast<GroupLayer*>(layer->layer()), expanded);
 }
 
 bool LayerDock::isExpanded(GroupLayer *layer) const {

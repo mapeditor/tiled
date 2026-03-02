@@ -43,8 +43,8 @@ public:
 
     void setMapDocument(MapDocument *mapDoc);
 
-    Q_INVOKABLE bool isExpanded(EditableObjectGroup *layer) const { return isExpanded(layer->objectGroup()); };
-    Q_INVOKABLE void setExpanded(EditableObjectGroup *layer, bool expanded) { setExpanded(layer->objectGroup(), expanded); };
+    Q_INVOKABLE bool isExpanded(EditableObjectGroup *layer) const;
+    Q_INVOKABLE void setExpanded(EditableObjectGroup *layer, bool expanded);
     bool isExpanded(ObjectGroup *layer) const;
     void setExpanded(ObjectGroup *layer, bool expanded);
 
