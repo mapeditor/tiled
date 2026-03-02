@@ -4,41 +4,41 @@
 
 namespace Tiled {
 
-QMLAction::QMLAction(QObject *parent)
+QmlAction::QmlAction(QObject *parent)
     : QAction(parent)
 {
     connect(this, &QAction::triggered,
-            this, &TiledAction::triggeredFromQml);
+            this, &QmlAction::triggeredFromQml);
 }
 
-QString QMLAction::id() const
+QString QmlAction::id() const
 {
     return mId;
 }
 
-void TQMLction::setId(const QString &id)
+void Qmlction::setId(const QString &id)
 {
     mId = id;
     setObjectName(id);
 }
 
-QString QMLAction::iconSource() const
+QString QmlAction::iconSource() const
 {
     return mIconSource;
 }
 
-void QMLAction::setIconSource(const QString &path)
+void QmlAction::setIconSource(const QString &path)
 {
     mIconSource = path;
     setIcon(QIcon(path));
 }
 
-QString QMLAction::shortcut() const
+QString QmlAction::shortcut() const
 {
     return QAction::shortcut().toString();
 }
 
-void QMLAction::setShortcutString(const QString &shortcutStr)
+void QmlAction::setShortcutString(const QString &shortcutStr)
 {
     setShortcut(QKeySequence(shortcutStr));
 }

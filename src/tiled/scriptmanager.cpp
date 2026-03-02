@@ -147,7 +147,7 @@ namespace Tiled
         qRegisterMetaType<ScriptTilesetFormatWrapper *>();
         qRegisterMetaType<ScriptImage *>();
         qRegisterMetaType<WangIndex::Value>("WangIndex");
-        qmlRegisterType<Tiled::TiledAction>("Tiled", 1, 0, "TiledAction");
+        qmlRegisterType<Tiled::QmlAction>("Tiled", 1, 0, "QmlAction");
 
         connect(&mWatcher, &FileSystemWatcher::pathsChanged,
                 this, &ScriptManager::scriptFilesChanged);
@@ -468,16 +468,10 @@ namespace Tiled
     {
         auto engine = new QQmlEngine(this);
         mModule = new ScriptModule(this);
-        qmlRegisterType<Tiled::QMLAction>("Tiled", 1, 0, "QMLAction");
-
         engine->setOutputWarningsToStandardError(false);
-        connect(engine, &QQmlEngine::warnings,
-                this, &ScriptManager::onScriptWarnings);
-
+        connect(engine, &QQmlEngine::warnings, this, &ScriptManager::onScriptWarnings);
         mEngine = engine;
-
         QJSValue globalObject = engine->globalObject();
-
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0) && QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
         QJSValue qtObject = globalObject.property(QStringLiteral("Qt"));
         auto &qtNamespace = Qt::staticMetaObject;
