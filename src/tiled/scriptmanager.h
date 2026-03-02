@@ -111,8 +111,6 @@ private:
     void loadQmlExtension(const QString &filePath);
 
     QJSValue evaluateFile(const QString &fileName);
-
-    QJSEngine *mEngine = nullptr;
     ScriptModule *mModule = nullptr;
     FileSystemWatcher mWatcher;
     QString mExtensionsPath;
