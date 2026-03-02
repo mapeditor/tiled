@@ -468,7 +468,6 @@ namespace Tiled
     {
         auto engine = new QQmlEngine(this);
         mModule = new ScriptModule(this);
-        qmlRegisterType<MyExtensionObject>("TiledExtension", 1, 0, "MyExtensionObject");
         qmlRegisterType<Tiled::TiledAction>("Tiled", 1, 0, "TiledAction");
 
         engine->setOutputWarningsToStandardError(false);
