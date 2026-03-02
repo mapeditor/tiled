@@ -468,7 +468,7 @@ namespace Tiled
     {
         auto engine = new QQmlEngine(this);
         mModule = new ScriptModule(this);
-        qmlRegisterType<Tiled::TiledAction>("Tiled", 1, 0, "TiledAction");
+        qmlRegisterType<Tiled::QMLAction>("Tiled", 1, 0, "QMLAction");
 
         engine->setOutputWarningsToStandardError(false);
         connect(engine, &QQmlEngine::warnings,

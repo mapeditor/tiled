@@ -5,7 +5,7 @@
 
 namespace Tiled {
 
-class TiledAction : public QAction
+class QMLAction : public QAction
 {
     Q_OBJECT
 
@@ -15,7 +15,7 @@ class TiledAction : public QAction
     Q_PROPERTY(QString shortcut READ shortcut WRITE setShortcutString)
 
 public:
-    explicit TiledAction(QObject *parent = nullptr);
+    explicit QMLAction(QObject *parent = nullptr);
 
     QString id() const;
     void setId(const QString &id);
