@@ -28,6 +28,9 @@
 #include <QQmlError>
 #include <QScopedValueRollback>
 #include <QStringList>
+#include "tiledapi.h"
+class QQmlEngine;
+
 
 class QJSEngine;
 
@@ -106,6 +109,7 @@ private:
 
     void loadExtensions();
     void loadExtension(const QString &path);
+    void loadQmlExtension(const QString &filePath);
 
     QJSValue evaluateFile(const QString &fileName);
 
@@ -120,6 +124,8 @@ private:
     friend struct ResetBlocker;
     bool mResetBlocked = false;
     QTimer mResetTimer;
+    QQmlEngine *mEngine = nullptr;
+    QList<QObject*> mExtensions;
 
     static ScriptManager *mInstance;
 };

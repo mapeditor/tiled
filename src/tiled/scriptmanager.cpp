@@ -73,9 +73,7 @@
 #include <QFileInfo>
 #include <QDebug>
 #include <QQmlContext>
-#include "tiledapi.h"
-#include "myexample.h"
-#include "tiledaction.h"
+#include "tiledaction.h
 #include "mainwindow.h"
 #include <QMenuBar>
 #include "actionmanager.h"
