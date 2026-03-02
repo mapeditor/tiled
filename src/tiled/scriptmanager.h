@@ -28,7 +28,6 @@
 #include <QQmlError>
 #include <QScopedValueRollback>
 #include <QStringList>
-#include "tiledapi.h"
 class QQmlEngine;
 
 
