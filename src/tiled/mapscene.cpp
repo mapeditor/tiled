@@ -133,6 +133,11 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
     // Create new viewport overlay item
     mViewportOverlayItem = new ViewportOverlayItem(mMapDocument);
     addItem(mViewportOverlayItem);
+    
+    // Set initial position to view center
+    if (!mViewRect.isNull()) {
+        mViewportOverlayItem->setPos(mViewRect.center());
+    }
 
     refreshScene();
     emit mapDocumentChanged(mMapDocument);
@@ -230,6 +235,11 @@ void MapScene::setViewRect(const QRectF &rect)
         return;
 
     mViewRect = rect;
+
+    // Update the viewport rectangle overlay item, so it's always centered in the map view
+    if (mViewportOverlayItem) {
+        mViewportOverlayItem->setPos(rect.center());
+    }
 
     if (mParallaxEnabled)
         emit parallaxParametersChanged();

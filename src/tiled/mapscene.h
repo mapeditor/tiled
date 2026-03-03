@@ -75,6 +75,7 @@ public:
     MapItem *mapItem(MapDocument *mapDocument) const;
 
     DebugDrawItem *debugDrawItem() const;
+    ViewportOverlayItem *viewportOverlay() const;
 
     const QRectF &viewRect() const;
     void setViewRect(const QRectF &rect);
@@ -169,6 +170,11 @@ inline MapItem *MapScene::mapItem(MapDocument *mapDocument) const
 inline DebugDrawItem *MapScene::debugDrawItem() const
 {
     return mDebugDrawItem;
+}
+
+inline ViewportOverlayItem *MapScene::viewportOverlay() const
+{
+    return mViewportOverlayItem;
 }
 
 inline const QRectF &MapScene::viewRect() const
