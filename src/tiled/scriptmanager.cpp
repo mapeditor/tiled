@@ -73,7 +73,7 @@
 #include <QFileInfo>
 #include <QDebug>
 #include <QQmlContext>
-#include "tiledaction.h
+#include "tiledaction.h"
 #include "mainwindow.h"
 #include <QMenuBar>
 #include "actionmanager.h"
