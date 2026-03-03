@@ -1227,7 +1227,7 @@ void ObjectSelectionTool::startMoving(const QPointF &pos,
 
     mStart = pos;
     mAction = Moving;
-    mMergeableTransform = false;
+    mMergeUndo = false;
     mAlignPosition = mMovingObjects.first().oldPosition;
     mOriginPos = mOriginIndicator->pos();
 
@@ -1262,7 +1262,7 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
 
     auto command = new TransformMapObjects(mapDocument(), changingObjects(), states);
     if (command->hasAnyChanges()) {
-        command->setMergeable(std::exchange(mMergeableTransform, true));
+        command->setMergeable(std::exchange(mMergeUndo, true));
         mapDocument()->undoStack()->push(command);
     } else {
         delete command;
@@ -1304,7 +1304,7 @@ void ObjectSelectionTool::startRotating(const QPointF &pos)
 {
     mStart = pos;
     mAction = Rotating;
-    mMergeableTransform = false;
+    mMergeUndo = false;
     mOriginPos = mOriginIndicator->pos();
 
     saveSelectionState();
@@ -1360,7 +1360,7 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
 
     auto command = new TransformMapObjects(mapDocument(), changingObjects(), states);
     if (command->hasAnyChanges()) {
-        command->setMergeable(std::exchange(mMergeableTransform, true));
+        command->setMergeable(std::exchange(mMergeUndo, true));
         mapDocument()->undoStack()->push(command);
     } else {
         delete command;
@@ -1381,7 +1381,7 @@ void ObjectSelectionTool::finishRotating()
 void ObjectSelectionTool::startResizing()
 {
     mAction = Resizing;
-    mMergeableTransform = false;
+    mMergeUndo = false;
     mOriginPos = mOriginIndicator->pos();
 
     mResizingLimitHorizontal = mClickedResizeHandle->resizingLimitHorizontal();
@@ -1489,7 +1489,7 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
 
     auto command = new TransformMapObjects(mapDocument(), changingObjects(), states);
     if (command->hasAnyChanges()) {
-        command->setMergeable(std::exchange(mMergeableTransform, true));
+        command->setMergeable(std::exchange(mMergeUndo, true));
         mapDocument()->undoStack()->push(command);
     } else {
         delete command;
@@ -1636,7 +1636,7 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
 
     if (state.propertiesChangedNow()) {
         auto command = new TransformMapObjects(mapDocument(), { mapObject }, { state });
-        command->setMergeable(std::exchange(mMergeableTransform, true));
+        command->setMergeable(std::exchange(mMergeUndo, true));
         mapDocument()->undoStack()->push(command);
     }
 }
