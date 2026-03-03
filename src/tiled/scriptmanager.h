@@ -29,10 +29,7 @@
 #include <QScopedValueRollback>
 #include <QStringList>
 class QQmlEngine;
-
-
 class QJSEngine;
-
 namespace Tiled {
 
 class ScriptModule;
@@ -70,7 +67,7 @@ public:
     const QString &extensionsPath() const;
 
     ScriptModule *module() const;
-    QJSEngine *engine() const;
+    QQmlEngine *engine() const;
 
     QJSValue evaluate(const QString &program,
                       const QString &fileName = QString(), int lineNumber = 1);
@@ -109,7 +106,6 @@ private:
     void loadExtensions();
     void loadExtension(const QString &path);
     void loadQmlExtension(const QString &filePath);
-
     QJSValue evaluateFile(const QString &fileName);
     ScriptModule *mModule = nullptr;
     FileSystemWatcher mWatcher;
@@ -138,7 +134,7 @@ inline ScriptModule *ScriptManager::module() const
     return mModule;
 }
 
-inline QJSEngine *ScriptManager::engine() const
+inline QQmlEngine *ScriptManager::engine() const
 {
     return mEngine;
 }

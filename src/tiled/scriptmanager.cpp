@@ -431,7 +431,7 @@ namespace Tiled
 
     void ScriptManager::throwError(const QString &message)
     {
-        engine()->throwError(message);
+        mEngine->throwError(message);
     }
 
     void ScriptManager::throwNullArgError(int argNumber)
