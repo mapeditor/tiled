@@ -36,6 +36,8 @@
 #include <QApplication>
 #include <QCollator>
 #include <QDir>
+#include <QGuiApplication>
+#include <QInputMethod>
 #include <QKeyEvent>
 #include <QPainter>
 #include <QScrollBar>
@@ -271,7 +273,10 @@ LocatorWidget::LocatorWidget(LocatorSource *locatorSource,
     , mResultsView(new ResultsView(this))
 {
     setAttribute(Qt::WA_DeleteOnClose);
+    setAttribute(Qt::WA_InputMethodEnabled);
     setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
+    setAutoFillBackground(true);
+    setFocusPolicy(Qt::StrongFocus);
 
     mLocatorSource->setParent(this);        // take ownership of source
 
@@ -286,6 +291,7 @@ LocatorWidget::LocatorWidget(LocatorSource *locatorSource,
     mFilterEdit->setFilteredView(mResultsView);
     mFilterEdit->setClearTextOnEscape(false);
     mFilterEdit->setFont(scaledFont(mFilterEdit->font(), 1.5));
+    mFilterEdit->setAttribute(Qt::WA_InputMethodEnabled);
 
     setFocusProxy(mFilterEdit);
     mResultsView->setFocusProxy(mFilterEdit);
@@ -315,6 +321,12 @@ void LocatorWidget::setVisible(bool visible)
 
     if (visible) {
         setFocus();
+        activateWindow();
+
+        // Ensure the text field gets focus directly, so input methods can
+        // attach to it reliably.
+        mFilterEdit->setFocus(Qt::ShortcutFocusReason);
+        QGuiApplication::inputMethod()->update(Qt::ImEnabled);
 
         if (!mFilterEdit->text().isEmpty())
             mFilterEdit->clear();
