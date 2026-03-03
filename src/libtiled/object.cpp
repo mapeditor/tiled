@@ -123,7 +123,15 @@ QVariantMap Object::inheritedProperties() const
 
 bool Object::setProperty(const PropertyPath &path, const QVariant &value)
 {
-    return setPropertyMemberValue(mProperties, path, value);
+    // Allow removing an empty top-level class property only when it is defined
+    // in the object's class, so that manually added properties are preserved.
+    bool allowTopLevelReset = false;
+    if (path.size() > 1) {
+        const auto &topKey = std::get<QString>(path.first());
+        if (const ClassPropertyType *type = classType())
+            allowTopLevelReset = type->members.contains(topKey);
+    }
+    return setPropertyMemberValue(mProperties, path, value, allowTopLevelReset);
 }
 
 void Object::setPropertyTypes(const SharedPropertyTypes &propertyTypes)

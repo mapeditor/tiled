@@ -173,7 +173,8 @@ bool setNestedPropertyValue(QVariant &compoundValue,
 
 bool setPropertyMemberValue(Properties &properties,
                             const PropertyPath &path,
-                            const QVariant &value)
+                            const QVariant &value,
+                            bool allowTopLevelReset)
 {
     Q_ASSERT(!path.isEmpty());
 
@@ -184,9 +185,12 @@ bool setPropertyMemberValue(Properties &properties,
 
     if (path.size() > 1) {
         auto topLevelValue = properties.value(topLevelName);
-        if (!setNestedPropertyValue(topLevelValue, 1, path, value, false))
+        if (!setNestedPropertyValue(topLevelValue, 1, path, value, allowTopLevelReset))
             return false;
-        properties.insert(topLevelName, topLevelValue);
+        if (!topLevelValue.isValid() && allowTopLevelReset)
+            properties.remove(topLevelName);
+        else
+            properties.insert(topLevelName, topLevelValue);
     } else {
         properties.insert(topLevelName, value);
     }

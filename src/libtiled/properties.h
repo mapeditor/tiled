@@ -191,7 +191,8 @@ TILEDSHARED_EXPORT bool setNestedPropertyValue(QVariant &compoundValue,
 
 TILEDSHARED_EXPORT bool setPropertyMemberValue(Properties &properties,
                                                const PropertyPath &path,
-                                               const QVariant &value);
+                                               const QVariant &value,
+                                               bool allowTopLevelReset = false);
 
 TILEDSHARED_EXPORT void aggregateProperties(AggregatedProperties &aggregated, const Properties &properties);
 TILEDSHARED_EXPORT void mergeProperties(Properties &target, const Properties &source);
