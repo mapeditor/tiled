@@ -131,7 +131,7 @@ private:
     void setValue(MapObject *mapObject, const TransformState &value) const override;
 
     MapObject::ChangedProperties mChangedProperties;
-    bool mMergeable = false;
+    bool mMergeable = true;
 };
 
 inline bool TransformMapObjects::hasAnyChanges() const
