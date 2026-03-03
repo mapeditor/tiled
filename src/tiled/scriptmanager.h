@@ -28,10 +28,10 @@
 #include <QQmlError>
 #include <QScopedValueRollback>
 #include <QStringList>
-class QQmlEngine;
-class QJSEngine;
 namespace Tiled {
 
+class QQmlEngine;
+class QJSEngine;
 class ScriptModule;
 
 /**
