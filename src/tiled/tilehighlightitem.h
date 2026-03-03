@@ -1,6 +1,6 @@
 /*
- * TBIN Tiled Plugin
- * Copyright 2017, Casey Warrington <spacechase0.and.cat@gmail.com>
+ * tilehighlightitem.h
+ * Copyright 2026, PoonamMehan <poonammehan655@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -20,39 +20,36 @@
 
 #pragma once
 
-#include "tbin_global.h"
+#include <QGraphicsObject>
+#include <QPointer>
 
-#include "mapformat.h"
-#include "plugin.h"
-#include "properties.h"
+namespace Tiled {
 
-#include <QObject>
+class MapDocument;
 
-namespace Tiled
-{
-    class Object;
-    class Cell;
-    class Map;
-}
-
-namespace tbin
-{
-    class Map;
-}
-
-namespace Tbin {
-
-class TBINSHARED_EXPORT TbinPlugin : public Tiled::Plugin
+class TileHighlightItem : public QGraphicsObject
 {
     Q_OBJECT
-    Q_INTERFACES(Tiled::Plugin)
-    Q_PLUGIN_METADATA(IID "org.mapeditor.Plugin" FILE "plugin.json")
 
 public:
-    void initialize() override;
+    TileHighlightItem(MapDocument *mapDocument,
+                      int tileX, int tileY,
+                      QGraphicsItem *parent = nullptr);
 
-    static std::unique_ptr< Tiled::Map > fromTbin( const tbin::Map& tmap, const QDir &fileDir );
-    static tbin::Map toTbin( const Tiled::Map* map, const QDir &fileDir );
+    void startBlink();
+
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter,
+               const QStyleOptionGraphicsItem *option,
+               QWidget *widget = nullptr) override;
+
+private:
+    void updatePosition();
+
+    QPointer<MapDocument> mMapDocument;
+    int mTileX;
+    int mTileY;
+    QRectF mBoundingRect;
 };
 
-} // namespace Tbin
+} // namespace Tiled
