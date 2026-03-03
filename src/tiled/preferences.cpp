@@ -726,6 +726,17 @@ bool Preferences::wheelZoomsByDefault() const
     return get("Interface/WheelZoomsByDefault", false);
 }
 
+int Preferences::autosaveInterval() const
+{
+    return get("Storage/AutosaveInterval", 0);
+}
+
+void Preferences::setAutosaveInterval(int seconds)
+{
+    setValue(QLatin1String("Storage/AutosaveInterval"), seconds);
+    emit autosaveIntervalChanged(seconds);
+}
+
 void Preferences::setRestoreSessionOnStartup(bool enabled)
 {
     setValue(QLatin1String("Startup/RestorePreviousSession"), enabled);

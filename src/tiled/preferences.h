@@ -175,6 +175,9 @@ public:
 
     bool wheelZoomsByDefault() const;
 
+    int autosaveInterval() const;
+    void setAutosaveInterval(int seconds);
+
     template <typename T>
     T get(const char *key, const T &defaultValue = T()) const
     { return value(QLatin1String(key), defaultValue).template value<T>(); }
@@ -259,6 +262,8 @@ signals:
 
     void checkForUpdatesChanged(bool on);
     void displayNewsChanged(bool on);
+
+    void autosaveIntervalChanged(int seconds);
 
     void aboutToSwitchSession();
 

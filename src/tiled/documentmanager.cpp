@@ -62,6 +62,7 @@
 #include <QScrollBar>
 #include <QStackedLayout>
 #include <QTabBar>
+#include <QTimer>
 #include <QUndoGroup>
 #include <QUndoStack>
 #include <QVBoxLayout>
@@ -95,6 +96,7 @@ DocumentManager::DocumentManager(QObject *parent)
     , mMapEditor(nullptr) // todo: look into removing this
     , mUndoGroup(new QUndoGroup(this))
     , mFileSystemWatcher(new FileSystemWatcher(this))
+    , mAutosaveTimer(new QTimer(this))
     , mMultiDocumentClose(false)
 {
     Q_ASSERT(!mInstance);
@@ -285,6 +287,16 @@ DocumentManager::DocumentManager(QObject *parent)
             this, &DocumentManager::onWorldLoaded);
     connect(&worldManager, &WorldManager::worldUnloaded,
             this, &DocumentManager::onWorldUnloaded);
+
+    // Setup autosave timer
+    mAutosaveTimer->setSingleShot(true);
+    connect(mAutosaveTimer, &QTimer::timeout, this, &DocumentManager::performAutosave);
+
+    // Connect to preferences to update autosave interval
+    auto *prefs = Preferences::instance();
+    connect(prefs, &Preferences::autosaveIntervalChanged,
+            this, &DocumentManager::autosaveIntervalChanged);
+    autosaveIntervalChanged(prefs->autosaveInterval());
 }
 
 DocumentManager::~DocumentManager()
@@ -582,6 +594,9 @@ int DocumentManager::insertDocument(int index, const DocumentPtr &document)
     connect(documentPtr, &Document::changed, this, &DocumentManager::onDocumentChanged);
     connect(documentPtr, &Document::saved, this, &DocumentManager::onDocumentSaved);
 
+    // Connect to undo stack changes for autosave (any command pushed means document was modified)
+    connect(documentPtr->undoStack(), &QUndoStack::indexChanged, this, &DocumentManager::documentModified);
+
     mTabBar->insertTab(index, QString());
     updateDocumentTab(documentPtr);
 
@@ -869,6 +884,9 @@ void DocumentManager::closeDocumentAt(int index)
     mTabBar->removeTab(index);
 
     document->disconnect(this);
+
+    // Remove from pending autosave set
+    mDocumentsPendingAutosave.remove(document.data());
 
     if (Editor *editor = mEditorForType.value(document->type()))
         editor->removeDocument(document.data());
@@ -1474,6 +1492,96 @@ bool DocumentManager::askForAdjustment(const Tileset &tileset)
 void DocumentManager::abortMultiDocumentClose()
 {
     mMultiDocumentClose = false;
+}
+
+void DocumentManager::autosaveIntervalChanged(int seconds)
+{
+    // Stop any pending autosave
+    mAutosaveTimer->stop();
+    mDocumentsPendingAutosave.clear();
+
+    if (seconds <= 0)
+        return;
+
+    for (const auto &doc : mDocuments) {
+        if (doc->isModified() && !doc->fileName().isEmpty()) {
+            mDocumentsPendingAutosave.insert(doc.data());
+        }
+    }
+
+    if (!mDocumentsPendingAutosave.isEmpty())
+        mAutosaveTimer->start(seconds * 1000);
+}
+
+void DocumentManager::documentModified()
+{
+    auto *undoStack = qobject_cast<QUndoStack*>(sender());
+    if (!undoStack)
+        return;
+
+    Document *document = nullptr;
+    for (const auto &doc : mDocuments) {
+        if (doc->undoStack() == undoStack) {
+            document = doc.data();
+            break;
+        }
+    }
+
+    if (!document)
+        return;
+
+    if (!document->isModified())
+        return;
+
+    // Only autosave documents that have a file name
+    if (document->fileName().isEmpty())
+        return;
+
+    int interval = Preferences::instance()->autosaveInterval();
+    if (interval <= 0)
+        return;
+
+    mDocumentsPendingAutosave.insert(document);
+
+    mAutosaveTimer->start(interval * 1000);
+}
+
+void DocumentManager::performAutosave()
+{
+
+    QSet<Document*> documentsToSave = mDocumentsPendingAutosave;
+    mDocumentsPendingAutosave.clear();
+
+    for (Document *document : documentsToSave) {
+        // Check if document still exists in our list
+        bool found = false;
+        for (const auto &doc : mDocuments) {
+            if (doc.data() == document) {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            qDebug() << "Autosave: Document no longer exists, skipping";
+            continue;
+        }
+
+        if (!document->isModified()) {
+            continue;
+        }
+
+        if (document->fileName().isEmpty()) {
+            continue;
+        }
+
+        if (document->isReadOnly()) {
+            continue;
+        }
+
+        // Perform the save
+        saveDocument(document);
+    }
 }
 
 #include "moc_documentmanager.cpp"
