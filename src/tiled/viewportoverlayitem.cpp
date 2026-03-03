@@ -21,9 +21,11 @@
 #include "viewportoverlayitem.h"
 
 #include "mapdocument.h"
+#include "map.h"
 #include "preferences.h"
 
 #include <QPen>
+#include <QCoreApplication>
 
 namespace Tiled {
 
@@ -39,19 +41,50 @@ ViewportOverlayItem::ViewportOverlayItem(MapDocument *mapDocument, QGraphicsItem
     setFlag(QGraphicsItem::ItemIsSelectable, false);
     setFlag(QGraphicsItem::ItemIsMovable, false);
     
-    syncWithMapDocument();
+    // Enable hover events for tooltip
+    setAcceptHoverEvents(true);
+    
+    // Only sync if we have a valid map document
+    if (mMapDocument)
+        syncWithMapDocument();
+    else
+        setVisible(false);
 }
 
 void ViewportOverlayItem::syncWithMapDocument()
 {
-    const bool showViewport = Preferences::instance()->showViewport();
-    const QSize viewportSize = mMapDocument->map()->viewportSize();
+    // Bail out if no map document
+    if (!mMapDocument) {
+        setVisible(false);
+        return;
+    }
+    
+    // Bail out if map is null
+    Map *map = mMapDocument->map();
+    if (!map) {
+        setVisible(false);
+        return;
+    }
+    
+    // Get preferences safely
+    Preferences *prefs = Preferences::instance();
+    if (!prefs) {
+        setVisible(false);
+        return;
+    }
+    
+    const bool showViewport = prefs->showViewport();
+    const QSize viewportSize = map->viewportSize();
+    
+    // Validate viewport size (must be positive and reasonable)
+    const bool validSize = !viewportSize.isEmpty() && 
+                          viewportSize.width() > 0 && 
+                          viewportSize.height() > 0 && 
+                          viewportSize.width() <= 32768 &&  // Max reasonable size
+                          viewportSize.height() <= 32768;
     
     // Only show if preference is enabled and viewport size is valid
-    const bool shouldShow = showViewport && 
-                           !viewportSize.isEmpty() && 
-                           viewportSize.width() > 0 && 
-                           viewportSize.height() > 0;
+    const bool shouldShow = showViewport && validSize;
     
     setVisible(shouldShow);
     
@@ -60,6 +93,12 @@ void ViewportOverlayItem::syncWithMapDocument()
         const qreal halfWidth = viewportSize.width() / 2.0;
         const qreal halfHeight = viewportSize.height() / 2.0;
         setRect(-halfWidth, -halfHeight, viewportSize.width(), viewportSize.height());
+        
+        // Set tooltip with viewport dimensions
+        setToolTip(QCoreApplication::translate("ViewportOverlayItem", "Viewport: %1 × %2 px")
+                   .arg(viewportSize.width()).arg(viewportSize.height()));
+    } else {
+        setToolTip(QString());
     }
 }
 

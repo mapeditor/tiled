@@ -125,10 +125,14 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
 
     // Update viewport overlay with new map document
     if (mViewportOverlayItem) {
-        delete mViewportOverlayItem;
-        mViewportOverlayItem = new ViewportOverlayItem(mMapDocument);
-        addItem(mViewportOverlayItem);
+        // Remove from scene (scene will delete it)
+        removeItem(mViewportOverlayItem);
+        mViewportOverlayItem = nullptr;
     }
+    
+    // Create new viewport overlay item
+    mViewportOverlayItem = new ViewportOverlayItem(mMapDocument);
+    addItem(mViewportOverlayItem);
 
     refreshScene();
     emit mapDocumentChanged(mMapDocument);
