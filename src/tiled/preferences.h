@@ -205,9 +205,6 @@ public slots:
     void setShowObjectReferences(bool enabled);
     void setParallaxEnabled(bool enabled);
     void setSnapMode(SnapMode snapMode);
-    void setSnapToGrid(bool snapToGrid);
-    void setSnapToFineGrid(bool snapToFineGrid);
-    void setSnapToPixels(bool snapToPixels);
     void setGridColor(QColor gridColor);
     void setBackgroundFadeColor(QColor backgroundFadeColor);
     void setGridFine(int gridFine);
@@ -233,9 +230,6 @@ signals:
     void showObjectReferencesChanged(bool enabled);
     void parallaxEnabledChanged(bool enabled);
     void snapModeChanged(SnapMode snapMode);
-    void snapToGridChanged(bool snapToGrid);
-    void snapToFineGridChanged(bool snapToFineGrid);
-    void snapToPixelsChanged(bool snapToPixels);
     void gridColorChanged(QColor gridColor);
     void backgroundFadeColorChanged(QColor backgroundFadeColor);
     void gridFineChanged(int gridFine);

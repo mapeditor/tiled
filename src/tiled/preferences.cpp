@@ -36,13 +36,12 @@
 
 using namespace Tiled;
 
-namespace {
 constexpr auto snapModeKey = "Interface/SnapMode";
 constexpr auto snapToGridKey = "Interface/SnapToGrid";
 constexpr auto snapToFineGridKey = "Interface/SnapToFineGrid";
 constexpr auto snapToPixelsKey = "Interface/SnapToPixels";
 
-Preferences::SnapMode toSnapMode(int mode)
+static Preferences::SnapMode toSnapMode(int mode)
 {
     switch (mode) {
     case Preferences::SnapToGridMode:
@@ -53,7 +52,6 @@ Preferences::SnapMode toSnapMode(int mode)
         return Preferences::NoSnap;
     }
 }
-} // namespace
 
 Preferences *Preferences::mInstance;
 QString Preferences::mStartupProject;
@@ -391,40 +389,12 @@ void Preferences::setParallaxEnabled(bool enabled)
 
 void Preferences::setSnapMode(SnapMode snapMode)
 {
-    snapMode = toSnapMode(snapMode);
     if (this->snapMode() == snapMode)
         return;
 
     setValue(QLatin1String(snapModeKey), static_cast<int>(snapMode));
     sync();
     emit snapModeChanged(snapMode);
-    emit snapToGridChanged(snapMode == SnapToGridMode);
-    emit snapToFineGridChanged(snapMode == SnapToFineGridMode);
-    emit snapToPixelsChanged(snapMode == SnapToPixelsMode);
-}
-
-void Preferences::setSnapToGrid(bool snapToGrid)
-{
-    if (snapToGrid)
-        setSnapMode(SnapToGridMode);
-    else if (snapMode() == SnapToGridMode)
-        setSnapMode(NoSnap);
-}
-
-void Preferences::setSnapToFineGrid(bool snapToFineGrid)
-{
-    if (snapToFineGrid)
-        setSnapMode(SnapToFineGridMode);
-    else if (snapMode() == SnapToFineGridMode)
-        setSnapMode(NoSnap);
-}
-
-void Preferences::setSnapToPixels(bool snapToPixels)
-{
-    if (snapToPixels)
-        setSnapMode(SnapToPixelsMode);
-    else if (snapMode() == SnapToPixelsMode)
-        setSnapMode(NoSnap);
 }
 
 void Preferences::setGridColor(QColor gridColor)
