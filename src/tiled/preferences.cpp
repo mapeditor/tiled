@@ -41,15 +41,15 @@ constexpr auto snapToGridKey = "Interface/SnapToGrid";
 constexpr auto snapToFineGridKey = "Interface/SnapToFineGrid";
 constexpr auto snapToPixelsKey = "Interface/SnapToPixels";
 
-static Preferences::SnapMode toSnapMode(int mode)
+static SnapMode toSnapMode(int mode)
 {
     switch (mode) {
-    case Preferences::SnapToGridMode:
-    case Preferences::SnapToFineGridMode:
-    case Preferences::SnapToPixelsMode:
-        return static_cast<Preferences::SnapMode>(mode);
+    case static_cast<int>(SnapMode::Grid):
+    case static_cast<int>(SnapMode::FineGrid):
+    case static_cast<int>(SnapMode::Pixels):
+        return static_cast<SnapMode>(mode);
     default:
-        return Preferences::NoSnap;
+        return SnapMode::None;
     }
 }
 
@@ -153,17 +153,17 @@ void Preferences::initialize()
     }
 
     if (!contains(QLatin1String(snapModeKey))) {
-        SnapMode mode = NoSnap;
+        SnapMode mode = SnapMode::None;
 
         // Preserve legacy behavior when multiple old flags were enabled:
         // grid snapping took priority over fine grid, and pixel snapping only
         // applied when neither grid mode was active.
         if (get<bool>(snapToGridKey, false))
-            mode = SnapToGridMode;
+            mode = SnapMode::Grid;
         else if (get<bool>(snapToFineGridKey, false))
-            mode = SnapToFineGridMode;
+            mode = SnapMode::FineGrid;
         else if (get<bool>(snapToPixelsKey, false))
-            mode = SnapToPixelsMode;
+            mode = SnapMode::Pixels;
 
         setValue(QLatin1String(snapModeKey), static_cast<int>(mode));
     }
@@ -203,9 +203,9 @@ bool Preferences::parallaxEnabled() const
     return get("Interface/ParallaxEnabled", true);
 }
 
-Preferences::SnapMode Preferences::snapMode() const
+SnapMode Preferences::snapMode() const
 {
-    return toSnapMode(get<int>(snapModeKey, NoSnap));
+    return toSnapMode(get(snapModeKey, static_cast<int>(SnapMode::None)));
 }
 
 QColor Preferences::gridColor() const

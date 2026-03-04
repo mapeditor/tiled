@@ -32,6 +32,13 @@
 
 namespace Tiled {
 
+enum class SnapMode {
+    None = 0,
+    Grid = 1,
+    FineGrid = 2,
+    Pixels = 3
+};
+
 /**
  * This class holds user preferences and provides a convenient interface to
  * access them.
@@ -61,14 +68,6 @@ public:
     bool showTileCollisionShapes() const;
     bool showObjectReferences() const;
     bool parallaxEnabled() const;
-
-    enum SnapMode {
-        NoSnap = 0,
-        SnapToGridMode = 1,
-        SnapToFineGridMode = 2,
-        SnapToPixelsMode = 3
-    };
-
     SnapMode snapMode() const;
     QColor gridColor() const;
     QColor backgroundFadeColor() const;

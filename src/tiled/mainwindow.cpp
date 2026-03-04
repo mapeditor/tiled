@@ -571,19 +571,19 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             preferences, &Preferences::setParallaxEnabled);
     connect(mUi->actionSnapNothing, &QAction::toggled, preferences, [preferences](bool checked) {
         if (checked)
-            preferences->setSnapMode(Preferences::NoSnap);
+            preferences->setSnapMode(SnapMode::None);
     });
     connect(mUi->actionSnapToGrid, &QAction::toggled, preferences, [preferences](bool checked) {
         if (checked)
-            preferences->setSnapMode(Preferences::SnapToGridMode);
+            preferences->setSnapMode(SnapMode::Grid);
     });
     connect(mUi->actionSnapToFineGrid, &QAction::toggled, preferences, [preferences](bool checked) {
         if (checked)
-            preferences->setSnapMode(Preferences::SnapToFineGridMode);
+            preferences->setSnapMode(SnapMode::FineGrid);
     });
     connect(mUi->actionSnapToPixels, &QAction::toggled, preferences, [preferences](bool checked) {
         if (checked)
-            preferences->setSnapMode(Preferences::SnapToPixelsMode);
+            preferences->setSnapMode(SnapMode::Pixels);
     });
     connect(mUi->actionHighlightCurrentLayer, &QAction::toggled,
             preferences, &Preferences::setHighlightCurrentLayer);
@@ -2038,17 +2038,17 @@ void MainWindow::autoMappingWarning(bool automatic)
     }
 }
 
-void MainWindow::updateSnappingActions(Preferences::SnapMode mode)
+void MainWindow::updateSnappingActions(SnapMode mode)
 {
     const QSignalBlocker blockSnapNothing(mUi->actionSnapNothing);
     const QSignalBlocker blockSnapToGrid(mUi->actionSnapToGrid);
     const QSignalBlocker blockSnapToFineGrid(mUi->actionSnapToFineGrid);
     const QSignalBlocker blockSnapToPixels(mUi->actionSnapToPixels);
 
-    mUi->actionSnapNothing->setChecked(mode == Preferences::NoSnap);
-    mUi->actionSnapToGrid->setChecked(mode == Preferences::SnapToGridMode);
-    mUi->actionSnapToFineGrid->setChecked(mode == Preferences::SnapToFineGridMode);
-    mUi->actionSnapToPixels->setChecked(mode == Preferences::SnapToPixelsMode);
+    mUi->actionSnapNothing->setChecked(mode == SnapMode::None);
+    mUi->actionSnapToGrid->setChecked(mode == SnapMode::Grid);
+    mUi->actionSnapToFineGrid->setChecked(mode == SnapMode::FineGrid);
+    mUi->actionSnapToPixels->setChecked(mode == SnapMode::Pixels);
 }
 
 void MainWindow::onPropertyTypesEditorClosed()

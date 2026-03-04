@@ -448,7 +448,7 @@ void ObjectSelectionTool::keyPressed(QKeyEvent *event)
         // TODO: This only makes sense for orthogonal maps
         moveBy.rx() *= mapDocument()->map()->tileWidth();
         moveBy.ry() *= mapDocument()->map()->tileHeight();
-        if (snapMode == Preferences::SnapToFineGridMode)
+        if (snapMode == SnapMode::FineGrid)
             moveBy /= Preferences::instance()->gridFine();
     }
 

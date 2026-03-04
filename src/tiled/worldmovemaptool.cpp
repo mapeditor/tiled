@@ -94,7 +94,7 @@ void WorldMoveMapTool::keyPressed(QKeyEvent *event)
         // TODO: This only makes sense for orthogonal maps
         moveBy.rx() *= document->map()->tileWidth();
         moveBy.ry() *= document->map()->tileHeight();
-        if (snapMode == Preferences::SnapToFineGridMode)
+        if (snapMode == SnapMode::FineGrid)
             moveBy /= Preferences::instance()->gridFine();
     }
 

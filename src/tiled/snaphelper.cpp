@@ -21,33 +21,17 @@
 
 #include "snaphelper.h"
 
-#include "preferences.h"
-
 namespace Tiled {
 
 SnapHelper::SnapHelper(const MapRenderer *renderer,
                        Qt::KeyboardModifiers modifiers)
     : mRenderer(renderer)
+    , mSnapMode(Preferences::instance()->snapMode())
 {
-    Preferences *preferences = Preferences::instance();
-    switch (preferences->snapMode()) {
-    case Preferences::SnapToGridMode:
-        mSnapMode = SnapToGrid;
-        break;
-    case Preferences::SnapToFineGridMode:
-        mSnapMode = SnapToFineGrid;
-        break;
-    case Preferences::SnapToPixelsMode:
-        mSnapToPixels = true;
-        break;
-    case Preferences::NoSnap:
-        break;
-    }
-
     if (modifiers & Qt::ControlModifier) {
         if (modifiers & Qt::ShiftModifier) {
             toggleFineSnap();
-        } else { 
+        } else {
             toggleSnap();
         }
     }
@@ -56,41 +40,49 @@ SnapHelper::SnapHelper(const MapRenderer *renderer,
 void SnapHelper::toggleSnap()
 {
     switch (mSnapMode) {
-    case NoSnap:
-        mSnapMode = SnapToGrid;
+    case SnapMode::None:
+    case SnapMode::Pixels:
+        mSnapMode = SnapMode::Grid;
         break;
-    case SnapToGrid:
-    case SnapToFineGrid:
-        mSnapMode = NoSnap;
+    case SnapMode::Grid:
+    case SnapMode::FineGrid:
+        mSnapMode = SnapMode::None;
         break;
     }
 }
-  
+
 void SnapHelper::toggleFineSnap()
 {
     switch (mSnapMode) {
-    case NoSnap:
-    case SnapToGrid:
-        mSnapMode = SnapToFineGrid;
+    case SnapMode::None:
+    case SnapMode::Grid:
+    case SnapMode::Pixels:
+        mSnapMode = SnapMode::FineGrid;
         break;
-    case SnapToFineGrid:
-        mSnapMode = SnapToGrid;
+    case SnapMode::FineGrid:
+        mSnapMode = SnapMode::Grid;
         break;
     }
 }
 
 void SnapHelper::snap(QPointF &pixelPos) const
 {
-    if (mSnapMode != NoSnap) {
-        if (mSnapMode == SnapToFineGrid) {
-            const int gridFine = Preferences::instance()->gridFine();
-            pixelPos = mRenderer->snapToGrid(pixelPos, gridFine);
-        } else {
-            pixelPos = mRenderer->snapToGrid(pixelPos);
-        }
-    } else if (mSnapToPixels) {
+    switch (mSnapMode) {
+    case SnapMode::None:
+        break;
+    case SnapMode::FineGrid: {
+        const int gridFine = Preferences::instance()->gridFine();
+        pixelPos = mRenderer->snapToGrid(pixelPos, gridFine);
+        break;
+    }
+    case SnapMode::Grid:
+        pixelPos = mRenderer->snapToGrid(pixelPos);
+        break;
+    case SnapMode::Pixels: {
         QPointF screenPos = mRenderer->pixelToScreenCoords(pixelPos);
         pixelPos = mRenderer->screenToPixelCoords(screenPos.toPoint());
+        break;
+    }
     }
 }
 
