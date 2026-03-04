@@ -317,3 +317,4 @@ void Preference<T>::set(const T &value)
 } // namespace Tiled
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Tiled::Preferences::ExportOptions)
+Q_DECLARE_METATYPE(Tiled::SnapMode)

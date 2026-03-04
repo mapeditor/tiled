@@ -85,7 +85,6 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QRegularExpression>
-#include <QSignalBlocker>
 #include <QShortcut>
 #include <QStandardPaths>
 #include <QStatusBar>
@@ -413,11 +412,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             mTilesetEditor->templatesDock(), &TemplatesDock::tryOpenTemplate);
 
     auto snappingGroup = new QActionGroup(this);
-    snappingGroup->setExclusive(true);
     mUi->actionSnapNothing->setActionGroup(snappingGroup);
     mUi->actionSnapToGrid->setActionGroup(snappingGroup);
     mUi->actionSnapToFineGrid->setActionGroup(snappingGroup);
     mUi->actionSnapToPixels->setActionGroup(snappingGroup);
+    mUi->actionSnapNothing->setData(QVariant::fromValue(SnapMode::None));
+    mUi->actionSnapToGrid->setData(QVariant::fromValue(SnapMode::Grid));
+    mUi->actionSnapToFineGrid->setData(QVariant::fromValue(SnapMode::FineGrid));
+    mUi->actionSnapToPixels->setData(QVariant::fromValue(SnapMode::Pixels));
 
     mUi->actionShowGrid->setChecked(preferences->showGrid());
     mUi->actionShowTileObjectOutlines->setChecked(preferences->showTileObjectOutlines());
@@ -425,12 +427,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionShowTileAnimations->setChecked(preferences->showTileAnimations());
     mUi->actionShowTileCollisionShapes->setChecked(preferences->showTileCollisionShapes());
     mUi->actionEnableParallax->setChecked(preferences->parallaxEnabled());
-    updateSnappingActions(preferences->snapMode());
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
     mUi->actionHighlightHoveredObject->setChecked(preferences->highlightHoveredObject());
     connect(preferences, &Preferences::snapModeChanged, this, &MainWindow::updateSnappingActions);
     connect(mUi->menuSnapping, &QMenu::aboutToShow, this, [this, preferences] {
-        preferences->sync();
         updateSnappingActions(preferences->snapMode());
     });
 
@@ -569,21 +569,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             preferences, &Preferences::setShowTileCollisionShapes);
     connect(mUi->actionEnableParallax, &QAction::toggled,
             preferences, &Preferences::setParallaxEnabled);
-    connect(mUi->actionSnapNothing, &QAction::toggled, preferences, [preferences](bool checked) {
-        if (checked)
-            preferences->setSnapMode(SnapMode::None);
-    });
-    connect(mUi->actionSnapToGrid, &QAction::toggled, preferences, [preferences](bool checked) {
-        if (checked)
-            preferences->setSnapMode(SnapMode::Grid);
-    });
-    connect(mUi->actionSnapToFineGrid, &QAction::toggled, preferences, [preferences](bool checked) {
-        if (checked)
-            preferences->setSnapMode(SnapMode::FineGrid);
-    });
-    connect(mUi->actionSnapToPixels, &QAction::toggled, preferences, [preferences](bool checked) {
-        if (checked)
-            preferences->setSnapMode(SnapMode::Pixels);
+    connect(snappingGroup, &QActionGroup::triggered, preferences, [preferences](QAction *action) {
+        preferences->setSnapMode(action->data().value<SnapMode>());
     });
     connect(mUi->actionHighlightCurrentLayer, &QAction::toggled,
             preferences, &Preferences::setHighlightCurrentLayer);
@@ -979,13 +966,6 @@ void MainWindow::changeEvent(QEvent *event)
         break;
     case QEvent::WindowStateChange:
         mUi->actionFullScreen->setChecked(isFullScreen());
-        break;
-    case QEvent::ActivationChange:
-        if (isActiveWindow()) {
-            Preferences *preferences = Preferences::instance();
-            preferences->sync();
-            updateSnappingActions(preferences->snapMode());
-        }
         break;
     default:
         break;
@@ -2040,11 +2020,6 @@ void MainWindow::autoMappingWarning(bool automatic)
 
 void MainWindow::updateSnappingActions(SnapMode mode)
 {
-    const QSignalBlocker blockSnapNothing(mUi->actionSnapNothing);
-    const QSignalBlocker blockSnapToGrid(mUi->actionSnapToGrid);
-    const QSignalBlocker blockSnapToFineGrid(mUi->actionSnapToFineGrid);
-    const QSignalBlocker blockSnapToPixels(mUi->actionSnapToPixels);
-
     mUi->actionSnapNothing->setChecked(mode == SnapMode::None);
     mUi->actionSnapToGrid->setChecked(mode == SnapMode::Grid);
     mUi->actionSnapToFineGrid->setChecked(mode == SnapMode::FineGrid);

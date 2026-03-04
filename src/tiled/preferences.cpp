@@ -378,7 +378,6 @@ void Preferences::setSnapMode(SnapMode snapMode)
         return;
 
     setValue(QLatin1String(snapModeKey), static_cast<int>(snapMode));
-    sync();
     emit snapModeChanged(snapMode);
 }
 
