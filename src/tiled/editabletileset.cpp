@@ -213,10 +213,9 @@ void EditableTileset::removeWangSet(EditableWangSet *editableWangSet)
 
 QString EditableTileset::fileName() const
 {
-    if (auto doc = tilesetDocument())
-        return doc->fileName();
-    const auto originalTileset = const_cast<Tileset*>(tileset())->originalTileset();
-    return originalTileset ? originalTileset->fileName() : QString();
+    if (auto fileName = EditableAsset::fileName(); !fileName.isEmpty())
+        return fileName;
+    return const_cast<Tileset*>(tileset())->originalTileset()->fileName();
 }
 
 TilesetDocument *EditableTileset::tilesetDocument() const

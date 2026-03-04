@@ -90,8 +90,8 @@ EditableMap::~EditableMap()
 
 QString EditableMap::fileName() const
 {
-    if (auto doc = mapDocument())
-        return doc->fileName();
+    if (auto fileName = EditableAsset::fileName(); !fileName.isEmpty())
+        return fileName;
     return map()->fileName;
 }
 
