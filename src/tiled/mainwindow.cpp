@@ -429,7 +429,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionEnableParallax->setChecked(preferences->parallaxEnabled());
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
     mUi->actionHighlightHoveredObject->setChecked(preferences->highlightHoveredObject());
-    connect(preferences, &Preferences::snapModeChanged, this, &MainWindow::updateSnappingActions);
     connect(mUi->menuSnapping, &QMenu::aboutToShow, this, [this, preferences] {
         updateSnappingActions(preferences->snapMode());
     });
