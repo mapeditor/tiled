@@ -29,6 +29,7 @@
 * Fixed undo behavior after resizing objects certain ways (by Kanishka, #4339)
 * Scripting: Added API for custom property types (with dogboydog, #3971)
 * Scripting: Added TileMap.chunkSize and TileMap.compressionLevel properties
+* Scripting: Added optional defaultValue and toolTip params to Dialog add widget methods (by Oval, #4358)
 * Scripting: Added tiled.session to read and write session properties (by Kanishka, #4345)
 * Scripting: Added MapEditor.selectedTool and MapEditor.tool (#4330)
 * Scripting: Fixed the `fileName` property of map/tileset passed to `FileFormat.write` (by Shuvam Pal, #4359)
