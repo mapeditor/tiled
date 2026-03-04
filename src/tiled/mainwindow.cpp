@@ -153,9 +153,9 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
 
         QString lastExportedFilePath = session.lastPath(Session::ExportedFile);
 
-        suggestedFilename = lastExportedFilePath
-                            + QLatin1Char('/') + baseName
-                            + QLatin1Char('.') + extension;
+        suggestedFilename = lastExportedFilePath + QLatin1Char('/') + baseName;
+        if (!extension.isEmpty())
+            suggestedFilename += QLatin1Char('.') + extension;
     }
 
     // No need to confirm overwrite here since it'll be prompted below
@@ -2435,8 +2435,8 @@ void MainWindow::exportTilesetAs(TilesetDocument *tilesetDocument)
         fileName = tilesetDocument->tileset()->name();
     }
 
-    SessionOption<QString> lastUsedTilesetExportFilter { "lastUsedTilesetExportFilter" };
-    QString selectedFilter = lastUsedTilesetExportFilter;
+    SessionOption<QString> lastUsedExportFilter { "tileset.lastUsedExportFilter" };
+    QString selectedFilter = lastUsedExportFilter;
     auto exportDetails = chooseExportDetails<TilesetFormat>(fileName,
                                                             tilesetDocument->lastExportFileName(),
                                                             selectedFilter,
@@ -2447,7 +2447,7 @@ void MainWindow::exportTilesetAs(TilesetDocument *tilesetDocument)
     Session &session = Session::current();
 
     session.setLastPath(Session::ExportedFile, QFileInfo(exportDetails.mFileName).path());
-    lastUsedTilesetExportFilter = selectedFilter;
+    lastUsedExportFilter = selectedFilter;
 
     ExportHelper exportHelper;
     SharedTileset exportTileset = exportHelper.prepareExportTileset(tilesetDocument->tileset());
