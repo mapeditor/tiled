@@ -844,6 +844,7 @@ void PropertyTypesEditor::updateDetails()
     case PropertyType::PT_Enum: {
         const auto &enumType = *static_cast<const EnumPropertyType*>(propertyType);
 
+        mUseAsPropertyCheckBox->setChecked(enumType.isPropertyValueType());
         mStorageTypeComboBox->setCurrentIndex(enumType.storageType);
         mValuesAsFlagsCheckBox->setChecked(enumType.valuesAsFlags);
         mValuesModel->setStringList(enumType.values);
@@ -1008,6 +1009,11 @@ void PropertyTypesEditor::addEnumProperties()
     connect(mValuesAsFlagsCheckBox, &QCheckBox::toggled,
             this, [this] (bool checked) { setValuesAsFlags(checked); });
 
+    mUseAsPropertyCheckBox = new QCheckBox(tr("Property value"));
+
+    connect(mUseAsPropertyCheckBox, &QCheckBox::toggled,
+            this, [this] (bool checked) { setUsageFlags(ClassPropertyType::PropertyValueType, checked); });
+
     mValuesView = new QTreeView(this);
     mValuesView->setRootIsDecorated(false);
     mValuesView->setUniformRowHeights(true);
@@ -1029,6 +1035,7 @@ void PropertyTypesEditor::addEnumProperties()
     valuesWithToolBarLayout->addWidget(valuesToolBar);
 
     mDetailsLayout->addRow(tr("Name"), mNameEdit);
+    mDetailsLayout->addRow(tr("Use as"), mUseAsPropertyCheckBox);
     mDetailsLayout->addRow(tr("Save as"), mStorageTypeComboBox);
     mDetailsLayout->addRow(QString(), mValuesAsFlagsCheckBox);
     mDetailsLayout->addRow(tr("Values"), valuesWithToolBarLayout);
@@ -1111,9 +1118,21 @@ void PropertyTypesEditor::setUsageFlags(int flags, bool value)
     if (mUpdatingDetails)
         return;
 
-    if (ClassPropertyType *classType = selectedClassPropertyType()) {
+    PropertyType *propertyType = selectedPropertyType();
+    if (!propertyType)
+        return;
+
+    if (propertyType->isClass()) {
+        auto *classType = static_cast<ClassPropertyType*>(propertyType);
         classType->setUsageFlags(flags, value);
         updateClassUsageDetails(*classType);
+        applyPropertyTypes();
+    } else if (propertyType->isEnum()) {
+        auto *enumType = static_cast<EnumPropertyType*>(propertyType);
+        if (value)
+            enumType->usageFlags |= flags;
+        else
+            enumType->usageFlags &= ~flags;
         applyPropertyTypes();
     }
 }

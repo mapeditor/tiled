@@ -113,6 +113,10 @@ public:
     StorageType storageType = StringValue;
     QStringList values;
     bool valuesAsFlags = false;
+    // Controls whether this enum can be used as a top-level property value.
+    // Defaults to 0x001 (PropertyValueType flag) for backward compatibility.
+    // Does NOT restrict usage as class member - all enums are always usable as class members.
+    int usageFlags = 0x001;
 
     EnumPropertyType(const QString &name) : PropertyType(PT_Enum, name) {}
 
@@ -123,6 +127,8 @@ public:
 
     QJsonObject toJson(const ExportContext &) const override;
     void initializeFromJson(const QJsonObject &json) override;
+
+    bool isPropertyValueType() const { return usageFlags & 0x001; }
 
     static StorageType storageTypeFromString(const QString &string);
     static QString storageTypeToString(StorageType type);
