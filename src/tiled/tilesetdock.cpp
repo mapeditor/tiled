@@ -57,6 +57,7 @@
 #include <QComboBox>
 #include <QDropEvent>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QHBoxLayout>
 #include <QMenu>
 #include <QMessageBox>
@@ -163,6 +164,14 @@ static void removeTileReferences(MapDocument *mapDocument,
 
     if (!objectsToRemove.isEmpty())
         undoStack->push(new RemoveMapObjects(mapDocument, objectsToRemove));
+}
+
+static QString tabTitle(const TilesetDocument *tilesetDocument)
+{
+    QString title = tilesetDocument->tileset()->name();
+    if (title.isEmpty())
+        title = tilesetDocument->displayName();
+    return title;
 }
 
 } // anonymous namespace
@@ -628,7 +637,7 @@ void TilesetDock::createTilesetView(int index, TilesetDocument *tilesetDocument)
     // Insert view before the tab to make sure it is there when the tab index
     // changes (happens when first tab is inserted).
     mViewStack->insertWidget(index, view);
-    mTabBar->insertTab(index, tileset->name());
+    mTabBar->insertTab(index, tabTitle(tilesetDocument));
     mTabBar->setTabToolTip(index, tileset->fileName());
 
     // Workaround a bug that appears to have snug into Qt 6 which causes the
@@ -942,10 +951,9 @@ void TilesetDock::onTilesetDataChanged(const QModelIndex &topLeft, const QModelI
     // Update the titles of the affected tabs
     for (int i = topLeft.row(); i <= bottomRight.row(); ++i) {
         const TilesetDocument *tilesetDocument = mTilesetDocuments.at(i);
-        const QString &name = tilesetDocument->tileset()->name();
-        if (mTabBar->tabText(i) != name)
-            mTabBar->setTabText(i, name);
-        mTabBar->setTabToolTip(i, tilesetDocument->fileName());
+        const QString title = tabTitle(tilesetDocument);
+        if (mTabBar->tabText(i) != title)
+            mTabBar->setTabText(i, title);
     }
 }
 
@@ -1220,6 +1228,7 @@ void TilesetDock::tilesetFileNameChanged(const QString &fileName)
     Q_ASSERT(index != -1);
 
     mTabBar->setTabToolTip(index, fileName);
+    mTabBar->setTabText(index, tabTitle(tilesetDocument));
 
     updateActions();
 }

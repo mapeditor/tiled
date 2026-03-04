@@ -22,8 +22,15 @@
 
 #include "documentmanager.h"
 #include "filteredit.h"
+#include "map.h"
+#include "mapdocument.h"
+#include "mapitem.h"
+#include "maprenderer.h"
+#include "mapscene.h"
+#include "mapview.h"
 #include "preferences.h"
 #include "projectmanager.h"
+#include "tilehighlightitem.h"
 #include "utils.h"
 
 #include <QApplication>
@@ -396,6 +403,97 @@ void FileLocatorSource::setFilterWords(const QStringList &words)
     beginResetModel();
     mMatches = std::move(matches);
     endResetModel();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+TileLocatorSource::TileLocatorSource(QObject *parent)
+    : LocatorSource(parent)
+    , mDelegate(new QStyledItemDelegate(this))
+{}
+
+int TileLocatorSource::rowCount(const QModelIndex &parent) const
+{
+    return (!parent.isValid() && mHasValidCoord) ? 1 : 0;
+}
+
+QVariant TileLocatorSource::data(const QModelIndex &index, int role) const
+{
+    if (role == Qt::DisplayRole && index.row() == 0 && mHasValidCoord)
+        return tr("Go to tile (%1, %2)").arg(mTileX).arg(mTileY);
+    return QVariant();
+}
+
+QAbstractItemDelegate *TileLocatorSource::delegate() const
+{
+    return mDelegate;
+}
+
+QString TileLocatorSource::placeholderText() const
+{
+    return tr("Go to tile: x, y");
+}
+
+void TileLocatorSource::setFilterWords(const QStringList &words)
+{
+    bool validX = false;
+    bool validY = false;
+    int x = 0;
+    int y = 0;
+
+    const QString input = words.join(QStringView());
+    const int commaIndex = input.indexOf(QLatin1Char(','));
+    if (commaIndex >= 0 && commaIndex < input.size() - 1) {
+        x = QStringView(input).left(commaIndex).toInt(&validX);
+        y = QStringView(input).mid(commaIndex + 1).toInt(&validY);
+    }
+
+    if (!(validX && validY) && words.size() == 2) {
+        x = words.at(0).toInt(&validX);
+        y = words.at(1).toInt(&validY);
+    }
+
+    beginResetModel();
+    mHasValidCoord = validX && validY;
+    mTileX = x;
+    mTileY = y;
+    endResetModel();
+}
+
+void TileLocatorSource::activate(const QModelIndex &)
+{
+    auto documentManager = DocumentManager::instance();
+    auto mapDocument = qobject_cast<MapDocument*>(documentManager->currentDocument());
+    if (!mapDocument)
+        return;
+
+    const auto *map = mapDocument->map();
+    if (map->width() < 1 || map->height() < 1)
+        return;
+
+    auto mapView = documentManager->currentMapView();
+    if (!mapView)
+        return;
+
+    const int x = qBound(0, mTileX, map->width() - 1);
+    const int y = qBound(0, mTileY, map->height() - 1);
+
+    auto renderer = mapDocument->renderer();
+    QPointF pixelPos = renderer->tileToPixelCoords(x + 0.5, y + 0.5);
+
+    if (Layer *layer = mapDocument->currentLayer()) {
+        mapView->forceCenterOn(pixelPos, *layer);
+
+        if (auto mapScene = mapView->mapScene()) {
+            if (MapItem *mapItem = mapScene->mapItem(mapDocument)) {
+                auto *highlight = new TileHighlightItem(mapDocument, x, y, mapItem);
+                highlight->setZValue(10003);
+                highlight->startBlink();
+            }
+        }
+    } else {
+        mapView->forceCenterOn(pixelPos);
+    }
 }
 
 } // namespace Tiled
