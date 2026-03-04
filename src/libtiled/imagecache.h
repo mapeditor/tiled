@@ -36,6 +36,9 @@
 #include <QImage>
 #include <QPixmap>
 #include <QString>
+#include <QtGlobal>
+
+#include <list>
 
 namespace Tiled {
 
@@ -61,11 +64,25 @@ public:
 
     static void remove(const QString &fileName);
 
+    static void setMaxCacheBytes(qint64 bytes);
+    static qint64 maxCacheBytes();
+    static qint64 currentCacheBytes();
+
 private:
     static QImage renderMap(const QString &fileName);
+    static qint64 cacheCost(const QString &fileName);
+    static void touch(const QString &fileName);
+    static void addEntry(const QString &fileName, qint64 costBytes);
+    static void removeEntry(const QString &fileName);
+    static void evictIfNeeded();
 
     static QHash<QString, LoadedImage> sLoadedImages;
     static QHash<QString, LoadedPixmap> sLoadedPixmaps;
+    static QHash<QString, qint64> sEntryCosts;
+    static qint64 sCurrentCacheBytes;
+    static qint64 sMaxCacheBytes;
+    static std::list<QString> sLruEntries;
+    static QHash<QString, std::list<QString>::iterator> sLruPositions;
 };
 
 } // namespace Tiled

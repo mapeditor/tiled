@@ -35,6 +35,7 @@
 
 #include <QDesktopServices>
 #include <QSortFilterProxyModel>
+#include <QSpinBox>
 
 using namespace Tiled;
 
@@ -93,6 +94,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             preferences, &Preferences::setSafeSavingEnabled);
     connect(mUi->exportOnSave, &QCheckBox::toggled,
             preferences, &Preferences::setExportOnSave);
+    connect(mUi->imageCacheMaxMB, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            preferences, &Preferences::setImageCacheMaxMB);
     connect(mUi->naturalSorting, &QCheckBox::toggled,
             preferences, &Preferences::setNaturalSorting);
 
@@ -219,6 +222,7 @@ void PreferencesDialog::fromPreferences()
     mUi->restoreSession->setChecked(prefs->restoreSessionOnStartup());
     mUi->safeSaving->setChecked(prefs->safeSavingEnabled());
     mUi->exportOnSave->setChecked(prefs->exportOnSave());
+    mUi->imageCacheMaxMB->setValue(prefs->imageCacheMaxMB());
     mUi->naturalSorting->setChecked(prefs->naturalSorting());
 
     mUi->embedTilesets->setChecked(prefs->exportOption(Preferences::EmbedTilesets));

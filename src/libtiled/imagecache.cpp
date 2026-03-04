@@ -35,8 +35,15 @@
 #include <QBitmap>
 #include <QCoreApplication>
 #include <QFileInfo>
+#include <QSet>
 
 namespace Tiled {
+
+namespace {
+
+constexpr qint64 DefaultMaxCacheBytes = 512LL * 1024 * 1024;
+
+}
 
 struct LoadedPixmap
 {
@@ -67,6 +74,11 @@ LoadedPixmap::LoadedPixmap(const LoadedImage &cachedImage)
 
 QHash<QString, LoadedImage> ImageCache::sLoadedImages;
 QHash<QString, LoadedPixmap> ImageCache::sLoadedPixmaps;
+QHash<QString, qint64> ImageCache::sEntryCosts;
+qint64 ImageCache::sCurrentCacheBytes = 0;
+qint64 ImageCache::sMaxCacheBytes = DefaultMaxCacheBytes;
+std::list<QString> ImageCache::sLruEntries;
+QHash<QString, std::list<QString>::iterator> ImageCache::sLruPositions;
 
 LoadedImage ImageCache::loadImage(const QString &fileName)
 {
@@ -79,20 +91,36 @@ LoadedImage ImageCache::loadImage(const QString &fileName)
     bool found = it != sLoadedImages.end();
     bool old = found && it.value().lastModified < info.lastModified();
 
-    if (old)
+    if (old) {
         remove(fileName);
-
-    if (old || !found) {
-        QImage image(fileName);
-
-        // If the image failed to load, try to load and render a map file
-        if (image.isNull())
-            image = renderMap(fileName);
-
-        it = sLoadedImages.insert(fileName, LoadedImage(image, info.lastModified()));
+    } else if (found) {
+        touch(fileName);
+        return it.value();
     }
 
-    return it.value();
+    QImage image(fileName);
+
+    // If the image failed to load, try to load and render a map file
+    if (image.isNull())
+        image = renderMap(fileName);
+
+    LoadedImage loaded(image, info.lastModified());
+
+    if (loaded.image.isNull())
+        return loaded;
+
+    const qint64 costBytes = cacheCost(fileName);
+    if (costBytes > sMaxCacheBytes)
+        return loaded;
+
+    sLoadedImages.insert(fileName, loaded);
+    addEntry(fileName, costBytes);
+    evictIfNeeded();
+
+    if (const auto cached = sLoadedImages.find(fileName); cached != sLoadedImages.end())
+        return cached.value();
+
+    return loaded;
 }
 
 QPixmap ImageCache::loadPixmap(const QString &fileName)
@@ -105,18 +133,113 @@ QPixmap ImageCache::loadPixmap(const QString &fileName)
     bool found = it != sLoadedPixmaps.end();
     bool old = found && it.value().lastModified < QFileInfo(fileName).lastModified();
 
-    if (old)
+    if (old) {
         remove(fileName);
-    if (old || !found)
-        it = sLoadedPixmaps.insert(fileName, LoadedPixmap(loadImage(fileName)));
+    } else if (found) {
+        touch(fileName);
+        return it.value();
+    }
 
-    return it.value();
+    const LoadedImage loadedImage = loadImage(fileName);
+    if (loadedImage.image.isNull())
+        return {};
+
+    LoadedPixmap loadedPixmap(loadedImage);
+
+    const qint64 costBytes = cacheCost(fileName);
+    if (costBytes > sMaxCacheBytes)
+        return loadedPixmap.pixmap;
+
+    sLoadedPixmaps.insert(fileName, loadedPixmap);
+
+    if (sEntryCosts.contains(fileName))
+        touch(fileName);
+    else
+        addEntry(fileName, costBytes);
+
+    evictIfNeeded();
+
+    if (const auto cached = sLoadedPixmaps.find(fileName); cached != sLoadedPixmaps.end())
+        return cached.value();
+
+    return loadedPixmap.pixmap;
 }
 
 void ImageCache::remove(const QString &fileName)
 {
     sLoadedImages.remove(fileName);
     sLoadedPixmaps.remove(fileName);
+    removeEntry(fileName);
+}
+
+void ImageCache::setMaxCacheBytes(qint64 bytes)
+{
+    sMaxCacheBytes = qMax<qint64>(0, bytes);
+    evictIfNeeded();
+}
+
+qint64 ImageCache::maxCacheBytes()
+{
+    return sMaxCacheBytes;
+}
+
+qint64 ImageCache::currentCacheBytes()
+{
+    return sCurrentCacheBytes;
+}
+
+qint64 ImageCache::cacheCost(const QString &fileName)
+{
+    const qint64 fileSize = QFileInfo(fileName).size();
+    return qMax<qint64>(1, fileSize);
+}
+
+void ImageCache::touch(const QString &fileName)
+{
+    if (auto posIt = sLruPositions.find(fileName); posIt != sLruPositions.end()) {
+        sLruEntries.erase(posIt.value());
+        sLruPositions.erase(posIt);
+    }
+
+    sLruEntries.push_back(fileName);
+    auto listIt = sLruEntries.end();
+    --listIt;
+    sLruPositions.insert(fileName, listIt);
+}
+
+void ImageCache::addEntry(const QString &fileName, qint64 costBytes)
+{
+    if (auto costIt = sEntryCosts.find(fileName); costIt != sEntryCosts.end()) {
+        sCurrentCacheBytes -= costIt.value();
+        sEntryCosts.erase(costIt);
+    }
+
+    sEntryCosts.insert(fileName, costBytes);
+    sCurrentCacheBytes += costBytes;
+    touch(fileName);
+}
+
+void ImageCache::removeEntry(const QString &fileName)
+{
+    if (auto costIt = sEntryCosts.find(fileName); costIt != sEntryCosts.end()) {
+        sCurrentCacheBytes -= costIt.value();
+        sEntryCosts.erase(costIt);
+        if (sCurrentCacheBytes < 0)
+            sCurrentCacheBytes = 0;
+    }
+
+    if (auto posIt = sLruPositions.find(fileName); posIt != sLruPositions.end()) {
+        sLruEntries.erase(posIt.value());
+        sLruPositions.erase(posIt);
+    }
+}
+
+void ImageCache::evictIfNeeded()
+{
+    while (sCurrentCacheBytes > sMaxCacheBytes && !sLruEntries.empty()) {
+        const QString oldestFile = sLruEntries.front();
+        remove(oldestFile);
+    }
 }
 
 QImage ImageCache::renderMap(const QString &fileName)

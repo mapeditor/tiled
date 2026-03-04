@@ -136,6 +136,9 @@ public:
     bool reloadTilesetsOnChange() const;
     void setReloadTilesetsOnChanged(bool reloadOnChanged);
 
+    int imageCacheMaxMB() const;
+    void setImageCacheMaxMB(int mb);
+
     bool useOpenGL() const;
     void setUseOpenGL(bool useOpenGL);
 

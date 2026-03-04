@@ -21,6 +21,7 @@
 
 #include "preferences.h"
 
+#include "imagecache.h"
 #include "languagemanager.h"
 #include "pluginmanager.h"
 #include "savefile.h"
@@ -33,6 +34,7 @@
 #include <QScopedValueRollback>
 #include <QStandardPaths>
 #include <QVariantMap>
+#include <QtGlobal>
 
 using namespace Tiled;
 
@@ -99,6 +101,8 @@ void Preferences::initialize()
     TilesetManager *tilesetManager = TilesetManager::instance();
     tilesetManager->setReloadTilesetsOnChange(reloadTilesetsOnChange());
     tilesetManager->setAnimateTiles(showTileAnimations());
+
+    setImageCacheMaxMB(imageCacheMaxMB());
 
     // Read the lists of enabled and disabled plugins
     const auto disabledPlugins = get<QStringList>("Plugins/Disabled");
@@ -527,6 +531,18 @@ void Preferences::setReloadTilesetsOnChanged(bool reloadOnChanged)
 {
     setValue(QLatin1String("Storage/ReloadTilesets"), reloadOnChanged);
     TilesetManager::instance()->setReloadTilesetsOnChange(reloadOnChanged);
+}
+
+int Preferences::imageCacheMaxMB() const
+{
+    return qBound(32, get("Storage/ImageCacheMaxMB", 512), 16384);
+}
+
+void Preferences::setImageCacheMaxMB(int mb)
+{
+    const int clamped = qBound(32, mb, 16384);
+    setValue(QLatin1String("Storage/ImageCacheMaxMB"), clamped);
+    ImageCache::setMaxCacheBytes(static_cast<qint64>(clamped) * 1024 * 1024);
 }
 
 bool Preferences::useOpenGL() const
