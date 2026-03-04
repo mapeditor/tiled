@@ -26,6 +26,7 @@
 #include "projectmodel.h"
 
 class QAbstractItemDelegate;
+class QStyledItemDelegate;
 
 namespace Tiled {
 
@@ -83,6 +84,29 @@ public:
 private:
     FileMatchDelegate *mDelegate;
     QVector<ProjectModel::Match> mMatches;
+};
+
+class TileLocatorSource : public LocatorSource
+{
+    Q_OBJECT
+
+public:
+    explicit TileLocatorSource(QObject *parent = nullptr);
+
+    int rowCount(const QModelIndex &parent) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+
+    // LocatorSource
+    QAbstractItemDelegate *delegate() const override;
+    QString placeholderText() const override;
+    void setFilterWords(const QStringList &words) override;
+    void activate(const QModelIndex &index) override;
+
+private:
+    QStyledItemDelegate *mDelegate;
+    bool mHasValidCoord = false;
+    int mTileX = 0;
+    int mTileY = 0;
 };
 
 } // namespace Tiled
