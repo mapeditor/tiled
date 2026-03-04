@@ -149,7 +149,7 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
 
         QRegularExpression extensionFinder(QLatin1String("\\(\\*\\.([^\\)\\s]*)"));
         QRegularExpressionMatch match = extensionFinder.match(selectedFilter);
-        const QString extension = match.captured(1).trimmed();
+        const QString extension = match.captured(1);
 
         QString lastExportedFilePath = session.lastPath(Session::ExportedFile);
 
