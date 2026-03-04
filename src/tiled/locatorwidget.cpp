@@ -273,9 +273,7 @@ LocatorWidget::LocatorWidget(LocatorSource *locatorSource,
     , mResultsView(new ResultsView(this))
 {
     setAttribute(Qt::WA_DeleteOnClose);
-    setAttribute(Qt::WA_InputMethodEnabled);
     setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
-    setAutoFillBackground(true);
     setFocusPolicy(Qt::StrongFocus);
 
     mLocatorSource->setParent(this);        // take ownership of source
@@ -323,11 +321,7 @@ void LocatorWidget::setVisible(bool visible)
         setFocus();
         activateWindow();
 
-        // Ensure the text field gets focus directly, so input methods can
-        // attach to it reliably.
-        mFilterEdit->setFocus(Qt::ShortcutFocusReason);
         QGuiApplication::inputMethod()->update(Qt::ImEnabled);
-
         if (!mFilterEdit->text().isEmpty())
             mFilterEdit->clear();
         else
