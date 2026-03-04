@@ -208,21 +208,6 @@ Preferences::SnapMode Preferences::snapMode() const
     return toSnapMode(get<int>(snapModeKey, NoSnap));
 }
 
-bool Preferences::snapToGrid() const
-{
-    return snapMode() == SnapToGridMode;
-}
-
-bool Preferences::snapToFineGrid() const
-{
-    return snapMode() == SnapToFineGridMode;
-}
-
-bool Preferences::snapToPixels() const
-{
-    return snapMode() == SnapToPixelsMode;
-}
-
 QColor Preferences::gridColor() const
 {
     return get<QColor>("Interface/GridColor", Qt::black);

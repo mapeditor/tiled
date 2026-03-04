@@ -88,13 +88,13 @@ void WorldMoveMapTool::keyPressed(QKeyEvent *event)
         return;
 
     const bool moveFast = modifiers & Qt::ShiftModifier;
-    const bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
+    const auto snapMode = Preferences::instance()->snapMode();
 
     if (moveFast) {
         // TODO: This only makes sense for orthogonal maps
         moveBy.rx() *= document->map()->tileWidth();
         moveBy.ry() *= document->map()->tileHeight();
-        if (snapToFineGrid)
+        if (snapMode == Preferences::SnapToFineGridMode)
             moveBy /= Preferences::instance()->gridFine();
     }
 

@@ -61,16 +61,15 @@ public:
     bool showTileCollisionShapes() const;
     bool showObjectReferences() const;
     bool parallaxEnabled() const;
+
     enum SnapMode {
         NoSnap = 0,
         SnapToGridMode = 1,
         SnapToFineGridMode = 2,
         SnapToPixelsMode = 3
     };
+
     SnapMode snapMode() const;
-    bool snapToGrid() const;
-    bool snapToFineGrid() const;
-    bool snapToPixels() const;
     QColor gridColor() const;
     QColor backgroundFadeColor() const;
     int gridFine() const;
