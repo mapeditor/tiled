@@ -103,6 +103,7 @@ void Preferences::initialize()
     tilesetManager->setAnimateTiles(showTileAnimations());
 
     setImageCacheMaxMB(imageCacheMaxMB());
+    setUseImageCacheLimit(useImageCacheLimit());
 
     // Read the lists of enabled and disabled plugins
     const auto disabledPlugins = get<QStringList>("Plugins/Disabled");
@@ -543,6 +544,18 @@ void Preferences::setImageCacheMaxMB(int mb)
     const int clamped = qBound(32, mb, 16384);
     setValue(QLatin1String("Storage/ImageCacheMaxMB"), clamped);
     ImageCache::setMaxCacheBytes(static_cast<qint64>(clamped) * 1024 * 1024);
+}
+
+bool Preferences::useImageCacheLimit() const
+{
+    return get("Storage/UseImageCacheLimit", false);
+}
+
+void Preferences::setUseImageCacheLimit(bool enabled)
+{
+    setValue(QLatin1String("Storage/UseImageCacheLimit"), enabled);
+    ImageCache::setCacheLimitEnabled(enabled);
+    emit useImageCacheLimitChanged(enabled);
 }
 
 bool Preferences::useOpenGL() const

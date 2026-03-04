@@ -94,6 +94,10 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             preferences, &Preferences::setSafeSavingEnabled);
     connect(mUi->exportOnSave, &QCheckBox::toggled,
             preferences, &Preferences::setExportOnSave);
+    connect(mUi->useImageCacheLimit, &QCheckBox::toggled,
+            preferences, &Preferences::setUseImageCacheLimit);
+    connect(mUi->useImageCacheLimit, &QCheckBox::toggled,
+            this, &PreferencesDialog::updateImageCacheLimitControls);
     connect(mUi->imageCacheMaxMB, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
             preferences, &Preferences::setImageCacheMaxMB);
     connect(mUi->naturalSorting, &QCheckBox::toggled,
@@ -222,7 +226,9 @@ void PreferencesDialog::fromPreferences()
     mUi->restoreSession->setChecked(prefs->restoreSessionOnStartup());
     mUi->safeSaving->setChecked(prefs->safeSavingEnabled());
     mUi->exportOnSave->setChecked(prefs->exportOnSave());
+    mUi->useImageCacheLimit->setChecked(prefs->useImageCacheLimit());
     mUi->imageCacheMaxMB->setValue(prefs->imageCacheMaxMB());
+    updateImageCacheLimitControls(prefs->useImageCacheLimit());
     mUi->naturalSorting->setChecked(prefs->naturalSorting());
 
     mUi->embedTilesets->setChecked(prefs->exportOption(Preferences::EmbedTilesets));
@@ -278,6 +284,12 @@ void PreferencesDialog::fromPreferences()
     mUi->baseColorLabel->setEnabled(!systemStyle);
     mUi->selectionColor->setEnabled(!systemStyle);
     mUi->selectionColorLabel->setEnabled(!systemStyle);
+}
+
+void PreferencesDialog::updateImageCacheLimitControls(bool enabled)
+{
+    mUi->imageCacheMaxLabel->setEnabled(enabled);
+    mUi->imageCacheMaxMB->setEnabled(enabled);
 }
 
 void PreferencesDialog::retranslateUi()

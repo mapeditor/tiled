@@ -49,6 +49,7 @@ private:
     void languageSelected(int index);
 
     void fromPreferences();
+    void updateImageCacheLimitControls(bool enabled);
 
     void retranslateUi();
 

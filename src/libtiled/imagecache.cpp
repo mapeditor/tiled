@@ -35,6 +35,7 @@
 #include <QBitmap>
 #include <QCoreApplication>
 #include <QFileInfo>
+#include <QDebug>
 #include <QSet>
 
 namespace Tiled {
@@ -77,6 +78,7 @@ QHash<QString, LoadedPixmap> ImageCache::sLoadedPixmaps;
 QHash<QString, qint64> ImageCache::sEntryCosts;
 qint64 ImageCache::sCurrentCacheBytes = 0;
 qint64 ImageCache::sMaxCacheBytes = DefaultMaxCacheBytes;
+bool ImageCache::sCacheLimitEnabled = false;
 std::list<QString> ImageCache::sLruEntries;
 QHash<QString, std::list<QString>::iterator> ImageCache::sLruPositions;
 
@@ -110,7 +112,7 @@ LoadedImage ImageCache::loadImage(const QString &fileName)
         return loaded;
 
     const qint64 costBytes = cacheCost(fileName);
-    if (costBytes > sMaxCacheBytes)
+    if (sCacheLimitEnabled && costBytes > sMaxCacheBytes)
         return loaded;
 
     sLoadedImages.insert(fileName, loaded);
@@ -147,7 +149,7 @@ QPixmap ImageCache::loadPixmap(const QString &fileName)
     LoadedPixmap loadedPixmap(loadedImage);
 
     const qint64 costBytes = cacheCost(fileName);
-    if (costBytes > sMaxCacheBytes)
+    if (sCacheLimitEnabled && costBytes > sMaxCacheBytes)
         return loadedPixmap.pixmap;
 
     sLoadedPixmaps.insert(fileName, loadedPixmap);
@@ -170,6 +172,17 @@ void ImageCache::remove(const QString &fileName)
     sLoadedImages.remove(fileName);
     sLoadedPixmaps.remove(fileName);
     removeEntry(fileName);
+}
+
+void ImageCache::setCacheLimitEnabled(bool enabled)
+{
+    sCacheLimitEnabled = enabled;
+    evictIfNeeded();
+}
+
+bool ImageCache::isCacheLimitEnabled()
+{
+    return sCacheLimitEnabled;
 }
 
 void ImageCache::setMaxCacheBytes(qint64 bytes)
@@ -236,6 +249,9 @@ void ImageCache::removeEntry(const QString &fileName)
 
 void ImageCache::evictIfNeeded()
 {
+    if (!sCacheLimitEnabled)
+        return;
+
     while (sCurrentCacheBytes > sMaxCacheBytes && !sLruEntries.empty()) {
         const QString oldestFile = sLruEntries.front();
         remove(oldestFile);

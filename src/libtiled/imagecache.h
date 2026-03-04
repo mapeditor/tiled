@@ -64,6 +64,9 @@ public:
 
     static void remove(const QString &fileName);
 
+    static void setCacheLimitEnabled(bool enabled);
+    static bool isCacheLimitEnabled();
+
     static void setMaxCacheBytes(qint64 bytes);
     static qint64 maxCacheBytes();
     static qint64 currentCacheBytes();
@@ -81,6 +84,7 @@ private:
     static QHash<QString, qint64> sEntryCosts;
     static qint64 sCurrentCacheBytes;
     static qint64 sMaxCacheBytes;
+    static bool sCacheLimitEnabled;
     static std::list<QString> sLruEntries;
     static QHash<QString, std::list<QString>::iterator> sLruPositions;
 };
