@@ -611,6 +611,12 @@ void MapView::wheelEvent(QWheelEvent *event)
         pixels.setY(int(steps.y() * lines * vBar->singleStep()));
     } else {
         pixels = Utils::dpiScaled(pixels);
+
+        // Clamp to viewport size to prevent overshooting from accumulated
+        // deltas on the first touchpad scroll event.
+        const QSize maxDelta = viewport()->size();
+        pixels.setX(qBound(-maxDelta.width(), pixels.x(), maxDelta.width()));
+        pixels.setY(qBound(-maxDelta.height(), pixels.y(), maxDelta.height()));
     }
 
     scrollBy(-pixels);
