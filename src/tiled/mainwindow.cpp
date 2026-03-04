@@ -416,6 +416,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionSnapToGrid->setActionGroup(snappingGroup);
     mUi->actionSnapToFineGrid->setActionGroup(snappingGroup);
     mUi->actionSnapToPixels->setActionGroup(snappingGroup);
+    mUi->actionSnapNothing->setData(QVariant::fromValue(SnapMode::None));
+    mUi->actionSnapToGrid->setData(QVariant::fromValue(SnapMode::Grid));
+    mUi->actionSnapToFineGrid->setData(QVariant::fromValue(SnapMode::FineGrid));
+    mUi->actionSnapToPixels->setData(QVariant::fromValue(SnapMode::Pixels));
 
     mUi->actionShowGrid->setChecked(preferences->showGrid());
     mUi->actionShowTileObjectOutlines->setChecked(preferences->showTileObjectOutlines());
@@ -423,11 +427,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionShowTileAnimations->setChecked(preferences->showTileAnimations());
     mUi->actionShowTileCollisionShapes->setChecked(preferences->showTileCollisionShapes());
     mUi->actionEnableParallax->setChecked(preferences->parallaxEnabled());
-    mUi->actionSnapToGrid->setChecked(preferences->snapToGrid());
-    mUi->actionSnapToFineGrid->setChecked(preferences->snapToFineGrid());
-    mUi->actionSnapToPixels->setChecked(preferences->snapToPixels());
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
     mUi->actionHighlightHoveredObject->setChecked(preferences->highlightHoveredObject());
+    connect(mUi->menuSnapping, &QMenu::aboutToShow, this, [this, preferences] {
+        updateSnappingActions(preferences->snapMode());
+    });
 
     bindToOption(mUi->actionAutoMapWhileDrawing, AutomappingManager::automappingWhileDrawing);
     bindToOption(mUi->actionEnableWorlds, MapScene::enableWorlds);
@@ -564,12 +568,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             preferences, &Preferences::setShowTileCollisionShapes);
     connect(mUi->actionEnableParallax, &QAction::toggled,
             preferences, &Preferences::setParallaxEnabled);
-    connect(mUi->actionSnapToGrid, &QAction::toggled,
-            preferences, &Preferences::setSnapToGrid);
-    connect(mUi->actionSnapToFineGrid, &QAction::toggled,
-            preferences, &Preferences::setSnapToFineGrid);
-    connect(mUi->actionSnapToPixels, &QAction::toggled,
-            preferences, &Preferences::setSnapToPixels);
+    connect(snappingGroup, &QActionGroup::triggered, preferences, [preferences](QAction *action) {
+        preferences->setSnapMode(action->data().value<SnapMode>());
+    });
     connect(mUi->actionHighlightCurrentLayer, &QAction::toggled,
             preferences, &Preferences::setHighlightCurrentLayer);
     connect(mUi->actionHighlightHoveredObject, &QAction::toggled,
@@ -2014,6 +2015,14 @@ void MainWindow::autoMappingWarning(bool automatic)
             QMessageBox::warning(this, tr("Automatic Mapping Warning"), warning);
         }
     }
+}
+
+void MainWindow::updateSnappingActions(SnapMode mode)
+{
+    mUi->actionSnapNothing->setChecked(mode == SnapMode::None);
+    mUi->actionSnapToGrid->setChecked(mode == SnapMode::Grid);
+    mUi->actionSnapToFineGrid->setChecked(mode == SnapMode::FineGrid);
+    mUi->actionSnapToPixels->setChecked(mode == SnapMode::Pixels);
 }
 
 void MainWindow::onPropertyTypesEditorClosed()
