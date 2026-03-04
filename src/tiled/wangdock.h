@@ -64,9 +64,9 @@ public:
     int currentWangColor() const;
 
     void editWangSetName(WangSet *wangSet);
-    void editWangColorName(int colorIndex);
+	void selectWangColor(int colorIndex, bool editName = false);
 
-    void setColorView();
+	void setColorView();
     void hideTemplateColorView();
 
     WangColorView *wangColorView() const { return mWangColorView; }
@@ -107,7 +107,10 @@ private:
     void addColor();
     void removeColor();
 
-    void updateAddColorStatus();
+	void moveUpColor();
+	void moveDownColor();
+
+	void updateAddColorStatus();
     void retranslateUi();
 
     QModelIndex wangSetIndex(WangSet *wangSet) const;
@@ -123,6 +126,8 @@ private:
     QAction *mRemoveWangSet;
     QAction *mAddColor;
     QAction *mRemoveColor;
+    QAction *mMoveUpColor;
+    QAction *mMoveDownColor;
 
     Document *mDocument = nullptr;
     QStackedWidget *mStack;

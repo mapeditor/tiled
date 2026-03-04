@@ -137,6 +137,8 @@ WangDock::WangDock(QWidget *parent)
     , mRemoveWangSet(new QAction(this))
     , mAddColor(new QAction(this))
     , mRemoveColor(new QAction(this))
+    , mMoveUpColor(new QAction(this))
+    , mMoveDownColor(new QAction(this))
     , mStack(new QStackedWidget)
     , mTilesetDocumentFilterModel(new TilesetDocumentsFilterModel(this))
     , mWangColorModel(nullptr)
@@ -186,11 +188,17 @@ WangDock::WangDock(QWidget *parent)
     mAddColor->setEnabled(false);
     mRemoveColor->setIcon(QIcon(QStringLiteral(":/images/22/remove.png")));
     mRemoveColor->setEnabled(false);
+    mMoveUpColor->setIcon(QIcon(QStringLiteral(":/images/16/go-up.png")));
+    mMoveUpColor->setEnabled(false);
+    mMoveDownColor->setIcon(QIcon(QStringLiteral(":/images/16/go-down.png")));
+    mMoveDownColor->setEnabled(false);
 
     Utils::setThemeIcon(mNewWangSetButton, "add");
     Utils::setThemeIcon(mRemoveWangSet, "remove");
     Utils::setThemeIcon(mAddColor, "add");
     Utils::setThemeIcon(mRemoveColor, "remove");
+    Utils::setThemeIcon(mMoveUpColor, "go-up");
+    Utils::setThemeIcon(mMoveUpColor, "go-down");
 
     mWangSetToolBar->setFloatable(false);
     mWangSetToolBar->setMovable(false);
@@ -211,12 +219,18 @@ WangDock::WangDock(QWidget *parent)
     mWangColorToolBar->setIconSize(Utils::smallIconSize());
 
     mWangColorToolBar->addAction(mAddColor);
+    mWangColorToolBar->addAction(mMoveUpColor);
+    mWangColorToolBar->addAction(mMoveDownColor);
     mWangColorToolBar->addAction(mRemoveColor);
 
     connect(mAddColor, &QAction::triggered,
             this, &WangDock::addColor);
     connect(mRemoveColor, &QAction::triggered,
             this, &WangDock::removeColor);
+    connect(mMoveUpColor, &QAction::triggered,
+            this, &WangDock::moveUpColor);
+    connect(mMoveDownColor, &QAction::triggered,
+            this, &WangDock::moveDownColor);
 
     mWangTemplateView = new WangTemplateView;
     mWangTemplateView->setModel(mWangTemplateModel);
@@ -396,7 +410,7 @@ void WangDock::editWangSetName(WangSet *wangSet)
     mWangSetView->edit(index);
 }
 
-void WangDock::editWangColorName(int colorIndex)
+void WangDock::selectWangColor(int colorIndex, bool editName)
 {
     const QModelIndex index = mWangColorModel->colorIndex(colorIndex);
     if (!index.isValid())
@@ -410,8 +424,10 @@ void WangDock::editWangColorName(int colorIndex)
     selectionModel->setCurrentIndex(viewIndex,
                                     QItemSelectionModel::ClearAndSelect |
                                     QItemSelectionModel::Rows);
-
-    mWangColorView->edit(viewIndex);
+	if (editName)
+	{
+		mWangColorView->edit(viewIndex);
+	}
 }
 
 void WangDock::changeEvent(QEvent *event)
@@ -454,6 +470,8 @@ void WangDock::refreshCurrentWangColor()
 
     mEraseWangIdsButton->setChecked(color == 0);
     mRemoveColor->setEnabled(color != 0);
+    mMoveUpColor->setEnabled(color > 1);
+    mMoveDownColor->setEnabled(color < mCurrentWangSet->colorCount());
     emit wangColorChanged(color);
 }
 
@@ -542,7 +560,7 @@ void WangDock::addColor()
         tilesetDocument->undoStack()->push(new ChangeWangSetColorCount(tilesetDocument,
                                                                        mCurrentWangSet,
                                                                        mCurrentWangSet->colorCount() + 1));
-        editWangColorName(mCurrentWangSet->colorCount());
+        selectWangColor(mCurrentWangSet->colorCount(), true);
     }
 }
 
@@ -560,6 +578,41 @@ void WangDock::removeColor()
     tilesetDocument->undoStack()->push(new RemoveWangSetColor(tilesetDocument,
                                                               mCurrentWangSet,
                                                               color));
+}
+
+void WangDock::moveUpColor()
+{
+    Q_ASSERT(mCurrentWangSet);
+
+    TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(mDocument);
+    if (!tilesetDocument)
+        return;
+
+    const QItemSelectionModel *selectionModel = mWangColorView->selectionModel();
+    const QModelIndex index = static_cast<QAbstractProxyModel*>(mWangColorView->model())->mapToSource(selectionModel->currentIndex());
+    const int color = mWangColorModel->colorAt(index);
+    tilesetDocument->undoStack()->push(new MoveUpWangSetColor(tilesetDocument,
+                                                              mCurrentWangSet,
+                                                              color));
+	
+	selectWangColor(color - 1);
+}
+void WangDock::moveDownColor()
+{
+    Q_ASSERT(mCurrentWangSet);
+	
+    TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(mDocument);
+    if (!tilesetDocument)
+        return;
+
+    const QItemSelectionModel *selectionModel = mWangColorView->selectionModel();
+    const QModelIndex index = static_cast<QAbstractProxyModel*>(mWangColorView->model())->mapToSource(selectionModel->currentIndex());
+    const int color = mWangColorModel->colorAt(index) + 1;
+    tilesetDocument->undoStack()->push(new MoveUpWangSetColor(tilesetDocument,
+                                                              mCurrentWangSet,
+                                                              color));
+	
+	selectWangColor(color);
 }
 
 void WangDock::setCurrentWangSet(WangSet *wangSet)
@@ -590,6 +643,8 @@ void WangDock::setCurrentWangSet(WangSet *wangSet)
     mWangColorView->expandAll();
 
     mRemoveColor->setEnabled(false);
+    mMoveUpColor->setEnabled(false);
+    mMoveDownColor->setEnabled(false);
 
     activateErase();
 
@@ -653,6 +708,8 @@ void WangDock::retranslateUi()
     mRemoveWangSet->setText(tr("Remove Terrain Set"));
     mAddColor->setText(tr("Add Terrain"));
     mRemoveColor->setText(tr("Remove Terrain"));
+    mMoveUpColor->setText(tr("Swap Terrain Up"));
+    mMoveDownColor->setText(tr("Swap Terrain Down"));
 
     mTemplateAndColorView->setTabText(0, tr("Terrains"));
     mTemplateAndColorView->setTabText(1, tr("Patterns"));

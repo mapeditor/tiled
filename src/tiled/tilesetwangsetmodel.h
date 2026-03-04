@@ -81,6 +81,7 @@ public:
     void setWangSetImage(WangSet *wangSet, int tileId);
     void insertWangColor(WangSet *wangSet, const QSharedPointer<WangColor> &wangColor);
     QSharedPointer<WangColor> takeWangColorAt(WangSet *wangSet, int color);
+	void swapWangColorsAt(WangSet *wangSet, int colorA, int colorB);
 
 signals:
     void wangSetAdded(Tileset *tileset, int index);
