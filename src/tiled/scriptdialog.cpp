@@ -175,9 +175,10 @@ QWidget *ScriptDialog::addHeading(const QString &text, bool fillRow)
     return label;
 }
 
-QWidget *ScriptDialog::addLabel(const QString &text)
+QWidget *ScriptDialog::addLabel(const QString &text, const QString &toolTip)
 {
-    return addDialogWidget(newLabel(text));
+    QLabel *label = newLabel(text);
+    return addDialogWidget(label, QString(), QString(), toolTip);
 }
 
 QWidget *ScriptDialog::addSeparator(const QString &labelText)
@@ -207,65 +208,81 @@ QWidget *ScriptDialog::addSeparator(const QString &labelText)
     return line;
 }
 
-QWidget *ScriptDialog::addTextInput(const QString &labelText, const QString &defaultValue)
+QWidget *ScriptDialog::addTextInput(const QString &labelText, const QString &defaultValue, const QString &toolTip)
 {
-    return addDialogWidget(new QLineEdit(defaultValue, this), labelText);
+    QLineEdit *lineEdit = new QLineEdit(defaultValue, this);
+    return addDialogWidget(lineEdit, labelText, QString(), toolTip);
 }
 
-QWidget *ScriptDialog::addTextEdit(const QString &labelText, const QString &defaultValue)
+QWidget *ScriptDialog::addTextEdit(const QString &labelText, const QString &defaultValue, const QString &toolTip)
 {
     QTextEdit *textEdit = new QTextEdit(defaultValue, this);
-    addDialogWidget(textEdit, labelText);
+    addDialogWidget(textEdit, labelText, QString(), toolTip);
     textEdit->setTextInteractionFlags(Qt::LinksAccessibleByMouse | Qt::TextEditorInteraction);
     textEdit->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
     return textEdit;
 }
 
-QWidget *ScriptDialog::addImage(const QString &labelText, Tiled::ScriptImage *image)
+QWidget *ScriptDialog::addImage(const QString &labelText, Tiled::ScriptImage *image, const QString &toolTip)
 {
-    return addDialogWidget(new ScriptImageWidget(image, this), labelText);
+    ScriptImageWidget *imageWidget = new ScriptImageWidget(image, this);
+    return addDialogWidget(imageWidget, labelText, QString(), toolTip);
 }
 
-QWidget *ScriptDialog::addNumberInput(const QString &labelText)
+QWidget *ScriptDialog::addNumberInput(const QString &labelText, double defaultValue, const QString &toolTip)
 {
-    return addDialogWidget(new ExpressionDoubleSpinBox(this), labelText);
+    ExpressionDoubleSpinBox *spinBox = new ExpressionDoubleSpinBox(this);
+    spinBox->setValue(defaultValue);
+    return addDialogWidget(spinBox, labelText, QString(), toolTip);
 }
 
-QWidget *ScriptDialog::addSlider(const QString &labelText)
+QWidget *ScriptDialog::addSlider(const QString &labelText, int defaultValue, const QString &toolTip)
 {
     QSlider *horizontalSlider = new QSlider(this);
     horizontalSlider->setOrientation(Qt::Horizontal);
-    return addDialogWidget(horizontalSlider, labelText);
+    horizontalSlider->setMaximum(qMax(defaultValue, horizontalSlider->maximum()));
+    horizontalSlider->setValue(defaultValue);
+    return addDialogWidget(horizontalSlider, labelText, QString(), toolTip);
 }
 
-QWidget *ScriptDialog::addCheckBox(const QString &text, bool defaultValue)
+QWidget *ScriptDialog::addCheckBox(const QString &text, bool defaultValue, const QString &toolTip)
 {
     QCheckBox *checkBox = new QCheckBox(text, this);
-    checkBox->setCheckState(defaultValue ? Qt::Checked: Qt::Unchecked);
-    return addDialogWidget(checkBox);
+    checkBox->setCheckState(defaultValue ? Qt::Checked : Qt::Unchecked);
+    return addDialogWidget(checkBox, QString(), QString(), toolTip);
 }
-QWidget *ScriptDialog::addComboBox(const QString &labelText, const QStringList &values)
+
+QWidget *ScriptDialog::addComboBox(const QString &labelText, const QStringList &values, int defaultIndex, const QString &toolTip)
 {
-    QComboBox *comboBox = new ScriptComboBox(this);
+    ScriptComboBox *comboBox = new ScriptComboBox(this);
     comboBox->addItems(values);
-    return addDialogWidget(comboBox, labelText);
+    if (defaultIndex > 0 && defaultIndex < comboBox->count())
+        comboBox->setCurrentIndex(defaultIndex);
+    return addDialogWidget(comboBox, labelText, QString(), toolTip);
 }
 
-QWidget *ScriptDialog::addButton(const QString &text)
+QWidget *ScriptDialog::addButton(const QString &text, const QString &toolTip)
 {
-    return addDialogWidget(new QPushButton(text, this));
+    QPushButton *button = new QPushButton(text, this);
+    return addDialogWidget(button, QString(), QString(), toolTip);
 }
 
-QWidget *ScriptDialog::addFilePicker(const QString &labelText)
+QWidget *ScriptDialog::addFilePicker(const QString &labelText, const QString &defaultValue, const QString &toolTip)
 {
-    return addDialogWidget(new FileEdit(this), labelText);
+    FileEdit *fileEdit = new FileEdit(this);
+    if (!defaultValue.isEmpty())
+        fileEdit->setFileName(defaultValue);
+    return addDialogWidget(fileEdit, labelText, QString(), toolTip);
 }
 
-QWidget *ScriptDialog::addColorButton(const QString &labelText)
+QWidget *ScriptDialog::addColorButton(const QString &labelText, const QColor &defaultValue, const QString &toolTip)
 {
-    QWidget *colorButton = addDialogWidget(new ColorButton(this), labelText);
-    colorButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    return colorButton;
+    ColorButton *colorButton = new ColorButton(this);
+    if (defaultValue.isValid())
+        colorButton->setColor(defaultValue);
+    QWidget *widget = addDialogWidget(colorButton, labelText, QString(), toolTip);
+    widget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    return widget;
 }
 
 ScriptDialog::NewRowMode ScriptDialog::newRowMode() const
@@ -299,8 +316,12 @@ int ScriptDialog::exec()
 
 QWidget *ScriptDialog::addDialogWidget(QWidget *widget,
                                        const QString &label,
-                                       const QString &labelToolTip)
+                                       const QString &labelToolTip,
+                                       const QString &widgetToolTip)
 {
+    if (!widgetToolTip.isEmpty())
+        widget->setToolTip(widgetToolTip);
+
     determineWidgetGrouping(widget);
     if (m_widgetsInRow == 0)
         m_widgetsInRow = 1;

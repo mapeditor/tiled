@@ -26,10 +26,14 @@
 * Fixed tileset tabs to fall back to filename in case of unnamed tilesets (by Sid, #4360)
 * Fixed alpha component of tint color not applying correctly to opaque images (by Roland Helmerichs, #4310)
 * Fixed panning with space bar not always working on first click (with Oval, #4338)
+* Fixed undo behavior after resizing objects certain ways (by Kanishka, #4339)
 * Fixed suggesting filename with trailing dot when export filter is unset (by Sid, #4368)
 * Scripting: Added API for custom property types (with dogboydog, #3971)
 * Scripting: Added TileMap.chunkSize and TileMap.compressionLevel properties
+* Scripting: Added optional defaultValue and toolTip params to Dialog add widget methods (by Oval, #4358)
 * Scripting: Added tiled.session to read and write session properties (by Kanishka, #4345)
+* Scripting: Added MapEditor.selectedTool and MapEditor.tool (#4330)
+* Scripting: Fixed the `fileName` property of map/tileset passed to `FileFormat.write` (by Shuvam Pal, #4359)
 * AutoMapping: Don't match rules based on empty input indexes
 * AutoMapping: Optimized reloading of rule maps and load rule maps on-demand
 * tBIN plugin: Added support for the tIDE XML format (by Casey Warrington, #4308)
