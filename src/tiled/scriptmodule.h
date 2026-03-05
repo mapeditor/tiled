@@ -137,11 +137,6 @@ public:
     Q_INVOKABLE Tiled::ScriptTilesetFormatWrapper *tilesetFormatForFile(const QString &fileName) const;
 
     Q_INVOKABLE void extendMenu(const QByteArray &idName, QJSValue items);
-    Q_INVOKABLE EditableTileLayer* createTileLayer(
-        const QString &name,
-        int width,
-        int height);
-
     // Synchronized with Tiled::CompressionMethod
     enum CompressionMethod {
         Gzip,

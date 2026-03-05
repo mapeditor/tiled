@@ -44,3 +44,6 @@ void QmlAction::setShortcutString(const QString &shortcutStr)
 }
 
 }
+
+
+#include "moc_tiledaction.cpp"

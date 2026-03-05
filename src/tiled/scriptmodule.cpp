@@ -579,24 +579,6 @@ void ScriptModule::extendMenu(const QByteArray &idName, QJSValue items)
 
     ActionManager::registerMenuExtension(menuId, extension);
 }
-EditableTileLayer* ScriptModule::createTileLayer(
-    const QString &name,
-    int width,
-    int height)
-{
-    auto asset = activeAsset();
-    if (!asset)
-        return nullptr;
-
-    auto map = qobject_cast<EditableMap*>(asset);
-    if (!map)
-        return nullptr;
-
-    QSize size(width, height);
-    auto layer = new EditableTileLayer(name, size, map);
-
-    return layer;
-}
 
 QByteArray ScriptModule::compress(const QByteArray &data, CompressionMethod method, int compressionLevel)
 {

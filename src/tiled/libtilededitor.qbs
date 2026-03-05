@@ -506,6 +506,8 @@ DynamicLibrary {
         "tilecollisiondock.h",
         "tiledapplication.cpp",
         "tiledapplication.h",
+        "tiledaction.h",
+        "tiledaction.cpp",
         "tilededitor_global.h",
         "tiledproxystyle.cpp",
         "tiledproxystyle.h",
