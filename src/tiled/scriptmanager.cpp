@@ -80,6 +80,8 @@
 #include "id.h"
 #include <QApplication>
 #include <QWidget>
+#include <QJSEngine>
+#include <QJSValue>
 namespace Tiled
 {
 
