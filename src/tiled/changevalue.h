@@ -116,6 +116,14 @@ protected:
 
     Document *document() const { return mDocument; }
     const QList<Object *> &objects() const { return mObjects; }
+    const QVector<Value> &values() const { return mValues; }
+
+    void append(const QList<Object *> &objects, const QVector<Value> &values)
+    {
+        Q_ASSERT(objects.size() == values.size());
+        mObjects.append(objects);
+        mValues.append(values);
+    }
 
 private:
     Document *mDocument;

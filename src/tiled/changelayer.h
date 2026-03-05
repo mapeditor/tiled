@@ -58,10 +58,15 @@ public:
                     bool visible);
 
     int id() const override { return Cmd_ChangeLayerVisible; }
+    bool mergeWith(const QUndoCommand *other) override;
+
+    void setMergeable(bool mergeable) { mMergeable = mergeable; }
 
 private:
     bool getValue(const Layer *layer) const override;
     void setValue(Layer *layer, const bool &value) const override;
+
+    bool mMergeable = false;
 };
 
 /**
@@ -75,10 +80,15 @@ public:
                    bool locked);
 
     int id() const override { return Cmd_ChangeLayerLocked; }
+    bool mergeWith(const QUndoCommand *other) override;
+
+    void setMergeable(bool mergeable) { mMergeable = mergeable; }
 
 private:
     bool getValue(const Layer *layer) const override;
     void setValue(Layer *layer, const bool &value) const override;
+
+    bool mMergeable = false;
 };
 
 

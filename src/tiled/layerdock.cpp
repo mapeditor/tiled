@@ -32,6 +32,7 @@
 #include "reversingproxymodel.h"
 #include "utils.h"
 #include "iconcheckdelegate.h"
+#include "changelayer.h"
 #include "changeevents.h"
 
 #include <QApplication>
@@ -39,6 +40,7 @@
 #include <QContextMenuEvent>
 #include <QHeaderView>
 #include <QMenu>
+#include <QMouseEvent>
 #include <QScopedValueRollback>
 #include <QStyledItemDelegate>
 #include <QToolBar>
@@ -251,6 +253,128 @@ void LayerView::editLayerModelIndex(const QModelIndex &layerModelIndex)
     edit(mProxyModel->mapFromSource(layerModelIndex));
 }
 
+Layer *LayerView::layerForProxyIndex(const QModelIndex &proxyIndex) const
+{
+    if (!mMapDocument || !proxyIndex.isValid())
+        return nullptr;
+    const QModelIndex sourceIndex = mProxyModel->mapToSource(proxyIndex);
+    return mMapDocument->layerModel()->toLayer(sourceIndex);
+}
+
+void LayerView::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() != Qt::LeftButton) {
+        QTreeView::mousePressEvent(event);
+        return;
+    }
+
+    const QModelIndex proxyIndex = indexAt(event->pos());
+    if (!proxyIndex.isValid()) {
+        QTreeView::mousePressEvent(event);
+        return;
+    }
+
+    const int column = proxyIndex.column();
+    if (column != 1 && column != 2) {
+        QTreeView::mousePressEvent(event);
+        return;
+    }
+
+    Layer *layer = layerForProxyIndex(proxyIndex);
+    if (!layer) {
+        QTreeView::mousePressEvent(event);
+        return;
+    }
+
+    // Start drag-to-toggle
+    mToggleDragColumn = column;
+
+    if (column == 1) {
+        mToggleDragValue = !layer->isVisible();
+        auto cmd = new SetLayerVisible(mMapDocument, { layer }, mToggleDragValue);
+        cmd->setMergeable(true);
+        mToggleDragVisibleCmd = cmd;
+        mMapDocument->undoStack()->push(cmd);
+    } else {
+        mToggleDragValue = !layer->isLocked();
+        auto cmd = new SetLayerLocked(mMapDocument, { layer }, mToggleDragValue);
+        cmd->setMergeable(true);
+        mToggleDragLockedCmd = cmd;
+        mMapDocument->undoStack()->push(cmd);
+    }
+
+    mToggleDragToggledLayers.insert(layer);
+
+    // Update current layer and selection to match original click behavior
+    mMapDocument->setCurrentObject(layer);
+    mMapDocument->setCurrentLayer(layer);
+    setCurrentIndex(proxyIndex);
+
+    event->accept();
+}
+
+void LayerView::mouseMoveEvent(QMouseEvent *event)
+{
+    if (mToggleDragColumn == -1) {
+        QTreeView::mouseMoveEvent(event);
+        return;
+    }
+
+    const QModelIndex proxyIndex = indexAt(event->pos());
+    if (!proxyIndex.isValid())
+        return;
+
+    // Use the drag column regardless of cursor's horizontal position
+    const QModelIndex rowIndex = proxyIndex.sibling(proxyIndex.row(), mToggleDragColumn);
+    if (!rowIndex.isValid())
+        return;
+
+    Layer *layer = layerForProxyIndex(rowIndex);
+    if (!layer || mToggleDragToggledLayers.contains(layer))
+        return;
+
+    if (mToggleDragColumn == 1) {
+        auto cmd = new SetLayerVisible(mMapDocument, { layer }, mToggleDragValue);
+        cmd->setMergeable(true);
+        mMapDocument->undoStack()->push(cmd);
+    } else {
+        auto cmd = new SetLayerLocked(mMapDocument, { layer }, mToggleDragValue);
+        cmd->setMergeable(true);
+        mMapDocument->undoStack()->push(cmd);
+    }
+
+    mToggleDragToggledLayers.insert(layer);
+    event->accept();
+}
+
+void LayerView::stopToggleDrag()
+{
+    if (mToggleDragColumn == -1)
+        return;
+
+    // Disable merging so next drag won't merge into this one
+    if (mToggleDragVisibleCmd)
+        mToggleDragVisibleCmd->setMergeable(false);
+    if (mToggleDragLockedCmd)
+        mToggleDragLockedCmd->setMergeable(false);
+
+    mToggleDragColumn = -1;
+    mToggleDragToggledLayers.clear();
+    mToggleDragVisibleCmd = nullptr;
+    mToggleDragLockedCmd = nullptr;
+}
+
+void LayerView::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (mToggleDragColumn != -1) {
+        stopToggleDrag();
+        event->accept();
+        return;
+    }
+
+    QTreeView::mouseReleaseEvent(event);
+}
+
 void LayerView::onExpanded(const QModelIndex &proxyIndex)
 {
     const LayerModel *layerModel = mMapDocument->layerModel();
@@ -354,6 +478,9 @@ void LayerView::layerRemoved(Layer *layer)
 
 bool LayerView::event(QEvent *event)
 {
+    if (event->type() == QEvent::Leave)
+        stopToggleDrag();
+
     if (event->type() == QEvent::ShortcutOverride) {
         if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Tab) {
             if (indexWidget(currentIndex())) {
