@@ -160,6 +160,13 @@ ApplicationWindow {
                             mapView.height / scale);
                 }
             }
+
+            Tiled.MapBorderItem {
+                id: mapBorderItem
+                anchors.fill: mapItem
+
+                color: "red"
+            }
         }
     }
 
