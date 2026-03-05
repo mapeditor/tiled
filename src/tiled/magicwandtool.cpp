@@ -28,7 +28,6 @@
 #include "map.h"
 #include "mapdocument.h"
 
-#include <algorithm>
 #include <QCheckBox>
 #include <QToolBar>
 
@@ -74,19 +73,8 @@ void MagicWandTool::tilePositionChanged(QPoint tilePos)
         const QPoint localPos = tilePos - tileLayer->position();
         QRegion resultRegion;
 
-        if (infinite || tileLayer->contains(localPos)) {
-            resultRegion = tileLayer->region(condition);
-
-            // Handle empty cells in the same way as SelectSameTileTool
-            const bool hasEmptyCell = std::any_of(mMatchCells.begin(),
-                                                  mMatchCells.end(),
-                                                  [](const Cell &cell) { return cell.isEmpty(); });
-            if (hasEmptyCell) {
-                QRegion emptyRegion = infinite ? tileLayer->bounds() : tileLayer->rect();
-                emptyRegion -= tileLayer->region();
-                resultRegion += emptyRegion;
-            }
-        }
+        if (infinite || tileLayer->contains(localPos))
+            resultRegion = tilePainter.computeRegion(condition);
 
         setSelectionPreview(resultRegion);
     }
