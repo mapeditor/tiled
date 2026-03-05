@@ -582,7 +582,12 @@ void TilesetEditor::currentChanged(const QModelIndex &index)
 {
     if (index.isValid()) {
         auto model = static_cast<const TilesetModel*>(index.model());
-        setCurrentTile(model->tileAt(index));
+        auto newTile = model->tileAt(index);
+        if (newTile && newTile->imageShape().isEmpty()) {
+            setCurrentTile(nullptr);
+        } else {
+            setCurrentTile(newTile);
+        }
     } else {
         setCurrentTile(nullptr);
     }
@@ -591,8 +596,13 @@ void TilesetEditor::currentChanged(const QModelIndex &index)
 void TilesetEditor::indexPressed(const QModelIndex &index)
 {
     TilesetView *view = currentTilesetView();
-    if (Tile *tile = view->tilesetModel()->tileAt(index))
+    Tile *tile = view->tilesetModel()->tileAt(index);
+    if (tile && tile->imageShape().isEmpty()){
+        mCurrentTilesetDocument->setSelectedTiles({});
+        mCurrentTilesetDocument->setCurrentObject(nullptr);
+    }else{
         mCurrentTilesetDocument->setCurrentObject(tile);
+    }
 }
 
 void TilesetEditor::saveDocumentState(TilesetDocument *tilesetDocument) const
