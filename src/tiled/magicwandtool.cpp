@@ -68,7 +68,7 @@ void MagicWandTool::tilePositionChanged(QPoint tilePos)
         // Flood fill (default magic wand behavior)
         setSelectionPreview(tilePainter.computeFillRegion(tilePos, condition));
     } else {
-        // Select same tile everywhere (like Select Same Tile tool)
+        // Select same tile everywhere
         const bool infinite = mapDocument()->map()->infinite();
         const QPoint localPos = tilePos - tileLayer->position();
         QRegion resultRegion;
