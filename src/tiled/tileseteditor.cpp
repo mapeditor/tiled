@@ -582,12 +582,7 @@ void TilesetEditor::currentChanged(const QModelIndex &index)
 {
     if (index.isValid()) {
         auto model = static_cast<const TilesetModel*>(index.model());
-        auto newTile = model->tileAt(index);
-        if (newTile && newTile->imageShape().isEmpty()) {
-            setCurrentTile(nullptr);
-        } else {
-            setCurrentTile(newTile);
-        }
+        setCurrentTile(model->tileAt(index));
     } else {
         setCurrentTile(nullptr);
     }
@@ -596,13 +591,14 @@ void TilesetEditor::currentChanged(const QModelIndex &index)
 void TilesetEditor::indexPressed(const QModelIndex &index)
 {
     TilesetView *view = currentTilesetView();
-    Tile *tile = view->tilesetModel()->tileAt(index);
-    if (tile && tile->imageShape().isEmpty()){
+	Tile *tile = view->tilesetModel()->tileAt(index);
+
+	// fixed https://github.com/mapeditor/tiled/issues/3498
+	if (!tile){
         mCurrentTilesetDocument->setSelectedTiles({});
-        mCurrentTilesetDocument->setCurrentObject(nullptr);
-    }else{
-        mCurrentTilesetDocument->setCurrentObject(tile);
-    }
+	}
+
+    mCurrentTilesetDocument->setCurrentObject(tile);
 }
 
 void TilesetEditor::saveDocumentState(TilesetDocument *tilesetDocument) const
