@@ -45,7 +45,9 @@ DynamicLibrary {
         "tilelayeritem.cpp",
         "tiledquick_global.h",
         "tilesnode.h",
-        "tilesnode.cpp"
+        "tilesnode.cpp",
+        "mapborderitem.h",
+        "mapborderitem.cpp"
     ]
 
     Group {
@@ -64,6 +66,8 @@ DynamicLibrary {
 
         cpp.includePaths: exportingProduct.sourceDirectory
     }
+
+    Depends { name: "Qt.quick" }
 
     install: !qbs.targetOS.contains("darwin")
     installDir: {
