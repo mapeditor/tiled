@@ -173,6 +173,7 @@ private:
 
     void updateWindowTitle();
     void updateActions();
+    void updateSnappingActions(SnapMode mode);
     void updateZoomable();
     void updateZoomActions();
     void openDocumentation();
