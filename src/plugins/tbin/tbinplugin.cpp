@@ -167,8 +167,8 @@ std::unique_ptr< Tiled::Map > TbinPlugin::fromTbin( const tbin::Map& tmap, const
         if (ttilesheet.margin.x != ttilesheet.margin.y)
             throw std::invalid_argument(QT_TR_NOOP("Tilesheet must have equal margins."));
 
-        auto tileset = Tiled::Tileset::create(ttilesheet.id.c_str(), ttilesheet.tileSize.x, ttilesheet.tileSize.y, ttilesheet.spacing.x, ttilesheet.margin.x);
-        tileset->setImageSource(Tiled::toUrl(QString::fromStdString(ttilesheet.image).replace("\\", "/"), fileDir));
+        auto tileset = Tiled::Tileset::create(QString::fromStdString(ttilesheet.id), ttilesheet.tileSize.x, ttilesheet.tileSize.y, ttilesheet.spacing.x, ttilesheet.margin.x);
+        tileset->setImageSource(Tiled::toUrl(QString::fromStdString(ttilesheet.image).replace(QLatin1Char('\\'), QLatin1Char('/')), fileDir));
         tileset->loadImage();
 
         tbinToTiledProperties(ttilesheet.props, *tileset);
@@ -235,7 +235,7 @@ std::unique_ptr< Tiled::Map > TbinPlugin::fromTbin( const tbin::Map& tmap, const
 
             if (ttile.props.size() > 0)
             {
-                auto obj = std::make_unique<Tiled::MapObject>("TileData");
+                auto obj = std::make_unique<Tiled::MapObject>(QStringLiteral("TileData"));
                 obj->setPosition(QPointF(ix * tlayer.tileSize.x, iy * tlayer.tileSize.y));
                 obj->setSize(QSizeF(tlayer.tileSize.x, tlayer.tileSize.y));
                 tbinToTiledProperties(ttile.props, *obj);
@@ -342,7 +342,7 @@ tbin::Map TbinPlugin::toTbin( const Tiled::Map* map, const QDir &fileDir )
     for (const Tiled::SharedTileset& tilesheet : map->tilesets()) {
         tbin::TileSheet ttilesheet;
         ttilesheet.id = tilesheet->name().toStdString();
-        ttilesheet.image = Tiled::toFileReference(tilesheet->imageSource(), fileDir).replace("/", "\\").toStdString();
+        ttilesheet.image = Tiled::toFileReference(tilesheet->imageSource(), fileDir).replace(QLatin1Char('/'), QLatin1Char('\\')).toStdString();
         ttilesheet.margin.x = ttilesheet.margin.y = tilesheet->margin();
         ttilesheet.spacing.x = ttilesheet.spacing.y = tilesheet->tileSpacing();
         ttilesheet.sheetSize.x = tilesheet->columnCount();
@@ -355,7 +355,7 @@ tbin::Map TbinPlugin::toTbin( const Tiled::Map* map, const QDir &fileDir )
         for (auto tile : tilesheet->tiles()) {
             const auto &props = tile->properties();
             for (auto it = props.begin(), it_end = props.end(); it != it_end; ++it) {
-                tilesetTileProperties.insert("@TileIndex@" + QString::number(tile->id()) + "@" + it.key(), it.value());
+                tilesetTileProperties.insert(QLatin1String("@TileIndex@") + QString::number(tile->id()) + QLatin1Char('@') + it.key(), it.value());
             }
         }
         tiledToTbinProperties(tilesetTileProperties, ttilesheet.props, fileDir);
@@ -385,7 +385,7 @@ tbin::Map TbinPlugin::toTbin( const Tiled::Map* map, const QDir &fileDir )
                     ttile.staticData.tileIndex = -1;
 
                     if (hasUnsupportedFlags(cell)) {
-                        Tiled::ERROR("tBIN: Flipped and/or rotated tiles are not supported.",
+                        Tiled::ERROR(QLatin1String("tBIN: Flipped and/or rotated tiles are not supported."),
                                         Tiled::JumpToTile { map, QPoint(ix + layer->x(), iy + layer->y()), layer });
                     }
 
@@ -400,7 +400,7 @@ tbin::Map TbinPlugin::toTbin( const Tiled::Map* map, const QDir &fileDir )
 
                             for (Tiled::Frame frame : tile->frames()) {
                                 if (frame.duration != ttile.animatedData.frameInterval) {
-                                    Tiled::ERROR("tBIN: Frames with different duration are not supported.",
+                                    Tiled::ERROR(QLatin1String("tBIN: Frames with different duration are not supported."),
                                                     Tiled::SelectTile { tile });
                                 }
 

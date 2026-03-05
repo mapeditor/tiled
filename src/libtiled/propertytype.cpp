@@ -242,12 +242,11 @@ ExportValue ClassPropertyType::toExportValue(const QVariant &value, const Export
 {
     Properties properties = value.toMap();
 
-    for (auto &value : properties) {
-        ExportValue exportValue = context.toExportValue(value);
-        if (context.recursiveBehavior() == ExportContext::RecursiveBehavior::ExportValuesOnly)
-            value = QVariant::fromValue(std::move(exportValue));
-        else
+    if (context.recursiveBehavior() != ExportContext::RecursiveBehavior::NoRecursion) {
+        for (auto &value : properties) {
+            ExportValue exportValue = context.toExportValue(value);
             value = exportValue.value;
+        }
     }
 
     return PropertyType::toExportValue(properties, context);
@@ -267,8 +266,12 @@ QVariant ClassPropertyType::toPropertyValue(const QVariant &value, const ExportC
         if (!classMember.isValid())
             continue; // ignore removed members
 
-        if (it.value().userType() == classMember.userType())
-            continue; // leave members alone that already have the expected type
+        // Members that already match the expected type can be left alone,
+        // except for lists where the items themselves may still need decoding
+        // (in TypedListValues mode each item is a wrapper map).
+        if (it.value().userType() == classMember.userType()
+                && classMember.userType() != QMetaType::QVariantList)
+            continue;
 
         QVariant propertyValue = context.toPropertyValue(it.value(), classMember.userType());
 
@@ -305,20 +308,29 @@ static const struct  {
     { ClassPropertyType::ProjectClass,          QLatin1String("project") },
 };
 
-QJsonValue exportValueToJson(const ExportValue &exportValue)
+/*
+ * Walks the value tree ourselves rather than relying on
+ * RecursiveBehavior::TypedListValues, because the property types JSON format
+ * spells the key "propertyType" while TypedListValues emits "propertytype".
+ * Hence the context is expected to be in NoRecursion mode.
+ */
+QJsonValue exportValueToJson(const QVariant &value, const ExportContext &context)
 {
-    switch (exportValue.value.userType()) {
-    case QMetaType::QVariantList: {
+    Q_ASSERT(context.recursiveBehavior() == ExportContext::RecursiveBehavior::NoRecursion);
+
+    const ExportValue exportValue = context.toExportValue(value);
+
+    if (exportValue.typeName == QLatin1String("list")) {
         // We have to include the type and possibly propertyType for each value
         // in the list so that we know the type of the values when loading the
         // list.
         QJsonArray jsonArray;
         const auto list = exportValue.value.toList();
-        for (const auto &item : list) {
-            const auto itemExportValue = item.value<ExportValue>();
+        for (const QVariant &item : list) {
+            const ExportValue itemExportValue = context.toExportValue(item);
             QJsonObject member {
-               { QStringLiteral("type"), itemExportValue.typeName },
-               { QStringLiteral("value"), exportValueToJson(itemExportValue) },
+                { QStringLiteral("type"), itemExportValue.typeName },
+                { QStringLiteral("value"), exportValueToJson(item, context) },
             };
 
             if (!itemExportValue.propertyTypeName.isEmpty())
@@ -328,18 +340,18 @@ QJsonValue exportValueToJson(const ExportValue &exportValue)
         }
         return jsonArray;
     }
-    case QMetaType::QVariantMap: {
+
+    if (exportValue.typeName == QLatin1String("class")) {
         // For classes we only store the values, because the type of the
         // members is defined by the class.
         QJsonObject jsonObject;
-        const auto map = exportValue.value.toMap();
-        for (auto it = map.constBegin(); it != map.constEnd(); ++it)
-            jsonObject.insert(it.key(), exportValueToJson(it.value().value<ExportValue>()));
+        const QVariantMap members = exportValue.value.toMap();
+        for (auto it = members.constBegin(); it != members.constEnd(); ++it)
+            jsonObject.insert(it.key(), exportValueToJson(it.value(), context));
         return jsonObject;
     }
-    default:
-        return QJsonValue::fromVariant(exportValue.value);
-    }
+
+    return QJsonValue::fromVariant(exportValue.value);
 }
 
 QJsonObject ClassPropertyType::toJson(const ExportContext &context) const
@@ -355,7 +367,7 @@ QJsonObject ClassPropertyType::toJson(const ExportContext &context) const
         QJsonObject member {
             { QStringLiteral("name"), it.key() },
             { QStringLiteral("type"), exportValue.typeName },
-            { QStringLiteral("value"), exportValueToJson(exportValue) },
+            { QStringLiteral("value"), exportValueToJson(it.value(), context) },
         };
 
         if (!exportValue.propertyTypeName.isEmpty())
@@ -783,8 +795,7 @@ void PropertyTypes::resolveMemberValues(ClassPropertyType *classType,
 
 QJsonArray PropertyTypes::toJson(const QString &path) const
 {
-    ExportContext context(*this, path);
-    context.setRecursiveBehavior(ExportContext::RecursiveBehavior::ExportValuesOnly);
+    const ExportContext context(*this, path);  // NoRecursion mode
 
     QJsonArray propertyTypesJson;
     for (const auto &type : mTypes)

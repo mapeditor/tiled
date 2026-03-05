@@ -98,9 +98,12 @@ class TILEDSHARED_EXPORT ExportContext
 {
 public:
     enum class RecursiveBehavior {
+        NoRecursion,            // Values are taken as-is. Used by readers and
+                                // writers that walk compound values themselves.
         ValuesOnly,             // Lua and JSON1 formats (loses types in lists)
-        ListsAsExportValues,    // JSON2 format
-        ExportValuesOnly,       // XML format (keep superfluous types in classes)
+        TypedListValues,        // List elements expanded to {type, propertytype,
+                                // value} maps so the result can be passed
+                                // directly to QJsonValue::fromVariant.
     };
 
     explicit ExportContext(const QString &path = QString());
@@ -126,7 +129,7 @@ public:
 private:
     const PropertyTypes &mTypes;
     const QString mPath;
-    RecursiveBehavior mRecursiveBehavior = RecursiveBehavior::ListsAsExportValues;
+    RecursiveBehavior mRecursiveBehavior = RecursiveBehavior::NoRecursion;
 };
 
 class TILEDSHARED_EXPORT AggregatedPropertyData
@@ -197,14 +200,19 @@ TILEDSHARED_EXPORT void aggregateProperties(AggregatedProperties &aggregated, co
 TILEDSHARED_EXPORT void mergeProperties(Properties &target, const Properties &source);
 
 TILEDSHARED_EXPORT QJsonArray propertiesToJson(const Properties &properties,
-                                               const ExportContext &context = ExportContext());
+                                               const ExportContext &context);
+TILEDSHARED_EXPORT QJsonArray propertiesToJson(const Properties &properties,
+                                               const QString &path = QString());
+
 TILEDSHARED_EXPORT Properties propertiesFromJson(const QJsonArray &json,
-                                                 const ExportContext &context = ExportContext());
+                                                 const ExportContext &context);
+TILEDSHARED_EXPORT Properties propertiesFromJson(const QJsonArray &json,
+                                                 const QString &path = QString());
 
 TILEDSHARED_EXPORT QJsonArray valuesToJson(const QVariantList &values,
-                                           const ExportContext &context = ExportContext());
+                                           const QString &path = QString());
 TILEDSHARED_EXPORT QVariantList valuesFromJson(const QJsonArray &json,
-                                               const ExportContext &context = ExportContext());
+                                               const QString &path = QString());
 
 constexpr int propertyValueId() { return qMetaTypeId<PropertyValue>(); }
 constexpr int filePathTypeId() { return qMetaTypeId<FilePath>(); }

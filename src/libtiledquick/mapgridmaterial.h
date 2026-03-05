@@ -1,6 +1,6 @@
 /*
- * tiledquickplugin.cpp
- * Copyright 2014, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * mapgridmaterial.cpp
+ * Copyright 2026, UltraDagon
  *
  * This file is part of Tiled Quick.
  *
@@ -18,28 +18,32 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "tiledquickplugin.h"
+#pragma once
 
-#include "mapitem.h"
-#include "maploader.h"
-#include "mapborderitem.h"
-#include "mapgriditem.h"
-#include "tiled.h"
+#include <QSGMaterial>
 
-#include <qqml.h>
+#include "tiledquick_global.h"
 
-using namespace TiledQuick;
+namespace TiledQuick {
 
-void TiledQuickPlugin::registerTypes(const char *uri)
+class TILEDQUICK_SHARED_EXPORT MapGridMaterial : public QSGMaterial
 {
-    // @uri org.mapeditor.Tiled
+public:
+    MapGridMaterial();
+    ~MapGridMaterial() override;
 
-    qmlRegisterAnonymousType<MapRef>(uri, 1);
+    QSGMaterialShader *createShader(QSGRendererInterface::RenderMode) const override;
 
-    qmlRegisterType<MapLoader>(uri, 1, 0, "MapLoader");
-    qmlRegisterType<MapItem>(uri, 1, 0, "MapItem");
-    qmlRegisterType<MapBorderItem>(uri, 1, 0, "MapBorderItem");
-    qmlRegisterType<MapGridItem>(uri, 1, 0, "MapGridItem");
+    QSGMaterialType *type() const override { static QSGMaterialType t; return &t; }
 
-    Tiled::increaseImageAllocationLimit();
-}
+    int compare(const QSGMaterial *other) const override;
+
+    QColor mColor = Qt::black;
+    float mScale = 1;
+    float mPixelWidth = 0;
+    float mPixelHeight = 0;
+    float mTileWidth = 0;
+    float mTileHeight = 0;
+};
+
+} // namespace TiledQuick

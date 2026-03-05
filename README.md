@@ -42,14 +42,14 @@ and a free code signing certificate by the
 Compiling Tiled
 -------------------------------------------------------------------------------
 
-Before you can compile Tiled, you must ensure the Qt (>= 5.12) development
+Before you can compile Tiled, you must ensure the Qt (>= 5.15.2) development
 libraries have been installed as well as the Qbs build tool:
 
-* On Ubuntu/Debian: `sudo apt install qtbase5-dev libqt5svg5 qttools5-dev-tools zlib1g-dev qtdeclarative5-dev qbs`
+* On Ubuntu/Debian: `sudo apt install qt6-base-dev libqt6svg6 libqt6test6 qt6-l10n-tools qt6-declarative-dev zlib1g-dev qbs`
 * On Fedora:        `sudo dnf builddep tiled`
-* On Arch Linux:    `sudo pacman -S qt qt5-tools qbs`
+* On Arch Linux:    `sudo pacman -S qt6-declarative qt6-svg qt6-tools qbs`
 * On macOS with [Homebrew](https://brew.sh/):
-  + `brew install qbs` (which automatically pulls in `qt`)
+  + `brew install qbs qttools` (which automatically pulls in `qt`)
 
 If you want to build the Python plugin, you additionally need to install the
 Python 3 development libraries:
