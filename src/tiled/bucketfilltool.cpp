@@ -33,7 +33,6 @@
 #include <QCheckBox>
 #include <QCoreApplication>
 #include <QKeyEvent>
-#include <QSignalBlocker>
 #include <QToolBar>
 
 using namespace Tiled;
@@ -250,7 +249,7 @@ void BucketFillTool::populateToolBar(QToolBar *toolBar)
 
     mContiguousCheckBox = new QCheckBox(tr("Contiguous"), toolBar);
     updateContiguousCheckBox();
-    connect(mContiguousCheckBox, &QCheckBox::toggled, this, &BucketFillTool::setContiguous);
+    connect(mContiguousCheckBox, &QCheckBox::clicked, this, &BucketFillTool::setContiguous);
     toolBar->addWidget(mContiguousCheckBox);
 }
 
@@ -278,7 +277,6 @@ void BucketFillTool::updateContiguousCheckBox()
     if (!mContiguousCheckBox)
         return;
 
-    const QSignalBlocker blocker(mContiguousCheckBox);
     mContiguousCheckBox->setChecked(effectiveContiguous());
 }
 
