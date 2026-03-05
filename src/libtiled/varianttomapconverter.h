@@ -84,9 +84,6 @@ public:
 private:
     Properties toProperties(const QVariant &propertiesVariant,
                             const QVariant &propertyTypesVariant) const;
-    QVariant toPropertyValue(const QVariantMap &valueVariantMap,
-                             const ExportContext &context) const;
-    void convertListValues(QVariant &value, const ExportContext &context) const;
 
     SharedTileset toTileset(const QVariant &variant);
     std::unique_ptr<WangSet> toWangSet(const QVariantMap &variantMap, Tileset *tileset);

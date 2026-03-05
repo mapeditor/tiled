@@ -75,7 +75,8 @@ bool Project::save(const QString &fileName)
         commands.append(QJsonObject::fromVariantHash(command.toVariant()));
 
     const QJsonArray propertyTypes = mPropertyTypes->toJson(dir.path());
-    const ExportContext context(*mPropertyTypes, dir.path());
+    ExportContext context(*mPropertyTypes, dir.path());
+    context.setRecursiveBehavior(ExportContext::RecursiveBehavior::TypedListValues);
     const QJsonArray projectProperties = propertiesToJson(properties(), context);
     QJsonObject project {
         { QStringLiteral("propertyTypes"), propertyTypes },
@@ -131,7 +132,8 @@ std::unique_ptr<Project> Project::load(const QString &fileName)
 
     const QString projectPropertiesKey = QLatin1String("properties");
     if (projectJson.contains(projectPropertiesKey)) {
-        const ExportContext context(*project->mPropertyTypes, dir.path());
+        ExportContext context(*project->mPropertyTypes, dir.path());
+        context.setRecursiveBehavior(ExportContext::RecursiveBehavior::TypedListValues);
         const Properties loadedProperties = propertiesFromJson(projectJson.value(projectPropertiesKey).toArray(), context);
         project->setProperties(loadedProperties);
     }
