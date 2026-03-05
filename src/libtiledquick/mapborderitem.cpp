@@ -34,7 +34,7 @@ QSGNode *MapBorderItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNo
         vertex[4].set(0, 0);
 
         auto *material = new QSGFlatColorMaterial;
-        material->setColor(Qt::black);
+        material->setColor(mColor);
 
         borderNode->setMaterial(material);
         borderNode->setFlag(QSGNode::OwnsMaterial);

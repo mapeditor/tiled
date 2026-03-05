@@ -165,7 +165,7 @@ ApplicationWindow {
                 id: mapBorderItem
                 anchors.fill: mapItem
 
-                color: "red"
+                color: "black"
             }
         }
     }

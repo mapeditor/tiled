@@ -67,8 +67,6 @@ DynamicLibrary {
         cpp.includePaths: exportingProduct.sourceDirectory
     }
 
-    Depends { name: "Qt.quick" }
-
     install: !qbs.targetOS.contains("darwin")
     installDir: {
         if (qbs.targetOS.contains("windows"))
