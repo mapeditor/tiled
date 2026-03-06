@@ -204,11 +204,13 @@ void ExportAsImageDialog::accept()
 
         miniMapRenderer.renderToImage(image, renderFlags);
 
-        if (!image.save(fileName)) {
+        QImageWriter imageWriter(fileName);
+        if (!imageWriter.write(image)) {
              QMessageBox::warning(this,
                          tr("Export Failed"),
-                         tr("The image could not be saved to the specified location. "
-                            "Please check the file path and permissions."));
+                         tr("Could not save image to \"%1\":\n%2"))
+                         .arg(filename)
+                         .arg(imageWriter.errorString());
             return;
         }
 
