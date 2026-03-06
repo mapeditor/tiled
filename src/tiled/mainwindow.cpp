@@ -84,6 +84,7 @@
 #include <QLabel>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QPushButton>
 #include <QRegularExpression>
 #include <QShortcut>
 #include <QStandardPaths>
@@ -115,6 +116,51 @@ static Preference<bool> mainWindowLocked { "mainwindow/locked" };
 } // namespace preferences
 
 namespace {
+
+
+enum class UnsavedDecision {
+    SaveOne,
+    DiscardOne,
+    SaveAllRemaining,
+    DiscardAllRemaining,
+    CancelClose
+};
+
+UnsavedDecision confirmUnsavedChanges(QWidget *parent,
+                                     const QString &title,
+                                     const QString &text,
+                                     bool allowBatchActions)
+{
+    QMessageBox messageBox(QMessageBox::Warning, title, text, QMessageBox::NoButton, parent);
+
+    auto *saveButton = messageBox.addButton(QMessageBox::Save);
+    auto *discardButton = messageBox.addButton(QMessageBox::Discard);
+    auto *cancelButton = messageBox.addButton(QMessageBox::Cancel);
+    QPushButton *saveAllButton = nullptr;
+    QPushButton *discardAllButton = nullptr;
+
+    if (allowBatchActions) {
+        saveAllButton = messageBox.addButton(QCoreApplication::translate("Tiled::MainWindow", "Save All"),
+                                             QMessageBox::AcceptRole);
+        discardAllButton = messageBox.addButton(QCoreApplication::translate("Tiled::MainWindow", "Discard All"),
+                                                QMessageBox::DestructiveRole);
+    }
+
+    messageBox.setDefaultButton(saveButton);
+    messageBox.setEscapeButton(cancelButton);
+    messageBox.exec();
+
+    const auto *clickedButton = messageBox.clickedButton();
+    if (clickedButton == saveButton)
+        return UnsavedDecision::SaveOne;
+    if (clickedButton == discardButton)
+        return UnsavedDecision::DiscardOne;
+    if (clickedButton == saveAllButton)
+        return UnsavedDecision::SaveAllRemaining;
+    if (clickedButton == discardAllButton)
+        return UnsavedDecision::DiscardAllRemaining;
+    return UnsavedDecision::CancelClose;
+}
 
 template <typename Format>
 struct ExportDetails
@@ -1277,16 +1323,71 @@ bool MainWindow::confirmSave(Document *document)
 
 bool MainWindow::confirmAllSave()
 {
+    UnsavedDecision batchDecision = UnsavedDecision::DiscardOne;
+    bool hasBatchDecision = false;
+
+    auto handleDecision = [this, &batchDecision, &hasBatchDecision] (UnsavedDecision decision,
+                                                                      const auto &saveCurrent) -> bool {
+        switch (decision) {
+        case UnsavedDecision::SaveOne:
+            return saveCurrent();
+        case UnsavedDecision::DiscardOne:
+            return true;
+        case UnsavedDecision::SaveAllRemaining:
+        case UnsavedDecision::DiscardAllRemaining:
+            batchDecision = decision;
+            hasBatchDecision = true;
+            return decision == UnsavedDecision::SaveAllRemaining ? saveCurrent() : true;
+        case UnsavedDecision::CancelClose:
+        default:
+            mDocumentManager->abortMultiDocumentClose();
+            return false;
+        }
+    };
+
     for (const auto &document : mDocumentManager->documents()) {
-        if (isEmbeddedTilesetDocument((document.data())))
+        if (isEmbeddedTilesetDocument(document.data()) || !mDocumentManager->isDocumentModified(document.data()))
             continue;
-        if (!confirmSave(document.data()))
+
+        if (hasBatchDecision) {
+            if (batchDecision == UnsavedDecision::SaveAllRemaining) {
+                mDocumentManager->switchToDocument(document.data());
+                if (!saveFile())
+                    return false;
+            }
+            continue;
+        }
+
+        mDocumentManager->switchToDocument(document.data());
+
+        const auto decision = confirmUnsavedChanges(this,
+                                                    tr("Unsaved Changes"),
+                                                    tr("There are unsaved changes. Do you want to save now?"),
+                                                    true);
+        if (!handleDecision(decision, [this] { return saveFile(); }))
             return false;
     }
 
-    for (auto &worldDocument : WorldManager::instance().worlds())
-        if (!confirmSaveWorld(worldDocument.data()))
+    for (auto &worldDocument : WorldManager::instance().worlds()) {
+        if (!worldDocument->isModified())
+            continue;
+
+        if (hasBatchDecision) {
+            if (batchDecision == UnsavedDecision::SaveAllRemaining &&
+                !mDocumentManager->saveDocument(worldDocument.data())) {
+                return false;
+            }
+            continue;
+        }
+
+        const auto decision = confirmUnsavedChanges(
+                this,
+                tr("Unsaved Changes to World"),
+                tr("There are unsaved changes to world \"%1\". Do you want to save the world now?").arg(worldDocument->fileName()),
+                true);
+        if (!handleDecision(decision, [this, worldDocument] { return mDocumentManager->saveDocument(worldDocument.data()); }))
             return false;
+    }
 
     return true;
 }
