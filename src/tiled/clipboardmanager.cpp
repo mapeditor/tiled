@@ -104,6 +104,9 @@ void ClipboardManager::setMap(const Map &map)
 Properties ClipboardManager::properties() const
 {
     auto mimeData = mClipboard->mimeData();
+    if (!mimeData)
+        return {};
+
     const QByteArray data = mimeData->data(QLatin1String(PROPERTIES_MIMETYPE));
     const QJsonArray array = QCborValue::fromCbor(data).toArray().toJsonArray();
     return propertiesFromJson(array);
