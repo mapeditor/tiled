@@ -28,8 +28,10 @@
 #include <QQmlError>
 #include <QScopedValueRollback>
 #include <QStringList>
+#include <QTimer>
 
 class QJSEngine;
+class QQmlEngine;
 
 namespace Tiled {
 
@@ -68,7 +70,7 @@ public:
     const QString &extensionsPath() const;
 
     ScriptModule *module() const;
-    QJSEngine *engine() const;
+    QQmlEngine *engine() const;
 
     QJSValue evaluate(const QString &program,
                       const QString &fileName = QString(), int lineNumber = 1);
@@ -106,10 +108,11 @@ private:
 
     void loadExtensions();
     void loadExtension(const QString &path);
+    void loadQmlExtension(const QString &filePath);
 
     QJSValue evaluateFile(const QString &fileName);
 
-    QJSEngine *mEngine = nullptr;
+    // QJSEngine *mEngine = nullptr;
     ScriptModule *mModule = nullptr;
     FileSystemWatcher mWatcher;
     QString mExtensionsPath;
@@ -120,6 +123,8 @@ private:
     friend struct ResetBlocker;
     bool mResetBlocked = false;
     QTimer mResetTimer;
+    QQmlEngine * mEngine =nullptr;
+    QList<QObject*> mExtensions;
 
     static ScriptManager *mInstance;
 };
@@ -135,7 +140,7 @@ inline ScriptModule *ScriptManager::module() const
     return mModule;
 }
 
-inline QJSEngine *ScriptManager::engine() const
+inline QQmlEngine *ScriptManager::engine() const
 {
     return mEngine;
 }

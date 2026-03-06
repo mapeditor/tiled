@@ -24,6 +24,7 @@
 #include "tilesetformat.h"
 
 #include <QJSValue>
+#include <QQmlEngine>
 
 namespace Tiled {
 

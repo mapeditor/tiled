@@ -34,6 +34,8 @@ TiledQtGuiApplication {
     }
 
     files: [
+        "../tiled/tiledaction.cpp",
+        "../tiled/tiledaction.h",
         "commandlineparser.cpp",
         "commandlineparser.h",
         "main.cpp",

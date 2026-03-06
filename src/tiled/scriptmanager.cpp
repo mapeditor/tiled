@@ -58,6 +58,7 @@
 #include "tileseteditor.h"
 
 #include <QCoreApplication>
+#include <QQmlComponent>
 #include <QDesktopServices>
 #include <QDir>
 #include <QFile>
@@ -69,6 +70,18 @@
 #include <QStringDecoder>
 #endif
 #include <QtDebug>
+#include <QFileInfo>
+#include <QDebug>
+#include <QQmlContext>
+#include "tiledaction.h"
+#include "mainwindow.h"
+#include <QMenuBar>
+#include "actionmanager.h"
+#include "id.h"
+#include <QApplication>
+#include <QWidget>
+#include <QJSEngine>
+#include <QJSValue>
 
 namespace Tiled {
 
@@ -136,6 +149,7 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<ScriptTilesetFormatWrapper*>();
     qRegisterMetaType<ScriptImage*>();
     qRegisterMetaType<WangIndex::Value>("WangIndex");
+    qmlRegisterType<Tiled::QmlAction>("Tiled", 1, 0, "QmlAction");
 
     connect(&mWatcher, &FileSystemWatcher::pathsChanged,
             this, &ScriptManager::scriptFilesChanged);
@@ -284,17 +298,94 @@ void ScriptManager::loadExtension(const QString &path)
 
     const QStringList nameFilters = {
         QLatin1String("*.js"),
-        QLatin1String("*.mjs")
+        QLatin1String("*.mjs"),
+        QLatin1String("*.qml")
     };
     const QDir dir(path);
-    const QStringList jsFiles = dir.entryList(nameFilters,
+    const QStringList files = dir.entryList(nameFilters,
                                               QDir::Files | QDir::Readable);
 
-    for (const QString &jsFile : jsFiles) {
-        const QString absolutePath = dir.filePath(jsFile);
+    for (const QString &file : files) {
+        const QString absolutePath = dir.filePath(file);
+        if (absolutePath.endsWith(QStringLiteral(".qml"),
+                                  Qt::CaseInsensitive))
+        {
+            loadQmlExtension(absolutePath);
+        }
+        else{
         evaluateFileOrLoadModule(absolutePath);
+        }
         mWatcher.addPath(absolutePath);
     }
+}
+
+void ScriptManager::loadQmlExtension(const QString &filePath)
+{
+    if (!mEngine)
+    {
+        qWarning() << "QML engine not initialized";
+        return;
+    }
+
+    QQmlComponent component(mEngine, QUrl::fromLocalFile(filePath));
+
+    if (component.isError())
+    {
+        qWarning() << component.errors();
+        return;
+    }
+
+    QObject *object = component.create();
+
+    if (!object)
+    {
+        qWarning() << "Failed to create QML object";
+        return;
+    }
+
+    object->setParent(this);
+    mExtensions.append(object);
+
+    QAction *action = qobject_cast<QAction *>(object);
+    if (!action)
+        return;
+    if (!action->objectName().isEmpty())
+    {
+        Tiled::ActionManager::registerAction(
+            action,
+            Tiled::Id(action->objectName().toUtf8()));
+    }
+    Tiled::MainWindow *mainWindow = nullptr;
+
+    for (QWidget *w : QApplication::topLevelWidgets())
+    {
+        mainWindow = qobject_cast<Tiled::MainWindow *>(w);
+        if (mainWindow)
+            break;
+    }
+
+    if (!mainWindow)
+        return;
+
+    QMenuBar *menuBar = mainWindow->menuBar();
+    QMenu *extensionsMenu = nullptr;
+
+    for (QAction *act : menuBar->actions())
+    {
+        if (act->menu() &&
+            act->text().compare(QStringLiteral("Extensions"),
+                                Qt::CaseInsensitive) == 0)
+        {
+            extensionsMenu = act->menu();
+            break;
+        }
+    }
+
+    if (!extensionsMenu)
+        extensionsMenu = menuBar->addMenu(QStringLiteral("Extensions"));
+
+    if (!extensionsMenu->actions().contains(action))
+        extensionsMenu->addAction(action);
 }
 
 bool ScriptManager::checkError(QJSValue value, const QString &program)
@@ -332,7 +423,7 @@ bool ScriptManager::checkError(QJSValue value, const QString &program)
 
 void ScriptManager::throwError(const QString &message)
 {
-    engine()->throwError(message);
+    mEngine->throwError(message);
 }
 
 void ScriptManager::throwNullArgError(int argNumber)
@@ -367,13 +458,14 @@ void ScriptManager::reset()
 void ScriptManager::initialize()
 {
     auto engine = new QQmlEngine(this);
+    mModule=new ScriptModule(this);
 
     // We'll report errors in the Console view instead
     engine->setOutputWarningsToStandardError(false);
     connect(engine, &QQmlEngine::warnings, this, &ScriptManager::onScriptWarnings);
 
     mEngine = engine;
-    mModule = new ScriptModule(this);
+    // mModule = new ScriptModule(this);
 
     QJSValue globalObject = engine->globalObject();
 
