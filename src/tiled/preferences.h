@@ -69,9 +69,6 @@ public:
     bool showObjectReferences() const;
     bool parallaxEnabled() const;
     bool showViewport() const;
-    bool snapToGrid() const;
-    bool snapToFineGrid() const;
-    bool snapToPixels() const;
     SnapMode snapMode() const;
     QColor gridColor() const;
     QColor backgroundFadeColor() const;
@@ -207,9 +204,6 @@ public slots:
     void setShowObjectReferences(bool enabled);
     void setParallaxEnabled(bool enabled);
     void setShowViewport(bool enabled);
-    void setSnapToGrid(bool snapToGrid);
-    void setSnapToFineGrid(bool snapToFineGrid);
-    void setSnapToPixels(bool snapToPixels);
     void setSnapMode(SnapMode snapMode);
     void setGridColor(QColor gridColor);
     void setBackgroundFadeColor(QColor backgroundFadeColor);
@@ -236,9 +230,6 @@ signals:
     void showObjectReferencesChanged(bool enabled);
     void parallaxEnabledChanged(bool enabled);
     void showViewportChanged(bool enabled);
-    void snapToGridChanged(bool snapToGrid);
-    void snapToFineGridChanged(bool snapToFineGrid);
-    void snapToPixelsChanged(bool snapToPixels);
     void snapModeChanged(SnapMode snapMode);
     void gridColorChanged(QColor gridColor);
     void backgroundFadeColorChanged(QColor backgroundFadeColor);

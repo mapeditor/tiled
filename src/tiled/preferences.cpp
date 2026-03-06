@@ -208,12 +208,6 @@ bool Preferences::showViewport() const
     return get("Interface/ShowViewport", false);
 }
 
-bool Preferences::snapToGrid() const
-{
-    return get("Interface/SnapToGrid", false);
-}
-
-bool Preferences::snapToFineGrid() const
 SnapMode Preferences::snapMode() const
 {
     return toSnapMode(get(snapModeKey, static_cast<int>(SnapMode::None)));
@@ -389,13 +383,6 @@ void Preferences::setShowViewport(bool enabled)
     emit showViewportChanged(enabled);
 }
 
-void Preferences::setSnapToGrid(bool snapToGrid)
-{
-    setValue(QLatin1String("Interface/SnapToGrid"), snapToGrid);
-    emit snapToGridChanged(snapToGrid);
-}
-
-void Preferences::setSnapToFineGrid(bool snapToFineGrid)
 void Preferences::setSnapMode(SnapMode snapMode)
 {
     if (this->snapMode() == snapMode)
