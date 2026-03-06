@@ -206,11 +206,9 @@ void ExportAsImageDialog::accept()
 
         QImageWriter imageWriter(fileName);
         if (!imageWriter.write(image)) {
-             QMessageBox::warning(this,
-                         tr("Export Failed"),
-                         tr("Could not save image to \"%1\":\n%2"))
-                         .arg(filename)
-                         .arg(imageWriter.errorString());
+                const QString message = tr("Could not save image to \"%1\":\n%2")
+                                        .arg(fileName, imageWriter.errorString());
+            QMessageBox::warning(this, tr("Export Failed"), message);
             return;
         }
 
