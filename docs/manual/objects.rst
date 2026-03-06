@@ -342,6 +342,10 @@ right-clicking those nodes and choosing "Extend Polyline", or by
 switching to the :ref:`insert-polygon-tool` tool and clicking on either
 end of an already selected polyline.
 
+While creating or extending a polygon/polyline with the
+:ref:`insert-polygon-tool`, you can press ``Backspace`` to remove the
+previously added point.
+
 
 .. raw:: html
 

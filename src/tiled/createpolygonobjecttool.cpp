@@ -121,6 +121,10 @@ void CreatePolygonObjectTool::keyPressed(QKeyEvent *event)
         MapObject *newObject = mNewMapObjectItem->mapObject();
         QPolygonF currentPolygon = newObject->polygon();
 
+        // Keep extended polylines valid by never removing below two points.
+        if (mMode != Creating && currentPolygon.size() <= 2)
+            return;
+
         // If only the starting point remains, cancel the whole operation
         if (currentPolygon.size() <= 1) {
             cancelNewMapObject();
