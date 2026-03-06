@@ -204,7 +204,13 @@ void ExportAsImageDialog::accept()
 
         miniMapRenderer.renderToImage(image, renderFlags);
 
-        image.save(fileName);
+        if (!image.save(fileName)) {
+             QMessageBox::warning(this,
+                         tr("Export Failed"),
+                         tr("The image could not be saved to the specified location. "
+                            "Please check the file path and permissions."));
+            return;
+        }
 
     } catch (const std::bad_alloc &) {
         QMessageBox::critical(this,
