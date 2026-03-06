@@ -81,9 +81,9 @@ std::unique_ptr<Map> ClipboardManager::map() const
 {
     const auto mimeData = mClipboard->mimeData();
     const QByteArray data = mimeData->data(QLatin1String(TMX_MIMETYPE));
-    if (data.isEmpty())
+    if (data.isEmpty()){
         return nullptr;
-
+    }
     TmxMapFormat format;
     return format.fromByteArray(data);
 }
@@ -172,8 +172,9 @@ bool ClipboardManager::copySelection(const MapDocument &mapDocument)
         bool tileLayerSelected = std::any_of(selectedLayers.begin(), selectedLayers.end(),
                                              [] (Layer *layer) { return layer->isTileLayer(); });
 
-        if (tileLayerSelected)
+        if (tileLayerSelected){
             map->copyLayers(selectedLayers, selectedArea, copyMap);
+        }
     }
 
     if (!selectedObjects.isEmpty()) {
@@ -183,8 +184,9 @@ bool ClipboardManager::copySelection(const MapDocument &mapDocument)
         if (objectGroupSelected) {
             // Create a new object group with clones of the selected objects
             auto objectGroup = new ObjectGroup;
-            for (const MapObject *mapObject : selectedObjects)
+            for (const MapObject *mapObject : selectedObjects){
                 objectGroup->addObject(mapObject->clone());
+            }
             copyMap.addLayer(objectGroup);
         }
     }
@@ -210,12 +212,14 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
                                         PasteFlags flags)
 {
     Layer *currentLayer = mapDocument->currentLayer();
-    if (!currentLayer)
+    if (!currentLayer){
         return;
+    }
 
     ObjectGroup *currentObjectGroup = currentLayer->asObjectGroup();
-    if (!currentObjectGroup)
+    if (!currentObjectGroup){
         return;
+    }
 
     QPointF insertPos;
 
@@ -228,10 +232,12 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
         // Take the mouse position if the mouse is on the view, otherwise
         // take the center of the view.
         QPoint viewPos;
-        if (view->underMouse())
+        if (view->underMouse()){
             viewPos = view->mapFromGlobal(QCursor::pos());
-        else
+        }
+        else{
             viewPos = QPoint(view->width() / 2, view->height() / 2);
+        }
 
         QPointF layerScreenPos = view->mapToScene(viewPos);
         layerScreenPos -= view->mapScene()->absolutePositionForLayer(*currentObjectGroup);
@@ -247,8 +253,9 @@ void ClipboardManager::pasteObjectGroup(const ObjectGroup *objectGroup,
     ObjectReferencesHelper objectRefs(map);
 
     for (const MapObject *mapObject : objectGroup->objects()) {
-        if (flags & PasteNoTileObjects && !mapObject->cell().isEmpty())
+        if (flags & PasteNoTileObjects && !mapObject->cell().isEmpty()){
             continue;
+        }
 
         MapObject *objectClone = mapObject->clone();
         objectClone->setPosition(objectClone->position() + insertPos);
