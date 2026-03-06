@@ -55,10 +55,6 @@
 #include <QDialogButtonBox>
 #include <QFileDialog>
 #include <QFileInfo>
-#include <QFile>
-#include <QTemporaryFile>
-#include <QCryptographicHash>
-#include <QDir>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMenu>
@@ -1034,7 +1030,6 @@ bool DocumentManager::reloadDocument(Document *document)
 
     mRecreatedDocuments.remove(document);
 
-    
     const int index = findDocument(document);
     if (index != -1)
         mTabBar->setTabRecreated(index, false);
@@ -1044,7 +1039,6 @@ bool DocumentManager::reloadDocument(Document *document)
             mFileChangedWarning->setVisible(false);
 
     emit documentReloaded(document);
-
     return true;
 }
 
@@ -1315,7 +1309,7 @@ void DocumentManager::fileChanged(const QString &fileName)
         }
 
         // Check if the restored file is identical to the one we have in memory.
-        if (isRestoredFileIdentical(document, fileName)) {
+        if (isRestoredFileUnchanged(document, fileName)) {
             mRecreatedDocuments.remove(document);
             document->setChangedOnDisk(false);
             if (currentDocument() == document)
@@ -1371,11 +1365,9 @@ void DocumentManager::hideChangedWarning()
     mRecreatedDocuments.remove(document);
     mFileChangedWarning->setVisible(false);
 
-    
     const int index = findDocument(document);
     if (index != -1)
-     mTabBar->setTabRecreated(index, false);
-    
+        mTabBar->setTabRecreated(index, false);
 }
 
 void DocumentManager::markDocumentAsDeleted(Document *document, bool deleted)
@@ -1409,7 +1401,7 @@ void DocumentManager::checkForRestoredFiles()
     QSet<Document*> restoredDocuments;
 
     for (Document* document : std::as_const(mDeletedDocuments)) {
-        const QString fileName = document->canonicalFilePath();
+        const QString fileName = document->fileName();
         if (!fileName.isEmpty() && QFileInfo::exists(fileName)) {
             restoredDocuments.insert(document);
         }
@@ -1425,15 +1417,13 @@ void DocumentManager::checkForRestoredFiles()
     }
 }
 
-
-
 bool DocumentManager::timestampMatches(const QFileInfo &fileInfo, Document *document) const
 {
     return (fileInfo.lastModified() == document->lastSaved() ||
             qAbs(fileInfo.lastModified().toMSecsSinceEpoch() - document->lastSaved().toMSecsSinceEpoch()) < 2000);
 }
 
-bool DocumentManager::isRestoredFileIdentical(Document *document, const QString &fileName) const
+bool DocumentManager::isRestoredFileUnchanged(Document *document, const QString &fileName) const
 {
     if (!document)
         return false;
@@ -1447,10 +1437,6 @@ bool DocumentManager::isRestoredFileIdentical(Document *document, const QString 
 
     return timestampMatches(fileInfo, document);
 }
-
-
-
-
 
 TilesetDocument* DocumentManager::findTilesetDocument(const SharedTileset &tileset) const
 {

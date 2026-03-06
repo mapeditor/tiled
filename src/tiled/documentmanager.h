@@ -218,7 +218,7 @@ private:
     void checkForRestoredFiles();
 
     // Helpers for restored-file verification
-    bool isRestoredFileIdentical(Document *document, const QString &fileName) const;
+    bool isRestoredFileUnchanged(Document *document, const QString &fileName) const;
     bool timestampMatches(const QFileInfo &fileInfo, Document *document) const;
 
     void tilesetImagesChanged(Tileset *tileset);

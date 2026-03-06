@@ -46,7 +46,6 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
 
-protected:
     void tabInserted(int index) override;
     void tabRemoved(int index) override;
 
