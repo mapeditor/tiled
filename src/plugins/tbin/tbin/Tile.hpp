@@ -1,6 +1,6 @@
 /*
  * TBIN
- * Copyright 2017, Chase Warrington <spacechase0.and.cat@gmail.com>
+ * Copyright 2017, Casey Warrington <spacechase0.and.cat@gmail.com>
  *
  * MIT License
  *
@@ -26,10 +26,10 @@
 #ifndef TBIN_TILE_HPP
 #define TBIN_TILE_HPP
 
+#include <cstdint>
 //#include <SFML/Config.hpp>
 #include <vector>
 
-#include "FakeSfml.hpp"
 #include "PropertyValue.hpp"
 
 namespace tbin
@@ -43,26 +43,25 @@ namespace tbin
                 Static,
                 Animated,
             };
-            
+
             std::string tilesheet;
-            
+
             struct
             {
-                sf::Int32 tileIndex;
-                sf::Uint8 blendMode;
+                int32_t tileIndex = -1;
+                uint8_t blendMode = 0;
             } staticData;
-            
+
             struct
             {
-                sf::Int32 frameInterval;
+                int32_t frameInterval = 0;
                 std::vector< Tile > frames;
             } animatedData;
-            
+
             Properties props;
-            
+
             inline bool isNullTile() const { return staticData.tileIndex == -1 && animatedData.frames.size() == 0; }
     };
 }
 
 #endif // TBIN_TILE_HPP
-                    

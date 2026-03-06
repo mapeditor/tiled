@@ -36,6 +36,23 @@
 
 using namespace Tiled;
 
+constexpr auto snapModeKey = "Interface/SnapMode";
+constexpr auto snapToGridKey = "Interface/SnapToGrid";
+constexpr auto snapToFineGridKey = "Interface/SnapToFineGrid";
+constexpr auto snapToPixelsKey = "Interface/SnapToPixels";
+
+static SnapMode toSnapMode(int mode)
+{
+    switch (mode) {
+    case static_cast<int>(SnapMode::Grid):
+    case static_cast<int>(SnapMode::FineGrid):
+    case static_cast<int>(SnapMode::Pixels):
+        return static_cast<SnapMode>(mode);
+    default:
+        return SnapMode::None;
+    }
+}
+
 Preferences *Preferences::mInstance;
 QString Preferences::mStartupProject;
 QString Preferences::mStartupSession;
@@ -134,6 +151,26 @@ void Preferences::initialize()
         setGridMajor(QSize(gridMajor, gridMajor));
         remove(oldGridMajorKey);
     }
+
+    if (!contains(QLatin1String(snapModeKey))) {
+        SnapMode mode = SnapMode::None;
+
+        // Preserve legacy behavior when multiple old flags were enabled:
+        // grid snapping took priority over fine grid, and pixel snapping only
+        // applied when neither grid mode was active.
+        if (get<bool>(snapToGridKey, false))
+            mode = SnapMode::Grid;
+        else if (get<bool>(snapToFineGridKey, false))
+            mode = SnapMode::FineGrid;
+        else if (get<bool>(snapToPixelsKey, false))
+            mode = SnapMode::Pixels;
+
+        setValue(QLatin1String(snapModeKey), static_cast<int>(mode));
+    }
+
+    remove(QLatin1String(snapToGridKey));
+    remove(QLatin1String(snapToFineGridKey));
+    remove(QLatin1String(snapToPixelsKey));
 }
 
 bool Preferences::showGrid() const
@@ -177,13 +214,9 @@ bool Preferences::snapToGrid() const
 }
 
 bool Preferences::snapToFineGrid() const
+SnapMode Preferences::snapMode() const
 {
-    return get("Interface/SnapToFineGrid", false);
-}
-
-bool Preferences::snapToPixels() const
-{
-    return get("Interface/SnapToPixels", false);
+    return toSnapMode(get(snapModeKey, static_cast<int>(SnapMode::None)));
 }
 
 QColor Preferences::gridColor() const
@@ -363,15 +396,13 @@ void Preferences::setSnapToGrid(bool snapToGrid)
 }
 
 void Preferences::setSnapToFineGrid(bool snapToFineGrid)
+void Preferences::setSnapMode(SnapMode snapMode)
 {
-    setValue(QLatin1String("Interface/SnapToFineGrid"), snapToFineGrid);
-    emit snapToFineGridChanged(snapToFineGrid);
-}
+    if (this->snapMode() == snapMode)
+        return;
 
-void Preferences::setSnapToPixels(bool snapToPixels)
-{
-    setValue(QLatin1String("Interface/SnapToPixels"), snapToPixels);
-    emit snapToPixelsChanged(snapToPixels);
+    setValue(QLatin1String(snapModeKey), static_cast<int>(snapMode));
+    emit snapModeChanged(snapMode);
 }
 
 void Preferences::setGridColor(QColor gridColor)
