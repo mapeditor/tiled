@@ -342,8 +342,12 @@ right-clicking those nodes and choosing "Extend Polyline", or by
 switching to the :ref:`insert-polygon-tool` tool and clicking on either
 end of an already selected polyline.
 
+.. raw:: html
+
+   <div class="new">New in Tiled 1.12</div>
+
 While creating or extending a polygon/polyline with the
-:ref:`insert-polygon-tool`, you can press ``Backspace`` to remove the
+:ref:`insert-polygon-tool` tool, you can press ``Backspace`` to remove the
 previously added point.
 
 
