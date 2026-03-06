@@ -139,6 +139,7 @@ UnsavedDecision confirmUnsavedChanges(QWidget *parent,
     QPushButton *saveAllButton = nullptr;
     QPushButton *discardAllButton = nullptr;
 
+    // todo : translation for new buttons
     if (allowBatchActions) {
         saveAllButton = messageBox.addButton(QCoreApplication::translate("Tiled::MainWindow", "Save All"),
                                              QMessageBox::AcceptRole);
