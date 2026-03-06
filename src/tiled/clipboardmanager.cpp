@@ -77,6 +77,7 @@ ClipboardManager *ClipboardManager::instance()
  * Retrieves the map from the clipboard. Returns null when there was no map or
  * loading failed.
  */
+
 std::unique_ptr<Map> ClipboardManager::map() const
 {
     const auto mimeData = mClipboard->mimeData();
@@ -85,9 +86,14 @@ std::unique_ptr<Map> ClipboardManager::map() const
         return nullptr;
 
     TmxMapFormat format;
-    return format.fromByteArray(data);
-}
+    auto map = format.fromByteArray(data);
 
+    if (!map) {
+        qWarning() << "Failed to parse TMX data from clipboard";
+    }
+
+    return map;
+}
 /**
  * Sets the given map on the clipboard.
  */
