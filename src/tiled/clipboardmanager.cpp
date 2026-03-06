@@ -281,7 +281,8 @@ void ClipboardManager::update()
     bool hasListValues = false;
 
     if (const auto data = mClipboard->mimeData()) {
-        hasMap = data->hasFormat(QLatin1String(TMX_MIMETYPE));
+       hasMap = data->hasFormat(QLatin1String(TMX_MIMETYPE)) ||
+         data->hasText();
         hasProperties = data->hasFormat(QLatin1String(PROPERTIES_MIMETYPE));
         hasListValues = data->hasFormat(QLatin1String(LIST_VALUES_MIMETYPE));
     }
