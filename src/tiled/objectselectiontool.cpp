@@ -1197,8 +1197,17 @@ void ObjectSelectionTool::updateSelection(const QPointF &pos,
     QList<MapObject*> selectedObjects = objectsAboutToBeSelected(pos, modifiers);
 
     if (modifiers & (Qt::ControlModifier | Qt::ShiftModifier)) {
-        for (MapObject *object : mapDocument()->selectedObjects())
-            if (!selectedObjects.contains(object))
+        const QList<MapObject*> rectObjects = selectedObjects;
+        const QList<MapObject*> currentSelection = mapDocument()->selectedObjects();
+
+        selectedObjects.clear();
+
+        for (MapObject *object : currentSelection)
+            if (!rectObjects.contains(object))
+                selectedObjects.append(object);
+
+        for (MapObject *object : rectObjects)
+            if (!currentSelection.contains(object))
                 selectedObjects.append(object);
     } else {
         setMode(Resize);    // new selection resets edit mode
