@@ -80,14 +80,23 @@ ClipboardManager *ClipboardManager::instance()
 std::unique_ptr<Map> ClipboardManager::map() const
 {
     const auto mimeData = mClipboard->mimeData();
-    const QByteArray data = mimeData->data(QLatin1String(TMX_MIMETYPE));
-    if (data.isEmpty())
+    if (!mimeData)
         return nullptr;
+
+    QByteArray data = mimeData->data(QLatin1String(TMX_MIMETYPE));
+
+    // Fallback to plain text if custom TMX MIME type is unavailable
+    if (data.isEmpty() && mimeData->hasText()) {
+        data = mimeData->text().toUtf8();
+    }
+
+    if (data.isEmpty()) {
+        return nullptr;
+    }
 
     TmxMapFormat format;
     return format.fromByteArray(data);
 }
-
 /**
  * Sets the given map on the clipboard.
  */
