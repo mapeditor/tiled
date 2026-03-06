@@ -40,6 +40,7 @@
 
 #include <QApplication>
 #include <QGraphicsView>
+#include <QKeyEvent>
 #include <QPalette>
 #include <QUndoStack>
 
@@ -114,6 +115,8 @@ void CreatePolygonObjectTool::deactivate(MapScene *scene)
 void CreatePolygonObjectTool::keyPressed(QKeyEvent *event)
 {
     // TODO: Modifier for finishing as polygon (Shift+Enter)
+
+    // Backspace removes the last added point (or first, when extending from the beginning)
     if (event->key() == Qt::Key_Backspace && state() == CreatingObject) {
         MapObject *newObject = mNewMapObjectItem->mapObject();
         QPolygonF currentPolygon = newObject->polygon();
@@ -124,7 +127,6 @@ void CreatePolygonObjectTool::keyPressed(QKeyEvent *event)
             return;
         }
 
-        // Remove the last added point (or first, when extending from the beginning)
         if (mMode == ExtendingAtBegin)
             currentPolygon.removeFirst();
         else
@@ -133,18 +135,16 @@ void CreatePolygonObjectTool::keyPressed(QKeyEvent *event)
         // Apply the change to the object
         if (mMode == Creating) {
             mNewMapObjectItem->setPolygon(currentPolygon);
+            synchronizeOverlayObject();
 
             // Update handles if we can no longer close as polygon
             if (currentPolygon.size() <= 2)
                 updateHandles();
         } else {
-            mapDocument()->undoStack()->push(
-                new ChangePolygon(mapDocument(), newObject, currentPolygon));
-            updateHandles();
+            mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(),
+                                                               newObject,
+                                                               currentPolygon));
         }
-
-        // Rebuild the overlay to reflect the removed point
-        synchronizeOverlayObject();
         return;
     }
 
