@@ -289,9 +289,9 @@ MapEditor::MapEditor(QObject *parent)
     connect(mTileStampsDock, &TileStampsDock::setStamp,
             this, &MapEditor::setStamp);
 
-    setSelectedTool(mToolManager->selectedTool());
+    onSelectedToolChanged(mToolManager->selectedTool());
     connect(mToolManager, &ToolManager::selectedToolChanged,
-            this, &MapEditor::setSelectedTool);
+            this, &MapEditor::onSelectedToolChanged);
 
     setupQuickStamps();
     retranslateUi();
@@ -645,7 +645,7 @@ void MapEditor::restoreDocumentState(MapDocument *mapDocument) const
         mapDocument->switchCurrentLayer(layer);
 }
 
-void MapEditor::setSelectedTool(AbstractTool *tool)
+void MapEditor::onSelectedToolChanged(AbstractTool *tool)
 {
     if (mSelectedTool == tool)
         return;
@@ -676,6 +676,7 @@ void MapEditor::setSelectedTool(AbstractTool *tool)
     }
 
     updateActiveUndoStack();
+    emit selectedToolChanged(tool);
 }
 
 void MapEditor::updateActiveUndoStack()
@@ -1097,9 +1098,14 @@ void MapEditor::setCurrentWangColorIndex(int newIndex)
     mWangDock->setCurrentWangColor(newIndex);
 }
 
-AbstractTool *MapEditor::selectedTool() const
+void MapEditor::setSelectedTool(AbstractTool *tool)
 {
-    return mSelectedTool;
+    mToolManager->selectTool(tool);
+}
+
+AbstractTool *MapEditor::tool(const QByteArray &id) const
+{
+    return mToolManager->findTool(id);
 }
 
 } // namespace Tiled

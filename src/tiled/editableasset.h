@@ -59,7 +59,7 @@ class EditableAsset : public EditableObject
 public:
     EditableAsset(Object *object, QObject *parent = nullptr);
 
-    QString fileName() const;
+    virtual QString fileName() const;
     bool isReadOnly() const override = 0;
     bool isMap() const { return assetType() == AssetType::TileMap; }
     bool isTileset() const { return assetType() == AssetType::Tileset; }

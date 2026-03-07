@@ -1,7 +1,6 @@
 /*
- * snaphelper.h
- * Copyright 2015, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- * Copyright 2016, Mamed Ibrahimov <ibramlab@gmail.com>
+ * tilehighlightitem.h
+ * Copyright 2026, PoonamMehan <poonammehan655@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -21,26 +20,36 @@
 
 #pragma once
 
-#include "maprenderer.h"
-#include "preferences.h"
+#include <QGraphicsObject>
+#include <QPointer>
 
 namespace Tiled {
 
-class SnapHelper
+class MapDocument;
+
+class TileHighlightItem : public QGraphicsObject
 {
+    Q_OBJECT
+
 public:
-    SnapHelper(const MapRenderer *renderer, Qt::KeyboardModifiers modifiers = {});
+    TileHighlightItem(MapDocument *mapDocument,
+                      int tileX, int tileY,
+                      QGraphicsItem *parent = nullptr);
 
-    void toggleSnap();
-    void toggleFineSnap();
+    void startBlink();
 
-    bool snaps() const { return mSnapMode != SnapMode::None; }
-
-    void snap(QPointF &pixelPos) const;
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter,
+               const QStyleOptionGraphicsItem *option,
+               QWidget *widget = nullptr) override;
 
 private:
-    const MapRenderer *mRenderer;
-    SnapMode mSnapMode = SnapMode::None;
+    void updatePosition();
+
+    QPointer<MapDocument> mMapDocument;
+    int mTileX;
+    int mTileY;
+    QRectF mBoundingRect;
 };
 
 } // namespace Tiled

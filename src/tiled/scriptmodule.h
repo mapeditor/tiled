@@ -39,6 +39,7 @@ class EditableAsset;
 class MapEditor;
 class ScriptImage;
 class ScriptMapFormatWrapper;
+class ScriptSession;
 class ScriptTilesetFormatWrapper;
 class ScriptedAction;
 class ScriptedMapFormat;
@@ -70,6 +71,7 @@ class ScriptModule : public QObject
     Q_PROPERTY(Tiled::EditableAsset *activeAsset READ activeAsset WRITE setActiveAsset NOTIFY activeAssetChanged)
     Q_PROPERTY(QList<QObject*> openAssets READ openAssets)
     Q_PROPERTY(Tiled::EditableAsset *project READ project)
+    Q_PROPERTY(Tiled::ScriptSession *session READ session)
 
     Q_PROPERTY(Tiled::MapEditor *mapEditor READ mapEditor)
     Q_PROPERTY(Tiled::TilesetEditor *tilesetEditor READ tilesetEditor)
@@ -104,6 +106,8 @@ public:
 
     TilesetEditor *tilesetEditor() const;
     MapEditor *mapEditor() const;
+
+    ScriptSession *session() const;
 
     Q_INVOKABLE QColor color(const QString &name) const;
     Q_INVOKABLE QColor color(float r, float g, float b, float a = 1.0f) const;
@@ -194,6 +198,7 @@ private:
     std::map<Id, std::unique_ptr<ScriptedTool>> mRegisteredTools;
 
     QStringList mScriptArguments;
+    ScriptSession *mSession = nullptr;
 };
 
 inline bool ScriptModule::versionLessThan(const QString &a)
