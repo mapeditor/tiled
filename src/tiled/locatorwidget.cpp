@@ -321,6 +321,8 @@ void LocatorWidget::setVisible(bool visible)
         setFocus();
         activateWindow();
 
+        // just a fallback to make sure the input method will be enabled in some situation
+        // like changed the focus object when showing this widget
         QGuiApplication::inputMethod()->update(Qt::ImEnabled);
         if (!mFilterEdit->text().isEmpty())
             mFilterEdit->clear();
