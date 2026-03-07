@@ -24,6 +24,8 @@
 
 #include <QJSValue>
 
+class QUndoStack;
+
 namespace Tiled {
 
 class BrushItem;
@@ -39,6 +41,7 @@ class ScriptedTool : public AbstractTileTool
     Q_PROPERTY(Tiled::EditableTile *selectedTile READ editableTile)
     Q_PROPERTY(Tiled::EditableMap *preview READ preview WRITE setPreview)
     Q_PROPERTY(QStringList toolBarActions READ toolBarActions WRITE setToolBarActions)
+    Q_PROPERTY(bool isWorldTool READ isWorldTool WRITE setIsWorldTool)
 
 public:
     explicit ScriptedTool(Id id, QJSValue object, QObject *parent = nullptr);
@@ -71,6 +74,11 @@ public:
     QStringList toolBarActions() const;
     void setToolBarActions(const QStringList &actionNames);
 
+    bool isWorldTool() const;
+    void setIsWorldTool(bool isWorldTool);
+
+    QUndoStack *undoStack() override;
+
 protected:
     void mapDocumentChanged(MapDocument *oldDocument, MapDocument *newDocument) override;
 
@@ -85,6 +93,7 @@ private:
     QJSValue mScriptObject;
     QString mIconFileName;
     QList<Id> mToolBarActions;
+    bool mIsWorldTool = false;
 };
 
 
