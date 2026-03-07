@@ -136,6 +136,14 @@ TILEDSHARED_EXPORT std::unique_ptr<Map> readMap(const QString &fileName,
                                                 QString *error = nullptr);
 
 /**
+ * Overload that allows specifying a custom \a searchPath for resolving
+ * relative references to external tilesets and images.
+ */
+TILEDSHARED_EXPORT std::unique_ptr<Map> readMap(const QString &fileName,
+                                                const QString &searchPath,
+                                                QString *error = nullptr);
+
+/**
  * Attempts to find a map format supporting the given file.
  */
 TILEDSHARED_EXPORT MapFormat *findSupportingMapFormat(const QString &fileName);

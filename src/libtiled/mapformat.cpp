@@ -31,6 +31,8 @@
 #include "map.h"
 #include "mapreader.h"
 
+#include <QFile>
+
 namespace Tiled {
 
 std::unique_ptr<Map> readMap(const QString &fileName, QString *error)
@@ -55,6 +57,31 @@ std::unique_ptr<Map> readMap(const QString &fileName, QString *error)
     // Fall back to default reader (TMX format)
     MapReader reader;
     std::unique_ptr<Map> map(reader.readMap(fileName));
+
+    if (error) {
+        if (!map)
+            *error = reader.errorString();
+        else
+            *error = QString();
+    }
+
+    if (map)
+        map->fileName = fileName;
+
+    return map;
+}
+
+std::unique_ptr<Map> readMap(const QString &fileName, const QString &searchPath, QString *error)
+{
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly)) {
+        if (error)
+            *error = file.errorString();
+        return nullptr;
+    }
+
+    MapReader reader;
+    std::unique_ptr<Map> map(reader.readMap(&file, searchPath));
 
     if (error) {
         if (!map)

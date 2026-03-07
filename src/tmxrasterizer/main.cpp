@@ -105,6 +105,9 @@ int main(int argc, char *argv[])
                           { QStringLiteral("frame-duration"),
                             QCoreApplication::translate("main", "Duration of each frame in milliseconds, defaults to 100."),
                             QCoreApplication::translate("main", "number") },
+                          { QStringLiteral("search-path"),
+                            QCoreApplication::translate("main", "Override the search path used to resolve tileset and image references. Useful when the map file is in a temporary location (e.g. during git diff)."),
+                            QCoreApplication::translate("main", "path") },
                       });
     parser.addPositionalArgument(QStringLiteral("map|world"), QCoreApplication::translate("main", "Map or world file to render."));
     parser.addPositionalArgument(QStringLiteral("image"), QCoreApplication::translate("main", "Image file to output."));
@@ -185,6 +188,9 @@ int main(int argc, char *argv[])
             exit(1);
         }
     }
+
+    if (parser.isSet(QLatin1String("search-path")))
+        w.setSearchPath(parser.value(QLatin1String("search-path")));
 
     return w.render(fileToOpen, fileToSave);
 }

@@ -32,12 +32,14 @@
 #include "imagelayer.h"
 #include "map.h"
 #include "mapformat.h"
+#include "mapreader.h"
 #include "objectgroup.h"
 #include "tilelayer.h"
 #include "tilesetmanager.h"
 #include "world.h"
 
 #include <QDebug>
+#include <QFile>
 #include <QFileInfo>
 #include <QImageWriter>
 
@@ -174,7 +176,8 @@ int TmxRasterizer::render(const QString &fileName,
     // If we're not rendering a world, load the map once and create a renderer
     if (!fileName.endsWith(QLatin1String(".world"), Qt::CaseInsensitive)) {
         QString errorString;
-        map = readMap(fileName, &errorString);
+        map = mSearchPath.isEmpty() ? readMap(fileName, &errorString)
+                                    : readMap(fileName, mSearchPath, &errorString);
         if (!map) {
             qWarning("Error while reading \"%s\":\n%s",
                      qUtf8Printable(fileName),
@@ -253,6 +256,21 @@ int TmxRasterizer::renderMap(const MapRenderer &renderer,
 int TmxRasterizer::saveImage(const QString &imageFileName,
                              const QImage &image) const
 {
+    if (imageFileName == QLatin1String("-")) {
+        QFile stdoutFile;
+        if (!stdoutFile.open(stdout, QIODevice::WriteOnly)) {
+            qWarning("Error while opening stdout for writing");
+            return 1;
+        }
+        QImageWriter imageWriter(&stdoutFile, "png");
+        if (!imageWriter.write(image)) {
+            qWarning("Error while writing to stdout: %s",
+                     qUtf8Printable(imageWriter.errorString()));
+            return 1;
+        }
+        return 0;
+    }
+
     QImageWriter imageWriter(imageFileName);
 
     if (!imageWriter.canWrite())
@@ -288,7 +306,8 @@ int TmxRasterizer::renderWorld(const QString &worldFileName,
     }
     QRect worldBoundingRect;
     for (const WorldMapEntry &mapEntry : maps) {
-        std::unique_ptr<Map> map { readMap(mapEntry.fileName, &errorString) };
+        std::unique_ptr<Map> map { mSearchPath.isEmpty() ? readMap(mapEntry.fileName, &errorString)
+                                                         : readMap(mapEntry.fileName, mSearchPath, &errorString) };
         if (!map) {
             qWarning("Error while reading \"%s\":\n%s",
                      qUtf8Printable(mapEntry.fileName),
@@ -325,7 +344,8 @@ int TmxRasterizer::renderWorld(const QString &worldFileName,
     painter.translate(-worldBoundingRect.topLeft());
 
     for (const WorldMapEntry &mapEntry : maps) {
-        std::unique_ptr<Map> map { readMap(mapEntry.fileName, &errorString) };
+        std::unique_ptr<Map> map { mSearchPath.isEmpty() ? readMap(mapEntry.fileName, &errorString)
+                                                         : readMap(mapEntry.fileName, mSearchPath, &errorString) };
         if (!map) {
             qWarning("Error while reading \"%s\":\n%s",
                     qUtf8Printable(mapEntry.fileName),
