@@ -191,6 +191,11 @@ QColor Preferences::backgroundFadeColor() const
     return get<QColor>("Interface/BackgroundFadeColor", Qt::black);
 }
 
+QColor Preferences::defaultObjectColor() const
+{
+    return get<QColor>("Interface/DefaultObjectColor", QColor(128, 128, 128));
+}
+
 int Preferences::gridFine() const
 {
     return get<int>("Interface/GridFine", 4);
@@ -373,6 +378,12 @@ void Preferences::setBackgroundFadeColor(QColor backgroundFadeColor)
 {
     setValue(QLatin1String("Interface/BackgroundFadeColor"), backgroundFadeColor.name());
     emit backgroundFadeColorChanged(backgroundFadeColor);
+}
+
+void Preferences::setDefaultObjectColor(QColor color)
+{
+    setValue(QLatin1String("Interface/DefaultObjectColor"), color.name());
+    emit defaultObjectColorChanged(color);
 }
 
 void Preferences::setGridFine(int gridFine)

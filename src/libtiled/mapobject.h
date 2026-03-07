@@ -213,6 +213,9 @@ public:
     QColor effectiveColor() const;
     MapObjectColors effectiveColors() const;
 
+    static QColor defaultColor();
+    static void setDefaultColor(const QColor &color);
+
     QVariant mapObjectProperty(Property property) const;
     void setMapObjectProperty(Property property, const QVariant &value);
 

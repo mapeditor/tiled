@@ -148,10 +148,16 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     renderer->setObjectLineWidth(prefs->objectLineWidth());
     renderer->setFlag(ShowTileObjectOutlines, prefs->showTileObjectOutlines());
 
+    MapObject::setDefaultColor(prefs->defaultObjectColor());
+
     connect(prefs, &Preferences::objectLineWidthChanged, this, &MapItem::setObjectLineWidth);
     connect(prefs, &Preferences::showTileObjectOutlinesChanged, this, &MapItem::setShowTileObjectOutlines);
     connect(prefs, &Preferences::highlightCurrentLayerChanged, this, &MapItem::updateSelectedLayersHighlight);
     connect(prefs, &Preferences::propertyTypesChanged, this, &MapItem::syncAllObjectItems);
+    connect(prefs, &Preferences::defaultObjectColorChanged, this, [this] (QColor color) {
+        MapObject::setDefaultColor(color);
+        syncAllObjectItems();
+    });
     connect(prefs, &Preferences::backgroundFadeColorChanged, this, [this] (QColor color) { mDarkRectangle->setBrush(color); });
 
     connect(mapDocument.data(), &Document::changed, this, &MapItem::documentChanged);
