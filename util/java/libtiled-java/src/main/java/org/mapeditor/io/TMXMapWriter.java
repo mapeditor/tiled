@@ -49,7 +49,7 @@ import java.util.TreeSet;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
 
-import javax.xml.bind.DatatypeConverter;
+import java.util.Base64;
 
 import org.mapeditor.core.AnimatedTile;
 import org.mapeditor.core.MapLayer;
@@ -511,7 +511,7 @@ public class TMXMapWriter {
             }
 
             byte[] dec = baos.toByteArray();
-            w.writeCDATA(DatatypeConverter.printBase64Binary(dec));
+            w.writeCDATA(Base64.getEncoder().encodeToString(dec));
         } else {
             for (int y = 0; y < l.getHeight(); y++) {
                 for (int x = 0; x < l.getWidth(); x++) {

@@ -284,6 +284,11 @@ Godot
 - `Godot Tiled importer (Mono version) <https://github.com/mi-sts/godot_tiled_importer>`__ imports Tiled maps exported to JSON (.tmj) format. Supports all map orientations.
 - `Tiled To Godot Export <https://github.com/MikeMnD/tiled-to-godot-export>`__ is a Tiled :doc:`JavaScript extension </manual/scripting>` for exporting Tilemaps and Tilesets in Godot 3.2 format (`forum announcement <https://discourse.mapeditor.org/t/tiled-editor-map-and-tileset-integration-with-godot-3-2/4347>`__).
 
+Gosu
+~~~~
+
+- `gosu-tiled <https://github.com/spajus/gosu-tiled>`__, a gem for drawing Tiled maps on the `Gosu <https://www.libgosu.org/>`__ framework.
+
 Grid Engine
 ~~~~~~~~~~~
 

@@ -47,7 +47,7 @@ import org.mapeditor.core.StaggerIndex;
 import org.mapeditor.core.TileLayer;
 import org.mapeditor.core.TileSet;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 
 public class MapReaderTest {
 

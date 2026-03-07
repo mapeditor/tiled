@@ -13,6 +13,7 @@ Tiled Documentation
 
    manual/introduction
    manual/projects
+   manual/maps
    manual/layers
    manual/editing-tile-layers
    manual/objects

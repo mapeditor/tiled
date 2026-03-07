@@ -44,7 +44,7 @@ OffsetMapDialog::OffsetMapDialog(MapDocument *mapDocument, QWidget *parent)
 
     boundsSelectionChanged();   // updates wrap checkboxes
 
-    connect(mUi->boundsSelection, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+    connect(mUi->boundsSelection, &QComboBox::currentIndexChanged,
             this, &OffsetMapDialog::boundsSelectionChanged);
 }
 

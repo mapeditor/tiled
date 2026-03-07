@@ -270,6 +270,10 @@ std::unique_ptr<Map> MapReaderPrivate::readMap()
     mapParameters.staggerIndex = staggerIndexFromString(staggerIndex);
 
     bool ok;
+    if (const int skewX = atts.value(QLatin1String("skewx")).toInt(&ok); ok)
+        mapParameters.skewX = skewX;
+    if (const int skewY = atts.value(QLatin1String("skewy")).toInt(&ok); ok)
+        mapParameters.skewY = skewY;
     if (const qreal parallaxOriginX = atts.value(QLatin1String("parallaxoriginx")).toDouble(&ok); ok)
         mapParameters.parallaxOrigin.setX(parallaxOriginX);
     if (const qreal parallaxOriginY = atts.value(QLatin1String("parallaxoriginy")).toDouble(&ok); ok)
@@ -1224,6 +1228,12 @@ std::unique_ptr<MapObject> MapReaderPrivate::readObject()
     if (ok) {
         object->setRotation(rotation);
         object->setPropertyChanged(MapObject::RotationProperty);
+    }
+
+    const qreal opacity = atts.value(QLatin1String("opacity")).toDouble(&ok);
+    if (ok) {
+        object->setOpacity(opacity);
+        object->setPropertyChanged(MapObject::OpacityProperty);
     }
 
     if (gid) {

@@ -88,11 +88,13 @@ template<> EnumData enumData<Map::Orientation>()
     return {{
         QCoreApplication::translate("Tiled::NewMapDialog", "Orthogonal"),
         QCoreApplication::translate("Tiled::NewMapDialog", "Isometric"),
+        QCoreApplication::translate("Tiled::NewMapDialog", "Oblique"),
         QCoreApplication::translate("Tiled::NewMapDialog", "Isometric (Staggered)"),
         QCoreApplication::translate("Tiled::NewMapDialog", "Hexagonal (Staggered)")
     }, {
         Map::Orthogonal,
         Map::Isometric,
+        Map::Oblique,
         Map::Staggered,
         Map::Hexagonal,
     }};
@@ -796,6 +798,16 @@ public:
                         push(new ChangeMapStaggerIndex(mapDocument(), value));
                     });
 
+        mSkewProperty = new PointProperty(
+                    tr("Skew"),
+                    [this] {
+                        return QPoint(map()->skewX(), map()->skewY());
+                    },
+                    [this](const QPoint &value) {
+                        push(new ChangeMapSkew(mapDocument(), value));
+                    });
+        mSkewProperty->setSuffix(tr(" px"));
+
         mParallaxOriginProperty = new PointFProperty(
                     tr("Parallax Origin"),
                     [this] {
@@ -861,6 +873,7 @@ public:
         mMapProperties->addProperty(mHexSideLengthProperty);
         mMapProperties->addProperty(mStaggerAxisProperty);
         mMapProperties->addProperty(mStaggerIndexProperty);
+        mMapProperties->addProperty(mSkewProperty);
         mMapProperties->addSeparator();
         mMapProperties->addProperty(mParallaxOriginProperty);
         mMapProperties->addSeparator();
@@ -871,9 +884,11 @@ public:
         mMapProperties->addProperty(mRenderOrderProperty);
         mMapProperties->addProperty(mBackgroundColorProperty);
 
+        updateStaggerAxisLabels();
+        updateEnabledState();
+
         addProperty(mMapProperties);
 
-        updateEnabledState();
         connect(document, &Document::changed,
                 this, &MapProperties::onChanged);
     }
@@ -901,10 +916,14 @@ private:
         case Map::StaggerIndexProperty:
             emit mStaggerIndexProperty->valueChanged();
             break;
+        case Map::SkewProperty:
+            emit mSkewProperty->valueChanged();
+            break;
         case Map::ParallaxOriginProperty:
             emit mParallaxOriginProperty->valueChanged();
             break;
         case Map::OrientationProperty:
+            updateStaggerAxisLabels();
             emit mOrientationProperty->valueChanged();
             break;
         case Map::RenderOrderProperty:
@@ -935,7 +954,9 @@ private:
         mHexSideLengthProperty->setEnabled(orientation == Map::Hexagonal);
         mStaggerAxisProperty->setEnabled(stagger);
         mStaggerIndexProperty->setEnabled(stagger);
-        mRenderOrderProperty->setEnabled(orientation == Map::Orthogonal);
+        mSkewProperty->setEnabled(orientation == Map::Oblique);
+        mRenderOrderProperty->setEnabled(orientation == Map::Orthogonal ||
+                                         orientation == Map::Oblique);
         mChunkSizeProperty->setEnabled(map()->infinite());
 
         switch (map()->layerDataFormat()) {
@@ -948,6 +969,24 @@ private:
         case Map::Base64Zlib:
         case Map::Base64Zstandard:
             mCompressionLevelProperty->setEnabled(true);
+            break;
+        }
+    }
+
+    void updateStaggerAxisLabels()
+    {
+        switch (map()->orientation()) {
+        case Map::Hexagonal:
+            mStaggerAxisProperty->setEnumNames({
+                tr("X (Flat-top)"),
+                tr("Y (Pointy-top)")
+            });
+            break;
+        default:
+            mStaggerAxisProperty->setEnumNames({
+                tr("X"),
+                tr("Y")
+            });
             break;
         }
     }
@@ -968,8 +1007,9 @@ private:
     SizeProperty *mTileSizeProperty;
     BoolProperty *mInfiniteProperty;
     IntProperty *mHexSideLengthProperty;
-    Property *mStaggerAxisProperty;
+    BaseEnumProperty *mStaggerAxisProperty;
     Property *mStaggerIndexProperty;
+    PointProperty *mSkewProperty;
     Property *mParallaxOriginProperty;
     Property *mLayerDataFormatProperty;
     Property *mCompressionLevelProperty;
@@ -1590,6 +1630,17 @@ public:
                     });
         mVisibleProperty->setNameOnCheckBox(true);
 
+        mOpacityProperty = new IntProperty(
+                    tr("Opacity"),
+                    [this] { return qRound(mapObject()->opacity() * 100); },
+                    [this](const int &value) {
+                        changeMapObject(MapObject::OpacityProperty,
+                                        qreal(value) / 100);
+                    });
+        mOpacityProperty->setRange(0, 100);
+        mOpacityProperty->setSuffix(tr("%"));
+        mOpacityProperty->setSliderEnabled(true);
+
         mPositionProperty = new PointFProperty(
                     tr("Position"),
                     [this] {
@@ -1759,6 +1810,8 @@ public:
         if (mapDocument()->allowHidingObjects())
             mObjectProperties->addProperty(mVisibleProperty);
 
+        mObjectProperties->addProperty(mOpacityProperty);
+
         if (mapObject()->hasDimensions())
             mObjectProperties->addProperty(mBoundsProperty);
         else
@@ -1803,6 +1856,8 @@ private:
             emit mNameProperty->valueChanged();
         if (change.properties & MapObject::VisibleProperty)
             emit mVisibleProperty->valueChanged();
+        if (change.properties & MapObject::OpacityProperty)
+            emit mOpacityProperty->valueChanged();
         if (change.properties & MapObject::PositionProperty) {
             emit mPositionProperty->valueChanged();
             emit mBoundsProperty->valueChanged();
@@ -1880,6 +1935,7 @@ private:
     Property *mTemplateProperty;
     Property *mNameProperty;
     BoolProperty *mVisibleProperty;
+    IntProperty *mOpacityProperty;
     Property *mPositionProperty;
     Property *mBoundsProperty;
     FloatProperty *mRotationProperty;

@@ -19,9 +19,9 @@ on:
     - '.travis.yml'
 
 env:
-  QBS_VERSION: 2.4.1
+  QBS_VERSION: 3.1.1
   CMAKE_VERSION: 3.31
-  SENTRY_VERSION: 0.7.19
+  SENTRY_VERSION: 0.12.8
   SENTRY_ORG: mapeditor
   SENTRY_PROJECT: tiled
   TILED_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') }}
@@ -80,7 +80,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
-        version: 6.9.3
+        version: 6.10.2
         arch: linux_gcc_64
         modules: "qtimageformats"
         tools: 'tools_qtcreator'
@@ -154,7 +154,7 @@ jobs:
         ./linuxdeploy-x86_64.AppImage --appdir AppDir --custom-apprun=dist/linux/AppRun --exclude-library "*libpython3*" --plugin qt --output appimage
 
     - name: Upload Tiled.AppImage
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: Tiled-${{ needs.version.outputs.version }}_Linux_x86_64.AppImage
         path: Tiled-${{ needs.version.outputs.version }}_Linux_x86_64.AppImage
@@ -184,7 +184,7 @@ jobs:
       uses: snapcore/action-build@v1
 
     - name: Upload snap artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: tiled_amd64.snap
         path: tiled_*_amd64.snap
@@ -211,7 +211,7 @@ jobs:
           version_suffix: "10.13-10.15"
           architectures: x86_64
           cmake_architectures: x86_64
-        - qt_version: 6.9.3
+        - qt_version: 6.10.2
           qt_modules: "qtimageformats"
           version_suffix: "11+"
           architectures: x86_64,arm64
@@ -248,6 +248,9 @@ jobs:
       run: |
         brew update
         brew install qbs
+        export PATH="$(brew --prefix qbs)/bin:$PATH"
+        echo "$(brew --prefix qbs)/bin" >> "$GITHUB_PATH"
+        qbs --version
         qbs setup-toolchains --detect
         qbs setup-qt --detect
         qbs config profiles.qt-6-9-3.baseProfile xcode
@@ -315,7 +318,7 @@ jobs:
         ditto -c -k --sequesterRsrc --keepParent install/Tiled.app Tiled-${{ needs.version.outputs.version }}_macOS-${{ matrix.version_suffix }}.zip
 
     - name: Upload Tiled.app
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: Tiled-${{ needs.version.outputs.version }}_macOS-${{ matrix.version_suffix }}.app
         path: Tiled-${{ needs.version.outputs.version }}_macOS-${{ matrix.version_suffix }}.zip
@@ -338,7 +341,7 @@ jobs:
           mingw_component: tools_mingw
           mingw_variant: qt.tools.win32_mingw810
           mingw_dir: mingw810_32
-        - qt_version: 6.9.3
+        - qt_version: 6.10.2
           qt_version_major: 6
           qt_arch: win64_mingw
           qt_modules: "qtimageformats"
@@ -423,13 +426,13 @@ jobs:
         mv release/installer*/Tiled-*.msi ./Tiled-${{ needs.version.outputs.version }}_${{ matrix.filename_suffix }}.msi
 
     - name: Upload Tiled installer
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: Tiled-${{ needs.version.outputs.version }}_${{ matrix.filename_suffix }}.msi
         path: Tiled-${{ needs.version.outputs.version }}_*.msi
 
     - name: Upload Tiled archive
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: Tiled-${{ needs.version.outputs.version }}_${{ matrix.filename_suffix }}.zip
         path: release/install-root/*
@@ -445,7 +448,7 @@ jobs:
 
     steps:
     - name: Download all artifacts
-      uses: actions/download-artifact@v6
+      uses: actions/download-artifact@v7
 
     - name: Create release
       id: create_release

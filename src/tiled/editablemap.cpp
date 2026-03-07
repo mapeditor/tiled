@@ -88,6 +88,13 @@ EditableMap::~EditableMap()
         setObject(nullptr);
 }
 
+QString EditableMap::fileName() const
+{
+    if (auto fileName = EditableAsset::fileName(); !fileName.isEmpty())
+        return fileName;
+    return map()->fileName;
+}
+
 QList<QObject *> EditableMap::tilesets() const
 {
     QList<QObject *> editableTilesets;
@@ -555,6 +562,22 @@ void EditableMap::setStaggerIndex(StaggerIndex value)
         push(new ChangeMapStaggerIndex(doc, static_cast<Map::StaggerIndex>(value)));
     else if (!checkReadOnly())
         map()->setStaggerIndex(static_cast<Map::StaggerIndex>(value));
+}
+
+void EditableMap::setSkewX(int value)
+{
+    if (auto doc = mapDocument())
+        push(new ChangeMapSkew(doc, QPoint(value, map()->skewY())));
+    else if (!checkReadOnly())
+        map()->setSkewX(value);
+}
+
+void EditableMap::setSkewY(int value)
+{
+    if (auto doc = mapDocument())
+        push(new ChangeMapSkew(doc, QPoint(map()->skewX(), value)));
+    else if (!checkReadOnly())
+        map()->setSkewY(value);
 }
 
 void EditableMap::setParallaxOrigin(const QPointF &parallaxOrigin)

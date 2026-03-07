@@ -104,6 +104,7 @@
     <xs:restriction base="xs:NMTOKEN">
       <xs:enumeration value="orthogonal" />
       <xs:enumeration value="isometric" />
+      <xs:enumeration value="oblique" />
       <xs:enumeration value="hexagonal" />
       <xs:enumeration value="shifted" />
     </xs:restriction>
@@ -362,6 +363,8 @@
     <xs:attribute name="height" type="xs:nonNegativeInteger" use="required"/>
     <xs:attribute name="tilewidth" type="pixelT" use="required"/>
     <xs:attribute name="tileheight" type="pixelT" use="required"/>
+    <xs:attribute name="skewx" type="xs:integer" use="optional"/>
+    <xs:attribute name="skewy" type="xs:integer" use="optional"/>
     <xs:attribute name="hexsidelength" type="xs:integer" use="optional"/>
     <xs:attribute name="staggeraxis" type="staggeraxisT" use="optional"/>
     <xs:attribute name="staggerindex" type="staggerindexT" use="optional"/>

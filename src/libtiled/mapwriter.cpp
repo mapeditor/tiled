@@ -229,6 +229,11 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
                          staggerIndexToString(map.staggerIndex()));
     }
 
+    if (map.skewX())
+        w.writeAttribute(QStringLiteral("skewx"), QString::number(map.skewX()));
+    if (map.skewY())
+        w.writeAttribute(QStringLiteral("skewy"), QString::number(map.skewY()));
+
     if (!map.parallaxOrigin().isNull()) {
         w.writeAttribute(QStringLiteral("parallaxoriginx"), QString::number(map.parallaxOrigin().x()));
         w.writeAttribute(QStringLiteral("parallaxoriginy"), QString::number(map.parallaxOrigin().y()));
@@ -759,6 +764,10 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     const qreal rotation = mapObject.rotation();
     if (shouldWrite(rotation != 0.0, isTemplateInstance, mapObject.propertyChanged(MapObject::RotationProperty)))
         w.writeAttribute(QStringLiteral("rotation"), QString::number(rotation));
+
+    const qreal opacity = mapObject.opacity();
+    if (shouldWrite(opacity != 1.0, isTemplateInstance, mapObject.propertyChanged(MapObject::OpacityProperty)))
+        w.writeAttribute(QStringLiteral("opacity"), QString::number(opacity));
 
     if (shouldWrite(!mapObject.isVisible(), isTemplateInstance, mapObject.propertyChanged(MapObject::VisibleProperty)))
         w.writeAttribute(QStringLiteral("visible"), QLatin1String(mapObject.isVisible() ? "1" : "0"));

@@ -6986,6 +6986,18 @@ _wrap_PyTiledMapObject_objectGroup(PyTiledMapObject *self, PyObject *PYBINDGEN_U
 
 
 PyObject *
+_wrap_PyTiledMapObject_opacity(PyTiledMapObject *self, PyObject *PYBINDGEN_UNUSED(_args), PyObject *PYBINDGEN_UNUSED(_kwargs))
+{
+    PyObject *py_retval;
+    double retval;
+
+    retval = self->obj->opacity();
+    py_retval = Py_BuildValue((char *) "d", retval);
+    return py_retval;
+}
+
+
+PyObject *
 _wrap_PyTiledMapObject_rotation(PyTiledMapObject *self, PyObject *PYBINDGEN_UNUSED(_args), PyObject *PYBINDGEN_UNUSED(_kwargs))
 {
     PyObject *py_retval;
@@ -7043,6 +7055,23 @@ _wrap_PyTiledMapObject_setName(PyTiledMapObject *self, PyObject *args, PyObject 
         return NULL;
     }
     self->obj->setName(QString::fromUtf8(n));
+    Py_INCREF(Py_None);
+    py_retval = Py_None;
+    return py_retval;
+}
+
+
+PyObject *
+_wrap_PyTiledMapObject_setOpacity(PyTiledMapObject *self, PyObject *args, PyObject *kwargs)
+{
+    PyObject *py_retval;
+    double opacity;
+    const char *keywords[] = {"opacity", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, (char *) "d", (char **) keywords, &opacity)) {
+        return NULL;
+    }
+    self->obj->setOpacity(opacity);
     Py_INCREF(Py_None);
     py_retval = Py_None;
     return py_retval;
@@ -7271,10 +7300,12 @@ static PyMethodDef PyTiledMapObject_methods[] = {
     {(char *) "isVisible", (PyCFunction) _wrap_PyTiledMapObject_isVisible, METH_NOARGS, "isVisible()\n\n" },
     {(char *) "name", (PyCFunction) _wrap_PyTiledMapObject_name, METH_NOARGS, "name()\n\n" },
     {(char *) "objectGroup", (PyCFunction) _wrap_PyTiledMapObject_objectGroup, METH_NOARGS, "objectGroup()\n\n" },
+    {(char *) "opacity", (PyCFunction) _wrap_PyTiledMapObject_opacity, METH_NOARGS, "opacity()\n\n" },
     {(char *) "rotation", (PyCFunction) _wrap_PyTiledMapObject_rotation, METH_NOARGS, "rotation()\n\n" },
     {(char *) "setCell", (PyCFunction) _wrap_PyTiledMapObject_setCell, METH_KEYWORDS|METH_VARARGS, "setCell(c)\n\ntype: c: Tiled::Cell const" },
     {(char *) "setHeight", (PyCFunction) _wrap_PyTiledMapObject_setHeight, METH_KEYWORDS|METH_VARARGS, "setHeight(h)\n\ntype: h: double" },
     {(char *) "setName", (PyCFunction) _wrap_PyTiledMapObject_setName, METH_KEYWORDS|METH_VARARGS, "setName(n)\n\ntype: n: QString" },
+    {(char *) "setOpacity", (PyCFunction) _wrap_PyTiledMapObject_setOpacity, METH_KEYWORDS|METH_VARARGS, "setOpacity(opacity)\n\ntype: opacity: double" },
     {(char *) "setPosition", (PyCFunction) _wrap_PyTiledMapObject_setPosition, METH_KEYWORDS|METH_VARARGS, "setPosition(pos)\n\ntype: pos: QPointF" },
     {(char *) "setRotation", (PyCFunction) _wrap_PyTiledMapObject_setRotation, METH_KEYWORDS|METH_VARARGS, "setRotation(r)\n\ntype: r: double" },
     {(char *) "setShape", (PyCFunction) _wrap_PyTiledMapObject_setShape, METH_KEYWORDS|METH_VARARGS, "setShape(s)\n\ntype: s: Tiled::MapObject::Shape" },

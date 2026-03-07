@@ -1,6 +1,6 @@
 /*
  * TBIN Tiled Plugin
- * Copyright 2017, Chase Warrington <spacechase0.and.cat@gmail.com>
+ * Copyright 2017, Casey Warrington <spacechase0.and.cat@gmail.com>
  *
  * This file is part of Tiled.
  *
@@ -24,11 +24,20 @@
 
 #include "mapformat.h"
 #include "plugin.h"
+#include "properties.h"
 
 #include <QObject>
 
-namespace Tiled {
-class Map;
+namespace Tiled
+{
+    class Object;
+    class Cell;
+    class Map;
+}
+
+namespace tbin
+{
+    class Map;
 }
 
 namespace Tbin {
@@ -41,28 +50,9 @@ class TBINSHARED_EXPORT TbinPlugin : public Tiled::Plugin
 
 public:
     void initialize() override;
+
+    static std::unique_ptr< Tiled::Map > fromTbin( const tbin::Map& tmap, const QDir &fileDir );
+    static tbin::Map toTbin( const Tiled::Map* map, const QDir &fileDir );
 };
 
-
-class TBINSHARED_EXPORT TbinMapFormat : public Tiled::MapFormat
-{
-    Q_OBJECT
-    Q_INTERFACES(Tiled::MapFormat)
-
-public:
-    TbinMapFormat(QObject *parent = nullptr);
-
-    std::unique_ptr<Tiled::Map> read(const QString &fileName) override;
-    bool supportsFile(const QString &fileName) const override;
-
-    bool write(const Tiled::Map *map, const QString &fileName, Options options) override;
-
-    QString nameFilter() const override;
-    QString shortName() const override;
-    QString errorString() const override;
-
-protected:
-    QString mError;
-};
-
-} // namespace Json
+} // namespace Tbin

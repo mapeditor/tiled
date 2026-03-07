@@ -30,9 +30,9 @@
 
 #include "map.h"
 #include "mapobject.h"
+#include "objectgroup.h"
 #include "tile.h"
 #include "tilelayer.h"
-#include "objectgroup.h"
 
 #include <QtMath>
 

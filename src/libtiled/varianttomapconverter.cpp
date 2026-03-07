@@ -80,6 +80,8 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
     mapParameters.hexSideLength = variantMap[QStringLiteral("hexsidelength")].toInt();
     mapParameters.staggerAxis = staggerAxisFromString(staggerAxis);
     mapParameters.staggerIndex = staggerIndexFromString(staggerIndex);
+    mapParameters.skewX = variantMap[QStringLiteral("skewx")].toInt();
+    mapParameters.skewY = variantMap[QStringLiteral("skewy")].toInt();
 
     bool ok;
     const qreal parallaxOriginX = variantMap[QStringLiteral("parallaxoriginx")].toDouble(&ok);
@@ -754,6 +756,7 @@ std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap 
     const qreal width = variantMap[QStringLiteral("width")].toReal();
     const qreal height = variantMap[QStringLiteral("height")].toReal();
     const qreal rotation = variantMap[QStringLiteral("rotation")].toReal();
+    const qreal opacity = variantMap[QStringLiteral("opacity")].toReal();
 
     QString className = variantMap[QStringLiteral("class")].toString();
     if (className.isEmpty())    // fallback for compatibility
@@ -768,6 +771,11 @@ std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap 
     if (variantMap.contains(QLatin1String("rotation"))) {
         object->setRotation(rotation);
         object->setPropertyChanged(MapObject::RotationProperty);
+    }
+
+    if (variantMap.contains(QLatin1String("opacity"))) {
+        object->setOpacity(opacity);
+        object->setPropertyChanged(MapObject::OpacityProperty);
     }
 
     if (!templateVariant.isNull()) { // This object is a template instance
