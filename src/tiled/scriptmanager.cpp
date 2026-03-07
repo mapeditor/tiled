@@ -447,6 +447,8 @@ void ScriptManager::reset()
 
     delete mEngine;
     delete mModule;
+    qDeleteAll(mExtensions);
+    mExtensions.clear();
 
     mEngine = nullptr;
     mModule = nullptr;

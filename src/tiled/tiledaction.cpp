@@ -38,9 +38,9 @@ QString QmlAction::shortcut() const
     return QAction::shortcut().toString();
 }
 
-void QmlAction::setShortcutString(const QString &shortcutStr)
+void QmlAction::setShortcut(const QString &shortcutStr)
 {
-    setShortcut(QKeySequence(shortcutStr));
+    QAction::setShortcut(QKeySequence(shortcutStr));
 }
 
 }

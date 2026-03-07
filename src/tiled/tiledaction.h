@@ -12,7 +12,7 @@ class QmlAction : public QAction
     Q_PROPERTY(QString id READ id WRITE setId)
     Q_PROPERTY(QString text READ text WRITE setText)
     Q_PROPERTY(QString iconSource READ iconSource WRITE setIconSource)
-    Q_PROPERTY(QString shortcut READ shortcut WRITE setShortcutString)
+    Q_PROPERTY(QString shortcut READ shortcut WRITE setShortcut)
 
 public:
     explicit QmlAction(QObject *parent = nullptr);
@@ -24,7 +24,7 @@ public:
     void setIconSource(const QString &path);
 
     QString shortcut() const;
-    void setShortcutString(const QString &shortcut);
+    void setShortcut(const QString &shortcut);
 
 signals:
     void triggeredFromQml();   // forwarded to QML

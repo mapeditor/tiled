@@ -69,7 +69,7 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
 
             while ( xml.readNextStartElement() )
             {
-                if (xml.name() == QStringLiteral("Property"))
+                if (xml.name() == QLatin1String("Properties"))
                 {
                     const QXmlStreamAttributes attrs = xml.attributes();
 
@@ -153,7 +153,7 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
 
                             xml.skipCurrentElement();
                         }
-                        else if (xml.name() == QStringLiteral("Property"))
+                        else if (xml.name() == QLatin1String("Properties"))
                             ts.props = readProps();
                         else xml.skipCurrentElement();
                     }
@@ -218,7 +218,7 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
                                 // for compatibility with xTile code.
                                 while ( xml.readNextStartElement() )
                                 {
-                                    if (xml.name() == QStringLiteral("Property"))
+                                    if (xml.name() == QLatin1String("Properties"))
                                         tile.props = readProps();
                                     else xml.skipCurrentElement();
                                 }
@@ -274,7 +274,7 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
                                                     else xml.skipCurrentElement();
                                                 }
                                             }
-                                            else if (xml.name() == QStringLiteral("Property"))
+                                            else if (xml.name() == QLatin1String("Properties"))
                                                 tile.props = readProps();
                                             else xml.skipCurrentElement();
                                         }
@@ -295,7 +295,7 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
                                 tilePos.y += 1;
                             }
                         }
-                        else if (xml.name() == QStringLiteral("Property"))
+                        else if (xml.name() == QLatin1String("Properties"))
                             layer.props = readProps();
                         else xml.skipCurrentElement();
                     }
@@ -303,7 +303,7 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
                     tmap.layers.push_back( layer );
                 }
             }
-            else if (xml.name() == QStringLiteral("Property"))
+            else if (xml.name() == QLatin1String("Properties"))
                 tmap.props = readProps();
             else xml.skipCurrentElement();
         }
