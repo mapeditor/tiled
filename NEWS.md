@@ -45,6 +45,7 @@
 * Workaround tileset view layout regression in Qt 6.9
 * Raised minimum supported Qt version from 5.12 to 5.15.2
 * AppImage: Updated to Sentry 0.12.8
+* Godot 4 plugin: Added support for exporting map properties as Godot's TileMap metadata (by Ximo Planells Lerma, #4301)
 
 ### Tiled 1.11.2 (28 Jan 2025)
 

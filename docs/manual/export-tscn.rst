@@ -72,8 +72,8 @@ of the Godot TileSet resource.
 
 .. _godot4-map-properties:
 
-Map Properties
-~~~~~~~~~~~~~~
+Special Map Properties
+~~~~~~~~~~~~~~~~~~~~~~
 
 Maps support the following custom property:
 
@@ -94,6 +94,21 @@ overwritten every time the map is exported.
 .. raw:: html
 
    <div class="new">New in Tiled 1.11</div>
+
+Exported Map Properties
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Any custom properties defined on the map will be exported as metadata on the
+root TileMap node. Property names are sanitized by removing spaces and special
+characters. For example: a custom property named "My Property" becomes
+"MyProperty" when exported.
+
+Metadata is displayed in Godot in the Inspector and can be accessed in Godot
+at runtime using `get_meta()`.
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.12</div>
 
 Object Properties
 ~~~~~~~~~~~~~~~~~

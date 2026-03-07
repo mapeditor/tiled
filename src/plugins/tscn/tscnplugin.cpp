@@ -855,7 +855,7 @@ static void writeTileset(const Map *map, QFileDevice *device, bool isExternal, A
     device->write("\n");
 }
 
-static void writeTileMapMetadata(const Properties &mapProperties, AssetInfo &assetInfo, QFileDevice *device)
+static void writeMetadata(const Properties &mapProperties, AssetInfo &assetInfo, QFileDevice *device)
 {
     QSet<QString> sanitizedNames;
     sanitizedNames.reserve(mapProperties.size());
@@ -877,13 +877,13 @@ static void writeTileMapMetadata(const Properties &mapProperties, AssetInfo &ass
         const QString sanitizedName = sanitizeSpecialChars(name);
 
         if (sanitizedName.isEmpty()) {
-            Tiled::WARNING(TscnPlugin::tr("Unable to export map property '%1': sanitized name is empty").arg(name));
+            Tiled::WARNING(TscnPlugin::tr("Unable to export property '%1': sanitized name is empty").arg(name));
             continue;
         }
 
         // Check that we haven't already written a property with a sanitizedName that matches the one we are processing.
         if (sanitizedNames.contains(sanitizedName)) {
-            Tiled::WARNING(TscnPlugin::tr("Unable to export map property '%1': sanitized name collision '%2'").arg(name, sanitizedName));
+            Tiled::WARNING(TscnPlugin::tr("Unable to export property '%1': sanitized name collision '%2'").arg(name, sanitizedName));
             continue;
         }
         sanitizedNames.insert(sanitizedName);
@@ -977,9 +977,7 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
 
         // Write map custom properties as node metadata
         Properties mapProperties = map->properties();
-        if (!mapProperties.isEmpty()) {
-            writeTileMapMetadata(mapProperties, assetInfo, device);
-        }
+        writeMetadata(mapProperties, assetInfo, device);
 
         // Tile packing format:
         // DestLocation, SrcX, SrcY
