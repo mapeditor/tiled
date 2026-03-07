@@ -321,71 +321,91 @@ void ScriptManager::loadExtension(const QString &path)
 
 void ScriptManager::loadQmlExtension(const QString &filePath)
 {
-    if (!mEngine)
-    {
+    if (!mEngine) {
         qWarning() << "QML engine not initialized";
         return;
     }
 
     QQmlComponent component(mEngine, QUrl::fromLocalFile(filePath));
 
-    if (component.isError())
-    {
+    if (component.isError()) {
         qWarning() << component.errors();
         return;
     }
 
     QObject *object = component.create();
 
-    if (!object)
-    {
+    if (!object) {
         qWarning() << "Failed to create QML object";
         return;
     }
 
+    // keep extension alive
     object->setParent(this);
     mExtensions.append(object);
 
-    QAction *action = qobject_cast<QAction *>(object);
+    // we only care about QmlAction objects
+    QmlAction *action = qobject_cast<QmlAction *>(object);
     if (!action)
         return;
-    if (!action->objectName().isEmpty())
-    {
+
+    // register with ActionManager
+    if (!action->objectName().isEmpty()) {
         Tiled::ActionManager::registerAction(
             action,
             Tiled::Id(action->objectName().toUtf8()));
     }
+
+    // find MainWindow
     Tiled::MainWindow *mainWindow = nullptr;
 
-    for (QWidget *w : QApplication::topLevelWidgets())
-    {
+    for (QWidget *w : QApplication::topLevelWidgets()) {
         mainWindow = qobject_cast<Tiled::MainWindow *>(w);
         if (mainWindow)
             break;
     }
 
-    if (!mainWindow)
+    if (!mainWindow) {
+        qWarning() << "MainWindow not found";
         return;
+    }
 
     QMenuBar *menuBar = mainWindow->menuBar();
-    QMenu *extensionsMenu = nullptr;
 
-    for (QAction *act : menuBar->actions())
-    {
-        if (act->menu() &&
-            act->text().compare(QStringLiteral("Extensions"),
-                                Qt::CaseInsensitive) == 0)
-        {
-            extensionsMenu = act->menu();
+    QString targetMenuName = action->menu();
+    if (targetMenuName.isEmpty())
+        targetMenuName = QStringLiteral("Extensions");
+
+    QMenu *targetMenu = nullptr;
+
+    // search existing menu
+    for (QAction *act : menuBar->actions()) {
+
+        if (!act->menu())
+            continue;
+
+        QString menuText = act->text();
+        menuText.remove(QRegularExpression(QStringLiteral("&")));          // remove Qt shortcut markers
+        menuText = menuText.trimmed();
+
+        if (menuText.compare(targetMenuName, Qt::CaseInsensitive) == 0) {
+            targetMenu = act->menu();
             break;
         }
     }
 
-    if (!extensionsMenu)
-        extensionsMenu = menuBar->addMenu(QStringLiteral("Extensions"));
+    // create menu if it doesn't exist
+    if (!targetMenu) {
+        targetMenu = menuBar->addMenu(targetMenuName);
+    }
 
-    if (!extensionsMenu->actions().contains(action))
-        extensionsMenu->addAction(action);
+    // prevent duplicate insertion
+    if (!targetMenu->actions().contains(action)) {
+        targetMenu->addAction(action);
+    }
+
+    qDebug() << "QML extension loaded:" << action->text()
+             << "→ menu:" << targetMenuName;
 }
 
 bool ScriptManager::checkError(QJSValue value, const QString &program)
