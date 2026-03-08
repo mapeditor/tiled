@@ -553,6 +553,7 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
                         xml.raiseError(tr("Error reading embedded image for tile %1").arg(id));
                 }
                 tileset.setTileImage(tile, image, imageReference.source);
+                tile->setImageData(imageReference.data, imageReference.format);
             }
         } else if (xml.name() == QLatin1String("objectgroup")) {
             std::unique_ptr<ObjectGroup> objectGroup = readObjectGroup();

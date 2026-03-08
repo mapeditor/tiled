@@ -32,6 +32,7 @@
 #include "imagecache.h"
 
 #include <QBitmap>
+#include <QImage>
 
 using namespace Tiled;
 
@@ -48,11 +49,49 @@ void ImageLayer::resetImage()
 {
     mImage = QPixmap();
     mImageSource.clear();
+    mImageData.clear();
+    mImageFormat.clear();
+}
+
+bool ImageLayer::canReloadImage() const
+{
+    return !mImageSource.isEmpty() || !mImageData.isEmpty();
+}
+
+qint64 ImageLayer::loadedImageBytes() const
+{
+    if (mImage.isNull())
+        return 0;
+
+    return static_cast<qint64>(mImage.width()) * mImage.height() * mImage.depth() / 8;
+}
+
+bool ImageLayer::ensureImageLoaded()
+{
+    if (!mImage.isNull())
+        return true;
+
+    if (!mImageSource.isEmpty())
+        return loadFromImage(mImageSource);
+
+    if (mImageData.isEmpty())
+        return false;
+
+    return loadFromImage(QPixmap::fromImage(QImage::fromData(mImageData, mImageFormat)), QUrl());
+}
+
+void ImageLayer::unloadImage()
+{
+    mImage = QPixmap();
 }
 
 bool ImageLayer::loadFromImage(const QPixmap &image, const QUrl &source)
 {
     mImageSource = source;
+    if (!source.isEmpty()) {
+        mImageData.clear();
+        mImageFormat.clear();
+    }
     mImage = image;
 
     if (image.isNull())
@@ -83,13 +122,16 @@ bool ImageLayer::loadFromImage(const QUrl &url)
 
 bool ImageLayer::loadFromImage(const ImageReference &image)
 {
+    mImageSource = image.source;
+    mImageData = image.data;
+    mImageFormat = image.format;
     setTransparentColor(image.transparentColor);
     return loadFromImage(image.create(), image.source);
 }
 
 bool ImageLayer::isEmpty() const
 {
-    return mImage.isNull();
+    return mImage.isNull() && mImageSource.isEmpty() && mImageData.isEmpty();
 }
 
 ImageLayer *ImageLayer::clone() const
@@ -102,6 +144,8 @@ ImageLayer *ImageLayer::initializeClone(ImageLayer *clone) const
     Layer::initializeClone(clone);
 
     clone->mImageSource = mImageSource;
+    clone->mImageData = mImageData;
+    clone->mImageFormat = mImageFormat;
     clone->mTransparentColor = mTransparentColor;
     clone->mImage = mImage;
     clone->mRepetition = mRepetition;

@@ -50,6 +50,7 @@ private:
 
     void fromPreferences();
     void updateImageCacheLimitControls(bool enabled);
+    void updateLoadedImageBudgetControls(bool enabled);
 
     void retranslateUi();
 

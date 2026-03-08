@@ -28,10 +28,12 @@
 
 #include "tile.h"
 
+#include "imagecache.h"
 #include "objectgroup.h"
 #include "tileset.h"
 
 #include <QBitmap>
+#include <QImage>
 
 using namespace Tiled;
 
@@ -75,6 +77,24 @@ QSharedPointer<Tileset> Tile::sharedTileset() const
 const QPixmap &Tile::image() const
 {
     return mImage.isNull() ? mTileset->image() : mImage;
+}
+
+bool Tile::hasLoadedImage() const
+{
+    return !mImage.isNull();
+}
+
+bool Tile::canReloadImage() const
+{
+    return !mImageSource.isEmpty() || !mImageData.isEmpty();
+}
+
+qint64 Tile::loadedImageBytes() const
+{
+    if (mImage.isNull())
+        return 0;
+
+    return static_cast<qint64>(mImage.width()) * mImage.height() * mImage.depth() / 8;
 }
 
 // Using some internal Qt API here, but this is the function that is also used
@@ -123,6 +143,31 @@ void Tile::setImage(const QPixmap &image)
     mImage = image;
     mImageStatus = image.isNull() ? LoadingError : LoadingReady;
     mImageShape.reset();
+}
+
+bool Tile::ensureImageLoaded()
+{
+    if (!mImage.isNull())
+        return true;
+
+    if (!mImageSource.isEmpty())
+        setImage(ImageCache::loadPixmap(Tiled::urlToLocalFileOrQrc(mImageSource)));
+    else if (!mImageData.isEmpty())
+        setImage(QPixmap::fromImage(QImage::fromData(mImageData, mImageFormat)));
+
+    return !mImage.isNull();
+}
+
+void Tile::unloadImage()
+{
+    mImage = QPixmap();
+    mImageShape.reset();
+}
+
+void Tile::setImageData(QByteArray data, QByteArray format)
+{
+    mImageData = data;
+    mImageFormat = format;
 }
 
 /**
@@ -244,6 +289,8 @@ Tile *Tile::clone(Tileset *tileset) const
     c->setProperties(properties());
 
     c->mImageSource = mImageSource;
+    c->mImageData = mImageData;
+    c->mImageFormat = mImageFormat;
     c->mImageRect = mImageRect;
     c->mImageStatus = mImageStatus;
     c->mProbability = mProbability;

@@ -76,11 +76,17 @@ public:
     const QPixmap &image() const;
     const QPainterPath &imageShape() const;
     void setImage(const QPixmap &image);
+    bool hasLoadedImage() const;
+    bool canReloadImage() const;
+    qint64 loadedImageBytes() const;
+    bool ensureImageLoaded();
+    void unloadImage();
 
     const Tile *currentFrameTile() const;
 
     const QUrl &imageSource() const;
     void setImageSource(const QUrl &imageSource);
+    void setImageData(QByteArray data, QByteArray format = QByteArray());
 
     const QRect &imageRect() const;
     void setImageRect(const QRect &imageRect);
@@ -120,6 +126,8 @@ private:
     QPixmap mImage;
     mutable std::optional<QPainterPath> mImageShape;   // cache
     QUrl mImageSource;
+    QByteArray mImageData;
+    QByteArray mImageFormat;
     QRect mImageRect;
     LoadingStatus mImageStatus;
     qreal mProbability;
@@ -161,6 +169,10 @@ inline const QUrl &Tile::imageSource() const
 inline void Tile::setImageSource(const QUrl &imageSource)
 {
     mImageSource = imageSource;
+    if (!imageSource.isEmpty()) {
+        mImageData.clear();
+        mImageFormat.clear();
+    }
 }
 
 /**

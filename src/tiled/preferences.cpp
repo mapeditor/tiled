@@ -104,6 +104,8 @@ void Preferences::initialize()
 
     setImageCacheMaxMB(imageCacheMaxMB());
     setUseImageCacheLimit(useImageCacheLimit());
+    setLoadedImageBudgetMB(loadedImageBudgetMB());
+    setUseLoadedImageBudget(useLoadedImageBudget());
 
     // Read the lists of enabled and disabled plugins
     const auto disabledPlugins = get<QStringList>("Plugins/Disabled");
@@ -556,6 +558,29 @@ void Preferences::setUseImageCacheLimit(bool enabled)
     setValue(QLatin1String("Storage/UseImageCacheLimit"), enabled);
     ImageCache::setCacheLimitEnabled(enabled);
     emit useImageCacheLimitChanged(enabled);
+}
+
+int Preferences::loadedImageBudgetMB() const
+{
+    return qBound(32, get("Storage/LoadedImageBudgetMB", 1024), 16384);
+}
+
+void Preferences::setLoadedImageBudgetMB(int mb)
+{
+    const int clamped = qBound(32, mb, 16384);
+    setValue(QLatin1String("Storage/LoadedImageBudgetMB"), clamped);
+    emit loadedImageBudgetChanged(clamped);
+}
+
+bool Preferences::useLoadedImageBudget() const
+{
+    return get("Storage/UseLoadedImageBudget", false);
+}
+
+void Preferences::setUseLoadedImageBudget(bool enabled)
+{
+    setValue(QLatin1String("Storage/UseLoadedImageBudget"), enabled);
+    emit useLoadedImageBudgetChanged(enabled);
 }
 
 bool Preferences::useOpenGL() const

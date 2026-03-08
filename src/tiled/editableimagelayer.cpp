@@ -50,8 +50,12 @@ void EditableImageLayer::setTransparentColor(const QColor &transparentColor)
                                                            transparentColor));
     } else if (!checkReadOnly()) {
         imageLayer()->setTransparentColor(transparentColor);
-        if (!imageSource().isEmpty())
+        if (!imageSource().isEmpty()) {
             imageLayer()->loadFromImage(imageSource());
+        } else if (imageLayer()->canReloadImage()) {
+            imageLayer()->unloadImage();
+            imageLayer()->ensureImageLoaded();
+        }
     }
 }
 

@@ -199,6 +199,11 @@ public:
     bool loadFromImage(const QString &fileName);
     bool loadImage();
     bool initializeTilesetTiles();
+    qint64 loadedImageBytes() const;
+    bool hasLoadedImages() const;
+    bool canReloadImages() const;
+    bool ensureImagesLoaded();
+    void unloadImages();
 
     SharedTileset findSimilarTileset(const QVector<SharedTileset> &tilesets) const;
 

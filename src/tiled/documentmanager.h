@@ -122,6 +122,8 @@ public:
     void closeDocumentsToRight(int index);
     void closeDocumentAt(int index);
 
+    qint64 releaseInactiveImages();
+
     bool reloadCurrentDocument();
     bool reloadDocumentAt(int index);
     bool reloadDocument(Document *document);
@@ -221,6 +223,10 @@ private:
     void removeFromTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
 
     void updateSession() const;
+    void touchLoadedImages(Document *document);
+    void ensureDocumentImagesLoaded(Document *document);
+    void enforceLoadedImageBudget();
+    qint64 releaseInactiveImages(qint64 targetBytes);
 
     MapDocument *openMapFile(const QString &path);
     TilesetDocument *openTilesetFile(const QString &path);
@@ -248,6 +254,8 @@ private:
     QUndoGroup *mUndoGroup;
     FileSystemWatcher *mFileSystemWatcher;
     QHash<QString, Document*> mDocumentByFileName;
+    QHash<const Document*, quint64> mLoadedImagesLastUsed;
+    quint64 mLoadedImagesAccessCounter = 0;
 
     static DocumentManager *mInstance;
 

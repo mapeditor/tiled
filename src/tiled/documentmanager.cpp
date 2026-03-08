@@ -29,6 +29,7 @@
 #include "editor.h"
 #include "filechangedwarning.h"
 #include "filesystemwatcher.h"
+#include "imagelayer.h"
 #include "logginginterface.h"
 #include "map.h"
 #include "mapdocument.h"
@@ -60,13 +61,86 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QScrollBar>
+#include <QSet>
 #include <QStackedLayout>
 #include <QTabBar>
 #include <QUndoGroup>
 #include <QUndoStack>
 #include <QVBoxLayout>
 
+#include <algorithm>
+
 using namespace Tiled;
+
+namespace {
+
+struct ImageResident
+{
+    enum Type { TilesetResident, ImageLayerResident } type;
+
+    quint64 lastUsed = 0;
+    bool pinned = false;
+    Tileset *tileset = nullptr;
+    ImageLayer *imageLayer = nullptr;
+
+    void *key() const
+    {
+        return type == TilesetResident
+                ? static_cast<void*>(tileset)
+                : static_cast<void*>(imageLayer);
+    }
+
+    qint64 loadedBytes() const
+    {
+        return type == TilesetResident
+                ? tileset->loadedImageBytes()
+                : imageLayer->loadedImageBytes();
+    }
+
+    bool canReload() const
+    {
+        return type == TilesetResident
+                ? tileset->canReloadImages()
+                : imageLayer->canReloadImage();
+    }
+
+    void unload() const
+    {
+        if (type == TilesetResident)
+            tileset->unloadImages();
+        else
+            imageLayer->unloadImage();
+    }
+
+    bool ensureLoaded() const
+    {
+        return type == TilesetResident
+                ? tileset->ensureImagesLoaded()
+                : imageLayer->ensureImageLoaded();
+    }
+};
+
+template <typename Function>
+void visitImageResidents(Document *document, Function &&function)
+{
+    if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
+        QSet<Tileset*> seenTilesets;
+
+        for (const SharedTileset &tileset : mapDocument->map()->tilesets()) {
+            if (!seenTilesets.contains(tileset.data())) {
+                seenTilesets.insert(tileset.data());
+                function(ImageResident { ImageResident::TilesetResident, 0, false, tileset.data(), nullptr });
+            }
+        }
+
+        for (Layer *layer : mapDocument->map()->allLayers(Layer::ImageLayerType))
+            function(ImageResident { ImageResident::ImageLayerResident, 0, false, nullptr, layer->asImageLayer() });
+    } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document)) {
+        function(ImageResident { ImageResident::TilesetResident, 0, false, tilesetDocument->tileset().data(), nullptr });
+    }
+}
+
+} // namespace
 
 
 DocumentManager *DocumentManager::mInstance;
@@ -148,8 +222,14 @@ DocumentManager::DocumentManager(QObject *parent)
     connect(TilesetManager::instance(), &TilesetManager::tilesetImagesChanged,
             this, &DocumentManager::tilesetImagesChanged);
 
-    connect(Preferences::instance(), &Preferences::aboutToSwitchSession,
+    auto preferences = Preferences::instance();
+
+    connect(preferences, &Preferences::aboutToSwitchSession,
             this, &DocumentManager::updateSession);
+    connect(preferences, &Preferences::useLoadedImageBudgetChanged,
+            this, &DocumentManager::enforceLoadedImageBudget);
+    connect(preferences, &Preferences::loadedImageBudgetChanged,
+            this, &DocumentManager::enforceLoadedImageBudget);
 
     OpenFile::activated = [this] (const OpenFile &open) {
         openFile(open.file);
@@ -678,6 +758,8 @@ bool DocumentManager::saveDocument(Document *document, const QString &fileName)
     if (fileName.isEmpty())
         return false;
 
+    ensureDocumentImagesLoaded(document);
+
     emit documentAboutToBeSaved(document);
 
     QString error;
@@ -864,6 +946,7 @@ void DocumentManager::closeDocumentAt(int index)
     auto document = mDocuments.at(index);       // keeps alive and may delete
 
     emit documentAboutToClose(document.data());
+    mLoadedImagesLastUsed.remove(document.data());
 
     mDocuments.removeAt(index);
     mTabBar->removeTab(index);
@@ -893,6 +976,11 @@ void DocumentManager::closeDocumentAt(int index)
  *
  * \sa reloadDocumentAt()
  */
+qint64 DocumentManager::releaseInactiveImages()
+{
+    return releaseInactiveImages(-1);
+}
+
 bool DocumentManager::reloadCurrentDocument()
 {
     const int index = mTabBar->currentIndex();
@@ -979,6 +1067,12 @@ bool DocumentManager::reloadDocument(Document *document)
         if (!isDocumentChangedOnDisk(current))
             mFileChangedWarning->setVisible(false);
 
+    if (document == currentDocument()) {
+        touchLoadedImages(document);
+        ensureDocumentImagesLoaded(document);
+    }
+    enforceLoadedImageBudget();
+
     emit documentReloaded(document);
 
     return true;
@@ -991,6 +1085,9 @@ void DocumentManager::currentIndexChanged()
     bool changed = false;
 
     if (document) {
+        touchLoadedImages(document);
+        ensureDocumentImagesLoaded(document);
+
         editor = mEditorForType.value(document->type());
         changed = isDocumentChangedOnDisk(document);
     }
@@ -1012,6 +1109,7 @@ void DocumentManager::currentIndexChanged()
     mBrokenLinksModel->setDocument(document);
 
     emit currentDocumentChanged(document);
+    enforceLoadedImageBudget();
 }
 
 void DocumentManager::fileNameChanged(const QString &/* fileName */,
@@ -1080,6 +1178,8 @@ void DocumentManager::onDocumentSaved()
         if (!isDocumentModified(currentDocument()))
             mFileChangedWarning->setVisible(false);
     }
+
+    enforceLoadedImageBudget();
 }
 
 void DocumentManager::documentTabMoved(int from, int to)
@@ -1141,6 +1241,8 @@ void DocumentManager::tilesetNameChanged(Tileset *tileset)
     auto *tilesetDocument = findTilesetDocument(tileset->sharedFromThis());
     if (tilesetDocument->isEmbedded())
         updateDocumentTab(tilesetDocument);
+
+    enforceLoadedImageBudget();
 }
 
 void DocumentManager::filesChanged(const QStringList &fileNames)
@@ -1280,6 +1382,93 @@ void DocumentManager::updateSession() const
     session.setActiveFile(doc ? doc->fileName() : QString());
 }
 
+void DocumentManager::touchLoadedImages(Document *document)
+{
+    bool hasResidents = false;
+    visitImageResidents(document, [&hasResidents] (const ImageResident &) {
+        hasResidents = true;
+    });
+
+    if (hasResidents)
+        mLoadedImagesLastUsed.insert(document, ++mLoadedImagesAccessCounter);
+}
+
+void DocumentManager::ensureDocumentImagesLoaded(Document *document)
+{
+    visitImageResidents(document, [] (const ImageResident &resident) {
+        resident.ensureLoaded();
+    });
+}
+
+void DocumentManager::enforceLoadedImageBudget()
+{
+    const Preferences *preferences = Preferences::instance();
+    if (!preferences->useLoadedImageBudget())
+        return;
+
+    releaseInactiveImages(static_cast<qint64>(preferences->loadedImageBudgetMB()) * 1024 * 1024);
+}
+
+qint64 DocumentManager::releaseInactiveImages(qint64 targetBytes)
+{
+    QHash<void*, ImageResident> residents;
+    const Document *current = currentDocument();
+
+    for (const auto &document : std::as_const(mDocuments)) {
+        const quint64 lastUsed = mLoadedImagesLastUsed.value(document.data(), 0);
+        const bool pinned = document.data() == current;
+
+        visitImageResidents(document.data(), [&] (ImageResident resident) {
+            resident.lastUsed = lastUsed;
+            resident.pinned = pinned;
+
+            if (auto it = residents.find(resident.key()); it != residents.end()) {
+                it->lastUsed = std::max(it->lastUsed, resident.lastUsed);
+                it->pinned = it->pinned || resident.pinned;
+            } else {
+                residents.insert(resident.key(), resident);
+            }
+        });
+    }
+
+    qint64 currentBytes = 0;
+    QVector<ImageResident> candidates;
+    candidates.reserve(residents.size());
+
+    for (const ImageResident &resident : residents) {
+        const qint64 bytes = resident.loadedBytes();
+        currentBytes += bytes;
+
+        if (!resident.pinned && bytes > 0 && resident.canReload())
+            candidates.append(resident);
+    }
+
+    if (targetBytes >= 0 && currentBytes <= targetBytes)
+        return 0;
+
+    std::sort(candidates.begin(), candidates.end(), [] (const ImageResident &a, const ImageResident &b) {
+        if (a.lastUsed != b.lastUsed)
+            return a.lastUsed < b.lastUsed;
+        return a.key() < b.key();
+    });
+
+    const qint64 before = currentBytes;
+
+    for (const ImageResident &candidate : std::as_const(candidates)) {
+        if (targetBytes >= 0 && currentBytes <= targetBytes)
+            break;
+
+        const qint64 bytes = candidate.loadedBytes();
+        if (bytes <= 0)
+            continue;
+
+        candidate.unload();
+        currentBytes -= bytes;
+    }
+
+    return before - currentBytes;
+}
+
 MapDocument *DocumentManager::openMapFile(const QString &path)
 {
     openFile(path);
@@ -1388,6 +1577,8 @@ static bool mayNeedColumnCountAdjustment(const Tileset &tileset)
 
 void DocumentManager::tilesetImagesChanged(Tileset *tileset)
 {
+    enforceLoadedImageBudget();
+
     if (!mayNeedColumnCountAdjustment(*tileset))
         return;
 

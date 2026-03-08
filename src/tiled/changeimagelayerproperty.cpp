@@ -48,10 +48,14 @@ void ChangeImageLayerTransparentColor::setValue(ImageLayer *imageLayer, const QC
 {
     imageLayer->setTransparentColor(value);
 
-    if (imageLayer->imageSource().isEmpty())
-        imageLayer->resetImage();
-    else
+    if (!imageLayer->imageSource().isEmpty()) {
         imageLayer->loadFromImage(imageLayer->imageSource());
+    } else if (imageLayer->canReloadImage()) {
+        imageLayer->unloadImage();
+        imageLayer->ensureImageLoaded();
+    } else {
+        imageLayer->resetImage();
+    }
 
     emit document()->changed(ImageLayerChangeEvent(imageLayer, ImageLayerChangeEvent::TransparentColorProperty));
 }

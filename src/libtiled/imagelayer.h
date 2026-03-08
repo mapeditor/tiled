@@ -84,7 +84,7 @@ public:
     /**
      * Sets the image source URL.
      */
-    void setSource(const QUrl &source) { mImageSource = source; }
+    void setSource(const QUrl &source) { mImageSource = source; if (!source.isEmpty()) { mImageData.clear(); mImageFormat.clear(); } }
 
     /**
      * Returns the source URL of the layer image.
@@ -100,6 +100,11 @@ public:
       * Sets the image of this layer.
       */
     void setImage(const QPixmap &image) { mImage = image; }
+    bool hasLoadedImage() const { return !mImage.isNull(); }
+    bool canReloadImage() const;
+    qint64 loadedImageBytes() const;
+    bool ensureImageLoaded();
+    void unloadImage();
 
     /**
      * Resets layer image.
@@ -142,6 +147,8 @@ protected:
 
 private:
     QUrl mImageSource;
+    QByteArray mImageData;
+    QByteArray mImageFormat;
     QColor mTransparentColor;
     QPixmap mImage;
     RepetitionFlags mRepetition;

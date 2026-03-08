@@ -245,6 +245,76 @@ bool Tileset::loadImage()
     return initializeTilesetTiles();
 }
 
+qint64 Tileset::loadedImageBytes() const
+{
+    auto pixmapBytes = [] (const QPixmap &pixmap) -> qint64 {
+        if (pixmap.isNull())
+            return 0;
+
+        return static_cast<qint64>(pixmap.width()) * pixmap.height() * pixmap.depth() / 8;
+    };
+
+    qint64 total = pixmapBytes(mImage);
+    for (const Tile *tile : std::as_const(mTiles))
+        total += tile->loadedImageBytes();
+
+    return total;
+}
+
+bool Tileset::hasLoadedImages() const
+{
+    if (!mImage.isNull())
+        return true;
+
+    for (const Tile *tile : std::as_const(mTiles)) {
+        if (tile->hasLoadedImage())
+            return true;
+    }
+
+    return false;
+}
+
+bool Tileset::canReloadImages() const
+{
+    if (mImageReference.hasImage())
+        return true;
+
+    for (const Tile *tile : std::as_const(mTiles)) {
+        if (tile->canReloadImage())
+            return true;
+    }
+
+    return false;
+}
+
+bool Tileset::ensureImagesLoaded()
+{
+    bool success = true;
+
+    if (mImageReference.hasImage()) {
+        if (mImage.isNull())
+            success = loadImage();
+    } else {
+        for (Tile *tile : std::as_const(mTiles)) {
+            if (!tile->hasLoadedImage() && tile->canReloadImage())
+                success = tile->ensureImageLoaded() && success;
+        }
+    }
+
+    return success;
+}
+
+void Tileset::unloadImages()
+{
+    if (mImageReference.hasImage())
+        mImage = QPixmap();
+
+    for (Tile *tile : std::as_const(mTiles)) {
+        if (mImageReference.hasImage() || tile->canReloadImage())
+            tile->unloadImage();
+    }
+}
+
 bool Tileset::initializeTilesetTiles()
 {
     if (mImage.isNull() || mTileWidth <= 0 || mTileHeight <= 0)

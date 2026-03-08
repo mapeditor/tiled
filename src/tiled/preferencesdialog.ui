@@ -94,6 +94,36 @@
             </property>
            </widget>
           </item>
+          <item row="6" column="0" colspan="2">
+           <widget class="QCheckBox" name="useLoadedImageBudget">
+            <property name="text">
+             <string>Enable loaded image memory limit</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="loadedImageBudgetLabel">
+            <property name="text">
+             <string>Loaded image memory limit:</string>
+            </property>
+            <property name="buddy">
+             <cstring>loadedImageBudgetMB</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1">
+           <widget class="QSpinBox" name="loadedImageBudgetMB">
+            <property name="minimum">
+             <number>32</number>
+            </property>
+            <property name="maximum">
+             <number>16384</number>
+            </property>
+            <property name="suffix">
+             <string> MB</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -719,6 +749,8 @@
   <tabstop>exportOnSave</tabstop>
   <tabstop>useImageCacheLimit</tabstop>
   <tabstop>imageCacheMaxMB</tabstop>
+  <tabstop>useLoadedImageBudget</tabstop>
+  <tabstop>loadedImageBudgetMB</tabstop>
   <tabstop>embedTilesets</tabstop>
   <tabstop>detachTemplateInstances</tabstop>
   <tabstop>resolveObjectTypesAndProperties</tabstop>

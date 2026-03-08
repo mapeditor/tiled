@@ -140,6 +140,10 @@ public:
     void setImageCacheMaxMB(int mb);
     bool useImageCacheLimit() const;
     void setUseImageCacheLimit(bool enabled);
+    int loadedImageBudgetMB() const;
+    void setLoadedImageBudgetMB(int mb);
+    bool useLoadedImageBudget() const;
+    void setUseLoadedImageBudget(bool enabled);
 
     bool useOpenGL() const;
     void setUseOpenGL(bool useOpenGL);
@@ -265,6 +269,8 @@ signals:
     void checkForUpdatesChanged(bool on);
     void displayNewsChanged(bool on);
     void useImageCacheLimitChanged(bool enabled);
+    void loadedImageBudgetChanged(int mb);
+    void useLoadedImageBudgetChanged(bool enabled);
 
     void aboutToSwitchSession();
 

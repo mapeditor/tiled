@@ -100,6 +100,12 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             this, &PreferencesDialog::updateImageCacheLimitControls);
     connect(mUi->imageCacheMaxMB, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
             preferences, &Preferences::setImageCacheMaxMB);
+    connect(mUi->useLoadedImageBudget, &QCheckBox::toggled,
+            preferences, &Preferences::setUseLoadedImageBudget);
+    connect(mUi->useLoadedImageBudget, &QCheckBox::toggled,
+            this, &PreferencesDialog::updateLoadedImageBudgetControls);
+    connect(mUi->loadedImageBudgetMB, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            preferences, &Preferences::setLoadedImageBudgetMB);
     connect(mUi->naturalSorting, &QCheckBox::toggled,
             preferences, &Preferences::setNaturalSorting);
 
@@ -229,6 +235,9 @@ void PreferencesDialog::fromPreferences()
     mUi->useImageCacheLimit->setChecked(prefs->useImageCacheLimit());
     mUi->imageCacheMaxMB->setValue(prefs->imageCacheMaxMB());
     updateImageCacheLimitControls(prefs->useImageCacheLimit());
+    mUi->useLoadedImageBudget->setChecked(prefs->useLoadedImageBudget());
+    mUi->loadedImageBudgetMB->setValue(prefs->loadedImageBudgetMB());
+    updateLoadedImageBudgetControls(prefs->useLoadedImageBudget());
     mUi->naturalSorting->setChecked(prefs->naturalSorting());
 
     mUi->embedTilesets->setChecked(prefs->exportOption(Preferences::EmbedTilesets));
@@ -290,6 +299,12 @@ void PreferencesDialog::updateImageCacheLimitControls(bool enabled)
 {
     mUi->imageCacheMaxLabel->setEnabled(enabled);
     mUi->imageCacheMaxMB->setEnabled(enabled);
+}
+
+void PreferencesDialog::updateLoadedImageBudgetControls(bool enabled)
+{
+    mUi->loadedImageBudgetLabel->setEnabled(enabled);
+    mUi->loadedImageBudgetMB->setEnabled(enabled);
 }
 
 void PreferencesDialog::retranslateUi()
