@@ -77,6 +77,8 @@
 #include "zoomable.h"
 #include "worldmanager.h"
 #include "worldmovemaptool.h"
+#include "qmltool.h"
+
 
 #include <QComboBox>
 #include <QDialogButtonBox>
@@ -226,6 +228,14 @@ MapEditor::MapEditor(QObject *parent)
             mToolManager->unregisterTool(tool);
         }
     });
+
+
+    auto qmlTools =ScriptManager::instance().qmlTools();
+
+
+    for (QmlTool * tool : qmlTools){
+        mToolManager->registerTool(tool);
+    }
 
     mToolManager->createShortcuts(mMainWindow);
 

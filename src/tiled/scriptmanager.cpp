@@ -56,6 +56,15 @@
 #include "tilelayerwangedit.h"
 #include "tilesetdock.h"
 #include "tileseteditor.h"
+#include "documentmanager.h"
+#include "mapdocument.h"
+#include "qmltool.h"
+#include "toolmanager.h"
+#include "mainwindow.h"
+#include "mapeditor.h"
+#include "toolmanager.h"
+#include "editor.h"
+
 
 #include <QCoreApplication>
 #include <QQmlComponent>
@@ -150,6 +159,7 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<ScriptImage*>();
     qRegisterMetaType<WangIndex::Value>("WangIndex");
     qmlRegisterType<Tiled::QmlAction>("Tiled", 1, 0, "QmlAction");
+    qmlRegisterType<Tiled::QmlTool>("Tiled", 1, 0, "QmlTool");
 
     connect(&mWatcher, &FileSystemWatcher::pathsChanged,
             this, &ScriptManager::scriptFilesChanged);
@@ -333,81 +343,117 @@ void ScriptManager::loadQmlExtension(const QString &filePath)
         return;
     }
 
-    QObject *object = component.create();
+    QObject *root = component.create();
 
-    if (!object) {
-        qWarning() << "Failed to create QML object";
+    if (!root) {
+        qWarning() << "Failed to create QML extension";
         return;
     }
 
-    // keep extension alive
-    object->setParent(this);
-    mExtensions.append(object);
+    root->setParent(this);
+    mExtensions.append(root);
 
-    // we only care about QmlAction objects
-    QmlAction *action = qobject_cast<QmlAction *>(object);
+    registerQmlExtension(root);
+
+    qDebug() << "QML extension loaded:" << filePath;
+}
+
+
+void ScriptManager::registerQmlExtension(QObject *root)
+{
+    // Load actions
+    QList<QmlAction*> actions = root->findChildren<QmlAction*>();
+
+    for (QmlAction *action : actions) {
+        registerAction(action);
+    }
+
+    // Load tools
+    QList<QmlTool*> tools = root->findChildren<QmlTool*>();
+
+    for (QmlTool *tool : tools) {
+        registerTool(tool);
+    }
+    for (QObject *child : root->children()) {
+
+        if (auto action = qobject_cast<QmlAction*>(child)) {
+            registerAction(action);
+        }
+
+        if (auto tool = qobject_cast<QmlTool*>(child)) {
+            registerTool(tool);
+        }
+    }
+}
+
+void ScriptManager::registerAction(QmlAction *action)
+{
     if (!action)
         return;
 
-    // register with ActionManager
     if (!action->objectName().isEmpty()) {
-        Tiled::ActionManager::registerAction(
+        ActionManager::registerAction(
             action,
-            Tiled::Id(action->objectName().toUtf8()));
+            Id(action->objectName().toUtf8()));
     }
 
-    // find MainWindow
-    Tiled::MainWindow *mainWindow = nullptr;
+    addActionToMenu(action);
+
+    qDebug() << "Registered QML action:" << action->text();
+}
+
+void ScriptManager::addActionToMenu(QmlAction *action)
+{
+    MainWindow *mainWindow = nullptr;
 
     for (QWidget *w : QApplication::topLevelWidgets()) {
-        mainWindow = qobject_cast<Tiled::MainWindow *>(w);
+        mainWindow = qobject_cast<MainWindow *>(w);
         if (mainWindow)
             break;
     }
 
-    if (!mainWindow) {
-        qWarning() << "MainWindow not found";
+    if (!mainWindow)
         return;
-    }
 
     QMenuBar *menuBar = mainWindow->menuBar();
 
-    QString targetMenuName = action->menu();
-    if (targetMenuName.isEmpty())
-        targetMenuName = QStringLiteral("Extensions");
+    QString menuName = action->menu();
+    if (menuName.isEmpty())
+        menuName = QStringLiteral("Extensions");
 
     QMenu *targetMenu = nullptr;
 
-    // search existing menu
     for (QAction *act : menuBar->actions()) {
 
         if (!act->menu())
             continue;
 
-        QString menuText = act->text();
-        menuText.remove(QRegularExpression(QStringLiteral("&")));          // remove Qt shortcut markers
-        menuText = menuText.trimmed();
+        QString text = act->text();
+        text.replace(QStringLiteral("&"), QString());
+        text = text.trimmed();
 
-        if (menuText.compare(targetMenuName, Qt::CaseInsensitive) == 0) {
+        if (text.compare(menuName, Qt::CaseInsensitive) == 0) {
             targetMenu = act->menu();
             break;
         }
     }
 
-    // create menu if it doesn't exist
-    if (!targetMenu) {
-        targetMenu = menuBar->addMenu(targetMenuName);
-    }
+    if (!targetMenu)
+        targetMenu = menuBar->addMenu(menuName);
 
-    // prevent duplicate insertion
-    if (!targetMenu->actions().contains(action)) {
+    if (!targetMenu->actions().contains(action))
         targetMenu->addAction(action);
-    }
-
-    qDebug() << "QML extension loaded:" << action->text()
-             << "→ menu:" << targetMenuName;
 }
 
+void ScriptManager::registerTool(QmlTool *tool)
+{
+    if (!tool)
+        return;
+
+    mQmlTools.append(tool);
+
+    qDebug() << "Registered QML tool:" << tool->name();
+}
 bool ScriptManager::checkError(QJSValue value, const QString &program)
 {
     if (!value.isError())
@@ -441,6 +487,10 @@ bool ScriptManager::checkError(QJSValue value, const QString &program)
     return true;
 }
 
+QList <QmlTool*>ScriptManager::qmlTools() const{
+    return mQmlTools;
+}
+
 void ScriptManager::throwError(const QString &message)
 {
     mEngine->throwError(message);
@@ -467,7 +517,12 @@ void ScriptManager::reset()
 
     delete mEngine;
     delete mModule;
-    qDeleteAll(mExtensions);
+    for (QObject *ext : std::as_const(mExtensions))
+    {
+        if (ext)
+            ext->deleteLater();
+    }
+
     mExtensions.clear();
 
     mEngine = nullptr;

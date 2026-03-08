@@ -132,6 +132,7 @@ public:
 
     AbstractTool *selectedTool() const;
     void setSelectedTool(AbstractTool *tool);
+    ToolManager *toolManager () const{ return mToolManager;}
 
     Q_INVOKABLE AbstractTool *tool(const QByteArray &id) const;
 

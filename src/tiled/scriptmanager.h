@@ -22,6 +22,8 @@
 
 #include "filesystemwatcher.h"
 #include "tilededitor_global.h"
+#include "tiledaction.h"
+#include  "qmltool.h"
 
 #include <QJSValue>
 #include <QObject>
@@ -91,6 +93,7 @@ public:
 
     bool projectExtensionsSuppressed() const;
     void enableProjectExtensions();
+    QList<QmlTool*> qmlTools () const;
 
 signals:
     void projectExtensionsSuppressedChanged(bool);
@@ -110,6 +113,15 @@ private:
     void loadExtension(const QString &path);
     void loadQmlExtension(const QString &filePath);
 
+    void registerQmlExtension(QObject *root);
+
+    void registerAction(QmlAction *action);
+
+    void registerTool(QmlTool *tool);
+    void  addTool(AbstractTool *tool);
+
+    void addActionToMenu(QmlAction *action);
+
     QJSValue evaluateFile(const QString &fileName);
 
     // QJSEngine *mEngine = nullptr;
@@ -125,7 +137,8 @@ private:
     QTimer mResetTimer;
     QQmlEngine * mEngine =nullptr;
     QList<QObject*> mExtensions;
-
+    QList<QmlTool*> mTools;
+    QList<QmlTool*> mQmlTools;
     static ScriptManager *mInstance;
 };
 

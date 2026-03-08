@@ -414,6 +414,8 @@ DynamicLibrary {
         "propertytypeseditor.ui",
         "propertytypesmodel.cpp",
         "propertytypesmodel.h",
+        "qmltool.cpp",
+        "qmltool.h",
         "raiselowerhelper.cpp",
         "raiselowerhelper.h",
         "randompicker.h",
@@ -623,8 +625,10 @@ DynamicLibrary {
     Export {
         Depends { name: "cpp" }
         Depends { name: "libtiled" }
+        // Depends { name: "tiled"}
         Depends { name: "qtsingleapplication" }
         Depends { name: "Qt"; submodules: ["qml"] }
+
         cpp.includePaths: exportingProduct.sourceDirectory
     }
 
