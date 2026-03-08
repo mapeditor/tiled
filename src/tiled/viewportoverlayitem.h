@@ -33,12 +33,9 @@ class MapDocument;
 class ViewportOverlayItem : public QGraphicsRectItem
 {
 public:
-    ViewportOverlayItem(MapDocument *mapDocument, QGraphicsItem *parent = nullptr);
+    ViewportOverlayItem(QGraphicsItem *parent = nullptr);
 
-    void syncWithMapDocument();
-
-private:
-    MapDocument *mMapDocument;
+    void syncWithMapDocument(MapDocument *mapDocument);
 };
 
 } // namespace Tiled

@@ -91,7 +91,7 @@ MapScene::MapScene(QObject *parent)
     connect(Preferences::instance(), &Preferences::showViewportChanged,
             this, [this] {
         if (mViewportOverlayItem && mMapDocument)
-            mViewportOverlayItem->syncWithMapDocument();
+            mViewportOverlayItem->syncWithMapDocument(mMapDocument);
     });
 }
 
@@ -125,14 +125,16 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
 
     // Update viewport overlay with new map document
     if (mViewportOverlayItem) {
-        // Remove from scene (scene will delete it)
         removeItem(mViewportOverlayItem);
+        // The scene does not take ownership, so we must delete the item.
+        delete mViewportOverlayItem;
         mViewportOverlayItem = nullptr;
     }
     
-    // Create new viewport overlay item
-    mViewportOverlayItem = new ViewportOverlayItem(mMapDocument);
+    // Create new viewport overlay item and sync with map document
+    mViewportOverlayItem = new ViewportOverlayItem();
     addItem(mViewportOverlayItem);
+    mViewportOverlayItem->syncWithMapDocument(mMapDocument);
     
     // Set initial position to view center
     if (!mViewRect.isNull()) {
@@ -450,7 +452,7 @@ void MapScene::changeEvent(const ChangeEvent &change)
             break;
         case Map::ViewportSizeProperty:
             if (mViewportOverlayItem)
-                mViewportOverlayItem->syncWithMapDocument();
+                mViewportOverlayItem->syncWithMapDocument(mMapDocument);
             break;
         default:
             break;

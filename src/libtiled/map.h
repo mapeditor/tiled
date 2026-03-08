@@ -175,7 +175,7 @@ public:
         int compressionLevel = -1;
         QSize chunkSize = QSize(CHUNK_SIZE, CHUNK_SIZE);
         LayerDataFormat layerDataFormat = Base64Zlib;
-        QSize viewportSize;  // Camera bounds / in-game viewport size (0,0 = disabled)
+        QSize viewportSize = QSize(0, 0);  // Camera bounds / in-game viewport size (empty = disabled)
     };
 
     Map();

@@ -29,57 +29,35 @@
 
 namespace Tiled {
 
-ViewportOverlayItem::ViewportOverlayItem(MapDocument *mapDocument, QGraphicsItem *parent)
+ViewportOverlayItem::ViewportOverlayItem(QGraphicsItem *parent)
     : QGraphicsRectItem(parent)
-    , mMapDocument(mapDocument)
 {
     setZValue(10000); // Place above map items
     setPen(QPen(QColor(255, 0, 0, 180), 2.0));
     setBrush(Qt::NoBrush);
     
-    // Item should not be selectable or movable
-    setFlag(QGraphicsItem::ItemIsSelectable, false);
-    setFlag(QGraphicsItem::ItemIsMovable, false);
-    
     // Enable hover events for tooltip
     setAcceptHoverEvents(true);
     
-    // Only sync if we have a valid map document
-    if (mMapDocument)
-        syncWithMapDocument();
-    else
-        setVisible(false);
+    // Initially hidden until synced with a map document
+    setVisible(false);
 }
 
-void ViewportOverlayItem::syncWithMapDocument()
+void ViewportOverlayItem::syncWithMapDocument(MapDocument *mapDocument)
 {
     // Bail out if no map document
-    if (!mMapDocument) {
+    if (!mapDocument) {
         setVisible(false);
         return;
     }
     
-    // Bail out if map is null
-    Map *map = mMapDocument->map();
-    if (!map) {
-        setVisible(false);
-        return;
-    }
+    Map *map = mapDocument->map();
     
-    // Get preferences safely
-    Preferences *prefs = Preferences::instance();
-    if (!prefs) {
-        setVisible(false);
-        return;
-    }
-    
-    const bool showViewport = prefs->showViewport();
+    const bool showViewport = Preferences::instance()->showViewport();
     const QSize viewportSize = map->viewportSize();
     
     // Validate viewport size (must be positive and reasonable)
     const bool validSize = !viewportSize.isEmpty() && 
-                          viewportSize.width() > 0 && 
-                          viewportSize.height() > 0 && 
                           viewportSize.width() <= 32768 &&  // Max reasonable size
                           viewportSize.height() <= 32768;
     
