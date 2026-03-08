@@ -3130,6 +3130,8 @@ bool PropertiesWidget::event(QEvent *event)
     }
     case QEvent::LanguageChange:
         retranslateUi();
+        if (mDocument)
+            currentObjectChanged(mDocument->currentObject());
         break;
     default:
         break;
@@ -3155,6 +3157,8 @@ void PropertiesWidget::keyPressEvent(QKeyEvent *event)
 
 void PropertiesWidget::retranslateUi()
 {
+    mCustomProperties->setName(QCoreApplication::translate("Tiled::CustomProperties", "Custom Properties"));
+
     mActionAddProperty->setText(QCoreApplication::translate("Tiled::PropertiesDock", "Add Property"));
 
     mActionRemoveProperty->setText(QCoreApplication::translate("Tiled::PropertiesDock", "Remove"));

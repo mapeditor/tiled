@@ -78,6 +78,8 @@ CommandManager::CommandManager()
 
     connect(ProjectManager::instance(), &ProjectManager::projectChanged,
             this, &CommandManager::updateActions);
+    connect(preferences, &Preferences::languageChanged,
+            this, &CommandManager::retranslateUi);
 }
 
 CommandManager::~CommandManager()

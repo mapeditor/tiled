@@ -30,6 +30,7 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "objectgroup.h"
+#include "preferences.h"
 
 #include <QApplication>
 #include <QPalette>
@@ -81,6 +82,11 @@ MapObjectModel::MapObjectModel(QObject *parent)
     , mObjectGroupIcon(QLatin1String(":/images/16/layer-object.png"))
 {
     mObjectGroupIcon.addFile(QLatin1String(":images/32/layer-object.png"));
+
+    connect(Preferences::instance(), &Preferences::languageChanged,
+            this, [this] {
+                emit headerDataChanged(Qt::Horizontal, 0, ColumnCount - 1);
+            });
 }
 
 QModelIndex MapObjectModel::index(int row, int column,

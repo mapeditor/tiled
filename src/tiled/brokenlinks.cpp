@@ -27,6 +27,7 @@
 #include "mainwindow.h"
 #include "map.h"
 #include "objectgroup.h"
+#include "preferences.h"
 #include "replacetemplate.h"
 #include "replacetileset.h"
 #include "session.h"
@@ -41,6 +42,7 @@
 
 #include <QPushButton>
 #include <QDialogButtonBox>
+#include <QEvent>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QHeaderView>
@@ -99,6 +101,13 @@ BrokenLinksModel::BrokenLinksModel(QObject *parent)
     : QAbstractListModel(parent)
     , mDocument(nullptr)
 {
+    connect(Preferences::instance(), &Preferences::languageChanged,
+            this, [this] {
+                emit headerDataChanged(Qt::Horizontal, 0, 2);
+
+                if (rowCount() > 0)
+                    emit dataChanged(index(0, 2), index(rowCount() - 1, 2));
+            });
 }
 
 void BrokenLinksModel::setDocument(Document *document)
@@ -411,11 +420,9 @@ BrokenLinksWidget::BrokenLinksWidget(BrokenLinksModel *brokenLinksModel, QWidget
                                     Qt::Horizontal,
                                     this))
 {
-    mTitleLabel->setText(tr("Some files could not be found"));
-    mDescriptionLabel->setText(tr("One or more referenced files could not be found. You can help locate them below."));
     mDescriptionLabel->setWordWrap(true);
 
-    mLocateButton = mButtons->addButton(tr("Locate File..."), QDialogButtonBox::ActionRole);
+    mLocateButton = mButtons->addButton(QString(), QDialogButtonBox::ActionRole);
     mLocateButton->setEnabled(false);
 
     QFont font = mTitleLabel->font();
@@ -461,6 +468,27 @@ BrokenLinksWidget::BrokenLinksWidget(BrokenLinksModel *brokenLinksModel, QWidget
     // For some reason a model reset doesn't trigger the selectionChanged signal,
     // so we need to handle that explicitly.
     connect(brokenLinksModel, &BrokenLinksModel::modelReset, this, &BrokenLinksWidget::selectionChanged);
+
+    retranslateUi();
+}
+
+void BrokenLinksWidget::changeEvent(QEvent *event)
+{
+    QWidget::changeEvent(event);
+
+    if (event->type() == QEvent::LanguageChange)
+        retranslateUi();
+}
+
+void BrokenLinksWidget::retranslateUi()
+{
+    mTitleLabel->setText(tr("Some files could not be found"));
+    mDescriptionLabel->setText(tr("One or more referenced files could not be found. You can help locate them below."));
+
+    if (auto ignoreButton = mButtons->button(QDialogButtonBox::Ignore))
+        ignoreButton->setText(tr("Ignore"));
+
+    selectionChanged();
 }
 
 void BrokenLinksWidget::clicked(QAbstractButton *button)

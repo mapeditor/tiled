@@ -59,6 +59,9 @@ public:
                            QWidget *parent = nullptr);
     void setVisible(bool visible) override;
 
+protected:
+    void changeEvent(QEvent *event) override;
+
 private:
     void setFilterText(const QString &text);
 

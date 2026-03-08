@@ -21,6 +21,7 @@
 #include "stampactions.h"
 
 #include "actionmanager.h"
+#include "preferences.h"
 
 #include <QAction>
 #include <QToolBar>
@@ -76,6 +77,9 @@ StampActions::StampActions(QObject *parent) : QObject(parent)
 
     setEnabled(false);
     languageChanged();
+
+    connect(Preferences::instance(), &Preferences::languageChanged,
+            this, &StampActions::languageChanged);
 }
 
 void StampActions::setEnabled(bool enabled)

@@ -22,6 +22,7 @@
 #include "ui_shortcutsettingspage.h"
 
 #include "actionmanager.h"
+#include "preferences.h"
 #include "savefile.h"
 #include "session.h"
 #include "utils.h"
@@ -93,6 +94,11 @@ ActionsModel::ActionsModel(QObject *parent)
             this, &ActionsModel::actionChanged);
     connect(ActionManager::instance(), &ActionManager::actionsChanged,
             this, [this] { mDirty = mConflictsDirty = true; refresh(); });
+    connect(Preferences::instance(), &Preferences::languageChanged,
+            this, [this] {
+                emit headerDataChanged(Qt::Horizontal, 0, 2);
+                refresh();
+            });
 
     refreshConflicts();
 }

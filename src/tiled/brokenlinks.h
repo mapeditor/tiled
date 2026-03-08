@@ -134,7 +134,11 @@ public:
 signals:
     void ignore();
 
+protected:
+    void changeEvent(QEvent *event) override;
+
 private:
+    void retranslateUi();
     void clicked(QAbstractButton *button);
     void selectionChanged();
 

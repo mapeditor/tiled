@@ -21,12 +21,17 @@
 #include "tilestampmodel.h"
 
 #include "minimaprenderer.h"
+#include "preferences.h"
 
 namespace Tiled {
 
 TileStampModel::TileStampModel(QObject *parent)
     : QAbstractItemModel(parent)
 {
+    connect(Preferences::instance(), &Preferences::languageChanged,
+            this, [this] {
+                emit headerDataChanged(Qt::Horizontal, 0, 1);
+            });
 }
 
 QModelIndex TileStampModel::index(int row, int column, const QModelIndex &parent) const

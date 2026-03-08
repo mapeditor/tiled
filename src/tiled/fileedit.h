@@ -25,6 +25,7 @@
 #include <QWidget>
 
 class QLineEdit;
+class QToolButton;
 
 namespace Tiled {
 
@@ -59,17 +60,20 @@ signals:
     void fileUrlChanged(const QUrl &url);
 
 protected:
+    void changeEvent(QEvent *event) override;
     void focusInEvent(QFocusEvent *e) override;
     void focusOutEvent(QFocusEvent *e) override;
     void keyPressEvent(QKeyEvent *e) override;
     void keyReleaseEvent(QKeyEvent *e) override;
 
 private:
+    void retranslateUi();
     void textEdited();
     void validate();
     void buttonClicked();
 
     QLineEdit *mLineEdit;
+    QToolButton *mButton;
     QString mFilter;
     bool mIsDirectory = false;
     QColor mOkTextColor;

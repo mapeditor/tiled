@@ -39,7 +39,12 @@ public:
                               QWidget *parent = nullptr);
     ~NewVersionDialog() override;
 
+protected:
+    void changeEvent(QEvent *event) override;
+
 private:
+    void updateLabel();
+
     Ui::NewVersionDialog *ui;
     NewVersionChecker::VersionInfo mVersionInfo;
 };
