@@ -95,13 +95,6 @@ std::unique_ptr<Map> ClipboardManager::map() const
 
     return map;
 }
-
-    if (!map) {
-        qWarning() << "Failed to parse TMX data from clipboard";
-    }
-
-    return map;
-}
 /**
  * Sets the given map on the clipboard.
  */
