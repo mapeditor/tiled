@@ -968,6 +968,12 @@ void VariantToMapConverter::readMapEditorSettings(Map &map, const QVariantMap &e
     chunkHeight = chunkHeight == 0 ? CHUNK_SIZE : qMax(CHUNK_SIZE_MIN, chunkHeight);
     map.setChunkSize(QSize(chunkWidth, chunkHeight));
 
+    const QVariantMap viewportSizeVariant = editorSettings[QStringLiteral("viewportsize")].toMap();
+    int viewportWidth = viewportSizeVariant[QStringLiteral("width")].toInt();
+    int viewportHeight = viewportSizeVariant[QStringLiteral("height")].toInt();
+    if (viewportWidth > 0 && viewportHeight > 0)
+        map.setViewportSize(QSize(viewportWidth, viewportHeight));
+
     const QVariantMap exportVariant = editorSettings[QStringLiteral("export")].toMap();
     const QString target = exportVariant[QStringLiteral("target")].toString();
     if (!target.isEmpty() && target != QLatin1String("."))

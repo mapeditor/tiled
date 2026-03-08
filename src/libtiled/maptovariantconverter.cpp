@@ -67,7 +67,7 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
     mapVariant[QStringLiteral("nextobjectid")] = map.nextObjectId();
     mapVariant[QStringLiteral("compressionlevel")] = map.compressionLevel();
 
-    if (map.chunkSize() != QSize(CHUNK_SIZE, CHUNK_SIZE) || !map.exportFileName.isEmpty() || !map.exportFormat.isEmpty()) {
+    if (map.chunkSize() != QSize(CHUNK_SIZE, CHUNK_SIZE) || !map.viewportSize().isEmpty() || !map.exportFileName.isEmpty() || !map.exportFormat.isEmpty()) {
         QVariantMap editorSettingsVariant;
 
         if (map.chunkSize() != QSize(CHUNK_SIZE, CHUNK_SIZE)) {
@@ -75,6 +75,13 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
             chunkSizeVariant[QStringLiteral("width")] = map.chunkSize().width();
             chunkSizeVariant[QStringLiteral("height")] = map.chunkSize().height();
             editorSettingsVariant[QStringLiteral("chunksize")] = chunkSizeVariant;
+        }
+
+        if (!map.viewportSize().isEmpty()) {
+            QVariantMap viewportSizeVariant;
+            viewportSizeVariant[QStringLiteral("width")] = map.viewportSize().width();
+            viewportSizeVariant[QStringLiteral("height")] = map.viewportSize().height();
+            editorSettingsVariant[QStringLiteral("viewportsize")] = viewportSizeVariant;
         }
 
         if (!map.exportFileName.isEmpty() || !map.exportFormat.isEmpty()) {
