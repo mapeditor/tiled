@@ -20,8 +20,6 @@
 
 #include "commanddatamodel.h"
 
-#include "preferences.h"
-
 #include <QKeySequence>
 #include <QMenu>
 #include <QMimeData>
@@ -37,15 +35,16 @@ static const char *commandMimeType = "application/x-tiled-commandptr";
 CommandDataModel::CommandDataModel(QObject *parent)
     : QAbstractTableModel(parent)
 {
-    connect(Preferences::instance(), &Preferences::languageChanged,
-            this, [this] {
-                emit headerDataChanged(Qt::Horizontal, 0, 2);
+}
 
-                const int rows = rowCount();
-                const int columns = columnCount();
-                if (rows > 0 && columns > 0)
-                    emit dataChanged(index(0, 0), index(rows - 1, columns - 1));
-            });
+void CommandDataModel::languageChanged()
+{
+    emit headerDataChanged(Qt::Horizontal, 0, 2);
+
+    const int rows = rowCount();
+    const int columns = columnCount();
+    if (rows > 0 && columns > 0)
+        emit dataChanged(index(0, 0), index(rows - 1, columns - 1));
 }
 
 void CommandDataModel::setCommands(const QVector<Command> &commands)

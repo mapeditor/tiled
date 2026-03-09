@@ -354,7 +354,10 @@ void LayerView::layerRemoved(Layer *layer)
 
 bool LayerView::event(QEvent *event)
 {
-    if (event->type() == QEvent::ShortcutOverride) {
+    if (event->type() == QEvent::LanguageChange) {
+        if (mMapDocument)
+            mMapDocument->layerModel()->languageChanged();
+    } else if (event->type() == QEvent::ShortcutOverride) {
         if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Tab) {
             if (indexWidget(currentIndex())) {
                 event->accept();

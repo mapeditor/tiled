@@ -22,7 +22,6 @@
 #include "ui_shortcutsettingspage.h"
 
 #include "actionmanager.h"
-#include "preferences.h"
 #include "savefile.h"
 #include "session.h"
 #include "utils.h"
@@ -32,6 +31,7 @@
 #include <QApplication>
 #include <QCoreApplication>
 #include <QDateTime>
+#include <QEvent>
 #include <QFileDialog>
 #include <QItemEditorFactory>
 #include <QKeyEvent>
@@ -65,6 +65,7 @@ public:
     explicit ActionsModel(QObject *parent = nullptr);
 
     void setVisible(bool visible);
+    void languageChanged();
 
     int rowCount(const QModelIndex &parent) const override;
     int columnCount(const QModelIndex &parent) const override;
@@ -94,11 +95,6 @@ ActionsModel::ActionsModel(QObject *parent)
             this, &ActionsModel::actionChanged);
     connect(ActionManager::instance(), &ActionManager::actionsChanged,
             this, [this] { mDirty = mConflictsDirty = true; refresh(); });
-    connect(Preferences::instance(), &Preferences::languageChanged,
-            this, [this] {
-                emit headerDataChanged(Qt::Horizontal, 0, 2);
-                refresh();
-            });
 
     refreshConflicts();
 }
@@ -106,6 +102,12 @@ ActionsModel::ActionsModel(QObject *parent)
 void ActionsModel::setVisible(bool visible)
 {
     mVisible = visible;
+    refresh();
+}
+
+void ActionsModel::languageChanged()
+{
+    emit headerDataChanged(Qt::Horizontal, 0, 2);
     refresh();
 }
 
@@ -644,6 +646,16 @@ QSize ShortcutSettingsPage::sizeHint() const
     QSize size = QWidget::sizeHint();
     size.setWidth(Utils::dpiScaled(500));
     return size;
+}
+
+void ShortcutSettingsPage::changeEvent(QEvent *event)
+{
+    QWidget::changeEvent(event);
+
+    if (event->type() == QEvent::LanguageChange) {
+        ui->retranslateUi(this);
+        mActionsModel->languageChanged();
+    }
 }
 
 void ShortcutSettingsPage::showEvent(QShowEvent *event)

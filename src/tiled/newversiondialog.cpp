@@ -25,7 +25,6 @@
 #include "utils.h"
 
 #include <QDesktopServices>
-#include <QEvent>
 #include <QGuiApplication>
 
 namespace Tiled {
@@ -45,7 +44,10 @@ NewVersionDialog::NewVersionDialog(const NewVersionChecker::VersionInfo &version
     QSize logoSize = Utils::dpiScaled(QSize(210, 114));
     ui->logo->setFixedSize(logoSize);
     ui->label->setFixedWidth(ui->logo->minimumWidth());
-    updateLabel();
+    ui->label->setText(tr("<p><b>%1 %2</b> is available!<br/><br/>Current version is %1 %3.</p>")
+                       .arg(QGuiApplication::applicationDisplayName(),
+                            versionInfo.version,
+                            QGuiApplication::applicationVersion()));
 
     ui->downloadButton->setVisible(!mVersionInfo.downloadUrl.isEmpty());
     connect(ui->downloadButton, &QPushButton::clicked, this, [this] {
@@ -63,24 +65,6 @@ NewVersionDialog::NewVersionDialog(const NewVersionChecker::VersionInfo &version
 NewVersionDialog::~NewVersionDialog()
 {
     delete ui;
-}
-
-void NewVersionDialog::changeEvent(QEvent *event)
-{
-    QDialog::changeEvent(event);
-
-    if (event->type() == QEvent::LanguageChange) {
-        ui->retranslateUi(this);
-        updateLabel();
-    }
-}
-
-void NewVersionDialog::updateLabel()
-{
-    ui->label->setText(tr("<p><b>%1 %2</b> is available!<br/><br/>Current version is %1 %3.</p>")
-                       .arg(QGuiApplication::applicationDisplayName(),
-                            mVersionInfo.version,
-                            QGuiApplication::applicationVersion()));
 }
 
 } // namespace Tiled

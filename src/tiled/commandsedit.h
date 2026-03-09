@@ -55,6 +55,9 @@ public slots:
     void browseExecutable();
     void browseWorkingDirectory();
 
+protected:
+    void changeEvent(QEvent *event) override;
+
 private:
     Ui::CommandsEdit *mUi;
     CommandDataModel *mModel;

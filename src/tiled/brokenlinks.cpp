@@ -27,7 +27,6 @@
 #include "mainwindow.h"
 #include "map.h"
 #include "objectgroup.h"
-#include "preferences.h"
 #include "replacetemplate.h"
 #include "replacetileset.h"
 #include "session.h"
@@ -101,13 +100,14 @@ BrokenLinksModel::BrokenLinksModel(QObject *parent)
     : QAbstractListModel(parent)
     , mDocument(nullptr)
 {
-    connect(Preferences::instance(), &Preferences::languageChanged,
-            this, [this] {
-                emit headerDataChanged(Qt::Horizontal, 0, 2);
+}
 
-                if (rowCount() > 0)
-                    emit dataChanged(index(0, 2), index(rowCount() - 1, 2));
-            });
+void BrokenLinksModel::languageChanged()
+{
+    emit headerDataChanged(Qt::Horizontal, 0, 2);
+
+    if (rowCount() > 0)
+        emit dataChanged(index(0, 2), index(rowCount() - 1, 2));
 }
 
 void BrokenLinksModel::setDocument(Document *document)
@@ -476,8 +476,10 @@ void BrokenLinksWidget::changeEvent(QEvent *event)
 {
     QWidget::changeEvent(event);
 
-    if (event->type() == QEvent::LanguageChange)
+    if (event->type() == QEvent::LanguageChange) {
+        mBrokenLinksModel->languageChanged();
         retranslateUi();
+    }
 }
 
 void BrokenLinksWidget::retranslateUi()

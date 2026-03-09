@@ -3130,8 +3130,6 @@ bool PropertiesWidget::event(QEvent *event)
     }
     case QEvent::LanguageChange:
         retranslateUi();
-        if (mDocument)
-            currentObjectChanged(mDocument->currentObject());
         break;
     default:
         break;

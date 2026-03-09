@@ -65,8 +65,6 @@ TemplatesDock::TemplatesDock(QWidget *parent)
     , mRedoAction(new QAction(this))
     , mMapScene(new MapScene(this))
     , mMapView(new MapView(this))
-    , mObjectTemplate(nullptr)
-    , mPropertiesDock(nullptr)
     , mToolManager(new ToolManager(this))
 {
     setObjectName(QLatin1String("TemplatesDock"));

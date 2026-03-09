@@ -39,7 +39,6 @@
 #include "movelayer.h"
 #include "objectgroup.h"
 #include "objectreferenceshelper.h"
-#include "preferences.h"
 #include "tilelayer.h"
 #include "utils.h"
 
@@ -236,9 +235,6 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
 
     updateActions();
     retranslateUi();
-
-    connect(Preferences::instance(), &Preferences::languageChanged,
-            this, &MapDocumentActionHandler::retranslateUi);
 }
 
 MapDocumentActionHandler::~MapDocumentActionHandler()

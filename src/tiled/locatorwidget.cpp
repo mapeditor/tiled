@@ -36,7 +36,6 @@
 #include <QApplication>
 #include <QCollator>
 #include <QDir>
-#include <QEvent>
 #include <QKeyEvent>
 #include <QPainter>
 #include <QScrollBar>
@@ -321,16 +320,6 @@ void LocatorWidget::setVisible(bool visible)
             mFilterEdit->clear();
         else
             setFilterText(QString());
-    }
-}
-
-void LocatorWidget::changeEvent(QEvent *event)
-{
-    QFrame::changeEvent(event);
-
-    if (event->type() == QEvent::LanguageChange) {
-        mFilterEdit->setPlaceholderText(mLocatorSource->placeholderText());
-        setFilterText(mFilterEdit->text());
     }
 }
 

@@ -44,6 +44,7 @@ public:
     QSize sizeHint() const override;
 
 protected:
+    void changeEvent(QEvent *event) override;
     void showEvent(QShowEvent *event) override;
     void hideEvent(QHideEvent *event) override;
 

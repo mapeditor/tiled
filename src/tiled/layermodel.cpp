@@ -26,7 +26,6 @@
 #include "layer.h"
 #include "map.h"
 #include "mapdocument.h"
-#include "preferences.h"
 #include "reparentlayers.h"
 
 #include <QApplication>
@@ -45,11 +44,11 @@ LayerModel::LayerModel(QObject *parent):
 {
     mTileLayerIcon.addFile(QLatin1String(":images/32/layer-tile.png"));
     mObjectGroupIcon.addFile(QLatin1String(":images/32/layer-object.png"));
+}
 
-    connect(Preferences::instance(), &Preferences::languageChanged,
-            this, [this] {
-                emit headerDataChanged(Qt::Horizontal, 0, 2);
-            });
+void LayerModel::languageChanged()
+{
+    emit headerDataChanged(Qt::Horizontal, 0, 2);
 }
 
 QModelIndex LayerModel::index(int row, int column, const QModelIndex &parent) const

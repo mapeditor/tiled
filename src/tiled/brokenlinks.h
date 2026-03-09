@@ -73,6 +73,8 @@ class BrokenLinksModel : public QAbstractListModel
 public:
     BrokenLinksModel(QObject *parent = nullptr);
 
+    void languageChanged();
+
     void setDocument(Document *document);
     Document *document() const;
 

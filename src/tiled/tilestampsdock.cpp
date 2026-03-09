@@ -292,6 +292,8 @@ void TileStampsDock::ensureStampVisible(const TileStamp &stamp)
 
 void TileStampsDock::retranslateUi()
 {
+    mTileStampModel->languageChanged();
+
     setWindowTitle(tr("Tile Stamps"));
 
     mNewStamp->setText(tr("Add New Stamp"));

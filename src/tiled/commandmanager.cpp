@@ -21,7 +21,6 @@
 
 #include "commandmanager.h"
 
-#include "commanddatamodel.h"
 #include "commanddialog.h"
 #include "logginginterface.h"
 #include "pluginmanager.h"
@@ -37,7 +36,6 @@
 namespace Tiled {
 
 CommandManager::CommandManager()
-    : mModel(new CommandDataModel(this))
 {
     auto preferences = Preferences::instance();
 
@@ -78,8 +76,6 @@ CommandManager::CommandManager()
 
     connect(ProjectManager::instance(), &ProjectManager::projectChanged,
             this, &CommandManager::updateActions);
-    connect(preferences, &Preferences::languageChanged,
-            this, &CommandManager::retranslateUi);
 }
 
 CommandManager::~CommandManager()
