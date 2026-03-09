@@ -32,12 +32,11 @@
 #include "objectselectionitem.h"
 #include "preferences.h"
 #include "session.h"
-#include "tilelayer.h"
 #include "utils.h"
 
 #include <QFileDialog>
-#include <QMessageBox>
 #include <QImageWriter>
+#include <QMessageBox>
 
 using namespace Tiled;
 
@@ -206,9 +205,10 @@ void ExportAsImageDialog::accept()
 
         QImageWriter imageWriter(fileName);
         if (!imageWriter.write(image)) {
-                const QString message = tr("Could not save image to \"%1\":\n%2")
-                                        .arg(fileName, imageWriter.errorString());
-            QMessageBox::warning(this, tr("Export Failed"), message);
+            QMessageBox::warning(this,
+                                 tr("Export Failed"),
+                                 tr("Could not save image to \"%1\":\n%2")
+                                     .arg(fileName, imageWriter.errorString()));
             return;
         }
 
