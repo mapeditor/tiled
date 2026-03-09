@@ -166,6 +166,11 @@ ApplicationWindow {
                 anchors.fill: mapItem
 
                 color: "black"
+
+                Tiled.MapGridItem {
+                    id: mapGriditem
+                    anchors.fill: parent
+                }
             }
         }
     }

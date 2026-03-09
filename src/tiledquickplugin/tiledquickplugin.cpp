@@ -23,6 +23,7 @@
 #include "mapitem.h"
 #include "maploader.h"
 #include "mapborderitem.h"
+#include "mapgriditem.h"
 #include "tiled.h"
 
 #include <qqml.h>
@@ -38,6 +39,7 @@ void TiledQuickPlugin::registerTypes(const char *uri)
     qmlRegisterType<MapLoader>(uri, 1, 0, "MapLoader");
     qmlRegisterType<MapItem>(uri, 1, 0, "MapItem");
     qmlRegisterType<MapBorderItem>(uri, 1, 0, "MapBorderItem");
+    qmlRegisterType<MapGridItem>(uri, 1, 0, "MapGridItem");
 
     Tiled::increaseImageAllocationLimit();
 }
