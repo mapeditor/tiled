@@ -36,6 +36,8 @@ DynamicLibrary {
     }
 
     files: [
+        "mapgriditem.cpp",
+        "mapgriditem.h",
         "mapitem.h",
         "mapitem.cpp",
         "maploader.h",
@@ -47,7 +49,7 @@ DynamicLibrary {
         "tilesnode.h",
         "tilesnode.cpp",
         "mapborderitem.h",
-        "mapborderitem.cpp"
+        "mapborderitem.cpp",
     ]
 
     Group {
@@ -66,6 +68,8 @@ DynamicLibrary {
 
         cpp.includePaths: exportingProduct.sourceDirectory
     }
+
+    Depends { name: "Qt.quick" }
 
     install: !qbs.targetOS.contains("darwin")
     installDir: {
