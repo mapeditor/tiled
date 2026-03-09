@@ -122,6 +122,8 @@ When an object layer is selected
 
    -  ``Enter`` - Finish creating object
    -  ``Escape`` - Cancel creating object
+   -  ``Backspace`` - Remove previously added point while creating or extending
+      polygons and polylines
 
 -  ``T`` - Activate :ref:`insert-tile-tool`
 -  ``V`` - Activate :ref:`insert-template-tool` (since Tiled 1.1)
