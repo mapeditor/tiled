@@ -193,7 +193,8 @@ QColor Preferences::backgroundFadeColor() const
 
 QColor Preferences::defaultObjectColor() const
 {
-    return get<QColor>("Interface/DefaultObjectColor", QColor(128, 128, 128));
+    const QColor color = get<QColor>("Interface/DefaultObjectColor", QColor(128, 128, 128));
+    return color.isValid() ? color : QColor(128, 128, 128);
 }
 
 int Preferences::gridFine() const
