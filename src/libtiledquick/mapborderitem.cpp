@@ -26,21 +26,21 @@ QSGNode *MapBorderItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNo
         borderNode->setGeometry(geometry);
         borderNode->setFlag(QSGNode::OwnsGeometry);
 
-        auto *vertex = geometry->vertexDataAsPoint2D();
-        vertex[0].set(0, 0);
-        vertex[1].set(width(), 0);
-        vertex[2].set(width(), height());
-        vertex[3].set(0, height());
-        vertex[4].set(0, 0);
-
         auto *material = new QSGFlatColorMaterial;
-        material->setColor(mColor);
-
         borderNode->setMaterial(material);
         borderNode->setFlag(QSGNode::OwnsMaterial);
-
-        borderNode->markDirty(QSGNode::DirtyGeometry);
     }
+
+    auto *geometry = borderNode->geometry();
+    auto *vertex = geometry->vertexDataAsPoint2D();
+    vertex[0].set(0, 0);
+    vertex[1].set(width(), 0);
+    vertex[2].set(width(), height());
+    vertex[3].set(0, height());
+    vertex[4].set(0, 0);
+    borderNode->markDirty(QSGNode::DirtyGeometry);
+
+    static_cast<QSGFlatColorMaterial *>(borderNode->material())->setColor(mColor);
 
     return borderNode;
 }
