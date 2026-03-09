@@ -166,11 +166,14 @@ ApplicationWindow {
                 anchors.fill: mapItem
 
                 color: "black"
+            }
 
-                Tiled.MapGridItem {
-                    id: mapGriditem
-                    anchors.fill: parent
-                }
+            Tiled.MapGridItem {
+                id: mapGriditem
+                anchors.fill: mapItem
+
+                gridSize: mapItem.pixelToTileCoords(width, height);
+                scale: mapContainer.scale;
             }
         }
     }
@@ -228,7 +231,7 @@ ApplicationWindow {
                     } else {
                         var mapRelativeCoords = singleFingerPanArea.mapToItem(mapItem, singleFingerPanArea.mouseX, singleFingerPanArea.mouseY)
                         var tileCoords = mapItem.screenToTileCoords(mapRelativeCoords.x, mapRelativeCoords.y)
-                        Math.floor(tileCoords.x) + ", " + Math.floor(tileCoords.y)
+                        Math.floor(tileCoords.x) + ", " + Math.floor(tileCoords.y) + ", " + mapContainer.scale;
                     }
                 }
             }
