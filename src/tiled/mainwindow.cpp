@@ -887,9 +887,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 #endif
 
     connect(preferences, &Preferences::iconSizeChanged, this, &MainWindow::refreshAllIconSizes);
+    connect(preferences, &Preferences::smallToolbarIconSizeChanged, this, &MainWindow::refreshAllIconSizes);
 
     connect(preferences, &Preferences::recentFilesChanged, this, &MainWindow::updateRecentFilesMenu);
     connect(preferences, &Preferences::recentProjectsChanged, this, &MainWindow::updateRecentProjectsMenu);
+
+    QTimer::singleShot(0, this, &MainWindow::refreshAllIconSizes);
 
     QTimer::singleShot(500, this, [this,preferences] {
 #ifdef TILED_SENTRY
@@ -2042,9 +2045,20 @@ void MainWindow::ensureHasBorderInFullScreen()
 void MainWindow::refreshAllIconSizes()
 {
     const QSize iconSize = Utils::smallIconSize();
+    const QSize smallToolbarIconSize = Utils::smallToolbarIconSize();
 
-    for (QToolBar *toolBar : findChildren<QToolBar *>())
-        toolBar->setIconSize(iconSize);
+    for (QToolBar *toolBar : findChildren<QToolBar *>()) {
+        bool isDockToolbar = false;
+        QWidget *ancestor = toolBar->parentWidget();
+        while (ancestor) {
+            if (ancestor->inherits("QDockWidget")) {
+                isDockToolbar = true;
+                break;
+            }
+            ancestor = ancestor->parentWidget();
+        }
+        toolBar->setIconSize(isDockToolbar ? smallToolbarIconSize : iconSize);
+    }
 
     for (QWidget *widget : findChildren<QWidget *>()) {
         if (widget->inherits("QToolButton")) {

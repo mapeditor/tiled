@@ -245,13 +245,24 @@ void Preferences::setLabelForHoveredObject(bool enabled)
 
 Preferences::IconSize Preferences::iconSize() const
 {
-    return static_cast<IconSize>(get<int>("Interface/IconSize", SmallIconSize));
+    return static_cast<IconSize>(get<int>("Interface/IconSize", MediumIconSize));
 }
 
 void Preferences::setIconSize(IconSize size)
 {
     setValue(QLatin1String("Interface/IconSize"), size);
     emit iconSizeChanged(size);
+}
+
+Preferences::IconSize Preferences::smallToolbarIconSize() const
+{
+    return static_cast<IconSize>(get<int>("Interface/SmallToolbarIconSize", SmallIconSize));
+}
+
+void Preferences::setSmallToolbarIconSize(IconSize size)
+{
+    setValue(QLatin1String("Interface/SmallToolbarIconSize"), size);
+    emit smallToolbarIconSizeChanged(size);
 }
 
 Preferences::ApplicationStyle Preferences::applicationStyle() const

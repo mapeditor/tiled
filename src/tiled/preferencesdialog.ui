@@ -545,6 +545,19 @@
            <item row="3" column="1" colspan="2">
             <widget class="QComboBox" name="iconSizeCombo"/>
            </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="smallToolbarIconSizeLabel">
+             <property name="text">
+              <string>Small toolbar icon size:</string>
+             </property>
+             <property name="buddy">
+              <cstring>smallToolbarIconSizeCombo</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1" colspan="2">
+            <widget class="QComboBox" name="smallToolbarIconSizeCombo"/>
+           </item>
           </layout>
         </widget>
        </item>
@@ -726,6 +739,7 @@
   <tabstop>baseColor</tabstop>
   <tabstop>selectionColor</tabstop>
   <tabstop>iconSizeCombo</tabstop>
+  <tabstop>smallToolbarIconSizeCombo</tabstop>
   <tabstop>fontGroupBox</tabstop>
   <tabstop>fontComboBox</tabstop>
   <tabstop>fontSize</tabstop>
