@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
                             QCoreApplication::translate("main", "Duration of each frame in milliseconds, defaults to 100."),
                             QCoreApplication::translate("main", "number") },
                           { QStringLiteral("search-path"),
-                            QCoreApplication::translate("main", "Override the search path used to resolve tileset and image references. Useful when the map file is in a temporary location (e.g. during git diff)."),
+                            QCoreApplication::translate("main", "Override the search path used to resolve tileset and image references."),
                             QCoreApplication::translate("main", "path") },
                       });
     parser.addPositionalArgument(QStringLiteral("map|world"), QCoreApplication::translate("main", "Map or world file to render."));
