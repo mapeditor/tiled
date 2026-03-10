@@ -95,6 +95,8 @@
 #include <QUndoStack>
 #include <QUndoView>
 #include <QVariantAnimation>
+#include <QDebug>
+#include <QScreen>
 
 #ifdef Q_OS_WIN
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -958,14 +960,65 @@ void MainWindow::closeEvent(QCloseEvent *event)
 void MainWindow::changeEvent(QEvent *event)
 {
     QMainWindow::changeEvent(event);
+
     switch (event->type()) {
     case QEvent::LanguageChange:
         mUi->retranslateUi(this);
         retranslateUi();
         break;
+
     case QEvent::WindowStateChange:
         mUi->actionFullScreen->setChecked(isFullScreen());
         break;
+
+    // ── NEW: Handle DPI/monitor scaling changes ──
+    case QEvent::ScreenChangeInternal:   // Primary event for moving between monitors
+    case QEvent::StyleChange:            // Often sent after DPI change (style adapts)
+    case QEvent::ApplicationStateChange: // Sometimes triggered in scaling transitions
+        {
+            qDebug() << "DPI/monitor change detected - forcing UI relayout"
+                     << "devicePixelRatio:" << devicePixelRatioF()
+                     << "logicalDpiX:" << logicalDpiX()
+                     << "logicalDpiY:" << logicalDpiY();
+
+            // Force relayout of central area (map view, etc.)
+            if (centralWidget()) {
+                centralWidget()->adjustSize();
+                centralWidget()->updateGeometry();
+            }
+
+            // Toolbars (icons/text sizes may need refresh)
+            for (QToolBar *toolbar : allToolBars()) {
+                toolbar->adjustSize();
+                toolbar->updateGeometry();
+            }
+
+            // Status bar
+            if (statusBar()) {
+                statusBar()->adjustSize();
+            }
+
+            // Dock widgets / side panels (layers, properties, project, etc.)
+            for (QDockWidget *dock : findChildren<QDockWidget*>()) {
+                if (dock->widget()) {
+                    dock->widget()->adjustSize();
+                    dock->widget()->updateGeometry();
+                }
+            }
+
+            // Optional: full window refresh (helps if overall size feels wrong)
+            updateGeometry();
+
+            // If custom views (map/tileset) need extra nudge:
+            if (mMapEditor) {
+                if (MapView *view = mMapEditor->currentMapView()) {
+                    view->updateGeometry();
+                    view->viewport()->update();
+                }
+            }
+        }
+        break;
+
     default:
         break;
     }
