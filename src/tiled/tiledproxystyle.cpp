@@ -698,63 +698,82 @@ void TiledProxyStyle::drawControl(ControlElement element,
 
             bool ignoreCheckMark = false;
             const int checkColHOffset = windowsItemHMargin + windowsItemFrame - 1;
-            int checkcol = qMax<int>(menuItem->rect.height() * 0.79,
-                                     qMax<int>(menuItem->maxIconWidth, dpiScaled(21, option))); // icon checkbox's highlight column width
+            int defaultCheckWidth = qMax<int>(menuItem->rect.height() * 0.79, dpiScaled(21, option));
+            int checkcol = defaultCheckWidth;
+
+            // Define the tight UI spacing between checkbox and icon
+            int dualOffset = dpiScaled(18, option);
+
             if (
                 qobject_cast<const QComboBox*>(widget) ||
                 (option->styleObject && option->styleObject->property("_q_isComboBoxPopupItem").toBool()))
-                ignoreCheckMark = true; //ignore the checkmarks provided by the QComboMenuDelegate
+                ignoreCheckMark = true;
 
             if (!ignoreCheckMark) {
-                // Check, using qreal and QRectF to avoid error accumulation
+                if (checkable && !menuItem->icon.isNull()) {
+                    // Use tight spacing instead of adding the massive default column width
+                    checkcol = qMax<int>(defaultCheckWidth, menuItem->maxIconWidth) + dualOffset;
+                }
+                else {
+                    checkcol = qMax<int>(defaultCheckWidth, menuItem->maxIconWidth);
+                }
+
                 const qreal boxMargin = dpiScaled(3.5, option);
-                const qreal boxWidth = checkcol - 2 * boxMargin;
-                QRectF checkRectF(option->rect.left() + boxMargin + checkColHOffset, option->rect.center().y() - boxWidth/2 + 1, boxWidth, boxWidth);
+                const qreal boxWidth = defaultCheckWidth - 2 * boxMargin;
+                QRectF checkRectF(option->rect.left() + boxMargin + checkColHOffset, option->rect.center().y() - boxWidth / 2 + 1, boxWidth, boxWidth);
                 QRect checkRect = checkRectF.toRect();
-                checkRect.setWidth(checkRect.height()); // avoid .toRect() round error results in non-perfect square
+                checkRect.setWidth(checkRect.height());
                 checkRect = visualRect(menuItem->direction, menuItem->rect, checkRect);
+
                 if (checkable) {
                     if (menuItem->checkType & QStyleOptionMenuItem::Exclusive) {
-                        // Radio button
                         if (checked || sunken) {
                             painter->setRenderHint(QPainter::Antialiasing);
                             painter->setPen(Qt::NoPen);
 
-                            QPalette::ColorRole textRole = !enabled ? QPalette::Text:
-                                                                      selected ? QPalette::HighlightedText : QPalette::ButtonText;
-                            painter->setBrush(option->palette.brush( option->palette.currentColorGroup(), textRole));
+                            QPalette::ColorRole textRole = !enabled ? QPalette::Text :
+                                selected ? QPalette::HighlightedText : QPalette::ButtonText;
+                            painter->setBrush(option->palette.brush(option->palette.currentColorGroup(), textRole));
                             const int adjustment = checkRect.height() * 0.3;
                             painter->drawEllipse(checkRect.adjusted(adjustment, adjustment, -adjustment, -adjustment));
                         }
-                    } else {
-                        // Check box
-                        if (menuItem->icon.isNull()) {
-                            QStyleOptionButton box;
-                            box.QStyleOption::operator=(*option);
-                            box.rect = checkRect;
-                            if (checked)
-                                box.state |= State_On;
-                            proxy()->drawPrimitive(PE_IndicatorCheckBox, &box, painter, widget);
-                        }
+                    }
+                    else {
+                        QStyleOptionButton box;
+                        box.QStyleOption::operator=(*option);
+                        box.rect = checkRect;
+                        if (checked)
+                            box.state |= State_On;
+                        proxy()->drawPrimitive(PE_IndicatorCheckBox, &box, painter, widget);
                     }
                 }
-            } else { //ignore checkmark
+            }
+            else {
                 if (menuItem->icon.isNull())
                     checkcol = 0;
                 else
                     checkcol = menuItem->maxIconWidth;
             }
 
-            // Text and icon, ripped from windows style
             bool dis = !(menuItem->state & State_Enabled);
             bool act = menuItem->state & State_Selected;
-            const QStyleOption *opt = option;
-            const QStyleOptionMenuItem *menuitem = menuItem;
+            const QStyleOption* opt = option;
+            const QStyleOptionMenuItem* menuitem = menuItem;
 
-            QPainter *p = painter;
+            QPainter* p = painter;
+
+            // Shift the icon by the tight offset, NOT the entire column width
+            int iconOffsetX = checkColHOffset;
+            int iconAreaWidth = checkcol;
+            if (!ignoreCheckMark && checkable && !menuItem->icon.isNull()) {
+                iconOffsetX += dualOffset;
+                iconAreaWidth = menuItem->maxIconWidth;
+            }
+
             QRect vCheckRect = visualRect(opt->direction, menuitem->rect,
-                                          QRect(menuitem->rect.x() + checkColHOffset, menuitem->rect.y(),
-                                                checkcol, menuitem->rect.height()));
+                QRect(menuitem->rect.x() + iconOffsetX, menuitem->rect.y(),
+                    iconAreaWidth, menuitem->rect.height()));
+
             if (!menuItem->icon.isNull()) {
                 QIcon::Mode mode = dis ? QIcon::Disabled : QIcon::Normal;
                 if (act && !dis)
@@ -763,7 +782,7 @@ void TiledProxyStyle::drawControl(ControlElement element,
 
                 int smallIconSize = proxy()->pixelMetric(PM_SmallIconSize, option, widget);
                 QSize iconSize(smallIconSize, smallIconSize);
-                if (const QComboBox *combo = qobject_cast<const QComboBox*>(widget))
+                if (const QComboBox* combo = qobject_cast<const QComboBox*>(widget))
                     iconSize = combo->iconSize();
                 if (checked)
                     pixmap = menuItem->icon.pixmap(iconSize, mode, QIcon::On);
@@ -776,17 +795,7 @@ void TiledProxyStyle::drawControl(ControlElement element,
                 QRect pmr(0, 0, pixw, pixh);
                 pmr.moveCenter(vCheckRect.center());
                 painter->setPen(menuItem->palette.text().color());
-                if (!ignoreCheckMark && checkable && checked) {
-                    QStyleOption opt = *option;
-                    if (act) {
-                        QColor activeColor = mergedColors(option->palette.window().color(),
-                                                          option->palette.highlight().color());
-                        opt.palette.setBrush(QPalette::Button, activeColor);
-                    }
-                    opt.state |= State_Sunken;
-                    opt.rect = vCheckRect;
-                    proxy()->drawPrimitive(PE_PanelButtonCommand, &opt, painter, widget);
-                }
+
                 painter->drawPixmap(pmr.topLeft(), pixmap);
             }
             if (selected) {
@@ -1413,6 +1422,14 @@ QSize TiledProxyStyle::sizeFromContents(ContentsType type,
                 size = QSize(fm.size(Qt::TextShowMnemonic, tab->text).width() + iconSize.width() + hframe
                       + widgetWidth + padding,
                       qMax(maxWidgetHeight, qMax(fm.height(), iconSize.height()) + vframe));
+            }
+        }
+        break;
+    case CT_MenuItem:
+        size = QProxyStyle::sizeFromContents(type, option, contentsSize, widget);
+        if (const QStyleOptionMenuItem* menuItem = qstyleoption_cast<const QStyleOptionMenuItem*>(option)) {
+            if (menuItem->checkType != QStyleOptionMenuItem::NotCheckable && !menuItem->icon.isNull()) {
+                size.rwidth() += dpiScaled(18, option);
             }
         }
         break;
