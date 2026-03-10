@@ -41,7 +41,14 @@ ScriptedAction::ScriptedAction(Id id,
     }();
 
     setIcon(scriptIcon);
-
+    connect(this, &QAction::changed, this, [this, scriptIcon] {
+        if (isCheckable() && mIconFileName.isEmpty() && !icon().isNull()) {
+            setIcon(QIcon()); 
+        }
+        else if (!isCheckable() && mIconFileName.isEmpty() && icon().isNull()) {
+            setIcon(scriptIcon); 
+        }
+        });
     connect(this, &QAction::triggered, this, [this] {
         QJSValueList arguments;
         arguments.append(ScriptManager::instance().engine()->newQObject(this));
