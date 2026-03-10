@@ -28,6 +28,7 @@
 #include "containerhelpers.h"
 #include "debugdrawitem.h"
 #include "documentmanager.h"
+#include "preferences.h"
 #include "map.h"
 #include "mapobject.h"
 #include "maprenderer.h"
@@ -69,6 +70,9 @@ MapScene::MapScene(QObject *parent)
 
     WorldManager &worldManager = WorldManager::instance();
     connect(&worldManager, &WorldManager::worldsChanged, this, &MapScene::refreshScene);
+
+    Preferences *prefs = Preferences::instance();
+    connect(prefs, &Preferences::showMapLabelsChanged, this, &MapScene::updateMapLabels);
 
     // Install an event filter so that we can get key events on behalf of the
     // active tool without having to have the current focus.
@@ -332,6 +336,7 @@ void MapScene::refreshScene()
 
     updateBackgroundColor();
     updateSceneRect();
+    updateMapLabels();
 
     emit sceneRefreshed();
 }
@@ -371,6 +376,16 @@ void MapScene::updateSceneRect()
         sceneRect |= mapItem->boundingRect().translated(mapItem->pos());
 
     setSceneRect(sceneRect);
+}
+
+void MapScene::updateMapLabels()
+{
+    const bool showLabels = Preferences::instance()->showMapLabels();
+    const bool inWorld = mMapDocument &&
+                         WorldManager::instance().worldForMap(mMapDocument->fileName());
+
+    for (MapItem *mapItem : std::as_const(mMapItems))
+        mapItem->setLabelVisible(showLabels && inWorld);
 }
 
 void MapScene::setWorldsEnabled(bool enabled)

@@ -76,6 +76,7 @@ public:
     void setShowTileCollisionShapes(bool enabled);
 
     void updateLayerPositions();
+    void setLabelVisible(bool visible);
 
     // QGraphicsItem
     QRectF boundingRect() const override;

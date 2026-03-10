@@ -236,9 +236,8 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(prefs, &Preferences::highlightCurrentLayerChanged, this, &MapItem::updateSelectedLayersHighlight);
     connect(prefs, &Preferences::propertyTypesChanged, this, &MapItem::syncAllObjectItems);
     connect(prefs, &Preferences::backgroundFadeColorChanged, this, [this] (QColor color) { mDarkRectangle->setBrush(color); });
-    connect(prefs, &Preferences::showMapLabelsChanged, this, &MapItem::updateLabel);
-
     connect(mapDocument.data(), &Document::changed, this, &MapItem::documentChanged);
+    connect(mapDocument.data(), &Document::fileNameChanged, this, &MapItem::updateLabel);
     connect(mapDocument.data(), &MapDocument::mapResized, this, &MapItem::mapChanged);
     connect(mapDocument.data(), &MapDocument::regionChanged, this, &MapItem::repaintRegion);
     connect(mapDocument.data(), &MapDocument::tileLayerChanged, this, &MapItem::tileLayerChanged);
@@ -275,17 +274,6 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     // Label shown above each map in the world view
     mLabelItem = new MapLabelItem(this);
     mLabelItem->setZValue(10001);
-
-    // Update label whenever any loaded world changes
-    for (auto &worldDoc : WorldManager::instance().worlds())
-        connect(worldDoc.data(), &WorldDocument::worldChanged, this, &MapItem::updateLabel);
-    connect(&WorldManager::instance(), &WorldManager::worldLoaded,
-            this, [this](WorldDocument *worldDoc) {
-        connect(worldDoc, &WorldDocument::worldChanged, this, &MapItem::updateLabel);
-        updateLabel();
-    });
-
-    updateLabel();
 
     if (displayMode == ReadOnly) {
         setDisplayMode(displayMode);
@@ -957,24 +945,19 @@ void MapItem::updateLabel()
     if (!mLabelItem)
         return;
 
-    const QString &mapFileName = mMapDocument->fileName();
-    auto worldDoc = WorldManager::instance().worldForMap(mapFileName);
-
-    // Only show labels for maps that are part of a world, and when enabled
-    if (!worldDoc || !Preferences::instance()->showMapLabels()) {
-        mLabelItem->setVisible(false);
-        return;
-    }
-
     // Derive the label from the map's file name (without extension)
-    const QString label = QFileInfo(mapFileName).baseName();
-
+    const QString label = QFileInfo(mMapDocument->fileName()).baseName();
     mLabelItem->setText(label);
 
-    // Position centered at the top of the map boundary
-    const QRect border = mapDocument()->renderer()->mapBoundingRect();
+    // Position centered at the top of the map tile boundary
+    const QRectF border = mBorderRectangle->rect();
     mLabelItem->setPos(QPointF(border.center().x(), border.top()));
-    mLabelItem->setVisible(true);
+}
+
+void MapItem::setLabelVisible(bool visible)
+{
+    if (mLabelItem)
+        mLabelItem->setVisible(visible);
 }
 
 void MapItem::updateBoundingRect()
