@@ -3485,9 +3485,9 @@ declare class TileMap extends Asset {
    * undo stack when possible. Useful for reducing the amount of undo commands.
    *
    * If `notify` is true (the default), the {@link regionEdited} signal is
-   * emitted after the merge, which triggers Automap While Drawing. Set to
-   * `false` if your script listens to `regionEdited` and you want to avoid
-   * infinite loops.
+   * emitted after the merge, which allows scripts and AutoMapping to react
+   * to the edit. Set to `false` if your script listens to `regionEdited`
+   * and you want to avoid infinite loops.
    */
   public merge(map: TileMap, canJoin?: boolean, notify?: boolean): void;
 
@@ -3710,7 +3710,7 @@ interface TileLayerEdit {
 
   /**
    * Whether applying edits emits the {@link TileMap.regionEdited} signal,
-   * which triggers Automap While Drawing. Defaults to `true`.
+   * which allows scripts and AutoMapping to react to the edit. Defaults to `true`.
    *
    * Set to `false` if your script listens to `regionEdited` and you want
    * to avoid infinite loops.
@@ -3743,7 +3743,8 @@ interface TileLayerEdit {
    * before calling {@link apply}.
    *
    * If {@link notify} is `true` (the default), the {@link TileMap.regionEdited}
-   * signal is emitted after applying, which triggers Automap While Drawing.
+   * signal is emitted after applying, which allows scripts and AutoMapping to
+   * react to the edit.
    */
   apply(): void;
 }

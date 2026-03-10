@@ -35,7 +35,7 @@ class TileLayerEdit : public QObject
 
     Q_PROPERTY(Tiled::EditableTileLayer *target READ target CONSTANT)
     Q_PROPERTY(bool mergeable READ isMergeable WRITE setMergeable)
-    Q_PROPERTY(bool notify READ isNotify WRITE setNotify)
+    Q_PROPERTY(bool notify READ shouldNotify WRITE setNotify)
 
 public:
     explicit TileLayerEdit(EditableTileLayer *tileLayer,
@@ -52,7 +52,7 @@ public:
     bool isMergeable() const;
 
     void setNotify(bool notify);
-    bool isNotify() const;
+    bool shouldNotify() const;
 
     EditableTileLayer *target() const;
 
@@ -83,7 +83,7 @@ inline void TileLayerEdit::setNotify(bool notify)
     mNotify = notify;
 }
 
-inline bool TileLayerEdit::isNotify() const
+inline bool TileLayerEdit::shouldNotify() const
 {
     return mNotify;
 }
