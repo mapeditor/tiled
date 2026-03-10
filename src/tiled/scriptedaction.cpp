@@ -41,7 +41,7 @@ ScriptedAction::ScriptedAction(Id id,
     }();
 
     setIcon(scriptIcon);
-    connect(this, &QAction::changed, this, [this, scriptIcon] {
+    connect(this, &QAction::changed, this, [this] {
         if (isCheckable() && mIconFileName.isEmpty() && !icon().isNull()) {
             setIcon(QIcon()); 
         }
