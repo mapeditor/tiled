@@ -648,7 +648,7 @@ void MapView::adjustCenterFromMousePosition(QPoint mousePos)
     const QPointF viewCenterScenePos = viewportTransform().inverted().map(QRectF(view->rect()).center());
     const QPointF mouseScenePos = mapToScene(view->mapFromGlobal(mousePos));
     const QPointF diff = viewCenterScenePos - mouseScenePos;
-    QGraphicsView::centerOn(mLastMouseScenePos + diff);
+    forceCenterOn(mLastMouseScenePos + diff);
 }
 
 #include "moc_mapview.cpp"
