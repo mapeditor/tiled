@@ -22,4 +22,5 @@ jobs:
         with:
           token: ${{ secrets.HOMEBREW_BUMP_TOKEN }}
           cask: tiled
+          org: mapeditor
           tag: ${{ inputs.tag || github.ref }}
