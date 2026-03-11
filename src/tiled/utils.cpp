@@ -377,26 +377,25 @@ void saveGeometry(QWidget *widget)
 
 int defaultDpi()
 {
-    static int dpi = []{
-        if (const QScreen *screen = QGuiApplication::primaryScreen())
-            return static_cast<int>(screen->logicalDotsPerInchX());
+    if (const QScreen *screen = QGuiApplication::primaryScreen())
+        return static_cast<int>(screen->logicalDotsPerInchX());
 #ifdef Q_OS_MAC
-        return 72;
+    return 72;
 #else
-        return 96;
+    return 96;
 #endif
-    }();
-    return dpi;
 }
 
-qreal defaultDpiScale()
+qreal defaultDpiScale(const QScreen *screen)
 {
-    static qreal scale = []{
-        if (const QScreen *screen = QGuiApplication::primaryScreen())
-            return screen->logicalDotsPerInchX() / 96.0;
-        return 1.0;
-    }();
-    return scale;
+    const QScreen *effectiveScreen = screen;
+    if (!effectiveScreen)
+        effectiveScreen = QGuiApplication::primaryScreen();
+
+    if (effectiveScreen)
+        return effectiveScreen->logicalDotsPerInchX() / 96.0;
+
+    return 1.0;
 }
 
 qreal dpiScaled(qreal value)
@@ -405,8 +404,7 @@ qreal dpiScaled(qreal value)
     // On mac the DPI is always 72 so we should not scale it
     return value;
 #else
-    static const qreal scale = defaultDpiScale();
-    return value * scale;
+    return value * defaultDpiScale();
 #endif
 }
 

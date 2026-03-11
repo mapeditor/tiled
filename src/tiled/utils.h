@@ -24,6 +24,7 @@
 
 #include <QIcon>
 #include <QJsonParseError>
+#include <QScreen>
 #include <QSettings>
 #include <QString>
 
@@ -87,7 +88,7 @@ void restoreGeometry(QWidget *widget);
 void saveGeometry(QWidget *widget);
 
 int defaultDpi();
-qreal defaultDpiScale();
+qreal defaultDpiScale(const QScreen *screen = nullptr);
 int dpiScaled(int value);
 qreal dpiScaled(qreal value);
 QSize dpiScaled(QSize value);
