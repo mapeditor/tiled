@@ -1,4 +1,4 @@
-### Unreleased
+### Tiled 1.12.0 (12 March 2026)
 
 * Rewritten Properties view to enable direct widget interaction (#4045)
 * Added support for lists in custom properties (#1493)
@@ -49,7 +49,7 @@
 * Raised minimum supported Qt version from 5.12 to 5.15.2
 * AppImage: Updated to Sentry 0.12.8
 
-### Tiled 1.11.2 (28 Jan 2025)
+### Tiled 1.11.2 (28 January 2025)
 
 * YY plugin: Fixed compatibility with GameMaker 2024 (#4132)
 * Fixed crash while handling file reloads without any files opened
@@ -57,7 +57,7 @@
 * snap: Fixed crash on startup on Wayland
 * AppImage: Updated to Sentry 0.7.19
 
-### Tiled 1.11.1 (11 Jan 2025)
+### Tiled 1.11.1 (11 January 2025)
 
 * Releases now ship with support for loading Aseprite images (#4109)
 * Scripting: Added `FileFormat.nameFilter`
