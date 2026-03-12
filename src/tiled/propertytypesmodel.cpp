@@ -165,6 +165,9 @@ QModelIndex PropertyTypesModel::addNewPropertyType(PropertyType::Type type)
     case PropertyType::PT_Enum:
         propertyType = std::make_unique<EnumPropertyType>(name);
         break;
+    case PropertyType::PT_Primitive:
+        propertyType = std::make_unique<PrimitivePropertyType>(name);
+        break;
     }
 
     if (!propertyType)
@@ -221,6 +224,10 @@ QIcon PropertyTypesModel::iconForPropertyType(PropertyType::Type type)
         static const QIcon enumIcon(QStringLiteral("://images/scalable/property-type-enum.svg"));
         return enumIcon;
     }
+    case PropertyType::PT_Primitive: {
+        static const QIcon plain(QStringLiteral("://images/scalable/property-type-plain.svg"));
+        return plain;
+    }
     }
     return QIcon();
 }
@@ -239,7 +246,8 @@ bool PropertyTypesModel::checkTypeNameUnused(const QString &name) const
 QString PropertyTypesModel::nextPropertyTypeName(PropertyType::Type type) const
 {
     const auto baseText = type == PropertyType::PT_Enum ? tr("Enum")
-                                                        : tr("Class");
+                         : type == PropertyType::PT_Primitive ? tr("Primitive")
+                         : tr("Class");
 
     // Search for a unique value, starting from the current count
     auto number = mPropertyTypes->count(type);

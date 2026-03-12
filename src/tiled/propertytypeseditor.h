@@ -107,12 +107,16 @@ private:
     void setCurrentPropertyType(PropertyType::Type type);
     void addClassProperties();
     void addEnumProperties();
+    void addPrimitiveProperties();
 
     void setStorageType(EnumPropertyType::StorageType storageType);
     void setValuesAsFlags(bool flags);
     void addValue();
     void removeValues();
     bool checkValueCount(int count);
+
+    void setPrimitiveStorageType(PrimitivePropertyType::StorageType storageType);
+    void primitiveColorChanged(const QColor &color);
 
     void openClassOfPopup();
     void openAddMemberDialog();
@@ -161,12 +165,16 @@ private:
     VariantMapProperty *mMembersProperty = nullptr;
     QPointer<AddValueProperty> mAddValueProperty;
 
+    ColorButton *mPrimitiveColorButton = nullptr;
+    QComboBox *mPrimitiveStorageTypeCombo = nullptr;
+
     bool mSettingPrefPropertyTypes = false;
     bool mSettingName = false;
     bool mUpdatingDetails = false;
 
     QAction *mAddEnumPropertyTypeAction;
     QAction *mAddClassPropertyTypeAction;
+    QAction *mAddPrimitivePropertyTypeAction;
     QAction *mRemovePropertyTypeAction;
 
     QAction *mAddValueAction;

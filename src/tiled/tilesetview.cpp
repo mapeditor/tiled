@@ -25,6 +25,9 @@
 #include "changetilewangid.h"
 #include "pannableviewhelper.h"
 #include "preferences.h"
+#include "project.h"
+#include "projectmanager.h"
+#include "propertytype.h"
 #include "stylehelper.h"
 #include "tile.h"
 #include "tileset.h"
@@ -162,6 +165,44 @@ void TileDelegate::paint(QPainter *painter,
     // Overlay with film strip when animated
     if (mTilesetView->markAnimatedTiles() && tile->isAnimated())
         drawFilmStrip(painter, targetRect);
+
+    // Draw property visual indicators
+    {
+        const auto &propertyTypes = *ProjectManager::instance()->project().propertyTypes();
+        const auto &properties = tile->properties();
+        int indicatorIndex = 0;
+
+        for (auto it = properties.constBegin(); it != properties.constEnd(); ++it) {
+            if (it.value().userType() != propertyValueId())
+                continue;
+
+            const auto propertyValue = it.value().value<PropertyValue>();
+            if (propertyValue.typeId == 0)
+                continue;
+
+            const auto *type = propertyTypes.findTypeById(propertyValue.typeId);
+            if (!type || !type->isPrimitive())
+                continue;
+
+            const auto &primitiveType = static_cast<const PrimitivePropertyType &>(*type);
+            if (!primitiveType.visualColor.isValid())
+                continue;
+
+            const int diameter = std::max(6, static_cast<int>(targetRect.width() * 0.15));
+            const int spacing = 2;
+            const int x = targetRect.left() + 2 + indicatorIndex * (diameter + spacing);
+            const int y = targetRect.top() + 2;
+
+            painter->save();
+            painter->setRenderHint(QPainter::Antialiasing);
+            painter->setBrush(primitiveType.visualColor);
+            painter->setPen(QPen(Qt::black, 1));
+            painter->drawEllipse(x, y, diameter, diameter);
+            painter->restore();
+
+            ++indicatorIndex;
+        }
+    }
 
     const auto highlight = option.palette.highlight();
 
@@ -322,6 +363,9 @@ TilesetView::TilesetView(QWidget *parent)
 
     connect(prefs, &Preferences::showTilesetGridChanged,
             this, &TilesetView::setDrawGrid);
+
+    connect(prefs, &Preferences::propertyTypesChanged,
+            this, [this] { viewport()->update(); });
 
     connect(StyleHelper::instance(), &StyleHelper::styleApplied,
             this, &TilesetView::updateBackgroundColor);

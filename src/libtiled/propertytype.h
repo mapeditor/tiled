@@ -65,7 +65,8 @@ public:
     enum Type {
         PT_Invalid,
         PT_Class,
-        PT_Enum
+        PT_Enum,
+        PT_Primitive
     };
 
     const Type type;
@@ -74,6 +75,7 @@ public:
 
     bool isClass() const { return type == PT_Class; }
     bool isEnum() const { return type == PT_Enum; }
+    bool isPrimitive() const { return type == PT_Primitive; }
 
     virtual ~PropertyType() = default;
 
@@ -174,6 +176,39 @@ public:
     bool isClassFor(const Object &object) const;
 
     void setUsageFlags(int flags, bool value);
+};
+
+/**
+ * A user-defined primitive type with an optional visual color, for use as
+ * custom property. This allows associating a visual indicator with a
+ * property value.
+ */
+class TILEDSHARED_EXPORT PrimitivePropertyType final : public PropertyType
+{
+public:
+    enum StorageType {
+        BoolValue,
+        IntValue,
+        FloatValue,
+        StringValue,
+        ColorValue
+    };
+
+    StorageType storageType = BoolValue;
+    QColor visualColor;
+
+    PrimitivePropertyType(const QString &name) : PropertyType(PT_Primitive, name) {}
+
+    ExportValue toExportValue(const QVariant &value, const ExportContext &) const override;
+    QVariant toPropertyValue(const QVariant &value, const ExportContext &) const override;
+
+    QVariant defaultValue() const override;
+
+    QJsonObject toJson(const ExportContext &) const override;
+    void initializeFromJson(const QJsonObject &json) override;
+
+    static StorageType storageTypeFromString(const QString &string);
+    static QString storageTypeToString(StorageType type);
 };
 
 using SharedPropertyType = QSharedPointer<PropertyType>;
