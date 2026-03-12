@@ -346,9 +346,22 @@ void TilesetView::setTilesetDocument(TilesetDocument *tilesetDocument)
 
     if (mTilesetDocument) {
         connect(mTilesetDocument, &Document::changed, this, &TilesetView::onChange);
+        connect(mTilesetDocument, &TilesetDocument::tilesetChanged,
+                this, &TilesetView::tilesetChanged);
         connect(mTilesetDocument, &TilesetDocument::tilesAdded, this, &TilesetView::refreshColumnCount);
         connect(mTilesetDocument, &TilesetDocument::tilesRemoved, this, &TilesetView::refreshColumnCount);
     }
+}
+
+void TilesetView::tilesetChanged(Tileset *tileset)
+{
+    if (!tilesetModel())
+        return;
+    if (tilesetModel()->tileset() != tileset)
+        return;
+
+    scheduleDelayedItemsLayout();
+    refreshColumnCount();
 }
 
 QSize TilesetView::sizeHint() const

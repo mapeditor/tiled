@@ -120,6 +120,7 @@ protected:
 
 private:
     void onChange(const ChangeEvent &change);
+    void tilesetChanged(Tileset *tileset);
 
     void selectWangSetImage();
     void selectWangColorImage();
