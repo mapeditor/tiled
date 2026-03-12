@@ -237,10 +237,9 @@ void TilesetModel::setColumnCountOverride(int columnCount)
     if (mColumnCountOverride == columnCount)
         return;
 
-    const int oldColumnCount = TilesetModel::columnCount();
-
     emit layoutAboutToBeChanged();
 
+    const int oldColumnCount = TilesetModel::columnCount();
     const QModelIndexList oldIndexes = persistentIndexList();
 
     mColumnCountOverride = columnCount;
