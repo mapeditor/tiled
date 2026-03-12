@@ -34,6 +34,7 @@
 #include <QFileInfo>
 #include <QMap>
 #include <QRegularExpression>
+#include <QByteArray>
 
 #include <iostream>
 #include <map>
@@ -622,6 +623,222 @@ static void writeExtObjects(QFileDevice *device, const AssetInfo &assetInfo)
 
     device->write("\n");
 }
+// Detects and returns true if Godot's version is 4.3 or later
+static bool detectGodot4_3(QString projectFilePath)
+{
+    QFile file(projectFilePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
+    throw tscnError(TscnPlugin::tr("godot.project file could not be found."));
+    }
+
+    QTextStream in(&file);
+
+    QRegularExpression versionRegex("config/features=.*\"(\\d+\\.\\d+)\"");
+
+    while (!in.atEnd()){
+        auto line = in.readLine();
+        if (!line.startsWith("config/features"))
+            continue;
+
+        QRegularExpressionMatch match = versionRegex.match(line);
+        if (match.hasMatch())
+        {
+            QString capturedVersion = match.captured(1);
+            return capturedVersion >= "4.3";
+        }
+    }
+    // godot version not found
+    return false;
+}
+
+// Write TileMap node. Exports all layers under one TileMap node. 
+static void writeTileMap(const Map *map, QFileDevice *device,const QString tilesetResPath, AssetInfo &assetInfo)
+{
+    // TileMap node
+    device->write("[node name=\"TileMap\" type=\"TileMap\" parent=\".\"]\n");
+
+    if (tilesetResPath.isEmpty())
+        device->write("tile_set = SubResource(\"TileSet_0\")\n");
+    else
+        device->write("tile_set = ExtResource(\"TileSet_0\")\n");
+
+    device->write("format = 2\n");
+
+    // Tile packing format:
+    // DestLocation, SrcX, SrcY
+    // Where:
+    //   DestLocation = (DestX >= 0 ? DestY : DestY + 1) * 65536 + DestX
+    //   SrcX         = SrcX * 65536 + TileSetId
+    //   SrcY         = SrcY + 65536 * (AlternateId | FLIP_H | FLIP_V | TRANSPOSE)
+    int layerIndex = 0;
+    for (const auto layer : std::as_const(assetInfo.layers)) {
+        device->write(formatByteString("layer_%1/name = \"%2\"\n",
+                                       layerIndex,
+                                       sanitizeQuotedString(layer->name())));
+
+        if (layer->resolvedProperty("ySortEnabled").isValid()) {
+            device->write(formatByteString("layer_%1/y_sort_enabled = true\n",
+                                           layerIndex));
+        }
+
+        if (layer->resolvedProperty("zIndex").isValid()) {
+            device->write(formatByteString("layer_%1/z_index = %2\n",
+                                           layerIndex,
+                                           layer->resolvedProperty("zIndex").toInt()));
+        }
+
+        device->write(formatByteString("layer_%1/tile_data = PackedInt32Array(",
+                                       layerIndex));
+
+        bool first = true;
+        auto bounds = layer->bounds();
+        for (int y = bounds.y(); y < bounds.y() + bounds.height(); ++y) {
+            for (int x = bounds.x(); x < bounds.x() + bounds.width(); ++x) {
+                auto& cell = layer->cellAt(x, y);
+
+                if (!cell.isEmpty()) {
+                    auto resPath = imageSourceToRes(cell.tile()->tileset(), assetInfo.resRoot);
+                    auto& tilesetInfo = assetInfo.tilesetInfo[resPath];
+
+                    if (tilesetInfo.reservedAnimationTiles.contains(cell.tileId())) {
+                        Tiled::ERROR(TscnPlugin::tr("Cannot use tile %1 from tileset %2 because it is "
+                                                    "reserved as an animation frame.")
+                                         .arg(cell.tileId())
+                                         .arg(cell.tileset()->name()),
+                                     Tiled::SelectTile { cell.tile() });
+                    }
+
+                    int alt = 0;
+                    if (cell.rotatedHexagonal120()) {
+                        Tiled::ERROR(TscnPlugin::tr("Hex tiles that are rotated by 120° degrees are not supported."),
+                                     Tiled::JumpToTile { map, QPoint(x, y), layer });
+                    }
+                    if (cell.flippedHorizontally())
+                        alt |= FlippedH;
+                    if (cell.flippedVertically())
+                        alt |= FlippedV;
+                    if (cell.flippedAntiDiagonally())
+                        alt |= Transposed;
+                    // exportAlternate Deprecation Note: Remove this if block
+                    if (alt && !cell.tileset()->resolvedProperty("exportAlternates").toBool()) {
+                        alt <<= 12;
+                    }
+
+                    int destLocation = (x >= 0 ? y : y + 1) * 65536 + x;
+                    int srcX = cell.tileId() % cell.tileset()->columnCount();
+                    srcX *= 65536;
+                    srcX += tilesetInfo.atlasId;
+                    int srcY = cell.tileId() / cell.tileset()->columnCount();
+                    srcY += alt * 65536;
+
+                    if (!first)
+                        device->write(", ");
+
+                    device->write(formatByteString("%1, %2, %3",
+                                                   destLocation, srcX, srcY));
+
+                    first = false;
+                }
+            }
+        }
+
+        device->write(")\n");
+
+        layerIndex++;
+    }
+
+}
+// Write TileMapLayer. Writes each layer as a separate TileMapLayer
+static void writeTileMapLayer(const Map *map, QFileDevice *device, AssetInfo &assetInfo)
+{
+
+    int layerIndex = 0;
+    for (const auto layer : std::as_const(assetInfo.layers)) {
+
+        if (layer->usedTilesets().count() > 1){
+            throw tscnError(TscnPlugin::tr("Godot only supports 1 tileset used per layer. "
+                                           "Separate the tilesets into seperate layers."));
+        }
+
+        device->write(formatByteString("[node name=\"%2\" type=\"TileMapLayer\""
+                                       " parent=\".\"]\n",
+                                       sanitizeQuotedString(layer->name())));
+
+        if (layer->resolvedProperty("zIndex").isValid()) {
+            device->write(formatByteString("layer_%1/z_index = %2\n",
+                                           layer->resolvedProperty("zIndex").toInt()));
+        }
+
+        if (layer->resolvedProperty("ySortEnabled").isValid()) {
+            device->write(formatByteString("layer_%1/y_sort_enabled = true\n",
+                                           layerIndex));
+        }
+
+        // buffer to store encoded map data
+        QByteArray buffer;
+        int tile_count = layer->height() * layer->width();
+
+        buffer.reserve(2 + (12 * tile_count));
+
+        uint16_t version = 0;
+        buffer.append(reinterpret_cast<const char*>(&version), 2);
+
+        auto bounds = layer->bounds();
+        for (int y = bounds.y(); y < bounds.y() + bounds.height(); ++y) {
+            for (int x = bounds.x(); x < bounds.x() + bounds.width(); ++x) {
+                auto& cell = layer->cellAt(x, y);
+
+                if (!cell.isEmpty()) {
+                    auto resPath = imageSourceToRes(cell.tile()->tileset(), assetInfo.resRoot);
+                    auto& tilesetInfo = assetInfo.tilesetInfo[resPath];
+
+                    if (tilesetInfo.reservedAnimationTiles.contains(cell.tileId())) {
+                        Tiled::ERROR(TscnPlugin::tr("Cannot use tile %1 from tileset %2 because it is "
+                                                    "reserved as an animation frame.")
+                                         .arg(cell.tileId())
+                                         .arg(cell.tileset()->name()),
+                                     Tiled::SelectTile { cell.tile() });
+                    }
+
+                    int alt = 0;
+                    if (cell.rotatedHexagonal120()) {
+                        Tiled::ERROR(TscnPlugin::tr("Hex tiles that are rotated by 120° degrees are not supported."),
+                                     Tiled::JumpToTile { map, QPoint(x, y), layer });
+                    }
+                    if (cell.flippedHorizontally())
+                        alt |= FlippedH;
+                    if (cell.flippedVertically())
+                        alt |= FlippedV;
+                    if (cell.flippedAntiDiagonally())
+                        alt |= Transposed;
+                    // exportAlternate Deprecation Note: Remove this if block
+                    if (alt && !cell.tileset()->resolvedProperty("exportAlternates").toBool()) {
+                        alt <<= 12;
+                    }
+                    
+                    // Godot 4.3 onwards packs each tile into 12 bytes, => 6 16-bit / 2 byte each for the data 
+                    int16_t xpos = static_cast<int16_t>(x);
+                    int16_t ypos = static_cast<int16_t>(y);
+                    int16_t atlasId = static_cast<int16_t>(tilesetInfo.atlasId);
+                    uint16_t xTileId = static_cast<uint16_t>(cell.tileId() % cell.tileset()->columnCount());
+                    uint16_t yTileId = static_cast<uint16_t>(cell.tileId() / cell.tileset()->columnCount());
+                    int16_t altTile = static_cast<int16_t>(alt);
+
+                    buffer.append(reinterpret_cast<const char *>(&xpos), 2);
+                    buffer.append(reinterpret_cast<const char *>(&ypos), 2);
+                    buffer.append(reinterpret_cast<const char *>(&atlasId), 2);
+                    buffer.append(reinterpret_cast<const char *>(&xTileId), 2);
+                    buffer.append(reinterpret_cast<const char *>(&yTileId), 2);
+                    buffer.append(reinterpret_cast<const char *>(&altTile), 2);
+                }
+            }
+        }
+        // Godot 4.3 onwards encodes the buffer using Base64
+        device->write(formatByteString("tile_map_data = PackedByteArray(\"%1\")\n", QString::fromLatin1(buffer.toBase64())));
+        device->write("tile_set = SubResource(\"TileSet_0\")");
+        layerIndex++;
+    }
+}
 
 // Write the tileset
 // If you're creating a reusable tileset file, pass in a new file device and
@@ -874,6 +1091,12 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
         AssetInfo assetInfo = collectAssets(map);
         auto tilesetResPath = map->propertyAsString("tilesetResPath");
 
+        QString projectFilePath = assetInfo.resRoot + "/project.godot";
+        // Check engine version to either export tileMap or TileMapLayer
+        bool useTileMapLayer = detectGodot4_3(projectFilePath);
+
+        int godotSceneFormat = useTileMapLayer ? 4 : 3;
+
         // One TileSet, one TileMap, plus a Texture2D and TileSetAtlasSource per tileset
         // (unless we're writing the tileset to an external .tres file)
         auto loadSteps = !tilesetResPath.isEmpty() ? 2 : assetInfo.tilesetInfo.size() * 2 + 2;
@@ -882,7 +1105,7 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
         loadSteps += assetInfo.objectIds.size();
 
         // gdscene node
-        device->write(formatByteString("[gd_scene load_steps=%1 format=3]\n\n", loadSteps));
+        device->write(formatByteString("[gd_scene load_steps=%1 format=%2]\n\n", loadSteps, godotSceneFormat));
 
         writeExtObjects(device, assetInfo);
 
@@ -925,97 +1148,10 @@ bool TscnPlugin::write(const Map *map, const QString &fileName, Options options)
         device->write(formatByteString("[node name=\"%1\" type=\"Node2D\"]\n\n",
             sanitizeQuotedString(fi.baseName())));
 
-        // TileMap node
-        device->write("[node name=\"TileMap\" type=\"TileMap\" parent=\".\"]\n");
-
-        if (tilesetResPath.isEmpty())
-            device->write("tile_set = SubResource(\"TileSet_0\")\n");
-        else
-            device->write("tile_set = ExtResource(\"TileSet_0\")\n");
-
-        device->write("format = 2\n");
-
-        // Tile packing format:
-        // DestLocation, SrcX, SrcY
-        // Where:
-        //   DestLocation = (DestX >= 0 ? DestY : DestY + 1) * 65536 + DestX
-        //   SrcX         = SrcX * 65536 + TileSetId
-        //   SrcY         = SrcY + 65536 * (AlternateId | FLIP_H | FLIP_V | TRANSPOSE)
-        int layerIndex = 0;
-        for (const auto layer : std::as_const(assetInfo.layers)) {
-            device->write(formatByteString("layer_%1/name = \"%2\"\n",
-                                           layerIndex,
-                                           sanitizeQuotedString(layer->name())));
-
-            if (layer->resolvedProperty("ySortEnabled").isValid()) {
-                device->write(formatByteString("layer_%1/y_sort_enabled = true\n",
-                                               layerIndex));
-            }
-
-            if (layer->resolvedProperty("zIndex").isValid()) {
-                device->write(formatByteString("layer_%1/z_index = %2\n",
-                                               layerIndex,
-                                               layer->resolvedProperty("zIndex").toInt()));
-            }
-
-            device->write(formatByteString("layer_%1/tile_data = PackedInt32Array(",
-                                           layerIndex));
-
-            bool first = true;
-            auto bounds = layer->bounds();
-            for (int y = bounds.y(); y < bounds.y() + bounds.height(); ++y) {
-                for (int x = bounds.x(); x < bounds.x() + bounds.width(); ++x) {
-                    auto& cell = layer->cellAt(x, y);
-
-                    if (!cell.isEmpty()) {
-                        auto resPath = imageSourceToRes(cell.tile()->tileset(), assetInfo.resRoot);
-                        auto& tilesetInfo = assetInfo.tilesetInfo[resPath];
-
-                        if (tilesetInfo.reservedAnimationTiles.contains(cell.tileId())) {
-                            Tiled::ERROR(TscnPlugin::tr("Cannot use tile %1 from tileset %2 because it is "
-                                                        "reserved as an animation frame.")
-                                                     .arg(cell.tileId())
-                                                     .arg(cell.tileset()->name()),
-                                         Tiled::SelectTile { cell.tile() });
-                        }
-
-                        int alt = 0;
-                        if (cell.rotatedHexagonal120()) {
-                            Tiled::ERROR(TscnPlugin::tr("Hex tiles that are rotated by 120° degrees are not supported."),
-                                         Tiled::JumpToTile { map, QPoint(x, y), layer });
-                        }
-                        if (cell.flippedHorizontally())
-                            alt |= FlippedH;
-                        if (cell.flippedVertically())
-                            alt |= FlippedV;
-                        if (cell.flippedAntiDiagonally())
-                            alt |= Transposed;
-                        // exportAlternate Deprecation Note: Remove this if block
-                        if (alt && !cell.tileset()->resolvedProperty("exportAlternates").toBool()) {
-                            alt <<= 12;
-                        }
-
-                        int destLocation = (x >= 0 ? y : y + 1) * 65536 + x;
-                        int srcX = cell.tileId() % cell.tileset()->columnCount();
-                        srcX *= 65536;
-                        srcX += tilesetInfo.atlasId;
-                        int srcY = cell.tileId() / cell.tileset()->columnCount();
-                        srcY += alt * 65536;     
-
-                        if (!first)
-                            device->write(", ");
-
-                        device->write(formatByteString("%1, %2, %3",
-                                                       destLocation, srcX, srcY));
-
-                        first = false;
-                    }
-                }
-            }
-
-            device->write(")\n");
-
-            layerIndex++;
+        if (useTileMapLayer){
+            writeTileMapLayer(map, device, assetInfo);
+        } else {
+            writeTileMap(map, device, tilesetResPath, assetInfo);
         }
 
         device->write("\n");
