@@ -572,7 +572,8 @@ void PropertyTypesEditor::openAddMemberDialog()
 
         connect(mAddValueProperty, &Property::addRequested, this, [this] (bool focus) {
             const auto &name = mAddValueProperty->name();
-            addMember(name, mAddValueProperty->value());
+            const bool reportExisting = focus;
+            addMember(name, mAddValueProperty->value(), reportExisting);
 
             if (auto property = mMembersProperty->property(name)) {
                 if (focus)
@@ -592,7 +593,7 @@ void PropertyTypesEditor::openAddMemberDialog()
     mMembersView->focusProperty(mAddValueProperty, PropertiesView::FocusLabel);
 }
 
-void PropertyTypesEditor::addMember(const QString &name, const QVariant &value)
+void PropertyTypesEditor::addMember(const QString &name, const QVariant &value, bool reportExisting)
 {
     if (name.isEmpty())
         return;
@@ -603,9 +604,11 @@ void PropertyTypesEditor::addMember(const QString &name, const QVariant &value)
 
     auto &classType = static_cast<ClassPropertyType&>(*propertyType);
     if (classType.members.contains(name)) {
-        QMessageBox::critical(this,
-                              tr("Error Adding Member"),
-                              tr("There is already a member named '%1'.").arg(name));
+        if (reportExisting) {
+            QMessageBox::critical(this,
+                                  tr("Error Adding Member"),
+                                  tr("There is already a member named '%1'.").arg(name));
+        }
         return;
     }
 
