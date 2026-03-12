@@ -118,8 +118,8 @@ donation][donate] to support further improvements. Let's make this tool even bet
 [Itch]: https://thorbjorn.itch.io/tiled
 [Liberapay]: https://liberapay.com/Tiled/
 [Automapping]: https://doc.mapeditor.org/en/stable/manual/automapping/
-[Tiled 1.9]: https://www.mapeditor.org/2022/06/25/tiled-1-9-released.html
-[unifying custom types]: https://www.mapeditor.org/2022/06/25/tiled-1-9-released.html#unified-custom-types
+[Tiled 1.9]: {{ site.baseurl }}{% post_url 2022-06-25-tiled-1-9-released %}
+[unifying custom types]: {{ site.baseurl }}{% post_url 2022-06-25-tiled-1-9-released %}#unified-custom-types
 [automapping probability]: https://doc.mapeditor.org/en/stable/manual/automapping/#layer-properties
 [custom dialogs]: https://doc.mapeditor.org/docs/scripting/classes/Dialog.html
 [TileMap.toImage]: https://www.mapeditor.org/docs/scripting/classes/TileMap.html#toImage

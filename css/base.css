@@ -71,7 +71,7 @@ img {
   border: 0;
 }
 article p > img {
-  width: 80%;
+  max-width: 80%;
   margin: 2em auto;
   display: block;
   border-radius: 5px;

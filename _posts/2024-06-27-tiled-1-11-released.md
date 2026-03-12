@@ -135,4 +135,3 @@ donation][donate] to support further improvements. Let's make this tool even bet
 [donate]: https://www.mapeditor.org/donate
 [Itch]: https://thorbjorn.itch.io/tiled
 [Automapping]: https://doc.mapeditor.org/en/stable/manual/automapping/
-[Tiled 1.9]: https://www.mapeditor.org/2022/06/25/tiled-1-9-released.html
