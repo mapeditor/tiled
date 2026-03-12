@@ -25,6 +25,7 @@
 * Added export plugin for Remixed Dungeon (by Mikhael Danilov, #4158)
 * Added "World > World Properties" menu action (with dogboydog, #4190)
 * Added Delete shortcut to Remove Tiles action by default and avoid ambiguity (#4201)
+* Fixed selection to be preserved when toggling dynamic wrapping (by Mollah Hamza, #4385)
 * Fixed tileset tabs to fall back to filename in case of unnamed tilesets (by Sid, #4360)
 * Fixed alpha component of tint color not applying correctly to opaque images (by Roland Helmerichs, #4310)
 * Fixed panning with space bar not always working on first click (with Oval, #4338)
