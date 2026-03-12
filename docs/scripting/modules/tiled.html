@@ -125,6 +125,7 @@
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#projectFilePath" class="tsd-kind-icon">project<wbr>File<wbr>Path</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#qtVersion" class="tsd-kind-icon">qt<wbr>Version</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#scriptArguments" class="tsd-kind-icon">script<wbr>Arguments</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#session" class="tsd-kind-icon">session</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#tilesetEditor" class="tsd-kind-icon">tileset<wbr>Editor</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#tilesetFormats" class="tsd-kind-icon">tileset<wbr>Formats</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-namespace"><a href="tiled.html#version" class="tsd-kind-icon">version</a></li>
@@ -482,6 +483,27 @@
 						<dl class="tsd-comment-tags">
 							<dt>since</dt>
 							<dd><p>1.9</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-namespace">
+					<a name="session" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> session</h3>
+					<div class="tsd-signature tsd-kind-icon">session<span class="tsd-signature-symbol">:</span> <a href="../interfaces/Session.html" class="tsd-signature-type" data-tsd-kind="Interface">Session</a></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Provides access to the current session, allowing scripts to read and
+							write session-specific settings like last-used tile size.</p>
+						</div>
+						<p>In command-line mode (<code>--evaluate</code>), no session may be available. In
+							that case, methods return safe defaults (empty strings, default
+						values, etc.).</p>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.12</p>
 							</dd>
 						</dl>
 					</div>
@@ -1593,6 +1615,9 @@
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
 						<a href="tiled.html#scriptArguments" class="tsd-kind-icon">script<wbr>Arguments</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
+						<a href="tiled.html#session" class="tsd-kind-icon">session</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-namespace">
 						<a href="tiled.html#tilesetEditor" class="tsd-kind-icon">tileset<wbr>Editor</a>

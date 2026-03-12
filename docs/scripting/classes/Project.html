@@ -134,15 +134,20 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Project.html#extensionsPath" class="tsd-kind-icon">extensions<wbr>Path</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Project.html#fileName" class="tsd-kind-icon">file<wbr>Name</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Project.html#folders" class="tsd-kind-icon">folders</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Project.html#propertyTypes" class="tsd-kind-icon">property<wbr>Types</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Project.html#readOnly" class="tsd-kind-icon">read<wbr>Only</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section tsd-is-inherited">
+						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Project.html#addClassType" class="tsd-kind-icon">add<wbr>Class<wbr>Type</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Project.html#addEnumType" class="tsd-kind-icon">add<wbr>Enum<wbr>Type</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Project.html#findTypeByName" class="tsd-kind-icon">find<wbr>Type<wbr>ByName</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="Project.html#properties" class="tsd-kind-icon">properties</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="Project.html#property" class="tsd-kind-icon">property</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="Project.html#removeProperty" class="tsd-kind-icon">remove<wbr>Property</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Project.html#removeTypeByName" class="tsd-kind-icon">remove<wbr>Type<wbr>ByName</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="Project.html#resolvedProperties" class="tsd-kind-icon">resolved<wbr>Properties</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="Project.html#resolvedProperty" class="tsd-kind-icon">resolved<wbr>Property</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="Project.html#setColorProperty" class="tsd-kind-icon">set<wbr>Color<wbr>Property</a></li>
@@ -257,6 +262,24 @@
 						</div>
 					</div>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="propertyTypes" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> property<wbr>Types</h3>
+					<div class="tsd-signature tsd-kind-icon">property<wbr>Types<span class="tsd-signature-symbol">:</span> <a href="PropertyType.html" class="tsd-signature-type" data-tsd-kind="Class">PropertyType</a><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A list of custom property types defined in the project in the <em>View &gt;
+							Custom Types Editor</em> UI.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.12</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="readOnly" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> read<wbr>Only</h3>
@@ -271,8 +294,78 @@
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="addClassType" class="tsd-anchor"></a>
+					<h3>add<wbr>Class<wbr>Type</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Class<wbr>Type<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="ClassPropertyType.html" class="tsd-signature-type" data-tsd-kind="Class">ClassPropertyType</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Add a new Class property type to the project with the specified name.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>since</dt>
+									<dd><p>1.12</p>
+									</dd>
+								</dl>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="addEnumType" class="tsd-anchor"></a>
+					<h3>add<wbr>Enum<wbr>Type</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Enum<wbr>Type<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="EnumPropertyType.html" class="tsd-signature-type" data-tsd-kind="Class">EnumPropertyType</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Add a new Enum property type to the project with the specified name.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>since</dt>
+									<dd><p>1.12</p>
+									</dd>
+								</dl>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="findTypeByName" class="tsd-anchor"></a>
+					<h3>find<wbr>Type<wbr>ByName</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">find<wbr>Type<wbr>ByName<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="PropertyType.html" class="tsd-signature-type" data-tsd-kind="Class">PropertyType</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get a custom type from the project by name. If no type of the specified name
+									exists, null will be returned.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>since</dt>
+									<dd><p>1.12</p>
+									</dd>
+								</dl>
+							</div>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="properties" class="tsd-anchor"></a>
 					<h3>properties</h3>
@@ -333,6 +426,29 @@
 								<div class="lead">
 									<p>Removes the custom property with the given name.</p>
 								</div>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="removeTypeByName" class="tsd-anchor"></a>
+					<h3>remove<wbr>Type<wbr>ByName</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>Type<wbr>ByName<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Remove a custom type from the project by name. Returns whether the type was removed.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>since</dt>
+									<dd><p>1.12</p>
+									</dd>
+								</dl>
 							</div>
 						</li>
 					</ul>
@@ -573,8 +689,20 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="Project.html#folders" class="tsd-kind-icon">folders</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="Project.html#propertyTypes" class="tsd-kind-icon">property<wbr>Types</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="Project.html#readOnly" class="tsd-kind-icon">read<wbr>Only</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Project.html#addClassType" class="tsd-kind-icon">add<wbr>Class<wbr>Type</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Project.html#addEnumType" class="tsd-kind-icon">add<wbr>Enum<wbr>Type</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Project.html#findTypeByName" class="tsd-kind-icon">find<wbr>Type<wbr>ByName</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="Project.html#properties" class="tsd-kind-icon">properties</a>
@@ -584,6 +712,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="Project.html#removeProperty" class="tsd-kind-icon">remove<wbr>Property</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Project.html#removeTypeByName" class="tsd-kind-icon">remove<wbr>Type<wbr>ByName</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="Project.html#resolvedProperties" class="tsd-kind-icon">resolved<wbr>Properties</a>

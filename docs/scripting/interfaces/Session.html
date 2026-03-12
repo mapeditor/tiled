@@ -1,0 +1,584 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<meta name='viewport' content="width=device-width, initial-scale=1" />
+	<meta property="og:image" content="https://www.mapeditor.org/img/tiled-logo-filled.png" />
+	<link href='/favicon.ico' rel='icon' type='image/png'/>
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="/css/base.css">
+	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
+	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
+	<link rel="stylesheet" href="../assets/css/override.css">
+	<title>Session | Tiled Scripting API</title>
+	<meta name="description" content="Documentation for Tiled Scripting API">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<div class="headerbar-container">
+	<nav class="headerbar container">
+		<a href="/" class="headerbar-logo"><img src="/img/tiled-logo-white.png" class="logo" alt="Tiled logo" width="393" height="213" /></a>
+		<div class="headerbar-content">
+			<a class="header-item" href="/docs">Docs</a>
+			<a class="header-item" href="/news">News</a>
+			<a class="header-item" href="/donate">Donate</a>
+			<a class="header-item button-sponsor" rel="noopener sponsored" href="https://craftpix.net/link/TiledHeaderAssets">
+				Pixel&nbsp;Game&nbsp;Assets<span class="ad">Ad</span>
+			</a>
+			<div class="stretch"></div>
+			<!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+			<a href="https://discourse.mapeditor.org/" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44.8 51.2"><path d="m22.59 2.7652c-12.26 0-22.59 9.85-22.59 22.01 0 0.39 0.01 22.79 0.01 22.79l22.58-0.02c12.27 0 22.21-10.23 22.21-22.39s-9.94-22.39-22.21-22.39zm-0.19 35.2c-1.94 0-3.79-0.43-5.44-1.21l-8.11 2.01 2.29-7.5c-0.98-1.81-1.54-3.89-1.54-6.1 0-7.07 5.73-12.8 12.8-12.8s12.8 5.73 12.8 12.8-5.73 12.8-12.8 12.8z"/></svg> <span class="tooltiptext">Forum</span></a>
+			<a href="https://discord.gg/39wbTv7" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44.8 51.2"><path d="m29.722 24.32c0 1.5616-1.152 2.8416-2.6112 2.8416-1.4336 0-2.6112-1.28-2.6112-2.8416s1.152-2.8416 2.6112-2.8416 2.6112 1.28 2.6112 2.8416zm-11.955-2.8416c-1.4592 0-2.6112 1.28-2.6112 2.8416s1.1776 2.8416 2.6112 2.8416c1.4592 0 2.6112-1.28 2.6112-2.8416 0.0256-1.5616-1.152-2.8416-2.6112-2.8416zm27.034-16.205v45.926c-6.4494-5.6994-4.3868-3.8128-11.878-10.778l1.3568 4.736h-29.03c-2.8928 0-5.248-2.3552-5.248-5.2736v-34.611c0-2.9184 2.3552-5.2736 5.248-5.2736h34.304c2.8928 0 5.248 2.3552 5.248 5.2736zm-7.296 24.269c0-8.2432-3.6864-14.925-3.6864-14.925-3.6864-2.7648-7.1936-2.688-7.1936-2.688l-0.3584 0.4096c4.352 1.3312 6.3744 3.2512 6.3744 3.2512-6.0811-3.3329-13.224-3.3335-19.123-0.7424-0.9472 0.4352-1.5104 0.7424-1.5104 0.7424s2.1248-2.0224 6.7328-3.3536l-0.256-0.3072s-3.5072-0.0768-7.1936 2.688c0 0-3.6864 6.6816-3.6864 14.925 0 0 2.1504 3.712 7.808 3.8912 0 0 0.9472-1.152 1.7152-2.1248-3.2512-0.9728-4.48-3.0208-4.48-3.0208 0.3766 0.2636 0.9976 0.6053 1.0496 0.64 4.321 2.4198 10.459 3.2126 15.974 0.896 0.896-0.3328 1.8944-0.8192 2.944-1.5104 0 0-1.28 2.0992-4.6336 3.0464 0.768 0.9728 1.6896 2.0736 1.6896 2.0736 5.6576-0.1792 7.8336-3.8912 7.8336-3.8912z"/></svg> <span class="tooltiptext">Discord</span></a>
+			<a href="https://floss.social/@tiled" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M433 179.1c0-97.2-63.7-125.7-63.7-125.7-62.5-28.7-228.6-28.4-290.5 0 0 0-63.7 28.5-63.7 125.7 0 115.7-6.6 259.4 105.6 289.1 40.5 10.7 75.3 13 103.3 11.4 50.8-2.8 79.3-18.1 79.3-18.1l-1.7-36.9s-36.3 11.4-77.1 10.1c-40.4-1.4-83-4.4-89.6-54a102.5 102.5 0 0 1 -.9-13.9c85.6 20.9 158.7 9.1 178.8 6.7 56.1-6.7 105-41.3 111.2-72.9 9.8-49.8 9-121.5 9-121.5zm-75.1 125.2h-46.6v-114.2c0-49.7-64-51.6-64 6.9v62.5h-46.3V197c0-58.5-64-56.6-64-6.9v114.2H90.2c0-122.1-5.2-147.9 18.4-175 25.9-28.9 79.8-30.8 103.8 6.1l11.6 19.5 11.6-19.5c24.1-37.1 78.1-34.8 103.8-6.1 23.7 27.3 18.4 53 18.4 175z"/></svg> <span class="tooltiptext">Mastodon</span></a>
+			<a href="https://github.com/mapeditor/tiled" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49.6 51.2"><path d="m16.59 40.099c0 0.2-0.23 0.36-0.52 0.36-0.33 0.03-0.56-0.13-0.56-0.36 0-0.2 0.23-0.36 0.52-0.36 0.3-0.03 0.56 0.13 0.56 0.36zm-3.11-0.45c-0.07 0.2 0.13 0.43 0.43 0.49 0.26 0.1 0.56 0 0.62-0.2s-0.13-0.43-0.43-0.52c-0.26-0.07-0.55 0.03-0.62 0.23zm4.42-0.17c-0.29 0.07-0.49 0.26-0.46 0.49 0.03 0.2 0.29 0.33 0.59 0.26 0.29-0.07 0.49-0.26 0.46-0.46-0.03-0.19-0.3-0.32-0.59-0.29zm6.58-38.32c-13.87 0-24.48 10.53-24.48 24.4 0 11.09 6.98 20.58 16.95 23.92 1.28 0.23 1.73-0.56 1.73-1.21 0-0.62-0.03-4.04-0.03-6.14 0 0-7 1.5-8.47-2.98 0 0-1.14-2.91-2.78-3.66 0 0-2.29-1.57 0.16-1.54 0 0 2.49 0.2 3.86 2.58 2.19 3.86 5.86 2.75 7.29 2.09 0.23-1.6 0.88-2.71 1.6-3.37-5.59-0.62-11.23-1.43-11.23-11.05 0-2.75 0.76-4.13 2.36-5.89-0.26-0.65-1.11-3.33 0.26-6.79 2.09-0.65 6.9 2.7 6.9 2.7 2-0.56 4.15-0.85 6.28-0.85s4.28 0.29 6.28 0.85c0 0 4.81-3.36 6.9-2.7 1.37 3.47 0.52 6.14 0.26 6.79 1.6 1.77 2.58 3.15 2.58 5.89 0 9.65-5.89 10.42-11.48 11.05 0.92 0.79 1.7 2.29 1.7 4.64 0 3.37-0.03 7.54-0.03 8.36 0 0.65 0.46 1.44 1.73 1.21 10-3.32 16.78-12.81 16.78-23.9 0-13.87-11.25-24.4-25.12-24.4zm-14.76 34.49c-0.13 0.1-0.1 0.33 0.07 0.52 0.16 0.16 0.39 0.23 0.52 0.1 0.13-0.1 0.1-0.33-0.07-0.52-0.16-0.16-0.39-0.23-0.52-0.1zm-1.08-0.81c-0.07 0.13 0.03 0.29 0.23 0.39 0.16 0.1 0.36 0.07 0.43-0.07 0.07-0.13-0.03-0.29-0.23-0.39-0.2-0.06-0.36-0.03-0.43 0.07zm3.24 3.56c-0.16 0.13-0.1 0.43 0.13 0.62 0.23 0.23 0.52 0.26 0.65 0.1 0.13-0.13 0.07-0.43-0.13-0.62-0.22-0.23-0.52-0.26-0.65-0.1zm-1.14-1.47c-0.16 0.1-0.16 0.36 0 0.59s0.43 0.33 0.56 0.23c0.16-0.13 0.16-0.39 0-0.62-0.14-0.23-0.4-0.33-0.56-0.2z"/></svg> <span class="tooltiptext">GitHub</span></a>
+		</div>
+	</nav>
+</div>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">Tiled Scripting API</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../index.html">Tiled Scripting API</a>
+				</li>
+				<li>
+					<a href="Session.html">Session</a>
+				</li>
+			</ul>
+			<h1>Interface Session</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Provides access to session-specific settings. The session stores
+							per-project preferences like last-used tile sizes, open files, and
+						file states.</p>
+					</div>
+					<p>Values are accessed by their string key (e.g. <code>&quot;map.tileWidth&quot;</code>).</p>
+					<a href="#known-session-properties" id="known-session-properties" style="color: inherit; text-decoration: none;">
+						<h3>Known Session Properties</h3>
+					</a>
+					<table>
+						<thead>
+							<tr>
+								<th>Key</th>
+								<th>Type</th>
+								<th>Default</th>
+								<th>Description</th>
+							</tr>
+						</thead>
+						<tbody><tr>
+								<td><code>&quot;map.orientation&quot;</code></td>
+								<td><code>number</code> (Map.Orientation)</td>
+								<td><code>Map.Orthogonal</code></td>
+								<td>Last used map orientation</td>
+							</tr>
+							<tr>
+								<td><code>&quot;map.layerDataFormat&quot;</code></td>
+								<td><code>number</code> (Map.LayerDataFormat)</td>
+								<td><code>Map.CSV</code></td>
+								<td>Last used layer data format</td>
+							</tr>
+							<tr>
+								<td><code>&quot;map.renderOrder&quot;</code></td>
+								<td><code>number</code> (Map.RenderOrder)</td>
+								<td><code>Map.RightDown</code></td>
+								<td>Last used render order</td>
+							</tr>
+							<tr>
+								<td><code>&quot;map.fixedSize&quot;</code></td>
+								<td><code>boolean</code></td>
+								<td><code>true</code></td>
+								<td>Whether new maps use a fixed size</td>
+							</tr>
+							<tr>
+								<td><code>&quot;map.width&quot;</code></td>
+								<td><code>number</code></td>
+								<td><code>30</code></td>
+								<td>Last used map width (in tiles)</td>
+							</tr>
+							<tr>
+								<td><code>&quot;map.height&quot;</code></td>
+								<td><code>number</code></td>
+								<td><code>20</code></td>
+								<td>Last used map height (in tiles)</td>
+							</tr>
+							<tr>
+								<td><code>&quot;map.tileWidth&quot;</code></td>
+								<td><code>number</code></td>
+								<td><code>32</code></td>
+								<td>Last used tile width (in pixels)</td>
+							</tr>
+							<tr>
+								<td><code>&quot;map.tileHeight&quot;</code></td>
+								<td><code>number</code></td>
+								<td><code>32</code></td>
+								<td>Last used tile height (in pixels)</td>
+							</tr>
+							<tr>
+								<td><code>&quot;map.lastUsedFormat&quot;</code></td>
+								<td><code>string</code></td>
+								<td><code>&quot;&quot;</code></td>
+								<td>Last used map format</td>
+							</tr>
+							<tr>
+								<td><code>&quot;map.lastUsedExportFilter&quot;</code></td>
+								<td><code>string</code></td>
+								<td><code>&quot;&quot;</code></td>
+								<td>Last used map export filter</td>
+							</tr>
+							<tr>
+								<td><code>&quot;tileset.type&quot;</code></td>
+								<td><code>number</code></td>
+								<td><code>0</code></td>
+								<td>Last used tileset type</td>
+							</tr>
+							<tr>
+								<td><code>&quot;tileset.embedInMap&quot;</code></td>
+								<td><code>boolean</code></td>
+								<td><code>false</code></td>
+								<td>Whether to embed tileset in map</td>
+							</tr>
+							<tr>
+								<td><code>&quot;tileset.useTransparentColor&quot;</code></td>
+								<td><code>boolean</code></td>
+								<td><code>false</code></td>
+								<td>Whether to use a transparent color</td>
+							</tr>
+							<tr>
+								<td><code>&quot;tileset.transparentColor&quot;</code></td>
+								<td><code>color</code></td>
+								<td>magenta</td>
+								<td>Transparent color for tilesets</td>
+							</tr>
+							<tr>
+								<td><code>&quot;tileset.tileSize&quot;</code></td>
+								<td><code>size</code></td>
+								<td><code>{width: 32, height: 32}</code></td>
+								<td>Last used tileset tile size</td>
+							</tr>
+							<tr>
+								<td><code>&quot;tileset.spacing&quot;</code></td>
+								<td><code>number</code></td>
+								<td><code>0</code></td>
+								<td>Last used tileset spacing</td>
+							</tr>
+							<tr>
+								<td><code>&quot;tileset.margin&quot;</code></td>
+								<td><code>number</code></td>
+								<td><code>0</code></td>
+								<td>Last used tileset margin</td>
+							</tr>
+							<tr>
+								<td><code>&quot;tileset.lastUsedFilter&quot;</code></td>
+								<td><code>string</code></td>
+								<td><code>&quot;&quot;</code></td>
+								<td>Last used tileset file filter</td>
+							</tr>
+							<tr>
+								<td><code>&quot;tileset.lastUsedFormat&quot;</code></td>
+								<td><code>string</code></td>
+								<td><code>&quot;&quot;</code></td>
+								<td>Last used tileset format</td>
+							</tr>
+							<tr>
+								<td><code>&quot;resizeMap.removeObjects&quot;</code></td>
+								<td><code>boolean</code></td>
+								<td><code>true</code></td>
+								<td>Remove objects when resizing</td>
+							</tr>
+							<tr>
+								<td><code>&quot;exportAsImage.visibleLayersOnly&quot;</code></td>
+								<td><code>boolean</code></td>
+								<td><code>true</code></td>
+								<td>Export only visible layers</td>
+							</tr>
+							<tr>
+								<td><code>&quot;exportAsImage.useCurrentScale&quot;</code></td>
+								<td><code>boolean</code></td>
+								<td><code>false</code></td>
+								<td>Use current scale for export</td>
+							</tr>
+							<tr>
+								<td><code>&quot;exportAsImage.drawTileGrid&quot;</code></td>
+								<td><code>boolean</code></td>
+								<td><code>false</code></td>
+								<td>Draw tile grid in export</td>
+							</tr>
+							<tr>
+								<td><code>&quot;exportAsImage.drawObjectLabels&quot;</code></td>
+								<td><code>boolean</code></td>
+								<td><code>false</code></td>
+								<td>Draw object labels in export</td>
+							</tr>
+							<tr>
+								<td><code>&quot;exportAsImage.includeBackgroundColor&quot;</code></td>
+								<td><code>boolean</code></td>
+								<td><code>false</code></td>
+								<td>Include background color in export</td>
+							</tr>
+							<tr>
+								<td><code>&quot;automapping.whileDrawing&quot;</code></td>
+								<td><code>boolean</code></td>
+								<td><code>false</code></td>
+								<td>Automap while drawing</td>
+							</tr>
+							<tr>
+								<td><code>&quot;mapScene.enableWorlds&quot;</code></td>
+								<td><code>boolean</code></td>
+								<td><code>true</code></td>
+								<td>Enable worlds in map scene</td>
+							</tr>
+							<tr>
+								<td><code>&quot;textEdit.monospace&quot;</code></td>
+								<td><code>boolean</code></td>
+								<td><code>true</code></td>
+								<td>Use monospace font in text editor</td>
+							</tr>
+							<tr>
+								<td><code>&quot;frame.defaultDuration&quot;</code></td>
+								<td><code>number</code></td>
+								<td><code>100</code></td>
+								<td>Default animation frame duration</td>
+							</tr>
+							<tr>
+								<td><code>&quot;console.history&quot;</code></td>
+								<td><code>string[]</code></td>
+								<td><code>[]</code></td>
+								<td>Console command history</td>
+							</tr>
+							<tr>
+								<td><code>&quot;property.type&quot;</code></td>
+								<td><code>string</code></td>
+								<td><code>&quot;string&quot;</code></td>
+								<td>Last used property type</td>
+							</tr>
+							<tr>
+								<td><code>&quot;file.lastUsedOpenFilter&quot;</code></td>
+								<td><code>string</code></td>
+								<td><code>&quot;&quot;</code></td>
+								<td>Last used file open filter</td>
+							</tr>
+							<tr>
+								<td><code>&quot;loadedWorlds&quot;</code></td>
+								<td><code>string[]</code></td>
+								<td><code>[]</code></td>
+								<td>List of currently loaded world files</td>
+							</tr>
+							<tr>
+								<td><code>&quot;lastUsedTilesetExportFilter&quot;</code></td>
+								<td><code>string</code></td>
+								<td><code>&quot;&quot;</code></td>
+								<td>Last used tileset export filter</td>
+							</tr>
+							<tr>
+								<td><code>&quot;stampsFolder&quot;</code></td>
+								<td><code>string</code></td>
+								<td><code>&quot;&lt;dataDir&gt;/stamps&quot;</code></td>
+								<td>Directory for tile stamps</td>
+							</tr>
+					</tbody></table>
+					<dl class="tsd-comment-tags">
+						<dt>since</dt>
+						<dd><p>1.12</p>
+						</dd>
+					</dl>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">Session</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Session.html#fileName" class="tsd-kind-icon">file<wbr>Name</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="Session.html#fileState" class="tsd-kind-icon">file<wbr>State</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="Session.html#get" class="tsd-kind-icon">get</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="Session.html#isSet" class="tsd-kind-icon">is<wbr>Set</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="Session.html#set" class="tsd-kind-icon">set</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="Session.html#setFileState" class="tsd-kind-icon">set<wbr>File<wbr>State</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="Session.html#setFileStateValue" class="tsd-kind-icon">set<wbr>File<wbr>State<wbr>Value</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="fileName" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> file<wbr>Name</h3>
+					<div class="tsd-signature tsd-kind-icon">file<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Path to the current session file.</p>
+						</div>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="fileState" class="tsd-anchor"></a>
+					<h3>file<wbr>State</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">file<wbr>State<span class="tsd-signature-symbol">(</span>fileName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{}</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns the per-file state for the given file name.</p>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="get" class="tsd-anchor"></a>
+					<h3>get</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">get<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, defaultValue<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns the session value for the given key, or <code>defaultValue</code> if
+									the key is not set.</p>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="isSet" class="tsd-anchor"></a>
+					<h3>is<wbr>Set</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Set<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns whether the given key is present in the session.</p>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="set" class="tsd-anchor"></a>
+					<h3>set</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">set<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sets the session value for the given key.</p>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="setFileState" class="tsd-anchor"></a>
+					<h3>set<wbr>File<wbr>State</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>File<wbr>State<span class="tsd-signature-symbol">(</span>fileName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, fileState<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sets the per-file state for the given file name.</p>
+								</div>
+								<p><strong>Warning:</strong> This replaces the entire per-file state for the given file.
+								To set only a single value, use <a href="Session.html#setFileStateValue">setFileStateValue</a> instead.</p>
+							</div>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="setFileStateValue" class="tsd-anchor"></a>
+					<h3>set<wbr>File<wbr>State<wbr>Value</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>File<wbr>State<wbr>Value<span class="tsd-signature-symbol">(</span>fileName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sets a single value in the per-file state for the given file name.</p>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../index.html">Exports</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface">
+						<a href="Session.html" class="tsd-kind-icon">Session</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="Session.html#fileName" class="tsd-kind-icon">file<wbr>Name</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="Session.html#fileState" class="tsd-kind-icon">file<wbr>State</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="Session.html#get" class="tsd-kind-icon">get</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="Session.html#isSet" class="tsd-kind-icon">is<wbr>Set</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="Session.html#set" class="tsd-kind-icon">set</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="Session.html#setFileState" class="tsd-kind-icon">set<wbr>File<wbr>State</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="Session.html#setFileStateValue" class="tsd-kind-icon">set<wbr>File<wbr>State<wbr>Value</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+<footer class="media-content">
+	<div class="footer-content container">
+		<p>Tiled - Copyright © 2008-2025 Thorbjørn Lindeijer<br> and <a href="https://www.openhub.net/p/tiled-qt/contributors/summary">many other contributors</a></p>
+		<nav style="display: flex; justify-content: center; align-items: top; margin-left: 1em;">
+			<ul style="float: right; border-left: 2px solid #ececec; padding: 0 1em">
+				<li><a href="/docs">Documentation</a></li>
+				<li><a href="/news">News</a></li>
+				<li><a href="/donate">Donate</a></li>
+				<li><a href="https://discourse.mapeditor.org/">Forum</a></li>
+				<li><a href="https://discord.gg/39wbTv7">Discord</a></li>
+				<li><a rel="me" href="https://floss.social/@tiled">Mastodon</a></li>
+				<li><a href="https://github.com/mapeditor/tiled">GitHub</a></li>
+				<li><a href="https://x.com/TiledApp">X</a></li>
+			</ul>
+		</nav>
+	</div>
+</footer>
+</body>
+</html>

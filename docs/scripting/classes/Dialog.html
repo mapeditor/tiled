@@ -453,7 +453,7 @@
 					<a name="addButton" class="tsd-anchor"></a>
 					<h3>add<wbr>Button</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Button<span class="tsd-signature-symbol">(</span>text<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QPushButton.html" class="tsd-signature-type" data-tsd-kind="Class">QPushButton</a></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Button<span class="tsd-signature-symbol">(</span>text<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, toolTip<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QPushButton.html" class="tsd-signature-type" data-tsd-kind="Class">QPushButton</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -465,6 +465,7 @@
 										Allows the user to press a button that you can respond to the clicked
 									signal of.</p>
 								</div>
+								<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
 							</div>
 						</li>
 					</ul>
@@ -473,7 +474,7 @@
 					<a name="addCheckBox" class="tsd-anchor"></a>
 					<h3>add<wbr>Check<wbr>Box</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Check<wbr>Box<span class="tsd-signature-symbol">(</span>text<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, defaultValue<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QCheckBox.html" class="tsd-signature-type" data-tsd-kind="Class">QCheckBox</a></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Check<wbr>Box<span class="tsd-signature-symbol">(</span>text<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, defaultValue<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span>, toolTip<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QCheckBox.html" class="tsd-signature-type" data-tsd-kind="Class">QCheckBox</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -485,6 +486,7 @@
 									Allows a user to toggle a boolean value.</p>
 								</div>
 								<p>If the defaultValue parameter is true the checkbox is checked by default.</p>
+								<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
 							</div>
 						</li>
 					</ul>
@@ -493,7 +495,7 @@
 					<a name="addColorButton" class="tsd-anchor"></a>
 					<h3>add<wbr>Color<wbr>Button</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Color<wbr>Button<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="ColorButton.html" class="tsd-signature-type" data-tsd-kind="Class">ColorButton</a></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Color<wbr>Button<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, defaultValue<span class="tsd-signature-symbol">?: </span><a href="../interfaces/color.html" class="tsd-signature-type" data-tsd-kind="Interface">color</a>, toolTip<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="ColorButton.html" class="tsd-signature-type" data-tsd-kind="Class">ColorButton</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -505,6 +507,9 @@
 								</div>
 								<p>If the labelText is non-empty, a label widget will be added to the left of
 								the widget.</p>
+								<p>The optional defaultValue parameter sets the initial color (since 1.12). Pass <code>undefined</code>
+								to skip setting a default color while still providing a toolTip.</p>
+								<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
 							</div>
 						</li>
 					</ul>
@@ -513,7 +518,7 @@
 					<a name="addComboBox" class="tsd-anchor"></a>
 					<h3>add<wbr>Combo<wbr>Box</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Combo<wbr>Box<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QComboBox.html" class="tsd-signature-type" data-tsd-kind="Class">QComboBox</a></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Combo<wbr>Box<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, defaultIndex<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, toolTip<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QComboBox.html" class="tsd-signature-type" data-tsd-kind="Class">QComboBox</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -526,6 +531,8 @@
 								</div>
 								<p>If the labelText is non-empty, a label widget will be added to the left of
 								the widget.</p>
+								<p>The optional defaultIndex parameter sets the initially selected index (0-based) (since 1.12).</p>
+								<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
 							</div>
 						</li>
 					</ul>
@@ -534,7 +541,7 @@
 					<a name="addFilePicker" class="tsd-anchor"></a>
 					<h3>add<wbr>File<wbr>Picker</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>File<wbr>Picker<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="FileEdit.html" class="tsd-signature-type" data-tsd-kind="Class">FileEdit</a></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>File<wbr>Picker<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, defaultValue<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, toolTip<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="FileEdit.html" class="tsd-signature-type" data-tsd-kind="Class">FileEdit</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -547,6 +554,8 @@
 								</div>
 								<p>If the labelText is non-empty, a label widget will be added to the left of
 								the widget.</p>
+								<p>The optional defaultValue parameter sets the initial file path (since 1.12).</p>
+								<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
 							</div>
 						</li>
 					</ul>
@@ -577,7 +586,7 @@
 					<a name="addImage" class="tsd-anchor"></a>
 					<h3>add<wbr>Image</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Image<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, image<span class="tsd-signature-symbol">: </span><a href="Image.html" class="tsd-signature-type" data-tsd-kind="Class">Image</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="ImageWidget.html" class="tsd-signature-type" data-tsd-kind="Class">ImageWidget</a></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Image<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, image<span class="tsd-signature-symbol">: </span><a href="Image.html" class="tsd-signature-type" data-tsd-kind="Class">Image</a>, toolTip<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="ImageWidget.html" class="tsd-signature-type" data-tsd-kind="Class">ImageWidget</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -587,6 +596,7 @@
 								<div class="lead">
 									<p>Adds an image widget that can display an image in a dialog.</p>
 								</div>
+								<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
 							</div>
 						</li>
 					</ul>
@@ -595,7 +605,7 @@
 					<a name="addLabel" class="tsd-anchor"></a>
 					<h3>add<wbr>Label</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Label<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QLabel.html" class="tsd-signature-type" data-tsd-kind="Class">QLabel</a></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Label<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, toolTip<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QLabel.html" class="tsd-signature-type" data-tsd-kind="Class">QLabel</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -603,9 +613,10 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Add a label to the dialog with the given test. A label will always be the
+									<p>Add a label to the dialog with the given text. A label will always be the
 									first widget in a row.</p>
 								</div>
+								<p>The optional toolTip parameter sets a tooltip on the label (since 1.12).</p>
 							</div>
 						</li>
 					</ul>
@@ -633,7 +644,7 @@
 					<a name="addNumberInput" class="tsd-anchor"></a>
 					<h3>add<wbr>Number<wbr>Input</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Number<wbr>Input<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QDoubleSpinBox.html" class="tsd-signature-type" data-tsd-kind="Class">QDoubleSpinBox</a></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Number<wbr>Input<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, defaultValue<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, toolTip<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QDoubleSpinBox.html" class="tsd-signature-type" data-tsd-kind="Class">QDoubleSpinBox</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -641,11 +652,13 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Add a <a href="Qt.QSlider.html">Qt.QSlider</a> widget to the dialog to allow a user to type a
+									<p>Add a <a href="Qt.QDoubleSpinBox.html">Qt.QDoubleSpinBox</a> widget to the dialog to allow a user to type a
 										numerical value or use up and down controls on the widget to manipulate
 									the value.</p>
 								</div>
 								<p>This can be used to enter integer or decimal values.</p>
+								<p>The optional defaultValue parameter sets the initial value of the spin box (since 1.12).</p>
+								<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
 							</div>
 						</li>
 					</ul>
@@ -705,7 +718,7 @@
 					<a name="addSlider" class="tsd-anchor"></a>
 					<h3>add<wbr>Slider</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Slider<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QSlider.html" class="tsd-signature-type" data-tsd-kind="Class">QSlider</a></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Slider<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, defaultValue<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, toolTip<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QSlider.html" class="tsd-signature-type" data-tsd-kind="Class">QSlider</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -717,6 +730,8 @@
 									slide a handle within a number range.</p>
 								</div>
 								<p>This can only be used to enter integer-type values.</p>
+								<p>The optional defaultValue parameter sets the initial value of the slider.</p>
+								<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
 							</div>
 						</li>
 					</ul>
@@ -725,7 +740,7 @@
 					<a name="addTextEdit" class="tsd-anchor"></a>
 					<h3>add<wbr>Text<wbr>Edit</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Text<wbr>Edit<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, defaultValue<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QTextEdit.html" class="tsd-signature-type" data-tsd-kind="Class">QTextEdit</a></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Text<wbr>Edit<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, defaultValue<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, toolTip<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QTextEdit.html" class="tsd-signature-type" data-tsd-kind="Class">QTextEdit</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -740,6 +755,7 @@
 								</div>
 								<p>If the labelText is non-empty, a label widget will be added to the left of
 								the widget.</p>
+								<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
 							</div>
 						</li>
 					</ul>
@@ -748,7 +764,7 @@
 					<a name="addTextInput" class="tsd-anchor"></a>
 					<h3>add<wbr>Text<wbr>Input</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Text<wbr>Input<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, defaultValue<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QLineEdit.html" class="tsd-signature-type" data-tsd-kind="Class">QLineEdit</a></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Text<wbr>Input<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, defaultValue<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, toolTip<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QLineEdit.html" class="tsd-signature-type" data-tsd-kind="Class">QLineEdit</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -762,6 +778,7 @@
 								</div>
 								<p>If the labelText is non-empty, a label widget will be added to the left of
 								the widget.</p>
+								<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
 							</div>
 						</li>
 					</ul>

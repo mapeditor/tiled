@@ -130,7 +130,9 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="TileMap.html#asset" class="tsd-kind-icon">asset</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="TileMap.html#assetType" class="tsd-kind-icon">asset<wbr>Type</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="TileMap.html#backgroundColor" class="tsd-kind-icon">background<wbr>Color</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="TileMap.html#chunkSize" class="tsd-kind-icon">chunk<wbr>Size</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="TileMap.html#className" class="tsd-kind-icon">class<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="TileMap.html#compressionLevel" class="tsd-kind-icon">compression<wbr>Level</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="TileMap.html#currentLayer" class="tsd-kind-icon">current<wbr>Layer</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="TileMap.html#currentLayerChanged" class="tsd-kind-icon">current<wbr>Layer<wbr>Changed</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="TileMap.html#fileName" class="tsd-kind-icon">file<wbr>Name</a></li>
@@ -293,6 +295,23 @@
 						</div>
 					</div>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="chunkSize" class="tsd-anchor"></a>
+					<h3>chunk<wbr>Size</h3>
+					<div class="tsd-signature tsd-kind-icon">chunk<wbr>Size<span class="tsd-signature-symbol">:</span> <a href="../interfaces/size.html" class="tsd-signature-type" data-tsd-kind="Interface">size</a></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The chunk size used when saving tile layers of infinite maps.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.12</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="className" class="tsd-anchor"></a>
 					<h3>class<wbr>Name</h3>
@@ -308,6 +327,26 @@
 						<dl class="tsd-comment-tags">
 							<dt>since</dt>
 							<dd><p>1.9</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="compressionLevel" class="tsd-anchor"></a>
+					<h3>compression<wbr>Level</h3>
+					<div class="tsd-signature tsd-kind-icon">compression<wbr>Level<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Compression level used for compressed tile layer data.</p>
+						</div>
+						<p>For Zlib/Gzip, valid range is usually -1..9 (-1 uses the default level).
+							For Zstandard, higher values increase compression at the cost of speed.
+						Values outside the supported range may be clamped by the underlying library.</p>
+						<dl class="tsd-comment-tags">
+							<dt>since</dt>
+							<dd><p>1.12</p>
 							</dd>
 						</dl>
 					</div>
@@ -1749,8 +1788,14 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="TileMap.html#backgroundColor" class="tsd-kind-icon">background<wbr>Color</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="TileMap.html#chunkSize" class="tsd-kind-icon">chunk<wbr>Size</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="TileMap.html#className" class="tsd-kind-icon">class<wbr>Name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="TileMap.html#compressionLevel" class="tsd-kind-icon">compression<wbr>Level</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="TileMap.html#currentLayer" class="tsd-kind-icon">current<wbr>Layer</a>
