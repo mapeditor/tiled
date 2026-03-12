@@ -751,7 +751,6 @@ static void writeTileMap(const Map *map, QFileDevice *device,const QString tiles
 // Write TileMapLayer. Writes each layer as a separate TileMapLayer
 static void writeTileMapLayer(const Map *map, QFileDevice *device, AssetInfo &assetInfo)
 {
-
     int layerIndex = 0;
     for (const auto layer : std::as_const(assetInfo.layers)) {
 
@@ -760,8 +759,8 @@ static void writeTileMapLayer(const Map *map, QFileDevice *device, AssetInfo &as
                                            "Separate the tilesets into seperate layers."));
         }
 
-        device->write(formatByteString("[node name=\"%2\" type=\"TileMapLayer\""
-                                       " parent=\".\"]\n",
+        device->write(formatByteString("[node name=\"%2\" type=\"TileMapLayer\" "
+                                       "parent=\".\"]\n",
                                        sanitizeQuotedString(layer->name())));
 
         if (layer->resolvedProperty("zIndex").isValid()) {
@@ -835,7 +834,7 @@ static void writeTileMapLayer(const Map *map, QFileDevice *device, AssetInfo &as
         }
         // Godot 4.3 onwards encodes the buffer using Base64
         device->write(formatByteString("tile_map_data = PackedByteArray(\"%1\")\n", QString::fromLatin1(buffer.toBase64())));
-        device->write("tile_set = SubResource(\"TileSet_0\")");
+        device->write("tile_set = SubResource(\"TileSet_0\")\n");
         layerIndex++;
     }
 }
