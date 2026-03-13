@@ -1,4 +1,4 @@
-### Tiled 1.12.0 (12 March 2026)
+### Tiled 1.12.0 (13 March 2026)
 
 * Rewritten Properties view to enable direct widget interaction (#4045)
 * Added support for lists in custom properties (#1493)
@@ -34,16 +34,16 @@
 * Fixed snapping mode sync across instances (by Sid, #4364)
 * Fixed missing error message when 'Export as Image' fails (by kunal649, #4397)
 * Scripting: Added API for custom property types (with dogboydog, #3971)
-* Scripting: Added TileMap.chunkSize and TileMap.compressionLevel properties
-* Scripting: Added optional defaultValue and toolTip params to Dialog add widget methods (by Oval, #4358)
-* Scripting: Added tiled.session to read and write session properties (by Kanishka, #4345)
-* Scripting: Added MapEditor.selectedTool and MapEditor.tool (#4330)
+* Scripting: Added `TileMap.chunkSize` and `TileMap.compressionLevel` properties
+* Scripting: Added optional defaultValue and toolTip params to `Dialog` add widget methods (by Oval, #4358)
+* Scripting: Added `tiled.session` to read and write session properties (by Kanishka, #4345)
+* Scripting: Added `MapEditor.selectedTool` and `MapEditor.tool` (#4330)
 * Scripting: Fixed the `fileName` property of map/tileset passed to `FileFormat.write` (by Shuvam Pal, #4359)
 * AutoMapping: Don't match rules based on empty input indexes
 * AutoMapping: Optimized reloading of rule maps and load rule maps on-demand
 * tBIN plugin: Added support for the tIDE XML format (by Casey Warrington, #4308)
 * Windows: Fixed issue with opening Tile Animation Editor (#4223)
-* macOS: Add Cmd+Shift+[ and Cmd+Shift+] shortcuts to switch tabs (by Oval, #4344)
+* macOS: Add <kbd>Cmd+Shift+\[</kbd> and <kbd>Cmd+Shift+\]</kbd> shortcuts to switch tabs (by Oval, #4344)
 * macOS: Fixed crash when JS code is JIT-compiled (#4218)
 * Workaround tileset view layout regression in Qt 6.9
 * Raised minimum supported Qt version from 5.12 to 5.15.2
