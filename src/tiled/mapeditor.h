@@ -198,7 +198,6 @@ private:
     ReversingProxyModel *mReversingProxyModel;
 
     Zoomable *mZoomable;
-    std::unique_ptr<QComboBox> mZoomComboBox;
     std::unique_ptr<QLabel> mStatusInfoLabel;
 
     StampBrush *mStampBrush;
