@@ -7,7 +7,7 @@ author:
 tags: release
 ---
 
-Tiled 1.12 brings a rewritten Properties view with direct widget interaction, support for list-valued custom properties, a new Oblique map orientation, and many usability and scripting improvements.
+Tiled 1.12 brings a rewritten Properties view with direct widget interaction, support for list-valued custom properties, a new Oblique map orientation, layer blending modes, capsule objects, and many usability and scripting improvements.
 
 ### Rewritten Properties View
 
