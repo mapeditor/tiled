@@ -1040,13 +1040,13 @@ void MainWindow::initializeSession()
     // adding the project's extension path.
     ScriptManager::instance().ensureInitialized();
 
-    // Load tile stamps (delayed so that potential custom types and file
-    // formats can be supported by stamps - which isn't perfect since there
-    // will still be issues when the project isn't open on startup)
-    TileStampManager::instance()->loadStamps();
-
     if (projectLoaded || Preferences::instance()->restoreSessionOnStartup())
         restoreSession();
+
+    // Load tile stamps after restoring the session, so that any files opened
+    // on startup (including external tilesets) are available when resolving
+    // references inside stamps.
+    TileStampManager::instance()->loadStamps();
 }
 
 bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
