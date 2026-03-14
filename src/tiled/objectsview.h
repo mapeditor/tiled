@@ -21,7 +21,10 @@
 
 #pragma once
 
+#include <QSet>
 #include <QTreeView>
+
+class QUndoStack;
 
 namespace Tiled {
 
@@ -55,6 +58,7 @@ protected:
     bool event(QEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
     bool viewportEvent(QEvent *event) override;
     void selectionChanged(const QItemSelection &selected,
                           const QItemSelection &deselected) override;
@@ -85,6 +89,15 @@ private:
     ReversingProxyModel *mProxyModel;
     bool mSynching = false;
     bool mActiveFilter = false;
+
+    // Drag-to-toggle state
+    void stopToggleDrag();
+    bool isOnVisibilityIcon(const QModelIndex &proxyIndex, const QPoint &pos) const;
+
+    bool mToggleDragActive = false;
+    bool mToggleDragValue = false;
+    QSet<QModelIndex> mToggleDragToggledRows;
+    QUndoStack *mToggleDragUndoStack = nullptr;
 };
 
 } // namespace Tiled

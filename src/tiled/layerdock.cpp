@@ -280,6 +280,11 @@ void LayerView::mousePressEvent(QMouseEvent *event)
         return;
     }
 
+    if (event->modifiers()) {
+        QTreeView::mousePressEvent(event);
+        return;
+    }
+
     Layer *layer = layerForProxyIndex(proxyIndex);
     if (!layer) {
         QTreeView::mousePressEvent(event);
