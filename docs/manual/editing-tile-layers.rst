@@ -177,27 +177,19 @@ While selecting an area, the following modifiers can be used:
 - Hold ``Shift`` to constrain the selection to a square.
 - Hold ``Ctrl`` to expand the selection from the starting location.
 
-.. _move-tiles-tool:
+.. _moving-tiles:
 
-Move Tiles
-----------
+Moving Tiles
+^^^^^^^^^^^^
 
-Shortcut: ``V`` |stock-tool-move|
+Click and drag inside a selection to move the selected tiles to a new
+location.
 
-The Move Tiles tool allows moving or duplicating selected tiles to a new
-location. First select tiles using one of the :ref:`tile-selection-tools`,
-then switch to this tool.
-
--  Drag the selection to move tiles to a new location.
 -  Hold ``Alt`` while dragging to duplicate tiles instead of moving them.
 -  Press ``Escape`` or right-click to cancel the move operation.
 
 Undo will restore both the tiles and the selection to their original
 positions.
-
-.. raw:: html
-
-   <div class="new">Since Tiled 1.12</div>
 
 Managing Tile Stamps
 --------------------
@@ -218,7 +210,6 @@ using the *Tile Stamps* view.
 .. |stock-tool-bucket-fill| image:: ../../src/tiled/resources/images/22/stock-tool-bucket-fill.png
 .. |stock-tool-clone| image:: ../../src/tiled/resources/images/22/stock-tool-clone.png
 .. |stock-tool-eraser| image:: ../../src/tiled/resources/images/22/stock-tool-eraser.png
-.. |stock-tool-move| image:: ../../src/tiled/resources/images/22/stock-tool-move-22.png
 .. |stock-tool-rect-select| image:: ../../src/tiled/resources/images/22/stock-tool-rect-select.png
 .. |stock-tool-by-color-select| image:: ../../src/tiled/resources/images/22/stock-tool-by-color-select.png
 .. |stock-tool-fuzzy-select-22| image:: ../../src/tiled/resources/images/22/stock-tool-fuzzy-select-22.png
