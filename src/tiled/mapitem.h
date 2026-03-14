@@ -73,6 +73,7 @@ public:
 
     void setDisplayMode(DisplayMode displayMode);
     void setShowTileCollisionShapes(bool enabled);
+    void setShowWorldLabels(bool show);
 
     void updateLayerPositions();
 
@@ -133,6 +134,7 @@ private:
 
     void updateBoundingRect();
     void updateSelectedLayersHighlight();
+    void updateOverlayState();
 
     MapDocumentPtr mMapDocument;
     QGraphicsRectItem *mDarkRectangle;
@@ -145,6 +147,7 @@ private:
     DisplayMode mDisplayMode;
     QRectF mBoundingRect;
     bool mIsHovered = false;
+    bool mShowWorldLabels = false;
 };
 
 inline MapDocument *MapItem::mapDocument() const

@@ -463,6 +463,26 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(objectLabelVisibilityGroup, &QActionGroup::triggered,
             this, &MainWindow::labelVisibilityActionTriggered);
 
+    QActionGroup *worldObjectLabelVisibilityGroup = new QActionGroup(this);
+    mUi->actionWorldObjectLabelsActiveOnly->setActionGroup(worldObjectLabelVisibilityGroup);
+    mUi->actionWorldObjectLabelsNearest->setActionGroup(worldObjectLabelVisibilityGroup);
+    mUi->actionWorldObjectLabelsAll->setActionGroup(worldObjectLabelVisibilityGroup);
+
+    switch (preferences->worldObjectLabelVisibility()) {
+    case Preferences::WorldLabelsActiveOnly:
+        mUi->actionWorldObjectLabelsActiveOnly->setChecked(true);
+        break;
+    case Preferences::WorldLabelsNearest:
+        mUi->actionWorldObjectLabelsNearest->setChecked(true);
+        break;
+    case Preferences::WorldLabelsAll:
+        mUi->actionWorldObjectLabelsAll->setChecked(true);
+        break;
+    }
+
+    connect(worldObjectLabelVisibilityGroup, &QActionGroup::triggered,
+            this, &MainWindow::worldObjectLabelVisibilityActionTriggered);
+
     mUi->actionLabelForHoveredObject->setChecked(preferences->labelForHoveredObject());
     connect(mUi->actionLabelForHoveredObject, &QAction::triggered,
             preferences, &Preferences::setLabelForHoveredObject);
@@ -1700,6 +1720,18 @@ void MainWindow::labelVisibilityActionTriggered(QAction *action)
         visibility = Preferences::AllObjectLabels;
 
     Preferences::instance()->setObjectLabelVisibility(visibility);
+}
+
+void MainWindow::worldObjectLabelVisibilityActionTriggered(QAction *action)
+{
+    Preferences::WorldObjectLabelVisibility visibility = Preferences::WorldLabelsActiveOnly;
+
+    if (action == mUi->actionWorldObjectLabelsNearest)
+        visibility = Preferences::WorldLabelsNearest;
+    else if (action == mUi->actionWorldObjectLabelsAll)
+        visibility = Preferences::WorldLabelsAll;
+
+    Preferences::instance()->setWorldObjectLabelVisibility(visibility);
 }
 
 void MainWindow::zoomIn()

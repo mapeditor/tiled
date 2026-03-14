@@ -88,6 +88,15 @@ public:
     ObjectLabelVisiblity objectLabelVisibility() const;
     void setObjectLabelVisibility(ObjectLabelVisiblity visibility);
 
+    enum WorldObjectLabelVisibility {
+        WorldLabelsActiveOnly,
+        WorldLabelsNearest,
+        WorldLabelsAll
+    };
+
+    WorldObjectLabelVisibility worldObjectLabelVisibility() const;
+    void setWorldObjectLabelVisibility(WorldObjectLabelVisibility visibility);
+
     bool labelForHoveredObject() const;
     void setLabelForHoveredObject(bool enabled);
 
@@ -237,6 +246,7 @@ signals:
     void highlightHoveredObjectChanged(bool highlight);
     void showTilesetGridChanged(bool showTilesetGrid);
     void objectLabelVisibilityChanged(ObjectLabelVisiblity);
+    void worldObjectLabelVisibilityChanged(WorldObjectLabelVisibility visibility);
     void labelForHoveredObjectChanged(bool enabled);
 
     void applicationStyleChanged(ApplicationStyle);
