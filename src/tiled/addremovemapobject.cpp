@@ -25,6 +25,7 @@
 #include "map.h"
 #include "mapobject.h"
 #include "objectgroup.h"
+#include "undocommands.h"
 
 #include <QCoreApplication>
 
@@ -143,6 +144,37 @@ void AddMapObjects::redo()
     mOwnsObjects = false;
 }
 
+QUndoCommand *AddMapObjects::clone(QUndoCommand *parent) const
+{
+    auto *clone = new AddMapObjects(mDocument, mEntries, parent);
+    clone->setText(text());
+    
+    // Transfer ownership of objects from original to clone
+    clone->mEntries = mEntries;
+    const_cast<AddMapObjects*>(this)->mOwnsObjects = false;
+    
+    return clone;
+}
+
+bool AddMapObjects::mergeWith(const QUndoCommand *other)
+{
+    const auto *o = static_cast<const AddMapObjects*>(other);
+    if (mDocument != o->mDocument)
+        return false;
+    
+    if (!cloneChildren(other, this))
+        return false;
+    
+    // Append entries from other command
+    for (const Entry &entry : o->mEntries)
+        mEntries.append(entry);
+    
+    // Transfer ownership from other to this
+    const_cast<AddMapObjects*>(o)->mOwnsObjects = false;
+    
+    return true;
+}
+
 
 RemoveMapObjects::RemoveMapObjects(Document *document,
                                    MapObject *mapObject,
@@ -199,4 +231,35 @@ void RemoveMapObjects::redo()
     emit mDocument->changed(mapObjectsEvent);
 
     mOwnsObjects = true;
+}
+
+QUndoCommand *RemoveMapObjects::clone(QUndoCommand *parent) const
+{
+    auto *clone = new RemoveMapObjects(mDocument, objects(mEntries), parent);
+    clone->setText(text());
+    
+    // Transfer ownership of objects from original to clone
+    clone->mEntries = mEntries;
+    const_cast<RemoveMapObjects*>(this)->mOwnsObjects = false;
+    
+    return clone;
+}
+
+bool RemoveMapObjects::mergeWith(const QUndoCommand *other)
+{
+    const auto *o = static_cast<const RemoveMapObjects*>(other);
+    if (mDocument != o->mDocument)
+        return false;
+    
+    if (!cloneChildren(other, this))
+        return false;
+    
+    // Append entries from other command
+    for (const Entry &entry : o->mEntries)
+        mEntries.append(entry);
+    
+    // Transfer ownership from other to this
+    const_cast<RemoveMapObjects*>(o)->mOwnsObjects = false;
+    
+    return true;
 }
