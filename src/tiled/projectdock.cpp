@@ -23,8 +23,12 @@
 #include "actionmanager.h"
 #include "addremovetileset.h"
 #include "documentmanager.h"
+#include "layer.h"
+#include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
 #include "mapeditor.h"
+#include "mapobject.h"
+#include "objectgroup.h"
 #include "objecttemplate.h"
 #include "preferences.h"
 #include "projectmanager.h"
@@ -36,9 +40,11 @@
 #include "utils.h"
 
 #include <QBoxLayout>
+#include <QFile>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMenu>
+#include <QMessageBox>
 #include <QMouseEvent>
 #include <QScrollBar>
 #include <QSet>
@@ -80,6 +86,7 @@ private:
     void onRowsInserted(const QModelIndex &parent);
 
     void restoreExpanded(const QModelIndex &parent);
+    void deleteTemplate(const QString &templatePath);
 
     ProjectModel *mProjectModel;
     ProjectProxyModel *mProxyModel;
@@ -276,6 +283,9 @@ void ProjectView::contextMenuEvent(QContextMenuEvent *event)
                 menu.addAction(tr("Select Template Instances"), [=] {
                     mapDocumentActionHandler->selectAllInstances(objectTemplate);
                 })->setEnabled(mapDocument != nullptr);
+                menu.addAction(tr("Delete"), [=] {
+                    deleteTemplate(path);
+                });
             }
             // Add tileset-specific actions
             else if (auto tileset = TilesetManager::instance()->loadTileset(path)) {
@@ -343,6 +353,34 @@ void ProjectView::restoreExpanded(const QModelIndex &parent)
         for (int row = 0, count = model()->rowCount(parent); row < count; ++row)
             restoreExpanded(model()->index(row, 0, parent));
     }
+}
+
+static bool isTemplateInUse(const ObjectTemplate *objectTemplate)
+{
+    for (const auto &doc : DocumentManager::instance()->documents()) {
+        if (auto mapDoc = qobject_cast<MapDocument*>(doc.data())) {
+            for (Layer *layer : mapDoc->map()->objectGroups()) {
+                for (MapObject *obj : static_cast<ObjectGroup*>(layer)->objects()) {
+                    if (obj->objectTemplate() == objectTemplate)
+                        return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+void ProjectView::deleteTemplate(const QString &templatePath)
+{
+    auto objectTemplate = TemplateManager::instance()->loadObjectTemplate(templatePath);
+
+    if (isTemplateInUse(objectTemplate)) {
+        if (QMessageBox::warning(window(), tr("Delete Template"), tr("This template is in use. Delete anyway?"),
+                                 QMessageBox::Yes | QMessageBox::Cancel) != QMessageBox::Yes)
+            return;
+    }
+    QFile::remove(templatePath);
+    TemplateManager::instance()->deleteTemplate(templatePath);
 }
 
 } // namespace Tiled
