@@ -140,6 +140,9 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             preferences, &Preferences::setUseOpenGL);
     connect(mUi->wheelZoomsByDefault, &QCheckBox::toggled,
             preferences, &Preferences::setWheelZoomsByDefault);
+    connect(mUi->syncLayersInWorldTool, &QCheckBox::toggled,
+            preferences, &Preferences::setSyncLayersInWorldTool);
+
     connect(mUi->autoScrolling, &QCheckBox::toggled,
             this, [] (bool checked) { MapView::ourAutoScrollingEnabled = checked; });
     connect(mUi->smoothScrolling, &QCheckBox::toggled,
@@ -235,6 +238,7 @@ void PreferencesDialog::fromPreferences()
     if (mUi->openGL->isEnabled())
         mUi->openGL->setChecked(prefs->useOpenGL());
     mUi->wheelZoomsByDefault->setChecked(prefs->wheelZoomsByDefault());
+    mUi->syncLayersInWorldTool->setChecked(prefs->syncLayersInWorldTool());
     mUi->autoScrolling->setChecked(MapView::ourAutoScrollingEnabled);
     mUi->smoothScrolling->setChecked(MapView::ourSmoothScrollingEnabled);
     mUi->duplicateAddsCopy->setChecked(Editor::duplicateAddsCopy);

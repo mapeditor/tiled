@@ -433,6 +433,13 @@
             </property>
            </widget>
           </item>
+          <item row="6" column="0" colspan="3">
+           <widget class="QCheckBox" name="syncLayersInWorldTool">
+            <property name="text">
+             <string>Sync layers when switching maps in World Tool</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -709,6 +716,7 @@
   <tabstop>autoScrolling</tabstop>
   <tabstop>smoothScrolling</tabstop>
   <tabstop>duplicateAddsCopy</tabstop>
+  <tabstop>syncLayersInWorldTool</tabstop>
   <tabstop>styleCombo</tabstop>
   <tabstop>baseColor</tabstop>
   <tabstop>selectionColor</tabstop>
