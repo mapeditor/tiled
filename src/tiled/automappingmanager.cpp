@@ -54,6 +54,7 @@ AutomappingManager::~AutomappingManager()
 {
 }
 
+// This function is called when the user triggers the "AutoMap" action
 void AutomappingManager::autoMap()
 {
     if (!mMapDocument)
@@ -79,7 +80,7 @@ void AutomappingManager::autoMap()
     }
 
     autoMapInternal(region, nullptr);
-}
+} // autoMap
 
 void AutomappingManager::autoMapRegion(const QRegion &region)
 {
@@ -120,8 +121,10 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
             emit errorsOccurred(automatic);
     });
 
-    if (!mLoaded) {
-        if (mRulesFile.isEmpty()) {
+    if (!mLoaded)
+    {
+        if (mRulesFile.isEmpty())
+        {
             mError = tr("No AutoMapping rules provided. Save the map or refer to a rule file in the project properties.");
             return;
         }
@@ -138,11 +141,15 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
     QVector<const AutoMapper*> autoMappers;
     autoMappers.reserve(mRuleMapReferences.size());
 
-    for (auto &ruleMap : std::as_const(mRuleMapReferences)) {
+    for (auto &ruleMap : std::as_const(mRuleMapReferences))
+    {
         const auto &mapNameFilter = ruleMap.mapNameFilter;
         if (!mapNameFilter.isValid() || mapNameFilter.match(mapFileName).hasMatch())
-            if (const AutoMapper *autoMapper = findAutoMapper(ruleMap.filePath))
+        {
+            // Check if the AutoMapper has already been loaded for this rule map, and load it if not.
+            if (const AutoMapper* autoMapper = findAutoMapper(ruleMap.filePath))
                 autoMappers.append(autoMapper);
+        }
     }
 
     if (autoMappers.isEmpty())
@@ -150,19 +157,22 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
 
     // Skip this AutoMapping run if none of the loaded rule maps actually use
     // the touched layer.
-    if (touchedLayer) {
+    if (touchedLayer)
+    {
         if (std::none_of(autoMappers.cbegin(),
                          autoMappers.cend(),
                          [=] (const AutoMapper *autoMapper) { return autoMapper->ruleLayerNameUsed(touchedLayer->name()); }))
             return;
     }
 
+    // Run the AutoMapping command
     AutoMapperWrapper *aw = new AutoMapperWrapper(mMapDocument, autoMappers, where, touchedLayer);
     aw->setMergeable(automatic);
     aw->setText(tr("Apply AutoMap rules"));
 
+    // Update the undo stack with the new command, so it can be undone/redone by the user.
     mMapDocument->undoStack()->push(aw);
-}
+} // autoMapInternal
 
 /**
  * Returns the AutoMapper instance for the given rules file, loading it if
@@ -180,7 +190,7 @@ const AutoMapper *AutomappingManager::findAutoMapper(const QString &filePath)
 
     auto result = mLoadedAutoMappers.emplace(filePath, std::move(autoMapper));
     return result.first->second.get();
-}
+} // findAutoMapper
 
 /**
  * This function parses a rules file or loads a rules map file.
@@ -285,6 +295,7 @@ std::unique_ptr<AutoMapper> AutomappingManager::loadRuleMap(const QString &fileP
 
     mWatcher.addPath(filePath);
 
+    // Create the AutoMapper instance for this rules map and set up the rules.
     auto autoMapper = std::make_unique<AutoMapper>(std::move(rulesMap));
 
     mWarning += autoMapper->warningString();
@@ -293,7 +304,7 @@ std::unique_ptr<AutoMapper> AutomappingManager::loadRuleMap(const QString &fileP
         mError += error;
 
     return autoMapper;
-}
+} // loadRuleMap
 
 /**
  * The rules file is determined based on the map location, or taken from the

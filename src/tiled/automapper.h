@@ -38,6 +38,7 @@
 #include <memory>
 #include <unordered_map>
 #include <vector>
+#include <optional>
 
 namespace Tiled {
 
@@ -145,8 +146,8 @@ struct RuleMapSetup
     const TileLayer *mLayerOutputRegions = nullptr;
 
     /**
-     * Holds different input sets. A rule matches when any of its input sets
-     * match.
+     * Holds different input sets.
+     A rule matches when the wildcard input set matches (if any) and any of its other input sets matches too.
      */
     std::vector<InputSet> mInputSets;
 
@@ -165,7 +166,7 @@ struct RuleMapSetup
     // The properties that should be copied to the target map, when any rule
     // matches for these output layers.
     QHash<const Layer*, Properties> mOutputLayerProperties;
-};
+}; // RuleMapSetup
 
 struct RuleInputLayer
 {
@@ -377,8 +378,8 @@ private:
         QRegion inputRegion;
         QRegion outputRegion;
         RuleOptions options;
-        std::optional<RuleOutputSet> outputSet;
-        RandomPicker<RuleOutputSet> outputSets;
+        std::optional<RuleOutputSet> outputSet; // Unnamed output set
+        RandomPicker<RuleOutputSet> outputSets; // Named output sets
     };
 
     void setupRuleMapProperties();

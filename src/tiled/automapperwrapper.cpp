@@ -59,21 +59,26 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
     const Map *map = mapDocument->map();
     const QRegion mapRect(0, 0, map->width(), map->height());
 
-    for (const auto autoMapper : autoMappers) {
+    // Run the AutoMappers
+    for (const auto autoMapper : autoMappers)
+    {
         // stop expanding region when it's already the entire fixed-size map
         if (appliedRegionPtr && (!map->infinite() && (mapRect - region).isEmpty()))
             appliedRegionPtr = nullptr;
 
-        if (touchedLayer) {
+        if (touchedLayer)
+        {
             if (std::none_of(context.touchedTileLayers.cbegin(),
                              context.touchedTileLayers.cend(),
                              [&] (const TileLayer *tileLayer) { return autoMapper->ruleLayerNameUsed(tileLayer->name()); }))
                 continue;
         }
 
+        // Automap
         autoMapper->autoMap(region, appliedRegionPtr, context);
 
-        if (appliedRegionPtr) {
+        if (appliedRegionPtr)
+        {
             // expand where with modified area
             region |= std::exchange(appliedRegion, QRegion());
 
