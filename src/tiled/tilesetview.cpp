@@ -55,28 +55,6 @@ using namespace Tiled;
 
 namespace {
 
-static void setupTilesetGridTransform(const Tileset &tileset, QTransform &transform, QRect &targetRect)
-{
-    if (tileset.orientation() == Tileset::Isometric) {
-        const QPoint tileCenter = targetRect.center();
-        targetRect.setHeight(targetRect.width());
-        targetRect.moveCenter(tileCenter);
-
-        const QSize gridSize = tileset.gridSize();
-
-        transform.translate(tileCenter.x(), tileCenter.y());
-
-        const auto ratio = (qreal) gridSize.height() / gridSize.width();
-        const auto scaleX = 1.0 / sqrt(2.0);
-        const auto scaleY = scaleX * ratio;
-        transform.scale(scaleX, scaleY);
-
-        transform.rotate(45.0);
-
-        transform.translate(-tileCenter.x(), -tileCenter.y());
-    }
-}
-
 /**
  * The delegate for drawing tile items in the tileset view.
  */
@@ -105,11 +83,13 @@ private:
     TilesetView *mTilesetView;
 };
 
+} // anonymous namespace
+
 void TileDelegate::paint(QPainter *painter,
                          const QStyleOptionViewItem &option,
                          const QModelIndex &index) const
 {
-    const TilesetModel *model = static_cast<const TilesetModel*>(index.model());
+    const auto *model = static_cast<const TilesetModel*>(index.model());
     const Tile *tile = model->tileAt(index);
     if (!tile)
         return;
@@ -245,6 +225,28 @@ void TileDelegate::drawFilmStrip(QPainter *painter, QRect targetRect)
     painter->restore();
 }
 
+static void setupTilesetGridTransform(const Tileset &tileset, QTransform &transform, QRect &targetRect)
+{
+    if (tileset.orientation() == Tileset::Isometric) {
+        const QPoint tileCenter = targetRect.center();
+        targetRect.setHeight(targetRect.width());
+        targetRect.moveCenter(tileCenter);
+
+        const QSize gridSize = tileset.gridSize();
+
+        transform.translate(tileCenter.x(), tileCenter.y());
+
+        const auto ratio = (qreal) gridSize.height() / gridSize.width();
+        const auto scaleX = 1.0 / sqrt(2.0);
+        const auto scaleY = scaleX * ratio;
+        transform.scale(scaleX, scaleY);
+
+        transform.rotate(45.0);
+
+        transform.translate(-tileCenter.x(), -tileCenter.y());
+    }
+}
+
 void TileDelegate::drawWangOverlay(QPainter *painter,
                                    const Tile *tile,
                                    QRect targetRect,
@@ -278,7 +280,6 @@ void TileDelegate::drawWangOverlay(QPainter *painter,
     painter->restore();
 }
 
-} // anonymous namespace
 
 TilesetView::TilesetView(QWidget *parent)
     : QTableView(parent)
@@ -932,7 +933,7 @@ void TilesetView::applyWangId()
     WangId newWangId = previousWangId;
 
     if (mWangBehavior == AssignWholeId) {
-        newWangId = mWangId;
+        newWangId = mWangId & ~mWangId.mask(WangId::INDEX_MASK);
     } else {
         for (int i = 0; i < WangId::NumIndexes; ++i) {
             if (mWangId.indexColor(i))

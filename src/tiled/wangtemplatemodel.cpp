@@ -38,8 +38,7 @@ int WangTemplateModel::rowCount(const QModelIndex &parent) const
     if (!mWangSet)
         return 0;
 
-    // arbitrary large cap on how many rows can be displayed.
-    return static_cast<int>(std::min<quint64>(0xffff, mWangSet->completeSetSize()));
+    return templateCount() + 1;
 }
 
 QVariant WangTemplateModel::data(const QModelIndex &index, int role) const
@@ -56,8 +55,11 @@ WangId WangTemplateModel::wangIdAt(const QModelIndex &index) const
         return {};
 
     if (WangSet *set = wangSet()) {
-        const int idIndex = index.row();
-        if (idIndex < rowCount())
+        if (index.row() == 0)
+            return set->typeMask();
+
+        const int idIndex = index.row() - 1;
+        if (idIndex < templateCount())
             return set->templateWangIdAt(idIndex);
     }
 
@@ -68,6 +70,9 @@ QModelIndex WangTemplateModel::wangIdIndex(WangId wangId) const
 {
     if (!mWangSet)
         return QModelIndex();
+
+    if (!wangId)
+        return index(0, 0);
 
     Q_ASSERT(mWangSet->wangIdIsValid(wangId));
 
@@ -109,7 +114,7 @@ QModelIndex WangTemplateModel::wangIdIndex(WangId wangId) const
         break;
     }
 
-    return index(row, 0);
+    return index(row + 1, 0);
 }
 
 void WangTemplateModel::setWangSet(WangSet *wangSet)
@@ -123,6 +128,15 @@ void WangTemplateModel::wangSetChanged()
 {
     beginResetModel();
     endResetModel();
+}
+
+int WangTemplateModel::templateCount() const
+{
+    if (!mWangSet)
+        return 0;
+
+    // arbitrary large cap on how many rows can be displayed.
+    return static_cast<int>(std::min<quint64>(0xffff, mWangSet->completeSetSize()));
 }
 
 #include "moc_wangtemplatemodel.cpp"

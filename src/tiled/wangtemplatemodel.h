@@ -53,6 +53,8 @@ public slots:
     void wangSetChanged();
 
 private:
+    int templateCount() const;
+
     WangSet *mWangSet;
 };
 

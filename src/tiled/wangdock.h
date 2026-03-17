@@ -27,7 +27,6 @@
 
 class QMenu;
 class QModelIndex;
-class QPushButton;
 class QSortFilterProxyModel;
 class QStackedWidget;
 class QTabWidget;
@@ -94,7 +93,6 @@ protected:
     void changeEvent(QEvent *event) override;
 
 private:
-    void activateErase();
     void refreshCurrentWangSet();
     void refreshCurrentWangId();
     void refreshCurrentWangColor();
@@ -127,7 +125,6 @@ private:
     Document *mDocument = nullptr;
     QStackedWidget *mStack;
     WangSetView *mWangSetView;
-    QPushButton *mEraseWangIdsButton;
     WangSet *mCurrentWangSet = nullptr;
     WangId mCurrentWangId;
     TilesetDocumentsFilterModel *mTilesetDocumentFilterModel;
@@ -140,7 +137,6 @@ private:
     WangTemplateView *mWangTemplateView;
     WangTemplateModel *mWangTemplateModel;
     QTabWidget *mTemplateAndColorView;
-    QWidget *mTemplateAndColorWidget;
 
     bool mInitializing = false;
 };
