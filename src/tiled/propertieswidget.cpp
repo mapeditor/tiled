@@ -1910,7 +1910,7 @@ private:
         QUndoCommand *command = new ChangeMapObject(mapDocument(), mapObject(),
                                                     property, value);
 
-        if (mapDocument()->selectedObjects().size() == 1) {
+        if (mapDocument()->selectedObjects().size() <= 1) {
             push(command);
             return;
         }

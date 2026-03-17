@@ -1,3 +1,7 @@
+### Unreleased
+
+* Fixed ability to change properties after deselecting the current object
+
 ### Tiled 1.12.0 (13 March 2026)
 
 * Rewritten Properties view to enable direct widget interaction (#4045)
