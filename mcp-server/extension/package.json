@@ -1,0 +1,8 @@
+{
+  "name": "tiled-mcp-bridge",
+  "version": "0.1.0",
+  "description": "Tiled extension for MCP server integration",
+  "devDependencies": {
+    "@mapeditor/tiled-api": "^1.10.0"
+  }
+}
