@@ -1,3 +1,7 @@
+### Unreleased
+
+* Added 'Collapse All' action and 'Only Expand to Current' mode to Project view (with rhythmcache, #4306)
+
 ### Tiled 1.12.0 (13 March 2026)
 
 * Rewritten Properties view to enable direct widget interaction (#4045)
