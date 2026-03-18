@@ -1,6 +1,6 @@
 ### Unreleased
 
-* Added 'Collapse All' action and 'Only Expand to Current' mode to Project view (with rhythmcache, #4306)
+* Added 'Collapse All' action and 'Only Expand to Current' mode to Project view (with rhythmcache, #4346)
 
 ### Tiled 1.12.0 (13 March 2026)
 
