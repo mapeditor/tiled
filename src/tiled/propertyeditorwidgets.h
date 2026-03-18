@@ -374,6 +374,7 @@ public:
     void setModified(bool modified);
 
     QSize sizeHint() const override;
+    void setProperty(Property *property) { m_property = property; }
 
 signals:
     void toggled(bool expanded);
@@ -381,10 +382,12 @@ signals:
 protected:
     bool event(QEvent *event) override;
     void paintEvent(QPaintEvent *) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
 
 private:
     void updateContentMargins();
     QRect branchIndicatorRect() const;
+    Property *m_property = nullptr;
 
     int m_level = 0;
     bool m_header = false;

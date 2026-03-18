@@ -852,6 +852,15 @@ PropertyLabel::PropertyLabel(QWidget *parent)
     updateContentMargins();
 }
 
+void PropertyLabel::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    ElidingLabel::mouseDoubleClickEvent(event);
+
+    if (m_property) {
+        emit m_property->renameRequested();
+    }
+}
+
 void PropertyLabel::setLevel(int level)
 {
     if (m_level == level)
