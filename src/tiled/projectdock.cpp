@@ -155,9 +155,7 @@ ProjectDock::ProjectDock(QWidget *parent)
     retranslateUi();
 
     connect(Preferences::instance(), &Preferences::aboutToSwitchSession,
-            this, [=] {
-        Session::current().expandedProjectPaths = mProjectView->expandedPaths();
-    });
+            this, [this] { Session::current().expandedProjectPaths = mProjectView->expandedPaths(); });
 
     connect(mProjectView->selectionModel(), &QItemSelectionModel::currentRowChanged,
             this, &ProjectDock::onCurrentRowChanged);
@@ -229,9 +227,9 @@ void ProjectDock::retranslateUi()
 {
     setWindowTitle(tr("Project"));
     mCollapseAllAction->setText(tr("Collapse All"));
-    mCollapseAllAction->setToolTip(tr("Collapse all folders in the project view."));
+    mCollapseAllAction->setToolTip(tr("Collapse all folders."));
     mExpandToCurrentAction->setText(tr("Only Expand to Current"));
-    mExpandToCurrentAction->setToolTip(tr("Shows only the folder path of the active file. Restores the previous expansion state when disabled."));
+    mExpandToCurrentAction->setToolTip(tr("Keep only those folders expanded that lead to the active file."));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
