@@ -41,6 +41,7 @@
 #include <QFileInfo>
 #include <QMenu>
 #include <QMouseEvent>
+#include <QScopedValueRollback>
 #include <QScrollBar>
 #include <QSet>
 #include <QToolBar>
@@ -71,7 +72,7 @@ public:
     void addExpandedPath(const QString &path);
 
     void setCollapseAllAction(QAction *action) { mCollapseAllAction = action; }
-    void setExpandToCurrentActive(bool active) { mExpandToCurrentActive = active; }
+    void setPersistCollapseExpand(bool enabled) { mPersistCollapseExpand = enabled; }
 
     void selectPath(const QString &path);
     void expandToPath(const QString &filePath);
@@ -92,7 +93,7 @@ private:
     ProjectProxyModel *mProxyModel;
     QSet<QString> mExpandedPaths;
     QAction *mCollapseAllAction = nullptr;
-    bool mExpandToCurrentActive = false;
+    bool mPersistCollapseExpand = true;
     QString mSelectedPath;
     int mScrollBarValue = 0;
 };
@@ -119,10 +120,9 @@ ProjectDock::ProjectDock(QWidget *parent)
     mExpandToCurrentAction->setCheckable(true);
     mExpandToCurrentAction->setIcon(QIcon(QLatin1String(":/images/scalable/focus.svg")));
     connect(mExpandToCurrentAction, &QAction::toggled, this, [=](bool checked) {
-        mProjectView->setExpandToCurrentActive(checked);
+        mProjectView->setPersistCollapseExpand(!checked);
         if (checked) {
-            auto doc = DocumentManager::instance()->currentDocument();
-            if (doc)
+            if (auto doc = DocumentManager::instance()->currentDocument())
                 mProjectView->expandToPath(doc->fileName());
         } else {
             mProjectView->restoreExpandedPaths();
@@ -132,10 +132,13 @@ ProjectDock::ProjectDock(QWidget *parent)
 
     connect(DocumentManager::instance(), &DocumentManager::currentDocumentChanged,
             this, [=](Document *doc) {
-        if (!mExpandToCurrentAction->isChecked())
+        if (!doc)
             return;
-        if (doc)
+
+        if (mExpandToCurrentAction->isChecked())
             mProjectView->expandToPath(doc->fileName());
+        else
+            mProjectView->selectPath(doc->fileName());
     });
 
     mProjectView->setCollapseAllAction(mCollapseAllAction);
@@ -222,11 +225,6 @@ void ProjectDock::onCurrentRowChanged(const QModelIndex &current)
         emit fileSelected(filePath);
 }
 
-void ProjectDock::selectFile(const QString &filePath)
-{
-    mProjectView->selectPath(filePath);
-}
-
 void ProjectDock::retranslateUi()
 {
     setWindowTitle(tr("Project"));
@@ -260,12 +258,12 @@ ProjectView::ProjectView(QWidget *parent)
 
     connect(this, &QTreeView::expanded,
             this, [=] (const QModelIndex &index) {
-        if (!mExpandToCurrentActive)
+        if (mPersistCollapseExpand)
             mExpandedPaths.insert(filePath(index));
     });
     connect(this, &QTreeView::collapsed,
             this, [=] (const QModelIndex &index) {
-        if (!mExpandToCurrentActive)
+        if (mPersistCollapseExpand)
             mExpandedPaths.remove(filePath(index));
     });
 
@@ -322,6 +320,8 @@ void ProjectView::expandToPath(const QString &filePath)
 
 void ProjectView::restoreExpandedPaths()
 {
+    QScopedValueRollback<bool> ignore(mPersistCollapseExpand, false);
+
     collapseAll();
 
     const int topLevel = mProxyModel->rowCount();

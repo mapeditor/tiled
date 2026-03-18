@@ -37,13 +37,10 @@ class ProjectDock final : public QDockWidget
 public:
     ProjectDock(QWidget *parent = nullptr);
 
-    void selectFile(const QString &filePath);
-
     void addFolderToProject();
     void refreshProjectFolders();
 
     void setExpandedPaths(const QStringList &expandedPaths);
-
 
 signals:
     void folderAdded(const QString &path);
