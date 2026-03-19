@@ -337,7 +337,7 @@ void TemplatesDock::checkTileset()
         mDescriptionLabel->setVisible(false);
     }
 
-    if (MapObject *object = dummyObject()) {
+    if (MapObject *object = dummyObject(); object && object->shape() == MapObject::Text) {
         const auto availableFamilies = availableFontFamiliesCaseFolded();
         const QString missingFamily = missingTextObjectFontFamily(*object, availableFamilies);
 
