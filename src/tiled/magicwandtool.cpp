@@ -43,6 +43,20 @@ MagicWandTool::MagicWandTool(QObject *parent)
 {
 }
 
+void MagicWandTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
+{
+    AbstractTileSelectionTool::modifiersChanged(modifiers & ~Qt::AltModifier);
+
+    mModifiers = modifiers;
+
+    const bool contiguous = effectiveContiguous();
+
+    updateContiguousCheckBox();
+
+    if (mLastContiguousStatus != contiguous)
+        tilePositionChanged(tilePosition());
+}
+
 void MagicWandTool::tilePositionChanged(QPoint tilePos)
 {
     // Make sure that a tile layer is selected
@@ -55,6 +69,7 @@ void MagicWandTool::tilePositionChanged(QPoint tilePos)
         mMatchCells.clear();
 
     TilePainter tilePainter(mapDocument(), tileLayer);
+    const bool contiguous = effectiveContiguous();
 
     const Cell targetCell = tilePainter.cellAt(tilePos);
     if (!mMatchCells.contains(targetCell))
@@ -64,7 +79,9 @@ void MagicWandTool::tilePositionChanged(QPoint tilePos)
         return mMatchCells.contains(cell);
     };
 
-    if (mContiguous) {
+    mLastContiguousStatus = contiguous;
+
+    if (contiguous) {
         // Flood fill (default magic wand behavior)
         setSelectionPreview(tilePainter.computeFillRegion(tilePos, condition));
     } else {
@@ -91,20 +108,37 @@ void MagicWandTool::populateToolBar(QToolBar *toolBar)
 {
     AbstractTileSelectionTool::populateToolBar(toolBar);
 
-    auto contiguousCheckBox = new QCheckBox(tr("Contiguous"), toolBar);
-    contiguousCheckBox->setChecked(mContiguous);
-    connect(contiguousCheckBox, &QCheckBox::toggled, this, &MagicWandTool::setContiguous);
-    toolBar->addWidget(contiguousCheckBox);
+    mContiguousCheckBox = new QCheckBox(tr("Contiguous"), toolBar);
+    updateContiguousCheckBox();
+    connect(mContiguousCheckBox, &QCheckBox::clicked, this, &MagicWandTool::setContiguous);
+    toolBar->addWidget(mContiguousCheckBox);
 }
 
 void MagicWandTool::setContiguous(bool contiguous)
 {
-    if (mContiguous == contiguous)
+    const bool persistentContiguous = (mModifiers & Qt::AltModifier) ? !contiguous : contiguous;
+
+    if (mContiguous == persistentContiguous)
         return;
 
-    mContiguous = contiguous;
+    mContiguous = persistentContiguous;
+
+    updateContiguousCheckBox();
     mMatchCells.clear();
     tilePositionChanged(tilePosition());
+}
+
+bool MagicWandTool::effectiveContiguous() const
+{
+    return mContiguous != static_cast<bool>(mModifiers & Qt::AltModifier);
+}
+
+void MagicWandTool::updateContiguousCheckBox()
+{
+    if (!mContiguousCheckBox)
+        return;
+
+    mContiguousCheckBox->setChecked(effectiveContiguous());
 }
 
 #include "moc_magicwandtool.cpp"
