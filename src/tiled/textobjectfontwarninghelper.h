@@ -20,15 +20,15 @@
 
 #pragma once
 
-#include <QSet>
+#include <QStringList>
 #include <QString>
 
 namespace Tiled {
 
 class MapObject;
 
-QSet<QString> availableFontFamiliesCaseFolded();
+QStringList availableFontFamilies();
 QString missingTextObjectFontFamily(const MapObject &mapObject,
-                                    const QSet<QString> &availableFamilies);
+                                    const QStringList &availableFamilies);
 
 } // namespace Tiled

@@ -338,7 +338,7 @@ void TemplatesDock::checkTileset()
     }
 
     if (MapObject *object = dummyObject(); object && object->shape() == MapObject::Text) {
-        const auto availableFamilies = availableFontFamiliesCaseFolded();
+        const auto availableFamilies = availableFontFamilies();
         const QString missingFamily = missingTextObjectFontFamily(*object, availableFamilies);
 
         if (!missingFamily.isEmpty()) {

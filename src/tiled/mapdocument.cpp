@@ -1650,7 +1650,7 @@ void MapDocument::checkIssues()
               this);
     }
 
-    const auto availableFamilies = availableFontFamiliesCaseFolded();
+    const auto availableFamilies = availableFontFamilies();
     for (Layer *layer : map()->objectGroups()) {
         const auto objectGroup = static_cast<ObjectGroup*>(layer);
 

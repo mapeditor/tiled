@@ -47,19 +47,13 @@ static bool isGenericFontFamily(const QString &family)
     return genericFamilies.contains(family.toCaseFolded());
 }
 
-QSet<QString> availableFontFamiliesCaseFolded()
+QStringList availableFontFamilies()
 {
-    QSet<QString> families;
-    const QStringList fontFamilies = QFontDatabase().families();
-
-    for (const QString &fontFamily : fontFamilies)
-        families.insert(fontFamily.toCaseFolded());
-
-    return families;
+    return QFontDatabase().families();
 }
 
 QString missingTextObjectFontFamily(const MapObject &mapObject,
-                                    const QSet<QString> &availableFamilies)
+                                    const QStringList &availableFamilies)
 {
     if (mapObject.shape() != MapObject::Text)
         return {};
@@ -68,7 +62,7 @@ QString missingTextObjectFontFamily(const MapObject &mapObject,
     if (family.isEmpty() || isGenericFontFamily(family))
         return {};
 
-    return availableFamilies.contains(family.toCaseFolded()) ? QString() : family;
+    return availableFamilies.contains(family, Qt::CaseInsensitive) ? QString() : family;
 }
 
 } // namespace Tiled
