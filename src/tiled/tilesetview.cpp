@@ -95,8 +95,7 @@ public:
                    const QModelIndex &index) const override;
 
 private:
-    static void drawFilmStrip(QPainter *painter, QRect targetRect);
-
+    static void drawFilmStrip(QPainter *painter, QRect targetRect, bool wangEditingActive);
     void drawWangOverlay(QPainter *painter,
                          const Tile *tile,
                          QRect targetRect,
@@ -161,8 +160,8 @@ void TileDelegate::paint(QPainter *painter,
 
     // Overlay with film strip when animated
     if (mTilesetView->markAnimatedTiles() && tile->isAnimated())
-        drawFilmStrip(painter, targetRect);
-
+        drawFilmStrip(painter, targetRect, mTilesetView->isEditWangSet());
+    
     const auto highlight = option.palette.highlight();
 
     // Overlay with highlight color when selected
@@ -211,7 +210,7 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
     return QSize(extra, extra);
 }
 
-void TileDelegate::drawFilmStrip(QPainter *painter, QRect targetRect)
+void TileDelegate::drawFilmStrip(QPainter *painter, QRect targetRect, bool wangEditingActive)
 {
     painter->save();
 
@@ -224,8 +223,7 @@ void TileDelegate::drawFilmStrip(QPainter *painter, QRect targetRect)
     painter->scale(scale, scale);
     painter->translate(-18, 3);
     painter->rotate(-45);
-    painter->setOpacity(0.8);
-
+    painter->setOpacity(wangEditingActive ? 0.5 : 0.8);
     QRectF strip(0, 0, 32, 6);
     painter->fillRect(strip, Qt::black);
 
