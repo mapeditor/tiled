@@ -701,7 +701,6 @@ void TiledProxyStyle::drawControl(ControlElement element,
             int defaultCheckWidth = qMax<int>(menuItem->rect.height() * 0.79, dpiScaled(21, option));
             int checkcol = defaultCheckWidth;
 
-            // Define the tight UI spacing between checkbox and icon
             int dualOffset = dpiScaled(18, option);
 
             if (
@@ -710,13 +709,7 @@ void TiledProxyStyle::drawControl(ControlElement element,
                 ignoreCheckMark = true;
 
             if (!ignoreCheckMark) {
-                if (checkable && !menuItem->icon.isNull()) {
-                    // Use tight spacing instead of adding the massive default column width
-                    checkcol = qMax<int>(defaultCheckWidth, menuItem->maxIconWidth) + dualOffset;
-                }
-                else {
-                    checkcol = qMax<int>(defaultCheckWidth, menuItem->maxIconWidth);
-                }
+                checkcol = qMax<int>(defaultCheckWidth, menuItem->maxIconWidth) + dualOffset;
 
                 const qreal boxMargin = dpiScaled(3.5, option);
                 const qreal boxWidth = defaultCheckWidth - 2 * boxMargin;
@@ -762,10 +755,10 @@ void TiledProxyStyle::drawControl(ControlElement element,
 
             QPainter* p = painter;
 
-            // Shift the icon by the tight offset, NOT the entire column width
+            // Shift the icon by the offset
             int iconOffsetX = checkColHOffset;
             int iconAreaWidth = checkcol;
-            if (!ignoreCheckMark && checkable && !menuItem->icon.isNull()) {
+            if (!ignoreCheckMark /* && checkable */&& !menuItem->icon.isNull()) {
                 iconOffsetX += dualOffset;
                 iconAreaWidth = menuItem->maxIconWidth;
             }
