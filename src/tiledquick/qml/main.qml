@@ -168,15 +168,15 @@ ApplicationWindow {
                 color: "black"
             }
 
-            // Tiled.MapGridItem {
-            //     id: mapGriditem
-            //     anchors.fill: mapItem
+            Tiled.MapGridItem {
+                id: mapGriditem
+                anchors.fill: mapItem
 
-            //     gridSize: mapItem.pixelToTileCoords(width, height);
-            //     scale: mapContainer.scale;
+                gridSize: mapItem.pixelToTileCoords(width, height);
+                scale: mapContainer.scale;
 
-            //     color: "blue"
-            // }
+                color: "blue"
+            }
         }
     }
 
