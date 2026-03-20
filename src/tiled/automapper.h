@@ -145,8 +145,8 @@ struct RuleMapSetup
     const TileLayer *mLayerOutputRegions = nullptr;
 
     /**
-     * Holds different input sets. A rule matches when any of its input sets
-     * match.
+     * Holds different input sets.
+     * A rule matches when the wildcard input set matches (if any) or any of its other input sets matches too.
      */
     std::vector<InputSet> mInputSets;
 

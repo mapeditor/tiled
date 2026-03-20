@@ -55,7 +55,17 @@ After the first underscore there will be the **name** of the target input layer.
 
 The **not** is optional. If present, it inverts the layer's meaning, so instead of matching the tiles on the layer, Tiled will match anything but those tiles.
 
-The **index** is optional. Indices on `input` layers allow you to create rules that match any of several completely separate inputs. Any inputs with the same index are treated as part of the same condition, and each different index is its own independent set of conditions. Any of these conditions being matched will count as a match for the rule. An index can be empty, or it can be any string that doesn't start with `not` and doesn't contain any underscores.
+The **index** is optional. Indices on `input` layers allow you to create rules that match any of several completely separate inputs. Any inputs with the same index are treated as part of the same condition, and each different index is its own independent set of conditions. Any of these conditions being matched will count as a match for the rule. 
+An index can be empty, or it can be any string that doesn't start with `not` and doesn't contain any underscores.
+
+An empty index indicate a **wildcard**. Wildcards provide alternative ways to match to all other input sets. In particular, all layers from the wildcard are copied to all other input sets. 
+For instance, suppose you have the following input sets:
+```
+inputA_Ground
+inputB_Details
+input_Ground    <- wildcard
+```
+When applying Automap, the wildcard layers are copied to both other input sets, so that inputA will have additional ways to match Ground, and inputB will be required to match not only Details, but also Ground.
 
 Multiple input layers having the same name and index is explicitly allowed and is intended. Having multiple input layers of the same name and index allows you to define different possible tiles per coordinate as input, and any combination of those tiles will count as a match.
 

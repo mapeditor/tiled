@@ -1,5 +1,6 @@
 ### Unreleased
 
+* AutoMapping: Input layers with no index now act as wildcards, part of every index (#3636)
 * Rewritten Properties view to enable direct widget interaction (#4045)
 * Added support for lists in custom properties (#1493)
 * Added capsule object shape (by Jocelyn, #2153)
