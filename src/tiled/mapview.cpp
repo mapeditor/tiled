@@ -30,6 +30,7 @@
 #include "pannableviewhelper.h"
 #include "preferences.h"
 #include "rulerwidget.h"
+#include "rulerwidget.h"
 #include "tileanimationdriver.h"
 #include "utils.h"
 #include "zoomable.h"
@@ -129,8 +130,6 @@ MapView::MapView(QWidget *parent)
     // Corner square covering the top-left intersection of the two rulers
     mRulerCorner = new QWidget(this);
     mRulerCorner->setAttribute(Qt::WA_TransparentForMouseEvents);
-    // Background is painted by the ruler widgets on either side; just needs
-    // to be opaque so the map doesn't show through the corner gap.
     mRulerCorner->setAutoFillBackground(true);
 
     // Update view when preferences change
@@ -543,11 +542,6 @@ void MapView::paintEvent(QPaintEvent *event)
     QGraphicsView::paintEvent(event);
 }
 
-void MapView::drawForeground(QPainter *painter, const QRectF &rect)
-{
-    QGraphicsView::drawForeground(painter, rect);
-}
-
 void MapView::hideEvent(QHideEvent *event)
 {
     // Disable panning when the view gets hidden in any way
@@ -561,6 +555,7 @@ void MapView::resizeEvent(QResizeEvent *event)
         updateSceneRect(s->sceneRect());
 
     QGraphicsView::resizeEvent(event);
+    updateRulerGeometry();
     updateRulerGeometry();
 }
 

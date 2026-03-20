@@ -27,6 +27,8 @@
 
 #include <QPainter>
 
+#include <cmath>
+
 using namespace Tiled;
 
 RulerWidget::RulerWidget(Orientation orientation, MapView *mapView)
