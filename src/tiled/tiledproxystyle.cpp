@@ -706,25 +706,25 @@ void TiledProxyStyle::drawControl(ControlElement element,
             if (
                 qobject_cast<const QComboBox*>(widget) ||
                 (option->styleObject && option->styleObject->property("_q_isComboBoxPopupItem").toBool()))
-                ignoreCheckMark = true;
+                ignoreCheckMark = true; //ignore the checkmarks provided by the QComboMenuDelegate
 
-            if (!ignoreCheckMark) {
+            if (!ignoreCheckMark) { 
                 checkcol = qMax<int>(defaultCheckWidth, menuItem->maxIconWidth) + dualOffset;
 
                 const qreal boxMargin = dpiScaled(3.5, option);
                 const qreal boxWidth = defaultCheckWidth - 2 * boxMargin;
-                QRectF checkRectF(option->rect.left() + boxMargin + checkColHOffset, option->rect.center().y() - boxWidth / 2 + 1, boxWidth, boxWidth);
+                QRectF checkRectF(option->rect.left() + boxMargin + checkColHOffset, option->rect.center().y() - boxWidth/2 + 1, boxWidth, boxWidth);
                 QRect checkRect = checkRectF.toRect();
-                checkRect.setWidth(checkRect.height());
+                checkRect.setWidth(checkRect.height()); // avoid .toRect() round error results in non-perfect square
                 checkRect = visualRect(menuItem->direction, menuItem->rect, checkRect);
-
                 if (checkable) {
                     if (menuItem->checkType & QStyleOptionMenuItem::Exclusive) {
+                        // Radio button
                         if (checked || sunken) {
                             painter->setRenderHint(QPainter::Antialiasing);
                             painter->setPen(Qt::NoPen);
 
-                            QPalette::ColorRole textRole = !enabled ? QPalette::Text :
+                            QPalette::ColorRole textRole = !enabled ? QPalette::Text:
                                 selected ? QPalette::HighlightedText : QPalette::ButtonText;
                             painter->setBrush(option->palette.brush(option->palette.currentColorGroup(), textRole));
                             const int adjustment = checkRect.height() * 0.3;
@@ -741,13 +741,14 @@ void TiledProxyStyle::drawControl(ControlElement element,
                     }
                 }
             }
-            else {
+            else { //ignore checkmark
                 if (menuItem->icon.isNull())
                     checkcol = 0;
                 else
                     checkcol = menuItem->maxIconWidth;
             }
 
+            // Text and icon, ripped from windows style
             bool dis = !(menuItem->state & State_Enabled);
             bool act = menuItem->state & State_Selected;
             const QStyleOption* opt = option;
@@ -758,7 +759,7 @@ void TiledProxyStyle::drawControl(ControlElement element,
             // Shift the icon by the offset
             int iconOffsetX = checkColHOffset;
             int iconAreaWidth = checkcol;
-            if (!ignoreCheckMark /* && checkable */&& !menuItem->icon.isNull()) {
+            if (!ignoreCheckMark && !menuItem->icon.isNull()) {
                 iconOffsetX += dualOffset;
                 iconAreaWidth = menuItem->maxIconWidth;
             }
@@ -775,7 +776,7 @@ void TiledProxyStyle::drawControl(ControlElement element,
 
                 int smallIconSize = proxy()->pixelMetric(PM_SmallIconSize, option, widget);
                 QSize iconSize(smallIconSize, smallIconSize);
-                if (const QComboBox* combo = qobject_cast<const QComboBox*>(widget))
+                if (const QComboBox *combo = qobject_cast<const QComboBox*>(widget))
                     iconSize = combo->iconSize();
                 if (checked)
                     pixmap = menuItem->icon.pixmap(iconSize, mode, QIcon::On);
