@@ -379,6 +379,7 @@ bool AutoMapper::setupRuleMapLayers()
 
     QString error;
 
+    // Loop over all layers in the map and parse them
     for (Layer *layer : mRulesMap->allLayers()) {
         if (layer->isGroupLayer() || layer->isImageLayer())
             continue;
@@ -451,7 +452,7 @@ bool AutoMapper::setupRuleMapLayers()
 
         const int layerNameStartPosition = ruleMapLayerName.indexOf(QLatin1Char('_'));
 
-        // both 'rule' and 'output' layers will require and underscore and
+        // both 'input' and 'output' layers will require and underscore and
         // rely on the correct position detected of the underscore
         if (layerNameStartPosition == -1) {
             error += tr("Did you forget an underscore in layer '%1'?").arg(ruleMapLayerName);
@@ -462,6 +463,7 @@ bool AutoMapper::setupRuleMapLayers()
         const QString layerName = ruleMapLayerName.mid(layerNameStartPosition + 1); // all characters after the underscore
         QString setName = ruleMapLayerName.left(layerNameStartPosition);            // all before the underscore
 
+        // Keep only the layer name
         if (setName.startsWith(QLatin1String("output"), Qt::CaseInsensitive))
             setName.remove(0, 6);
         else if (setName.startsWith(QLatin1String("inputnot"), Qt::CaseInsensitive))
@@ -469,6 +471,7 @@ bool AutoMapper::setupRuleMapLayers()
         else if (setName.startsWith(QLatin1String("input"), Qt::CaseInsensitive))
             setName.remove(0, 5);
 
+        // Input layers
         if (ruleMapLayerName.startsWith(QLatin1String("input"), Qt::CaseInsensitive)) {
             const TileLayer *tileLayer = layer->asTileLayer();
 
@@ -478,15 +481,18 @@ bool AutoMapper::setupRuleMapLayers()
                 continue;
             }
 
+            // Input layers are uniquely identified by their name
             setup.mInputLayerNames.insert(layerName);
 
             InputLayer inputLayer { tileLayer };
             setupInputLayerProperties(inputLayer);
 
+            // If this input set doesn't exist yet, create it
             auto &inputSet = find_or_emplace<InputSet>(setup.mInputSets, [&setName] (const InputSet &set) {
                 return set.name == setName;
-            }, setName);
+                }, setName);
 
+            // If the target layer is not part of the input set yet, add it
             auto &conditions = find_or_emplace<InputConditions>(inputSet.layers, [&layerName] (const InputConditions &conditions) {
                 return conditions.layerName == layerName;
             }, layerName);
@@ -500,6 +506,7 @@ bool AutoMapper::setupRuleMapLayers()
             continue;
         }
 
+        // Output layers
         if (ruleMapLayerName.startsWith(QLatin1String("output"), Qt::CaseInsensitive)) {
             if (layer->isTileLayer())
                 setup.mOutputTileLayerNames.insert(layerName);
@@ -628,6 +635,8 @@ void AutoMapper::setupRules()
         }
     }
 
+    // Combine together input and output, then split the result into a vector of disjoint regions.
+    // Adjacent rects get merged into the same region, so the resulting regions will be well-defined
     QVector<QRegion> combinedRegions = coherentRegions(regionInput + regionOutput);
 
     // Combined regions are sorted, in order to have a deterministic order in
@@ -875,7 +884,7 @@ bool AutoMapper::compileRule(QVector<RuleInputSet> &inputSets,
             const auto mergedSet = mergeInputConditions(inputSet, *wildcardSet);
 
             // Compile the resulting input set
-        RuleInputSet index;
+            RuleInputSet index;
             if (compileInputSet(index, mergedSet, rule.inputRegion, compileContext, context))
                 inputSets.push_back(std::move(index));
         }
@@ -887,7 +896,7 @@ bool AutoMapper::compileRule(QVector<RuleInputSet> &inputSets,
         {
             RuleInputSet index;
             if(compileInputSet(index, inputSet, rule.inputRegion, compileContext, context))
-            inputSets.append(std::move(index));
+                inputSets.append(std::move(index));
         }
     }
 
@@ -1207,12 +1216,14 @@ void AutoMapper::autoMap(const QRegion &where,
             if (rule.options.disabled)
                 continue;
 
+            // Match and immediately apply the current rule 
             matchRule(rule, applyRegion, get, [&] (QPoint pos) {
                 applyRule(rule, pos, applyContext, context);
             }, context);
             applyContext.appliedRegions.clear();
         }
     } else {
+        // Match all rules first
         auto collectMatches = [&] (const Rule &rule) {
             QVector<QPoint> positions;
             if (!rule.options.disabled)
@@ -1238,6 +1249,7 @@ void AutoMapper::autoMap(const QRegion &where,
                                                                                    MatchRule { collectMatches });
 #endif
 
+        // Now, apply them all
         for (size_t i = 0; i < mRules.size(); ++i) {
             const Rule &rule = mRules[i];
             for (const QPoint pos : result[i])
@@ -1263,6 +1275,7 @@ static bool matchInputIndex(const RuleInputSet &inputSet, QPoint offset, AutoMap
     qsizetype nextPos = 0;
     qsizetype nextCell = 0;
 
+    // Loop over all layers in this input set, and check the conditions for each position in each layer
     for (const RuleInputLayer &layer : inputSet.layers) {
         for (auto p = std::exchange(nextPos, nextPos + layer.posCount); p < nextPos; ++p) {
             const RuleInputLayerPos &pos = inputSet.positions[p];
@@ -1280,6 +1293,7 @@ static bool matchInputIndex(const RuleInputSet &inputSet, QPoint offset, AutoMap
                 }
             }
 
+            // If we did not found a match for this layer, the rule does not match at this location
             if (!anyMatch)
                 return false;
 
@@ -1298,7 +1312,7 @@ static bool matchInputIndex(const RuleInputSet &inputSet, QPoint offset, AutoMap
 static bool matchRuleAtOffset(const QVector<RuleInputSet> &inputSets, QPoint offset, AutoMapper::GetCell getCell)
 {
     return std::any_of(inputSets.begin(),
-                       inputSets.end(),
+        inputSets.end(),
                        [=] (const RuleInputSet &index) { return matchInputIndex(index, offset, getCell); });
 }
 
@@ -1338,6 +1352,7 @@ void AutoMapper::matchRule(const Rule &rule,
                                  context.targetMap->height() - ruleHeight);
     }
 
+    // Match rules at each point in the match region, applying the mod and offset options
     for (const QRect &rect : ruleMatchRegion) {
         const int startX = rect.left() + (rect.left() + rule.options.offsetX) % rule.options.modX;
         const int startY = rect.top() + (rect.top() + rule.options.offsetY) % rule.options.modY;
@@ -1347,6 +1362,7 @@ void AutoMapper::matchRule(const Rule &rule,
                 if (rule.options.skipChance != 0.0 && randomDouble() < rule.options.skipChance)
                     continue;
 
+                // Either apply the rule or add this point to the vector of matched points
                 if (matchRuleAtOffset(inputSets, QPoint(x, y), getCell))
                     matched(QPoint(x, y));
             }
@@ -1401,9 +1417,11 @@ void AutoMapper::applyRule(const Rule &rule, QPoint pos,
         }
     }
 
+    // Apply unnamed output set, if any
     if (rule.outputSet)
         copyMapRegion(rule, pos, *rule.outputSet, context);
 
+    // Apply randomly chosen output set, if any
     if (randomOutputSet)
         copyMapRegion(rule, pos, *randomOutputSet, context);
 
