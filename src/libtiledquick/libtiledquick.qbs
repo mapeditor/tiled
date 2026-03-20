@@ -3,7 +3,7 @@ import qbs.Utilities
 DynamicLibrary {
     targetName: "tiledquick"
     builtByDefault: false
-    condition: Utilities.versionCompare(Qt.core.version, "6.5") >= 0
+    condition: Qt.core && Utilities.versionCompare(Qt.core.version, "6.5") >= 0
 
     Depends { name: "libtiled" }
     Depends { name: "cpp" }
