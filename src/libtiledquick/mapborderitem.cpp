@@ -1,6 +1,5 @@
 #include "mapborderitem.h"
 
-#include <QQuickWindow>
 #include <QSGFlatColorMaterial>
 
 using namespace TiledQuick;
@@ -45,10 +44,10 @@ QSGNode *MapBorderItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNo
     return borderNode;
 }
 
-void MapBorderItem::setColor(const QColor &c)
+void MapBorderItem::setColor(const QColor &color)
 {
-    if (mColor != c) {
-        mColor = c;
+    if (mColor != color) {
+        mColor = color;
         emit colorChanged();
         update();
     }

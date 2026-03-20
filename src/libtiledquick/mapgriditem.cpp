@@ -1,7 +1,5 @@
 #include "mapgriditem.h"
-
-#include <QQuickWindow>
-#include <QSGFlatColorMaterial>
+#include "mapgridmaterial.h"
 
 using namespace TiledQuick;
 
@@ -15,74 +13,39 @@ MapGridItem::~MapGridItem() = default;
 
 QSGNode *MapGridItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData *)
 {
-    int gridWidth = mGridSize.x();
-    int gridHeight = mGridSize.y();
-    int tileWidth = width() / gridWidth;
-    int tileHeight = height() / gridHeight;
-    float segmentDrawLength = static_cast<float>(mSegmentLength / mScale);
-    qDebug() << segmentDrawLength;
-
-    // Currently only top line
-    int wVertexCountPerTile = 2 * ceil(0.5 * tileWidth * mScale / mSegmentLength);
-    int hVertexCountPerTile = 2 * ceil(0.5 * tileHeight * mScale / mSegmentLength);
-
-    int newVertexCount = (gridWidth * gridHeight) *
-                         (wVertexCountPerTile + hVertexCountPerTile);
-
-    qDebug() << gridWidth << "x" << gridHeight << ":" << tileWidth << "x" << tileHeight << mScale << "v:" << wVertexCountPerTile << "x" << hVertexCountPerTile << "x" << gridWidth << "x" << gridHeight;
-
     QSGGeometryNode *gridNode = static_cast<QSGGeometryNode *>(node);
 
     if (!gridNode) {
         gridNode = new QSGGeometryNode;
 
-        auto *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), newVertexCount);
-        geometry->setDrawingMode(QSGGeometry::DrawLines);
+        auto *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_TexturedPoint2D(), 4);
+        geometry->setDrawingMode(QSGGeometry::DrawTriangleStrip);
 
         gridNode->setGeometry(geometry);
         gridNode->setFlag(QSGNode::OwnsGeometry);
 
-        auto *material = new QSGFlatColorMaterial;
+        auto *material = new MapGridMaterial;
         gridNode->setMaterial(material);
         gridNode->setFlag(QSGNode::OwnsMaterial);
     }
 
-    auto *geometry = gridNode->geometry();
+    auto *vertices = gridNode->geometry()->vertexDataAsTexturedPoint2D();
 
-    if (geometry->vertexCount() != newVertexCount) {
-        geometry->allocate(newVertexCount);
-    }
-
-    auto *vertex = geometry->vertexDataAsPoint2D();
-    int currentVertex = 0;
-
-    for (int gridX = 0; gridX < gridWidth; gridX++) {
-        for (int gridY = 0; gridY < gridHeight; gridY++) {
-            for (int i = 0; i < wVertexCountPerTile/2; i++) {
-                float startX = i * segmentDrawLength * 2 + gridX * tileWidth;
-                float endX = startX + segmentDrawLength;
-
-                vertex[currentVertex++].set(startX, gridY * tileHeight);
-                vertex[currentVertex++].set(endX, gridY * tileHeight);
-            }
-
-            for (int i = 0; i < hVertexCountPerTile/2; i++) {
-                float startY = i * segmentDrawLength * 2 + gridY * tileHeight;
-                float endY = startY + segmentDrawLength;
-
-                vertex[currentVertex++].set(gridX * tileWidth, startY);
-                vertex[currentVertex++].set(gridX * tileWidth, endY);
-            }
-        }
-    }
-
-
-    qDebug() << currentVertex;
-
-
+    vertices[0].set(0, 0, 0, 0);
+    vertices[1].set(width(), 0, 1, 0);
+    vertices[2].set(0, height(), 0, 1);
+    vertices[3].set(width(), height(), 1, 1);
     gridNode->markDirty(QSGNode::DirtyGeometry);
 
-    static_cast<QSGFlatColorMaterial *>(gridNode->material())->setColor(mColor);
+    auto *material = static_cast<MapGridMaterial *>(gridNode->material());
+    material->mColor = mColor;
+    material->mScale = mScale;
+    material->mPixelWidth = width();
+    material->mPixelHeight = height();
+    material->mTileWidth = width() / mGridSize.x();
+    material->mTileHeight = height() / mGridSize.y();
+
+    gridNode->markDirty(QSGNode::DirtyGeometry);
 
     return gridNode;
 }
@@ -103,7 +66,8 @@ QPointF MapGridItem::gridSize() const
 
 void MapGridItem::setScale(const qreal &scale)
 {
-    if (mScale != scale) {
+    if (mScale != scale)
+    {
         mScale = scale;
         emit gridSizeChanged();
         update();
@@ -113,4 +77,19 @@ void MapGridItem::setScale(const qreal &scale)
 qreal MapGridItem::scale() const
 {
     return mScale;
+}
+
+void MapGridItem::setColor(const QColor &color)
+{
+    if(mColor != color)
+    {
+        mColor = color;
+        emit colorChanged();
+        update();
+    }
+}
+
+QColor MapGridItem::color() const
+{
+    return mColor;
 }

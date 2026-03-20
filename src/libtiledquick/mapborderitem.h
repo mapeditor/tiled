@@ -1,13 +1,8 @@
 #pragma once
 
 #include <QQuickItem>
-#include <QColor>
 
 #include "tiledquick_global.h"
-
-namespace Tiled {
-class MapRenderer;
-}
 
 namespace TiledQuick {
 
@@ -24,7 +19,7 @@ public:
     QSGNode *updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData *) override;
 
     QColor color() const;
-    void setColor(const QColor &c);
+    void setColor(const QColor &color);
 
 signals:
     void colorChanged();
