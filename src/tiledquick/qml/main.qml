@@ -174,6 +174,8 @@ ApplicationWindow {
 
                 gridSize: mapItem.pixelToTileCoords(width, height);
                 scale: mapContainer.scale;
+
+                color: "black"
             }
         }
     }
