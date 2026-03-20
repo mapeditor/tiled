@@ -347,7 +347,7 @@
     <string>Show Map &amp;Rulers</string>
    </property>
    <property name="shortcut">
-    <string notr="true">Ctrl+R</string>
+    <string notr="true">Ctrl+Shift+R</string>
    </property>
   </action>
   <action name="actionSaveAs">

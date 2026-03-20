@@ -319,6 +319,8 @@ DynamicLibrary {
         "mapscene.h",
         "mapview.cpp",
         "mapview.h",
+        "rulerwidget.cpp",
+        "rulerwidget.h",
         "minimap.cpp",
         "minimapdock.cpp",
         "minimapdock.h",
