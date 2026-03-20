@@ -66,8 +66,7 @@ QPointF MapGridItem::gridSize() const
 
 void MapGridItem::setScale(const qreal &scale)
 {
-    if (mScale != scale)
-    {
+    if (mScale != scale) {
         mScale = scale;
         emit gridSizeChanged();
         update();
@@ -81,8 +80,7 @@ qreal MapGridItem::scale() const
 
 void MapGridItem::setColor(const QColor &color)
 {
-    if(mColor != color)
-    {
+    if(mColor != color) {
         mColor = color;
         emit colorChanged();
         update();

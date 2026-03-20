@@ -233,7 +233,7 @@ ApplicationWindow {
                     } else {
                         var mapRelativeCoords = singleFingerPanArea.mapToItem(mapItem, singleFingerPanArea.mouseX, singleFingerPanArea.mouseY)
                         var tileCoords = mapItem.screenToTileCoords(mapRelativeCoords.x, mapRelativeCoords.y)
-                        Math.floor(tileCoords.x) + ", " + Math.floor(tileCoords.y) + ", " + mapContainer.scale;
+                        Math.floor(tileCoords.x) + ", " + Math.floor(tileCoords.y);
                     }
                 }
             }
