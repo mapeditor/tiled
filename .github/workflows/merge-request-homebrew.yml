@@ -1,0 +1,26 @@
+name: Update Homebrew Cask
+
+on:
+  release:
+    types: [released]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to bump (e.g. v1.11.2). Defaults to latest release.'
+        required: false
+
+jobs:
+  bump-cask:
+    name: Bump Homebrew cask
+    runs-on: macos-latest
+
+    if: github.repository == 'mapeditor/tiled'
+
+    steps:
+      - name: Update Homebrew cask
+        uses: eugenesvk/action-homebrew-bump-cask@6b066272df85c164f0496877387ecc8d989a194f # 3.8.6
+        with:
+          token: ${{ secrets.HOMEBREW_BUMP_TOKEN }}
+          cask: tiled
+          org: mapeditor
+          tag: ${{ inputs.tag || github.ref }}

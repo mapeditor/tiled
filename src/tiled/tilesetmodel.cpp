@@ -237,9 +237,30 @@ void TilesetModel::setColumnCountOverride(int columnCount)
     if (mColumnCountOverride == columnCount)
         return;
 
-    beginResetModel();
+    emit layoutAboutToBeChanged();
+
+    const int oldColumnCount = TilesetModel::columnCount();
+    const QModelIndexList oldIndexes = persistentIndexList();
+
     mColumnCountOverride = columnCount;
-    endResetModel();
+
+    const int newColumnCount = TilesetModel::columnCount();
+
+    QModelIndexList newIndexes;
+    newIndexes.reserve(oldIndexes.size());
+
+    for (const QModelIndex &oldIndex : oldIndexes) {
+        if (!oldIndex.isValid()) {
+            newIndexes.append(QModelIndex());
+            continue;
+        }
+        const int tileIndex = oldIndex.row() * oldColumnCount + oldIndex.column();
+        newIndexes.append(index(tileIndex / newColumnCount, tileIndex % newColumnCount));
+    }
+
+    changePersistentIndexList(oldIndexes, newIndexes);
+
+    emit layoutChanged();
 }
 
 void TilesetModel::tilesChanged(const QList<Tile *> &tiles)

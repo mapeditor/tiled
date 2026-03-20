@@ -37,52 +37,52 @@
     <message>
         <location filename="../src/tiled/propertieswidget.cpp" line="+72"/>
         <source>Unspecified</source>
-        <translation type="unfinished">Неопределено</translation>
+        <translation>Неопределено</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Top Left</source>
-        <translation type="unfinished">Горе вляво</translation>
+        <translation>Горе вляво</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Top</source>
-        <translation type="unfinished">Горе</translation>
+        <translation>Горе</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Top Right</source>
-        <translation type="unfinished">Горе вдясно</translation>
+        <translation>Горе вдясно</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Left</source>
-        <translation type="unfinished">Ляво</translation>
+        <translation>Ляво</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Center</source>
-        <translation type="unfinished">Центрирано</translation>
+        <translation>Центрирано</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Right</source>
-        <translation type="unfinished">Дясно</translation>
+        <translation>Дясно</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Bottom Left</source>
-        <translation type="unfinished">Долу вляво</translation>
+        <translation>Долу вляво</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Bottom</source>
-        <translation type="unfinished">Долу</translation>
+        <translation>Долу</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Bottom Right</source>
-        <translation type="unfinished">Долу вдясно</translation>
+        <translation>Долу вдясно</translation>
     </message>
 </context>
 <context>
@@ -90,67 +90,67 @@
     <message>
         <location line="+124"/>
         <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Нормално</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавяне</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Multiply</source>
-        <translation type="unfinished"></translation>
+        <translation>Умножение</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Екран</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>Наслагване</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Darken</source>
-        <translation type="unfinished"></translation>
+        <translation>Потъмняване</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Lighten</source>
-        <translation type="unfinished"></translation>
+        <translation>Изсветляване</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Color Dodge</source>
-        <translation type="unfinished"></translation>
+        <translation>Цветно изсветляване</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Color Burn</source>
-        <translation type="unfinished"></translation>
+        <translation>Цветно изгаряне</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Hard Light</source>
-        <translation type="unfinished"></translation>
+        <translation>Твърда светлина</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Soft Light</source>
-        <translation type="unfinished"></translation>
+        <translation>Мека светлина</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Difference</source>
-        <translation type="unfinished"></translation>
+        <translation>Разлика</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Exclusion</source>
-        <translation type="unfinished"></translation>
+        <translation>Изключване</translation>
     </message>
 </context>
 <context>
@@ -592,7 +592,7 @@
     <message>
         <location filename="../src/plugins/tbin/tidemapformat.cpp" line="+9"/>
         <source>Not a tide file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Този файл не е във формата на tide.</translation>
     </message>
 </context>
 <context>
@@ -623,7 +623,7 @@
     <message>
         <location filename="../src/plugins/flare/flareplugin.cpp" line="+101"/>
         <source>Error loading tileset image %1, which expands to %2!</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при зареждането на изображение с плочен набор %1, което се разширява до %2!</translation>
     </message>
     <message>
         <location line="+18"/>
@@ -951,17 +951,17 @@
     <message>
         <location line="+9"/>
         <source>World Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Свойства на света…</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>World Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Свойства на света</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Go to &amp;Tile...</source>
-        <translation type="unfinished"></translation>
+        <translation>Към &amp;плочка…</translation>
     </message>
     <message>
         <location line="-117"/>
@@ -1574,12 +1574,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/propertieswidget.cpp" line="-36"/>
         <source>Top Down</source>
-        <translation type="unfinished">Отгоре-надолу</translation>
+        <translation>От горе надолу</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Manual</source>
-        <translation type="unfinished">Ръчно</translation>
+        <translation>Ръчно</translation>
     </message>
 </context>
 <context>
@@ -1918,12 +1918,12 @@ Line %1, column %2</source>
     <message>
         <location line="+143"/>
         <source>Sort files numerically (d3, d20) instead of alphabetically (d20, d3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Подреждане на файловете по номера (d3, d20) вместо по азбучен ред (d20, d3)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Use natural sorting in Projects view</source>
-        <translation type="unfinished"></translation>
+        <translation>Използване на естествена подредба в изгледа с проектите</translation>
     </message>
     <message>
         <location line="+93"/>
@@ -2029,7 +2029,7 @@ Line %1, column %2</source>
     <message>
         <location line="+6"/>
         <source>Custom Properties</source>
-        <translation type="unfinished">Допълнителни свойства</translation>
+        <translation>Персонализирани свойства</translation>
     </message>
 </context>
 <context>
@@ -2104,12 +2104,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/propertiesview.cpp" line="+359"/>
         <source>On</source>
-        <translation type="unfinished"></translation>
+        <translation>Вкл</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Off</source>
-        <translation type="unfinished"></translation>
+        <translation>Изкл</translation>
     </message>
 </context>
 <context>
@@ -2117,22 +2117,22 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/propertieswidget.cpp" line="-25"/>
         <source>Right Down</source>
-        <translation type="unfinished">Надясно-надолу</translation>
+        <translation>Надясно-надолу</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Right Up</source>
-        <translation type="unfinished">Надясно-нагоре</translation>
+        <translation>Надясно-нагоре</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Left Down</source>
-        <translation type="unfinished">Наляво-надолу</translation>
+        <translation>Наляво-надолу</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Left Up</source>
-        <translation type="unfinished">Наляво-нагоре</translation>
+        <translation>Наляво-нагоре</translation>
     </message>
 </context>
 <context>
@@ -2262,62 +2262,62 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/rpd/rpdplugin.cpp" line="+85"/>
         <source>You don&apos;t used any tileset for &apos;%1&apos; layer, tile layer without tiles is useless</source>
-        <translation type="unfinished"></translation>
+        <translation>Не сте използвали никакъв плочен набор за слоя „%1“ – слой с плочки без плочен набор е безсмислен</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Only one tileset per layer supported, &apos;%1&apos; layer uses following tilesets:</source>
-        <translation type="unfinished"></translation>
+        <translation>Един слой може да използва само един плочен набор, а слоят „%1“ използва следните набори:</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>You have an unknown tile layer &apos;%1&apos;, it will be ignored</source>
-        <translation type="unfinished"></translation>
+        <translation>Имате неизвестен слой с плочки „%1“ – той ще бъде пренебрегнат</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>You have an unknown object layer &apos;%1&apos;, it will be ignored</source>
-        <translation type="unfinished"></translation>
+        <translation>Имате неизвестен слой с обекти „%1“ – той ще бъде пренебрегнат</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>You must have a layer with tile layer type and name &apos;logic&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Трябва да имате слой с плочки, който има име „logic“</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Don&apos;t know about property &apos;%1&apos; it probably will be ignored by Remixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Свойството „%1“ е непознато – то вероятно ще бъде пренебрегнато от Remixed</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Don&apos;t know what to do with map property &apos;%1&apos; it will be ignored</source>
-        <translation type="unfinished"></translation>
+        <translation>Не е ясно за какво може да се ползва свойството „%1“ на картата – то ще бъде пренебрегнато</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Could not open file &apos;%1&apos; for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлът „%1“ не може да бъде отворен за запис.</translation>
     </message>
     <message>
         <location line="+63"/>
         <source>Error while writing file: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при записа на файла: „%1“</translation>
     </message>
     <message>
         <location line="+38"/>
         <source>Don&apos;t know about object class &apos;%1&apos; it probably will be ignored by Remixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Класът обекти „%1“ е непознат – той вероятно ще бъде пренебрегнат от Remixed</translation>
     </message>
     <message>
         <location line="+63"/>
         <source>Hole in &apos;logic&apos; layer at (%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Дупка в слоя „logic“ на позиция (%1, %2)</translation>
     </message>
     <message>
         <location line="+31"/>
         <source>Remixed Pixel Dungeon levels (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Нива на Remixed Pixel Dungeon (*.json)</translation>
     </message>
 </context>
 <context>
@@ -2576,7 +2576,7 @@ Line %1, column %2</source>
     <message>
         <location line="+10"/>
         <source>Expected object to initialize class value</source>
-        <translation type="unfinished"></translation>
+        <translation>Липсва обект, който да инициализира стойността на класа</translation>
     </message>
     <message>
         <location line="+65"/>
@@ -2849,23 +2849,23 @@ Line %1, column %2</source>
         <location filename="../src/tiled/mapeditor.cpp" line="+1090"/>
         <location filename="../src/tiled/tileseteditor.cpp" line="+541"/>
         <source>No current Wang set</source>
-        <translation type="unfinished"></translation>
+        <translation>Няма текущ набор на Ванг</translation>
     </message>
     <message>
         <location line="+4"/>
         <location filename="../src/tiled/tileseteditor.cpp" line="+4"/>
         <source>An invalid index was provided</source>
-        <translation type="unfinished"></translation>
+        <translation>Зададеният индекс е грешен</translation>
     </message>
     <message>
         <location filename="../src/tiled/scriptpropertytype.cpp" line="+56"/>
         <source>The name &apos;%1&apos; is already in use.</source>
-        <translation type="unfinished">Името „%1“ вече се ползва.</translation>
+        <translation>Името „%1“ вече се ползва.</translation>
     </message>
     <message>
         <location line="+48"/>
         <source>The specified value is not of the correct type</source>
-        <translation type="unfinished"></translation>
+        <translation>Зададената стойност не е от правилния тип</translation>
     </message>
 </context>
 <context>
@@ -2873,12 +2873,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/propertieswidget.cpp" line="-19"/>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
 </context>
 <context>
@@ -2886,12 +2886,12 @@ Line %1, column %2</source>
     <message>
         <location line="+7"/>
         <source>Odd</source>
-        <translation type="unfinished">Нечетна</translation>
+        <translation>Нечетно</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Even</source>
-        <translation type="unfinished">Четна</translation>
+        <translation>Четно</translation>
     </message>
 </context>
 <context>
@@ -2909,7 +2909,7 @@ Line %1, column %2</source>
     <message>
         <location line="+7"/>
         <source>tIDE binary map files (*.tbin)</source>
-        <translation type="unfinished"></translation>
+        <translation>Двоичен файл с карта на tIDE (*.tbin)</translation>
     </message>
 </context>
 <context>
@@ -2917,32 +2917,32 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/tbin/tbinplugin.cpp" line="+146"/>
         <source>Map contains no layers.</source>
-        <translation type="unfinished">В картата няма слоеве.</translation>
+        <translation>В картата няма слоеве.</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Tilesheet must have equal spacings.</source>
-        <translation type="unfinished">Плочният набор трябва да има еднакви отстояния.</translation>
+        <translation>Изображението с плочките трябва да има еднакви отстояния.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Tilesheet must have equal margins.</source>
-        <translation type="unfinished">Плочният набор трябва да има еднакви кантове.</translation>
+        <translation>Изображението с плочките трябва да има еднакви кантове.</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Different tile sizes per layer are not supported.</source>
-        <translation type="unfinished">Не се поддържат различни размери на плочките на различните слоеве.</translation>
+        <translation>Не се поддържат различни размери на плочките на различните слоеве.</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>Invalid animation frame.</source>
-        <translation type="unfinished">Неправилен анимационен кадър.</translation>
+        <translation>Неправилен анимационен кадър.</translation>
     </message>
     <message>
         <location line="+202"/>
         <source>Only object and tile layers supported.</source>
-        <translation type="unfinished">Поддържат се само слоеве с обекти и плочки.</translation>
+        <translation>Поддържат се само слоеве с обекти и плочки.</translation>
     </message>
 </context>
 <context>
@@ -2950,12 +2950,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/plugins/tbin/tidemapformat.cpp" line="+469"/>
         <source>Exception: %1</source>
-        <translation type="unfinished">Изключение: %1</translation>
+        <translation>Изключение: %1</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>tIDE map files (*.tide)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлове с карти на tIDE (*.tide)</translation>
     </message>
 </context>
 <context>
@@ -3283,7 +3283,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/variantmapproperty.cpp" line="+718"/>
         <source>Property name</source>
-        <translation type="unfinished">Име на свойството</translation>
+        <translation>Име на свойството</translation>
     </message>
 </context>
 <context>
@@ -3393,12 +3393,12 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/propertiesview.cpp" line="-21"/>
         <source>On</source>
-        <translation type="unfinished"></translation>
+        <translation>Вкл</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Off</source>
-        <translation type="unfinished"></translation>
+        <translation>Изкл</translation>
     </message>
 </context>
 <context>
@@ -3529,7 +3529,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/propertieswidget.cpp" line="+477"/>
         <source>Class</source>
-        <translation type="unfinished">Клас</translation>
+        <translation>Клас</translation>
     </message>
 </context>
 <context>
@@ -3545,7 +3545,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/colorbutton.cpp" line="+80"/>
         <source>Not set</source>
-        <translation type="unfinished">Не е зададено</translation>
+        <translation>Не е зададено</translation>
     </message>
 </context>
 <context>
@@ -3553,13 +3553,13 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/propertyeditorwidgets.cpp" line="+682"/>
         <source>Not set</source>
-        <translation type="unfinished">Не е зададено</translation>
+        <translation>Не е зададено</translation>
     </message>
     <message>
         <location line="+4"/>
         <location line="+43"/>
         <source>Pick Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Изберете цвят</translation>
     </message>
 </context>
 <context>
@@ -3771,7 +3771,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createcapsuleobjecttool.cpp" line="+48"/>
         <source>Insert Capsule</source>
-        <translation type="unfinished"></translation>
+        <translation>Вмъкване на капсула</translation>
     </message>
 </context>
 <context>
@@ -3779,7 +3779,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createellipseobjecttool.cpp" line="+48"/>
         <source>Insert Ellipse</source>
-        <translation>Елипса</translation>
+        <translation>Вмъкване на елипса</translation>
     </message>
 </context>
 <context>
@@ -3787,7 +3787,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createpointobjecttool.cpp" line="+51"/>
         <source>Insert Point</source>
-        <translation>Точка</translation>
+        <translation>Вмъкване на точка</translation>
     </message>
 </context>
 <context>
@@ -3795,7 +3795,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createpolygonobjecttool.cpp" line="+166"/>
         <source>Insert Polygon</source>
-        <translation>Многоъгълник</translation>
+        <translation>Вмъкване на многоъгълник</translation>
     </message>
     <message>
         <location line="+125"/>
@@ -3813,7 +3813,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createrectangleobjecttool.cpp" line="+47"/>
         <source>Insert Rectangle</source>
-        <translation>Правоъгълник</translation>
+        <translation>Вмъкване на правоъгълник</translation>
     </message>
 </context>
 <context>
@@ -3821,7 +3821,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createtemplatetool.cpp" line="+53"/>
         <source>Insert Template</source>
-        <translation>Шаблон</translation>
+        <translation>Вмъкване на шаблон</translation>
     </message>
 </context>
 <context>
@@ -3842,7 +3842,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/createtileobjecttool.cpp" line="+86"/>
         <source>Insert Tile</source>
-        <translation>Плочка</translation>
+        <translation>Вмъкване на плочка</translation>
     </message>
 </context>
 <context>
@@ -3850,7 +3850,7 @@ Line %1, column %2</source>
     <message>
         <location filename="../src/tiled/propertieswidget.cpp" line="-106"/>
         <source>Custom Properties</source>
-        <translation type="unfinished">Допълнителни свойства</translation>
+        <translation>Персонализирани свойства</translation>
     </message>
 </context>
 <context>
@@ -4021,7 +4021,7 @@ Line %1, column %2</source>
     <message>
         <location line="+46"/>
         <source>%1, %2 - Erase area (%4 x %5)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1, %2 – Изтриване на област (%4 x %5)</translation>
     </message>
 </context>
 <context>
@@ -4110,12 +4110,12 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/propertieswidget.cpp" line="-230"/>
         <source>Flip Horizontally</source>
-        <translation type="unfinished">Хоризонтално обръщане</translation>
+        <translation>Хоризонтално обръщане</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Flip Vertically</source>
-        <translation type="unfinished">Вертикално обръщане</translation>
+        <translation>Вертикално обръщане</translation>
     </message>
 </context>
 <context>
@@ -4123,32 +4123,32 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/propertiesview.cpp" line="+183"/>
         <source> px</source>
-        <translation type="unfinished"> пкс</translation>
+        <translation> пкс</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Bold</source>
-        <translation type="unfinished">Получер</translation>
+        <translation>Получер</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Italic</source>
-        <translation type="unfinished">Курсив</translation>
+        <translation>Курсив</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Underline</source>
-        <translation type="unfinished">Подчертан</translation>
+        <translation>Подчертано</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Strikethrough</source>
-        <translation type="unfinished"></translation>
+        <translation>Зачеркнато</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Kerning</source>
-        <translation type="unfinished">Припокриване</translation>
+        <translation>Припокриване</translation>
     </message>
 </context>
 <context>
@@ -4156,12 +4156,12 @@ Do you want to replace it?</source>
     <message>
         <location line="-393"/>
         <source>Expand All</source>
-        <translation type="unfinished"></translation>
+        <translation>Разгъване на всички</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Collapse All</source>
-        <translation type="unfinished"></translation>
+        <translation>Свиване на всички</translation>
     </message>
 </context>
 <context>
@@ -4182,22 +4182,22 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/propertieswidget.cpp" line="+961"/>
         <source>Image Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Изображение-източник</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Transparent Color</source>
-        <translation type="unfinished">Цвят за прозрачност</translation>
+        <translation>Цвят за прозрачност</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>Повтаряне</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Image Layer</source>
-        <translation type="unfinished">Слой с изображения</translation>
+        <translation>Слой с изображения</translation>
     </message>
 </context>
 <context>
@@ -4205,12 +4205,12 @@ Do you want to replace it?</source>
     <message>
         <location line="-944"/>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
 </context>
 <context>
@@ -4328,57 +4328,57 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/propertieswidget.cpp" line="+723"/>
         <source>ID</source>
-        <translation type="unfinished">Ид.</translation>
+        <translation>Ид.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Name</source>
-        <translation type="unfinished">Име</translation>
+        <translation>Име</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Visible</source>
-        <translation type="unfinished">Видим</translation>
+        <translation>Видим</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Locked</source>
-        <translation type="unfinished">Заключено</translation>
+        <translation>Заключен</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Opacity</source>
-        <translation type="unfinished">Плътност</translation>
+        <translation>Плътност</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>%</source>
-        <translation type="unfinished"></translation>
+        <translation>%</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Tint Color</source>
-        <translation type="unfinished">Оттенък</translation>
+        <translation>Оттенък</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Blend Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим на смесване</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Offset</source>
-        <translation type="unfinished">Отместване</translation>
+        <translation>Отместване</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Parallax Factor</source>
-        <translation type="unfinished">Фактор на паралакс</translation>
+        <translation>Фактор на паралакс</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Layer</source>
-        <translation type="unfinished">Слой</translation>
+        <translation>Слой</translation>
     </message>
 </context>
 <context>
@@ -4386,17 +4386,17 @@ Do you want to replace it?</source>
     <message>
         <location filename="../src/tiled/listedit.cpp" line="+48"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавяне</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>&lt;empty&gt;</source>
-        <translation type="unfinished">&lt;празно&gt;</translation>
+        <translation>&lt;празно&gt;</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>%1 items</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 елемента</translation>
     </message>
 </context>
 <context>
@@ -5162,82 +5162,82 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/propertieswidget.cpp" line="+471"/>
         <source>ID</source>
-        <translation type="unfinished">Ид.</translation>
+        <translation>Ид.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Template</source>
-        <translation type="unfinished">Шаблон</translation>
+        <translation>Шаблон</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Name</source>
-        <translation type="unfinished">Име</translation>
+        <translation>Име</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Visible</source>
-        <translation type="unfinished">Видим</translation>
+        <translation>Видим</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Opacity</source>
-        <translation type="unfinished">Плътност</translation>
+        <translation>Плътност</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>%</source>
-        <translation type="unfinished"></translation>
+        <translation>%</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Position</source>
-        <translation type="unfinished">Позиция</translation>
+        <translation>Позиция</translation>
     </message>
     <message>
         <location line="+31"/>
         <source>Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Геометрия</translation>
     </message>
     <message>
         <location line="+39"/>
         <source>Rotation</source>
-        <translation type="unfinished">Завъртане</translation>
+        <translation>Завъртане</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Flipping</source>
-        <translation type="unfinished">Обръщане</translation>
+        <translation>Обръщане</translation>
     </message>
     <message>
         <location line="+32"/>
         <source>Text</source>
-        <translation type="unfinished">Текст</translation>
+        <translation>Текст</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Alignment</source>
-        <translation type="unfinished">Подравняване</translation>
+        <translation>Подравняване</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Font</source>
-        <translation type="unfinished">Шрифт</translation>
+        <translation>Шрифт</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Word Wrap</source>
-        <translation type="unfinished">Пренасяне</translation>
+        <translation>Пренасяне</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Text Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Цвят на текста</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Object</source>
-        <translation type="unfinished">Обект</translation>
+        <translation>Обект</translation>
     </message>
 </context>
 <context>
@@ -5245,99 +5245,99 @@ Please select specific format.</source>
     <message>
         <location line="-1062"/>
         <source>Orientation</source>
-        <translation type="unfinished">Ориентация</translation>
+        <translation>Ориентация</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Tile Size</source>
-        <translation type="unfinished">Размер на плочката</translation>
+        <translation>Размер на плочката</translation>
     </message>
     <message>
         <location line="+9"/>
         <location line="+20"/>
         <location line="+28"/>
         <source> px</source>
-        <translation type="unfinished"> пкс</translation>
+        <translation> пкс</translation>
     </message>
     <message>
         <location line="-45"/>
         <source>Infinite</source>
-        <translation type="unfinished">Безкрайно</translation>
+        <translation>Безкрайно</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Hex Side Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Дължина на страната на шестоъгълника</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Stagger Axis</source>
-        <translation type="unfinished">Ос на разминаване</translation>
+        <translation>Ос на разминаване</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Stagger Index</source>
-        <translation type="unfinished">Номерация на разминаване</translation>
+        <translation>Номерация на разминаване</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Skew</source>
-        <translation type="unfinished"></translation>
+        <translation>Изкривяване</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Parallax Origin</source>
-        <translation type="unfinished">Изходна точка на паралакса</translation>
+        <translation>Изходна точка на паралакса</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Layer Data Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Формат на данните на слоя</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Compression Level</source>
-        <translation type="unfinished">Степен на компресиране</translation>
+        <translation>Степен на компресиране</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Output Chunk Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер на изходящите парчета</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Tile Render Order</source>
-        <translation type="unfinished">Ред на изчерт. на плочките</translation>
+        <translation>Ред на изчерт. на плочките</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Background Color</source>
-        <translation type="unfinished">Цвят на фона</translation>
+        <translation>Цвят на фона</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Map</source>
-        <translation type="unfinished">Карта</translation>
+        <translation>Карта</translation>
     </message>
     <message>
         <location line="+115"/>
         <source>X (Flat-top)</source>
-        <translation type="unfinished"></translation>
+        <translation>X (отгоре : страна)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Y (Pointy-top)</source>
-        <translation type="unfinished"></translation>
+        <translation>Y (отгоре: връх)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
 </context>
 <context>
@@ -5345,12 +5345,12 @@ Please select specific format.</source>
     <message>
         <location line="-313"/>
         <source>Map Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер на картата</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Resize Map</source>
-        <translation type="unfinished">Преоразмеряване на карта</translation>
+        <translation>Преоразмеряване на картата</translation>
     </message>
 </context>
 <context>
@@ -5379,7 +5379,7 @@ Please select specific format.</source>
         <location line="+1"/>
         <location filename="../src/tiled/propertieswidget.cpp" line="+1"/>
         <source>Oblique</source>
-        <translation type="unfinished"></translation>
+        <translation>Скосена</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -5531,17 +5531,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/propertieswidget.cpp" line="+1208"/>
         <source>Color</source>
-        <translation type="unfinished">Цвят</translation>
+        <translation>Цвят</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Draw Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Ред на изчертаване</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Object Layer</source>
-        <translation type="unfinished">Слой с обекти</translation>
+        <translation>Слой с обекти</translation>
     </message>
 </context>
 <context>
@@ -5878,17 +5878,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/propertiesview.cpp" line="+1273"/>
         <source>Reset</source>
-        <translation type="unfinished">Нулиране</translation>
+        <translation>Нулиране</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Remove</source>
-        <translation type="unfinished">Премахване</translation>
+        <translation>Премахване</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавяне</translation>
     </message>
 </context>
 <context>
@@ -5896,12 +5896,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/propertieswidget.cpp" line="-181"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавяне</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Reset</source>
-        <translation type="unfinished">Нулиране</translation>
+        <translation>Нулиране</translation>
     </message>
 </context>
 <context>
@@ -6034,7 +6034,7 @@ Please select specific format.</source>
     <message>
         <location line="+52"/>
         <source>Member name</source>
-        <translation type="unfinished"></translation>
+        <translation>Име на член-данната</translation>
     </message>
     <message>
         <location line="+36"/>
@@ -6180,43 +6180,43 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/propertiesview.cpp" line="-830"/>
         <source>Horizontal</source>
-        <translation type="unfinished">Хоризонтално</translation>
+        <translation>Хоризонтално</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Vertical</source>
-        <translation type="unfinished">Вертикално</translation>
+        <translation>Вертикално</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Left</source>
-        <translation type="unfinished">Ляво</translation>
+        <translation>Ляво</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+7"/>
         <source>Center</source>
-        <translation type="unfinished">Центрирано</translation>
+        <translation>Центрирано</translation>
     </message>
     <message>
         <location line="-6"/>
         <source>Right</source>
-        <translation type="unfinished">Дясно</translation>
+        <translation>Дясно</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Justify</source>
-        <translation type="unfinished">Двустранно подравняване</translation>
+        <translation>Двустранно подравняване</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Top</source>
-        <translation type="unfinished">Горе</translation>
+        <translation>Горе</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Bottom</source>
-        <translation type="unfinished">Долу</translation>
+        <translation>Долу</translation>
     </message>
 </context>
 <context>
@@ -6466,22 +6466,22 @@ Please select specific format.</source>
     <message>
         <location line="-132"/>
         <source>Capture area (%3 x %4)</source>
-        <translation type="unfinished"></translation>
+        <translation>Област на прихващане (%3 x %4)</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Draw line (length: %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Изчертаване на линия (дължина: %3)</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Draw ellipse (size: %3 x %4)</source>
-        <translation type="unfinished"></translation>
+        <translation>Изчертаване на елипса(размер: %3 x %4)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>%1, %2 - %3</source>
-        <translation type="unfinished"></translation>
+        <translation>%1, %2 – %3</translation>
     </message>
 </context>
 <context>
@@ -6622,12 +6622,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/locatorwidget.cpp" line="+49"/>
         <source>Go to tile (%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Към плочка (%1, %2)</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Go to tile: x, y</source>
-        <translation type="unfinished"></translation>
+        <translation>Към плочка: x, y</translation>
     </message>
 </context>
 <context>
@@ -6635,32 +6635,32 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/propertieswidget.cpp" line="-988"/>
         <source>ID</source>
-        <translation type="unfinished">Ид.</translation>
+        <translation>Ид.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Image</source>
-        <translation type="unfinished">Изображение</translation>
+        <translation>Изображение</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Rectangle</source>
-        <translation type="unfinished">Правоъгълник</translation>
+        <translation>Правоъгълник</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Probability</source>
-        <translation type="unfinished">Вероятност</translation>
+        <translation>Вероятност</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Relative chance this tile will be picked</source>
-        <translation type="unfinished">Относителен шанс тази плочка да бъде избрана</translation>
+        <translation>Относителен шанс тази плочка да бъде избрана</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Tile</source>
-        <translation type="unfinished">Плочка</translation>
+        <translation>Плочка</translation>
     </message>
 </context>
 <context>
@@ -6824,12 +6824,12 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Filter</source>
-        <translation type="unfinished">Филтриране</translation>
+        <translation>Филтриране</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Tileset Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Показване на филтъра за плочни карти</translation>
     </message>
     <message>
         <location line="+268"/>
@@ -6896,7 +6896,7 @@ Please select specific format.</source>
     <message>
         <location line="-197"/>
         <source>Edit Tileset Image Parameters...</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактиране на свойствата на изображението с плочния набор…</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -6954,7 +6954,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/propertieswidget.cpp" line="-1568"/>
         <source>Tileset Image</source>
-        <translation type="unfinished">Изображение с плочен набор</translation>
+        <translation>Изображение с плочен набор</translation>
     </message>
 </context>
 <context>
@@ -6962,7 +6962,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/tilesetparametersedit.cpp" line="+47"/>
         <source>Edit Tileset</source>
-        <translation type="unfinished">Редактиране на плочен набор</translation>
+        <translation>Редактиране на плочния набор</translation>
     </message>
 </context>
 <context>
@@ -6970,17 +6970,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/propertieswidget.cpp" line="+930"/>
         <source>Name</source>
-        <translation type="unfinished">Име</translation>
+        <translation>Име</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Object Alignment</source>
-        <translation type="unfinished">Подравняване на обектите</translation>
+        <translation>Подравняване на обектите</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Drawing Offset</source>
-        <translation type="unfinished">Отместване при изчертаване</translation>
+        <translation>Отместване при изчертаване</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -6989,72 +6989,72 @@ Please select specific format.</source>
         <location line="+1"/>
         <location line="+1"/>
         <source> px</source>
-        <translation type="unfinished"> пкс</translation>
+        <translation> пкс</translation>
     </message>
     <message>
         <location line="-90"/>
         <source>Tile Render Size</source>
-        <translation type="unfinished">Размер на плочката за изчертаване</translation>
+        <translation>Размер на плочката за изчертаване</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Fill Mode</source>
-        <translation type="unfinished">Режим на запълване</translation>
+        <translation>Режим на запълване</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Background Color</source>
-        <translation type="unfinished">Цвят на фона</translation>
+        <translation>Цвят на фона</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Orientation</source>
-        <translation type="unfinished">Ориентация</translation>
+        <translation>Ориентация</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Grid Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер на решетката</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Columns</source>
-        <translation type="unfinished">Колони</translation>
+        <translation>Колони</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Allowed Transformations</source>
-        <translation type="unfinished">Разрешени трансформации</translation>
+        <translation>Разрешени трансформации</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Image</source>
-        <translation type="unfinished">Изображение</translation>
+        <translation>Изображение</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Transparent Color</source>
-        <translation type="unfinished">Цвят за прозрачност</translation>
+        <translation>Цвят за прозрачност</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Tile Size</source>
-        <translation type="unfinished">Размер на плочката</translation>
+        <translation>Размер на плочката</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Margin</source>
-        <translation type="unfinished">Кант</translation>
+        <translation>Кант</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Spacing</source>
-        <translation type="unfinished">Отстояние</translation>
+        <translation>Отстояние</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>Tileset</source>
-        <translation type="unfinished">Плочен набор</translation>
+        <translation>Плочен набор</translation>
     </message>
 </context>
 <context>
@@ -7103,22 +7103,22 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/propertieswidget.cpp" line="-1132"/>
         <source>Flip Horizontally</source>
-        <translation type="unfinished">Хоризонтално обръщане</translation>
+        <translation>Хоризонтално обръщане</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Flip Vertically</source>
-        <translation type="unfinished">Вертикално обръщане</translation>
+        <translation>Вертикално обръщане</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Rotate</source>
-        <translation type="unfinished">Завъртане</translation>
+        <translation>Завъртане</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Prefer Untransformed</source>
-        <translation type="unfinished"></translation>
+        <translation>Да се предпочита без трансформации</translation>
     </message>
 </context>
 <context>
@@ -7147,7 +7147,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/variantmapproperty.cpp" line="+545"/>
         <source>Add Value</source>
-        <translation type="unfinished">Добавяне на стойност</translation>
+        <translation>Добавяне на стойност</translation>
     </message>
 </context>
 <context>
@@ -7161,12 +7161,12 @@ Please select specific format.</source>
     <message>
         <location line="+1"/>
         <source>Fill Full Tiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Запълване с цели плочки</translation>
     </message>
     <message>
         <location line="+177"/>
         <source>%1, %2 and %3, %4</source>
-        <translation type="unfinished"></translation>
+        <translation>%1, %2 и %3, %4</translation>
     </message>
     <message>
         <location line="+34"/>
@@ -7179,22 +7179,22 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/propertieswidget.cpp" line="+1806"/>
         <source>Name</source>
-        <translation type="unfinished">Име</translation>
+        <translation>Име</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Color</source>
-        <translation type="unfinished">Цвят</translation>
+        <translation>Цвят</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Probability</source>
-        <translation type="unfinished">Вероятност</translation>
+        <translation>Вероятност</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Terrain</source>
-        <translation type="unfinished">Терен</translation>
+        <translation>Терен</translation>
     </message>
 </context>
 <context>
@@ -7275,22 +7275,22 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/propertieswidget.cpp" line="-118"/>
         <source>Name</source>
-        <translation type="unfinished">Име</translation>
+        <translation>Име</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Type</source>
-        <translation type="unfinished">Тип</translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Color Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Брой на цветовете</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Terrain Set</source>
-        <translation type="unfinished">Теренен набор</translation>
+        <translation>Теренен набор</translation>
     </message>
 </context>
 <context>
@@ -7373,7 +7373,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/worldpropertiesdialog.cpp" line="+45"/>
         <source>%1 - World Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 – свойства на света</translation>
     </message>
 </context>
 <context>
@@ -7389,32 +7389,32 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/propertieswidget.cpp" line="-1949"/>
         <source>Orthogonal</source>
-        <translation type="unfinished">Ортогонална</translation>
+        <translation>Ортогонален</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Isometric</source>
-        <translation type="unfinished">Изометрична</translation>
+        <translation>Изометричен</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Tile Size</source>
-        <translation type="unfinished">Размер на плочката</translation>
+        <translation>Размер на плочката</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Map Grid Size</source>
-        <translation type="unfinished">Размер на решетката на картата</translation>
+        <translation>Размер на решетката на картата</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Stretch</source>
-        <translation type="unfinished">Разтегляне</translation>
+        <translation>Разтегляне</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Preserve Aspect Ratio</source>
-        <translation type="unfinished">Запазване на съотношението на страните</translation>
+        <translation>Запазване на съотношението на страните</translation>
     </message>
 </context>
 <context>
@@ -7568,7 +7568,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/changeproperties.cpp" line="+37"/>
         <source>Change Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на клас</translation>
     </message>
     <message>
         <location line="+47"/>
@@ -7583,17 +7583,17 @@ Please select specific format.</source>
     <message>
         <location line="+69"/>
         <source>Set Property &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Задаване на свойство „%1“</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add Property &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавяне на свойство „%1“</translation>
     </message>
     <message>
         <location line="+61"/>
         <source>Remove Property &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Премахване на свойство „%1“</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -7614,7 +7614,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/bucketfilltool.cpp" line="-43"/>
         <source>Fill Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Запълване на избраното</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -7760,7 +7760,7 @@ Please select specific format.</source>
     <message>
         <location line="+22"/>
         <source>Change Layer Blend Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на режима на смесване на слой</translation>
     </message>
     <message>
         <location line="+22"/>
@@ -7891,7 +7891,7 @@ Please select specific format.</source>
     <message>
         <location line="+13"/>
         <source>Change Skew</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на изкривяването</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -7912,7 +7912,7 @@ Please select specific format.</source>
     <message>
         <location line="+26"/>
         <source>Change Infinite</source>
-        <translation type="unfinished"></translation>
+        <translation>Промяна на безкрайността</translation>
     </message>
     <message>
         <location filename="../src/tiled/changetile.cpp" line="+37"/>
@@ -8116,7 +8116,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/worlddocument.cpp" line="-30"/>
         <source>Reload World</source>
-        <translation type="unfinished"></translation>
+        <translation>Презареждане на света</translation>
     </message>
 </context>
 <context>
@@ -8147,7 +8147,7 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/variantmapproperty.cpp" line="-380"/>
         <source>Unknown type</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестен тип</translation>
     </message>
 </context>
 <context>
@@ -8155,17 +8155,17 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/propertieswidget.cpp" line="-1561"/>
         <source>Corner</source>
-        <translation type="unfinished">Ъгъл</translation>
+        <translation>Ъгъл</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Edge</source>
-        <translation type="unfinished">Ръб</translation>
+        <translation>Ръб</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Mixed</source>
-        <translation type="unfinished">Смесено</translation>
+        <translation>Смесено</translation>
     </message>
 </context>
 <context>
@@ -8173,12 +8173,12 @@ Please select specific format.</source>
     <message>
         <location filename="../src/tiled/worldpropertiesdialog.ui" line="+14"/>
         <source>World Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Свойства на света</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Custom Properties</source>
-        <translation type="unfinished">Допълнителни свойства</translation>
+        <translation>Персонализирани свойства</translation>
     </message>
 </context>
 <context>

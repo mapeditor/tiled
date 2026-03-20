@@ -1,5 +1,9 @@
 ### Unreleased
 
+* Added 'Collapse All' action and 'Only Expand to Current' mode to Project view (with rhythmcache, #4346)
+
+### Tiled 1.12.0 (13 March 2026)
+
 * Rewritten Properties view to enable direct widget interaction (#4045)
 * Added support for lists in custom properties (#1493)
 * Added capsule object shape (by Jocelyn, #2153)
@@ -19,34 +23,38 @@
 * Made the shortcut for current tool switch to previous tool (#4280)
 * Allow canceling Select Same Tile, Magic Wand and Bucket Fill operations with right-click and Escape
 * Allow dragging over multiple tiles with Select Same Tile, Magic Wand and Bucket Fill tools (#4276)
+* Allow zooming in on areas outside the map bounds (by kunal649, #3860)
 * Don't switch to Edit Polygons tool on double-click with Alt pressed
 * Adjust world map position when resizing a map with offset (#4270)
 * Added export plugin for Remixed Dungeon (by Mikhael Danilov, #4158)
 * Added "World > World Properties" menu action (with dogboydog, #4190)
 * Added Delete shortcut to Remove Tiles action by default and avoid ambiguity (#4201)
+* Fixed selection to be preserved when toggling dynamic wrapping (by Mollah Hamza, #4385)
 * Fixed tileset tabs to fall back to filename in case of unnamed tilesets (by Sid, #4360)
 * Fixed alpha component of tint color not applying correctly to opaque images (by Roland Helmerichs, #4310)
 * Fixed panning with space bar not always working on first click (with Oval, #4338)
 * Fixed undo behavior after resizing objects certain ways (by Kanishka, #4339)
 * Fixed suggesting filename with trailing dot when export filter is unset (by Sid, #4368)
 * Fixed snapping mode sync across instances (by Sid, #4364)
+* Fixed missing error message when 'Export as Image' fails (by kunal649, #4397)
 * Scripting: Added API for custom property types (with dogboydog, #3971)
-* Scripting: Added TileMap.chunkSize and TileMap.compressionLevel properties
-* Scripting: Added optional defaultValue and toolTip params to Dialog add widget methods (by Oval, #4358)
-* Scripting: Added tiled.session to read and write session properties (by Kanishka, #4345)
-* Scripting: Added MapEditor.selectedTool and MapEditor.tool (#4330)
+* Scripting: Added `TileMap.chunkSize` and `TileMap.compressionLevel` properties
+* Scripting: Added optional defaultValue and toolTip params to `Dialog` add widget methods (by Oval, #4358)
+* Scripting: Added `tiled.session` to read and write session properties (by Kanishka, #4345)
+* Scripting: Added `MapEditor.selectedTool` and `MapEditor.tool` (#4330)
 * Scripting: Fixed the `fileName` property of map/tileset passed to `FileFormat.write` (by Shuvam Pal, #4359)
 * AutoMapping: Don't match rules based on empty input indexes
 * AutoMapping: Optimized reloading of rule maps and load rule maps on-demand
 * tBIN plugin: Added support for the tIDE XML format (by Casey Warrington, #4308)
 * Windows: Fixed issue with opening Tile Animation Editor (#4223)
-* macOS: Add Cmd+Shift+[ and Cmd+Shift+] shortcuts to switch tabs (by Oval, #4344)
+* macOS: Add <kbd>Cmd+Shift+\[</kbd> and <kbd>Cmd+Shift+\]</kbd> shortcuts to switch tabs (by Oval, #4344)
 * macOS: Fixed crash when JS code is JIT-compiled (#4218)
 * Workaround tileset view layout regression in Qt 6.9
 * Raised minimum supported Qt version from 5.12 to 5.15.2
 * AppImage: Updated to Sentry 0.12.8
+* Updated Bulgarian translation
 
-### Tiled 1.11.2 (28 Jan 2025)
+### Tiled 1.11.2 (28 January 2025)
 
 * YY plugin: Fixed compatibility with GameMaker 2024 (#4132)
 * Fixed crash while handling file reloads without any files opened
@@ -54,7 +62,7 @@
 * snap: Fixed crash on startup on Wayland
 * AppImage: Updated to Sentry 0.7.19
 
-### Tiled 1.11.1 (11 Jan 2025)
+### Tiled 1.11.1 (11 January 2025)
 
 * Releases now ship with support for loading Aseprite images (#4109)
 * Scripting: Added `FileFormat.nameFilter`
