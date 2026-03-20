@@ -59,3 +59,4 @@ gmon.out
 # Vim files
 *.swp
 *.swo
+.vs/
