@@ -266,6 +266,9 @@ MapEditor::MapEditor(QObject *parent)
     connect(mStampBrush, &StampBrush::wangFillChanged, this, &MapEditor::setWangFill);
     connect(mBucketFillTool, &BucketFillTool::wangFillChanged, this, &MapEditor::setWangFill);
     connect(mShapeFillTool, &ShapeFillTool::wangFillChanged, this, &MapEditor::setWangFill);
+    connect(mStampBrush, &StampBrush::eraseModeChanged, this, &MapEditor::setEraseMode);
+    connect(mBucketFillTool, &BucketFillTool::eraseModeChanged, this, &MapEditor::setEraseMode);
+    connect(mShapeFillTool, &ShapeFillTool::eraseModeChanged, this, &MapEditor::setEraseMode);
 
     connect(mWangDock, &WangDock::currentWangSetChanged,
             mBucketFillTool, &BucketFillTool::setWangSet);
@@ -765,6 +768,13 @@ void MapEditor::setWangFill(bool value)
 
     mBucketFillTool->setFillMethod(fillMethod);
     mShapeFillTool->setFillMethod(fillMethod);
+}
+
+void MapEditor::setEraseMode(bool value)
+{
+    mStampBrush->setEraseMode(value);
+    mBucketFillTool->setEraseMode(value);
+    mShapeFillTool->setEraseMode(value);
 }
 
 /**

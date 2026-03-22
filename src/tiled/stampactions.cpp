@@ -31,7 +31,7 @@ StampActions::StampActions(QObject *parent) : QObject(parent)
 {
     QIcon diceIcon(QLatin1String(":images/24/dice.png"));
     QIcon wangIcon(QLatin1String(":images/24/terrain.png"));
-    QIcon eraseEmptyIcon(QLatin1String(":images/22/stock-tool-eraser.png"));
+    QIcon eraseModeIcon(QLatin1String(":images/22/stock-tool-eraser.png"));
     QIcon flipHorizontalIcon(QLatin1String(":images/24/flip-horizontal.png"));
     QIcon flipVerticalIcon(QLatin1String(":images/24/flip-vertical.png"));
     QIcon rotateLeftIcon(QLatin1String(":images/24/rotate-left.png"));
@@ -52,9 +52,9 @@ StampActions::StampActions(QObject *parent) : QObject(parent)
     mWangFill->setIcon(wangIcon);
     mWangFill->setCheckable(true);
 
-    mEraseEmpty = new QAction(this);
-    mEraseEmpty->setIcon(eraseEmptyIcon);
-    mEraseEmpty->setCheckable(true);
+    mEraseMode = new QAction(this);
+    mEraseMode->setIcon(eraseModeIcon);
+    mEraseMode->setCheckable(true);
 
     mFlipHorizontal = new QAction(this);
     mFlipHorizontal->setIcon(flipHorizontalIcon);
@@ -74,7 +74,7 @@ StampActions::StampActions(QObject *parent) : QObject(parent)
 
     ActionManager::registerAction(mRandom, "RandomMode");
     ActionManager::registerAction(mWangFill, "WangFillMode");
-    ActionManager::registerAction(mEraseEmpty, "EraseEmptyMode");
+    ActionManager::registerAction(mEraseMode, "EraseMode");
     ActionManager::registerAction(mFlipHorizontal, "FlipHorizontal");
     ActionManager::registerAction(mFlipVertical, "FlipVertical");
     ActionManager::registerAction(mRotateLeft, "RotateLeft");
@@ -88,7 +88,7 @@ void StampActions::setEnabled(bool enabled)
 {
     mRandom->setEnabled(enabled);
     mWangFill->setEnabled(enabled);
-    mEraseEmpty->setEnabled(enabled);
+    mEraseMode->setEnabled(enabled);
     mFlipHorizontal->setEnabled(enabled);
     mFlipVertical->setEnabled(enabled);
     mRotateLeft->setEnabled(enabled);
@@ -99,7 +99,7 @@ void StampActions::languageChanged()
 {
     mRandom->setText(tr("Random Mode"));
     mWangFill->setText(tr("Terrain Fill Mode"));
-    mEraseEmpty->setText(tr("Erase Empty Tiles"));
+    mEraseMode->setText(tr("Erase Mode"));
     mFlipHorizontal->setText(tr("Flip Horizontally"));
     mFlipVertical->setText(tr("Flip Vertically"));
     mRotateLeft->setText(tr("Rotate Left"));
@@ -110,10 +110,10 @@ void StampActions::populateToolBar(QToolBar *toolBar, bool isRandom, bool isWang
 {
     mRandom->setChecked(isRandom);
     mWangFill->setChecked(isWangFill);
-    mEraseEmpty->setChecked(isErasing);
+    mEraseMode->setChecked(isErasing);
     toolBar->addAction(mRandom);
     toolBar->addAction(mWangFill);
-    toolBar->addAction(mEraseEmpty);
+    toolBar->addAction(mEraseMode);
     toolBar->addSeparator();
     toolBar->addAction(mFlipHorizontal);
     toolBar->addAction(mFlipVertical);

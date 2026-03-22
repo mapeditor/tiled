@@ -74,6 +74,7 @@ public:
 
 public slots:
     void setFillMethod(FillMethod fillMethod);
+    void setEraseMode(bool value);
     void setWangSet(WangSet *wangSet);
 
 signals:
@@ -81,6 +82,7 @@ signals:
 
     void randomChanged(bool value);
     void wangFillChanged(bool value);
+    void eraseModeChanged(bool value);
 
 protected:
     void mapDocumentChanged(MapDocument *oldDocument,
@@ -102,6 +104,7 @@ protected:
     QVector<SharedTileset> mMissingTilesets;
 
     FillMethod mFillMethod;
+    bool mEraseMode = false;
     QRect mFillBounds;
 
     StampActions *mStampActions;
