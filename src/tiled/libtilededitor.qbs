@@ -253,6 +253,8 @@ DynamicLibrary {
         "expressionspinbox.h",
         "filechangedwarning.cpp",
         "filechangedwarning.h",
+        "filedependenciesdock.cpp",
+        "filedependenciesdock.h",
         "fileedit.cpp",
         "fileedit.h",
         "filteredit.cpp",

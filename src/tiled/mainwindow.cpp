@@ -41,6 +41,7 @@
 #include "exporthelper.h"
 #include "issuescounter.h"
 #include "issuesdock.h"
+#include "filedependenciesdock.h"
 #include "layer.h"
 #include "locatorwidget.h"
 #include "map.h"
@@ -384,14 +385,17 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mProjectDock = new ProjectDock(this);   // uses some actions registered above
     mConsoleDock = new ConsoleDock(this);
     mIssuesDock = new IssuesDock(this);
+    mFileDependenciesDock = new FileDependenciesDock(this);
 
     addDockWidget(Qt::LeftDockWidgetArea, mProjectDock);
     addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
     addDockWidget(Qt::BottomDockWidgetArea, mIssuesDock);
+    addDockWidget(Qt::RightDockWidgetArea, mFileDependenciesDock);
     tabifyDockWidget(mConsoleDock, mIssuesDock);
 
     mConsoleDock->setVisible(false);
     mIssuesDock->setVisible(false);
+    mFileDependenciesDock->setVisible(false);
 
     mMapEditor = new MapEditor;
     mTilesetEditor = new TilesetEditor;
@@ -844,6 +848,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, &MainWindow::saveFile);
     connect(mDocumentManager, &DocumentManager::currentDocumentChanged,
             this, &MainWindow::documentChanged);
+    connect(mDocumentManager, &DocumentManager::currentDocumentChanged,
+            mFileDependenciesDock, &FileDependenciesDock::setDocument);
     connect(mDocumentManager, &DocumentManager::documentCloseRequested,
             this, &MainWindow::closeDocument);
     connect(mDocumentManager, &DocumentManager::reloadError,
@@ -2144,12 +2150,15 @@ void MainWindow::resetToDefaultLayout()
     mProjectDock->setFloating(false);
     mConsoleDock->setFloating(false);
     mIssuesDock->setFloating(false);
+    mFileDependenciesDock->setFloating(false);
     addDockWidget(Qt::LeftDockWidgetArea, mProjectDock);
     addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
     addDockWidget(Qt::BottomDockWidgetArea, mIssuesDock);
+    addDockWidget(Qt::RightDockWidgetArea, mFileDependenciesDock);
     mProjectDock->setVisible(true);
     mConsoleDock->setVisible(false);
     mIssuesDock->setVisible(false);
+    mFileDependenciesDock->setVisible(false);
     tabifyDockWidget(mConsoleDock, mIssuesDock);
 
     // Reset the layout of the current editor
@@ -2164,6 +2173,7 @@ void MainWindow::updateViewsAndToolbarsMenu()
     mViewsAndToolbarsMenu->addAction(mProjectDock->toggleViewAction());
     mViewsAndToolbarsMenu->addAction(mConsoleDock->toggleViewAction());
     mViewsAndToolbarsMenu->addAction(mIssuesDock->toggleViewAction());
+    mViewsAndToolbarsMenu->addAction(mFileDependenciesDock->toggleViewAction());
 
     if (Editor *editor = mDocumentManager->currentEditor()) {
         mViewsAndToolbarsMenu->addSeparator();
@@ -2486,8 +2496,6 @@ void MainWindow::documentChanged(Document *document)
                 this, &MainWindow::updateWindowTitle);
         connect(document, &Document::modifiedChanged,
                 this, &MainWindow::updateWindowTitle);
-
-        mProjectDock->selectFile(document->fileName());
     }
 
     MapDocument *mapDocument = qobject_cast<MapDocument*>(document);
