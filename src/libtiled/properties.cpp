@@ -504,13 +504,8 @@ QVariantList possiblePropertyValues(const ClassPropertyType *parentClassType)
         // Filter types based on PropertyValueType flag for top-level properties.
         // Note: This filtering does NOT apply to class member selection - all types
         // are always usable as class members regardless of this flag.
-        if (propertyType->isClass()) {
-            if (!static_cast<const ClassPropertyType&>(*propertyType).isPropertyValueType())
-                continue;
-        } else if (propertyType->isEnum()) {
-            if (!static_cast<const EnumPropertyType&>(*propertyType).isPropertyValueType())
-                continue;
-        }
+        if (!parentClassType && !propertyType->isPropertyValueType())
+            continue;
 
         values.append(propertyType->wrap(propertyType->defaultValue()));
     }
