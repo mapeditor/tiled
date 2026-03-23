@@ -69,12 +69,10 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     mUi->styleCombo->setItemData(1, Preferences::TiledStyle);
 
     mUi->autosaveCombo->addItem(tr("Disabled"), 0);
-    mUi->autosaveCombo->addItem(tr("1 minute"), 60);
-    mUi->autosaveCombo->addItem(tr("5 minutes"), 300);
-    mUi->autosaveCombo->addItem(tr("10 minutes"), 600);
-    mUi->autosaveCombo->addItem(tr("15 minutes"), 900);
-    mUi->autosaveCombo->addItem(tr("30 minutes"), 1800);
-    mUi->autosaveCombo->addItem(tr("60 minutes"), 3600);
+    mUi->autosaveCombo->addItem(QCoreApplication::translate("PreferencesDialog", "%n second(s)", nullptr, 1), 1);
+    mUi->autosaveCombo->addItem(QCoreApplication::translate("PreferencesDialog", "%n second(s)", nullptr, 5), 5);
+    mUi->autosaveCombo->addItem(QCoreApplication::translate("PreferencesDialog", "%n minute(s)", nullptr, 10), 600);
+    mUi->autosaveCombo->addItem(QCoreApplication::translate("PreferencesDialog", "%n minute(s)", nullptr, 30), 1800);
 
     mUi->objectSelectionBehaviorCombo->addItems({ tr("Select From Any Layer"),
                                                   tr("Prefer Selected Layers"),
@@ -104,7 +102,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     connect(mUi->naturalSorting, &QCheckBox::toggled,
             preferences, &Preferences::setNaturalSorting);
 
-    connect(mUi->autosaveCombo, qOverload<int>(&QComboBox::currentIndexChanged), this, [=] (int index) {
+    connect(mUi->autosaveCombo, &QComboBox::currentIndexChanged, this, [=] (int index) {
         if (index >= 0) {
             int seconds = mUi->autosaveCombo->itemData(index).toInt();
             preferences->setAutosaveInterval(seconds);

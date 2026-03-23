@@ -218,7 +218,6 @@ private:
     bool askForAdjustment(const Tileset &tileset);
 
     void autosaveIntervalChanged(int seconds);
-    void documentModified();
     void performAutosave();
 
     void addToTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);

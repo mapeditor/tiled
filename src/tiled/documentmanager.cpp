@@ -595,7 +595,23 @@ int DocumentManager::insertDocument(int index, const DocumentPtr &document)
     connect(documentPtr, &Document::saved, this, &DocumentManager::onDocumentSaved);
 
     // Connect to undo stack changes for autosave (any command pushed means document was modified)
-    connect(documentPtr->undoStack(), &QUndoStack::indexChanged, this, &DocumentManager::documentModified);
+    connect(documentPtr->undoStack(), &QUndoStack::indexChanged, this, [=] (int index) {
+        Q_UNUSED(index)
+        
+        if (!documentPtr->isModified())
+            return;
+
+        // Only autosave documents that have a file name
+        if (documentPtr->fileName().isEmpty())
+            return;
+
+        int interval = Preferences::instance()->autosaveInterval();
+        if (interval <= 0)
+            return;
+
+        mDocumentsPendingAutosave.insert(documentPtr);
+        mAutosaveTimer->start(interval * 1000);
+    });
 
     mTabBar->insertTab(index, QString());
     updateDocumentTab(documentPtr);
@@ -1498,86 +1514,25 @@ void DocumentManager::autosaveIntervalChanged(int seconds)
 {
     // Stop any pending autosave
     mAutosaveTimer->stop();
-    mDocumentsPendingAutosave.clear();
 
     if (seconds <= 0)
         return;
-
-    for (const auto &doc : mDocuments) {
-        if (doc->isModified() && !doc->fileName().isEmpty()) {
-            mDocumentsPendingAutosave.insert(doc.data());
-        }
-    }
 
     if (!mDocumentsPendingAutosave.isEmpty())
         mAutosaveTimer->start(seconds * 1000);
 }
 
-void DocumentManager::documentModified()
-{
-    auto *undoStack = qobject_cast<QUndoStack*>(sender());
-    if (!undoStack)
-        return;
-
-    Document *document = nullptr;
-    for (const auto &doc : mDocuments) {
-        if (doc->undoStack() == undoStack) {
-            document = doc.data();
-            break;
-        }
-    }
-
-    if (!document)
-        return;
-
-    if (!document->isModified())
-        return;
-
-    // Only autosave documents that have a file name
-    if (document->fileName().isEmpty())
-        return;
-
-    int interval = Preferences::instance()->autosaveInterval();
-    if (interval <= 0)
-        return;
-
-    mDocumentsPendingAutosave.insert(document);
-
-    mAutosaveTimer->start(interval * 1000);
-}
-
 void DocumentManager::performAutosave()
 {
-
     QSet<Document*> documentsToSave = mDocumentsPendingAutosave;
     mDocumentsPendingAutosave.clear();
 
     for (Document *document : documentsToSave) {
-        // Check if document still exists in our list
-        bool found = false;
-        for (const auto &doc : mDocuments) {
-            if (doc.data() == document) {
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) {
-            qDebug() << "Autosave: Document no longer exists, skipping";
+        if (!document->isModified())
             continue;
-        }
 
-        if (!document->isModified()) {
+        if (document->isReadOnly())
             continue;
-        }
-
-        if (document->fileName().isEmpty()) {
-            continue;
-        }
-
-        if (document->isReadOnly()) {
-            continue;
-        }
 
         // Perform the save
         saveDocument(document);
