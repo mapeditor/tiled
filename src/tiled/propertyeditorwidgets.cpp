@@ -287,6 +287,14 @@ bool ComboBox::event(QEvent *event)
     return QComboBox::event(event);
 }
 
+void ComboBox::showPopup()
+{
+    // Ensure the combo box has focus before opening the popup, so that focus
+    // returns to it when the popup closes (fails without this on macOS).
+    setFocus();
+    QComboBox::showPopup();
+}
+
 void ComboBox::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
