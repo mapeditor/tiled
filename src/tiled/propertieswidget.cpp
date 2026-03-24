@@ -57,6 +57,7 @@
 #include <QMenu>
 #include <QPushButton>
 #include <QScopedValueRollback>
+#include <QTimer>
 #include <QToolBar>
 #include <QToolButton>
 #include <QUndoStack>
@@ -65,6 +66,41 @@
 #include <algorithm>
 
 namespace Tiled {
+
+/**
+ * Suppresses widget updates for the duration of a scope. Updates are
+ * re-enabled with a double-deferred timer to ensure all cascading layout
+ * requests have been processed before the next paint.
+ */
+class ScopedUpdatesDisabler
+{
+public:
+    explicit ScopedUpdatesDisabler(QWidget *widget)
+        : mWidget(widget)
+        , mHadUpdatesEnabled(widget->updatesEnabled())
+    {
+        widget->setUpdatesEnabled(false);
+    }
+
+    ~ScopedUpdatesDisabler()
+    {
+        if (!mHadUpdatesEnabled)
+            return;
+
+        QTimer::singleShot(0, mWidget, [w = mWidget] {
+            QTimer::singleShot(0, w, [w] {
+                w->setUpdatesEnabled(true);
+            });
+        });
+    }
+
+    Q_DISABLE_COPY_MOVE(ScopedUpdatesDisabler)
+
+private:
+    QWidget *mWidget;
+    bool mHadUpdatesEnabled;
+};
+
 
 template<> EnumData enumData<Alignment>()
 {
@@ -2390,6 +2426,8 @@ void PropertiesWidget::selectCustomProperty(const QString &name, bool focus)
 
 void PropertiesWidget::currentObjectChanged(Object *object)
 {
+    const ScopedUpdatesDisabler updatesDisabler(mPropertiesView);
+
     if (mPropertiesObject) {
         // Remember the expanded states
         const auto &subProperties = mPropertiesObject->subProperties();
