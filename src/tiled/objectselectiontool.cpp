@@ -741,11 +741,15 @@ void ObjectSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
     mModifiers = modifiers;
 
-    if ((mSelectionMode == Qt::IntersectsItemShape) ^ modifiers.testFlag(Qt::AltModifier))
-        mSelectIntersected->setChecked(true);
-    else
-        mSelectContained->setChecked(true);
+    const bool hasSelection = mapDocument() && !mapDocument()->selectedObjects().isEmpty();
+    const bool altWillMove = !mMousePressed && hasSelection; 
 
+    if (!altWillMove) {
+        if ((mSelectionMode == Qt::IntersectsItemShape) ^ modifiers.testFlag(Qt::AltModifier))
+            mSelectIntersected->setChecked(true);
+        else
+            mSelectContained->setChecked(true);
+    }
     refreshCursor();
 }
 
