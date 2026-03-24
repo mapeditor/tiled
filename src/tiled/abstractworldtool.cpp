@@ -112,7 +112,7 @@ void AbstractWorldTool::mouseMoved(const QPointF &pos,
     if (Layer *layer = currentLayer())
         offsetPos -= mapScene()->absolutePositionForLayer(*layer);
 
-    const QPoint pixelPos = offsetPos.toPoint();
+    const QPoint pixelPos(qFloor(offsetPos.x()), qFloor(offsetPos.y()));
     const QPointF tilePosF = mapDocument()->renderer()->screenToTileCoords(offsetPos);
     const int x = qFloor(tilePosF.x());
     const int y = qFloor(tilePosF.y());
