@@ -75,14 +75,18 @@ namespace Tiled {
 class ScopedUpdatesDisabler
 {
 public:
-    ScopedUpdatesDisabler(QWidget *widget)
+    explicit ScopedUpdatesDisabler(QWidget *widget)
         : mWidget(widget)
+        , mHadUpdatesEnabled(widget->updatesEnabled())
     {
         widget->setUpdatesEnabled(false);
     }
 
     ~ScopedUpdatesDisabler()
     {
+        if (!mHadUpdatesEnabled)
+            return;
+
         QTimer::singleShot(0, mWidget, [w = mWidget] {
             QTimer::singleShot(0, w, [w] {
                 w->setUpdatesEnabled(true);
@@ -94,6 +98,7 @@ public:
 
 private:
     QWidget *mWidget;
+    bool mHadUpdatesEnabled;
 };
 
 
