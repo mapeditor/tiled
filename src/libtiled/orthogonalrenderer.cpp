@@ -487,10 +487,48 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
         }
 
         case MapObject::Text: {
-            const auto& textData = object->textData();
+            const auto &textData = object->textData();
+
+            painter->save();
+
+            if (textData.flippedHorizontally || textData.flippedVertically) {
+                painter->translate(bounds.width() / 2, bounds.height() / 2);
+                painter->scale(textData.flippedHorizontally ? -1 : 1,
+                               textData.flippedVertically ? -1 : 1);
+                painter->translate(-bounds.width() / 2, -bounds.height() / 2);
+            }
+
+            if (textData.backgroundEnabled)
+                painter->fillRect(bounds, textData.backgroundColor);
+
             painter->setFont(textData.font);
+
+            const auto textOption = textData.textOption();
+
+            if (textData.shadowEnabled) {
+                painter->setPen(textData.shadowColor);
+                painter->drawText(bounds.translated(textData.shadowOffset),
+                                  textData.text,
+                                  textOption);
+            }
+
+            if (textData.strokeEnabled) {
+                painter->setPen(textData.strokeColor);
+                const qreal w = textData.strokeWidth;
+                painter->drawText(bounds.translated(-w, -w), textData.text, textOption);
+                painter->drawText(bounds.translated(w, -w), textData.text, textOption);
+                painter->drawText(bounds.translated(-w, w), textData.text, textOption);
+                painter->drawText(bounds.translated(w, w), textData.text, textOption);
+                painter->drawText(bounds.translated(-w, 0), textData.text, textOption);
+                painter->drawText(bounds.translated(w, 0), textData.text, textOption);
+                painter->drawText(bounds.translated(0, -w), textData.text, textOption);
+                painter->drawText(bounds.translated(0, w), textData.text, textOption);
+            }
+
             painter->setPen(textData.color);
-            painter->drawText(bounds, textData.text, textData.textOption());
+            painter->drawText(bounds, textData.text, textOption);
+
+            painter->restore();
             break;
         }
         case MapObject::Point: {
