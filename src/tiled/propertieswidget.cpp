@@ -2421,7 +2421,7 @@ void PropertiesWidget::selectCustomProperty(const QString &name, bool focus)
 
 void PropertiesWidget::currentObjectChanged(Object *object)
 {
-    const ScopedUpdatesDisabler updatesEnabler(mPropertiesView);
+    const ScopedUpdatesDisabler updatesDisabler(mPropertiesView);
 
     if (mPropertiesObject) {
         // Remember the expanded states
