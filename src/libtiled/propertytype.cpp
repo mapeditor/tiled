@@ -329,9 +329,9 @@ QJsonValue exportValueToJson(const QVariant &value, const ExportContext &context
         for (const QVariant &item : list) {
             const ExportValue itemExportValue = context.toExportValue(item);
             QJsonObject member {
-                { QStringLiteral("type"), itemExportValue.typeName },
-                { QStringLiteral("value"), exportValueToJson(item, context) },
-            };
+                               { QStringLiteral("type"), itemExportValue.typeName },
+                               { QStringLiteral("value"), exportValueToJson(item, context) },
+                               };
 
             if (!itemExportValue.propertyTypeName.isEmpty())
                 member.insert(QStringLiteral("propertyType"), itemExportValue.propertyTypeName);
