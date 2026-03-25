@@ -2,6 +2,13 @@
 
 * Added 'Collapse All' action and 'Only Expand to Current' mode to Project view (with rhythmcache, #4346)
 
+### Tiled 1.12.1 (25 March 2026)
+
+* Fixed Properties view flicker when switching between objects or files (#4460)
+* Fixed selection mode indicator to not toggle on Alt when it would move objects (by kunal649, #4434)
+* Fixed status bar pixel coords being rounded instead of floored (by kunal649, #4426)
+* macOS: Fix ability to choose type when adding properties (#4459)
+
 ### Tiled 1.12.0 (13 March 2026)
 
 * Rewritten Properties view to enable direct widget interaction (#4045)
