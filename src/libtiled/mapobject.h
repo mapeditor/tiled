@@ -123,6 +123,7 @@ public:
         ShapeProperty           = 1 << 12,
         TemplateProperty        = 1 << 13,
         CustomProperties        = 1 << 14,
+        TintColorProperty       = 1 << 15,
         AllProperties           = 0xFF
     };
 
@@ -237,6 +238,10 @@ public:
     bool isTemplateBase() const;
     void markAsTemplateBase();
 
+    const QColor &tintColor() const { return mTintColor; }
+    void setTintColor(const QColor &color) { mTintColor = color; }
+    QColor effectiveTintColor() const;
+
 private:
     void flipInScreenCoordinates(FlipDirection direction, const QPointF &screenOrigin);
     void flipInPixelCoordinates(FlipDirection direction, const QPointF &pixelOrigin);
@@ -256,6 +261,7 @@ private:
     bool mVisible = true;
     bool mTemplateBase = false;
     ChangedProperties mChangedProperties;
+    QColor mTintColor;
 };
 
 /**
