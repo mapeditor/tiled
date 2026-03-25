@@ -35,7 +35,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install qtbase5-dev libqt5svg5 qttools5-dev-tools zlib1g-dev qtdeclarative5-dev qbs python3-dev
+        sudo apt install qt6-base-dev libqt6svg6 qt6-l10n-tools qt6-declarative-dev zlib1g-dev qbs python3-dev
 
     - name: Setup qbs
       run: |
