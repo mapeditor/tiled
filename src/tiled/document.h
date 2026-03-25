@@ -93,6 +93,7 @@ public:
     virtual FileFormat *writerFormat() const = 0;
 
     QDateTime lastSaved() const { return mLastSaved; }
+    void refreshLastSaved(const QString &fileName);
 
     QUndoStack *undoStack() const;
     bool isModified() const;
