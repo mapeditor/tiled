@@ -53,8 +53,6 @@
 
 using namespace Tiled;
 
-namespace {
-
 static void setupTilesetGridTransform(const Tileset &tileset, QTransform &transform, QRect &targetRect)
 {
     if (tileset.orientation() == Tileset::Isometric) {
@@ -77,6 +75,8 @@ static void setupTilesetGridTransform(const Tileset &tileset, QTransform &transf
     }
 }
 
+namespace {
+
 /**
  * The delegate for drawing tile items in the tileset view.
  */
@@ -95,7 +95,7 @@ public:
                    const QModelIndex &index) const override;
 
 private:
-    static void drawFilmStrip(QPainter *painter, QRect targetRect);
+    static void drawFilmStrip(QPainter *painter, QRect targetRect, bool wangEditingActive);
 
     void drawWangOverlay(QPainter *painter,
                          const Tile *tile,
@@ -104,6 +104,8 @@ private:
 
     TilesetView *mTilesetView;
 };
+
+} // anonymous namespace
 
 void TileDelegate::paint(QPainter *painter,
                          const QStyleOptionViewItem &option,
@@ -161,7 +163,7 @@ void TileDelegate::paint(QPainter *painter,
 
     // Overlay with film strip when animated
     if (mTilesetView->markAnimatedTiles() && tile->isAnimated())
-        drawFilmStrip(painter, targetRect);
+        drawFilmStrip(painter, targetRect, mTilesetView->isEditWangSet());
 
     const auto highlight = option.palette.highlight();
 
@@ -211,7 +213,7 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
     return QSize(extra, extra);
 }
 
-void TileDelegate::drawFilmStrip(QPainter *painter, QRect targetRect)
+void TileDelegate::drawFilmStrip(QPainter *painter, QRect targetRect, bool wangEditingActive)
 {
     painter->save();
 
@@ -224,7 +226,7 @@ void TileDelegate::drawFilmStrip(QPainter *painter, QRect targetRect)
     painter->scale(scale, scale);
     painter->translate(-18, 3);
     painter->rotate(-45);
-    painter->setOpacity(0.8);
+    painter->setOpacity(wangEditingActive ? 0.3 : 0.8);
 
     QRectF strip(0, 0, 32, 6);
     painter->fillRect(strip, Qt::black);
@@ -277,8 +279,6 @@ void TileDelegate::drawWangOverlay(QPainter *painter,
 
     painter->restore();
 }
-
-} // anonymous namespace
 
 TilesetView::TilesetView(QWidget *parent)
     : QTableView(parent)
@@ -504,7 +504,7 @@ void TilesetView::keyPressEvent(QKeyEvent *event)
         return;
     }
 
-    return QTableView::keyPressEvent(event);
+    QTableView::keyPressEvent(event);
 }
 
 void TilesetView::setRelocateTiles(bool enabled)
