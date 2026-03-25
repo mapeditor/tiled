@@ -1,3 +1,7 @@
+### Unreleased
+
+* Fixed ability to change properties after deselecting the current object (#4440)
+
 ### Tiled 1.12.1 (25 March 2026)
 
 * Fixed Properties view flicker when switching between objects or files (#4460)
