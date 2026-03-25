@@ -597,6 +597,9 @@ QVariant MapToVariantConverter::toVariant(const MapObject &object) const
     if (notTemplateInstance || object.propertyChanged(MapObject::VisibleProperty))
         objectVariant[QStringLiteral("visible")] = object.isVisible();
 
+    if (notTemplateInstance || object.propertyChanged(MapObject::TintColorProperty))
+        objectVariant[QStringLiteral("tintcolor")] = colorToString(object.tintColor());
+
     /* Polygons are stored in this format:
      *
      *   "polygon/polyline": [
