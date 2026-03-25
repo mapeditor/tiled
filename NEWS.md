@@ -1,6 +1,7 @@
 ### Unreleased
 
 * Added 'Collapse All' action and 'Only Expand to Current' mode to Project view (with rhythmcache, #4346)
+* Fixed ability to change properties after deselecting the current object (#4440)
 
 ### Tiled 1.12.1 (25 March 2026)
 
