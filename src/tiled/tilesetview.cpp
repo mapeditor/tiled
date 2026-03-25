@@ -226,7 +226,7 @@ void TileDelegate::drawFilmStrip(QPainter *painter, QRect targetRect, bool wangE
     painter->scale(scale, scale);
     painter->translate(-18, 3);
     painter->rotate(-45);
-    painter->setOpacity(wangEditingActive ? 0.5 : 0.8);
+    painter->setOpacity(wangEditingActive ? 0.3 : 0.8);
 
     QRectF strip(0, 0, 32, 6);
     painter->fillRect(strip, Qt::black);
