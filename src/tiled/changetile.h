@@ -66,4 +66,14 @@ protected:
     void setValue(Tile *tile, const QRect &rect) const override;
 };
 
+class ChangeTileColor : public ChangeValue<Tile, QColor> {
+public:
+    ChangeTileColor(TilesetDocument *tilesetDocument,
+                   const QList<Tile*> &tiles,
+                   const QColor &color,
+                   QUndoCommand *parent = nullptr);
+    QColor getValue(const Tile *tile) const override;
+    void setValue(Tile *tile, const QColor &color) const override;
+
+};
 } // namespace Tiled
