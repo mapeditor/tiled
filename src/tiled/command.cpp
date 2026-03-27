@@ -35,6 +35,7 @@
 #include <QProcess>
 #include <QStandardPaths>
 #include <QUndoStack>
+#include <qfileinfo.h>
 
 using namespace Tiled;
 
@@ -74,10 +75,17 @@ static QString replaceVariables(const QString &string, bool quoteValues = true)
         const QString &fileName = document->fileName();
         QFileInfo fileInfo(fileName);
         const QString mapPath = fileInfo.absolutePath();
+
+        const QString &exportFileName = document->lastExportFileName();
+        QFileInfo exportFileInfo(exportFileName);
+        const QString exportPath = QFileInfo(exportFileName).absolutePath();
+
         const QString projectPath = QFileInfo(ProjectManager::instance()->project().fileName()).absolutePath();
 
         finalString.replace(QLatin1String("%mapfile"), replaceString.arg(fileName));
         finalString.replace(QLatin1String("%mappath"), replaceString.arg(mapPath));
+        finalString.replace(QLatin1String("%exportfile"), replaceString.arg(exportFileName));
+        finalString.replace(QLatin1String("%exportpath"), replaceString.arg(exportPath));
         finalString.replace(QLatin1String("%projectpath"), replaceString.arg(projectPath));
 
         if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
