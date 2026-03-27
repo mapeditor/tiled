@@ -541,6 +541,11 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
     if (!probability.isEmpty())
         tile->setProbability(probability.toDouble());
 
+    // Read tile tint color
+    const auto tintColor = atts.value(QLatin1String("tintcolor"));
+    if (!tintColor.isEmpty())
+        tile->setTintColor(QColor(tintColor));
+
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("properties")) {
             tile->mergeProperties(readProperties());
