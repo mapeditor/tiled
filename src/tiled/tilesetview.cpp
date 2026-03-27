@@ -393,6 +393,8 @@ void TilesetView::setTilesetDocument(TilesetDocument *tilesetDocument)
         connect(mTilesetDocument, &Document::changed, this, &TilesetView::onChange);
         connect(mTilesetDocument, &TilesetDocument::tilesAdded, this, &TilesetView::refreshColumnCount);
         connect(mTilesetDocument, &TilesetDocument::tilesRemoved, this, &TilesetView::refreshColumnCount);
+        connect(mTilesetDocument, &TilesetDocument::tileTintColorChanged,
+                this, [this] { viewport()->update(); });
     }
 }
 
