@@ -297,6 +297,8 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
             tileVariant[FileFormat::classPropertyNameForObject()] = tile->className();
         if (tile->probability() != 1.0)
             tileVariant[QStringLiteral("probability")] = tile->probability();
+        if (tile->tintColor().isValid())
+            tileVariant[QStringLiteral("tintcolor")] = colorToString(tile->tintColor());
         if (!tile->imageSource().isEmpty()) {
             const QString rel = toFileReference(tile->imageSource(), mDir);
             tileVariant[QStringLiteral("image")] = rel;
