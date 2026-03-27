@@ -512,6 +512,17 @@ QVariantList possiblePropertyValues(const ClassPropertyType *parentClassType)
     return values;
 }
 
+QVariantList possiblePrimitiveValues()
+{
+    return {
+        QVariant(false),                        // bool
+        QVariant(0),                            // int
+        QVariant(0.0),                          // float
+        QVariant(QString()),                    // string
+        QVariant::fromValue(QColor()),          // color
+    };
+}
+
 } // namespace Tiled
 
 #include "moc_properties.cpp"

@@ -168,7 +168,6 @@ void TileDelegate::paint(QPainter *painter,
 
     // Draw property visual indicators
     {
-        const auto &propertyTypes = *ProjectManager::instance()->project().propertyTypes();
         const auto &properties = tile->properties();
         int indicatorIndex = 0;
 
@@ -177,10 +176,7 @@ void TileDelegate::paint(QPainter *painter,
                 continue;
 
             const auto propertyValue = it.value().value<PropertyValue>();
-            if (propertyValue.typeId == 0)
-                continue;
-
-            const auto *type = propertyTypes.findTypeById(propertyValue.typeId);
+            const auto *type = propertyValue.type();
             if (!type || !type->isPrimitive())
                 continue;
 
@@ -392,6 +388,14 @@ void TilesetView::setTilesetDocument(TilesetDocument *tilesetDocument)
         connect(mTilesetDocument, &Document::changed, this, &TilesetView::onChange);
         connect(mTilesetDocument, &TilesetDocument::tilesAdded, this, &TilesetView::refreshColumnCount);
         connect(mTilesetDocument, &TilesetDocument::tilesRemoved, this, &TilesetView::refreshColumnCount);
+        connect(mTilesetDocument, &Document::propertyAdded,
+                this, [this] { viewport()->update(); });
+        connect(mTilesetDocument, &Document::propertyRemoved,
+                this, [this] { viewport()->update(); });
+        connect(mTilesetDocument, &Document::propertyChanged,
+                this, [this] { viewport()->update(); });
+        connect(mTilesetDocument, &Document::propertiesChanged,
+                this, [this] { viewport()->update(); });
     }
 }
 

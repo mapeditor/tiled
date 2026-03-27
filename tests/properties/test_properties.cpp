@@ -283,7 +283,6 @@ private slots:
     void loadEnumInNestedClass();
 
     void loadAndSavePrimitiveTypes();
-    void primitiveDefaultValues();
     void primitiveExportImport();
 
     void loadProperties();
@@ -294,7 +293,7 @@ private slots:
 
 private:
     EnumPropertyType &addEnum(const QString &name);
-    PrimitivePropertyType &addPrimitive(const QString &name);
+    PrimitivePropertyType &addPrimitive(const QString &name, const QVariant &defaultValue = false);
     ClassPropertyType &addClass(const QString &name);
 
     int mNextId = 0;
@@ -500,21 +499,21 @@ void test_Properties::loadAndSavePrimitiveTypes()
     QVERIFY(interactable);
     QCOMPARE(interactable->type, PropertyType::PT_Primitive);
     auto &primInteractable = static_cast<const PrimitivePropertyType&>(*interactable);
-    QCOMPARE(primInteractable.storageType, PrimitivePropertyType::BoolValue);
+    QCOMPARE(primInteractable.defaultValue().userType(), QMetaType::Bool);
     QCOMPARE(primInteractable.visualColor, QColor(Qt::red));
 
     // Verify Health (int with green color)
     auto health = types.findPropertyValueType(QStringLiteral("Health"));
     QVERIFY(health);
     auto &primHealth = static_cast<const PrimitivePropertyType&>(*health);
-    QCOMPARE(primHealth.storageType, PrimitivePropertyType::IntValue);
+    QCOMPARE(primHealth.defaultValue().userType(), QMetaType::Int);
     QCOMPARE(primHealth.visualColor, QColor(Qt::green));
 
     // Verify Label (string with no color)
     auto label = types.findPropertyValueType(QStringLiteral("Label"));
     QVERIFY(label);
     auto &primLabel = static_cast<const PrimitivePropertyType&>(*label);
-    QCOMPARE(primLabel.storageType, PrimitivePropertyType::StringValue);
+    QCOMPARE(primLabel.defaultValue().userType(), QMetaType::QString);
     QVERIFY(!primLabel.visualColor.isValid());
 
     // Round-trip: save and reload
@@ -527,40 +526,20 @@ void test_Properties::loadAndSavePrimitiveTypes()
     QVERIFY(interactable2);
     QCOMPARE(interactable2->type, PropertyType::PT_Primitive);
     auto &prim2 = static_cast<const PrimitivePropertyType&>(*interactable2);
-    QCOMPARE(prim2.storageType, PrimitivePropertyType::BoolValue);
+    QCOMPARE(prim2.defaultValue().userType(), QMetaType::Bool);
     QCOMPARE(prim2.visualColor, QColor(Qt::red));
-}
-
-void test_Properties::primitiveDefaultValues()
-{
-    PrimitivePropertyType boolType(QStringLiteral("TestBool"));
-    boolType.storageType = PrimitivePropertyType::BoolValue;
-    QCOMPARE(boolType.defaultValue(), QVariant(false));
-
-    PrimitivePropertyType intType(QStringLiteral("TestInt"));
-    intType.storageType = PrimitivePropertyType::IntValue;
-    QCOMPARE(intType.defaultValue(), QVariant(0));
-
-    PrimitivePropertyType floatType(QStringLiteral("TestFloat"));
-    floatType.storageType = PrimitivePropertyType::FloatValue;
-    QCOMPARE(floatType.defaultValue(), QVariant(0.0));
-
-    PrimitivePropertyType stringType(QStringLiteral("TestString"));
-    stringType.storageType = PrimitivePropertyType::StringValue;
-    QCOMPARE(stringType.defaultValue(), QVariant(QString()));
-
-    PrimitivePropertyType colorType(QStringLiteral("TestColor"));
-    colorType.storageType = PrimitivePropertyType::ColorValue;
-    QCOMPARE(colorType.defaultValue(), QVariant::fromValue(QColor()));
 }
 
 void test_Properties::primitiveExportImport()
 {
-    auto &primType = addPrimitive(QStringLiteral("TestPrimitive"));
-    primType.storageType = PrimitivePropertyType::IntValue;
+    // Use local types to avoid leaking state into other tests
+    PropertyTypes localTypes;
+    auto &type = localTypes.add(SharedPropertyType(new PrimitivePropertyType(QStringLiteral("TestPrimitive"), QVariant(0))));
+    type.id = 100;
+    auto &primType = static_cast<PrimitivePropertyType&>(type);
     primType.visualColor = QColor(Qt::red);
 
-    ExportContext context(mTypes, QString());
+    ExportContext context(localTypes, QString());
 
     // Wrap a value and verify
     auto wrapped = primType.wrap(42);
@@ -724,9 +703,9 @@ ClassPropertyType &test_Properties::addClass(const QString &name)
     return static_cast<ClassPropertyType&>(type);
 }
 
-PrimitivePropertyType &test_Properties::addPrimitive(const QString &name)
+PrimitivePropertyType &test_Properties::addPrimitive(const QString &name, const QVariant &defaultValue)
 {
-    auto &type = mTypes.add(SharedPropertyType(new PrimitivePropertyType(name)));
+    auto &type = mTypes.add(SharedPropertyType(new PrimitivePropertyType(name, defaultValue)));
     type.id = ++mNextId;
     return static_cast<PrimitivePropertyType&>(type);
 }

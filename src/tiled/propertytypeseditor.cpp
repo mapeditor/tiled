@@ -212,8 +212,30 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
             this, [this] { addPropertyType(PropertyType::PT_Enum); });
     connect(mAddClassPropertyTypeAction, &QAction::triggered,
             this, [this] { addPropertyType(PropertyType::PT_Class); });
-    connect(mAddPrimitivePropertyTypeAction, &QAction::triggered,
-            this, [this] { addPropertyType(PropertyType::PT_Primitive); });
+    auto primitiveMenu = new QMenu(this);
+    for (const auto &value : possiblePrimitiveValues()) {
+        QString displayName;
+        switch (value.userType()) {
+        case QMetaType::Bool:    displayName = tr("Bool"); break;
+        case QMetaType::Int:     displayName = tr("Int"); break;
+        case QMetaType::Double:  displayName = tr("Float"); break;
+        case QMetaType::QString: displayName = tr("String"); break;
+        case QMetaType::QColor:  displayName = tr("Color"); break;
+        default: continue;
+        }
+        primitiveMenu->addAction(displayName, this, [this, value] {
+            addPropertyType(PropertyType::PT_Primitive, value);
+        });
+    }
+
+    // Show the menu below the button on click, without a dropdown arrow
+    if (auto *primitiveButton = qobject_cast<QToolButton*>(
+            propertyTypesToolBar->widgetForAction(mAddPrimitivePropertyTypeAction))) {
+        connect(mAddPrimitivePropertyTypeAction, &QAction::triggered, this, [primitiveMenu, primitiveButton] {
+            primitiveMenu->exec(primitiveButton->mapToGlobal(primitiveButton->rect().bottomLeft()));
+        });
+    }
+
     connect(mRemovePropertyTypeAction, &QAction::triggered,
             this, &PropertyTypesEditor::removeSelectedPropertyType);
 
@@ -305,9 +327,9 @@ void PropertyTypesEditor::retranslateUi()
     mImportAction->setToolTip(tr("Import Types"));
 }
 
-void PropertyTypesEditor::addPropertyType(PropertyType::Type type)
+void PropertyTypesEditor::addPropertyType(PropertyType::Type type, const QVariant &defaultValue)
 {
-    const QModelIndex newIndex = mPropertyTypesModel->addNewPropertyType(type);
+    const QModelIndex newIndex = mPropertyTypesModel->addNewPropertyType(type, defaultValue);
     if (!newIndex.isValid())
         return;
 
@@ -861,7 +883,6 @@ void PropertyTypesEditor::updateDetails()
     case PropertyType::PT_Primitive: {
         const auto &primitiveType = *static_cast<const PrimitivePropertyType*>(propertyType);
 
-        mPrimitiveStorageTypeCombo->setCurrentIndex(primitiveType.storageType);
         mPrimitiveColorButton->setColor(primitiveType.visualColor);
         break;
     }
@@ -922,7 +943,6 @@ void PropertyTypesEditor::setCurrentPropertyType(PropertyType::Type type)
     mAddMemberAction->setEnabled(type == PropertyType::PT_Class);
 
     mPrimitiveColorButton = nullptr;
-    mPrimitiveStorageTypeCombo = nullptr;
 
     if (type == PropertyType::PT_Invalid)
         return;
@@ -1062,39 +1082,14 @@ void PropertyTypesEditor::addPrimitiveProperties()
     connect(mPrimitiveColorButton, &ColorButton::colorChanged,
             this, &PropertyTypesEditor::primitiveColorChanged);
 
-    mPrimitiveStorageTypeCombo = new QComboBox(mUi->groupBox);
-    mPrimitiveStorageTypeCombo->addItems({ tr("Bool"), tr("Int"), tr("Float"), tr("String"), tr("Color") });
-
-    connect(mPrimitiveStorageTypeCombo, &QComboBox::currentIndexChanged,
-            this, [this] (int index) {
-        if (index != -1)
-            setPrimitiveStorageType(static_cast<PrimitivePropertyType::StorageType>(index));
-    });
-
     auto nameAndColor = new QHBoxLayout;
     nameAndColor->addWidget(mNameEdit);
     nameAndColor->addWidget(mPrimitiveColorButton);
 
     mDetailsLayout->addRow(tr("Name"), nameAndColor);
-    mDetailsLayout->addRow(tr("Save as"), mPrimitiveStorageTypeCombo);
 }
 
-void PropertyTypesEditor::setPrimitiveStorageType(PrimitivePropertyType::StorageType storageType)
-{
-    if (mUpdatingDetails)
-        return;
 
-    PropertyType *propertyType = selectedPropertyType();
-    if (!propertyType || !propertyType->isPrimitive())
-        return;
-
-    auto &primitiveType = static_cast<PrimitivePropertyType&>(*propertyType);
-    if (primitiveType.storageType == storageType)
-        return;
-
-    primitiveType.storageType = storageType;
-    applyPropertyTypes();
-}
 
 void PropertyTypesEditor::primitiveColorChanged(const QColor &color)
 {

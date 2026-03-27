@@ -186,29 +186,21 @@ public:
 class TILEDSHARED_EXPORT PrimitivePropertyType final : public PropertyType
 {
 public:
-    enum StorageType {
-        BoolValue,
-        IntValue,
-        FloatValue,
-        StringValue,
-        ColorValue
-    };
-
-    StorageType storageType = BoolValue;
     QColor visualColor;
 
-    PrimitivePropertyType(const QString &name) : PropertyType(PT_Primitive, name) {}
-
-    ExportValue toExportValue(const QVariant &value, const ExportContext &) const override;
-    QVariant toPropertyValue(const QVariant &value, const ExportContext &) const override;
+    PrimitivePropertyType(const QString &name, const QVariant &defaultValue = false)
+        : PropertyType(PT_Primitive, name)
+        , mDefaultValue(defaultValue)
+    {}
 
     QVariant defaultValue() const override;
+    void setDefaultValue(const QVariant &value) { mDefaultValue = value; }
 
-    QJsonObject toJson(const ExportContext &) const override;
+    QJsonObject toJson(const ExportContext &context) const override;
     void initializeFromJson(const QJsonObject &json) override;
 
-    static StorageType storageTypeFromString(const QString &string);
-    static QString storageTypeToString(StorageType type);
+private:
+    QVariant mDefaultValue;
 };
 
 using SharedPropertyType = QSharedPointer<PropertyType>;

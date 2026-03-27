@@ -480,37 +480,25 @@ void ClassPropertyType::setUsageFlags(int flags, bool value)
 
 // PrimitivePropertyType
 
-ExportValue PrimitivePropertyType::toExportValue(const QVariant &value, const ExportContext &context) const
-{
-    return PropertyType::toExportValue(value, context);
-}
-
-QVariant PrimitivePropertyType::toPropertyValue(const QVariant &value, const ExportContext &context) const
-{
-    return PropertyType::toPropertyValue(value, context);
-}
-
 QVariant PrimitivePropertyType::defaultValue() const
 {
-    switch (storageType) {
-    case BoolValue:
-        return false;
-    case IntValue:
-        return 0;
-    case FloatValue:
-        return 0.0;
-    case StringValue:
-        return QString();
-    case ColorValue:
-        return QColor();
-    }
-    return QVariant();
+    return mDefaultValue;
 }
 
 QJsonObject PrimitivePropertyType::toJson(const ExportContext &context) const
 {
     auto json = PropertyType::toJson(context);
-    json.insert(QStringLiteral("storageType"), storageTypeToString(storageType));
+    json.insert(QStringLiteral("storageType"), typeToName(mDefaultValue.userType()));
+
+    // Persist the actual default value
+    if (mDefaultValue.userType() == QMetaType::QColor) {
+        const QColor color = mDefaultValue.value<QColor>();
+        if (color.isValid())
+            json.insert(QStringLiteral("value"), color.name(QColor::HexArgb));
+    } else {
+        json.insert(QStringLiteral("value"), QJsonValue::fromVariant(mDefaultValue));
+    }
+
     if (visualColor.isValid())
         json.insert(QStringLiteral("visualColor"), visualColor.name(QColor::HexArgb));
     return json;
@@ -518,41 +506,20 @@ QJsonObject PrimitivePropertyType::toJson(const ExportContext &context) const
 
 void PrimitivePropertyType::initializeFromJson(const QJsonObject &json)
 {
-    storageType = storageTypeFromString(json.value(QStringLiteral("storageType")).toString());
+    const QString typeName = json.value(QStringLiteral("storageType")).toString();
+
+    ExportValue exportValue;
+    exportValue.typeName = typeName;
+
+    if (json.contains(QStringLiteral("value")))
+        exportValue.value = json.value(QStringLiteral("value")).toVariant();
+
+    ExportContext context;
+    mDefaultValue = context.toPropertyValue(exportValue);
 
     const QString colorName = json.value(QLatin1String("visualColor")).toString();
     if (QColor::isValidColor(colorName))
         visualColor.setNamedColor(colorName);
-}
-
-PrimitivePropertyType::StorageType PrimitivePropertyType::storageTypeFromString(const QString &string)
-{
-    if (string == QLatin1String("int"))
-        return IntValue;
-    if (string == QLatin1String("float"))
-        return FloatValue;
-    if (string == QLatin1String("string"))
-        return StringValue;
-    if (string == QLatin1String("color"))
-        return ColorValue;
-    return BoolValue;
-}
-
-QString PrimitivePropertyType::storageTypeToString(StorageType type)
-{
-    switch (type) {
-    case IntValue:
-        return QStringLiteral("int");
-    case FloatValue:
-        return QStringLiteral("float");
-    case StringValue:
-        return QStringLiteral("string");
-    case ColorValue:
-        return QStringLiteral("color");
-    case BoolValue:
-        break;
-    }
-    return QStringLiteral("bool");
 }
 
 // PropertyTypes

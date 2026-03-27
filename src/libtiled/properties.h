@@ -217,5 +217,6 @@ TILEDSHARED_EXPORT QString userTypeName(const QVariant &value);
 TILEDSHARED_EXPORT void initializeMetatypes();
 
 TILEDSHARED_EXPORT QVariantList possiblePropertyValues(const ClassPropertyType *parentClassType = nullptr);
+TILEDSHARED_EXPORT QVariantList possiblePrimitiveValues();
 
 } // namespace Tiled

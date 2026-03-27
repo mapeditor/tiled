@@ -85,7 +85,7 @@ protected:
     void changeEvent(QEvent *e) override;
 
 private:
-    void addPropertyType(PropertyType::Type type);
+    void addPropertyType(PropertyType::Type type, const QVariant &defaultValue = QVariant());
     void selectedPropertyTypesChanged();
     void removeSelectedPropertyType();
     QModelIndex selectedPropertyTypeIndex() const;
@@ -115,7 +115,6 @@ private:
     void removeValues();
     bool checkValueCount(int count);
 
-    void setPrimitiveStorageType(PrimitivePropertyType::StorageType storageType);
     void primitiveColorChanged(const QColor &color);
 
     void openClassOfPopup();
@@ -166,7 +165,6 @@ private:
     QPointer<AddValueProperty> mAddValueProperty;
 
     ColorButton *mPrimitiveColorButton = nullptr;
-    QComboBox *mPrimitiveStorageTypeCombo = nullptr;
 
     bool mSettingPrefPropertyTypes = false;
     bool mSettingName = false;
