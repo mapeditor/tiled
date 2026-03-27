@@ -166,7 +166,7 @@ QModelIndex PropertyTypesModel::addNewPropertyType(PropertyType::Type type, cons
         propertyType = std::make_unique<EnumPropertyType>(name);
         break;
     case PropertyType::PT_Primitive:
-        propertyType = std::make_unique<PrimitivePropertyType>(name, defaultValue.isValid() ? defaultValue : QVariant(false));
+        propertyType = std::make_unique<PrimitivePropertyType>(name, defaultValue);
         break;
     }
 

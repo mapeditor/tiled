@@ -214,16 +214,8 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
             this, [this] { addPropertyType(PropertyType::PT_Class); });
     auto primitiveMenu = new QMenu(this);
     for (const auto &value : possiblePrimitiveValues()) {
-        QString displayName;
-        switch (value.userType()) {
-        case QMetaType::Bool:    displayName = tr("Bool"); break;
-        case QMetaType::Int:     displayName = tr("Int"); break;
-        case QMetaType::Double:  displayName = tr("Float"); break;
-        case QMetaType::QString: displayName = tr("String"); break;
-        case QMetaType::QColor:  displayName = tr("Color"); break;
-        default: continue;
-        }
-        primitiveMenu->addAction(displayName, this, [this, value] {
+        const QIcon icon = PropertyTypesModel::iconForProperty(value);
+        primitiveMenu->addAction(icon, userTypeName(value), this, [this, value] {
             addPropertyType(PropertyType::PT_Primitive, value);
         });
     }

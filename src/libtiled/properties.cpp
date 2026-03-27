@@ -483,17 +483,23 @@ void initializeMetatypes()
     QMetaType::registerConverter<QString, FilePath>(&FilePath::fromString);
 }
 
+QVariantList possiblePrimitiveValues()
+{
+    return {
+        QVariant(false),                        // bool
+        QVariant(QColor()),                     // color
+        QVariant(0.0),                          // float
+        QVariant::fromValue(FilePath()),        // file
+        QVariant(0),                            // int
+        QVariant::fromValue(ObjectRef()),       // object
+        QVariant(QString()),                    // string
+    };
+}
+
 QVariantList possiblePropertyValues(const ClassPropertyType *parentClassType)
 {
-    QVariantList values;
+    QVariantList values = possiblePrimitiveValues();
 
-    values.append(false);                               // bool
-    values.append(QColor());                            // color
-    values.append(0.0);                                 // float
-    values.append(QVariant::fromValue(FilePath()));     // file
-    values.append(0);                                   // int
-    values.append(QVariant::fromValue(ObjectRef()));    // object
-    values.append(QString());                           // string
     values.append(QVariant(QVariantList()));            // list
 
     for (const auto &propertyType : Object::propertyTypes()) {
@@ -510,17 +516,6 @@ QVariantList possiblePropertyValues(const ClassPropertyType *parentClassType)
     }
 
     return values;
-}
-
-QVariantList possiblePrimitiveValues()
-{
-    return {
-        QVariant(false),                        // bool
-        QVariant(0),                            // int
-        QVariant(0.0),                          // float
-        QVariant(QString()),                    // string
-        QVariant::fromValue(QColor()),          // color
-    };
 }
 
 } // namespace Tiled
