@@ -77,6 +77,44 @@ static void setupTilesetGridTransform(const Tileset &tileset, QTransform &transf
     }
 }
 
+// copy of tinted function from maprender.cpp
+static QPixmap tintedPixmap(const QPixmap &pixmap, const QRect &rect, const QColor &color)
+{
+    if (!color.isValid() || color == QColor(255, 255, 255, 255))
+        return pixmap.copy(rect);
+
+    QPixmap result = pixmap.copy(rect);
+
+    // tinting with a non-fully opaque color needs an alpha channel to work properly
+    if (color.alpha() < 255 && !result.hasAlphaChannel()) {
+        auto imageWithAlpha = result.toImage();
+        imageWithAlpha.convertTo(QImage::Format_ARGB32_Premultiplied);
+        result = QPixmap::fromImage(std::move(imageWithAlpha), Qt::NoOpaqueDetection);
+    }
+
+    QPainter painter(&result);
+
+    QColor fullOpacity = color;
+    fullOpacity.setAlpha(255);
+
+    // tint the final color (this will mess up the alpha which we will fix in
+    // the next lines)
+    painter.setCompositionMode(QPainter::CompositionMode_Multiply);
+    painter.fillRect(result.rect(), fullOpacity);
+
+    // apply the original alpha to the final image
+    painter.setCompositionMode(QPainter::CompositionMode_DestinationIn);
+    painter.drawPixmap(result.rect(), pixmap, rect);
+
+    // apply the alpha of the tint color so that we can use it to make the image
+    // transparent instead of just increasing or decreasing the tint effect
+    painter.setCompositionMode(QPainter::CompositionMode_DestinationIn);
+    painter.fillRect(result.rect(), color);
+
+    painter.end();
+    return result;
+}
+
 /**
  * The delegate for drawing tile items in the tileset view.
  */
@@ -153,8 +191,15 @@ void TileDelegate::paint(QPainter *painter,
         if (zoomable->smoothTransform())
             painter->setRenderHint(QPainter::SmoothPixmapTransform);
 
-    if (!tileImage.isNull())
+    if (!tileImage.isNull()){
+        const QColor tintColor = tile->effectiveTintColor();
+        if (tintColor.isValid() && tintColor != QColor(255, 255, 255, 255)){
+            const QPixmap t = tintedPixmap(tileImage, tile->imageRect(), tintColor);
+            painter->drawPixmap(targetRect, t, t.rect());
+        } else {
         painter->drawPixmap(targetRect, tileImage, tile->imageRect());
+        }
+    }
     else
         mTilesetView->imageMissingIcon().paint(painter, targetRect, Qt::AlignBottom | Qt::AlignLeft);
 

@@ -460,7 +460,7 @@ void CellRenderer::render(const Cell &cell, const QPointF &screenPos, const QSiz
         return;
     }
 
-    const QColor newTintColor = multiplyColors(mLayerTintColor, mTintColor);
+    const QColor newTintColor = multiplyColors(mLayerTintColor, tile->effectiveTintColor());
     // The USHRT_MAX limit is rather arbitrary but avoids a crash in
     // drawPixmapFragments for a large number of fragments.
     if (mTile != tile || mFragments.size() == USHRT_MAX || newTintColor != mTintColor)
