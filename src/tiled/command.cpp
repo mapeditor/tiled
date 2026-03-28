@@ -31,11 +31,11 @@
 
 #include <QAction>
 #include <QDir>
+#include <QFileInfo>
 #include <QMessageBox>
 #include <QProcess>
 #include <QStandardPaths>
 #include <QUndoStack>
-#include <qfileinfo.h>
 
 using namespace Tiled;
 
@@ -73,11 +73,9 @@ static QString replaceVariables(const QString &string, bool quoteValues = true)
     // Perform variable replacement
     if (Document *document = DocumentManager::instance()->currentDocument()) {
         const QString &fileName = document->fileName();
-        QFileInfo fileInfo(fileName);
-        const QString mapPath = fileInfo.absolutePath();
+        const QString mapPath = QFileInfo(fileName).absolutePath();
 
         const QString &exportFileName = document->lastExportFileName();
-        QFileInfo exportFileInfo(exportFileName);
         const QString exportPath = QFileInfo(exportFileName).absolutePath();
 
         const QString projectPath = QFileInfo(ProjectManager::instance()->project().fileName()).absolutePath();
