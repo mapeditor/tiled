@@ -180,7 +180,8 @@ public:
     QList<TileLayer*> findTargetLayers(const QList<const TileLayer *> &sourceLayers) const;
     void paintTileLayers(const Map &map, bool mergeable = false,
                          QVector<SharedTileset> *missingTilesets = nullptr,
-                         QHash<TileLayer *, QRegion> *paintedRegions = nullptr);
+                         QHash<TileLayer *, QRegion> *paintedRegions = nullptr,
+                         bool notify = true);
     void eraseTileLayers(const QRegion &region,
                          bool allLayers = false,
                          bool mergeable = false,
