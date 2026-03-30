@@ -1790,6 +1790,15 @@ public:
                         push(command);
                     });
 
+        mTintColorProperty = new ColorProperty(
+                    tr("Tint color"),
+                    [this] {
+                        return mapObject()->tintColor();
+                    },
+                    [this](const QColor &value){
+                        changeMapObject(MapObject::TintColorProperty, value);
+                    });
+
         mTextProperty = new MultilineStringProperty(
                     tr("Text"),
                     [this] {
@@ -1859,6 +1868,7 @@ public:
         if (mapObject()->isTileObject()) {
             mObjectProperties->addSeparator();
             mObjectProperties->addProperty(mFlippingProperty);
+            mObjectProperties->addProperty(mTintColorProperty);
         }
 
         if (mapObject()->shape() == MapObject::Text) {
@@ -1904,6 +1914,8 @@ private:
             emit mRotationProperty->valueChanged();
         if (change.properties & MapObject::CellProperty)
             emit mFlippingProperty->valueChanged();
+        if (change.properties & MapObject::TintColorProperty)
+            emit mTintColorProperty->valueChanged();
         if (change.properties & MapObject::TextProperty)
             emit mTextProperty->valueChanged();
         if (change.properties & MapObject::TextFontProperty)
@@ -1975,6 +1987,7 @@ private:
     Property *mPositionProperty;
     Property *mBoundsProperty;
     FloatProperty *mRotationProperty;
+    Property *mTintColorProperty;
 
     // for tile objects
     Property *mFlippingProperty;

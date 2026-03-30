@@ -1,4 +1,4 @@
-/*
+    /*
  * mapwriter.cpp
  * Copyright 2008-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
@@ -771,6 +771,9 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
 
     if (shouldWrite(!mapObject.isVisible(), isTemplateInstance, mapObject.propertyChanged(MapObject::VisibleProperty)))
         w.writeAttribute(QStringLiteral("visible"), QLatin1String(mapObject.isVisible() ? "1" : "0"));
+
+    if (shouldWrite(mapObject.tintColor().isValid(), isTemplateInstance, mapObject.propertyChanged((MapObject::TintColorProperty))))
+        w.writeAttribute(QStringLiteral("tintcolor"), colorToString(mapObject.tintColor()));
 
     writeProperties(w, mapObject.properties());
 

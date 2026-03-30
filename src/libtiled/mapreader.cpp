@@ -1236,6 +1236,12 @@ std::unique_ptr<MapObject> MapReaderPrivate::readObject()
         object->setPropertyChanged(MapObject::OpacityProperty);
     }
 
+    const QString tintColorStr = atts.value(QLatin1String("tintcolor")).toString();
+    if(!tintColorStr.isEmpty()){
+        object->setTintColor(QColor(tintColorStr));
+        object->setPropertyChanged(MapObject::TintColorProperty);
+    }
+
     if (gid) {
         object->setCell(cellForGid(gid));
         object->setPropertyChanged(MapObject::CellProperty);
