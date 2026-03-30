@@ -159,7 +159,15 @@ void SetMapPosInLoadedWorld::setRect(QPoint pos)
 
     rect.moveTo(pos);
 
-    worldDoc->undoStack()->push(new SetMapRectCommand(worldDoc.data(), mMapName, rect));
+    // Avoid merging this automatic world update with a user's manual world move.
+    class NonMergingSetMapRectCommand final : public SetMapRectCommand
+    {
+    public:
+        using SetMapRectCommand::SetMapRectCommand;
+        int id() const override { return -1; }
+    };
+
+    worldDoc->undoStack()->push(new NonMergingSetMapRectCommand(worldDoc.data(), mMapName, rect));
 }
 
 } // namespace Tiled
