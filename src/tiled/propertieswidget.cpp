@@ -2000,8 +2000,8 @@ public:
                     [this]{ return tile()->tintColor();},
                     [this](const QColor &value) {
                         push(new ChangeTileTintColor(tilesetDocument(),
-                                                { tile() },
-                                                value));
+                                                    { tile() },
+                                                    value));
                     });
         mTileProperties = new GroupProperty(tr("Tile"));
         mTileProperties->addProperty(mIdProperty);
@@ -2073,6 +2073,7 @@ private:
         mImageProperty->setEnabled(hasTilesetDocument && isCollection);
         mRectangleProperty->setEnabled(hasTilesetDocument && isCollection);
         mProbabilityProperty->setEnabled(hasTilesetDocument);
+        mTintColorProperty->setEnabled(hasTilesetDocument);
     }
 
     TilesetDocument *tilesetDocument() const
