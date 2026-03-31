@@ -113,18 +113,18 @@ private:
 class MoveUpWangSetColor : public QUndoCommand
 {
 public:
-	MoveUpWangSetColor(TilesetDocument *tilesetDocumnet,
-					   WangSet *wangSet,
-					   int color);
+    MoveUpWangSetColor(TilesetDocument *tilesetDocumnet,
+                       WangSet *wangSet,
+                       int color);
 
-	void undo() override;
+    void undo() override;
     void redo() override;
 
 private:
     TilesetDocument *mTilesetDocument;
     WangSet *mWangSet;
     const int mColor;
-	void swap();
+    void swap();
 };
 
 class SetWangSetImage : public QUndoCommand

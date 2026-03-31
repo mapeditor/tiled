@@ -542,10 +542,10 @@ void WangSet::swapWangColorsAt(int colorA, int colorB)
     Q_ASSERT(colorB > 0 && colorB - 1 < colorCount());
 
     auto wangColor = mColors[colorA - 1];
-	wangColor->setColorIndex(colorB - 1);
-	mColors.replace(colorA - 1, mColors[colorB - 1]);
-	mColors[colorA - 1]->setColorIndex(colorA - 1);
-	mColors.replace(colorB - 1, wangColor);
+    wangColor->setColorIndex(colorB - 1);
+    mColors.replace(colorA - 1, mColors[colorB - 1]);
+    mColors[colorA - 1]->setColorIndex(colorA - 1);
+    mColors.replace(colorB - 1, wangColor);
 
     mColorDistancesDirty = true;
 }

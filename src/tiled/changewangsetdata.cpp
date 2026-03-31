@@ -163,11 +163,11 @@ void RemoveWangSetColor::redo()
 
 void MoveUpWangSetColor::swap()
 {
-	const auto changes = ChangeTileWangId::changesOnMoveColor(mWangSet, mColor - 1, mColor);
+    const auto changes = ChangeTileWangId::changesOnMoveColor(mWangSet, mColor - 1, mColor);
     if (!changes.isEmpty())
         new ChangeTileWangId(mTilesetDocument, mWangSet, changes, this);
-	
-	mTilesetDocument->wangSetModel()->swapWangColorsAt(mWangSet, mColor - 1, mColor);
+    
+    mTilesetDocument->wangSetModel()->swapWangColorsAt(mWangSet, mColor - 1, mColor);
 }
 
 MoveUpWangSetColor::MoveUpWangSetColor(TilesetDocument *tilesetDocumnet, WangSet *wangSet, int color)
@@ -188,7 +188,7 @@ void MoveUpWangSetColor::undo()
 
 void MoveUpWangSetColor::redo()
 {
-	swap();
+    swap();
     QUndoCommand::redo();
 }
 

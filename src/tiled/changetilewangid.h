@@ -70,9 +70,9 @@ public:
     static QVector<WangIdChange> changesOnRemoveColor(const WangSet *wangSet,
                                                       int removedColor);
 
-	static QVector<ChangeTileWangId::WangIdChange> changesOnMoveColor(const WangSet *wangSet, int colorA, int colorB);
+    static QVector<ChangeTileWangId::WangIdChange> changesOnMoveColor(const WangSet *wangSet, int colorA, int colorB);
 
-	static void applyChanges(WangSet *wangSet, const QVector<WangIdChange> &changes);
+    static void applyChanges(WangSet *wangSet, const QVector<WangIdChange> &changes);
 
 private:
     Tile *findTile(int tileId) const;

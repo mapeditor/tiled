@@ -424,10 +424,10 @@ void WangDock::selectWangColor(int colorIndex, bool editName)
     selectionModel->setCurrentIndex(viewIndex,
                                     QItemSelectionModel::ClearAndSelect |
                                     QItemSelectionModel::Rows);
-	if (editName)
-	{
-		mWangColorView->edit(viewIndex);
-	}
+    if (editName)
+    {
+        mWangColorView->edit(viewIndex);
+    }
 }
 
 void WangDock::changeEvent(QEvent *event)
@@ -594,13 +594,13 @@ void WangDock::moveUpColor()
     tilesetDocument->undoStack()->push(new MoveUpWangSetColor(tilesetDocument,
                                                               mCurrentWangSet,
                                                               color));
-	
-	selectWangColor(color - 1);
+    
+    selectWangColor(color - 1);
 }
 void WangDock::moveDownColor()
 {
     Q_ASSERT(mCurrentWangSet);
-	
+    
     TilesetDocument *tilesetDocument = qobject_cast<TilesetDocument*>(mDocument);
     if (!tilesetDocument)
         return;
@@ -611,8 +611,8 @@ void WangDock::moveDownColor()
     tilesetDocument->undoStack()->push(new MoveUpWangSetColor(tilesetDocument,
                                                               mCurrentWangSet,
                                                               color));
-	
-	selectWangColor(color);
+    
+    selectWangColor(color);
 }
 
 void WangDock::setCurrentWangSet(WangSet *wangSet)
