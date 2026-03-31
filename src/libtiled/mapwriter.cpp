@@ -300,6 +300,8 @@ static bool includeTile(const Tile *tile)
         return true;
     if (tile->probability() != 1.0)
         return true;
+    if (tile->tintColor().isValid())
+        return true;
 
     return false;
 }
@@ -442,6 +444,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                 w.writeAttribute(FileFormat::classPropertyNameForObject(), tile->className());
             if (tile->probability() != 1.0)
                 w.writeAttribute(QStringLiteral("probability"), QString::number(tile->probability()));
+            if (tile->tintColor().isValid())
+                w.writeAttribute(QStringLiteral("tintcolor"), colorToString(tile->tintColor()));
             if (!tile->properties().isEmpty())
                 writeProperties(w, tile->properties());
             if (isCollection)

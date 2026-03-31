@@ -155,8 +155,15 @@ void TileDelegate::paint(QPainter *painter,
         if (zoomable->smoothTransform())
             painter->setRenderHint(QPainter::SmoothPixmapTransform);
 
-    if (!tileImage.isNull())
+    if (!tileImage.isNull()){
+        const QColor tintColor = tile->effectiveTintColor();
+        if (tintColor.isValid() && tintColor != QColor(255, 255, 255, 255)){
+            const QPixmap t = tintedPixmap(tileImage, tile->imageRect(), tintColor);
+            painter->drawPixmap(targetRect, t, t.rect());
+        } else {
         painter->drawPixmap(targetRect, tileImage, tile->imageRect());
+        }
+    }
     else
         mTilesetView->imageMissingIcon().paint(painter, targetRect, Qt::AlignBottom | Qt::AlignLeft);
 
@@ -348,6 +355,8 @@ void TilesetView::setTilesetDocument(TilesetDocument *tilesetDocument)
         connect(mTilesetDocument, &Document::changed, this, &TilesetView::onChange);
         connect(mTilesetDocument, &TilesetDocument::tilesAdded, this, &TilesetView::refreshColumnCount);
         connect(mTilesetDocument, &TilesetDocument::tilesRemoved, this, &TilesetView::refreshColumnCount);
+        connect(mTilesetDocument, &TilesetDocument::tileTintColorChanged,
+                this, [this] { viewport()->update(); });
     }
 }
 

@@ -2044,6 +2044,14 @@ public:
         mProbabilityProperty->setToolTip(tr("Relative chance this tile will be picked"));
         mProbabilityProperty->setMinimum(0.0);
 
+        mTintColorProperty = new ColorProperty(
+                    tr("Tint color"),
+                    [this]{ return tile()->tintColor();},
+                    [this](const QColor &value) {
+                        push(new ChangeTileTintColor(tilesetDocument(),
+                                                    { tile() },
+                                                    value));
+                    });
         mTileProperties = new GroupProperty(tr("Tile"));
         mTileProperties->addProperty(mIdProperty);
         mTileProperties->addProperty(mClassProperty);
@@ -2054,6 +2062,7 @@ public:
 
         mTileProperties->addProperty(mRectangleProperty);
         mTileProperties->addProperty(mProbabilityProperty);
+        mTileProperties->addProperty(mTintColorProperty);
 
         addProperty(mTileProperties);
 
@@ -2064,12 +2073,18 @@ public:
 
             connect(tilesetDocument, &TilesetDocument::tileProbabilityChanged,
                     this, &TileProperties::tileProbabilityChanged);
+
+            connect(tilesetDocument, &TilesetDocument::tileTintColorChanged,
+                    this, &TileProperties::tileTintColorChanged);
         } else if (auto mapDocument = qobject_cast<MapDocument*>(document)) {
             connect(mapDocument, &MapDocument::tileImageSourceChanged,
                     this, &TileProperties::tileImageSourceChanged);
 
             connect(mapDocument, &MapDocument::tileProbabilityChanged,
                     this, &TileProperties::tileProbabilityChanged);
+
+            connect(mapDocument, &MapDocument::tileTintColorChanged,
+                    this, &TileProperties::tileTintColorChanged);
         }
 
         updateEnabledState();
@@ -2092,6 +2107,13 @@ private:
         emit mProbabilityProperty->valueChanged();
     }
 
+    void tileTintColorChanged(Tile *tile)
+    {
+        if (tile != this->tile())
+            return;
+        emit mTintColorProperty->valueChanged();
+    }
+
     void updateEnabledState()
     {
         const bool hasTilesetDocument = tilesetDocument();
@@ -2100,6 +2122,7 @@ private:
         mImageProperty->setEnabled(hasTilesetDocument && isCollection);
         mRectangleProperty->setEnabled(hasTilesetDocument && isCollection);
         mProbabilityProperty->setEnabled(hasTilesetDocument);
+        mTintColorProperty->setEnabled(hasTilesetDocument);
     }
 
     TilesetDocument *tilesetDocument() const
@@ -2117,6 +2140,7 @@ private:
     UrlProperty *mImageProperty;
     RectProperty *mRectangleProperty;
     FloatProperty *mProbabilityProperty;
+    ColorProperty *mTintColorProperty;
 };
 
 class WangSetProperties : public ObjectProperties

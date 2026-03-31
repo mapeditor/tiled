@@ -396,6 +396,9 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
         if (ok)
             tile->setProbability(probability);
 
+        QString tintColorStr = tileVar[QStringLiteral("tintcolor")].toString();
+        if (!tintColorStr.isEmpty())
+            tile->setTintColor(QColor(tintColorStr));
         QVariant imageVariant = tileVar[QStringLiteral("image")];
         if (!imageVariant.isNull()) {
             const QUrl imagePath = toUrl(imageVariant.toString(), mDir);
