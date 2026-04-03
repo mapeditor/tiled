@@ -21,8 +21,8 @@
 
 #pragma once
 
+#include "editablelayer.h"
 #include "mapdocument.h"
-#include "editablegrouplayer.h"
 
 #include <QDockWidget>
 #include <QTreeView>
@@ -33,6 +33,7 @@ class QModelIndex;
 
 namespace Tiled {
 
+class GroupLayer;
 class LayerView;
 
 /**
@@ -53,10 +54,8 @@ public:
      */
     void setMapDocument(MapDocument *mapDocument);
 
-    Q_INVOKABLE bool isExpanded(EditableGroupLayer *layer) const;
-    Q_INVOKABLE void setExpanded(EditableGroupLayer *layer, bool expanded);
-    bool isExpanded(GroupLayer *layer) const;
-    void setExpanded(GroupLayer *layer, bool expanded);
+    Q_INVOKABLE bool isExpanded(EditableLayer *layer) const;
+    Q_INVOKABLE void setExpanded(EditableLayer *layer, bool expanded);
 
 protected:
     void changeEvent(QEvent *e) override;
@@ -86,6 +85,9 @@ public:
     void setMapDocument(MapDocument *mapDocument);
 
     void editLayerModelIndex(const QModelIndex &layerModelIndex);
+
+    bool isExpanded(GroupLayer *layer) const;
+    void setExpanded(GroupLayer *layer, bool expanded);
 
     QAbstractProxyModel *proxyModel() { return mProxyModel; }
 

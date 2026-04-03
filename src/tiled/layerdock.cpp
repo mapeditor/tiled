@@ -24,17 +24,18 @@
 #include "layerdock.h"
 
 #include "actionmanager.h"
-#include "scriptmanager.h"
+#include "changeevents.h"
+#include "editablelayer.h"
+#include "grouplayer.h"
+#include "iconcheckdelegate.h"
 #include "layer.h"
 #include "layermodel.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "mapdocumentactionhandler.h"
 #include "reversingproxymodel.h"
+#include "scriptmanager.h"
 #include "utils.h"
-#include "iconcheckdelegate.h"
-#include "changeevents.h"
-#include "grouplayer.h"
 
 #include <QApplication>
 #include <QBoxLayout>
@@ -125,34 +126,25 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
     }
 }
 
-bool LayerDock::isExpanded(EditableGroupLayer *layer) const
+bool LayerDock::isExpanded(EditableLayer *layer) const
 {
     if (!layer) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
         return false;
     }
-    return isExpanded(static_cast<GroupLayer*>(layer->layer()));
+    if (auto *groupLayer = layer->layer()->asGroupLayer())
+        return mLayerView->isExpanded(groupLayer);
+    return false;
 }
 
-void LayerDock::setExpanded(EditableGroupLayer *layer, bool expanded)
+void LayerDock::setExpanded(EditableLayer *layer, bool expanded)
 {
     if (!layer) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
         return;
     }
-    setExpanded(static_cast<GroupLayer*>(layer->layer()), expanded);
-}
-
-bool LayerDock::isExpanded(GroupLayer *layer) const {
-    auto sourceIndex = mMapDocument->layerModel()->index(layer);
-    auto index = mLayerView->proxyModel()->mapFromSource(sourceIndex);
-    return mLayerView->isExpanded(index);
-}
-
-void LayerDock::setExpanded(GroupLayer *layer, bool expanded) {
-    auto sourceIndex = mMapDocument->layerModel()->index(layer);
-    auto index = mLayerView->proxyModel()->mapFromSource(sourceIndex);
-    mLayerView->setExpanded(index, expanded);
+    if (auto *groupLayer = layer->layer()->asGroupLayer())
+        mLayerView->setExpanded(groupLayer, expanded);
 }
 
 void LayerDock::changeEvent(QEvent *e)
@@ -281,6 +273,24 @@ void LayerView::setMapDocument(MapDocument *mapDocument)
 void LayerView::editLayerModelIndex(const QModelIndex &layerModelIndex)
 {
     edit(mProxyModel->mapFromSource(layerModelIndex));
+}
+
+bool LayerView::isExpanded(GroupLayer *layer) const
+{
+    if (!mMapDocument)
+        return false;
+    auto sourceIndex = mMapDocument->layerModel()->index(layer);
+    auto index = mProxyModel->mapFromSource(sourceIndex);
+    return QTreeView::isExpanded(index);
+}
+
+void LayerView::setExpanded(GroupLayer *layer, bool expanded)
+{
+    if (!mMapDocument)
+        return;
+    auto sourceIndex = mMapDocument->layerModel()->index(layer);
+    auto index = mProxyModel->mapFromSource(sourceIndex);
+    QTreeView::setExpanded(index, expanded);
 }
 
 void LayerView::onExpanded(const QModelIndex &proxyIndex)

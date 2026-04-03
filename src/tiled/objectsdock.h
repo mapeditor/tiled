@@ -45,8 +45,6 @@ public:
 
     Q_INVOKABLE bool isExpanded(EditableObjectGroup *layer) const;
     Q_INVOKABLE void setExpanded(EditableObjectGroup *layer, bool expanded);
-    bool isExpanded(ObjectGroup *layer) const;
-    void setExpanded(ObjectGroup *layer, bool expanded);
 
 protected:
     void changeEvent(QEvent *e) override;

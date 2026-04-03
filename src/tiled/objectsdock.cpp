@@ -34,6 +34,7 @@
 #include "utils.h"
 
 #include <QBoxLayout>
+#include <QCoreApplication>
 #include <QEvent>
 #include <QLabel>
 #include <QMenu>
@@ -158,7 +159,7 @@ bool ObjectsDock::isExpanded(EditableObjectGroup *layer) const
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
         return false;
     }
-    return isExpanded(layer->objectGroup());
+    return mObjectsView->isExpanded(layer->objectGroup());
 }
 
 void ObjectsDock::setExpanded(EditableObjectGroup *layer, bool expanded)
@@ -167,15 +168,7 @@ void ObjectsDock::setExpanded(EditableObjectGroup *layer, bool expanded)
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
         return;
     }
-    setExpanded(layer->objectGroup(), expanded);
-}
-
-bool ObjectsDock::isExpanded(ObjectGroup *layer) const {
-    return mObjectsView->isExpanded(mObjectsView->layerViewIndex(layer));
-}
-
-void ObjectsDock::setExpanded(ObjectGroup *layer, bool expanded) {
-    mObjectsView->setExpanded(mObjectsView->layerViewIndex(layer), expanded);
+    mObjectsView->setExpanded(layer->objectGroup(), expanded);
 }
 
 void ObjectsDock::changeEvent(QEvent *e)
