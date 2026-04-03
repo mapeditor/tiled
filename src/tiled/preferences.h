@@ -56,7 +56,6 @@ private:
 
 public:
     bool showGrid() const;
-    bool clipMapToBounds() const;
     bool showTileObjectOutlines() const;
     bool showTileAnimations() const;
     bool showTileCollisionShapes() const;
@@ -75,14 +74,14 @@ public:
     bool highlightHoveredObject() const;
     bool showTilesetGrid() const;
 
-    enum ObjectBoundsVisibility {
-        ShowAllObjects,
-        ClipObjectsToMapBounds,
-        HideOutOfBoundsObjects
+    enum MapClippingMode {
+        NoClipping,
+        ClipAllMaps,
+        ClipOtherMaps
     };
 
-    ObjectBoundsVisibility objectBoundsVisibility() const;
-    void setObjectBoundsVisibility(ObjectBoundsVisibility visibility);
+    MapClippingMode mapClippingMode() const;
+    void setMapClippingMode(MapClippingMode mode);
 
     enum ObjectLabelVisiblity {
         NoObjectLabels,
@@ -202,7 +201,6 @@ public:
 
 public slots:
     void setShowGrid(bool showGrid);
-    void setClipMapToBounds(bool enabled);
     void setShowTileObjectOutlines(bool enabled);
     void setShowTileAnimations(bool enabled);
     void setShowTileCollisionShapes(bool enabled);
@@ -230,7 +228,6 @@ public slots:
 
 signals:
     void showGridChanged(bool showGrid);
-    void clipMapToBoundsChanged(bool enabled);
     void showTileObjectOutlinesChanged(bool enabled);
     void showTileAnimationsChanged(bool enabled);
     void showTileCollisionShapesChanged(bool enabled);
@@ -240,14 +237,14 @@ signals:
     void snapToFineGridChanged(bool snapToFineGrid);
     void snapToPixelsChanged(bool snapToPixels);
     void gridColorChanged(QColor gridColor);
-    void backgroundFadeColorChanged(QColor backgroundFadeColor);
-    void gridFineChanged(int gridFine);
-    void gridMajorChanged(QSize gridMajor);
+    void backgroundFadeColorChanged(QColor color);
+    void gridFineChanged(int fine);
+    void gridMajorChanged(QSize major);
     void objectLineWidthChanged(qreal lineWidth);
     void highlightCurrentLayerChanged(bool highlight);
     void highlightHoveredObjectChanged(bool highlight);
     void showTilesetGridChanged(bool showTilesetGrid);
-    void objectBoundsVisibilityChanged(ObjectBoundsVisibility visibility);
+    void mapClippingModeChanged(MapClippingMode mode);
     void objectLabelVisibilityChanged(ObjectLabelVisiblity);
     void labelForHoveredObjectChanged(bool enabled);
 

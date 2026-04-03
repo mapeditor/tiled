@@ -46,6 +46,7 @@
 
 #include <QCursor>
 #include <QGraphicsSceneMouseEvent>
+#include <QPainterPath>
 #include <QPen>
 #include <QStyleOptionGraphicsItem>
 #include <QWidget>
@@ -152,16 +153,9 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(prefs, &Preferences::objectLineWidthChanged, this, &MapItem::setObjectLineWidth);
     connect(prefs, &Preferences::showTileObjectOutlinesChanged, this, &MapItem::setShowTileObjectOutlines);
     connect(prefs, &Preferences::highlightCurrentLayerChanged, this, &MapItem::updateSelectedLayersHighlight);
-    connect(prefs, &Preferences::clipMapToBoundsChanged, this, [this] {
-        for (LayerItem *item : std::as_const(mLayerItems)) {
-            if (item->layer()->isTileLayer() || item->layer()->isImageLayer())
-                item->update();
-        }
-    });
-    connect(prefs, &Preferences::objectBoundsVisibilityChanged, this, [this] {
-        for (MapObjectItem *item : std::as_const(mObjectItems))
-            item->syncWithMapObject();
-    });
+    connect(prefs, &Preferences::mapClippingModeChanged, this, &MapItem::updateClipping);
+    connect(DocumentManager::instance(), &DocumentManager::currentDocumentChanged,
+            this, &MapItem::updateClipping);
     connect(prefs, &Preferences::propertyTypesChanged, this, &MapItem::syncAllObjectItems);
     connect(prefs, &Preferences::backgroundFadeColorChanged, this, [this] (QColor color) { mDarkRectangle->setBrush(color); });
 
@@ -324,6 +318,13 @@ void MapItem::updateLayerPositions()
 QRectF MapItem::boundingRect() const
 {
     return mBoundingRect;
+}
+
+QPainterPath MapItem::shape() const
+{
+    QPainterPath path;
+    path.addRect(mBoundingRect);
+    return path;
 }
 
 void MapItem::paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *)
@@ -912,6 +913,24 @@ void MapItem::updateBoundingRect()
         mBoundingRect = boundingRect;
         emit boundingRectChanged();
     }
+
+    updateClipping();
+}
+
+void MapItem::updateClipping()
+{
+    Preferences *prefs = Preferences::instance();
+    auto mode = prefs->mapClippingMode();
+
+    bool shouldClip = false;
+    if (mode == Preferences::ClipAllMaps) {
+        shouldClip = true;
+    } else if (mode == Preferences::ClipOtherMaps) {
+        Document *currentDoc = DocumentManager::instance()->currentDocument();
+        shouldClip = (currentDoc != mMapDocument.data());
+    }
+
+    setFlag(QGraphicsItem::ItemClipsChildrenToShape, shouldClip);
 }
 
 void MapItem::updateSelectedLayersHighlight()

@@ -152,18 +152,10 @@
      <addaction name="actionNoLabels"/>
      <addaction name="actionLabelsForSelectedObjects"/>
      <addaction name="actionLabelsForAllObjects"/>
-     <addaction name="separator"/>
-     <addaction name="actionLabelForHoveredObject"/>
-    </widget>
-    <widget class="QMenu" name="menuObjectBounds">
-     <property name="title">
-      <string>Object Bounds</string>
-     </property>
-     <addaction name="actionShowAllObjects"/>
-     <addaction name="actionClipObjectsToMapBounds"/>
-     <addaction name="actionHideOutOfBoundsObjects"/>
-    </widget>
-    <widget class="QMenu" name="menuSnapping">
+      <addaction name="separator"/>
+      <addaction name="actionLabelForHoveredObject"/>
+     </widget>
+     <widget class="QMenu" name="menuSnapping">
      <property name="title">
       <string>Snapping</string>
      </property>
@@ -171,17 +163,24 @@
      <addaction name="actionSnapToGrid"/>
      <addaction name="actionSnapToFineGrid"/>
      <addaction name="actionSnapToPixels"/>
-    </widget>
-    <addaction name="actionSearchActions"/>
-    <addaction name="actionShowGrid"/>
-    <addaction name="actionClipMapToBounds"/>
-    <addaction name="actionShowTileObjectOutlines"/>
-    <addaction name="actionShowObjectReferences"/>
-    <addaction name="menuShowObjectNames"/>
-    <addaction name="menuObjectBounds"/>
-    <addaction name="actionShowTileAnimations"/>
-    <addaction name="actionShowTileCollisionShapes"/>
-    <addaction name="actionEnableWorlds"/>
+     </widget>
+     <widget class="QMenu" name="menuMapBoundsClipping">
+      <property name="title">
+       <string>Map &amp;Bounds Clipping</string>
+      </property>
+      <addaction name="actionNoMapClipping"/>
+      <addaction name="actionClipAllMaps"/>
+      <addaction name="actionClipOtherMaps"/>
+     </widget>
+     <addaction name="menuMapBoundsClipping"/>
+     <addaction name="actionSearchActions"/>
+     <addaction name="actionShowGrid"/>
+     <addaction name="actionShowTileObjectOutlines"/>
+     <addaction name="actionShowObjectReferences"/>
+     <addaction name="menuShowObjectNames"/>
+     <addaction name="actionShowTileAnimations"/>
+     <addaction name="actionShowTileCollisionShapes"/>
+     <addaction name="actionEnableWorlds"/>
     <addaction name="actionEnableParallax"/>
     <addaction name="actionHighlightCurrentLayer"/>
     <addaction name="actionHighlightHoveredObject"/>
@@ -345,16 +344,8 @@
    <property name="shortcut">
     <string notr="true">Ctrl+G</string>
    </property>
-  </action>
-  <action name="actionClipMapToBounds">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Clip Map to &amp;Bounds</string>
-   </property>
-  </action>
-  <action name="actionSaveAs">
+   </action>
+   <action name="actionSaveAs">
    <property name="icon">
     <iconset resource="tiled.qrc">
      <normaloff>:/images/16/document-save-as.png</normaloff>:/images/16/document-save-as.png</iconset>
@@ -569,32 +560,8 @@
    <property name="text">
     <string>&amp;Never</string>
    </property>
-  </action>
-  <action name="actionShowAllObjects">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Show All</string>
-   </property>
-  </action>
-  <action name="actionClipObjectsToMapBounds">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Clip to Map Bounds</string>
-   </property>
-  </action>
-  <action name="actionHideOutOfBoundsObjects">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Hide Out-of-Bounds</string>
-   </property>
-  </action>
-  <action name="actionLabelsForSelectedObjects">
+   </action>
+   <action name="actionLabelsForSelectedObjects">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -849,23 +816,47 @@
    <property name="text">
     <string>Unload All Worlds</string>
    </property>
-  </action>
-  <action name="actionWorldProperties">
-   <property name="icon">
-    <iconset resource="tiled.qrc">
-     <normaloff>:/images/16/document-properties.png</normaloff>:/images/16/document-properties.png</iconset>
-   </property>
-   <property name="text">
-    <string>World Properties...</string>
-   </property>
-   <property name="toolTip">
-    <string>World Properties</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
- </widget>
+   </action>
+   <action name="actionWorldProperties">
+    <property name="icon">
+     <iconset resource="tiled.qrc">
+      <normaloff>:/images/16/document-properties.png</normaloff>:/images/16/document-properties.png</iconset>
+    </property>
+    <property name="text">
+     <string>World Properties...</string>
+    </property>
+    <property name="toolTip">
+     <string>World Properties</string>
+    </property>
+    <property name="menuRole">
+     <enum>QAction::MenuRole::NoRole</enum>
+    </property>
+   </action>
+   <action name="actionNoMapClipping">
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="text">
+     <string>No Map Clipping</string>
+    </property>
+   </action>
+   <action name="actionClipAllMaps">
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="text">
+     <string>Clip All Maps to Bounds</string>
+    </property>
+   </action>
+   <action name="actionClipOtherMaps">
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="text">
+     <string>Clip Other Maps to Bounds</string>
+    </property>
+   </action>
+  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
   <include location="tiled.qrc"/>

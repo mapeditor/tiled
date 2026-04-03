@@ -141,11 +141,6 @@ bool Preferences::showGrid() const
     return get("Interface/ShowGrid", true);
 }
 
-bool Preferences::clipMapToBounds() const
-{
-    return get("Interface/ClipMapToBounds", false);
-}
-
 bool Preferences::showTileObjectOutlines() const
 {
     return get("Interface/ShowTileObjectOutlines", false);
@@ -226,15 +221,15 @@ bool Preferences::showTilesetGrid() const
     return get("Interface/ShowTilesetGrid", true);
 }
 
-Preferences::ObjectBoundsVisibility Preferences::objectBoundsVisibility() const
+Preferences::MapClippingMode Preferences::mapClippingMode() const
 {
-    return static_cast<ObjectBoundsVisibility>(get<int>("Interface/ObjectBoundsVisibility", ShowAllObjects));
+    return static_cast<MapClippingMode>(get<int>("Interface/MapClippingMode", NoClipping));
 }
 
-void Preferences::setObjectBoundsVisibility(ObjectBoundsVisibility visibility)
+void Preferences::setMapClippingMode(MapClippingMode mode)
 {
-    setValue(QLatin1String("Interface/ObjectBoundsVisibility"), visibility);
-    emit objectBoundsVisibilityChanged(visibility);
+    setValue(QLatin1String("Interface/MapClippingMode"), mode);
+    emit mapClippingModeChanged(mode);
 }
 
 Preferences::ObjectLabelVisiblity Preferences::objectLabelVisibility() const
@@ -328,12 +323,6 @@ void Preferences::setShowGrid(bool showGrid)
 {
     setValue(QLatin1String("Interface/ShowGrid"), showGrid);
     emit showGridChanged(showGrid);
-}
-
-void Preferences::setClipMapToBounds(bool enabled)
-{
-    setValue(QLatin1String("Interface/ClipMapToBounds"), enabled);
-    emit clipMapToBoundsChanged(enabled);
 }
 
 void Preferences::setShowTileObjectOutlines(bool enabled)
