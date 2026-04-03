@@ -77,7 +77,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
-        version: 6.10.2
+        version: 6.11.1
         arch: linux_gcc_64
         modules: "qtimageformats qtshadertools"
         tools: 'tools_qtcreator'
@@ -209,7 +209,7 @@ jobs:
           cmake_architectures: x86_64
           runner: macos-15
           deployment_target: "10.14"
-        - qt_version: 6.10.2
+        - qt_version: 6.11.1
           qt_modules: "qtimageformats qtshadertools"
           version_suffix: "13+"
           architectures: x86_64,arm64
@@ -340,7 +340,7 @@ jobs:
     strategy:
       matrix:
         include:
-        - qt_version: 6.10.2
+        - qt_version: 6.11.1
           qt_version_major: 6
           qt_arch: win64_mingw
           qt_modules: "qtimageformats qtshadertools"
@@ -376,7 +376,9 @@ jobs:
         arch: ${{ matrix.qt_arch }}
         modules: ${{ matrix.qt_modules }}
         tools: "${{ matrix.mingw_component }},${{ matrix.mingw_variant }}"
-        aqtversion: '==3.1.19'
+        # aqtinstall 3.3.0 does not yet support the changed repository
+        # layout of Qt 6.11 on Windows
+        aqtsource: 'git+https://github.com/miurahr/aqtinstall.git@9e49c82edc6d946db376dec907cca5b4b486eec5'
         setup-python: false
         cache: true
 
