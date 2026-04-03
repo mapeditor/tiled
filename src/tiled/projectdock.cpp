@@ -35,13 +35,16 @@
 #include "tilesetmanager.h"
 #include "utils.h"
 
+#include <QAction>
 #include <QBoxLayout>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMenu>
 #include <QMouseEvent>
+#include <QScopedValueRollback>
 #include <QScrollBar>
 #include <QSet>
+#include <QToolBar>
 #include <QTreeView>
 #include <QUndoStack>
 
@@ -68,7 +71,12 @@ public:
     void setExpandedPaths(const QStringList &paths);
     void addExpandedPath(const QString &path);
 
+    void setCollapseAllAction(QAction *action) { mCollapseAllAction = action; }
+    void setPersistCollapseExpand(bool enabled) { mPersistCollapseExpand = enabled; }
+
     void selectPath(const QString &path);
+    void expandToPath(const QString &filePath);
+    void restoreExpandedPaths();
 
     QString filePath(const QModelIndex &index) const;
 
@@ -84,6 +92,8 @@ private:
     ProjectModel *mProjectModel;
     ProjectProxyModel *mProxyModel;
     QSet<QString> mExpandedPaths;
+    QAction *mCollapseAllAction = nullptr;
+    bool mPersistCollapseExpand = true;
     QString mSelectedPath;
     int mScrollBarValue = 0;
 };
@@ -95,12 +105,51 @@ ProjectDock::ProjectDock(QWidget *parent)
 {
     setObjectName(QLatin1String("ProjectDock"));
 
+    auto toolBar = new QToolBar;
+    toolBar->setIconSize(Utils::smallIconSize());
+
+    mCollapseAllAction = new QAction(this);
+    mCollapseAllAction->setIcon(QIcon(QLatin1String(":/images/scalable/chevrons-down-up.svg")));
+    connect(mCollapseAllAction, &QAction::triggered, this, [=] {
+        mProjectView->collapseAll();
+        mProjectView->setExpandedPaths({});
+    });
+    toolBar->addAction(mCollapseAllAction);
+
+    mExpandToCurrentAction = new QAction(this);
+    mExpandToCurrentAction->setCheckable(true);
+    mExpandToCurrentAction->setIcon(QIcon(QLatin1String(":/images/scalable/focus.svg")));
+    connect(mExpandToCurrentAction, &QAction::toggled, this, [=](bool checked) {
+        mProjectView->setPersistCollapseExpand(!checked);
+        if (checked) {
+            if (auto doc = DocumentManager::instance()->currentDocument())
+                mProjectView->expandToPath(doc->fileName());
+        } else {
+            mProjectView->restoreExpandedPaths();
+        }
+    });
+    toolBar->addAction(mExpandToCurrentAction);
+
+    connect(DocumentManager::instance(), &DocumentManager::currentDocumentChanged,
+            this, [=](Document *doc) {
+        if (!doc)
+            return;
+
+        if (mExpandToCurrentAction->isChecked())
+            mProjectView->expandToPath(doc->fileName());
+        else
+            mProjectView->selectPath(doc->fileName());
+    });
+
+    mProjectView->setCollapseAllAction(mCollapseAllAction);
+
     auto widget = new QWidget(this);
     auto layout = new QVBoxLayout(widget);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
 
     layout->addWidget(mProjectView);
+    layout->addWidget(toolBar);
 
     setWidget(widget);
     retranslateUi();
@@ -174,14 +223,13 @@ void ProjectDock::onCurrentRowChanged(const QModelIndex &current)
         emit fileSelected(filePath);
 }
 
-void ProjectDock::selectFile(const QString &filePath)
-{
-    mProjectView->selectPath(filePath);
-}
-
 void ProjectDock::retranslateUi()
 {
     setWindowTitle(tr("Project"));
+    mCollapseAllAction->setText(tr("Collapse All"));
+    mCollapseAllAction->setToolTip(tr("Collapse all folders."));
+    mExpandToCurrentAction->setText(tr("Only Expand to Current"));
+    mExpandToCurrentAction->setToolTip(tr("Keep only those folders expanded that lead to the active file."));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -207,9 +255,15 @@ ProjectView::ProjectView(QWidget *parent)
             this, &ProjectView::onRowsInserted);
 
     connect(this, &QTreeView::expanded,
-            this, [=] (const QModelIndex &index) { mExpandedPaths.insert(filePath(index)); });
+            this, [=] (const QModelIndex &index) {
+        if (mPersistCollapseExpand)
+            mExpandedPaths.insert(filePath(index));
+    });
     connect(this, &QTreeView::collapsed,
-            this, [=] (const QModelIndex &index) { mExpandedPaths.remove(filePath(index)); });
+            this, [=] (const QModelIndex &index) {
+        if (mPersistCollapseExpand)
+            mExpandedPaths.remove(filePath(index));
+    });
 
     // Reselect a previously selected path and restore scrollbar after refresh
     connect(mProjectModel, &ProjectModel::aboutToRefresh,
@@ -245,6 +299,32 @@ void ProjectView::selectPath(const QString &path)
     const auto proxyIndex = mProxyModel->mapFromSource(sourceIndex);
     if (proxyIndex.isValid())
         setCurrentIndex(proxyIndex);
+}
+
+void ProjectView::expandToPath(const QString &filePath)
+{
+    const QModelIndex sourceIndex = mProjectModel->index(filePath);
+    const QModelIndex proxyIndex = mProxyModel->mapFromSource(sourceIndex);
+    if (!proxyIndex.isValid())
+        return;
+
+    collapseAll();
+
+    if (currentIndex() == proxyIndex)
+        scrollTo(proxyIndex);
+    else
+        setCurrentIndex(proxyIndex);
+}
+
+void ProjectView::restoreExpandedPaths()
+{
+    QScopedValueRollback<bool> ignore(mPersistCollapseExpand, false);
+
+    collapseAll();
+
+    const int topLevel = mProxyModel->rowCount();
+    for (int i = 0; i < topLevel; ++i)
+        restoreExpanded(mProxyModel->index(i, 0));
 }
 
 QString ProjectView::filePath(const QModelIndex &index) const
@@ -310,6 +390,9 @@ void ProjectView::contextMenuEvent(QContextMenuEvent *event)
             Utils::setThemeIcon(removeFolder, "list-remove");
         }
     } else {
+        menu.addAction(mCollapseAllAction);
+
+        menu.addSeparator();
         menu.addAction(ActionManager::action("AddFolderToProject"));
         menu.addAction(ActionManager::action("RefreshProjectFolders"));
     }

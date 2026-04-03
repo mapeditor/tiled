@@ -1,6 +1,6 @@
 /*
  * TBIN
- * Copyright 2017, Chase Warrington <spacechase0.and.cat@gmail.com>
+ * Copyright 2017, Casey Warrington <spacechase0.and.cat@gmail.com>
  *
  * MIT License
  *

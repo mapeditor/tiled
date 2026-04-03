@@ -442,13 +442,13 @@ void ObjectSelectionTool::keyPressed(QKeyEvent *event)
     }
 
     const bool moveFast = modifiers & Qt::ShiftModifier;
-    const bool snapToFineGrid = Preferences::instance()->snapToFineGrid();
+    const auto snapMode = Preferences::instance()->snapMode();
 
     if (moveFast) {
         // TODO: This only makes sense for orthogonal maps
         moveBy.rx() *= mapDocument()->map()->tileWidth();
         moveBy.ry() *= mapDocument()->map()->tileHeight();
-        if (snapToFineGrid)
+        if (snapMode == SnapMode::FineGrid)
             moveBy /= Preferences::instance()->gridFine();
     }
 
@@ -741,11 +741,15 @@ void ObjectSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
     mModifiers = modifiers;
 
-    if ((mSelectionMode == Qt::IntersectsItemShape) ^ modifiers.testFlag(Qt::AltModifier))
-        mSelectIntersected->setChecked(true);
-    else
-        mSelectContained->setChecked(true);
+    const bool hasSelection = mapDocument() && !mapDocument()->selectedObjects().isEmpty();
+    const bool altWillMove = !mMousePressed && hasSelection; 
 
+    if (!altWillMove) {
+        if ((mSelectionMode == Qt::IntersectsItemShape) ^ modifiers.testFlag(Qt::AltModifier))
+            mSelectIntersected->setChecked(true);
+        else
+            mSelectContained->setChecked(true);
+    }
     refreshCursor();
 }
 
@@ -1227,6 +1231,7 @@ void ObjectSelectionTool::startMoving(const QPointF &pos,
 
     mStart = pos;
     mAction = Moving;
+    mMergeUndo = false;
     mAlignPosition = mMovingObjects.first().oldPosition;
     mOriginPos = mOriginIndicator->pos();
 
@@ -1260,10 +1265,12 @@ void ObjectSelectionTool::updateMovingItems(const QPointF &pos,
     }
 
     auto command = new TransformMapObjects(mapDocument(), changingObjects(), states);
-    if (command->hasAnyChanges())
+    if (command->hasAnyChanges()) {
+        command->setMergeable(std::exchange(mMergeUndo, true));
         mapDocument()->undoStack()->push(command);
-    else
+    } else {
         delete command;
+    }
 
     mOriginIndicator->setPos(mOriginPos + diff);
 }
@@ -1301,6 +1308,7 @@ void ObjectSelectionTool::startRotating(const QPointF &pos)
 {
     mStart = pos;
     mAction = Rotating;
+    mMergeUndo = false;
     mOriginPos = mOriginIndicator->pos();
 
     saveSelectionState();
@@ -1355,10 +1363,12 @@ void ObjectSelectionTool::updateRotatingItems(const QPointF &pos,
     }
 
     auto command = new TransformMapObjects(mapDocument(), changingObjects(), states);
-    if (command->hasAnyChanges())
+    if (command->hasAnyChanges()) {
+        command->setMergeable(std::exchange(mMergeUndo, true));
         mapDocument()->undoStack()->push(command);
-    else
+    } else {
         delete command;
+    }
 }
 
 void ObjectSelectionTool::finishRotating()
@@ -1375,6 +1385,7 @@ void ObjectSelectionTool::finishRotating()
 void ObjectSelectionTool::startResizing()
 {
     mAction = Resizing;
+    mMergeUndo = false;
     mOriginPos = mOriginIndicator->pos();
 
     mResizingLimitHorizontal = mClickedResizeHandle->resizingLimitHorizontal();
@@ -1481,10 +1492,12 @@ void ObjectSelectionTool::updateResizingItems(const QPointF &pos,
     }
 
     auto command = new TransformMapObjects(mapDocument(), changingObjects(), states);
-    if (command->hasAnyChanges())
+    if (command->hasAnyChanges()) {
+        command->setMergeable(std::exchange(mMergeUndo, true));
         mapDocument()->undoStack()->push(command);
-    else
+    } else {
         delete command;
+    }
 }
 
 void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin,
@@ -1627,6 +1640,7 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
 
     if (state.propertiesChangedNow()) {
         auto command = new TransformMapObjects(mapDocument(), { mapObject }, { state });
+        command->setMergeable(std::exchange(mMergeUndo, true));
         mapDocument()->undoStack()->push(command);
     }
 }

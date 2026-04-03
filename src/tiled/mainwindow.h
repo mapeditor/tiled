@@ -117,6 +117,7 @@ private:
     void openFileDialog();
     void openFileInProject();
     void searchActions();
+    void goToTile();
     void showLocatorWidget(LocatorSource *source);
     bool saveFile();
     bool saveFileAs();
@@ -173,6 +174,7 @@ private:
 
     void updateWindowTitle();
     void updateActions();
+    void updateSnappingActions(SnapMode mode);
     void updateZoomable();
     void updateZoomActions();
     void openDocumentation();

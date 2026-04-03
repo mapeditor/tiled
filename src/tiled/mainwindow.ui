@@ -139,6 +139,8 @@
     <addaction name="actionAutoMap"/>
     <addaction name="actionAutoMapWhileDrawing"/>
     <addaction name="separator"/>
+    <addaction name="actionGoToTile"/>
+    <addaction name="separator"/>
     <addaction name="actionMapProperties"/>
    </widget>
    <widget class="QMenu" name="menuView">

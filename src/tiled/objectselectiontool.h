@@ -183,6 +183,7 @@ private:
     QPointF mLastMousePos;
     QPoint mScreenStart;
     Qt::KeyboardModifiers mModifiers;
+    bool mMergeUndo = false;
 
     static Preference<Qt::ItemSelectionMode> ourSelectionMode;
 };

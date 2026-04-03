@@ -1,5 +1,5 @@
 clone_depth: 200
-version: '1.11.{build}'
+version: '1.12.{build}'
 image:
   - Visual Studio 2022
 
@@ -7,20 +7,45 @@ cache:
   - C:\Users\appveyor\.m2
   - C:\ProgramData\chocolatey\bin -> appveyor.yml
   - C:\ProgramData\chocolatey\lib -> appveyor.yml
+  - C:\Qt\6.10.2\msvc2022_64 -> appveyor.yml
+  - C:\Qt\5.15.2\mingw81_32 -> appveyor.yml
+  - C:\Qt\6.10.2\mingw_64 -> appveyor.yml
+  - C:\Qt\Tools\mingw810_32 -> appveyor.yml
+  - C:\Qt\Tools\mingw1310_64 -> appveyor.yml
 
 environment:
-  BUTLER_API_KEY:
-    secure: j7JM5L6KeqpnQukzJLsm7J6oV92SpmyEZLSoED1pZ3gQ79VIkdxtbQmTkqUNZPsz
   matrix:
-    - QTDIR: C:\Qt\6.9\msvc2022_64
+    - QT_VERSION: 6.10.2
+      QT_ARCH: win64_msvc2022_64
+      QT_MODULES: qtimageformats
+      QTDIR: C:\Qt\6.10.2\msvc2022_64
       PYTHONHOME: C:\Python312-x64
       DEFAULT_PROFILE: MSVC2022-x64
+      FILE_SUFFIX: Windows-10+_msvc_x86_64
       PUSH_RELEASE: false
       ENABLE_ZSTD: false
-    - QTDIR: C:\Qt\6.9\mingw_64
+    - QT_VERSION: 5.15.2
+      QT_ARCH: win32_mingw81
+      QT_MODULES:
+      QTDIR: C:\Qt\5.15.2\mingw81_32
+      PYTHONHOME: C:\Python312
+      MINGW: C:\Qt\Tools\mingw810_32
+      MINGW_COMPONENT: tools_mingw
+      MINGW_VARIANT: qt.tools.win32_mingw810
+      FILE_SUFFIX: Windows-7-8_x86
+      PUSH_RELEASE: true
+      ENABLE_ZSTD: true
+      CC: i686-w64-mingw32-gcc.exe
+      CXX: i686-w64-mingw32-g++.exe
+    - QT_VERSION: 6.10.2
+      QT_ARCH: win64_mingw
+      QT_MODULES: qtimageformats
+      QTDIR: C:\Qt\6.10.2\mingw_64
       PYTHONHOME: C:\Python312-x64
-      MINGW: C:\Qt\mingw_64\Tools\mingw1310_64
-      DEFAULT_PROFILE: x86_64-w64-mingw32-gcc-13_1_0
+      MINGW: C:\Qt\Tools\mingw1310_64
+      MINGW_COMPONENT: tools_mingw1310
+      MINGW_VARIANT: qt.tools.win64_mingw1310
+      FILE_SUFFIX: Windows-10+_x86_64
       PUSH_RELEASE: true
       ENABLE_ZSTD: true
       CC: x86_64-w64-mingw32-gcc.exe
@@ -29,14 +54,19 @@ environment:
 configuration: Release
 
 install:
-  - choco install -y qbs --version 2.4.1
-  - nuget install secure-file -ExcludeVersion
-  - set PATH=%PATH%;%QTDIR%\bin;%MINGW%\bin
+  - choco install -y qbs --version 3.1.1
+  - set PATH=%PYTHONHOME%;%PYTHONHOME%\Scripts;%PATH%
+  - python -m pip install aqtinstall
+  - if not exist %QTDIR%\bin\qmake.exe if "%QT_MODULES%"=="" (aqt install-qt -O C:\Qt windows desktop %QT_VERSION% %QT_ARCH%) else (aqt install-qt -O C:\Qt windows desktop %QT_VERSION% %QT_ARCH% -m %QT_MODULES%)
+  - if defined MINGW if not exist %MINGW%\bin\%CC% aqt install-tool -O C:\Qt windows desktop %MINGW_COMPONENT% %MINGW_VARIANT%
+  - set PATH=%QTDIR%\bin;%MINGW%\bin;%PATH%
 
 before_build:
   - qbs --version
-  - qbs setup-toolchains --detect
-  - qbs config defaultProfile %DEFAULT_PROFILE%
+  - if defined MINGW qbs setup-toolchains %MINGW%\bin\%CC% mingw
+  - if defined MINGW qbs config defaultProfile mingw
+  - if defined DEFAULT_PROFILE qbs setup-toolchains --detect
+  - if defined DEFAULT_PROFILE qbs config defaultProfile %DEFAULT_PROFILE%
 
 build_script:
   - FOR /F "tokens=*" %%i in ('git describe') do SET COMMITNOW=%%i
@@ -69,7 +99,7 @@ build_script:
 after_build:
   - cd release
   - cd installer*
-  - move tiled-*.msi %APPVEYOR_BUILD_FOLDER%
+  - move tiled-*.msi %APPVEYOR_BUILD_FOLDER%\Tiled-%TILED_VERSION%_%FILE_SUFFIX%.msi
   - cd ..
   - cd archive*
   - move tiled-*.7z %APPVEYOR_BUILD_FOLDER%
@@ -77,7 +107,7 @@ after_build:
 
 artifacts:
   - name: Installer
-    path: 'tiled-*.msi'
+    path: 'Tiled-*.msi'
   - name: Archive
     path: 'tiled-*.7z'
 
