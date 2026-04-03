@@ -417,7 +417,18 @@ void VariantMapProperty::setMemberValue(const PropertyPath &path, const QVariant
         return;
     }
 
-    if (!setPropertyMemberValue(mValue, path, value))
+    // Allow auto-removing the top-level key when it becomes empty, but only
+    // when the suggestion (inherited class value) is also empty. If the class
+    // has a non-empty default, removing the override would revert to it.
+    bool allowTopLevelReset = false;
+    if (path.size() > 1 && mSuggestions.contains(topLevelName)) {
+        const auto suggestedValue = mSuggestions.value(topLevelName);
+        allowTopLevelReset = !suggestedValue.isValid() ||
+            (suggestedValue.userType() == propertyValueId() &&
+             suggestedValue.value<PropertyValue>().value.toMap().isEmpty());
+    }
+
+    if (!setPropertyMemberValue(mValue, path, value, allowTopLevelReset))
         return;
 
     auto property = mPropertyMap.value(topLevelName);
@@ -426,7 +437,7 @@ void VariantMapProperty::setMemberValue(const PropertyPath &path, const QVariant
 
     property->setModified(suggested && present);
     property->setDimmed(!present);
-    updateModifiedRecursively(property, mValue.value(topLevelName));
+    updateModifiedRecursively(property, mValue.value(topLevelName, mSuggestions.value(topLevelName)));
 
     emitMemberValueChanged(path, value);
 }
