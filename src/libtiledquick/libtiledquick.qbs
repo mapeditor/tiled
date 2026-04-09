@@ -36,22 +36,22 @@ DynamicLibrary {
     }
 
     files: [
+        "mapborderitem.cpp",
+        "mapborderitem.h",
         "mapgriditem.cpp",
         "mapgriditem.h",
         "mapgridmaterial.cpp",
         "mapgridmaterial.h",
-        "mapitem.h",
         "mapitem.cpp",
-        "maploader.h",
+        "mapitem.h",
         "maploader.cpp",
+        "maploader.h",
         "mapref.h",
-        "tilelayeritem.h",
-        "tilelayeritem.cpp",
         "tiledquick_global.h",
-        "tilesnode.h",
+        "tilelayeritem.cpp",
+        "tilelayeritem.h",
         "tilesnode.cpp",
-        "mapborderitem.h",
-        "mapborderitem.cpp",
+        "tilesnode.h",
     ]
 
     Group {
@@ -67,9 +67,6 @@ DynamicLibrary {
             "grid.vert",
             "grid.frag",
         ]
-        fileTags: ["qt.shadertools.qsb"]
-
-        overrideTags: false
     }
 
     Export {
