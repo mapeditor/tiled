@@ -6,7 +6,7 @@ Project {
     qbsSearchPaths: "qbs"
     minimumQbsVersion: "1.18"
 
-    property string version: Environment.getEnv("TILED_VERSION") || "1.12.0";
+    property string version: Environment.getEnv("TILED_VERSION") || "1.12.1";
     property bool snapshot: Environment.getEnv("TILED_SNAPSHOT") == "true"
     property bool release: Environment.getEnv("TILED_RELEASE") == "true"
     property string libDir: "lib"

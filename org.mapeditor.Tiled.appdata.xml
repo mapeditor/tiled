@@ -19,6 +19,17 @@
  </keywords>
  <content_rating type="oars-1.0" />
  <releases>
+  <release version="1.12.1" type="stable" date="2026-03-25">
+   <url>https://www.mapeditor.org/2026/03/25/tiled-1-12-1-released.html</url>
+   <description>
+    <ul>
+     <li>Fixed Properties view flicker when switching between objects or files (#4460)</li>
+     <li>Fixed selection mode indicator to not toggle on Alt when it would move objects (by kunal649, #4434)</li>
+     <li>Fixed status bar pixel coords being rounded instead of floored (by kunal649, #4426)</li>
+     <li>macOS: Fix ability to choose type when adding properties (#4459)</li>
+    </ul>
+   </description>
+  </release>
   <release version="1.12.0" type="stable" date="2026-03-12">
    <url>https://www.mapeditor.org/2026/03/12/tiled-1-12-released.html</url>
    <description>

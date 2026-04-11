@@ -196,12 +196,12 @@ jobs:
         include:
         - qt_version: 5.15.2
           qt_modules: ""
-          version_suffix: "10.13-10.15"
+          version_suffix: "10.13-12"
           architectures: x86_64
           cmake_architectures: x86_64
         - qt_version: 6.10.2
           qt_modules: "qtimageformats qtshadertools"
-          version_suffix: "11+"
+          version_suffix: "13+"
           architectures: x86_64,arm64
           cmake_architectures: x86_64;arm64
 

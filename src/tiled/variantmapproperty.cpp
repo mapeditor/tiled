@@ -37,6 +37,7 @@
 #include <QKeyEvent>
 #include <QMenu>
 #include <QScopedValueRollback>
+#include <QTimer>
 
 namespace Tiled {
 
@@ -767,18 +768,26 @@ QWidget *AddValueProperty::createLabel(int level, QWidget *parent)
 
     nameEdit->installEventFilter(this);
 
-    connect(qApp, &QApplication::focusChanged, this, [=](QWidget *, QWidget *focusWidget) {
-        // Ignore focus in different windows (popups, dialogs, etc.)
-        if (!focusWidget || focusWidget->window() != parent->window())
-            return;
+    QPointer<AddValueProperty> self = this;
 
-        // Request add or removal if focus moved elsewhere
-        if (!parent->isAncestorOf(focusWidget)) {
-            if (!name().isEmpty())
-                emit addRequested(false);   // add without focusing, in response to focus out
+    // Request add or removal if focus moved elsewhere. Use a delayed check
+    // to allow for transient focus changes (necessary on macOS).
+    connect(qApp, &QApplication::focusChanged, parent, [self, parent] {
+        QTimer::singleShot(0, parent, [self, parent] {
+            if (!self || QApplication::activePopupWidget())
+                return;
+
+            auto currentFocus = QApplication::focusWidget();
+            if (!currentFocus || currentFocus->window() != parent->window())
+                return;
+            if (parent->isAncestorOf(currentFocus))
+                return;
+
+            if (!self->name().isEmpty())
+                emit self->addRequested(false);   // add without focusing, in response to focus out
             else
-                emit removeRequested();
-        }
+                emit self->removeRequested();
+        });
     });
 
     return nameEdit;
