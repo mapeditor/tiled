@@ -441,7 +441,7 @@ jobs:
 
     - name: Create release
       id: create_release
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       with:
         name: Tiled ${{ needs.version.outputs.version }}
         draft: true
