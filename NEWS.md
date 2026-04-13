@@ -3,6 +3,7 @@
 * Added 'Collapse All' action and 'Only Expand to Current' mode to Project view (with rhythmcache, #4346)
 * Reduced animated tile marker opacity during terrain editing (by Huy Vũ, #4449)
 * Fixed ability to change properties after deselecting the current object (#4440)
+* Added command variables %exportfile and %exportpath (#4476)
 
 ### Tiled 1.12.1 (25 March 2026)
 
