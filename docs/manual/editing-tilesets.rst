@@ -10,7 +10,7 @@ tileset.
 Two Types of Tileset
 --------------------
 
-A tileset is a collection of tiles. Tiled currently supports two types
+A tileset is a collection of tiles. Tiled currently supports three types
 of tilesets, which are chosen when creating a new tileset:
 
 Based on Tileset Image
@@ -20,6 +20,13 @@ Based on Tileset Image
    allows for using tileset images that either happen to have space
    between or around their tiles or those that have extruded the border
    pixels of each tile to avoid color bleeding.
+
+Tileset Atlas
+   This tileset uses a single image but allows you to define custom tile
+   regions that can vary in size and position. This is useful for tilesets
+   with varied tile sizes, y-sorting, multi-tile objects, or when you need
+   to dynamically adjust tile boundaries. Tiles can be arranged, moved, and
+   resized using the *Rearrange Tiles* mode (see :ref:`rearranging-tiles`).
 
 Collection of Images
    In this type of tileset each tile refers to its own image file. It
@@ -174,6 +181,34 @@ both tile layers and tile objects.
 
    Collision shapes rendered on the map. This map is from `Owyn's Adventure
    <https://store.steampowered.com/app/1020940/Owyns_Adventure/>`__.
+
+.. _rearranging-tiles:
+
+Rearranging Tiles (Atlas Tilesets)
+-----------------------------------
+
+When working with a Tileset Atlas, you can customize the tile regions using the
+*Rearrange Tiles* mode. This mode allows you to move, resize, create, and delete
+tile regions within the tileset image. Click the *Rearrange Tiles* |rearrange-tiles-icon|
+button in the toolbar to enter this mode.
+
+When in Rearrange Tiles mode, the following mouse controls are available:
+
+* **Left-click and drag on a tile** - Moves the tile to a new position
+* **Left-click and drag on a tile corner** - Resizes the tile
+* **Left-click and drag on empty space** - Creates a new tile region
+* **Right-click and drag** - Deletes all tiles overlapping the selection area
+* **Press Shift** - Toggles grid snapping
+
+This is particularly useful for:
+
+* Creating tilesets with varied tile sizes
+* Implementing y-sorting with tiles of different heights
+* Defining multi-tile objects as single tiles
+* Adjusting tile boundaries after importing an image
+
+.. |rearrange-tiles-icon|
+   image:: ../../src/tiled/resources/images/22/stock-tool-move-22.png
 
 .. _tile-animation-editor:
 
