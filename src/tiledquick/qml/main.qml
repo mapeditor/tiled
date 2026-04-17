@@ -172,7 +172,7 @@ ApplicationWindow {
                 id: mapGriditem
                 anchors.fill: mapItem
 
-                gridSize: mapItem.pixelToTileCoords(width, height);
+                gridSize: Qt.point(width / mapItem.tileSize().width, height / mapItem.tileSize().height);
                 scale: mapContainer.scale;
 
                 color: "black"
