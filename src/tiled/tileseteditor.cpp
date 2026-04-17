@@ -591,8 +591,14 @@ void TilesetEditor::currentChanged(const QModelIndex &index)
 void TilesetEditor::indexPressed(const QModelIndex &index)
 {
     TilesetView *view = currentTilesetView();
-    if (Tile *tile = view->tilesetModel()->tileAt(index))
-        mCurrentTilesetDocument->setCurrentObject(tile);
+	Tile *tile = view->tilesetModel()->tileAt(index);
+
+	// fixed https://github.com/mapeditor/tiled/issues/3498
+	if (!tile){
+        mCurrentTilesetDocument->setSelectedTiles({});
+	}
+
+    mCurrentTilesetDocument->setCurrentObject(tile);
 }
 
 void TilesetEditor::saveDocumentState(TilesetDocument *tilesetDocument) const
