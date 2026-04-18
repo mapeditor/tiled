@@ -24,6 +24,7 @@
 #include "commandmanager.h"
 #include "compression.h"
 #include "documentmanager.h"
+#include "editormanager.h"
 #include "editabletileset.h"
 #include "issuesmodel.h"
 #include "logginginterface.h"
@@ -59,17 +60,15 @@ ScriptModule::ScriptModule(QObject *parent)
     : QObject(parent)
     , mSession(new ScriptSession(this))
 {
-    // If the script module is only created for command-line use, there will
-    // not be a DocumentManager instance.
+    connect(EditorManager::instance(), &EditorManager::documentOpened, this, &ScriptModule::documentOpened);
+    connect(EditorManager::instance(), &EditorManager::documentReloaded, this, &ScriptModule::documentReloaded);
+    connect(EditorManager::instance(), &EditorManager::documentAboutToBeSaved, this, &ScriptModule::documentAboutToBeSaved);
+    connect(EditorManager::instance(), &EditorManager::documentSaved, this, &ScriptModule::documentSaved);
+    connect(EditorManager::instance(), &EditorManager::documentAboutToClose, this, &ScriptModule::documentAboutToClose);
+    connect(EditorManager::instance(), &EditorManager::currentDocumentChanged, this, &ScriptModule::currentDocumentChanged);
+
     if (auto documentManager = DocumentManager::maybeInstance()) {
         connect(documentManager, &DocumentManager::documentCreated, this, &ScriptModule::documentCreated);
-        connect(documentManager, &DocumentManager::documentOpened, this, &ScriptModule::documentOpened);
-        connect(documentManager, &DocumentManager::documentReloaded, this, &ScriptModule::documentReloaded);
-        connect(documentManager, &DocumentManager::documentAboutToBeSaved, this, &ScriptModule::documentAboutToBeSaved);
-        connect(documentManager, &DocumentManager::documentSaved, this, &ScriptModule::documentSaved);
-        connect(documentManager, &DocumentManager::documentAboutToClose, this, &ScriptModule::documentAboutToClose);
-        connect(documentManager, &DocumentManager::currentDocumentChanged, this, &ScriptModule::currentDocumentChanged);
-
         connect(&WorldManager::instance(), &WorldManager::worldsChanged, this, &ScriptModule::worldsChanged);
     }
 }
@@ -178,10 +177,8 @@ QStringList ScriptModule::tilesetFormats() const
 
 EditableAsset *ScriptModule::activeAsset() const
 {
-    if (auto documentManager = DocumentManager::maybeInstance())
-        if (Document *document = documentManager->currentDocument())
-            return document->editable();
-
+    if (Document *document = EditorManager::instance()->currentDocument())
+        return document->editable();
     return nullptr;
 }
 
@@ -192,20 +189,18 @@ bool ScriptModule::setActiveAsset(EditableAsset *asset) const
         return false;
     }
 
-    auto documentManager = DocumentManager::maybeInstance();
-    if (!documentManager) {
-        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Editor not available"));
-        return false;
-    }
-
     if (asset->checkReadOnly())
         return false;
 
-    if (auto document = asset->document())
-        return documentManager->switchToDocument(document);
+    if (auto document = asset->document()) {
+        EditorManager::instance()->setCurrentDocument(document);
+        if (auto documentManager = DocumentManager::maybeInstance())
+            documentManager->switchToDocument(document);
+        return true;
+    }
 
     if (auto document = asset->createDocument()) {
-        documentManager->addDocument(document);
+        EditorManager::instance()->addDocument(document);
         return true;
     }
 
@@ -215,11 +210,9 @@ bool ScriptModule::setActiveAsset(EditableAsset *asset) const
 QList<QObject *> ScriptModule::openAssets() const
 {
     QList<QObject *> assets;
-    if (auto documentManager = DocumentManager::maybeInstance()) {
-        assets.reserve(documentManager->documents().size());
-        for (const DocumentPtr &document : documentManager->documents())
-            assets.append(document->editable());
-    }
+    assets.reserve(EditorManager::instance()->documents().size());
+    for (const DocumentPtr &document : EditorManager::instance()->documents())
+        assets.append(document->editable());
     return assets;
 }
 
@@ -319,21 +312,16 @@ bool ScriptModule::versionLessThan(const QString &a, const QString &b)
 
 EditableAsset *ScriptModule::open(const QString &fileName) const
 {
-    auto documentManager = DocumentManager::maybeInstance();
-    if (!documentManager) {
-        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Editor not available"));
+    QString error;
+    DocumentPtr document = EditorManager::instance()->loadDocument(fileName, nullptr, &error);
+    if (!document) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Failed to open file: %1").arg(error));
         return nullptr;
     }
 
-    documentManager->openFile(fileName);
+    EditorManager::instance()->addDocument(document);
 
-    // If opening succeeded, it is the current document
-    int index = documentManager->findDocument(fileName);
-    if (index != -1)
-        if (auto document = documentManager->currentDocument())
-            return document->editable();
-
-    return nullptr;
+    return document->editable();
 }
 
 bool ScriptModule::close(EditableAsset *asset) const
@@ -343,18 +331,18 @@ bool ScriptModule::close(EditableAsset *asset) const
         return false;
     }
 
-    auto documentManager = DocumentManager::maybeInstance();
-    int index = -1;
+    auto document = asset->document();
+    if (!document) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Asset has no document"));
+        return false;
+    }
 
-    if (documentManager)
-        index = documentManager->findDocument(asset->document());
-
-    if (index == -1) {
+    if (EditorManager::instance()->findDocument(document) == -1) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Not an open asset"));
         return false;
     }
 
-    documentManager->closeDocumentAt(index);
+    EditorManager::instance()->closeDocument(document);
     return true;
 }
 
@@ -365,13 +353,13 @@ EditableAsset *ScriptModule::reload(EditableAsset *asset) const
         return nullptr;
     }
 
-    auto documentManager = DocumentManager::maybeInstance();
-    int index = -1;
+    auto document = asset->document();
+    if (!document) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Asset has no document"));
+        return nullptr;
+    }
 
-    if (documentManager)
-        index = documentManager->findDocument(asset->document());
-
-    if (index == -1) {
+    if (EditorManager::instance()->findDocument(document) == -1) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Not an open asset"));
         return nullptr;
     }
@@ -383,14 +371,15 @@ EditableAsset *ScriptModule::reload(EditableAsset *asset) const
         }
     }
 
-    // The reload is going to invalidate the EditableAsset instance and
-    // possibly also its document. We'll try to find it by its file name.
     const auto fileName = asset->fileName();
 
-    if (documentManager->reloadDocumentAt(index)) {
-        int newIndex = documentManager->findDocument(fileName);
-        if (newIndex != -1)
-            return documentManager->documents().at(newIndex)->editable();
+    if (EditorManager::instance()->reloadDocument(document)) {
+        int newIndex = EditorManager::instance()->findDocument(fileName);
+        if (newIndex != -1) {
+            const auto &docs = EditorManager::instance()->documents();
+            if (newIndex < docs.size())
+                return docs.at(newIndex)->editable();
+        }
     }
 
     return nullptr;

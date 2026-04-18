@@ -204,6 +204,8 @@ DynamicLibrary {
         "document.h",
         "documentmanager.cpp",
         "documentmanager.h",
+        "editormanager.cpp",
+        "editormanager.h",
         "donationpopup.cpp",
         "donationpopup.h",
         "editableasset.cpp",

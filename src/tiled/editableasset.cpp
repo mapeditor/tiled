@@ -20,7 +20,7 @@
 
 #include "editableasset.h"
 
-#include "documentmanager.h"
+#include "editormanager.h"
 #include "scriptmanager.h"
 
 #include <QCoreApplication>
@@ -71,18 +71,12 @@ bool EditableAsset::push(std::unique_ptr<QUndoCommand> command)
 
 bool EditableAsset::save()
 {
-    auto documentManager = DocumentManager::maybeInstance();
-    if (!documentManager) {
-        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Editor not available"));
-        return false;
-    }
-
     if (fileName().isEmpty()) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Asset not associated with a file"));
         return false;
     }
 
-    return documentManager->saveDocument(document());
+    return EditorManager::instance()->saveDocument(document());
 }
 
 QJSValue EditableAsset::macro(const QString &text, QJSValue callback)
