@@ -133,6 +133,27 @@ unsigned GidMapper::cellToGid(const Cell &cell) const
     if (i == i_end) // tileset not found
         return 0;
 
+    // Check if the tile is completely transparent, treat as empty
+    Tile *tile = tileset->tileAt(cell.tileId());
+    if (tile) {
+        const QPixmap &img = tile->image();
+        if (!img.isNull() && img.hasAlphaChannel()) {
+            // Extract just this tile's region and check if all pixels are transparent
+            QPixmap tilePixmap = img.copy(tile->imageRect());
+            QImage imgData = tilePixmap.toImage();
+
+            bool allTransparent = true;
+            for (int y = 0; y < imgData.height() && allTransparent; ++y) {
+                for (int x = 0; x < imgData.width() && allTransparent; ++x) {
+                    if (qAlpha(imgData.pixel(x, y)) > 0)
+                        allTransparent = false;
+                }
+            }
+            if (allTransparent)
+                return 0;
+        }
+    }
+
     unsigned gid = i.key() + cell.tileId();
     if (cell.flippedHorizontally())
         gid |= FlippedHorizontallyFlag;
