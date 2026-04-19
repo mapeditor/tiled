@@ -53,6 +53,10 @@ util/java/tmxviewer-java/target
 util/java/libtiled-java/target
 /util/java/target/
 
+# Node.js
+node_modules/
+tools/tiled-agent-orchestrator/dist/
+
 # Linux perf/debugging
 gmon.out
 

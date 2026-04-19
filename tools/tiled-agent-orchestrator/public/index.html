@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tiled Agent Debug</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        background: #101318;
+        color: #f3f5f7;
+      }
+
+      body {
+        margin: 0;
+        padding: 2rem;
+        background:
+          radial-gradient(circle at top left, rgba(92, 225, 230, 0.2), transparent 30%),
+          radial-gradient(circle at top right, rgba(255, 180, 0, 0.18), transparent 28%),
+          #101318;
+      }
+
+      main {
+        max-width: 960px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        margin-top: 0;
+        font-size: 2rem;
+      }
+
+      .panel {
+        padding: 1rem 1.25rem;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 14px;
+        background: rgba(17, 24, 39, 0.72);
+        backdrop-filter: blur(10px);
+      }
+
+      code {
+        color: #8ee8ff;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Tiled Agent Debug</h1>
+      <div class="panel">
+        <p>HTTP API and session state will appear here once the orchestrator starts with a live bridge process.</p>
+        <p>Use <code>POST /workspaces</code>, <code>POST /sessions</code>, and <code>GET /sessions/:id/snapshot</code> to drive the backend.</p>
+      </div>
+    </main>
+  </body>
+</html>
