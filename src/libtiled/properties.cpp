@@ -501,10 +501,11 @@ QVariantList possiblePropertyValues(const ClassPropertyType *parentClassType)
         if (parentClassType && !parentClassType->canAddMemberOfType(propertyType.data()))
             continue;
 
-        // Avoid suggesting classes not meant to be used as property value
-        if (propertyType->isClass())
-            if (!static_cast<const ClassPropertyType&>(*propertyType).isPropertyValueType())
-                continue;
+        // Filter types based on PropertyValueType flag for top-level properties.
+        // Note: This filtering does NOT apply to class member selection - all types
+        // are always usable as class members regardless of this flag.
+        if (!parentClassType && !propertyType->isPropertyValueType())
+            continue;
 
         values.append(propertyType->wrap(propertyType->defaultValue()));
     }
