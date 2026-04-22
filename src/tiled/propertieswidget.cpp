@@ -76,15 +76,16 @@ class ScopedUpdatesDisabler
 {
 public:
     explicit ScopedUpdatesDisabler(QWidget *widget)
-        : mWidget(widget)
-        , mHadUpdatesEnabled(widget->updatesEnabled())
+        // If updates are already effectively disabled, leave the widget alone
+        : mWidget(widget->updatesEnabled() ? widget : nullptr)
     {
-        widget->setUpdatesEnabled(false);
+        if (mWidget)
+            mWidget->setUpdatesEnabled(false);
     }
 
     ~ScopedUpdatesDisabler()
     {
-        if (!mHadUpdatesEnabled)
+        if (!mWidget)
             return;
 
         QTimer::singleShot(0, mWidget, [w = mWidget] {
@@ -98,7 +99,6 @@ public:
 
 private:
     QWidget *mWidget;
-    bool mHadUpdatesEnabled;
 };
 
 
