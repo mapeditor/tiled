@@ -3,6 +3,7 @@
 * Reduced animated tile marker opacity during terrain editing (by Huy Vũ, #4449)
 * Fixed ability to change properties after deselecting the current object (#4440)
 * Fixed Properties view getting stuck with updates disabled (#4506)
+* Fixed locale-aware parsing of numbers in expression-capable spin boxes
 
 ### Tiled 1.12.1 (25 March 2026)
 
