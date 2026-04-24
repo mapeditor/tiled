@@ -864,6 +864,35 @@ void MapWriterPrivate::writeObjectText(QXmlStreamWriter &w, const TextData &text
             w.writeAttribute(QStringLiteral("valign"), QLatin1String("bottom"));
     }
 
+    if (textData.strokeEnabled) {
+        w.writeAttribute(QStringLiteral("stroke"), QStringLiteral("1"));
+        if (textData.strokeColor != Qt::white)
+            w.writeAttribute(QStringLiteral("strokecolor"), colorToString(textData.strokeColor));
+        if (textData.strokeWidth != 1.0)
+            w.writeAttribute(QStringLiteral("strokewidth"), QString::number(textData.strokeWidth));
+    }
+
+    if (textData.shadowEnabled) {
+        w.writeAttribute(QStringLiteral("shadow"), QStringLiteral("1"));
+        if (textData.shadowColor != Qt::black)
+            w.writeAttribute(QStringLiteral("shadowcolor"), colorToString(textData.shadowColor));
+        if (textData.shadowOffset.x() != 1.0)
+            w.writeAttribute(QStringLiteral("shadowoffsetx"), QString::number(textData.shadowOffset.x()));
+        if (textData.shadowOffset.y() != 1.0)
+            w.writeAttribute(QStringLiteral("shadowoffsety"), QString::number(textData.shadowOffset.y()));
+    }
+
+    if (textData.backgroundEnabled) {
+        w.writeAttribute(QStringLiteral("background"), QStringLiteral("1"));
+        if (textData.backgroundColor != Qt::transparent)
+            w.writeAttribute(QStringLiteral("backgroundcolor"), colorToString(textData.backgroundColor));
+    }
+
+    if (textData.flippedHorizontally)
+        w.writeAttribute(QStringLiteral("fliph"), QStringLiteral("1"));
+    if (textData.flippedVertically)
+        w.writeAttribute(QStringLiteral("flipv"), QStringLiteral("1"));
+
     w.writeCharacters(textData.text);
     w.writeEndElement();
 }
