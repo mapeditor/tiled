@@ -174,7 +174,6 @@ private:
     TileCollisionDock *mTileCollisionDock;
     TemplatesDock *mTemplatesDock;
     WangDock *mWangDock;
-    QComboBox *mZoomComboBox;
     QLabel *mStatusInfoLabel;
     TileAnimationEditor *mTileAnimationEditor = nullptr;
 

@@ -78,7 +78,6 @@
 #include "worldmanager.h"
 #include "worldmovemaptool.h"
 
-#include <QComboBox>
 #include <QDialogButtonBox>
 #include <QHBoxLayout>
 #include <QIdentityProxyModel>
@@ -152,7 +151,6 @@ MapEditor::MapEditor(QObject *parent)
     , mComboBoxProxyModel(new ComboBoxProxyModel(this))
     , mReversingProxyModel(new ReversingProxyModel(this))
     , mZoomable(nullptr)
-    , mZoomComboBox(new QComboBox)
     , mStatusInfoLabel(new QLabel)
     , mMainToolBar(new MainToolBar(mMainWindow))
     , mToolManager(new ToolManager(this))
@@ -395,7 +393,6 @@ void MapEditor::setCurrentDocument(Document *document)
     mLayerDock->setMapDocument(mapDocument);
 
     if (mZoomable) {
-        mZoomable->setComboBox(nullptr);
         mZoomable = nullptr;
     }
 
@@ -416,7 +413,6 @@ void MapEditor::setCurrentDocument(Document *document)
 
         if (mapView) {
             mZoomable = mapView->zoomable();
-            mZoomable->setComboBox(mZoomComboBox.get());
         }
 
         connect(mCurrentMapDocument, &MapDocument::currentObjectSet,
@@ -498,8 +494,7 @@ QList<QWidget *> MapEditor::statusBarWidgets() const
 QList<QWidget *> MapEditor::permanentStatusBarWidgets() const
 {
     return {
-        mLayerComboBox.get(),
-        mZoomComboBox.get()
+        mLayerComboBox.get()
     };
 }
 

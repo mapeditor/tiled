@@ -33,6 +33,8 @@
 #include <QMainWindow>
 #include <QPointer>
 #include <QSessionManager>
+#include <QSlider>
+#include <QLineEdit>
 
 class QComboBox;
 class QLabel;
@@ -266,6 +268,12 @@ private:
     TilesetEditor *mTilesetEditor;
     QList<QWidget*> mEditorStatusBarWidgets;
     QToolButton *mNewsButton;
+
+    // Zoom controls in the status bar
+    QToolButton *mZoomOutButton = nullptr;
+    QToolButton *mZoomInButton = nullptr;
+    QSlider *mZoomSlider = nullptr;
+    QLineEdit *mZoomEdit = nullptr;
 
     QPointer<PreferencesDialog> mPreferencesDialog;
 
