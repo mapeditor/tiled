@@ -19,8 +19,7 @@
  */
 
 #include "propertieswidget.h"
-#include <QTimer>
-#include <QLineEdit>
+
 #include "actionmanager.h"
 #include "changeimagelayerproperty.h"
 #include "changelayer.h"
@@ -2903,10 +2902,6 @@ void PropertiesWidget::renameProperty(const QString &name)
     dialog->setInputMode(QInputDialog::TextInput);
     dialog->setLabelText(QCoreApplication::translate("Tiled::PropertiesDock", "Name:"));
     dialog->setTextValue(name);
-    QTimer::singleShot(0, dialog, [dialog]() {
-        if (auto lineEdit = dialog->findChild<QLineEdit*>())
-            lineEdit->selectAll();
-    });
     dialog->setWindowTitle(QCoreApplication::translate("Tiled::PropertiesDock", "Rename Property"));
 
     connect(dialog, &QInputDialog::textValueSelected, this, [=] (const QString &newName) {
@@ -2920,6 +2915,9 @@ void PropertiesWidget::renameProperty(const QString &name)
     });
 
     dialog->open();
+
+    if (auto lineEdit = dialog->findChild<QLineEdit*>())
+        lineEdit->selectAll();
 }
 
 bool PropertiesWidget::SelectionState::canCopy() const
