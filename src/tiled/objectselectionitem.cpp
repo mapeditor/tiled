@@ -350,6 +350,48 @@ const MapRenderer &ObjectSelectionItem::mapRenderer() const
     return *mMapDocument->renderer();
 }
 
+void ObjectSelectionItem::setShowAllLabels(bool show)
+{
+    if (mShowAllLabels == show)
+        return;
+    mShowAllLabels = show;
+    addRemoveObjectLabels();
+}
+
+void ObjectSelectionItem::setLabelsOnly(bool labelsOnly)
+{
+    if (mLabelsOnly == labelsOnly)
+        return;
+
+    mLabelsOnly = labelsOnly;
+
+    if (mLabelsOnly) {
+        qDeleteAll(mObjectOutlines);
+        mObjectOutlines.clear();
+
+        qDeleteAll(mObjectHoverItems);
+        mObjectHoverItems.clear();
+
+        mHoveredMapObjectItem.reset();
+
+        for (const auto &items : std::as_const(mReferencesBySourceObject))
+            qDeleteAll(items);
+        mReferencesBySourceObject.clear();
+        mReferencesByTargetObject.clear();
+    } else {
+        addRemoveObjectOutlines();
+        addRemoveObjectHoverItems();
+
+        if (MapObject *hovered = mMapDocument->hoveredMapObject())
+            hoveredMapObjectChanged(hovered, nullptr);
+
+        if (Preferences::instance()->showObjectReferences())
+            addRemoveObjectReferences();
+    }
+
+    addRemoveObjectLabels();
+}
+
 QVariant ObjectSelectionItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     if (change == ItemSceneChange) {
@@ -486,6 +528,11 @@ void ObjectSelectionItem::hoveredMapObjectChanged(MapObject *object,
                 mObjectLabels.remove(previous);
             }
         }
+    }
+
+    if (mLabelsOnly) {
+        mHoveredMapObjectItem.reset();
+        return;
     }
 
     if (object && prefs->highlightHoveredObject()) {
@@ -791,7 +838,12 @@ void ObjectSelectionItem::addRemoveObjectLabels()
         if (MapObject *object = mMapDocument->hoveredMapObject())
             ensureLabel(object);
 
-    switch (objectLabelVisibility()) {
+    auto visibility = objectLabelVisibility();
+    if (mShowAllLabels) {
+        visibility = Preferences::AllObjectLabels;
+    }
+
+    switch (visibility) {
     case Preferences::AllObjectLabels: {
         LayerIterator iterator(mMapDocument->map(), Layer::ObjectGroupType);
         while (auto objectGroup = static_cast<ObjectGroup*>(iterator.next())) {
@@ -820,6 +872,9 @@ void ObjectSelectionItem::addRemoveObjectLabels()
 
 void ObjectSelectionItem::addRemoveObjectOutlines()
 {
+    if (mLabelsOnly)
+        return;
+
     QHash<MapObject*, MapObjectOutline*> outlineItems;
     const MapRenderer &renderer = *mMapDocument->renderer();
 
@@ -838,6 +893,9 @@ void ObjectSelectionItem::addRemoveObjectOutlines()
 
 void ObjectSelectionItem::addRemoveObjectHoverItems()
 {
+    if (mLabelsOnly)
+        return;
+
     QHash<MapObject*, MapObjectOutline*> hoverItems;
     const MapRenderer &renderer = *mMapDocument->renderer();
 
@@ -889,6 +947,9 @@ static void forEachObjectReference(const QVariant &value, Callback callback)
 
 void ObjectSelectionItem::addRemoveObjectReferences()
 {
+    if (mLabelsOnly)
+        return;
+
     QHash<MapObject*, QList<ObjectReferenceItem*>> referencesBySourceObject;
     QHash<MapObject*, QList<ObjectReferenceItem*>> referencesByTargetObject;
     const MapRenderer &renderer = *mMapDocument->renderer();
@@ -948,6 +1009,9 @@ void ObjectSelectionItem::addRemoveObjectReferences()
 
 void ObjectSelectionItem::addRemoveObjectReferences(MapObject *object)
 {
+    if (mLabelsOnly)
+        return;
+
     QList<ObjectReferenceItem*> &items = mReferencesBySourceObject[object];
     QList<ObjectReferenceItem*> existingItems;
     items.swap(existingItems);

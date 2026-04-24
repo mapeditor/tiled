@@ -223,27 +223,15 @@ void MapItem::setDisplayMode(DisplayMode displayMode)
         setZValue(-1);
 
         mBorderRectangle->setBrush(QColor(0, 0, 0, 64));
-
-        mTileSelectionItem.reset();
-        mTileGridItem.reset();
-        mObjectSelectionItem.reset();
     } else {
         unsetCursor();
 
         setZValue(0);
 
         mBorderRectangle->setBrush(Qt::NoBrush);
-
-        mTileSelectionItem = std::make_unique<TileSelectionItem>(mapDocument(), this);
-        mTileSelectionItem->setZValue(10000 - 3);
-
-        mTileGridItem = std::make_unique<TileGridItem>(mapDocument(), this);
-        mTileGridItem->setZValue(10000 - 2);
-
-        mObjectSelectionItem = std::make_unique<ObjectSelectionItem>(mapDocument(), this);
-        mObjectSelectionItem->setZValue(10000 - 1);
     }
 
+    updateOverlayState();
     updateSelectedLayersHighlight();
 }
 
@@ -259,6 +247,14 @@ void MapItem::setShowTileCollisionShapes(bool enabled)
     for (LayerItem *item : std::as_const(mLayerItems))
         if (item->layer()->isTileLayer())
             item->update();
+}
+
+void MapItem::setShowWorldLabels(bool show)
+{
+    if (mShowWorldLabels == show)
+        return;
+    mShowWorldLabels = show;
+    updateOverlayState();
 }
 
 void MapItem::updateLayerPositions()
@@ -921,6 +917,40 @@ void MapItem::updateSelectedLayersHighlight()
             qreal multiplier = (foundSelected && !isSelected) ? opacityFactor : 1;
             mLayerItems.value(layer)->setOpacity(layer->opacity() * multiplier);
         }
+    }
+}
+
+void MapItem::updateOverlayState()
+{
+    if (mDisplayMode == ReadOnly) {
+        mTileSelectionItem.reset();
+        mTileGridItem.reset();
+
+        if (!mShowWorldLabels) {
+            mObjectSelectionItem.reset();
+        } else {
+            if (!mObjectSelectionItem) {
+                mObjectSelectionItem = std::make_unique<ObjectSelectionItem>(mapDocument(), this);
+                mObjectSelectionItem->setZValue(10000 - 1);
+            }
+            mObjectSelectionItem->setLabelsOnly(true);
+            mObjectSelectionItem->setShowAllLabels(true);
+        }
+    } else {
+        if (!mTileSelectionItem) {
+            mTileSelectionItem = std::make_unique<TileSelectionItem>(mapDocument(), this);
+            mTileSelectionItem->setZValue(10000 - 3);
+        }
+        if (!mTileGridItem) {
+            mTileGridItem = std::make_unique<TileGridItem>(mapDocument(), this);
+            mTileGridItem->setZValue(10000 - 2);
+        }
+        if (!mObjectSelectionItem) {
+            mObjectSelectionItem = std::make_unique<ObjectSelectionItem>(mapDocument(), this);
+            mObjectSelectionItem->setZValue(10000 - 1);
+        }
+        mObjectSelectionItem->setLabelsOnly(false);
+        mObjectSelectionItem->setShowAllLabels(false);
     }
 }
 

@@ -157,6 +157,14 @@
      <addaction name="separator"/>
      <addaction name="actionLabelForHoveredObject"/>
     </widget>
+    <widget class="QMenu" name="menuWorldObjectLabels">
+     <property name="title">
+      <string>Show &amp;World Object Names</string>
+     </property>
+     <addaction name="actionWorldObjectLabelsActiveOnly"/>
+     <addaction name="actionWorldObjectLabelsNearest"/>
+     <addaction name="actionWorldObjectLabelsAll"/>
+    </widget>
     <widget class="QMenu" name="menuSnapping">
      <property name="title">
       <string>Snapping</string>
@@ -171,6 +179,7 @@
     <addaction name="actionShowTileObjectOutlines"/>
     <addaction name="actionShowObjectReferences"/>
     <addaction name="menuShowObjectNames"/>
+    <addaction name="menuWorldObjectLabels"/>
     <addaction name="actionShowTileAnimations"/>
     <addaction name="actionShowTileCollisionShapes"/>
     <addaction name="actionEnableWorlds"/>
@@ -571,6 +580,33 @@
    </property>
    <property name="text">
     <string>For &amp;All Objects</string>
+   </property>
+  </action>
+  <action name="actionWorldObjectLabelsActiveOnly">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Active Map &amp;Only</string>
+   </property>
+  </action>
+  <action name="actionWorldObjectLabelsNearest">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Nearest Maps</string>
+   </property>
+  </action>
+  <action name="actionWorldObjectLabelsAll">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;All Maps</string>
    </property>
   </action>
   <action name="actionAutoMapWhileDrawing">

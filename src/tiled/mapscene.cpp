@@ -70,6 +70,9 @@ MapScene::MapScene(QObject *parent)
     WorldManager &worldManager = WorldManager::instance();
     connect(&worldManager, &WorldManager::worldsChanged, this, &MapScene::refreshScene);
 
+    connect(Preferences::instance(), &Preferences::worldObjectLabelVisibilityChanged,
+            this, &MapScene::refreshScene);
+
     // Install an event filter so that we can get key events on behalf of the
     // active tool without having to have the current focus.
     qApp->installEventFilter(this);
@@ -310,10 +313,29 @@ void MapScene::refreshScene()
 
             if (mapDocument) {
                 MapItem::DisplayMode displayMode = MapItem::ReadOnly;
-                if (mapDocument == mMapDocument)
+                bool showWorldLabels = false;
+
+                if (mapDocument == mMapDocument) {
                     displayMode = MapItem::Editable;
+                } else {
+                    auto mode = Preferences::instance()->worldObjectLabelVisibility();
+                    if (mode == Preferences::WorldLabelsAll) {
+                        showWorldLabels = true;
+                    } else if (mode == Preferences::WorldLabelsNearest) {
+                        QRect activeRect = mMapDocument->renderer()->mapBoundingRect();
+                        activeRect.translate(currentMapPosition);
+
+                        QRect contextRect = mapDocument->renderer()->mapBoundingRect();
+                        contextRect.translate(mapEntry.rect.topLeft());
+
+                        if (activeRect.adjusted(-1, -1, 1, 1).intersects(contextRect)) {
+                            showWorldLabels = true;
+                        }
+                    }
+                }
 
                 auto mapItem = takeOrCreateMapItem(mapDocument, displayMode);
+                mapItem->setShowWorldLabels(showWorldLabels);
                 mapItem->setPos(mapEntry.rect.topLeft() - currentMapPosition);
                 mapItem->setVisible(mWorldsEnabled || mapDocument == mMapDocument);
                 mapItems.insert(mapDocument.data(), mapItem);
