@@ -42,6 +42,8 @@
 #include "tileseteditor.h"
 #include "worlddocument.h"
 #include "worldmanager.h"
+#include "editabletilelayer.h"
+#include "editablemap.h"
 
 #include <QAction>
 #include <QCoreApplication>

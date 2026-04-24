@@ -69,7 +69,7 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
 
             while ( xml.readNextStartElement() )
             {
-                if ( xml.name() == "Property" )
+                if (xml.name() == QLatin1String("Properties"))
                 {
                     const QXmlStreamAttributes attrs = xml.attributes();
 
@@ -111,11 +111,11 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
         {
             if ( xml.name() == QLatin1String( "Description" ) )
                 tmap.desc = xml.readElementText().toStdString();
-            else if ( xml.name() == "TileSheets" )
+            else if ( xml.name() == QLatin1String("TileSheets") )
             {
                 while ( xml.readNextStartElement() )
                 {
-                    if ( xml.name() != "TileSheet" )
+                    if ( xml.name() != QLatin1String("TileSheet") )
                     {
                         xml.skipCurrentElement();
                         continue;
@@ -130,9 +130,9 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
                     {
                         if ( xml.name() == QLatin1String( "Description" ) )
                             ts.desc = xml.readElementText().toStdString();
-                        else if ( xml.name() == "ImageSource" )
+                        else if ( xml.name() == QLatin1String("ImageSource") )
                             ts.image = xml.readElementText().toStdString();
-                        else if ( xml.name() == "Alignment" )
+                        else if ( xml.name() == QLatin1String("Alignment" ))
                         {
                             const QXmlStreamAttributes alignAttrs = xml.attributes();
 
@@ -153,7 +153,7 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
 
                             xml.skipCurrentElement();
                         }
-                        else if (xml.name() == "Properties")
+                        else if (xml.name() == QLatin1String("Properties"))
                             ts.props = readProps();
                         else xml.skipCurrentElement();
                     }
@@ -161,11 +161,11 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
                     tmap.tilesheets.push_back( ts );
                 }
             }
-            else if ( xml.name() == "Layers" )
+            else if ( xml.name() == QLatin1String("Layers") )
             {
                 while ( xml.readNextStartElement() )
                 {
-                    if ( xml.name() != "Layer" )
+                    if ( xml.name() != QLatin1String("Layer") )
                     {
                         xml.skipCurrentElement();
                         continue;
@@ -181,7 +181,7 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
                     {
                         if ( xml.name() == QLatin1String( "Description" ) )
                             layer.desc = xml.readElementText().toStdString();
-                        else if ( xml.name() == "Dimensions" )
+                        else if ( xml.name() == QLatin1String("Dimensions") )
                         {
                             const QXmlStreamAttributes alignAttrs = xml.attributes();
 
@@ -196,7 +196,7 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
 
                             xml.skipCurrentElement();
                         }
-                        else if ( xml.name() == "TileArray" )
+                        else if ( xml.name() == QLatin1String( "TileArray" ))
                         {
                             tbin::Tile nullTile;
                             nullTile.staticData.tileIndex = -1;
@@ -218,7 +218,7 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
                                 // for compatibility with xTile code.
                                 while ( xml.readNextStartElement() )
                                 {
-                                    if (xml.name() == "Properties")
+                                    if (xml.name() == QLatin1String("Properties"))
                                         tile.props = readProps();
                                     else xml.skipCurrentElement();
                                 }
@@ -230,7 +230,7 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
                             tbin::Vector2i tilePos;
                             while ( xml.readNextStartElement() )
                             {
-                                if (xml.name() != "Row" )
+                                if (xml.name() != QLatin1String("Row") )
                                 {
                                     xml.skipCurrentElement();
                                     continue;
@@ -238,18 +238,18 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
 
                                 while ( xml.readNextStartElement() )
                                 {
-                                    if ( xml.name() == "TileSheet" )
+                                    if ( xml.name() == QLatin1String( "TileSheet") )
                                     {
                                         const QXmlStreamAttributes tsAttrs = xml.attributes();
                                         lastTilesheet = tsAttrs.value( "Ref" ).toString().toStdString();
                                         xml.skipCurrentElement();
                                     }
-                                    else if ( xml.name() == "Static" )
+                                    else if ( xml.name() == QLatin1String("Static") )
                                     {
                                         layer.tiles[ tilePos.x + tilePos.y * layer.layerSize.x ] = readStaticTile( lastTilesheet );
                                         tilePos.x += 1;
                                     }
-                                    else if ( xml.name() == "Animated" )
+                                    else if ( xml.name() == QLatin1String("Animated" ))
                                     {
                                         const QXmlStreamAttributes tileAttrs = xml.attributes();
 
@@ -258,23 +258,23 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
 
                                         while ( xml.readNextStartElement() )
                                         {
-                                            if (xml.name() == "Frames" )
+                                            if (xml.name() == QLatin1String("Frames") )
                                             {
                                                 std::string lastTilesheet; // Shadowing the previous declaration intentionally, because we explicitly do not want to use/affect it
                                                 while ( xml.readNextStartElement() )
                                                 {
-                                                    if ( xml.name() == "TileSheet" )
+                                                    if ( xml.name() == QLatin1String("TileSheet") )
                                                     {
                                                         const QXmlStreamAttributes tsAttrs = xml.attributes();
                                                         lastTilesheet = tsAttrs.value( "Ref" ).toString().toStdString();
                                                         xml.skipCurrentElement();
                                                     }
-                                                    else if (xml.name() == "Static")
+                                                    else if (xml.name() == QLatin1String( "Static"))
                                                         tile.animatedData.frames.push_back( readStaticTile( lastTilesheet ) );
                                                     else xml.skipCurrentElement();
                                                 }
                                             }
-                                            else if (xml.name() == "Properties")
+                                            else if (xml.name() == QLatin1String("Properties"))
                                                 tile.props = readProps();
                                             else xml.skipCurrentElement();
                                         }
@@ -282,7 +282,7 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
                                         layer.tiles[ tilePos.x + tilePos.y * layer.layerSize.x ] = tile;
                                         tilePos.x += 1;
                                     }
-                                    else if ( xml.name() == "Null" )
+                                    else if ( xml.name() == QLatin1String("Null" ))
                                     {
                                         const QXmlStreamAttributes tileAttrs = xml.attributes();
                                         tilePos.x += tileAttrs.value( "Count" ).toString().toInt();
@@ -295,7 +295,7 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
                                 tilePos.y += 1;
                             }
                         }
-                        else if (xml.name() == "Properties")
+                        else if (xml.name() == QLatin1String("Properties"))
                             layer.props = readProps();
                         else xml.skipCurrentElement();
                     }
@@ -303,7 +303,7 @@ std::unique_ptr<Tiled::Map> TideMapFormat::read(const QString &fileName)
                     tmap.layers.push_back( layer );
                 }
             }
-            else if (xml.name() == "Properties")
+            else if (xml.name() == QLatin1String("Properties"))
                 tmap.props = readProps();
             else xml.skipCurrentElement();
         }

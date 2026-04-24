@@ -22,14 +22,18 @@
 
 #include "filesystemwatcher.h"
 #include "tilededitor_global.h"
+#include "tiledaction.h"
+#include  "qmltool.h"
 
 #include <QJSValue>
 #include <QObject>
 #include <QQmlError>
 #include <QScopedValueRollback>
 #include <QStringList>
+#include <QTimer>
 
 class QJSEngine;
+class QQmlEngine;
 
 namespace Tiled {
 
@@ -68,7 +72,7 @@ public:
     const QString &extensionsPath() const;
 
     ScriptModule *module() const;
-    QJSEngine *engine() const;
+    QQmlEngine *engine() const;
 
     QJSValue evaluate(const QString &program,
                       const QString &fileName = QString(), int lineNumber = 1);
@@ -89,6 +93,7 @@ public:
 
     bool projectExtensionsSuppressed() const;
     void enableProjectExtensions();
+    QList<QmlTool*> qmlTools () const;
 
 signals:
     void projectExtensionsSuppressedChanged(bool);
@@ -106,10 +111,20 @@ private:
 
     void loadExtensions();
     void loadExtension(const QString &path);
+    void loadQmlExtension(const QString &filePath);
+
+    void registerQmlExtension(QObject *root);
+
+    void registerAction(QmlAction *action);
+
+    void registerTool(QmlTool *tool);
+    void  addTool(AbstractTool *tool);
+
+    void addActionToMenu(QmlAction *action);
 
     QJSValue evaluateFile(const QString &fileName);
 
-    QJSEngine *mEngine = nullptr;
+    // QJSEngine *mEngine = nullptr;
     ScriptModule *mModule = nullptr;
     FileSystemWatcher mWatcher;
     QString mExtensionsPath;
@@ -120,7 +135,10 @@ private:
     friend struct ResetBlocker;
     bool mResetBlocked = false;
     QTimer mResetTimer;
-
+    QQmlEngine * mEngine =nullptr;
+    QList<QObject*> mExtensions;
+    QList<QmlTool*> mTools;
+    QList<QmlTool*> mQmlTools;
     static ScriptManager *mInstance;
 };
 
@@ -135,7 +153,7 @@ inline ScriptModule *ScriptManager::module() const
     return mModule;
 }
 
-inline QJSEngine *ScriptManager::engine() const
+inline QQmlEngine *ScriptManager::engine() const
 {
     return mEngine;
 }
