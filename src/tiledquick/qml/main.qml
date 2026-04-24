@@ -173,6 +173,7 @@ ApplicationWindow {
                 anchors.fill: mapItem
 
                 tileSize: Qt.point(mapLoader.editableMap.tileWidth, mapLoader.editableMap.tileHeight);
+
                 scale: mapContainer.scale;
 
                 color: "black"

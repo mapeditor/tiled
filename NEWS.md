@@ -1,6 +1,9 @@
-### Unreleased
+### Tiled 1.12.2 (27 May 2026)
 
 * Added 'Collapse All' action and 'Only Expand to Current' mode to Project view (with rhythmcache, #4346)
+
+### Tiled 1.12.2 (27 May 2026)
+
 * Added whitespace trimming for custom property names (with Praagya26, #4486)
 * Reduced animated tile marker opacity during terrain editing (by Huy Vũ, #4449)
 * Fixed ability to change properties after deselecting the current object (#4440)
@@ -10,6 +13,7 @@
 * Fixed locale-aware parsing of numbers in expression-capable spin boxes
 * Fixed Tile Animation Editor update after tileset image reload (#3923)
 * Fixed runtime language switching in many editor widgets and models (by SIDDHAARTHAA, #4411)
+* Fixed multi-object selection bounding box for point objects (by Mollah Hamza, #4401)
 * Fixed non-tile locations in wrapping Tilesets view being selectable (#3498)
 
 ### Tiled 1.12.1 (25 March 2026)
