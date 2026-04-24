@@ -38,7 +38,7 @@
 #endif
 
 #include <QByteArray>
-#include <QDebug>
+#include <QString>
 
 #ifdef Z_PREFIX
 #undef compress
@@ -46,24 +46,25 @@
 
 using namespace Tiled;
 
-// TODO: Improve error reporting by showing these errors in the user interface
-static void logZlibError(int error)
+static QString zlibErrorString(int error)
 {
-    switch (error)
-    {
-        case Z_MEM_ERROR:
-            qDebug() << "Out of memory while (de)compressing data!";
-            break;
-        case Z_VERSION_ERROR:
-            qDebug() << "Incompatible zlib version!";
-            break;
-        case Z_NEED_DICT:
-        case Z_DATA_ERROR:
-            qDebug() << "Incorrect zlib compressed data!";
-            break;
-        default:
-            qDebug() << "Unknown error while (de)compressing data!";
+    switch (error) {
+    case Z_MEM_ERROR:
+        return QStringLiteral("Out of memory while (de)compressing data!");
+    case Z_VERSION_ERROR:
+        return QStringLiteral("Incompatible zlib version!");
+    case Z_NEED_DICT:
+    case Z_DATA_ERROR:
+        return QStringLiteral("Incorrect zlib compressed data!");
+    default:
+        return QStringLiteral("Unknown error while (de)compressing data!");
     }
+}
+
+static void setError(QString *errorString, const QString &error)
+{
+    if (errorString)
+        *errorString = error;
 }
 
 bool Tiled::compressionSupported(CompressionMethod method)
@@ -82,7 +83,8 @@ bool Tiled::compressionSupported(CompressionMethod method)
 
 QByteArray Tiled::decompress(const QByteArray &data,
                              int expectedSize,
-                             CompressionMethod method)
+                             CompressionMethod method,
+                             QString *errorString)
 {
     if (data.isEmpty())
         return QByteArray();
@@ -103,7 +105,7 @@ QByteArray Tiled::decompress(const QByteArray &data,
         int ret = inflateInit2(&strm, 15 + 32);
 
         if (ret != Z_OK) {
-            logZlibError(ret);
+            setError(errorString, zlibErrorString(ret));
             return QByteArray();
         }
 
@@ -118,7 +120,7 @@ QByteArray Tiled::decompress(const QByteArray &data,
                 case Z_DATA_ERROR:
                 case Z_MEM_ERROR:
                     inflateEnd(&strm);
-                    logZlibError(ret);
+                    setError(errorString, zlibErrorString(ret));
                     return QByteArray();
             }
 
@@ -133,7 +135,7 @@ QByteArray Tiled::decompress(const QByteArray &data,
         while (ret != Z_STREAM_END);
 
         if (strm.avail_in != 0) {
-            logZlibError(Z_DATA_ERROR);
+            setError(errorString, zlibErrorString(Z_DATA_ERROR));
             return QByteArray();
         }
 
@@ -146,21 +148,22 @@ QByteArray Tiled::decompress(const QByteArray &data,
     } else if (method == Zstandard) {
         size_t const dSize = ZSTD_decompress(out.data(), out.size(), data.constData(), data.size());
         if (ZSTD_isError(dSize)) {
-            qDebug() << "error decoding:" << ZSTD_getErrorName(dSize);
+            setError(errorString, QString::fromUtf8(ZSTD_getErrorName(dSize)));
             return QByteArray();
         }
         out.resize(dSize);
         return out;
 #endif
     } else {
-        qDebug() << "compression not supported:" << method;
+        setError(errorString, QStringLiteral("Compression method not supported"));
         return QByteArray();
     }
 }
 
 QByteArray Tiled::compress(const QByteArray &data,
                            CompressionMethod method,
-                           int compressionLevel)
+                           int compressionLevel,
+                           QString *errorString)
 {
     if (data.isEmpty())
         return QByteArray();
@@ -188,7 +191,7 @@ QByteArray Tiled::compress(const QByteArray &data,
         err = deflateInit2(&strm, compressionLevel, Z_DEFLATED, windowBits,
                            8, Z_DEFAULT_STRATEGY);
         if (err != Z_OK) {
-            logZlibError(err);
+            setError(errorString, zlibErrorString(err));
             return QByteArray();
         }
 
@@ -197,7 +200,6 @@ QByteArray Tiled::compress(const QByteArray &data,
             Q_ASSERT(err != Z_STREAM_ERROR);
 
             if (err == Z_OK) {
-                // More output space needed
                 int oldSize = out.size();
                 out.resize(out.size() * 2);
 
@@ -207,7 +209,7 @@ QByteArray Tiled::compress(const QByteArray &data,
         } while (err == Z_OK);
 
         if (err != Z_STREAM_END) {
-            logZlibError(err);
+            setError(errorString, zlibErrorString(err));
             deflateEnd(&strm);
             return QByteArray();
         }
@@ -231,7 +233,7 @@ QByteArray Tiled::compress(const QByteArray &data,
 
         size_t const cSize = ZSTD_compress(out.data(), cBuffSize, data.constData(), data.size(), compressionLevel);
         if (ZSTD_isError(cSize)) {
-            qDebug() << "error compressing:" << ZSTD_getErrorName(cSize);
+            setError(errorString, QString::fromUtf8(ZSTD_getErrorName(cSize)));
             return QByteArray();
         }
 
@@ -239,7 +241,7 @@ QByteArray Tiled::compress(const QByteArray &data,
         return out;
 #endif
     } else {
-        qDebug() << "compression not supported:" << method;
+        setError(errorString, QStringLiteral("Compression method not supported"));
         return QByteArray();
     }
 }
