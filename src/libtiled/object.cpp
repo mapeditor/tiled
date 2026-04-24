@@ -123,7 +123,23 @@ QVariantMap Object::inheritedProperties() const
 
 bool Object::setProperty(const PropertyPath &path, const QVariant &value)
 {
-    return setPropertyMemberValue(mProperties, path, value);
+    // Allow removing an empty top-level class property only when it is defined
+    // in the object's class and the class's own value for it is empty. If the
+    // class has a non-empty default, removing the override would revert to that
+    // non-empty inherited value, which is not the intent.
+    bool allowTopLevelReset = false;
+    if (path.size() > 1) {
+        const auto &topKey = std::get<QString>(path.first());
+        if (const ClassPropertyType *type = classType()) {
+            if (type->members.contains(topKey)) {
+                const auto classValue = type->members.value(topKey);
+                allowTopLevelReset = !classValue.isValid() ||
+                    (classValue.userType() == propertyValueId() &&
+                     classValue.value<PropertyValue>().value.toMap().isEmpty());
+            }
+        }
+    }
+    return setPropertyMemberValue(mProperties, path, value, allowTopLevelReset);
 }
 
 void Object::setPropertyTypes(const SharedPropertyTypes &propertyTypes)
