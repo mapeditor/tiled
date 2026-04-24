@@ -114,7 +114,15 @@ void CreatePolygonObjectTool::deactivate(MapScene *scene)
 
 void CreatePolygonObjectTool::keyPressed(QKeyEvent *event)
 {
-    // TODO: Modifier for finishing as polygon (Shift+Enter)
+    if ((event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
+            && (event->modifiers() & Qt::ShiftModifier)
+            && state() == CreatingObject) {
+        if (mNewMapObjectItem->mapObject()->polygon().size() > 2) {
+            mFinishAsPolygon = true;
+            finishNewMapObject();
+        }
+        return;
+    }
 
     // Backspace removes the last added point (or first, when extending from the beginning)
     if (event->key() == Qt::Key_Backspace && state() == CreatingObject) {
