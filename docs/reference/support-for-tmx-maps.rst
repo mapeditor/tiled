@@ -327,6 +327,10 @@ HTML5 (multiple engines)
    multi-canvas based game rendering library
 -  `melonJS <http://www.melonjs.org>`__ A lightweight HTML5 game engine
 -  `Panda 2 <https://www.panda2.io/>`__, a HTML5 Game Development Platform for Mac, Windows and Linux. Has `a plugin for rendering Tiled <https://www.panda2.io/plugins>`__ maps, both orthogonal and isometric.
+-  `pixi-tiledmap <https://github.com/riebel/pixi-tiledmap>`__ A
+   loader and renderer for Tiled Maps in `Pixi.JS <https://pixijs.com/>`__ 
+   v8+ written in TypeScript. JSON/XML support with no external deps,
+   full layer-type support, typed API and ESM/CJS dual output.
 -  `Phaser <http://www.phaser.io>`__ A fast, free and fun open source
    framework supporting both JavaScript and TypeScript (`Tiled
    tutorial <http://www.gamedevacademy.org/html5-phaser-tutorial-top-down-games-with-tiled/>`__)
