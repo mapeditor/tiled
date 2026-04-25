@@ -21,6 +21,7 @@
 #pragma once
 
 #include "preferences.h"
+#include "rulerwidget.h"
 
 #include <QGraphicsView>
 #include <QPinchGesture>
@@ -33,6 +34,7 @@ class MapObject;
 class MapDocument;
 class MapScene;
 class PannableViewHelper;
+class RulerWidget;
 class TileAnimationDriver;
 class Zoomable;
 
@@ -81,6 +83,9 @@ public:
 
     void setUseOpenGL(bool useOpenGL);
 
+    RulerWidget *horizontalRuler() const { return mHorizontalRuler; }
+    RulerWidget *verticalRuler()   const { return mVerticalRuler; }
+
 protected:
     bool event(QEvent *event) override;
 
@@ -128,6 +133,7 @@ private:
     void scrollBy(QPoint distance);
 
     void setMapDocument(MapDocument *mapDocument);
+    void updateRulerGeometry();
 
     MapDocument *mMapDocument = nullptr;
     QPoint mLastMousePos;
@@ -143,6 +149,10 @@ private:
 
     PanDirections mPanDirections;
     TileAnimationDriver *mPanningDriver;
+
+    RulerWidget *mHorizontalRuler = nullptr;
+    RulerWidget *mVerticalRuler   = nullptr;
+    QWidget     *mRulerCorner     = nullptr;
 };
 
 /**
