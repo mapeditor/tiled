@@ -65,6 +65,7 @@ protected:
 private:
     void framesEdited();
     void tilesetChanged();
+    void tilesetImagesChanged(Tileset *tileset);
     void tileAnimationChanged(Tile *tile);
     void currentObjectChanged(Object *object);
 
