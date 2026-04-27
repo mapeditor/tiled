@@ -62,8 +62,6 @@ public:
     QVariant data(const QModelIndex &index,
                   int role = Qt::DisplayRole) const override;
 
-
-
     /**
      * Returns a small size hint, to prevent the headers from affecting the
      * minimum width and height of the sections.
