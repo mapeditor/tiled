@@ -4,6 +4,7 @@
 * Fixed ability to change properties after deselecting the current object (#4440)
 * Fixed Properties view getting stuck with updates disabled (#4506)
 * Fixed locale-aware parsing of numbers in expression-capable spin boxes
+* Fixed Tile Animation Editor update after tileset image reload (#3923)
 
 ### Tiled 1.12.1 (25 March 2026)
 
