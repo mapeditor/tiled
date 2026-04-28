@@ -454,14 +454,9 @@ public:
     void rotateHexagonal(RotateDirection direction, Map *map);
 
     /**
-     * Computes and returns the set of tilesets used by this tile layer.
+     * Returns the set of tilesets used by this tile layer.
      */
     QSet<SharedTileset> usedTilesets() const override;
-
-    /**
-     * Returns whether this tile layer has any cell for which the given
-     * \a condition returns true.
-     */
     bool hasCell(std::function<bool (const Cell &)> condition) const;
 
     /**
@@ -536,8 +531,7 @@ private:
     int mHeight;
     QHash<QPoint, Chunk> mChunks;
     QRect mBounds;
-    mutable QSet<SharedTileset> mUsedTilesets;
-    mutable bool mUsedTilesetsDirty;
+    mutable QHash<SharedTileset, int> mUsedTilesets;
 };
 
 inline QPoint TileLayer::iterator::key() const
