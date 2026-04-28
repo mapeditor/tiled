@@ -57,6 +57,7 @@
 #include "resizemap.h"
 #include "resizetilelayer.h"
 #include "templatemanager.h"
+#include "textobjectfontwarninghelper.h"
 #include "tile.h"
 #include "tilelayer.h"
 #include "tilesetdocument.h"
@@ -1647,6 +1648,27 @@ void MapDocument::checkIssues()
         ERROR(tr("Failed to load template '%1'").arg(objectTemplate->fileName()),
               LocateObjectTemplate { objectTemplate, sharedFromThis() },
               this);
+    }
+
+    const auto availableFamilies = availableFontFamilies();
+    for (Layer *layer : map()->objectGroups()) {
+        const auto objectGroup = static_cast<ObjectGroup*>(layer);
+
+        for (MapObject *mapObject : *objectGroup) {
+            const QString missingFamily = missingTextObjectFontFamily(*mapObject, availableFamilies);
+            if (missingFamily.isEmpty())
+                continue;
+
+            const QString objectDescription = mapObject->name().isEmpty()
+                    ? tr("id %1").arg(mapObject->id())
+                    : tr("\"%1\" (id %2)").arg(mapObject->name(),
+                                               QString::number(mapObject->id()));
+
+            WARNING(tr("Text object %1 uses missing font \"%2\". A placeholder font will be shown and the font reference will be preserved.")
+                            .arg(objectDescription, missingFamily),
+                    JumpToObject { mapObject },
+                    this);
+        }
     }
 
     checkFilePathProperties(map());

@@ -494,6 +494,8 @@ DynamicLibrary {
         "tabbar.h",
         "templatesdock.cpp",
         "templatesdock.h",
+        "textobjectfontwarninghelper.cpp",
+        "textobjectfontwarninghelper.h",
         "texteditordialog.cpp",
         "texteditordialog.h",
         "texteditordialog.ui",

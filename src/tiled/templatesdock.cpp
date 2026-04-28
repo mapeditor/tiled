@@ -23,6 +23,8 @@
 
 #include "documentmanager.h"
 #include "editpolygontool.h"
+#include "issuesmodel.h"
+#include "logginginterface.h"
 #include "mapscene.h"
 #include "mapview.h"
 #include "objectgroup.h"
@@ -32,6 +34,7 @@
 #include "replacetileset.h"
 #include "session.h"
 #include "templatemanager.h"
+#include "textobjectfontwarninghelper.h"
 #include "tilesetdocument.h"
 #include "tilesetmanager.h"
 #include "toolmanager.h"
@@ -148,6 +151,8 @@ TemplatesDock::TemplatesDock(QWidget *parent)
 
 TemplatesDock::~TemplatesDock()
 {
+    IssuesModel::instance().removeIssuesWithContext(this);
+
     mMapScene->setSelectedTool(nullptr);
 
     if (mDummyMapDocument)
@@ -295,36 +300,62 @@ void TemplatesDock::refreshDummyObject()
 
 void TemplatesDock::checkTileset()
 {
-    if (!mObjectTemplate || !mObjectTemplate->tileset()) {
+    IssuesModel::instance().removeIssuesWithContext(this);
+
+    if (!mObjectTemplate || !mObjectTemplate->object()) {
         mFixTilesetButton->setVisible(false);
         mDescriptionLabel->setVisible(false);
         return;
     }
 
     auto templateName = QFileInfo(mObjectTemplate->fileName()).fileName();
-    auto tileset = mObjectTemplate->tileset();
+    if (auto tileset = mObjectTemplate->tileset()) {
+        if (tileset->imageStatus() == LoadingError) {
+            mFixTilesetButton->setVisible(true);
+            mFixTilesetButton->setText(tr("Open Tileset"));
+            mFixTilesetButton->setToolTip(tileset->imageSource().fileName());
 
-    if (tileset->imageStatus() == LoadingError) {
-        mFixTilesetButton->setVisible(true);
-        mFixTilesetButton->setText(tr("Open Tileset"));
-        mFixTilesetButton->setToolTip(tileset->imageSource().fileName());
+            mDescriptionLabel->setVisible(true);
+            mDescriptionLabel->setText(tr("%1: Couldn't find \"%2\"").arg(templateName,
+                                                                          tileset->imageSource().fileName()));
+            mDescriptionLabel->setToolTip(tileset->imageSource().fileName());
+        } else if (!tileset->fileName().isEmpty() && tileset->status() == LoadingError) {
+            mFixTilesetButton->setVisible(true);
+            mFixTilesetButton->setText(tr("Locate Tileset"));
+            mFixTilesetButton->setToolTip(tileset->fileName());
 
-        mDescriptionLabel->setVisible(true);
-        mDescriptionLabel->setText(tr("%1: Couldn't find \"%2\"").arg(templateName,
-                                                                      tileset->imageSource().fileName()));
-        mDescriptionLabel->setToolTip(tileset->imageSource().fileName());
-    } else if (!tileset->fileName().isEmpty() && tileset->status() == LoadingError) {
-        mFixTilesetButton->setVisible(true);
-        mFixTilesetButton->setText(tr("Locate Tileset"));
-        mFixTilesetButton->setToolTip(tileset->fileName());
-
-        mDescriptionLabel->setVisible(true);
-        mDescriptionLabel->setText(tr("%1: Couldn't find \"%2\"").arg(templateName,
-                                                                      tileset->fileName()));
-        mDescriptionLabel->setToolTip(tileset->fileName());
+            mDescriptionLabel->setVisible(true);
+            mDescriptionLabel->setText(tr("%1: Couldn't find \"%2\"").arg(templateName,
+                                                                          tileset->fileName()));
+            mDescriptionLabel->setToolTip(tileset->fileName());
+        } else {
+            mFixTilesetButton->setVisible(false);
+            mDescriptionLabel->setVisible(false);
+        }
     } else {
         mFixTilesetButton->setVisible(false);
         mDescriptionLabel->setVisible(false);
+    }
+
+    if (MapObject *object = dummyObject(); object && object->shape() == MapObject::Text) {
+        const auto availableFamilies = availableFontFamilies();
+        const QString missingFamily = missingTextObjectFontFamily(*object, availableFamilies);
+
+        if (!missingFamily.isEmpty()) {
+            WARNING(tr("Template \"%1\" has a text object using missing font \"%2\". "
+                       "A placeholder font will be shown and the font reference will be preserved.")
+                            .arg(templateName, missingFamily),
+                    [this] {
+                        bringToFront();
+                        if (!mDummyMapDocument)
+                            return;
+                        if (MapObject *target = dummyObject()) {
+                            emit mDummyMapDocument->focusMapObjectRequested(target);
+                            mDummyMapDocument->setSelectedObjects({ target });
+                        }
+                    },
+                    this);
+        }
     }
 }
 
