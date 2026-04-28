@@ -36,7 +36,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 
 import org.mapeditor.core.Map;
@@ -51,7 +50,7 @@ import org.mapeditor.core.TileLayer;
  *
  * @version 1.4.2
  */
-public class OrthogonalRenderer implements MapRenderer {
+public class OrthogonalRenderer extends AbstractRenderer {
 
     private final Map map;
 
@@ -67,6 +66,20 @@ public class OrthogonalRenderer implements MapRenderer {
     /** {@inheritDoc} */
     @Override
     public Dimension getMapSize() {
+        if (map.getInfinite() != null && map.getInfinite() == 1) {
+            int minX = 0, minY = 0;
+            int maxX = map.getWidth(), maxY = map.getHeight();
+            for (int i = 0; i < map.getLayerCount(); i++) {
+                Rectangle b = map.getLayer(i).getBounds();
+                minX = Math.min(minX, b.x);
+                minY = Math.min(minY, b.y);
+                maxX = Math.max(maxX, b.x + b.width);
+                maxY = Math.max(maxY, b.y + b.height);
+            }
+            return new Dimension(
+                    (maxX - minX) * map.getTileWidth(),
+                    (maxY - minY) * map.getTileHeight());
+        }
         return new Dimension(
                 map.getWidth() * map.getTileWidth(),
                 map.getHeight() * map.getTileHeight());
@@ -75,107 +88,81 @@ public class OrthogonalRenderer implements MapRenderer {
     /** {@inheritDoc} */
     @Override
     public void paintTileLayer(Graphics2D g, TileLayer layer) {
-        final Rectangle clip = g.getClipBounds();
-        final int tileWidth = map.getTileWidth();
-        final int tileHeight = map.getTileHeight();
-        final Rectangle bounds = layer.getBounds();
+        paintLayer(g, layer, () -> {
+            final Rectangle clip = g.getClipBounds();
+            final int tileWidth = map.getTileWidth();
+            final int tileHeight = map.getTileHeight();
+            final Rectangle bounds = layer.getBounds();
 
-        g.translate(bounds.x * tileWidth, bounds.y * tileHeight);
-        clip.translate(-bounds.x * tileWidth, -bounds.y * tileHeight);
+            // Compute visible tile range in tile-space coordinates
+            final int startX = Math.max(bounds.x,
+                    Math.floorDiv(clip.x, tileWidth));
+            final int startY = Math.max(bounds.y,
+                    Math.floorDiv(clip.y, tileHeight));
+            final int endX = Math.min(bounds.x + bounds.width,
+                    (int) Math.ceil(clip.getMaxX() / tileWidth));
+            final int endY = Math.min(bounds.y + bounds.height,
+                    (int) Math.ceil((clip.getMaxY() + map.getTileHeightMax()) / tileHeight));
 
-        clip.height += map.getTileHeightMax();
+            for (int tx = startX; tx < endX; ++tx) {
+                for (int ty = startY; ty < endY; ++ty) {
+                    final Tile tile = layer.getTileAt(tx, ty);
+                    if (tile == null) {
+                        continue;
+                    }
+                    final Image image = tile.getImage();
+                    if (image == null) {
+                        continue;
+                    }
 
-        final int startX = Math.max(0, clip.x / tileWidth);
-        final int startY = Math.max(0, clip.y / tileHeight);
-        final int endX = Math.min(layer.getWidth(),
-                (int) Math.ceil(clip.getMaxX() / tileWidth));
-        final int endY = Math.min(layer.getHeight(),
-                (int) Math.ceil(clip.getMaxY() / tileHeight));
+                    Point drawLoc = getTileDrawLocation(
+                            layer, tile, tx * tileWidth, (ty + 1) * tileHeight - image.getHeight(null));
 
-        for (int x = startX; x < endX; ++x) {
-            for (int y = startY; y < endY; ++y) {
-                final Tile tile = layer.getTileAt(x, y);
-                if (tile == null) {
-                    continue;
+                    drawTileWithFlags(g, image, drawLoc.x, drawLoc.y, layer.getFlagsAt(tx, ty), false);
                 }
-                final Image image = tile.getImage();
-                if (image == null) {
-                    continue;
-                }
-
-                Point drawLoc = new Point(x * tileWidth, (y + 1) * tileHeight - image.getHeight(null));
-
-                // Add offset from tile layer property
-                drawLoc.x += layer.getOffsetX() != null ? layer.getOffsetX() : 0;
-                drawLoc.y += layer.getOffsetY() != null ? layer.getOffsetY() : 0;
-
-                // Add offset from tileset property
-                drawLoc.x += tile.getTileSet().getTileoffset() != null ? tile.getTileSet().getTileoffset().getX() : 0;
-                drawLoc.y += tile.getTileSet().getTileoffset() != null ? tile.getTileSet().getTileoffset().getY() : 0;
-
-                g.drawImage(image, drawLoc.x, drawLoc.y, null);
             }
-        }
-
-        g.translate(-bounds.x * tileWidth, -bounds.y * tileHeight);
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public void paintObjectGroup(Graphics2D g, ObjectGroup group) {
-        final Dimension tsize = new Dimension(map.getTileWidth(), map.getTileHeight());
-        assert tsize.width != 0 && tsize.height != 0;
-        final Rectangle bounds = map.getBounds();
+        paintLayer(g, group, () -> {
+            final Dimension tsize = new Dimension(map.getTileWidth(), map.getTileHeight());
+            assert tsize.width != 0 && tsize.height != 0;
+            final Rectangle bounds = map.getBounds();
 
-        g.translate(
-                bounds.x * tsize.width,
-                bounds.y * tsize.height);
+            g.translate(
+                    bounds.x * tsize.width,
+                    bounds.y * tsize.height);
+            try {
+                for (MapObject mo : group) {
+                    final double ox = mo.getX();
+                    final double oy = mo.getY();
+                    final double rotation = mo.getRotation();
+                    final Tile tile = mo.getTile();
 
-        for (MapObject mo : group) {
-            final double ox = mo.getX();
-            final double oy = mo.getY();
-            final Double objectWidth = mo.getWidth();
-            final Double objectHeight = mo.getHeight();
-            final double rotation = mo.getRotation();
-            final Tile tile = mo.getTile();
-
-            if (tile != null) {
-                Image objectImage = tile.getImage();
-                AffineTransform old = g.getTransform();
-                g.rotate(Math.toRadians(rotation));
-                g.drawImage(objectImage, (int) ox, (int) oy, null);
-                g.setTransform(old);
-            } else if (objectWidth == null || objectWidth == 0
-                    || objectHeight == null || objectHeight == 0) {
-                g.setRenderingHint(
-                        RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_ON);
-                g.setColor(Color.black);
-                g.fillOval((int) ox + 1, (int) oy + 1, 10, 10);
-                g.setColor(Color.orange);
-                g.fillOval((int) ox, (int) oy, 10, 10);
-                g.setRenderingHint(
-                        RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_OFF);
-            } else {
-                g.setColor(Color.black);
-                g.drawRect((int) ox + 1, (int) oy + 1,
-                        mo.getWidth().intValue(),
-                        mo.getHeight().intValue());
-                g.setColor(Color.orange);
-                g.drawRect((int) ox, (int) oy,
-                        mo.getWidth().intValue(),
-                        mo.getHeight().intValue());
+                    if (tile != null) {
+                        Image objectImage = tile.getImage();
+                        AffineTransform old = g.getTransform();
+                        g.rotate(Math.toRadians(rotation));
+                        Point drawLoc = getTileDrawLocation(tile, (int) ox, (int) oy - objectImage.getHeight(null));
+                        g.drawImage(objectImage, drawLoc.x, drawLoc.y, null);
+                        g.setTransform(old);
+                    } else {
+                        paintObjectShape(g, mo, ox, oy);
+                    }
+                    final String s = mo.getName() != null ? mo.getName() : "(null)";
+                    g.setColor(Color.black);
+                    g.drawString(s, (int) (ox - 5) + 1, (int) (oy - 5) + 1);
+                    g.setColor(Color.white);
+                    g.drawString(s, (int) (ox - 5), (int) (oy - 5));
+                }
+            } finally {
+                g.translate(
+                        -bounds.x * tsize.width,
+                        -bounds.y * tsize.height);
             }
-            final String s = mo.getName() != null ? mo.getName() : "(null)";
-            g.setColor(Color.black);
-            g.drawString(s, (int) (ox - 5) + 1, (int) (oy - 5) + 1);
-            g.setColor(Color.white);
-            g.drawString(s, (int) (ox - 5), (int) (oy - 5));
-        }
-
-        g.translate(
-                -bounds.x * tsize.width,
-                -bounds.y * tsize.height);
+        });
     }
 }

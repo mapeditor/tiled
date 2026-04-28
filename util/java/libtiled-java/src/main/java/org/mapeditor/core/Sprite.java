@@ -160,6 +160,7 @@ public class Sprite {
      * @param frames an array of {@link org.mapeditor.core.Tile} objects.
      */
     public Sprite(Tile[] frames) {
+        this();
         setFrames(frames);
     }
 
@@ -172,6 +173,7 @@ public class Sprite {
      * @param totalFrames a int.
      */
     public Sprite(Image image, int fpl, int border, int totalFrames) {
+        this();
         Tile[] frames = null;
         this.fpl = fpl;
         borderWidth = border;

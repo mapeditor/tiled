@@ -101,11 +101,14 @@
                     </jxb:javadoc>
                 </jxb:property>
             </jxb:bindings>
-            <jxb:bindings node="xs:attribute[@name='offsetx']">		
-                <jxb:property name="offsetX"/>		
-            </jxb:bindings>		
-            <jxb:bindings node="xs:attribute[@name='offsety']">		
-                <jxb:property name="offsetY"/>		
+            <jxb:bindings node="xs:attribute[@name='offsetx']">
+                <jxb:property name="offsetX"/>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='offsety']">
+                <jxb:property name="offsetY"/>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='class']">
+                <jxb:property name="className"/>
             </jxb:bindings>
         </jxb:bindings>
 
@@ -169,6 +172,9 @@
             <jxb:bindings node="xs:attribute[@name='tilewidth']">
                 <jxb:property name="tileWidth"/>
             </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='class']">
+                <jxb:property name="className"/>
+            </jxb:bindings>
         </jxb:bindings>
 
         <jxb:bindings node="xs:complexType[@name='Object']">
@@ -217,6 +223,21 @@
                         <jxb:baseType name="Properties"/>
                     </jxb:property>
                 </jxb:bindings>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='class']">
+                <jxb:property name="className"/>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='x']">
+                <jxb:property name="imageX"/>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='y']">
+                <jxb:property name="imageY"/>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='width']">
+                <jxb:property name="imageWidth"/>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='height']">
+                <jxb:property name="imageHeight"/>
             </jxb:bindings>
         </jxb:bindings>
 
@@ -275,6 +296,37 @@
                         the map the tileset is used with.
                     </jxb:javadoc>
                 </jxb:property>
+            </jxb:bindings>
+            <jxb:bindings node="xs:attribute[@name='class']">
+                <jxb:property name="className"/>
+            </jxb:bindings>
+        </jxb:bindings>
+
+        <jxb:bindings node="xs:complexType[@name='WangColor']">
+            <jxb:bindings node="xs:attribute[@name='class']">
+                <jxb:property name="className"/>
+            </jxb:bindings>
+            <jxb:bindings node="xs:sequence/xs:element[@name='properties']">
+                <jxb:property>
+                    <jxb:baseType name="Properties"/>
+                </jxb:property>
+            </jxb:bindings>
+        </jxb:bindings>
+
+        <jxb:bindings node="xs:complexType[@name='WangSet']">
+            <jxb:bindings node="xs:attribute[@name='class']">
+                <jxb:property name="className"/>
+            </jxb:bindings>
+            <jxb:bindings node="xs:sequence/xs:element[@name='properties']">
+                <jxb:property>
+                    <jxb:baseType name="Properties"/>
+                </jxb:property>
+            </jxb:bindings>
+        </jxb:bindings>
+
+        <jxb:bindings node="xs:complexType[@name='Property']">
+            <jxb:bindings node="xs:attribute[@name='propertytype']">
+                <jxb:property name="propertyTypeName"/>
             </jxb:bindings>
         </jxb:bindings>
 
