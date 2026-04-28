@@ -24,6 +24,7 @@
 #include "mapdocument.h"
 
 #include <QDockWidget>
+#include <QSet>
 #include <QTreeView>
 #include <QToolButton>
 
@@ -33,6 +34,8 @@ class QModelIndex;
 namespace Tiled {
 
 class LayerView;
+class SetLayerVisible;
+class SetLayerLocked;
 
 /**
  * The dock widget that displays the map layers.
@@ -83,6 +86,9 @@ public:
 
 protected:
     bool event(QEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
     void selectionChanged(const QItemSelection &selected,
@@ -104,10 +110,20 @@ private:
     void selectedLayersChanged();
     void layerRemoved(Layer *layer);
 
+    void stopToggleDrag();
+    Layer *layerForProxyIndex(const QModelIndex &proxyIndex) const;
+
     MapDocument *mMapDocument = nullptr;
     QAbstractProxyModel *mProxyModel;
     bool mUpdatingSelectedLayers = false;
     bool mUpdatingViewSelection = false;
+
+    // Drag-to-toggle state
+    int mToggleDragColumn = -1;
+    bool mToggleDragValue = false;
+    QSet<Layer *> mToggleDragToggledLayers;
+    SetLayerVisible *mToggleDragVisibleCmd = nullptr;
+    SetLayerLocked *mToggleDragLockedCmd = nullptr;
 };
 
 } // namespace Tiled

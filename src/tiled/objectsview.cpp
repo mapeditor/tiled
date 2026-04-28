@@ -32,9 +32,12 @@
 #include <QGuiApplication>
 #include <QHeaderView>
 #include <QKeyEvent>
+#include <QMouseEvent>
 #include <QMenu>
 #include <QPainter>
+#include <QStyle>
 #include <QScopedValueRollback>
+#include <QUndoStack>
 
 namespace Tiled {
 
@@ -79,6 +82,8 @@ void ObjectsView::setMapDocument(MapDocument *mapDoc)
 {
     if (mapDoc == mMapDocument)
         return;
+
+    stopToggleDrag();
 
     if (mMapDocument) {
         saveExpandedLayers();
@@ -185,6 +190,9 @@ void ObjectsView::restoreExpandedLayers()
 
 bool ObjectsView::event(QEvent *event)
 {
+    if (event->type() == QEvent::Leave)
+        stopToggleDrag();
+
     if (event->type() == QEvent::ShortcutOverride) {
         if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Tab) {
             if (indexWidget(currentIndex())) {
@@ -213,7 +221,28 @@ void ObjectsView::mousePressEvent(QMouseEvent *event)
         mMapDocument->switchSelectedLayers({ layer });
     }
 
+    // Let base class handle selection/focus before we start a drag-to-toggle
     QTreeView::mousePressEvent(event);
+
+    // Start drag-to-toggle if clicking on the visibility icon (no modifiers)
+    if (event->button() == Qt::LeftButton && !event->modifiers() && proxyIndex.isValid()
+            && mMapDocument && proxyIndex.column() == 0
+            && isOnVisibilityIcon(proxyIndex, event->pos())) {
+        const QVariant checkState = proxyIndex.data(Qt::CheckStateRole);
+        if (checkState.isValid()) {
+            mToggleDragActive = true;
+            mToggleDragValue = checkState.toInt() != Qt::Checked;
+            mToggleDragToggledRows.clear();
+            mToggleDragToggledRows.insert(proxyIndex.siblingAtColumn(0));
+            mToggleDragUndoStack = mMapDocument->undoStack();
+            mToggleDragUndoStack->beginMacro(mToggleDragValue
+                                             ? tr("Show Objects")
+                                             : tr("Hide Objects"));
+            mProxyModel->setData(proxyIndex.siblingAtColumn(0),
+                                 mToggleDragValue ? Qt::Checked : Qt::Unchecked,
+                                 Qt::CheckStateRole);
+        }
+    }
 }
 
 void ObjectsView::mouseMoveEvent(QMouseEvent *event)
@@ -226,6 +255,53 @@ void ObjectsView::mouseMoveEvent(QMouseEvent *event)
 
     MapObject *mapObject = mapObjectModel()->toMapObject(index);
     mMapDocument->setHoveredMapObject(mapObject);
+
+    if (mToggleDragActive && proxyIndex.isValid()) {
+        const QModelIndex col0 = proxyIndex.siblingAtColumn(0);
+        if (!mToggleDragToggledRows.contains(col0) && col0.data(Qt::CheckStateRole).isValid()) {
+            mToggleDragToggledRows.insert(col0);
+            mProxyModel->setData(col0,
+                                 mToggleDragValue ? Qt::Checked : Qt::Unchecked,
+                                 Qt::CheckStateRole);
+        }
+    }
+}
+
+void ObjectsView::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (mToggleDragActive) {
+        stopToggleDrag();
+        event->accept();
+        return;
+    }
+
+    QTreeView::mouseReleaseEvent(event);
+}
+
+void ObjectsView::stopToggleDrag()
+{
+    if (!mToggleDragActive)
+        return;
+
+    mToggleDragActive = false;
+    mToggleDragToggledRows.clear();
+
+    if (mToggleDragUndoStack) {
+        mToggleDragUndoStack->endMacro();
+        mToggleDragUndoStack = nullptr;
+    }
+}
+
+bool ObjectsView::isOnVisibilityIcon(const QModelIndex &proxyIndex, const QPoint &pos) const
+{
+    const QRect cellRect = visualRect(proxyIndex);
+    QStyleOptionViewItem option;
+    option.initFrom(this);
+    option.rect = cellRect;
+    option.features |= QStyleOptionViewItem::HasCheckIndicator;
+    const QRect checkRect = style()->subElementRect(QStyle::SE_ItemViewItemCheckIndicator,
+                                                    &option, this);
+    return checkRect.contains(pos);
 }
 
 bool ObjectsView::viewportEvent(QEvent *event)

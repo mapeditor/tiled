@@ -70,6 +70,19 @@ void SetLayerVisible::setValue(Layer *layer, const bool &value) const
     emit document()->changed(LayerChangeEvent(layer, LayerChangeEvent::VisibleProperty));
 }
 
+bool SetLayerVisible::mergeWith(const QUndoCommand *other)
+{
+    auto o = static_cast<const SetLayerVisible*>(other);
+    if (!mMergeable || !o->mMergeable)
+        return false;
+    if (document() != o->document())
+        return false;
+
+    append(o->objects(), o->values());
+    setObsolete(getValues() == values());
+    return true;
+}
+
 
 SetLayerLocked::SetLayerLocked(Document *document,
                                QList<Layer *> layers,
@@ -91,6 +104,19 @@ void SetLayerLocked::setValue(Layer *layer, const bool &value) const
 {
     layer->setLocked(value);
     emit document()->changed(LayerChangeEvent(layer, LayerChangeEvent::LockedProperty));
+}
+
+bool SetLayerLocked::mergeWith(const QUndoCommand *other)
+{
+    auto o = static_cast<const SetLayerLocked*>(other);
+    if (!mMergeable || !o->mMergeable)
+        return false;
+    if (document() != o->document())
+        return false;
+
+    append(o->objects(), o->values());
+    setObsolete(getValues() == values());
+    return true;
 }
 
 
