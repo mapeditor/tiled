@@ -319,6 +319,27 @@ QRegion TilePainter::computePaintableFillRegion(QPoint fillOrigin,
     return region;
 }
 
+QRegion TilePainter::computeRegion(std::function<bool(const Cell &)> condition) const
+{
+    QRegion resultRegion = mTileLayer->region(condition);
+
+    // TileLayer::region iterates allocated chunks only, so empty cells need
+    // explicit handling when they are part of the requested match.
+    if (condition(Cell())) {
+        QRegion emptyRegion = mMapDocument->map()->infinite() ? mTileLayer->bounds()
+                                                               : mTileLayer->rect();
+        emptyRegion -= mTileLayer->region();
+        resultRegion += emptyRegion;
+    }
+
+    return resultRegion;
+}
+
+QRegion TilePainter::computePaintableRegion(std::function<bool(const Cell &)> condition) const
+{
+    return paintableRegion(computeRegion(condition));
+}
+
 QRegion TilePainter::computeFillRegion(QPoint fillOrigin,
                                        std::function<bool(const Cell &)> condition) const
 {
