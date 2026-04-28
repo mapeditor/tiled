@@ -773,6 +773,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             mConsoleDock->raise();
         }
     });
+    connect(toggleConsoleAction, &QAction::triggered, this, [this] (bool checked) {
+        if (checked)
+            mConsoleDock->focusInputLine();
+    });
 
     auto issuesCounter = new IssuesCounter(myStatusBar);
     issuesCounter->setDefaultAction(mIssuesDock->toggleViewAction());
