@@ -132,6 +132,12 @@ MapDocument::MapDocument(std::unique_ptr<Map> map)
 
     connect(TemplateManager::instance(), &TemplateManager::objectTemplateChanged,
             this, &MapDocument::updateTemplateInstances);
+
+    // Track the last focused MapObject to support PropertiesDock behavior
+    connect(this, &Document::currentObjectChanged, this, [this](Object *object) {
+        if (auto mapObj = dynamic_cast<MapObject*>(object))
+            mLastFocusedMapObject = mapObj;
+    });
 }
 
 MapDocument::~MapDocument()
@@ -1468,6 +1474,9 @@ void MapDocument::onChanged(const ChangeEvent &change)
 
         if (mHoveredMapObject && mapObjects.contains(mHoveredMapObject))
             setHoveredMapObject(nullptr);
+
+        if (mLastFocusedMapObject && mapObjects.contains(mLastFocusedMapObject))
+            mLastFocusedMapObject = nullptr;
 
         // Deselecting all objects to be removed here avoids causing a selection
         // change for each individual object.
