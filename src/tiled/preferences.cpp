@@ -248,6 +248,17 @@ bool Preferences::showTilesetGrid() const
     return get("Interface/ShowTilesetGrid", true);
 }
 
+Preferences::MapClippingMode Preferences::mapClippingMode() const
+{
+    return static_cast<MapClippingMode>(get<int>("Interface/MapClippingMode", NoClipping));
+}
+
+void Preferences::setMapClippingMode(MapClippingMode mode)
+{
+    setValue(QLatin1String("Interface/MapClippingMode"), mode);
+    emit mapClippingModeChanged(mode);
+}
+
 Preferences::ObjectLabelVisiblity Preferences::objectLabelVisibility() const
 {
     return static_cast<ObjectLabelVisiblity>(get<int>("Interface/ObjectLabelVisibility", AllObjectLabels));

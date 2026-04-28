@@ -23,6 +23,7 @@
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
+#include "preferences.h"
 
 #include <QStyleOptionGraphicsItem>
 
@@ -67,7 +68,12 @@ void TileLayerItem::paint(QPainter *painter,
                           QWidget *)
 {
     MapRenderer *renderer = mMapDocument->renderer();
+    painter->save();
+
     // TODO: Display a border around the layer when selected
     painter->setCompositionMode(layer()->compositionMode());
+
     renderer->drawTileLayer(painter, tileLayer(), option->exposedRect);
+
+    painter->restore();
 }

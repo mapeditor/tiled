@@ -23,6 +23,7 @@
 
 #include "mapdocument.h"
 #include "maprenderer.h"
+#include "preferences.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -53,8 +54,14 @@ void ImageLayerItem::paint(QPainter *painter,
                            const QStyleOptionGraphicsItem *option,
                            QWidget *)
 {
-    // TODO: Display a border around the layer when selected
     MapRenderer *renderer = mMapDocument->renderer();
+
+    painter->save();
+
+    // TODO: Display a border around the layer when selected
     painter->setCompositionMode(layer()->compositionMode());
+
     renderer->drawImageLayer(painter, imageLayer(), option->exposedRect);
+
+    painter->restore();
 }

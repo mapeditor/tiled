@@ -433,6 +433,26 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         updateSnappingActions(preferences->snapMode());
     });
 
+    QActionGroup *mapClippingGroup = new QActionGroup(this);
+    mUi->actionNoMapClipping->setActionGroup(mapClippingGroup);
+    mUi->actionClipAllMaps->setActionGroup(mapClippingGroup);
+    mUi->actionClipOtherMaps->setActionGroup(mapClippingGroup);
+
+    switch (preferences->mapClippingMode()) {
+    case Preferences::NoClipping:
+        mUi->actionNoMapClipping->setChecked(true);
+        break;
+    case Preferences::ClipAllMaps:
+        mUi->actionClipAllMaps->setChecked(true);
+        break;
+    case Preferences::ClipOtherMaps:
+        mUi->actionClipOtherMaps->setChecked(true);
+        break;
+    }
+
+    connect(mapClippingGroup, &QActionGroup::triggered,
+            this, &MainWindow::mapClippingActionTriggered);
+
     bindToOption(mUi->actionAutoMapWhileDrawing, AutomappingManager::automappingWhileDrawing);
     bindToOption(mUi->actionEnableWorlds, MapScene::enableWorlds);
 
@@ -1700,6 +1720,18 @@ void MainWindow::labelVisibilityActionTriggered(QAction *action)
         visibility = Preferences::AllObjectLabels;
 
     Preferences::instance()->setObjectLabelVisibility(visibility);
+}
+
+void MainWindow::mapClippingActionTriggered(QAction *action)
+{
+    Preferences::MapClippingMode mode = Preferences::NoClipping;
+
+    if (action == mUi->actionClipAllMaps)
+        mode = Preferences::ClipAllMaps;
+    else if (action == mUi->actionClipOtherMaps)
+        mode = Preferences::ClipOtherMaps;
+
+    Preferences::instance()->setMapClippingMode(mode);
 }
 
 void MainWindow::zoomIn()
