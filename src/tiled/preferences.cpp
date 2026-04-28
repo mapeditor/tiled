@@ -203,6 +203,11 @@ bool Preferences::parallaxEnabled() const
     return get("Interface/ParallaxEnabled", true);
 }
 
+bool Preferences::showViewport() const
+{
+    return get("Interface/ShowViewport", false);
+}
+
 SnapMode Preferences::snapMode() const
 {
     return toSnapMode(get(snapModeKey, static_cast<int>(SnapMode::None)));
@@ -370,6 +375,12 @@ void Preferences::setParallaxEnabled(bool enabled)
 {
     setValue(QLatin1String("Interface/ParallaxEnabled"), enabled);
     emit parallaxEnabledChanged(enabled);
+}
+
+void Preferences::setShowViewport(bool enabled)
+{
+    setValue(QLatin1String("Interface/ShowViewport"), enabled);
+    emit showViewportChanged(enabled);
 }
 
 void Preferences::setSnapMode(SnapMode snapMode)

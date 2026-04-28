@@ -33,11 +33,13 @@
 #include "maprenderer.h"
 #include "objectgroup.h"
 #include "objecttemplate.h"
+#include "preferences.h"
 #include "snaphelper.h"
 #include "stylehelper.h"
 #include "templatemanager.h"
 #include "tilesetmanager.h"
 #include "toolmanager.h"
+#include "viewportoverlayitem.h"
 #include "world.h"
 #include "worldmanager.h"
 
@@ -80,6 +82,17 @@ MapScene::MapScene(QObject *parent)
     mDebugDrawItem = new DebugDrawItem;
     addItem(mDebugDrawItem);
 #endif
+
+    // Create viewport overlay item
+    mViewportOverlayItem = new ViewportOverlayItem(nullptr);
+    addItem(mViewportOverlayItem);
+    
+    // Update viewport overlay when preference changes
+    connect(Preferences::instance(), &Preferences::showViewportChanged,
+            this, [this] {
+        if (mViewportOverlayItem && mMapDocument)
+            mViewportOverlayItem->syncWithMapDocument(mMapDocument);
+    });
 }
 
 MapScene::~MapScene()
@@ -108,6 +121,24 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, [this] { update(); });
         connect(mMapDocument, &MapDocument::tilesetReplaced,
                 this, &MapScene::tilesetReplaced);
+    }
+
+    // Update viewport overlay with new map document
+    if (mViewportOverlayItem) {
+        removeItem(mViewportOverlayItem);
+        // The scene does not take ownership, so we must delete the item.
+        delete mViewportOverlayItem;
+        mViewportOverlayItem = nullptr;
+    }
+    
+    // Create new viewport overlay item and sync with map document
+    mViewportOverlayItem = new ViewportOverlayItem();
+    addItem(mViewportOverlayItem);
+    mViewportOverlayItem->syncWithMapDocument(mMapDocument);
+    
+    // Set initial position to view center
+    if (!mViewRect.isNull()) {
+        mViewportOverlayItem->setPos(mViewRect.center());
     }
 
     refreshScene();
@@ -206,6 +237,11 @@ void MapScene::setViewRect(const QRectF &rect)
         return;
 
     mViewRect = rect;
+
+    // Update the viewport rectangle overlay item, so it's always centered in the map view
+    if (mViewportOverlayItem) {
+        mViewportOverlayItem->setPos(rect.center());
+    }
 
     if (mParallaxEnabled)
         emit parallaxParametersChanged();
@@ -413,6 +449,10 @@ void MapScene::changeEvent(const ChangeEvent &change)
             break;
         case Map::RenderOrderProperty:
             update();
+            break;
+        case Map::ViewportSizeProperty:
+            if (mViewportOverlayItem)
+                mViewportOverlayItem->syncWithMapDocument(mMapDocument);
             break;
         default:
             break;

@@ -249,13 +249,20 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
     w.writeAttribute(QStringLiteral("nextobjectid"),
                      QString::number(map.nextObjectId()));
 
-    if (map.chunkSize() != QSize(CHUNK_SIZE, CHUNK_SIZE) || !map.exportFileName.isEmpty() || !map.exportFormat.isEmpty()) {
+    if (map.chunkSize() != QSize(CHUNK_SIZE, CHUNK_SIZE) || !map.viewportSize().isEmpty() || !map.exportFileName.isEmpty() || !map.exportFormat.isEmpty()) {
         w.writeStartElement(QStringLiteral("editorsettings"));
 
         if (map.chunkSize() != QSize(CHUNK_SIZE, CHUNK_SIZE)) {
             w.writeStartElement(QStringLiteral("chunksize"));
             w.writeAttribute(QStringLiteral("width"), QString::number(map.chunkSize().width()));
             w.writeAttribute(QStringLiteral("height"), QString::number(map.chunkSize().height()));
+            w.writeEndElement();
+        }
+
+        if (!map.viewportSize().isEmpty()) {
+            w.writeStartElement(QStringLiteral("viewportsize"));
+            w.writeAttribute(QStringLiteral("width"), QString::number(map.viewportSize().width()));
+            w.writeAttribute(QStringLiteral("height"), QString::number(map.viewportSize().height()));
             w.writeEndElement();
         }
 

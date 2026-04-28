@@ -203,6 +203,19 @@ struct MapCompressionLevel
     }
 };
 
+struct MapViewportSize
+{
+    using Type = QSize;
+
+    static void set(Map *map, Type value)   { map->setViewportSize(value); }
+    static Type get(const Map *map)         { return map->viewportSize(); }
+    static int undoId()                     { return Cmd_ChangeMapViewportSize; }
+    static Map::Property property()         { return Map::ViewportSizeProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Viewport Size");
+    }
+};
+
 
 template<typename Member>
 class ChangeMapProperty : public ChangeValue<Map, typename Member::Type>
@@ -243,5 +256,6 @@ using ChangeMapTileSize         = ChangeMapProperty<MapTileSize>;
 using ChangeMapInfinite         = ChangeMapProperty<MapInfinite>;
 using ChangeMapHexSideLength    = ChangeMapProperty<MapHexSideLength>;
 using ChangeMapCompressionLevel = ChangeMapProperty<MapCompressionLevel>;
+using ChangeMapViewportSize     = ChangeMapProperty<MapViewportSize>;
 
 } // namespace Tiled
