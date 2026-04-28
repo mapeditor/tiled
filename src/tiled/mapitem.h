@@ -39,6 +39,7 @@ class Tileset;
 
 class BorderItem;
 class LayerChangeEvent;
+class MapLabelItem;
 class LayerItem;
 class MapObjectItem;
 class MapScene;
@@ -75,6 +76,7 @@ public:
     void setShowTileCollisionShapes(bool enabled);
 
     void updateLayerPositions();
+    void setLabelVisible(bool visible);
 
     // QGraphicsItem
     QRectF boundingRect() const override;
@@ -133,10 +135,12 @@ private:
 
     void updateBoundingRect();
     void updateSelectedLayersHighlight();
+    void updateLabel();
 
     MapDocumentPtr mMapDocument;
     QGraphicsRectItem *mDarkRectangle;
     QGraphicsRectItem *mBorderRectangle;
+    MapLabelItem *mLabelItem = nullptr;
     std::unique_ptr<TileSelectionItem> mTileSelectionItem;
     std::unique_ptr<TileGridItem> mTileGridItem;
     std::unique_ptr<ObjectSelectionItem> mObjectSelectionItem;

@@ -43,8 +43,11 @@
 #include "worldmanager.h"
 #include "zoomable.h"
 
+#include <QApplication>
 #include <QCursor>
+#include <QFileInfo>
 #include <QGraphicsSceneMouseEvent>
+#include <QPainter>
 #include <QPen>
 #include <QStyleOptionGraphicsItem>
 #include <QWidget>
@@ -128,6 +131,86 @@ private:
     QPointF mOffset;
 };
 
+static constexpr qreal mapLabelMargin = 4;
+static constexpr qreal mapLabelDistance = 4;
+
+/**
+ * A label item drawn above a map in the world view, with a rounded rectangle
+ * background for readability. Inspired by MapObjectLabel.
+ */
+class MapLabelItem : public QGraphicsItem
+{
+public:
+    MapLabelItem(QGraphicsItem *parent = nullptr)
+        : QGraphicsItem(parent)
+    {
+        setFlags(QGraphicsItem::ItemIgnoresTransformations |
+                 QGraphicsItem::ItemIgnoresParentOpacity);
+    }
+
+    void setText(const QString &text)
+    {
+        if (mText == text)
+            return;
+        mText = text;
+        updateGeometry();
+        update();
+    }
+
+    QRectF boundingRect() const override
+    {
+        return mBoundingRect;
+    }
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override
+    {
+        if (mText.isEmpty())
+            return;
+
+        painter->setRenderHint(QPainter::Antialiasing);
+
+        // Drop shadow
+        painter->setBrush(QColor(0, 0, 0, 80));
+        painter->setPen(Qt::NoPen);
+        painter->drawRoundedRect(mBoundingRect.translated(1, 1), 4, 4);
+
+        // Background
+        painter->setBrush(QColor(0, 0, 0, 160));
+        painter->drawRoundedRect(mBoundingRect, 4, 4);
+
+        // Text
+        painter->setPen(Qt::white);
+        painter->drawText(mTextPos, mText);
+    }
+
+private:
+    void updateGeometry()
+    {
+        prepareGeometryChange();
+        if (mText.isEmpty()) {
+            mBoundingRect = QRectF();
+            return;
+        }
+
+        const QFontMetricsF metrics(scene() ? scene()->font() : QApplication::font());
+        QRectF br = metrics.boundingRect(mText);
+
+        // Center horizontally, position above the item's pos
+        mTextPos = QPointF(-br.width() / 2 - br.left(),
+                           -br.bottom() - mapLabelMargin - mapLabelDistance);
+
+        QRectF background = br;
+        background.translate(-br.width() / 2, -br.bottom() - mapLabelMargin - mapLabelDistance);
+        mBoundingRect = background.adjusted(-mapLabelMargin * 2, -mapLabelMargin,
+                                            mapLabelMargin * 2,  mapLabelMargin);
+    }
+
+    QString mText;
+    QRectF mBoundingRect;
+    QPointF mTextPos;
+};
+
+
 MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
                  QGraphicsItem *parent)
     : QGraphicsObject(parent)
@@ -153,8 +236,8 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(prefs, &Preferences::highlightCurrentLayerChanged, this, &MapItem::updateSelectedLayersHighlight);
     connect(prefs, &Preferences::propertyTypesChanged, this, &MapItem::syncAllObjectItems);
     connect(prefs, &Preferences::backgroundFadeColorChanged, this, [this] (QColor color) { mDarkRectangle->setBrush(color); });
-
     connect(mapDocument.data(), &Document::changed, this, &MapItem::documentChanged);
+    connect(mapDocument.data(), &Document::fileNameChanged, this, &MapItem::updateLabel);
     connect(mapDocument.data(), &MapDocument::mapResized, this, &MapItem::mapChanged);
     connect(mapDocument.data(), &MapDocument::regionChanged, this, &MapItem::repaintRegion);
     connect(mapDocument.data(), &MapDocument::tileLayerChanged, this, &MapItem::tileLayerChanged);
@@ -187,6 +270,10 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(prefs, &Preferences::gridColorChanged, this, updateBorder);
 
     mBorderRectangle->setZValue(10000 - 3);
+
+    // Label shown above each map in the world view
+    mLabelItem = new MapLabelItem(this);
+    mLabelItem->setZValue(10001);
 
     if (displayMode == ReadOnly) {
         setDisplayMode(displayMode);
@@ -853,6 +940,26 @@ void MapItem::deleteLayerItems(Layer *layer)
     delete mLayerItems.take(layer);
 }
 
+void MapItem::updateLabel()
+{
+    if (!mLabelItem)
+        return;
+
+    // Derive the label from the map's file name (without extension)
+    const QString label = QFileInfo(mMapDocument->fileName()).baseName();
+    mLabelItem->setText(label);
+
+    // Position centered at the top of the map tile boundary
+    const QRectF border = mBorderRectangle->rect();
+    mLabelItem->setPos(QPointF(border.center().x(), border.top()));
+}
+
+void MapItem::setLabelVisible(bool visible)
+{
+    if (mLabelItem)
+        mLabelItem->setVisible(visible);
+}
+
 void MapItem::updateBoundingRect()
 {
     QRect boundingRect = mapDocument()->renderer()->mapBoundingRect();
@@ -868,6 +975,9 @@ void MapItem::updateBoundingRect()
         mBoundingRect = boundingRect;
         emit boundingRectChanged();
     }
+
+    // Keep label position in sync with map boundary
+    updateLabel();
 }
 
 void MapItem::updateSelectedLayersHighlight()
