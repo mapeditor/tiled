@@ -109,7 +109,7 @@ ExportAsImageDialog::~ExportAsImageDialog()
 
 static bool smoothTransform(qreal scale)
 {
-    return scale != qreal(1) && scale < qreal(2);
+    return Preferences::instance()->smoothTransform(scale != qreal(1) && scale < qreal(2));
 }
 
 void ExportAsImageDialog::accept()
@@ -170,7 +170,9 @@ void ExportAsImageDialog::accept()
         renderFlags |= MiniMapRenderer::DrawGrid;
     if (session::includeBackgroundColor)
         renderFlags |= MiniMapRenderer::DrawBackground;
-    if (session::useCurrentScale && smoothTransform(mCurrentScale))
+
+    if (Preferences::instance()->smoothTransform(session::useCurrentScale
+                                                  && smoothTransform(mCurrentScale)))
         renderFlags |= MiniMapRenderer::SmoothPixmapTransform;
 
     MapRenderer *renderer = mMapDocument->renderer();

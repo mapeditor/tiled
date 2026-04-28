@@ -20,6 +20,7 @@
 
 #include "wangcolorview.h"
 
+#include "preferences.h"
 #include "utils.h"
 #include "wangcolormodel.h"
 
@@ -64,7 +65,8 @@ void WangColorDelegate::initStyleOption(QStyleOptionViewItem *option, const QMod
         const qreal scale = std::max(scaleX, scaleY);
         const QSizeF targetSize = size * scale;
 
-        painter.setRenderHint(QPainter::SmoothPixmapTransform, scale < 1.0);
+        painter.setRenderHint(QPainter::SmoothPixmapTransform,
+                              Preferences::instance()->smoothTransform(scale < 1.0));
         painter.drawPixmap(QRectF(decorationSize.width() - targetSize.width(),
                                   decorationSize.height() - targetSize.height(),
                                   targetSize.width(),
@@ -103,6 +105,9 @@ WangColorView::WangColorView(QWidget *parent)
     setIndentation(0);
     setUniformRowHeights(true);
     setItemDelegate(new WangColorDelegate(this));
+
+    connect(Preferences::instance(), &Preferences::textureFilteringChanged,
+            this, [this] { viewport()->update(); });
 }
 
 WangColorView::~WangColorView()
