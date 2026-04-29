@@ -48,7 +48,7 @@ LayerModel::LayerModel(QObject *parent):
 
 void LayerModel::languageChanged()
 {
-    emit headerDataChanged(Qt::Horizontal, 0, 2);
+    emit headerDataChanged(Qt::Horizontal, 0, columnCount() - 1);
 }
 
 QModelIndex LayerModel::index(int row, int column, const QModelIndex &parent) const

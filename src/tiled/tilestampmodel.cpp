@@ -31,7 +31,7 @@ TileStampModel::TileStampModel(QObject *parent)
 
 void TileStampModel::languageChanged()
 {
-    emit headerDataChanged(Qt::Horizontal, 0, 1);
+    emit headerDataChanged(Qt::Horizontal, 0, columnCount() - 1);
 }
 
 QModelIndex TileStampModel::index(int row, int column, const QModelIndex &parent) const

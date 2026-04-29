@@ -104,7 +104,7 @@ BrokenLinksModel::BrokenLinksModel(QObject *parent)
 
 void BrokenLinksModel::languageChanged()
 {
-    emit headerDataChanged(Qt::Horizontal, 0, 2);
+    emit headerDataChanged(Qt::Horizontal, 0, columnCount() - 1);
 
     if (rowCount() > 0)
         emit dataChanged(index(0, 2), index(rowCount() - 1, 2));
@@ -542,6 +542,8 @@ void BrokenLinksWidget::selectionChanged()
                 mLocateButton->setText(tr("Open Tileset..."));
             break;
         }
+    } else {
+        mLocateButton->setText(tr("Locate File..."));
     }
 }
 

@@ -37,6 +37,7 @@ class TileStampModel : public QAbstractItemModel
 
 public:
     TileStampModel(QObject *parent = nullptr);
+
     void languageChanged();
 
     QModelIndex index(int row, int column,

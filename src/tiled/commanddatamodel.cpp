@@ -39,12 +39,11 @@ CommandDataModel::CommandDataModel(QObject *parent)
 
 void CommandDataModel::languageChanged()
 {
-    emit headerDataChanged(Qt::Horizontal, 0, 2);
+    emit headerDataChanged(Qt::Horizontal, 0, columnCount() - 1);
 
     const int rows = rowCount();
-    const int columns = columnCount();
-    if (rows > 0 && columns > 0)
-        emit dataChanged(index(0, 0), index(rows - 1, columns - 1));
+    if (rows > 0)
+        emit dataChanged(index(0, NameColumn), index(rows - 1, ShortcutColumn));
 }
 
 void CommandDataModel::setCommands(const QVector<Command> &commands)
