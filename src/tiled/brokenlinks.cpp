@@ -106,8 +106,10 @@ void BrokenLinksModel::languageChanged()
 {
     emit headerDataChanged(Qt::Horizontal, 0, columnCount() - 1);
 
-    if (rowCount() > 0)
-        emit dataChanged(index(0, 2), index(rowCount() - 1, 2));
+    // link type column is affected by language change
+    const int rows = rowCount();
+    if (rows > 0)
+        emit dataChanged(index(0, 2), index(rows - 1, 2));
 }
 
 void BrokenLinksModel::setDocument(Document *document)

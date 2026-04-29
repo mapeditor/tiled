@@ -67,7 +67,7 @@ public:
     void setVisible(bool visible);
     void languageChanged();
 
-    int rowCount(const QModelIndex &parent) const override;
+    int rowCount(const QModelIndex &parent = {}) const override;
     int columnCount(const QModelIndex &parent = {}) const override;
     QVariant data(const QModelIndex &index, int role) const override;
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
@@ -107,9 +107,14 @@ void ActionsModel::setVisible(bool visible)
 
 void ActionsModel::languageChanged()
 {
-    emit headerDataChanged(Qt::Horizontal, 0, columnCount() - 1);
+    const int rows = rowCount();
+    const int columns = columnCount();
+
+    emit headerDataChanged(Qt::Horizontal, 0, columns - 1);
+
     // name and shortcut might be affected by language change
-    emit dataChanged(index(0, 1), index(mActions.size() - 1, columnCount() - 1));
+    if (rows > 0)
+        emit dataChanged(index(0, 1), index(rows - 1, columns - 1));
 }
 
 void ActionsModel::refresh()
