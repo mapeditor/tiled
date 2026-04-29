@@ -185,7 +185,10 @@ void ObjectsView::restoreExpandedLayers()
 
 bool ObjectsView::event(QEvent *event)
 {
-    if (event->type() == QEvent::ShortcutOverride) {
+    if (event->type() == QEvent::LanguageChange) {
+        if (MapObjectModel *model = mapObjectModel())
+            model->languageChanged();
+    } else if (event->type() == QEvent::ShortcutOverride) {
         if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Tab) {
             if (indexWidget(currentIndex())) {
                 event->accept();

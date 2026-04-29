@@ -39,6 +39,7 @@
 
 #include <QAction>
 #include <QBoxLayout>
+#include <QEvent>
 #include <QFileDialog>
 #include <QHeaderView>
 #include <QLabel>
@@ -152,6 +153,14 @@ TemplatesDock::~TemplatesDock()
 
     if (mDummyMapDocument)
         mDummyMapDocument->undoStack()->disconnect(this);
+}
+
+void TemplatesDock::changeEvent(QEvent *event)
+{
+    QDockWidget::changeEvent(event);
+
+    if (event->type() == QEvent::LanguageChange)
+        retranslateUi();
 }
 
 void TemplatesDock::setTile(Tile *tile)
@@ -381,6 +390,7 @@ void TemplatesDock::focusInEvent(QFocusEvent *event)
 void TemplatesDock::retranslateUi()
 {
     setWindowTitle(tr("Template Editor"));
+    checkTileset();
 }
 
 void TemplatesDock::fixTileset()
