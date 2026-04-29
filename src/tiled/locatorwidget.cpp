@@ -289,7 +289,6 @@ LocatorWidget::LocatorWidget(LocatorSource *locatorSource,
     mFilterEdit->setFilteredView(mResultsView);
     mFilterEdit->setClearTextOnEscape(false);
     mFilterEdit->setFont(scaledFont(mFilterEdit->font(), 1.5));
-    mFilterEdit->setAttribute(Qt::WA_InputMethodEnabled);
 
     setFocusProxy(mFilterEdit);
     mResultsView->setFocusProxy(mFilterEdit);
