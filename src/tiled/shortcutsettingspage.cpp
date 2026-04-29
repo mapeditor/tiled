@@ -31,6 +31,7 @@
 #include <QApplication>
 #include <QCoreApplication>
 #include <QDateTime>
+#include <QEvent>
 #include <QFileDialog>
 #include <QItemEditorFactory>
 #include <QKeyEvent>
@@ -64,9 +65,10 @@ public:
     explicit ActionsModel(QObject *parent = nullptr);
 
     void setVisible(bool visible);
+    void languageChanged();
 
-    int rowCount(const QModelIndex &parent) const override;
-    int columnCount(const QModelIndex &parent) const override;
+    int rowCount(const QModelIndex &parent = {}) const override;
+    int columnCount(const QModelIndex &parent = {}) const override;
     QVariant data(const QModelIndex &index, int role) const override;
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
@@ -101,6 +103,18 @@ void ActionsModel::setVisible(bool visible)
 {
     mVisible = visible;
     refresh();
+}
+
+void ActionsModel::languageChanged()
+{
+    const int rows = rowCount();
+    const int columns = columnCount();
+
+    emit headerDataChanged(Qt::Horizontal, 0, columns - 1);
+
+    // name and shortcut might be affected by language change
+    if (rows > 0)
+        emit dataChanged(index(0, 1), index(rows - 1, columns - 1));
 }
 
 void ActionsModel::refresh()
@@ -638,6 +652,16 @@ QSize ShortcutSettingsPage::sizeHint() const
     QSize size = QWidget::sizeHint();
     size.setWidth(Utils::dpiScaled(500));
     return size;
+}
+
+void ShortcutSettingsPage::changeEvent(QEvent *event)
+{
+    QWidget::changeEvent(event);
+
+    if (event->type() == QEvent::LanguageChange) {
+        ui->retranslateUi(this);
+        mActionsModel->languageChanged();
+    }
 }
 
 void ShortcutSettingsPage::showEvent(QShowEvent *event)

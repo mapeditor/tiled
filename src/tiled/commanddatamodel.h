@@ -38,6 +38,8 @@ public:
 
     CommandDataModel(QObject *parent = nullptr);
 
+    void languageChanged();
+
     void setCommands(const QVector<Command> &commands);
     const QVector<Command> &commands() const;
 

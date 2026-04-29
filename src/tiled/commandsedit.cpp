@@ -25,6 +25,7 @@
 #include "session.h"
 #include "utils.h"
 
+#include <QEvent>
 #include <QFileDialog>
 #include <QStandardPaths>
 
@@ -81,6 +82,16 @@ CommandsEdit::CommandsEdit(const QVector<Command> &commands, QWidget *parent)
 CommandsEdit::~CommandsEdit()
 {
     delete mUi;
+}
+
+void CommandsEdit::changeEvent(QEvent *event)
+{
+    QWidget::changeEvent(event);
+
+    if (event->type() == QEvent::LanguageChange) {
+        mUi->retranslateUi(this);
+        mModel->languageChanged();
+    }
 }
 
 const QVector<Command> &CommandsEdit::commands() const

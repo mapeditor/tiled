@@ -106,6 +106,7 @@ public:
 
     void setMapDocument(MapDocument *mapDocument);
     MapDocument *mapDocument() const { return mMapDocument; }
+    void languageChanged();
 
     void moveObjects(ObjectGroup *og, int from, int to, int count);
 
