@@ -163,6 +163,34 @@ QVector<ChangeTileWangId::WangIdChange> ChangeTileWangId::changesOnRemoveColor(
     return changes;
 }
 
+/**
+ * Swaps the wang IDs of tiles between 2 colors.
+ */
+QVector<ChangeTileWangId::WangIdChange> ChangeTileWangId::changesOnMoveColor(
+        const WangSet *wangSet, int colorA, int colorB)
+{
+    QVector<WangIdChange> changes;
+
+    QHashIterator<int, WangId> it(wangSet->wangIdByTileId());
+    while (it.hasNext()) {
+        it.next();
+        WangId newWangId = it.value();
+
+        for (int i = 0; i < WangId::NumIndexes; ++i) {
+            const int color = newWangId.indexColor(i);
+            if (color == colorA)
+                newWangId.setIndexColor(i, colorB);
+            else if (color == colorB)
+                newWangId.setIndexColor(i, colorA);
+        }
+
+        if (it.value() != newWangId)
+            changes.append(WangIdChange(it.value(), newWangId, it.key()));
+    }
+
+    return changes;
+}
+
 void ChangeTileWangId::applyChanges(WangSet *wangSet, const QVector<WangIdChange> &changes)
 {
     for (const WangIdChange &change : changes)
