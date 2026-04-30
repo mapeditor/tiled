@@ -5,7 +5,7 @@ DynamicLibrary {
     cpp.dynamicLibraryPrefix: "lib"
 
     Depends { name: "cpp" }
-    Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "5.15.2" }
+    Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "6.2.0" }
 
     Probes.PkgConfigProbe {
         id: pkgConfigZstd
