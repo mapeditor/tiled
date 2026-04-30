@@ -83,6 +83,11 @@ ObjectTemplate *TemplateManager::loadObjectTemplate(const QString &fileName, QSt
     return objectTemplate;
 }
 
+void TemplateManager::deleteTemplate(const QString &fileName)
+{
+    mWatcher->removePath(fileName);
+}
+
 void TemplateManager::pathsChanged(const QStringList &paths)
 {
     for (const QString &fileName : paths) {
