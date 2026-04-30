@@ -79,7 +79,7 @@ jobs:
       with:
         version: 6.10.2
         arch: linux_gcc_64
-        modules: "qtimageformats"
+        modules: "qtimageformats qtshadertools"
         tools: 'tools_qtcreator'
         setup-python: false
         cache: true
@@ -200,7 +200,7 @@ jobs:
           architectures: x86_64
           cmake_architectures: x86_64
         - qt_version: 6.10.2
-          qt_modules: "qtimageformats"
+          qt_modules: "qtimageformats qtshadertools"
           version_suffix: "13+"
           architectures: x86_64,arm64
           cmake_architectures: x86_64;arm64
@@ -333,7 +333,7 @@ jobs:
         - qt_version: 6.10.2
           qt_version_major: 6
           qt_arch: win64_mingw
-          qt_modules: "qtimageformats"
+          qt_modules: "qtimageformats qtshadertools"
           arch: 64
           openssl_arch: x64
           filename_suffix: 'Windows-10+_x86_64'

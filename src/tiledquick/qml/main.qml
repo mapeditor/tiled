@@ -160,6 +160,23 @@ ApplicationWindow {
                             mapView.height / scale);
                 }
             }
+
+            Tiled.MapBorderItem {
+                id: mapBorderItem
+                anchors.fill: mapItem
+
+                color: "black"
+            }
+
+            Tiled.MapGridItem {
+                id: mapGriditem
+                anchors.fill: mapItem
+
+                gridSize: Qt.point(width / mapItem.tileSize().width, height / mapItem.tileSize().height);
+                scale: mapContainer.scale;
+
+                color: "black"
+            }
         }
     }
 
@@ -216,7 +233,7 @@ ApplicationWindow {
                     } else {
                         var mapRelativeCoords = singleFingerPanArea.mapToItem(mapItem, singleFingerPanArea.mouseX, singleFingerPanArea.mouseY)
                         var tileCoords = mapItem.screenToTileCoords(mapRelativeCoords.x, mapRelativeCoords.y)
-                        Math.floor(tileCoords.x) + ", " + Math.floor(tileCoords.y)
+                        Math.floor(tileCoords.x) + ", " + Math.floor(tileCoords.y);
                     }
                 }
             }

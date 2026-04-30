@@ -69,6 +69,7 @@ public:
     Q_INVOKABLE QPointF pixelToScreenCoords(const QPointF &position) const;
     Q_INVOKABLE QPointF pixelToTileCoords(qreal x, qreal y) const;
     Q_INVOKABLE QPointF pixelToTileCoords(const QPointF &position) const;
+    Q_INVOKABLE QSize tileSize() const;
 
     void componentComplete() override;
 

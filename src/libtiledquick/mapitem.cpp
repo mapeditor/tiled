@@ -62,6 +62,14 @@ QRectF MapItem::boundingRect() const
     return mRenderer->mapBoundingRect();
 }
 
+QSize MapItem::tileSize() const
+{
+    if (!mMap)
+        return {0,0};
+
+    return mMap->tileSize();
+}
+
 QPointF MapItem::screenToTileCoords(qreal x, qreal y) const
 {
     if (!mRenderer)
