@@ -71,6 +71,7 @@ public:
     SnapMode snapMode() const;
     QColor gridColor() const;
     QColor backgroundFadeColor() const;
+    QColor defaultObjectColor() const;
     int gridFine() const;
     QSize gridMajor() const;
     qreal objectLineWidth() const;
@@ -205,6 +206,7 @@ public slots:
     void setSnapMode(SnapMode snapMode);
     void setGridColor(QColor gridColor);
     void setBackgroundFadeColor(QColor backgroundFadeColor);
+    void setDefaultObjectColor(QColor color);
     void setGridFine(int gridFine);
     void setGridMajor(QSize gridMajor);
     void setGridMajorX(int gridMajorX);
@@ -230,6 +232,7 @@ signals:
     void snapModeChanged(SnapMode snapMode);
     void gridColorChanged(QColor gridColor);
     void backgroundFadeColorChanged(QColor backgroundFadeColor);
+    void defaultObjectColorChanged(QColor color);
     void gridFineChanged(int gridFine);
     void gridMajorChanged(QSize gridMajor);
     void objectLineWidthChanged(qreal lineWidth);

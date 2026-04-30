@@ -126,6 +126,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             preferences, &Preferences::setGridColor);
     connect(mUi->backgroundFadeColor, &ColorButton::colorChanged,
             preferences, &Preferences::setBackgroundFadeColor);
+    connect(mUi->defaultObjectColor, &ColorButton::colorChanged,
+            preferences, &Preferences::setDefaultObjectColor);
     connect(mUi->gridFine, &QSpinBox::valueChanged,
             preferences, &Preferences::setGridFine);
     connect(mUi->gridMajorX, &QSpinBox::valueChanged,
@@ -251,6 +253,7 @@ void PreferencesDialog::fromPreferences()
     mUi->languageCombo->setCurrentIndex(languageIndex);
     mUi->gridColor->setColor(prefs->gridColor());
     mUi->backgroundFadeColor->setColor(prefs->backgroundFadeColor());
+    mUi->defaultObjectColor->setColor(prefs->defaultObjectColor());
     mUi->gridFine->setValue(prefs->gridFine());
     mUi->gridMajorX->setValue(prefs->gridMajor().width());
     mUi->gridMajorY->setValue(prefs->gridMajor().height());
