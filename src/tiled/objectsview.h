@@ -27,6 +27,7 @@ namespace Tiled {
 
 class Layer;
 class MapObject;
+class ObjectGroup;
 
 class MapDocument;
 class MapObjectModel;
@@ -46,6 +47,9 @@ public:
     MapObjectModel *mapObjectModel() const;
 
     QModelIndex layerViewIndex(Layer *layer) const;
+
+    bool isExpanded(ObjectGroup *layer) const;
+    void setExpanded(ObjectGroup *layer, bool expanded);
 
     void ensureVisible(MapObject *mapObject);
 

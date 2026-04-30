@@ -30,9 +30,11 @@
 #include "objectgroup.h"
 #include "objectsview.h"
 #include "raiselowerhelper.h"
+#include "scriptmanager.h"
 #include "utils.h"
 
 #include <QBoxLayout>
+#include <QCoreApplication>
 #include <QEvent>
 #include <QLabel>
 #include <QMenu>
@@ -149,6 +151,24 @@ void ObjectsDock::setMapDocument(MapDocument *mapDoc)
     }
 
     updateActions();
+}
+
+bool ObjectsDock::isExpanded(EditableObjectGroup *layer) const
+{
+    if (!layer) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
+        return false;
+    }
+    return mObjectsView->isExpanded(layer->objectGroup());
+}
+
+void ObjectsDock::setExpanded(EditableObjectGroup *layer, bool expanded)
+{
+    if (!layer) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid argument"));
+        return;
+    }
+    mObjectsView->setExpanded(layer->objectGroup(), expanded);
 }
 
 void ObjectsDock::changeEvent(QEvent *e)
