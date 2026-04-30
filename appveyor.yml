@@ -8,9 +8,7 @@ cache:
   - C:\ProgramData\chocolatey\bin -> appveyor.yml
   - C:\ProgramData\chocolatey\lib -> appveyor.yml
   - C:\Qt\6.10.2\msvc2022_64 -> appveyor.yml
-  - C:\Qt\5.15.2\mingw81_32 -> appveyor.yml
   - C:\Qt\6.10.2\mingw_64 -> appveyor.yml
-  - C:\Qt\Tools\mingw810_32 -> appveyor.yml
   - C:\Qt\Tools\mingw1310_64 -> appveyor.yml
 
 environment:
@@ -24,19 +22,6 @@ environment:
       FILE_SUFFIX: Windows-10+_msvc_x86_64
       PUSH_RELEASE: false
       ENABLE_ZSTD: false
-    - QT_VERSION: 5.15.2
-      QT_ARCH: win32_mingw81
-      QT_MODULES:
-      QTDIR: C:\Qt\5.15.2\mingw81_32
-      PYTHONHOME: C:\Python312
-      MINGW: C:\Qt\Tools\mingw810_32
-      MINGW_COMPONENT: tools_mingw
-      MINGW_VARIANT: qt.tools.win32_mingw810
-      FILE_SUFFIX: Windows-7-8_x86
-      PUSH_RELEASE: true
-      ENABLE_ZSTD: true
-      CC: i686-w64-mingw32-gcc.exe
-      CXX: i686-w64-mingw32-g++.exe
     - QT_VERSION: 6.10.2
       QT_ARCH: win64_mingw
       QT_MODULES: qtimageformats qtshadertools
