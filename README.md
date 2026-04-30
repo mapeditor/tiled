@@ -42,7 +42,7 @@ and a free code signing certificate by the
 Compiling Tiled
 -------------------------------------------------------------------------------
 
-Before you can compile Tiled, you must ensure the Qt (>= 5.15.2) development
+Before you can compile Tiled, you must ensure the Qt (>= 6.2) development
 libraries have been installed as well as the Qbs build tool:
 
 * On Ubuntu/Debian: `sudo apt install qt6-base-dev libqt6svg6 libqt6test6 qt6-l10n-tools qt6-declarative-dev zlib1g-dev qbs`
