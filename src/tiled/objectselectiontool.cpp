@@ -928,7 +928,8 @@ static QRectF objectBounds(const MapObject *object,
             return transform.map(screenPolygon).boundingRect();
         }
         case MapObject::Point: {
-            return transform.mapRect(renderer->shape(object).boundingRect());
+            const QPointF pos = renderer->pixelToScreenCoords(object->position());
+            return transform.mapRect(QRectF(pos, QSizeF(0, 0)));
         }
         case MapObject::Polygon:
         case MapObject::Polyline: {
