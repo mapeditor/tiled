@@ -7,18 +7,18 @@ cache:
   - C:\Users\appveyor\.m2
   - C:\ProgramData\chocolatey\bin -> appveyor.yml
   - C:\ProgramData\chocolatey\lib -> appveyor.yml
-  - C:\Qt\6.10.2\msvc2022_64 -> appveyor.yml
+  - C:\Qt\6.10.3\msvc2022_64 -> appveyor.yml
   - C:\Qt\5.15.2\mingw81_32 -> appveyor.yml
-  - C:\Qt\6.10.2\mingw_64 -> appveyor.yml
+  - C:\Qt\6.10.3\mingw_64 -> appveyor.yml
   - C:\Qt\Tools\mingw810_32 -> appveyor.yml
   - C:\Qt\Tools\mingw1310_64 -> appveyor.yml
 
 environment:
   matrix:
-    - QT_VERSION: 6.10.2
+    - QT_VERSION: 6.10.3
       QT_ARCH: win64_msvc2022_64
       QT_MODULES: qtimageformats
-      QTDIR: C:\Qt\6.10.2\msvc2022_64
+      QTDIR: C:\Qt\6.10.3\msvc2022_64
       PYTHONHOME: C:\Python312-x64
       DEFAULT_PROFILE: MSVC2022-x64
       FILE_SUFFIX: Windows-10+_msvc_x86_64
@@ -37,10 +37,10 @@ environment:
       ENABLE_ZSTD: true
       CC: i686-w64-mingw32-gcc.exe
       CXX: i686-w64-mingw32-g++.exe
-    - QT_VERSION: 6.10.2
+    - QT_VERSION: 6.10.3
       QT_ARCH: win64_mingw
       QT_MODULES: qtimageformats
-      QTDIR: C:\Qt\6.10.2\mingw_64
+      QTDIR: C:\Qt\6.10.3\mingw_64
       PYTHONHOME: C:\Python312-x64
       MINGW: C:\Qt\Tools\mingw1310_64
       MINGW_COMPONENT: tools_mingw1310
