@@ -150,6 +150,7 @@ private:
 
     void setRandom(bool value);
     void setWangFill(bool value);
+    void setEraseMode(bool value);
 
     void setStamp(const TileStamp &stamp);
 

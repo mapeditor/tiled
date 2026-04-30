@@ -73,6 +73,7 @@ public:
 public slots:
     void setRandom(bool value);
     void setWangFill(bool value);
+    void setEraseMode(bool value);
     void setWangSet(WangSet *wangSet);
 
 signals:
@@ -86,6 +87,8 @@ signals:
     void randomChanged(bool value);
 
     void wangFillChanged(bool value);
+
+    void eraseModeChanged(bool value);
 
 protected:
     void tilePositionChanged(QPoint tilePos) override;
@@ -160,6 +163,8 @@ private:
 
     bool mIsWangFill = false;
     WangSet *mWangSet = nullptr;
+
+    bool mEraseMode = false;
 
     bool mRandomCacheValid = true;
     void updateRandomList();

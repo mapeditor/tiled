@@ -38,10 +38,11 @@ public:
 
     void languageChanged();
 
-    void populateToolBar(QToolBar *toolBar, bool isRandom, bool isWangFill);
+    void populateToolBar(QToolBar *toolBar, bool isRandom, bool isWangFill, bool isErasing = false);
 
     QAction *random() const { return mRandom; }
     QAction *wangFill() const { return mWangFill; }
+    QAction *eraseMode() const { return mEraseMode; }
     QAction *flipHorizontal() const { return mFlipHorizontal; }
     QAction *flipVertical() const { return mFlipVertical; }
     QAction *rotateLeft() const { return mRotateLeft; }
@@ -50,6 +51,7 @@ public:
 private:
     QAction *mRandom;
     QAction *mWangFill;
+    QAction *mEraseMode;
     QAction *mFlipHorizontal;
     QAction *mFlipVertical;
     QAction *mRotateLeft;
