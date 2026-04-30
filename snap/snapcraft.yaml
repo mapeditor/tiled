@@ -6,37 +6,32 @@ base: core24
 grade: stable
 confinement: strict
 
+# The kde-neon-6 extension supplies the Qt 6 SDK at build time (via the
+# kde-qt6-core24-sdk content snap) and Qt 6 / KF6 runtime libraries via the
+# kf6-core24 content snap. It also auto-adds a desktop-launch command-chain
+# and the standard desktop / opengl / wayland / x11 / unity7 / network plugs
+# to every app that lists it in `extensions`.
+
 apps:
   tiled:
-    command-chain: &command-chain
-      - bin/desktop-launch
+    extensions: [kde-neon-6]
     command: usr/bin/tiled
     common-id: org.mapeditor.Tiled.desktop
     plugs:
-      - desktop
-      - desktop-legacy
-      - wayland
-      - unity7
       - home
       - removable-media
-      - opengl
-      - network
   tmxviewer:
-    command-chain: *command-chain
+    extensions: [kde-neon-6]
     command: usr/bin/tmxviewer
     plugs: &basic-plugs
-      - desktop
-      - desktop-legacy
-      - wayland
-      - unity7
       - home
       - removable-media
   tmxrasterizer:
-    command-chain: *command-chain
+    extensions: [kde-neon-6]
     command: usr/bin/tmxrasterizer
     plugs: *basic-plugs
   terraingenerator:
-    command-chain: *command-chain
+    extensions: [kde-neon-6]
     command: usr/bin/terraingenerator
     plugs: *basic-plugs
 
@@ -48,6 +43,12 @@ parts:
       craftctl set version="$(git describe | sed 's/v//')"
     override-build: |
       qbs setup-toolchains --detect
+      # Qt 6 ships qmake as `qmake6`; the kde-neon-6 extension exposes that on
+      # PATH but not a `qmake` symlink. qbs's Qt module provider scans PATH
+      # for `qmake`, so create a shim that points at qmake6.
+      mkdir -p "${CRAFT_PART_BUILD}/.qmake-shim"
+      ln -sf "$(command -v qmake6)" "${CRAFT_PART_BUILD}/.qmake-shim/qmake"
+      export PATH="${CRAFT_PART_BUILD}/.qmake-shim:${PATH}"
       qbs build --jobs "${CRAFT_PARALLEL_BUILD_COUNT}" --command-echo-mode command-line config:release qbs.installPrefix:"/usr" projects.Tiled.version:$(craftctl get version) projects.Tiled.useRPaths:false
       qbs install --install-root "${CRAFT_PART_INSTALL}" config:release
     parse-info:
@@ -57,20 +58,12 @@ parts:
       - pkg-config
     # FIXME: Python plugin compiles and loads, but can't find platform libraries
     #  - python-dev
-      - qttools5-dev-tools
       - qbs
-      - libqt5svg5-dev
-      - qtdeclarative5-dev
       - zlib1g-dev
       - libzstd-dev
     stage-packages:
-      - libqt5quick5
-      - qt5-image-formats-plugins
-      - qtwayland5
     #  - libpython2.7
       - libzstd1
-      - xkb-data
-    after: [desktop-qt5]
 
   qaseprite:
     source: https://github.com/mapeditor/qaseprite/releases/download/1.0.3/qaseprite-1.0.3-source.tar.gz
@@ -97,26 +90,3 @@ parts:
       - libxcursor1
       - libxi6
       - zlib1g
-    after: [desktop-qt5]
-
-  desktop-qt5:
-    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
-    source-subdir: qt
-    plugin: make
-    make-parameters: ["FLAVOR=qt5"]
-    build-packages:
-      - build-essential
-      - qtbase5-dev
-    stage-packages:
-      - libxkbcommon0
-      - dmz-cursor-theme
-      - light-themes
-      - adwaita-icon-theme
-      - shared-mime-info
-      - libqt5concurrent5
-      - libqt5gui5
-      - libqt5svg5 # for loading icon themes which are svg
-      - libgdk-pixbuf2.0-0
-      - locales-all
-      - xdg-user-dirs
-      - fcitx-frontend-qt5
