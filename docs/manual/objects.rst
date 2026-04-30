@@ -108,8 +108,8 @@ They are most commonly used for defining collision shapes.
 When placing a polygon, the first click determines the location of the
 object as well as the location of the first point of the polygon.
 Subsequent clicks are used to add additional points to the polygon.
-Polygons needs to have at least three points. Click the first point
-again or press ``Shift+Enter`` to finish creating the polygon. You can
+Polygons need to have at least three points. Click the first point
+again or press ``Shift + Enter`` to finish creating the polygon. You can
 press ``Escape`` to cancel the creation of the polygon.
 
 When you want to change a polygon after it has been placed, you need to

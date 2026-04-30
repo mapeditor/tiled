@@ -121,7 +121,7 @@ When an object layer is selected
 -  ``P`` - Activate :ref:`insert-polygon-tool`
 
    -  ``Enter`` - Finish creating object (as polyline)
-   -  ``Shift+Enter`` - Finish creating object as polygon (closing the shape)
+   -  ``Shift + Enter`` - Finish creating object as polygon (closing the shape)
    -  ``Escape`` - Cancel creating object
    -  ``Backspace`` - Remove previously added point while creating or extending
       polygons and polylines
