@@ -194,11 +194,6 @@ jobs:
     strategy:
       matrix:
         include:
-        - qt_version: 5.15.2
-          qt_modules: ""
-          version_suffix: "10.13-12"
-          architectures: x86_64
-          cmake_architectures: x86_64
         - qt_version: 6.10.2
           qt_modules: "qtimageformats"
           version_suffix: "13+"
@@ -320,16 +315,6 @@ jobs:
     strategy:
       matrix:
         include:
-        - qt_version: 5.15.2
-          qt_version_major: 5
-          qt_arch: win32_mingw81
-          qt_modules: ""
-          arch: 32
-          openssl_arch: x86
-          filename_suffix: 'Windows-7-8_x86'
-          mingw_component: tools_mingw
-          mingw_variant: qt.tools.win32_mingw810
-          mingw_dir: mingw810_32
         - qt_version: 6.10.2
           qt_version_major: 6
           qt_arch: win64_mingw
@@ -448,9 +433,7 @@ jobs:
         prerelease: false
         files: |
           Tiled-${{ needs.version.outputs.version }}_Windows-10+_x86_64.msi/*.msi
-          Tiled-${{ needs.version.outputs.version }}_Windows-7-8_x86.msi/*.msi
           Tiled-${{ needs.version.outputs.version }}_Linux_x86_64.AppImage/*.AppImage
-          Tiled-${{ needs.version.outputs.version }}_macOS-10.13-10.15.app/*.zip
           Tiled-${{ needs.version.outputs.version }}_macOS-11+.app/*.zip
 
   sentry:
