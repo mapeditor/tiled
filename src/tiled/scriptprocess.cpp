@@ -35,11 +35,7 @@
 #include <QJSEngine>
 #include <QCoreApplication>
 
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-#include <QTextCodec>
-#else
 #include <QStringConverter>
-#endif
 
 #include <memory>
 
@@ -93,19 +89,12 @@ private:
     std::unique_ptr<QProcess> m_process;
     QProcessEnvironment m_environment;
     QString m_workingDirectory;
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    QTextCodec *m_codec;
-#else
     QStringConverter::Encoding m_encoding = QStringConverter::System;
-#endif
 };
 
 ScriptProcess::ScriptProcess()
     : m_process(new QProcess)
     , m_environment(QProcessEnvironment::systemEnvironment())
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    , m_codec(QTextCodec::codecForName("UTF-8"))
-#endif
 {
 }
 
@@ -126,23 +115,11 @@ void ScriptProcess::setEnv(const QString &name, const QString &value)
 
 QString ScriptProcess::codec() const
 {
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    return QString::fromLatin1(m_codec->name());
-#else
     return QString::fromLatin1(QStringConverter::nameForEncoding(m_encoding));
-#endif
 }
 
 void ScriptProcess::setCodec(const QString &codec)
 {
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    if (const auto newCodec = QTextCodec::codecForName(codec.toLatin1())) {
-        m_codec = newCodec;
-    } else {
-        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors",
-                                                                         "Unsupported encoding: %1").arg(codec));
-    }
-#else
     auto encoding = QStringConverter::encodingForName(codec.toLatin1());
     if (!encoding.has_value()) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors",
@@ -150,7 +127,6 @@ void ScriptProcess::setCodec(const QString &codec)
         return;
     }
     m_encoding = encoding.value();
-#endif
 }
 
 QString ScriptProcess::workingDirectory()
@@ -336,20 +312,12 @@ bool ScriptProcess::checkForClosed() const
 
 QByteArray ScriptProcess::encode(const QString &string) const
 {
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    return m_codec->fromUnicode(string);
-#else
     return QStringEncoder(m_encoding).encode(string);
-#endif
 }
 
 QString ScriptProcess::decode(const QByteArray &bytes) const
 {
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    return m_codec->toUnicode(bytes);
-#else
     return QStringDecoder(m_encoding).decode(bytes);
-#endif
 }
 
 

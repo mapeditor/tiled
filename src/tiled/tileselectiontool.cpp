@@ -196,16 +196,7 @@ QRect TileSelectionTool::selectedArea() const
     if (mExpandFromCenter)
         startPos -= delta;
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QRect area = QRect(startPos, endPos).normalized();
-    if (area.width() == 0)
-        area.adjust(-1, 0, 1, 0);
-    if (area.height() == 0)
-        area.adjust(0, -1, 0, 1);
-    return area;
-#else
     return QRect::span(startPos, endPos);
-#endif
 }
 
 #include "moc_tileselectiontool.cpp"

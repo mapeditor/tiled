@@ -10,9 +10,9 @@ DynamicLibrary {
     Depends { name: "qtsingleapplication" }
     Depends { name: "Qt"; submodules: ["core", "widgets", "concurrent", "qml"]; versionAtLeast: "6.2.0" }
     Depends { name: "Qt.svg"; condition: qbs.targetOS.contains("macos") }
-    Depends { name: "Qt.openglwidgets"; condition: Qt.core.versionMajor >= 6; required: false }
+    Depends { name: "Qt.openglwidgets"; required: false }
     Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux") && project.dbus; required: false }
-    Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") && Qt.core.versionMajor >= 6 }
+    Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") }
 
     cpp.includePaths: {
         var paths = ["."];
@@ -28,7 +28,7 @@ DynamicLibrary {
     cpp.cxxFlags: {
         var flags = base;
         if (qbs.toolchain.contains("msvc")) {
-            if (Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 3)
+            if (Qt.core.versionMinor >= 3)
                 flags.push("/permissive-");
         }
         return flags;

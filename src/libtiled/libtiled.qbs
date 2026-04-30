@@ -18,7 +18,7 @@ DynamicLibrary {
         var flags = base;
 
         if (qbs.toolchain.contains("msvc")) {
-            if (Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 3)
+            if (Qt.core.versionMinor >= 3)
                 flags.push("/permissive-");
         }
 

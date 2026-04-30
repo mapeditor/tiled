@@ -221,15 +221,7 @@ void ShapeFillTool::updateFillOverlay()
                           : mStartCorner;
     const QPoint p2 = mStartCorner + QPoint(dx, dy);
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QRect area = QRect(p1, p2).normalized();
-    if (area.width() == 0)
-        area.adjust(-1, 0, 1, 0);
-    if (area.height() == 0)
-        area.adjust(0, -1, 0, 1);
-#else
     QRect area = QRect::span(p1, p2);
-#endif
 
     switch (mCurrentShape) {
     case Rect:

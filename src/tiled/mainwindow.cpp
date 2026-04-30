@@ -97,12 +97,8 @@
 #include <QVariantAnimation>
 
 #ifdef Q_OS_WIN
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QWindow>
 #include <QtGui/qpa/qplatformwindow_p.h>
-#else
-#include <QtPlatformHeaders\QWindowsWindowFunctions>
-#endif
 #endif // Q_OS_WIN
 
 using namespace Tiled;
@@ -2048,13 +2044,9 @@ void MainWindow::ensureHasBorderInFullScreen()
 
     bool wasFullScreen = isFullScreen();
     setFullScreen(false);
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QWindowsWindowFunctions::setHasBorderInFullScreen(window, true);
-#else
     using QWindowsWindow = QNativeInterface::Private::QWindowsWindow;
     if (auto windowsWindow = window->nativeInterface<QWindowsWindow>())
         windowsWindow->setHasBorderInFullScreen(true);
-#endif
     setFullScreen(wasFullScreen);
 
     hasBorderInFullScreen = true;
