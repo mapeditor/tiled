@@ -250,7 +250,7 @@ ScriptSession *ScriptModule::session() const
 QColor ScriptModule::color(const QString &name) const
 {
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
-    return QColor::isValidColor(name) ? QColor(name) : QColor();
+    return isValidColorName(name) ? QColor(name) : QColor();
 #else
     return QColor::fromString(name);
 #endif

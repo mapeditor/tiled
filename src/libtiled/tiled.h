@@ -133,6 +133,15 @@ inline QString colorToString(const QColor &color)
     return color.name();
 }
 
+inline bool isValidColorName(const QString &name)
+{
+#if QT_VERSION >= QT_VERSION_CHECK(6, 4, 0)
+    return QColor::isValidColorName(name);
+#else
+    return QColor::isValidColor(name);
+#endif
+}
+
 inline QMargins maxMargins(const QMargins &a,
                            const QMargins &b)
 {

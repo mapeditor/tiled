@@ -30,6 +30,7 @@
 
 #include "properties.h"
 #include "savefile.h"
+#include "tiled.h"
 
 #include <QCoreApplication>
 #include <QDebug>
@@ -96,8 +97,12 @@ static void fromJson(const QJsonObject &object, ObjectType &objectType, const Ex
     objectType.name = object.value(QLatin1String("name")).toString();
 
     const QString colorName = object.value(QLatin1String("color")).toString();
-    if (QColor::isValidColor(colorName))
+#if QT_VERSION >= QT_VERSION_CHECK(6, 4, 0)
+    objectType.color = QColor::fromString(colorName);
+#else
+    if (isValidColorName(colorName))
         objectType.color.setNamedColor(colorName);
+#endif
 
     const QJsonArray properties = object.value(QLatin1String("properties")).toArray();
     for (const QJsonValue &property : properties) {

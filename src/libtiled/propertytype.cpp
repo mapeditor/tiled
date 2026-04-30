@@ -33,6 +33,7 @@
 #include "object.h"
 #include "objecttypes.h"
 #include "properties.h"
+#include "tiled.h"
 
 #include <QVector>
 
@@ -397,8 +398,12 @@ void ClassPropertyType::initializeFromJson(const QJsonObject &json)
     memberValuesResolved = false;
 
     const QString colorName = json.value(QLatin1String("color")).toString();
-    if (QColor::isValidColor(colorName))
+#if QT_VERSION >= QT_VERSION_CHECK(6, 4, 0)
+    color = QColor::fromString(colorName);
+#else
+    if (isValidColorName(colorName))
         color.setNamedColor(colorName);
+#endif
 
     const QString drawFillPropertyName = QLatin1String("drawFill");
     if (json.contains(drawFillPropertyName))
