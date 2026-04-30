@@ -55,7 +55,7 @@ jobs:
         popd
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: Tiled.app
         path: Tiled-*-macos.zip

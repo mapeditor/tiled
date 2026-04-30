@@ -17,7 +17,7 @@ jobs:
         docs-folder: "docs/"
 
     - name: Upload documentation
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: Tiled-Manual-HTML
         path: docs/_build/html/
