@@ -697,16 +697,28 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
     }
 
     menu.addSeparator();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+    menu.addAction(tr("Flip Horizontally"), Qt::Key_X, this, &AbstractObjectTool::flipHorizontally);
+    menu.addAction(tr("Flip Vertically"), Qt::Key_Y, this, &AbstractObjectTool::flipVertically);
+#else
     menu.addAction(tr("Flip Horizontally"), this, &AbstractObjectTool::flipHorizontally, Qt::Key_X);
     menu.addAction(tr("Flip Vertically"), this, &AbstractObjectTool::flipVertically, Qt::Key_Y);
+#endif
 
     ObjectGroup *sameObjectGroup = RaiseLowerHelper::sameObjectGroup(selectedObjects);
     if (sameObjectGroup && sameObjectGroup->drawOrder() == ObjectGroup::IndexOrder) {
         menu.addSeparator();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+        menu.addAction(tr("Raise Object"), Qt::Key_PageUp, this, &AbstractObjectTool::raise);
+        menu.addAction(tr("Lower Object"), Qt::Key_PageDown, this, &AbstractObjectTool::lower);
+        menu.addAction(tr("Raise Object to Top"), Qt::Key_Home, this, &AbstractObjectTool::raiseToTop);
+        menu.addAction(tr("Lower Object to Bottom"), Qt::Key_End, this, &AbstractObjectTool::lowerToBottom);
+#else
         menu.addAction(tr("Raise Object"), this, &AbstractObjectTool::raise, Qt::Key_PageUp);
         menu.addAction(tr("Lower Object"), this, &AbstractObjectTool::lower, Qt::Key_PageDown);
         menu.addAction(tr("Raise Object to Top"), this, &AbstractObjectTool::raiseToTop, Qt::Key_Home);
         menu.addAction(tr("Lower Object to Bottom"), this, &AbstractObjectTool::lowerToBottom, Qt::Key_End);
+#endif
     }
 
     if (LayerIterator(mapDocument()->map(), Layer::ObjectGroupType).next()) {
