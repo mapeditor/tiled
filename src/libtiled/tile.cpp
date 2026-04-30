@@ -257,3 +257,7 @@ Tile *Tile::clone(Tileset *tileset) const
 
     return c;
 }
+
+QColor Tile::effectiveTintColor() const {
+    return mTintColor.isValid() ? mTintColor : QColor(255, 255, 255, 255);
+}

@@ -396,6 +396,9 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
         if (ok)
             tile->setProbability(probability);
 
+        QString tintColorStr = tileVar[QStringLiteral("tintcolor")].toString();
+        if (!tintColorStr.isEmpty())
+            tile->setTintColor(QColor(tintColorStr));
         QVariant imageVariant = tileVar[QStringLiteral("image")];
         if (!imageVariant.isNull()) {
             const QUrl imagePath = toUrl(imageVariant.toString(), mDir);
@@ -757,6 +760,7 @@ std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap 
     const qreal height = variantMap[QStringLiteral("height")].toReal();
     const qreal rotation = variantMap[QStringLiteral("rotation")].toReal();
     const qreal opacity = variantMap[QStringLiteral("opacity")].toReal();
+    const QColor tintColor = variantMap[QStringLiteral("tintcolor")].value<QColor>();
 
     QString className = variantMap[QStringLiteral("class")].toString();
     if (className.isEmpty())    // fallback for compatibility
@@ -776,6 +780,11 @@ std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap 
     if (variantMap.contains(QLatin1String("opacity"))) {
         object->setOpacity(opacity);
         object->setPropertyChanged(MapObject::OpacityProperty);
+    }
+
+    if (variantMap.contains(QLatin1String("tintcolor"))){
+        object->setTintColor(tintColor);
+        object->setPropertyChanged(MapObject::TintColorProperty);
     }
 
     if (!templateVariant.isNull()) { // This object is a template instance

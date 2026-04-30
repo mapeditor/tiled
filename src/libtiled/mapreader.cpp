@@ -541,6 +541,11 @@ void MapReaderPrivate::readTilesetTile(Tileset &tileset)
     if (!probability.isEmpty())
         tile->setProbability(probability.toDouble());
 
+    // Read tile tint color
+    const auto tintColor = atts.value(QLatin1String("tintcolor"));
+    if (!tintColor.isEmpty())
+        tile->setTintColor(QColor(tintColor));
+
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("properties")) {
             tile->mergeProperties(readProperties());
@@ -1234,6 +1239,12 @@ std::unique_ptr<MapObject> MapReaderPrivate::readObject()
     if (ok) {
         object->setOpacity(opacity);
         object->setPropertyChanged(MapObject::OpacityProperty);
+    }
+
+    const QString tintColorStr = atts.value(QLatin1String("tintcolor")).toString();
+    if(!tintColorStr.isEmpty()){
+        object->setTintColor(QColor(tintColorStr));
+        object->setPropertyChanged(MapObject::TintColorProperty);
     }
 
     if (gid) {

@@ -297,6 +297,8 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
             tileVariant[FileFormat::classPropertyNameForObject()] = tile->className();
         if (tile->probability() != 1.0)
             tileVariant[QStringLiteral("probability")] = tile->probability();
+        if (tile->tintColor().isValid())
+            tileVariant[QStringLiteral("tintcolor")] = colorToString(tile->tintColor());
         if (!tile->imageSource().isEmpty()) {
             const QString rel = toFileReference(tile->imageSource(), mDir);
             tileVariant[QStringLiteral("image")] = rel;
@@ -596,6 +598,9 @@ QVariant MapToVariantConverter::toVariant(const MapObject &object) const
 
     if (notTemplateInstance || object.propertyChanged(MapObject::VisibleProperty))
         objectVariant[QStringLiteral("visible")] = object.isVisible();
+
+    if (notTemplateInstance || object.propertyChanged(MapObject::TintColorProperty))
+        objectVariant[QStringLiteral("tintcolor")] = colorToString(object.tintColor());
 
     /* Polygons are stored in this format:
      *
