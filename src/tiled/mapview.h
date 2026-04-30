@@ -99,7 +99,7 @@ protected:
 
     void handlePinchGesture(QPinchGesture *pinch);
 
-    void adjustCenterFromMousePosition(QPoint mousePos);
+    void adjustCenterFromMousePosition(QPointF mousePos);
 
 signals:
     void focused();
@@ -130,8 +130,8 @@ private:
     void setMapDocument(MapDocument *mapDocument);
 
     MapDocument *mMapDocument = nullptr;
-    QPoint mLastMousePos;
-    QPoint mScrollStartPos;
+    QPointF mLastMousePos;
+    QPointF mScrollStartPos;
     QPointF mLastMouseScenePos;
     PannableViewHelper *mPannableViewHelper;
     std::unique_ptr<QCursor> mToolCursor;

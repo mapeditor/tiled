@@ -67,7 +67,7 @@ private:
     QAbstractScrollArea *mView;
     PanningMode mMode = NoPanning;
     bool mAutoPanningEnabled = false;
-    QPoint mLastMousePos;
+    QPointF mLastMousePos;
     std::optional<Qt::CursorShape> mCursor;
 };
 
