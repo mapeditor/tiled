@@ -100,6 +100,9 @@ std::unique_ptr<PropertyType> PropertyType::createFromJson(const QJsonObject &js
     case PT_Enum:
         propertyType = std::make_unique<EnumPropertyType>(name);
         break;
+    case PT_Primitive:
+        propertyType = std::make_unique<PrimitivePropertyType>(name);
+        break;
     }
 
     if (propertyType) {
@@ -116,6 +119,8 @@ PropertyType::Type PropertyType::typeFromString(const QString &string)
         return PT_Enum;
     if (string == QLatin1String("class"))
         return PT_Class;
+    if (string == QLatin1String("primitive"))
+        return PT_Primitive;
     return PT_Invalid;
 }
 
@@ -126,6 +131,8 @@ QString PropertyType::typeToString(Type type)
         return QStringLiteral("class");
     case PT_Enum:
         return QStringLiteral("enum");
+    case PT_Primitive:
+        return QStringLiteral("primitive");
     case PT_Invalid:
         break;
     }
@@ -471,6 +478,50 @@ void ClassPropertyType::setUsageFlags(int flags, bool value)
         usageFlags &= ~flags;
 }
 
+// PrimitivePropertyType
+
+QVariant PrimitivePropertyType::defaultValue() const
+{
+    return mDefaultValue;
+}
+
+QJsonObject PrimitivePropertyType::toJson(const ExportContext &context) const
+{
+    auto json = PropertyType::toJson(context);
+    json.insert(QStringLiteral("storageType"), typeToName(mDefaultValue.userType()));
+
+    // Persist the actual default value
+    if (mDefaultValue.userType() == QMetaType::QColor) {
+        const QColor color = mDefaultValue.value<QColor>();
+        if (color.isValid())
+            json.insert(QStringLiteral("value"), color.name(QColor::HexArgb));
+    } else {
+        json.insert(QStringLiteral("value"), QJsonValue::fromVariant(mDefaultValue));
+    }
+
+    if (visualColor.isValid())
+        json.insert(QStringLiteral("visualColor"), visualColor.name(QColor::HexArgb));
+    return json;
+}
+
+void PrimitivePropertyType::initializeFromJson(const QJsonObject &json)
+{
+    const QString typeName = json.value(QStringLiteral("storageType")).toString();
+
+    ExportValue exportValue;
+    exportValue.typeName = typeName;
+
+    if (json.contains(QStringLiteral("value")))
+        exportValue.value = json.value(QStringLiteral("value")).toVariant();
+
+    ExportContext context;
+    mDefaultValue = context.toPropertyValue(exportValue);
+
+    const QString colorName = json.value(QLatin1String("visualColor")).toString();
+    if (QColor::isValidColor(colorName))
+        visualColor.setNamedColor(colorName);
+}
+
 // PropertyTypes
 
 PropertyTypes::~PropertyTypes() = default;
@@ -484,8 +535,9 @@ size_t PropertyTypes::count(PropertyType::Type type) const
 
 static int typeUsageFlags(const PropertyType &type)
 {
-    return type.isClass() ? static_cast<const ClassPropertyType&>(type).usageFlags
-                          : ClassPropertyType::PropertyValueType;
+    if (type.isClass())
+        return static_cast<const ClassPropertyType&>(type).usageFlags;
+    return ClassPropertyType::PropertyValueType;
 }
 
 void PropertyTypes::merge(PropertyTypes typesToMerge)
