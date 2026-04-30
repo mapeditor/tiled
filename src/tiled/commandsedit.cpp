@@ -49,11 +49,19 @@ CommandsEdit::CommandsEdit(const QVector<Command> &commands, QWidget *parent)
     h->setSectionResizeMode(CommandDataModel::ShortcutColumn, QHeaderView::Fixed);
     h->setSectionResizeMode(CommandDataModel::EnabledColumn, QHeaderView::ResizeToContents);
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0)
+    connect(mUi->saveBox, &QCheckBox::checkStateChanged,
+            this, &CommandsEdit::setSaveBeforeExecute);
+
+    connect(mUi->outputBox, &QCheckBox::checkStateChanged,
+            this, &CommandsEdit::setShowOutput);
+#else
     connect(mUi->saveBox, &QCheckBox::stateChanged,
             this, &CommandsEdit::setSaveBeforeExecute);
 
     connect(mUi->outputBox, &QCheckBox::stateChanged,
             this, &CommandsEdit::setShowOutput);
+#endif
 
     connect(mUi->keySequenceEdit, &QKeySequenceEdit::keySequenceChanged,
             this, &CommandsEdit::setShortcut);
