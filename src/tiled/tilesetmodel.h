@@ -45,6 +45,8 @@ public:
      */
     TilesetModel(TilesetDocument *tilesetDocument, QObject *parent = nullptr);
 
+    QModelIndex index(int row, int column = 0, const QModelIndex &parent = {}) const override;
+
     /**
      * Returns the number of rows.
      */
