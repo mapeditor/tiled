@@ -2904,7 +2904,8 @@ void PropertiesWidget::renameProperty(const QString &name)
     dialog->setTextValue(name);
     dialog->setWindowTitle(QCoreApplication::translate("Tiled::PropertiesDock", "Rename Property"));
 
-    connect(dialog, &QInputDialog::textValueSelected, this, [=] (const QString &newName) {
+    connect(dialog, &QInputDialog::textValueSelected, this, [=] (const QString &text) {
+        const QString newName = text.trimmed();
         if (newName.isEmpty())
             return;
         if (newName == name)
