@@ -48,12 +48,8 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QtGui/private/qguiapplication_p.h>
 #include <QtGui/qpa/qplatformintegration.h>
-#else
-#include <QtPlatformHeaders\QWindowsWindowFunctions>
-#endif
 
 #ifdef ERROR
 #undef ERROR
@@ -431,22 +427,6 @@ int main(int argc, char *argv[])
 
     QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::RoundPreferFloor);
 
-    // High-DPI scaling is always enabled in Qt 6
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-#endif
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    // Enable support for highres images (added in Qt 5.1, but off by default, always enabled in Qt 6)
-    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-
-    // Fallback session management was removed from Qt 6
-    QGuiApplication::setFallbackSessionManagementEnabled(false);
-
-    // Window context help buttons are disabled by default in Qt 6
-    QCoreApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
-#endif
-
 #if defined(Q_OS_MAC) && QT_VERSION < QT_VERSION_CHECK(6, 7, 3)
     QCoreApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
@@ -616,13 +596,9 @@ int main(int argc, char *argv[])
 
     a.setActivationWindow(&w);
 #ifdef Q_OS_WIN
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     using QWindowsApplication = QNativeInterface::Private::QWindowsApplication;
     if (auto nativeWindowsApp = dynamic_cast<QWindowsApplication *>(QGuiApplicationPrivate::platformIntegration()))
         nativeWindowsApp->setWindowActivationBehavior(QWindowsApplication::AlwaysActivateWindow);
-#else
-    QWindowsWindowFunctions::setWindowActivationBehavior(QWindowsWindowFunctions::AlwaysActivateWindow);
-#endif
 #endif
 
     QObject::connect(&a, &TiledApplication::fileOpenRequest,

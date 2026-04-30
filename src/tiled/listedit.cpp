@@ -112,11 +112,7 @@ void ListEdit::addButtonClicked()
         else
             newValue = QVariant::fromValue(PropertyValue { QVariant(), propertyValue.typeId });
     } else {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         newValue = QVariant(lastValue.metaType());
-#else
-        newValue = QVariant(lastValue.userType(), nullptr);
-#endif
     }
     emit appendValue(newValue);
 }

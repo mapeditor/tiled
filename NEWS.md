@@ -7,6 +7,7 @@
 * Scripting: Added 'tiled.cell' function, 'cell.flags' property and 'TileLayerEdit.setCell' function (#4538)
 * Scripting: Added MapObject.resolvedClassName() (by MatusGuy, #4529)
 * snap: Updated to Qt 6
+* Raised the minimum Qt version to 6.2 (drops Qt 5 support)
 
 ### Tiled 1.12.2 (27 May 2026)
 
