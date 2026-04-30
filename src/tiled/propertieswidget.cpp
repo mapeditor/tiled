@@ -2904,22 +2904,15 @@ void PropertiesWidget::renameProperty(const QString &name)
     dialog->setTextValue(name);
     dialog->setWindowTitle(QCoreApplication::translate("Tiled::PropertiesDock", "Rename Property"));
 
-    connect(dialog, &QInputDialog::textValueSelected, this, [=](const QString &newName) {
-        QString trimmedName = newName.trimmed();
-
-        if (trimmedName.isEmpty())
+    connect(dialog, &QInputDialog::textValueSelected, this, [=] (const QString &text) {
+        const QString newName = text.trimmed();
+        if (newName.isEmpty())
             return;
-
-        if (trimmedName == name)
+        if (newName == name)
             return;
 
         QUndoStack *undoStack = mDocument->undoStack();
-        undoStack->push(new RenameProperty(
-            mDocument,
-            mDocument->currentObjects(),
-            name,
-            trimmedName
-            ));
+        undoStack->push(new RenameProperty(mDocument, mDocument->currentObjects(), name, newName));
     });
 
     dialog->open();
