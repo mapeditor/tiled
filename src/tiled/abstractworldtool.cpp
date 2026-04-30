@@ -61,20 +61,20 @@ AbstractWorldTool::AbstractWorldTool(Id id,
     QIcon addAnotherMapToWorldIcon(QLatin1String(":images/24/world-map-add-other.png"));
     mAddAnotherMapToWorldAction = new QAction(this);
     mAddAnotherMapToWorldAction->setIcon(addAnotherMapToWorldIcon);
-    mAddAnotherMapToWorldAction->setShortcut(Qt::SHIFT + Qt::Key_A);
+    mAddAnotherMapToWorldAction->setShortcut(Qt::SHIFT | Qt::Key_A);
     ActionManager::registerAction(mAddAnotherMapToWorldAction, "AddAnotherMap");
     connect(mAddAnotherMapToWorldAction, &QAction::triggered, this, &AbstractWorldTool::addAnotherMapToWorldAtCenter);
 
     QIcon addMapToWorldIcon(QLatin1String(":images/24/world-map-add-this.png"));
     mAddMapToWorldAction = new QAction(this);
     mAddMapToWorldAction->setIcon(addMapToWorldIcon);
-    mAddMapToWorldAction->setShortcut(Qt::SHIFT + Qt::Key_A);
+    mAddMapToWorldAction->setShortcut(Qt::SHIFT | Qt::Key_A);
     ActionManager::registerAction(mAddMapToWorldAction, "AddMap");
 
     QIcon removeMapFromWorldIcon(QLatin1String(":images/24/world-map-remove-this.png"));
     mRemoveMapFromWorldAction = new QAction(this);
     mRemoveMapFromWorldAction->setIcon(removeMapFromWorldIcon);
-    mRemoveMapFromWorldAction->setShortcut(Qt::SHIFT + Qt::Key_D);
+    mRemoveMapFromWorldAction->setShortcut(Qt::SHIFT | Qt::Key_D);
     ActionManager::registerAction(mRemoveMapFromWorldAction, "RemoveMap");
     connect(mRemoveMapFromWorldAction, &QAction::triggered, this, &AbstractWorldTool::removeCurrentMapFromWorld);
 

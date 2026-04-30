@@ -117,7 +117,7 @@ AbstractObjectTool::AbstractObjectTool(Id id,
 
     mRotateLeft = new QAction(this);
     mRotateLeft->setIcon(rotateLeftIcon);
-    mRotateLeft->setShortcut(Qt::SHIFT + Qt::Key_Z);
+    mRotateLeft->setShortcut(Qt::SHIFT | Qt::Key_Z);
 
     mRotateRight = new QAction(this);
     mRotateRight->setIcon(rotateRightIcon);

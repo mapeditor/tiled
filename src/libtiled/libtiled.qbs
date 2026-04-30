@@ -35,8 +35,7 @@ DynamicLibrary {
             "QT_NO_CAST_FROM_ASCII",
             "QT_NO_CAST_TO_ASCII",
             "QT_NO_URL_CAST_FROM_STRING",
-            "QT_DISABLE_DEPRECATED_BEFORE=0x050F00",
-            "QT_NO_DEPRECATED_WARNINGS",
+            "QT_DISABLE_DEPRECATED_BEFORE=0x060200",
             "_USE_MATH_DEFINES",
         ]
 

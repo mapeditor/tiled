@@ -221,7 +221,7 @@ TileCollisionDock::TileCollisionDock(QWidget *parent)
     vertical->addLayout(horizontal);
     vertical->addWidget(mObjectsViewSplitter);
 
-    auto selectAllShortcut = new QShortcut(Qt::CTRL + Qt::Key_A, mMapView, nullptr, nullptr, Qt::WidgetShortcut);
+    auto selectAllShortcut = new QShortcut(Qt::CTRL | Qt::Key_A, mMapView, nullptr, nullptr, Qt::WidgetShortcut);
     connect(selectAllShortcut, &QShortcut::activated, this, &TileCollisionDock::selectAll);
 
     connect(mActionDuplicateObjects, &QAction::triggered, this, &TileCollisionDock::duplicateObjects);
