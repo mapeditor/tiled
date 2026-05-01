@@ -604,7 +604,11 @@ void MapView::wheelEvent(QWheelEvent *event)
     // on that event.
     QPoint pixels = event->pixelDelta();
 
-    if (pixels.isNull()) {
+    const bool isNewGesture = event->phase() == Qt::ScrollBegin
+                              || !mScrollTimer.isValid()
+                              || mScrollTimer.elapsed() > 300;
+
+    if (pixels.isNull() || isNewGesture) {
         QPointF steps = event->angleDelta() / 8.0 / 15.0;
         int lines = QApplication::wheelScrollLines();
         pixels.setX(int(steps.x() * lines * hBar->singleStep()));
@@ -612,6 +616,9 @@ void MapView::wheelEvent(QWheelEvent *event)
     } else {
         pixels = Utils::dpiScaled(pixels);
     }
+
+    if (!event->pixelDelta().isNull())
+        mScrollTimer.restart();
 
     scrollBy(-pixels);
 }
