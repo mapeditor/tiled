@@ -280,7 +280,7 @@ jobs:
     - name: Create Certificate File
       id: certificateFile
       if: env.SIGNING_ENABLED == 'true'
-      uses: timheuer/base64-to-file@v1
+      uses: timheuer/base64-to-file@v2
       with:
         fileName: 'certificate.p12'
         encodedString: ${{ secrets.MACOS_CERTIFICATE }}
