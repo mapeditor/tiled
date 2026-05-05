@@ -166,7 +166,7 @@ Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant
 {
     Properties properties;
 
-    const ExportContext context(mDir.path());
+    ExportContext context(mDir.path());
 
     // read object-based format (1.0)
     const QVariantMap propertiesMap = propertiesVariant.toMap();
@@ -184,47 +184,21 @@ Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant
 
     // read array-based format (1.2)
     const QVariantList propertiesList = propertiesVariant.toList();
+    if (!propertiesList.isEmpty())
+        context.setRecursiveBehavior(ExportContext::RecursiveBehavior::JsonReady);
     for (const QVariant &propertyVariant : propertiesList) {
         const QVariantMap propertyVariantMap = propertyVariant.toMap();
         const QString propertyName = propertyVariantMap[QStringLiteral("name")].toString();
 
-        properties[propertyName] = toPropertyValue(propertyVariantMap, context);
+        ExportValue exportValue;
+        exportValue.value = propertyVariantMap[QStringLiteral("value")];
+        exportValue.typeName = propertyVariantMap[QStringLiteral("type")].toString();
+        exportValue.propertyTypeName = propertyVariantMap[QStringLiteral("propertytype")].toString();
+
+        properties[propertyName] = context.toPropertyValue(exportValue);
     }
 
     return properties;
-}
-
-QVariant VariantToMapConverter::toPropertyValue(const QVariantMap &valueVariantMap,
-                                                const ExportContext &context) const
-{
-    ExportValue exportValue;
-    exportValue.value = valueVariantMap[QStringLiteral("value")];
-    exportValue.typeName = valueVariantMap[QStringLiteral("type")].toString();
-    exportValue.propertyTypeName = valueVariantMap[QStringLiteral("propertytype")].toString();
-
-    convertListValues(exportValue.value, context);
-
-    return context.toPropertyValue(exportValue);
-}
-
-void VariantToMapConverter::convertListValues(QVariant &value, const ExportContext &context) const
-{
-    switch (value.userType()) {
-    case QMetaType::QVariantList: {
-        QVariantList list = value.toList();
-        for (QVariant &item : list)
-            item = toPropertyValue(item.toMap(), context);
-        value = std::move(list);
-        break;
-    }
-    case QMetaType::QVariantMap: {
-        QVariantMap map = value.toMap();
-        for (QVariant &value : map)
-            convertListValues(value, context);
-        value = std::move(map);
-        break;
-    }
-    }
 }
 
 SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
