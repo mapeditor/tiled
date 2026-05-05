@@ -252,6 +252,7 @@ private slots:
 
     void loadProperties();
     void saveProperties();
+    void roundTripListProperty();
     void mergeProperties();
 
     void cleanupTestCase();
@@ -524,6 +525,38 @@ void test_Properties::saveProperties()
     QCOMPARE(classExportValue.propertyTypeName, classType->name);
 
     // todo: test saving a class with nested class
+}
+
+void test_Properties::roundTripListProperty()
+{
+    PropertyTypes types;
+    int nextId = 0;
+
+    auto &classWithList = static_cast<ClassPropertyType&>(
+        types.add(SharedPropertyType(new ClassPropertyType(QStringLiteral("ClassWithList")))));
+    classWithList.id = ++nextId;
+    classWithList.members.insert(QStringLiteral("items"), QVariantList());
+
+    ExportContext context(types, QString());
+
+    Properties properties;
+    properties.insert(QStringLiteral("ParallaxLayers"),
+                      QVariantList { QStringLiteral("layer1"), QStringLiteral("layer2") });
+
+    QVariantList nested;
+    nested.append(QVariant::fromValue(QVariantList { QStringLiteral("a"), QStringLiteral("b") }));
+    nested.append(QVariant::fromValue(QVariantList { QStringLiteral("c") }));
+    properties.insert(QStringLiteral("Nested"), nested);
+
+    QVariantMap classValue;
+    classValue.insert(QStringLiteral("items"),
+                      QVariantList { QStringLiteral("x"), QStringLiteral("y") });
+    properties.insert(QStringLiteral("Container"), classWithList.wrap(classValue));
+
+    const QJsonArray json = propertiesToJson(properties, context);
+    const Properties roundTripped = propertiesFromJson(json, context);
+
+    QCOMPARE(roundTripped, properties);
 }
 
 void test_Properties::mergeProperties()

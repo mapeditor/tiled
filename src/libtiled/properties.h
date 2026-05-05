@@ -101,6 +101,9 @@ public:
         ValuesOnly,             // Lua and JSON1 formats (loses types in lists)
         ListsAsExportValues,    // JSON2 format
         ExportValuesOnly,       // XML format (keep superfluous types in classes)
+        JsonReady,              // List elements expanded to {type, propertytype,
+                                // value} maps so the result can be passed
+                                // directly to QJsonValue::fromVariant.
     };
 
     explicit ExportContext(const QString &path = QString());
@@ -124,6 +127,8 @@ public:
     QVariant toPropertyValue(const QVariant &value, int metaType) const;
 
 private:
+    void convertListValues(QVariant &value) const;
+
     const PropertyTypes &mTypes;
     const QString mPath;
     RecursiveBehavior mRecursiveBehavior = RecursiveBehavior::ListsAsExportValues;
