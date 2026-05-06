@@ -412,11 +412,13 @@ ExportValue ExportContext::toExportValue(const QVariant &value) const
 
     ExportValue exportValue;
 
-    if (metaType == QMetaType::QVariantList) {
+    if (metaType == QMetaType::QVariantList && mRecursiveBehavior != RecursiveBehavior::NoRecursion) {
         QVariantList exportValues;
         const auto list = value.toList();
         exportValues.reserve(list.size());
         switch (mRecursiveBehavior) {
+        case RecursiveBehavior::NoRecursion:
+            break;  // unreachable, handled above
         case RecursiveBehavior::ValuesOnly:
             for (const QVariant &element : list)
                 exportValues.append(toExportValue(element).value);
@@ -490,13 +492,7 @@ void ExportContext::convertListValues(QVariant &value) const
     case QMetaType::QVariantList: {
         QVariantList list = value.toList();
         for (QVariant &item : list) {
-            // Only items that look like TypedListValues wrappers are converted, so
-            // already-typed values (e.g. from the XML reader) pass through.
-            if (item.userType() != QMetaType::QVariantMap)
-                continue;
             const QVariantMap itemMap = item.toMap();
-            if (!itemMap.contains(QLatin1String("type")))
-                continue;
             ExportValue elementExport;
             elementExport.value = itemMap.value(QLatin1String("value"));
             elementExport.typeName = itemMap.value(QLatin1String("type")).toString();

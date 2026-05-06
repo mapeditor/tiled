@@ -98,9 +98,12 @@ class TILEDSHARED_EXPORT ExportContext
 {
 public:
     enum class RecursiveBehavior {
+        NoRecursion,            // Values are taken as-is. Used by readers that
+                                // already produce list elements as typed values
+                                // (e.g. the XML map reader).
         ValuesOnly,             // Lua and JSON1 formats (loses types in lists)
         ExportValuesOnly,       // XML format (keep superfluous types in classes)
-        TypedListValues,              // List elements expanded to {type, propertytype,
+        TypedListValues,        // List elements expanded to {type, propertytype,
                                 // value} maps so the result can be passed
                                 // directly to QJsonValue::fromVariant.
     };
@@ -130,7 +133,7 @@ private:
 
     const PropertyTypes &mTypes;
     const QString mPath;
-    RecursiveBehavior mRecursiveBehavior = RecursiveBehavior::TypedListValues;
+    RecursiveBehavior mRecursiveBehavior = RecursiveBehavior::NoRecursion;
 };
 
 class TILEDSHARED_EXPORT AggregatedPropertyData
