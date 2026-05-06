@@ -423,10 +423,6 @@ ExportValue ExportContext::toExportValue(const QVariant &value) const
             for (const QVariant &element : list)
                 exportValues.append(toExportValue(element).value);
             break;
-        case RecursiveBehavior::ExportValuesOnly:
-            for (const QVariant &element : list)
-                exportValues.append(QVariant::fromValue(toExportValue(element)));
-            break;
         case RecursiveBehavior::TypedListValues:
             for (const QVariant &element : list) {
                 const ExportValue elementExport = toExportValue(element);
