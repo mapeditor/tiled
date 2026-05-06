@@ -94,7 +94,9 @@ private:
     void writeGroupLayer(QXmlStreamWriter &w, const GroupLayer &groupLayer);
     void writeProperties(QXmlStreamWriter &w,
                          const Properties &properties);
-    void writeExportValue(QXmlStreamWriter &w, const ExportValue &value);
+    void writePropertyValue(QXmlStreamWriter &w,
+                            const QVariant &value,
+                            const ExportContext &context);
     void writeImage(QXmlStreamWriter &w,
                     const QUrl &source,
                     const QPixmap &image,
@@ -908,66 +910,64 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
     w.writeStartElement(QStringLiteral("properties"));
 
     ExportContext context(mUseAbsolutePaths ? QString() : mDir.path());
-    context.setRecursiveBehavior(ExportContext::RecursiveBehavior::ExportValuesOnly);
+    // The writer drives recursion into lists and class members itself, so the
+    // ExportContext should not transform compound values.
+    context.setRecursiveBehavior(ExportContext::RecursiveBehavior::NoRecursion);
 
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it) {
         w.writeStartElement(QStringLiteral("property"));
         w.writeAttribute(QStringLiteral("name"), it.key());
-
-        writeExportValue(w, context.toExportValue(it.value()));
-
+        writePropertyValue(w, it.value(), context);
         w.writeEndElement(); // </property>
     }
 
     w.writeEndElement(); // </properties>
 }
 
-void MapWriterPrivate::writeExportValue(QXmlStreamWriter &w, const ExportValue &exportValue)
+void MapWriterPrivate::writePropertyValue(QXmlStreamWriter &w,
+                                          const QVariant &value,
+                                          const ExportContext &context)
 {
+    const ExportValue exportValue = context.toExportValue(value);
+
     if (exportValue.typeName != QLatin1String("string"))
         w.writeAttribute(QStringLiteral("type"), exportValue.typeName);
     if (!exportValue.propertyTypeName.isEmpty())
         w.writeAttribute(QStringLiteral("propertytype"), exportValue.propertyTypeName);
 
-    switch (exportValue.value.userType()) {
-    case QMetaType::QVariantList: {
-        const auto values = exportValue.value.toList();
-        for (const QVariant &value : values) {
-            w.writeStartElement(QStringLiteral("item"));
-            writeExportValue(w, value.value<ExportValue>());
-            w.writeEndElement(); // </item>
-        }
-        break;
-    }
-    case QMetaType::QVariantMap: {
-        const auto map = exportValue.value.toMap();
-        if (map.isEmpty())
-            break;
+    if (exportValue.typeName == QLatin1String("class")) {
+        QVariantMap members;
+        if (value.userType() == propertyValueId())
+            members = value.value<PropertyValue>().value.toMap();
+        else
+            members = value.toMap();
+
+        if (members.isEmpty())
+            return;
 
         w.writeStartElement(QStringLiteral("properties"));
-        Properties::const_iterator it = map.constBegin();
-        Properties::const_iterator it_end = map.constEnd();
-        for (; it != it_end; ++it) {
+        for (auto it = members.constBegin(); it != members.constEnd(); ++it) {
             w.writeStartElement(QStringLiteral("property"));
             w.writeAttribute(QStringLiteral("name"), it.key());
-
-            writeExportValue(w, it.value().value<ExportValue>());
-
+            writePropertyValue(w, it.value(), context);
             w.writeEndElement(); // </property>
         }
         w.writeEndElement(); // </properties>
-        break;
-    }
-    default:
-        const QString value = exportValue.value.toString();
-
-        if (value.contains(QLatin1Char('\n')))
-            w.writeCharacters(value);
+    } else if (exportValue.typeName == QLatin1String("list")) {
+        const auto list = value.toList();
+        for (const QVariant &item : list) {
+            w.writeStartElement(QStringLiteral("item"));
+            writePropertyValue(w, item, context);
+            w.writeEndElement(); // </item>
+        }
+    } else {
+        const QString stringValue = exportValue.value.toString();
+        if (stringValue.contains(QLatin1Char('\n')))
+            w.writeCharacters(stringValue);
         else
-            w.writeAttribute(QStringLiteral("value"), value);
-        break;
+            w.writeAttribute(QStringLiteral("value"), stringValue);
     }
 }
 
