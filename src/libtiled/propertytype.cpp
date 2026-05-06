@@ -242,12 +242,14 @@ ExportValue ClassPropertyType::toExportValue(const QVariant &value, const Export
 {
     Properties properties = value.toMap();
 
-    for (auto &value : properties) {
-        ExportValue exportValue = context.toExportValue(value);
-        if (context.recursiveBehavior() == ExportContext::RecursiveBehavior::ExportValuesOnly)
-            value = QVariant::fromValue(std::move(exportValue));
-        else
-            value = exportValue.value;
+    if (context.recursiveBehavior() != ExportContext::RecursiveBehavior::NoRecursion) {
+        for (auto &value : properties) {
+            ExportValue exportValue = context.toExportValue(value);
+            if (context.recursiveBehavior() == ExportContext::RecursiveBehavior::ExportValuesOnly)
+                value = QVariant::fromValue(std::move(exportValue));
+            else
+                value = exportValue.value;
+        }
     }
 
     return PropertyType::toExportValue(properties, context);

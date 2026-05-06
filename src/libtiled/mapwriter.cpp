@@ -938,12 +938,7 @@ void MapWriterPrivate::writePropertyValue(QXmlStreamWriter &w,
         w.writeAttribute(QStringLiteral("propertytype"), exportValue.propertyTypeName);
 
     if (exportValue.typeName == QLatin1String("class")) {
-        QVariantMap members;
-        if (value.userType() == propertyValueId())
-            members = value.value<PropertyValue>().value.toMap();
-        else
-            members = value.toMap();
-
+        const QVariantMap members = exportValue.value.toMap();
         if (members.isEmpty())
             return;
 
@@ -956,7 +951,7 @@ void MapWriterPrivate::writePropertyValue(QXmlStreamWriter &w,
         }
         w.writeEndElement(); // </properties>
     } else if (exportValue.typeName == QLatin1String("list")) {
-        const auto list = value.toList();
+        const auto list = exportValue.value.toList();
         for (const QVariant &item : list) {
             w.writeStartElement(QStringLiteral("item"));
             writePropertyValue(w, item, context);

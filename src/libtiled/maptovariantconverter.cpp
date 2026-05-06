@@ -365,7 +365,10 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
 QVariant MapToVariantConverter::toVariant(const Properties &properties) const
 {
     QVariantMap variantMap;
-    const ExportContext context(mDir.path());
+    ExportContext context(mDir.path());
+    // The JSON1 format can't represent typed lists, but classes still need
+    // their members converted to scalars.
+    context.setRecursiveBehavior(ExportContext::RecursiveBehavior::ValuesOnly);
 
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
