@@ -253,6 +253,7 @@ private slots:
     void loadProperties();
     void saveProperties();
     void roundTripListProperty();
+    void typedListPassesThroughDefaultMode();
     void mergeProperties();
 
     void cleanupTestCase();
@@ -557,6 +558,25 @@ void test_Properties::roundTripListProperty()
     const Properties roundTripped = propertiesFromJson(json, context);
 
     QCOMPARE(roundTripped, properties);
+}
+
+/**
+ * The XML reader builds an ExportValue whose value is already a QVariantList
+ * of typed values (not the JsonReady wrapper form), and then calls
+ * context.toPropertyValue with the default ExportContext. Verify that this
+ * still works and does not mangle the items.
+ */
+void test_Properties::typedListPassesThroughDefaultMode()
+{
+    ExportContext context(mTypes, QString());
+
+    ExportValue exportValue;
+    exportValue.typeName = QStringLiteral("list");
+    exportValue.value = QVariantList { QStringLiteral("a"), QStringLiteral("b") };
+
+    const QVariant result = context.toPropertyValue(exportValue);
+    QCOMPARE(result.toList(),
+             (QVariantList { QStringLiteral("a"), QStringLiteral("b") }));
 }
 
 void test_Properties::mergeProperties()
