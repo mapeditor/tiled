@@ -1,12 +1,9 @@
 #include "map.h"
 #include "mapobject.h"
-#include "mapwriter.h"
 #include "objectgroup.h"
-#include "propertytype.h"
 #include "tilelayer.h"
 #include "mapreader.h"
 
-#include <QBuffer>
 #include <QtTest/QtTest>
 
 using namespace Tiled;
@@ -17,7 +14,6 @@ class test_MapReader : public QObject
 
 private slots:
     void loadMap();
-    void roundTripListProperties();
 };
 
 void test_MapReader::loadMap()
@@ -55,43 +51,6 @@ void test_MapReader::loadMap()
     QCOMPARE(mapObject->y(), qreal(200));
     QCOMPARE(mapObject->width(), qreal(128));
     QCOMPARE(mapObject->height(), qreal(64));
-}
-
-void test_MapReader::roundTripListProperties()
-{
-    auto classWithList = SharedPropertyType(new ClassPropertyType(QStringLiteral("ClassWithList")));
-    classWithList->id = 1;
-    static_cast<ClassPropertyType&>(*classWithList).members
-        .insert(QStringLiteral("items"), QVariantList());
-
-    SharedPropertyTypes types(new PropertyTypes());
-    types->add(classWithList);
-    Object::setPropertyTypes(types);
-
-    Map map(Map::Parameters{});
-    Properties properties;
-    properties.insert(QStringLiteral("ParallaxLayers"),
-                      QVariantList { QStringLiteral("layer1"), QStringLiteral("layer2") });
-
-    QVariantMap classValue;
-    classValue.insert(QStringLiteral("items"),
-                      QVariantList { QStringLiteral("x"), QStringLiteral("y") });
-    properties.insert(QStringLiteral("Container"), classWithList->wrap(classValue));
-
-    map.setProperties(properties);
-
-    QBuffer buffer;
-    buffer.open(QIODevice::ReadWrite);
-    MapWriter writer;
-    writer.writeMap(&map, &buffer);
-
-    buffer.seek(0);
-    MapReader reader;
-    auto loaded = reader.readMap(&buffer, QString());
-    QVERIFY(loaded.get());
-    QCOMPARE(loaded->properties(), properties);
-
-    Object::setPropertyTypes(SharedPropertyTypes(new PropertyTypes()));
 }
 
 QTEST_MAIN(test_MapReader)

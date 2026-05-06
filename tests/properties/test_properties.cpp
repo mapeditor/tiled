@@ -1,5 +1,11 @@
+#include "map.h"
+#include "mapreader.h"
+#include "mapwriter.h"
+#include "object.h"
 #include "properties.h"
+#include "propertytype.h"
 
+#include <QBuffer>
 #include <QtTest/QtTest>
 
 using namespace Tiled;
@@ -530,15 +536,12 @@ void test_Properties::saveProperties()
 
 void test_Properties::roundTripListProperty()
 {
-    PropertyTypes types;
-    int nextId = 0;
-
-    auto &classWithList = static_cast<ClassPropertyType&>(
-        types.add(SharedPropertyType(new ClassPropertyType(QStringLiteral("ClassWithList")))));
-    classWithList.id = ++nextId;
-    classWithList.members.insert(QStringLiteral("items"), QVariantList());
-
-    ExportContext context(types, QString());
+    SharedPropertyTypes types(new PropertyTypes());
+    auto classWithList = SharedPropertyType(new ClassPropertyType(QStringLiteral("ClassWithList")));
+    classWithList->id = 1;
+    static_cast<ClassPropertyType&>(*classWithList).members
+        .insert(QStringLiteral("items"), QVariantList());
+    types->add(classWithList);
 
     Properties properties;
     properties.insert(QStringLiteral("ParallaxLayers"),
@@ -552,12 +555,35 @@ void test_Properties::roundTripListProperty()
     QVariantMap classValue;
     classValue.insert(QStringLiteral("items"),
                       QVariantList { QStringLiteral("x"), QStringLiteral("y") });
-    properties.insert(QStringLiteral("Container"), classWithList.wrap(classValue));
+    properties.insert(QStringLiteral("Container"), classWithList->wrap(classValue));
 
-    const QJsonArray json = propertiesToJson(properties, context);
-    const Properties roundTripped = propertiesFromJson(json, context);
+    // Round-trip through the JSON helpers (clipboard / project / world path).
+    {
+        const ExportContext context(*types, QString());
+        const QJsonArray json = propertiesToJson(properties, context);
+        QCOMPARE(propertiesFromJson(json, context), properties);
+    }
 
-    QCOMPARE(roundTripped, properties);
+    // Round-trip through the TMX XML reader and writer.
+    {
+        Object::setPropertyTypes(types);
+
+        Map map(Map::Parameters{});
+        map.setProperties(properties);
+
+        QBuffer buffer;
+        buffer.open(QIODevice::ReadWrite);
+        MapWriter writer;
+        writer.writeMap(&map, &buffer);
+
+        buffer.seek(0);
+        MapReader reader;
+        auto loaded = reader.readMap(&buffer, QString());
+        QVERIFY(loaded.get());
+        QCOMPARE(loaded->properties(), properties);
+
+        Object::setPropertyTypes(SharedPropertyTypes(new PropertyTypes()));
+    }
 }
 
 /**
