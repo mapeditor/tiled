@@ -100,7 +100,7 @@ public:
     enum class RecursiveBehavior {
         ValuesOnly,             // Lua and JSON1 formats (loses types in lists)
         ExportValuesOnly,       // XML format (keep superfluous types in classes)
-        JsonReady,              // List elements expanded to {type, propertytype,
+        TypedListValues,              // List elements expanded to {type, propertytype,
                                 // value} maps so the result can be passed
                                 // directly to QJsonValue::fromVariant.
     };
@@ -130,7 +130,7 @@ private:
 
     const PropertyTypes &mTypes;
     const QString mPath;
-    RecursiveBehavior mRecursiveBehavior = RecursiveBehavior::JsonReady;
+    RecursiveBehavior mRecursiveBehavior = RecursiveBehavior::TypedListValues;
 };
 
 class TILEDSHARED_EXPORT AggregatedPropertyData

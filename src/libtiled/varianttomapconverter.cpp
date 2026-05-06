@@ -185,7 +185,7 @@ Properties VariantToMapConverter::toProperties(const QVariant &propertiesVariant
     // read array-based format (1.2)
     const QVariantList propertiesList = propertiesVariant.toList();
     if (!propertiesList.isEmpty())
-        context.setRecursiveBehavior(ExportContext::RecursiveBehavior::JsonReady);
+        context.setRecursiveBehavior(ExportContext::RecursiveBehavior::TypedListValues);
     for (const QVariant &propertyVariant : propertiesList) {
         const QVariantMap propertyVariantMap = propertyVariant.toMap();
         const QString propertyName = propertyVariantMap[QStringLiteral("name")].toString();

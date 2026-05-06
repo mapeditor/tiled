@@ -562,7 +562,7 @@ void test_Properties::roundTripListProperty()
 
 /**
  * The XML reader builds an ExportValue whose value is already a QVariantList
- * of typed values (not the JsonReady wrapper form), and then calls
+ * of typed values (not the TypedListValues wrapper form), and then calls
  * context.toPropertyValue with the default ExportContext. Verify that this
  * still works and does not mangle the items.
  */

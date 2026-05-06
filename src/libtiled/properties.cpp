@@ -207,7 +207,7 @@ void mergeProperties(Properties &target, const Properties &source)
 QJsonArray propertiesToJson(const Properties &properties, const ExportContext &context)
 {
     ExportContext jsonContext = context;
-    jsonContext.setRecursiveBehavior(ExportContext::RecursiveBehavior::JsonReady);
+    jsonContext.setRecursiveBehavior(ExportContext::RecursiveBehavior::TypedListValues);
 
     QJsonArray json;
 
@@ -233,7 +233,7 @@ QJsonArray propertiesToJson(const Properties &properties, const ExportContext &c
 Properties propertiesFromJson(const QJsonArray &json, const ExportContext &context)
 {
     ExportContext jsonContext = context;
-    jsonContext.setRecursiveBehavior(ExportContext::RecursiveBehavior::JsonReady);
+    jsonContext.setRecursiveBehavior(ExportContext::RecursiveBehavior::TypedListValues);
 
     Properties properties;
 
@@ -255,7 +255,7 @@ Properties propertiesFromJson(const QJsonArray &json, const ExportContext &conte
 QJsonArray valuesToJson(const QVariantList &values, const ExportContext &context)
 {
     ExportContext jsonContext = context;
-    jsonContext.setRecursiveBehavior(ExportContext::RecursiveBehavior::JsonReady);
+    jsonContext.setRecursiveBehavior(ExportContext::RecursiveBehavior::TypedListValues);
 
     QJsonArray json;
 
@@ -277,7 +277,7 @@ QJsonArray valuesToJson(const QVariantList &values, const ExportContext &context
 QVariantList valuesFromJson(const QJsonArray &json, const ExportContext &context)
 {
     ExportContext jsonContext = context;
-    jsonContext.setRecursiveBehavior(ExportContext::RecursiveBehavior::JsonReady);
+    jsonContext.setRecursiveBehavior(ExportContext::RecursiveBehavior::TypedListValues);
 
     QVariantList values;
 
@@ -425,7 +425,7 @@ ExportValue ExportContext::toExportValue(const QVariant &value) const
             for (const QVariant &element : list)
                 exportValues.append(QVariant::fromValue(toExportValue(element)));
             break;
-        case RecursiveBehavior::JsonReady:
+        case RecursiveBehavior::TypedListValues:
             for (const QVariant &element : list) {
                 const ExportValue elementExport = toExportValue(element);
                 QVariantMap mapItem;
@@ -459,7 +459,7 @@ ExportValue ExportContext::toExportValue(const QVariant &value) const
 QVariant ExportContext::toPropertyValue(const ExportValue &exportValue) const
 {
     QVariant value = exportValue.value;
-    if (mRecursiveBehavior == RecursiveBehavior::JsonReady)
+    if (mRecursiveBehavior == RecursiveBehavior::TypedListValues)
         convertListValues(value);
 
     const int metaType = nameToType(exportValue.typeName);
@@ -479,7 +479,7 @@ QVariant ExportContext::toPropertyValue(const ExportValue &exportValue) const
 }
 
 /**
- * Walks the given value tree (in JsonReady form), converting each list
+ * Walks the given value tree (in TypedListValues form), converting each list
  * element from a {type, propertytype, value} map back into a typed value.
  * Recurses into class maps so list members nested within classes are also
  * converted.
@@ -490,7 +490,7 @@ void ExportContext::convertListValues(QVariant &value) const
     case QMetaType::QVariantList: {
         QVariantList list = value.toList();
         for (QVariant &item : list) {
-            // Only items that look like JsonReady wrappers are converted, so
+            // Only items that look like TypedListValues wrappers are converted, so
             // already-typed values (e.g. from the XML reader) pass through.
             if (item.userType() != QMetaType::QVariantMap)
                 continue;

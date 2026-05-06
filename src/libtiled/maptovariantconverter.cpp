@@ -834,7 +834,7 @@ void MapToVariantConverter::addProperties(QVariantMap &variantMap,
         variantMap[QStringLiteral("properties")] = std::move(propertiesMap);
         variantMap[QStringLiteral("propertytypes")] = std::move(propertyTypesMap);
     } else {
-        context.setRecursiveBehavior(ExportContext::RecursiveBehavior::JsonReady);
+        context.setRecursiveBehavior(ExportContext::RecursiveBehavior::TypedListValues);
 
         QVariantList propertiesVariantList;
 
