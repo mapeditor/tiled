@@ -909,10 +909,7 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
 
     w.writeStartElement(QStringLiteral("properties"));
 
-    ExportContext context(mUseAbsolutePaths ? QString() : mDir.path());
-    // The writer drives recursion into lists and class members itself, so the
-    // ExportContext should not transform compound values.
-    context.setRecursiveBehavior(ExportContext::RecursiveBehavior::NoRecursion);
+    const ExportContext context(mUseAbsolutePaths ? QString() : mDir.path());  // NoRecursion mode
 
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();

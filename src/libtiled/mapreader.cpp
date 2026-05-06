@@ -1433,10 +1433,7 @@ Properties MapReaderPrivate::readProperties()
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("properties"));
 
     Properties properties;
-    ExportContext context(mPath.path());
-    // The XML reader builds list values from <item> elements directly, so the
-    // ExportContext should not try to expand list items.
-    context.setRecursiveBehavior(ExportContext::RecursiveBehavior::NoRecursion);
+    const ExportContext context(mPath.path());  // NoRecursion mode
 
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("property"))
