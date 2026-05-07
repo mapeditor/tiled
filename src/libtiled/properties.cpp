@@ -456,12 +456,8 @@ ExportValue ExportContext::toExportValue(const QVariant &value) const
 
 QVariant ExportContext::toPropertyValue(const ExportValue &exportValue) const
 {
-    QVariant value = exportValue.value;
-    if (mRecursiveBehavior == RecursiveBehavior::TypedListValues)
-        convertListValues(value);
-
     const int metaType = nameToType(exportValue.typeName);
-    QVariant propertyValue = toPropertyValue(value, metaType);
+    QVariant propertyValue = toPropertyValue(exportValue.value, metaType);
 
     // Wrap the value in its custom property type when applicable
     if (!exportValue.propertyTypeName.isEmpty()) {
@@ -476,16 +472,14 @@ QVariant ExportContext::toPropertyValue(const ExportValue &exportValue) const
     return propertyValue;
 }
 
-/**
- * Walks the given value tree (in TypedListValues form), converting each list
- * element from a {type, propertytype, value} map back into a typed value.
- * Recurses into class maps so list members nested within classes are also
- * converted.
- */
-void ExportContext::convertListValues(QVariant &value) const
+QVariant ExportContext::toPropertyValue(const QVariant &value, int metaType) const
 {
-    switch (value.userType()) {
-    case QMetaType::QVariantList: {
+    if (metaType == QMetaType::QVariantList) {
+        if (mRecursiveBehavior != RecursiveBehavior::TypedListValues)
+            return value;   // list elements are already in their final form
+
+        // Each list element is a {type, propertytype, value} map. Reconstruct
+        // its ExportValue and recurse, which decodes any nested lists too.
         QVariantList list = value.toList();
         for (QVariant &item : list) {
             const QVariantMap itemMap = item.toMap();
@@ -495,31 +489,14 @@ void ExportContext::convertListValues(QVariant &value) const
             elementExport.propertyTypeName = itemMap.value(QLatin1String("propertytype")).toString();
             item = toPropertyValue(elementExport);
         }
-        value = std::move(list);
-        break;
+        return list;
     }
-    case QMetaType::QVariantMap: {
-        QVariantMap map = value.toMap();
-        for (QVariant &v : map)
-            convertListValues(v);
-        value = std::move(map);
-        break;
-    }
-    default:
-        break;
-    }
-}
 
-QVariant ExportContext::toPropertyValue(const QVariant &value, int metaType) const
-{
     if (metaType == QMetaType::UnknownType || value.userType() == metaType)
         return value;   // value possibly already converted
 
     if (metaType == QMetaType::QVariantMap || metaType == propertyValueId())
         return value;   // should be covered by property type
-
-    if (metaType == QMetaType::QVariantList)
-        return value;   // list elements should be converted individually
 
     if (metaType == filePathTypeId()) {
         const QUrl url = toUrl(value.toString(), mPath);

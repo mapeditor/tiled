@@ -127,8 +127,6 @@ public:
     QVariant toPropertyValue(const QVariant &value, int metaType) const;
 
 private:
-    void convertListValues(QVariant &value) const;
-
     const PropertyTypes &mTypes;
     const QString mPath;
     RecursiveBehavior mRecursiveBehavior = RecursiveBehavior::NoRecursion;

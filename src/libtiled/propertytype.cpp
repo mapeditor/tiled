@@ -266,8 +266,12 @@ QVariant ClassPropertyType::toPropertyValue(const QVariant &value, const ExportC
         if (!classMember.isValid())
             continue; // ignore removed members
 
-        if (it.value().userType() == classMember.userType())
-            continue; // leave members alone that already have the expected type
+        // Members that already match the expected type can be left alone,
+        // except for lists where the items themselves may still need decoding
+        // (in TypedListValues mode each item is a wrapper map).
+        if (it.value().userType() == classMember.userType()
+                && classMember.userType() != QMetaType::QVariantList)
+            continue;
 
         QVariant propertyValue = context.toPropertyValue(it.value(), classMember.userType());
 
