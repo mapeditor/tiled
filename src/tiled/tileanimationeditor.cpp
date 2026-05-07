@@ -30,6 +30,7 @@
 #include "tiled.h"
 #include "tileset.h"
 #include "tilesetdocument.h"
+#include "tilesetmanager.h"
 #include "utils.h"
 #include "zoomable.h"
 
@@ -318,6 +319,9 @@ TileAnimationEditor::TileAnimationEditor(QWidget *parent)
     connect(mUi->setFrameTimeButton, &QAbstractButton::clicked,
             this, &TileAnimationEditor::setFrameTime);
 
+    connect(TilesetManager::instance(), &TilesetManager::tilesetImagesChanged,
+            this, &TileAnimationEditor::tilesetImagesChanged);
+
     QShortcut *undoShortcut = new QShortcut(QKeySequence::Undo, this);
     QShortcut *redoShortcut = new QShortcut(QKeySequence::Redo, this);
     QShortcut *cutShortcut = new QShortcut(QKeySequence::Cut, mUi->frameList, nullptr, nullptr, Qt::WidgetShortcut);
@@ -442,6 +446,14 @@ void TileAnimationEditor::tilesetChanged()
 
     tilesetView->updateBackgroundColor();
     model->tilesetChanged();
+}
+
+void TileAnimationEditor::tilesetImagesChanged(Tileset *tileset)
+{
+    if (mTilesetDocument && mTilesetDocument->tileset() == tileset) {
+        mUi->tilesetView->tilesetModel()->tilesetChanged();
+        mUi->frameList->viewport()->update();
+    }
 }
 
 void TileAnimationEditor::setDefaultFrameTime(int duration)

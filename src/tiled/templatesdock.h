@@ -64,6 +64,7 @@ public slots:
     void bringToFront();
 
 protected:
+    void changeEvent(QEvent *event) override;
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dropEvent(QDropEvent *event) override;
 
@@ -93,8 +94,8 @@ private:
     MapDocumentPtr mDummyMapDocument;
     MapScene *mMapScene;
     MapView *mMapView;
-    ObjectTemplate *mObjectTemplate;
-    PropertiesDock *mPropertiesDock;
+    ObjectTemplate *mObjectTemplate = nullptr;
+    PropertiesDock *mPropertiesDock = nullptr;
     ToolManager *mToolManager;
 
     static QHash<ObjectTemplate*, QWeakPointer<MapDocument>> ourDummyDocuments;

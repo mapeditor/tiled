@@ -46,6 +46,11 @@ LayerModel::LayerModel(QObject *parent):
     mObjectGroupIcon.addFile(QLatin1String(":images/32/layer-object.png"));
 }
 
+void LayerModel::languageChanged()
+{
+    emit headerDataChanged(Qt::Horizontal, 0, columnCount() - 1);
+}
+
 QModelIndex LayerModel::index(int row, int column, const QModelIndex &parent) const
 {
     // Top-level layer index

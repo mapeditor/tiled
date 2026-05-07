@@ -21,6 +21,7 @@
 #include "filechangedwarning.h"
 
 #include <QDialogButtonBox>
+#include <QEvent>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPainter>
@@ -36,19 +37,31 @@ FileChangedWarning::FileChangedWarning(QWidget *parent)
                                     Qt::Horizontal,
                                     this))
 {
-    mLabel->setText(tr("File change detected. Discard changes and reload the file?"));
-
     QHBoxLayout *layout = new QHBoxLayout;
     layout->addWidget(mLabel);
     layout->addWidget(mButtons);
     layout->addStretch(1);
     setLayout(layout);
 
-    mButtons->button(QDialogButtonBox::Yes)->setText(tr("Reload"));
-    mButtons->button(QDialogButtonBox::No)->setText(tr("Ignore"));
+    retranslateUi();
 
     connect(mButtons, &QDialogButtonBox::accepted, this, &FileChangedWarning::reload);
     connect(mButtons, &QDialogButtonBox::rejected, this, &FileChangedWarning::ignore);
+}
+
+void FileChangedWarning::changeEvent(QEvent *event)
+{
+    QWidget::changeEvent(event);
+
+    if (event->type() == QEvent::LanguageChange)
+        retranslateUi();
+}
+
+void FileChangedWarning::retranslateUi()
+{
+    mLabel->setText(tr("File change detected. Discard changes and reload the file?"));
+    mButtons->button(QDialogButtonBox::Yes)->setText(tr("Reload"));
+    mButtons->button(QDialogButtonBox::No)->setText(tr("Ignore"));
 }
 
 void FileChangedWarning::paintEvent(QPaintEvent *event)

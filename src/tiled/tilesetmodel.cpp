@@ -44,6 +44,17 @@ TilesetModel::TilesetModel(TilesetDocument *tilesetDocument, QObject *parent)
             this, &TilesetModel::tileChanged);
 }
 
+/**
+ * Override to return an invalid index if the tile index is out of range.
+ */
+QModelIndex TilesetModel::index(int row, int column, const QModelIndex &parent) const
+{
+    const int tileIndex = column + row * columnCount();
+    if (tileIndex >= mTileIds.size())
+        return QModelIndex();
+    return QAbstractListModel::index(row, column, parent);
+}
+
 int TilesetModel::rowCount(const QModelIndex &parent) const
 {
     if (parent.isValid())

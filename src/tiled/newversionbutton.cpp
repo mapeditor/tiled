@@ -25,6 +25,7 @@
 #include "tiledapplication.h"
 #include "utils.h"
 
+#include <QEvent>
 #include <QGuiApplication>
 
 namespace Tiled {
@@ -65,6 +66,26 @@ NewVersionButton::NewVersionButton(NewVersionButton::Visibility visibility, QWid
     connect(this, &QToolButton::clicked, this, [this, &checker] {
         NewVersionDialog(checker.versionInfo(), window()).exec();
     });
+}
+
+void NewVersionButton::changeEvent(QEvent *event)
+{
+    QToolButton::changeEvent(event);
+
+    if (event->type() == QEvent::LanguageChange)
+        retranslateUi();
+}
+
+void NewVersionButton::retranslateUi()
+{
+    const auto &checker = tiledApp()->newVersionChecker();
+
+    if (checker.isNewVersionAvailable())
+        newVersionAvailable(checker.versionInfo());
+    else if (!checker.errorString().isEmpty())
+        errorStringChanged(checker.errorString());
+    else
+        setText(tr("Up to date"));
 }
 
 void NewVersionButton::newVersionAvailable(const NewVersionChecker::VersionInfo &versionInfo)

@@ -755,7 +755,9 @@ QWidget *AddValueProperty::createLabel(int level, QWidget *parent)
 
     nameEdit->setContentsMargins(margins);
 
-    connect(nameEdit, &QLineEdit::textChanged, this, &Property::setName);
+    connect(nameEdit, &QLineEdit::textChanged, this, [this](const QString &name) {
+        setName(name.trimmed());
+    });
     connect(nameEdit, &QLineEdit::returnPressed, this, [this] {
         if (!name().isEmpty())
             emit addRequested();

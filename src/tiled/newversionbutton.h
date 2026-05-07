@@ -39,7 +39,11 @@ public:
     explicit NewVersionButton(QWidget *parent = nullptr);
     explicit NewVersionButton(Visibility visibility, QWidget *parent = nullptr);
 
+protected:
+    void changeEvent(QEvent *event) override;
+
 private:
+    void retranslateUi();
     void newVersionAvailable(const NewVersionChecker::VersionInfo &versionInfo);
     void errorStringChanged(const QString &errorString);
 

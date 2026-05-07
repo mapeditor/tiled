@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Release tag to bump (e.g. v1.11.2). Defaults to latest release.'
+        description: 'Release tag to bump (e.g. v1.11.2). Defaults to the triggering release tag.'
         required: false
 
 jobs:
@@ -18,9 +18,12 @@ jobs:
 
     steps:
       - name: Update Homebrew cask
-        uses: eugenesvk/action-homebrew-bump-cask@6b066272df85c164f0496877387ecc8d989a194f # 3.8.6
-        with:
-          token: ${{ secrets.HOMEBREW_BUMP_TOKEN }}
-          cask: tiled
-          org: mapeditor
-          tag: ${{ inputs.tag || github.ref }}
+        env:
+          HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.HOMEBREW_BUMP_TOKEN }}
+        run: |
+          TAG="${{ inputs.tag || github.ref_name }}"
+          VERSION="${TAG#v}"
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+ ]]; then
+            echo "Error: '$VERSION' is not a valid version. Provide a tag like v1.11.2." && exit 1
+          fi
+          brew bump-cask-pr --version "$VERSION" --fork-org mapeditor --no-browse tiled

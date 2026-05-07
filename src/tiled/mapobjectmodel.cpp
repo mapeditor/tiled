@@ -83,6 +83,11 @@ MapObjectModel::MapObjectModel(QObject *parent)
     mObjectGroupIcon.addFile(QLatin1String(":images/32/layer-object.png"));
 }
 
+void MapObjectModel::languageChanged()
+{
+    emit headerDataChanged(Qt::Horizontal, 0, ColumnCount - 1);
+}
+
 QModelIndex MapObjectModel::index(int row, int column,
                                   const QModelIndex &parent) const
 {

@@ -48,6 +48,13 @@ ExpressionSpinBox::ExpressionSpinBox(QWidget *parent)
 
 int ExpressionSpinBox::valueFromText(const QString &text) const
 {
+    // First try locale-aware number parsing, so that input like "1,000"
+    // works as expected in locales using a thousands separator.
+    bool ok = false;
+    const int number = locale().toInt(text, &ok);
+    if (ok)
+        return number;
+
     const QJSValue result = ExpressionEvaluator::evaluate(text);
     if (result.isNumber())
         return result.toNumber();
@@ -94,6 +101,13 @@ ExpressionDoubleSpinBox::ExpressionDoubleSpinBox(QWidget *parent)
 
 double ExpressionDoubleSpinBox::valueFromText(const QString &text) const
 {
+    // First try locale-aware number parsing, so that input like "3,14"
+    // works as expected in locales using a comma as decimal separator.
+    bool ok = false;
+    const double number = locale().toDouble(text, &ok);
+    if (ok)
+        return number;
+
     const QJSValue result = ExpressionEvaluator::evaluate(text);
     if (result.isNumber())
         return result.toNumber();
