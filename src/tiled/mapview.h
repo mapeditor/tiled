@@ -112,6 +112,7 @@ private:
     void updateViewRect();
     void focusMapObject(MapObject *mapObject);
     void updateCursor();
+    int hoverTileName(QPointF mousePos);
 
     enum PanDirectionFlag {
         Left    = 0x1,
@@ -140,6 +141,7 @@ private:
     QPointF mInitialCenterPos;
     QRectF mViewRect;
     Zoomable *mZoomable;
+    int lastHoveredCellId = -1;
 
     PanDirections mPanDirections;
     TileAnimationDriver *mPanningDriver;

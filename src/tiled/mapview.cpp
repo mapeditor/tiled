@@ -31,6 +31,7 @@
 #include "tileanimationdriver.h"
 #include "utils.h"
 #include "zoomable.h"
+#include "qtooltip.h"
 
 #include <QApplication>
 #include <QCursor>
@@ -39,6 +40,7 @@
 #include <QPinchGesture>
 #include <QScrollBar>
 #include <QWheelEvent>
+
 
 #ifndef QT_NO_OPENGL
 
@@ -649,6 +651,34 @@ void MapView::adjustCenterFromMousePosition(QPoint mousePos)
     const QPointF mouseScenePos = mapToScene(view->mapFromGlobal(mousePos));
     const QPointF diff = viewCenterScenePos - mouseScenePos;
     forceCenterOn(mLastMouseScenePos + diff);
+}
+
+int MapView::hoverTileName(QPointF mousePos)
+{
+    if (!mMapDocument)
+        return 0;
+
+    MapRenderer *renderer = mMapDocument->renderer();
+    QPointF tileCoordinate = renderer->pixelToTileCoords(mousePos);
+    QPoint tileCoordsToPoint = tileCoordinate.toPoint();
+    Layer *layer = mMapDocument->currentLayer();
+
+    if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer)) {
+        Cell cell = tileLayer->cellAt(tileCoordsToPoint);
+        int id = cell.tileId();
+        Tile *tile = cell.tile();
+
+        if (lastHoveredCellId != id) {
+            lastHoveredCellId = id;
+            if (tile && !tile->id()) {
+                QToolTip::showText(QCursor::pos(), QStringLiteral("Tile ID: %1").arg(id), this);
+            } else {
+                QToolTip::showText(QCursor::pos(), QStringLiteral("unknown"), this);
+            }
+        }
+        return id;
+    }
+    return 0;
 }
 
 #include "moc_mapview.cpp"
