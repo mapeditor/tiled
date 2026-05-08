@@ -198,4 +198,4 @@ Layer *AbstractTool::currentLayer() const
 
 } // namespace Tiled
 
-#include "moc_abstracttool.cpp"
+// #include "moc_abstracttool.cpp"
