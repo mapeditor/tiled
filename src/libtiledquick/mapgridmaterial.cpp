@@ -56,8 +56,7 @@ public:
 
 MapGridMaterial::MapGridMaterial()
 {
-    setFlag(RequiresFullMatrix);
-    setFlag(QSGMaterial::Blending);
+    setFlag(RequiresFullMatrix | Blending);
 }
 
 MapGridMaterial::~MapGridMaterial() = default;
