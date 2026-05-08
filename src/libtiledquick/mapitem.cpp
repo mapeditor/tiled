@@ -26,8 +26,6 @@
 #include "maprenderer.h"
 #include "tilelayer.h"
 
-#include <cmath>
-
 using namespace TiledQuick;
 
 MapItem::MapItem(QQuickItem *parent)

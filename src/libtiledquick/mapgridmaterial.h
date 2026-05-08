@@ -26,4 +26,4 @@ public:
     float mTileHeight = 0;
 };
 
-}
+} // namespace TiledQuick
