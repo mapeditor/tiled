@@ -206,8 +206,7 @@ void mergeProperties(Properties &target, const Properties &source)
 
 QJsonArray propertiesToJson(const Properties &properties, const ExportContext &context)
 {
-    ExportContext jsonContext = context;
-    jsonContext.setRecursiveBehavior(ExportContext::RecursiveBehavior::TypedListValues);
+    Q_ASSERT(context.recursiveBehavior() == ExportContext::RecursiveBehavior::TypedListValues);
 
     QJsonArray json;
 
@@ -215,7 +214,7 @@ QJsonArray propertiesToJson(const Properties &properties, const ExportContext &c
     const Properties::const_iterator it_end = properties.end();
     for (; it != it_end; ++it) {
         const QString &name = it.key();
-        const auto exportValue = jsonContext.toExportValue(it.value());
+        const auto exportValue = context.toExportValue(it.value());
 
         QJsonObject propertyObject;
         propertyObject.insert(QLatin1String("name"), name);
@@ -230,10 +229,16 @@ QJsonArray propertiesToJson(const Properties &properties, const ExportContext &c
     return json;
 }
 
+QJsonArray propertiesToJson(const Properties &properties, const QString &path)
+{
+    ExportContext context(path);
+    context.setRecursiveBehavior(ExportContext::RecursiveBehavior::TypedListValues);
+    return propertiesToJson(properties, context);
+}
+
 Properties propertiesFromJson(const QJsonArray &json, const ExportContext &context)
 {
-    ExportContext jsonContext = context;
-    jsonContext.setRecursiveBehavior(ExportContext::RecursiveBehavior::TypedListValues);
+    Q_ASSERT(context.recursiveBehavior() == ExportContext::RecursiveBehavior::TypedListValues);
 
     Properties properties;
 
@@ -246,21 +251,28 @@ Properties propertiesFromJson(const QJsonArray &json, const ExportContext &conte
         exportValue.typeName = propertyObject.value(QLatin1String("type")).toString();
         exportValue.propertyTypeName = propertyObject.value(QLatin1String("propertytype")).toString();
 
-        properties.insert(name, jsonContext.toPropertyValue(exportValue));
+        properties.insert(name, context.toPropertyValue(exportValue));
     }
 
     return properties;
 }
 
-QJsonArray valuesToJson(const QVariantList &values, const ExportContext &context)
+Properties propertiesFromJson(const QJsonArray &json, const QString &path)
 {
-    ExportContext jsonContext = context;
-    jsonContext.setRecursiveBehavior(ExportContext::RecursiveBehavior::TypedListValues);
+    ExportContext context(path);
+    context.setRecursiveBehavior(ExportContext::RecursiveBehavior::TypedListValues);
+    return propertiesFromJson(json, context);
+}
+
+QJsonArray valuesToJson(const QVariantList &values, const QString &path)
+{
+    ExportContext context(path);
+    context.setRecursiveBehavior(ExportContext::RecursiveBehavior::TypedListValues);
 
     QJsonArray json;
 
     for (auto &value : values) {
-        const auto exportValue = jsonContext.toExportValue(value);
+        const auto exportValue = context.toExportValue(value);
 
         QJsonObject propertyObject;
         propertyObject.insert(QLatin1String("type"), exportValue.typeName);
@@ -274,10 +286,10 @@ QJsonArray valuesToJson(const QVariantList &values, const ExportContext &context
     return json;
 }
 
-QVariantList valuesFromJson(const QJsonArray &json, const ExportContext &context)
+QVariantList valuesFromJson(const QJsonArray &json, const QString &path)
 {
-    ExportContext jsonContext = context;
-    jsonContext.setRecursiveBehavior(ExportContext::RecursiveBehavior::TypedListValues);
+    ExportContext context(path);
+    context.setRecursiveBehavior(ExportContext::RecursiveBehavior::TypedListValues);
 
     QVariantList values;
 
@@ -289,7 +301,7 @@ QVariantList valuesFromJson(const QJsonArray &json, const ExportContext &context
         exportValue.typeName = valueObject.value(QLatin1String("type")).toString();
         exportValue.propertyTypeName = valueObject.value(QLatin1String("propertytype")).toString();
 
-        values.append(jsonContext.toPropertyValue(exportValue));
+        values.append(context.toPropertyValue(exportValue));
     }
 
     return values;

@@ -542,6 +542,7 @@ void test_Properties::roundTripListProperty()
     static_cast<ClassPropertyType&>(*classWithList).members
         .insert(QStringLiteral("items"), QVariantList());
     types->add(classWithList);
+    Object::setPropertyTypes(types);
 
     Properties properties;
     properties.insert(QStringLiteral("ParallaxLayers"),
@@ -559,15 +560,12 @@ void test_Properties::roundTripListProperty()
 
     // Round-trip through the JSON helpers (clipboard / project / world path).
     {
-        const ExportContext context(*types, QString());
-        const QJsonArray json = propertiesToJson(properties, context);
-        QCOMPARE(propertiesFromJson(json, context), properties);
+        const QJsonArray json = propertiesToJson(properties);
+        QCOMPARE(propertiesFromJson(json), properties);
     }
 
     // Round-trip through the TMX XML reader and writer.
     {
-        Object::setPropertyTypes(types);
-
         Map map(Map::Parameters{});
         map.setProperties(properties);
 
@@ -581,9 +579,9 @@ void test_Properties::roundTripListProperty()
         auto loaded = reader.readMap(&buffer, QString());
         QVERIFY(loaded.get());
         QCOMPARE(loaded->properties(), properties);
-
-        Object::setPropertyTypes(SharedPropertyTypes(new PropertyTypes()));
     }
+
+    Object::setPropertyTypes(SharedPropertyTypes(new PropertyTypes()));
 }
 
 /**

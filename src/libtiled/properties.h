@@ -200,14 +200,19 @@ TILEDSHARED_EXPORT void aggregateProperties(AggregatedProperties &aggregated, co
 TILEDSHARED_EXPORT void mergeProperties(Properties &target, const Properties &source);
 
 TILEDSHARED_EXPORT QJsonArray propertiesToJson(const Properties &properties,
-                                               const ExportContext &context = ExportContext());
+                                               const ExportContext &context);
+TILEDSHARED_EXPORT QJsonArray propertiesToJson(const Properties &properties,
+                                               const QString &path = QString());
+
 TILEDSHARED_EXPORT Properties propertiesFromJson(const QJsonArray &json,
-                                                 const ExportContext &context = ExportContext());
+                                                 const ExportContext &context);
+TILEDSHARED_EXPORT Properties propertiesFromJson(const QJsonArray &json,
+                                                 const QString &path = QString());
 
 TILEDSHARED_EXPORT QJsonArray valuesToJson(const QVariantList &values,
-                                           const ExportContext &context = ExportContext());
+                                           const QString &path = QString());
 TILEDSHARED_EXPORT QVariantList valuesFromJson(const QJsonArray &json,
-                                               const ExportContext &context = ExportContext());
+                                               const QString &path = QString());
 
 constexpr int propertyValueId() { return qMetaTypeId<PropertyValue>(); }
 constexpr int filePathTypeId() { return qMetaTypeId<FilePath>(); }
