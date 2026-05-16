@@ -58,26 +58,26 @@ QSGNode *MapGridItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
     material->mScale = mScale;
     material->mPixelWidth = width();
     material->mPixelHeight = height();
-    material->mTileWidth = width() / mGridSize.x();
-    material->mTileHeight = height() / mGridSize.y();
+    material->mTileWidth = mTileSize.x();
+    material->mTileHeight = mTileSize.y();
 
     gridNode->markDirty(QSGNode::DirtyGeometry | QSGNode::DirtyMaterial);
 
     return gridNode;
 }
 
-void MapGridItem::setGridSize(const QPointF &gridSize)
+void MapGridItem::setTileSize(const QPointF &tileSize)
 {
-    if (mGridSize != gridSize) {
-        mGridSize = gridSize;
-        emit gridSizeChanged();
+    if (mTileSize != tileSize) {
+        mTileSize = tileSize;
+        emit tileSizeChanged();
         update();
     }
 }
 
-QPointF MapGridItem::gridSize() const
+QPointF MapGridItem::tileSize() const
 {
-    return mGridSize;
+    return mTileSize;
 }
 
 void MapGridItem::setScale(const qreal &scale)

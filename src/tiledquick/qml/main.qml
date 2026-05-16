@@ -172,7 +172,7 @@ ApplicationWindow {
                 id: mapGriditem
                 anchors.fill: mapItem
 
-                gridSize: Qt.point(width / mapItem.tileSize().width, height / mapItem.tileSize().height);
+                tileSize: Qt.point(mapItem.tileSize().width, mapItem.tileSize().height);
                 scale: mapContainer.scale;
 
                 color: "black"
@@ -233,7 +233,7 @@ ApplicationWindow {
                     } else {
                         var mapRelativeCoords = singleFingerPanArea.mapToItem(mapItem, singleFingerPanArea.mouseX, singleFingerPanArea.mouseY)
                         var tileCoords = mapItem.screenToTileCoords(mapRelativeCoords.x, mapRelativeCoords.y)
-                        Math.floor(tileCoords.x) + ", " + Math.floor(tileCoords.y);
+                        Math.floor(tileCoords.x) + ", " + Math.floor(tileCoords.y)
                     }
                 }
             }

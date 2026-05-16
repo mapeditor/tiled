@@ -30,7 +30,7 @@ class TILEDQUICK_SHARED_EXPORT MapGridItem : public QQuickItem
 {
     Q_OBJECT
 
-    Q_PROPERTY(QPointF gridSize READ gridSize WRITE setGridSize NOTIFY gridSizeChanged)
+    Q_PROPERTY(QPointF tileSize READ tileSize WRITE setTileSize NOTIFY tileSizeChanged)
     Q_PROPERTY(qreal scale READ scale WRITE setScale NOTIFY scaleChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
 
@@ -40,8 +40,8 @@ public:
 
     QSGNode *updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData *) override;
 
-    QPointF gridSize() const;
-    void setGridSize(const QPointF &gridSize);
+    QPointF tileSize() const;
+    void setTileSize(const QPointF &tileSize);
 
     qreal scale() const;
     void setScale(const qreal &scale);
@@ -50,12 +50,12 @@ public:
     void setColor(const QColor &color);
 
 signals:
-    void gridSizeChanged();
+    void tileSizeChanged();
     void scaleChanged();
     void colorChanged();
 
 private:
-    QPointF mGridSize = {0,0};
+    QPointF mTileSize = {0,0};
     qreal mScale = 0;
     QColor mColor = Qt::black;
 };

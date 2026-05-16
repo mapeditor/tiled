@@ -69,7 +69,13 @@ QSGMaterialShader *MapGridMaterial::createShader(QSGRendererInterface::RenderMod
 int MapGridMaterial::compare(const QSGMaterial *other) const
 {
     auto *m = static_cast<const MapGridMaterial *>(other);
-    return (mColor == m->mColor &&
-            qFuzzyCompare(mScale, m->mScale) &&
-            qFuzzyCompare(mPixelWidth, m->mPixelWidth) ? 0 : 1);
+    return ((
+                mColor == m->mColor &&
+                qFuzzyCompare(mScale, m->mScale) &&
+                qFuzzyCompare(mPixelWidth, m->mPixelWidth) &&
+                qFuzzyCompare(mPixelHeight, m->mPixelHeight) &&
+                qFuzzyCompare(mTileWidth, m->mTileWidth) &&
+                qFuzzyCompare(mTileHeight, m->mTileHeight)
+                )? 0 : 1
+            );
 }
