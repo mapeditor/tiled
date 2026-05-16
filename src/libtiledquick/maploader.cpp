@@ -30,6 +30,7 @@ using namespace TiledQuick;
 MapLoader::MapLoader(QObject *parent)
     : QObject(parent)
     , m_map(nullptr)
+    , m_editableMap(nullptr)
     , m_status(Null)
 {
 }
@@ -56,6 +57,8 @@ void MapLoader::setSource(const QUrl &source)
     const bool errorDiff = m_error != error;
 
     m_map = std::move(map);
+    // Currently duplicates m_map, once mapref and mapitem are replaced m_map should be moved rather than cloned
+    m_editableMap = std::make_unique<Tiled::EditableMap>(m_map->clone());
     m_status = status;
     m_error = error;
 
