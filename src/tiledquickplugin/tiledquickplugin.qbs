@@ -5,7 +5,7 @@ DynamicLibrary {
     builtByDefault: false
     condition: Utilities.versionCompare(Qt.core.version, "6.5") >= 0
 
-    Depends { name: "libtiled" }
+    Depends { name: "libtilededitor" }
     Depends { name: "libtiledquick" }
     Depends {
         name: "Qt"; submodules: ["qml", "quick"]
