@@ -35,7 +35,7 @@ class EditableMapObject;
 class EditableSelectedArea;
 class EditableTileLayer;
 class EditableTileset;
-/**/
+
 class TILED_EDITOR_EXPORT EditableMap final : public EditableAsset
 {
     Q_OBJECT
@@ -43,8 +43,8 @@ class TILED_EDITOR_EXPORT EditableMap final : public EditableAsset
     Q_PROPERTY(int width READ width WRITE setWidth NOTIFY sizeChanged)
     Q_PROPERTY(int height READ height WRITE setHeight NOTIFY sizeChanged)
     Q_PROPERTY(QSize size READ size NOTIFY sizeChanged)
-    Q_PROPERTY(int tileWidth READ tileWidth WRITE setTileWidth)
-    Q_PROPERTY(int tileHeight READ tileHeight WRITE setTileHeight)
+    Q_PROPERTY(int tileWidth READ tileWidth WRITE setTileWidth NOTIFY sizeChanged)
+    Q_PROPERTY(int tileHeight READ tileHeight WRITE setTileHeight NOTIFY sizeChanged)
     Q_PROPERTY(bool infinite READ infinite WRITE setInfinite)
     Q_PROPERTY(int hexSideLength READ hexSideLength WRITE setHexSideLength)
     Q_PROPERTY(StaggerAxis staggerAxis READ staggerAxis WRITE setStaggerAxis)
