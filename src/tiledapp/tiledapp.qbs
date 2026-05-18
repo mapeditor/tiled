@@ -43,7 +43,7 @@ TiledQtGuiApplication {
         condition: qbs.targetOS.contains("macos")
         cpp.frameworks: ["Foundation"]
         bundle.identifierPrefix: "org.mapeditor"
-        ib.appIconName: "tiled-icon-mac"
+        ib.appIconName: "tiled-icon-macos26"
         targetName: "Tiled"
     }
 
@@ -77,6 +77,7 @@ TiledQtGuiApplication {
         files: [
             "Info.plist",
             "images/tiled.xcassets",
+            "images/tiled-icon-macos26.icon",
         ]
     }
 
