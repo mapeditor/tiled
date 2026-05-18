@@ -140,6 +140,7 @@ private:
     QPointF mInitialCenterPos;
     QRectF mViewRect;
     Zoomable *mZoomable;
+    int lastHoveredCellId = -1;
 
     PanDirections mPanDirections;
     TileAnimationDriver *mPanningDriver;
