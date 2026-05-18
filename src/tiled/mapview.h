@@ -101,6 +101,8 @@ protected:
 
     void adjustCenterFromMousePosition(QPoint mousePos);
 
+    int hoverTileName(QPointF mousePos);
+
 signals:
     void focused();
     void viewRectChanged();
