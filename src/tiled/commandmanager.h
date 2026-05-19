@@ -31,8 +31,6 @@ class QMenu;
 
 namespace Tiled {
 
-class CommandDataModel;
-
 class CommandManager : public QObject
 {
     Q_OBJECT
@@ -63,7 +61,6 @@ private:
 
     void updateActions();
 
-    CommandDataModel *mModel;
     QVector<Command> mCommands;
     QList<QMenu*> mMenus;
     QList<QAction*> mActions;

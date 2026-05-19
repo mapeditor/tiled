@@ -76,15 +76,16 @@ class ScopedUpdatesDisabler
 {
 public:
     explicit ScopedUpdatesDisabler(QWidget *widget)
-        : mWidget(widget)
-        , mHadUpdatesEnabled(widget->updatesEnabled())
+        // If updates are already effectively disabled, leave the widget alone
+        : mWidget(widget->updatesEnabled() ? widget : nullptr)
     {
-        widget->setUpdatesEnabled(false);
+        if (mWidget)
+            mWidget->setUpdatesEnabled(false);
     }
 
     ~ScopedUpdatesDisabler()
     {
-        if (!mHadUpdatesEnabled)
+        if (!mWidget)
             return;
 
         QTimer::singleShot(0, mWidget, [w = mWidget] {
@@ -98,7 +99,6 @@ public:
 
 private:
     QWidget *mWidget;
-    bool mHadUpdatesEnabled;
 };
 
 
@@ -2904,7 +2904,8 @@ void PropertiesWidget::renameProperty(const QString &name)
     dialog->setTextValue(name);
     dialog->setWindowTitle(QCoreApplication::translate("Tiled::PropertiesDock", "Rename Property"));
 
-    connect(dialog, &QInputDialog::textValueSelected, this, [=] (const QString &newName) {
+    connect(dialog, &QInputDialog::textValueSelected, this, [=] (const QString &text) {
+        const QString newName = text.trimmed();
         if (newName.isEmpty())
             return;
         if (newName == name)
@@ -3155,6 +3156,8 @@ void PropertiesWidget::keyPressEvent(QKeyEvent *event)
 
 void PropertiesWidget::retranslateUi()
 {
+    mCustomProperties->setName(QCoreApplication::translate("Tiled::CustomProperties", "Custom Properties"));
+
     mActionAddProperty->setText(QCoreApplication::translate("Tiled::PropertiesDock", "Add Property"));
 
     mActionRemoveProperty->setText(QCoreApplication::translate("Tiled::PropertiesDock", "Remove"));

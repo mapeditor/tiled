@@ -79,6 +79,7 @@ public:
 
     MapDocument *mapDocument() const;
     void setMapDocument(MapDocument *mapDocument);
+    void languageChanged();
 
     void insertLayer(GroupLayer *parentLayer, int index, Layer *layer);
     Layer *takeLayerAt(GroupLayer *parentLayer, int index);

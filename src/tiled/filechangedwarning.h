@@ -39,9 +39,12 @@ signals:
     void ignore();
 
 protected:
+    void changeEvent(QEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
 
 private:
+    void retranslateUi();
+
     QLabel *mLabel;
     QDialogButtonBox *mButtons;
 };

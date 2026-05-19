@@ -111,8 +111,8 @@ void TileDelegate::paint(QPainter *painter,
                          const QStyleOptionViewItem &option,
                          const QModelIndex &index) const
 {
-    const TilesetModel *model = static_cast<const TilesetModel*>(index.model());
-    const Tile *tile = model->tileAt(index);
+    auto model = static_cast<const TilesetModel*>(index.model());
+    auto tile = model->tileAt(index);
     if (!tile)
         return;
 
@@ -177,12 +177,27 @@ void TileDelegate::paint(QPainter *painter,
 
     if (mTilesetView->isEditWangSet())
         drawWangOverlay(painter, tile, targetRect, index);
+
+    // draw the focus rect
+    if (option.state & QStyle::State_HasFocus) {
+        auto style = option.widget->style();
+        QStyleOptionFocusRect o;
+        o.QStyleOption::operator=(option);
+        o.rect = style->subElementRect(QStyle::SE_ItemViewItemFocusRect, &option);
+        o.state |= QStyle::State_KeyboardFocusChange;
+        o.state |= QStyle::State_Item;
+        QPalette::ColorGroup cg = (option.state & QStyle::State_Enabled)
+                                      ? QPalette::Normal : QPalette::Disabled;
+        o.backgroundColor = option.palette.color(cg, (option.state & QStyle::State_Selected)
+                                                         ? QPalette::Highlight : QPalette::Window);
+        style->drawPrimitive(QStyle::PE_FrameFocusRect, &o, painter);
+    }
 }
 
 QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
                              const QModelIndex &index) const
 {
-    const TilesetModel *m = static_cast<const TilesetModel*>(index.model());
+    auto m = static_cast<const TilesetModel*>(index.model());
     const int extra = mTilesetView->drawGrid() ? 1 : 0;
     const qreal scale = mTilesetView->scale();
 
@@ -444,7 +459,7 @@ void TilesetView::setMarkAnimatedTiles(bool enabled)
 bool TilesetView::event(QEvent *event)
 {
     if (event->type() == QEvent::Gesture) {
-        QGestureEvent *gestureEvent = static_cast<QGestureEvent *>(event);
+        auto gestureEvent = static_cast<QGestureEvent *>(event);
         if (QGesture *gesture = gestureEvent->gesture(Qt::PinchGesture))
             mZoomable->handlePinchGesture(static_cast<QPinchGesture *>(gesture));
     } else if (event->type() == QEvent::ShortcutOverride) {
