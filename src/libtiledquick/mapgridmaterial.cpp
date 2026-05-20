@@ -1,3 +1,23 @@
+/*
+ * mapgridmaterial.cpp
+ * Copyright 2026, UltraDagon
+ *
+ * This file is part of Tiled Quick.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "mapgridmaterial.h"
 
 using namespace TiledQuick;
@@ -34,21 +54,20 @@ public:
         auto *u = reinterpret_cast<GridUniformBuffer *>(buffer->data());
         auto *material = static_cast<MapGridMaterial *>(newMaterial);
 
-        memcpy(u->qt_Matrix, state.combinedMatrix().constData(), 64);
+        if (state.isMatrixDirty())
+            memcpy(u->qt_Matrix, state.combinedMatrix().constData(), 64);
+
         u->qt_Opacity = state.opacity();
-
-        u->scale = material->mScale;
-
-        u->pixelWidth = material->mPixelWidth;
-        u->pixelHeight = material->mPixelHeight;
-
-        u->tileWidth = material->mTileWidth;
-        u->tileHeight = material->mTileHeight;
 
         u->color[0] = material->mColor.redF();
         u->color[1] = material->mColor.greenF();
         u->color[2] = material->mColor.blueF();
         u->color[3] = material->mColor.alphaF();
+        u->scale = material->mScale;
+        u->pixelWidth = material->mPixelWidth;
+        u->pixelHeight = material->mPixelHeight;
+        u->tileWidth = material->mTileWidth;
+        u->tileHeight = material->mTileHeight;
 
         return true;
     }
@@ -63,7 +82,7 @@ MapGridMaterial::~MapGridMaterial() = default;
 
 QSGMaterialShader *MapGridMaterial::createShader(QSGRendererInterface::RenderMode) const
 {
-    return new MapGridShader();
+    return new MapGridShader;
 }
 
 int MapGridMaterial::compare(const QSGMaterial *other) const
