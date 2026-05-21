@@ -301,8 +301,7 @@ std::unique_ptr<World> World::load(const QString &fileName,
     }
 
     const QJsonArray properties = object.value(QLatin1String("properties")).toArray();
-    const ExportContext context(dir.path());
-    world->setProperties(propertiesFromJson(properties, context));
+    world->setProperties(propertiesFromJson(properties, dir.path()));
 
     world->onlyShowAdjacentMaps = object.value(QLatin1String("onlyShowAdjacentMaps")).toBool();
 
@@ -350,8 +349,7 @@ bool World::save(World &world, QString *errorString)
         patterns.append(jsonPattern);
     }
 
-    const ExportContext context(worldDir.path());
-    const QJsonArray properties = propertiesToJson(world.properties(), context);
+    const QJsonArray properties = propertiesToJson(world.properties(), worldDir.path());
 
     QJsonObject document;
     if (!maps.isEmpty())

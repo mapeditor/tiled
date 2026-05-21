@@ -1,5 +1,11 @@
+#include "map.h"
+#include "mapreader.h"
+#include "mapwriter.h"
+#include "object.h"
 #include "properties.h"
+#include "propertytype.h"
 
+#include <QBuffer>
 #include <QtTest/QtTest>
 
 using namespace Tiled;
@@ -252,6 +258,8 @@ private slots:
 
     void loadProperties();
     void saveProperties();
+    void roundTripListProperty();
+    void typedListPassesThroughDefaultMode();
     void mergeProperties();
 
     void cleanupTestCase();
@@ -524,6 +532,75 @@ void test_Properties::saveProperties()
     QCOMPARE(classExportValue.propertyTypeName, classType->name);
 
     // todo: test saving a class with nested class
+}
+
+void test_Properties::roundTripListProperty()
+{
+    SharedPropertyTypes types(new PropertyTypes());
+    auto classWithList = SharedPropertyType(new ClassPropertyType(QStringLiteral("ClassWithList")));
+    classWithList->id = 1;
+    static_cast<ClassPropertyType&>(*classWithList).members
+        .insert(QStringLiteral("items"), QVariantList());
+    types->add(classWithList);
+    Object::setPropertyTypes(types);
+
+    Properties properties;
+    properties.insert(QStringLiteral("ParallaxLayers"),
+                      QVariantList { QStringLiteral("layer1"), QStringLiteral("layer2") });
+
+    QVariantList nested;
+    nested.append(QVariant::fromValue(QVariantList { QStringLiteral("a"), QStringLiteral("b") }));
+    nested.append(QVariant::fromValue(QVariantList { QStringLiteral("c") }));
+    properties.insert(QStringLiteral("Nested"), nested);
+
+    QVariantMap classValue;
+    classValue.insert(QStringLiteral("items"),
+                      QVariantList { QStringLiteral("x"), QStringLiteral("y") });
+    properties.insert(QStringLiteral("Container"), classWithList->wrap(classValue));
+
+    // Round-trip through the JSON helpers (clipboard / project / world path).
+    {
+        const QJsonArray json = propertiesToJson(properties);
+        QCOMPARE(propertiesFromJson(json), properties);
+    }
+
+    // Round-trip through the TMX XML reader and writer.
+    {
+        Map map(Map::Parameters{});
+        map.setProperties(properties);
+
+        QBuffer buffer;
+        buffer.open(QIODevice::ReadWrite);
+        MapWriter writer;
+        writer.writeMap(&map, &buffer);
+
+        buffer.seek(0);
+        MapReader reader;
+        auto loaded = reader.readMap(&buffer, QString());
+        QVERIFY(loaded.get());
+        QCOMPARE(loaded->properties(), properties);
+    }
+
+    Object::setPropertyTypes(SharedPropertyTypes(new PropertyTypes()));
+}
+
+/**
+ * The XML reader builds an ExportValue whose value is already a QVariantList
+ * of typed values (not the TypedListValues wrapper form). Verify that under
+ * the default NoRecursion behavior toPropertyValue passes such a list through
+ * untouched.
+ */
+void test_Properties::typedListPassesThroughDefaultMode()
+{
+    ExportContext context(mTypes, QString());
+
+    ExportValue exportValue;
+    exportValue.typeName = QStringLiteral("list");
+    exportValue.value = QVariantList { QStringLiteral("a"), QStringLiteral("b") };
+
+    const QVariant result = context.toPropertyValue(exportValue);
+    QCOMPARE(result.toList(),
+             (QVariantList { QStringLiteral("a"), QStringLiteral("b") }));
 }
 
 void test_Properties::mergeProperties()
