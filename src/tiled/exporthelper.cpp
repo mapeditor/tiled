@@ -143,6 +143,17 @@ const Map *ExportHelper::prepareExportMap(const Map *map, std::unique_ptr<Map> &
 
 static bool resolveClassPropertyMembers(QVariant &value)
 {
+    // Recurse into list values
+    if (value.userType() == QMetaType::QVariantList) {
+        bool changed = false;
+        auto list = value.value<QVariantList>();
+        for (auto &item : list)
+            changed |= resolveClassPropertyMembers(item);
+        if (changed)
+            value = list;
+        return changed;
+    }
+
     if (value.userType() != propertyValueId())
         return false;
 
