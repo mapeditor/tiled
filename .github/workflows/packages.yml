@@ -170,12 +170,6 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Set Tiled version
-      id: version
-      run: |
-        if [[ "$TILED_RELEASE" == 'true' ]]; then echo "snap_channel=candidate" >> $GITHUB_OUTPUT ; fi
-        if [[ "$TILED_RELEASE" != 'true' ]]; then echo "snap_channel=beta" >> $GITHUB_OUTPUT ; fi
-
     - name: Install snapcraft
       run: sudo snap install --classic snapcraft
 
