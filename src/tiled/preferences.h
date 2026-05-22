@@ -123,6 +123,9 @@ public:
     bool exportOnSave() const;
     void setExportOnSave(bool enabled);
 
+    bool enableTextPaste() const;
+    void setEnableTextPaste(bool enabled);
+
     enum ExportOption {
         EmbedTilesets                   = 0x1,
         DetachTemplateInstances         = 0x2,
@@ -260,6 +263,8 @@ signals:
 
     void checkForUpdatesChanged(bool on);
     void displayNewsChanged(bool on);
+
+    void enableTextPasteChanged(bool enabled);
 
     void aboutToSwitchSession();
 
