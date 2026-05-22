@@ -43,6 +43,8 @@
 #include <QPaintEngine>
 #include <QPainter>
 #include <QVector2D>
+#include <QColorSpace>
+
 
 #include <cmath>
 
@@ -116,6 +118,13 @@ static QPixmap tinted(const QPixmap &pixmap, const QRect &rect, const QColor &co
         resultImage = QPixmap::fromImage(std::move(imageWithAlpha), Qt::NoOpaqueDetection);
     }
 
+    // converting to linear light before blending
+    QImage linearImage = resultImage.toImage();
+    linearImage = linearImage.convertToFormat(QImage::Format_ARGB32);
+    linearImage.setColorSpace(QColorSpace(QColorSpace::SRgb));
+    linearImage = linearImage.convertedToColorSpace(QColorSpace(QColorSpace::SRgbLinear));
+    resultImage = QPixmap::fromImage(linearImage, Qt::NoOpaqueDetection);
+
     QPainter painter(&resultImage);
 
     QColor fullOpacity = color;
@@ -135,6 +144,12 @@ static QPixmap tinted(const QPixmap &pixmap, const QRect &rect, const QColor &co
     painter.fillRect(resultImage.rect(), color);
 
     painter.end();
+
+    // converting back to sRGB 
+    QImage srgbImage = resultImage.toImage();
+    srgbImage = srgbImage.convertedToColorSpace(QColorSpace(QColorSpace::SRgb));
+    srgbImage = srgbImage.convertToFormat(QImage::Format_ARGB32_Premultiplied);
+    resultImage = QPixmap::fromImage(std::move(srgbImage), Qt::NoOpaqueDetection);
 
     cache.insert(tintedKey, new QPixmap(resultImage), cost(resultImage));
 
