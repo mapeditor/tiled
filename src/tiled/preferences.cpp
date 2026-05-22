@@ -270,6 +270,17 @@ void Preferences::setLabelForHoveredObject(bool enabled)
     emit labelForHoveredObjectChanged(enabled);
 }
 
+bool Preferences::showMapLabels() const
+{
+    return get("Interface/ShowMapLabels", false);
+}
+
+void Preferences::setShowMapLabels(bool enabled)
+{
+    setValue(QLatin1String("Interface/ShowMapLabels"), enabled);
+    emit showMapLabelsChanged(enabled);
+}
+
 Preferences::ApplicationStyle Preferences::applicationStyle() const
 {
 #if defined(Q_OS_MAC)

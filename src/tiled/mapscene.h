@@ -119,6 +119,7 @@ private:
     void updateDefaultBackgroundColor();
     void updateBackgroundColor();
     void updateSceneRect();
+    void updateMapLabels();
 
     void setWorldsEnabled(bool enabled);
 
