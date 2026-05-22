@@ -4498,6 +4498,18 @@ interface ToolDefinition {
   targetLayerType?: number;
 
   /**
+   * Whether this tool is a "world tool". When set to `true`, the undo/redo
+   * operations will use the world's undo stack instead of the map's undo stack.
+   *
+   * Set this to `true` when your scripted tool modifies world data
+   * (e.g., using {@link World.setMapPos} or {@link World.setMapRect}), so that
+   * the user can properly undo those changes.
+   *
+   * @since 1.12
+   */
+  isWorldTool?: boolean;
+
+  /**
    * Called when the tool was activated.
    */
   activated?(this: Tool): void;
@@ -4663,6 +4675,12 @@ interface Tool extends ToolDefinition {
    * Whether this tool is enabled.
    */
   enabled: boolean;
+
+  /**
+   * Whether this tool is a "world tool".
+   * @see ToolDefinition.isWorldTool
+   */
+  isWorldTool: boolean;
 }
 
 declare namespace Tiled {

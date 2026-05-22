@@ -121,6 +121,9 @@ bool SetMapRectCommand::mergeWith(const QUndoCommand *other)
     if (mWorldDocument != o->mWorldDocument || mMapName != o->mMapName)
         return false;
 
+    if (o->mRect.topLeft() != mPreviousRect.topLeft())
+        return false;
+
     mRect = o->mRect;
     setObsolete(childCount() == 0 && mRect == mPreviousRect);
     return true;
