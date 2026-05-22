@@ -3483,8 +3483,13 @@ declare class TileMap extends Asset {
    *
    * If `canJoin` is true, the operation joins with the previous one on the
    * undo stack when possible. Useful for reducing the amount of undo commands.
+   *
+   * If `notify` is true (the default), the {@link regionEdited} signal is
+   * emitted after the merge, which allows scripts and AutoMapping to react
+   * to the edit. Set to `false` if your script listens to `regionEdited`
+   * and you want to avoid infinite loops.
    */
-  public merge(map: TileMap, canJoin?: boolean): void;
+  public merge(map: TileMap, canJoin?: boolean, notify?: boolean): void;
 
   /**
    * Resizes the map to the given size, optionally applying an offset (in tiles).
@@ -3704,6 +3709,15 @@ interface TileLayerEdit {
   mergeable: boolean;
 
   /**
+   * Whether applying edits emits the {@link TileMap.regionEdited} signal,
+   * which allows scripts and AutoMapping to react to the edit. Defaults to `true`.
+   *
+   * Set to `false` if your script listens to `regionEdited` and you want
+   * to avoid infinite loops.
+   */
+  notify: boolean;
+
+  /**
    * Sets the tile at the given location, optionally specifying tile flags (any
    * combination of {@link Tile.FlippedHorizontally}, {@link Tile.FlippedVertically},
    * {@link Tile.FlippedAntiDiagonally} and {@link Tile.RotatedHexagonal120}).
@@ -3727,6 +3741,10 @@ interface TileLayerEdit {
    * the same instance will merge with the previous step. To manually control
    * whether the edit will be merged or not, set the {@link mergeable} property
    * before calling {@link apply}.
+   *
+   * If {@link notify} is `true` (the default), the {@link TileMap.regionEdited}
+   * signal is emitted after applying, which allows scripts and AutoMapping to
+   * react to the edit.
    */
   apply(): void;
 }

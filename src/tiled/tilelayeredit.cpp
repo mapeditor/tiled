@@ -59,7 +59,7 @@ void TileLayerEdit::apply()
     // Applying an edit automatically makes it mergeable, so that further
     // changes made through the same edit are merged by default.
     bool mergeable = std::exchange(mMergeable, true);
-    mTargetLayer->applyChangesFrom(&mChanges, mergeable);
+    mTargetLayer->applyChangesFrom(&mChanges, mergeable, mNotify);
     mChanges.clear();
 }
 
