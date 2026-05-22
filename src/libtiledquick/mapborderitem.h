@@ -1,6 +1,6 @@
 /*
- * tiledquickplugin.cpp
- * Copyright 2014, Thorbjørn Lindeijer <bjorn@lindeijer.nl>
+ * mapborderitem.h
+ * Copyright 2026, UltraDagon
  *
  * This file is part of Tiled Quick.
  *
@@ -18,28 +18,34 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "tiledquickplugin.h"
+#pragma once
 
-#include "mapitem.h"
-#include "maploader.h"
-#include "mapborderitem.h"
-#include "mapgriditem.h"
-#include "tiled.h"
+#include <QQuickItem>
 
-#include <qqml.h>
+#include "tiledquick_global.h"
 
-using namespace TiledQuick;
+namespace TiledQuick {
 
-void TiledQuickPlugin::registerTypes(const char *uri)
+class TILEDQUICK_SHARED_EXPORT MapBorderItem : public QQuickItem
 {
-    // @uri org.mapeditor.Tiled
+    Q_OBJECT
 
-    qmlRegisterAnonymousType<MapRef>(uri, 1);
+    Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
 
-    qmlRegisterType<MapLoader>(uri, 1, 0, "MapLoader");
-    qmlRegisterType<MapItem>(uri, 1, 0, "MapItem");
-    qmlRegisterType<MapBorderItem>(uri, 1, 0, "MapBorderItem");
-    qmlRegisterType<MapGridItem>(uri, 1, 0, "MapGridItem");
+public:
+    explicit MapBorderItem(QQuickItem *parent = nullptr);
+    ~MapBorderItem() override;
 
-    Tiled::increaseImageAllocationLimit();
-}
+    QSGNode *updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData *) override;
+
+    QColor color() const;
+    void setColor(const QColor &color);
+
+signals:
+    void colorChanged();
+
+private:
+    QColor mColor = Qt::black;
+};
+
+} // namespace TiledQuick
