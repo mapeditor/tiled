@@ -47,6 +47,8 @@ AbstractTileFillTool::AbstractTileFillTool(Id id,
 
     connect(mStampActions->random(), &QAction::toggled, this, &AbstractTileFillTool::randomChanged);
     connect(mStampActions->wangFill(), &QAction::toggled, this, &AbstractTileFillTool::wangFillChanged);
+    connect(mStampActions->eraseMode(), &QAction::toggled, this, &AbstractTileFillTool::setEraseMode);
+    connect(this, &AbstractTileFillTool::eraseModeChanged, mStampActions->eraseMode(), &QAction::setChecked);
 
     connect(mStampActions->flipHorizontal(), &QAction::triggered, this,
             [this] { emit stampChanged(mStamp.flipped(FlipHorizontally)); });
@@ -118,7 +120,8 @@ void AbstractTileFillTool::populateToolBar(QToolBar *toolBar)
 {
     mStampActions->populateToolBar(toolBar,
                                    mFillMethod == RandomFill,
-                                   mFillMethod == WangFill);
+                                   mFillMethod == WangFill,
+                                   mEraseMode);
 }
 
 void AbstractTileFillTool::setFillMethod(FillMethod fillMethod)
@@ -146,6 +149,21 @@ void AbstractTileFillTool::setWangSet(WangSet *wangSet)
     mWangSet = wangSet;
 
     invalidateRandomAndMissingCache();
+}
+
+void AbstractTileFillTool::setEraseMode(bool value)
+{
+    if (mEraseMode == value)
+        return;
+
+    mEraseMode = value;
+    emit eraseModeChanged(value);
+
+    // Don't need to recalculate fill region if there was no preview
+    if (!mPreviewMap)
+        return;
+
+    tilePositionChanged(tilePosition());
 }
 
 void AbstractTileFillTool::mapDocumentChanged(MapDocument *oldDocument,
@@ -227,6 +245,17 @@ void AbstractTileFillTool::updatePreview(const QRegion &fillRegion)
     }
     }
 
+    if (mEraseMode) {
+        if (preview->layerCount() == 0) {
+            for (Layer *layer : targetLayers()) {
+                if (TileLayer *tileLayer = layer->asTileLayer()) {
+                    preview->addLayer(new TileLayer(tileLayer->name(), mFillBounds.topLeft(), mFillBounds.size()));
+                }
+            }
+        }
+        erasePreview(*preview, fillRegion);
+    }
+
     preview->addTilesets(preview->usedTilesets());
 
     brushItem()->setMap(preview);
@@ -241,7 +270,15 @@ bool AbstractTileFillTool::applyPreview(const QString &text)
 
     auto undoStack = mapDocument()->undoStack();
     undoStack->beginMacro(text);
-    mapDocument()->paintTileLayers(*preview, false, &mMissingTilesets);
+
+    if (mEraseMode) {
+        const QRegion eraseRegion = preview->modifiedTileRegion();
+        if (!eraseRegion.isEmpty())
+            mapDocument()->eraseTileLayers(eraseRegion, false, false);
+    } else {
+        mapDocument()->paintTileLayers(*preview, false, &mMissingTilesets);
+    }
+
     undoStack->endMacro();
     return true;
 }

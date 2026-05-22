@@ -125,6 +125,11 @@ protected:
 
     QList<Layer *> targetLayersForStamp(const TileStamp &stamp) const;
 
+    static void erasePreview(TileLayer &tileLayer);
+    static void erasePreview(Map &preview);
+    static void erasePreview(TileLayer &tileLayer, const QRegion &region);
+    static void erasePreview(Map &preview, const QRegion &region);
+
 private:
     void setBrushVisible(bool visible);
 

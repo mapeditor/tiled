@@ -289,6 +289,39 @@ QList<Layer *> AbstractTileTool::targetLayersForStamp(const TileStamp &stamp) co
     return layers;
 }
 
+void AbstractTileTool::erasePreview(TileLayer &tileLayer)
+{
+    erasePreview(tileLayer, tileLayer.modifiedRegion());
+}
+
+void AbstractTileTool::erasePreview(Map &preview)
+{
+    for (Layer *layer : preview.layers())
+        if (TileLayer *tileLayer = layer->asTileLayer())
+            erasePreview(*tileLayer);
+}
+
+void AbstractTileTool::erasePreview(TileLayer &tileLayer, const QRegion &region)
+{
+    for (const QRect &rect : region.translated(-tileLayer.position())) {
+        for (int y = rect.top(); y <= rect.bottom(); ++y) {
+            for (int x = rect.left(); x <= rect.right(); ++x) {
+                Cell cell = tileLayer.cellAt(x, y);
+                cell.setTile(nullptr);
+                cell.setChecked(true);
+                tileLayer.setCell(x, y, cell);
+            }
+        }
+    }
+}
+
+void AbstractTileTool::erasePreview(Map &preview, const QRegion &region)
+{
+    for (Layer *layer : preview.layers())
+        if (TileLayer *tileLayer = layer->asTileLayer())
+            erasePreview(*tileLayer, region);
+}
+
 void AbstractTileTool::setBrushVisible(bool visible)
 {
     if (mBrushVisible == visible)
