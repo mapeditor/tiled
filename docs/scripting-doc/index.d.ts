@@ -2696,8 +2696,14 @@ interface ScriptedMapFormat {
   read?(fileName: string): TileMap;
 
   /**
-   * A function that writes a map to the given
-   * file. Can use {@link TextFile} or {@link BinaryFile} to write the file. * When a non-empty string is returned, it is shown as error message.
+   * A function that writes a map to the given file.
+   *
+   * Can use {@link TextFile} or {@link BinaryFile} to write the file.
+   *
+   * The passed map can be modified and any changes only apply to this write.
+   * The original asset remains unchanged.
+   *
+   * When a non-empty string is returned, it is shown as error message.
    */
   write?(map: TileMap, fileName: string): string | undefined;
 
@@ -4337,6 +4343,10 @@ interface ScriptedTilesetFormat {
    * A function that writes a tileset to the given file.
    *
    * Can use {@link TextFile} or {@link BinaryFile} to write the file.
+   *
+   * The passed tileset can be modified and any changes only apply to this
+   * write. The original asset remains unchanged.
+   *
    * When a non-empty string is returned, it is shown as error message.
    */
   write?(tileset: Tileset, fileName: string): string | undefined;
