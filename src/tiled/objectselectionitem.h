@@ -86,6 +86,10 @@ public:
     QRectF boundingRect() const override { return QRectF(); }
     void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) override {}
 
+    void setShowAllLabels(bool show);
+    void setLabelsOnly(bool labelsOnly);
+    bool isLabelsOnly() const { return mLabelsOnly; }
+
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
@@ -126,6 +130,9 @@ private:
     QHash<MapObject*, QList<ObjectReferenceItem*>> mReferencesBySourceObject;
     QHash<MapObject*, QList<ObjectReferenceItem*>> mReferencesByTargetObject;
     std::unique_ptr<MapObjectItem> mHoveredMapObjectItem;
+
+    bool mShowAllLabels = false;
+    bool mLabelsOnly = false;
 };
 
 } // namespace Tiled

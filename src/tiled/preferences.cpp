@@ -259,6 +259,17 @@ void Preferences::setObjectLabelVisibility(ObjectLabelVisiblity visibility)
     emit objectLabelVisibilityChanged(visibility);
 }
 
+Preferences::WorldObjectLabelVisibility Preferences::worldObjectLabelVisibility() const
+{
+    return static_cast<WorldObjectLabelVisibility>(get<int>("Interface/WorldObjectLabelVisibility", WorldLabelsActiveOnly));
+}
+
+void Preferences::setWorldObjectLabelVisibility(WorldObjectLabelVisibility visibility)
+{
+    setValue(QLatin1String("Interface/WorldObjectLabelVisibility"), static_cast<int>(visibility));
+    emit worldObjectLabelVisibilityChanged(visibility);
+}
+
 bool Preferences::labelForHoveredObject() const
 {
     return get("Interface/LabelForHoveredObject", false);
