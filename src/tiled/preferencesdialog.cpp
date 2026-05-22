@@ -68,6 +68,12 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     mUi->styleCombo->setItemData(0, Preferences::SystemDefaultStyle);
     mUi->styleCombo->setItemData(1, Preferences::TiledStyle);
 
+    mUi->autosaveCombo->addItem(tr("Disabled"), 0);
+    mUi->autosaveCombo->addItem(QCoreApplication::translate("PreferencesDialog", "%n second(s)", nullptr, 1), 1);
+    mUi->autosaveCombo->addItem(QCoreApplication::translate("PreferencesDialog", "%n second(s)", nullptr, 5), 5);
+    mUi->autosaveCombo->addItem(QCoreApplication::translate("PreferencesDialog", "%n minute(s)", nullptr, 10), 600);
+    mUi->autosaveCombo->addItem(QCoreApplication::translate("PreferencesDialog", "%n minute(s)", nullptr, 30), 1800);
+
     mUi->objectSelectionBehaviorCombo->addItems({ tr("Select From Any Layer"),
                                                   tr("Prefer Selected Layers"),
                                                   tr("Selected Layers Only") });
@@ -95,6 +101,13 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             preferences, &Preferences::setExportOnSave);
     connect(mUi->naturalSorting, &QCheckBox::toggled,
             preferences, &Preferences::setNaturalSorting);
+
+    connect(mUi->autosaveCombo, &QComboBox::currentIndexChanged, this, [=] (int index) {
+        if (index >= 0) {
+            int seconds = mUi->autosaveCombo->itemData(index).toInt();
+            preferences->setAutosaveInterval(seconds);
+        }
+    });
 
     connect(mUi->embedTilesets, &QCheckBox::toggled, preferences, [preferences] (bool value) {
         preferences->setExportOption(Preferences::EmbedTilesets, value);
@@ -225,6 +238,12 @@ void PreferencesDialog::fromPreferences()
     mUi->detachTemplateInstances->setChecked(prefs->exportOption(Preferences::DetachTemplateInstances));
     mUi->resolveObjectTypesAndProperties->setChecked(prefs->exportOption(Preferences::ResolveObjectTypesAndProperties));
     mUi->minimizeOutput->setChecked(prefs->exportOption(Preferences::ExportMinimized));
+
+    int autosaveInterval = prefs->autosaveInterval();
+    int autosaveIndex = mUi->autosaveCombo->findData(autosaveInterval);
+    if (autosaveIndex == -1)
+        autosaveIndex = 0;
+    mUi->autosaveCombo->setCurrentIndex(autosaveIndex);
 
 #ifdef TILED_SENTRY
     mUi->sendCrashReports->setChecked(Sentry::instance()->userConsent() == Sentry::ConsentGiven);
