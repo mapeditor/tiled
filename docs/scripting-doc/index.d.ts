@@ -2817,6 +2817,20 @@ interface MapEditor {
    * @since 1.12
    */
   tool(shortName: string): Tool | null;
+
+  /**
+   * Access the Layers view.
+   *
+   * @since 2.0
+   */
+  readonly layersView: LayersView;
+
+  /**
+   * Access the Objects view.
+   *
+   * @since 2.0
+   */
+  readonly objectsView: ObjectsView;
 }
 
 /**
@@ -2844,6 +2858,42 @@ interface TilesetsView {
    * usually more useful than the list of selected tiles.
    */
   selectedTiles: Tile[];
+}
+
+/**
+ * The Layers view, accessible through {@link MapEditor.layersView}.
+ *
+ * @since 2.0
+ */
+interface LayersView {
+  /**
+   * Returns whether the given group layer is expanded in the Layers view.
+   * Returns false for non-group layers.
+   */
+  isExpanded(layer: Layer): boolean;
+
+  /**
+   * Sets the expanded state of the given group layer in the Layers view.
+   * Has no effect for non-group layers.
+   */
+  setExpanded(layer: Layer, expanded: boolean): void;
+}
+
+/**
+ * The Objects view, accessible through {@link MapEditor.objectsView}.
+ *
+ * @since 2.0
+ */
+interface ObjectsView {
+  /**
+   * Returns whether the given object group is expanded in the Objects view.
+   */
+  isExpanded(layer: ObjectGroup): boolean;
+
+  /**
+   * Sets the expanded state of the given object group in the Objects view.
+   */
+  setExpanded(layer: ObjectGroup, expanded: boolean): void;
 }
 
 /**
