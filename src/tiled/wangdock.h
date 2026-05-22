@@ -64,7 +64,7 @@ public:
     int currentWangColor() const;
 
     void editWangSetName(WangSet *wangSet);
-    void editWangColorName(int colorIndex);
+    void selectWangColor(int colorIndex, bool editName = false);
 
     void setColorView();
     void hideTemplateColorView();
@@ -107,6 +107,9 @@ private:
     void addColor();
     void removeColor();
 
+    void moveUpColor();
+    void moveDownColor();
+
     void updateAddColorStatus();
     void retranslateUi();
 
@@ -123,6 +126,8 @@ private:
     QAction *mRemoveWangSet;
     QAction *mAddColor;
     QAction *mRemoveColor;
+    QAction *mMoveUpColor;
+    QAction *mMoveDownColor;
 
     Document *mDocument = nullptr;
     QStackedWidget *mStack;
