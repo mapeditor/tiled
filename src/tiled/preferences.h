@@ -85,8 +85,17 @@ public:
         AllObjectLabels
     };
 
+    enum TextureFiltering {
+        TextureFilteringAuto,
+        TextureFilteringNearest,
+        TextureFilteringSmooth
+    };
+
     ObjectLabelVisiblity objectLabelVisibility() const;
     void setObjectLabelVisibility(ObjectLabelVisiblity visibility);
+    TextureFiltering textureFiltering() const;
+    void setTextureFiltering(TextureFiltering filtering);
+    bool smoothTransform(bool scaleIsSmooth) const;
 
     bool labelForHoveredObject() const;
     void setLabelForHoveredObject(bool enabled);
@@ -237,6 +246,7 @@ signals:
     void highlightHoveredObjectChanged(bool highlight);
     void showTilesetGridChanged(bool showTilesetGrid);
     void objectLabelVisibilityChanged(ObjectLabelVisiblity);
+    void textureFilteringChanged(TextureFiltering);
     void labelForHoveredObjectChanged(bool enabled);
 
     void applicationStyleChanged(ApplicationStyle);

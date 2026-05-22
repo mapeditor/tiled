@@ -101,6 +101,14 @@ MapView::MapView(QWidget *parent)
     connect(verticalScrollBar(), &QAbstractSlider::rangeChanged, this, &MapView::updateViewRect);
 
     connect(mZoomable, &Zoomable::scaleChanged, this, &MapView::adjustScale);
+    setRenderHint(QPainter::SmoothPixmapTransform, mZoomable->smoothTransform());
+
+    connect(Preferences::instance(), &Preferences::textureFilteringChanged,
+            this, [this] {
+        setRenderHint(QPainter::SmoothPixmapTransform,
+                      mZoomable->smoothTransform());
+        viewport()->update();
+    });
 
     connect(mPanningDriver, &TileAnimationDriver::update, this, &MapView::updatePanning);
 

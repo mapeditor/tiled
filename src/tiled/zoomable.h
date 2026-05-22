@@ -65,12 +65,9 @@ public:
     void handlePinchGesture(QPinchGesture *pinch);
 
     /**
-     * Returns whether images should be smoothly transformed when drawn at the
-     * current scale. This is the case when the scale is not 1 and smaller than
-     * 2.
+     * Returns whether images should be smoothly transformed when drawn at the current scale.
      */
-    bool smoothTransform() const
-    { return mScale != qreal(1) && mScale < qreal(2); }
+    bool smoothTransform() const;
 
     void setZoomFactors(const QVector<qreal>& factors);
     void setComboBox(QComboBox *comboBox);

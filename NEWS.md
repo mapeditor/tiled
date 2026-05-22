@@ -1,5 +1,6 @@
 ### Unreleased
 
+* Added texture filtering preference: Auto, Nearest Neighbor, Smooth (#3801)
 * Added 'Collapse All' action and 'Only Expand to Current' mode to Project view (with rhythmcache, #4346)
 * Added whitespace trimming for custom property names (with Praagya26, #4486)
 * Reduced animated tile marker opacity during terrain editing (by Huy Vũ, #4449)
