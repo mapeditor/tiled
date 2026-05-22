@@ -308,8 +308,16 @@ static const struct  {
     { ClassPropertyType::ProjectClass,          QLatin1String("project") },
 };
 
+/*
+ * Walks the value tree ourselves rather than relying on
+ * RecursiveBehavior::TypedListValues, because the property types JSON format
+ * spells the key "propertyType" while TypedListValues emits "propertytype".
+ * Hence the context is expected to be in NoRecursion mode.
+ */
 QJsonValue exportValueToJson(const QVariant &value, const ExportContext &context)
 {
+    Q_ASSERT(context.recursiveBehavior() == ExportContext::RecursiveBehavior::NoRecursion);
+
     const ExportValue exportValue = context.toExportValue(value);
 
     if (exportValue.typeName == QLatin1String("list")) {
