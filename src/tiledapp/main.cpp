@@ -21,6 +21,7 @@
  */
 
 #include "commandlineparser.h"
+#include "editormanager.h"
 #include "exporthelper.h"
 #include "logginginterface.h"
 #include "mainwindow.h"
@@ -460,6 +461,8 @@ int main(int argc, char *argv[])
 #endif
 
     initializeMetatypes();
+
+    EditorManager::instance();
 
     // Add the built-in file formats
     TmxMapFormat tmxMapFormat;

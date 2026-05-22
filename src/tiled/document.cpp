@@ -22,7 +22,7 @@
 
 #include "changeevents.h"
 #include "containerhelpers.h"
-#include "documentmanager.h"
+#include "editormanager.h"
 #include "editableasset.h"
 #include "logginginterface.h"
 #include "object.h"
@@ -47,7 +47,7 @@ Document::Document(DocumentType type, const QString &fileName,
     mCanonicalFilePath = fileInfo.canonicalFilePath();
     mReadOnly = fileInfo.exists() && !fileInfo.isWritable();
 
-    if (auto manager = DocumentManager::maybeInstance())
+    if (auto manager = EditorManager::instance())
         manager->registerDocument(this);
 
     connect(mUndoStack, &QUndoStack::indexChanged, this, &Document::updateIsModified);
@@ -60,7 +60,7 @@ Document::~Document()
     if (mCurrentObjectDocument)
         mCurrentObjectDocument->disconnect(this);
 
-    if (auto manager = DocumentManager::maybeInstance())
+    if (auto manager = EditorManager::instance())
         manager->unregisterDocument(this);
 }
 
@@ -84,14 +84,14 @@ void Document::setFileName(const QString &fileName)
 
     QString oldFileName = mFileName;
 
-    DocumentManager::instance()->unregisterDocument(this);
+    EditorManager::instance()->unregisterDocument(this);
 
     const QFileInfo fileInfo { fileName };
     mFileName = fileName;
     mCanonicalFilePath = fileInfo.canonicalFilePath();
     setReadOnly(fileInfo.exists() && !fileInfo.isWritable());
 
-    DocumentManager::instance()->registerDocument(this);
+    EditorManager::instance()->registerDocument(this);
 
     emit fileNameChanged(fileName, oldFileName);
 }
