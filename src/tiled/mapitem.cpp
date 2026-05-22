@@ -335,9 +335,16 @@ void MapItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         MapView *view = static_cast<MapView*>(event->widget()->parent());
         QRectF viewRect { view->viewport()->rect() };
         QRectF sceneViewRect = view->viewportTransform().inverted().mapRect(viewRect);
-        DocumentManager::instance()->switchToDocumentAndHandleSimiliarTileset(mMapDocument.data(),
-                                                                              sceneViewRect.center() - pos(),
-                                                                              view->zoomable()->scale());
+        
+        if (Preferences::instance()->syncLayersInWorldTool()) {
+            DocumentManager::instance()->switchToDocumentAndHandleSimiliarTileset(mMapDocument.data(),
+                                                                                  sceneViewRect.center() - pos(),
+                                                                                  view->zoomable()->scale());
+        } else {
+            DocumentManager::instance()->switchToDocument(mMapDocument.data(),
+                                                          sceneViewRect.center() - pos(),
+                                                          view->zoomable()->scale());
+        }
         return;
     }
 

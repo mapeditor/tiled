@@ -744,6 +744,11 @@ bool Preferences::wheelZoomsByDefault() const
     return get("Interface/WheelZoomsByDefault", false);
 }
 
+bool Preferences::syncLayersInWorldTool() const
+{
+    return get("Interface/SyncLayersInWorldTool", true);
+}
+
 void Preferences::setRestoreSessionOnStartup(bool enabled)
 {
     setValue(QLatin1String("Startup/RestorePreviousSession"), enabled);
@@ -782,6 +787,12 @@ void Preferences::setPluginEnabled(const QString &fileName, bool enabled)
 void Preferences::setWheelZoomsByDefault(bool mode)
 {
     setValue(QLatin1String("Interface/WheelZoomsByDefault"), mode);
+}
+
+void Preferences::setSyncLayersInWorldTool(bool sync)
+{
+    setValue(QLatin1String("Interface/SyncLayersInWorldTool"), sync);
+    emit syncLayersInWorldToolChanged(sync);
 }
 
 QString Preferences::homeLocation()
