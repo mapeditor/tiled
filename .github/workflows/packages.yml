@@ -158,7 +158,7 @@ jobs:
 
   snap:
     name: Linux (snap)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: version
 
     env:
@@ -176,9 +176,15 @@ jobs:
         if [[ "$TILED_RELEASE" == 'true' ]]; then echo "snap_channel=candidate" >> $GITHUB_OUTPUT ; fi
         if [[ "$TILED_RELEASE" != 'true' ]]; then echo "snap_channel=beta" >> $GITHUB_OUTPUT ; fi
 
+    - name: Install snapcraft
+      run: sudo snap install --classic snapcraft
+
     - name: Build snap
       id: build
-      uses: snapcore/action-build@v1
+      env:
+        SNAPCRAFT_BUILD_INFO: "1"
+        SNAPCRAFT_IMAGE_INFO: '{"build_url":"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"}'
+      run: sudo snapcraft --destructive-mode
 
     - name: Upload snap artifact
       uses: actions/upload-artifact@v6
