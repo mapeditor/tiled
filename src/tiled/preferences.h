@@ -91,6 +91,18 @@ public:
     bool labelForHoveredObject() const;
     void setLabelForHoveredObject(bool enabled);
 
+    enum IconSize {
+        SmallIconSize,
+        MediumIconSize,
+        LargeIconSize
+    };
+
+    IconSize iconSize() const;
+    void setIconSize(IconSize size);
+
+    IconSize smallToolbarIconSize() const;
+    void setSmallToolbarIconSize(IconSize size);
+
     enum ApplicationStyle {
         SystemDefaultStyle,
         FusionStyle,
@@ -240,6 +252,8 @@ signals:
     void labelForHoveredObjectChanged(bool enabled);
 
     void applicationStyleChanged(ApplicationStyle);
+    void iconSizeChanged(IconSize size);
+    void smallToolbarIconSizeChanged(IconSize size);
     void baseColorChanged(const QColor &baseColor);
     void selectionColorChanged(const QColor &selectionColor);
     void applicationFontChanged();

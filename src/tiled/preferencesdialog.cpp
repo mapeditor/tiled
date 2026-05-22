@@ -68,6 +68,22 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     mUi->styleCombo->setItemData(0, Preferences::SystemDefaultStyle);
     mUi->styleCombo->setItemData(1, Preferences::TiledStyle);
 
+    mUi->iconSizeCombo->addItems({ tr("Small (16px)"),
+                                   tr("Medium (24px)"),
+                                   tr("Large (32px)") });
+
+    mUi->iconSizeCombo->setItemData(0, Preferences::SmallIconSize);
+    mUi->iconSizeCombo->setItemData(1, Preferences::MediumIconSize);
+    mUi->iconSizeCombo->setItemData(2, Preferences::LargeIconSize);
+
+    mUi->smallToolbarIconSizeCombo->addItems({ tr("Small (16px)"),
+                                                tr("Medium (24px)"),
+                                                tr("Large (32px)") });
+
+    mUi->smallToolbarIconSizeCombo->setItemData(0, Preferences::SmallIconSize);
+    mUi->smallToolbarIconSizeCombo->setItemData(1, Preferences::MediumIconSize);
+    mUi->smallToolbarIconSizeCombo->setItemData(2, Preferences::LargeIconSize);
+
     mUi->objectSelectionBehaviorCombo->addItems({ tr("Select From Any Layer"),
                                                   tr("Prefer Selected Layers"),
                                                   tr("Selected Layers Only") });
@@ -149,6 +165,12 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
 
     connect(mUi->styleCombo, &QComboBox::currentIndexChanged,
             this, &PreferencesDialog::styleComboChanged);
+    connect(mUi->iconSizeCombo, &QComboBox::currentIndexChanged, preferences, [this, preferences] {
+        preferences->setIconSize(static_cast<Preferences::IconSize>(mUi->iconSizeCombo->currentData().toInt()));
+    });
+    connect(mUi->smallToolbarIconSizeCombo, &QComboBox::currentIndexChanged, preferences, [this, preferences] {
+        preferences->setSmallToolbarIconSize(static_cast<Preferences::IconSize>(mUi->smallToolbarIconSizeCombo->currentData().toInt()));
+    });
     connect(mUi->objectSelectionBehaviorCombo, &QComboBox::currentIndexChanged,
             this, [] (int index) { AbstractObjectTool::ourSelectionBehavior = static_cast<AbstractObjectTool::SelectionBehavior>(index); });
     connect(mUi->baseColor, &ColorButton::colorChanged,
@@ -269,6 +291,17 @@ void PreferencesDialog::fromPreferences()
     mUi->objectSelectionBehaviorCombo->setCurrentIndex(AbstractObjectTool::ourSelectionBehavior);
     mUi->baseColor->setColor(prefs->baseColor());
     mUi->selectionColor->setColor(prefs->selectionColor());
+
+    int iconSizeComboIndex = mUi->iconSizeCombo->findData(prefs->iconSize());
+    if (iconSizeComboIndex == -1)
+        iconSizeComboIndex = 0;
+    mUi->iconSizeCombo->setCurrentIndex(iconSizeComboIndex);
+
+    int smallToolbarIconSizeComboIndex = mUi->smallToolbarIconSizeCombo->findData(prefs->smallToolbarIconSize());
+    if (smallToolbarIconSizeComboIndex == -1)
+        smallToolbarIconSizeComboIndex = 0;
+    mUi->smallToolbarIconSizeCombo->setCurrentIndex(smallToolbarIconSizeComboIndex);
+
     bool systemStyle = prefs->applicationStyle() == Preferences::SystemDefaultStyle;
     mUi->baseColor->setEnabled(!systemStyle);
     mUi->baseColorLabel->setEnabled(!systemStyle);
