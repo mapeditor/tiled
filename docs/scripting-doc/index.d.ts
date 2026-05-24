@@ -1827,6 +1827,15 @@ declare class MapObject extends TiledObject {
   layer: ObjectGroup | null;
 
   /**
+   * Returns the resolved class name of this object.
+   * This may be the class name of the object's template or the class name of its tile,
+   * in the case of the object not having an explicitly set class name.
+   *
+   * @since 1.13
+   */
+  resolvedClassName(): string;
+
+  /**
    * Map this object is part of (or `null` in case of a
    * standalone object).
    */
