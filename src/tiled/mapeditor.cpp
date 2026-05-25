@@ -982,11 +982,11 @@ void MapEditor::setupQuickStamps()
         connect(selectStamp, &QShortcut::activated, this, [=] { mTileStampManager->selectQuickStamp(i); });
 
         // Set up shortcut for creating this quick stamp
-        QShortcut *createStamp = new QShortcut(Qt::CTRL + key, mMainWindow);
+        QShortcut *createStamp = new QShortcut(Qt::CTRL | key, mMainWindow);
         connect(createStamp, &QShortcut::activated, this, [=] { mTileStampManager->createQuickStamp(i); });
 
         // Set up shortcut for extending this quick stamp
-        QShortcut *extendStamp = new QShortcut((Qt::CTRL | Qt::SHIFT) + key, mMainWindow);
+        QShortcut *extendStamp = new QShortcut((Qt::CTRL | Qt::SHIFT) | key, mMainWindow);
         connect(extendStamp, &QShortcut::activated, this, [=] { mTileStampManager->extendQuickStamp(i); });
     }
 

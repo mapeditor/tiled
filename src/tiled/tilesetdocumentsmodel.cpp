@@ -117,18 +117,24 @@ void TilesetDocumentsFilterModel::setMapDocument(MapDocument *mapDocument)
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
     beginFilterChange();
-#endif
+    mMapDocument = mapDocument;
+    endFilterChange();
+#else
     mMapDocument = mapDocument;
     invalidateFilter();
+#endif
 }
 
 void TilesetDocumentsFilterModel::setFilterText(const QString &filterText)
 {
 #if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
     beginFilterChange();
-#endif
+    mFilterText = filterText.trimmed();
+    endFilterChange();
+#else
     mFilterText = filterText.trimmed();
     invalidateFilter();
+#endif
 }
 
 bool TilesetDocumentsFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const

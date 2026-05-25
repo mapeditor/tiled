@@ -21,6 +21,7 @@
 #include "scriptimage.h"
 
 #include "scriptmanager.h"
+#include "tiled.h"
 
 #include <QBuffer>
 #include <QCoreApplication>
@@ -92,7 +93,7 @@ void ScriptImage::setColorTable(QJSValue colors)
             colorTable[i] = color.toUInt();
         } else if (color.isString()) {
             const QString colorName = color.toString();
-            if (QColor::isValidColor(colorName)) {
+            if (isValidColorName(colorName)) {
                 colorTable[i] = QColor(colorName).rgba();
             } else {
                 ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors",
@@ -129,7 +130,14 @@ ScriptImage *ScriptImage::scaled(int w, int h,
 
 ScriptImage *ScriptImage::mirrored(bool horiz, bool vert) const
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
+    Qt::Orientations orient;
+    if (horiz) orient |= Qt::Horizontal;
+    if (vert)  orient |= Qt::Vertical;
+    return new ScriptImage(mImage.flipped(orient));
+#else
     return new ScriptImage(mImage.mirrored(horiz, vert));
+#endif
 }
 
 } // namespace Tiled

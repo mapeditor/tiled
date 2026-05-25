@@ -3058,7 +3058,7 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
                 if (propertyValue.userType() != toType)
                     someDifferentType = true;
 
-                if (!propertyValue.convert(toType)) {
+                if (!propertyValue.convert(QMetaType(toType))) {
                     allCanConvert = false;
                     break;
                 }
@@ -3078,7 +3078,7 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
     const QPoint globalPos = mPropertiesView->mapToGlobal(pos);
     const QAction *selectedItem = contextMenu.exec(globalPos);
 
-    if (selectedItem && convertMenu && selectedItem->parentWidget() == convertMenu) {
+    if (selectedItem && convertMenu && convertMenu->actions().contains(const_cast<QAction*>(selectedItem))) {
         QUndoStack *undoStack = mDocument->undoStack();
         undoStack->beginMacro(QCoreApplication::translate("Tiled::PropertiesDock", "Convert Property/Properties", nullptr, properties.size()));
 
@@ -3091,7 +3091,7 @@ void PropertiesWidget::showContextMenu(const QPoint &pos)
             const auto currentObjects = mDocument->currentObjects();
             for (auto obj : currentObjects) {
                 QVariant propertyValue = obj->property(propertyName);
-                if (propertyValue.convert(toType)) {
+                if (propertyValue.convert(QMetaType(toType))) {
                     objects.append(obj);
                     values.append(propertyValue);
                 }

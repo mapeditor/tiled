@@ -63,7 +63,7 @@ void LanguageManager::installTranslators()
                                               : QLocale(language);
 
     const QString qtTranslationsDir =
-            QLibraryInfo::location(QLibraryInfo::TranslationsPath);
+            QLibraryInfo::path(QLibraryInfo::TranslationsPath);
 
     if (mQtTranslator->load(locale,
                             QStringLiteral("qt"),

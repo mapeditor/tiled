@@ -51,9 +51,12 @@ public:
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
         beginFilterChange();
-#endif
+        mShowWarnings = showWarnings;
+        endFilterChange();
+#else
         mShowWarnings = showWarnings;
         invalidateFilter();
+#endif
     }
 
 protected:

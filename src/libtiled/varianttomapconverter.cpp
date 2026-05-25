@@ -92,7 +92,7 @@ std::unique_ptr<Map> VariantToMapConverter::toMap(const QVariant &variant,
         mapParameters.parallaxOrigin.setY(parallaxOriginY);
 
     const QString bgColor = variantMap[QStringLiteral("backgroundcolor")].toString();
-    if (QColor::isValidColor(bgColor))
+    if (isValidColorName(bgColor))
         mapParameters.backgroundColor = QColor(bgColor);
 
     auto map = std::make_unique<Map>(mapParameters);
@@ -285,7 +285,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
             tileset->setGridSize(gridSize);
     }
 
-    if (QColor::isValidColor(backgroundColor))
+    if (isValidColorName(backgroundColor))
         tileset->setBackgroundColor(QColor(backgroundColor));
 
     QVariant imageVariant = variantMap[QStringLiteral("image")];
@@ -306,7 +306,7 @@ SharedTileset VariantToMapConverter::toTileset(const QVariant &variant)
     }
 
     const QString trans = variantMap[QStringLiteral("transparentcolor")].toString();
-    if (QColor::isValidColor(trans))
+    if (isValidColorName(trans))
         tileset->setTransparentColor(QColor(trans));
 
     tileset->setProperties(extractProperties(variantMap));
@@ -833,7 +833,7 @@ std::unique_ptr<ImageLayer> VariantToMapConverter::toImageLayer(const QVariantMa
                                             variantMap[QStringLiteral("y")].toInt()));
 
     const QString trans = variantMap[QStringLiteral("transparentcolor")].toString();
-    if (QColor::isValidColor(trans))
+    if (isValidColorName(trans))
         imageLayer->setTransparentColor(QColor(trans));
 
     QVariant imageVariant = variantMap[QStringLiteral("image")].toString();

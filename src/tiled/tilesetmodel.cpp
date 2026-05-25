@@ -132,11 +132,7 @@ QMimeData *TilesetModel::mimeData(const QModelIndexList &indexes) const
 {
     QByteArray encodedData;
 
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    QDataStream stream(&encodedData, QIODevice::WriteOnly);
-#else
     QDataStream stream(&encodedData, QDataStream::WriteOnly);
-#endif
 
     for (const QModelIndex &index : indexes) {
         if (auto tile = tileAt(index))
@@ -164,11 +160,7 @@ bool TilesetModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
         return false;
 
     QByteArray encodedData = data->data(QLatin1String(TILES_MIMETYPE));
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    QDataStream stream(&encodedData, QIODevice::ReadOnly);
-#else
     QDataStream stream(&encodedData, QDataStream::ReadOnly);
-#endif
 
     QList<Tile*> sourceTiles;
 

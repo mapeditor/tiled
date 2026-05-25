@@ -97,12 +97,8 @@
 #include <QVariantAnimation>
 
 #ifdef Q_OS_WIN
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QWindow>
 #include <QtGui/qpa/qplatformwindow_p.h>
-#else
-#include <QtPlatformHeaders\QWindowsWindowFunctions>
-#endif
 #endif // Q_OS_WIN
 
 using namespace Tiled;
@@ -356,7 +352,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionOpen->setShortcuts(QKeySequence::Open);
     mUi->actionSave->setShortcuts(QKeySequence::Save);
     mUi->actionClose->setShortcuts(QKeySequence::Close);
-    mUi->actionQuit->setShortcut(Qt::CTRL + Qt::Key_Q);
+    mUi->actionQuit->setShortcut(Qt::CTRL | Qt::Key_Q);
     mUi->actionCut->setShortcuts(QKeySequence::Cut);
     mUi->actionCopy->setShortcuts(QKeySequence::Copy);
     mUi->actionPaste->setShortcuts(QKeySequence::Paste);
@@ -467,13 +463,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionLabelForHoveredObject, &QAction::triggered,
             preferences, &Preferences::setLabelForHoveredObject);
 
-    QShortcut *reloadTilesetsShortcut = new QShortcut(Qt::CTRL + Qt::Key_T, this);
+    QShortcut *reloadTilesetsShortcut = new QShortcut(Qt::CTRL | Qt::Key_T, this);
     connect(reloadTilesetsShortcut, &QShortcut::activated,
             this, &MainWindow::reloadTilesetImages);
 
     // Make sure Ctrl+= also works for zooming in
     QList<QKeySequence> keys = QKeySequence::keyBindings(QKeySequence::ZoomIn);
-    keys += QKeySequence(Qt::CTRL + Qt::Key_Equal);
+    keys += QKeySequence(Qt::CTRL | Qt::Key_Equal);
     keys += QKeySequence(Qt::Key_Plus);
     mUi->actionZoomIn->setShortcuts(keys);
     keys = QKeySequence::keyBindings(QKeySequence::ZoomOut);
@@ -856,31 +852,31 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mResetToDefaultLayout, &QAction::triggered, this, &MainWindow::resetToDefaultLayout);
     connect(mLockLayout, &QAction::toggled, this, &MainWindow::setLayoutLocked);
 
-    QShortcut *switchToLeftDocument = new QShortcut(Qt::ALT + Qt::Key_Left, this);
+    QShortcut *switchToLeftDocument = new QShortcut(Qt::ALT | Qt::Key_Left, this);
     connect(switchToLeftDocument, &QShortcut::activated,
             mDocumentManager, &DocumentManager::switchToLeftDocument);
 #ifdef Q_OS_MAC
-    QShortcut *switchToLeftDocument1 = new QShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_BracketLeft, this);
+    QShortcut *switchToLeftDocument1 = new QShortcut((Qt::CTRL | Qt::SHIFT) | Qt::Key_BracketLeft, this);
 #else
-    QShortcut *switchToLeftDocument1 = new QShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_Tab, this);
+    QShortcut *switchToLeftDocument1 = new QShortcut((Qt::CTRL | Qt::SHIFT) | Qt::Key_Tab, this);
 #endif
     connect(switchToLeftDocument1, &QShortcut::activated,
             mDocumentManager, &DocumentManager::switchToLeftDocument);
 
-    QShortcut *switchToRightDocument = new QShortcut(Qt::ALT + Qt::Key_Right, this);
+    QShortcut *switchToRightDocument = new QShortcut(Qt::ALT | Qt::Key_Right, this);
     connect(switchToRightDocument, &QShortcut::activated,
             mDocumentManager, &DocumentManager::switchToRightDocument);
 #ifdef Q_OS_MAC
-    QShortcut *switchToRightDocument1 = new QShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_BracketRight, this);
+    QShortcut *switchToRightDocument1 = new QShortcut((Qt::CTRL | Qt::SHIFT) | Qt::Key_BracketRight, this);
 #else
-    QShortcut *switchToRightDocument1 = new QShortcut(Qt::CTRL + Qt::Key_Tab, this);
+    QShortcut *switchToRightDocument1 = new QShortcut(Qt::CTRL | Qt::Key_Tab, this);
 #endif
     connect(switchToRightDocument1, &QShortcut::activated,
             mDocumentManager, &DocumentManager::switchToRightDocument);
 
     connect(qApp, &QApplication::commitDataRequest, this, &MainWindow::commitData);
 
-    QShortcut *copyPositionShortcut = new QShortcut(Qt::ALT + Qt::Key_C, this);
+    QShortcut *copyPositionShortcut = new QShortcut(Qt::ALT | Qt::Key_C, this);
     connect(copyPositionShortcut, &QShortcut::activated,
             mActionHandler, &MapDocumentActionHandler::copyPosition);
 
@@ -2048,13 +2044,9 @@ void MainWindow::ensureHasBorderInFullScreen()
 
     bool wasFullScreen = isFullScreen();
     setFullScreen(false);
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QWindowsWindowFunctions::setHasBorderInFullScreen(window, true);
-#else
     using QWindowsWindow = QNativeInterface::Private::QWindowsWindow;
     if (auto windowsWindow = window->nativeInterface<QWindowsWindow>())
         windowsWindow->setHasBorderInFullScreen(true);
-#endif
     setFullScreen(wasFullScreen);
 
     hasBorderInFullScreen = true;

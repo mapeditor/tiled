@@ -167,7 +167,7 @@ bool PannableViewHelper::eventFilter(QObject *, QEvent *event)
 
 bool PannableViewHelper::mousePressEvent(QMouseEvent *event)
 {
-    mLastMousePos = event->globalPos();
+    mLastMousePos = event->globalPosition();
 
     const auto button = event->button();
 
@@ -201,8 +201,8 @@ bool PannableViewHelper::mouseReleaseEvent(QMouseEvent *event)
 
 bool PannableViewHelper::mouseMoveEvent(QMouseEvent *event)
 {
-    const QPoint d = event->globalPos() - mLastMousePos;
-    mLastMousePos = event->globalPos();
+    const QPoint d = (event->globalPosition() - mLastMousePos).toPoint();
+    mLastMousePos = event->globalPosition();
 
     switch (mMode) {
     case SpaceActivatedPanning:

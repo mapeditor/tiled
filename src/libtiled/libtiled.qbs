@@ -5,7 +5,7 @@ DynamicLibrary {
     cpp.dynamicLibraryPrefix: "lib"
 
     Depends { name: "cpp" }
-    Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "5.15.2" }
+    Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "6.2.0" }
 
     Probes.PkgConfigProbe {
         id: pkgConfigZstd
@@ -18,7 +18,7 @@ DynamicLibrary {
         var flags = base;
 
         if (qbs.toolchain.contains("msvc")) {
-            if (Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 3)
+            if (Qt.core.versionMinor >= 3)
                 flags.push("/permissive-");
         }
 
@@ -35,8 +35,7 @@ DynamicLibrary {
             "QT_NO_CAST_FROM_ASCII",
             "QT_NO_CAST_TO_ASCII",
             "QT_NO_URL_CAST_FROM_STRING",
-            "QT_DISABLE_DEPRECATED_BEFORE=0x050F00",
-            "QT_NO_DEPRECATED_WARNINGS",
+            "QT_DISABLE_DEPRECATED_BEFORE=0x060200",
             "_USE_MATH_DEFINES",
         ]
 

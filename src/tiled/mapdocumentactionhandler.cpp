@@ -66,9 +66,9 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionSelectAll = new QAction(this);
     mActionSelectAll->setShortcuts(QKeySequence::SelectAll);
     mActionSelectInverse = new QAction(this);
-    mActionSelectInverse->setShortcut(Qt::CTRL + Qt::Key_I);
+    mActionSelectInverse->setShortcut(Qt::CTRL | Qt::Key_I);
     mActionSelectNone = new QAction(this);
-    mActionSelectNone->setShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_A);
+    mActionSelectNone->setShortcut((Qt::CTRL | Qt::SHIFT) | Qt::Key_A);
 
     mActionCropToSelection = new QAction(this);
     mActionAutocrop = new QAction(this);
@@ -90,16 +90,16 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionAddGroupLayer->setIcon(QApplication::style()->standardIcon(QStyle::SP_DirIcon));
 
     mActionLayerViaCopy = new QAction(this);
-    mActionLayerViaCopy->setShortcut(Qt::CTRL + Qt::Key_J);
+    mActionLayerViaCopy->setShortcut(Qt::CTRL | Qt::Key_J);
 
     mActionLayerViaCut = new QAction(this);
-    mActionLayerViaCut->setShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_J);
+    mActionLayerViaCut->setShortcut((Qt::CTRL | Qt::SHIFT) | Qt::Key_J);
 
     mActionGroupLayers = new QAction(this);
     mActionUngroupLayers = new QAction(this);
 
     mActionDuplicateLayers = new QAction(this);
-    mActionDuplicateLayers->setShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_D);
+    mActionDuplicateLayers->setShortcut((Qt::CTRL | Qt::SHIFT) | Qt::Key_D);
     mActionDuplicateLayers->setIcon(
             QIcon(QLatin1String(":/images/16/stock-duplicate-16.png")));
 
@@ -110,21 +110,21 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
             QIcon(QLatin1String(":/images/16/edit-delete.png")));
 
     mActionSelectPreviousLayer = new QAction(this);
-    mActionSelectPreviousLayer->setShortcut(Qt::CTRL + Qt::Key_PageDown);
+    mActionSelectPreviousLayer->setShortcut(Qt::CTRL | Qt::Key_PageDown);
 
     mActionSelectNextLayer = new QAction(this);
-    mActionSelectNextLayer->setShortcut(Qt::CTRL + Qt::Key_PageUp);
+    mActionSelectNextLayer->setShortcut(Qt::CTRL | Qt::Key_PageUp);
 
     mActionSelectAllLayers = new QAction(this);
-    mActionSelectAllLayers->setShortcut((Qt::CTRL | Qt::ALT) + Qt::Key_A);
+    mActionSelectAllLayers->setShortcut((Qt::CTRL | Qt::ALT) | Qt::Key_A);
 
     mActionMoveLayersUp = new QAction(this);
-    mActionMoveLayersUp->setShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_Up);
+    mActionMoveLayersUp->setShortcut((Qt::CTRL | Qt::SHIFT) | Qt::Key_Up);
     mActionMoveLayersUp->setIcon(
             QIcon(QLatin1String(":/images/16/go-up.png")));
 
     mActionMoveLayersDown = new QAction(this);
-    mActionMoveLayersDown->setShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_Down);
+    mActionMoveLayersDown->setShortcut((Qt::CTRL | Qt::SHIFT) | Qt::Key_Down);
     mActionMoveLayersDown->setIcon(
             QIcon(QLatin1String(":/images/16/go-down.png")));
 
@@ -134,7 +134,7 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     toggleVisibilityIcon.addFile(QLatin1String(":/images/24/hidden.png"));
 
     mActionToggleSelectedLayers = new QAction(this);
-    mActionToggleSelectedLayers->setShortcut(Qt::CTRL + Qt::Key_H);
+    mActionToggleSelectedLayers->setShortcut(Qt::CTRL | Qt::Key_H);
     mActionToggleSelectedLayers->setIcon(toggleVisibilityIcon);
 
     QIcon lockedIcon;
@@ -143,16 +143,16 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     lockedIcon.addFile(QLatin1String(":/images/24/locked.png"));
 
     mActionToggleLockSelectedLayers = new QAction(this);
-    mActionToggleLockSelectedLayers->setShortcut(Qt::CTRL + Qt::Key_L);
+    mActionToggleLockSelectedLayers->setShortcut(Qt::CTRL | Qt::Key_L);
     mActionToggleLockSelectedLayers->setIcon(lockedIcon);
 
     mActionToggleOtherLayers = new QAction(this);
-    mActionToggleOtherLayers->setShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_H);
+    mActionToggleOtherLayers->setShortcut((Qt::CTRL | Qt::SHIFT) | Qt::Key_H);
     mActionToggleOtherLayers->setIcon(
             QIcon(QLatin1String(":/images/16/show_hide_others.png")));
 
     mActionToggleLockOtherLayers = new QAction(this);
-    mActionToggleLockOtherLayers->setShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_L);
+    mActionToggleLockOtherLayers->setShortcut((Qt::CTRL | Qt::SHIFT) | Qt::Key_L);
     mActionToggleLockOtherLayers->setIcon(lockedIcon);
 
     mActionLayerProperties = new QAction(this);

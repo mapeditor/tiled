@@ -8,11 +8,11 @@ DynamicLibrary {
     Depends { name: "libtiled" }
     Depends { name: "translations" }
     Depends { name: "qtsingleapplication" }
-    Depends { name: "Qt"; submodules: ["core", "widgets", "concurrent", "qml"]; versionAtLeast: "5.15.2" }
+    Depends { name: "Qt"; submodules: ["core", "widgets", "concurrent", "qml"]; versionAtLeast: "6.2.0" }
     Depends { name: "Qt.svg"; condition: qbs.targetOS.contains("macos") }
-    Depends { name: "Qt.openglwidgets"; condition: Qt.core.versionMajor >= 6; required: false }
+    Depends { name: "Qt.openglwidgets"; required: false }
     Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux") && project.dbus; required: false }
-    Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") && Qt.core.versionMajor >= 6 }
+    Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") }
 
     cpp.includePaths: {
         var paths = ["."];
@@ -28,7 +28,7 @@ DynamicLibrary {
     cpp.cxxFlags: {
         var flags = base;
         if (qbs.toolchain.contains("msvc")) {
-            if (Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 3)
+            if (Qt.core.versionMinor >= 3)
                 flags.push("/permissive-");
         }
         return flags;
@@ -39,8 +39,7 @@ DynamicLibrary {
         var defs = [
             "TILED_EDITOR_LIBRARY",
             "TILED_VERSION=" + project.version,
-            "QT_DISABLE_DEPRECATED_BEFORE=0x050F00",
-            "QT_NO_DEPRECATED_WARNINGS",
+            "QT_DISABLE_DEPRECATED_BEFORE=0x060200",
             "QT_NO_CAST_FROM_ASCII",
             "QT_NO_CAST_TO_ASCII",
             "QT_NO_FOREACH",

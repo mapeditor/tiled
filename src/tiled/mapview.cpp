@@ -43,7 +43,7 @@
 #ifndef QT_NO_OPENGL
 
 // Needed to avoid include issue when compiling with mingw_900
-#if defined(Q_OS_WIN) && QT_VERSION >= QT_VERSION_CHECK(6, 2, 0)
+#if defined(Q_OS_WIN)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #endif
@@ -302,7 +302,7 @@ void MapView::updatePanning(int deltaTime)
     QPoint distance;
 
     if (mPannableViewHelper->mode() == PannableViewHelper::AutoPanning) {
-        distance = (mLastMousePos - mScrollStartPos) * deltaTime / 100;
+        distance = ((mLastMousePos - mScrollStartPos) * deltaTime / 100).toPoint();
     } else if (mPanDirections && ourSmoothScrollingEnabled) {
         if (mPanDirections & Left)
             distance.rx() -= 1;
@@ -339,7 +339,7 @@ void MapView::scrollBy(QPoint distance)
 
     // When scrolling the mouse does not move, but the view below it does.
     // This affects the mouse scene position, which needs to be updated.
-    mLastMouseScenePos = mapToScene(viewport()->mapFromGlobal(mLastMousePos));
+    mLastMouseScenePos = mapToScene(viewport()->mapFromGlobal(mLastMousePos).toPoint());
 }
 
 void MapView::setMapDocument(MapDocument *mapDocument)
@@ -625,8 +625,8 @@ void MapView::focusInEvent(QFocusEvent *event)
 void MapView::mouseMoveEvent(QMouseEvent *event)
 {
     QGraphicsView::mouseMoveEvent(event);
-    mLastMousePos = event->globalPos();
-    mLastMouseScenePos = mapToScene(viewport()->mapFromGlobal(mLastMousePos));
+    mLastMousePos = event->globalPosition();
+    mLastMouseScenePos = mapToScene(viewport()->mapFromGlobal(mLastMousePos).toPoint());
 }
 
 void MapView::handlePinchGesture(QPinchGesture *pinch)
@@ -635,18 +635,17 @@ void MapView::handlePinchGesture(QPinchGesture *pinch)
 
     mZoomable->handlePinchGesture(pinch);
 
-    QPoint centerPoint = pinch->hotSpot().toPoint();
-    adjustCenterFromMousePosition(centerPoint);
+    adjustCenterFromMousePosition(pinch->hotSpot());
 
     setTransformationAnchor(QGraphicsView::AnchorViewCenter);
 }
 
-void MapView::adjustCenterFromMousePosition(QPoint mousePos)
+void MapView::adjustCenterFromMousePosition(QPointF mousePos)
 {
     // Place the last known mouse scene pos below the mouse again
     const QWidget *view = viewport();
     const QPointF viewCenterScenePos = viewportTransform().inverted().map(QRectF(view->rect()).center());
-    const QPointF mouseScenePos = mapToScene(view->mapFromGlobal(mousePos));
+    const QPointF mouseScenePos = mapToScene(view->mapFromGlobal(mousePos).toPoint());
     const QPointF diff = viewCenterScenePos - mouseScenePos;
     forceCenterOn(mLastMouseScenePos + diff);
 }

@@ -280,7 +280,7 @@ std::unique_ptr<Map> MapReaderPrivate::readMap()
         mapParameters.parallaxOrigin.setY(parallaxOriginY);
 
     const QString backgroundColor = atts.value(QLatin1String("backgroundcolor")).toString();
-    if (QColor::isValidColor(backgroundColor))
+    if (isValidColorName(backgroundColor))
         mapParameters.backgroundColor = QColor(backgroundColor);
 
     mMap = std::make_unique<Map>(mapParameters);
@@ -407,7 +407,7 @@ SharedTileset MapReaderPrivate::readTileset()
         tileset->setClassName(className);
         tileset->setColumnCount(columns);
 
-        if (QColor::isValidColor(backgroundColor))
+        if (isValidColorName(backgroundColor))
             tileset->setBackgroundColor(QColor(backgroundColor));
 
         tileset->setObjectAlignment(alignmentFromString(alignment));
@@ -663,7 +663,7 @@ ImageReference MapReaderPrivate::readImage()
     if (!trans.isEmpty()) {
         if (!trans.startsWith(QLatin1Char('#')))
             trans.prepend(QLatin1Char('#'));
-        if (QColor::isValidColor(trans))
+        if (isValidColorName(trans))
             image.transparentColor = QColor(trans);
     }
 

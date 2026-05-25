@@ -10,7 +10,7 @@ TiledQtGuiApplication {
 
     Depends { name: "libtilededitor" }
     Depends { name: "ib"; condition: qbs.targetOS.contains("macos") }
-    Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") && Qt.core.versionMajor >= 6 }
+    Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") }
     Depends { name: "texttemplate"; condition: qbs.targetOS.contains("windows") }
 
     property bool qtcRunnable: true

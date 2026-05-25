@@ -240,11 +240,7 @@ bool AutomappingManager::loadRulesFile(const QString &filePath)
             continue;
 
         if (trimmedLine.startsWith(QLatin1Char('[')) && trimmedLine.endsWith(QLatin1Char(']'))) {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-            auto filter = trimmedLine.mid(1, trimmedLine.length() - 2);
-#else
             auto filter = trimmedLine.sliced(1, trimmedLine.length() - 2);
-#endif
             mMapNameFilter.setPattern(QRegularExpression::wildcardToRegularExpression(filter));
             continue;
         }

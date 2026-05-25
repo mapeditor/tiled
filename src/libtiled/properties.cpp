@@ -348,7 +348,7 @@ QString typeToName(int type)
         if (type == objectRefTypeId())
             return QStringLiteral("object");
     }
-    return QLatin1String(QVariant::typeToName(type));
+    return QLatin1String(QMetaType(type).name());
 }
 
 static int nameToType(const QString &name)
@@ -368,7 +368,7 @@ static int nameToType(const QString &name)
     if (name == QLatin1String("list"))
         return QMetaType::QVariantList;
 
-    return QVariant::nameToType(name.toLatin1().constData());
+    return QMetaType::fromName(name.toLatin1()).id();
 }
 
 QString typeName(const QVariant &value)
@@ -519,7 +519,7 @@ QVariant ExportContext::toPropertyValue(const QVariant &value, int metaType) con
         return QVariant::fromValue(ObjectRef::fromInt(value.toInt()));
 
     QVariant convertedValue = value;
-    convertedValue.convert(metaType);
+    convertedValue.convert(QMetaType(metaType));
     return convertedValue;
 }
 
