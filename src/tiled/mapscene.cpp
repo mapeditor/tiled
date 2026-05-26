@@ -108,6 +108,8 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, [this] { update(); });
         connect(mMapDocument, &MapDocument::tilesetReplaced,
                 this, &MapScene::tilesetReplaced);
+        connect(mMapDocument, &MapDocument::tileTintColorChanged,
+                this, [this] { update(); });
     }
 
     refreshScene();

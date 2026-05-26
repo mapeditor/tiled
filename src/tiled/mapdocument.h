@@ -374,6 +374,7 @@ signals:
     void tilesetTilePositioningChanged(Tileset *tileset);
     void tileImageSourceChanged(Tile *tile);
     void tileProbabilityChanged(Tile *tile);
+    void tileTintColorChanged(Tile *tile);
     void tileObjectGroupChanged(Tile *tile);
 
 public slots:
