@@ -82,10 +82,12 @@
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QLabel>
+#include <QLineEdit>
 #include <QMessageBox>
 #include <QMimeData>
 #include <QRegularExpression>
 #include <QShortcut>
+#include <QSlider>
 #include <QStandardPaths>
 #include <QStatusBar>
 #include <QTextStream>
@@ -754,6 +756,47 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     myStatusBar->addPermanentWidget(mNewsButton);
     myStatusBar->addPermanentWidget(new NewVersionButton(NewVersionButton::AutoVisible, myStatusBar));
 
+    // Zoom controls in the status bar (slider + percentage, with +/- buttons)
+    mZoomOutButton = new QToolButton(myStatusBar);
+    mZoomOutButton->setText(QStringLiteral("-"));
+    mZoomOutButton->setAutoRaise(true);
+
+    mZoomInButton = new QToolButton(myStatusBar);
+    mZoomInButton->setText(QStringLiteral("+"));
+    mZoomInButton->setAutoRaise(true);
+
+    mZoomSlider = new QSlider(Qt::Horizontal);
+    mZoomSlider->setRange(10, 3200);   // 10% to 3200% zoom
+    mZoomSlider->setFixedWidth(Utils::dpiScaled(100));
+    mZoomSlider->setToolTip(tr("Zoom Level"));
+
+    mZoomEdit = new QLineEdit;
+    mZoomEdit->setFixedWidth(Utils::dpiScaled(50));
+    mZoomEdit->setAlignment(Qt::AlignCenter);
+    mZoomEdit->setToolTip(tr("Current Zoom Percentage"));
+
+    connect(mZoomSlider, &QSlider::valueChanged, this, [this](int value) {
+        if (mZoomable)
+            mZoomable->setScale(value / 100.0);
+    });
+
+    connect(mZoomEdit, &QLineEdit::returnPressed, this, [this]() {
+        QString text = mZoomEdit->text().remove(QLatin1Char('%')).trimmed();
+        bool ok;
+        int value = text.toInt(&ok);
+        if (ok) {
+            if (mZoomable)
+                mZoomable->setScale(value / 100.0);
+            else if (mZoomSlider)
+                mZoomSlider->setValue(value);
+        }
+    });
+
+    statusBar()->addPermanentWidget(mZoomOutButton);
+    statusBar()->addPermanentWidget(mZoomSlider);
+    statusBar()->addPermanentWidget(mZoomInButton);
+    statusBar()->addPermanentWidget(mZoomEdit);
+
     QIcon terminalIcon(QLatin1String("://images/24/terminal.png"));
     terminalIcon.addFile(QLatin1String("://images/16/terminal.png"));
     terminalIcon.addFile(QLatin1String("://images/32/terminal.png"));
@@ -787,6 +830,33 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     myStatusBar->addWidget(consoleToggleButton);
     myStatusBar->addWidget(issuesCounter);
+
+    // Connect zoom controls to existing zoom actions / Zoomable
+    connect(mZoomOutButton, &QToolButton::clicked,
+            this, &MainWindow::zoomOut);
+    connect(mZoomInButton, &QToolButton::clicked,
+            this, &MainWindow::zoomIn);
+
+    connect(mZoomSlider, &QSlider::valueChanged, this, [this](int value) {
+        if (!mZoomable)
+            return;
+        const qreal scale = value / 100.0;
+        mZoomable->setScale(scale);
+    });
+
+    connect(mZoomEdit, &QLineEdit::returnPressed, this, [this]() {
+        if (!mZoomable)
+            return;
+
+        QString text = mZoomEdit->text().remove(QLatin1Char('%')).trimmed();
+        bool ok = false;
+        int percent = text.toInt(&ok);
+        if (!ok)
+            return;
+
+        percent = qBound(mZoomSlider->minimum(), percent, mZoomSlider->maximum());
+        mZoomable->setScale(percent / 100.0);
+    });
 
     // Add the 'Views and Toolbars' submenu. This needs to happen after all
     // the dock widgets and toolbars have been added to the main window.
@@ -2268,6 +2338,19 @@ void MainWindow::updateZoomActions()
     mUi->actionZoomOut->setEnabled(mZoomable && mZoomable->canZoomOut());
     mUi->actionZoomNormal->setEnabled(scale != 1);
     mUi->actionFitInView->setEnabled(mDocument && mDocument->type() == Document::MapDocumentType);
+
+    const int percent = qRound(scale * 100);
+
+    if (mZoomSlider) {
+        mZoomSlider->blockSignals(true);
+        mZoomSlider->setValue(qBound(mZoomSlider->minimum(),
+                                     percent,
+                                     mZoomSlider->maximum()));
+        mZoomSlider->blockSignals(false);
+    }
+
+    if (mZoomEdit)
+        mZoomEdit->setText(QStringLiteral("%1 %").arg(percent));
 }
 
 void MainWindow::openDocumentation()

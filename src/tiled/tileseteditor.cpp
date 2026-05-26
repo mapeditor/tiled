@@ -60,7 +60,6 @@
 
 #include <QAction>
 #include <QCheckBox>
-#include <QComboBox>
 #include <QCoreApplication>
 #include <QDropEvent>
 #include <QFileDialog>
@@ -144,7 +143,6 @@ TilesetEditor::TilesetEditor(QObject *parent)
     , mTileCollisionDock(new TileCollisionDock(mMainWindow))
     , mTemplatesDock(new TemplatesDock(mMainWindow))
     , mWangDock(new WangDock(mMainWindow))
-    , mZoomComboBox(new QComboBox)
     , mStatusInfoLabel(new QLabel)
 {
     mMainWindow->setDockOptions(mMainWindow->dockOptions() | QMainWindow::GroupedDragging);
@@ -357,7 +355,6 @@ void TilesetEditor::setCurrentDocument(Document *document)
 
         mWidgetStack->setCurrentWidget(tilesetView);
         tilesetView->setEditWangSet(mWangDock->isVisible());
-        tilesetView->zoomable()->setComboBox(mZoomComboBox);
     }
 
     mPropertiesDock->setDocument(document);
@@ -419,9 +416,7 @@ QList<QWidget *> TilesetEditor::statusBarWidgets() const
 
 QList<QWidget *> TilesetEditor::permanentStatusBarWidgets() const
 {
-    return {
-        mZoomComboBox
-    };
+    return {};
 }
 
 Editor::StandardActions TilesetEditor::enabledStandardActions() const
