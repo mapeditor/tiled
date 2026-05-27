@@ -168,6 +168,7 @@
     </widget>
     <addaction name="actionSearchActions"/>
     <addaction name="actionShowGrid"/>
+    <addaction name="actionShowMapRulers"/>
     <addaction name="actionShowTileObjectOutlines"/>
     <addaction name="actionShowObjectReferences"/>
     <addaction name="menuShowObjectNames"/>
@@ -336,6 +337,17 @@
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+G</string>
+   </property>
+  </action>
+  <action name="actionShowMapRulers">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Map &amp;Rulers</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">Ctrl+Shift+R</string>
    </property>
   </action>
   <action name="actionSaveAs">

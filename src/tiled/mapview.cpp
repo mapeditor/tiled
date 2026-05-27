@@ -20,6 +20,7 @@
 
 #include "mapview.h"
 
+#include "changeevents.h"
 #include "flexiblescrollbar.h"
 #include "mapdocument.h"
 #include "mapobject.h"
@@ -28,6 +29,8 @@
 #include "objectgroup.h"
 #include "pannableviewhelper.h"
 #include "preferences.h"
+#include "rulerwidget.h"
+#include "rulerwidget.h"
 #include "tileanimationdriver.h"
 #include "utils.h"
 #include "zoomable.h"
@@ -36,6 +39,7 @@
 #include <QCursor>
 #include <QGesture>
 #include <QGestureEvent>
+#include <QPainter>
 #include <QPinchGesture>
 #include <QScrollBar>
 #include <QWheelEvent>
@@ -118,6 +122,47 @@ MapView::MapView(QWidget *parent)
         setInteractive(mode == PannableViewHelper::NoPanning);
         updatePanningDriverState();
     });
+
+    // Create ruler widgets as children of this view (drawn over the margins)
+    mHorizontalRuler = new RulerWidget(RulerWidget::Orientation::Horizontal, this);
+    mVerticalRuler   = new RulerWidget(RulerWidget::Orientation::Vertical,   this);
+
+    // Corner square covering the top-left intersection of the two rulers
+    mRulerCorner = new QWidget(this);
+    mRulerCorner->setAttribute(Qt::WA_TransparentForMouseEvents);
+    mRulerCorner->setAutoFillBackground(true);
+
+    // Update view when preferences change
+    Preferences *prefs = Preferences::instance();
+    connect(prefs, &Preferences::showMapRulersChanged, this, [this](bool enabled) {
+        const int margin = enabled ? RulerWidget::RULER_SIZE : 0;
+        setViewportMargins(margin, margin, 0, 0);
+        mHorizontalRuler->setVisible(enabled);
+        mVerticalRuler->setVisible(enabled);
+        mRulerCorner->setVisible(enabled);
+        updateRulerGeometry();
+    });
+    connect(prefs, &Preferences::gridMajorChanged, this, [this] {
+        mHorizontalRuler->update();
+        mVerticalRuler->update();
+    });
+
+    // Trigger rulers to repaint when the view scrolls or zooms
+    auto updateRulers = [this] {
+        mHorizontalRuler->update();
+        mVerticalRuler->update();
+    };
+    connect(horizontalScrollBar(), &QAbstractSlider::valueChanged, this, updateRulers);
+    connect(verticalScrollBar(),   &QAbstractSlider::valueChanged, this, updateRulers);
+    connect(mZoomable, &Zoomable::scaleChanged, this, updateRulers);
+
+    // Apply initial visibility / margins
+    const bool showRulers = prefs->showMapRulers();
+    const int  margin     = showRulers ? RulerWidget::RULER_SIZE : 0;
+    setViewportMargins(margin, margin, 0, 0);
+    mHorizontalRuler->setVisible(showRulers);
+    mVerticalRuler->setVisible(showRulers);
+    mRulerCorner->setVisible(showRulers);
 }
 
 MapView::~MapView()
@@ -352,10 +397,27 @@ void MapView::setMapDocument(MapDocument *mapDocument)
 
     mMapDocument = mapDocument;
 
+    mHorizontalRuler->setMapDocument(mapDocument);
+    mVerticalRuler->setMapDocument(mapDocument);
+
     if (mapDocument) {
         connect(mapDocument, &MapDocument::focusMapObjectRequested,
                 this, &MapView::focusMapObject);
     }
+}
+
+void MapView::updateRulerGeometry()
+{
+    const int s = RulerWidget::RULER_SIZE;
+    const int w = width();
+    const int h = height();
+
+    // Corner square at top-left
+    mRulerCorner->setGeometry(0, 0, s, s);
+    // Horizontal ruler spans the top, to the right of the corner
+    mHorizontalRuler->setGeometry(s, 0, w - s, s);
+    // Vertical ruler spans the left side, below the corner
+    mVerticalRuler->setGeometry(0, s, s, h - s);
 }
 
 void MapView::setToolCursor(const QCursor &cursor)
@@ -493,6 +555,8 @@ void MapView::resizeEvent(QResizeEvent *event)
         updateSceneRect(s->sceneRect());
 
     QGraphicsView::resizeEvent(event);
+    updateRulerGeometry();
+    updateRulerGeometry();
 }
 
 void MapView::keyPressEvent(QKeyEvent *event)
