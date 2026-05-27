@@ -157,9 +157,17 @@ jobs:
         path: Tiled-${{ needs.version.outputs.version }}_Linux_x86_64.AppImage
 
   snap:
-    name: Linux (snap)
-    runs-on: ubuntu-24.04
+    name: Linux (snap, ${{ matrix.arch }})
+    runs-on: ${{ matrix.runs_on }}
     needs: version
+
+    strategy:
+      matrix:
+        include:
+        - runs_on: ubuntu-24.04
+          arch: amd64
+        - runs_on: ubuntu-24.04-arm
+          arch: arm64
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
@@ -183,8 +191,8 @@ jobs:
     - name: Upload snap artifact
       uses: actions/upload-artifact@v6
       with:
-        name: tiled_amd64.snap
-        path: tiled_*_amd64.snap
+        name: tiled_${{ matrix.arch }}.snap
+        path: tiled_*_${{ matrix.arch }}.snap
 
   macos:
     name: macOS (${{ matrix.version_suffix }})
