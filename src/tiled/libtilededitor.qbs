@@ -327,6 +327,8 @@ DynamicLibrary {
         "movelayer.h",
         "movemapobjecttogroup.cpp",
         "movemapobjecttogroup.h",
+        "movetiles.cpp",
+        "movetiles.h",
         "newmapdialog.cpp",
         "newmapdialog.h",
         "newmapdialog.ui",
