@@ -142,6 +142,7 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
 
     mAddEnumPropertyTypeAction = new QAction(this);
     mAddClassPropertyTypeAction = new QAction(this);
+    mAddPrimitivePropertyTypeAction = new QAction(this);
     mRemovePropertyTypeAction = new QAction(this);
     mAddValueAction = new QAction(this);
     mRemoveValueAction = new QAction(this);
@@ -157,6 +158,7 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
 
     mAddEnumPropertyTypeAction->setIcon(addIcon);
     mAddClassPropertyTypeAction->setIcon(addIcon);
+    mAddPrimitivePropertyTypeAction->setIcon(addIcon);
     mRemovePropertyTypeAction->setEnabled(false);
     mRemovePropertyTypeAction->setIcon(removeIcon);
     mRemovePropertyTypeAction->setPriority(QAction::LowPriority);
@@ -178,6 +180,7 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
 
     Utils::setThemeIcon(mAddEnumPropertyTypeAction, "add");
     Utils::setThemeIcon(mAddClassPropertyTypeAction, "add");
+    Utils::setThemeIcon(mAddPrimitivePropertyTypeAction, "add");
     Utils::setThemeIcon(mRemovePropertyTypeAction, "remove");
     Utils::setThemeIcon(mAddValueAction, "add");
     Utils::setThemeIcon(mRemoveValueAction, "remove");
@@ -196,6 +199,7 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
     QToolBar *propertyTypesToolBar = createSmallToolBar(this);
     propertyTypesToolBar->addAction(mAddEnumPropertyTypeAction);
     propertyTypesToolBar->addAction(mAddClassPropertyTypeAction);
+    propertyTypesToolBar->addAction(mAddPrimitivePropertyTypeAction);
     propertyTypesToolBar->addAction(mRemovePropertyTypeAction);
     mUi->propertyTypesLayout->addWidget(propertyTypesToolBar);
 
@@ -208,6 +212,22 @@ PropertyTypesEditor::PropertyTypesEditor(QWidget *parent)
             this, [this] { addPropertyType(PropertyType::PT_Enum); });
     connect(mAddClassPropertyTypeAction, &QAction::triggered,
             this, [this] { addPropertyType(PropertyType::PT_Class); });
+    auto primitiveMenu = new QMenu(this);
+    for (const auto &value : possiblePrimitiveValues()) {
+        const QIcon icon = PropertyTypesModel::iconForProperty(value);
+        primitiveMenu->addAction(icon, userTypeName(value), this, [this, value] {
+            addPropertyType(PropertyType::PT_Primitive, value);
+        });
+    }
+
+    // Show the menu below the button on click, without a dropdown arrow
+    if (auto *primitiveButton = qobject_cast<QToolButton*>(
+            propertyTypesToolBar->widgetForAction(mAddPrimitivePropertyTypeAction))) {
+        connect(mAddPrimitivePropertyTypeAction, &QAction::triggered, this, [primitiveMenu, primitiveButton] {
+            primitiveMenu->exec(primitiveButton->mapToGlobal(primitiveButton->rect().bottomLeft()));
+        });
+    }
+
     connect(mRemovePropertyTypeAction, &QAction::triggered,
             this, &PropertyTypesEditor::removeSelectedPropertyType);
 
@@ -283,6 +303,7 @@ void PropertyTypesEditor::retranslateUi()
 {
     mAddEnumPropertyTypeAction->setText(tr("Add Enum"));
     mAddClassPropertyTypeAction->setText(tr("Add Class"));
+    mAddPrimitivePropertyTypeAction->setText(tr("Add Primitive"));
     mRemovePropertyTypeAction->setText(tr("Remove Type"));
 
     mAddValueAction->setText(tr("Add Value"));
@@ -298,9 +319,9 @@ void PropertyTypesEditor::retranslateUi()
     mImportAction->setToolTip(tr("Import Types"));
 }
 
-void PropertyTypesEditor::addPropertyType(PropertyType::Type type)
+void PropertyTypesEditor::addPropertyType(PropertyType::Type type, const QVariant &defaultValue)
 {
-    const QModelIndex newIndex = mPropertyTypesModel->addNewPropertyType(type);
+    const QModelIndex newIndex = mPropertyTypesModel->addNewPropertyType(type, defaultValue);
     if (!newIndex.isValid())
         return;
 
@@ -854,6 +875,12 @@ void PropertyTypesEditor::updateDetails()
         selectedValuesChanged(mValuesView->selectionModel()->selection());
         break;
     }
+    case PropertyType::PT_Primitive: {
+        const auto &primitiveType = *static_cast<const PrimitivePropertyType*>(propertyType);
+
+        mPrimitiveColorButton->setColor(primitiveType.visualColor);
+        break;
+    }
     }
 
     mNameEdit->setText(propertyType->name);
@@ -910,6 +937,8 @@ void PropertyTypesEditor::setCurrentPropertyType(PropertyType::Type type)
     mAddValueAction->setEnabled(type == PropertyType::PT_Enum);
     mAddMemberAction->setEnabled(type == PropertyType::PT_Class);
 
+    mPrimitiveColorButton = nullptr;
+
     if (type == PropertyType::PT_Invalid)
         return;
 
@@ -928,6 +957,9 @@ void PropertyTypesEditor::setCurrentPropertyType(PropertyType::Type type)
         break;
     case PropertyType::PT_Enum:
         addEnumProperties();
+        break;
+    case PropertyType::PT_Primitive:
+        addPrimitiveProperties();
         break;
     }
 }
@@ -1035,6 +1067,37 @@ void PropertyTypesEditor::addEnumProperties()
     mDetailsLayout->addRow(tr("Save as"), mStorageTypeComboBox);
     mDetailsLayout->addRow(QString(), mValuesAsFlagsCheckBox);
     mDetailsLayout->addRow(tr("Values"), valuesWithToolBarLayout);
+}
+
+void PropertyTypesEditor::addPrimitiveProperties()
+{
+    mPrimitiveColorButton = new ColorButton(mUi->groupBox);
+    mPrimitiveColorButton->setToolTip(tr("Visual Color"));
+    mPrimitiveColorButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+    connect(mPrimitiveColorButton, &ColorButton::colorChanged,
+            this, &PropertyTypesEditor::primitiveColorChanged);
+
+    auto nameAndColor = new QHBoxLayout;
+    nameAndColor->addWidget(mNameEdit);
+    nameAndColor->addWidget(mPrimitiveColorButton);
+
+    mDetailsLayout->addRow(tr("Name"), nameAndColor);
+}
+
+
+
+void PropertyTypesEditor::primitiveColorChanged(const QColor &color)
+{
+    if (mUpdatingDetails)
+        return;
+
+    PropertyType *propertyType = selectedPropertyType();
+    if (!propertyType || !propertyType->isPrimitive())
+        return;
+
+    auto &primitiveType = static_cast<PrimitivePropertyType&>(*propertyType);
+    primitiveType.visualColor = color;
+    applyPropertyTypes();
 }
 
 void PropertyTypesEditor::selectFirstPropertyType()

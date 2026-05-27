@@ -292,6 +292,8 @@ QVariant ScriptModule::propertyValue(const QString &typeName, const QJSValue &va
     case PropertyType::PT_Enum:
         // Call toPropertyValue to support using strings to create a value
         return type->toPropertyValue(var, ExportContext());
+    case PropertyType::PT_Primitive:
+        break;
     }
 
     return type->wrap(var);
