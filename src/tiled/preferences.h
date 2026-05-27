@@ -144,6 +144,9 @@ public:
     bool useOpenGL() const;
     void setUseOpenGL(bool useOpenGL);
 
+    bool useNewHardwareRenderer() const;
+    void setUseNewHardwareRenderer(bool useNewHardwareRenderer);
+
     void setPropertyTypes(const SharedPropertyTypes &propertyTypes);
 
     void setObjectTypesFile(const QString &filePath);
@@ -245,6 +248,7 @@ signals:
     void applicationFontChanged();
 
     void useOpenGLChanged(bool useOpenGL);
+    void useNewHardwareRendererChanged(bool useNewHardwareRenderer);
 
     void languageChanged();
 

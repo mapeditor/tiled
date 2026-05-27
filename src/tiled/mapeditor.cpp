@@ -298,6 +298,7 @@ MapEditor::MapEditor(QObject *parent)
 
     Preferences *prefs = Preferences::instance();
     connect(prefs, &Preferences::useOpenGLChanged, this, &MapEditor::setUseOpenGL);
+    connect(prefs, &Preferences::useNewHardwareRendererChanged, this, &MapEditor::setUseNewHardwareRenderer);
     connect(prefs, &Preferences::languageChanged, this, &MapEditor::retranslateUi);
     connect(prefs, &Preferences::showTileCollisionShapesChanged,
             this, &MapEditor::showTileCollisionShapesChanged);
@@ -1004,6 +1005,26 @@ void MapEditor::setUseOpenGL(bool useOpenGL)
 
     // When turning off OpenGL, we may need to change the surface type back
     // to RasterSurface, to avoid lag and improve performance.
+    if (auto w = mMainWindow->window()->windowHandle()) {
+        if (w->surfaceType() != QSurface::RasterSurface) {
+            w->setSurfaceType(QSurface::RasterSurface);
+
+            if (w->handle()) {
+                w->destroy();
+                w->show();
+            }
+        }
+    }
+}
+
+void MapEditor::setUseNewHardwareRenderer(bool useNewHardwareRenderer)
+{
+    for (MapView *mapView : std::as_const(mWidgetForMap))
+        mapView->setUseNewHardwareRenderer(useNewHardwareRenderer);
+
+    if (useNewHardwareRenderer)
+        return;
+
     if (auto w = mMainWindow->window()->windowHandle()) {
         if (w->surfaceType() != QSurface::RasterSurface) {
             w->setSurfaceType(QSurface::RasterSurface);

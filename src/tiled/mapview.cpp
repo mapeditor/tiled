@@ -40,6 +40,9 @@
 #include <QScrollBar>
 #include <QWheelEvent>
 
+// #include <QtQuickWidgets/QQuickWidget>
+#include <QtQuick/QQuickView>
+
 #ifndef QT_NO_OPENGL
 
 // Needed to avoid include issue when compiling with mingw_900
@@ -73,6 +76,7 @@ MapView::MapView(QWidget *parent)
 
 #ifndef QT_NO_OPENGL
     setUseOpenGL(Preferences::instance()->useOpenGL());
+    setUseNewHardwareRenderer(Preferences::instance()->useNewHardwareRenderer());
 #endif
 
     QWidget *v = viewport();
@@ -225,6 +229,47 @@ void MapView::setUseOpenGL(bool useOpenGL)
 #else
     Q_UNUSED(useOpenGL)
 #endif
+}
+
+void MapView::setUseNewHardwareRenderer(bool useNewHardwareRenderer)
+{
+    /* QQuickView Container */
+    if (useNewHardwareRenderer) {
+        if (!qobject_cast<QQuickView*>(viewport())) {
+            QQuickView *quickView = new QQuickView();
+            quickView->setSource(QUrl(QStringLiteral("qrc:/test_renderer.qml")));
+            quickView->setResizeMode(QQuickView::SizeRootObjectToView);
+
+            QWidget *container = QWidget::createWindowContainer(quickView, this);
+
+            setViewport(container);
+        }
+    } else {
+        if (viewport() && viewport()->inherits("QWindowContainer"))
+            setViewport(nullptr);
+    }
+
+    /* QQuickWidget (Not working) */
+    // if (useNewHardwareRenderer) {
+    //     if (!qobject_cast<QQuickWidget*>(viewport())) {
+    //         QQuickWidget *quickWidget = new QQuickWidget(this);
+
+    //         quickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    //         quickWidget->setSource(QUrl(QStringLiteral("qrc:/test_renderer.qml")));
+
+    //         setViewport(quickWidget);
+
+    //         quickWidget->setGeometry(this->geometry());
+    //         quickWidget->update();
+    //     }
+    // } else {
+    //     if (qobject_cast<QQuickWidget*>(viewport()))
+    //         setViewport(nullptr);
+    // }
+
+    QWidget *v = viewport();
+    v->setAttribute(Qt::WA_StaticContents);
+    v->setMouseTracking(true);
 }
 
 void MapView::updateSceneRect(const QRectF &sceneRect)

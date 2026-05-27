@@ -264,6 +264,13 @@
            </widget>
           </item>
           <item row="7" column="0" colspan="2">
+           <widget class="QCheckBox" name="newHardwareRenderer">
+            <property name="text">
+             <string>Use experimental TiledQuick hardware renderer (WIP)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="0" colspan="2">
            <widget class="QCheckBox" name="naturalSorting">
             <property name="toolTip">
              <string>Sort files numerically (d3, d20) instead of alphabetically (d20, d3)</string>
@@ -702,6 +709,7 @@
   <tabstop>gridMajorY</tabstop>
   <tabstop>objectLineWidth</tabstop>
   <tabstop>openGL</tabstop>
+  <tabstop>newHardwareRenderer</tabstop>
   <tabstop>naturalSorting</tabstop>
   <tabstop>objectSelectionBehaviorCombo</tabstop>
   <tabstop>preciseTileObjectSelection</tabstop>
