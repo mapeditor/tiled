@@ -7,3 +7,5 @@ twitter:
   username: TiledApp
 include:
   - .well-known
+exclude:
+  - docs/typedoc_theme
