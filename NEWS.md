@@ -1,4 +1,4 @@
-### Unreleased
+### Tiled 1.12.2 (27 May 2026)
 
 * Added whitespace trimming for custom property names (with Praagya26, #4486)
 * Reduced animated tile marker opacity during terrain editing (by Huy Vũ, #4449)
