@@ -450,8 +450,8 @@ jobs:
           Tiled-${{ needs.version.outputs.version }}_Windows-10+_x86_64.msi/*.msi
           Tiled-${{ needs.version.outputs.version }}_Windows-7-8_x86.msi/*.msi
           Tiled-${{ needs.version.outputs.version }}_Linux_x86_64.AppImage/*.AppImage
-          Tiled-${{ needs.version.outputs.version }}_macOS-10.13-10.15.app/*.zip
-          Tiled-${{ needs.version.outputs.version }}_macOS-11+.app/*.zip
+          Tiled-${{ needs.version.outputs.version }}_macOS-10.13-12.app/*.zip
+          Tiled-${{ needs.version.outputs.version }}_macOS-13+.app/*.zip
 
   sentry:
     name: Create Sentry release
