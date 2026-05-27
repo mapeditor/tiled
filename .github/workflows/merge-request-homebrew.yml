@@ -14,7 +14,11 @@ jobs:
     name: Bump Homebrew cask
     runs-on: macos-latest
 
-    if: github.repository == 'mapeditor/tiled'
+    # Disabled: Homebrew's BrewTestBot now autobumps the tiled cask on a
+    # ~3-hour cadence, and `brew bump-cask-pr` refuses to run manually
+    # against autobumped casks. Flip back to the github.repository check
+    # if BrewTestBot ever stops handling it.
+    if: false
 
     steps:
       - name: Update Homebrew cask
