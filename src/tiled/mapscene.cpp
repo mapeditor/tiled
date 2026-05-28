@@ -33,6 +33,7 @@
 #include "maprenderer.h"
 #include "objectgroup.h"
 #include "objecttemplate.h"
+#include "preferences.h"
 #include "snaphelper.h"
 #include "stylehelper.h"
 #include "templatemanager.h"
@@ -46,7 +47,10 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
 #include <QMimeData>
+#include <QPainter>
 #include <QPalette>
+
+#include <cmath>
 
 using namespace Tiled;
 
@@ -69,6 +73,12 @@ MapScene::MapScene(QObject *parent)
 
     WorldManager &worldManager = WorldManager::instance();
     connect(&worldManager, &WorldManager::worldsChanged, this, &MapScene::refreshScene);
+
+    Preferences *preferences = Preferences::instance();
+    connect(preferences, &Preferences::showWorldGridChanged,
+            this, [this] { update(); });
+    connect(preferences, &Preferences::gridColorChanged,
+            this, [this] { update(); });
 
     // Install an event filter so that we can get key events on behalf of the
     // active tool without having to have the current focus.
@@ -632,6 +642,62 @@ void MapScene::dragLeaveEvent(QGraphicsSceneDragDropEvent *event)
 void MapScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 {
     Q_UNUSED(event)
+}
+
+/**
+ * Draws the world grid behind the maps.
+ */
+void MapScene::drawBackground(QPainter *painter, const QRectF &rect)
+{
+    QGraphicsScene::drawBackground(painter, rect);
+
+    if (!mMapDocument)
+        return;
+
+    if (!Preferences::instance()->showWorldGrid())
+        return;
+
+    const auto worldDocument =
+            WorldManager::instance().worldForMap(mMapDocument->fileName());
+    if (!worldDocument)
+        return;
+
+    const auto world = worldDocument->world();
+    if (world->gridWidth <= 0 || world->gridHeight <= 0)
+        return;
+
+    // Translate so we can draw the grid in world coordinates.
+    const QPoint currentMapPosition =
+            world->mapRect(mMapDocument->fileName()).topLeft();
+
+    painter->save();
+    painter->translate(-currentMapPosition);
+
+    const QRectF worldRect = rect.translated(currentMapPosition);
+
+    // Dashed and translucent, so it stays distinct from the tile grid.
+    QColor color = Preferences::instance()->gridColor();
+    color.setAlpha(90);
+    QPen pen(color);
+    pen.setCosmetic(true);
+    pen.setWidthF(1.0);
+    pen.setStyle(Qt::DashLine);
+    painter->setPen(pen);
+
+    const int gridWidth = world->gridWidth;
+    const int gridHeight = world->gridHeight;
+
+    const qreal startX = std::floor(worldRect.left() / gridWidth) * gridWidth;
+    const qreal endX = std::ceil(worldRect.right() / gridWidth) * gridWidth;
+    for (qreal x = startX; x <= endX; x += gridWidth)
+        painter->drawLine(QLineF(x, worldRect.top(), x, worldRect.bottom()));
+
+    const qreal startY = std::floor(worldRect.top() / gridHeight) * gridHeight;
+    const qreal endY = std::ceil(worldRect.bottom() / gridHeight) * gridHeight;
+    for (qreal y = startY; y <= endY; y += gridHeight)
+        painter->drawLine(QLineF(worldRect.left(), y, worldRect.right(), y));
+
+    painter->restore();
 }
 
 bool MapScene::eventFilter(QObject *, QEvent *event)

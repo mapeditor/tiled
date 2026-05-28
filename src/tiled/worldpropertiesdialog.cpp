@@ -21,9 +21,13 @@
 #include "worldpropertiesdialog.h"
 #include "ui_worldpropertiesdialog.h"
 
+#include "changeworld.h"
 #include "propertiesview.h"
+#include "world.h"
 
 #include "utils.h"
+
+#include <QSignalBlocker>
 
 namespace Tiled {
 
@@ -42,7 +46,45 @@ WorldPropertiesDialog::WorldPropertiesDialog(WorldDocumentPtr world, QWidget *pa
     ui->propertiesWidget->propertiesView()->widget()->setContentsMargins(0, halfSpacing, 0, halfSpacing);
 
     ui->propertiesWidget->setDocument(mWorldDocument.get());
+
+    // Avoid one undo step per keystroke while typing a value.
+    ui->gridWidthSpinBox->setKeyboardTracking(false);
+    ui->gridHeightSpinBox->setKeyboardTracking(false);
+
+    refreshGridFromWorld();
+
+    connect(ui->gridWidthSpinBox, qOverload<int>(&QSpinBox::valueChanged),
+            this, &WorldPropertiesDialog::pushGridSizeCommand);
+    connect(ui->gridHeightSpinBox, qOverload<int>(&QSpinBox::valueChanged),
+            this, &WorldPropertiesDialog::pushGridSizeCommand);
+
+    // Keep the spin boxes in sync if the world is changed elsewhere (e.g. undo).
+    connect(mWorldDocument.get(), &WorldDocument::worldChanged,
+            this, &WorldPropertiesDialog::refreshGridFromWorld);
+
     setWindowTitle(tr("%1 - World Properties").arg(world->displayName()));
+}
+
+void WorldPropertiesDialog::pushGridSizeCommand()
+{
+    const int width = ui->gridWidthSpinBox->value();
+    const int height = ui->gridHeightSpinBox->value();
+    const auto *world = mWorldDocument->world();
+
+    if (width == world->gridWidth && height == world->gridHeight)
+        return;
+
+    mWorldDocument->undoStack()->push(
+                new SetWorldGridCommand(mWorldDocument.get(), width, height));
+}
+
+void WorldPropertiesDialog::refreshGridFromWorld()
+{
+    const auto *world = mWorldDocument->world();
+    const QSignalBlocker blockWidth(ui->gridWidthSpinBox);
+    const QSignalBlocker blockHeight(ui->gridHeightSpinBox);
+    ui->gridWidthSpinBox->setValue(world->gridWidth);
+    ui->gridHeightSpinBox->setValue(world->gridHeight);
 }
 
 WorldPropertiesDialog::~WorldPropertiesDialog()
