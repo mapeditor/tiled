@@ -39,6 +39,9 @@ public:
     ~WorldPropertiesDialog() override;
 
 private:
+    void pushGridSizeCommand();
+    void refreshGridFromWorld();
+
     Ui::WorldPropertiesDialog *ui;
     WorldDocumentPtr mWorldDocument;
 };

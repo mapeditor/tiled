@@ -49,6 +49,12 @@ void World::setMapRect(int mapIndex, const QRect &rect)
     maps[mapIndex].rect = rect;
 }
 
+void World::setGridSize(int width, int height)
+{
+    gridWidth = width;
+    gridHeight = height;
+}
+
 void World::removeMap(int mapIndex)
 {
     maps.removeAt(mapIndex);
@@ -304,6 +310,8 @@ std::unique_ptr<World> World::load(const QString &fileName,
     world->setProperties(propertiesFromJson(properties, dir.path()));
 
     world->onlyShowAdjacentMaps = object.value(QLatin1String("onlyShowAdjacentMaps")).toBool();
+    world->gridWidth = object.value(QLatin1String("gridWidth")).toInt(0);
+    world->gridHeight = object.value(QLatin1String("gridHeight")).toInt(0);
 
     if (world->maps.isEmpty() && world->patterns.isEmpty())
         world->warning(tr("World contained no valid maps or patterns: %1").arg(fileName));
@@ -360,6 +368,10 @@ bool World::save(World &world, QString *errorString)
         document.insert(QLatin1String("properties"), properties);
     document.insert(QLatin1String("type"), QLatin1String("world"));
     document.insert(QLatin1String("onlyShowAdjacentMaps"), world.onlyShowAdjacentMaps);
+    if (world.gridWidth > 0 && world.gridHeight > 0) {
+        document.insert(QLatin1String("gridWidth"), world.gridWidth);
+        document.insert(QLatin1String("gridHeight"), world.gridHeight);
+    }
 
     QJsonDocument doc(document);
 
