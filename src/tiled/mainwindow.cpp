@@ -307,6 +307,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionShowTileAnimations, "ShowTileAnimations");
     ActionManager::registerAction(mUi->actionShowTileCollisionShapes, "ShowTileCollisionShapes");
     ActionManager::registerAction(mUi->actionShowTileObjectOutlines, "ShowTileObjectOutlines");
+    ActionManager::registerAction(mUi->actionShowWorldGrid, "ShowWorldGrid");
     ActionManager::registerAction(mUi->actionSnapNothing, "SnapNothing");
     ActionManager::registerAction(mUi->actionSnapToFineGrid, "SnapToFineGrid");
     ActionManager::registerAction(mUi->actionSnapToGrid, "SnapToGrid");
@@ -422,6 +423,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionSnapToPixels->setData(QVariant::fromValue(SnapMode::Pixels));
 
     mUi->actionShowGrid->setChecked(preferences->showGrid());
+    mUi->actionShowWorldGrid->setChecked(preferences->showWorldGrid());
     mUi->actionShowTileObjectOutlines->setChecked(preferences->showTileObjectOutlines());
     mUi->actionShowObjectReferences->setChecked(preferences->showObjectReferences());
     mUi->actionShowTileAnimations->setChecked(preferences->showTileAnimations());
@@ -558,6 +560,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     connect(mUi->actionShowGrid, &QAction::toggled,
             preferences, &Preferences::setShowGrid);
+    connect(mUi->actionShowWorldGrid, &QAction::toggled,
+            preferences, &Preferences::setShowWorldGrid);
     connect(mUi->actionShowTileObjectOutlines, &QAction::toggled,
             preferences, &Preferences::setShowTileObjectOutlines);
     connect(mUi->actionShowObjectReferences, &QAction::toggled,

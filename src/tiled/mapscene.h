@@ -108,6 +108,8 @@ protected:
     void dragLeaveEvent(QGraphicsSceneDragDropEvent *event) override;
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event) override;
 
+    void drawBackground(QPainter *painter, const QRectF &rect) override;
+
 private:
     void refreshScene();
 

@@ -89,6 +89,26 @@ private:
     QRect mPreviousRect;
 };
 
+class SetWorldGridCommand : public QUndoCommand
+{
+public:
+    SetWorldGridCommand(WorldDocument *worldDocument,
+                        int gridWidth,
+                        int gridHeight);
+
+    void undo() override { setGridSize(mPreviousWidth, mPreviousHeight); }
+    void redo() override { setGridSize(mWidth, mHeight); }
+
+private:
+    void setGridSize(int width, int height);
+
+    WorldDocument *mWorldDocument;
+    int mWidth;
+    int mHeight;
+    int mPreviousWidth;
+    int mPreviousHeight;
+};
+
 /**
  * Undo command that safely updates a world's map rect if that world is loaded.
  *

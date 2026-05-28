@@ -168,6 +168,7 @@
     </widget>
     <addaction name="actionSearchActions"/>
     <addaction name="actionShowGrid"/>
+    <addaction name="actionShowWorldGrid"/>
     <addaction name="actionShowTileObjectOutlines"/>
     <addaction name="actionShowObjectReferences"/>
     <addaction name="menuShowObjectNames"/>
@@ -336,6 +337,14 @@
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+G</string>
+   </property>
+  </action>
+  <action name="actionShowWorldGrid">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show &amp;World Grid</string>
    </property>
   </action>
   <action name="actionSaveAs">

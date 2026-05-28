@@ -178,6 +178,11 @@ bool Preferences::showGrid() const
     return get("Interface/ShowGrid", true);
 }
 
+bool Preferences::showWorldGrid() const
+{
+    return get("Interface/ShowWorldGrid", true);
+}
+
 bool Preferences::showTileObjectOutlines() const
 {
     return get("Interface/ShowTileObjectOutlines", false);
@@ -339,6 +344,12 @@ void Preferences::setShowGrid(bool showGrid)
 {
     setValue(QLatin1String("Interface/ShowGrid"), showGrid);
     emit showGridChanged(showGrid);
+}
+
+void Preferences::setShowWorldGrid(bool showWorldGrid)
+{
+    setValue(QLatin1String("Interface/ShowWorldGrid"), showWorldGrid);
+    emit showWorldGridChanged(showWorldGrid);
 }
 
 void Preferences::setShowTileObjectOutlines(bool enabled)
