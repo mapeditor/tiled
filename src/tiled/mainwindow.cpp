@@ -1342,6 +1342,10 @@ bool MainWindow::exportDocument(Document *document)
 
             if (exportFormat->write(map, exportFileName, exportHelper.formatOptions())) {
                 statusBar()->showMessage(tr("Exported to %1").arg(exportFileName), 3000);
+                // When exporting to the same file, update the saved timestamp
+                // to avoid triggering an unnecessary auto-reload
+                if (exportFileName == document->fileName())
+                    document->refreshLastSaved(exportFileName);
                 return true;
             }
 
@@ -1356,6 +1360,10 @@ bool MainWindow::exportDocument(Document *document)
 
             if (exportFormat->write(*tileset, exportFileName, exportHelper.formatOptions())) {
                 statusBar()->showMessage(tr("Exported to %1").arg(exportFileName), 3000);
+                // When exporting to the same file, update the saved timestamp
+                // to avoid triggering an unnecessary auto-reload
+                if (exportFileName == document->fileName())
+                    document->refreshLastSaved(exportFileName);
                 return true;
             }
 
@@ -2432,6 +2440,10 @@ void MainWindow::exportMapAs(MapDocument *mapDocument)
         // Remember export parameters, so subsequent exports can be done faster
         mapDocument->setLastExportFileName(exportDetails.mFileName);
         mapDocument->setExportFormat(exportDetails.mFormat);
+        // When exporting to the same file, update the saved timestamp to avoid
+        // triggering an unnecessary auto-reload
+        if (exportDetails.mFileName == mapDocument->fileName())
+            mapDocument->refreshLastSaved(exportDetails.mFileName);
     }
 }
 
@@ -2471,6 +2483,10 @@ void MainWindow::exportTilesetAs(TilesetDocument *tilesetDocument)
         // Remember export parameters, so subsequent exports can be done faster
         tilesetDocument->setLastExportFileName(exportDetails.mFileName);
         tilesetDocument->setExportFormat(exportDetails.mFormat);
+        // When exporting to the same file, update the saved timestamp to avoid
+        // triggering an unnecessary auto-reload
+        if (exportDetails.mFileName == tilesetDocument->fileName())
+            tilesetDocument->refreshLastSaved(exportDetails.mFileName);
     }
 }
 
