@@ -409,6 +409,7 @@ void MapItem::documentChanged(const ChangeEvent &change)
         case Map::LayerDataFormatProperty:
         case Map::CompressionLevelProperty:
         case Map::ChunkSizeProperty:
+        case Map::ViewportSizeProperty:
             break;
         }
         break;

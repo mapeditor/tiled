@@ -173,6 +173,7 @@
     <addaction name="menuShowObjectNames"/>
     <addaction name="actionShowTileAnimations"/>
     <addaction name="actionShowTileCollisionShapes"/>
+    <addaction name="actionShowViewport"/>
     <addaction name="actionEnableWorlds"/>
     <addaction name="actionEnableParallax"/>
     <addaction name="actionHighlightCurrentLayer"/>
@@ -689,6 +690,14 @@
    </property>
    <property name="text">
     <string>Show Tile Collision Shapes</string>
+   </property>
+  </action>
+  <action name="actionShowViewport">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show &amp;Viewport</string>
    </property>
   </action>
   <action name="actionFitInView">

@@ -68,6 +68,7 @@ public:
     bool showTileCollisionShapes() const;
     bool showObjectReferences() const;
     bool parallaxEnabled() const;
+    bool showViewport() const;
     SnapMode snapMode() const;
     QColor gridColor() const;
     QColor backgroundFadeColor() const;
@@ -202,6 +203,7 @@ public slots:
     void setShowTileCollisionShapes(bool enabled);
     void setShowObjectReferences(bool enabled);
     void setParallaxEnabled(bool enabled);
+    void setShowViewport(bool enabled);
     void setSnapMode(SnapMode snapMode);
     void setGridColor(QColor gridColor);
     void setBackgroundFadeColor(QColor backgroundFadeColor);
@@ -227,6 +229,7 @@ signals:
     void showTileCollisionShapesChanged(bool enabled);
     void showObjectReferencesChanged(bool enabled);
     void parallaxEnabledChanged(bool enabled);
+    void showViewportChanged(bool enabled);
     void snapModeChanged(SnapMode snapMode);
     void gridColorChanged(QColor gridColor);
     void backgroundFadeColorChanged(QColor backgroundFadeColor);
