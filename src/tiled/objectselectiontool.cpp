@@ -1230,6 +1230,15 @@ void ObjectSelectionTool::startMoving(const QPointF &pos,
 
     saveSelectionState();
 
+    // The selection may have ended up empty (e.g. mClickedObject was filtered
+    // out, deleted between press and move, or cleared by a slot reacting to
+    // the selection-changed signal). Fall back to rubber-band selecting in
+    // that case to avoid dereferencing an empty list below.
+    if (mMovingObjects.isEmpty()) {
+        startSelecting();
+        return;
+    }
+
     mStart = pos;
     mAction = Moving;
     mMergeUndo = false;
@@ -1313,6 +1322,13 @@ void ObjectSelectionTool::startRotating(const QPointF &pos)
     mOriginPos = mOriginIndicator->pos();
 
     saveSelectionState();
+
+    // Abort if the selection ended up empty, to avoid later first() crashes.
+    if (mMovingObjects.isEmpty()) {
+        mAction = NoAction;
+        return;
+    }
+
     updateHandleVisibility();
 }
 
@@ -1395,6 +1411,14 @@ void ObjectSelectionTool::startResizing()
     mStartOffset = mStart - mClickedResizeHandle->pos();
 
     saveSelectionState();
+
+    // Abort if the selection ended up empty, to avoid later first() crashes
+    // in updateResizingSingleItem and elsewhere.
+    if (mMovingObjects.isEmpty()) {
+        mAction = NoAction;
+        return;
+    }
+
     updateHandleVisibility();
 }
 
@@ -1505,6 +1529,9 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
                                                    const QPointF &screenPos,
                                                    Qt::KeyboardModifiers modifiers)
 {
+    if (mMovingObjects.isEmpty())
+        return;
+
     const MapRenderer *renderer = mapDocument()->renderer();
     const MovingObject &object = mMovingObjects.first();
     MapObject *mapObject = object.mapObject;
