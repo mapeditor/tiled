@@ -76,6 +76,7 @@ private:
                                 const QVariant &oldValue,
                                 const QVariant &newValue);
 
+    void setupExpandedState(GroupProperty *group, const QStringList &path);
     void emitMemberValueChanged(const PropertyPath &path, const QVariant &value);
 
     bool mEmittingValueChanged = false;
