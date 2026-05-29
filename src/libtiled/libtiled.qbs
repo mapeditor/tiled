@@ -101,6 +101,8 @@ DynamicLibrary {
         "fileformat.h",
         "filesystemwatcher.cpp",
         "filesystemwatcher.h",
+        "filedependencies.cpp",
+        "filedependencies.h",
         "gidmapper.cpp",
         "gidmapper.h",
         "grid.h",
