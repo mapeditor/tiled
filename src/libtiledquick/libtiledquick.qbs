@@ -3,11 +3,11 @@ import qbs.Utilities
 DynamicLibrary {
     targetName: "tiledquick"
     builtByDefault: false
-    condition: Utilities.versionCompare(Qt.core.version, "6.5") >= 0
+    condition: Qt.core && Utilities.versionCompare(Qt.core.version, "6.5") >= 0
 
     Depends { name: "libtiled" }
     Depends { name: "cpp" }
-    Depends { name: "Qt"; submodules: ["quick"]; versionAtLeast: "6.5" }
+    Depends { name: "Qt"; submodules: ["quick","shadertools"]; versionAtLeast: "6.5" }
 
     cpp.cxxLanguageVersion: "c++17"
     cpp.cxxFlags: {
@@ -36,16 +36,22 @@ DynamicLibrary {
     }
 
     files: [
-        "mapitem.h",
+        "mapborderitem.cpp",
+        "mapborderitem.h",
+        "mapgriditem.cpp",
+        "mapgriditem.h",
+        "mapgridmaterial.cpp",
+        "mapgridmaterial.h",
         "mapitem.cpp",
-        "maploader.h",
+        "mapitem.h",
         "maploader.cpp",
+        "maploader.h",
         "mapref.h",
-        "tilelayeritem.h",
-        "tilelayeritem.cpp",
         "tiledquick_global.h",
+        "tilelayeritem.cpp",
+        "tilelayeritem.h",
+        "tilesnode.cpp",
         "tilesnode.h",
-        "tilesnode.cpp"
     ]
 
     Group {
@@ -53,6 +59,14 @@ DynamicLibrary {
         qbs.install: true
         qbs.installDir: "include/tiledquick"
         fileTagsFilter: "hpp"
+    }
+
+    Group {
+        name: "Shaders"
+        files: [
+            "grid.vert",
+            "grid.frag",
+        ]
     }
 
     Export {

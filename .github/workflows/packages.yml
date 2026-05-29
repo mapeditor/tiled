@@ -79,7 +79,7 @@ jobs:
       with:
         version: 6.10.2
         arch: linux_gcc_64
-        modules: "qtimageformats"
+        modules: "qtimageformats qtshadertools"
         tools: 'tools_qtcreator'
         setup-python: false
         cache: true
@@ -157,9 +157,17 @@ jobs:
         path: Tiled-${{ needs.version.outputs.version }}_Linux_x86_64.AppImage
 
   snap:
-    name: Linux (snap)
-    runs-on: ubuntu-latest
+    name: Linux (snap, ${{ matrix.arch }})
+    runs-on: ${{ matrix.runs_on }}
     needs: version
+
+    strategy:
+      matrix:
+        include:
+        - runs_on: ubuntu-24.04
+          arch: amd64
+        - runs_on: ubuntu-24.04-arm
+          arch: arm64
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
@@ -170,21 +178,21 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Set Tiled version
-      id: version
-      run: |
-        if [[ "$TILED_RELEASE" == 'true' ]]; then echo "snap_channel=candidate" >> $GITHUB_OUTPUT ; fi
-        if [[ "$TILED_RELEASE" != 'true' ]]; then echo "snap_channel=beta" >> $GITHUB_OUTPUT ; fi
+    - name: Install snapcraft
+      run: sudo snap install --classic snapcraft
 
     - name: Build snap
       id: build
-      uses: snapcore/action-build@v1
+      env:
+        SNAPCRAFT_BUILD_INFO: "1"
+        SNAPCRAFT_IMAGE_INFO: '{"build_url":"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"}'
+      run: sudo snapcraft --destructive-mode
 
     - name: Upload snap artifact
       uses: actions/upload-artifact@v6
       with:
-        name: tiled_amd64.snap
-        path: tiled_*_amd64.snap
+        name: tiled_${{ matrix.arch }}.snap
+        path: tiled_*_${{ matrix.arch }}.snap
 
   macos:
     name: macOS (${{ matrix.version_suffix }})
@@ -200,7 +208,7 @@ jobs:
           architectures: x86_64
           cmake_architectures: x86_64
         - qt_version: 6.10.2
-          qt_modules: "qtimageformats"
+          qt_modules: "qtimageformats qtshadertools"
           version_suffix: "13+"
           architectures: x86_64,arm64
           cmake_architectures: x86_64;arm64
@@ -333,7 +341,7 @@ jobs:
         - qt_version: 6.10.2
           qt_version_major: 6
           qt_arch: win64_mingw
-          qt_modules: "qtimageformats"
+          qt_modules: "qtimageformats qtshadertools"
           arch: 64
           openssl_arch: x64
           filename_suffix: 'Windows-10+_x86_64'
@@ -450,8 +458,8 @@ jobs:
           Tiled-${{ needs.version.outputs.version }}_Windows-10+_x86_64.msi/*.msi
           Tiled-${{ needs.version.outputs.version }}_Windows-7-8_x86.msi/*.msi
           Tiled-${{ needs.version.outputs.version }}_Linux_x86_64.AppImage/*.AppImage
-          Tiled-${{ needs.version.outputs.version }}_macOS-10.13-10.15.app/*.zip
-          Tiled-${{ needs.version.outputs.version }}_macOS-11+.app/*.zip
+          Tiled-${{ needs.version.outputs.version }}_macOS-10.13-12.app/*.zip
+          Tiled-${{ needs.version.outputs.version }}_macOS-13+.app/*.zip
 
   sentry:
     name: Create Sentry release

@@ -160,6 +160,23 @@ ApplicationWindow {
                             mapView.height / scale);
                 }
             }
+
+            Tiled.MapBorderItem {
+                id: mapBorderItem
+                anchors.fill: mapItem
+
+                color: "black"
+            }
+
+            Tiled.MapGridItem {
+                id: mapGriditem
+                anchors.fill: mapItem
+
+                tileSize: Qt.point(mapItem.tileSize().width, mapItem.tileSize().height);
+                scale: mapContainer.scale;
+
+                color: "black"
+            }
         }
     }
 

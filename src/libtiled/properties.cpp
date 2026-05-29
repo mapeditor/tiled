@@ -206,6 +206,8 @@ void mergeProperties(Properties &target, const Properties &source)
 
 QJsonArray propertiesToJson(const Properties &properties, const ExportContext &context)
 {
+    Q_ASSERT(context.recursiveBehavior() == ExportContext::RecursiveBehavior::TypedListValues);
+
     QJsonArray json;
 
     Properties::const_iterator it = properties.begin();
@@ -218,7 +220,8 @@ QJsonArray propertiesToJson(const Properties &properties, const ExportContext &c
         propertyObject.insert(QLatin1String("name"), name);
         propertyObject.insert(QLatin1String("value"), QJsonValue::fromVariant(exportValue.value));
         propertyObject.insert(QLatin1String("type"), exportValue.typeName);
-        propertyObject.insert(QLatin1String("propertytype"), exportValue.propertyTypeName);
+        if (!exportValue.propertyTypeName.isEmpty())
+            propertyObject.insert(QLatin1String("propertytype"), exportValue.propertyTypeName);
 
         json.append(propertyObject);
     }
@@ -226,8 +229,17 @@ QJsonArray propertiesToJson(const Properties &properties, const ExportContext &c
     return json;
 }
 
+QJsonArray propertiesToJson(const Properties &properties, const QString &path)
+{
+    ExportContext context(path);
+    context.setRecursiveBehavior(ExportContext::RecursiveBehavior::TypedListValues);
+    return propertiesToJson(properties, context);
+}
+
 Properties propertiesFromJson(const QJsonArray &json, const ExportContext &context)
 {
+    Q_ASSERT(context.recursiveBehavior() == ExportContext::RecursiveBehavior::TypedListValues);
+
     Properties properties;
 
     for (const QJsonValue &property : json) {
@@ -245,8 +257,18 @@ Properties propertiesFromJson(const QJsonArray &json, const ExportContext &conte
     return properties;
 }
 
-QJsonArray valuesToJson(const QVariantList &values, const ExportContext &context)
+Properties propertiesFromJson(const QJsonArray &json, const QString &path)
 {
+    ExportContext context(path);
+    context.setRecursiveBehavior(ExportContext::RecursiveBehavior::TypedListValues);
+    return propertiesFromJson(json, context);
+}
+
+QJsonArray valuesToJson(const QVariantList &values, const QString &path)
+{
+    ExportContext context(path);
+    context.setRecursiveBehavior(ExportContext::RecursiveBehavior::TypedListValues);
+
     QJsonArray json;
 
     for (auto &value : values) {
@@ -254,12 +276,9 @@ QJsonArray valuesToJson(const QVariantList &values, const ExportContext &context
 
         QJsonObject propertyObject;
         propertyObject.insert(QLatin1String("type"), exportValue.typeName);
-        propertyObject.insert(QLatin1String("propertytype"), exportValue.propertyTypeName);
-
-        if (value.userType() == QMetaType::QVariantList)
-            propertyObject.insert(QLatin1String("value"), valuesToJson(value.toList(), context));
-        else
-            propertyObject.insert(QLatin1String("value"), QJsonValue::fromVariant(exportValue.value));
+        if (!exportValue.propertyTypeName.isEmpty())
+            propertyObject.insert(QLatin1String("propertytype"), exportValue.propertyTypeName);
+        propertyObject.insert(QLatin1String("value"), QJsonValue::fromVariant(exportValue.value));
 
         json.append(propertyObject);
     }
@@ -267,8 +286,11 @@ QJsonArray valuesToJson(const QVariantList &values, const ExportContext &context
     return json;
 }
 
-QVariantList valuesFromJson(const QJsonArray &json, const ExportContext &context)
+QVariantList valuesFromJson(const QJsonArray &json, const QString &path)
 {
+    ExportContext context(path);
+    context.setRecursiveBehavior(ExportContext::RecursiveBehavior::TypedListValues);
+
     QVariantList values;
 
     for (const QJsonValue &value : json) {
@@ -402,16 +424,28 @@ ExportValue ExportContext::toExportValue(const QVariant &value) const
 
     ExportValue exportValue;
 
-    if (metaType == QMetaType::QVariantList) {
+    if (metaType == QMetaType::QVariantList && mRecursiveBehavior != RecursiveBehavior::NoRecursion) {
         QVariantList exportValues;
         const auto list = value.toList();
         exportValues.reserve(list.size());
-        if (mRecursiveBehavior == RecursiveBehavior::ValuesOnly) {
+        switch (mRecursiveBehavior) {
+        case RecursiveBehavior::NoRecursion:
+            break;  // unreachable, handled above
+        case RecursiveBehavior::ValuesOnly:
             for (const QVariant &element : list)
                 exportValues.append(toExportValue(element).value);
-        } else {
-            for (const QVariant &element : list)
-                exportValues.append(QVariant::fromValue(toExportValue(element)));
+            break;
+        case RecursiveBehavior::TypedListValues:
+            for (const QVariant &element : list) {
+                const ExportValue elementExport = toExportValue(element);
+                QVariantMap mapItem;
+                mapItem.insert(QLatin1String("type"), elementExport.typeName);
+                if (!elementExport.propertyTypeName.isEmpty())
+                    mapItem.insert(QLatin1String("propertytype"), elementExport.propertyTypeName);
+                mapItem.insert(QLatin1String("value"), elementExport.value);
+                exportValues.append(mapItem);
+            }
+            break;
         }
         exportValue.value = exportValues;
     } else if (metaType == QMetaType::QColor) {
@@ -452,14 +486,29 @@ QVariant ExportContext::toPropertyValue(const ExportValue &exportValue) const
 
 QVariant ExportContext::toPropertyValue(const QVariant &value, int metaType) const
 {
+    if (metaType == QMetaType::QVariantList) {
+        if (mRecursiveBehavior != RecursiveBehavior::TypedListValues)
+            return value;   // list elements are already in their final form
+
+        // Each list element is a {type, propertytype, value} map. Reconstruct
+        // its ExportValue and recurse, which decodes any nested lists too.
+        QVariantList list = value.toList();
+        for (QVariant &item : list) {
+            const QVariantMap itemMap = item.toMap();
+            ExportValue elementExport;
+            elementExport.value = itemMap.value(QLatin1String("value"));
+            elementExport.typeName = itemMap.value(QLatin1String("type")).toString();
+            elementExport.propertyTypeName = itemMap.value(QLatin1String("propertytype")).toString();
+            item = toPropertyValue(elementExport);
+        }
+        return list;
+    }
+
     if (metaType == QMetaType::UnknownType || value.userType() == metaType)
         return value;   // value possibly already converted
 
     if (metaType == QMetaType::QVariantMap || metaType == propertyValueId())
         return value;   // should be covered by property type
-
-    if (metaType == QMetaType::QVariantList)
-        return value;   // list elements should be converted individually
 
     if (metaType == filePathTypeId()) {
         const QUrl url = toUrl(value.toString(), mPath);

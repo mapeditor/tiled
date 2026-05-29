@@ -1433,7 +1433,7 @@ Properties MapReaderPrivate::readProperties()
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("properties"));
 
     Properties properties;
-    const ExportContext context(mPath.path());
+    const ExportContext context(mPath.path());  // NoRecursion mode
 
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("property"))
