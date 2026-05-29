@@ -1,13 +1,13 @@
 ### Unreleased
 
 * Added 'Collapse All' action and 'Only Expand to Current' mode to Project view (with rhythmcache, #4346)
+* Added command variables %exportfile and %exportpath (#4476)
 
 ### Tiled 1.12.2 (27 May 2026)
 
 * Added whitespace trimming for custom property names (with Praagya26, #4486)
 * Reduced animated tile marker opacity during terrain editing (by Huy Vũ, #4449)
 * Fixed ability to change properties after deselecting the current object (#4440)
-* Added command variables %exportfile and %exportpath (#4476)
 * Fixed Properties view getting stuck with updates disabled (#4506)
 * Fixed copy/paste of list properties losing item types (#4514)
 * Fixed resolving of class members values in lists on export (#4525)
