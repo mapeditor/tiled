@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+ <object name="block" type="solid" width="64" height="64">
+  <properties>
+   <property name="collision" type="bool" value="true"/>
+  </properties>
+ </object>
+</template>

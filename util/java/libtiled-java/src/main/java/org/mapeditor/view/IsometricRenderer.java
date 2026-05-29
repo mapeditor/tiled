@@ -46,7 +46,7 @@ import org.mapeditor.core.TileLayer;
  *
  * @version 1.4.2
  */
-public class IsometricRenderer implements MapRenderer {
+public class IsometricRenderer extends AbstractRenderer {
 
     private final Map map;
 
@@ -71,77 +71,84 @@ public class IsometricRenderer implements MapRenderer {
     /** {@inheritDoc} */
     @Override
     public void paintTileLayer(Graphics2D g, TileLayer layer) {
-        final Rectangle clip = g.getClipBounds();
-        final int tileWidth = map.getTileWidth();
-        final int tileHeight = map.getTileHeight();
+        paintLayer(g, layer, () -> {
+            final Rectangle clip = g.getClipBounds();
+            final int tileWidth = map.getTileWidth();
+            final int tileHeight = map.getTileHeight();
 
-        // Translate origin to top-center
-        double tileRatio = (double) tileWidth / (double) tileHeight;
-        clip.x -= map.getHeight() * (tileWidth / 2);
-        int mx = clip.y + (int) (clip.x / tileRatio);
-        int my = clip.y - (int) (clip.x / tileRatio);
+            // Translate origin to top-center
+            double tileRatio = (double) tileWidth / (double) tileHeight;
+            clip.x -= map.getHeight() * (tileWidth / 2);
+            int mx = clip.y + (int) (clip.x / tileRatio);
+            int my = clip.y - (int) (clip.x / tileRatio);
 
-        // Calculate map coords and divide by tile size (tiles assumed to
-        // be square in normal projection)
-        Point rowItr = new Point(
-                (mx < 0 ? mx - tileHeight : mx) / tileHeight,
-                (my < 0 ? my - tileHeight : my) / tileHeight);
-        rowItr.x--;
+            // Calculate map coords and divide by tile size (tiles assumed to
+            // be square in normal projection)
+            Point rowItr = new Point(
+                    (mx < 0 ? mx - tileHeight : mx) / tileHeight,
+                    (my < 0 ? my - tileHeight : my) / tileHeight);
+            rowItr.x--;
 
-        // Location on the screen of the top corner of a tile.
-        int originX = (map.getHeight() * tileWidth) / 2;
-        Point drawLoc = new Point(
-                ((rowItr.x - rowItr.y) * tileWidth / 2) + originX,
-                (rowItr.x + rowItr.y) * tileHeight / 2);
-        drawLoc.x -= tileWidth / 2;
-        drawLoc.y -= tileHeight / 2;
+            // Location on the screen of the top corner of a tile.
+            int originX = (map.getHeight() * tileWidth) / 2;
+            Point drawLoc = new Point(
+                    ((rowItr.x - rowItr.y) * tileWidth / 2) + originX,
+                    (rowItr.x + rowItr.y) * tileHeight / 2);
+            drawLoc.x -= tileWidth / 2;
+            drawLoc.y -= tileHeight / 2;
 
-        // Add offset from tile layer property
-        drawLoc.x += layer.getOffsetX() != null ? layer.getOffsetX() : 0;
-        drawLoc.y += layer.getOffsetY() != null ? layer.getOffsetY() : 0;
-        
-        // Determine area to draw from clipping rectangle
-        int tileStepY = tileHeight / 2 == 0 ? 1 : tileHeight / 2;
-        int columns = clip.width / tileWidth + 3;
-        int rows = clip.height / tileStepY + 4;
+            // Add offset from tile layer property
+            drawLoc.x += layer.getOffsetX() != null ? layer.getOffsetX() : 0;
+            drawLoc.y += layer.getOffsetY() != null ? layer.getOffsetY() : 0;
 
-        // Draw this map layer
-        for (int y = 0; y < rows; y++) {
-            Point columnItr = new Point(rowItr);
+            // Determine area to draw from clipping rectangle
+            int tileStepY = tileHeight / 2 == 0 ? 1 : tileHeight / 2;
+            int columns = clip.width / tileWidth + 3;
+            int rows = clip.height / tileStepY + 4;
 
-            for (int x = 0; x < columns; x++) {
-                final Tile tile = layer.getTileAt(columnItr.x, columnItr.y);
+            // Draw this map layer
+            for (int y = 0; y < rows; y++) {
+                Point columnItr = new Point(rowItr);
 
-                if (tile != null) {
-                    final BufferedImage image = tile.getImage();
-                    if (image == null) {
-                        continue;
+                for (int x = 0; x < columns; x++) {
+                    final Tile tile = layer.getTileAt(columnItr.x, columnItr.y);
+
+                    if (tile != null) {
+                        final BufferedImage image = tile.getImage();
+                        if (image == null) {
+                            continue;
+                        }
+
+                        // Tile offset is per-draw, so don't mutate the running cursor.
+                        Point tileDrawLoc = getTileDrawLocation(
+                                layer, tile, drawLoc.x, drawLoc.y + tileHeight - image.getHeight(null));
+                        drawTileWithFlags(
+                                g,
+                                image,
+                                tileDrawLoc.x,
+                                tileDrawLoc.y,
+                                layer.getFlagsAt(columnItr.x, columnItr.y),
+                                false);
                     }
 
-                    // Add offset from tileset property
-                    drawLoc.x += tile.getTileSet().getTileoffset() != null ? tile.getTileSet().getTileoffset().getX() : 0;
-                    drawLoc.y += tile.getTileSet().getTileoffset() != null ? tile.getTileSet().getTileoffset().getY() : 0;
-
-                    g.drawImage(image, drawLoc.x, drawLoc.y, null);
+                    // Advance to the next tile
+                    columnItr.x++;
+                    columnItr.y--;
+                    drawLoc.x += tileWidth;
                 }
 
-                // Advance to the next tile
-                columnItr.x++;
-                columnItr.y--;
-                drawLoc.x += tileWidth;
+                // Advance to the next row
+                if ((y & 1) > 0) {
+                    rowItr.x++;
+                    drawLoc.x += tileWidth / 2;
+                } else {
+                    rowItr.y++;
+                    drawLoc.x -= tileWidth / 2;
+                }
+                drawLoc.x -= columns * tileWidth;
+                drawLoc.y += tileStepY;
             }
-
-            // Advance to the next row
-            if ((y & 1) > 0) {
-                rowItr.x++;
-                drawLoc.x += tileWidth / 2;
-            } else {
-                rowItr.y++;
-                drawLoc.x -= tileWidth / 2;
-            }
-            drawLoc.x -= columns * tileWidth;
-            drawLoc.y += tileStepY;
-        }
+        });
     }
 
     /** {@inheritDoc} */
