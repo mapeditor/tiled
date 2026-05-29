@@ -50,20 +50,24 @@ void MapLoader::setSource(const QUrl &source)
     Status status = map ? Ready : Error;
     QString error = map ? QString() : mapReader.errorString();
 
-    const bool mapDiff = m_map != map;
+    const bool mapDiff = m_editableMap ? m_editableMap->map() != map.get()
+                                         : nullptr != map.get() ;
     const bool statusDiff = m_status != status;
     const bool errorDiff = m_error != error;
 
-    m_map = std::move(map);
-    // Currently duplicates m_map, once mapref and mapitem are replaced m_map should be moved rather than cloned
-    m_editableMap = std::make_unique<Tiled::EditableMap>(m_map->clone());
+    m_editableMap = std::make_unique<Tiled::EditableMap>(std::move(map));
     m_status = status;
     m_error = error;
 
     emit sourceChanged(source);
 
     if (mapDiff)
-        emit mapChanged(m_map.get());
+    {
+        if (m_editableMap)
+            emit mapChanged(m_editableMap->map());
+        else
+            emit mapChanged(nullptr);
+    }
     if (statusDiff)
         emit statusChanged(status);
     if (errorDiff)

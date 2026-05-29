@@ -69,7 +69,6 @@ public slots:
 
 private:
     QUrl m_source;
-    std::unique_ptr<Tiled::Map> m_map;
     std::unique_ptr<Tiled::EditableMap> m_editableMap;
     Status m_status;
     QString m_error;
@@ -78,7 +77,10 @@ private:
 
 inline MapRef MapLoader::map() const
 {
-    return m_map.get();
+    if (m_editableMap)
+        return m_editableMap->map();
+    else
+        return nullptr;
 }
 
 inline Tiled::EditableMap* MapLoader::editableMap() const
