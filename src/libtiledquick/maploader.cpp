@@ -29,8 +29,6 @@ using namespace TiledQuick;
 
 MapLoader::MapLoader(QObject *parent)
     : QObject(parent)
-    , m_map(nullptr)
-    , m_editableMap(nullptr)
     , m_status(Null)
 {
 }
