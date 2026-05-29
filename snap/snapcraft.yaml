@@ -6,6 +6,12 @@ base: core24
 grade: stable
 confinement: strict
 
+platforms:
+  amd64:
+  arm64:
+  s390x:
+  ppc64el:
+
 apps:
   tiled:
     command-chain: &command-chain
@@ -82,6 +88,28 @@ parts:
       - -DUSE_SHARED_PIXMAN=on
       - -DUSE_SHARED_FREETYPE=on
       - -DUSE_SHARED_HARFBUZZ=on
+    # Aseprite's vendored `laf` library hardcodes the CPU-architecture
+    # whitelist (x86/x64/arm64/riscv64) and refuses to compile on s390x
+    # or ppc64el. Skip the plugin entirely on those arches so the rest
+    # of Tiled still builds; users there lose .ase/.aseprite import.
+    override-pull: |
+      case "$CRAFT_ARCH_BUILD_FOR" in
+        s390x|ppc64el)
+          echo "Skipping qaseprite pull on $CRAFT_ARCH_BUILD_FOR"
+          ;;
+        *)
+          craftctl default
+          ;;
+      esac
+    override-build: |
+      case "$CRAFT_ARCH_BUILD_FOR" in
+        s390x|ppc64el)
+          echo "Skipping qaseprite build on $CRAFT_ARCH_BUILD_FOR"
+          ;;
+        *)
+          craftctl default
+          ;;
+      esac
     build-packages:
       - libfreetype-dev
       - libgl1-mesa-dev
