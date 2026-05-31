@@ -46,7 +46,6 @@ DynamicLibrary {
         "mapitem.h",
         "maploader.cpp",
         "maploader.h",
-        "mapref.h",
         "tiledquick_global.h",
         "tilelayeritem.cpp",
         "tilelayeritem.h",

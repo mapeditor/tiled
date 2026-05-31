@@ -151,7 +151,8 @@ ApplicationWindow {
 
             Tiled.MapItem {
                 id: mapItem
-                map: mapLoader.map
+                editableMap: mapLoader.editableMap
+
                 visibleArea: {
                     var scale = mapContainer.scale
                     Qt.rect(-mapContainer.x / scale,
