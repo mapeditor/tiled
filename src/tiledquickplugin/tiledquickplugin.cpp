@@ -34,8 +34,6 @@ void TiledQuickPlugin::registerTypes(const char *uri)
 {
     // @uri org.mapeditor.Tiled
 
-    qmlRegisterAnonymousType<MapRef>(uri, 1);
-
     qmlRegisterType<MapLoader>(uri, 1, 0, "MapLoader");
     qmlRegisterType<MapItem>(uri, 1, 0, "MapItem");
     qmlRegisterType<MapBorderItem>(uri, 1, 0, "MapBorderItem");
