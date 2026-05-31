@@ -20,8 +20,8 @@
 
 #pragma once
 
-#include "mapref.h"
 #include "tiledquick_global.h"
+#include "editablemap.h"
 
 #include <QObject>
 #include <QUrl>
@@ -35,7 +35,8 @@ class TILEDQUICK_SHARED_EXPORT MapLoader : public QObject
     Q_OBJECT
 
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
-    Q_PROPERTY(TiledQuick::MapRef map READ map NOTIFY sourceChanged)
+    Q_PROPERTY(Tiled::Map *map READ map NOTIFY sourceChanged)
+    Q_PROPERTY(Tiled::EditableMap *editableMap READ editableMap NOTIFY sourceChanged)
     Q_PROPERTY(Status status READ status NOTIFY statusChanged)
     Q_PROPERTY(QString error READ error NOTIFY errorChanged)
 
@@ -51,7 +52,8 @@ public:
     ~MapLoader() override;
 
     QUrl source() const;
-    MapRef map() const;
+    Tiled::Map *map() const;
+    Tiled::EditableMap *editableMap() const;
     Status status() const;
     QString error() const;
 
@@ -66,15 +68,23 @@ public slots:
 
 private:
     QUrl m_source;
-    std::unique_ptr<Tiled::Map> m_map;
+    std::unique_ptr<Tiled::EditableMap> m_editableMap;
     Status m_status;
     QString m_error;
 };
 
 
-inline MapRef MapLoader::map() const
+inline Tiled::Map *MapLoader::map() const
 {
-    return m_map.get();
+    if (m_editableMap)
+        return m_editableMap->map();
+    else
+        return nullptr;
+}
+
+inline Tiled::EditableMap* MapLoader::editableMap() const
+{
+    return m_editableMap.get();
 }
 
 inline MapLoader::Status MapLoader::status() const

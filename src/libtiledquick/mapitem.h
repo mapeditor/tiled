@@ -20,8 +20,8 @@
 
 #pragma once
 
-#include "mapref.h"
 #include "tiledquick_global.h"
+#include "editablemap.h"
 
 #include <QQuickItem>
 
@@ -43,16 +43,19 @@ class TILEDQUICK_SHARED_EXPORT MapItem : public QQuickItem
 {
     Q_OBJECT
 
-    Q_PROPERTY(TiledQuick::MapRef map READ map WRITE setMap RESET unsetMap NOTIFY mapChanged)
+    Q_PROPERTY(Tiled::Map *map READ map NOTIFY mapChanged)
+    Q_PROPERTY(Tiled::EditableMap *editableMap READ editableMap WRITE setEditableMap RESET unsetEditableMap NOTIFY mapChanged)
     Q_PROPERTY(QRectF visibleArea READ visibleArea WRITE setVisibleArea NOTIFY visibleAreaChanged)
 
 public:
     explicit MapItem(QQuickItem *parent = nullptr);
     ~MapItem() override;
 
-    MapRef map() const;
-    void setMap(MapRef map);
-    void unsetMap();
+    Tiled::Map *map() const;
+
+    Tiled::EditableMap *editableMap() const;
+    void setEditableMap(Tiled::EditableMap *editableMap);
+    void unsetEditableMap();
 
     const QRectF &visibleArea() const;
     void setVisibleArea(const QRectF &visibleArea);
@@ -75,12 +78,14 @@ public:
 
 signals:
     void mapChanged();
+    void editableMapChanged();
     void visibleAreaChanged();
 
 private:
     void refresh();
 
     Tiled::Map *mMap;
+    Tiled::EditableMap *mEditableMap;
     QRectF mVisibleArea;
 
     std::unique_ptr<Tiled::MapRenderer> mRenderer;
@@ -92,14 +97,19 @@ inline const QRectF &MapItem::visibleArea() const
     return mVisibleArea;
 }
 
-inline MapRef MapItem::map() const
+inline Tiled::Map *MapItem::map() const
 {
     return mMap;
 }
 
-inline void MapItem::unsetMap()
+inline Tiled::EditableMap *MapItem::editableMap() const
 {
-    setMap(nullptr);
+    return mEditableMap;
+}
+
+inline void MapItem::unsetEditableMap()
+{
+    setEditableMap(nullptr);
 }
 
 } // namespace TiledQuick

@@ -36,7 +36,7 @@ class EditableSelectedArea;
 class EditableTileLayer;
 class EditableTileset;
 
-class EditableMap final : public EditableAsset
+class TILED_EDITOR_EXPORT EditableMap final : public EditableAsset
 {
     Q_OBJECT
 
@@ -211,7 +211,8 @@ public:
     void setSelectedLayers(const QList<QObject*> &layers);
     void setSelectedObjects(const QList<QObject*> &objects);
 
-    Map *map() const;
+    inline Map *map() const;
+
     MapDocument *mapDocument() const;
 
     QSharedPointer<Document> createDocument() override;
@@ -406,7 +407,6 @@ inline void EditableMap::setHeight(int height)
 {
     setSize(width(), height);
 }
-
 inline Map *EditableMap::map() const
 {
     return static_cast<Map*>(object());
