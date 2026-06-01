@@ -24,6 +24,7 @@
 #include "commandmanager.h"
 #include "compression.h"
 #include "documentmanager.h"
+#include "editabletile.h"
 #include "editabletileset.h"
 #include "issuesmodel.h"
 #include "logginginterface.h"
@@ -259,6 +260,13 @@ QColor ScriptModule::color(const QString &name) const
 QColor ScriptModule::color(float r, float g, float b, float a) const
 {
     return QColor::fromRgbF(r, g, b, a);
+}
+
+Cell ScriptModule::cell(EditableTile *tile, int flags) const
+{
+    Cell cell(tile ? tile->tile() : nullptr);
+    cell.setFlags(flags);
+    return cell;
 }
 
 FilePath ScriptModule::filePath(const QUrl &path) const
