@@ -3590,6 +3590,17 @@ interface cell {
   empty: boolean;
 
   /**
+   * The flags used for the tile.
+   *
+   * This is a combination of {@link Tile.FlippedHorizontally},
+   * {@link Tile.FlippedVertically}, {@link Tile.FlippedAntiDiagonally} and
+   * {@link Tile.RotatedHexagonal120}.
+   *
+   * @since 1.13
+   */
+  flags: number;
+
+  /**
    * Whether the tile is flipped horizontally.
    */
   flippedHorizontally: boolean;
@@ -3717,6 +3728,24 @@ interface TileLayerEdit {
    * (since Tiled 1.10.2).
    */
   setTile(x: number, y: number, tile: Tile | null, flags?: number): void;
+
+  /**
+   * Sets the cell at the given location. This is an alternative to
+   * {@link setTile} that takes a {@link cell} value, which is convenient for
+   * copying cells along with their flags (for example a value returned by
+   * {@link TileLayer.cellAt}).
+   *
+   * New cells can be created with {@link tiled.cell}. To remove a tile, set an
+   * empty cell (`tiled.cell()`).
+   *
+   * As with {@link setTile}, all locations which have been set retain a special
+   * flag that is taken into account by {@link TileMap.merge} and
+   * {@link Tool.preview}, to enable erasing tiles and highlighting the erased
+   * area, respectively.
+   *
+   * @since 1.13
+   */
+  setCell(x: number, y: number, cell: cell): void;
 
   /**
    * Applies the changes made through this object to the target layer. This
@@ -5219,6 +5248,19 @@ declare namespace tiled {
    * @since 1.11
    */
   export function color(r: number, g: number, b: number, a?: number): color;
+
+  /**
+   * Creates a {@link cell} referring to the given tile, optionally with the
+   * given flags (any combination of {@link Tile.FlippedHorizontally},
+   * {@link Tile.FlippedVertically}, {@link Tile.FlippedAntiDiagonally} and
+   * {@link Tile.RotatedHexagonal120}).
+   *
+   * Pass no tile (or `null`) to create an empty cell, which can be used with
+   * {@link TileLayerEdit.setCell} to erase a tile.
+   *
+   * @since 1.13
+   */
+  export function cell(tile?: Tile | null, flags?: number): cell;
 
   /**
    * Creates a {@link FilePath} object with the given URL.

@@ -1,6 +1,7 @@
 ### Unreleased
 
 * Added 'Collapse All' action and 'Only Expand to Current' mode to Project view (with rhythmcache, #4346)
+* Scripting: Added 'tiled.cell' function, 'cell.flags' property and 'TileLayerEdit.setCell' function
 
 ### Tiled 1.12.2 (27 May 2026)
 
