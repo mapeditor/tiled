@@ -23,6 +23,7 @@
 #include "id.h"
 #include "issuesdock.h"
 #include "properties.h"
+#include "tilelayer.h"
 
 #include <QJSValue>
 #include <QObject>
@@ -36,6 +37,7 @@ namespace Tiled {
 
 class Document;
 class EditableAsset;
+class EditableTile;
 class MapEditor;
 class ScriptImage;
 class ScriptMapFormatWrapper;
@@ -111,6 +113,7 @@ public:
 
     Q_INVOKABLE QColor color(const QString &name) const;
     Q_INVOKABLE QColor color(float r, float g, float b, float a = 1.0f) const;
+    Q_INVOKABLE Tiled::Cell cell(Tiled::EditableTile *tile = nullptr, int flags = 0) const;
     Q_INVOKABLE Tiled::FilePath filePath(const QUrl &path) const;
     Q_INVOKABLE Tiled::ObjectRef objectRef(int id) const;
     Q_INVOKABLE QVariant propertyValue(const QString &typeName, const QJSValue &value) const;
