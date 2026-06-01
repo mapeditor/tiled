@@ -1,6 +1,7 @@
 ### Unreleased
 
 * Added 'Collapse All' action and 'Only Expand to Current' mode to Project view (with rhythmcache, #4346)
+* Added command variables %exportfile and %exportpath (#4476)
 
 ### Tiled 1.12.2 (27 May 2026)
 

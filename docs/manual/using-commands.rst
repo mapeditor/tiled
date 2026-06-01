@@ -74,6 +74,12 @@ the following variables:
 ``%mappath``
     the path in which the current file is located.
 
+``%exportfile``
+    the full path to which the current file was last exported, or an empty string if the file has not yet been exported.
+
+``%exportpath``
+    the path in which the last export is located, or an empty string if the file has not yet been exported.
+
 .. raw:: html
 
    <div class="new new-prev">Since Tiled 1.4</div>
