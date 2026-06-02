@@ -3,6 +3,7 @@
 * Added 'Collapse All' action and 'Only Expand to Current' mode to Project view (with rhythmcache, #4346)
 * Added command variables %exportfile and %exportpath (#4476)
 * Scripting: Added 'tiled.cell' function, 'cell.flags' property and 'TileLayerEdit.setCell' function (#4538)
+* Scripting: Added MapObject.resolvedClassName() (by MatusGuy, #4529)
 
 ### Tiled 1.12.2 (27 May 2026)
 
