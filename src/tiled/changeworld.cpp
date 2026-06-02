@@ -127,22 +127,18 @@ bool SetMapRectCommand::mergeWith(const QUndoCommand *other)
 }
 
 
-SetWorldGridCommand::SetWorldGridCommand(WorldDocument *worldDocument,
-                                         int gridWidth,
-                                         int gridHeight)
+SetWorldGridCommand::SetWorldGridCommand(WorldDocument *worldDocument, QSize gridSize)
     : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change World Grid"))
     , mWorldDocument(worldDocument)
-    , mWidth(gridWidth)
-    , mHeight(gridHeight)
-    , mPreviousWidth(worldDocument->world()->gridWidth)
-    , mPreviousHeight(worldDocument->world()->gridHeight)
+    , mSize(gridSize)
+    , mPreviousSize(worldDocument->world()->gridSize)
 {
 }
 
-void SetWorldGridCommand::setGridSize(int width, int height)
+void SetWorldGridCommand::setGridSize(QSize size)
 {
     auto world = mWorldDocument->world();
-    world->setGridSize(width, height);
+    world->setGridSize(size);
     emit mWorldDocument->worldChanged();
 }
 

@@ -80,12 +80,11 @@ public:
     QVector<WorldMapEntry> maps;
     QVector<WorldPattern> patterns;
     bool onlyShowAdjacentMaps = false;
-    int gridWidth = 0;
-    int gridHeight = 0;
+    QSize gridSize {0,0};
 
     int mapIndex(const QString &fileName) const;
     void setMapRect(int mapIndex, const QRect &rect);
-    void setGridSize(int width, int height);
+    void setGridSize(QSize size);
     void addMap(const QString &fileName, const QRect &rect);
     void removeMap(int mapIndex);
     bool containsMap(const QString &fileName) const;

@@ -53,9 +53,9 @@ WorldPropertiesDialog::WorldPropertiesDialog(WorldDocumentPtr world, QWidget *pa
 
     refreshGridFromWorld();
 
-    connect(ui->gridWidthSpinBox, qOverload<int>(&QSpinBox::valueChanged),
+    connect(ui->gridWidthSpinBox, &QSpinBox::valueChanged,
             this, &WorldPropertiesDialog::pushGridSizeCommand);
-    connect(ui->gridHeightSpinBox, qOverload<int>(&QSpinBox::valueChanged),
+    connect(ui->gridHeightSpinBox, &QSpinBox::valueChanged,
             this, &WorldPropertiesDialog::pushGridSizeCommand);
 
     // Keep the spin boxes in sync if the world is changed elsewhere (e.g. undo).
@@ -67,24 +67,23 @@ WorldPropertiesDialog::WorldPropertiesDialog(WorldDocumentPtr world, QWidget *pa
 
 void WorldPropertiesDialog::pushGridSizeCommand()
 {
-    const int width = ui->gridWidthSpinBox->value();
-    const int height = ui->gridHeightSpinBox->value();
-    const auto *world = mWorldDocument->world();
+    const QSize gridSize(ui->gridWidthSpinBox->value(),
+                         ui->gridHeightSpinBox->value());
 
-    if (width == world->gridWidth && height == world->gridHeight)
+    if (gridSize == mWorldDocument->world()->gridSize)
         return;
 
     mWorldDocument->undoStack()->push(
-                new SetWorldGridCommand(mWorldDocument.get(), width, height));
+                new SetWorldGridCommand(mWorldDocument.get(), gridSize));
 }
 
 void WorldPropertiesDialog::refreshGridFromWorld()
 {
-    const auto *world = mWorldDocument->world();
+    const QSize gridSize = mWorldDocument->world()->gridSize;
     const QSignalBlocker blockWidth(ui->gridWidthSpinBox);
     const QSignalBlocker blockHeight(ui->gridHeightSpinBox);
-    ui->gridWidthSpinBox->setValue(world->gridWidth);
-    ui->gridHeightSpinBox->setValue(world->gridHeight);
+    ui->gridWidthSpinBox->setValue(gridSize.width());
+    ui->gridHeightSpinBox->setValue(gridSize.height());
 }
 
 WorldPropertiesDialog::~WorldPropertiesDialog()

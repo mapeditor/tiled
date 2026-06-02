@@ -662,7 +662,7 @@ void MapScene::drawBackground(QPainter *painter, const QRectF &rect)
         return;
 
     const auto world = worldDocument->world();
-    if (world->gridWidth <= 0 || world->gridHeight <= 0)
+    if (world->gridSize.isEmpty())
         return;
 
     // Translate so we can draw the grid in world coordinates.
@@ -683,8 +683,8 @@ void MapScene::drawBackground(QPainter *painter, const QRectF &rect)
     pen.setStyle(Qt::DashLine);
     painter->setPen(pen);
 
-    const int gridWidth = world->gridWidth;
-    const int gridHeight = world->gridHeight;
+    const int gridWidth = world->gridSize.width();
+    const int gridHeight = world->gridSize.height();
 
     const qreal startX = qFloor(worldRect.left() / gridWidth) * gridWidth;
     const qreal endX = qCeil(worldRect.right() / gridWidth) * gridWidth;
