@@ -407,6 +407,7 @@ inline void EditableMap::setHeight(int height)
 {
     setSize(width(), height);
 }
+
 inline Map *EditableMap::map() const
 {
     return static_cast<Map*>(object());
