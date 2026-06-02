@@ -41,7 +41,7 @@ void MapItem::setMap(Tiled::EditableMap* editableMap)
         return;
 
     mEditableMap = editableMap;
-    mMap = editableMap->map();
+    mMap = editableMap ? editableMap->map() : nullptr;
     refresh();
     emit mapChanged();
 }
