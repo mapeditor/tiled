@@ -35,7 +35,7 @@ MapItem::MapItem(QQuickItem *parent)
 
 MapItem::~MapItem() = default;
 
-void MapItem::setEditableMap(Tiled::EditableMap* editableMap)
+void MapItem::setMap(Tiled::EditableMap* editableMap)
 {
     if (mEditableMap == editableMap)
         return;
@@ -44,7 +44,6 @@ void MapItem::setEditableMap(Tiled::EditableMap* editableMap)
     mMap = editableMap->map();
     refresh();
     emit mapChanged();
-    emit editableMapChanged();
 }
 
 void MapItem::setVisibleArea(const QRectF &visibleArea)

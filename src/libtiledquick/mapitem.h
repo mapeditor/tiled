@@ -43,8 +43,7 @@ class TILEDQUICK_SHARED_EXPORT MapItem : public QQuickItem
 {
     Q_OBJECT
 
-    Q_PROPERTY(Tiled::Map *map READ map NOTIFY mapChanged)
-    Q_PROPERTY(Tiled::EditableMap *editableMap READ editableMap WRITE setEditableMap RESET unsetEditableMap NOTIFY mapChanged)
+    Q_PROPERTY(Tiled::EditableMap *map READ editableMap WRITE setMap RESET unsetMap NOTIFY mapChanged)
     Q_PROPERTY(QRectF visibleArea READ visibleArea WRITE setVisibleArea NOTIFY visibleAreaChanged)
 
 public:
@@ -54,8 +53,8 @@ public:
     Tiled::Map *map() const;
 
     Tiled::EditableMap *editableMap() const;
-    void setEditableMap(Tiled::EditableMap *editableMap);
-    void unsetEditableMap();
+    void setMap(Tiled::EditableMap *editableMap);
+    void unsetMap();
 
     const QRectF &visibleArea() const;
     void setVisibleArea(const QRectF &visibleArea);
@@ -78,7 +77,6 @@ public:
 
 signals:
     void mapChanged();
-    void editableMapChanged();
     void visibleAreaChanged();
 
 private:
@@ -107,9 +105,9 @@ inline Tiled::EditableMap *MapItem::editableMap() const
     return mEditableMap;
 }
 
-inline void MapItem::unsetEditableMap()
+inline void MapItem::unsetMap()
 {
-    setEditableMap(nullptr);
+    setMap(nullptr);
 }
 
 } // namespace TiledQuick

@@ -151,7 +151,7 @@ ApplicationWindow {
 
             Tiled.MapItem {
                 id: mapItem
-                editableMap: mapLoader.editableMap
+                map: mapLoader.editableMap
 
                 visibleArea: {
                     var scale = mapContainer.scale
