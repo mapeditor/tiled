@@ -233,6 +233,7 @@ void MapView::setUseOpenGL(bool useOpenGL)
 
 void MapView::setUseNewHardwareRenderer(bool useNewHardwareRenderer)
 {
+    return;
     /* QQuickView Container */
     if (useNewHardwareRenderer) {
         if (!qobject_cast<QQuickView*>(viewport())) {

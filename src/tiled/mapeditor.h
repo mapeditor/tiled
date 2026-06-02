@@ -23,6 +23,7 @@
 #include <QHash>
 #include <QMap>
 #include <QVariant>
+#include <QtQuickWidgets/QQuickWidget>
 
 #include "clipboardmanager.h"
 #include "editor.h"
@@ -183,6 +184,7 @@ private:
     LayerDock *mLayerDock;
     QStackedWidget *mWidgetStack;
     QHash<MapDocument*, MapView*> mWidgetForMap;
+    QHash<MapDocument*, QQuickWidget*> mQuickViewForMap;
     MapDocument *mCurrentMapDocument;
 
     PropertiesDock *mPropertiesDock;

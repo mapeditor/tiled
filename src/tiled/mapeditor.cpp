@@ -351,7 +351,12 @@ void MapEditor::addDocument(Document *document)
     scene->setMapDocument(mapDocument);
     view->setScene(scene);
 
+    QQuickWidget *quickView = new QQuickWidget(mWidgetStack);
+
+
     mWidgetForMap.insert(mapDocument, view);
+    //TODO: Add tiledquick document to mQuickViewForMap
+    mQuickViewForMap.insert(mapDocument, )
     mWidgetStack->addWidget(view);
 
     restoreDocumentState(mapDocument);
@@ -369,6 +374,7 @@ void MapEditor::removeDocument(Document *document)
     MapView *mapView = mWidgetForMap.take(mapDocument);
     // remove first, to keep it valid while the current widget changes
     mWidgetStack->removeWidget(mapView);
+    //TODO: Remove tiledquick document to mQuickViewForMap
     delete mapView;
 }
 
@@ -1019,22 +1025,44 @@ void MapEditor::setUseOpenGL(bool useOpenGL)
 
 void MapEditor::setUseNewHardwareRenderer(bool useNewHardwareRenderer)
 {
-    for (MapView *mapView : std::as_const(mWidgetForMap))
-        mapView->setUseNewHardwareRenderer(useNewHardwareRenderer);
+    // for (MapView *mapView : std::as_const(mWidgetForMap))
+        // TODO: Remove setUseNewHardwareRenderer from mapview class
+        // mapView->setUseNewHardwareRenderer(useNewHardwareRenderer);
 
     if (useNewHardwareRenderer)
-        return;
+    {
+        // Clear out the mapview stack
+        for (MapView* widget : std::as_const(mWidgetForMap))
+            mWidgetStack->removeWidget(widget);
 
-    if (auto w = mMainWindow->window()->windowHandle()) {
-        if (w->surfaceType() != QSurface::RasterSurface) {
-            w->setSurfaceType(QSurface::RasterSurface);
+        // Create temporary quickWidget for testing
+        if (mQuickViewForMap.count() < 1) {
+            QQuickWidget *quickWidget = new QQuickWidget();
+            quickWidget->setSource(QUrl(QStringLiteral("qrc:/test_renderer.qml")));
+            quickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
 
-            if (w->handle()) {
-                w->destroy();
-                w->show();
-            }
+            //TODO: currentmapdocument should be the real mapdocument
+            mQuickViewForMap.insert(mCurrentMapDocument, quickWidget);
+        }
+
+        // Fill mWidgetStack with loaded QQuickWidgets
+        for (QQuickWidget *quickWidget : std::as_const(mQuickViewForMap))
+        {
+            mWidgetStack->addWidget(quickWidget);
+        }
+    } else {
+        // Clear out the mapview stack
+        for (QQuickWidget* widget : std::as_const(mQuickViewForMap))
+            mWidgetStack->removeWidget(widget);
+
+        // Fill mWidgetStack with loaded MapViews
+        for (MapView *mapView : std::as_const(mWidgetForMap))
+        {
+            mWidgetStack->addWidget(mapView);
         }
     }
+
+    // mWidgetStack->setCurrentWidget();
 }
 
 void MapEditor::retranslateUi()
