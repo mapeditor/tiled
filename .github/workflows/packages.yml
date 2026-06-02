@@ -19,7 +19,7 @@ on:
     - '.travis.yml'
 
 env:
-  QBS_VERSION: 3.1.1
+  QBS_VERSION: 3.2.0
   CMAKE_VERSION: 3.31
   SENTRY_VERSION: 0.12.8
   SENTRY_ORG: mapeditor
