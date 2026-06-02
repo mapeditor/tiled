@@ -8,8 +8,6 @@
 	<string>Copyright 2008-2020 Thorbjørn Lindeijer</string>
 	<key>NSHighResolutionCapable</key>
 	<true/>
-	<key>CFBundleIconName</key>
-	<string>tiled-icon-macos26</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
