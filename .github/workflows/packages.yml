@@ -385,7 +385,8 @@ jobs:
 
     - name: Install Qbs
       run: |
-        choco install -y qbs --version ${{ env.QBS_VERSION }}
+        curl -fLO https://download.qt.io/official_releases/qbs/${{ env.QBS_VERSION }}/qbs.${{ env.QBS_VERSION }}.nupkg
+        choco install -y qbs --version ${{ env.QBS_VERSION }} --source .
 
     - name: Setup Qbs
       run: |
