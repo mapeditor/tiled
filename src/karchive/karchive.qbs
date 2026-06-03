@@ -6,6 +6,13 @@ StaticLibrary {
     Depends { name: "cpp" }
     Depends { name: "Qt.core"; versionAtLeast: "5.12" }
 
+    // Avoid wrapping this in a static framework, whose code signing breaks
+    // the install step on macOS 26 with Qbs 3.2.0.
+    Properties {
+        condition: qbs.targetOS.contains("macos")
+        bundle.isBundle: false
+    }
+
     cpp.includePaths: [ "src" ]
     cpp.defines: [
         "KARCHIVE_NO_DEPRECATED",
