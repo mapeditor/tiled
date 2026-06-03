@@ -317,6 +317,11 @@ jobs:
         xcrun notarytool submit --apple-id ${{ secrets.NOTARIZATION_USERNAME }} --password ${{ secrets.NOTARIZATION_PASSWORD }} --team-id ${{ secrets.NOTARIZATION_TEAM }} --wait Tiled_for_notarization.zip
         xcrun stapler staple install/Tiled.app
 
+    - name: Ad-hoc sign
+      if: env.SIGNING_ENABLED != 'true'
+      run: |
+        codesign --deep --force --sign - install/Tiled.app
+
     - name: Create Archive
       run: |
         ditto -c -k --sequesterRsrc --keepParent install/Tiled.app Tiled-${{ needs.version.outputs.version }}_macOS-${{ matrix.version_suffix }}.zip
