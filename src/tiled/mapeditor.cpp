@@ -357,7 +357,7 @@ void MapEditor::addDocument(Document *document)
     quickWidget->setSource(QUrl(QStringLiteral("qrc:/test_renderer.qml")));
     quickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
 
-    mQuickViewForMap.insert(mapDocument, quickWidget);
+    mQuickWidgetForMap.insert(mapDocument, quickWidget);
 
     if (!prefs->useNewHardwareRenderer()) {
         mWidgetStack->addWidget(view);
@@ -382,9 +382,9 @@ void MapEditor::removeDocument(Document *document)
     mWidgetStack->removeWidget(mapView);
     delete mapView;
 
-    QQuickWidget *quickView = mQuickViewForMap.take(mapDocument);
-    mWidgetStack->removeWidget(quickView);
-    delete quickView;
+    QQuickWidget *quickWidget = mQuickWidgetForMap.take(mapDocument);
+    mWidgetStack->removeWidget(quickWidget);
+    delete quickWidget;
 }
 
 void MapEditor::setCurrentDocument(Document *document)
@@ -407,7 +407,7 @@ void MapEditor::setCurrentDocument(Document *document)
     auto prefs = Preferences::instance();
 
     MapView *mapView = nullptr;
-    QQuickWidget *quickView = nullptr;
+    QQuickWidget *quickWidget = nullptr;
 
     if (!prefs->useNewHardwareRenderer())
     {
@@ -417,10 +417,10 @@ void MapEditor::setCurrentDocument(Document *document)
             mWidgetStack->setCurrentWidget(mapView);
         }
     } else {
-        quickView = mQuickViewForMap.value(mapDocument);
-        if (quickView)
+        quickWidget = mQuickWidgetForMap.value(mapDocument);
+        if (quickWidget)
         {
-            mWidgetStack->setCurrentWidget(quickView);
+            mWidgetStack->setCurrentWidget(quickWidget);
         }
     }
 
@@ -1053,7 +1053,7 @@ void MapEditor::setUseNewHardwareRenderer(bool useNewHardwareRenderer)
     // Replaces all widgets on the mWidgetStack with their default/tiledquick counterparts
     if (useNewHardwareRenderer)
     {
-        for (QQuickWidget* quickWidget : std::as_const(mQuickViewForMap))
+        for (QQuickWidget* quickWidget : std::as_const(mQuickWidgetForMap))
             mWidgetStack->addWidget(quickWidget);
 
         for (MapView* widget : std::as_const(mWidgetForMap))
@@ -1062,7 +1062,7 @@ void MapEditor::setUseNewHardwareRenderer(bool useNewHardwareRenderer)
         for (MapView* mapView : std::as_const(mWidgetForMap))
             mWidgetStack->addWidget(mapView);
 
-        for (QQuickWidget* quickWidget : std::as_const(mQuickViewForMap))
+        for (QQuickWidget* quickWidget : std::as_const(mQuickWidgetForMap))
             mWidgetStack->removeWidget(quickWidget);
     }
 }

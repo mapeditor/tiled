@@ -184,7 +184,7 @@ private:
     LayerDock *mLayerDock;
     QStackedWidget *mWidgetStack;
     QHash<MapDocument*, MapView*> mWidgetForMap;
-    QHash<MapDocument*, QQuickWidget*> mQuickViewForMap;
+    QHash<MapDocument*, QQuickWidget*> mQuickWidgetForMap;
     MapDocument *mCurrentMapDocument;
 
     PropertiesDock *mPropertiesDock;
