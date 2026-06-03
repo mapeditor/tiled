@@ -196,7 +196,7 @@ jobs:
 
   macos:
     name: macOS (${{ matrix.version_suffix }})
-    runs-on: macos-latest
+    runs-on: ${{ matrix.runner }}
     needs: version
 
     strategy:
@@ -207,15 +207,20 @@ jobs:
           version_suffix: "10.13-12"
           architectures: x86_64
           cmake_architectures: x86_64
+          runner: macos-15
+          deployment_target: "10.13"
         - qt_version: 6.10.2
           qt_modules: "qtimageformats qtshadertools"
           version_suffix: "13+"
           architectures: x86_64,arm64
           cmake_architectures: x86_64;arm64
+          runner: macos-26
+          deployment_target: "13"
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
       SIGNING_ENABLED: ${{ secrets.SIGNING_ENABLED }}
+      MACOSX_DEPLOYMENT_TARGET: ${{ matrix.deployment_target }}
 
     steps:
     - name: Checkout repository
