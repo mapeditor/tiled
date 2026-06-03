@@ -80,7 +80,6 @@ public:
     void forceCenterOn(QPointF pos, const Layer &layer);
 
     void setUseOpenGL(bool useOpenGL);
-    void setUseNewHardwareRenderer(bool useNewHardwareRenderer);
 
 protected:
     bool event(QEvent *event) override;
