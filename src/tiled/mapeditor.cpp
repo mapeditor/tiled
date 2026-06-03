@@ -76,7 +76,7 @@
 #include "wangdock.h"
 #include "zoomable.h"
 #include "worldmanager.h"
-#include "worldmovemaptool.h"
+#include "worldmaptool.h"
 
 #include <QComboBox>
 #include <QDialogButtonBox>
@@ -205,7 +205,7 @@ MapEditor::MapEditor(QObject *parent)
     mToolsToolBar->addAction(mToolManager->registerTool(templatesTool));
     mToolsToolBar->addAction(mToolManager->registerTool(textObjectsTool));
     mToolsToolBar->addSeparator();
-    mToolsToolBar->addAction(mToolManager->registerTool(new WorldMoveMapTool(this)));
+    mToolsToolBar->addAction(mToolManager->registerTool(new WorldMapTool(this)));
     mToolsToolBar->addAction(mToolManager->registerTool(new LayerOffsetTool(this)));
     mToolsToolBar->addSeparator();  // todo: hide when there are no tool extensions
 
