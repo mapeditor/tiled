@@ -691,6 +691,17 @@ void Preferences::setNaturalSorting(bool enabled)
     emit naturalSortingChanged(enabled);
 }
 
+bool Preferences::repeatShortcutForPreviousTool() const
+{
+    return get("Project/RepeatShortcutForPreviousTool", false);
+}
+
+void Preferences::setRepeatShortcutForPreviousTool(bool enabled)
+{
+    setValue(QLatin1String("Project/RepeatShortcutForPreviousTool"), enabled);
+    emit naturalSortingChanged(enabled);
+}
+
 void Preferences::addToRecentFileList(const QString &fileName, QStringList& files)
 {
     // Remember the file by its absolute file path (not the canonical one,

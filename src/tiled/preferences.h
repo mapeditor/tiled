@@ -172,6 +172,9 @@ public:
     bool naturalSorting() const;
     void setNaturalSorting(bool enabled);
 
+    bool repeatShortcutForPreviousTool() const;
+    void setRepeatShortcutForPreviousTool(bool enabled);
+
     bool checkForUpdates() const;
     void setCheckForUpdates(bool on);
 
