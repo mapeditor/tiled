@@ -70,6 +70,7 @@ DynamicLibrary {
 
     Export {
         Depends { name: "cpp" }
+        Depends { name: "libtilededitor" }
         Depends {
             name: "Qt"
             submodules: ["quick"]
