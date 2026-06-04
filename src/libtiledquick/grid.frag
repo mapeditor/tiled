@@ -14,21 +14,31 @@ layout(std140, binding = 0) uniform buf {
     vec4 color;
 } ubuf;
 
-void main()
+const float thickness = 1;
+const float dashLength = thickness * 2;
+const float spaceLength = dashLength;
+
+bool posInGrid(vec2 pixelPos)
 {
-    float thickness = 1;
-    float dashLength = thickness * 2;
-    float spaceLength = dashLength;
-
-    vec2 pixelPos = vTexCoord * vec2(ubuf.pixelWidth, ubuf.pixelHeight) * ubuf.scale + thickness * 0.5;
-
     if ((mod(pixelPos.x, ubuf.tileWidth * ubuf.scale) < thickness &&
          mod(pixelPos.y, dashLength + spaceLength) < dashLength) ||
         (mod(pixelPos.y, ubuf.tileHeight * ubuf.scale) < thickness &&
          mod(pixelPos.x, dashLength + spaceLength) < dashLength))
     {
-        fragColor = ubuf.color * ubuf.qt_Opacity;
-    } else {
-        discard;
+        return true;
     }
+    return false;
+}
+
+void main()
+{
+    vec2 pixelPos = vTexCoord * vec2(ubuf.pixelWidth, ubuf.pixelHeight) * ubuf.scale + ceil(thickness * 0.5);
+
+    if (posInGrid(floor(pixelPos)))
+    {
+        fragColor = ubuf.color * ubuf.qt_Opacity;
+        return;
+    }
+
+    discard;
 }
