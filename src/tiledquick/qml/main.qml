@@ -151,7 +151,7 @@ ApplicationWindow {
 
             Tiled.MapItem {
                 id: mapItem
-                map: mapLoader.editableMap
+                map: mapLoader.map
 
                 visibleArea: {
                     var scale = mapContainer.scale
@@ -173,7 +173,7 @@ ApplicationWindow {
                 id: mapGriditem
                 anchors.fill: mapItem
 
-                tileSize: Qt.point(mapLoader.editableMap.tileWidth, mapLoader.editableMap.tileHeight);
+                tileSize: Qt.point(mapLoader.map.tileWidth, mapLoader.map.tileHeight);
                 scale: mapContainer.scale;
 
                 color: "black"

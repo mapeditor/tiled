@@ -35,8 +35,7 @@ class TILEDQUICK_SHARED_EXPORT MapLoader : public QObject
     Q_OBJECT
 
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
-    Q_PROPERTY(Tiled::Map *map READ map NOTIFY sourceChanged)
-    Q_PROPERTY(Tiled::EditableMap *editableMap READ editableMap NOTIFY sourceChanged)
+    Q_PROPERTY(Tiled::EditableMap *map READ map NOTIFY sourceChanged)
     Q_PROPERTY(Status status READ status NOTIFY statusChanged)
     Q_PROPERTY(QString error READ error NOTIFY errorChanged)
 
@@ -52,14 +51,13 @@ public:
     ~MapLoader() override;
 
     QUrl source() const;
-    Tiled::Map *map() const;
-    Tiled::EditableMap *editableMap() const;
+    Tiled::EditableMap *map() const;
     Status status() const;
     QString error() const;
 
 signals:
     void sourceChanged(const QUrl &source);
-    void mapChanged(Tiled::Map *map);
+    void mapChanged(Tiled::EditableMap *map);
     void statusChanged(Status status);
     void errorChanged(const QString &error);
 
@@ -69,20 +67,12 @@ public slots:
 private:
     QUrl m_source;
     std::unique_ptr<Tiled::EditableMap> m_editableMap;
-    Status m_status;
+    Status m_status = Null;
     QString m_error;
 };
 
 
-inline Tiled::Map *MapLoader::map() const
-{
-    if (m_editableMap)
-        return m_editableMap->map();
-    else
-        return nullptr;
-}
-
-inline Tiled::EditableMap* MapLoader::editableMap() const
+inline Tiled::EditableMap *MapLoader::map() const
 {
     return m_editableMap.get();
 }

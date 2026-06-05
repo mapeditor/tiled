@@ -20,8 +20,8 @@
 
 #pragma once
 
-#include "tiledquick_global.h"
 #include "editablemap.h"
+#include "tiledquick_global.h"
 
 #include <QQuickItem>
 

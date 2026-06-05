@@ -20,22 +20,17 @@
 
 #include "maploader.h"
 
-#include "map.h"
 #include "mapreader.h"
 #include "tiled.h"
-#include "tileset.h"
 
 using namespace TiledQuick;
 
 MapLoader::MapLoader(QObject *parent)
     : QObject(parent)
-    , m_status(Null)
 {
 }
 
-MapLoader::~MapLoader()
-{
-}
+MapLoader::~MapLoader() = default;
 
 void MapLoader::setSource(const QUrl &source)
 {
@@ -46,28 +41,23 @@ void MapLoader::setSource(const QUrl &source)
 
     Tiled::MapReader mapReader;
 
-    std::unique_ptr<Tiled::Map> map(mapReader.readMap(Tiled::urlToLocalFileOrQrc(source)));
-    Status status = map ? Ready : Error;
-    QString error = map ? QString() : mapReader.errorString();
+    auto map = mapReader.readMap(Tiled::urlToLocalFileOrQrc(source));
+    auto status = map ? Ready : Error;
+    auto error = map ? QString() : mapReader.errorString();
+    auto editableMap = map ? std::make_unique<Tiled::EditableMap>(std::move(map)) : nullptr;
 
-    const bool mapDiff = m_editableMap ? m_editableMap->map() != map.get()
-                                         : nullptr != map.get() ;
+    const bool mapDiff = m_editableMap != editableMap;
     const bool statusDiff = m_status != status;
     const bool errorDiff = m_error != error;
 
-    m_editableMap = std::make_unique<Tiled::EditableMap>(std::move(map));
+    m_editableMap = std::move(editableMap);
     m_status = status;
     m_error = error;
 
     emit sourceChanged(source);
 
     if (mapDiff)
-    {
-        if (m_editableMap)
-            emit mapChanged(m_editableMap->map());
-        else
-            emit mapChanged(nullptr);
-    }
+        emit mapChanged(m_editableMap.get());
     if (statusDiff)
         emit statusChanged(status);
     if (errorDiff)

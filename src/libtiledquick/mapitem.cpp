@@ -35,7 +35,7 @@ MapItem::MapItem(QQuickItem *parent)
 
 MapItem::~MapItem() = default;
 
-void MapItem::setMap(Tiled::EditableMap* editableMap)
+void MapItem::setMap(Tiled::EditableMap *editableMap)
 {
     if (mEditableMap == editableMap)
         return;
