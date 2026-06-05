@@ -69,6 +69,7 @@ DynamicLibrary {
     }
 
     files: [
+        "../tiledquick/qml/qml.qrc",
         "aboutdialog.cpp",
         "aboutdialog.h",
         "aboutdialog.ui",

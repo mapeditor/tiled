@@ -87,6 +87,7 @@
 #include <QMessageBox>
 #include <QQmlEngine>
 #include <QQuickWidget>
+#include <QQuickItem>
 #include <QShortcut>
 #include <QStackedWidget>
 #include <QToolBar>
@@ -355,8 +356,31 @@ void MapEditor::addDocument(Document *document)
     mWidgetForMap.insert(mapDocument, view);
 
     QQuickWidget *quickWidget = new QQuickWidget(mWidgetStack);
-    quickWidget->setSource(QUrl(QStringLiteral("qrc:/test_renderer.qml")));
+    QQmlEngine *engine = quickWidget->engine();
+
+    QString qmlPluginPath = QCoreApplication::applicationDirPath() + QStringLiteral("/qml");
+    engine->addImportPath(qmlPluginPath);
+
+    quickWidget->setSource(QUrl(QStringLiteral("qrc:/widget.qml")));
     quickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
+
+    QQuickItem *rootObject = quickWidget->rootObject();
+
+    if (rootObject)
+    {
+        QObject *mapLoader = rootObject->findChild<QObject*>("mapLoader");
+
+        if (mapLoader) {
+            QString sourceFile = QStringLiteral("file:///") + mapDocument->fileName();
+            mapLoader->setProperty("source", sourceFile);
+        }
+    }
+
+    if (quickWidget->status() == QQuickWidget::Error) {
+        for (const QQmlError &error : quickWidget->errors()) {
+            qDebug() << "QML Error:" << error.toString();
+        }
+    }
 
     mQuickWidgetForMap.insert(mapDocument, quickWidget);
 
