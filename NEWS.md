@@ -4,6 +4,7 @@
 * Added command variables %exportfile and %exportpath (#4476)
 * Scripting: Added 'tiled.cell' function, 'cell.flags' property and 'TileLayerEdit.setCell' function (#4538)
 * Scripting: Added MapObject.resolvedClassName() (by MatusGuy, #4529)
+* snap: Updated to Qt 6
 
 ### Tiled 1.12.2 (27 May 2026)
 
