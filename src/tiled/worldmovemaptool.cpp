@@ -28,7 +28,6 @@
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "mapview.h"
-#include "preferences.h"
 #include "toolmanager.h"
 #include "utils.h"
 #include "world.h"
@@ -41,6 +40,7 @@
 #include <QToolBar>
 #include <QTransform>
 #include <QUndoStack>
+#include <QtMath>
 
 #include <utility>
 
@@ -87,16 +87,9 @@ void WorldMoveMapTool::keyPressed(QKeyEvent *event)
     if (!document || !mapCanBeMoved(document) || mDraggingMap)
         return;
 
-    const bool moveFast = modifiers & Qt::ShiftModifier;
-    const auto snapMode = Preferences::instance()->snapMode();
-
-    if (moveFast) {
-        // TODO: This only makes sense for orthogonal maps
-        moveBy.rx() *= document->map()->tileWidth();
-        moveBy.ry() *= document->map()->tileHeight();
-        if (snapMode == SnapMode::FineGrid)
-            moveBy /= Preferences::instance()->gridFine();
-    }
+    // Shift moves several cells at a time
+    if (modifiers & Qt::ShiftModifier)
+        moveBy *= 5;
 
     moveMap(document, moveBy.toPoint());
 }
@@ -108,21 +101,33 @@ void WorldMoveMapTool::moveMap(MapDocument *document, QPoint moveBy)
         return;
 
     const auto prevRect = worldDocument->world()->mapRect(document->fileName());
-    QPoint offset = QPoint(document->map()->tileWidth() * static_cast<int>(moveBy.x()),
-                           document->map()->tileHeight() * static_cast<int>(moveBy.y()));
+    const QSize step = snapSize(document);
+
+    // move only the pressed axis, by grid cells in the pressed direction
+    QPoint pos = prevRect.topLeft();
+    if (moveBy.x() > 0)
+        pos.setX((qFloor(qreal(pos.x()) / step.width()) + moveBy.x()) * step.width());
+    else if (moveBy.x() < 0)
+        pos.setX((qCeil(qreal(pos.x()) / step.width()) + moveBy.x()) * step.width());
+    if (moveBy.y() > 0)
+        pos.setY((qFloor(qreal(pos.y()) / step.height()) + moveBy.y()) * step.height());
+    else if (moveBy.y() < 0)
+        pos.setY((qCeil(qreal(pos.y()) / step.height()) + moveBy.y()) * step.height());
+
     QRect rect = document->renderer()->mapBoundingRect();
-    rect.moveTo(snapPoint(prevRect.topLeft() + offset, document));
+    rect.moveTo(pos);
 
     auto undoStack = worldDocument->undoStack();
     undoStack->push(new SetMapRectCommand(worldDocument, document->fileName(), rect));
 
     if (document == mapDocument()) {
-        // undo camera movement
+        // undo camera movement, by the actual snapped offset
+        const QPoint actualOffset = rect.topLeft() - prevRect.topLeft();
         DocumentManager *manager = DocumentManager::instance();
         MapView *view = manager->viewForDocument(mapDocument());
         QRectF viewRect { view->viewport()->rect() };
         QRectF sceneViewRect = view->viewportTransform().inverted().mapRect(viewRect);
-        view->forceCenterOn(sceneViewRect.center() - offset);
+        view->forceCenterOn(sceneViewRect.center() - actualOffset);
     }
 }
 
@@ -157,15 +162,16 @@ void WorldMoveMapTool::mouseMoved(const QPointF &pos,
         return;
     }
 
-    // calculate new drag offset
-    const QRect currentMapRect = mapRect(mDraggingMap);
+    // use the committed map position to avoid jitter
+    const QPoint mapStartPos = worldForMap(mDraggingMap)->world()
+                                   ->mapRect(mDraggingMap->fileName()).topLeft();
     const QPoint offset = (pos - mDragStartScenePos).toPoint();
 
-    QPoint newPos = currentMapRect.topLeft() + offset;
+    QPoint newPos = mapStartPos + offset;
     if (!(modifiers & Qt::ControlModifier))
         newPos = snapPoint(newPos, mDraggingMap);
 
-    mDragOffset = newPos - currentMapRect.topLeft();
+    mDragOffset = newPos - mapStartPos;
 
     // update preview
     mDraggingMapItem->setPos(mDraggedMapStartPos + mDragOffset);

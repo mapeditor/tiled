@@ -169,6 +169,7 @@
     <addaction name="actionSearchActions"/>
     <addaction name="actionShowGrid"/>
     <addaction name="actionShowWorldGrid"/>
+    <addaction name="actionSnapToWorldGrid"/>
     <addaction name="actionShowTileObjectOutlines"/>
     <addaction name="actionShowObjectReferences"/>
     <addaction name="menuShowObjectNames"/>
@@ -345,6 +346,14 @@
    </property>
    <property name="text">
     <string>Show &amp;World Grid</string>
+   </property>
+  </action>
+  <action name="actionSnapToWorldGrid">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Snap to World Grid</string>
    </property>
   </action>
   <action name="actionSaveAs">

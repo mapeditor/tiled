@@ -183,6 +183,11 @@ bool Preferences::showWorldGrid() const
     return get("Interface/ShowWorldGrid", true);
 }
 
+bool Preferences::snapToWorldGrid() const
+{
+    return get("Interface/SnapToWorldGrid", true);
+}
+
 bool Preferences::showTileObjectOutlines() const
 {
     return get("Interface/ShowTileObjectOutlines", false);
@@ -350,6 +355,12 @@ void Preferences::setShowWorldGrid(bool showWorldGrid)
 {
     setValue(QLatin1String("Interface/ShowWorldGrid"), showWorldGrid);
     emit showWorldGridChanged(showWorldGrid);
+}
+
+void Preferences::setSnapToWorldGrid(bool snapToWorldGrid)
+{
+    setValue(QLatin1String("Interface/SnapToWorldGrid"), snapToWorldGrid);
+    emit snapToWorldGridChanged(snapToWorldGrid);
 }
 
 void Preferences::setShowTileObjectOutlines(bool enabled)
