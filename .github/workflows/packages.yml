@@ -186,7 +186,7 @@ jobs:
       env:
         SNAPCRAFT_BUILD_INFO: "1"
         SNAPCRAFT_IMAGE_INFO: '{"build_url":"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"}'
-      run: sudo snapcraft --destructive-mode
+      run: sudo snapcraft pack --destructive-mode
 
     - name: Upload snap artifact
       uses: actions/upload-artifact@v6
