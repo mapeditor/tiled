@@ -152,6 +152,7 @@ ApplicationWindow {
             Tiled.MapItem {
                 id: mapItem
                 map: mapLoader.map
+
                 visibleArea: {
                     var scale = mapContainer.scale
                     Qt.rect(-mapContainer.x / scale,
@@ -172,7 +173,7 @@ ApplicationWindow {
                 id: mapGriditem
                 anchors.fill: mapItem
 
-                tileSize: Qt.point(mapItem.tileSize().width, mapItem.tileSize().height);
+                tileSize: Qt.point(mapLoader.map.tileWidth, mapLoader.map.tileHeight);
                 scale: mapContainer.scale;
 
                 color: "black"

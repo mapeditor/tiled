@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "mapref.h"
+#include "editablemap.h"
 #include "tiledquick_global.h"
 
 #include <QQuickItem>
@@ -43,15 +43,15 @@ class TILEDQUICK_SHARED_EXPORT MapItem : public QQuickItem
 {
     Q_OBJECT
 
-    Q_PROPERTY(TiledQuick::MapRef map READ map WRITE setMap RESET unsetMap NOTIFY mapChanged)
+    Q_PROPERTY(Tiled::EditableMap *map READ map WRITE setMap RESET unsetMap NOTIFY mapChanged)
     Q_PROPERTY(QRectF visibleArea READ visibleArea WRITE setVisibleArea NOTIFY visibleAreaChanged)
 
 public:
     explicit MapItem(QQuickItem *parent = nullptr);
     ~MapItem() override;
 
-    MapRef map() const;
-    void setMap(MapRef map);
+    Tiled::EditableMap *map() const;
+    void setMap(Tiled::EditableMap *editableMap);
     void unsetMap();
 
     const QRectF &visibleArea() const;
@@ -81,6 +81,7 @@ private:
     void refresh();
 
     Tiled::Map *mMap;
+    Tiled::EditableMap *mEditableMap;
     QRectF mVisibleArea;
 
     std::unique_ptr<Tiled::MapRenderer> mRenderer;
@@ -92,9 +93,9 @@ inline const QRectF &MapItem::visibleArea() const
     return mVisibleArea;
 }
 
-inline MapRef MapItem::map() const
+inline Tiled::EditableMap *MapItem::map() const
 {
-    return mMap;
+    return mEditableMap;
 }
 
 inline void MapItem::unsetMap()

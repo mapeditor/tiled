@@ -30,18 +30,18 @@ using namespace TiledQuick;
 
 MapItem::MapItem(QQuickItem *parent)
     : QQuickItem(parent)
-    , mMap(nullptr)
 {
 }
 
 MapItem::~MapItem() = default;
 
-void MapItem::setMap(MapRef map)
+void MapItem::setMap(Tiled::EditableMap *editableMap)
 {
-    if (mMap == map.mMap)
+    if (mEditableMap == editableMap)
         return;
 
-    mMap = map.mMap;
+    mEditableMap = editableMap;
+    mMap = editableMap ? editableMap->map() : nullptr;
     refresh();
     emit mapChanged();
 }

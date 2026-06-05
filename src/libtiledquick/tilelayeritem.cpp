@@ -248,7 +248,7 @@ TileItem::TileItem(const Cell &cell, QPoint position, MapItem *parent)
     , mPosition(position)
 {
     setFlag(ItemHasContents);
-    setZ(position.y() * parent->map().mMap->tileHeight());
+    setZ(position.y() * parent->map()->tileHeight());
 }
 
 QSGNode *TileItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData *)
@@ -267,16 +267,13 @@ QSGNode *TileItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeDat
         if (!tile)
             return nullptr;   // todo: render "missing tile" marker
 
-        const Map *map = mapItem->map();
-        const int tileWidth = map->tileWidth();
-        const int tileHeight = map->tileHeight();
-
+        const QSize tileSize = mapItem->map()->map()->tileSize();
         const QSize size = tile->size();
         const QPoint offset = tileset->tileOffset();
 
         QVector<TileData> data(1);
-        data[0].x = mPosition.x() * tileWidth + offset.x();
-        data[0].y = (mPosition.y() + 1) * tileHeight - tileset->tileHeight() + offset.y();
+        data[0].x = mPosition.x() * tileSize.width() + offset.x();
+        data[0].y = (mPosition.y() + 1) * tileSize.height() - tileset->tileHeight() + offset.y();
         data[0].width = size.width();
         data[0].height = size.height();
         helper.setTextureCoordinates(data[0], mCell);

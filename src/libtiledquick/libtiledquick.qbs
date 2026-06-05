@@ -5,7 +5,7 @@ DynamicLibrary {
     builtByDefault: false
     condition: Qt.core && Utilities.versionCompare(Qt.core.version, "6.5") >= 0
 
-    Depends { name: "libtiled" }
+    Depends { name: "libtilededitor" }
     Depends { name: "cpp" }
     Depends { name: "Qt"; submodules: ["quick","shadertools"]; versionAtLeast: "6.5" }
 
@@ -46,7 +46,6 @@ DynamicLibrary {
         "mapitem.h",
         "maploader.cpp",
         "maploader.h",
-        "mapref.h",
         "tiledquick_global.h",
         "tilelayeritem.cpp",
         "tilelayeritem.h",
@@ -71,6 +70,7 @@ DynamicLibrary {
 
     Export {
         Depends { name: "cpp" }
+        Depends { name: "libtilededitor" }
         Depends {
             name: "Qt"
             submodules: ["quick"]
