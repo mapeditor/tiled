@@ -6,7 +6,6 @@ DynamicLibrary {
     targetName: "tilededitor"
 
     Depends { name: "libtiled" }
-    Depends { name: "tiledquickplugin" }
     Depends { name: "translations" }
     Depends { name: "qtsingleapplication" }
     Depends { name: "Qt"; submodules: ["core", "widgets", "concurrent", "qml"]; versionAtLeast: "6.2.0" }
