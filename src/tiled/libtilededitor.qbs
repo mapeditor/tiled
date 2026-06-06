@@ -69,7 +69,6 @@ DynamicLibrary {
     }
 
     files: [
-        "../tiledquick/qml/qml.qrc",
         "aboutdialog.cpp",
         "aboutdialog.h",
         "aboutdialog.ui",
@@ -595,6 +594,12 @@ DynamicLibrary {
         Qt.core.resourceSourceBase: "resources/"
         files: "resources/**"
         fileTags: ["qt.core.resource_data"]
+    }
+
+    Group {
+        name: "TiledQuick Resources"
+        files: "../tiledquick/qml/qml.qrc"
+        fileTags: ["qrc"]
     }
 
     Group {
