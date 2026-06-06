@@ -1056,14 +1056,18 @@ void MapEditor::setUseNewHardwareRenderer(bool useNewHardwareRenderer)
         for (QQuickWidget* quickWidget : std::as_const(mQuickWidgetForMap))
             mWidgetStack->addWidget(quickWidget);
 
-        for (MapView* widget : std::as_const(mWidgetForMap))
-            mWidgetStack->removeWidget(widget);
+        for (MapView* mapView : std::as_const(mWidgetForMap))
+            mWidgetStack->removeWidget(mapView);
+
+        mWidgetStack->setCurrentWidget(mQuickWidgetForMap.value(mCurrentMapDocument));
     } else {
         for (MapView* mapView : std::as_const(mWidgetForMap))
             mWidgetStack->addWidget(mapView);
 
         for (QQuickWidget* quickWidget : std::as_const(mQuickWidgetForMap))
             mWidgetStack->removeWidget(quickWidget);
+
+        mWidgetStack->setCurrentWidget(mWidgetForMap.value(mCurrentMapDocument));
     }
 }
 
