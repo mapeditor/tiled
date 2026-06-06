@@ -78,6 +78,7 @@ public:
 
     // QGraphicsItem
     QRectF boundingRect() const override;
+    QPainterPath shape() const override;
     void paint(QPainter *, const QStyleOptionGraphicsItem *,
                QWidget *widget = nullptr) override;
 
@@ -133,6 +134,7 @@ private:
 
     void updateBoundingRect();
     void updateSelectedLayersHighlight();
+    void updateClipping();
 
     MapDocumentPtr mMapDocument;
     QGraphicsRectItem *mDarkRectangle;

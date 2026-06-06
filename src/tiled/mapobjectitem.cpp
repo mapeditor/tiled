@@ -97,7 +97,9 @@ void MapObjectItem::syncWithMapObject()
         mBoundingRect = bounds;
     }
 
-    setVisible(mObject->isVisible());
+    bool visible = mObject->isVisible();
+
+    setVisible(visible);
     setFlag(QGraphicsItem::ItemIgnoresTransformations,
             mObject->shape() == MapObject::Point);
 }

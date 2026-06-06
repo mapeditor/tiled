@@ -79,6 +79,15 @@ public:
     bool highlightHoveredObject() const;
     bool showTilesetGrid() const;
 
+    enum MapClippingMode {
+        NoClipping,
+        ClipAllMaps,
+        ClipOtherMaps
+    };
+
+    MapClippingMode mapClippingMode() const;
+    void setMapClippingMode(MapClippingMode mode);
+
     enum ObjectLabelVisiblity {
         NoObjectLabels,
         SelectedObjectLabels,
@@ -229,13 +238,14 @@ signals:
     void parallaxEnabledChanged(bool enabled);
     void snapModeChanged(SnapMode snapMode);
     void gridColorChanged(QColor gridColor);
-    void backgroundFadeColorChanged(QColor backgroundFadeColor);
-    void gridFineChanged(int gridFine);
-    void gridMajorChanged(QSize gridMajor);
+    void backgroundFadeColorChanged(QColor color);
+    void gridFineChanged(int fine);
+    void gridMajorChanged(QSize major);
     void objectLineWidthChanged(qreal lineWidth);
     void highlightCurrentLayerChanged(bool highlight);
     void highlightHoveredObjectChanged(bool highlight);
     void showTilesetGridChanged(bool showTilesetGrid);
+    void mapClippingModeChanged(MapClippingMode mode);
     void objectLabelVisibilityChanged(ObjectLabelVisiblity);
     void labelForHoveredObjectChanged(bool enabled);
 
