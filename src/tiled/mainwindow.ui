@@ -173,6 +173,7 @@
     <addaction name="menuShowObjectNames"/>
     <addaction name="actionShowTileAnimations"/>
     <addaction name="actionShowTileCollisionShapes"/>
+    <addaction name="actionShowMapLabels"/>
     <addaction name="actionEnableWorlds"/>
     <addaction name="actionEnableParallax"/>
     <addaction name="actionHighlightCurrentLayer"/>
@@ -689,6 +690,14 @@
    </property>
    <property name="text">
     <string>Show Tile Collision Shapes</string>
+   </property>
+  </action>
+  <action name="actionShowMapLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Map Labels</string>
    </property>
   </action>
   <action name="actionFitInView">
