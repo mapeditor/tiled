@@ -41,6 +41,18 @@
 
 namespace Tiled {
 
+static QColor sDefaultObjectColor = Qt::gray;
+
+QColor MapObject::defaultColor()
+{
+    return sDefaultObjectColor;
+}
+
+void MapObject::setDefaultColor(const QColor &color)
+{
+    sDefaultObjectColor = color;
+}
+
 TextData::TextData()
     : font(QStringLiteral("sans-serif"))
 {
@@ -289,7 +301,7 @@ MapObjectColors MapObject::effectiveColors() const
     } else if (mObjectGroup && mObjectGroup->color().isValid()) {
         colors.main = mObjectGroup->color();
     } else {
-        colors.main = Qt::gray;
+        colors.main = sDefaultObjectColor;
     }
 
     if (drawFill) {
