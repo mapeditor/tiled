@@ -693,13 +693,12 @@ void Preferences::setNaturalSorting(bool enabled)
 
 bool Preferences::repeatShortcutForPreviousTool() const
 {
-    return get("Project/RepeatShortcutForPreviousTool", false);
+    return get("Interface/RepeatShortcutForPreviousTool", false);
 }
 
 void Preferences::setRepeatShortcutForPreviousTool(bool enabled)
 {
-    setValue(QLatin1String("Project/RepeatShortcutForPreviousTool"), enabled);
-    emit naturalSortingChanged(enabled);
+    setValue(QLatin1String("Interface/RepeatShortcutForPreviousTool"), enabled);
 }
 
 void Preferences::addToRecentFileList(const QString &fileName, QStringList& files)
