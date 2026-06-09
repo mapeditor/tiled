@@ -54,6 +54,7 @@ public:
 
 public slots:
     void setTile(int x, int y, EditableTile *tile, int flags = 0);
+    void setCell(int x, int y, const Tiled::Cell &cell);
     void apply();
 
 private:

@@ -18,6 +18,13 @@ StaticLibrary {
     }
     cpp.visibility: "minimal"
 
+    // Avoid wrapping this in a static framework, whose code signing breaks
+    // the install step on macOS 26 with Qbs 3.2.0.
+    Properties {
+        condition: qbs.targetOS.contains("macos")
+        bundle.isBundle: false
+    }
+
     files: [
         "src/qtlocalpeer.cpp",
         "src/qtlocalpeer.h",

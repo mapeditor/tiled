@@ -133,6 +133,8 @@ public:
 
     MapObject *mapObject() const;
 
+    Q_INVOKABLE QString resolvedClassName() const;
+
     void detach();
     MapObject *attach(EditableAsset *asset);
     void hold(std::unique_ptr<MapObject> mapObject);
@@ -271,6 +273,11 @@ inline bool EditableMapObject::tileFlippedVertically() const
 inline MapObject *EditableMapObject::mapObject() const
 {
     return static_cast<MapObject*>(object());
+}
+
+inline QString EditableMapObject::resolvedClassName() const
+{
+    return mapObject()->effectiveClassName();
 }
 
 inline bool EditableMapObject::isOwning() const

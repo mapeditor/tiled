@@ -3,6 +3,10 @@
 * Added 'Collapse All' action and 'Only Expand to Current' mode to Project view (with rhythmcache, #4346)
 * Added command variables %exportfile and %exportpath (#4476)
 * Added a configurable world grid with snapping for maps (by Kanishka, #4534)
+* Made switching to the previously selected tool when pressing its shortcut again optional and off by default (by dogboydog, #4540)
+* Scripting: Added 'tiled.cell' function, 'cell.flags' property and 'TileLayerEdit.setCell' function (#4538)
+* Scripting: Added MapObject.resolvedClassName() (by MatusGuy, #4529)
+* snap: Updated to Qt 6
 
 ### Tiled 1.12.2 (27 May 2026)
 
