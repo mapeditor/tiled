@@ -273,6 +273,16 @@
             </property>
            </widget>
           </item>
+          <item row="8" column="0" colspan="2">
+           <widget class="QCheckBox" name="repeatShortcutForPreviousTool">
+            <property name="toolTip">
+             <string>Pressing the shortcut of the currently selected tool changes back to the previously selected tool, rather than keeping the current tool selected.</string>
+            </property>
+            <property name="text">
+             <string>Pressing a tool shortcut again toggles to the previous tool</string>
+            </property>
+           </widget>
+          </item>
           <item row="4" column="1" colspan="2">
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
