@@ -237,7 +237,7 @@ void ToolManager::retranslateTools()
  * This is done to make sure the shortcuts can still be used even when the
  * actions are only added to a tool bar and this tool bar is hidden.
  *
- * In addition, this allows us to optionally implement a toggle behavior: if the tool is
+ * In addition, this allows us to implement the optional toggle behavior: if the tool is
  * already selected, pressing the shortcut again will switch to the previously
  * selected tool.
  */
@@ -262,7 +262,7 @@ void ToolManager::createShortcuts(QWidget *parent)
                 if (!action->isChecked()) {
                     // Select the tool associated with this shortcut
                     action->trigger();
-                } else if ( Preferences::instance()->repeatShortcutForPreviousTool() ) {
+                } else if (Preferences::instance()->repeatShortcutForPreviousTool()) {
                     // The tool is already selected, switch to the previously selected tool
                     auto tool = mPreviousSelectedTool;
                     if (tool && tool->isVisible())
