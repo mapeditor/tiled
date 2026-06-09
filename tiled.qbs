@@ -4,7 +4,8 @@ Project {
     name: "Tiled"
 
     qbsSearchPaths: "qbs"
-    minimumQbsVersion: "1.18"
+    // Qbs 1.23 adds the required /permissive- flag for MSVC automatically.
+    minimumQbsVersion: qbs.toolchain.contains("msvc") ? "1.23" : "1.18"
 
     property string version: Environment.getEnv("TILED_VERSION") || "1.12.2";
     property bool snapshot: Environment.getEnv("TILED_SNAPSHOT") == "true"

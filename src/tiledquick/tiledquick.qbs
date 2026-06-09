@@ -23,12 +23,6 @@ QtGuiApplication {
     cpp.includePaths: ["."]
     cpp.rpaths: qbs.targetOS.contains("darwin") ? ["@loader_path/../Frameworks"] : ["$ORIGIN/../" + project.libDir]
     cpp.cxxLanguageVersion: "c++17"
-    cpp.cxxFlags: {
-        var flags = base;
-        if (qbs.toolchain.contains("msvc"))
-            flags.push("/permissive-");
-        return flags;
-    }
     cpp.defines: [
         "QT_DISABLE_DEPRECATED_BEFORE=QT_VERSION_CHECK(6,5,0)",
         "QT_NO_DEPRECATED_WARNINGS",

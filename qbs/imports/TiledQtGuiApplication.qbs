@@ -7,14 +7,6 @@ QtGuiApplication {
             return ["$ORIGIN/../" + project.libDir];
     }
     cpp.cxxLanguageVersion: "c++17"
-    cpp.cxxFlags: {
-        var flags = base;
-        if (qbs.toolchain.contains("msvc")) {
-            if (Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 3)
-                flags.push("/permissive-");
-        }
-        return flags;
-    }
     cpp.defines: [
         "QT_DISABLE_DEPRECATED_BEFORE=0x050F00",
         "QT_NO_DEPRECATED_WARNINGS",
