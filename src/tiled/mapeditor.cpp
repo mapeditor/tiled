@@ -86,6 +86,7 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QQmlEngine>
+#include <QQuickWidget>
 #include <QShortcut>
 #include <QStackedWidget>
 #include <QToolBar>
@@ -359,11 +360,10 @@ void MapEditor::addDocument(Document *document)
 
     mQuickWidgetForMap.insert(mapDocument, quickWidget);
 
-    if (!prefs->useNewHardwareRenderer()) {
+    if (!prefs->useNewHardwareRenderer())
         mWidgetStack->addWidget(view);
-    } else {
+    else
         mWidgetStack->addWidget(quickWidget);
-    }
 
     restoreDocumentState(mapDocument);
 }
@@ -409,19 +409,14 @@ void MapEditor::setCurrentDocument(Document *document)
     MapView *mapView = nullptr;
     QQuickWidget *quickWidget = nullptr;
 
-    if (!prefs->useNewHardwareRenderer())
-    {
+    if (!prefs->useNewHardwareRenderer()) {
         mapView = mWidgetForMap.value(mapDocument);
         if (mapView)
-        {
             mWidgetStack->setCurrentWidget(mapView);
-        }
     } else {
         quickWidget = mQuickWidgetForMap.value(mapDocument);
         if (quickWidget)
-        {
             mWidgetStack->setCurrentWidget(quickWidget);
-        }
     }
 
     mLayerDock->setMapDocument(mapDocument);

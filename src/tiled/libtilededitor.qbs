@@ -620,7 +620,6 @@ DynamicLibrary {
     }
 
     Export {
-
         Depends { name: "cpp" }
         Depends { name: "libtiled" }
         Depends { name: "qtsingleapplication" }

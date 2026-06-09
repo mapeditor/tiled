@@ -23,7 +23,6 @@
 #include <QHash>
 #include <QMap>
 #include <QVariant>
-#include <QtQuickWidgets/QQuickWidget>
 
 #include "clipboardmanager.h"
 #include "editor.h"
@@ -35,6 +34,7 @@ class QAction;
 class QComboBox;
 class QLabel;
 class QMainWindow;
+class QQuickWidget;
 class QStackedWidget;
 class QToolBar;
 class QToolButton;
