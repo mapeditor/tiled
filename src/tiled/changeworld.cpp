@@ -142,6 +142,17 @@ void SetWorldGridCommand::setGridSize(QSize size)
     emit mWorldDocument->worldChanged();
 }
 
+bool SetWorldGridCommand::mergeWith(const QUndoCommand *other)
+{
+    auto o = static_cast<const SetWorldGridCommand *>(other);
+    if (mWorldDocument != o->mWorldDocument)
+        return false;
+
+    mSize = o->mSize;
+    setObsolete(childCount() == 0 && mSize == mPreviousSize);
+    return true;
+}
+
 
 SetMapPosInLoadedWorld::SetMapPosInLoadedWorld(const QString &worldFileName,
                                                const QString &mapName,

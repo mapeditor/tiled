@@ -98,6 +98,9 @@ public:
     void undo() override { setGridSize(mPreviousSize); }
     void redo() override { setGridSize(mSize); }
 
+    int id() const override { return Cmd_SetWorldGrid; }
+    bool mergeWith(const QUndoCommand *other) override;
+
 private:
     void setGridSize(QSize size);
 

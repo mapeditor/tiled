@@ -87,8 +87,8 @@ void WorldMoveMapTool::keyPressed(QKeyEvent *event)
     if (!document || !mapCanBeMoved(document) || mDraggingMap)
         return;
 
-    // Shift moves several cells at a time
-    if (modifiers & Qt::ShiftModifier)
+    const bool moveFast = modifiers & Qt::ShiftModifier;
+    if (moveFast)
         moveBy *= 5;
 
     moveMap(document, moveBy.toPoint());
