@@ -30,6 +30,8 @@ class WorldPropertiesDialog;
 
 namespace Tiled {
 
+struct IntProperty;
+
 class WorldPropertiesDialog : public QDialog
 {
     Q_OBJECT
@@ -39,11 +41,10 @@ public:
     ~WorldPropertiesDialog() override;
 
 private:
-    void pushGridSizeCommand();
-    void refreshGridFromWorld();
-
     Ui::WorldPropertiesDialog *ui;
     WorldDocumentPtr mWorldDocument;
+    IntProperty *mGridWidthProperty;
+    IntProperty *mGridHeightProperty;
 };
 
 } // namespace Tiled

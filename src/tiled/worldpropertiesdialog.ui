@@ -15,55 +15,6 @@
   </property>
   <layout class="QVBoxLayout" name="dialogLayout">
    <item>
-    <widget class="QGroupBox" name="worldGridGroupBox">
-     <property name="title">
-      <string>World Grid</string>
-     </property>
-     <layout class="QFormLayout" name="worldGridLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="gridWidthLabel">
-        <property name="text">
-         <string>Grid &amp;width:</string>
-        </property>
-        <property name="buddy">
-         <cstring>gridWidthSpinBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QSpinBox" name="gridWidthSpinBox">
-        <property name="suffix">
-         <string> px</string>
-        </property>
-        <property name="maximum">
-         <number>1048576</number>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="gridHeightLabel">
-        <property name="text">
-         <string>Grid &amp;height:</string>
-        </property>
-        <property name="buddy">
-         <cstring>gridHeightSpinBox</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QSpinBox" name="gridHeightSpinBox">
-        <property name="suffix">
-         <string> px</string>
-        </property>
-        <property name="maximum">
-         <number>1048576</number>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Custom Properties</string>
