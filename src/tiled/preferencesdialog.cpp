@@ -138,6 +138,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             this, [] (bool checked) { MapObjectItem::preciseTileObjectSelection = checked; });
     connect(mUi->openGL, &QCheckBox::toggled,
             preferences, &Preferences::setUseOpenGL);
+    connect(mUi->newHardwareRenderer, &QCheckBox::toggled,
+            preferences, &Preferences::setUseNewHardwareRenderer);
     connect(mUi->wheelZoomsByDefault, &QCheckBox::toggled,
             preferences, &Preferences::setWheelZoomsByDefault);
     connect(mUi->autoScrolling, &QCheckBox::toggled,
@@ -234,6 +236,8 @@ void PreferencesDialog::fromPreferences()
     mUi->preciseTileObjectSelection->setChecked(MapObjectItem::preciseTileObjectSelection);
     if (mUi->openGL->isEnabled())
         mUi->openGL->setChecked(prefs->useOpenGL());
+    if (mUi->newHardwareRenderer->isEnabled())
+        mUi->newHardwareRenderer->setChecked(prefs->useNewHardwareRenderer());
     mUi->wheelZoomsByDefault->setChecked(prefs->wheelZoomsByDefault());
     mUi->autoScrolling->setChecked(MapView::ourAutoScrollingEnabled);
     mUi->smoothScrolling->setChecked(MapView::ourSmoothScrollingEnabled);

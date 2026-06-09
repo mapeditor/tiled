@@ -34,6 +34,7 @@ class QAction;
 class QComboBox;
 class QLabel;
 class QMainWindow;
+class QQuickWidget;
 class QStackedWidget;
 class QToolBar;
 class QToolButton;
@@ -168,6 +169,7 @@ private:
 
     void setupQuickStamps();
     void setUseOpenGL(bool useOpenGL);
+    void setUseNewHardwareRenderer(bool useNewHardwareRenderer);
     void retranslateUi();
     void showTileCollisionShapesChanged(bool enabled);
     void parallaxEnabledChanged(bool enabled);
@@ -182,6 +184,7 @@ private:
     LayerDock *mLayerDock;
     QStackedWidget *mWidgetStack;
     QHash<MapDocument*, MapView*> mWidgetForMap;
+    QHash<MapDocument*, QQuickWidget*> mQuickWidgetForMap;
     MapDocument *mCurrentMapDocument;
 
     PropertiesDock *mPropertiesDock;

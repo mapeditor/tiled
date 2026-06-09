@@ -558,6 +558,17 @@ void Preferences::setUseOpenGL(bool useOpenGL)
     emit useOpenGLChanged(useOpenGL);
 }
 
+bool Preferences::useNewHardwareRenderer() const
+{
+    return get("Interface/newHardwareRenderer", false);
+}
+
+void Preferences::setUseNewHardwareRenderer(bool useNewHardwareRenderer)
+{
+    setValue(QLatin1String("Interface/newHardwareRenderer"), useNewHardwareRenderer);
+    emit useNewHardwareRendererChanged(useNewHardwareRenderer);
+}
+
 void Preferences::setPropertyTypes(const SharedPropertyTypes &propertyTypes)
 {
     Object::setPropertyTypes(propertyTypes);
