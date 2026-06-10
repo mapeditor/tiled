@@ -78,6 +78,7 @@ protected:
     void removeFromWorld(WorldDocument *worldDocument, const QString &mapFileName);
     void addToWorld(WorldDocument *worldDocument);
 
+    QSize snapSize(MapDocument *document) const;
     QPoint snapPoint(QPoint point, MapDocument *document) const;
 
     void setTargetMap(MapDocument *mapDocument);

@@ -21,6 +21,9 @@
 #pragma once
 
 #include <QDockWidget>
+#include <QModelIndex>
+
+class QAction;
 
 namespace Tiled {
 
@@ -33,8 +36,6 @@ class ProjectDock final : public QDockWidget
 
 public:
     ProjectDock(QWidget *parent = nullptr);
-
-    void selectFile(const QString &filePath);
 
     void addFolderToProject();
     void refreshProjectFolders();
@@ -54,6 +55,8 @@ private:
     void retranslateUi();
 
     ProjectView *mProjectView;
+    QAction *mCollapseAllAction = nullptr;
+    QAction *mExpandToCurrentAction = nullptr;
 };
 
 } // namespace Tiled

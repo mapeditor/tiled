@@ -4,9 +4,9 @@ Using Commands
 The Command Button allows you to create and run shell commands (other
 programs) from Tiled.
 
-You may setup as many commands as you like. This is useful if you edit
+You may set up as many commands as you like. This is useful if you edit
 maps for multiple games and you want to set up a command for each game.
-Or you could setup multiple commands for the same game that load
+Or you could set up multiple commands for the same game that load
 different checkpoints or configurations.
 
 The Command Button
@@ -74,6 +74,12 @@ the following variables:
 ``%mappath``
     the path in which the current file is located.
 
+``%exportfile``
+    the full path to which the current file was last exported, or an empty string if the file has not yet been exported.
+
+``%exportpath``
+    the path in which the last export is located, or an empty string if the file has not yet been exported.
+
 .. raw:: html
 
    <div class="new new-prev">Since Tiled 1.4</div>
@@ -100,7 +106,7 @@ the following variables:
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.9</div>
+   <div class="new new-prev">Since Tiled 1.9</div>
 
 ``%worldfile``
     the full path of the world the current map is part of, if any.

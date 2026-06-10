@@ -81,7 +81,7 @@ collision shape needs to represent a circle or ellipse.
 
 .. raw:: html
 
-   <div class="new">Since Tiled 1.12</div>
+   <div class="new">New in Tiled 1.12</div>
 
 
 .. _insert-capsule-tool:
@@ -341,6 +341,14 @@ It is possible to extend a polyline at either end, either by
 right-clicking those nodes and choosing "Extend Polyline", or by
 switching to the :ref:`insert-polygon-tool` tool and clicking on either
 end of an already selected polyline.
+
+.. raw:: html
+
+   <div class="new">New in Tiled 1.12</div>
+
+While creating or extending a polygon/polyline with the
+:ref:`insert-polygon-tool` tool, you can press ``Backspace`` to remove the
+previously added point.
 
 
 .. raw:: html

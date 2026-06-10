@@ -44,9 +44,6 @@
 #include <QPushButton>
 #include <QScopedValueRollback>
 #include <QStringListModel>
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-#include <QStylePainter>
-#endif
 #include <QToolBar>
 
 namespace Tiled {
@@ -82,20 +79,7 @@ public:
     }
 
 protected:
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    void paintEvent(QPaintEvent *) override
-    {
-        QStyleOptionButton option;
-        initStyleOption(&option);
-
-        QStylePainter p(this);
-        p.drawControl(QStyle::CE_PushButton, option);
-    }
-
-    void initStyleOption(QStyleOptionButton *option) const
-#else
     void initStyleOption(QStyleOptionButton *option) const override
-#endif
     {
         QPushButton::initStyleOption(option);
         option->features |= QStyleOptionButton::HasMenu;
@@ -572,7 +556,8 @@ void PropertyTypesEditor::openAddMemberDialog()
 
         connect(mAddValueProperty, &Property::addRequested, this, [this] (bool focus) {
             const auto &name = mAddValueProperty->name();
-            addMember(name, mAddValueProperty->value());
+            const bool reportExisting = focus;
+            addMember(name, mAddValueProperty->value(), reportExisting);
 
             if (auto property = mMembersProperty->property(name)) {
                 if (focus)
@@ -592,7 +577,7 @@ void PropertyTypesEditor::openAddMemberDialog()
     mMembersView->focusProperty(mAddValueProperty, PropertiesView::FocusLabel);
 }
 
-void PropertyTypesEditor::addMember(const QString &name, const QVariant &value)
+void PropertyTypesEditor::addMember(const QString &name, const QVariant &value, bool reportExisting)
 {
     if (name.isEmpty())
         return;
@@ -603,9 +588,11 @@ void PropertyTypesEditor::addMember(const QString &name, const QVariant &value)
 
     auto &classType = static_cast<ClassPropertyType&>(*propertyType);
     if (classType.members.contains(name)) {
-        QMessageBox::critical(this,
-                              tr("Error Adding Member"),
-                              tr("There is already a member named '%1'.").arg(name));
+        if (reportExisting) {
+            QMessageBox::critical(this,
+                                  tr("Error Adding Member"),
+                                  tr("There is already a member named '%1'.").arg(name));
+        }
         return;
     }
 

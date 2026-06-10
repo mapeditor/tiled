@@ -63,11 +63,7 @@
 #include <QFile>
 #include <QQmlEngine>
 #include <QStandardPaths>
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-#include <QTextCodec>
-#else
 #include <QStringDecoder>
-#endif
 #include <QtDebug>
 
 namespace Tiled {
@@ -197,30 +193,13 @@ void ScriptManager::evaluateFileOrLoadModule(const QString &fileName)
         // According to the documentation, importModule could return an
         // error object, though in practice this doesn't appear to happen.
         if (!checkError(result)) {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 1, 0)
             // This appears to be the way to report exceptions
             checkError(mEngine->catchError());
-#else
-            // With Qt 5 it seems we need to get a little creative, like
-            // calling evaluate to let that catch a potentially raised
-            // exception.
-            checkError(mEngine->evaluate(QString()));
-#endif
         }
 
         globalObject.deleteProperty(QStringLiteral("__filename"));
     }
 }
-
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-static bool fromUtf8(const QByteArray &bytes, QString &unicode)
-{
-    QTextCodec::ConverterState state;
-    const QTextCodec *codec = QTextCodec::codecForName("UTF-8");
-    unicode = codec->toUnicode(bytes.constData(), bytes.size(), &state);
-    return state.invalidChars == 0;
-}
-#endif
 
 QJSValue ScriptManager::evaluateFile(const QString &fileName)
 {
@@ -233,10 +212,6 @@ QJSValue ScriptManager::evaluateFile(const QString &fileName)
 
     const QByteArray bytes = file.readAll();
     QString script;
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    if (!fromUtf8(bytes, script))
-        script = QTextCodec::codecForUtfText(bytes)->toUnicode(bytes);
-#else
     auto encoding = QStringConverter::encodingForData(bytes.constData(), bytes.size());
     QStringDecoder decoder(encoding.value_or(QStringConverter::Utf8));
     script = decoder.decode(bytes);
@@ -244,7 +219,6 @@ QJSValue ScriptManager::evaluateFile(const QString &fileName)
         Tiled::ERROR(tr("Error decoding file: %1").arg(fileName));
         return QJSValue();
     }
-#endif
 
     Tiled::INFO(tr("Evaluating '%1'").arg(fileName));
     return evaluate(script, fileName);
@@ -379,7 +353,7 @@ void ScriptManager::initialize()
 
     // Work around issue where since Qt 6, the value from the global Qt
     // namespace are no longer part of the Qt object.
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0) && QT_VERSION < QT_VERSION_CHECK(6,4,0)
+#if QT_VERSION < QT_VERSION_CHECK(6,4,0)
     QJSValue qtObject = globalObject.property(QStringLiteral("Qt"));
 
     auto &qtNamespace = Qt::staticMetaObject;

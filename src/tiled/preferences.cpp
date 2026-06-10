@@ -36,6 +36,23 @@
 
 using namespace Tiled;
 
+constexpr auto snapModeKey = "Interface/SnapMode";
+constexpr auto snapToGridKey = "Interface/SnapToGrid";
+constexpr auto snapToFineGridKey = "Interface/SnapToFineGrid";
+constexpr auto snapToPixelsKey = "Interface/SnapToPixels";
+
+static SnapMode toSnapMode(int mode)
+{
+    switch (mode) {
+    case static_cast<int>(SnapMode::Grid):
+    case static_cast<int>(SnapMode::FineGrid):
+    case static_cast<int>(SnapMode::Pixels):
+        return static_cast<SnapMode>(mode);
+    default:
+        return SnapMode::None;
+    }
+}
+
 Preferences *Preferences::mInstance;
 QString Preferences::mStartupProject;
 QString Preferences::mStartupSession;
@@ -134,11 +151,41 @@ void Preferences::initialize()
         setGridMajor(QSize(gridMajor, gridMajor));
         remove(oldGridMajorKey);
     }
+
+    if (!contains(QLatin1String(snapModeKey))) {
+        SnapMode mode = SnapMode::None;
+
+        // Preserve legacy behavior when multiple old flags were enabled:
+        // grid snapping took priority over fine grid, and pixel snapping only
+        // applied when neither grid mode was active.
+        if (get<bool>(snapToGridKey, false))
+            mode = SnapMode::Grid;
+        else if (get<bool>(snapToFineGridKey, false))
+            mode = SnapMode::FineGrid;
+        else if (get<bool>(snapToPixelsKey, false))
+            mode = SnapMode::Pixels;
+
+        setValue(QLatin1String(snapModeKey), static_cast<int>(mode));
+    }
+
+    remove(QLatin1String(snapToGridKey));
+    remove(QLatin1String(snapToFineGridKey));
+    remove(QLatin1String(snapToPixelsKey));
 }
 
 bool Preferences::showGrid() const
 {
     return get("Interface/ShowGrid", true);
+}
+
+bool Preferences::showWorldGrid() const
+{
+    return get("Interface/ShowWorldGrid", true);
+}
+
+bool Preferences::snapToWorldGrid() const
+{
+    return get("Interface/SnapToWorldGrid", true);
 }
 
 bool Preferences::showTileObjectOutlines() const
@@ -166,19 +213,9 @@ bool Preferences::parallaxEnabled() const
     return get("Interface/ParallaxEnabled", true);
 }
 
-bool Preferences::snapToGrid() const
+SnapMode Preferences::snapMode() const
 {
-    return get("Interface/SnapToGrid", false);
-}
-
-bool Preferences::snapToFineGrid() const
-{
-    return get("Interface/SnapToFineGrid", false);
-}
-
-bool Preferences::snapToPixels() const
-{
-    return get("Interface/SnapToPixels", false);
+    return toSnapMode(get(snapModeKey, static_cast<int>(SnapMode::None)));
 }
 
 QColor Preferences::gridColor() const
@@ -314,6 +351,18 @@ void Preferences::setShowGrid(bool showGrid)
     emit showGridChanged(showGrid);
 }
 
+void Preferences::setShowWorldGrid(bool showWorldGrid)
+{
+    setValue(QLatin1String("Interface/ShowWorldGrid"), showWorldGrid);
+    emit showWorldGridChanged(showWorldGrid);
+}
+
+void Preferences::setSnapToWorldGrid(bool snapToWorldGrid)
+{
+    setValue(QLatin1String("Interface/SnapToWorldGrid"), snapToWorldGrid);
+    emit snapToWorldGridChanged(snapToWorldGrid);
+}
+
 void Preferences::setShowTileObjectOutlines(bool enabled)
 {
     setValue(QLatin1String("Interface/ShowTileObjectOutlines"), enabled);
@@ -345,22 +394,13 @@ void Preferences::setParallaxEnabled(bool enabled)
     emit parallaxEnabledChanged(enabled);
 }
 
-void Preferences::setSnapToGrid(bool snapToGrid)
+void Preferences::setSnapMode(SnapMode snapMode)
 {
-    setValue(QLatin1String("Interface/SnapToGrid"), snapToGrid);
-    emit snapToGridChanged(snapToGrid);
-}
+    if (this->snapMode() == snapMode)
+        return;
 
-void Preferences::setSnapToFineGrid(bool snapToFineGrid)
-{
-    setValue(QLatin1String("Interface/SnapToFineGrid"), snapToFineGrid);
-    emit snapToFineGridChanged(snapToFineGrid);
-}
-
-void Preferences::setSnapToPixels(bool snapToPixels)
-{
-    setValue(QLatin1String("Interface/SnapToPixels"), snapToPixels);
-    emit snapToPixelsChanged(snapToPixels);
+    setValue(QLatin1String(snapModeKey), static_cast<int>(snapMode));
+    emit snapModeChanged(snapMode);
 }
 
 void Preferences::setGridColor(QColor gridColor)
@@ -671,6 +711,16 @@ void Preferences::setNaturalSorting(bool enabled)
 {
     setValue(QLatin1String("Project/NaturalSorting"), enabled);
     emit naturalSortingChanged(enabled);
+}
+
+bool Preferences::repeatShortcutForPreviousTool() const
+{
+    return get("Interface/RepeatShortcutForPreviousTool", false);
+}
+
+void Preferences::setRepeatShortcutForPreviousTool(bool enabled)
+{
+    setValue(QLatin1String("Interface/RepeatShortcutForPreviousTool"), enabled);
 }
 
 void Preferences::addToRecentFileList(const QString &fileName, QStringList& files)

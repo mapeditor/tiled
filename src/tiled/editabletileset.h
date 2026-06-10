@@ -117,6 +117,7 @@ public:
                              QObject *parent = nullptr);
     ~EditableTileset() override;
 
+    QString fileName() const override;
     bool isReadOnly() const final;
     AssetType::Value assetType() const override { return AssetType::Tileset; }
 

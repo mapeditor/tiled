@@ -312,9 +312,6 @@ bool FlarePlugin::write(const Tiled::Map *map, const QString &fileName, Options 
     }
 
     QTextStream out(file.device());
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    out.setCodec("UTF-8");
-#endif
 
     const int mapWidth = map->width();
     const int mapHeight = map->height();

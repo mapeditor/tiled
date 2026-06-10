@@ -796,11 +796,7 @@ void TiledProxyStyle::drawControl(ControlElement element,
             }
             int x, y, w, h;
             menuitem->rect.getRect(&x, &y, &w, &h);
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
             int tab = menuitem->reservedShortcutWidth;
-#else
-            int tab = menuitem->tabWidth;
-#endif
             QColor discol;
             if (dis) {
                 discol = menuitem->palette.text().color();
@@ -1134,7 +1130,7 @@ void TiledProxyStyle::drawControl(ControlElement element,
         }
         break;
 
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0) && defined(Q_OS_WIN)
+#if defined(Q_OS_WIN)
     case CE_ItemViewItem:
         if (const QStyleOptionViewItem *vopt = qstyleoption_cast<const QStyleOptionViewItem *>(option)) {
             // Work around wrong inactive HighlightedText color

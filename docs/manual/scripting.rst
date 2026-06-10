@@ -80,7 +80,7 @@ startup.
 
 .. raw:: html
 
-   <div class="new">Since Tiled 1.8</div>
+   <div class="new new-prev">Since Tiled 1.8</div>
 
 When using the ``.mjs`` extension, script files are loaded as `JavaScript
 modules`_. They will then be able to use the `import`_ and `export`_ statements
@@ -110,7 +110,7 @@ script expressions.
 
 .. raw:: html
 
-   <div class="new">Since Tiled 1.9</div>
+   <div class="new new-prev">Since Tiled 1.9</div>
 
 .. _script-cli:
 

@@ -245,6 +245,11 @@ void LuaWriter::writeMap(const Map *map)
         mWriter.writeEndTable();
     }
 
+    if (map->skewX())
+        mWriter.writeKeyAndValue("skewx", map->skewX());
+    if (map->skewY())
+        mWriter.writeKeyAndValue("skewy", map->skewY());
+
     const QColor &backgroundColor = map->backgroundColor();
     if (backgroundColor.isValid())
         writeColor("backgroundcolor", backgroundColor);
@@ -732,6 +737,7 @@ void LuaWriter::writeMapObject(const Tiled::MapObject *mapObject)
     mWriter.writeKeyAndValue("width", mapObject->width());
     mWriter.writeKeyAndValue("height", mapObject->height());
     mWriter.writeKeyAndValue("rotation", mapObject->rotation());
+    mWriter.writeKeyAndValue("opacity", mapObject->opacity());
 
     if (!mapObject->cell().isEmpty())
         mWriter.writeKeyAndValue("gid", mGidMapper.cellToGid(mapObject->cell()));

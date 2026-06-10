@@ -32,8 +32,8 @@
 #include "tiled_global.h"
 
 #include "layer.h"
-#include "tiled.h"
 #include "tile.h"
+#include "tiled.h"
 #include "tileset.h"
 
 #include <QHash>
@@ -44,15 +44,6 @@
 #include <QVector>
 
 #include <functional>
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-inline uint qHash(QPoint key, uint seed = 0) Q_DECL_NOTHROW
-{
-    uint h1 = qHash(key.x(), seed);
-    uint h2 = qHash(key.y(), seed);
-    return ((h1 << 16) | (h1 >> 16)) ^ h2 ^ seed;
-}
-#endif
 
 namespace Tiled {
 
@@ -67,6 +58,7 @@ class TILEDSHARED_EXPORT Cell
 
     Q_PROPERTY(int tileId READ tileId)
     Q_PROPERTY(bool empty READ isEmpty)
+    Q_PROPERTY(int flags READ flags WRITE setFlags)
     Q_PROPERTY(bool flippedHorizontally READ flippedHorizontally WRITE setFlippedHorizontally)
     Q_PROPERTY(bool flippedVertically READ flippedVertically WRITE setFlippedVertically)
     Q_PROPERTY(bool flippedAntiDiagonally READ flippedAntiDiagonally WRITE setFlippedAntiDiagonally)
@@ -116,6 +108,8 @@ public:
     bool flippedVertically() const { return _flags & FlippedVertically; }
     bool flippedAntiDiagonally() const { return _flags & FlippedAntiDiagonally; }
     bool rotatedHexagonal120() const { return _flags & RotatedHexagonal120; }
+
+    void setFlags(int flags) { _flags = (_flags & ~VisualFlags) | (flags & VisualFlags); }
 
     void setFlippedHorizontally(bool v) { v ? _flags |= FlippedHorizontally : _flags &= ~FlippedHorizontally; }
     void setFlippedVertically(bool v) { v ? _flags |= FlippedVertically : _flags &= ~FlippedVertically; }

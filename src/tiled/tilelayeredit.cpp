@@ -40,18 +40,16 @@ TileLayerEdit::~TileLayerEdit()
 void TileLayerEdit::setTile(int x, int y, EditableTile *tile, int flags)
 {
     Cell cell(tile ? tile->tile() : nullptr);
-    cell.setChecked(true);  // Used to find painted region later (allows erasing)
+    cell.setFlags(flags);
+    setCell(x, y, cell);
+}
 
-    if (flags & EditableTile::FlippedHorizontally)
-        cell.setFlippedHorizontally(true);
-    if (flags & EditableTile::FlippedVertically)
-        cell.setFlippedVertically(true);
-    if (flags & EditableTile::FlippedAntiDiagonally)
-        cell.setFlippedAntiDiagonally(true);
-    if (flags & EditableTile::RotatedHexagonal120)
-        cell.setRotatedHexagonal120(true);
+void TileLayerEdit::setCell(int x, int y, const Cell &cell)
+{
+    Cell changedCell = cell;
+    changedCell.setChecked(true);   // Used to find painted region later (allows erasing)
 
-    mChanges.setCell(x, y, cell);
+    mChanges.setCell(x, y, changedCell);
 }
 
 void TileLayerEdit::apply()

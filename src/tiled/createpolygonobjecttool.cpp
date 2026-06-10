@@ -40,6 +40,7 @@
 
 #include <QApplication>
 #include <QGraphicsView>
+#include <QKeyEvent>
 #include <QPalette>
 #include <QUndoStack>
 
@@ -113,8 +114,44 @@ void CreatePolygonObjectTool::deactivate(MapScene *scene)
 
 void CreatePolygonObjectTool::keyPressed(QKeyEvent *event)
 {
-    // TODO: Backspace for going back one step (and possibly override undo shortcut)
     // TODO: Modifier for finishing as polygon (Shift+Enter)
+
+    // Backspace removes the last added point (or first, when extending from the beginning)
+    if (event->key() == Qt::Key_Backspace && state() == CreatingObject) {
+        MapObject *newObject = mNewMapObjectItem->mapObject();
+        QPolygonF currentPolygon = newObject->polygon();
+
+        // Keep extended polylines valid by never removing below two points.
+        if (mMode != Creating && currentPolygon.size() <= 2)
+            return;
+
+        // If only the starting point remains, cancel the whole operation
+        if (currentPolygon.size() <= 1) {
+            cancelNewMapObject();
+            return;
+        }
+
+        if (mMode == ExtendingAtBegin)
+            currentPolygon.removeFirst();
+        else
+            currentPolygon.removeLast();
+
+        // Apply the change to the object
+        if (mMode == Creating) {
+            mNewMapObjectItem->setPolygon(currentPolygon);
+            synchronizeOverlayObject();
+
+            // Update handles if we can no longer close as polygon
+            if (currentPolygon.size() <= 2)
+                updateHandles();
+        } else {
+            mapDocument()->undoStack()->push(new ChangePolygon(mapDocument(),
+                                                               newObject,
+                                                               currentPolygon));
+        }
+        return;
+    }
+
     CreateObjectTool::keyPressed(event);
 }
 

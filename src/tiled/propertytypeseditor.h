@@ -116,7 +116,7 @@ private:
 
     void openClassOfPopup();
     void openAddMemberDialog();
-    void addMember(const QString &name, const QVariant &value = QVariant());
+    void addMember(const QString &name, const QVariant &value, bool reportExisting);
     void removeMember();
     void renameSelectedMember();
     void renameMember(const QString &name);

@@ -97,12 +97,8 @@
 #include <QVariantAnimation>
 
 #ifdef Q_OS_WIN
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QWindow>
 #include <QtGui/qpa/qplatformwindow_p.h>
-#else
-#include <QtPlatformHeaders\QWindowsWindowFunctions>
-#endif
 #endif // Q_OS_WIN
 
 using namespace Tiled;
@@ -153,9 +149,9 @@ ExportDetails<Format> chooseExportDetails(const QString &fileName,
 
         QString lastExportedFilePath = session.lastPath(Session::ExportedFile);
 
-        suggestedFilename = lastExportedFilePath
-                            + QLatin1Char('/') + baseName
-                            + QLatin1Char('.') + extension;
+        suggestedFilename = lastExportedFilePath + QLatin1Char('/') + baseName;
+        if (!extension.isEmpty())
+            suggestedFilename += QLatin1Char('.') + extension;
     }
 
     // No need to confirm overwrite here since it'll be prompted below
@@ -274,6 +270,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionFullScreen, "FullScreen");
     ActionManager::registerAction(mUi->actionHighlightCurrentLayer, "HighlightCurrentLayer");
     ActionManager::registerAction(mUi->actionHighlightHoveredObject, "HighlightHoveredObject");
+    ActionManager::registerAction(mUi->actionGoToTile, "GoToTile");
     ActionManager::registerAction(mUi->actionLabelForHoveredObject, "LabelForHoveredObject");
     ActionManager::registerAction(mUi->actionLabelsForAllObjects, "LabelsForAllObjects");
     ActionManager::registerAction(mUi->actionLabelsForSelectedObjects, "LabelsForSelectedObjects");
@@ -306,6 +303,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionShowTileAnimations, "ShowTileAnimations");
     ActionManager::registerAction(mUi->actionShowTileCollisionShapes, "ShowTileCollisionShapes");
     ActionManager::registerAction(mUi->actionShowTileObjectOutlines, "ShowTileObjectOutlines");
+    ActionManager::registerAction(mUi->actionShowWorldGrid, "ShowWorldGrid");
+    ActionManager::registerAction(mUi->actionSnapToWorldGrid, "SnapToWorldGrid");
     ActionManager::registerAction(mUi->actionSnapNothing, "SnapNothing");
     ActionManager::registerAction(mUi->actionSnapToFineGrid, "SnapToFineGrid");
     ActionManager::registerAction(mUi->actionSnapToGrid, "SnapToGrid");
@@ -415,18 +414,24 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionSnapToGrid->setActionGroup(snappingGroup);
     mUi->actionSnapToFineGrid->setActionGroup(snappingGroup);
     mUi->actionSnapToPixels->setActionGroup(snappingGroup);
+    mUi->actionSnapNothing->setData(QVariant::fromValue(SnapMode::None));
+    mUi->actionSnapToGrid->setData(QVariant::fromValue(SnapMode::Grid));
+    mUi->actionSnapToFineGrid->setData(QVariant::fromValue(SnapMode::FineGrid));
+    mUi->actionSnapToPixels->setData(QVariant::fromValue(SnapMode::Pixels));
 
     mUi->actionShowGrid->setChecked(preferences->showGrid());
+    mUi->actionShowWorldGrid->setChecked(preferences->showWorldGrid());
+    mUi->actionSnapToWorldGrid->setChecked(preferences->snapToWorldGrid());
     mUi->actionShowTileObjectOutlines->setChecked(preferences->showTileObjectOutlines());
     mUi->actionShowObjectReferences->setChecked(preferences->showObjectReferences());
     mUi->actionShowTileAnimations->setChecked(preferences->showTileAnimations());
     mUi->actionShowTileCollisionShapes->setChecked(preferences->showTileCollisionShapes());
     mUi->actionEnableParallax->setChecked(preferences->parallaxEnabled());
-    mUi->actionSnapToGrid->setChecked(preferences->snapToGrid());
-    mUi->actionSnapToFineGrid->setChecked(preferences->snapToFineGrid());
-    mUi->actionSnapToPixels->setChecked(preferences->snapToPixels());
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
     mUi->actionHighlightHoveredObject->setChecked(preferences->highlightHoveredObject());
+    connect(mUi->menuSnapping, &QMenu::aboutToShow, this, [this, preferences] {
+        updateSnappingActions(preferences->snapMode());
+    });
 
     bindToOption(mUi->actionAutoMapWhileDrawing, AutomappingManager::automappingWhileDrawing);
     bindToOption(mUi->actionEnableWorlds, MapScene::enableWorlds);
@@ -530,6 +535,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionOpen, &QAction::triggered, this, &MainWindow::openFileDialog);
     connect(mUi->actionOpenFileInProject, &QAction::triggered, this, &MainWindow::openFileInProject);
     connect(mUi->actionSearchActions, &QAction::triggered, this, &MainWindow::searchActions);
+    connect(mUi->actionGoToTile, &QAction::triggered, this, &MainWindow::goToTile);
     connect(mUi->actionReopenClosedFile, &QAction::triggered, this, &MainWindow::reopenClosedFile);
     connect(mUi->actionClearRecentFiles, &QAction::triggered, preferences, &Preferences::clearRecentFiles);
     connect(mUi->actionSave, &QAction::triggered, this, &MainWindow::saveFile);
@@ -552,6 +558,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     connect(mUi->actionShowGrid, &QAction::toggled,
             preferences, &Preferences::setShowGrid);
+    connect(mUi->actionShowWorldGrid, &QAction::toggled,
+            preferences, &Preferences::setShowWorldGrid);
+    connect(mUi->actionSnapToWorldGrid, &QAction::toggled,
+            preferences, &Preferences::setSnapToWorldGrid);
     connect(mUi->actionShowTileObjectOutlines, &QAction::toggled,
             preferences, &Preferences::setShowTileObjectOutlines);
     connect(mUi->actionShowObjectReferences, &QAction::toggled,
@@ -562,12 +572,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             preferences, &Preferences::setShowTileCollisionShapes);
     connect(mUi->actionEnableParallax, &QAction::toggled,
             preferences, &Preferences::setParallaxEnabled);
-    connect(mUi->actionSnapToGrid, &QAction::toggled,
-            preferences, &Preferences::setSnapToGrid);
-    connect(mUi->actionSnapToFineGrid, &QAction::toggled,
-            preferences, &Preferences::setSnapToFineGrid);
-    connect(mUi->actionSnapToPixels, &QAction::toggled,
-            preferences, &Preferences::setSnapToPixels);
+    connect(snappingGroup, &QActionGroup::triggered, preferences, [preferences](QAction *action) {
+        preferences->setSnapMode(action->data().value<SnapMode>());
+    });
     connect(mUi->actionHighlightCurrentLayer, &QAction::toggled,
             preferences, &Preferences::setHighlightCurrentLayer);
     connect(mUi->actionHighlightHoveredObject, &QAction::toggled,
@@ -856,14 +863,22 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QShortcut *switchToLeftDocument = new QShortcut(Qt::ALT + Qt::Key_Left, this);
     connect(switchToLeftDocument, &QShortcut::activated,
             mDocumentManager, &DocumentManager::switchToLeftDocument);
+#ifdef Q_OS_MAC
+    QShortcut *switchToLeftDocument1 = new QShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_BracketLeft, this);
+#else
     QShortcut *switchToLeftDocument1 = new QShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_Tab, this);
+#endif
     connect(switchToLeftDocument1, &QShortcut::activated,
             mDocumentManager, &DocumentManager::switchToLeftDocument);
 
     QShortcut *switchToRightDocument = new QShortcut(Qt::ALT + Qt::Key_Right, this);
     connect(switchToRightDocument, &QShortcut::activated,
             mDocumentManager, &DocumentManager::switchToRightDocument);
+#ifdef Q_OS_MAC
+    QShortcut *switchToRightDocument1 = new QShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_BracketRight, this);
+#else
     QShortcut *switchToRightDocument1 = new QShortcut(Qt::CTRL + Qt::Key_Tab, this);
+#endif
     connect(switchToRightDocument1, &QShortcut::activated,
             mDocumentManager, &DocumentManager::switchToRightDocument);
 
@@ -1144,6 +1159,11 @@ void MainWindow::openFileInProject()
 void MainWindow::searchActions()
 {
     showLocatorWidget(new ActionLocatorSource);
+}
+
+void MainWindow::goToTile()
+{
+    showLocatorWidget(new TileLocatorSource);
 }
 
 void MainWindow::showLocatorWidget(LocatorSource *source)
@@ -2001,6 +2021,14 @@ void MainWindow::autoMappingWarning(bool automatic)
     }
 }
 
+void MainWindow::updateSnappingActions(SnapMode mode)
+{
+    mUi->actionSnapNothing->setChecked(mode == SnapMode::None);
+    mUi->actionSnapToGrid->setChecked(mode == SnapMode::Grid);
+    mUi->actionSnapToFineGrid->setChecked(mode == SnapMode::FineGrid);
+    mUi->actionSnapToPixels->setChecked(mode == SnapMode::Pixels);
+}
+
 void MainWindow::onPropertyTypesEditorClosed()
 {
     mShowPropertyTypesEditor->setChecked(false);
@@ -2024,13 +2052,9 @@ void MainWindow::ensureHasBorderInFullScreen()
 
     bool wasFullScreen = isFullScreen();
     setFullScreen(false);
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QWindowsWindowFunctions::setHasBorderInFullScreen(window, true);
-#else
     using QWindowsWindow = QNativeInterface::Private::QWindowsWindow;
     if (auto windowsWindow = window->nativeInterface<QWindowsWindow>())
         windowsWindow->setHasBorderInFullScreen(true);
-#endif
     setFullScreen(wasFullScreen);
 
     hasBorderInFullScreen = true;
@@ -2197,6 +2221,7 @@ void MainWindow::updateActions()
     mUi->actionOffsetMap->setEnabled(mapDocument);
     mUi->actionMapProperties->setEnabled(mapDocument);
     mUi->actionAutoMap->setEnabled(mapDocument);
+    mUi->actionGoToTile->setEnabled(mapDocument);
 
     mUi->menuTileset->menuAction()->setVisible(tilesetDocument);
     mUi->actionTilesetProperties->setEnabled(tilesetDocument);
@@ -2419,8 +2444,8 @@ void MainWindow::exportTilesetAs(TilesetDocument *tilesetDocument)
         fileName = tilesetDocument->tileset()->name();
     }
 
-    SessionOption<QString> lastUsedTilesetExportFilter { "lastUsedTilesetExportFilter" };
-    QString selectedFilter = lastUsedTilesetExportFilter;
+    SessionOption<QString> lastUsedExportFilter { "tileset.lastUsedExportFilter" };
+    QString selectedFilter = lastUsedExportFilter;
     auto exportDetails = chooseExportDetails<TilesetFormat>(fileName,
                                                             tilesetDocument->lastExportFileName(),
                                                             selectedFilter,
@@ -2431,7 +2456,7 @@ void MainWindow::exportTilesetAs(TilesetDocument *tilesetDocument)
     Session &session = Session::current();
 
     session.setLastPath(Session::ExportedFile, QFileInfo(exportDetails.mFileName).path());
-    lastUsedTilesetExportFilter = selectedFilter;
+    lastUsedExportFilter = selectedFilter;
 
     ExportHelper exportHelper;
     SharedTileset exportTileset = exportHelper.prepareExportTileset(tilesetDocument->tileset());
@@ -2461,8 +2486,6 @@ void MainWindow::documentChanged(Document *document)
                 this, &MainWindow::updateWindowTitle);
         connect(document, &Document::modifiedChanged,
                 this, &MainWindow::updateWindowTitle);
-
-        mProjectDock->selectFile(document->fileName());
     }
 
     MapDocument *mapDocument = qobject_cast<MapDocument*>(document);

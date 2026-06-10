@@ -37,8 +37,8 @@ import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.Iterator;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
 /**
  * A layer containing {@link MapObject map objects}.

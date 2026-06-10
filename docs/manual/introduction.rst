@@ -11,8 +11,8 @@ your level with extra information used by the game. Tiled focuses on
 general flexibility while trying to stay intuitive.**
 
 In terms of tile maps, it supports straight rectangular tile layers, but
-also projected isometric, staggered isometric and staggered hexagonal
-layers. A tileset can be either a single image containing many tiles, or
+also projected isometric, staggered isometric, staggered hexagonal and
+oblique layers. A tileset can be either a single image containing many tiles, or
 it can be a collection of individual images. In order to support certain
 depth faking techniques, tiles and layers can be offset by a custom
 distance and their rendering order can be configured.
@@ -93,10 +93,11 @@ following dialog will pop up:
    New Map
 
 Here, we choose the initial map size, tile size, orientation, tile layer
-format, tile render order (only supported for *Orthogonal* maps) and whether
-the map is :doc:`infinite <using-infinite-maps>` or not. All of these things
-can be changed later as needed, so it's not important to get it all right the
-first time.
+format, tile render order (only supported for *Orthogonal* and *Oblique* maps)
+and whether the map is :doc:`infinite <using-infinite-maps>` or not. For more
+details on map orientations and related options, see :doc:`maps <maps>`. All of
+these things can be changed later as needed, so it's not important to get it
+all right the first time.
 
 .. note::
 

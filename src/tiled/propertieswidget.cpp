@@ -57,6 +57,7 @@
 #include <QMenu>
 #include <QPushButton>
 #include <QScopedValueRollback>
+#include <QTimer>
 #include <QToolBar>
 #include <QToolButton>
 #include <QUndoStack>
@@ -65,6 +66,41 @@
 #include <algorithm>
 
 namespace Tiled {
+
+/**
+ * Suppresses widget updates for the duration of a scope. Updates are
+ * re-enabled with a double-deferred timer to ensure all cascading layout
+ * requests have been processed before the next paint.
+ */
+class ScopedUpdatesDisabler
+{
+public:
+    explicit ScopedUpdatesDisabler(QWidget *widget)
+        // If updates are already effectively disabled, leave the widget alone
+        : mWidget(widget->updatesEnabled() ? widget : nullptr)
+    {
+        if (mWidget)
+            mWidget->setUpdatesEnabled(false);
+    }
+
+    ~ScopedUpdatesDisabler()
+    {
+        if (!mWidget)
+            return;
+
+        QTimer::singleShot(0, mWidget, [w = mWidget] {
+            QTimer::singleShot(0, w, [w] {
+                w->setUpdatesEnabled(true);
+            });
+        });
+    }
+
+    Q_DISABLE_COPY_MOVE(ScopedUpdatesDisabler)
+
+private:
+    QWidget *mWidget;
+};
+
 
 template<> EnumData enumData<Alignment>()
 {
@@ -88,11 +124,13 @@ template<> EnumData enumData<Map::Orientation>()
     return {{
         QCoreApplication::translate("Tiled::NewMapDialog", "Orthogonal"),
         QCoreApplication::translate("Tiled::NewMapDialog", "Isometric"),
+        QCoreApplication::translate("Tiled::NewMapDialog", "Oblique"),
         QCoreApplication::translate("Tiled::NewMapDialog", "Isometric (Staggered)"),
         QCoreApplication::translate("Tiled::NewMapDialog", "Hexagonal (Staggered)")
     }, {
         Map::Orthogonal,
         Map::Isometric,
+        Map::Oblique,
         Map::Staggered,
         Map::Hexagonal,
     }};
@@ -796,6 +834,16 @@ public:
                         push(new ChangeMapStaggerIndex(mapDocument(), value));
                     });
 
+        mSkewProperty = new PointProperty(
+                    tr("Skew"),
+                    [this] {
+                        return QPoint(map()->skewX(), map()->skewY());
+                    },
+                    [this](const QPoint &value) {
+                        push(new ChangeMapSkew(mapDocument(), value));
+                    });
+        mSkewProperty->setSuffix(tr(" px"));
+
         mParallaxOriginProperty = new PointFProperty(
                     tr("Parallax Origin"),
                     [this] {
@@ -861,6 +909,7 @@ public:
         mMapProperties->addProperty(mHexSideLengthProperty);
         mMapProperties->addProperty(mStaggerAxisProperty);
         mMapProperties->addProperty(mStaggerIndexProperty);
+        mMapProperties->addProperty(mSkewProperty);
         mMapProperties->addSeparator();
         mMapProperties->addProperty(mParallaxOriginProperty);
         mMapProperties->addSeparator();
@@ -871,9 +920,11 @@ public:
         mMapProperties->addProperty(mRenderOrderProperty);
         mMapProperties->addProperty(mBackgroundColorProperty);
 
+        updateStaggerAxisLabels();
+        updateEnabledState();
+
         addProperty(mMapProperties);
 
-        updateEnabledState();
         connect(document, &Document::changed,
                 this, &MapProperties::onChanged);
     }
@@ -901,10 +952,14 @@ private:
         case Map::StaggerIndexProperty:
             emit mStaggerIndexProperty->valueChanged();
             break;
+        case Map::SkewProperty:
+            emit mSkewProperty->valueChanged();
+            break;
         case Map::ParallaxOriginProperty:
             emit mParallaxOriginProperty->valueChanged();
             break;
         case Map::OrientationProperty:
+            updateStaggerAxisLabels();
             emit mOrientationProperty->valueChanged();
             break;
         case Map::RenderOrderProperty:
@@ -935,7 +990,9 @@ private:
         mHexSideLengthProperty->setEnabled(orientation == Map::Hexagonal);
         mStaggerAxisProperty->setEnabled(stagger);
         mStaggerIndexProperty->setEnabled(stagger);
-        mRenderOrderProperty->setEnabled(orientation == Map::Orthogonal);
+        mSkewProperty->setEnabled(orientation == Map::Oblique);
+        mRenderOrderProperty->setEnabled(orientation == Map::Orthogonal ||
+                                         orientation == Map::Oblique);
         mChunkSizeProperty->setEnabled(map()->infinite());
 
         switch (map()->layerDataFormat()) {
@@ -948,6 +1005,24 @@ private:
         case Map::Base64Zlib:
         case Map::Base64Zstandard:
             mCompressionLevelProperty->setEnabled(true);
+            break;
+        }
+    }
+
+    void updateStaggerAxisLabels()
+    {
+        switch (map()->orientation()) {
+        case Map::Hexagonal:
+            mStaggerAxisProperty->setEnumNames({
+                tr("X (Flat-top)"),
+                tr("Y (Pointy-top)")
+            });
+            break;
+        default:
+            mStaggerAxisProperty->setEnumNames({
+                tr("X"),
+                tr("Y")
+            });
             break;
         }
     }
@@ -968,8 +1043,9 @@ private:
     SizeProperty *mTileSizeProperty;
     BoolProperty *mInfiniteProperty;
     IntProperty *mHexSideLengthProperty;
-    Property *mStaggerAxisProperty;
+    BaseEnumProperty *mStaggerAxisProperty;
     Property *mStaggerIndexProperty;
+    PointProperty *mSkewProperty;
     Property *mParallaxOriginProperty;
     Property *mLayerDataFormatProperty;
     Property *mCompressionLevelProperty;
@@ -1590,6 +1666,17 @@ public:
                     });
         mVisibleProperty->setNameOnCheckBox(true);
 
+        mOpacityProperty = new IntProperty(
+                    tr("Opacity"),
+                    [this] { return qRound(mapObject()->opacity() * 100); },
+                    [this](const int &value) {
+                        changeMapObject(MapObject::OpacityProperty,
+                                        qreal(value) / 100);
+                    });
+        mOpacityProperty->setRange(0, 100);
+        mOpacityProperty->setSuffix(tr("%"));
+        mOpacityProperty->setSliderEnabled(true);
+
         mPositionProperty = new PointFProperty(
                     tr("Position"),
                     [this] {
@@ -1759,6 +1846,8 @@ public:
         if (mapDocument()->allowHidingObjects())
             mObjectProperties->addProperty(mVisibleProperty);
 
+        mObjectProperties->addProperty(mOpacityProperty);
+
         if (mapObject()->hasDimensions())
             mObjectProperties->addProperty(mBoundsProperty);
         else
@@ -1803,6 +1892,8 @@ private:
             emit mNameProperty->valueChanged();
         if (change.properties & MapObject::VisibleProperty)
             emit mVisibleProperty->valueChanged();
+        if (change.properties & MapObject::OpacityProperty)
+            emit mOpacityProperty->valueChanged();
         if (change.properties & MapObject::PositionProperty) {
             emit mPositionProperty->valueChanged();
             emit mBoundsProperty->valueChanged();
@@ -1855,7 +1946,7 @@ private:
         QUndoCommand *command = new ChangeMapObject(mapDocument(), mapObject(),
                                                     property, value);
 
-        if (mapDocument()->selectedObjects().size() == 1) {
+        if (mapDocument()->selectedObjects().size() <= 1) {
             push(command);
             return;
         }
@@ -1880,6 +1971,7 @@ private:
     Property *mTemplateProperty;
     Property *mNameProperty;
     BoolProperty *mVisibleProperty;
+    IntProperty *mOpacityProperty;
     Property *mPositionProperty;
     Property *mBoundsProperty;
     FloatProperty *mRotationProperty;
@@ -2334,6 +2426,8 @@ void PropertiesWidget::selectCustomProperty(const QString &name, bool focus)
 
 void PropertiesWidget::currentObjectChanged(Object *object)
 {
+    const ScopedUpdatesDisabler updatesDisabler(mPropertiesView);
+
     if (mPropertiesObject) {
         // Remember the expanded states
         const auto &subProperties = mPropertiesObject->subProperties();
@@ -2810,7 +2904,8 @@ void PropertiesWidget::renameProperty(const QString &name)
     dialog->setTextValue(name);
     dialog->setWindowTitle(QCoreApplication::translate("Tiled::PropertiesDock", "Rename Property"));
 
-    connect(dialog, &QInputDialog::textValueSelected, this, [=] (const QString &newName) {
+    connect(dialog, &QInputDialog::textValueSelected, this, [=] (const QString &text) {
+        const QString newName = text.trimmed();
         if (newName.isEmpty())
             return;
         if (newName == name)
@@ -3061,6 +3156,8 @@ void PropertiesWidget::keyPressEvent(QKeyEvent *event)
 
 void PropertiesWidget::retranslateUi()
 {
+    mCustomProperties->setName(QCoreApplication::translate("Tiled::CustomProperties", "Custom Properties"));
+
     mActionAddProperty->setText(QCoreApplication::translate("Tiled::PropertiesDock", "Add Property"));
 
     mActionRemoveProperty->setText(QCoreApplication::translate("Tiled::PropertiesDock", "Remove"));

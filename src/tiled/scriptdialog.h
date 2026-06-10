@@ -24,6 +24,7 @@
 #include <QAbstractButton>
 #include <QBoxLayout>
 #include <QButtonGroup>
+#include <QColor>
 #include <QDialog>
 #include <QLabel>
 
@@ -98,18 +99,18 @@ public:
     ~ScriptDialog() override;
 
     Q_INVOKABLE QWidget *addHeading(const QString &text, bool fillRow = false);
-    Q_INVOKABLE QWidget *addLabel(const QString &text);
+    Q_INVOKABLE QWidget *addLabel(const QString &text, const QString &toolTip = QString());
     Q_INVOKABLE QWidget *addSeparator(const QString &labelText = QString());
-    Q_INVOKABLE QWidget *addTextInput(const QString &labelText = QString(), const QString &defaultValue = QString());
-    Q_INVOKABLE QWidget *addTextEdit(const QString &labelText, const QString &defaultValue= QString());
-    Q_INVOKABLE QWidget *addNumberInput(const QString &labelText);
-    Q_INVOKABLE QWidget *addSlider(const QString &labelText);
-    Q_INVOKABLE QWidget *addComboBox(const QString &labelText, const QStringList &values);
-    Q_INVOKABLE QWidget *addCheckBox(const QString &text = QString(), bool defaultValue = false);
-    Q_INVOKABLE QWidget *addButton(const QString &text = QString());
-    Q_INVOKABLE QWidget *addFilePicker(const QString &labelText = QString());
-    Q_INVOKABLE QWidget *addColorButton(const QString &labelText = QString());
-    Q_INVOKABLE QWidget *addImage(const QString &labelText, Tiled::ScriptImage *image);
+    Q_INVOKABLE QWidget *addTextInput(const QString &labelText = QString(), const QString &defaultValue = QString(), const QString &toolTip = QString());
+    Q_INVOKABLE QWidget *addTextEdit(const QString &labelText = QString(), const QString &defaultValue = QString(), const QString &toolTip = QString());
+    Q_INVOKABLE QWidget *addNumberInput(const QString &labelText = QString(), double defaultValue = 0.0, const QString &toolTip = QString());
+    Q_INVOKABLE QWidget *addSlider(const QString &labelText = QString(), int defaultValue = 0, const QString &toolTip = QString());
+    Q_INVOKABLE QWidget *addComboBox(const QString &labelText, const QStringList &values, int defaultIndex = 0, const QString &toolTip = QString());
+    Q_INVOKABLE QWidget *addCheckBox(const QString &text = QString(), bool defaultValue = false, const QString &toolTip = QString());
+    Q_INVOKABLE QWidget *addButton(const QString &text = QString(), const QString &toolTip = QString());
+    Q_INVOKABLE QWidget *addFilePicker(const QString &labelText = QString(), const QString &defaultValue = QString(), const QString &toolTip = QString());
+    Q_INVOKABLE QWidget *addColorButton(const QString &labelText = QString(), const QColor &defaultValue = QColor(), const QString &toolTip = QString());
+    Q_INVOKABLE QWidget *addImage(const QString &labelText, Tiled::ScriptImage *image, const QString &toolTip = QString());
     Q_INVOKABLE ScriptButtonGroup *addRadioButtonGroup(const QString &labelText,
                                                        const QStringList &values,
                                                        const QString &toolTip = QString(),
@@ -128,9 +129,10 @@ private:
     QLabel *newLabel(const QString &labelText);
     void initializeLayout();
     void determineWidgetGrouping(QWidget *widget);
-    QWidget *addDialogWidget(QWidget * widget,
+    QWidget *addDialogWidget(QWidget *widget,
                              const QString &label = QString(),
-                             const QString &labelToolTip = QString());
+                             const QString &labelToolTip = QString(),
+                             const QString &widgetToolTip = QString());
 
     int m_rowIndex = 0;
     int m_widgetsInRow = 0;

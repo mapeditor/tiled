@@ -212,6 +212,7 @@ public:
 
     static Session &initialize();
     static Session &current();
+    static bool hasCurrent() { return mCurrent != nullptr; }
     static Session &switchCurrent(const QString &fileName);
     static void deinitialize();
 

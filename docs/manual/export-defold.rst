@@ -12,7 +12,7 @@ It only supports tile layers and only a single tileset may be used.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.9.2</div>
+   <div class="new new-prev">Since Tiled 1.9.2</div>
 
 Custom Properties
 ^^^^^^^^^^^^^^^^^
@@ -69,7 +69,7 @@ Custom Properties
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.10</div>
+   <div class="new new-prev">Since Tiled 1.10</div>
 
 * A custom float property named "z" can be added to tile layers to manually
   specify their ``z`` value.

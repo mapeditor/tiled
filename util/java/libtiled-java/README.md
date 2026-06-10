@@ -1,4 +1,5 @@
 # libtiled - Java library to work with Tiled maps
+[![Maven Central Version](https://img.shields.io/maven-central/v/org.mapeditor/libtiled?label=libtiled-java)](https://central.sonatype.com/artifact/org.mapeditor/libtiled)
 
 This is a small library meant to make it easy to use Tiled maps in your Java
 project. It is based on the Java version of Tiled.

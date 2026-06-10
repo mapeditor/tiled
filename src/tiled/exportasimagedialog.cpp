@@ -32,12 +32,11 @@
 #include "objectselectionitem.h"
 #include "preferences.h"
 #include "session.h"
-#include "tilelayer.h"
 #include "utils.h"
 
 #include <QFileDialog>
-#include <QMessageBox>
 #include <QImageWriter>
+#include <QMessageBox>
 
 using namespace Tiled;
 
@@ -204,7 +203,14 @@ void ExportAsImageDialog::accept()
 
         miniMapRenderer.renderToImage(image, renderFlags);
 
-        image.save(fileName);
+        QImageWriter imageWriter(fileName);
+        if (!imageWriter.write(image)) {
+            QMessageBox::warning(this,
+                                 tr("Export Failed"),
+                                 tr("Could not save image to \"%1\":\n%2")
+                                     .arg(fileName, imageWriter.errorString()));
+            return;
+        }
 
     } catch (const std::bad_alloc &) {
         QMessageBox::critical(this,

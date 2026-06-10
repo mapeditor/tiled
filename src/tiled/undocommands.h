@@ -53,6 +53,7 @@ enum UndoCommands {
     Cmd_ChangeMapOrientation,
     Cmd_ChangeMapParallaxOrigin,
     Cmd_ChangeMapRenderOrder,
+    Cmd_ChangeMapSkew,
     Cmd_ChangeMapStaggerAxis,
     Cmd_ChangeMapStaggerIndex,
     Cmd_ChangeMapTileSize,
@@ -70,6 +71,7 @@ enum UndoCommands {
     Cmd_PaintTileLayer,
     Cmd_SetMapRect,
     Cmd_SetProperty,
+    Cmd_SetWorldGrid,
 };
 
 /**

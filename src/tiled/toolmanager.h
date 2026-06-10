@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "id.h"
 #include "layer.h"
 
 #include <QActionGroup>
@@ -63,6 +64,7 @@ public:
 
     template<typename Tool>
     Tool *findTool();
+    AbstractTool *findTool(Id id);
 
     QAction *findAction(AbstractTool *tool) const;
 

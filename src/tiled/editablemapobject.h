@@ -63,6 +63,7 @@ class EditableMapObject : public EditableObject
     Q_PROPERTY(qreal height READ height WRITE setHeight)
     Q_PROPERTY(QSizeF size READ size WRITE setSize)
     Q_PROPERTY(qreal rotation READ rotation WRITE setRotation)
+    Q_PROPERTY(qreal opacity READ opacity WRITE setOpacity)
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible)
     Q_PROPERTY(QJSValue polygon READ polygon WRITE setPolygon)
     Q_PROPERTY(QString text READ text WRITE setText)
@@ -115,6 +116,7 @@ public:
     qreal height() const;
     QSizeF size() const;
     qreal rotation() const;
+    qreal opacity() const;
     bool isVisible() const;
     QJSValue polygon() const;
     QString text() const;
@@ -130,6 +132,8 @@ public:
     EditableMap *map() const;
 
     MapObject *mapObject() const;
+
+    Q_INVOKABLE QString resolvedClassName() const;
 
     void detach();
     MapObject *attach(EditableAsset *asset);
@@ -150,6 +154,7 @@ public slots:
     void setHeight(qreal height);
     void setSize(QSizeF size);
     void setRotation(qreal rotation);
+    void setOpacity(qreal opacity);
     void setVisible(bool visible);
     void setPolygon(QJSValue polygon);
     void setPolygon(const QPolygonF &polygon);
@@ -220,6 +225,11 @@ inline qreal EditableMapObject::rotation() const
     return mapObject()->rotation();
 }
 
+inline qreal EditableMapObject::opacity() const
+{
+    return mapObject()->opacity();
+}
+
 inline bool EditableMapObject::isVisible() const
 {
     return mapObject()->isVisible();
@@ -263,6 +273,11 @@ inline bool EditableMapObject::tileFlippedVertically() const
 inline MapObject *EditableMapObject::mapObject() const
 {
     return static_cast<MapObject*>(object());
+}
+
+inline QString EditableMapObject::resolvedClassName() const
+{
+    return mapObject()->effectiveClassName();
 }
 
 inline bool EditableMapObject::isOwning() const

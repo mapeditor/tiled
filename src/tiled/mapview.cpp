@@ -43,7 +43,7 @@
 #ifndef QT_NO_OPENGL
 
 // Needed to avoid include issue when compiling with mingw_900
-#if defined(Q_OS_WIN) && QT_VERSION >= QT_VERSION_CHECK(6, 2, 0)
+#if defined(Q_OS_WIN)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #endif
@@ -648,7 +648,7 @@ void MapView::adjustCenterFromMousePosition(QPoint mousePos)
     const QPointF viewCenterScenePos = viewportTransform().inverted().map(QRectF(view->rect()).center());
     const QPointF mouseScenePos = mapToScene(view->mapFromGlobal(mousePos));
     const QPointF diff = viewCenterScenePos - mouseScenePos;
-    QGraphicsView::centerOn(mLastMouseScenePos + diff);
+    forceCenterOn(mLastMouseScenePos + diff);
 }
 
 #include "moc_mapview.cpp"

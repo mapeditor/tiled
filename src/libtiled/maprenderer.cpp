@@ -32,6 +32,7 @@
 #include "isometricrenderer.h"
 #include "map.h"
 #include "mapobject.h"
+#include "obliquerenderer.h"
 #include "objectgroup.h"
 #include "orthogonalrenderer.h"
 #include "staggeredrenderer.h"
@@ -61,21 +62,10 @@ struct TintedKey
     }
 };
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-uint qHash(const TintedKey &key, uint seed) Q_DECL_NOTHROW
-{
-    auto h = ::qHash(key.pixmapKey, seed);
-    h = ::qHash(key.rect.topLeft(), h);
-    h = ::qHash(key.rect.bottomRight(), h);
-    h = ::qHash(key.color.rgba(), h);
-    return h;
-}
-#else
 size_t qHash(const TintedKey &key, size_t seed) Q_DECL_NOTHROW
 {
     return qHashMulti(seed, key.pixmapKey, key.rect, key.color.rgba());
 }
-#endif
 
 // Borrowed from qpixmapcache.cpp
 static inline qsizetype cost(const QPixmap &pixmap)
@@ -107,12 +97,20 @@ static QPixmap tinted(const QPixmap &pixmap, const QRect &rect, const QColor &co
         return *cached;
 
     QPixmap resultImage = pixmap.copy(rect);
+
+    // tinting with a non-fully opaque color needs an alpha channel to work properly
+    if (color.alpha() < 255 && !resultImage.hasAlphaChannel()) {
+        auto imageWithAlpha = resultImage.toImage();
+        imageWithAlpha.convertTo(QImage::Format_ARGB32_Premultiplied);
+        resultImage = QPixmap::fromImage(std::move(imageWithAlpha), Qt::NoOpaqueDetection);
+    }
+
     QPainter painter(&resultImage);
 
     QColor fullOpacity = color;
     fullOpacity.setAlpha(255);
-    // tint the final color (this will will mess up the alpha which we will fix
-    // in the next lines)
+    // tint the final color (this will mess up the alpha which we will fix in
+    // the next lines)
     painter.setCompositionMode(QPainter::CompositionMode_Multiply);
     painter.fillRect(resultImage.rect(), fullOpacity);
 
@@ -342,6 +340,8 @@ std::unique_ptr<MapRenderer> MapRenderer::create(const Map *map)
         return std::make_unique<StaggeredRenderer>(map);
     case Map::Hexagonal:
         return std::make_unique<HexagonalRenderer>(map);
+    case Map::Oblique:
+        return std::make_unique<ObliqueRenderer>(map);
     default:
         return std::make_unique<OrthogonalRenderer>(map);
     }

@@ -1134,24 +1134,7 @@ void AutoMapper::autoMap(const QRegion &where,
                 matchRule(rule, applyRegion, get, [&] (QPoint pos) { positions.append(pos); }, context);
             return positions;
         };
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         auto result = QtConcurrent::blockingMapped(mRules, collectMatches);
-#else
-        struct MatchRule
-        {
-            using result_type = QVector<QPoint>;
-
-            std::function<result_type(const Rule&)> collectMatches;
-
-            result_type operator()(const Rule &rule)
-            {
-                return collectMatches(rule);
-            }
-        };
-
-        const auto result = QtConcurrent::blockingMapped<QVector<QVector<QPoint>>>(mRules,
-                                                                                   MatchRule { collectMatches });
-#endif
 
         for (size_t i = 0; i < mRules.size(); ++i) {
             const Rule &rule = mRules[i];

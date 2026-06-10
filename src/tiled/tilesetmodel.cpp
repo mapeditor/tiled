@@ -44,6 +44,17 @@ TilesetModel::TilesetModel(TilesetDocument *tilesetDocument, QObject *parent)
             this, &TilesetModel::tileChanged);
 }
 
+/**
+ * Override to return an invalid index if the tile index is out of range.
+ */
+QModelIndex TilesetModel::index(int row, int column, const QModelIndex &parent) const
+{
+    const int tileIndex = column + row * columnCount();
+    if (tileIndex >= mTileIds.size())
+        return QModelIndex();
+    return QAbstractListModel::index(row, column, parent);
+}
+
 int TilesetModel::rowCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
@@ -121,11 +132,7 @@ QMimeData *TilesetModel::mimeData(const QModelIndexList &indexes) const
 {
     QByteArray encodedData;
 
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    QDataStream stream(&encodedData, QIODevice::WriteOnly);
-#else
     QDataStream stream(&encodedData, QDataStream::WriteOnly);
-#endif
 
     for (const QModelIndex &index : indexes) {
         if (auto tile = tileAt(index))
@@ -153,11 +160,7 @@ bool TilesetModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
         return false;
 
     QByteArray encodedData = data->data(QLatin1String(TILES_MIMETYPE));
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    QDataStream stream(&encodedData, QIODevice::ReadOnly);
-#else
     QDataStream stream(&encodedData, QDataStream::ReadOnly);
-#endif
 
     QList<Tile*> sourceTiles;
 
@@ -237,9 +240,30 @@ void TilesetModel::setColumnCountOverride(int columnCount)
     if (mColumnCountOverride == columnCount)
         return;
 
-    beginResetModel();
+    emit layoutAboutToBeChanged();
+
+    const int oldColumnCount = TilesetModel::columnCount();
+    const QModelIndexList oldIndexes = persistentIndexList();
+
     mColumnCountOverride = columnCount;
-    endResetModel();
+
+    const int newColumnCount = TilesetModel::columnCount();
+
+    QModelIndexList newIndexes;
+    newIndexes.reserve(oldIndexes.size());
+
+    for (const QModelIndex &oldIndex : oldIndexes) {
+        if (!oldIndex.isValid()) {
+            newIndexes.append(QModelIndex());
+            continue;
+        }
+        const int tileIndex = oldIndex.row() * oldColumnCount + oldIndex.column();
+        newIndexes.append(index(tileIndex / newColumnCount, tileIndex % newColumnCount));
+    }
+
+    changePersistentIndexList(oldIndexes, newIndexes);
+
+    emit layoutChanged();
 }
 
 void TilesetModel::tilesChanged(const QList<Tile *> &tiles)

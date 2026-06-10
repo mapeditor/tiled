@@ -31,6 +31,7 @@
 
 #include <QAction>
 #include <QDir>
+#include <QFileInfo>
 #include <QMessageBox>
 #include <QProcess>
 #include <QStandardPaths>
@@ -72,12 +73,17 @@ static QString replaceVariables(const QString &string, bool quoteValues = true)
     // Perform variable replacement
     if (Document *document = DocumentManager::instance()->currentDocument()) {
         const QString &fileName = document->fileName();
-        QFileInfo fileInfo(fileName);
-        const QString mapPath = fileInfo.absolutePath();
+        const QString mapPath = QFileInfo(fileName).absolutePath();
+
+        const QString &exportFileName = document->lastExportFileName();
+        const QString exportPath = QFileInfo(exportFileName).absolutePath();
+
         const QString projectPath = QFileInfo(ProjectManager::instance()->project().fileName()).absolutePath();
 
         finalString.replace(QLatin1String("%mapfile"), replaceString.arg(fileName));
         finalString.replace(QLatin1String("%mappath"), replaceString.arg(mapPath));
+        finalString.replace(QLatin1String("%exportfile"), replaceString.arg(exportFileName));
+        finalString.replace(QLatin1String("%exportpath"), replaceString.arg(exportPath));
         finalString.replace(QLatin1String("%projectpath"), replaceString.arg(projectPath));
 
         if (MapDocument *mapDocument = qobject_cast<MapDocument*>(document)) {
@@ -294,13 +300,7 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
     if (!finalWorkingDirectory.trimmed().isEmpty())
         setWorkingDirectory(finalWorkingDirectory);
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QStringList args = QProcess::splitCommand(mFinalCommand);
-    const QString executable = args.takeFirst();
-    start(executable, args);
-#else
     startCommand(mFinalCommand);
-#endif
 }
 
 void CommandProcess::consoleOutput()

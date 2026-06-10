@@ -28,6 +28,7 @@
 
 #include <QColor>
 #include <QCoreApplication>
+#include <QPoint>
 
 namespace Tiled {
 
@@ -95,6 +96,19 @@ struct MapParallaxOrigin
     static Map::Property property()         { return Map::ParallaxOriginProperty; }
     static QString undoName() {
         return QCoreApplication::translate("Undo Commands", "Change Parallax Origin");
+    }
+};
+
+struct MapSkew
+{
+    using Type = QPoint;
+
+    static void set(Map *map, Type value)   { map->setSkewX(value.x()); map->setSkewY(value.y()); }
+    static Type get(const Map *map)         { return { map->skewX(), map->skewY() }; }
+    static int undoId()                     { return Cmd_ChangeMapSkew; }
+    static Map::Property property()         { return Map::SkewProperty; }
+    static QString undoName() {
+        return QCoreApplication::translate("Undo Commands", "Change Skew");
     }
 };
 
@@ -221,6 +235,7 @@ using ChangeMapChunkSize        = ChangeMapProperty<MapChunkSize>;
 using ChangeMapStaggerAxis      = ChangeMapProperty<MapStaggerAxis>;
 using ChangeMapStaggerIndex     = ChangeMapProperty<MapStaggerIndex>;
 using ChangeMapParallaxOrigin   = ChangeMapProperty<MapParallaxOrigin>;
+using ChangeMapSkew             = ChangeMapProperty<MapSkew>;
 using ChangeMapOrientation      = ChangeMapProperty<MapOrientation>;
 using ChangeMapRenderOrder      = ChangeMapProperty<MapRenderOrder>;
 using ChangeMapLayerDataFormat  = ChangeMapProperty<MapLayerDataFormat>;

@@ -21,6 +21,7 @@
 #include "filechangedwarning.h"
 
 #include <QDialogButtonBox>
+#include <QEvent>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPainter>
@@ -44,6 +45,7 @@ FileChangedWarning::FileChangedWarning(QWidget *parent)
 
 void FileChangedWarning::setState(State state)
 {
+    mCurrentState = state;  
     setupButtonsForState(state);
 
     switch (state) {
@@ -92,6 +94,19 @@ void FileChangedWarning::setupButtonsForState(State state)
         break;
     }
     }
+}
+
+void FileChangedWarning::changeEvent(QEvent *event)
+{
+    QWidget::changeEvent(event);
+
+    if (event->type() == QEvent::LanguageChange)
+        retranslateUi();
+}
+
+void FileChangedWarning::retranslateUi()
+{
+    setState(mCurrentState); 
 }
 
 void FileChangedWarning::paintEvent(QPaintEvent *event)

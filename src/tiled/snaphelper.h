@@ -22,6 +22,7 @@
 #pragma once
 
 #include "maprenderer.h"
+#include "preferences.h"
 
 namespace Tiled {
 
@@ -31,24 +32,15 @@ public:
     SnapHelper(const MapRenderer *renderer, Qt::KeyboardModifiers modifiers = {});
 
     void toggleSnap();
-    
     void toggleFineSnap();
 
-    bool snaps() const { return mSnapMode != NoSnap || mSnapToPixels; }
+    bool snaps() const { return mSnapMode != SnapMode::None; }
 
     void snap(QPointF &pixelPos) const;
 
 private:
     const MapRenderer *mRenderer;
-
-    enum SnapMode {
-        NoSnap,
-        SnapToGrid,
-        SnapToFineGrid
-    };
-
-    SnapMode mSnapMode = NoSnap;
-    bool mSnapToPixels;
+    SnapMode mSnapMode = SnapMode::None;
 };
 
 } // namespace Tiled

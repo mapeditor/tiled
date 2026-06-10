@@ -26,6 +26,8 @@
 
 #include <QApplication>
 #include <QMouseEvent>
+#include <QPointer>
+#include <QWindow>
 
 namespace Tiled {
 
@@ -53,11 +55,21 @@ private:
     SpaceBarEventFilter(QObject *parent = nullptr)
         : QObject(parent)
     {
+        // Install on MainWindow to detect window handle changes
         MainWindow::instance()->installEventFilter(this);
+
+        // Install on window handle to detect Space key state changes
+        installOnWindowHandle();
     }
 
-    bool eventFilter(QObject*, QEvent *event) override
+    bool eventFilter(QObject *watched, QEvent *event) override
     {
+        if (watched == MainWindow::maybeInstance()) {
+            if (event->type() == QEvent::WinIdChange)
+                installOnWindowHandle();
+            return false;
+        }
+
         switch (event->type()) {
         case QEvent::KeyPress:
         case QEvent::KeyRelease: {
@@ -72,13 +84,28 @@ private:
             break;
         }
         default:
-        break;
+            break;
         }
 
         return false;
     }
 
+    void installOnWindowHandle()
+    {
+        auto *windowHandle = MainWindow::instance()->windowHandle();
+        if (mWindowHandle == windowHandle)
+            return;
+
+        if (mWindowHandle)
+            mWindowHandle->removeEventFilter(this);
+
+        mWindowHandle = windowHandle;
+        if (mWindowHandle)
+            mWindowHandle->installEventFilter(this);
+    }
+
     bool mSpacePressed = false;
+    QPointer<QWindow> mWindowHandle;
 };
 
 

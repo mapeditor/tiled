@@ -24,6 +24,7 @@
 #include "propertytypesmodel.h"
 #include "utils.h"
 
+#include <QEvent>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMenu>
@@ -45,7 +46,6 @@ ListEdit::ListEdit(QWidget *parent)
 
     mAddButton = new QToolButton{this};
     mAddButton->setIcon(QIcon(QStringLiteral(":/images/22/add.png")));
-    mAddButton->setText(tr("Add"));
     mAddButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     mAddButton->setMenu(mAddMenu);
     mAddButton->setPopupMode(QToolButton::MenuButtonPopup);
@@ -65,6 +65,8 @@ ListEdit::ListEdit(QWidget *parent)
     connect(mAddMenu, &QMenu::triggered, this, [this](QAction *action) {
         emit appendValue(action->data());
     });
+
+    retranslateUi();
 }
 
 void ListEdit::setValue(const QVariantList &value)
@@ -77,6 +79,20 @@ QString ListEdit::valueText(const QVariantList &value)
 {
     return value.isEmpty() ? tr("<empty>")
                            : tr("%1 items").arg(value.count());
+}
+
+void ListEdit::changeEvent(QEvent *event)
+{
+    QWidget::changeEvent(event);
+
+    if (event->type() == QEvent::LanguageChange)
+        retranslateUi();
+}
+
+void ListEdit::retranslateUi()
+{
+    mAddButton->setText(tr("Add"));
+    mLabel->setText(valueText(mValue));
 }
 
 void ListEdit::addButtonClicked()
@@ -96,11 +112,7 @@ void ListEdit::addButtonClicked()
         else
             newValue = QVariant::fromValue(PropertyValue { QVariant(), propertyValue.typeId });
     } else {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         newValue = QVariant(lastValue.metaType());
-#else
-        newValue = QVariant(lastValue.userType(), nullptr);
-#endif
     }
     emit appendValue(newValue);
 }

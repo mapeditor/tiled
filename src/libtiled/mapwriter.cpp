@@ -94,7 +94,9 @@ private:
     void writeGroupLayer(QXmlStreamWriter &w, const GroupLayer &groupLayer);
     void writeProperties(QXmlStreamWriter &w,
                          const Properties &properties);
-    void writeExportValue(QXmlStreamWriter &w, const ExportValue &value);
+    void writePropertyValue(QXmlStreamWriter &w,
+                            const QVariant &value,
+                            const ExportContext &context);
     void writeImage(QXmlStreamWriter &w,
                     const QUrl &source,
                     const QPixmap &image,
@@ -228,6 +230,11 @@ void MapWriterPrivate::writeMap(QXmlStreamWriter &w, const Map &map)
         w.writeAttribute(QStringLiteral("staggerindex"),
                          staggerIndexToString(map.staggerIndex()));
     }
+
+    if (map.skewX())
+        w.writeAttribute(QStringLiteral("skewx"), QString::number(map.skewX()));
+    if (map.skewY())
+        w.writeAttribute(QStringLiteral("skewy"), QString::number(map.skewY()));
 
     if (!map.parallaxOrigin().isNull()) {
         w.writeAttribute(QStringLiteral("parallaxoriginx"), QString::number(map.parallaxOrigin().x()));
@@ -760,6 +767,10 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     if (shouldWrite(rotation != 0.0, isTemplateInstance, mapObject.propertyChanged(MapObject::RotationProperty)))
         w.writeAttribute(QStringLiteral("rotation"), QString::number(rotation));
 
+    const qreal opacity = mapObject.opacity();
+    if (shouldWrite(opacity != 1.0, isTemplateInstance, mapObject.propertyChanged(MapObject::OpacityProperty)))
+        w.writeAttribute(QStringLiteral("opacity"), QString::number(opacity));
+
     if (shouldWrite(!mapObject.isVisible(), isTemplateInstance, mapObject.propertyChanged(MapObject::VisibleProperty)))
         w.writeAttribute(QStringLiteral("visible"), QLatin1String(mapObject.isVisible() ? "1" : "0"));
 
@@ -898,67 +909,57 @@ void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
 
     w.writeStartElement(QStringLiteral("properties"));
 
-    ExportContext context(mUseAbsolutePaths ? QString() : mDir.path());
-    context.setRecursiveBehavior(ExportContext::RecursiveBehavior::ExportValuesOnly);
+    const ExportContext context(mUseAbsolutePaths ? QString() : mDir.path());  // NoRecursion mode
 
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it) {
         w.writeStartElement(QStringLiteral("property"));
         w.writeAttribute(QStringLiteral("name"), it.key());
-
-        writeExportValue(w, context.toExportValue(it.value()));
-
+        writePropertyValue(w, it.value(), context);
         w.writeEndElement(); // </property>
     }
 
     w.writeEndElement(); // </properties>
 }
 
-void MapWriterPrivate::writeExportValue(QXmlStreamWriter &w, const ExportValue &exportValue)
+void MapWriterPrivate::writePropertyValue(QXmlStreamWriter &w,
+                                          const QVariant &value,
+                                          const ExportContext &context)
 {
+    const ExportValue exportValue = context.toExportValue(value);
+
     if (exportValue.typeName != QLatin1String("string"))
         w.writeAttribute(QStringLiteral("type"), exportValue.typeName);
     if (!exportValue.propertyTypeName.isEmpty())
         w.writeAttribute(QStringLiteral("propertytype"), exportValue.propertyTypeName);
 
-    switch (exportValue.value.userType()) {
-    case QMetaType::QVariantList: {
-        const auto values = exportValue.value.toList();
-        for (const QVariant &value : values) {
-            w.writeStartElement(QStringLiteral("item"));
-            writeExportValue(w, value.value<ExportValue>());
-            w.writeEndElement(); // </item>
-        }
-        break;
-    }
-    case QMetaType::QVariantMap: {
-        const auto map = exportValue.value.toMap();
-        if (map.isEmpty())
-            break;
+    if (exportValue.typeName == QLatin1String("class")) {
+        const QVariantMap members = exportValue.value.toMap();
+        if (members.isEmpty())
+            return;
 
         w.writeStartElement(QStringLiteral("properties"));
-        Properties::const_iterator it = map.constBegin();
-        Properties::const_iterator it_end = map.constEnd();
-        for (; it != it_end; ++it) {
+        for (auto it = members.constBegin(); it != members.constEnd(); ++it) {
             w.writeStartElement(QStringLiteral("property"));
             w.writeAttribute(QStringLiteral("name"), it.key());
-
-            writeExportValue(w, it.value().value<ExportValue>());
-
+            writePropertyValue(w, it.value(), context);
             w.writeEndElement(); // </property>
         }
         w.writeEndElement(); // </properties>
-        break;
-    }
-    default:
-        const QString value = exportValue.value.toString();
-
-        if (value.contains(QLatin1Char('\n')))
-            w.writeCharacters(value);
+    } else if (exportValue.typeName == QLatin1String("list")) {
+        const auto list = exportValue.value.toList();
+        for (const QVariant &item : list) {
+            w.writeStartElement(QStringLiteral("item"));
+            writePropertyValue(w, item, context);
+            w.writeEndElement(); // </item>
+        }
+    } else {
+        const QString stringValue = exportValue.value.toString();
+        if (stringValue.contains(QLatin1Char('\n')))
+            w.writeCharacters(stringValue);
         else
-            w.writeAttribute(QStringLiteral("value"), value);
-        break;
+            w.writeAttribute(QStringLiteral("value"), stringValue);
     }
 }
 

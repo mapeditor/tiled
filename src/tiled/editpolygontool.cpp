@@ -519,6 +519,7 @@ void EditPolygonTool::startSelecting()
 void EditPolygonTool::startMoving(const QPointF &pos)
 {
     mAction = Moving;
+    mMergeUndo = false;
     mStart = pos;
 
     MapRenderer *renderer = mapDocument()->renderer();
@@ -584,6 +585,7 @@ void EditPolygonTool::updateMovingItems(const QPointF &pos,
 
     auto command = createChangePolygonsCommand(mapDocument(), newPolygons);
     if (command->hasAnyChanges()) {
+        command->setMergeable(std::exchange(mMergeUndo, true));
         command->setText(tr("Move %n Node(s)", "", mSelectedHandles.size()));
         mapDocument()->undoStack()->push(command);
     } else {

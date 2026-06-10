@@ -53,8 +53,6 @@
 
 using namespace Tiled;
 
-namespace {
-
 static void setupTilesetGridTransform(const Tileset &tileset, QTransform &transform, QRect &targetRect)
 {
     if (tileset.orientation() == Tileset::Isometric) {
@@ -77,6 +75,8 @@ static void setupTilesetGridTransform(const Tileset &tileset, QTransform &transf
     }
 }
 
+namespace {
+
 /**
  * The delegate for drawing tile items in the tileset view.
  */
@@ -95,7 +95,7 @@ public:
                    const QModelIndex &index) const override;
 
 private:
-    static void drawFilmStrip(QPainter *painter, QRect targetRect);
+    static void drawFilmStrip(QPainter *painter, QRect targetRect, bool wangEditingActive);
 
     void drawWangOverlay(QPainter *painter,
                          const Tile *tile,
@@ -105,12 +105,14 @@ private:
     TilesetView *mTilesetView;
 };
 
+} // anonymous namespace
+
 void TileDelegate::paint(QPainter *painter,
                          const QStyleOptionViewItem &option,
                          const QModelIndex &index) const
 {
-    const TilesetModel *model = static_cast<const TilesetModel*>(index.model());
-    const Tile *tile = model->tileAt(index);
+    auto model = static_cast<const TilesetModel*>(index.model());
+    auto tile = model->tileAt(index);
     if (!tile)
         return;
 
@@ -161,7 +163,7 @@ void TileDelegate::paint(QPainter *painter,
 
     // Overlay with film strip when animated
     if (mTilesetView->markAnimatedTiles() && tile->isAnimated())
-        drawFilmStrip(painter, targetRect);
+        drawFilmStrip(painter, targetRect, mTilesetView->isEditWangSet());
 
     const auto highlight = option.palette.highlight();
 
@@ -175,12 +177,27 @@ void TileDelegate::paint(QPainter *painter,
 
     if (mTilesetView->isEditWangSet())
         drawWangOverlay(painter, tile, targetRect, index);
+
+    // draw the focus rect
+    if (option.state & QStyle::State_HasFocus) {
+        auto style = option.widget->style();
+        QStyleOptionFocusRect o;
+        o.QStyleOption::operator=(option);
+        o.rect = style->subElementRect(QStyle::SE_ItemViewItemFocusRect, &option);
+        o.state |= QStyle::State_KeyboardFocusChange;
+        o.state |= QStyle::State_Item;
+        QPalette::ColorGroup cg = (option.state & QStyle::State_Enabled)
+                                      ? QPalette::Normal : QPalette::Disabled;
+        o.backgroundColor = option.palette.color(cg, (option.state & QStyle::State_Selected)
+                                                         ? QPalette::Highlight : QPalette::Window);
+        style->drawPrimitive(QStyle::PE_FrameFocusRect, &o, painter);
+    }
 }
 
 QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
                              const QModelIndex &index) const
 {
-    const TilesetModel *m = static_cast<const TilesetModel*>(index.model());
+    auto m = static_cast<const TilesetModel*>(index.model());
     const int extra = mTilesetView->drawGrid() ? 1 : 0;
     const qreal scale = mTilesetView->scale();
 
@@ -211,7 +228,7 @@ QSize TileDelegate::sizeHint(const QStyleOptionViewItem & /* option */,
     return QSize(extra, extra);
 }
 
-void TileDelegate::drawFilmStrip(QPainter *painter, QRect targetRect)
+void TileDelegate::drawFilmStrip(QPainter *painter, QRect targetRect, bool wangEditingActive)
 {
     painter->save();
 
@@ -224,7 +241,7 @@ void TileDelegate::drawFilmStrip(QPainter *painter, QRect targetRect)
     painter->scale(scale, scale);
     painter->translate(-18, 3);
     painter->rotate(-45);
-    painter->setOpacity(0.8);
+    painter->setOpacity(wangEditingActive ? 0.3 : 0.8);
 
     QRectF strip(0, 0, 32, 6);
     painter->fillRect(strip, Qt::black);
@@ -277,8 +294,6 @@ void TileDelegate::drawWangOverlay(QPainter *painter,
 
     painter->restore();
 }
-
-} // anonymous namespace
 
 TilesetView::TilesetView(QWidget *parent)
     : QTableView(parent)
@@ -444,7 +459,7 @@ void TilesetView::setMarkAnimatedTiles(bool enabled)
 bool TilesetView::event(QEvent *event)
 {
     if (event->type() == QEvent::Gesture) {
-        QGestureEvent *gestureEvent = static_cast<QGestureEvent *>(event);
+        auto gestureEvent = static_cast<QGestureEvent *>(event);
         if (QGesture *gesture = gestureEvent->gesture(Qt::PinchGesture))
             mZoomable->handlePinchGesture(static_cast<QPinchGesture *>(gesture));
     } else if (event->type() == QEvent::ShortcutOverride) {
@@ -504,7 +519,7 @@ void TilesetView::keyPressEvent(QKeyEvent *event)
         return;
     }
 
-    return QTableView::keyPressEvent(event);
+    QTableView::keyPressEvent(event);
 }
 
 void TilesetView::setRelocateTiles(bool enabled)
@@ -585,24 +600,29 @@ void TilesetView::mousePressEvent(QMouseEvent *event)
 
 void TilesetView::mouseMoveEvent(QMouseEvent *event)
 {
-    if (mEditWangSet) {
-        if (!mWangSet)
-            return;
+    if (!mEditWangSet) {
+        QTableView::mouseMoveEvent(event);
+        return;
+    }
 
-        const QPoint pos = event->pos();
-        const QModelIndex hoveredIndex = indexAt(pos);
-        const QModelIndex previousHoveredIndex = mHoveredIndex;
-        mHoveredIndex = hoveredIndex;
+    if (!mWangSet)
+        return;
 
-        WangId wangId;
+    const QPoint pos = event->pos();
+    const QModelIndex hoveredIndex = indexAt(pos);
+    const QModelIndex previousHoveredIndex = mHoveredIndex;
+    mHoveredIndex = hoveredIndex;
 
-        if (mWangBehavior == AssignWholeId) {
-            wangId = mWangId;
-        } else {
-            QRect tileRect = visualRect(mHoveredIndex);
-            QTransform transform;
-            setupTilesetGridTransform(*tilesetDocument()->tileset(), transform, tileRect);
+    WangId wangId;
 
+    if (mWangBehavior == AssignWholeId) {
+        wangId = mWangId;
+    } else {
+        QRect tileRect = visualRect(mHoveredIndex);
+        QTransform transform;
+        setupTilesetGridTransform(*tilesetDocument()->tileset(), transform, tileRect);
+
+        if (!tileRect.isEmpty()) {
             const auto mappedPos = transform.inverted().map(pos);
             QPoint tileLocalPos = mappedPos - tileRect.topLeft();
             QPointF tileLocalPosF((qreal) tileLocalPos.x() / tileRect.width(),
@@ -650,23 +670,19 @@ void TilesetView::mouseMoveEvent(QMouseEvent *event)
                                                             : WangId::INDEX_MASK);
             }
         }
-
-        if (previousHoveredIndex != mHoveredIndex || wangId != mWangId) {
-            mWangId = wangId;
-
-            if (previousHoveredIndex.isValid())
-                update(previousHoveredIndex);
-            if (mHoveredIndex.isValid())
-                update(mHoveredIndex);
-        }
-
-        if (event->buttons() & Qt::LeftButton)
-            applyWangId();
-
-        return;
     }
 
-    QTableView::mouseMoveEvent(event);
+    if (previousHoveredIndex != mHoveredIndex || wangId != mWangId) {
+        mWangId = wangId;
+
+        if (previousHoveredIndex.isValid())
+            update(previousHoveredIndex);
+        if (mHoveredIndex.isValid())
+            update(mHoveredIndex);
+    }
+
+    if (event->buttons() & Qt::LeftButton)
+        applyWangId();
 }
 
 void TilesetView::mouseReleaseEvent(QMouseEvent *event)

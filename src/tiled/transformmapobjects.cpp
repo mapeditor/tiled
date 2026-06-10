@@ -99,12 +99,24 @@ void TransformMapObjects::redo()
 
 bool TransformMapObjects::mergeWith(const QUndoCommand *other)
 {
-    // Don't merge when the other command affects different properties
     auto o = static_cast<const TransformMapObjects*>(other);
-    if (mChangedProperties != o->mChangedProperties)
+    if (!o->mMergeable)
         return false;
 
-    return ChangeValue<MapObject, TransformState>::mergeWith(other);
+    // Don't merge when the other command affects different properties
+    // Position changes are allowed as part of other changes
+    auto nonPositionChanges = [](MapObject::ChangedProperties p) {
+        return p & ~MapObject::PositionProperty;
+    };
+
+    if (nonPositionChanges(mChangedProperties) != nonPositionChanges(o->mChangedProperties))
+        return false;
+
+    if (!ChangeValue<MapObject, TransformState>::mergeWith(other))
+        return false;
+
+    mChangedProperties |= o->mChangedProperties;
+    return true;
 }
 
 TransformState TransformMapObjects::getValue(const MapObject *mapObject) const

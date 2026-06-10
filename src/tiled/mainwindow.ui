@@ -139,6 +139,8 @@
     <addaction name="actionAutoMap"/>
     <addaction name="actionAutoMapWhileDrawing"/>
     <addaction name="separator"/>
+    <addaction name="actionGoToTile"/>
+    <addaction name="separator"/>
     <addaction name="actionMapProperties"/>
    </widget>
    <widget class="QMenu" name="menuView">
@@ -163,9 +165,12 @@
      <addaction name="actionSnapToGrid"/>
      <addaction name="actionSnapToFineGrid"/>
      <addaction name="actionSnapToPixels"/>
+     <addaction name="separator"/>
+     <addaction name="actionSnapToWorldGrid"/>
     </widget>
     <addaction name="actionSearchActions"/>
     <addaction name="actionShowGrid"/>
+    <addaction name="actionShowWorldGrid"/>
     <addaction name="actionShowTileObjectOutlines"/>
     <addaction name="actionShowObjectReferences"/>
     <addaction name="menuShowObjectNames"/>
@@ -334,6 +339,22 @@
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+G</string>
+   </property>
+  </action>
+  <action name="actionShowWorldGrid">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show &amp;World Grid</string>
+   </property>
+  </action>
+  <action name="actionSnapToWorldGrid">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Snap Maps to World Grid</string>
    </property>
   </action>
   <action name="actionSaveAs">
@@ -821,6 +842,14 @@
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionGoToTile">
+   <property name="text">
+    <string>Go to &amp;Tile...</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">Ctrl+Shift+G</string>
    </property>
   </action>
  </widget>

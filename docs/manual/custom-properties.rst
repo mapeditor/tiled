@@ -51,7 +51,7 @@ quickly jump to the referenced object.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.8</div>
+   <div class="new new-prev">Since Tiled 1.8</div>
 
 .. _custom-property-types:
 
@@ -105,7 +105,7 @@ names. Classes can have members referring to other classes.
 
 .. raw:: html
 
-   <div class="new">New in Tiled 1.9</div>
+   <div class="new new-prev">Since Tiled 1.9</div>
 
 Each data type has a "Class" property, which can be used to refer to a custom
 class. The members of this class will then be directly available as custom

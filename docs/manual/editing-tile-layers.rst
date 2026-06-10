@@ -116,7 +116,7 @@ tile or pattern.
 
 .. raw:: html
 
-   <div class="new">Since Tiled 1.10.2</div>
+   <div class="new new-prev">Since Tiled 1.10.2</div>
 
 - Holding ``Alt`` draws the rectangle or ellipse centered around the starting
   location.
@@ -170,7 +170,7 @@ by clicking on one of the tool buttons in the Tool Options toolbar.
 
 .. raw:: html
 
-   <div class="new">Since Tiled 1.12</div>
+   <div class="new">New in Tiled 1.12</div>
 
 While selecting an area, the following modifiers can be used:
 

@@ -1,0 +1,85 @@
+/*
+ * obliquerenderer.h
+ * Copyright 2025, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+ *
+ * This file is part of libtiled.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *    1. Redistributions of source code must retain the above copyright notice,
+ *       this list of conditions and the following disclaimer.
+ *
+ *    2. Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+ * EVENT SHALL THE CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+#pragma once
+
+#include "orthogonalrenderer.h"
+
+namespace Tiled {
+
+/**
+ * An oblique map renderer.
+ *
+ * Oblique maps use a skewed grid where the X and/or Y axis is projected diagonally.
+ */
+class TILEDSHARED_EXPORT ObliqueRenderer final : public OrthogonalRenderer
+{
+public:
+    ObliqueRenderer(const Map *map) : OrthogonalRenderer(map) {}
+
+    QRect boundingRect(const QRect &rect) const override;
+
+    QRectF boundingRect(const MapObject *object) const override;
+    QPainterPath shape(const MapObject *object) const override;
+    QPainterPath interactionShape(const MapObject *object) const override;
+
+    void drawGrid(QPainter *painter, const QRectF &rect,
+                  QColor gridColor, QSize gridMajor) const override;
+
+    using MapRenderer::drawTileLayer;
+    void drawTileLayer(const RenderTileCallback &renderTile,
+                       const QRectF &exposed) const override;
+
+    void drawTileSelection(QPainter *painter,
+                           const QRegion &region,
+                           const QColor &color,
+                           const QRectF &exposed) const override;
+
+    void drawMapObject(QPainter *painter,
+                       const MapObject *object,
+                       const MapObjectColors &colors) const override;
+
+    using MapRenderer::screenToTileCoords;
+    QPointF screenToTileCoords(qreal x, qreal y) const override;
+
+    using MapRenderer::tileToScreenCoords;
+    QPointF tileToScreenCoords(qreal x, qreal y) const override;
+
+    using MapRenderer::screenToPixelCoords;
+    QPointF screenToPixelCoords(qreal x, qreal y) const override;
+
+    using MapRenderer::pixelToScreenCoords;
+    QPointF pixelToScreenCoords(qreal x, qreal y) const override;
+
+private:
+    QTransform transform() const;
+    QRectF screenToPixelRect(const QRectF &rect) const;
+    QPolygonF tileRectToScreenPolygon(const QRect &rect) const;
+};
+
+} // namespace Tiled

@@ -86,6 +86,7 @@ NewMapDialog::NewMapDialog(QWidget *parent) :
 
     mUi->orientation->addItem(tr("Orthogonal"), QVariant::fromValue(Map::Orthogonal));
     mUi->orientation->addItem(tr("Isometric"), QVariant::fromValue(Map::Isometric));
+    mUi->orientation->addItem(tr("Oblique"), QVariant::fromValue(Map::Oblique));
     mUi->orientation->addItem(tr("Isometric (Staggered)"), QVariant::fromValue(Map::Staggered));
     mUi->orientation->addItem(tr("Hexagonal (Staggered)"), QVariant::fromValue(Map::Hexagonal));
 
@@ -150,6 +151,9 @@ MapDocumentPtr NewMapDialog::createMap()
     mapParameters.tileHeight = session::mapTileHeight;
     mapParameters.infinite = !session::fixedSize;
 
+    if (mapParameters.orientation == Map::Oblique)
+        mapParameters.skewX = mapParameters.tileWidth / 2;
+
     auto map = std::make_unique<Map>(mapParameters);
 
     map->setLayerDataFormat(session::layerDataFormat);
@@ -190,6 +194,8 @@ void NewMapDialog::refreshPixelSize()
     mapParameters.height = mUi->mapHeight->value();
     mapParameters.tileWidth = mUi->tileWidth->value();
     mapParameters.tileHeight = mUi->tileHeight->value();
+    if (mapParameters.orientation == Map::Oblique)
+        mapParameters.skewX = mapParameters.tileWidth / 2;
 
     const Map map(mapParameters);
     const QSize size = MapRenderer::create(&map)->mapBoundingRect().size();

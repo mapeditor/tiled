@@ -181,6 +181,17 @@ bool ToolManager::selectTool(AbstractTool *tool)
     return tool == nullptr;
 }
 
+AbstractTool *ToolManager::findTool(Id id)
+{
+    const auto actions = mActionGroup->actions();
+    for (QAction *action : actions) {
+        AbstractTool *abstractTool = action->data().value<AbstractTool*>();
+        if (abstractTool->id() == id)
+            return abstractTool;
+    }
+    return nullptr;
+}
+
 QAction *ToolManager::findAction(AbstractTool *tool) const
 {
     const auto actions = mActionGroup->actions();
@@ -226,7 +237,7 @@ void ToolManager::retranslateTools()
  * This is done to make sure the shortcuts can still be used even when the
  * actions are only added to a tool bar and this tool bar is hidden.
  *
- * In addition, this allows us to implement a toggle behavior: if the tool is
+ * In addition, this allows us to implement the optional toggle behavior: if the tool is
  * already selected, pressing the shortcut again will switch to the previously
  * selected tool.
  */
@@ -251,7 +262,7 @@ void ToolManager::createShortcuts(QWidget *parent)
                 if (!action->isChecked()) {
                     // Select the tool associated with this shortcut
                     action->trigger();
-                } else {
+                } else if (Preferences::instance()->repeatShortcutForPreviousTool()) {
                     // The tool is already selected, switch to the previously selected tool
                     auto tool = mPreviousSelectedTool;
                     if (tool && tool->isVisible())

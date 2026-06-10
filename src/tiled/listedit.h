@@ -50,7 +50,11 @@ public:
 signals:
     void appendValue(const QVariant &value);
 
+protected:
+    void changeEvent(QEvent *event) override;
+
 private:
+    void retranslateUi();
     void addButtonClicked();
     void populateAddMenu();
 

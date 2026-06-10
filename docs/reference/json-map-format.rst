@@ -28,11 +28,13 @@ Map
     layers,           array,            "Array of :ref:`Layers <json-layer>`"
     nextlayerid,      int,              "Auto-increments for each layer"
     nextobjectid,     int,              "Auto-increments for each placed object"
-    orientation,      string,           "``orthogonal``, ``isometric``, ``staggered`` or ``hexagonal``"
+    orientation,      string,           "``orthogonal``, ``isometric``, ``oblique``, ``staggered`` or ``hexagonal``"
     parallaxoriginx,  double,           "X coordinate of the parallax origin in pixels (since 1.8, default: 0)"
     parallaxoriginy,  double,           "Y coordinate of the parallax origin in pixels (since 1.8, default: 0)"
     properties,       array,            "Array of :ref:`Properties <json-property>`"
     renderorder,      string,           "``right-down`` (the default), ``right-up``, ``left-down`` or ``left-up`` (currently only supported for orthogonal maps)"
+    skewx,            int,              "X offset applied per tile row (oblique maps only)"
+    skewy,            int,              "Y offset applied per tile column (oblique maps only)"
     staggeraxis,      string,           "``x`` or ``y`` (staggered / hexagonal maps only)"
     staggerindex,     string,           "``odd`` or ``even`` (staggered / hexagonal maps only)"
     tiledversion,     string,           "The Tiled version used to save the file"
@@ -101,7 +103,7 @@ Layer
     objects,          array,            "Array of :ref:`objects <json-object>`. ``objectgroup`` only."
     offsetx,          double,           "Horizontal layer offset in pixels (default: 0)"
     offsety,          double,           "Vertical layer offset in pixels (default: 0)"
-    opacity,          double,           "Value between 0 and 1"
+    opacity,          double,           "Value between 0 and 1 (default: 1)"
     parallaxx,        double,           "Horizontal :ref:`parallax factor <parallax-factor>` for this layer (default: 1). (since 1.5)"
     parallaxy,        double,           "Vertical :ref:`parallax factor <parallax-factor>` for this layer (default: 1). (since 1.5)"
     properties,       array,            "Array of :ref:`Properties <json-property>`"
@@ -239,6 +241,7 @@ Object
     height,           double,           "Height in pixels."
     id,               int,              "Incremental ID, unique across all objects"
     name,             string,           "String assigned to name field in editor"
+    opacity,          double,           "The opacity of the object as a value from 0 to 1 (default: 1)"
     point,            bool,             "Used to mark an object as a point"
     polygon,          array,            "Array of :ref:`Points <json-point>`, in case the object is a polygon"
     polyline,         array,            "Array of :ref:`Points <json-point>`, in case the object is a polyline"
@@ -269,6 +272,7 @@ Object Example
           "value":12
         }],
       "rotation":0,
+      "opacity":1,
       "type":"npc",
       "visible":true,
       "width":0,
@@ -287,6 +291,7 @@ Ellipse Example
       "id":13,
       "name":"",
       "rotation":0,
+      "opacity":1,
       "type":"",
       "visible":true,
       "width":248,
@@ -304,6 +309,7 @@ Rectangle Example
       "id":14,
       "name":"",
       "rotation":0,
+      "opacity":1,
       "type":"",
       "visible":true,
       "width":368,
@@ -322,6 +328,7 @@ Point Example
       "name":"",
       "point":true,
       "rotation":0,
+      "opacity":1,
       "type":"",
       "visible":true,
       "width":0,
@@ -360,6 +367,7 @@ Polygon Example
         "y":-288
       }],
       "rotation":0,
+      "opacity":1,
       "type":"",
       "visible":true,
       "width":0,
@@ -402,6 +410,7 @@ Polyline Example
         "y":0
       }],
       "rotation":0,
+      "opacity":1,
       "type":"",
       "visible":true,
       "width":0,
@@ -424,6 +433,7 @@ Text Example
         "wrap":true
       },
       "rotation":0,
+      "opacity":1,
       "type":"",
       "visible":true,
       "width":248,
@@ -771,6 +781,8 @@ Tiled 1.12
   when rendering the layer.
 
 * Added ``capsule`` property to :ref:`json-object`.
+
+* Added ``opacity`` property to :ref:`json-object`.
 
 Tiled 1.11.1
 ~~~~~~~~~~~~

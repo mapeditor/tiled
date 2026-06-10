@@ -26,8 +26,6 @@
 #include "maprenderer.h"
 #include "tilelayer.h"
 
-#include <cmath>
-
 using namespace TiledQuick;
 
 MapItem::MapItem(QQuickItem *parent)
@@ -60,6 +58,14 @@ QRectF MapItem::boundingRect() const
         return QRectF();
 
     return mRenderer->mapBoundingRect();
+}
+
+QSize MapItem::tileSize() const
+{
+    if (!mMap)
+        return {0,0};
+
+    return mMap->tileSize();
 }
 
 QPointF MapItem::screenToTileCoords(qreal x, qreal y) const

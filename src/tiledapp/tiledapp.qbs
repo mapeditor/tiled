@@ -1,6 +1,7 @@
 import qbs.File
 import qbs.FileInfo
 import qbs.TextFile
+import qbs.Utilities
 
 TiledQtGuiApplication {
     name: "tiled"
@@ -10,10 +11,19 @@ TiledQtGuiApplication {
 
     Depends { name: "libtilededitor" }
     Depends { name: "ib"; condition: qbs.targetOS.contains("macos") }
-    Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") && Qt.core.versionMajor >= 6 }
+    Depends { name: "xcode"; condition: qbs.targetOS.contains("macos") }
+    Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") }
     Depends { name: "texttemplate"; condition: qbs.targetOS.contains("windows") }
 
     property bool qtcRunnable: true
+
+    // The Icon Composer (.icon) app icon needs both Qbs 3.2+ (to tag the
+    // bundle) and Xcode 26+ (whose actool can actually compile it; older
+    // actool accepts the input but silently emits nothing). When either is
+    // missing, fall back to the legacy tiled-icon-mac appiconset.
+    readonly property bool useIconComposerIcon: qbs.targetOS.contains("macos")
+        && Utilities.versionCompare(qbs.version, "3.2") >= 0
+        && Utilities.versionCompare(xcode.version, "26") >= 0
 
     cpp.includePaths: {
         var paths = ["."];
@@ -43,7 +53,7 @@ TiledQtGuiApplication {
         condition: qbs.targetOS.contains("macos")
         cpp.frameworks: ["Foundation"]
         bundle.identifierPrefix: "org.mapeditor"
-        ib.appIconName: "tiled-icon-mac"
+        ib.appIconName: useIconComposerIcon ? "tiled-icon-macos26" : "tiled-icon-mac"
         targetName: "Tiled"
     }
 
@@ -77,6 +87,16 @@ TiledQtGuiApplication {
         files: [
             "Info.plist",
             "images/tiled.xcassets",
+        ]
+    }
+
+    // Only included with a toolchain that can compile it (see
+    // useIconComposerIcon); otherwise the legacy appiconset is used.
+    Group {
+        name: "macOS app icon (Icon Composer)"
+        condition: useIconComposerIcon
+        files: [
+            "images/tiled-icon-macos26.icon",
         ]
     }
 

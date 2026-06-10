@@ -50,13 +50,16 @@ signals:
     void closeDocument();
 
 protected:
+    void changeEvent(QEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
 
 private:
     void setupButtonsForState(State state);
+    void retranslateUi();
 
     QLabel *mLabel;
     QDialogButtonBox *mButtons;
+    State mCurrentState = FileChanged;
 };
 
 } // namespace Tiled

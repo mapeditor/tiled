@@ -230,7 +230,7 @@ IgnoreHexRotate120
 : This boolean layer property can be added to `input` and `inputnot` layers to also match 120-degree rotated tiles on hexagonal maps. However, note that Automapping currently does not really work for hexagonal maps since it does not take into account the staggered axis.
 
 (outputProbability)=
-Probability {bdg-primary}`New in Tiled 1.10`
+Probability {bdg-secondary-line}`Since Tiled 1.10`
 : This float layer property can be added to `output` layers to control the probability that a given output index will be chosen. The probabilities for each output index are relative to one another, and default to 1.0. For example, if you have outputA with probability 2 and outputB with probability 0.5, A will be chosen four times as often as B. If multiple output layers with the same index have their **Probability** set, the last (top-most) layer's probability will be used.
 
 {bdg-secondary-line}`Since Tiled 1.9`
@@ -265,7 +265,7 @@ NoOverlappingOutput
 : When set to `true`, the output of a rule is not allowed to overlap other outputs of the same rule (defaults to `false`).
 
 (IgnoreLock)=
-IgnoreLock {bdg-primary}`New in Tiled 1.10`
+IgnoreLock {bdg-secondary-line}`Since Tiled 1.10`
 : Since Tiled 1.10, Automapping rules no longer modify locked layers. Set this property to `true` to ignore the lock. This can be useful when you have layers that are only changed by rules and want to keep them locked.
 
 All these options can also be set on the rule map itself, in which case they apply as defaults for all rules, which can then be overridden for specific rules by placing rectangle objects.
