@@ -161,6 +161,37 @@ void RemoveWangSetColor::redo()
     QUndoCommand::redo();
 }
 
+void MoveUpWangSetColor::swap()
+{
+    const auto changes = ChangeTileWangId::changesOnMoveColor(mWangSet, mColor - 1, mColor);
+    if (!changes.isEmpty())
+        new ChangeTileWangId(mTilesetDocument, mWangSet, changes, this);
+    
+    mTilesetDocument->wangSetModel()->swapWangColorsAt(mWangSet, mColor - 1, mColor);
+}
+
+MoveUpWangSetColor::MoveUpWangSetColor(TilesetDocument *tilesetDocumnet, WangSet *wangSet, int color)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                               "Swap Terrain"))
+    , mTilesetDocument(tilesetDocumnet)
+    , mWangSet(wangSet)
+    , mColor(color)
+{
+    
+}
+
+void MoveUpWangSetColor::undo()
+{
+    swap();
+    QUndoCommand::undo();
+}
+
+void MoveUpWangSetColor::redo()
+{
+    swap();
+    QUndoCommand::redo();
+}
+
 
 SetWangSetImage::SetWangSetImage(TilesetDocument *tilesetDocument,
                                  WangSet *wangSet,
