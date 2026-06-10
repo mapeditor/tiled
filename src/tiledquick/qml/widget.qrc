@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>widget.qml</file>
+        <file>DragArea.qml</file>
+    </qresource>
+</RCC>

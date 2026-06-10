@@ -598,7 +598,7 @@ DynamicLibrary {
 
     Group {
         name: "TiledQuick Resources"
-        files: "../tiledquick/qml/qml.qrc"
+        files: "../tiledquick/qml/widget.qrc"
         fileTags: ["qrc"]
     }
 
