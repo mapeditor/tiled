@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.0" orientation="orthogonal" renderorder="right-down" width="3" height="3" tilewidth="32" tileheight="32" infinite="0" compressionlevel="6" parallaxoriginx="100" parallaxoriginy="200" nextlayerid="5" nextobjectid="3">
+ <properties>
+  <property name="boolProp" type="bool" value="true"/>
+  <property name="intProp" type="int" value="42"/>
+  <property name="floatProp" type="float" value="3.14"/>
+  <property name="colorProp" type="color" value="#ff00ff00"/>
+  <property name="fileProp" type="file" value="test.png"/>
+  <property name="stringProp" value="hello"/>
+ </properties>
+ <layer id="1" name="TintedLayer" width="3" height="3" tintcolor="#dca0a0" parallaxx="0.5" parallaxy="0.75">
+  <data encoding="csv">
+0,0,0,
+0,0,0,
+0,0,0
+</data>
+ </layer>
+ <layer id="2" name="NormalLayer" width="3" height="3">
+  <data encoding="csv">
+0,0,0,
+0,0,0,
+0,0,0
+</data>
+ </layer>
+ <layer id="3" name="HalfOpacity" width="3" height="3" opacity="0.5" tintcolor="#80ff0000">
+  <data encoding="csv">
+0,0,0,
+0,0,0,
+0,0,0
+</data>
+ </layer>
+ <objectgroup id="4" name="TemplateObjects">
+  <object id="1" template="templates/rect_template.tx" x="100" y="200"/>
+  <object id="2" template="templates/rect_template.tx" x="300" y="400" name="override_block">
+   <properties>
+    <property name="collision" type="bool" value="false"/>
+    <property name="color" value="red"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
