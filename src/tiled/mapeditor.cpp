@@ -358,7 +358,12 @@ void MapEditor::addDocument(Document *document)
     QQuickWidget *quickWidget = new QQuickWidget(mWidgetStack);
     QQmlEngine *engine = quickWidget->engine();
 
-    QString qmlPluginPath = QCoreApplication::applicationDirPath() + QStringLiteral("/qml");
+    QString qmlPluginPath = QCoreApplication::applicationDirPath();
+#ifdef Q_OS_WIN
+    qmlPluginPath += QStringLiteral("/qml");
+#else
+    qmlPluginPath += QStringLiteral("/../qml");
+#endif
     engine->addImportPath(qmlPluginPath);
 
     quickWidget->setSource(QUrl(QStringLiteral("qrc:/widget.qml")));
