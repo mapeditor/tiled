@@ -5,6 +5,6 @@
         <file>DragArea.qml</file>
         <file>FontAwesome.qml</file>
         <file>qmldir</file>
-        <file>widget.qml</file>
+        <file>mapview.qml</file>
     </qresource>
 </RCC>

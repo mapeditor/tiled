@@ -366,7 +366,7 @@ void MapEditor::addDocument(Document *document)
 #endif
     engine->addImportPath(qmlPluginPath);
 
-    quickWidget->setSource(QUrl(QStringLiteral("qrc:/widget.qml")));
+    quickWidget->setSource(QUrl(QStringLiteral("qrc:/mapview.qml")));
     quickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
 
     QQuickItem *rootObject = quickWidget->rootObject();
@@ -375,6 +375,7 @@ void MapEditor::addDocument(Document *document)
     {
         QObject *mapLoader = rootObject->findChild<QObject*>("mapLoader");
 
+        // Replace this with mapDocument->editable() pointer instead of loading the mapDocument->fileName()
         if (mapLoader) {
             QString sourceFile = QStringLiteral("file:///") + mapDocument->fileName();
             mapLoader->setProperty("source", sourceFile);

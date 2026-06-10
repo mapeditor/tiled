@@ -593,12 +593,13 @@ DynamicLibrary {
         name: "Resources"
         Qt.core.resourceSourceBase: "resources/"
         files: "resources/**"
+        excludeFiles: "resources/qml/**"
         fileTags: ["qt.core.resource_data"]
     }
 
     Group {
-        name: "TiledQuick Resources"
-        files: "../tiledquick/qml/widget.qrc"
+        name: "QML Resources"
+        files: "resources/qml/mapview.qrc"
         fileTags: ["qrc"]
     }
 

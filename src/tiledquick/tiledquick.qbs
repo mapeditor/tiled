@@ -35,7 +35,6 @@ QtGuiApplication {
         "main.cpp",
         "qml/qml.qrc",
         "qml/qtquickcontrols2.conf",
-        "qml/widget.qrc",
     ]
 
     Properties {
