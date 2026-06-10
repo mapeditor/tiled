@@ -71,6 +71,7 @@ enum UndoCommands {
     Cmd_PaintTileLayer,
     Cmd_SetMapRect,
     Cmd_SetProperty,
+    Cmd_SetWorldGrid,
 };
 
 /**

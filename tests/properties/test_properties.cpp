@@ -328,19 +328,12 @@ void test_Properties::toPropertyValue_data()
     QTest::newRow("invalid-color") << QString() << QStringLiteral("color") << QVariant::fromValue(QColor());
     QTest::newRow("int") << QStringLiteral("42") << QStringLiteral("int") << QVariant::fromValue(42);
     QTest::newRow("float") << QStringLiteral("42.0") << QStringLiteral("float") << QVariant::fromValue(42.0);
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
     QTest::newRow("invalid-int") << QStringLiteral("foo") << QStringLiteral("int") << QVariant(QMetaType(QMetaType::Int));
     QTest::newRow("invalid-float") << QStringLiteral("foo") << QStringLiteral("float") << QVariant(QMetaType(QMetaType::Double));
-#else
-    QTest::newRow("invalid-int") << QStringLiteral("foo") << QStringLiteral("int") << QVariant(QVariant::Int);
-    QTest::newRow("invalid-float") << QStringLiteral("foo") << QStringLiteral("float") << QVariant(QVariant::Double);
-#endif
     QTest::newRow("bool-true") << QStringLiteral("true") << QStringLiteral("bool") << QVariant::fromValue(true);
     QTest::newRow("bool-false") << QStringLiteral("false") << QStringLiteral("bool") << QVariant::fromValue(false);
     QTest::newRow("string") << QStringLiteral("foo") << QStringLiteral("string") << QVariant::fromValue(QStringLiteral("foo"));
-#if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
     QTest::newRow("file") << QStringLiteral("/foo") << QStringLiteral("file") << QVariant::fromValue(FilePath { QUrl::fromLocalFile(QStringLiteral("/foo")) });
-#endif
     QTest::newRow("object") << QStringLiteral("1") << QStringLiteral("object") << QVariant::fromValue(ObjectRef { 1 });
 
     // todo: test enums and classes, and also add a test for toExportValue

@@ -46,7 +46,7 @@ WindowsInstallerPackage {
             }
         }
 
-        if (Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 7)
+        if (Qt.core.versionMinor >= 7)
             defs.push("WindowsStylePlugin=qmodernwindowsstyle.dll")
         else
             defs.push("WindowsStylePlugin=qwindowsvistastyle.dll")
@@ -62,18 +62,6 @@ WindowsInstallerPackage {
         var imageFormatsPath = FileInfo.joinPaths(Qt.core.pluginPath, "imageformats")
         if (File.exists(FileInfo.joinPaths(imageFormatsPath, "qaseprite.dll")))
             defs.push("AsepriteImageFormatPlugin=qaseprite.dll");
-
-        // Since Qt 6.2 we rely on the schannel backend.
-        if (Qt.core.versionMajor < 6 || Qt.core.versionMinor < 2) {
-            if (project.openSslPath) {
-                defs.push("OpenSsl111Dir=" + project.openSslPath);
-            } else {
-                var bits = (qbs.architecture === "x86_64") ? "64" : "32;"
-                var openSslDir = "C:\\OpenSSL-v111-Win" + bits
-                if (File.exists(openSslDir))
-                    defs.push("OpenSsl111Dir=" + openSslDir);
-            }
-        }
 
         return defs;
     }

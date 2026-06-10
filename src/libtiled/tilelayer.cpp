@@ -155,11 +155,10 @@ static QMargins computeDrawMargins(const QSet<SharedTileset> &tilesets)
                                                          tileSize.height()));
         }
 
-        offsetMargins = maxMargins(QMargins(-offset.x(),
-                                            -offset.y(),
-                                            offset.x(),
-                                            offset.y()),
-                                   offsetMargins);
+        offsetMargins = QMargins(-offset.x(),
+                                 -offset.y(),
+                                 offset.x(),
+                                 offset.y()) | offsetMargins;
     }
 
     // Adding maxTileSize to top-right of the margins assumes a bottom-left tile

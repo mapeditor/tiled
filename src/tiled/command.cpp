@@ -300,13 +300,7 @@ CommandProcess::CommandProcess(const Command &command, bool inTerminal, bool sho
     if (!finalWorkingDirectory.trimmed().isEmpty())
         setWorkingDirectory(finalWorkingDirectory);
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QStringList args = QProcess::splitCommand(mFinalCommand);
-    const QString executable = args.takeFirst();
-    start(executable, args);
-#else
     startCommand(mFinalCommand);
-#endif
 }
 
 void CommandProcess::consoleOutput()

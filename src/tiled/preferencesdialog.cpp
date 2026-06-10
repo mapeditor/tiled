@@ -95,6 +95,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             preferences, &Preferences::setExportOnSave);
     connect(mUi->naturalSorting, &QCheckBox::toggled,
             preferences, &Preferences::setNaturalSorting);
+    connect(mUi->repeatShortcutForPreviousTool, &QCheckBox::toggled,
+            preferences, &Preferences::setRepeatShortcutForPreviousTool);
 
     connect(mUi->embedTilesets, &QCheckBox::toggled, preferences, [preferences] (bool value) {
         preferences->setExportOption(Preferences::EmbedTilesets, value);

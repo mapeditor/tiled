@@ -100,11 +100,10 @@ void Map::adjustBoundingRectForOffsetsAndImageLayers(QRect &boundingRect) const
             // rect. More precise would be to take into account their
             // contents.
             const QPointF offset = layer->totalOffset();
-            offsetMargins = maxMargins(QMargins(qCeil(-offset.x()),
-                                                qCeil(-offset.y()),
-                                                qCeil(offset.x()),
-                                                qCeil(offset.y())),
-                                       offsetMargins);
+            offsetMargins = QMargins(qCeil(-offset.x()),
+                                     qCeil(-offset.y()),
+                                     qCeil(offset.x()),
+                                     qCeil(offset.y())) | offsetMargins;
             break;
         }
         case Layer::ImageLayerType: {
@@ -151,11 +150,10 @@ void Map::recomputeDrawMargins() const
                                                      tileSize.height()));
 
         const QPoint offset = tileset->tileOffset();
-        offsetMargins = maxMargins(QMargins(-offset.x(),
-                                            -offset.y(),
-                                            offset.x(),
-                                            offset.y()),
-                                   offsetMargins);
+        offsetMargins = QMargins(-offset.x(),
+                                 -offset.y(),
+                                 offset.x(),
+                                 offset.y()) | offsetMargins;
     }
 
     // We subtract the tile size of the map, since that part does not

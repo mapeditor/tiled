@@ -127,6 +127,33 @@ bool SetMapRectCommand::mergeWith(const QUndoCommand *other)
 }
 
 
+SetWorldGridCommand::SetWorldGridCommand(WorldDocument *worldDocument, QSize gridSize)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Change World Grid"))
+    , mWorldDocument(worldDocument)
+    , mSize(gridSize)
+    , mPreviousSize(worldDocument->world()->gridSize)
+{
+}
+
+void SetWorldGridCommand::setGridSize(QSize size)
+{
+    auto world = mWorldDocument->world();
+    world->setGridSize(size);
+    emit mWorldDocument->worldChanged();
+}
+
+bool SetWorldGridCommand::mergeWith(const QUndoCommand *other)
+{
+    auto o = static_cast<const SetWorldGridCommand *>(other);
+    if (mWorldDocument != o->mWorldDocument)
+        return false;
+
+    mSize = o->mSize;
+    setObsolete(childCount() == 0 && mSize == mPreviousSize);
+    return true;
+}
+
+
 SetMapPosInLoadedWorld::SetMapPosInLoadedWorld(const QString &worldFileName,
                                                const QString &mapName,
                                                const QPoint &from,

@@ -21,9 +21,14 @@
 #include "worldpropertiesdialog.h"
 #include "ui_worldpropertiesdialog.h"
 
+#include "changeworld.h"
 #include "propertiesview.h"
+#include "world.h"
 
 #include "utils.h"
+
+#include <QFormLayout>
+#include <QGroupBox>
 
 namespace Tiled {
 
@@ -34,6 +39,41 @@ WorldPropertiesDialog::WorldPropertiesDialog(WorldDocumentPtr world, QWidget *pa
 {
     ui->setupUi(this);
 
+    const auto setGridSize = [=](int width, int height) {
+        const QSize gridSize(width, height);
+        if (gridSize == mWorldDocument->world()->gridSize)
+            return;
+        auto *undoStack = mWorldDocument->undoStack();
+        undoStack->push(new SetWorldGridCommand(mWorldDocument.get(), gridSize));
+    };
+
+    mGridWidthProperty = new IntProperty(
+                tr("Width"),
+                [=] {
+                    return mWorldDocument->world()->gridSize.width();
+                },
+                [=](const int &value) {
+                    setGridSize(value, mWorldDocument->world()->gridSize.height());
+                });
+    mGridWidthProperty->setSuffix(tr(" px"));
+
+    mGridHeightProperty = new IntProperty(
+                tr("Height"),
+                [=] {
+                    return mWorldDocument->world()->gridSize.height();
+                },
+                [=](const int &value) {
+                    setGridSize(mWorldDocument->world()->gridSize.width(), value);
+                });
+    mGridHeightProperty->setSuffix(tr(" px"));
+
+    auto gridGroup = new QGroupBox(tr("World Grid"));
+    auto gridLayout = new QFormLayout(gridGroup);
+    gridLayout->addRow(mGridWidthProperty->name(), mGridWidthProperty->createEditor(gridGroup));
+    gridLayout->addRow(mGridHeightProperty->name(), mGridHeightProperty->createEditor(gridGroup));
+
+    ui->dialogLayout->insertWidget(0, gridGroup);
+
     // Don't display the "Custom Properties" header
     ui->propertiesWidget->customPropertiesGroup()->setName(QString());
 
@@ -42,6 +82,13 @@ WorldPropertiesDialog::WorldPropertiesDialog(WorldDocumentPtr world, QWidget *pa
     ui->propertiesWidget->propertiesView()->widget()->setContentsMargins(0, halfSpacing, 0, halfSpacing);
 
     ui->propertiesWidget->setDocument(mWorldDocument.get());
+
+    // Keep the editors in sync if the world is changed elsewhere (e.g. undo).
+    connect(mWorldDocument.get(), &WorldDocument::worldChanged,
+            mGridWidthProperty, &Property::valueChanged);
+    connect(mWorldDocument.get(), &WorldDocument::worldChanged,
+            mGridHeightProperty, &Property::valueChanged);
+
     setWindowTitle(tr("%1 - World Properties").arg(world->displayName()));
 }
 

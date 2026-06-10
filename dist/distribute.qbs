@@ -70,17 +70,12 @@ Product {
                     "Qt" + major + "Core" + postfix,
                     "Qt" + major + "Gui" + postfix,
                     "Qt" + major + "Network" + postfix,
+                    "Qt" + major + "OpenGL" + postfix,
+                    "Qt" + major + "OpenGLWidgets" + postfix,
                     "Qt" + major + "Qml" + postfix,
                     "Qt" + major + "Svg" + postfix,
                     "Qt" + major + "Widgets" + postfix
                 );
-
-                if (major >= 6) {
-                    list.push(
-                        "Qt" + major + "OpenGL" + postfix,
-                        "Qt" + major + "OpenGLWidgets" + postfix
-                    );
-                }
             }
 
             if (qbs.targetOS.contains("linux")) {
@@ -185,7 +180,6 @@ Product {
 
     Group {
         name: "Qt TLS Plugins"
-        condition: Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 2;
         prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/tls/")
         files: {
             if (qbs.targetOS.contains("windows")) {
@@ -304,34 +298,6 @@ Product {
                           "MSVCR120.DLL")
             }
             return list
-        }
-        qbs.install: true
-        qbs.installDir: ""
-    }
-
-    Group {
-        name: "OpenSSL DLLs"
-        condition: {
-            return qbs.targetOS.contains("windows") &&
-                    !(Qt.core.versionMajor >= 6 && Qt.core.versionMinor >= 2) &&
-                    File.exists(prefix)
-        }
-
-        prefix: {
-            if (project.openSslPath) {
-                return project.openSslPath + "/";
-            } else {
-                if (qbs.architecture === "x86_64")
-                    return "C:/OpenSSL-v111-Win64/"
-                else
-                    return "C:/OpenSSL-v111-Win32/"
-            }
-        }
-        files: {
-            if (qbs.architecture === "x86_64")
-                return [ "libcrypto-1_1-x64.dll", "libssl-1_1-x64.dll" ]
-            else
-                return [ "libcrypto-1_1.dll", "libssl-1_1.dll" ]
         }
         qbs.install: true
         qbs.installDir: ""

@@ -62,21 +62,10 @@ struct TintedKey
     }
 };
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-uint qHash(const TintedKey &key, uint seed) Q_DECL_NOTHROW
-{
-    auto h = ::qHash(key.pixmapKey, seed);
-    h = ::qHash(key.rect.topLeft(), h);
-    h = ::qHash(key.rect.bottomRight(), h);
-    h = ::qHash(key.color.rgba(), h);
-    return h;
-}
-#else
 size_t qHash(const TintedKey &key, size_t seed) Q_DECL_NOTHROW
 {
     return qHashMulti(seed, key.pixmapKey, key.rect, key.color.rgba());
 }
-#endif
 
 // Borrowed from qpixmapcache.cpp
 static inline qsizetype cost(const QPixmap &pixmap)

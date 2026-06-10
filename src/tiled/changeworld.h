@@ -24,6 +24,7 @@
 #include "undocommands.h"
 
 #include <QRect>
+#include <QSize>
 #include <QUndoCommand>
 
 namespace Tiled {
@@ -87,6 +88,25 @@ private:
     QString mMapName;
     QRect mRect;
     QRect mPreviousRect;
+};
+
+class SetWorldGridCommand : public QUndoCommand
+{
+public:
+    SetWorldGridCommand(WorldDocument *worldDocument, QSize gridSize);
+
+    void undo() override { setGridSize(mPreviousSize); }
+    void redo() override { setGridSize(mSize); }
+
+    int id() const override { return Cmd_SetWorldGrid; }
+    bool mergeWith(const QUndoCommand *other) override;
+
+private:
+    void setGridSize(QSize size);
+
+    WorldDocument *mWorldDocument;
+    QSize mSize;
+    QSize mPreviousSize;
 };
 
 /**

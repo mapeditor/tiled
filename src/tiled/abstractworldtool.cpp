@@ -28,6 +28,7 @@
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "mapview.h"
+#include "preferences.h"
 #include "selectionrectangle.h"
 #include "world.h"
 #include "worlddocument.h"
@@ -350,10 +351,25 @@ void AbstractWorldTool::populateToolBar(QToolBar *toolBar)
     });
 }
 
+QSize AbstractWorldTool::snapSize(MapDocument *document) const
+{
+    // Snap to the world grid when set and enabled, otherwise the tile size
+    if (Preferences::instance()->snapToWorldGrid()) {
+        if (auto worldDocument = worldForMap(document)) {
+            const QSize gridSize = worldDocument->world()->gridSize;
+            if (!gridSize.isEmpty())
+                return gridSize;
+        }
+    }
+
+    return document->map()->tileSize();
+}
+
 QPoint AbstractWorldTool::snapPoint(QPoint point, MapDocument *document) const
 {
-    point.setX(point.x() - point.x() % document->map()->tileWidth());
-    point.setY(point.y() - point.y() % document->map()->tileHeight());
+    const QSize size = snapSize(document);
+    point.setX(qRound(qreal(point.x()) / size.width()) * size.width());
+    point.setY(qRound(qreal(point.y()) / size.height()) * size.height());
     return point;
 }
 
