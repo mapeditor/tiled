@@ -22,9 +22,9 @@ Rectangle {
         property alias mapY: mapContainer.y
     }
 
+    // TODO: Remove mapLoader from mapview.qml
     Tiled.MapLoader {
         id: mapLoader
-        objectName: "mapLoader"
     }
 
     Item {
@@ -52,6 +52,7 @@ Rectangle {
 
             Tiled.MapItem {
                 id: mapItem
+                objectName: "mapItem"
                 map: mapLoader.map
                 visibleArea: {
                     var scale = mapContainer.scale

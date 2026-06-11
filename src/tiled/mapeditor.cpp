@@ -373,12 +373,12 @@ void MapEditor::addDocument(Document *document)
 
     if (rootObject)
     {
-        QObject *mapLoader = rootObject->findChild<QObject*>("mapLoader");
+        QObject *mapItem = rootObject->findChild<QObject*>("mapItem");
 
-        // Replace this with mapDocument->editable() pointer instead of loading the mapDocument->fileName()
-        if (mapLoader) {
-            QString sourceFile = QStringLiteral("file:///") + mapDocument->fileName();
-            mapLoader->setProperty("source", sourceFile);
+        if (mapItem)
+        {
+            EditableMap *editableMap = new EditableMap(mapDocument->map());
+            mapItem->setProperty("map", QVariant::fromValue(editableMap));
         }
     }
 
