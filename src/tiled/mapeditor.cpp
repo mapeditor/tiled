@@ -366,7 +366,7 @@ void MapEditor::addDocument(Document *document)
 #endif
     engine->addImportPath(qmlPluginPath);
 
-    quickWidget->setSource(QUrl(QStringLiteral("qrc:/mapview.qml")));
+    quickWidget->setSource(QUrl(QStringLiteral("qrc:/qml/mapview.qml")));
     quickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
 
     QQuickItem *rootObject = quickWidget->rootObject();

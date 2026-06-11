@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>mapview.qml</file>
-        <file>DragArea.qml</file>
-    </qresource>
-</RCC>
