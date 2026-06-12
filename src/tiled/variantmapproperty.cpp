@@ -335,6 +335,9 @@ bool VariantMapProperty::createOrUpdateProperty(int index,
                 addMember(name, mSuggestions.value(name));
             });
 
+            if (auto groupProperty = qobject_cast<GroupProperty*>(property))
+                setupExpandedState(groupProperty, { name });
+
             insertProperty(index, property);
             mPropertyMap.insert(name, property);
         } else {
@@ -441,6 +444,26 @@ void VariantMapProperty::propertyTypesChanged()
         return;
 
     setValue(mValue, mSuggestions);
+}
+
+void VariantMapProperty::setupExpandedState(GroupProperty *group, const QStringList &path)
+{
+    group->setExpanded(mExpandedProperties.contains(path));
+
+    connect(group, &GroupProperty::expandedChanged, this, [this, path](bool expanded) {
+        if (expanded)
+            mExpandedProperties.insert(path);
+        else
+            mExpandedProperties.remove(path);
+    });
+
+    for (auto subProperty : group->subProperties()) {
+        if (auto subGroup = qobject_cast<GroupProperty*>(subProperty)) {
+            QStringList subPath = path;
+            subPath.append(subGroup->name());
+            setupExpandedState(subGroup, subPath);
+        }
+    }
 }
 
 void VariantMapProperty::emitMemberValueChanged(const PropertyPath &path, const QVariant &value)
