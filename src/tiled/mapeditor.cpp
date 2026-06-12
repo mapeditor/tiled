@@ -85,6 +85,7 @@
 #include <QLabel>
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QQmlContext>
 #include <QQmlEngine>
 #include <QQuickWidget>
 #include <QQuickItem>
@@ -366,21 +367,11 @@ void MapEditor::addDocument(Document *document)
 #endif
     engine->addImportPath(qmlPluginPath);
 
+    EditableMap *editableMap = qobject_cast<Tiled::EditableMap*>(mapDocument->editable());
+
+    engine->rootContext()->setContextProperty(QStringLiteral("mapItemMap"), editableMap);
     quickWidget->setSource(QUrl(QStringLiteral("qrc:/qml/mapview.qml")));
     quickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
-
-    QQuickItem *rootObject = quickWidget->rootObject();
-
-    if (rootObject)
-    {
-        QObject *mapItem = rootObject->findChild<QObject*>("mapItem");
-
-        if (mapItem)
-        {
-            EditableMap *editableMap = new EditableMap(mapDocument->map());
-            mapItem->setProperty("map", QVariant::fromValue(editableMap));
-        }
-    }
 
     if (quickWidget->status() == QQuickWidget::Error) {
         for (const QQmlError &error : quickWidget->errors()) {

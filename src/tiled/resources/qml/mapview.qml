@@ -14,17 +14,11 @@ Rectangle {
     Settings {
         id: settings
         property string mapsFolder
-        property alias mapSource: mapLoader.source
 
         // TODO: Eventually should be remembered for each map
         property alias mapScale: mapContainer.scale
         property alias mapX: mapContainer.x
         property alias mapY: mapContainer.y
-    }
-
-    // TODO: Remove mapLoader from mapview.qml
-    Tiled.MapLoader {
-        id: mapLoader
     }
 
     Item {
@@ -52,8 +46,8 @@ Rectangle {
 
             Tiled.MapItem {
                 id: mapItem
-                objectName: "mapItem"
-                map: mapLoader.map
+                map: mapItemMap;
+
                 visibleArea: {
                     var scale = mapContainer.scale
                     Qt.rect(-mapContainer.x / scale,
@@ -61,6 +55,11 @@ Rectangle {
                             mapView.width / scale,
                             mapView.height / scale);
                 }
+
+                // TODO: Remove if not needed later.
+                // Component.onCompleted: {
+                //     mapItem.map = mapItemMap
+                // }
             }
 
             Tiled.MapBorderItem {
@@ -74,7 +73,7 @@ Rectangle {
                 id: mapGriditem
                 anchors.fill: mapItem
 
-                tileSize: Qt.point(mapLoader.map.tileWidth, mapLoader.map.tileHeight);
+                tileSize: Qt.point(mapItem.map.tileWidth, mapItem.map.tileHeight);
                 scale: mapContainer.scale;
 
                 color: "black"
@@ -129,15 +128,9 @@ Rectangle {
 
         Label {
             text: {
-                if (mapLoader.status === Tiled.MapLoader.Null) {
-                    qsTr("No map file loaded")
-                } else if (mapLoader.status === Tiled.MapLoader.Error) {
-                    mapLoader.error
-                } else {
-                    var mapRelativeCoords = singleFingerPanArea.mapToItem(mapItem, singleFingerPanArea.mouseX, singleFingerPanArea.mouseY)
-                    var tileCoords = mapItem.screenToTileCoords(mapRelativeCoords.x, mapRelativeCoords.y)
-                    Math.floor(tileCoords.x) + ", " + Math.floor(tileCoords.y)
-                }
+                var mapRelativeCoords = singleFingerPanArea.mapToItem(mapItem, singleFingerPanArea.mouseX, singleFingerPanArea.mouseY)
+                var tileCoords = mapItem.screenToTileCoords(mapRelativeCoords.x, mapRelativeCoords.y)
+                Math.floor(tileCoords.x) + ", " + Math.floor(tileCoords.y)
             }
         }
     }
