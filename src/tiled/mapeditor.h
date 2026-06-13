@@ -27,6 +27,7 @@
 #include "clipboardmanager.h"
 #include "editor.h"
 #include "tileset.h"
+#include "viewinterface.h"
 
 #include <memory>
 
@@ -183,8 +184,7 @@ private:
 
     LayerDock *mLayerDock;
     QStackedWidget *mWidgetStack;
-    QHash<MapDocument*, MapView*> mWidgetForMap;
-    QHash<MapDocument*, QQuickWidget*> mQuickWidgetForMap;
+    QHash<MapDocument*, ViewInterface*> mViewForMap;
     MapDocument *mCurrentMapDocument;
 
     PropertiesDock *mPropertiesDock;
@@ -223,7 +223,7 @@ private:
 
 inline MapView *MapEditor::viewForDocument(MapDocument *mapDocument) const
 {
-    return mWidgetForMap.value(mapDocument);
+    return mViewForMap.value(mapDocument)->mapView();
 }
 
 inline MapView *MapEditor::currentMapView() const

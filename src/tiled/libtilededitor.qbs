@@ -556,6 +556,8 @@ DynamicLibrary {
         "utils.h",
         "variantmapproperty.cpp",
         "variantmapproperty.h",
+        "viewinterface.cpp",
+        "viewinterface.h",
         "wangbrush.cpp",
         "wangbrush.h",
         "wangcolormodel.cpp",
