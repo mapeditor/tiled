@@ -373,6 +373,7 @@ void MapEditor::addDocument(Document *document)
     EditableMap *editableMap = qobject_cast<Tiled::EditableMap*>(mapDocument->editable());
 
     engine->rootContext()->setContextProperty(QStringLiteral("mapItemMap"), editableMap);
+    engine->rootContext()->setContextProperty(QStringLiteral("toolBrushMap"), nullptr);
     quickWidget->setSource(QUrl(QStringLiteral("qrc:/qml/mapview.qml")));
     quickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
 #endif
@@ -825,6 +826,16 @@ void MapEditor::setStamp(const TileStamp &stamp)
 
     mTilesetDock->selectTilesInStamp(stamp);
 
+#ifdef TILEDQUICK_LIB
+    if (Preferences::instance()->useNewHardwareRenderer())
+    {
+        QQuickWidget* activeWidget = mViewForMap.value(mCurrentMapDocument)->quickWidget();
+        QQmlContext* rootContext = activeWidget->engine()->rootContext();
+
+        rootContext->setContextProperty(QStringLiteral("toolBrushMap"), currentBrush());
+    }
+#endif
+
     emit currentBrushChanged();
 }
 
@@ -1106,7 +1117,10 @@ EditableMap *MapEditor::currentBrush() const
 
     auto map = stamp.variations().first().map->clone();
     auto editableMap = new EditableMap(std::move(map));
-    QQmlEngine::setObjectOwnership(editableMap, QQmlEngine::JavaScriptOwnership);
+
+    // Disable JavaScriptOwnership for QtQuick rendering
+    if (!Preferences::instance()->useNewHardwareRenderer())
+        QQmlEngine::setObjectOwnership(editableMap, QQmlEngine::JavaScriptOwnership);
     return editableMap;
 }
 

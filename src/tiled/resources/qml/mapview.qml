@@ -55,13 +55,35 @@ Rectangle {
             }
 
             Tiled.MapGridItem {
-                id: mapGriditem
+                id: mapGridItem
                 anchors.fill: mapItem
 
                 tileSize: Qt.point(mapItem.map.tileWidth, mapItem.map.tileHeight);
                 scale: mapContainer.scale;
 
                 color: "black"
+            }
+
+            Tiled.MapItem { // Tool Brush
+                id: toolBrush
+                anchors.left: mapItem.left
+                anchors.top: mapItem.top
+                anchors.leftMargin: (Math.floor(cursorTileCoords().x) - Math.floor(this.map ? this.map.width/2 : 0)) * mapGridItem.tileSize.x
+                anchors.topMargin: (Math.floor(cursorTileCoords().y) - Math.floor(this.map ? this.map.height/2 : 0)) * mapGridItem.tileSize.y
+
+                map: toolBrushMap;
+
+                visibleArea: {
+                    var scale = mapContainer.scale
+                    // Qt.rect(-mapContainer.x / scale,
+                    //         -mapContainer.y / scale,
+                    //         mapView.width / scale,
+                    //         mapView.height / scale);
+                    Qt.rect(0,
+                            0,
+                            this.map.width * this.map.tileWidth,
+                            this.map.height * this.map.tileHeight);
+                }
             }
         }
     }
@@ -129,5 +151,12 @@ Rectangle {
             mapContainer.x = (mapView.width / 2) - ((mapItem.width * scale) / 2)
             mapContainer.y = (mapView.height / 2) - ((mapItem.height * scale) / 2)
         }
+    }
+
+    function cursorTileCoords() {
+        var mapRelativeCoords = singleFingerPanArea.mapToItem(mapItem, singleFingerPanArea.mouseX, singleFingerPanArea.mouseY);
+        var tileCoords = mapItem.screenToTileCoords(mapRelativeCoords.x, mapRelativeCoords.y);
+
+        return tileCoords;
     }
 }
