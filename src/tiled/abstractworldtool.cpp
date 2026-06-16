@@ -30,21 +30,52 @@
 #include "mapview.h"
 #include "preferences.h"
 #include "selectionrectangle.h"
+#include "utils.h"
 #include "world.h"
 #include "worlddocument.h"
 #include "worldmanager.h"
 
 #include <QAction>
 #include <QFileDialog>
+#include <QGraphicsItem>
 #include <QKeyEvent>
 #include <QMenu>
 #include <QMessageBox>
+#include <QPainter>
 #include <QToolBar>
 #include <QToolButton>
 #include <QUndoStack>
 #include <QtMath>
 
 namespace Tiled {
+
+namespace {
+
+// A small square handle shown on a map's corners and edges for resizing
+class MapResizeHandle : public QGraphicsItem
+{
+public:
+    MapResizeHandle()
+    {
+        setAcceptedMouseButtons(Qt::MouseButtons());
+        setFlag(QGraphicsItem::ItemIgnoresTransformations);
+        setZValue(10000);
+    }
+
+    QRectF boundingRect() const override
+    {
+        return Utils::dpiScaled(QRectF(-5, -5, 10, 10));
+    }
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override
+    {
+        painter->setPen(QPen(Qt::black, 1));
+        painter->setBrush(Qt::white);
+        painter->drawRect(Utils::dpiScaled(QRectF(-4, -4, 8, 8)));
+    }
+};
+
+} // namespace
 
 AbstractWorldTool::AbstractWorldTool(Id id,
                                      const QString &name,
@@ -55,6 +86,11 @@ AbstractWorldTool::AbstractWorldTool(Id id,
     , mSelectionRectangle(new SelectionRectangle)
 {
     mSelectionRectangle->setVisible(false);
+
+    for (auto &handle : mResizeHandles){
+        handle = std::make_unique<MapResizeHandle>();
+        handle->setVisible(false);
+    }
 
     WorldManager &worldManager = WorldManager::instance();
     connect(&worldManager, &WorldManager::worldsChanged, this, &AbstractWorldTool::updateEnabledState);
@@ -87,6 +123,8 @@ AbstractWorldTool::~AbstractWorldTool() = default;
 void AbstractWorldTool::activate(MapScene *scene)
 {
     scene->addItem(mSelectionRectangle.get());
+    for (auto &handle : mResizeHandles)
+        scene->addItem(handle.get());
     connect(scene, &MapScene::sceneRefreshed, this, &AbstractWorldTool::updateSelectionRectangle);
     AbstractTool::activate(scene);
 }
@@ -94,6 +132,8 @@ void AbstractWorldTool::activate(MapScene *scene)
 void AbstractWorldTool::deactivate(MapScene *scene)
 {
     scene->removeItem(mSelectionRectangle.get());
+    for (auto &handle : mResizeHandles)
+        scene->removeItem(handle.get());
     disconnect(scene, &MapScene::sceneRefreshed, this, &AbstractWorldTool::updateSelectionRectangle);
     AbstractTool::deactivate(scene);
 }
@@ -382,11 +422,25 @@ void AbstractWorldTool::setTargetMap(MapDocument *mapDocument)
 void AbstractWorldTool::updateSelectionRectangle()
 {
     if (mTargetMap) {
-        const auto rect = mapRect(mTargetMap);
+        const QRect rect = mapRect(mTargetMap);
         mSelectionRectangle->setRectangle(rect);
         mSelectionRectangle->setVisible(true);
+
+        // Place the eight handles on the corners andedge midpoints
+        const QPoint center = rect.center();
+        const QPoint handlePos[] = {
+            rect.topLeft(),QPoint(center.x(),rect.top()),rect.topRight(),
+            QPoint(rect.left(),center.y()),QPoint(rect.right(),center.y()),
+            rect.bottomLeft(),QPoint(center.x(),rect.bottom()),rect.bottomRight(),
+        };
+        for (int i = 0; i < 8; ++i) {
+            mResizeHandles[i]->setPos(handlePos[i]);
+            mResizeHandles[i]->setVisible(true);
+        }
     } else {
         mSelectionRectangle->setVisible(false);
+        for (auto &handle : mResizeHandles)
+            handle->setVisible(false);
     }
 }
 

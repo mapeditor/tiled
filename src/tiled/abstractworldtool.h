@@ -22,7 +22,11 @@
 
 #include "abstracttool.h"
 
+#include <array>
+#include <memory>
+
 class QAction;
+class QGraphicsItem;
 class QMenu;
 
 namespace Tiled {
@@ -103,6 +107,7 @@ private:
     QAction *mRemoveMapFromWorldAction;
 
     std::unique_ptr<SelectionRectangle> mSelectionRectangle;
+    std::array<std::unique_ptr<QGraphicsItem>, 8> mResizeHandles;
 };
 
 } // namespace Tiled
