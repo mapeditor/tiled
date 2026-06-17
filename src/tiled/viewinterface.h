@@ -1,6 +1,8 @@
 #pragma once
 
+#ifdef TILEDQUICK_LIB
 #include <QQuickWidget>
+#endif
 
 #include "mapview.h"
 
@@ -17,7 +19,10 @@ public:
     QWidget* getWidget() const;
 
     MapView* mapView() const;
+
+#ifdef TILEDQUICK_LIB
     QQuickWidget* quickWidget() const;
+#endif
 
 signals:
 
@@ -25,7 +30,9 @@ private:
     inline bool quickEnabled() const;
 
     std::unique_ptr<MapView> mMapView;
+#ifdef TILEDQUICK_LIB
     std::unique_ptr<QQuickWidget> mQuickWidget;
+#endif
 };
 
 } // namespace Tiled

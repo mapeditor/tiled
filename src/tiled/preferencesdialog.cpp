@@ -51,6 +51,12 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
     mUi->openGL->setEnabled(true);
 #endif
 
+#if defined(TILEDQUICK_LIB)
+    mUi->newHardwareRenderer->setEnabled(true);
+#else
+    mUi->newHardwareRenderer->setEnabled(false);
+#endif
+
     for (const QString &name : std::as_const(mLanguages)) {
         QLocale locale(name);
         QString string = QStringLiteral("%1 (%2)")

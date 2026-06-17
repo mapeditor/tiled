@@ -77,7 +77,6 @@
 #include "zoomable.h"
 #include "worldmanager.h"
 #include "worldmovemaptool.h"
-
 #include <QComboBox>
 #include <QDialogButtonBox>
 #include <QHBoxLayout>
@@ -87,7 +86,9 @@
 #include <QMessageBox>
 #include <QQmlContext>
 #include <QQmlEngine>
-#include <QQuickWidget>
+// #ifdef TILEDQUICK_LIB
+// #include <QQuickWidget>
+// #endif
 #include <QQuickItem>
 #include <QShortcut>
 #include <QStackedWidget>
@@ -356,6 +357,7 @@ void MapEditor::addDocument(Document *document)
     scene->setMapDocument(mapDocument);
     view->setScene(scene);
 
+#ifdef TILEDQUICK_LIB
     QQuickWidget *quickWidget = viewInterface->quickWidget();
     QQmlEngine *engine = quickWidget->engine();
 
@@ -378,6 +380,7 @@ void MapEditor::addDocument(Document *document)
             qDebug() << "QML Error:" << error.toString();
         }
     }
+#endif
 
     mViewForMap.insert(mapDocument, viewInterface);
 
@@ -1052,6 +1055,7 @@ void MapEditor::setUseOpenGL(bool useOpenGL)
 
 void MapEditor::setUseNewHardwareRenderer(bool useNewHardwareRenderer)
 {
+#ifdef TILEDQUICK_LIB
     for (ViewInterface* viewInterface : std::as_const(mViewForMap))
     {
         mWidgetStack->addWidget(viewInterface->getWidget());
@@ -1063,6 +1067,7 @@ void MapEditor::setUseNewHardwareRenderer(bool useNewHardwareRenderer)
     }
 
     mWidgetStack->setCurrentWidget(mViewForMap.value(mCurrentMapDocument)->getWidget());
+#endif
 }
 
 void MapEditor::retranslateUi()
