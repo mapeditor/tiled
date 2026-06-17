@@ -87,7 +87,7 @@ AbstractWorldTool::AbstractWorldTool(Id id,
 {
     mSelectionRectangle->setVisible(false);
 
-    for (auto &handle : mResizeHandles){
+    for (auto &handle : mResizeHandles) {
         handle = std::make_unique<MapResizeHandle>();
         handle->setVisible(false);
     }
@@ -426,12 +426,12 @@ void AbstractWorldTool::updateSelectionRectangle()
         mSelectionRectangle->setRectangle(rect);
         mSelectionRectangle->setVisible(true);
 
-        // Place the eight handles on the corners andedge midpoints
+        // Place the eight handles on the corners and edge midpoints
         const QPoint center = rect.center();
-        const QPoint handlePos[] = {
-            rect.topLeft(),QPoint(center.x(),rect.top()),rect.topRight(),
-            QPoint(rect.left(),center.y()),QPoint(rect.right(),center.y()),
-            rect.bottomLeft(),QPoint(center.x(),rect.bottom()),rect.bottomRight(),
+        const QPoint handlePos[HandleCount] = {
+            rect.topLeft(),    QPoint(center.x(), rect.top()),    rect.topRight(),
+            QPoint(rect.left(), center.y()),                      QPoint(rect.right(), center.y()),
+            rect.bottomLeft(), QPoint(center.x(), rect.bottom()), rect.bottomRight(),
         };
         for (int i = 0; i < 8; ++i) {
             mResizeHandles[i]->setPos(handlePos[i]);
