@@ -107,7 +107,9 @@ private:
     QAction *mRemoveMapFromWorldAction;
 
     std::unique_ptr<SelectionRectangle> mSelectionRectangle;
-    std::array<std::unique_ptr<QGraphicsItem>, 8> mResizeHandles;
+
+    static constexpr int HandleCount = 8;
+    std::array<std::unique_ptr<QGraphicsItem>, HandleCount> mResizeHandles;
 };
 
 } // namespace Tiled
