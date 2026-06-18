@@ -11,16 +11,6 @@ Rectangle {
     anchors.fill: parent
     visible: true
 
-    Settings {
-        id: settings
-        property string mapsFolder
-
-        // TODO: Eventually should be remembered for each map
-        property alias mapScale: mapContainer.scale
-        property alias mapX: mapContainer.x
-        property alias mapY: mapContainer.y
-    }
-
     Item {
         id: mapView
 
@@ -55,11 +45,6 @@ Rectangle {
                             mapView.width / scale,
                             mapView.height / scale);
                 }
-
-                // TODO: Remove if not needed later.
-                // Component.onCompleted: {
-                //     mapItem.map = mapItemMap
-                // }
             }
 
             Tiled.MapBorderItem {
@@ -120,18 +105,6 @@ Rectangle {
             containerAnimation.y = mapContainer.y - (newY - oldY)
             containerAnimation.scale = targetScale
             containerAnimation.start()
-        }
-    }
-
-    RowLayout {
-        anchors.bottom: parent.bottom;
-
-        Label {
-            text: {
-                var mapRelativeCoords = singleFingerPanArea.mapToItem(mapItem, singleFingerPanArea.mouseX, singleFingerPanArea.mouseY)
-                var tileCoords = mapItem.screenToTileCoords(mapRelativeCoords.x, mapRelativeCoords.y)
-                Math.floor(tileCoords.x) + ", " + Math.floor(tileCoords.y)
-            }
         }
     }
 

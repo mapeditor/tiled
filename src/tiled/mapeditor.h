@@ -27,7 +27,7 @@
 #include "clipboardmanager.h"
 #include "editor.h"
 #include "tileset.h"
-#include "viewinterface.h"
+#include "mapviewinterface.h"
 
 #include <memory>
 
@@ -184,7 +184,7 @@ private:
 
     LayerDock *mLayerDock;
     QStackedWidget *mWidgetStack;
-    QHash<MapDocument*, ViewInterface*> mViewForMap;
+    QHash<MapDocument*, MapViewInterface*> mViewForMap;
     MapDocument *mCurrentMapDocument;
 
     PropertiesDock *mPropertiesDock;
