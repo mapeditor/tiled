@@ -10,6 +10,11 @@ TiledQtGuiApplication {
     consoleApplication: false
 
     Depends { name: "libtilededitor" }
+    Depends {
+        name: "tiledquickplugin"
+        condition: Qt.core.version !== undefined
+                   && Utilities.versionCompare(Qt.core.version, "6.5") >= 0
+    }
     Depends { name: "ib"; condition: qbs.targetOS.contains("macos") }
     Depends { name: "xcode"; condition: qbs.targetOS.contains("macos") }
     Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") }

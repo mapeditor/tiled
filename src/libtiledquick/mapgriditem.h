@@ -55,7 +55,7 @@ signals:
     void colorChanged();
 
 private:
-    QPointF mTileSize = {0,0};
+    QPointF mTileSize = {0, 0};
     qreal mScale = 0;
     QColor mColor = Qt::black;
 };

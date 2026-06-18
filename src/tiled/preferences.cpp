@@ -582,7 +582,11 @@ void Preferences::setUseOpenGL(bool useOpenGL)
 
 bool Preferences::useNewHardwareRenderer() const
 {
+#ifdef TILEDQUICK_LIB
     return get("Interface/newHardwareRenderer", false);
+#else
+    return false;
+#endif
 }
 
 void Preferences::setUseNewHardwareRenderer(bool useNewHardwareRenderer)

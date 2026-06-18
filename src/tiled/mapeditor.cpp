@@ -45,6 +45,7 @@
 #include "mapdocumentactionhandler.h"
 #include "mapscene.h"
 #include "mapview.h"
+#include "mapviewinterface.h"
 #include "minimapdock.h"
 #include "newtilesetdialog.h"
 #include "objectgroup.h"
@@ -85,8 +86,11 @@
 #include <QLabel>
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QQmlContext>
 #include <QQmlEngine>
+#ifdef TILEDQUICK_LIB
 #include <QQuickWidget>
+#endif
 #include <QShortcut>
 #include <QStackedWidget>
 #include <QToolBar>
@@ -343,7 +347,9 @@ void MapEditor::addDocument(Document *document)
         mapDocument->expandedObjectLayers = fromSettingsValue<QSet<int>>(fileState.value(QStringLiteral("expandedObjectLayers")));
     }
 
-    MapView *view = new MapView(mWidgetStack);
+    MapViewInterface *mapViewInterface = new MapViewInterface(mWidgetStack);
+
+    MapView *view = mapViewInterface->mapView();
     MapScene *scene = new MapScene(view); // scene is owned by the view
 
     auto prefs = Preferences::instance();
@@ -352,18 +358,28 @@ void MapEditor::addDocument(Document *document)
     scene->setMapDocument(mapDocument);
     view->setScene(scene);
 
-    mWidgetForMap.insert(mapDocument, view);
+#ifdef TILEDQUICK_LIB
+    QQuickWidget *quickWidget = mapViewInterface->quickWidget();
+    QQmlEngine *engine = quickWidget->engine();
 
-    QQuickWidget *quickWidget = new QQuickWidget(mWidgetStack);
-    quickWidget->setSource(QUrl(QStringLiteral("qrc:/test_renderer.qml")));
+    QString qmlPluginPath = QCoreApplication::applicationDirPath();
+#ifdef Q_OS_WIN
+    qmlPluginPath += QStringLiteral("/qml");
+#else
+    qmlPluginPath += QStringLiteral("/../qml");
+#endif
+    engine->addImportPath(qmlPluginPath);
+
+    EditableMap *editableMap = qobject_cast<Tiled::EditableMap*>(mapDocument->editable());
+
+    engine->rootContext()->setContextProperty(QStringLiteral("mapItemMap"), editableMap);
+    quickWidget->setSource(QUrl(QStringLiteral("qrc:/qml/mapview.qml")));
     quickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
+#endif
 
-    mQuickWidgetForMap.insert(mapDocument, quickWidget);
+    mViewForMap.insert(mapDocument, mapViewInterface);
 
-    if (!prefs->useNewHardwareRenderer())
-        mWidgetStack->addWidget(view);
-    else
-        mWidgetStack->addWidget(quickWidget);
+    mWidgetStack->addWidget(mapViewInterface->getWidget());
 
     restoreDocumentState(mapDocument);
 }
@@ -372,19 +388,16 @@ void MapEditor::removeDocument(Document *document)
 {
     MapDocument *mapDocument = qobject_cast<MapDocument*>(document);
     Q_ASSERT(mapDocument);
-    Q_ASSERT(mWidgetForMap.contains(mapDocument));
+    Q_ASSERT(mViewForMap.contains(mapDocument));
 
     if (mapDocument == mCurrentMapDocument)
         setCurrentDocument(nullptr);
 
-    MapView *mapView = mWidgetForMap.take(mapDocument);
-    // remove first, to keep it valid while the current widget changes
-    mWidgetStack->removeWidget(mapView);
-    delete mapView;
 
-    QQuickWidget *quickWidget = mQuickWidgetForMap.take(mapDocument);
-    mWidgetStack->removeWidget(quickWidget);
-    delete quickWidget;
+    MapViewInterface *mapViewInterface = mViewForMap.take(mapDocument);
+    // remove first, to keep it valid while the current widget changes
+    mWidgetStack->removeWidget(mapViewInterface->getWidget());
+    delete mapViewInterface;
 }
 
 void MapEditor::setCurrentDocument(Document *document)
@@ -404,20 +417,11 @@ void MapEditor::setCurrentDocument(Document *document)
 
     mCurrentMapDocument = mapDocument;
 
-    auto prefs = Preferences::instance();
+    MapViewInterface *mapViewInterface = mViewForMap.value(mapDocument);
+    if (mapViewInterface)
+        mWidgetStack->setCurrentWidget(mapViewInterface->getWidget());
 
-    MapView *mapView = nullptr;
-    QQuickWidget *quickWidget = nullptr;
-
-    if (!prefs->useNewHardwareRenderer()) {
-        mapView = mWidgetForMap.value(mapDocument);
-        if (mapView)
-            mWidgetStack->setCurrentWidget(mapView);
-    } else {
-        quickWidget = mQuickWidgetForMap.value(mapDocument);
-        if (quickWidget)
-            mWidgetStack->setCurrentWidget(quickWidget);
-    }
+    MapView *mapView = mapViewInterface->mapView();
 
     mLayerDock->setMapDocument(mapDocument);
 
@@ -619,6 +623,11 @@ void MapEditor::resetLayout()
     mTileStampsDock->setVisible(false);
 }
 
+MapView *MapEditor::viewForDocument(MapDocument *mapDocument) const
+{
+    return mViewForMap.value(mapDocument)->mapView();
+}
+
 Zoomable *MapEditor::zoomable() const
 {
     if (auto view = currentMapView())
@@ -628,7 +637,7 @@ Zoomable *MapEditor::zoomable() const
 
 void MapEditor::saveDocumentState(MapDocument *mapDocument) const
 {
-    MapView *mapView = mWidgetForMap.value(mapDocument);
+    MapView *mapView = mViewForMap.value(mapDocument)->mapView();
     if (!mapView)
         return;
 
@@ -652,7 +661,8 @@ void MapEditor::saveDocumentState(MapDocument *mapDocument) const
 
 void MapEditor::restoreDocumentState(MapDocument *mapDocument) const
 {
-    MapView *mapView = mWidgetForMap.value(mapDocument);
+    MapView *mapView = mViewForMap.value(mapDocument)->mapView();
+
     if (!mapView)
         return;
 
@@ -1023,8 +1033,8 @@ void MapEditor::setupQuickStamps()
 
 void MapEditor::setUseOpenGL(bool useOpenGL)
 {
-    for (MapView *mapView : std::as_const(mWidgetForMap))
-        mapView->setUseOpenGL(useOpenGL);
+    for (MapViewInterface *mapViewInterface : std::as_const(mViewForMap))
+        mapViewInterface->mapView()->setUseOpenGL(useOpenGL);
 
     if (useOpenGL)
         return;
@@ -1045,25 +1055,19 @@ void MapEditor::setUseOpenGL(bool useOpenGL)
 
 void MapEditor::setUseNewHardwareRenderer(bool useNewHardwareRenderer)
 {
-    // Replaces all widgets on the mWidgetStack with their default/tiledquick counterparts
-    if (useNewHardwareRenderer)
+#ifdef TILEDQUICK_LIB
+    for (MapViewInterface *mapViewInterface : std::as_const(mViewForMap))
     {
-        for (QQuickWidget* quickWidget : std::as_const(mQuickWidgetForMap))
-            mWidgetStack->addWidget(quickWidget);
+        mWidgetStack->addWidget(mapViewInterface->getWidget());
 
-        for (MapView* mapView : std::as_const(mWidgetForMap))
-            mWidgetStack->removeWidget(mapView);
-
-        mWidgetStack->setCurrentWidget(mQuickWidgetForMap.value(mCurrentMapDocument));
-    } else {
-        for (MapView* mapView : std::as_const(mWidgetForMap))
-            mWidgetStack->addWidget(mapView);
-
-        for (QQuickWidget* quickWidget : std::as_const(mQuickWidgetForMap))
-            mWidgetStack->removeWidget(quickWidget);
-
-        mWidgetStack->setCurrentWidget(mWidgetForMap.value(mCurrentMapDocument));
+        if (useNewHardwareRenderer)
+            mWidgetStack->removeWidget(mapViewInterface->mapView());
+        else
+            mWidgetStack->removeWidget(mapViewInterface->quickWidget());
     }
+
+    mWidgetStack->setCurrentWidget(mViewForMap.value(mCurrentMapDocument)->getWidget());
+#endif
 }
 
 void MapEditor::retranslateUi()
@@ -1074,14 +1078,14 @@ void MapEditor::retranslateUi()
 
 void MapEditor::showTileCollisionShapesChanged(bool enabled)
 {
-    for (MapView *mapView : std::as_const(mWidgetForMap))
-        mapView->mapScene()->setShowTileCollisionShapes(enabled);
+    for (MapViewInterface *mapViewInterface : std::as_const(mViewForMap))
+        mapViewInterface->mapView()->mapScene()->setShowTileCollisionShapes(enabled);
 }
 
 void MapEditor::parallaxEnabledChanged(bool enabled)
 {
-    for (MapView *mapView : std::as_const(mWidgetForMap))
-        mapView->mapScene()->setParallaxEnabled(enabled);
+    for (MapViewInterface *mapViewInterface : std::as_const(mViewForMap))
+        mapViewInterface->mapView()->mapScene()->setParallaxEnabled(enabled);
 }
 
 void MapEditor::setCurrentTileset(const SharedTileset &tileset)

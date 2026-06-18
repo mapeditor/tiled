@@ -50,6 +50,7 @@ class EditableWangSet;
 class LayerDock;
 class MapDocument;
 class MapView;
+class MapViewInterface;
 class MiniMapDock;
 class ObjectsDock;
 class PropertiesDock;
@@ -183,8 +184,7 @@ private:
 
     LayerDock *mLayerDock;
     QStackedWidget *mWidgetStack;
-    QHash<MapDocument*, MapView*> mWidgetForMap;
-    QHash<MapDocument*, QQuickWidget*> mQuickWidgetForMap;
+    QHash<MapDocument*, MapViewInterface*> mViewForMap;
     MapDocument *mCurrentMapDocument;
 
     PropertiesDock *mPropertiesDock;
@@ -220,11 +220,6 @@ private:
     TileStampManager *mTileStampManager;
 };
 
-
-inline MapView *MapEditor::viewForDocument(MapDocument *mapDocument) const
-{
-    return mWidgetForMap.value(mapDocument);
-}
 
 inline MapView *MapEditor::currentMapView() const
 {

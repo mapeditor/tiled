@@ -1,6 +1,7 @@
 import qbs.File
 import qbs.FileInfo
 import qbs.TextFile
+import qbs.Utilities
 
 DynamicLibrary {
     targetName: "tilededitor"
@@ -52,6 +53,9 @@ DynamicLibrary {
 
         if (project.sentry)
             defs.push("TILED_SENTRY");
+
+        if (Qt.core.version !== undefined && Utilities.versionCompare(Qt.core.version, "6.5") >= 0)
+            defs.push("TILEDQUICK_LIB");
 
         return defs;
     }
@@ -312,6 +316,8 @@ DynamicLibrary {
         "mapscene.h",
         "mapview.cpp",
         "mapview.h",
+        "mapviewinterface.cpp",
+        "mapviewinterface.h",
         "minimap.cpp",
         "minimapdock.cpp",
         "minimapdock.h",
