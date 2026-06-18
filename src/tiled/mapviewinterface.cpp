@@ -63,4 +63,4 @@ QQuickWidget *MapViewInterface::quickWidget() const
 }
 #endif
 
-}
+} // namespace Tiled
