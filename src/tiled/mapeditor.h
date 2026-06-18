@@ -27,7 +27,6 @@
 #include "clipboardmanager.h"
 #include "editor.h"
 #include "tileset.h"
-#include "mapviewinterface.h"
 
 #include <memory>
 
@@ -51,6 +50,7 @@ class EditableWangSet;
 class LayerDock;
 class MapDocument;
 class MapView;
+class MapViewInterface;
 class MiniMapDock;
 class ObjectsDock;
 class PropertiesDock;
@@ -220,11 +220,6 @@ private:
     TileStampManager *mTileStampManager;
 };
 
-
-inline MapView *MapEditor::viewForDocument(MapDocument *mapDocument) const
-{
-    return mViewForMap.value(mapDocument)->mapView();
-}
 
 inline MapView *MapEditor::currentMapView() const
 {

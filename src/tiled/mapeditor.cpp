@@ -45,6 +45,7 @@
 #include "mapdocumentactionhandler.h"
 #include "mapscene.h"
 #include "mapview.h"
+#include "mapviewinterface.h"
 #include "minimapdock.h"
 #include "newtilesetdialog.h"
 #include "objectgroup.h"
@@ -77,6 +78,7 @@
 #include "zoomable.h"
 #include "worldmanager.h"
 #include "worldmovemaptool.h"
+
 #include <QComboBox>
 #include <QDialogButtonBox>
 #include <QHBoxLayout>
@@ -86,10 +88,9 @@
 #include <QMessageBox>
 #include <QQmlContext>
 #include <QQmlEngine>
-// #ifdef TILEDQUICK_LIB
-// #include <QQuickWidget>
-// #endif
-#include <QQuickItem>
+#ifdef TILEDQUICK_LIB
+#include <QQuickWidget>
+#endif
 #include <QShortcut>
 #include <QStackedWidget>
 #include <QToolBar>
@@ -620,6 +621,11 @@ void MapEditor::resetLayout()
     mUndoDock->setVisible(false);
     mTemplatesDock->setVisible(false);
     mTileStampsDock->setVisible(false);
+}
+
+MapView *MapEditor::viewForDocument(MapDocument *mapDocument) const
+{
+    return mViewForMap.value(mapDocument)->mapView();
 }
 
 Zoomable *MapEditor::zoomable() const
