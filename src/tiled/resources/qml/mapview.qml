@@ -75,14 +75,13 @@ Rectangle {
 
                 visibleArea: {
                     var scale = mapContainer.scale
-                    // Qt.rect(-mapContainer.x / scale,
-                    //         -mapContainer.y / scale,
-                    //         mapView.width / scale,
-                    //         mapView.height / scale);
-                    Qt.rect(0,
-                            0,
-                            this.map.width * this.map.tileWidth,
-                            this.map.height * this.map.tileHeight);
+                    if (this.map)
+                        Qt.rect(0,
+                                0,
+                                this.map.width * this.map.tileWidth,
+                                this.map.height * this.map.tileHeight);
+                    else
+                        Qt.rect(0, 0, 0, 0);
                 }
             }
         }
