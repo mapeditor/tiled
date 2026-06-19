@@ -184,6 +184,7 @@ public:
     void setDisplayNews(bool on);
 
     bool wheelZoomsByDefault() const;
+    bool syncLayersInWorldTool() const;
 
     template <typename T>
     T get(const char *key, const T &defaultValue = T()) const
@@ -223,6 +224,7 @@ public slots:
     void setRestoreSessionOnStartup(bool enabled);
     void setPluginEnabled(const QString &fileName, bool enabled);
     void setWheelZoomsByDefault(bool mode);
+    void setSyncLayersInWorldTool(bool sync);
 
     void clearRecentFiles();
     void clearRecentProjects();
@@ -247,6 +249,7 @@ signals:
     void showTilesetGridChanged(bool showTilesetGrid);
     void objectLabelVisibilityChanged(ObjectLabelVisiblity);
     void labelForHoveredObjectChanged(bool enabled);
+    void syncLayersInWorldToolChanged(bool sync);
 
     void applicationStyleChanged(ApplicationStyle);
     void baseColorChanged(const QColor &baseColor);

@@ -216,9 +216,15 @@ void WorldMoveMapTool::mouseReleased(QGraphicsSceneMouseEvent *event)
             }
         } else {
             // switch to the document
-            manager->switchToDocumentAndHandleSimiliarTileset(draggedMap,
-                                                              sceneViewRect.center() - mDraggedMapStartPos,
-                                                              view->zoomable()->scale());
+            if (Preferences::instance()->syncLayersInWorldTool()) {
+                manager->switchToDocumentAndHandleSimiliarTileset(draggedMap,
+                                                                  sceneViewRect.center() - mDraggedMapStartPos,
+                                                                  view->zoomable()->scale());
+            } else { 
+                manager->switchToDocument(draggedMap,
+                                    sceneViewRect.center() - mDraggedMapStartPos,
+                                    view->zoomable()->scale());
+           }
         }
 
         refreshCursor();
