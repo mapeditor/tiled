@@ -42,6 +42,13 @@ void MapItem::setMap(Tiled::EditableMap *editableMap)
 
     mEditableMap = editableMap;
     mMap = editableMap ? editableMap->map() : nullptr;
+
+    if (editableMap)
+    {
+        Tiled::MapDocument *mapDocument = editableMap->mapDocument();
+        connect(mapDocument, &Tiled::MapDocument::regionChanged, this, &MapItem::repaintRegion);
+    }
+
     refresh();
     emit mapChanged();
 }
@@ -169,4 +176,10 @@ void MapItem::refresh()
 
     const QRect rect = mRenderer->mapBoundingRect();
     setImplicitSize(rect.width(), rect.height());
+}
+
+void MapItem::repaintRegion(const QRegion &region, Tiled::TileLayer *tileLayer)
+{
+    // TODO: update only the region edited
+    refresh();
 }

@@ -80,6 +80,8 @@ signals:
 private:
     void refresh();
 
+    void repaintRegion(const QRegion &region, Tiled::TileLayer *tileLayer);
+
     Tiled::Map *mMap;
     Tiled::EditableMap *mEditableMap;
     QRectF mVisibleArea;
