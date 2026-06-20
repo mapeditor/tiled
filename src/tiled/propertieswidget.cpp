@@ -3132,6 +3132,10 @@ bool PropertiesWidget::event(QEvent *event)
     case QEvent::LanguageChange:
         retranslateUi();
         break;
+    case QEvent::MouseButtonDblClick: {
+        mActionAddProperty->trigger();
+        break;
+    }
     default:
         break;
     }
