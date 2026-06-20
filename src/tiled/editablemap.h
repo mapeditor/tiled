@@ -40,11 +40,11 @@ class TILED_EDITOR_EXPORT EditableMap final : public EditableAsset
 {
     Q_OBJECT
 
-    Q_PROPERTY(int width READ width WRITE setWidth)
-    Q_PROPERTY(int height READ height WRITE setHeight)
-    Q_PROPERTY(QSize size READ size)
-    Q_PROPERTY(int tileWidth READ tileWidth WRITE setTileWidth)
-    Q_PROPERTY(int tileHeight READ tileHeight WRITE setTileHeight)
+    Q_PROPERTY(int width READ width WRITE setWidth NOTIFY sizeChanged)
+    Q_PROPERTY(int height READ height WRITE setHeight NOTIFY sizeChanged)
+    Q_PROPERTY(QSize size READ size NOTIFY sizeChanged)
+    Q_PROPERTY(int tileWidth READ tileWidth WRITE setTileWidth NOTIFY tileSizeChanged)
+    Q_PROPERTY(int tileHeight READ tileHeight WRITE setTileHeight NOTIFY tileSizeChanged)
     Q_PROPERTY(bool infinite READ infinite WRITE setInfinite)
     Q_PROPERTY(int hexSideLength READ hexSideLength WRITE setHexSideLength)
     Q_PROPERTY(StaggerAxis staggerAxis READ staggerAxis WRITE setStaggerAxis)
@@ -218,6 +218,8 @@ public:
     QSharedPointer<Document> createDocument() override;
 
 signals:
+    void sizeChanged();
+    void tileSizeChanged();
     void currentLayerChanged();
     void selectedLayersChanged();
     void selectedObjectsChanged();

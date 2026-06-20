@@ -497,6 +497,7 @@ void EditableMap::setSize(int width, int height)
         map()->setWidth(width);
         map()->setHeight(height);
     }
+    emit sizeChanged();
 }
 
 void EditableMap::setTileWidth(int value)
@@ -505,6 +506,7 @@ void EditableMap::setTileWidth(int value)
         push(new ChangeMapTileSize(doc, QSize(value, tileHeight())));
     else if (!checkReadOnly())
         map()->setTileWidth(value);
+    emit tileSizeChanged();
 }
 
 void EditableMap::setTileHeight(int value)
@@ -513,6 +515,7 @@ void EditableMap::setTileHeight(int value)
         push(new ChangeMapTileSize(doc, QSize(tileWidth(), value)));
     else if (!checkReadOnly())
         map()->setTileHeight(value);
+    emit tileSizeChanged();
 }
 
 void EditableMap::setTileSize(int width, int height)
@@ -529,6 +532,7 @@ void EditableMap::setTileSize(int width, int height)
     } else {
         map()->setTileWidth(width);
         map()->setTileHeight(height);
+        emit tileSizeChanged();
     }
 }
 
