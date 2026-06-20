@@ -59,7 +59,7 @@ public:
     {
         setAcceptedMouseButtons(Qt::MouseButtons());
         setFlag(QGraphicsItem::ItemIgnoresTransformations);
-        setZValue(10000);
+        setZValue(10000 + 1);
     }
 
     QRectF boundingRect() const override
@@ -422,26 +422,42 @@ void AbstractWorldTool::setTargetMap(MapDocument *mapDocument)
 void AbstractWorldTool::updateSelectionRectangle()
 {
     if (mTargetMap) {
-        const QRect rect = mapRect(mTargetMap);
-        mSelectionRectangle->setRectangle(rect);
-        mSelectionRectangle->setVisible(true);
-
-        // Place the eight handles on the corners and edge midpoints
-        const QPoint center = rect.center();
-        const QPoint handlePos[HandleCount] = {
-            rect.topLeft(),    QPoint(center.x(), rect.top()),    rect.topRight(),
-            QPoint(rect.left(), center.y()),                      QPoint(rect.right(), center.y()),
-            rect.bottomLeft(), QPoint(center.x(), rect.bottom()), rect.bottomRight(),
-        };
-        for (int i = 0; i < 8; ++i) {
-            mResizeHandles[i]->setPos(handlePos[i]);
-            mResizeHandles[i]->setVisible(true);
-        }
+        setSelectionScreenRect(mapRect(mTargetMap));
     } else {
         mSelectionRectangle->setVisible(false);
         for (auto &handle : mResizeHandles)
             handle->setVisible(false);
     }
+}
+
+void AbstractWorldTool::setSelectionScreenRect(const QRect &rect)
+{
+    mSelectionRectangle->setRectangle(rect);
+    mSelectionRectangle->setVisible(true);
+
+    // Place the eight handles on the corners and edge midpoints
+    const QPoint center = rect.center();
+    const QPoint handlePos[HandleCount] = {
+        rect.topLeft(),    QPoint(center.x(), rect.top()),    rect.topRight(),
+        QPoint(rect.left(), center.y()),                      QPoint(rect.right(), center.y()),
+        rect.bottomLeft(), QPoint(center.x(), rect.bottom()), rect.bottomRight(),
+    };
+    for (int i = 0; i < HandleCount; ++i) {
+        mResizeHandles[i]->setPos(handlePos[i]);
+        mResizeHandles[i]->setVisible(true);
+    }
+}
+
+int AbstractWorldTool::resizeHandleAt(const QPointF &scenePos,
+                                      const QTransform &viewTransform) const
+{
+    // The handles ignore transformations, so pass the view transform to hit-test them
+    QGraphicsItem *item = mapScene()->itemAt(scenePos, viewTransform);
+    for (int i = 0; i < HandleCount; ++i) {
+        if (mResizeHandles[i].get() == item)
+            return i;
+    }
+    return -1;
 }
 
 } // namespace Tiled

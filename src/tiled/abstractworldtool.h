@@ -28,6 +28,7 @@
 class QAction;
 class QGraphicsItem;
 class QMenu;
+class QTransform;
 
 namespace Tiled {
 
@@ -88,6 +89,8 @@ protected:
     void setTargetMap(MapDocument *mapDocument);
     MapDocument *targetMap() const { return mTargetMap; }
     void updateSelectionRectangle();
+    void setSelectionScreenRect(const QRect &rect);
+    int resizeHandleAt(const QPointF &scenePos, const QTransform &viewTransform) const;
 
     bool mapCanBeMoved(MapDocument *mapDocument) const;
     QRect mapRect(MapDocument *mapDocument) const;

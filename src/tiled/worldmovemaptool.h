@@ -45,9 +45,11 @@ public:
 
 protected:
     void abortMoving();
+    void abortResizing();
     void refreshCursor();
 
     void moveMap(MapDocument *document, QPoint moveBy);
+    void updateResizingMap(const QPointF &pos, Qt::KeyboardModifiers modifiers);
 
     // drag state
     MapDocument *mDraggingMap = nullptr;
@@ -55,6 +57,14 @@ protected:
     QPointF mDragStartScenePos;
     QPointF mDraggedMapStartPos;
     QPoint mDragOffset;
+
+    // resize drag state
+    MapDocument *mResizingMap = nullptr;
+    int mResizeHandle = -1;
+    QRect mResizeStartWorldRect;
+    QPoint mResizeSceneOffset;
+    QSize mResizeNewSize;
+    QPoint mResizeOffset;
 };
 
 } // namespace Tiled
