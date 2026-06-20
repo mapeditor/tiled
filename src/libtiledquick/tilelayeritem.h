@@ -62,6 +62,8 @@ public:
 
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
 
+    Tiled::TileLayer *getLayer();
+
 public slots:
     void updateVisibleTiles();
 
