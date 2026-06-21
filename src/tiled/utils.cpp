@@ -437,8 +437,42 @@ QRectF dpiScaled(QRectF value)
 
 QSize smallIconSize()
 {
-    static QSize size = dpiScaled(QSize(16, 16));
-    return size;
+    const Preferences *prefs = Preferences::instance();
+    int baseSize = 24;
+
+    switch (prefs->iconSize()) {
+    case Preferences::SmallIconSize:
+        baseSize = 16;
+        break;
+    case Preferences::MediumIconSize:
+        baseSize = 24;
+        break;
+    case Preferences::LargeIconSize:
+        baseSize = 32;
+        break;
+    }
+
+    return dpiScaled(QSize(baseSize, baseSize));
+}
+
+QSize smallToolbarIconSize()
+{
+    const Preferences *prefs = Preferences::instance();
+    int baseSize = 16;
+
+    switch (prefs->smallToolbarIconSize()) {
+    case Preferences::SmallIconSize:
+        baseSize = 16;
+        break;
+    case Preferences::MediumIconSize:
+        baseSize = 24;
+        break;
+    case Preferences::LargeIconSize:
+        baseSize = 32;
+        break;
+    }
+
+    return dpiScaled(QSize(baseSize, baseSize));
 }
 
 bool isZoomInShortcut(QKeyEvent *event)
