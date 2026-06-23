@@ -143,6 +143,11 @@ signals:
     void currentWangColorIndexChanged(int colorIndex);
     void selectedToolChanged(AbstractTool *tool);
 
+#ifdef TILEDQUICK_LIB
+public slots:
+    void onQuickMouseCoordsChanged(QVariant coords);
+#endif
+
 private:
     void onSelectedToolChanged(AbstractTool *tool);
     void currentDocumentChanged(Document *document);

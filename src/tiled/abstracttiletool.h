@@ -62,6 +62,11 @@ public:
 
     void keyPressed(QKeyEvent *event) override;
 
+#ifdef TILEDQUICK_LIB
+signals:
+    void quickBrushChanged();
+#endif
+
 protected:
     void mapDocumentChanged(MapDocument *oldDocument,
                             MapDocument *newDocument) override;
@@ -112,8 +117,9 @@ protected:
      * hidden based on whether the mouse is in the scene and whether the
      * currently selected layer is a tile layer.
      */
+public: // TODO: REMOVE
     BrushItem *brushItem() const { return mBrushItem; }
-
+protected: // TODO: REMOVE
     /**
      * Returns the current tile layer, or null if no tile layer is currently
      * selected.

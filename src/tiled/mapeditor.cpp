@@ -89,6 +89,7 @@
 #include <QQmlContext>
 #include <QQmlEngine>
 #ifdef TILEDQUICK_LIB
+#include <QQuickItem>
 #include <QQuickWidget>
 #endif
 #include <QShortcut>
@@ -416,6 +417,14 @@ void MapEditor::setCurrentDocument(Document *document)
         mCurrentMapDocument->disconnect(this);
     }
 
+#ifdef TILEDQUICK_LIB
+    {
+    QQuickWidget *oldQuickWidget = mViewForMap.value(mapDocument)->quickWidget();
+    disconnect(oldQuickWidget->rootObject(), SIGNAL(mouseCoordsChanged(QVariant)),
+               this, SLOT(onQuickMouseCoordsChanged(QVariant)));
+    }
+#endif
+
     mCurrentMapDocument = mapDocument;
 
     MapViewInterface *mapViewInterface = mViewForMap.value(mapDocument);
@@ -453,6 +462,16 @@ void MapEditor::setCurrentDocument(Document *document)
 
         connect(mCurrentMapDocument, &MapDocument::currentObjectSet,
                 this, [this, mapDocument] { mPropertiesDock->setDocument(mapDocument); });
+
+#ifdef TILEDQUICK_LIB
+        if (Preferences::instance()->useNewHardwareRenderer()) {
+            QQuickWidget *quickWidget = mapViewInterface->quickWidget();
+
+            if (quickWidget && quickWidget->rootObject())
+                connect(quickWidget->rootObject(), SIGNAL(mouseCoordsChanged(QVariant)),
+                        this, SLOT(onQuickMouseCoordsChanged(QVariant)));
+        }
+#endif
 
         mReversingProxyModel->setSourceModel(mapDocument->layerModel());
     } else {
@@ -714,8 +733,38 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
     }
 
     updateActiveUndoStack();
+
     emit selectedToolChanged(tool);
 }
+
+#ifdef TILEDQUICK_LIB
+void MapEditor::onQuickMouseCoordsChanged(QVariant coords)
+{
+    QPointF mouseCoords = coords.toPointF();
+    selectedTool()->mouseMoved(mouseCoords, Qt::NoModifier);
+
+
+    // TODO: Everything past this line will be moved to a slot for an quickBrushChanged signal
+    AbstractTileTool *atTool = dynamic_cast<AbstractTileTool*>(selectedTool());
+
+    if (atTool && atTool->brushItem()->map()) {
+        QQuickWidget* activeWidget = mViewForMap.value(mCurrentMapDocument)->quickWidget();
+        QQmlContext* rootContext = activeWidget->engine()->rootContext();
+        QVariant brushMapContext = rootContext->contextProperty(QStringLiteral("toolBrushMap"));
+
+        if (brushMapContext.isValid()) {
+            EditableMap *oldBrushMap = brushMapContext.value<EditableMap*>();
+            EditableMap *newBrushMap = new EditableMap(atTool->brushItem()->map().get());
+
+            rootContext->setContextProperty(QStringLiteral("toolBrushMap"), newBrushMap);
+
+            if (oldBrushMap && false)
+                delete oldBrushMap;
+        }
+    }
+
+}
+#endif
 
 void MapEditor::updateActiveUndoStack()
 {
@@ -825,16 +874,6 @@ void MapEditor::setStamp(const TileStamp &stamp)
         mToolManager->selectTool(mStampBrush);
 
     mTilesetDock->selectTilesInStamp(stamp);
-
-#ifdef TILEDQUICK_LIB
-    if (Preferences::instance()->useNewHardwareRenderer())
-    {
-        QQuickWidget* activeWidget = mViewForMap.value(mCurrentMapDocument)->quickWidget();
-        QQmlContext* rootContext = activeWidget->engine()->rootContext();
-
-        rootContext->setContextProperty(QStringLiteral("toolBrushMap"), currentBrush());
-    }
-#endif
 
     emit currentBrushChanged();
 }

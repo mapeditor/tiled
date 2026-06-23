@@ -68,8 +68,6 @@ Rectangle {
                 id: toolBrush
                 anchors.left: mapItem.left
                 anchors.top: mapItem.top
-                anchors.leftMargin: (Math.floor(cursorTileCoords().x) - Math.floor(this.map ? this.map.width/2 : 0)) * mapGridItem.tileSize.x
-                anchors.topMargin: (Math.floor(cursorTileCoords().y) - Math.floor(this.map ? this.map.height/2 : 0)) * mapGridItem.tileSize.y
 
                 map: toolBrushMap;
 
@@ -89,6 +87,7 @@ Rectangle {
 
     DragArea {
         id: singleFingerPanArea
+        objectName: "singleFingerPanArea"
         anchors.fill: parent
 
         onDragged: function(dx, dy) {
@@ -153,9 +152,19 @@ Rectangle {
     }
 
     function cursorTileCoords() {
-        var mapRelativeCoords = singleFingerPanArea.mapToItem(mapItem, singleFingerPanArea.mouseX, singleFingerPanArea.mouseY);
-        var tileCoords = mapItem.screenToTileCoords(mapRelativeCoords.x, mapRelativeCoords.y);
+        var tileCoords = mapItem.screenToTileCoords(widget.mapRelativeCoords.x, widget.mapRelativeCoords.y);
 
-        return tileCoords;
+        return tileCoords
+    }
+
+    signal mouseCoordsChanged(var coords)
+
+    property var mapRelativeCoords: {
+        var mapRelativeCoords = singleFingerPanArea.mapToItem(mapItem, singleFingerPanArea.mouseX, singleFingerPanArea.mouseY)
+        return mapRelativeCoords
+    }
+
+    onMapRelativeCoordsChanged: {
+        mouseCoordsChanged(mapRelativeCoords)
     }
 }
