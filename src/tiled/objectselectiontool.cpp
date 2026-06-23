@@ -742,7 +742,7 @@ void ObjectSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
     mModifiers = modifiers;
 
     const bool hasSelection = mapDocument() && !mapDocument()->selectedObjects().isEmpty();
-    const bool altWillMove = !mMousePressed && hasSelection; 
+    const bool altWillMove = !mMousePressed && hasSelection;
 
     if (!altWillMove) {
         if ((mSelectionMode == Qt::IntersectsItemShape) ^ modifiers.testFlag(Qt::AltModifier))
@@ -1228,13 +1228,9 @@ void ObjectSelectionTool::startMoving(const QPointF &pos,
             mapDocument()->setSelectedObjects({ mClickedObject });
     }
 
-    saveSelectionState();
-
-    // The selection may have ended up empty (e.g. mClickedObject was filtered
-    // out, deleted between press and move, or cleared by a slot reacting to
-    // the selection-changed signal). Fall back to rubber-band selecting in
-    // that case to avoid dereferencing an empty list below.
-    if (mMovingObjects.isEmpty()) {
+    // The selection can become empty between the mouse press and the start of
+    // the drag. Fall back to a rubber-band selection rather than crashing.
+    if (!saveSelectionState()) {
         startSelecting();
         return;
     }
@@ -1316,18 +1312,14 @@ void ObjectSelectionTool::finishMovingOrigin()
 
 void ObjectSelectionTool::startRotating(const QPointF &pos)
 {
+    // Abort if the selection became empty between press and drag (see startMoving).
+    if (!saveSelectionState())
+        return;
+
     mStart = pos;
     mAction = Rotating;
     mMergeUndo = false;
     mOriginPos = mOriginIndicator->pos();
-
-    saveSelectionState();
-
-    // Abort if the selection ended up empty, to avoid later first() crashes.
-    if (mMovingObjects.isEmpty()) {
-        mAction = NoAction;
-        return;
-    }
 
     updateHandleVisibility();
 }
@@ -1401,6 +1393,10 @@ void ObjectSelectionTool::finishRotating()
 
 void ObjectSelectionTool::startResizing()
 {
+    // Abort if the selection became empty between press and drag (see startMoving).
+    if (!saveSelectionState())
+        return;
+
     mAction = Resizing;
     mMergeUndo = false;
     mOriginPos = mOriginIndicator->pos();
@@ -1409,15 +1405,6 @@ void ObjectSelectionTool::startResizing()
     mResizingLimitVertical = mClickedResizeHandle->resizingLimitVertical();
 
     mStartOffset = mStart - mClickedResizeHandle->pos();
-
-    saveSelectionState();
-
-    // Abort if the selection ended up empty, to avoid later first() crashes
-    // in updateResizingSingleItem and elsewhere.
-    if (mMovingObjects.isEmpty()) {
-        mAction = NoAction;
-        return;
-    }
 
     updateHandleVisibility();
 }
@@ -1529,9 +1516,6 @@ void ObjectSelectionTool::updateResizingSingleItem(const QPointF &resizingOrigin
                                                    const QPointF &screenPos,
                                                    Qt::KeyboardModifiers modifiers)
 {
-    if (mMovingObjects.isEmpty())
-        return;
-
     const MapRenderer *renderer = mapDocument()->renderer();
     const MovingObject &object = mMovingObjects.first();
     MapObject *mapObject = object.mapObject;
@@ -1691,7 +1675,7 @@ void ObjectSelectionTool::setMode(Mode mode)
     }
 }
 
-void ObjectSelectionTool::saveSelectionState()
+bool ObjectSelectionTool::saveSelectionState()
 {
     mMovingObjects.clear();
 
@@ -1709,6 +1693,8 @@ void ObjectSelectionTool::saveSelectionState()
         };
         mMovingObjects.append(object);
     }
+
+    return !mMovingObjects.isEmpty();
 }
 
 /**
