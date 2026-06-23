@@ -6,6 +6,7 @@
 * Made switching to the previously selected tool when pressing its shortcut again optional and off by default (by dogboydog, #4540)
 * Scripting: Added 'tiled.cell' function, 'cell.flags' property and 'TileLayerEdit.setCell' function (#4538)
 * Scripting: Added MapObject.resolvedClassName() (by MatusGuy, #4529)
+* Fixed crash when the selection becomes empty while starting a move (#4536)
 * snap: Updated to Qt 6
 * Raised the minimum Qt version to 6.2 (drops Qt 5 support)
 
