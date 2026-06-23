@@ -78,6 +78,15 @@ void ActionManager::registerAction(QAction *action, Id id)
         emit d->actionChanged(id);
     });
 
+    // Make sure an action that gets destroyed doesn't leave a dangling pointer behind
+    connect(action, &QObject::destroyed, d, [=] {
+        d->mIdToActions.remove(id, action);
+        if (!d->mIdToActions.contains(id)) {
+            d->mDefaultShortcuts.remove(id);
+            d->mLastKnownShortcuts.remove(id);
+        }
+    });
+
     if (d->hasCustomShortcut(id)) {
         d->mDefaultShortcuts.insert(id, action->shortcuts());
         d->applyShortcut(action, d->mCustomShortcuts.value(id));
@@ -85,18 +94,6 @@ void ActionManager::registerAction(QAction *action, Id id)
 
     d->updateToolTipWithShortcut(action);
 
-    emit d->actionsChanged();
-}
-
-void ActionManager::unregisterAction(QAction *action, Id id)
-{
-    auto d = instance();
-
-    Q_ASSERT_X(d->mIdToActions.contains(id, action), "ActionManager::unregisterAction", "unknown action");
-    d->mIdToActions.remove(id, action);
-    action->disconnect(d);
-    d->mDefaultShortcuts.remove(id);
-    d->mLastKnownShortcuts.remove(id);
     emit d->actionsChanged();
 }
 

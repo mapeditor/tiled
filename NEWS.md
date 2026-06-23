@@ -7,6 +7,7 @@
 * Scripting: Added 'tiled.cell' function, 'cell.flags' property and 'TileLayerEdit.setCell' function (#4538)
 * Scripting: Added MapObject.resolvedClassName() (by MatusGuy, #4529)
 * Fixed crash when the selection becomes empty while starting a move (#4536)
+* Fixed crash when opening the Preferences dialog due to a dangling action (#4551)
 * snap: Updated to Qt 6
 * Raised the minimum Qt version to 6.2 (drops Qt 5 support)
 
