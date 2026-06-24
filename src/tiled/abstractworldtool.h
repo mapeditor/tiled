@@ -28,7 +28,6 @@
 class QAction;
 class QGraphicsItem;
 class QMenu;
-class QTransform;
 
 namespace Tiled {
 
@@ -36,6 +35,19 @@ class World;
 
 class SelectionRectangle;
 class WorldDocument;
+
+// The eight resize handles, in the order they are placed by
+// AbstractWorldTool::setSelectionScreenRect.
+enum ResizeHandlePosition {
+    TopLeftHandle,
+    TopHandle,
+    TopRightHandle,
+    LeftHandle,
+    RightHandle,
+    BottomLeftHandle,
+    BottomHandle,
+    BottomRightHandle,
+};
 
 /**
  * A convenient base class for tools that work on object layers. Implements
@@ -90,7 +102,7 @@ protected:
     MapDocument *targetMap() const { return mTargetMap; }
     void updateSelectionRectangle();
     void setSelectionScreenRect(const QRect &rect);
-    int resizeHandleAt(const QPointF &scenePos, const QTransform &viewTransform) const;
+    int resizeHandleAt(const QPointF &scenePos) const;
 
     bool mapCanBeMoved(MapDocument *mapDocument) const;
     QRect mapRect(MapDocument *mapDocument) const;

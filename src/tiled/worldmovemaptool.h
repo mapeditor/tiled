@@ -61,6 +61,7 @@ protected:
     // resize drag state
     MapDocument *mResizingMap = nullptr;
     int mResizeHandle = -1;
+    int mHoveredHandle = -1;
     QRect mResizeStartWorldRect;
     QPoint mResizeSceneOffset;
     QSize mResizeNewSize;

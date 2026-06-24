@@ -35,7 +35,6 @@
 #include "zoomable.h"
 
 #include <QApplication>
-#include <QGraphicsView>
 #include <QKeyEvent>
 #include <QMenu>
 #include <QToolBar>
@@ -69,11 +68,11 @@ const HandleEdges handleEdges[] = {
 Qt::CursorShape cursorForHandle(int handle)
 {
     switch (handle) {
-    case 0: case 7: return Qt::SizeFDiagCursor;     // top-left / bottom-right
-    case 2: case 5: return Qt::SizeBDiagCursor;     // top-right / bottom-left
-    case 1: case 6: return Qt::SizeVerCursor;       // top / bottom
-    case 3: case 4: return Qt::SizeHorCursor;       // left / right
-    default:        return Qt::ArrowCursor;
+    case TopLeftHandle: case BottomRightHandle: return Qt::SizeFDiagCursor;
+    case TopRightHandle: case BottomLeftHandle: return Qt::SizeBDiagCursor;
+    case TopHandle: case BottomHandle:          return Qt::SizeVerCursor;
+    case LeftHandle: case RightHandle:          return Qt::SizeHorCursor;
+    default:                                    return Qt::ArrowCursor;
     }
 }
 
@@ -203,11 +202,14 @@ void WorldMoveMapTool::updateResizingMap(const QPointF &pos,
                            edges.top ? newHeight - map->height() : 0);
     mResizeNewSize = QSize(newWidth, newHeight);
 
-    // preview the result, matching what resizeMap() will produce
-    const QPoint topLeft(mResizeStartWorldRect.left() - mResizeOffset.x() * tileWidth,
-                         mResizeStartWorldRect.top() - mResizeOffset.y() * tileHeight);
-    const QRect previewRect(topLeft, QSize(newWidth * tileWidth, newHeight * tileHeight));
-    setSelectionScreenRect(previewRect.translated(mResizeSceneOffset));
+    // preview the result, matching what resizeMap() will produce, using the
+    // renderer so the size is correct for isometric and other orientations
+    const MapRenderer *renderer = mResizingMap->renderer();
+    const QPointF pixelOffset = renderer->tileToPixelCoords(QPointF())
+                              - renderer->tileToPixelCoords(-mResizeOffset);
+    const QPoint topLeft = mResizeStartWorldRect.topLeft() - pixelOffset.toPoint();
+    const QSize previewSize = renderer->boundingRect(QRect(QPoint(), mResizeNewSize)).size();
+    setSelectionScreenRect(QRect(topLeft, previewSize).translated(mResizeSceneOffset));
 
     setStatusInfo(tr("Resize map to %1 x %2").arg(newWidth).arg(newHeight));
 }
@@ -223,12 +225,7 @@ void WorldMoveMapTool::mousePressed(QGraphicsSceneMouseEvent *event)
 
     if (event->button() == Qt::LeftButton && mapCanBeMoved(targetMap())) {
         // initiate a resize when one of the handles is pressed
-        QTransform viewTransform;
-        if (QWidget *viewport = event->widget())
-            if (auto view = qobject_cast<QGraphicsView*>(viewport->parent()))
-                viewTransform = view->transform();
-
-        const int handle = resizeHandleAt(event->scenePos(), viewTransform);
+        const int handle = resizeHandleAt(event->scenePos());
         if (handle != -1) {
             mResizingMap = targetMap();
             mResizeHandle = handle;
@@ -269,15 +266,9 @@ void WorldMoveMapTool::mouseMoved(const QPointF &pos,
     if (!worldForMap(mDraggingMap) || !mDraggingMap) {
         AbstractWorldTool::mouseMoved(pos, modifiers);
 
-        // show a resize cursor while hovering one of the handles
-        const auto views = mapScene()->views();
-        const QTransform viewTransform = views.isEmpty() ? QTransform()
-                                                         : views.first()->transform();
-        const int handle = resizeHandleAt(pos, viewTransform);
-        const Qt::CursorShape shape = (handle != -1) ? cursorForHandle(handle)
-                                                     : Qt::ArrowCursor;
-        if (cursor().shape() != shape)
-            setCursor(shape);
+        // update the hovered handle so refreshCursor can show a resize cursor
+        mHoveredHandle = resizeHandleAt(pos);
+        refreshCursor();
         return;
     }
 
@@ -398,6 +389,8 @@ void WorldMoveMapTool::refreshCursor()
         cursorShape = Qt::SizeAllCursor;
     else if (mResizingMap)
         cursorShape = cursorForHandle(mResizeHandle);
+    else if (mHoveredHandle != -1)
+        cursorShape = cursorForHandle(mHoveredHandle);
 
     if (cursor().shape() != cursorShape)
         setCursor(cursorShape);

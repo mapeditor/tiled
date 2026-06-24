@@ -38,6 +38,7 @@
 #include <QAction>
 #include <QFileDialog>
 #include <QGraphicsItem>
+#include <QGraphicsView>
 #include <QKeyEvent>
 #include <QMenu>
 #include <QMessageBox>
@@ -448,10 +449,12 @@ void AbstractWorldTool::setSelectionScreenRect(const QRect &rect)
     }
 }
 
-int AbstractWorldTool::resizeHandleAt(const QPointF &scenePos,
-                                      const QTransform &viewTransform) const
+int AbstractWorldTool::resizeHandleAt(const QPointF &scenePos) const
 {
-    // The handles ignore transformations, so pass the view transform to hit-test them
+    // The handles ignore transformations, so itemAt needs the view transform
+    const auto views = mapScene()->views();
+    const QTransform viewTransform = views.isEmpty() ? QTransform()
+                                                     : views.first()->transform();
     QGraphicsItem *item = mapScene()->itemAt(scenePos, viewTransform);
     for (int i = 0; i < HandleCount; ++i) {
         if (mResizeHandles[i].get() == item)
