@@ -436,12 +436,14 @@ void AbstractWorldTool::setSelectionScreenRect(const QRect &rect)
     mSelectionRectangle->setRectangle(rect);
     mSelectionRectangle->setVisible(true);
 
-    // Place the eight handles on the corners and edge midpoints
-    const QPoint center = rect.center();
-    const QPoint handlePos[HandleCount] = {
-        rect.topLeft(),    QPoint(center.x(), rect.top()),    rect.topRight(),
-        QPoint(rect.left(), center.y()),                      QPoint(rect.right(), center.y()),
-        rect.bottomLeft(), QPoint(center.x(), rect.bottom()), rect.bottomRight(),
+    // Place the eight handles on the corners and edge midpoints, using QRectf
+    // to avoid the off by-one of QRect::right() and bottom()
+    const QRectF bounds = rect;
+    const QPointF center = bounds.center();
+    const QPointF handlePos[HandleCount] = {
+        bounds.topLeft(),    QPointF(center.x(), bounds.top()),    bounds.topRight(),
+        QPointF(bounds.left(), center.y()),                        QPointF(bounds.right(), center.y()),
+        bounds.bottomLeft(), QPointF(center.x(), bounds.bottom()), bounds.bottomRight(),
     };
     for (int i = 0; i < HandleCount; ++i) {
         mResizeHandles[i]->setPos(handlePos[i]);
