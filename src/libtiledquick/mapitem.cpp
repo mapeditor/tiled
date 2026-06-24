@@ -47,6 +47,7 @@ void MapItem::setMap(Tiled::EditableMap *editableMap)
     {
         Tiled::MapDocument *mapDocument = editableMap->mapDocument();
         connect(mapDocument, &Tiled::MapDocument::regionChanged, this, &MapItem::repaintRegion);
+        connect(mapDocument, &Tiled::MapDocument::mapResized, this, &MapItem::refresh);
     }
 
     refresh();

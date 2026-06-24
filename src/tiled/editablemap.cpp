@@ -497,7 +497,6 @@ void EditableMap::setSize(int width, int height)
         map()->setWidth(width);
         map()->setHeight(height);
     }
-    emit sizeChanged();
 }
 
 void EditableMap::setTileWidth(int value)
@@ -506,7 +505,6 @@ void EditableMap::setTileWidth(int value)
         push(new ChangeMapTileSize(doc, QSize(value, tileHeight())));
     else if (!checkReadOnly())
         map()->setTileWidth(value);
-    emit tileSizeChanged();
 }
 
 void EditableMap::setTileHeight(int value)
@@ -515,7 +513,6 @@ void EditableMap::setTileHeight(int value)
         push(new ChangeMapTileSize(doc, QSize(tileWidth(), value)));
     else if (!checkReadOnly())
         map()->setTileHeight(value);
-    emit tileSizeChanged();
 }
 
 void EditableMap::setTileSize(int width, int height)
@@ -532,7 +529,6 @@ void EditableMap::setTileSize(int width, int height)
     } else {
         map()->setTileWidth(width);
         map()->setTileHeight(height);
-        emit tileSizeChanged();
     }
 }
 
@@ -727,6 +723,7 @@ void EditableMap::setDocument(Document *document)
     if (auto doc = mapDocument()) {
         connect(doc, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
         connect(doc, &Document::changed, this, &EditableMap::documentChanged);
+        connect(doc, &MapDocument::mapResized, this, &EditableMap::sizeChanged);
         connect(doc, &MapDocument::layerAdded, this, &EditableMap::attachLayer);
         connect(doc, &MapDocument::layerRemoved, this, &EditableMap::detachLayer);
 
@@ -751,10 +748,20 @@ void EditableMap::documentChanged(const ChangeEvent &change)
     case ChangeEvent::DocumentReloaded:
         setObject(mapDocument()->map());
         break;
-    case ChangeEvent::MapChanged:
-        if (static_cast<const MapChangeEvent&>(change).property == Map::OrientationProperty)
+    case ChangeEvent::MapChanged: {
+        auto &mapChange = static_cast<const MapChangeEvent&>(change);
+        switch (mapChange.property) {
+        case Map::TileSizeProperty:
+            emit tileSizeChanged();
+            break;
+        case Map::OrientationProperty:
             mRenderer.reset();
+            break;
+        default:
+            break;
+        }
         break;
+    }
     case ChangeEvent::MapObjectsAdded:
         attachMapObjects(static_cast<const MapObjectsEvent&>(change).mapObjects);
         break;
