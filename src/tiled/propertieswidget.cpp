@@ -1836,6 +1836,76 @@ public:
                         changeMapObject(MapObject::TextColorProperty, value);
                     });
 
+        mTextStrokeEnabledProperty = new BoolProperty(
+                    tr("Stroke Enabled"),
+                    [this] { return mapObject()->textData().strokeEnabled; },
+                    [this](const bool &value) {
+                        changeMapObject(MapObject::TextStrokeProperty, value);
+                    });
+
+        mTextStrokeColorProperty = new ColorProperty(
+                    tr("Stroke Color"),
+                    [this] { return mapObject()->textData().strokeColor; },
+                    [this](const QColor &value) {
+                        changeMapObject(MapObject::TextStrokeColorProperty, value);
+                    });
+
+        mTextStrokeWidthProperty = new FloatProperty(
+                    tr("Stroke Width"),
+                    [this] { return mapObject()->textData().strokeWidth; },
+                    [this](const double &value) {
+                        changeMapObject(MapObject::TextStrokeWidthProperty, value);
+                    });
+
+        mTextShadowEnabledProperty = new BoolProperty(
+                    tr("Shadow Enabled"),
+                    [this] { return mapObject()->textData().shadowEnabled; },
+                    [this](const bool &value) {
+                        changeMapObject(MapObject::TextShadowProperty, value);
+                    });
+
+        mTextShadowColorProperty = new ColorProperty(
+                    tr("Shadow Color"),
+                    [this] { return mapObject()->textData().shadowColor; },
+                    [this](const QColor &value) {
+                        changeMapObject(MapObject::TextShadowColorProperty, value);
+                    });
+
+        mTextShadowOffsetProperty = new PointFProperty(
+                    tr("Shadow Offset"),
+                    [this] { return mapObject()->textData().shadowOffset; },
+                    [this](const QPointF &value) {
+                        changeMapObject(MapObject::TextShadowOffsetProperty, value);
+                    });
+
+        mTextBackgroundEnabledProperty = new BoolProperty(
+                    tr("Background Enabled"),
+                    [this] { return mapObject()->textData().backgroundEnabled; },
+                    [this](const bool &value) {
+                        changeMapObject(MapObject::TextBackgroundProperty, value);
+                    });
+
+        mTextBackgroundColorProperty = new ColorProperty(
+                    tr("Background Color"),
+                    [this] { return mapObject()->textData().backgroundColor; },
+                    [this](const QColor &value) {
+                        changeMapObject(MapObject::TextBackgroundColorProperty, value);
+                    });
+
+        mTextMirrorHorizontalProperty = new BoolProperty(
+                    tr("Flip Horizontally"),
+                    [this] { return mapObject()->textData().flippedHorizontally; },
+                    [this](const bool &value) {
+                        changeMapObject(MapObject::TextMirrorHorizontalProperty, value);
+                    });
+
+        mTextMirrorVerticalProperty = new BoolProperty(
+                    tr("Flip Vertically"),
+                    [this] { return mapObject()->textData().flippedVertically; },
+                    [this](const bool &value) {
+                        changeMapObject(MapObject::TextMirrorVerticalProperty, value);
+                    });
+
         mObjectProperties = new GroupProperty(tr("Object"));
         mObjectProperties->addProperty(mIdProperty);
         mObjectProperties->addProperty(mTemplateProperty);
@@ -1868,6 +1938,20 @@ public:
             mObjectProperties->addProperty(mTextFontProperty);
             mObjectProperties->addProperty(mTextWordWrapProperty);
             mObjectProperties->addProperty(mTextColorProperty);
+            mObjectProperties->addSeparator();
+            mObjectProperties->addProperty(mTextStrokeEnabledProperty);
+            mObjectProperties->addProperty(mTextStrokeColorProperty);
+            mObjectProperties->addProperty(mTextStrokeWidthProperty);
+            mObjectProperties->addSeparator();
+            mObjectProperties->addProperty(mTextShadowEnabledProperty);
+            mObjectProperties->addProperty(mTextShadowColorProperty);
+            mObjectProperties->addProperty(mTextShadowOffsetProperty);
+            mObjectProperties->addSeparator();
+            mObjectProperties->addProperty(mTextBackgroundEnabledProperty);
+            mObjectProperties->addProperty(mTextBackgroundColorProperty);
+            mObjectProperties->addSeparator();
+            mObjectProperties->addProperty(mTextMirrorHorizontalProperty);
+            mObjectProperties->addProperty(mTextMirrorVerticalProperty);
         }
 
         addProperty(mObjectProperties);
@@ -1914,6 +1998,26 @@ private:
             emit mTextWordWrapProperty->valueChanged();
         if (change.properties & MapObject::TextColorProperty)
             emit mTextColorProperty->valueChanged();
+        if (change.properties & MapObject::TextStrokeProperty)
+            emit mTextStrokeEnabledProperty->valueChanged();
+        if (change.properties & MapObject::TextStrokeColorProperty)
+            emit mTextStrokeColorProperty->valueChanged();
+        if (change.properties & MapObject::TextStrokeWidthProperty)
+            emit mTextStrokeWidthProperty->valueChanged();
+        if (change.properties & MapObject::TextShadowProperty)
+            emit mTextShadowEnabledProperty->valueChanged();
+        if (change.properties & MapObject::TextShadowColorProperty)
+            emit mTextShadowColorProperty->valueChanged();
+        if (change.properties & MapObject::TextShadowOffsetProperty)
+            emit mTextShadowOffsetProperty->valueChanged();
+        if (change.properties & MapObject::TextBackgroundProperty)
+            emit mTextBackgroundEnabledProperty->valueChanged();
+        if (change.properties & MapObject::TextBackgroundColorProperty)
+            emit mTextBackgroundColorProperty->valueChanged();
+        if (change.properties & MapObject::TextMirrorHorizontalProperty)
+            emit mTextMirrorHorizontalProperty->valueChanged();
+        if (change.properties & MapObject::TextMirrorVerticalProperty)
+            emit mTextMirrorVerticalProperty->valueChanged();
     }
 
     void updateEnabledState()
@@ -1929,6 +2033,16 @@ private:
         mTextFontProperty->setEnabled(isText);
         mTextWordWrapProperty->setEnabled(isText);
         mTextColorProperty->setEnabled(isText);
+        mTextStrokeEnabledProperty->setEnabled(isText);
+        mTextStrokeColorProperty->setEnabled(isText);
+        mTextStrokeWidthProperty->setEnabled(isText);
+        mTextShadowEnabledProperty->setEnabled(isText);
+        mTextShadowColorProperty->setEnabled(isText);
+        mTextShadowOffsetProperty->setEnabled(isText);
+        mTextBackgroundEnabledProperty->setEnabled(isText);
+        mTextBackgroundColorProperty->setEnabled(isText);
+        mTextMirrorHorizontalProperty->setEnabled(isText);
+        mTextMirrorVerticalProperty->setEnabled(isText);
     }
 
     MapDocument *mapDocument() const
@@ -1985,6 +2099,16 @@ private:
     Property *mTextFontProperty;
     Property *mTextWordWrapProperty;
     Property *mTextColorProperty;
+    Property *mTextStrokeEnabledProperty;
+    Property *mTextStrokeColorProperty;
+    Property *mTextStrokeWidthProperty;
+    Property *mTextShadowEnabledProperty;
+    Property *mTextShadowColorProperty;
+    Property *mTextShadowOffsetProperty;
+    Property *mTextBackgroundEnabledProperty;
+    Property *mTextBackgroundColorProperty;
+    Property *mTextMirrorHorizontalProperty;
+    Property *mTextMirrorVerticalProperty;
 };
 
 class TileProperties : public ObjectProperties
