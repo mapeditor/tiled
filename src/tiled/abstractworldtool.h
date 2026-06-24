@@ -47,6 +47,7 @@ enum ResizeHandlePosition {
     BottomLeftHandle,
     BottomHandle,
     BottomRightHandle,
+    HandleCount,
 };
 
 /**
@@ -125,8 +126,6 @@ private:
     QAction *mRemoveMapFromWorldAction;
 
     std::unique_ptr<SelectionRectangle> mSelectionRectangle;
-
-    static constexpr int HandleCount = 8;
     std::array<std::unique_ptr<QGraphicsItem>, HandleCount> mResizeHandles;
 };
 

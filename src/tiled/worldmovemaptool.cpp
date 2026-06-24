@@ -54,7 +54,7 @@ namespace {
 // setSelectionScreenRect (corners and edge midpoints)
 struct HandleEdges { bool left, right, top, bottom; };
 
-const HandleEdges handleEdges[] = {
+static constexpr HandleEdges handleEdges[HandleCount] = {
     { true,  false, true,  false },     // top-left
     { false, false, true,  false },     // top
     { false, true,  true,  false },     // top-right
@@ -267,7 +267,7 @@ void WorldMoveMapTool::startMoving(QGraphicsSceneMouseEvent *event)
 
 void WorldMoveMapTool::mouseMoved(const QPointF &pos,
                                   Qt::KeyboardModifiers modifiers)
-{    
+{
     if (mResizingMap) {
         updateResizingMap(pos, modifiers);
         return;
