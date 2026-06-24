@@ -231,6 +231,10 @@ void AbstractTileFillTool::updatePreview(const QRegion &fillRegion)
 
     brushItem()->setMap(preview);
     mPreviewMap = preview;
+
+#ifdef TILEDQUICK_LIB
+    emit quickBrushChanged();
+#endif
 }
 
 bool AbstractTileFillTool::applyPreview(const QString &text)

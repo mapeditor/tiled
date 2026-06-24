@@ -117,9 +117,9 @@ protected:
      * hidden based on whether the mouse is in the scene and whether the
      * currently selected layer is a tile layer.
      */
-public: // TODO: REMOVE
+public: // TODO: MOVE
     BrushItem *brushItem() const { return mBrushItem; }
-protected: // TODO: REMOVE
+protected: // TODO: MOVE
     /**
      * Returns the current tile layer, or null if no tile layer is currently
      * selected.

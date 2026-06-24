@@ -710,6 +710,13 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
     if (mSelectedTool) {
         disconnect(mSelectedTool, &AbstractTool::cursorChanged,
                    this, &MapEditor::cursorChanged);
+#ifdef TILEDQUICK_LIB
+        AbstractTileTool *atTool = dynamic_cast<AbstractTileTool*>(mSelectedTool);
+        if (atTool) {
+            disconnect(atTool, &AbstractTileTool::quickBrushChanged,
+                       this, &MapEditor::onQuickBrushChanged);
+        }
+#endif
     }
 
     mSelectedTool = tool;
@@ -728,6 +735,13 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
     if (tool) {
         connect(tool, &AbstractTool::cursorChanged,
                 this, &MapEditor::cursorChanged);
+#ifdef TILEDQUICK_LIB
+        AbstractTileTool *atTool = dynamic_cast<AbstractTileTool*>(tool);
+        if (atTool) {
+            connect(atTool, &AbstractTileTool::quickBrushChanged,
+                       this, &MapEditor::onQuickBrushChanged);
+        }
+#endif
 
         tool->populateToolBar(mToolSpecificToolBar);
     }
@@ -742,27 +756,30 @@ void MapEditor::onQuickMouseCoordsChanged(QVariant coords)
 {
     QPointF mouseCoords = coords.toPointF();
     selectedTool()->mouseMoved(mouseCoords, Qt::NoModifier);
+}
 
-
-    // TODO: Everything past this line will be moved to a slot for an quickBrushChanged signal
+void MapEditor::onQuickBrushChanged()
+{
     AbstractTileTool *atTool = dynamic_cast<AbstractTileTool*>(selectedTool());
 
     if (atTool && atTool->brushItem()->map()) {
-        QQuickWidget* activeWidget = mViewForMap.value(mCurrentMapDocument)->quickWidget();
-        QQmlContext* rootContext = activeWidget->engine()->rootContext();
+        QQuickWidget *activeWidget = mViewForMap.value(mCurrentMapDocument)->quickWidget();
+        QQmlContext *rootContext = activeWidget->engine()->rootContext();
         QVariant brushMapContext = rootContext->contextProperty(QStringLiteral("toolBrushMap"));
 
         if (brushMapContext.isValid()) {
             EditableMap *oldBrushMap = brushMapContext.value<EditableMap*>();
-            EditableMap *newBrushMap = new EditableMap(atTool->brushItem()->map().get());
 
+            if (oldBrushMap && oldBrushMap->map() == atTool->brushItem()->map().get())
+                return;
+
+            EditableMap *newBrushMap = new EditableMap(atTool->brushItem()->map().get());
             rootContext->setContextProperty(QStringLiteral("toolBrushMap"), newBrushMap);
 
-            if (oldBrushMap && false)
+            if (oldBrushMap)
                 delete oldBrushMap;
         }
     }
-
 }
 #endif
 
