@@ -72,7 +72,6 @@ Rectangle {
                 map: toolBrushMap;
 
                 visibleArea: {
-                    var scale = mapContainer.scale
                     if (this.map)
                         Qt.rect(0,
                                 0,
@@ -87,7 +86,6 @@ Rectangle {
 
     DragArea {
         id: singleFingerPanArea
-        objectName: "singleFingerPanArea"
         anchors.fill: parent
 
         onDragged: function(dx, dy) {

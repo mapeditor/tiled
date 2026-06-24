@@ -199,7 +199,7 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
     return node;
 }
 
-Tiled::TileLayer *TileLayerItem::getLayer() {
+Tiled::TileLayer *TileLayerItem::layer() {
     return mLayer;
 }
 

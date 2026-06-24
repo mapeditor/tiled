@@ -711,7 +711,7 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
         disconnect(mSelectedTool, &AbstractTool::cursorChanged,
                    this, &MapEditor::cursorChanged);
 #ifdef TILEDQUICK_LIB
-        AbstractTileTool *atTool = dynamic_cast<AbstractTileTool*>(mSelectedTool);
+        AbstractTileTool *atTool = qobject_cast<AbstractTileTool*>(mSelectedTool);
         if (atTool) {
             disconnect(atTool, &AbstractTileTool::quickBrushChanged,
                        this, &MapEditor::onQuickBrushChanged);
@@ -736,7 +736,7 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
         connect(tool, &AbstractTool::cursorChanged,
                 this, &MapEditor::cursorChanged);
 #ifdef TILEDQUICK_LIB
-        AbstractTileTool *atTool = dynamic_cast<AbstractTileTool*>(tool);
+        AbstractTileTool *atTool = qobject_cast<AbstractTileTool*>(tool);
         if (atTool) {
             connect(atTool, &AbstractTileTool::quickBrushChanged,
                        this, &MapEditor::onQuickBrushChanged);
@@ -754,13 +754,16 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
 #ifdef TILEDQUICK_LIB
 void MapEditor::onQuickMouseCoordsChanged(QVariant coords)
 {
+    if (!selectedTool())
+        return;
+
     QPointF mouseCoords = coords.toPointF();
     selectedTool()->mouseMoved(mouseCoords, Qt::NoModifier);
 }
 
 void MapEditor::onQuickBrushChanged()
 {
-    AbstractTileTool *atTool = dynamic_cast<AbstractTileTool*>(selectedTool());
+    AbstractTileTool *atTool = qobject_cast<AbstractTileTool*>(selectedTool());
 
     if (atTool && atTool->brushItem()->map()) {
         QQuickWidget *activeWidget = mViewForMap.value(mCurrentMapDocument)->quickWidget();

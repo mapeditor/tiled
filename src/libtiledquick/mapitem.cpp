@@ -30,6 +30,7 @@ using namespace TiledQuick;
 
 MapItem::MapItem(QQuickItem *parent)
     : QQuickItem(parent)
+    , mEditableMap(nullptr)
 {
 }
 
@@ -187,7 +188,7 @@ void MapItem::refresh()
 void MapItem::repaintRegion(const QRegion &, Tiled::TileLayer *tileLayer)
 {
     for (TileLayerItem *tileLayerItem : std::as_const(mTileLayerItems)) {
-        if (tileLayer == tileLayerItem->getLayer()) {
+        if (tileLayer == tileLayerItem->layer()) {
             // TODO: Update only the region edited
             tileLayerItem->update();
             continue;
