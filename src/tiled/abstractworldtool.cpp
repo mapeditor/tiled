@@ -79,7 +79,7 @@ public:
 
 // The eight resize handle positions for bounds, in ResizeHandlePosition order,
 // using a QRectF so right() and bottom() are not off by one like QRect
-std::array<QPointF, 8> resizeHandlePositions(const QRectF &bounds)
+std::array<QPointF, HandleCount> resizeHandlePositions(const QRectF &bounds)
 {
     const QPointF center = bounds.center();
     return {{
@@ -332,7 +332,8 @@ void AbstractWorldTool::populateAddToWorldMenu(QMenu &menu)
 
 void AbstractWorldTool::addAnotherMapToWorldAtCenter()
 {
-    addAnotherMapToWorld(sceneViewRect().center().toPoint());
+    MapView *view = DocumentManager::instance()->viewForDocument(mapDocument());
+    addAnotherMapToWorld(view->viewCenter().toPoint());
 }
 
 void AbstractWorldTool::addAnotherMapToWorld(QPoint insertPos)
@@ -491,20 +492,14 @@ void AbstractWorldTool::setSelectionScreenRect(const QRect &rect)
     }
 }
 
-// The scene rect currently visible in the active map's view
-QRectF AbstractWorldTool::sceneViewRect() const
-{
-    MapView *view = DocumentManager::instance()->viewForDocument(mapDocument());
-    return view->viewportTransform().inverted().mapRect(QRectF(view->viewport()->rect()));
-}
-
 // Move the camera back by offset, to keep the active map steady after it shifts
 void AbstractWorldTool::recenterView(const QPoint &offset)
 {
+    if (offset.isNull())
+        return;
+
     MapView *view = DocumentManager::instance()->viewForDocument(mapDocument());
-    const QRectF viewRect { view->viewport()->rect() };
-    const QRectF sceneViewRect = view->viewportTransform().inverted().mapRect(viewRect);
-    view->forceCenterOn(sceneViewRect.center() - offset);
+    view->forceCenterOn(view->viewCenter() - offset);
 }
 
 } // namespace Tiled

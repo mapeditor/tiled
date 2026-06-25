@@ -153,8 +153,7 @@ void WorldMoveMapTool::moveMap(MapDocument *document, QPoint moveBy)
 
     if (document == mapDocument()) {
         // undo camera movement, by the actual snapped offset
-        const QPoint actualOffset = rect.topLeft() - prevRect.topLeft();
-        recenterView(actualOffset);
+        recenterView(rect.topLeft() - prevRect.topLeft());
     }
 }
 
@@ -343,9 +342,7 @@ void WorldMoveMapTool::finishResizing()
         if (resizedMap == mapDocument()) {
             if (auto worldDocument = worldForMap(resizedMap)) {
                 const QPoint newPos = worldDocument->world()->mapRect(resizedMap->fileName()).topLeft();
-                const QPoint actualOffset = newPos - prevPos;
-                if (!actualOffset.isNull())
-                    recenterView(actualOffset);
+                recenterView(newPos - prevPos);
             }
         }
     }
@@ -359,7 +356,6 @@ void WorldMoveMapTool::finishMoving()
 {
     DocumentManager *manager = DocumentManager::instance();
     MapView *view = manager->viewForDocument(mapDocument());
-    const QPointF viewCenter = sceneViewRect().center();
 
     auto draggedMap = std::exchange(mDraggingMap, nullptr);
     mDraggingMapItem = nullptr;
@@ -377,13 +373,13 @@ void WorldMoveMapTool::finishMoving()
 
             if (draggedMap == mapDocument()) {
                 // undo camera movement
-                view->forceCenterOn(viewCenter - mDragOffset);
+                view->forceCenterOn(view->viewCenter() - mDragOffset);
             }
         }
     } else {
         // switch to the document
         manager->switchToDocumentAndHandleSimiliarTileset(draggedMap,
-                                                          viewCenter - mDraggedMapStartPos,
+                                                          view->viewCenter() - mDraggedMapStartPos,
                                                           view->zoomable()->scale());
     }
 
