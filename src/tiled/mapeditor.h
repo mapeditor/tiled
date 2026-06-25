@@ -146,7 +146,7 @@ signals:
 #ifdef TILEDQUICK_LIB
 public slots:
     void onQuickMouseCoordsChanged(QVariant coords);
-    void onQuickBrushChanged();
+    void onBrushMapChanged();
 #endif
 
 private:

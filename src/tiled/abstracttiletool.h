@@ -64,7 +64,7 @@ public:
 
 #ifdef TILEDQUICK_LIB
 signals:
-    void quickBrushChanged();
+    void brushMapChanged();
 #endif
 
 protected:

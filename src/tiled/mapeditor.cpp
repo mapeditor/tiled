@@ -713,8 +713,8 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
 #ifdef TILEDQUICK_LIB
         AbstractTileTool *atTool = qobject_cast<AbstractTileTool*>(mSelectedTool);
         if (atTool) {
-            disconnect(atTool, &AbstractTileTool::quickBrushChanged,
-                       this, &MapEditor::onQuickBrushChanged);
+            disconnect(atTool, &AbstractTileTool::brushMapChanged,
+                       this, &MapEditor::onBrushMapChanged);
         }
 #endif
     }
@@ -738,8 +738,8 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
 #ifdef TILEDQUICK_LIB
         AbstractTileTool *atTool = qobject_cast<AbstractTileTool*>(tool);
         if (atTool) {
-            connect(atTool, &AbstractTileTool::quickBrushChanged,
-                       this, &MapEditor::onQuickBrushChanged);
+            connect(atTool, &AbstractTileTool::brushMapChanged,
+                       this, &MapEditor::onBrushMapChanged);
         }
 #endif
 
@@ -761,7 +761,7 @@ void MapEditor::onQuickMouseCoordsChanged(QVariant coords)
     selectedTool()->mouseMoved(mouseCoords, Qt::NoModifier);
 }
 
-void MapEditor::onQuickBrushChanged()
+void MapEditor::onBrushMapChanged()
 {
     AbstractTileTool *atTool = qobject_cast<AbstractTileTool*>(selectedTool());
 
@@ -1177,9 +1177,7 @@ EditableMap *MapEditor::currentBrush() const
     auto map = stamp.variations().first().map->clone();
     auto editableMap = new EditableMap(std::move(map));
 
-    // Disable JavaScriptOwnership for QtQuick rendering
-    if (!Preferences::instance()->useNewHardwareRenderer())
-        QQmlEngine::setObjectOwnership(editableMap, QQmlEngine::JavaScriptOwnership);
+    QQmlEngine::setObjectOwnership(editableMap, QQmlEngine::JavaScriptOwnership);
     return editableMap;
 }
 

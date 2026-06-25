@@ -677,9 +677,7 @@ void StampBrush::updatePreview(QPoint tilePos)
 
     brushItem()->setMap(mPreviewMap, tileRegion);
 
-#ifdef TILEDQUICK_LIB
-    emit quickBrushChanged();
-#endif
+    emit brushMapChanged();
 }
 
 void StampBrush::setRandom(bool value)
