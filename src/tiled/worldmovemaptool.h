@@ -44,6 +44,10 @@ public:
     void languageChanged() override;
 
 protected:
+    bool startResizing(QGraphicsSceneMouseEvent *event);
+    void startMoving(QGraphicsSceneMouseEvent *event);
+    void finishResizing();
+    void finishMoving();
     void abortMoving();
     void abortResizing();
     void refreshCursor();
