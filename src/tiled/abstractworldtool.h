@@ -104,6 +104,9 @@ protected:
     void setSelectionScreenRect(const QRect &rect);
     int resizeHandleAt(const QPointF &scenePos) const;
 
+    QRectF sceneViewRect() const;
+    void recenterView(const QPoint &offset);
+
     bool mapCanBeMoved(MapDocument *mapDocument) const;
     QRect mapRect(MapDocument *mapDocument) const;
     WorldDocument *worldForMap(MapDocument *mapDocument) const;

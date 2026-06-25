@@ -154,11 +154,7 @@ void WorldMoveMapTool::moveMap(MapDocument *document, QPoint moveBy)
     if (document == mapDocument()) {
         // undo camera movement, by the actual snapped offset
         const QPoint actualOffset = rect.topLeft() - prevRect.topLeft();
-        DocumentManager *manager = DocumentManager::instance();
-        MapView *view = manager->viewForDocument(mapDocument());
-        QRectF viewRect { view->viewport()->rect() };
-        QRectF sceneViewRect = view->viewportTransform().inverted().mapRect(viewRect);
-        view->forceCenterOn(sceneViewRect.center() - actualOffset);
+        recenterView(actualOffset);
     }
 }
 
@@ -310,13 +306,8 @@ void WorldMoveMapTool::mouseReleased(QGraphicsSceneMouseEvent *event)
                     if (auto worldDocument = worldForMap(resizedMap)) {
                         const QPoint newPos = worldDocument->world()->mapRect(resizedMap->fileName()).topLeft();
                         const QPoint actualOffset = newPos - prevPos;
-                        if (!actualOffset.isNull()) {
-                            DocumentManager *manager = DocumentManager::instance();
-                            MapView *view = manager->viewForDocument(mapDocument());
-                            const QRectF viewRect { view->viewport()->rect() };
-                            const QRectF sceneViewRect = view->viewportTransform().inverted().mapRect(viewRect);
-                            view->forceCenterOn(sceneViewRect.center() - actualOffset);
-                        }
+                        if (!actualOffset.isNull())
+                            recenterView(actualOffset);
                     }
                 }
             }
@@ -336,8 +327,7 @@ void WorldMoveMapTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     if (event->button() == Qt::LeftButton) {
         DocumentManager *manager = DocumentManager::instance();
         MapView *view = manager->viewForDocument(mapDocument());
-        const QRectF viewRect { view->viewport()->rect() };
-        const QRectF sceneViewRect = view->viewportTransform().inverted().mapRect(viewRect);
+        const QPointF viewCenter = sceneViewRect().center();
 
         auto draggedMap = std::exchange(mDraggingMap, nullptr);
         mDraggingMapItem = nullptr;
@@ -355,13 +345,13 @@ void WorldMoveMapTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 
                 if (draggedMap == mapDocument()) {
                     // undo camera movement
-                    view->forceCenterOn(sceneViewRect.center() - mDragOffset);
+                    view->forceCenterOn(viewCenter - mDragOffset);
                 }
             }
         } else {
             // switch to the document
             manager->switchToDocumentAndHandleSimiliarTileset(draggedMap,
-                                                              sceneViewRect.center() - mDraggedMapStartPos,
+                                                              viewCenter - mDraggedMapStartPos,
                                                               view->zoomable()->scale());
         }
 

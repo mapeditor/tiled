@@ -281,11 +281,7 @@ void AbstractWorldTool::populateAddToWorldMenu(QMenu &menu)
 
 void AbstractWorldTool::addAnotherMapToWorldAtCenter()
 {
-    DocumentManager *manager = DocumentManager::instance();
-    MapView *view = manager->viewForDocument(mapDocument());
-    const QRectF viewRect { view->viewport()->rect() };
-    const QRectF sceneViewRect = view->viewportTransform().inverted().mapRect(viewRect);
-    addAnotherMapToWorld(sceneViewRect.center().toPoint());
+    addAnotherMapToWorld(sceneViewRect().center().toPoint());
 }
 
 void AbstractWorldTool::addAnotherMapToWorld(QPoint insertPos)
@@ -436,8 +432,8 @@ void AbstractWorldTool::setSelectionScreenRect(const QRect &rect)
     mSelectionRectangle->setRectangle(rect);
     mSelectionRectangle->setVisible(true);
 
-    // Place the eight handles on the corners and edge midpoints, using QRectf
-    // to avoid the off by-one of QRect::right() and bottom()
+    // Place the eight handles on the corners and edge midpoints, using QRectF
+    // to avoid the off-by-one of QRect::right() and bottom()
     const QRectF bounds = rect;
     const QPointF center = bounds.center();
     const QPointF handlePos[HandleCount] = {
@@ -463,6 +459,22 @@ int AbstractWorldTool::resizeHandleAt(const QPointF &scenePos) const
             return i;
     }
     return -1;
+}
+
+// The scene rect currently visible in the active map's view
+QRectF AbstractWorldTool::sceneViewRect() const
+{
+    MapView *view = DocumentManager::instance()->viewForDocument(mapDocument());
+    return view->viewportTransform().inverted().mapRect(QRectF(view->viewport()->rect()));
+}
+
+// Move the camera back by offset, to keep the active map steady after it shifts
+void AbstractWorldTool::recenterView(const QPoint &offset)
+{
+    MapView *view = DocumentManager::instance()->viewForDocument(mapDocument());
+    const QRectF viewRect { view->viewport()->rect() };
+    const QRectF sceneViewRect = view->viewportTransform().inverted().mapRect(viewRect);
+    view->forceCenterOn(sceneViewRect.center() - offset);
 }
 
 } // namespace Tiled
