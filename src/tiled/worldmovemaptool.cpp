@@ -208,11 +208,15 @@ void WorldMoveMapTool::mousePressed(QGraphicsSceneMouseEvent *event)
         return;
 
     if (event->button() == Qt::LeftButton) {
-        if (startResizing(event))
+        MapDocument *map = nullptr;
+        const int handle = resizeHandleNear(event->scenePos(), map);
+        if (handle != -1 && mapCanBeMoved(map)) {
+            startResizing(map, handle, event->scenePos());
             return;
+        }
 
         if (mapCanBeMoved(targetMap())) {
-            startMoving(event);
+            startMoving(targetMap(), event->scenePos());
             return;
         }
     }
@@ -220,17 +224,12 @@ void WorldMoveMapTool::mousePressed(QGraphicsSceneMouseEvent *event)
     AbstractWorldTool::mousePressed(event);
 }
 
-// returns false when no handle was pressed, so the caller can start a move
-bool WorldMoveMapTool::startResizing(QGraphicsSceneMouseEvent *event)
+void WorldMoveMapTool::startResizing(MapDocument *map, int handle,
+                                     const QPointF &scenePos)
 {
-    MapDocument *map = nullptr;
-    const int handle = resizeHandleNear(event->scenePos(), map);
-    if (handle == -1 || !mapCanBeMoved(map))
-        return false;
-
     mResizingMap = map;
     mResizeHandle = handle;
-    mDragStartScenePos = event->scenePos();
+    mDragStartScenePos = scenePos;
 
     auto world = worldForMap(mResizingMap)->world();
     const QPoint worldPos = world->mapRect(mResizingMap->fileName()).topLeft();
@@ -240,14 +239,13 @@ bool WorldMoveMapTool::startResizing(QGraphicsSceneMouseEvent *event)
     mResizeNewSize = mResizingMap->map()->size();
     mResizeOffset = QPoint(0, 0);
     refreshCursor();
-    return true;
 }
 
-void WorldMoveMapTool::startMoving(QGraphicsSceneMouseEvent *event)
+void WorldMoveMapTool::startMoving(MapDocument *map, const QPointF &scenePos)
 {
-    mDraggingMap = targetMap();
+    mDraggingMap = map;
     mDraggingMapItem = mapScene()->mapItem(mDraggingMap);
-    mDragStartScenePos = event->scenePos();
+    mDragStartScenePos = scenePos;
     mDraggedMapStartPos = mDraggingMapItem->pos();
     mDragOffset = QPoint(0, 0);
     refreshCursor();
