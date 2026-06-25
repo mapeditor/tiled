@@ -50,6 +50,9 @@ enum ResizeHandlePosition {
     HandleCount,
 };
 
+// The resize cursor shape for a given resize handle.
+Qt::CursorShape cursorForHandle(int handle);
+
 /**
  * A convenient base class for tools that work on object layers. Implements
  * the standard context menu.

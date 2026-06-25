@@ -65,17 +65,6 @@ static constexpr HandleEdges handleEdges[HandleCount] = {
     { false, true,  false, true  },     // bottom-right
 };
 
-Qt::CursorShape cursorForHandle(int handle)
-{
-    switch (handle) {
-    case TopLeftHandle: case BottomRightHandle: return Qt::SizeFDiagCursor;
-    case TopRightHandle: case BottomLeftHandle: return Qt::SizeBDiagCursor;
-    case TopHandle: case BottomHandle:          return Qt::SizeVerCursor;
-    case LeftHandle: case RightHandle:          return Qt::SizeHorCursor;
-    default:                                    return Qt::ArrowCursor;
-    }
-}
-
 } // namespace
 
 WorldMoveMapTool::WorldMoveMapTool(QObject *parent)

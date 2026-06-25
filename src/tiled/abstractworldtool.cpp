@@ -91,6 +91,17 @@ std::array<QPointF, HandleCount> resizeHandlePositions(const QRectF &bounds)
 
 } // namespace
 
+Qt::CursorShape cursorForHandle(int handle)
+{
+    switch (handle) {
+    case TopLeftHandle: case BottomRightHandle: return Qt::SizeFDiagCursor;
+    case TopRightHandle: case BottomLeftHandle: return Qt::SizeBDiagCursor;
+    case TopHandle: case BottomHandle:          return Qt::SizeVerCursor;
+    case LeftHandle: case RightHandle:          return Qt::SizeHorCursor;
+    default:                                    return Qt::ArrowCursor;
+    }
+}
+
 AbstractWorldTool::AbstractWorldTool(Id id,
                                      const QString &name,
                                      const QIcon &icon,
@@ -102,15 +113,10 @@ AbstractWorldTool::AbstractWorldTool(Id id,
     mSelectionRectangle->setVisible(false);
 
     // Each handle owns its resize cursor, so it shows above a map's own cursor
-    static constexpr Qt::CursorShape handleCursors[HandleCount] = {
-        Qt::SizeFDiagCursor, Qt::SizeVerCursor, Qt::SizeBDiagCursor,
-        Qt::SizeHorCursor,                      Qt::SizeHorCursor,
-        Qt::SizeBDiagCursor, Qt::SizeVerCursor, Qt::SizeFDiagCursor,
-    };
     for (int i = 0; i < HandleCount; ++i) {
         mResizeHandles[i] = std::make_unique<MapResizeHandle>();
         mResizeHandles[i]->setVisible(false);
-        mResizeHandles[i]->setCursor(handleCursors[i]);
+        mResizeHandles[i]->setCursor(cursorForHandle(i));
     }
 
     WorldManager &worldManager = WorldManager::instance();
