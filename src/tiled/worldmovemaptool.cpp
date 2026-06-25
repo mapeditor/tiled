@@ -219,12 +219,14 @@ void WorldMoveMapTool::mousePressed(QGraphicsSceneMouseEvent *event)
     if (mDraggingMap || mResizingMap)
         return;
 
-    if (event->button() == Qt::LeftButton && mapCanBeMoved(targetMap())) {
+    if (event->button() == Qt::LeftButton) {
         if (startResizing(event))
             return;
 
-        startMoving(event);
-        return;
+        if (mapCanBeMoved(targetMap())) {
+            startMoving(event);
+            return;
+        }
     }
 
     AbstractWorldTool::mousePressed(event);
@@ -233,11 +235,12 @@ void WorldMoveMapTool::mousePressed(QGraphicsSceneMouseEvent *event)
 // returns false when no handle was pressed, so the caller can start a move
 bool WorldMoveMapTool::startResizing(QGraphicsSceneMouseEvent *event)
 {
-    const int handle = resizeHandleAt(event->scenePos());
-    if (handle == -1)
+    MapDocument *map = nullptr;
+    const int handle = resizeHandleNear(event->scenePos(), map);
+    if (handle == -1 || !mapCanBeMoved(map))
         return false;
 
-    mResizingMap = targetMap();
+    mResizingMap = map;
     mResizeHandle = handle;
     mDragStartScenePos = event->scenePos();
 
@@ -271,10 +274,14 @@ void WorldMoveMapTool::mouseMoved(const QPointF &pos,
     }
 
     if (!worldForMap(mDraggingMap) || !mDraggingMap) {
-        AbstractWorldTool::mouseMoved(pos, modifiers);
+        // target the map whose handle is under the cursor, else hover normally
+        MapDocument *map = nullptr;
+        const int hoveredHandle = resizeHandleNear(pos, map);
+        if (hoveredHandle != -1 && mapCanBeMoved(map))
+            setTargetMap(map);
+        else
+            AbstractWorldTool::mouseMoved(pos, modifiers);
 
-        // update the hovered handle so refreshCursor can show a resize cursor
-        mHoveredHandle = resizeHandleAt(pos);
         refreshCursor();
         return;
     }
@@ -399,8 +406,6 @@ void WorldMoveMapTool::refreshCursor()
         cursorShape = Qt::SizeAllCursor;
     else if (mResizingMap)
         cursorShape = cursorForHandle(mResizeHandle);
-    else if (mHoveredHandle != -1)
-        cursorShape = cursorForHandle(mHoveredHandle);
 
     if (cursor().shape() != cursorShape)
         setCursor(cursorShape);

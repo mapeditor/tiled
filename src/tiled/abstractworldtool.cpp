@@ -59,6 +59,7 @@ public:
     MapResizeHandle()
     {
         setAcceptedMouseButtons(Qt::MouseButtons());
+        setAcceptHoverEvents(true);
         setFlag(QGraphicsItem::ItemIgnoresTransformations);
         setZValue(10000 + 1);
     }
@@ -76,6 +77,18 @@ public:
     }
 };
 
+// The eight resize handle positions for bounds, in ResizeHandlePosition order,
+// using a QRectF so right() and bottom() are not off by one like QRect
+std::array<QPointF, 8> resizeHandlePositions(const QRectF &bounds)
+{
+    const QPointF center = bounds.center();
+    return {{
+        bounds.topLeft(),    QPointF(center.x(), bounds.top()),    bounds.topRight(),
+        QPointF(bounds.left(), center.y()),                        QPointF(bounds.right(), center.y()),
+        bounds.bottomLeft(), QPointF(center.x(), bounds.bottom()), bounds.bottomRight(),
+    }};
+}
+
 } // namespace
 
 AbstractWorldTool::AbstractWorldTool(Id id,
@@ -88,9 +101,16 @@ AbstractWorldTool::AbstractWorldTool(Id id,
 {
     mSelectionRectangle->setVisible(false);
 
-    for (auto &handle : mResizeHandles) {
-        handle = std::make_unique<MapResizeHandle>();
-        handle->setVisible(false);
+    // Each handle owns its resize cursor, so it shows above a map's own cursor
+    static constexpr Qt::CursorShape handleCursors[HandleCount] = {
+        Qt::SizeFDiagCursor, Qt::SizeVerCursor, Qt::SizeBDiagCursor,
+        Qt::SizeHorCursor,                      Qt::SizeHorCursor,
+        Qt::SizeBDiagCursor, Qt::SizeVerCursor, Qt::SizeFDiagCursor,
+    };
+    for (int i = 0; i < HandleCount; ++i) {
+        mResizeHandles[i] = std::make_unique<MapResizeHandle>();
+        mResizeHandles[i]->setVisible(false);
+        mResizeHandles[i]->setCursor(handleCursors[i]);
     }
 
     WorldManager &worldManager = WorldManager::instance();
@@ -206,6 +226,37 @@ MapDocument *AbstractWorldTool::mapAt(const QPointF &pos) const
             return mapItem->mapDocument();
     }
     return nullptr;
+}
+
+// Finds a resize handle near the cursor on any map, hit-tested in view
+// coordinates so the hit area matches the on-screen handle size at any zoom,
+// returning its index and setting mapDocument to the owning map, or -1 if none
+int AbstractWorldTool::resizeHandleNear(const QPointF &scenePos, MapDocument *&mapDocument) const
+{
+    const auto views = mapScene()->views();
+    if (views.isEmpty())
+        return -1;
+
+    const QTransform viewTransform = views.first()->viewportTransform();
+    const QPointF viewPos = viewTransform.map(scenePos);
+    const qreal radius = Utils::dpiScaled(10.0);
+
+    const auto items = mapScene()->items();
+    for (QGraphicsItem *item : items) {
+        auto mapItem = qgraphicsitem_cast<MapItem*>(item);
+        if (!mapItem || !mapItem->isEnabled())
+            continue;
+
+        const auto handlePos = resizeHandlePositions(mapRect(mapItem->mapDocument()));
+        for (int i = 0; i < HandleCount; ++i) {
+            const QPointF delta = viewPos - viewTransform.map(handlePos[i]);
+            if (qAbs(delta.x()) <= radius && qAbs(delta.y()) <= radius) {
+                mapDocument = mapItem->mapDocument();
+                return i;
+            }
+        }
+    }
+    return -1;
 }
 
 bool AbstractWorldTool::mapCanBeMoved(MapDocument *mapDocument) const
@@ -432,33 +483,12 @@ void AbstractWorldTool::setSelectionScreenRect(const QRect &rect)
     mSelectionRectangle->setRectangle(rect);
     mSelectionRectangle->setVisible(true);
 
-    // Place the eight handles on the corners and edge midpoints, using QRectF
-    // to avoid the off-by-one of QRect::right() and bottom()
-    const QRectF bounds = rect;
-    const QPointF center = bounds.center();
-    const QPointF handlePos[HandleCount] = {
-        bounds.topLeft(),    QPointF(center.x(), bounds.top()),    bounds.topRight(),
-        QPointF(bounds.left(), center.y()),                        QPointF(bounds.right(), center.y()),
-        bounds.bottomLeft(), QPointF(center.x(), bounds.bottom()), bounds.bottomRight(),
-    };
+    // Place the eight handles on the corners and edge midpoints
+    const auto handlePos = resizeHandlePositions(rect);
     for (int i = 0; i < HandleCount; ++i) {
         mResizeHandles[i]->setPos(handlePos[i]);
         mResizeHandles[i]->setVisible(true);
     }
-}
-
-int AbstractWorldTool::resizeHandleAt(const QPointF &scenePos) const
-{
-    // The handles ignore transformations, so itemAt needs the view transform
-    const auto views = mapScene()->views();
-    const QTransform viewTransform = views.isEmpty() ? QTransform()
-                                                     : views.first()->transform();
-    QGraphicsItem *item = mapScene()->itemAt(scenePos, viewTransform);
-    for (int i = 0; i < HandleCount; ++i) {
-        if (mResizeHandles[i].get() == item)
-            return i;
-    }
-    return -1;
 }
 
 // The scene rect currently visible in the active map's view
