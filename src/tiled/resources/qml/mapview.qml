@@ -69,7 +69,10 @@ Rectangle {
                 anchors.left: mapItem.left
                 anchors.top: mapItem.top
 
-                map: toolBrushMap;
+                // Save toolBrushMap as a property var so that qml doesn't lose
+                // track of it during garbage collection
+                property var toolPreviewMap: toolBrushMap;
+                map: toolPreviewMap
 
                 visibleArea: {
                     if (this.map)

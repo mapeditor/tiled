@@ -58,6 +58,11 @@ AbstractTileTool::~AbstractTileTool()
     delete mBrushItem;
 }
 
+const SharedMap &AbstractTileTool::brushMap() const
+{
+    return brushItem()->map();
+}
+
 void AbstractTileTool::activate(MapScene *scene)
 {
     scene->addItem(mBrushItem);

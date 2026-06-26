@@ -763,26 +763,21 @@ void MapEditor::onQuickMouseCoordsChanged(QVariant coords)
 
 void MapEditor::onBrushMapChanged()
 {
-    AbstractTileTool *atTool = qobject_cast<AbstractTileTool*>(selectedTool());
+    EditableMap *brushMap = tileEditPreview();
 
-    if (atTool && atTool->brushItem()->map()) {
-        QQuickWidget *activeWidget = mViewForMap.value(mCurrentMapDocument)->quickWidget();
-        QQmlContext *rootContext = activeWidget->engine()->rootContext();
-        QVariant brushMapContext = rootContext->contextProperty(QStringLiteral("toolBrushMap"));
+    QQuickWidget *activeWidget = mViewForMap.value(mCurrentMapDocument)->quickWidget();
+    QQmlContext *rootContext = activeWidget->engine()->rootContext();
+    QVariant brushMapContext = rootContext->contextProperty(QStringLiteral("toolBrushMap"));
 
-        if (brushMapContext.isValid()) {
-            EditableMap *oldBrushMap = brushMapContext.value<EditableMap*>();
+    if (!brushMap || !brushMapContext.isValid())
+        return;
 
-            if (oldBrushMap && oldBrushMap->map() == atTool->brushItem()->map().get())
-                return;
+    EditableMap *oldBrushMap = brushMapContext.value<EditableMap*>();
 
-            EditableMap *newBrushMap = new EditableMap(atTool->brushItem()->map().get());
-            rootContext->setContextProperty(QStringLiteral("toolBrushMap"), newBrushMap);
+    if (oldBrushMap && oldBrushMap->map() == brushMap->map())
+        return;
 
-            if (oldBrushMap)
-                delete oldBrushMap;
-        }
-    }
+    rootContext->setContextProperty(QStringLiteral("toolBrushMap"), brushMap);
 }
 #endif
 
@@ -1176,6 +1171,18 @@ EditableMap *MapEditor::currentBrush() const
 
     auto map = stamp.variations().first().map->clone();
     auto editableMap = new EditableMap(std::move(map));
+
+    QQmlEngine::setObjectOwnership(editableMap, QQmlEngine::JavaScriptOwnership);
+    return editableMap;
+}
+
+EditableMap *MapEditor::tileEditPreview() const
+{
+    AbstractTileTool *atTool = qobject_cast<AbstractTileTool*>(selectedTool());
+    if (!atTool || !atTool->brushMap())
+        return nullptr;
+
+    EditableMap *editableMap = new EditableMap(atTool->brushMap().get());
 
     QQmlEngine::setObjectOwnership(editableMap, QQmlEngine::JavaScriptOwnership);
     return editableMap;
