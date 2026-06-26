@@ -47,6 +47,7 @@ class MapDocument;
 class MapObjectItem;
 class MapScene;
 class ObjectGroupItem;
+class ViewportOverlayItem;
 
 /**
  * A graphics scene that represents the contents of a map.
@@ -74,6 +75,7 @@ public:
     MapItem *mapItem(MapDocument *mapDocument) const;
 
     DebugDrawItem *debugDrawItem() const;
+    ViewportOverlayItem *viewportOverlay() const;
 
     const QRectF &viewRect() const;
     void setViewRect(const QRectF &rect);
@@ -135,6 +137,7 @@ private:
     QHash<MapDocument*, MapItem*> mMapItems;
     AbstractTool *mSelectedTool = nullptr;
     DebugDrawItem *mDebugDrawItem = nullptr;
+    ViewportOverlayItem *mViewportOverlayItem = nullptr;
     bool mUnderMouse = false;
     bool mShowTileCollisionShapes = false;
     bool mParallaxEnabled = true;
@@ -169,6 +172,11 @@ inline MapItem *MapScene::mapItem(MapDocument *mapDocument) const
 inline DebugDrawItem *MapScene::debugDrawItem() const
 {
     return mDebugDrawItem;
+}
+
+inline ViewportOverlayItem *MapScene::viewportOverlay() const
+{
+    return mViewportOverlayItem;
 }
 
 inline const QRectF &MapScene::viewRect() const

@@ -881,6 +881,17 @@ public:
                     });
         mChunkSizeProperty->setMinimum(CHUNK_SIZE_MIN);
 
+        mViewportSizeProperty = new SizeProperty(
+                    tr("Viewport Size"),
+                    [this] {
+                        return map()->viewportSize();
+                    },
+                    [this](const QSize &value) {
+                        push(new ChangeMapViewportSize(mapDocument(), value));
+                    });
+        mViewportSizeProperty->setMinimum(0);
+        mViewportSizeProperty->setSuffix(tr(" px"));
+
         mRenderOrderProperty = new EnumProperty<Map::RenderOrder>(
                     tr("Tile Render Order"),
                     [this] {
@@ -912,6 +923,7 @@ public:
         mMapProperties->addProperty(mSkewProperty);
         mMapProperties->addSeparator();
         mMapProperties->addProperty(mParallaxOriginProperty);
+        mMapProperties->addProperty(mViewportSizeProperty);
         mMapProperties->addSeparator();
         mMapProperties->addProperty(mLayerDataFormatProperty);
         mMapProperties->addProperty(mCompressionLevelProperty);
@@ -976,6 +988,9 @@ private:
             break;
         case Map::ChunkSizeProperty:
             emit mChunkSizeProperty->valueChanged();
+            break;
+        case Map::ViewportSizeProperty:
+            emit mViewportSizeProperty->valueChanged();
             break;
         }
 
@@ -1050,6 +1065,7 @@ private:
     Property *mLayerDataFormatProperty;
     Property *mCompressionLevelProperty;
     SizeProperty *mChunkSizeProperty;
+    SizeProperty *mViewportSizeProperty;
     Property *mRenderOrderProperty;
     Property *mBackgroundColorProperty;
 };
