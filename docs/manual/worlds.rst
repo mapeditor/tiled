@@ -92,6 +92,19 @@ Moving Maps
     Alternatively you can use the arrow keys to move the current selected map
     - holding Shift will perform bigger steps.
 
+Resizing Maps
+    Hover over a map with the World Tool to show resize handles on its corners
+    and edges, then drag a handle to resize the map within the world. The size
+    snaps to the world grid; hold 'Ctrl' while dragging to resize freely. You
+    can abort a resize by hitting 'Escape' or by right-clicking.
+
+Using the World Grid
+    A grid can be shown across the world to help align maps. Toggle it with
+    *View > Show World Grid*, and toggle snapping with *View > Snapping > Snap
+    Maps to World Grid*. When snapping is enabled, maps snap to the grid while
+    being moved or resized (hold 'Ctrl' to override). The grid size is set per
+    world in the *World > World Properties* dialog.
+
 Saving World files
     You can save manipulated world files by using the *World > Save World*
     menu. Worlds will also automatically be saved if you launch any external
