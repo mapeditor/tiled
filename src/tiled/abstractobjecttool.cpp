@@ -38,6 +38,8 @@
 #include "session.h"
 #include "templatemanager.h"
 #include "tile.h"
+
+#include <QShortcut>
 #include "tmxmapformat.h"
 #include "utils.h"
 
@@ -123,15 +125,41 @@ AbstractObjectTool::AbstractObjectTool(Id id,
     mRotateRight->setIcon(rotateRightIcon);
     mRotateRight->setShortcut(Qt::Key_Z);
 
+    mRaiseObject = new QAction(this);
+    mRaiseObject->setShortcut(Qt::Key_PageUp);
+
+    mLowerObject = new QAction(this);
+    mLowerObject->setShortcut(Qt::Key_PageDown);
+
+    mRaiseObjectToTop = new QAction(this);
+    mRaiseObjectToTop->setShortcut(Qt::Key_Home);
+
+    mLowerObjectToBottom = new QAction(this);
+    mLowerObjectToBottom->setShortcut(Qt::Key_End);
+
     ActionManager::registerAction(mFlipHorizontal, "FlipHorizontal");
     ActionManager::registerAction(mFlipVertical, "FlipVertical");
     ActionManager::registerAction(mRotateLeft, "RotateLeft");
     ActionManager::registerAction(mRotateRight, "RotateRight");
+    ActionManager::registerAction(mRaiseObject, "RaiseObject");
+    ActionManager::registerAction(mLowerObject, "LowerObject");
+    ActionManager::registerAction(mRaiseObjectToTop, "RaiseObjectToTop");
+    ActionManager::registerAction(mLowerObjectToBottom, "LowerObjectToBottom");
 
     connect(mFlipHorizontal, &QAction::triggered, this, &AbstractObjectTool::flipHorizontally);
     connect(mFlipVertical, &QAction::triggered, this, &AbstractObjectTool::flipVertically);
     connect(mRotateLeft, &QAction::triggered, this, &AbstractObjectTool::rotateLeft);
     connect(mRotateRight, &QAction::triggered, this, &AbstractObjectTool::rotateRight);
+    connect(mRaiseObject, &QAction::triggered, this, &AbstractObjectTool::raise);
+    connect(mLowerObject, &QAction::triggered, this, &AbstractObjectTool::lower);
+    connect(mRaiseObjectToTop, &QAction::triggered, this, &AbstractObjectTool::raiseToTop);
+    connect(mLowerObjectToBottom, &QAction::triggered, this, &AbstractObjectTool::lowerToBottom);
+
+    // QShortcut instances for reliable shortcuts even when toolbar is hidden (per bjorn #4369)
+    connect(mRaiseObject, &QAction::changed, this, &AbstractObjectTool::updateShortcuts);
+    connect(mLowerObject, &QAction::changed, this, &AbstractObjectTool::updateShortcuts);
+    connect(mRaiseObjectToTop, &QAction::changed, this, &AbstractObjectTool::updateShortcuts);
+    connect(mLowerObjectToBottom, &QAction::changed, this, &AbstractObjectTool::updateShortcuts);
 
     setActionsEnabled(false);
 
@@ -142,6 +170,7 @@ void AbstractObjectTool::activate(MapScene *scene)
 {
     AbstractTool::activate(scene);
     setActionsEnabled(true);
+    updateShortcuts();
 }
 
 void AbstractObjectTool::deactivate(MapScene *scene)
@@ -203,6 +232,10 @@ void AbstractObjectTool::languageChanged()
     mFlipVertical->setText(tr("Flip Vertically"));
     mRotateLeft->setText(QCoreApplication::translate("Tiled::StampActions", "Rotate Left"));
     mRotateRight->setText(QCoreApplication::translate("Tiled::StampActions", "Rotate Right"));
+    mRaiseObject->setText(tr("Raise Object"));
+    mLowerObject->setText(tr("Lower Object"));
+    mRaiseObjectToTop->setText(tr("Raise Object to Top"));
+    mLowerObjectToBottom->setText(tr("Lower Object to Bottom"));
 }
 
 void AbstractObjectTool::populateToolBar(QToolBar *toolBar)
@@ -697,16 +730,16 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
     }
 
     menu.addSeparator();
-    menu.addAction(tr("Flip Horizontally"), this, &AbstractObjectTool::flipHorizontally, Qt::Key_X);
-    menu.addAction(tr("Flip Vertically"), this, &AbstractObjectTool::flipVertically, Qt::Key_Y);
+    menu.addAction(mFlipHorizontal);
+    menu.addAction(mFlipVertical);
 
     ObjectGroup *sameObjectGroup = RaiseLowerHelper::sameObjectGroup(selectedObjects);
     if (sameObjectGroup && sameObjectGroup->drawOrder() == ObjectGroup::IndexOrder) {
         menu.addSeparator();
-        menu.addAction(tr("Raise Object"), this, &AbstractObjectTool::raise, Qt::Key_PageUp);
-        menu.addAction(tr("Lower Object"), this, &AbstractObjectTool::lower, Qt::Key_PageDown);
-        menu.addAction(tr("Raise Object to Top"), this, &AbstractObjectTool::raiseToTop, Qt::Key_Home);
-        menu.addAction(tr("Lower Object to Bottom"), this, &AbstractObjectTool::lowerToBottom, Qt::Key_End);
+        menu.addAction(mRaiseObject);
+        menu.addAction(mLowerObject);
+        menu.addAction(mRaiseObjectToTop);
+        menu.addAction(mLowerObjectToBottom);
     }
 
     if (LayerIterator(mapDocument()->map(), Layer::ObjectGroupType).next()) {
@@ -752,6 +785,73 @@ void AbstractObjectTool::setActionsEnabled(bool enabled)
     mFlipVertical->setEnabled(enabled);
     mRotateLeft->setEnabled(enabled);
     mRotateRight->setEnabled(enabled);
+    mRaiseObject->setEnabled(enabled);
+    mLowerObject->setEnabled(enabled);
+    mRaiseObjectToTop->setEnabled(enabled);
+    mLowerObjectToBottom->setEnabled(enabled);
+
+    // Sync shortcut enabled state
+    if (mRaiseShortcut)
+        mRaiseShortcut->setEnabled(enabled);
+    if (mLowerShortcut)
+        mLowerShortcut->setEnabled(enabled);
+    if (mRaiseToTopShortcut)
+        mRaiseToTopShortcut->setEnabled(enabled);
+    if (mLowerToBottomShortcut)
+        mLowerToBottomShortcut->setEnabled(enabled);
+}
+
+/**
+ * Creates QShortcut instances that synchronize with the QActions.
+ * This ensures shortcuts work even when toolbar is hidden (per bjorn #4369).
+ */
+void AbstractObjectTool::updateShortcuts()
+{
+    if (!mapScene() || mapScene()->views().isEmpty())
+        return;
+
+    QWidget *parent = mapScene()->views().first();
+
+    // Delete existing shortcuts
+    delete mRaiseShortcut;
+    mRaiseShortcut = nullptr;
+    delete mLowerShortcut;
+    mLowerShortcut = nullptr;
+    delete mRaiseToTopShortcut;
+    mRaiseToTopShortcut = nullptr;
+    delete mLowerToBottomShortcut;
+    mLowerToBottomShortcut = nullptr;
+
+    // Create new shortcuts synchronized with actions
+    if (!mRaiseObject->shortcut().isEmpty()) {
+        mRaiseShortcut = new QShortcut(mRaiseObject->shortcut(), parent);
+        mRaiseShortcut->setEnabled(mRaiseObject->isEnabled());
+        connect(mRaiseShortcut, &QShortcut::activated, this, &AbstractObjectTool::raise);
+    }
+
+    if (!mLowerObject->shortcut().isEmpty()) {
+        mLowerShortcut = new QShortcut(mLowerObject->shortcut(), parent);
+        mLowerShortcut->setEnabled(mLowerObject->isEnabled());
+        connect(mLowerShortcut, &QShortcut::activated, this, &AbstractObjectTool::lower);
+    }
+
+    if (!mRaiseObjectToTop->shortcut().isEmpty()) {
+        mRaiseToTopShortcut = new QShortcut(mRaiseObjectToTop->shortcut(), parent);
+        mRaiseToTopShortcut->setEnabled(mRaiseObjectToTop->isEnabled());
+        connect(mRaiseToTopShortcut, &QShortcut::activated, this, &AbstractObjectTool::raiseToTop);
+    }
+
+    if (!mLowerObjectToBottom->shortcut().isEmpty()) {
+        mLowerToBottomShortcut = new QShortcut(mLowerObjectToBottom->shortcut(), parent);
+        mLowerToBottomShortcut->setEnabled(mLowerObjectToBottom->isEnabled());
+        connect(mLowerToBottomShortcut, &QShortcut::activated, this, &AbstractObjectTool::lowerToBottom);
+    }
+
+    // Limit context to avoid ambiguous overloads
+    mRaiseObject->setShortcutContext(Qt::WidgetShortcut);
+    mLowerObject->setShortcutContext(Qt::WidgetShortcut);
+    mRaiseObjectToTop->setShortcutContext(Qt::WidgetShortcut);
+    mLowerObjectToBottom->setShortcutContext(Qt::WidgetShortcut);
 }
 
 #include "moc_abstractobjecttool.cpp"
