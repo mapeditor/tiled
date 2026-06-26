@@ -54,7 +54,7 @@ namespace {
 // setSelectionScreenRect (corners and edge midpoints)
 struct HandleEdges { bool left, right, top, bottom; };
 
-const HandleEdges handleEdges[] = {
+static constexpr HandleEdges handleEdges[HandleCount] = {
     { true,  false, true,  false },     // top-left
     { false, false, true,  false },     // top
     { false, true,  true,  false },     // top-right
@@ -64,17 +64,6 @@ const HandleEdges handleEdges[] = {
     { false, false, false, true  },     // bottom
     { false, true,  false, true  },     // bottom-right
 };
-
-Qt::CursorShape cursorForHandle(int handle)
-{
-    switch (handle) {
-    case TopLeftHandle: case BottomRightHandle: return Qt::SizeFDiagCursor;
-    case TopRightHandle: case BottomLeftHandle: return Qt::SizeBDiagCursor;
-    case TopHandle: case BottomHandle:          return Qt::SizeVerCursor;
-    case LeftHandle: case RightHandle:          return Qt::SizeHorCursor;
-    default:                                    return Qt::ArrowCursor;
-    }
-}
 
 } // namespace
 
@@ -153,8 +142,7 @@ void WorldMoveMapTool::moveMap(MapDocument *document, QPoint moveBy)
 
     if (document == mapDocument()) {
         // undo camera movement, by the actual snapped offset
-        const QPoint actualOffset = rect.topLeft() - prevRect.topLeft();
-        recenterView(actualOffset);
+        recenterView(rect.topLeft() - prevRect.topLeft());
     }
 }
 
@@ -220,11 +208,15 @@ void WorldMoveMapTool::mousePressed(QGraphicsSceneMouseEvent *event)
         return;
 
     if (event->button() == Qt::LeftButton) {
-        if (startResizing(event))
+        MapDocument *map = nullptr;
+        const int handle = resizeHandleNear(event->scenePos(), map);
+        if (handle != -1 && mapCanBeMoved(map)) {
+            startResizing(map, handle, event->scenePos());
             return;
+        }
 
         if (mapCanBeMoved(targetMap())) {
-            startMoving(event);
+            startMoving(targetMap(), event->scenePos());
             return;
         }
     }
@@ -232,17 +224,12 @@ void WorldMoveMapTool::mousePressed(QGraphicsSceneMouseEvent *event)
     AbstractWorldTool::mousePressed(event);
 }
 
-// returns false when no handle was pressed, so the caller can start a move
-bool WorldMoveMapTool::startResizing(QGraphicsSceneMouseEvent *event)
+void WorldMoveMapTool::startResizing(MapDocument *map, int handle,
+                                     const QPointF &scenePos)
 {
-    MapDocument *map = nullptr;
-    const int handle = resizeHandleNear(event->scenePos(), map);
-    if (handle == -1 || !mapCanBeMoved(map))
-        return false;
-
     mResizingMap = map;
     mResizeHandle = handle;
-    mDragStartScenePos = event->scenePos();
+    mDragStartScenePos = scenePos;
 
     auto world = worldForMap(mResizingMap)->world();
     const QPoint worldPos = world->mapRect(mResizingMap->fileName()).topLeft();
@@ -252,14 +239,13 @@ bool WorldMoveMapTool::startResizing(QGraphicsSceneMouseEvent *event)
     mResizeNewSize = mResizingMap->map()->size();
     mResizeOffset = QPoint(0, 0);
     refreshCursor();
-    return true;
 }
 
-void WorldMoveMapTool::startMoving(QGraphicsSceneMouseEvent *event)
+void WorldMoveMapTool::startMoving(MapDocument *map, const QPointF &scenePos)
 {
-    mDraggingMap = targetMap();
+    mDraggingMap = map;
     mDraggingMapItem = mapScene()->mapItem(mDraggingMap);
-    mDragStartScenePos = event->scenePos();
+    mDragStartScenePos = scenePos;
     mDraggedMapStartPos = mDraggingMapItem->pos();
     mDragOffset = QPoint(0, 0);
     refreshCursor();
@@ -267,7 +253,7 @@ void WorldMoveMapTool::startMoving(QGraphicsSceneMouseEvent *event)
 
 void WorldMoveMapTool::mouseMoved(const QPointF &pos,
                                   Qt::KeyboardModifiers modifiers)
-{    
+{
     if (mResizingMap) {
         updateResizingMap(pos, modifiers);
         return;
@@ -343,9 +329,7 @@ void WorldMoveMapTool::finishResizing()
         if (resizedMap == mapDocument()) {
             if (auto worldDocument = worldForMap(resizedMap)) {
                 const QPoint newPos = worldDocument->world()->mapRect(resizedMap->fileName()).topLeft();
-                const QPoint actualOffset = newPos - prevPos;
-                if (!actualOffset.isNull())
-                    recenterView(actualOffset);
+                recenterView(newPos - prevPos);
             }
         }
     }
@@ -359,7 +343,6 @@ void WorldMoveMapTool::finishMoving()
 {
     DocumentManager *manager = DocumentManager::instance();
     MapView *view = manager->viewForDocument(mapDocument());
-    const QPointF viewCenter = sceneViewRect().center();
 
     auto draggedMap = std::exchange(mDraggingMap, nullptr);
     mDraggingMapItem = nullptr;
@@ -377,13 +360,13 @@ void WorldMoveMapTool::finishMoving()
 
             if (draggedMap == mapDocument()) {
                 // undo camera movement
-                view->forceCenterOn(viewCenter - mDragOffset);
+                view->forceCenterOn(view->viewCenter() - mDragOffset);
             }
         }
     } else {
         // switch to the document
         manager->switchToDocumentAndHandleSimiliarTileset(draggedMap,
-                                                          viewCenter - mDraggedMapStartPos,
+                                                          view->viewCenter() - mDraggedMapStartPos,
                                                           view->zoomable()->scale());
     }
 

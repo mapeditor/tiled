@@ -44,8 +44,8 @@ public:
     void languageChanged() override;
 
 protected:
-    bool startResizing(QGraphicsSceneMouseEvent *event);
-    void startMoving(QGraphicsSceneMouseEvent *event);
+    void startResizing(MapDocument *map, int handle, const QPointF &scenePos);
+    void startMoving(MapDocument *map, const QPointF &scenePos);
     void finishResizing();
     void finishMoving();
     void abortMoving();

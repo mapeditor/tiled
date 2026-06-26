@@ -47,7 +47,11 @@ enum ResizeHandlePosition {
     BottomLeftHandle,
     BottomHandle,
     BottomRightHandle,
+    HandleCount,
 };
+
+// The resize cursor shape for a given resize handle.
+Qt::CursorShape cursorForHandle(int handle);
 
 /**
  * A convenient base class for tools that work on object layers. Implements
@@ -104,7 +108,6 @@ protected:
     void setSelectionScreenRect(const QRect &rect);
     int resizeHandleNear(const QPointF &scenePos, MapDocument *&mapDocument) const;
 
-    QRectF sceneViewRect() const;
     void recenterView(const QPoint &offset);
 
     bool mapCanBeMoved(MapDocument *mapDocument) const;
@@ -125,8 +128,6 @@ private:
     QAction *mRemoveMapFromWorldAction;
 
     std::unique_ptr<SelectionRectangle> mSelectionRectangle;
-
-    static constexpr int HandleCount = 8;
     std::array<std::unique_ptr<QGraphicsItem>, HandleCount> mResizeHandles;
 };
 
