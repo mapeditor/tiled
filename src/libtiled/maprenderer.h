@@ -347,7 +347,8 @@ private:
     const Tile *mTile;
     QVector<QPainter::PixmapFragment> mFragments;
     const bool mIsOpenGL;
-    const QColor mTintColor;
+    const QColor mLayerTintColor;
+    QColor mTintColor;
 };
 
 } // namespace Tiled

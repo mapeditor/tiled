@@ -356,7 +356,7 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
     const Cell &cell = object->cell();
 
     if (!cell.isEmpty()) {
-        CellRenderer(painter, this, object->objectGroup()->effectiveTintColor())
+        CellRenderer(painter, this, object->effectiveTintColor())
                 .render(cell, QPointF(), bounds.size());
 
         if (testFlag(ShowTileObjectOutlines)) {
