@@ -44,10 +44,16 @@ public:
     void languageChanged() override;
 
 protected:
+    void startResizing(MapDocument *map, int handle, const QPointF &scenePos);
+    void startMoving(MapDocument *map, const QPointF &scenePos);
+    void finishResizing();
+    void finishMoving();
     void abortMoving();
+    void abortResizing();
     void refreshCursor();
 
     void moveMap(MapDocument *document, QPoint moveBy);
+    void updateResizingMap(const QPointF &pos, Qt::KeyboardModifiers modifiers);
 
     // drag state
     MapDocument *mDraggingMap = nullptr;
@@ -55,6 +61,14 @@ protected:
     QPointF mDragStartScenePos;
     QPointF mDraggedMapStartPos;
     QPoint mDragOffset;
+
+    // resize drag state
+    MapDocument *mResizingMap = nullptr;
+    int mResizeHandle = -1;
+    QRect mResizeStartWorldRect;
+    QPoint mResizeSceneOffset;
+    QSize mResizeNewSize;
+    QPoint mResizeOffset;
 };
 
 } // namespace Tiled

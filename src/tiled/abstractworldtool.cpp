@@ -30,21 +30,77 @@
 #include "mapview.h"
 #include "preferences.h"
 #include "selectionrectangle.h"
+#include "utils.h"
 #include "world.h"
 #include "worlddocument.h"
 #include "worldmanager.h"
 
 #include <QAction>
 #include <QFileDialog>
+#include <QGraphicsItem>
+#include <QGraphicsView>
 #include <QKeyEvent>
 #include <QMenu>
 #include <QMessageBox>
+#include <QPainter>
 #include <QToolBar>
 #include <QToolButton>
 #include <QUndoStack>
 #include <QtMath>
 
 namespace Tiled {
+
+namespace {
+
+// A small square handle shown on a map's corners and edges for resizing
+class MapResizeHandle : public QGraphicsItem
+{
+public:
+    MapResizeHandle()
+    {
+        setAcceptedMouseButtons(Qt::MouseButtons());
+        setAcceptHoverEvents(true);
+        setFlag(QGraphicsItem::ItemIgnoresTransformations);
+        setZValue(10000 + 1);
+    }
+
+    QRectF boundingRect() const override
+    {
+        return Utils::dpiScaled(QRectF(-5, -5, 10, 10));
+    }
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override
+    {
+        painter->setPen(QPen(Qt::black, 1));
+        painter->setBrush(Qt::white);
+        painter->drawRect(Utils::dpiScaled(QRectF(-4, -4, 8, 8)));
+    }
+};
+
+// The eight resize handle positions for bounds, in ResizeHandlePosition order,
+// using a QRectF so right() and bottom() are not off by one like QRect
+std::array<QPointF, HandleCount> resizeHandlePositions(const QRectF &bounds)
+{
+    const QPointF center = bounds.center();
+    return {{
+        bounds.topLeft(),    QPointF(center.x(), bounds.top()),    bounds.topRight(),
+        QPointF(bounds.left(), center.y()),                        QPointF(bounds.right(), center.y()),
+        bounds.bottomLeft(), QPointF(center.x(), bounds.bottom()), bounds.bottomRight(),
+    }};
+}
+
+} // namespace
+
+Qt::CursorShape cursorForHandle(int handle)
+{
+    switch (handle) {
+    case TopLeftHandle: case BottomRightHandle: return Qt::SizeFDiagCursor;
+    case TopRightHandle: case BottomLeftHandle: return Qt::SizeBDiagCursor;
+    case TopHandle: case BottomHandle:          return Qt::SizeVerCursor;
+    case LeftHandle: case RightHandle:          return Qt::SizeHorCursor;
+    default:                                    return Qt::ArrowCursor;
+    }
+}
 
 AbstractWorldTool::AbstractWorldTool(Id id,
                                      const QString &name,
@@ -55,6 +111,13 @@ AbstractWorldTool::AbstractWorldTool(Id id,
     , mSelectionRectangle(new SelectionRectangle)
 {
     mSelectionRectangle->setVisible(false);
+
+    // Each handle owns its resize cursor, so it shows above a map's own cursor
+    for (int i = 0; i < HandleCount; ++i) {
+        mResizeHandles[i] = std::make_unique<MapResizeHandle>();
+        mResizeHandles[i]->setVisible(false);
+        mResizeHandles[i]->setCursor(cursorForHandle(i));
+    }
 
     WorldManager &worldManager = WorldManager::instance();
     connect(&worldManager, &WorldManager::worldsChanged, this, &AbstractWorldTool::updateEnabledState);
@@ -87,6 +150,8 @@ AbstractWorldTool::~AbstractWorldTool() = default;
 void AbstractWorldTool::activate(MapScene *scene)
 {
     scene->addItem(mSelectionRectangle.get());
+    for (auto &handle : mResizeHandles)
+        scene->addItem(handle.get());
     connect(scene, &MapScene::sceneRefreshed, this, &AbstractWorldTool::updateSelectionRectangle);
     AbstractTool::activate(scene);
 }
@@ -94,6 +159,8 @@ void AbstractWorldTool::activate(MapScene *scene)
 void AbstractWorldTool::deactivate(MapScene *scene)
 {
     scene->removeItem(mSelectionRectangle.get());
+    for (auto &handle : mResizeHandles)
+        scene->removeItem(handle.get());
     disconnect(scene, &MapScene::sceneRefreshed, this, &AbstractWorldTool::updateSelectionRectangle);
     AbstractTool::deactivate(scene);
 }
@@ -165,6 +232,37 @@ MapDocument *AbstractWorldTool::mapAt(const QPointF &pos) const
             return mapItem->mapDocument();
     }
     return nullptr;
+}
+
+// Finds a resize handle near the cursor on any map, hit-tested in view
+// coordinates so the hit area matches the on-screen handle size at any zoom,
+// returning its index and setting mapDocument to the owning map, or -1 if none
+int AbstractWorldTool::resizeHandleNear(const QPointF &scenePos, MapDocument *&mapDocument) const
+{
+    const auto views = mapScene()->views();
+    if (views.isEmpty())
+        return -1;
+
+    const QTransform viewTransform = views.first()->viewportTransform();
+    const QPointF viewPos = viewTransform.map(scenePos);
+    const qreal radius = Utils::dpiScaled(10.0);
+
+    const auto items = mapScene()->items();
+    for (QGraphicsItem *item : items) {
+        auto mapItem = qgraphicsitem_cast<MapItem*>(item);
+        if (!mapItem || !mapItem->isEnabled())
+            continue;
+
+        const auto handlePos = resizeHandlePositions(mapRect(mapItem->mapDocument()));
+        for (int i = 0; i < HandleCount; ++i) {
+            const QPointF delta = viewPos - viewTransform.map(handlePos[i]);
+            if (qAbs(delta.x()) <= radius && qAbs(delta.y()) <= radius) {
+                mapDocument = mapItem->mapDocument();
+                return i;
+            }
+        }
+    }
+    return -1;
 }
 
 bool AbstractWorldTool::mapCanBeMoved(MapDocument *mapDocument) const
@@ -240,11 +338,8 @@ void AbstractWorldTool::populateAddToWorldMenu(QMenu &menu)
 
 void AbstractWorldTool::addAnotherMapToWorldAtCenter()
 {
-    DocumentManager *manager = DocumentManager::instance();
-    MapView *view = manager->viewForDocument(mapDocument());
-    const QRectF viewRect { view->viewport()->rect() };
-    const QRectF sceneViewRect = view->viewportTransform().inverted().mapRect(viewRect);
-    addAnotherMapToWorld(sceneViewRect.center().toPoint());
+    MapView *view = DocumentManager::instance()->viewForDocument(mapDocument());
+    addAnotherMapToWorld(view->viewCenter().toPoint());
 }
 
 void AbstractWorldTool::addAnotherMapToWorld(QPoint insertPos)
@@ -382,12 +477,35 @@ void AbstractWorldTool::setTargetMap(MapDocument *mapDocument)
 void AbstractWorldTool::updateSelectionRectangle()
 {
     if (mTargetMap) {
-        const auto rect = mapRect(mTargetMap);
-        mSelectionRectangle->setRectangle(rect);
-        mSelectionRectangle->setVisible(true);
+        setSelectionScreenRect(mapRect(mTargetMap));
     } else {
         mSelectionRectangle->setVisible(false);
+        for (auto &handle : mResizeHandles)
+            handle->setVisible(false);
     }
+}
+
+void AbstractWorldTool::setSelectionScreenRect(const QRect &rect)
+{
+    mSelectionRectangle->setRectangle(rect);
+    mSelectionRectangle->setVisible(true);
+
+    // Place the eight handles on the corners and edge midpoints
+    const auto handlePos = resizeHandlePositions(rect);
+    for (int i = 0; i < HandleCount; ++i) {
+        mResizeHandles[i]->setPos(handlePos[i]);
+        mResizeHandles[i]->setVisible(true);
+    }
+}
+
+// Move the camera back by offset, to keep the active map steady after it shifts
+void AbstractWorldTool::recenterView(const QPoint &offset)
+{
+    if (offset.isNull())
+        return;
+
+    MapView *view = DocumentManager::instance()->viewForDocument(mapDocument());
+    view->forceCenterOn(view->viewCenter() - offset);
 }
 
 } // namespace Tiled

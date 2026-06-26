@@ -22,7 +22,11 @@
 
 #include "abstracttool.h"
 
+#include <array>
+#include <memory>
+
 class QAction;
+class QGraphicsItem;
 class QMenu;
 
 namespace Tiled {
@@ -31,6 +35,23 @@ class World;
 
 class SelectionRectangle;
 class WorldDocument;
+
+// The eight resize handles, in the order they are placed by
+// AbstractWorldTool::setSelectionScreenRect.
+enum ResizeHandlePosition {
+    TopLeftHandle,
+    TopHandle,
+    TopRightHandle,
+    LeftHandle,
+    RightHandle,
+    BottomLeftHandle,
+    BottomHandle,
+    BottomRightHandle,
+    HandleCount,
+};
+
+// The resize cursor shape for a given resize handle.
+Qt::CursorShape cursorForHandle(int handle);
 
 /**
  * A convenient base class for tools that work on object layers. Implements
@@ -84,6 +105,10 @@ protected:
     void setTargetMap(MapDocument *mapDocument);
     MapDocument *targetMap() const { return mTargetMap; }
     void updateSelectionRectangle();
+    void setSelectionScreenRect(const QRect &rect);
+    int resizeHandleNear(const QPointF &scenePos, MapDocument *&mapDocument) const;
+
+    void recenterView(const QPoint &offset);
 
     bool mapCanBeMoved(MapDocument *mapDocument) const;
     QRect mapRect(MapDocument *mapDocument) const;
@@ -103,6 +128,7 @@ private:
     QAction *mRemoveMapFromWorldAction;
 
     std::unique_ptr<SelectionRectangle> mSelectionRectangle;
+    std::array<std::unique_ptr<QGraphicsItem>, HandleCount> mResizeHandles;
 };
 
 } // namespace Tiled
