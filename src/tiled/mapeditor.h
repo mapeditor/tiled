@@ -178,7 +178,9 @@ private:
 
     void setupQuickStamps();
     void setUseOpenGL(bool useOpenGL);
+#ifdef TILEDQUICK_LIB
     void setUseNewHardwareRenderer(bool useNewHardwareRenderer);
+#endif
     void retranslateUi();
     void showTileCollisionShapesChanged(bool enabled);
     void parallaxEnabledChanged(bool enabled);

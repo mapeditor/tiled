@@ -304,7 +304,9 @@ MapEditor::MapEditor(QObject *parent)
 
     Preferences *prefs = Preferences::instance();
     connect(prefs, &Preferences::useOpenGLChanged, this, &MapEditor::setUseOpenGL);
+#ifdef TILEDQUICK_LIB
     connect(prefs, &Preferences::useNewHardwareRendererChanged, this, &MapEditor::setUseNewHardwareRenderer);
+#endif
     connect(prefs, &Preferences::languageChanged, this, &MapEditor::retranslateUi);
     connect(prefs, &Preferences::showTileCollisionShapesChanged,
             this, &MapEditor::showTileCollisionShapesChanged);
@@ -1070,9 +1072,9 @@ void MapEditor::setUseOpenGL(bool useOpenGL)
     }
 }
 
+#ifdef TILEDQUICK_LIB
 void MapEditor::setUseNewHardwareRenderer(bool useNewHardwareRenderer)
 {
-#ifdef TILEDQUICK_LIB
     for (MapViewInterface *mapViewInterface : std::as_const(mViewForMap))
     {
         mWidgetStack->addWidget(mapViewInterface->getWidget());
@@ -1084,8 +1086,8 @@ void MapEditor::setUseNewHardwareRenderer(bool useNewHardwareRenderer)
     }
 
     mWidgetStack->setCurrentWidget(mViewForMap.value(mCurrentMapDocument)->getWidget());
-#endif
 }
+#endif
 
 void MapEditor::retranslateUi()
 {
@@ -1187,6 +1189,7 @@ void MapEditor::setSelectedTool(AbstractTool *tool)
     mToolManager->selectTool(tool);
 }
 
+#ifdef TILEDQUICK_LIB
 void MapEditor::setQuickMouseCoords(QPointF coords)
 {
     if (!selectedTool())
@@ -1194,6 +1197,7 @@ void MapEditor::setQuickMouseCoords(QPointF coords)
 
     selectedTool()->mouseMoved(coords, Qt::NoModifier);
 }
+#endif
 
 AbstractTool *MapEditor::tool(const QByteArray &id) const
 {

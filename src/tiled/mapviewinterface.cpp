@@ -24,10 +24,12 @@
 
 namespace Tiled {
 
+#ifdef TILEDQUICK_LIB
 static bool quickEnabled()
 {
     return Preferences::instance()->useNewHardwareRenderer();
 }
+#endif
 
 MapViewInterface::MapViewInterface(QWidget *parent)
     : QObject{parent}
