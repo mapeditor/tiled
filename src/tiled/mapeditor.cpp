@@ -373,8 +373,8 @@ void MapEditor::addDocument(Document *document)
 
     EditableMap *editableMap = qobject_cast<Tiled::EditableMap*>(mapDocument->editable());
 
+    engine->rootContext()->setContextProperty(QStringLiteral("mapEditorInstance"), this);
     engine->rootContext()->setContextProperty(QStringLiteral("mapItemMap"), editableMap);
-    engine->rootContext()->setContextProperty(QStringLiteral("toolBrushMap"), nullptr);
     quickWidget->setSource(QUrl(QStringLiteral("qrc:/qml/mapview.qml")));
     quickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
 #endif
@@ -417,14 +417,6 @@ void MapEditor::setCurrentDocument(Document *document)
         mCurrentMapDocument->disconnect(this);
     }
 
-#ifdef TILEDQUICK_LIB
-    {
-    QQuickWidget *oldQuickWidget = mViewForMap.value(mapDocument)->quickWidget();
-    disconnect(oldQuickWidget->rootObject(), SIGNAL(mouseCoordsChanged(QVariant)),
-               this, SLOT(onQuickMouseCoordsChanged(QVariant)));
-    }
-#endif
-
     mCurrentMapDocument = mapDocument;
 
     MapViewInterface *mapViewInterface = mViewForMap.value(mapDocument);
@@ -462,16 +454,6 @@ void MapEditor::setCurrentDocument(Document *document)
 
         connect(mCurrentMapDocument, &MapDocument::currentObjectSet,
                 this, [this, mapDocument] { mPropertiesDock->setDocument(mapDocument); });
-
-#ifdef TILEDQUICK_LIB
-        if (Preferences::instance()->useNewHardwareRenderer()) {
-            QQuickWidget *quickWidget = mapViewInterface->quickWidget();
-
-            if (quickWidget && quickWidget->rootObject())
-                connect(quickWidget->rootObject(), SIGNAL(mouseCoordsChanged(QVariant)),
-                        this, SLOT(onQuickMouseCoordsChanged(QVariant)));
-        }
-#endif
 
         mReversingProxyModel->setSourceModel(mapDocument->layerModel());
     } else {
@@ -714,7 +696,7 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
         AbstractTileTool *atTool = qobject_cast<AbstractTileTool*>(mSelectedTool);
         if (atTool) {
             disconnect(atTool, &AbstractTileTool::brushMapChanged,
-                       this, &MapEditor::onBrushMapChanged);
+                       this, &MapEditor::tileEditPreviewChanged);
         }
 #endif
     }
@@ -739,7 +721,7 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
         AbstractTileTool *atTool = qobject_cast<AbstractTileTool*>(tool);
         if (atTool) {
             connect(atTool, &AbstractTileTool::brushMapChanged,
-                       this, &MapEditor::onBrushMapChanged);
+                       this, &MapEditor::tileEditPreviewChanged);
         }
 #endif
 
@@ -750,36 +732,6 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
 
     emit selectedToolChanged(tool);
 }
-
-#ifdef TILEDQUICK_LIB
-void MapEditor::onQuickMouseCoordsChanged(QVariant coords)
-{
-    if (!selectedTool())
-        return;
-
-    QPointF mouseCoords = coords.toPointF();
-    selectedTool()->mouseMoved(mouseCoords, Qt::NoModifier);
-}
-
-void MapEditor::onBrushMapChanged()
-{
-    EditableMap *brushMap = tileEditPreview();
-
-    QQuickWidget *activeWidget = mViewForMap.value(mCurrentMapDocument)->quickWidget();
-    QQmlContext *rootContext = activeWidget->engine()->rootContext();
-    QVariant brushMapContext = rootContext->contextProperty(QStringLiteral("toolBrushMap"));
-
-    if (!brushMap || !brushMapContext.isValid())
-        return;
-
-    EditableMap *oldBrushMap = brushMapContext.value<EditableMap*>();
-
-    if (oldBrushMap && oldBrushMap->map() == brushMap->map())
-        return;
-
-    rootContext->setContextProperty(QStringLiteral("toolBrushMap"), brushMap);
-}
-#endif
 
 void MapEditor::updateActiveUndoStack()
 {
@@ -1233,6 +1185,14 @@ void MapEditor::setCurrentWangColorIndex(int newIndex)
 void MapEditor::setSelectedTool(AbstractTool *tool)
 {
     mToolManager->selectTool(tool);
+}
+
+void MapEditor::setQuickMouseCoords(QPointF coords)
+{
+    if (!selectedTool())
+        return;
+
+    selectedTool()->mouseMoved(coords, Qt::NoModifier);
 }
 
 AbstractTool *MapEditor::tool(const QByteArray &id) const

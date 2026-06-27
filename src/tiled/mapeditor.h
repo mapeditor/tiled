@@ -75,6 +75,7 @@ class MapEditor final : public Editor
 
     Q_PROPERTY(Tiled::TilesetDock *tilesetsView READ tilesetDock CONSTANT)
     Q_PROPERTY(Tiled::EditableMap *currentBrush READ currentBrush WRITE setCurrentBrush NOTIFY currentBrushChanged)
+    Q_PROPERTY(Tiled::EditableMap *tileEditPreview READ tileEditPreview NOTIFY tileEditPreviewChanged)
     Q_PROPERTY(Tiled::EditableWangSet *currentWangSet READ currentWangSet WRITE setCurrentWangSet NOTIFY currentWangSetChanged)
     Q_PROPERTY(int currentWangColorIndex READ currentWangColorIndex WRITE setCurrentWangColorIndex NOTIFY currentWangColorIndexChanged)
     Q_PROPERTY(Tiled::MapView *currentMapView READ currentMapView CONSTANT)
@@ -137,19 +138,18 @@ public:
     AbstractTool *selectedTool() const;
     void setSelectedTool(AbstractTool *tool);
 
+#ifdef TILEDQUICK_LIB
+    Q_INVOKABLE void setQuickMouseCoords(QPointF coords);
+#endif
+
     Q_INVOKABLE AbstractTool *tool(const QByteArray &id) const;
 
 signals:
     void currentBrushChanged();
+    void tileEditPreviewChanged();
     void currentWangSetChanged();
     void currentWangColorIndexChanged(int colorIndex);
     void selectedToolChanged(AbstractTool *tool);
-
-#ifdef TILEDQUICK_LIB
-public slots:
-    void onQuickMouseCoordsChanged(QVariant coords);
-    void onBrushMapChanged();
-#endif
 
 private:
     void onSelectedToolChanged(AbstractTool *tool);

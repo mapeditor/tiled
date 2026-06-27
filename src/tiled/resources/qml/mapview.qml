@@ -11,6 +11,8 @@ Rectangle {
     anchors.fill: parent
     visible: true
 
+    property var mapEditor: mapEditorInstance
+
     Item {
         id: mapView
 
@@ -71,15 +73,16 @@ Rectangle {
 
                 // Save toolBrushMap as a property var so that qml doesn't lose
                 // track of it during garbage collection
-                property var toolPreviewMap: toolBrushMap;
+                property var toolPreviewMap: mapEditor.tileEditPreview
                 map: toolPreviewMap
 
                 visibleArea: {
+                    var scale = mapContainer.scale
                     if (this.map)
-                        Qt.rect(0,
-                                0,
-                                this.map.width * this.map.tileWidth,
-                                this.map.height * this.map.tileHeight);
+                        Qt.rect(-mapContainer.x / scale,
+                                -mapContainer.y / scale,
+                                mapView.width / scale,
+                                mapView.height / scale);
                     else
                         Qt.rect(0, 0, 0, 0);
                 }
@@ -153,12 +156,10 @@ Rectangle {
     }
 
     function cursorTileCoords() {
-        var tileCoords = mapItem.screenToTileCoords(widget.mapRelativeCoords.x, widget.mapRelativeCoords.y);
+        var tileCoords = mapItem.screenToTileCoords(mapRelativeCoords.x, mapRelativeCoords.y);
 
         return tileCoords
     }
-
-    signal mouseCoordsChanged(var coords)
 
     property var mapRelativeCoords: {
         var mapRelativeCoords = singleFingerPanArea.mapToItem(mapItem, singleFingerPanArea.mouseX, singleFingerPanArea.mouseY)
@@ -166,6 +167,6 @@ Rectangle {
     }
 
     onMapRelativeCoordsChanged: {
-        mouseCoordsChanged(mapRelativeCoords)
+        mapEditor.setQuickMouseCoords(mapRelativeCoords)
     }
 }
