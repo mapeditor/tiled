@@ -87,6 +87,11 @@ Rectangle {
                         Qt.rect(0, 0, 0, 0);
                 }
             }
+
+            Tiled.RegionOverlay {
+                id: regionOverlay
+                anchors.fill: mapItem
+            }
         }
     }
 
