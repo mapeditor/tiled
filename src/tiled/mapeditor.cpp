@@ -1138,7 +1138,6 @@ EditableMap *MapEditor::tileEditPreview() const
 
     EditableMap *editableMap = new EditableMap(atTool->brushMap().get());
 
-    QQmlEngine::setObjectOwnership(editableMap, QQmlEngine::JavaScriptOwnership);
     return editableMap;
 }
 

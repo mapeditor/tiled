@@ -30,6 +30,7 @@ using namespace TiledQuick;
 
 MapItem::MapItem(QQuickItem *parent)
     : QQuickItem(parent)
+    , mMap(nullptr)
     , mEditableMap(nullptr)
 {
 }

@@ -71,10 +71,8 @@ Rectangle {
                 anchors.left: mapItem.left
                 anchors.top: mapItem.top
 
-                // Save toolBrushMap as a property var so that qml doesn't lose
-                // track of it during garbage collection
                 property var toolPreviewMap: mapEditor.tileEditPreview
-                map: toolPreviewMap
+                map: mapEditor.tileEditPreview
 
                 visibleArea: {
                     var scale = mapContainer.scale
