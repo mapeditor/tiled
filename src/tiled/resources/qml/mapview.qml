@@ -72,7 +72,7 @@ Rectangle {
                 anchors.top: mapItem.top
 
                 property var toolPreviewMap: mapEditor.tileEditPreview
-                map: mapEditor.tileEditPreview
+                map: toolPreviewMap
 
                 visibleArea: {
                     var scale = mapContainer.scale
