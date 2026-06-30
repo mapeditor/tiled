@@ -2,6 +2,7 @@ Project {
     name: "plugins"
 
     references: [
+        "binmap",
         "csv",
         "defold",
         "defoldcollection",
