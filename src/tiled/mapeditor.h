@@ -123,6 +123,7 @@ public:
     void setCurrentBrush(EditableMap *editableMap);
 
     EditableMap *tileEditPreview() const;
+    void setTileEditPreview(Map *map);
 
     EditableWangSet *currentWangSet() const;
     void setCurrentWangSet(EditableWangSet *wangSet);
@@ -203,7 +204,7 @@ private:
     TemplatesDock *mTemplatesDock;
     TilesetDock *mTilesetDock;
     WangDock *mWangDock;
-    MiniMapDock* mMiniMapDock;
+    MiniMapDock *mMiniMapDock;
     TileStampsDock *mTileStampsDock;
 
     std::unique_ptr<TreeViewComboBox> mLayerComboBox;
@@ -219,6 +220,8 @@ private:
     ShapeFillTool *mShapeFillTool;
     WangBrush *mWangBrush;
     EditPolygonTool *mEditPolygonTool;
+
+    std::unique_ptr<EditableMap> mTileEditPreview;
 
     QToolBar *mMainToolBar;
     QToolBar *mToolsToolBar;

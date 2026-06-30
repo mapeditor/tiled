@@ -395,7 +395,10 @@ void MapEditor::removeDocument(Document *document)
     Q_ASSERT(mViewForMap.contains(mapDocument));
 
     if (mapDocument == mCurrentMapDocument)
+    {
         setCurrentDocument(nullptr);
+        setTileEditPreview(nullptr);
+    }
 
 
     MapViewInterface *mapViewInterface = mViewForMap.take(mapDocument);
@@ -691,6 +694,8 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
     if (mSelectedTool == tool)
         return;
 
+    setTileEditPreview(nullptr);
+
     if (mSelectedTool) {
         disconnect(mSelectedTool, &AbstractTool::cursorChanged,
                    this, &MapEditor::cursorChanged);
@@ -698,7 +703,7 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
         AbstractTileTool *atTool = qobject_cast<AbstractTileTool*>(mSelectedTool);
         if (atTool) {
             disconnect(atTool, &AbstractTileTool::brushMapChanged,
-                       this, &MapEditor::tileEditPreviewChanged);
+                       this, &MapEditor::setTileEditPreview);
         }
 #endif
     }
@@ -723,7 +728,7 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
         AbstractTileTool *atTool = qobject_cast<AbstractTileTool*>(tool);
         if (atTool) {
             connect(atTool, &AbstractTileTool::brushMapChanged,
-                       this, &MapEditor::tileEditPreviewChanged);
+                       this, &MapEditor::setTileEditPreview);
         }
 #endif
 
@@ -1132,13 +1137,26 @@ EditableMap *MapEditor::currentBrush() const
 
 EditableMap *MapEditor::tileEditPreview() const
 {
-    AbstractTileTool *atTool = qobject_cast<AbstractTileTool*>(selectedTool());
-    if (!atTool || !atTool->brushMap())
-        return nullptr;
+    return mTileEditPreview.get();
+}
 
-    EditableMap *editableMap = new EditableMap(atTool->brushMap().get());
+/**
+* Sets the mTileEditPreview EditableMap wrapper for the given *map.
+*
+* The previous *map must remain valid until after mTileEditPreview is set to
+* the new *map, as EditableMap wrappers cannot be deleted if their wrapped *map
+* is invalid.
+*/
+void MapEditor::setTileEditPreview(Map *map)
+{
+    if (!map) {
+        mTileEditPreview.reset();
+        return;
+    }
 
-    return editableMap;
+    mTileEditPreview = std::make_unique<EditableMap>(map);
+
+    emit tileEditPreviewChanged();
 }
 
 void MapEditor::setCurrentBrush(EditableMap *editableMap)

@@ -65,7 +65,7 @@ public:
     void keyPressed(QKeyEvent *event) override;
 
 signals:
-    void brushMapChanged();
+    void brushMapChanged(Map* map);
 
 protected:
     void mapDocumentChanged(MapDocument *oldDocument,

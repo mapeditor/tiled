@@ -67,7 +67,6 @@ Map::Map(Orientation orientation,
 Map::~Map()
 {
     qDeleteAll(mLayers);
-    mLayers.clear();
 }
 
 /**
