@@ -52,8 +52,6 @@ public:
 
     ~AbstractTileTool() override;
 
-    const SharedMap &brushMap() const;
-
     void activate(MapScene *scene) override;
     void deactivate(MapScene *scene) override;
 

@@ -425,10 +425,12 @@ void MapEditor::setCurrentDocument(Document *document)
     mCurrentMapDocument = mapDocument;
 
     MapViewInterface *mapViewInterface = mViewForMap.value(mapDocument);
-    if (mapViewInterface)
-        mWidgetStack->setCurrentWidget(mapViewInterface->getWidget());
+    MapView *mapView = nullptr;
 
-    MapView *mapView = mapViewInterface->mapView();
+    if (mapViewInterface) {
+        mWidgetStack->setCurrentWidget(mapViewInterface->getWidget());
+        mapView = mapViewInterface->mapView();
+    }
 
     mLayerDock->setMapDocument(mapDocument);
 
