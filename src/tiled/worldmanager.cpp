@@ -185,6 +185,29 @@ WorldDocumentPtr WorldManager::worldForMap(const QString &fileName) const
     return nullptr;
 }
 
+/**
+ * Returns the world containing the given map,or a default world when the
+ * map is not part of any loaded world.This allows the world tools to be
+ * used with standalone maps
+ */
+WorldDocumentPtr WorldManager::worldForMapOrDefault(const QString &fileName)
+{
+    if (fileName.isEmpty())
+        return nullptr;
+
+    if (auto worldDocument = worldForMap(fileName))
+        return worldDocument;
+
+    if (mDefaultWorld && mDefaultWorld->world()->containsMap(fileName))
+        return mDefaultWorld;
+
+    auto world = std::make_unique<World>();
+    world->addMap(fileName, QRect());
+
+    mDefaultWorld = WorldDocumentPtr::create(std::move(world));
+    return mDefaultWorld;
+}
+
 } // namespace Tiled
 
 #include "moc_worldmanager.cpp"
