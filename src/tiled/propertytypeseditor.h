@@ -85,7 +85,7 @@ protected:
     void changeEvent(QEvent *e) override;
 
 private:
-    void addPropertyType(PropertyType::Type type);
+    void addPropertyType(PropertyType::Type type, const QVariant &defaultValue = QVariant());
     void selectedPropertyTypesChanged();
     void removeSelectedPropertyType();
     QModelIndex selectedPropertyTypeIndex() const;
@@ -107,12 +107,15 @@ private:
     void setCurrentPropertyType(PropertyType::Type type);
     void addClassProperties();
     void addEnumProperties();
+    void addPrimitiveProperties();
 
     void setStorageType(EnumPropertyType::StorageType storageType);
     void setValuesAsFlags(bool flags);
     void addValue();
     void removeValues();
     bool checkValueCount(int count);
+
+    void primitiveColorChanged(const QColor &color);
 
     void openClassOfPopup();
     void openAddMemberDialog();
@@ -161,12 +164,15 @@ private:
     VariantMapProperty *mMembersProperty = nullptr;
     QPointer<AddValueProperty> mAddValueProperty;
 
+    ColorButton *mPrimitiveColorButton = nullptr;
+
     bool mSettingPrefPropertyTypes = false;
     bool mSettingName = false;
     bool mUpdatingDetails = false;
 
     QAction *mAddEnumPropertyTypeAction;
     QAction *mAddClassPropertyTypeAction;
+    QAction *mAddPrimitivePropertyTypeAction;
     QAction *mRemovePropertyTypeAction;
 
     QAction *mAddValueAction;
