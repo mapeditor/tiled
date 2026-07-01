@@ -1,0 +1,22 @@
+name: "Build Scripting API docs"
+on:
+  pull_request:
+    paths:
+    - 'docs/scripting-doc/**'
+
+jobs:
+  scripting-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build scripting API docs
+        run: |
+          cd docs/scripting-doc
+          npm exec -- typedoc \
+            --name "Tiled Scripting API" \
+            --readme none \
+            --excludeExternals \
+            --disableSources \
+            index.d.ts
