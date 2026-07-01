@@ -20,24 +20,55 @@
 
 #include "regionoverlay.h"
 
-#include <QSGMaterial>
-//#include "regionoverlaymaterial"
+#include <QPainterPath>
+#include <QApplication>
+#include <QPalette>
 
 using namespace TiledQuick;
 
 RegionOverlay::RegionOverlay(QQuickItem *parent)
-    : QQuickItem{parent}
+    : QQuickItem(parent)
+    , mTileSize(0, 0)
+    , mRegion(QRegion())
+    , mColor(QApplication::palette().highlight().color())
 {
-
 }
 
 RegionOverlay::~RegionOverlay() = default;
 
-QSGNode *RegionOverlay::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData *)
+QList<QPolygonF> RegionOverlay::polygons() const
 {
-    auto regionNode = static_cast<QSGGeometryNode *>(node);
+    QPainterPath path;
 
-    return regionNode;
+    for (const QRect &r : mRegion.rects())
+        path.addRect(r);
+
+    QList<QPolygonF> polygons = path.simplified().toFillPolygons();
+
+    QTransform transform;
+    transform.scale(mTileSize.x(), mTileSize.y());
+
+    for (QPolygonF &polygon : polygons)
+        polygon = polygon * transform;
+
+    return polygons;
+}
+
+QColor RegionOverlay::strokeColor() const
+{
+    return mColor;
+}
+
+QColor RegionOverlay::fillColor() const
+{
+    QColor fillColor = mColor;
+    fillColor.setAlpha(64);
+    return fillColor;
+}
+
+QPointF RegionOverlay::tileSize() const
+{
+    return mTileSize;
 }
 
 void RegionOverlay::setTileSize(const QPointF &tileSize)
@@ -47,55 +78,18 @@ void RegionOverlay::setTileSize(const QPointF &tileSize)
 
     mTileSize = tileSize;
     emit tileSizeChanged();
-    update();
 }
 
-QPointF RegionOverlay::tileSize() const
+QRegion RegionOverlay::region() const
 {
-    return mTileSize;
+    return mRegion;
 }
 
-void RegionOverlay::setScale(const qreal &scale)
+void RegionOverlay::setRegion(const QRegion &region)
 {
-    if (mScale == scale)
+    if (mRegion == region)
         return;
 
-    mScale = scale;
-    emit scaleChanged();
-    update();
-}
-
-qreal RegionOverlay::scale() const
-{
-    return mScale;
-}
-
-void RegionOverlay::setValidColor(const QColor &color)
-{
-    if (mValidColor == color)
-        return;
-
-    mValidColor = color;
-    emit validColorChanged();
-    update();
-}
-
-QColor RegionOverlay::validColor() const
-{
-    return mValidColor;
-}
-
-void RegionOverlay::setInvalidColor(const QColor &color)
-{
-    if (mInvalidColor == color)
-        return;
-
-    mInvalidColor = color;
-    emit invalidColorChanged();
-    update();
-}
-
-QColor RegionOverlay::invalidColor() const
-{
-    return mInvalidColor;
+    mRegion = region;
+    emit regionChanged();
 }

@@ -34,8 +34,10 @@ class MapDocument;
  * This brush item is used to represent a brush in a map scene before it is
  * used.
  */
-class BrushItem : public QGraphicsItem
+class BrushItem : public QGraphicsObject
 {
+    Q_OBJECT
+
 public:
     BrushItem();
 
@@ -64,11 +66,16 @@ public:
                const QStyleOptionGraphicsItem *option,
                QWidget *widget = nullptr) override;
 
+signals:
+    void regionChanged();
+
 protected:
     MapDocument *mapDocument() const { return mMapDocument; }
 
 private:
     void updateBoundingRect();
+    void setRegion(const QRegion &region);
+    void translateRegion(const QPoint &p);
 
     MapDocument *mMapDocument;
     SharedTileLayer mTileLayer;

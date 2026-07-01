@@ -706,6 +706,8 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
         if (atTool) {
             disconnect(atTool, &AbstractTileTool::brushMapChanged,
                        this, &MapEditor::setTileEditPreview);
+            disconnect(atTool, &AbstractTileTool::brushRegionChanged,
+                       this, &MapEditor::tileEditRegionChanged);
         }
 #endif
     }
@@ -731,6 +733,8 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
         if (atTool) {
             connect(atTool, &AbstractTileTool::brushMapChanged,
                        this, &MapEditor::setTileEditPreview);
+            connect(atTool, &AbstractTileTool::brushRegionChanged,
+                       this, &MapEditor::tileEditRegionChanged);
         }
 #endif
 
@@ -1082,6 +1086,8 @@ void MapEditor::setUseOpenGL(bool useOpenGL)
 #ifdef TILEDQUICK_LIB
 void MapEditor::setUseNewHardwareRenderer(bool useNewHardwareRenderer)
 {
+    setTileEditPreview(nullptr);
+
     for (MapViewInterface *mapViewInterface : std::as_const(mViewForMap))
     {
         mWidgetStack->addWidget(mapViewInterface->getWidget());
@@ -1159,6 +1165,14 @@ void MapEditor::setTileEditPreview(Map *map)
     mTileEditPreview = std::make_unique<EditableMap>(map);
 
     emit tileEditPreviewChanged();
+}
+
+QRegion MapEditor::tileEditRegion() const
+{
+    AbstractTileTool *atTool = qobject_cast<AbstractTileTool*>(selectedTool());
+    if (atTool)
+        return atTool->validRegion();
+    return QRegion();
 }
 
 void MapEditor::setCurrentBrush(EditableMap *editableMap)

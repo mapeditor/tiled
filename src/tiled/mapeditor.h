@@ -76,6 +76,7 @@ class MapEditor final : public Editor
     Q_PROPERTY(Tiled::TilesetDock *tilesetsView READ tilesetDock CONSTANT)
     Q_PROPERTY(Tiled::EditableMap *currentBrush READ currentBrush WRITE setCurrentBrush NOTIFY currentBrushChanged)
     Q_PROPERTY(Tiled::EditableMap *tileEditPreview READ tileEditPreview NOTIFY tileEditPreviewChanged)
+    Q_PROPERTY(QRegion tileEditRegion READ tileEditRegion NOTIFY tileEditRegionChanged)
     Q_PROPERTY(Tiled::EditableWangSet *currentWangSet READ currentWangSet WRITE setCurrentWangSet NOTIFY currentWangSetChanged)
     Q_PROPERTY(int currentWangColorIndex READ currentWangColorIndex WRITE setCurrentWangColorIndex NOTIFY currentWangColorIndexChanged)
     Q_PROPERTY(Tiled::MapView *currentMapView READ currentMapView CONSTANT)
@@ -125,6 +126,8 @@ public:
     EditableMap *tileEditPreview() const;
     void setTileEditPreview(Map *map);
 
+    QRegion tileEditRegion() const;
+
     EditableWangSet *currentWangSet() const;
     void setCurrentWangSet(EditableWangSet *wangSet);
 
@@ -148,6 +151,7 @@ public:
 signals:
     void currentBrushChanged();
     void tileEditPreviewChanged();
+    void tileEditRegionChanged();
     void currentWangSetChanged();
     void currentWangColorIndexChanged(int colorIndex);
     void selectedToolChanged(AbstractTool *tool);

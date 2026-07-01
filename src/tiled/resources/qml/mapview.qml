@@ -38,14 +38,14 @@ Rectangle {
 
             Tiled.MapItem {
                 id: mapItem
-                map: mapItemMap;
+                map: mapItemMap
 
                 visibleArea: {
                     var scale = mapContainer.scale
                     Qt.rect(-mapContainer.x / scale,
                             -mapContainer.y / scale,
                             mapView.width / scale,
-                            mapView.height / scale);
+                            mapView.height / scale)
                 }
             }
 
@@ -60,8 +60,8 @@ Rectangle {
                 id: mapGridItem
                 anchors.fill: mapItem
 
-                tileSize: Qt.point(mapItem.map.tileWidth, mapItem.map.tileHeight);
-                scale: mapContainer.scale;
+                tileSize: Qt.point(mapItem.map.tileWidth, mapItem.map.tileHeight)
+                scale: mapContainer.scale
 
                 color: "black"
             }
@@ -75,20 +75,25 @@ Rectangle {
                 map: toolPreviewMap
 
                 visibleArea: {
-                    var scale = mapContainer.scale
+                    // TODO: Adjust to only show needed visible area
                     if (this.map)
-                        Qt.rect(-mapContainer.x / scale,
-                                -mapContainer.y / scale,
-                                mapView.width / scale,
-                                mapView.height / scale);
+                        Qt.rect(0,
+                                0,
+                                this.width,
+                                this.height)
                     else
-                        Qt.rect(0, 0, 0, 0);
+                        Qt.rect(0, 0, 0, 0)
                 }
             }
 
-            Tiled.RegionOverlay {
-                id: regionOverlay
+            RegionOverlay {
+                id: validRegionOverlay
                 anchors.fill: mapItem
+
+                scale: mapContainer.scale
+
+                region: mapEditor.tileEditRegion
+                tileSize: Qt.point(mapItem.map.tileWidth, mapItem.map.tileHeight)
             }
         }
     }
@@ -159,7 +164,7 @@ Rectangle {
     }
 
     function cursorTileCoords() {
-        var tileCoords = mapItem.screenToTileCoords(mapRelativeCoords.x, mapRelativeCoords.y);
+        var tileCoords = mapItem.screenToTileCoords(mapRelativeCoords.x, mapRelativeCoords.y)
 
         return tileCoords
     }
