@@ -2,14 +2,19 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+
 	<key>CSResourcesFileMapped</key>
 	<true/>
+
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright 2008-2020 Thorbjørn Lindeijer</string>
+
 	<key>NSHighResolutionCapable</key>
 	<true/>
+
 	<key>CFBundleDocumentTypes</key>
 	<array>
+
 		<dict>
 			<key>CFBundleTypeName</key>
 			<string>Tiled Map</string>
@@ -20,10 +25,240 @@
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>tmx</string>
+				<string>tmj</string>
+			</array>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>org.mapeditor.tiled.tmx</string>
+				<string>org.mapeditor.tiled.tmj</string>
 			</array>
 		</dict>
+
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Tiled Tileset</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>tmx-icon-mac</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>tsx</string>
+				<string>tsj</string>
+			</array>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>org.mapeditor.tiled.tsx</string>
+				<string>org.mapeditor.tiled.tsj</string>
+			</array>
+		</dict>
+
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Tiled Object Template</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>tmx-icon-mac</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>tx</string>
+				<string>tj</string>
+			</array>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>org.mapeditor.tiled.tx</string>
+				<string>org.mapeditor.tiled.tj</string>
+			</array>
+		</dict>
+
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Tiled Project</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>tmx-icon-mac</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>tiled-project</string>
+			</array>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>org.mapeditor.tiled.project</string>
+			</array>
+		</dict>
+
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Tiled World</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>tmx-icon-mac</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>world</string>
+			</array>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>org.mapeditor.tiled.world</string>
+			</array>
+		</dict>
+
 	</array>
+
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>org.mapeditor.tiled.tmx</string>
+			<key>UTTypeDescription</key>
+			<string>Tiled Map File</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.xml</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>tmx</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>org.mapeditor.tiled.tsx</string>
+			<key>UTTypeDescription</key>
+			<string>Tiled Tileset File</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.xml</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>tsx</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>org.mapeditor.tiled.tmj</string>
+			<key>UTTypeDescription</key>
+			<string>Tiled Map File (JSON)</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.json</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>tmj</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>org.mapeditor.tiled.tsj</string>
+			<key>UTTypeDescription</key>
+			<string>Tiled Tileset File (JSON)</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.json</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>tsj</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>org.mapeditor.tiled.tx</string>
+			<key>UTTypeDescription</key>
+			<string>Tiled Object Template File</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.xml</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>tx</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>org.mapeditor.tiled.tj</string>
+			<key>UTTypeDescription</key>
+			<string>Tiled Object Template File (JSON)</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.json</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>tj</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>org.mapeditor.tiled.project</string>
+			<key>UTTypeDescription</key>
+			<string>Tiled Project File</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.json</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>tiled-project</string>
+				</array>
+			</dict>
+		</dict>
+
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>org.mapeditor.tiled.world</string>
+			<key>UTTypeDescription</key>
+			<string>Tiled World File</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.json</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>world</string>
+				</array>
+			</dict>
+		</dict>
+
+	</array>
+
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
+
 </dict>
 </plist>

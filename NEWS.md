@@ -9,6 +9,7 @@
 * Scripting: Added MapObject.resolvedClassName() (by MatusGuy, #4529)
 * Fixed crash when the selection becomes empty while starting a move (#4536)
 * Linux: Added file associations for .tmj, .tsj, .tiled-project and .world files (by miffe, #4550)
+* macOS: Declared UTIs and file associations for all supported Tiled formats (with Jyotish, #4469)
 * snap: Updated to Qt 6
 * Raised the minimum Qt version to 6.2 (drops Qt 5 support)
 
