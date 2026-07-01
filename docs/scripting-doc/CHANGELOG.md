@@ -1,5 +1,24 @@
 ## Changelog
 
+### 1.12.0
+
+- Updated to the new API from Tiled 1.11.1 and 1.12
+  - Added Layer.blendMode (#4140)
+  - Added API for accessing and changing custom property types (#3971)
+  - Added Tileset.transformationFlags (#4100)
+  - Added TileMap.chunkSize and TileMap.compressionLevel (#4242)
+  - Added MapEditor.selectedTool and MapEditor.tool (#4330)
+  - Added Dialog.addRadioButtonGroup (#4107)
+  - Added optional defaultValue and toolTip params to Dialog add widget methods (#4358)
+  - Expose session as tiled.session (#4345)
+  - Made currentWangSet and currentWangColorIndex writeable (#4105)
+- Added link from World to tiled.worlds (#4092)
+- Fixed link to deprecated property Tileset.image (#4033)
+- Fixed errors in API type definitions (#4056)
+- Fixed strict mode error (#4104)
+- Clarified how to distinguish an invalid color from black (#3154)
+- Automatic updates to some dependencies
+
 ### 1.11.0
 
 - Added the new API from Tiled 1.10.2 and 1.11.0
