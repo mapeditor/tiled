@@ -81,7 +81,7 @@ Adding Maps
     can be accessed by right-clicking in the map editor.
 
 Removing Maps
-    Hit the 'Remove the current map from the current world' button on the 
+    Hit the 'Remove the current map from the current world' button on the
     toolbar. Alternatively, right-click a map in the map editor and select the
     'Remove ... from World ...' action from the context menu.
 
@@ -91,6 +91,10 @@ Moving Maps
 
     Alternatively you can use the arrow keys to move the current selected map
     - holding Shift will perform bigger steps.
+
+.. raw:: html
+
+    <div class="new">New in Tiled 1.13</div>
 
 Resizing Maps
     Hover over a map with the World Tool to show resize handles on its corners
@@ -103,6 +107,10 @@ Saving World files
     You can save manipulated world files by using the *World > Save World*
     menu. Worlds will also automatically be saved if you launch any external
     tool that has the 'Save Map Before Executing' option enabled.
+
+.. raw:: html
+
+    <div class="new">New in Tiled 1.13</div>
 
 The World Grid
 --------------
