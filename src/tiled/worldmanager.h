@@ -54,6 +54,7 @@ public:
     const QStringList worldFileNames() const;
 
     WorldDocumentPtr worldForMap(const QString &fileName) const;
+    WorldDocumentPtr worldForMapOrDefault(const QString &fileName);
 
 signals:
     void worldsChanged();
@@ -64,6 +65,7 @@ private:
     WorldDocumentPtr loadAndStoreWorld(const QString &fileName, QString *errorString = nullptr);
 
     QVector<WorldDocumentPtr> mWorldDocuments;
+    WorldDocumentPtr mDefaultWorld;
 
     static WorldManager *mInstance;
 };
