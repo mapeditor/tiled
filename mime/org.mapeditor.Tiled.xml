@@ -12,4 +12,28 @@
     <glob pattern="*.tsx"/>
     <sub-class-of type="application/xml"/>
   </mime-type>
+  <mime-type type="application/x-tiled-tmj">
+    <comment>Tiled map</comment>
+    <generic-icon name="application-x-tiled"/>
+    <glob pattern="*.tmj"/>
+    <sub-class-of type="application/json"/>
+  </mime-type>
+  <mime-type type="application/x-tiled-tsj">
+    <comment>Tiled tileset</comment>
+    <generic-icon name="application-x-tiled"/>
+    <glob pattern="*.tsj"/>
+    <sub-class-of type="application/json"/>
+  </mime-type>
+  <mime-type type="application/x-tiled-project">
+    <comment>Tiled project</comment>
+    <generic-icon name="application-x-tiled"/>
+    <glob pattern="*.tiled-project"/>
+    <sub-class-of type="application/json"/>
+  </mime-type>
+  <mime-type type="application/x-tiled-world">
+    <comment>Tiled world</comment>
+    <generic-icon name="application-x-tiled"/>
+    <glob pattern="*.world"/>
+    <sub-class-of type="application/json"/>
+  </mime-type>
 </mime-info>
