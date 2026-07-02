@@ -136,8 +136,6 @@ void TileLayerItem::syncWithTileLayer()
     setSize(boundingRect.size());
 }
 
-
-
 QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
                                         QQuickItem::UpdatePaintNodeData *)
 {
@@ -199,6 +197,10 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
         node->appendChildNode(new TilesNode(helper.texture(), tileData));
 
     return node;
+}
+
+Tiled::TileLayer *TileLayerItem::layer() {
+    return mLayer;
 }
 
 void TileLayerItem::updateVisibleTiles()

@@ -51,11 +51,20 @@ AbstractTileTool::AbstractTileTool(Id id,
         mBrushItem = new BrushItem;
     mBrushItem->setVisible(false);
     mBrushItem->setZValue(10000);
+    connect(mBrushItem, &BrushItem::regionChanged,
+            this, &AbstractTileTool::brushRegionChanged);
 }
 
 AbstractTileTool::~AbstractTileTool()
 {
+    disconnect(mBrushItem, &BrushItem::regionChanged,
+            this, &AbstractTileTool::brushRegionChanged);
     delete mBrushItem;
+}
+
+QRegion AbstractTileTool::validRegion() const
+{
+    return mBrushItem->tileRegion();
 }
 
 void AbstractTileTool::activate(MapScene *scene)
@@ -243,7 +252,7 @@ void AbstractTileTool::updateBrushVisibility()
         }
     }
 
-    mBrushItem->setVisible(showBrush);
+    mBrushItem->setVisible(showBrush || Preferences::instance()->useNewHardwareRenderer());
 }
 
 /**

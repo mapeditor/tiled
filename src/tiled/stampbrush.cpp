@@ -675,6 +675,8 @@ void StampBrush::updatePreview(QPoint tilePos)
             tileRegion = QRect(tilePos, tilePos);
     }
 
+    emit brushMapChanged(mPreviewMap.get());
+
     brushItem()->setMap(mPreviewMap, tileRegion);
 }
 

@@ -75,6 +75,8 @@ class MapEditor final : public Editor
 
     Q_PROPERTY(Tiled::TilesetDock *tilesetsView READ tilesetDock CONSTANT)
     Q_PROPERTY(Tiled::EditableMap *currentBrush READ currentBrush WRITE setCurrentBrush NOTIFY currentBrushChanged)
+    Q_PROPERTY(Tiled::EditableMap *tileEditPreview READ tileEditPreview NOTIFY tileEditPreviewChanged)
+    Q_PROPERTY(QRegion tileEditRegion READ tileEditRegion NOTIFY tileEditRegionChanged)
     Q_PROPERTY(Tiled::EditableWangSet *currentWangSet READ currentWangSet WRITE setCurrentWangSet NOTIFY currentWangSetChanged)
     Q_PROPERTY(int currentWangColorIndex READ currentWangColorIndex WRITE setCurrentWangColorIndex NOTIFY currentWangColorIndexChanged)
     Q_PROPERTY(Tiled::MapView *currentMapView READ currentMapView CONSTANT)
@@ -121,6 +123,11 @@ public:
     EditableMap *currentBrush() const;
     void setCurrentBrush(EditableMap *editableMap);
 
+    EditableMap *tileEditPreview() const;
+    void setTileEditPreview(Map *map);
+
+    QRegion tileEditRegion() const;
+
     EditableWangSet *currentWangSet() const;
     void setCurrentWangSet(EditableWangSet *wangSet);
 
@@ -135,10 +142,18 @@ public:
     AbstractTool *selectedTool() const;
     void setSelectedTool(AbstractTool *tool);
 
+#ifdef TILEDQUICK_LIB
+    Q_INVOKABLE void setQuickMouseCoords(QPointF coords);
+    Q_INVOKABLE void quickMousePressed(Qt::MouseButton button, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, QPointF pos, QPointF scenePos, QPoint screenPos);
+    Q_INVOKABLE void quickMouseReleased(Qt::MouseButton button, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, QPointF pos, QPointF scenePos, QPoint screenPos);
+#endif
+
     Q_INVOKABLE AbstractTool *tool(const QByteArray &id) const;
 
 signals:
     void currentBrushChanged();
+    void tileEditPreviewChanged();
+    void tileEditRegionChanged();
     void currentWangSetChanged();
     void currentWangColorIndexChanged(int colorIndex);
     void selectedToolChanged(AbstractTool *tool);
@@ -170,7 +185,9 @@ private:
 
     void setupQuickStamps();
     void setUseOpenGL(bool useOpenGL);
+#ifdef TILEDQUICK_LIB
     void setUseNewHardwareRenderer(bool useNewHardwareRenderer);
+#endif
     void retranslateUi();
     void showTileCollisionShapesChanged(bool enabled);
     void parallaxEnabledChanged(bool enabled);
@@ -193,7 +210,7 @@ private:
     TemplatesDock *mTemplatesDock;
     TilesetDock *mTilesetDock;
     WangDock *mWangDock;
-    MiniMapDock* mMiniMapDock;
+    MiniMapDock *mMiniMapDock;
     TileStampsDock *mTileStampsDock;
 
     std::unique_ptr<TreeViewComboBox> mLayerComboBox;
@@ -209,6 +226,8 @@ private:
     ShapeFillTool *mShapeFillTool;
     WangBrush *mWangBrush;
     EditPolygonTool *mEditPolygonTool;
+
+    std::unique_ptr<EditableMap> mTileEditPreview;
 
     QToolBar *mMainToolBar;
     QToolBar *mToolsToolBar;

@@ -14,6 +14,10 @@ TiledQtGuiApplication {
         name: "tiledquickplugin"
         condition: Qt.core.version !== undefined
                    && Utilities.versionCompare(Qt.core.version, "6.5") >= 0
+
+        // Disable linking against the plugin, as it is loaded dynamically at
+        // runtime. The Depends is only used to ensure that the plugin is built.
+        cpp.link: false
     }
     Depends { name: "ib"; condition: qbs.targetOS.contains("macos") }
     Depends { name: "xcode"; condition: qbs.targetOS.contains("macos") }

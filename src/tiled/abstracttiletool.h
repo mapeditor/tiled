@@ -52,6 +52,8 @@ public:
 
     ~AbstractTileTool() override;
 
+    QRegion validRegion() const;
+
     void activate(MapScene *scene) override;
     void deactivate(MapScene *scene) override;
 
@@ -61,6 +63,10 @@ public:
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
 
     void keyPressed(QKeyEvent *event) override;
+
+signals:
+    void brushMapChanged(Tiled::Map *map);
+    void brushRegionChanged();
 
 protected:
     void mapDocumentChanged(MapDocument *oldDocument,

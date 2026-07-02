@@ -38,6 +38,8 @@ DynamicLibrary {
         "mapitem.h",
         "maploader.cpp",
         "maploader.h",
+        "regionoverlay.cpp",
+        "regionoverlay.h",
         "tiledquick_global.h",
         "tilelayeritem.cpp",
         "tilelayeritem.h",
@@ -70,6 +72,8 @@ DynamicLibrary {
 
         cpp.includePaths: exportingProduct.sourceDirectory
     }
+
+    Depends { name: "Qt.core" }
 
     install: !qbs.targetOS.contains("darwin")
     installDir: {

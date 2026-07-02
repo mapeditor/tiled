@@ -30,6 +30,8 @@ using namespace TiledQuick;
 
 MapItem::MapItem(QQuickItem *parent)
     : QQuickItem(parent)
+    , mMap(nullptr)
+    , mEditableMap(nullptr)
 {
 }
 
@@ -40,8 +42,21 @@ void MapItem::setMap(Tiled::EditableMap *editableMap)
     if (mEditableMap == editableMap)
         return;
 
+    if (mEditableMap && mEditableMap->mapDocument()) {
+        Tiled::MapDocument *oldMapDocument = mEditableMap->mapDocument();
+        disconnect(oldMapDocument, &Tiled::MapDocument::regionChanged, this, &MapItem::repaintRegion);
+        disconnect(oldMapDocument, &Tiled::MapDocument::mapResized, this, &MapItem::refresh);
+    }
+
+    if (editableMap && editableMap->mapDocument()) {
+        Tiled::MapDocument *mapDocument = editableMap->mapDocument();
+        connect(mapDocument, &Tiled::MapDocument::regionChanged, this, &MapItem::repaintRegion);
+        connect(mapDocument, &Tiled::MapDocument::mapResized, this, &MapItem::refresh);
+    }
+
     mEditableMap = editableMap;
     mMap = editableMap ? editableMap->map() : nullptr;
+
     refresh();
     emit mapChanged();
 }
@@ -169,4 +184,15 @@ void MapItem::refresh()
 
     const QRect rect = mRenderer->mapBoundingRect();
     setImplicitSize(rect.width(), rect.height());
+}
+
+void MapItem::repaintRegion(const QRegion &, Tiled::TileLayer *tileLayer)
+{
+    for (TileLayerItem *tileLayerItem : std::as_const(mTileLayerItems)) {
+        if (tileLayer == tileLayerItem->layer()) {
+            // TODO: Update only the region edited
+            tileLayerItem->update();
+            continue;
+        }
+    }
 }

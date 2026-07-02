@@ -5,6 +5,7 @@ MouseArea {
 
     signal dragged(var dx, var dy)
 
+    acceptedButtons: Qt.AllButtons
     hoverEnabled: true
     onPressed: function(mouse) {
         lastDragPos = mapToItem(null, mouse.x, mouse.y)
