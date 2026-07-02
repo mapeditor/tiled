@@ -1230,6 +1230,38 @@ void MapEditor::setQuickMouseCoords(QPointF coords)
 
     selectedTool()->mouseMoved(coords, Qt::NoModifier);
 }
+
+void MapEditor::quickMousePressed(Qt::MouseButton button, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, QPointF pos, QPointF scenePos, QPoint screenPos)
+{
+    if (!selectedTool())
+        return;
+
+    QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
+    event.setButton(button);
+    event.setButtons(buttons);
+    event.setModifiers(modifiers);
+    event.setPos(pos);
+    event.setScenePos(scenePos);
+    event.setScreenPos(screenPos);
+
+    selectedTool()->mousePressed(&event);
+}
+
+void MapEditor::quickMouseReleased(Qt::MouseButton button, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, QPointF pos, QPointF scenePos, QPoint screenPos)
+{
+    if (!selectedTool())
+        return;
+
+    QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseRelease);
+    event.setButton(button);
+    event.setButtons(buttons);
+    event.setModifiers(modifiers);
+    event.setPos(pos);
+    event.setScenePos(scenePos);
+    event.setScreenPos(screenPos);
+
+    selectedTool()->mouseReleased(&event);
+}
 #endif
 
 AbstractTool *MapEditor::tool(const QByteArray &id) const

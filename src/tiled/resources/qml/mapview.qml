@@ -138,6 +138,24 @@ Rectangle {
             containerAnimation.scale = targetScale
             containerAnimation.start()
         }
+
+        onPressed: (event) => mapEditor.quickMousePressed(
+            event.button,
+            event.buttons,
+            event.modifiers,
+            singleFingerPanArea.mapToItem(mapItem, event.x, event.y),
+            singleFingerPanArea.mapToItem(null, event.x, event.y),
+            singleFingerPanArea.mapToGlobal(event.x, event.y)
+        )
+
+        onReleased: (event) => mapEditor.quickMouseReleased(
+            event.button,
+            event.buttons,
+            event.modifiers,
+            singleFingerPanArea.mapToItem(mapItem, event.x, event.y),
+            singleFingerPanArea.mapToItem(null, event.x, event.y),
+            singleFingerPanArea.mapToGlobal(event.x, event.y)
+        )
     }
 
     function fitMapInView(animate = true) {

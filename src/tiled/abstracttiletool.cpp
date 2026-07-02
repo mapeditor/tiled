@@ -252,7 +252,7 @@ void AbstractTileTool::updateBrushVisibility()
         }
     }
 
-    mBrushItem->setVisible(showBrush);
+    mBrushItem->setVisible(showBrush || Preferences::instance()->useNewHardwareRenderer());
 }
 
 /**
