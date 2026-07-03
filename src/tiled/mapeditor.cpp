@@ -707,7 +707,7 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
             disconnect(atTool, &AbstractTileTool::brushMapChanged,
                        this, &MapEditor::setTileEditPreview);
             disconnect(atTool, &AbstractTileTool::brushRegionChanged,
-                       this, &MapEditor::tileEditRegionChanged);
+                       this, &MapEditor::setTileEditRegion);
         }
 #endif
     }
@@ -734,7 +734,7 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
             connect(atTool, &AbstractTileTool::brushMapChanged,
                        this, &MapEditor::setTileEditPreview);
             connect(atTool, &AbstractTileTool::brushRegionChanged,
-                       this, &MapEditor::tileEditRegionChanged);
+                       this, &MapEditor::setTileEditRegion);
         }
 #endif
 
@@ -1169,10 +1169,14 @@ void MapEditor::setTileEditPreview(Map *map)
 
 QRegion MapEditor::tileEditRegion() const
 {
-    AbstractTileTool *atTool = qobject_cast<AbstractTileTool*>(selectedTool());
-    if (atTool)
-        return atTool->validRegion();
-    return QRegion();
+    return mTileEditRegion;
+}
+
+void MapEditor::setTileEditRegion(const QRegion &region)
+{
+    mTileEditRegion = region;
+
+    emit tileEditRegionChanged();
 }
 
 void MapEditor::setCurrentBrush(EditableMap *editableMap)

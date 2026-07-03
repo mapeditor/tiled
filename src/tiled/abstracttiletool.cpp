@@ -51,14 +51,10 @@ AbstractTileTool::AbstractTileTool(Id id,
         mBrushItem = new BrushItem;
     mBrushItem->setVisible(false);
     mBrushItem->setZValue(10000);
-    connect(mBrushItem, &BrushItem::regionChanged,
-            this, &AbstractTileTool::brushRegionChanged);
 }
 
 AbstractTileTool::~AbstractTileTool()
 {
-    disconnect(mBrushItem, &BrushItem::regionChanged,
-            this, &AbstractTileTool::brushRegionChanged);
     delete mBrushItem;
 }
 

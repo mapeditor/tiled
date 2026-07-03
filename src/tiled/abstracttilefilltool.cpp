@@ -230,6 +230,7 @@ void AbstractTileFillTool::updatePreview(const QRegion &fillRegion)
     preview->addTilesets(preview->usedTilesets());
 
     emit brushMapChanged(preview.get());
+    emit brushRegionChanged(fillRegion);
 
     brushItem()->setMap(preview);
     mPreviewMap = preview;

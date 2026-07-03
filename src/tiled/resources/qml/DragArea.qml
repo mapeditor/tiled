@@ -12,7 +12,7 @@ MouseArea {
     }
 
     onPositionChanged: function(mouse) {
-        if (!pressed)
+        if (!(pressedButtons & Qt.MiddleButton))
             return;
 
         var pos = mapToItem(null, mouse.x, mouse.y)

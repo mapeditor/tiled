@@ -240,7 +240,6 @@ void BrushItem::setRegion(const QRegion &region)
         return;
 
     mRegion = region;
-    emit regionChanged();
 }
 
 void BrushItem::translateRegion(const QPoint &p)
@@ -249,5 +248,4 @@ void BrushItem::translateRegion(const QPoint &p)
         return;
 
     mRegion.translate(p);
-    emit regionChanged();
 }

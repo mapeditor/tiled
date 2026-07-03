@@ -66,7 +66,7 @@ public:
 
 signals:
     void brushMapChanged(Tiled::Map *map);
-    void brushRegionChanged();
+    void brushRegionChanged(const QRegion &region);
 
 protected:
     void mapDocumentChanged(MapDocument *oldDocument,

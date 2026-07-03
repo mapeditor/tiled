@@ -127,6 +127,7 @@ public:
     void setTileEditPreview(Map *map);
 
     QRegion tileEditRegion() const;
+    void setTileEditRegion(const QRegion &region);
 
     EditableWangSet *currentWangSet() const;
     void setCurrentWangSet(EditableWangSet *wangSet);
@@ -228,6 +229,7 @@ private:
     EditPolygonTool *mEditPolygonTool;
 
     std::unique_ptr<EditableMap> mTileEditPreview;
+    QRegion mTileEditRegion;
 
     QToolBar *mMainToolBar;
     QToolBar *mToolsToolBar;

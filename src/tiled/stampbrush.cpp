@@ -96,7 +96,10 @@ void StampBrush::tilePositionChanged(QPoint pos)
 
             // Only update the brush item for the last drawn piece
             if (i == points.size() - 1)
+            {
+                emit brushMapChanged(mPreviewMap.get());
                 brushItem()->setMap(mPreviewMap);
+            }
 
             doPaint(Mergeable, &paintedRegions);
         }
@@ -104,6 +107,7 @@ void StampBrush::tilePositionChanged(QPoint pos)
         QHashIterator<TileLayer*, QRegion> ri(paintedRegions);
         while (ri.hasNext()) {
             ri.next();
+            emit brushRegionChanged(ri.value());
             emit mapDocument()->regionEdited(ri.value(), ri.key());
         }
     } else {
@@ -676,6 +680,7 @@ void StampBrush::updatePreview(QPoint tilePos)
     }
 
     emit brushMapChanged(mPreviewMap.get());
+    emit brushRegionChanged(tileRegion);
 
     brushItem()->setMap(mPreviewMap, tileRegion);
 }

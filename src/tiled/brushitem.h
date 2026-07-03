@@ -34,10 +34,8 @@ class MapDocument;
  * This brush item is used to represent a brush in a map scene before it is
  * used.
  */
-class BrushItem : public QGraphicsObject
+class BrushItem : public QGraphicsItem
 {
-    Q_OBJECT
-
 public:
     BrushItem();
 
@@ -65,9 +63,6 @@ public:
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
                QWidget *widget = nullptr) override;
-
-signals:
-    void regionChanged();
 
 protected:
     MapDocument *mapDocument() const { return mMapDocument; }
