@@ -20,8 +20,9 @@
 
 #pragma once
 
+#include "session.h"
+
 #include <QIcon>
-#include <QMap>
 #include <QPointer>
 #include <QWidget>
 
@@ -87,6 +88,8 @@ private:
     void currentObjectChanged(Object *object);
     void updateActions();
 
+    void applyObjectExpandedStates();
+
     void cut();
     bool copy();
     bool copyImpl(const SelectionState &state);
@@ -110,8 +113,9 @@ private:
     ObjectProperties *mPropertiesObject = nullptr;
     CustomProperties *mCustomProperties = nullptr;
     QPointer<AddValueProperty> mAddValueProperty;
-    QMap<int, bool> mExpandedStates;
     PropertiesView *mPropertiesView;
+    Session::CallbackIterator mObjectExpandedCallback;
+    Session::CallbackIterator mCustomExpandedCallback;
     QAction *mActionAddProperty;
     QAction *mActionRemoveProperty;
     QAction *mActionRenameProperty;
