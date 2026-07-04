@@ -9,6 +9,7 @@
 * Scripting: Added 'tiled.cell' function, 'cell.flags' property and 'TileLayerEdit.setCell' function (#4538)
 * Scripting: Added MapObject.resolvedClassName() (by MatusGuy, #4529)
 * Fixed crash when the selection becomes empty while starting a move (#4536)
+* Fixed Properties view update on 'Reset Template Instance' and 'Replace With Template' actions
 * Linux: Added file associations for .tmj, .tsj, .tiled-project and .world files (by miffe, #4550)
 * macOS: Declared UTIs and file associations for all supported Tiled formats (with Jyotish, #4469)
 * snap: Updated to Qt 6
