@@ -111,6 +111,7 @@ protected:
     void recenterView(const QPoint &offset);
 
     bool mapCanBeMoved(MapDocument *mapDocument) const;
+    bool mapCanBeResized(MapDocument *mapDocument) const;
     QRect mapRect(MapDocument *mapDocument) const;
     WorldDocument *worldForMap(MapDocument *mapDocument) const;
 

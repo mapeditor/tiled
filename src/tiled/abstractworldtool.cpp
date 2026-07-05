@@ -211,7 +211,9 @@ void AbstractWorldTool::updateEnabledState()
 {
     const bool hasWorlds = !WorldManager::instance().worlds().isEmpty();
     const auto worldDocument = worldForMap(mapDocument());
-    setEnabled(mapDocument() && hasWorlds && (!worldDocument || worldDocument->world()->canBeModified()));
+
+    // Maps that are not in a world can still be resized
+    setEnabled(mapDocument() && (!worldDocument || worldDocument->world()->canBeModified()));
 
     // update toolbar actions
     mAddMapToWorldAction->setEnabled(hasWorlds && !worldDocument);
@@ -271,6 +273,15 @@ bool AbstractWorldTool::mapCanBeMoved(MapDocument *mapDocument) const
         return false;
     auto worldDocument = worldForMap(mapDocument);
     return worldDocument && worldDocument->world()->canBeModified();
+}
+
+// Resizing only changes the map itself, so it also works without a world
+bool AbstractWorldTool::mapCanBeResized(MapDocument *mapDocument) const
+{
+    if (!mapDocument)
+        return false;
+    auto worldDocument = worldForMap(mapDocument);
+    return !worldDocument || worldDocument->world()->canBeModified();
 }
 
 QRect AbstractWorldTool::mapRect(MapDocument *mapDocument) const
