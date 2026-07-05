@@ -1266,6 +1266,18 @@ void MapEditor::quickMouseReleased(Qt::MouseButton button, Qt::MouseButtons butt
 
     selectedTool()->mouseReleased(&event);
 }
+
+void MapEditor::quickContainsMouseChanged(bool viewContainsMouse)
+{
+    if (!selectedTool())
+        return;
+
+    if (viewContainsMouse) {
+        selectedTool()->mouseEntered();
+    } else {
+        selectedTool()->mouseLeft();
+    }
+}
 #endif
 
 AbstractTool *MapEditor::tool(const QByteArray &id) const

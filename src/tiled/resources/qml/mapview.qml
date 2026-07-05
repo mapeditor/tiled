@@ -49,6 +49,8 @@ Rectangle {
                 }
             }
 
+    // TODO: Need RegionOverlay for selected tiles from tile selection tools.
+
             Tiled.MapBorderItem {
                 id: mapBorderItem
                 anchors.fill: mapItem
@@ -70,6 +72,7 @@ Rectangle {
                 id: toolBrush
                 anchors.left: mapItem.left
                 anchors.top: mapItem.top
+                visible: singleFingerPanArea.containsMouse
 
                 property var toolPreviewMap: mapEditor.tileEditPreview
                 map: toolPreviewMap
@@ -87,12 +90,13 @@ Rectangle {
             }
 
             RegionOverlay {
-                id: validRegionOverlay
+                id: brushRegionOverlay
                 anchors.fill: mapItem
+                visible: singleFingerPanArea.containsMouse
 
                 scale: mapContainer.scale
-
                 region: mapEditor.tileEditRegion
+                mapRect: Qt.rect(0, 0, mapItem.map.width, mapItem.map.height)
                 tileSize: Qt.point(mapItem.map.tileWidth, mapItem.map.tileHeight)
             }
         }
@@ -156,6 +160,8 @@ Rectangle {
             singleFingerPanArea.mapToItem(null, event.x, event.y),
             singleFingerPanArea.mapToGlobal(event.x, event.y)
         )
+
+        onContainsMouseChanged: mapEditor.quickContainsMouseChanged(singleFingerPanArea.containsMouse)
     }
 
     function fitMapInView(animate = true) {

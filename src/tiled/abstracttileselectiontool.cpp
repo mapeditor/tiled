@@ -176,6 +176,7 @@ const QRegion &AbstractTileSelectionTool::selectionPreviewRegion() const
 void AbstractTileSelectionTool::setSelectionPreview(const QRegion &region)
 {
     brushItem()->setTileRegion(region);
+    emit brushRegionChanged(region);
 }
 
 void AbstractTileSelectionTool::applySelectionPreview()

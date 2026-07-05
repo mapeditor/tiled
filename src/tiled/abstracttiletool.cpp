@@ -58,11 +58,6 @@ AbstractTileTool::~AbstractTileTool()
     delete mBrushItem;
 }
 
-QRegion AbstractTileTool::validRegion() const
-{
-    return mBrushItem->tileRegion();
-}
-
 void AbstractTileTool::activate(MapScene *scene)
 {
     scene->addItem(mBrushItem);
@@ -248,7 +243,7 @@ void AbstractTileTool::updateBrushVisibility()
         }
     }
 
-    mBrushItem->setVisible(showBrush || Preferences::instance()->useNewHardwareRenderer());
+    mBrushItem->setVisible(showBrush);
 }
 
 /**

@@ -52,8 +52,6 @@ public:
 
     ~AbstractTileTool() override;
 
-    QRegion validRegion() const;
-
     void activate(MapScene *scene) override;
     void deactivate(MapScene *scene) override;
 

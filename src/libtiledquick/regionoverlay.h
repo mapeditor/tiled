@@ -32,14 +32,19 @@ class TILEDQUICK_SHARED_EXPORT RegionOverlay : public QQuickItem
 
     Q_PROPERTY(QPointF tileSize READ tileSize WRITE setTileSize NOTIFY tileSizeChanged)
     Q_PROPERTY(QRegion region READ region WRITE setRegion NOTIFY regionChanged)
+    Q_PROPERTY(QRect mapRect READ mapRect WRITE setMapRect NOTIFY mapRectChanged)
+    Q_PROPERTY(QList<QPolygonF> validPolygons READ validPolygons NOTIFY regionChanged)
+    Q_PROPERTY(QList<QPolygonF> invalidPolygons READ invalidPolygons NOTIFY regionChanged)
 
 public:
     explicit RegionOverlay(QQuickItem *parent = nullptr);
     ~RegionOverlay() override;
 
-    Q_INVOKABLE QList<QPolygonF> polygons() const;
-    Q_INVOKABLE QColor strokeColor() const;
-    Q_INVOKABLE QColor fillColor() const;
+    Q_INVOKABLE QColor validStrokeColor() const;
+    Q_INVOKABLE QColor validFillColor() const;
+
+    Q_INVOKABLE QColor invalidStrokeColor() const;
+    Q_INVOKABLE QColor invalidFillColor() const;
 
     QPointF tileSize() const;
     void setTileSize(const QPointF &tileSize);
@@ -47,14 +52,23 @@ public:
     QRegion region() const;
     void setRegion(const QRegion &region);
 
+    QRect mapRect() const;
+    void setMapRect(const QRect &rect);
+
+    QList<QPolygonF> validPolygons() const;
+    QList<QPolygonF> invalidPolygons() const;
+
 signals:
     void tileSizeChanged();
     void regionChanged();
+    void mapRectChanged();
 
 private:
     QPointF mTileSize;
     QRegion mRegion;
-    QColor mColor;
+    QRect mMapRect;
+    QColor mValidColor;
+    QColor mInvalidColor;
 };
 
 } // namespace TiledQuick

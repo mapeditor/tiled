@@ -30,38 +30,34 @@ RegionOverlay::RegionOverlay(QQuickItem *parent)
     : QQuickItem(parent)
     , mTileSize(0, 0)
     , mRegion(QRegion())
-    , mColor(QApplication::palette().highlight().color())
+    , mMapRect(QRect())
+    , mValidColor(QApplication::palette().highlight().color())
+    , mInvalidColor(QColor(255,0,0))
 {
 }
 
 RegionOverlay::~RegionOverlay() = default;
 
-QList<QPolygonF> RegionOverlay::polygons() const
+QColor RegionOverlay::validStrokeColor() const
 {
-    QPainterPath path;
-
-    for (const QRect &r : mRegion.rects())
-        path.addRect(r);
-
-    QList<QPolygonF> polygons = path.simplified().toFillPolygons();
-
-    QTransform transform;
-    transform.scale(mTileSize.x(), mTileSize.y());
-
-    for (QPolygonF &polygon : polygons)
-        polygon = polygon * transform;
-
-    return polygons;
+    return mValidColor;
 }
 
-QColor RegionOverlay::strokeColor() const
+QColor RegionOverlay::validFillColor() const
 {
-    return mColor;
+    QColor fillColor = mValidColor;
+    fillColor.setAlpha(64);
+    return fillColor;
 }
 
-QColor RegionOverlay::fillColor() const
+QColor RegionOverlay::invalidStrokeColor() const
 {
-    QColor fillColor = mColor;
+    return mInvalidColor;
+}
+
+QColor RegionOverlay::invalidFillColor() const
+{
+    QColor fillColor = mInvalidColor;
     fillColor.setAlpha(64);
     return fillColor;
 }
@@ -92,4 +88,63 @@ void RegionOverlay::setRegion(const QRegion &region)
 
     mRegion = region;
     emit regionChanged();
+}
+
+QRect RegionOverlay::mapRect() const
+{
+    return mMapRect;
+}
+
+void RegionOverlay::setMapRect(const QRect &rect)
+{
+    if (mMapRect == rect)
+        return;
+
+    mMapRect = rect;
+    emit mapRectChanged();
+}
+
+QList<QPolygonF> RegionOverlay::validPolygons() const
+{
+    QRegion insideMapRegion;
+    if (mMapRect == QRect())
+        insideMapRegion = mRegion;
+    else
+        insideMapRegion = mRegion.intersected(mMapRect);
+
+    QPainterPath path;
+    for (const QRect &r : insideMapRegion.rects())
+        path.addRect(r);
+
+    QList<QPolygonF> polygons = path.simplified().toSubpathPolygons();
+
+    QTransform transform;
+    transform.scale(mTileSize.x(), mTileSize.y());
+
+    for (QPolygonF &polygon : polygons)
+        polygon = transform.map(polygon);
+
+    return polygons;
+}
+
+QList<QPolygonF> RegionOverlay::invalidPolygons() const
+{
+    if (mMapRect == QRect())
+        return QList<QPolygonF>();
+
+    QRegion outsideMapRegion = mRegion.subtracted(mMapRect);
+
+    QPainterPath path;
+    for (const QRect &r : outsideMapRegion.rects())
+        path.addRect(r);
+
+    QList<QPolygonF> polygons = path.simplified().toSubpathPolygons();
+
+    QTransform transform;
+    transform.scale(mTileSize.x(), mTileSize.y());
+
+    for (QPolygonF &polygon : polygons)
+        polygon = transform.map(polygon);
+
+    return polygons;
 }

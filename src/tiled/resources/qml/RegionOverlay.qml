@@ -7,20 +7,25 @@ Tiled.RegionOverlay {
     id: regionOverlay
 
     property var scale
-    property var regionPolygons
-
-    onRegionChanged: {
-        regionOverlay.regionPolygons = regionOverlay.polygons()
-    }
 
     Shape {
         ShapePath {
-            strokeColor: regionOverlay.strokeColor()
+            strokeColor: regionOverlay.validStrokeColor()
             strokeWidth: 1 / regionOverlay.scale
-            fillColor: regionOverlay.fillColor()
+            fillColor: regionOverlay.validFillColor()
 
             PathMultiline {
-                paths: regionOverlay.regionPolygons
+                paths: regionOverlay.validPolygons
+            }
+        }
+
+        ShapePath {
+            strokeColor: regionOverlay.invalidStrokeColor()
+            strokeWidth: 1 / regionOverlay.scale
+            fillColor: regionOverlay.invalidFillColor()
+
+            PathMultiline {
+                paths: regionOverlay.invalidPolygons
             }
         }
     }
