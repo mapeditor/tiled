@@ -753,9 +753,43 @@ Property
     :widths: 1, 1, 4
 
     name,             string,           "Name of the property"
-    type,             string,           "Type of the property (``string`` (default), ``int``, ``float``, ``bool``, ``color``, ``file``, ``object`` or ``class`` (since 0.16, with ``color`` and ``file`` added in 0.17, ``object`` added in 1.4 and ``class`` added in 1.8))"
+    type,             string,           "Type of the property (``string`` (default), ``int``, ``float``, ``bool``, ``color``, ``file``, ``object``, ``class`` or ``list`` (since 0.16, with ``color`` and ``file`` added in 0.17, ``object`` added in 1.4, ``class`` added in 1.8 and ``list`` added in 1.12))"
     propertytype,     string,           "Name of the :ref:`custom property type <custom-property-types>`, when applicable (since 1.8)"
     value,            value,            "Value of the property"
+
+When the type is ``list``, the ``value`` is an array storing each item of the
+list as an object with ``type``, ``value`` and (when applicable)
+``propertytype`` fields, like a property without a name. Class items store
+their set members as a JSON object, and list items store their values as a
+nested array.
+
+Example of a list property with a nested list:
+
+.. code:: json
+
+   {
+       "name":"list property",
+       "type":"list",
+       "value":[
+           {
+               "type":"int",
+               "value":10
+           },
+           {
+               "type":"string",
+               "value":"text"
+           },
+           {
+               "type":"list",
+               "value":[
+                   {
+                       "type":"bool",
+                       "value":true
+                   }
+               ]
+           }
+       ]
+   }
 
 .. _json-point:
 
@@ -783,6 +817,10 @@ Tiled 1.12
 * Added ``capsule`` property to :ref:`json-object`.
 
 * Added ``opacity`` property to :ref:`json-object`.
+
+* Added ``list`` as a possible type of :ref:`json-property`. The ``value`` of
+  a list property is an array storing each item as an object with ``type``,
+  ``propertytype`` and ``value`` fields.
 
 Tiled 1.11.1
 ~~~~~~~~~~~~
