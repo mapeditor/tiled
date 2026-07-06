@@ -210,15 +210,20 @@ void AbstractWorldTool::languageChangedImpl()
 void AbstractWorldTool::updateEnabledState()
 {
     const bool hasWorlds = !WorldManager::instance().worlds().isEmpty();
-    const auto worldDocument = worldForMap(mapDocument());
+    MapDocument *map = mapDocument();
+    const auto worldDocument = worldForMap(map);
 
     // Maps that are not in a world can still be resized
-    setEnabled(mapDocument() && (!worldDocument || worldDocument->world()->canBeModified()));
+    setEnabled(map && (!worldDocument || worldDocument->world()->canBeModified()));
 
     // update toolbar actions
     mAddMapToWorldAction->setEnabled(hasWorlds && !worldDocument);
     mRemoveMapFromWorldAction->setEnabled(worldDocument);
-    mAddAnotherMapToWorldAction->setEnabled(worldDocument);
+
+    // Adding another map also works without a world, since we can
+    // create one first
+    mAddAnotherMapToWorldAction->setEnabled(worldDocument ||
+                                            (map && !map->fileName().isEmpty()));
 }
 
 MapDocument *AbstractWorldTool::mapAt(const QPointF &pos) const
@@ -357,8 +362,14 @@ void AbstractWorldTool::addAnotherMapToWorld(QPoint insertPos)
 {
     MapDocument *map = mapDocument();
     auto worldDocument = worldForMap(map);
-    if (!worldDocument)
-        return;
+
+    // A world needs to be saved before a map can be added to it, so when
+    // the map is not in a world yet we ask for a world file first
+    if (!worldDocument) {
+        worldDocument = createWorldForMap(map);
+        if (!worldDocument)
+            return;
+    }
 
     const QDir dir = QFileInfo(map->fileName()).dir();
     const QString lastPath = QDir::cleanPath(dir.absolutePath());
@@ -390,6 +401,42 @@ void AbstractWorldTool::addAnotherMapToWorld(QPoint insertPos)
 
     auto undoStack = worldDocument->undoStack();
     undoStack->push(new AddMapCommand(worldDocument, fileName, rect));
+}
+
+// Asks for a file name and creates a new world with the given map in it.
+// Returns null when the user cancels or the world could not be saved.
+WorldDocument *AbstractWorldTool::createWorldForMap(MapDocument *map)
+{
+    if (map->fileName().isEmpty())
+        return nullptr;
+
+    const QFileInfo fileInfo(map->fileName());
+    const QString suggestedFileName
+            = fileInfo.dir().filePath(fileInfo.completeBaseName() +
+                                      QStringLiteral(".world"));
+
+    QFileDialog dialog(MainWindow::instance(), tr("New World"), suggestedFileName,
+                       tr("World files (*.world)"));
+    dialog.setAcceptMode(QFileDialog::AcceptSave);
+    dialog.setDefaultSuffix(QStringLiteral("world"));
+    if (dialog.exec() != QDialog::Accepted)
+        return nullptr;
+
+    const QString worldFile = dialog.selectedFiles().value(0);
+    if (worldFile.isEmpty())
+        return nullptr;
+
+    QString errorString;
+    auto worldDocument = WorldManager::instance().addEmptyWorld(worldFile, &errorString);
+    if (!worldDocument) {
+        QMessageBox::critical(MainWindow::instance(), tr("Error Creating World"), errorString);
+        return nullptr;
+    }
+
+    const QRect rect = map->renderer()->mapBoundingRect();
+    worldDocument->undoStack()->push(new AddMapCommand(worldDocument.data(), map->fileName(), rect));
+
+    return worldDocument.data();
 }
 
 void AbstractWorldTool::removeCurrentMapFromWorld()
