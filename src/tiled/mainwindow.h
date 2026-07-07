@@ -96,6 +96,8 @@ public:
      */
     bool openFile(const QString &fileName, FileFormat *fileFormat = nullptr);
 
+    WorldDocument *createNewWorld(const QString &suggestedFileName = QString());
+
     bool addRecentProjectsActions(QMenu *menu) const;
 
     static MainWindow *instance();

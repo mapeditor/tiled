@@ -415,28 +415,14 @@ WorldDocument *AbstractWorldTool::createWorldForMap(MapDocument *map)
             = fileInfo.dir().filePath(fileInfo.completeBaseName() +
                                       QStringLiteral(".world"));
 
-    QFileDialog dialog(MainWindow::instance(), tr("New World"), suggestedFileName,
-                       tr("World files (*.world)"));
-    dialog.setAcceptMode(QFileDialog::AcceptSave);
-    dialog.setDefaultSuffix(QStringLiteral("world"));
-    if (dialog.exec() != QDialog::Accepted)
+    auto worldDocument = MainWindow::instance()->createNewWorld(suggestedFileName);
+    if (!worldDocument)
         return nullptr;
-
-    const QString worldFile = dialog.selectedFiles().value(0);
-    if (worldFile.isEmpty())
-        return nullptr;
-
-    QString errorString;
-    auto worldDocument = WorldManager::instance().addEmptyWorld(worldFile, &errorString);
-    if (!worldDocument) {
-        QMessageBox::critical(MainWindow::instance(), tr("Error Creating World"), errorString);
-        return nullptr;
-    }
 
     const QRect rect = map->renderer()->mapBoundingRect();
-    worldDocument->undoStack()->push(new AddMapCommand(worldDocument.data(), map->fileName(), rect));
+    worldDocument->undoStack()->push(new AddMapCommand(worldDocument, map->fileName(), rect));
 
-    return worldDocument.data();
+    return worldDocument;
 }
 
 void AbstractWorldTool::removeCurrentMapFromWorld()
