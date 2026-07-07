@@ -333,6 +333,13 @@ void WorldMoveMapTool::finishResizing()
             if (auto worldDocument = worldForMap(resizedMap)) {
                 const QPoint newPos = worldDocument->world()->mapRect(resizedMap->fileName()).topLeft();
                 recenterView(newPos - prevPos);
+            } else {
+                // a map that is not in a world stays anchored at 0,0 while
+                // its content shifts, so compensate for that shift instead
+                const MapRenderer *renderer = resizedMap->renderer();
+                const QPointF pixelOffset = renderer->tileToPixelCoords(QPointF())
+                                          - renderer->tileToPixelCoords(-mResizeOffset);
+                recenterView(-pixelOffset.toPoint());
             }
         }
     }
