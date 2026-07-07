@@ -125,7 +125,7 @@ public:
     void setCurrentBrush(EditableMap *editableMap);
 
     EditableMap *tileEditPreview() const;
-    void setTileEditPreview(Map *map);
+    void setTileEditPreview(const SharedMap &map);
 
     QRegion tileEditRegion() const;
     void setTileEditRegion(const QRegion &region);

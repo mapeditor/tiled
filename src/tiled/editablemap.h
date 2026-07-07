@@ -115,6 +115,7 @@ public:
     Q_INVOKABLE explicit EditableMap(QObject *parent = nullptr);
     explicit EditableMap(MapDocument *mapDocument, QObject *parent = nullptr);
     explicit EditableMap(const Map *map, QObject *parent = nullptr);
+    explicit EditableMap(const SharedMap &map, QObject *parent = nullptr);
     explicit EditableMap(std::unique_ptr<Map> map, QObject *parent = nullptr);
     ~EditableMap() override;
 
@@ -242,6 +243,7 @@ private:
     MapRenderer *renderer() const;
 
     std::unique_ptr<Map> mDetachedMap;
+    SharedMap mSharedMap;
     mutable std::unique_ptr<MapRenderer> mRenderer;
     bool mReadOnly = false;
 

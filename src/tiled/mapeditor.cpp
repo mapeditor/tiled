@@ -395,11 +395,7 @@ void MapEditor::removeDocument(Document *document)
     Q_ASSERT(mViewForMap.contains(mapDocument));
 
     if (mapDocument == mCurrentMapDocument)
-    {
         setCurrentDocument(nullptr);
-        setTileEditPreview(nullptr);
-    }
-
 
     MapViewInterface *mapViewInterface = mViewForMap.take(mapDocument);
     // remove first, to keep it valid while the current widget changes
@@ -1096,8 +1092,6 @@ void MapEditor::setUseOpenGL(bool useOpenGL)
 #ifdef TILEDQUICK_LIB
 void MapEditor::setUseNewHardwareRenderer(bool useNewHardwareRenderer)
 {
-    setTileEditPreview(nullptr);
-
     for (MapViewInterface *mapViewInterface : std::as_const(mViewForMap))
     {
         mWidgetStack->addWidget(mapViewInterface->getWidget());
@@ -1158,14 +1152,7 @@ EditableMap *MapEditor::tileEditPreview() const
     return mTileEditPreview.get();
 }
 
-/**
-* Sets the mTileEditPreview EditableMap wrapper for the given *map.
-*
-* The previous *map must remain valid until after mTileEditPreview is set to
-* the new *map, as EditableMap wrappers cannot be deleted if their wrapped *map
-* is invalid.
-*/
-void MapEditor::setTileEditPreview(Map *map)
+void MapEditor::setTileEditPreview(const SharedMap &map)
 {
     if (!map) {
         mTileEditPreview.reset();

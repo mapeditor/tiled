@@ -91,8 +91,6 @@ void StampBrush::tilePositionChanged(QPoint pos)
         QVector<QPoint> points = pointsOnLine(mPrevTilePosition, pos);
         QHash<TileLayer*, QRegion> paintedRegions;
 
-        emit brushMapChanged(nullptr);
-
         for (int i = 1; i < points.size(); ++i) {
             drawPreviewLayer(QVector<QPoint>() << points.at(i));
 
@@ -109,6 +107,7 @@ void StampBrush::tilePositionChanged(QPoint pos)
             emit mapDocument()->regionEdited(ri.value(), ri.key());
         }
 
+        emit brushMapChanged(nullptr);
         emit brushRegionChanged(mPreviewMap->modifiedTileRegion());
     } else {
         updatePreview();
@@ -679,10 +678,10 @@ void StampBrush::updatePreview(QPoint tilePos)
             tileRegion = QRect(tilePos, tilePos);
     }
 
-    emit brushMapChanged(mPreviewMap.get());
-    emit brushRegionChanged(tileRegion);
-
     brushItem()->setMap(mPreviewMap, tileRegion);
+
+    emit brushMapChanged(mPreviewMap);
+    emit brushRegionChanged(tileRegion);
 }
 
 void StampBrush::setRandom(bool value)

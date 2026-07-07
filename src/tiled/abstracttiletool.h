@@ -63,7 +63,7 @@ public:
     void keyPressed(QKeyEvent *event) override;
 
 signals:
-    void brushMapChanged(Tiled::Map *map);
+    void brushMapChanged(const Tiled::SharedMap &map);
     void brushRegionChanged(const QRegion &region);
 
 protected:
