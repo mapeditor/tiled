@@ -243,7 +243,7 @@ private:
     MapRenderer *renderer() const;
 
     std::unique_ptr<Map> mDetachedMap;
-    SharedMap mSharedMap;
+    SharedMap mSharedMap = nullptr;
     mutable std::unique_ptr<MapRenderer> mRenderer;
     bool mReadOnly = false;
 

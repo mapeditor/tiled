@@ -1,12 +1,12 @@
 import QtQuick
 import QtQuick.Shapes
-import QtQuick.Controls
 import org.mapeditor.Tiled as Tiled
 
 Tiled.RegionOverlay {
     id: regionOverlay
 
     property var scale
+    // TODO: Draw only visible area
 
     Shape {
         ShapePath {
