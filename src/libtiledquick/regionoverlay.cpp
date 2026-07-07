@@ -33,6 +33,7 @@ RegionOverlay::RegionOverlay(QQuickItem *parent)
     , mMapRect(QRect())
     , mValidColor(QApplication::palette().highlight().color())
     , mInvalidColor(QColor(255,0,0))
+    , mRegionAlpha(64)
 {
 }
 
@@ -46,7 +47,7 @@ QColor RegionOverlay::validStrokeColor() const
 QColor RegionOverlay::validFillColor() const
 {
     QColor fillColor = mValidColor;
-    fillColor.setAlpha(64);
+    fillColor.setAlpha(mRegionAlpha);
     return fillColor;
 }
 
@@ -58,7 +59,7 @@ QColor RegionOverlay::invalidStrokeColor() const
 QColor RegionOverlay::invalidFillColor() const
 {
     QColor fillColor = mInvalidColor;
-    fillColor.setAlpha(64);
+    fillColor.setAlpha(mRegionAlpha);
     return fillColor;
 }
 
@@ -104,6 +105,20 @@ void RegionOverlay::setMapRect(const QRect &rect)
     emit mapRectChanged();
 }
 
+int RegionOverlay::regionAlpha() const
+{
+    return mRegionAlpha;
+}
+
+void RegionOverlay::setRegionAlpha(const int &alpha)
+{
+    if (mRegionAlpha == alpha)
+        return;
+
+    mRegionAlpha = alpha;
+    emit regionAlphaChanged();
+}
+
 QList<QPolygonF> RegionOverlay::validPolygons() const
 {
     QRegion insideMapRegion;
@@ -112,19 +127,7 @@ QList<QPolygonF> RegionOverlay::validPolygons() const
     else
         insideMapRegion = mRegion.intersected(mMapRect);
 
-    QPainterPath path;
-    for (const QRect &r : insideMapRegion.rects())
-        path.addRect(r);
-
-    QList<QPolygonF> polygons = path.simplified().toSubpathPolygons();
-
-    QTransform transform;
-    transform.scale(mTileSize.x(), mTileSize.y());
-
-    for (QPolygonF &polygon : polygons)
-        polygon = transform.map(polygon);
-
-    return polygons;
+    return polygons(insideMapRegion);
 }
 
 QList<QPolygonF> RegionOverlay::invalidPolygons() const
@@ -134,8 +137,13 @@ QList<QPolygonF> RegionOverlay::invalidPolygons() const
 
     QRegion outsideMapRegion = mRegion.subtracted(mMapRect);
 
+    return polygons(outsideMapRegion);
+}
+
+QList<QPolygonF> RegionOverlay::polygons(const QRegion &region) const
+{
     QPainterPath path;
-    for (const QRect &r : outsideMapRegion.rects())
+    for (const QRect &r : region.rects())
         path.addRect(r);
 
     QList<QPolygonF> polygons = path.simplified().toSubpathPolygons();

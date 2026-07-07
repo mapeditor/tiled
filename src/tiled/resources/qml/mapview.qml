@@ -49,7 +49,16 @@ Rectangle {
                 }
             }
 
-    // TODO: Need RegionOverlay for selected tiles from tile selection tools.
+            RegionOverlay {
+                id: selectedRegionOverlay
+                anchors.fill: mapItem
+
+                scale: mapContainer.scale
+                region: mapEditor.selectedRegion
+                tileSize: Qt.point(mapItem.map.tileWidth, mapItem.map.tileHeight)
+
+                regionAlpha: 127
+            }
 
             Tiled.MapBorderItem {
                 id: mapBorderItem
@@ -72,7 +81,7 @@ Rectangle {
                 id: toolBrush
                 anchors.left: mapItem.left
                 anchors.top: mapItem.top
-                visible: singleFingerPanArea.containsMouse
+                visible: singleFingerPanArea.containsMouse || singleFingerPanArea.pressed
 
                 property var toolPreviewMap: mapEditor.tileEditPreview
                 map: toolPreviewMap
@@ -92,7 +101,7 @@ Rectangle {
             RegionOverlay {
                 id: brushRegionOverlay
                 anchors.fill: mapItem
-                visible: singleFingerPanArea.containsMouse
+                visible: toolBrush.visible
 
                 scale: mapContainer.scale
                 region: mapEditor.tileEditRegion

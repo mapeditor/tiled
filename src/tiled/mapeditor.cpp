@@ -453,6 +453,8 @@ void MapEditor::setCurrentDocument(Document *document)
 //                this, &MapEditor::updateActions);
 //        connect(mapDocument, &MapDocument::selectedObjectsChanged,
 //                this, &MapEditor::updateActions);
+        connect(mapDocument, &MapDocument::selectedAreaChanged,
+                this, &MapEditor::selectedRegionChanged);
 
         if (mapView) {
             mZoomable = mapView->zoomable();
@@ -744,6 +746,14 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
     updateActiveUndoStack();
 
     emit selectedToolChanged(tool);
+}
+
+QRegion MapEditor::selectedRegion() const
+{
+    if (!mCurrentMapDocument)
+        return QRegion();
+
+    return mCurrentMapDocument->selectedArea();
 }
 
 void MapEditor::updateActiveUndoStack()
