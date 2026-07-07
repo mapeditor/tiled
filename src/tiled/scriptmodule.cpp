@@ -416,10 +416,7 @@ ScriptedAction *ScriptModule::registerAction(const QByteArray &idName, QJSValue 
     Id id { idName };
     auto &action = mRegisteredActions[id];
 
-    // Remove any previously registered action with the same name
-    if (action) {
-        action.reset();
-    } else if (ActionManager::findAction(id)) {
+    if (!action && ActionManager::findAction(id)) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Reserved ID"));
         return nullptr;
     }
