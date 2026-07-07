@@ -592,6 +592,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, &MainWindow::addExternalTileset);
     connect(mUi->actionAddAutomappingRulesTileset, &QAction::triggered,
             this, &MainWindow::addAutomappingRulesTileset);
+    auto rememberLoadedWorlds = [this] {
+        mLoadedWorlds = WorldManager::instance().worldFileNames();
+    };
+    connect(&WorldManager::instance(), &WorldManager::worldLoaded,
+            this, rememberLoadedWorlds);
+    connect(&WorldManager::instance(), &WorldManager::worldUnloaded,
+            this, rememberLoadedWorlds);
+
     connect(mUi->actionLoadWorld, &QAction::triggered, this, [this] {
         Session &session = Session::current();
         QString lastPath = session.lastPath(Session::WorldFile);
@@ -608,8 +616,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         QString errorString;
         if (!WorldManager::instance().loadWorld(worldFile, &errorString))
             QMessageBox::critical(this, tr("Error Loading World"), errorString);
-        else
-            mLoadedWorlds = WorldManager::instance().worldFileNames();
     });
     connect(mUi->menuUnloadWorld, &QMenu::aboutToShow, this, [this] {
         mUi->menuUnloadWorld->clear();
@@ -624,7 +630,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
                     return;
 
                 WorldManager::instance().unloadWorld(worldDocument);
-                mLoadedWorlds = WorldManager::instance().worldFileNames();
             });
         }
         if (WorldManager::instance().worlds().count() >= 2) {
@@ -655,8 +660,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         QString errorString;
         if (!WorldManager::instance().addEmptyWorld(worldFile, &errorString))
             QMessageBox::critical(this, tr("Error Creating World"), errorString);
-        else
-            mLoadedWorlds = WorldManager::instance().worldFileNames();
     });
     connect(mUi->menuSaveWorld, &QMenu::aboutToShow, this, [this] {
         mUi->menuSaveWorld->clear();
@@ -1072,8 +1075,6 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
             QMessageBox::critical(this, tr("Error Loading World"), errorString);
             return false;
         } else {
-            mLoadedWorlds = worldManager.worldFileNames();
-
             Document *document = mDocumentManager->currentDocument();
             if (document && document->type() == Document::MapDocumentType)
                 if (worldManager.worldForMap(document->fileName()) == worldDocument)
