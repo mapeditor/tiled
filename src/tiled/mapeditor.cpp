@@ -1223,18 +1223,27 @@ void MapEditor::setSelectedTool(AbstractTool *tool)
     mToolManager->selectTool(tool);
 }
 
+AbstractTool *MapEditor::activeTool() const
+{
+    if (!mViewWithTool)
+        return nullptr;
+    return mToolManager->selectedTool();
+}
+
 #ifdef TILEDQUICK_LIB
 void MapEditor::setQuickMouseCoords(QPointF coords)
 {
-    if (!selectedTool())
+    auto tool = activeTool();
+    if (!tool)
         return;
 
-    selectedTool()->mouseMoved(coords, Qt::NoModifier);
+    tool->mouseMoved(coords, Qt::NoModifier);
 }
 
 void MapEditor::quickMousePressed(Qt::MouseButton button, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, QPointF pos, QPointF scenePos, QPoint screenPos)
 {
-    if (!selectedTool())
+    auto tool = activeTool();
+    if (!tool)
         return;
 
     QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
@@ -1245,12 +1254,13 @@ void MapEditor::quickMousePressed(Qt::MouseButton button, Qt::MouseButtons butto
     event.setScenePos(scenePos);
     event.setScreenPos(screenPos);
 
-    selectedTool()->mousePressed(&event);
+    tool->mousePressed(&event);
 }
 
 void MapEditor::quickMouseReleased(Qt::MouseButton button, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, QPointF pos, QPointF scenePos, QPoint screenPos)
 {
-    if (!selectedTool())
+    auto tool = activeTool();
+    if (!tool)
         return;
 
     QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseRelease);
@@ -1261,19 +1271,19 @@ void MapEditor::quickMouseReleased(Qt::MouseButton button, Qt::MouseButtons butt
     event.setScenePos(scenePos);
     event.setScreenPos(screenPos);
 
-    selectedTool()->mouseReleased(&event);
+    tool->mouseReleased(&event);
 }
 
 void MapEditor::quickContainsMouseChanged(bool viewContainsMouse)
 {
-    if (!selectedTool())
+    auto tool = activeTool();
+    if (!tool)
         return;
 
-    if (viewContainsMouse) {
-        selectedTool()->mouseEntered();
-    } else {
-        selectedTool()->mouseLeft();
-    }
+    if (viewContainsMouse)
+        tool->mouseEntered();
+    else
+        tool->mouseLeft();
 }
 #endif
 

@@ -145,6 +145,7 @@ public:
 
     AbstractTool *selectedTool() const;
     void setSelectedTool(AbstractTool *tool);
+    AbstractTool *activeTool() const;
 
 #ifdef TILEDQUICK_LIB
     Q_INVOKABLE void setQuickMouseCoords(QPointF coords);
