@@ -61,7 +61,7 @@ void BrushItem::clear()
 {
     mTileLayer.clear();
     mMap.clear();
-    setRegion(QRegion());
+    mRegion = QRegion();
 
     updateBoundingRect();
     update();
@@ -86,7 +86,7 @@ void BrushItem::setTileLayer(const SharedTileLayer &tileLayer,
                              const QRegion &region)
 {
     mTileLayer = tileLayer;
-    setRegion(region);
+    mRegion = region;
 
     updateBoundingRect();
     update();
@@ -100,7 +100,7 @@ void BrushItem::setMap(const SharedMap &map)
 void BrushItem::setMap(const SharedMap &map, const QRegion &region)
 {
     mMap = map;
-    setRegion(region);
+    mRegion = region;
 
     updateBoundingRect();
     update();
@@ -118,7 +118,7 @@ void BrushItem::setTileLayerPosition(QPoint pos)
     if (oldPosition == pos)
         return;
 
-    translateRegion(pos - oldPosition);
+    mRegion.translate(pos - oldPosition);
     mTileLayer->setX(pos.x());
     mTileLayer->setY(pos.y());
     updateBoundingRect();
@@ -129,7 +129,10 @@ void BrushItem::setTileLayerPosition(QPoint pos)
  */
 void BrushItem::setTileRegion(const QRegion &region)
 {
-    setRegion(region);
+    if (mRegion == region)
+        return;
+
+    mRegion = region;
     updateBoundingRect();
 }
 
@@ -232,20 +235,4 @@ void BrushItem::updateBoundingRect()
 
     // Adjust for border drawn at tile selection edges
     mBoundingRect.adjust(-1, -1, 1, 1);
-}
-
-void BrushItem::setRegion(const QRegion &region)
-{
-    if (mRegion == region)
-        return;
-
-    mRegion = region;
-}
-
-void BrushItem::translateRegion(const QPoint &p)
-{
-    if (p.x() == 0 && p.y() == 0)
-        return;
-
-    mRegion.translate(p);
 }

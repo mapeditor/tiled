@@ -1149,17 +1149,27 @@ EditableMap *MapEditor::currentBrush() const
 
 EditableMap *MapEditor::tileEditPreview() const
 {
-    return mTileEditPreview.get();
+    EditableMap* preview;
+    EditableObject* existingPreview = EditableObject::find(mTileEditPreview.get());
+
+    if (existingPreview)
+        preview = qobject_cast<EditableMap*>(existingPreview);
+    else
+        preview = mTileEditPreview ? new EditableMap(mTileEditPreview) : nullptr;
+
+    return preview;
 }
 
 void MapEditor::setTileEditPreview(const SharedMap &map)
 {
-    if (!map) {
-        mTileEditPreview.reset();
+    if (map == mTileEditPreview)
         return;
-    }
 
-    mTileEditPreview = std::make_unique<EditableMap>(map);
+    EditableObject* oldPreview = EditableObject::find(mTileEditPreview.get());
+    if (oldPreview)
+        delete oldPreview;
+
+    mTileEditPreview = map;
 
     emit tileEditPreviewChanged();
 }
@@ -1231,7 +1241,7 @@ AbstractTool *MapEditor::activeTool() const
 }
 
 #ifdef TILEDQUICK_LIB
-void MapEditor::setQuickMouseCoords(QPointF coords)
+void MapEditor::quickMouseMoved(QPointF coords)
 {
     auto tool = activeTool();
     if (!tool)

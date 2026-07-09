@@ -94,6 +94,10 @@ private:
     QPoint mPosition;
 };
 
+inline Tiled::TileLayer *TileLayerItem::layer() {
+    return mLayer;
+}
+
 inline QPoint TileItem::position() const
 {
     return mPosition;

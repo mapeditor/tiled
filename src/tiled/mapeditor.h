@@ -148,7 +148,7 @@ public:
     AbstractTool *activeTool() const;
 
 #ifdef TILEDQUICK_LIB
-    Q_INVOKABLE void setQuickMouseCoords(QPointF coords);
+    Q_INVOKABLE void quickMouseMoved(QPointF coords);
     Q_INVOKABLE void quickMousePressed(Qt::MouseButton button, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, QPointF pos, QPointF scenePos, QPoint screenPos);
     Q_INVOKABLE void quickMouseReleased(Qt::MouseButton button, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, QPointF pos, QPointF scenePos, QPoint screenPos);
     Q_INVOKABLE void quickContainsMouseChanged(bool viewContainsMouse);
@@ -234,7 +234,7 @@ private:
     WangBrush *mWangBrush;
     EditPolygonTool *mEditPolygonTool;
 
-    std::unique_ptr<EditableMap> mTileEditPreview;
+    SharedMap mTileEditPreview;
     QRegion mTileEditRegion;
 
     QToolBar *mMainToolBar;

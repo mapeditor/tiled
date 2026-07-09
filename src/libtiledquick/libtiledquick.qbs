@@ -73,8 +73,6 @@ DynamicLibrary {
         cpp.includePaths: exportingProduct.sourceDirectory
     }
 
-    Depends { name: "Qt.core" }
-
     install: !qbs.targetOS.contains("darwin")
     installDir: {
         if (qbs.targetOS.contains("windows"))

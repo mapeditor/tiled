@@ -199,10 +199,6 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
     return node;
 }
 
-Tiled::TileLayer *TileLayerItem::layer() {
-    return mLayer;
-}
-
 void TileLayerItem::updateVisibleTiles()
 {
     const MapItem *mapItem = static_cast<MapItem*>(parentItem());

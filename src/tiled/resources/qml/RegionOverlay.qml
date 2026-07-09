@@ -6,7 +6,6 @@ Tiled.RegionOverlay {
     id: regionOverlay
 
     property var scale
-    // TODO: Draw only visible area
 
     Shape {
         ShapePath {

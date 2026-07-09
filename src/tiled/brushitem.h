@@ -69,8 +69,6 @@ protected:
 
 private:
     void updateBoundingRect();
-    void setRegion(const QRegion &region);
-    void translateRegion(const QPoint &p);
 
     MapDocument *mMapDocument;
     SharedTileLayer mTileLayer;

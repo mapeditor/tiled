@@ -196,18 +196,11 @@ Rectangle {
         }
     }
 
-    function cursorTileCoords() {
-        var tileCoords = mapItem.screenToTileCoords(mapRelativeCoords.x, mapRelativeCoords.y)
-
-        return tileCoords
-    }
-
     property var mapRelativeCoords: {
-        var mapRelativeCoords = singleFingerPanArea.mapToItem(mapItem, singleFingerPanArea.mouseX, singleFingerPanArea.mouseY)
-        return mapRelativeCoords
+        return singleFingerPanArea.mapToItem(mapItem, singleFingerPanArea.mouseX, singleFingerPanArea.mouseY)
     }
 
     onMapRelativeCoordsChanged: {
-        mapEditor.setQuickMouseCoords(mapRelativeCoords)
+        mapEditor.quickMouseMoved(mapRelativeCoords)
     }
 }

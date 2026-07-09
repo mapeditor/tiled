@@ -29,8 +29,6 @@ using namespace TiledQuick;
 RegionOverlay::RegionOverlay(QQuickItem *parent)
     : QQuickItem(parent)
     , mTileSize(0, 0)
-    , mRegion(QRegion())
-    , mMapRect(QRect())
     , mValidColor(QApplication::palette().highlight().color())
     , mInvalidColor(QColor(255,0,0))
     , mRegionAlpha(64)
