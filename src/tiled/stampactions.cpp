@@ -31,6 +31,7 @@ StampActions::StampActions(QObject *parent) : QObject(parent)
 {
     QIcon diceIcon(QLatin1String(":images/24/dice.png"));
     QIcon wangIcon(QLatin1String(":images/24/terrain.png"));
+    QIcon eraseModeIcon(QLatin1String(":images/22/stock-tool-eraser.png"));
     QIcon flipHorizontalIcon(QLatin1String(":images/24/flip-horizontal.png"));
     QIcon flipVerticalIcon(QLatin1String(":images/24/flip-vertical.png"));
     QIcon rotateLeftIcon(QLatin1String(":images/24/rotate-left.png"));
@@ -51,6 +52,10 @@ StampActions::StampActions(QObject *parent) : QObject(parent)
     mWangFill->setIcon(wangIcon);
     mWangFill->setCheckable(true);
 
+    mEraseMode = new QAction(this);
+    mEraseMode->setIcon(eraseModeIcon);
+    mEraseMode->setCheckable(true);
+
     mFlipHorizontal = new QAction(this);
     mFlipHorizontal->setIcon(flipHorizontalIcon);
     mFlipHorizontal->setShortcut(Qt::Key_X);
@@ -69,6 +74,7 @@ StampActions::StampActions(QObject *parent) : QObject(parent)
 
     ActionManager::registerAction(mRandom, "RandomMode");
     ActionManager::registerAction(mWangFill, "WangFillMode");
+    ActionManager::registerAction(mEraseMode, "EraseMode");
     ActionManager::registerAction(mFlipHorizontal, "FlipHorizontal");
     ActionManager::registerAction(mFlipVertical, "FlipVertical");
     ActionManager::registerAction(mRotateLeft, "RotateLeft");
@@ -82,6 +88,7 @@ void StampActions::setEnabled(bool enabled)
 {
     mRandom->setEnabled(enabled);
     mWangFill->setEnabled(enabled);
+    mEraseMode->setEnabled(enabled);
     mFlipHorizontal->setEnabled(enabled);
     mFlipVertical->setEnabled(enabled);
     mRotateLeft->setEnabled(enabled);
@@ -92,18 +99,21 @@ void StampActions::languageChanged()
 {
     mRandom->setText(tr("Random Mode"));
     mWangFill->setText(tr("Terrain Fill Mode"));
+    mEraseMode->setText(tr("Erase Mode"));
     mFlipHorizontal->setText(tr("Flip Horizontally"));
     mFlipVertical->setText(tr("Flip Vertically"));
     mRotateLeft->setText(tr("Rotate Left"));
     mRotateRight->setText(tr("Rotate Right"));
 }
 
-void StampActions::populateToolBar(QToolBar *toolBar, bool isRandom, bool isWangFill)
+void StampActions::populateToolBar(QToolBar *toolBar, bool isRandom, bool isWangFill, bool isErasing)
 {
     mRandom->setChecked(isRandom);
     mWangFill->setChecked(isWangFill);
+    mEraseMode->setChecked(isErasing);
     toolBar->addAction(mRandom);
     toolBar->addAction(mWangFill);
+    toolBar->addAction(mEraseMode);
     toolBar->addSeparator();
     toolBar->addAction(mFlipHorizontal);
     toolBar->addAction(mFlipVertical);

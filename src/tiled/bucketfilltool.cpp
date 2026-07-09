@@ -55,7 +55,7 @@ void BucketFillTool::tilePositionChanged(QPoint tilePos)
         return;
 
     // Skip filling if the stamp is empty and not in wangFill mode
-    if (mStamp.isEmpty() && mFillMethod != WangFill)
+    if (mStamp.isEmpty() && mFillMethod != WangFill && !mEraseMode)
         return;
 
     // Make sure that a tile layer is selected
@@ -87,12 +87,14 @@ void BucketFillTool::tilePositionChanged(QPoint tilePos)
             // If not holding shift, a region is computed from the current pos
             bool computeRegion = true;
 
-            if (!mMouseDown)
-                mMatchCells.clear();
+            if (!mEraseMode) {
+                if (!mMouseDown)
+                    mMatchCells.clear();
 
-            const auto matchCell = regionComputer.cellAt(tilePos);
-            if (!mMatchCells.contains(matchCell))
-                mMatchCells.append(matchCell);
+                const auto matchCell = regionComputer.cellAt(tilePos);
+                if (!mMatchCells.contains(matchCell))
+                    mMatchCells.append(matchCell);
+            }
 
             // If the stamp is a single layer with a single tile, ignore that tile when making the region
             if (mFillMethod != WangFill && mStamp.variations().size() == 1 && mMatchCells.size() == 1) {
@@ -107,6 +109,8 @@ void BucketFillTool::tilePositionChanged(QPoint tilePos)
 
             if (computeRegion) {
                 const auto condition = [&](const Cell &cell) {
+                    if (mEraseMode)
+                        return !cell.isEmpty();
                     return mMatchCells.contains(cell);
                 };
                 mFillRegion = regionComputer.computePaintableFillRegion(tilePos, condition);
