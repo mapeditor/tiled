@@ -408,10 +408,9 @@ jobs:
         mkdir sentry-native
         pushd sentry-native
         unzip -q ../sentry-native.zip
-        # Qt's MinGW headers declare WerReportSubmit using PWER_SUBMIT_RESULT
-        # without defining it, and crashpad's compat header defines it only
-        # after the system header has already been included
-        sed -i 's/^typedef HANDLE HREPORT;$/&\n#define PWER_SUBMIT_RESULT WER_SUBMIT_RESULT*/' external/crashpad/compat/mingw/werapi.h
+        # Fixes compilation of crashpad against the mingw-w64 headers
+        # shipped with the Qt MinGW toolchain
+        patch -p1 < ../dist/win/sentry-native-mingw.patch
         cmake -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=crashpad -DSENTRY_BUILD_TESTS=OFF -DSENTRY_BUILD_EXAMPLES=OFF -DCRASHPAD_ZLIB_SYSTEM=OFF -DCMAKE_ASM_MASM_COMPILER=C:/msys64/mingw64/bin/uasm.exe
         cmake --build build --parallel
         cmake --install build --prefix install --config RelWithDebInfo
