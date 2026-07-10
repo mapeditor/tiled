@@ -20,6 +20,7 @@
 
 #include "sentryhelper.h"
 
+#include <QCoreApplication>
 #include <QDir>
 #include <QStandardPaths>
 
@@ -48,8 +49,18 @@ Sentry::Sentry()
     const QString cacheLocation { QStandardPaths::writableLocation(QStandardPaths::CacheLocation) };
     if (!cacheLocation.isEmpty()) {
         const QString databasePath = QDir{cacheLocation}.filePath(QStringLiteral("sentry"));
+#ifdef Q_OS_WIN
+        sentry_options_set_database_pathw(options, reinterpret_cast<const wchar_t *>(databasePath.utf16()));
+#else
         sentry_options_set_database_path(options, databasePath.toLocal8Bit().constData());
+#endif
     }
+
+#ifdef Q_OS_WIN
+    // crashpad_handler.exe is deployed next to the Tiled executable
+    const QString handlerPath = QCoreApplication::applicationDirPath() + QLatin1String("/crashpad_handler.exe");
+    sentry_options_set_handler_pathw(options, reinterpret_cast<const wchar_t *>(handlerPath.utf16()));
+#endif
 
     sentry_init(options);
 }

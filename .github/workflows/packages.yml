@@ -400,6 +400,17 @@ jobs:
         qbs setup-qt ${QT_ROOT_DIR}/bin/qmake.exe qt
         qbs config defaultProfile qt
 
+    - name: Build Sentry Native
+      run: |
+        curl -sLO https://github.com/getsentry/sentry-native/releases/download/${SENTRY_VERSION}/sentry-native.zip
+        mkdir sentry-native
+        pushd sentry-native
+        unzip -q ../sentry-native.zip
+        cmake -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=crashpad
+        cmake --build build --parallel
+        cmake --install build --prefix install --config RelWithDebInfo
+        popd
+
     - name: Build Zstandard
       run: |
         git clone --depth 1 -b release https://github.com/facebook/zstd.git
@@ -422,8 +433,17 @@ jobs:
     - name: Build Tiled
       run: |
         export TILED_MSI_VERSION=1.4.${GITHUB_RUN_NUMBER}
-        qbs build config:release projects.Tiled.windowsInstaller:true projects.Tiled.staticZstd:true
+        qbs build config:release projects.Tiled.windowsInstaller:true projects.Tiled.staticZstd:true projects.Tiled.sentry:true qbs.debugInformation:true modules.cpp.separateDebugInformation:true
         mv release/installer*/Tiled-*.msi ./Tiled-${{ needs.version.outputs.version }}_${{ matrix.filename_suffix }}.msi
+
+    - name: Upload symbols and sources to Sentry
+      if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
+      continue-on-error: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      run: |
+        npm install -g @sentry/cli
+        sentry-cli debug-files upload --include-sources release sentry-native/install/bin
 
     - name: Upload Tiled installer
       uses: actions/upload-artifact@v6
