@@ -4,6 +4,9 @@ default/
 # sentry-native sources, built in-tree by CI (see packages.yml)
 /sentry-native/
 
+# Tiled session files
+*.tiled-session
+
 # clangd cache
 .cache/
 compile_commands.json
