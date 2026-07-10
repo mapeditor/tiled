@@ -402,11 +402,13 @@ jobs:
 
     - name: Build Sentry Native
       run: |
+        # uasm is needed to assemble crashpad's .asm files with MinGW
+        /c/msys64/usr/bin/pacman -S --noconfirm mingw-w64-x86_64-uasm
         curl -sLO https://github.com/getsentry/sentry-native/releases/download/${SENTRY_VERSION}/sentry-native.zip
         mkdir sentry-native
         pushd sentry-native
         unzip -q ../sentry-native.zip
-        cmake -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=crashpad -DCRASHPAD_ZLIB_SYSTEM=OFF
+        cmake -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=crashpad -DSENTRY_BUILD_TESTS=OFF -DSENTRY_BUILD_EXAMPLES=OFF -DCRASHPAD_ZLIB_SYSTEM=OFF -DCMAKE_ASM_MASM_COMPILER=C:/msys64/mingw64/bin/uasm.exe
         cmake --build build --parallel
         cmake --install build --prefix install --config RelWithDebInfo
         popd
