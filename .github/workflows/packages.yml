@@ -106,7 +106,7 @@ jobs:
         mkdir sentry-native
         pushd sentry-native
         unzip -q ../sentry-native.zip
-        cmake -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=breakpad
+        cmake -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=breakpad -DSENTRY_BUILD_TESTS=OFF -DSENTRY_BUILD_EXAMPLES=OFF
         cmake --build build --parallel
         sudo cmake --install build --prefix /usr --config RelWithDebInfo
         popd
