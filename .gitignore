@@ -1,6 +1,9 @@
 # General build artifacts
 default/
 
+# sentry-native sources, built in-tree by CI (see packages.yml)
+/sentry-native/
+
 # clangd cache
 .cache/
 compile_commands.json
