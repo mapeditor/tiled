@@ -106,7 +106,8 @@ TiledQtGuiApplication {
         prefix: "../../sentry-native/install/bin/"
         files: [
             "crashpad_handler.exe",
-            "sentry.dll",
+            "crashpad_wer.dll",
+            "libsentry.dll",
         ]
         qbs.install: true
     }
