@@ -42,7 +42,6 @@ Sentry::Sentry()
     sentry_options_set_require_user_consent(options, true);
     sentry_options_set_release(options, "tiled@" AS_STRING(TILED_VERSION));
 #ifdef QT_DEBUG
-    sentry_options_set_symbolize_stacktraces(options, true);
     sentry_options_set_debug(options, true);
 #endif
 
@@ -67,7 +66,7 @@ Sentry::Sentry()
 
 Sentry::~Sentry()
 {
-    sentry_shutdown();
+    sentry_close();
     sInstance = nullptr;
 }
 
