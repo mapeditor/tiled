@@ -41,6 +41,11 @@ Sentry::Sentry()
     sentry_options_set_dsn(options, "https://6c72ea2c9d024333bae90e40bc1d41e0@o326665.ingest.sentry.io/1835065");
     sentry_options_set_require_user_consent(options, true);
     sentry_options_set_release(options, "tiled@" AS_STRING(TILED_VERSION));
+
+    // We only use crash reporting (structured logs and metrics are enabled
+    // by default since sentry-native 0.14.0)
+    sentry_options_set_enable_logs(options, false);
+    sentry_options_set_enable_metrics(options, false);
 #ifdef QT_DEBUG
     sentry_options_set_symbolize_stacktraces(options, true);
     sentry_options_set_debug(options, true);

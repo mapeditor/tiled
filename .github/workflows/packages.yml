@@ -21,7 +21,7 @@ on:
 env:
   QBS_VERSION: 3.2.0
   CMAKE_VERSION: 3.31
-  SENTRY_VERSION: 0.12.8
+  SENTRY_VERSION: 0.15.3
   SENTRY_ORG: mapeditor
   SENTRY_PROJECT: tiled
   TILED_RELEASE: ${{ startsWith(github.ref, 'refs/tags/v') }}
