@@ -406,7 +406,7 @@ jobs:
         mkdir sentry-native
         pushd sentry-native
         unzip -q ../sentry-native.zip
-        cmake -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=crashpad
+        cmake -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=crashpad -DCRASHPAD_ZLIB_SYSTEM=OFF
         cmake --build build --parallel
         cmake --install build --prefix install --config RelWithDebInfo
         popd
