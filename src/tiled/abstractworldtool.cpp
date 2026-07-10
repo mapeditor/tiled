@@ -122,6 +122,12 @@ AbstractWorldTool::AbstractWorldTool(Id id,
     WorldManager &worldManager = WorldManager::instance();
     connect(&worldManager, &WorldManager::worldsChanged, this, &AbstractWorldTool::updateEnabledState);
 
+    QIcon newWorldForMapIcon(QLatin1String(":images/24/world-map-add-other.png"));
+    mNewWorldForMapAction = new QAction(this);
+    mNewWorldForMapAction->setIcon(newWorldForMapIcon);
+    ActionManager::registerAction(mNewWorldForMapAction, "NewWorldForMap");
+    connect(mNewWorldForMapAction, &QAction::triggered, this, &AbstractWorldTool::createWorldForCurrentMap);
+
     QIcon addAnotherMapToWorldIcon(QLatin1String(":images/24/world-map-add-other.png"));
     mAddAnotherMapToWorldAction = new QAction(this);
     mAddAnotherMapToWorldAction->setIcon(addAnotherMapToWorldIcon);
@@ -202,6 +208,7 @@ void AbstractWorldTool::languageChanged()
 
 void AbstractWorldTool::languageChangedImpl()
 {
+    mNewWorldForMapAction->setText(tr("Create a new world containing the current map"));
     mAddAnotherMapToWorldAction->setText(tr("Add another map to the current world"));
     mAddMapToWorldAction->setText(tr("Add the current map to a loaded world"));
     mRemoveMapFromWorldAction->setText(tr("Remove the current map from the current world"));
@@ -216,14 +223,19 @@ void AbstractWorldTool::updateEnabledState()
     // Maps that are not in a world can still be resized
     setEnabled(map && (!worldDocument || worldDocument->world()->canBeModified()));
 
-    // update toolbar actions
-    mAddMapToWorldAction->setEnabled(hasWorlds && !worldDocument);
-    mRemoveMapFromWorldAction->setEnabled(worldDocument);
+    // When the map is not in a world, only the action for creating a new
+    // world is shown, which guides the user to create one first
+    mNewWorldForMapAction->setVisible(!worldDocument);
+    mNewWorldForMapAction->setEnabled(map && !map->fileName().isEmpty());
 
-    // Adding another map also works without a world, since we can
-    // create one first
-    mAddAnotherMapToWorldAction->setEnabled(worldDocument ||
-                                            (map && !map->fileName().isEmpty()));
+    mAddAnotherMapToWorldAction->setVisible(worldDocument);
+    mAddAnotherMapToWorldAction->setEnabled(worldDocument);
+
+    mAddMapToWorldAction->setVisible(!worldDocument);
+    mAddMapToWorldAction->setEnabled(hasWorlds && !worldDocument);
+
+    mRemoveMapFromWorldAction->setVisible(worldDocument);
+    mRemoveMapFromWorldAction->setEnabled(worldDocument);
 }
 
 MapDocument *AbstractWorldTool::mapAt(const QPointF &pos) const
@@ -332,6 +344,12 @@ void AbstractWorldTool::showContextMenu(QGraphicsSceneMouseEvent *event)
                            this, [=] { removeFromWorld(currentWorldDocument, targetFilename); });
         }
     } else {
+        menu.addAction(QIcon(QLatin1String(":images/24/world-map-add-other.png")),
+                       tr("New World Containing \"%1\"")
+                       .arg(mapDocument()->displayName()),
+                       this, &AbstractWorldTool::createWorldForCurrentMap)
+                ->setEnabled(!mapDocument()->fileName().isEmpty());
+
         populateAddToWorldMenu(menu);
     }
 
@@ -363,13 +381,8 @@ void AbstractWorldTool::addAnotherMapToWorld(QPoint insertPos)
     MapDocument *map = mapDocument();
     auto worldDocument = worldForMap(map);
 
-    // A world needs to be saved before a map can be added to it, so when
-    // the map is not in a world yet we ask for a world file first
-    if (!worldDocument) {
-        worldDocument = createWorldForMap(map);
-        if (!worldDocument)
-            return;
-    }
+    if (!worldDocument)
+        return;
 
     const QDir dir = QFileInfo(map->fileName()).dir();
     const QString lastPath = QDir::cleanPath(dir.absolutePath());
@@ -401,6 +414,12 @@ void AbstractWorldTool::addAnotherMapToWorld(QPoint insertPos)
 
     auto undoStack = worldDocument->undoStack();
     undoStack->push(new AddMapCommand(worldDocument, fileName, rect));
+}
+
+void AbstractWorldTool::createWorldForCurrentMap()
+{
+    if (auto map = mapDocument())
+        createWorldForMap(map);
 }
 
 // Asks for a file name and creates a new world with the given map in it.
@@ -468,6 +487,7 @@ QUndoStack *AbstractWorldTool::undoStack()
 
 void AbstractWorldTool::populateToolBar(QToolBar *toolBar)
 {
+    toolBar->addAction(mNewWorldForMapAction);
     toolBar->addAction(mAddAnotherMapToWorldAction);
     toolBar->addAction(mAddMapToWorldAction);
     toolBar->addAction(mRemoveMapFromWorldAction);

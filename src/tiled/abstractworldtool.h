@@ -95,6 +95,7 @@ protected:
 
     void addAnotherMapToWorldAtCenter();
     void addAnotherMapToWorld(QPoint insertPos);
+    void createWorldForCurrentMap();
     WorldDocument *createWorldForMap(MapDocument *map);
     void removeCurrentMapFromWorld();
     void removeFromWorld(WorldDocument *worldDocument, const QString &mapFileName);
@@ -125,6 +126,7 @@ private:
 
     MapDocument *mTargetMap = nullptr;
 
+    QAction *mNewWorldForMapAction;
     QAction *mAddAnotherMapToWorldAction;
     QAction *mAddMapToWorldAction;
     QAction *mRemoveMapFromWorldAction;

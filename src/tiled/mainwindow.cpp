@@ -1329,6 +1329,11 @@ WorldDocument *MainWindow::createNewWorld(const QString &suggestedFileName)
 
     session.setLastPath(Session::WorldFile, QFileInfo(worldFile).path());
 
+    // When the selected world is already loaded, use it rather than
+    // reporting an error
+    if (auto worldDocument = WorldManager::instance().findWorld(worldFile))
+        return worldDocument.data();
+
     QString errorString;
     auto worldDocument = WorldManager::instance().addEmptyWorld(worldFile, &errorString);
     if (!worldDocument) {
