@@ -80,7 +80,7 @@ EditableMap::EditableMap(const Map *map, QObject *parent)
  */
 EditableMap::EditableMap(const SharedMap &map, QObject *parent)
     : EditableAsset(const_cast<Map*>(map.data()), parent)
-    , mSharedMap(map)
+    , mIsSharedMap(true)
     , mReadOnly(true)
 {
 }
@@ -93,11 +93,14 @@ EditableMap::EditableMap(std::unique_ptr<Map> map, QObject *parent)
 
 EditableMap::~EditableMap()
 {
+    if (mIsSharedMap)
+        return;
+
     for (Layer *layer : map()->layers())
         detachLayer(layer);
 
     // Prevent owned object from trying to delete us again
-    if (mDetachedMap || mSharedMap)
+    if (mDetachedMap)
         setObject(nullptr);
 }
 

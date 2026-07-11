@@ -243,8 +243,8 @@ private:
     MapRenderer *renderer() const;
 
     std::unique_ptr<Map> mDetachedMap;
-    SharedMap mSharedMap = nullptr;
     mutable std::unique_ptr<MapRenderer> mRenderer;
+    bool mIsSharedMap = false;
     bool mReadOnly = false;
 
     EditableSelectedArea *mSelectedArea = nullptr;

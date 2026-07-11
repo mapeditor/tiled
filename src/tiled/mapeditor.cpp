@@ -1149,26 +1149,18 @@ EditableMap *MapEditor::currentBrush() const
 
 EditableMap *MapEditor::tileEditPreview() const
 {
-    EditableMap* preview;
     EditableObject* existingPreview = EditableObject::find(mTileEditPreview.get());
 
     if (existingPreview)
-        preview = qobject_cast<EditableMap*>(existingPreview);
-    else
-        preview = mTileEditPreview ? new EditableMap(mTileEditPreview) : nullptr;
+        return qobject_cast<EditableMap*>(existingPreview);
 
-    return preview;
+    return mTileEditPreview ? new EditableMap(mTileEditPreview) : nullptr;
 }
 
 void MapEditor::setTileEditPreview(const SharedMap &map)
 {
-    if (map == mTileEditPreview)
+    if (mTileEditPreview == map)
         return;
-
-    EditableObject* oldPreview = EditableObject::find(mTileEditPreview.get());
-    if (oldPreview)
-        delete oldPreview;
-
     mTileEditPreview = map;
 
     emit tileEditPreviewChanged();
