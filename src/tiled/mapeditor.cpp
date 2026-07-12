@@ -1282,13 +1282,10 @@ void MapEditor::quickContainsMouseChanged(bool viewContainsMouse)
     if (!tool)
         return;
 
-    if (viewContainsMouse) {
+    if (viewContainsMouse)
         tool->mouseEntered();
-    } else {
-        // "Move" mouse to an out of bounds state to update tools
-        tool->mouseMoved(QPointF(-1, -1), Qt::NoModifier);
+    else
         tool->mouseLeft();
-    }
 }
 #endif
 
