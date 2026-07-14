@@ -4,11 +4,11 @@ title: Focus on Level Design with Automapping!
 author:
   name: Thorbjørn Lindeijer
   twitter: thorbjorn81
-image: /img/posts/automapping/blueprint-mapping.png
+image: automapping/blueprint-mapping.png
 tags: tutorial
 ---
 
-The following cute Dungeon tileset is one of the many [free tilesets released on CraftPix.net](https://craftpix.net/freebies/):
+The following cute Dungeon tileset is one of the many [free tilesets released on CraftPix.net](https://craftpix.net/freebies/?affiliate=231893):
 
 ![Dungeon Tileset by CraftPix.net](/img/posts/automapping/tileset.png)
 
