@@ -214,6 +214,18 @@ void AbstractWorldTool::languageChangedImpl()
     mRemoveMapFromWorldAction->setText(tr("Remove the current map from the current world"));
 }
 
+void AbstractWorldTool::mapDocumentChanged(MapDocument *oldDocument,
+                                           MapDocument *newDocument)
+{
+    // The enabled state of the actions depends on the map's file name
+    if (oldDocument)
+        disconnect(oldDocument, &Document::fileNameChanged,
+                   this, &AbstractWorldTool::updateEnabledState);
+    if (newDocument)
+        connect(newDocument, &Document::fileNameChanged,
+                this, &AbstractWorldTool::updateEnabledState);
+}
+
 void AbstractWorldTool::updateEnabledState()
 {
     const bool hasWorlds = !WorldManager::instance().worlds().isEmpty();
@@ -226,7 +238,7 @@ void AbstractWorldTool::updateEnabledState()
     // When the map is not in a world, only the action for creating a new
     // world is shown, which guides the user to create one first
     mNewWorldForMapAction->setVisible(!worldDocument);
-    mNewWorldForMapAction->setEnabled(map && !map->fileName().isEmpty());
+    mNewWorldForMapAction->setEnabled(map && !map->fileName().isEmpty() && !worldDocument);
 
     mAddAnotherMapToWorldAction->setVisible(worldDocument);
     mAddAnotherMapToWorldAction->setEnabled(worldDocument);
@@ -423,10 +435,11 @@ void AbstractWorldTool::createWorldForCurrentMap()
 }
 
 // Asks for a file name and creates a new world with the given map in it.
-// Returns null when the user cancels or the world could not be saved.
+// Returns null when the map is already part of a world, the user cancels or
+// the world could not be saved.
 WorldDocument *AbstractWorldTool::createWorldForMap(MapDocument *map)
 {
-    if (map->fileName().isEmpty())
+    if (map->fileName().isEmpty() || worldForMap(map))
         return nullptr;
 
     const QFileInfo fileInfo(map->fileName());

@@ -91,6 +91,9 @@ protected:
      */
     void updateEnabledState() override;
 
+    void mapDocumentChanged(MapDocument *oldDocument,
+                            MapDocument *newDocument) override;
+
     MapDocument *mapAt(const QPointF &pos) const;
 
     void addAnotherMapToWorldAtCenter();
