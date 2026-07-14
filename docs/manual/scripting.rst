@@ -97,6 +97,97 @@ works as intended.
 Apart from scripts, extensions can include images that can be used as the icon
 for scripted actions or tools.
 
+.. _qml-extensions:
+
+QML Extensions
+^^^^^^^^^^^^^^
+
+.. raw:: html
+
+   <div class="new">Since Tiled 1.13</div>
+
+Extensions can also be written as declarative QML documents (``.qml`` files
+placed in an extensions directory). These are loaded by the same script engine
+and can coexist with JavaScript extensions. The ``Tiled`` import provides the
+following types:
+
+============== =============================================================
+Type           Description
+============== =============================================================
+Action         Registers an action, like ``tiled.registerAction``
+MenuExtension  Adds items to a menu, like ``tiled.extendMenu``
+Tool           Registers a tool, like ``tiled.registerTool``
+MapFormat      Registers a map format, like ``tiled.registerMapFormat``
+TilesetFormat  Registers a tileset format, like ``tiled.registerTilesetFormat``
+Dock           Adds a dock widget with Qt Quick based contents
+Extension      Groups any number of the above types
+============== =============================================================
+
+The main advantage of the declarative approach is that property bindings can
+be used to keep dynamic property values up to date. This applies to live
+properties like the ``enabled``, ``text`` or ``checked`` state of an action
+and anything inside the contents of a dock. Properties that describe a
+registration (like the ``name`` of an action or the ``items`` of a menu
+extension) are read once when the extension is loaded. The following example
+registers an action that is only enabled when a map is active, and adds it to
+the Map menu:
+
+.. code:: qml
+
+    import Tiled
+
+    Extension {
+        Action {
+            id: countLayers
+            name: "CountLayers"
+            text: "Count Layers"
+            enabled: tiled.activeAsset && tiled.activeAsset.isTileMap
+            onTriggered: tiled.alert("The map has " + tiled.activeAsset.layerCount + " layers.")
+        }
+
+        MenuExtension {
+            menu: "Map"
+            items: [
+                { separator: true },
+                { action: countLayers },
+            ]
+        }
+    }
+
+A ``Dock`` declares custom UI using Qt Quick, which is shown in a dock widget
+that can be moved, floated and tabbed like the built-in views. Its ``name``
+identifies the dock when saving and restoring the window layout, so it should
+be unique and stable:
+
+.. code:: qml
+
+    import QtQuick
+    import Tiled
+
+    Dock {
+        name: "activeAssetDock"
+        title: "Active Asset"
+
+        Text {
+            text: tiled.activeAsset ? tiled.activeAsset.fileName : "No asset active"
+        }
+    }
+
+By default a dock is added to Tiled's main window. Set the ``window`` property
+to ``Dock.MapEditor`` or ``Dock.TilesetEditor`` to add it to the window of the
+respective editor instead, in which case it is only visible while that editor
+is active.
+
+The registered types generally support the same properties and functions as
+their JavaScript counterparts. For example, a ``Tool`` can declare functions
+like ``mousePressed`` or ``tilePositionChanged``, and a ``MapFormat`` is
+expected to provide ``read`` and/or ``write`` functions.
+
+Note that every ``.qml`` file found directly in an extension directory is
+instantiated as an extension. Reusable components should be placed in a
+sub-directory, from where they can be used through a relative directory
+import (for example, ``import "./components"``).
+
 .. _script-console:
 
 Console View

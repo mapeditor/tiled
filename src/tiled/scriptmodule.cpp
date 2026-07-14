@@ -417,15 +417,17 @@ ScriptedAction *ScriptModule::registerAction(const QByteArray &idName, QJSValue 
     }
 
     Id id { idName };
-    auto &action = mRegisteredActions[id];
+    auto it = mRegisteredActions.find(id);
 
-    // Remove any previously registered action with the same name
-    if (action) {
-        ActionManager::unregisterAction(action.get(), id);
+    if (it != mRegisteredActions.end()) {
+        // Remove any previously registered action with the same name
+        ActionManager::unregisterAction(it->second.get(), id);
     } else if (ActionManager::findAction(id)) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Reserved ID"));
         return nullptr;
     }
+
+    auto &action = mRegisteredActions[id];
 
     action = std::make_unique<ScriptedAction>(id, callback, this);
     ActionManager::registerAction(action.get(), id);

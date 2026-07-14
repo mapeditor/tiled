@@ -81,12 +81,30 @@ ScriptedTool::ScriptedTool(Id id, QJSValue object, QObject *parent)
     else
         setTargetLayerType(0);  // default behavior is not to disable based on current layer
 
-    PluginManager::addObject(this);
+    addToPluginManager();
+}
+
+ScriptedTool::ScriptedTool(QObject *parent)
+    : AbstractTileTool(Id(), QStringLiteral("<unnamed tool>"), QIcon(), QKeySequence(), nullptr, parent)
+{
+    setTargetLayerType(0);  // default behavior is not to disable based on current layer
 }
 
 ScriptedTool::~ScriptedTool()
 {
-    PluginManager::removeObject(this);
+    if (mAddedToPluginManager)
+        PluginManager::removeObject(this);
+}
+
+void ScriptedTool::setScriptObject(QJSValue object)
+{
+    mScriptObject = std::move(object);
+}
+
+void ScriptedTool::addToPluginManager()
+{
+    PluginManager::addObject(this);
+    mAddedToPluginManager = true;
 }
 
 EditableMap *ScriptedTool::editableMap() const

@@ -2165,9 +2165,26 @@ void MainWindow::updateViewsAndToolbarsMenu()
     mViewsAndToolbarsMenu->addAction(mConsoleDock->toggleViewAction());
     mViewsAndToolbarsMenu->addAction(mIssuesDock->toggleViewAction());
 
+    // Docks contributed by extensions
+    const auto extensionDocks = findChildren<QDockWidget*>(QString(), Qt::FindDirectChildrenOnly);
+    for (auto dockWidget : extensionDocks) {
+        if (dockWidget == mProjectDock || dockWidget == mConsoleDock || dockWidget == mIssuesDock)
+            continue;
+        mViewsAndToolbarsMenu->addAction(dockWidget->toggleViewAction());
+    }
+
     if (Editor *editor = mDocumentManager->currentEditor()) {
         mViewsAndToolbarsMenu->addSeparator();
-        const auto dockWidgets = editor->dockWidgets();
+        auto dockWidgets = editor->dockWidgets();
+
+        // Include docks contributed by extensions
+        if (auto editorWindow = qobject_cast<QMainWindow*>(editor->editorWidget())) {
+            const auto editorDocks = editorWindow->findChildren<QDockWidget*>(QString(), Qt::FindDirectChildrenOnly);
+            for (auto dockWidget : editorDocks)
+                if (!dockWidgets.contains(dockWidget))
+                    dockWidgets.append(dockWidget);
+        }
+
         for (auto dockWidget : dockWidgets)
             mViewsAndToolbarsMenu->addAction(dockWidget->toggleViewAction());
 

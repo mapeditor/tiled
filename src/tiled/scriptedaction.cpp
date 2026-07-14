@@ -22,7 +22,7 @@
 
 #include "scriptmanager.h"
 
-#include <QJSEngine>
+#include <QQmlEngine>
 
 namespace Tiled {
 

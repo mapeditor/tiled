@@ -37,6 +37,7 @@
 #include "preferences.h"
 #include "project.h"
 #include "projectmanager.h"
+#include "qmlextension.h"
 #include "regionvaluetype.h"
 #include "scriptbase64.h"
 #include "scriptdialog.h"
@@ -61,6 +62,8 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QFile>
+#include <QQmlComponent>
+#include <QQmlContext>
 #include <QQmlEngine>
 #include <QStandardPaths>
 #include <QStringDecoder>
@@ -133,6 +136,8 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<ScriptImage*>();
     qRegisterMetaType<WangIndex::Value>("WangIndex");
 
+    registerQmlExtensionTypes();
+
     connect(&mWatcher, &FileSystemWatcher::pathsChanged,
             this, &ScriptManager::scriptFilesChanged);
 
@@ -146,6 +151,14 @@ ScriptManager::ScriptManager(QObject *parent)
         if (!QFile::exists(mExtensionsPath))
             QDir().mkpath(mExtensionsPath);
     }
+}
+
+ScriptManager::~ScriptManager()
+{
+    // Make sure any loaded QML extensions (which may reference the engine,
+    // for example through a QQuickWidget) are destroyed before the engine is
+    // deleted along with the other children.
+    mQmlExtensions.clear();
 }
 
 void ScriptManager::ensureInitialized()
@@ -258,17 +271,46 @@ void ScriptManager::loadExtension(const QString &path)
 
     const QStringList nameFilters = {
         QLatin1String("*.js"),
-        QLatin1String("*.mjs")
+        QLatin1String("*.mjs"),
+        QLatin1String("*.qml")
     };
     const QDir dir(path);
-    const QStringList jsFiles = dir.entryList(nameFilters,
-                                              QDir::Files | QDir::Readable);
+    const QStringList scriptFiles = dir.entryList(nameFilters,
+                                                  QDir::Files | QDir::Readable);
 
-    for (const QString &jsFile : jsFiles) {
-        const QString absolutePath = dir.filePath(jsFile);
-        evaluateFileOrLoadModule(absolutePath);
+    for (const QString &scriptFile : scriptFiles) {
+        const QString absolutePath = dir.filePath(scriptFile);
+
+        if (scriptFile.endsWith(QLatin1String(".qml"), Qt::CaseInsensitive))
+            loadQmlExtension(absolutePath);
+        else
+            evaluateFileOrLoadModule(absolutePath);
+
         mWatcher.addPath(absolutePath);
     }
+}
+
+void ScriptManager::loadQmlExtension(const QString &fileName)
+{
+    Tiled::INFO(tr("Loading '%1'").arg(fileName));
+
+    auto component = std::make_unique<QQmlComponent>(mEngine,
+                                                     QUrl::fromLocalFile(fileName));
+    if (component->isError()) {
+        onScriptWarnings(component->errors());
+        return;
+    }
+
+    std::unique_ptr<QObject> rootObject { component->create() };
+    if (!rootObject) {
+        onScriptWarnings(component->errors());
+        return;
+    }
+
+    // The engine should not delete the object tree we own
+    QQmlEngine::setObjectOwnership(rootObject.get(), QQmlEngine::CppOwnership);
+
+    mQmlExtensions.push_back({ std::move(component), std::move(rootObject) });
 }
 
 bool ScriptManager::checkError(QJSValue value, const QString &program)
@@ -328,6 +370,10 @@ void ScriptManager::reset()
 
     mWatcher.clear();
 
+    // QML extensions may reference the engine, for example through a
+    // QQuickWidget, so they need to be destroyed before the engine.
+    mQmlExtensions.clear();
+
     delete mEngine;
     delete mModule;
 
@@ -348,6 +394,11 @@ void ScriptManager::initialize()
 
     mEngine = engine;
     mModule = new ScriptModule(this);
+
+    // Make the 'tiled' object available to expressions in QML extensions
+    // (the global object properties set below are not resolved by the QML
+    // context chain).
+    engine->rootContext()->setContextProperty(QStringLiteral("tiled"), mModule);
 
     QJSValue globalObject = engine->globalObject();
 

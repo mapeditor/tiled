@@ -27,7 +27,7 @@
 
 #include <QCoreApplication>
 #include <QFile>
-#include <QJSEngine>
+#include <QQmlEngine>
 #include <QJSValueIterator>
 #include <QTextStream>
 

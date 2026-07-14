@@ -72,6 +72,16 @@ public:
     void setToolBarActions(const QStringList &actionNames);
 
 protected:
+    /**
+     * Constructs a scripted tool that does not have a script object yet and
+     * is not added to the PluginManager. Used by QmlTool, which sets its
+     * script object and adds itself once its declared properties are set.
+     */
+    explicit ScriptedTool(QObject *parent = nullptr);
+
+    void setScriptObject(QJSValue object);
+    void addToPluginManager();
+
     void mapDocumentChanged(MapDocument *oldDocument, MapDocument *newDocument) override;
 
     void tilePositionChanged(QPoint tilePos) override;
@@ -85,6 +95,7 @@ private:
     QJSValue mScriptObject;
     QString mIconFileName;
     QList<Id> mToolBarActions;
+    bool mAddedToPluginManager = false;
 };
 
 
