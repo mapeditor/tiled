@@ -4,7 +4,7 @@ title: Focus on Level Design with Automapping
 author:
   name: Thorbjørn Lindeijer
   twitter: thorbjorn81
-image: automapping/blueprint-mapping.png
+image: /img/posts/automapping/blueprint-mapping.png
 tags: tutorial
 ---
 

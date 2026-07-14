@@ -2,6 +2,7 @@ plugins:
   - jekyll-seo-tag
   - jekyll-redirect-from
 title: Tiled
+url: https://www.mapeditor.org
 repository: mapeditor/tiled
 twitter:
   username: TiledApp

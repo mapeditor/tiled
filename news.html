@@ -10,7 +10,7 @@ title: News
     <a class="news" href="{{ post.url }}">
 {% if post.image %}
       <div class="news-image">
-        <img src="img/posts/{{ post.image }}" />
+        <img src="{{ post.image }}" />
       </div>
 {% endif %}
       <div class="news-title">{{ post.title }} <span class="news-subtitle">{{ post.date | date_to_long_string }}</span></div>
