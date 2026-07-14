@@ -104,8 +104,10 @@ void WorldMoveMapTool::keyPressed(QKeyEvent *event)
         return;
     }
     MapDocument *document = mapDocument();
-    if (!document || !mapCanBeMoved(document) || mDraggingMap)
+    if (!document || !mapCanBeMoved(document) || mDraggingMap) {
+        event->ignore();    // allow the view to scroll instead
         return;
+    }
 
     const bool moveFast = modifiers & Qt::ShiftModifier;
     if (moveFast)
