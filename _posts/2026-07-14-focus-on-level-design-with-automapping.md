@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Focus on Level Design with Automapping!
+title: Focus on Level Design with Automapping
 author:
   name: Thorbjørn Lindeijer
   twitter: thorbjorn81
@@ -8,9 +8,9 @@ image: automapping/blueprint-mapping.png
 tags: tutorial
 ---
 
-Wouldn't it be nice if we could focus on the layout of our levels, while the right tiles fall into place automatically? This is exactly what Tiled's Automapping feature can do for us! In this tutorial, we'll set up rules that turn a simple blueprint into a polished dungeon.
+Wouldn't it be nice if the right tiles fell into place automatically? With Tiled's Automapping, they can!
 
-We'll be using the following cute Dungeon tileset, one of the many [free tilesets released on CraftPix.net](https://craftpix.net/freebies/?affiliate=231893):
+In this tutorial, we'll set up rules that turn a simple blueprint into a polished dungeon. We'll be using the following cute Dungeon tileset, one of the many [free tilesets released on CraftPix.net](https://craftpix.net/freebies/?affiliate=231893):
 
 ![Dungeon Tileset by CraftPix.net](/img/posts/automapping/tileset.png)
 
