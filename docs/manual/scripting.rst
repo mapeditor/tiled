@@ -188,6 +188,12 @@ instantiated as an extension. Reusable components should be placed in a
 sub-directory, from where they can be used through a relative directory
 import (for example, ``import "./components"``).
 
+The following QML modules are shipped with Tiled and can be used by
+extensions: ``QtQml``, ``QtQuick``, ``QtQuick.Controls``, ``QtQuick.Layouts``,
+``QtQuick.Templates`` and ``QtQuick.Window``. For Qt Quick Controls, the
+Fusion and Basic styles are available, with Fusion being used by default (can
+be overridden using the ``QT_QUICK_CONTROLS_STYLE`` environment variable).
+
 .. _script-console:
 
 Console View

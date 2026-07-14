@@ -76,6 +76,14 @@ Product {
                     "Qt" + major + "Svg" + postfix,
                     "Qt" + major + "Widgets" + postfix
                 );
+
+                // Qt Quick libraries, needed by QML extensions. Their
+                // existence depends on the Qt version.
+                for (i = 0; i < project.qtQuickLibraries.length; ++i) {
+                    var lib = "Qt" + major + project.qtQuickLibraries[i] + postfix;
+                    if (File.exists(prefix + lib))
+                        list.push(lib);
+                }
             }
 
             if (qbs.targetOS.contains("linux")) {
@@ -122,6 +130,50 @@ Product {
             files.push("*d.dll");
         }
         return files;
+    }
+
+    property string qtQmlDir: FileInfo.joinPaths(Qt.core.binPath, "../qml")
+
+    Probe {
+        id: qmlModuleFiles
+        property string qmlDir: qtQmlDir
+        property stringList importDirs: project.qmlImportDirs
+        property stringList files
+        configure: {
+            var list = [];
+
+            for (var i = 0; i < importDirs.length; ++i) {
+                var dir = importDirs[i];
+                var absDir = qmlDir + "/" + dir;
+                if (!File.exists(absDir))
+                    continue;
+
+                var entries = File.directoryEntries(absDir, File.Files);
+                for (var j = 0; j < entries.length; ++j) {
+                    var entry = entries[j];
+                    if (entry.endsWith(".qmltypes") || entry.endsWith(".pdb"))
+                        continue;
+
+                    // Skip debug variants of the QML plugins
+                    if (entry.endsWith("d.dll") && File.exists(absDir + "/" + entry.slice(0, -5) + ".dll"))
+                        continue;
+
+                    list.push(dir + "/" + entry);
+                }
+            }
+
+            files = list;
+            found = true;
+        }
+    }
+
+    Group {
+        name: "Qt QML Modules"
+        prefix: qtQmlDir + "/"
+        files: qmlModuleFiles.files
+        qbs.install: true
+        qbs.installDir: "qml"
+        qbs.installSourceBase: prefix
     }
 
     Group {
