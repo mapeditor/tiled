@@ -592,13 +592,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, &MainWindow::addExternalTileset);
     connect(mUi->actionAddAutomappingRulesTileset, &QAction::triggered,
             this, &MainWindow::addAutomappingRulesTileset);
-    auto rememberLoadedWorlds = [this] {
+
+    // Remember the loaded worlds before switching session or quitting
+    connect(preferences, &Preferences::aboutToSwitchSession, this, [this] {
         mLoadedWorlds = WorldManager::instance().worldFileNames();
-    };
-    connect(&WorldManager::instance(), &WorldManager::worldLoaded,
-            this, rememberLoadedWorlds);
-    connect(&WorldManager::instance(), &WorldManager::worldUnloaded,
-            this, rememberLoadedWorlds);
+    });
 
     connect(mUi->actionLoadWorld, &QAction::triggered, this, [this] {
         Session &session = Session::current();
