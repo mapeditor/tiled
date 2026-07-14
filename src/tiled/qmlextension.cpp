@@ -22,13 +22,12 @@
 
 #include "actionmanager.h"
 #include "logginginterface.h"
-#include "pluginmanager.h"
 #include "qmldock.h"
+#include "scriptedaction.h"
 #include "scriptedfileformat.h"
-#include "scriptmanager.h"
+#include "scriptedtool.h"
 
 #include <QCoreApplication>
-#include <QJSEngine>
 #include <QQmlEngine>
 #include <QTimer>
 
@@ -51,87 +50,6 @@ void QmlExtension::setName(const QString &name)
 QQmlListProperty<QObject> QmlExtension::data()
 {
     return QQmlListProperty<QObject>(this, &mData);
-}
-
-
-QmlAction::QmlAction(QObject *parent)
-    : QAction(parent)
-{
-    static QIcon scriptIcon = [] {
-        QIcon icon(QStringLiteral("://images/32/plugin.png"));
-        icon.addFile(QStringLiteral("://images/22/plugin.png"));
-        icon.addFile(QStringLiteral("://images/16/plugin.png"));
-        return icon;
-    }();
-
-    setIcon(scriptIcon);
-}
-
-QmlAction::~QmlAction()
-{
-    if (mRegistered)
-        ActionManager::unregisterAction(this, mId);
-}
-
-QString QmlAction::name() const
-{
-    return mName;
-}
-
-void QmlAction::setName(const QString &name)
-{
-    mName = name;
-}
-
-void QmlAction::setIconFileName(const QString &fileName)
-{
-    if (mIconFileName == fileName)
-        return;
-
-    mIconFileName = fileName;
-
-    QString iconFile = fileName;
-
-    const QString ext = QStringLiteral("ext:");
-    if (!iconFile.startsWith(ext) && !iconFile.startsWith(QLatin1Char(':')))
-        iconFile.prepend(ext);
-
-    setIcon(QIcon { iconFile });
-}
-
-QString QmlAction::shortcutString() const
-{
-    return shortcut().toString();
-}
-
-void QmlAction::setShortcutString(const QString &shortcut)
-{
-    setShortcut(QKeySequence(shortcut));
-}
-
-void QmlAction::componentComplete()
-{
-    // May be called earlier by a QmlMenuExtension referencing this action
-    if (mCompleted)
-        return;
-
-    mCompleted = true;
-
-    if (mName.isEmpty()) {
-        Tiled::ERROR(QCoreApplication::translate("Script Errors", "Action without name"));
-        return;
-    }
-
-    const Id id { mName.toUtf8() };
-
-    if (ActionManager::findAction(id)) {
-        Tiled::ERROR(QCoreApplication::translate("Script Errors", "Reserved ID: '%1'").arg(mName));
-        return;
-    }
-
-    mId = id;
-    ActionManager::registerAction(this, id);
-    mRegistered = true;
 }
 
 
@@ -166,8 +84,8 @@ void QmlMenuExtension::apply()
         const QVariant action = map.value(QStringLiteral("action"));
 
         // An action can be referenced either by its ID or directly
-        if (auto qmlAction = qobject_cast<QmlAction*>(action.value<QObject*>())) {
-            menuItem.action = qmlAction->id();
+        if (auto scriptedAction = qobject_cast<ScriptedAction*>(action.value<QObject*>())) {
+            menuItem.action = scriptedAction->id();
         } else if (action.userType() == QMetaType::QString) {
             menuItem.action = Id(action.toString().toUtf8());
         }
@@ -198,123 +116,6 @@ void QmlMenuExtension::apply()
 }
 
 
-QmlMapFormat::QmlMapFormat(QObject *parent)
-    : QObject(parent)
-{
-}
-
-QmlMapFormat::~QmlMapFormat()
-{
-}
-
-void QmlMapFormat::componentComplete()
-{
-    if (mShortName.isEmpty()) {
-        Tiled::ERROR(QCoreApplication::translate("Script Errors", "MapFormat without shortName"));
-        return;
-    }
-
-    const auto formats = PluginManager::objects<MapFormat>();
-    for (auto format : formats) {
-        if (format->shortName() == mShortName) {
-            Tiled::ERROR(QCoreApplication::translate("Script Errors", "Reserved shortName: '%1'").arg(mShortName));
-            return;
-        }
-    }
-
-    if (mName.isEmpty() || mExtension.isEmpty()) {
-        Tiled::ERROR(QCoreApplication::translate("Script Errors", "Invalid file format object (requires 'name' and 'extension' properties)"));
-        return;
-    }
-
-    // This object is owned by the loaded extension, the garbage collector
-    // should leave it alone.
-    QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
-
-    const QJSValue self = ScriptManager::instance().engine()->newQObject(this);
-
-    if (!self.property(QStringLiteral("read")).isCallable() &&
-            !self.property(QStringLiteral("write")).isCallable()) {
-        Tiled::ERROR(QCoreApplication::translate("Script Errors", "Invalid file format object (requires a 'write' and/or 'read' function property)"));
-        return;
-    }
-
-    mFormat = std::make_unique<ScriptedMapFormat>(mShortName, self, nullptr);
-}
-
-
-QmlTilesetFormat::QmlTilesetFormat(QObject *parent)
-    : QObject(parent)
-{
-}
-
-QmlTilesetFormat::~QmlTilesetFormat()
-{
-}
-
-void QmlTilesetFormat::componentComplete()
-{
-    if (mShortName.isEmpty()) {
-        Tiled::ERROR(QCoreApplication::translate("Script Errors", "TilesetFormat without shortName"));
-        return;
-    }
-
-    const auto formats = PluginManager::objects<TilesetFormat>();
-    for (auto format : formats) {
-        if (format->shortName() == mShortName) {
-            Tiled::ERROR(QCoreApplication::translate("Script Errors", "Reserved shortName: '%1'").arg(mShortName));
-            return;
-        }
-    }
-
-    if (mName.isEmpty() || mExtension.isEmpty()) {
-        Tiled::ERROR(QCoreApplication::translate("Script Errors", "Invalid file format object (requires 'name' and 'extension' properties)"));
-        return;
-    }
-
-    QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
-
-    const QJSValue self = ScriptManager::instance().engine()->newQObject(this);
-
-    if (!self.property(QStringLiteral("read")).isCallable() &&
-            !self.property(QStringLiteral("write")).isCallable()) {
-        Tiled::ERROR(QCoreApplication::translate("Script Errors", "Invalid file format object (requires a 'write' and/or 'read' function property)"));
-        return;
-    }
-
-    mFormat = std::make_unique<ScriptedTilesetFormat>(mShortName, self, nullptr);
-}
-
-
-QmlTool::QmlTool(QObject *parent)
-    : ScriptedTool(parent)
-{
-}
-
-void QmlTool::componentComplete()
-{
-    if (mShortName.isEmpty()) {
-        Tiled::ERROR(QCoreApplication::translate("Script Errors", "Tool without shortName"));
-        return;
-    }
-
-    const Id id { mShortName.toUtf8() };
-    const auto tools = PluginManager::objects<AbstractTool>();
-    for (auto tool : tools) {
-        if (tool->id() == id) {
-            Tiled::ERROR(QCoreApplication::translate("Script Errors", "Reserved shortName: '%1'").arg(mShortName));
-            return;
-        }
-    }
-
-    setId(id);
-
-    QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
-    setScriptObject(ScriptManager::instance().engine()->newQObject(this));
-    addToPluginManager();
-}
-
-
 void registerQmlExtensionTypes()
 {
     static bool registered = false;
@@ -322,13 +123,13 @@ void registerQmlExtensionTypes()
         return;
     registered = true;
 
-    qmlRegisterType<QmlAction>("Tiled", 1, 0, "Action");
+    qmlRegisterType<ScriptedAction>("Tiled", 1, 0, "Action");
     qmlRegisterType<QmlDock>("Tiled", 1, 0, "Dock");
     qmlRegisterType<QmlExtension>("Tiled", 1, 0, "Extension");
-    qmlRegisterType<QmlMapFormat>("Tiled", 1, 0, "MapFormat");
+    qmlRegisterType<ScriptedMapFormat>("Tiled", 1, 0, "MapFormat");
     qmlRegisterType<QmlMenuExtension>("Tiled", 1, 0, "MenuExtension");
-    qmlRegisterType<QmlTilesetFormat>("Tiled", 1, 0, "TilesetFormat");
-    qmlRegisterType<QmlTool>("Tiled", 1, 0, "Tool");
+    qmlRegisterType<ScriptedTilesetFormat>("Tiled", 1, 0, "TilesetFormat");
+    qmlRegisterType<ScriptedTool>("Tiled", 1, 0, "Tool");
 }
 
 } // namespace Tiled

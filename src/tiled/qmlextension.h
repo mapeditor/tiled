@@ -20,21 +20,12 @@
 
 #pragma once
 
-#include "id.h"
-#include "scriptedtool.h"
-
-#include <QAction>
 #include <QObject>
 #include <QQmlListProperty>
 #include <QQmlParserStatus>
 #include <QVariantList>
 
-#include <memory>
-
 namespace Tiled {
-
-class ScriptedMapFormat;
-class ScriptedTilesetFormat;
 
 /**
  * Groups any number of extension objects, giving the extension a name.
@@ -64,47 +55,6 @@ signals:
 private:
     QString mName;
     QList<QObject*> mData;
-};
-
-/**
- * A declaratively registered action, which registers itself with the
- * ActionManager once its declared properties are set and unregisters on
- * destruction (when the extension is unloaded or the engine is reset).
- */
-class QmlAction : public QAction, public QQmlParserStatus
-{
-    Q_OBJECT
-    Q_INTERFACES(QQmlParserStatus)
-
-    Q_PROPERTY(QString name READ name WRITE setName)
-    Q_PROPERTY(QString icon READ iconFileName WRITE setIconFileName)
-    Q_PROPERTY(QString shortcut READ shortcutString WRITE setShortcutString)
-
-public:
-    explicit QmlAction(QObject *parent = nullptr);
-    ~QmlAction() override;
-
-    QString name() const;
-    void setName(const QString &name);
-
-    Id id() const { return mId; }
-
-    QString iconFileName() const { return mIconFileName; }
-    void setIconFileName(const QString &fileName);
-
-    // Shadows QAction::shortcut to support assigning a string in QML
-    QString shortcutString() const;
-    void setShortcutString(const QString &shortcut);
-
-    void classBegin() override {}
-    void componentComplete() override;
-
-private:
-    QString mName;
-    QString mIconFileName;
-    Id mId;
-    bool mCompleted = false;
-    bool mRegistered = false;
 };
 
 /**
@@ -142,104 +92,6 @@ private:
 
     QString mMenu;
     QVariantList mItems;
-};
-
-/**
- * A declaratively registered map format. The 'read', 'write' and
- * 'outputFiles' functions can be declared as QML functions on this object.
- */
-class QmlMapFormat : public QObject, public QQmlParserStatus
-{
-    Q_OBJECT
-    Q_INTERFACES(QQmlParserStatus)
-
-    Q_PROPERTY(QString shortName READ shortName WRITE setShortName)
-    Q_PROPERTY(QString name READ name WRITE setName)
-    Q_PROPERTY(QString extension READ extension WRITE setExtension)
-
-public:
-    explicit QmlMapFormat(QObject *parent = nullptr);
-    ~QmlMapFormat() override;
-
-    QString shortName() const { return mShortName; }
-    void setShortName(const QString &shortName) { mShortName = shortName; }
-
-    QString name() const { return mName; }
-    void setName(const QString &name) { mName = name; }
-
-    QString extension() const { return mExtension; }
-    void setExtension(const QString &extension) { mExtension = extension; }
-
-    void classBegin() override {}
-    void componentComplete() override;
-
-private:
-    QString mShortName;
-    QString mName;
-    QString mExtension;
-    std::unique_ptr<ScriptedMapFormat> mFormat;
-};
-
-/**
- * A declaratively registered tileset format. The 'read' and 'write'
- * functions can be declared as QML functions on this object.
- */
-class QmlTilesetFormat : public QObject, public QQmlParserStatus
-{
-    Q_OBJECT
-    Q_INTERFACES(QQmlParserStatus)
-
-    Q_PROPERTY(QString shortName READ shortName WRITE setShortName)
-    Q_PROPERTY(QString name READ name WRITE setName)
-    Q_PROPERTY(QString extension READ extension WRITE setExtension)
-
-public:
-    explicit QmlTilesetFormat(QObject *parent = nullptr);
-    ~QmlTilesetFormat() override;
-
-    QString shortName() const { return mShortName; }
-    void setShortName(const QString &shortName) { mShortName = shortName; }
-
-    QString name() const { return mName; }
-    void setName(const QString &name) { mName = name; }
-
-    QString extension() const { return mExtension; }
-    void setExtension(const QString &extension) { mExtension = extension; }
-
-    void classBegin() override {}
-    void componentComplete() override;
-
-private:
-    QString mShortName;
-    QString mName;
-    QString mExtension;
-    std::unique_ptr<ScriptedTilesetFormat> mFormat;
-};
-
-/**
- * A declaratively registered tool. Event handlers like 'activated',
- * 'mousePressed' or 'tilePositionChanged' can be declared as QML functions
- * on this object, like they are declared on the object passed to
- * tiled.registerTool in the JavaScript API.
- */
-class QmlTool : public ScriptedTool, public QQmlParserStatus
-{
-    Q_OBJECT
-    Q_INTERFACES(QQmlParserStatus)
-
-    Q_PROPERTY(QString shortName READ shortName WRITE setShortName)
-
-public:
-    explicit QmlTool(QObject *parent = nullptr);
-
-    QString shortName() const { return mShortName; }
-    void setShortName(const QString &shortName) { mShortName = shortName; }
-
-    void classBegin() override {}
-    void componentComplete() override;
-
-private:
-    QString mShortName;
 };
 
 /**

@@ -20,18 +20,17 @@
 
 #include "scriptedaction.h"
 
+#include "actionmanager.h"
+#include "logginginterface.h"
 #include "scriptmanager.h"
 
+#include <QCoreApplication>
 #include <QQmlEngine>
 
 namespace Tiled {
 
-ScriptedAction::ScriptedAction(Id id,
-                               const QJSValue &callback,
-                               QObject *parent)
+ScriptedAction::ScriptedAction(QObject *parent)
     : QAction(parent)
-    , mId(id)
-    , mCallback(callback)
 {
     static QIcon scriptIcon = [] {
         QIcon icon(QStringLiteral("://images/32/plugin.png"));
@@ -41,6 +40,16 @@ ScriptedAction::ScriptedAction(Id id,
     }();
 
     setIcon(scriptIcon);
+}
+
+ScriptedAction::ScriptedAction(Id id,
+                               const QJSValue &callback,
+                               QObject *parent)
+    : ScriptedAction(parent)
+{
+    mId = id;
+    mName = QString::fromUtf8(id.name());
+    mCallback = callback;
 
     connect(this, &QAction::triggered, this, [this] {
         QJSValueList arguments;
@@ -49,6 +58,15 @@ ScriptedAction::ScriptedAction(Id id,
         QJSValue result = mCallback.call(arguments);
         ScriptManager::instance().checkError(result);
     });
+
+    ActionManager::registerAction(this, id);
+    mRegistered = true;
+}
+
+ScriptedAction::~ScriptedAction()
+{
+    if (mRegistered)
+        ActionManager::unregisterAction(this, mId);
 }
 
 void ScriptedAction::setIconFileName(const QString &fileName)
@@ -65,6 +83,35 @@ void ScriptedAction::setIconFileName(const QString &fileName)
         iconFile.prepend(ext);
 
     setIcon(QIcon { iconFile });
+}
+
+QString ScriptedAction::shortcutString() const
+{
+    return shortcut().toString();
+}
+
+void ScriptedAction::setShortcutString(const QString &shortcut)
+{
+    setShortcut(QKeySequence(shortcut));
+}
+
+void ScriptedAction::componentComplete()
+{
+    if (mName.isEmpty()) {
+        Tiled::ERROR(QCoreApplication::translate("Script Errors", "Action without name"));
+        return;
+    }
+
+    const Id id { mName.toUtf8() };
+
+    if (ActionManager::findAction(id)) {
+        Tiled::ERROR(QCoreApplication::translate("Script Errors", "Reserved ID: '%1'").arg(mName));
+        return;
+    }
+
+    mId = id;
+    ActionManager::registerAction(this, id);
+    mRegistered = true;
 }
 
 } // namespace Tiled

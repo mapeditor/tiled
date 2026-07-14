@@ -23,6 +23,7 @@
 #include "abstracttiletool.h"
 
 #include <QJSValue>
+#include <QQmlParserStatus>
 
 namespace Tiled {
 
@@ -30,10 +31,18 @@ class BrushItem;
 class EditableMap;
 class EditableTile;
 
-class ScriptedTool : public AbstractTileTool
+/**
+ * A tool registered by an extension, either through tiled.registerTool or
+ * declared as a QML component. Its behavior functions (like 'activated' or
+ * 'mousePressed') are looked up on the script object, which for QML declared
+ * tools is the tool object itself.
+ */
+class ScriptedTool : public AbstractTileTool, public QQmlParserStatus
 {
     Q_OBJECT
+    Q_INTERFACES(QQmlParserStatus)
 
+    Q_PROPERTY(QString shortName READ shortName WRITE setShortName)
     Q_PROPERTY(QString icon READ iconFileName WRITE setIconFileName)
     Q_PROPERTY(Tiled::EditableMap *map READ editableMap)
     Q_PROPERTY(Tiled::EditableTile *selectedTile READ editableTile)
@@ -41,8 +50,15 @@ class ScriptedTool : public AbstractTileTool
     Q_PROPERTY(QStringList toolBarActions READ toolBarActions WRITE setToolBarActions)
 
 public:
+    explicit ScriptedTool(QObject *parent = nullptr);
     explicit ScriptedTool(Id id, QJSValue object, QObject *parent = nullptr);
     ~ScriptedTool() override;
+
+    QString shortName() const { return mShortName; }
+    void setShortName(const QString &shortName) { mShortName = shortName; }
+
+    void classBegin() override {}
+    void componentComplete() override;
 
     EditableMap *editableMap() const;
     EditableTile *editableTile() const;
@@ -72,16 +88,6 @@ public:
     void setToolBarActions(const QStringList &actionNames);
 
 protected:
-    /**
-     * Constructs a scripted tool that does not have a script object yet and
-     * is not added to the PluginManager. Used by QmlTool, which sets its
-     * script object and adds itself once its declared properties are set.
-     */
-    explicit ScriptedTool(QObject *parent = nullptr);
-
-    void setScriptObject(QJSValue object);
-    void addToPluginManager();
-
     void mapDocumentChanged(MapDocument *oldDocument, MapDocument *newDocument) override;
 
     void tilePositionChanged(QPoint tilePos) override;
@@ -93,6 +99,7 @@ private:
     bool call(const QString &methodName, const QJSValueList &args = QJSValueList());
 
     QJSValue mScriptObject;
+    QString mShortName;
     QString mIconFileName;
     QList<Id> mToolBarActions;
     bool mAddedToPluginManager = false;

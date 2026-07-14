@@ -315,9 +315,6 @@ void ScriptManager::loadQmlExtension(const QString &fileName)
         return;
     }
 
-    // The engine should not delete the object tree we own
-    QQmlEngine::setObjectOwnership(rootObject.get(), QQmlEngine::CppOwnership);
-
     mQmlExtensions.push_back({ std::move(component), std::move(rootObject) });
 }
 
