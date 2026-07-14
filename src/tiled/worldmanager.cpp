@@ -52,6 +52,8 @@ void WorldManager::deleteInstance()
 WorldDocumentPtr WorldManager::findWorld(const QString &fileName) const
 {
     const auto canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
+    if (canonicalFilePath.isEmpty())    // file doesn't exist
+        return {};
     for (auto &worldDocument : mWorldDocuments)
         if (worldDocument->canonicalFilePath() == canonicalFilePath)
             return worldDocument;
@@ -68,20 +70,21 @@ WorldDocumentPtr WorldManager::addEmptyWorld(const QString &fileName, QString *e
 
     auto world = std::make_unique<World>();
     world->fileName = fileName;
+
+    // Save before creating the document, so that the canonical file path is
+    // available when the document is constructed
+    if (!World::save(*world, errorString))
+        return {};
+
     auto worldDocument = WorldDocumentPtr::create(std::move(world));
+    mWorldDocuments.append(worldDocument);
 
-    if (worldDocument->save(worldDocument->fileName(), errorString)) {
-        mWorldDocuments.append(worldDocument);
+    connect(worldDocument.data(), &WorldDocument::worldChanged,
+            this, [this] { emit worldsChanged(); });
 
-        connect(worldDocument.data(), &WorldDocument::worldChanged,
-                this, [this] { emit worldsChanged(); });
-
-        emit worldLoaded(worldDocument.data());
-        emit worldsChanged();
-        return worldDocument;
-    }
-
-    return {};
+    emit worldLoaded(worldDocument.data());
+    emit worldsChanged();
+    return worldDocument;
 }
 
 /**
