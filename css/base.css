@@ -84,6 +84,18 @@ article > video {
   border: 2px solid dimgray;
   outline: none;
 }
+article > table {
+  border-collapse: collapse;
+  margin: 1em 0;
+}
+article > table th,
+article > table td {
+  padding: 0.375em 0.8125em;
+  border: 1px solid #5c5c5c;
+}
+article > table tr:nth-child(2n) {
+  background-color: #434343;
+}
 
 .thumbnail {
   display: block;
