@@ -1329,8 +1329,19 @@ WorldDocument *MainWindow::createNewWorld(const QString &suggestedFileName)
 
     // When the selected world is already loaded, use it rather than
     // reporting an error
-    if (auto worldDocument = WorldManager::instance().findWorld(worldFile))
+    if (auto worldDocument = WorldManager::instance().findWorld(worldFile)) {
+        if (!worldDocument->world()->canBeModified()) {
+            QMessageBox::critical(this, tr("Error Creating World"),
+                                  tr("World \"%1\" is already loaded and cannot be modified.")
+                                  .arg(worldDocument->displayName()));
+            return nullptr;
+        }
+
+        QMessageBox::information(this, tr("New World"),
+                                 tr("Using already loaded world \"%1\".")
+                                 .arg(worldDocument->displayName()));
         return worldDocument.data();
+    }
 
     QString errorString;
     auto worldDocument = WorldManager::instance().addEmptyWorld(worldFile, &errorString);
