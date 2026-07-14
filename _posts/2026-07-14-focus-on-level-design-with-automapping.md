@@ -8,7 +8,9 @@ image: automapping/blueprint-mapping.png
 tags: tutorial
 ---
 
-The following cute Dungeon tileset is one of the many [free tilesets released on CraftPix.net](https://craftpix.net/freebies/?affiliate=231893):
+Wouldn't it be nice if we could focus on the layout of our levels, while the right tiles fall into place automatically? This is exactly what Tiled's Automapping feature can do for us! In this tutorial, we'll set up rules that turn a simple blueprint into a polished dungeon.
+
+We'll be using the following cute Dungeon tileset, one of the many [free tilesets released on CraftPix.net](https://craftpix.net/freebies/?affiliate=231893):
 
 ![Dungeon Tileset by CraftPix.net](/img/posts/automapping/tileset.png)
 
