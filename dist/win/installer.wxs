@@ -429,6 +429,7 @@
         <ComponentRef Id='StylePlugins' />
       <?endif?>
       <ComponentRef Id='TlsPlugins' />
+      <ComponentGroupRef Id='QmlModules' />
       <ComponentRef Id='ProgramMenuDir' />
     </Feature>
 

@@ -65,6 +65,7 @@
 #include <QQmlComponent>
 #include <QQmlContext>
 #include <QQmlEngine>
+#include <QQuickStyle>
 #include <QStandardPaths>
 #include <QStringDecoder>
 #include <QtDebug>
@@ -292,6 +293,19 @@ void ScriptManager::loadExtension(const QString &path)
 
 void ScriptManager::loadQmlExtension(const QString &fileName)
 {
+    // Since the platform-native Qt Quick Controls styles are not shipped
+    // with Tiled, make sure a deterministic style is used. Can be overridden
+    // using the QT_QUICK_CONTROLS_STYLE environment variable. Needs to be
+    // set up before the first extension using Qt Quick Controls is loaded.
+    // Note that QQuickStyle::name can't be used as a guard here, since it
+    // resolves and locks in the platform default style.
+    static bool styleInitialized = false;
+    if (!styleInitialized) {
+        styleInitialized = true;
+        if (qEnvironmentVariableIsEmpty("QT_QUICK_CONTROLS_STYLE"))
+            QQuickStyle::setStyle(QStringLiteral("Fusion"));
+    }
+
     Tiled::INFO(tr("Loading '%1'").arg(fileName));
 
     auto component = std::make_unique<QQmlComponent>(mEngine,
