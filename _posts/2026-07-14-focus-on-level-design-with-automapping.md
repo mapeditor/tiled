@@ -20,7 +20,7 @@ When drawing a dungeon with this tileset in Tiled however, one quickly realizes 
 
 ## Using the Terrain Brush
 
-The easiest to set up are what Tiled calls "terrains". Although more commonly used for automatic placement of terrain transitions, it can easily handle the wall as an _Edge_ terrain.
+The easiest to set up are what Tiled calls ["terrains"](https://doc.mapeditor.org/en/stable/manual/terrain/). Although more commonly used for automatic placement of terrain transitions, it can easily handle the wall as an _Edge_ terrain.
 
 ![Walls set up as Terrain](/img/posts/automapping/wall-edge-set.png)
 
