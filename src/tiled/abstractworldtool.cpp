@@ -233,7 +233,7 @@ void AbstractWorldTool::updateEnabledState()
     const auto worldDocument = worldForMap(map);
 
     // Maps that are not in a world can still be resized
-    setEnabled(map && (!worldDocument || worldDocument->world()->canBeModified()));
+    setEnabled(mapCanBeResized(map));
 
     // When the map is not in a world, only the action for creating a new
     // world is shown, which guides the user to create one first
@@ -392,7 +392,6 @@ void AbstractWorldTool::addAnotherMapToWorld(QPoint insertPos)
 {
     MapDocument *map = mapDocument();
     auto worldDocument = worldForMap(map);
-
     if (!worldDocument)
         return;
 
@@ -428,33 +427,22 @@ void AbstractWorldTool::addAnotherMapToWorld(QPoint insertPos)
     undoStack->push(new AddMapCommand(worldDocument, fileName, rect));
 }
 
+// Asks for a file name and creates a new world containing the current map.
+// Does nothing when the map is already part of a world, the user cancels or
+// the world could not be saved.
 void AbstractWorldTool::createWorldForCurrentMap()
 {
-    if (auto map = mapDocument())
-        createWorldForMap(map);
-}
-
-// Asks for a file name and creates a new world with the given map in it.
-// Returns null when the map is already part of a world, the user cancels or
-// the world could not be saved.
-WorldDocument *AbstractWorldTool::createWorldForMap(MapDocument *map)
-{
-    if (map->fileName().isEmpty() || worldForMap(map))
-        return nullptr;
+    MapDocument *map = mapDocument();
+    if (!map || map->fileName().isEmpty() || worldForMap(map))
+        return;
 
     const QFileInfo fileInfo(map->fileName());
     const QString suggestedFileName
             = fileInfo.dir().filePath(fileInfo.completeBaseName() +
                                       QStringLiteral(".world"));
 
-    auto worldDocument = MainWindow::instance()->createNewWorld(suggestedFileName);
-    if (!worldDocument)
-        return nullptr;
-
-    const QRect rect = map->renderer()->mapBoundingRect();
-    worldDocument->undoStack()->push(new AddMapCommand(worldDocument, map->fileName(), rect));
-
-    return worldDocument;
+    if (auto worldDocument = MainWindow::instance()->createNewWorld(suggestedFileName))
+        addToWorld(worldDocument);
 }
 
 void AbstractWorldTool::removeCurrentMapFromWorld()
