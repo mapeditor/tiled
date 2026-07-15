@@ -327,22 +327,16 @@ void WorldMoveMapTool::finishResizing()
     mResizeHandle = -1;
 
     if (mResizeNewSize != resizedMap->map()->size() || !mResizeOffset.isNull()) {
-        const QPoint prevPos = mResizeStartWorldRect.topLeft();
         resizedMap->resizeMap(mResizeNewSize, mResizeOffset, false);
 
-        // keep the view steady when the active map's position shifted
+        // keep the view steady by compensating for the content shift, which
+        // matches the pixelOffset applied by MapDocument::resizeMap (a map
+        // in a world has its position adjusted by exactly this amount)
         if (resizedMap == mapDocument()) {
-            if (auto worldDocument = worldForMap(resizedMap)) {
-                const QPoint newPos = worldDocument->world()->mapRect(resizedMap->fileName()).topLeft();
-                recenterView(newPos - prevPos);
-            } else {
-                // a map that is not in a world stays anchored at 0,0 while
-                // its content shifts, so compensate for that shift instead
-                const MapRenderer *renderer = resizedMap->renderer();
-                const QPointF pixelOffset = renderer->tileToPixelCoords(QPointF())
-                                          - renderer->tileToPixelCoords(-mResizeOffset);
-                recenterView(-pixelOffset.toPoint());
-            }
+            const MapRenderer *renderer = resizedMap->renderer();
+            const QPointF pixelOffset = renderer->tileToPixelCoords(QPointF())
+                                      - renderer->tileToPixelCoords(-mResizeOffset);
+            recenterView(-pixelOffset.toPoint());
         }
     }
 
