@@ -592,6 +592,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, &MainWindow::addExternalTileset);
     connect(mUi->actionAddAutomappingRulesTileset, &QAction::triggered,
             this, &MainWindow::addAutomappingRulesTileset);
+
+    // Remember the loaded worlds before switching session or quitting
+    connect(preferences, &Preferences::aboutToSwitchSession, this, [this] {
+        mLoadedWorlds = WorldManager::instance().worldFileNames();
+    });
+
     connect(mUi->actionLoadWorld, &QAction::triggered, this, [this] {
         Session &session = Session::current();
         QString lastPath = session.lastPath(Session::WorldFile);
@@ -608,8 +614,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         QString errorString;
         if (!WorldManager::instance().loadWorld(worldFile, &errorString))
             QMessageBox::critical(this, tr("Error Loading World"), errorString);
-        else
-            mLoadedWorlds = WorldManager::instance().worldFileNames();
     });
     connect(mUi->menuUnloadWorld, &QMenu::aboutToShow, this, [this] {
         mUi->menuUnloadWorld->clear();
@@ -624,7 +628,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
                     return;
 
                 WorldManager::instance().unloadWorld(worldDocument);
-                mLoadedWorlds = WorldManager::instance().worldFileNames();
             });
         }
         if (WorldManager::instance().worlds().count() >= 2) {
@@ -633,30 +636,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         }
     });
     connect(mUi->actionNewWorld, &QAction::triggered, this, [this] {
-        Session &session = Session::current();
-        QString lastPath = session.lastPath(Session::WorldFile);
-        QString filter = tr("All Files (*)");
-        filter.append(QStringLiteral(";;"));
-        QString worldFilesFilter = tr("World files (*.world)");
-        filter.append(worldFilesFilter);
-        QString worldFile;
-
-        QFileDialog dialog(this, tr("New World"), lastPath, filter);
-        dialog.setAcceptMode(QFileDialog::AcceptSave);
-        dialog.selectNameFilter(worldFilesFilter);
-        dialog.setDefaultSuffix(QStringLiteral("world"));
-        if (dialog.exec() == QDialog::Accepted)
-            worldFile = dialog.selectedFiles().value(0);
-
-        if (worldFile.isEmpty())
-            return;
-
-        session.setLastPath(Session::WorldFile, QFileInfo(worldFile).path());
-        QString errorString;
-        if (!WorldManager::instance().addEmptyWorld(worldFile, &errorString))
-            QMessageBox::critical(this, tr("Error Creating World"), errorString);
-        else
-            mLoadedWorlds = WorldManager::instance().worldFileNames();
+        createNewWorld();
     });
     connect(mUi->menuSaveWorld, &QMenu::aboutToShow, this, [this] {
         mUi->menuSaveWorld->clear();
@@ -1072,8 +1052,6 @@ bool MainWindow::openFile(const QString &fileName, FileFormat *fileFormat)
             QMessageBox::critical(this, tr("Error Loading World"), errorString);
             return false;
         } else {
-            mLoadedWorlds = worldManager.worldFileNames();
-
             Document *document = mDocumentManager->currentDocument();
             if (document && document->type() == Document::MapDocumentType)
                 if (worldManager.worldForMap(document->fileName()) == worldDocument)
@@ -1314,6 +1292,65 @@ bool MainWindow::confirmSaveWorld(WorldDocument *worldDocument)
     default:
         return false;
     }
+}
+
+/**
+ * Asks for a file name and creates a new empty world. When \a
+ * suggestedFileName is empty, the last used world path is suggested.
+ *
+ * @return the created world, or null when the user canceled or the world
+ *         could not be created
+ */
+WorldDocument *MainWindow::createNewWorld(const QString &suggestedFileName)
+{
+    Session &session = Session::current();
+    const QString startingLocation = suggestedFileName.isEmpty()
+            ? session.lastPath(Session::WorldFile)
+            : suggestedFileName;
+
+    QString filter = tr("All Files (*)");
+    filter.append(QStringLiteral(";;"));
+    QString worldFilesFilter = tr("World files (*.world)");
+    filter.append(worldFilesFilter);
+
+    QFileDialog dialog(this, tr("New World"), startingLocation, filter);
+    dialog.setAcceptMode(QFileDialog::AcceptSave);
+    dialog.selectNameFilter(worldFilesFilter);
+    dialog.setDefaultSuffix(QStringLiteral("world"));
+
+    QString worldFile;
+    if (dialog.exec() == QDialog::Accepted)
+        worldFile = dialog.selectedFiles().value(0);
+
+    if (worldFile.isEmpty())
+        return nullptr;
+
+    session.setLastPath(Session::WorldFile, QFileInfo(worldFile).path());
+
+    // When the selected world is already loaded, use it rather than
+    // reporting an error
+    if (auto worldDocument = WorldManager::instance().findWorld(worldFile)) {
+        if (!worldDocument->world()->canBeModified()) {
+            QMessageBox::critical(this, tr("Error Creating World"),
+                                  tr("World \"%1\" is already loaded and cannot be modified.")
+                                  .arg(worldDocument->displayName()));
+            return nullptr;
+        }
+
+        QMessageBox::information(this, tr("New World"),
+                                 tr("Using already loaded world \"%1\".")
+                                 .arg(worldDocument->displayName()));
+        return worldDocument.data();
+    }
+
+    QString errorString;
+    auto worldDocument = WorldManager::instance().addEmptyWorld(worldFile, &errorString);
+    if (!worldDocument) {
+        QMessageBox::critical(this, tr("Error Creating World"), errorString);
+        return nullptr;
+    }
+
+    return worldDocument.data();
 }
 
 void MainWindow::export_()

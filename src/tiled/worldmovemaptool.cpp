@@ -104,8 +104,10 @@ void WorldMoveMapTool::keyPressed(QKeyEvent *event)
         return;
     }
     MapDocument *document = mapDocument();
-    if (!document || !mapCanBeMoved(document) || mDraggingMap)
+    if (!document || !mapCanBeMoved(document) || mDraggingMap) {
+        event->ignore();    // allow the view to scroll instead
         return;
+    }
 
     const bool moveFast = modifiers & Qt::ShiftModifier;
     if (moveFast)
@@ -210,7 +212,7 @@ void WorldMoveMapTool::mousePressed(QGraphicsSceneMouseEvent *event)
     if (event->button() == Qt::LeftButton) {
         MapDocument *map = nullptr;
         const int handle = resizeHandleNear(event->scenePos(), map);
-        if (handle != -1 && mapCanBeMoved(map)) {
+        if (handle != -1 && mapCanBeResized(map)) {
             startResizing(map, handle, event->scenePos());
             return;
         }
@@ -231,8 +233,11 @@ void WorldMoveMapTool::startResizing(MapDocument *map, int handle,
     mResizeHandle = handle;
     mDragStartScenePos = scenePos;
 
-    auto world = worldForMap(mResizingMap)->world();
-    const QPoint worldPos = world->mapRect(mResizingMap->fileName()).topLeft();
+    // For maps that are not in a world the position is just 0,0
+    QPoint worldPos;
+    if (auto worldDocument = worldForMap(mResizingMap))
+        worldPos = worldDocument->world()->mapRect(mResizingMap->fileName()).topLeft();
+
     const QSize sizePixels = mResizingMap->renderer()->mapBoundingRect().size();
     mResizeStartWorldRect = QRect(worldPos, sizePixels);
     mResizeSceneOffset = mapScene()->mapItem(mResizingMap)->pos().toPoint() - worldPos;
@@ -263,7 +268,7 @@ void WorldMoveMapTool::mouseMoved(const QPointF &pos,
         // target the map whose handle is under the cursor, else hover normally
         MapDocument *map = nullptr;
         const int hoveredHandle = resizeHandleNear(pos, map);
-        if (hoveredHandle != -1 && mapCanBeMoved(map))
+        if (hoveredHandle != -1 && mapCanBeResized(map))
             setTargetMap(map);
         else
             AbstractWorldTool::mouseMoved(pos, modifiers);
@@ -322,15 +327,16 @@ void WorldMoveMapTool::finishResizing()
     mResizeHandle = -1;
 
     if (mResizeNewSize != resizedMap->map()->size() || !mResizeOffset.isNull()) {
-        const QPoint prevPos = mResizeStartWorldRect.topLeft();
         resizedMap->resizeMap(mResizeNewSize, mResizeOffset, false);
 
-        // keep the view steady when the active map's position shifted
+        // keep the view steady by compensating for the content shift, which
+        // matches the pixelOffset applied by MapDocument::resizeMap (a map
+        // in a world has its position adjusted by exactly this amount)
         if (resizedMap == mapDocument()) {
-            if (auto worldDocument = worldForMap(resizedMap)) {
-                const QPoint newPos = worldDocument->world()->mapRect(resizedMap->fileName()).topLeft();
-                recenterView(newPos - prevPos);
-            }
+            const MapRenderer *renderer = resizedMap->renderer();
+            const QPointF pixelOffset = renderer->tileToPixelCoords(QPointF())
+                                      - renderer->tileToPixelCoords(-mResizeOffset);
+            recenterView(-pixelOffset.toPoint());
         }
     }
 
