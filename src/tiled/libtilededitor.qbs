@@ -14,12 +14,21 @@ DynamicLibrary {
     Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux") && project.dbus; required: false }
     Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") }
 
+    // When the build multiplexes over multiple architectures, the QML type
+    // description only needs to be installed once, since its contents do not
+    // depend on the architecture.
+    readonly property bool installQmlTypeDescription: {
+        return !qbs.architectures
+                || qbs.architectures.length < 2
+                || qbs.architecture === qbs.architectures[0];
+    }
+
     // Generates the registration of the QML types provided for use by QML
     // extensions (see QML_NAMED_ELEMENT), along with a "plugins.qmltypes"
     // file describing them for use by tooling like qmllint and qmlls.
     Qt.qml.importName: "Tiled"
     Qt.qml.importVersion: "1.0"
-    Qt.qml.typesInstallDir: "qml/Tiled"
+    Qt.qml.typesInstallDir: installQmlTypeDescription ? "qml/Tiled" : undefined
     Qt.qml.extraMetaTypesFiles: qtMetaTypes.files
 
     // Locates the metatypes files of the used Qt modules, needed to resolve
@@ -79,7 +88,7 @@ DynamicLibrary {
     Group {
         name: "QML type description"
         files: ["qml/Tiled/qmldir"]
-        qbs.install: true
+        qbs.install: installQmlTypeDescription
         qbs.installDir: "qml/Tiled"
     }
 
