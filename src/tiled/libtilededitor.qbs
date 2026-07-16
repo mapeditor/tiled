@@ -23,30 +23,56 @@ DynamicLibrary {
     Qt.qml.extraMetaTypesFiles: qtMetaTypes.files
 
     // Locates the metatypes files of the used Qt modules, needed to resolve
-    // the Qt base classes of the QML registered types. Their location
-    // differs between Qt builds.
+    // the Qt base classes of the QML registered types. Qbs passes these
+    // files automatically when they are in the archdata directory, which is
+    // the case since Qt 6.5 (qtbase commit 4234ce12dc819). Older Qt builds
+    // place them under lib/metatypes instead, a location Qbs does not
+    // currently check, so this Probe supplies them in that case. It can be
+    // removed entirely once the minimum Qbs version includes the upstream
+    // fix "Qt support: Look for metatypes files in the libraries directory
+    // too".
     Probe {
         id: qtMetaTypes
         property string libPath: Qt.core.libPath
-        property string libExecPath: Qt.core.libExecPath
+        property string mkspecPath: Qt.core.mkspecPath
         property stringList files
         configure: {
-            var candidates = [
-                FileInfo.joinPaths(libPath, "metatypes"),
-                FileInfo.joinPaths(libExecPath, "..", "metatypes"),
-            ];
             var list = [];
-            for (var i = 0; i < candidates.length && list.length === 0; ++i) {
-                if (!File.exists(candidates[i]))
-                    continue;
-                var entries = File.directoryEntries(candidates[i], File.Files);
-                for (var j = 0; j < entries.length; ++j) {
-                    if (entries[j].endsWith("_metatypes.json"))
-                        list.push(FileInfo.joinPaths(candidates[i], entries[j]));
+
+            // The used mkspec lives at <archdata>/mkspecs/<spec>, so the
+            // archdata directory is two levels up from it.
+            var archDataPath = FileInfo.path(FileInfo.path(mkspecPath));
+            var archDataMetaTypesDir = FileInfo.joinPaths(archDataPath,
+                                                          "metatypes");
+
+            var handledByQbs = false;
+            if (File.exists(archDataMetaTypesDir)) {
+                var entries = File.directoryEntries(archDataMetaTypesDir,
+                                                    File.Files);
+                for (var i = 0; i < entries.length; ++i) {
+                    if (entries[i].endsWith("_metatypes.json")) {
+                        handledByQbs = true;
+                        break;
+                    }
                 }
             }
+
+            if (!handledByQbs) {
+                var libMetaTypesDir = FileInfo.joinPaths(libPath, "metatypes");
+                if (File.exists(libMetaTypesDir)) {
+                    var libEntries = File.directoryEntries(libMetaTypesDir,
+                                                           File.Files);
+                    for (var j = 0; j < libEntries.length; ++j) {
+                        if (libEntries[j].endsWith("_metatypes.json")) {
+                            list.push(FileInfo.joinPaths(libMetaTypesDir,
+                                                         libEntries[j]));
+                        }
+                    }
+                }
+            }
+
             files = list;
-            found = list.length > 0;
+            found = true;
         }
     }
 
