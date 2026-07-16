@@ -38,8 +38,7 @@ DynamicLibrary {
     // place them under lib/metatypes instead, a location Qbs does not
     // currently check, so this Probe supplies them in that case. It can be
     // removed entirely once the minimum Qbs version includes the upstream
-    // fix "Qt support: Look for metatypes files in the libraries directory
-    // too".
+    // fix (https://codereview.qt-project.org/c/qbs/qbs/+/753486).
     Probe {
         id: qtMetaTypes
         property string libPath: Qt.core.libPath
