@@ -36,16 +36,20 @@ class TILEDQUICK_SHARED_EXPORT RegionOverlay : public QQuickItem
     Q_PROPERTY(int regionAlpha READ regionAlpha WRITE setRegionAlpha NOTIFY regionAlphaChanged)
     Q_PROPERTY(QList<QPolygonF> validPolygons READ validPolygons NOTIFY regionChanged)
     Q_PROPERTY(QList<QPolygonF> invalidPolygons READ invalidPolygons NOTIFY regionChanged)
+    Q_PROPERTY(QColor validStrokeColor READ validStrokeColor CONSTANT)
+    Q_PROPERTY(QColor validFillColor READ validFillColor NOTIFY regionAlphaChanged)
+    Q_PROPERTY(QColor invalidStrokeColor READ invalidStrokeColor CONSTANT)
+    Q_PROPERTY(QColor invalidFillColor READ invalidFillColor NOTIFY regionAlphaChanged)
 
 public:
     explicit RegionOverlay(QQuickItem *parent = nullptr);
     ~RegionOverlay() override;
 
-    Q_INVOKABLE QColor validStrokeColor() const;
-    Q_INVOKABLE QColor validFillColor() const;
+    QColor validStrokeColor() const;
+    QColor validFillColor() const;
 
-    Q_INVOKABLE QColor invalidStrokeColor() const;
-    Q_INVOKABLE QColor invalidFillColor() const;
+    QColor invalidStrokeColor() const;
+    QColor invalidFillColor() const;
 
     QPointF tileSize() const;
     void setTileSize(const QPointF &tileSize);

@@ -170,6 +170,11 @@ Rectangle {
             singleFingerPanArea.mapToGlobal(event.x, event.y)
         )
 
+        onPositionChanged: (event) => mapEditor.quickMouseMoved(
+            singleFingerPanArea.mapToItem(mapItem, event.x, event.y),
+            event.modifiers
+        )
+
         onContainsMouseChanged: mapEditor.quickContainsMouseChanged(singleFingerPanArea.containsMouse)
     }
 
@@ -196,11 +201,4 @@ Rectangle {
         }
     }
 
-    property var mapRelativeCoords: {
-        return singleFingerPanArea.mapToItem(mapItem, singleFingerPanArea.mouseX, singleFingerPanArea.mouseY)
-    }
-
-    onMapRelativeCoordsChanged: {
-        mapEditor.quickMouseMoved(mapRelativeCoords)
-    }
 }

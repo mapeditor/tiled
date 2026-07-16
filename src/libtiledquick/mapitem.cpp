@@ -192,7 +192,7 @@ void MapItem::repaintRegion(const QRegion &, Tiled::TileLayer *tileLayer)
         if (tileLayer == tileLayerItem->layer()) {
             // TODO: Update only the region edited
             tileLayerItem->update();
-            continue;
+            break;
         }
     }
 }

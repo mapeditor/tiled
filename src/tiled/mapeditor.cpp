@@ -1239,13 +1239,13 @@ AbstractTool *MapEditor::activeTool() const
 }
 
 #ifdef TILEDQUICK_LIB
-void MapEditor::quickMouseMoved(QPointF coords)
+void MapEditor::quickMouseMoved(QPointF coords, Qt::KeyboardModifiers modifiers)
 {
     auto tool = activeTool();
     if (!tool)
         return;
 
-    tool->mouseMoved(coords, Qt::NoModifier);
+    tool->mouseMoved(coords, modifiers);
 }
 
 void MapEditor::quickMousePressed(Qt::MouseButton button, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, QPointF pos, QPointF scenePos, QPoint screenPos)

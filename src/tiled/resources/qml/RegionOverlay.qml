@@ -9,9 +9,9 @@ Tiled.RegionOverlay {
 
     Shape {
         ShapePath {
-            strokeColor: regionOverlay.validStrokeColor()
+            strokeColor: regionOverlay.validStrokeColor
             strokeWidth: 1 / regionOverlay.scale
-            fillColor: regionOverlay.validFillColor()
+            fillColor: regionOverlay.validFillColor
 
             PathMultiline {
                 paths: regionOverlay.validPolygons
@@ -19,9 +19,9 @@ Tiled.RegionOverlay {
         }
 
         ShapePath {
-            strokeColor: regionOverlay.invalidStrokeColor()
+            strokeColor: regionOverlay.invalidStrokeColor
             strokeWidth: 1 / regionOverlay.scale
-            fillColor: regionOverlay.invalidFillColor()
+            fillColor: regionOverlay.invalidFillColor
 
             PathMultiline {
                 paths: regionOverlay.invalidPolygons
