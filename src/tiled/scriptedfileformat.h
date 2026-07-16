@@ -25,6 +25,7 @@
 
 #include <QJSValue>
 #include <QQmlParserStatus>
+#include <QtQml/qqmlregistration.h>
 
 namespace Tiled {
 
@@ -64,6 +65,7 @@ class ScriptedMapFormat : public MapFormat, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(Tiled::MapFormat QQmlParserStatus)
+    QML_NAMED_ELEMENT(MapFormat)
 
     Q_PROPERTY(QString shortName READ shortName WRITE setShortName)
     Q_PROPERTY(QString name READ name WRITE setName)
@@ -115,6 +117,7 @@ class ScriptedTilesetFormat : public TilesetFormat, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(Tiled::TilesetFormat QQmlParserStatus)
+    QML_NAMED_ELEMENT(TilesetFormat)
 
     Q_PROPERTY(QString shortName READ shortName WRITE setShortName)
     Q_PROPERTY(QString name READ name WRITE setName)

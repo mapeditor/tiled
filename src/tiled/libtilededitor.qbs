@@ -14,6 +14,49 @@ DynamicLibrary {
     Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux") && project.dbus; required: false }
     Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") }
 
+    // Generates the registration of the QML types provided for use by QML
+    // extensions (see QML_NAMED_ELEMENT), along with a "plugins.qmltypes"
+    // file describing them for use by tooling like qmllint and qmlls.
+    Qt.qml.importName: "Tiled"
+    Qt.qml.importVersion: "1.0"
+    Qt.qml.typesInstallDir: "qml/Tiled"
+    Qt.qml.extraMetaTypesFiles: qtMetaTypes.files
+
+    // Locates the metatypes files of the used Qt modules, needed to resolve
+    // the Qt base classes of the QML registered types. Their location
+    // differs between Qt builds.
+    Probe {
+        id: qtMetaTypes
+        property string libPath: Qt.core.libPath
+        property string libExecPath: Qt.core.libExecPath
+        property stringList files
+        configure: {
+            var candidates = [
+                FileInfo.joinPaths(libPath, "metatypes"),
+                FileInfo.joinPaths(libExecPath, "..", "metatypes"),
+            ];
+            var list = [];
+            for (var i = 0; i < candidates.length && list.length === 0; ++i) {
+                if (!File.exists(candidates[i]))
+                    continue;
+                var entries = File.directoryEntries(candidates[i], File.Files);
+                for (var j = 0; j < entries.length; ++j) {
+                    if (entries[j].endsWith("_metatypes.json"))
+                        list.push(FileInfo.joinPaths(candidates[i], entries[j]));
+                }
+            }
+            files = list;
+            found = list.length > 0;
+        }
+    }
+
+    Group {
+        name: "QML type description"
+        files: ["qml/Tiled/qmldir"]
+        qbs.install: true
+        qbs.installDir: "qml/Tiled"
+    }
+
     cpp.includePaths: {
         var paths = ["."];
 

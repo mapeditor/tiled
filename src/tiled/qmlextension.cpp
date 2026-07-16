@@ -22,13 +22,9 @@
 
 #include "actionmanager.h"
 #include "logginginterface.h"
-#include "qmldock.h"
 #include "scriptedaction.h"
-#include "scriptedfileformat.h"
-#include "scriptedtool.h"
 
 #include <QCoreApplication>
-#include <QQmlEngine>
 #include <QTimer>
 
 namespace Tiled {
@@ -113,23 +109,6 @@ void QmlMenuExtension::apply()
     }
 
     ActionManager::registerMenuExtension(menuId, extension);
-}
-
-
-void registerQmlExtensionTypes()
-{
-    static bool registered = false;
-    if (registered)
-        return;
-    registered = true;
-
-    qmlRegisterType<ScriptedAction>("Tiled", 1, 0, "Action");
-    qmlRegisterType<QmlDock>("Tiled", 1, 0, "Dock");
-    qmlRegisterType<QmlExtension>("Tiled", 1, 0, "Extension");
-    qmlRegisterType<ScriptedMapFormat>("Tiled", 1, 0, "MapFormat");
-    qmlRegisterType<QmlMenuExtension>("Tiled", 1, 0, "MenuExtension");
-    qmlRegisterType<ScriptedTilesetFormat>("Tiled", 1, 0, "TilesetFormat");
-    qmlRegisterType<ScriptedTool>("Tiled", 1, 0, "Tool");
 }
 
 } // namespace Tiled

@@ -23,6 +23,7 @@
 #include <QObject>
 #include <QPointer>
 #include <QQmlParserStatus>
+#include <QtQml/qqmlregistration.h>
 
 class QDockWidget;
 class QQmlComponent;
@@ -41,6 +42,7 @@ class QmlDock : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
+    QML_NAMED_ELEMENT(Dock)
 
     Q_PROPERTY(QString name READ name WRITE setName)
     Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
