@@ -133,12 +133,13 @@ void QmlDock::componentComplete()
     dock->setWidget(quickWidget);
     mDockWidget = dock;
 
-    mainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(mArea), dock);
-
     // Apply any previously saved placement, relevant when the dock is
     // created after the main window layout was restored (which is the common
-    // case, and always the case after a script engine reset).
-    mainWindow->restoreDockWidget(dock);
+    // case, and always the case after a script engine reset). Restoring
+    // before adding also avoids a crash with Qt 6.10.0 to 6.10.2 (see
+    // QTBUG-143708).
+    if (!mainWindow->restoreDockWidget(dock))
+        mainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(mArea), dock);
 }
 
 } // namespace Tiled
