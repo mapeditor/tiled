@@ -136,8 +136,6 @@ void TileLayerItem::syncWithTileLayer()
     setSize(boundingRect.size());
 }
 
-
-
 QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
                                         QQuickItem::UpdatePaintNodeData *)
 {

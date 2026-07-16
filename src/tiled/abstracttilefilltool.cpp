@@ -231,6 +231,9 @@ void AbstractTileFillTool::updatePreview(const QRegion &fillRegion)
 
     brushItem()->setMap(preview);
     mPreviewMap = preview;
+
+    emit brushMapChanged(preview);
+    emit brushRegionChanged(fillRegion);
 }
 
 bool AbstractTileFillTool::applyPreview(const QString &text)
@@ -252,6 +255,9 @@ void AbstractTileFillTool::clearOverlay()
     static_cast<WangBrushItem*>(brushItem())->setInvalidTiles(QRegion());
 
     mPreviewMap.clear();
+
+    emit brushMapChanged(nullptr);
+    emit brushRegionChanged(QRegion());
 }
 
 void AbstractTileFillTool::updateRandomListAndMissingTilesets()

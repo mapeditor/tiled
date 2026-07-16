@@ -5,13 +5,14 @@ MouseArea {
 
     signal dragged(var dx, var dy)
 
+    acceptedButtons: Qt.AllButtons
     hoverEnabled: true
     onPressed: function(mouse) {
         lastDragPos = mapToItem(null, mouse.x, mouse.y)
     }
 
     onPositionChanged: function(mouse) {
-        if (!pressed)
+        if (!(pressedButtons & Qt.MiddleButton))
             return;
 
         var pos = mapToItem(null, mouse.x, mouse.y)

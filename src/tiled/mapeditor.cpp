@@ -89,6 +89,7 @@
 #include <QQmlContext>
 #include <QQmlEngine>
 #ifdef TILEDQUICK_LIB
+#include <QQuickItem>
 #include <QQuickWidget>
 #endif
 #include <QShortcut>
@@ -303,7 +304,9 @@ MapEditor::MapEditor(QObject *parent)
 
     Preferences *prefs = Preferences::instance();
     connect(prefs, &Preferences::useOpenGLChanged, this, &MapEditor::setUseOpenGL);
+#ifdef TILEDQUICK_LIB
     connect(prefs, &Preferences::useNewHardwareRendererChanged, this, &MapEditor::setUseNewHardwareRenderer);
+#endif
     connect(prefs, &Preferences::languageChanged, this, &MapEditor::retranslateUi);
     connect(prefs, &Preferences::showTileCollisionShapesChanged,
             this, &MapEditor::showTileCollisionShapesChanged);
@@ -372,6 +375,7 @@ void MapEditor::addDocument(Document *document)
 
     EditableMap *editableMap = qobject_cast<Tiled::EditableMap*>(mapDocument->editable());
 
+    engine->rootContext()->setContextProperty(QStringLiteral("mapEditorInstance"), this);
     engine->rootContext()->setContextProperty(QStringLiteral("mapItemMap"), editableMap);
     quickWidget->setSource(QUrl(QStringLiteral("qrc:/qml/mapview.qml")));
     quickWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
@@ -392,7 +396,6 @@ void MapEditor::removeDocument(Document *document)
 
     if (mapDocument == mCurrentMapDocument)
         setCurrentDocument(nullptr);
-
 
     MapViewInterface *mapViewInterface = mViewForMap.take(mapDocument);
     // remove first, to keep it valid while the current widget changes
@@ -418,10 +421,12 @@ void MapEditor::setCurrentDocument(Document *document)
     mCurrentMapDocument = mapDocument;
 
     MapViewInterface *mapViewInterface = mViewForMap.value(mapDocument);
-    if (mapViewInterface)
-        mWidgetStack->setCurrentWidget(mapViewInterface->getWidget());
+    MapView *mapView = nullptr;
 
-    MapView *mapView = mapViewInterface->mapView();
+    if (mapViewInterface) {
+        mWidgetStack->setCurrentWidget(mapViewInterface->getWidget());
+        mapView = mapViewInterface->mapView();
+    }
 
     mLayerDock->setMapDocument(mapDocument);
 
@@ -444,6 +449,8 @@ void MapEditor::setCurrentDocument(Document *document)
 //                this, &MapEditor::updateActions);
 //        connect(mapDocument, &MapDocument::selectedObjectsChanged,
 //                this, &MapEditor::updateActions);
+        connect(mapDocument, &MapDocument::selectedAreaChanged,
+                this, &MapEditor::selectedRegionChanged);
 
         if (mapView) {
             mZoomable = mapView->zoomable();
@@ -687,9 +694,20 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
     if (mSelectedTool == tool)
         return;
 
+    setTileEditPreview(nullptr);
+
     if (mSelectedTool) {
         disconnect(mSelectedTool, &AbstractTool::cursorChanged,
                    this, &MapEditor::cursorChanged);
+#ifdef TILEDQUICK_LIB
+        AbstractTileTool *atTool = qobject_cast<AbstractTileTool*>(mSelectedTool);
+        if (atTool) {
+            disconnect(atTool, &AbstractTileTool::brushMapChanged,
+                       this, &MapEditor::setTileEditPreview);
+            disconnect(atTool, &AbstractTileTool::brushRegionChanged,
+                       this, &MapEditor::setTileEditRegion);
+        }
+#endif
     }
 
     mSelectedTool = tool;
@@ -708,12 +726,30 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
     if (tool) {
         connect(tool, &AbstractTool::cursorChanged,
                 this, &MapEditor::cursorChanged);
+#ifdef TILEDQUICK_LIB
+        AbstractTileTool *atTool = qobject_cast<AbstractTileTool*>(tool);
+        if (atTool) {
+            connect(atTool, &AbstractTileTool::brushMapChanged,
+                       this, &MapEditor::setTileEditPreview);
+            connect(atTool, &AbstractTileTool::brushRegionChanged,
+                       this, &MapEditor::setTileEditRegion);
+        }
+#endif
 
         tool->populateToolBar(mToolSpecificToolBar);
     }
 
     updateActiveUndoStack();
+
     emit selectedToolChanged(tool);
+}
+
+QRegion MapEditor::selectedRegion() const
+{
+    if (!mCurrentMapDocument)
+        return QRegion();
+
+    return mCurrentMapDocument->selectedArea();
 }
 
 void MapEditor::updateActiveUndoStack()
@@ -1053,9 +1089,9 @@ void MapEditor::setUseOpenGL(bool useOpenGL)
     }
 }
 
+#ifdef TILEDQUICK_LIB
 void MapEditor::setUseNewHardwareRenderer(bool useNewHardwareRenderer)
 {
-#ifdef TILEDQUICK_LIB
     for (MapViewInterface *mapViewInterface : std::as_const(mViewForMap))
     {
         mWidgetStack->addWidget(mapViewInterface->getWidget());
@@ -1067,8 +1103,8 @@ void MapEditor::setUseNewHardwareRenderer(bool useNewHardwareRenderer)
     }
 
     mWidgetStack->setCurrentWidget(mViewForMap.value(mCurrentMapDocument)->getWidget());
-#endif
 }
+#endif
 
 void MapEditor::retranslateUi()
 {
@@ -1106,8 +1142,46 @@ EditableMap *MapEditor::currentBrush() const
 
     auto map = stamp.variations().first().map->clone();
     auto editableMap = new EditableMap(std::move(map));
+
     QQmlEngine::setObjectOwnership(editableMap, QQmlEngine::JavaScriptOwnership);
     return editableMap;
+}
+
+EditableMap *MapEditor::tileEditPreview() const
+{
+    if (!mTileEditPreview)
+        return nullptr;
+
+    // Reuse the existing wrapper, if the map is still referenced from QML
+    if (EditableObject *existingPreview = EditableObject::find(mTileEditPreview.get()))
+        return qobject_cast<EditableMap*>(existingPreview);
+
+    // The wrapper keeps the map alive and is garbage collected by QML once
+    // it is no longer referenced
+    auto editableMap = new EditableMap(mTileEditPreview);
+    QQmlEngine::setObjectOwnership(editableMap, QQmlEngine::JavaScriptOwnership);
+    return editableMap;
+}
+
+void MapEditor::setTileEditPreview(const SharedMap &map)
+{
+    if (mTileEditPreview == map)
+        return;
+    mTileEditPreview = map;
+
+    emit tileEditPreviewChanged();
+}
+
+QRegion MapEditor::tileEditRegion() const
+{
+    return mTileEditRegion;
+}
+
+void MapEditor::setTileEditRegion(const QRegion &region)
+{
+    mTileEditRegion = region;
+
+    emit tileEditRegionChanged();
 }
 
 void MapEditor::setCurrentBrush(EditableMap *editableMap)
@@ -1156,6 +1230,70 @@ void MapEditor::setSelectedTool(AbstractTool *tool)
 {
     mToolManager->selectTool(tool);
 }
+
+AbstractTool *MapEditor::activeTool() const
+{
+    if (!mViewWithTool)
+        return nullptr;
+    return mToolManager->selectedTool();
+}
+
+#ifdef TILEDQUICK_LIB
+void MapEditor::quickMouseMoved(QPointF coords, Qt::KeyboardModifiers modifiers)
+{
+    auto tool = activeTool();
+    if (!tool)
+        return;
+
+    tool->mouseMoved(coords, modifiers);
+}
+
+void MapEditor::quickMousePressed(Qt::MouseButton button, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, QPointF pos, QPointF scenePos, QPoint screenPos)
+{
+    auto tool = activeTool();
+    if (!tool)
+        return;
+
+    QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMousePress);
+    event.setButton(button);
+    event.setButtons(buttons);
+    event.setModifiers(modifiers);
+    event.setPos(pos);
+    event.setScenePos(scenePos);
+    event.setScreenPos(screenPos);
+
+    tool->mousePressed(&event);
+}
+
+void MapEditor::quickMouseReleased(Qt::MouseButton button, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, QPointF pos, QPointF scenePos, QPoint screenPos)
+{
+    auto tool = activeTool();
+    if (!tool)
+        return;
+
+    QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseRelease);
+    event.setButton(button);
+    event.setButtons(buttons);
+    event.setModifiers(modifiers);
+    event.setPos(pos);
+    event.setScenePos(scenePos);
+    event.setScreenPos(screenPos);
+
+    tool->mouseReleased(&event);
+}
+
+void MapEditor::quickContainsMouseChanged(bool viewContainsMouse)
+{
+    auto tool = activeTool();
+    if (!tool)
+        return;
+
+    if (viewContainsMouse)
+        tool->mouseEntered();
+    else
+        tool->mouseLeft();
+}
+#endif
 
 AbstractTool *MapEditor::tool(const QByteArray &id) const
 {

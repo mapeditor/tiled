@@ -80,8 +80,10 @@ signals:
 private:
     void refresh();
 
-    Tiled::Map *mMap;
-    Tiled::EditableMap *mEditableMap;
+    void repaintRegion(const QRegion &region, Tiled::TileLayer *tileLayer);
+
+    Tiled::Map *mMap = nullptr;
+    Tiled::EditableMap *mEditableMap = nullptr;
     QRectF mVisibleArea;
 
     std::unique_ptr<Tiled::MapRenderer> mRenderer;

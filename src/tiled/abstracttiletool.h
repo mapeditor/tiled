@@ -62,6 +62,10 @@ public:
 
     void keyPressed(QKeyEvent *event) override;
 
+signals:
+    void brushMapChanged(const Tiled::SharedMap &map);
+    void brushRegionChanged(const QRegion &region);
+
 protected:
     void mapDocumentChanged(MapDocument *oldDocument,
                             MapDocument *newDocument) override;

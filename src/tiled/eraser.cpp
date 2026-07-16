@@ -46,6 +46,7 @@ void Eraser::tilePositionChanged(QPoint tilePos)
     Q_UNUSED(tilePos)
 
     brushItem()->setTileRegion(eraseArea());
+    emit brushRegionChanged(eraseArea());
 
     if (mMode == Erase)
         doErase(true);

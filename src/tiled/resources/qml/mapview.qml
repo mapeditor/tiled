@@ -173,6 +173,11 @@ Rectangle {
             singleFingerPanArea.mapToGlobal(event.x, event.y)
         )
 
+        onPositionChanged: (event) => mapEditor.quickMouseMoved(
+            singleFingerPanArea.mapToItem(mapItem, event.x, event.y),
+            event.modifiers
+        )
+
         onContainsMouseChanged: mapEditor.quickContainsMouseChanged(singleFingerPanArea.containsMouse)
     }
 

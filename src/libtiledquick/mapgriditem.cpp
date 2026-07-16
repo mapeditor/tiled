@@ -72,11 +72,12 @@ QSGNode *MapGridItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
 
 void MapGridItem::setTileSize(const QPointF &tileSize)
 {
-    if (mTileSize != tileSize) {
-        mTileSize = tileSize;
-        emit tileSizeChanged();
-        update();
-    }
+    if (mTileSize == tileSize)
+        return;
+
+    mTileSize = tileSize;
+    emit tileSizeChanged();
+    update();
 }
 
 void MapGridItem::setMapSize(const QPointF &mapSize)
@@ -91,20 +92,22 @@ void MapGridItem::setMapSize(const QPointF &mapSize)
 
 void MapGridItem::setScale(const qreal &scale)
 {
-    if (mScale != scale) {
-        mScale = scale;
-        emit scaleChanged();
-        update();
-    }
+    if (mScale == scale)
+        return;
+
+    mScale = scale;
+    emit scaleChanged();
+    update();
 }
 
 void MapGridItem::setColor(const QColor &color)
 {
-    if(mColor != color) {
-        mColor = color;
-        emit colorChanged();
-        update();
-    }
+    if (mColor == color)
+        return;
+
+    mColor = color;
+    emit colorChanged();
+    update();
 }
 
 void MapGridItem::setSkew(const QPointF &skew)
