@@ -11,6 +11,8 @@ Rectangle {
     anchors.fill: parent
     visible: true
 
+    property var mapEditor: mapEditorInstance
+
     Item {
         id: mapView
 
@@ -36,15 +38,26 @@ Rectangle {
 
             Tiled.MapItem {
                 id: mapItem
-                map: mapItemMap;
+                map: mapItemMap
 
                 visibleArea: {
                     var scale = mapContainer.scale
                     Qt.rect(-mapContainer.x / scale,
                             -mapContainer.y / scale,
                             mapView.width / scale,
-                            mapView.height / scale);
+                            mapView.height / scale)
                 }
+            }
+
+            RegionOverlay {
+                id: selectedRegionOverlay
+                anchors.fill: mapItem
+
+                scale: mapContainer.scale
+                region: mapEditor.selectedRegion
+                tileSize: Qt.point(mapItem.map.tileWidth, mapItem.map.tileHeight)
+
+                regionAlpha: 127
             }
 
             Tiled.MapBorderItem {
@@ -55,13 +68,45 @@ Rectangle {
             }
 
             Tiled.MapGridItem {
-                id: mapGriditem
+                id: mapGridItem
                 anchors.fill: mapItem
 
-                tileSize: Qt.point(mapItem.map.tileWidth, mapItem.map.tileHeight);
-                scale: mapContainer.scale;
+                tileSize: Qt.point(mapItem.map.tileWidth, mapItem.map.tileHeight)
+                scale: mapContainer.scale
 
                 color: "black"
+            }
+
+            Tiled.MapItem { // Tool Brush
+                id: toolBrush
+                anchors.left: mapItem.left
+                anchors.top: mapItem.top
+                visible: singleFingerPanArea.containsMouse || singleFingerPanArea.pressed
+
+                property var toolPreviewMap: mapEditor.tileEditPreview
+                map: toolPreviewMap
+
+                visibleArea: {
+                    // TODO: Adjust to only show needed visible area
+                    if (this.map)
+                        Qt.rect(0,
+                                0,
+                                this.width,
+                                this.height)
+                    else
+                        Qt.rect(0, 0, 0, 0)
+                }
+            }
+
+            RegionOverlay {
+                id: brushRegionOverlay
+                anchors.fill: mapItem
+                visible: toolBrush.visible
+
+                scale: mapContainer.scale
+                region: mapEditor.tileEditRegion
+                mapRect: Qt.rect(0, 0, mapItem.map.width, mapItem.map.height)
+                tileSize: Qt.point(mapItem.map.tileWidth, mapItem.map.tileHeight)
             }
         }
     }
@@ -106,6 +151,31 @@ Rectangle {
             containerAnimation.scale = targetScale
             containerAnimation.start()
         }
+
+        onPressed: (event) => mapEditor.quickMousePressed(
+            event.button,
+            event.buttons,
+            event.modifiers,
+            singleFingerPanArea.mapToItem(mapItem, event.x, event.y),
+            singleFingerPanArea.mapToItem(null, event.x, event.y),
+            singleFingerPanArea.mapToGlobal(event.x, event.y)
+        )
+
+        onReleased: (event) => mapEditor.quickMouseReleased(
+            event.button,
+            event.buttons,
+            event.modifiers,
+            singleFingerPanArea.mapToItem(mapItem, event.x, event.y),
+            singleFingerPanArea.mapToItem(null, event.x, event.y),
+            singleFingerPanArea.mapToGlobal(event.x, event.y)
+        )
+
+        onPositionChanged: (event) => mapEditor.quickMouseMoved(
+            singleFingerPanArea.mapToItem(mapItem, event.x, event.y),
+            event.modifiers
+        )
+
+        onContainsMouseChanged: mapEditor.quickContainsMouseChanged(singleFingerPanArea.containsMouse)
     }
 
     function fitMapInView(animate = true) {
@@ -130,4 +200,5 @@ Rectangle {
             mapContainer.y = (mapView.height / 2) - ((mapItem.height * scale) / 2)
         }
     }
+
 }

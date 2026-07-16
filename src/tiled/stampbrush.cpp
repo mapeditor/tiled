@@ -106,6 +106,9 @@ void StampBrush::tilePositionChanged(QPoint pos)
             ri.next();
             emit mapDocument()->regionEdited(ri.value(), ri.key());
         }
+
+        emit brushMapChanged(nullptr);
+        emit brushRegionChanged(mPreviewMap->modifiedTileRegion());
     } else {
         updatePreview();
     }
@@ -676,6 +679,9 @@ void StampBrush::updatePreview(QPoint tilePos)
     }
 
     brushItem()->setMap(mPreviewMap, tileRegion);
+
+    emit brushMapChanged(mPreviewMap);
+    emit brushRegionChanged(tileRegion);
 }
 
 void StampBrush::setRandom(bool value)

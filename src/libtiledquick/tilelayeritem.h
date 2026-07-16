@@ -62,6 +62,8 @@ public:
 
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
 
+    Tiled::TileLayer *layer() const;
+
 public slots:
     void updateVisibleTiles();
 
@@ -91,6 +93,11 @@ private:
     Tiled::Cell mCell;
     QPoint mPosition;
 };
+
+inline Tiled::TileLayer *TileLayerItem::layer() const
+{
+    return mLayer;
+}
 
 inline QPoint TileItem::position() const
 {

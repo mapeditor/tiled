@@ -72,6 +72,20 @@ EditableMap::EditableMap(const Map *map, QObject *parent)
 {
 }
 
+/**
+ * Creates a read-only instance of EditableMap that works on the given \a map.
+ *
+ * The instance keeps a reference to the map, which makes sure it stays alive
+ * for as long as this instance exists. Used to expose shared maps to QtQuick
+ * QML.
+ */
+EditableMap::EditableMap(const SharedMap &map, QObject *parent)
+    : EditableAsset(const_cast<Map*>(map.data()), parent)
+    , mSharedMap(map)
+    , mReadOnly(true)
+{
+}
+
 EditableMap::EditableMap(std::unique_ptr<Map> map, QObject *parent)
     : EditableAsset(map.get(), parent)
     , mDetachedMap(std::move(map))
@@ -84,7 +98,7 @@ EditableMap::~EditableMap()
         detachLayer(layer);
 
     // Prevent owned object from trying to delete us again
-    if (mDetachedMap)
+    if (mDetachedMap || mSharedMap)
         setObject(nullptr);
 }
 
@@ -723,6 +737,7 @@ void EditableMap::setDocument(Document *document)
     if (auto doc = mapDocument()) {
         connect(doc, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
         connect(doc, &Document::changed, this, &EditableMap::documentChanged);
+        connect(doc, &MapDocument::mapResized, this, &EditableMap::sizeChanged);
         connect(doc, &MapDocument::layerAdded, this, &EditableMap::attachLayer);
         connect(doc, &MapDocument::layerRemoved, this, &EditableMap::detachLayer);
 
@@ -747,10 +762,20 @@ void EditableMap::documentChanged(const ChangeEvent &change)
     case ChangeEvent::DocumentReloaded:
         setObject(mapDocument()->map());
         break;
-    case ChangeEvent::MapChanged:
-        if (static_cast<const MapChangeEvent&>(change).property == Map::OrientationProperty)
+    case ChangeEvent::MapChanged: {
+        auto &mapChange = static_cast<const MapChangeEvent&>(change);
+        switch (mapChange.property) {
+        case Map::TileSizeProperty:
+            emit tileSizeChanged();
+            break;
+        case Map::OrientationProperty:
             mRenderer.reset();
+            break;
+        default:
+            break;
+        }
         break;
+    }
     case ChangeEvent::MapObjectsAdded:
         attachMapObjects(static_cast<const MapObjectsEvent&>(change).mapObjects);
         break;
