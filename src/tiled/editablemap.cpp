@@ -75,12 +75,13 @@ EditableMap::EditableMap(const Map *map, QObject *parent)
 /**
  * Creates a read-only instance of EditableMap that works on the given \a map.
  *
- * This constructor is used to send a temporary EditableMap-wrapped SharedMap to QtQuick QML.
- * @warning Avoid using this constructor. Modifying or destroying the source map may lead to undefined behavior.
+ * The instance keeps a reference to the map, which makes sure it stays alive
+ * for as long as this instance exists. Used to expose shared maps to QtQuick
+ * QML.
  */
 EditableMap::EditableMap(const SharedMap &map, QObject *parent)
     : EditableAsset(const_cast<Map*>(map.data()), parent)
-    , mIsSharedMap(true)
+    , mSharedMap(map)
     , mReadOnly(true)
 {
 }
@@ -93,14 +94,11 @@ EditableMap::EditableMap(std::unique_ptr<Map> map, QObject *parent)
 
 EditableMap::~EditableMap()
 {
-    if (mIsSharedMap)
-        return;
-
     for (Layer *layer : map()->layers())
         detachLayer(layer);
 
     // Prevent owned object from trying to delete us again
-    if (mDetachedMap)
+    if (mDetachedMap || mSharedMap)
         setObject(nullptr);
 }
 

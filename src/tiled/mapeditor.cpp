@@ -1149,12 +1149,18 @@ EditableMap *MapEditor::currentBrush() const
 
 EditableMap *MapEditor::tileEditPreview() const
 {
-    EditableObject* existingPreview = EditableObject::find(mTileEditPreview.get());
+    if (!mTileEditPreview)
+        return nullptr;
 
-    if (existingPreview)
+    // Reuse the existing wrapper, if the map is still referenced from QML
+    if (EditableObject *existingPreview = EditableObject::find(mTileEditPreview.get()))
         return qobject_cast<EditableMap*>(existingPreview);
 
-    return mTileEditPreview ? new EditableMap(mTileEditPreview) : nullptr;
+    // The wrapper keeps the map alive and is garbage collected by QML once
+    // it is no longer referenced
+    auto editableMap = new EditableMap(mTileEditPreview);
+    QQmlEngine::setObjectOwnership(editableMap, QQmlEngine::JavaScriptOwnership);
+    return editableMap;
 }
 
 void MapEditor::setTileEditPreview(const SharedMap &map)
