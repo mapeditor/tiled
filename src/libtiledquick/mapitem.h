@@ -35,6 +35,7 @@ namespace TiledQuick {
 
 class TileItem;
 class TileLayerItem;
+class ObjectGroupItem;
 
 /**
  * A declarative item that displays a map.
@@ -81,6 +82,7 @@ private:
     void refresh();
 
     void repaintRegion(const QRegion &region, Tiled::TileLayer *tileLayer);
+    void repaintObjects(const QList<Tiled::MapObject*> &objects);
 
     Tiled::Map *mMap = nullptr;
     Tiled::EditableMap *mEditableMap = nullptr;
@@ -88,6 +90,7 @@ private:
 
     std::unique_ptr<Tiled::MapRenderer> mRenderer;
     QList<TileLayerItem*> mTileLayerItems;
+    QList<ObjectGroupItem*> mObjectGroupItems;
 };
 
 inline const QRectF &MapItem::visibleArea() const

@@ -21,6 +21,7 @@
 #include "mapitem.h"
 
 #include "tilelayeritem.h"
+#include "objectgroupitem.h"
 
 #include "map.h"
 #include "maprenderer.h"
@@ -43,12 +44,14 @@ void MapItem::setMap(Tiled::EditableMap *editableMap)
     if (mEditableMap && mEditableMap->mapDocument()) {
         Tiled::MapDocument *oldMapDocument = mEditableMap->mapDocument();
         disconnect(oldMapDocument, &Tiled::MapDocument::regionChanged, this, &MapItem::repaintRegion);
+        disconnect(oldMapDocument, &Tiled::MapDocument::mapObjectsChanged, this, &MapItem::repaintObjects);
         disconnect(oldMapDocument, &Tiled::MapDocument::mapResized, this, &MapItem::refresh);
     }
 
     if (editableMap && editableMap->mapDocument()) {
         Tiled::MapDocument *mapDocument = editableMap->mapDocument();
         connect(mapDocument, &Tiled::MapDocument::regionChanged, this, &MapItem::repaintRegion);
+        connect(mapDocument, &Tiled::MapDocument::mapObjectsChanged, this, &MapItem::repaintObjects);
         connect(mapDocument, &Tiled::MapDocument::mapResized, this, &MapItem::refresh);
     }
 
@@ -166,6 +169,9 @@ void MapItem::refresh()
     qDeleteAll(mTileLayerItems);
     mTileLayerItems.clear();
 
+    qDeleteAll(mObjectGroupItems);
+    mObjectGroupItems.clear();
+
     mRenderer = nullptr;
 
     if (!mMap)
@@ -177,6 +183,11 @@ void MapItem::refresh()
         if (Tiled::TileLayer *tl = layer->asTileLayer()) {
             TileLayerItem *layerItem = new TileLayerItem(tl, mRenderer.get(), this);
             mTileLayerItems.append(layerItem);
+        }
+
+        if (Tiled::ObjectGroup *og = layer->asObjectGroup()) {
+            ObjectGroupItem *groupItem = new ObjectGroupItem(og, mRenderer.get(), this);
+            mObjectGroupItems.append(groupItem);
         }
     }
 
@@ -191,6 +202,22 @@ void MapItem::repaintRegion(const QRegion &, Tiled::TileLayer *tileLayer)
             // TODO: Update only the region edited
             tileLayerItem->update();
             break;
+        }
+    }
+}
+
+void MapItem::repaintObjects(const QList<Tiled::MapObject*> &objects)
+{
+    QSet<Tiled::ObjectGroup*> changedGroups;
+    for (auto *object : objects)
+        changedGroups.insert(object->objectGroup());
+
+    // TODO: Update only subgroups containing affected tiles rather than entire layers
+    for (auto *objectGroupItem : std::as_const(mObjectGroupItems)) {
+        if (changedGroups.contains(objectGroupItem->group()))
+        {
+            // objectGroupItem->syncWithObjectGroup();
+            objectGroupItem->update();
         }
     }
 }
