@@ -38,7 +38,7 @@ namespace TiledQuick {
 
 struct ObjectData {
     qreal rotation;
-    Tiled::MapObject::Shape shape;
+    ObjectGroupMaterial::ObjectType type;
     float x;
     float y;
     float width;
@@ -47,20 +47,20 @@ struct ObjectData {
     float ty;
     float twidth;
     float theight;
-    unsigned char tintR;
-    unsigned char tintG;
-    unsigned char tintB;
+    unsigned char tint_r;
+    unsigned char tint_g;
+    unsigned char tint_b;
     unsigned char alpha;
     bool flippedHorizontally;
     bool flippedVertically;
-    bool isTileObject;
 };
 
-struct ObjectTexturedPoint2D {
+struct alignas(4) ObjectTexturedPoint2D {
     float x, y;
+    float local_x, local_y;
     float tx, ty;
-    unsigned char tintR, tintG, tintB;
-    unsigned char alpha;
+    unsigned char tint_r, tint_g, tint_b, alpha;
+    float object_type;
 };
 
 class TILEDQUICK_SHARED_EXPORT ObjectsNode : public QSGGeometryNode
@@ -75,7 +75,6 @@ public:
 
 private:
     void processObjectData(const QVector<ObjectData> &objectData);
-    void processTileObjectData(const ObjectData &data, ObjectTexturedPoint2D *&v, const float &r_x, const float &r_y, const float &s_x, const float &s_y);
 
     QSGGeometry mGeometry;
     ObjectGroupMaterial mMaterial;

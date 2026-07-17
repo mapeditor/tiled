@@ -24,11 +24,10 @@
 
 #include "tiledquick_global.h"
 
-struct ObjectGroupUniformBuffer {
+struct alignas(4) ObjectGroupUniformBuffer {
     float matrix[16];
 
     float opacity;
-    float padding[3];
 };
 
 namespace TiledQuick {
@@ -36,6 +35,22 @@ namespace TiledQuick {
 class TILEDQUICK_SHARED_EXPORT ObjectGroupMaterial : public QSGMaterial
 {
 public:
+    /**
+     * Enumerates the different object types for use by the objectgroup shader.
+     *
+     * This enum should be identical to the const ints in objectgroup.frag.
+     */
+    enum ObjectType {
+        Rectangle = 1,
+        Polygon = 2,
+        Polyline = 3,
+        Ellipse = 4,
+        Capsule = 5,
+        Text = 6,
+        Point = 7,
+        Tile = 8,
+    };
+
     ObjectGroupMaterial();
     ~ObjectGroupMaterial() override;
 

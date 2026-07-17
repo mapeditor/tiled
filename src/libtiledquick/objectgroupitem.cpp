@@ -149,31 +149,68 @@ QSGNode *ObjectGroupItem::updatePaintNode(QSGNode *node,
                 objectData.clear();
             }
 
-            helper.setTileset(cell.tileset());
+            if (!cell.isEmpty())
+                helper.setTileset(cell.tileset());
         }
 
         ObjectData data;
+
+        switch (object->shape())
+        {
+        case MapObject::Shape::Rectangle:
+            if (object->isTileObject())
+                data.type = ObjectGroupMaterial::ObjectType::Tile;
+            else
+                data.type = ObjectGroupMaterial::ObjectType::Rectangle;
+            break;
+        case MapObject::Shape::Polygon:
+            data.type = ObjectGroupMaterial::ObjectType::Polygon;
+            break;
+        case MapObject::Shape::Polyline:
+            data.type = ObjectGroupMaterial::ObjectType::Polyline;
+            break;
+        case MapObject::Shape::Ellipse:
+            data.type = ObjectGroupMaterial::ObjectType::Ellipse;
+            break;
+        case MapObject::Shape::Capsule:
+            data.type = ObjectGroupMaterial::ObjectType::Capsule;
+            break;
+        case MapObject::Shape::Text:
+            data.type = ObjectGroupMaterial::ObjectType::Text;
+            break;
+        case MapObject::Shape::Point:
+            data.type = ObjectGroupMaterial::ObjectType::Point;
+            break;
+        }
+
         data.rotation = object->rotation();
         data.x = object->x() - x();
-        data.y = object->y() - y() - object->height();
+        data.y = object->y() - y() - ((data.type == ObjectGroupMaterial::ObjectType::Tile) ? object->height() : 0);
         data.width = object->width();
         data.height = object->height();
-        data.twidth = cell.tile()->height();
-        data.theight = cell.tile()->width();
-        data.flippedHorizontally = cell.flippedHorizontally();
-        data.flippedVertically = cell.flippedVertically();
-        data.shape = object->shape();
-        data.isTileObject = object->isTileObject();
+
+        if (!cell.isEmpty()) {
+            data.twidth = cell.tile()->height();
+            data.theight = cell.tile()->width();
+            data.flippedHorizontally = cell.flippedHorizontally();
+            data.flippedVertically = cell.flippedVertically();
+        } else {
+            data.twidth = 0;
+            data.theight = 0;
+            data.flippedHorizontally = false;
+            data.flippedVertically = false;
+        }
+
         data.alpha = object->opacity() * mGroup->opacity() * mGroup->tintColor().alpha();
 
         if (mGroup->tintColor().isValid()) {
-            data.tintR = mGroup->tintColor().red();
-            data.tintG = mGroup->tintColor().green();
-            data.tintB = mGroup->tintColor().blue();
+            data.tint_r = mGroup->tintColor().red();
+            data.tint_g = mGroup->tintColor().green();
+            data.tint_b = mGroup->tintColor().blue();
         } else {
-            data.tintR = 255;
-            data.tintG = 255;
-            data.tintB = 255;
+            data.tint_r = 255;
+            data.tint_g = 255;
+            data.tint_b = 255;
         }
 
         helper.setTextureCoordinates(data, cell);
