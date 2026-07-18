@@ -78,6 +78,13 @@ static inline qsizetype cost(const QPixmap &pixmap)
     return static_cast<qsizetype>(qBound(1LL, costKb, costMax));
 }
 
+static QColor multiplyColors(const QColor color1, const QColor color2) {
+    return QColor::fromRgbF(color1.redF() * color2.redF(),
+                            color1.greenF() * color2.greenF(),
+                            color1.blueF() * color2.blueF(),
+                            color1.alphaF() *color2.alphaF());
+}
+
 static bool needsTint(const QColor &color)
 {
     return color.isValid() &&
@@ -409,6 +416,7 @@ CellRenderer::CellRenderer(QPainter *painter, const MapRenderer *renderer, const
     , mRenderer(renderer)
     , mTile(nullptr)
     , mIsOpenGL(hasOpenGLEngine(painter))
+    , mLayerTintColor(tintColor)
     , mTintColor(tintColor)
 {
 }
@@ -441,10 +449,12 @@ void CellRenderer::render(const Cell &cell, const QPointF &screenPos, const QSiz
         return;
     }
 
+    const QColor newTintColor = multiplyColors(mLayerTintColor, tile->effectiveTintColor());
     // The USHRT_MAX limit is rather arbitrary but avoids a crash in
     // drawPixmapFragments for a large number of fragments.
-    if (mTile != tile || mFragments.size() == USHRT_MAX)
+    if (mTile != tile || mFragments.size() == USHRT_MAX || newTintColor != mTintColor)
         flush();
+    mTintColor = newTintColor;
 
     const QPixmap &image = tile->image();
     QRect imageRect = tile->imageRect();
