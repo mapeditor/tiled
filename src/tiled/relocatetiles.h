@@ -57,4 +57,25 @@ private:
     QList<int> mPrevLocations;
 };
 
+/**
+ * A command that swaps the display order of two tiles in a tileset.
+ */
+class SwapTilesetTiles : public QUndoCommand
+{
+public:
+    SwapTilesetTiles(TilesetDocument *tilesetDocument,
+                     Tile *tileA,
+                     Tile *tileB);
+
+    void undo() override { swap(); }
+    void redo() override { swap(); }
+
+private:
+    void swap();
+
+    TilesetDocument * const mTilesetDocument;
+    Tile * const mTileA;
+    Tile * const mTileB;
+};
+
 } // namespace Tiled
