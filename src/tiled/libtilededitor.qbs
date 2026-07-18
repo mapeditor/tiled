@@ -8,11 +8,88 @@ DynamicLibrary {
     Depends { name: "libtiled" }
     Depends { name: "translations" }
     Depends { name: "qtsingleapplication" }
-    Depends { name: "Qt"; submodules: ["core", "widgets", "concurrent", "qml"]; versionAtLeast: "6.2.0" }
+    Depends { name: "Qt"; submodules: ["core", "widgets", "concurrent", "qml", "quick", "quickcontrols2", "quickwidgets"]; versionAtLeast: "6.2.0" }
     Depends { name: "Qt.svg"; condition: qbs.targetOS.contains("macos") }
     Depends { name: "Qt.openglwidgets"; required: false }
     Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux") && project.dbus; required: false }
     Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") }
+
+    // When the build multiplexes over multiple architectures, the QML type
+    // description only needs to be installed once, since its contents do not
+    // depend on the architecture.
+    readonly property bool installQmlTypeDescription: {
+        return !qbs.architectures
+                || qbs.architectures.length < 2
+                || qbs.architecture === qbs.architectures[0];
+    }
+
+    // Generates the registration of the QML types provided for use by QML
+    // extensions (see QML_NAMED_ELEMENT), along with a "plugins.qmltypes"
+    // file describing them for use by tooling like qmllint and qmlls.
+    Qt.qml.importName: "Tiled"
+    Qt.qml.importVersion: "1.0"
+    Qt.qml.typesInstallDir: installQmlTypeDescription ? "qml/Tiled" : undefined
+    Qt.qml.extraMetaTypesFiles: qtMetaTypes.files
+
+    // Locates the metatypes files of the used Qt modules, needed to resolve
+    // the Qt base classes of the QML registered types. Qbs passes these
+    // files automatically when they are in the archdata directory, which is
+    // the case since Qt 6.5 (qtbase commit 4234ce12dc819). Older Qt builds
+    // place them under lib/metatypes instead, a location Qbs does not
+    // currently check, so this Probe supplies them in that case. It can be
+    // removed entirely once the minimum Qbs version includes the upstream
+    // fix (https://codereview.qt-project.org/c/qbs/qbs/+/753486).
+    Probe {
+        id: qtMetaTypes
+        property string libPath: Qt.core.libPath
+        property string mkspecPath: Qt.core.mkspecPath
+        property stringList files
+        configure: {
+            var list = [];
+
+            // The used mkspec lives at <archdata>/mkspecs/<spec>, so the
+            // archdata directory is two levels up from it.
+            var archDataPath = FileInfo.path(FileInfo.path(mkspecPath));
+            var archDataMetaTypesDir = FileInfo.joinPaths(archDataPath,
+                                                          "metatypes");
+
+            var handledByQbs = false;
+            if (File.exists(archDataMetaTypesDir)) {
+                var entries = File.directoryEntries(archDataMetaTypesDir,
+                                                    File.Files);
+                for (var i = 0; i < entries.length; ++i) {
+                    if (entries[i].endsWith("_metatypes.json")) {
+                        handledByQbs = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!handledByQbs) {
+                var libMetaTypesDir = FileInfo.joinPaths(libPath, "metatypes");
+                if (File.exists(libMetaTypesDir)) {
+                    var libEntries = File.directoryEntries(libMetaTypesDir,
+                                                           File.Files);
+                    for (var j = 0; j < libEntries.length; ++j) {
+                        if (libEntries[j].endsWith("_metatypes.json")) {
+                            list.push(FileInfo.joinPaths(libMetaTypesDir,
+                                                         libEntries[j]));
+                        }
+                    }
+                }
+            }
+
+            files = list;
+            found = true;
+        }
+    }
+
+    Group {
+        name: "QML type description"
+        files: ["qml/Tiled/qmldir"]
+        qbs.install: installQmlTypeDescription
+        qbs.installDir: "qml/Tiled"
+    }
 
     cpp.includePaths: {
         var paths = ["."];
@@ -406,6 +483,10 @@ DynamicLibrary {
         "propertytypeseditor.ui",
         "propertytypesmodel.cpp",
         "propertytypesmodel.h",
+        "qmldock.cpp",
+        "qmldock.h",
+        "qmlextension.cpp",
+        "qmlextension.h",
         "raiselowerhelper.cpp",
         "raiselowerhelper.h",
         "randompicker.h",
