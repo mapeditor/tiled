@@ -42,6 +42,7 @@ public:
     ObjectTemplate *findObjectTemplate(const QString &fileName);
     ObjectTemplate *loadObjectTemplate(const QString &fileName,
                                        QString *error = nullptr);
+    void deleteTemplate(const QString &fileName);
 
 signals:
     /**
