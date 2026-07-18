@@ -26,6 +26,7 @@
 #include "editableasset.h"
 #include "logginginterface.h"
 #include "object.h"
+#include "propertytype.h"
 #include "tile.h"
 #include "undocommands.h"
 #include "wangset.h"
@@ -283,13 +284,29 @@ void Document::setPropertyMember(Object *object,
         return;
     }
 
+    // Allow removing an empty top-level class property, but only when the
+    // class's own value for it is empty. If the class has a non-empty default,
+    // removing the override would revert to that non-empty inherited value.
+    bool allowTopLevelReset = false;
+    if (const ClassPropertyType *type = object->classType()) {
+        if (type->members.contains(topLevelName)) {
+            const auto classValue = type->members.value(topLevelName);
+            allowTopLevelReset = !classValue.isValid() ||
+                (classValue.userType() == propertyValueId() &&
+                 classValue.value<PropertyValue>().value.toMap().isEmpty());
+        }
+    }
+
     // Take the resolved property since we may not have this property yet
     // when we want to override it with a changed member.
     auto topLevelValue = object->resolvedProperty(topLevelName);
-    if (!setNestedPropertyValue(topLevelValue, 1, path, value, false))
+    if (!setNestedPropertyValue(topLevelValue, 1, path, value, allowTopLevelReset))
         return;
 
-    setProperty(object, topLevelName, topLevelValue);
+    if (!topLevelValue.isValid() && allowTopLevelReset)
+        removeProperty(object, topLevelName);
+    else
+        setProperty(object, topLevelName, topLevelValue);
 }
 
 void Document::setProperties(Object *object, const Properties &properties)
