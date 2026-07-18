@@ -203,7 +203,8 @@ std::unique_ptr<Map> ScriptedMapFormat::read(const QString &fileName)
 
 bool ScriptedMapFormat::write(const Map *map, const QString &fileName, Options options)
 {
-    EditableMap editable(map);
+    auto editableMap = map->clone();
+    EditableMap editable(std::move(editableMap));
     return mFormat.write(&editable, fileName, options, mError);
 }
 
@@ -248,7 +249,8 @@ SharedTileset ScriptedTilesetFormat::read(const QString &fileName)
 
 bool ScriptedTilesetFormat::write(const Tileset &tileset, const QString &fileName, FileFormat::Options options)
 {
-    EditableTileset editable(&tileset);
+    const auto editableTileset = tileset.clone();
+    EditableTileset editable(editableTileset);
     return mFormat.write(&editable, fileName, options, mError);
 }
 
