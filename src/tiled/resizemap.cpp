@@ -29,12 +29,14 @@ namespace Tiled {
 
 ResizeMap::ResizeMap(MapDocument *mapDocument,
                      QSize size,
+                     QPoint offset,
                      QUndoCommand *parent)
     : QUndoCommand(QCoreApplication::translate("Undo Commands",
                                                "Resize Map"),
                    parent)
     , mMapDocument(mapDocument)
     , mSize(size)
+    , mOffset(offset)
 {
 }
 
@@ -56,7 +58,8 @@ void ResizeMap::swapSize()
     map->setHeight(mSize.height());
     mSize = oldSize;
 
-    emit mMapDocument->mapResized();
+    emit mMapDocument->mapResized(mOffset);
+    mOffset = -mOffset;
 }
 
 } // namespace Tiled

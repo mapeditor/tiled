@@ -322,9 +322,10 @@ signals:
     void mapObjectPicked(MapObject *object);
 
     /**
-     * Emitted when the map size changes.
+     * Emitted when the map size changes. The offset tells by how many tiles
+     * the contents were shifted during the resize.
      */
-    void mapResized();
+    void mapResized(QPoint offset);
 
     void layerAdded(Layer *layer);
     void layerAboutToBeRemoved(GroupLayer *parentLayer, int index);
