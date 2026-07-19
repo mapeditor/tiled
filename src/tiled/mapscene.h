@@ -114,6 +114,7 @@ private:
     void refreshScene();
 
     void changeEvent(const ChangeEvent &change);
+    void mapResized(QPoint offset);
     void repaintTileset(Tileset *tileset);
 
     void tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset);
@@ -133,6 +134,8 @@ private:
 
     MapDocument *mMapDocument = nullptr;
     QHash<MapDocument*, MapItem*> mMapItems;
+    QString mLastWorldPositionMapFile;
+    QPoint mLastWorldPosition;
     AbstractTool *mSelectedTool = nullptr;
     DebugDrawItem *mDebugDrawItem = nullptr;
     bool mUnderMouse = false;

@@ -451,7 +451,7 @@ void MapDocument::resizeMap(QSize size, QPoint offset, bool removeObjects)
         new TransformMapObjects(this, objectsToMove, states, command);
     }
 
-    new ResizeMap(this, size, command);
+    new ResizeMap(this, size, offset, command);
     new ChangeSelectedArea(this, movedSelection, command);
 
     // Adjust world position if this map is part of any loaded worlds

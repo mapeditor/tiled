@@ -141,11 +141,6 @@ void WorldMoveMapTool::moveMap(MapDocument *document, QPoint moveBy)
 
     auto undoStack = worldDocument->undoStack();
     undoStack->push(new SetMapRectCommand(worldDocument, document->fileName(), rect));
-
-    if (document == mapDocument()) {
-        // undo camera movement, by the actual snapped offset
-        recenterView(rect.topLeft() - prevRect.topLeft());
-    }
 }
 
 void WorldMoveMapTool::updateResizingMap(const QPointF &pos,
@@ -326,19 +321,8 @@ void WorldMoveMapTool::finishResizing()
     auto resizedMap = std::exchange(mResizingMap, nullptr);
     mResizeHandle = -1;
 
-    if (mResizeNewSize != resizedMap->map()->size() || !mResizeOffset.isNull()) {
+    if (mResizeNewSize != resizedMap->map()->size() || !mResizeOffset.isNull())
         resizedMap->resizeMap(mResizeNewSize, mResizeOffset, false);
-
-        // keep the view steady by compensating for the content shift, which
-        // matches the pixelOffset applied by MapDocument::resizeMap (a map
-        // in a world has its position adjusted by exactly this amount)
-        if (resizedMap == mapDocument()) {
-            const MapRenderer *renderer = resizedMap->renderer();
-            const QPointF pixelOffset = renderer->tileToPixelCoords(QPointF())
-                                      - renderer->tileToPixelCoords(-mResizeOffset);
-            recenterView(-pixelOffset.toPoint());
-        }
-    }
 
     updateSelectionRectangle();
     refreshCursor();
@@ -363,11 +347,6 @@ void WorldMoveMapTool::finishMoving()
 
             auto undoStack = worldDocument->undoStack();
             undoStack->push(new SetMapRectCommand(worldDocument, draggedMap->fileName(), rect));
-
-            if (draggedMap == mapDocument()) {
-                // undo camera movement
-                view->forceCenterOn(view->viewCenter() - mDragOffset);
-            }
         }
     } else {
         // switch to the document
