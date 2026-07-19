@@ -464,7 +464,15 @@ bool ClassPropertyType::canAddMember(const QVariant &member, const PropertyTypes
                 return false;
         }
     } else if (member.userType() == QMetaType::QVariantMap) {
-        return false; // Nested class members are not supported
+        // A plain map is a not-yet-resolved member. Any class references in
+        // there are still plain type names, which get checked when that member
+        // is resolved, but check any PropertyValue instances that might
+        // already be present.
+        const auto map = member.toMap();
+        for (const auto &item : map) {
+            if (!canAddMember(item, types))
+                return false;
+        }
     }
 
     return true;
