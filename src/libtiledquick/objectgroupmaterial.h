@@ -24,12 +24,6 @@
 
 #include "tiledquick_global.h"
 
-struct alignas(4) ObjectGroupUniformBuffer {
-    float matrix[16];
-
-    float opacity;
-};
-
 namespace TiledQuick {
 
 class TILEDQUICK_SHARED_EXPORT ObjectGroupMaterial : public QSGMaterial

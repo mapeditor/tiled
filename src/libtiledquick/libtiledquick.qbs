@@ -49,6 +49,8 @@ DynamicLibrary {
         "tiledquick_global.h",
         "tilelayeritem.cpp",
         "tilelayeritem.h",
+        "tilesethelper.cpp",
+        "tilesethelper.h",
         "tilesnode.cpp",
         "tilesnode.h",
     ]

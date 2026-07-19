@@ -20,92 +20,17 @@
 
 #include "objectgroupitem.h"
 
-#include "tile.h"
-#include "tilelayer.h"
-#include "tileset.h"
 #include "map.h"
 #include "maprenderer.h"
 
-#include "mapitem.h"
 #include "objectsnode.h"
+#include "tilesethelper.h"
 
 #include <QtMath>
 #include <QQuickWindow>
 
 using namespace Tiled;
 using namespace TiledQuick;
-
-namespace {
-
-static inline QSGTexture *tilesetTexture(Tileset *tileset,
-                                         QQuickWindow *window)
-{
-    static QHash<Tileset *, QSGTexture *> cache;
-
-    QSGTexture *texture = cache.value(tileset);
-    if (!texture) {
-        const QString imagePath(Tiled::urlToLocalFileOrQrc(tileset->imageSource()));
-        texture = window->createTextureFromImage(QImage(imagePath));
-        cache.insert(tileset, texture);
-    }
-    return texture;
-}
-
-struct TilesetHelper
-{
-    TilesetHelper(const MapItem *mapItem)
-        : mWindow(mapItem->window())
-        , mTileset(nullptr)
-        , mTexture(nullptr)
-        , mMargin(0)
-        , mTileHSpace(0)
-        , mTileVSpace(0)
-        , mTilesPerRow(0)
-    {
-    }
-
-    Tileset *tileset() const { return mTileset; }
-    QSGTexture *texture() const { return mTexture; }
-
-    void setTileset(Tileset *tileset)
-    {
-        mTileset = tileset;
-        mTexture = tilesetTexture(tileset, mWindow);
-        if (!mTexture)
-            return;
-
-        const int tileSpacing = tileset->tileSpacing();
-        mMargin = tileset->margin();
-        mTileHSpace = tileset->tileWidth() + tileSpacing;
-        mTileVSpace = tileset->tileHeight() + tileSpacing;
-
-        const QSize tilesetSize = mTexture->textureSize();
-        const int availableWidth = tilesetSize.width() + tileSpacing - mMargin;
-        mTilesPerRow = qMax(availableWidth / mTileHSpace, 1);
-    }
-
-    void setTextureCoordinates(ObjectData &data, const Cell &cell) const
-    {
-        const int tileId = cell.tileId();
-        const int column = tileId % mTilesPerRow;
-        const int row = tileId / mTilesPerRow;
-
-        data.tx = column * mTileHSpace + mMargin;
-        data.ty = row * mTileVSpace + mMargin;
-    }
-
-private:
-    QQuickWindow *mWindow;
-    Tileset *mTileset;
-    QSGTexture *mTexture;
-    int mMargin;
-    int mTileHSpace;
-    int mTileVSpace;
-    int mTilesPerRow;
-};
-
-} // anonymous namespace
-
 
 ObjectGroupItem::ObjectGroupItem(ObjectGroup *group, MapRenderer *renderer,
                                  MapItem *parent)
@@ -128,6 +53,11 @@ void ObjectGroupItem::syncWithObjectGroup()
     setSize(boundingRect.size());
 }
 
+void ObjectGroupItem::setMapScale(const qreal &scale)
+{
+    mScale = scale;
+}
+
 QSGNode *ObjectGroupItem::updatePaintNode(QSGNode *node,
                                           QQuickItem::UpdatePaintNodeData *)
 {
@@ -135,15 +65,14 @@ QSGNode *ObjectGroupItem::updatePaintNode(QSGNode *node,
     node = new QSGNode;
     node->setFlag(QSGNode::OwnedByParent);
 
-    TilesetHelper helper(static_cast<MapItem*>(parentItem()));
+    TilesetHelper helper = TilesetHelper::instance(static_cast<MapItem*>(parentItem()));
 
     QVector<ObjectData> objectData;
-    objectData.reserve(ObjectsNode::MaxObjectCount);
 
     for (auto object : *mGroup) {
         const Cell &cell = object->cell();
 
-        if (cell.tileset() != helper.tileset() || objectData.size() == ObjectsNode::MaxObjectCount) {
+        if (cell.tileset() != helper.tileset()) {
             if (!objectData.isEmpty()) {
                 node->appendChildNode(new ObjectsNode(helper.texture(), objectData));
                 objectData.clear();
@@ -190,8 +119,8 @@ QSGNode *ObjectGroupItem::updatePaintNode(QSGNode *node,
         data.height = object->height();
 
         if (!cell.isEmpty()) {
-            data.twidth = cell.tile()->height();
-            data.theight = cell.tile()->width();
+            data.twidth = cell.tile()->width();
+            data.theight = cell.tile()->height();
             data.flippedHorizontally = cell.flippedHorizontally();
             data.flippedVertically = cell.flippedVertically();
         } else {
@@ -201,7 +130,7 @@ QSGNode *ObjectGroupItem::updatePaintNode(QSGNode *node,
             data.flippedVertically = false;
         }
 
-        data.alpha = object->opacity() * mGroup->opacity() * mGroup->tintColor().alpha();
+        data.alpha = object->opacity() * mGroup->tintColor().alpha();
 
         if (mGroup->tintColor().isValid()) {
             data.tint_r = mGroup->tintColor().red();
@@ -213,7 +142,7 @@ QSGNode *ObjectGroupItem::updatePaintNode(QSGNode *node,
             data.tint_b = 255;
         }
 
-        helper.setTextureCoordinates(data, cell);
+        helper.setTextureCoordinates(data.tx, data.ty, cell);
 
         objectData.append(data);
     }
@@ -235,15 +164,15 @@ void ObjectGroupItem::groupVisibilityChanged()
     const bool visible = mGroup->isVisible();
     setVisible(visible);
 
-    MapItem *parent = qobject_cast<MapItem*>(parentItem());
+    // MapItem *parent = qobject_cast<MapItem*>(parentItem());
     if (visible) {
         updateVisibleObjects();
 
-        if (parent)
-            connect(parent, &MapItem::visibleAreaChanged, this, &ObjectGroupItem::updateVisibleObjects);
+        // if (parent)
+        //     connect(parent, &MapItem::visibleAreaChanged, this, &ObjectGroupItem::updateVisibleObjects);
     } else {
-        if (parent)
-            disconnect(parent, &MapItem::visibleAreaChanged, this, &ObjectGroupItem::updateVisibleObjects);
+        // if (parent)
+        //     disconnect(parent, &MapItem::visibleAreaChanged, this, &ObjectGroupItem::updateVisibleObjects);
     }
 }
 
@@ -282,7 +211,7 @@ QSGNode *ObjectItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeD
         data[0].y = (mPosition.y() + 1) * tileSize.height() - tileset->tileHeight() + offset.y();
         data[0].width = size.width();
         data[0].height = size.height();
-        helper.setTextureCoordinates(data[0], mCell);
+        helper.setTextureCoordinates(data[0].ty, data[0].ty, mCell);
 
         node = new ObjectsNode(helper.texture(), data);
     }

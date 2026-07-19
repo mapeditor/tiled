@@ -20,13 +20,10 @@
 
 #include "tilelayeritem.h"
 
-#include "tile.h"
-#include "tilelayer.h"
-#include "tileset.h"
 #include "map.h"
 #include "maprenderer.h"
 
-#include "mapitem.h"
+#include "tilesethelper.h"
 #include "tilesnode.h"
 
 #include <QtMath>
@@ -34,86 +31,6 @@
 
 using namespace Tiled;
 using namespace TiledQuick;
-
-namespace {
-
-/**
- * Returns the texture of a given tileset, or 0 if the image has not been
- * loaded yet.
- */
-static inline QSGTexture *tilesetTexture(Tileset *tileset,
-                                         QQuickWindow *window)
-{
-    static QHash<Tileset *, QSGTexture *> cache;
-
-    QSGTexture *texture = cache.value(tileset);
-    if (!texture) {
-        const QString imagePath(Tiled::urlToLocalFileOrQrc(tileset->imageSource()));
-        texture = window->createTextureFromImage(QImage(imagePath));
-        cache.insert(tileset, texture);
-    }
-    return texture;
-}
-
-/**
- * This helper class exists mainly to avoid redoing calculations that only need
- * to be done once per tileset.
- */
-struct TilesetHelper
-{
-    TilesetHelper(const MapItem *mapItem)
-        : mWindow(mapItem->window())
-        , mTileset(nullptr)
-        , mTexture(nullptr)
-        , mMargin(0)
-        , mTileHSpace(0)
-        , mTileVSpace(0)
-        , mTilesPerRow(0)
-    {
-    }
-
-    Tileset *tileset() const { return mTileset; }
-    QSGTexture *texture() const { return mTexture; }
-
-    void setTileset(Tileset *tileset)
-    {
-        mTileset = tileset;
-        mTexture = tilesetTexture(tileset, mWindow);
-        if (!mTexture)
-            return;
-
-        const int tileSpacing = tileset->tileSpacing();
-        mMargin = tileset->margin();
-        mTileHSpace = tileset->tileWidth() + tileSpacing;
-        mTileVSpace = tileset->tileHeight() + tileSpacing;
-
-        const QSize tilesetSize = mTexture->textureSize();
-        const int availableWidth = tilesetSize.width() + tileSpacing - mMargin;
-        mTilesPerRow = qMax(availableWidth / mTileHSpace, 1);
-    }
-
-    void setTextureCoordinates(TileData &data, const Cell &cell) const
-    {
-        const int tileId = cell.tileId();
-        const int column = tileId % mTilesPerRow;
-        const int row = tileId / mTilesPerRow;
-
-        data.tx = column * mTileHSpace + mMargin;
-        data.ty = row * mTileVSpace + mMargin;
-    }
-
-private:
-    QQuickWindow *mWindow;
-    Tileset *mTileset;
-    QSGTexture *mTexture;
-    int mMargin;
-    int mTileHSpace;
-    int mTileVSpace;
-    int mTilesPerRow;
-};
-
-} // anonymous namespace
-
 
 TileLayerItem::TileLayerItem(TileLayer *layer, MapRenderer *renderer,
                              MapItem *parent)
@@ -143,7 +60,7 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
     node = new QSGNode;
     node->setFlag(QSGNode::OwnedByParent);
 
-    TilesetHelper helper(static_cast<MapItem*>(parentItem()));
+    TilesetHelper helper = TilesetHelper::instance(static_cast<MapItem*>(parentItem()));
 
     QVector<TileData> tileData;
     tileData.reserve(TilesNode::MaxTileCount);
@@ -187,7 +104,7 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
         data.height = static_cast<float>(size.height());
         data.flippedHorizontally = cell.flippedHorizontally();
         data.flippedVertically = cell.flippedVertically();
-        helper.setTextureCoordinates(data, cell);
+        helper.setTextureCoordinates(data.tx, data.ty, cell);
         tileData.append(data);
     };
 
@@ -274,7 +191,7 @@ QSGNode *TileItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeDat
         data[0].y = (mPosition.y() + 1) * tileSize.height() - tileset->tileHeight() + offset.y();
         data[0].width = size.width();
         data[0].height = size.height();
-        helper.setTextureCoordinates(data[0], mCell);
+        helper.setTextureCoordinates(data[0].tx, data[0].ty, mCell);
 
         node = new TilesNode(helper.texture(), data);
     }

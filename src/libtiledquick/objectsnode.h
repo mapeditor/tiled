@@ -1,5 +1,5 @@
 /*
- * tilesnode.h
+ * objectsnode.h
  * Copyright 2026, UltraDagon
  *
  * This file is part of Tiled Quick.
@@ -57,21 +57,18 @@ struct ObjectData {
 
 struct alignas(4) ObjectTexturedPoint2D {
     float x, y;
-    float local_x, local_y;
+    // float local_x, local_y;
     float tx, ty;
     unsigned char tint_r, tint_g, tint_b, alpha;
-    float object_type;
+    // float object_type;
 };
 
 class TILEDQUICK_SHARED_EXPORT ObjectsNode : public QSGGeometryNode
 {
 public:
-    enum {
-        // TODO: Make actual max count
-        MaxObjectCount = 100
-    };
-
     ObjectsNode(QSGTexture *texture, const QVector<ObjectData> &objectData);
+
+    void setScale(qreal scale);
 
 private:
     void processObjectData(const QVector<ObjectData> &objectData);

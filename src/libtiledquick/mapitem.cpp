@@ -26,6 +26,7 @@
 #include "map.h"
 #include "maprenderer.h"
 #include "tilelayer.h"
+#include "tilesethelper.h"
 
 using namespace TiledQuick;
 
@@ -34,7 +35,10 @@ MapItem::MapItem(QQuickItem *parent)
 {
 }
 
-MapItem::~MapItem() = default;
+MapItem::~MapItem()
+{
+    TilesetHelper::deleteInstance();
+};
 
 void MapItem::setMap(Tiled::EditableMap *editableMap)
 {
@@ -66,6 +70,19 @@ void MapItem::setVisibleArea(const QRectF &visibleArea)
 {
     mVisibleArea = visibleArea;
     emit visibleAreaChanged();
+}
+
+void MapItem::setScale(const qreal &scale)
+{
+    if (mScale == scale)
+        return;
+
+    mScale = scale;
+
+    for (auto objectGroup : std::as_const(mObjectGroupItems))
+        objectGroup->setMapScale(scale);
+
+    emit scaleChanged();
 }
 
 QRectF MapItem::boundingRect() const

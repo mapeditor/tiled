@@ -22,6 +22,11 @@
 
 #include <QSGTexture>
 
+struct alignas(4) ObjectGroupUniformBuffer {
+    float matrix[16];
+    float opacity;
+};
+
 using namespace TiledQuick;
 
 class ObjectGroupShader : public QSGMaterialShader
@@ -35,19 +40,23 @@ public:
 
     bool updateUniformData(RenderState &state, QSGMaterial *, QSGMaterial *) override
     {
-        if (!state.isMatrixDirty())
-            return false;
-
         auto *buffer = state.uniformData()->data();
         auto *ubuf = reinterpret_cast<ObjectGroupUniformBuffer*>(buffer);
+        bool changed = false;
 
-        memcpy(buffer + offsetof(ObjectGroupUniformBuffer, matrix),
-               state.combinedMatrix().constData(),
-               64);
+        if (state.isMatrixDirty()) {
+            memcpy(buffer + offsetof(ObjectGroupUniformBuffer, matrix),
+                   state.combinedMatrix().constData(),
+                   64);
+            changed = true;
+        }
 
-        ubuf->opacity = state.opacity();
+        if (state.isOpacityDirty()) {
+            ubuf->opacity = state.opacity();
+            changed = true;
+        }
 
-        return true;
+        return changed;
     }
 
     void updateSampledImage(RenderState &state, int binding, QSGTexture **texture, QSGMaterial *newMaterial, QSGMaterial *) override

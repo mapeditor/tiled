@@ -24,10 +24,10 @@ namespace TiledQuick {
 
 static const QSGGeometry::Attribute ObjectAttributes[] = {
     QSGGeometry::Attribute::create(0, 2, QSGGeometry::FloatType, QSGGeometry::PositionAttribute), // Global Position
-    QSGGeometry::Attribute::create(1, 2, QSGGeometry::FloatType, QSGGeometry::PositionAttribute), // Local Position
-    QSGGeometry::Attribute::create(2, 2, QSGGeometry::FloatType, QSGGeometry::TexCoordAttribute), // Texture Coords
-    QSGGeometry::Attribute::create(3, 4, QSGGeometry::UnsignedByteType, true),                    // Tint colors (0-3) and alpha (4)
-    QSGGeometry::Attribute::create(4, 1, QSGGeometry::FloatType, false)                     // Object Type
+    // QSGGeometry::Attribute::create(1, 2, QSGGeometry::FloatType, QSGGeometry::PositionAttribute), // Local Position
+    QSGGeometry::Attribute::create(1, 2, QSGGeometry::FloatType, QSGGeometry::TexCoordAttribute), // Texture Coords
+    QSGGeometry::Attribute::create(2, 4, QSGGeometry::UnsignedByteType, true),                    // Tint colors (0-3) and alpha (4)
+    // QSGGeometry::Attribute::create(4, 1, QSGGeometry::FloatType, false),                          // Object Type
 };
 
 static const QSGGeometry::AttributeSet ObjectAttributeSet = {
@@ -44,6 +44,7 @@ ObjectsNode::ObjectsNode(QSGTexture *texture, const QVector<ObjectData> &objectD
     mMaterial.setTexture(texture);
 
     mGeometry.setDrawingMode(QSGGeometry::DrawTriangles);
+    // mGeometry.setDrawingMode(QSGGeometry::DrawLines);
     mGeometry.setVertexDataPattern(QSGGeometry::StaticPattern);
 
     processObjectData(objectData);
@@ -97,15 +98,15 @@ void ObjectsNode::processObjectData(const QVector<ObjectData> &objectData)
 
         // ObjectGroupMaterial
         for (int i = 0; i < 6; i++) {
-            v[i].local_x = (v[i].x - data.x) / data.width;
-            v[i].local_y = (v[i].y - data.y) / data.width;
+            // v[i].local_x = (v[i].x - data.x) / data.width;
+            // v[i].local_y = (v[i].y - data.y) / data.width;
 
             v[i].tint_r = data.tint_r;
             v[i].tint_g = data.tint_g;
             v[i].tint_b = data.tint_b;
             v[i].alpha = data.alpha;
 
-            v[i].object_type = static_cast<float>(data.type);
+            // v[i].object_type = static_cast<float>(data.type);
         }
 
         if (data.flippedHorizontally) {

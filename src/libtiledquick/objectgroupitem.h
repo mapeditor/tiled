@@ -26,7 +26,6 @@
 #include "tilelayer.h"
 #include "tiledquick_global.h"
 
-
 namespace Tiled {
 class MapRenderer;
 }
@@ -38,11 +37,13 @@ class MapItem;
 class TILEDQUICK_SHARED_EXPORT ObjectGroupItem : public QQuickItem
 {
     Q_OBJECT
+
 public:
     ObjectGroupItem(Tiled::ObjectGroup *group, Tiled::MapRenderer *renderer,
                     MapItem *parent);
 
     void syncWithObjectGroup();
+    void setMapScale(const qreal &scale);
 
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
 
@@ -57,6 +58,7 @@ private:
     Tiled::ObjectGroup *mGroup;
     Tiled::MapRenderer *mRenderer;
     QRectF mVisibleArea;
+    qreal mScale;
 };
 
 class ObjectItem : public QQuickItem

@@ -46,6 +46,7 @@ class TILEDQUICK_SHARED_EXPORT MapItem : public QQuickItem
 
     Q_PROPERTY(Tiled::EditableMap *map READ map WRITE setMap RESET unsetMap NOTIFY mapChanged)
     Q_PROPERTY(QRectF visibleArea READ visibleArea WRITE setVisibleArea NOTIFY visibleAreaChanged)
+    Q_PROPERTY(qreal scale READ scale WRITE setScale NOTIFY scaleChanged)
 
 public:
     explicit MapItem(QQuickItem *parent = nullptr);
@@ -57,6 +58,9 @@ public:
 
     const QRectF &visibleArea() const;
     void setVisibleArea(const QRectF &visibleArea);
+
+    const qreal &scale() const;
+    void setScale(const qreal &scale);
 
     QRectF boundingRect() const override;
 
@@ -87,6 +91,7 @@ private:
     Tiled::Map *mMap = nullptr;
     Tiled::EditableMap *mEditableMap = nullptr;
     QRectF mVisibleArea;
+    qreal mScale = 1;
 
     std::unique_ptr<Tiled::MapRenderer> mRenderer;
     QList<TileLayerItem*> mTileLayerItems;
@@ -96,6 +101,11 @@ private:
 inline const QRectF &MapItem::visibleArea() const
 {
     return mVisibleArea;
+}
+
+inline const qreal &MapItem::scale() const
+{
+    return mScale;
 }
 
 inline Tiled::EditableMap *MapItem::map() const
