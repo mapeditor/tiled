@@ -8,13 +8,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -30,383 +30,295 @@
  */
 package org.mapeditor.view;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
+import java.util.List;
 
 import org.mapeditor.core.Map;
 import org.mapeditor.core.ObjectGroup;
+import org.mapeditor.core.StaggerAxis;
+import org.mapeditor.core.StaggerIndex;
 import org.mapeditor.core.Tile;
 import org.mapeditor.core.TileLayer;
 import org.mapeditor.core.MapObject;
-import org.mapeditor.core.Polygon;
 
 /**
- * A View for displaying Hex based maps. There are four possible layouts for the
- * hexes. These are called tile alignment and are named 'top', 'bottom', 'left'
- * and 'right'. The name designates the border where the first row or column of
- * hexes is aligned with a flat side. I.e. 'left' and 'right' result in hexes
- * with the pointy sides up and down and the first row either aligned left or
- * right:
- *
- * <pre>
- *   /\
- *  |  |
- *   \/
- * </pre>
- *
- * And 'top' and 'bottom' result in hexes with the pointy sides to the
- * left and right and the first column either aligned top or bottom:
- *
- * <pre>
- *   __
- *  /  \
- *  \__/
- * </pre>
- *
- * Here is an example 2x2 map with top alignment:
- *
- * <pre>
- *   ___
- *  /0,0\___
- *  \___/1,0\
- *  /0,1\___/
- *  \___/1,1\
- *      \___/
- * </pre>
- *
- * The icon width and height refer to the total width and height of a hex (i.e
- * the size of the enclosing rectangle).
+ * A renderer for hexagonal maps, matching the C++ hexagonalrenderer.cpp logic.
  *
  * @version 1.4.2
  */
-public class HexagonalRenderer implements MapRenderer {
+public class HexagonalRenderer extends AbstractRenderer {
 
-    /** Constant <code>ALIGN_TOP=1</code> */
+    /** Constant <code>ALIGN_TOP=1</code> @deprecated Use StaggerAxis/StaggerIndex instead. */
+    @Deprecated
     public static final int ALIGN_TOP = 1;
-    /** Constant <code>ALIGN_BOTTOM=2</code> */
+    /** Constant <code>ALIGN_BOTTOM=2</code> @deprecated Use StaggerAxis/StaggerIndex instead. */
+    @Deprecated
     public static final int ALIGN_BOTTOM = 2;
-    /** Constant <code>ALIGN_RIGHT=3</code> */
+    /** Constant <code>ALIGN_RIGHT=3</code> @deprecated Use StaggerAxis/StaggerIndex instead. */
+    @Deprecated
     public static final int ALIGN_RIGHT = 3;
-    /** Constant <code>ALIGN_LEFT=4</code> */
+    /** Constant <code>ALIGN_LEFT=4</code> @deprecated Use StaggerAxis/StaggerIndex instead. */
+    @Deprecated
     public static final int ALIGN_LEFT = 4;
 
+    private static final class Offset {
+        final int dx, dy;
+        Offset(int dx, int dy) { this.dx = dx; this.dy = dy; }
+    }
+
+    private static final List<Offset> OFFSETS_STAGGER_X = List.of(
+            new Offset(0, 0), new Offset(1, -1), new Offset(1, 0), new Offset(2, 0));
+    private static final List<Offset> OFFSETS_STAGGER_Y = List.of(
+            new Offset(0, 0), new Offset(-1, 1), new Offset(0, 1), new Offset(0, 2));
+
     private final Map map;
-    private final int mapAlignment;
-    /* hexEdgesToTheLeft:
-     * This means a layout like this:     __
-     *                                   /  \
-     *                                   \__/
-     * as opposed to this:     /\
-     *                        |  |
-     *                         \/
+    /*
+     * staggerX == true  (staggeraxis="x"):  columns overlap, flat-top hexes
+     *    __
+     *   /  \
+     *   \__/
+     *
+     * staggerX == false (staggeraxis="y"):  rows overlap, pointy-top hexes
+     *   /\
+     *  |  |
+     *   \/
      */
-    private boolean hexEdgesToTheLeft;
-    private boolean alignedToBottomOrRight;
+    private final boolean staggerX;
+
+    /*
+     * staggerEven == false (staggerindex="odd"):
+     *   <0>  <2>    <- even: not shifted
+     *     <1>  <3>  <- odd: shifted
+     *
+     * staggerEven == true (staggerindex="even"):
+     *     <0>  <2>  <- even: shifted
+     *   <1>  <3>    <- odd: not shifted
+     */
+    private final boolean staggerEven;
+
+    private final int sideOffsetX;
+    private final int sideOffsetY;
+    private final int columnWidth;
+    private final int rowHeight;
 
     /**
-     * Constructor for IsometricRenderer.
+     * Constructor for HexagonalRenderer.
      *
      * @param map a {@link org.mapeditor.core.Map} object.
      */
     public HexagonalRenderer(Map map) {
         this.map = map;
+        staggerX = map.getStaggerAxis() == StaggerAxis.X;
+        staggerEven = map.getStaggerIndex() == StaggerIndex.EVEN;
 
-        mapAlignment = ALIGN_LEFT;
-        hexEdgesToTheLeft = false;
-        if (mapAlignment == ALIGN_TOP
-                || mapAlignment == ALIGN_BOTTOM) {
-            hexEdgesToTheLeft = true;
+        Integer hexSide = map.getHexSideLength();
+        int sideLengthX = 0, sideLengthY = 0;
+        if (hexSide != null) {
+            if (staggerX) sideLengthX = hexSide;
+            else sideLengthY = hexSide;
         }
-        alignedToBottomOrRight = false;
-        if (mapAlignment == ALIGN_BOTTOM
-                || mapAlignment == ALIGN_RIGHT) {
-            alignedToBottomOrRight = true;
-        }
+        sideOffsetX = (map.getTileWidth() - sideLengthX) / 2;
+        sideOffsetY = (map.getTileHeight() - sideLengthY) / 2;
+        columnWidth = sideOffsetX + sideLengthX;
+        rowHeight = sideOffsetY + sideLengthY;
+    }
+
+    private boolean doStaggerX(int x) {
+        return staggerX && ((x & 1) == 0) == staggerEven;
+    }
+
+    private boolean doStaggerY(int y) {
+        return !staggerX && ((y & 1) == 0) == staggerEven;
     }
 
     /** {@inheritDoc} */
     @Override
     public Dimension getMapSize() {
-        Dimension tsize = getEffectiveMapTileSize();
-        int w;
-        int h;
-        int tq = getThreeQuarterHex(tsize);
-        int oq = getOneQuarterHex(tsize);
-
-        if (hexEdgesToTheLeft) {
-            w = map.getWidth() * tq + oq;
-            h = map.getHeight() * tsize.height + (int) (tsize.height / 2 + 0.49);
+        int w, h;
+        if (staggerX) {
+            w = map.getWidth() * columnWidth + sideOffsetX;
+            h = map.getHeight() * rowHeight * 2;
+            if (map.getWidth() > 1) {
+                h += rowHeight;
+            }
         } else {
-            w = map.getWidth() * tsize.width + (int) (tsize.width / 2 + 0.49);
-            h = map.getHeight() * tq + oq;
+            w = map.getWidth() * columnWidth * 2;
+            h = map.getHeight() * rowHeight + sideOffsetY;
+            if (map.getHeight() > 1) {
+                w += columnWidth;
+            }
         }
-
         return new Dimension(w, h);
     }
 
     /** {@inheritDoc} */
     @Override
     public void paintTileLayer(Graphics2D g, TileLayer layer) {
-        // Determine area to draw from clipping rectangle
-        Dimension tsize = getEffectiveMapTileSize();
+        paintLayer(g, layer, () -> {
+            if (rowHeight <= 0 || columnWidth <= 0) {
+                return;
+            }
 
-        Rectangle clipRect = g.getClipBounds();
+            Rectangle clipRect = g.getClipBounds();
 
-        Point topLeft = screenToTileCoords(
-                layer, (int) clipRect.getMinX(), (int) clipRect.getMinY());
-        Point bottomRight = screenToTileCoords(
-                layer, (int) clipRect.getMaxX(), (int) clipRect.getMaxY());
-        int startX = (int) topLeft.getX();
-        int startY = (int) topLeft.getY();
-        int endX = (int) (bottomRight.getX());
-        int endY = (int) (bottomRight.getY());
-        if (startX < 0) {
-            startX = 0;
-        }
-        if (startY < 0) {
-            startY = 0;
-        }
-        if (endX >= map.getWidth()) {
-            endX = map.getWidth() - 1;
-        }
-        if (endY >= map.getHeight()) {
-            endY = map.getHeight() - 1;
-        }
+            Point topLeft = screenToTileCoords(
+                    (int) clipRect.getMinX(), (int) clipRect.getMinY());
+            Point bottomRight = screenToTileCoords(
+                    (int) clipRect.getMaxX(), (int) clipRect.getMaxY());
 
-        Polygon gridPoly;
-        double gx;
-        double gy;
-        for (int y = startY; y <= endY; y++) {
-            for (int x = startX; x <= endX; x++) {
-                Tile t = layer.getTileAt(x, y);
+            int startX = Math.max(0, topLeft.x - 1);
+            int startY = Math.max(0, topLeft.y - 1);
+            int endX = Math.min(bottomRight.x + 1, map.getWidth() - 1);
+            int endY = Math.min(bottomRight.y + 1, map.getHeight() - 1);
 
-                if (t != null) {
-                    Point screenCoords = getTopLeftCornerOfTile(tsize, x, y);
-                    gx = screenCoords.getX();
-                    gy = screenCoords.getY();
-                    g.drawImage(t.getImage(), (int) gx, (int) gy, null);
+            for (int y = startY; y <= endY; y++) {
+                for (int x = startX; x <= endX; x++) {
+                    Tile t = layer.getTileAt(x, y);
+
+                    if (t != null) {
+                        Point screenCoords = getTopLeftCornerOfTile(x, y);
+                        drawTileWithFlags(
+                                g,
+                                t.getImage(),
+                                screenCoords.x,
+                                screenCoords.y,
+                                layer.getFlagsAt(x, y),
+                                true);
+                    }
                 }
             }
-        }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     public void paintObjectGroup(Graphics2D g, ObjectGroup group) {
-        // NOTE: Direct copy from OrthoMapView (candidate for generalization)
-        for (MapObject mo : group) {
-            double ox = mo.getX();
-            double oy = mo.getY();
-
-            if (mo.getWidth() == 0 || mo.getHeight() == 0) {
-                g.setRenderingHint(
-                        RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_ON);
-                g.setColor(Color.black);
-                g.fillOval((int) ox + 1, (int) oy + 1,
-                        10, 10);
-                g.setColor(Color.orange);
-                g.fillOval((int) ox, (int) oy,
-                        10, 10);
-                g.setRenderingHint(
-                        RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_OFF);
-            } else {
-                g.setColor(Color.black);
-                g.drawRect((int) ox + 1, (int) oy + 1,
-                        mo.getWidth().intValue(),
-                        mo.getHeight().intValue());
-                g.setColor(Color.orange);
-                g.drawRect((int) ox, (int) oy,
-                        mo.getWidth().intValue(),
-                        mo.getHeight().intValue());
+        paintLayer(g, group, () -> {
+            for (MapObject mo : group) {
+                paintObjectShape(g, mo, mo.getX(), mo.getY());
             }
-        }
-    }
-
-    /**
-     * @return The tile size in the view without border as Dimension.
-     */
-    private Dimension getEffectiveMapTileSize() {
-        return new Dimension((int) (map.getTileWidth() + 0.999),
-                (int) (map.getTileHeight() + 0.999));
-    }
-
-    /**
-     * Together with getOneQuarterHex this gives the sizes of one and three
-     * quarters in pixels in the interesting dimension. If the layout is such
-     * that the hex edges point left and right the interesting dimension is the
-     * width, otherwise it is the height. The sum of one and three quarters
-     * equals always the total size of the hex in this dimension.
-     *
-     * @return Three quarter of the tile size width or height (see above) as
-     * integer.
-     */
-    private int getThreeQuarterHex(Dimension tileDimension) {
-        int tq;
-        if (hexEdgesToTheLeft) {
-            tq = (int) (tileDimension.width * 3.0 / 4.0 + 0.49);
-        } else {
-            tq = (int) (tileDimension.height * 3.0 / 4.0 + 0.49);
-        }
-
-        return tq;
-    }
-
-    /**
-     * Together with getThreeQuarterHex this gives the sizes of one and three
-     * quarters in pixels in the interesting dimension. If the layout is such
-     * that the hex edges point left and right the interesting dimension is the
-     * width, otherwise it is the height. The sum of one and three quarters
-     * equals always the total size of the hex in this dimension.
-     *
-     * @return One quarter of the tile size width or height (see above) as
-     * integer.
-     */
-    private int getOneQuarterHex(Dimension tileDimension) {
-        int oq;
-        if (hexEdgesToTheLeft) {
-            oq = tileDimension.width;
-        } else {
-            oq = tileDimension.height;
-        }
-
-        return oq - getThreeQuarterHex(tileDimension);
-    }
-
-    /**
-     * Compute the resulting tile coords, i.e. map coordinates, from a point in
-     * the viewport. This function works for some coords off the map, i.e. it
-     * works for the tile coord -1 and for coords larger than the map size.
-     *
-     * @param layer a {@link org.mapeditor.core.TileLayer} object.
-     * @param screenX The x coordinate of a point in the viewport.
-     * @param screenY The y coordinate of a point in the viewport.
-     * @return The corresponding tile coords as Point.
-     */
-    public Point screenToTileCoords(TileLayer layer, int screenX, int screenY) {
-        Dimension tileSize = getEffectiveMapTileSize();
-        int tileWidth = tileSize.width;
-        int tileHeight = tileSize.height;
-        int hWidth = (int) (tileWidth / 2 + 0.49);
-        int hHeight = (int) (tileHeight / 2 + 0.49);
-        Point[] fourPoints = new Point[4];
-        Point[] fourTiles = new Point[4];
-
-        final int x = screenX;
-        final int y = screenY;
-
-        // determine the two columns of hexes we are between
-        // we are between col and col+1.
-        // col == -1 means we are in the strip to the left
-        //   of the centers of the hexes of column 0.
-        int col;
-        if (x < hWidth) {
-            col = -1;
-        } else {
-            if (hexEdgesToTheLeft) {
-                col = (int) ((x - hWidth)
-                        / (double) getThreeQuarterHex(tileSize) + 0.001);
-            } else {
-                col = (int) ((x - hWidth) / (double) tileWidth + 0.001);
-            }
-        }
-
-        // determine the two rows of hexes we are between
-        int row;
-        if (y < hHeight) {
-            row = -1;
-        } else {
-            if (hexEdgesToTheLeft) {
-                row = (int) ((y - hHeight) / (double) tileHeight + 0.001);
-            } else {
-                row = (int) ((y - hHeight)
-                        / (double) getThreeQuarterHex(tileSize) + 0.001);
-            }
-        }
-
-        // now take the four surrounding points and
-        // find the one having the minimum distance to x,y
-        fourTiles[0] = new Point(col, row);
-        fourTiles[1] = new Point(col, row + 1);
-        fourTiles[2] = new Point(col + 1, row);
-        fourTiles[3] = new Point(col + 1, row + 1);
-
-        fourPoints[0] = tileToScreenCoords(tileSize, col, row);
-        fourPoints[1] = tileToScreenCoords(tileSize, col, row + 1);
-        fourPoints[2] = tileToScreenCoords(tileSize, col + 1, row);
-        fourPoints[3] = tileToScreenCoords(tileSize, col + 1, row + 1);
-
-        // find point with min.distance
-        double minDist = 2 * (map.getTileWidth() + map.getTileHeight());
-        int minI = 5;
-        for (int i = 0; i < fourPoints.length; i++) {
-            if (fourPoints[i].distance(x, y) < minDist) {
-                minDist = fourPoints[i].distance(x, y);
-                minI = i;
-            }
-        }
-
-        // get min point
-        int tx = (int) (fourTiles[minI].getX());
-        int ty = (int) (fourTiles[minI].getY());
-
-        return new Point(tx, ty);
-    }
-
-    /**
-     * Returns the location (center) on screen for the given tile. Works also
-     * for hypothetical tiles off the map. The zoom is accounted for.
-     *
-     * @param tileSize a {@link java.awt.Dimension} object.
-     * @param x The x coordinate of the tile.
-     * @param y The y coordinate of the tile.
-     * @return The point at the centre of the Hex as Point.
-     */
-    public Point tileToScreenCoords(Dimension tileSize, int x, int y) {
-        Point p = getTopLeftCornerOfTile(tileSize, x, y);
-        return new Point(
-                (int) (p.getX()) + (int) (tileSize.width / 2 + 0.49),
-                (int) (p.getY()) + (int) (tileSize.height / 2 + 0.49));
+        });
     }
 
     /**
      * Get the point at the top left corner of the bounding rectangle of this
-     * hex.
+     * hex. Matches the C++ tileToScreenCoords logic.
+     */
+    private Point getTopLeftCornerOfTile(int x, int y) {
+        int pixelX, pixelY;
+
+        if (staggerX) {
+            pixelY = y * rowHeight * 2;
+            if (doStaggerX(x)) {
+                pixelY += rowHeight;
+            }
+            pixelX = x * columnWidth;
+        } else {
+            pixelX = x * columnWidth * 2;
+            if (doStaggerY(y)) {
+                pixelX += columnWidth;
+            }
+            pixelY = y * rowHeight;
+        }
+
+        return new Point(pixelX, pixelY);
+    }
+
+    /**
+     * Returns the centre of the hex in screen coordinates.
      *
      * @param x The x coordinate of the tile.
      * @param y The y coordinate of the tile.
-     *
-     * @return The top left corner of the enclosing rectangle of the hex in
-     * screen coordinates as Point.
+     * @return The point at the centre of the Hex as Point.
      */
-    private Point getTopLeftCornerOfTile(Dimension tileSize, int x, int y) {
-        int w = tileSize.width;
-        int h = tileSize.height;
-        int xx;
-        int yy;
+    public Point tileToScreenCoords(int x, int y) {
+        Point p = getTopLeftCornerOfTile(x, y);
+        return new Point(
+                p.x + (columnWidth + sideOffsetX) / 2,
+                p.y + (rowHeight + sideOffsetY) / 2);
+    }
 
-        if (hexEdgesToTheLeft) {
-            xx = x * getThreeQuarterHex(tileSize);
-            yy = y * h;
+    /**
+     * Converts screen to tile coordinates using the C++ algorithm with four
+     * candidate hex centres.
+     *
+     * @param screenX The x coordinate of a point in the viewport.
+     * @param screenY The y coordinate of a point in the viewport.
+     * @return The corresponding tile coords as Point.
+     */
+    public Point screenToTileCoords(int screenX, int screenY) {
+        if (columnWidth <= 0 || rowHeight <= 0) {
+            return new Point(0, 0);
+        }
+
+        double x = screenX;
+        double y = screenY;
+
+        int tileW = columnWidth + sideOffsetX;
+        int tileH = rowHeight + sideOffsetY;
+
+        if (staggerX) {
+            x -= staggerEven ? tileW : sideOffsetX;
         } else {
-            xx = x * w;
-            yy = y * getThreeQuarterHex(tileSize);
+            y -= staggerEven ? tileH : sideOffsetY;
         }
 
-        if ((Math.abs(x % 2) == 1 && mapAlignment == ALIGN_TOP)
-                || (x % 2 == 0 && mapAlignment == ALIGN_BOTTOM)) {
-            yy += (int) (h / 2.0 + 0.49);
-        }
-        if ((Math.abs(y % 2) == 1 && mapAlignment == ALIGN_LEFT)
-                || (y % 2 == 0 && mapAlignment == ALIGN_RIGHT)) {
-            xx += (int) (w / 2.0 + 0.49);
+        // Start with the coordinates of a grid-aligned tile
+        int refX = (int) Math.floor(x / (columnWidth * 2));
+        int refY = (int) Math.floor(y / (rowHeight * 2));
+
+        // Relative x and y position on the base square of the grid-aligned tile
+        double relX = x - refX * (columnWidth * 2.0);
+        double relY = y - refY * (rowHeight * 2.0);
+
+        // Adjust the reference point to the correct tile coordinates
+        if (staggerX) {
+            refX = refX * 2 + (staggerEven ? 1 : 0);
+        } else {
+            refY = refY * 2 + (staggerEven ? 1 : 0);
         }
 
-        return new Point(xx, yy);
+        // Determine the nearest hexagon tile by the distance to the center
+        double[] centersX = new double[4];
+        double[] centersY = new double[4];
+
+        if (staggerX) {
+            double left = columnWidth - sideOffsetX;
+            double centerX = left + columnWidth;
+            double centerY = tileH / 2.0;
+
+            centersX[0] = left;                  centersY[0] = centerY;
+            centersX[1] = centerX;               centersY[1] = centerY - rowHeight;
+            centersX[2] = centerX;               centersY[2] = centerY + rowHeight;
+            centersX[3] = centerX + columnWidth;  centersY[3] = centerY;
+        } else {
+            double top = rowHeight - sideOffsetY;
+            double centerX = tileW / 2.0;
+            double centerY = top + rowHeight;
+
+            centersX[0] = centerX;               centersY[0] = top;
+            centersX[1] = centerX - columnWidth;  centersY[1] = centerY;
+            centersX[2] = centerX + columnWidth;  centersY[2] = centerY;
+            centersX[3] = centerX;               centersY[3] = centerY + rowHeight;
+        }
+
+        int nearest = 0;
+        double minDist = Double.MAX_VALUE;
+        for (int i = 0; i < 4; i++) {
+            double dx = centersX[i] - relX;
+            double dy = centersY[i] - relY;
+            double dist = dx * dx + dy * dy;
+            if (dist < minDist) {
+                minDist = dist;
+                nearest = i;
+            }
+        }
+
+
+        Offset offset = (staggerX ? OFFSETS_STAGGER_X : OFFSETS_STAGGER_Y).get(nearest);
+        return new Point(refX + offset.dx, refY + offset.dy);
     }
 }

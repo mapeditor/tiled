@@ -8,13 +8,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -30,12 +30,19 @@
  */
 package org.mapeditor.util;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.imageio.ImageIO;
+
+import com.github.weisj.jsvg.SVGDocument;
+import com.github.weisj.jsvg.parser.SVGLoader;
+import com.github.weisj.jsvg.view.FloatSize;
 
 /**
  * This class provides functions to help out with saving/loading images.
@@ -80,5 +87,77 @@ public class ImageHelper {
      */
     public static BufferedImage bytesToImage(byte[] imageData) throws IOException {
         return ImageIO.read(new ByteArrayInputStream(imageData));
+    }
+
+    /**
+     * Returns whether the given path refers to an SVG file.
+     *
+     * @param path a file path or URL string
+     * @return true if the path ends with .svg or .svgz
+     */
+    public static boolean isSvg(String path) {
+        if (path == null) {
+            return false;
+        }
+        String lower = path.toLowerCase();
+        return lower.endsWith(".svg") || lower.endsWith(".svgz");
+    }
+
+    /**
+     * Reads an SVG file from the given URL and renders it to a BufferedImage.
+     * If width or height is 0, the SVG's intrinsic size is used.
+     *
+     * @param url the URL to read the SVG from
+     * @param width desired width, or 0 to use the SVG's intrinsic width
+     * @param height desired height, or 0 to use the SVG's intrinsic height
+     * @return a BufferedImage with the rendered SVG, or null if loading fails
+     * @throws IOException if the SVG cannot be read
+     */
+    public static BufferedImage readSvg(URL url, int width, int height) throws IOException {
+        SVGLoader loader = new SVGLoader();
+        SVGDocument doc = loader.load(url);
+        if (doc == null) {
+            return null;
+        }
+
+        FloatSize size = doc.size();
+        int w = width > 0 ? width : Math.max(1, (int) size.width);
+        int h = height > 0 ? height : Math.max(1, (int) size.height);
+
+        BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = image.createGraphics();
+        doc.render(null, g);
+        g.dispose();
+        return image;
+    }
+
+    /**
+     * Reads an image from a URL. SVG files are rendered using JSVG;
+     * other formats are read using ImageIO.
+     *
+     * @param url the URL to read from
+     * @return the loaded BufferedImage, or null if the format is unsupported
+     * @throws IOException if the image cannot be read
+     */
+    public static BufferedImage readImage(URL url) throws IOException {
+        if (isSvg(url.getPath())) {
+            return readSvg(url, 0, 0);
+        }
+        return ImageIO.read(url);
+    }
+
+    /**
+     * Reads an image from a File. SVG files are rendered using JSVG;
+     * other formats are read using ImageIO.
+     *
+     * @param file the file to read from
+     * @return the loaded BufferedImage, or null if the format is unsupported
+     * @throws IOException if the image cannot be read
+     */
+    public static BufferedImage readImage(File file) throws IOException {
+        if (isSvg(file.getName())) {
+            return readSvg(file.toURI().toURL(), 0, 0);
+        }
+        return ImageIO.read(file);
     }
 }
