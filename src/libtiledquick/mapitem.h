@@ -46,7 +46,7 @@ class TILEDQUICK_SHARED_EXPORT MapItem : public QQuickItem
 
     Q_PROPERTY(Tiled::EditableMap *map READ map WRITE setMap RESET unsetMap NOTIFY mapChanged)
     Q_PROPERTY(QRectF visibleArea READ visibleArea WRITE setVisibleArea NOTIFY visibleAreaChanged)
-    Q_PROPERTY(qreal scale READ scale WRITE setScale NOTIFY scaleChanged)
+    Q_PROPERTY(qreal zoom READ zoom WRITE setZoom NOTIFY zoomChanged)
 
 public:
     explicit MapItem(QQuickItem *parent = nullptr);
@@ -59,8 +59,8 @@ public:
     const QRectF &visibleArea() const;
     void setVisibleArea(const QRectF &visibleArea);
 
-    const qreal &scale() const;
-    void setScale(const qreal &scale);
+    const qreal &zoom() const;
+    void setZoom(const qreal &zoom);
 
     QRectF boundingRect() const override;
 
@@ -81,6 +81,7 @@ public:
 signals:
     void mapChanged();
     void visibleAreaChanged();
+    void zoomChanged();
 
 private:
     void refresh();
@@ -91,7 +92,7 @@ private:
     Tiled::Map *mMap = nullptr;
     Tiled::EditableMap *mEditableMap = nullptr;
     QRectF mVisibleArea;
-    qreal mScale = 1;
+    qreal mZoom = 0;
 
     std::unique_ptr<Tiled::MapRenderer> mRenderer;
     QList<TileLayerItem*> mTileLayerItems;
@@ -103,9 +104,9 @@ inline const QRectF &MapItem::visibleArea() const
     return mVisibleArea;
 }
 
-inline const qreal &MapItem::scale() const
+inline const qreal &MapItem::zoom() const
 {
-    return mScale;
+    return mZoom;
 }
 
 inline Tiled::EditableMap *MapItem::map() const

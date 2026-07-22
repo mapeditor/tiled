@@ -44,7 +44,8 @@ static inline QSGTexture *tilesetTexture(Tileset *tileset,
 TilesetHelper *TilesetHelper::mInstance;
 
 TilesetHelper::TilesetHelper(const MapItem *mapItem)
-    : mWindow(mapItem->window())
+    : mObjectPalette(3, 1, QImage::Format_RGBA8888)
+    , mWindow(mapItem->window())
     , mTileset(nullptr)
     , mTexture(nullptr)
     , mMargin(0)
@@ -52,6 +53,9 @@ TilesetHelper::TilesetHelper(const MapItem *mapItem)
     , mTileVSpace(0)
     , mTilesPerRow(0)
 {
+    mObjectPalette.setPixelColor(Fill, 0, QColor(191, 191, 191, 63));
+    mObjectPalette.setPixelColor(Border, 0, QColor(191, 191, 191));
+    mObjectPalette.setPixelColor(Shadow, 0, Qt::black);
 }
 
 TilesetHelper &TilesetHelper::instance(const MapItem *mapItem)
@@ -70,6 +74,12 @@ void TilesetHelper::deleteInstance()
 void TilesetHelper::setTileset(Tileset *tileset)
 {
     mTileset = tileset;
+    // If tileset is nullptr, use default object texture
+    if (!tileset) {
+        mTexture = mWindow->createTextureFromImage(mObjectPalette);
+        return;
+    }
+
     mTexture = tilesetTexture(tileset, mWindow);
     if (!mTexture)
         return;
@@ -86,6 +96,9 @@ void TilesetHelper::setTileset(Tileset *tileset)
 
 void TilesetHelper::setTextureCoordinates(float &tx, float &ty, const Cell &cell) const
 {
+    if (cell.isEmpty())
+        return;
+
     const int tileId = cell.tileId();
     const int column = tileId % mTilesPerRow;
     const int row = tileId / mTilesPerRow;

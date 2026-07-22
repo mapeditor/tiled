@@ -72,17 +72,17 @@ void MapItem::setVisibleArea(const QRectF &visibleArea)
     emit visibleAreaChanged();
 }
 
-void MapItem::setScale(const qreal &scale)
+void MapItem::setZoom(const qreal &zoom)
 {
-    if (mScale == scale)
+    if (mZoom == zoom)
         return;
 
-    mScale = scale;
+    mZoom = zoom;
 
     for (auto objectGroup : std::as_const(mObjectGroupItems))
-        objectGroup->setMapScale(scale);
+        objectGroup->setZoom(zoom);
 
-    emit scaleChanged();
+    emit zoomChanged();
 }
 
 QRectF MapItem::boundingRect() const
@@ -205,6 +205,7 @@ void MapItem::refresh()
         if (Tiled::ObjectGroup *og = layer->asObjectGroup()) {
             ObjectGroupItem *groupItem = new ObjectGroupItem(og, mRenderer.get(), this);
             mObjectGroupItems.append(groupItem);
+            groupItem->setZoom(mZoom);
         }
     }
 

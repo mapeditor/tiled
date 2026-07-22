@@ -36,6 +36,16 @@ using namespace TiledQuick;
 class TilesetHelper
 {
 public:
+    /**
+     * Enumerates the different parts of a geometry object's texture.
+     */
+    enum ObjectColorIndex {
+        Fill = 0,
+        Border = 1,
+        Shadow = 2,
+        ColorCount
+    };
+
     TilesetHelper(const MapItem *mapItem);
 
     static TilesetHelper &instance(const MapItem *mapItem);
@@ -50,6 +60,7 @@ public:
     void setTextureCoordinates(float &tx, float &ty, const Cell &cell) const;
 
 private:
+    QImage mObjectPalette;
     QQuickWindow *mWindow;
     Tileset *mTileset;
     QSGTexture *mTexture;

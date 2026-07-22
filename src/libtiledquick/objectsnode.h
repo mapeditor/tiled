@@ -30,7 +30,6 @@
 
 #include <QSGTextureMaterial>
 
-#include "mapobject.h"
 #include "objectgroupmaterial.h"
 #include "tiledquick_global.h"
 
@@ -47,6 +46,7 @@ struct ObjectData {
     float ty;
     float twidth;
     float theight;
+    float zoom;
     unsigned char tint_r;
     unsigned char tint_g;
     unsigned char tint_b;
@@ -68,10 +68,9 @@ class TILEDQUICK_SHARED_EXPORT ObjectsNode : public QSGGeometryNode
 public:
     ObjectsNode(QSGTexture *texture, const QVector<ObjectData> &objectData);
 
-    void setScale(qreal scale);
-
 private:
     void processObjectData(const QVector<ObjectData> &objectData);
+    void processTileData(const ObjectData &data, ObjectTexturedPoint2D *&v);
 
     QSGGeometry mGeometry;
     ObjectGroupMaterial mMaterial;

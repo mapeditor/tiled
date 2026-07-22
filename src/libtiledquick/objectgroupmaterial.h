@@ -30,9 +30,7 @@ class TILEDQUICK_SHARED_EXPORT ObjectGroupMaterial : public QSGMaterial
 {
 public:
     /**
-     * Enumerates the different object types for use by the objectgroup shader.
-     *
-     * This enum should be identical to the const ints in objectgroup.frag.
+     * Enumerates the different object types for use by the objectsnode's rendering.
      */
     enum ObjectType {
         Rectangle = 1,

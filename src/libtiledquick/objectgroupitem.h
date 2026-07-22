@@ -43,7 +43,7 @@ public:
                     MapItem *parent);
 
     void syncWithObjectGroup();
-    void setMapScale(const qreal &scale);
+    void setZoom(const qreal &zoom);
 
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
 
@@ -58,7 +58,7 @@ private:
     Tiled::ObjectGroup *mGroup;
     Tiled::MapRenderer *mRenderer;
     QRectF mVisibleArea;
-    qreal mScale;
+    qreal mZoom;
 };
 
 class ObjectItem : public QQuickItem

@@ -40,7 +40,7 @@ Rectangle {
                 id: mapItem
 
                 map: mapItemMap
-                scale: mapContainer.scale
+                zoom: 1 / mapContainer.scale
                 visibleArea: {
                     var scale = mapContainer.scale
                     Qt.rect(-mapContainer.x / scale,

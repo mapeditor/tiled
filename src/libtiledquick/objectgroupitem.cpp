@@ -53,9 +53,9 @@ void ObjectGroupItem::syncWithObjectGroup()
     setSize(boundingRect.size());
 }
 
-void ObjectGroupItem::setMapScale(const qreal &scale)
+void ObjectGroupItem::setZoom(const qreal &zoom)
 {
-    mScale = scale;
+    mZoom = zoom;
 }
 
 QSGNode *ObjectGroupItem::updatePaintNode(QSGNode *node,
@@ -80,6 +80,8 @@ QSGNode *ObjectGroupItem::updatePaintNode(QSGNode *node,
 
             if (!cell.isEmpty())
                 helper.setTileset(cell.tileset());
+            else
+                helper.setTileset(nullptr);
         }
 
         ObjectData data;
@@ -117,6 +119,7 @@ QSGNode *ObjectGroupItem::updatePaintNode(QSGNode *node,
         data.y = object->y() - y() - ((data.type == ObjectGroupMaterial::ObjectType::Tile) ? object->height() : 0);
         data.width = object->width();
         data.height = object->height();
+        data.zoom = mZoom;
 
         if (!cell.isEmpty()) {
             data.twidth = cell.tile()->width();
@@ -148,6 +151,8 @@ QSGNode *ObjectGroupItem::updatePaintNode(QSGNode *node,
     }
 
     if (!objectData.isEmpty()) {
+        if (!helper.texture())
+            helper.setTileset(nullptr);
         node->appendChildNode(new ObjectsNode(helper.texture(), objectData));
     }
 
@@ -164,15 +169,15 @@ void ObjectGroupItem::groupVisibilityChanged()
     const bool visible = mGroup->isVisible();
     setVisible(visible);
 
-    // MapItem *parent = qobject_cast<MapItem*>(parentItem());
+    MapItem *parent = qobject_cast<MapItem*>(parentItem());
     if (visible) {
         updateVisibleObjects();
 
-        // if (parent)
-        //     connect(parent, &MapItem::visibleAreaChanged, this, &ObjectGroupItem::updateVisibleObjects);
+        if (parent)
+            connect(parent, &MapItem::visibleAreaChanged, this, &ObjectGroupItem::updateVisibleObjects);
     } else {
-        // if (parent)
-        //     disconnect(parent, &MapItem::visibleAreaChanged, this, &ObjectGroupItem::updateVisibleObjects);
+        if (parent)
+            disconnect(parent, &MapItem::visibleAreaChanged, this, &ObjectGroupItem::updateVisibleObjects);
     }
 }
 
