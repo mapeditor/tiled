@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "undocommands.h"
+
 #include <QUndoCommand>
 #include <QVector>
 
@@ -69,7 +71,7 @@ protected:
 /**
  * Undo command that adds an object to a map.
  */
-class AddMapObjects : public AddRemoveMapObjects
+class AddMapObjects : public AddRemoveMapObjects, public ClonableUndoCommand
 {
 public:
     AddMapObjects(Document *document,
@@ -83,12 +85,15 @@ public:
 
     void undo() override;
     void redo() override;
+
+    QUndoCommand *clone(QUndoCommand *parent = nullptr) const override;
+    bool mergeWith(const QUndoCommand *other) override;
 };
 
 /**
  * Undo command that removes one or more objects from a map.
  */
-class RemoveMapObjects : public AddRemoveMapObjects
+class RemoveMapObjects : public AddRemoveMapObjects, public ClonableUndoCommand
 {
 public:
     RemoveMapObjects(Document *document,
@@ -101,6 +106,9 @@ public:
 
     void undo() override;
     void redo() override;
+
+    QUndoCommand *clone(QUndoCommand *parent = nullptr) const override;
+    bool mergeWith(const QUndoCommand *other) override;
 };
 
 } // namespace Tiled
