@@ -35,6 +35,7 @@ namespace TiledQuick {
 
 class TileItem;
 class TileLayerItem;
+class ObjectGroupItem;
 
 /**
  * A declarative item that displays a map.
@@ -45,6 +46,7 @@ class TILEDQUICK_SHARED_EXPORT MapItem : public QQuickItem
 
     Q_PROPERTY(Tiled::EditableMap *map READ map WRITE setMap RESET unsetMap NOTIFY mapChanged)
     Q_PROPERTY(QRectF visibleArea READ visibleArea WRITE setVisibleArea NOTIFY visibleAreaChanged)
+    Q_PROPERTY(qreal zoom READ zoom WRITE setZoom NOTIFY zoomChanged)
 
 public:
     explicit MapItem(QQuickItem *parent = nullptr);
@@ -56,6 +58,9 @@ public:
 
     const QRectF &visibleArea() const;
     void setVisibleArea(const QRectF &visibleArea);
+
+    const qreal &zoom() const;
+    void setZoom(const qreal &zoom);
 
     QRectF boundingRect() const override;
 
@@ -76,23 +81,32 @@ public:
 signals:
     void mapChanged();
     void visibleAreaChanged();
+    void zoomChanged();
 
 private:
     void refresh();
 
     void repaintRegion(const QRegion &region, Tiled::TileLayer *tileLayer);
+    void repaintObjects(const QList<Tiled::MapObject*> &objects);
 
     Tiled::Map *mMap = nullptr;
     Tiled::EditableMap *mEditableMap = nullptr;
     QRectF mVisibleArea;
+    qreal mZoom = 0;
 
     std::unique_ptr<Tiled::MapRenderer> mRenderer;
     QList<TileLayerItem*> mTileLayerItems;
+    QList<ObjectGroupItem*> mObjectGroupItems;
 };
 
 inline const QRectF &MapItem::visibleArea() const
 {
     return mVisibleArea;
+}
+
+inline const qreal &MapItem::zoom() const
+{
+    return mZoom;
 }
 
 inline Tiled::EditableMap *MapItem::map() const

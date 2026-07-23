@@ -296,6 +296,11 @@ signals:
      */
     void hoveredMapObjectChanged(MapObject *object, MapObject *previous);
 
+    /**
+     * Emitted when one or more objects change.
+     */
+    void mapObjectsChanged(const QList<MapObject*> &objects);
+
     void aboutToBeSelectedObjectsChanged(const QList<MapObject*> &objects);
 
     /**

@@ -1475,6 +1475,12 @@ void MapDocument::onChanged(const ChangeEvent &change)
 
         break;
     }
+    case ChangeEvent::MapObjectsChanged: {
+        const auto &mapObjects = static_cast<const MapObjectsChangeEvent&>(change).mapObjects;
+
+        emit mapObjectsChanged(mapObjects);
+        break;
+    }
     default:
         break;
     }

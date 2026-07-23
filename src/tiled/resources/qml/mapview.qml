@@ -38,8 +38,9 @@ Rectangle {
 
             Tiled.MapItem {
                 id: mapItem
-                map: mapItemMap
 
+                map: mapItemMap
+                zoom: 1 / mapContainer.scale
                 visibleArea: {
                     var scale = mapContainer.scale
                     Qt.rect(-mapContainer.x / scale,

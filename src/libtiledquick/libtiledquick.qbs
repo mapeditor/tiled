@@ -38,11 +38,19 @@ DynamicLibrary {
         "mapitem.h",
         "maploader.cpp",
         "maploader.h",
+        "objectgroupitem.cpp",
+        "objectgroupitem.h",
+        "objectgroupmaterial.cpp",
+        "objectgroupmaterial.h",
+        "objectsnode.cpp",
+        "objectsnode.h",
         "regionoverlay.cpp",
         "regionoverlay.h",
         "tiledquick_global.h",
         "tilelayeritem.cpp",
         "tilelayeritem.h",
+        "tilesethelper.cpp",
+        "tilesethelper.h",
         "tilesnode.cpp",
         "tilesnode.h",
     ]
@@ -57,8 +65,10 @@ DynamicLibrary {
     Group {
         name: "Shaders"
         files: [
-            "grid.vert",
             "grid.frag",
+            "grid.vert",
+            "objectgroup.frag",
+            "objectgroup.vert",
         ]
     }
 
