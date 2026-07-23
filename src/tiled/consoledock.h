@@ -37,6 +37,8 @@ public:
     explicit ConsoleDock(QWidget *parent = nullptr);
     ~ConsoleDock() override;
 
+    void focusInputLine();
+
 protected:
     void changeEvent(QEvent *e) override;
 
