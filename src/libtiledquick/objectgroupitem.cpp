@@ -71,6 +71,7 @@ QSGNode *ObjectGroupItem::updatePaintNode(QSGNode *node,
 
     for (auto object : *mGroup) {
         const Cell &cell = object->cell();
+        QSGTexture *textTexture = nullptr;
 
         if (cell.tileset() != helper.tileset()) {
             if (!objectData.isEmpty()) {
@@ -106,9 +107,31 @@ QSGNode *ObjectGroupItem::updatePaintNode(QSGNode *node,
         case MapObject::Shape::Capsule:
             data.type = ObjectGroupMaterial::ObjectType::Capsule;
             break;
-        case MapObject::Shape::Text:
+        case MapObject::Shape::Text: {
             data.type = ObjectGroupMaterial::ObjectType::Text;
+
+            // All text objects have a unique texture, so they can be the only data in their node.
+            if (!objectData.isEmpty()) {
+                node->appendChildNode(new ObjectsNode(helper.texture(), objectData));
+                objectData.clear();
+            }
+
+            const auto& textData = object->textData();
+            QFont font = textData.font;
+            const int fontDetail = qMax(1.0, (0.5) / mZoom);
+            font.setPixelSize(font.pixelSize()*fontDetail);
+            qDebug() << fontDetail;
+            QImage textImage(object->width()*fontDetail, object->height()*fontDetail, QImage::Format_RGBA8888);
+            textImage.fill(Qt::transparent);
+
+            QPainter painter(&textImage);
+            painter.setFont(font);
+            painter.setPen(textData.color);
+            painter.drawText(textImage.rect(), textData.text, textData.textOption());
+
+            textTexture = window()->createTextureFromImage(textImage);
             break;
+        }
         case MapObject::Shape::Point:
             data.type = ObjectGroupMaterial::ObjectType::Point;
             break;
@@ -120,6 +143,7 @@ QSGNode *ObjectGroupItem::updatePaintNode(QSGNode *node,
         data.width = object->width();
         data.height = object->height();
         data.zoom = mZoom;
+        data.polygon = object->polygon();
 
         if (!cell.isEmpty()) {
             data.twidth = cell.tile()->width();
@@ -135,10 +159,14 @@ QSGNode *ObjectGroupItem::updatePaintNode(QSGNode *node,
 
         data.alpha = object->opacity() * mGroup->tintColor().alpha();
 
-        if (mGroup->tintColor().isValid()) {
+        if (mGroup->tintColor().isValid() && data.type == ObjectGroupMaterial::ObjectType::Tile) {
             data.tint_r = mGroup->tintColor().red();
             data.tint_g = mGroup->tintColor().green();
             data.tint_b = mGroup->tintColor().blue();
+        } else if (mGroup->color().isValid()) {
+            data.tint_r = mGroup->color().red();
+            data.tint_g = mGroup->color().green();
+            data.tint_b = mGroup->color().blue();
         } else {
             data.tint_r = 255;
             data.tint_g = 255;
@@ -148,6 +176,16 @@ QSGNode *ObjectGroupItem::updatePaintNode(QSGNode *node,
         helper.setTextureCoordinates(data.tx, data.ty, cell);
 
         objectData.append(data);
+
+        if (textTexture) {
+            objectData[0].tx = 0;
+            objectData[0].ty = 0;
+            objectData[0].twidth = textTexture->textureSize().width();
+            objectData[0].theight = textTexture->textureSize().height();
+            node->appendChildNode(new ObjectsNode(textTexture, objectData));
+            node->setFlag(QSGNode::OwnsMaterial);
+            objectData.clear();
+        }
     }
 
     if (!objectData.isEmpty()) {

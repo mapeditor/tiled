@@ -36,6 +36,7 @@
 namespace TiledQuick {
 
 struct ObjectData {
+    QPolygonF polygon;
     qreal rotation;
     ObjectGroupMaterial::ObjectType type;
     float x;
@@ -70,7 +71,7 @@ public:
 
 private:
     void processObjectData(const QVector<ObjectData> &objectData);
-    void processTileData(const ObjectData &data, ObjectTexturedPoint2D *&v);
+    void processTextureData(const ObjectData &data, ObjectTexturedPoint2D *&v, bool applyTint = true);
 
     QSGGeometry mGeometry;
     ObjectGroupMaterial mMaterial;

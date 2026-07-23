@@ -56,6 +56,7 @@ TilesetHelper::TilesetHelper(const MapItem *mapItem)
     mObjectPalette.setPixelColor(Fill, 0, QColor(191, 191, 191, 63));
     mObjectPalette.setPixelColor(Border, 0, QColor(191, 191, 191));
     mObjectPalette.setPixelColor(Shadow, 0, Qt::black);
+    mObjectTexture = mWindow->createTextureFromImage(mObjectPalette);
 }
 
 TilesetHelper &TilesetHelper::instance(const MapItem *mapItem)
@@ -74,9 +75,8 @@ void TilesetHelper::deleteInstance()
 void TilesetHelper::setTileset(Tileset *tileset)
 {
     mTileset = tileset;
-    // If tileset is nullptr, use default object texture
     if (!tileset) {
-        mTexture = mWindow->createTextureFromImage(mObjectPalette);
+        mTexture = nullptr;
         return;
     }
 

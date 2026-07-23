@@ -53,7 +53,7 @@ public:
     static void deleteInstance();
 
     inline Tileset *tileset() const { return mTileset; }
-    inline QSGTexture *texture() const { return mTexture; }
+    inline QSGTexture *texture() const { return (mTexture ? mTexture : mObjectTexture); }
 
     void setTileset(Tileset *tileset);
 
@@ -64,6 +64,7 @@ private:
     QQuickWindow *mWindow;
     Tileset *mTileset;
     QSGTexture *mTexture;
+    QSGTexture *mObjectTexture;
     int mMargin;
     int mTileHSpace;
     int mTileVSpace;

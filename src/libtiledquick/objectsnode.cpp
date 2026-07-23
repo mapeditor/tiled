@@ -38,23 +38,6 @@ static const QSGGeometry::AttributeSet ObjectAttributeSet = {
     ObjectAttributes
 };
 
-ObjectsNode::ObjectsNode(QSGTexture *texture, const QVector<ObjectData> &objectData)
-    : mGeometry(ObjectAttributeSet, 0, 0)
-{
-    setFlag(QSGNode::OwnedByParent);
-
-    mMaterial.setTexture(texture);
-
-    mGeometry.setDrawingMode(QSGGeometry::DrawTriangles);
-    // mGeometry.setDrawingMode(QSGGeometry::DrawLines);
-    mGeometry.setVertexDataPattern(QSGGeometry::StaticPattern);
-
-    processObjectData(objectData);
-
-    setGeometry(&mGeometry);
-    setMaterial(&mMaterial);
-}
-
 /**
  * Draws a border and shadow between two points.
  *
@@ -242,6 +225,32 @@ static void processRectangleData(const ObjectData &data, ObjectTexturedPoint2D *
     v += totalBorders*6;
 }
 
+static void processPolygonData(const ObjectData &data, ObjectTexturedPoint2D *&v)
+{
+    const float s_width = 1.0f / TilesetHelper::ColorCount;
+    const float fill_tx = (TilesetHelper::Fill + 0.5) * s_width;
+    const float border_tx = (TilesetHelper::Border + 0.5) * s_width;
+    const float shadow_tx = (TilesetHelper::Shadow + 0.5) * s_width;
+    const float thickness = 2*data.zoom;
+    const QPointF shadowOffset = QPointF(thickness * 2/3, thickness * 2/3);
+
+    QList<QPointF> points;
+    for (QPointF p : data.polygon)
+        points.append(p + QPointF(data.x, data.y));
+    points.append(points[0]);
+
+    // Fill
+    // TODO: Add convex and intersecting polygon support
+    processFillPoints(data, v, points, fill_tx);
+
+    // Border + Shadow
+    const int totalBorders = points.count() - 1;
+    for (int i = 0; i < totalBorders; i++)
+        processBorderSegment(data, v, points[i], points[i+1], thickness,
+                             border_tx, totalBorders, shadow_tx, shadowOffset);
+    v += totalBorders*6;
+}
+
 static void processEllipseData(const ObjectData &data, ObjectTexturedPoint2D *&v, const int &precision)
 {
     const float s_width = 1.0f / TilesetHelper::ColorCount;
@@ -308,10 +317,9 @@ static void processCapsuleData(const ObjectData &data, ObjectTexturedPoint2D *&v
     }
 
     const int currentPoints = points.count();
-    for (int i = 0; i < currentPoints; i++) {
+    for (int i = 0; i < currentPoints; i++)
         points.append(QPointF(2*data.x + data.width - points[i].x(),
                               2*data.y + data.height - points[i].y()));
-    }
     points.append(points[0]);
 
     // Fill
@@ -406,6 +414,22 @@ static void processPointData(const ObjectData &data, ObjectTexturedPoint2D *&v, 
     v += 6*totalBorders;
 }
 
+ObjectsNode::ObjectsNode(QSGTexture *texture, const QVector<ObjectData> &objectData)
+    : mGeometry(ObjectAttributeSet, 0, 0)
+{
+    setFlag(QSGNode::OwnedByParent);
+
+    mMaterial.setTexture(texture);
+
+    mGeometry.setDrawingMode(QSGGeometry::DrawTriangles);
+    mGeometry.setVertexDataPattern(QSGGeometry::StaticPattern);
+
+    processObjectData(objectData);
+
+    setGeometry(&mGeometry);
+    setMaterial(&mMaterial);
+}
+
 void ObjectsNode::processObjectData(const QVector<ObjectData> &objectData)
 {
     // TODO: Bounds can be adjusted to be more precise
@@ -418,14 +442,22 @@ void ObjectsNode::processObjectData(const QVector<ObjectData> &objectData)
         case ObjectGroupMaterial::ObjectType::Rectangle:
             totalVertices += 6 + 24 + 24;
             break;
-        case ObjectGroupMaterial::ObjectType::Ellipse:
-            totalVertices += (3 + 6 + 6)*precision;
+        case ObjectGroupMaterial::ObjectType::Polygon:
+            totalVertices += 3*(data.polygon.size()-2) + 12*data.polygon.size();
             break;
-        case ObjectGroupMaterial::ObjectType::Capsule:
-            totalVertices += (3 + 6 + 6)*(2*(precision/2)) + 3;
+        case ObjectGroupMaterial::ObjectType::Ellipse:
+            totalVertices += 3*(precision-2) + 12*precision;
+            break;
+        case ObjectGroupMaterial::ObjectType::Capsule: {
+            const int edges = 2*(precision/2 + 1);
+            totalVertices += 3*(edges-2) + 12*(edges);
+            break;
+        }
+        case ObjectGroupMaterial::ObjectType::Text:
+            totalVertices += 6;
             break;
         case ObjectGroupMaterial::ObjectType::Point:
-            totalVertices += 3 * 8 + (3 + 6 + 6)*(8 + 3);
+            totalVertices += 3*8 + (3+6+6)*(8+3);
             break;
         case ObjectGroupMaterial::ObjectType::Tile:
             totalVertices += 6;
@@ -443,17 +475,23 @@ void ObjectsNode::processObjectData(const QVector<ObjectData> &objectData)
         case ObjectGroupMaterial::ObjectType::Rectangle:
             processRectangleData(data, v);
             break;
+        case ObjectGroupMaterial::ObjectType::Polygon:
+            processPolygonData(data, v);
+            break;
         case ObjectGroupMaterial::ObjectType::Ellipse:
             processEllipseData(data, v, precision);
             break;
         case ObjectGroupMaterial::ObjectType::Capsule:
             processCapsuleData(data, v, precision/2);
             break;
+        case ObjectGroupMaterial::ObjectType::Text:
+            processTextureData(data, v, false);
+            break;
         case ObjectGroupMaterial::ObjectType::Point:
             processPointData(data, v, 8);
             break;
         case ObjectGroupMaterial::ObjectType::Tile:
-            processTileData(data, v);
+            processTextureData(data, v);
             break;
         default:
             break;
@@ -463,7 +501,7 @@ void ObjectsNode::processObjectData(const QVector<ObjectData> &objectData)
     markDirty(DirtyGeometry);
 }
 
-void ObjectsNode::processTileData(const ObjectData &data, ObjectTexturedPoint2D *&v)
+void ObjectsNode::processTextureData(const ObjectData &data, ObjectTexturedPoint2D *&v, bool applyTint)
 {
     const QSize s = mMaterial.texture()->textureSize();
     const QRectF r = mMaterial.texture()->normalizedTextureSubRect();
@@ -504,9 +542,15 @@ void ObjectsNode::processTileData(const ObjectData &data, ObjectTexturedPoint2D 
 
     // ObjectGroupMaterial
     for (int i = 0; i < 6; i++) {
-        v[i].tint_r = data.tint_r;
-        v[i].tint_g = data.tint_g;
-        v[i].tint_b = data.tint_b;
+        if (applyTint) {
+            v[i].tint_r = data.tint_r;
+            v[i].tint_g = data.tint_g;
+            v[i].tint_b = data.tint_b;
+        } else {
+            v[i].tint_r = 255;
+            v[i].tint_g = 255;
+            v[i].tint_b = 255;
+        }
         v[i].alpha = data.alpha;
     }
 
