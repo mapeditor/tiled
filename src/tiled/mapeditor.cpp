@@ -894,6 +894,12 @@ void MapEditor::cursorChanged(const QCursor &cursor)
 {
     if (mViewWithTool)
         mViewWithTool->setToolCursor(cursor);
+
+    if (mCursorShape == cursor.shape())
+        return;
+
+    mCursorShape = cursor.shape();
+    emit cursorShapeChanged();
 }
 
 void MapEditor::updateStatusInfoLabel(const QString &statusInfo)

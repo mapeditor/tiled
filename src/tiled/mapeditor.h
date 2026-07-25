@@ -83,6 +83,7 @@ class MapEditor final : public Editor
     Q_PROPERTY(int currentWangColorIndex READ currentWangColorIndex WRITE setCurrentWangColorIndex NOTIFY currentWangColorIndexChanged)
     Q_PROPERTY(Tiled::MapView *currentMapView READ currentMapView CONSTANT)
     Q_PROPERTY(Tiled::AbstractTool *selectedTool READ selectedTool WRITE setSelectedTool NOTIFY selectedToolChanged)
+    Q_PROPERTY(Qt::CursorShape cursorShape READ cursorShape NOTIFY cursorShapeChanged)
 
 public:
     explicit MapEditor(QObject *parent = nullptr);
@@ -150,6 +151,8 @@ public:
     void setSelectedTool(AbstractTool *tool);
     AbstractTool *activeTool() const;
 
+    Qt::CursorShape cursorShape() const;
+
 #ifdef TILEDQUICK_LIB
     Q_INVOKABLE void quickMouseMoved(QPointF coords, Qt::KeyboardModifiers modifiers);
     Q_INVOKABLE void quickMousePressed(Qt::MouseButton button, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, QPointF pos, QPointF scenePos, QPoint screenPos);
@@ -165,6 +168,7 @@ signals:
     void tileEditRegionChanged();
     void selectedRegionChanged(const QRegion &newSelection, const QRegion &oldSelection);
     void selectedObjectsChanged();
+    void cursorShapeChanged();
     void currentWangSetChanged();
     void currentWangColorIndexChanged(int colorIndex);
     void selectedToolChanged(AbstractTool *tool);
@@ -240,6 +244,7 @@ private:
 
     SharedMap mTileEditPreview;
     QRegion mTileEditRegion;
+    Qt::CursorShape mCursorShape;
 
     QToolBar *mMainToolBar;
     QToolBar *mToolsToolBar;
@@ -260,6 +265,11 @@ inline MapView *MapEditor::currentMapView() const
 inline AbstractTool *MapEditor::selectedTool() const
 {
     return mSelectedTool;
+}
+
+inline Qt::CursorShape MapEditor::cursorShape() const
+{
+    return mCursorShape;
 }
 
 } // namespace Tiled

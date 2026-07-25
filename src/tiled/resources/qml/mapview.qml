@@ -122,6 +122,8 @@ Rectangle {
         id: singleFingerPanArea
         anchors.fill: parent
 
+        cursorShape: mapEditor.cursorShape
+
         onDragged: function(dx, dy) {
             dx *= Screen.devicePixelRatio
             dy *= Screen.devicePixelRatio
@@ -207,5 +209,4 @@ Rectangle {
             mapContainer.y = (mapView.height / 2) - ((mapItem.height * scale) / 2)
         }
     }
-
 }
