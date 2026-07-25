@@ -25,7 +25,8 @@
 #include "mapborderitem.h"
 #include "mapgriditem.h"
 #include "regionoverlay.h"
-#include "tiled.h"
+#include "objectinteractionitem.h"
+// #include "tiled.h"
 
 #include <qqml.h>
 
@@ -40,6 +41,7 @@ void TiledQuickPlugin::registerTypes(const char *uri)
     qmlRegisterType<MapBorderItem>(uri, 1, 0, "MapBorderItem");
     qmlRegisterType<MapGridItem>(uri, 1, 0, "MapGridItem");
     qmlRegisterType<RegionOverlay>(uri, 1, 0, "RegionOverlay");
+    qmlRegisterType<ObjectInteractionItem>(uri, 1, 0, "ObjectInteractionItem");
 
     Tiled::increaseImageAllocationLimit();
 }

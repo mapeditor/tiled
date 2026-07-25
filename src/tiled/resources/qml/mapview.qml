@@ -109,6 +109,12 @@ Rectangle {
                 mapRect: Qt.rect(0, 0, mapItem.map.width, mapItem.map.height)
                 tileSize: Qt.point(mapItem.map.tileWidth, mapItem.map.tileHeight)
             }
+
+            ObjectInteractionItem {
+                anchors.fill: mapItem
+
+                selectedObjects: mapEditor.selectedObjects
+            }
         }
     }
 

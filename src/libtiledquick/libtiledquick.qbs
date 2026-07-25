@@ -42,6 +42,8 @@ DynamicLibrary {
         "objectgroupitem.h",
         "objectgroupmaterial.cpp",
         "objectgroupmaterial.h",
+        "objectinteractionitem.cpp",
+        "objectinteractionitem.h",
         "objectsnode.cpp",
         "objectsnode.h",
         "regionoverlay.cpp",
