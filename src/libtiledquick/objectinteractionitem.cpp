@@ -47,6 +47,7 @@ void ObjectInteractionItem::setSelectedObjects(const QList<Tiled::MapObject*> &o
 
     mSelectedObjects = objects;
     emit selectedObjectsChanged();
+    emit selectionOutlinesChanged();
 }
 
 void ObjectInteractionItem::setHoveredObjects(const QList<Tiled::MapObject*> &objects)
@@ -56,6 +57,7 @@ void ObjectInteractionItem::setHoveredObjects(const QList<Tiled::MapObject*> &ob
 
     mHoveredObjects = objects;
     emit hoveredObjectsChanged();
+    emit hoverOutlinesChanged();
 }
 
 QList<QPolygonF> ObjectInteractionItem::selectionOutlines() const
@@ -66,4 +68,12 @@ QList<QPolygonF> ObjectInteractionItem::selectionOutlines() const
 QList<QPolygonF> ObjectInteractionItem::hoverOutlines() const
 {
     return outlines(mHoveredObjects);
+}
+
+void ObjectInteractionItem::updateOutlines()
+{
+    if (!mSelectedObjects.isEmpty())
+        emit selectionOutlinesChanged();
+    if (!mHoveredObjects.isEmpty())
+        emit hoverOutlinesChanged();
 }

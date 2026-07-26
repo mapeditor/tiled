@@ -48,6 +48,8 @@ Rectangle {
                             mapView.width / scale,
                             mapView.height / scale)
                 }
+
+                onMapObjectsChanged: objectInteractionItem.updateOutlines()
             }
 
             RegionOverlay {
@@ -111,7 +113,7 @@ Rectangle {
             }
 
             ObjectInteractionItem {
-                anchors.fill: singleFingerPanArea
+                id: objectInteractionItem
 
                 selectedObjects: mapEditor.selectedObjects
                 hoveredObjects: mapEditor.aboutToBeSelectedObjects

@@ -230,7 +230,10 @@ void MapItem::repaintObjects(const QList<Tiled::MapObject*> &objects)
     for (auto *object : objects)
         changedGroups.insert(object->objectGroup());
 
-    // TODO: Update only subgroups containing affected tiles rather than entire layers
+    if (changedGroups.size() == 0)
+        return;
+
+    // TODO: Update only nodes containing affected objects rather than entire layers
     for (auto *objectGroupItem : std::as_const(mObjectGroupItems)) {
         if (changedGroups.contains(objectGroupItem->group()))
         {
@@ -238,4 +241,6 @@ void MapItem::repaintObjects(const QList<Tiled::MapObject*> &objects)
             objectGroupItem->update();
         }
     }
+
+    emit mapObjectsChanged();
 }

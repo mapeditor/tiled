@@ -80,6 +80,7 @@ public:
 
 signals:
     void mapChanged();
+    void mapObjectsChanged();
     void visibleAreaChanged();
     void zoomChanged();
 
