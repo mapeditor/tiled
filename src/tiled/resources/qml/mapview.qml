@@ -111,9 +111,10 @@ Rectangle {
             }
 
             ObjectInteractionItem {
-                anchors.fill: mapItem
+                anchors.fill: singleFingerPanArea
 
                 selectedObjects: mapEditor.selectedObjects
+                hoveredObjects: mapEditor.aboutToBeSelectedObjects
             }
         }
     }
@@ -166,7 +167,7 @@ Rectangle {
             event.buttons,
             event.modifiers,
             singleFingerPanArea.mapToItem(mapItem, event.x, event.y),
-            singleFingerPanArea.mapToItem(null, event.x, event.y),
+            singleFingerPanArea.mapToItem(mapItem, event.x, event.y),
             singleFingerPanArea.mapToGlobal(event.x, event.y)
         )
 
@@ -175,7 +176,7 @@ Rectangle {
             event.buttons,
             event.modifiers,
             singleFingerPanArea.mapToItem(mapItem, event.x, event.y),
-            singleFingerPanArea.mapToItem(null, event.x, event.y),
+            singleFingerPanArea.mapToItem(mapItem, event.x, event.y),
             singleFingerPanArea.mapToGlobal(event.x, event.y)
         )
 

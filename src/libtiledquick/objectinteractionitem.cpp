@@ -3,27 +3,11 @@
 using namespace Tiled;
 using namespace TiledQuick;
 
-ObjectInteractionItem::ObjectInteractionItem(QQuickItem *parent)
-    : QQuickItem(parent)
-{
-}
-
-ObjectInteractionItem::~ObjectInteractionItem() = default;
-
-void ObjectInteractionItem::setSelectedObjects(const QList<Tiled::MapObject*> &objects)
-{
-    if (mSelectedObjects == objects)
-        return;
-
-    mSelectedObjects = objects;
-    emit selectedObjectsChanged();
-}
-
-QList<QPolygonF> ObjectInteractionItem::selectionOutlines() const
+static QList<QPolygonF> outlines(const QList<Tiled::MapObject*> &objects)
 {
     QList<QPolygonF> outlines;
 
-    for (auto object : mSelectedObjects) {
+    for (auto object : objects) {
         QPolygonF outline = object->bounds();
 
         if (object->isTileObject())
@@ -46,4 +30,40 @@ QList<QPolygonF> ObjectInteractionItem::selectionOutlines() const
     }
 
     return outlines;
+}
+
+
+ObjectInteractionItem::ObjectInteractionItem(QQuickItem *parent)
+    : QQuickItem(parent)
+{
+}
+
+ObjectInteractionItem::~ObjectInteractionItem() = default;
+
+void ObjectInteractionItem::setSelectedObjects(const QList<Tiled::MapObject*> &objects)
+{
+    if (mSelectedObjects == objects)
+        return;
+
+    mSelectedObjects = objects;
+    emit selectedObjectsChanged();
+}
+
+void ObjectInteractionItem::setHoveredObjects(const QList<Tiled::MapObject*> &objects)
+{
+    if (mHoveredObjects == objects)
+        return;
+
+    mHoveredObjects = objects;
+    emit hoveredObjectsChanged();
+}
+
+QList<QPolygonF> ObjectInteractionItem::selectionOutlines() const
+{
+    return outlines(mSelectedObjects);
+}
+
+QList<QPolygonF> ObjectInteractionItem::hoverOutlines() const
+{
+    return outlines(mHoveredObjects);
 }

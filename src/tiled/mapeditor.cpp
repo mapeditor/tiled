@@ -453,6 +453,10 @@ void MapEditor::setCurrentDocument(Document *document)
                 this, &MapEditor::selectedRegionChanged);
         connect(mapDocument, &MapDocument::selectedObjectsChanged,
                 this, &MapEditor::selectedObjectsChanged);
+        connect(mapDocument, &MapDocument::aboutToBeSelectedObjectsChanged,
+                this, &MapEditor::aboutToBeSelectedObjectsChanged);
+        connect(mapDocument, &MapDocument::hoveredMapObjectChanged,
+                this, [this, mapDocument] {emit aboutToBeSelectedObjectsChanged(QList<MapObject*>{mapDocument->hoveredMapObject()}); });
 
         if (mapView) {
             mZoomable = mapView->zoomable();
@@ -760,6 +764,18 @@ QList<MapObject*> MapEditor::selectedObjects() const
         return QList<MapObject*>();
 
     return mCurrentMapDocument->selectedObjects();
+}
+
+QList<MapObject*> MapEditor::aboutToBeSelectedObjects() const
+{
+    if (!mCurrentMapDocument)
+        return QList<MapObject*>();
+
+    QList<MapObject*> list = mCurrentMapDocument->aboutToBeSelectedObjects();
+    if (mCurrentMapDocument->hoveredMapObject() && !list.contains(mCurrentMapDocument->hoveredMapObject()))
+        list.append(mCurrentMapDocument->hoveredMapObject());
+
+    return list;
 }
 
 void MapEditor::updateActiveUndoStack()
