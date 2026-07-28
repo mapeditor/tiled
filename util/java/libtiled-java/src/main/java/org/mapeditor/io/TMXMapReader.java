@@ -53,7 +53,6 @@ import java.util.zip.InflaterInputStream;
 import java.util.Base64;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.function.DoublePredicate;
 import java.util.function.DoubleConsumer;
 
 import com.github.luben.zstd.ZstdInputStream;
@@ -237,16 +236,6 @@ public class TMXMapReader {
         }
     }
 
-    private static void setDoubleIf(Node node, String attrName, DoublePredicate cond, DoubleConsumer setter) {
-        String value = getAttributeValue(node, attrName);
-        if (value != null) {
-            double d = Double.parseDouble(value);
-            if (cond.test(d)) {
-                setter.accept(d);
-            }
-        }
-    }
-
     private static void setBoolIfPresent(Node node, String attrName, Consumer<Boolean> setter) {
         String value = getAttributeValue(node, attrName);
         if (value != null) {
@@ -271,8 +260,8 @@ public class TMXMapReader {
         setFloatIfPresent(t, "opacity", ml::setOpacity);
         setDoubleIfPresent(t, "offsetx", (d) -> ml.setOffsetX((int) d));
         setDoubleIfPresent(t, "offsety", (d) -> ml.setOffsetY((int) d));
-        setDoubleIf(t, "parallaxx", d -> d != 0, ml::setParallaxx);
-        setDoubleIf(t, "parallaxy", d -> d != 0, ml::setParallaxy);
+        setDoubleIfPresent(t, "parallaxx", ml::setParallaxx);
+        setDoubleIfPresent(t, "parallaxy", ml::setParallaxy);
         setStrIfPresent(t, "tintcolor", ml::setTintcolor);
         setStrIfPresent(t, "class", ml::setClassName);
         setStrIf(t, "mode", s -> !s.isEmpty(), ml::setMode);
