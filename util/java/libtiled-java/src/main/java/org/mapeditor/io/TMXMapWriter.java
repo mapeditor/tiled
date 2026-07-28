@@ -806,8 +806,8 @@ public class TMXMapWriter {
 
         boolean tilePropertiesElementStarted = false;
 
-        for (int y = 0; y < bounds.height; y++) {
-            for (int x = 0; x < bounds.width; x++) {
+        for (int y = bounds.y; y < bounds.y + bounds.height; y++) {
+            for (int x = bounds.x; x < bounds.x + bounds.width; x++) {
                 Properties tip = l.getTileInstancePropertiesAt(x, y);
 
                 if (tip != null && !tip.isEmpty()) {
