@@ -147,7 +147,18 @@ class MapView extends JPanel implements Scrollable
         setOpaque(true);
 
         animationTimer = new Timer(33, e -> repaint());
+    }
+
+    @Override
+    public void addNotify() {
+        super.addNotify();
         animationTimer.start();
+    }
+
+    @Override
+    public void removeNotify() {
+        animationTimer.stop();
+        super.removeNotify();
     }
 
     @Override
