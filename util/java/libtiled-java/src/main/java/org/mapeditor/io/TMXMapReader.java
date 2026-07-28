@@ -62,6 +62,7 @@ import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.mapeditor.core.AnimatedTile;
 import org.mapeditor.core.Group;
@@ -328,11 +329,28 @@ public class TMXMapReader {
         return img;
     }
 
+    /**
+     * Creates a {@link DocumentBuilderFactory} hardened against XML External
+     * Entity (XXE) attacks. Tileset and template files are referenced from
+     * untrusted TMX input, so external entity resolution and DOCTYPE
+     * declarations are disabled.
+     */
+    private static DocumentBuilderFactory newSecureDocumentBuilderFactory() throws ParserConfigurationException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        factory.setXIncludeAware(false);
+        factory.setExpandEntityReferences(false);
+        return factory;
+    }
+
     private TileSet unmarshalTilesetFile(InputStream in, URL file) throws Exception {
         TileSet set = null;
         Node tsNode;
 
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory factory = newSecureDocumentBuilderFactory();
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
             //builder.setErrorHandler(new XMLErrorHandler());
@@ -708,7 +726,7 @@ public class TMXMapReader {
         templatePath = replacePathSeparator(templatePath);
         URL templateUrl = URLHelper.resolve(xmlPath, templatePath);
 
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory factory = newSecureDocumentBuilderFactory();
         try (InputStream in = StreamHelper.openStream(templateUrl)) {
             Document doc = factory.newDocumentBuilder()
                 .parse(StreamHelper.buffered(in), ".");
