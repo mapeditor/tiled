@@ -115,6 +115,7 @@ Rectangle {
             ObjectInteractionItem {
                 id: objectInteractionItem
 
+                selectedToolId: (mapEditor.selectedTool ? mapEditor.selectedTool.id : "")
                 selectedObjects: mapEditor.selectedObjects
                 hoveredObjects: mapEditor.aboutToBeSelectedObjects
             }
@@ -164,28 +165,46 @@ Rectangle {
             containerAnimation.start()
         }
 
-        onPressed: (event) => mapEditor.quickMousePressed(
-            event.button,
-            event.buttons,
-            event.modifiers,
-            singleFingerPanArea.mapToItem(mapItem, event.x, event.y),
-            singleFingerPanArea.mapToItem(mapItem, event.x, event.y),
-            singleFingerPanArea.mapToGlobal(event.x, event.y)
-        )
+        onPressed: function(event) {
+            const localPos = singleFingerPanArea.mapToItem(mapItem, event.x, event.y);
 
-        onReleased: (event) => mapEditor.quickMouseReleased(
-            event.button,
-            event.buttons,
-            event.modifiers,
-            singleFingerPanArea.mapToItem(mapItem, event.x, event.y),
-            singleFingerPanArea.mapToItem(mapItem, event.x, event.y),
-            singleFingerPanArea.mapToGlobal(event.x, event.y)
-        )
+            mapEditor.quickMousePressed(
+                event.button,
+                event.buttons,
+                event.modifiers,
+                localPos,
+                localPos,
+                singleFingerPanArea.mapToGlobal(event.x, event.y)
+            )
 
-        onPositionChanged: (event) => mapEditor.quickMouseMoved(
-            singleFingerPanArea.mapToItem(mapItem, event.x, event.y),
-            event.modifiers
-        )
+            objectInteractionItem.mousePressed(localPos)
+        }
+
+        onReleased: function(event) {
+            const localPos = singleFingerPanArea.mapToItem(mapItem, event.x, event.y);
+
+            mapEditor.quickMouseReleased(
+                event.button,
+                event.buttons,
+                event.modifiers,
+                localPos,
+                localPos,
+                singleFingerPanArea.mapToGlobal(event.x, event.y)
+            )
+
+            objectInteractionItem.mouseReleased(localPos)
+        }
+
+        onPositionChanged: function(event) {
+            const localPos = singleFingerPanArea.mapToItem(mapItem, event.x, event.y);
+
+            mapEditor.quickMouseMoved(
+                localPos,
+                event.modifiers
+            )
+
+            objectInteractionItem.mouseMoved(localPos)
+        }
 
         onContainsMouseChanged: mapEditor.quickContainsMouseChanged(singleFingerPanArea.containsMouse)
     }

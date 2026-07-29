@@ -1,5 +1,8 @@
 #include "objectinteractionitem.h"
 
+#include <QApplication>
+#include <QPalette>
+
 using namespace Tiled;
 using namespace TiledQuick;
 
@@ -35,10 +38,20 @@ static QList<QPolygonF> outlines(const QList<Tiled::MapObject*> &objects)
 
 ObjectInteractionItem::ObjectInteractionItem(QQuickItem *parent)
     : QQuickItem(parent)
+    , mMousePressed(false)
 {
 }
 
 ObjectInteractionItem::~ObjectInteractionItem() = default;
+
+void ObjectInteractionItem::setSelectedToolId(const QByteArray &id)
+{
+    if (mSelectedToolId == id)
+        return;
+
+    mSelectedToolId = id;
+    emit selectedToolIdChanged();
+}
 
 void ObjectInteractionItem::setSelectedObjects(const QList<Tiled::MapObject*> &objects)
 {
@@ -70,10 +83,50 @@ QList<QPolygonF> ObjectInteractionItem::hoverOutlines() const
     return outlines(mHoveredObjects);
 }
 
+QColor ObjectInteractionItem::selectionRectBorderColor() const
+{
+    return QApplication::palette().highlight().color();
+}
+
+QColor ObjectInteractionItem::selectionRectFillColor() const
+{
+    QColor color = QApplication::palette().highlight().color();
+    color.setAlpha(32);
+
+    return color;
+}
+
 void ObjectInteractionItem::updateOutlines()
 {
     if (!mSelectedObjects.isEmpty())
         emit selectionOutlinesChanged();
     if (!mHoveredObjects.isEmpty())
         emit hoverOutlinesChanged();
+}
+
+void ObjectInteractionItem::mousePressed(const QPointF &pos)
+{
+    if (mSelectedToolId != "ObjectSelectionTool" || mHoveredObjects.size() > 0)
+        return;
+
+    mMousePressed = true;
+    mSelectionRect = QRectF(pos.x(), pos.y(), 0, 0);
+    emit selectionRectChanged();
+}
+
+void ObjectInteractionItem::mouseMoved(const QPointF &pos)
+{
+    if (!mMousePressed)
+        return;
+
+    mSelectionRect.setWidth(pos.x() - mSelectionRect.x());
+    mSelectionRect.setHeight(pos.y() - mSelectionRect.y());
+    emit selectionRectChanged();
+}
+
+void ObjectInteractionItem::mouseReleased(const QPointF &pos)
+{
+    mMousePressed = false;
+    mSelectionRect = QRectF(pos.x(), pos.y(), 0, 0);
+    emit selectionRectChanged();
 }

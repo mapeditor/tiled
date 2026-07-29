@@ -12,9 +12,7 @@ Tiled.ObjectInteractionItem {
         running: true
         repeat: true
 
-        onTriggered: {
-            borderDashOffset -= 0.5
-        }
+        onTriggered: borderDashOffset -= 0.5
     }
 
     Shape {
@@ -81,6 +79,41 @@ Tiled.ObjectInteractionItem {
 
             PathMultiline {
                 paths: hoverOutlines
+            }
+        }
+
+        ShapePath {
+            id: selectionToolRectShadow
+
+            fillColor: "transparent"
+            strokeColor: Qt.rgba(0, 0, 0, 0.5)
+            strokeWidth: 2 / mapContainer.scale
+
+            strokeStyle: ShapePath.DashLine
+            dashPattern: [1.5, 3]
+
+            PathRectangle {
+                x: objectInteractionItem.selectionRect.x + 1 / mapContainer.scale
+                y: objectInteractionItem.selectionRect.y + 1 / mapContainer.scale
+                width: objectInteractionItem.selectionRect.width
+                height: objectInteractionItem.selectionRect.height
+            }
+        }
+        ShapePath {
+            id: selectionToolRect
+
+            fillColor: objectInteractionItem.selectionRectFillColor()
+            strokeColor: objectInteractionItem.selectionRectBorderColor()
+            strokeWidth: 2 / mapContainer.scale
+
+            strokeStyle: ShapePath.DashLine
+            dashPattern: [1.5, 3]
+
+            PathRectangle {
+                x: objectInteractionItem.selectionRect.x
+                y: objectInteractionItem.selectionRect.y
+                width: objectInteractionItem.selectionRect.width
+                height: objectInteractionItem.selectionRect.height
             }
         }
     }
