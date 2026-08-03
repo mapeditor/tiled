@@ -299,7 +299,7 @@ signals:
     /**
      * Emitted when one or more objects change.
      */
-    void mapObjectsChanged(const QList<MapObject*> &objects);
+    void mapObjectsChanged(const QList<MapObject*> &objects, ObjectGroup *group = nullptr);
 
     void aboutToBeSelectedObjectsChanged(const QList<MapObject*> &objects);
 

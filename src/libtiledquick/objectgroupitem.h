@@ -42,12 +42,15 @@ public:
     ObjectGroupItem(Tiled::ObjectGroup *group, Tiled::MapRenderer *renderer,
                     MapItem *parent);
 
+    void setObjectGroup(Tiled::ObjectGroup *group);
+    void setRenderer(Tiled::MapRenderer *renderer);
+
     void syncWithObjectGroup();
     void setZoom(const qreal &zoom);
 
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
 
-    Tiled::ObjectGroup *group();
+    Tiled::ObjectGroup *group() const;
 
 public slots:
     void updateVisibleObjects();
@@ -75,7 +78,7 @@ private:
     QPoint mPosition;
 };
 
-inline Tiled::ObjectGroup *ObjectGroupItem::group()
+inline Tiled::ObjectGroup *ObjectGroupItem::group() const
 {
     return mGroup;
 }

@@ -87,10 +87,12 @@ Rectangle {
                 visible: singleFingerPanArea.containsMouse || singleFingerPanArea.pressed
 
                 property var toolPreviewMap: mapEditor.tileEditPreview
+                property var newObjectsPreviewGroup: mapEditor.newObjectsPreview
                 map: toolPreviewMap
+                zoom: 1 / mapContainer.scale
+                newObjectsPreview: newObjectsPreviewGroup
 
                 visibleArea: {
-                    // TODO: Adjust to only show needed visible area
                     if (this.map)
                         Qt.rect(0,
                                 0,
@@ -204,6 +206,8 @@ Rectangle {
             )
 
             objectInteractionItem.mouseMoved(localPos)
+
+            toolBrush.repaintPreview();
         }
 
         onContainsMouseChanged: mapEditor.quickContainsMouseChanged(singleFingerPanArea.containsMouse)

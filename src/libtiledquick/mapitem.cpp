@@ -21,17 +21,16 @@
 #include "mapitem.h"
 
 #include "tilelayeritem.h"
-#include "objectgroupitem.h"
+#include "tilesethelper.h"
 
 #include "map.h"
 #include "maprenderer.h"
-#include "tilelayer.h"
-#include "tilesethelper.h"
 
 using namespace TiledQuick;
 
 MapItem::MapItem(QQuickItem *parent)
     : QQuickItem(parent)
+    , mNewObjectsPreviewItem(nullptr, nullptr, this)
 {
 }
 
@@ -81,8 +80,28 @@ void MapItem::setZoom(const qreal &zoom)
 
     for (auto objectGroup : std::as_const(mObjectGroupItems))
         objectGroup->setZoom(zoom);
+    mNewObjectsPreviewItem.setZoom(zoom);
+
+    // Since the tool brush is always fully rendered and does not
+    // receive the visibleAreaChanged signal upon zoom changes,
+    // we need to update it here.
+    mNewObjectsPreviewItem.update();
 
     emit zoomChanged();
+}
+
+void MapItem::setNewObjectsPreview(Tiled::ObjectGroup *objects)
+{
+    if (mNewObjectsPreviewItem.group() == objects)
+        return;
+
+    mNewObjectsPreviewItem.setObjectGroup(objects);
+    emit newObjectsPreviewChanged();
+}
+
+void MapItem::repaintPreview()
+{
+    mNewObjectsPreviewItem.update();
 }
 
 QRectF MapItem::boundingRect() const
@@ -195,6 +214,8 @@ void MapItem::refresh()
         return;
 
     mRenderer = Tiled::MapRenderer::create(mMap);
+    mNewObjectsPreviewItem.setRenderer(mRenderer.get());
+    mNewObjectsPreviewItem.setZoom(mZoom);
 
     for (Tiled::Layer *layer : mMap->layers()) {
         if (Tiled::TileLayer *tl = layer->asTileLayer()) {
@@ -224,18 +245,18 @@ void MapItem::repaintRegion(const QRegion &, Tiled::TileLayer *tileLayer)
     }
 }
 
-void MapItem::repaintObjects(const QList<Tiled::MapObject*> &objects)
+void MapItem::repaintObjects(const QList<Tiled::MapObject*> &objects, ObjectGroup *group)
 {
     QSet<Tiled::ObjectGroup*> changedGroups;
-    for (auto *object : objects)
+    for (auto object : objects)
         changedGroups.insert(object->objectGroup());
 
-    if (changedGroups.size() == 0)
+    if (changedGroups.size() == 0 && !group)
         return;
 
     // TODO: Update only nodes containing affected objects rather than entire layers
-    for (auto *objectGroupItem : std::as_const(mObjectGroupItems)) {
-        if (changedGroups.contains(objectGroupItem->group()))
+    for (auto objectGroupItem : std::as_const(mObjectGroupItems)) {
+        if (objectGroupItem->group() == group || changedGroups.contains(objectGroupItem->group()))
         {
             // objectGroupItem->syncWithObjectGroup();
             objectGroupItem->update();

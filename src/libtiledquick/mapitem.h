@@ -21,6 +21,7 @@
 #pragma once
 
 #include "editablemap.h"
+#include "objectgroupitem.h"
 #include "tiledquick_global.h"
 
 #include <QQuickItem>
@@ -48,6 +49,13 @@ class TILEDQUICK_SHARED_EXPORT MapItem : public QQuickItem
     Q_PROPERTY(QRectF visibleArea READ visibleArea WRITE setVisibleArea NOTIFY visibleAreaChanged)
     Q_PROPERTY(qreal zoom READ zoom WRITE setZoom NOTIFY zoomChanged)
 
+    /**
+     * Holds a pointer to the selected object tool's new object preview group.
+     *
+     * This is used by mapview's toolBrush, and should remain nullptr when used for standard mapItems.
+     */
+    Q_PROPERTY(Tiled::ObjectGroup *newObjectsPreview READ newObjectsPreview WRITE setNewObjectsPreview NOTIFY newObjectsPreviewChanged)
+
 public:
     explicit MapItem(QQuickItem *parent = nullptr);
     ~MapItem() override;
@@ -61,6 +69,11 @@ public:
 
     const qreal &zoom() const;
     void setZoom(const qreal &zoom);
+
+    Tiled::ObjectGroup *newObjectsPreview() const;
+    void setNewObjectsPreview(Tiled::ObjectGroup *objects);
+
+    Q_INVOKABLE void repaintPreview();
 
     QRectF boundingRect() const override;
 
@@ -83,17 +96,19 @@ signals:
     void mapObjectsChanged();
     void visibleAreaChanged();
     void zoomChanged();
+    void newObjectsPreviewChanged();
 
 private:
     void refresh();
 
     void repaintRegion(const QRegion &region, Tiled::TileLayer *tileLayer);
-    void repaintObjects(const QList<Tiled::MapObject*> &objects);
+    void repaintObjects(const QList<Tiled::MapObject*> &objects, Tiled::ObjectGroup *group = nullptr);
 
     Tiled::Map *mMap = nullptr;
     Tiled::EditableMap *mEditableMap = nullptr;
     QRectF mVisibleArea;
     qreal mZoom = 0;
+    ObjectGroupItem mNewObjectsPreviewItem;
 
     std::unique_ptr<Tiled::MapRenderer> mRenderer;
     QList<TileLayerItem*> mTileLayerItems;
@@ -118,6 +133,11 @@ inline Tiled::EditableMap *MapItem::map() const
 inline void MapItem::unsetMap()
 {
     setMap(nullptr);
+}
+
+inline Tiled::ObjectGroup *MapItem::newObjectsPreview() const
+{
+    return mNewObjectsPreviewItem.group();
 }
 
 } // namespace TiledQuick

@@ -224,12 +224,10 @@ void EditableMap::insertLayerAt(int index, EditableLayer *editableLayer)
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Index out of range"));
         return;
     }
-
     if (!editableLayer) {
         ScriptManager::instance().throwNullArgError(1);
         return;
     }
-
     if (!editableLayer->isOwning()) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Layer is in use"));
         return;

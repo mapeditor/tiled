@@ -43,14 +43,31 @@ ObjectGroupItem::ObjectGroupItem(ObjectGroup *group, MapRenderer *renderer,
     groupVisibilityChanged();
 
     syncWithObjectGroup();
-    setOpacity(mGroup->opacity());
+    if (mGroup)
+        setOpacity(mGroup->opacity());
+    else
+        setOpacity(1);
 }
 
 void ObjectGroupItem::syncWithObjectGroup()
 {
+    if (!mGroup)
+        return;
+
     const QRectF boundingRect = mGroup->objectsBoundingRect();
     setPosition(boundingRect.topLeft());
     setSize(boundingRect.size());
+}
+
+void ObjectGroupItem::setObjectGroup(Tiled::ObjectGroup *group)
+{
+    mGroup = group;
+    setOpacity(mGroup->opacity());
+}
+
+void ObjectGroupItem::setRenderer(Tiled::MapRenderer *renderer)
+{
+    mRenderer = renderer;
 }
 
 void ObjectGroupItem::setZoom(const qreal &zoom)
@@ -64,6 +81,9 @@ QSGNode *ObjectGroupItem::updatePaintNode(QSGNode *node,
     delete node;
     node = new QSGNode;
     node->setFlag(QSGNode::OwnedByParent);
+
+    if (!mGroup)
+        return node;
 
     TilesetHelper helper = TilesetHelper::instance(static_cast<MapItem*>(parentItem()));
 
@@ -116,11 +136,10 @@ QSGNode *ObjectGroupItem::updatePaintNode(QSGNode *node,
                 objectData.clear();
             }
 
+            const int fontDetail = qMax(1.0, (0.5) / mZoom);
             const auto& textData = object->textData();
             QFont font = textData.font;
-            const int fontDetail = qMax(1.0, (0.5) / mZoom);
             font.setPixelSize(font.pixelSize()*fontDetail);
-            qDebug() << fontDetail;
             QImage textImage(object->width()*fontDetail, object->height()*fontDetail, QImage::Format_RGBA8888);
             textImage.fill(Qt::transparent);
 
@@ -142,6 +161,17 @@ QSGNode *ObjectGroupItem::updatePaintNode(QSGNode *node,
         data.y = object->y() - y() - ((data.type == ObjectGroupMaterial::ObjectType::Tile) ? object->height() : 0);
         data.width = object->width();
         data.height = object->height();
+
+        if (object->width() == 0 && object->height() == 0 &&
+            (data.type == ObjectGroupMaterial::ObjectType::Rectangle ||
+             data.type == ObjectGroupMaterial::ObjectType::Ellipse ||
+             data.type == ObjectGroupMaterial::ObjectType::Capsule)) {
+            data.x -= 10;
+            data.y -= 10;
+            data.width += 20;
+            data.height += 20;
+        }
+
         data.zoom = mZoom;
         data.polygon = object->polygon();
 
@@ -204,6 +234,9 @@ void ObjectGroupItem::updateVisibleObjects()
 
 void ObjectGroupItem::groupVisibilityChanged()
 {
+    if (!mGroup)
+        return;
+
     const bool visible = mGroup->isVisible();
     setVisible(visible);
 

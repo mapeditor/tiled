@@ -1475,10 +1475,22 @@ void MapDocument::onChanged(const ChangeEvent &change)
 
         break;
     }
+    case ChangeEvent::MapObjectsAdded:
     case ChangeEvent::MapObjectsChanged: {
         const auto &mapObjects = static_cast<const MapObjectsChangeEvent&>(change).mapObjects;
-
         emit mapObjectsChanged(mapObjects);
+        break;
+    }
+    case ChangeEvent::MapObjectRemoved:
+    case ChangeEvent::ObjectGroupChanged: {
+        const auto &objectGroup = static_cast<const ObjectGroupChangeEvent&>(change);
+        emit mapObjectsChanged({}, objectGroup.objectGroup);
+        break;
+    }
+    case ChangeEvent::LayerChanged: {
+        const auto &layer = static_cast<const LayerChangeEvent&>(change);
+        if (layer.layer->isObjectGroup())
+            emit mapObjectsChanged({}, layer.layer->asObjectGroup());
         break;
     }
     default:

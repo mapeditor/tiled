@@ -160,6 +160,7 @@ MapEditor::MapEditor(QObject *parent)
     , mZoomable(nullptr)
     , mZoomComboBox(new QComboBox)
     , mStatusInfoLabel(new QLabel)
+    , mNewObjectsPreview(nullptr)
     , mMainToolBar(new MainToolBar(mMainWindow))
     , mToolManager(new ToolManager(this))
     , mSelectedTool(nullptr)
@@ -743,6 +744,10 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
 #endif
 
         tool->populateToolBar(mToolSpecificToolBar);
+
+        CreateObjectTool *coTool = qobject_cast<CreateObjectTool*>(tool);
+        if (coTool)
+            setNewObjectsPreview(coTool->newMapObjectGroup());
     }
 
     updateActiveUndoStack();
@@ -1202,6 +1207,15 @@ void MapEditor::setTileEditPreview(const SharedMap &map)
     mTileEditPreview = map;
 
     emit tileEditPreviewChanged();
+}
+
+void MapEditor::setNewObjectsPreview(ObjectGroup *objects)
+{
+    if (mNewObjectsPreview == objects)
+        return;
+    mNewObjectsPreview = objects;
+
+    emit newObjectsPreviewChanged();
 }
 
 QRegion MapEditor::tileEditRegion() const

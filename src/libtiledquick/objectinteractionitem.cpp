@@ -106,7 +106,9 @@ void ObjectInteractionItem::updateOutlines()
 
 void ObjectInteractionItem::mousePressed(const QPointF &pos)
 {
-    if (mSelectedToolId != "ObjectSelectionTool" || mHoveredObjects.size() > 0)
+    if (!(mSelectedToolId == "EditPolygonTool" ||
+          mSelectedToolId == "ObjectSelectionTool") ||
+          mHoveredObjects.count() > 0)
         return;
 
     mMousePressed = true;
