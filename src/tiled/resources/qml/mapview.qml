@@ -40,7 +40,6 @@ Rectangle {
                 id: mapItem
 
                 map: mapItemMap
-                zoom: 1 / mapContainer.scale
                 visibleArea: {
                     var scale = mapContainer.scale
                     Qt.rect(-mapContainer.x / scale,
@@ -48,6 +47,7 @@ Rectangle {
                             mapView.width / scale,
                             mapView.height / scale)
                 }
+                zoom: 1 / mapContainer.scale
 
                 onMapObjectsChanged: objectInteractionItem.updateOutlines()
             }
@@ -89,9 +89,6 @@ Rectangle {
                 property var toolPreviewMap: mapEditor.tileEditPreview
                 property var newObjectsPreviewGroup: mapEditor.newObjectsPreview
                 map: toolPreviewMap
-                zoom: 1 / mapContainer.scale
-                newObjectsPreview: newObjectsPreviewGroup
-
                 visibleArea: {
                     if (this.map)
                         Qt.rect(0,
@@ -101,6 +98,10 @@ Rectangle {
                     else
                         Qt.rect(0, 0, 0, 0)
                 }
+                zoom: 1 / mapContainer.scale
+
+                newObjectsPreview: newObjectsPreviewGroup
+                mousePos: singleFingerPanArea.mapToItem(mapItem, Qt.point(singleFingerPanArea.mouseX, singleFingerPanArea.mouseY))
             }
 
             RegionOverlay {

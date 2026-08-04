@@ -45,6 +45,9 @@ public:
     void setObjectGroup(Tiled::ObjectGroup *group);
     void setRenderer(Tiled::MapRenderer *renderer);
 
+    QPointF mousePos() const;
+    void setMousePos(const QPointF &pos);
+
     void syncWithObjectGroup();
     void setZoom(const qreal &zoom);
 
@@ -62,6 +65,7 @@ private:
     Tiled::MapRenderer *mRenderer;
     QRectF mVisibleArea;
     qreal mZoom;
+    QPointF mMousePos;
 };
 
 class ObjectItem : public QQuickItem
@@ -77,6 +81,11 @@ private:
     Tiled::Cell mCell;
     QPoint mPosition;
 };
+
+inline QPointF ObjectGroupItem::mousePos() const
+{
+    return mMousePos;
+}
 
 inline Tiled::ObjectGroup *ObjectGroupItem::group() const
 {

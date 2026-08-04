@@ -49,12 +49,9 @@ class TILEDQUICK_SHARED_EXPORT MapItem : public QQuickItem
     Q_PROPERTY(QRectF visibleArea READ visibleArea WRITE setVisibleArea NOTIFY visibleAreaChanged)
     Q_PROPERTY(qreal zoom READ zoom WRITE setZoom NOTIFY zoomChanged)
 
-    /**
-     * Holds a pointer to the selected object tool's new object preview group.
-     *
-     * This is used by mapview's toolBrush, and should remain nullptr when used for standard mapItems.
-     */
+    // MapView toolBrush only properties. Should remain nullptr for standard MapItem usage.
     Q_PROPERTY(Tiled::ObjectGroup *newObjectsPreview READ newObjectsPreview WRITE setNewObjectsPreview NOTIFY newObjectsPreviewChanged)
+    Q_PROPERTY(QPointF mousePos READ mousePos WRITE setMousePos NOTIFY mousePosChanged)
 
 public:
     explicit MapItem(QQuickItem *parent = nullptr);
@@ -72,6 +69,9 @@ public:
 
     Tiled::ObjectGroup *newObjectsPreview() const;
     void setNewObjectsPreview(Tiled::ObjectGroup *objects);
+
+    QPointF mousePos() const;
+    void setMousePos(const QPointF &pos);
 
     Q_INVOKABLE void repaintPreview();
 
@@ -96,7 +96,9 @@ signals:
     void mapObjectsChanged();
     void visibleAreaChanged();
     void zoomChanged();
+
     void newObjectsPreviewChanged();
+    void mousePosChanged();
 
 private:
     void refresh();
@@ -138,6 +140,11 @@ inline void MapItem::unsetMap()
 inline Tiled::ObjectGroup *MapItem::newObjectsPreview() const
 {
     return mNewObjectsPreviewItem.group();
+}
+
+inline QPointF MapItem::mousePos() const
+{
+    return mNewObjectsPreviewItem.mousePos();
 }
 
 } // namespace TiledQuick

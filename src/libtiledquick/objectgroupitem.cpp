@@ -70,6 +70,11 @@ void ObjectGroupItem::setRenderer(Tiled::MapRenderer *renderer)
     mRenderer = renderer;
 }
 
+void ObjectGroupItem::setMousePos(const QPointF &pos)
+{
+    mMousePos = pos;
+}
+
 void ObjectGroupItem::setZoom(const qreal &zoom)
 {
     mZoom = zoom;
@@ -174,6 +179,8 @@ QSGNode *ObjectGroupItem::updatePaintNode(QSGNode *node,
 
         data.zoom = mZoom;
         data.polygon = object->polygon();
+        if (data.type == ObjectGroupMaterial::ObjectType::Polyline)
+            data.polygon.append(mousePos() - object->position());
 
         if (!cell.isEmpty()) {
             data.twidth = cell.tile()->width();

@@ -251,6 +251,29 @@ static void processPolygonData(const ObjectData &data, ObjectTexturedPoint2D *&v
     v += totalBorders*6;
 }
 
+static void processPolylineData(const ObjectData &data, ObjectTexturedPoint2D *&v)
+{
+    const float s_width = 1.0f / TilesetHelper::ColorCount;
+    const float border_tx = (TilesetHelper::Border + 0.5) * s_width;
+    const float shadow_tx = (TilesetHelper::Shadow + 0.5) * s_width;
+    const float thickness = 2*data.zoom;
+    const QPointF shadowOffset = QPointF(thickness * 2/3, thickness * 2/3);
+
+    if (data.polygon.count() <= 1)
+        return;
+
+    QList<QPointF> points;
+    for (QPointF p : data.polygon)
+        points.append(p + QPointF(data.x, data.y));
+
+    // Border + Shadow
+    const int totalBorders = points.count() - 1;
+    for (int i = 0; i < totalBorders; i++)
+        processBorderSegment(data, v, points[i], points[i+1], thickness,
+                             border_tx, totalBorders, shadow_tx, shadowOffset);
+    v += totalBorders*6;
+}
+
 static void processEllipseData(const ObjectData &data, ObjectTexturedPoint2D *&v, const int &precision)
 {
     const float s_width = 1.0f / TilesetHelper::ColorCount;
@@ -445,6 +468,9 @@ void ObjectsNode::processObjectData(const QVector<ObjectData> &objectData)
         case ObjectGroupMaterial::ObjectType::Polygon:
             totalVertices += 3*(data.polygon.size()-2) + 12*data.polygon.size();
             break;
+        case ObjectGroupMaterial::ObjectType::Polyline:
+            totalVertices += 12*qMax(data.polygon.size() - 1, 0);
+            break;
         case ObjectGroupMaterial::ObjectType::Ellipse:
             totalVertices += 3*(precision-2) + 12*precision;
             break;
@@ -462,8 +488,6 @@ void ObjectsNode::processObjectData(const QVector<ObjectData> &objectData)
         case ObjectGroupMaterial::ObjectType::Tile:
             totalVertices += 6;
             break;
-        default:
-            break;
         }
     }
 
@@ -477,6 +501,9 @@ void ObjectsNode::processObjectData(const QVector<ObjectData> &objectData)
             break;
         case ObjectGroupMaterial::ObjectType::Polygon:
             processPolygonData(data, v);
+            break;
+        case ObjectGroupMaterial::ObjectType::Polyline:
+            processPolylineData(data, v);
             break;
         case ObjectGroupMaterial::ObjectType::Ellipse:
             processEllipseData(data, v, precision);
@@ -492,8 +519,6 @@ void ObjectsNode::processObjectData(const QVector<ObjectData> &objectData)
             break;
         case ObjectGroupMaterial::ObjectType::Tile:
             processTextureData(data, v);
-            break;
-        default:
             break;
         }
     }

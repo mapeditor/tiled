@@ -99,6 +99,15 @@ void MapItem::setNewObjectsPreview(Tiled::ObjectGroup *objects)
     emit newObjectsPreviewChanged();
 }
 
+void MapItem::setMousePos(const QPointF &pos)
+{
+    if (mNewObjectsPreviewItem.mousePos() == pos)
+        return;
+
+    mNewObjectsPreviewItem.setMousePos(pos);
+    emit mousePosChanged();
+}
+
 void MapItem::repaintPreview()
 {
     mNewObjectsPreviewItem.update();

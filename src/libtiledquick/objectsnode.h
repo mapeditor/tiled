@@ -58,10 +58,8 @@ struct ObjectData {
 
 struct alignas(4) ObjectTexturedPoint2D {
     float x, y;
-    // float local_x, local_y;
     float tx, ty;
     unsigned char tint_r, tint_g, tint_b, alpha;
-    // float object_type;
 };
 
 class TILEDQUICK_SHARED_EXPORT ObjectsNode : public QSGGeometryNode
