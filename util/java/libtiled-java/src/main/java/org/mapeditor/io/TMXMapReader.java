@@ -740,24 +740,26 @@ public class TMXMapReader {
 
             URL xmlPathSave = xmlPath;
             xmlPath = URLHelper.getParent(templateUrl);
+            try {
+                TileSet templateTileset = null;
+                int templateFirstGid = 1;
+                MapObject templateObject = null;
 
-            TileSet templateTileset = null;
-            int templateFirstGid = 1;
-            MapObject templateObject = null;
-
-            NodeList children = templateNode.getChildNodes();
-            for (int i = 0; i < children.getLength(); i++) {
-                Node child = children.item(i);
-                if ("tileset".equalsIgnoreCase(child.getNodeName())) {
-                    templateFirstGid = getAttribute(child, "firstgid", 1);
-                    templateTileset = unmarshalTileset(child);
-                } else if ("object".equalsIgnoreCase(child.getNodeName())) {
-                    templateObject = readTemplateObject(child, templateTileset, templateFirstGid);
+                NodeList children = templateNode.getChildNodes();
+                for (int i = 0; i < children.getLength(); i++) {
+                    Node child = children.item(i);
+                    if ("tileset".equalsIgnoreCase(child.getNodeName())) {
+                        templateFirstGid = getAttribute(child, "firstgid", 1);
+                        templateTileset = unmarshalTileset(child);
+                    } else if ("object".equalsIgnoreCase(child.getNodeName())) {
+                        templateObject = readTemplateObject(child, templateTileset, templateFirstGid);
+                    }
                 }
-            }
 
-            xmlPath = xmlPathSave;
-            return templateObject;
+                return templateObject;
+            } finally {
+                xmlPath = xmlPathSave;
+            }
         }
     }
 
