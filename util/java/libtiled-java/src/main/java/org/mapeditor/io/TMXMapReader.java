@@ -491,7 +491,7 @@ public class TMXMapReader {
                         set.importTileBitmap(sourcePath, new BasicTileCutter(
                             tileWidth, tileHeight, tileSpacing, tileMargin));
                     } catch (UnsupportedImageFormatException e) {
-                        System.out.printf("Warning: unsupported image format '%s' - %s%n",
+                        System.out.printf("Warning: could not load tileset image '%s' - %s%n",
                                               sourcePath, e.getMessage());
                         hasTilesetImage = false;
                     }
