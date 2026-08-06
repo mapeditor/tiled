@@ -44,7 +44,6 @@ import org.mapeditor.core.MapObject;
 import org.mapeditor.core.ObjectGroup;
 import org.mapeditor.core.Orientation;
 import org.mapeditor.core.Properties;
-import org.mapeditor.core.PropertyType;
 import org.mapeditor.core.StaggerAxis;
 import org.mapeditor.core.StaggerIndex;
 import org.mapeditor.core.TileLayer;
