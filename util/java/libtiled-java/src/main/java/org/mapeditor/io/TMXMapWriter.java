@@ -209,7 +209,7 @@ public class TMXMapWriter {
 //        w.writeDocType("map", null, "http://mapeditor.org/dtd/1.0/map.dtd");
         w.startElement("map");
 
-        w.writeAttribute("version", "1.11");
+        w.writeAttribute("version", isNonEmpty(map.getVersion()) ? map.getVersion() : "1.11");
 
         if (isNonEmpty(map.getTiledversion())) {
             w.writeAttribute("tiledversion", map.getTiledversion());
