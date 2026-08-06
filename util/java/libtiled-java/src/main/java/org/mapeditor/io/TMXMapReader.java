@@ -1137,8 +1137,8 @@ public class TMXMapReader {
         final int layerId = getAttribute(t, "id", 0);
         final int layerWidth = getAttribute(t, "width", map.getWidth());
         final int layerHeight = getAttribute(t, "height", map.getHeight());
-        final int offsetX = getAttribute(t, "x", 0);
-        final int offsetY = getAttribute(t, "y", 0);
+        int offsetX = getAttribute(t, "x", 0);
+        int offsetY = getAttribute(t, "y", 0);
         final int visible = getAttribute(t, "visible", 1);
 
         TileLayer ml = new TileLayer(layerWidth, layerHeight);
@@ -1184,6 +1184,12 @@ public class TMXMapReader {
                     ml = new TileLayer(new java.awt.Rectangle(minX, minY, totalWidth, totalHeight));
                     ml.setId(layerId);
                     applyLayerAttributes(ml, t);
+
+                    // The final setOffset call would otherwise reset the
+                    // chunk-derived origin, making negative chunk coordinates
+                    // inaccessible.
+                    offsetX += minX;
+                    offsetY += minY;
 
                     // Read each chunk
                     for (Node chunkNode = child.getFirstChild(); chunkNode != null;
