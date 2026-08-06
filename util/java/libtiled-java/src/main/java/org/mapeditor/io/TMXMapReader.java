@@ -694,8 +694,14 @@ public class TMXMapReader {
                 obj.setShape(new Ellipse2D.Double(x, y, width, height));
             } else if (templateObj.getPolygon() != null) {
                 obj.setPolygon(templateObj.getPolygon());
+                Path2D.Double shape = buildPointsShape(templateObj.getPolygon().getPoints(), x, y, true);
+                obj.setShape(shape);
+                obj.setBounds((Rectangle2D.Double) shape.getBounds2D());
             } else if (templateObj.getPolyline() != null) {
                 obj.setPolyline(templateObj.getPolyline());
+                Path2D.Double shape = buildPointsShape(templateObj.getPolyline().getPoints(), x, y, false);
+                obj.setShape(shape);
+                obj.setBounds((Rectangle2D.Double) shape.getBounds2D());
             }
         }
 
@@ -832,8 +838,23 @@ public class TMXMapReader {
 
     private void readPolylineOrPolygon(Node node, MapObject object, double x, double y) {
         boolean isPolygon = "polygon".equalsIgnoreCase(node.getNodeName());
-        Path2D.Double shape = new Path2D.Double();
         final String pointsAttribute = getAttributeValue(node, "points");
+        Path2D.Double shape = buildPointsShape(pointsAttribute, x, y, isPolygon);
+        if (isPolygon) {
+            Polygon pg = new Polygon();
+            pg.setPoints(pointsAttribute);
+            object.setPolygon(pg);
+        } else {
+            Polyline pl = new Polyline();
+            pl.setPoints(pointsAttribute);
+            object.setPolyline(pl);
+        }
+        object.setShape(shape);
+        object.setBounds((Rectangle2D.Double) shape.getBounds2D());
+    }
+
+    private static Path2D.Double buildPointsShape(String pointsAttribute, double x, double y, boolean close) {
+        Path2D.Double shape = new Path2D.Double();
         StringTokenizer st = new StringTokenizer(pointsAttribute, ", ");
         boolean firstPoint = true;
         while (st.hasMoreElements()) {
@@ -846,18 +867,10 @@ public class TMXMapReader {
                 shape.lineTo(x + pointX, y + pointY);
             }
         }
-        if (isPolygon) {
+        if (close) {
             shape.closePath();
-            Polygon pg = new Polygon();
-            pg.setPoints(pointsAttribute);
-            object.setPolygon(pg);
-        } else {
-            Polyline pl = new Polyline();
-            pl.setPoints(pointsAttribute);
-            object.setPolyline(pl);
         }
-        object.setShape(shape);
-        object.setBounds((Rectangle2D.Double) shape.getBounds2D());
+        return shape;
     }
 
     private Tile findTileInMapTilesets(Tile templateTile, TileSet templateTileSet) {
