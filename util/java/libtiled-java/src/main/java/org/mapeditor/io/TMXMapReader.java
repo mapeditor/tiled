@@ -1223,18 +1223,18 @@ public class TMXMapReader {
                         String enc = cdata.getNodeValue().trim();
                         byte[] dec = Base64.getDecoder().decode(enc);
                         ByteArrayInputStream bais = new ByteArrayInputStream(dec);
-                        InputStream is = createDecompressStream(bais, comp,
-                                layerWidth * layerHeight * 4, "map layer " + ml.getName());
+                        try (InputStream is = createDecompressStream(bais, comp,
+                                layerWidth * layerHeight * 4, "map layer " + ml.getName())) {
+                            for (int y = 0; y < ml.getHeight(); y++) {
+                                for (int x = 0; x < ml.getWidth(); x++) {
+                                    int tileId = 0;
+                                    tileId |= is.read();
+                                    tileId |= is.read() << Byte.SIZE;
+                                    tileId |= is.read() << Byte.SIZE * 2;
+                                    tileId |= is.read() << Byte.SIZE * 3;
 
-                        for (int y = 0; y < ml.getHeight(); y++) {
-                            for (int x = 0; x < ml.getWidth(); x++) {
-                                int tileId = 0;
-                                tileId |= is.read();
-                                tileId |= is.read() << Byte.SIZE;
-                                tileId |= is.read() << Byte.SIZE * 2;
-                                tileId |= is.read() << Byte.SIZE * 3;
-
-                                setTileAtFromTileId(ml, y, x, tileId);
+                                    setTileAtFromTileId(ml, y, x, tileId);
+                                }
                             }
                         }
                     }
@@ -1331,17 +1331,17 @@ public class TMXMapReader {
                 String enc = cdata.getNodeValue().trim();
                 byte[] dec = Base64.getDecoder().decode(enc);
                 ByteArrayInputStream bais = new ByteArrayInputStream(dec);
-                InputStream is = createDecompressStream(bais, comp, cw * ch * 4, "chunk");
+                try (InputStream is = createDecompressStream(bais, comp, cw * ch * 4, "chunk")) {
+                    for (int y = 0; y < ch; y++) {
+                        for (int x = 0; x < cw; x++) {
+                            int tileId = 0;
+                            tileId |= is.read();
+                            tileId |= is.read() << Byte.SIZE;
+                            tileId |= is.read() << Byte.SIZE * 2;
+                            tileId |= is.read() << Byte.SIZE * 3;
 
-                for (int y = 0; y < ch; y++) {
-                    for (int x = 0; x < cw; x++) {
-                        int tileId = 0;
-                        tileId |= is.read();
-                        tileId |= is.read() << Byte.SIZE;
-                        tileId |= is.read() << Byte.SIZE * 2;
-                        tileId |= is.read() << Byte.SIZE * 3;
-
-                        setTileAtFromTileId(ml, cy + y, cx + x, tileId);
+                            setTileAtFromTileId(ml, cy + y, cx + x, tileId);
+                        }
                     }
                 }
             }
