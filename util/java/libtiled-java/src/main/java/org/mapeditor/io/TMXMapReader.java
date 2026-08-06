@@ -270,9 +270,11 @@ public class TMXMapReader {
         readProperties(t.getChildNodes(), ml.getProperties());
     }
 
+    private static final int MAX_GZIP_BUFFER_SIZE = 32 * 1024;
+
     private static InputStream createDecompressStream(ByteArrayInputStream bais, String comp, int bufferSize, String context) throws IOException {
         if ("gzip".equalsIgnoreCase(comp)) {
-            return new GZIPInputStream(bais, bufferSize);
+            return new GZIPInputStream(bais, Math.max(1, Math.min(bufferSize, MAX_GZIP_BUFFER_SIZE)));
         } else if ("zlib".equalsIgnoreCase(comp)) {
             return new InflaterInputStream(bais);
         } else if ("zstd".equalsIgnoreCase(comp)) {
