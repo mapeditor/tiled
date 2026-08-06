@@ -15,6 +15,10 @@ Tiled.ObjectInteractionItem {
         onTriggered: borderDashOffset -= 0.5
     }
 
+    SystemPalette {
+        id: systemPalette
+    }
+
     Shape {
         anchors.fill: parent
 
@@ -117,4 +121,113 @@ Tiled.ObjectInteractionItem {
             }
         }
     }
+
+    // EditPolygonTool
+    property var highlightedSelectedPolygonEditPoints: innerJoin(objectInteractionItem.selectedPolygonEditPoints ?? [], objectInteractionItem.highlightedPolygonEditPoints ?? [])
+    property real editPointSize: 8 / mapContainer.scale
+    Repeater {
+        id: defaultEditPoints
+        model: objectInteractionItem.polygonEditPoints
+
+        delegate: Rectangle {
+            x: modelData.x - editPointSize/2
+            y: modelData.y - editPointSize/2
+
+            width: editPointSize
+            height: editPointSize
+            radius: editPointSize/2
+
+            color: "lightgray"
+
+            border.pixelAligned: false
+            border.color: "black"
+            border.width: width/8
+        }
+    }
+    Repeater {
+        id: highlightedEditPoints
+        model: objectInteractionItem.highlightedPolygonEditPoints
+        delegate: Rectangle {
+            x: modelData.x - editPointSize/2
+            y: modelData.y - editPointSize/2
+
+            width: editPointSize
+            height: editPointSize
+            radius: editPointSize/2
+
+            color: Qt.lighter("lightgray")
+
+            border.pixelAligned: false
+            border.color: "black"
+            border.width: width/8
+        }
+    }
+    Repeater {
+        id: selectedEditPoints
+        model: objectInteractionItem.selectedPolygonEditPoints
+
+        delegate: Rectangle {
+            x: modelData.x - 1.5 * editPointSize/2
+            y: modelData.y - 1.5 * editPointSize/2
+
+            width: 1.5 * editPointSize
+            height: 1.5 * editPointSize
+            radius: 1.5 * editPointSize/2
+
+            color: systemPalette.highlight
+
+            border.pixelAligned: false
+            border.color: "black"
+            border.width: width/8
+        }
+    }
+    Repeater {
+        id: highlightedSelectedEditPoints
+        model: highlightedSelectedPolygonEditPoints
+
+        delegate: Rectangle {
+            x: modelData.x - 1.5 * editPointSize/2
+            y: modelData.y - 1.5 * editPointSize/2
+
+            width: 1.5 * editPointSize
+            height: 1.5 * editPointSize
+            radius: 1.5 * editPointSize/2
+
+            color: Qt.lighter(systemPalette.highlight)
+
+            border.pixelAligned: false
+            border.color: "black"
+            border.width: width/8
+        }
+    }
+
+    function innerJoin(listA, listB) {
+        let mapA = {}
+        let output = []
+
+        for (let a = 0; a < listA.length; a++)
+            mapA[listA[a]] = true
+
+        for (let b = 0; b < listB.length; b++)
+            if (mapA[listB[b]])
+                output.push(listB[b])
+
+        return output
+    }
+
+    // function leftAntiJoin(listA, listB) {
+    //     let mapB = {}
+    //     let output = []
+
+    //     for (let b = 0; b < listB.length; b++)
+    //         mapB[listB[b]] = true
+
+    //     for (let a = 0; a < listA.length; a++) {
+    //         if (!mapB[listA[a]]) {
+    //             output.push(listA[a])
+    //         }
+    //     }
+
+    //     return output
+    // }
 }

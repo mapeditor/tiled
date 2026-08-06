@@ -350,6 +350,22 @@ void EditPolygonTool::languageChanged()
     setName(tr("Edit Polygons"));
 }
 
+QList<QPointF> EditPolygonTool::selectedHandlePoints() const
+{
+    QList<QPointF> points;
+    for (auto handle : std::as_const(mSelectedHandles))
+        points.append(handle->pos());
+    return points;
+}
+
+QList<QPointF> EditPolygonTool::highlightedHandlePoints() const
+{
+    QList<QPointF> points;
+    for (auto handle : std::as_const(mHighlightedHandles))
+        points.append(handle->pos());
+    return points;
+}
+
 void EditPolygonTool::setSelectedHandles(const QSet<PointHandle *> &handles)
 {
     for (PointHandle *handle : std::as_const(mSelectedHandles))
@@ -360,7 +376,11 @@ void EditPolygonTool::setSelectedHandles(const QSet<PointHandle *> &handles)
         if (!mSelectedHandles.contains(handle))
             handle->setSelected(true);
 
+    if (mSelectedHandles == handles)
+        return;
+
     mSelectedHandles = handles;
+    emit selectedHandlePointsChanged();
 }
 
 void EditPolygonTool::setHighlightedHandles(const QSet<PointHandle *> &handles)
@@ -373,7 +393,11 @@ void EditPolygonTool::setHighlightedHandles(const QSet<PointHandle *> &handles)
         if (!mHighlightedHandles.contains(handle))
             handle->setHighlighted(true);
 
+    if (mHighlightedHandles == handles)
+        return;
+
     mHighlightedHandles = handles;
+    emit highlightedHandlePointsChanged();
 }
 
 /**
@@ -591,6 +615,9 @@ void EditPolygonTool::updateMovingItems(const QPointF &pos,
     } else {
         delete command;
     }
+
+    emit highlightedHandlePointsChanged();
+    emit selectedHandlePointsChanged();
 }
 
 void EditPolygonTool::finishMoving()

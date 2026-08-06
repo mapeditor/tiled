@@ -38,19 +38,20 @@ static QList<QPolygonF> outlines(const QList<Tiled::MapObject*> &objects)
 
 ObjectInteractionItem::ObjectInteractionItem(QQuickItem *parent)
     : QQuickItem(parent)
-    , mMousePressed(false)
+    , mDrawSelectionRect(false)
 {
 }
 
 ObjectInteractionItem::~ObjectInteractionItem() = default;
 
-void ObjectInteractionItem::setSelectedToolId(const QByteArray &id)
+void ObjectInteractionItem::setSelectedToolId(const QString &id)
 {
     if (mSelectedToolId == id)
         return;
 
     mSelectedToolId = id;
     emit selectedToolIdChanged();
+    emit polygonEditPointsChanged();
 }
 
 void ObjectInteractionItem::setSelectedObjects(const QList<Tiled::MapObject*> &objects)
@@ -61,6 +62,7 @@ void ObjectInteractionItem::setSelectedObjects(const QList<Tiled::MapObject*> &o
     mSelectedObjects = objects;
     emit selectedObjectsChanged();
     emit selectionOutlinesChanged();
+    emit polygonEditPointsChanged();
 }
 
 void ObjectInteractionItem::setHoveredObjects(const QList<Tiled::MapObject*> &objects)
@@ -71,6 +73,38 @@ void ObjectInteractionItem::setHoveredObjects(const QList<Tiled::MapObject*> &ob
     mHoveredObjects = objects;
     emit hoveredObjectsChanged();
     emit hoverOutlinesChanged();
+}
+
+void ObjectInteractionItem::setSelectedPolygonEditPoints(const QList<QPointF> &points)
+{
+    if (mSelectedPolygonEditPoints == points)
+        return;
+
+    mSelectedPolygonEditPoints = points;
+    emit selectedPolygonEditPointsChanged();
+    emit polygonEditPointsChanged();
+}
+
+void ObjectInteractionItem::setHighlightedPolygonEditPoints(const QList<QPointF> &points)
+{
+    if (mHighlightedPolygonEditPoints == points)
+        return;
+
+    mHighlightedPolygonEditPoints = points;
+    emit highlightedPolygonEditPointsChanged();
+}
+
+QList<QPointF> ObjectInteractionItem::polygonEditPoints() const
+{
+    QList<QPointF> points;
+    if (mSelectedToolId != QStringLiteral("EditPolygonTool"))
+        return points;
+
+    for (auto object : mSelectedObjects)
+        for (QPointF point : object->polygon())
+            points.append(point + object->position());
+
+    return points;
 }
 
 QList<QPolygonF> ObjectInteractionItem::selectionOutlines() const
@@ -106,19 +140,21 @@ void ObjectInteractionItem::updateOutlines()
 
 void ObjectInteractionItem::mousePressed(const QPointF &pos)
 {
-    if (!(mSelectedToolId == "EditPolygonTool" ||
-          mSelectedToolId == "ObjectSelectionTool") ||
+    if (!((mSelectedToolId == QStringLiteral("EditPolygonTool") &&
+           mHighlightedPolygonEditPoints.count() == 0) ||
+          mSelectedToolId == QStringLiteral("ObjectSelectionTool")) ||
           mHoveredObjects.count() > 0)
         return;
 
-    mMousePressed = true;
+    mDrawSelectionRect = true;
+
     mSelectionRect = QRectF(pos.x(), pos.y(), 0, 0);
     emit selectionRectChanged();
 }
 
 void ObjectInteractionItem::mouseMoved(const QPointF &pos)
 {
-    if (!mMousePressed)
+    if (!mDrawSelectionRect)
         return;
 
     mSelectionRect.setWidth(pos.x() - mSelectionRect.x());
@@ -128,7 +164,7 @@ void ObjectInteractionItem::mouseMoved(const QPointF &pos)
 
 void ObjectInteractionItem::mouseReleased(const QPointF &pos)
 {
-    mMousePressed = false;
+    mDrawSelectionRect = false;
     mSelectionRect = QRectF(pos.x(), pos.y(), 0, 0);
     emit selectionRectChanged();
 }

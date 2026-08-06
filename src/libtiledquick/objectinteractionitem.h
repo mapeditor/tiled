@@ -12,19 +12,23 @@ class TILEDQUICK_SHARED_EXPORT ObjectInteractionItem : public QQuickItem
 {
     Q_OBJECT
 
-    Q_PROPERTY(QByteArray selectedToolId READ selectedToolId WRITE setSelectedToolId NOTIFY selectedToolIdChanged)
+    Q_PROPERTY(QString selectedToolId READ selectedToolId WRITE setSelectedToolId NOTIFY selectedToolIdChanged)
     Q_PROPERTY(QList<Tiled::MapObject*> selectedObjects READ selectedObjects WRITE setSelectedObjects NOTIFY selectedObjectsChanged)
     Q_PROPERTY(QList<Tiled::MapObject*> hoveredObjects READ hoveredObjects WRITE setHoveredObjects NOTIFY hoveredObjectsChanged)
+    Q_PROPERTY(QList<QPointF> selectedPolygonEditPoints READ selectedPolygonEditPoints WRITE setSelectedPolygonEditPoints NOTIFY selectedPolygonEditPointsChanged)
+    Q_PROPERTY(QList<QPointF> highlightedPolygonEditPoints READ highlightedPolygonEditPoints WRITE setHighlightedPolygonEditPoints NOTIFY highlightedPolygonEditPointsChanged)
+
     Q_PROPERTY(QList<QPolygonF> selectionOutlines READ selectionOutlines NOTIFY selectionOutlinesChanged)
     Q_PROPERTY(QList<QPolygonF> hoverOutlines READ hoverOutlines NOTIFY hoverOutlinesChanged)
     Q_PROPERTY(QRectF selectionRect READ selectionRect NOTIFY selectionRectChanged)
+    Q_PROPERTY(QList<QPointF> polygonEditPoints READ polygonEditPoints NOTIFY polygonEditPointsChanged)
 
 public:
     ObjectInteractionItem(QQuickItem *parent = nullptr);
     ~ObjectInteractionItem() override;
 
-    QByteArray selectedToolId() const;
-    void setSelectedToolId(const QByteArray &id);
+    QString selectedToolId() const;
+    void setSelectedToolId(const QString &id);
 
     QList<Tiled::MapObject*> selectedObjects() const;
     void setSelectedObjects(const QList<Tiled::MapObject*> &objects);
@@ -32,35 +36,47 @@ public:
     QList<Tiled::MapObject*> hoveredObjects() const;
     void setHoveredObjects(const QList<Tiled::MapObject*> &objects);
 
+    QList<QPointF> selectedPolygonEditPoints() const;
+    void setSelectedPolygonEditPoints(const QList<QPointF> &points);
+
+    QList<QPointF> highlightedPolygonEditPoints() const;
+    void setHighlightedPolygonEditPoints(const QList<QPointF> &points);
+
     QList<QPolygonF> selectionOutlines() const;
     QList<QPolygonF> hoverOutlines() const;
     QRectF selectionRect() const;
-
-    Q_INVOKABLE QColor selectionRectBorderColor() const;
-    Q_INVOKABLE QColor selectionRectFillColor() const;
+    QList<QPointF> polygonEditPoints() const;
 
     Q_INVOKABLE void updateOutlines();
     Q_INVOKABLE void mousePressed(const QPointF &pos);
     Q_INVOKABLE void mouseMoved(const QPointF &pos);
     Q_INVOKABLE void mouseReleased(const QPointF &pos);
 
+    Q_INVOKABLE QColor selectionRectBorderColor() const;
+    Q_INVOKABLE QColor selectionRectFillColor() const;
+
 signals:
     void selectedToolIdChanged();
     void selectedObjectsChanged();
     void hoveredObjectsChanged();
+    void selectedPolygonEditPointsChanged();
+    void highlightedPolygonEditPointsChanged();
     void selectionOutlinesChanged();
     void hoverOutlinesChanged();
     void selectionRectChanged();
+    void polygonEditPointsChanged();
 
 private:
-    QByteArray mSelectedToolId;
+    QString mSelectedToolId;
     QList<Tiled::MapObject*> mSelectedObjects;
     QList<Tiled::MapObject*> mHoveredObjects;
-    bool mMousePressed;
+    QList<QPointF> mSelectedPolygonEditPoints;
+    QList<QPointF> mHighlightedPolygonEditPoints;
+    bool mDrawSelectionRect;
     QRectF mSelectionRect;
 };
 
-inline QByteArray ObjectInteractionItem::selectedToolId() const {
+inline QString ObjectInteractionItem::selectedToolId() const {
     return mSelectedToolId;
 }
 
@@ -72,6 +88,16 @@ inline QList<Tiled::MapObject*> ObjectInteractionItem::selectedObjects() const
 inline QList<Tiled::MapObject*> ObjectInteractionItem::hoveredObjects() const
 {
     return mHoveredObjects;
+}
+
+inline QList<QPointF> ObjectInteractionItem::selectedPolygonEditPoints() const
+{
+    return mSelectedPolygonEditPoints;
+}
+
+inline QList<QPointF> ObjectInteractionItem::highlightedPolygonEditPoints() const
+{
+    return mHighlightedPolygonEditPoints;
 }
 
 inline QRectF ObjectInteractionItem::selectionRect() const

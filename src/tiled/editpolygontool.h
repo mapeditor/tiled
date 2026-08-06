@@ -41,6 +41,9 @@ class EditPolygonTool : public AbstractObjectTool
 {
     Q_OBJECT
 
+    Q_PROPERTY(QList<QPointF> selectedHandlePoints READ selectedHandlePoints NOTIFY selectedHandlePointsChanged)
+    Q_PROPERTY(QList<QPointF> highlightedHandlePoints READ highlightedHandlePoints NOTIFY highlightedHandlePointsChanged)
+
 public:
     explicit EditPolygonTool(QObject *parent = nullptr);
     ~EditPolygonTool() override;
@@ -61,6 +64,13 @@ public:
     void languageChanged() override;
 
     bool hasSelectedHandles() const { return !mSelectedHandles.isEmpty(); }
+
+    QList<QPointF> selectedHandlePoints() const;
+    QList<QPointF> highlightedHandlePoints() const;
+
+signals:
+    void selectedHandlePointsChanged();
+    void highlightedHandlePointsChanged();
 
 public slots:
     void deleteNodes();

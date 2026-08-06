@@ -118,9 +118,25 @@ Rectangle {
             ObjectInteractionItem {
                 id: objectInteractionItem
 
-                selectedToolId: (mapEditor.selectedTool ? mapEditor.selectedTool.id : "")
+                selectedToolId: mapEditor.selectedTool?.id ?? ""
                 selectedObjects: mapEditor.selectedObjects
                 hoveredObjects: mapEditor.aboutToBeSelectedObjects
+
+                Binding {
+                    target: objectInteractionItem
+                    property: "selectedPolygonEditPoints"
+                    value: mapEditor.selectedTool?.selectedHandlePoints
+                    when: mapEditor.selectedTool !== null &&
+                          mapEditor.selectedTool?.selectedHandlePoints !== undefined
+                }
+
+                Binding {
+                    target: objectInteractionItem
+                    property: "highlightedPolygonEditPoints"
+                    value: mapEditor.selectedTool?.highlightedHandlePoints
+                    when: mapEditor.selectedTool !== null &&
+                          mapEditor.selectedTool?.highlightedHandlePoints !== undefined
+                }
             }
         }
     }
