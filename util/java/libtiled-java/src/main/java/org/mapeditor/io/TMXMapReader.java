@@ -598,11 +598,11 @@ public class TMXMapReader {
         final String heightStr = getAttributeValue(t, "height");
         final String rotationStr = getAttributeValue(t, "rotation");
 
-        double width = widthStr != null ? Double.parseDouble(widthStr) :
+        double width = widthStr != null && !widthStr.isEmpty() ? Double.parseDouble(widthStr) :
                        (templateObj != null && templateObj.getWidth() != null ? templateObj.getWidth() : 0);
-        double height = heightStr != null ? Double.parseDouble(heightStr) :
+        double height = heightStr != null && !heightStr.isEmpty() ? Double.parseDouble(heightStr) :
                         (templateObj != null && templateObj.getHeight() != null ? templateObj.getHeight() : 0);
-        double rotation = rotationStr != null ? Double.parseDouble(rotationStr) :
+        double rotation = rotationStr != null && !rotationStr.isEmpty() ? Double.parseDouble(rotationStr) :
                           (templateObj != null ? templateObj.getRotation() : 0);
 
         // Step 3: Create object with merged values
