@@ -42,11 +42,14 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
 
+import org.mapeditor.core.AnimatedTile;
 import org.mapeditor.core.Group;
 import org.mapeditor.core.Map;
 import org.mapeditor.core.ObjectGroup;
 import org.mapeditor.core.MapLayer;
+import org.mapeditor.core.Tile;
 import org.mapeditor.core.TileLayer;
+import org.mapeditor.core.TileSet;
 import org.mapeditor.io.TMXMapReader;
 import org.mapeditor.view.HexagonalRenderer;
 import org.mapeditor.view.MapRenderer;
@@ -146,18 +149,33 @@ class MapView extends JPanel implements Scrollable
         setPreferredSize(renderer.getMapSize());
         setOpaque(true);
 
-        animationTimer = new Timer(33, e -> repaint());
+        animationTimer = hasAnimatedTiles(map) ? new Timer(33, e -> repaint()) : null;
+    }
+
+    private static boolean hasAnimatedTiles(Map map) {
+        for (TileSet tileSet : map.getTileSets()) {
+            for (Tile tile : tileSet) {
+                if (tile instanceof AnimatedTile) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
     public void addNotify() {
         super.addNotify();
-        animationTimer.start();
+        if (animationTimer != null) {
+            animationTimer.start();
+        }
     }
 
     @Override
     public void removeNotify() {
-        animationTimer.stop();
+        if (animationTimer != null) {
+            animationTimer.stop();
+        }
         super.removeNotify();
     }
 
