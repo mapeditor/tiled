@@ -145,7 +145,7 @@ public class OrthogonalRenderer extends AbstractRenderer {
                     if (tile != null) {
                         Image objectImage = tile.getImage();
                         AffineTransform old = g.getTransform();
-                        g.rotate(Math.toRadians(rotation));
+                        g.rotate(Math.toRadians(rotation), ox, oy);
                         Point drawLoc = getTileDrawLocation(tile, (int) ox, (int) oy - objectImage.getHeight(null));
                         g.drawImage(objectImage, drawLoc.x, drawLoc.y, null);
                         g.setTransform(old);
