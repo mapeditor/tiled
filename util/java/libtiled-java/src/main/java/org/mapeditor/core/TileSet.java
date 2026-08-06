@@ -32,6 +32,7 @@
 package org.mapeditor.core;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
@@ -124,7 +125,12 @@ public class TileSet extends TileSetData implements Iterable<Tile> {
         }
         BufferedImage buffered = new BufferedImage(
                 image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        buffered.getGraphics().drawImage(image, 0, 0, null);
+        Graphics2D g = buffered.createGraphics();
+        try {
+            g.drawImage(image, 0, 0, null);
+        } finally {
+            g.dispose();
+        }
         return buffered;
     }
 
