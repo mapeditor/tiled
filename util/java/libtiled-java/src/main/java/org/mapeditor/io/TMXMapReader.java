@@ -1741,7 +1741,9 @@ public class TMXMapReader {
      * <code>null</code> when no such tileset exists
      */
     private java.util.Map.Entry<Integer, TileSet> findTileSetForTileGID(int gid) {
-        return tilesetPerFirstGid.floorEntry(gid);
+        // The gid table only exists while reading a map. When reading a
+        // standalone tileset there is nothing to resolve against.
+        return tilesetPerFirstGid != null ? tilesetPerFirstGid.floorEntry(gid) : null;
     }
 
     /**
