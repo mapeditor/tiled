@@ -753,12 +753,14 @@ public class TMXMapReader {
                 obj.setPolygon(templateObj.getPolygon());
                 Path2D.Double shape = buildPointsShape(templateObj.getPolygon().getPoints(), x, y, true);
                 obj.setShape(shape);
-                obj.setBounds((Rectangle2D.Double) shape.getBounds2D());
+                obj.setWidth(shape.getBounds2D().getWidth());
+                obj.setHeight(shape.getBounds2D().getHeight());
             } else if (templateObj.getPolyline() != null) {
                 obj.setPolyline(templateObj.getPolyline());
                 Path2D.Double shape = buildPointsShape(templateObj.getPolyline().getPoints(), x, y, false);
                 obj.setShape(shape);
-                obj.setBounds((Rectangle2D.Double) shape.getBounds2D());
+                obj.setWidth(shape.getBounds2D().getWidth());
+                obj.setHeight(shape.getBounds2D().getHeight());
             }
         }
 
@@ -910,7 +912,10 @@ public class TMXMapReader {
             object.setPolyline(pl);
         }
         object.setShape(shape);
-        object.setBounds((Rectangle2D.Double) shape.getBounds2D());
+        // Keep the object's position; only derive the size from the shape so
+        // negative point coordinates don't shift x/y on every round trip.
+        object.setWidth(shape.getBounds2D().getWidth());
+        object.setHeight(shape.getBounds2D().getHeight());
     }
 
     private static Path2D.Double buildPointsShape(String pointsAttribute, double x, double y, boolean close) {
