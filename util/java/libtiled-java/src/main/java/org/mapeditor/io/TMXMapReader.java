@@ -512,8 +512,37 @@ public class TMXMapReader {
                 if (!hasTilesetImage || tile.getId() > set.getMaxTileId()) {
                     set.addTile(tile);
                 } else {
+                    // Merge the parsed per-tile data onto the tile that was
+                    // created when cutting the tileset image.
                     Tile myTile = set.getTile(tile.getId());
                     myTile.setProperties(tile.getProperties());
+                    if (tile.getType() != null) {
+                        myTile.setType(tile.getType());
+                    }
+                    if (tile.getClassName() != null) {
+                        myTile.setClassName(tile.getClassName());
+                    }
+                    if (tile.getProbability() != null) {
+                        myTile.setProbability(tile.getProbability());
+                    }
+                    if (tile.getAnimation() != null) {
+                        myTile.setAnimation(tile.getAnimation());
+                    }
+                    if (tile.getCollisionObjectGroup() != null) {
+                        myTile.setObjectGroup(tile.getCollisionObjectGroup());
+                    }
+                    if (tile.getImageX() != null) {
+                        myTile.setImageX(tile.getImageX());
+                    }
+                    if (tile.getImageY() != null) {
+                        myTile.setImageY(tile.getImageY());
+                    }
+                    if (tile.getImageWidth() != null) {
+                        myTile.setImageWidth(tile.getImageWidth());
+                    }
+                    if (tile.getImageHeight() != null) {
+                        myTile.setImageHeight(tile.getImageHeight());
+                    }
                     //TODO: there is the possibility here of overlaying images,
                     //      which some people may want
                 }
