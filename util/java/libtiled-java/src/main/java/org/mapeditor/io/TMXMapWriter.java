@@ -95,7 +95,11 @@ public class TMXMapWriter {
         public static final String LAYER_COMPRESSION_METHOD_ZLIB = "zlib";
         public static final String LAYER_COMPRESSION_METHOD_ZSTD = "zstd";
 
+        public static final String LAYER_ENCODING_BASE64 = "base64";
+        public static final String LAYER_ENCODING_CSV = "csv";
+
         public String layerCompressionMethod = LAYER_COMPRESSION_METHOD_ZLIB;
+        public String layerEncoding = LAYER_ENCODING_BASE64;
     }
     public Settings settings = new Settings();
 
@@ -829,7 +833,9 @@ public class TMXMapWriter {
         writeProperties(l.getProperties(), w);
 
         w.startElement("data");
-        if (ENCODE_LAYER_DATA) {
+        if (usesCsvEncoding()) {
+            w.writeAttribute("encoding", "csv");
+        } else if (ENCODE_LAYER_DATA) {
             w.writeAttribute("encoding", "base64");
             if (COMPRESS_LAYER_DATA) {
                 w.writeAttribute("compression", settings.layerCompressionMethod);
@@ -916,8 +922,36 @@ public class TMXMapWriter {
         w.endElement();
     }
 
+    private boolean usesCsvEncoding() {
+        return Settings.LAYER_ENCODING_CSV.equalsIgnoreCase(settings.layerEncoding);
+    }
+
     private void writeLayerDataRect(TileLayer tl, XMLWriter w, int startX, int startY, int rectWidth, int rectHeight) throws IOException {
-        if (ENCODE_LAYER_DATA) {
+        if (usesCsvEncoding()) {
+            StringBuilder csv = new StringBuilder();
+            for (int y = startY; y < startY + rectHeight; y++) {
+                for (int x = startX; x < startX + rectWidth; x++) {
+                    Tile tile = tl.getTileAt(x, y);
+                    int gid = 0;
+
+                    if (tile != null) {
+                        gid = getGid(tile);
+                        gid |= tl.getFlagsAt(x, y);
+                    }
+
+                    csv.append(gid & 0xFFFFFFFFL);
+                    boolean lastValue = y == startY + rectHeight - 1
+                            && x == startX + rectWidth - 1;
+                    if (!lastValue) {
+                        csv.append(',');
+                        if (x == startX + rectWidth - 1) {
+                            csv.append('\n');
+                        }
+                    }
+                }
+            }
+            w.writeCDATA(csv.toString());
+        } else if (ENCODE_LAYER_DATA) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             OutputStream out;
 
