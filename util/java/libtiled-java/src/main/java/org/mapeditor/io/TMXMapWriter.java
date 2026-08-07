@@ -116,9 +116,14 @@ public class TMXMapWriter {
     private static boolean tileNeedsWrite(Tile tile, boolean checkSource) {
         return !tile.getProperties().isEmpty()
                 || isNonEmpty(tile.getType())
+                || isNonEmpty(tile.getClassName())
                 || (checkSource && tile.getSource() != null)
                 || (tile.getProbability() != null && tile.getProbability() != 1.0)
                 || tile.getCollisionObjectGroup() != null
+                || tile.getImageX() != null
+                || tile.getImageY() != null
+                || tile.getImageWidth() != null
+                || tile.getImageHeight() != null
                 || hasAnimation(tile);
     }
 
@@ -392,6 +397,11 @@ public class TMXMapWriter {
             throws IOException {
 
         String tileBitmapFile = set.getTilebmpFile();
+        org.mapeditor.core.ImageData imageData = set.getImageData();
+        // The tileset image either came from an explicit import or was parsed
+        // from the file into ImageData.
+        String imageSource = tileBitmapFile != null ? getRelativePath(wp, tileBitmapFile)
+                : (imageData != null ? imageData.getSource() : null);
         String name = set.getName();
 
         w.startElement("tileset");
@@ -405,22 +415,20 @@ public class TMXMapWriter {
             w.writeAttribute("class", set.getClassName());
         }
 
-        if (tileBitmapFile != null) {
-            w.writeAttribute("tilewidth", set.getTileWidth());
-            w.writeAttribute("tileheight", set.getTileHeight());
+        w.writeAttribute("tilewidth", set.getTileWidth());
+        w.writeAttribute("tileheight", set.getTileHeight());
 
-            final int tileSpacing = set.getTileSpacing();
-            final int tileMargin = set.getTileMargin();
-            if (tileSpacing != 0) {
-                w.writeAttribute("spacing", tileSpacing);
-            }
-            if (tileMargin != 0) {
-                w.writeAttribute("margin", tileMargin);
-            }
-
-            w.writeAttribute("tilecount", set.getTilecount() != null ? set.getTilecount() : set.size());
-            w.writeAttribute("columns", set.getColumns());
+        final int tileSpacing = set.getTileSpacing() != null ? set.getTileSpacing() : 0;
+        final int tileMargin = set.getTileMargin() != null ? set.getTileMargin() : 0;
+        if (tileSpacing != 0) {
+            w.writeAttribute("spacing", tileSpacing);
         }
+        if (tileMargin != 0) {
+            w.writeAttribute("margin", tileMargin);
+        }
+
+        w.writeAttribute("tilecount", set.getTilecount() != null ? set.getTilecount() : set.size());
+        w.writeAttribute("columns", set.getColumns());
 
         if (isNonEmpty(set.getObjectalignment())) {
             w.writeAttribute("objectalignment", set.getObjectalignment());
@@ -463,22 +471,24 @@ public class TMXMapWriter {
 
         writeProperties(set.getProperties(), w);
 
-        if (tileBitmapFile != null) {
+        if (imageSource != null) {
             w.startElement("image");
-            w.writeAttribute("source", getRelativePath(wp, tileBitmapFile));
+            w.writeAttribute("source", imageSource);
 
             Color trans = set.getTransparentColor();
             if (trans != null) {
                 w.writeAttribute("trans", Integer.toHexString(
                         trans.getRGB()).substring(2));
+            } else if (imageData != null && imageData.getTrans() != null) {
+                w.writeAttribute("trans", imageData.getTrans());
             }
 
-            if (set.getImageData() != null) {
-                if (set.getImageData().getWidth() != null) {
-                    w.writeAttribute("width", set.getImageData().getWidth());
+            if (imageData != null) {
+                if (imageData.getWidth() != null) {
+                    w.writeAttribute("width", imageData.getWidth());
                 }
-                if (set.getImageData().getHeight() != null) {
-                    w.writeAttribute("height", set.getImageData().getHeight());
+                if (imageData.getHeight() != null) {
+                    w.writeAttribute("height", imageData.getHeight());
                 }
             }
             w.endElement();
@@ -491,9 +501,23 @@ public class TMXMapWriter {
                     w.writeAttribute("id", tile.getId());
                     if (isNonEmpty(tile.getType())) {
                         w.writeAttribute("type", tile.getType());
+                    } else if (isNonEmpty(tile.getClassName())) {
+                        w.writeAttribute("type", tile.getClassName());
                     }
                     if (tile.getProbability() != null && tile.getProbability() != 1.0) {
                         w.writeAttribute("probability", tile.getProbability());
+                    }
+                    if (tile.getImageX() != null) {
+                        w.writeAttribute("x", tile.getImageX());
+                    }
+                    if (tile.getImageY() != null) {
+                        w.writeAttribute("y", tile.getImageY());
+                    }
+                    if (tile.getImageWidth() != null) {
+                        w.writeAttribute("width", tile.getImageWidth());
+                    }
+                    if (tile.getImageHeight() != null) {
+                        w.writeAttribute("height", tile.getImageHeight());
                     }
                     if (!tile.getProperties().isEmpty()) {
                         writeProperties(tile.getProperties(), w);
@@ -518,11 +542,6 @@ public class TMXMapWriter {
             }
 
             if (needWrite) {
-                w.writeAttribute("tilewidth", set.getTileWidth());
-                w.writeAttribute("tileheight", set.getTileHeight());
-                w.writeAttribute("tilecount", set.getTilecount() != null ? set.getTilecount() : set.size());
-                w.writeAttribute("columns", set.getColumns());
-
                 for (Tile tile : set) {
                     // todo: move this check back into the iterator?
                     if (tile != null) {
