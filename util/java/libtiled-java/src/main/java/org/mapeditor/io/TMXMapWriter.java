@@ -686,11 +686,19 @@ public class TMXMapWriter {
                 w.writeAttribute("height", bounds.height);
             }
         }
-        if (bounds.x != 0) {
-            w.writeAttribute("x", bounds.x);
-        }
-        if (bounds.y != 0) {
-            w.writeAttribute("y", bounds.y);
+        // For infinite maps the chunk coordinates carry the layer origin, so
+        // writing it as x/y as well would shift the layer on every round trip.
+        boolean chunked = l instanceof TileLayer
+                && l.getMap() != null
+                && l.getMap().getInfinite() != null
+                && l.getMap().getInfinite() != 0;
+        if (!chunked) {
+            if (bounds.x != 0) {
+                w.writeAttribute("x", bounds.x);
+            }
+            if (bounds.y != 0) {
+                w.writeAttribute("y", bounds.y);
+            }
         }
 
         Boolean isVisible = l.isVisible();
