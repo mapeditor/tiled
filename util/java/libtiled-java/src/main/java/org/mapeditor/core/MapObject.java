@@ -63,6 +63,7 @@ public class MapObject extends MapObjectData implements Cloneable {
     private boolean flipHorizontal;
     private boolean flipVertical;
     private boolean flipDiagonal;
+    private boolean rotatedHexagonal120;
 
     /**
      * Constructor for MapObject.
@@ -220,6 +221,9 @@ public class MapObject extends MapObjectData implements Cloneable {
 
     public boolean getFlipDiagonal() { return flipDiagonal; }
     public void setFlipDiagonal(boolean flip) { this.flipDiagonal = flip; }
+
+    public boolean getRotatedHexagonal120() { return rotatedHexagonal120; }
+    public void setRotatedHexagonal120(boolean rotated) { this.rotatedHexagonal120 = rotated; }
 
     /**
      * Returns the image to be used when drawing this object. This image is

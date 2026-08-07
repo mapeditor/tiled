@@ -114,6 +114,7 @@ public class TMXMapWriter {
         if (obj.getFlipHorizontal()) flags |= TMXMapReader.FLIPPED_HORIZONTALLY_FLAG;
         if (obj.getFlipVertical())   flags |= TMXMapReader.FLIPPED_VERTICALLY_FLAG;
         if (obj.getFlipDiagonal())   flags |= TMXMapReader.FLIPPED_DIAGONALLY_FLAG;
+        if (obj.getRotatedHexagonal120()) flags |= TMXMapReader.ROTATED_HEXAGONAL_120_FLAG;
         return flags;
     }
 

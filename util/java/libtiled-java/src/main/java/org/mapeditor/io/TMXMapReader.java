@@ -692,18 +692,13 @@ public class TMXMapReader {
             long tileId = Long.parseLong(gid);
             if ((tileId & ALL_FLAGS) != 0) {
                 // Read out the flags
-                long flippedHorizontally = tileId & FLIPPED_HORIZONTALLY_FLAG;
-                long flippedVertically = tileId & FLIPPED_VERTICALLY_FLAG;
-                long flippedDiagonally = tileId & FLIPPED_DIAGONALLY_FLAG;
-
-                obj.setFlipHorizontal(flippedHorizontally != 0);
-                obj.setFlipVertical(flippedVertically != 0);
-                obj.setFlipDiagonal(flippedDiagonally != 0);
+                obj.setFlipHorizontal((tileId & FLIPPED_HORIZONTALLY_FLAG) != 0);
+                obj.setFlipVertical((tileId & FLIPPED_VERTICALLY_FLAG) != 0);
+                obj.setFlipDiagonal((tileId & FLIPPED_DIAGONALLY_FLAG) != 0);
+                obj.setRotatedHexagonal120((tileId & ROTATED_HEXAGONAL_120_FLAG) != 0);
 
                 // Clear the flags
-                tileId &= ~(FLIPPED_HORIZONTALLY_FLAG
-                        | FLIPPED_VERTICALLY_FLAG
-                        | FLIPPED_DIAGONALLY_FLAG);
+                tileId &= ~ALL_FLAGS;
             }
             Tile tile = getTileForTileGID((int) tileId);
             obj.setTile(tile);
@@ -714,6 +709,7 @@ public class TMXMapReader {
             obj.setFlipHorizontal(templateObj.getFlipHorizontal());
             obj.setFlipVertical(templateObj.getFlipVertical());
             obj.setFlipDiagonal(templateObj.getFlipDiagonal());
+            obj.setRotatedHexagonal120(templateObj.getRotatedHexagonal120());
         }
 
         // Read child elements from TMX
@@ -850,6 +846,7 @@ public class TMXMapReader {
                 obj.setFlipHorizontal((tileId & FLIPPED_HORIZONTALLY_FLAG) != 0);
                 obj.setFlipVertical((tileId & FLIPPED_VERTICALLY_FLAG) != 0);
                 obj.setFlipDiagonal((tileId & FLIPPED_DIAGONALLY_FLAG) != 0);
+                obj.setRotatedHexagonal120((tileId & ROTATED_HEXAGONAL_120_FLAG) != 0);
                 tileId &= ~ALL_FLAGS;
             }
             int localId = (int) tileId - firstGid;
