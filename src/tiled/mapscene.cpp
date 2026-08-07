@@ -305,13 +305,21 @@ void MapScene::mapResized(QPoint offset)
             return;
 
     const MapRenderer *renderer = mMapDocument->renderer();
-    const QPointF pixelOffset = renderer->tileToPixelCoords(QPointF())
-                              - renderer->tileToPixelCoords(-offset);
+    const QPointF screenOffset = renderer->tileToScreenCoords(QPointF())
+                               - renderer->tileToScreenCoords(-offset);
 
+    translateViews(screenOffset);
+}
+
+/**
+ * Moves all views on this scene along by the given delta.
+ */
+void MapScene::translateViews(const QPointF &delta)
+{
     const auto sceneViews = views();
     for (QGraphicsView *view : sceneViews)
         if (auto mapView = qobject_cast<MapView*>(view))
-            mapView->forceCenterOn(mapView->viewCenter() + pixelOffset);
+            mapView->forceCenterOn(mapView->viewCenter() + delta);
 }
 
 /**
@@ -343,10 +351,7 @@ void MapScene::refreshScene()
         if (mLastWorldPositionMapFile == currentMapFile
                 && currentMapPosition != mLastWorldPosition) {
             const QPoint delta = currentMapPosition - mLastWorldPosition;
-            const auto sceneViews = views();
-            for (QGraphicsView *view : sceneViews)
-                if (auto mapView = qobject_cast<MapView*>(view))
-                    mapView->forceCenterOn(mapView->viewCenter() - delta);
+            translateViews(-delta);
         }
         mLastWorldPositionMapFile = currentMapFile;
         mLastWorldPosition = currentMapPosition;

@@ -115,6 +115,7 @@ private:
 
     void changeEvent(const ChangeEvent &change);
     void mapResized(QPoint offset);
+    void translateViews(const QPointF &delta);
     void repaintTileset(Tileset *tileset);
 
     void tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset);
