@@ -32,6 +32,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Rectangle;
 
@@ -134,14 +135,9 @@ class MapView extends JPanel implements Scrollable
         // For infinite maps, layer bounds can be negative.
         // Compute an origin offset so everything shifts into positive pixel space.
         if (map.getInfinite() != null && map.getInfinite() == 1) {
-            int minX = 0, minY = 0;
-            for (int i = 0; i < map.getLayerCount(); i++) {
-                Rectangle b = map.getLayer(i).getBounds();
-                minX = Math.min(minX, b.x);
-                minY = Math.min(minY, b.y);
-            }
-            originOffsetX = -minX * map.getTileWidth();
-            originOffsetY = -minY * map.getTileHeight();
+            Point min = minLayerOrigin(map.getLayers());
+            originOffsetX = -min.x * map.getTileWidth();
+            originOffsetY = -min.y * map.getTileHeight();
         } else {
             originOffsetX = 0;
             originOffsetY = 0;
@@ -151,6 +147,22 @@ class MapView extends JPanel implements Scrollable
         setOpaque(true);
 
         animationTimer = hasAnimatedTiles(map) ? new Timer(33, e -> repaint()) : null;
+    }
+
+    private static Point minLayerOrigin(java.util.List<MapLayer> layers) {
+        Point min = new Point(0, 0);
+        for (MapLayer layer : layers) {
+            if (layer instanceof Group) {
+                Point child = minLayerOrigin(((Group) layer).getLayers());
+                min.x = Math.min(min.x, child.x);
+                min.y = Math.min(min.y, child.y);
+            } else {
+                Rectangle b = layer.getBounds();
+                min.x = Math.min(min.x, b.x);
+                min.y = Math.min(min.y, b.y);
+            }
+        }
+        return min;
     }
 
     private static boolean hasAnimatedTiles(Map map) {
