@@ -37,6 +37,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Locale;
 
 import javax.imageio.ImageIO;
 
@@ -99,7 +100,7 @@ public class ImageHelper {
         if (path == null) {
             return false;
         }
-        String lower = path.toLowerCase();
+        String lower = path.toLowerCase(Locale.ROOT);
         return lower.endsWith(".svg") || lower.endsWith(".svgz");
     }
 
