@@ -179,12 +179,21 @@ public class HexagonalRenderer extends AbstractRenderer {
                     Tile t = layer.getTileAt(x, y);
 
                     if (t != null) {
+                        java.awt.Image image = t.getImage();
+                        if (image == null) {
+                            continue;
+                        }
                         Point screenCoords = getTopLeftCornerOfTile(x, y);
+                        // Apply layer offset and tileset tileoffset, and
+                        // bottom-align tiles taller than the cell.
+                        Point drawLoc = getTileDrawLocation(layer, t,
+                                screenCoords.x,
+                                screenCoords.y + map.getTileHeight() - image.getHeight(null));
                         drawTileWithFlags(
                                 g,
-                                t.getImage(),
-                                screenCoords.x,
-                                screenCoords.y,
+                                image,
+                                drawLoc.x,
+                                drawLoc.y,
                                 layer.getFlagsAt(x, y),
                                 true);
                     }
