@@ -353,7 +353,13 @@ public class TMXMapWriter {
             IOException {
         if (props != null && !props.isEmpty()) {
             w.startElement("properties");
+            // Sort by name and keep the first occurrence, so the output is
+            // deterministic and duplicates don't multiply on round trips.
+            java.util.Map<String, Property> unique = new java.util.TreeMap<>();
             for (Property prop : props.getProperties()) {
+                unique.putIfAbsent(prop.getName() != null ? prop.getName() : "", prop);
+            }
+            for (Property prop : unique.values()) {
                 final String key = prop.getName();
                 final String value = prop.getValue();
                 w.startElement("property");
