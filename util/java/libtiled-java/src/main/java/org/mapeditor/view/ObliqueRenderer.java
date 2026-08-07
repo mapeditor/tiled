@@ -30,6 +30,7 @@
  */
 package org.mapeditor.view;
 
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
@@ -39,6 +40,7 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 
 import org.mapeditor.core.Map;
+import org.mapeditor.core.ObjectGroup;
 import org.mapeditor.core.Tile;
 import org.mapeditor.core.TileLayer;
 
@@ -109,27 +111,59 @@ public class ObliqueRenderer extends OrthogonalRenderer {
                     (int) Math.ceil((pixelClip.getMaxY() + tileHeight) / tileHeight));
 
             g.transform(transform);
+            try {
+                for (int tx = startX; tx < endX; ++tx) {
+                    for (int ty = startY; ty < endY; ++ty) {
+                        final Tile tile = layer.getTileAt(tx, ty);
+                        if (tile == null) {
+                            continue;
+                        }
+                        final Image image = tile.getImage();
+                        if (image == null) {
+                            continue;
+                        }
 
-            for (int tx = startX; tx < endX; ++tx) {
-                for (int ty = startY; ty < endY; ++ty) {
-                    final Tile tile = layer.getTileAt(tx, ty);
-                    if (tile == null) {
-                        continue;
+                        Point drawLoc = getTileDrawLocation(
+                                layer, tile, tx * tileWidth, (ty + 1) * tileHeight - image.getHeight(null));
+
+                        drawTileWithFlags(g, image, drawLoc.x, drawLoc.y, layer.getFlagsAt(tx, ty), false);
                     }
-                    final Image image = tile.getImage();
-                    if (image == null) {
-                        continue;
-                    }
-
-                    Point drawLoc = getTileDrawLocation(
-                            layer, tile, tx * tileWidth, (ty + 1) * tileHeight - image.getHeight(null));
-
-                    drawTileWithFlags(g, image, drawLoc.x, drawLoc.y, layer.getFlagsAt(tx, ty), false);
                 }
+            } finally {
+                g.setTransform(oldTransform);
             }
-
-            g.setTransform(oldTransform);
         });
+    }
+
+    /**
+     * Objects live in the same skewed coordinate system as the tiles.
+     */
+    @Override
+    public void paintObjectGroup(Graphics2D g, ObjectGroup group) {
+        final AffineTransform oldTransform = g.getTransform();
+        g.transform(getTransform());
+        try {
+            super.paintObjectGroup(g, group);
+        } finally {
+            g.setTransform(oldTransform);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Dimension getMapSize() {
+        Dimension size = super.getMapSize();
+        final int tileWidth = map.getTileWidth();
+        final int tileHeight = map.getTileHeight();
+        if (tileWidth <= 0 || tileHeight <= 0) {
+            return size;
+        }
+
+        final double skewX = Math.abs(map.getSkewx() != null ? map.getSkewx() : 0);
+        final double skewY = Math.abs(map.getSkewy() != null ? map.getSkewy() : 0);
+        return new Dimension(
+                size.width + (int) Math.ceil(skewX / tileHeight * size.height),
+                size.height + (int) Math.ceil(skewY / tileWidth * size.width));
     }
 
     /**
