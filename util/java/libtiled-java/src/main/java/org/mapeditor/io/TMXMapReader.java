@@ -333,13 +333,12 @@ public class TMXMapReader {
 
     /**
      * Creates a {@link DocumentBuilderFactory} hardened against XML External
-     * Entity (XXE) attacks. Tileset and template files are referenced from
-     * untrusted TMX input, so external entity resolution and DOCTYPE
-     * declarations are disabled.
+     * Entity (XXE) attacks. External entity resolution and external DTD
+     * loading are disabled, while DOCTYPE declarations remain allowed so
+     * legacy TMX/TSX files with a DTD reference still parse.
      */
     private static DocumentBuilderFactory newSecureDocumentBuilderFactory() throws ParserConfigurationException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
         factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
         factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
@@ -355,6 +354,7 @@ public class TMXMapReader {
         DocumentBuilderFactory factory = newSecureDocumentBuilderFactory();
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
+            builder.setEntityResolver(entityResolver);
             //builder.setErrorHandler(new XMLErrorHandler());
             Document tsDoc = builder.parse(StreamHelper.buffered(in), ".");
 
@@ -791,8 +791,9 @@ public class TMXMapReader {
 
         DocumentBuilderFactory factory = newSecureDocumentBuilderFactory();
         try (InputStream in = StreamHelper.openStream(templateUrl)) {
-            Document doc = factory.newDocumentBuilder()
-                .parse(StreamHelper.buffered(in), ".");
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            builder.setEntityResolver(entityResolver);
+            Document doc = builder.parse(StreamHelper.buffered(in), ".");
             Node templateNode = doc.getDocumentElement();
 
             URL xmlPathSave = xmlPath;
@@ -1564,12 +1565,11 @@ public class TMXMapReader {
     }
 
     private Map unmarshal(InputStream in) throws Exception {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory factory = newSecureDocumentBuilderFactory();
         Document doc;
         try {
             factory.setIgnoringComments(true);
             factory.setIgnoringElementContentWhitespace(true);
-            factory.setExpandEntityReferences(false);
             DocumentBuilder builder = factory.newDocumentBuilder();
             builder.setEntityResolver(entityResolver);
             InputSource insrc = new InputSource(StreamHelper.buffered(in));
