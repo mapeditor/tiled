@@ -450,6 +450,12 @@ public class TMXMapReader {
         final int tileSpacing = getAttribute(t, "spacing", 0);
         final int tileMargin = getAttribute(t, "margin", 0);
 
+        // Store the declared tile grid so image-collection tilesets keep it.
+        set.setTileWidth(tileWidth);
+        set.setTileHeight(tileHeight);
+        set.setTileSpacing(tileSpacing);
+        set.setTileMargin(tileMargin);
+
         boolean hasTilesetImage = false;
         NodeList children = t.getChildNodes();
 
