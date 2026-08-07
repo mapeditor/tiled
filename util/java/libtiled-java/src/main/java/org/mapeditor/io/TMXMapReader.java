@@ -684,8 +684,15 @@ public class TMXMapReader {
             obj.setTemplate(templatePath);
         }
 
-        final int visible = getAttribute(t, "visible", 1);
-        obj.setVisible(visible == 1);
+        // Visibility: use the TMX value when present, else the template's
+        final String visibleStr = getAttributeValue(t, "visible");
+        if (visibleStr != null) {
+            obj.setVisible("1".equals(visibleStr) || "true".equalsIgnoreCase(visibleStr));
+        } else if (templateObj != null && templateObj.isVisible() != null) {
+            obj.setVisible(templateObj.isVisible());
+        } else {
+            obj.setVisible(true);
+        }
 
         // GID/tile: TMX gid overrides template tile
         if (gid != null) {
