@@ -210,12 +210,18 @@ public class XMLWriter {
             throws IOException, XMLWriterException {
         if (bStartTagOpen) {
             String escapedContent = (content != null)
-                    ? content.replaceAll("\"", "&quot;") : "";
+                    ? escapeText(content).replace("\"", "&quot;") : "";
             w.write(" " + name + "=\"" + escapedContent + "\"");
         } else {
             throw new XMLWriterException(
                     "Can't write attribute without open start tag.");
         }
+    }
+
+    private static String escapeText(String content) {
+        return content.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;");
     }
 
     /**
@@ -290,7 +296,7 @@ public class XMLWriter {
         }
 
         writeIndent();
-        w.write(content + newLine);
+        w.write(escapeText(content) + newLine);
     }
 
     /**
