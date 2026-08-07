@@ -1353,6 +1353,10 @@ public class TMXMapReader {
             String csvText = chunkNode.getTextContent();
             String[] csvTileIds = csvText.trim().split("[\\s]*,[\\s]*");
 
+            if (csvTileIds.length != cw * ch) {
+                throw new IOException("Number of tiles does not match the chunk's width and height");
+            }
+
             for (int y = 0; y < ch; y++) {
                 for (int x = 0; x < cw; x++) {
                     String gid = csvTileIds[x + y * cw];
