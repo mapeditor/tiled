@@ -780,7 +780,8 @@ public class TMXMapWriter {
                     chunkCheck:
                     for (int y = cy; y < cy + chunkH; y++) {
                         for (int x = cx; x < cx + chunkW; x++) {
-                            if (l.getTileAt(x, y) != null) {
+                            Properties tip = l.getTileInstancePropertiesAt(x, y);
+                            if (l.getTileAt(x, y) != null || (tip != null && !tip.isEmpty())) {
                                 hasData = true;
                                 break chunkCheck;
                             }
