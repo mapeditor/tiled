@@ -416,7 +416,7 @@ public class TMXMapWriter {
                 w.writeAttribute("margin", tileMargin);
             }
 
-            w.writeAttribute("tilecount", set.size());
+            w.writeAttribute("tilecount", set.getTilecount() != null ? set.getTilecount() : set.size());
             w.writeAttribute("columns", set.getColumns());
         }
 
@@ -518,7 +518,7 @@ public class TMXMapWriter {
             if (needWrite) {
                 w.writeAttribute("tilewidth", set.getTileWidth());
                 w.writeAttribute("tileheight", set.getTileHeight());
-                w.writeAttribute("tilecount", set.size());
+                w.writeAttribute("tilecount", set.getTilecount() != null ? set.getTilecount() : set.size());
                 w.writeAttribute("columns", set.getColumns());
 
                 for (Tile tile : set) {
