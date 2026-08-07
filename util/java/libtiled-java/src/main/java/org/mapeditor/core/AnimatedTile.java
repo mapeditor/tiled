@@ -140,7 +140,11 @@ public class AnimatedTile extends Tile {
                 return super.getImage();
             }
 
-            final long elapsed = (System.currentTimeMillis() - animationStartTimeMs) % totalDuration;
+            long elapsed = (System.currentTimeMillis() - animationStartTimeMs) % totalDuration;
+            if (elapsed < 0) {
+                // The system clock may move backwards.
+                elapsed += totalDuration;
+            }
             long time = 0;
             for (Frame frame : frames) {
                 int duration = frame.getDuration() != null ? frame.getDuration() : DEFAULT_FRAME_DURATION_MS;
