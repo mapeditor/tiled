@@ -1320,12 +1320,7 @@ public class TMXMapReader {
                                 layerWidth * layerHeight * 4, "map layer " + ml.getName())) {
                             for (int y = 0; y < ml.getHeight(); y++) {
                                 for (int x = 0; x < ml.getWidth(); x++) {
-                                    int tileId = 0;
-                                    tileId |= is.read();
-                                    tileId |= is.read() << Byte.SIZE;
-                                    tileId |= is.read() << Byte.SIZE * 2;
-                                    tileId |= is.read() << Byte.SIZE * 3;
-
+                                    int tileId = readTileId(is, "map layer " + ml.getName());
                                     setTileAtFromTileId(ml, y, x, tileId);
                                 }
                             }
@@ -1430,12 +1425,7 @@ public class TMXMapReader {
                 try (InputStream is = createDecompressStream(bais, comp, cw * ch * 4, "chunk")) {
                     for (int y = 0; y < ch; y++) {
                         for (int x = 0; x < cw; x++) {
-                            int tileId = 0;
-                            tileId |= is.read();
-                            tileId |= is.read() << Byte.SIZE;
-                            tileId |= is.read() << Byte.SIZE * 2;
-                            tileId |= is.read() << Byte.SIZE * 3;
-
+                            int tileId = readTileId(is, "chunk");
                             setTileAtFromTileId(ml, cy + y, cx + x, tileId);
                         }
                     }
@@ -1488,6 +1478,23 @@ public class TMXMapReader {
      * @param x x-coordinate
      * @param tileGid global id of the tile as read from the file
      */
+    /**
+     * Reads one little-endian 32-bit gid, failing loudly on truncated data.
+     */
+    private static int readTileId(InputStream is, String context) throws IOException {
+        int b0 = is.read();
+        int b1 = is.read();
+        int b2 = is.read();
+        int b3 = is.read();
+        if ((b0 | b1 | b2 | b3) < 0) {
+            throw new IOException("Premature end of tile data in " + context);
+        }
+        return b0
+                | b1 << Byte.SIZE
+                | b2 << Byte.SIZE * 2
+                | b3 << Byte.SIZE * 3;
+    }
+
     private void setTileAtFromTileId(TileLayer ml, int y, int x, int tileGid) {
         Tile tile = this.getTileForTileGID( (tileGid & (int)~ALL_FLAGS));
 
