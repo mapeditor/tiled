@@ -38,7 +38,9 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 
+import org.mapeditor.core.Group;
 import org.mapeditor.core.Map;
+import org.mapeditor.core.MapLayer;
 import org.mapeditor.core.MapObject;
 import org.mapeditor.core.ObjectGroup;
 import org.mapeditor.core.Tile;
@@ -67,22 +69,29 @@ public class OrthogonalRenderer extends AbstractRenderer {
     @Override
     public Dimension getMapSize() {
         if (map.getInfinite() != null && map.getInfinite() == 1) {
-            int minX = 0, minY = 0;
-            int maxX = map.getWidth(), maxY = map.getHeight();
-            for (int i = 0; i < map.getLayerCount(); i++) {
-                Rectangle b = map.getLayer(i).getBounds();
-                minX = Math.min(minX, b.x);
-                minY = Math.min(minY, b.y);
-                maxX = Math.max(maxX, b.x + b.width);
-                maxY = Math.max(maxY, b.y + b.height);
-            }
+            Rectangle extent = new Rectangle(0, 0, map.getWidth(), map.getHeight());
+            addLayerBounds(map.getLayers(), extent);
             return new Dimension(
-                    (maxX - minX) * map.getTileWidth(),
-                    (maxY - minY) * map.getTileHeight());
+                    extent.width * map.getTileWidth(),
+                    extent.height * map.getTileHeight());
         }
         return new Dimension(
                 map.getWidth() * map.getTileWidth(),
                 map.getHeight() * map.getTileHeight());
+    }
+
+    /**
+     * Grows the extent to cover the bounds of all layers, including layers
+     * nested inside groups.
+     */
+    private static void addLayerBounds(java.util.List<MapLayer> layers, Rectangle extent) {
+        for (MapLayer layer : layers) {
+            if (layer instanceof Group) {
+                addLayerBounds(((Group) layer).getLayers(), extent);
+            } else {
+                extent.add(layer.getBounds());
+            }
+        }
     }
 
     /** {@inheritDoc} */
