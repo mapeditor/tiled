@@ -253,15 +253,23 @@ public class TMXMapWriter {
             w.writeAttribute("class", map.getClassName());
         }
 
-        w.writeAttribute("nextlayerid", map.getNextlayerid());
-        w.writeAttribute("nextobjectid", map.getNextobjectid());
+        if (map.getNextlayerid() != null) {
+            w.writeAttribute("nextlayerid", map.getNextlayerid());
+        }
+        if (map.getNextobjectid() != null) {
+            w.writeAttribute("nextobjectid", map.getNextobjectid());
+        }
 
-        if (orientation == Orientation.HEXAGONAL) {
+        if (orientation == Orientation.HEXAGONAL && map.getHexSideLength() != null) {
             w.writeAttribute("hexsidelength", map.getHexSideLength());
         }
         if (orientation == Orientation.HEXAGONAL || orientation == Orientation.STAGGERED) {
-            w.writeAttribute("staggeraxis", map.getStaggerAxis().value());
-            w.writeAttribute("staggerindex", map.getStaggerIndex().value());
+            if (map.getStaggerAxis() != null) {
+                w.writeAttribute("staggeraxis", map.getStaggerAxis().value());
+            }
+            if (map.getStaggerIndex() != null) {
+                w.writeAttribute("staggerindex", map.getStaggerIndex().value());
+            }
         }
 
         if (map.getSkewx() != null && map.getSkewx() != 0) {
