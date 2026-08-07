@@ -68,6 +68,7 @@ import org.mapeditor.core.AnimatedTile;
 import org.mapeditor.core.Group;
 import org.mapeditor.core.ImageLayer;
 import org.mapeditor.core.Map;
+import org.mapeditor.core.MapLayer;
 import org.mapeditor.core.MapObject;
 import org.mapeditor.core.ObjectGroup;
 import org.mapeditor.core.Point;
@@ -1160,26 +1161,21 @@ public class TMXMapReader {
         // Load the layers and objectgroups
         for (Node sibs = t.getFirstChild(); sibs != null;
              sibs = sibs.getNextSibling()) {
+            MapLayer child = null;
             if ("group".equals(sibs.getNodeName())) {
-                Group group = unmarshalGroup(sibs);
-                if (group != null) {
-                    g.getLayers().add(group);
-                }
+                child = unmarshalGroup(sibs);
             } else if ("layer".equals(sibs.getNodeName())) {
-                TileLayer layer = readLayer(sibs);
-                if (layer != null) {
-                    g.getLayers().add(layer);
-                }
+                child = readLayer(sibs);
             } else if ("objectgroup".equals(sibs.getNodeName())) {
-                ObjectGroup group = unmarshalObjectGroup(sibs);
-                if (group != null) {
-                    g.getLayers().add(group);
-                }
+                child = unmarshalObjectGroup(sibs);
             } else if ("imagelayer".equals(sibs.getNodeName())) {
-                ImageLayer imageLayer = unmarshalImageLayer(sibs);
-                if (imageLayer != null) {
-                    g.getLayers().add(imageLayer);
-                }
+                child = unmarshalImageLayer(sibs);
+            }
+            if (child != null) {
+                // Group children are not added through Map.addLayer, so set
+                // the map here for anything that needs the map context.
+                child.setMap(map);
+                g.getLayers().add(child);
             }
         }
 
