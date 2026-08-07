@@ -353,7 +353,7 @@ public class TMXMapWriter {
                     w.writeAttribute("value", value);
                 } else if (value != null) {
                     // Save multiline values as character data
-                    w.writeCDATA(value);
+                    w.writeCharacters(value);
                 }
                 w.endElement();
             }
@@ -1111,7 +1111,7 @@ public class TMXMapWriter {
                 w.writeAttribute("valign", text.getValign().value());
             }
             if (text.getValue() != null) {
-                w.writeCDATA(text.getValue());
+                w.writeCharacters(text.getValue());
             }
             w.endElement();
         } else if (mapObject.getCapsule() != null) {
