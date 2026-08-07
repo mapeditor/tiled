@@ -97,9 +97,7 @@ public class IsometricRenderer extends AbstractRenderer {
             drawLoc.x -= tileWidth / 2;
             drawLoc.y -= tileHeight / 2;
 
-            // Add offset from tile layer property
-            drawLoc.x += layer.getOffsetX() != null ? layer.getOffsetX() : 0;
-            drawLoc.y += layer.getOffsetY() != null ? layer.getOffsetY() : 0;
+            // The layer offset is applied per tile by getTileDrawLocation.
 
             // Determine area to draw from clipping rectangle
             int tileStepY = tileHeight / 2 == 0 ? 1 : tileHeight / 2;
