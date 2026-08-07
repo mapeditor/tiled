@@ -120,6 +120,30 @@ Tiled.ObjectInteractionItem {
                 height: objectInteractionItem.selectionRect.height
             }
         }
+
+        ShapePath {
+            id: objectHandleArrows
+
+            fillColor: "black"
+            strokeColor: "white"
+            strokeWidth: 1 / mapContainer.scale
+
+            PathMultiline {
+                paths: objectHandlePolygons
+            }
+        }
+
+        ShapePath {
+            id: hoveredHandle
+
+            fillColor: "white"
+            strokeColor: "black"
+            strokeWidth: 1 / mapContainer.scale
+
+            PathPolyline {
+                path: hoveredHandlePolygon
+            }
+        }
     }
 
     // EditPolygonTool

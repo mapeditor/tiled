@@ -118,6 +118,7 @@ Rectangle {
             ObjectInteractionItem {
                 id: objectInteractionItem
 
+                zoom: 1 / mapContainer.scale
                 selectedToolId: mapEditor.selectedTool?.id ?? ""
                 selectedObjects: mapEditor.selectedObjects
                 hoveredObjects: mapEditor.aboutToBeSelectedObjects
@@ -129,13 +130,20 @@ Rectangle {
                     when: mapEditor.selectedTool !== null &&
                           mapEditor.selectedTool?.selectedHandlePoints !== undefined
                 }
-
                 Binding {
                     target: objectInteractionItem
                     property: "highlightedPolygonEditPoints"
                     value: mapEditor.selectedTool?.highlightedHandlePoints
                     when: mapEditor.selectedTool !== null &&
                           mapEditor.selectedTool?.highlightedHandlePoints !== undefined
+                }
+
+                Binding {
+                    target: objectInteractionItem
+                    property: "objectHandles"
+                    value: mapEditor.selectedTool?.objectHandles
+                    when: mapEditor.selectedTool !== null &&
+                          mapEditor.selectedTool?.objectHandles !== undefined
                 }
             }
         }

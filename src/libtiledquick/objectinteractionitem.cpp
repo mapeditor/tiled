@@ -44,6 +44,16 @@ ObjectInteractionItem::ObjectInteractionItem(QQuickItem *parent)
 
 ObjectInteractionItem::~ObjectInteractionItem() = default;
 
+void ObjectInteractionItem::setZoom(const qreal zoom)
+{
+    if (mZoom == zoom)
+        return;
+
+    mZoom = zoom;
+    emit zoomChanged();
+    emit objectHandlesChanged();
+}
+
 void ObjectInteractionItem::setSelectedToolId(const QString &id)
 {
     if (mSelectedToolId == id)
@@ -92,6 +102,56 @@ void ObjectInteractionItem::setHighlightedPolygonEditPoints(const QList<QPointF>
 
     mHighlightedPolygonEditPoints = points;
     emit highlightedPolygonEditPointsChanged();
+}
+
+void ObjectInteractionItem::setObjectHandles(const QList<Tiled::ObjectHandleData> &handles)
+{
+    mObjectHandles = handles;
+    emit objectHandlesChanged();
+}
+
+QList<QPolygonF> ObjectInteractionItem::objectHandlePolygons() const
+{
+    QList<QPolygonF> polygons;
+
+    for (const auto &handle : mObjectHandles)
+        if (handle.drawPoints.size() > 0 && !handle.isHovered) {
+            QTransform transform;
+
+            const QRectF boundingRect = handle.drawPoints.boundingRect();
+            const qreal centerX = boundingRect.x() + boundingRect.width()/2;
+            const qreal centerY = boundingRect.y() + boundingRect.height()/2;
+
+            transform.translate(handle.pos.x(), handle.pos.y());
+            transform.translate(centerX * mZoom, centerY * mZoom);
+            transform.scale(mZoom, mZoom);
+            transform.translate(-centerX, -centerY);
+
+            polygons.append(transform.map(handle.drawPoints));
+        }
+
+    return polygons;
+}
+
+QPolygonF ObjectInteractionItem::hoveredHandlePolygon() const
+{
+    for (const auto &handle : mObjectHandles)
+        if (handle.isHovered) {
+            QTransform transform;
+
+            const QRectF boundingRect = handle.drawPoints.boundingRect();
+            const qreal centerX = boundingRect.x() + boundingRect.width()/2;
+            const qreal centerY = boundingRect.y() + boundingRect.height()/2;
+
+            transform.translate(handle.pos.x(), handle.pos.y());
+            transform.translate(centerX * mZoom, centerY * mZoom);
+            transform.scale(mZoom, mZoom);
+            transform.translate(-centerX, -centerY);
+
+            return transform.map(handle.drawPoints);
+        }
+
+    return QPolygonF();
 }
 
 QList<QPointF> ObjectInteractionItem::polygonEditPoints() const
@@ -145,6 +205,10 @@ void ObjectInteractionItem::mousePressed(const QPointF &pos)
           mSelectedToolId == QStringLiteral("ObjectSelectionTool")) ||
           mHoveredObjects.count() > 0)
         return;
+
+    for (const auto &handle : mObjectHandles)
+        if (handle.isHovered)
+            return;
 
     mDrawSelectionRect = true;
 
