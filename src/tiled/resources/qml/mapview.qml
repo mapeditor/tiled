@@ -120,7 +120,7 @@ Rectangle {
 
                 zoom: 1 / mapContainer.scale
                 selectedToolId: mapEditor.selectedTool?.id ?? ""
-                selectedObjects: mapEditor.selectedObjects
+                selectedObjects: mapItem.map.selectedObjects
                 hoveredObjects: mapEditor.aboutToBeSelectedObjects
 
                 Binding {

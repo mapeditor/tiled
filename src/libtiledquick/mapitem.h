@@ -105,6 +105,7 @@ private:
 
     void repaintRegion(const QRegion &region, Tiled::TileLayer *tileLayer);
     void repaintObjects(const QList<Tiled::MapObject*> &objects, Tiled::ObjectGroup *group = nullptr);
+    void onTileLayerChanged(Tiled::TileLayer *layer, Tiled::MapDocument::TileLayerChangeFlags flags);
 
     Tiled::Map *mMap = nullptr;
     Tiled::EditableMap *mEditableMap = nullptr;

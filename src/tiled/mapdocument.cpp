@@ -1491,6 +1491,8 @@ void MapDocument::onChanged(const ChangeEvent &change)
         const auto &layer = static_cast<const LayerChangeEvent&>(change);
         if (layer.layer->isObjectGroup())
             emit mapObjectsChanged({}, layer.layer->asObjectGroup());
+        if (layer.layer->isTileLayer())
+            emit tileLayerChanged(layer.layer->asTileLayer(), TileLayerChangeFlags());
         break;
     }
     default:

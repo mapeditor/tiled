@@ -1,5 +1,7 @@
 #include "objectinteractionitem.h"
 
+#include "editablemapobject.h"
+
 #include <QApplication>
 #include <QPalette>
 
@@ -60,11 +62,12 @@ void ObjectInteractionItem::setSelectedToolId(const QString &id)
         return;
 
     mSelectedToolId = id;
+    setObjectHandles({});
     emit selectedToolIdChanged();
     emit polygonEditPointsChanged();
 }
 
-void ObjectInteractionItem::setSelectedObjects(const QList<Tiled::MapObject*> &objects)
+void ObjectInteractionItem::setSelectedObjects(const QList<QObject*> &objects)
 {
     if (mSelectedObjects == objects)
         return;
@@ -160,16 +163,27 @@ QList<QPointF> ObjectInteractionItem::polygonEditPoints() const
     if (mSelectedToolId != QStringLiteral("EditPolygonTool"))
         return points;
 
-    for (auto object : mSelectedObjects)
-        for (QPointF point : object->polygon())
-            points.append(point + object->position());
+    for (auto object : std::as_const(mSelectedObjects)) {
+        auto mapObject = dynamic_cast<Tiled::EditableMapObject*>(object)->mapObject();
+        if (!mapObject)
+            continue;
+
+        for (QPointF point : mapObject->polygon())
+            points.append(point + mapObject->position());
+    }
 
     return points;
 }
 
 QList<QPolygonF> ObjectInteractionItem::selectionOutlines() const
 {
-    return outlines(mSelectedObjects);
+    QList<Tiled::MapObject*> selectedObjects;
+
+    for (auto object : std::as_const(mSelectedObjects))
+        if (auto mapObject = dynamic_cast<Tiled::EditableMapObject*>(object)->mapObject())
+            selectedObjects.append(mapObject);
+
+    return outlines(selectedObjects);
 }
 
 QList<QPolygonF> ObjectInteractionItem::hoverOutlines() const
@@ -206,7 +220,7 @@ void ObjectInteractionItem::mousePressed(const QPointF &pos)
           mHoveredObjects.count() > 0)
         return;
 
-    for (const auto &handle : mObjectHandles)
+    for (const auto &handle : std::as_const(mObjectHandles))
         if (handle.isHovered)
             return;
 

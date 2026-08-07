@@ -87,7 +87,7 @@ QSGNode *ObjectGroupItem::updatePaintNode(QSGNode *node,
     node = new QSGNode;
     node->setFlag(QSGNode::OwnedByParent);
 
-    if (!mGroup)
+    if (!mGroup || !mGroup->isVisible())
         return node;
 
     TilesetHelper helper = TilesetHelper::instance(static_cast<MapItem*>(parentItem()));
@@ -95,6 +95,11 @@ QSGNode *ObjectGroupItem::updatePaintNode(QSGNode *node,
     QVector<ObjectData> objectData;
 
     for (auto object : *mGroup) {
+        // Ignore invisible objects and single/zero vertex polygons
+        if (!object->isVisible() ||
+            (object->shape() == MapObject::Shape::Polygon && object->polygon().size() < 2))
+            continue;
+
         const Cell &cell = object->cell();
         QSGTexture *textTexture = nullptr;
 
@@ -104,7 +109,7 @@ QSGNode *ObjectGroupItem::updatePaintNode(QSGNode *node,
                 objectData.clear();
             }
 
-            if (!cell.isEmpty())
+            if (cell.tile())
                 helper.setTileset(cell.tileset());
             else
                 helper.setTileset(nullptr);
@@ -182,9 +187,9 @@ QSGNode *ObjectGroupItem::updatePaintNode(QSGNode *node,
         if (data.type == ObjectGroupMaterial::ObjectType::Polyline)
             data.polygon.append(mousePos() - object->position());
 
-        if (!cell.isEmpty()) {
-            data.twidth = cell.tile()->width();
-            data.theight = cell.tile()->height();
+        if (Tile *tile = cell.tile()) {
+            data.twidth = tile->width();
+            data.theight = tile->height();
             data.flippedHorizontally = cell.flippedHorizontally();
             data.flippedVertically = cell.flippedVertically();
         } else {

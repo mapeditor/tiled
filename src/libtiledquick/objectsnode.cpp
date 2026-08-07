@@ -46,8 +46,9 @@ static const QSGGeometry::AttributeSet ObjectAttributeSet = {
 static void processBorderSegment(const ObjectData &data, ObjectTexturedPoint2D *&v, const QPointF start, const QPointF end, const float thickness, const float border_tx, const int totalBorderSegments = 1, const float shadow_tx = 2.5, const QPointF shadowOffset = {1, 1}, const bool extendCorners = false)
 {
     const float lineLength = sqrt(pow(end.x() - start.x(), 2) + pow(end.y() - start.y(), 2));
-    const QPointF thicknessOffset = thickness/2 * QPointF((start.y() - end.y())/lineLength,
-                                               (end.x() - start.x())/lineLength);
+    const QPointF thicknessOffset = lineLength == 0 ? QPointF(0,0) :
+                                    thickness/2 * QPointF((start.y() - end.y())/lineLength,
+                                    (end.x() - start.x())/lineLength);
     const float o_x = thicknessOffset.x();
     const float o_y = thicknessOffset.y();
     const float c = (extendCorners ? 1 : 0);
@@ -132,7 +133,7 @@ static void processBorderSegment(const ObjectData &data, ObjectTexturedPoint2D *
         v[b+i].tint_b = data.tint_b;
         v[b+i].alpha = data.alpha;
 
-        v[i].ty = 0;
+        v[b+i].ty = 0;
     }
 
     if (data.rotation != 0) {
@@ -455,9 +456,10 @@ ObjectsNode::ObjectsNode(QSGTexture *texture, const QVector<ObjectData> &objectD
 
 void ObjectsNode::processObjectData(const QVector<ObjectData> &objectData)
 {
-    // TODO: Bounds can be adjusted to be more precise
+    // TODO: Bounds can be adjusted to be more precise (should take into account object size)
     const int precision = (objectData.isEmpty() || objectData[0].zoom == 0 ? 12 :
                            qBound(12, int(18 / sqrt(objectData[0].zoom)), 56));
+    const int staticPrecision = 8;
 
     int totalVertices = 0;
     for (const ObjectData &data : objectData) {
@@ -483,7 +485,7 @@ void ObjectsNode::processObjectData(const QVector<ObjectData> &objectData)
             totalVertices += 6;
             break;
         case ObjectGroupMaterial::ObjectType::Point:
-            totalVertices += 3*8 + (3+6+6)*(8+3);
+            totalVertices += 3*staticPrecision + (3+6+6)*(staticPrecision+2);
             break;
         case ObjectGroupMaterial::ObjectType::Tile:
             totalVertices += 6;
@@ -515,7 +517,7 @@ void ObjectsNode::processObjectData(const QVector<ObjectData> &objectData)
             processTextureData(data, v, false);
             break;
         case ObjectGroupMaterial::ObjectType::Point:
-            processPointData(data, v, 8);
+            processPointData(data, v, staticPrecision);
             break;
         case ObjectGroupMaterial::ObjectType::Tile:
             processTextureData(data, v);

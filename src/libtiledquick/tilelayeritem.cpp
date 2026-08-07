@@ -60,6 +60,9 @@ QSGNode *TileLayerItem::updatePaintNode(QSGNode *node,
     node = new QSGNode;
     node->setFlag(QSGNode::OwnedByParent);
 
+    if (!mLayer->isVisible())
+        return node;
+
     TilesetHelper helper = TilesetHelper::instance(static_cast<MapItem*>(parentItem()));
 
     QVector<TileData> tileData;

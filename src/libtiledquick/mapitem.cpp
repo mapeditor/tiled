@@ -46,16 +46,18 @@ void MapItem::setMap(Tiled::EditableMap *editableMap)
 
     if (mEditableMap && mEditableMap->mapDocument()) {
         Tiled::MapDocument *oldMapDocument = mEditableMap->mapDocument();
+        disconnect(oldMapDocument, &Tiled::MapDocument::mapResized, this, &MapItem::refresh);
         disconnect(oldMapDocument, &Tiled::MapDocument::regionChanged, this, &MapItem::repaintRegion);
         disconnect(oldMapDocument, &Tiled::MapDocument::mapObjectsChanged, this, &MapItem::repaintObjects);
-        disconnect(oldMapDocument, &Tiled::MapDocument::mapResized, this, &MapItem::refresh);
+        disconnect(oldMapDocument, &Tiled::MapDocument::tileLayerChanged, this, &MapItem::onTileLayerChanged);
     }
 
     if (editableMap && editableMap->mapDocument()) {
         Tiled::MapDocument *mapDocument = editableMap->mapDocument();
+        connect(mapDocument, &Tiled::MapDocument::mapResized, this, &MapItem::refresh);
         connect(mapDocument, &Tiled::MapDocument::regionChanged, this, &MapItem::repaintRegion);
         connect(mapDocument, &Tiled::MapDocument::mapObjectsChanged, this, &MapItem::repaintObjects);
-        connect(mapDocument, &Tiled::MapDocument::mapResized, this, &MapItem::refresh);
+        connect(mapDocument, &Tiled::MapDocument::tileLayerChanged, this, &MapItem::onTileLayerChanged);
     }
 
     mEditableMap = editableMap;
@@ -273,4 +275,10 @@ void MapItem::repaintObjects(const QList<Tiled::MapObject*> &objects, ObjectGrou
     }
 
     emit mapObjectsChanged();
+}
+
+void MapItem::onTileLayerChanged(Tiled::TileLayer *layer, Tiled::MapDocument::TileLayerChangeFlags) {
+    for (auto layerItem : std::as_const(mTileLayerItems))
+        if (layerItem->layer() == layer && layerItem->isVisible() != layer->isVisible())
+            layerItem->layerVisibilityChanged();
 }

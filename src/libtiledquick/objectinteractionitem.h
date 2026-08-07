@@ -15,7 +15,7 @@ class TILEDQUICK_SHARED_EXPORT ObjectInteractionItem : public QQuickItem
 
     Q_PROPERTY(qreal zoom READ zoom WRITE setZoom NOTIFY zoomChanged)
     Q_PROPERTY(QString selectedToolId READ selectedToolId WRITE setSelectedToolId NOTIFY selectedToolIdChanged)
-    Q_PROPERTY(QList<Tiled::MapObject*> selectedObjects READ selectedObjects WRITE setSelectedObjects NOTIFY selectedObjectsChanged)
+    Q_PROPERTY(QList<QObject*> selectedObjects READ selectedObjects WRITE setSelectedObjects NOTIFY selectedObjectsChanged)
     Q_PROPERTY(QList<Tiled::MapObject*> hoveredObjects READ hoveredObjects WRITE setHoveredObjects NOTIFY hoveredObjectsChanged)
     Q_PROPERTY(QList<QPointF> selectedPolygonEditPoints READ selectedPolygonEditPoints WRITE setSelectedPolygonEditPoints NOTIFY selectedPolygonEditPointsChanged)
     Q_PROPERTY(QList<QPointF> highlightedPolygonEditPoints READ highlightedPolygonEditPoints WRITE setHighlightedPolygonEditPoints NOTIFY highlightedPolygonEditPointsChanged)
@@ -38,8 +38,8 @@ public:
     QString selectedToolId() const;
     void setSelectedToolId(const QString &id);
 
-    QList<Tiled::MapObject*> selectedObjects() const;
-    void setSelectedObjects(const QList<Tiled::MapObject*> &objects);
+    QList<QObject*> selectedObjects() const;
+    void setSelectedObjects(const QList<QObject*> &objects);
 
     QList<Tiled::MapObject*> hoveredObjects() const;
     void setHoveredObjects(const QList<Tiled::MapObject*> &objects);
@@ -84,7 +84,7 @@ signals:
 private:
     qreal mZoom = 0;
     QString mSelectedToolId;
-    QList<Tiled::MapObject*> mSelectedObjects;
+    QList<QObject*> mSelectedObjects;
     QList<Tiled::MapObject*> mHoveredObjects;
     QList<QPointF> mSelectedPolygonEditPoints;
     QList<QPointF> mHighlightedPolygonEditPoints;
@@ -101,7 +101,7 @@ inline QString ObjectInteractionItem::selectedToolId() const {
     return mSelectedToolId;
 }
 
-inline QList<Tiled::MapObject*> ObjectInteractionItem::selectedObjects() const
+inline QList<QObject*> ObjectInteractionItem::selectedObjects() const
 {
     return mSelectedObjects;
 }
