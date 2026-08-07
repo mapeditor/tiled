@@ -725,7 +725,9 @@ public class TMXMapWriter {
     private void writeLayerAttributes(MapLayer l, XMLWriter w) throws IOException {
         Rectangle bounds = l.getBounds();
 
-        w.writeAttribute("id", l.getId());
+        if (l.getId() != null && l.getId() != 0) {
+            w.writeAttribute("id", l.getId());
+        }
 
         w.writeAttribute("name", l.getName());
         if (l instanceof TileLayer) {
@@ -1085,7 +1087,9 @@ public class TMXMapWriter {
     private void writeMapObject(MapObject mapObject, XMLWriter w, String wp)
             throws IOException {
         w.startElement("object");
-        w.writeAttribute("id", mapObject.getId());
+        if (mapObject.getId() != null) {
+            w.writeAttribute("id", mapObject.getId());
+        }
 
         if (isNonEmpty(mapObject.getTemplate())) {
             w.writeAttribute("template", mapObject.getTemplate());
