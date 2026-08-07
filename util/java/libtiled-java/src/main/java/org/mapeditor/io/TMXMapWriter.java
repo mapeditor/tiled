@@ -968,7 +968,7 @@ public class TMXMapWriter {
             for (Frame frame : anim.getFrame()) {
                 w.startElement("frame");
                 w.writeAttribute("tileid", frame.getTileid());
-                w.writeAttribute("duration", frame.getDuration());
+                w.writeAttribute("duration", frame.getDuration() != null ? frame.getDuration() : 100);
                 w.endElement();
             }
             w.endElement();
