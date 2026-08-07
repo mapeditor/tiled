@@ -31,7 +31,10 @@
 package org.mapeditor.io;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -69,6 +72,7 @@ import org.mapeditor.core.WangSet;
 import org.mapeditor.core.WangSets;
 import org.mapeditor.core.WangTile;
 import org.mapeditor.io.xml.XMLWriter;
+import org.mapeditor.util.ImageHelper;
 
 /**
  * A writer for Tiled's TMX map format.
@@ -471,9 +475,11 @@ public class TMXMapWriter {
 
         writeProperties(set.getProperties(), w);
 
-        if (imageSource != null) {
+        if (imageSource != null || set.getTileSetImage() != null) {
             w.startElement("image");
-            w.writeAttribute("source", imageSource);
+            if (imageSource != null) {
+                w.writeAttribute("source", imageSource);
+            }
 
             Color trans = set.getTransparentColor();
             if (trans != null) {
@@ -490,6 +496,10 @@ public class TMXMapWriter {
                 if (imageData.getHeight() != null) {
                     w.writeAttribute("height", imageData.getHeight());
                 }
+            }
+            if (imageSource == null) {
+                w.writeAttribute("format", "png");
+                writeEmbeddedImageData(w, set.getTileSetImage());
             }
             w.endElement();
 
@@ -649,17 +659,36 @@ public class TMXMapWriter {
 
         writeProperties(il.getProperties(), w);
 
-        if (il.getImage() != null && il.getImage().getSource() != null) {
+        org.mapeditor.core.ImageData image = il.getImage();
+        if (image != null && (image.getSource() != null || image.getData() != null)) {
             w.startElement("image");
-            w.writeAttribute("source", getRelativePath(wp, il.getImage().getSource()));
-            if (il.getImage().getWidth() != null) {
-                w.writeAttribute("width", il.getImage().getWidth());
+            if (image.getSource() != null) {
+                w.writeAttribute("source", getRelativePath(wp, image.getSource()));
+            } else if (image.getFormat() != null) {
+                w.writeAttribute("format", image.getFormat());
             }
-            if (il.getImage().getHeight() != null) {
-                w.writeAttribute("height", il.getImage().getHeight());
+            if (image.getWidth() != null) {
+                w.writeAttribute("width", image.getWidth());
             }
-            if (il.getImage().getTrans() != null) {
-                w.writeAttribute("trans", il.getImage().getTrans());
+            if (image.getHeight() != null) {
+                w.writeAttribute("height", image.getHeight());
+            }
+            if (image.getTrans() != null) {
+                w.writeAttribute("trans", image.getTrans());
+            }
+            if (image.getSource() == null && image.getData() != null) {
+                org.mapeditor.core.Data data = image.getData();
+                w.startElement("data");
+                if (data.getEncoding() != null) {
+                    w.writeAttribute("encoding", data.getEncoding().value());
+                }
+                if (data.getCompression() != null) {
+                    w.writeAttribute("compression", data.getCompression().value());
+                }
+                if (data.getValue() != null) {
+                    w.writeCDATA(data.getValue().trim());
+                }
+                w.endElement();
             }
             w.endElement();
         }
@@ -970,6 +999,13 @@ public class TMXMapWriter {
 
         if (tile.getSource() != null) {
             writeImage(tile, w, wp);
+        } else if (tile.getImage() != null) {
+            w.startElement("image");
+            w.writeAttribute("width", tile.getWidth());
+            w.writeAttribute("height", tile.getHeight());
+            w.writeAttribute("format", "png");
+            writeEmbeddedImageData(w, tile.getImage());
+            w.endElement();
         }
 
         if (tile.getCollisionObjectGroup() != null) {
@@ -988,6 +1024,29 @@ public class TMXMapWriter {
         w.writeAttribute("width", t.getWidth());
         w.writeAttribute("height", t.getHeight());
         w.writeAttribute("source", getRelativePath(wp, t.getSource()));
+        w.endElement();
+    }
+
+    /**
+     * Writes an image as an embedded base64-encoded PNG data element.
+     */
+    private static void writeEmbeddedImageData(XMLWriter w, Image image) throws IOException {
+        BufferedImage buffered;
+        if (image instanceof BufferedImage) {
+            buffered = (BufferedImage) image;
+        } else {
+            buffered = new BufferedImage(
+                    image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g = buffered.createGraphics();
+            try {
+                g.drawImage(image, 0, 0, null);
+            } finally {
+                g.dispose();
+            }
+        }
+        w.startElement("data");
+        w.writeAttribute("encoding", "base64");
+        w.writeCDATA(java.util.Base64.getEncoder().encodeToString(ImageHelper.imageToPNG(buffered)));
         w.endElement();
     }
 

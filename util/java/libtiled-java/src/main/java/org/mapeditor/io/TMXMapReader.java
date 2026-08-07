@@ -512,6 +512,20 @@ public class TMXMapReader {
                         imgData.setTrans(transStr);
                     }
                     set.setImageData(imgData);
+                } else {
+                    // Tileset image embedded as base64 <data>
+                    BufferedImage img = unmarshalImage(child, xmlPath);
+                    if (img != null) {
+                        set.importTileBitmap(img, new BasicTileCutter(
+                            tileWidth, tileHeight, tileSpacing, tileMargin));
+                        hasTilesetImage = true;
+
+                        ImageData imgData = new ImageData();
+                        setStrIfPresent(child, "format", imgData::setFormat);
+                        setIntIfPresent(child, "width", imgData::setWidth);
+                        setIntIfPresent(child, "height", imgData::setHeight);
+                        set.setImageData(imgData);
+                    }
                 }
             } else if (child.getNodeName().equalsIgnoreCase("tile")) {
                 Tile tile = unmarshalTile(set, child, xmlPath);

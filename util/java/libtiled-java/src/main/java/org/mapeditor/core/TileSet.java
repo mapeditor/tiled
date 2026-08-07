@@ -141,7 +141,7 @@ public class TileSet extends TileSetData implements Iterable<Tile> {
      * @param tileBitmap the image to be used, must not be null
      * @param cutter the tile cutter, must not be null
      */
-    private void importTileBitmap(BufferedImage tileBitmap, TileCutter cutter) {
+    public void importTileBitmap(BufferedImage tileBitmap, TileCutter cutter) {
         assert tileBitmap != null;
         assert cutter != null;
 
@@ -419,5 +419,15 @@ public class TileSet extends TileSetData implements Iterable<Tile> {
      */
     public boolean isSetFromImage() {
         return tileSetImage != null;
+    }
+
+    /**
+     * Returns the tileset image, when this tileset was created from a single
+     * image.
+     *
+     * @return the tileset image, or null for image-collection tilesets
+     */
+    public Image getTileSetImage() {
+        return tileSetImage;
     }
 }
