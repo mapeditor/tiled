@@ -320,7 +320,7 @@ public class XMLWriter {
         }
 
         writeIndent();
-        w.write(escapeText(content) + newLine);
+        w.write(escapeText(content != null ? content : "") + newLine);
     }
 
     /**
