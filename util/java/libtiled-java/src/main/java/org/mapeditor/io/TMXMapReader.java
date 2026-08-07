@@ -1350,8 +1350,9 @@ public class TMXMapReader {
                             dataChild = dataChild.getNextSibling()) {
                         if ("tile".equalsIgnoreCase(dataChild.getNodeName())) {
                             // Parse as long so unsigned gids with flip flags set fit.
+                            // A missing gid means an empty cell, like in C++.
                             String gidAttr = getAttributeValue(dataChild, "gid");
-                            int tileId = gidAttr != null ? (int) Long.parseLong(gidAttr) : -1;
+                            int tileId = gidAttr != null ? (int) Long.parseLong(gidAttr) : 0;
                             setTileAtFromTileId(ml, y, x, tileId);
 
                             x++;
@@ -1450,8 +1451,9 @@ public class TMXMapReader {
                  dataChild = dataChild.getNextSibling()) {
                 if ("tile".equalsIgnoreCase(dataChild.getNodeName())) {
                     // Parse as long so unsigned gids with flip flags set fit.
+                    // A missing gid means an empty cell, like in C++.
                     String gidAttr = getAttributeValue(dataChild, "gid");
-                    int tileId = gidAttr != null ? (int) Long.parseLong(gidAttr) : -1;
+                    int tileId = gidAttr != null ? (int) Long.parseLong(gidAttr) : 0;
                     setTileAtFromTileId(ml, cy + y, cx + x, tileId);
 
                     x++;
