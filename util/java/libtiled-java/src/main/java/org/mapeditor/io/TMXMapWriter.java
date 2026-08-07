@@ -222,7 +222,7 @@ public class TMXMapWriter {
         w.writeAttribute("height", map.getHeight());
         w.writeAttribute("tilewidth", map.getTileWidth());
         w.writeAttribute("tileheight", map.getTileHeight());
-        w.writeAttribute("infinite", map.getInfinite());
+        w.writeAttribute("infinite", map.getInfinite() != null ? map.getInfinite() : 0);
 
         if (isNonEmpty(map.getBackgroundcolor())) {
             w.writeAttribute("backgroundcolor", map.getBackgroundcolor());
