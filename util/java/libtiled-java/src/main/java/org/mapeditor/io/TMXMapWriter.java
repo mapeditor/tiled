@@ -355,6 +355,8 @@ public class TMXMapWriter {
                     // Save multiline values as character data
                     w.writeCharacters(value);
                 }
+                // Member values of a class property
+                writeProperties(prop.getProperties(), w);
                 w.endElement();
             }
             w.endElement();

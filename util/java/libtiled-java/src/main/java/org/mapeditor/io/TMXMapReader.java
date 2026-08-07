@@ -943,7 +943,20 @@ public class TMXMapReader {
             if ("property".equalsIgnoreCase(child.getNodeName())) {
                 final String key = getAttributeValue(child, "name");
                 String value = getAttributeValue(child, "value");
-                if (value == null) {
+
+                // A class property carries its member values in a nested
+                // <properties> element instead of a value attribute.
+                Properties nested = null;
+                for (Node grand = child.getFirstChild(); grand != null;
+                        grand = grand.getNextSibling()) {
+                    if ("properties".equalsIgnoreCase(grand.getNodeName())) {
+                        nested = new Properties();
+                        readProperties(grand.getChildNodes(), nested);
+                        break;
+                    }
+                }
+
+                if (value == null && nested == null) {
                     Node grandChild = child.getFirstChild();
                     if (grandChild != null) {
                         value = grandChild.getNodeValue();
@@ -952,7 +965,7 @@ public class TMXMapReader {
                         }
                     }
                 }
-                if (value != null) {
+                if (value != null || nested != null) {
                     final String typeStr = getAttributeValue(child, "type");
                     final String propertyTypeName = getAttributeValue(child, "propertytype");
                     if (typeStr != null && !typeStr.isEmpty()) {
@@ -965,6 +978,10 @@ public class TMXMapReader {
                         }
                     } else {
                         props.setProperty(key, value);
+                    }
+                    if (nested != null) {
+                        List<Property> list = props.getProperties();
+                        list.get(list.size() - 1).setProperties(nested);
                     }
                 }
             } else if ("properties".equals(child.getNodeName())) {

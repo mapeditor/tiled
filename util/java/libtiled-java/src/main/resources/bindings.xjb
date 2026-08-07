@@ -328,6 +328,11 @@
             <jxb:bindings node="xs:attribute[@name='propertytype']">
                 <jxb:property name="propertyTypeName"/>
             </jxb:bindings>
+            <jxb:bindings node="xs:sequence/xs:element[@name='properties']">
+                <jxb:property>
+                    <jxb:baseType name="Properties"/>
+                </jxb:property>
+            </jxb:bindings>
         </jxb:bindings>
 
         <jxb:bindings node="xs:simpleType[@name='Compression']">

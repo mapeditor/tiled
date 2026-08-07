@@ -991,6 +991,18 @@ POSSIBILITY OF SUCH DAMAGE.
             <xs:documentation source="http://doc.mapeditor.org/reference/tmx-map-format/#property"/>
         </xs:annotation>
 
+        <xs:sequence>
+            <xs:element name="properties" type="Properties" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        The member values of a class property.
+
+                        @since 1.8
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+
         <xs:attribute name="name" type="xs:string" use="required">
             <xs:annotation>
                 <xs:documentation>
