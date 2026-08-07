@@ -65,12 +65,18 @@ public abstract class AbstractRenderer implements MapRenderer {
             return;
         }
 
-        final float opacity = getOpacity(layer);
+        // Multiply with any alpha already set on the graphics, so opacity
+        // applied by a parent group carries through to this layer.
+        final Composite oldComposite = g.getComposite();
+        float baseOpacity = 1.0f;
+        if (oldComposite instanceof AlphaComposite) {
+            baseOpacity = ((AlphaComposite) oldComposite).getAlpha();
+        }
+        final float opacity = baseOpacity * getOpacity(layer);
         if (opacity <= 0.0f) {
             return;
         }
 
-        final Composite oldComposite = g.getComposite();
         if (opacity < 1.0f) {
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
         }

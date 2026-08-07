@@ -27,6 +27,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -200,11 +201,18 @@ class MapView extends JPanel implements Scrollable
 
     private void paintLayers(Graphics2D g2d, java.util.List<MapLayer> layers) {
         for (MapLayer layer : layers) {
+            if (Boolean.FALSE.equals(layer.isVisible())) {
+                continue;
+            }
             final Graphics2D layerGraphics = (Graphics2D) g2d.create();
             try {
                 applyParallaxTranslation(layerGraphics, layer);
 
                 if (layer instanceof Group) {
+                    // The renderer applies opacity for tile and object layers.
+                    // Groups are recursed here, so multiply their opacity onto
+                    // the graphics for the child layers to pick up.
+                    applyGroupOpacity(layerGraphics, layer);
                     paintLayers(layerGraphics, ((Group) layer).getLayers());
                 } else if (layer instanceof TileLayer) {
                     renderer.paintTileLayer(layerGraphics, (TileLayer) layer);
@@ -214,6 +222,16 @@ class MapView extends JPanel implements Scrollable
             } finally {
                 layerGraphics.dispose();
             }
+        }
+    }
+
+    private static void applyGroupOpacity(Graphics2D g2d, MapLayer group) {
+        float opacity = group.getOpacity() != null
+                ? Math.max(0.0f, Math.min(1.0f, group.getOpacity())) : 1.0f;
+        if (opacity < 1.0f) {
+            float base = g2d.getComposite() instanceof AlphaComposite
+                    ? ((AlphaComposite) g2d.getComposite()).getAlpha() : 1.0f;
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, base * opacity));
         }
     }
 
