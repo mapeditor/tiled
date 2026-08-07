@@ -792,7 +792,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="capsule" type="Capsule">
+            <xs:element name="capsule" type="Capsule" minOccurs="0">
                 <xs:annotation>
                     <xs:documentation>
                         @since 1.11
