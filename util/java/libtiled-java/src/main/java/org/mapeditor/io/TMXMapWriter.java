@@ -483,8 +483,8 @@ public class TMXMapWriter {
 
             Color trans = set.getTransparentColor();
             if (trans != null) {
-                w.writeAttribute("trans", Integer.toHexString(
-                        trans.getRGB()).substring(2));
+                w.writeAttribute("trans",
+                        String.format("%06x", trans.getRGB() & 0xFFFFFF));
             } else if (imageData != null && imageData.getTrans() != null) {
                 w.writeAttribute("trans", imageData.getTrans());
             }

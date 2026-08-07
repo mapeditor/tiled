@@ -490,9 +490,15 @@ public class TMXMapReader {
                             transStr = transStr.substring(1);
                         }
 
-                        int colorInt = Integer.parseInt(transStr, 16);
-                        Color color = new Color(colorInt);
-                        set.setTransparentColor(color);
+                        try {
+                            // Long.parseLong so 8-digit #AARRGGBB values fit
+                            int colorInt = (int) Long.parseLong(transStr, 16);
+                            Color color = new Color(colorInt, transStr.length() > 6);
+                            set.setTransparentColor(color);
+                        } catch (NumberFormatException e) {
+                            System.out.printf(
+                                "Warning: unrecognized transparent color '%s'%n", transStr);
+                        }
                     }
 
                     try {
