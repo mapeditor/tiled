@@ -574,8 +574,8 @@ public class TMXMapReader {
                 }
             } else if (child.getNodeName().equalsIgnoreCase("tileoffset")) {
                 TileOffset tileoffset = new TileOffset();
-                tileoffset.setX(Integer.valueOf(getAttributeValue(child, "x")));
-                tileoffset.setY(Integer.valueOf(getAttributeValue(child, "y")));
+                tileoffset.setX(getAttribute(child, "x", 0));
+                tileoffset.setY(getAttribute(child, "y", 0));
                 set.setTileoffset(tileoffset);
             } else if (child.getNodeName().equalsIgnoreCase("transformations")) {
                 Transformations trans = new Transformations();
