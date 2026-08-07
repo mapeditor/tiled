@@ -872,6 +872,16 @@ POSSIBILITY OF SUCH DAMAGE.
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="opacity" type="xs:double">
+            <xs:annotation>
+                <xs:documentation>
+                    The opacity of the object as a value from 0 to 1. Defaults
+                    to 1.
+
+                    @since 1.2
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="visible" type="xs:boolean">
             <xs:annotation>
                 <xs:documentation>

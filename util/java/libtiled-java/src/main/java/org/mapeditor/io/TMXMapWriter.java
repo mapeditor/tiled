@@ -1155,6 +1155,10 @@ public class TMXMapWriter {
             w.writeAttribute("rotation", mapObject.getRotation());
         }
 
+        if (mapObject.getOpacity() != null && mapObject.getOpacity() != 1.0) {
+            w.writeAttribute("opacity", mapObject.getOpacity());
+        }
+
         if (mapObject.isVisible() != null && !mapObject.isVisible()) {
             w.writeAttribute("visible", "0");
         }

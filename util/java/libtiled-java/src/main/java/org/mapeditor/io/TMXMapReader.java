@@ -685,6 +685,14 @@ public class TMXMapReader {
             obj.setTemplate(templatePath);
         }
 
+        // Opacity: use the TMX value when present, else the template's
+        final String opacityStr = getAttributeValue(t, "opacity");
+        if (opacityStr != null) {
+            obj.setOpacity(Double.parseDouble(opacityStr));
+        } else if (templateObj != null && templateObj.getOpacity() != null) {
+            obj.setOpacity(templateObj.getOpacity());
+        }
+
         // Visibility: use the TMX value when present, else the template's
         final String visibleStr = getAttributeValue(t, "visible");
         if (visibleStr != null) {
