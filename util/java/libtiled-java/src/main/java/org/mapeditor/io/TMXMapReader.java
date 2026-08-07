@@ -712,6 +712,17 @@ public class TMXMapReader {
             obj.setRotatedHexagonal120(templateObj.getRotatedHexagonal120());
         }
 
+        // Tile objects saved without an explicit size default to the tile size.
+        if (obj.getTile() != null) {
+            Tile objTile = obj.getTile();
+            if (width == 0 && objTile.getWidth() > 0) {
+                obj.setWidth((double) objTile.getWidth());
+            }
+            if (height == 0 && objTile.getHeight() > 0) {
+                obj.setHeight((double) objTile.getHeight());
+            }
+        }
+
         // Read child elements from TMX
         NodeList children = t.getChildNodes();
         boolean hasShapeChild = readShapeChildren(children, obj, x, y);
