@@ -424,7 +424,13 @@ public class TMXMapWriter {
         String name = set.getName();
 
         w.startElement("tileset");
-        w.writeAttribute("firstgid", getFirstGidForTileset(set));
+        if (firstGidPerTileset != null) {
+            w.writeAttribute("firstgid", getFirstGidForTileset(set));
+        } else {
+            // A standalone TSX file has no firstgid but carries the format
+            // version, like the C++ writer.
+            w.writeAttribute("version", "1.11");
+        }
 
         if (name != null) {
             w.writeAttribute("name", name);
