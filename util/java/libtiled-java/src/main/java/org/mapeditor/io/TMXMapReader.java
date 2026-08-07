@@ -1271,7 +1271,9 @@ public class TMXMapReader {
                             dataChild != null;
                             dataChild = dataChild.getNextSibling()) {
                         if ("tile".equalsIgnoreCase(dataChild.getNodeName())) {
-                            int tileId = getAttribute(dataChild, "gid", -1);
+                            // Parse as long so unsigned gids with flip flags set fit.
+                            String gidAttr = getAttributeValue(dataChild, "gid");
+                            int tileId = gidAttr != null ? (int) Long.parseLong(gidAttr) : -1;
                             setTileAtFromTileId(ml, y, x, tileId);
 
                             x++;
@@ -1369,7 +1371,9 @@ public class TMXMapReader {
             for (Node dataChild = chunkNode.getFirstChild(); dataChild != null;
                  dataChild = dataChild.getNextSibling()) {
                 if ("tile".equalsIgnoreCase(dataChild.getNodeName())) {
-                    int tileId = getAttribute(dataChild, "gid", -1);
+                    // Parse as long so unsigned gids with flip flags set fit.
+                    String gidAttr = getAttributeValue(dataChild, "gid");
+                    int tileId = gidAttr != null ? (int) Long.parseLong(gidAttr) : -1;
                     setTileAtFromTileId(ml, cy + y, cx + x, tileId);
 
                     x++;

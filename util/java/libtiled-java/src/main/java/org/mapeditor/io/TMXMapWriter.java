@@ -890,10 +890,12 @@ public class TMXMapWriter {
 
                     if (tile != null) {
                         gid = getGid(tile);
+                        gid |= tl.getFlagsAt(x, y);
                     }
 
                     w.startElement("tile");
-                    w.writeAttribute("gid", gid);
+                    // Write as unsigned so set flip flags don't turn the gid negative.
+                    w.writeAttribute("gid", gid & 0xFFFFFFFFL);
                     w.endElement();
                 }
             }
