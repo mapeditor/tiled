@@ -126,8 +126,11 @@ public class ImageHelper {
 
         BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();
-        doc.render(null, g);
-        g.dispose();
+        try {
+            doc.render(null, g);
+        } finally {
+            g.dispose();
+        }
         return image;
     }
 
