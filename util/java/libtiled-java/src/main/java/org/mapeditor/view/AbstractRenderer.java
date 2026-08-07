@@ -219,11 +219,11 @@ public abstract class AbstractRenderer implements MapRenderer {
     }
 
     private int getLayerOffsetX(TileLayer layer) {
-        return layer.getOffsetX() != null ? layer.getOffsetX() : 0;
+        return layer.getOffsetX() != null ? (int) Math.round(layer.getOffsetX()) : 0;
     }
 
     private int getLayerOffsetY(TileLayer layer) {
-        return layer.getOffsetY() != null ? layer.getOffsetY() : 0;
+        return layer.getOffsetY() != null ? (int) Math.round(layer.getOffsetY()) : 0;
     }
 
     private float getOpacity(MapLayer layer) {

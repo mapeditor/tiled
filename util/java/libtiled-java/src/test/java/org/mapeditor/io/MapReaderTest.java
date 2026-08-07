@@ -507,8 +507,8 @@ public class MapReaderTest {
         assertEquals(32, layer.getHeight());
 
         // Verify attributes are preserved after TileLayer recreation for infinite maps
-        assertEquals(Integer.valueOf(10), layer.getOffsetX());
-        assertEquals(Integer.valueOf(20), layer.getOffsetY());
+        assertEquals(Double.valueOf(10), layer.getOffsetX());
+        assertEquals(Double.valueOf(20), layer.getOffsetY());
         assertEquals("MyLayerClass", layer.getClassName());
     }
 

@@ -454,7 +454,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="offsetx" type="xs:int">
+        <xs:attribute name="offsetx" type="xs:double">
             <xs:annotation>
                 <xs:documentation>
                     Rendering offset for this layer in pixels. Defaults to 0.
@@ -463,7 +463,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="offsety" type="xs:int">
+        <xs:attribute name="offsety" type="xs:double">
             <xs:annotation>
                 <xs:documentation>
                     Rendering offset for this layer in pixels. Defaults to 0.

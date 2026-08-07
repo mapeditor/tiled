@@ -260,8 +260,8 @@ public class TMXMapReader {
         ml.setName(getAttributeValue(t, "name"));
 
         setFloatIfPresent(t, "opacity", ml::setOpacity);
-        setDoubleIfPresent(t, "offsetx", (d) -> ml.setOffsetX((int) d));
-        setDoubleIfPresent(t, "offsety", (d) -> ml.setOffsetY((int) d));
+        setDoubleIfPresent(t, "offsetx", ml::setOffsetX);
+        setDoubleIfPresent(t, "offsety", ml::setOffsetY);
         setDoubleIfPresent(t, "parallaxx", ml::setParallaxx);
         setDoubleIfPresent(t, "parallaxy", ml::setParallaxy);
         setStrIfPresent(t, "tintcolor", ml::setTintcolor);
