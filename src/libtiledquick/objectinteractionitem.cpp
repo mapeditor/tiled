@@ -37,6 +37,23 @@ static QList<QPolygonF> outlines(const QList<Tiled::MapObject*> &objects)
     return outlines;
 }
 
+static QPolygonF handlePolygon(const ObjectHandleData &handle, const qreal &mZoom, const QList<QObject*> mSelectedObjects)
+{
+    QTransform transform;
+
+    const QRectF boundingRect = handle.drawPoints.boundingRect();
+    const qreal centerX = boundingRect.x() + boundingRect.width()/2;
+    const qreal centerY = boundingRect.y() + boundingRect.height()/2;
+    const qreal rotation = mSelectedObjects.count() == 1 ? dynamic_cast<EditableMapObject*>(mSelectedObjects[0])->mapObject()->rotation() : 0;
+
+    transform.translate(handle.pos.x(), handle.pos.y());
+    transform.translate(centerX * mZoom, centerY * mZoom);
+    transform.scale(mZoom, mZoom);
+    transform.translate(-centerX, -centerY);
+    transform.rotate(rotation);
+
+    return transform.map(handle.drawPoints);
+}
 
 ObjectInteractionItem::ObjectInteractionItem(QQuickItem *parent)
     : QQuickItem(parent)
@@ -118,20 +135,8 @@ QList<QPolygonF> ObjectInteractionItem::objectHandlePolygons() const
     QList<QPolygonF> polygons;
 
     for (const auto &handle : mObjectHandles)
-        if (handle.drawPoints.size() > 0 && !handle.isHovered) {
-            QTransform transform;
-
-            const QRectF boundingRect = handle.drawPoints.boundingRect();
-            const qreal centerX = boundingRect.x() + boundingRect.width()/2;
-            const qreal centerY = boundingRect.y() + boundingRect.height()/2;
-
-            transform.translate(handle.pos.x(), handle.pos.y());
-            transform.translate(centerX * mZoom, centerY * mZoom);
-            transform.scale(mZoom, mZoom);
-            transform.translate(-centerX, -centerY);
-
-            polygons.append(transform.map(handle.drawPoints));
-        }
+        if (handle.drawPoints.size() > 0 && !handle.isHovered)
+            polygons.append(handlePolygon(handle, mZoom, mSelectedObjects));
 
     return polygons;
 }
@@ -139,20 +144,8 @@ QList<QPolygonF> ObjectInteractionItem::objectHandlePolygons() const
 QPolygonF ObjectInteractionItem::hoveredHandlePolygon() const
 {
     for (const auto &handle : mObjectHandles)
-        if (handle.isHovered) {
-            QTransform transform;
-
-            const QRectF boundingRect = handle.drawPoints.boundingRect();
-            const qreal centerX = boundingRect.x() + boundingRect.width()/2;
-            const qreal centerY = boundingRect.y() + boundingRect.height()/2;
-
-            transform.translate(handle.pos.x(), handle.pos.y());
-            transform.translate(centerX * mZoom, centerY * mZoom);
-            transform.scale(mZoom, mZoom);
-            transform.translate(-centerX, -centerY);
-
-            return transform.map(handle.drawPoints);
-        }
+        if (handle.isHovered)
+            return handlePolygon(handle, mZoom, mSelectedObjects);
 
     return QPolygonF();
 }
