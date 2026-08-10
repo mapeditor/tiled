@@ -44,7 +44,7 @@ static QPolygonF handlePolygon(const ObjectHandleData &handle, const qreal &mZoo
     const QRectF boundingRect = handle.drawPoints.boundingRect();
     const qreal centerX = boundingRect.x() + boundingRect.width()/2;
     const qreal centerY = boundingRect.y() + boundingRect.height()/2;
-    const qreal rotation = mSelectedObjects.count() == 1 ? dynamic_cast<EditableMapObject*>(mSelectedObjects[0])->mapObject()->rotation() : 0;
+    const qreal rotation = mSelectedObjects.count() == 1 ? qobject_cast<EditableMapObject*>(mSelectedObjects[0])->mapObject()->rotation() : 0;
 
     transform.translate(handle.pos.x(), handle.pos.y());
     transform.translate(centerX * mZoom, centerY * mZoom);
@@ -157,7 +157,7 @@ QList<QPointF> ObjectInteractionItem::polygonEditPoints() const
         return points;
 
     for (auto object : std::as_const(mSelectedObjects)) {
-        auto mapObject = dynamic_cast<Tiled::EditableMapObject*>(object)->mapObject();
+        auto mapObject = qobject_cast<Tiled::EditableMapObject*>(object)->mapObject();
         if (!mapObject)
             continue;
 
@@ -173,7 +173,7 @@ QList<QPolygonF> ObjectInteractionItem::selectionOutlines() const
     QList<Tiled::MapObject*> selectedObjects;
 
     for (auto object : std::as_const(mSelectedObjects))
-        if (auto mapObject = dynamic_cast<Tiled::EditableMapObject*>(object)->mapObject())
+        if (auto mapObject = qobject_cast<Tiled::EditableMapObject*>(object)->mapObject())
             selectedObjects.append(mapObject);
 
     return outlines(selectedObjects);

@@ -22,6 +22,7 @@
 
 #include "editableobject.h"
 #include "mapobject.h"
+#include "tilededitor_global.h"
 
 #include <QJSValue>
 
@@ -48,7 +49,7 @@ public:
     Font(const QFont &font) : QFont(font) {}
 };
 
-class EditableMapObject : public EditableObject
+class TILED_EDITOR_EXPORT EditableMapObject : public EditableObject
 {
     Q_OBJECT
 
