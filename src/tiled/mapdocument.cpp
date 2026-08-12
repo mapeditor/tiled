@@ -1334,7 +1334,7 @@ QList<Object*> MapDocument::currentObjects() const
                     objects.append(mapObj);
                 return objects;
             }
-            break;
+            return {};
         case Object::LayerType:
             if (!mSelectedLayers.isEmpty()) {
                 QList<Object*> objects;
@@ -1342,7 +1342,7 @@ QList<Object*> MapDocument::currentObjects() const
                     objects.append(layer);
                 return objects;
             }
-            break;
+            return {};
         default:
             break;
         }

@@ -564,8 +564,6 @@ void TilesetEditor::selectionChanged()
 
     const QItemSelectionModel *s = view->selectionModel();
     const QModelIndexList indexes = s->selection().indexes();
-    if (indexes.isEmpty())
-        return;
 
     const TilesetModel *model = view->tilesetModel();
     QList<Tile*> selectedTiles;
@@ -718,8 +716,7 @@ void TilesetEditor::setCurrentTile(Tile *tile)
     mCurrentTile = tile;
     emit currentTileChanged(tile);
 
-    if (tile)
-        mCurrentTilesetDocument->setCurrentObject(tile);
+    mCurrentTilesetDocument->setCurrentObject(tile);
 }
 
 void TilesetEditor::retranslateUi()
