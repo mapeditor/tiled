@@ -49,10 +49,10 @@ class TILED_EDITOR_EXPORT EditableMap final : public EditableAsset
     Q_PROPERTY(int hexSideLength READ hexSideLength WRITE setHexSideLength)
     Q_PROPERTY(StaggerAxis staggerAxis READ staggerAxis WRITE setStaggerAxis)
     Q_PROPERTY(StaggerIndex staggerIndex READ staggerIndex WRITE setStaggerIndex)
-    Q_PROPERTY(int skewX READ skewX WRITE setSkewX)
-    Q_PROPERTY(int skewY READ skewY WRITE setSkewY)
+    Q_PROPERTY(int skewX READ skewX WRITE setSkewX NOTIFY skewChanged)
+    Q_PROPERTY(int skewY READ skewY WRITE setSkewY NOTIFY skewChanged)
     Q_PROPERTY(QPointF parallaxOrigin READ parallaxOrigin WRITE setParallaxOrigin)
-    Q_PROPERTY(Orientation orientation READ orientation WRITE setOrientation)
+    Q_PROPERTY(Orientation orientation READ orientation WRITE setOrientation NOTIFY orientationChanged)
     Q_PROPERTY(RenderOrder renderOrder READ renderOrder WRITE setRenderOrder)
     Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
     Q_PROPERTY(LayerDataFormat layerDataFormat READ layerDataFormat WRITE setLayerDataFormat)
@@ -221,6 +221,8 @@ signals:
     void currentLayerChanged();
     void selectedLayersChanged();
     void selectedObjectsChanged();
+    void skewChanged();
+    void orientationChanged();
 
     void regionEdited(const Tiled::RegionValueType &region, Tiled::EditableTileLayer *layer);
 

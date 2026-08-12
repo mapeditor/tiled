@@ -22,7 +22,7 @@
 
 using namespace TiledQuick;
 
-struct GridUniformBuffer
+struct alignas(4) GridUniformBuffer
 {
     float qt_Matrix[16];
 
@@ -31,12 +31,15 @@ struct GridUniformBuffer
     float pixelWidth;
     float pixelHeight;
 
+    float mapWidth;
+    float mapHeight;
     float tileWidth;
     float tileHeight;
-    // Needed to fill the remaining 8 bytes in this 16-byte "block".
-    float _padding[2];
 
     float color[4];
+
+    float skew[2];
+    int orientation;
 };
 
 class MapGridShader : public QSGMaterialShader
@@ -66,8 +69,13 @@ public:
         u->scale = material->mScale;
         u->pixelWidth = material->mPixelWidth;
         u->pixelHeight = material->mPixelHeight;
+        u->mapWidth = material->mMapWidth;
+        u->mapHeight = material->mMapHeight;
         u->tileWidth = material->mTileWidth;
         u->tileHeight = material->mTileHeight;
+        u->skew[0] = material->mSkew.x();
+        u->skew[1] = material->mSkew.y();
+        u->orientation = material->mOrientation;
 
         return true;
     }
@@ -93,8 +101,12 @@ int MapGridMaterial::compare(const QSGMaterial *other) const
                 qFuzzyCompare(mScale, m->mScale) &&
                 qFuzzyCompare(mPixelWidth, m->mPixelWidth) &&
                 qFuzzyCompare(mPixelHeight, m->mPixelHeight) &&
+                qFuzzyCompare(mMapWidth, m->mMapWidth) &&
+                qFuzzyCompare(mMapHeight, m->mMapHeight) &&
                 qFuzzyCompare(mTileWidth, m->mTileWidth) &&
-                qFuzzyCompare(mTileHeight, m->mTileHeight)
+                qFuzzyCompare(mTileHeight, m->mTileHeight) &&
+                qFuzzyCompare(mSkew, m->mSkew) &&
+                mOrientation == m->mOrientation
                 )? 0 : 1
             );
 }

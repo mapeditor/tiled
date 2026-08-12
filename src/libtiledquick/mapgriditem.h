@@ -31,8 +31,11 @@ class TILEDQUICK_SHARED_EXPORT MapGridItem : public QQuickItem
     Q_OBJECT
 
     Q_PROPERTY(QPointF tileSize READ tileSize WRITE setTileSize NOTIFY tileSizeChanged)
+    Q_PROPERTY(QPointF mapSize READ mapSize WRITE setMapSize NOTIFY mapSizeChanged)
     Q_PROPERTY(qreal scale READ scale WRITE setScale NOTIFY scaleChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
+    Q_PROPERTY(QPointF skew READ skew WRITE setSkew NOTIFY skewChanged)
+    Q_PROPERTY(int orientation READ orientation WRITE setOrientation NOTIFY orientationChanged)
 
 public:
     explicit MapGridItem(QQuickItem *parent = nullptr);
@@ -43,21 +46,66 @@ public:
     QPointF tileSize() const;
     void setTileSize(const QPointF &tileSize);
 
+    QPointF mapSize() const;
+    void setMapSize(const QPointF &mapSize);
+
     qreal scale() const;
     void setScale(const qreal &scale);
 
     QColor color() const;
     void setColor(const QColor &color);
 
+    QPointF skew() const;
+    void setSkew(const QPointF &skew);
+
+    int orientation() const;
+    void setOrientation(const int &orientation);
+
 signals:
     void tileSizeChanged();
+    void mapSizeChanged();
     void scaleChanged();
     void colorChanged();
+    void skewChanged();
+    void orientationChanged();
 
 private:
-    QPointF mTileSize = {0, 0};
+    QPointF mTileSize;
+    QPointF mMapSize;
     qreal mScale = 0;
     QColor mColor = Qt::black;
+    QPointF mSkew;
+    int mOrientation = 0;
 };
+
+inline QPointF MapGridItem::tileSize() const
+{
+    return mTileSize;
+}
+
+inline QPointF MapGridItem::mapSize() const
+{
+    return mMapSize;
+}
+
+inline qreal MapGridItem::scale() const
+{
+    return mScale;
+}
+
+inline QColor MapGridItem::color() const
+{
+    return mColor;
+}
+
+inline QPointF MapGridItem::skew() const
+{
+    return mSkew;
+}
+
+inline int MapGridItem::orientation() const
+{
+    return mOrientation;
+}
 
 } // namespace TiledQuick
