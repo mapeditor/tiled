@@ -63,6 +63,7 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QPushButton>
+#include <QScrollArea>
 #include <QScopedValueRollback>
 #include <QStackedWidget>
 #include <QStylePainter>
@@ -219,7 +220,7 @@ TilesetDock::TilesetDock(QWidget *parent)
     });
     connect(mTilesetFilterEdit, &QLineEdit::textChanged,
             mTilesetDocumentsFilterModel, &TilesetDocumentsFilterModel::setFilterText);
-    mTabBar->setUsesScrollButtons(true);
+    mTabBar->setUsesScrollButtons(false);
     mTabBar->setExpanding(false);
     mTabBar->setContextMenuPolicy(Qt::CustomContextMenu);
 
