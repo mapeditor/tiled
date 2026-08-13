@@ -30,12 +30,15 @@
 #include "mapview.h"
 #include "preferences.h"
 #include "selectionrectangle.h"
+#include "tilelayer.h"
 #include "utils.h"
 #include "world.h"
 #include "worlddocument.h"
 #include "worldmanager.h"
 
 #include <QAction>
+#include <QCoreApplication>
+#include <QDir>
 #include <QFileDialog>
 #include <QGraphicsItem>
 #include <QGraphicsView>
@@ -87,6 +90,39 @@ std::array<QPointF, HandleCount> resizeHandlePositions(const QRectF &bounds)
         QPointF(bounds.left(), center.y()),                        QPointF(bounds.right(), center.y()),
         bounds.bottomLeft(), QPointF(center.x(), bounds.bottom()), bounds.bottomRight(),
     }};
+}
+
+// Finds the map whose center is nearest to the center of rect, so a newly
+// created map can take its format from what is already around it
+MapDocumentPtr nearestMapDocument(const World *world, const QRect &rect)
+{
+    QString nearestFileName;
+    int nearestDistance = 0;
+
+    for (const WorldMapEntry &entry : world->allMaps()) {
+        const int distance = (entry.rect.center() - rect.center()).manhattanLength();
+        if (nearestFileName.isEmpty() || distance < nearestDistance) {
+            nearestFileName = entry.fileName;
+            nearestDistance = distance;
+        }
+    }
+
+    if (nearestFileName.isEmpty())
+        return MapDocumentPtr();
+
+    return DocumentManager::instance()->loadDocument(nearestFileName).objectCast<MapDocument>();
+}
+
+// Picks the first free untitled-N.tmx alongside the world file
+QString newMapFileName(const World *world)
+{
+    const QDir dir = QFileInfo(world->fileName).dir();
+
+    for (int i = 1; ; ++i) {
+        const QString fileName = dir.filePath(QStringLiteral("untitled-%1.tmx").arg(i));
+        if (!QFileInfo::exists(fileName))
+            return fileName;
+    }
 }
 
 } // namespace
@@ -427,6 +463,54 @@ void AbstractWorldTool::addAnotherMapToWorld(QPoint insertPos)
     undoStack->push(new AddMapCommand(worldDocument, fileName, rect));
 }
 
+// Creates a new map covering the given world rect and adds it to the current
+// world. The map is saved right away, since a world refers to its maps by
+// file name.
+void AbstractWorldTool::createMapAt(const QRect &worldRect)
+{
+    auto worldDocument = worldForMap(mapDocument());
+    if (!worldDocument || !worldDocument->world()->canBeModified())
+        return;
+
+    const World *world = worldDocument->world();
+
+    // The nearest map decides the format of the new one
+    const MapDocumentPtr nearest = nearestMapDocument(world, worldRect);
+    const Map *templateMap = nearest ? nearest->map() : mapDocument()->map();
+
+    Map::Parameters parameters;
+    parameters.orientation = templateMap->orientation();
+    parameters.tileWidth = qMax(1, templateMap->tileWidth());
+    parameters.tileHeight = qMax(1, templateMap->tileHeight());
+
+    // A map is always a whole number of tiles, so round the dragged size
+    parameters.width = qMax(1, qRound(qreal(worldRect.width()) / parameters.tileWidth));
+    parameters.height = qMax(1, qRound(qreal(worldRect.height()) / parameters.tileHeight));
+
+    auto map = std::make_unique<Map>(parameters);
+    map->setRenderOrder(templateMap->renderOrder());
+    map->setLayerDataFormat(templateMap->layerDataFormat());
+
+    for (const SharedTileset &tileset : templateMap->tilesets())
+        map->addTileset(tileset);
+
+    map->addLayer(new TileLayer(QCoreApplication::translate("Tiled::MapDocument", "Tile Layer %1").arg(1),
+                                0, 0, map->width(), map->height()));
+
+    // Rounding may have changed the size, so use the rect the map actually
+    // occupies
+    QRect entryRect = MapRenderer::create(map.get())->mapBoundingRect();
+    entryRect.moveTo(worldRect.topLeft());
+
+    const QString fileName = newMapFileName(world);
+
+    QUndoStack *undoStack = worldDocument->undoStack();
+    undoStack->beginMacro(tr("Create Map"));
+    undoStack->push(new CreateMapFileCommand(std::move(map), fileName));
+    undoStack->push(new AddMapCommand(worldDocument, fileName, entryRect));
+    undoStack->endMacro();
+}
+
 // Asks for a file name and creates a new world containing the current map.
 // Does nothing when the map is already part of a world, the user cancels or
 // the world could not be saved.
@@ -531,6 +615,25 @@ QPoint AbstractWorldTool::snapPoint(QPoint point, MapDocument *document) const
     point.setX(qRound(qreal(point.x()) / size.width()) * size.width());
     point.setY(qRound(qreal(point.y()) / size.height()) * size.height());
     return point;
+}
+
+// The scene puts the current map at 0,0, so converting between scene and
+// world coordinates is just a shift by the current map's world position
+QPoint AbstractWorldTool::currentMapWorldPos() const
+{
+    if (auto worldDocument = worldForMap(mapDocument()))
+        return worldDocument->world()->mapRect(mapDocument()->fileName()).topLeft();
+    return QPoint();
+}
+
+QPoint AbstractWorldTool::sceneToWorldPos(const QPointF &scenePos) const
+{
+    return scenePos.toPoint() + currentMapWorldPos();
+}
+
+QPoint AbstractWorldTool::worldToScenePos(QPoint worldPos) const
+{
+    return worldPos - currentMapWorldPos();
 }
 
 void AbstractWorldTool::setTargetMap(MapDocument *mapDocument)

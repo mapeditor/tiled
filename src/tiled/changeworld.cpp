@@ -22,10 +22,13 @@
 #include "changeworld.h"
 
 #include "documentmanager.h"
+#include "map.h"
+#include "tmxmapformat.h"
 #include "world.h"
 #include "worldmanager.h"
 
 #include <QCoreApplication>
+#include <QFile>
 
 namespace Tiled {
 
@@ -89,6 +92,37 @@ void RemoveMapCommand::redo()
     }
 
     removeMap();
+}
+
+
+CreateMapFileCommand::CreateMapFileCommand(std::unique_ptr<Map> map,
+                                           const QString &fileName,
+                                           QUndoCommand *parent)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Create Map"), parent)
+    , mMap(std::move(map))
+    , mFileName(fileName)
+{
+}
+
+CreateMapFileCommand::~CreateMapFileCommand() = default;
+
+void CreateMapFileCommand::redo()
+{
+    // Writes the map as it was created, so a redo restores the original file
+    TmxMapFormat format;
+    if (!format.write(mMap.get(), mFileName, MapFormat::Options()))
+        qWarning("Failed to create map file: %s", qUtf8Printable(format.errorString()));
+}
+
+void CreateMapFileCommand::undo()
+{
+    // Close the map first, so no document is left pointing at a missing file
+    DocumentManager *manager = DocumentManager::instance();
+    const int index = manager->findDocument(mFileName);
+    if (index != -1)
+        manager->closeDocumentAt(index);
+
+    QFile::moveToTrash(mFileName);
 }
 
 

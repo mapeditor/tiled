@@ -27,8 +27,11 @@
 #include <QSize>
 #include <QUndoCommand>
 
+#include <memory>
+
 namespace Tiled {
 
+class Map;
 class WorldDocument;
 
 class AddRemoveMapCommand : public QUndoCommand
@@ -66,6 +69,29 @@ public:
 
     void undo() override { addMap(); }
     void redo() override;
+};
+
+/**
+ * Undo command that writes a newly created map to disk.
+ *
+ * A world refers to its maps by file name, so the map needs a file before it
+ * can be added. Pushed in a macro with AddMapCommand, so a single undo
+ * reverts both. Undo moves the file to the trash, in case it was edited.
+ */
+class CreateMapFileCommand : public QUndoCommand
+{
+public:
+    CreateMapFileCommand(std::unique_ptr<Map> map,
+                         const QString &fileName,
+                         QUndoCommand *parent = nullptr);
+    ~CreateMapFileCommand() override;
+
+    void undo() override;
+    void redo() override;
+
+private:
+    std::unique_ptr<Map> mMap;
+    QString mFileName;
 };
 
 class SetMapRectCommand : public QUndoCommand

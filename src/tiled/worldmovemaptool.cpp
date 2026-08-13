@@ -28,6 +28,7 @@
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "mapview.h"
+#include "selectionrectangle.h"
 #include "toolmanager.h"
 #include "utils.h"
 #include "world.h"
@@ -73,11 +74,25 @@ WorldMoveMapTool::WorldMoveMapTool(QObject *parent)
                         QIcon(QLatin1String(":images/22/world-move-tool.png")),
                         QKeySequence(Qt::Key_N),
                         parent)
+    , mCreatePreview(new SelectionRectangle)
 {
+    mCreatePreview->setVisible(false);
 }
 
 WorldMoveMapTool::~WorldMoveMapTool()
 {
+}
+
+void WorldMoveMapTool::activate(MapScene *scene)
+{
+    scene->addItem(mCreatePreview.get());
+    AbstractWorldTool::activate(scene);
+}
+
+void WorldMoveMapTool::deactivate(MapScene *scene)
+{
+    scene->removeItem(mCreatePreview.get());
+    AbstractWorldTool::deactivate(scene);
 }
 
 void WorldMoveMapTool::keyPressed(QKeyEvent *event)
@@ -92,6 +107,7 @@ void WorldMoveMapTool::keyPressed(QKeyEvent *event)
     case Qt::Key_Escape:
         abortMoving();
         abortResizing();
+        abortCreating();
         return;
     default:
         AbstractWorldTool::keyPressed(event);
@@ -104,7 +120,7 @@ void WorldMoveMapTool::keyPressed(QKeyEvent *event)
         return;
     }
     MapDocument *document = mapDocument();
-    if (!document || !mapCanBeMoved(document) || mDraggingMap) {
+    if (!document || !mapCanBeMoved(document) || mDraggingMap || mCreatingMap) {
         event->ignore();    // allow the view to scroll instead
         return;
     }
@@ -206,7 +222,7 @@ void WorldMoveMapTool::mouseEntered()
 
 void WorldMoveMapTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (mDraggingMap || mResizingMap)
+    if (mDraggingMap || mResizingMap || mCreatingMap)
         return;
 
     if (event->button() == Qt::LeftButton) {
@@ -219,6 +235,12 @@ void WorldMoveMapTool::mousePressed(QGraphicsSceneMouseEvent *event)
 
         if (mapCanBeMoved(targetMap())) {
             startMoving(targetMap(), event->scenePos());
+            return;
+        }
+
+        // nothing under the cursor, so drag out the bounds of a new map
+        if (canCreateMap()) {
+            startCreating(event->scenePos());
             return;
         }
     }
@@ -256,11 +278,91 @@ void WorldMoveMapTool::startMoving(MapDocument *map, const QPointF &scenePos)
     refreshCursor();
 }
 
+// a new map can be dragged out in empty space
+bool WorldMoveMapTool::canCreateMap() const
+{
+    if (targetMap())
+        return false;
+
+    auto worldDocument = worldForMap(mapDocument());
+    return worldDocument && worldDocument->world()->canBeModified();
+}
+
+void WorldMoveMapTool::startCreating(const QPointF &scenePos)
+{
+    mCreatingMap = true;
+    mCreateStartWorldPos = sceneToWorldPos(scenePos);
+    mCreateWorldRect = QRect();
+    refreshCursor();
+}
+
+void WorldMoveMapTool::updateCreatingMap(const QPointF &pos,
+                                         Qt::KeyboardModifiers modifiers)
+{
+    QPoint from = mCreateStartWorldPos;
+    QPoint to = sceneToWorldPos(pos);
+
+    if (!(modifiers & Qt::ControlModifier)) {
+        from = snapPoint(from, mapDocument());
+        to = snapPoint(to, mapDocument());
+    }
+
+   //qrectf
+    const QRectF rect = QRectF(from, to).normalized();
+    mCreateWorldRect = QRect(rect.topLeft().toPoint(), rect.size().toSize());
+
+    mCreatePreview->setRectangle(QRectF(worldToScenePos(mCreateWorldRect.topLeft()),
+                                        QSizeF(mCreateWorldRect.size())));
+    mCreatePreview->setVisible(true);
+
+    // report the size in tiles like the resize handles do
+    const QSize tileSize = mapDocument()->map()->tileSize();
+    const int tileWidth = qMax(1, tileSize.width());
+    const int tileHeight = qMax(1, tileSize.height());
+
+    setStatusInfo(tr("New map %1 x %2 at %3, %4")
+                  .arg(qMax(1, qRound(qreal(mCreateWorldRect.width()) / tileWidth)))
+                  .arg(qMax(1, qRound(qreal(mCreateWorldRect.height()) / tileHeight)))
+                  .arg(mCreateWorldRect.left())
+                  .arg(mCreateWorldRect.top()));
+}
+
+void WorldMoveMapTool::finishCreating()
+{
+    const QRect worldRect = mCreateWorldRect;
+
+    abortCreating();
+
+    // a plain click without a drag should not create a map
+    if (worldRect.isEmpty())
+        return;
+
+    createMapAt(worldRect);
+}
+
+void WorldMoveMapTool::abortCreating()
+{
+    if (!mCreatingMap)
+        return;
+
+    mCreatingMap = false;
+    mCreateWorldRect = QRect();
+    mCreatePreview->setVisible(false);
+
+    refreshCursor();
+    setStatusInfo(QString());
+}
+
 void WorldMoveMapTool::mouseMoved(const QPointF &pos,
                                   Qt::KeyboardModifiers modifiers)
 {
     if (mResizingMap) {
         updateResizingMap(pos, modifiers);
+        return;
+    }
+
+    if (mCreatingMap) {
+        updateCreatingMap(pos, modifiers);
         return;
     }
 
@@ -306,6 +408,14 @@ void WorldMoveMapTool::mouseReleased(QGraphicsSceneMouseEvent *event)
             finishResizing();
         else if (event->button() == Qt::RightButton)
             abortResizing();
+        return;
+    }
+
+    if (mCreatingMap) {
+        if (event->button() == Qt::LeftButton)
+            finishCreating();
+        else if (event->button() == Qt::RightButton)
+            abortCreating();
         return;
     }
 
@@ -395,6 +505,8 @@ void WorldMoveMapTool::refreshCursor()
         cursorShape = Qt::SizeAllCursor;
     else if (mResizingMap)
         cursorShape = cursorForHandle(mResizeHandle);
+    else if (mCreatingMap || canCreateMap())
+        cursorShape = Qt::CrossCursor;
 
     if (cursor().shape() != cursorShape)
         setCursor(cursorShape);
