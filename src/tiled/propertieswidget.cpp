@@ -2554,8 +2554,10 @@ void PropertiesWidget::currentObjectChanged(Object *object)
 
     if (scrollValue > 0) {
         QTimer::singleShot(0, mPropertiesView, [view = mPropertiesView, scrollValue] {
-            if (auto scrollBar = view->verticalScrollBar())
-                scrollBar->setValue(scrollValue);
+            QTimer::singleShot(0, view, [view, scrollValue] {
+                if (auto scrollBar = view->verticalScrollBar())
+                    scrollBar->setValue(scrollValue);
+            });
         });
     }
 }
