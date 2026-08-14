@@ -56,6 +56,7 @@ Rectangle {
                 scale: mapContainer.scale
                 region: mapEditor.selectedRegion
                 tileSize: Qt.point(mapItem.map.tileWidth, mapItem.map.tileHeight)
+                mapDocument: mapEditor.currentMapDocument
 
                 regionAlpha: 127
             }
@@ -110,6 +111,7 @@ Rectangle {
                 region: mapEditor.tileEditRegion
                 mapRect: Qt.rect(0, 0, mapItem.map.width, mapItem.map.height)
                 tileSize: Qt.point(mapItem.map.tileWidth, mapItem.map.tileHeight)
+                mapDocument: mapEditor.currentMapDocument
             }
         }
     }

@@ -20,9 +20,11 @@
 
 #pragma once
 
-#include <QQuickItem>
+#include "mapdocument.h"
 
 #include "tiledquick_global.h"
+
+#include <QQuickItem>
 
 namespace TiledQuick {
 
@@ -34,6 +36,8 @@ class TILEDQUICK_SHARED_EXPORT RegionOverlay : public QQuickItem
     Q_PROPERTY(QRegion region READ region WRITE setRegion NOTIFY regionChanged)
     Q_PROPERTY(QRect mapRect READ mapRect WRITE setMapRect NOTIFY mapRectChanged)
     Q_PROPERTY(int regionAlpha READ regionAlpha WRITE setRegionAlpha NOTIFY regionAlphaChanged)
+    Q_PROPERTY(Tiled::MapDocument *mapDocument READ mapDocument WRITE setMapDocument NOTIFY mapDocumentChanged)
+
     Q_PROPERTY(QList<QPolygonF> validPolygons READ validPolygons NOTIFY regionChanged)
     Q_PROPERTY(QList<QPolygonF> invalidPolygons READ invalidPolygons NOTIFY regionChanged)
     Q_PROPERTY(QColor validStrokeColor READ validStrokeColor CONSTANT)
@@ -44,12 +48,6 @@ class TILEDQUICK_SHARED_EXPORT RegionOverlay : public QQuickItem
 public:
     explicit RegionOverlay(QQuickItem *parent = nullptr);
     ~RegionOverlay() override;
-
-    QColor validStrokeColor() const;
-    QColor validFillColor() const;
-
-    QColor invalidStrokeColor() const;
-    QColor invalidFillColor() const;
 
     QPointF tileSize() const;
     void setTileSize(const QPointF &tileSize);
@@ -63,6 +61,15 @@ public:
     int regionAlpha() const;
     void setRegionAlpha(const int &alpha);
 
+    Tiled::MapDocument *mapDocument() const;
+    void setMapDocument(Tiled::MapDocument *document);
+
+    QColor validStrokeColor() const;
+    QColor validFillColor() const;
+
+    QColor invalidStrokeColor() const;
+    QColor invalidFillColor() const;
+
     QList<QPolygonF> validPolygons() const;
     QList<QPolygonF> invalidPolygons() const;
 
@@ -71,6 +78,7 @@ signals:
     void regionChanged();
     void mapRectChanged();
     void regionAlphaChanged();
+    void mapDocumentChanged();
 
 private:
     QList<QPolygonF> polygons(const QRegion &region) const;
@@ -81,6 +89,42 @@ private:
     QColor mValidColor;
     QColor mInvalidColor;
     int mRegionAlpha;
+    Tiled::MapDocument *mMapDocument;
 };
+
+inline QColor RegionOverlay::validStrokeColor() const
+{
+    return mValidColor;
+}
+
+inline QColor RegionOverlay::invalidStrokeColor() const
+{
+    return mInvalidColor;
+}
+
+inline QPointF RegionOverlay::tileSize() const
+{
+    return mTileSize;
+}
+
+inline QRegion RegionOverlay::region() const
+{
+    return mRegion;
+}
+
+inline QRect RegionOverlay::mapRect() const
+{
+    return mMapRect;
+}
+
+inline int RegionOverlay::regionAlpha() const
+{
+    return mRegionAlpha;
+}
+
+inline Tiled::MapDocument *RegionOverlay::mapDocument() const
+{
+    return mMapDocument;
+}
 
 } // namespace TiledQuick

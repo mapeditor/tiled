@@ -76,10 +76,11 @@ public:
     using MapRenderer::pixelToScreenCoords;
     QPointF pixelToScreenCoords(qreal x, qreal y) const override;
 
+    QPolygonF tileRectToScreenPolygon(const QRect &rect) const;
+
 private:
     QTransform transform() const;
     QRectF screenToPixelRect(const QRectF &rect) const;
-    QPolygonF tileRectToScreenPolygon(const QRect &rect) const;
 };
 
 } // namespace Tiled

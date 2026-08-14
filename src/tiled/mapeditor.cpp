@@ -490,9 +490,15 @@ void MapEditor::setCurrentDocument(Document *document)
     }
 
     updateActiveUndoStack();
+    emit currentDocumentChanged(document);
 }
 
 Document *MapEditor::currentDocument() const
+{
+    return mCurrentMapDocument;
+}
+
+MapDocument *MapEditor::currentMapDocument() const
 {
     return mCurrentMapDocument;
 }
