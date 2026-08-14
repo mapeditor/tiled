@@ -58,8 +58,12 @@ QSGNode *MapGridItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
     material->mScale = mScale;
     material->mPixelWidth = width();
     material->mPixelHeight = height();
+    material->mMapWidth = mMapSize.x();
+    material->mMapHeight = mMapSize.y();
     material->mTileWidth = mTileSize.x();
     material->mTileHeight = mTileSize.y();
+    material->mSkew = mSkew;
+    material->mOrientation = mOrientation;
 
     gridNode->markDirty(QSGNode::DirtyGeometry | QSGNode::DirtyMaterial);
 
@@ -76,9 +80,14 @@ void MapGridItem::setTileSize(const QPointF &tileSize)
     update();
 }
 
-QPointF MapGridItem::tileSize() const
+void MapGridItem::setMapSize(const QPointF &mapSize)
 {
-    return mTileSize;
+    if (mMapSize == mapSize)
+        return;
+
+    mMapSize = mapSize;
+    emit mapSizeChanged();
+    update();
 }
 
 void MapGridItem::setScale(const qreal &scale)
@@ -91,11 +100,6 @@ void MapGridItem::setScale(const qreal &scale)
     update();
 }
 
-qreal MapGridItem::scale() const
-{
-    return mScale;
-}
-
 void MapGridItem::setColor(const QColor &color)
 {
     if (mColor == color)
@@ -106,7 +110,22 @@ void MapGridItem::setColor(const QColor &color)
     update();
 }
 
-QColor MapGridItem::color() const
+void MapGridItem::setSkew(const QPointF &skew)
 {
-    return mColor;
+    if (mSkew == skew)
+        return;
+
+    mSkew = skew;
+    emit skewChanged();
+    update();
+}
+
+void MapGridItem::setOrientation(const int &orientation)
+{
+    if (mOrientation == orientation)
+        return;
+
+    mOrientation = orientation;
+    emit orientationChanged();
+    update();
 }

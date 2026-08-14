@@ -11,9 +11,13 @@ layout(std140, binding = 0) uniform buf {
     float scale;
     float pixelWidth;
     float pixelHeight;
+    float mapWidth;
+    float mapHeight;
     float tileWidth;
     float tileHeight;
     vec4 color;
+    vec2 skew;
+    int orientation;
 } ubuf;
 
 void main()

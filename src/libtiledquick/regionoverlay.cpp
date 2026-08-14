@@ -18,6 +18,12 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "mapdocument.h"
+#include "isometricrenderer.h"
+#include "staggeredrenderer.h"
+#include "hexagonalrenderer.h"
+#include "obliquerenderer.h"
+
 #include "regionoverlay.h"
 
 #include <QPainterPath>
@@ -32,15 +38,11 @@ RegionOverlay::RegionOverlay(QQuickItem *parent)
     , mValidColor(QApplication::palette().highlight().color())
     , mInvalidColor(QColor(255,0,0))
     , mRegionAlpha(64)
+    , mMapDocument(nullptr)
 {
 }
 
 RegionOverlay::~RegionOverlay() = default;
-
-QColor RegionOverlay::validStrokeColor() const
-{
-    return mValidColor;
-}
 
 QColor RegionOverlay::validFillColor() const
 {
@@ -49,21 +51,11 @@ QColor RegionOverlay::validFillColor() const
     return fillColor;
 }
 
-QColor RegionOverlay::invalidStrokeColor() const
-{
-    return mInvalidColor;
-}
-
 QColor RegionOverlay::invalidFillColor() const
 {
     QColor fillColor = mInvalidColor;
     fillColor.setAlpha(mRegionAlpha);
     return fillColor;
-}
-
-QPointF RegionOverlay::tileSize() const
-{
-    return mTileSize;
 }
 
 void RegionOverlay::setTileSize(const QPointF &tileSize)
@@ -75,11 +67,6 @@ void RegionOverlay::setTileSize(const QPointF &tileSize)
     emit tileSizeChanged();
 }
 
-QRegion RegionOverlay::region() const
-{
-    return mRegion;
-}
-
 void RegionOverlay::setRegion(const QRegion &region)
 {
     if (mRegion == region)
@@ -87,11 +74,6 @@ void RegionOverlay::setRegion(const QRegion &region)
 
     mRegion = region;
     emit regionChanged();
-}
-
-QRect RegionOverlay::mapRect() const
-{
-    return mMapRect;
 }
 
 void RegionOverlay::setMapRect(const QRect &rect)
@@ -103,11 +85,6 @@ void RegionOverlay::setMapRect(const QRect &rect)
     emit mapRectChanged();
 }
 
-int RegionOverlay::regionAlpha() const
-{
-    return mRegionAlpha;
-}
-
 void RegionOverlay::setRegionAlpha(const int &alpha)
 {
     if (mRegionAlpha == alpha)
@@ -115,6 +92,15 @@ void RegionOverlay::setRegionAlpha(const int &alpha)
 
     mRegionAlpha = alpha;
     emit regionAlphaChanged();
+}
+
+void RegionOverlay::setMapDocument(Tiled::MapDocument *document)
+{
+    if (mMapDocument == document)
+        return;
+
+    mMapDocument = document;
+    emit mapDocumentChanged();
 }
 
 QList<QPolygonF> RegionOverlay::validPolygons() const
@@ -140,17 +126,62 @@ QList<QPolygonF> RegionOverlay::invalidPolygons() const
 
 QList<QPolygonF> RegionOverlay::polygons(const QRegion &region) const
 {
+    if (!mMapDocument)
+        return {};
+
     QPainterPath path;
-    for (const QRect &r : region.rects())
-        path.addRect(r);
+
+    switch (mMapDocument->map()->orientation())
+    {
+    case Tiled::Map::Orientation::Orthogonal: {
+        QTransform transform;
+        transform.scale(mTileSize.x(), mTileSize.y());
+
+        for (const QRect &r : region)
+            path.addRect(transform.mapRect(r));
+
+        break;
+    }
+    case Tiled::Map::Orientation::Isometric: {
+        auto *renderer = dynamic_cast<Tiled::IsometricRenderer*>(mMapDocument->renderer());
+
+        for (const QRect &r : region)
+            path.addPolygon(renderer->tileRectToScreenPolygon(r));
+        break;
+    }
+    case Tiled::Map::Orientation::Staggered: {
+        auto *renderer = dynamic_cast<Tiled::StaggeredRenderer*>(mMapDocument->renderer());
+
+        for (const QRect &r : region)
+            for (int y = r.top(); y <= r.bottom(); ++y)
+                for (int x = r.left(); x <= r.right(); ++x)
+                    path.addPolygon(renderer->tileToScreenPolygon(x, y));
+
+        break;
+    }
+    case Tiled::Map::Orientation::Hexagonal: {
+        auto *renderer = dynamic_cast<Tiled::HexagonalRenderer*>(mMapDocument->renderer());
+
+        for (const QRect &r : region)
+            for (int y = r.top(); y <= r.bottom(); ++y)
+                for (int x = r.left(); x <= r.right(); ++x)
+                    path.addPolygon(renderer->tileToScreenPolygon(x, y));
+
+        break;
+    }
+    case Tiled::Map::Orientation::Oblique: {
+        auto *renderer = dynamic_cast<Tiled::ObliqueRenderer*>(mMapDocument->renderer());
+
+        for (const QRect &r : region)
+            path.addPolygon(renderer->tileRectToScreenPolygon(r));
+        break;
+    }
+    case Tiled::Map::Orientation::Unknown:
+    default:
+        break;
+    }
 
     QList<QPolygonF> polygons = path.simplified().toSubpathPolygons();
-
-    QTransform transform;
-    transform.scale(mTileSize.x(), mTileSize.y());
-
-    for (QPolygonF &polygon : polygons)
-        polygon = transform.map(polygon);
 
     return polygons;
 }

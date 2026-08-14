@@ -56,6 +56,7 @@ Rectangle {
                 scale: mapContainer.scale
                 region: mapEditor.selectedRegion
                 tileSize: Qt.point(mapItem.map.tileWidth, mapItem.map.tileHeight)
+                mapDocument: mapEditor.currentMapDocument
 
                 regionAlpha: 127
             }
@@ -72,7 +73,10 @@ Rectangle {
                 anchors.fill: mapItem
 
                 tileSize: Qt.point(mapItem.map.tileWidth, mapItem.map.tileHeight)
+                mapSize: Qt.point(mapItem.map.width, mapItem.map.height)
                 scale: mapContainer.scale
+                skew: Qt.point(mapItem.map.skewX, mapItem.map.skewY)
+                orientation: mapItem.map.orientation
 
                 color: "black"
             }
@@ -107,6 +111,7 @@ Rectangle {
                 region: mapEditor.tileEditRegion
                 mapRect: Qt.rect(0, 0, mapItem.map.width, mapItem.map.height)
                 tileSize: Qt.point(mapItem.map.tileWidth, mapItem.map.tileHeight)
+                mapDocument: mapEditor.currentMapDocument
             }
         }
     }
@@ -201,4 +206,18 @@ Rectangle {
         }
     }
 
+    function cursorTileCoords() {
+        var tileCoords = mapItem.screenToTileCoords(mapRelativeCoords.x, mapRelativeCoords.y)
+
+        return tileCoords
+    }
+
+    property var mapRelativeCoords: {
+        var mapRelativeCoords = singleFingerPanArea.mapToItem(mapItem, singleFingerPanArea.mouseX, singleFingerPanArea.mouseY)
+        return mapRelativeCoords
+    }
+
+    onMapRelativeCoordsChanged: {
+        mapEditor.setQuickMouseCoords(mapRelativeCoords)
+    }
 }

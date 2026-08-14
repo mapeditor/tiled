@@ -42,8 +42,12 @@ public:
     float mScale = 1;
     float mPixelWidth = 0;
     float mPixelHeight = 0;
+    float mMapWidth = 0;
+    float mMapHeight = 0;
     float mTileWidth = 0;
     float mTileHeight = 0;
+    QPointF mSkew;
+    int mOrientation;
 };
 
 } // namespace TiledQuick

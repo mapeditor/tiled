@@ -580,18 +580,28 @@ void EditableMap::setStaggerIndex(StaggerIndex value)
 
 void EditableMap::setSkewX(int value)
 {
+    int oldSkewX = skewX();
+
     if (auto doc = mapDocument())
         push(new ChangeMapSkew(doc, QPoint(value, map()->skewY())));
     else if (!checkReadOnly())
         map()->setSkewX(value);
+
+    if (oldSkewX != skewX())
+        emit skewChanged();
 }
 
 void EditableMap::setSkewY(int value)
 {
+    int oldSkewY = skewY();
+
     if (auto doc = mapDocument())
         push(new ChangeMapSkew(doc, QPoint(map()->skewX(), value)));
     else if (!checkReadOnly())
         map()->setSkewY(value);
+
+    if (oldSkewY != skewY())
+        emit skewChanged();
 }
 
 void EditableMap::setParallaxOrigin(const QPointF &parallaxOrigin)
@@ -604,12 +614,17 @@ void EditableMap::setParallaxOrigin(const QPointF &parallaxOrigin)
 
 void EditableMap::setOrientation(Orientation value)
 {
+    int oldOrientation = orientation();
+
     if (auto doc = mapDocument()) {
         push(new ChangeMapOrientation(doc, static_cast<Map::Orientation>(value)));
     } else if (!checkReadOnly()) {
         map()->setOrientation(static_cast<Map::Orientation>(value));
         mRenderer.reset();
     }
+
+    if (oldOrientation != orientation())
+    emit orientationChanged();
 }
 
 void EditableMap::setRenderOrder(RenderOrder value)

@@ -82,6 +82,7 @@ class MapEditor final : public Editor
     Q_PROPERTY(int currentWangColorIndex READ currentWangColorIndex WRITE setCurrentWangColorIndex NOTIFY currentWangColorIndexChanged)
     Q_PROPERTY(Tiled::MapView *currentMapView READ currentMapView CONSTANT)
     Q_PROPERTY(Tiled::AbstractTool *selectedTool READ selectedTool WRITE setSelectedTool NOTIFY selectedToolChanged)
+    Q_PROPERTY(Tiled::MapDocument *currentMapDocument READ currentMapDocument NOTIFY currentDocumentChanged)
 
 public:
     explicit MapEditor(QObject *parent = nullptr);
@@ -98,6 +99,7 @@ public:
 
     void setCurrentDocument(Document *document) override;
     Document *currentDocument() const override;
+    MapDocument *currentMapDocument() const;
 
     QWidget *editorWidget() const override;
 
@@ -164,10 +166,10 @@ signals:
     void currentWangSetChanged();
     void currentWangColorIndexChanged(int colorIndex);
     void selectedToolChanged(AbstractTool *tool);
+    void currentDocumentChanged(Document *document);
 
 private:
     void onSelectedToolChanged(AbstractTool *tool);
-    void currentDocumentChanged(Document *document);
     void updateActiveUndoStack();
 
     void paste(ClipboardManager::PasteFlags flags);
