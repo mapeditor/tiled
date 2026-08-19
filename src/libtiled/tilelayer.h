@@ -451,6 +451,11 @@ public:
      * Returns the set of tilesets used by this tile layer.
      */
     QSet<SharedTileset> usedTilesets() const override;
+
+    /**
+     * Returns whether this tile layer has any cell for which the given
+     * \a condition returns true.
+     */
     bool hasCell(std::function<bool (const Cell &)> condition) const;
 
     /**
@@ -525,7 +530,7 @@ private:
     int mHeight;
     QHash<QPoint, Chunk> mChunks;
     QRect mBounds;
-    mutable QHash<SharedTileset, int> mUsedTilesets;
+    QHash<SharedTileset, int> mUsedTilesets;
 };
 
 inline QPoint TileLayer::iterator::key() const
