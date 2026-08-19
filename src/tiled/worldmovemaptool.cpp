@@ -307,7 +307,7 @@ void WorldMoveMapTool::updateCreatingMap(const QPointF &pos,
         to = snapPoint(to, mapDocument());
     }
 
-   //qrectf
+
     const QRectF rect = QRectF(from, to).normalized();
     mCreateWorldRect = QRect(rect.topLeft().toPoint(), rect.size().toSize());
 

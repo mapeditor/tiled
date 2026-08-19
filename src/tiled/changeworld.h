@@ -76,7 +76,8 @@ public:
  *
  * A world refers to its maps by file name, so the map needs a file before it
  * can be added. Pushed in a macro with AddMapCommand, so a single undo
- * reverts both. Undo moves the file to the trash, in case it was edited.
+ * reverts both. Undo moves the file to the trash, but only when the map
+ * still has no content.
  */
 class CreateMapFileCommand : public QUndoCommand
 {

@@ -22,13 +22,16 @@
 #include "changeworld.h"
 
 #include "documentmanager.h"
+#include "layer.h"
 #include "map.h"
+#include "mapdocument.h"
 #include "tmxmapformat.h"
 #include "world.h"
 #include "worldmanager.h"
 
 #include <QCoreApplication>
 #include <QFile>
+#include <QFileInfo>
 
 namespace Tiled {
 
@@ -95,6 +98,19 @@ void RemoveMapCommand::redo()
 }
 
 
+// A map counts as empty when none of its layers have any content
+static bool mapIsEmpty(const Map &map)
+{
+    LayerIterator it(&map);
+    while (Layer *layer = it.next()) {
+        if (layer->isGroupLayer())
+            continue;
+        if (!layer->isEmpty())
+            return false;
+    }
+    return true;
+}
+
 CreateMapFileCommand::CreateMapFileCommand(std::unique_ptr<Map> map,
                                            const QString &fileName,
                                            QUndoCommand *parent)
@@ -108,6 +124,10 @@ CreateMapFileCommand::~CreateMapFileCommand() = default;
 
 void CreateMapFileCommand::redo()
 {
+    // Nothing to write when undo left the file in place
+    if (QFileInfo::exists(mFileName))
+        return;
+
     // Writes the map as it was created, so a redo restores the original file
     TmxMapFormat format;
     if (!format.write(mMap.get(), mFileName, MapFormat::Options()))
@@ -116,9 +136,21 @@ void CreateMapFileCommand::redo()
 
 void CreateMapFileCommand::undo()
 {
-    // Close the map first, so no document is left pointing at a missing file
     DocumentManager *manager = DocumentManager::instance();
     const int index = manager->findDocument(mFileName);
+
+    // A map the user put content in keeps its file, checking the open
+    // document first so unsaved edits count too
+    if (index != -1) {
+        auto mapDocument = manager->documents().at(index).objectCast<MapDocument>();
+        if (mapDocument && !mapIsEmpty(*mapDocument->map()))
+            return;
+    } else if (auto map = TmxMapFormat().read(mFileName)) {
+        if (!mapIsEmpty(*map))
+            return;
+    }
+
+    // Close the map first, so no document is left pointing at a missing file
     if (index != -1)
         manager->closeDocumentAt(index);
 
