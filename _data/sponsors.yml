@@ -113,30 +113,10 @@
   banner: sponsors/apuesdeportivas.png
   sponsor: https://opencollective.com/apuesdeportivas-es
 
-- name: Paysafecard Casino
-  url: https://de.trustpilot.com/review/paysafecardcasinos.org
-  banner: sponsors/paysafecard-casino.png
-  sponsor: https://opencollective.com/paysafecard-casino
-
 - name: Top Cazinouri Online
   url: https://casinolegal.ro/
   banner: sponsors/casinolegal.ro.png
   sponsor: https://www.patreon.com/user?u=198707564
-
-- name: BetPokies.co.nz is your New Zealand guide in the world of online gambling.
-  url: https://nz.trustpilot.com/review/betpokies.co.nz
-  banner: sponsors/betpokies.co.nz.png
-  sponsor: https://opencollective.com/betpokiesconz
-
-- name: Online Pokies in Australia
-  url: https://au.trustpilot.com/review/betpokies.com
-  banner: sponsors/betpokies.com.png
-  sponsor: https://opencollective.com/betpokies
-
-- name: PayID Pokies
-  url: https://au.trustpilot.com/review/bestpayidpokies.net
-  banner: sponsors/bestpayidpokies.png
-  sponsor: https://opencollective.com/bestpayidpokies
 
 - name: PayID Pokies
   url: https://au.trustpilot.com/review/bestpayidpokies.net
@@ -176,14 +156,4 @@
 - name: Line Awesome
   url: https://icons8.com/line-awesome
   banner: sponsors/line-awesome.png
-
-- name: CasinoHEX CA
-  url: https://casinohex.org/canada/
-  banner: sponsors/hexcasinoca.png
-  sponsor: https://opencollective.com/hexcasinoca
-
-- name: Aviator Game Online
-  url: https://www.trustpilot.com/review/aviatorplay.top
-  banner: sponsors/aviator-game-online.png
-  sponsor: https://opencollective.com/aviator-game-online
 
