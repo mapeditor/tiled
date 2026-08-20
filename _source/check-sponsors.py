@@ -2,18 +2,22 @@
 """
 Check OpenCollective sponsors in `_data/sponsors.yml` against the Tiled collective.
 
-Hybrid logic:
-- Activity status: GraphQL members(role: BACKER) + Member.isActive
-- Slot counts: GraphQL account.orders(oppositeAccount: tiled), counting ACTIVE recurring orders
-- Missing-sponsor detection: only banner-level candidates (active + >= $100 total donations)
+Logic:
+- Slot counts: distinct orders that actually charged within RECENT_ACTIVITY_DAYS.
+  Order.status is unreliable here: OpenCollective marks many long-running orders
+  CANCELLED while they keep billing monthly, so payments are the source of truth.
+- Activity status: a sponsor is ACTIVE when it has at least one such recent
+  payment, LAPSED otherwise (Member.isActive is only used as extra diagnostics)
+- Missing-sponsor detection: only banner-level candidates
+  (recent payment + >= $100 total donations)
 - URL extraction: use GraphQL `account.website` when suggesting URLs for missing sponsors
 
 Usage:
-    python3 scripts/check-sponsors.py
+    python3 _source/check-sponsors.py
 
 Exit codes:
     0 - all checked sponsors are active and aligned
-    1 - issues found (inactive/missing/mismatches/new banner-level sponsors)
+    1 - issues found (lapsed/missing/mismatches/new banner-level sponsors)
     2 - script/runtime/API error
 """
 
@@ -39,6 +43,10 @@ SPONSORS_FILE = os.path.join(
 
 # "Big Sponsor" threshold currently used by Tiled banner sponsors.
 BANNER_MIN_TOTAL_CENTS = 10_000  # $100.00
+
+# How far back a contribution still counts as "currently sponsoring". Banner
+# sponsorships are billed monthly, so this is one cycle plus roughly two weeks
+# of slack for retries and billing-date drift.
 RECENT_ACTIVITY_DAYS = 45
 
 USE_COLOR = hasattr(sys.stdout, "isatty") and sys.stdout.isatty()
@@ -95,7 +103,7 @@ def fetch_rest_members(slug: str) -> list[dict[str, Any]]:
         url,
         headers={
             "Accept": "application/json",
-            "User-Agent": "check-sponsors/3.0",
+            "User-Agent": "check-sponsors/4.0",
         },
     )
     try:
@@ -119,7 +127,7 @@ def graphql_request(query: str, variables: dict[str, Any]) -> dict[str, Any]:
         headers={
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "User-Agent": "check-sponsors/3.0",
+            "User-Agent": "check-sponsors/4.0",
         },
     )
     try:
@@ -136,7 +144,7 @@ def graphql_request(query: str, variables: dict[str, Any]) -> dict[str, Any]:
     return payload["data"]
 
 
-def fetch_backer_members_with_orders(slug: str) -> list[dict[str, Any]]:
+def fetch_backer_members(slug: str) -> list[dict[str, Any]]:
     query = """
     query($slug: String!, $offset: Int!, $limit: Int!) {
       account(slug: $slug) {
@@ -148,18 +156,6 @@ def fetch_backer_members_with_orders(slug: str) -> list[dict[str, Any]]:
               slug
               name
               website
-              orders(oppositeAccount: { slug: $slug }, limit: 100) {
-                nodes {
-                  id
-                  createdAt
-                  amount {
-                    valueInCents
-                    currency
-                  }
-                  frequency
-                  status
-                }
-              }
             }
             totalDonations {
               valueInCents
@@ -194,19 +190,83 @@ def fetch_backer_members_with_orders(slug: str) -> list[dict[str, Any]]:
     return all_nodes
 
 
+def fetch_recent_contribution_slots(
+    slug: str, days: int
+) -> dict[str, dict[str, str]]:
+    """Map each contributor slug to {order id: last charge date} within `days`.
+
+    Each distinct order that charged in the window is one banner slot, which is
+    what sponsors.yml entries correspond to.
+    """
+    query = """
+    query($slug: String!, $dateFrom: DateTime!, $offset: Int!, $limit: Int!) {
+      transactions(account: {slug: $slug}, type: CREDIT, kind: CONTRIBUTION,
+                   dateFrom: $dateFrom, offset: $offset, limit: $limit) {
+        totalCount
+        nodes {
+          createdAt
+          fromAccount {
+            slug
+          }
+          order {
+            id
+          }
+        }
+      }
+    }
+    """
+
+    date_from = (
+        datetime.now(timezone.utc) - timedelta(days=days)
+    ).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    slots: dict[str, dict[str, str]] = defaultdict(dict)
+    offset = 0
+    limit = 100
+    total_count = None
+
+    print(f"Fetching contributions of the last {days} days (paged) …")
+    while True:
+        data = graphql_request(
+            query,
+            {
+                "slug": slug,
+                "dateFrom": date_from,
+                "offset": offset,
+                "limit": limit,
+            },
+        )
+        transactions = data["transactions"]
+        nodes = transactions["nodes"]
+        if total_count is None:
+            total_count = transactions["totalCount"]
+
+        for node in nodes:
+            from_slug = ((node.get("fromAccount") or {}).get("slug") or "").lower()
+            order_id = (node.get("order") or {}).get("id")
+            created_at = node.get("createdAt")
+            if not from_slug or not order_id or not created_at:
+                continue
+            previous = slots[from_slug].get(order_id)
+            if previous is None or created_at > previous:
+                slots[from_slug][order_id] = created_at
+
+        offset += len(nodes)
+
+        if not nodes or offset >= total_count:
+            break
+
+    print(
+        f"  → {total_count} contributions from {len(slots)} contributors "
+        f"since {date_from[:10]}\n"
+    )
+    return slots
+
+
 def cents_to_amount_str(value_in_cents: int | None, currency: str | None) -> str:
     if value_in_cents is None:
         return "?"
     return f"{value_in_cents / 100:.2f} {(currency or '').strip()}".strip()
-
-
-def parse_iso_datetime(value: str | None) -> datetime | None:
-    if not value:
-        return None
-    try:
-        return datetime.fromisoformat(value.replace("Z", "+00:00"))
-    except ValueError:
-        return None
 
 
 def first_nonempty(values: list[str | None]) -> str | None:
@@ -234,17 +294,26 @@ def main() -> None:
         print("No OpenCollective sponsor entries found in sponsors.yml.")
         sys.exit(0)
 
-    member_rows = fetch_backer_members_with_orders(COLLECTIVE_SLUG)
+    member_rows = fetch_backer_members(COLLECTIVE_SLUG)
+    recent_slots = fetch_recent_contribution_slots(
+        COLLECTIVE_SLUG, RECENT_ACTIVITY_DAYS
+    )
     rest_members = fetch_rest_members(COLLECTIVE_SLUG)
 
     # Structures
     rows_by_slug: dict[str, list[dict[str, Any]]] = defaultdict(list)
     active_row_count_by_slug: Counter[str] = Counter()
-    active_order_count_by_slug: Counter[str] = Counter()
     max_total_donations_cents_by_slug: dict[str, int] = defaultdict(int)
-    most_recent_order_by_slug: dict[str, datetime] = {}
     name_by_slug: dict[str, str] = {}
     rest_last_tx_by_slug: dict[str, str] = {}
+
+    # One slot per order that charged recently.
+    slot_count_by_slug: Counter[str] = Counter(
+        {slug: len(orders) for slug, orders in recent_slots.items()}
+    )
+    last_paid_by_slug: dict[str, str] = {
+        slug: max(orders.values()) for slug, orders in recent_slots.items()
+    }
 
     for m in rest_members:
         profile = m.get("profile")
@@ -276,22 +345,6 @@ def main() -> None:
         if isinstance(cents, int) and cents > max_total_donations_cents_by_slug[slug]:
             max_total_donations_cents_by_slug[slug] = cents
 
-        # Slot counting from orders: only ACTIVE recurring orders.
-        orders = (acct.get("orders") or {}).get("nodes") or []
-        active_order_ids = set()
-        most_recent = most_recent_order_by_slug.get(slug)
-        for o in orders:
-            if o.get("status") == "ACTIVE":
-                active_order_ids.add(o.get("id"))
-            created_at = parse_iso_datetime(o.get("createdAt"))
-            if created_at and (most_recent is None or created_at > most_recent):
-                most_recent = created_at
-        if most_recent is not None:
-            most_recent_order_by_slug[slug] = most_recent
-        active_order_count_by_slug[slug] = max(
-            active_order_count_by_slug[slug], len(active_order_ids)
-        )
-
     yml_slugs = sorted({slug for _, slug in yml_entries})
 
     print(
@@ -300,55 +353,64 @@ def main() -> None:
             f"({len(yml_slugs)} unique slugs):\n"
         )
     )
-    print(f"  {'Name':<70} {'Slug':<40} {'Status'}")
-    print(f"  {'─' * 70} {'─' * 40} {'─' * 24}")
+    print(f"  {'Name':<60} {'Slug':<34} {'Last paid':<12} {'Status'}")
+    print(f"  {'─' * 60} {'─' * 34} {'─' * 12} {'─' * 22}")
 
-    inactive: list[str] = []
+    lapsed: list[str] = []
     not_found: list[str] = []
     active: list[str] = []
 
     for slug in yml_slugs:
         sponsor_obj = next(s for s, k in yml_entries if k == slug)
         name = sponsor_obj.get("name", "(unnamed)")
-        display_name = (name[:67] + "…") if len(name) > 68 else name
+        display_name = (name[:57] + "…") if len(name) > 58 else name
 
-        rows = rows_by_slug.get(slug, [])
-        if not rows:
-            status = red("NOT FOUND IN GRAPHQL MEMBERS")
-            not_found.append(slug)
+        last_paid = last_paid_by_slug.get(slug) or rest_last_tx_by_slug.get(slug)
+        last_paid_str = last_paid[:10] if last_paid else "never"
+
+        if slot_count_by_slug.get(slug, 0) > 0:
+            status = green("ACTIVE")
+            active.append(slug)
+        elif rows_by_slug.get(slug):
+            status = yellow("LAPSED")
+            lapsed.append(slug)
         else:
-            is_active = any(r.get("isActive") is True for r in rows)
-            if is_active:
-                status = green("ACTIVE")
-                active.append(slug)
-            else:
-                status = yellow("INACTIVE")
-                inactive.append(slug)
+            status = red("NOT FOUND")
+            not_found.append(slug)
 
-        print(f"  {display_name:<70} {slug:<40} {status}")
+        print(f"  {display_name:<60} {slug:<34} {last_paid_str:<12} {status}")
 
     print()
     print(bold("Summary"))
     print(f"  YAML OC entries: {len(yml_entries)} ({len(yml_slugs)} unique slugs)")
     print(f"  {green('Active')}:    {len(active)}")
-    print(f"  {yellow('Inactive')}:  {len(inactive)}")
+    print(f"  {yellow('Lapsed')}:    {len(lapsed)}")
     print(f"  {red('Not found')}: {len(not_found)}")
 
     has_problems = False
 
-    if inactive:
+    if lapsed:
         has_problems = True
         print()
-        print(yellow(bold("Inactive sponsors in sponsors.yml:")))
-        for slug in inactive:
+        print(
+            yellow(
+                bold(
+                    f"Sponsors with no contribution in the last "
+                    f"{RECENT_ACTIVITY_DAYS} days:"
+                )
+            )
+        )
+        for slug in lapsed:
             rows = rows_by_slug.get(slug, [])
             acct_name = name_by_slug.get(slug, slug)
+            last_tx = rest_last_tx_by_slug.get(slug, "unknown")
             print(f"  • {acct_name} ({slug})")
+            print(f"    sponsors.yml entries: {yml_count_by_slug.get(slug, 0)}")
+            print(f"    last collective transaction: {last_tx}")
             for r in rows:
                 td = r.get("totalDonations") or {}
-                tier = (r.get("tier") or {}).get("name", "Unknown tier")
                 total = cents_to_amount_str(td.get("valueInCents"), td.get("currency"))
-                print(f"    - isActive={r.get('isActive')} tier={tier} total={total}")
+                print(f"    - isActive={r.get('isActive')} total={total}")
             print()
 
     if not_found:
@@ -360,31 +422,20 @@ def main() -> None:
             print(f"    profile: https://opencollective.com/{slug}")
         print()
 
-    # Missing banner-level active sponsors:
-    # active member + donation total above threshold + absent from YAML
-    now = datetime.now(timezone.utc)
-    recent_cutoff = now - timedelta(days=RECENT_ACTIVITY_DAYS)
-
-    active_banner_candidate_slugs = sorted(
+    # Missing banner-level sponsors:
+    # recent payment + donation total above threshold + absent from YAML
+    banner_candidate_slugs = sorted(
         slug
-        for slug, count in active_row_count_by_slug.items()
-        if count > 0
-        and max_total_donations_cents_by_slug.get(slug, 0) >= BANNER_MIN_TOTAL_CENTS
-        and (
-            (
-                most_recent_order_by_slug.get(slug) is not None
-                and most_recent_order_by_slug[slug] >= recent_cutoff
-            )
-            or active_order_count_by_slug.get(slug, 0) > 0
-        )
+        for slug in slot_count_by_slug
+        if max_total_donations_cents_by_slug.get(slug, 0) >= BANNER_MIN_TOTAL_CENTS
     )
     missing_from_yml = [
-        slug for slug in active_banner_candidate_slugs if yml_count_by_slug.get(slug, 0) == 0
+        slug for slug in banner_candidate_slugs if yml_count_by_slug.get(slug, 0) == 0
     ]
 
     if missing_from_yml:
         has_problems = True
-        print(yellow(bold("Active banner-level BACKER members missing from sponsors.yml:")))
+        print(yellow(bold("Banner-level sponsors missing from sponsors.yml:")))
         for slug in missing_from_yml:
             rows = rows_by_slug.get(slug, [])
             acct_name = name_by_slug.get(slug, slug)
@@ -398,76 +449,57 @@ def main() -> None:
             print(
                 f"    suggested url: {profile_website or '(not found in account.website)'}"
             )
-            print(f"    active member rows: {active_row_count_by_slug.get(slug, 0)}")
-            print(f"    active recurring orders: {active_order_count_by_slug.get(slug, 0)}")
+            print(f"    slots paid recently: {slot_count_by_slug.get(slug, 0)}")
+            print(f"    last paid: {last_paid_by_slug.get(slug, 'unknown')[:10]}")
             print()
 
     else:
         print()
-        print(green("No active banner-level BACKER members are missing from sponsors.yml. ✓"))
+        print(green("No banner-level sponsors are missing from sponsors.yml. ✓"))
 
     # Count mismatch for existing YAML entries:
-    # Compare YAML entry count vs ACTIVE recurring order count.
-    # This captures multi-slot sponsors.
+    # compare YAML entry count against the number of recently paid slots.
+    # This captures multi-slot sponsors that added or dropped a slot.
     mismatches = []
     for slug in sorted(yml_count_by_slug.keys()):
         yml_count = yml_count_by_slug.get(slug, 0)
-        active_order_count = active_order_count_by_slug.get(slug, 0)
+        slot_count = slot_count_by_slug.get(slug, 0)
 
-        if yml_count != active_order_count:
-            mismatches.append((slug, yml_count, active_order_count))
+        # Fully lapsed sponsors are already reported above.
+        if slot_count == 0:
+            continue
+
+        if yml_count != slot_count:
+            mismatches.append((slug, yml_count, slot_count))
 
     if mismatches:
         has_problems = True
         print()
         print(
             yellow(
-                bold(
-                    "Count mismatches (sponsors.yml entries vs ACTIVE recurring orders):"
-                )
+                bold("Count mismatches (sponsors.yml entries vs paid slots):")
             )
         )
-        for slug, yml_count, active_orders in mismatches:
+        for slug, yml_count, slot_count in mismatches:
             acct_name = name_by_slug.get(slug, slug)
             direction = (
                 "too many entries in sponsors.yml"
-                if yml_count > active_orders
+                if yml_count > slot_count
                 else "missing entries in sponsors.yml"
             )
             print(f"  • {acct_name} ({slug})")
             print(
                 f"    sponsors.yml entries: {yml_count}, "
-                f"active recurring orders: {active_orders} → {direction}"
+                f"paid slots: {slot_count} → {direction}"
             )
-
-            # order + transaction diagnostics
-            rows = rows_by_slug.get(slug, [])
-            all_order_nodes = []
-            for r in rows:
-                acct = r.get("account") or {}
-                all_order_nodes.extend((acct.get("orders") or {}).get("nodes") or [])
-
-            unique_orders = {o.get("id"): o for o in all_order_nodes if o.get("id")}
-
-            print("    order diagnostics:")
-            rest_last_tx = rest_last_tx_by_slug.get(slug, "unknown")
-            print(f"      last collective transaction (REST): {rest_last_tx}")
-
-            if unique_orders:
-                for order in unique_orders.values():
-                    amt = order.get("amount") or {}
-                    amount = cents_to_amount_str(
-                        amt.get("valueInCents"), amt.get("currency")
-                    )
-                    print(
-                        f"      - {order.get('id')}: status={order.get('status')}, "
-                        f"freq={order.get('frequency')}, amount={amount}, "
-                        f"created={str(order.get('createdAt', ''))[:10]}"
-                    )
+            for order_id, charged_at in sorted(
+                recent_slots.get(slug, {}).items(), key=lambda kv: kv[1], reverse=True
+            ):
+                print(f"      - {order_id}: last charged {charged_at[:10]}")
             print()
     else:
         print()
-        print(green("Entry counts match ACTIVE recurring order counts. ✓"))
+        print(green("Entry counts match paid slot counts. ✓"))
 
     if has_problems:
         sys.exit(1)
