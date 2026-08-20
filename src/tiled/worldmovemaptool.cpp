@@ -238,6 +238,16 @@ void WorldMoveMapTool::mousePressed(QGraphicsSceneMouseEvent *event)
             return;
         }
 
+        // an unsaved map has no file name, so switch to its document directly
+        MapDocument *target = targetMap();
+        if (target && target->fileName().isEmpty()) {
+            DocumentManager *manager = DocumentManager::instance();
+            if (manager->findDocument(target) == -1)
+                manager->addDocument(target->sharedFromThis());
+            manager->switchToDocument(target);
+            return;
+        }
+
         // nothing under the cursor, so drag out the bounds of a new map
         if (canCreateMap()) {
             startCreating(event->scenePos());

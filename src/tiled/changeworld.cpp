@@ -22,16 +22,11 @@
 #include "changeworld.h"
 
 #include "documentmanager.h"
-#include "layer.h"
-#include "map.h"
-#include "mapdocument.h"
-#include "tmxmapformat.h"
 #include "world.h"
+#include "worlddocument.h"
 #include "worldmanager.h"
 
 #include <QCoreApplication>
-#include <QFile>
-#include <QFileInfo>
 
 namespace Tiled {
 
@@ -98,63 +93,24 @@ void RemoveMapCommand::redo()
 }
 
 
-// A map counts as empty when none of its layers have any content
-static bool mapIsEmpty(const Map &map)
-{
-    LayerIterator it(&map);
-    while (Layer *layer = it.next()) {
-        if (layer->isGroupLayer())
-            continue;
-        if (!layer->isEmpty())
-            return false;
-    }
-    return true;
-}
-
-CreateMapFileCommand::CreateMapFileCommand(std::unique_ptr<Map> map,
-                                           const QString &fileName,
-                                           QUndoCommand *parent)
-    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Create Map"), parent)
-    , mMap(std::move(map))
-    , mFileName(fileName)
+AddUnsavedMapCommand::AddUnsavedMapCommand(WorldDocument *worldDocument,
+                                           const MapDocumentPtr &mapDocument,
+                                           const QRect &rect)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Add Map to World"))
+    , mWorldDocument(worldDocument)
+    , mMapDocument(mapDocument)
+    , mRect(rect)
 {
 }
 
-CreateMapFileCommand::~CreateMapFileCommand() = default;
-
-void CreateMapFileCommand::redo()
+void AddUnsavedMapCommand::redo()
 {
-    // Nothing to write when undo left the file in place
-    if (QFileInfo::exists(mFileName))
-        return;
-
-    // Writes the map as it was created, so a redo restores the original file
-    TmxMapFormat format;
-    if (!format.write(mMap.get(), mFileName, MapFormat::Options()))
-        qWarning("Failed to create map file: %s", qUtf8Printable(format.errorString()));
+    mWorldDocument->addUnsavedMap(mMapDocument, mRect);
 }
 
-void CreateMapFileCommand::undo()
+void AddUnsavedMapCommand::undo()
 {
-    DocumentManager *manager = DocumentManager::instance();
-    const int index = manager->findDocument(mFileName);
-
-    // A map the user put content in keeps its file, checking the open
-    // document first so unsaved edits count too
-    if (index != -1) {
-        auto mapDocument = manager->documents().at(index).objectCast<MapDocument>();
-        if (mapDocument && !mapIsEmpty(*mapDocument->map()))
-            return;
-    } else if (auto map = TmxMapFormat().read(mFileName)) {
-        if (!mapIsEmpty(*map))
-            return;
-    }
-
-    // Close the map first, so no document is left pointing at a missing file
-    if (index != -1)
-        manager->closeDocumentAt(index);
-
-    QFile::moveToTrash(mFileName);
+    mWorldDocument->removeUnsavedMap(mMapDocument.data());
 }
 
 

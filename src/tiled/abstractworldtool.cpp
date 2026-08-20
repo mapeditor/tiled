@@ -113,18 +113,6 @@ MapDocumentPtr nearestMapDocument(const World *world, const QRect &rect)
     return DocumentManager::instance()->loadDocument(nearestFileName).objectCast<MapDocument>();
 }
 
-// Picks the first free untitled-N.tmx alongside the world file
-QString newMapFileName(const World *world)
-{
-    const QDir dir = QFileInfo(world->fileName).dir();
-
-    for (int i = 1; ; ++i) {
-        const QString fileName = dir.filePath(QStringLiteral("untitled-%1.tmx").arg(i));
-        if (!QFileInfo::exists(fileName))
-            return fileName;
-    }
-}
-
 } // namespace
 
 Qt::CursorShape cursorForHandle(int handle)
@@ -464,8 +452,7 @@ void AbstractWorldTool::addAnotherMapToWorld(QPoint insertPos)
 }
 
 // Creates a new map covering the given world rect and adds it to the current
-// world. The map is saved right away, since a world refers to its maps by
-// file name.
+// world. The map stays unsaved until the user saves it.
 void AbstractWorldTool::createMapAt(const QRect &worldRect)
 {
     auto worldDocument = worldForMap(mapDocument());
@@ -507,13 +494,10 @@ void AbstractWorldTool::createMapAt(const QRect &worldRect)
     QRect entryRect = MapRenderer::create(map.get())->mapBoundingRect();
     entryRect.moveTo(worldRect.topLeft());
 
-    const QString fileName = newMapFileName(world);
+    auto mapDocument = MapDocumentPtr::create(std::move(map));
 
     QUndoStack *undoStack = worldDocument->undoStack();
-    undoStack->beginMacro(tr("Create Map"));
-    undoStack->push(new CreateMapFileCommand(std::move(map), fileName));
-    undoStack->push(new AddMapCommand(worldDocument, fileName, entryRect));
-    undoStack->endMacro();
+    undoStack->push(new AddUnsavedMapCommand(worldDocument, mapDocument, entryRect));
 }
 
 // Asks for a file name and creates a new world containing the current map.

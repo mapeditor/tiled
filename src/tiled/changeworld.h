@@ -21,17 +21,15 @@
 
 #pragma once
 
+#include "mapdocument.h"
 #include "undocommands.h"
 
 #include <QRect>
 #include <QSize>
 #include <QUndoCommand>
 
-#include <memory>
-
 namespace Tiled {
 
-class Map;
 class WorldDocument;
 
 class AddRemoveMapCommand : public QUndoCommand
@@ -72,27 +70,25 @@ public:
 };
 
 /**
- * Undo command that writes a newly created map to disk.
+ * Undo command that adds a map without a file to a world.
  *
- * A world refers to its maps by file name, so the map needs a file before it
- * can be added. Pushed in a macro with AddMapCommand, so a single undo
- * reverts both. Undo moves the file to the trash, but only when the map
- * still has no content.
+ * The map document is kept loaded by the world document, so the map can
+ * stay unsaved until the user saves it.
  */
-class CreateMapFileCommand : public QUndoCommand
+class AddUnsavedMapCommand : public QUndoCommand
 {
 public:
-    CreateMapFileCommand(std::unique_ptr<Map> map,
-                         const QString &fileName,
-                         QUndoCommand *parent = nullptr);
-    ~CreateMapFileCommand() override;
+    AddUnsavedMapCommand(WorldDocument *worldDocument,
+                         const MapDocumentPtr &mapDocument,
+                         const QRect &rect);
 
     void undo() override;
     void redo() override;
 
 private:
-    std::unique_ptr<Map> mMap;
-    QString mFileName;
+    WorldDocument *mWorldDocument;
+    MapDocumentPtr mMapDocument;
+    QRect mRect;
 };
 
 class SetMapRectCommand : public QUndoCommand

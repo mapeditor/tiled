@@ -23,6 +23,7 @@
 
 #include "document.h"
 #include "editableasset.h"
+#include "mapdocument.h"
 
 namespace Tiled {
 
@@ -69,14 +70,27 @@ public:
 
     void swapWorld(std::unique_ptr<World> &other);
 
+    // A map that is part of this world but does not have a file yet
+    struct UnsavedMap {
+        MapDocumentPtr mapDocument;
+        QRect rect;
+    };
+
+    const QVector<UnsavedMap> &unsavedMaps() const { return mUnsavedMaps; }
+    void addUnsavedMap(const MapDocumentPtr &mapDocument, const QRect &rect);
+    void removeUnsavedMap(MapDocument *mapDocument);
+
 signals:
     void worldChanged();
 
 private:
+    void unsavedMapSaved(MapDocument *mapDocument);
+
     // Document interface
     std::unique_ptr<EditableAsset> createEditable() override;
 
     std::unique_ptr<World> mWorld;
+    QVector<UnsavedMap> mUnsavedMaps;
 };
 
 } // namespace Tiled

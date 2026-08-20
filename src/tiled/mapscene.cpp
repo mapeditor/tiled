@@ -328,6 +328,14 @@ void MapScene::refreshScene()
                 mapItems.insert(mapDocument.data(), mapItem);
             }
         }
+
+        // Maps that are part of the world but don't have a file yet
+        for (const auto &unsavedMap : worldDocument->unsavedMaps()) {
+            auto mapItem = takeOrCreateMapItem(unsavedMap.mapDocument, MapItem::ReadOnly);
+            mapItem->setPos(unsavedMap.rect.topLeft() - currentMapPosition);
+            mapItem->setVisible(mWorldsEnabled);
+            mapItems.insert(unsavedMap.mapDocument.data(), mapItem);
+        }
     } else {
         auto mapItem = takeOrCreateMapItem(mMapDocument->sharedFromThis(), MapItem::Editable);
         mapItems.insert(mMapDocument, mapItem);
