@@ -482,6 +482,11 @@ void AbstractWorldTool::createMapAt(const QRect &worldRect)
     parameters.orientation = templateMap->orientation();
     parameters.tileWidth = qMax(1, templateMap->tileWidth());
     parameters.tileHeight = qMax(1, templateMap->tileHeight());
+    parameters.staggerAxis = templateMap->staggerAxis();
+    parameters.staggerIndex = templateMap->staggerIndex();
+    parameters.hexSideLength = templateMap->hexSideLength();
+    parameters.skewX = templateMap->skewX();
+    parameters.skewY = templateMap->skewY();
 
     // A map is always a whole number of tiles, so round the dragged size
     parameters.width = qMax(1, qRound(qreal(worldRect.width()) / parameters.tileWidth));
