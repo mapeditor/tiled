@@ -454,8 +454,6 @@ void MapEditor::setCurrentDocument(Document *document)
 //                this, &MapEditor::updateActions);
         connect(mapDocument, &MapDocument::selectedAreaChanged,
                 this, &MapEditor::selectedRegionChanged);
-        // connect(mapDocument, &MapDocument::selectedObjectsChanged,
-        //         this, &MapEditor::selectedObjectsChanged);
         connect(mapDocument, &MapDocument::aboutToBeSelectedObjectsChanged,
                 this, &MapEditor::aboutToBeSelectedObjectsChanged);
         connect(mapDocument, &MapDocument::hoveredMapObjectChanged,
@@ -764,14 +762,6 @@ QRegion MapEditor::selectedRegion() const
 
     return mCurrentMapDocument->selectedArea();
 }
-
-// QList<MapObject*> MapEditor::selectedObjects() const
-// {
-//     if (!mCurrentMapDocument)
-//         return QList<MapObject*>();
-
-//     return mCurrentMapDocument->selectedObjects();
-// }
 
 QList<MapObject*> MapEditor::aboutToBeSelectedObjects() const
 {
