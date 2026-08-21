@@ -21,19 +21,23 @@
 #include "mapitem.h"
 
 #include "tilelayeritem.h"
+#include "tilesethelper.h"
 
 #include "map.h"
 #include "maprenderer.h"
-#include "tilelayer.h"
 
 using namespace TiledQuick;
 
 MapItem::MapItem(QQuickItem *parent)
     : QQuickItem(parent)
+    , mNewObjectsPreviewItem(nullptr, nullptr, this)
 {
 }
 
-MapItem::~MapItem() = default;
+MapItem::~MapItem()
+{
+    TilesetHelper::deleteInstance();
+};
 
 void MapItem::setMap(Tiled::EditableMap *editableMap)
 {
@@ -42,14 +46,18 @@ void MapItem::setMap(Tiled::EditableMap *editableMap)
 
     if (mEditableMap && mEditableMap->mapDocument()) {
         Tiled::MapDocument *oldMapDocument = mEditableMap->mapDocument();
-        disconnect(oldMapDocument, &Tiled::MapDocument::regionChanged, this, &MapItem::repaintRegion);
         disconnect(oldMapDocument, &Tiled::MapDocument::mapResized, this, &MapItem::refresh);
+        disconnect(oldMapDocument, &Tiled::MapDocument::regionChanged, this, &MapItem::repaintRegion);
+        disconnect(oldMapDocument, &Tiled::MapDocument::mapObjectsChanged, this, &MapItem::repaintObjects);
+        disconnect(oldMapDocument, &Tiled::MapDocument::tileLayerChanged, this, &MapItem::onTileLayerChanged);
     }
 
     if (editableMap && editableMap->mapDocument()) {
         Tiled::MapDocument *mapDocument = editableMap->mapDocument();
-        connect(mapDocument, &Tiled::MapDocument::regionChanged, this, &MapItem::repaintRegion);
         connect(mapDocument, &Tiled::MapDocument::mapResized, this, &MapItem::refresh);
+        connect(mapDocument, &Tiled::MapDocument::regionChanged, this, &MapItem::repaintRegion);
+        connect(mapDocument, &Tiled::MapDocument::mapObjectsChanged, this, &MapItem::repaintObjects);
+        connect(mapDocument, &Tiled::MapDocument::tileLayerChanged, this, &MapItem::onTileLayerChanged);
     }
 
     mEditableMap = editableMap;
@@ -63,6 +71,48 @@ void MapItem::setVisibleArea(const QRectF &visibleArea)
 {
     mVisibleArea = visibleArea;
     emit visibleAreaChanged();
+}
+
+void MapItem::setZoom(const qreal &zoom)
+{
+    if (mZoom == zoom)
+        return;
+
+    mZoom = zoom;
+
+    for (auto objectGroup : std::as_const(mObjectGroupItems))
+        objectGroup->setZoom(zoom);
+    mNewObjectsPreviewItem.setZoom(zoom);
+
+    // Since the tool brush is always fully rendered and does not
+    // receive the visibleAreaChanged signal upon zoom changes,
+    // we need to update it here.
+    mNewObjectsPreviewItem.update();
+
+    emit zoomChanged();
+}
+
+void MapItem::setNewObjectsPreview(Tiled::ObjectGroup *objects)
+{
+    if (mNewObjectsPreviewItem.group() == objects)
+        return;
+
+    mNewObjectsPreviewItem.setObjectGroup(objects);
+    emit newObjectsPreviewChanged();
+}
+
+void MapItem::setMousePos(const QPointF &pos)
+{
+    if (mNewObjectsPreviewItem.mousePos() == pos)
+        return;
+
+    mNewObjectsPreviewItem.setMousePos(pos);
+    emit mousePosChanged();
+}
+
+void MapItem::repaintPreview()
+{
+    mNewObjectsPreviewItem.update();
 }
 
 QRectF MapItem::boundingRect() const
@@ -166,17 +216,28 @@ void MapItem::refresh()
     qDeleteAll(mTileLayerItems);
     mTileLayerItems.clear();
 
+    qDeleteAll(mObjectGroupItems);
+    mObjectGroupItems.clear();
+
     mRenderer = nullptr;
 
     if (!mMap)
         return;
 
     mRenderer = Tiled::MapRenderer::create(mMap);
+    mNewObjectsPreviewItem.setRenderer(mRenderer.get());
+    mNewObjectsPreviewItem.setZoom(mZoom);
 
     for (Tiled::Layer *layer : mMap->layers()) {
         if (Tiled::TileLayer *tl = layer->asTileLayer()) {
             TileLayerItem *layerItem = new TileLayerItem(tl, mRenderer.get(), this);
             mTileLayerItems.append(layerItem);
+        }
+
+        if (Tiled::ObjectGroup *og = layer->asObjectGroup()) {
+            ObjectGroupItem *groupItem = new ObjectGroupItem(og, mRenderer.get(), this);
+            mObjectGroupItems.append(groupItem);
+            groupItem->setZoom(mZoom);
         }
     }
 
@@ -193,4 +254,31 @@ void MapItem::repaintRegion(const QRegion &, Tiled::TileLayer *tileLayer)
             break;
         }
     }
+}
+
+void MapItem::repaintObjects(const QList<Tiled::MapObject*> &objects, ObjectGroup *group)
+{
+    QSet<Tiled::ObjectGroup*> changedGroups;
+    for (auto object : objects)
+        changedGroups.insert(object->objectGroup());
+
+    if (changedGroups.size() == 0 && !group)
+        return;
+
+    // TODO: Update only nodes containing affected objects rather than entire layers
+    for (auto objectGroupItem : std::as_const(mObjectGroupItems)) {
+        if (objectGroupItem->group() == group || changedGroups.contains(objectGroupItem->group()))
+        {
+            // objectGroupItem->syncWithObjectGroup();
+            objectGroupItem->update();
+        }
+    }
+
+    emit mapObjectsChanged();
+}
+
+void MapItem::onTileLayerChanged(Tiled::TileLayer *layer, Tiled::MapDocument::TileLayerChangeFlags) {
+    for (auto layerItem : std::as_const(mTileLayerItems))
+        if (layerItem->layer() == layer && layerItem->isVisible() != layer->isVisible())
+            layerItem->layerVisibilityChanged();
 }

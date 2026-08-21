@@ -60,6 +60,8 @@ public:
      */
     void syncWithTileLayer();
 
+    void layerVisibilityChanged();
+
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *) override;
 
     Tiled::TileLayer *layer() const;
@@ -68,8 +70,6 @@ public slots:
     void updateVisibleTiles();
 
 private:
-    void layerVisibilityChanged();
-
     Tiled::TileLayer *mLayer;
     Tiled::MapRenderer *mRenderer;
     QRectF mVisibleArea;

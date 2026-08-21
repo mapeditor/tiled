@@ -51,6 +51,8 @@ public:
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
     void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
 
+    ObjectGroup *newMapObjectGroup() { return mNewMapObjectGroup.get(); }
+
 protected:
     void changeEvent(const ChangeEvent &event) override;
 
@@ -74,7 +76,6 @@ protected:
     State state() const { return mState; }
     void setState(State state) { mState = state; }
 
-    ObjectGroup *newMapObjectGroup() { return mNewMapObjectGroup.get(); }
     ObjectGroupItem *objectGroupItem() { return mObjectGroupItem.get(); }
 
     MapObjectItem *mNewMapObjectItem;   // owned by mObjectGroupItem if set

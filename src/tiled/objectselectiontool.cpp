@@ -221,6 +221,8 @@ public:
     QRectF boundingRect() const override { return Utils::dpiScaled(mArrow.boundingRect().adjusted(-1, -1, 1, 1)); }
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
 
+    inline QPainterPath arrow() const { return mArrow; }
+
 private:
     QPainterPath mArrow;
 };
@@ -282,6 +284,8 @@ public:
 
     QRectF boundingRect() const override { return Utils::dpiScaled(mArrow.boundingRect().adjusted(-1, -1, 1, 1)); }
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override;
+
+    inline QPainterPath arrow() const { return mArrow; }
 
 private:
     bool mResizingLimitHorizontal;
@@ -558,6 +562,14 @@ void ObjectSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
 
             clickedHandle = dynamic_cast<Handle*>(clickedItem);
         }
+#ifdef TILEDQUICK_LIB
+        else if (Preferences::instance()->useNewHardwareRenderer()){
+            QGraphicsItem *clickedItem = mapScene()->itemAt(event->scenePos(),
+                                                            QTransform());
+
+            clickedHandle = dynamic_cast<Handle*>(clickedItem);
+        }
+#endif
 
         if (!clickedHandle) {
             mClickedObject = topMostMapObjectAt(mStart);
@@ -773,6 +785,33 @@ void ObjectSelectionTool::populateToolBar(QToolBar *toolBar)
     toolBar->addSeparator();
     toolBar->addAction(mSelectIntersected);
     toolBar->addAction(mSelectContained);
+}
+
+QList<ObjectHandleData> ObjectSelectionTool::objectHandles() const
+{
+    QList<ObjectHandleData> handles;
+
+    for (const auto &handle : mResizeHandles) {
+        if (handle->isVisible()) {
+            ObjectHandleData data;
+            data.pos = handle->pos();
+            data.drawPoints = handle->arrow().toFillPolygon();
+            data.isHovered = (handle == mHoveredHandle);
+            handles.append(data);
+        }
+    }
+
+    for (const auto &handle : mRotateHandles) {
+        if (handle->isVisible()) {
+            ObjectHandleData data;
+            data.pos = handle->pos();
+            data.drawPoints = handle->arrow().toFillPolygon();
+            data.isHovered = (handle == mHoveredHandle);
+            handles.append(data);
+        }
+    }
+
+    return handles;
 }
 
 void ObjectSelectionTool::changeEvent(const ChangeEvent &event)
@@ -1096,6 +1135,7 @@ void ObjectSelectionTool::updateHandleVisibility()
         handle->setVisible(showHandles && mMode == Resize);
 
     mOriginIndicator->setVisible(showOrigin);
+    emit objectHandlesChanged();
 }
 
 void ObjectSelectionTool::objectsAboutToBeRemoved(const QList<MapObject *> &objects)
@@ -1139,6 +1179,14 @@ void ObjectSelectionTool::updateHover(const QPointF &pos)
 
         hoveredHandle = dynamic_cast<Handle*>(hoveredItem);
     }
+#ifdef TILEDQUICK_LIB
+    else if (Preferences::instance()->useNewHardwareRenderer()){
+        QGraphicsItem *hoveredItem = mapScene()->itemAt(pos,
+                                                        QTransform());
+
+        hoveredHandle = dynamic_cast<Handle*>(hoveredItem);
+    }
+#endif
 
     if (mHoveredHandle != hoveredHandle) {
         if (mHoveredHandle)
@@ -1146,6 +1194,7 @@ void ObjectSelectionTool::updateHover(const QPointF &pos)
         if (hoveredHandle)
             hoveredHandle->setUnderMouse(true);
         mHoveredHandle = hoveredHandle;
+        emit objectHandlesChanged();
     }
 
     MapObject *hoveredObject = nullptr;

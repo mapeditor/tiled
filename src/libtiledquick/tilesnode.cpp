@@ -20,8 +20,6 @@
 
 #include "tilesnode.h"
 
-#include <QSGTexture>
-
 namespace TiledQuick {
 
 TilesNode::TilesNode(QSGTexture *texture, const QVector<TileData> &tileData)

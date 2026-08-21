@@ -76,12 +76,15 @@ class MapEditor final : public Editor
     Q_PROPERTY(Tiled::TilesetDock *tilesetsView READ tilesetDock CONSTANT)
     Q_PROPERTY(Tiled::EditableMap *currentBrush READ currentBrush WRITE setCurrentBrush NOTIFY currentBrushChanged)
     Q_PROPERTY(Tiled::EditableMap *tileEditPreview READ tileEditPreview NOTIFY tileEditPreviewChanged)
+    Q_PROPERTY(Tiled::ObjectGroup *newObjectsPreview READ newObjectsPreview NOTIFY newObjectsPreviewChanged)
     Q_PROPERTY(QRegion tileEditRegion READ tileEditRegion NOTIFY tileEditRegionChanged)
     Q_PROPERTY(QRegion selectedRegion READ selectedRegion NOTIFY selectedRegionChanged)
+    Q_PROPERTY(QList<Tiled::MapObject*> aboutToBeSelectedObjects READ aboutToBeSelectedObjects NOTIFY aboutToBeSelectedObjectsChanged)
     Q_PROPERTY(Tiled::EditableWangSet *currentWangSet READ currentWangSet WRITE setCurrentWangSet NOTIFY currentWangSetChanged)
     Q_PROPERTY(int currentWangColorIndex READ currentWangColorIndex WRITE setCurrentWangColorIndex NOTIFY currentWangColorIndexChanged)
     Q_PROPERTY(Tiled::MapView *currentMapView READ currentMapView CONSTANT)
     Q_PROPERTY(Tiled::AbstractTool *selectedTool READ selectedTool WRITE setSelectedTool NOTIFY selectedToolChanged)
+    Q_PROPERTY(Qt::CursorShape cursorShape READ cursorShape NOTIFY cursorShapeChanged)
 
 public:
     explicit MapEditor(QObject *parent = nullptr);
@@ -127,10 +130,15 @@ public:
     EditableMap *tileEditPreview() const;
     void setTileEditPreview(const SharedMap &map);
 
+    ObjectGroup *newObjectsPreview() const;
+    void setNewObjectsPreview(ObjectGroup *objects);
+
     QRegion tileEditRegion() const;
     void setTileEditRegion(const QRegion &region);
 
     QRegion selectedRegion() const;
+
+    QList<MapObject*> aboutToBeSelectedObjects() const;
 
     EditableWangSet *currentWangSet() const;
     void setCurrentWangSet(EditableWangSet *wangSet);
@@ -147,6 +155,8 @@ public:
     void setSelectedTool(AbstractTool *tool);
     AbstractTool *activeTool() const;
 
+    Qt::CursorShape cursorShape() const;
+
 #ifdef TILEDQUICK_LIB
     Q_INVOKABLE void quickMouseMoved(QPointF coords, Qt::KeyboardModifiers modifiers);
     Q_INVOKABLE void quickMousePressed(Qt::MouseButton button, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers, QPointF pos, QPointF scenePos, QPoint screenPos);
@@ -159,8 +169,11 @@ public:
 signals:
     void currentBrushChanged();
     void tileEditPreviewChanged();
+    void newObjectsPreviewChanged();
     void tileEditRegionChanged();
     void selectedRegionChanged(const QRegion &newSelection, const QRegion &oldSelection);
+    void aboutToBeSelectedObjectsChanged(const QList<MapObject*> &objects);
+    void cursorShapeChanged();
     void currentWangSetChanged();
     void currentWangColorIndexChanged(int colorIndex);
     void selectedToolChanged(AbstractTool *tool);
@@ -235,7 +248,9 @@ private:
     EditPolygonTool *mEditPolygonTool;
 
     SharedMap mTileEditPreview;
+    ObjectGroup *mNewObjectsPreview;
     QRegion mTileEditRegion;
+    Qt::CursorShape mCursorShape;
 
     QToolBar *mMainToolBar;
     QToolBar *mToolsToolBar;
@@ -256,6 +271,16 @@ inline MapView *MapEditor::currentMapView() const
 inline AbstractTool *MapEditor::selectedTool() const
 {
     return mSelectedTool;
+}
+
+inline Qt::CursorShape MapEditor::cursorShape() const
+{
+    return mCursorShape;
+}
+
+inline ObjectGroup *MapEditor::newObjectsPreview() const
+{
+    return mNewObjectsPreview;
 }
 
 } // namespace Tiled

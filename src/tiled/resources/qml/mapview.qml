@@ -38,8 +38,8 @@ Rectangle {
 
             Tiled.MapItem {
                 id: mapItem
-                map: mapItemMap
 
+                map: mapItemMap
                 visibleArea: {
                     var scale = mapContainer.scale
                     Qt.rect(-mapContainer.x / scale,
@@ -47,6 +47,9 @@ Rectangle {
                             mapView.width / scale,
                             mapView.height / scale)
                 }
+                zoom: 1 / mapContainer.scale
+
+                onMapObjectsChanged: objectInteractionItem.updateOutlines()
             }
 
             RegionOverlay {
@@ -84,10 +87,9 @@ Rectangle {
                 visible: singleFingerPanArea.containsMouse || singleFingerPanArea.pressed
 
                 property var toolPreviewMap: mapEditor.tileEditPreview
+                property var newObjectsPreviewGroup: mapEditor.newObjectsPreview
                 map: toolPreviewMap
-
                 visibleArea: {
-                    // TODO: Adjust to only show needed visible area
                     if (this.map)
                         Qt.rect(0,
                                 0,
@@ -96,6 +98,10 @@ Rectangle {
                     else
                         Qt.rect(0, 0, 0, 0)
                 }
+                zoom: 1 / mapContainer.scale
+
+                newObjectsPreview: newObjectsPreviewGroup
+                mousePos: singleFingerPanArea.mapToItem(mapItem, Qt.point(singleFingerPanArea.mouseX, singleFingerPanArea.mouseY))
             }
 
             RegionOverlay {
@@ -108,12 +114,46 @@ Rectangle {
                 mapRect: Qt.rect(0, 0, mapItem.map.width, mapItem.map.height)
                 tileSize: Qt.point(mapItem.map.tileWidth, mapItem.map.tileHeight)
             }
+
+            ObjectInteractionItem {
+                id: objectInteractionItem
+
+                zoom: 1 / mapContainer.scale
+                selectedToolId: mapEditor.selectedTool?.id ?? ""
+                selectedObjects: mapItem.map.selectedObjects
+                hoveredObjects: mapEditor.aboutToBeSelectedObjects
+
+                Binding {
+                    target: objectInteractionItem
+                    property: "selectedPolygonEditPoints"
+                    value: mapEditor.selectedTool?.selectedHandlePoints
+                    when: mapEditor.selectedTool !== null &&
+                          mapEditor.selectedTool?.selectedHandlePoints !== undefined
+                }
+                Binding {
+                    target: objectInteractionItem
+                    property: "highlightedPolygonEditPoints"
+                    value: mapEditor.selectedTool?.highlightedHandlePoints
+                    when: mapEditor.selectedTool !== null &&
+                          mapEditor.selectedTool?.highlightedHandlePoints !== undefined
+                }
+
+                Binding {
+                    target: objectInteractionItem
+                    property: "objectHandles"
+                    value: mapEditor.selectedTool?.objectHandles
+                    when: mapEditor.selectedTool !== null &&
+                          mapEditor.selectedTool?.objectHandles !== undefined
+                }
+            }
         }
     }
 
     DragArea {
         id: singleFingerPanArea
         anchors.fill: parent
+
+        cursorShape: mapEditor.cursorShape
 
         onDragged: function(dx, dy) {
             dx *= Screen.devicePixelRatio
@@ -152,28 +192,48 @@ Rectangle {
             containerAnimation.start()
         }
 
-        onPressed: (event) => mapEditor.quickMousePressed(
-            event.button,
-            event.buttons,
-            event.modifiers,
-            singleFingerPanArea.mapToItem(mapItem, event.x, event.y),
-            singleFingerPanArea.mapToItem(null, event.x, event.y),
-            singleFingerPanArea.mapToGlobal(event.x, event.y)
-        )
+        onPressed: function(event) {
+            const localPos = singleFingerPanArea.mapToItem(mapItem, event.x, event.y);
 
-        onReleased: (event) => mapEditor.quickMouseReleased(
-            event.button,
-            event.buttons,
-            event.modifiers,
-            singleFingerPanArea.mapToItem(mapItem, event.x, event.y),
-            singleFingerPanArea.mapToItem(null, event.x, event.y),
-            singleFingerPanArea.mapToGlobal(event.x, event.y)
-        )
+            mapEditor.quickMousePressed(
+                event.button,
+                event.buttons,
+                event.modifiers,
+                localPos,
+                localPos,
+                singleFingerPanArea.mapToGlobal(event.x, event.y)
+            )
 
-        onPositionChanged: (event) => mapEditor.quickMouseMoved(
-            singleFingerPanArea.mapToItem(mapItem, event.x, event.y),
-            event.modifiers
-        )
+            objectInteractionItem.mousePressed(localPos)
+        }
+
+        onReleased: function(event) {
+            const localPos = singleFingerPanArea.mapToItem(mapItem, event.x, event.y);
+
+            mapEditor.quickMouseReleased(
+                event.button,
+                event.buttons,
+                event.modifiers,
+                localPos,
+                localPos,
+                singleFingerPanArea.mapToGlobal(event.x, event.y)
+            )
+
+            objectInteractionItem.mouseReleased(localPos)
+        }
+
+        onPositionChanged: function(event) {
+            const localPos = singleFingerPanArea.mapToItem(mapItem, event.x, event.y);
+
+            mapEditor.quickMouseMoved(
+                localPos,
+                event.modifiers
+            )
+
+            objectInteractionItem.mouseMoved(localPos)
+
+            toolBrush.repaintPreview();
+        }
 
         onContainsMouseChanged: mapEditor.quickContainsMouseChanged(singleFingerPanArea.containsMouse)
     }
@@ -200,5 +260,4 @@ Rectangle {
             mapContainer.y = (mapView.height / 2) - ((mapItem.height * scale) / 2)
         }
     }
-
 }

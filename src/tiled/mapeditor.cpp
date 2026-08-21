@@ -160,6 +160,7 @@ MapEditor::MapEditor(QObject *parent)
     , mZoomable(nullptr)
     , mZoomComboBox(new QComboBox)
     , mStatusInfoLabel(new QLabel)
+    , mNewObjectsPreview(nullptr)
     , mMainToolBar(new MainToolBar(mMainWindow))
     , mToolManager(new ToolManager(this))
     , mSelectedTool(nullptr)
@@ -418,6 +419,8 @@ void MapEditor::setCurrentDocument(Document *document)
         mCurrentMapDocument->disconnect(this);
     }
 
+    if (mCurrentMapDocument)
+        mCurrentMapDocument->setSelectedObjects({});
     mCurrentMapDocument = mapDocument;
 
     MapViewInterface *mapViewInterface = mViewForMap.value(mapDocument);
@@ -451,6 +454,10 @@ void MapEditor::setCurrentDocument(Document *document)
 //                this, &MapEditor::updateActions);
         connect(mapDocument, &MapDocument::selectedAreaChanged,
                 this, &MapEditor::selectedRegionChanged);
+        connect(mapDocument, &MapDocument::aboutToBeSelectedObjectsChanged,
+                this, &MapEditor::aboutToBeSelectedObjectsChanged);
+        connect(mapDocument, &MapDocument::hoveredMapObjectChanged,
+                this, [this, mapDocument] {emit aboutToBeSelectedObjectsChanged(QList<MapObject*>{mapDocument->hoveredMapObject()}); });
 
         if (mapView) {
             mZoomable = mapView->zoomable();
@@ -737,6 +744,10 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
 #endif
 
         tool->populateToolBar(mToolSpecificToolBar);
+
+        CreateObjectTool *coTool = qobject_cast<CreateObjectTool*>(tool);
+        if (coTool)
+            setNewObjectsPreview(coTool->newMapObjectGroup());
     }
 
     updateActiveUndoStack();
@@ -750,6 +761,18 @@ QRegion MapEditor::selectedRegion() const
         return QRegion();
 
     return mCurrentMapDocument->selectedArea();
+}
+
+QList<MapObject*> MapEditor::aboutToBeSelectedObjects() const
+{
+    if (!mCurrentMapDocument)
+        return QList<MapObject*>();
+
+    QList<MapObject*> list = mCurrentMapDocument->aboutToBeSelectedObjects();
+    if (mCurrentMapDocument->hoveredMapObject() && !list.contains(mCurrentMapDocument->hoveredMapObject()))
+        list.append(mCurrentMapDocument->hoveredMapObject());
+
+    return list;
 }
 
 void MapEditor::updateActiveUndoStack()
@@ -884,6 +907,12 @@ void MapEditor::cursorChanged(const QCursor &cursor)
 {
     if (mViewWithTool)
         mViewWithTool->setToolCursor(cursor);
+
+    if (mCursorShape == cursor.shape())
+        return;
+
+    mCursorShape = cursor.shape();
+    emit cursorShapeChanged();
 }
 
 void MapEditor::updateStatusInfoLabel(const QString &statusInfo)
@@ -1170,6 +1199,15 @@ void MapEditor::setTileEditPreview(const SharedMap &map)
     mTileEditPreview = map;
 
     emit tileEditPreviewChanged();
+}
+
+void MapEditor::setNewObjectsPreview(ObjectGroup *objects)
+{
+    if (mNewObjectsPreview == objects)
+        return;
+    mNewObjectsPreview = objects;
+
+    emit newObjectsPreviewChanged();
 }
 
 QRegion MapEditor::tileEditRegion() const

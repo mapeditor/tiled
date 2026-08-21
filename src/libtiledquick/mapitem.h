@@ -21,6 +21,7 @@
 #pragma once
 
 #include "editablemap.h"
+#include "objectgroupitem.h"
 #include "tiledquick_global.h"
 
 #include <QQuickItem>
@@ -35,6 +36,7 @@ namespace TiledQuick {
 
 class TileItem;
 class TileLayerItem;
+class ObjectGroupItem;
 
 /**
  * A declarative item that displays a map.
@@ -45,6 +47,11 @@ class TILEDQUICK_SHARED_EXPORT MapItem : public QQuickItem
 
     Q_PROPERTY(Tiled::EditableMap *map READ map WRITE setMap RESET unsetMap NOTIFY mapChanged)
     Q_PROPERTY(QRectF visibleArea READ visibleArea WRITE setVisibleArea NOTIFY visibleAreaChanged)
+    Q_PROPERTY(qreal zoom READ zoom WRITE setZoom NOTIFY zoomChanged)
+
+    // MapView toolBrush only properties. Should remain nullptr for standard MapItem usage.
+    Q_PROPERTY(Tiled::ObjectGroup *newObjectsPreview READ newObjectsPreview WRITE setNewObjectsPreview NOTIFY newObjectsPreviewChanged)
+    Q_PROPERTY(QPointF mousePos READ mousePos WRITE setMousePos NOTIFY mousePosChanged)
 
 public:
     explicit MapItem(QQuickItem *parent = nullptr);
@@ -56,6 +63,17 @@ public:
 
     const QRectF &visibleArea() const;
     void setVisibleArea(const QRectF &visibleArea);
+
+    const qreal &zoom() const;
+    void setZoom(const qreal &zoom);
+
+    Tiled::ObjectGroup *newObjectsPreview() const;
+    void setNewObjectsPreview(Tiled::ObjectGroup *objects);
+
+    QPointF mousePos() const;
+    void setMousePos(const QPointF &pos);
+
+    Q_INVOKABLE void repaintPreview();
 
     QRectF boundingRect() const override;
 
@@ -75,24 +93,39 @@ public:
 
 signals:
     void mapChanged();
+    void mapObjectsChanged();
     void visibleAreaChanged();
+    void zoomChanged();
+
+    void newObjectsPreviewChanged();
+    void mousePosChanged();
 
 private:
     void refresh();
 
     void repaintRegion(const QRegion &region, Tiled::TileLayer *tileLayer);
+    void repaintObjects(const QList<Tiled::MapObject*> &objects, Tiled::ObjectGroup *group = nullptr);
+    void onTileLayerChanged(Tiled::TileLayer *layer, Tiled::MapDocument::TileLayerChangeFlags flags);
 
     Tiled::Map *mMap = nullptr;
     Tiled::EditableMap *mEditableMap = nullptr;
     QRectF mVisibleArea;
+    qreal mZoom = 0;
+    ObjectGroupItem mNewObjectsPreviewItem;
 
     std::unique_ptr<Tiled::MapRenderer> mRenderer;
     QList<TileLayerItem*> mTileLayerItems;
+    QList<ObjectGroupItem*> mObjectGroupItems;
 };
 
 inline const QRectF &MapItem::visibleArea() const
 {
     return mVisibleArea;
+}
+
+inline const qreal &MapItem::zoom() const
+{
+    return mZoom;
 }
 
 inline Tiled::EditableMap *MapItem::map() const
@@ -103,6 +136,16 @@ inline Tiled::EditableMap *MapItem::map() const
 inline void MapItem::unsetMap()
 {
     setMap(nullptr);
+}
+
+inline Tiled::ObjectGroup *MapItem::newObjectsPreview() const
+{
+    return mNewObjectsPreviewItem.group();
+}
+
+inline QPointF MapItem::mousePos() const
+{
+    return mNewObjectsPreviewItem.mousePos();
 }
 
 } // namespace TiledQuick

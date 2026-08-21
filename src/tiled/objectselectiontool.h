@@ -39,9 +39,18 @@ class ResizeHandle;
 class RotateHandle;
 class SelectionRectangle;
 
+struct ObjectHandleData {
+    QPolygonF drawPoints;
+    QPointF pos;
+    bool isHovered = false;
+};
+
+
 class ObjectSelectionTool : public AbstractObjectTool
 {
     Q_OBJECT
+
+    Q_PROPERTY(QList<ObjectHandleData> objectHandles READ objectHandles NOTIFY objectHandlesChanged)
 
 public:
     explicit ObjectSelectionTool(QObject *parent = nullptr);
@@ -63,6 +72,11 @@ public:
     void languageChanged() override;
 
     void populateToolBar(QToolBar*) override;
+
+    QList<ObjectHandleData> objectHandles() const;
+
+signals:
+    void objectHandlesChanged();
 
 protected:
     void changeEvent(const ChangeEvent &event) override;
