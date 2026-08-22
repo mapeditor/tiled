@@ -292,9 +292,9 @@ QPointF MapScene::parallaxOffset(const Layer &layer) const
  * When a resize shifted the map contents, move the view along by the same
  * amount so the contents appear to stay in place.
  */
-void MapScene::mapResized(QPoint offset)
+void MapScene::mapResized(QPointF screenOffset)
 {
-    if (offset.isNull())
+    if (screenOffset.isNull())
         return;
 
     // when the map has its own entry in a world, the resize also moves its
@@ -303,10 +303,6 @@ void MapScene::mapResized(QPoint offset)
     if (auto worldDocument = WorldManager::instance().worldForMap(fileName))
         if (worldDocument->world()->mapIndex(fileName) >= 0)
             return;
-
-    const MapRenderer *renderer = mMapDocument->renderer();
-    const QPointF screenOffset = renderer->tileToScreenCoords(QPointF())
-                               - renderer->tileToScreenCoords(-offset);
 
     translateViews(screenOffset);
 }

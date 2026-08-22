@@ -114,7 +114,7 @@ private:
     void refreshScene();
 
     void changeEvent(const ChangeEvent &change);
-    void mapResized(QPoint offset);
+    void mapResized(QPointF screenOffset);
     void translateViews(const QPointF &delta);
     void repaintTileset(Tileset *tileset);
 

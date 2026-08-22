@@ -22,6 +22,7 @@
 
 #include "map.h"
 #include "mapdocument.h"
+#include "maprenderer.h"
 
 #include <QCoreApplication>
 
@@ -53,12 +54,27 @@ void ResizeMap::redo()
 void ResizeMap::swapSize()
 {
     Map *map = mMapDocument->map();
+    const MapRenderer *renderer = mMapDocument->renderer();
+
+    // Determine by how much the contents shift on screen, by sampling around
+    // the resize. Sampling both sides is necessary because for isometric maps
+    // the screen origin depends on the map height.
+    const QPointF beforeResize = renderer->tileToScreenCoords(QPointF());
+
     QSize oldSize(map->width(), map->height());
     map->setWidth(mSize.width());
     map->setHeight(mSize.height());
     mSize = oldSize;
 
-    emit mMapDocument->mapResized(mOffset);
+    // For staggered and hexagonal maps this is only exact when the offset
+    // keeps the stagger parity, since there the shift depends on where the
+    // contents are.
+    const QPointF afterResize = renderer->tileToScreenCoords(mOffset);
+
+    emit mMapDocument->mapResized(afterResize - beforeResize);
+
+    // Shift the other way when this command is applied again, so that undo
+    // and redo each restore the previous state.
     mOffset = -mOffset;
 }
 
