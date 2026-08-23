@@ -1,4 +1,4 @@
-/*
+    /*
  * mapwriter.cpp
  * Copyright 2008-2014, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
  * Copyright 2010, Jeff Bland <jksb@member.fsf.org>
@@ -302,6 +302,8 @@ static bool includeTile(const Tile *tile)
         return true;
     if (tile->probability() != 1.0)
         return true;
+    if (tile->tintColor().isValid())
+        return true;
 
     return false;
 }
@@ -444,6 +446,8 @@ void MapWriterPrivate::writeTileset(QXmlStreamWriter &w, const Tileset &tileset,
                 w.writeAttribute(FileFormat::classPropertyNameForObject(), tile->className());
             if (tile->probability() != 1.0)
                 w.writeAttribute(QStringLiteral("probability"), QString::number(tile->probability()));
+            if (tile->tintColor().isValid())
+                w.writeAttribute(QStringLiteral("tintcolor"), colorToString(tile->tintColor()));
             if (!tile->properties().isEmpty())
                 writeProperties(w, tile->properties());
             if (isCollection)
@@ -773,6 +777,9 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
 
     if (shouldWrite(!mapObject.isVisible(), isTemplateInstance, mapObject.propertyChanged(MapObject::VisibleProperty)))
         w.writeAttribute(QStringLiteral("visible"), QLatin1String(mapObject.isVisible() ? "1" : "0"));
+
+    if (shouldWrite(mapObject.tintColor().isValid(), isTemplateInstance, mapObject.propertyChanged((MapObject::TintColorProperty))))
+        w.writeAttribute(QStringLiteral("tintcolor"), colorToString(mapObject.tintColor()));
 
     writeProperties(w, mapObject.properties());
 

@@ -98,6 +98,10 @@ public:
     qreal probability() const;
     void setProbability(qreal probability);
 
+    const QColor &tintColor() const {return mTintColor;}
+    void setTintColor(const QColor color) { mTintColor = color;}
+    QColor effectiveTintColor() const;
+
     ObjectGroup *objectGroup() const;
     void setObjectGroup(std::unique_ptr<ObjectGroup> objectGroup);
     void swapObjectGroup(std::unique_ptr<ObjectGroup> &objectGroup);
@@ -123,6 +127,7 @@ private:
     QRect mImageRect;
     LoadingStatus mImageStatus;
     qreal mProbability;
+    QColor mTintColor;
     std::unique_ptr<ObjectGroup> mObjectGroup;
 
     QVector<Frame> mFrames;

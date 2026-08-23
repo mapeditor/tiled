@@ -315,6 +315,7 @@ QVariant MapObject::mapObjectProperty(Property property) const
     case RotationProperty:      return mRotation;
     case OpacityProperty:       return mOpacity;
     case CellProperty:          Q_ASSERT(false); break;
+    case TintColorProperty:     return mTintColor;
     case ShapeProperty:         return mShape;
     case TemplateProperty:      Q_ASSERT(false); break;
     case CustomProperties:      Q_ASSERT(false); break;
@@ -338,6 +339,7 @@ void MapObject::setMapObjectProperty(Property property, const QVariant &value)
     case RotationProperty:      setRotation(value.toReal()); break;
     case OpacityProperty:       setOpacity(value.toReal()); break;
     case CellProperty:          Q_ASSERT(false); break;
+    case TintColorProperty:     setTintColor(value.value<QColor>()); break;
     case ShapeProperty:         setShape(value.value<Shape>()); break;
     case TemplateProperty:      Q_ASSERT(false); break;
     case CustomProperties:      Q_ASSERT(false); break;
@@ -534,6 +536,25 @@ void MapObject::flipInPixelCoordinates(FlipDirection direction, const QPointF &p
         const QPointF newPos = flipAroundOriginTransform.map(position() + rotationTransform.map(newOrigin));
         setPosition(newPos);
     }
+}
+
+static QColor multiplyColors(QColor color1, QColor color2)
+{
+    return QColor::fromRgbF(color1.redF() * color2.redF(),
+                            color1.greenF() * color2.greenF(),
+                            color1.blueF() * color2.blueF(),
+                            color1.alphaF() * color2.alphaF());
+}
+
+QColor MapObject::effectiveTintColor() const {
+    auto tintColor = mTintColor.isValid() ? mTintColor : QColor(255, 255, 255, 255);
+
+    if (ObjectGroup *group = objectGroup()) {
+        if (group->effectiveTintColor().isValid()) {
+            tintColor = multiplyColors(tintColor, group->effectiveTintColor());
+        }
+    }
+    return tintColor;
 }
 
 } // namespace Tiled

@@ -297,6 +297,11 @@ void TileCollisionDock::setTilesetDocument(TilesetDocument *tilesetDocument)
                 this, &TileCollisionDock::tilesetTileOffsetChanged);
         connect(mTilesetDocument, &TilesetDocument::tilesetChanged,
                 this, &TileCollisionDock::tilesetChanged);
+        connect(mTilesetDocument, &TilesetDocument::tileTintColorChanged,
+                this, [this](Tile *tile) {
+                if (tile == mTile)
+                mMapScene->update();
+        });
 
         mMapScene->setOverrideBackgroundColor(mTilesetDocument->tileset()->backgroundColor());
     } else {

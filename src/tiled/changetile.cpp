@@ -84,4 +84,28 @@ void ChangeTileImageRect::setValue(Tile *tile, const QRect &rect) const
         emit mapDocument->tileImageSourceChanged(tile);
 }
 
+ChangeTileTintColor::ChangeTileTintColor(TilesetDocument *tilesetDocument,
+                                 const QList<Tile*> &tiles,
+                                 const QColor &color,
+                                 QUndoCommand *parent)
+    : ChangeValue(tilesetDocument, tiles, color, parent)
+{
+    setText(QCoreApplication::translate("Undo Commands",
+                                        "Change Tile Tint Color"));
+
+}
+
+QColor ChangeTileTintColor::getValue(const Tile *tile) const
+{
+    return tile->tintColor();
+}
+
+void ChangeTileTintColor::setValue(Tile *tile, const QColor &color) const
+{
+    tile->setTintColor(color);
+    emit static_cast<TilesetDocument*>(document())->tileTintColorChanged(tile);
+    for (MapDocument *mapDocument : static_cast<TilesetDocument*>(document())->mapDocuments())
+        emit mapDocument->tileTintColorChanged(tile);
+}
+
 } // namespace Tiled

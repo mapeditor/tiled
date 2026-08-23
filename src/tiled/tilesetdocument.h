@@ -150,6 +150,10 @@ signals:
     void tileProbabilityChanged(Tile *tile);
 
     /**
+     * Emitted when the tint color of a tile is changed
+     */
+    void tileTintColorChanged(Tile *tile);
+    /**
      * Notifies the TileCollisionDock about the object group of a tile changing.
      */
     void tileObjectGroupChanged(Tile *tile);
