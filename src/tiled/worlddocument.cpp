@@ -161,6 +161,19 @@ void WorldDocument::removeUnsavedMap(MapDocument *mapDocument)
     }
 }
 
+// The rect of an unsaved map is stored here rather than in the world
+QRect WorldDocument::mapRect(MapDocument *mapDocument) const
+{
+    if (!mapDocument->fileName().isEmpty())
+        return mWorld->mapRect(mapDocument->fileName());
+
+    for (const auto &unsavedMap : mUnsavedMaps)
+        if (unsavedMap.mapDocument.data() == mapDocument)
+            return unsavedMap.rect;
+
+    return QRect();
+}
+
 void WorldDocument::unsavedMapSaved(MapDocument *mapDocument)
 {
     if (mapDocument->fileName().isEmpty())

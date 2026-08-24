@@ -80,6 +80,8 @@ public:
     void addUnsavedMap(const MapDocumentPtr &mapDocument, const QRect &rect);
     void removeUnsavedMap(MapDocument *mapDocument);
 
+    QRect mapRect(MapDocument *mapDocument) const;
+
 signals:
     void worldChanged();
 

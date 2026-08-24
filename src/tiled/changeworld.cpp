@@ -114,6 +114,26 @@ void AddUnsavedMapCommand::undo()
 }
 
 
+RemoveUnsavedMapCommand::RemoveUnsavedMapCommand(WorldDocument *worldDocument,
+                                                 const MapDocumentPtr &mapDocument)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Remove Map from World"))
+    , mWorldDocument(worldDocument)
+    , mMapDocument(mapDocument)
+    , mRect(worldDocument->mapRect(mapDocument.data()))
+{
+}
+
+void RemoveUnsavedMapCommand::redo()
+{
+    mWorldDocument->removeUnsavedMap(mMapDocument.data());
+}
+
+void RemoveUnsavedMapCommand::undo()
+{
+    mWorldDocument->addUnsavedMap(mMapDocument, mRect);
+}
+
+
 SetMapRectCommand::SetMapRectCommand(WorldDocument *worldDocument,
                                      const QString &mapName,
                                      const QRect &rect)

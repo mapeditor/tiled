@@ -324,6 +324,12 @@ bool AbstractWorldTool::mapCanBeMoved(MapDocument *mapDocument) const
 {
     if (!mapDocument)
         return false;
+
+    // Moving unsaved maps is not supported yet, since the move commands
+    // look up world entries by file name
+    if (mapDocument->fileName().isEmpty())
+        return false;
+
     auto worldDocument = worldForMap(mapDocument);
     return worldDocument && worldDocument->world()->canBeModified();
 }
@@ -349,9 +355,7 @@ QRect AbstractWorldTool::mapRect(MapDocument *mapDocument) const
 
 WorldDocument *AbstractWorldTool::worldForMap(MapDocument *mapDocument) const
 {
-    if (!mapDocument)
-        return nullptr;
-    return WorldManager::instance().worldForMap(mapDocument->fileName()).data();
+    return WorldManager::instance().worldForMap(mapDocument).data();
 }
 
 /**
@@ -372,12 +376,11 @@ void AbstractWorldTool::showContextMenu(QGraphicsSceneMouseEvent *event)
 
         MapDocument *targetDocument = targetMap();
         if (targetDocument != nullptr && targetDocument != mapDocument()) {
-            const QString &targetFilename = targetDocument->fileName();
             menu.addAction(QIcon(QLatin1String(":images/24/world-map-remove-this.png")),
                            tr("Remove \"%1\" from World \"%2\"")
                            .arg(targetDocument->displayName(),
                                 currentWorldDocument->displayName()),
-                           this, [=] { removeFromWorld(currentWorldDocument, targetFilename); });
+                           this, [=] { removeFromWorld(currentWorldDocument, targetDocument); });
         }
     } else {
         menu.addAction(QIcon(QLatin1String(":images/24/world-map-add-other.png")),
@@ -419,7 +422,10 @@ void AbstractWorldTool::addAnotherMapToWorld(QPoint insertPos)
     if (!worldDocument)
         return;
 
-    const QDir dir = QFileInfo(map->fileName()).dir();
+    // For an unsaved map the world's folder is the best starting point
+    const QString basePath = map->fileName().isEmpty() ? worldDocument->fileName()
+                                                       : map->fileName();
+    const QDir dir = QFileInfo(basePath).dir();
     const QString lastPath = QDir::cleanPath(dir.absolutePath());
     QString filter = tr("All Files (*)");
     FormatHelper<MapFormat> helper(FileFormat::ReadWrite, filter);
@@ -521,17 +527,19 @@ void AbstractWorldTool::createWorldForCurrentMap()
 void AbstractWorldTool::removeCurrentMapFromWorld()
 {
     if (auto currentWorldDocument = worldForMap(mapDocument()))
-        removeFromWorld(currentWorldDocument, mapDocument()->fileName());
+        removeFromWorld(currentWorldDocument, mapDocument());
 }
 
 void AbstractWorldTool::removeFromWorld(WorldDocument *worldDocument,
-                                        const QString &mapFileName)
+                                        MapDocument *mapDocument)
 {
-    if (mapFileName.isEmpty())
-        return;
-
     QUndoStack *undoStack = worldDocument->undoStack();
-    undoStack->push(new RemoveMapCommand(worldDocument, mapFileName));
+
+    // An unsaved map has no world entry, it is tracked by the world document
+    if (mapDocument->fileName().isEmpty())
+        undoStack->push(new RemoveUnsavedMapCommand(worldDocument, mapDocument->sharedFromThis()));
+    else
+        undoStack->push(new RemoveMapCommand(worldDocument, mapDocument->fileName()));
 }
 
 void AbstractWorldTool::addToWorld(WorldDocument *worldDocument)
@@ -633,6 +641,11 @@ void AbstractWorldTool::setTargetMap(MapDocument *mapDocument)
 
 void AbstractWorldTool::updateSelectionRectangle()
 {
+    // The target map may no longer be part of the scene, for example when
+    // it was just removed from the world
+    if (mTargetMap && !mapScene()->mapItem(mTargetMap))
+        mTargetMap = nullptr;
+
     if (mTargetMap) {
         setSelectionScreenRect(mapRect(mTargetMap));
     } else {

@@ -91,6 +91,21 @@ private:
     QRect mRect;
 };
 
+class RemoveUnsavedMapCommand : public QUndoCommand
+{
+public:
+    RemoveUnsavedMapCommand(WorldDocument *worldDocument,
+                            const MapDocumentPtr &mapDocument);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    WorldDocument *mWorldDocument;
+    MapDocumentPtr mMapDocument;
+    QRect mRect;
+};
+
 class SetMapRectCommand : public QUndoCommand
 {
 public:

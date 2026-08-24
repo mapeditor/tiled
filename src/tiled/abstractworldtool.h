@@ -101,7 +101,7 @@ protected:
     void createMapAt(const QRect &worldRect);
     void createWorldForCurrentMap();
     void removeCurrentMapFromWorld();
-    void removeFromWorld(WorldDocument *worldDocument, const QString &mapFileName);
+    void removeFromWorld(WorldDocument *worldDocument, MapDocument *mapDocument);
     void addToWorld(WorldDocument *worldDocument);
 
     QSize snapSize(MapDocument *document) const;
