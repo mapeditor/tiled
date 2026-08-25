@@ -409,6 +409,18 @@
       </Directory>
     </Directory>
 
+    <!-- The Tiled QML module, providing the type description used by tooling
+         like qmllint and qmlls. The "qml" directory is created by the
+         generated qml-modules.wxs fragment. -->
+    <DirectoryRef Id="qmldir">
+      <Directory Id="qmlTiledDir" Name="Tiled">
+        <Component Id="QmlTiledModule" Guid="{1AE516C3-5BB5-4A9B-AEA9-6957A3F21E12}">
+          <File Id="TiledQmldir" Source="$(var.InstallRoot)\qml\Tiled\qmldir" KeyPath="yes" />
+          <File Id="TiledPluginsQmltypes" Source="$(var.InstallRoot)\qml\Tiled\plugins.qmltypes" />
+        </Component>
+      </Directory>
+    </DirectoryRef>
+
     <Feature Id='Complete' Level='1' Title="Tiled" Description="The complete package." ConfigurableDirectory='INSTALLDIR' AllowAdvertise='no' Absent='disallow'>
       <ComponentRef Id='MainExecutable' />
       <ComponentRef Id='DesktopShortcut' />
@@ -430,6 +442,7 @@
       <?endif?>
       <ComponentRef Id='TlsPlugins' />
       <ComponentGroupRef Id='QmlModules' />
+      <ComponentRef Id='QmlTiledModule' />
       <ComponentRef Id='ProgramMenuDir' />
     </Feature>
 
