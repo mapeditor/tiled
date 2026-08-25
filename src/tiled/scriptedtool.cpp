@@ -106,6 +106,14 @@ void ScriptedTool::componentComplete()
     }
 
     const Id id { mShortName.toUtf8() };
+
+    // Built-in tools don't get added to the PluginManager, but their actions
+    // are registered with the ActionManager by the ToolManager.
+    if (ActionManager::findAction(id)) {
+        Tiled::ERROR(QCoreApplication::translate("Script Errors", "Reserved shortName: '%1'").arg(mShortName));
+        return;
+    }
+
     const auto tools = PluginManager::objects<AbstractTool>();
     for (auto tool : tools) {
         if (tool->id() == id) {
