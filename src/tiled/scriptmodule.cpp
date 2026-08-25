@@ -429,6 +429,39 @@ ScriptedAction *ScriptModule::registerAction(const QByteArray &idName, QJSValue 
     return action.get();
 }
 
+/**
+ * Checks whether the given shortName is still available, reporting an error
+ * when it is already used by another file format.
+ *
+ * The format that is about to be replaced by a re-registration is excluded
+ * from this check, since it is still registered at this point.
+ */
+template<typename Format>
+static bool checkShortNameAvailable(const QString &shortName,
+                                    const Format *replacedFormat)
+{
+    const auto formats = PluginManager::objects<Format>();
+    for (auto format : formats) {
+        if (format != replacedFormat && format->shortName() == shortName) {
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Reserved shortName: '%1'").arg(shortName));
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/**
+ * Returns the format currently registered for the given shortName, or nullptr
+ * when there is none.
+ */
+template<typename Container>
+static auto registeredFormat(const Container &formats, const QString &shortName)
+{
+    const auto it = formats.find(shortName);
+    return it != formats.end() ? it->second.get() : nullptr;
+}
+
 void ScriptModule::registerMapFormat(const QString &shortName, QJSValue mapFormatObject)
 {
     if (shortName.isEmpty()) {
@@ -437,6 +470,9 @@ void ScriptModule::registerMapFormat(const QString &shortName, QJSValue mapForma
     }
 
     if (!ScriptedFileFormat::validateFileFormatObject(mapFormatObject))
+        return;
+
+    if (!checkShortNameAvailable<MapFormat>(shortName, registeredFormat(mRegisteredMapFormats, shortName)))
         return;
 
     auto &format = mRegisteredMapFormats[shortName];
@@ -451,6 +487,9 @@ void ScriptModule::registerTilesetFormat(const QString &shortName, QJSValue tile
     }
 
     if (!ScriptedFileFormat::validateFileFormatObject(tilesetFormatObject))
+        return;
+
+    if (!checkShortNameAvailable<TilesetFormat>(shortName, registeredFormat(mRegisteredTilesetFormats, shortName)))
         return;
 
     auto &format = mRegisteredTilesetFormats[shortName];
