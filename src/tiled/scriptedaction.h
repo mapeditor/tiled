@@ -25,6 +25,7 @@
 #include <QAction>
 #include <QJSValue>
 #include <QQmlParserStatus>
+#include <QtQml/qqmlregistration.h>
 
 namespace Tiled {
 
@@ -37,6 +38,7 @@ class ScriptedAction : public QAction, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
+    QML_NAMED_ELEMENT(Action)
 
     Q_PROPERTY(QByteArray id READ idName CONSTANT)
     Q_PROPERTY(QString name READ name WRITE setName)

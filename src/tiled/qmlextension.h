@@ -24,6 +24,7 @@
 #include <QQmlListProperty>
 #include <QQmlParserStatus>
 #include <QVariantList>
+#include <QtQml/qqmlregistration.h>
 
 namespace Tiled {
 
@@ -36,6 +37,7 @@ namespace Tiled {
 class QmlExtension : public QObject
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(Extension)
 
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data)
@@ -71,6 +73,7 @@ class QmlMenuExtension : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
+    QML_NAMED_ELEMENT(MenuExtension)
 
     Q_PROPERTY(QString menu READ menu WRITE setMenu)
     Q_PROPERTY(QVariantList items READ items WRITE setItems)
@@ -93,11 +96,5 @@ private:
     QString mMenu;
     QVariantList mItems;
 };
-
-/**
- * Registers the QML types provided by the "Tiled" import. Safe to call
- * multiple times; registration only happens once per process.
- */
-void registerQmlExtensionTypes();
 
 } // namespace Tiled
