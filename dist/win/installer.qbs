@@ -4,6 +4,8 @@ import qbs.TextFile
 import qbs.Environment
 import qbs.Utilities
 
+import "../qmlmodules.js" as QmlModules
+
 WindowsInstallerPackage {
     builtByDefault: project.windowsInstaller
     condition: {
@@ -143,36 +145,24 @@ WindowsInstallerPackage {
 
                     tf.writeLine("    <ComponentGroup Id='QmlModules'>");
 
-                    for (i = 0; i < qmlImportDirs.length; ++i) {
-                        var dir = qmlImportDirs[i];
-                        var absDir = FileInfo.joinPaths(qmlDir, dir);
-                        if (!File.exists(absDir))
-                            continue;
-
-                        var entries = File.directoryEntries(absDir, File.Files);
-                        for (j = 0; j < entries.length; ++j) {
-                            var entry = entries[j];
-                            if (entry.endsWith(".qmltypes") || entry.endsWith(".pdb"))
-                                continue;
-
-                            // Skip debug variants of the QML plugins
-                            if (entry.endsWith("d.dll") && File.exists(FileInfo.joinPaths(absDir, entry.slice(0, -5) + ".dll")))
-                                continue;
-
-                            var rel = dir + "/" + entry;
-                            tf.writeLine("      <Component Id='" + idFor("cmp_", rel) + "' Directory='" + idFor("qmldir_", dir) + "' Guid='*'>");
-                            tf.writeLine("        <File Id='" + idFor("qml_", rel) + "' Source='" + FileInfo.toWindowsSeparators(FileInfo.joinPaths(absDir, entry)) + "' KeyPath='yes' />");
+                    var moduleDirs = QmlModules.moduleDirs(qmlDir, qmlImportDirs);
+                    for (i = 0; i < moduleDirs.length; ++i) {
+                        var moduleDir = moduleDirs[i];
+                        for (j = 0; j < moduleDir.files.length; ++j) {
+                            var entry = moduleDir.files[j];
+                            var rel = moduleDir.dir + "/" + entry;
+                            tf.writeLine("      <Component Id='" + idFor("cmp_", rel) + "' Directory='" + idFor("qmldir_", moduleDir.dir) + "' Guid='*'>");
+                            tf.writeLine("        <File Id='" + idFor("qml_", rel) + "' Source='" + FileInfo.toWindowsSeparators(FileInfo.joinPaths(moduleDir.absDir, entry)) + "' KeyPath='yes' />");
                             tf.writeLine("      </Component>");
                         }
                     }
 
-                    // Qt libraries needed by the QML modules. Their existence
-                    // depends on the Qt version.
-                    for (i = 0; i < qtQuickLibraries.length; ++i) {
-                        var dll = "Qt" + versionMajor + qtQuickLibraries[i] + ".dll";
+                    // Qt libraries needed by the QML modules
+                    var libraries = QmlModules.existingLibraries(binDir + "/", versionMajor,
+                                                                qtQuickLibraries, ".dll");
+                    for (i = 0; i < libraries.length; ++i) {
+                        var dll = libraries[i];
                         var absFile = FileInfo.joinPaths(binDir, dll);
-                        if (!File.exists(absFile))
-                            continue;
 
                         tf.writeLine("      <Component Id='" + idFor("cmp_", dll) + "' Directory='INSTALLDIR' Guid='*'>");
                         tf.writeLine("        <File Id='" + idFor("", dll) + "' Source='" + FileInfo.toWindowsSeparators(absFile) + "' KeyPath='yes' />");
