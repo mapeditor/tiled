@@ -82,6 +82,30 @@ static QMainWindow *targetWindow(QmlDock::Window window)
     return nullptr;
 }
 
+/**
+ * Returns whether \a mainWindow already has a dock widget called
+ * \a objectName.
+ *
+ * Dock widgets can be reparented into a floating group window, so the search
+ * is recursive and each match is attributed to its first QMainWindow ancestor.
+ * Docks in other main windows are ignored, since each main window saves and
+ * restores its layout separately.
+ */
+static bool hasDockWidget(QMainWindow *mainWindow, const QString &objectName)
+{
+    const auto dockWidgets = mainWindow->findChildren<QDockWidget*>(objectName);
+    for (QDockWidget *dockWidget : dockWidgets) {
+        for (QWidget *w = dockWidget->parentWidget(); w; w = w->parentWidget()) {
+            if (auto window = qobject_cast<QMainWindow*>(w)) {
+                if (window == mainWindow)
+                    return true;
+                break;
+            }
+        }
+    }
+    return false;
+}
+
 void QmlDock::componentComplete()
 {
     // Docks are not supported when running without GUI
@@ -102,7 +126,7 @@ void QmlDock::componentComplete()
     // The object name identifies the dock when saving/restoring the window
     // layout, so duplicates would corrupt each other's placement.
     const QString objectName = QLatin1String("qml.") + mName;
-    if (mainWindow->findChild<QDockWidget*>(objectName)) {
+    if (hasDockWidget(mainWindow, objectName)) {
         Tiled::ERROR(QCoreApplication::translate("Script Errors", "Duplicate dock name: '%1'").arg(mName));
         return;
     }
