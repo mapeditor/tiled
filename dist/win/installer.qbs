@@ -112,7 +112,7 @@ WindowsInstallerPackage {
                 var tf;
                 try {
                     tf = new TextFile(output.filePath, TextFile.WriteOnly);
-                    tf.writeLine("<?xml version='1.0' encoding='windows-1252'?>");
+                    tf.writeLine("<?xml version='1.0' encoding='utf-8'?>");
                     tf.writeLine("<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>");
                     tf.writeLine("  <Fragment>");
 
