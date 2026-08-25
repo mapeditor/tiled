@@ -30,6 +30,7 @@
 #include <QDockWidget>
 #include <QMainWindow>
 #include <QQmlComponent>
+#include <QQmlContext>
 #include <QQmlEngine>
 #include <QQuickItem>
 #include <QQuickWidget>
@@ -111,7 +112,13 @@ void QmlDock::componentComplete()
     QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
 #endif
 
-    std::unique_ptr<QObject> content { mContentItem->create() };
+    // Create the content in the component's creation context, so that it can
+    // refer to the scope of the file it was declared in.
+    auto context = mContentItem->creationContext();
+    if (!context)
+        context = qmlContext(this);
+
+    std::unique_ptr<QObject> content { mContentItem->create(context) };
     if (!content) {
         for (const QQmlError &error : mContentItem->errors())
             Tiled::ERROR(error.toString());
