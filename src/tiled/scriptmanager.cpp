@@ -37,7 +37,6 @@
 #include "preferences.h"
 #include "project.h"
 #include "projectmanager.h"
-#include "qmlextension.h"
 #include "regionvaluetype.h"
 #include "scriptbase64.h"
 #include "scriptdialog.h"
@@ -136,8 +135,6 @@ ScriptManager::ScriptManager(QObject *parent)
     qRegisterMetaType<ScriptTilesetFormatWrapper*>();
     qRegisterMetaType<ScriptImage*>();
     qRegisterMetaType<WangIndex::Value>("WangIndex");
-
-    registerQmlExtensionTypes();
 
     connect(&mWatcher, &FileSystemWatcher::pathsChanged,
             this, &ScriptManager::scriptFilesChanged);

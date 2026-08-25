@@ -24,6 +24,7 @@
 
 #include <QJSValue>
 #include <QQmlParserStatus>
+#include <QtQml/qqmlregistration.h>
 
 namespace Tiled {
 
@@ -41,6 +42,7 @@ class ScriptedTool : public AbstractTileTool, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
+    QML_NAMED_ELEMENT(Tool)
 
     Q_PROPERTY(QString shortName READ shortName WRITE setShortName)
     Q_PROPERTY(QString icon READ iconFileName WRITE setIconFileName)
