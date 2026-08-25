@@ -84,6 +84,11 @@ void QmlMenuExtension::apply()
             menuItem.action = scriptedAction->id();
         } else if (action.userType() == QMetaType::QString) {
             menuItem.action = Id(action.toString().toUtf8());
+        } else if (action.userType() == QMetaType::QByteArray) {
+            menuItem.action = Id(action.toByteArray());
+        } else if (action.isValid() && !action.isNull()) {
+            Tiled::ERROR(QCoreApplication::translate("Script Errors", "Invalid action reference"));
+            return;
         }
 
         menuItem.beforeAction = Id(map.value(QStringLiteral("before")).toString().toUtf8());
