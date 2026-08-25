@@ -501,7 +501,13 @@ void ScriptManager::refreshExtensionsPaths()
 
     if (mEngine) {
         Tiled::INFO(tr("Extensions paths changed: %1").arg(mExtensionsPaths.join(QLatin1String(", "))));
-        reset();
+
+        // Never reset immediately, since this function can be reached from
+        // script or QML code. It is called when the project changes, which
+        // can be triggered by a script calling tiled.trigger("CloseProject")
+        // or by a button in a QML extension. Deleting the engine while it is
+        // still executing that code would crash.
+        mResetTimer.start();
     }
 }
 
