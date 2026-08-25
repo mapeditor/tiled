@@ -36,6 +36,19 @@
 namespace Tiled {
 
 /**
+ * Returns an error message when the given object provides neither a 'read'
+ * nor a 'write' function, or an empty string when it is fine.
+ */
+static QString checkReadWriteFunctions(const QJSValue &object)
+{
+    if (!object.property(QStringLiteral("read")).isCallable() &&
+            !object.property(QStringLiteral("write")).isCallable())
+        return QCoreApplication::translate("Script Errors", "Invalid file format object (requires a 'write' and/or 'read' function property)");
+
+    return QString();
+}
+
+/**
  * Validates the declared properties of a QML declared file format, reporting
  * errors to the Console view.
  */
@@ -56,9 +69,9 @@ static bool validateQmlFileFormat(const QString &shortName,
         return false;
     }
 
-    if (!object.property(QStringLiteral("read")).isCallable() &&
-            !object.property(QStringLiteral("write")).isCallable()) {
-        Tiled::ERROR(QCoreApplication::translate("Script Errors", "Invalid file format object (requires a 'write' and/or 'read' function property)"));
+    const QString error = checkReadWriteFunctions(object);
+    if (!error.isEmpty()) {
+        Tiled::ERROR(error);
         return false;
     }
 
@@ -174,8 +187,6 @@ bool ScriptedFileFormat::validateFileFormatObject(const QJSValue &value)
 {
     const QJSValue nameProperty = value.property(QStringLiteral("name"));
     const QJSValue extensionProperty = value.property(QStringLiteral("extension"));
-    const QJSValue writeProperty = value.property(QStringLiteral("write"));
-    const QJSValue readProperty = value.property(QStringLiteral("read"));
 
     if (!nameProperty.isString()) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid file format object (requires string 'name' property)"));
@@ -187,8 +198,9 @@ bool ScriptedFileFormat::validateFileFormatObject(const QJSValue &value)
         return false;
     }
 
-    if (!writeProperty.isCallable() && !readProperty.isCallable()) {
-        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid file format object (requires a 'write' and/or 'read' function property)"));
+    const QString error = checkReadWriteFunctions(value);
+    if (!error.isEmpty()) {
+        ScriptManager::instance().throwError(error);
         return false;
     }
 
