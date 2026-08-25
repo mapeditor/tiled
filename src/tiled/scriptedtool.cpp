@@ -39,9 +39,16 @@
 
 namespace Tiled {
 
+ScriptedTool::ScriptedTool(QObject *parent)
+    : AbstractTileTool(Id(), QStringLiteral("<unnamed tool>"), QIcon(), QKeySequence(), nullptr, parent)
+{
+    setTargetLayerType(0);  // default behavior is not to disable based on current layer
+}
+
 ScriptedTool::ScriptedTool(Id id, QJSValue object, QObject *parent)
     : AbstractTileTool(id, QStringLiteral("<unnamed tool>"), QIcon(), QKeySequence(), nullptr, parent)
     , mScriptObject(std::move(object))
+    , mShortName(QString::fromUtf8(id.name()))
 {
     // Read out the properties from the script object before setting its prototype
     const QJSValue nameProperty = mScriptObject.property(QStringLiteral("name"));
@@ -82,11 +89,35 @@ ScriptedTool::ScriptedTool(Id id, QJSValue object, QObject *parent)
         setTargetLayerType(0);  // default behavior is not to disable based on current layer
 
     PluginManager::addObject(this);
+    mAddedToPluginManager = true;
 }
 
 ScriptedTool::~ScriptedTool()
 {
-    PluginManager::removeObject(this);
+    if (mAddedToPluginManager)
+        PluginManager::removeObject(this);
+}
+
+void ScriptedTool::componentComplete()
+{
+    if (mShortName.isEmpty()) {
+        Tiled::ERROR(QCoreApplication::translate("Script Errors", "Tool without shortName"));
+        return;
+    }
+
+    const Id id { mShortName.toUtf8() };
+    const auto tools = PluginManager::objects<AbstractTool>();
+    for (auto tool : tools) {
+        if (tool->id() == id) {
+            Tiled::ERROR(QCoreApplication::translate("Script Errors", "Reserved shortName: '%1'").arg(mShortName));
+            return;
+        }
+    }
+
+    setId(id);
+    mScriptObject = ScriptManager::instance().engine()->newQObject(this);
+    PluginManager::addObject(this);
+    mAddedToPluginManager = true;
 }
 
 EditableMap *ScriptedTool::editableMap() const
