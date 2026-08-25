@@ -56,22 +56,22 @@ void ResizeMap::swapSize()
     Map *map = mMapDocument->map();
     const MapRenderer *renderer = mMapDocument->renderer();
 
-    // Determine by how much the contents shift on screen, by sampling around
-    // the resize. Sampling both sides is necessary because for isometric maps
-    // the screen origin depends on the map height.
-    const QPointF beforeResize = renderer->tileToScreenCoords(QPointF());
+    const QSize oldSize = map->size();
 
-    QSize oldSize(map->width(), map->height());
+    // Measure the bounding rect rather than the contents, since on hexagonal
+    // and staggered maps the contents jump half a tile whenever the stagger
+    // parity changes. Taken before the resize, because the isometric origin
+    // follows the map height.
+    const QRect oldBounds = renderer->boundingRect(QRect(QPoint(), oldSize));
+    const QRect newBounds = renderer->boundingRect(QRect(-mOffset, mSize));
+    const QPoint boundsOffset = newBounds.topLeft() - oldBounds.topLeft();
+
     map->setWidth(mSize.width());
     map->setHeight(mSize.height());
     mSize = oldSize;
 
-    // For staggered and hexagonal maps this is only exact when the offset
-    // keeps the stagger parity, since there the shift depends on where the
-    // contents are.
-    const QPointF afterResize = renderer->tileToScreenCoords(mOffset);
-
-    emit mMapDocument->mapResized(afterResize - beforeResize);
+    // The view goes the other way, so the map stays where it was on screen.
+    emit mMapDocument->mapResized(-boundsOffset);
 
     // Shift the other way when this command is applied again, so that undo
     // and redo each restore the previous state.
