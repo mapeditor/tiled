@@ -25,13 +25,52 @@
 #include "savefile.h"
 #include "scriptmanager.h"
 
+#include "logginginterface.h"
+
 #include <QCoreApplication>
 #include <QFile>
-#include <QJSEngine>
+#include <QQmlEngine>
 #include <QJSValueIterator>
 #include <QTextStream>
 
 namespace Tiled {
+
+/**
+ * Validates the declared properties of a QML declared file format, reporting
+ * errors to the Console view.
+ */
+template<typename FormatList>
+static bool validateQmlFileFormat(const QString &shortName,
+                                  const QString &name,
+                                  const QString &extension,
+                                  const QJSValue &object,
+                                  const FormatList &existingFormats)
+{
+    if (shortName.isEmpty()) {
+        Tiled::ERROR(QCoreApplication::translate("Script Errors", "File format without shortName"));
+        return false;
+    }
+
+    if (name.isEmpty() || extension.isEmpty()) {
+        Tiled::ERROR(QCoreApplication::translate("Script Errors", "Invalid file format object (requires 'name' and 'extension' properties)"));
+        return false;
+    }
+
+    if (!object.property(QStringLiteral("read")).isCallable() &&
+            !object.property(QStringLiteral("write")).isCallable()) {
+        Tiled::ERROR(QCoreApplication::translate("Script Errors", "Invalid file format object (requires a 'write' and/or 'read' function property)"));
+        return false;
+    }
+
+    for (auto format : existingFormats) {
+        if (format->shortName() == shortName) {
+            Tiled::ERROR(QCoreApplication::translate("Script Errors", "Reserved shortName: '%1'").arg(shortName));
+            return false;
+        }
+    }
+
+    return true;
+}
 
 ScriptedFileFormat::ScriptedFileFormat(const QJSValue &object)
     : mObject(object)
@@ -157,6 +196,11 @@ bool ScriptedFileFormat::validateFileFormatObject(const QJSValue &value)
 }
 
 
+ScriptedMapFormat::ScriptedMapFormat(QObject *parent)
+    : MapFormat(parent)
+{
+}
+
 ScriptedMapFormat::ScriptedMapFormat(const QString &shortName,
                                      const QJSValue &object,
                                      QObject *parent)
@@ -165,11 +209,26 @@ ScriptedMapFormat::ScriptedMapFormat(const QString &shortName,
     , mFormat(object)
 {
     PluginManager::addObject(this);
+    mAddedToPluginManager = true;
 }
 
 ScriptedMapFormat::~ScriptedMapFormat()
 {
-    PluginManager::removeObject(this);
+    if (mAddedToPluginManager)
+        PluginManager::removeObject(this);
+}
+
+void ScriptedMapFormat::componentComplete()
+{
+    const QJSValue self = ScriptManager::instance().engine()->newQObject(this);
+
+    if (!validateQmlFileFormat(mShortName, mName, mExtension, self,
+                               PluginManager::objects<MapFormat>()))
+        return;
+
+    mFormat.setObject(self);
+    PluginManager::addObject(this);
+    mAddedToPluginManager = true;
 }
 
 QStringList ScriptedMapFormat::outputFiles(const Map *map, const QString &fileName) const
@@ -208,6 +267,11 @@ bool ScriptedMapFormat::write(const Map *map, const QString &fileName, Options o
 }
 
 
+ScriptedTilesetFormat::ScriptedTilesetFormat(QObject *parent)
+    : TilesetFormat(parent)
+{
+}
+
 ScriptedTilesetFormat::ScriptedTilesetFormat(const QString &shortName,
                                              const QJSValue &object,
                                              QObject *parent)
@@ -216,11 +280,26 @@ ScriptedTilesetFormat::ScriptedTilesetFormat(const QString &shortName,
     , mFormat(object)
 {
     PluginManager::addObject(this);
+    mAddedToPluginManager = true;
 }
 
 ScriptedTilesetFormat::~ScriptedTilesetFormat()
 {
-    PluginManager::removeObject(this);
+    if (mAddedToPluginManager)
+        PluginManager::removeObject(this);
+}
+
+void ScriptedTilesetFormat::componentComplete()
+{
+    const QJSValue self = ScriptManager::instance().engine()->newQObject(this);
+
+    if (!validateQmlFileFormat(mShortName, mName, mExtension, self,
+                               PluginManager::objects<TilesetFormat>()))
+        return;
+
+    mFormat.setObject(self);
+    PluginManager::addObject(this);
+    mAddedToPluginManager = true;
 }
 
 SharedTileset ScriptedTilesetFormat::read(const QString &fileName)

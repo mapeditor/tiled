@@ -8,7 +8,7 @@ DynamicLibrary {
     Depends { name: "libtiled" }
     Depends { name: "translations" }
     Depends { name: "qtsingleapplication" }
-    Depends { name: "Qt"; submodules: ["core", "widgets", "concurrent", "qml"]; versionAtLeast: "6.2.0" }
+    Depends { name: "Qt"; submodules: ["core", "widgets", "concurrent", "qml", "quick", "quickwidgets"]; versionAtLeast: "6.2.0" }
     Depends { name: "Qt.svg"; condition: qbs.targetOS.contains("macos") }
     Depends { name: "Qt.openglwidgets"; required: false }
     Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux") && project.dbus; required: false }
@@ -406,6 +406,10 @@ DynamicLibrary {
         "propertytypeseditor.ui",
         "propertytypesmodel.cpp",
         "propertytypesmodel.h",
+        "qmldock.cpp",
+        "qmldock.h",
+        "qmlextension.cpp",
+        "qmlextension.h",
         "raiselowerhelper.cpp",
         "raiselowerhelper.h",
         "randompicker.h",
