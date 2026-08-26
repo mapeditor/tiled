@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "id.h"
+
 #include <QObject>
 #include <QPointer>
 #include <QQmlParserStatus>
@@ -37,6 +39,10 @@ namespace Tiled {
  * so expressions in the contents can refer to the 'tiled' API. The dock is
  * added to the main window and its placement is persisted based on its
  * mandatory 'name' property, which needs to be unique and stable.
+ *
+ * The action that shows and hides the dock is registered with the
+ * ActionManager as "Dock.<name>", so that it shows up in the action search
+ * and can be assigned a custom keyboard shortcut.
  */
 class QmlDock : public QObject, public QQmlParserStatus
 {
@@ -48,6 +54,7 @@ class QmlDock : public QObject, public QQmlParserStatus
     Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
     Q_PROPERTY(DockArea area READ area WRITE setArea)
     Q_PROPERTY(Window window READ window WRITE setWindow)
+    Q_PROPERTY(QString shortcut READ shortcut WRITE setShortcut)
     Q_PROPERTY(QQmlComponent *contentItem READ contentItem WRITE setContentItem)
     Q_CLASSINFO("DefaultProperty", "contentItem")
 
@@ -86,6 +93,9 @@ public:
     Window window() const { return mWindow; }
     void setWindow(Window window) { mWindow = window; }
 
+    QString shortcut() const { return mShortcut; }
+    void setShortcut(const QString &shortcut);
+
     QQmlComponent *contentItem() const { return mContentItem; }
     void setContentItem(QQmlComponent *component) { mContentItem = component; }
 
@@ -98,6 +108,8 @@ signals:
 private:
     QString mName;
     QString mTitle;
+    QString mShortcut;
+    Id mActionId;
     DockArea mArea = RightDockArea;
     Window mWindow = MainWindow;
     QQmlComponent *mContentItem = nullptr;

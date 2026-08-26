@@ -178,6 +178,11 @@ to ``Dock.MapEditor`` or ``Dock.TilesetEditor`` to add it to the window of the
 respective editor instead, in which case it is only visible while that editor
 is active.
 
+The action that shows and hides a dock is registered with the ID
+``Dock.<name>``, so that it can be triggered from the action search and can be
+given a custom keyboard shortcut in *Preferences > Keyboard*. A default
+shortcut can be suggested using the ``shortcut`` property.
+
 The registered types generally support the same properties and functions as
 their JavaScript counterparts. For example, a ``Tool`` can declare functions
 like ``mousePressed`` or ``tilePositionChanged``, and a ``MapFormat`` is
