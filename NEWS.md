@@ -7,6 +7,7 @@
 * Added an action to create a world containing the current map (by Kanishka, #4562)
 * Made switching to the previously selected tool when pressing its shortcut again optional and off by default (by dogboydog, #4540)
 * Persisted collapsed state of the properties groups in the session (#4561)
+* Added support for assigning keyboard shortcuts to the dock view toggles (#4598)
 * Scripting: Added 'tiled.cell' function, 'cell.flags' property and 'TileLayerEdit.setCell' function (#4538)
 * Scripting: Added MapObject.resolvedClassName() (by MatusGuy, #4529)
 * Scripting: Added Tileset.selectedTilesChanged signal (#4615)

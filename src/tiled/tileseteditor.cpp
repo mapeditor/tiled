@@ -156,6 +156,9 @@ TilesetEditor::TilesetEditor(QObject *parent)
 
     ActionManager::registerAction(editCollision, "EditCollision");
     ActionManager::registerAction(editWang, "EditWang");
+    ActionManager::registerAction(mPropertiesDock->toggleViewAction(), "ViewProperties");
+    ActionManager::registerAction(mUndoDock->toggleViewAction(), "ViewHistory");
+    ActionManager::registerAction(mTemplatesDock->toggleViewAction(), "ViewTemplateEditor");
     ActionManager::registerAction(mAddTiles, "AddTiles");
     ActionManager::registerAction(mRemoveTiles, "RemoveTiles");
     ActionManager::registerAction(mEditTilesetParameters, "EditTilesetParameters");
@@ -183,6 +186,14 @@ TilesetEditor::TilesetEditor(QObject *parent)
     // The shortcut set on the 'Remove Tiles' action should only be active
     // while the tileset view is focused, to avoid ambiguities.
     mWidgetStack->addAction(mRemoveTiles);
+
+    // A shortcut only triggers when its action has been added to a widget, and
+    // the 'Views and Toolbars' menu is rebuilt each time it is shown. Adding
+    // the toggle actions to this editor's main window also makes sure they are
+    // only active while this editor is the current one.
+    const QList<QDockWidget*> dockWidgets = this->dockWidgets();
+    for (QDockWidget *dockWidget : dockWidgets)
+        mMainWindow->addAction(dockWidget->toggleViewAction());
 
     Utils::setThemeIcon(mAddTiles, "add");
     Utils::setThemeIcon(mRemoveTiles, "remove");
