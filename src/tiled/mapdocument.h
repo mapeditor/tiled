@@ -322,9 +322,10 @@ signals:
     void mapObjectPicked(MapObject *object);
 
     /**
-     * Emitted when the map size changes.
+     * Emitted when the map size changes. The screen offset tells by how much
+     * the contents were shifted during the resize, in screen coordinates.
      */
-    void mapResized();
+    void mapResized(QPointF screenOffset);
 
     void layerAdded(Layer *layer);
     void layerAboutToBeRemoved(GroupLayer *parentLayer, int index);
