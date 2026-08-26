@@ -512,11 +512,23 @@ static int evaluateInRunningInstance(const CommandLineHandler &commandLine)
 int main(int argc, char *argv[])
 {
 #if defined(Q_OS_WIN) && (!defined(Q_CC_MINGW) || __GNUC__ >= 5)
-    // Make console output work on Windows, if running in a console.
+    // Make console output work on Windows, if running in a console. Streams
+    // that were redirected to a pipe or file by the parent process are left
+    // alone, so that their output can be captured.
     if (AttachConsole(ATTACH_PARENT_PROCESS)) {
+        auto isRedirected = [] (DWORD handleId) {
+            const HANDLE handle = GetStdHandle(handleId);
+            if (handle == nullptr || handle == INVALID_HANDLE_VALUE)
+                return false;
+            const DWORD type = GetFileType(handle);
+            return type == FILE_TYPE_PIPE || type == FILE_TYPE_DISK;
+        };
+
         FILE *dummy = nullptr;
-        freopen_s(&dummy, "CONOUT$", "w", stdout);
-        freopen_s(&dummy, "CONOUT$", "w", stderr);
+        if (!isRedirected(STD_OUTPUT_HANDLE))
+            freopen_s(&dummy, "CONOUT$", "w", stdout);
+        if (!isRedirected(STD_ERROR_HANDLE))
+            freopen_s(&dummy, "CONOUT$", "w", stderr);
     }
 #endif
 
