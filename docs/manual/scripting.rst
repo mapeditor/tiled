@@ -183,6 +183,12 @@ The action that shows and hides a dock is registered with the ID
 given a custom keyboard shortcut in *Preferences > Keyboard*. A default
 shortcut can be suggested using the ``shortcut`` property.
 
+The ``visible`` property tells whether the dock is currently shown and can
+also be used to show or hide it. For a dock in an editor window it is also
+``false`` while that editor is not the active one. Setting it to ``false``
+only has an effect the first time the dock is created, since after that the
+dock is restored to the state the user left it in.
+
 The registered types generally support the same properties and functions as
 their JavaScript counterparts. For example, a ``Tool`` can declare functions
 like ``mousePressed`` or ``tilePositionChanged``, and a ``MapFormat`` is
