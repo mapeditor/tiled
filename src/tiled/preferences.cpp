@@ -580,6 +580,17 @@ void Preferences::setUseOpenGL(bool useOpenGL)
     emit useOpenGLChanged(useOpenGL);
 }
 
+bool Preferences::scriptServerEnabled() const
+{
+    return get("Scripting/ServerEnabled", false);
+}
+
+void Preferences::setScriptServerEnabled(bool enabled)
+{
+    setValue(QLatin1String("Scripting/ServerEnabled"), enabled);
+    emit scriptServerEnabledChanged(enabled);
+}
+
 void Preferences::setPropertyTypes(const SharedPropertyTypes &propertyTypes)
 {
     Object::setPropertyTypes(propertyTypes);

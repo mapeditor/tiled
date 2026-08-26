@@ -9,6 +9,7 @@
 * Persisted collapsed state of the properties groups in the session (#4561)
 * Scripting: Added 'tiled.cell' function, 'cell.flags' property and 'TileLayerEdit.setCell' function (#4538)
 * Scripting: Added MapObject.resolvedClassName() (by MatusGuy, #4529)
+* Scripting: Added a script server and --eval, --eval-file and --script-server options, for running scripts in a running Tiled instance from the command-line
 * Fixed crash when the selection becomes empty while starting a move (#4536)
 * Fixed Properties view update on 'Reset Template Instance' and 'Replace With Template' actions
 * Linux: Added file associations for .tmj, .tsj, .tiled-project and .world files (by miffe, #4550)

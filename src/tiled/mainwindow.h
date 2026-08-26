@@ -52,6 +52,7 @@ class ConsoleDock;
 class DocumentManager;
 class Editor;
 class IssuesDock;
+class ScriptServer;
 class LocatorSource;
 class LocatorWidget;
 class MapDocument;
@@ -244,6 +245,7 @@ private:
     ConsoleDock *mConsoleDock;
     ProjectDock *mProjectDock;
     IssuesDock *mIssuesDock;
+    ScriptServer *mScriptServer = nullptr;
     PropertyTypesEditor *mPropertyTypesEditor;
     QPointer<LocatorWidget> mLocatorWidget;
     QPointer<QWidget> mPopupWidget;

@@ -178,6 +178,55 @@ QJSValue ScriptManager::evaluate(const QString &program,
     return result;
 }
 
+/**
+ * Evaluates the given program, capturing any output emitted while doing so.
+ *
+ * Errors are still reported through the LoggingInterface as usual, but they
+ * are not included in the captured output. Instead, the error message is
+ * available in the returned result. When the result is neither undefined nor
+ * an error, it is stored as a global temporary value.
+ */
+ScriptManager::EvaluationResult ScriptManager::evaluateCaptured(const QString &program,
+                                                                const QString &fileName)
+{
+    EvaluationResult result;
+
+    auto &logger = LoggingInterface::instance();
+    auto captureOutput = [&result] (LoggingInterface::OutputType type) {
+        return [&result, type] (const QString &message) {
+            result.output.append({ type, message });
+        };
+    };
+
+    QMetaObject::Connection connections[] = {
+        connect(&logger, &LoggingInterface::info, captureOutput(LoggingInterface::INFO)),
+        connect(&logger, &LoggingInterface::warning, captureOutput(LoggingInterface::WARNING)),
+        connect(&logger, &LoggingInterface::error, captureOutput(LoggingInterface::ERROR)),
+    };
+
+    QJSValue globalObject = mEngine->globalObject();
+    if (!fileName.isEmpty())
+        globalObject.setProperty(QStringLiteral("__filename"), fileName);
+
+    const QJSValue value = mEngine->evaluate(program, fileName);
+
+    globalObject.deleteProperty(QStringLiteral("__filename"));
+
+    for (const auto &connection : connections)
+        disconnect(connection);
+
+    if (value.isError()) {
+        result.error = errorString(value, program);
+        mModule->error(result.error);
+    } else if (!value.isUndefined()) {
+        result.tempName = createTempValue(value);
+        result.result = value.toString();
+        result.hasResult = true;
+    }
+
+    return result;
+}
+
 void ScriptManager::evaluateFileOrLoadModule(const QString &fileName)
 {
     if (fileName.endsWith(QLatin1String(".js"), Qt::CaseInsensitive)) {
@@ -276,6 +325,16 @@ bool ScriptManager::checkError(QJSValue value, const QString &program)
     if (!value.isError())
         return false;
 
+    mModule->error(errorString(value, program));
+    return true;
+}
+
+/**
+ * Returns the error message for the given error value, including a stack
+ * trace or line number where available.
+ */
+QString ScriptManager::errorString(const QJSValue &value, const QString &program)
+{
     QString errorString = value.toString();
     QString stack = value.property(QStringLiteral("stack")).toString();
 
@@ -300,8 +359,7 @@ bool ScriptManager::checkError(QJSValue value, const QString &program)
                 .arg(errorString);
     }
 
-    mModule->error(errorString);
-    return true;
+    return errorString;
 }
 
 void ScriptManager::throwError(const QString &message)
