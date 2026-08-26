@@ -22,6 +22,7 @@
 
 #include "preferences.h"
 
+#include <QAction>
 #include <QMenu>
 #include <QScopedValueRollback>
 
@@ -161,17 +162,43 @@ QAction *ActionManager::findAction(Id id)
     return d->mIdToActions.value(id);
 }
 
+/**
+ * Returns whether the action can currently be reached, based on whether any
+ * of the widgets it was added to is visible. This is the same rule Qt applies
+ * when resolving shortcuts, and it is what tells the actions of the map and
+ * tileset editors apart when they share an ID.
+ */
+static bool isReachable(const QAction *action)
+{
+    const auto objects = action->associatedObjects();
+    for (QObject *object : objects)
+        if (auto widget = qobject_cast<QWidget*>(object))
+            if (widget->isVisible())
+                return true;
+
+    return false;
+}
+
 QAction *ActionManager::findEnabledAction(Id id)
 {
     auto d = instance();
 
+    QAction *fallback = nullptr;
+
     const auto [start, end] = std::as_const(d->mIdToActions).equal_range(id);
     for (auto it = start; it != end; ++it) {
-        if (it.value()->isEnabled())
-            return it.value();
+        QAction *action = it.value();
+        if (!action->isEnabled())
+            continue;
+        if (isReachable(action))
+            return action;
+        if (!fallback)
+            fallback = action;
     }
 
-    return nullptr;
+    // Most actions are only added to a menu, which is not visible unless it
+    // happens to be open, so an unreachable action is still better than none.
+    return fallback;
 }
 
 bool ActionManager::hasMenu(Id id)
