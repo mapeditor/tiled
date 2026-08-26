@@ -43,6 +43,10 @@ namespace Tiled {
  * The action that shows and hides the dock is registered with the
  * ActionManager as "Dock.<name>", so that it shows up in the action search
  * and can be assigned a custom keyboard shortcut.
+ *
+ * The 'visible' property tracks whether the dock is shown. Its initial value
+ * only applies when there is no saved placement yet, since otherwise the dock
+ * is restored to the state the user left it in.
  */
 class QmlDock : public QObject, public QQmlParserStatus
 {
@@ -55,6 +59,7 @@ class QmlDock : public QObject, public QQmlParserStatus
     Q_PROPERTY(DockArea area READ area WRITE setArea)
     Q_PROPERTY(Window window READ window WRITE setWindow)
     Q_PROPERTY(QString shortcut READ shortcut WRITE setShortcut)
+    Q_PROPERTY(bool visible READ isVisible WRITE setVisible NOTIFY visibleChanged)
     Q_PROPERTY(QQmlComponent *contentItem READ contentItem WRITE setContentItem)
     Q_CLASSINFO("DefaultProperty", "contentItem")
 
@@ -96,6 +101,9 @@ public:
     QString shortcut() const { return mShortcut; }
     void setShortcut(const QString &shortcut);
 
+    bool isVisible() const { return mVisible; }
+    void setVisible(bool visible);
+
     QQmlComponent *contentItem() const { return mContentItem; }
     void setContentItem(QQmlComponent *component) { mContentItem = component; }
 
@@ -104,6 +112,7 @@ public:
 
 signals:
     void titleChanged();
+    void visibleChanged();
 
 private:
     QString mName;
@@ -112,6 +121,7 @@ private:
     Id mActionId;
     DockArea mArea = RightDockArea;
     Window mWindow = MainWindow;
+    bool mVisible = true;
     QQmlComponent *mContentItem = nullptr;
     QPointer<QDockWidget> mDockWidget;
 };

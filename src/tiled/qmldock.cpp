@@ -77,6 +77,19 @@ void QmlDock::setShortcut(const QString &shortcut)
         mDockWidget->toggleViewAction()->setShortcut(QKeySequence(shortcut));
 }
 
+void QmlDock::setVisible(bool visible)
+{
+    if (mVisible == visible)
+        return;
+
+    mVisible = visible;
+
+    if (mDockWidget)
+        mDockWidget->setVisible(visible);
+
+    emit visibleChanged();
+}
+
 static QMainWindow *targetWindow(QmlDock::Window window)
 {
     switch (window) {
@@ -189,11 +202,28 @@ void QmlDock::componentComplete()
     ActionManager::registerAction(toggleViewAction, mActionId);
     mainWindow->addAction(toggleViewAction);
 
+    // The action is checked exactly when the dock is shown, so it also serves
+    // to keep the 'visible' property up to date when the dock is closed by
+    // the user or restored to a saved state.
+    connect(toggleViewAction, &QAction::toggled, this, [this] (bool checked) {
+        if (mVisible == checked)
+            return;
+
+        mVisible = checked;
+        emit visibleChanged();
+    });
+
+    // Adding a dock to a window that is already visible shows it, so starting
+    // out closed requires hiding it explicitly.
+    if (!mVisible)
+        dock->hide();
+
     // Apply any previously saved placement, relevant when the dock is
     // created after the main window layout was restored (which is the common
     // case, and always the case after a script engine reset). Restoring
     // before adding also avoids a crash with Qt 6.10.0 to 6.10.2 (see
-    // QTBUG-143708).
+    // QTBUG-143708). It also restores the visibility, which takes precedence
+    // over the initial value of the 'visible' property.
     if (!mainWindow->restoreDockWidget(dock))
         mainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(mArea), dock);
 }
