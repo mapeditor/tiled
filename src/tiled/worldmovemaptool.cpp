@@ -159,19 +159,22 @@ void WorldMoveMapTool::updateResizingMap(const QPointF &pos,
     const QPoint delta = (pos - mDragStartScenePos).toPoint();
     const bool snapToGrid = !(modifiers & Qt::ControlModifier);
 
-    const auto snap = [&](int value, int gridStep) {
-        return (snapToGrid && gridStep > 0) ? qRound(qreal(value) / gridStep) * gridStep
-                                            : value;
+    // snap the drag rather than the resulting edge, since the bounds of a
+    // staggered or hexagonal map don't line up with the grid and the edge
+    // would otherwise jump as soon as a handle is grabbed
+    const auto snap = [&](int amount, int gridStep) {
+        return (snapToGrid && gridStep > 0) ? qRound(qreal(amount) / gridStep) * gridStep
+                                            : amount;
     };
 
     if (edges.left)
-        left = snap(left + delta.x(), step.width());
+        left += snap(delta.x(), step.width());
     if (edges.right)
-        right = snap(right + delta.x(), step.width());
+        right += snap(delta.x(), step.width());
     if (edges.top)
-        top = snap(top + delta.y(), step.height());
+        top += snap(delta.y(), step.height());
     if (edges.bottom)
-        bottom = snap(bottom + delta.y(), step.height());
+        bottom += snap(delta.y(), step.height());
 
     // ask the renderer what one more column or row adds on screen, since that
     // is only the tile size for orthogonal maps
