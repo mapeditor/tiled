@@ -20,12 +20,14 @@
 
 #include "qmldock.h"
 
+#include "actionmanager.h"
 #include "documentmanager.h"
 #include "editor.h"
 #include "logginginterface.h"
 #include "mainwindow.h"
 #include "scriptmanager.h"
 
+#include <QAction>
 #include <QCoreApplication>
 #include <QDockWidget>
 #include <QMainWindow>
@@ -48,7 +50,10 @@ QmlDock::QmlDock(QObject *parent)
 
 QmlDock::~QmlDock()
 {
-    delete mDockWidget;
+    if (mDockWidget) {
+        ActionManager::unregisterAction(mDockWidget->toggleViewAction(), mActionId);
+        delete mDockWidget;
+    }
 }
 
 void QmlDock::setTitle(const QString &title)
@@ -62,6 +67,14 @@ void QmlDock::setTitle(const QString &title)
         mDockWidget->setWindowTitle(title);
 
     emit titleChanged();
+}
+
+void QmlDock::setShortcut(const QString &shortcut)
+{
+    mShortcut = shortcut;
+
+    if (mDockWidget)
+        mDockWidget->toggleViewAction()->setShortcut(QKeySequence(shortcut));
 }
 
 static QMainWindow *targetWindow(QmlDock::Window window)
@@ -163,6 +176,18 @@ void QmlDock::componentComplete()
 
     dock->setWidget(quickWidget);
     mDockWidget = dock;
+    mActionId = Id { QByteArray("Dock.") + mName.toUtf8() };
+
+    // Registering the action makes it possible to assign a custom shortcut to
+    // it and to find it through the action search. Adding it to the window is
+    // what makes its shortcut work, since it is not permanently part of any
+    // menu. Docks with the same name in different windows share the action ID
+    // and therefore also their shortcut.
+    auto toggleViewAction = dock->toggleViewAction();
+    if (!mShortcut.isEmpty())
+        toggleViewAction->setShortcut(QKeySequence(mShortcut));
+    ActionManager::registerAction(toggleViewAction, mActionId);
+    mainWindow->addAction(toggleViewAction);
 
     // Apply any previously saved placement, relevant when the dock is
     // created after the main window layout was restored (which is the common
