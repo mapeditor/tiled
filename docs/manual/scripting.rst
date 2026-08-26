@@ -17,6 +17,11 @@ TypeScript definitions of the API are available as the `@mapeditor/tiled-api`_
 NPM package, which can provide auto-completion in your editor. The API
 reference is generated based on these definitions.
 
+The same definitions are also readable as a single file, `index.d.ts`_.
+Fetching that file is usually the most efficient way for an AI coding agent to
+learn the API, since it describes every type and function along with their
+documentation comments, without having to crawl the generated HTML reference.
+
 On startup, Tiled will execute any script files present in :ref:`extension
 folders <script-extensions>`. In addition it is possible to run scripts
 directly from :ref:`the console <script-console>`, as well as to evaluate a
@@ -173,6 +178,16 @@ in the Console view directly.
 Output produced after the script finished, for example from a callback
 connected to a signal, is not captured.
 
+Each script is evaluated as a program, so a ``return`` statement at the top
+level is a syntax error. To exit early, assign the result to a variable and
+end the script with that variable.
+
+Since all scripts share a single JavaScript context, a top-level ``var``
+becomes a property of the global object and stays there for the lifetime of
+the Tiled instance. That can be handy for keeping state between calls, but use
+``let`` or ``const`` when you want repeated calls to stay independent, since
+those are scoped to a single evaluation.
+
 If no running instance with an enabled script server is found, ``--eval``
 fails with exit code 2. To evaluate a script without UI, use ``--evaluate``
 instead. When several Tiled instances are running, only the first one that
@@ -205,6 +220,7 @@ __filename
 .. _List of JavaScript Objects and Functions: https://doc.qt.io/qt-6/qtqml-javascript-functionlist.html
 .. _QML module: https://doc.qt.io/qt-6/qtqml-index.html
 .. _@mapeditor/tiled-api: https://www.npmjs.com/package/@mapeditor/tiled-api
+.. _index.d.ts: https://raw.githubusercontent.com/mapeditor/tiled/master/docs/scripting-doc/index.d.ts
 .. _JavaScript modules: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
 .. _import: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import
 .. _export: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export
