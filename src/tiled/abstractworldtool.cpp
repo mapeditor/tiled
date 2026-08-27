@@ -619,7 +619,7 @@ QPoint AbstractWorldTool::snapPoint(QPoint point, MapDocument *document) const
 QPoint AbstractWorldTool::currentMapWorldPos() const
 {
     if (auto worldDocument = worldForMap(mapDocument()))
-        return worldDocument->world()->mapRect(mapDocument()->fileName()).topLeft();
+        return worldDocument->mapRect(mapDocument()).topLeft();
     return QPoint();
 }
 

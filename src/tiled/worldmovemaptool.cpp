@@ -108,6 +108,7 @@ void WorldMoveMapTool::keyPressed(QKeyEvent *event)
         abortMoving();
         abortResizing();
         abortCreating();
+        mClickedUnsavedMap = nullptr;
         return;
     default:
         AbstractWorldTool::keyPressed(event);
@@ -238,13 +239,10 @@ void WorldMoveMapTool::mousePressed(QGraphicsSceneMouseEvent *event)
             return;
         }
 
-        // an unsaved map has no file name, so switch to its document directly
+        // an unsaved map is opened on release, like saved maps
         MapDocument *target = targetMap();
-        if (target && target->fileName().isEmpty()) {
-            DocumentManager *manager = DocumentManager::instance();
-            if (manager->findDocument(target) == -1)
-                manager->addDocument(target->sharedFromThis());
-            manager->switchToDocument(target);
+        if (target && target != mapDocument() && target->fileName().isEmpty()) {
+            mClickedUnsavedMap = target;
             return;
         }
 
@@ -286,6 +284,22 @@ void WorldMoveMapTool::startMoving(MapDocument *map, const QPointF &scenePos)
     mDraggedMapStartPos = mDraggingMapItem->pos();
     mDragOffset = QPoint(0, 0);
     refreshCursor();
+}
+
+// Opens an unsaved map, keeping the view position and zoom like the
+// click-to-switch for saved maps does
+void WorldMoveMapTool::openUnsavedMap(MapDocument *map)
+{
+    DocumentManager *manager = DocumentManager::instance();
+    MapView *view = manager->viewForDocument(mapDocument());
+
+    QPointF itemPos;
+    if (auto item = mapScene()->mapItem(map))
+        itemPos = item->pos();
+
+    manager->switchToDocumentAndHandleSimiliarTileset(map,
+                                                      view->viewCenter() - itemPos,
+                                                      view->zoomable()->scale());
 }
 
 // a new map can be dragged out in empty space
@@ -426,6 +440,13 @@ void WorldMoveMapTool::mouseReleased(QGraphicsSceneMouseEvent *event)
             finishCreating();
         else if (event->button() == Qt::RightButton)
             abortCreating();
+        return;
+    }
+
+    if (mClickedUnsavedMap) {
+        auto clickedMap = std::exchange(mClickedUnsavedMap, nullptr);
+        if (event->button() == Qt::LeftButton && mapAt(event->scenePos()) == clickedMap)
+            openUnsavedMap(clickedMap);
         return;
     }
 

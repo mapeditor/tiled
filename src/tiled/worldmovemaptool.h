@@ -63,6 +63,7 @@ protected:
     void moveMap(MapDocument *document, QPoint moveBy);
     void updateResizingMap(const QPointF &pos, Qt::KeyboardModifiers modifiers);
     void updateCreatingMap(const QPointF &pos, Qt::KeyboardModifiers modifiers);
+    void openUnsavedMap(MapDocument *map);
 
     // drag state
     MapDocument *mDraggingMap = nullptr;
@@ -84,6 +85,9 @@ protected:
     QPoint mCreateStartWorldPos;
     QRect mCreateWorldRect;
     std::unique_ptr<SelectionRectangle> mCreatePreview;
+
+    // an unsaved map that was clicked, opened on release
+    MapDocument *mClickedUnsavedMap = nullptr;
 };
 
 } // namespace Tiled
