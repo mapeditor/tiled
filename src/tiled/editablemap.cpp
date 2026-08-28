@@ -492,7 +492,7 @@ QPointF EditableMap::tileToPixel(qreal x, qreal y) const
 void EditableMap::setSize(int width, int height)
 {
     if (auto doc = mapDocument()) {
-        push(new ResizeMap(doc, QSize(width, height)));
+        push(new ResizeMap(doc, QSize(width, height), QPoint()));
     } else if (!checkReadOnly()) {
         map()->setWidth(width);
         map()->setHeight(height);

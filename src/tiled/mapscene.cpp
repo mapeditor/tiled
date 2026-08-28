@@ -31,6 +31,7 @@
 #include "map.h"
 #include "mapobject.h"
 #include "maprenderer.h"
+#include "mapview.h"
 #include "objectgroup.h"
 #include "objecttemplate.h"
 #include "preferences.h"
@@ -117,6 +118,8 @@ void MapScene::setMapDocument(MapDocument *mapDocument)
                 this, [this] { update(); });
         connect(mMapDocument, &MapDocument::tilesetReplaced,
                 this, &MapScene::tilesetReplaced);
+        connect(mMapDocument, &MapDocument::mapResized,
+                this, &MapScene::mapResized);
     }
 
     refreshScene();
@@ -286,6 +289,36 @@ QPointF MapScene::parallaxOffset(const Layer &layer) const
 }
 
 /**
+ * When a resize shifted the map contents, move the view along by the same
+ * amount so the contents appear to stay in place.
+ */
+void MapScene::mapResized(QPointF screenOffset)
+{
+    if (screenOffset.isNull())
+        return;
+
+    // when the map has its own entry in a world, the resize also moves its
+    // world position and refreshScene handles the view, so nothing to do here
+    const QString &fileName = mMapDocument->fileName();
+    if (auto worldDocument = WorldManager::instance().worldForMap(fileName))
+        if (worldDocument->world()->mapIndex(fileName) >= 0)
+            return;
+
+    translateViews(screenOffset);
+}
+
+/**
+ * Moves all views on this scene along by the given delta.
+ */
+void MapScene::translateViews(const QPointF &delta)
+{
+    const auto sceneViews = views();
+    for (QGraphicsView *view : sceneViews)
+        if (auto mapView = qobject_cast<MapView*>(view))
+            mapView->forceCenterOn(mapView->viewCenter() + delta);
+}
+
+/**
  * Refreshes the map scene.
  */
 void MapScene::refreshScene()
@@ -293,6 +326,7 @@ void MapScene::refreshScene()
     QHash<MapDocument*, MapItem*> mapItems;
 
     if (!mMapDocument) {
+        mLastWorldPositionMapFile.clear();
         mMapItems.swap(mapItems);
         qDeleteAll(mapItems);
         updateSceneRect();
@@ -307,6 +341,17 @@ void MapScene::refreshScene()
         const QRect currentMapRect = worldDocument->mapRect(mMapDocument);
         const QPoint currentMapPosition = currentMapRect.topLeft();
         auto const contextMaps = world->contextMaps(currentMapRect);
+
+        // If the current map moved in its world (by a move or an undo),
+        // shift the view along so the map visibly moves instead of the
+        // world around it.
+        if (mLastWorldPositionMapFile == currentMapFile
+                && currentMapPosition != mLastWorldPosition) {
+            const QPoint delta = currentMapPosition - mLastWorldPosition;
+            translateViews(-delta);
+        }
+        mLastWorldPositionMapFile = currentMapFile;
+        mLastWorldPosition = currentMapPosition;
 
         for (const WorldMapEntry &mapEntry : contextMaps) {
             MapDocumentPtr mapDocument;
@@ -342,6 +387,8 @@ void MapScene::refreshScene()
             mapItems.insert(unsavedMap.mapDocument.data(), mapItem);
         }
     } else {
+        mLastWorldPositionMapFile.clear();
+
         auto mapItem = takeOrCreateMapItem(mMapDocument->sharedFromThis(), MapItem::Editable);
         mapItems.insert(mMapDocument, mapItem);
     }

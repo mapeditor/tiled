@@ -451,19 +451,25 @@ void MapDocument::resizeMap(QSize size, QPoint offset, bool removeObjects)
         new TransformMapObjects(this, objectsToMove, states, command);
     }
 
-    new ResizeMap(this, size, command);
+    new ResizeMap(this, size, offset, command);
     new ChangeSelectedArea(this, movedSelection, command);
 
+    // A world positions a map by its bounding rect, so move by how much that
+    // rect shifts. The pixel offset moved isometric maps twice as far as their
+    // rect actually shifts
+    const QRect oldBounds = renderer()->boundingRect(QRect(QPoint(), map()->size()));
+    const QRect newBounds = renderer()->boundingRect(QRect(-offset, size));
+    const QPoint boundsOffset = newBounds.topLeft() - oldBounds.topLeft();
+
     // Adjust world position if this map is part of any loaded worlds
-    if (!pixelOffset.isNull()) {
+    if (!boundsOffset.isNull()) {
         const QString &mapName = fileName();
-        const QPoint offsetPixels = pixelOffset.toPoint();
 
         if (mapName.isEmpty()) {
             // The rect of an unsaved map is kept by its world document
             if (auto worldDocument = WorldManager::instance().worldForMap(this)) {
                 const QPoint prevPos = worldDocument->mapRect(this).topLeft();
-                new SetUnsavedMapPos(this, prevPos, prevPos - offsetPixels, command);
+                new SetUnsavedMapPos(this, prevPos, prevPos + boundsOffset, command);
             }
         } else {
             for (const auto &worldDocument : WorldManager::instance().worlds()) {
@@ -473,7 +479,7 @@ void MapDocument::resizeMap(QSize size, QPoint offset, bool removeObjects)
                     continue; // also skips maps matched via pattern
 
                 const QPoint prevPos = world->mapRect(mapName).topLeft();
-                const QPoint newPos = prevPos - offsetPixels;
+                const QPoint newPos = prevPos + boundsOffset;
                 new SetMapPosInLoadedWorld(worldDocument->fileName(), mapName, prevPos, newPos, command);
             }
         }

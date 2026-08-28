@@ -77,7 +77,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
-        version: 6.11.1
+        version: 6.11.2
         arch: linux_gcc_64
         modules: "qtimageformats qtshadertools"
         tools: 'tools_qtcreator'
@@ -85,7 +85,7 @@ jobs:
         cache: true
 
     - name: Setup ccache
-      uses: hendrikmuhs/ccache-action@v1
+      uses: hendrikmuhs/ccache-action@v1.2.23
       with:
         max-size: 250M
 
@@ -209,7 +209,7 @@ jobs:
           cmake_architectures: x86_64
           runner: macos-15
           deployment_target: "10.14"
-        - qt_version: 6.11.1
+        - qt_version: 6.11.2
           qt_modules: "qtimageformats qtshadertools"
           version_suffix: "13+"
           architectures: x86_64,arm64
@@ -340,7 +340,7 @@ jobs:
     strategy:
       matrix:
         include:
-        - qt_version: 6.11.1
+        - qt_version: 6.11.2
           qt_version_major: 6
           qt_arch: win64_mingw
           qt_modules: "qtimageformats qtshadertools"

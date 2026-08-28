@@ -272,7 +272,7 @@ private:
     QPointer<PreferencesDialog> mPreferencesDialog;
 
     QMap<QMainWindow*, QByteArray> mMainWindowStates;
-    bool mHasRestoredLayout = false;
+    bool mReapplyLayoutOnResize = false;
 
     SessionOption<QStringList> mLoadedWorlds { "loadedWorlds" };
 
