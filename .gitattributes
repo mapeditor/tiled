@@ -5,6 +5,7 @@
 *.ui                text
 
 *.bat               eol=crlf
+*.patch             eol=lf
 
 *.png               binary
 
