@@ -79,6 +79,7 @@ public:
     const QVector<UnsavedMap> &unsavedMaps() const { return mUnsavedMaps; }
     void addUnsavedMap(const MapDocumentPtr &mapDocument, const QRect &rect);
     void removeUnsavedMap(MapDocument *mapDocument);
+    void setUnsavedMapRect(MapDocument *mapDocument, const QRect &rect);
 
     QRect mapRect(MapDocument *mapDocument) const;
 

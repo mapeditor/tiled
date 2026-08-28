@@ -161,6 +161,17 @@ void WorldDocument::removeUnsavedMap(MapDocument *mapDocument)
     }
 }
 
+void WorldDocument::setUnsavedMapRect(MapDocument *mapDocument, const QRect &rect)
+{
+    for (auto &unsavedMap : mUnsavedMaps) {
+        if (unsavedMap.mapDocument.data() == mapDocument) {
+            unsavedMap.rect = rect;
+            emit worldChanged();
+            return;
+        }
+    }
+}
+
 // The rect of an unsaved map is stored here rather than in the world
 QRect WorldDocument::mapRect(MapDocument *mapDocument) const
 {

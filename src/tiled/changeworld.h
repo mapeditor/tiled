@@ -154,6 +154,31 @@ private:
  * using SetMapRectCommand, which obsoletes itself when this command changes the
  * value back on undo.
  */
+/**
+ * Undo command that updates the position of an unsaved map in its world.
+ *
+ * Used as part of resizing a map, like SetMapPosInLoadedWorld, except the
+ * rect of an unsaved map is kept by the world document.
+ */
+class SetUnsavedMapPos : public QUndoCommand
+{
+public:
+    SetUnsavedMapPos(MapDocument *mapDocument,
+                     const QPoint &from,
+                     const QPoint &to,
+                     QUndoCommand *parent = nullptr);
+
+    void undo() override { setPos(mFrom); }
+    void redo() override { setPos(mTo); }
+
+private:
+    void setPos(QPoint pos);
+
+    MapDocument *mMapDocument;
+    QPoint mFrom;
+    QPoint mTo;
+};
+
 class SetMapPosInLoadedWorld : public QUndoCommand
 {
 public:

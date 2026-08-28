@@ -196,6 +196,34 @@ bool SetWorldGridCommand::mergeWith(const QUndoCommand *other)
 }
 
 
+SetUnsavedMapPos::SetUnsavedMapPos(MapDocument *mapDocument,
+                                   const QPoint &from,
+                                   const QPoint &to,
+                                   QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mMapDocument(mapDocument)
+    , mFrom(from)
+    , mTo(to)
+{}
+
+void SetUnsavedMapPos::setPos(QPoint pos)
+{
+    auto worldDocument = WorldManager::instance().worldForMap(mMapDocument);
+    if (!worldDocument)
+        return;
+
+    // Only apply when the current position matches the expected state, to
+    // avoid clobbering other changes
+    QRect rect = worldDocument->mapRect(mMapDocument);
+    const QPoint expectedPos = (pos == mTo) ? mFrom : mTo;
+    if (rect.topLeft() != expectedPos)
+        return;
+
+    rect.moveTo(pos);
+    worldDocument->setUnsavedMapRect(mMapDocument, rect);
+}
+
+
 SetMapPosInLoadedWorld::SetMapPosInLoadedWorld(const QString &worldFileName,
                                                const QString &mapName,
                                                const QPoint &from,
