@@ -37,19 +37,13 @@ using namespace Tiled;
 
 AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
                                      const QVector<const AutoMapper *> &autoMappers,
-                                     const QRegion &where,
-                                     const TileLayer *touchedLayer)
+                                     const QRegion &where)
     : PaintTileLayer(mapDocument)
 {
     AutoMappingContext context(mapDocument);
 
     for (const auto autoMapper : autoMappers)
         autoMapper->prepareAutoMap(context);
-
-    // During "AutoMap while drawing", keep track of the touched layers, so we
-    // can skip any rule maps that doesn't have these layers as input entirely.
-    if (touchedLayer)
-        context.touchedTileLayers.append(touchedLayer);
 
     // use a copy of the region, so each AutoMapper can manipulate it and the
     // following AutoMappers do see the impact
@@ -63,13 +57,6 @@ AutoMapperWrapper::AutoMapperWrapper(MapDocument *mapDocument,
         // stop expanding region when it's already the entire fixed-size map
         if (appliedRegionPtr && (!map->infinite() && (mapRect - region).isEmpty()))
             appliedRegionPtr = nullptr;
-
-        if (touchedLayer) {
-            if (std::none_of(context.touchedTileLayers.cbegin(),
-                             context.touchedTileLayers.cend(),
-                             [&] (const TileLayer *tileLayer) { return autoMapper->ruleLayerNameUsed(tileLayer->name()); }))
-                continue;
-        }
 
         autoMapper->autoMap(region, appliedRegionPtr, context);
 
