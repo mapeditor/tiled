@@ -84,6 +84,8 @@ ScriptPropertyType *EditableProject::toScriptType(const SharedPropertyType &type
         return new ScriptClassPropertyType(qSharedPointerCast<ClassPropertyType>(type));
     case PropertyType::PT_Enum:
         return new ScriptEnumPropertyType(qSharedPointerCast<EnumPropertyType>(type));
+    case PropertyType::PT_Primitive:
+        return new ScriptPrimitivePropertyType(qSharedPointerCast<PrimitivePropertyType>(type));
     }
 
     return nullptr;

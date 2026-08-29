@@ -37,6 +37,7 @@ class ScriptPropertyType : public QObject
     Q_PROPERTY(QString name READ name WRITE setName)
     Q_PROPERTY(bool isClass READ isClass)
     Q_PROPERTY(bool isEnum READ isEnum)
+    Q_PROPERTY(bool isPrimitive READ isPrimitive)
     Q_PROPERTY(QVariant defaultValue READ defaultValue)
 
 public:
@@ -48,6 +49,7 @@ public:
     void setName(const QString &name);
     bool isClass() const { return propertyType().isClass(); }
     bool isEnum() const { return propertyType().isEnum(); }
+    bool isPrimitive() const { return propertyType().isPrimitive(); }
     QVariant defaultValue() { return propertyType().wrap(propertyType().defaultValue()); }
 
     static void throwDuplicateNameError(const QString &name);
@@ -172,6 +174,36 @@ private:
     const ClassPropertyType &classType() const
     {
         return static_cast<const ClassPropertyType &>(propertyType());
+    }
+};
+
+class ScriptPrimitivePropertyType : public ScriptPropertyType
+{
+    Q_OBJECT
+    Q_PROPERTY(QColor visualColor READ visualColor WRITE setVisualColor)
+
+public:
+    ScriptPrimitivePropertyType(const QSharedPointer<PrimitivePropertyType> &propertyType)
+        : ScriptPropertyType(propertyType)
+    {}
+
+    QColor visualColor() const { return primitiveType().visualColor; }
+
+    void setVisualColor(QColor &value)
+    {
+        primitiveType().visualColor = value;
+        applyPropertyChanges();
+    }
+
+private:
+    PrimitivePropertyType &primitiveType()
+    {
+        return static_cast<PrimitivePropertyType &>(propertyType());
+    }
+
+    const PrimitivePropertyType &primitiveType() const
+    {
+        return static_cast<const PrimitivePropertyType &>(propertyType());
     }
 };
 
