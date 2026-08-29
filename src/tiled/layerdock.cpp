@@ -38,8 +38,10 @@
 #include <QBoxLayout>
 #include <QContextMenuEvent>
 #include <QHeaderView>
+#include <QLabel>
 #include <QMenu>
 #include <QScopedValueRollback>
+#include <QSlider>
 #include <QStyledItemDelegate>
 #include <QToolBar>
 #include <QUndoStack>
@@ -51,6 +53,8 @@ using namespace Tiled;
 
 LayerDock::LayerDock(QWidget *parent):
     QDockWidget(parent),
+    mOpacityLabel(new QLabel),
+    mOpacitySlider(new QSlider(Qt::Horizontal)),
     mLayerView(new LayerView)
 {
     setObjectName(QLatin1String("layerDock"));
@@ -58,6 +62,13 @@ LayerDock::LayerDock(QWidget *parent):
     QWidget *widget = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(widget);
     layout->setContentsMargins(0, 0, 0, 0);
+
+    QHBoxLayout *opacityLayout = new QHBoxLayout;
+    mOpacitySlider->setRange(0, 100);
+    mOpacitySlider->setEnabled(false);
+    opacityLayout->addWidget(mOpacityLabel);
+    opacityLayout->addWidget(mOpacitySlider);
+    mOpacityLabel->setBuddy(mOpacitySlider);
 
     MapDocumentActionHandler *handler = MapDocumentActionHandler::instance();
 
@@ -87,12 +98,24 @@ LayerDock::LayerDock(QWidget *parent):
     buttonContainer->addWidget(spacerWidget);
     buttonContainer->addAction(ActionManager::action("HighlightCurrentLayer"));
 
-    layout->setSpacing(0);
-    layout->addWidget(mLayerView);
-    layout->addWidget(buttonContainer);
+    QVBoxLayout *listAndToolBar = new QVBoxLayout;
+    listAndToolBar->setSpacing(0);
+    listAndToolBar->addWidget(mLayerView);
+    listAndToolBar->addWidget(buttonContainer);
+
+    layout->addLayout(opacityLayout);
+    layout->addLayout(listAndToolBar);
+
+    //layout->setSpacing(0);
+    //layout->addWidget(mLayerView);
+    //layout->addWidget(buttonContainer);
 
     setWidget(widget);
     retranslateUi();
+
+    connect(mOpacitySlider, &QAbstractSlider::valueChanged,
+            this, &LayerDock::sliderValueChanged);
+    updateOpacitySlider();
 }
 
 void LayerDock::setMapDocument(MapDocument *mapDocument)
@@ -106,6 +129,10 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
     mMapDocument = mapDocument;
 
     if (mMapDocument) {
+        connect(mMapDocument, &MapDocument::changed,
+                this, &LayerDock::documentChanged);
+        connect(mMapDocument, &MapDocument::currentLayerChanged,
+                this, &LayerDock::updateOpacitySlider);
         connect(mMapDocument, &MapDocument::editLayerNameRequested,
                 this, &LayerDock::editLayerName);
     }
@@ -121,6 +148,7 @@ void LayerDock::setMapDocument(MapDocument *mapDocument)
         mLayerView->header()->resizeSection(1, iconSectionWidth);
         mLayerView->header()->resizeSection(2, iconSectionWidth);
     }
+    updateOpacitySlider();
 }
 
 void LayerDock::changeEvent(QEvent *e)
@@ -131,6 +159,40 @@ void LayerDock::changeEvent(QEvent *e)
     case QEvent::LanguageChange:
         retranslateUi();
         break;
+    default:
+        break;
+    }
+}
+
+void LayerDock::updateOpacitySlider()
+{
+    const bool enabled = mMapDocument &&
+                         mMapDocument->currentLayer() != nullptr;
+
+    mOpacitySlider->setEnabled(enabled);
+    mOpacityLabel->setEnabled(enabled);
+
+    QScopedValueRollback<bool> updating(mUpdatingSlider, true);
+    if (enabled) {
+        qreal opacity = mMapDocument->currentLayer()->opacity();
+        mOpacitySlider->setValue(qRound(opacity * 100));
+    } else {
+        mOpacitySlider->setValue(100);
+    }
+}
+
+void LayerDock::documentChanged(const ChangeEvent &change)
+{
+    switch (change.type) {
+    case ChangeEvent::LayerChanged: {
+        auto &layerChange = static_cast<const LayerChangeEvent&>(change);
+
+        // Don't update the slider when we're the ones changing the layer opacity
+        if ((layerChange.properties & LayerChangeEvent::OpacityProperty) && !mChangingLayerOpacity)
+            if (layerChange.layer == mMapDocument->currentLayer())
+                updateOpacitySlider();
+        break;
+    }
     default:
         break;
     }
@@ -148,9 +210,34 @@ void LayerDock::editLayerName()
     mLayerView->editLayerModelIndex(layerModel->index(currentLayer));
 }
 
+void LayerDock::sliderValueChanged(int opacity)
+{
+    if (!mMapDocument)
+        return;
+
+    // When the slider changes value just because we're updating it, it
+    // shouldn't try to set the layer opacity.
+    if (mUpdatingSlider)
+        return;
+
+    const auto layer = mMapDocument->currentLayer();
+    if (!layer)
+        return;
+
+    if (static_cast<int>(layer->opacity() * 100) != opacity) {
+        LayerModel *layerModel = mMapDocument->layerModel();
+        QScopedValueRollback<bool> updating(mChangingLayerOpacity, true);
+        layerModel->setData(layerModel->index(layer),
+                            qreal(opacity) / 100,
+                            LayerModel::OpacityRole);
+    }
+    mOpacitySlider->setToolTip(QString(QStringLiteral("%1%")).arg(static_cast<int>(layer->opacity()*100)));
+}
+
 void LayerDock::retranslateUi()
 {
     setWindowTitle(tr("Layers"));
+    mOpacityLabel->setText(tr("Opacity:"));
     mNewLayerButton->setToolTip(tr("New Layer"));
 }
 
