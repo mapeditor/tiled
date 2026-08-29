@@ -35,6 +35,7 @@ namespace Tiled {
 
 class ObjectGroup;
 class WangColor;
+class WangSet;
 
 class MapDocument;
 class TilesetDocument;
@@ -109,6 +110,16 @@ public:
 
     TilesetWangSetModel *wangSetModel() const { return mWangSetModel; }
 
+    // Track last focused Tile and the current Wang selection
+    Tile *lastFocusedTile() const { return mLastFocusedTile; }
+    void setLastFocusedTile(Tile *tile) { mLastFocusedTile = tile; }
+
+    WangSet *selectedWangSet() const { return mSelectedWangSet; }
+    void setSelectedWangSet(WangSet *wangSet);
+
+    int selectedWangColor() const { return mSelectedWangColor; }
+    void setSelectedWangColor(int color);
+
     WangColorModel *wangColorModel(WangSet *wangSet);
 
     void setTileImage(Tile *tile, const QPixmap &image, const QUrl &source);
@@ -164,6 +175,9 @@ signals:
      */
     void selectedTilesChanged();
 
+    void selectedWangSetChanged(WangSet *wangSet);
+    void selectedWangColorChanged(int color);
+
 protected:
     std::unique_ptr<EditableAsset> createEditable() override;
 
@@ -182,6 +196,13 @@ private:
     std::unordered_map<WangSet*, std::unique_ptr<WangColorModel>> mWangColorModels;
 
     QList<Tile*> mSelectedTiles;
+
+    // Last focused tile in the tileset (for PropertiesDock Tile tab)
+    Tile *mLastFocusedTile = nullptr;
+
+    // Selected WangSet and WangColor index (for PropertiesDock Wang tabs)
+    WangSet *mSelectedWangSet = nullptr;
+    int mSelectedWangColor = 0;
 
     static QMap<SharedTileset, TilesetDocument*> sTilesetToDocument;
 };
