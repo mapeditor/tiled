@@ -48,7 +48,7 @@ jobs:
       run: |
         export TILED_VERSION=$(git describe | cut -c 2-)
         qbs install --install-root install config:release
-        macdeployqt install/Tiled.app -verbose=2
+        macdeployqt install/Tiled.app -verbose=2 -qmldir=dist/qml
         pushd install
         ruby ../dist/macos/fixup-install-names.rb
         ditto -c -k --sequesterRsrc --keepParent Tiled.app ../Tiled-$TILED_VERSION-macos.zip
