@@ -1,22 +1,22 @@
 /*
- * mapview.cpp
- * Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
- *
- * This file is part of Tiled.
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
- */
+* mapview.cpp
+* Copyright 2008-2010, Thorbjørn Lindeijer <thorbjorn@lindeijer.nl>
+*
+* This file is part of Tiled.
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the Free
+* Software Foundation; either version 2 of the License, or (at your option)
+* any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along with
+* this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include "mapview.h"
 
@@ -31,6 +31,7 @@
 #include "tileanimationdriver.h"
 #include "utils.h"
 #include "zoomable.h"
+#include "qtooltip.h"
 
 #include <QApplication>
 #include <QCursor>
@@ -39,6 +40,7 @@
 #include <QPinchGesture>
 #include <QScrollBar>
 #include <QWheelEvent>
+
 
 #ifndef QT_NO_OPENGL
 
@@ -78,11 +80,11 @@ MapView::MapView(QWidget *parent)
     QWidget *v = viewport();
 
     /* Since Qt 4.5, setting this attribute yields significant repaint
-     * reduction when the view is being resized. */
+    * reduction when the view is being resized. */
     v->setAttribute(Qt::WA_StaticContents);
 
     /* Since Qt 4.6, mouse tracking is disabled when no graphics item uses
-     * hover events. We need to set it since our scene wants the events. */
+    * hover events. We need to set it since our scene wants the events. */
     v->setMouseTracking(true);
 
     // Adjustment for antialiasing is done by the items that need it
@@ -112,12 +114,12 @@ MapView::MapView(QWidget *parent)
     connect(mPannableViewHelper, &PannableViewHelper::modeChanged,
             this, [this] (PannableViewHelper::PanningMode mode) {
 
-        if (mode == PannableViewHelper::AutoPanning)
-            mScrollStartPos = mLastMousePos;
+                if (mode == PannableViewHelper::AutoPanning)
+                    mScrollStartPos = mLastMousePos;
 
-        setInteractive(mode == PannableViewHelper::NoPanning);
-        updatePanningDriverState();
-    });
+                setInteractive(mode == PannableViewHelper::NoPanning);
+                updatePanningDriverState();
+            });
 }
 
 MapView::~MapView()
@@ -371,11 +373,11 @@ void MapView::unsetToolCursor()
 }
 
 /**
- * Centers the view on the given scene position, even when this requires
- * extending the range of the scroll bars.
- *
- * This code is based on QGraphicsView::centerOn.
- */
+* Centers the view on the given scene position, even when this requires
+* extending the range of the scroll bars.
+*
+* This code is based on QGraphicsView::centerOn.
+*/
 void MapView::forceCenterOn(QPointF pos)
 {
     // Let's wait until the initial paint event before we position the view,
@@ -415,11 +417,11 @@ void MapView::forceCenterOn(QPointF pos)
 }
 
 /**
- * Centers the view on the given \a position on the given \a layer, taking into
- * account that the layer may have an offset and a parallax factor.
- *
- * \sa forceCenterOn(QPointF)
- */
+* Centers the view on the given \a position on the given \a layer, taking into
+* account that the layer may have an offset and a parallax factor.
+*
+* \sa forceCenterOn(QPointF)
+*/
 void MapView::forceCenterOn(QPointF position, const Layer &layer)
 {
     position += layer.totalOffset();
@@ -453,8 +455,8 @@ bool MapView::event(QEvent *e)
     } else if (e->type() == QEvent::ShortcutOverride) {
         auto keyEvent = static_cast<QKeyEvent*>(e);
         if (Utils::isZoomInShortcut(keyEvent) ||
-                Utils::isZoomOutShortcut(keyEvent) ||
-                Utils::isResetZoomShortcut(keyEvent)) {
+            Utils::isZoomOutShortcut(keyEvent) ||
+            Utils::isResetZoomShortcut(keyEvent)) {
             e->accept();
             return true;
         }
@@ -569,8 +571,8 @@ void MapView::keyReleaseEvent(QKeyEvent *event)
 }
 
 /**
- * Override to support zooming in and out using the mouse wheel.
- */
+* Override to support zooming in and out using the mouse wheel.
+*/
 void MapView::wheelEvent(QWheelEvent *event)
 {
     auto *hBar = static_cast<FlexibleScrollBar*>(horizontalScrollBar());
@@ -625,8 +627,11 @@ void MapView::focusInEvent(QFocusEvent *event)
 void MapView::mouseMoveEvent(QMouseEvent *event)
 {
     QGraphicsView::mouseMoveEvent(event);
+
     mLastMousePos = event->globalPos();
     mLastMouseScenePos = mapToScene(viewport()->mapFromGlobal(mLastMousePos));
+
+    hoverTileName(mLastMouseScenePos);
 }
 
 void MapView::handlePinchGesture(QPinchGesture *pinch)
@@ -649,6 +654,50 @@ void MapView::adjustCenterFromMousePosition(QPoint mousePos)
     const QPointF mouseScenePos = mapToScene(view->mapFromGlobal(mousePos));
     const QPointF diff = viewCenterScenePos - mouseScenePos;
     forceCenterOn(mLastMouseScenePos + diff);
+}
+
+//Integration for tile details on hover
+
+int MapView::hoverTileName(QPointF mousePos)
+{
+    if (!mMapDocument)
+        return 0;
+
+    MapRenderer *renderer = mMapDocument->renderer();
+    QPointF tileCoordinate = renderer->pixelToTileCoords(mousePos);
+
+    Layer *layer = mMapDocument->currentLayer();
+
+    if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer)) {
+
+        Cell cell = tileLayer->cellAt(static_cast<int>(tileCoordinate.x()), static_cast<int>(tileCoordinate.y()));
+        int id = cell.tileId();
+
+        Tile *tile = cell.tile();
+
+        // Will show the ID of the identified tile being hovered over.
+        // Allows for quick lookup for tile painting and
+        // Improves continuity of designs
+
+        if (lastHoveredCellId != id) {
+
+            lastHoveredCellId = id;
+
+            if (tile) {
+                if(tile->id() >= 0)
+                {
+                    QToolTip::showText(QCursor::pos(), QStringLiteral("Tile ID: %1").arg(id), this);
+                }
+                else
+                {
+                    QToolTip::showText(QCursor::pos(), QStringLiteral("unknown"), this);
+                }
+            }
+        }
+
+        return id;
+    }
+    return 0;
 }
 
 #include "moc_mapview.cpp"
