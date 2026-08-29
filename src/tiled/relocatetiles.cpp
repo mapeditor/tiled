@@ -53,4 +53,20 @@ void RelocateTiles::redo()
     mPrevLocations = mTilesetDocument->relocateTiles(mTiles, mLocation);
 }
 
+SwapTilesetTiles::SwapTilesetTiles(TilesetDocument *tilesetDocument,
+                                   Tile *tileA,
+                                   Tile *tileB)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands",
+                                               "Swap Tiles"))
+    , mTilesetDocument(tilesetDocument)
+    , mTileA(tileA)
+    , mTileB(tileB)
+{
+}
+
+void SwapTilesetTiles::swap()
+{
+    mTilesetDocument->swapTiles(mTileA, mTileB);
+}
+
 } // namespace Tiled

@@ -227,6 +227,7 @@ public:
     void removeTiles(const QList<Tile *> &tiles);
     void deleteTile(int id);
     QList<int> relocateTiles(const QList<Tile *> &tiles, int location);
+    void swapTiles(Tile *tileA, Tile *tileB);
 
     bool anyTileOutOfOrder() const;
     void resetTileOrder();

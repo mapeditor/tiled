@@ -40,6 +40,7 @@
 #endif
 #include "preferences.h"
 #include "propertiesdock.h"
+#include "relocatetiles.h"
 #include "scriptmanager.h"
 #include "session.h"
 #include "templatesdock.h"
@@ -306,6 +307,7 @@ void TilesetEditor::addDocument(Document *document)
     connect(view, &TilesetView::wangColorImageSelected, this, &TilesetEditor::setWangColorImage);
     connect(view, &TilesetView::wangIdUsedChanged, mWangDock, &WangDock::onWangIdUsedChanged);
     connect(view, &TilesetView::currentWangIdChanged, mWangDock, &WangDock::onCurrentWangIdChanged);
+    connect(view, &TilesetView::swapTilesRequested, this, &TilesetEditor::swapTiles);
 
     QItemSelectionModel *s = view->selectionModel();
     connect(s, &QItemSelectionModel::selectionChanged, this, &TilesetEditor::selectionChanged);
@@ -836,6 +838,19 @@ void TilesetEditor::addTiles(const QList<QUrl> &urls)
     }
 
     mCurrentTilesetDocument->undoStack()->push(new AddTiles(mCurrentTilesetDocument, tiles));
+}
+
+void TilesetEditor::swapTiles(Tile *tileA, Tile *tileB)
+{
+    if (!mCurrentTilesetDocument || !tileA || !tileB || tileA == tileB)
+        return;
+
+    Tileset *tileset = mCurrentTilesetDocument->tileset().data();
+    if (tileA->tileset() != tileset || tileB->tileset() != tileset)
+        return;
+
+    mCurrentTilesetDocument->undoStack()->push(
+            new SwapTilesetTiles(mCurrentTilesetDocument, tileA, tileB));
 }
 
 static bool hasTileReferences(MapDocument *mapDocument,

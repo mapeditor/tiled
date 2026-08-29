@@ -131,6 +131,7 @@ private:
     void openAddTilesDialog();
     void addTiles(const QList<QUrl> &urls);
     void removeTiles();
+    void swapTiles(Tile *tileA, Tile *tileB);
 
     void setRelocateTiles(bool relocateTiles);
     void setEditCollision(bool editCollision);
