@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include <QDebug>
 #include <QLatin1String>
 #include <QMetaType>
 
@@ -45,13 +46,16 @@ public:
 private:
     uint mId;
 
-    friend uint qHash(Id id) Q_DECL_NOTHROW;
+    friend auto qHash(Id id) Q_DECL_NOTHROW
+    {
+        return qHash(id.mId, 0);
+    }
 };
 
 
-inline uint qHash(Id id) Q_DECL_NOTHROW
+inline QDebug operator<<(QDebug debug, Id id)
 {
-    return id.mId;
+    return debug << id.name();
 }
 
 QStringList idsToNames(const QList<Id> &ids);
