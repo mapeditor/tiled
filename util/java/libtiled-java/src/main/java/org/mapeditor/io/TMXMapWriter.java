@@ -966,7 +966,12 @@ public class TMXMapWriter {
                 } else if (Settings.LAYER_COMPRESSION_METHOD_GZIP.equalsIgnoreCase(settings.layerCompressionMethod)) {
                     compressedOut = new GZIPOutputStream(baos);
                 } else if (Settings.LAYER_COMPRESSION_METHOD_ZSTD.equalsIgnoreCase(settings.layerCompressionMethod)) {
-                    compressedOut = new ZstdOutputStream(baos);
+                    try {
+                        compressedOut = new ZstdOutputStream(baos);
+                    } catch (NoClassDefFoundError e) {
+                        throw new IOException("Writing zstd-compressed data requires the"
+                                + " com.github.luben:zstd-jni dependency", e);
+                    }
                 } else {
                     throw new IOException("Unrecognized compression method \"" + settings.layerCompressionMethod + "\"");
                 }

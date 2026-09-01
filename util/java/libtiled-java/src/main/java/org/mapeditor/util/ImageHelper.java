@@ -115,6 +115,17 @@ public class ImageHelper {
      * @throws IOException if the SVG cannot be read
      */
     public static BufferedImage readSvg(URL url, int width, int height) throws IOException {
+        // Guarded in a separate method so a missing jsvg dependency
+        // surfaces here as a catchable NoClassDefFoundError.
+        try {
+            return readSvgImpl(url, width, height);
+        } catch (NoClassDefFoundError e) {
+            throw new IOException("Rendering SVG images requires the"
+                    + " com.github.weisj:jsvg dependency", e);
+        }
+    }
+
+    private static BufferedImage readSvgImpl(URL url, int width, int height) throws IOException {
         SVGLoader loader = new SVGLoader();
         SVGDocument doc = loader.load(url);
         if (doc == null) {

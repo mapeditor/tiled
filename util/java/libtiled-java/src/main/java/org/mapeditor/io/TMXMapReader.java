@@ -279,7 +279,12 @@ public class TMXMapReader {
         } else if ("zlib".equalsIgnoreCase(comp)) {
             return new InflaterInputStream(bais);
         } else if ("zstd".equalsIgnoreCase(comp)) {
-            return new ZstdInputStream(bais);
+            try {
+                return new ZstdInputStream(bais);
+            } catch (NoClassDefFoundError e) {
+                throw new IOException("Reading zstd-compressed data requires the"
+                        + " com.github.luben:zstd-jni dependency", e);
+            }
         } else if (comp != null && !comp.isEmpty()) {
             throw new IOException("Unrecognized compression method \"" + comp + "\" for " + context);
         }
