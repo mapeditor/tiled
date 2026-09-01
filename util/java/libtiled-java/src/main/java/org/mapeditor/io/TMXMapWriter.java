@@ -83,6 +83,9 @@ public class TMXMapWriter {
 
     private static final int LAST_BYTE = 0x000000FF;
 
+    // The TMX format version written to output files.
+    private static final String CURRENT_VERSION = "1.11";
+
     private static final boolean ENCODE_LAYER_DATA = true;
     private static final boolean COMPRESS_LAYER_DATA = ENCODE_LAYER_DATA;
 
@@ -223,7 +226,8 @@ public class TMXMapWriter {
 //        w.writeDocType("map", null, "http://mapeditor.org/dtd/1.0/map.dtd");
         w.startElement("map");
 
-        w.writeAttribute("version", isNonEmpty(map.getVersion()) ? map.getVersion() : "1.11");
+        // Saving upgrades the map to the current format version.
+        w.writeAttribute("version", CURRENT_VERSION);
 
         if (isNonEmpty(map.getTiledversion())) {
             w.writeAttribute("tiledversion", map.getTiledversion());
@@ -433,7 +437,7 @@ public class TMXMapWriter {
         } else {
             // A standalone TSX file has no firstgid but carries the format
             // version, like the C++ writer.
-            w.writeAttribute("version", "1.11");
+            w.writeAttribute("version", CURRENT_VERSION);
         }
 
         if (name != null) {
