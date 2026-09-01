@@ -4,7 +4,7 @@ TiledTest {
     Depends { name: "libtilededitor" }
 
     cpp.includePaths: [
-        "/home/leenattress/Projects/tiled/src/tiled",
+        "../../src/tiled",
     ]
 
     files: [
