@@ -167,7 +167,7 @@ POSSIBILITY OF SUCH DAMAGE.
             <xs:documentation>
                 Used to mark an object as a capsule shape.
 
-                @since 1.11
+                @since 1.12
             </xs:documentation>
         </xs:annotation>
     </xs:complexType>
@@ -795,7 +795,7 @@ POSSIBILITY OF SUCH DAMAGE.
             <xs:element name="capsule" type="Capsule" minOccurs="0">
                 <xs:annotation>
                     <xs:documentation>
-                        @since 1.11
+                        @since 1.12
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
