@@ -44,6 +44,8 @@ import org.mapeditor.core.MapObject;
 import org.mapeditor.core.ObjectGroup;
 import org.mapeditor.core.Orientation;
 import org.mapeditor.core.Properties;
+import org.mapeditor.core.Property;
+import org.mapeditor.core.PropertyType;
 import org.mapeditor.core.StaggerAxis;
 import org.mapeditor.core.StaggerIndex;
 import org.mapeditor.core.TileLayer;
@@ -440,6 +442,18 @@ public class MapReaderTest {
         assertEquals("#ff00ff00", mapProps.getProperty("colorProp"));
         assertEquals("test.png", mapProps.getProperty("fileProp"));
         assertEquals("hello", mapProps.getProperty("stringProp"));
+        assertEquals(PropertyType.BOOL, findPropertyByName(mapProps, "boolProp").getType());
+        assertEquals(PropertyType.FLOAT, findPropertyByName(mapProps, "floatProp").getType());
+        assertNull(findPropertyByName(mapProps, "stringProp").getType());
+
+        // Class property with nested member values
+        Property classProp = findPropertyByName(mapProps, "classProp");
+        assertEquals(PropertyType.CLASS, classProp.getType());
+        assertEquals("PhysicsBody", classProp.getPropertyTypeName());
+        assertNull(classProp.getValue());
+        assertNotNull(classProp.getProperties());
+        assertEquals("2.5", classProp.getProperties().getProperty("mass"));
+        assertEquals("true", classProp.getProperties().getProperty("sticky"));
 
         // Layer 0: tintcolor and parallax
         TileLayer tintedLayer = (TileLayer) map.getLayer(0);
@@ -533,6 +547,13 @@ public class MapReaderTest {
         assertEquals(original.getWidth(), reread.getWidth());
         assertEquals(original.getHeight(), reread.getHeight());
         assertEquals(original.getLayerCount(), reread.getLayerCount());
+
+        // Class property survives the round trip
+        Property classProp = findPropertyByName(reread.getProperties(), "classProp");
+        assertEquals(PropertyType.CLASS, classProp.getType());
+        assertEquals("PhysicsBody", classProp.getPropertyTypeName());
+        assertEquals("2.5", classProp.getProperties().getProperty("mass"));
+        assertEquals("true", classProp.getProperties().getProperty("sticky"));
 
         // Verify template objects in round-trip
         ObjectGroup origOG = (ObjectGroup) original.getLayer(3);
@@ -675,6 +696,15 @@ public class MapReaderTest {
         assertEquals(64.0, diamond.getWidth(), 0.001);
         assertEquals(64.0, diamond.getHeight(), 0.001);
         assertNotNull("diamond should have a tile", diamond.getTile());
+    }
+
+    private static Property findPropertyByName(Properties props, String name) {
+        for (Property property : props.getProperties()) {
+            if (name.equals(property.getName())) {
+                return property;
+            }
+        }
+        throw new AssertionError("Missing property: " + name);
     }
 
     private static MapObject findObjectById(ObjectGroup group, int id) {

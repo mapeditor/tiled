@@ -7,6 +7,12 @@
   <property name="colorProp" type="color" value="#ff00ff00"/>
   <property name="fileProp" type="file" value="test.png"/>
   <property name="stringProp" value="hello"/>
+  <property name="classProp" type="class" propertytype="PhysicsBody">
+   <properties>
+    <property name="mass" type="float" value="2.5"/>
+    <property name="sticky" type="bool" value="true"/>
+   </properties>
+  </property>
  </properties>
  <layer id="1" name="TintedLayer" width="3" height="3" tintcolor="#dca0a0" parallaxx="0.5" parallaxy="0.75">
   <data encoding="csv">
