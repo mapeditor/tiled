@@ -98,13 +98,18 @@ protected:
 
     void addAnotherMapToWorldAtCenter();
     void addAnotherMapToWorld(QPoint insertPos);
+    void createMapAt(const QRect &worldRect);
     void createWorldForCurrentMap();
     void removeCurrentMapFromWorld();
-    void removeFromWorld(WorldDocument *worldDocument, const QString &mapFileName);
+    void removeFromWorld(WorldDocument *worldDocument, MapDocument *mapDocument);
     void addToWorld(WorldDocument *worldDocument);
 
     QSize snapSize(MapDocument *document) const;
     QPoint snapPoint(QPoint point, MapDocument *document) const;
+
+    QPoint currentMapWorldPos() const;
+    QPoint sceneToWorldPos(const QPointF &scenePos) const;
+    QPoint worldToScenePos(QPoint worldPos) const;
 
     void setTargetMap(MapDocument *mapDocument);
     MapDocument *targetMap() const { return mTargetMap; }

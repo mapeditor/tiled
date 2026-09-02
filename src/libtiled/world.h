@@ -92,6 +92,7 @@ public:
     QVector<WorldMapEntry> allMaps() const;
     QVector<WorldMapEntry> mapsInRect(const QRect &rect) const;
     QVector<WorldMapEntry> contextMaps(const QString &fileName) const;
+    QVector<WorldMapEntry> contextMaps(const QRect &rect) const;
     QString firstMap() const;
 
     void error(const QString &message) const;
