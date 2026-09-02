@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
     - 'docs/scripting-doc/**'
+    - '.github/workflows/scripting-api.yml' 
 
 jobs:
   scripting-api:
