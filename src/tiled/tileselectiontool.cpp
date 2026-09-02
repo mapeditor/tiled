@@ -40,6 +40,9 @@ TileSelectionTool::TileSelectionTool(QObject *parent)
 
 void TileSelectionTool::tilePositionChanged(QPoint)
 {
+    if (isMovingTiles())
+        return;
+
     if (mSelecting)
         setSelectionPreview(selectedArea());
 }
@@ -60,6 +63,11 @@ void TileSelectionTool::updateStatusInfo()
 
 void TileSelectionTool::mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers)
 {
+    if (isMovingTiles()) {
+        AbstractTileSelectionTool::mouseMoved(pos, modifiers);
+        return;
+    }
+
     if (mMouseDown && !mSelecting) {
         QPoint screenPos = QCursor::pos();
         const int dragDistance = (mMouseScreenStart - screenPos).manhattanLength();
@@ -79,6 +87,9 @@ void TileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
     const Qt::MouseButton button = event->button();
 
     if (button == Qt::LeftButton) {
+        if (tryStartMove(event))
+            return;
+
         mMouseDown = true;
         mForceSquare = false;
         mExpandFromCenter = false;
@@ -89,6 +100,11 @@ void TileSelectionTool::mousePressed(QGraphicsSceneMouseEvent *event)
     }
 
     if (button == Qt::RightButton) {
+        if (isMovingTiles()) {
+            AbstractTileSelectionTool::mousePressed(event);
+            return;
+        }
+
         if (mSelecting) {
             // Cancel selecting
             mSelecting = false;
@@ -111,6 +127,11 @@ void TileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
     if (event->button() != Qt::LeftButton)
         return;
 
+    if (isMovingTiles()) {
+        AbstractTileSelectionTool::mouseReleased(event);
+        return;
+    }
+
     if (mSelecting) {
         mSelecting = false;
 
@@ -127,6 +148,12 @@ void TileSelectionTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 
 void TileSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
 {
+    if (isMovingTiles()) {
+        AbstractTileSelectionTool::modifiersChanged(modifiers);
+        mLastModifiers = modifiers;
+        return;
+    }
+
     if (mMouseDown) {
         // When the mouse is down, we no longer change the selection mode. Instead:
         //
@@ -159,6 +186,11 @@ void TileSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
 
 void TileSelectionTool::keyPressed(QKeyEvent *event)
 {
+    if (isMovingTiles()) {
+        AbstractTileSelectionTool::keyPressed(event);
+        return;
+    }
+
     if (event->key() == Qt::Key_Escape) {
         if (mSelecting) {
             // Cancel the ongoing selection

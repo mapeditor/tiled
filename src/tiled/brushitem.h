@@ -24,18 +24,21 @@
 #include "map.h"
 #include "tilelayer.h"
 
-#include <QGraphicsItem>
+#include <QGraphicsObject>
 
 namespace Tiled {
 
 class MapDocument;
+class MapRenderer;
 
 /**
  * This brush item is used to represent a brush in a map scene before it is
  * used.
  */
-class BrushItem : public QGraphicsItem
+class BrushItem : public QGraphicsObject
 {
+    Q_OBJECT
+
 public:
     BrushItem();
 
@@ -58,6 +61,12 @@ public:
 
     void setLayerOffset(const QPointF &offset);
 
+    void setAnimatedOutline(bool enabled);
+    bool animatedOutline() const { return mAnimatedOutline; }
+
+    void setTileOffset(QPoint offset);
+    QPoint tileOffset() const { return mTileOffset; }
+
     // QGraphicsItem
     QRectF boundingRect() const override;
     void paint(QPainter *painter,
@@ -66,15 +75,26 @@ public:
 
 protected:
     MapDocument *mapDocument() const { return mMapDocument; }
+    void timerEvent(QTimerEvent *event) override;
 
 private:
     void updateBoundingRect();
+    void paintAnimatedOutline(QPainter *painter,
+                              const QStyleOptionGraphicsItem *option);
+    QPainterPath buildOutlinePath(MapRenderer *renderer,
+                                  const QRegion &region);
 
     MapDocument *mMapDocument;
     SharedTileLayer mTileLayer;
     SharedMap mMap;
     QRegion mRegion;
     QRectF mBoundingRect;
+
+    bool mAnimatedOutline = false;
+    QPoint mTileOffset;
+    int mAnimationTimer = -1;
+    int mDashOffset = 0;
+    static constexpr int AnimationInterval = 100;
 };
 
 /**

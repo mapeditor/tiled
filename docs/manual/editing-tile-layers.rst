@@ -177,6 +177,20 @@ While selecting an area, the following modifiers can be used:
 - Hold ``Shift`` to constrain the selection to a square.
 - Hold ``Ctrl`` to expand the selection from the starting location.
 
+.. _moving-tiles:
+
+Moving Tiles
+^^^^^^^^^^^^
+
+Click and drag inside a selection to move the selected tiles to a new
+location.
+
+-  Hold ``Alt`` while dragging to duplicate tiles instead of moving them.
+-  Press ``Escape`` or right-click to cancel the move operation.
+
+Undo will restore both the tiles and the selection to their original
+positions.
+
 Managing Tile Stamps
 --------------------
 
