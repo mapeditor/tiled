@@ -1,0 +1,33 @@
+name: Build libtiled-java
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'util/java/**'
+      - '.github/workflows/java.yml'
+  pull_request:
+    paths:
+      - 'util/java/**'
+      - '.github/workflows/java.yml'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v6
+
+    - name: Setup Java
+      uses: actions/setup-java@v5
+      with:
+        distribution: temurin
+        java-version: 21
+        cache: maven
+
+    - name: Build and test
+      run: mvn --batch-mode clean install
+      working-directory: util/java

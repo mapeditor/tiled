@@ -32,6 +32,7 @@
 package org.mapeditor.core;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
@@ -44,13 +45,13 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.TreeMap;
 
-import javax.imageio.ImageIO;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+import org.mapeditor.util.ImageHelper;
 import org.mapeditor.util.TileCutter;
 import org.mapeditor.util.TransparentImageFilter;
 import org.mapeditor.util.BasicTileCutter;
@@ -110,27 +111,27 @@ public class TileSet extends TileSetData implements Iterable<Tile> {
      * @throws java.io.IOException if any.
      */
     public void importTileBitmap(final URL imgUrl, final TileCutter cutter) throws IOException {
-        Image image = ImageIO.read(imgUrl);
+        importTileBitmap(loadAndFilterImage(ImageHelper.readImage(imgUrl), imgUrl.toString()), cutter);
+    }
+
+    private BufferedImage loadAndFilterImage(Image image, String source) throws IOException {
         if (image == null) {
-            throw new IOException("Failed to load " + imgUrl);
+            throw new UnsupportedImageFormatException("Failed to load " + source);
         }
-
-        Toolkit tk = Toolkit.getDefaultToolkit();
-
         if (transparentColor != null) {
-            int rgb = transparentColor.getRGB();
-            image = tk.createImage(
+            image = Toolkit.getDefaultToolkit().createImage(
                     new FilteredImageSource(image.getSource(),
-                            new TransparentImageFilter(rgb)));
+                            new TransparentImageFilter(transparentColor.getRGB())));
         }
-
         BufferedImage buffered = new BufferedImage(
-                image.getWidth(null),
-                image.getHeight(null),
-                BufferedImage.TYPE_INT_ARGB);
-        buffered.getGraphics().drawImage(image, 0, 0, null);
-
-        importTileBitmap(buffered, cutter);
+                image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = buffered.createGraphics();
+        try {
+            g.drawImage(image, 0, 0, null);
+        } finally {
+            g.dispose();
+        }
+        return buffered;
     }
 
     /**
@@ -140,7 +141,7 @@ public class TileSet extends TileSetData implements Iterable<Tile> {
      * @param tileBitmap the image to be used, must not be null
      * @param cutter the tile cutter, must not be null
      */
-    private void importTileBitmap(BufferedImage tileBitmap, TileCutter cutter) {
+    public void importTileBitmap(BufferedImage tileBitmap, TileCutter cutter) {
         assert tileBitmap != null;
         assert cutter != null;
 
@@ -173,31 +174,10 @@ public class TileSet extends TileSetData implements Iterable<Tile> {
      * @throws IOException
      * @see TileSet#importTileBitmap(BufferedImage,TileCutter)
      */
-    private void refreshImportedTileBitmap()
-            throws IOException {
-        String imgFilename = tilebmpFile.getPath();
-
-        Image image = ImageIO.read(new File(imgFilename));
-        if (image == null) {
-            throw new IOException("Failed to load " + tilebmpFile);
-        }
-
-        Toolkit tk = Toolkit.getDefaultToolkit();
-
-        if (transparentColor != null) {
-            int rgb = transparentColor.getRGB();
-            image = tk.createImage(
-                    new FilteredImageSource(image.getSource(),
-                            new TransparentImageFilter(rgb)));
-        }
-
-        BufferedImage buffered = new BufferedImage(
-                image.getWidth(null),
-                image.getHeight(null),
-                BufferedImage.TYPE_INT_ARGB);
-        buffered.getGraphics().drawImage(image, 0, 0, null);
-
-        refreshImportedTileBitmap(buffered);
+    private void refreshImportedTileBitmap() throws IOException {
+        refreshImportedTileBitmap(loadAndFilterImage(
+                ImageHelper.readImage(new File(tilebmpFile.getPath())),
+                tilebmpFile.toString()));
     }
 
     /**
@@ -410,8 +390,7 @@ public class TileSet extends TileSetData implements Iterable<Tile> {
      * @param marshaller the marshaller doing the marshalling.
      */
     public void beforeMarshal(Marshaller marshaller) {
-        internalTiles = new ArrayList<>();
-        tiles.entrySet().forEach(entry -> internalTiles.add(entry.getValue()));
+        internalTiles = new ArrayList<>(tiles.values());
     }
 
     /**
@@ -440,5 +419,15 @@ public class TileSet extends TileSetData implements Iterable<Tile> {
      */
     public boolean isSetFromImage() {
         return tileSetImage != null;
+    }
+
+    /**
+     * Returns the tileset image, when this tileset was created from a single
+     * image.
+     *
+     * @return the tileset image, or null for image-collection tilesets
+     */
+    public Image getTileSetImage() {
+        return tileSetImage;
     }
 }
