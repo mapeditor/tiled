@@ -61,6 +61,7 @@
 #include "propertytypeseditor.h"
 #include "resizedialog.h"
 #include "scriptmanager.h"
+#include "scriptserver.h"
 #include "sentryhelper.h"
 #include "templatesdock.h"
 #include "tileset.h"
@@ -390,6 +391,26 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     mConsoleDock->setVisible(false);
     mIssuesDock->setVisible(false);
+
+    auto updateScriptServer = [this] (bool enabled) {
+        if (enabled || ScriptServer::forceEnabled) {
+            if (!mScriptServer) {
+                mScriptServer = new ScriptServer(this);
+                connect(mScriptServer, &ScriptServer::scriptReceived,
+                        mConsoleDock, &ConsoleDock::appendScript);
+                connect(mScriptServer, &ScriptServer::scriptEvaluated,
+                        mConsoleDock, [this] (const QString &, const ScriptManager::EvaluationResult &result) {
+                    if (result.hasResult)
+                        mConsoleDock->appendScriptResult(result.tempName, result.result);
+                });
+            }
+            mScriptServer->listen();
+        } else if (mScriptServer) {
+            mScriptServer->close();
+        }
+    };
+    updateScriptServer(preferences->scriptServerEnabled());
+    connect(preferences, &Preferences::scriptServerEnabledChanged, this, updateScriptServer);
 
     mMapEditor = new MapEditor;
     mTilesetEditor = new TilesetEditor;
