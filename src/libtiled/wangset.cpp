@@ -332,7 +332,10 @@ WangId WangId::fromString(QStringView string, bool *ok)
             if (ok && !(*ok))
                 return id;
 
-            if (color > WangId::MAX_COLOR_COUNT) {
+            // Accept any value that fits in the 8-bit storage (0–255).
+            // Values above MAX_COLOR_COUNT may be rejected later by
+            // wangIdIsValid() in the context of a specific WangSet.
+            if (color > INDEX_MASK) {
                 if (ok)
                     *ok = false;
                 return id;
