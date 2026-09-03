@@ -31,6 +31,7 @@
 #include "tiled_global.h"
 
 class QByteArray;
+class QString;
 
 namespace Tiled {
 
@@ -61,7 +62,8 @@ bool TILEDSHARED_EXPORT compressionSupported(CompressionMethod method);
  */
 QByteArray TILEDSHARED_EXPORT decompress(const QByteArray &data,
                                          int expectedSize,
-                                         CompressionMethod method = Zlib);
+                                         CompressionMethod method = Zlib,
+                                         QString *errorString = nullptr);
 
 /**
  * Compresses the give data in either gzip or zlib format. Returns a null
@@ -74,6 +76,7 @@ QByteArray TILEDSHARED_EXPORT decompress(const QByteArray &data,
  */
 QByteArray TILEDSHARED_EXPORT compress(const QByteArray &data,
                                        CompressionMethod method,
-                                       int compressionLevel = -1);
+                                       int compressionLevel = -1,
+                                       QString *errorString = nullptr);
 
 } // namespace Tiled

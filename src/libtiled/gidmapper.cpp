@@ -175,11 +175,11 @@ QByteArray GidMapper::encodeLayerData(const TileLayer &tileLayer,
     }
 
     if (format == Map::Base64Gzip)
-        tileData = compress(tileData, Gzip, compressionLevel);
+        tileData = compress(tileData, Gzip, compressionLevel, &mCompressionError);
     else if (format == Map::Base64Zlib)
-        tileData = compress(tileData, Zlib, compressionLevel);
+        tileData = compress(tileData, Zlib, compressionLevel, &mCompressionError);
     else if (format == Map::Base64Zstandard)
-        tileData = compress(tileData, Zstandard, compressionLevel);
+        tileData = compress(tileData, Zstandard, compressionLevel, &mCompressionError);
 
     return tileData.toBase64();
 }
@@ -196,11 +196,11 @@ GidMapper::DecodeError GidMapper::decodeLayerData(TileLayer &tileLayer,
     const int size = bounds.width() * bounds.height() * 4;
 
     if (format == Map::Base64Gzip)
-        decodedData = decompress(decodedData, size, Gzip);
+        decodedData = decompress(decodedData, size, Gzip, &mCompressionError);
     else if (format == Map::Base64Zlib)
-        decodedData = decompress(decodedData, size, Zlib);
+        decodedData = decompress(decodedData, size, Zlib, &mCompressionError);
     else if (format == Map::Base64Zstandard)
-        decodedData = decompress(decodedData, size, Zstandard);
+        decodedData = decompress(decodedData, size, Zstandard, &mCompressionError);
 
     if (size != decodedData.length())
         return CorruptLayerData;
