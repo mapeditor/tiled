@@ -463,8 +463,6 @@ DynamicLibrary {
         "scriptpropertytype.h",
         "selectionrectangle.cpp",
         "selectionrectangle.h",
-        "selectsametiletool.cpp",
-        "selectsametiletool.h",
         "session.cpp",
         "session.h",
         "shapefilltool.cpp",

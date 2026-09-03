@@ -91,6 +91,12 @@ areas covered with the same tiles. The currently active tile stamp will
 be repeated in the filled area. It can also be used in combination with
 the *Random Mode*, or *Terrain Fill Mode*.
 
+By default, **Contiguous** is enabled, using flood-fill behavior. Disable it
+to fill all matching tiles on the current layer.
+
+Hold ``Alt`` to temporarily toggle the **Contiguous** option while filling.
+The checkbox in Tool Options updates while the key is held.
+
 When holding ``Shift``, the tool fills the currently selected area
 regardless of its contents. This is useful for filling custom areas that
 have been selected previously using one or more :ref:`tile-selection-tools`.
@@ -153,8 +159,12 @@ There are various tile selection tools that all work in similar fashion:
 -  |stock-tool-fuzzy-select-22| **Magic Wand** allows selection of connected
    areas filled with the same tile (shortcut: ``W``)
 
--  |stock-tool-by-color-select| **Select Same Tile** allows selection of
-   same-tiles across the entire layer (shortcut: ``S``)
+For **Magic Wand**, **Contiguous** is enabled by default and limits
+selection to connected areas. Disable it to select all matching tiles on the
+current layer.
+
+Hold ``Alt`` while using **Magic Wand** to temporarily toggle
+**Contiguous**. The checkbox in Tool Options updates while the key is held.
 
 By default, each of these tools replaces the currently selected area. The
 following modifiers can be used to change the selection mode before starting
@@ -197,7 +207,6 @@ using the *Tile Stamps* view.
 .. |stock-tool-clone| image:: ../../src/tiled/resources/images/22/stock-tool-clone.png
 .. |stock-tool-eraser| image:: ../../src/tiled/resources/images/22/stock-tool-eraser.png
 .. |stock-tool-rect-select| image:: ../../src/tiled/resources/images/22/stock-tool-rect-select.png
-.. |stock-tool-by-color-select| image:: ../../src/tiled/resources/images/22/stock-tool-by-color-select.png
 .. |stock-tool-fuzzy-select-22| image:: ../../src/tiled/resources/images/22/stock-tool-fuzzy-select-22.png
 .. |terrain-edit| image:: ../../src/tiled/resources/images/24/terrain-edit.png
 .. |terrain| image:: ../../src/tiled/resources/images/24/terrain.png

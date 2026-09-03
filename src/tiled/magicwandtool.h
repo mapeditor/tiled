@@ -27,6 +27,11 @@
 
 #include "tilelayer.h"
 
+#include <QPointer>
+
+class QCheckBox;
+class QToolBar;
+
 namespace Tiled {
 
 class MapDocument;
@@ -41,13 +46,23 @@ class MagicWandTool final : public AbstractTileSelectionTool
 public:
     MagicWandTool(QObject *parent = nullptr);
 
+    void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
     void languageChanged() override;
+    void populateToolBar(QToolBar *toolBar) override;
 
 protected:
     void tilePositionChanged(QPoint tilePos) override;
 
 private:
+    void setContiguous(bool contiguous);
+    bool effectiveContiguous() const;
+    void updateContiguousCheckBox();
+
+    Qt::KeyboardModifiers mModifiers = Qt::NoModifier;
+    bool mLastContiguousStatus = true;
     QVector<Cell> mMatchCells;
+    bool mContiguous = true;
+    QPointer<QCheckBox> mContiguousCheckBox;
 };
 
 } // namespace Tiled
