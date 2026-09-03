@@ -46,6 +46,7 @@
 #include <QKeyEvent>
 #include <QMenu>
 #include <QMessageBox>
+#include <QShortcut>
 #include <QToolBar>
 #include <QUndoStack>
 
@@ -211,6 +212,38 @@ void AbstractObjectTool::populateToolBar(QToolBar *toolBar)
     toolBar->addAction(mFlipVertical);
     toolBar->addAction(mRotateLeft);
     toolBar->addAction(mRotateRight);
+
+    createShortcuts(toolBar->window());
+}
+
+void AbstractObjectTool::createShortcuts(QWidget *parent)
+{
+    if (!mTransformationShortcuts.isEmpty())
+        return;
+
+    const QList<QAction*> actions {
+        mFlipHorizontal, mFlipVertical, mRotateLeft, mRotateRight
+    };
+
+    for (QAction *action : actions) {
+        QKeySequence key = action->shortcut();
+        if (key.isEmpty())
+            continue;
+
+        auto shortcut = new QShortcut(key, parent);
+
+        shortcut->setEnabled(action->isEnabled());
+        connect(action, &QAction::changed, shortcut, [action, shortcut] {
+            shortcut->setKey(action->shortcut());
+            shortcut->setEnabled(action->isEnabled());
+        });
+
+        connect(shortcut, &QShortcut::activated, action, [action] { action->trigger(); });
+
+        action->setShortcutContext(Qt::WidgetShortcut);
+
+        mTransformationShortcuts.append(shortcut);
+    }
 }
 
 AbstractObjectTool::SelectionBehavior AbstractObjectTool::selectionBehavior()

@@ -24,6 +24,7 @@
 #include "preferences.h"
 
 class QAction;
+class QShortcut;
 
 namespace Tiled {
 
@@ -71,6 +72,13 @@ public:
 
     void populateToolBar(QToolBar*) override;
 
+    /**
+     * Creates QShortcut instances for the flip/rotate actions that synchronize
+     * with the actions, so the shortcuts work even when the tool bar is hidden
+     * (e.g. in fullscreen or clear-view mode).
+     */
+    void createShortcuts(QWidget *parent);
+
     static SelectionBehavior selectionBehavior();
     void filterMapObjects(QList<MapObject*> &mapObjects) const;
 
@@ -110,6 +118,8 @@ private:
     QAction *mFlipVertical;
     QAction *mRotateLeft;
     QAction *mRotateRight;
+
+    QList<QShortcut*> mTransformationShortcuts;
 };
 
 } // namespace Tiled
