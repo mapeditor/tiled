@@ -10,6 +10,7 @@
 * Scripting: Added 'tiled.cell' function, 'cell.flags' property and 'TileLayerEdit.setCell' function (#4538)
 * Scripting: Added MapObject.resolvedClassName() (by MatusGuy, #4529)
 * Fixed crash when the selection becomes empty while starting a move (#4536)
+* Fixed crash after importing custom types due to unresolved type references in lists (#4570)
 * Fixed Properties view update on 'Reset Template Instance' and 'Replace With Template' actions
 * Fixed restoring of the layout for maximized windows on startup (#4580)
 * Linux: Added file associations for .tmj, .tsj, .tiled-project and .world files (by miffe, #4550)

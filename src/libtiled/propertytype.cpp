@@ -464,7 +464,15 @@ bool ClassPropertyType::canAddMember(const QVariant &member, const PropertyTypes
                 return false;
         }
     } else if (member.userType() == QMetaType::QVariantMap) {
-        return false; // Nested class members are not supported
+        // A plain map is a not-yet-resolved member. Any class references in
+        // there are still plain type names, which get checked when that member
+        // is resolved, but check any PropertyValue instances that might
+        // already be present.
+        const auto map = member.toMap();
+        for (const auto &item : map) {
+            if (!canAddMember(item, types))
+                return false;
+        }
     }
 
     return true;
@@ -532,24 +540,49 @@ void PropertyTypes::merge(PropertyTypes typesToMerge)
     }
 
     // Update the type IDs for the class members
-    for (auto classType : std::as_const(classesToProcess)) {
-        QMutableMapIterator<QString, QVariant> it(classType->members);
-        while (it.hasNext()) {
-            QVariant &classMember = it.next().value();
+    for (auto classType : std::as_const(classesToProcess))
+        for (auto &classMember : classType->members)
+            updateTypeIds(classMember, oldTypeIdToName);
+}
 
-            if (classMember.userType() == propertyValueId()) {
-                auto classMemberValue = classMember.value<PropertyValue>();
+/**
+ * Recursively updates the type IDs of any PropertyValue found in the given
+ * value, making them refer to the merged types by name. Recursion is needed
+ * to reach values in lists and members of nested class values (#4570).
+ */
+void PropertyTypes::updateTypeIds(QVariant &value, const QHash<int, QString> &oldTypeIdToName)
+{
+    switch (value.userType()) {
+    case QMetaType::QVariantList: {
+        QVariantList list = value.toList();
+        for (QVariant &item : list)
+            updateTypeIds(item, oldTypeIdToName);
+        value = list;
+        break;
+    }
+    case QMetaType::QVariantMap: {
+        QVariantMap map = value.toMap();
+        for (QVariant &item : map)
+            updateTypeIds(item, oldTypeIdToName);
+        value = map;
+        break;
+    }
+    default:
+        if (value.userType() == propertyValueId()) {
+            auto propertyValue = value.value<PropertyValue>();
 
-                const QString typeName = oldTypeIdToName.value(classMemberValue.typeId);
-                auto type = findPropertyValueType(typeName);
-                Q_ASSERT(type);
+            updateTypeIds(propertyValue.value, oldTypeIdToName);
 
-                if (classMemberValue.typeId != type->id) {
-                    classMemberValue.typeId = type->id;
-                    classMember = QVariant::fromValue(classMemberValue);
-                }
-            }
+            const QString typeName = oldTypeIdToName.value(propertyValue.typeId);
+            auto type = findPropertyValueType(typeName);
+            Q_ASSERT(type);
+
+            if (type)
+                propertyValue.typeId = type->id;
+
+            value = QVariant::fromValue(propertyValue);
         }
+        break;
     }
 }
 
