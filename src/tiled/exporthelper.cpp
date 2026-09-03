@@ -24,6 +24,8 @@
 #include "objectgroup.h"
 #include "wangset.h"
 
+#include <QFileInfo>
+
 namespace Tiled {
 
 /**
@@ -106,8 +108,15 @@ const Map *ExportHelper::prepareExportMap(const Map *map, std::unique_ptr<Map> &
     // Make a copy to which export options are applied
     exportMap = map->clone();
 
-    // We don't want to save the export options in the exported file
-    if (hasExportSettings) {
+    // We don't want to save the export options in the exported file,
+    // unless we're exporting to the same file (to preserve the export settings
+    // so they can be picked up again on the next save)
+    const auto canonicalMapFile = QFileInfo(map->fileName).canonicalFilePath();
+    const auto canonicalExportFile = QFileInfo(map->exportFileName).canonicalFilePath();
+    const bool isSelfExport = !canonicalMapFile.isEmpty()
+            && canonicalMapFile == canonicalExportFile;
+
+    if (hasExportSettings && !isSelfExport) {
         exportMap->exportFileName.clear();
         exportMap->exportFormat.clear();
     }
