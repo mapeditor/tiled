@@ -354,6 +354,16 @@ void MapReaderPrivate::readMapEditorSettings(Map &map)
             map.setChunkSize(QSize(chunkWidth, chunkHeight));
 
             xml.skipCurrentElement();
+        } else if (xml.name() == QLatin1String("viewportsize")) {
+            const QXmlStreamAttributes atts = xml.attributes();
+
+            int viewportWidth = atts.value(QLatin1String("width")).toInt();
+            int viewportHeight = atts.value(QLatin1String("height")).toInt();
+
+            if (viewportWidth > 0 && viewportHeight > 0)
+                map.setViewportSize(QSize(viewportWidth, viewportHeight));
+
+            xml.skipCurrentElement();
         } else if (xml.name() == QLatin1String("export")) {
             const QXmlStreamAttributes atts = xml.attributes();
 
