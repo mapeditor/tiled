@@ -21,6 +21,7 @@
 #include "stylehelper.h"
 
 #include "preferences.h"
+#include "prolificstyle.h"
 #include "tiledproxystyle.h"
 
 #include <QApplication>
@@ -109,6 +110,7 @@ void StyleHelper::apply()
 {
     Preferences *preferences = Preferences::instance();
 
+    QStyle *style = nullptr;
     QString desiredStyle;
     QPalette desiredPalette;
     bool showShortcutsInContextMenus = true;
@@ -130,20 +132,27 @@ void StyleHelper::apply()
         desiredPalette = createPalette(preferences->baseColor(),
                                        preferences->selectionColor());
         break;
+    case Preferences::ProlificStyle:
+        style = new ProlificStyle;
+        desiredPalette = createPalette(preferences->baseColor(),
+                                       preferences->selectionColor());
+        break;
     }
 
     QGuiApplication::styleHints()->setShowShortcutsInContextMenus(showShortcutsInContextMenus);
 
-    if (QApplication::style()->objectName() != desiredStyle) {
-        QStyle *style;
+    if (!style) {
+        if (QApplication::style()->objectName() != desiredStyle) {
+            if (desiredStyle == QLatin1String("tiled")) {
+                style = QStyleFactory::create(QLatin1String("fusion"));
+                style = new TiledProxyStyle(desiredPalette, style);
+            } else {
+                style = QStyleFactory::create(desiredStyle);
+            }
 
-        if (desiredStyle == QLatin1String("tiled")) {
-            style = QStyleFactory::create(QLatin1String("fusion"));
-            style = new TiledProxyStyle(desiredPalette, style);
-        } else {
-            style = QStyleFactory::create(desiredStyle);
+            QApplication::setStyle(style);
         }
-
+    } else {
         QApplication::setStyle(style);
     }
 
