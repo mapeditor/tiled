@@ -39,6 +39,7 @@
 #include <QAction>
 #include <QCoreApplication>
 #include <QDir>
+#include <QFile>
 #include <QFileDialog>
 #include <QGraphicsItem>
 #include <QGraphicsView>
@@ -381,6 +382,14 @@ void AbstractWorldTool::showContextMenu(QGraphicsSceneMouseEvent *event)
                            .arg(targetDocument->displayName(),
                                 currentWorldDocument->displayName()),
                            this, [=] { removeFromWorld(currentWorldDocument, targetDocument); });
+
+            // Maps that were never saved have no file to delete
+            if (!targetDocument->fileName().isEmpty()) {
+                menu.addAction(QIcon(QLatin1String(":/images/16/edit-delete.png")),
+                               tr("Delete \"%1\" from Disk")
+                               .arg(targetDocument->displayName()),
+                               this, [=] { deleteMapFile(currentWorldDocument, targetDocument); });
+            }
         }
     } else {
         menu.addAction(QIcon(QLatin1String(":images/24/world-map-add-other.png")),
@@ -533,6 +542,11 @@ void AbstractWorldTool::removeCurrentMapFromWorld()
 void AbstractWorldTool::removeFromWorld(WorldDocument *worldDocument,
                                         MapDocument *mapDocument)
 {
+    // Refreshing the scene drops the map item, which may be the last owner of
+    // the map document, so the tool should not keep pointing at it
+    if (mTargetMap == mapDocument)
+        setTargetMap(nullptr);
+
     QUndoStack *undoStack = worldDocument->undoStack();
 
     // An unsaved map has no world entry, it is tracked by the world document
@@ -540,6 +554,53 @@ void AbstractWorldTool::removeFromWorld(WorldDocument *worldDocument,
         undoStack->push(new RemoveUnsavedMapCommand(worldDocument, mapDocument->sharedFromThis()));
     else
         undoStack->push(new RemoveMapCommand(worldDocument, mapDocument->fileName()));
+}
+
+/**
+ * Moves the map file to the trash and removes the map from the world.
+ *
+ * Trashing the file is not something we can undo, so it is confirmed first.
+ * Removing the map from the world does go on the undo stack, since that is
+ * also what marks the world as modified and gets it saved.
+ */
+void AbstractWorldTool::deleteMapFile(WorldDocument *worldDocument,
+                                      MapDocument *mapDocument)
+{
+    const QString mapFileName = mapDocument->fileName();
+    if (mapFileName.isEmpty())
+        return;
+
+    const QString fileName = QFileInfo(mapFileName).fileName();
+
+    const int answer = QMessageBox::warning(
+            MainWindow::instance(), tr("Delete Map File"),
+            tr("Are you sure you want to delete \"%1\"?\n\n"
+               "The file is moved to the trash and the map is removed from the "
+               "world. Deleting the file can't be undone.").arg(fileName),
+            QMessageBox::Yes | QMessageBox::No,
+            QMessageBox::No);
+
+    if (answer != QMessageBox::Yes)
+        return;
+
+    // Documents are looked up by canonical path, which is only available
+    // while the file is still there
+    DocumentManager *manager = DocumentManager::instance();
+    const int documentIndex = manager->findDocument(mapFileName);
+
+    // Nothing is changed when the file can't be trashed, so the user is left
+    // to deal with whatever is holding on to it
+    if (!QFile::moveToTrash(mapFileName)) {
+        QMessageBox::critical(MainWindow::instance(), tr("Delete Map File"),
+                              tr("Could not move \"%1\" to the trash.").arg(fileName));
+        return;
+    }
+
+    // An open tab could still save the map back to the file we just deleted
+    if (documentIndex != -1)
+        manager->closeDocumentAt(documentIndex);
+
+    removeFromWorld(worldDocument, mapDocument);
 }
 
 void AbstractWorldTool::addToWorld(WorldDocument *worldDocument)
