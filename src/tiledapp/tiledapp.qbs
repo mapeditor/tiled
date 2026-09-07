@@ -101,6 +101,18 @@ TiledQtGuiApplication {
     }
 
     Group {
+        name: "Sentry (Windows)"
+        condition: project.sentry && qbs.targetOS.contains("windows")
+        prefix: "../../sentry-native/install/bin/"
+        files: [
+            "crashpad_handler.exe",
+            "crashpad_wer.dll",
+            "libsentry.dll",
+        ]
+        qbs.install: true
+    }
+
+    Group {
         name: "Desktop file (Linux)"
         condition: qbs.targetOS.contains("linux")
         qbs.install: true
