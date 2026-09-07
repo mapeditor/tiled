@@ -391,6 +391,7 @@ static void migratePreferences()
 
     migrateToSession<bool>("SaveAsImage/VisibleLayersOnly", "exportAsImage.visibleLayersOnly");
     migrateToSession<bool>("SaveAsImage/CurrentScale", "exportAsImage.useCurrentScale");
+    migrateToSession<bool>("SaveAsImage/SelectionOnly", "exportAsImage.selectedAreaOnly");
     migrateToSession<bool>("SaveAsImage/DrawGrid", "exportAsImage.drawTileGrid");
     migrateToSession<bool>("SaveAsImage/IncludeBackgroundColor", "exportAsImage.includeBackgroundColor");
 

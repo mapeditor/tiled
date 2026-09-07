@@ -3,6 +3,7 @@ Project {
 
     references: [
         "automapping",
+        "export",
         "mapreader",
         "properties",
         "staggeredrenderer",
