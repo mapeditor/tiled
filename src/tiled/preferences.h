@@ -146,6 +146,9 @@ public:
     bool useOpenGL() const;
     void setUseOpenGL(bool useOpenGL);
 
+    bool scriptServerEnabled() const;
+    void setScriptServerEnabled(bool enabled);
+
     void setPropertyTypes(const SharedPropertyTypes &propertyTypes);
 
     void setObjectTypesFile(const QString &filePath);
@@ -254,6 +257,7 @@ signals:
     void applicationFontChanged();
 
     void useOpenGLChanged(bool useOpenGL);
+    void scriptServerEnabledChanged(bool enabled);
 
     void languageChanged();
 

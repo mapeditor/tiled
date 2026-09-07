@@ -627,25 +627,39 @@
          <property name="title">
           <string>Extensions</string>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout">
+         <layout class="QVBoxLayout" name="extensionsLayout">
           <item>
-           <widget class="QLabel" name="extensionsPathLabel">
-            <property name="text">
-             <string>Directory:</string>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLabel" name="extensionsPathLabel">
+              <property name="text">
+               <string>Directory:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="extensionsPathEdit">
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="openExtensionsPathButton">
+              <property name="text">
+               <string>Open...</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item>
-           <widget class="QLineEdit" name="extensionsPathEdit">
-            <property name="readOnly">
-             <bool>true</bool>
+           <widget class="QCheckBox" name="scriptServer">
+            <property name="toolTip">
+             <string>Allows scripts to be evaluated in this instance by other processes, using &quot;tiled --eval&quot;. Only accessible to the current user.</string>
             </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="openExtensionsPathButton">
             <property name="text">
-             <string>Open...</string>
+             <string>Enable script server (allows &quot;tiled --eval&quot; to run scripts in this instance)</string>
             </property>
            </widget>
           </item>
@@ -727,6 +741,8 @@
   <tabstop>fontSize</tabstop>
   <tabstop>pluginList</tabstop>
   <tabstop>extensionsPathEdit</tabstop>
+  <tabstop>openExtensionsPathButton</tabstop>
+  <tabstop>scriptServer</tabstop>
   <tabstop>openExtensionsPathButton</tabstop>
  </tabstops>
  <resources/>
