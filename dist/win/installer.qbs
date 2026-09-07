@@ -54,6 +54,9 @@ WindowsInstallerPackage {
         else
             defs.push("WindowsStylePlugin=qwindowsvistastyle.dll")
 
+        if (project.sentry)
+            defs.push("Sentry");
+
         var pythonHome = Environment.getEnv("PYTHONHOME");
         if (pythonHome && File.exists(pythonHome))
             defs.push("Python");
