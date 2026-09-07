@@ -50,6 +50,12 @@ EditableTileset::EditableTileset(const Tileset *tileset, QObject *parent)
 {
 }
 
+EditableTileset::EditableTileset(const SharedTileset &tileset, QObject *parent)
+    : EditableAsset(tileset.data(), parent)
+    , mTileset(tileset)
+{
+}
+
 EditableTileset::EditableTileset(TilesetDocument *tilesetDocument,
                                  QObject *parent)
     : EditableAsset(tilesetDocument->tileset().data(), parent)
