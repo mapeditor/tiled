@@ -120,7 +120,8 @@ static void extendMapRect(QRect &mapBoundingRect, const MapRenderer &renderer)
     mapBoundingRect = rect.toAlignedRect();
 }
 
-void MiniMapRenderer::renderToImage(QImage &image, RenderFlags renderFlags) const
+void MiniMapRenderer::renderToImage(QImage &image, RenderFlags renderFlags,
+                                    const QRectF &exposed) const
 {
     if (!mMap)
         return;
@@ -147,10 +148,12 @@ void MiniMapRenderer::renderToImage(QImage &image, RenderFlags renderFlags) cons
     const qreal scale = qMin(static_cast<qreal>(image.width()) / mapSize.width(),
                              static_cast<qreal>(image.height()) / mapSize.height());
 
-    if (renderFlags.testFlag(DrawBackground) && mMap->backgroundColor().isValid())
-        image.fill(mMap->backgroundColor());
-    else
-        image.fill(Qt::transparent);
+    const QColor background = renderFlags.testFlag(DrawBackground) && mMap->backgroundColor().isValid()
+            ? mMap->backgroundColor()
+            : QColor(Qt::transparent);
+
+    if (exposed.isNull())
+        image.fill(background);
 
     QPainter painter(&image);
     painter.setRenderHints(QPainter::SmoothPixmapTransform, renderFlags.testFlag(SmoothPixmapTransform));
@@ -165,6 +168,13 @@ void MiniMapRenderer::renderToImage(QImage &image, RenderFlags renderFlags) cons
     painter.translate(-mapBoundingRect.topLeft());
 
     mRenderer->setPainterScale(scale);
+
+    if (!exposed.isNull()) {
+        painter.setClipRect(exposed);
+        painter.setCompositionMode(QPainter::CompositionMode_Source);
+        painter.fillRect(exposed, background);
+        painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+    }
 
     LayerIterator iterator(mMap);
     while (const Layer *layer = iterator.next()) {
@@ -184,7 +194,7 @@ void MiniMapRenderer::renderToImage(QImage &image, RenderFlags renderFlags) cons
                 painter.setCompositionMode(compositionMode);
 
                 const TileLayer *tileLayer = static_cast<const TileLayer*>(layer);
-                mRenderer->drawTileLayer(&painter, tileLayer);
+                mRenderer->drawTileLayer(&painter, tileLayer, exposed.translated(-offset));
             }
             break;
         }

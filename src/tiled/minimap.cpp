@@ -21,18 +21,23 @@
 
 #include "minimap.h"
 
+#include "changeevents.h"
 #include "documentmanager.h"
+#include "geometry.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
 #include "mapscene.h"
 #include "mapview.h"
+#include "objectgroup.h"
+#include "tilelayer.h"
 #include "utils.h"
 #include "zoomable.h"
 
 #include <QCursor>
 #include <QResizeEvent>
 #include <QScrollBar>
+#include <QtMath>
 #include <QUndoStack>
 
 using namespace Tiled;
@@ -43,6 +48,8 @@ MiniMap::MiniMap(QWidget *parent)
     , mDragging(false)
     , mMouseMoveCursorState(false)
     , mRedrawMapImage(false)
+    , mNeedsFullRedraw(true)
+    , mSawTrackedChange(false)
     , mRenderFlags(MiniMapRenderer::DrawTileLayers
                    | MiniMapRenderer::DrawMapObjects
                    | MiniMapRenderer::DrawImageLayers
@@ -66,16 +73,29 @@ void MiniMap::setMapDocument(MapDocument *map)
 
     if (mMapDocument) {
         mMapDocument->disconnect(this);
+        mMapDocument->undoStack()->disconnect(this);
 
         if (MapView *mapView = dm->viewForDocument(mMapDocument))
             mapView->disconnect(this);
     }
 
     mMapDocument = map;
+    mDirtyRegion = QRegion();
+    mSawTrackedChange = false;
 
     if (mMapDocument) {
         connect(mMapDocument->undoStack(), &QUndoStack::indexChanged,
-                this, &MiniMap::scheduleMapImageUpdate);
+                this, &MiniMap::undoStackIndexChanged);
+        connect(mMapDocument, &Document::changed,
+                this, &MiniMap::documentChanged);
+        connect(mMapDocument, &MapDocument::regionChanged,
+                this, &MiniMap::regionChanged);
+        connect(mMapDocument, &MapDocument::tileLayerChanged,
+                this, [this] (TileLayer *, MapDocument::TileLayerChangeFlags flags) {
+            // Layer bounds only affect the rendered area of infinite maps
+            if (flags & MapDocument::LayerBoundsChanged && mMapDocument->map()->infinite())
+                mNeedsFullRedraw = true;
+        });
 
         if (MapView *mapView = dm->viewForDocument(mMapDocument))
             connect(mapView, &MapView::viewRectChanged, this, [this] { update(); });
@@ -91,6 +111,63 @@ QSize MiniMap::sizeHint() const
 
 void MiniMap::scheduleMapImageUpdate()
 {
+    mNeedsFullRedraw = true;
+    mMapImageUpdateTimer.start(100);
+}
+
+void MiniMap::undoStackIndexChanged()
+{
+    // When a command didn't report the changed area, a full redraw is needed
+    if (!mSawTrackedChange)
+        mNeedsFullRedraw = true;
+
+    mSawTrackedChange = false;
+    mMapImageUpdateTimer.start(100);
+}
+
+void MiniMap::documentChanged(const ChangeEvent &change)
+{
+    switch (change.type) {
+    case ChangeEvent::MapObjectAboutToBeAdded:
+    case ChangeEvent::MapObjectAdded:
+    case ChangeEvent::MapObjectAboutToBeRemoved:
+    case ChangeEvent::MapObjectRemoved:
+    case ChangeEvent::MapObjectsRemoved:
+        // Handled by MapObjectsAdded and MapObjectsAboutToBeRemoved
+        break;
+    case ChangeEvent::MapObjectsAdded:
+    case ChangeEvent::MapObjectsAboutToBeRemoved:
+        for (MapObject *object : static_cast<const MapObjectsEvent&>(change).mapObjects)
+            markObjectDirty(object);
+        break;
+    default:
+        mNeedsFullRedraw = true;
+        break;
+    }
+}
+
+void MiniMap::regionChanged(const QRegion &region, TileLayer *tileLayer)
+{
+    const MapRenderer *renderer = mMapDocument->renderer();
+    const QMargins margins = mMapDocument->map()->drawMargins();
+    const QPoint offset = tileLayer->totalOffset().toPoint();
+
+    for (const QRect &r : region)
+        mDirtyRegion |= renderer->boundingRect(r).marginsAdded(margins).translated(offset);
+
+    mSawTrackedChange = true;
+    mMapImageUpdateTimer.start(100);
+}
+
+void MiniMap::markObjectDirty(MapObject *object)
+{
+    const MapRenderer *renderer = mMapDocument->renderer();
+    const QPointF screenPos = renderer->pixelToScreenCoords(object->position());
+    QRectF bounds = rotateAt(screenPos, object->rotation()).mapRect(object->screenBounds(*renderer));
+    bounds.translate(object->objectGroup()->totalOffset());
+
+    mDirtyRegion |= bounds.toAlignedRect();
+    mSawTrackedChange = true;
     mMapImageUpdateTimer.start(100);
 }
 
@@ -185,12 +262,25 @@ void MiniMap::renderMapToImage()
     if (mMapImage.size() != imageSize) {
         mMapImage = QImage(imageSize, QImage::Format_ARGB32_Premultiplied);
         updateImageRect();
+        mNeedsFullRedraw = true;
     }
 
     if (imageSize.isEmpty())
         return;
 
-    miniMapRenderer.renderToImage(mMapImage, mRenderFlags);
+    if (mNeedsFullRedraw || mDirtyRegion.isEmpty()) {
+        miniMapRenderer.renderToImage(mMapImage, mRenderFlags);
+    } else {
+        // The margin accounts for anti-aliasing and for object outlines and
+        // markers, which are drawn at a constant size in image pixels.
+        const int margin = qCeil(20 / scale);
+        const QRect exposed = mDirtyRegion.boundingRect().adjusted(-margin, -margin,
+                                                                   margin, margin);
+        miniMapRenderer.renderToImage(mMapImage, mRenderFlags, exposed);
+    }
+
+    mNeedsFullRedraw = false;
+    mDirtyRegion = QRegion();
 }
 
 void MiniMap::centerViewOnLocalPixel(const QPointF &centerPos, int delta)
