@@ -20,6 +20,7 @@
 
 #include "sentryhelper.h"
 
+#include <QCoreApplication>
 #include <QDir>
 #include <QStandardPaths>
 
@@ -40,6 +41,11 @@ Sentry::Sentry()
     sentry_options_set_dsn(options, "https://6c72ea2c9d024333bae90e40bc1d41e0@o326665.ingest.sentry.io/1835065");
     sentry_options_set_require_user_consent(options, true);
     sentry_options_set_release(options, "tiled@" AS_STRING(TILED_VERSION));
+
+    // We only use crash reporting (structured logs and metrics are enabled
+    // by default since sentry-native 0.14.0)
+    sentry_options_set_enable_logs(options, false);
+    sentry_options_set_enable_metrics(options, false);
 #ifdef QT_DEBUG
     sentry_options_set_symbolize_stacktraces(options, true);
     sentry_options_set_debug(options, true);
@@ -48,8 +54,18 @@ Sentry::Sentry()
     const QString cacheLocation { QStandardPaths::writableLocation(QStandardPaths::CacheLocation) };
     if (!cacheLocation.isEmpty()) {
         const QString databasePath = QDir{cacheLocation}.filePath(QStringLiteral("sentry"));
+#ifdef Q_OS_WIN
+        sentry_options_set_database_pathw(options, reinterpret_cast<const wchar_t *>(databasePath.utf16()));
+#else
         sentry_options_set_database_path(options, databasePath.toLocal8Bit().constData());
+#endif
     }
+
+#ifdef Q_OS_WIN
+    // crashpad_handler.exe is deployed next to the Tiled executable
+    const QString handlerPath = QCoreApplication::applicationDirPath() + QLatin1String("/crashpad_handler.exe");
+    sentry_options_set_handler_pathw(options, reinterpret_cast<const wchar_t *>(handlerPath.utf16()));
+#endif
 
     sentry_init(options);
 }
