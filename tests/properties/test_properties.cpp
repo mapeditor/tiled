@@ -180,6 +180,45 @@ constexpr auto propertyTypesToMerge = R"([
 ]
 )";
 
+// Mirrors the file from issue #4570: the enum has a higher ID than the class
+// that refers to it, so merging into an empty set assigns different IDs.
+constexpr auto propertyTypesWithListOfEnumsToMerge = R"([
+    {
+        "id": 2,
+        "name": "AnEnumerate",
+        "storageType": "string",
+        "type": "enum",
+        "values": [ "AnEnumerate_1", "AnEnumerate_2" ],
+        "valuesAsFlags": false
+    },
+    {
+        "id": 1,
+        "members": [
+            {
+                "name": "list_of_enums",
+                "type": "list",
+                "value": [
+                    {
+                        "propertyType": "AnEnumerate",
+                        "type": "string",
+                        "value": "AnEnumerate_1"
+                    }
+                ]
+            },
+            {
+                "name": "single_enum",
+                "propertyType": "AnEnumerate",
+                "type": "string",
+                "value": "AnEnumerate_1"
+            }
+        ],
+        "name": "TopLevelType",
+        "type": "class",
+        "useAs": [ "property" ]
+    }
+]
+)";
+
 constexpr auto propertyTypesWithEnumInNestedClass = R"([
     {
         "color": "#ffff0000",
@@ -261,6 +300,7 @@ private slots:
     void roundTripListProperty();
     void typedListPassesThroughDefaultMode();
     void mergeProperties();
+    void mergeListOfEnums();
 
     void cleanupTestCase();
 
@@ -638,6 +678,38 @@ void test_Properties::mergeProperties()
     QVERIFY(classType && classType->isClass());
     const auto classMember = classType->members.value(QStringLiteral("newEnumString")).value<PropertyValue>();
     QCOMPARE(classMember.typeId, newEnumStringType->id);
+}
+
+void test_Properties::mergeListOfEnums()
+{
+    QJsonParseError error;
+    auto doc = QJsonDocument::fromJson(propertyTypesWithListOfEnumsToMerge, &error);
+    QVERIFY(error.error == QJsonParseError::NoError);
+
+    PropertyTypes typesToMerge;
+    typesToMerge.loadFromJson(doc.array(), QString());
+    QCOMPARE(typesToMerge.count(), size_t(2));
+
+    // Merging into an empty set assigns new IDs in order of appearance,
+    // effectively swapping the IDs of the enum and the class.
+    PropertyTypes types;
+    types.merge(std::move(typesToMerge));
+
+    const auto enumType = types.findPropertyValueType(QStringLiteral("AnEnumerate"));
+    const auto classType = static_cast<const ClassPropertyType*>(types.findPropertyValueType(QStringLiteral("TopLevelType")));
+    QVERIFY(enumType);
+    QVERIFY(classType && classType->isClass());
+    QVERIFY(enumType->id != classType->id);
+
+    const auto singleEnum = classType->members.value(QStringLiteral("single_enum")).value<PropertyValue>();
+    QCOMPARE(singleEnum.typeId, enumType->id);
+
+    // The enum values in the list also need to have their type ID updated
+    // (issue #4570, where they ended up referring to the class itself)
+    const auto listOfEnums = classType->members.value(QStringLiteral("list_of_enums")).toList();
+    QCOMPARE(listOfEnums.size(), 1);
+    const auto listItem = listOfEnums.first().value<PropertyValue>();
+    QCOMPARE(listItem.typeId, enumType->id);
 }
 
 void test_Properties::cleanupTestCase()
