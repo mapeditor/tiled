@@ -455,8 +455,8 @@ jobs:
         # sentry-cli cannot read. Convert them to Breakpad symbol files with
         # dump_syms, renaming them so the module name matches the binary.
         curl -sLO https://github.com/mozilla/dump_syms/releases/download/v2.3.9/dump_syms-x86_64-pc-windows-msvc.zip
-        unzip -q dump_syms-x86_64-pc-windows-msvc.zip
-        DUMP_SYMS=$(find dump_syms-x86_64-pc-windows-msvc -name dump_syms.exe)
+        unzip -q -o dump_syms-x86_64-pc-windows-msvc.zip -d dump_syms-dist
+        DUMP_SYMS=$(find dump_syms-dist -name dump_syms.exe)
         mkdir syms modules
         find release/install-root -name '*.debug' | while read -r f; do
           base=$(basename "${f%.debug}")
