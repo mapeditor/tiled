@@ -7,6 +7,10 @@ DynamicLibrary {
     Depends { name: "cpp" }
     Depends { name: "Qt"; submodules: "gui"; versionAtLeast: "6.2.0" }
 
+    // Needed by libtilededitor to resolve the base classes of the types it
+    // registers to QML (see Qt.qml.importName)
+    Qt.core.generateMetaTypesFile: true
+
     Probes.PkgConfigProbe {
         id: pkgConfigZstd
         name: "libzstd"

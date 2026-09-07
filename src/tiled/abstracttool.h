@@ -205,6 +205,14 @@ protected:
     MapDocument *mapDocument() const { return mMapDocument; }
     MapScene *mapScene() const { return mMapScene; }
 
+    /**
+     * Allows setting the ID after construction, for tools that only know
+     * their ID once their declared properties have been set (see
+     * ScriptedTool::componentComplete). Should not be called after the tool
+     * has been registered.
+     */
+    void setId(Id id) { mId = id; }
+
     Layer *currentLayer() const;
 
     /**
