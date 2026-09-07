@@ -8,6 +8,7 @@ Project {
         "droidcraft",
         "flare",
         "gmx",
+        "gltf",
         "json",
         "json1",
         "lua",
