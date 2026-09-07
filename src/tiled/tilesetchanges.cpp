@@ -36,7 +36,7 @@ RenameTileset::RenameTileset(TilesetDocument *tilesetDocument,
                                                "Change Tileset Name"))
     , mTilesetDocument(tilesetDocument)
     , mOldName(tilesetDocument->tileset()->name())
-    , mNewName(newName)
+    , mNewName(newName.trimmed())
 {}
 
 void RenameTileset::undo()
