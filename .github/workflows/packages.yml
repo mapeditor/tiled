@@ -129,6 +129,7 @@ jobs:
         qbs install --install-root AppDir config:release qbs.installPrefix:/usr projects.Tiled.sentry:true qbs.debugInformation:true modules.cpp.separateDebugInformation:true modules.cpp.compilerWrapper:ccache
 
     - name: Upload symbols and sources to Sentry
+      id: sentry-upload
       if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
       continue-on-error: ${{ !startsWith(github.ref, 'refs/tags/v') }}
       env:
@@ -136,6 +137,10 @@ jobs:
       run: |
         curl -sL https://sentry.io/get-cli/ | bash
         sentry-cli debug-files upload --include-sources src AppDir
+
+    - name: Warn about failed symbol upload
+      if: steps.sentry-upload.outcome == 'failure'
+      run: echo "::warning::Sentry symbol upload failed, crash reports for this build will lack symbols"
 
     - name: Build AppImage
       run: |
@@ -445,6 +450,7 @@ jobs:
         mv release/installer*/Tiled-*.msi ./Tiled-${{ needs.version.outputs.version }}_${{ matrix.filename_suffix }}.msi
 
     - name: Upload symbols and sources to Sentry
+      id: sentry-upload
       if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
       continue-on-error: ${{ !startsWith(github.ref, 'refs/tags/v') }}
       env:
@@ -465,6 +471,10 @@ jobs:
           rm "modules/$base"
         done
         sentry-cli debug-files upload --include-sources release sentry-native/install/bin syms
+
+    - name: Warn about failed symbol upload
+      if: steps.sentry-upload.outcome == 'failure'
+      run: echo "::warning::Sentry symbol upload failed, crash reports for this build will lack symbols"
 
     - name: Upload Tiled installer
       uses: actions/upload-artifact@v6
