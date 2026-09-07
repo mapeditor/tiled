@@ -20,6 +20,7 @@
 
 #include "mapeditor.h"
 
+#include "actionmanager.h"
 #include "addremovetileset.h"
 #include "bucketfilltool.h"
 #include "changeselectedarea.h"
@@ -232,6 +233,24 @@ MapEditor::MapEditor(QObject *parent)
     mPropertiesDock = new PropertiesDock(mMainWindow);
     mTemplatesDock->setPropertiesDock(mPropertiesDock);
     mTileStampsDock = new TileStampsDock(mTileStampManager, mMainWindow);
+
+    ActionManager::registerAction(mPropertiesDock->toggleViewAction(), "ViewProperties");
+    ActionManager::registerAction(mLayerDock->toggleViewAction(), "ViewLayers");
+    ActionManager::registerAction(mUndoDock->toggleViewAction(), "ViewHistory");
+    ActionManager::registerAction(mObjectsDock->toggleViewAction(), "ViewObjects");
+    ActionManager::registerAction(mTemplatesDock->toggleViewAction(), "ViewTemplateEditor");
+    ActionManager::registerAction(mTilesetDock->toggleViewAction(), "ViewTilesets");
+    ActionManager::registerAction(mWangDock->toggleViewAction(), "ViewTerrainSets");
+    ActionManager::registerAction(mMiniMapDock->toggleViewAction(), "ViewMiniMap");
+    ActionManager::registerAction(mTileStampsDock->toggleViewAction(), "ViewTileStamps");
+
+    // A shortcut only triggers when its action has been added to a widget, and
+    // the 'Views and Toolbars' menu is rebuilt each time it is shown. Adding
+    // the toggle actions to this editor's main window also makes sure they are
+    // only active while this editor is the current one.
+    const QList<QDockWidget*> dockWidgets = this->dockWidgets();
+    for (QDockWidget *dockWidget : dockWidgets)
+        mMainWindow->addAction(dockWidget->toggleViewAction());
 
     resetLayout();
 
