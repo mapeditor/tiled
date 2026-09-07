@@ -23,6 +23,7 @@
 
 #include "documentmanager.h"
 #include "world.h"
+#include "worlddocument.h"
 #include "worldmanager.h"
 
 #include <QCoreApplication>
@@ -92,6 +93,47 @@ void RemoveMapCommand::redo()
 }
 
 
+AddUnsavedMapCommand::AddUnsavedMapCommand(WorldDocument *worldDocument,
+                                           const MapDocumentPtr &mapDocument,
+                                           const QRect &rect)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Add Map to World"))
+    , mWorldDocument(worldDocument)
+    , mMapDocument(mapDocument)
+    , mRect(rect)
+{
+}
+
+void AddUnsavedMapCommand::redo()
+{
+    mWorldDocument->addUnsavedMap(mMapDocument, mRect);
+}
+
+void AddUnsavedMapCommand::undo()
+{
+    mWorldDocument->removeUnsavedMap(mMapDocument.data());
+}
+
+
+RemoveUnsavedMapCommand::RemoveUnsavedMapCommand(WorldDocument *worldDocument,
+                                                 const MapDocumentPtr &mapDocument)
+    : QUndoCommand(QCoreApplication::translate("Undo Commands", "Remove Map from World"))
+    , mWorldDocument(worldDocument)
+    , mMapDocument(mapDocument)
+    , mRect(worldDocument->mapRect(mapDocument.data()))
+{
+}
+
+void RemoveUnsavedMapCommand::redo()
+{
+    mWorldDocument->removeUnsavedMap(mMapDocument.data());
+}
+
+void RemoveUnsavedMapCommand::undo()
+{
+    mWorldDocument->addUnsavedMap(mMapDocument, mRect);
+}
+
+
 SetMapRectCommand::SetMapRectCommand(WorldDocument *worldDocument,
                                      const QString &mapName,
                                      const QRect &rect)
@@ -151,6 +193,34 @@ bool SetWorldGridCommand::mergeWith(const QUndoCommand *other)
     mSize = o->mSize;
     setObsolete(childCount() == 0 && mSize == mPreviousSize);
     return true;
+}
+
+
+SetUnsavedMapPos::SetUnsavedMapPos(MapDocument *mapDocument,
+                                   const QPoint &from,
+                                   const QPoint &to,
+                                   QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , mMapDocument(mapDocument)
+    , mFrom(from)
+    , mTo(to)
+{}
+
+void SetUnsavedMapPos::setPos(QPoint pos)
+{
+    auto worldDocument = WorldManager::instance().worldForMap(mMapDocument);
+    if (!worldDocument)
+        return;
+
+    // Only apply when the current position matches the expected state, to
+    // avoid clobbering other changes
+    QRect rect = worldDocument->mapRect(mMapDocument);
+    const QPoint expectedPos = (pos == mTo) ? mFrom : mTo;
+    if (rect.topLeft() != expectedPos)
+        return;
+
+    rect.moveTo(pos);
+    worldDocument->setUnsavedMapRect(mMapDocument, rect);
 }
 
 

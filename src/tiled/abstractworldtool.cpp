@@ -30,12 +30,16 @@
 #include "mapview.h"
 #include "preferences.h"
 #include "selectionrectangle.h"
+#include "tilelayer.h"
 #include "utils.h"
 #include "world.h"
 #include "worlddocument.h"
 #include "worldmanager.h"
 
 #include <QAction>
+#include <QCoreApplication>
+#include <QDir>
+#include <QFile>
 #include <QFileDialog>
 #include <QGraphicsItem>
 #include <QGraphicsView>
@@ -87,6 +91,27 @@ std::array<QPointF, HandleCount> resizeHandlePositions(const QRectF &bounds)
         QPointF(bounds.left(), center.y()),                        QPointF(bounds.right(), center.y()),
         bounds.bottomLeft(), QPointF(center.x(), bounds.bottom()), bounds.bottomRight(),
     }};
+}
+
+// Finds the map whose center is nearest to the center of rect, so a newly
+// created map can take its format from what is already around it
+MapDocumentPtr nearestMapDocument(const World *world, const QRect &rect)
+{
+    QString nearestFileName;
+    int nearestDistance = 0;
+
+    for (const WorldMapEntry &entry : world->allMaps()) {
+        const int distance = (entry.rect.center() - rect.center()).manhattanLength();
+        if (nearestFileName.isEmpty() || distance < nearestDistance) {
+            nearestFileName = entry.fileName;
+            nearestDistance = distance;
+        }
+    }
+
+    if (nearestFileName.isEmpty())
+        return MapDocumentPtr();
+
+    return DocumentManager::instance()->loadDocument(nearestFileName).objectCast<MapDocument>();
 }
 
 } // namespace
@@ -300,6 +325,12 @@ bool AbstractWorldTool::mapCanBeMoved(MapDocument *mapDocument) const
 {
     if (!mapDocument)
         return false;
+
+    // Moving unsaved maps is not supported yet, since the move commands
+    // look up world entries by file name
+    if (mapDocument->fileName().isEmpty())
+        return false;
+
     auto worldDocument = worldForMap(mapDocument);
     return worldDocument && worldDocument->world()->canBeModified();
 }
@@ -325,9 +356,7 @@ QRect AbstractWorldTool::mapRect(MapDocument *mapDocument) const
 
 WorldDocument *AbstractWorldTool::worldForMap(MapDocument *mapDocument) const
 {
-    if (!mapDocument)
-        return nullptr;
-    return WorldManager::instance().worldForMap(mapDocument->fileName()).data();
+    return WorldManager::instance().worldForMap(mapDocument).data();
 }
 
 /**
@@ -348,12 +377,19 @@ void AbstractWorldTool::showContextMenu(QGraphicsSceneMouseEvent *event)
 
         MapDocument *targetDocument = targetMap();
         if (targetDocument != nullptr && targetDocument != mapDocument()) {
-            const QString &targetFilename = targetDocument->fileName();
             menu.addAction(QIcon(QLatin1String(":images/24/world-map-remove-this.png")),
                            tr("Remove \"%1\" from World \"%2\"")
                            .arg(targetDocument->displayName(),
                                 currentWorldDocument->displayName()),
-                           this, [=] { removeFromWorld(currentWorldDocument, targetFilename); });
+                           this, [=] { removeFromWorld(currentWorldDocument, targetDocument); });
+
+            // Maps that were never saved have no file to delete
+            if (!targetDocument->fileName().isEmpty()) {
+                menu.addAction(QIcon(QLatin1String(":/images/16/edit-delete.png")),
+                               tr("Delete \"%1\" from Disk")
+                               .arg(targetDocument->displayName()),
+                               this, [=] { deleteMapFile(currentWorldDocument, targetDocument); });
+            }
         }
     } else {
         menu.addAction(QIcon(QLatin1String(":images/24/world-map-add-other.png")),
@@ -395,7 +431,10 @@ void AbstractWorldTool::addAnotherMapToWorld(QPoint insertPos)
     if (!worldDocument)
         return;
 
-    const QDir dir = QFileInfo(map->fileName()).dir();
+    // For an unsaved map the world's folder is the best starting point
+    const QString basePath = map->fileName().isEmpty() ? worldDocument->fileName()
+                                                       : map->fileName();
+    const QDir dir = QFileInfo(basePath).dir();
     const QString lastPath = QDir::cleanPath(dir.absolutePath());
     QString filter = tr("All Files (*)");
     FormatHelper<MapFormat> helper(FileFormat::ReadWrite, filter);
@@ -427,6 +466,55 @@ void AbstractWorldTool::addAnotherMapToWorld(QPoint insertPos)
     undoStack->push(new AddMapCommand(worldDocument, fileName, rect));
 }
 
+// Creates a new map covering the given world rect and adds it to the current
+// world. The map stays unsaved until the user saves it.
+void AbstractWorldTool::createMapAt(const QRect &worldRect)
+{
+    auto worldDocument = worldForMap(mapDocument());
+    if (!worldDocument || !worldDocument->world()->canBeModified())
+        return;
+
+    const World *world = worldDocument->world();
+
+    // The nearest map decides the format of the new one
+    const MapDocumentPtr nearest = nearestMapDocument(world, worldRect);
+    const Map *templateMap = nearest ? nearest->map() : mapDocument()->map();
+
+    Map::Parameters parameters;
+    parameters.orientation = templateMap->orientation();
+    parameters.tileWidth = qMax(1, templateMap->tileWidth());
+    parameters.tileHeight = qMax(1, templateMap->tileHeight());
+    parameters.staggerAxis = templateMap->staggerAxis();
+    parameters.staggerIndex = templateMap->staggerIndex();
+    parameters.hexSideLength = templateMap->hexSideLength();
+    parameters.skewX = templateMap->skewX();
+    parameters.skewY = templateMap->skewY();
+
+    // A map is always a whole number of tiles, so round the dragged size
+    parameters.width = qMax(1, qRound(qreal(worldRect.width()) / parameters.tileWidth));
+    parameters.height = qMax(1, qRound(qreal(worldRect.height()) / parameters.tileHeight));
+
+    auto map = std::make_unique<Map>(parameters);
+    map->setRenderOrder(templateMap->renderOrder());
+    map->setLayerDataFormat(templateMap->layerDataFormat());
+
+    for (const SharedTileset &tileset : templateMap->tilesets())
+        map->addTileset(tileset);
+
+    map->addLayer(new TileLayer(QCoreApplication::translate("Tiled::MapDocument", "Tile Layer %1").arg(1),
+                                0, 0, map->width(), map->height()));
+
+    // Rounding may have changed the size, so use the rect the map actually
+    // occupies
+    QRect entryRect = MapRenderer::create(map.get())->mapBoundingRect();
+    entryRect.moveTo(worldRect.topLeft());
+
+    auto mapDocument = MapDocumentPtr::create(std::move(map));
+
+    QUndoStack *undoStack = worldDocument->undoStack();
+    undoStack->push(new AddUnsavedMapCommand(worldDocument, mapDocument, entryRect));
+}
+
 // Asks for a file name and creates a new world containing the current map.
 // Does nothing when the map is already part of a world, the user cancels or
 // the world could not be saved.
@@ -448,17 +536,71 @@ void AbstractWorldTool::createWorldForCurrentMap()
 void AbstractWorldTool::removeCurrentMapFromWorld()
 {
     if (auto currentWorldDocument = worldForMap(mapDocument()))
-        removeFromWorld(currentWorldDocument, mapDocument()->fileName());
+        removeFromWorld(currentWorldDocument, mapDocument());
 }
 
 void AbstractWorldTool::removeFromWorld(WorldDocument *worldDocument,
-                                        const QString &mapFileName)
+                                        MapDocument *mapDocument)
 {
+    // Refreshing the scene drops the map item, which may be the last owner of
+    // the map document, so the tool should not keep pointing at it
+    if (mTargetMap == mapDocument)
+        setTargetMap(nullptr);
+
+    QUndoStack *undoStack = worldDocument->undoStack();
+
+    // An unsaved map has no world entry, it is tracked by the world document
+    if (mapDocument->fileName().isEmpty())
+        undoStack->push(new RemoveUnsavedMapCommand(worldDocument, mapDocument->sharedFromThis()));
+    else
+        undoStack->push(new RemoveMapCommand(worldDocument, mapDocument->fileName()));
+}
+
+/**
+ * Moves the map file to the trash and removes the map from the world.
+ *
+ * Trashing the file is not something we can undo, so it is confirmed first.
+ * Removing the map from the world does go on the undo stack, since that is
+ * also what marks the world as modified and gets it saved.
+ */
+void AbstractWorldTool::deleteMapFile(WorldDocument *worldDocument,
+                                      MapDocument *mapDocument)
+{
+    const QString mapFileName = mapDocument->fileName();
     if (mapFileName.isEmpty())
         return;
 
-    QUndoStack *undoStack = worldDocument->undoStack();
-    undoStack->push(new RemoveMapCommand(worldDocument, mapFileName));
+    const QString fileName = QFileInfo(mapFileName).fileName();
+
+    const int answer = QMessageBox::warning(
+            MainWindow::instance(), tr("Delete Map File"),
+            tr("Are you sure you want to delete \"%1\"?\n\n"
+               "The file is moved to the trash and the map is removed from the "
+               "world. Deleting the file can't be undone.").arg(fileName),
+            QMessageBox::Yes | QMessageBox::No,
+            QMessageBox::No);
+
+    if (answer != QMessageBox::Yes)
+        return;
+
+    // Documents are looked up by canonical path, which is only available
+    // while the file is still there
+    DocumentManager *manager = DocumentManager::instance();
+    const int documentIndex = manager->findDocument(mapFileName);
+
+    // Nothing is changed when the file can't be trashed, so the user is left
+    // to deal with whatever is holding on to it
+    if (!QFile::moveToTrash(mapFileName)) {
+        QMessageBox::critical(MainWindow::instance(), tr("Delete Map File"),
+                              tr("Could not move \"%1\" to the trash.").arg(fileName));
+        return;
+    }
+
+    // An open tab could still save the map back to the file we just deleted
+    if (documentIndex != -1)
+        manager->closeDocumentAt(documentIndex);
+
+    removeFromWorld(worldDocument, mapDocument);
 }
 
 void AbstractWorldTool::addToWorld(WorldDocument *worldDocument)
@@ -533,6 +675,25 @@ QPoint AbstractWorldTool::snapPoint(QPoint point, MapDocument *document) const
     return point;
 }
 
+// The scene puts the current map at 0,0, so converting between scene and
+// world coordinates is just a shift by the current map's world position
+QPoint AbstractWorldTool::currentMapWorldPos() const
+{
+    if (auto worldDocument = worldForMap(mapDocument()))
+        return worldDocument->mapRect(mapDocument()).topLeft();
+    return QPoint();
+}
+
+QPoint AbstractWorldTool::sceneToWorldPos(const QPointF &scenePos) const
+{
+    return scenePos.toPoint() + currentMapWorldPos();
+}
+
+QPoint AbstractWorldTool::worldToScenePos(QPoint worldPos) const
+{
+    return worldPos - currentMapWorldPos();
+}
+
 void AbstractWorldTool::setTargetMap(MapDocument *mapDocument)
 {
     mTargetMap = mapDocument;
@@ -541,6 +702,11 @@ void AbstractWorldTool::setTargetMap(MapDocument *mapDocument)
 
 void AbstractWorldTool::updateSelectionRectangle()
 {
+    // The target map may no longer be part of the scene, for example when
+    // it was just removed from the world
+    if (mTargetMap && !mapScene()->mapItem(mTargetMap))
+        mTargetMap = nullptr;
+
     if (mTargetMap) {
         setSelectionScreenRect(mapRect(mTargetMap));
     } else {

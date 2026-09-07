@@ -161,8 +161,13 @@ QVector<WorldMapEntry> World::mapsInRect(const QRect &rect) const
 
 QVector<WorldMapEntry> World::contextMaps(const QString &fileName) const
 {
+    return contextMaps(mapRect(fileName));
+}
+
+QVector<WorldMapEntry> World::contextMaps(const QRect &rect) const
+{
     if (onlyShowAdjacentMaps)
-        return mapsInRect(mapRect(fileName).adjusted(-1, -1, 1, 1));
+        return mapsInRect(rect.adjusted(-1, -1, 1, 1));
     return allMaps();
 }
 

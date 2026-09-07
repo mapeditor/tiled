@@ -54,6 +54,7 @@ public:
     const QStringList worldFileNames() const;
 
     WorldDocumentPtr worldForMap(const QString &fileName) const;
+    WorldDocumentPtr worldForMap(MapDocument *mapDocument) const;
 
 signals:
     void worldsChanged();

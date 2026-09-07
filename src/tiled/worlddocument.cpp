@@ -22,7 +22,9 @@
 #include "worlddocument.h"
 
 #include "changeevents.h"
+#include "changeworld.h"
 #include "editableworld.h"
+#include "maprenderer.h"
 #include "worldmanager.h"
 
 #include <QFileInfo>
@@ -134,6 +136,75 @@ void WorldDocument::swapWorld(std::unique_ptr<World> &other)
 
     setCurrentObject(mWorld.get());
     emit worldChanged();
+}
+
+void WorldDocument::addUnsavedMap(const MapDocumentPtr &mapDocument, const QRect &rect)
+{
+    mUnsavedMaps.append({ mapDocument, rect });
+
+    // Once saved, the map becomes a regular entry in the world
+    connect(mapDocument.data(), &Document::fileNameChanged,
+            this, [this, document = mapDocument.data()] { unsavedMapSaved(document); });
+
+    emit worldChanged();
+}
+
+void WorldDocument::removeUnsavedMap(MapDocument *mapDocument)
+{
+    for (int i = 0; i < mUnsavedMaps.size(); ++i) {
+        if (mUnsavedMaps.at(i).mapDocument.data() == mapDocument) {
+            disconnect(mapDocument, &Document::fileNameChanged, this, nullptr);
+            mUnsavedMaps.remove(i);
+            emit worldChanged();
+            return;
+        }
+    }
+}
+
+void WorldDocument::setUnsavedMapRect(MapDocument *mapDocument, const QRect &rect)
+{
+    for (auto &unsavedMap : mUnsavedMaps) {
+        if (unsavedMap.mapDocument.data() == mapDocument) {
+            unsavedMap.rect = rect;
+            emit worldChanged();
+            return;
+        }
+    }
+}
+
+// The rect of an unsaved map is stored here rather than in the world
+QRect WorldDocument::mapRect(MapDocument *mapDocument) const
+{
+    if (!mapDocument->fileName().isEmpty())
+        return mWorld->mapRect(mapDocument->fileName());
+
+    for (const auto &unsavedMap : mUnsavedMaps)
+        if (unsavedMap.mapDocument.data() == mapDocument)
+            return unsavedMap.rect;
+
+    return QRect();
+}
+
+void WorldDocument::unsavedMapSaved(MapDocument *mapDocument)
+{
+    if (mapDocument->fileName().isEmpty())
+        return;
+
+    for (int i = 0; i < mUnsavedMaps.size(); ++i) {
+        if (mUnsavedMaps.at(i).mapDocument.data() != mapDocument)
+            continue;
+
+        // The map may have been resized while unsaved, so take only the
+        // position from the stored rect
+        const QRect rect { mUnsavedMaps.at(i).rect.topLeft(),
+                           mapDocument->renderer()->mapBoundingRect().size() };
+
+        disconnect(mapDocument, &Document::fileNameChanged, this, nullptr);
+        mUnsavedMaps.remove(i);
+
+        undoStack()->push(new AddMapCommand(this, mapDocument->fileName(), rect));
+        return;
+    }
 }
 
 std::unique_ptr<EditableAsset> WorldDocument::createEditable()
