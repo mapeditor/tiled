@@ -399,6 +399,9 @@ jobs:
         qbs setup-toolchains ${IQTA_TOOLS}/${{ matrix.mingw_dir }}/bin/*-w64-mingw32-gcc.exe mingw
         qbs setup-qt ${QT_ROOT_DIR}/bin/qmake.exe qt
         qbs config defaultProfile qt
+        # Give the binaries a debug identifier, needed to match crash
+        # reports to their debug symbols on Sentry
+        qbs config profiles.qt.cpp.linkerFlags '["--build-id"]'
 
     - name: Build Sentry Native
       run: |
@@ -411,7 +414,7 @@ jobs:
         # Fixes compilation of crashpad against the mingw-w64 headers
         # shipped with the Qt MinGW toolchain
         patch -p1 < ../dist/win/sentry-native-mingw.patch
-        cmake -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=crashpad -DSENTRY_BUILD_TESTS=OFF -DSENTRY_BUILD_EXAMPLES=OFF -DCRASHPAD_ZLIB_SYSTEM=OFF -DCMAKE_ASM_MASM_COMPILER=C:/msys64/mingw64/bin/uasm.exe
+        cmake -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=crashpad -DSENTRY_BUILD_TESTS=OFF -DSENTRY_BUILD_EXAMPLES=OFF -DCRASHPAD_ZLIB_SYSTEM=OFF -DCMAKE_ASM_MASM_COMPILER=C:/msys64/mingw64/bin/uasm.exe -DCMAKE_EXE_LINKER_FLAGS=-Wl,--build-id -DCMAKE_SHARED_LINKER_FLAGS=-Wl,--build-id
         cmake --build build --parallel
         cmake --install build --prefix install --config RelWithDebInfo
         popd
@@ -448,7 +451,20 @@ jobs:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       run: |
         npm install -g @sentry/cli
-        sentry-cli debug-files upload --include-sources release sentry-native/install/bin
+        # MinGW stores DWARF debug information in the .debug files, which
+        # sentry-cli cannot read. Convert them to Breakpad symbol files with
+        # dump_syms, renaming them so the module name matches the binary.
+        curl -sLO https://github.com/mozilla/dump_syms/releases/download/v2.3.9/dump_syms-x86_64-pc-windows-msvc.zip
+        unzip -q dump_syms-x86_64-pc-windows-msvc.zip
+        DUMP_SYMS=$(find dump_syms-x86_64-pc-windows-msvc -name dump_syms.exe)
+        mkdir syms modules
+        find release/install-root -name '*.debug' | while read -r f; do
+          base=$(basename "${f%.debug}")
+          cp "$f" "modules/$base"
+          "$DUMP_SYMS" "modules/$base" -o "syms/$base.sym"
+          rm "modules/$base"
+        done
+        sentry-cli debug-files upload --include-sources release sentry-native/install/bin syms
 
     - name: Upload Tiled installer
       uses: actions/upload-artifact@v6
