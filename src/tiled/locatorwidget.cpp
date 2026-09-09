@@ -36,6 +36,8 @@
 #include <QApplication>
 #include <QCollator>
 #include <QDir>
+#include <QGuiApplication>
+#include <QInputMethod>
 #include <QKeyEvent>
 #include <QPainter>
 #include <QScrollBar>
@@ -272,6 +274,7 @@ LocatorWidget::LocatorWidget(LocatorSource *locatorSource,
 {
     setAttribute(Qt::WA_DeleteOnClose);
     setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
+    setFocusPolicy(Qt::StrongFocus);
 
     mLocatorSource->setParent(this);        // take ownership of source
 
@@ -315,7 +318,11 @@ void LocatorWidget::setVisible(bool visible)
 
     if (visible) {
         setFocus();
+        activateWindow();
 
+        // just a fallback to make sure the input method will be enabled in some situation
+        // like changed the focus object when showing this widget
+        QGuiApplication::inputMethod()->update(Qt::ImEnabled);
         if (!mFilterEdit->text().isEmpty())
             mFilterEdit->clear();
         else
