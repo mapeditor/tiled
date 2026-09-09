@@ -398,6 +398,13 @@ void MapDocument::resizeMap(QSize size, QPoint offset, bool removeObjects)
     const QPointF newOrigin = renderer()->tileToPixelCoords(-offset);
     const QPointF pixelOffset = origin - newOrigin;
 
+    // Image layers and worlds position the map by its bounding rect, whose
+    // screen-space shift can differ from the pixel-space object movement.
+    const QRect oldBounds = renderer()->boundingRect(QRect(QPoint(), map()->size()));
+    const QRect newBounds = renderer()->boundingRect(newArea);
+    const QPoint boundsOffset = newBounds.topLeft() - oldBounds.topLeft();
+    const QPoint screenOffset = -boundsOffset;
+
     // Resize the map and each layer
     auto command = new QUndoCommand(tr("Resize Map"));
 
@@ -428,7 +435,7 @@ void MapDocument::resizeMap(QSize size, QPoint offset, bool removeObjects)
             // Adjust image layer by changing its offset
             auto imageLayer = static_cast<ImageLayer*>(layer);
             new SetLayerOffset(this, { layer },
-                               imageLayer->offset() + pixelOffset,
+                               imageLayer->offset() + screenOffset,
                                command);
             break;
         }
@@ -453,13 +460,6 @@ void MapDocument::resizeMap(QSize size, QPoint offset, bool removeObjects)
 
     new ResizeMap(this, size, offset, command);
     new ChangeSelectedArea(this, movedSelection, command);
-
-    // A world positions a map by its bounding rect, so move by how much that
-    // rect shifts. The pixel offset moved isometric maps twice as far as their
-    // rect actually shifts
-    const QRect oldBounds = renderer()->boundingRect(QRect(QPoint(), map()->size()));
-    const QRect newBounds = renderer()->boundingRect(QRect(-offset, size));
-    const QPoint boundsOffset = newBounds.topLeft() - oldBounds.topLeft();
 
     // Adjust world position if this map is part of any loaded worlds
     if (!boundsOffset.isNull()) {
