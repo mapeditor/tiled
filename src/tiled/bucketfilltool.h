@@ -25,6 +25,11 @@
 #include "abstracttilefilltool.h"
 #include "tilelayer.h"
 
+#include <QPointer>
+
+class QCheckBox;
+class QToolBar;
+
 namespace Tiled {
 
 class WangSet;
@@ -51,16 +56,21 @@ public:
     void modifiersChanged(Qt::KeyboardModifiers) override;
 
     void languageChanged() override;
+    void populateToolBar(QToolBar *toolBar) override;
 
 protected:
     void tilePositionChanged(QPoint tilePos) override;
     void clearConnections(MapDocument *mapDocument) override;
 
 private:
+    void setContiguous(bool contiguous);
+    bool effectiveContiguous() const;
+    void updateContiguousCheckBox();
     void clearOverlay();
 
-    Qt::KeyboardModifiers mModifiers;
-    bool mLastShiftStatus;
+    Qt::KeyboardModifiers mModifiers = Qt::NoModifier;
+    bool mLastShiftStatus = false;
+    bool mLastContiguousStatus = true;
 
     /**
      * The active fill method during the last call of tilePositionChanged().
@@ -73,6 +83,8 @@ private:
     bool mMouseDown = false;
     QRegion mFillRegion;
     QVector<Cell> mMatchCells;
+    bool mContiguous = true;
+    QPointer<QCheckBox> mContiguousCheckBox;
 
     void makeConnections();
 };
