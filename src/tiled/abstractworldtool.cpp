@@ -542,7 +542,18 @@ QPoint AbstractWorldTool::snapPoint(QPoint point, MapDocument *document) const
 
 void AbstractWorldTool::setTargetMap(MapDocument *mapDocument)
 {
-    mTargetMap = mapDocument;
+    if (mTargetMap != mapDocument) {
+        if (mTargetMap)
+            disconnect(mTargetMap, &MapDocument::mapResized,
+                       this, &AbstractWorldTool::updateSelectionRectangle);
+
+        mTargetMap = mapDocument;
+
+        if (mTargetMap)
+            connect(mTargetMap, &MapDocument::mapResized,
+                    this, &AbstractWorldTool::updateSelectionRectangle);
+    }
+
     updateSelectionRectangle();
 }
 
