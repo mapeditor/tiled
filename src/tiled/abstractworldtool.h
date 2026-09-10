@@ -103,6 +103,7 @@ protected:
     void removeFromWorld(WorldDocument *worldDocument, const QString &mapFileName);
     void addToWorld(WorldDocument *worldDocument);
 
+    QSize worldGridSize(MapDocument *document) const;
     QSize snapSize(MapDocument *document) const;
     QPoint snapPoint(QPoint point, MapDocument *document) const;
 
