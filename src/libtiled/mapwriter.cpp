@@ -774,6 +774,11 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     if (shouldWrite(!mapObject.isVisible(), isTemplateInstance, mapObject.propertyChanged(MapObject::VisibleProperty)))
         w.writeAttribute(QStringLiteral("visible"), QLatin1String(mapObject.isVisible() ? "1" : "0"));
 
+    // vvv tambahkan blok ini vvv
+       if (shouldWrite(mapObject.color().isValid(), isTemplateInstance, mapObject.propertyChanged(MapObject::ColorProperty)))
+           w.writeAttribute(QStringLiteral("color"), colorToString(mapObject.color()));
+    // ^^^ sampai sini ^^^
+
     writeProperties(w, mapObject.properties());
 
     switch (mapObject.shape()) {

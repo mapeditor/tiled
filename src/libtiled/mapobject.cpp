@@ -286,6 +286,9 @@ MapObjectColors MapObject::effectiveColors() const
     if (auto classType = Object::propertyTypes().findClassFor(effectiveClassName(), *this)) {
         colors.main = classType->color;
         drawFill = classType->drawFill;
+    } else if (mColor.isValid()) {
+        // Per-object color override takes priority over the layer's color
+        colors.main = mColor;
     } else if (mObjectGroup && mObjectGroup->color().isValid()) {
         colors.main = mObjectGroup->color();
     } else {
@@ -310,6 +313,7 @@ QVariant MapObject::mapObjectProperty(Property property) const
     case TextAlignmentProperty: return QVariant::fromValue(mTextData.alignment);
     case TextWordWrapProperty:  return mTextData.wordWrap;
     case TextColorProperty:     return mTextData.color;
+    case ColorProperty:         return mColor;     // color pada object
     case PositionProperty:      return mPos;
     case SizeProperty:          return mSize;
     case RotationProperty:      return mRotation;
@@ -333,6 +337,7 @@ void MapObject::setMapObjectProperty(Property property, const QVariant &value)
     case TextAlignmentProperty: mTextData.alignment = value.value<Qt::Alignment>(); break;
     case TextWordWrapProperty:  mTextData.wordWrap = value.toBool(); break;
     case TextColorProperty:     mTextData.color = value.value<QColor>(); break;
+    case ColorProperty:         mColor = value.value<QColor>(); break;   // <-- tambahkan
     case PositionProperty:      setPosition(value.toPointF()); break;
     case SizeProperty:          setSize(value.toSizeF()); break;
     case RotationProperty:      setRotation(value.toReal()); break;
@@ -376,6 +381,7 @@ MapObject *MapObject::clone() const
     o->setPolygon(mPolygon);
     o->setShape(mShape);
     o->setCell(mCell);
+    o->setColor(mColor);
     o->setRotation(mRotation);
     o->setOpacity(mOpacity);
     o->setVisible(mVisible);
@@ -392,6 +398,7 @@ void MapObject::copyPropertiesFrom(const MapObject *object)
     setPolygon(object->polygon());
     setShape(object->shape());
     setCell(object->cell());
+    setColor(object->color());
     setRotation(object->rotation());
     setOpacity(object->opacity());
     setVisible(object->isVisible());
@@ -429,6 +436,9 @@ void MapObject::syncWithTemplate()
 
     if (!propertyChanged(MapObject::CellProperty))
         setCell(base->cell());
+
+    if (!propertyChanged(MapObject::ColorProperty))     // <-- tambahkan blok ini
+           setColor(base->color());
 
     if (!propertyChanged(MapObject::RotationProperty))
         setRotation(base->rotation());

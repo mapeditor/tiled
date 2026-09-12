@@ -123,6 +123,7 @@ public:
         ShapeProperty           = 1 << 12,
         TemplateProperty        = 1 << 13,
         CustomProperties        = 1 << 14,
+        ColorProperty            = 1 << 15,   // <-- tambahkan ini
         AllProperties           = 0xFF
     };
 
@@ -191,6 +192,9 @@ public:
     const Cell &cell() const;
     void setCell(const Cell &cell);
 
+    QColor color() const;              // <-- tambahkan
+    void setColor(const QColor &color); // <-- tambahkan
+
     const ObjectTemplate *objectTemplate() const;
     void setObjectTemplate(const ObjectTemplate *objectTemplate);
 
@@ -249,6 +253,7 @@ private:
     TextData mTextData;
     QPolygonF mPolygon;
     Cell mCell;
+    QColor mColor;
     const ObjectTemplate *mObjectTemplate = nullptr;
     ObjectGroup *mObjectGroup = nullptr;
     qreal mRotation = 0.0;
@@ -445,6 +450,11 @@ inline QRectF MapObject::bounds() const
 inline const Cell &MapObject::cell() const
 { return mCell; }
 
+inline QColor MapObject::color() const
+{ return mColor; }
+
+inline void MapObject::setColor(const QColor &color)
+{ mColor = color; }
 /**
  * Sets the tile that is associated with this object. The object will
  * display as the tile image.
