@@ -381,6 +381,7 @@ MapObject *MapObject::clone() const
     o->setPolygon(mPolygon);
     o->setShape(mShape);
     o->setCell(mCell);
+    o->setColor(mColor);
     o->setRotation(mRotation);
     o->setOpacity(mOpacity);
     o->setVisible(mVisible);
@@ -397,6 +398,7 @@ void MapObject::copyPropertiesFrom(const MapObject *object)
     setPolygon(object->polygon());
     setShape(object->shape());
     setCell(object->cell());
+    setColor(object->color());
     setRotation(object->rotation());
     setOpacity(object->opacity());
     setVisible(object->isVisible());
@@ -434,6 +436,9 @@ void MapObject::syncWithTemplate()
 
     if (!propertyChanged(MapObject::CellProperty))
         setCell(base->cell());
+
+    if (!propertyChanged(MapObject::ColorProperty))     // <-- tambahkan blok ini
+           setColor(base->color());
 
     if (!propertyChanged(MapObject::RotationProperty))
         setRotation(base->rotation());
