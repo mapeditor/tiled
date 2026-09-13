@@ -39,6 +39,9 @@ MagicWandTool::MagicWandTool(QObject *parent)
 
 void MagicWandTool::tilePositionChanged(QPoint tilePos)
 {
+    if (isMovingTiles())
+        return;
+
     // Make sure that a tile layer is selected
     TileLayer *tileLayer = currentTileLayer();
     if (!tileLayer)

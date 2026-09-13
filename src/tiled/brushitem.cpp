@@ -20,6 +20,8 @@
 
 #include "brushitem.h"
 
+#include "hexagonalrenderer.h"
+#include "isometricrenderer.h"
 #include "map.h"
 #include "mapdocument.h"
 #include "maprenderer.h"
@@ -29,8 +31,12 @@
 
 #include <QApplication>
 #include <QPainter>
+#include <QPainterPath>
 #include <QStyleOptionGraphicsItem>
+#include <QTimerEvent>
 #include <QUndoStack>
+
+#include <cmath>
 
 using namespace Tiled;
 
@@ -62,6 +68,13 @@ void BrushItem::clear()
     mTileLayer.clear();
     mMap.clear();
     mRegion = QRegion();
+
+    if (mAnimationTimer != -1) {
+        killTimer(mAnimationTimer);
+        mAnimationTimer = -1;
+    }
+    mTileOffset = QPoint();
+    mDashOffset = 0;
 
     updateBoundingRect();
     update();
@@ -134,6 +147,15 @@ void BrushItem::setTileRegion(const QRegion &region)
 
     mRegion = region;
     updateBoundingRect();
+
+    if (mAnimatedOutline) {
+        if (!region.isEmpty() && mAnimationTimer == -1)
+            mAnimationTimer = startTimer(AnimationInterval);
+        else if (region.isEmpty() && mAnimationTimer != -1) {
+            killTimer(mAnimationTimer);
+            mAnimationTimer = -1;
+        }
+    }
 }
 
 /**
@@ -142,6 +164,37 @@ void BrushItem::setTileRegion(const QRegion &region)
 void BrushItem::setLayerOffset(const QPointF &offset)
 {
     setPos(offset);
+}
+
+void BrushItem::setAnimatedOutline(bool enabled)
+{
+    if (mAnimatedOutline == enabled)
+        return;
+
+    mAnimatedOutline = enabled;
+
+    if (enabled && !mRegion.isEmpty()) {
+        if (mAnimationTimer == -1)
+            mAnimationTimer = startTimer(AnimationInterval);
+    } else {
+        if (mAnimationTimer != -1) {
+            killTimer(mAnimationTimer);
+            mAnimationTimer = -1;
+        }
+        mDashOffset = 0;
+    }
+
+    update();
+}
+
+void BrushItem::setTileOffset(QPoint offset)
+{
+    if (mTileOffset == offset)
+        return;
+
+    mTileOffset = offset;
+    updateBoundingRect();
+    update();
 }
 
 QRectF BrushItem::boundingRect() const
@@ -155,6 +208,11 @@ void BrushItem::paint(QPainter *painter,
 {
     if (!mMapDocument)
         return;
+
+    if (mAnimatedOutline) {
+        paintAnimatedOutline(painter, option);
+        return;
+    }
 
     QColor insideMapHighlight = QApplication::palette().highlight().color();
     insideMapHighlight.setAlpha(64);
@@ -199,6 +257,90 @@ void BrushItem::paint(QPainter *painter,
                                 option->exposedRect);
 }
 
+void BrushItem::paintAnimatedOutline(QPainter *painter,
+                                     const QStyleOptionGraphicsItem *option)
+{
+    MapRenderer *renderer = mMapDocument->renderer();
+
+    if (mTileLayer) {
+        painter->save();
+        QPointF pixelOffset = renderer->tileToPixelCoords(QPointF(mTileOffset));
+        painter->translate(pixelOffset);
+        painter->setOpacity(0.8);
+        renderer->drawTileLayer(painter, mTileLayer.data(),
+                                option->exposedRect.translated(-pixelOffset));
+        painter->restore();
+    }
+
+    QRegion offsetRegion = mRegion.translated(mTileOffset);
+    QPainterPath path = buildOutlinePath(renderer, offsetRegion);
+
+    const qreal dpr = painter->device()->devicePixelRatioF();
+    const qreal dashLength = std::ceil(2.0 * dpr);
+
+    painter->setRenderHint(QPainter::Antialiasing);
+
+    QPen pen(Qt::white, 1.5 * dpr, Qt::SolidLine);
+    pen.setCosmetic(true);
+    painter->setPen(pen);
+    painter->setBrush(Qt::NoBrush);
+    painter->drawPath(path);
+
+    pen.setColor(Qt::black);
+    pen.setCapStyle(Qt::FlatCap);
+    pen.setDashPattern({dashLength, dashLength});
+    pen.setDashOffset(mDashOffset);
+    painter->setPen(pen);
+    painter->drawPath(path);
+}
+
+QPainterPath BrushItem::buildOutlinePath(MapRenderer *renderer,
+                                         const QRegion &region)
+{
+    QPainterPath path;
+    const Map *map = mMapDocument->map();
+
+    if (map->orientation() == Map::Orthogonal) {
+        for (const QRect &r : region)
+            path.addRect(QRectF(renderer->boundingRect(r)));
+
+    } else if (auto *hexRenderer = dynamic_cast<HexagonalRenderer *>(renderer)) {
+        for (const QRect &r : region)
+            for (int y = r.top(); y <= r.bottom(); ++y)
+                for (int x = r.left(); x <= r.right(); ++x)
+                    path.addPolygon(hexRenderer->tileToScreenPolygon(x, y));
+
+    } else if (auto *isoRenderer = dynamic_cast<IsometricRenderer *>(renderer)) {
+        for (const QRect &r : region)
+            path.addPolygon(isoRenderer->tileRectToScreenPolygon(r));
+
+    } else {
+        // Fallback: per-tile diamond from 4 corners
+        for (const QRect &r : region) {
+            for (int y = r.top(); y <= r.bottom(); ++y) {
+                for (int x = r.left(); x <= r.right(); ++x) {
+                    QPolygonF polygon;
+                    polygon << renderer->tileToScreenCoords(x, y)
+                            << renderer->tileToScreenCoords(x + 1, y)
+                            << renderer->tileToScreenCoords(x + 1, y + 1)
+                            << renderer->tileToScreenCoords(x, y + 1);
+                    path.addPolygon(polygon);
+                }
+            }
+        }
+    }
+
+    return path.simplified();
+}
+
+void BrushItem::timerEvent(QTimerEvent *event)
+{
+    if (event->timerId() == mAnimationTimer) {
+        ++mDashOffset;
+        update();
+    }
+}
+
 void BrushItem::updateBoundingRect()
 {
     prepareGeometryChange();
@@ -208,7 +350,11 @@ void BrushItem::updateBoundingRect()
         return;
     }
 
-    const QRect bounds = mRegion.boundingRect();
+    QRegion effectiveRegion = mRegion;
+    if (mAnimatedOutline && !mTileOffset.isNull())
+        effectiveRegion = mRegion.translated(mTileOffset);
+
+    const QRect bounds = effectiveRegion.boundingRect();
     mBoundingRect = mMapDocument->renderer()->boundingRect(bounds);
 
     QMargins drawMargins;
@@ -222,7 +368,7 @@ void BrushItem::updateBoundingRect()
         drawMargins.setRight(drawMargins.right() - tileSize.width());
     } else if (mMap) {
         drawMargins = mMap->drawMargins();
-    } else {
+    } else if (!mAnimatedOutline) {
         return;
     }
 
@@ -234,5 +380,8 @@ void BrushItem::updateBoundingRect()
                          qMax(0, drawMargins.bottom()));
 
     // Adjust for border drawn at tile selection edges
-    mBoundingRect.adjust(-1, -1, 1, 1);
+    const int pad = mAnimatedOutline ? 2 : 1;
+    mBoundingRect.adjust(-pad, -pad, pad, pad);
 }
+
+#include "moc_brushitem.cpp"
