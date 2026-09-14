@@ -490,6 +490,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->menuEdit->insertAction(mUi->actionPreferences,
                                 mActionHandler->actionSelectNone());
     mUi->menuEdit->insertSeparator(mUi->actionPreferences);
+    mUi->menuEdit->insertAction(mUi->actionPreferences,
+                                mActionHandler->actionCopyLayers());
+    mUi->menuEdit->insertAction(mUi->actionPreferences,
+                                mActionHandler->actionPasteLayers());
+    mUi->menuEdit->insertSeparator(mUi->actionPreferences);
 
     mUi->menuMap->insertAction(mUi->actionOffsetMap,
                                mActionHandler->actionCropToSelection());
