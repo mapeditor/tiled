@@ -57,6 +57,16 @@ struct TILEDSHARED_EXPORT TextData
     QColor color = Qt::black;
     Qt::Alignment alignment = Qt::AlignTop | Qt::AlignLeft;
     bool wordWrap = true;
+    bool strokeEnabled = false;
+    QColor strokeColor = Qt::white;
+    qreal strokeWidth = 1.0;
+    bool shadowEnabled = false;
+    QColor shadowColor = Qt::black;
+    QPointF shadowOffset = QPointF(1, 1);
+    bool backgroundEnabled = false;
+    QColor backgroundColor = Qt::transparent;
+    bool flippedHorizontally = false;
+    bool flippedVertically = false;
 
     int flags() const;
     QTextOption textOption() const;
@@ -123,7 +133,17 @@ public:
         ShapeProperty           = 1 << 12,
         TemplateProperty        = 1 << 13,
         CustomProperties        = 1 << 14,
-        AllProperties           = 0xFF
+        TextStrokeProperty      = 1 << 15,
+        TextStrokeColorProperty = 1 << 16,
+        TextStrokeWidthProperty = 1 << 17,
+        TextShadowProperty      = 1 << 18,
+        TextShadowColorProperty = 1 << 19,
+        TextShadowOffsetProperty= 1 << 20,
+        TextBackgroundProperty  = 1 << 21,
+        TextBackgroundColorProperty = 1 << 22,
+        TextMirrorHorizontalProperty = 1 << 23,
+        TextMirrorVerticalProperty = 1 << 24,
+        AllProperties           = 0xFFFFFFFF
     };
 
     Q_DECLARE_FLAGS(ChangedProperties, Property)

@@ -384,13 +384,48 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
         QRectF bounds = { pixelToScreenCoords(object->position()), object->size() };
         bounds.translate(-alignmentOffset(bounds, object->alignment(map())));
 
-        const auto& textData = object->textData();
+        const auto &textData = object->textData();
+
+        painter->save();
+
+        if (textData.flippedHorizontally || textData.flippedVertically) {
+            painter->translate(bounds.center());
+            painter->scale(textData.flippedHorizontally ? -1 : 1,
+                           textData.flippedVertically ? -1 : 1);
+            painter->translate(-bounds.center());
+        }
+
+        if (textData.backgroundEnabled)
+            painter->fillRect(bounds, textData.backgroundColor);
 
         painter->setFont(textData.font);
+
+        const auto textOption = textData.textOption();
+
+        if (textData.shadowEnabled) {
+            painter->setPen(textData.shadowColor);
+            painter->drawText(bounds.translated(textData.shadowOffset),
+                              textData.text,
+                              textOption);
+        }
+
+        if (textData.strokeEnabled) {
+            painter->setPen(textData.strokeColor);
+            const qreal w = textData.strokeWidth;
+            painter->drawText(bounds.translated(-w, -w), textData.text, textOption);
+            painter->drawText(bounds.translated(w, -w), textData.text, textOption);
+            painter->drawText(bounds.translated(-w, w), textData.text, textOption);
+            painter->drawText(bounds.translated(w, w), textData.text, textOption);
+            painter->drawText(bounds.translated(-w, 0), textData.text, textOption);
+            painter->drawText(bounds.translated(w, 0), textData.text, textOption);
+            painter->drawText(bounds.translated(0, -w), textData.text, textOption);
+            painter->drawText(bounds.translated(0, w), textData.text, textOption);
+        }
+
         painter->setPen(textData.color);
-        painter->drawText(bounds,
-                          textData.text,
-                          textData.textOption());
+        painter->drawText(bounds, textData.text, textOption);
+
+        painter->restore();
     } else {
         const qreal lineWidth = objectLineWidth();
         const qreal scale = painterScale();
