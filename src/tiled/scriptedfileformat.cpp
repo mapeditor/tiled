@@ -25,13 +25,65 @@
 #include "savefile.h"
 #include "scriptmanager.h"
 
+#include "logginginterface.h"
+
 #include <QCoreApplication>
 #include <QFile>
-#include <QJSEngine>
+#include <QQmlEngine>
 #include <QJSValueIterator>
 #include <QTextStream>
 
 namespace Tiled {
+
+/**
+ * Returns an error message when the given object provides neither a 'read'
+ * nor a 'write' function, or an empty string when it is fine.
+ */
+static QString checkReadWriteFunctions(const QJSValue &object)
+{
+    if (!object.property(QStringLiteral("read")).isCallable() &&
+            !object.property(QStringLiteral("write")).isCallable())
+        return QCoreApplication::translate("Script Errors", "Invalid file format object (requires a 'write' and/or 'read' function property)");
+
+    return QString();
+}
+
+/**
+ * Validates the declared properties of a QML declared file format, reporting
+ * errors to the Console view.
+ */
+template<typename FormatList>
+static bool validateQmlFileFormat(const QString &shortName,
+                                  const QString &name,
+                                  const QString &extension,
+                                  const QJSValue &object,
+                                  const FormatList &existingFormats)
+{
+    if (shortName.isEmpty()) {
+        Tiled::ERROR(QCoreApplication::translate("Script Errors", "File format without shortName"));
+        return false;
+    }
+
+    if (name.isEmpty() || extension.isEmpty()) {
+        Tiled::ERROR(QCoreApplication::translate("Script Errors", "Invalid file format object (requires 'name' and 'extension' properties)"));
+        return false;
+    }
+
+    const QString error = checkReadWriteFunctions(object);
+    if (!error.isEmpty()) {
+        Tiled::ERROR(error);
+        return false;
+    }
+
+    for (auto format : existingFormats) {
+        if (format->shortName() == shortName) {
+            Tiled::ERROR(QCoreApplication::translate("Script Errors", "Reserved shortName: '%1'").arg(shortName));
+            return false;
+        }
+    }
+
+    return true;
+}
 
 ScriptedFileFormat::ScriptedFileFormat(const QJSValue &object)
     : mObject(object)
@@ -135,8 +187,6 @@ bool ScriptedFileFormat::validateFileFormatObject(const QJSValue &value)
 {
     const QJSValue nameProperty = value.property(QStringLiteral("name"));
     const QJSValue extensionProperty = value.property(QStringLiteral("extension"));
-    const QJSValue writeProperty = value.property(QStringLiteral("write"));
-    const QJSValue readProperty = value.property(QStringLiteral("read"));
 
     if (!nameProperty.isString()) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid file format object (requires string 'name' property)"));
@@ -148,14 +198,20 @@ bool ScriptedFileFormat::validateFileFormatObject(const QJSValue &value)
         return false;
     }
 
-    if (!writeProperty.isCallable() && !readProperty.isCallable()) {
-        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Invalid file format object (requires a 'write' and/or 'read' function property)"));
+    const QString error = checkReadWriteFunctions(value);
+    if (!error.isEmpty()) {
+        ScriptManager::instance().throwError(error);
         return false;
     }
 
     return true;
 }
 
+
+ScriptedMapFormat::ScriptedMapFormat(QObject *parent)
+    : MapFormat(parent)
+{
+}
 
 ScriptedMapFormat::ScriptedMapFormat(const QString &shortName,
                                      const QJSValue &object,
@@ -165,11 +221,26 @@ ScriptedMapFormat::ScriptedMapFormat(const QString &shortName,
     , mFormat(object)
 {
     PluginManager::addObject(this);
+    mAddedToPluginManager = true;
 }
 
 ScriptedMapFormat::~ScriptedMapFormat()
 {
-    PluginManager::removeObject(this);
+    if (mAddedToPluginManager)
+        PluginManager::removeObject(this);
+}
+
+void ScriptedMapFormat::componentComplete()
+{
+    const QJSValue self = ScriptManager::instance().engine()->newQObject(this);
+
+    if (!validateQmlFileFormat(mShortName, mName, mExtension, self,
+                               PluginManager::objects<MapFormat>()))
+        return;
+
+    mFormat.setObject(self);
+    PluginManager::addObject(this);
+    mAddedToPluginManager = true;
 }
 
 QStringList ScriptedMapFormat::outputFiles(const Map *map, const QString &fileName) const
@@ -208,6 +279,11 @@ bool ScriptedMapFormat::write(const Map *map, const QString &fileName, Options o
 }
 
 
+ScriptedTilesetFormat::ScriptedTilesetFormat(QObject *parent)
+    : TilesetFormat(parent)
+{
+}
+
 ScriptedTilesetFormat::ScriptedTilesetFormat(const QString &shortName,
                                              const QJSValue &object,
                                              QObject *parent)
@@ -216,11 +292,26 @@ ScriptedTilesetFormat::ScriptedTilesetFormat(const QString &shortName,
     , mFormat(object)
 {
     PluginManager::addObject(this);
+    mAddedToPluginManager = true;
 }
 
 ScriptedTilesetFormat::~ScriptedTilesetFormat()
 {
-    PluginManager::removeObject(this);
+    if (mAddedToPluginManager)
+        PluginManager::removeObject(this);
+}
+
+void ScriptedTilesetFormat::componentComplete()
+{
+    const QJSValue self = ScriptManager::instance().engine()->newQObject(this);
+
+    if (!validateQmlFileFormat(mShortName, mName, mExtension, self,
+                               PluginManager::objects<TilesetFormat>()))
+        return;
+
+    mFormat.setObject(self);
+    PluginManager::addObject(this);
+    mAddedToPluginManager = true;
 }
 
 SharedTileset ScriptedTilesetFormat::read(const QString &fileName)
