@@ -124,7 +124,7 @@ private:
     void finishResizing();
 
     void setMode(Mode mode);
-    void saveSelectionState();
+    bool saveSelectionState();
 
     enum AbortReason {
         UserInteraction,

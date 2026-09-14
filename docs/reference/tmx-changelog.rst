@@ -7,7 +7,7 @@ Below are described the changes/additions that were made to the
 Tiled 1.12
 ----------
 
--  Added ``mode`` attribute on :ref:`tmx-layer` to specific its blend mode.
+-  Added ``mode`` attribute on :ref:`tmx-layer` to specify its blend mode.
 
 -  Added ``oblique`` to the supported values for the ``orientation`` attribute
    on the :ref:`tmx-map` element, along with the ``skewx`` and ``skewy``
@@ -22,7 +22,11 @@ Tiled 1.12
         <capsule/>
       </object>
 
--  Added ``opacity`` attribute to :ref:`tmx-object` to specificy its opacity.
+-  Added ``opacity`` attribute to :ref:`tmx-object` to specify its opacity.
+
+-  Added ``list`` to the supported values for the ``type`` attribute on the
+   :ref:`tmx-property` element. Each value of a list property is stored in a
+   nested :ref:`item <tmx-item>` element.
 
 
 Tiled 1.10

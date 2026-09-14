@@ -333,10 +333,8 @@ void MapItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if (mDisplayMode == ReadOnly && event->button() == Qt::LeftButton && isUnderMouse()) {
         MapView *view = static_cast<MapView*>(event->widget()->parent());
-        QRectF viewRect { view->viewport()->rect() };
-        QRectF sceneViewRect = view->viewportTransform().inverted().mapRect(viewRect);
         DocumentManager::instance()->switchToDocumentAndHandleSimiliarTileset(mMapDocument.data(),
-                                                                              sceneViewRect.center() - pos(),
+                                                                              view->viewCenter() - pos(),
                                                                               view->zoomable()->scale());
         return;
     }

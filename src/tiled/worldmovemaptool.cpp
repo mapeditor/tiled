@@ -48,6 +48,25 @@ using namespace Tiled;
 
 namespace Tiled {
 
+namespace {
+
+// which edges each resize handle moves, in the same order as
+// setSelectionScreenRect (corners and edge midpoints)
+struct HandleEdges { bool left, right, top, bottom; };
+
+static constexpr HandleEdges handleEdges[HandleCount] = {
+    { true,  false, true,  false },     // top-left
+    { false, false, true,  false },     // top
+    { false, true,  true,  false },     // top-right
+    { true,  false, false, false },     // left
+    { false, true,  false, false },     // right
+    { true,  false, false, true  },     // bottom-left
+    { false, false, false, true  },     // bottom
+    { false, true,  false, true  },     // bottom-right
+};
+
+} // namespace
+
 WorldMoveMapTool::WorldMoveMapTool(QObject *parent)
     : AbstractWorldTool("WorldMoveMapTool",
                         tr("World Tool"),
@@ -72,6 +91,7 @@ void WorldMoveMapTool::keyPressed(QKeyEvent *event)
     case Qt::Key_Right: moveBy = QPointF(1, 0); break;
     case Qt::Key_Escape:
         abortMoving();
+        abortResizing();
         return;
     default:
         AbstractWorldTool::keyPressed(event);
@@ -84,8 +104,10 @@ void WorldMoveMapTool::keyPressed(QKeyEvent *event)
         return;
     }
     MapDocument *document = mapDocument();
-    if (!document || !mapCanBeMoved(document) || mDraggingMap)
+    if (!document || !mapCanBeMoved(document) || mDraggingMap) {
+        event->ignore();    // allow the view to scroll instead
         return;
+    }
 
     const bool moveFast = modifiers & Qt::ShiftModifier;
     if (moveFast)
@@ -119,16 +141,68 @@ void WorldMoveMapTool::moveMap(MapDocument *document, QPoint moveBy)
 
     auto undoStack = worldDocument->undoStack();
     undoStack->push(new SetMapRectCommand(worldDocument, document->fileName(), rect));
+}
 
-    if (document == mapDocument()) {
-        // undo camera movement, by the actual snapped offset
-        const QPoint actualOffset = rect.topLeft() - prevRect.topLeft();
-        DocumentManager *manager = DocumentManager::instance();
-        MapView *view = manager->viewForDocument(mapDocument());
-        QRectF viewRect { view->viewport()->rect() };
-        QRectF sceneViewRect = view->viewportTransform().inverted().mapRect(viewRect);
-        view->forceCenterOn(sceneViewRect.center() - actualOffset);
-    }
+void WorldMoveMapTool::updateResizingMap(const QPointF &pos,
+                                         Qt::KeyboardModifiers modifiers)
+{
+    const Map *map = mResizingMap->map();
+    const MapRenderer *renderer = mResizingMap->renderer();
+    const QSize step = snapSize(mResizingMap);
+    const HandleEdges edges = handleEdges[mResizeHandle];
+
+    int left = mResizeStartWorldRect.left();
+    int top = mResizeStartWorldRect.top();
+    int right = mResizeStartWorldRect.left() + mResizeStartWorldRect.width();
+    int bottom = mResizeStartWorldRect.top() + mResizeStartWorldRect.height();
+
+    const QPoint delta = (pos - mDragStartScenePos).toPoint();
+    const bool snapToGrid = !(modifiers & Qt::ControlModifier);
+
+    // snap the drag rather than the resulting edge, since the bounds of a
+    // staggered or hexagonal map don't line up with the grid and the edge
+    // would otherwise jump as soon as a handle is grabbed
+    const auto snap = [&](int amount, int gridStep) {
+        return (snapToGrid && gridStep > 0) ? qRound(qreal(amount) / gridStep) * gridStep
+                                            : amount;
+    };
+
+    if (edges.left)
+        left += snap(delta.x(), step.width());
+    if (edges.right)
+        right += snap(delta.x(), step.width());
+    if (edges.top)
+        top += snap(delta.y(), step.height());
+    if (edges.bottom)
+        bottom += snap(delta.y(), step.height());
+
+    // ask the renderer what one more column or row adds on screen, since that
+    // is only the tile size for orthogonal maps
+    const QSize mapSize = map->size();
+    const QRect mapRect = renderer->boundingRect(QRect(QPoint(), mapSize));
+    const QRect oneMoreColumn = renderer->boundingRect(QRect(QPoint(), mapSize + QSize(1, 0)));
+    const QRect oneMoreRow = renderer->boundingRect(QRect(QPoint(), mapSize + QSize(0, 1)));
+    const int columnPixels = qMax(1, oneMoreColumn.width() - mapRect.width());
+    const int rowPixels = qMax(1, oneMoreRow.height() - mapRect.height());
+
+    // count from the size we started at, so grabbing a handle without dragging
+    // leaves the map as it is
+    const int widthDragged = right - left - mResizeStartWorldRect.width();
+    const int heightDragged = bottom - top - mResizeStartWorldRect.height();
+    const int newWidth = qMax(1, mapSize.width() + qRound(qreal(widthDragged) / columnPixels));
+    const int newHeight = qMax(1, mapSize.height() + qRound(qreal(heightDragged) / rowPixels));
+
+    // the content only shifts when the left or top edge is the one being moved
+    mResizeOffset = QPoint(edges.left ? newWidth - mapSize.width() : 0,
+                           edges.top ? newHeight - mapSize.height() : 0);
+    mResizeNewSize = QSize(newWidth, newHeight);
+
+    // preview the result, positioned the way resizeMap() will position it
+    const QRect newBounds = renderer->boundingRect(QRect(-mResizeOffset, mResizeNewSize));
+    const QPoint topLeft = mResizeStartWorldRect.topLeft() + newBounds.topLeft() - mapRect.topLeft();
+    setSelectionScreenRect(QRect(topLeft, newBounds.size()).translated(mResizeSceneOffset));
+
+    setStatusInfo(tr("Resize map to %1 x %2").arg(newWidth).arg(newHeight));
 }
 
 void WorldMoveMapTool::mouseEntered()
@@ -137,28 +211,74 @@ void WorldMoveMapTool::mouseEntered()
 
 void WorldMoveMapTool::mousePressed(QGraphicsSceneMouseEvent *event)
 {
-    if (mDraggingMap)
+    if (mDraggingMap || mResizingMap)
         return;
 
-    if (event->button() == Qt::LeftButton && mapCanBeMoved(targetMap())) {
-        // initiate drag action
-        mDraggingMap = targetMap();
-        mDraggingMapItem = mapScene()->mapItem(mDraggingMap);
-        mDragStartScenePos = event->scenePos();
-        mDraggedMapStartPos = mDraggingMapItem->pos();
-        mDragOffset = QPoint(0, 0);
-        refreshCursor();
-        return;
+    if (event->button() == Qt::LeftButton) {
+        MapDocument *map = nullptr;
+        const int handle = resizeHandleNear(event->scenePos(), map);
+        if (handle != -1 && mapCanBeResized(map)) {
+            startResizing(map, handle, event->scenePos());
+            return;
+        }
+
+        if (mapCanBeMoved(targetMap())) {
+            startMoving(targetMap(), event->scenePos());
+            return;
+        }
     }
 
     AbstractWorldTool::mousePressed(event);
 }
 
+void WorldMoveMapTool::startResizing(MapDocument *map, int handle,
+                                     const QPointF &scenePos)
+{
+    mResizingMap = map;
+    mResizeHandle = handle;
+    mDragStartScenePos = scenePos;
+
+    // For maps that are not in a world the position is just 0,0
+    QPoint worldPos;
+    if (auto worldDocument = worldForMap(mResizingMap))
+        worldPos = worldDocument->world()->mapRect(mResizingMap->fileName()).topLeft();
+
+    const QSize sizePixels = mResizingMap->renderer()->mapBoundingRect().size();
+    mResizeStartWorldRect = QRect(worldPos, sizePixels);
+    mResizeSceneOffset = mapScene()->mapItem(mResizingMap)->pos().toPoint() - worldPos;
+    mResizeNewSize = mResizingMap->map()->size();
+    mResizeOffset = QPoint(0, 0);
+    refreshCursor();
+}
+
+void WorldMoveMapTool::startMoving(MapDocument *map, const QPointF &scenePos)
+{
+    mDraggingMap = map;
+    mDraggingMapItem = mapScene()->mapItem(mDraggingMap);
+    mDragStartScenePos = scenePos;
+    mDraggedMapStartPos = mDraggingMapItem->pos();
+    mDragOffset = QPoint(0, 0);
+    refreshCursor();
+}
+
 void WorldMoveMapTool::mouseMoved(const QPointF &pos,
                                   Qt::KeyboardModifiers modifiers)
-{    
+{
+    if (mResizingMap) {
+        updateResizingMap(pos, modifiers);
+        return;
+    }
+
     if (!worldForMap(mDraggingMap) || !mDraggingMap) {
-        AbstractWorldTool::mouseMoved(pos, modifiers);
+        // target the map whose handle is under the cursor, else hover normally
+        MapDocument *map = nullptr;
+        const int hoveredHandle = resizeHandleNear(pos, map);
+        if (hoveredHandle != -1 && mapCanBeResized(map))
+            setTargetMap(map);
+        else
+            AbstractWorldTool::mouseMoved(pos, modifiers);
+
+        refreshCursor();
         return;
     }
 
@@ -186,48 +306,67 @@ void WorldMoveMapTool::mouseMoved(const QPointF &pos,
 
 void WorldMoveMapTool::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
+    if (mResizingMap) {
+        if (event->button() == Qt::LeftButton)
+            finishResizing();
+        else if (event->button() == Qt::RightButton)
+            abortResizing();
+        return;
+    }
+
     if (!mDraggingMap)
         return;
 
     if (event->button() == Qt::LeftButton) {
-        DocumentManager *manager = DocumentManager::instance();
-        MapView *view = manager->viewForDocument(mapDocument());
-        const QRectF viewRect { view->viewport()->rect() };
-        const QRectF sceneViewRect = view->viewportTransform().inverted().mapRect(viewRect);
-
-        auto draggedMap = std::exchange(mDraggingMap, nullptr);
-        mDraggingMapItem = nullptr;
-
-        if (!mDragOffset.isNull()) {
-            if (auto worldDocument = worldForMap(draggedMap)) {
-                QRect rect = draggedMap->renderer()->mapBoundingRect();
-
-                auto world = worldDocument->world();
-                rect.moveTo(world->mapRect(draggedMap->fileName()).topLeft());
-                rect.translate(mDragOffset);
-
-                auto undoStack = worldDocument->undoStack();
-                undoStack->push(new SetMapRectCommand(worldDocument, draggedMap->fileName(), rect));
-
-                if (draggedMap == mapDocument()) {
-                    // undo camera movement
-                    view->forceCenterOn(sceneViewRect.center() - mDragOffset);
-                }
-            }
-        } else {
-            // switch to the document
-            manager->switchToDocumentAndHandleSimiliarTileset(draggedMap,
-                                                              sceneViewRect.center() - mDraggedMapStartPos,
-                                                              view->zoomable()->scale());
-        }
-
-        refreshCursor();
-        setStatusInfo(QString());
+        finishMoving();
         return;
     }
 
     if (event->button() == Qt::RightButton)
         abortMoving();
+}
+
+void WorldMoveMapTool::finishResizing()
+{
+    auto resizedMap = std::exchange(mResizingMap, nullptr);
+    mResizeHandle = -1;
+
+    if (mResizeNewSize != resizedMap->map()->size() || !mResizeOffset.isNull())
+        resizedMap->resizeMap(mResizeNewSize, mResizeOffset, false);
+
+    updateSelectionRectangle();
+    refreshCursor();
+    setStatusInfo(QString());
+}
+
+void WorldMoveMapTool::finishMoving()
+{
+    DocumentManager *manager = DocumentManager::instance();
+    MapView *view = manager->viewForDocument(mapDocument());
+
+    auto draggedMap = std::exchange(mDraggingMap, nullptr);
+    mDraggingMapItem = nullptr;
+
+    if (!mDragOffset.isNull()) {
+        if (auto worldDocument = worldForMap(draggedMap)) {
+            QRect rect = draggedMap->renderer()->mapBoundingRect();
+
+            auto world = worldDocument->world();
+            rect.moveTo(world->mapRect(draggedMap->fileName()).topLeft());
+            rect.translate(mDragOffset);
+
+            auto undoStack = worldDocument->undoStack();
+            undoStack->push(new SetMapRectCommand(worldDocument, draggedMap->fileName(), rect));
+        }
+    } else {
+        // switch to the document
+        manager->switchToDocumentAndHandleSimiliarTileset(draggedMap,
+                                                          view->viewCenter() - mDraggedMapStartPos,
+                                                          view->zoomable()->scale());
+    }
+
+    refreshCursor();
+    setStatusInfo(QString());
 }
 
 void WorldMoveMapTool::languageChanged()
@@ -243,6 +382,8 @@ void WorldMoveMapTool::refreshCursor()
 
     if (mDraggingMap)
         cursorShape = Qt::SizeAllCursor;
+    else if (mResizingMap)
+        cursorShape = cursorForHandle(mResizeHandle);
 
     if (cursor().shape() != cursorShape)
         setCursor(cursorShape);
@@ -256,6 +397,19 @@ void WorldMoveMapTool::abortMoving()
     mDraggingMapItem->setPos(mDraggedMapStartPos);
     mDraggingMapItem = nullptr;
     mDraggingMap = nullptr;
+    updateSelectionRectangle();
+
+    refreshCursor();
+    setStatusInfo(QString());
+}
+
+void WorldMoveMapTool::abortResizing()
+{
+    if (!mResizingMap)
+        return;
+
+    mResizingMap = nullptr;
+    mResizeHandle = -1;
     updateSelectionRectangle();
 
     refreshCursor();

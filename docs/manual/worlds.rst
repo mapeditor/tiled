@@ -81,7 +81,7 @@ Adding Maps
     can be accessed by right-clicking in the map editor.
 
 Removing Maps
-    Hit the 'Remove the current map from the current world' button on the 
+    Hit the 'Remove the current map from the current world' button on the
     toolbar. Alternatively, right-click a map in the map editor and select the
     'Remove ... from World ...' action from the context menu.
 
@@ -92,10 +92,36 @@ Moving Maps
     Alternatively you can use the arrow keys to move the current selected map
     - holding Shift will perform bigger steps.
 
+.. raw:: html
+
+    <div class="new">New in Tiled 1.13</div>
+
+Resizing Maps
+    Hover over a map with the World Tool to show resize handles on its corners
+    and edges, then drag a handle to resize the map within the world. The map's
+    existing content keeps its position within the world, with the map's world
+    position adjusted when necessary to achieve this. You can abort a resize
+    by hitting 'Escape' or by right-clicking.
+
 Saving World files
     You can save manipulated world files by using the *World > Save World*
     menu. Worlds will also automatically be saved if you launch any external
     tool that has the 'Save Map Before Executing' option enabled.
+
+.. raw:: html
+
+    <div class="new">New in Tiled 1.13</div>
+
+The World Grid
+--------------
+
+A grid can be shown across the world to help align maps. Toggle it with
+*View > Show World Grid*, and toggle snapping with *View > Snapping > Snap Maps
+to World Grid*. While snapping is enabled, maps snap to the grid as they are
+moved or resized. Hold 'Ctrl' during the drag to temporarily turn off snapping,
+letting you position the map freely.
+
+The grid size is set per world in the *World > World Properties* dialog.
 
 Using Pattern Matching
 ----------------------

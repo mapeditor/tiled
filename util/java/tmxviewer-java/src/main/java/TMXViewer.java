@@ -27,10 +27,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.Rectangle;
 
 import javax.swing.JFrame;
@@ -38,17 +41,24 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.WindowConstants;
 
+import org.mapeditor.core.AnimatedTile;
+import org.mapeditor.core.Group;
 import org.mapeditor.core.Map;
 import org.mapeditor.core.ObjectGroup;
 import org.mapeditor.core.MapLayer;
+import org.mapeditor.core.Tile;
 import org.mapeditor.core.TileLayer;
+import org.mapeditor.core.TileSet;
 import org.mapeditor.io.TMXMapReader;
 import org.mapeditor.view.HexagonalRenderer;
 import org.mapeditor.view.MapRenderer;
+import org.mapeditor.view.ObliqueRenderer;
 import org.mapeditor.view.OrthogonalRenderer;
 import org.mapeditor.view.IsometricRenderer;
+
 
 /**
  * An example showing how to use libtiled-java to do a simple TMX viewer.
@@ -114,32 +124,138 @@ class MapView extends JPanel implements Scrollable
 {
     private final Map map;
     private final MapRenderer renderer;
+    private final Timer animationTimer;
+    private final int originOffsetX;
+    private final int originOffsetY;
 
     public MapView(Map map) {
         this.map = map;
         renderer = createRenderer(map);
 
+        // For infinite maps, layer bounds can be negative.
+        // Compute an origin offset so everything shifts into positive pixel space.
+        if (map.getInfinite() != null && map.getInfinite() == 1) {
+            Point min = minLayerOrigin(map.getLayers());
+            originOffsetX = -min.x * map.getTileWidth();
+            originOffsetY = -min.y * map.getTileHeight();
+        } else {
+            originOffsetX = 0;
+            originOffsetY = 0;
+        }
+
         setPreferredSize(renderer.getMapSize());
         setOpaque(true);
+
+        animationTimer = hasAnimatedTiles(map) ? new Timer(33, e -> repaint()) : null;
+    }
+
+    private static Point minLayerOrigin(java.util.List<MapLayer> layers) {
+        Point min = new Point(0, 0);
+        for (MapLayer layer : layers) {
+            if (layer instanceof Group) {
+                Point child = minLayerOrigin(((Group) layer).getLayers());
+                min.x = Math.min(min.x, child.x);
+                min.y = Math.min(min.y, child.y);
+            } else {
+                Rectangle b = layer.getBounds();
+                min.x = Math.min(min.x, b.x);
+                min.y = Math.min(min.y, b.y);
+            }
+        }
+        return min;
+    }
+
+    private static boolean hasAnimatedTiles(Map map) {
+        for (TileSet tileSet : map.getTileSets()) {
+            for (Tile tile : tileSet) {
+                if (tile instanceof AnimatedTile) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        if (animationTimer != null) {
+            animationTimer.start();
+        }
+    }
+
+    @Override
+    public void removeNotify() {
+        if (animationTimer != null) {
+            animationTimer.stop();
+        }
+        super.removeNotify();
     }
 
     @Override
     public void paintComponent(Graphics g) {
         final Graphics2D g2d = (Graphics2D) g.create();
         final Rectangle clip = g2d.getClipBounds();
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 
         // Draw a gray background
         g2d.setPaint(new Color(100, 100, 100));
         g2d.fill(clip);
 
+        // Shift so negative tile coordinates appear in positive pixel space
+        g2d.translate(originOffsetX, originOffsetY);
+
         // Draw each map layer
-        for (MapLayer layer : map.getLayers()) {
-            if (layer instanceof TileLayer) {
-                renderer.paintTileLayer(g2d, (TileLayer) layer);
-            } else if (layer instanceof ObjectGroup) {
-                renderer.paintObjectGroup(g2d, (ObjectGroup) layer);
+        paintLayers(g2d, map.getLayers());
+        g2d.dispose();
+    }
+
+    private void paintLayers(Graphics2D g2d, java.util.List<MapLayer> layers) {
+        for (MapLayer layer : layers) {
+            if (Boolean.FALSE.equals(layer.isVisible())) {
+                continue;
+            }
+            final Graphics2D layerGraphics = (Graphics2D) g2d.create();
+            try {
+                applyParallaxTranslation(layerGraphics, layer);
+
+                if (layer instanceof Group) {
+                    // The renderer applies opacity for tile and object layers.
+                    // Groups are recursed here, so multiply their opacity onto
+                    // the graphics for the child layers to pick up.
+                    applyGroupOpacity(layerGraphics, layer);
+                    paintLayers(layerGraphics, ((Group) layer).getLayers());
+                } else if (layer instanceof TileLayer) {
+                    renderer.paintTileLayer(layerGraphics, (TileLayer) layer);
+                } else if (layer instanceof ObjectGroup) {
+                    renderer.paintObjectGroup(layerGraphics, (ObjectGroup) layer);
+                }
+            } finally {
+                layerGraphics.dispose();
             }
         }
+    }
+
+    private static void applyGroupOpacity(Graphics2D g2d, MapLayer group) {
+        float opacity = group.getOpacity() != null
+                ? Math.max(0.0f, Math.min(1.0f, group.getOpacity())) : 1.0f;
+        if (opacity < 1.0f) {
+            float base = g2d.getComposite() instanceof AlphaComposite
+                    ? ((AlphaComposite) g2d.getComposite()).getAlpha() : 1.0f;
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, base * opacity));
+        }
+    }
+
+    private void applyParallaxTranslation(Graphics2D g2d, MapLayer layer) {
+        final double parallaxOriginX = map.getParallaxoriginx() != null ? map.getParallaxoriginx() : 0.0;
+        final double parallaxOriginY = map.getParallaxoriginy() != null ? map.getParallaxoriginy() : 0.0;
+        final double parallaxX = layer.getParallaxx() != null ? layer.getParallaxx() : 1.0;
+        final double parallaxY = layer.getParallaxy() != null ? layer.getParallaxy() : 1.0;
+
+        final int translateX = (int) Math.round(parallaxOriginX * (1.0 - parallaxX));
+        final int translateY = (int) Math.round(parallaxOriginY * (1.0 - parallaxY));
+        g2d.translate(translateX, translateY);
     }
 
     private static MapRenderer createRenderer(Map map) {
@@ -150,8 +266,12 @@ class MapView extends JPanel implements Scrollable
             case ISOMETRIC:
                 return new IsometricRenderer(map);
 
+            case STAGGERED:
             case HEXAGONAL:
                 return new HexagonalRenderer(map);
+
+            case OBLIQUE:
+                return new ObliqueRenderer(map);
 
             default:
                 return null;

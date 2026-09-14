@@ -1549,9 +1549,11 @@ void PropertiesView::setPropertyChildrenExpanded(PropertyWidgets &widgets,
         if (widgets.children->isHidden() == expanded)
             widgets.children->setVisible(expanded);
 
-        // needed to avoid flickering when hiding the children
-        if (!expanded)
-            activateParentLayouts(widgets.children->parentWidget());
+        // Activate the affected layouts right away, to avoid flickering due to
+        // relayouting not being done before the next paint. When expanding we
+        // start at the children, so that their own layout is activated first.
+        activateParentLayouts(expanded ? widgets.children
+                                       : widgets.children->parentWidget());
     }
 }
 

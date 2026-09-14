@@ -49,6 +49,43 @@ public class Map extends MapData implements Iterable<MapLayer> {
 
     private String filename;
 
+    private Integer editorChunkWidth;
+    private Integer editorChunkHeight;
+    private String exportTarget;
+    private String exportFormat;
+
+    public Integer getEditorChunkWidth() {
+        return editorChunkWidth;
+    }
+
+    public void setEditorChunkWidth(Integer editorChunkWidth) {
+        this.editorChunkWidth = editorChunkWidth;
+    }
+
+    public Integer getEditorChunkHeight() {
+        return editorChunkHeight;
+    }
+
+    public void setEditorChunkHeight(Integer editorChunkHeight) {
+        this.editorChunkHeight = editorChunkHeight;
+    }
+
+    public String getExportTarget() {
+        return exportTarget;
+    }
+
+    public void setExportTarget(String exportTarget) {
+        this.exportTarget = exportTarget;
+    }
+
+    public String getExportFormat() {
+        return exportFormat;
+    }
+
+    public void setExportFormat(String exportFormat) {
+        this.exportFormat = exportFormat;
+    }
+
     /**
      * Constructor for Map.
      */

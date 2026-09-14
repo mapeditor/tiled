@@ -51,6 +51,7 @@ TiledApplication::TiledApplication(int &argc, char **argv)
 #endif
     setApplicationDisplayName(QLatin1String("Tiled"));
     setApplicationVersion(QLatin1String(AS_STRING(TILED_VERSION)));
+    setDesktopFileName(QLatin1String("org.mapeditor.Tiled"));
 
     LanguageManager::instance()->installTranslators();
 

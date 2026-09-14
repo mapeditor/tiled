@@ -742,7 +742,7 @@ void ObjectSelectionTool::modifiersChanged(Qt::KeyboardModifiers modifiers)
     mModifiers = modifiers;
 
     const bool hasSelection = mapDocument() && !mapDocument()->selectedObjects().isEmpty();
-    const bool altWillMove = !mMousePressed && hasSelection; 
+    const bool altWillMove = !mMousePressed && hasSelection;
 
     if (!altWillMove) {
         if ((mSelectionMode == Qt::IntersectsItemShape) ^ modifiers.testFlag(Qt::AltModifier))
@@ -1228,7 +1228,12 @@ void ObjectSelectionTool::startMoving(const QPointF &pos,
             mapDocument()->setSelectedObjects({ mClickedObject });
     }
 
-    saveSelectionState();
+    // The selection can become empty between the mouse press and the start of
+    // the drag. Fall back to a rubber-band selection rather than crashing.
+    if (!saveSelectionState()) {
+        startSelecting();
+        return;
+    }
 
     mStart = pos;
     mAction = Moving;
@@ -1307,12 +1312,15 @@ void ObjectSelectionTool::finishMovingOrigin()
 
 void ObjectSelectionTool::startRotating(const QPointF &pos)
 {
+    // Abort if the selection became empty between press and drag (see startMoving).
+    if (!saveSelectionState())
+        return;
+
     mStart = pos;
     mAction = Rotating;
     mMergeUndo = false;
     mOriginPos = mOriginIndicator->pos();
 
-    saveSelectionState();
     updateHandleVisibility();
 }
 
@@ -1385,6 +1393,10 @@ void ObjectSelectionTool::finishRotating()
 
 void ObjectSelectionTool::startResizing()
 {
+    // Abort if the selection became empty between press and drag (see startMoving).
+    if (!saveSelectionState())
+        return;
+
     mAction = Resizing;
     mMergeUndo = false;
     mOriginPos = mOriginIndicator->pos();
@@ -1394,7 +1406,6 @@ void ObjectSelectionTool::startResizing()
 
     mStartOffset = mStart - mClickedResizeHandle->pos();
 
-    saveSelectionState();
     updateHandleVisibility();
 }
 
@@ -1664,7 +1675,7 @@ void ObjectSelectionTool::setMode(Mode mode)
     }
 }
 
-void ObjectSelectionTool::saveSelectionState()
+bool ObjectSelectionTool::saveSelectionState()
 {
     mMovingObjects.clear();
 
@@ -1682,6 +1693,8 @@ void ObjectSelectionTool::saveSelectionState()
         };
         mMovingObjects.append(object);
     }
+
+    return !mMovingObjects.isEmpty();
 }
 
 /**

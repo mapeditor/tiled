@@ -1594,7 +1594,7 @@ declare class World extends Asset {
   allMaps(): WorldMapEntry[];
 
   /**
-   * Returns any maps that intersect with the given {@link rect}. This is a
+   * Returns any maps that intersect with the given rectangle. This is a
    * filtered version of the results from {@link allMaps}.
    */
   mapsInRect(rect: rect): WorldMapEntry[];
@@ -3740,7 +3740,7 @@ interface TileLayerEdit {
 
   /**
    * Sets the cell at the given location. This is an alternative to
-   * {@link setTile} that takes a {@link cell} value, which is convenient for
+   * {@link setTile} that takes a cell value, which is convenient for
    * copying cells along with their flags (for example a value returned by
    * {@link TileLayer.cellAt}).
    *
@@ -4494,7 +4494,7 @@ interface ToolDefinition {
    * actions.
    *
    * The actions need to be registered using
-   * {@link registerAction | tiled.registerAction()}.
+   * {@link tiled.registerAction | tiled.registerAction()}.
    *
    * @since 1.9
    */
@@ -4627,7 +4627,7 @@ interface ToolDefinition {
    * the status bar text.
    *
    * This function is called automatically when the hovered tile position
-   * changed, but {@link statusInfo} can be changed in any other function as
+   * changed, but {@link Tool.statusInfo} can be changed in any other function as
    * well.
    */
   updateStatusInfo?(this: Tool): void;
@@ -5871,10 +5871,10 @@ declare class Dialog extends Qt.QWidget {
   addFilePicker(labelText?: string, defaultValue?: string, toolTip?: string): FileEdit;
 
   /**
-   * Add a {@link QButtonGroup} widget which allows you to add multiple radio
+   * Add a {@link Qt.QButtonGroup} widget which allows you to add multiple radio
    * buttons, where only one radio button can be selected at a time.
    *
-   * Each radio button is a {@link QAbstractButton}. You can force selection of
+   * Each radio button is a {@link Qt.QAbstractButton}. You can force selection of
    * a radio button by setting checked = true, and also disable
    *
    * If the labelText is non-empty, a label widget will be added to the left of

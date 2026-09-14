@@ -10,4 +10,4 @@ Icon=tiled
 Categories=Graphics;2DGraphics;
 StartupNotify=true
 X-Desktop-File-Install-Version=0.1
-MimeType=application/x-tiled-tmx;application/x-tiled-tsx;
+MimeType=application/x-tiled-tmx;application/x-tiled-tsx;application/x-tiled-tmj;application/x-tiled-tsj;application/x-tiled-project;application/x-tiled-world;

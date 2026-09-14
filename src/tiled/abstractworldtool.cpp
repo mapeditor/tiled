@@ -30,21 +30,77 @@
 #include "mapview.h"
 #include "preferences.h"
 #include "selectionrectangle.h"
+#include "utils.h"
 #include "world.h"
 #include "worlddocument.h"
 #include "worldmanager.h"
 
 #include <QAction>
 #include <QFileDialog>
+#include <QGraphicsItem>
+#include <QGraphicsView>
 #include <QKeyEvent>
 #include <QMenu>
 #include <QMessageBox>
+#include <QPainter>
 #include <QToolBar>
 #include <QToolButton>
 #include <QUndoStack>
 #include <QtMath>
 
 namespace Tiled {
+
+namespace {
+
+// A small square handle shown on a map's corners and edges for resizing
+class MapResizeHandle : public QGraphicsItem
+{
+public:
+    MapResizeHandle()
+    {
+        setAcceptedMouseButtons(Qt::MouseButtons());
+        setAcceptHoverEvents(true);
+        setFlag(QGraphicsItem::ItemIgnoresTransformations);
+        setZValue(10000 + 1);
+    }
+
+    QRectF boundingRect() const override
+    {
+        return Utils::dpiScaled(QRectF(-5, -5, 10, 10));
+    }
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) override
+    {
+        painter->setPen(QPen(Qt::black, 1));
+        painter->setBrush(Qt::white);
+        painter->drawRect(Utils::dpiScaled(QRectF(-4, -4, 8, 8)));
+    }
+};
+
+// The eight resize handle positions for bounds, in ResizeHandlePosition order,
+// using a QRectF so right() and bottom() are not off by one like QRect
+std::array<QPointF, HandleCount> resizeHandlePositions(const QRectF &bounds)
+{
+    const QPointF center = bounds.center();
+    return {{
+        bounds.topLeft(),    QPointF(center.x(), bounds.top()),    bounds.topRight(),
+        QPointF(bounds.left(), center.y()),                        QPointF(bounds.right(), center.y()),
+        bounds.bottomLeft(), QPointF(center.x(), bounds.bottom()), bounds.bottomRight(),
+    }};
+}
+
+} // namespace
+
+Qt::CursorShape cursorForHandle(int handle)
+{
+    switch (handle) {
+    case TopLeftHandle: case BottomRightHandle: return Qt::SizeFDiagCursor;
+    case TopRightHandle: case BottomLeftHandle: return Qt::SizeBDiagCursor;
+    case TopHandle: case BottomHandle:          return Qt::SizeVerCursor;
+    case LeftHandle: case RightHandle:          return Qt::SizeHorCursor;
+    default:                                    return Qt::ArrowCursor;
+    }
+}
 
 AbstractWorldTool::AbstractWorldTool(Id id,
                                      const QString &name,
@@ -56,8 +112,21 @@ AbstractWorldTool::AbstractWorldTool(Id id,
 {
     mSelectionRectangle->setVisible(false);
 
+    // Each handle owns its resize cursor, so it shows above a map's own cursor
+    for (int i = 0; i < HandleCount; ++i) {
+        mResizeHandles[i] = std::make_unique<MapResizeHandle>();
+        mResizeHandles[i]->setVisible(false);
+        mResizeHandles[i]->setCursor(cursorForHandle(i));
+    }
+
     WorldManager &worldManager = WorldManager::instance();
     connect(&worldManager, &WorldManager::worldsChanged, this, &AbstractWorldTool::updateEnabledState);
+
+    QIcon newWorldForMapIcon(QLatin1String(":images/24/world-map-add-other.png"));
+    mNewWorldForMapAction = new QAction(this);
+    mNewWorldForMapAction->setIcon(newWorldForMapIcon);
+    ActionManager::registerAction(mNewWorldForMapAction, "NewWorldForMap");
+    connect(mNewWorldForMapAction, &QAction::triggered, this, &AbstractWorldTool::createWorldForCurrentMap);
 
     QIcon addAnotherMapToWorldIcon(QLatin1String(":images/24/world-map-add-other.png"));
     mAddAnotherMapToWorldAction = new QAction(this);
@@ -87,6 +156,8 @@ AbstractWorldTool::~AbstractWorldTool() = default;
 void AbstractWorldTool::activate(MapScene *scene)
 {
     scene->addItem(mSelectionRectangle.get());
+    for (auto &handle : mResizeHandles)
+        scene->addItem(handle.get());
     connect(scene, &MapScene::sceneRefreshed, this, &AbstractWorldTool::updateSelectionRectangle);
     AbstractTool::activate(scene);
 }
@@ -94,6 +165,8 @@ void AbstractWorldTool::activate(MapScene *scene)
 void AbstractWorldTool::deactivate(MapScene *scene)
 {
     scene->removeItem(mSelectionRectangle.get());
+    for (auto &handle : mResizeHandles)
+        scene->removeItem(handle.get());
     disconnect(scene, &MapScene::sceneRefreshed, this, &AbstractWorldTool::updateSelectionRectangle);
     AbstractTool::deactivate(scene);
 }
@@ -135,21 +208,46 @@ void AbstractWorldTool::languageChanged()
 
 void AbstractWorldTool::languageChangedImpl()
 {
+    mNewWorldForMapAction->setText(tr("Create a new world containing the current map"));
     mAddAnotherMapToWorldAction->setText(tr("Add another map to the current world"));
     mAddMapToWorldAction->setText(tr("Add the current map to a loaded world"));
     mRemoveMapFromWorldAction->setText(tr("Remove the current map from the current world"));
 }
 
+void AbstractWorldTool::mapDocumentChanged(MapDocument *oldDocument,
+                                           MapDocument *newDocument)
+{
+    // The enabled state of the actions depends on the map's file name
+    if (oldDocument)
+        disconnect(oldDocument, &Document::fileNameChanged,
+                   this, &AbstractWorldTool::updateEnabledState);
+    if (newDocument)
+        connect(newDocument, &Document::fileNameChanged,
+                this, &AbstractWorldTool::updateEnabledState);
+}
+
 void AbstractWorldTool::updateEnabledState()
 {
     const bool hasWorlds = !WorldManager::instance().worlds().isEmpty();
-    const auto worldDocument = worldForMap(mapDocument());
-    setEnabled(mapDocument() && hasWorlds && (!worldDocument || worldDocument->world()->canBeModified()));
+    MapDocument *map = mapDocument();
+    const auto worldDocument = worldForMap(map);
 
-    // update toolbar actions
-    mAddMapToWorldAction->setEnabled(hasWorlds && !worldDocument);
-    mRemoveMapFromWorldAction->setEnabled(worldDocument);
+    // Maps that are not in a world can still be resized
+    setEnabled(mapCanBeResized(map));
+
+    // When the map is not in a world, only the action for creating a new
+    // world is shown, which guides the user to create one first
+    mNewWorldForMapAction->setVisible(!worldDocument);
+    mNewWorldForMapAction->setEnabled(map && !map->fileName().isEmpty() && !worldDocument);
+
+    mAddAnotherMapToWorldAction->setVisible(worldDocument);
     mAddAnotherMapToWorldAction->setEnabled(worldDocument);
+
+    mAddMapToWorldAction->setVisible(!worldDocument);
+    mAddMapToWorldAction->setEnabled(hasWorlds && !worldDocument);
+
+    mRemoveMapFromWorldAction->setVisible(worldDocument);
+    mRemoveMapFromWorldAction->setEnabled(worldDocument);
 }
 
 MapDocument *AbstractWorldTool::mapAt(const QPointF &pos) const
@@ -167,12 +265,52 @@ MapDocument *AbstractWorldTool::mapAt(const QPointF &pos) const
     return nullptr;
 }
 
+// Finds a resize handle near the cursor on any map, hit-tested in view
+// coordinates so the hit area matches the on-screen handle size at any zoom,
+// returning its index and setting mapDocument to the owning map, or -1 if none
+int AbstractWorldTool::resizeHandleNear(const QPointF &scenePos, MapDocument *&mapDocument) const
+{
+    const auto views = mapScene()->views();
+    if (views.isEmpty())
+        return -1;
+
+    const QTransform viewTransform = views.first()->viewportTransform();
+    const QPointF viewPos = viewTransform.map(scenePos);
+    const qreal radius = Utils::dpiScaled(10.0);
+
+    const auto items = mapScene()->items();
+    for (QGraphicsItem *item : items) {
+        auto mapItem = qgraphicsitem_cast<MapItem*>(item);
+        if (!mapItem || !mapItem->isEnabled())
+            continue;
+
+        const auto handlePos = resizeHandlePositions(mapRect(mapItem->mapDocument()));
+        for (int i = 0; i < HandleCount; ++i) {
+            const QPointF delta = viewPos - viewTransform.map(handlePos[i]);
+            if (qAbs(delta.x()) <= radius && qAbs(delta.y()) <= radius) {
+                mapDocument = mapItem->mapDocument();
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
 bool AbstractWorldTool::mapCanBeMoved(MapDocument *mapDocument) const
 {
     if (!mapDocument)
         return false;
     auto worldDocument = worldForMap(mapDocument);
     return worldDocument && worldDocument->world()->canBeModified();
+}
+
+// Resizing only changes the map itself, so it also works without a world
+bool AbstractWorldTool::mapCanBeResized(MapDocument *mapDocument) const
+{
+    if (!mapDocument)
+        return false;
+    auto worldDocument = worldForMap(mapDocument);
+    return !worldDocument || worldDocument->world()->canBeModified();
 }
 
 QRect AbstractWorldTool::mapRect(MapDocument *mapDocument) const
@@ -218,6 +356,12 @@ void AbstractWorldTool::showContextMenu(QGraphicsSceneMouseEvent *event)
                            this, [=] { removeFromWorld(currentWorldDocument, targetFilename); });
         }
     } else {
+        menu.addAction(QIcon(QLatin1String(":images/24/world-map-add-other.png")),
+                       tr("New World Containing \"%1\"")
+                       .arg(mapDocument()->displayName()),
+                       this, &AbstractWorldTool::createWorldForCurrentMap)
+                ->setEnabled(!mapDocument()->fileName().isEmpty());
+
         populateAddToWorldMenu(menu);
     }
 
@@ -240,11 +384,8 @@ void AbstractWorldTool::populateAddToWorldMenu(QMenu &menu)
 
 void AbstractWorldTool::addAnotherMapToWorldAtCenter()
 {
-    DocumentManager *manager = DocumentManager::instance();
-    MapView *view = manager->viewForDocument(mapDocument());
-    const QRectF viewRect { view->viewport()->rect() };
-    const QRectF sceneViewRect = view->viewportTransform().inverted().mapRect(viewRect);
-    addAnotherMapToWorld(sceneViewRect.center().toPoint());
+    MapView *view = DocumentManager::instance()->viewForDocument(mapDocument());
+    addAnotherMapToWorld(view->viewCenter().toPoint());
 }
 
 void AbstractWorldTool::addAnotherMapToWorld(QPoint insertPos)
@@ -284,6 +425,24 @@ void AbstractWorldTool::addAnotherMapToWorld(QPoint insertPos)
 
     auto undoStack = worldDocument->undoStack();
     undoStack->push(new AddMapCommand(worldDocument, fileName, rect));
+}
+
+// Asks for a file name and creates a new world containing the current map.
+// Does nothing when the map is already part of a world, the user cancels or
+// the world could not be saved.
+void AbstractWorldTool::createWorldForCurrentMap()
+{
+    MapDocument *map = mapDocument();
+    if (!map || map->fileName().isEmpty() || worldForMap(map))
+        return;
+
+    const QFileInfo fileInfo(map->fileName());
+    const QString suggestedFileName
+            = fileInfo.dir().filePath(fileInfo.completeBaseName() +
+                                      QStringLiteral(".world"));
+
+    if (auto worldDocument = MainWindow::instance()->createNewWorld(suggestedFileName))
+        addToWorld(worldDocument);
 }
 
 void AbstractWorldTool::removeCurrentMapFromWorld()
@@ -329,6 +488,7 @@ QUndoStack *AbstractWorldTool::undoStack()
 
 void AbstractWorldTool::populateToolBar(QToolBar *toolBar)
 {
+    toolBar->addAction(mNewWorldForMapAction);
     toolBar->addAction(mAddAnotherMapToWorldAction);
     toolBar->addAction(mAddMapToWorldAction);
     toolBar->addAction(mRemoveMapFromWorldAction);
@@ -382,11 +542,24 @@ void AbstractWorldTool::setTargetMap(MapDocument *mapDocument)
 void AbstractWorldTool::updateSelectionRectangle()
 {
     if (mTargetMap) {
-        const auto rect = mapRect(mTargetMap);
-        mSelectionRectangle->setRectangle(rect);
-        mSelectionRectangle->setVisible(true);
+        setSelectionScreenRect(mapRect(mTargetMap));
     } else {
         mSelectionRectangle->setVisible(false);
+        for (auto &handle : mResizeHandles)
+            handle->setVisible(false);
+    }
+}
+
+void AbstractWorldTool::setSelectionScreenRect(const QRect &rect)
+{
+    mSelectionRectangle->setRectangle(rect);
+    mSelectionRectangle->setVisible(true);
+
+    // Place the eight handles on the corners and edge midpoints
+    const auto handlePos = resizeHandlePositions(rect);
+    for (int i = 0; i < HandleCount; ++i) {
+        mResizeHandles[i]->setPos(handlePos[i]);
+        mResizeHandles[i]->setVisible(true);
     }
 }
 

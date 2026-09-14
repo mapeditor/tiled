@@ -70,70 +70,102 @@ inline QString FileHelper::resolve(const QString &fileName) const
 }
 
 
+/**
+ * Converts between a value of type T and the QVariant stored in the session
+ * settings. Specialize this struct to support additional types.
+ *
+ * Function templates can't be partially specialized, so this struct is used to
+ * support container types like QList<T> and QSet<T> generically.
+ */
+template<typename T>
+struct SettingsValue
+{
+    static T from(const QVariant &value) { return value.value<T>(); }
+    static QVariant to(const T &value) { return QVariant::fromValue(value); }
+};
+
+/**
+ * Stores a sequence or set as a QVariantList, converting each element through
+ * its own SettingsValue conversion. This keeps container types serializable by
+ * the JSON settings backend, which does not support arbitrary QVariant types.
+ */
+template<typename Container>
+struct SettingsValueList
+{
+    static Container from(const QVariant &value)
+    {
+        const auto variantList = value.toList();
+        Container container;
+        container.reserve(variantList.size());
+        for (const auto &variantValue : variantList)
+            container << SettingsValue<typename Container::value_type>::from(variantValue);
+        return container;
+    }
+
+    static QVariant to(const Container &container)
+    {
+        QVariantList variantList;
+        variantList.reserve(container.size());
+        for (const auto &value : container)
+            variantList.append(SettingsValue<typename Container::value_type>::to(value));
+        return variantList;
+    }
+};
+
+template<typename T>
+struct SettingsValue<QList<T>> : SettingsValueList<QList<T>> {};
+
+template<typename T>
+struct SettingsValue<QSet<T>> : SettingsValueList<QSet<T>> {};
+
+template<>
+struct SettingsValue<QSize>
+{
+    static QSize from(const QVariant &value)
+    {
+        const auto map = value.toMap();
+        return QSize(map.value(QLatin1String("width")).toInt(),
+                     map.value(QLatin1String("height")).toInt());
+    }
+
+    static QVariant to(const QSize &size)
+    {
+        return QVariantMap {
+            { QLatin1String("width"), size.width() },
+            { QLatin1String("height"), size.height() }
+        };
+    }
+};
+
+template<>
+struct SettingsValue<QPointF>
+{
+    static QPointF from(const QVariant &value)
+    {
+        const auto map = value.toMap();
+        return QPointF(map.value(QLatin1String("x")).toReal(),
+                       map.value(QLatin1String("y")).toReal());
+    }
+
+    static QVariant to(const QPointF &point)
+    {
+        return QVariantMap {
+            { QLatin1String("x"), point.x() },
+            { QLatin1String("y"), point.y() }
+        };
+    }
+};
+
 template<typename T>
 T fromSettingsValue(const QVariant &value)
 {
-    return value.value<T>();
+    return SettingsValue<T>::from(value);
 }
 
 template<typename T>
 QVariant toSettingsValue(const T &value)
 {
-    return QVariant::fromValue(value);
-}
-
-template<>
-inline QSize fromSettingsValue<QSize>(const QVariant &value)
-{
-    const auto map = value.toMap();
-    return QSize(map.value(QLatin1String("width")).toInt(),
-                 map.value(QLatin1String("height")).toInt());
-}
-
-template<>
-inline QVariant toSettingsValue<QSize>(const QSize &size)
-{
-    return QVariantMap {
-        { QLatin1String("width"), size.width() },
-        { QLatin1String("height"), size.height() }
-    };
-}
-
-template<>
-inline QPointF fromSettingsValue<QPointF>(const QVariant &value)
-{
-    const auto map = value.toMap();
-    return QPointF(map.value(QLatin1String("x")).toReal(),
-                   map.value(QLatin1String("y")).toReal());
-}
-
-template<>
-inline QVariant toSettingsValue<QPointF>(const QPointF &point)
-{
-    return QVariantMap {
-        { QLatin1String("x"), point.x() },
-        { QLatin1String("y"), point.y() }
-    };
-}
-
-template<>
-inline QSet<int> fromSettingsValue<QSet<int>>(const QVariant &value)
-{
-    const auto variantList = value.toList();
-    QSet<int> set;
-    for (const auto &variantValue : variantList)
-        set.insert(variantValue.value<int>());
-    return set;
-}
-
-template<>
-inline QVariant toSettingsValue<QSet<int>>(const QSet<int> &set)
-{
-    QVariantList variantList;
-    variantList.reserve(set.size());
-    for (const int value : set)
-        variantList.append(value);
-    return variantList;
+    return SettingsValue<T>::to(value);
 }
 
 

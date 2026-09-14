@@ -65,6 +65,36 @@ public class Properties extends PropertiesData implements Cloneable {
     }
 
     /**
+     * setProperty with type.
+     *
+     * @param name a {@link java.lang.String} object.
+     * @param value a {@link java.lang.String} object.
+     * @param type a {@link org.mapeditor.core.PropertyType} object.
+     */
+    public void setProperty(String name, String value, PropertyType type) {
+        setProperty(name, value, type, null);
+    }
+
+    /**
+     * setProperty with type and custom property type name.
+     *
+     * @param name a {@link java.lang.String} object.
+     * @param value a {@link java.lang.String} object.
+     * @param type a {@link org.mapeditor.core.PropertyType} object.
+     * @param propertyTypeName the custom type name (optional).
+     */
+    public void setProperty(String name, String value, PropertyType type, String propertyTypeName) {
+        Property property = new Property();
+        property.setName(name);
+        property.setValue(value);
+        property.setType(type);
+        if (propertyTypeName != null) {
+            property.setPropertyTypeName(propertyTypeName);
+        }
+        properties.add(property);
+    }
+
+    /**
      * getProperty.
      *
      * @param name a {@link java.lang.String} object.
@@ -112,9 +142,7 @@ public class Properties extends PropertiesData implements Cloneable {
      * @return a {@link java.util.List} object.
      */
     public List<String> keySet() {
-        List<String> keys = new ArrayList<>();
-        properties.forEach(property -> keys.add(property.getName()));
-        return keys;
+        return properties.stream().map(Property::getName).collect(java.util.stream.Collectors.toList());
     }
 
     /**

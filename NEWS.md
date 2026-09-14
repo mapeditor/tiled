@@ -3,9 +3,18 @@
 * Added 'Collapse All' action and 'Only Expand to Current' mode to Project view (with rhythmcache, #4346)
 * Added command variables %exportfile and %exportpath (#4476)
 * Added a configurable world grid with snapping for maps (by Kanishka, #4534)
+* Added drag-to-resize for maps in the world view, usable even when they are not part of a world (by Kanishka, #4545, #4562)
+* Added an action to create a world containing the current map (by Kanishka, #4562)
 * Made switching to the previously selected tool when pressing its shortcut again optional and off by default (by dogboydog, #4540)
+* Persisted collapsed state of the properties groups in the session (#4561)
 * Scripting: Added 'tiled.cell' function, 'cell.flags' property and 'TileLayerEdit.setCell' function (#4538)
 * Scripting: Added MapObject.resolvedClassName() (by MatusGuy, #4529)
+* Fixed crash when the selection becomes empty while starting a move (#4536)
+* Fixed Properties view update on 'Reset Template Instance' and 'Replace With Template' actions
+* Fixed restoring of the layout for maximized windows on startup (#4580)
+* Linux: Added file associations for .tmj, .tsj, .tiled-project and .world files (by miffe, #4550)
+* Linux: Fixed the window icon on some Wayland compositors (by Balló György, #4567)
+* macOS: Declared UTIs and file associations for all supported Tiled formats (with Jyotish, #4469)
 * snap: Updated to Qt 6
 * Raised the minimum Qt version to 6.2 (drops Qt 5 support)
 

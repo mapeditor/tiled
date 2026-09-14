@@ -87,6 +87,7 @@ gettext_compact = True
 # This patterns also effect to html_static_path and html_extra_path
 exclude_patterns = [
     '.DS_Store',
+    '.venv',
     'README.md',
     'Thumbs.db',
     '_build',
