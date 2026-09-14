@@ -22,6 +22,8 @@
 
 #include "abstracttool.h"
 
+#include <QPointer>
+
 #include <array>
 #include <memory>
 
@@ -103,6 +105,7 @@ protected:
     void removeFromWorld(WorldDocument *worldDocument, const QString &mapFileName);
     void addToWorld(WorldDocument *worldDocument);
 
+    QSize worldGridSize(MapDocument *document) const;
     QSize snapSize(MapDocument *document) const;
     QPoint snapPoint(QPoint point, MapDocument *document) const;
 
@@ -124,7 +127,9 @@ private:
 
     void populateAddToWorldMenu(QMenu &menu);
 
-    MapDocument *mTargetMap = nullptr;
+    // A QPointer, since the target map may be a document other than the
+    // current one and can be closed while it is targeted
+    QPointer<MapDocument> mTargetMap;
 
     QAction *mNewWorldForMapAction;
     QAction *mAddAnotherMapToWorldAction;

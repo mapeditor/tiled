@@ -511,16 +511,23 @@ void AbstractWorldTool::populateToolBar(QToolBar *toolBar)
     });
 }
 
+// The world grid to snap to, or an empty size when the map is not in a world
+// with a grid or snapping to it is disabled.
+QSize AbstractWorldTool::worldGridSize(MapDocument *document) const
+{
+    if (Preferences::instance()->snapToWorldGrid())
+        if (auto worldDocument = worldForMap(document))
+            return worldDocument->world()->gridSize;
+
+    return QSize();
+}
+
 QSize AbstractWorldTool::snapSize(MapDocument *document) const
 {
     // Snap to the world grid when set and enabled, otherwise the tile size
-    if (Preferences::instance()->snapToWorldGrid()) {
-        if (auto worldDocument = worldForMap(document)) {
-            const QSize gridSize = worldDocument->world()->gridSize;
-            if (!gridSize.isEmpty())
-                return gridSize;
-        }
-    }
+    const QSize gridSize = worldGridSize(document);
+    if (!gridSize.isEmpty())
+        return gridSize;
 
     return document->map()->tileSize();
 }
@@ -535,7 +542,18 @@ QPoint AbstractWorldTool::snapPoint(QPoint point, MapDocument *document) const
 
 void AbstractWorldTool::setTargetMap(MapDocument *mapDocument)
 {
-    mTargetMap = mapDocument;
+    if (mTargetMap != mapDocument) {
+        if (mTargetMap)
+            disconnect(mTargetMap, &MapDocument::mapResized,
+                       this, &AbstractWorldTool::updateSelectionRectangle);
+
+        mTargetMap = mapDocument;
+
+        if (mTargetMap)
+            connect(mTargetMap, &MapDocument::mapResized,
+                    this, &AbstractWorldTool::updateSelectionRectangle);
+    }
+
     updateSelectionRectangle();
 }
 
