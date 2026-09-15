@@ -32,6 +32,7 @@
 #include "tilelayer.h"
 
 #include <QMap>
+#include <QString>
 
 namespace Tiled {
 
@@ -69,11 +70,13 @@ public:
                                 QRect bounds) const;
 
     unsigned invalidTile() const;
+    QString compressionError() const;
 
 private:
     QMap<unsigned, SharedTileset> mFirstGidToTileset;
 
     mutable unsigned mInvalidTile = 0;
+    mutable QString mCompressionError;
 };
 
 
@@ -108,6 +111,11 @@ inline bool GidMapper::isEmpty() const
 inline unsigned GidMapper::invalidTile() const
 {
     return mInvalidTile;
+}
+
+inline QString GidMapper::compressionError() const
+{
+    return mCompressionError;
 }
 
 } // namespace Tiled
