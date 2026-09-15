@@ -85,6 +85,7 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QRegularExpression>
+#include <QScreen>
 #include <QShortcut>
 #include <QStandardPaths>
 #include <QStatusBar>
@@ -105,8 +106,9 @@ using namespace Tiled;
 using namespace Tiled::Utils;
 
 namespace preferences {
-static Preference<QByteArray> mainWindowGeometry { "mainwindow/geometry" };
-static Preference<QByteArray> mainWindowState { "mainwindow/state" };
+static LayoutPreference<QByteArray> mainWindowGeometry { "mainwindow/geometry" };
+static LayoutPreference<QSize>      mainWindowSize { "mainwindow/size" };
+static LayoutPreference<QByteArray> mainWindowState { "mainwindow/state" };
 static Preference<bool> mainWindowLocked { "mainwindow/locked" };
 } // namespace preferences
 
@@ -2329,7 +2331,11 @@ void MainWindow::writeSettings()
         setWindowState(windowState() & ~Qt::WindowFullScreen);
 #endif
 
+    // The layout is saved for the resolution of the screen the window is on
+    Preferences::instance()->setLayoutResolution(screen()->size());
+
     preferences::mainWindowGeometry = saveGeometry();
+    preferences::mainWindowSize = normalGeometry().size();
     preferences::mainWindowState = saveState();
     preferences::mainWindowLocked = mLockLayout->isChecked();
 
@@ -2338,11 +2344,30 @@ void MainWindow::writeSettings()
 
 void MainWindow::readSettings()
 {
-    QByteArray geom = preferences::mainWindowGeometry;
-    if (!geom.isEmpty())
-        restoreGeometry(geom);
-    else
-        resize(Utils::dpiScaled(QSize(1200, 700)));
+    auto prefs = Preferences::instance();
+
+    // Restore the last used geometry first, since it determines the screen
+    // the window will appear on.
+    prefs->setLayoutResolution(QSize());
+    const QByteArray lastGeometry = preferences::mainWindowGeometry;
+    bool restored = !lastGeometry.isEmpty() && restoreGeometry(lastGeometry);
+
+    // Now restore the layout stored for the resolution of that screen, or
+    // the closest match when nothing was stored for it yet.
+    const QSize resolution = screen()->size();
+    prefs->setLayoutResolution(prefs->storedLayoutResolution(resolution));
+
+    const QByteArray geometry = preferences::mainWindowGeometry;
+    if (!geometry.isEmpty())
+        restored = restoreGeometry(geometry) || restored;
+    if (!restored) {
+        // A geometry saved for a different resolution may be rejected by
+        // restoreGeometry, so fall back to restoring just the stored size.
+        QSize size = preferences::mainWindowSize;
+        if (size.isEmpty())
+            size = Utils::dpiScaled(QSize(1200, 700));
+        resize(size.boundedTo(screen()->availableSize()));
+    }
 
     restoreLayout();
 

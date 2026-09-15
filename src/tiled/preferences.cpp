@@ -816,6 +816,97 @@ void Preferences::setWheelZoomsByDefault(bool mode)
     setValue(QLatin1String("Interface/WheelZoomsByDefault"), mode);
 }
 
+static const char layoutsGroup[] = "Layouts";
+
+static QString resolutionToString(QSize resolution)
+{
+    return QStringLiteral("%1x%2").arg(resolution.width()).arg(resolution.height());
+}
+
+static QSize resolutionFromString(const QString &string)
+{
+    const auto parts = string.split(QLatin1Char('x'));
+    if (parts.size() != 2)
+        return QSize();
+
+    bool widthOk = false;
+    bool heightOk = false;
+    const int width = parts.at(0).toInt(&widthOk);
+    const int height = parts.at(1).toInt(&heightOk);
+    if (!widthOk || !heightOk)
+        return QSize();
+
+    return QSize(width, height);
+}
+
+/**
+ * Sets the screen resolution for which layout preferences are read and
+ * written. When invalid, layout preferences use their plain keys, which hold
+ * the last saved layout.
+ */
+void Preferences::setLayoutResolution(QSize resolution)
+{
+    mLayoutResolution = resolution;
+}
+
+/**
+ * Returns the resolution of the stored layout that best matches the given
+ * screen resolution. This is the layout stored for exactly that resolution
+ * when available, otherwise the largest one that fits the screen, or failing
+ * that the smallest one.
+ *
+ * Returns an invalid size when no layout has been stored per resolution.
+ */
+QSize Preferences::storedLayoutResolution(QSize resolution)
+{
+    beginGroup(QLatin1String(layoutsGroup));
+    const QStringList groups = childGroups();
+    endGroup();
+
+    const auto area = [] (QSize size) { return qint64(size.width()) * size.height(); };
+    const auto fits = [resolution] (QSize size) {
+        return size.width() <= resolution.width() && size.height() <= resolution.height();
+    };
+
+    QSize best;
+
+    for (const QString &group : groups) {
+        const QSize stored = resolutionFromString(group);
+        if (!stored.isValid())
+            continue;
+        if (stored == resolution)
+            return stored;
+
+        if (!best.isValid()) {
+            best = stored;
+        } else if (fits(stored) != fits(best)) {
+            if (fits(stored))
+                best = stored;
+        } else if (fits(stored)) {
+            if (area(stored) > area(best))
+                best = stored;
+        } else if (area(stored) < area(best)) {
+            best = stored;
+        }
+    }
+
+    return best;
+}
+
+/**
+ * Returns the key under which a layout preference is stored for the current
+ * layout resolution. Returns the plain key when no resolution is set.
+ */
+QString Preferences::layoutKey(const char *key) const
+{
+    if (!mLayoutResolution.isValid())
+        return QLatin1String(key);
+
+    return QStringLiteral("%1/%2/%3").arg(QLatin1String(layoutsGroup),
+                                         resolutionToString(mLayoutResolution),
+                                         QLatin1String(key));
+}
+
 QString Preferences::homeLocation()
 {
     return QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
