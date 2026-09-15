@@ -140,8 +140,8 @@ jobs:
     - name: Build AppImage
       run: |
         cp LICENSE* COPYING *md AppDir/
-        wget --no-verbose "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
-        wget --no-verbose "https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage"
+        for i in {1..5}; do wget --no-verbose "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage" && break || sleep 5; done
+        for i in {1..5}; do wget --no-verbose "https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage" && break || sleep 5; done
         chmod +x linuxdeploy*.AppImage
         export EXTRA_QT_PLUGINS=svg
         export LD_LIBRARY_PATH=${QT_ROOT_DIR}/lib:$PWD/AppDir/usr/lib
