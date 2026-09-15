@@ -199,8 +199,11 @@ bool ScriptModule::setActiveAsset(EditableAsset *asset) const
     if (asset->checkReadOnly())
         return false;
 
-    if (auto document = asset->document())
-        return documentManager->switchToDocument(document);
+    if (auto document = asset->document()) {
+        if (!documentManager->switchToDocument(document))
+            documentManager->addDocument(document->sharedFromThis());
+        return true;
+    }
 
     if (auto document = asset->createDocument()) {
         documentManager->addDocument(document);
@@ -320,6 +323,31 @@ QCursor ScriptModule::cursor(ScriptImage *image, int hotX, int hotY)
 bool ScriptModule::versionLessThan(const QString &a, const QString &b)
 {
     return QVersionNumber::fromString(a) < QVersionNumber::fromString(b);
+}
+
+EditableAsset *ScriptModule::load(const QString &fileName) const
+{
+    auto documentManager = DocumentManager::maybeInstance();
+    if (!documentManager) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Editor not available"));
+        return nullptr;
+    }
+
+    QString error;
+    auto document = documentManager->loadDocument(fileName, nullptr, &error);
+    if (!document) {
+        ScriptManager::instance().throwError(error);
+        return nullptr;
+    }
+
+    auto editable = document->editable();
+
+    // When the document isn't open in the editor, the editable keeps it alive
+    // for as long as the script references it
+    if (!documentManager->isManaged(document.data()))
+        editable->holdDocument();
+
+    return editable;
 }
 
 EditableAsset *ScriptModule::open(const QString &fileName) const

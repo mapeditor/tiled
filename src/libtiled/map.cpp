@@ -66,6 +66,10 @@ Map::Map(Orientation orientation,
 
 Map::~Map()
 {
+    // The editable needs to be deleted before the layers, since it may need
+    // to detach their editables.
+    delete mEditable;
+
     qDeleteAll(mLayers);
 }
 

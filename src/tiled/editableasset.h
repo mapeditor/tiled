@@ -21,6 +21,7 @@
 #pragma once
 
 #include "editableobject.h"
+#include "document.h"
 
 #include <QJSValue>
 #include <QSharedPointer>
@@ -58,6 +59,7 @@ class EditableAsset : public EditableObject
 
 public:
     EditableAsset(Object *object, QObject *parent = nullptr);
+    ~EditableAsset() override;
 
     virtual QString fileName() const;
     bool isReadOnly() const override = 0;
@@ -76,9 +78,14 @@ public:
     Document *document() const;
 
     /**
-     * Creates a document for this asset.
+     * Creates a document for this asset. The editable keeps the document
+     * alive until it is opened in the editor (see holdDocument).
      */
     virtual QSharedPointer<Document> createDocument() = 0;
+
+    void holdDocument();
+    void releaseDocument();
+    bool isHoldingDocument() const;
 
 public slots:
     void undo();
@@ -92,15 +99,19 @@ protected:
     virtual void setDocument(Document *document);
 
 private:
-    friend class Document;
-
     Document *mDocument = nullptr;
+    DocumentPtr mHeldDocument;
 };
 
 
 inline Document *EditableAsset::document() const
 {
     return mDocument;
+}
+
+inline bool EditableAsset::isHoldingDocument() const
+{
+    return !mHeldDocument.isNull();
 }
 
 } // namespace Tiled

@@ -24,6 +24,7 @@
 #include "scriptmanager.h"
 
 #include <QCoreApplication>
+#include <QQmlEngine>
 #include <QUndoStack>
 
 namespace Tiled {
@@ -31,6 +32,19 @@ namespace Tiled {
 EditableAsset::EditableAsset(Object *object, QObject *parent)
     : EditableObject(this, object, parent)
 {
+}
+
+EditableAsset::~EditableAsset()
+{
+    if (mDocument) {
+        Q_ASSERT(mDocument->mEditable == this);
+        mDocument->mEditable = nullptr;
+
+        // When we're keeping the document alive, releasing it below deletes
+        // the wrapped object, which must not try to delete us again.
+        if (mHeldDocument)
+            setObject(nullptr);
+    }
 }
 
 QString EditableAsset::fileName() const
@@ -121,15 +135,51 @@ void EditableAsset::redo()
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Undo system not available for this asset"));
 }
 
+/**
+ * Makes this editable keep its document alive, and moves the editable to
+ * JavaScript ownership. This is used for assets that were loaded by a script
+ * without being opened in the editor, so that they stay alive for as long as
+ * the script references them.
+ */
+void EditableAsset::holdDocument()
+{
+    Q_ASSERT(mDocument);
+
+    mHeldDocument = mDocument->sharedFromThis();
+    QQmlEngine::setObjectOwnership(this, QQmlEngine::JavaScriptOwnership);
+}
+
+/**
+ * Stops keeping the document alive and moves the editable back to C++
+ * ownership, in which case it is deleted along with its document. Called when
+ * the document is taken over by the DocumentManager, which needs to make sure
+ * the document stays alive.
+ */
+void EditableAsset::releaseDocument()
+{
+    if (!mHeldDocument)
+        return;
+
+    moveOwnershipToCpp();
+    mHeldDocument.reset();
+}
+
 void EditableAsset::setDocument(Document *document)
 {
     if (mDocument == document)
         return;
 
-    if (mDocument)
+    Q_ASSERT(!mHeldDocument);
+
+    if (mDocument) {
         mDocument->disconnect(this);
+        mDocument->mEditable = nullptr;
+    }
 
     if (document) {
+        Q_ASSERT(!document->mEditable);
+        document->mEditable = this;
+
         connect(document, &Document::modifiedChanged,
                 this, &EditableAsset::modifiedChanged);
     }

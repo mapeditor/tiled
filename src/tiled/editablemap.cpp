@@ -49,14 +49,12 @@
 namespace Tiled {
 
 EditableMap::EditableMap(QObject *parent)
-    : EditableAsset(new Map(), parent)
+    : EditableMap(std::make_unique<Map>(), parent)
 {
-    mDetachedMap.reset(map());
 }
 
 EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
     : EditableAsset(mapDocument->map(), parent)
-    , mSelectedArea(new EditableSelectedArea(mapDocument, this))
 {
     setDocument(mapDocument);
 }
@@ -492,7 +490,7 @@ QPointF EditableMap::tileToPixel(qreal x, qreal y) const
 void EditableMap::setSize(int width, int height)
 {
     if (auto doc = mapDocument()) {
-        push(new ResizeMap(doc, QSize(width, height)));
+        push(new ResizeMap(doc, QSize(width, height), QPoint()));
     } else if (!checkReadOnly()) {
         map()->setWidth(width);
         map()->setHeight(height);
@@ -700,13 +698,11 @@ void EditableMap::setSelectedObjects(const QList<QObject *> &objects)
 QSharedPointer<Document> EditableMap::createDocument()
 {
     Q_ASSERT(mDetachedMap);
+    Q_ASSERT(!document());
 
     auto document = MapDocumentPtr::create(std::move(mDetachedMap));
-    document->setEditable(std::unique_ptr<EditableAsset>(this));
-
-    mSelectedArea = new EditableSelectedArea(document.data(), this);
-
-    moveOwnershipToCpp();
+    setDocument(document.data());
+    holdDocument();
 
     return document;
 }
@@ -721,6 +717,8 @@ void EditableMap::setDocument(Document *document)
     EditableAsset::setDocument(document);
 
     if (auto doc = mapDocument()) {
+        mSelectedArea = new EditableSelectedArea(mapDocument(), this);
+
         connect(doc, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
         connect(doc, &Document::changed, this, &EditableMap::documentChanged);
         connect(doc, &MapDocument::layerAdded, this, &EditableMap::attachLayer);
@@ -731,6 +729,9 @@ void EditableMap::setDocument(Document *document)
         connect(doc, &MapDocument::selectedObjectsChanged, this, &EditableMap::selectedObjectsChanged);
 
         connect(doc, &MapDocument::regionEdited, this, &EditableMap::onRegionEdited);
+    } else {
+        delete mSelectedArea;
+        mSelectedArea = nullptr;
     }
 }
 

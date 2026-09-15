@@ -563,16 +563,6 @@ void AbstractWorldTool::setSelectionScreenRect(const QRect &rect)
     }
 }
 
-// Move the camera back by offset, to keep the active map steady after it shifts
-void AbstractWorldTool::recenterView(const QPoint &offset)
-{
-    if (offset.isNull())
-        return;
-
-    MapView *view = DocumentManager::instance()->viewForDocument(mapDocument());
-    view->forceCenterOn(view->viewCenter() - offset);
-}
-
 } // namespace Tiled
 
 #include "moc_abstractworldtool.cpp"

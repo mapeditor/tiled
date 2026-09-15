@@ -204,6 +204,8 @@ private:
     void wangSetAdded(Tileset *tileset, int index);
     void wangSetRemoved(WangSet *wangSet);
 
+    friend class TilesetDocument;
+
     bool mReadOnly = false;
     SharedTileset mTileset;
 };
