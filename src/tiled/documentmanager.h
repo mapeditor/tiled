@@ -106,6 +106,7 @@ public:
     int insertDocument(int index, const DocumentPtr &document);
 
     bool isDocumentModified(Document *document) const;
+    bool isManaged(Document *document) const;
 
     DocumentPtr loadDocument(const QString &fileName,
                              FileFormat *fileFormat = nullptr,

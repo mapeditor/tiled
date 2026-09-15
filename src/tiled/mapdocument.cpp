@@ -138,6 +138,11 @@ MapDocument::~MapDocument()
 {
     // Clear any previously found issues in this document
     IssuesModel::instance().removeIssuesWithContext(this);
+
+    // Needs to be deleted before the Map instance is deleted, because it may
+    // cause script values to detach from the map, in which case they'll need
+    // to be able to copy the data.
+    delete mEditable;
 }
 
 bool MapDocument::save(const QString &fileName, QString *error)
@@ -290,9 +295,9 @@ QString MapDocument::displayName() const
     return displayName;
 }
 
-EditableAsset *MapDocument::editable()
+EditableAsset *MapDocument::createEditable()
 {
-    return EditableMap::get(this);
+    return new EditableMap(this);
 }
 
 /**

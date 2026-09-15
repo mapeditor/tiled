@@ -31,6 +31,7 @@
 #include "wangset.h"
 
 #include <QFileInfo>
+#include <QQmlEngine>
 #include <QUndoStack>
 
 namespace Tiled {
@@ -62,6 +63,21 @@ Document::~Document()
 
     if (auto manager = DocumentManager::maybeInstance())
         manager->unregisterDocument(this);
+
+    // Subclasses are responsible for deleting the editable
+    Q_ASSERT(!mEditable);
+}
+
+EditableAsset *Document::editable()
+{
+    if (!mEditable) {
+        mEditable = createEditable();
+        Q_ASSERT(mEditable->document() == this);
+
+        // Editables created from C++ are owned by their document
+        QQmlEngine::setObjectOwnership(mEditable, QQmlEngine::CppOwnership);
+    }
+    return mEditable;
 }
 
 void Document::setFileName(const QString &fileName)

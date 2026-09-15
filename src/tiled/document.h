@@ -95,7 +95,7 @@ public:
     QUndoStack *undoStack() const;
     bool isModified() const;
 
-    virtual EditableAsset *editable() = 0;
+    EditableAsset *editable();
 
     Object *currentObject() const { return mCurrentObject; }
     void setCurrentObject(Object *object);
@@ -151,6 +151,7 @@ signals:
     void ignoreBrokenLinksChanged(bool ignoreBrokenLinks);
 
 protected:
+    virtual EditableAsset *createEditable() = 0;
     virtual bool isModifiedImpl() const;
 
     void updateIsModified();
@@ -164,7 +165,18 @@ protected:
     Object *mCurrentObject = nullptr;   /**< Current properties object. */
     Document *mCurrentObjectDocument = nullptr;
 
+    /**
+     * The editable wrapper for this document. Generally owned by the
+     * document, but a script may instead keep the document alive through
+     * its editable (see EditableAsset::holdDocument).
+     *
+     * Subclasses need to delete it before deleting the wrapped object.
+     */
+    EditableAsset *mEditable = nullptr;
+
 private:
+    friend class EditableAsset;
+
     void currentObjectDocumentChanged(const ChangeEvent &change);
     void currentObjectDocumentDestroyed();
 
