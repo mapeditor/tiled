@@ -41,6 +41,7 @@ class WorldDocument final : public Document
 
 public:
     explicit WorldDocument(std::unique_ptr<World> world, QObject *parent = nullptr);
+    ~WorldDocument() override;
 
     // Document interface
     QString displayName() const override;
@@ -58,8 +59,6 @@ public:
 
     FileFormat *writerFormat() const override { return nullptr; }
 
-    EditableAsset *editable() override; // TODO: Check
-
     // Exporting not supported for worlds
     QString lastExportFileName() const override { return QString(); }
     void setLastExportFileName(const QString &) override {}
@@ -72,6 +71,9 @@ public:
 
 signals:
     void worldChanged();
+
+protected:
+    EditableAsset *createEditable() override;
 
 private:
     std::unique_ptr<World> mWorld;

@@ -702,22 +702,9 @@ QSharedPointer<Document> EditableMap::createDocument()
 
     auto document = MapDocumentPtr::create(std::move(mDetachedMap));
     setDocument(document.data());
+    holdDocument();
 
     return document;
-}
-
-EditableMap *EditableMap::get(MapDocument *mapDocument)
-{
-    if (!mapDocument)
-        return nullptr;
-
-    auto editable = EditableMap::find(mapDocument->map());
-    if (editable)
-        return editable;
-
-    editable = new EditableMap(mapDocument);
-    // editable->moveOwnershipToCpp();
-    return editable;
 }
 
 void EditableMap::setDocument(Document *document)
@@ -744,6 +731,7 @@ void EditableMap::setDocument(Document *document)
         connect(doc, &MapDocument::regionEdited, this, &EditableMap::onRegionEdited);
     } else {
         delete mSelectedArea;
+        mSelectedArea = nullptr;
     }
 }
 

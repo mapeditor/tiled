@@ -337,13 +337,20 @@ EditableAsset *ScriptModule::load(const QString &fileName) const
     }
 
     QString error;
-    if (auto document = documentManager->loadDocument(fileName, nullptr, &error)) {
-        return document->editable();
-    } else {
+    auto document = documentManager->loadDocument(fileName, nullptr, &error);
+    if (!document) {
         ScriptManager::instance().throwError(error);
+        return nullptr;
     }
 
-    return nullptr;
+    auto editable = document->editable();
+
+    // When the document isn't open in the editor, the editable keeps it alive
+    // for as long as the script references it
+    if (!documentManager->isManaged(document.data()))
+        editable->holdDocument();
+
+    return editable;
 }
 
 EditableAsset *ScriptModule::open(const QString &fileName) const

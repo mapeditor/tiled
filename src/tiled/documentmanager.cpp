@@ -593,9 +593,27 @@ int DocumentManager::insertDocument(int index, const DocumentPtr &document)
     if (auto *tilesetDocument = qobject_cast<TilesetDocument*>(documentPtr))
         connect(tilesetDocument, &TilesetDocument::tilesetNameChanged, this, &DocumentManager::tilesetNameChanged);
 
+    // A script may have been keeping the document alive
+    document->editable()->releaseDocument();
+
     emit documentOpened(documentPtr);
 
     return index;
+}
+
+/**
+ * Returns whether the given document is kept alive by the document manager,
+ * because it is open in a tab or because it is a tileset used by an open map.
+ */
+bool DocumentManager::isManaged(Document *document) const
+{
+    if (findDocument(document) != -1)
+        return true;
+
+    if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document))
+        return mTilesetDocumentsModel->contains(tilesetDocument);
+
+    return false;
 }
 
 /**
@@ -660,6 +678,13 @@ DocumentPtr DocumentManager::loadDocument(const QString &fileName,
         // It could be, that we have already loaded this tileset while loading some map.
         if (auto tilesetDocument = findTilesetDocument(fileName)) {
             document = tilesetDocument->sharedFromThis();
+        } else if (auto tileset = TilesetManager::instance()->findTileset(canonicalFilePath)) {
+            // The tileset may be in use by a map that is not open, for
+            // example when it was loaded by a script or as part of a world.
+            if (auto tilesetDocument = findTilesetDocument(tileset))
+                document = tilesetDocument->sharedFromThis();
+            else
+                document = TilesetDocumentPtr::create(tileset);
         } else {
             document = TilesetDocument::load(fileName, tilesetFormat, error);
         }
@@ -1233,6 +1258,14 @@ void DocumentManager::addToTilesetDocument(const SharedTileset &tileset, MapDocu
 {
     if (auto existingTilesetDocument = findTilesetDocument(tileset)) {
         existingTilesetDocument->addMapDocument(mapDocument);
+
+        // The document may not be known to us yet, when a script loaded it
+        if (!mTilesetDocumentsModel->contains(existingTilesetDocument)) {
+            mTilesetDocumentsModel->append(existingTilesetDocument);
+            emit tilesetDocumentAdded(existingTilesetDocument);
+
+            existingTilesetDocument->editable()->releaseDocument();
+        }
     } else {
         // Create TilesetDocument instance when it doesn't exist yet
         auto tilesetDocument = TilesetDocumentPtr::create(tileset);

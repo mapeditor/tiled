@@ -205,7 +205,6 @@ private:
     void wangSetRemoved(WangSet *wangSet);
 
     friend class TilesetDocument;
-    void setDocument(TilesetDocument *tilesetDocument);
 
     bool mReadOnly = false;
     SharedTileset mTileset;

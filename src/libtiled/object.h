@@ -169,15 +169,18 @@ public:
 
     QObject *editable() const { return mEditable; }
 
+protected:
+    /**
+     * The editable wrapper created for this object. Deleted along with the
+     * object, unless it is owned by the script engine.
+     */
+    QPointer<QObject> mEditable;
+
 private:
     const TypeId mTypeId;
     QString mClassName;
     Properties mProperties;
 
-    /**
-     * The editable wrapper created for this object.
-     */
-    QPointer<QObject> mEditable;
     friend class EditableObject;
 
     static SharedPropertyTypes mPropertyTypes;

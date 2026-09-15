@@ -37,6 +37,13 @@ ProjectDocument::ProjectDocument(std::unique_ptr<Project> project, QObject *pare
             this, [this] { mProject->save(); });
 }
 
+ProjectDocument::~ProjectDocument()
+{
+    // The editable needs to be deleted before the Project, since it may
+    // cause script values to detach from the project.
+    delete mEditable;
+}
+
 QString ProjectDocument::displayName() const
 {
     return mProject->fileName();
@@ -72,9 +79,9 @@ void ProjectDocument::setLastExportFileName(const QString &/* fileName */)
     // do nothing
 }
 
-EditableAsset *ProjectDocument::editable()
+EditableAsset *ProjectDocument::createEditable()
 {
-    return EditableProject::get(this);
+    return new EditableProject(this);
 }
 
 } // namespace Tiled
