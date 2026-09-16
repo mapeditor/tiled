@@ -93,6 +93,14 @@ public:
     bool labelForHoveredObject() const;
     void setLabelForHoveredObject(bool enabled);
 
+    enum ObjectReferenceLineStyle {
+        StraightLine,
+        CurvedLine
+    };
+
+    ObjectReferenceLineStyle objectReferenceLineStyle() const;
+    void setObjectReferenceLineStyle(ObjectReferenceLineStyle style);
+
     enum ApplicationStyle {
         SystemDefaultStyle,
         FusionStyle,
@@ -242,6 +250,7 @@ signals:
     void gridFineChanged(int gridFine);
     void gridMajorChanged(QSize gridMajor);
     void objectLineWidthChanged(qreal lineWidth);
+    void objectReferenceLineStyleChanged(ObjectReferenceLineStyle style);   // <-- pindahin ke sini
     void highlightCurrentLayerChanged(bool highlight);
     void highlightHoveredObjectChanged(bool highlight);
     void showTilesetGridChanged(bool showTilesetGrid);

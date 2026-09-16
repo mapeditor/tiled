@@ -243,6 +243,17 @@ qreal Preferences::objectLineWidth() const
     return get<qreal>("Interface/ObjectLineWidth", 2.0);
 }
 
+Preferences::ObjectReferenceLineStyle Preferences::objectReferenceLineStyle() const
+{
+    return static_cast<ObjectReferenceLineStyle>(get<int>("Interface/ObjectReferenceLineStyle", StraightLine));
+}
+
+void Preferences::setObjectReferenceLineStyle(ObjectReferenceLineStyle style)
+{
+    setValue(QLatin1String("Interface/ObjectReferenceLineStyle"), style);
+    emit objectReferenceLineStyleChanged(style);
+}
+
 bool Preferences::highlightCurrentLayer() const
 {
     return get("Interface/HighlightCurrentLayer", false);
