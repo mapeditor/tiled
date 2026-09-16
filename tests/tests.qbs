@@ -5,6 +5,7 @@ Project {
         "automapping",
         "mapreader",
         "properties",
+        "scriptmodule",
         "staggeredrenderer",
     ]
 }
