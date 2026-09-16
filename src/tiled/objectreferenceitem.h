@@ -21,6 +21,7 @@
 #pragma once
 
 #include <QGraphicsItem>
+#include <QPointF>
 
 namespace Tiled {
 
@@ -49,6 +50,7 @@ public:
     void syncWithSourceObject(const MapRenderer &renderer);
     void syncWithTargetObject(const MapRenderer &renderer);
     void updateColor();
+    void updateLineStyle();
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter,
@@ -57,6 +59,7 @@ public:
 
 private:
     void updateArrowRotation();
+    QPointF controlPoint() const;
 
     QPointF objectCenter(MapObject *object,
                          const MapRenderer &renderer) const;
