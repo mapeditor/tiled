@@ -43,12 +43,38 @@ using namespace Tiled;
 namespace session {
 static SessionOption<bool> visibleLayersOnly { "exportAsImage.visibleLayersOnly", true };
 static SessionOption<bool> useCurrentScale { "exportAsImage.useCurrentScale", false };
+static SessionOption<bool> selectedAreaOnly { "exportAsImage.selectedAreaOnly", false };
 static SessionOption<bool> drawTileGrid { "exportAsImage.drawTileGrid", false };
 static SessionOption<bool> drawObjectLabels { "exportAsImage.drawObjectLabels", false };
 static SessionOption<bool> includeBackgroundColor { "exportAsImage.includeBackgroundColor", false };
 } // namespace session
 
 QString ExportAsImageDialog::mPath;
+
+QRect ExportAsImageDialog::selectedAreaImageRect(const QRect &mapBounds,
+                                                const QRect &selectionBounds,
+                                                const QSize &imageSize)
+{
+    if (selectionBounds.isEmpty())
+        return QRect();
+
+    const QSize mapSize = mapBounds.size();
+    if (mapSize.isEmpty())
+        return QRect();
+
+    const qreal scale = qMin(static_cast<qreal>(imageSize.width()) / mapSize.width(),
+                            static_cast<qreal>(imageSize.height()) / mapSize.height());
+    const QSize scaledMapSize = mapSize * scale;
+    const QPointF centerOffset((imageSize.width() - scaledMapSize.width()) / 2.0,
+                               (imageSize.height() - scaledMapSize.height()) / 2.0);
+
+    const QPointF imageTopLeft = QPointF(selectionBounds.left() - mapBounds.left(),
+                                         selectionBounds.top() - mapBounds.top()) * scale + centerOffset;
+    const QSizeF imageSizeF(selectionBounds.width() * scale,
+                            selectionBounds.height() * scale);
+
+    return QRectF(imageTopLeft, imageSizeF).toAlignedRect();
+}
 
 ExportAsImageDialog::ExportAsImageDialog(MapDocument *mapDocument,
                                          const QString &fileName,
@@ -89,6 +115,8 @@ ExportAsImageDialog::ExportAsImageDialog(MapDocument *mapDocument,
 
     mUi->visibleLayersOnly->setChecked(session::visibleLayersOnly);
     mUi->currentZoomLevel->setChecked(session::useCurrentScale);
+    mUi->selectedAreaOnly->setChecked(session::selectedAreaOnly);
+    mUi->selectedAreaOnly->setEnabled(!mMapDocument->selectedArea().isEmpty());
     mUi->drawTileGrid->setChecked(session::drawTileGrid);
     mUi->drawObjectLabels->setChecked(session::drawObjectLabels);
     mUi->includeBackgroundColor->setChecked(session::includeBackgroundColor);
@@ -134,9 +162,17 @@ void ExportAsImageDialog::accept()
 
     session::visibleLayersOnly = mUi->visibleLayersOnly->isChecked();
     session::useCurrentScale = mUi->currentZoomLevel->isChecked();
+    session::selectedAreaOnly = mUi->selectedAreaOnly->isChecked();
     session::drawTileGrid = mUi->drawTileGrid->isChecked();
     session::drawObjectLabels = mUi->drawObjectLabels->isChecked();
     session::includeBackgroundColor = mUi->includeBackgroundColor->isChecked();
+
+    if (session::selectedAreaOnly && mMapDocument->selectedArea().isEmpty()) {
+        QMessageBox::warning(this,
+                             tr("Export as Image"),
+                             tr("Please select an area before exporting only the selected area."));
+        return;
+    }
 
     MiniMapRenderer miniMapRenderer(mMapDocument->map());
     miniMapRenderer.setGridColor(Preferences::instance()->gridColor());
@@ -175,10 +211,11 @@ void ExportAsImageDialog::accept()
 
     MapRenderer *renderer = mMapDocument->renderer();
 
-    QRect boundingRect = renderer->mapBoundingRect();
-    mMapDocument->map()->adjustBoundingRectForOffsetsAndImageLayers(boundingRect);
+    const QRect mapBounds = renderer->mapBoundingRect();
+    QRect exportBounds = mapBounds;
+    mMapDocument->map()->adjustBoundingRectForOffsetsAndImageLayers(exportBounds);
 
-    QSize imageSize = boundingRect.size();
+    QSize imageSize = exportBounds.size();
 
     if (session::useCurrentScale)
         imageSize *= mCurrentScale;
@@ -202,6 +239,14 @@ void ExportAsImageDialog::accept()
         }
 
         miniMapRenderer.renderToImage(image, renderFlags);
+
+        if (session::selectedAreaOnly) {
+            const QRect selectionBounds = renderer->boundingRect(mMapDocument->selectedArea().boundingRect());
+            const QRect cropRect = ExportAsImageDialog::selectedAreaImageRect(exportBounds,
+                                                                             selectionBounds,
+                                                                             image.size());
+            image = image.copy(cropRect);
+        }
 
         QImageWriter imageWriter(fileName);
         if (!imageWriter.write(image)) {
