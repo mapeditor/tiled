@@ -325,6 +325,16 @@ bool ScriptModule::versionLessThan(const QString &a, const QString &b)
     return QVersionNumber::fromString(a) < QVersionNumber::fromString(b);
 }
 
+/**
+ * Deliberately crashes Tiled by writing to an invalid address, for testing
+ * the crash reporting.
+ */
+void ScriptModule::__crash() const
+{
+    volatile int *invalidAddress = nullptr;
+    *invalidAddress = 0;
+}
+
 EditableAsset *ScriptModule::open(const QString &fileName) const
 {
     auto documentManager = DocumentManager::maybeInstance();
