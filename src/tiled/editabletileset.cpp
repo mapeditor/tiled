@@ -43,10 +43,24 @@ EditableTileset::EditableTileset(const QString &name, QObject *parent)
     setObject(mTileset.data());
 }
 
+/**
+ * Creates an editable that owns the given tileset, like a tileset created
+ * from script. Changes made through it can't be undone.
+ */
+EditableTileset::EditableTileset(const SharedTileset &tileset, QObject *parent)
+    : EditableAsset(nullptr, parent)
+    , mTileset(tileset)
+{
+    setObject(mTileset.data());
+}
+
+/**
+ * Creates a read-only editable for a tileset owned by something else, for
+ * example a map that is not open in the editor.
+ */
 EditableTileset::EditableTileset(const Tileset *tileset, QObject *parent)
     : EditableAsset(const_cast<Tileset*>(tileset), parent)
     , mReadOnly(true)
-    , mTileset(const_cast<Tileset*>(tileset)->sharedFromThis())    // keep alive
 {
 }
 
@@ -62,7 +76,7 @@ EditableTileset::~EditableTileset()
     detachTiles(tileset()->tiles());
     detachWangSets(tileset()->wangSets());
 
-    // Prevent owned object from trying to delete us again
+    // Prevent owned tileset from trying to delete us again
     if (mTileset)
         setObject(nullptr);
 }
@@ -225,7 +239,14 @@ TilesetDocument *EditableTileset::tilesetDocument() const
 
 QSharedPointer<Document> EditableTileset::createDocument()
 {
-    return TilesetDocumentPtr::create(mTileset);
+    Q_ASSERT(!document());
+
+    // The TilesetDocument constructor takes over this editable
+    auto document = TilesetDocumentPtr::create(tileset()->sharedFromThis());
+    Q_ASSERT(this->document() == document.data());
+    holdDocument();
+
+    return document;
 }
 
 EditableTileset *EditableTileset::get(Tileset *tileset)
@@ -417,6 +438,9 @@ void EditableTileset::setDocument(Document *document)
     EditableAsset::setDocument(document);
 
     if (auto doc = tilesetDocument()) {
+        // A read-only editable may have been created before the document
+        mReadOnly = false;
+
         connect(doc, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
         connect(doc, &Document::changed, this, &EditableTileset::documentChanged);
         connect(doc, &TilesetDocument::tilesAdded, this, &EditableTileset::attachTiles);

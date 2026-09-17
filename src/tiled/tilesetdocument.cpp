@@ -70,7 +70,7 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset)
     // If there already happens to be an editable for this tileset, take
     // ownership of it.
     if (auto editable = EditableTileset::find(tileset.data())) {
-        setEditable(std::unique_ptr<EditableAsset>(editable));
+        editable->setDocument(this);
         QQmlEngine::setObjectOwnership(editable, QQmlEngine::CppOwnership);
     }
 
@@ -97,9 +97,9 @@ TilesetDocument::~TilesetDocument()
     sTilesetToDocument.remove(mTileset);
 
     // Needs to be deleted before the Tileset instance is deleted, because it
-    // may cause script values to detach from the map, in which case they'll
-    // need to be able to copy the data.
-    mEditable.reset();
+    // may cause script values to detach from the tileset, in which case
+    // they'll need to be able to copy the data.
+    delete mEditable;
 }
 
 bool TilesetDocument::save(const QString &fileName, QString *error)
@@ -270,9 +270,9 @@ void TilesetDocument::swapTileset(SharedTileset &tileset)
     emit tilesetChanged(mTileset.data());
 }
 
-std::unique_ptr<EditableAsset> TilesetDocument::createEditable()
+EditableAsset *TilesetDocument::createEditable()
 {
-    return std::make_unique<EditableTileset>(this, this);
+    return new EditableTileset(this);
 }
 
 /**

@@ -77,9 +77,6 @@ ScriptModule::ScriptModule(QObject *parent)
 
 ScriptModule::~ScriptModule()
 {
-    for (const auto &[id, action] : mRegisteredActions)
-        ActionManager::unregisterAction(action.get(), id);
-
     ActionManager::clearMenuExtensions();
 
     IssuesModel::instance().removeIssuesWithContext(this);
@@ -202,8 +199,11 @@ bool ScriptModule::setActiveAsset(EditableAsset *asset) const
     if (asset->checkReadOnly())
         return false;
 
-    if (auto document = asset->document())
-        return documentManager->switchToDocument(document);
+    if (auto document = asset->document()) {
+        if (!documentManager->switchToDocument(document))
+            documentManager->addDocument(document->sharedFromThis());
+        return true;
+    }
 
     if (auto document = asset->createDocument()) {
         documentManager->addDocument(document);
@@ -325,6 +325,31 @@ bool ScriptModule::versionLessThan(const QString &a, const QString &b)
     return QVersionNumber::fromString(a) < QVersionNumber::fromString(b);
 }
 
+EditableAsset *ScriptModule::load(const QString &fileName) const
+{
+    auto documentManager = DocumentManager::maybeInstance();
+    if (!documentManager) {
+        ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Editor not available"));
+        return nullptr;
+    }
+
+    QString error;
+    auto document = documentManager->loadDocument(fileName, nullptr, &error);
+    if (!document) {
+        ScriptManager::instance().throwError(error);
+        return nullptr;
+    }
+
+    auto editable = document->editable();
+
+    // When the document isn't open in the editor, the editable keeps it alive
+    // for as long as the script references it
+    if (!documentManager->isManaged(document.data()))
+        editable->holdDocument();
+
+    return editable;
+}
+
 EditableAsset *ScriptModule::open(const QString &fileName) const
 {
     auto documentManager = DocumentManager::maybeInstance();
@@ -417,19 +442,52 @@ ScriptedAction *ScriptModule::registerAction(const QByteArray &idName, QJSValue 
     }
 
     Id id { idName };
-    auto &action = mRegisteredActions[id];
+    auto it = mRegisteredActions.find(id);
 
-    // Remove any previously registered action with the same name
-    if (action) {
-        ActionManager::unregisterAction(action.get(), id);
+    if (it != mRegisteredActions.end()) {
+        // Remove any previously registered action with the same name
+        it->second.reset();
     } else if (ActionManager::findAction(id)) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Reserved ID"));
         return nullptr;
     }
 
+    auto &action = mRegisteredActions[id];
     action = std::make_unique<ScriptedAction>(id, callback, this);
-    ActionManager::registerAction(action.get(), id);
     return action.get();
+}
+
+/**
+ * Checks whether the given shortName is still available, reporting an error
+ * when it is already used by another file format.
+ *
+ * The format that is about to be replaced by a re-registration is excluded
+ * from this check, since it is still registered at this point.
+ */
+template<typename Format>
+static bool checkShortNameAvailable(const QString &shortName,
+                                    const Format *replacedFormat)
+{
+    const auto formats = PluginManager::objects<Format>();
+    for (auto format : formats) {
+        if (format != replacedFormat && format->shortName() == shortName) {
+            ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Reserved shortName: '%1'").arg(shortName));
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/**
+ * Returns the format currently registered for the given shortName, or nullptr
+ * when there is none.
+ */
+template<typename Container>
+static auto registeredFormat(const Container &formats, const QString &shortName)
+{
+    const auto it = formats.find(shortName);
+    return it != formats.end() ? it->second.get() : nullptr;
 }
 
 void ScriptModule::registerMapFormat(const QString &shortName, QJSValue mapFormatObject)
@@ -440,6 +498,9 @@ void ScriptModule::registerMapFormat(const QString &shortName, QJSValue mapForma
     }
 
     if (!ScriptedFileFormat::validateFileFormatObject(mapFormatObject))
+        return;
+
+    if (!checkShortNameAvailable<MapFormat>(shortName, registeredFormat(mRegisteredMapFormats, shortName)))
         return;
 
     auto &format = mRegisteredMapFormats[shortName];
@@ -454,6 +515,9 @@ void ScriptModule::registerTilesetFormat(const QString &shortName, QJSValue tile
     }
 
     if (!ScriptedFileFormat::validateFileFormatObject(tilesetFormatObject))
+        return;
+
+    if (!checkShortNameAvailable<TilesetFormat>(shortName, registeredFormat(mRegisteredTilesetFormats, shortName)))
         return;
 
     auto &format = mRegisteredTilesetFormats[shortName];

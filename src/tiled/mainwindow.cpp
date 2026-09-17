@@ -61,6 +61,7 @@
 #include "propertytypeseditor.h"
 #include "resizedialog.h"
 #include "scriptmanager.h"
+#include "scriptserver.h"
 #include "sentryhelper.h"
 #include "templatesdock.h"
 #include "tileset.h"
@@ -390,6 +391,26 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     mConsoleDock->setVisible(false);
     mIssuesDock->setVisible(false);
+
+    auto updateScriptServer = [this] (bool enabled) {
+        if (enabled || ScriptServer::forceEnabled) {
+            if (!mScriptServer) {
+                mScriptServer = new ScriptServer(this);
+                connect(mScriptServer, &ScriptServer::scriptReceived,
+                        mConsoleDock, &ConsoleDock::appendScript);
+                connect(mScriptServer, &ScriptServer::scriptEvaluated,
+                        mConsoleDock, [this] (const QString &, const ScriptManager::EvaluationResult &result) {
+                    if (result.hasResult)
+                        mConsoleDock->appendScriptResult(result.tempName, result.result);
+                });
+            }
+            mScriptServer->listen();
+        } else if (mScriptServer) {
+            mScriptServer->close();
+        }
+    };
+    updateScriptServer(preferences->scriptServerEnabled());
+    connect(preferences, &Preferences::scriptServerEnabledChanged, this, updateScriptServer);
 
     mMapEditor = new MapEditor;
     mTilesetEditor = new TilesetEditor;
@@ -2194,6 +2215,30 @@ void MainWindow::resetToDefaultLayout()
         editor->resetLayout();
 }
 
+/**
+ * Docks contributed by extensions are identified by their object name, which
+ * is set by QmlDock.
+ */
+static bool isExtensionDock(const QDockWidget *dockWidget)
+{
+    return dockWidget->objectName().startsWith(QLatin1String("qml."));
+}
+
+/**
+ * Returns the docks contributed by extensions to the given \a mainWindow.
+ */
+static QList<QDockWidget*> extensionDockWidgets(const QMainWindow *mainWindow)
+{
+    QList<QDockWidget*> extensionDocks;
+
+    const auto dockWidgets = mainWindow->findChildren<QDockWidget*>(QString(), Qt::FindDirectChildrenOnly);
+    for (auto dockWidget : dockWidgets)
+        if (isExtensionDock(dockWidget))
+            extensionDocks.append(dockWidget);
+
+    return extensionDocks;
+}
+
 void MainWindow::updateViewsAndToolbarsMenu()
 {
     mViewsAndToolbarsMenu->clear();
@@ -2202,9 +2247,19 @@ void MainWindow::updateViewsAndToolbarsMenu()
     mViewsAndToolbarsMenu->addAction(mConsoleDock->toggleViewAction());
     mViewsAndToolbarsMenu->addAction(mIssuesDock->toggleViewAction());
 
+    // Docks contributed by extensions
+    const auto extensionDocks = extensionDockWidgets(this);
+    for (auto dockWidget : extensionDocks)
+        mViewsAndToolbarsMenu->addAction(dockWidget->toggleViewAction());
+
     if (Editor *editor = mDocumentManager->currentEditor()) {
         mViewsAndToolbarsMenu->addSeparator();
-        const auto dockWidgets = editor->dockWidgets();
+        auto dockWidgets = editor->dockWidgets();
+
+        // Include docks contributed by extensions
+        if (auto editorWindow = qobject_cast<QMainWindow*>(editor->editorWidget()))
+            dockWidgets += extensionDockWidgets(editorWindow);
+
         for (auto dockWidget : dockWidgets)
             mViewsAndToolbarsMenu->addAction(dockWidget->toggleViewAction());
 
@@ -2604,8 +2659,13 @@ QList<QDockWidget *> MainWindow::allDockWidgets() const
     QList<QDockWidget*> docks = findChildren<QDockWidget*>(QString(), Qt::FindDirectChildrenOnly);
 
     const auto editors = mDocumentManager->editors();
-    for (Editor *editor : editors)
+    for (Editor *editor : editors) {
         docks += editor->dockWidgets();
+
+        // Include docks contributed by extensions
+        if (auto editorWindow = qobject_cast<QMainWindow*>(editor->editorWidget()))
+            docks += extensionDockWidgets(editorWindow);
+    }
 
     return docks;
 }

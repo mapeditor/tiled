@@ -61,7 +61,10 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QFile>
+#include <QQmlComponent>
+#include <QQmlContext>
 #include <QQmlEngine>
+#include <QQuickStyle>
 #include <QStandardPaths>
 #include <QStringDecoder>
 #include <QtDebug>
@@ -148,6 +151,14 @@ ScriptManager::ScriptManager(QObject *parent)
     }
 }
 
+ScriptManager::~ScriptManager()
+{
+    // Make sure any loaded QML extensions (which may reference the engine,
+    // for example through a QQuickWidget) are destroyed before the engine is
+    // deleted along with the other children.
+    mQmlExtensions.clear();
+}
+
 void ScriptManager::ensureInitialized()
 {
     if (!mEngine) {
@@ -175,6 +186,55 @@ QJSValue ScriptManager::evaluate(const QString &program,
     checkError(result, program);
 
     globalObject.deleteProperty(QStringLiteral("__filename"));
+    return result;
+}
+
+/**
+ * Evaluates the given program, capturing any output emitted while doing so.
+ *
+ * Errors are still reported through the LoggingInterface as usual, but they
+ * are not included in the captured output. Instead, the error message is
+ * available in the returned result. When the result is neither undefined nor
+ * an error, it is stored as a global temporary value.
+ */
+ScriptManager::EvaluationResult ScriptManager::evaluateCaptured(const QString &program,
+                                                                const QString &fileName)
+{
+    EvaluationResult result;
+
+    auto &logger = LoggingInterface::instance();
+    auto captureOutput = [&result] (LoggingInterface::OutputType type) {
+        return [&result, type] (const QString &message) {
+            result.output.append({ type, message });
+        };
+    };
+
+    QMetaObject::Connection connections[] = {
+        connect(&logger, &LoggingInterface::info, captureOutput(LoggingInterface::INFO)),
+        connect(&logger, &LoggingInterface::warning, captureOutput(LoggingInterface::WARNING)),
+        connect(&logger, &LoggingInterface::error, captureOutput(LoggingInterface::ERROR)),
+    };
+
+    QJSValue globalObject = mEngine->globalObject();
+    if (!fileName.isEmpty())
+        globalObject.setProperty(QStringLiteral("__filename"), fileName);
+
+    const QJSValue value = mEngine->evaluate(program, fileName);
+
+    globalObject.deleteProperty(QStringLiteral("__filename"));
+
+    for (const auto &connection : connections)
+        disconnect(connection);
+
+    if (value.isError()) {
+        result.error = errorString(value, program);
+        mModule->error(result.error);
+    } else if (!value.isUndefined()) {
+        result.tempName = createTempValue(value);
+        result.result = value.toString();
+        result.hasResult = true;
+    }
+
     return result;
 }
 
@@ -258,17 +318,56 @@ void ScriptManager::loadExtension(const QString &path)
 
     const QStringList nameFilters = {
         QLatin1String("*.js"),
-        QLatin1String("*.mjs")
+        QLatin1String("*.mjs"),
+        QLatin1String("*.qml")
     };
     const QDir dir(path);
-    const QStringList jsFiles = dir.entryList(nameFilters,
-                                              QDir::Files | QDir::Readable);
+    const QStringList scriptFiles = dir.entryList(nameFilters,
+                                                  QDir::Files | QDir::Readable);
 
-    for (const QString &jsFile : jsFiles) {
-        const QString absolutePath = dir.filePath(jsFile);
-        evaluateFileOrLoadModule(absolutePath);
+    for (const QString &scriptFile : scriptFiles) {
+        const QString absolutePath = dir.filePath(scriptFile);
+
+        if (scriptFile.endsWith(QLatin1String(".qml"), Qt::CaseInsensitive))
+            loadQmlExtension(absolutePath);
+        else
+            evaluateFileOrLoadModule(absolutePath);
+
         mWatcher.addPath(absolutePath);
     }
+}
+
+void ScriptManager::loadQmlExtension(const QString &fileName)
+{
+    // Since the platform-native Qt Quick Controls styles are not shipped
+    // with Tiled, make sure a deterministic style is used. Can be overridden
+    // using the QT_QUICK_CONTROLS_STYLE environment variable. Needs to be
+    // set up before the first extension using Qt Quick Controls is loaded.
+    // Note that QQuickStyle::name can't be used as a guard here, since it
+    // resolves and locks in the platform default style.
+    static bool styleInitialized = false;
+    if (!styleInitialized) {
+        styleInitialized = true;
+        if (qEnvironmentVariableIsEmpty("QT_QUICK_CONTROLS_STYLE"))
+            QQuickStyle::setStyle(QStringLiteral("Fusion"));
+    }
+
+    Tiled::INFO(tr("Loading '%1'").arg(fileName));
+
+    auto component = std::make_unique<QQmlComponent>(mEngine,
+                                                     QUrl::fromLocalFile(fileName));
+    if (component->isError()) {
+        onScriptWarnings(component->errors());
+        return;
+    }
+
+    std::unique_ptr<QObject> rootObject { component->create() };
+    if (!rootObject) {
+        onScriptWarnings(component->errors());
+        return;
+    }
+
+    mQmlExtensions.push_back({ std::move(component), std::move(rootObject) });
 }
 
 bool ScriptManager::checkError(QJSValue value, const QString &program)
@@ -276,6 +375,16 @@ bool ScriptManager::checkError(QJSValue value, const QString &program)
     if (!value.isError())
         return false;
 
+    mModule->error(errorString(value, program));
+    return true;
+}
+
+/**
+ * Returns the error message for the given error value, including a stack
+ * trace or line number where available.
+ */
+QString ScriptManager::errorString(const QJSValue &value, const QString &program)
+{
     QString errorString = value.toString();
     QString stack = value.property(QStringLiteral("stack")).toString();
 
@@ -300,8 +409,7 @@ bool ScriptManager::checkError(QJSValue value, const QString &program)
                 .arg(errorString);
     }
 
-    mModule->error(errorString);
-    return true;
+    return errorString;
 }
 
 void ScriptManager::throwError(const QString &message)
@@ -328,6 +436,10 @@ void ScriptManager::reset()
 
     mWatcher.clear();
 
+    // QML extensions may reference the engine, for example through a
+    // QQuickWidget, so they need to be destroyed before the engine.
+    mQmlExtensions.clear();
+
     delete mEngine;
     delete mModule;
 
@@ -348,6 +460,11 @@ void ScriptManager::initialize()
 
     mEngine = engine;
     mModule = new ScriptModule(this);
+
+    // Make the 'tiled' object available to expressions in QML extensions
+    // (the global object properties set below are not resolved by the QML
+    // context chain).
+    engine->rootContext()->setContextProperty(QStringLiteral("tiled"), mModule);
 
     QJSValue globalObject = engine->globalObject();
 
@@ -442,7 +559,13 @@ void ScriptManager::refreshExtensionsPaths()
 
     if (mEngine) {
         Tiled::INFO(tr("Extensions paths changed: %1").arg(mExtensionsPaths.join(QLatin1String(", "))));
-        reset();
+
+        // Never reset immediately, since this function can be reached from
+        // script or QML code. It is called when the project changes, which
+        // can be triggered by a script calling tiled.trigger("CloseProject")
+        // or by a button in a QML extension. Deleting the engine while it is
+        // still executing that code would crash.
+        mResetTimer.start();
     }
 }
 

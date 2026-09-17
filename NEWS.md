@@ -10,6 +10,7 @@
 * Scripting: Added 'tiled.cell' function, 'cell.flags' property and 'TileLayerEdit.setCell' function (#4538)
 * Scripting: Added MapObject.resolvedClassName() (by MatusGuy, #4529)
 * Scripting: Added Tileset.selectedTilesChanged signal (#4615)
+* Scripting: Added a script server and --eval, --eval-file and --script-server options, for running scripts in a running Tiled instance from the command-line
 * Fixed crash when the selection becomes empty while starting a move (#4536)
 * Fixed Properties view update on 'Reset Template Instance' and 'Replace With Template' actions
 * Fixed restoring of the layout for maximized windows on startup (#4580)

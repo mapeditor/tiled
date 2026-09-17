@@ -21,6 +21,7 @@
 #pragma once
 
 #include "filesystemwatcher.h"
+#include "logginginterface.h"
 #include "tilededitor_global.h"
 
 #include <QJSValue>
@@ -29,7 +30,11 @@
 #include <QScopedValueRollback>
 #include <QStringList>
 
-class QJSEngine;
+#include <memory>
+#include <vector>
+
+class QQmlComponent;
+class QQmlEngine;
 
 namespace Tiled {
 
@@ -58,6 +63,27 @@ public:
         {}
     };
 
+    /**
+     * A line of output emitted while a script was being evaluated.
+     */
+    struct OutputLine {
+        LoggingInterface::OutputType type;
+        QString text;
+    };
+
+    /**
+     * The result of evaluating a script with evaluateCaptured().
+     */
+    struct EvaluationResult {
+        QString tempName;           // global name assigned to the result ($0, $1, ...)
+        QString result;             // string representation of the result
+        QString error;              // error message, if evaluation failed
+        QList<OutputLine> output;   // output emitted during evaluation
+        bool hasResult = false;     // false when the result was undefined or an error
+
+        bool hasError() const { return !error.isNull(); }
+    };
+
     static ScriptManager &instance();
     static void deleteInstance();
 
@@ -68,10 +94,13 @@ public:
     const QString &extensionsPath() const;
 
     ScriptModule *module() const;
-    QJSEngine *engine() const;
+    QQmlEngine *engine() const;
 
     QJSValue evaluate(const QString &program,
                       const QString &fileName = QString(), int lineNumber = 1);
+
+    EvaluationResult evaluateCaptured(const QString &program,
+                                      const QString &fileName = QString());
 
     void evaluateFileOrLoadModule(const QString &fileName);
 
@@ -82,6 +111,7 @@ public:
     QString createTempValue(const QJSValue &value);
 
     bool checkError(QJSValue value, const QString &program = QString());
+    static QString errorString(const QJSValue &value, const QString &program = QString());
     void throwError(const QString &message);
     void throwNullArgError(int argNumber);
 
@@ -95,7 +125,7 @@ signals:
 
 private:
     explicit ScriptManager(QObject *parent = nullptr);
-    ~ScriptManager() override = default;
+    ~ScriptManager() override;
 
     void reset();
     void initialize();
@@ -106,11 +136,23 @@ private:
 
     void loadExtensions();
     void loadExtension(const QString &path);
+    void loadQmlExtension(const QString &fileName);
 
     QJSValue evaluateFile(const QString &fileName);
 
-    QJSEngine *mEngine = nullptr;
+    /**
+     * The object tree instantiated for a loaded QML extension file. The root
+     * object is destroyed before the component and both are destroyed before
+     * the engine.
+     */
+    struct QmlExtensionFile {
+        std::unique_ptr<QQmlComponent> component;
+        std::unique_ptr<QObject> rootObject;
+    };
+
+    QQmlEngine *mEngine = nullptr;
     ScriptModule *mModule = nullptr;
+    std::vector<QmlExtensionFile> mQmlExtensions;
     FileSystemWatcher mWatcher;
     QString mExtensionsPath;
     QStringList mExtensionsPaths;
@@ -135,7 +177,7 @@ inline ScriptModule *ScriptManager::module() const
     return mModule;
 }
 
-inline QJSEngine *ScriptManager::engine() const
+inline QQmlEngine *ScriptManager::engine() const
 {
     return mEngine;
 }

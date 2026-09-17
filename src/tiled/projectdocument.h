@@ -41,9 +41,11 @@ public:
     FileFormat *exportFormat() const override;
     QString lastExportFileName() const override;
     void setLastExportFileName(const QString &fileName) override;
-    std::unique_ptr<EditableAsset> createEditable() override;
 
     Project &project() { return *mProject; }
+
+protected:
+    EditableAsset *createEditable() override;
 
 private:
     std::unique_ptr<Project> mProject;

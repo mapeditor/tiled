@@ -4990,9 +4990,31 @@ declare namespace tiled {
   export function open(fileName: string): Asset | null;
 
   /**
+   * Loads the map or tileset with the given file name, without opening it
+   * in the editor. When the asset is already open or loaded, the existing
+   * instance is returned.
+   *
+   * This can be used to inspect or modify assets without showing them in
+   * the editor. Changes can be saved using {@link Asset.save}. To open a
+   * loaded asset in the editor, assign it to {@link activeAsset}. The
+   * tilesets used by a loaded map can be modified as well, and loading such
+   * a tileset by its file name returns the same instance.
+   *
+   * A loaded asset stays alive for as long as the script references it.
+   *
+   * Raises a script error when the file could not be loaded.
+   *
+   * @since 1.13
+   */
+  export function load(fileName: string): Asset;
+
+  /**
    * Closes the given asset without checking for unsaved changes (to
    * confirm the loss of any unsaved changes, set {@link activeAsset} and
    * trigger the "Close" action instead).
+   *
+   * A script that still references the asset can keep using it, as if it
+   * was loaded with {@link load}.
    */
   export function close(asset: Asset): boolean;
 
