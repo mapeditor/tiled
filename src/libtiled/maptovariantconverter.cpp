@@ -42,6 +42,7 @@ QVariant MapToVariantConverter::toVariant(const Map &map, const QDir &mapDir)
 {
     mDir = mapDir;
     mGidMapper.clear();
+    mError.clear();
 
     QVariantMap mapVariant;
 
@@ -136,6 +137,7 @@ QVariant MapToVariantConverter::toVariant(const Tileset &tileset,
                                           const QDir &directory)
 {
     mDir = directory;
+    mError.clear();
     return toVariant(tileset, 0);
 }
 
@@ -143,6 +145,7 @@ QVariant MapToVariantConverter::toVariant(const ObjectTemplate &objectTemplate,
                                           const QDir &directory)
 {
     mDir = directory;
+    mError.clear();
     QVariantMap objectTemplateVariant;
 
     objectTemplateVariant[QStringLiteral("type")] = QLatin1String("template");
@@ -577,9 +580,23 @@ QVariant MapToVariantConverter::toVariant(const MapObject &object) const
     if (notTemplateInstance || !className.isEmpty())
         objectVariant[FileFormat::classPropertyNameForObject()] = className;
 
-    if (notTemplateInstance || object.propertyChanged(MapObject::CellProperty))
-        if (!object.cell().isEmpty())
-            objectVariant[QStringLiteral("gid")] = mGidMapper.cellToGid(object.cell());
+    if (notTemplateInstance || object.propertyChanged(MapObject::CellProperty)) {
+        if (!object.cell().isEmpty()) {
+            const unsigned gid = mGidMapper.cellToGid(object.cell());
+            if (gid == 0) {
+                // The tileset referenced by this object is not part of the
+                // map, so there is no valid gid to write. Writing 0 would
+                // silently drop the tile (and any flip flags) on load.
+                if (mError.isEmpty()) {
+                    mError = tr("Object %1 references tileset '%2', which is not part of the map")
+                            .arg(object.id())
+                            .arg(object.cell().tileset()->name());
+                }
+            } else {
+                objectVariant[QStringLiteral("gid")] = gid;
+            }
+        }
+    }
 
     if (!object.isTemplateBase()) {
         objectVariant[QStringLiteral("x")] = object.x();
