@@ -33,6 +33,15 @@ namespace Tiled {
 
 Sentry *Sentry::sInstance;
 
+// We only use crash reporting, so discard any structured logs and metrics.
+// Since sentry-native 0.16.5 these can no longer be disabled through the
+// options.
+static sentry_value_t discardValue(sentry_value_t value, void *)
+{
+    sentry_value_decref(value);
+    return sentry_value_new_null();
+}
+
 Sentry::Sentry()
 {
     sInstance = this;
@@ -42,10 +51,8 @@ Sentry::Sentry()
     sentry_options_set_require_user_consent(options, true);
     sentry_options_set_release(options, "tiled@" AS_STRING(TILED_VERSION));
 
-    // We only use crash reporting (structured logs and metrics are enabled
-    // by default since sentry-native 0.14.0)
-    sentry_options_set_enable_logs(options, false);
-    sentry_options_set_enable_metrics(options, false);
+    sentry_options_set_before_send_log(options, discardValue, nullptr);
+    sentry_options_set_before_send_metric(options, discardValue, nullptr);
 #ifdef QT_DEBUG
     sentry_options_set_symbolize_stacktraces(options, true);
     sentry_options_set_debug(options, true);
@@ -72,7 +79,7 @@ Sentry::Sentry()
 
 Sentry::~Sentry()
 {
-    sentry_shutdown();
+    sentry_close();
     sInstance = nullptr;
 }
 
