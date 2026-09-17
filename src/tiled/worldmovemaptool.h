@@ -34,6 +34,9 @@ public:
     explicit WorldMoveMapTool(QObject *parent = nullptr);
     ~WorldMoveMapTool() override;
 
+    void activate(MapScene *scene) override;
+    void deactivate(MapScene *scene) override;
+
     void keyPressed(QKeyEvent *event) override;
     void mouseEntered() override;
     void mouseMoved(const QPointF &pos,
@@ -46,14 +49,21 @@ public:
 protected:
     void startResizing(MapDocument *map, int handle, const QPointF &scenePos);
     void startMoving(MapDocument *map, const QPointF &scenePos);
+    void startCreating(const QPointF &scenePos);
     void finishResizing();
     void finishMoving();
+    void finishCreating();
     void abortMoving();
     void abortResizing();
+    void abortCreating();
     void refreshCursor();
+
+    bool canCreateMap() const;
 
     void moveMap(MapDocument *document, QPoint moveBy);
     void updateResizingMap(const QPointF &pos, Qt::KeyboardModifiers modifiers);
+    void updateCreatingMap(const QPointF &pos, Qt::KeyboardModifiers modifiers);
+    void openUnsavedMap(MapDocument *map);
 
     // drag state
     MapDocument *mDraggingMap = nullptr;
@@ -69,6 +79,15 @@ protected:
     QPoint mResizeSceneOffset;
     QSize mResizeNewSize;
     QPoint mResizeOffset;
+
+    // map creation drag state, in world coordinates
+    bool mCreatingMap = false;
+    QPoint mCreateStartWorldPos;
+    QRect mCreateWorldRect;
+    std::unique_ptr<SelectionRectangle> mCreatePreview;
+
+    // an unsaved map that was clicked, opened on release
+    MapDocument *mClickedUnsavedMap = nullptr;
 };
 
 } // namespace Tiled
