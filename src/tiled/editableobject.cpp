@@ -54,7 +54,7 @@ void EditableObject::setPropertyImpl(const QString &name, const QVariant &value)
 {
     if (Document *doc = document())
         asset()->push(new SetProperty(doc, { mObject }, name, propertyValueFromScript(value)));
-    else
+    else if (!checkReadOnly())
         mObject->setProperty(name, propertyValueFromScript(value));
 }
 
@@ -68,7 +68,7 @@ void EditableObject::setPropertyImpl(const QStringList &path, const QVariant &va
     if (Document *doc = document())
         // todo: add support for array indices in path
         asset()->push(new SetProperty(doc, { mObject }, toPropertyPath(path), propertyValueFromScript(value)));
-    else
+    else if (!checkReadOnly())
         mObject->setProperty(toPropertyPath(path), propertyValueFromScript(value));
 }
 
@@ -76,7 +76,7 @@ void EditableObject::setProperties(const QVariantMap &properties)
 {
     if (Document *doc = document())
         asset()->push(new ChangeProperties(doc, QString(), mObject, propertyValueFromScript(properties)));
-    else
+    else if (!checkReadOnly())
         mObject->setProperties(propertyValueFromScript(properties));
 }
 

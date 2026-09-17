@@ -60,7 +60,7 @@ class EditableTileset final : public EditableAsset
     Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor)
     Q_PROPERTY(bool collection READ isCollection)   // deprecated
     Q_PROPERTY(bool isCollection READ isCollection)
-    Q_PROPERTY(QList<QObject*> selectedTiles READ selectedTiles WRITE setSelectedTiles)
+    Q_PROPERTY(QList<QObject*> selectedTiles READ selectedTiles WRITE setSelectedTiles NOTIFY selectedTilesChanged)
     Q_PROPERTY(Tileset::TransformationFlags transformationFlags READ transformationFlags WRITE setTransformationFlags)
 
 public:
@@ -112,6 +112,7 @@ public:
 
     Q_INVOKABLE explicit EditableTileset(const QString &name = QString(),
                                          QObject *parent = nullptr);
+    explicit EditableTileset(const SharedTileset &tileset, QObject *parent = nullptr);
     explicit EditableTileset(const Tileset *tileset, QObject *parent = nullptr);
     explicit EditableTileset(TilesetDocument *tilesetDocument,
                              QObject *parent = nullptr);
@@ -187,6 +188,9 @@ public slots:
     void setTransparentColor(const QColor &color);
     void setBackgroundColor(const QColor &color);
     void setTransformationFlags(Tileset::TransformationFlags flags);
+
+signals:
+    void selectedTilesChanged();
 
 protected:
     void setDocument(Document *document) override;

@@ -43,6 +43,21 @@ EditableTileset::EditableTileset(const QString &name, QObject *parent)
     setObject(mTileset.data());
 }
 
+/**
+ * Creates an editable that owns the given tileset, like a tileset created
+ * from script. Changes made through it can't be undone.
+ */
+EditableTileset::EditableTileset(const SharedTileset &tileset, QObject *parent)
+    : EditableAsset(nullptr, parent)
+    , mTileset(tileset)
+{
+    setObject(mTileset.data());
+}
+
+/**
+ * Creates a read-only editable for a tileset owned by something else, for
+ * example a map that is not open in the editor.
+ */
 EditableTileset::EditableTileset(const Tileset *tileset, QObject *parent)
     : EditableAsset(const_cast<Tileset*>(tileset), parent)
     , mReadOnly(true)
@@ -431,6 +446,7 @@ void EditableTileset::setDocument(Document *document)
         connect(doc, &TilesetDocument::tilesAdded, this, &EditableTileset::attachTiles);
         connect(doc, &TilesetDocument::tilesRemoved, this, &EditableTileset::detachTiles);
         connect(doc, &TilesetDocument::tileObjectGroupChanged, this, &EditableTileset::tileObjectGroupChanged);
+        connect(doc, &TilesetDocument::selectedTilesChanged, this, &EditableTileset::selectedTilesChanged);
         connect(doc->wangSetModel(), &TilesetWangSetModel::wangSetAdded, this, &EditableTileset::wangSetAdded);
         connect(doc->wangSetModel(), &TilesetWangSetModel::wangSetRemoved, this, &EditableTileset::wangSetRemoved);
     }
