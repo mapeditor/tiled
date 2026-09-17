@@ -165,7 +165,7 @@ signals:
     void selectedTilesChanged();
 
 protected:
-    std::unique_ptr<EditableAsset> createEditable() override;
+    EditableAsset *createEditable() override;
 
 private:
     void onPropertyAdded(Object *object, const QString &name);

@@ -55,6 +55,10 @@ Tileset::Tileset(QString name, int tileWidth, int tileHeight,
 
 Tileset::~Tileset()
 {
+    // The editable needs to be deleted before the tiles and Wang sets, since
+    // it may need to detach their editables.
+    delete mEditable;
+
     TilesetManager::instance()->removeTileset(this);
     qDeleteAll(mTiles);
     qDeleteAll(mWangSets);

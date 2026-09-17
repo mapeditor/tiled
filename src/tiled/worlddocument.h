@@ -41,7 +41,7 @@ class WorldDocument final : public Document
 
 public:
     explicit WorldDocument(std::unique_ptr<World> world, QObject *parent = nullptr);
-    ~WorldDocument();
+    ~WorldDocument() override;
 
     // Document interface
     QString displayName() const override;
@@ -72,10 +72,10 @@ public:
 signals:
     void worldChanged();
 
-private:
-    // Document interface
-    std::unique_ptr<EditableAsset> createEditable() override;
+protected:
+    EditableAsset *createEditable() override;
 
+private:
     std::unique_ptr<World> mWorld;
 };
 

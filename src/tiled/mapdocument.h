@@ -383,7 +383,7 @@ public slots:
     void deselectObjects(const QList<MapObject*> &objects);
 
 protected:
-    std::unique_ptr<EditableAsset> createEditable() override;
+    EditableAsset *createEditable() override;
 
 private:
     void onChanged(const ChangeEvent &change);

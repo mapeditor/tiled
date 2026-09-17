@@ -49,14 +49,12 @@
 namespace Tiled {
 
 EditableMap::EditableMap(QObject *parent)
-    : EditableAsset(new Map(), parent)
+    : EditableMap(std::make_unique<Map>(), parent)
 {
-    mDetachedMap.reset(map());
 }
 
 EditableMap::EditableMap(MapDocument *mapDocument, QObject *parent)
     : EditableAsset(mapDocument->map(), parent)
-    , mSelectedArea(new EditableSelectedArea(mapDocument, this))
 {
     setDocument(mapDocument);
 }
@@ -700,15 +698,95 @@ void EditableMap::setSelectedObjects(const QList<QObject *> &objects)
 QSharedPointer<Document> EditableMap::createDocument()
 {
     Q_ASSERT(mDetachedMap);
+    Q_ASSERT(!document());
 
     auto document = MapDocumentPtr::create(std::move(mDetachedMap));
-    document->setEditable(std::unique_ptr<EditableAsset>(this));
-
-    mSelectedArea = new EditableSelectedArea(document.data(), this);
-
-    moveOwnershipToCpp();
+    setDocument(document.data());
+    holdDocument();
 
     return document;
+}
+
+static TilesetDocumentPtr tilesetDocumentFor(const SharedTileset &tileset)
+{
+    if (auto document = TilesetDocument::findDocumentForTileset(tileset))
+        return document->sharedFromThis();
+    return TilesetDocumentPtr::create(tileset);
+}
+
+/**
+ * Besides the map document, also keeps documents for the map's tilesets
+ * alive, like the DocumentManager does for open maps. This makes the tilesets
+ * of a loaded map editable.
+ */
+void EditableMap::holdDocument()
+{
+    if (isHoldingDocument())
+        return;
+
+    EditableAsset::holdDocument();
+
+    holdTilesetDocuments();
+
+    auto doc = mapDocument();
+    connect(doc, &MapDocument::tilesetAdded, this, &EditableMap::tilesetAdded);
+    connect(doc, &MapDocument::tilesetRemoved, this, &EditableMap::tilesetRemoved);
+    connect(doc, &MapDocument::tilesetReplaced, this, &EditableMap::tilesetReplaced);
+}
+
+void EditableMap::releaseDocument()
+{
+    if (!isHoldingDocument())
+        return;
+
+    auto doc = mapDocument();
+    disconnect(doc, &MapDocument::tilesetAdded, this, &EditableMap::tilesetAdded);
+    disconnect(doc, &MapDocument::tilesetRemoved, this, &EditableMap::tilesetRemoved);
+    disconnect(doc, &MapDocument::tilesetReplaced, this, &EditableMap::tilesetReplaced);
+
+    // The DocumentManager has taken over the tileset documents by now
+    mTilesetDocuments.clear();
+
+    EditableAsset::releaseDocument();
+}
+
+void EditableMap::holdTilesetDocuments()
+{
+    QVector<TilesetDocumentPtr> tilesetDocuments;
+    for (const SharedTileset &tileset : map()->tilesets())
+        tilesetDocuments.append(tilesetDocumentFor(tileset));
+
+    for (const TilesetDocumentPtr &document : std::as_const(mTilesetDocuments))
+        if (!tilesetDocuments.contains(document))
+            document->editable()->holdDocumentIfReferenced();
+
+    // Assigned afterwards, so that documents that stay in use survive
+    mTilesetDocuments = std::move(tilesetDocuments);
+}
+
+void EditableMap::tilesetAdded(int index, Tileset *tileset)
+{
+    Q_UNUSED(index)
+    mTilesetDocuments.append(tilesetDocumentFor(tileset->sharedFromThis()));
+}
+
+void EditableMap::tilesetRemoved(Tileset *tileset)
+{
+    for (int i = mTilesetDocuments.size() - 1; i >= 0; --i) {
+        const TilesetDocumentPtr &document = mTilesetDocuments.at(i);
+        if (document->tileset().data() != tileset)
+            continue;
+
+        // A script may still reference the tileset
+        document->editable()->holdDocumentIfReferenced();
+        mTilesetDocuments.removeAt(i);
+    }
+}
+
+void EditableMap::tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset)
+{
+    tilesetAdded(index, tileset);
+    tilesetRemoved(oldTileset);
 }
 
 void EditableMap::setDocument(Document *document)
@@ -721,6 +799,8 @@ void EditableMap::setDocument(Document *document)
     EditableAsset::setDocument(document);
 
     if (auto doc = mapDocument()) {
+        mSelectedArea = new EditableSelectedArea(mapDocument(), this);
+
         connect(doc, &Document::fileNameChanged, this, &EditableAsset::fileNameChanged);
         connect(doc, &Document::changed, this, &EditableMap::documentChanged);
         connect(doc, &MapDocument::layerAdded, this, &EditableMap::attachLayer);
@@ -731,6 +811,9 @@ void EditableMap::setDocument(Document *document)
         connect(doc, &MapDocument::selectedObjectsChanged, this, &EditableMap::selectedObjectsChanged);
 
         connect(doc, &MapDocument::regionEdited, this, &EditableMap::onRegionEdited);
+    } else {
+        delete mSelectedArea;
+        mSelectedArea = nullptr;
     }
 }
 
@@ -746,6 +829,8 @@ void EditableMap::documentChanged(const ChangeEvent &change)
         break;
     case ChangeEvent::DocumentReloaded:
         setObject(mapDocument()->map());
+        if (isHoldingDocument())
+            holdTilesetDocuments();
         break;
     case ChangeEvent::MapChanged:
         if (static_cast<const MapChangeEvent&>(change).property == Map::OrientationProperty)
