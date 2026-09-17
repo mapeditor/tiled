@@ -82,8 +82,8 @@ public:
                          const QVector<MapObjectCell> &changes,
                          QUndoCommand *parent = nullptr);
 
-    void undo() override { swap(); }
-    void redo() override { swap(); }
+    void undo() override;
+    void redo() override;
 
 private:
     void swap();
