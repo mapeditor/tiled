@@ -112,6 +112,12 @@
               <?endif?>
             <?endif?>
 
+            <?ifdef Sentry ?>
+              <File Source="$(var.InstallRoot)\libsentry.dll"/>
+              <File Source="$(var.InstallRoot)\crashpad_handler.exe"/>
+              <File Source="$(var.InstallRoot)\crashpad_wer.dll"/>
+            <?endif?>
+
             <File Name="COPYING.txt" Source="$(var.RootDir)\COPYING"/>
             <File Name="AUTHORS.txt" Source="$(var.RootDir)\AUTHORS"/>
             <File Name="README.txt" Source="$(var.RootDir)\README.md"/>
