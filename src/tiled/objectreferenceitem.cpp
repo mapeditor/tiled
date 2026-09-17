@@ -30,6 +30,7 @@
 #include "utils.h"
 
 #include <QPainter>
+#include <QPainterPath>
 #include <QPen>
 #include <QVector2D>
 
@@ -147,16 +148,53 @@ void ObjectReferenceItem::updateColor()
     }
 }
 
+QPointF ObjectReferenceItem::controlPoint() const
+{
+    const QPointF mid = (mSourcePos + mTargetPos) / 2.0;
+    const QPointF delta = mTargetPos - mSourcePos;
+    const QPointF perpendicular(-delta.y(), delta.x()); // rotated 90°, same length as delta
+    constexpr qreal curveFactor = 0.25; // seberapa melengkung, silakan disesuaikan
+    return mid + perpendicular * curveFactor;
+}
+
+void ObjectReferenceItem::updateLineStyle()
+{
+    prepareGeometryChange();
+    updateArrowRotation();
+    update();
+}
+
 void ObjectReferenceItem::updateArrowRotation()
 {
-    qreal dx = mTargetPos.x() - mSourcePos.x();
-    qreal dy = mTargetPos.y() - mSourcePos.y();
+    QPointF tangentOrigin = mSourcePos;
+
+    if (Preferences::instance()->objectReferenceLineStyle() == Preferences::CurvedLine)
+        tangentOrigin = controlPoint();
+
+    qreal dx = mTargetPos.x() - tangentOrigin.x();
+    qreal dy = mTargetPos.y() - tangentOrigin.y();
     mArrowHead->setRotation(std::atan2(dy, dx) * 180 / M_PI);
 }
 
 QRectF ObjectReferenceItem::boundingRect() const
 {
-    return QRectF(mSourcePos, mTargetPos).normalized().adjusted(-5, -5, 5, 5);
+    QRectF rect;
+
+    if (Preferences::instance()->objectReferenceLineStyle() == Preferences::CurvedLine) {
+        QPainterPath path(mSourcePos);
+        path.quadTo(controlPoint(), mTargetPos);
+        rect = path.controlPointRect();
+    } else {
+        rect = QRectF(mSourcePos, mTargetPos).normalized();
+    }
+
+    // Margin generous enough to cover the arrow head, the current line
+    // width (which the user can change via Preferences), and the small
+    // shadow offset drawn in paint().
+    const qreal margin = ArrowHead::arrowHeadSize * 2
+            + Preferences::instance()->objectLineWidth() + 10;
+
+    return rect.adjusted(-margin, -margin, margin, margin);
 }
 
 void ObjectReferenceItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
@@ -170,29 +208,53 @@ void ObjectReferenceItem::paint(QPainter *painter, const QStyleOptionGraphicsIte
     auto shadowOffset = QPointF(shadowDist * 0.5, shadowDist * 0.5);
     auto devicePixelRatio = painter->device()->devicePixelRatioF();
     auto dashLength = std::ceil(Utils::dpiScaled(2) * devicePixelRatio);
-    auto lineLength = static_cast<qreal>(QVector2D(mTargetPos - mSourcePos).length());
-    auto dashOffset = lineLength * -0.5 * painterScale / lineWidth;
 
     auto pen = QPen(mColor, lineWidth, Qt::SolidLine, Qt::RoundCap);
     pen.setCosmetic(true);
     pen.setDashPattern({dashLength, dashLength});
-    pen.setDashOffset(dashOffset);
 
     auto shadowPen = pen;
     shadowPen.setColor(Qt::black);
 
-    auto direction = QVector2D(mTargetPos - mSourcePos).normalized().toPointF();
-    auto offset = direction * ArrowHead::arrowHeadSize / painterScale;
-    auto start = mSourcePos + offset;
-    auto end = mTargetPos - offset;
-
     painter->setRenderHint(QPainter::Antialiasing);
 
-    painter->setPen(shadowPen);
-    painter->drawLine(start + shadowOffset, end + shadowOffset);
+    const bool curved = Preferences::instance()->objectReferenceLineStyle() == Preferences::CurvedLine;
 
-    painter->setPen(pen);
-    painter->drawLine(start, end);
+    if (curved) {
+        const QPointF control = controlPoint();
+
+        auto startDir = QVector2D(control - mSourcePos).normalized().toPointF();
+        auto endDir = QVector2D(mTargetPos - control).normalized().toPointF();
+        auto start = mSourcePos + startDir * ArrowHead::arrowHeadSize / painterScale;
+        auto end = mTargetPos - endDir * ArrowHead::arrowHeadSize / painterScale;
+
+        QPainterPath path(start);
+        path.quadTo(control, end);
+
+        painter->setPen(shadowPen);
+        painter->translate(shadowOffset);
+        painter->drawPath(path);
+        painter->translate(-shadowOffset);
+
+        painter->setPen(pen);
+        painter->drawPath(path);
+    } else {
+        auto lineLength = static_cast<qreal>(QVector2D(mTargetPos - mSourcePos).length());
+        auto dashOffset = lineLength * -0.5 * painterScale / lineWidth;
+        pen.setDashOffset(dashOffset);
+        shadowPen.setDashOffset(dashOffset);
+
+        auto direction = QVector2D(mTargetPos - mSourcePos).normalized().toPointF();
+        auto offset = direction * ArrowHead::arrowHeadSize / painterScale;
+        auto start = mSourcePos + offset;
+        auto end = mTargetPos - offset;
+
+        painter->setPen(shadowPen);
+        painter->drawLine(start + shadowOffset, end + shadowOffset);
+
+        painter->setPen(pen);
+        painter->drawLine(start, end);
+    }
 }
 
 QPointF ObjectReferenceItem::objectCenter(MapObject *object, const MapRenderer &renderer) const

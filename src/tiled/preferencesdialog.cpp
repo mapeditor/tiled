@@ -72,6 +72,9 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
                                                   tr("Prefer Selected Layers"),
                                                   tr("Selected Layers Only") });
 
+    mUi->objectReferenceLineStyleCombo->addItems({ tr("Line"),
+                                                tr("Curve") });
+
     auto *pluginListModel = new PluginListModel(this);
     auto *pluginProxyModel = new QSortFilterProxyModel(this);
     pluginProxyModel->setSortLocaleAware(true);
@@ -153,6 +156,10 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
             this, &PreferencesDialog::styleComboChanged);
     connect(mUi->objectSelectionBehaviorCombo, &QComboBox::currentIndexChanged,
             this, [] (int index) { AbstractObjectTool::ourSelectionBehavior = static_cast<AbstractObjectTool::SelectionBehavior>(index); });
+    connect(mUi->objectReferenceLineStyleCombo, &QComboBox::currentIndexChanged,
+            this, [preferences] (int index) {
+        preferences->setObjectReferenceLineStyle(static_cast<Preferences::ObjectReferenceLineStyle>(index));
+    });
     connect(mUi->baseColor, &ColorButton::colorChanged,
             preferences, &Preferences::setBaseColor);
     connect(mUi->selectionColor, &ColorButton::colorChanged,
@@ -269,6 +276,7 @@ void PreferencesDialog::fromPreferences()
 
     mUi->styleCombo->setCurrentIndex(styleComboIndex);
     mUi->objectSelectionBehaviorCombo->setCurrentIndex(AbstractObjectTool::ourSelectionBehavior);
+    mUi->objectReferenceLineStyleCombo->setCurrentIndex(prefs->objectReferenceLineStyle());
     mUi->baseColor->setColor(prefs->baseColor());
     mUi->selectionColor->setColor(prefs->selectionColor());
     bool systemStyle = prefs->applicationStyle() == Preferences::SystemDefaultStyle;

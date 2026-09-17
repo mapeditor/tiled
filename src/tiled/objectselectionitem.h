@@ -110,6 +110,7 @@ private:
     void objectLabelVisibilityChanged();
     void showObjectReferencesChanged();
     void objectLineWidthChanged();
+    void objectReferenceLineStyleChanged();
 
     void sceneFontChanged();
 
