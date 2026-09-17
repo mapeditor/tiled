@@ -4996,7 +4996,9 @@ declare namespace tiled {
    *
    * This can be used to inspect or modify assets without showing them in
    * the editor. Changes can be saved using {@link Asset.save}. To open a
-   * loaded asset in the editor, assign it to {@link activeAsset}.
+   * loaded asset in the editor, assign it to {@link activeAsset}. The
+   * tilesets used by a loaded map can be modified as well, and loading such
+   * a tileset by its file name returns the same instance.
    *
    * A loaded asset stays alive for as long as the script references it.
    *
@@ -5010,6 +5012,9 @@ declare namespace tiled {
    * Closes the given asset without checking for unsaved changes (to
    * confirm the loss of any unsaved changes, set {@link activeAsset} and
    * trigger the "Close" action instead).
+   *
+   * A script that still references the asset can keep using it, as if it
+   * was loaded with {@link load}.
    */
   export function close(asset: Asset): boolean;
 

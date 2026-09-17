@@ -219,6 +219,7 @@ private:
     bool askForAdjustment(const Tileset &tileset);
 
     void addToTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
+    void handOverToScript(Document *document);
     void removeFromTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
 
     void updateSession() const;

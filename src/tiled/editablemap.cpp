@@ -707,6 +707,88 @@ QSharedPointer<Document> EditableMap::createDocument()
     return document;
 }
 
+static TilesetDocumentPtr tilesetDocumentFor(const SharedTileset &tileset)
+{
+    if (auto document = TilesetDocument::findDocumentForTileset(tileset))
+        return document->sharedFromThis();
+    return TilesetDocumentPtr::create(tileset);
+}
+
+/**
+ * Besides the map document, also keeps documents for the map's tilesets
+ * alive, like the DocumentManager does for open maps. This makes the tilesets
+ * of a loaded map editable.
+ */
+void EditableMap::holdDocument()
+{
+    if (isHoldingDocument())
+        return;
+
+    EditableAsset::holdDocument();
+
+    holdTilesetDocuments();
+
+    auto doc = mapDocument();
+    connect(doc, &MapDocument::tilesetAdded, this, &EditableMap::tilesetAdded);
+    connect(doc, &MapDocument::tilesetRemoved, this, &EditableMap::tilesetRemoved);
+    connect(doc, &MapDocument::tilesetReplaced, this, &EditableMap::tilesetReplaced);
+}
+
+void EditableMap::releaseDocument()
+{
+    if (!isHoldingDocument())
+        return;
+
+    auto doc = mapDocument();
+    disconnect(doc, &MapDocument::tilesetAdded, this, &EditableMap::tilesetAdded);
+    disconnect(doc, &MapDocument::tilesetRemoved, this, &EditableMap::tilesetRemoved);
+    disconnect(doc, &MapDocument::tilesetReplaced, this, &EditableMap::tilesetReplaced);
+
+    // The DocumentManager has taken over the tileset documents by now
+    mTilesetDocuments.clear();
+
+    EditableAsset::releaseDocument();
+}
+
+void EditableMap::holdTilesetDocuments()
+{
+    QVector<TilesetDocumentPtr> tilesetDocuments;
+    for (const SharedTileset &tileset : map()->tilesets())
+        tilesetDocuments.append(tilesetDocumentFor(tileset));
+
+    for (const TilesetDocumentPtr &document : std::as_const(mTilesetDocuments))
+        if (!tilesetDocuments.contains(document))
+            document->editable()->holdDocumentIfReferenced();
+
+    // Assigned afterwards, so that documents that stay in use survive
+    mTilesetDocuments = std::move(tilesetDocuments);
+}
+
+void EditableMap::tilesetAdded(int index, Tileset *tileset)
+{
+    Q_UNUSED(index)
+    mTilesetDocuments.append(tilesetDocumentFor(tileset->sharedFromThis()));
+}
+
+void EditableMap::tilesetRemoved(Tileset *tileset)
+{
+    for (int i = mTilesetDocuments.size() - 1; i >= 0; --i) {
+        const TilesetDocumentPtr &document = mTilesetDocuments.at(i);
+        if (document->tileset().data() != tileset)
+            continue;
+
+        // A script may still reference the tileset
+        document->editable()->holdDocumentIfReferenced();
+        mTilesetDocuments.removeAt(i);
+    }
+}
+
+void EditableMap::tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset)
+{
+    tilesetAdded(index, tileset);
+    tilesetRemoved(oldTileset);
+}
+
 void EditableMap::setDocument(Document *document)
 {
     Q_ASSERT(!document || document->type() == Document::MapDocumentType);
@@ -747,6 +829,8 @@ void EditableMap::documentChanged(const ChangeEvent &change)
         break;
     case ChangeEvent::DocumentReloaded:
         setObject(mapDocument()->map());
+        if (isHoldingDocument())
+            holdTilesetDocuments();
         break;
     case ChangeEvent::MapChanged:
         if (static_cast<const MapChangeEvent&>(change).property == Map::OrientationProperty)

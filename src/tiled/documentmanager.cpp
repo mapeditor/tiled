@@ -901,15 +901,28 @@ void DocumentManager::closeDocumentAt(int index)
     if (auto mapDocument = qobject_cast<MapDocument*>(document.data())) {
         for (const SharedTileset &tileset : mapDocument->map()->tilesets())
             removeFromTilesetDocument(tileset, mapDocument);
+
+        handOverToScript(mapDocument);
     } else if (auto tilesetDocument = qobject_cast<TilesetDocument*>(document.data())) {
         if (tilesetDocument->mapDocuments().isEmpty()) {
             mTilesetDocumentsModel->remove(tilesetDocument);
             emit tilesetDocumentRemoved(tilesetDocument);
+
+            handOverToScript(tilesetDocument);
         }
     }
 
     if (!document->fileName().isEmpty())
         Preferences::instance()->addRecentFile(document->fileName());
+}
+
+/**
+ * Called when the given document is no longer kept alive by the document
+ * manager. When a script still references it, the script keeps it alive.
+ */
+void DocumentManager::handOverToScript(Document *document)
+{
+    document->editable()->holdDocumentIfReferenced();
 }
 
 /**
@@ -1294,6 +1307,8 @@ void DocumentManager::removeFromTilesetDocument(const SharedTileset &tileset, Ma
         } else {
             mTilesetDocumentsModel->remove(tilesetDocument);
             emit tilesetDocumentRemoved(tilesetDocument);
+
+            handOverToScript(tilesetDocument);
         }
     }
 }

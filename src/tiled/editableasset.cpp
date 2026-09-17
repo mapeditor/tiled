@@ -164,6 +164,25 @@ void EditableAsset::releaseDocument()
     mHeldDocument.reset();
 }
 
+/**
+ * Called when the document is about to be no longer kept alive by whoever
+ * was managing it. When a script still references this editable, it takes
+ * over keeping the document alive and returns true. Otherwise, the editable
+ * is deleted along with the document.
+ */
+bool EditableAsset::holdDocumentIfReferenced()
+{
+    if (isHoldingDocument())
+        return true;
+
+    // Only when a live script wrapper exists
+    if (!moveOwnershipToJavaScript())
+        return false;
+
+    holdDocument();
+    return true;
+}
+
 void EditableAsset::setDocument(Document *document)
 {
     if (mDocument == document)

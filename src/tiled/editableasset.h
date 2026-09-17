@@ -83,8 +83,9 @@ public:
      */
     virtual QSharedPointer<Document> createDocument() = 0;
 
-    void holdDocument();
-    void releaseDocument();
+    virtual void holdDocument();
+    virtual void releaseDocument();
+    bool holdDocumentIfReferenced();
     bool isHoldingDocument() const;
 
 public slots:
