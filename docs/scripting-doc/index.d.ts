@@ -4289,6 +4289,13 @@ declare class Tileset extends Asset {
   selectedTiles: Tile[];
 
   /**
+   * The signal emitted when {@link selectedTiles} changes.
+   *
+   * @since 1.13
+   */
+  readonly selectedTilesChanged: Signal<void>;
+
+  /**
    * Constructs a new Tileset.
    */
   constructor(name?: string);
