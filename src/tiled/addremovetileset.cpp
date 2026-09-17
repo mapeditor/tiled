@@ -77,3 +77,19 @@ RemoveTileset::RemoveTileset(MapDocument *mapDocument, int index)
     setText(QCoreApplication::translate("Undo Commands",
                                         "Remove Tileset"));
 }
+
+
+void Tiled::addMissingTilesets(Document *document,
+                               const QSet<SharedTileset> &tilesets,
+                               QUndoCommand *parent)
+{
+    if (document->type() != Document::MapDocumentType)
+        return;
+
+    auto mapDocument = static_cast<MapDocument*>(document);
+    const auto &mapTilesets = mapDocument->map()->tilesets();
+
+    for (const SharedTileset &tileset : tilesets)
+        if (!mapTilesets.contains(tileset))
+            new AddTileset(mapDocument, tileset, parent);
+}

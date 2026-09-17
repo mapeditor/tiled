@@ -24,10 +24,12 @@
 #include "undocommands.h"
 
 #include <QCoreApplication>
+#include <QSet>
 #include <QUndoCommand>
 
 namespace Tiled {
 
+class Document;
 class MapDocument;
 
 /**
@@ -84,5 +86,17 @@ public:
     void redo() override
     { removeTileset(); }
 };
+
+/**
+ * Adds AddTileset child commands to \a parent for each of the given
+ * \a tilesets that is not yet part of the map. Does nothing when
+ * \a document is not a map document.
+ *
+ * This makes sure the map can refer to the tiles of these tilesets, for
+ * example when the tile of a template instance gets overridden.
+ */
+void addMissingTilesets(Document *document,
+                        const QSet<SharedTileset> &tilesets,
+                        QUndoCommand *parent);
 
 } // namespace Tiled
