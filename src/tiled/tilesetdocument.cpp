@@ -27,12 +27,14 @@
 #include "mapdocument.h"
 #include "tile.h"
 #include "tilesetformat.h"
+#include "tilesetmodel.h"
 #include "tilesetwangsetmodel.h"
 #include "wangcolormodel.h"
 #include "wangset.h"
 
 #include <QCoreApplication>
 #include <QFileInfo>
+#include <QItemSelectionModel>
 #include <QQmlEngine>
 #include <QUndoStack>
 
@@ -387,6 +389,22 @@ QList<Object *> TilesetDocument::currentObjects() const
     }
 
     return Document::currentObjects();
+}
+
+TilesetModel *TilesetDocument::tilesetModel()
+{
+    if (!mTilesetModel)
+        mTilesetModel = new TilesetModel(this, this);
+
+    return mTilesetModel;
+}
+
+QItemSelectionModel *TilesetDocument::tilesetSelectionModel()
+{
+    if (!mTilesetSelectionModel)
+        mTilesetSelectionModel = new QItemSelectionModel(tilesetModel(), this);
+
+    return mTilesetSelectionModel;
 }
 
 /**

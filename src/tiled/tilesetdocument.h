@@ -31,6 +31,8 @@
 #include <memory>
 #include <unordered_map>
 
+class QItemSelectionModel;
+
 namespace Tiled {
 
 class ObjectGroup;
@@ -38,6 +40,7 @@ class WangColor;
 
 class MapDocument;
 class TilesetDocument;
+class TilesetModel;
 class TilesetWangSetModel;
 class WangColorModel;
 
@@ -109,6 +112,8 @@ public:
 
     TilesetWangSetModel *wangSetModel() const { return mWangSetModel; }
 
+    TilesetModel *tilesetModel();
+    QItemSelectionModel *tilesetSelectionModel();
     WangColorModel *wangColorModel(WangSet *wangSet);
 
     void setTileImage(Tile *tile, const QPixmap &image, const QUrl &source);
@@ -178,6 +183,8 @@ private:
     SharedTileset mTileset;
     QList<MapDocument*> mMapDocuments;
 
+    TilesetModel *mTilesetModel = nullptr;
+    QItemSelectionModel *mTilesetSelectionModel = nullptr;
     TilesetWangSetModel *mWangSetModel;
     std::unordered_map<WangSet*, std::unique_ptr<WangColorModel>> mWangColorModels;
 
