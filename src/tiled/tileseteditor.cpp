@@ -595,8 +595,11 @@ void TilesetEditor::currentChanged(const QModelIndex &index)
 void TilesetEditor::indexPressed(const QModelIndex &index)
 {
     TilesetView *view = currentTilesetView();
-    if (Tile *tile = view->tilesetModel()->tileAt(index))
+    if (Tile *tile = view->tilesetModel()->tileAt(index)) {
         mCurrentTilesetDocument->setCurrentObject(tile);
+        if (mCurrentTilesetDocument)
+            mCurrentTilesetDocument->setLastFocusedTile(tile);
+    }
 }
 
 void TilesetEditor::saveDocumentState(TilesetDocument *tilesetDocument) const
@@ -726,8 +729,11 @@ void TilesetEditor::setCurrentTile(Tile *tile)
     mCurrentTile = tile;
     emit currentTileChanged(tile);
 
-    if (tile)
+    if (tile) {
         mCurrentTilesetDocument->setCurrentObject(tile);
+        if (mCurrentTilesetDocument)
+            mCurrentTilesetDocument->setLastFocusedTile(tile);
+    }
 }
 
 void TilesetEditor::retranslateUi()
@@ -999,8 +1005,8 @@ void TilesetEditor::setEditWang(bool editWang)
 
 void TilesetEditor::onCurrentWangSetChanged(WangSet *wangSet)
 {
-    if (TilesetView *view = currentTilesetView())
-        view->setWangSet(wangSet);
+    if (mCurrentTilesetDocument)
+        mCurrentTilesetDocument->setSelectedWangSet(wangSet);
 
     emit currentWangSetChanged();
 }
@@ -1013,8 +1019,8 @@ void TilesetEditor::currentWangIdChanged(WangId wangId)
 
 void TilesetEditor::wangColorChanged(int color)
 {
-    if (TilesetView *view = currentTilesetView())
-        view->setWangColor(color);
+    if (mCurrentTilesetDocument)
+        mCurrentTilesetDocument->setSelectedWangColor(color);
 
     emit currentWangColorIndexChanged(color);
 }
