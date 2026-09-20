@@ -24,6 +24,7 @@
 #include "preferences.h"
 
 class QAction;
+class QShortcut;
 
 namespace Tiled {
 
@@ -106,10 +107,21 @@ private:
 
     void setActionsEnabled(bool enabled);
 
+    void updateShortcuts();
+
     QAction *mFlipHorizontal;
     QAction *mFlipVertical;
     QAction *mRotateLeft;
     QAction *mRotateRight;
+    QAction *mRaiseObject;
+    QAction *mLowerObject;
+    QAction *mRaiseObjectToTop;
+    QAction *mLowerObjectToBottom;
+
+    QShortcut *mRaiseShortcut = nullptr;
+    QShortcut *mLowerShortcut = nullptr;
+    QShortcut *mRaiseToTopShortcut = nullptr;
+    QShortcut *mLowerToBottomShortcut = nullptr;
 };
 
 } // namespace Tiled
