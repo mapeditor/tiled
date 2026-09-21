@@ -1859,7 +1859,7 @@ public:
             mObjectProperties->addProperty(mVisibleProperty);
 
         mObjectProperties->addProperty(mOpacityProperty);
-        mObjectProperties->addProperty(mColorProperty);   // <-- tambahkan
+        mObjectProperties->addProperty(mColorProperty);
 
         if (mapObject()->hasDimensions())
             mObjectProperties->addProperty(mBoundsProperty);
@@ -1987,7 +1987,7 @@ private:
     Property *mNameProperty;
     BoolProperty *mVisibleProperty;
     IntProperty *mOpacityProperty;
-    Property *mColorProperty;   // <-- tambahkan di sini
+    Property *mColorProperty;
     Property *mPositionProperty;
     Property *mBoundsProperty;
     FloatProperty *mRotationProperty;

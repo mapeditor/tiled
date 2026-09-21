@@ -123,7 +123,7 @@ public:
         ShapeProperty           = 1 << 12,
         TemplateProperty        = 1 << 13,
         CustomProperties        = 1 << 14,
-        ColorProperty            = 1 << 15,   // <-- tambahkan ini
+        ColorProperty           = 1 << 15,
         AllProperties           = 0xFF
     };
 
@@ -192,8 +192,8 @@ public:
     const Cell &cell() const;
     void setCell(const Cell &cell);
 
-    QColor color() const;              // <-- tambahkan
-    void setColor(const QColor &color); // <-- tambahkan
+    QColor color() const;
+    void setColor(const QColor &color);
 
     const ObjectTemplate *objectTemplate() const;
     void setObjectTemplate(const ObjectTemplate *objectTemplate);

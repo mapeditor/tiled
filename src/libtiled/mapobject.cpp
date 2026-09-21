@@ -337,7 +337,7 @@ void MapObject::setMapObjectProperty(Property property, const QVariant &value)
     case TextAlignmentProperty: mTextData.alignment = value.value<Qt::Alignment>(); break;
     case TextWordWrapProperty:  mTextData.wordWrap = value.toBool(); break;
     case TextColorProperty:     mTextData.color = value.value<QColor>(); break;
-    case ColorProperty:         mColor = value.value<QColor>(); break;   // <-- tambahkan
+    case ColorProperty:         mColor = value.value<QColor>(); break;
     case PositionProperty:      setPosition(value.toPointF()); break;
     case SizeProperty:          setSize(value.toSizeF()); break;
     case RotationProperty:      setRotation(value.toReal()); break;
@@ -437,8 +437,8 @@ void MapObject::syncWithTemplate()
     if (!propertyChanged(MapObject::CellProperty))
         setCell(base->cell());
 
-    if (!propertyChanged(MapObject::ColorProperty))     // <-- tambahkan blok ini
-           setColor(base->color());
+    if (!propertyChanged(MapObject::ColorProperty))
+        setColor(base->color());
 
     if (!propertyChanged(MapObject::RotationProperty))
         setRotation(base->rotation());
