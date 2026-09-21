@@ -182,7 +182,7 @@ private:
     TilesetDocument *mCurrentTilesetDocument = nullptr;
 
     Tile *mCurrentTile = nullptr;
-    bool mSettingSelectedTiles = false;
+    bool mSynchronizingSelection = false;
 };
 
 inline QAction *TilesetEditor::addTilesAction() const
