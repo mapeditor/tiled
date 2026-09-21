@@ -70,9 +70,9 @@ ScriptModule::ScriptModule(QObject *parent)
         connect(documentManager, &DocumentManager::documentSaved, this, &ScriptModule::documentSaved);
         connect(documentManager, &DocumentManager::documentAboutToClose, this, &ScriptModule::documentAboutToClose);
         connect(documentManager, &DocumentManager::currentDocumentChanged, this, &ScriptModule::currentDocumentChanged);
-
-        connect(&WorldManager::instance(), &WorldManager::worldsChanged, this, &ScriptModule::worldsChanged);
     }
+
+    connect(&WorldManager::instance(), &WorldManager::worldsChanged, this, &ScriptModule::worldsChanged);
 }
 
 ScriptModule::~ScriptModule()
@@ -756,10 +756,6 @@ QList<QObject *> ScriptModule::worlds() const
 {
     QList<QObject*> worlds;
 
-    auto documentManager = DocumentManager::maybeInstance();
-    if (!documentManager)
-        return worlds;
-
     for (auto &worldDocument : WorldManager::instance().worlds())
         worlds.append(worldDocument->editable());
 
@@ -768,7 +764,9 @@ QList<QObject *> ScriptModule::worlds() const
 
 void ScriptModule::loadWorld(const QString &fileName) const
 {
-    WorldManager::instance().loadWorld(fileName);
+    QString error;
+    if (!WorldManager::instance().loadWorld(fileName, &error))
+        ScriptManager::instance().throwError(error);
 }
 
 void ScriptModule::unloadWorld(const QString &fileName) const

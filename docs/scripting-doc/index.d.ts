@@ -5472,6 +5472,7 @@ declare namespace tiled {
 
   /**
    * Load a world contained in a .world file in the path fileName.
+   * Throws an error if the world could not be loaded.
    * @since 1.11
    */
   export function loadWorld(fileName: string): void;
