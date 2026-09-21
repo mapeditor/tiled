@@ -22,6 +22,9 @@
 
 
 #include "abstracttiletool.h"
+#include "tilelayer.h"
+
+#include <QRegion>
 
 class QAction;
 class QActionGroup;
@@ -40,9 +43,13 @@ public:
                               const QIcon &icon,
                               const QKeySequence &shortcut,
                               QObject *parent = nullptr);
+    ~AbstractTileSelectionTool() override;
+
+    void deactivate(MapScene *scene) override;
 
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
+    void mouseMoved(const QPointF &pos, Qt::KeyboardModifiers modifiers) override;
 
     void modifiersChanged(Qt::KeyboardModifiers modifiers) override;
 
@@ -60,7 +67,16 @@ protected:
         Intersect
     };
 
+    enum MoveState {
+        NoMove,
+        PickingUp,
+        MovingTiles,
+    };
+
     SelectionMode selectionMode() const { return mSelectionMode; }
+
+    bool isMovingTiles() const { return mMoveState != NoMove; }
+    bool tryStartMove(QGraphicsSceneMouseEvent *event);
 
     const QRegion &selectionPreviewRegion() const;
     void setSelectionPreview(const QRegion &region);
@@ -70,9 +86,19 @@ protected:
 
     void updateBrushVisibility() override;
 
+    void mapDocumentChanged(MapDocument *oldDocument,
+                            MapDocument *newDocument) override;
+
     bool mMouseDown = false;
 
 private:
+    void pickUpSelection();
+    void updateFloatingPosition();
+    void commitMove();
+    void cancelMove();
+    bool hasActiveSelection() const;
+    void updateMoveCursor();
+
     SelectionMode mSelectionMode;
     SelectionMode mDefaultMode;
 
@@ -81,6 +107,22 @@ private:
     QAction *mSubtract;
     QAction *mIntersect;
     QActionGroup *mActionGroup;
+
+    MoveState mMoveState = NoMove;
+    bool mDuplicateMode = false;
+
+    SharedTileLayer mFloatingTiles;
+    QRegion mOriginalSelection;
+    QPoint mPickupTilePos;
+    QPoint mCurrentTilePos;
+    QPointF mMoveScreenStart;
+    int mUndoIndexBeforeMove = -1;
+
+    static constexpr int MoveDragThreshold = 3;
+
+private slots:
+    void onUndoIndexChanged();
+    void onMoveSelectionChanged();
 };
 
 } // namespace Tiled
