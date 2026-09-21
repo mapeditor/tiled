@@ -1839,6 +1839,14 @@ public:
                     [this](const QColor &value) {
                         changeMapObject(MapObject::TextColorProperty, value);
                     });
+        mColorProperty = new ColorProperty(
+                    tr("Color"),
+                    [this] {
+                        return mapObject()->color();
+                    },
+                    [this](const QColor &value) {
+                        changeMapObject(MapObject::ColorProperty, value);
+                    });
 
         mObjectProperties = new GroupProperty(tr("Object"));
         mObjectProperties->addProperty(mIdProperty);
@@ -1851,6 +1859,7 @@ public:
             mObjectProperties->addProperty(mVisibleProperty);
 
         mObjectProperties->addProperty(mOpacityProperty);
+        mObjectProperties->addProperty(mColorProperty);   // <-- tambahkan
 
         if (mapObject()->hasDimensions())
             mObjectProperties->addProperty(mBoundsProperty);
@@ -1918,6 +1927,8 @@ private:
             emit mTextWordWrapProperty->valueChanged();
         if (change.properties & MapObject::TextColorProperty)
             emit mTextColorProperty->valueChanged();
+        if (change.properties & MapObject::ColorProperty)
+            emit mColorProperty->valueChanged();
     }
 
     void updateEnabledState()
@@ -1976,6 +1987,7 @@ private:
     Property *mNameProperty;
     BoolProperty *mVisibleProperty;
     IntProperty *mOpacityProperty;
+    Property *mColorProperty;   // <-- tambahkan di sini
     Property *mPositionProperty;
     Property *mBoundsProperty;
     FloatProperty *mRotationProperty;
