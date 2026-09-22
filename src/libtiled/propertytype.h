@@ -29,6 +29,7 @@
 #pragma once
 
 #include <QColor>
+#include <QHash>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QMetaType>
@@ -220,6 +221,7 @@ public:
     Types::const_iterator end() const { return mTypes.end(); }
 
 private:
+    void updateTypeIds(QVariant &value, const QHash<int, QString> &oldTypeIdToName);
     void ensureMembersResolvedHelper(const QVariant &value, const ExportContext &context);
     void ensureMembersResolved(const QVariantMap &valueMap, const ExportContext &context);
     void resolveValue(ClassPropertyType *classType, QVariant &value, const ExportContext &context);
