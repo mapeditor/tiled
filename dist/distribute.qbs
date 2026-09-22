@@ -6,6 +6,8 @@
 import qbs.File
 import qbs.FileInfo
 
+import "qmlmodules.js" as QmlModules
+
 Product {
     name: "distribute"
     type: "installable"
@@ -76,6 +78,11 @@ Product {
                     "Qt" + major + "Svg" + postfix,
                     "Qt" + major + "Widgets" + postfix
                 );
+
+                // Qt Quick libraries, needed by QML extensions
+                list = list.concat(QmlModules.existingLibraries(prefix, major,
+                                                               project.qtQuickLibraries,
+                                                               postfix));
             }
 
             if (qbs.targetOS.contains("linux")) {
@@ -122,6 +129,28 @@ Product {
             files.push("*d.dll");
         }
         return files;
+    }
+
+    property string qtQmlDir: FileInfo.joinPaths(Qt.core.binPath, "../qml")
+
+    Probe {
+        id: qmlModuleFiles
+        property string qmlDir: qtQmlDir
+        property stringList importDirs: project.qmlImportDirs
+        property stringList files
+        configure: {
+            files = QmlModules.moduleFiles(qmlDir, importDirs);
+            found = true;
+        }
+    }
+
+    Group {
+        name: "Qt QML Modules"
+        prefix: qtQmlDir + "/"
+        files: qmlModuleFiles.files
+        qbs.install: true
+        qbs.installDir: "qml"
+        qbs.installSourceBase: prefix
     }
 
     Group {
