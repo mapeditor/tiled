@@ -5092,6 +5092,14 @@ declare namespace tiled {
   export function log(text: string): void;
 
   /**
+   * Deliberately crashes Tiled, which can be used to test the crash
+   * reporting. Any unsaved changes are lost.
+   *
+   * @since 1.13
+   */
+  export function __crash(): void;
+
+  /**
    * Outputs the given text in the Console window as warning message and
    * creates an issue in the Issues window.
    *

@@ -54,6 +54,10 @@
 #include <QQmlEngine>
 #include <QVersionNumber>
 
+#ifdef TILED_SENTRY
+#include <sentry.h>
+#endif
+
 namespace Tiled {
 
 ScriptModule::ScriptModule(QObject *parent)
@@ -323,6 +327,19 @@ QCursor ScriptModule::cursor(ScriptImage *image, int hotX, int hotY)
 bool ScriptModule::versionLessThan(const QString &a, const QString &b)
 {
     return QVersionNumber::fromString(a) < QVersionNumber::fromString(b);
+}
+
+/**
+ * Deliberately crashes Tiled, for testing the crash reporting.
+ */
+void ScriptModule::__crash() const
+{
+#ifdef TILED_SENTRY
+    sentry_crash();
+#else
+    volatile int *invalidAddress = nullptr;
+    *invalidAddress = 0;
+#endif
 }
 
 EditableAsset *ScriptModule::open(const QString &fileName) const
