@@ -313,7 +313,7 @@ QVariant MapObject::mapObjectProperty(Property property) const
     case TextAlignmentProperty: return QVariant::fromValue(mTextData.alignment);
     case TextWordWrapProperty:  return mTextData.wordWrap;
     case TextColorProperty:     return mTextData.color;
-    case ColorProperty:         return mColor;     // color pada object
+    case ColorProperty:         return mColor;
     case PositionProperty:      return mPos;
     case SizeProperty:          return mSize;
     case RotationProperty:      return mRotation;
