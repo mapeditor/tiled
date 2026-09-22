@@ -70,6 +70,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QCheckBox" name="selectedAreaOnly">
+        <property name="text">
+         <string>Only export selected &amp;area</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QCheckBox" name="drawTileGrid">
         <property name="text">
          <string>&amp;Draw tile grid</string>
