@@ -378,12 +378,16 @@ void TilesetDocument::setSelectedTiles(const QList<Tile*> &selectedTiles)
 
 QList<Object *> TilesetDocument::currentObjects() const
 {
-    if (mCurrentObject->typeId() == Object::TileType && !mSelectedTiles.isEmpty()) {
-        QList<Object*> objects;
-        objects.reserve(mSelectedTiles.size());
-        for (Tile *tile : mSelectedTiles)
-            objects.append(tile);
-        return objects;
+    if (mCurrentObject && mCurrentObject->typeId() == Object::TileType) {
+        if (!mSelectedTiles.isEmpty()) {
+            QList<Object*> objects;
+            objects.reserve(mSelectedTiles.size());
+            for (Tile *tile : mSelectedTiles)
+                objects.append(tile);
+            return objects;
+        } else {
+            return {};
+        }
     }
 
     return Document::currentObjects();

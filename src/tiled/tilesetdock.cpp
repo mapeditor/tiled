@@ -63,6 +63,7 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QPushButton>
+#include <QScrollArea>
 #include <QScopedValueRollback>
 #include <QStackedWidget>
 #include <QStylePainter>
@@ -219,7 +220,7 @@ TilesetDock::TilesetDock(QWidget *parent)
     });
     connect(mTilesetFilterEdit, &QLineEdit::textChanged,
             mTilesetDocumentsFilterModel, &TilesetDocumentsFilterModel::setFilterText);
-    mTabBar->setUsesScrollButtons(true);
+    mTabBar->setUsesScrollButtons(false);
     mTabBar->setExpanding(false);
     mTabBar->setContextMenuPolicy(Qt::CustomContextMenu);
 
@@ -230,9 +231,16 @@ TilesetDock::TilesetDock(QWidget *parent)
 
     QWidget *w = new QWidget(this);
 
+    QScrollArea *tabScrollArea = new QScrollArea(this);
+    tabScrollArea->setWidget(mTabBar);
+    tabScrollArea->setWidgetResizable(true);
+    tabScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    tabScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    tabScrollArea->setFrameShape(QFrame::NoFrame);
+
     QHBoxLayout *horizontal = new QHBoxLayout;
     horizontal->setSpacing(0);
-    horizontal->addWidget(mTabBar);
+    horizontal->addWidget(tabScrollArea);
     horizontal->addWidget(mTilesetMenuButton);
 
     QVBoxLayout *vertical = new QVBoxLayout(w);
@@ -565,8 +573,10 @@ void TilesetDock::updateCurrentTiles()
         return;
 
     const QModelIndexList indexes = s->selection().indexes();
-    if (indexes.isEmpty())
+    if (indexes.isEmpty()) {
+        setCurrentTiles(nullptr);
         return;
+    }
 
     const QModelIndex &first = indexes.first();
     int minX = first.column();
@@ -868,10 +878,16 @@ void TilesetDock::setCurrentTile(Tile *tile)
     mCurrentTile = tile;
     emit currentTileChanged(tile);
 
-    if (mMapDocument && tile && !mNoChangeCurrentObject) {
-        int tilesetIndex = indexOfTileset(tile->tileset());
-        if (tilesetIndex != -1)
-            mMapDocument->setCurrentObject(tile, mTilesetDocuments.at(tilesetIndex));
+    if (mMapDocument && !mNoChangeCurrentObject) {
+        if (tile) {
+            int tilesetIndex = indexOfTileset(tile->tileset());
+            if (tilesetIndex != -1)
+                mMapDocument->setCurrentObject(tile, mTilesetDocuments.at(tilesetIndex));
+        } else {
+            Object *current = mMapDocument->currentObject();
+            if (current && current->typeId() == Object::TileType)
+                mMapDocument->setCurrentObject(nullptr);
+        }
     }
 }
 
