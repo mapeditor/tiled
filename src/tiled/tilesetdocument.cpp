@@ -297,7 +297,7 @@ void TilesetDocument::removeMapDocument(MapDocument *mapDocument)
 
 void TilesetDocument::setTilesetName(const QString &name)
 {
-    mTileset->setName(name);
+    mTileset->setName(name.trimmed());
     emit tilesetNameChanged(mTileset.data());
 
     for (MapDocument *mapDocument : mapDocuments())
