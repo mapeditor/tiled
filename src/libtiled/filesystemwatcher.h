@@ -34,6 +34,8 @@
 #include <QObject>
 #include <QSet>
 #include <QTimer>
+#include <QDateTime>
+#include <QFileInfo>
 
 class QFileSystemWatcher;
 
@@ -62,6 +64,7 @@ public:
 
     void addPath(const QString &path);
     void addPaths(const QStringList &paths);
+    static void addIgnoredFile(const QString &name);
     void removePath(const QString &path);
     void removePaths(const QStringList &paths);
     void clear();
@@ -90,6 +93,12 @@ private:
     QSet<QString> mChangedPaths;
     QTimer mChangedPathsTimer;
     bool mEnabled = true;
+
+    static QSet<QString> mIgnoredFileNames;
+    static bool isIgnored(const QString &pathOrName);
+    struct DirEntry { qint64 size; QDateTime mtime; };
+    QMap<QString, QMap<QString, DirEntry>> mDirSnapshots;
+    QMap<QString, DirEntry> snapshotDir(const QString &dir) const;
 };
 
 inline bool FileSystemWatcher::isEnabled() const
