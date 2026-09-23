@@ -21,6 +21,7 @@
 
 #include "flipmapobjects.h"
 
+#include "addremovetileset.h"
 #include "changeevents.h"
 #include "document.h"
 
@@ -51,10 +52,32 @@ FlipMapObjects::FlipMapObjects(Document *document,
     mOldChangedProperties.reserve(mMapObjects.size());
     mNewChangedProperties.reserve(mMapObjects.size());
 
+    QSet<SharedTileset> tilesets;
+
     for (const MapObject *object : mMapObjects) {
         mOldChangedProperties.append(object->changedProperties());
         mNewChangedProperties.append(object->changedProperties() | propertiesChangedByFlip);
+
+        if (Tileset *tileset = object->cell().tileset())
+            tilesets.insert(tileset->sharedFromThis());
     }
+
+    // Flipping a tile object makes its tile an explicit reference (for
+    // example when it is a template instance), so make sure the map can
+    // refer to the tileset.
+    addMissingTilesets(document, tilesets, this);
+}
+
+void FlipMapObjects::undo()
+{
+    flip();
+    QUndoCommand::undo(); // undo child commands
+}
+
+void FlipMapObjects::redo()
+{
+    QUndoCommand::redo(); // redo child commands
+    flip();
 }
 
 void FlipMapObjects::flip()
