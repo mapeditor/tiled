@@ -51,6 +51,7 @@
 
 #include <QtGui/private/qguiapplication_p.h>
 #include <QtGui/qpa/qplatformintegration.h>
+#include <QtGui/qpa/qwindowsysteminterface.h>
 
 #ifdef ERROR
 #undef ERROR
@@ -710,6 +711,12 @@ int main(int argc, char *argv[])
 
     MainWindow w;
     w.show();
+
+#ifdef Q_OS_WIN
+    // Let a maximized window reach its final size before the layout and
+    // session are restored (see MainWindow::resizeEvent)
+    QWindowSystemInterface::flushWindowSystemEvents();
+#endif
 
     a.setActivationWindow(&w);
 #ifdef Q_OS_WIN

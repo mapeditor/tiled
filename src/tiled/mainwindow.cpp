@@ -997,14 +997,14 @@ void MainWindow::dropEvent(QDropEvent *e)
 
 void MainWindow::resizeEvent(QResizeEvent *e)
 {
-    // When the window is maximized, we need to delay restoring the internal
-    // layout until after the second resize event (issue #590). This does not
-    // appear to affect macOS, where only a single resize event is observed.
-    if (!mHasRestoredLayout)
-#ifndef Q_OS_MAC
-        if (!isMaximized() || e->oldSize().isValid())
-#endif
+    // A maximized window only reaches its final size with the first
+    // spontaneous resize event, so the layout may need to be restored again
+    // to avoid it being clamped to the normal geometry (#4580).
+    if (mReapplyLayoutOnResize && e->spontaneous()) {
+        mReapplyLayoutOnResize = false;
+        if (isMaximized())
             restoreLayout();
+    }
 
     if (mPopupWidget)
         updatePopupGeometry(e->size());
@@ -2365,8 +2365,14 @@ void MainWindow::readSettings()
     else
         resize(Utils::dpiScaled(QSize(1200, 700)));
 
-    // Make sure layout is restored eventually (see resizeEvent)
-    QTimer::singleShot(200, this, &MainWindow::restoreLayout);
+    restoreLayout();
+
+    // A maximized window does not have its final size yet (see resizeEvent).
+    // Not needed on macOS, where the size is final already, nor on Windows,
+    // where pending window system events are flushed first (see main.cpp).
+#if !defined(Q_OS_MAC) && !defined(Q_OS_WIN)
+    mReapplyLayoutOnResize = isMaximized();
+#endif
 
     updateRecentFilesMenu();
     updateRecentProjectsMenu();
@@ -2376,10 +2382,6 @@ void MainWindow::readSettings()
 
 void MainWindow::restoreLayout()
 {
-    if (mHasRestoredLayout)
-        return;
-
-    mHasRestoredLayout = true;
     restoreState(preferences::mainWindowState);
     mDocumentManager->restoreState();
 }

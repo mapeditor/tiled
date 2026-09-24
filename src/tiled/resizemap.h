@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include <QPoint>
 #include <QSize>
 #include <QUndoCommand>
 
@@ -36,6 +37,7 @@ class ResizeMap : public QUndoCommand
 public:
     ResizeMap(MapDocument *mapDocument,
               QSize size,
+              QPoint offset,
               QUndoCommand *parent = nullptr);
 
     void undo() override;
@@ -46,6 +48,7 @@ private:
 
     MapDocument *mMapDocument;
     QSize mSize;
+    QPoint mOffset;
 };
 
 } // namespace Tiled

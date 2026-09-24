@@ -40,7 +40,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
+import org.mapeditor.util.ImageHelper;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 
@@ -62,6 +63,7 @@ public class MapObject extends MapObjectData implements Cloneable {
     private boolean flipHorizontal;
     private boolean flipVertical;
     private boolean flipDiagonal;
+    private boolean rotatedHexagonal120;
 
     /**
      * Constructor for MapObject.
@@ -72,8 +74,6 @@ public class MapObject extends MapObjectData implements Cloneable {
         this.name = "";
         this.type = "";
         this.imageSource = "";
-        this.flipHorizontal = false;
-        this.flipVertical = false;
     }
 
     /**
@@ -182,9 +182,9 @@ public class MapObject extends MapObjectData implements Cloneable {
         imageSource = source;
 
         // Attempt to read the image
-        if (imageSource.length() > 0) {
+        if (!imageSource.isEmpty()) {
             try {
-                image = ImageIO.read(new File(imageSource));
+                image = ImageHelper.readImage(new File(imageSource));
             } catch (IOException e) {
                 image = null;
             }
@@ -221,6 +221,9 @@ public class MapObject extends MapObjectData implements Cloneable {
 
     public boolean getFlipDiagonal() { return flipDiagonal; }
     public void setFlipDiagonal(boolean flip) { this.flipDiagonal = flip; }
+
+    public boolean getRotatedHexagonal120() { return rotatedHexagonal120; }
+    public void setRotatedHexagonal120(boolean rotated) { this.rotatedHexagonal120 = rotated; }
 
     /**
      * Returns the image to be used when drawing this object. This image is
