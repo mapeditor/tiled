@@ -280,6 +280,7 @@ Game Maker
 Godot
 ~~~~~
 - Tiled ships with a plugin for exporting to :ref:`Godot 4 <godot4-export>` as .tscn scene files.
+- `YATI (Yet Another Tiled Importer) <https://github.com/Kiamo2/YATI>`__ imports TMX and TMJ files directly in Godot 4, supporting nearly all Tiled features.
 - `Tiled Map Importer <https://godotengine.org/asset-library/asset/25>`__ imports each map as Godot scene which can be instanced or inherited (`forum announcement <http://discourse.mapeditor.org/t/importer-plugin-for-godot-engine/1833/1>`__).
 - `Godot Tiled importer (Mono version) <https://github.com/mi-sts/godot_tiled_importer>`__ imports Tiled maps exported to JSON (.tmj) format. Supports all map orientations.
 - `Tiled To Godot Export <https://github.com/MikeMnD/tiled-to-godot-export>`__ is a Tiled :doc:`JavaScript extension </manual/scripting>` for exporting Tilemaps and Tilesets in Godot 3.2 format (`forum announcement <https://discourse.mapeditor.org/t/tiled-editor-map-and-tileset-integration-with-godot-3-2/4347>`__).
@@ -538,12 +539,16 @@ Unity
    (2D framework) offers `Tiled map
    support <http://www.wyrmtale.com/orthello-pro/tilemaps>`__.
 
-Unreal Engine 4
-~~~~~~~~~~~~~~~
+Unreal Engine
+~~~~~~~~~~~~~
 
 -  `Paper2D <https://forums.unrealengine.com/showthread.php?3539-Project-Paper2D>`__
    provides built-in support for tile maps and tile sets, importing JSON
    exported from Tiled.
+-  `ue5-tiled-importer <https://github.com/jscharnitzke/ue5-tiled-importer>`__
+   is an Unreal Engine 5 plugin that imports ``.tmx`` and ``.tsx`` files
+   through the Interchange framework, creating Paper2D Tile Sets and Tile
+   Maps.
 
 Urho3D
 ~~~~~~
