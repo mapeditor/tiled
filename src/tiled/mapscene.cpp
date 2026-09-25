@@ -336,10 +336,11 @@ void MapScene::refreshScene()
     const WorldManager &worldManager = WorldManager::instance();
     const QString &currentMapFile = mMapDocument->fileName();
 
-    if (auto worldDocument = worldManager.worldForMap(currentMapFile)) {
+    if (auto worldDocument = worldManager.worldForMap(mMapDocument)) {
         const auto world = worldDocument->world();
-        const QPoint currentMapPosition = world->mapRect(currentMapFile).topLeft();
-        auto const contextMaps = world->contextMaps(currentMapFile);
+        const QRect currentMapRect = worldDocument->mapRect(mMapDocument);
+        const QPoint currentMapPosition = currentMapRect.topLeft();
+        auto const contextMaps = world->contextMaps(currentMapRect);
 
         // If the current map moved in its world (by a move or an undo),
         // shift the view along so the map visibly moves instead of the
@@ -372,6 +373,18 @@ void MapScene::refreshScene()
                 mapItem->setVisible(mWorldsEnabled || mapDocument == mMapDocument);
                 mapItems.insert(mapDocument.data(), mapItem);
             }
+        }
+
+        // Maps that are part of the world but don't have a file yet
+        for (const auto &unsavedMap : worldDocument->unsavedMaps()) {
+            const bool isCurrent = unsavedMap.mapDocument.data() == mMapDocument;
+
+            auto mapItem = takeOrCreateMapItem(unsavedMap.mapDocument,
+                                               isCurrent ? MapItem::Editable
+                                                         : MapItem::ReadOnly);
+            mapItem->setPos(unsavedMap.rect.topLeft() - currentMapPosition);
+            mapItem->setVisible(mWorldsEnabled || isCurrent);
+            mapItems.insert(unsavedMap.mapDocument.data(), mapItem);
         }
     } else {
         mLastWorldPositionMapFile.clear();
@@ -700,7 +713,7 @@ void MapScene::drawBackground(QPainter *painter, const QRectF &rect)
         return;
 
     const auto worldDocument =
-            WorldManager::instance().worldForMap(mMapDocument->fileName());
+            WorldManager::instance().worldForMap(mMapDocument);
     if (!worldDocument)
         return;
 
@@ -710,7 +723,7 @@ void MapScene::drawBackground(QPainter *painter, const QRectF &rect)
 
     // Translate so we can draw the grid in world coordinates.
     const QPoint currentMapPosition =
-            world->mapRect(mMapDocument->fileName()).topLeft();
+            worldDocument->mapRect(mMapDocument).topLeft();
 
     painter->save();
     painter->translate(-currentMapPosition);
