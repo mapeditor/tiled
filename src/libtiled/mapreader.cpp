@@ -1247,6 +1247,12 @@ std::unique_ptr<MapObject> MapReaderPrivate::readObject()
         object->setPropertyChanged(MapObject::VisibleProperty);
     }
 
+    const QString colorString = atts.value(QLatin1String("color")).toString();
+    if (!colorString.isEmpty()) {
+        object->setColor(QColor(colorString));
+        object->setPropertyChanged(MapObject::ColorProperty);
+    }
+
     while (xml.readNextStartElement()) {
         if (xml.name() == QLatin1String("properties")) {
             object->mergeProperties(readProperties());
