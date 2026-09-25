@@ -367,6 +367,12 @@ QList<int> TilesetDocument::relocateTiles(const QList<Tile *> &tiles, int locati
     return prevLocations;
 }
 
+void TilesetDocument::swapTiles(Tile *tileA, Tile *tileB)
+{
+    mTileset->swapTiles(tileA, tileB);
+    emit tilesetChanged(mTileset.data());
+}
+
 void TilesetDocument::setSelectedTiles(const QList<Tile*> &selectedTiles)
 {
     mSelectedTiles = selectedTiles;
