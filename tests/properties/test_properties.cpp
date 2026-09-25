@@ -98,6 +98,37 @@ constexpr auto propertyTypesJson = R"([
 ]
 )";
 
+constexpr auto propertyTypesWithPrimitive = R"([
+    {
+        "id": 10,
+        "name": "Interactable",
+        "storageType": "bool",
+        "type": "primitive",
+        "visualColor": "#ffff0000"
+    },
+    {
+        "id": 11,
+        "name": "Health",
+        "storageType": "int",
+        "type": "primitive",
+        "visualColor": "#ff00ff00"
+    },
+    {
+        "id": 12,
+        "name": "Speed",
+        "storageType": "float",
+        "type": "primitive",
+        "visualColor": "#ff0000ff"
+    },
+    {
+        "id": 13,
+        "name": "Label",
+        "storageType": "string",
+        "type": "primitive"
+    }
+]
+)";
+
 constexpr auto propertyTypesWithCircularReference = R"([
     {
         "id": 1,
@@ -256,6 +287,9 @@ private slots:
     void loadCircularReference();
     void loadEnumInNestedClass();
 
+    void loadAndSavePrimitiveTypes();
+    void primitiveExportImport();
+
     void loadProperties();
     void saveProperties();
     void roundTripListProperty();
@@ -266,6 +300,7 @@ private slots:
 
 private:
     EnumPropertyType &addEnum(const QString &name);
+    PrimitivePropertyType &addPrimitive(const QString &name, const QVariant &defaultValue = false);
     ClassPropertyType &addClass(const QString &name);
 
     int mNextId = 0;
@@ -447,6 +482,83 @@ void test_Properties::loadEnumInNestedClass()
 
     const auto nestedEnumValue = classMember.value.toMap().value(QStringLiteral("ElementType"));
     QCOMPARE(nestedEnumValue.value<PropertyValue>().typeId, enumType->id);
+}
+
+void test_Properties::loadAndSavePrimitiveTypes()
+{
+    QJsonParseError error;
+    auto doc = QJsonDocument::fromJson(propertyTypesWithPrimitive, &error);
+    QVERIFY(error.error == QJsonParseError::NoError);
+
+    PropertyTypes types;
+    types.loadFromJson(doc.array(), QString());
+    QCOMPARE(types.count(), size_t(4));
+
+    // Verify Interactable (bool with red color)
+    auto interactable = types.findPropertyValueType(QStringLiteral("Interactable"));
+    QVERIFY(interactable);
+    QCOMPARE(interactable->type, PropertyType::PT_Primitive);
+    auto &primInteractable = static_cast<const PrimitivePropertyType&>(*interactable);
+    QCOMPARE(primInteractable.defaultValue().userType(), QMetaType::Bool);
+    QCOMPARE(primInteractable.visualColor, QColor(Qt::red));
+
+    // Verify Health (int with green color)
+    auto health = types.findPropertyValueType(QStringLiteral("Health"));
+    QVERIFY(health);
+    auto &primHealth = static_cast<const PrimitivePropertyType&>(*health);
+    QCOMPARE(primHealth.defaultValue().userType(), QMetaType::Int);
+    QCOMPARE(primHealth.visualColor, QColor(Qt::green));
+
+    // Verify Label (string with no color)
+    auto label = types.findPropertyValueType(QStringLiteral("Label"));
+    QVERIFY(label);
+    auto &primLabel = static_cast<const PrimitivePropertyType&>(*label);
+    QCOMPARE(primLabel.defaultValue().userType(), QMetaType::QString);
+    QVERIFY(!primLabel.visualColor.isValid());
+
+    // Round-trip: save and reload
+    const auto json = types.toJson();
+    PropertyTypes types2;
+    types2.loadFromJson(json, QString());
+    QCOMPARE(types2.count(), types.count());
+
+    auto interactable2 = types2.findPropertyValueType(QStringLiteral("Interactable"));
+    QVERIFY(interactable2);
+    QCOMPARE(interactable2->type, PropertyType::PT_Primitive);
+    auto &prim2 = static_cast<const PrimitivePropertyType&>(*interactable2);
+    QCOMPARE(prim2.defaultValue().userType(), QMetaType::Bool);
+    QCOMPARE(prim2.visualColor, QColor(Qt::red));
+}
+
+void test_Properties::primitiveExportImport()
+{
+    // Use local types to avoid leaking state into other tests
+    PropertyTypes localTypes;
+    auto &type = localTypes.add(SharedPropertyType(new PrimitivePropertyType(QStringLiteral("TestPrimitive"), QVariant(0))));
+    type.id = 100;
+    auto &primType = static_cast<PrimitivePropertyType&>(type);
+    primType.visualColor = QColor(Qt::red);
+
+    ExportContext context(localTypes, QString());
+
+    // Wrap a value and verify
+    auto wrapped = primType.wrap(42);
+    QCOMPARE(wrapped.userType(), propertyValueId());
+    auto pv = wrapped.value<PropertyValue>();
+    QCOMPARE(pv.typeId, primType.id);
+    QCOMPARE(pv.value, QVariant(42));
+
+    // Export and verify
+    auto exported = context.toExportValue(wrapped);
+    QCOMPARE(exported.value, QVariant(42));
+    QCOMPARE(exported.propertyTypeName, QStringLiteral("TestPrimitive"));
+
+    // Import back and verify round-trip
+    auto imported = context.toPropertyValue(exported);
+    QCOMPARE(imported.userType(), propertyValueId());
+    auto pvImported = imported.value<PropertyValue>();
+    QCOMPARE(pvImported.typeId, primType.id);
+    QCOMPARE(pvImported.value, QVariant(42));
 }
 
 void test_Properties::loadProperties()
@@ -658,6 +770,13 @@ ClassPropertyType &test_Properties::addClass(const QString &name)
     auto &type = mTypes.add(SharedPropertyType(new ClassPropertyType(name)));
     type.id = ++mNextId;
     return static_cast<ClassPropertyType&>(type);
+}
+
+PrimitivePropertyType &test_Properties::addPrimitive(const QString &name, const QVariant &defaultValue)
+{
+    auto &type = mTypes.add(SharedPropertyType(new PrimitivePropertyType(name, defaultValue)));
+    type.id = ++mNextId;
+    return static_cast<PrimitivePropertyType&>(type);
 }
 
 QTEST_MAIN(test_Properties)
