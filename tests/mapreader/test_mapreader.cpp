@@ -14,7 +14,35 @@ class test_MapReader : public QObject
 
 private slots:
     void loadMap();
+    void loadMap_missingExternalTileset();
+    void loadMap_nestedExternalTileset();
+    void loadMap_internalTileset();
 };
+
+void test_MapReader::loadMap_missingExternalTileset()
+{
+    MapReader reader;
+    auto map = reader.readMap("../data/missing_tileset.tmx");
+
+    QVERIFY(map.get());
+    QVERIFY(!reader.errorString().isEmpty());
+}
+
+void test_MapReader::loadMap_nestedExternalTileset()
+{
+    MapReader reader;
+    auto map = reader.readMap("../data/nested_tileset.tmx");
+
+    QVERIFY(map.get());
+}
+
+void test_MapReader::loadMap_internalTileset()
+{
+    MapReader reader;
+    auto map = reader.readMap("../data/internal_tileset.tmx");
+
+    QVERIFY(map.get());
+}
 
 void test_MapReader::loadMap()
 {
