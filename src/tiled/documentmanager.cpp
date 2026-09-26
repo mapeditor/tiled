@@ -35,6 +35,7 @@
 #include "mapeditor.h"
 #include "mapformat.h"
 #include "maprenderer.h"
+#include "mapscene.h"
 #include "mapview.h"
 #include "noeditorwidget.h"
 #include "preferences.h"
@@ -443,12 +444,15 @@ bool DocumentManager::switchToDocument(Document *document)
  * Switches to the given \a mapDocument, centering the view on \a viewCenter
  * (scene coordinates) at the given \a scale.
  *
- * If the given map document is not open yet, a tab will be created for it.
+ * If the given map document is not open yet, it takes over the current tab
+ * when possible. Otherwise a tab will be created for it.
  */
 void DocumentManager::switchToDocument(MapDocument *mapDocument, QPointF viewCenter, qreal scale)
 {
-    if (!switchToDocument(mapDocument))
-        addDocument(mapDocument->sharedFromThis());
+    if (!switchToDocument(mapDocument)) {
+        if (!replaceCurrentMapDocument(mapDocument))
+            addDocument(mapDocument->sharedFromThis());
+    }
 
     MapView *view = currentMapView();
     view->zoomable()->setScale(scale);
@@ -576,26 +580,95 @@ int DocumentManager::insertDocument(int index, const DocumentPtr &document)
     // Connect before adding the tab, so that we handle the 'changed' signal
     // first, since we may be creating TilesetDocument instances for tilesets
     // used by a reloaded map (design not ideal...).
-    connect(documentPtr, &Document::fileNameChanged, this, &DocumentManager::fileNameChanged);
-    connect(documentPtr, &Document::modifiedChanged, this, [=] { updateDocumentTab(documentPtr); });
-    connect(documentPtr, &Document::isReadOnlyChanged, this, [=] { updateDocumentTab(documentPtr); });
-    connect(documentPtr, &Document::changed, this, &DocumentManager::onDocumentChanged);
-    connect(documentPtr, &Document::saved, this, &DocumentManager::onDocumentSaved);
+    connectDocument(documentPtr);
 
     mTabBar->insertTab(index, QString());
     updateDocumentTab(documentPtr);
 
-    if (auto *mapDocument = qobject_cast<MapDocument*>(documentPtr)) {
+    emit documentOpened(documentPtr);
+
+    return index;
+}
+
+/**
+ * Connects to the signals of the given \a document that matter while it has
+ * a tab. They get disconnected again when the document loses its tab.
+ */
+void DocumentManager::connectDocument(Document *document)
+{
+    connect(document, &Document::fileNameChanged, this, &DocumentManager::fileNameChanged);
+    connect(document, &Document::modifiedChanged, this, [=] { updateDocumentTab(document); });
+    connect(document, &Document::isReadOnlyChanged, this, [=] { updateDocumentTab(document); });
+    connect(document, &Document::changed, this, &DocumentManager::onDocumentChanged);
+    connect(document, &Document::saved, this, &DocumentManager::onDocumentSaved);
+
+    if (auto *mapDocument = qobject_cast<MapDocument*>(document)) {
         connect(mapDocument, &MapDocument::tilesetAdded, this, &DocumentManager::tilesetAdded);
         connect(mapDocument, &MapDocument::tilesetRemoved, this, &DocumentManager::tilesetRemoved);
     }
 
-    if (auto *tilesetDocument = qobject_cast<TilesetDocument*>(documentPtr))
+    if (auto *tilesetDocument = qobject_cast<TilesetDocument*>(document))
         connect(tilesetDocument, &TilesetDocument::tilesetNameChanged, this, &DocumentManager::tilesetNameChanged);
+}
 
-    emit documentOpened(documentPtr);
+/**
+ * Tries to let the current tab take over the given \a mapDocument, so that
+ * the view and scene of the current map can be reused. This only works when
+ * the scene already shows that map, which it does for maps of the same world.
+ *
+ * Returns whether the current tab took over the map.
+ */
+bool DocumentManager::replaceCurrentMapDocument(MapDocument *mapDocument)
+{
+    const int index = mTabBar->currentIndex();
+    if (index == -1 || findDocument(mapDocument) != -1)
+        return false;
 
-    return index;
+    const DocumentPtr oldDocument = mDocuments.at(index);   // keeps alive
+    auto oldMapDocument = qobject_cast<MapDocument*>(oldDocument.data());
+    if (!oldMapDocument)
+        return false;
+
+    // A map without a tab can't be saved anymore, so a map with unsaved
+    // changes keeps its tab
+    if (oldMapDocument->fileName().isEmpty() || isDocumentModified(oldMapDocument))
+        return false;
+
+    MapView *mapView = viewForDocument(oldMapDocument);
+    if (!mapView || !mapView->mapScene()->mapItem(mapDocument))
+        return false;
+
+    emit documentAboutToClose(oldMapDocument);
+
+    mDocuments[index] = mapDocument->sharedFromThis();
+
+    mUndoGroup->removeStack(oldMapDocument->undoStack());
+    mUndoGroup->addStack(mapDocument->undoStack());
+
+    oldMapDocument->disconnect(this);
+    connectDocument(mapDocument);
+
+    // The tileset dock fills its tabs from the tileset documents, so they
+    // need to be there before the map becomes current
+    for (const SharedTileset &tileset : mapDocument->map()->tilesets())
+        addToTilesetDocument(tileset, mapDocument);
+
+    updateDocumentTab(mapDocument);
+
+    emit documentOpened(mapDocument);
+
+    mMapEditor->replaceDocument(oldMapDocument, mapDocument);
+
+    currentIndexChanged();
+
+    // This can close the tab of a tileset nobody uses anymore, so it is left
+    // for last
+    for (const SharedTileset &tileset : oldMapDocument->map()->tilesets())
+        removeFromTilesetDocument(tileset, oldMapDocument);
+
+    Preferences::instance()->addRecentFile(oldMapDocument->fileName());
+
+    return true;
 }
 
 /**

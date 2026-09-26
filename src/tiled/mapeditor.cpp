@@ -371,6 +371,36 @@ void MapEditor::removeDocument(Document *document)
     delete mapView;
 }
 
+/**
+ * Makes \a newDocument take over the view of \a oldDocument, for switching
+ * between maps of the same world. The scene already shows both maps, so it
+ * only needs to change which one is the current map.
+ */
+void MapEditor::replaceDocument(MapDocument *oldDocument, MapDocument *newDocument)
+{
+    Q_ASSERT(mWidgetForMap.contains(oldDocument));
+    Q_ASSERT(!mWidgetForMap.contains(newDocument));
+
+    // The view is looked up by its document, so save the state before the
+    // view is handed over
+    saveDocumentState(oldDocument);
+
+    MapView *mapView = mWidgetForMap.take(oldDocument);
+    mWidgetForMap.insert(newDocument, mapView);
+
+    // The tool still works on the old document, so take it off the scene
+    // first. It gets selected again once the new document is current
+    if (mViewWithTool == mapView) {
+        mapView->mapScene()->setSelectedTool(nullptr);
+        mViewWithTool = nullptr;
+    }
+
+    mapView->mapScene()->setMapDocument(newDocument);
+
+    if (oldDocument == mCurrentMapDocument)
+        setCurrentDocument(newDocument);
+}
+
 void MapEditor::setCurrentDocument(Document *document)
 {
     MapDocument *mapDocument = qobject_cast<MapDocument*>(document);
