@@ -22,6 +22,7 @@
 
 #include "editableasset.h"
 #include "mapdocument.h"
+#include "tilesetdocument.h"
 #include "regionvaluetype.h"
 #include "scriptimage.h"
 
@@ -216,6 +217,9 @@ public:
 
     QSharedPointer<Document> createDocument() override;
 
+    void holdDocument() override;
+    void releaseDocument() override;
+
 signals:
     void currentLayerChanged();
     void selectedLayersChanged();
@@ -229,6 +233,11 @@ protected:
 private:
     void documentChanged(const ChangeEvent &change);
 
+    void holdTilesetDocuments();
+    void tilesetAdded(int index, Tileset *tileset);
+    void tilesetRemoved(Tileset *tileset);
+    void tilesetReplaced(int index, Tileset *tileset, Tileset *oldTileset);
+
     void attachLayer(Layer *layer);
     void detachLayer(Layer *layer);
     void attachMapObjects(const QList<MapObject*> &mapObjects);
@@ -239,6 +248,7 @@ private:
     MapRenderer *renderer() const;
 
     std::unique_ptr<Map> mDetachedMap;
+    QVector<TilesetDocumentPtr> mTilesetDocuments;
     mutable std::unique_ptr<MapRenderer> mRenderer;
     bool mReadOnly = false;
 

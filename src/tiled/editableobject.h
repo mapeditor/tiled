@@ -34,9 +34,11 @@ class EditableAsset;
  * Editable wrapper class, enabling objects to be inspected and modified from
  * scripts.
  *
- * Generally, editables are created on-demand and are owned by the script
- * (garbage collected). This excludes EditableAsset instances, which are owned
- * by their Document.
+ * Editables created from C++ are owned by the object they wrap, whereas
+ * editables created from script are owned by the script (garbage collected)
+ * and own the object they wrap. EditableAsset instances are generally owned
+ * by their Document, unless a script is keeping the document alive through
+ * the editable (see EditableAsset::holdDocument).
  */
 class EditableObject : public QObject
 {
@@ -170,7 +172,7 @@ inline void EditableObject::setAsset(EditableAsset *asset)
 
 inline EditableObject *EditableObject::find(Object *object)
 {
-    return object ? static_cast<EditableObject*>(object->mEditable.data())
+    return object ? static_cast<EditableObject*>(object->editable())
                   : nullptr;
 }
 

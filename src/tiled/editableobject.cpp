@@ -40,7 +40,8 @@ EditableObject::EditableObject(EditableAsset *asset,
     , mAsset(asset)
     , mObject(object)
 {
-    if (object)
+    // A temporary wrapper should not take over from an existing editable
+    if (object && !object->mEditable)
         object->mEditable = this;
 }
 
@@ -97,10 +98,10 @@ void EditableObject::setObject(Object *object)
     if (mObject == object)
         return;
 
-    if (mObject)
+    if (mObject && mObject->mEditable == this)
         mObject->mEditable = nullptr;
 
-    if (object)
+    if (object && !object->mEditable)
         object->mEditable = this;
 
     mObject = object;
