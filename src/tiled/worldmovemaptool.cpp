@@ -148,8 +148,23 @@ void WorldMoveMapTool::updateResizingMap(const QPointF &pos,
 {
     const Map *map = mResizingMap->map();
     const MapRenderer *renderer = mResizingMap->renderer();
-    const QSize step = snapSize(mResizingMap);
     const HandleEdges edges = handleEdges[mResizeHandle];
+
+    // ask the renderer what one more column or row adds on screen, since that
+    // is only the tile size for orthogonal maps
+    const QSize mapSize = map->size();
+    const QRect mapRect = renderer->boundingRect(QRect(QPoint(), mapSize));
+    const QRect oneMoreColumn = renderer->boundingRect(QRect(QPoint(), mapSize + QSize(1, 0)));
+    const QRect oneMoreRow = renderer->boundingRect(QRect(QPoint(), mapSize + QSize(0, 1)));
+    const int columnPixels = qMax(1, oneMoreColumn.width() - mapRect.width());
+    const int rowPixels = qMax(1, oneMoreRow.height() - mapRect.height());
+
+    // snap the drag to the world grid when enabled, otherwise to whole columns
+    // and rows (which is less than the tile size for staggered and hexagonal
+    // maps, so snapping to the tile size would skip rows)
+    QSize step = worldGridSize(mResizingMap);
+    if (step.isEmpty())
+        step = QSize(columnPixels, rowPixels);
 
     int left = mResizeStartWorldRect.left();
     int top = mResizeStartWorldRect.top();
@@ -175,15 +190,6 @@ void WorldMoveMapTool::updateResizingMap(const QPointF &pos,
         top += snap(delta.y(), step.height());
     if (edges.bottom)
         bottom += snap(delta.y(), step.height());
-
-    // ask the renderer what one more column or row adds on screen, since that
-    // is only the tile size for orthogonal maps
-    const QSize mapSize = map->size();
-    const QRect mapRect = renderer->boundingRect(QRect(QPoint(), mapSize));
-    const QRect oneMoreColumn = renderer->boundingRect(QRect(QPoint(), mapSize + QSize(1, 0)));
-    const QRect oneMoreRow = renderer->boundingRect(QRect(QPoint(), mapSize + QSize(0, 1)));
-    const int columnPixels = qMax(1, oneMoreColumn.width() - mapRect.width());
-    const int rowPixels = qMax(1, oneMoreRow.height() - mapRect.height());
 
     // count from the size we started at, so grabbing a handle without dragging
     // leaves the map as it is
