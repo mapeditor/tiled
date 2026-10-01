@@ -503,6 +503,17 @@ QList<int> Tileset::relocateTiles(const QList<Tile *> &tiles, int location)
     return prevLocations;
 }
 
+void Tileset::swapTiles(Tile *tileA, Tile *tileB)
+{
+    const int indexA = mTiles.indexOf(tileA);
+    const int indexB = mTiles.indexOf(tileB);
+
+    Q_ASSERT(indexA != -1);
+    Q_ASSERT(indexB != -1);
+
+    mTiles.swapItemsAt(indexA, indexB);
+}
+
 bool Tileset::anyTileOutOfOrder() const
 {
     int tileId = 0;

@@ -101,6 +101,7 @@ public:
     void addTiles(const QList<Tile*> &tiles);
     void removeTiles(const QList<Tile*> &tiles);
     QList<int> relocateTiles(const QList<Tile *> &tiles, int location);
+    void swapTiles(Tile *tileA, Tile *tileB);
 
     const QList<Tile*> &selectedTiles() const;
     void setSelectedTiles(const QList<Tile*> &selectedTiles);
