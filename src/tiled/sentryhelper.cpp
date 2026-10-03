@@ -20,6 +20,7 @@
 
 #include "sentryhelper.h"
 
+#include <QCoreApplication>
 #include <QDir>
 #include <QStandardPaths>
 
@@ -32,6 +33,15 @@ namespace Tiled {
 
 Sentry *Sentry::sInstance;
 
+// We only use crash reporting, so discard any structured logs and metrics.
+// Since sentry-native 0.16.5 these can no longer be disabled through the
+// options.
+static sentry_value_t discardValue(sentry_value_t value, void *)
+{
+    sentry_value_decref(value);
+    return sentry_value_new_null();
+}
+
 Sentry::Sentry()
 {
     sInstance = this;
@@ -40,6 +50,9 @@ Sentry::Sentry()
     sentry_options_set_dsn(options, "https://6c72ea2c9d024333bae90e40bc1d41e0@o326665.ingest.sentry.io/1835065");
     sentry_options_set_require_user_consent(options, true);
     sentry_options_set_release(options, "tiled@" AS_STRING(TILED_VERSION));
+
+    sentry_options_set_before_send_log(options, discardValue, nullptr);
+    sentry_options_set_before_send_metric(options, discardValue, nullptr);
 #ifdef QT_DEBUG
     sentry_options_set_symbolize_stacktraces(options, true);
     sentry_options_set_debug(options, true);
@@ -48,15 +61,25 @@ Sentry::Sentry()
     const QString cacheLocation { QStandardPaths::writableLocation(QStandardPaths::CacheLocation) };
     if (!cacheLocation.isEmpty()) {
         const QString databasePath = QDir{cacheLocation}.filePath(QStringLiteral("sentry"));
+#ifdef Q_OS_WIN
+        sentry_options_set_database_pathw(options, reinterpret_cast<const wchar_t *>(databasePath.utf16()));
+#else
         sentry_options_set_database_path(options, databasePath.toLocal8Bit().constData());
+#endif
     }
+
+#ifdef Q_OS_WIN
+    // crashpad_handler.exe is deployed next to the Tiled executable
+    const QString handlerPath = QCoreApplication::applicationDirPath() + QLatin1String("/crashpad_handler.exe");
+    sentry_options_set_handler_pathw(options, reinterpret_cast<const wchar_t *>(handlerPath.utf16()));
+#endif
 
     sentry_init(options);
 }
 
 Sentry::~Sentry()
 {
-    sentry_shutdown();
+    sentry_close();
     sInstance = nullptr;
 }
 
