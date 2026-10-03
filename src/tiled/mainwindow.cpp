@@ -391,6 +391,16 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mConsoleDock->setVisible(false);
     mIssuesDock->setVisible(false);
 
+    ActionManager::registerAction(mProjectDock->toggleViewAction(), "ViewProject");
+    ActionManager::registerAction(mConsoleDock->toggleViewAction(), "ViewConsole");
+    ActionManager::registerAction(mIssuesDock->toggleViewAction(), "ViewIssues");
+
+    // A shortcut only triggers when its action has been added to a widget, and
+    // the 'Views and Toolbars' menu is rebuilt each time it is shown.
+    addAction(mProjectDock->toggleViewAction());
+    addAction(mConsoleDock->toggleViewAction());
+    addAction(mIssuesDock->toggleViewAction());
+
     mMapEditor = new MapEditor;
     mTilesetEditor = new TilesetEditor;
 
