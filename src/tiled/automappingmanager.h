@@ -86,7 +86,7 @@ signals:
     void warningsOccurred(bool automatic);
 
 private:
-    void onRegionEdited(const QRegion &where, TileLayer *touchedLayer);
+    void onRegionEdited(const QRegion &where);
     void onMapFileNameChanged();
     void onFileChanged(const QString &path);
 
@@ -99,10 +99,10 @@ private:
     /**
      * Applies automapping to the region \a where.
      *
-     * If a \a touchedLayer is given, only those AutoMappers will be used which
-     * have a rule layer matching the \a touchedLayer.
+     * If \a whileDrawing is true, the changes made through AutoMapping will
+     * merge with the previous undo operation when possible.
      */
-    void autoMapInternal(const QRegion &where, const TileLayer *touchedLayer);
+    void autoMapInternal(const QRegion &where, bool whileDrawing);
 
     /**
      * deletes all its data structures
