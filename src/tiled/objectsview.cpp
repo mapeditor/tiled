@@ -24,6 +24,7 @@
 #include "iconcheckdelegate.h"
 #include "mapdocument.h"
 #include "mapobjectmodel.h"
+#include "objectgroup.h"
 #include "preferences.h"
 #include "reversingproxymodel.h"
 #include "utils.h"
@@ -123,6 +124,16 @@ QModelIndex ObjectsView::layerViewIndex(Layer *layer) const
     }
 
     return QModelIndex();
+}
+
+bool ObjectsView::isExpanded(ObjectGroup *layer) const
+{
+    return QTreeView::isExpanded(layerViewIndex(layer));
+}
+
+void ObjectsView::setExpanded(ObjectGroup *layer, bool expanded)
+{
+    QTreeView::setExpanded(layerViewIndex(layer), expanded);
 }
 
 void ObjectsView::ensureVisible(MapObject *mapObject)
