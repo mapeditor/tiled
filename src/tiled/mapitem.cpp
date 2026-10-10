@@ -578,7 +578,7 @@ void MapItem::layerChanged(const LayerChangeEvent &change)
 
     layerItem->setOpacity(layer->opacity() * multiplier);
 
-    if (prefs->floorMode() && mDisplayMode != ReadOnly)
+    if (isFloorModeActive())
         applyFloorState(layer, layerItem, currentFloorIndex());
 
     if (layer->isGroupLayer() && (change.properties & LayerChangeEvent::ParallaxFactorProperty))
@@ -876,7 +876,7 @@ void MapItem::updateSelectedLayersHighlight()
 {
     Preferences *prefs = Preferences::instance();
 
-    if (prefs->floorMode() && mDisplayMode != ReadOnly) {
+    if (isFloorModeActive()) {
         applyFloorMode();
         return;
     }
@@ -939,6 +939,24 @@ void MapItem::updateSelectedLayersHighlight()
             mLayerItems.value(layer)->setOpacity(layer->opacity() * multiplier);
         }
     }
+}
+
+/**
+ * Floor mode only applies to maps that have floors, which are group layers at
+ * the top level. This avoids affecting maps that are not organized in floors,
+ * like the temporary map used by the tile collision editor.
+ */
+bool MapItem::isFloorModeActive() const
+{
+    if (!Preferences::instance()->floorMode() || mDisplayMode == ReadOnly)
+        return false;
+
+    for (const Layer *layer : mapDocument()->map()->layers()) {
+        if (layer->isGroupLayer())
+            return true;
+    }
+
+    return false;
 }
 
 /**

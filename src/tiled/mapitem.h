@@ -133,6 +133,7 @@ private:
 
     void updateBoundingRect();
     void updateSelectedLayersHighlight();
+    bool isFloorModeActive() const;
     void applyFloorMode();
     int currentFloorIndex() const;
     void applyFloorState(Layer *layer, QGraphicsItem *layerItem, int currentFloor) const;

@@ -572,6 +572,22 @@ void MapView::keyReleaseEvent(QKeyEvent *event)
 /**
  * Override to support zooming in and out using the mouse wheel.
  */
+/**
+ * Floors are the group layers at the top level of the map.
+ */
+static bool hasFloors(const MapDocument *mapDocument)
+{
+    if (!mapDocument)
+        return false;
+
+    for (const Layer *layer : mapDocument->map()->layers()) {
+        if (layer->isGroupLayer())
+            return true;
+    }
+
+    return false;
+}
+
 void MapView::wheelEvent(QWheelEvent *event)
 {
     auto *hBar = static_cast<FlexibleScrollBar*>(horizontalScrollBar());
@@ -583,7 +599,7 @@ void MapView::wheelEvent(QWheelEvent *event)
     // In floor mode, Shift+wheel switches floors. Some platforms report the
     // wheel of Shift+wheel as horizontal scrolling, so look at both axes.
     if ((event->modifiers() & Qt::ShiftModifier) && !control &&
-            Preferences::instance()->floorMode()) {
+            Preferences::instance()->floorMode() && hasFloors(mMapDocument)) {
         const QPoint delta = event->angleDelta();
         mFloorWheelDelta += delta.y() ? delta.y() : delta.x();
         const int steps = mFloorWheelDelta / 120;
