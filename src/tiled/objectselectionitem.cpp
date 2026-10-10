@@ -411,9 +411,15 @@ void ObjectSelectionItem::changeEvent(const ChangeEvent &event)
     case ChangeEvent::LayerChanged:
         layerChanged(static_cast<const LayerChangeEvent&>(event));
         break;
-    case ChangeEvent::MapObjectsChanged:
-        syncOverlayItems(static_cast<const MapObjectsChangeEvent&>(event).mapObjects);
+    case ChangeEvent::MapObjectsChanged: {
+        const auto &mapObjectsChange = static_cast<const MapObjectsChangeEvent&>(event);
+        if (mapObjectsChange.properties & MapObject::VisibleProperty) {
+            if (Preferences::instance()->showObjectReferences())
+                addRemoveObjectReferences();
+        }
+        syncOverlayItems(mapObjectsChange.mapObjects);
         break;
+    }
     case ChangeEvent::MapObjectsAdded:
         objectsAdded(static_cast<const MapObjectsEvent&>(event).mapObjects);
         break;
@@ -931,7 +937,13 @@ void ObjectSelectionItem::addRemoveObjectReferences()
                 continue;
 
             for (MapObject *object : objectGroup->objects()) {
+                if (!object->isVisible())
+                    continue;
+
                 forEachObjectReference(object->properties(), [&] (ObjectRef ref) {
+                    MapObject *targetObject = DisplayObjectRef(ref, mMapDocument).object();
+                    if (targetObject && !targetObject->isVisible())
+                        return;
                     ensureReferenceItem(object, ref);
                 });
             }
