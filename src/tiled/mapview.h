@@ -22,6 +22,7 @@
 
 #include "preferences.h"
 
+#include <QElapsedTimer>
 #include <QGraphicsView>
 #include <QPinchGesture>
 
@@ -130,6 +131,7 @@ private:
     void setMapDocument(MapDocument *mapDocument);
 
     MapDocument *mMapDocument = nullptr;
+    QElapsedTimer mScrollTimer;
     QPoint mLastMousePos;
     QPoint mScrollStartPos;
     QPointF mLastMouseScenePos;
