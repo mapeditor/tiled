@@ -85,6 +85,7 @@ LayerDock::LayerDock(QWidget *parent):
     buttonContainer->addAction(handler->actionToggleOtherLayers());
     buttonContainer->addAction(handler->actionToggleLockOtherLayers());
     buttonContainer->addWidget(spacerWidget);
+    buttonContainer->addAction(ActionManager::action("FloorMode"));
     buttonContainer->addAction(ActionManager::action("HighlightCurrentLayer"));
 
     layout->setSpacing(0);

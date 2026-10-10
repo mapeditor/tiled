@@ -21,6 +21,7 @@
 #include "mapview.h"
 
 #include "flexiblescrollbar.h"
+#include "grouplayer.h"
 #include "mapdocument.h"
 #include "mapobject.h"
 #include "maprenderer.h"
@@ -579,6 +580,20 @@ void MapView::wheelEvent(QWheelEvent *event)
     bool wheelZoomsByDefault = Preferences::instance()->wheelZoomsByDefault();
     bool control = event->modifiers() & Qt::ControlModifier;
 
+    // In floor mode, Shift+wheel switches floors. Some platforms report the
+    // wheel of Shift+wheel as horizontal scrolling, so look at both axes.
+    if ((event->modifiers() & Qt::ShiftModifier) && !control &&
+            Preferences::instance()->floorMode()) {
+        const QPoint delta = event->angleDelta();
+        mFloorWheelDelta += delta.y() ? delta.y() : delta.x();
+        const int steps = mFloorWheelDelta / 120;
+        if (steps != 0) {
+            mFloorWheelDelta -= steps * 120;
+            changeFloor(steps);
+        }
+        return;
+    }
+
     if ((wheelZoomsByDefault != control) && event->angleDelta().y()) {
         // No automatic anchoring since we'll do it manually
         setTransformationAnchor(QGraphicsView::NoAnchor);
@@ -614,6 +629,63 @@ void MapView::wheelEvent(QWheelEvent *event)
     }
 
     scrollBy(-pixels);
+}
+
+static void collectLeafLayers(Layer *layer, QList<Layer*> &leaves)
+{
+    if (auto groupLayer = layer->asGroupLayer()) {
+        for (Layer *child : groupLayer->layers())
+            collectLeafLayers(child, leaves);
+    } else {
+        leaves.append(layer);
+    }
+}
+
+/**
+ * Moves the selection to another floor (a top-level layer), 'steps' floors
+ * up (positive) or down (negative). Prefers selecting a layer with the same
+ * name as the currently selected layer, so that the same kind of layer stays
+ * selected while changing floors.
+ */
+void MapView::changeFloor(int steps)
+{
+    if (!mMapDocument)
+        return;
+
+    Layer *current = mMapDocument->currentLayer();
+    if (!current)
+        return;
+
+    Layer *currentFloor = current;
+    while (currentFloor->parentLayer())
+        currentFloor = currentFloor->parentLayer();
+
+    const auto &floors = mMapDocument->map()->layers();
+    const int newIndex = qBound(0, currentFloor->siblingIndex() + steps, int(floors.size()) - 1);
+    if (newIndex == currentFloor->siblingIndex())
+        return;
+
+    Layer *newFloor = floors.at(newIndex);
+    QList<Layer*> leaves;
+    collectLeafLayers(newFloor, leaves);
+
+    Layer *target = nullptr;
+    for (Layer *leaf : std::as_const(leaves)) {
+        if (leaf->name() == current->name()) {
+            target = leaf;
+            break;
+        }
+    }
+    if (!target) {
+        for (Layer *leaf : std::as_const(leaves)) {
+            if (leaf->layerType() == current->layerType())
+                target = leaf;
+        }
+    }
+    if (!target)
+        target = leaves.isEmpty() ? newFloor : leaves.last();
+
+    mMapDocument->switchSelectedLayers({ target });
 }
 
 void MapView::focusInEvent(QFocusEvent *event)

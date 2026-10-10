@@ -151,6 +151,7 @@ MapItem::MapItem(const MapDocumentPtr &mapDocument, DisplayMode displayMode,
     connect(prefs, &Preferences::objectLineWidthChanged, this, &MapItem::setObjectLineWidth);
     connect(prefs, &Preferences::showTileObjectOutlinesChanged, this, &MapItem::setShowTileObjectOutlines);
     connect(prefs, &Preferences::highlightCurrentLayerChanged, this, &MapItem::updateSelectedLayersHighlight);
+    connect(prefs, &Preferences::floorModeChanged, this, &MapItem::updateSelectedLayersHighlight);
     connect(prefs, &Preferences::propertyTypesChanged, this, &MapItem::syncAllObjectItems);
     connect(prefs, &Preferences::backgroundFadeColorChanged, this, [this] (QColor color) { mDarkRectangle->setBrush(color); });
 
@@ -577,6 +578,9 @@ void MapItem::layerChanged(const LayerChangeEvent &change)
 
     layerItem->setOpacity(layer->opacity() * multiplier);
 
+    if (prefs->floorMode() && mDisplayMode != ReadOnly)
+        applyFloorState(layer, layerItem, currentFloorIndex());
+
     if (layer->isGroupLayer() && (change.properties & LayerChangeEvent::ParallaxFactorProperty))
         updateLayerPositions();
     else
@@ -871,6 +875,21 @@ void MapItem::updateBoundingRect()
 void MapItem::updateSelectedLayersHighlight()
 {
     Preferences *prefs = Preferences::instance();
+
+    if (prefs->floorMode() && mDisplayMode != ReadOnly) {
+        applyFloorMode();
+        return;
+    }
+
+    if (mFloorModeApplied) {
+        // Restore visibility and opacity for all layers
+        mFloorModeApplied = false;
+        for (auto layerItem : std::as_const(mLayerItems)) {
+            layerItem->setVisible(layerItem->layer()->isVisible());
+            layerItem->setOpacity(layerItem->layer()->opacity());
+        }
+    }
+
     const auto selectedLayers = mapDocument()->selectedLayers();
 
     if (!prefs->highlightCurrentLayer() || selectedLayers.isEmpty() || mDisplayMode == ReadOnly) {
@@ -920,6 +939,60 @@ void MapItem::updateSelectedLayersHighlight()
             mLayerItems.value(layer)->setOpacity(layer->opacity() * multiplier);
         }
     }
+}
+
+/**
+ * Returns the index of the top-level layer (the "floor") containing the
+ * highest selected layer, or -1 when no layer is selected.
+ */
+int MapItem::currentFloorIndex() const
+{
+    int index = -1;
+
+    for (Layer *layer : mapDocument()->selectedLayers()) {
+        while (layer->parentLayer())
+            layer = layer->parentLayer();
+        index = qMax(index, layer->siblingIndex());
+    }
+
+    return index;
+}
+
+/**
+ * Floors are the top-level layers (usually group layers). Floors above the
+ * current one are hidden. Floors below it are darkened by the dark rectangle
+ * (see applyFloorMode), so their own opacity is left untouched.
+ */
+void MapItem::applyFloorState(Layer *layer, QGraphicsItem *layerItem, int currentFloor) const
+{
+    bool visible = layer->isVisible();
+
+    if (currentFloor >= 0 && !layer->parentLayer() && layer->siblingIndex() > currentFloor)
+        visible = false;
+
+    layerItem->setVisible(visible);
+    layerItem->setOpacity(layer->opacity());
+}
+
+void MapItem::applyFloorMode()
+{
+    mFloorModeApplied = true;
+
+    const int currentFloor = currentFloorIndex();
+
+    // Darken the floors below the current one, like the Highlight Current
+    // Layer option does, while the current floor stays bright.
+    if (currentFloor > 0) {
+        mDarkRectangle->setParentItem(this);
+        mDarkRectangle->setZValue(currentFloor - 0.5);
+        mDarkRectangle->setVisible(true);
+    } else if (mDarkRectangle->isVisible()) {
+        mDarkRectangle->setVisible(false);
+        mDarkRectangle->setParentItem(this);    // avoid automatic deletion
+    }
+
+    for (auto layerItem : std::as_const(mLayerItems))
+        applyFloorState(layerItem->layer(), layerItem, currentFloor);
 }
 
 } // namespace Tiled
