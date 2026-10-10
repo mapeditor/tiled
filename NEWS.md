@@ -12,6 +12,7 @@
 * Scripting: Added Tileset.selectedTilesChanged signal (#4615)
 * Scripting: Fixed world scripting APIs to work without the editor (by Shubham Padkonde, #4584)
 * Fixed crash when the selection becomes empty while starting a move (#4536)
+* Fixed crash after importing custom types due to unresolved type references in lists (#4570)
 * Fixed Properties view update on 'Reset Template Instance' and 'Replace With Template' actions
 * Fixed restoring of the layout for maximized windows on startup (#4580)
 * Linux: Added file associations for .tmj, .tsj, .tiled-project and .world files (by miffe, #4550)
