@@ -97,8 +97,8 @@
 namespace Tiled {
 
 namespace preferences {
-static Preference<QSize> mapEditorSize { "MapEditor/Size" };
-static Preference<QByteArray> mapEditorState { "MapEditor/State" };
+static LayoutPreference<QSize> mapEditorSize { "MapEditor/Size" };
+static LayoutPreference<QByteArray> mapEditorState { "MapEditor/State" };
 } // namespace preferences
 
 /**
