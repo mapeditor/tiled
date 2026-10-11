@@ -70,7 +70,7 @@ namespace Tiled {
 
 namespace preferences {
 static Preference<QVariant> objectsViewVisibility { "TileCollisionDock/ObjectsViewVisibility", TileCollisionDock::Hidden };
-static Preference<QByteArray> splitterState { "TileCollisionDock/SplitterState" };
+static LayoutPreference<QByteArray> splitterState { "TileCollisionDock/SplitterState" };
 } // namespace preferences
 
 TileCollisionDock::TileCollisionDock(QWidget *parent)
