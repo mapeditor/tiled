@@ -71,6 +71,7 @@ class EditableMapObject : public EditableObject
     Q_PROPERTY(Qt::Alignment textAlignment READ textAlignment WRITE setTextAlignment)
     Q_PROPERTY(bool wordWrap READ wordWrap WRITE setWordWrap)
     Q_PROPERTY(QColor textColor READ textColor WRITE setTextColor)
+    Q_PROPERTY(QColor color READ color WRITE setColor)
     Q_PROPERTY(Tiled::EditableTile *tile READ tile WRITE setTile)
     Q_PROPERTY(bool tileFlippedHorizontally READ tileFlippedHorizontally WRITE setTileFlippedHorizontally)
     Q_PROPERTY(bool tileFlippedVertically READ tileFlippedVertically WRITE setTileFlippedVertically)
@@ -124,6 +125,7 @@ public:
     Qt::Alignment textAlignment() const;
     bool wordWrap() const;
     QColor textColor() const;
+    QColor color() const;
     EditableTile *tile() const;
     bool tileFlippedHorizontally() const;
     bool tileFlippedVertically() const;
@@ -163,6 +165,7 @@ public slots:
     void setTextAlignment(Qt::Alignment textAlignment);
     void setWordWrap(bool wordWrap);
     void setTextColor(const QColor &textColor);
+    void setColor(const QColor &color);
     void setTile(EditableTile *tile);
     void setTileFlippedHorizontally(bool tileFlippedHorizontally);
     void setTileFlippedVertically(bool tileFlippedVertically);
@@ -258,6 +261,11 @@ inline bool EditableMapObject::wordWrap() const
 inline QColor EditableMapObject::textColor() const
 {
     return mapObject()->textData().color;
+}
+
+inline QColor EditableMapObject::color() const
+{
+    return mapObject()->color();
 }
 
 inline bool EditableMapObject::tileFlippedHorizontally() const
