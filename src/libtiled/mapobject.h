@@ -123,7 +123,8 @@ public:
         ShapeProperty           = 1 << 12,
         TemplateProperty        = 1 << 13,
         CustomProperties        = 1 << 14,
-        AllProperties           = 0xFF
+        ColorProperty           = 1 << 15,
+        AllProperties           = 0xFFFF
     };
 
     Q_DECLARE_FLAGS(ChangedProperties, Property)
@@ -191,6 +192,15 @@ public:
     const Cell &cell() const;
     void setCell(const Cell &cell);
 
+    /**
+     * Returns the color used to display this object, which overrides the
+     * color of the object layer it is part of. An invalid color means the
+     * object follows the color of its object layer (or the color of its
+     * class, when defined).
+     */
+    const QColor &color() const;
+    void setColor(const QColor &color);
+
     const ObjectTemplate *objectTemplate() const;
     void setObjectTemplate(const ObjectTemplate *objectTemplate);
 
@@ -249,6 +259,7 @@ private:
     TextData mTextData;
     QPolygonF mPolygon;
     Cell mCell;
+    QColor mColor;
     const ObjectTemplate *mObjectTemplate = nullptr;
     ObjectGroup *mObjectGroup = nullptr;
     qreal mRotation = 0.0;
@@ -444,6 +455,12 @@ inline QRectF MapObject::bounds() const
  */
 inline const Cell &MapObject::cell() const
 { return mCell; }
+
+inline const QColor &MapObject::color() const
+{ return mColor; }
+
+inline void MapObject::setColor(const QColor &color)
+{ mColor = color; }
 
 /**
  * Sets the tile that is associated with this object. The object will

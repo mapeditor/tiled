@@ -3,6 +3,7 @@
 * Added 'Collapse All' action and 'Only Expand to Current' mode to Project view (with rhythmcache, #4346)
 * Added command variables %exportfile and %exportpath (#4476)
 * Added a configurable world grid with snapping for maps (by Kanishka, #4534)
+* Added support for overriding the color of individual map objects (by BlueAlter, #4610)
 * Added drag-to-resize for maps in the world view, usable even when they are not part of a world (by Kanishka, #4545, #4562)
 * Added an action to create a world containing the current map (by Kanishka, #4562)
 * Made switching to the previously selected tool when pressing its shortcut again optional and off by default (by dogboydog, #4540)

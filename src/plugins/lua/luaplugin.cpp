@@ -744,6 +744,9 @@ void LuaWriter::writeMapObject(const Tiled::MapObject *mapObject)
 
     mWriter.writeKeyAndValue("visible", mapObject->isVisible());
 
+    if (mapObject->color().isValid())
+        writeColor("color", mapObject->color());
+
     switch (mapObject->shape()) {
     case MapObject::Rectangle:
     case MapObject::Ellipse:

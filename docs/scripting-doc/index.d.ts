@@ -1801,6 +1801,18 @@ declare class MapObject extends TiledObject {
   textColor: color;
 
   /**
+   * Color used to display this object, overriding the color of the object
+   * layer it is part of.
+   *
+   * Set to an invalid color (the default) to make the object follow the
+   * color of its object layer, or the color of its class when the class
+   * defines one.
+   *
+   * @since 1.13
+   */
+  color: color;
+
+  /**
    * Tile of the object.
    */
   tile: Tile | null;
