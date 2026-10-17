@@ -182,6 +182,8 @@ public:
     bool hasDimensions() const;
     bool canRotate() const;
     bool isTileObject() const;
+    bool isMultiTileObject() const;
+    QSizeF tileObjectSize(const Map *map = nullptr) const;
 
     QRectF bounds() const;
     QRectF boundsUseTile() const;
@@ -190,6 +192,15 @@ public:
 
     const Cell &cell() const;
     void setCell(const Cell &cell);
+
+    const TileLayer *tileLayer() const;
+    void setTileLayer(const QSharedPointer<TileLayer> &tileLayer);
+    void renderTileObject(class CellRenderer &cellRenderer,
+                          const QRectF &bounds,
+                          const Map *map = nullptr) const;
+    static void flipTileLayer(TileLayer *tileLayer,
+                              FlipDirection direction,
+                              const Map *map = nullptr);
 
     const ObjectTemplate *objectTemplate() const;
     void setObjectTemplate(const ObjectTemplate *objectTemplate);
@@ -249,6 +260,7 @@ private:
     TextData mTextData;
     QPolygonF mPolygon;
     Cell mCell;
+    QSharedPointer<TileLayer> mTileLayer;
     const ObjectTemplate *mObjectTemplate = nullptr;
     ObjectGroup *mObjectGroup = nullptr;
     qreal mRotation = 0.0;
@@ -431,7 +443,10 @@ inline bool MapObject::canRotate() const
 { return mShape != Point; }
 
 inline bool MapObject::isTileObject() const
-{ return !mCell.isEmpty(); }
+{ return !mCell.isEmpty() || isMultiTileObject(); }
+
+inline bool MapObject::isMultiTileObject() const
+{ return mTileLayer && !mTileLayer->isEmpty(); }
 
 /**
  * Shortcut to getting a QRectF from position() and size().
@@ -445,14 +460,8 @@ inline QRectF MapObject::bounds() const
 inline const Cell &MapObject::cell() const
 { return mCell; }
 
-/**
- * Sets the tile that is associated with this object. The object will
- * display as the tile image.
- *
- * \warning The object shape is ignored for tile objects!
- */
-inline void MapObject::setCell(const Cell &cell)
-{ mCell = cell; }
+inline const TileLayer *MapObject::tileLayer() const
+{ return mTileLayer.data(); }
 
 inline const ObjectTemplate *MapObject::objectTemplate() const
 { return mObjectTemplate; }

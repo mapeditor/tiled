@@ -51,10 +51,13 @@ protected:
 private:
     void languageChangedImpl();
 
+    bool syncSelection();
     void setCell(const Cell &cell);
 
     Cell mCell;
     SharedTileset mTileset; // keeps alive tileset referenced by mCell
+    QSharedPointer<TileLayer> mTileLayer;
+    const TileLayer *mSourceTileLayer = nullptr;
     int mRotation = 0;
 };
 
