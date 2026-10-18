@@ -136,7 +136,7 @@ jobs:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       run: |
         curl -sL https://sentry.io/get-cli/ | bash
-        sentry-cli debug-files upload --include-sources src AppDir
+        sentry-cli debug-files upload --include-sources src AppDir sentry-native/build
 
     - name: Warn about failed symbol upload
       if: steps.sentry-upload.outcome == 'failure'
