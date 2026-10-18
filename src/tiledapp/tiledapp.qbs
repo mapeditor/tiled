@@ -10,8 +10,8 @@ TiledQtGuiApplication {
     consoleApplication: false
 
     Depends { name: "libtilededitor" }
-    Depends { name: "ib"; condition: qbs.targetOS.contains("macos") }
-    Depends { name: "xcode"; condition: qbs.targetOS.contains("macos") }
+    Depends { name: "ib"; condition: qbs.targetOS.contains("macos") && qbs.toolchainType === "xcode" }
+    Depends { name: "xcode"; condition: qbs.targetOS.contains("macos") && qbs.toolchainType === "xcode" }
     Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") }
     Depends { name: "texttemplate"; condition: qbs.targetOS.contains("windows") }
 
@@ -22,6 +22,7 @@ TiledQtGuiApplication {
     // actool accepts the input but silently emits nothing). When either is
     // missing, fall back to the legacy tiled-icon-mac appiconset.
     readonly property bool useIconComposerIcon: qbs.targetOS.contains("macos")
+        && qbs.toolchainType === "xcode"
         && Utilities.versionCompare(qbs.version, "3.2") >= 0
         && Utilities.versionCompare(xcode.version, "26") >= 0
 
@@ -53,8 +54,12 @@ TiledQtGuiApplication {
         condition: qbs.targetOS.contains("macos")
         cpp.frameworks: ["Foundation"]
         bundle.identifierPrefix: "org.mapeditor"
-        ib.appIconName: useIconComposerIcon ? "tiled-icon-macos26" : "tiled-icon-mac"
         targetName: "Tiled"
+    }
+
+    Properties {
+        condition: qbs.targetOS.contains("macos") && qbs.toolchainType === "xcode"
+        ib.appIconName: useIconComposerIcon ? "tiled-icon-macos26" : "tiled-icon-mac"
     }
 
     Properties {
@@ -86,6 +91,14 @@ TiledQtGuiApplication {
         condition: qbs.targetOS.contains("macos")
         files: [
             "Info.plist",
+        ]
+    }
+
+    // Requires actool, which is only available as part of Xcode.
+    Group {
+        name: "macOS asset catalog"
+        condition: qbs.targetOS.contains("macos") && qbs.toolchainType === "xcode"
+        files: [
             "images/tiled.xcassets",
         ]
     }
