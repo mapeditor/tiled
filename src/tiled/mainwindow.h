@@ -96,6 +96,8 @@ public:
      */
     bool openFile(const QString &fileName, FileFormat *fileFormat = nullptr);
 
+    WorldDocument *createNewWorld(const QString &suggestedFileName = QString());
+
     bool addRecentProjectsActions(QMenu *menu) const;
 
     static MainWindow *instance();
@@ -270,7 +272,7 @@ private:
     QPointer<PreferencesDialog> mPreferencesDialog;
 
     QMap<QMainWindow*, QByteArray> mMainWindowStates;
-    bool mHasRestoredLayout = false;
+    bool mReapplyLayoutOnResize = false;
 
     SessionOption<QStringList> mLoadedWorlds { "loadedWorlds" };
 

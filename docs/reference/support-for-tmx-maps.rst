@@ -280,6 +280,7 @@ Game Maker
 Godot
 ~~~~~
 - Tiled ships with a plugin for exporting to :ref:`Godot 4 <godot4-export>` as .tscn scene files.
+- `YATI (Yet Another Tiled Importer) <https://github.com/Kiamo2/YATI>`__ imports TMX and TMJ files directly in Godot 4, supporting nearly all Tiled features.
 - `Tiled Map Importer <https://godotengine.org/asset-library/asset/25>`__ imports each map as Godot scene which can be instanced or inherited (`forum announcement <http://discourse.mapeditor.org/t/importer-plugin-for-godot-engine/1833/1>`__).
 - `Godot Tiled importer (Mono version) <https://github.com/mi-sts/godot_tiled_importer>`__ imports Tiled maps exported to JSON (.tmj) format. Supports all map orientations.
 - `Tiled To Godot Export <https://github.com/MikeMnD/tiled-to-godot-export>`__ is a Tiled :doc:`JavaScript extension </manual/scripting>` for exporting Tilemaps and Tilesets in Godot 3.2 format (`forum announcement <https://discourse.mapeditor.org/t/tiled-editor-map-and-tileset-integration-with-godot-3-2/4347>`__).
@@ -327,10 +328,11 @@ HTML5 (multiple engines)
    multi-canvas based game rendering library
 -  `melonJS <http://www.melonjs.org>`__ A lightweight HTML5 game engine
 -  `Panda 2 <https://www.panda2.io/>`__, a HTML5 Game Development Platform for Mac, Windows and Linux. Has `a plugin for rendering Tiled <https://www.panda2.io/plugins>`__ maps, both orthogonal and isometric.
--  `pixi-tiledmap <https://github.com/riebel/pixi-tiledmap>`__ A
-   loader and renderer for Tiled Maps in `Pixi.JS <https://pixijs.com/>`__ 
-   v8+ written in TypeScript. JSON/XML support with no external deps,
-   full layer-type support, typed API and ESM/CJS dual output.
+-  `pixi-tiledmap <https://github.com/riebel/pixi-tiledmap>`__ A Tiled map
+   runtime for `PixiJS <https://pixijs.com/>`__ v8+, written in TypeScript.
+   TMX/TMJ parsing with no external dependencies, all layer types and
+   orientations, batched tile rendering, runtime tile editing, procedural
+   map generation, and export back to Tiled JSON.
 -  `Phaser <http://www.phaser.io>`__ A fast, free and fun open source
    framework supporting both JavaScript and TypeScript (`Tiled
    tutorial <http://www.gamedevacademy.org/html5-phaser-tutorial-top-down-games-with-tiled/>`__)
@@ -537,12 +539,16 @@ Unity
    (2D framework) offers `Tiled map
    support <http://www.wyrmtale.com/orthello-pro/tilemaps>`__.
 
-Unreal Engine 4
-~~~~~~~~~~~~~~~
+Unreal Engine
+~~~~~~~~~~~~~
 
 -  `Paper2D <https://forums.unrealengine.com/showthread.php?3539-Project-Paper2D>`__
    provides built-in support for tile maps and tile sets, importing JSON
    exported from Tiled.
+-  `ue5-tiled-importer <https://github.com/jscharnitzke/ue5-tiled-importer>`__
+   is an Unreal Engine 5 plugin that imports ``.tmx`` and ``.tsx`` files
+   through the Interchange framework, creating Paper2D Tile Sets and Tile
+   Maps.
 
 Urho3D
 ~~~~~~

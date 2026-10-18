@@ -39,6 +39,7 @@
 #include "preferences.h"
 #include "propertiesview.h"
 #include "propertyeditorwidgets.h"
+#include "session.h"
 #include "tilesetchanges.h"
 #include "tilesetdocument.h"
 #include "tilesetparametersedit.h"
@@ -66,6 +67,9 @@
 #include <algorithm>
 
 namespace Tiled {
+
+static SessionOption<QList<bool>> propertiesObjectExpandedStates { "properties.objectExpandedStates" };
+static SessionOption<bool> customPropertiesExpanded { "properties.customExpanded", true };
 
 /**
  * Suppresses widget updates for the duration of a scope. Updates are
@@ -2316,6 +2320,18 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
 
     mRootProperty->addProperty(mCustomProperties);
 
+    // The collapsed states are stored in the session. Keep them in sync with
+    // the session at runtime, so that changes are reflected in any other open
+    // properties view as well.
+    mCustomProperties->setExpanded(customPropertiesExpanded);
+    connect(mCustomProperties, &GroupProperty::expandedChanged,
+            this, [] (bool expanded) { customPropertiesExpanded = expanded; });
+
+    mObjectExpandedCallback = propertiesObjectExpandedStates.onChange(
+                [this] { applyObjectExpandedStates(); });
+    mCustomExpandedCallback = customPropertiesExpanded.onChange(
+                [this] { mCustomProperties->setExpanded(customPropertiesExpanded); });
+
     mActionAddProperty = new QAction(this);
     mActionAddProperty->setEnabled(false);
     mActionAddProperty->setIcon(mAddIcon);
@@ -2374,6 +2390,9 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
 
 PropertiesWidget::~PropertiesWidget()
 {
+    propertiesObjectExpandedStates.unregister(mObjectExpandedCallback);
+    customPropertiesExpanded.unregister(mCustomExpandedCallback);
+
     // Disconnect to avoid crashing due to signals emitted during destruction
     mPropertiesView->disconnect(this);
 }
@@ -2429,13 +2448,6 @@ void PropertiesWidget::currentObjectChanged(Object *object)
     const ScopedUpdatesDisabler updatesDisabler(mPropertiesView);
 
     if (mPropertiesObject) {
-        // Remember the expanded states
-        const auto &subProperties = mPropertiesObject->subProperties();
-        for (int i = 0; i < subProperties.size(); ++i) {
-            if (auto subGroupProperty = qobject_cast<GroupProperty*>(subProperties.at(i)))
-                mExpandedStates[i] = subGroupProperty->isExpanded();
-        }
-
         mRootProperty->deleteProperty(mPropertiesObject);
         mPropertiesObject = nullptr;
     }
@@ -2501,12 +2513,26 @@ void PropertiesWidget::currentObjectChanged(Object *object)
         }
     }
 
-    // Restore the expanded states
+    // Restore the expanded states from the session and keep the session in
+    // sync when they are changed by the user.
     if (mPropertiesObject) {
+        applyObjectExpandedStates();
+
         const auto &subProperties = mPropertiesObject->subProperties();
         for (int i = 0; i < subProperties.size(); ++i) {
-            if (auto subGroupProperty = qobject_cast<GroupProperty*>(subProperties.at(i)))
-                subGroupProperty->setExpanded(mExpandedStates.value(i, true));
+            auto subGroupProperty = qobject_cast<GroupProperty*>(subProperties.at(i));
+            if (!subGroupProperty)
+                continue;
+
+            connect(subGroupProperty, &GroupProperty::expandedChanged, this, [i] (bool expanded) {
+                // Only update the state at this index, leaving the states of
+                // any additional groups shown in another view intact.
+                auto expandedStates = propertiesObjectExpandedStates.get();
+                while (expandedStates.size() <= i)
+                    expandedStates.append(true);
+                expandedStates[i] = expanded;
+                propertiesObjectExpandedStates = expandedStates;
+            });
         }
 
         mRootProperty->insertProperty(0, mPropertiesObject);
@@ -2520,6 +2546,19 @@ void PropertiesWidget::currentObjectChanged(Object *object)
 
     mPropertiesView->setEnabled(object);
     mActionAddProperty->setEnabled(enabled);
+}
+
+void PropertiesWidget::applyObjectExpandedStates()
+{
+    if (!mPropertiesObject)
+        return;
+
+    const auto expandedStates = propertiesObjectExpandedStates.get();
+    const auto &subProperties = mPropertiesObject->subProperties();
+    for (int i = 0; i < subProperties.size(); ++i) {
+        if (auto subGroupProperty = qobject_cast<GroupProperty*>(subProperties.at(i)))
+            subGroupProperty->setExpanded(expandedStates.value(i, true));
+    }
 }
 
 

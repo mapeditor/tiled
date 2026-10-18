@@ -755,9 +755,9 @@ Can contain any number: :ref:`tmx-property`
 
 -  **name:** The name of the property.
 -  **type:** The type of the property. Can be ``string`` (default), ``int``,
-   ``float``, ``bool``, ``color``, ``file``, ``object`` or ``class`` (since
-   0.16, with ``color`` and ``file`` added in 0.17, ``object`` added in 1.4 and
-   ``class`` added in 1.8).
+   ``float``, ``bool``, ``color``, ``file``, ``object``, ``class`` or ``list``
+   (since 0.16, with ``color`` and ``file`` added in 0.17, ``object`` added in
+   1.4, ``class`` added in 1.8 and ``list`` added in 1.12).
 -  **propertytype:** The name of the
    :ref:`custom property type <custom-property-types>`, when applicable
    (since 1.8).
@@ -781,6 +781,9 @@ Class properties will have their member values stored in a nested
 :ref:`tmx-properties` element. Only the actually set members are saved. When no
 members have been set the ``properties`` element is left out entirely.
 
+List properties store each of their values in a nested :ref:`tmx-item`
+element and have no ``value`` attribute of their own.
+
 When a string property contains newlines, the current version of Tiled
 will write out the value as characters contained inside the ``property``
 element rather than as the ``value`` attribute. It is possible that a
@@ -788,6 +791,41 @@ future version of the TMX format will switch to always saving property
 values inside the element rather than as an attribute.
 
 Can contain at most one: :ref:`tmx-properties` (since 1.8)
+
+Can contain any number: :ref:`tmx-item` (since 1.12)
+
+.. _tmx-item:
+
+<item>
+~~~~~~
+
+-  **type:** The type of the value. Same as the ``type`` attribute on the
+   :ref:`tmx-property` element (default ``string``).
+-  **propertytype:** The name of the
+   :ref:`custom property type <custom-property-types>`, when applicable.
+-  **value:** The value of this item.
+
+Stores one value of a ``list`` property (since 1.12). Apart from having no
+``name`` attribute, an item is structured like a :ref:`tmx-property` element:
+``class`` items store their set members in a nested :ref:`tmx-properties`
+element, ``list`` items contain their own ``item`` elements and multiline
+strings are written as characters contained inside the ``item`` element.
+
+Example of a list property with a nested list:
+
+.. code:: xml
+
+   <property name="list property" type="list">
+    <item type="int" value="10"/>
+    <item value="text"/>
+    <item type="list">
+     <item type="bool" value="true"/>
+    </item>
+   </property>
+
+Can contain at most one: :ref:`tmx-properties`
+
+Can contain any number: :ref:`tmx-item`
 
 .. _tmx-template-files:
 

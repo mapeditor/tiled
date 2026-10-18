@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.mapeditor</groupId>
         <artifactId>tiled-parent</artifactId>
-        <version>1.4.4-SNAPSHOT</version>
+        <version>1.5.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>libtiled</artifactId>
@@ -27,6 +27,16 @@
     </scm>
 
     <dependencies>
+        <dependency>
+            <groupId>com.github.luben</groupId>
+            <artifactId>zstd-jni</artifactId>
+            <version>1.5.6-8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.weisj</groupId>
+            <artifactId>jsvg</artifactId>
+            <version>2.0.0</version>
+        </dependency>
         <dependency>
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>

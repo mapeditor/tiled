@@ -52,6 +52,7 @@ public class XMLWriter {
     private final Stack<String> openElements;
     private boolean bStartTagOpen;
     private boolean bDocumentOpen;
+    private boolean bInlineText;
 
     /**
      * Constructor for XMLWriter.
@@ -187,6 +188,9 @@ public class XMLWriter {
         if (bStartTagOpen) {
             w.write("/>" + newLine);
             bStartTagOpen = false;
+        } else if (bInlineText) {
+            w.write("</" + name + ">" + newLine);
+            bInlineText = false;
         } else {
             writeIndent();
             w.write("</" + name + ">" + newLine);
@@ -210,12 +214,18 @@ public class XMLWriter {
             throws IOException, XMLWriterException {
         if (bStartTagOpen) {
             String escapedContent = (content != null)
-                    ? content.replaceAll("\"", "&quot;") : "";
+                    ? escapeText(content).replace("\"", "&quot;") : "";
             w.write(" " + name + "=\"" + escapedContent + "\"");
         } else {
             throw new XMLWriterException(
                     "Can't write attribute without open start tag.");
         }
+    }
+
+    private static String escapeText(String content) {
+        return content.replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;");
     }
 
     /**
@@ -283,6 +293,26 @@ public class XMLWriter {
      * @param content a {@link java.lang.String} object.
      * @throws java.io.IOException if any.
      */
+    /**
+     * Writes element text content inline, without surrounding indentation or
+     * newlines, so the value round-trips exactly.
+     *
+     * @param content the text content to write
+     * @throws java.io.IOException if any.
+     * @throws org.mapeditor.io.xml.XMLWriterException if any.
+     */
+    public void writeCharacters(String content)
+            throws IOException, XMLWriterException {
+        if (!bStartTagOpen) {
+            throw new XMLWriterException(
+                    "Can't write characters without open start tag.");
+        }
+        w.write(">");
+        bStartTagOpen = false;
+        w.write(escapeText(content != null ? content : ""));
+        bInlineText = true;
+    }
+
     public void writeCDATA(String content) throws IOException {
         if (bStartTagOpen) {
             w.write(">" + newLine);
@@ -290,7 +320,7 @@ public class XMLWriter {
         }
 
         writeIndent();
-        w.write(content + newLine);
+        w.write(escapeText(content != null ? content : "") + newLine);
     }
 
     /**

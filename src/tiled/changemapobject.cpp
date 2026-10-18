@@ -256,7 +256,8 @@ void ResetInstances::redo()
 
     for (auto object : mMapObjects) {
         // Template instances initially don't hold any custom properties
-        object->clearProperties();
+        if (!object->properties().isEmpty())
+            mDocument->setProperties(object, Properties());
 
         affectedProperties |= object->changedProperties();
 
@@ -266,9 +267,6 @@ void ResetInstances::redo()
     }
 
     emit mDocument->changed(MapObjectsChangeEvent(mMapObjects, affectedProperties));
-
-    // This signal forces updating custom properties in the properties dock
-//    emit mMapDocument->selectedObjectsChanged();
 }
 
 void ResetInstances::undo()
@@ -276,8 +274,14 @@ void ResetInstances::undo()
     MapObject::ChangedProperties affectedProperties = MapObject::CustomProperties;
 
     for (int i = 0; i < mMapObjects.size(); ++i) {
-        mMapObjects.at(i)->copyPropertiesFrom(mOldMapObjects.at(i));
-        affectedProperties |= mOldMapObjects.at(i)->changedProperties();
+        MapObject *object = mMapObjects.at(i);
+        const MapObject *oldObject = mOldMapObjects.at(i);
+
+        object->copyPropertiesFrom(oldObject);
+        affectedProperties |= oldObject->changedProperties();
+
+        if (!oldObject->properties().isEmpty())
+            emit mDocument->propertiesChanged(object);
     }
 
     emit mDocument->changed(MapObjectsChangeEvent(mMapObjects, affectedProperties));
@@ -314,6 +318,9 @@ void ReplaceObjectsWithTemplate::redo()
     }
 
     emit mDocument->changed(MapObjectsChangeEvent(mMapObjects, MapObject::AllProperties));
+
+    for (MapObject *object : std::as_const(mMapObjects))
+        emit mDocument->propertiesChanged(object);
 }
 
 void ReplaceObjectsWithTemplate::undo()
@@ -322,4 +329,7 @@ void ReplaceObjectsWithTemplate::undo()
         mMapObjects.at(i)->copyPropertiesFrom(mOldMapObjects.at(i));
 
     emit mDocument->changed(MapObjectsChangeEvent(mMapObjects, MapObject::AllProperties));
+
+    for (MapObject *object : std::as_const(mMapObjects))
+        emit mDocument->propertiesChanged(object);
 }

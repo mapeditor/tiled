@@ -1,0 +1,22 @@
+--- a/external/crashpad/compat/mingw/werapi.h	2026-07-06 14:25:54.000000000 +0200
++++ b/external/crashpad/compat/mingw/werapi.h	2026-07-10 17:37:39.926794300 +0200
+@@ -16,6 +16,7 @@
+ #define CRASHPAD_COMPAT_MINGW_WERAPI_H_
+ 
+ typedef HANDLE HREPORT;
++#define PWER_SUBMIT_RESULT WER_SUBMIT_RESULT*
+ 
+ #ifndef WER_MAX_PREFERRED_MODULES_BUFFER
+ #define WER_MAX_PREFERRED_MODULES_BUFFER 256
+--- a/external/crashpad/snapshot/win/pe_image_reader.cc	2026-07-06 14:25:54.000000000 +0200
++++ b/external/crashpad/snapshot/win/pe_image_reader.cc	2026-07-10 17:55:14.465591400 +0200
+@@ -425,7 +425,8 @@
+   }
+ 
+   if (nt_headers.FileHeader.SizeOfOptionalHeader <
+-          offsetof(decltype(nt_headers.OptionalHeader), DataDirectory[index]) +
++          offsetof(decltype(nt_headers.OptionalHeader), DataDirectory) +
++              index * sizeof(nt_headers.OptionalHeader.DataDirectory[0]) +
+               sizeof(nt_headers.OptionalHeader.DataDirectory[index]) ||
+       nt_headers.OptionalHeader.NumberOfRvaAndSizes <= index) {
+     return false;

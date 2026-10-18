@@ -54,6 +54,10 @@
 #include <QQmlEngine>
 #include <QVersionNumber>
 
+#ifdef TILED_SENTRY
+#include <sentry.h>
+#endif
+
 namespace Tiled {
 
 ScriptModule::ScriptModule(QObject *parent)
@@ -70,9 +74,9 @@ ScriptModule::ScriptModule(QObject *parent)
         connect(documentManager, &DocumentManager::documentSaved, this, &ScriptModule::documentSaved);
         connect(documentManager, &DocumentManager::documentAboutToClose, this, &ScriptModule::documentAboutToClose);
         connect(documentManager, &DocumentManager::currentDocumentChanged, this, &ScriptModule::currentDocumentChanged);
-
-        connect(&WorldManager::instance(), &WorldManager::worldsChanged, this, &ScriptModule::worldsChanged);
     }
+
+    connect(&WorldManager::instance(), &WorldManager::worldsChanged, this, &ScriptModule::worldsChanged);
 }
 
 ScriptModule::~ScriptModule()
@@ -320,6 +324,19 @@ QCursor ScriptModule::cursor(ScriptImage *image, int hotX, int hotY)
 bool ScriptModule::versionLessThan(const QString &a, const QString &b)
 {
     return QVersionNumber::fromString(a) < QVersionNumber::fromString(b);
+}
+
+/**
+ * Deliberately crashes Tiled, for testing the crash reporting.
+ */
+void ScriptModule::__crash() const
+{
+#ifdef TILED_SENTRY
+    sentry_crash();
+#else
+    volatile int *invalidAddress = nullptr;
+    *invalidAddress = 0;
+#endif
 }
 
 EditableAsset *ScriptModule::open(const QString &fileName) const
@@ -750,10 +767,6 @@ QList<QObject *> ScriptModule::worlds() const
 {
     QList<QObject*> worlds;
 
-    auto documentManager = DocumentManager::maybeInstance();
-    if (!documentManager)
-        return worlds;
-
     for (auto &worldDocument : WorldManager::instance().worlds())
         worlds.append(worldDocument->editable());
 
@@ -762,7 +775,9 @@ QList<QObject *> ScriptModule::worlds() const
 
 void ScriptModule::loadWorld(const QString &fileName) const
 {
-    WorldManager::instance().loadWorld(fileName);
+    QString error;
+    if (!WorldManager::instance().loadWorld(fileName, &error))
+        ScriptManager::instance().throwError(error);
 }
 
 void ScriptModule::unloadWorld(const QString &fileName) const

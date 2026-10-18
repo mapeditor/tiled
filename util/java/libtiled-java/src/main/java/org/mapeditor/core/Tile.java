@@ -176,6 +176,28 @@ public class Tile extends TileData {
         this.source = source;
     }
 
+    /**
+     * Sets the collision object group for this tile.
+     *
+     * @param og the object group defining collision shapes
+     */
+    public void setObjectGroup(ObjectGroup og) {
+        getObjectgroup().clear();
+        getObjectgroup().add(og);
+    }
+
+    /**
+     * Gets the collision object group for this tile, if any.
+     *
+     * @return the first ObjectGroup, or null
+     */
+    public ObjectGroup getCollisionObjectGroup() {
+        if (objectgroup != null && !objectgroup.isEmpty()) {
+            return (ObjectGroup) objectgroup.get(0);
+        }
+        return null;
+    }
+
     /** {@inheritDoc} */
     @Override
     public Properties getProperties() {

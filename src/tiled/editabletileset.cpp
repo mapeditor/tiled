@@ -422,6 +422,7 @@ void EditableTileset::setDocument(Document *document)
         connect(doc, &TilesetDocument::tilesAdded, this, &EditableTileset::attachTiles);
         connect(doc, &TilesetDocument::tilesRemoved, this, &EditableTileset::detachTiles);
         connect(doc, &TilesetDocument::tileObjectGroupChanged, this, &EditableTileset::tileObjectGroupChanged);
+        connect(doc, &TilesetDocument::selectedTilesChanged, this, &EditableTileset::selectedTilesChanged);
         connect(doc->wangSetModel(), &TilesetWangSetModel::wangSetAdded, this, &EditableTileset::wangSetAdded);
         connect(doc->wangSetModel(), &TilesetWangSetModel::wangSetRemoved, this, &EditableTileset::wangSetRemoved);
     }

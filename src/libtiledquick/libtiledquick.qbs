@@ -46,11 +46,18 @@ DynamicLibrary {
         "tilesnode.h",
     ]
 
+    // Tag the source headers, so that the group below won't match generated
+    // artifacts like the moc files, which are also tagged with "hpp".
+    FileTagger {
+        patterns: "*.h"
+        fileTags: ["hpp", "public_hpp"]
+    }
+
     Group {
         condition: project.installHeaders
         qbs.install: true
         qbs.installDir: "include/tiledquick"
-        fileTagsFilter: "hpp"
+        fileTagsFilter: "public_hpp"
     }
 
     Group {

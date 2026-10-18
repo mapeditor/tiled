@@ -1,6 +1,12 @@
 # General build artifacts
 default/
 
+# sentry-native sources, built in-tree by CI (see packages.yml)
+/sentry-native/
+
+# Tiled session files
+*.tiled-session
+
 # clangd cache
 .cache/
 compile_commands.json
@@ -33,13 +39,18 @@ build/
 # Ronn html outputs
 man/*.1.html
 
-# Doxygen and Sphinx
+# Doxygen (writes its HTML output to ./html, see Doxyfile: HTML_OUTPUT)
 html/
-docs/_build/html/
-docs/_build/gettext/.doctrees
-docs/_build/doctrees/
+
+# Sphinx
 docs/.venv/
 *.mo
+docs/_build/html/
+docs/_build/doctrees/
+# Only the .pot files here are source; ignore the other output the gettext
+# builder writes alongside them (static asset dirs, etc.).
+docs/_build/gettext/*
+!docs/_build/gettext/*.pot
 
 # tsdoc generation results
 docs/scripting-doc/out/

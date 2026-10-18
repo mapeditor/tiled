@@ -131,7 +131,6 @@ TileLayer::TileLayer(const QString &name, int x, int y, int width, int height)
     : Layer(TileLayerType, name, x, y)
     , mWidth(width)
     , mHeight(height)
-    , mUsedTilesetsDirty(false)
 {
 }
 
@@ -210,14 +209,22 @@ void Tiled::TileLayer::setCell(int x, int y, const Cell &cell)
 
     Chunk &_chunk = chunk(x, y);
 
-    if (!mUsedTilesetsDirty) {
-        Tileset *oldTileset = _chunk.cellAt(x & CHUNK_MASK, y & CHUNK_MASK).tileset();
-        Tileset *newTileset = cell.tileset();
-        if (oldTileset != newTileset) {
-            if (oldTileset)
-                mUsedTilesetsDirty = true;
-            else if (newTileset)
-                mUsedTilesets.insert(newTileset->sharedFromThis());
+    Tileset *oldTileset = _chunk.cellAt(x & CHUNK_MASK, y & CHUNK_MASK).tileset();
+    Tileset *newTileset = cell.tileset();
+
+    if (oldTileset != newTileset) {
+        if (newTileset) {
+            SharedTileset sharedNew = newTileset->sharedFromThis();
+            mUsedTilesets[sharedNew]++;
+        }
+        if (oldTileset) {
+            SharedTileset sharedOld = oldTileset->sharedFromThis();
+            auto it = mUsedTilesets.find(sharedOld);
+            Q_ASSERT(it != mUsedTilesets.end());
+            if (it != mUsedTilesets.end()) {
+                if (--it.value() <= 0)
+                    mUsedTilesets.erase(it);
+            }
         }
     }
 
@@ -306,7 +313,6 @@ void TileLayer::clear()
     mChunks.clear();
     mBounds = QRect();
     mUsedTilesets.clear();
-    mUsedTilesetsDirty = false;
 }
 
 void TileLayer::flip(FlipDirection direction)
@@ -341,6 +347,7 @@ void TileLayer::flip(FlipDirection direction)
 
     mChunks = newLayer->mChunks;
     mBounds = newLayer->mBounds;
+    mUsedTilesets = newLayer->mUsedTilesets;
 }
 
 void TileLayer::flipHexagonal(FlipDirection direction)
@@ -391,6 +398,7 @@ void TileLayer::flipHexagonal(FlipDirection direction)
 
     mChunks = newLayer->mChunks;
     mBounds = newLayer->mBounds;
+    mUsedTilesets = newLayer->mUsedTilesets;
 }
 
 void TileLayer::rotate(RotateDirection direction)
@@ -441,6 +449,7 @@ void TileLayer::rotate(RotateDirection direction)
     mHeight = newHeight;
     mChunks = newLayer->mChunks;
     mBounds = newLayer->mBounds;
+    mUsedTilesets = newLayer->mUsedTilesets;
 }
 
 void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
@@ -530,6 +539,7 @@ void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
     mHeight = newHeight;
     mChunks = newLayer->mChunks;
     mBounds = newLayer->mBounds;
+    mUsedTilesets = newLayer->mUsedTilesets;
 
     QRect filledRect = region().boundingRect();
 
@@ -547,20 +557,7 @@ void TileLayer::rotateHexagonal(RotateDirection direction, Map *map)
 
 QSet<SharedTileset> TileLayer::usedTilesets() const
 {
-    if (mUsedTilesetsDirty) {
-        QSet<SharedTileset> tilesets;
-
-        for (const Chunk &chunk : mChunks) {
-            for (const Cell &cell : chunk)
-                if (const Tile *tile = cell.tile())
-                    tilesets.insert(tile->sharedTileset());
-        }
-
-        mUsedTilesets.swap(tilesets);
-        mUsedTilesetsDirty = false;
-    }
-
-    return mUsedTilesets;
+    return { mUsedTilesets.keyBegin(), mUsedTilesets.keyEnd() };
 }
 
 bool TileLayer::hasCell(std::function<bool (const Cell &)> condition) const
@@ -575,11 +572,21 @@ bool TileLayer::hasCell(std::function<bool (const Cell &)> condition) const
 
 bool TileLayer::referencesTileset(const Tileset *tileset) const
 {
-    return ::contains(usedTilesets(), tileset);
+    if (!tileset)
+        return false;
+
+    // sharedFromThis() on a const Tileset yields QSharedPointer<const Tileset>,
+    // but mUsedTilesets stores QSharedPointer<Tileset>. We cast here only to
+    // perform the lookup; no mutation occurs.
+    auto sharedTileset = qSharedPointerConstCast<Tileset>(tileset->sharedFromThis());
+    return mUsedTilesets.contains(sharedTileset);
 }
 
 void TileLayer::removeReferencesToTileset(Tileset *tileset)
 {
+    if (!tileset)
+        return;
+
     for (Chunk &chunk : mChunks)
         chunk.removeReferencesToTileset(tileset);
 
@@ -589,11 +596,18 @@ void TileLayer::removeReferencesToTileset(Tileset *tileset)
 void TileLayer::replaceReferencesToTileset(Tileset *oldTileset,
                                            Tileset *newTileset)
 {
+    if (!oldTileset || !newTileset || oldTileset == newTileset)
+        return;
+
     for (Chunk &chunk : mChunks)
         chunk.replaceReferencesToTileset(oldTileset, newTileset);
 
-    if (mUsedTilesets.remove(oldTileset->sharedFromThis()))
-        mUsedTilesets.insert(newTileset->sharedFromThis());
+    auto it = mUsedTilesets.find(oldTileset->sharedFromThis());
+    if (it != mUsedTilesets.end()) {
+        int count = it.value();
+        mUsedTilesets.erase(it);
+        mUsedTilesets[newTileset->sharedFromThis()] += count;
+    }
 }
 
 void TileLayer::resize(QSize size, QPoint offset)
@@ -612,7 +626,6 @@ void TileLayer::resize(QSize size, QPoint offset)
     mChunks = newLayer->mChunks;
     mBounds = newLayer->mBounds;
     mUsedTilesets = newLayer->mUsedTilesets;
-    mUsedTilesetsDirty = newLayer->mUsedTilesetsDirty;
     setSize(size);
 }
 
@@ -657,7 +670,6 @@ void TileLayer::offsetTiles(QPoint offset,
     mChunks = newLayer->mChunks;
     mBounds = newLayer->mBounds;
     mUsedTilesets = newLayer->mUsedTilesets;
-    mUsedTilesetsDirty = newLayer->mUsedTilesetsDirty;
 }
 
 void TileLayer::offsetTiles(QPoint offset)
@@ -686,6 +698,7 @@ void TileLayer::offsetTiles(QPoint offset)
 
     mChunks = newLayer->mChunks;
     mBounds = newLayer->mBounds;
+    mUsedTilesets = newLayer->mUsedTilesets;
 }
 
 bool TileLayer::canMergeWith(const Layer *other) const
@@ -855,7 +868,6 @@ TileLayer *TileLayer::initializeClone(TileLayer *clone) const
     clone->mChunks = mChunks;
     clone->mBounds = mBounds;
     clone->mUsedTilesets = mUsedTilesets;
-    clone->mUsedTilesetsDirty = mUsedTilesetsDirty;
     return clone;
 }
 

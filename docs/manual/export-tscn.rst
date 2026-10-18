@@ -17,6 +17,13 @@ common parent folder containing a ``.godot`` project file and use that folder
 as the ``res://`` root for the project. The exporter will search at least two
 parent folders for a ``.godot`` file.
 
+.. note::
+
+    If this exporter does not fit your needs, `YATI (Yet Another Tiled
+    Importer) <https://github.com/Kiamo2/YATI>`__ is a popular Godot 4 addon
+    that imports ``.tmx`` and ``.tmj`` files directly, with a very extensive
+    feature set.
+
 Layer Properties
 ~~~~~~~~~~~~~~~~
 

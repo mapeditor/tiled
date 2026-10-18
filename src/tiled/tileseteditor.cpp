@@ -562,6 +562,10 @@ void TilesetEditor::selectionChanged()
 
     updateActions();
 
+    // The view is being updated to match the document
+    if (mSynchronizingSelection)
+        return;
+
     const QItemSelectionModel *s = view->selectionModel();
     const QModelIndexList indexes = s->selection().indexes();
     if (indexes.isEmpty())
@@ -574,7 +578,7 @@ void TilesetEditor::selectionChanged()
         if (Tile *tile = model->tileAt(index))
             selectedTiles.append(tile);
 
-    QScopedValueRollback<bool> settingSelectedTiles(mSettingSelectedTiles, true);
+    QScopedValueRollback<bool> synchronizingSelection(mSynchronizingSelection, true);
     mCurrentTilesetDocument->setSelectedTiles(selectedTiles);
 }
 
@@ -655,7 +659,8 @@ void TilesetEditor::tilesetChanged()
 
 void TilesetEditor::selectedTilesChanged()
 {
-    if (mSettingSelectedTiles)
+    // The document is being updated to match the view
+    if (mSynchronizingSelection)
         return;
 
     if (mCurrentTilesetDocument != sender())
@@ -670,6 +675,9 @@ void TilesetEditor::selectedTilesChanged()
         const QModelIndex modelIndex = model->tileIndex(tile);
         tileSelection.select(modelIndex, modelIndex);
     }
+
+    // Avoid setting the selection on the document again from selectionChanged
+    QScopedValueRollback<bool> synchronizingSelection(mSynchronizingSelection, true);
 
     QItemSelectionModel *selectionModel = tilesetView->selectionModel();
     selectionModel->select(tileSelection, QItemSelectionModel::SelectCurrent);
