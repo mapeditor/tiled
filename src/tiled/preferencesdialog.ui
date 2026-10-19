@@ -743,7 +743,6 @@
   <tabstop>extensionsPathEdit</tabstop>
   <tabstop>openExtensionsPathButton</tabstop>
   <tabstop>scriptServer</tabstop>
-  <tabstop>openExtensionsPathButton</tabstop>
  </tabstops>
  <resources/>
  <connections>
