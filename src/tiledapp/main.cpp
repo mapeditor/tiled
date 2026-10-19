@@ -548,7 +548,25 @@ int main(int argc, char *argv[])
 
     Tiled::increaseImageAllocationLimit();
 
-    TiledApplication a(argc, argv);
+    // The --eval and --eval-file options are handled by an already running
+    // instance, so a QCoreApplication suffices and no display is needed
+    // (this way they also work in headless environments).
+    bool remoteEval = false;
+    for (int i = 1; i < argc; ++i) {
+        const QByteArray arg(argv[i]);
+        if (arg == "--eval" || arg == "--eval-file" ||
+            arg.startsWith("--eval=") || arg.startsWith("--eval-file=")) {
+            remoteEval = true;
+            break;
+        }
+    }
+
+    std::unique_ptr<TiledApplication> app;
+    std::unique_ptr<QCoreApplication> coreApp;
+    if (remoteEval)
+        coreApp = std::make_unique<QCoreApplication>(argc, argv);
+    else
+        app = std::make_unique<TiledApplication>(argc, argv);
 
 #ifdef TILED_SENTRY
     Sentry sentry;
@@ -698,11 +716,11 @@ int main(int argc, char *argv[])
         }
     }
 
-    if (a.isRunning() && !filesToOpen.isEmpty() && !commandLine.newInstance) {
+    if (app && app->isRunning() && !filesToOpen.isEmpty() && !commandLine.newInstance) {
         // Files need to be absolute paths because the already running Tiled
         // instance likely does not have the same working directory.
         QJsonDocument doc(QJsonArray::fromStringList(filesToOpen));
-        if (a.sendMessage(QLatin1String(doc.toJson())))
+        if (app->sendMessage(QLatin1String(doc.toJson())))
             return 0;
     }
 
@@ -718,14 +736,14 @@ int main(int argc, char *argv[])
     QWindowSystemInterface::flushWindowSystemEvents();
 #endif
 
-    a.setActivationWindow(&w);
+    app->setActivationWindow(&w);
 #ifdef Q_OS_WIN
     using QWindowsApplication = QNativeInterface::Private::QWindowsApplication;
     if (auto nativeWindowsApp = dynamic_cast<QWindowsApplication *>(QGuiApplicationPrivate::platformIntegration()))
         nativeWindowsApp->setWindowActivationBehavior(QWindowsApplication::AlwaysActivateWindow);
 #endif
 
-    QObject::connect(&a, &TiledApplication::fileOpenRequest,
+    QObject::connect(app.get(), &TiledApplication::fileOpenRequest,
                      &w, [&] (const QString &file) { w.openFile(file); });
 
     PluginManager::instance()->loadPlugins();
@@ -735,5 +753,5 @@ int main(int argc, char *argv[])
     for (const QString &fileName : std::as_const(filesToOpen))
         w.openFile(fileName);
 
-    return a.exec();
+    return app->exec();
 }
