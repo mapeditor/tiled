@@ -164,11 +164,15 @@ bool ScriptServer::listen()
 
 void ScriptServer::close()
 {
-    if (!mServer->isListening())
-        return;
-
     mServer->close();
     mBuffers.clear();
+
+    // Disconnect any clients that are still connected
+    const auto sockets = mServer->findChildren<QLocalSocket*>();
+    for (QLocalSocket *socket : sockets) {
+        socket->disconnectFromServer();
+        socket->deleteLater();
+    }
 }
 
 bool ScriptServer::isListening() const
