@@ -132,13 +132,21 @@ void LuaTableWriter::writeKeyAndValue(const QByteArray &key,
     m_valueWritten = true;
 }
 
-void LuaTableWriter::writeQuotedKeyAndValue(const QString &key,
-                                            const QVariant &value)
+/**
+ * Writes a quoted key, to be followed by a call that writes its value.
+ */
+void LuaTableWriter::writeQuotedKey(const QString &key)
 {
     prepareNewLine();
     write('[');
     write(quote(key).toUtf8());
     write(m_minimize ? "]=" : "] = ");
+}
+
+void LuaTableWriter::writeQuotedKeyAndValue(const QString &key,
+                                            const QVariant &value)
+{
+    writeQuotedKey(key);
     writeVariantValue(value);
 }
 

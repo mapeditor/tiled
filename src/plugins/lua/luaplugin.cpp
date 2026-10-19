@@ -68,6 +68,8 @@ public:
 
     void writeMap(const Tiled::Map *);
     void writeProperties(const Tiled::Properties &);
+    void writePropertyValue(const QVariant &value,
+                            const Tiled::ExportContext &context);
     void writeTileset(const Tiled::Tileset &,
                       unsigned firstGid,
                       bool embedded = true);
@@ -283,19 +285,43 @@ void LuaWriter::writeProperties(const Properties &properties)
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it) {
-        const auto exportValue = context.toExportValue(it.value());
-        if (it.value().userType() == objectRefTypeId()) {
-            mWriter.writeStartTable(it.key());
-            mWriter.setSuppressNewlines(true);
-            mWriter.writeKeyAndValue("id", exportValue.value.toInt());
-            mWriter.writeEndTable();
-            mWriter.setSuppressNewlines(false);
+        const int type = it.value().userType();
+        if (type == objectRefTypeId() || type == QMetaType::QVariantList) {
+            mWriter.writeQuotedKey(it.key());
+            writePropertyValue(it.value(), context);
         } else {
+            const auto exportValue = context.toExportValue(it.value());
             mWriter.writeQuotedKeyAndValue(it.key(), exportValue.value);
         }
     }
 
     mWriter.writeEndTable();
+}
+
+/**
+ * Writes a property value, walking lists so that object references are
+ * written as { id = n } wherever they appear, instead of as plain integers.
+ */
+void LuaWriter::writePropertyValue(const QVariant &value,
+                                   const ExportContext &context)
+{
+    const int type = value.userType();
+
+    if (type == objectRefTypeId()) {
+        mWriter.writeStartTable();
+        mWriter.setSuppressNewlines(true);
+        mWriter.writeKeyAndValue("id", ObjectRef::toInt(value.value<ObjectRef>()));
+        mWriter.writeEndTable();
+        mWriter.setSuppressNewlines(false);
+    } else if (type == QMetaType::QVariantList) {
+        mWriter.writeStartTable();
+        const auto list = value.toList();
+        for (const QVariant &element : list)
+            writePropertyValue(element, context);
+        mWriter.writeEndTable();
+    } else {
+        mWriter.writeVariantValue(context.toExportValue(value).value);
+    }
 }
 
 static bool includeTile(const Tile *tile)
