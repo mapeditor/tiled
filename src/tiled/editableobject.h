@@ -83,6 +83,7 @@ public:
 
     static QVariant propertyValueFromScript(const QVariant &value);
     static QVariantMap propertyValueFromScript(const QVariantMap &value);
+    static QVariantList propertyValueFromScript(const QVariantList &value);
 
 public slots:
     void setClassName(const QString &type);
@@ -97,6 +98,7 @@ private:
 
     QVariant toScript(const QVariant &value) const;
     QVariantMap toScript(const QVariantMap &value) const;
+    QVariantList toScript(const QVariantList &value) const;
 
     EditableAsset *mAsset;
     Object *mObject;

@@ -171,6 +171,9 @@ QVariant EditableObject::toScript(const QVariant &value) const
     if (type == QMetaType::QVariantMap)
         return toScript(value.toMap());
 
+    if (type == QMetaType::QVariantList)
+        return toScript(value.toList());
+
     if (type == objectRefTypeId()) {
         const auto ref = value.value<ObjectRef>();
         MapObject *referencedObject = nullptr;
@@ -200,6 +203,9 @@ QVariant EditableObject::toScript(const QVariant &value) const
         return QVariant::fromValue(propertyValue);
     }
 
+    if (value.metaType().flags().testFlag(QMetaType::PointerToQObject))
+        return QVariant();
+
     return value;
 }
 
@@ -211,12 +217,24 @@ QVariantMap EditableObject::toScript(const QVariantMap &value) const
     return converted;
 }
 
+QVariantList EditableObject::toScript(const QVariantList &value) const
+{
+    QVariantList converted;
+    converted.reserve(value.size());
+    for (const QVariant &element : value)
+        converted.append(toScript(element));
+    return converted;
+}
+
 QVariant EditableObject::propertyValueFromScript(const QVariant &value)
 {
     const int type = value.userType();
 
     if (type == QMetaType::QVariantMap)
         return propertyValueFromScript(value.toMap());
+
+    if (type == QMetaType::QVariantList)
+        return propertyValueFromScript(value.toList());
 
     if (auto editableMapObject = value.value<EditableMapObject*>())
         return QVariant::fromValue(ObjectRef { editableMapObject->id() });
@@ -227,6 +245,12 @@ QVariant EditableObject::propertyValueFromScript(const QVariant &value)
         return QVariant::fromValue(propertyValue);
     }
 
+    if (value.metaType().flags().testFlag(QMetaType::PointerToQObject)) {
+        ScriptManager::instance().throwError(
+                    QCoreApplication::translate("Script Errors", "Cannot store object pointer as property value"));
+        return QVariant();
+    }
+
     return value;
 }
 
@@ -235,6 +259,15 @@ QVariantMap EditableObject::propertyValueFromScript(const QVariantMap &value)
     QVariantMap converted(value);
     for (auto i = converted.begin(); i != converted.end(); ++i)
         i.value() = propertyValueFromScript(i.value());
+    return converted;
+}
+
+QVariantList EditableObject::propertyValueFromScript(const QVariantList &value)
+{
+    QVariantList converted;
+    converted.reserve(value.size());
+    for (const QVariant &element : value)
+        converted.append(propertyValueFromScript(element));
     return converted;
 }
 
