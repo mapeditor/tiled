@@ -116,6 +116,10 @@ ScriptServer::ScriptServer(QObject *parent)
 
     connect(mServer, &QLocalServer::newConnection,
             this, &ScriptServer::newConnection);
+
+    // When another instance is already serving, take over once it quits
+    mRetryTimer.setInterval(2000);
+    mRetryTimer.callOnTimeout(this, &ScriptServer::takeOver);
 }
 
 ScriptServer::~ScriptServer()
@@ -141,12 +145,14 @@ bool ScriptServer::listen()
 
     const QString name = serverName();
 
-    // Don't take over from another instance that is already serving
+    // Don't take over from another instance that is already serving, but
+    // retry periodically so that this instance can take over when it quits
     QLocalSocket probe;
     probe.connectToServer(name);
     if (probe.waitForConnected(100)) {
         probe.disconnectFromServer();
         INFO(tr("Script server already running in another Tiled instance"));
+        mRetryTimer.start();
         return false;
     }
 
@@ -159,11 +165,35 @@ bool ScriptServer::listen()
     }
 
     INFO(tr("Script server listening at '%1'").arg(mServer->fullServerName()));
+    mRetryTimer.stop();
     return true;
+}
+
+void ScriptServer::takeOver()
+{
+    const QString name = serverName();
+
+    // Keep waiting while another instance is still serving
+    QLocalSocket probe;
+    probe.connectToServer(name);
+    if (probe.waitForConnected(100))
+        return;
+
+    mRetryTimer.stop();
+
+    QLocalServer::removeServer(name);
+
+    if (!mServer->listen(name)) {
+        ERROR(tr("Failed to start script server: %1").arg(mServer->errorString()));
+        return;
+    }
+
+    INFO(tr("Script server listening at '%1'").arg(mServer->fullServerName()));
 }
 
 void ScriptServer::close()
 {
+    mRetryTimer.stop();
     mServer->close();
     mBuffers.clear();
 

@@ -25,6 +25,7 @@
 
 #include <QHash>
 #include <QObject>
+#include <QTimer>
 
 #include <optional>
 
@@ -85,9 +86,11 @@ private:
     void newConnection();
     void readyRead(QLocalSocket *socket);
     void handleRequest(QLocalSocket *socket, const QByteArray &request);
+    void takeOver();
 
     QLocalServer *mServer;
     QHash<QLocalSocket*, QByteArray> mBuffers;
+    QTimer mRetryTimer;
     bool mBusy = false;
 };
 
