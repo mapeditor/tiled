@@ -27,6 +27,7 @@
 #include <QJsonObject>
 #include <QLocalServer>
 #include <QLocalSocket>
+#include <QPointer>
 
 #if defined(Q_OS_UNIX)
 #include <unistd.h>
@@ -188,25 +189,34 @@ void ScriptServer::newConnection()
 
 void ScriptServer::readyRead(QLocalSocket *socket)
 {
-    QByteArray &buffer = mBuffers[socket];
-    buffer.append(socket->readAll());
+    mBuffers[socket].append(socket->readAll());
 
-    int newline;
-    while ((newline = buffer.indexOf('\n')) != -1) {
+    // Evaluating a script can pump the event loop (for example when showing
+    // a scripted dialog), during which the socket may have been deleted.
+    // Hence the buffer needs to be looked up again in each iteration, which
+    // also covers a possible rehash when a new connection adds a buffer.
+    while (mBuffers.contains(socket)) {
+        QByteArray &buffer = mBuffers[socket];
+
+        const int newline = buffer.indexOf('\n');
+        if (newline == -1)
+            return;
+
         const QByteArray request = buffer.left(newline);
         buffer.remove(0, newline + 1);
 
         if (!request.trimmed().isEmpty())
             handleRequest(socket, request);
-
-        // The socket may have been deleted while evaluating the script
-        if (!mBuffers.contains(socket))
-            return;
     }
 }
 
 void ScriptServer::handleRequest(QLocalSocket *socket, const QByteArray &request)
 {
+    // The socket may get deleted while evaluating the script, when the
+    // client disconnects while the event loop is pumped (for example by a
+    // scripted dialog).
+    const QPointer<QLocalSocket> socketGuard(socket);
+
     QJsonParseError parseError;
     const QJsonDocument document = QJsonDocument::fromJson(request, &parseError);
 
@@ -228,9 +238,12 @@ void ScriptServer::handleRequest(QLocalSocket *socket, const QByteArray &request
         mBusy = false;
     }
 
-    socket->write(QJsonDocument(toJson(result)).toJson(QJsonDocument::Compact));
-    socket->write("\n");
-    socket->flush();
+    if (socketGuard.isNull())
+        return;
+
+    socketGuard->write(QJsonDocument(toJson(result)).toJson(QJsonDocument::Compact));
+    socketGuard->write("\n");
+    socketGuard->flush();
 }
 
 std::optional<ScriptManager::EvaluationResult>
