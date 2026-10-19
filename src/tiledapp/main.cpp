@@ -61,6 +61,9 @@
 
 using namespace Tiled;
 
+#define STRINGIFY(x) #x
+#define AS_STRING(x) STRINGIFY(x)
+
 static QTextStream& stdOut()
 {
     static QTextStream ts(stdout);
@@ -547,6 +550,19 @@ int main(int argc, char *argv[])
 #endif
 
     Tiled::increaseImageAllocationLimit();
+
+    // Set here rather than in the TiledApplication constructor, so that the
+    // name and version are also available when --eval or --eval-file is
+    // handled through a plain QCoreApplication.
+    QCoreApplication::setOrganizationDomain(QLatin1String("mapeditor.org"));
+#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
+    QCoreApplication::setApplicationName(QLatin1String("Tiled"));
+#else
+    QCoreApplication::setApplicationName(QLatin1String("tiled"));
+#endif
+    QCoreApplication::setApplicationVersion(QLatin1String(AS_STRING(TILED_VERSION)));
+    QGuiApplication::setApplicationDisplayName(QLatin1String("Tiled"));
+    QGuiApplication::setDesktopFileName(QLatin1String("org.mapeditor.Tiled"));
 
     // The --eval and --eval-file options are handled by an already running
     // instance, so a QCoreApplication suffices and no display is needed
