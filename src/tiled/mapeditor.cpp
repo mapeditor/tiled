@@ -91,6 +91,7 @@
 #include <QStackedWidget>
 #include <QToolBar>
 #include <QUndoGroup>
+#include <QWidgetAction>
 #include <QWindow>
 
 #include <memory>
@@ -675,6 +676,10 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
     }
 
     mSelectedTool = tool;
+
+    const auto previousToolActions = mToolSpecificToolBar->actions();
+    for (QAction *action : previousToolActions)
+        mMainWindow->removeAction(action);
     mToolSpecificToolBar->clear();
 
     if (mViewWithTool) {
@@ -692,6 +697,13 @@ void MapEditor::onSelectedToolChanged(AbstractTool *tool)
                 this, &MapEditor::cursorChanged);
 
         tool->populateToolBar(mToolSpecificToolBar);
+
+        // Also add the tool actions to the editor window, so their shortcuts
+        // keep working while the Tool Options toolbar is hidden (#4553).
+        const auto toolActions = mToolSpecificToolBar->actions();
+        for (QAction *action : toolActions)
+            if (!action->isSeparator() && !qobject_cast<QWidgetAction*>(action))
+                mMainWindow->addAction(action);
     }
 
     updateActiveUndoStack();
