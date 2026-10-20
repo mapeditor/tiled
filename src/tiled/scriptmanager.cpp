@@ -328,8 +328,10 @@ void ScriptManager::reset()
 
     mWatcher.clear();
 
-    delete mEngine;
+    // Delete the module before the engine, since destructors of registered
+    // objects may touch QJSValue members that need a live engine.
     delete mModule;
+    delete mEngine;
 
     mEngine = nullptr;
     mModule = nullptr;

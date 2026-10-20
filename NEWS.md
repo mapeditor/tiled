@@ -13,6 +13,7 @@
 * Scripting: Added Tileset.selectedTilesChanged signal (#4615)
 * Scripting: Fixed world scripting APIs to work without the editor (by Shubham Padkonde, #4584)
 * Scripting: Fixed conversion of object references stored in list properties (#4630)
+* Scripting: Fixed two possible sources of heap corruption (#4631)
 * Fixed crash when the selection becomes empty while starting a move (#4536)
 * Fixed Properties view update on 'Reset Template Instance' and 'Replace With Template' actions
 * Fixed restoring of the layout for maximized windows on startup (#4580)
