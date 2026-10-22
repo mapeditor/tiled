@@ -87,6 +87,7 @@ jobs:
     - name: Setup ccache
       uses: hendrikmuhs/ccache-action@v1.2.24
       with:
+        key: ccache-appimage
         max-size: 250M
 
     - name: Setup CMake
@@ -251,6 +252,11 @@ jobs:
       with:
         cmake-version: '${{ env.CMAKE_VERSION }}'
 
+    - name: Setup ccache
+      uses: hendrikmuhs/ccache-action@v1.2.24
+      with:
+        key: ccache-macos-${{ matrix.version_suffix }}
+
     - name: Install Qbs
       run: |
         tarball=qbs-macos-$(uname -m)-${{ env.QBS_VERSION }}.tar.gz
@@ -288,7 +294,8 @@ jobs:
           qbs.architectures:${{ matrix.architectures }} \
           qbs.installPrefix:"" \
           projects.Tiled.staticZstd:true \
-          products.python.condition:false
+          products.python.condition:false \
+          modules.cpp.compilerWrapper:ccache
 
     - name: Deploy Qt
       run: |
@@ -410,6 +417,11 @@ jobs:
         # reports to their debug symbols on Sentry
         qbs config profiles.qt.cpp.linkerFlags '["--build-id"]'
 
+    - name: Setup ccache
+      uses: hendrikmuhs/ccache-action@v1.2.24
+      with:
+        key: ccache-windows-${{ matrix.filename_suffix }}
+
     - name: Build Sentry Native
       run: |
         # uasm is needed to assemble crashpad's .asm files with MinGW
@@ -448,7 +460,13 @@ jobs:
     - name: Build Tiled
       run: |
         export TILED_MSI_VERSION=1.4.${GITHUB_RUN_NUMBER}
-        qbs build config:release projects.Tiled.windowsInstaller:true projects.Tiled.staticZstd:true projects.Tiled.sentry:true qbs.debugInformation:true modules.cpp.separateDebugInformation:true
+        qbs build config:release \
+          projects.Tiled.windowsInstaller:true \
+          projects.Tiled.staticZstd:true \
+          projects.Tiled.sentry:true \
+          qbs.debugInformation:true \
+          modules.cpp.separateDebugInformation:true \
+          modules.cpp.compilerWrapper:ccache
         mv release/installer*/Tiled-*.msi ./Tiled-${{ needs.version.outputs.version }}_${{ matrix.filename_suffix }}.msi
 
     - name: Upload symbols and sources to Sentry

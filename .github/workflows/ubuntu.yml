@@ -30,6 +30,7 @@ jobs:
     - name: Setup ccache
       uses: hendrikmuhs/ccache-action@v1.2.24
       with:
+        key: ccache-ubuntu
         max-size: 250M
 
     - name: Install dependencies
