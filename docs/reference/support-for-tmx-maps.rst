@@ -271,6 +271,12 @@ Flixel
 -  Lithander demonstrated his `Flash TMX parser combined with Flixel
    rendering <http://blog.pixelpracht.net/?p=59>`__
 
+Frostfire Forge
+~~~~~~~~~~~~~~~
+
+-  `Frostfire Forge <https://github.com/Lillious-Networks/Frostfire-Forge>`__
+   is an open-source, content-driven 2D MMO engine with Tiled JSON map support.
+
 Game Maker
 ~~~~~~~~~~
 
