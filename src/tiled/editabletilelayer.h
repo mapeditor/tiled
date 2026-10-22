@@ -80,7 +80,7 @@ private:
     QList<TileLayerEdit*> mActiveEdits;
     QList<TileLayerWangEdit*> mActiveWangEdits;
 
-    void applyChangesFrom(TileLayer *changes, bool mergeable);
+    void applyChangesFrom(TileLayer *changes, bool mergeable, bool notify = true);
 };
 
 
