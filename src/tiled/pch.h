@@ -39,20 +39,3 @@
 
 #include <QPlainTextEdit>
 #include <QFileDialog>
-
-// libtiled
-#include <layer.h>
-#include <mapdocument.h>
-#include <mapobject.h>
-#include <objectgroup.h>
-#include <tile.h>
-#include <tileset.h>
-#include <tilesetmanager.h>
-
-// tiled
-#include "abstractobjecttool.h"
-#include "preferences.h"
-
-#include "documentmanager.h"
-#include "mapscene.h"
-#include "tmxmapformat.h"
