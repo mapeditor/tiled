@@ -23,7 +23,9 @@ DynamicLibrary {
         return paths;
     }
 
-    cpp.useCxxPrecompiledHeader: qbs.buildVariant != "debug"
+    // The precompiled header makes every compilation uncacheable for
+    // ccache/sccache (without "time_macros" sloppiness), so don't use it then.
+    cpp.useCxxPrecompiledHeader: !(cpp.compilerWrapper || []).join(" ").contains("ccache")
     cpp.cxxLanguageVersion: "c++17"
     cpp.visibility: "minimal"
 
