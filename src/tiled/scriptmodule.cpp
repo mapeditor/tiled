@@ -81,9 +81,6 @@ ScriptModule::ScriptModule(QObject *parent)
 
 ScriptModule::~ScriptModule()
 {
-    for (const auto &[id, action] : mRegisteredActions)
-        ActionManager::unregisterAction(action.get(), id);
-
     ActionManager::clearMenuExtensions();
 
     IssuesModel::instance().removeIssuesWithContext(this);
@@ -436,10 +433,7 @@ ScriptedAction *ScriptModule::registerAction(const QByteArray &idName, QJSValue 
     Id id { idName };
     auto &action = mRegisteredActions[id];
 
-    // Remove any previously registered action with the same name
-    if (action) {
-        ActionManager::unregisterAction(action.get(), id);
-    } else if (ActionManager::findAction(id)) {
+    if (!action && ActionManager::findAction(id)) {
         ScriptManager::instance().throwError(QCoreApplication::translate("Script Errors", "Reserved ID"));
         return nullptr;
     }

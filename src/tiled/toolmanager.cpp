@@ -133,9 +133,6 @@ void ToolManager::unregisterTool(AbstractTool *tool)
     auto action = findAction(tool);
     Q_ASSERT(action);
 
-    if (mRegisterActions)
-        ActionManager::unregisterAction(action, tool->id());
-
     delete action;
 
     tool->disconnect(this);
