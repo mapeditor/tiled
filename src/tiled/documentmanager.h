@@ -106,6 +106,7 @@ public:
     int insertDocument(int index, const DocumentPtr &document);
 
     bool isDocumentModified(Document *document) const;
+    bool isManaged(Document *document) const;
 
     DocumentPtr loadDocument(const QString &fileName,
                              FileFormat *fileFormat = nullptr,
@@ -218,6 +219,7 @@ private:
     bool askForAdjustment(const Tileset &tileset);
 
     void addToTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
+    void handOverToScript(Document *document);
     void removeFromTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
 
     void updateSession() const;
