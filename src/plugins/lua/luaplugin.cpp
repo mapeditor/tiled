@@ -29,7 +29,6 @@
 #include "mapobject.h"
 #include "objectgroup.h"
 #include "properties.h"
-#include "propertytype.h"
 #include "savefile.h"
 #include "tile.h"
 #include "tilelayer.h"
@@ -319,9 +318,10 @@ void LuaWriter::writePropertyValue(const QVariant &value,
 
     if (metaType == propertyValueId()) {
         const auto propertyValue = value.value<PropertyValue>();
-        const PropertyType *type = context.types().findTypeById(propertyValue.typeId);
 
-        if (type && type->isClass()) {
+        // Checking the value rather than the type also covers class types
+        // that have been deleted.
+        if (propertyValue.value.userType() == QMetaType::QVariantMap) {
             mWriter.writeStartTable();
             const auto members = propertyValue.value.toMap();
             for (auto it = members.begin(); it != members.end(); ++it) {
