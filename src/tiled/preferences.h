@@ -192,6 +192,10 @@ public:
     T get(const char *key, const T &defaultValue = T()) const
     { return value(QLatin1String(key), defaultValue).template value<T>(); }
 
+    void setLayoutResolution(QSize resolution);
+    QSize storedLayoutResolution(QSize resolution);
+    QString layoutKey(const char *key) const;
+
     static QString homeLocation();
     QString dataLocation() const;
     QString configLocation() const;
@@ -283,6 +287,7 @@ private:
     bool mEmittingPropertyTypesChanged = false;
 
     QString mObjectTypesFile;
+    QSize mLayoutResolution;
 
     static Preferences *mInstance;
     static QString mStartupProject;
@@ -325,6 +330,51 @@ template<typename T>
 void Preference<T>::set(const T &value)
 {
     Preferences::instance()->setValue(QLatin1String(mKey), value);
+}
+
+/**
+ * A preference that is stored per screen resolution, meant for window
+ * geometry and layout state, which only make sense for the resolution they
+ * were saved for.
+ *
+ * Values are read from and written to the group for the resolution set with
+ * Preferences::setLayoutResolution. They are also written to the plain key,
+ * which as a result always holds the last saved value and is used when no
+ * resolution is set.
+ */
+template<typename T>
+class LayoutPreference
+{
+public:
+    LayoutPreference(const char * const key, T defaultValue = T())
+        : mKey(key)
+        , mDefault(defaultValue)
+    {}
+
+    inline T get() const;
+    inline void set(const T &value);
+
+    operator T() const { return get(); }
+    LayoutPreference &operator =(const T &value) { set(value); return *this; }
+
+private:
+    const char * const mKey;
+    const T mDefault;
+};
+
+template<typename T>
+T LayoutPreference<T>::get() const
+{
+    const auto prefs = Preferences::instance();
+    return prefs->value(prefs->layoutKey(mKey), mDefault).template value<T>();
+}
+
+template<typename T>
+void LayoutPreference<T>::set(const T &value)
+{
+    auto prefs = Preferences::instance();
+    prefs->setValue(prefs->layoutKey(mKey), value);
+    prefs->setValue(QLatin1String(mKey), value);
 }
 
 } // namespace Tiled
