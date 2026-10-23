@@ -17,6 +17,11 @@ TypeScript definitions of the API are available as the `@mapeditor/tiled-api`_
 NPM package, which can provide auto-completion in your editor. The API
 reference is generated based on these definitions.
 
+The same definitions are also readable as a single file, `index.d.ts`_.
+Fetching that file is usually the most efficient way for an AI coding agent to
+learn the API, since it describes every type and function along with their
+documentation comments, without having to crawl the generated HTML reference.
+
 On startup, Tiled will execute any script files present in :ref:`extension
 folders <script-extensions>`. In addition it is possible to run scripts
 directly from :ref:`the console <script-console>`, as well as to evaluate a
@@ -243,6 +248,68 @@ If you want to evaluate several scripts, use ``--evaluate`` for each file. Note
 that evaluating the same JavaScript module (``.mjs``) does not work, since
 modules are loaded only once.
 
+.. raw:: html
+
+   <div class="new">New in Tiled 1.13</div>
+
+.. _script-server:
+
+Running Scripts in a Running Instance
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Scripts can also be evaluated in an already running Tiled instance, with
+access to its open documents and UI. This is useful for automation and for
+tools like AI coding agents, which can run a script and read back its output
+without the user having to copy anything in and out of the Console view.
+
+For this to work, the running instance needs to have the script server
+enabled. It can be enabled in *Edit > Preferences > Plugins*, or by starting
+Tiled with the ``--script-server`` option. The server is a local socket that
+only accepts connections from the same user.
+
+Once enabled, use ``--eval`` to evaluate script code or ``--eval-file`` to
+evaluate a script file:
+
+.. code:: sh
+
+    tiled --eval 'tiled.activeAsset.fileName'
+    tiled --eval-file count-objects.js
+
+Anything logged with ``tiled.log`` is printed to standard output, while
+warnings, errors and script errors are printed to standard error. The value of
+the last expression is printed to standard output as well, unless it is
+``undefined``. The exit code is 1 when the script raised an error. The script
+and its result are also shown in the Console view of the running instance, and
+the result is available there as a ``$N`` variable, like for scripts entered
+in the Console view directly.
+
+Output produced after the script finished, for example from a callback
+connected to a signal, is not captured.
+
+Each script is evaluated as a program, so a ``return`` statement at the top
+level is a syntax error. To exit early, assign the result to a variable and
+end the script with that variable.
+
+Since all scripts share a single JavaScript context, a top-level ``var``
+becomes a property of the global object and stays there for the lifetime of
+the Tiled instance. That can be handy for keeping state between calls, but use
+``let`` or ``const`` when you want repeated calls to stay independent, since
+those are scoped to a single evaluation.
+
+If no running instance with an enabled script server is found, ``--eval``
+fails with exit code 2. To evaluate a script without UI, use ``--evaluate``
+instead. When several Tiled instances are running, only the first one that
+enabled the script server will accept scripts.
+
+The protocol is newline-delimited JSON over a local socket named
+``tiled-script-server-<uid>`` (or ``tiled-script-server-<username>`` on
+Windows), so other tools can also talk to it directly. Each request is an
+object with a ``script`` property and an optional ``fileName`` property. Each
+response is an object with an ``output`` array of ``{ type, text }`` objects,
+where ``type`` is ``info``, ``warning`` or ``error``, and optionally a
+``result`` and ``tempName`` (when the result was not ``undefined``) or an
+``error`` string.
+
 API Reference
 -------------
 
@@ -261,6 +328,7 @@ __filename
 .. _List of JavaScript Objects and Functions: https://doc.qt.io/qt-6/qtqml-javascript-functionlist.html
 .. _QML module: https://doc.qt.io/qt-6/qtqml-index.html
 .. _@mapeditor/tiled-api: https://www.npmjs.com/package/@mapeditor/tiled-api
+.. _index.d.ts: https://raw.githubusercontent.com/mapeditor/tiled/master/docs/scripting-doc/index.d.ts
 .. _JavaScript modules: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
 .. _import: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import
 .. _export: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export

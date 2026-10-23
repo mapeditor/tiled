@@ -28,6 +28,7 @@
 #include "pluginmanager.h"
 #include "preferences.h"
 #include "scriptmanager.h"
+#include "scriptserver.h"
 #include "sentryhelper.h"
 #include "stylehelper.h"
 #include "tiledapplication.h"
@@ -60,9 +61,18 @@
 
 using namespace Tiled;
 
+#define STRINGIFY(x) #x
+#define AS_STRING(x) STRINGIFY(x)
+
 static QTextStream& stdOut()
 {
     static QTextStream ts(stdout);
+    return ts;
+}
+
+static QTextStream& stdErr()
+{
+    static QTextStream ts(stderr);
     return ts;
 }
 
@@ -81,6 +91,9 @@ public:
     bool exportMap = false;
     bool exportTileset = false;
     bool newInstance = false;
+    bool evaluate = false;
+    QString evalScript;
+    QString evalFileName;
     Preferences::ExportOptions exportOptions;
 
 private:
@@ -97,6 +110,9 @@ private:
     void showExportFormats();
     void setCompatibilityVersion();
     void evaluateScript();
+    void setEvaluateScript();
+    void setEvaluateFile();
+    void enableScriptServer();
     void startNewInstance();
 
     // Convenience wrapper around registerOption
@@ -111,6 +127,19 @@ private:
                                                            help);
     }
 };
+
+static void connectLoggerToStdio()
+{
+    static bool connected = false;
+    if (connected)
+        return;
+    connected = true;
+
+    auto& logger = LoggingInterface::instance();
+    QObject::connect(&logger, &LoggingInterface::info, [] (const QString &message) { stdOut() << message << Qt::endl; });
+    QObject::connect(&logger, &LoggingInterface::warning, [] (const QString &message) { stdErr() << message << Qt::endl; });
+    QObject::connect(&logger, &LoggingInterface::error, [] (const QString &message) { stdErr() << message << Qt::endl; });
+}
 
 static void initializePluginsAndExtensions()
 {
@@ -253,6 +282,21 @@ CommandLineHandler::CommandLineHandler()
                 QLatin1Char('e'),
                 QLatin1String("--evaluate"),
                 tr("Evaluate a script file and quit"));
+
+    option<&CommandLineHandler::setEvaluateScript>(
+                QChar(),
+                QLatin1String("--eval"),
+                tr("Evaluate the given script code in a running instance and print the result"));
+
+    option<&CommandLineHandler::setEvaluateFile>(
+                QChar(),
+                QLatin1String("--eval-file"),
+                tr("Evaluate the given script file in a running instance and print the result"));
+
+    option<&CommandLineHandler::enableScriptServer>(
+                QChar(),
+                QLatin1String("--script-server"),
+                tr("Enable the script server, which allows --eval to run scripts in this instance"));
 }
 
 void CommandLineHandler::showVersion()
@@ -387,13 +431,7 @@ void CommandLineHandler::evaluateScript()
     static bool initialized = false;
     if (!initialized) {
         initialized = true;
-
-        // Output messages to command-line
-        auto& logger = LoggingInterface::instance();
-        QObject::connect(&logger, &LoggingInterface::info, [] (const QString &message) { stdOut() << message << Qt::endl; });
-        QObject::connect(&logger, &LoggingInterface::warning, [] (const QString &message) { qWarning() << message; });
-        QObject::connect(&logger, &LoggingInterface::error, [] (const QString &message) { qWarning() << message; });
-
+        connectLoggerToStdio();
         initializePluginsAndExtensions();
     }
 
@@ -402,20 +440,99 @@ void CommandLineHandler::evaluateScript()
     scriptManager.evaluateFileOrLoadModule(scriptFile);
 }
 
+void CommandLineHandler::setEvaluateScript()
+{
+    const QString script = nextArgument();
+    if (script.isNull()) {
+        qWarning().noquote() << QCoreApplication::translate("Command line", "Missing argument, evaluate a script using: --eval <script>");
+        justQuit();
+        return;
+    }
+
+    evaluate = true;
+    evalScript = script;
+    evalFileName.clear();
+}
+
+void CommandLineHandler::setEvaluateFile()
+{
+    const QString fileName = nextArgument();
+    if (fileName.isNull()) {
+        qWarning().noquote() << QCoreApplication::translate("Command line", "Missing argument, evaluate a script file using: --eval-file <script-file>");
+        justQuit();
+        return;
+    }
+
+    QFile file(fileName);
+    if (!file.open(QFile::ReadOnly | QFile::Text)) {
+        qWarning().noquote() << QCoreApplication::translate("Command line", "Error opening file: %1").arg(fileName);
+        justQuit();
+        return;
+    }
+
+    evaluate = true;
+    evalScript = QString::fromUtf8(file.readAll());
+    evalFileName = QFileInfo(fileName).absoluteFilePath();
+}
+
+void CommandLineHandler::enableScriptServer()
+{
+    ScriptServer::forceEnabled = true;
+}
+
 void CommandLineHandler::startNewInstance()
 {
     newInstance = true;
+}
+
+/**
+ * Evaluates the script given with --eval or --eval-file in a running Tiled
+ * instance. Returns the exit code.
+ */
+static int evaluateInRunningInstance(const CommandLineHandler &commandLine)
+{
+    const auto result = ScriptServer::evaluateRemotely(commandLine.evalScript,
+                                                       commandLine.evalFileName);
+    if (!result) {
+        stdErr() << QCoreApplication::translate("Command line", "No running Tiled instance with script server found. Enable the script server in the Preferences or start Tiled with --script-server.") << Qt::endl;
+        return 2;
+    }
+
+    for (const auto &line : result->output) {
+        if (line.type == LoggingInterface::INFO)
+            stdOut() << line.text << Qt::endl;
+        else
+            stdErr() << line.text << Qt::endl;
+    }
+    if (result->hasError())
+        stdErr() << result->error << Qt::endl;
+    if (result->hasResult)
+        stdOut() << result->result << Qt::endl;
+
+    return result->hasError() ? 1 : 0;
 }
 
 
 int main(int argc, char *argv[])
 {
 #if defined(Q_OS_WIN) && (!defined(Q_CC_MINGW) || __GNUC__ >= 5)
-    // Make console output work on Windows, if running in a console.
+    // Make console output work on Windows, if running in a console. Streams
+    // that were redirected to a pipe or file by the parent process are left
+    // alone, so that their output can be captured.
     if (AttachConsole(ATTACH_PARENT_PROCESS)) {
+        auto isRedirected = [] (DWORD handleId) {
+            const HANDLE handle = GetStdHandle(handleId);
+            if (handle == nullptr || handle == INVALID_HANDLE_VALUE)
+                return false;
+            const DWORD type = GetFileType(handle);
+            return type == FILE_TYPE_PIPE || type == FILE_TYPE_DISK;
+        };
+
         FILE *dummy = nullptr;
-        freopen_s(&dummy, "CONOUT$", "w", stdout);
-        freopen_s(&dummy, "CONOUT$", "w", stderr);
+        if (!isRedirected(STD_OUTPUT_HANDLE))
+            freopen_s(&dummy, "CONOUT$", "w", stdout);
+        if (!isRedirected(STD_ERROR_HANDLE))
+            freopen_s(&dummy, "CONOUT$", "w", stderr);
     }
 #endif
 
@@ -434,7 +551,38 @@ int main(int argc, char *argv[])
 
     Tiled::increaseImageAllocationLimit();
 
-    TiledApplication a(argc, argv);
+    // Set here rather than in the TiledApplication constructor, so that the
+    // name and version are also available when --eval or --eval-file is
+    // handled through a plain QCoreApplication.
+    QCoreApplication::setOrganizationDomain(QLatin1String("mapeditor.org"));
+#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
+    QCoreApplication::setApplicationName(QLatin1String("Tiled"));
+#else
+    QCoreApplication::setApplicationName(QLatin1String("tiled"));
+#endif
+    QCoreApplication::setApplicationVersion(QLatin1String(AS_STRING(TILED_VERSION)));
+    QGuiApplication::setApplicationDisplayName(QLatin1String("Tiled"));
+    QGuiApplication::setDesktopFileName(QLatin1String("org.mapeditor.Tiled"));
+
+    // The --eval and --eval-file options are handled by an already running
+    // instance, so a QCoreApplication suffices and no display is needed
+    // (this way they also work in headless environments).
+    bool remoteEval = false;
+    for (int i = 1; i < argc; ++i) {
+        const QByteArray arg(argv[i]);
+        if (arg == "--eval" || arg == "--eval-file" ||
+            arg.startsWith("--eval=") || arg.startsWith("--eval-file=")) {
+            remoteEval = true;
+            break;
+        }
+    }
+
+    std::unique_ptr<TiledApplication> app;
+    std::unique_ptr<QCoreApplication> coreApp;
+    if (remoteEval)
+        coreApp = std::make_unique<QCoreApplication>(argc, argv);
+    else
+        app = std::make_unique<TiledApplication>(argc, argv);
 
 #ifdef TILED_SENTRY
     Sentry sentry;
@@ -460,6 +608,9 @@ int main(int argc, char *argv[])
         return 0;
     if (commandLine.disableOpenGL)
         Preferences::instance()->setUseOpenGL(false);
+
+    if (commandLine.evaluate)
+        return evaluateInRunningInstance(commandLine);
 
     if (commandLine.exportMap) {
         // Get the path to the source file and target file
@@ -581,11 +732,11 @@ int main(int argc, char *argv[])
         }
     }
 
-    if (a.isRunning() && !filesToOpen.isEmpty() && !commandLine.newInstance) {
+    if (app && app->isRunning() && !filesToOpen.isEmpty() && !commandLine.newInstance) {
         // Files need to be absolute paths because the already running Tiled
         // instance likely does not have the same working directory.
         QJsonDocument doc(QJsonArray::fromStringList(filesToOpen));
-        if (a.sendMessage(QLatin1String(doc.toJson())))
+        if (app->sendMessage(QLatin1String(doc.toJson())))
             return 0;
     }
 
@@ -601,14 +752,14 @@ int main(int argc, char *argv[])
     QWindowSystemInterface::flushWindowSystemEvents();
 #endif
 
-    a.setActivationWindow(&w);
+    app->setActivationWindow(&w);
 #ifdef Q_OS_WIN
     using QWindowsApplication = QNativeInterface::Private::QWindowsApplication;
     if (auto nativeWindowsApp = dynamic_cast<QWindowsApplication *>(QGuiApplicationPrivate::platformIntegration()))
         nativeWindowsApp->setWindowActivationBehavior(QWindowsApplication::AlwaysActivateWindow);
 #endif
 
-    QObject::connect(&a, &TiledApplication::fileOpenRequest,
+    QObject::connect(app.get(), &TiledApplication::fileOpenRequest,
                      &w, [&] (const QString &file) { w.openFile(file); });
 
     PluginManager::instance()->loadPlugins();
@@ -618,5 +769,5 @@ int main(int argc, char *argv[])
     for (const QString &fileName : std::as_const(filesToOpen))
         w.openFile(fileName);
 
-    return a.exec();
+    return app->exec();
 }
