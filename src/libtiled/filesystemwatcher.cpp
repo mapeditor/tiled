@@ -32,8 +32,27 @@
 #include <QFile>
 #include <QFileSystemWatcher>
 #include <QStringList>
+#include <QDateTime>
+#include <QDir>
+#include <QFileInfo>
 
 namespace Tiled {
+QSet<QString> FileSystemWatcher::mIgnoredFileNames = { QStringLiteral(".DS_Store") };
+void FileSystemWatcher::addIgnoredFile(const QString &n) { mIgnoredFileNames.insert(n); }
+
+bool FileSystemWatcher::isIgnored(const QString &p) {
+    const QString name = QFileInfo(p).fileName();
+    for (const QString &n : std::as_const(mIgnoredFileNames))
+        if (name.compare(n, Qt::CaseInsensitive) == 0) return true;
+    return false;
+}
+
+QMap<QString, FileSystemWatcher::DirEntry> FileSystemWatcher::snapshotDir(const QString &d) const {
+    QMap<QString, DirEntry> m;
+    for (const QFileInfo &fi : QDir(d).entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::NoSort))
+        m.insert(fi.fileName(), { fi.size(), fi.lastModified() });
+    return m; // AllEntries (not Files-only) so new extension subdirs still trigger
+}
 
 FileSystemWatcher::FileSystemWatcher(QObject *parent) :
     QObject(parent),
@@ -62,6 +81,10 @@ void FileSystemWatcher::setEnabled(bool enabled)
         const auto files = mWatchCount.keys();
         if (!files.isEmpty())
             mWatcher->addPaths(files);
+
+        for (const QString &p : files)
+            if (QFileInfo(p).isDir())
+                mDirSnapshots[p] = snapshotDir(p);
     } else {
         clearInternal();
         mChangedPathsTimer.stop();
@@ -74,16 +97,19 @@ void FileSystemWatcher::addPaths(const QStringList &paths)
     pathsToAdd.reserve(paths.size());
 
     for (const QString &path : paths) {
+        const QString key = QDir::cleanPath(path);
         // Just silently ignore the request when the file doesn't exist
         if (!QFile::exists(path))
             continue;
 
-        QMap<QString, int>::iterator entry = mWatchCount.find(path);
+        QMap<QString, int>::iterator entry = mWatchCount.find(key);
         if (entry == mWatchCount.end()) {
             if (mEnabled)
                 pathsToAdd.append(path);
 
-            mWatchCount.insert(path, 1);
+            mWatchCount.insert(key, 1);
+            if (QFileInfo(path).isDir() && !mDirSnapshots.contains(key))
+                mDirSnapshots.insert(key, snapshotDir(key));
         } else {
             // Path is already being watched, increment watch count
             ++entry.value();
@@ -100,7 +126,8 @@ void FileSystemWatcher::removePaths(const QStringList &paths)
     pathsToRemove.reserve(paths.size());
 
     for (const QString &path : paths) {
-        QMap<QString, int>::iterator entry = mWatchCount.find(path);
+        const QString key = QDir::cleanPath(path);
+        QMap<QString, int>::iterator entry = mWatchCount.find(key);
         if (entry == mWatchCount.end()) {
             if (QFile::exists(path))
                 qWarning() << "FileSystemWatcher: Path was never added:" << path;
@@ -112,6 +139,7 @@ void FileSystemWatcher::removePaths(const QStringList &paths)
 
         if (entry.value() == 0) {
             mWatchCount.erase(entry);
+            mDirSnapshots.remove(key);
 
             if (mEnabled)
                 pathsToRemove.append(path);
@@ -137,22 +165,38 @@ void FileSystemWatcher::clear()
 {
     clearInternal();
     mWatchCount.clear();
+    mDirSnapshots.clear();
 }
 
 void FileSystemWatcher::onFileChanged(const QString &path)
 {
+    if (isIgnored(path)) { qDebug() << "FileSystemWatcher: suppressed" << path; return; }
+
     mChangedPaths.insert(path);
     mChangedPathsTimer.start();
 
     emit fileChanged(path);
 }
 
-void FileSystemWatcher::onDirectoryChanged(const QString &path)
-{
-    mChangedPaths.insert(path);
-    mChangedPathsTimer.start();
-
-    emit directoryChanged(path);
+void FileSystemWatcher::onDirectoryChanged(const QString &dir) {
+    const QString key = QDir::cleanPath(dir);
+    const auto now = snapshotDir(key);
+    const auto old = mDirSnapshots.value(key);
+    mDirSnapshots[key] = now;
+    // diff
+    QSet<QString> delta;
+    for (auto it=now.cbegin(); it!=now.cend(); ++it)
+        if (!old.contains(it.key()) || old[it.key()].mtime != it->mtime || old[it.key()].size != it->size)
+            delta.insert(it.key());
+    for (auto it=old.cbegin(); it!=old.cend(); ++it)
+        if (!now.contains(it.key())) delta.insert(it.key());
+    QSet<QString> relevant;
+    for (const QString &n : delta) if (!isIgnored(n)) relevant.insert(n);
+    if (!relevant.isEmpty() || !mWatchCount.contains(key)) {
+        mChangedPaths.insert(dir);
+        mChangedPathsTimer.start();
+        emit directoryChanged(dir);
+    }
 }
 
 void FileSystemWatcher::pathsChangedTimeout()
