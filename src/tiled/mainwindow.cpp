@@ -61,6 +61,7 @@
 #include "propertytypeseditor.h"
 #include "resizedialog.h"
 #include "scriptmanager.h"
+#include "scriptserver.h"
 #include "sentryhelper.h"
 #include "templatesdock.h"
 #include "tileset.h"
@@ -85,6 +86,7 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QRegularExpression>
+#include <QScreen>
 #include <QShortcut>
 #include <QStandardPaths>
 #include <QStatusBar>
@@ -105,8 +107,9 @@ using namespace Tiled;
 using namespace Tiled::Utils;
 
 namespace preferences {
-static Preference<QByteArray> mainWindowGeometry { "mainwindow/geometry" };
-static Preference<QByteArray> mainWindowState { "mainwindow/state" };
+static LayoutPreference<QByteArray> mainWindowGeometry { "mainwindow/geometry" };
+static LayoutPreference<QSize>      mainWindowSize { "mainwindow/size" };
+static LayoutPreference<QByteArray> mainWindowState { "mainwindow/state" };
 static Preference<bool> mainWindowLocked { "mainwindow/locked" };
 } // namespace preferences
 
@@ -400,6 +403,26 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     addAction(mProjectDock->toggleViewAction());
     addAction(mConsoleDock->toggleViewAction());
     addAction(mIssuesDock->toggleViewAction());
+
+    auto updateScriptServer = [this] (bool enabled) {
+        if (enabled || ScriptServer::forceEnabled) {
+            if (!mScriptServer) {
+                mScriptServer = new ScriptServer(this);
+                connect(mScriptServer, &ScriptServer::scriptReceived,
+                        mConsoleDock, &ConsoleDock::appendScript);
+                connect(mScriptServer, &ScriptServer::scriptEvaluated,
+                        mConsoleDock, [this] (const QString &, const ScriptManager::EvaluationResult &result) {
+                    if (result.hasResult)
+                        mConsoleDock->appendScriptResult(result.tempName, result.result);
+                });
+            }
+            mScriptServer->listen();
+        } else if (mScriptServer) {
+            mScriptServer->close();
+        }
+    };
+    updateScriptServer(preferences->scriptServerEnabled());
+    connect(preferences, &Preferences::scriptServerEnabledChanged, this, updateScriptServer);
 
     mMapEditor = new MapEditor;
     mTilesetEditor = new TilesetEditor;
@@ -2204,6 +2227,30 @@ void MainWindow::resetToDefaultLayout()
         editor->resetLayout();
 }
 
+/**
+ * Docks contributed by extensions are identified by their object name, which
+ * is set by QmlDock.
+ */
+static bool isExtensionDock(const QDockWidget *dockWidget)
+{
+    return dockWidget->objectName().startsWith(QLatin1String("qml."));
+}
+
+/**
+ * Returns the docks contributed by extensions to the given \a mainWindow.
+ */
+static QList<QDockWidget*> extensionDockWidgets(const QMainWindow *mainWindow)
+{
+    QList<QDockWidget*> extensionDocks;
+
+    const auto dockWidgets = mainWindow->findChildren<QDockWidget*>(QString(), Qt::FindDirectChildrenOnly);
+    for (auto dockWidget : dockWidgets)
+        if (isExtensionDock(dockWidget))
+            extensionDocks.append(dockWidget);
+
+    return extensionDocks;
+}
+
 void MainWindow::updateViewsAndToolbarsMenu()
 {
     mViewsAndToolbarsMenu->clear();
@@ -2212,9 +2259,19 @@ void MainWindow::updateViewsAndToolbarsMenu()
     mViewsAndToolbarsMenu->addAction(mConsoleDock->toggleViewAction());
     mViewsAndToolbarsMenu->addAction(mIssuesDock->toggleViewAction());
 
+    // Docks contributed by extensions
+    const auto extensionDocks = extensionDockWidgets(this);
+    for (auto dockWidget : extensionDocks)
+        mViewsAndToolbarsMenu->addAction(dockWidget->toggleViewAction());
+
     if (Editor *editor = mDocumentManager->currentEditor()) {
         mViewsAndToolbarsMenu->addSeparator();
-        const auto dockWidgets = editor->dockWidgets();
+        auto dockWidgets = editor->dockWidgets();
+
+        // Include docks contributed by extensions
+        if (auto editorWindow = qobject_cast<QMainWindow*>(editor->editorWidget()))
+            dockWidgets += extensionDockWidgets(editorWindow);
+
         for (auto dockWidget : dockWidgets)
             mViewsAndToolbarsMenu->addAction(dockWidget->toggleViewAction());
 
@@ -2339,7 +2396,11 @@ void MainWindow::writeSettings()
         setWindowState(windowState() & ~Qt::WindowFullScreen);
 #endif
 
+    // The layout is saved for the resolution of the screen the window is on
+    Preferences::instance()->setLayoutResolution(screen()->size());
+
     preferences::mainWindowGeometry = saveGeometry();
+    preferences::mainWindowSize = normalGeometry().size();
     preferences::mainWindowState = saveState();
     preferences::mainWindowLocked = mLockLayout->isChecked();
 
@@ -2348,11 +2409,30 @@ void MainWindow::writeSettings()
 
 void MainWindow::readSettings()
 {
-    QByteArray geom = preferences::mainWindowGeometry;
-    if (!geom.isEmpty())
-        restoreGeometry(geom);
-    else
-        resize(Utils::dpiScaled(QSize(1200, 700)));
+    auto prefs = Preferences::instance();
+
+    // Restore the last used geometry first, since it determines the screen
+    // the window will appear on.
+    prefs->setLayoutResolution(QSize());
+    const QByteArray lastGeometry = preferences::mainWindowGeometry;
+    bool restored = !lastGeometry.isEmpty() && restoreGeometry(lastGeometry);
+
+    // Now restore the layout stored for the resolution of that screen, or
+    // the closest match when nothing was stored for it yet.
+    const QSize resolution = screen()->size();
+    prefs->setLayoutResolution(prefs->storedLayoutResolution(resolution));
+
+    const QByteArray geometry = preferences::mainWindowGeometry;
+    if (!geometry.isEmpty())
+        restored = restoreGeometry(geometry) || restored;
+    if (!restored) {
+        // A geometry saved for a different resolution may be rejected by
+        // restoreGeometry, so fall back to restoring just the stored size.
+        QSize size = preferences::mainWindowSize;
+        if (size.isEmpty())
+            size = Utils::dpiScaled(QSize(1200, 700));
+        resize(size.boundedTo(screen()->availableSize()));
+    }
 
     restoreLayout();
 
@@ -2614,8 +2694,13 @@ QList<QDockWidget *> MainWindow::allDockWidgets() const
     QList<QDockWidget*> docks = findChildren<QDockWidget*>(QString(), Qt::FindDirectChildrenOnly);
 
     const auto editors = mDocumentManager->editors();
-    for (Editor *editor : editors)
+    for (Editor *editor : editors) {
         docks += editor->dockWidgets();
+
+        // Include docks contributed by extensions
+        if (auto editorWindow = qobject_cast<QMainWindow*>(editor->editorWidget()))
+            docks += extensionDockWidgets(editorWindow);
+    }
 
     return docks;
 }

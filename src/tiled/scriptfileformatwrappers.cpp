@@ -91,7 +91,7 @@ EditableTileset *ScriptTilesetFormatWrapper::read(const QString &filename)
         return nullptr;
     }
 
-    return new EditableTileset(tileset.data());
+    return new EditableTileset(tileset);
 }
 
 void ScriptTilesetFormatWrapper::write(EditableTileset *editable, const QString &filename)

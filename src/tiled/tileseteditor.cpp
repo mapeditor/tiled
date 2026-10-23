@@ -80,8 +80,8 @@
 namespace Tiled {
 
 namespace preferences {
-static Preference<QSize> tilesetEditorSize { "TilesetEditor/Size" };
-static Preference<QByteArray> tilesetEditorState { "TilesetEditor/State" };
+static LayoutPreference<QSize> tilesetEditorSize { "TilesetEditor/Size" };
+static LayoutPreference<QByteArray> tilesetEditorState { "TilesetEditor/State" };
 } // namespace preferences
 
 class TilesetEditorWindow : public QMainWindow

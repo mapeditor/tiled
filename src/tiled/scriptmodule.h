@@ -125,6 +125,7 @@ public:
 
     Q_INVOKABLE void __crash() const;
 
+    Q_INVOKABLE Tiled::EditableAsset *load(const QString &fileName) const;
     Q_INVOKABLE Tiled::EditableAsset *open(const QString &fileName) const;
     Q_INVOKABLE bool close(Tiled::EditableAsset *asset) const;
     Q_INVOKABLE Tiled::EditableAsset *reload(Tiled::EditableAsset *asset) const;
