@@ -68,6 +68,8 @@ public:
 
     void writeMap(const Tiled::Map *);
     void writeProperties(const Tiled::Properties &);
+    void writePropertyValue(const QVariant &value,
+                            const Tiled::ExportContext &context);
     void writeTileset(const Tiled::Tileset &,
                       unsigned firstGid,
                       bool embedded = true);
@@ -277,25 +279,61 @@ void LuaWriter::writeProperties(const Properties &properties)
 {
     mWriter.writeStartTable("properties");
 
+    // Compound values (lists and classes) are walked here, so that object
+    // references nested in them are also written as { id = n } tables.
     ExportContext context(mDir.path());
-    context.setRecursiveBehavior(ExportContext::RecursiveBehavior::ValuesOnly);
 
     Properties::const_iterator it = properties.constBegin();
     Properties::const_iterator it_end = properties.constEnd();
     for (; it != it_end; ++it) {
-        const auto exportValue = context.toExportValue(it.value());
-        if (it.value().userType() == objectRefTypeId()) {
-            mWriter.writeStartTable(it.key());
-            mWriter.setSuppressNewlines(true);
-            mWriter.writeKeyAndValue("id", exportValue.value.toInt());
-            mWriter.writeEndTable();
-            mWriter.setSuppressNewlines(false);
-        } else {
-            mWriter.writeQuotedKeyAndValue(it.key(), exportValue.value);
-        }
+        mWriter.writeQuotedKey(it.key());
+        writePropertyValue(it.value(), context);
     }
 
     mWriter.writeEndTable();
+}
+
+void LuaWriter::writePropertyValue(const QVariant &value,
+                                   const ExportContext &context)
+{
+    const int metaType = value.userType();
+
+    if (metaType == objectRefTypeId()) {
+        mWriter.writeStartTable();
+        mWriter.setSuppressNewlines(true);
+        mWriter.writeKeyAndValue("id", ObjectRef::toInt(value.value<ObjectRef>()));
+        mWriter.writeEndTable();
+        mWriter.setSuppressNewlines(false);
+        return;
+    }
+
+    if (metaType == QMetaType::QVariantList) {
+        mWriter.writeStartTable();
+        const auto list = value.toList();
+        for (const QVariant &item : list)
+            writePropertyValue(item, context);
+        mWriter.writeEndTable();
+        return;
+    }
+
+    if (metaType == propertyValueId()) {
+        const auto propertyValue = value.value<PropertyValue>();
+
+        // Checking the value rather than the type also covers class types
+        // that have been deleted.
+        if (propertyValue.value.userType() == QMetaType::QVariantMap) {
+            mWriter.writeStartTable();
+            const auto members = propertyValue.value.toMap();
+            for (auto it = members.begin(); it != members.end(); ++it) {
+                mWriter.writeQuotedKey(it.key());
+                writePropertyValue(it.value(), context);
+            }
+            mWriter.writeEndTable();
+            return;
+        }
+    }
+
+    mWriter.writeVariantValue(context.toExportValue(value).value);
 }
 
 static bool includeTile(const Tile *tile)

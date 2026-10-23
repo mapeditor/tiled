@@ -15,6 +15,7 @@
 * Scripting: Fixed conversion of object references stored in list properties (#4630)
 * Scripting: Fixed two possible sources of heap corruption (#4631)
 * Fixed crash when the selection becomes empty while starting a move (#4536)
+* Lua plugin: Fixed export of object references in lists and class members (#4601)
 * Fixed Properties view update on 'Reset Template Instance' and 'Replace With Template' actions
 * Fixed restoring of the layout for maximized windows on startup (#4580)
 * Fixed image layer position after map resize
