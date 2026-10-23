@@ -68,13 +68,13 @@ QRectF IsometricRenderer::boundingRect(const MapObject *object) const
                                       -extraSpace,
                                       extraSpace,
                                       extraSpace);
-    } else if (!object->cell().isEmpty()) {
+    } else if (object->isTileObject()) {
         QRectF bounds { pixelToScreenCoords(object->position()), object->size() };
         bounds.translate(-alignmentOffset(bounds, object->alignment(map())));
 
         if (const Tile *tile = object->cell().tile()) {
             QPointF tileOffset = tile->offset();
-            const QSize tileSize = tile->size();
+            const QSizeF tileSize = object->tileObjectSize(map());
             if (!tileSize.isNull()) {
                 const QSizeF scale {
                     bounds.width() / tileSize.width(),
@@ -346,19 +346,17 @@ void IsometricRenderer::drawMapObject(QPainter *painter,
     QPen pen(Qt::black);
     pen.setCosmetic(true);
 
-    const Cell &cell = object->cell();
-
-    if (!cell.isEmpty()) {
+    if (object->isTileObject()) {
         QRectF bounds = { pixelToScreenCoords(object->position()), object->size() };
         bounds.translate(-alignmentOffset(bounds, object->alignment(map())));
 
-        CellRenderer(painter, this, object->objectGroup()->effectiveTintColor())
-                .render(cell, bounds.topLeft(), bounds.size());
+        CellRenderer cellRenderer(painter, this, object->objectGroup()->effectiveTintColor());
+        object->renderTileObject(cellRenderer, bounds, map());
 
         if (testFlag(ShowTileObjectOutlines)) {
             if (const Tile *tile = object->cell().tile()) {
                 QPointF tileOffset = tile->offset();
-                const QSize tileSize = tile->size();
+                const QSizeF tileSize = object->tileObjectSize(map());
                 if (!tileSize.isNull()) {
                     const QSizeF scale {
                         bounds.width() / tileSize.width(),

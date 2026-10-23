@@ -960,7 +960,8 @@ void MapReaderPrivate::readTileLayerData(TileLayer &tileLayer)
         return;
     }
 
-    mMap->setLayerDataFormat(layerDataFormat);
+    if (mMap)
+        mMap->setLayerDataFormat(layerDataFormat);
 
     readTileLayerRect(tileLayer,
                       layerDataFormat,
@@ -1274,6 +1275,13 @@ std::unique_ptr<MapObject> MapReaderPrivate::readObject()
             xml.skipCurrentElement();
             object->setShape(MapObject::Point);
             object->setPropertyChanged(MapObject::ShapeProperty);
+        } else if (xml.name() == QLatin1String("layer")) {
+            if (auto tileLayer = readTileLayer()) {
+                object->setTileLayer(QSharedPointer<TileLayer>(tileLayer.release()));
+                if (width == 0 && height == 0)
+                    object->setSize(object->tileObjectSize(mMap.get()));
+                object->setPropertyChanged(MapObject::CellProperty);
+            }
         } else {
             readUnknownElement();
         }
