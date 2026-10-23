@@ -1,7 +1,6 @@
 clone_depth: 200
 version: '1.12.{build}'
-image:
-  - Visual Studio 2022
+image: Visual Studio 2022
 
 cache:
   - C:\ProgramData\chocolatey\bin -> appveyor.yml
@@ -101,30 +100,30 @@ deploy:
     folder: update.mapeditor.org/snapshots-win
     artifact: /.*\.(msi|7z)/
     on:
-        branch: snapshot
-        push_release: true
+      branch: snapshot
+      push_release: true
 
   - provider: Webhook
     url: https://app.signpath.io/API/v1/670574d6-49bf-4a0c-824a-3ae977077079/Integrations/AppVeyor?ProjectKey=tiled&SigningPolicyKey=test-signing
     authorization:
-        secure: 4E7IuM1Ftvdkx43gsqI3tUWb6tcvrfKB22sa6DsWaBzT+zv3DqceDCk0qc/JqTO+Er5UQNYwolmWBzMdys6fVA==
+      secure: 4E7IuM1Ftvdkx43gsqI3tUWb6tcvrfKB22sa6DsWaBzT+zv3DqceDCk0qc/JqTO+Er5UQNYwolmWBzMdys6fVA==
     on:
-        appveyor_repo_tag: false
-        branch: master
-        push_release: true
+      appveyor_repo_tag: false
+      branch: master
+      push_release: true
 
   - provider: Webhook
     url: https://app.signpath.io/API/v1/670574d6-49bf-4a0c-824a-3ae977077079/Integrations/AppVeyor?ProjectKey=tiled&SigningPolicyKey=release-signing
     authorization:
-        secure: 4E7IuM1Ftvdkx43gsqI3tUWb6tcvrfKB22sa6DsWaBzT+zv3DqceDCk0qc/JqTO+Er5UQNYwolmWBzMdys6fVA==
+      secure: 4E7IuM1Ftvdkx43gsqI3tUWb6tcvrfKB22sa6DsWaBzT+zv3DqceDCk0qc/JqTO+Er5UQNYwolmWBzMdys6fVA==
     on:
-        branch: snapshot
-        push_release: true
+      branch: snapshot
+      push_release: true
 
   - provider: Webhook
     url: https://app.signpath.io/API/v1/670574d6-49bf-4a0c-824a-3ae977077079/Integrations/AppVeyor?ProjectKey=tiled&SigningPolicyKey=release-signing
     authorization:
-        secure: 4E7IuM1Ftvdkx43gsqI3tUWb6tcvrfKB22sa6DsWaBzT+zv3DqceDCk0qc/JqTO+Er5UQNYwolmWBzMdys6fVA==
+      secure: 4E7IuM1Ftvdkx43gsqI3tUWb6tcvrfKB22sa6DsWaBzT+zv3DqceDCk0qc/JqTO+Er5UQNYwolmWBzMdys6fVA==
     on:
-        appveyor_repo_tag: true
-        push_release: true
+      appveyor_repo_tag: true
+      push_release: true
