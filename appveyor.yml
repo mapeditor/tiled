@@ -4,7 +4,6 @@ image:
   - Visual Studio 2022
 
 cache:
-  - C:\Users\appveyor\.m2
   - C:\ProgramData\chocolatey\bin -> appveyor.yml
   - C:\ProgramData\chocolatey\lib -> appveyor.yml
   - C:\Qt\6.11.2\msvc2022_64 -> appveyor.yml
@@ -76,12 +75,6 @@ build_script:
   - cd ..
   - echo Building Tiled %TILED_VERSION% from %COMMITNOW%
   - qbs build config:release projects.Tiled.windowsInstaller:true projects.Tiled.staticZstd:%ENABLE_ZSTD%
-  - cd util\java
-  - set JAVA_HOME=C:\Program Files\Java\jdk21
-  - set PATH=%JAVA_HOME%\bin;%PATH%
-  - mvn --version
-  - mvn clean install
-  - cd ..\..
 
 after_build:
   - cd release
