@@ -26,10 +26,18 @@ in C++, using the Qt application framework.
     Exports the specified tmx file to target
   * `--export-formats`:
     Prints a list of supported export formats
+  * `-e` `--evaluate` <file> [args]:
+    Evaluates a script file without UI and quits
+  * `--eval` <js code>:
+    Evaluates the given script code in a running instance and prints its output and result
+  * `--eval-file` <file>:
+    Evaluates the given script file in a running instance and prints its output and result
+  * `--script-server`:
+    Enables the script server, which allows --eval to run scripts in this instance
 
 ## AUTHORS
 <https://github.com/mapeditor/tiled/blob/master/AUTHORS>
 
 ## SEE ALSO
 
-tmxviewer(1), tmxrasterizer(1), <http://www.mapeditor.org/>
+tmxviewer(1), tmxrasterizer(1), <https://www.mapeditor.org/>
