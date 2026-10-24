@@ -8,9 +8,11 @@ cache:
   - C:\Qt\6.11.2\msvc2022_64 -> appveyor.yml
   - C:\Qt\6.11.2\mingw_64 -> appveyor.yml
   - C:\Qt\Tools\mingw1310_64 -> appveyor.yml
+  - C:\ccache
 
 environment:
   QASEPRITE_VERSION: 1.0.3
+  CCACHE_MAXSIZE: 400M
   matrix:
     - QT_VERSION: 6.11.2
       QT_ARCH: win64_msvc2022_64
@@ -21,6 +23,7 @@ environment:
       FILE_SUFFIX: Windows-10+_msvc_x86_64
       PUSH_RELEASE: false
       ENABLE_ZSTD: false
+      CCACHE_DIR: C:\ccache\msvc
     - QT_VERSION: 6.11.2
       QT_ARCH: win64_mingw
       QT_MODULES: qtimageformats qtshadertools
@@ -34,11 +37,13 @@ environment:
       ENABLE_ZSTD: true
       CC: x86_64-w64-mingw32-gcc.exe
       CXX: x86_64-w64-mingw32-g++.exe
+      CCACHE_DIR: C:\ccache\mingw
 
 configuration: Release
 
 install:
   - choco install -y qbs --version 3.1.1
+  - choco install -y ccache --version 4.14.2
   - set PATH=%PYTHONHOME%;%PYTHONHOME%\Scripts;%PATH%
   # aqtinstall 3.3.0 does not yet support the changed repository layout of
   # Qt 6.11 on Windows
@@ -60,14 +65,18 @@ build_script:
   - if defined TILED_RELEASE set TILED_VERSION=%APPVEYOR_REPO_TAG_NAME:~1%
   - if defined TILED_SNAPSHOT set TILED_VERSION=%DATE:~10,4%.%DATE:~4,2%.%DATE:~7,2%
   - if defined TILED_SNAPSHOT set TILED_MSI_VERSION=%APPVEYOR_BUILD_VERSION%
+  - ccache -z
   - if defined MINGW echo Building zstd
   - if defined MINGW git clone --depth 1 -b release https://github.com/facebook/zstd.git
-  - if defined MINGW cd zstd/lib & set CC=gcc & mingw32-make -j2 libzstd.a & cd ../../
+  - if defined MINGW cd zstd/lib & set CC=ccache gcc & mingw32-make -j2 libzstd.a & cd ../../
   # qaseprite installs its plugin into the cached Qt plugins directory, so
   # an existing qaseprite.dll matches the pinned Qt and qaseprite versions
   - if exist %QTDIR%\plugins\imageformats\qaseprite.dll (echo Using cached qaseprite.dll) else (call dist\win\build-qaseprite.bat)
   - echo Building Tiled %TILED_VERSION% from %COMMITNOW%
-  - qbs build config:release projects.Tiled.windowsInstaller:true projects.Tiled.staticZstd:%ENABLE_ZSTD%
+  # Keep the libtilededitor PCH: without it a cold build exceeds the 60
+  # minute job limit re-parsing the Qt headers for every file
+  - qbs build config:release projects.Tiled.windowsInstaller:true projects.Tiled.staticZstd:%ENABLE_ZSTD% modules.cpp.compilerWrapper:ccache products.libtilededitor.cpp.useCxxPrecompiledHeader:true
+  - ccache -s
 
 after_build:
   - cd release
