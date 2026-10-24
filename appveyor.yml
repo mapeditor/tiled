@@ -1,6 +1,7 @@
 clone_depth: 200
 version: '1.12.{build}'
 image: Visual Studio 2022
+skip_branch_with_pr: true
 
 cache:
   - C:\ProgramData\chocolatey\bin -> appveyor.yml
