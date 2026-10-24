@@ -490,29 +490,21 @@ void AbstractObjectTool::detachSelectedObjects()
 {
     MapDocument *currentMapDocument = mapDocument();
     QList<MapObject *> templateInstances;
-
-    /**
-     * Stores the unique tilesets used by the templates
-     * to avoid creating multiple undo commands for the same tileset
-     */
     QSet<SharedTileset> sharedTilesets;
 
     for (MapObject *object : mapDocument()->selectedObjects()) {
         if (object->templateObject()) {
             templateInstances.append(object);
 
-            if (Tile *tile = object->cell().tile())
-                sharedTilesets.insert(tile->tileset()->sharedFromThis());
+            if (Tileset *tileset = object->cell().tileset())
+                sharedTilesets.insert(tileset->sharedFromThis());
         }
     }
 
     auto changeMapObjectCommand = new DetachObjects(currentMapDocument, templateInstances);
 
-    // Add any missing tileset used by the templates to the map map before detaching
-    for (const SharedTileset &sharedTileset : std::as_const(sharedTilesets)) {
-        if (!currentMapDocument->map()->tilesets().contains(sharedTileset))
-            new AddTileset(currentMapDocument, sharedTileset, changeMapObjectCommand);
-    }
+    // Add any missing tileset used by the templates to the map before detaching
+    addMissingTilesets(currentMapDocument, sharedTilesets, changeMapObjectCommand);
 
     currentMapDocument->undoStack()->push(changeMapObjectCommand);
 }

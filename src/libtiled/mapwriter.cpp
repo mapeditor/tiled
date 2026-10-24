@@ -127,6 +127,7 @@ void MapWriterPrivate::writeMap(const Map *map, QIODevice *device,
 {
     mDir = QDir(path);
     mUseAbsolutePaths = path.isEmpty();
+    mError.clear();
     mLayerDataFormat = map->layerDataFormat();
     mCompressionlevel = map->compressionLevel();
     mChunkSize = map->chunkSize();
@@ -152,6 +153,7 @@ void MapWriterPrivate::writeTileset(const Tileset &tileset, QIODevice *device,
 {
     mDir = QDir(path);
     mUseAbsolutePaths = path.isEmpty();
+    mError.clear();
 
     QXmlStreamWriter writer(device);
     writer.setAutoFormatting(!mMinimize);
@@ -174,6 +176,7 @@ void MapWriterPrivate::writeObjectTemplate(const ObjectTemplate *objectTemplate,
 {
     mDir = QDir(path);
     mUseAbsolutePaths = path.isEmpty();
+    mError.clear();
 
     QXmlStreamWriter writer(device);
     writer.setAutoFormatting(!mMinimize);
@@ -747,7 +750,18 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
 
     if (shouldWrite(!mapObject.cell().isEmpty(), isTemplateInstance, mapObject.propertyChanged(MapObject::CellProperty))) {
         const unsigned gid = mGidMapper.cellToGid(mapObject.cell());
-        w.writeAttribute(QStringLiteral("gid"), QString::number(gid));
+        if (gid == 0) {
+            // The tileset referenced by this object is not part of the map,
+            // so there is no valid gid to write. Writing 0 would silently
+            // drop the tile (and any flip flags) on load.
+            if (mError.isEmpty()) {
+                mError = tr("Object %1 references tileset '%2', which is not part of the map")
+                        .arg(id)
+                        .arg(mapObject.cell().tileset()->name());
+            }
+        } else {
+            w.writeAttribute(QStringLiteral("gid"), QString::number(gid));
+        }
     }
 
     if (!mapObject.isTemplateBase()) {
@@ -1031,6 +1045,9 @@ bool MapWriter::writeMap(const Map *map, const QString &fileName)
 
     writeMap(map, file.device(), QFileInfo(fileName).absolutePath());
 
+    if (!d->mError.isEmpty())
+        return false;
+
     if (file.error() != QFileDevice::NoError) {
         d->mError = file.errorString();
         return false;
@@ -1058,6 +1075,9 @@ bool MapWriter::writeTileset(const Tileset &tileset, const QString &fileName)
 
     writeTileset(tileset, file.device(), QFileInfo(fileName).absolutePath());
 
+    if (!d->mError.isEmpty())
+        return false;
+
     if (file.error() != QFileDevice::NoError) {
         d->mError = file.errorString();
         return false;
@@ -1084,6 +1104,9 @@ bool MapWriter::writeObjectTemplate(const ObjectTemplate *objectTemplate, const 
         return false;
 
     writeObjectTemplate(objectTemplate, file.device(), QFileInfo(fileName).absolutePath());
+
+    if (!d->mError.isEmpty())
+        return false;
 
     if (file.error() != QFileDevice::NoError) {
         d->mError = file.errorString();

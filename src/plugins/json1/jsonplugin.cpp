@@ -101,6 +101,11 @@ bool JsonMapFormat::write(const Tiled::Map *map,
     Tiled::MapToVariantConverter converter{1};
     QVariant variant = converter.toVariant(*map, QFileInfo(fileName).dir());
 
+    if (!converter.errorString().isEmpty()) {
+        mError = converter.errorString();
+        return false;
+    }
+
     JsonWriter writer;
     writer.setAutoFormatting(!options.testFlag(WriteMinimized));
     writer.setAutoFormattingWrapArrayCount(map->infinite() ? map->chunkSize().width() : map->width());
@@ -275,6 +280,11 @@ bool JsonTilesetFormat::write(const Tiled::Tileset &tileset,
     Tiled::MapToVariantConverter converter{1};
     QVariant variant = converter.toVariant(tileset, QFileInfo(fileName).dir());
 
+    if (!converter.errorString().isEmpty()) {
+        mError = converter.errorString();
+        return false;
+    }
+
     JsonWriter writer;
     writer.setAutoFormatting(!options.testFlag(WriteMinimized));
 
@@ -376,6 +386,11 @@ bool JsonObjectTemplateFormat::write(const Tiled::ObjectTemplate *objectTemplate
 
     Tiled::MapToVariantConverter converter{1};
     QVariant variant = converter.toVariant(*objectTemplate, QFileInfo(fileName).dir());
+
+    if (!converter.errorString().isEmpty()) {
+        mError = converter.errorString();
+        return false;
+    }
 
     JsonWriter writer;
     writer.setAutoFormatting(true);
