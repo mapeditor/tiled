@@ -459,6 +459,8 @@ DynamicLibrary {
         "scriptmodule.h",
         "scriptprocess.cpp",
         "scriptprocess.h",
+        "scriptserver.cpp",
+        "scriptserver.h",
         "scriptsession.cpp",
         "scriptsession.h",
         "scriptpropertytype.cpp",
