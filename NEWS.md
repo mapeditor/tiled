@@ -19,6 +19,7 @@
 * Fixed Properties view update on 'Reset Template Instance' and 'Replace With Template' actions
 * Fixed restoring of the layout for maximized windows on startup (#4580)
 * Fixed image layer position after map resize
+* Fixed project file passed on the command line being loaded twice (#4642)
 * Made the action search prefer the action of the active editor (#4598)
 * Linux: Added file associations for .tmj, .tsj, .tiled-project and .world files (by miffe, #4550)
 * Linux: Fixed the window icon on some Wayland compositors (by Balló György, #4567)
