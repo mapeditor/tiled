@@ -50,7 +50,7 @@ public:
     bool setPropertyTypeName(int row, const QString &name);
     void removePropertyTypes(const QModelIndexList &indexes);
 
-    QModelIndex addNewPropertyType(PropertyType::Type type);
+    QModelIndex addNewPropertyType(PropertyType::Type type, const QVariant &defaultValue = QVariant());
     QModelIndex addPropertyType(std::unique_ptr<PropertyType> type);
 
     void importPropertyTypes(PropertyTypes typesToImport);

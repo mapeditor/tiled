@@ -266,6 +266,14 @@ static Property *createProperty(const PropertyPath &path,
                 property = enumProperty;
                 break;
             }
+            case PropertyType::PT_Primitive: {
+                property = createVariantProperty(name,
+                    [get = std::move(get)] { return get().value<PropertyValue>().value; },
+                    [path, set = std::move(set), propertyType](const QVariant &value) {
+                        set(path, propertyType->wrap(value));
+                    });
+                break;
+            }
             }
 
             typeName = propertyType->name;
