@@ -366,6 +366,19 @@
             </property>
            </widget>
           </item>
+          <item row="9" column="0">
+           <widget class="QLabel" name="labelObjectReferenceLineStyle">
+            <property name="text">
+             <string>Object reference line:</string>
+            </property>
+            <property name="buddy">
+             <cstring>objectReferenceLineStyleCombo</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="1" colspan="2">
+           <widget class="QComboBox" name="objectReferenceLineStyleCombo"/>
+          </item>
          </layout>
         </widget>
        </item>
@@ -708,6 +721,7 @@
   <tabstop>gridColor</tabstop>
   <tabstop>backgroundFadeColor</tabstop>
   <tabstop>gridFine</tabstop>
+  <tabstop>objectReferenceLineStyleCombo</tabstop>
   <tabstop>gridMajorX</tabstop>
   <tabstop>gridMajorY</tabstop>
   <tabstop>objectLineWidth</tabstop>
