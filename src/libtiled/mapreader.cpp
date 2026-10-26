@@ -1328,6 +1328,13 @@ static int intAttribute(const QXmlStreamAttributes& atts, const char *name, int 
     return ok ? value : def;
 }
 
+static double doubleAttribute(const QXmlStreamAttributes& atts, const char *name, double def)
+{
+    bool ok = false;
+    double value = atts.value(QLatin1String(name)).toDouble(&ok);
+    return ok ? value : def;
+}
+
 TextData MapReaderPrivate::readObjectText()
 {
     Q_ASSERT(xml.isStartElement() && xml.name() == QLatin1String("text"));
@@ -1348,6 +1355,24 @@ TextData MapReaderPrivate::readObjectText()
     textData.font.setUnderline(intAttribute(atts, "underline", 0) == 1);
     textData.font.setStrikeOut(intAttribute(atts, "strikeout", 0) == 1);
     textData.font.setKerning(intAttribute(atts, "kerning", 1) == 1);
+
+    textData.strokeEnabled = intAttribute(atts, "stroke", 0) == 1;
+    if (atts.hasAttribute(QLatin1String("strokecolor")))
+        textData.strokeColor = QColor(atts.value(QLatin1String("strokecolor")).toString());
+    textData.strokeWidth = doubleAttribute(atts, "strokewidth", 1.0);
+
+    textData.shadowEnabled = intAttribute(atts, "shadow", 0) == 1;
+    if (atts.hasAttribute(QLatin1String("shadowcolor")))
+        textData.shadowColor = QColor(atts.value(QLatin1String("shadowcolor")).toString());
+    textData.shadowOffset.setX(doubleAttribute(atts, "shadowoffsetx", 1.0));
+    textData.shadowOffset.setY(doubleAttribute(atts, "shadowoffsety", 1.0));
+
+    textData.backgroundEnabled = intAttribute(atts, "background", 0) == 1;
+    if (atts.hasAttribute(QLatin1String("backgroundcolor")))
+        textData.backgroundColor = QColor(atts.value(QLatin1String("backgroundcolor")).toString());
+
+    textData.flippedHorizontally = intAttribute(atts, "fliph", 0) == 1;
+    textData.flippedVertically = intAttribute(atts, "flipv", 0) == 1;
 
     const auto colorString = atts.value(QLatin1String("color"));
     if (!colorString.isEmpty())
