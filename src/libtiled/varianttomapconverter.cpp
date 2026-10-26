@@ -783,6 +783,12 @@ std::unique_ptr<MapObject> VariantToMapConverter::toMapObject(const QVariantMap 
         object->setPropertyChanged(MapObject::VisibleProperty);
     }
 
+    const QString colorString = variantMap.value(QLatin1String("color")).toString();
+    if (!colorString.isEmpty()) {
+        object->setColor(QColor(colorString));
+        object->setPropertyChanged(MapObject::ColorProperty);
+    }
+
     object->setProperties(extractProperties(variantMap));
 
     const QVariant polylineVariant = variantMap[QStringLiteral("polyline")];

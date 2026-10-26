@@ -236,6 +236,7 @@ Object
     :widths: 1, 1, 4
 
     capsule,          bool,             "Used to mark an object as a capsule"
+    color,            string,           "Hex-formatted color (#RRGGBB or #AARRGGBB) used to display the object, overriding the color of its object layer (optional, since 1.13)"
     ellipse,          bool,             "Used to mark an object as an ellipse"
     gid,              int,              "Global tile ID, only if object represents a tile"
     height,           double,           "Height in pixels."
@@ -807,6 +808,13 @@ A point on a polygon or a polyline, relative to the position of the object.
 
 Changelog
 ---------
+
+Tiled 1.13
+~~~~~~~~~~
+
+* Added ``color`` property to :ref:`json-object`, which overrides the color
+  used to display the object. Objects without this property keep using the
+  color of their object layer.
 
 Tiled 1.12
 ~~~~~~~~~~
