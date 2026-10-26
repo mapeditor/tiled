@@ -90,6 +90,7 @@ public:
 
     void addDocument(Document *document) override;
     void removeDocument(Document *document) override;
+    void replaceDocument(MapDocument *oldDocument, MapDocument *newDocument);
 
     void setCurrentDocument(Document *document) override;
     Document *currentDocument() const override;
