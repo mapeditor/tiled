@@ -316,6 +316,9 @@ TilesetDock::TilesetDock(QWidget *parent)
     connect(mTilesetDocumentsFilterModel, &TilesetDocumentsModel::dataChanged,
             this, &TilesetDock::onTilesetDataChanged);
 
+    // With many tilesets the menu would otherwise grow into columns that go
+    // past the edge of the screen (#4558).
+    mTilesetMenu->setStyleSheet(QStringLiteral("QMenu { menu-scrollable: 1; }"));
     mTilesetMenuButton->setMenu(mTilesetMenu);
     connect(mTilesetMenu, &QMenu::aboutToShow, this, &TilesetDock::refreshTilesetMenu);
 
