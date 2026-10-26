@@ -92,6 +92,19 @@ public:
                                        std::function<bool(const Cell &)> condition) const;
 
     /**
+     * Computes a region containing all cells for which the given \a condition
+     * returns true. Includes empty cells when the condition matches the empty
+     * cell.
+     */
+    QRegion computeRegion(std::function<bool(const Cell &)> condition) const;
+
+    /**
+     * Computes the part of computeRegion that can be painted to with the
+     * current map and selection constraints.
+     */
+    QRegion computePaintableRegion(std::function<bool(const Cell &)> condition) const;
+
+    /**
      * Computes a fill region starting at \a fillOrigin containing all
      * connected cells for which the given \a condition returns true. Does not
      * take into account the current selection.

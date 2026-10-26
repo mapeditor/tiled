@@ -81,11 +81,16 @@ When a tile layer is selected
 
 -  ``T`` - Activate :ref:`terrain-tool`
 -  ``F`` - Activate :ref:`bucket-fill-tool`
+
+   -  ``Alt`` (while filling) - Temporarily toggle Contiguous
+
 -  ``P`` - Activate :ref:`shape-fill-tool`
 -  ``E`` - Activate :ref:`eraser-tool`
 -  ``R`` - Activate Rectangular Select
 -  ``W`` - Activate Magic Wand
--  ``S`` - Activate Select Same Tile
+
+   -  ``Alt`` (while selecting) - Temporarily toggle Contiguous
+
 -  ``Ctrl + 1-9`` - Store current tile stamp. When no tile drawing tool is
    selected, tries to capture the current tile selection (similar to
    ``Ctrl + C``).
