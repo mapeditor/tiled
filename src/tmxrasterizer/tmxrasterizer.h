@@ -68,6 +68,8 @@ public:
     void setLayersToHide(QStringList layersToHide) { mLayersToHide = layersToHide; }
     void setLayersToShow(QStringList layersToShow) { mLayersToShow = layersToShow; }
 
+    void setSearchPath(const QString &searchPath) { mSearchPath = searchPath; }
+
     void setObjectsToHide(QStringList objectsToHide) { mObjectsToHide = objectsToHide; }
     void setObjectsToShow(QStringList objectsToShow) { mObjectsToShow = objectsToShow; }
 
@@ -90,6 +92,7 @@ private:
     QStringList mObjectsToHide;
     QStringList mObjectsToShow;
     int mLayerTypesToShow = Layer::AnyLayerType & ~Layer::GroupLayerType;
+    QString mSearchPath;
 
     void drawMapLayers(const MapRenderer &renderer, QPainter &painter, QPoint mapOffset = QPoint(0, 0)) const;
     int renderMap(const MapRenderer &renderer, const QString &imageFileName);
