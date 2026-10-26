@@ -57,6 +57,7 @@
 #include <QKeyEvent>
 #include <QMenu>
 #include <QPushButton>
+#include <QScrollBar>
 #include <QScopedValueRollback>
 #include <QTimer>
 #include <QToolBar>
@@ -2447,6 +2448,10 @@ void PropertiesWidget::currentObjectChanged(Object *object)
 {
     const ScopedUpdatesDisabler updatesDisabler(mPropertiesView);
 
+    int scrollValue = 0;
+    if (auto scrollBar = mPropertiesView->verticalScrollBar())
+        scrollValue = scrollBar->value();
+
     if (mPropertiesObject) {
         mRootProperty->deleteProperty(mPropertiesObject);
         mPropertiesObject = nullptr;
@@ -2546,6 +2551,13 @@ void PropertiesWidget::currentObjectChanged(Object *object)
 
     mPropertiesView->setEnabled(object);
     mActionAddProperty->setEnabled(enabled);
+
+    if (scrollValue > 0) {
+        QTimer::singleShot(0, mPropertiesView, [this, scrollValue] {
+            if (auto scrollBar = mPropertiesView->verticalScrollBar())
+                scrollBar->setValue(scrollValue);
+        });
+    }
 }
 
 void PropertiesWidget::applyObjectExpandedStates()
