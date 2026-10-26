@@ -35,6 +35,7 @@
 #include "wangset.h"
 
 #include <memory>
+#include <QDebug>
 
 namespace Tiled {
 
@@ -535,8 +536,11 @@ std::unique_ptr<WangSet> VariantToMapConverter::toWangSet(const QVariantMap &var
         }
 
         if (!ok || !wangSet->wangIdIsValid(wangId)) {
-            mError = QStringLiteral("Invalid wangId given for tileId: ") + QString::number(tileId);
-            return nullptr;
+            // Skip invalid wang tiles rather than aborting the entire wangset
+            // load. This can happen when a tileset was saved with a newer
+            // Tiled version that supported more colors than the current limit.
+            qWarning() << "Skipping invalid wangId for tileId:" << tileId;
+            continue;
         }
 
         wangSet->setWangId(tileId, wangId);
