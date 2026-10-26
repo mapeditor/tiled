@@ -56,10 +56,10 @@ QRectF OrthogonalRenderer::boundingRect(const MapObject *object) const
 
     QRectF boundingRect;
 
-    if (!object->cell().isEmpty()) {
+    if (object->isTileObject()) {
         if (const Tile *tile = object->cell().tile()) {
             QPointF tileOffset = tile->offset();
-            const QSize tileSize = tile->size();
+            const QSizeF tileSize = object->tileObjectSize(map());
             if (!tileSize.isNull()) {
                 const QSizeF scale {
                     bounds.width() / tileSize.width(),
@@ -138,7 +138,7 @@ QPainterPath OrthogonalRenderer::shape(const MapObject *object) const
         } else {
             if (const Tile *tile = object->cell().tile()) {
                 QPointF tileOffset = tile->offset();
-                const QSize tileSize = tile->size();
+                const QSizeF tileSize = object->tileObjectSize(map());
                 if (!tileSize.isNull()) {
                     const QSizeF scale {
                         bounds.width() / tileSize.width(),
@@ -353,16 +353,14 @@ void OrthogonalRenderer::drawMapObject(QPainter *painter,
     painter->translate(bounds.topLeft());
     bounds.moveTopLeft(QPointF(0, 0));
 
-    const Cell &cell = object->cell();
-
-    if (!cell.isEmpty()) {
-        CellRenderer(painter, this, object->objectGroup()->effectiveTintColor())
-                .render(cell, QPointF(), bounds.size());
+    if (object->isTileObject()) {
+        CellRenderer cellRenderer(painter, this, object->objectGroup()->effectiveTintColor());
+        object->renderTileObject(cellRenderer, bounds, map());
 
         if (testFlag(ShowTileObjectOutlines)) {
             if (const Tile *tile = object->cell().tile()) {
                 QPointF tileOffset = tile->offset();
-                const QSize tileSize = tile->size();
+                const QSizeF tileSize = object->tileObjectSize(map());
                 if (!tileSize.isNull()) {
                     const QSizeF scale {
                         bounds.width() / tileSize.width(),

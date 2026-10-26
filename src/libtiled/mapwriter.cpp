@@ -564,7 +564,7 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
     if (!compression.isEmpty())
         w.writeAttribute(QStringLiteral("compression"), compression);
 
-    if (tileLayer.map()->infinite()) {
+    if (tileLayer.map() && tileLayer.map()->infinite()) {
         const auto chunks = tileLayer.sortedChunksToWrite(mChunkSize);
         for (const QRect &rect : chunks) {
             w.writeStartElement(QStringLiteral("chunk"));
@@ -745,7 +745,7 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
     if (!className.isEmpty())
         w.writeAttribute(FileFormat::classPropertyNameForObject(), className);
 
-    if (shouldWrite(!mapObject.cell().isEmpty(), isTemplateInstance, mapObject.propertyChanged(MapObject::CellProperty))) {
+    if (shouldWrite(!mapObject.isMultiTileObject() && !mapObject.cell().isEmpty(), isTemplateInstance, mapObject.propertyChanged(MapObject::CellProperty))) {
         const unsigned gid = mGidMapper.cellToGid(mapObject.cell());
         w.writeAttribute(QStringLiteral("gid"), QString::number(gid));
     }
@@ -822,6 +822,11 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
         if (shouldWrite(true, isTemplateInstance, mapObject.propertyChanged(MapObject::ShapeProperty)))
             w.writeEmptyElement(QLatin1String("point"));
         break;
+    }
+
+    if (shouldWrite(mapObject.isMultiTileObject(), isTemplateInstance, mapObject.propertyChanged(MapObject::CellProperty))) {
+        if (const TileLayer *tileLayer = mapObject.tileLayer())
+            writeTileLayer(w, *tileLayer);
     }
 
     w.writeEndElement();
