@@ -87,6 +87,50 @@ TilesetDocument::TilesetDocument(const SharedTileset &tileset)
 
     connect(mWangSetModel, &TilesetWangSetModel::wangSetRemoved,
             this, &TilesetDocument::onWangSetRemoved);
+
+    // Track last focused tile (todo: make this more explicit by calling setLastFocusedTile)
+    connect(this, &Document::currentObjectChanged, this, [this](Object *object) {
+        if (!object)
+            return;
+
+        switch (object->typeId()) {
+        case Object::TileType:
+            mLastFocusedTile = static_cast<Tile*>(object);
+            break;
+        default:
+            break;
+        }
+    });
+
+    // Keep fields in sync when things are removed
+    connect(this, &Document::changed, this, [this](const ChangeEvent &change) {
+        switch (change.type) {
+        case ChangeEvent::TilesAboutToBeRemoved: {
+            const auto &tilesEvent = static_cast<const TilesEvent&>(change);
+            for (Tile *t : tilesEvent.tiles)
+                if (t == mLastFocusedTile)
+                    mLastFocusedTile = nullptr;
+            break;
+        }
+        case ChangeEvent::WangSetAboutToBeRemoved: {
+            const auto &e = static_cast<const WangSetEvent&>(change);
+            WangSet *ws = e.tileset->wangSet(e.index);
+            if (ws == mSelectedWangSet) {
+                mSelectedWangSet = nullptr;
+                mSelectedWangColor = 0;
+            }
+            break;
+        }
+        case ChangeEvent::WangColorAboutToBeRemoved: {
+            const auto &e = static_cast<const WangColorEvent&>(change);
+            if (e.wangSet == mSelectedWangSet && e.color == mSelectedWangColor)
+                mSelectedWangColor = 0;
+            break;
+        }
+        default:
+            break;
+        }
+    });
 }
 
 TilesetDocument::~TilesetDocument()
@@ -259,6 +303,9 @@ void TilesetDocument::swapTileset(SharedTileset &tileset)
     setSelectedTiles(QList<Tile*>());
     setCurrentObject(mTileset.data());
     mWangColorModels.clear();
+    mLastFocusedTile = nullptr;
+    mSelectedWangSet = nullptr;
+    mSelectedWangColor = 0;
 
     emit changed(AboutToReloadEvent());
 
@@ -351,6 +398,13 @@ void TilesetDocument::removeTiles(const QList<Tile *> &tiles)
         }
     }
 
+    for (Tile *tile : tiles) {
+        if (tile == mLastFocusedTile) {
+            mLastFocusedTile = nullptr;
+            break;
+        }
+    }
+
     emit changed(TilesEvent(ChangeEvent::TilesAboutToBeRemoved, tiles));
     mTileset->removeTiles(tiles);
     emit tilesRemoved(tiles);
@@ -387,6 +441,29 @@ QList<Object *> TilesetDocument::currentObjects() const
     }
 
     return Document::currentObjects();
+}
+
+void TilesetDocument::setSelectedWangSet(WangSet *wangSet)
+{
+    Q_ASSERT(!wangSet || wangSet->tileset() != mTileset.data());
+
+    if (mSelectedWangSet == wangSet)
+        return;
+
+    qDebug() << "TilesetDocument::setSelectedWangSet(" << (wangSet ? wangSet->name() : QStringLiteral("nullptr")) << ")";
+    mSelectedWangSet = wangSet;
+    mSelectedWangColor = 0;
+    emit selectedWangSetChanged(mSelectedWangSet);
+}
+
+void TilesetDocument::setSelectedWangColor(int color)
+{
+    if (mSelectedWangColor == color)
+        return;
+
+    qDebug() << "TilesetDocument::setSelectedWangColor(" << color << ")";
+    mSelectedWangColor = color;
+    emit selectedWangColorChanged(mSelectedWangColor);
 }
 
 /**
@@ -497,6 +574,11 @@ void TilesetDocument::onPropertiesChanged(Object *object)
 void TilesetDocument::onWangSetRemoved(WangSet *wangSet)
 {
     mWangColorModels.erase(wangSet);
+
+    if (mSelectedWangSet == wangSet) {
+        mSelectedWangSet = nullptr;
+        mSelectedWangColor = 0;
+    }
 }
 
 } // namespace Tiled

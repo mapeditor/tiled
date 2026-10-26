@@ -22,6 +22,8 @@
 
 #include <QDockWidget>
 
+class QTabBar;
+
 namespace Tiled {
 
 class Document;
@@ -47,10 +49,25 @@ protected:
     bool event(QEvent *event) override;
 
 private:
+    enum TabType {
+        MapTab,
+        LayerTab,
+        MapObjectTab,
+        TilesetTab,
+        TileTab,
+        WangSetTab,
+        WangColorTab,
+    };
+
     void bringToFront();
     void retranslateUi();
 
+    void updateTabs();
+    void tabChanged(int index);
+
+    QTabBar *mTabBar;
     PropertiesWidget *mPropertiesWidget;
+    Document *mDocument = nullptr;
 };
 
 } // namespace Tiled
