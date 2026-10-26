@@ -30,6 +30,8 @@
 #include "scriptmanager.h"
 #include "tile.h"
 #include "tilesetdocument.h"
+#include "worlddocument.h"
+#include "worldmanager.h"
 
 #include <QCoreApplication>
 #include <QJSEngine>
@@ -50,6 +52,7 @@ ScriptedTool::ScriptedTool(Id id, QJSValue object, QObject *parent)
     const QJSValue usesSelectedTilesProperty = mScriptObject.property(QStringLiteral("usesSelectedTiles"));
     const QJSValue usesWangSetsProperty = mScriptObject.property(QStringLiteral("usesWangSets"));
     const QJSValue targetLayerTypeProperty = mScriptObject.property(QStringLiteral("targetLayerType"));
+    const QJSValue isWorldToolProperty = mScriptObject.property(QStringLiteral("isWorldTool"));
 
     // Make members of ScriptedTool available through the original object
     auto &scriptManager = ScriptManager::instance();
@@ -80,6 +83,9 @@ ScriptedTool::ScriptedTool(Id id, QJSValue object, QObject *parent)
         setTargetLayerType(targetLayerTypeProperty.toInt());
     else
         setTargetLayerType(0);  // default behavior is not to disable based on current layer
+
+    if (isWorldToolProperty.isBool())
+        setIsWorldTool(isWorldToolProperty.toBool());
 
     PluginManager::addObject(this);
 }
@@ -276,6 +282,25 @@ QStringList ScriptedTool::toolBarActions() const
 void ScriptedTool::setToolBarActions(const QStringList &actionNames)
 {
     mToolBarActions = namesToIds(actionNames);
+}
+
+bool ScriptedTool::isWorldTool() const
+{
+    return mIsWorldTool;
+}
+
+void ScriptedTool::setIsWorldTool(bool isWorldTool)
+{
+    mIsWorldTool = isWorldTool;
+}
+
+QUndoStack *ScriptedTool::undoStack()
+{
+    if (mIsWorldTool && mapDocument()) {
+        if (auto worldDocument = WorldManager::instance().worldForMap(mapDocument()->fileName()))
+            return worldDocument->undoStack();
+    }
+    return nullptr;
 }
 
 void ScriptedTool::mapDocumentChanged(MapDocument *oldDocument,
