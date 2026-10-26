@@ -32,6 +32,7 @@
 #include <QPlainTextEdit>
 #include <QPushButton>
 #include <QShortcut>
+#include <QTimer>
 #include <QVBoxLayout>
 
 namespace Tiled {
@@ -113,16 +114,19 @@ ConsoleDock::ConsoleDock(QWidget *parent)
     mHistory = session::commandHistory;
     mHistoryPosition = mHistory.size();
 
-    connect(this, &QDockWidget::visibilityChanged, this, [this](bool visible) {
-        if (visible)
-            mLineEdit->setFocus();
-    });
-
     retranslateUi();
 }
 
 ConsoleDock::~ConsoleDock()
 {
+}
+
+void ConsoleDock::focusInputLine()
+{
+    QTimer::singleShot(50, this, [this] {
+        window()->activateWindow();
+        mLineEdit->setFocus();
+    });
 }
 
 void ConsoleDock::appendInfo(const QString &str)
