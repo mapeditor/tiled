@@ -29,7 +29,9 @@
 #include "filesystemwatcher.h"
 
 #include <QDebug>
+#include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QFileSystemWatcher>
 #include <QStringList>
 
@@ -84,6 +86,7 @@ void FileSystemWatcher::addPaths(const QStringList &paths)
                 pathsToAdd.append(path);
 
             mWatchCount.insert(path, 1);
+            mSnapshots.insert(path, snapshot(path));
         } else {
             // Path is already being watched, increment watch count
             ++entry.value();
@@ -112,6 +115,7 @@ void FileSystemWatcher::removePaths(const QStringList &paths)
 
         if (entry.value() == 0) {
             mWatchCount.erase(entry);
+            mSnapshots.remove(path);
 
             if (mEnabled)
                 pathsToRemove.append(path);
@@ -137,10 +141,15 @@ void FileSystemWatcher::clear()
 {
     clearInternal();
     mWatchCount.clear();
+    mSnapshots.clear();
 }
 
 void FileSystemWatcher::onFileChanged(const QString &path)
 {
+    // Ignore metadata-only changes, which on macOS are reported for any ctime change
+    if (!updateSnapshot(path))
+        return;
+
     mChangedPaths.insert(path);
     mChangedPathsTimer.start();
 
@@ -149,6 +158,9 @@ void FileSystemWatcher::onFileChanged(const QString &path)
 
 void FileSystemWatcher::onDirectoryChanged(const QString &path)
 {
+    if (!updateSnapshot(path))
+        return;
+
     mChangedPaths.insert(path);
     mChangedPathsTimer.start();
 
@@ -164,8 +176,10 @@ void FileSystemWatcher::pathsChangedTimeout()
     // with applications that do atomic saving.
     for (const QString &path : changedPaths) {
         if (mWatchCount.contains(path) && !mWatcher->files().contains(path)) {
-            if (QFile::exists(path))
+            if (QFile::exists(path)) {
                 mWatcher->addPath(path);
+                mSnapshots.insert(path, snapshot(path));
+            }
         }
     }
 
@@ -173,6 +187,38 @@ void FileSystemWatcher::pathsChangedTimeout()
     emit pathsChanged(changedPaths);
 
     mChangedPaths.clear();
+}
+
+FileSystemWatcher::Snapshot FileSystemWatcher::snapshot(const QString &path)
+{
+    const QFileInfo fileInfo(path);
+
+    Snapshot result;
+    result.insert(QString(), std::make_tuple(fileInfo.lastModified(), fileInfo.size(), fileInfo.permissions()));
+
+    if (fileInfo.isDir()) {
+        // Permissions of the entries are left out since they are slow to determine
+        constexpr QDir::Filters filters { QDir::AllEntries | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System };
+        const auto entries = QDir(path).entryInfoList(filters, QDir::NoSort);
+        for (const QFileInfo &entry : entries)
+            result.insert(entry.fileName(), std::make_tuple(entry.lastModified(), entry.size(), QFile::Permissions()));
+    }
+
+    return result;
+}
+
+bool FileSystemWatcher::updateSnapshot(const QString &path)
+{
+    const auto it = mSnapshots.find(path);
+    if (it == mSnapshots.end())
+        return true;
+
+    Snapshot current = snapshot(path);
+    if (current == *it)
+        return false;
+
+    *it = std::move(current);
+    return true;
 }
 
 } // namespace Tiled
