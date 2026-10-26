@@ -802,6 +802,13 @@ void TilesetView::contextMenuEvent(QContextMenuEvent *event)
         }
 
         if (mTilesetDocument) {
+            const bool exactlyTwoTilesSelected =
+                    (selectionModel()->selectedIndexes().size() == 2);
+
+            QAction *swapTilesAction = menu.addAction(tr("&Swap Tiles"));
+            swapTilesAction->setEnabled(exactlyTwoTilesSelected);
+            connect(swapTilesAction, &QAction::triggered, this, &TilesetView::swapTiles);
+
             const QIcon propIcon(QStringLiteral(":images/16/document-properties.png"));
             QAction *tileProperties = menu.addAction(propIcon,
                                                      tr("Tile &Properties..."));
