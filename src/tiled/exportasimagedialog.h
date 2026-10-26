@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "tilededitor_global.h"
+
 #include <QDialog>
 
 namespace Ui {
@@ -33,7 +35,7 @@ class MapDocument;
 /**
  * The dialog for exporting a map as an image.
  */
-class ExportAsImageDialog : public QDialog
+class TILED_EDITOR_EXPORT ExportAsImageDialog : public QDialog
 {
     Q_OBJECT
 
@@ -48,6 +50,14 @@ public:
                         qreal currentScale,
                         QWidget *parent = nullptr);
     ~ExportAsImageDialog() override;
+
+    /**
+     * Returns the rectangle of the selected area in the final exported image.
+     * This is based on the same scaling and centering logic as the rendered map.
+     */
+    static QRect selectedAreaImageRect(const QRect &mapBounds,
+                                       const QRect &selectionBounds,
+                                       const QSize &imageSize);
 
 public:
     void accept() override;
