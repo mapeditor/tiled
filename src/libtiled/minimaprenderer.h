@@ -72,7 +72,8 @@ public:
 
     QImage render(QSize size, RenderFlags renderFlags) const;
 
-    void renderToImage(QImage &image, RenderFlags renderFlags) const;
+    void renderToImage(QImage &image, RenderFlags renderFlags,
+                       const QRectF &exposed = QRectF()) const;
 
 private:
     const Map *mMap;
