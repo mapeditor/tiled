@@ -110,6 +110,23 @@ private:
     QSharedPointer<WangColor> mRemovedWangColor;
 };
 
+class MoveUpWangSetColor : public QUndoCommand
+{
+public:
+    MoveUpWangSetColor(TilesetDocument *tilesetDocumnet,
+                       WangSet *wangSet,
+                       int color);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    TilesetDocument *mTilesetDocument;
+    WangSet *mWangSet;
+    const int mColor;
+    void swap();
+};
+
 class SetWangSetImage : public QUndoCommand
 {
 public:
