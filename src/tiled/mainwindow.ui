@@ -179,6 +179,7 @@
     <addaction name="actionEnableWorlds"/>
     <addaction name="actionEnableParallax"/>
     <addaction name="actionHighlightCurrentLayer"/>
+    <addaction name="actionFloorMode"/>
     <addaction name="actionHighlightHoveredObject"/>
     <addaction name="separator"/>
     <addaction name="menuSnapping"/>
@@ -508,6 +509,20 @@
    </property>
    <property name="shortcut">
     <string notr="true">H</string>
+   </property>
+  </action>
+  <action name="actionFloorMode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Floor Mode</string>
+   </property>
+   <property name="toolTip">
+    <string>Show only the current floor (top-level layer or group) and the ones below it, faded</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">Shift+H</string>
    </property>
   </action>
   <action name="actionShowTileObjectOutlines">

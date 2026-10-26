@@ -92,6 +92,7 @@ protected:
     void keyReleaseEvent(QKeyEvent *event) override;
 
     void wheelEvent(QWheelEvent *event) override;
+    void changeFloor(int steps);
 
     void mouseMoveEvent(QMouseEvent *event) override;
 
@@ -131,6 +132,7 @@ private:
 
     MapDocument *mMapDocument = nullptr;
     QPoint mLastMousePos;
+    int mFloorWheelDelta = 0;
     QPoint mScrollStartPos;
     QPointF mLastMouseScenePos;
     PannableViewHelper *mPannableViewHelper;
