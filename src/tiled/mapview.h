@@ -85,6 +85,7 @@ protected:
     bool event(QEvent *event) override;
 
     void paintEvent(QPaintEvent *event) override;
+    void scrollContentsBy(int dx, int dy) override;
     void hideEvent(QHideEvent *) override;
     void resizeEvent(QResizeEvent *event) override;
 
