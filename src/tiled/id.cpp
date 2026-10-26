@@ -41,7 +41,11 @@ public:
     {}
 
     QByteArray string;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     uint hash;
+#else
+    size_t hash;
+#endif
 };
 
 static bool operator==(const StringHash &sh1, const StringHash &sh2)
@@ -49,13 +53,17 @@ static bool operator==(const StringHash &sh1, const StringHash &sh2)
     return sh1.string == sh2.string;
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 static uint qHash(const StringHash &sh)
+#else
+static size_t qHash(const StringHash &sh)
+#endif
 {
     return sh.hash;
 }
 
-static QHash<quintptr, StringHash> stringFromId;
-static QHash<StringHash, quintptr> idFromString;
+static QHash<uint, StringHash> stringFromId;
+static QHash<StringHash, uint> idFromString;
 
 
 Id::Id(const char *name)
