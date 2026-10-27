@@ -1,1149 +1,616 @@
-<!doctype html>
-<html class="default no-js">
-<head>
-	<meta charset="utf-8">
-	<link rel="stylesheet" href="../assets/css/main.css">
-	<meta name='viewport' content="width=device-width, initial-scale=1" />
-	<meta property="og:image" content="https://www.mapeditor.org/img/tiled-logo-filled.png" />
-	<link href='/favicon.ico' rel='icon' type='image/png'/>
-	<link rel="preconnect" href="https://fonts.gstatic.com">
-	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="/css/base.css">
-	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
-	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
-	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>Image | Tiled Scripting API</title>
-	<meta name="description" content="Documentation for Tiled Scripting API">
-	<script async src="../assets/js/search.js" id="search-script"></script>
-</head>
-<body>
+<!DOCTYPE html><html class="default" lang="en" data-base="../"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Image | Tiled Scripting API</title><meta name="description" content="Documentation for Tiled Scripting API"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><link rel="stylesheet" href="../assets/custom.css"/><script defer src="../assets/main.js"></script><script async src="../assets/icons.js" id="tsd-icons-script"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script><script async src="../assets/hierarchy.js" id="tsd-hierarchy-script"></script><meta property="og:image" content="https://www.mapeditor.org/img/tiled-logo-filled.png"/><link href="/favicon.ico" rel="icon" type="image/png"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/><link rel="stylesheet" href="/css/base.css"/><link href="/atom.xml" rel="alternate" type="application/atom+xml"/><script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script></head><body>
 <div class="headerbar-container">
-	<nav class="headerbar container">
-		<a href="/" class="headerbar-logo"><img src="/img/tiled-logo-white.png" class="logo" alt="Tiled logo" width="393" height="213" /></a>
-		<div class="headerbar-content">
-			<a class="header-item" href="/docs">Docs</a>
-			<a class="header-item" href="/news">News</a>
-			<a class="header-item" href="/donate">Donate</a>
-			<div class="stretch"></div>
-			<!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
-			<a href="https://discourse.mapeditor.org/" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44.8 51.2"><path d="m22.59 2.7652c-12.26 0-22.59 9.85-22.59 22.01 0 0.39 0.01 22.79 0.01 22.79l22.58-0.02c12.27 0 22.21-10.23 22.21-22.39s-9.94-22.39-22.21-22.39zm-0.19 35.2c-1.94 0-3.79-0.43-5.44-1.21l-8.11 2.01 2.29-7.5c-0.98-1.81-1.54-3.89-1.54-6.1 0-7.07 5.73-12.8 12.8-12.8s12.8 5.73 12.8 12.8-5.73 12.8-12.8 12.8z"/></svg> <span class="tooltiptext">Forum</span></a>
-			<a href="https://discord.gg/39wbTv7" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44.8 51.2"><path d="m29.722 24.32c0 1.5616-1.152 2.8416-2.6112 2.8416-1.4336 0-2.6112-1.28-2.6112-2.8416s1.152-2.8416 2.6112-2.8416 2.6112 1.28 2.6112 2.8416zm-11.955-2.8416c-1.4592 0-2.6112 1.28-2.6112 2.8416s1.1776 2.8416 2.6112 2.8416c1.4592 0 2.6112-1.28 2.6112-2.8416 0.0256-1.5616-1.152-2.8416-2.6112-2.8416zm27.034-16.205v45.926c-6.4494-5.6994-4.3868-3.8128-11.878-10.778l1.3568 4.736h-29.03c-2.8928 0-5.248-2.3552-5.248-5.2736v-34.611c0-2.9184 2.3552-5.2736 5.248-5.2736h34.304c2.8928 0 5.248 2.3552 5.248 5.2736zm-7.296 24.269c0-8.2432-3.6864-14.925-3.6864-14.925-3.6864-2.7648-7.1936-2.688-7.1936-2.688l-0.3584 0.4096c4.352 1.3312 6.3744 3.2512 6.3744 3.2512-6.0811-3.3329-13.224-3.3335-19.123-0.7424-0.9472 0.4352-1.5104 0.7424-1.5104 0.7424s2.1248-2.0224 6.7328-3.3536l-0.256-0.3072s-3.5072-0.0768-7.1936 2.688c0 0-3.6864 6.6816-3.6864 14.925 0 0 2.1504 3.712 7.808 3.8912 0 0 0.9472-1.152 1.7152-2.1248-3.2512-0.9728-4.48-3.0208-4.48-3.0208 0.3766 0.2636 0.9976 0.6053 1.0496 0.64 4.321 2.4198 10.459 3.2126 15.974 0.896 0.896-0.3328 1.8944-0.8192 2.944-1.5104 0 0-1.28 2.0992-4.6336 3.0464 0.768 0.9728 1.6896 2.0736 1.6896 2.0736 5.6576-0.1792 7.8336-3.8912 7.8336-3.8912z"/></svg> <span class="tooltiptext">Discord</span></a>
-			<a href="https://floss.social/@tiled" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M433 179.1c0-97.2-63.7-125.7-63.7-125.7-62.5-28.7-228.6-28.4-290.5 0 0 0-63.7 28.5-63.7 125.7 0 115.7-6.6 259.4 105.6 289.1 40.5 10.7 75.3 13 103.3 11.4 50.8-2.8 79.3-18.1 79.3-18.1l-1.7-36.9s-36.3 11.4-77.1 10.1c-40.4-1.4-83-4.4-89.6-54a102.5 102.5 0 0 1 -.9-13.9c85.6 20.9 158.7 9.1 178.8 6.7 56.1-6.7 105-41.3 111.2-72.9 9.8-49.8 9-121.5 9-121.5zm-75.1 125.2h-46.6v-114.2c0-49.7-64-51.6-64 6.9v62.5h-46.3V197c0-58.5-64-56.6-64-6.9v114.2H90.2c0-122.1-5.2-147.9 18.4-175 25.9-28.9 79.8-30.8 103.8 6.1l11.6 19.5 11.6-19.5c24.1-37.1 78.1-34.8 103.8-6.1 23.7 27.3 18.4 53 18.4 175z"/></svg> <span class="tooltiptext">Mastodon</span></a>
-			<a href="https://github.com/mapeditor/tiled" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49.6 51.2"><path d="m16.59 40.099c0 0.2-0.23 0.36-0.52 0.36-0.33 0.03-0.56-0.13-0.56-0.36 0-0.2 0.23-0.36 0.52-0.36 0.3-0.03 0.56 0.13 0.56 0.36zm-3.11-0.45c-0.07 0.2 0.13 0.43 0.43 0.49 0.26 0.1 0.56 0 0.62-0.2s-0.13-0.43-0.43-0.52c-0.26-0.07-0.55 0.03-0.62 0.23zm4.42-0.17c-0.29 0.07-0.49 0.26-0.46 0.49 0.03 0.2 0.29 0.33 0.59 0.26 0.29-0.07 0.49-0.26 0.46-0.46-0.03-0.19-0.3-0.32-0.59-0.29zm6.58-38.32c-13.87 0-24.48 10.53-24.48 24.4 0 11.09 6.98 20.58 16.95 23.92 1.28 0.23 1.73-0.56 1.73-1.21 0-0.62-0.03-4.04-0.03-6.14 0 0-7 1.5-8.47-2.98 0 0-1.14-2.91-2.78-3.66 0 0-2.29-1.57 0.16-1.54 0 0 2.49 0.2 3.86 2.58 2.19 3.86 5.86 2.75 7.29 2.09 0.23-1.6 0.88-2.71 1.6-3.37-5.59-0.62-11.23-1.43-11.23-11.05 0-2.75 0.76-4.13 2.36-5.89-0.26-0.65-1.11-3.33 0.26-6.79 2.09-0.65 6.9 2.7 6.9 2.7 2-0.56 4.15-0.85 6.28-0.85s4.28 0.29 6.28 0.85c0 0 4.81-3.36 6.9-2.7 1.37 3.47 0.52 6.14 0.26 6.79 1.6 1.77 2.58 3.15 2.58 5.89 0 9.65-5.89 10.42-11.48 11.05 0.92 0.79 1.7 2.29 1.7 4.64 0 3.37-0.03 7.54-0.03 8.36 0 0.65 0.46 1.44 1.73 1.21 10-3.32 16.78-12.81 16.78-23.9 0-13.87-11.25-24.4-25.12-24.4zm-14.76 34.49c-0.13 0.1-0.1 0.33 0.07 0.52 0.16 0.16 0.39 0.23 0.52 0.1 0.13-0.1 0.1-0.33-0.07-0.52-0.16-0.16-0.39-0.23-0.52-0.1zm-1.08-0.81c-0.07 0.13 0.03 0.29 0.23 0.39 0.16 0.1 0.36 0.07 0.43-0.07 0.07-0.13-0.03-0.29-0.23-0.39-0.2-0.06-0.36-0.03-0.43 0.07zm3.24 3.56c-0.16 0.13-0.1 0.43 0.13 0.62 0.23 0.23 0.52 0.26 0.65 0.1 0.13-0.13 0.07-0.43-0.13-0.62-0.22-0.23-0.52-0.26-0.65-0.1zm-1.14-1.47c-0.16 0.1-0.16 0.36 0 0.59s0.43 0.33 0.56 0.23c0.16-0.13 0.16-0.39 0-0.62-0.14-0.23-0.4-0.33-0.56-0.2z"/></svg> <span class="tooltiptext">GitHub</span></a>
-		</div>
-	</nav>
-</div>
-<header>
-	<div class="tsd-page-toolbar">
-		<div class="container">
-			<div class="table-wrap">
-				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
-					<div class="field">
-						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
-						<input id="tsd-search-field" type="text" />
-					</div>
-					<ul class="results">
-						<li class="state loading">Preparing search index...</li>
-						<li class="state failure">The search index is not available</li>
-					</ul>
-					<a href="../index.html" class="title">Tiled Scripting API</a>
-				</div>
-				<div class="table-cell" id="tsd-widgets">
-					<div id="tsd-filter">
-						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
-						<div class="tsd-filter-group">
-							<div class="tsd-select" id="tsd-filter-visibility">
-								<span class="tsd-select-label">All</span>
-								<ul class="tsd-select-list">
-									<li data-value="public">Public</li>
-									<li data-value="protected">Public/Protected</li>
-									<li data-value="private" class="selected">All</li>
-								</ul>
-							</div>
-							<input type="checkbox" id="tsd-filter-inherited" checked />
-							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
-						</div>
-					</div>
-					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="tsd-page-title">
-		<div class="container">
-			<ul class="tsd-breadcrumb">
-				<li>
-					<a href="../index.html">Tiled Scripting API</a>
-				</li>
-				<li>
-					<a href="Image.html">Image</a>
-				</li>
-			</ul>
-			<h1>Class Image</h1>
-		</div>
-	</div>
-</header>
+<nav class="headerbar container"><a href="/" class="headerbar-logo"><img src="/img/tiled-logo-white.png" class="logo" alt="Tiled logo" width="393" height="213"/></a>
+<div class="headerbar-content"><a class="header-item" href="/docs">Docs</a><a class="header-item" href="/news">News</a><a class="header-item" href="/donate">Donate</a>
+<div class="stretch"></div>
+    <a href="https://discourse.mapeditor.org/" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44.8 51.2"><path d="m22.59 2.7652c-12.26 0-22.59 9.85-22.59 22.01 0 0.39 0.01 22.79 0.01 22.79l22.58-0.02c12.27 0 22.21-10.23 22.21-22.39s-9.94-22.39-22.21-22.39zm-0.19 35.2c-1.94 0-3.79-0.43-5.44-1.21l-8.11 2.01 2.29-7.5c-0.98-1.81-1.54-3.89-1.54-6.1 0-7.07 5.73-12.8 12.8-12.8s12.8 5.73 12.8 12.8-5.73 12.8-12.8 12.8z"/></svg> <span class="tooltiptext">Forum</span></a>
+    <a href="https://discord.gg/39wbTv7" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44.8 51.2"><path d="m29.722 24.32c0 1.5616-1.152 2.8416-2.6112 2.8416-1.4336 0-2.6112-1.28-2.6112-2.8416s1.152-2.8416 2.6112-2.8416 2.6112 1.28 2.6112 2.8416zm-11.955-2.8416c-1.4592 0-2.6112 1.28-2.6112 2.8416s1.1776 2.8416 2.6112 2.8416c1.4592 0 2.6112-1.28 2.6112-2.8416 0.0256-1.5616-1.152-2.8416-2.6112-2.8416zm27.034-16.205v45.926c-6.4494-5.6994-4.3868-3.8128-11.878-10.778l1.3568 4.736h-29.03c-2.8928 0-5.248-2.3552-5.248-5.2736v-34.611c0-2.9184 2.3552-5.2736 5.248-5.2736h34.304c2.8928 0 5.248 2.3552 5.248 5.2736zm-7.296 24.269c0-8.2432-3.6864-14.925-3.6864-14.925-3.6864-2.7648-7.1936-2.688-7.1936-2.688l-0.3584 0.4096c4.352 1.3312 6.3744 3.2512 6.3744 3.2512-6.0811-3.3329-13.224-3.3335-19.123-0.7424-0.9472 0.4352-1.5104 0.7424-1.5104 0.7424s2.1248-2.0224 6.7328-3.3536l-0.256-0.3072s-3.5072-0.0768-7.1936 2.688c0 0-3.6864 6.6816-3.6864 14.925 0 0 2.1504 3.712 7.808 3.8912 0 0 0.9472-1.152 1.7152-2.1248-3.2512-0.9728-4.48-3.0208-4.48-3.0208 0.3766 0.2636 0.9976 0.6053 1.0496 0.64 4.321 2.4198 10.459 3.2126 15.974 0.896 0.896-0.3328 1.8944-0.8192 2.944-1.5104 0 0-1.28 2.0992-4.6336 3.0464 0.768 0.9728 1.6896 2.0736 1.6896 2.0736 5.6576-0.1792 7.8336-3.8912 7.8336-3.8912z"/></svg> <span class="tooltiptext">Discord</span></a>
+    <a href="https://floss.social/@tiled" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M433 179.1c0-97.2-63.7-125.7-63.7-125.7-62.5-28.7-228.6-28.4-290.5 0 0 0-63.7 28.5-63.7 125.7 0 115.7-6.6 259.4 105.6 289.1 40.5 10.7 75.3 13 103.3 11.4 50.8-2.8 79.3-18.1 79.3-18.1l-1.7-36.9s-36.3 11.4-77.1 10.1c-40.4-1.4-83-4.4-89.6-54a102.5 102.5 0 0 1 -.9-13.9c85.6 20.9 158.7 9.1 178.8 6.7 56.1-6.7 105-41.3 111.2-72.9 9.8-49.8 9-121.5 9-121.5zm-75.1 125.2h-46.6v-114.2c0-49.7-64-51.6-64 6.9v62.5h-46.3V197c0-58.5-64-56.6-64-6.9v114.2H90.2c0-122.1-5.2-147.9 18.4-175 25.9-28.9 79.8-30.8 103.8 6.1l11.6 19.5 11.6-19.5c24.1-37.1 78.1-34.8 103.8-6.1 23.7 27.3 18.4 53 18.4 175z"/></svg> <span class="tooltiptext">Mastodon</span></a>
+    <a href="https://github.com/mapeditor/tiled" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49.6 51.2"><path d="m16.59 40.099c0 0.2-0.23 0.36-0.52 0.36-0.33 0.03-0.56-0.13-0.56-0.36 0-0.2 0.23-0.36 0.52-0.36 0.3-0.03 0.56 0.13 0.56 0.36zm-3.11-0.45c-0.07 0.2 0.13 0.43 0.43 0.49 0.26 0.1 0.56 0 0.62-0.2s-0.13-0.43-0.43-0.52c-0.26-0.07-0.55 0.03-0.62 0.23zm4.42-0.17c-0.29 0.07-0.49 0.26-0.46 0.49 0.03 0.2 0.29 0.33 0.59 0.26 0.29-0.07 0.49-0.26 0.46-0.46-0.03-0.19-0.3-0.32-0.59-0.29zm6.58-38.32c-13.87 0-24.48 10.53-24.48 24.4 0 11.09 6.98 20.58 16.95 23.92 1.28 0.23 1.73-0.56 1.73-1.21 0-0.62-0.03-4.04-0.03-6.14 0 0-7 1.5-8.47-2.98 0 0-1.14-2.91-2.78-3.66 0 0-2.29-1.57 0.16-1.54 0 0 2.49 0.2 3.86 2.58 2.19 3.86 5.86 2.75 7.29 2.09 0.23-1.6 0.88-2.71 1.6-3.37-5.59-0.62-11.23-1.43-11.23-11.05 0-2.75 0.76-4.13 2.36-5.89-0.26-0.65-1.11-3.33 0.26-6.79 2.09-0.65 6.9 2.7 6.9 2.7 2-0.56 4.15-0.85 6.28-0.85s4.28 0.29 6.28 0.85c0 0 4.81-3.36 6.9-2.7 1.37 3.47 0.52 6.14 0.26 6.79 1.6 1.77 2.58 3.15 2.58 5.89 0 9.65-5.89 10.42-11.48 11.05 0.92 0.79 1.7 2.29 1.7 4.64 0 3.37-0.03 7.54-0.03 8.36 0 0.65 0.46 1.44 1.73 1.21 10-3.32 16.78-12.81 16.78-23.9 0-13.87-11.25-24.4-25.12-24.4zm-14.76 34.49c-0.13 0.1-0.1 0.33 0.07 0.52 0.16 0.16 0.39 0.23 0.52 0.1 0.13-0.1 0.1-0.33-0.07-0.52-0.16-0.16-0.39-0.23-0.52-0.1zm-1.08-0.81c-0.07 0.13 0.03 0.29 0.23 0.39 0.16 0.1 0.36 0.07 0.43-0.07 0.07-0.13-0.03-0.29-0.23-0.39-0.2-0.06-0.36-0.03-0.43 0.07zm3.24 3.56c-0.16 0.13-0.1 0.43 0.13 0.62 0.23 0.23 0.52 0.26 0.65 0.1 0.13-0.13 0.07-0.43-0.13-0.62-0.22-0.23-0.52-0.26-0.65-0.1zm-1.14-1.47c-0.16 0.1-0.16 0.36 0 0.59s0.43 0.33 0.56 0.23c0.16-0.13 0.16-0.39 0-0.62-0.14-0.23-0.4-0.33-0.56-0.2z"/></svg> <span class="tooltiptext">GitHub</span></a>
+</div></nav></div><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar">
+<div class="tsd-toolbar-contents container"><a href="../index.html" class="title">Tiled Scripting API</a>
+<div id="tsd-toolbar-links"></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/>
+<ul role="listbox" id="tsd-search-results"></ul>
+<div id="tsd-search-status" aria-live="polite" aria-atomic="true">
+<div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-menu"></use></svg></a></div></header>
 <div class="container container-main">
-	<div class="row">
-		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Can be used to create, load, save and modify images.</p>
-					</div>
-					<p>Also useful when writing an importer, where the image can be set on a
-						tileset (<a href="Tileset.html#loadFromImage">Tileset.loadFromImage</a>), its tiles (<a href="Tile.html#setImage">Tile.setImage</a>)
-					or an image layer (<a href="ImageLayer.html#setImage">ImageLayer.setImage</a>).</p>
-					<dl class="tsd-comment-tags">
-						<dt>since</dt>
-						<dd><p>1.5</p>
-						</dd>
-					</dl>
-				</div>
-			</section>
-			<section class="tsd-panel tsd-hierarchy">
-				<h3>Hierarchy</h3>
-				<ul class="tsd-hierarchy">
-					<li>
-						<span class="target">Image</span>
-					</li>
-				</ul>
-			</section>
-			<section class="tsd-panel-group tsd-index-group">
-				<h2>Index</h2>
-				<section class="tsd-panel tsd-index-panel">
-					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
-							<h3>Constructors</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="Image.html#constructor" class="tsd-kind-icon">constructor</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Properties</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Image.html#depth" class="tsd-kind-icon">depth</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Image.html#format" class="tsd-kind-icon">format</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Image.html#height" class="tsd-kind-icon">height</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Image.html#size" class="tsd-kind-icon">size</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Image.html#width" class="tsd-kind-icon">width</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#FastTransformation" class="tsd-kind-icon">Fast<wbr>Transformation</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_A2BGR30_Premultiplied" class="tsd-kind-icon">Format_<wbr><wbr>A2BGR30_<wbr><wbr>Premultiplied</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_A2RGB30_Premultiplied" class="tsd-kind-icon">Format_<wbr><wbr>A2RGB30_<wbr><wbr>Premultiplied</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_ARGB32" class="tsd-kind-icon">Format_<wbr>ARGB32</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_ARGB32_Premultiplied" class="tsd-kind-icon">Format_<wbr>ARGB32_<wbr><wbr>Premultiplied</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_ARGB4444_Premultiplied" class="tsd-kind-icon">Format_<wbr>ARGB4444_<wbr><wbr>Premultiplied</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_ARGB6666_Premultiplied" class="tsd-kind-icon">Format_<wbr>ARGB6666_<wbr><wbr>Premultiplied</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_ARGB8555_Premultiplied" class="tsd-kind-icon">Format_<wbr>ARGB8555_<wbr><wbr>Premultiplied</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_ARGB8565_Premultiplied" class="tsd-kind-icon">Format_<wbr>ARGB8565_<wbr><wbr>Premultiplied</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_Alpha8" class="tsd-kind-icon">Format_<wbr><wbr>Alpha8</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_BGR30" class="tsd-kind-icon">Format_<wbr>BGR30</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_BGR888" class="tsd-kind-icon">Format_<wbr>BGR888</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_Grayscale16" class="tsd-kind-icon">Format_<wbr><wbr>Grayscale16</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_Grayscale8" class="tsd-kind-icon">Format_<wbr><wbr>Grayscale8</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_Indexed8" class="tsd-kind-icon">Format_<wbr><wbr>Indexed8</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_Invalid" class="tsd-kind-icon">Format_<wbr><wbr>Invalid</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_Mono" class="tsd-kind-icon">Format_<wbr><wbr>Mono</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_MonoLSB" class="tsd-kind-icon">Format_<wbr><wbr>MonoLSB</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_RGB16" class="tsd-kind-icon">Format_<wbr>RGB16</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_RGB30" class="tsd-kind-icon">Format_<wbr>RGB30</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_RGB32" class="tsd-kind-icon">Format_<wbr>RGB32</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_RGB444" class="tsd-kind-icon">Format_<wbr>RGB444</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_RGB555" class="tsd-kind-icon">Format_<wbr>RGB555</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_RGB666" class="tsd-kind-icon">Format_<wbr>RGB666</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_RGB888" class="tsd-kind-icon">Format_<wbr>RGB888</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_RGBA64" class="tsd-kind-icon">Format_<wbr>RGBA64</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_RGBA64_Premultiplied" class="tsd-kind-icon">Format_<wbr>RGBA64_<wbr><wbr>Premultiplied</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_RGBA8888" class="tsd-kind-icon">Format_<wbr>RGBA8888</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_RGBA8888_Premultiplied" class="tsd-kind-icon">Format_<wbr>RGBA8888_<wbr><wbr>Premultiplied</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_RGBX64" class="tsd-kind-icon">Format_<wbr>RGBX64</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#Format_RGBX8888" class="tsd-kind-icon">Format_<wbr>RGBX8888</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#IgnoreAspectRatio" class="tsd-kind-icon">Ignore<wbr>Aspect<wbr>Ratio</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#KeepAspectRatio" class="tsd-kind-icon">Keep<wbr>Aspect<wbr>Ratio</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#KeepAspectRatioByExpanding" class="tsd-kind-icon">Keep<wbr>Aspect<wbr>Ratio<wbr>ByExpanding</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Image.html#SmoothTransformation" class="tsd-kind-icon">Smooth<wbr>Transformation</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Methods</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Image.html#color" class="tsd-kind-icon">color</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Image.html#colorTable" class="tsd-kind-icon">color<wbr>Table</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Image.html#copy" class="tsd-kind-icon">copy</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Image.html#fill" class="tsd-kind-icon">fill</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Image.html#load" class="tsd-kind-icon">load</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Image.html#loadFromData" class="tsd-kind-icon">load<wbr>From<wbr>Data</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Image.html#mirrored" class="tsd-kind-icon">mirrored</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Image.html#pixel" class="tsd-kind-icon">pixel</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Image.html#pixelColor" class="tsd-kind-icon">pixel<wbr>Color</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Image.html#save" class="tsd-kind-icon">save</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Image.html#saveToData" class="tsd-kind-icon">save<wbr>ToData</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Image.html#scaled" class="tsd-kind-icon">scaled</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Image.html#setColor" class="tsd-kind-icon">set<wbr>Color</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Image.html#setColorTable" class="tsd-kind-icon">set<wbr>Color<wbr>Table</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Image.html#setPixel" class="tsd-kind-icon">set<wbr>Pixel</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Image.html#setPixelColor" class="tsd-kind-icon">set<wbr>Pixel<wbr>Color</a></li>
-							</ul>
-						</section>
-					</div>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
-					<a name="constructor" class="tsd-anchor"></a>
-					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Image<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Image.html" class="tsd-signature-type" data-tsd-kind="Class">Image</a></li>
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Image<span class="tsd-signature-symbol">(</span>width<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, height<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, format<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Image.html" class="tsd-signature-type" data-tsd-kind="Class">Image</a></li>
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Image<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span>, width<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, height<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, format<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Image.html" class="tsd-signature-type" data-tsd-kind="Class">Image</a></li>
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Image<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span>, width<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, height<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, bytesPerLine<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, format<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Image.html" class="tsd-signature-type" data-tsd-kind="Class">Image</a></li>
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Image<span class="tsd-signature-symbol">(</span>fileName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, format<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Image.html" class="tsd-signature-type" data-tsd-kind="Class">Image</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Constructs an empty image.</p>
-								</div>
-							</div>
-						</li>
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Constructs an image of the given size using the given format. The format is defined by one of the <code>Image.Format_</code> values.</p>
-								</div>
-							</div>
-						</li>
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Constructs an image from the given data, interpreting it in the
-									specified format and size. The format is defined by one of the <code>Image.Format_</code> values.</p>
-								</div>
-							</div>
-						</li>
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Constructs an image from the given data, interpreting it in the
-										specified format and size. The <code>bytesPerLine</code> argument
-										specifies the stride and can be useful for referencing a sub-image.
-									The format is defined by one of the <code>Image.Format_</code> values.</p>
-								</div>
-							</div>
-						</li>
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Construct an image by loading it from the given file name. When no
-										format is given it will be auto-detected (can be &quot;bmp&quot;, &quot;png&quot;,
-									etc.).</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="depth" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> depth</h3>
-					<div class="tsd-signature tsd-kind-icon">depth<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Number of bits used to store a single pixel.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="format" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> format</h3>
-					<div class="tsd-signature tsd-kind-icon">format<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Format of the image. The format is defined by one of the <code>Image.Format_</code> values.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="height" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> height</h3>
-					<div class="tsd-signature tsd-kind-icon">height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Height of the image in pixels.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="size" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> size</h3>
-					<div class="tsd-signature tsd-kind-icon">size<span class="tsd-signature-symbol">:</span> <a href="../interfaces/size.html" class="tsd-signature-type" data-tsd-kind="Interface">size</a></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Size of the image in pixels.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="width" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> width</h3>
-					<div class="tsd-signature tsd-kind-icon">width<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Width of the image in pixels.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="FastTransformation" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Fast<wbr>Transformation</h3>
-					<div class="tsd-signature tsd-kind-icon">Fast<wbr>Transformation<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#FastTransformation" class="tsd-signature-type" data-tsd-kind="Property">FastTransformation</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_A2BGR30_Premultiplied" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr><wbr>A2BGR30_<wbr><wbr>Premultiplied</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr><wbr>A2BGR30_<wbr><wbr>Premultiplied<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_A2BGR30_Premultiplied" class="tsd-signature-type" data-tsd-kind="Property">Format_A2BGR30_Premultiplied</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_A2RGB30_Premultiplied" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr><wbr>A2RGB30_<wbr><wbr>Premultiplied</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr><wbr>A2RGB30_<wbr><wbr>Premultiplied<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_A2RGB30_Premultiplied" class="tsd-signature-type" data-tsd-kind="Property">Format_A2RGB30_Premultiplied</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_ARGB32" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr>ARGB32</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr>ARGB32<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_ARGB32" class="tsd-signature-type" data-tsd-kind="Property">Format_ARGB32</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_ARGB32_Premultiplied" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr>ARGB32_<wbr><wbr>Premultiplied</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr>ARGB32_<wbr><wbr>Premultiplied<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_ARGB32_Premultiplied" class="tsd-signature-type" data-tsd-kind="Property">Format_ARGB32_Premultiplied</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_ARGB4444_Premultiplied" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr>ARGB4444_<wbr><wbr>Premultiplied</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr>ARGB4444_<wbr><wbr>Premultiplied<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_ARGB4444_Premultiplied" class="tsd-signature-type" data-tsd-kind="Property">Format_ARGB4444_Premultiplied</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_ARGB6666_Premultiplied" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr>ARGB6666_<wbr><wbr>Premultiplied</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr>ARGB6666_<wbr><wbr>Premultiplied<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_ARGB6666_Premultiplied" class="tsd-signature-type" data-tsd-kind="Property">Format_ARGB6666_Premultiplied</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_ARGB8555_Premultiplied" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr>ARGB8555_<wbr><wbr>Premultiplied</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr>ARGB8555_<wbr><wbr>Premultiplied<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_ARGB8555_Premultiplied" class="tsd-signature-type" data-tsd-kind="Property">Format_ARGB8555_Premultiplied</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_ARGB8565_Premultiplied" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr>ARGB8565_<wbr><wbr>Premultiplied</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr>ARGB8565_<wbr><wbr>Premultiplied<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_ARGB8565_Premultiplied" class="tsd-signature-type" data-tsd-kind="Property">Format_ARGB8565_Premultiplied</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_Alpha8" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr><wbr>Alpha8</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr><wbr>Alpha8<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_Alpha8" class="tsd-signature-type" data-tsd-kind="Property">Format_Alpha8</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_BGR30" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr>BGR30</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr>BGR30<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_BGR30" class="tsd-signature-type" data-tsd-kind="Property">Format_BGR30</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_BGR888" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr>BGR888</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr>BGR888<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_BGR888" class="tsd-signature-type" data-tsd-kind="Property">Format_BGR888</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_Grayscale16" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr><wbr>Grayscale16</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr><wbr>Grayscale16<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_Grayscale16" class="tsd-signature-type" data-tsd-kind="Property">Format_Grayscale16</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_Grayscale8" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr><wbr>Grayscale8</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr><wbr>Grayscale8<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_Grayscale8" class="tsd-signature-type" data-tsd-kind="Property">Format_Grayscale8</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_Indexed8" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr><wbr>Indexed8</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr><wbr>Indexed8<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_Indexed8" class="tsd-signature-type" data-tsd-kind="Property">Format_Indexed8</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_Invalid" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr><wbr>Invalid</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr><wbr>Invalid<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_Invalid" class="tsd-signature-type" data-tsd-kind="Property">Format_Invalid</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_Mono" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr><wbr>Mono</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr><wbr>Mono<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_Mono" class="tsd-signature-type" data-tsd-kind="Property">Format_Mono</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_MonoLSB" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr><wbr>MonoLSB</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr><wbr>MonoLSB<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_MonoLSB" class="tsd-signature-type" data-tsd-kind="Property">Format_MonoLSB</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_RGB16" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr>RGB16</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr>RGB16<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_RGB16" class="tsd-signature-type" data-tsd-kind="Property">Format_RGB16</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_RGB30" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr>RGB30</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr>RGB30<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_RGB30" class="tsd-signature-type" data-tsd-kind="Property">Format_RGB30</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_RGB32" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr>RGB32</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr>RGB32<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_RGB32" class="tsd-signature-type" data-tsd-kind="Property">Format_RGB32</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_RGB444" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr>RGB444</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr>RGB444<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_RGB444" class="tsd-signature-type" data-tsd-kind="Property">Format_RGB444</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_RGB555" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr>RGB555</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr>RGB555<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_RGB555" class="tsd-signature-type" data-tsd-kind="Property">Format_RGB555</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_RGB666" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr>RGB666</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr>RGB666<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_RGB666" class="tsd-signature-type" data-tsd-kind="Property">Format_RGB666</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_RGB888" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr>RGB888</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr>RGB888<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_RGB888" class="tsd-signature-type" data-tsd-kind="Property">Format_RGB888</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_RGBA64" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr>RGBA64</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr>RGBA64<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_RGBA64" class="tsd-signature-type" data-tsd-kind="Property">Format_RGBA64</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_RGBA64_Premultiplied" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr>RGBA64_<wbr><wbr>Premultiplied</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr>RGBA64_<wbr><wbr>Premultiplied<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_RGBA64_Premultiplied" class="tsd-signature-type" data-tsd-kind="Property">Format_RGBA64_Premultiplied</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_RGBA8888" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr>RGBA8888</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr>RGBA8888<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_RGBA8888" class="tsd-signature-type" data-tsd-kind="Property">Format_RGBA8888</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_RGBA8888_Premultiplied" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr>RGBA8888_<wbr><wbr>Premultiplied</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr>RGBA8888_<wbr><wbr>Premultiplied<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_RGBA8888_Premultiplied" class="tsd-signature-type" data-tsd-kind="Property">Format_RGBA8888_Premultiplied</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_RGBX64" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr>RGBX64</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr>RGBX64<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_RGBX64" class="tsd-signature-type" data-tsd-kind="Property">Format_RGBX64</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Format_RGBX8888" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Format_<wbr>RGBX8888</h3>
-					<div class="tsd-signature tsd-kind-icon">Format_<wbr>RGBX8888<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#Format_RGBX8888" class="tsd-signature-type" data-tsd-kind="Property">Format_RGBX8888</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="IgnoreAspectRatio" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Ignore<wbr>Aspect<wbr>Ratio</h3>
-					<div class="tsd-signature tsd-kind-icon">Ignore<wbr>Aspect<wbr>Ratio<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#IgnoreAspectRatio" class="tsd-signature-type" data-tsd-kind="Property">IgnoreAspectRatio</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="KeepAspectRatio" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Keep<wbr>Aspect<wbr>Ratio</h3>
-					<div class="tsd-signature tsd-kind-icon">Keep<wbr>Aspect<wbr>Ratio<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#KeepAspectRatio" class="tsd-signature-type" data-tsd-kind="Property">KeepAspectRatio</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="KeepAspectRatioByExpanding" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Keep<wbr>Aspect<wbr>Ratio<wbr>ByExpanding</h3>
-					<div class="tsd-signature tsd-kind-icon">Keep<wbr>Aspect<wbr>Ratio<wbr>ByExpanding<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#KeepAspectRatioByExpanding" class="tsd-signature-type" data-tsd-kind="Property">KeepAspectRatioByExpanding</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="SmoothTransformation" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Smooth<wbr>Transformation</h3>
-					<div class="tsd-signature tsd-kind-icon">Smooth<wbr>Transformation<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Image.html#SmoothTransformation" class="tsd-signature-type" data-tsd-kind="Property">SmoothTransformation</a></div>
-					<aside class="tsd-sources">
-					</aside>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="color" class="tsd-anchor"></a>
-					<h3>color</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">color<span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Returns the 32-bit color value at the given index in the color
-									table.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="colorTable" class="tsd-anchor"></a>
-					<h3>color<wbr>Table</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">color<wbr>Table<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Returns the color table as an array of 32-bit color values.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="copy" class="tsd-anchor"></a>
-					<h3>copy</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">copy<span class="tsd-signature-symbol">(</span>rect<span class="tsd-signature-symbol">?: </span><a href="../interfaces/rect.html" class="tsd-signature-type" data-tsd-kind="Interface">rect</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Image.html" class="tsd-signature-type" data-tsd-kind="Class">Image</a></li>
-						<li class="tsd-signature tsd-kind-icon">copy<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, width<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, height<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Image.html" class="tsd-signature-type" data-tsd-kind="Class">Image</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Copies the given rectangle to a new image object.</p>
-								</div>
-								<p>When no rectangle is given, the entire image is copied.</p>
-								<dl class="tsd-comment-tags">
-									<dt>since</dt>
-									<dd><p>1.11</p>
-									</dd>
-								</dl>
-							</div>
-						</li>
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Copies the given rectangle to a new image object.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="fill" class="tsd-anchor"></a>
-					<h3>fill</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">fill<span class="tsd-signature-symbol">(</span>index_or_rgb<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-						<li class="tsd-signature tsd-kind-icon">fill<span class="tsd-signature-symbol">(</span>color<span class="tsd-signature-symbol">: </span><a href="../interfaces/color.html" class="tsd-signature-type" data-tsd-kind="Interface">color</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Fills the image with the given 32-bit unsigned color value (ARGB) or color
-									table index.</p>
-								</div>
-							</div>
-						</li>
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Fills the image with the given color (supports values like
-									&quot;#rrggbb&quot; or those created by <a href="../modules/tiled.html#color">tiled.color</a>).</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="load" class="tsd-anchor"></a>
-					<h3>load</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">load<span class="tsd-signature-symbol">(</span>fileName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, format<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Loads the image from the given file name. When no format is given it
-									will be auto-detected (can be &quot;bmp&quot;, &quot;png&quot;, etc.).</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="loadFromData" class="tsd-anchor"></a>
-					<h3>load<wbr>From<wbr>Data</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">load<wbr>From<wbr>Data<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span>, format<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Loads the image from the given data interpreted with the given
-									format (can be &quot;bmp&quot;, &quot;png&quot;, etc.).</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="mirrored" class="tsd-anchor"></a>
-					<h3>mirrored</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">mirrored<span class="tsd-signature-symbol">(</span>horizontal<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, vertical<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Image.html" class="tsd-signature-type" data-tsd-kind="Class">Image</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Returns a mirrored copy of this image.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="pixel" class="tsd-anchor"></a>
-					<h3>pixel</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">pixel<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Returns the 32-bit unsigned color value (in ARGB order).</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="pixelColor" class="tsd-anchor"></a>
-					<h3>pixel<wbr>Color</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">pixel<wbr>Color<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Returns the color at the given position as string like &quot;#rrggbb&quot;.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="save" class="tsd-anchor"></a>
-					<h3>save</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">save<span class="tsd-signature-symbol">(</span>fileName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, format<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, quality<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Saves the image to the given file.</p>
-								</div>
-								<p>When no format is given it will be auto-detected based on the file extension.</p>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="saveToData" class="tsd-anchor"></a>
-					<h3>save<wbr>ToData</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">save<wbr>ToData<span class="tsd-signature-symbol">(</span>format<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, quality<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Saves the image to an ArrayBuffer in the given format (can be &quot;bmp&quot;, png&quot;, etc.).</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="scaled" class="tsd-anchor"></a>
-					<h3>scaled</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">scaled<span class="tsd-signature-symbol">(</span>width<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, height<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, aspectRatioMode<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">typeof </span><a href="Image.html#IgnoreAspectRatio" class="tsd-signature-type" data-tsd-kind="Property">IgnoreAspectRatio</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="Image.html#KeepAspectRatio" class="tsd-signature-type" data-tsd-kind="Property">KeepAspectRatio</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="Image.html#KeepAspectRatioByExpanding" class="tsd-signature-type" data-tsd-kind="Property">KeepAspectRatioByExpanding</a>, transformationMode<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">typeof </span><a href="Image.html#FastTransformation" class="tsd-signature-type" data-tsd-kind="Property">FastTransformation</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="Image.html#SmoothTransformation" class="tsd-signature-type" data-tsd-kind="Property">SmoothTransformation</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Image.html" class="tsd-signature-type" data-tsd-kind="Class">Image</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Returns a scaled copy of this image. Default <code>aspectRatioMode</code>
-										behavior is to ignore the aspect ratio. Default <code>mode</code> is a fast
-									transformation.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="setColor" class="tsd-anchor"></a>
-					<h3>set<wbr>Color</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">set<wbr>Color<span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, rgb<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-						<li class="tsd-signature tsd-kind-icon">set<wbr>Color<span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, color<span class="tsd-signature-symbol">: </span><a href="../interfaces/color.html" class="tsd-signature-type" data-tsd-kind="Interface">color</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Sets the color at the given index in the color table to a given
-									32-bit color value.</p>
-								</div>
-							</div>
-						</li>
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Sets the color at the given index in the color table to a color (supports
-									values like &quot;#rrggbb&quot; or those created by <a href="../modules/tiled.html#color">tiled.color</a>).</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="setColorTable" class="tsd-anchor"></a>
-					<h3>set<wbr>Color<wbr>Table</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">set<wbr>Color<wbr>Table<span class="tsd-signature-symbol">(</span>colors<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Sets the color table given by an array of either 32-bit color values
-									or strings (supports values like &quot;#rrggbb&quot;).</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="setPixel" class="tsd-anchor"></a>
-					<h3>set<wbr>Pixel</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">set<wbr>Pixel<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, index_or_rgb<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Sets the color at the specified location to the given 32-bit unsigned
-									color value (ARGB) or color table index.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="setPixelColor" class="tsd-anchor"></a>
-					<h3>set<wbr>Pixel<wbr>Color</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">set<wbr>Pixel<wbr>Color<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, color<span class="tsd-signature-symbol">: </span><a href="../interfaces/color.html" class="tsd-signature-type" data-tsd-kind="Interface">color</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Sets the color at the specified location to the given color (supports
-									values like &quot;#rrggbb&quot; or those created by <a href="../modules/tiled.html#color">tiled.color</a>).</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-			</section>
-		</div>
-		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
-			<nav class="tsd-navigation primary">
-				<ul>
-					<li class=" ">
-						<a href="../index.html">Exports</a>
-					</li>
-				</ul>
-			</nav>
-			<nav class="tsd-navigation secondary menu-sticky">
-				<ul class="before-current">
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-class">
-						<a href="Image.html" class="tsd-kind-icon">Image</a>
-						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="Image.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="Image.html#depth" class="tsd-kind-icon">depth</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="Image.html#format" class="tsd-kind-icon">format</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="Image.html#height" class="tsd-kind-icon">height</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="Image.html#size" class="tsd-kind-icon">size</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="Image.html#width" class="tsd-kind-icon">width</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#FastTransformation" class="tsd-kind-icon">Fast<wbr>Transformation</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_A2BGR30_Premultiplied" class="tsd-kind-icon">Format_<wbr><wbr>A2BGR30_<wbr><wbr>Premultiplied</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_A2RGB30_Premultiplied" class="tsd-kind-icon">Format_<wbr><wbr>A2RGB30_<wbr><wbr>Premultiplied</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_ARGB32" class="tsd-kind-icon">Format_<wbr>ARGB32</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_ARGB32_Premultiplied" class="tsd-kind-icon">Format_<wbr>ARGB32_<wbr><wbr>Premultiplied</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_ARGB4444_Premultiplied" class="tsd-kind-icon">Format_<wbr>ARGB4444_<wbr><wbr>Premultiplied</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_ARGB6666_Premultiplied" class="tsd-kind-icon">Format_<wbr>ARGB6666_<wbr><wbr>Premultiplied</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_ARGB8555_Premultiplied" class="tsd-kind-icon">Format_<wbr>ARGB8555_<wbr><wbr>Premultiplied</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_ARGB8565_Premultiplied" class="tsd-kind-icon">Format_<wbr>ARGB8565_<wbr><wbr>Premultiplied</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_Alpha8" class="tsd-kind-icon">Format_<wbr><wbr>Alpha8</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_BGR30" class="tsd-kind-icon">Format_<wbr>BGR30</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_BGR888" class="tsd-kind-icon">Format_<wbr>BGR888</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_Grayscale16" class="tsd-kind-icon">Format_<wbr><wbr>Grayscale16</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_Grayscale8" class="tsd-kind-icon">Format_<wbr><wbr>Grayscale8</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_Indexed8" class="tsd-kind-icon">Format_<wbr><wbr>Indexed8</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_Invalid" class="tsd-kind-icon">Format_<wbr><wbr>Invalid</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_Mono" class="tsd-kind-icon">Format_<wbr><wbr>Mono</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_MonoLSB" class="tsd-kind-icon">Format_<wbr><wbr>MonoLSB</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_RGB16" class="tsd-kind-icon">Format_<wbr>RGB16</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_RGB30" class="tsd-kind-icon">Format_<wbr>RGB30</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_RGB32" class="tsd-kind-icon">Format_<wbr>RGB32</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_RGB444" class="tsd-kind-icon">Format_<wbr>RGB444</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_RGB555" class="tsd-kind-icon">Format_<wbr>RGB555</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_RGB666" class="tsd-kind-icon">Format_<wbr>RGB666</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_RGB888" class="tsd-kind-icon">Format_<wbr>RGB888</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_RGBA64" class="tsd-kind-icon">Format_<wbr>RGBA64</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_RGBA64_Premultiplied" class="tsd-kind-icon">Format_<wbr>RGBA64_<wbr><wbr>Premultiplied</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_RGBA8888" class="tsd-kind-icon">Format_<wbr>RGBA8888</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_RGBA8888_Premultiplied" class="tsd-kind-icon">Format_<wbr>RGBA8888_<wbr><wbr>Premultiplied</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_RGBX64" class="tsd-kind-icon">Format_<wbr>RGBX64</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#Format_RGBX8888" class="tsd-kind-icon">Format_<wbr>RGBX8888</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#IgnoreAspectRatio" class="tsd-kind-icon">Ignore<wbr>Aspect<wbr>Ratio</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#KeepAspectRatio" class="tsd-kind-icon">Keep<wbr>Aspect<wbr>Ratio</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#KeepAspectRatioByExpanding" class="tsd-kind-icon">Keep<wbr>Aspect<wbr>Ratio<wbr>ByExpanding</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Image.html#SmoothTransformation" class="tsd-kind-icon">Smooth<wbr>Transformation</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Image.html#color" class="tsd-kind-icon">color</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Image.html#colorTable" class="tsd-kind-icon">color<wbr>Table</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Image.html#copy" class="tsd-kind-icon">copy</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Image.html#fill" class="tsd-kind-icon">fill</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Image.html#load" class="tsd-kind-icon">load</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Image.html#loadFromData" class="tsd-kind-icon">load<wbr>From<wbr>Data</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Image.html#mirrored" class="tsd-kind-icon">mirrored</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Image.html#pixel" class="tsd-kind-icon">pixel</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Image.html#pixelColor" class="tsd-kind-icon">pixel<wbr>Color</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Image.html#save" class="tsd-kind-icon">save</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Image.html#saveToData" class="tsd-kind-icon">save<wbr>ToData</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Image.html#scaled" class="tsd-kind-icon">scaled</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Image.html#setColor" class="tsd-kind-icon">set<wbr>Color</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Image.html#setColorTable" class="tsd-kind-icon">set<wbr>Color<wbr>Table</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Image.html#setPixel" class="tsd-kind-icon">set<wbr>Pixel</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Image.html#setPixelColor" class="tsd-kind-icon">set<wbr>Pixel<wbr>Color</a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<ul class="after-current">
-				</ul>
-			</nav>
-		</div>
-	</div>
+<div class="col-content">
+<div class="tsd-page-title">
+<ul class="tsd-breadcrumb" aria-label="Breadcrumb">
+<li><a href="" aria-current="page">Image</a></li></ul>
+<h1>Class Image</h1></div>
+<section class="tsd-panel tsd-comment">
+<div class="tsd-comment tsd-typography"><p>Can be used to create, load, save and modify images.</p>
+<p>Also useful when writing an importer, where the image can be set on a
+tileset (<a href="Tileset.html#loadfromimage" class="tsd-kind-method">Tileset.loadFromImage</a>), its tiles (<a href="Tile.html#setimage" class="tsd-kind-method">Tile.setImage</a>)
+or an image layer (<a href="ImageLayer.html#setimage" class="tsd-kind-method">ImageLayer.setImage</a>).</p>
 </div>
-<footer class="with-border-bottom">
-	<div class="container">
-		<h2>Legend</h2>
-		<div class="tsd-legend-group">
-			<ul class="tsd-legend">
-				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
-			</ul>
-		</div>
-	</div>
-</footer>
-<div class="container tsd-generator">
-	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+<div class="tsd-comment tsd-typography">
+<div class="tsd-tag-since">
+<h4 class="tsd-anchor-link" id="since">Since<a href="#since" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p>1.5</p>
+</div></div></section>
+<section class="tsd-panel-group tsd-index-group">
+<section class="tsd-panel tsd-index-panel">
+<details class="tsd-index-content tsd-accordion" open><summary class="tsd-accordion-summary tsd-index-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h5 class="tsd-index-heading uppercase">Index</h5></summary>
+<div class="tsd-accordion-details">
+<section class="tsd-index-section">
+<h3 class="tsd-index-heading tsd-anchor-link" id="constructors">Constructors<a href="#constructors" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-index-list"><a href="#constructor" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Constructor"><use href="../assets/icons.svg#icon-512"></use></svg><span>constructor</span></a>
+</div></section>
+<section class="tsd-index-section">
+<h3 class="tsd-index-heading tsd-anchor-link" id="properties">Properties<a href="#properties" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-index-list"><a href="#depth" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>depth</span></a>
+<a href="#format" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>format</span></a>
+<a href="#height" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>height</span></a>
+<a href="#size" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>size</span></a>
+<a href="#width" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>width</span></a>
+<a href="#fasttransformation" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Fast<wbr/>Transformation</span></a>
+<a href="#format_a2bgr30_premultiplied" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>A2<wbr/>BGR30_<wbr/>Premultiplied</span></a>
+<a href="#format_a2rgb30_premultiplied" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>A2<wbr/>RGB30_<wbr/>Premultiplied</span></a>
+<a href="#format_alpha8" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>Alpha8</span></a>
+<a href="#format_argb32" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>ARGB32</span></a>
+<a href="#format_argb32_premultiplied" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>ARGB32_<wbr/>Premultiplied</span></a>
+<a href="#format_argb4444_premultiplied" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>ARGB4444_<wbr/>Premultiplied</span></a>
+<a href="#format_argb6666_premultiplied" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>ARGB6666_<wbr/>Premultiplied</span></a>
+<a href="#format_argb8555_premultiplied" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>ARGB8555_<wbr/>Premultiplied</span></a>
+<a href="#format_argb8565_premultiplied" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>ARGB8565_<wbr/>Premultiplied</span></a>
+<a href="#format_bgr30" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>BGR30</span></a>
+<a href="#format_bgr888" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>BGR888</span></a>
+<a href="#format_grayscale16" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>Grayscale16</span></a>
+<a href="#format_grayscale8" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>Grayscale8</span></a>
+<a href="#format_indexed8" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>Indexed8</span></a>
+<a href="#format_invalid" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>Invalid</span></a>
+<a href="#format_mono" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>Mono</span></a>
+<a href="#format_monolsb" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>Mono<wbr/>LSB</span></a>
+<a href="#format_rgb16" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGB16</span></a>
+<a href="#format_rgb30" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGB30</span></a>
+<a href="#format_rgb32" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGB32</span></a>
+<a href="#format_rgb444" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGB444</span></a>
+<a href="#format_rgb555" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGB555</span></a>
+<a href="#format_rgb666" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGB666</span></a>
+<a href="#format_rgb888" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGB888</span></a>
+<a href="#format_rgba64" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGBA64</span></a>
+<a href="#format_rgba64_premultiplied" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGBA64_<wbr/>Premultiplied</span></a>
+<a href="#format_rgba8888" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGBA8888</span></a>
+<a href="#format_rgba8888_premultiplied" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGBA8888_<wbr/>Premultiplied</span></a>
+<a href="#format_rgbx64" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGBX64</span></a>
+<a href="#format_rgbx8888" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGBX8888</span></a>
+<a href="#ignoreaspectratio" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Ignore<wbr/>Aspect<wbr/>Ratio</span></a>
+<a href="#keepaspectratio" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Keep<wbr/>Aspect<wbr/>Ratio</span></a>
+<a href="#keepaspectratiobyexpanding" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Keep<wbr/>Aspect<wbr/>Ratio<wbr/>By<wbr/>Expanding</span></a>
+<a href="#smoothtransformation" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Smooth<wbr/>Transformation</span></a>
+</div></section>
+<section class="tsd-index-section">
+<h3 class="tsd-index-heading tsd-anchor-link" id="methods">Methods<a href="#methods" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-index-list"><a href="#color" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>color</span></a>
+<a href="#colortable" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>color<wbr/>Table</span></a>
+<a href="#copy" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>copy</span></a>
+<a href="#fill" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>fill</span></a>
+<a href="#load" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>load</span></a>
+<a href="#loadfromdata" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>load<wbr/>From<wbr/>Data</span></a>
+<a href="#mirrored" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>mirrored</span></a>
+<a href="#pixel" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>pixel</span></a>
+<a href="#pixelcolor" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>pixel<wbr/>Color</span></a>
+<a href="#save" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>save</span></a>
+<a href="#savetodata" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>save<wbr/>To<wbr/>Data</span></a>
+<a href="#scaled" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>scaled</span></a>
+<a href="#setcolor" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>set<wbr/>Color</span></a>
+<a href="#setcolortable" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>set<wbr/>Color<wbr/>Table</span></a>
+<a href="#setpixel" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>set<wbr/>Pixel</span></a>
+<a href="#setpixelcolor" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>set<wbr/>Pixel<wbr/>Color</span></a>
+</div></section></div></details></section></section>
+<details class="tsd-panel-group tsd-member-group tsd-accordion" open><summary class="tsd-accordion-summary" data-key="section-Constructors"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h2 class="tsd-anchor-link" id="constructors-1">Constructors<a href="#constructors-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2></summary>
+<section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="constructor"><span>constructor</span><a href="#constructor" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="constructorimage"><span class="tsd-signature-keyword">new</span> <span class="tsd-kind-constructor-signature">Image</span><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-class">Image</a><a href="#constructorimage" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Constructs an empty image.</p>
 </div>
-<div class="overlay"></div>
-<script src="../assets/js/main.js"></script>
-<footer class="media-content">
-	<div class="footer-content container">
-		<p>Tiled - Copyright © 2008-2025 Thorbjørn Lindeijer<br> and <a href="https://www.openhub.net/p/tiled-qt/contributors/summary">many other contributors</a></p>
-		<nav style="display: flex; justify-content: center; align-items: top; margin-left: 1em;">
-			<ul style="float: right; border-left: 2px solid #ececec; padding: 0 1em">
-				<li><a href="/docs">Documentation</a></li>
-				<li><a href="/news">News</a></li>
-				<li><a href="/donate">Donate</a></li>
-				<li><a href="https://discourse.mapeditor.org/">Forum</a></li>
-				<li><a href="https://discord.gg/39wbTv7">Discord</a></li>
-				<li><a rel="me" href="https://floss.social/@tiled">Mastodon</a></li>
-				<li><a href="https://github.com/mapeditor/tiled">GitHub</a></li>
-				<li><a href="https://x.com/TiledApp">X</a></li>
-			</ul>
-		</nav>
-	</div>
-</footer>
-</body>
-</html>
+<h4 class="tsd-returns-title">Returns <a href="" class="tsd-signature-type tsd-kind-class">Image</a></h4></div></li>
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="constructorimage-1"><span class="tsd-signature-keyword">new</span> <span class="tsd-kind-constructor-signature">Image</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">width</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">height</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">format</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-class">Image</a><a href="#constructorimage-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Constructs an image of the given size using the given format. The format is defined by one of the <code>Image.Format_</code> values.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">width</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">height</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">format</span>: <span class="tsd-signature-type">number</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="" class="tsd-signature-type tsd-kind-class">Image</a></h4></div></li>
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="constructorimage-2"><span class="tsd-signature-keyword">new</span> <span class="tsd-kind-constructor-signature">Image</span><span class="tsd-signature-symbol">(</span><br/>    <span class="tsd-kind-parameter">data</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">width</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">height</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">format</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-class">Image</a><a href="#constructorimage-2" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Constructs an image from the given data, interpreting it in the
+specified format and size. The format is defined by one of the <code>Image.Format_</code> values.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">data</span>: <span class="tsd-signature-type">ArrayBuffer</span></span></li>
+<li><span><span class="tsd-kind-parameter">width</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">height</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">format</span>: <span class="tsd-signature-type">number</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="" class="tsd-signature-type tsd-kind-class">Image</a></h4></div></li>
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="constructorimage-3"><span class="tsd-signature-keyword">new</span> <span class="tsd-kind-constructor-signature">Image</span><span class="tsd-signature-symbol">(</span><br/>    <span class="tsd-kind-parameter">data</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">width</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">height</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">bytesPerLine</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">format</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-class">Image</a><a href="#constructorimage-3" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Constructs an image from the given data, interpreting it in the
+specified format and size. The <code>bytesPerLine</code> argument
+specifies the stride and can be useful for referencing a sub-image.
+The format is defined by one of the <code>Image.Format_</code> values.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">data</span>: <span class="tsd-signature-type">ArrayBuffer</span></span></li>
+<li><span><span class="tsd-kind-parameter">width</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">height</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">bytesPerLine</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">format</span>: <span class="tsd-signature-type">number</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="" class="tsd-signature-type tsd-kind-class">Image</a></h4></div></li>
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="constructorimage-4"><span class="tsd-signature-keyword">new</span> <span class="tsd-kind-constructor-signature">Image</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">fileName</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">format</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-class">Image</a><a href="#constructorimage-4" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Construct an image by loading it from the given file name. When no
+format is given it will be auto-detected (can be &quot;bmp&quot;, &quot;png&quot;,
+etc.).</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">fileName</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">format</span>: <span class="tsd-signature-type">string</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="" class="tsd-signature-type tsd-kind-class">Image</a></h4></div></li></ul></section></section></details>
+<details class="tsd-panel-group tsd-member-group tsd-accordion" open><summary class="tsd-accordion-summary" data-key="section-Properties"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h2 class="tsd-anchor-link" id="properties-1">Properties<a href="#properties-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2></summary>
+<section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="depth"><code class="tsd-tag">Readonly</code><span>depth</span><a href="#depth" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">depth</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+<div class="tsd-comment tsd-typography"><p>Number of bits used to store a single pixel.</p>
+</div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format"><code class="tsd-tag">Readonly</code><span>format</span><a href="#format" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">format</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+<div class="tsd-comment tsd-typography"><p>Format of the image. The format is defined by one of the <code>Image.Format_</code> values.</p>
+</div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="height"><code class="tsd-tag">Readonly</code><span>height</span><a href="#height" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">height</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+<div class="tsd-comment tsd-typography"><p>Height of the image in pixels.</p>
+</div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="size"><code class="tsd-tag">Readonly</code><span>size</span><a href="#size" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">size</span><span class="tsd-signature-symbol">:</span> <a href="../interfaces/size.html" class="tsd-signature-type tsd-kind-interface">size</a></div>
+<div class="tsd-comment tsd-typography"><p>Size of the image in pixels.</p>
+</div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="width"><code class="tsd-tag">Readonly</code><span>width</span><a href="#width" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">width</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+<div class="tsd-comment tsd-typography"><p>Width of the image in pixels.</p>
+</div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="fasttransformation"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Fast<wbr/>Transformation</span><a href="#fasttransformation" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">FastTransformation</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#fasttransformation" class="tsd-signature-type tsd-kind-property">FastTransformation</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_a2bgr30_premultiplied"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>A2<wbr/>BGR30_<wbr/>Premultiplied</span><a href="#format_a2bgr30_premultiplied" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_A2BGR30_Premultiplied</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_a2bgr30_premultiplied" class="tsd-signature-type tsd-kind-property">Format_A2BGR30_Premultiplied</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_a2rgb30_premultiplied"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>A2<wbr/>RGB30_<wbr/>Premultiplied</span><a href="#format_a2rgb30_premultiplied" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_A2RGB30_Premultiplied</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_a2rgb30_premultiplied" class="tsd-signature-type tsd-kind-property">Format_A2RGB30_Premultiplied</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_alpha8"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>Alpha8</span><a href="#format_alpha8" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_Alpha8</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_alpha8" class="tsd-signature-type tsd-kind-property">Format_Alpha8</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_argb32"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>ARGB32</span><a href="#format_argb32" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_ARGB32</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_argb32" class="tsd-signature-type tsd-kind-property">Format_ARGB32</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_argb32_premultiplied"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>ARGB32_<wbr/>Premultiplied</span><a href="#format_argb32_premultiplied" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_ARGB32_Premultiplied</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_argb32_premultiplied" class="tsd-signature-type tsd-kind-property">Format_ARGB32_Premultiplied</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_argb4444_premultiplied"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>ARGB4444_<wbr/>Premultiplied</span><a href="#format_argb4444_premultiplied" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_ARGB4444_Premultiplied</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_argb4444_premultiplied" class="tsd-signature-type tsd-kind-property">Format_ARGB4444_Premultiplied</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_argb6666_premultiplied"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>ARGB6666_<wbr/>Premultiplied</span><a href="#format_argb6666_premultiplied" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_ARGB6666_Premultiplied</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_argb6666_premultiplied" class="tsd-signature-type tsd-kind-property">Format_ARGB6666_Premultiplied</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_argb8555_premultiplied"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>ARGB8555_<wbr/>Premultiplied</span><a href="#format_argb8555_premultiplied" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_ARGB8555_Premultiplied</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_argb8555_premultiplied" class="tsd-signature-type tsd-kind-property">Format_ARGB8555_Premultiplied</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_argb8565_premultiplied"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>ARGB8565_<wbr/>Premultiplied</span><a href="#format_argb8565_premultiplied" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_ARGB8565_Premultiplied</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_argb8565_premultiplied" class="tsd-signature-type tsd-kind-property">Format_ARGB8565_Premultiplied</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_bgr30"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>BGR30</span><a href="#format_bgr30" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_BGR30</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_bgr30" class="tsd-signature-type tsd-kind-property">Format_BGR30</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_bgr888"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>BGR888</span><a href="#format_bgr888" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_BGR888</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_bgr888" class="tsd-signature-type tsd-kind-property">Format_BGR888</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_grayscale16"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>Grayscale16</span><a href="#format_grayscale16" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_Grayscale16</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_grayscale16" class="tsd-signature-type tsd-kind-property">Format_Grayscale16</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_grayscale8"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>Grayscale8</span><a href="#format_grayscale8" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_Grayscale8</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_grayscale8" class="tsd-signature-type tsd-kind-property">Format_Grayscale8</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_indexed8"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>Indexed8</span><a href="#format_indexed8" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_Indexed8</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_indexed8" class="tsd-signature-type tsd-kind-property">Format_Indexed8</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_invalid"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>Invalid</span><a href="#format_invalid" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_Invalid</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_invalid" class="tsd-signature-type tsd-kind-property">Format_Invalid</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_mono"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>Mono</span><a href="#format_mono" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_Mono</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_mono" class="tsd-signature-type tsd-kind-property">Format_Mono</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_monolsb"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>Mono<wbr/>LSB</span><a href="#format_monolsb" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_MonoLSB</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_monolsb" class="tsd-signature-type tsd-kind-property">Format_MonoLSB</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_rgb16"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>RGB16</span><a href="#format_rgb16" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_RGB16</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_rgb16" class="tsd-signature-type tsd-kind-property">Format_RGB16</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_rgb30"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>RGB30</span><a href="#format_rgb30" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_RGB30</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_rgb30" class="tsd-signature-type tsd-kind-property">Format_RGB30</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_rgb32"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>RGB32</span><a href="#format_rgb32" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_RGB32</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_rgb32" class="tsd-signature-type tsd-kind-property">Format_RGB32</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_rgb444"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>RGB444</span><a href="#format_rgb444" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_RGB444</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_rgb444" class="tsd-signature-type tsd-kind-property">Format_RGB444</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_rgb555"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>RGB555</span><a href="#format_rgb555" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_RGB555</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_rgb555" class="tsd-signature-type tsd-kind-property">Format_RGB555</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_rgb666"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>RGB666</span><a href="#format_rgb666" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_RGB666</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_rgb666" class="tsd-signature-type tsd-kind-property">Format_RGB666</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_rgb888"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>RGB888</span><a href="#format_rgb888" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_RGB888</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_rgb888" class="tsd-signature-type tsd-kind-property">Format_RGB888</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_rgba64"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>RGBA64</span><a href="#format_rgba64" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_RGBA64</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_rgba64" class="tsd-signature-type tsd-kind-property">Format_RGBA64</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_rgba64_premultiplied"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>RGBA64_<wbr/>Premultiplied</span><a href="#format_rgba64_premultiplied" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_RGBA64_Premultiplied</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_rgba64_premultiplied" class="tsd-signature-type tsd-kind-property">Format_RGBA64_Premultiplied</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_rgba8888"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>RGBA8888</span><a href="#format_rgba8888" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_RGBA8888</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_rgba8888" class="tsd-signature-type tsd-kind-property">Format_RGBA8888</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_rgba8888_premultiplied"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>RGBA8888_<wbr/>Premultiplied</span><a href="#format_rgba8888_premultiplied" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_RGBA8888_Premultiplied</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_rgba8888_premultiplied" class="tsd-signature-type tsd-kind-property">Format_RGBA8888_Premultiplied</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_rgbx64"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>RGBX64</span><a href="#format_rgbx64" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_RGBX64</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_rgbx64" class="tsd-signature-type tsd-kind-property">Format_RGBX64</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="format_rgbx8888"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Format_<wbr/>RGBX8888</span><a href="#format_rgbx8888" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Format_RGBX8888</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#format_rgbx8888" class="tsd-signature-type tsd-kind-property">Format_RGBX8888</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="ignoreaspectratio"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Ignore<wbr/>Aspect<wbr/>Ratio</span><a href="#ignoreaspectratio" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">IgnoreAspectRatio</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#ignoreaspectratio" class="tsd-signature-type tsd-kind-property">IgnoreAspectRatio</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="keepaspectratio"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Keep<wbr/>Aspect<wbr/>Ratio</span><a href="#keepaspectratio" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">KeepAspectRatio</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#keepaspectratio" class="tsd-signature-type tsd-kind-property">KeepAspectRatio</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="keepaspectratiobyexpanding"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Keep<wbr/>Aspect<wbr/>Ratio<wbr/>By<wbr/>Expanding</span><a href="#keepaspectratiobyexpanding" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">KeepAspectRatioByExpanding</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#keepaspectratiobyexpanding" class="tsd-signature-type tsd-kind-property">KeepAspectRatioByExpanding</a></div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="smoothtransformation"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Smooth<wbr/>Transformation</span><a href="#smoothtransformation" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">SmoothTransformation</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#smoothtransformation" class="tsd-signature-type tsd-kind-property">SmoothTransformation</a></div></section></section></details>
+<details class="tsd-panel-group tsd-member-group tsd-accordion" open><summary class="tsd-accordion-summary" data-key="section-Methods"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h2 class="tsd-anchor-link" id="methods-1">Methods<a href="#methods-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2></summary>
+<section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="color"><span>color</span><a href="#color" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="color-1"><span class="tsd-kind-call-signature">color</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">index</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><a href="#color-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Returns the 32-bit color value at the given index in the color
+table.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">index</span>: <span class="tsd-signature-type">number</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="colortable"><span>color<wbr/>Table</span><a href="#colortable" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="colortable-1"><span class="tsd-kind-call-signature">colorTable</span><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><a href="#colortable-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Returns the color table as an array of 32-bit color values.</p>
+</div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="copy"><span>copy</span><a href="#copy" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="copy-1"><span class="tsd-kind-call-signature">copy</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">rect</span><span class="tsd-signature-symbol">?:</span> <a href="../interfaces/rect.html" class="tsd-signature-type tsd-kind-interface">rect</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-class">Image</a><a href="#copy-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Copies the given rectangle to a new image object.</p>
+<p>When no rectangle is given, the entire image is copied.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">rect</span>: <a href="../interfaces/rect.html" class="tsd-signature-type tsd-kind-interface">rect</a></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="" class="tsd-signature-type tsd-kind-class">Image</a></h4>
+<div class="tsd-comment tsd-typography">
+<div class="tsd-tag-since">
+<h4 class="tsd-anchor-link" id="since-1">Since<a href="#since-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p>1.11</p>
+</div></div></div></li>
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="copy-2"><span class="tsd-kind-call-signature">copy</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">x</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">y</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">width</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">height</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-class">Image</a><a href="#copy-2" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Copies the given rectangle to a new image object.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">x</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">y</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">width</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">height</span>: <span class="tsd-signature-type">number</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="" class="tsd-signature-type tsd-kind-class">Image</a></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="fill"><span>fill</span><a href="#fill" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="fill-1"><span class="tsd-kind-call-signature">fill</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">index_or_rgb</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#fill-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Fills the image with the given 32-bit unsigned color value (ARGB) or color
+table index.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">index_or_rgb</span>: <span class="tsd-signature-type">number</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4></div></li>
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="fill-2"><span class="tsd-kind-call-signature">fill</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">color</span><span class="tsd-signature-symbol">:</span> <a href="../interfaces/color.html" class="tsd-signature-type tsd-kind-interface">color</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#fill-2" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Fills the image with the given color (supports values like
+&quot;#rrggbb&quot; or those created by <a href="../functions/tiled.color.html" class="tsd-kind-function">tiled.color</a>).</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">color</span>: <a href="../interfaces/color.html" class="tsd-signature-type tsd-kind-interface">color</a></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="load"><span>load</span><a href="#load" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="load-1"><span class="tsd-kind-call-signature">load</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">fileName</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">format</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#load-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Loads the image from the given file name. When no format is given it
+will be auto-detected (can be &quot;bmp&quot;, &quot;png&quot;, etc.).</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">fileName</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">format</span>: <span class="tsd-signature-type">string</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="loadfromdata"><span>load<wbr/>From<wbr/>Data</span><a href="#loadfromdata" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="loadfromdata-1"><span class="tsd-kind-call-signature">loadFromData</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">data</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">format</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#loadfromdata-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Loads the image from the given data interpreted with the given
+format (can be &quot;bmp&quot;, &quot;png&quot;, etc.).</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">data</span>: <span class="tsd-signature-type">ArrayBuffer</span></span></li>
+<li><span><span class="tsd-kind-parameter">format</span>: <span class="tsd-signature-type">string</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="mirrored"><span>mirrored</span><a href="#mirrored" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="mirrored-1"><span class="tsd-kind-call-signature">mirrored</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">horizontal</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">vertical</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-class">Image</a><a href="#mirrored-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Returns a mirrored copy of this image.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">horizontal</span>: <span class="tsd-signature-type">boolean</span></span></li>
+<li><span><span class="tsd-kind-parameter">vertical</span>: <span class="tsd-signature-type">boolean</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="" class="tsd-signature-type tsd-kind-class">Image</a></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="pixel"><span>pixel</span><a href="#pixel" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="pixel-1"><span class="tsd-kind-call-signature">pixel</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">x</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">y</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><a href="#pixel-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Returns the 32-bit unsigned color value (in ARGB order).</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">x</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">y</span>: <span class="tsd-signature-type">number</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="pixelcolor"><span>pixel<wbr/>Color</span><a href="#pixelcolor" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="pixelcolor-1"><span class="tsd-kind-call-signature">pixelColor</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">x</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">y</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><a href="#pixelcolor-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Returns the color at the given position as string like &quot;#rrggbb&quot;.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">x</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">y</span>: <span class="tsd-signature-type">number</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="save"><span>save</span><a href="#save" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="save-1"><span class="tsd-kind-call-signature">save</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">fileName</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">format</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">quality</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><a href="#save-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Saves the image to the given file.</p>
+<p>When no format is given it will be auto-detected based on the file extension.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">fileName</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">format</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">quality</span>: <span class="tsd-signature-type">number</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="savetodata"><span>save<wbr/>To<wbr/>Data</span><a href="#savetodata" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="savetodata-1"><span class="tsd-kind-call-signature">saveToData</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">format</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">quality</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ArrayBuffer</span><a href="#savetodata-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Saves the image to an ArrayBuffer in the given format (can be &quot;bmp&quot;, png&quot;, etc.).</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">format</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">quality</span>: <span class="tsd-signature-type">number</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ArrayBuffer</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="scaled"><span>scaled</span><a href="#scaled" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="scaled-1"><span class="tsd-kind-call-signature">scaled</span><span class="tsd-signature-symbol">(</span><br/>    <span class="tsd-kind-parameter">width</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">height</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">aspectRatioMode</span><span class="tsd-signature-symbol">?:</span><br/>        <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-keyword">typeof</span> <a href="#ignoreaspectratio" class="tsd-signature-type tsd-kind-property">IgnoreAspectRatio</a><br/>        <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-keyword">typeof</span> <a href="#keepaspectratio" class="tsd-signature-type tsd-kind-property">KeepAspectRatio</a><br/>        <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-keyword">typeof</span> <a href="#keepaspectratiobyexpanding" class="tsd-signature-type tsd-kind-property">KeepAspectRatioByExpanding</a><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">transformationMode</span><span class="tsd-signature-symbol">?:</span><br/>        <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-keyword">typeof</span> <a href="#fasttransformation" class="tsd-signature-type tsd-kind-property">FastTransformation</a><br/>        <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-keyword">typeof</span> <a href="#smoothtransformation" class="tsd-signature-type tsd-kind-property">SmoothTransformation</a><span class="tsd-signature-symbol">,</span><br/><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-class">Image</a><a href="#scaled-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Returns a scaled copy of this image. Default <code>aspectRatioMode</code>
+behavior is to ignore the aspect ratio. Default <code>mode</code> is a fast
+transformation.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">width</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">height</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">aspectRatioMode</span>: <br/>    <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-keyword">typeof</span> <a href="#ignoreaspectratio" class="tsd-signature-type tsd-kind-property">IgnoreAspectRatio</a><br/>    <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-keyword">typeof</span> <a href="#keepaspectratio" class="tsd-signature-type tsd-kind-property">KeepAspectRatio</a><br/>    <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-keyword">typeof</span> <a href="#keepaspectratiobyexpanding" class="tsd-signature-type tsd-kind-property">KeepAspectRatioByExpanding</a></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">transformationMode</span>: <span class="tsd-signature-keyword">typeof</span> <a href="#fasttransformation" class="tsd-signature-type tsd-kind-property">FastTransformation</a> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-keyword">typeof</span> <a href="#smoothtransformation" class="tsd-signature-type tsd-kind-property">SmoothTransformation</a></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="" class="tsd-signature-type tsd-kind-class">Image</a></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="setcolor"><span>set<wbr/>Color</span><a href="#setcolor" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="setcolor-1"><span class="tsd-kind-call-signature">setColor</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">index</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">rgb</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#setcolor-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Sets the color at the given index in the color table to a given
+32-bit color value.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">index</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">rgb</span>: <span class="tsd-signature-type">number</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4></div></li>
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="setcolor-2"><span class="tsd-kind-call-signature">setColor</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">index</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">color</span><span class="tsd-signature-symbol">:</span> <a href="../interfaces/color.html" class="tsd-signature-type tsd-kind-interface">color</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#setcolor-2" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Sets the color at the given index in the color table to a color (supports
+values like &quot;#rrggbb&quot; or those created by <a href="../functions/tiled.color.html" class="tsd-kind-function">tiled.color</a>).</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">index</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">color</span>: <a href="../interfaces/color.html" class="tsd-signature-type tsd-kind-interface">color</a></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="setcolortable"><span>set<wbr/>Color<wbr/>Table</span><a href="#setcolortable" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="setcolortable-1"><span class="tsd-kind-call-signature">setColorTable</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">colors</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#setcolortable-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Sets the color table given by an array of either 32-bit color values
+or strings (supports values like &quot;#rrggbb&quot;).</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">colors</span>: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="setpixel"><span>set<wbr/>Pixel</span><a href="#setpixel" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="setpixel-1"><span class="tsd-kind-call-signature">setPixel</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">x</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">y</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">index_or_rgb</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#setpixel-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Sets the color at the specified location to the given 32-bit unsigned
+color value (ARGB) or color table index.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">x</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">y</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">index_or_rgb</span>: <span class="tsd-signature-type">number</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="setpixelcolor"><span>set<wbr/>Pixel<wbr/>Color</span><a href="#setpixelcolor" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="setpixelcolor-1"><span class="tsd-kind-call-signature">setPixelColor</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">x</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">y</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">color</span><span class="tsd-signature-symbol">:</span> <a href="../interfaces/color.html" class="tsd-signature-type tsd-kind-interface">color</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#setpixelcolor-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Sets the color at the specified location to the given color (supports
+values like &quot;#rrggbb&quot; or those created by <a href="../functions/tiled.color.html" class="tsd-kind-function">tiled.color</a>).</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">x</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">y</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">color</span>: <a href="../interfaces/color.html" class="tsd-signature-type tsd-kind-interface">color</a></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4></div></li></ul></section></section></details></div>
+<div class="col-sidebar">
+<div class="page-menu">
+<div class="tsd-navigation settings">
+<details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>Settings</h3></summary>
+<div class="tsd-accordion-details">
+<div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span>
+<ul id="tsd-filter-options">
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li></ul></div>
+<div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div>
+<details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>On This Page</h3></summary>
+<div class="tsd-accordion-details">
+<details open class="tsd-accordion tsd-page-navigation-section"><summary class="tsd-accordion-summary" data-key="section-Constructors"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>Constructors</summary>
+<div><a href="#constructor"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Constructor"><use href="../assets/icons.svg#icon-512"></use></svg><span>constructor</span></a></div></details>
+<details open class="tsd-accordion tsd-page-navigation-section"><summary class="tsd-accordion-summary" data-key="section-Properties"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>Properties</summary>
+<div><a href="#depth"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>depth</span></a><a href="#format"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>format</span></a><a href="#height"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>height</span></a><a href="#size"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>size</span></a><a href="#width"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>width</span></a><a href="#fasttransformation"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Fast<wbr/>Transformation</span></a><a href="#format_a2bgr30_premultiplied"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>A2<wbr/>BGR30_<wbr/>Premultiplied</span></a><a href="#format_a2rgb30_premultiplied"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>A2<wbr/>RGB30_<wbr/>Premultiplied</span></a><a href="#format_alpha8"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>Alpha8</span></a><a href="#format_argb32"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>ARGB32</span></a><a href="#format_argb32_premultiplied"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>ARGB32_<wbr/>Premultiplied</span></a><a href="#format_argb4444_premultiplied"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>ARGB4444_<wbr/>Premultiplied</span></a><a href="#format_argb6666_premultiplied"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>ARGB6666_<wbr/>Premultiplied</span></a><a href="#format_argb8555_premultiplied"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>ARGB8555_<wbr/>Premultiplied</span></a><a href="#format_argb8565_premultiplied"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>ARGB8565_<wbr/>Premultiplied</span></a><a href="#format_bgr30"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>BGR30</span></a><a href="#format_bgr888"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>BGR888</span></a><a href="#format_grayscale16"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>Grayscale16</span></a><a href="#format_grayscale8"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>Grayscale8</span></a><a href="#format_indexed8"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>Indexed8</span></a><a href="#format_invalid"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>Invalid</span></a><a href="#format_mono"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>Mono</span></a><a href="#format_monolsb"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>Mono<wbr/>LSB</span></a><a href="#format_rgb16"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGB16</span></a><a href="#format_rgb30"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGB30</span></a><a href="#format_rgb32"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGB32</span></a><a href="#format_rgb444"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGB444</span></a><a href="#format_rgb555"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGB555</span></a><a href="#format_rgb666"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGB666</span></a><a href="#format_rgb888"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGB888</span></a><a href="#format_rgba64"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGBA64</span></a><a href="#format_rgba64_premultiplied"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGBA64_<wbr/>Premultiplied</span></a><a href="#format_rgba8888"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGBA8888</span></a><a href="#format_rgba8888_premultiplied"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGBA8888_<wbr/>Premultiplied</span></a><a href="#format_rgbx64"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGBX64</span></a><a href="#format_rgbx8888"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Format_<wbr/>RGBX8888</span></a><a href="#ignoreaspectratio"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Ignore<wbr/>Aspect<wbr/>Ratio</span></a><a href="#keepaspectratio"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Keep<wbr/>Aspect<wbr/>Ratio</span></a><a href="#keepaspectratiobyexpanding"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Keep<wbr/>Aspect<wbr/>Ratio<wbr/>By<wbr/>Expanding</span></a><a href="#smoothtransformation"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Smooth<wbr/>Transformation</span></a></div></details>
+<details open class="tsd-accordion tsd-page-navigation-section"><summary class="tsd-accordion-summary" data-key="section-Methods"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>Methods</summary>
+<div><a href="#color"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>color</span></a><a href="#colortable"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>color<wbr/>Table</span></a><a href="#copy"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>copy</span></a><a href="#fill"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>fill</span></a><a href="#load"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>load</span></a><a href="#loadfromdata"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>load<wbr/>From<wbr/>Data</span></a><a href="#mirrored"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>mirrored</span></a><a href="#pixel"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>pixel</span></a><a href="#pixelcolor"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>pixel<wbr/>Color</span></a><a href="#save"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>save</span></a><a href="#savetodata"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>save<wbr/>To<wbr/>Data</span></a><a href="#scaled"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>scaled</span></a><a href="#setcolor"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>set<wbr/>Color</span></a><a href="#setcolortable"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>set<wbr/>Color<wbr/>Table</span></a><a href="#setpixel"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>set<wbr/>Pixel</span></a><a href="#setpixelcolor"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>set<wbr/>Pixel<wbr/>Color</span></a></div></details></div></details></div>
+<div class="site-menu">
+<nav class="tsd-navigation"><a href="../index.html">Tiled Scripting API</a>
+<ul class="tsd-small-nested-navigation" id="tsd-nav-container">
+<li>Loading...</li></ul></nav></div></div></div><footer>
+<p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer>
+<div class="overlay"></div><footer class="media-content">
+<div class="footer-content container">
+<p>Tiled — Copyright © 2008–2025 Thorbjørn Lindeijer<br/> and <a href="https://www.openhub.net/p/tiled-qt/contributors/summary">many other contributors</a></p>
+<nav style="display: flex; justify-content: center; align-items: top; margin-left: 1em;">
+<ul style="float: right; border-left: 2px solid #ececec; padding: 0 1em">
+<li><a href="/docs">Documentation</a></li>
+<li><a href="/news">News</a></li>
+<li><a href="/donate">Donate</a></li>
+<li><a href="https://discourse.mapeditor.org/">Forum</a></li>
+<li><a href="https://discord.gg/39wbTv7">Discord</a></li>
+<li><a rel="me" href="https://floss.social/@tiled">Mastodon</a></li>
+<li><a href="https://github.com/mapeditor/tiled">GitHub</a></li>
+<li><a href="https://x.com/TiledApp">X</a></li></ul></nav></div></footer></body></html>

@@ -1,809 +1,456 @@
-<!doctype html>
-<html class="default no-js">
-<head>
-	<meta charset="utf-8">
-	<link rel="stylesheet" href="../assets/css/main.css">
-	<meta name='viewport' content="width=device-width, initial-scale=1" />
-	<meta property="og:image" content="https://www.mapeditor.org/img/tiled-logo-filled.png" />
-	<link href='/favicon.ico' rel='icon' type='image/png'/>
-	<link rel="preconnect" href="https://fonts.gstatic.com">
-	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="/css/base.css">
-	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
-	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
-	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>Tool | Tiled Scripting API</title>
-	<meta name="description" content="Documentation for Tiled Scripting API">
-	<script async src="../assets/js/search.js" id="search-script"></script>
-</head>
-<body>
+<!DOCTYPE html><html class="default" lang="en" data-base="../"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Tool | Tiled Scripting API</title><meta name="description" content="Documentation for Tiled Scripting API"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><link rel="stylesheet" href="../assets/custom.css"/><script defer src="../assets/main.js"></script><script async src="../assets/icons.js" id="tsd-icons-script"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script><script async src="../assets/hierarchy.js" id="tsd-hierarchy-script"></script><meta property="og:image" content="https://www.mapeditor.org/img/tiled-logo-filled.png"/><link href="/favicon.ico" rel="icon" type="image/png"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/><link rel="stylesheet" href="/css/base.css"/><link href="/atom.xml" rel="alternate" type="application/atom+xml"/><script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script></head><body>
 <div class="headerbar-container">
-	<nav class="headerbar container">
-		<a href="/" class="headerbar-logo"><img src="/img/tiled-logo-white.png" class="logo" alt="Tiled logo" width="393" height="213" /></a>
-		<div class="headerbar-content">
-			<a class="header-item" href="/docs">Docs</a>
-			<a class="header-item" href="/news">News</a>
-			<a class="header-item" href="/donate">Donate</a>
-			<div class="stretch"></div>
-			<!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
-			<a href="https://discourse.mapeditor.org/" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44.8 51.2"><path d="m22.59 2.7652c-12.26 0-22.59 9.85-22.59 22.01 0 0.39 0.01 22.79 0.01 22.79l22.58-0.02c12.27 0 22.21-10.23 22.21-22.39s-9.94-22.39-22.21-22.39zm-0.19 35.2c-1.94 0-3.79-0.43-5.44-1.21l-8.11 2.01 2.29-7.5c-0.98-1.81-1.54-3.89-1.54-6.1 0-7.07 5.73-12.8 12.8-12.8s12.8 5.73 12.8 12.8-5.73 12.8-12.8 12.8z"/></svg> <span class="tooltiptext">Forum</span></a>
-			<a href="https://discord.gg/39wbTv7" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44.8 51.2"><path d="m29.722 24.32c0 1.5616-1.152 2.8416-2.6112 2.8416-1.4336 0-2.6112-1.28-2.6112-2.8416s1.152-2.8416 2.6112-2.8416 2.6112 1.28 2.6112 2.8416zm-11.955-2.8416c-1.4592 0-2.6112 1.28-2.6112 2.8416s1.1776 2.8416 2.6112 2.8416c1.4592 0 2.6112-1.28 2.6112-2.8416 0.0256-1.5616-1.152-2.8416-2.6112-2.8416zm27.034-16.205v45.926c-6.4494-5.6994-4.3868-3.8128-11.878-10.778l1.3568 4.736h-29.03c-2.8928 0-5.248-2.3552-5.248-5.2736v-34.611c0-2.9184 2.3552-5.2736 5.248-5.2736h34.304c2.8928 0 5.248 2.3552 5.248 5.2736zm-7.296 24.269c0-8.2432-3.6864-14.925-3.6864-14.925-3.6864-2.7648-7.1936-2.688-7.1936-2.688l-0.3584 0.4096c4.352 1.3312 6.3744 3.2512 6.3744 3.2512-6.0811-3.3329-13.224-3.3335-19.123-0.7424-0.9472 0.4352-1.5104 0.7424-1.5104 0.7424s2.1248-2.0224 6.7328-3.3536l-0.256-0.3072s-3.5072-0.0768-7.1936 2.688c0 0-3.6864 6.6816-3.6864 14.925 0 0 2.1504 3.712 7.808 3.8912 0 0 0.9472-1.152 1.7152-2.1248-3.2512-0.9728-4.48-3.0208-4.48-3.0208 0.3766 0.2636 0.9976 0.6053 1.0496 0.64 4.321 2.4198 10.459 3.2126 15.974 0.896 0.896-0.3328 1.8944-0.8192 2.944-1.5104 0 0-1.28 2.0992-4.6336 3.0464 0.768 0.9728 1.6896 2.0736 1.6896 2.0736 5.6576-0.1792 7.8336-3.8912 7.8336-3.8912z"/></svg> <span class="tooltiptext">Discord</span></a>
-			<a href="https://floss.social/@tiled" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M433 179.1c0-97.2-63.7-125.7-63.7-125.7-62.5-28.7-228.6-28.4-290.5 0 0 0-63.7 28.5-63.7 125.7 0 115.7-6.6 259.4 105.6 289.1 40.5 10.7 75.3 13 103.3 11.4 50.8-2.8 79.3-18.1 79.3-18.1l-1.7-36.9s-36.3 11.4-77.1 10.1c-40.4-1.4-83-4.4-89.6-54a102.5 102.5 0 0 1 -.9-13.9c85.6 20.9 158.7 9.1 178.8 6.7 56.1-6.7 105-41.3 111.2-72.9 9.8-49.8 9-121.5 9-121.5zm-75.1 125.2h-46.6v-114.2c0-49.7-64-51.6-64 6.9v62.5h-46.3V197c0-58.5-64-56.6-64-6.9v114.2H90.2c0-122.1-5.2-147.9 18.4-175 25.9-28.9 79.8-30.8 103.8 6.1l11.6 19.5 11.6-19.5c24.1-37.1 78.1-34.8 103.8-6.1 23.7 27.3 18.4 53 18.4 175z"/></svg> <span class="tooltiptext">Mastodon</span></a>
-			<a href="https://github.com/mapeditor/tiled" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49.6 51.2"><path d="m16.59 40.099c0 0.2-0.23 0.36-0.52 0.36-0.33 0.03-0.56-0.13-0.56-0.36 0-0.2 0.23-0.36 0.52-0.36 0.3-0.03 0.56 0.13 0.56 0.36zm-3.11-0.45c-0.07 0.2 0.13 0.43 0.43 0.49 0.26 0.1 0.56 0 0.62-0.2s-0.13-0.43-0.43-0.52c-0.26-0.07-0.55 0.03-0.62 0.23zm4.42-0.17c-0.29 0.07-0.49 0.26-0.46 0.49 0.03 0.2 0.29 0.33 0.59 0.26 0.29-0.07 0.49-0.26 0.46-0.46-0.03-0.19-0.3-0.32-0.59-0.29zm6.58-38.32c-13.87 0-24.48 10.53-24.48 24.4 0 11.09 6.98 20.58 16.95 23.92 1.28 0.23 1.73-0.56 1.73-1.21 0-0.62-0.03-4.04-0.03-6.14 0 0-7 1.5-8.47-2.98 0 0-1.14-2.91-2.78-3.66 0 0-2.29-1.57 0.16-1.54 0 0 2.49 0.2 3.86 2.58 2.19 3.86 5.86 2.75 7.29 2.09 0.23-1.6 0.88-2.71 1.6-3.37-5.59-0.62-11.23-1.43-11.23-11.05 0-2.75 0.76-4.13 2.36-5.89-0.26-0.65-1.11-3.33 0.26-6.79 2.09-0.65 6.9 2.7 6.9 2.7 2-0.56 4.15-0.85 6.28-0.85s4.28 0.29 6.28 0.85c0 0 4.81-3.36 6.9-2.7 1.37 3.47 0.52 6.14 0.26 6.79 1.6 1.77 2.58 3.15 2.58 5.89 0 9.65-5.89 10.42-11.48 11.05 0.92 0.79 1.7 2.29 1.7 4.64 0 3.37-0.03 7.54-0.03 8.36 0 0.65 0.46 1.44 1.73 1.21 10-3.32 16.78-12.81 16.78-23.9 0-13.87-11.25-24.4-25.12-24.4zm-14.76 34.49c-0.13 0.1-0.1 0.33 0.07 0.52 0.16 0.16 0.39 0.23 0.52 0.1 0.13-0.1 0.1-0.33-0.07-0.52-0.16-0.16-0.39-0.23-0.52-0.1zm-1.08-0.81c-0.07 0.13 0.03 0.29 0.23 0.39 0.16 0.1 0.36 0.07 0.43-0.07 0.07-0.13-0.03-0.29-0.23-0.39-0.2-0.06-0.36-0.03-0.43 0.07zm3.24 3.56c-0.16 0.13-0.1 0.43 0.13 0.62 0.23 0.23 0.52 0.26 0.65 0.1 0.13-0.13 0.07-0.43-0.13-0.62-0.22-0.23-0.52-0.26-0.65-0.1zm-1.14-1.47c-0.16 0.1-0.16 0.36 0 0.59s0.43 0.33 0.56 0.23c0.16-0.13 0.16-0.39 0-0.62-0.14-0.23-0.4-0.33-0.56-0.2z"/></svg> <span class="tooltiptext">GitHub</span></a>
-		</div>
-	</nav>
-</div>
-<header>
-	<div class="tsd-page-toolbar">
-		<div class="container">
-			<div class="table-wrap">
-				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
-					<div class="field">
-						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
-						<input id="tsd-search-field" type="text" />
-					</div>
-					<ul class="results">
-						<li class="state loading">Preparing search index...</li>
-						<li class="state failure">The search index is not available</li>
-					</ul>
-					<a href="../index.html" class="title">Tiled Scripting API</a>
-				</div>
-				<div class="table-cell" id="tsd-widgets">
-					<div id="tsd-filter">
-						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
-						<div class="tsd-filter-group">
-							<div class="tsd-select" id="tsd-filter-visibility">
-								<span class="tsd-select-label">All</span>
-								<ul class="tsd-select-list">
-									<li data-value="public">Public</li>
-									<li data-value="protected">Public/Protected</li>
-									<li data-value="private" class="selected">All</li>
-								</ul>
-							</div>
-							<input type="checkbox" id="tsd-filter-inherited" checked />
-							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
-						</div>
-					</div>
-					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="tsd-page-title">
-		<div class="container">
-			<ul class="tsd-breadcrumb">
-				<li>
-					<a href="../index.html">Tiled Scripting API</a>
-				</li>
-				<li>
-					<a href="Tool.html">Tool</a>
-				</li>
-			</ul>
-			<h1>Interface Tool</h1>
-		</div>
-	</div>
-</header>
+<nav class="headerbar container"><a href="/" class="headerbar-logo"><img src="/img/tiled-logo-white.png" class="logo" alt="Tiled logo" width="393" height="213"/></a>
+<div class="headerbar-content"><a class="header-item" href="/docs">Docs</a><a class="header-item" href="/news">News</a><a class="header-item" href="/donate">Donate</a>
+<div class="stretch"></div>
+    <a href="https://discourse.mapeditor.org/" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44.8 51.2"><path d="m22.59 2.7652c-12.26 0-22.59 9.85-22.59 22.01 0 0.39 0.01 22.79 0.01 22.79l22.58-0.02c12.27 0 22.21-10.23 22.21-22.39s-9.94-22.39-22.21-22.39zm-0.19 35.2c-1.94 0-3.79-0.43-5.44-1.21l-8.11 2.01 2.29-7.5c-0.98-1.81-1.54-3.89-1.54-6.1 0-7.07 5.73-12.8 12.8-12.8s12.8 5.73 12.8 12.8-5.73 12.8-12.8 12.8z"/></svg> <span class="tooltiptext">Forum</span></a>
+    <a href="https://discord.gg/39wbTv7" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44.8 51.2"><path d="m29.722 24.32c0 1.5616-1.152 2.8416-2.6112 2.8416-1.4336 0-2.6112-1.28-2.6112-2.8416s1.152-2.8416 2.6112-2.8416 2.6112 1.28 2.6112 2.8416zm-11.955-2.8416c-1.4592 0-2.6112 1.28-2.6112 2.8416s1.1776 2.8416 2.6112 2.8416c1.4592 0 2.6112-1.28 2.6112-2.8416 0.0256-1.5616-1.152-2.8416-2.6112-2.8416zm27.034-16.205v45.926c-6.4494-5.6994-4.3868-3.8128-11.878-10.778l1.3568 4.736h-29.03c-2.8928 0-5.248-2.3552-5.248-5.2736v-34.611c0-2.9184 2.3552-5.2736 5.248-5.2736h34.304c2.8928 0 5.248 2.3552 5.248 5.2736zm-7.296 24.269c0-8.2432-3.6864-14.925-3.6864-14.925-3.6864-2.7648-7.1936-2.688-7.1936-2.688l-0.3584 0.4096c4.352 1.3312 6.3744 3.2512 6.3744 3.2512-6.0811-3.3329-13.224-3.3335-19.123-0.7424-0.9472 0.4352-1.5104 0.7424-1.5104 0.7424s2.1248-2.0224 6.7328-3.3536l-0.256-0.3072s-3.5072-0.0768-7.1936 2.688c0 0-3.6864 6.6816-3.6864 14.925 0 0 2.1504 3.712 7.808 3.8912 0 0 0.9472-1.152 1.7152-2.1248-3.2512-0.9728-4.48-3.0208-4.48-3.0208 0.3766 0.2636 0.9976 0.6053 1.0496 0.64 4.321 2.4198 10.459 3.2126 15.974 0.896 0.896-0.3328 1.8944-0.8192 2.944-1.5104 0 0-1.28 2.0992-4.6336 3.0464 0.768 0.9728 1.6896 2.0736 1.6896 2.0736 5.6576-0.1792 7.8336-3.8912 7.8336-3.8912z"/></svg> <span class="tooltiptext">Discord</span></a>
+    <a href="https://floss.social/@tiled" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M433 179.1c0-97.2-63.7-125.7-63.7-125.7-62.5-28.7-228.6-28.4-290.5 0 0 0-63.7 28.5-63.7 125.7 0 115.7-6.6 259.4 105.6 289.1 40.5 10.7 75.3 13 103.3 11.4 50.8-2.8 79.3-18.1 79.3-18.1l-1.7-36.9s-36.3 11.4-77.1 10.1c-40.4-1.4-83-4.4-89.6-54a102.5 102.5 0 0 1 -.9-13.9c85.6 20.9 158.7 9.1 178.8 6.7 56.1-6.7 105-41.3 111.2-72.9 9.8-49.8 9-121.5 9-121.5zm-75.1 125.2h-46.6v-114.2c0-49.7-64-51.6-64 6.9v62.5h-46.3V197c0-58.5-64-56.6-64-6.9v114.2H90.2c0-122.1-5.2-147.9 18.4-175 25.9-28.9 79.8-30.8 103.8 6.1l11.6 19.5 11.6-19.5c24.1-37.1 78.1-34.8 103.8-6.1 23.7 27.3 18.4 53 18.4 175z"/></svg> <span class="tooltiptext">Mastodon</span></a>
+    <a href="https://github.com/mapeditor/tiled" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49.6 51.2"><path d="m16.59 40.099c0 0.2-0.23 0.36-0.52 0.36-0.33 0.03-0.56-0.13-0.56-0.36 0-0.2 0.23-0.36 0.52-0.36 0.3-0.03 0.56 0.13 0.56 0.36zm-3.11-0.45c-0.07 0.2 0.13 0.43 0.43 0.49 0.26 0.1 0.56 0 0.62-0.2s-0.13-0.43-0.43-0.52c-0.26-0.07-0.55 0.03-0.62 0.23zm4.42-0.17c-0.29 0.07-0.49 0.26-0.46 0.49 0.03 0.2 0.29 0.33 0.59 0.26 0.29-0.07 0.49-0.26 0.46-0.46-0.03-0.19-0.3-0.32-0.59-0.29zm6.58-38.32c-13.87 0-24.48 10.53-24.48 24.4 0 11.09 6.98 20.58 16.95 23.92 1.28 0.23 1.73-0.56 1.73-1.21 0-0.62-0.03-4.04-0.03-6.14 0 0-7 1.5-8.47-2.98 0 0-1.14-2.91-2.78-3.66 0 0-2.29-1.57 0.16-1.54 0 0 2.49 0.2 3.86 2.58 2.19 3.86 5.86 2.75 7.29 2.09 0.23-1.6 0.88-2.71 1.6-3.37-5.59-0.62-11.23-1.43-11.23-11.05 0-2.75 0.76-4.13 2.36-5.89-0.26-0.65-1.11-3.33 0.26-6.79 2.09-0.65 6.9 2.7 6.9 2.7 2-0.56 4.15-0.85 6.28-0.85s4.28 0.29 6.28 0.85c0 0 4.81-3.36 6.9-2.7 1.37 3.47 0.52 6.14 0.26 6.79 1.6 1.77 2.58 3.15 2.58 5.89 0 9.65-5.89 10.42-11.48 11.05 0.92 0.79 1.7 2.29 1.7 4.64 0 3.37-0.03 7.54-0.03 8.36 0 0.65 0.46 1.44 1.73 1.21 10-3.32 16.78-12.81 16.78-23.9 0-13.87-11.25-24.4-25.12-24.4zm-14.76 34.49c-0.13 0.1-0.1 0.33 0.07 0.52 0.16 0.16 0.39 0.23 0.52 0.1 0.13-0.1 0.1-0.33-0.07-0.52-0.16-0.16-0.39-0.23-0.52-0.1zm-1.08-0.81c-0.07 0.13 0.03 0.29 0.23 0.39 0.16 0.1 0.36 0.07 0.43-0.07 0.07-0.13-0.03-0.29-0.23-0.39-0.2-0.06-0.36-0.03-0.43 0.07zm3.24 3.56c-0.16 0.13-0.1 0.43 0.13 0.62 0.23 0.23 0.52 0.26 0.65 0.1 0.13-0.13 0.07-0.43-0.13-0.62-0.22-0.23-0.52-0.26-0.65-0.1zm-1.14-1.47c-0.16 0.1-0.16 0.36 0 0.59s0.43 0.33 0.56 0.23c0.16-0.13 0.16-0.39 0-0.62-0.14-0.23-0.4-0.33-0.56-0.2z"/></svg> <span class="tooltiptext">GitHub</span></a>
+</div></nav></div><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar">
+<div class="tsd-toolbar-contents container"><a href="../index.html" class="title">Tiled Scripting API</a>
+<div id="tsd-toolbar-links"></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/>
+<ul role="listbox" id="tsd-search-results"></ul>
+<div id="tsd-search-status" aria-live="polite" aria-atomic="true">
+<div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-menu"></use></svg></a></div></header>
 <div class="container container-main">
-	<div class="row">
-		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Once a tool is registered using <a href="../modules/tiled.html#registerTool">tiled.registerTool</a>, it returns a
-							tool instance. This interface extends the <a href="ToolDefinition.html">ToolDefinition</a> interface
-						with the additional properties that are available on the tool instance.</p>
-					</div>
-					<p>Not all properties in the <a href="ToolDefinition.html">ToolDefinition</a> interface can be changed
-					after the tool has been registered.</p>
-				</div>
-			</section>
-			<section class="tsd-panel tsd-hierarchy">
-				<h3>Hierarchy</h3>
-				<ul class="tsd-hierarchy">
-					<li>
-						<a href="ToolDefinition.html" class="tsd-signature-type" data-tsd-kind="Interface">ToolDefinition</a>
-						<ul class="tsd-hierarchy">
-							<li>
-								<span class="target">Tool</span>
-							</li>
-						</ul>
-					</li>
-				</ul>
-			</section>
-			<section class="tsd-panel-group tsd-index-group">
-				<h2>Index</h2>
-				<section class="tsd-panel tsd-index-panel">
-					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
-							<h3>Properties</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Tool.html#cursor" class="tsd-kind-icon">cursor</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Tool.html#enabled" class="tsd-kind-icon">enabled</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite"><a href="Tool.html#icon" class="tsd-kind-icon">icon</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Tool.html#map" class="tsd-kind-icon">map</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="Tool.html#name" class="tsd-kind-icon">name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Tool.html#preview" class="tsd-kind-icon">preview</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Tool.html#selectedTile" class="tsd-kind-icon">selected<wbr>Tile</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Tool.html#statusInfo" class="tsd-kind-icon">status<wbr>Info</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="Tool.html#targetLayerType" class="tsd-kind-icon">target<wbr>Layer<wbr>Type</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="Tool.html#tilePosition" class="tsd-kind-icon">tile<wbr>Position</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite"><a href="Tool.html#toolBarActions" class="tsd-kind-icon">tool<wbr>Bar<wbr>Actions</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="Tool.html#usesSelectedTiles" class="tsd-kind-icon">uses<wbr>Selected<wbr>Tiles</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="Tool.html#usesWangSets" class="tsd-kind-icon">uses<wbr>Wang<wbr>Sets</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section tsd-is-inherited">
-							<h3>Methods</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="Tool.html#activated" class="tsd-kind-icon">activated</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="Tool.html#deactivated" class="tsd-kind-icon">deactivated</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="Tool.html#keyPressed" class="tsd-kind-icon">key<wbr>Pressed</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="Tool.html#languageChanged" class="tsd-kind-icon">language<wbr>Changed</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="Tool.html#mapChanged" class="tsd-kind-icon">map<wbr>Changed</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="Tool.html#modifiersChanged" class="tsd-kind-icon">modifiers<wbr>Changed</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="Tool.html#mouseDoubleClicked" class="tsd-kind-icon">mouse<wbr>Double<wbr>Clicked</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="Tool.html#mouseEntered" class="tsd-kind-icon">mouse<wbr>Entered</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="Tool.html#mouseLeft" class="tsd-kind-icon">mouse<wbr>Left</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="Tool.html#mouseMoved" class="tsd-kind-icon">mouse<wbr>Moved</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="Tool.html#mousePressed" class="tsd-kind-icon">mouse<wbr>Pressed</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="Tool.html#mouseReleased" class="tsd-kind-icon">mouse<wbr>Released</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="Tool.html#tilePositionChanged" class="tsd-kind-icon">tile<wbr>Position<wbr>Changed</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="Tool.html#updateEnabledState" class="tsd-kind-icon">update<wbr>Enabled<wbr>State</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="Tool.html#updateStatusInfo" class="tsd-kind-icon">update<wbr>Status<wbr>Info</a></li>
-							</ul>
-						</section>
-					</div>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="cursor" class="tsd-anchor"></a>
-					<h3>cursor</h3>
-					<div class="tsd-signature tsd-kind-icon">cursor<span class="tsd-signature-symbol">:</span> <a href="../classes/Qt.QCursor.html" class="tsd-signature-type" data-tsd-kind="Class">QCursor</a></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The cursor used by this tool. This will be the cursor set on the viewport
-							of the <a href="MapView.html">MapView</a> while the tool is active.</p>
-						</div>
-						<p>A <a href="../classes/Qt.QCursor.html">Qt.QCursor</a> value can be created with <a href="../modules/tiled.html#cursor">tiled.cursor</a>.</p>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="enabled" class="tsd-anchor"></a>
-					<h3>enabled</h3>
-					<div class="tsd-signature tsd-kind-icon">enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Whether this tool is enabled.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite">
-					<a name="icon" class="tsd-anchor"></a>
-					<h3>icon</h3>
-					<div class="tsd-signature tsd-kind-icon">icon<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<p>Overrides <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#icon">icon</a></p>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>File name of the icon, or empty string when not set.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="map" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> map</h3>
-					<div class="tsd-signature tsd-kind-icon">map<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="../classes/TileMap.html" class="tsd-signature-type" data-tsd-kind="Class">TileMap</a></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Currently active tile map.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-					<a name="name" class="tsd-anchor"></a>
-					<h3>name</h3>
-					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#name">name</a></p>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Name of the tool as shown on the tool bar.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="preview" class="tsd-anchor"></a>
-					<h3>preview</h3>
-					<div class="tsd-signature tsd-kind-icon">preview<span class="tsd-signature-symbol">:</span> <a href="../classes/TileMap.html" class="tsd-signature-type" data-tsd-kind="Class">TileMap</a></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Get or set the preview for tile layer edits.</p>
-						</div>
-						<p>When getting or setting this property, a copy is made. To modify the
-							preview, you need to assign a changed <a href="../enums/AssetType.html#TileMap">TileMap</a> instance to this
-						property.</p>
-						<p>To highlight areas that will be erased, use <a href="TileLayerEdit.html#setTile">TileLayerEdit.setTile</a>
-						to set tiles to <code>null</code>, before assigning the map to the preview.</p>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="selectedTile" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> selected<wbr>Tile</h3>
-					<div class="tsd-signature tsd-kind-icon">selected<wbr>Tile<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="../classes/Tile.html" class="tsd-signature-type" data-tsd-kind="Class">Tile</a></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The last clicked tile for the active map. See also the <a href="MapEditor.html#currentBrush">MapEditor.currentBrush</a> property.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="statusInfo" class="tsd-anchor"></a>
-					<h3>status<wbr>Info</h3>
-					<div class="tsd-signature tsd-kind-icon">status<wbr>Info<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Text shown in the status bar while the tool is active.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-					<a name="targetLayerType" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> target<wbr>Layer<wbr>Type</h3>
-					<div class="tsd-signature tsd-kind-icon">target<wbr>Layer<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#targetLayerType">targetLayerType</a></p>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The target layer type for which this tool should be enabled. A convenient
-							alternative to overriding <a href="Tool.html#updateEnabledState">updateEnabledState</a>.</p>
-						</div>
-						<p>The value can be any combination of the layer types
-							<a href="../classes/Layer.html#TileLayerType">Layer.TileLayerType</a>, <a href="../classes/Layer.html#ObjectGroupType">Layer.ObjectGroupType</a>,
-						<a href="../classes/Layer.html#ImageLayerType">Layer.ImageLayerType</a> and <a href="../classes/Layer.html#GroupLayerType">Layer.GroupLayerType</a>.</p>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.10</p>
-							</dd>
-						</dl>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="tilePosition" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> tile<wbr>Position</h3>
-					<div class="tsd-signature tsd-kind-icon">tile<wbr>Position<span class="tsd-signature-symbol">:</span> <a href="point.html" class="tsd-signature-type" data-tsd-kind="Interface">point</a></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Mouse cursor position in tile coordinates.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite">
-					<a name="toolBarActions" class="tsd-anchor"></a>
-					<h3>tool<wbr>Bar<wbr>Actions</h3>
-					<div class="tsd-signature tsd-kind-icon">tool<wbr>Bar<wbr>Actions<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
-					<aside class="tsd-sources">
-						<p>Overrides <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#toolBarActions">toolBarActions</a></p>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>see</dt>
-							<dd><p>ToolDefinition.toolBarActions</p>
-							</dd>
-						</dl>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-					<a name="usesSelectedTiles" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> uses<wbr>Selected<wbr>Tiles</h3>
-					<div class="tsd-signature tsd-kind-icon">uses<wbr>Selected<wbr>Tiles<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#usesSelectedTiles">usesSelectedTiles</a></p>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Whether this tool uses the currently selected tiles. This defaults to
-							<code>false</code>.</p>
-						</div>
-						<p>When set to <code>false</code> and the currently selected tiles change while this
-							tool is active, the Stamp Brush is automatically activated. Set this
-						property to <code>true</code> to keep this tool active.</p>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.8</p>
-							</dd>
-						</dl>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-					<a name="usesWangSets" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> uses<wbr>Wang<wbr>Sets</h3>
-					<div class="tsd-signature tsd-kind-icon">uses<wbr>Wang<wbr>Sets<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#usesWangSets">usesWangSets</a></p>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Whether this tool works with Wang sets. This defaults to <code>false</code>.</p>
-						</div>
-						<p>When set to <code>false</code> and a Wang color is clicked while this tool is active,
-							the Terrain Brush is automatically activated. Set this property to <code>true</code>
-						to keep this tool active.</p>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.8</p>
-							</dd>
-						</dl>
-					</div>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
-				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<a name="activated" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> activated</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">activated<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#activated">activated</a></p>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called when the tool was activated.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<a name="deactivated" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> deactivated</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">deactivated<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#deactivated">deactivated</a></p>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called when the tool was deactivated.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<a name="keyPressed" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> key<wbr>Pressed</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">key<wbr>Pressed<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, modifiers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#keyPressed">keyPressed</a></p>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called when a key was pressed while the tool was active.</p>
-								</div>
-								<p>The keys are defined by numbers from the
-									<a href="https://doc.qt.io/qt-6/qt.html#Key-enum">Qt::Key</a> enum. They can
-								be accessed like <code>Qt.Key_Return</code>.</p>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<a name="languageChanged" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> language<wbr>Changed</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">language<wbr>Changed<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#languageChanged">languageChanged</a></p>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called when the language was changed.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<a name="mapChanged" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> map<wbr>Changed</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">map<wbr>Changed<span class="tsd-signature-symbol">(</span>oldMap<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="../classes/TileMap.html" class="tsd-signature-type" data-tsd-kind="Class">TileMap</a>, newMap<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="../classes/TileMap.html" class="tsd-signature-type" data-tsd-kind="Class">TileMap</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#mapChanged">mapChanged</a></p>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called when the active map was changed.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<a name="modifiersChanged" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> modifiers<wbr>Changed</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">modifiers<wbr>Changed<span class="tsd-signature-symbol">(</span>modifiers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#modifiersChanged">modifiersChanged</a></p>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called when the active modifier keys changed.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<a name="mouseDoubleClicked" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> mouse<wbr>Double<wbr>Clicked</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">mouse<wbr>Double<wbr>Clicked<span class="tsd-signature-symbol">(</span>button<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, modifiers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#mouseDoubleClicked">mouseDoubleClicked</a></p>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called when a mouse button was double-clicked.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<a name="mouseEntered" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> mouse<wbr>Entered</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">mouse<wbr>Entered<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#mouseEntered">mouseEntered</a></p>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called when the mouse entered the map view.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<a name="mouseLeft" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> mouse<wbr>Left</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">mouse<wbr>Left<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#mouseLeft">mouseLeft</a></p>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called when the mouse left the map view.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<a name="mouseMoved" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> mouse<wbr>Moved</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">mouse<wbr>Moved<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, modifiers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#mouseMoved">mouseMoved</a></p>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called when the mouse position in the map scene changed.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<a name="mousePressed" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> mouse<wbr>Pressed</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">mouse<wbr>Pressed<span class="tsd-signature-symbol">(</span>button<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, modifiers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#mousePressed">mousePressed</a></p>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called when a mouse button was pressed.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<a name="mouseReleased" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> mouse<wbr>Released</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">mouse<wbr>Released<span class="tsd-signature-symbol">(</span>button<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, modifiers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#mouseReleased">mouseReleased</a></p>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called when a mouse button was released.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<a name="tilePositionChanged" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> tile<wbr>Position<wbr>Changed</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">tile<wbr>Position<wbr>Changed<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#tilePositionChanged">tilePositionChanged</a></p>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called when the hovered tile position changed.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<a name="updateEnabledState" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> update<wbr>Enabled<wbr>State</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">update<wbr>Enabled<wbr>State<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#updateEnabledState">updateEnabledState</a></p>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Called when the map or the current layer changed.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<a name="updateStatusInfo" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> update<wbr>Status<wbr>Info</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">update<wbr>Status<wbr>Info<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#updateStatusInfo">updateStatusInfo</a></p>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Defining this function is necessary to suppress the default updating of
-									the status bar text.</p>
-								</div>
-								<p>This function is called automatically when the hovered tile position
-									changed, but <a href="Tool.html#statusInfo">statusInfo</a> can be changed in any other function as
-								well.</p>
-							</div>
-						</li>
-					</ul>
-				</section>
-			</section>
-		</div>
-		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
-			<nav class="tsd-navigation primary">
-				<ul>
-					<li class=" ">
-						<a href="../index.html">Exports</a>
-					</li>
-				</ul>
-			</nav>
-			<nav class="tsd-navigation secondary menu-sticky">
-				<ul class="before-current">
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-interface">
-						<a href="Tool.html" class="tsd-kind-icon">Tool</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="Tool.html#cursor" class="tsd-kind-icon">cursor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="Tool.html#enabled" class="tsd-kind-icon">enabled</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite">
-								<a href="Tool.html#icon" class="tsd-kind-icon">icon</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="Tool.html#map" class="tsd-kind-icon">map</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="Tool.html#name" class="tsd-kind-icon">name</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="Tool.html#preview" class="tsd-kind-icon">preview</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="Tool.html#selectedTile" class="tsd-kind-icon">selected<wbr>Tile</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="Tool.html#statusInfo" class="tsd-kind-icon">status<wbr>Info</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="Tool.html#targetLayerType" class="tsd-kind-icon">target<wbr>Layer<wbr>Type</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="Tool.html#tilePosition" class="tsd-kind-icon">tile<wbr>Position</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-overwrite">
-								<a href="Tool.html#toolBarActions" class="tsd-kind-icon">tool<wbr>Bar<wbr>Actions</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="Tool.html#usesSelectedTiles" class="tsd-kind-icon">uses<wbr>Selected<wbr>Tiles</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="Tool.html#usesWangSets" class="tsd-kind-icon">uses<wbr>Wang<wbr>Sets</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="Tool.html#activated" class="tsd-kind-icon">activated</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="Tool.html#deactivated" class="tsd-kind-icon">deactivated</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="Tool.html#keyPressed" class="tsd-kind-icon">key<wbr>Pressed</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="Tool.html#languageChanged" class="tsd-kind-icon">language<wbr>Changed</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="Tool.html#mapChanged" class="tsd-kind-icon">map<wbr>Changed</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="Tool.html#modifiersChanged" class="tsd-kind-icon">modifiers<wbr>Changed</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="Tool.html#mouseDoubleClicked" class="tsd-kind-icon">mouse<wbr>Double<wbr>Clicked</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="Tool.html#mouseEntered" class="tsd-kind-icon">mouse<wbr>Entered</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="Tool.html#mouseLeft" class="tsd-kind-icon">mouse<wbr>Left</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="Tool.html#mouseMoved" class="tsd-kind-icon">mouse<wbr>Moved</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="Tool.html#mousePressed" class="tsd-kind-icon">mouse<wbr>Pressed</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="Tool.html#mouseReleased" class="tsd-kind-icon">mouse<wbr>Released</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="Tool.html#tilePositionChanged" class="tsd-kind-icon">tile<wbr>Position<wbr>Changed</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="Tool.html#updateEnabledState" class="tsd-kind-icon">update<wbr>Enabled<wbr>State</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="Tool.html#updateStatusInfo" class="tsd-kind-icon">update<wbr>Status<wbr>Info</a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<ul class="after-current">
-				</ul>
-			</nav>
-		</div>
-	</div>
+<div class="col-content">
+<div class="tsd-page-title">
+<ul class="tsd-breadcrumb" aria-label="Breadcrumb">
+<li><a href="" aria-current="page">Tool</a></li></ul>
+<h1>Interface Tool</h1></div>
+<section class="tsd-panel tsd-comment">
+<div class="tsd-comment tsd-typography"><p>Once a tool is registered using <a href="../functions/tiled.registerTool.html" class="tsd-kind-function">tiled.registerTool</a>, it returns a
+tool instance. This interface extends the <a href="ToolDefinition.html" class="tsd-kind-interface">ToolDefinition</a> interface
+with the additional properties that are available on the tool instance.</p>
+<p>Not all properties in the <a href="ToolDefinition.html" class="tsd-kind-interface">ToolDefinition</a> interface can be changed
+after the tool has been registered.</p>
+</div></section>
+<div class="tsd-signature"><span class="tsd-signature-keyword">interface</span> <span class="tsd-kind-interface">Tool</span> <span class="tsd-signature-symbol">{</span><br/>    <a class="tsd-kind-property" href="#cursor">cursor</a><span class="tsd-signature-symbol">:</span> <a href="../classes/Qt.QCursor.html" class="tsd-signature-type tsd-kind-class">QCursor</a><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#enabled">enabled</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#icon">icon</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#map">map</a><span class="tsd-signature-symbol">:</span> <a href="../classes/TileMap.html" class="tsd-signature-type tsd-kind-class">TileMap</a> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#name">name</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#preview">preview</a><span class="tsd-signature-symbol">:</span> <a href="../classes/TileMap.html" class="tsd-signature-type tsd-kind-class">TileMap</a><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#selectedtile">selectedTile</a><span class="tsd-signature-symbol">:</span> <a href="../classes/Tile.html" class="tsd-signature-type tsd-kind-class">Tile</a> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#statusinfo">statusInfo</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#targetlayertype">targetLayerType</a><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#tileposition">tilePosition</a><span class="tsd-signature-symbol">:</span> <a href="point.html" class="tsd-signature-type tsd-kind-interface">point</a><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#toolbaractions">toolBarActions</a><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#usesselectedtiles">usesSelectedTiles</a><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-property" href="#useswangsets">usesWangSets</a><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#activated-1">activated</a><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#deactivated-1">deactivated</a><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#keypressed-1">keyPressed</a><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">key</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">modifiers</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#languagechanged-1">languageChanged</a><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#mapchanged-1">mapChanged</a><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><br/>        <span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">,</span><br/>        <span class="tsd-kind-parameter">oldMap</span><span class="tsd-signature-symbol">:</span> <a href="../classes/TileMap.html" class="tsd-signature-type tsd-kind-class">TileMap</a> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">,</span><br/>        <span class="tsd-kind-parameter">newMap</span><span class="tsd-signature-symbol">:</span> <a href="../classes/TileMap.html" class="tsd-signature-type tsd-kind-class">TileMap</a> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#modifierschanged-1">modifiersChanged</a><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">modifiers</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#mousedoubleclicked-1">mouseDoubleClicked</a><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><br/>        <span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">,</span><br/>        <span class="tsd-kind-parameter">button</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>        <span class="tsd-kind-parameter">x</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>        <span class="tsd-kind-parameter">y</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>        <span class="tsd-kind-parameter">modifiers</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#mouseentered-1">mouseEntered</a><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#mouseleft-1">mouseLeft</a><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#mousemoved-1">mouseMoved</a><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">x</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">y</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">modifiers</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#mousepressed-1">mousePressed</a><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><br/>        <span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">,</span><br/>        <span class="tsd-kind-parameter">button</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>        <span class="tsd-kind-parameter">x</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>        <span class="tsd-kind-parameter">y</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>        <span class="tsd-kind-parameter">modifiers</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#mousereleased-1">mouseReleased</a><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><br/>        <span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">,</span><br/>        <span class="tsd-kind-parameter">button</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>        <span class="tsd-kind-parameter">x</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>        <span class="tsd-kind-parameter">y</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>        <span class="tsd-kind-parameter">modifiers</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#tilepositionchanged-1">tilePositionChanged</a><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#updateenabledstate-1">updateEnabledState</a><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#updatestatusinfo-1">updateStatusInfo</a><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br/><span class="tsd-signature-symbol">}</span></div>
+<section class="tsd-panel tsd-hierarchy" data-refl="2221">
+<h4>Hierarchy (<a href="../hierarchy.html#Tool">View Summary</a>)</h4>
+<ul class="tsd-hierarchy">
+<li class="tsd-hierarchy-item"><a href="ToolDefinition.html" class="tsd-signature-type tsd-kind-interface">ToolDefinition</a>
+<ul class="tsd-hierarchy">
+<li class="tsd-hierarchy-item"><span class="tsd-hierarchy-target">Tool</span></li></ul></li></ul></section>
+<section class="tsd-panel-group tsd-index-group">
+<section class="tsd-panel tsd-index-panel">
+<details class="tsd-index-content tsd-accordion" open><summary class="tsd-accordion-summary tsd-index-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h5 class="tsd-index-heading uppercase">Index</h5></summary>
+<div class="tsd-accordion-details">
+<section class="tsd-index-section">
+<h3 class="tsd-index-heading tsd-anchor-link" id="properties">Properties<a href="#properties" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-index-list"><a href="#cursor" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>cursor</span></a>
+<a href="#enabled" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>enabled</span></a>
+<a href="#icon" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>icon</span></a>
+<a href="#map" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>map</span></a>
+<a href="#name" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>name</span></a>
+<a href="#preview" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>preview</span></a>
+<a href="#selectedtile" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>selected<wbr/>Tile</span></a>
+<a href="#statusinfo" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>status<wbr/>Info</span></a>
+<a href="#targetlayertype" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>target<wbr/>Layer<wbr/>Type?</span></a>
+<a href="#tileposition" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>tile<wbr/>Position</span></a>
+<a href="#toolbaractions" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>tool<wbr/>Bar<wbr/>Actions</span></a>
+<a href="#usesselectedtiles" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>uses<wbr/>Selected<wbr/>Tiles?</span></a>
+<a href="#useswangsets" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>uses<wbr/>Wang<wbr/>Sets?</span></a>
+</div></section>
+<section class="tsd-index-section">
+<h3 class="tsd-index-heading tsd-anchor-link" id="methods">Methods<a href="#methods" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-index-list"><a href="#activated" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>activated?</span></a>
+<a href="#deactivated" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>deactivated?</span></a>
+<a href="#keypressed" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>key<wbr/>Pressed?</span></a>
+<a href="#languagechanged" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>language<wbr/>Changed?</span></a>
+<a href="#mapchanged" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>map<wbr/>Changed?</span></a>
+<a href="#modifierschanged" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>modifiers<wbr/>Changed?</span></a>
+<a href="#mousedoubleclicked" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>mouse<wbr/>Double<wbr/>Clicked?</span></a>
+<a href="#mouseentered" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>mouse<wbr/>Entered?</span></a>
+<a href="#mouseleft" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>mouse<wbr/>Left?</span></a>
+<a href="#mousemoved" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>mouse<wbr/>Moved?</span></a>
+<a href="#mousepressed" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>mouse<wbr/>Pressed?</span></a>
+<a href="#mousereleased" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>mouse<wbr/>Released?</span></a>
+<a href="#tilepositionchanged" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>tile<wbr/>Position<wbr/>Changed?</span></a>
+<a href="#updateenabledstate" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>update<wbr/>Enabled<wbr/>State?</span></a>
+<a href="#updatestatusinfo" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>update<wbr/>Status<wbr/>Info?</span></a>
+</div></section></div></details></section></section>
+<details class="tsd-panel-group tsd-member-group tsd-accordion" open><summary class="tsd-accordion-summary" data-key="section-Properties"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h2 class="tsd-anchor-link" id="properties-1">Properties<a href="#properties-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2></summary>
+<section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="cursor"><span>cursor</span><a href="#cursor" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">cursor</span><span class="tsd-signature-symbol">:</span> <a href="../classes/Qt.QCursor.html" class="tsd-signature-type tsd-kind-class">QCursor</a></div>
+<div class="tsd-comment tsd-typography"><p>The cursor used by this tool. This will be the cursor set on the viewport
+of the <a href="MapView.html" class="tsd-kind-interface">MapView</a> while the tool is active.</p>
+<p>A <a href="../classes/Qt.QCursor.html" class="tsd-kind-class">Qt.QCursor</a> value can be created with <a href="../functions/tiled.cursor.html" class="tsd-kind-function">tiled.cursor</a>.</p>
+</div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="enabled"><span>enabled</span><a href="#enabled" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">enabled</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+<div class="tsd-comment tsd-typography"><p>Whether this tool is enabled.</p>
+</div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="icon"><span>icon</span><a href="#icon" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">icon</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+<div class="tsd-comment tsd-typography"><p>File name of the icon, or empty string when not set.</p>
+</div><aside class="tsd-sources">
+<p>Overrides <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#icon">icon</a></p></aside></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="map"><code class="tsd-tag">Readonly</code><span>map</span><a href="#map" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">map</span><span class="tsd-signature-symbol">:</span> <a href="../classes/TileMap.html" class="tsd-signature-type tsd-kind-class">TileMap</a> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">null</span></div>
+<div class="tsd-comment tsd-typography"><p>Currently active tile map.</p>
+</div></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="name"><span>name</span><a href="#name" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">name</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+<div class="tsd-comment tsd-typography"><p>Name of the tool as shown on the tool bar.</p>
+</div><aside class="tsd-sources">
+<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#name">name</a></p></aside></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="preview"><span>preview</span><a href="#preview" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">preview</span><span class="tsd-signature-symbol">:</span> <a href="../classes/TileMap.html" class="tsd-signature-type tsd-kind-class">TileMap</a></div>
+<div class="tsd-comment tsd-typography"><p>Get or set the preview for tile layer edits.</p>
+<p>When getting or setting this property, a copy is made. To modify the
+preview, you need to assign a changed <a href="../classes/TileMap.html" class="tsd-kind-class">TileMap</a> instance to this
+property.</p>
+<p>To highlight areas that will be erased, use <a href="TileLayerEdit.html#settile" class="tsd-kind-method">TileLayerEdit.setTile</a>
+to set tiles to <code>null</code>, before assigning the map to the preview.</p>
+</div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="selectedtile"><code class="tsd-tag">Readonly</code><span>selected<wbr/>Tile</span><a href="#selectedtile" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">selectedTile</span><span class="tsd-signature-symbol">:</span> <a href="../classes/Tile.html" class="tsd-signature-type tsd-kind-class">Tile</a> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">null</span></div>
+<div class="tsd-comment tsd-typography"><p>The last clicked tile for the active map. See also the <a href="MapEditor.html#currentbrush" class="tsd-kind-property">MapEditor.currentBrush</a> property.</p>
+</div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="statusinfo"><span>status<wbr/>Info</span><a href="#statusinfo" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">statusInfo</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+<div class="tsd-comment tsd-typography"><p>Text shown in the status bar while the tool is active.</p>
+</div></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="targetlayertype"><code class="tsd-tag">Optional</code><span>target<wbr/>Layer<wbr/>Type</span><a href="#targetlayertype" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">targetLayerType</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span></div>
+<div class="tsd-comment tsd-typography"><p>The target layer type for which this tool should be enabled. A convenient
+alternative to overriding <a href="ToolDefinition.html#updateenabledstate" class="tsd-kind-method">updateEnabledState</a>.</p>
+<p>The value can be any combination of the layer types
+<a href="../classes/Layer.html#tilelayertype" class="tsd-kind-property">Layer.TileLayerType</a>, <a href="../classes/Layer.html#objectgrouptype" class="tsd-kind-property">Layer.ObjectGroupType</a>,
+<a href="../classes/Layer.html#imagelayertype" class="tsd-kind-property">Layer.ImageLayerType</a> and <a href="../classes/Layer.html#grouplayertype" class="tsd-kind-property">Layer.GroupLayerType</a>.</p>
 </div>
-<footer class="with-border-bottom">
-	<div class="container">
-		<h2>Legend</h2>
-		<div class="tsd-legend-group">
-			<ul class="tsd-legend">
-				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
-			</ul>
-		</div>
-	</div>
-</footer>
-<div class="container tsd-generator">
-	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+<div class="tsd-comment tsd-typography">
+<div class="tsd-tag-since">
+<h4 class="tsd-anchor-link" id="since">Since<a href="#since" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p>1.10</p>
+</div></div><aside class="tsd-sources">
+<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#targetlayertype">targetLayerType</a></p></aside></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="tileposition"><code class="tsd-tag">Readonly</code><span>tile<wbr/>Position</span><a href="#tileposition" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">tilePosition</span><span class="tsd-signature-symbol">:</span> <a href="point.html" class="tsd-signature-type tsd-kind-interface">point</a></div>
+<div class="tsd-comment tsd-typography"><p>Mouse cursor position in tile coordinates.</p>
+</div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="toolbaractions"><span>tool<wbr/>Bar<wbr/>Actions</span><a href="#toolbaractions" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">toolBarActions</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+<div class="tsd-comment tsd-typography">
+<div class="tsd-tag-see">
+<h4 class="tsd-anchor-link" id="see">See<a href="#see" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p>ToolDefinition.toolBarActions</p>
+</div></div><aside class="tsd-sources">
+<p>Overrides <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#toolbaractions">toolBarActions</a></p></aside></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="usesselectedtiles"><code class="tsd-tag">Optional</code><span>uses<wbr/>Selected<wbr/>Tiles</span><a href="#usesselectedtiles" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">usesSelectedTiles</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span></div>
+<div class="tsd-comment tsd-typography"><p>Whether this tool uses the currently selected tiles. This defaults to
+<code>false</code>.</p>
+<p>When set to <code>false</code> and the currently selected tiles change while this
+tool is active, the Stamp Brush is automatically activated. Set this
+property to <code>true</code> to keep this tool active.</p>
 </div>
-<div class="overlay"></div>
-<script src="../assets/js/main.js"></script>
-<footer class="media-content">
-	<div class="footer-content container">
-		<p>Tiled - Copyright © 2008-2025 Thorbjørn Lindeijer<br> and <a href="https://www.openhub.net/p/tiled-qt/contributors/summary">many other contributors</a></p>
-		<nav style="display: flex; justify-content: center; align-items: top; margin-left: 1em;">
-			<ul style="float: right; border-left: 2px solid #ececec; padding: 0 1em">
-				<li><a href="/docs">Documentation</a></li>
-				<li><a href="/news">News</a></li>
-				<li><a href="/donate">Donate</a></li>
-				<li><a href="https://discourse.mapeditor.org/">Forum</a></li>
-				<li><a href="https://discord.gg/39wbTv7">Discord</a></li>
-				<li><a rel="me" href="https://floss.social/@tiled">Mastodon</a></li>
-				<li><a href="https://github.com/mapeditor/tiled">GitHub</a></li>
-				<li><a href="https://x.com/TiledApp">X</a></li>
-			</ul>
-		</nav>
-	</div>
-</footer>
-</body>
-</html>
+<div class="tsd-comment tsd-typography">
+<div class="tsd-tag-since">
+<h4 class="tsd-anchor-link" id="since-1">Since<a href="#since-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p>1.8</p>
+</div></div><aside class="tsd-sources">
+<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#usesselectedtiles">usesSelectedTiles</a></p></aside></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="useswangsets"><code class="tsd-tag">Optional</code><span>uses<wbr/>Wang<wbr/>Sets</span><a href="#useswangsets" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">usesWangSets</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span></div>
+<div class="tsd-comment tsd-typography"><p>Whether this tool works with Wang sets. This defaults to <code>false</code>.</p>
+<p>When set to <code>false</code> and a Wang color is clicked while this tool is active,
+the Terrain Brush is automatically activated. Set this property to <code>true</code>
+to keep this tool active.</p>
+</div>
+<div class="tsd-comment tsd-typography">
+<div class="tsd-tag-since">
+<h4 class="tsd-anchor-link" id="since-2">Since<a href="#since-2" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p>1.8</p>
+</div></div><aside class="tsd-sources">
+<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#useswangsets">usesWangSets</a></p></aside></section></section></details>
+<details class="tsd-panel-group tsd-member-group tsd-accordion" open><summary class="tsd-accordion-summary" data-key="section-Methods"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h2 class="tsd-anchor-link" id="methods-1">Methods<a href="#methods-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2></summary>
+<section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="activated"><code class="tsd-tag">Optional</code><span>activated</span><a href="#activated" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="activated-1"><span class="tsd-kind-call-signature">activated</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#activated-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Called when the tool was activated.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">this</span>: <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#activated">activated</a></p></aside></div></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="deactivated"><code class="tsd-tag">Optional</code><span>deactivated</span><a href="#deactivated" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="deactivated-1"><span class="tsd-kind-call-signature">deactivated</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#deactivated-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Called when the tool was deactivated.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">this</span>: <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#deactivated">deactivated</a></p></aside></div></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="keypressed"><code class="tsd-tag">Optional</code><span>key<wbr/>Pressed</span><a href="#keypressed" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="keypressed-1"><span class="tsd-kind-call-signature">keyPressed</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">key</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">modifiers</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#keypressed-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Called when a key was pressed while the tool was active.</p>
+<p>The keys are defined by numbers from the
+<a href="https://doc.qt.io/qt-6/qt.html#Key-enum">Qt::Key</a> enum. They can
+be accessed like <code>Qt.Key_Return</code>.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">this</span>: <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a></span></li>
+<li><span><span class="tsd-kind-parameter">key</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">modifiers</span>: <span class="tsd-signature-type">number</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#keypressed">keyPressed</a></p></aside></div></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="languagechanged"><code class="tsd-tag">Optional</code><span>language<wbr/>Changed</span><a href="#languagechanged" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="languagechanged-1"><span class="tsd-kind-call-signature">languageChanged</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#languagechanged-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Called when the language was changed.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">this</span>: <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#languagechanged">languageChanged</a></p></aside></div></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="mapchanged"><code class="tsd-tag">Optional</code><span>map<wbr/>Changed</span><a href="#mapchanged" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="mapchanged-1"><span class="tsd-kind-call-signature">mapChanged</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">oldMap</span><span class="tsd-signature-symbol">:</span> <a href="../classes/TileMap.html" class="tsd-signature-type tsd-kind-class">TileMap</a> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">newMap</span><span class="tsd-signature-symbol">:</span> <a href="../classes/TileMap.html" class="tsd-signature-type tsd-kind-class">TileMap</a> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#mapchanged-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Called when the active map was changed.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">this</span>: <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a></span></li>
+<li><span><span class="tsd-kind-parameter">oldMap</span>: <a href="../classes/TileMap.html" class="tsd-signature-type tsd-kind-class">TileMap</a> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">null</span></span></li>
+<li><span><span class="tsd-kind-parameter">newMap</span>: <a href="../classes/TileMap.html" class="tsd-signature-type tsd-kind-class">TileMap</a> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">null</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#mapchanged">mapChanged</a></p></aside></div></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="modifierschanged"><code class="tsd-tag">Optional</code><span>modifiers<wbr/>Changed</span><a href="#modifierschanged" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="modifierschanged-1"><span class="tsd-kind-call-signature">modifiersChanged</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">modifiers</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#modifierschanged-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Called when the active modifier keys changed.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">this</span>: <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a></span></li>
+<li><span><span class="tsd-kind-parameter">modifiers</span>: <span class="tsd-signature-type">number</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#modifierschanged">modifiersChanged</a></p></aside></div></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="mousedoubleclicked"><code class="tsd-tag">Optional</code><span>mouse<wbr/>Double<wbr/>Clicked</span><a href="#mousedoubleclicked" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="mousedoubleclicked-1"><span class="tsd-kind-call-signature">mouseDoubleClicked</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><br/>    <span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">button</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">x</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">y</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">modifiers</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#mousedoubleclicked-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Called when a mouse button was double-clicked.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">this</span>: <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a></span></li>
+<li><span><span class="tsd-kind-parameter">button</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">x</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">y</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">modifiers</span>: <span class="tsd-signature-type">number</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#mousedoubleclicked">mouseDoubleClicked</a></p></aside></div></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="mouseentered"><code class="tsd-tag">Optional</code><span>mouse<wbr/>Entered</span><a href="#mouseentered" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="mouseentered-1"><span class="tsd-kind-call-signature">mouseEntered</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#mouseentered-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Called when the mouse entered the map view.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">this</span>: <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#mouseentered">mouseEntered</a></p></aside></div></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="mouseleft"><code class="tsd-tag">Optional</code><span>mouse<wbr/>Left</span><a href="#mouseleft" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="mouseleft-1"><span class="tsd-kind-call-signature">mouseLeft</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#mouseleft-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Called when the mouse left the map view.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">this</span>: <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#mouseleft">mouseLeft</a></p></aside></div></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="mousemoved"><code class="tsd-tag">Optional</code><span>mouse<wbr/>Moved</span><a href="#mousemoved" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="mousemoved-1"><span class="tsd-kind-call-signature">mouseMoved</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">x</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">y</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">modifiers</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#mousemoved-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Called when the mouse position in the map scene changed.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">this</span>: <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a></span></li>
+<li><span><span class="tsd-kind-parameter">x</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">y</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">modifiers</span>: <span class="tsd-signature-type">number</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#mousemoved">mouseMoved</a></p></aside></div></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="mousepressed"><code class="tsd-tag">Optional</code><span>mouse<wbr/>Pressed</span><a href="#mousepressed" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="mousepressed-1"><span class="tsd-kind-call-signature">mousePressed</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><br/>    <span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">button</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">x</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">y</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">modifiers</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#mousepressed-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Called when a mouse button was pressed.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">this</span>: <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a></span></li>
+<li><span><span class="tsd-kind-parameter">button</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">x</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">y</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">modifiers</span>: <span class="tsd-signature-type">number</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#mousepressed">mousePressed</a></p></aside></div></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="mousereleased"><code class="tsd-tag">Optional</code><span>mouse<wbr/>Released</span><a href="#mousereleased" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="mousereleased-1"><span class="tsd-kind-call-signature">mouseReleased</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><br/>    <span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">button</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">x</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">y</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">modifiers</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#mousereleased-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Called when a mouse button was released.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">this</span>: <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a></span></li>
+<li><span><span class="tsd-kind-parameter">button</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">x</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">y</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><span class="tsd-kind-parameter">modifiers</span>: <span class="tsd-signature-type">number</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#mousereleased">mouseReleased</a></p></aside></div></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="tilepositionchanged"><code class="tsd-tag">Optional</code><span>tile<wbr/>Position<wbr/>Changed</span><a href="#tilepositionchanged" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="tilepositionchanged-1"><span class="tsd-kind-call-signature">tilePositionChanged</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#tilepositionchanged-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Called when the hovered tile position changed.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">this</span>: <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#tilepositionchanged">tilePositionChanged</a></p></aside></div></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="updateenabledstate"><code class="tsd-tag">Optional</code><span>update<wbr/>Enabled<wbr/>State</span><a href="#updateenabledstate" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="updateenabledstate-1"><span class="tsd-kind-call-signature">updateEnabledState</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#updateenabledstate-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Called when the map or the current layer changed.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">this</span>: <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#updateenabledstate">updateEnabledState</a></p></aside></div></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="updatestatusinfo"><code class="tsd-tag">Optional</code><span>update<wbr/>Status<wbr/>Info</span><a href="#updatestatusinfo" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="updatestatusinfo-1"><span class="tsd-kind-call-signature">updateStatusInfo</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#updatestatusinfo-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Defining this function is necessary to suppress the default updating of
+the status bar text.</p>
+<p>This function is called automatically when the hovered tile position
+changed, but <a href="#statusinfo" class="tsd-kind-property">Tool.statusInfo</a> can be changed in any other function as
+well.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">this</span>: <a href="" class="tsd-signature-type tsd-kind-interface">Tool</a></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="ToolDefinition.html">ToolDefinition</a>.<a href="ToolDefinition.html#updatestatusinfo">updateStatusInfo</a></p></aside></div></li></ul></section></section></details></div>
+<div class="col-sidebar">
+<div class="page-menu">
+<div class="tsd-navigation settings">
+<details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>Settings</h3></summary>
+<div class="tsd-accordion-details">
+<div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span>
+<ul id="tsd-filter-options">
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li></ul></div>
+<div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div>
+<details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>On This Page</h3></summary>
+<div class="tsd-accordion-details">
+<details open class="tsd-accordion tsd-page-navigation-section"><summary class="tsd-accordion-summary" data-key="section-Properties"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>Properties</summary>
+<div><a href="#cursor"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>cursor</span></a><a href="#enabled"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>enabled</span></a><a href="#icon"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>icon</span></a><a href="#map"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>map</span></a><a href="#name" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>name</span></a><a href="#preview"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>preview</span></a><a href="#selectedtile"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>selected<wbr/>Tile</span></a><a href="#statusinfo"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>status<wbr/>Info</span></a><a href="#targetlayertype" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>target<wbr/>Layer<wbr/>Type</span></a><a href="#tileposition"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>tile<wbr/>Position</span></a><a href="#toolbaractions"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>tool<wbr/>Bar<wbr/>Actions</span></a><a href="#usesselectedtiles" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>uses<wbr/>Selected<wbr/>Tiles</span></a><a href="#useswangsets" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>uses<wbr/>Wang<wbr/>Sets</span></a></div></details>
+<details open class="tsd-accordion tsd-page-navigation-section"><summary class="tsd-accordion-summary" data-key="section-Methods"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>Methods</summary>
+<div><a href="#activated" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>activated</span></a><a href="#deactivated" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>deactivated</span></a><a href="#keypressed" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>key<wbr/>Pressed</span></a><a href="#languagechanged" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>language<wbr/>Changed</span></a><a href="#mapchanged" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>map<wbr/>Changed</span></a><a href="#modifierschanged" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>modifiers<wbr/>Changed</span></a><a href="#mousedoubleclicked" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>mouse<wbr/>Double<wbr/>Clicked</span></a><a href="#mouseentered" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>mouse<wbr/>Entered</span></a><a href="#mouseleft" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>mouse<wbr/>Left</span></a><a href="#mousemoved" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>mouse<wbr/>Moved</span></a><a href="#mousepressed" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>mouse<wbr/>Pressed</span></a><a href="#mousereleased" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>mouse<wbr/>Released</span></a><a href="#tilepositionchanged" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>tile<wbr/>Position<wbr/>Changed</span></a><a href="#updateenabledstate" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>update<wbr/>Enabled<wbr/>State</span></a><a href="#updatestatusinfo" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>update<wbr/>Status<wbr/>Info</span></a></div></details></div></details></div>
+<div class="site-menu">
+<nav class="tsd-navigation"><a href="../index.html">Tiled Scripting API</a>
+<ul class="tsd-small-nested-navigation" id="tsd-nav-container">
+<li>Loading...</li></ul></nav></div></div></div><footer>
+<p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer>
+<div class="overlay"></div><footer class="media-content">
+<div class="footer-content container">
+<p>Tiled — Copyright © 2008–2025 Thorbjørn Lindeijer<br/> and <a href="https://www.openhub.net/p/tiled-qt/contributors/summary">many other contributors</a></p>
+<nav style="display: flex; justify-content: center; align-items: top; margin-left: 1em;">
+<ul style="float: right; border-left: 2px solid #ececec; padding: 0 1em">
+<li><a href="/docs">Documentation</a></li>
+<li><a href="/news">News</a></li>
+<li><a href="/donate">Donate</a></li>
+<li><a href="https://discourse.mapeditor.org/">Forum</a></li>
+<li><a href="https://discord.gg/39wbTv7">Discord</a></li>
+<li><a rel="me" href="https://floss.social/@tiled">Mastodon</a></li>
+<li><a href="https://github.com/mapeditor/tiled">GitHub</a></li>
+<li><a href="https://x.com/TiledApp">X</a></li></ul></nav></div></footer></body></html>
