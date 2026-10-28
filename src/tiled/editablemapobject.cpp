@@ -100,7 +100,8 @@ EditableObjectGroup *EditableMapObject::layer() const
 
 EditableMap *EditableMapObject::map() const
 {
-    return asset()->isMap() ? static_cast<EditableMap*>(asset()) : nullptr;
+    return asset() && asset()->isMap() ? static_cast<EditableMap*>(asset())
+                                       : nullptr;
 }
 
 void EditableMapObject::detach()

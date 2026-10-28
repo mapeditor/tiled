@@ -190,7 +190,7 @@ void EditableWangSet::detach()
 
 void EditableWangSet::attach(EditableTileset *tileset)
 {
-    Q_ASSERT(!asset() && tileset);
+    Q_ASSERT(tileset);
 
     moveOwnershipToCpp();
     setAsset(tileset);

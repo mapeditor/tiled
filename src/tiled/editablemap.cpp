@@ -239,6 +239,9 @@ void EditableMap::insertLayerAt(int index, EditableLayer *editableLayer)
     } else if (!checkReadOnly()) {
         map()->addTilesets(tilesets);
 
+        for (const auto &tileset : tilesets)
+            attachTileset(tileset.data());
+
         // ownership moves to the map
         map()->insertLayer(index, editableLayer->attach(this));
     }
@@ -264,10 +267,14 @@ bool EditableMap::addTileset(EditableTileset *editableTileset)
     if (map()->indexOfTileset(tileset) != -1)
         return false;   // can't add existing tileset
 
-    if (auto doc = mapDocument())
+    if (auto doc = mapDocument()) {
         push(new AddTileset(doc, tileset));
-    else if (!checkReadOnly())
+    } else if (!checkReadOnly()) {
         map()->addTileset(tileset);
+
+        // ownership moves to the map
+        editableTileset->attach();
+    }
 
     return true;
 }
@@ -298,10 +305,14 @@ bool EditableMap::replaceTileset(EditableTileset *oldEditableTileset,
     if (indexOfNewTileset != -1)
         return false;   // can't replace with tileset that is already part of the map (undo broken)
 
-    if (auto doc = mapDocument())
+    if (auto doc = mapDocument()) {
         push(new ReplaceTileset(doc, indexOfOldTileset, newTileset));
-    else if (!checkReadOnly())
+    } else if (!checkReadOnly()) {
         map()->replaceTileset(oldTileset, newTileset);
+
+        // ownership moves to the map
+        newEditableTileset->attach();
+    }
 
     return true;
 }
@@ -725,6 +736,8 @@ void EditableMap::setDocument(Document *document)
         connect(doc, &Document::changed, this, &EditableMap::documentChanged);
         connect(doc, &MapDocument::layerAdded, this, &EditableMap::attachLayer);
         connect(doc, &MapDocument::layerRemoved, this, &EditableMap::detachLayer);
+        connect(doc, &MapDocument::tilesetAdded, this,
+                [this] (int, Tileset *tileset) { attachTileset(tileset); });
 
         connect(doc, &MapDocument::currentLayerChanged, this, &EditableMap::currentLayerChanged);
         connect(doc, &MapDocument::selectedLayersChanged, this, &EditableMap::selectedLayersChanged);
@@ -787,6 +800,12 @@ void EditableMap::detachLayer(Layer *layer)
     } else if (ObjectGroup *objectGroup = layer->asObjectGroup()) {
         detachMapObjects(objectGroup->objects());
     }
+}
+
+void EditableMap::attachTileset(Tileset *tileset)
+{
+    if (auto editable = EditableTileset::find(tileset))
+        editable->attach();
 }
 
 void EditableMap::attachMapObjects(const QList<MapObject *> &mapObjects)

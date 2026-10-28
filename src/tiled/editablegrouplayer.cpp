@@ -23,6 +23,7 @@
 #include "addremovelayer.h"
 #include "addremovetileset.h"
 #include "editablemap.h"
+#include "editabletileset.h"
 #include "scriptmanager.h"
 
 #include <QCoreApplication>
@@ -37,6 +38,22 @@ EditableGroupLayer::EditableGroupLayer(const QString &name, QObject *parent)
 EditableGroupLayer::EditableGroupLayer(EditableMap *map, GroupLayer *groupLayer, QObject *parent)
     : EditableLayer(map, groupLayer, parent)
 {
+}
+
+/**
+ * In addition to attaching the group layer, moves the editables of its
+ * child layers to the given asset.
+ */
+Layer *EditableGroupLayer::attach(EditableAsset *asset)
+{
+    auto layer = EditableLayer::attach(asset);
+
+    for (Layer *childLayer : groupLayer()->layers())
+        if (auto editable = EditableLayer::find(childLayer))
+            if (editable->asset() != asset)
+                editable->attach(asset);
+
+    return layer;
 }
 
 QList<QObject *> EditableGroupLayer::layers()
@@ -118,8 +135,13 @@ void EditableGroupLayer::insertLayerAt(int index, EditableLayer *editableLayer)
 
         asset()->push(command);
     } else if (!checkReadOnly()) {
-        if (auto map = groupLayer()->map())
+        if (auto map = groupLayer()->map()) {
             map->addTilesets(tilesets);
+
+            for (const auto &tileset : tilesets)
+                if (auto editable = EditableTileset::find(tileset.data()))
+                    editable->attach();
+        }
 
         // ownership moves to the group layer
         groupLayer()->insertLayer(index, editableLayer->attach(asset()));

@@ -112,7 +112,7 @@ public:
     Layer *layer() const;
 
     void detach();
-    Layer *attach(EditableAsset *asset);
+    virtual Layer *attach(EditableAsset *asset);
     void hold(std::unique_ptr<Layer> layer);
     bool isOwning() const;
 
