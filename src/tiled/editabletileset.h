@@ -166,6 +166,8 @@ public:
 
     QSharedPointer<Document> createDocument() override;
 
+    void attach();
+
     static EditableTileset *find(Tileset *tileset);
     static EditableTileset *get(Tileset *tileset);
 
@@ -200,6 +202,7 @@ private:
     void documentChanged(const ChangeEvent &event);
     void attachTiles(const QList<Tile*> &tiles);
     void detachTiles(const QList<Tile*> &tiles);
+    void attachWangSets(const QList<WangSet*> &wangSets);
     void detachWangSets(const QList<WangSet*> &wangSets);
 
     void tileObjectGroupChanged(Tile *tile);

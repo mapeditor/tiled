@@ -231,6 +231,7 @@ private:
 
     void attachLayer(Layer *layer);
     void detachLayer(Layer *layer);
+    void attachTileset(Tileset *tileset);
     void attachMapObjects(const QList<MapObject*> &mapObjects);
     void detachMapObjects(const QList<MapObject*> &mapObjects);
 

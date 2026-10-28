@@ -23,6 +23,7 @@
 #include "addremovemapobject.h"
 #include "changeobjectgroupproperties.h"
 #include "editableasset.h"
+#include "editablemapobject.h"
 #include "map.h"
 #include "scriptmanager.h"
 
@@ -40,6 +41,22 @@ EditableObjectGroup::EditableObjectGroup(EditableAsset *asset,
                                          QObject *parent)
     : EditableLayer(asset, objectGroup, parent)
 {
+}
+
+/**
+ * In addition to attaching the object group, moves the editables of its
+ * objects to the given asset.
+ */
+Layer *EditableObjectGroup::attach(EditableAsset *asset)
+{
+    auto layer = EditableLayer::attach(asset);
+
+    for (MapObject *object : objectGroup()->objects())
+        if (auto editable = EditableMapObject::find(object))
+            if (editable->asset() != asset)
+                editable->attach(asset);
+
+    return layer;
 }
 
 QList<QObject *> EditableObjectGroup::objects()

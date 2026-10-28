@@ -128,7 +128,7 @@ void EditableTile::detach()
 
 void EditableTile::attach(EditableTileset *tileset)
 {
-    Q_ASSERT(!asset() && tileset);
+    Q_ASSERT(tileset);
 
     moveOwnershipToCpp();
     setAsset(tileset);

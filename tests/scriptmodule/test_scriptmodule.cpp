@@ -25,6 +25,7 @@ private slots:
     void loadMissingWorld();
     void objectPointerPropertyValues();
     void objectReferencesInListProperty();
+    void gcOfTilesetAddedToMap();
 
 private:
     std::unique_ptr<ProjectManager> mProjectManager;
@@ -139,6 +140,38 @@ void test_ScriptModule::objectReferencesInListProperty()
         "loaded.property('refs')[0].name"));
     QVERIFY2(!result.isError(), qPrintable(result.toString()));
     QCOMPARE(result.toString(), QStringLiteral("hero"));
+}
+
+void test_ScriptModule::gcOfTilesetAddedToMap()
+{
+    auto &manager = ScriptManager::instance();
+    const auto result = manager.evaluate(QStringLiteral(
+        "var map = new TileMap();"
+        "map.setSize(4, 4);"
+        "map.setTileSize(32, 32);"
+        "(function() {"
+        "    var tileset = new Tileset(\"scripted\");"
+        "    var tile = tileset.addTile();"
+        "    var image = new Image(32, 32, Image.Format_ARGB32);"
+        "    image.fill(\"#0000ff\");"
+        "    tile.setImage(image);"
+        "    map.addTileset(tileset);"
+        "    var layer = new ObjectGroup(\"objects\");"
+        "    var object = new MapObject();"
+        "    object.tile = tile;"
+        "    object.width = 32;"
+        "    object.height = 32;"
+        "    layer.addObject(object);"
+        "    map.addLayer(layer);"
+        "})();"
+        "gc();"
+        "var tilesetOk = map.tilesets.length === 1 && map.tilesets[0] !== null;"
+        "var object = map.layerAt(0).objects[0];"
+        "var tileOk = object.tile !== null && object.tile.tileset === map.tilesets[0];"
+        "gc();"
+        "tilesetOk && tileOk && map.tilesets[0] !== null;"));
+    QVERIFY2(!result.isError(), qPrintable(result.toString()));
+    QCOMPARE(result.toBool(), true);
 }
 
 QTEST_MAIN(test_ScriptModule)
