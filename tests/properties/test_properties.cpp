@@ -422,7 +422,13 @@ void test_Properties::loadCircularReference()
     QVERIFY(a);
     QCOMPARE(a->type, PropertyType::PT_Class);
     const auto &membersA = static_cast<const ClassPropertyType*>(a)->members;
-    QVERIFY(!membersA.contains(QStringLiteral("b")));
+    QVERIFY(membersA.contains(QStringLiteral("b")));
+
+    const auto b = types.findPropertyValueType(QStringLiteral("B"));
+    QVERIFY(b);
+    QCOMPARE(b->type, PropertyType::PT_Class);
+    const auto &membersB = static_cast<const ClassPropertyType*>(b)->members;
+    QVERIFY(!membersB.contains(QStringLiteral("a")));
 }
 
 void test_Properties::loadEnumInNestedClass()

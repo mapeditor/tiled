@@ -47,3 +47,7 @@ jobs:
     - name: Build
       run: |
         qbs build modules.cpp.compilerWrapper:ccache
+
+    - name: Test
+      run: |
+        qbs build -p autotest-runner modules.cpp.compilerWrapper:ccache
