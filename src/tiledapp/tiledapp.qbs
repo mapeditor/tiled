@@ -37,6 +37,7 @@ TiledQtGuiApplication {
 
     cpp.defines: {
         var defs = base;
+        defs.push("TILED_VERSION=" + project.version);
 
         if (project.sentry)
             defs.push("TILED_SENTRY");
