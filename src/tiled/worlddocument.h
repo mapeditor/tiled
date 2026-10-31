@@ -91,6 +91,7 @@ private:
 
     // Document interface
     std::unique_ptr<EditableAsset> createEditable() override;
+    bool isModifiedImpl() const override;
 
     std::unique_ptr<World> mWorld;
     QVector<UnsavedMap> mUnsavedMaps;
