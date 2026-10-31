@@ -1,606 +1,84 @@
-<!doctype html>
-<html class="default no-js">
-<head>
-	<meta charset="utf-8">
-	<link rel="stylesheet" href="assets/css/main.css">
-	<meta name='viewport' content="width=device-width, initial-scale=1" />
-	<meta property="og:image" content="https://www.mapeditor.org/img/tiled-logo-filled.png" />
-	<link href='/favicon.ico' rel='icon' type='image/png'/>
-	<link rel="preconnect" href="https://fonts.gstatic.com">
-	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="/css/base.css">
-	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
-	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
-	<link rel="stylesheet" href="assets/css/override.css">
-	<title>Tiled Scripting API</title>
-	<meta name="description" content="Documentation for Tiled Scripting API">
-	<script async src="assets/js/search.js" id="search-script"></script>
-</head>
-<body>
+<!DOCTYPE html><html class="default" lang="en" data-base="./"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Tiled Scripting API</title><meta name="description" content="Documentation for Tiled Scripting API"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><link rel="stylesheet" href="assets/custom.css"/><script defer src="assets/main.js"></script><script async src="assets/icons.js" id="tsd-icons-script"></script><script async src="assets/search.js" id="tsd-search-script"></script><script async src="assets/navigation.js" id="tsd-nav-script"></script><script async src="assets/hierarchy.js" id="tsd-hierarchy-script"></script><meta property="og:image" content="https://www.mapeditor.org/img/tiled-logo-filled.png"/><link href="/favicon.ico" rel="icon" type="image/png"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/><link rel="stylesheet" href="/css/base.css"/><link href="/atom.xml" rel="alternate" type="application/atom+xml"/><script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script></head><body>
 <div class="headerbar-container">
-	<nav class="headerbar container">
-		<a href="/" class="headerbar-logo"><img src="/img/tiled-logo-white.png" class="logo" alt="Tiled logo" width="393" height="213" /></a>
-		<div class="headerbar-content">
-			<a class="header-item" href="/docs">Docs</a>
-			<a class="header-item" href="/news">News</a>
-			<a class="header-item" href="/donate">Donate</a>
-			<div class="stretch"></div>
-			<!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
-			<a href="https://discourse.mapeditor.org/" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44.8 51.2"><path d="m22.59 2.7652c-12.26 0-22.59 9.85-22.59 22.01 0 0.39 0.01 22.79 0.01 22.79l22.58-0.02c12.27 0 22.21-10.23 22.21-22.39s-9.94-22.39-22.21-22.39zm-0.19 35.2c-1.94 0-3.79-0.43-5.44-1.21l-8.11 2.01 2.29-7.5c-0.98-1.81-1.54-3.89-1.54-6.1 0-7.07 5.73-12.8 12.8-12.8s12.8 5.73 12.8 12.8-5.73 12.8-12.8 12.8z"/></svg> <span class="tooltiptext">Forum</span></a>
-			<a href="https://discord.gg/39wbTv7" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44.8 51.2"><path d="m29.722 24.32c0 1.5616-1.152 2.8416-2.6112 2.8416-1.4336 0-2.6112-1.28-2.6112-2.8416s1.152-2.8416 2.6112-2.8416 2.6112 1.28 2.6112 2.8416zm-11.955-2.8416c-1.4592 0-2.6112 1.28-2.6112 2.8416s1.1776 2.8416 2.6112 2.8416c1.4592 0 2.6112-1.28 2.6112-2.8416 0.0256-1.5616-1.152-2.8416-2.6112-2.8416zm27.034-16.205v45.926c-6.4494-5.6994-4.3868-3.8128-11.878-10.778l1.3568 4.736h-29.03c-2.8928 0-5.248-2.3552-5.248-5.2736v-34.611c0-2.9184 2.3552-5.2736 5.248-5.2736h34.304c2.8928 0 5.248 2.3552 5.248 5.2736zm-7.296 24.269c0-8.2432-3.6864-14.925-3.6864-14.925-3.6864-2.7648-7.1936-2.688-7.1936-2.688l-0.3584 0.4096c4.352 1.3312 6.3744 3.2512 6.3744 3.2512-6.0811-3.3329-13.224-3.3335-19.123-0.7424-0.9472 0.4352-1.5104 0.7424-1.5104 0.7424s2.1248-2.0224 6.7328-3.3536l-0.256-0.3072s-3.5072-0.0768-7.1936 2.688c0 0-3.6864 6.6816-3.6864 14.925 0 0 2.1504 3.712 7.808 3.8912 0 0 0.9472-1.152 1.7152-2.1248-3.2512-0.9728-4.48-3.0208-4.48-3.0208 0.3766 0.2636 0.9976 0.6053 1.0496 0.64 4.321 2.4198 10.459 3.2126 15.974 0.896 0.896-0.3328 1.8944-0.8192 2.944-1.5104 0 0-1.28 2.0992-4.6336 3.0464 0.768 0.9728 1.6896 2.0736 1.6896 2.0736 5.6576-0.1792 7.8336-3.8912 7.8336-3.8912z"/></svg> <span class="tooltiptext">Discord</span></a>
-			<a href="https://floss.social/@tiled" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M433 179.1c0-97.2-63.7-125.7-63.7-125.7-62.5-28.7-228.6-28.4-290.5 0 0 0-63.7 28.5-63.7 125.7 0 115.7-6.6 259.4 105.6 289.1 40.5 10.7 75.3 13 103.3 11.4 50.8-2.8 79.3-18.1 79.3-18.1l-1.7-36.9s-36.3 11.4-77.1 10.1c-40.4-1.4-83-4.4-89.6-54a102.5 102.5 0 0 1 -.9-13.9c85.6 20.9 158.7 9.1 178.8 6.7 56.1-6.7 105-41.3 111.2-72.9 9.8-49.8 9-121.5 9-121.5zm-75.1 125.2h-46.6v-114.2c0-49.7-64-51.6-64 6.9v62.5h-46.3V197c0-58.5-64-56.6-64-6.9v114.2H90.2c0-122.1-5.2-147.9 18.4-175 25.9-28.9 79.8-30.8 103.8 6.1l11.6 19.5 11.6-19.5c24.1-37.1 78.1-34.8 103.8-6.1 23.7 27.3 18.4 53 18.4 175z"/></svg> <span class="tooltiptext">Mastodon</span></a>
-			<a href="https://github.com/mapeditor/tiled" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49.6 51.2"><path d="m16.59 40.099c0 0.2-0.23 0.36-0.52 0.36-0.33 0.03-0.56-0.13-0.56-0.36 0-0.2 0.23-0.36 0.52-0.36 0.3-0.03 0.56 0.13 0.56 0.36zm-3.11-0.45c-0.07 0.2 0.13 0.43 0.43 0.49 0.26 0.1 0.56 0 0.62-0.2s-0.13-0.43-0.43-0.52c-0.26-0.07-0.55 0.03-0.62 0.23zm4.42-0.17c-0.29 0.07-0.49 0.26-0.46 0.49 0.03 0.2 0.29 0.33 0.59 0.26 0.29-0.07 0.49-0.26 0.46-0.46-0.03-0.19-0.3-0.32-0.59-0.29zm6.58-38.32c-13.87 0-24.48 10.53-24.48 24.4 0 11.09 6.98 20.58 16.95 23.92 1.28 0.23 1.73-0.56 1.73-1.21 0-0.62-0.03-4.04-0.03-6.14 0 0-7 1.5-8.47-2.98 0 0-1.14-2.91-2.78-3.66 0 0-2.29-1.57 0.16-1.54 0 0 2.49 0.2 3.86 2.58 2.19 3.86 5.86 2.75 7.29 2.09 0.23-1.6 0.88-2.71 1.6-3.37-5.59-0.62-11.23-1.43-11.23-11.05 0-2.75 0.76-4.13 2.36-5.89-0.26-0.65-1.11-3.33 0.26-6.79 2.09-0.65 6.9 2.7 6.9 2.7 2-0.56 4.15-0.85 6.28-0.85s4.28 0.29 6.28 0.85c0 0 4.81-3.36 6.9-2.7 1.37 3.47 0.52 6.14 0.26 6.79 1.6 1.77 2.58 3.15 2.58 5.89 0 9.65-5.89 10.42-11.48 11.05 0.92 0.79 1.7 2.29 1.7 4.64 0 3.37-0.03 7.54-0.03 8.36 0 0.65 0.46 1.44 1.73 1.21 10-3.32 16.78-12.81 16.78-23.9 0-13.87-11.25-24.4-25.12-24.4zm-14.76 34.49c-0.13 0.1-0.1 0.33 0.07 0.52 0.16 0.16 0.39 0.23 0.52 0.1 0.13-0.1 0.1-0.33-0.07-0.52-0.16-0.16-0.39-0.23-0.52-0.1zm-1.08-0.81c-0.07 0.13 0.03 0.29 0.23 0.39 0.16 0.1 0.36 0.07 0.43-0.07 0.07-0.13-0.03-0.29-0.23-0.39-0.2-0.06-0.36-0.03-0.43 0.07zm3.24 3.56c-0.16 0.13-0.1 0.43 0.13 0.62 0.23 0.23 0.52 0.26 0.65 0.1 0.13-0.13 0.07-0.43-0.13-0.62-0.22-0.23-0.52-0.26-0.65-0.1zm-1.14-1.47c-0.16 0.1-0.16 0.36 0 0.59s0.43 0.33 0.56 0.23c0.16-0.13 0.16-0.39 0-0.62-0.14-0.23-0.4-0.33-0.56-0.2z"/></svg> <span class="tooltiptext">GitHub</span></a>
-		</div>
-	</nav>
-</div>
-<header>
-	<div class="tsd-page-toolbar">
-		<div class="container">
-			<div class="table-wrap">
-				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
-					<div class="field">
-						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
-						<input id="tsd-search-field" type="text" />
-					</div>
-					<ul class="results">
-						<li class="state loading">Preparing search index...</li>
-						<li class="state failure">The search index is not available</li>
-					</ul>
-					<a href="index.html" class="title">Tiled Scripting API</a>
-				</div>
-				<div class="table-cell" id="tsd-widgets">
-					<div id="tsd-filter">
-						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
-						<div class="tsd-filter-group">
-							<div class="tsd-select" id="tsd-filter-visibility">
-								<span class="tsd-select-label">All</span>
-								<ul class="tsd-select-list">
-									<li data-value="public">Public</li>
-									<li data-value="protected">Public/Protected</li>
-									<li data-value="private" class="selected">All</li>
-								</ul>
-							</div>
-							<input type="checkbox" id="tsd-filter-inherited" checked />
-							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
-						</div>
-					</div>
-					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="tsd-page-title">
-		<div class="container">
-			<h1>Tiled Scripting API</h1>
-		</div>
-	</div>
-</header>
+<nav class="headerbar container"><a href="/" class="headerbar-logo"><img src="/img/tiled-logo-white.png" class="logo" alt="Tiled logo" width="393" height="213"/></a>
+<div class="headerbar-content"><a class="header-item" href="/docs">Docs</a><a class="header-item" href="/news">News</a><a class="header-item" href="/donate">Donate</a>
+<div class="stretch"></div>
+    <a href="https://discourse.mapeditor.org/" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44.8 51.2"><path d="m22.59 2.7652c-12.26 0-22.59 9.85-22.59 22.01 0 0.39 0.01 22.79 0.01 22.79l22.58-0.02c12.27 0 22.21-10.23 22.21-22.39s-9.94-22.39-22.21-22.39zm-0.19 35.2c-1.94 0-3.79-0.43-5.44-1.21l-8.11 2.01 2.29-7.5c-0.98-1.81-1.54-3.89-1.54-6.1 0-7.07 5.73-12.8 12.8-12.8s12.8 5.73 12.8 12.8-5.73 12.8-12.8 12.8z"/></svg> <span class="tooltiptext">Forum</span></a>
+    <a href="https://discord.gg/39wbTv7" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44.8 51.2"><path d="m29.722 24.32c0 1.5616-1.152 2.8416-2.6112 2.8416-1.4336 0-2.6112-1.28-2.6112-2.8416s1.152-2.8416 2.6112-2.8416 2.6112 1.28 2.6112 2.8416zm-11.955-2.8416c-1.4592 0-2.6112 1.28-2.6112 2.8416s1.1776 2.8416 2.6112 2.8416c1.4592 0 2.6112-1.28 2.6112-2.8416 0.0256-1.5616-1.152-2.8416-2.6112-2.8416zm27.034-16.205v45.926c-6.4494-5.6994-4.3868-3.8128-11.878-10.778l1.3568 4.736h-29.03c-2.8928 0-5.248-2.3552-5.248-5.2736v-34.611c0-2.9184 2.3552-5.2736 5.248-5.2736h34.304c2.8928 0 5.248 2.3552 5.248 5.2736zm-7.296 24.269c0-8.2432-3.6864-14.925-3.6864-14.925-3.6864-2.7648-7.1936-2.688-7.1936-2.688l-0.3584 0.4096c4.352 1.3312 6.3744 3.2512 6.3744 3.2512-6.0811-3.3329-13.224-3.3335-19.123-0.7424-0.9472 0.4352-1.5104 0.7424-1.5104 0.7424s2.1248-2.0224 6.7328-3.3536l-0.256-0.3072s-3.5072-0.0768-7.1936 2.688c0 0-3.6864 6.6816-3.6864 14.925 0 0 2.1504 3.712 7.808 3.8912 0 0 0.9472-1.152 1.7152-2.1248-3.2512-0.9728-4.48-3.0208-4.48-3.0208 0.3766 0.2636 0.9976 0.6053 1.0496 0.64 4.321 2.4198 10.459 3.2126 15.974 0.896 0.896-0.3328 1.8944-0.8192 2.944-1.5104 0 0-1.28 2.0992-4.6336 3.0464 0.768 0.9728 1.6896 2.0736 1.6896 2.0736 5.6576-0.1792 7.8336-3.8912 7.8336-3.8912z"/></svg> <span class="tooltiptext">Discord</span></a>
+    <a href="https://floss.social/@tiled" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M433 179.1c0-97.2-63.7-125.7-63.7-125.7-62.5-28.7-228.6-28.4-290.5 0 0 0-63.7 28.5-63.7 125.7 0 115.7-6.6 259.4 105.6 289.1 40.5 10.7 75.3 13 103.3 11.4 50.8-2.8 79.3-18.1 79.3-18.1l-1.7-36.9s-36.3 11.4-77.1 10.1c-40.4-1.4-83-4.4-89.6-54a102.5 102.5 0 0 1 -.9-13.9c85.6 20.9 158.7 9.1 178.8 6.7 56.1-6.7 105-41.3 111.2-72.9 9.8-49.8 9-121.5 9-121.5zm-75.1 125.2h-46.6v-114.2c0-49.7-64-51.6-64 6.9v62.5h-46.3V197c0-58.5-64-56.6-64-6.9v114.2H90.2c0-122.1-5.2-147.9 18.4-175 25.9-28.9 79.8-30.8 103.8 6.1l11.6 19.5 11.6-19.5c24.1-37.1 78.1-34.8 103.8-6.1 23.7 27.3 18.4 53 18.4 175z"/></svg> <span class="tooltiptext">Mastodon</span></a>
+    <a href="https://github.com/mapeditor/tiled" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49.6 51.2"><path d="m16.59 40.099c0 0.2-0.23 0.36-0.52 0.36-0.33 0.03-0.56-0.13-0.56-0.36 0-0.2 0.23-0.36 0.52-0.36 0.3-0.03 0.56 0.13 0.56 0.36zm-3.11-0.45c-0.07 0.2 0.13 0.43 0.43 0.49 0.26 0.1 0.56 0 0.62-0.2s-0.13-0.43-0.43-0.52c-0.26-0.07-0.55 0.03-0.62 0.23zm4.42-0.17c-0.29 0.07-0.49 0.26-0.46 0.49 0.03 0.2 0.29 0.33 0.59 0.26 0.29-0.07 0.49-0.26 0.46-0.46-0.03-0.19-0.3-0.32-0.59-0.29zm6.58-38.32c-13.87 0-24.48 10.53-24.48 24.4 0 11.09 6.98 20.58 16.95 23.92 1.28 0.23 1.73-0.56 1.73-1.21 0-0.62-0.03-4.04-0.03-6.14 0 0-7 1.5-8.47-2.98 0 0-1.14-2.91-2.78-3.66 0 0-2.29-1.57 0.16-1.54 0 0 2.49 0.2 3.86 2.58 2.19 3.86 5.86 2.75 7.29 2.09 0.23-1.6 0.88-2.71 1.6-3.37-5.59-0.62-11.23-1.43-11.23-11.05 0-2.75 0.76-4.13 2.36-5.89-0.26-0.65-1.11-3.33 0.26-6.79 2.09-0.65 6.9 2.7 6.9 2.7 2-0.56 4.15-0.85 6.28-0.85s4.28 0.29 6.28 0.85c0 0 4.81-3.36 6.9-2.7 1.37 3.47 0.52 6.14 0.26 6.79 1.6 1.77 2.58 3.15 2.58 5.89 0 9.65-5.89 10.42-11.48 11.05 0.92 0.79 1.7 2.29 1.7 4.64 0 3.37-0.03 7.54-0.03 8.36 0 0.65 0.46 1.44 1.73 1.21 10-3.32 16.78-12.81 16.78-23.9 0-13.87-11.25-24.4-25.12-24.4zm-14.76 34.49c-0.13 0.1-0.1 0.33 0.07 0.52 0.16 0.16 0.39 0.23 0.52 0.1 0.13-0.1 0.1-0.33-0.07-0.52-0.16-0.16-0.39-0.23-0.52-0.1zm-1.08-0.81c-0.07 0.13 0.03 0.29 0.23 0.39 0.16 0.1 0.36 0.07 0.43-0.07 0.07-0.13-0.03-0.29-0.23-0.39-0.2-0.06-0.36-0.03-0.43 0.07zm3.24 3.56c-0.16 0.13-0.1 0.43 0.13 0.62 0.23 0.23 0.52 0.26 0.65 0.1 0.13-0.13 0.07-0.43-0.13-0.62-0.22-0.23-0.52-0.26-0.65-0.1zm-1.14-1.47c-0.16 0.1-0.16 0.36 0 0.59s0.43 0.33 0.56 0.23c0.16-0.13 0.16-0.39 0-0.62-0.14-0.23-0.4-0.33-0.56-0.2z"/></svg> <span class="tooltiptext">GitHub</span></a>
+</div></nav></div><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar">
+<div class="tsd-toolbar-contents container"><a href="index.html" class="title">Tiled Scripting API</a>
+<div id="tsd-toolbar-links"></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/>
+<ul role="listbox" id="tsd-search-results"></ul>
+<div id="tsd-search-status" aria-live="polite" aria-atomic="true">
+<div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-menu"></use></svg></a></div></header>
 <div class="container container-main">
-	<div class="row">
-		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Tiled can be extended with the use of JavaScript.</p>
-					</div>
-					<p>Scripts can be used to implement <a href="modules/tiled.html#registerMapFormat">custom map formats</a>,
-						<a href="modules/tiled.html#registerAction">custom actions</a>, and <a href="modules/tiled.html#registerTool">new tools</a>.
-					Scripts can also <a href="interfaces/Signal.html">automate actions based on signals</a>.</p>
-					<p>See the <a href="https://doc.mapeditor.org/en/stable/manual/scripting">Tiled Manual</a> for more information on writing or installing extensions.</p>
-					<a href="#type-definitions" id="type-definitions" style="color: inherit; text-decoration: none;">
-						<h3>Type Definitions</h3>
-					</a>
-					<p>TypeScript type definitions for this API are available by installing the
-						<a href="https://www.npmjs.com/package/@mapeditor/tiled-api"><code>@mapeditor/tiled-api</code></a>
-						package, which allows you to write scripts using TypeScript and can provide
-					auto-completion in your editor (also when using plain JavaScript).</p>
-					<p>This documentation is also generated based on these type definitions.</p>
-				</div>
-			</section>
-			<section class="tsd-panel-group tsd-index-group">
-				<h2>Index</h2>
-				<section class="tsd-panel tsd-index-panel">
-					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
-							<h3>Namespaces</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-namespace"><a href="modules/Base64.html" class="tsd-kind-icon">Base64</a></li>
-								<li class="tsd-kind-namespace"><a href="modules/File.html" class="tsd-kind-icon">File</a></li>
-								<li class="tsd-kind-namespace"><a href="modules/FileInfo.html" class="tsd-kind-icon">File<wbr>Info</a></li>
-								<li class="tsd-kind-namespace"><a href="modules/Geometry.html" class="tsd-kind-icon">Geometry</a></li>
-								<li class="tsd-kind-namespace"><a href="modules/Qt.html" class="tsd-kind-icon">Qt</a></li>
-								<li class="tsd-kind-namespace"><a href="modules/Tiled.html" class="tsd-kind-icon">Tiled</a></li>
-								<li class="tsd-kind-namespace"><a href="modules/tiled.html" class="tsd-kind-icon">tiled</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Enumerations</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum"><a href="enums/AssetType.html" class="tsd-kind-icon">Asset<wbr>Type</a></li>
-								<li class="tsd-kind-enum"><a href="enums/BlendMode.html" class="tsd-kind-icon">Blend<wbr>Mode</a></li>
-								<li class="tsd-kind-enum"><a href="enums/StorageType.html" class="tsd-kind-icon">Storage<wbr>Type</a></li>
-								<li class="tsd-kind-enum"><a href="enums/WangIndex.html" class="tsd-kind-icon">Wang<wbr>Index</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Classes</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-class"><a href="classes/Asset.html" class="tsd-kind-icon">Asset</a></li>
-								<li class="tsd-kind-class"><a href="classes/BinaryFile.html" class="tsd-kind-icon">Binary<wbr>File</a></li>
-								<li class="tsd-kind-class"><a href="classes/ClassPropertyType.html" class="tsd-kind-icon">Class<wbr>Property<wbr>Type</a></li>
-								<li class="tsd-kind-class"><a href="classes/ColorButton.html" class="tsd-kind-icon">Color<wbr>Button</a></li>
-								<li class="tsd-kind-class"><a href="classes/Dialog.html" class="tsd-kind-icon">Dialog</a></li>
-								<li class="tsd-kind-class"><a href="classes/EnumPropertyType.html" class="tsd-kind-icon">Enum<wbr>Property<wbr>Type</a></li>
-								<li class="tsd-kind-class"><a href="classes/FileEdit.html" class="tsd-kind-icon">File<wbr>Edit</a></li>
-								<li class="tsd-kind-class"><a href="classes/GroupLayer.html" class="tsd-kind-icon">Group<wbr>Layer</a></li>
-								<li class="tsd-kind-class"><a href="classes/Image.html" class="tsd-kind-icon">Image</a></li>
-								<li class="tsd-kind-class"><a href="classes/ImageLayer.html" class="tsd-kind-icon">Image<wbr>Layer</a></li>
-								<li class="tsd-kind-class"><a href="classes/ImageWidget.html" class="tsd-kind-icon">Image<wbr>Widget</a></li>
-								<li class="tsd-kind-class"><a href="classes/Layer.html" class="tsd-kind-icon">Layer</a></li>
-								<li class="tsd-kind-class"><a href="classes/MapObject.html" class="tsd-kind-icon">Map<wbr>Object</a></li>
-								<li class="tsd-kind-class"><a href="classes/ObjectGroup.html" class="tsd-kind-icon">Object<wbr>Group</a></li>
-								<li class="tsd-kind-class"><a href="classes/Process.html" class="tsd-kind-icon">Process</a></li>
-								<li class="tsd-kind-class"><a href="classes/Project.html" class="tsd-kind-icon">Project</a></li>
-								<li class="tsd-kind-class"><a href="classes/PropertyType.html" class="tsd-kind-icon">Property<wbr>Type</a></li>
-								<li class="tsd-kind-class"><a href="classes/TextFile.html" class="tsd-kind-icon">Text<wbr>File</a></li>
-								<li class="tsd-kind-class"><a href="classes/Tile.html" class="tsd-kind-icon">Tile</a></li>
-								<li class="tsd-kind-class"><a href="classes/TileLayer.html" class="tsd-kind-icon">Tile<wbr>Layer</a></li>
-								<li class="tsd-kind-class"><a href="classes/TileMap.html" class="tsd-kind-icon">Tile<wbr>Map</a></li>
-								<li class="tsd-kind-class"><a href="classes/TiledObject.html" class="tsd-kind-icon">Tiled<wbr>Object</a></li>
-								<li class="tsd-kind-class"><a href="classes/Tileset.html" class="tsd-kind-icon">Tileset</a></li>
-								<li class="tsd-kind-class"><a href="classes/WangSet.html" class="tsd-kind-icon">Wang<wbr>Set</a></li>
-								<li class="tsd-kind-class"><a href="classes/World.html" class="tsd-kind-icon">World</a></li>
-								<li class="tsd-kind-class"><a href="classes/WorldMapEntry.html" class="tsd-kind-icon">World<wbr>Map<wbr>Entry</a></li>
-								<li class="tsd-kind-class"><a href="classes/WorldPattern.html" class="tsd-kind-icon">World<wbr>Pattern</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Interfaces</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface"><a href="interfaces/Action.html" class="tsd-kind-icon">Action</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/ClassPropertyTypeMembers.html" class="tsd-kind-icon">Class<wbr>Property<wbr>Type<wbr>Members</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/FileFormat.html" class="tsd-kind-icon">File<wbr>Format</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/FilePath.html" class="tsd-kind-icon">File<wbr>Path</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/Font.html" class="tsd-kind-icon">Font</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/MapEditor.html" class="tsd-kind-icon">Map<wbr>Editor</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/MapFormat.html" class="tsd-kind-icon">Map<wbr>Format</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/MapView.html" class="tsd-kind-icon">Map<wbr>View</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/MenuAction.html" class="tsd-kind-icon">Menu<wbr>Action</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/MenuSeparator.html" class="tsd-kind-icon">Menu<wbr>Separator</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/ObjectRef.html" class="tsd-kind-icon">Object<wbr>Ref</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/PropertyValue.html" class="tsd-kind-icon">Property<wbr>Value</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/ScriptedMapFormat.html" class="tsd-kind-icon">Scripted<wbr>Map<wbr>Format</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/ScriptedTilesetFormat.html" class="tsd-kind-icon">Scripted<wbr>Tileset<wbr>Format</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/SelectedArea.html" class="tsd-kind-icon">Selected<wbr>Area</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/Session.html" class="tsd-kind-icon">Session</a></li>
-								<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/Signal.html" class="tsd-kind-icon">Signal</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/TileCollisionEditor.html" class="tsd-kind-icon">Tile<wbr>Collision<wbr>Editor</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/TileLayerEdit.html" class="tsd-kind-icon">Tile<wbr>Layer<wbr>Edit</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/TileLayerWangEdit.html" class="tsd-kind-icon">Tile<wbr>Layer<wbr>Wang<wbr>Edit</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/TiledObjectProperties.html" class="tsd-kind-icon">Tiled<wbr>Object<wbr>Properties</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/TilesetEditor.html" class="tsd-kind-icon">Tileset<wbr>Editor</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/TilesetFormat.html" class="tsd-kind-icon">Tileset<wbr>Format</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/TilesetsView.html" class="tsd-kind-icon">Tilesets<wbr>View</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/Tool.html" class="tsd-kind-icon">Tool</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/ToolDefinition.html" class="tsd-kind-icon">Tool<wbr>Definition</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/cell.html" class="tsd-kind-icon">cell</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/color.html" class="tsd-kind-icon">color</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/frame.html" class="tsd-kind-icon">frame</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/point.html" class="tsd-kind-icon">point</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/rect.html" class="tsd-kind-icon">rect</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/region.html" class="tsd-kind-icon">region</a></li>
-								<li class="tsd-kind-interface"><a href="interfaces/size.html" class="tsd-kind-icon">size</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Type aliases</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-type-alias"><a href="index.html#ClassUsageFlags" class="tsd-kind-icon">Class<wbr>Usage<wbr>Flags</a></li>
-								<li class="tsd-kind-type-alias"><a href="index.html#FileFilter" class="tsd-kind-icon">File<wbr>Filter</a></li>
-								<li class="tsd-kind-type-alias"><a href="index.html#MapObjectShape" class="tsd-kind-icon">Map<wbr>Object<wbr>Shape</a></li>
-								<li class="tsd-kind-type-alias"><a href="index.html#MenuItem" class="tsd-kind-icon">Menu<wbr>Item</a></li>
-								<li class="tsd-kind-type-alias"><a href="index.html#Polygon" class="tsd-kind-icon">Polygon</a></li>
-								<li class="tsd-kind-type-alias"><a href="index.html#TiledObjectPropertyValue" class="tsd-kind-icon">Tiled<wbr>Object<wbr>Property<wbr>Value</a></li>
-							</ul>
-						</section>
-					</div>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Type aliases</h2>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias">
-					<a name="ClassUsageFlags" class="tsd-anchor"></a>
-					<h3>Class<wbr>Usage<wbr>Flags</h3>
-					<div class="tsd-signature tsd-kind-icon">Class<wbr>Usage<wbr>Flags<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Usage flags for a <a href="classes/ClassPropertyType.html">ClassPropertyType</a> control where the class can
-								be used. Restricting the usage flags for example could allow a class to only be used
-							for map objects, only for layers or only as property value.</p>
-						</div>
-						<p>Some combination of: <a href="classes/ClassPropertyType.html#PropertyValueType">ClassPropertyType.PropertyValueType</a>,
-							<a href="classes/ClassPropertyType.html#LayerClass">ClassPropertyType.LayerClass</a>,
-							<a href="classes/ClassPropertyType.html#MapObjectClass">ClassPropertyType.MapObjectClass</a>,
-							<a href="classes/ClassPropertyType.html#MapClass">ClassPropertyType.MapClass</a>,
-							<a href="classes/ClassPropertyType.html#TilesetClass">ClassPropertyType.TilesetClass</a>,
-							<a href="classes/ClassPropertyType.html#TileClass">ClassPropertyType.TileClass</a>,
-							<a href="classes/ClassPropertyType.html#WangSetClass">ClassPropertyType.WangSetClass</a>,
-							<a href="classes/ClassPropertyType.html#WangColorClass">ClassPropertyType.WangColorClass</a>,
-							<a href="classes/ClassPropertyType.html#ProjectClass">ClassPropertyType.ProjectClass</a>,
-							<a href="classes/ClassPropertyType.html#AnyUsage">ClassPropertyType.AnyUsage</a>, and
-						<a href="classes/ClassPropertyType.html#AnyObjectClass">ClassPropertyType.AnyObjectClass</a>.</p>
-						<dl class="tsd-comment-tags">
-							<dt>since</dt>
-							<dd><p>1.12</p>
-							</dd>
-						</dl>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias">
-					<a name="FileFilter" class="tsd-anchor"></a>
-					<h3>File<wbr>Filter</h3>
-					<div class="tsd-signature tsd-kind-icon">File<wbr>Filter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>A string used to show only certain types of files when prompting the user to select a file path.</p>
-						</div>
-						<p>Used in <a href="classes/FileEdit.html">FileEdit</a> and in <a href="modules/tiled.html#promptOpenFile">tiled.promptOpenFile</a> and related methods.
-						The filter is given in a format like <code>&quot;Images (*.png *.xpm *.jpg)&quot;</code>.</p>
-						<p>If you want multiple filters, separate them with &#39;;;&#39;, for example:</p>
-						<pre><code><span style="color: #CE9178">&quot;Images (*.png *.xpm *.jpg);;Text files (*.txt);;XML files (*.xml)&quot;</span>
-</code></pre>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias">
-					<a name="MapObjectShape" class="tsd-anchor"></a>
-					<h3>Map<wbr>Object<wbr>Shape</h3>
-					<div class="tsd-signature tsd-kind-icon">Map<wbr>Object<wbr>Shape<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="classes/MapObject.html#Rectangle" class="tsd-signature-type" data-tsd-kind="Property">Rectangle</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="classes/MapObject.html#Polygon" class="tsd-signature-type" data-tsd-kind="Property">Polygon</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="classes/MapObject.html#Polyline" class="tsd-signature-type" data-tsd-kind="Property">Polyline</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="classes/MapObject.html#Ellipse" class="tsd-signature-type" data-tsd-kind="Property">Ellipse</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="classes/MapObject.html#Text" class="tsd-signature-type" data-tsd-kind="Property">Text</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="classes/MapObject.html#Point" class="tsd-signature-type" data-tsd-kind="Property">Point</a></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The various possible shapes for <a href="classes/MapObject.html">MapObject</a> instances.</p>
-						</div>
-						<p>Accessible like <code>MapObject.Rectangle</code>, <code>MapObject.Polygon</code>, etc.</p>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias">
-					<a name="MenuItem" class="tsd-anchor"></a>
-					<h3>Menu<wbr>Item</h3>
-					<div class="tsd-signature tsd-kind-icon">Menu<wbr>Item<span class="tsd-signature-symbol">:</span> <a href="interfaces/MenuAction.html" class="tsd-signature-type" data-tsd-kind="Interface">MenuAction</a><span class="tsd-signature-symbol"> | </span><a href="interfaces/MenuSeparator.html" class="tsd-signature-type" data-tsd-kind="Interface">MenuSeparator</a></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>An item in a menu, which is either an action or a separator. Used with
-							<a href="modules/tiled.html#extendMenu">tiled.extendMenu</a>.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias">
-					<a name="Polygon" class="tsd-anchor"></a>
-					<h3>Polygon</h3>
-					<div class="tsd-signature tsd-kind-icon">Polygon<span class="tsd-signature-symbol">:</span> <a href="interfaces/point.html" class="tsd-signature-type" data-tsd-kind="Interface">point</a><span class="tsd-signature-symbol">[]</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>A polygon is not strictly a custom type. It is an array of objects that each
-							have an <code>x</code> and <code>y</code> property, representing the points of the polygon.</p>
-						</div>
-						<p>To modify the polygon of a <a href="classes/MapObject.html">MapObject</a>, change or set up the
-						polygon array and then assign it to <a href="classes/MapObject.html#polygon">MapObject.polygon</a>.</p>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias">
-					<a name="TiledObjectPropertyValue" class="tsd-anchor"></a>
-					<h3>Tiled<wbr>Object<wbr>Property<wbr>Value</h3>
-					<div class="tsd-signature tsd-kind-icon">Tiled<wbr>Object<wbr>Property<wbr>Value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><a href="interfaces/color.html" class="tsd-signature-type" data-tsd-kind="Interface">color</a><span class="tsd-signature-symbol"> | </span><a href="interfaces/ObjectRef.html" class="tsd-signature-type" data-tsd-kind="Interface">ObjectRef</a><span class="tsd-signature-symbol"> | </span><a href="interfaces/FilePath.html" class="tsd-signature-type" data-tsd-kind="Interface">FilePath</a><span class="tsd-signature-symbol"> | </span><a href="classes/MapObject.html" class="tsd-signature-type" data-tsd-kind="Class">MapObject</a><span class="tsd-signature-symbol"> | </span><a href="interfaces/PropertyValue.html" class="tsd-signature-type" data-tsd-kind="Interface">PropertyValue</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>A type alias used to describe the possible values in object properties.</p>
-						</div>
-					</div>
-				</section>
-			</section>
-		</div>
-		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
-			<nav class="tsd-navigation primary">
-				<ul>
-					<li class="current ">
-						<a href="index.html">Exports</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="modules/Base64.html">Base64</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="modules/File.html">File</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="modules/FileInfo.html">File<wbr>Info</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="modules/Geometry.html">Geometry</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="modules/Qt.html">Qt</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="modules/Tiled.html">Tiled</a>
-					</li>
-					<li class=" tsd-kind-namespace">
-						<a href="modules/tiled.html">tiled</a>
-					</li>
-				</ul>
-			</nav>
-			<nav class="tsd-navigation secondary menu-sticky">
-				<ul class="before-current">
-					<li class=" tsd-kind-enum">
-						<a href="enums/AssetType.html" class="tsd-kind-icon">Asset<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-enum">
-						<a href="enums/BlendMode.html" class="tsd-kind-icon">Blend<wbr>Mode</a>
-					</li>
-					<li class=" tsd-kind-enum">
-						<a href="enums/StorageType.html" class="tsd-kind-icon">Storage<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-enum">
-						<a href="enums/WangIndex.html" class="tsd-kind-icon">Wang<wbr>Index</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/Asset.html" class="tsd-kind-icon">Asset</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/BinaryFile.html" class="tsd-kind-icon">Binary<wbr>File</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/ClassPropertyType.html" class="tsd-kind-icon">Class<wbr>Property<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/ColorButton.html" class="tsd-kind-icon">Color<wbr>Button</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/Dialog.html" class="tsd-kind-icon">Dialog</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/EnumPropertyType.html" class="tsd-kind-icon">Enum<wbr>Property<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/FileEdit.html" class="tsd-kind-icon">File<wbr>Edit</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/GroupLayer.html" class="tsd-kind-icon">Group<wbr>Layer</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/Image.html" class="tsd-kind-icon">Image</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/ImageLayer.html" class="tsd-kind-icon">Image<wbr>Layer</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/ImageWidget.html" class="tsd-kind-icon">Image<wbr>Widget</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/Layer.html" class="tsd-kind-icon">Layer</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/MapObject.html" class="tsd-kind-icon">Map<wbr>Object</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/ObjectGroup.html" class="tsd-kind-icon">Object<wbr>Group</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/Process.html" class="tsd-kind-icon">Process</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/Project.html" class="tsd-kind-icon">Project</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/PropertyType.html" class="tsd-kind-icon">Property<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/TextFile.html" class="tsd-kind-icon">Text<wbr>File</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/Tile.html" class="tsd-kind-icon">Tile</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/TileLayer.html" class="tsd-kind-icon">Tile<wbr>Layer</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/TileMap.html" class="tsd-kind-icon">Tile<wbr>Map</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/TiledObject.html" class="tsd-kind-icon">Tiled<wbr>Object</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/Tileset.html" class="tsd-kind-icon">Tileset</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/WangSet.html" class="tsd-kind-icon">Wang<wbr>Set</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/World.html" class="tsd-kind-icon">World</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/WorldMapEntry.html" class="tsd-kind-icon">World<wbr>Map<wbr>Entry</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/WorldPattern.html" class="tsd-kind-icon">World<wbr>Pattern</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/Action.html" class="tsd-kind-icon">Action</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/ClassPropertyTypeMembers.html" class="tsd-kind-icon">Class<wbr>Property<wbr>Type<wbr>Members</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/FileFormat.html" class="tsd-kind-icon">File<wbr>Format</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/FilePath.html" class="tsd-kind-icon">File<wbr>Path</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/Font.html" class="tsd-kind-icon">Font</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/MapEditor.html" class="tsd-kind-icon">Map<wbr>Editor</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/MapFormat.html" class="tsd-kind-icon">Map<wbr>Format</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/MapView.html" class="tsd-kind-icon">Map<wbr>View</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/MenuAction.html" class="tsd-kind-icon">Menu<wbr>Action</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/MenuSeparator.html" class="tsd-kind-icon">Menu<wbr>Separator</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/ObjectRef.html" class="tsd-kind-icon">Object<wbr>Ref</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/PropertyValue.html" class="tsd-kind-icon">Property<wbr>Value</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/ScriptedMapFormat.html" class="tsd-kind-icon">Scripted<wbr>Map<wbr>Format</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/ScriptedTilesetFormat.html" class="tsd-kind-icon">Scripted<wbr>Tileset<wbr>Format</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/SelectedArea.html" class="tsd-kind-icon">Selected<wbr>Area</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/Session.html" class="tsd-kind-icon">Session</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-has-type-parameter">
-						<a href="interfaces/Signal.html" class="tsd-kind-icon">Signal</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/TileCollisionEditor.html" class="tsd-kind-icon">Tile<wbr>Collision<wbr>Editor</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/TileLayerEdit.html" class="tsd-kind-icon">Tile<wbr>Layer<wbr>Edit</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/TileLayerWangEdit.html" class="tsd-kind-icon">Tile<wbr>Layer<wbr>Wang<wbr>Edit</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/TiledObjectProperties.html" class="tsd-kind-icon">Tiled<wbr>Object<wbr>Properties</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/TilesetEditor.html" class="tsd-kind-icon">Tileset<wbr>Editor</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/TilesetFormat.html" class="tsd-kind-icon">Tileset<wbr>Format</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/TilesetsView.html" class="tsd-kind-icon">Tilesets<wbr>View</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/Tool.html" class="tsd-kind-icon">Tool</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/ToolDefinition.html" class="tsd-kind-icon">Tool<wbr>Definition</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/cell.html" class="tsd-kind-icon">cell</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/color.html" class="tsd-kind-icon">color</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/frame.html" class="tsd-kind-icon">frame</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/point.html" class="tsd-kind-icon">point</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/rect.html" class="tsd-kind-icon">rect</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/region.html" class="tsd-kind-icon">region</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/size.html" class="tsd-kind-icon">size</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="index.html#ClassUsageFlags" class="tsd-kind-icon">Class<wbr>Usage<wbr>Flags</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="index.html#FileFilter" class="tsd-kind-icon">File<wbr>Filter</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="index.html#MapObjectShape" class="tsd-kind-icon">Map<wbr>Object<wbr>Shape</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="index.html#MenuItem" class="tsd-kind-icon">Menu<wbr>Item</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="index.html#Polygon" class="tsd-kind-icon">Polygon</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="index.html#TiledObjectPropertyValue" class="tsd-kind-icon">Tiled<wbr>Object<wbr>Property<wbr>Value</a>
-					</li>
-				</ul>
-			</nav>
-		</div>
-	</div>
-</div>
-<footer class="with-border-bottom">
-	<div class="container">
-		<h2>Legend</h2>
-		<div class="tsd-legend-group">
-			<ul class="tsd-legend">
-				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
-			</ul>
-		</div>
-	</div>
-</footer>
-<div class="container tsd-generator">
-	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
-</div>
-<div class="overlay"></div>
-<script src="assets/js/main.js"></script>
-<footer class="media-content">
-	<div class="footer-content container">
-		<p>Tiled - Copyright © 2008-2025 Thorbjørn Lindeijer<br> and <a href="https://www.openhub.net/p/tiled-qt/contributors/summary">many other contributors</a></p>
-		<nav style="display: flex; justify-content: center; align-items: top; margin-left: 1em;">
-			<ul style="float: right; border-left: 2px solid #ececec; padding: 0 1em">
-				<li><a href="/docs">Documentation</a></li>
-				<li><a href="/news">News</a></li>
-				<li><a href="/donate">Donate</a></li>
-				<li><a href="https://discourse.mapeditor.org/">Forum</a></li>
-				<li><a href="https://discord.gg/39wbTv7">Discord</a></li>
-				<li><a rel="me" href="https://floss.social/@tiled">Mastodon</a></li>
-				<li><a href="https://github.com/mapeditor/tiled">GitHub</a></li>
-				<li><a href="https://x.com/TiledApp">X</a></li>
-			</ul>
-		</nav>
-	</div>
-</footer>
-</body>
-</html>
+<div class="col-content">
+<div class="tsd-page-title">
+<h1>Tiled Scripting API</h1></div>
+<section class="tsd-panel tsd-comment">
+<div class="tsd-comment tsd-typography"><p>Tiled can be extended with the use of JavaScript.</p>
+<p>Scripts can be used to implement <a href="functions/tiled.registerMapFormat.html" class="tsd-kind-function">custom map formats</a>,
+<a href="functions/tiled.registerAction.html" class="tsd-kind-function">custom actions</a>, and <a href="functions/tiled.registerTool.html" class="tsd-kind-function">new tools</a>.
+Scripts can also <a href="interfaces/Signal.html" class="tsd-kind-interface">automate actions based on signals</a>.</p>
+<p>See the <a href="https://doc.mapeditor.org/en/stable/manual/scripting">Tiled Manual</a> for more information on writing or installing extensions.</p>
+<h3 id="type-definitions" class="tsd-anchor-link">Type Definitions<a href="#type-definitions" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<p>TypeScript type definitions for this API are available by installing the
+<a href="https://www.npmjs.com/package/@mapeditor/tiled-api"><code>@mapeditor/tiled-api</code></a>
+package, which allows you to write scripts using TypeScript and can provide
+auto-completion in your editor (also when using plain JavaScript).</p>
+<p>This documentation is also generated based on these type definitions.</p>
+</div></section>
+<details class="tsd-panel-group tsd-member-group tsd-accordion" open><summary class="tsd-accordion-summary" data-key="section-Namespaces"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg>
+<h2 class="tsd-anchor-link" id="namespaces">Namespaces<a href="#namespaces" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2></summary><dl class="tsd-member-summaries"><dt class="tsd-member-summary" id="base64"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Namespace"><use href="assets/icons.svg#icon-4"></use></svg><a href="modules/Base64.html">Base64</a><a href="#base64" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="file"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Namespace"><use href="assets/icons.svg#icon-4"></use></svg><a href="modules/File.html">File</a><a href="#file" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="fileinfo"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Namespace"><use href="assets/icons.svg#icon-4"></use></svg><a href="modules/FileInfo.html">FileInfo</a><a href="#fileinfo" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="geometry"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Namespace"><use href="assets/icons.svg#icon-4"></use></svg><a href="modules/Geometry.html">Geometry</a><a href="#geometry" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="qt"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Namespace"><use href="assets/icons.svg#icon-4"></use></svg><a href="modules/Qt.html">Qt</a><a href="#qt" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="tiled"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Namespace"><use href="assets/icons.svg#icon-4"></use></svg><a href="modules/tiled.html">tiled</a><a href="#tiled" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="tiled-1"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Namespace"><use href="assets/icons.svg#icon-4"></use></svg><a href="modules/Tiled-1.html">Tiled</a><a href="#tiled-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd></dl></details>
+<details class="tsd-panel-group tsd-member-group tsd-accordion" open><summary class="tsd-accordion-summary" data-key="section-Enumerations"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg>
+<h2 class="tsd-anchor-link" id="enumerations">Enumerations<a href="#enumerations" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2></summary><dl class="tsd-member-summaries"><dt class="tsd-member-summary" id="assettype"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Enumeration"><use href="assets/icons.svg#icon-8"></use></svg><a href="enums/AssetType.html">AssetType</a><a href="#assettype" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="blendmode"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Enumeration"><use href="assets/icons.svg#icon-8"></use></svg><a href="enums/BlendMode.html">BlendMode</a><a href="#blendmode" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="storagetype"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Enumeration"><use href="assets/icons.svg#icon-8"></use></svg><a href="enums/StorageType.html">StorageType</a><a href="#storagetype" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="wangindex"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Enumeration"><use href="assets/icons.svg#icon-8"></use></svg><a href="enums/WangIndex.html">WangIndex</a><a href="#wangindex" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd></dl></details>
+<details class="tsd-panel-group tsd-member-group tsd-accordion" open><summary class="tsd-accordion-summary" data-key="section-Classes"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg>
+<h2 class="tsd-anchor-link" id="classes">Classes<a href="#classes" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2></summary><dl class="tsd-member-summaries"><dt class="tsd-member-summary" id="asset"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/Asset.html">Asset</a><a href="#asset" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="binaryfile"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/BinaryFile.html">BinaryFile</a><a href="#binaryfile" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="classpropertytype"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/ClassPropertyType.html">ClassPropertyType</a><a href="#classpropertytype" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="colorbutton"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/ColorButton.html">ColorButton</a><a href="#colorbutton" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="dialog"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/Dialog.html">Dialog</a><a href="#dialog" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="enumpropertytype"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/EnumPropertyType.html">EnumPropertyType</a><a href="#enumpropertytype" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="fileedit"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/FileEdit.html">FileEdit</a><a href="#fileedit" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="grouplayer"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/GroupLayer.html">GroupLayer</a><a href="#grouplayer" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="image"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/Image.html">Image</a><a href="#image" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="imagelayer"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/ImageLayer.html">ImageLayer</a><a href="#imagelayer" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="imagewidget"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/ImageWidget.html">ImageWidget</a><a href="#imagewidget" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="layer"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/Layer.html">Layer</a><a href="#layer" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="mapobject"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/MapObject.html">MapObject</a><a href="#mapobject" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="objectgroup"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/ObjectGroup.html">ObjectGroup</a><a href="#objectgroup" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="process"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/Process.html">Process</a><a href="#process" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="project"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/Project.html">Project</a><a href="#project" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="propertytype"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/PropertyType.html">PropertyType</a><a href="#propertytype" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="textfile"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/TextFile.html">TextFile</a><a href="#textfile" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="tile"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/Tile.html">Tile</a><a href="#tile" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="tiledobject"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/TiledObject.html">TiledObject</a><a href="#tiledobject" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="tilelayer"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/TileLayer.html">TileLayer</a><a href="#tilelayer" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="tilemap"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/TileMap.html">TileMap</a><a href="#tilemap" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="tileset"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/Tileset.html">Tileset</a><a href="#tileset" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="wangset"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/WangSet.html">WangSet</a><a href="#wangset" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="world"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/World.html">World</a><a href="#world" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="worldmapentry"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/WorldMapEntry.html">WorldMapEntry</a><a href="#worldmapentry" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="worldpattern"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><a href="classes/WorldPattern.html">WorldPattern</a><a href="#worldpattern" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd></dl></details>
+<details class="tsd-panel-group tsd-member-group tsd-accordion" open><summary class="tsd-accordion-summary" data-key="section-Interfaces"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg>
+<h2 class="tsd-anchor-link" id="interfaces">Interfaces<a href="#interfaces" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2></summary><dl class="tsd-member-summaries"><dt class="tsd-member-summary" id="action"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/Action.html">Action</a><a href="#action" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="cell"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/cell.html">cell</a><a href="#cell" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="classpropertytypemembers"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/ClassPropertyTypeMembers.html">ClassPropertyTypeMembers</a><a href="#classpropertytypemembers" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="color"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/color.html">color</a><a href="#color" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="fileformat"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/FileFormat.html">FileFormat</a><a href="#fileformat" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="filepath"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/FilePath.html">FilePath</a><a href="#filepath" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="font"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/Font.html">Font</a><a href="#font" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="frame"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/frame.html">frame</a><a href="#frame" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="mapeditor"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/MapEditor.html">MapEditor</a><a href="#mapeditor" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="mapformat"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/MapFormat.html">MapFormat</a><a href="#mapformat" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="mapview"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/MapView.html">MapView</a><a href="#mapview" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="menuaction"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/MenuAction.html">MenuAction</a><a href="#menuaction" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="menuseparator"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/MenuSeparator.html">MenuSeparator</a><a href="#menuseparator" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="objectref"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/ObjectRef.html">ObjectRef</a><a href="#objectref" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="point"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/point.html">point</a><a href="#point" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="propertyvalue"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/PropertyValue.html">PropertyValue</a><a href="#propertyvalue" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="rect"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/rect.html">rect</a><a href="#rect" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="region"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/region.html">region</a><a href="#region" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="scriptedmapformat"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/ScriptedMapFormat.html">ScriptedMapFormat</a><a href="#scriptedmapformat" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="scriptedtilesetformat"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/ScriptedTilesetFormat.html">ScriptedTilesetFormat</a><a href="#scriptedtilesetformat" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="selectedarea"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/SelectedArea.html">SelectedArea</a><a href="#selectedarea" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="session"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/Session.html">Session</a><a href="#session" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="signal"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/Signal.html">Signal</a><a href="#signal" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="size"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/size.html">size</a><a href="#size" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="tilecollisioneditor"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/TileCollisionEditor.html">TileCollisionEditor</a><a href="#tilecollisioneditor" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="tiledobjectproperties"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/TiledObjectProperties.html">TiledObjectProperties</a><a href="#tiledobjectproperties" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="tilelayeredit"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/TileLayerEdit.html">TileLayerEdit</a><a href="#tilelayeredit" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="tilelayerwangedit"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/TileLayerWangEdit.html">TileLayerWangEdit</a><a href="#tilelayerwangedit" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="tileseteditor"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/TilesetEditor.html">TilesetEditor</a><a href="#tileseteditor" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="tilesetformat"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/TilesetFormat.html">TilesetFormat</a><a href="#tilesetformat" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="tilesetsview"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/TilesetsView.html">TilesetsView</a><a href="#tilesetsview" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="tool"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/Tool.html">Tool</a><a href="#tool" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="tooldefinition"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><a href="interfaces/ToolDefinition.html">ToolDefinition</a><a href="#tooldefinition" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd></dl></details>
+<details class="tsd-panel-group tsd-member-group tsd-accordion" open><summary class="tsd-accordion-summary" data-key="section-Type Aliases"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg>
+<h2 class="tsd-anchor-link" id="type-aliases">Type Aliases<a href="#type-aliases" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2></summary><dl class="tsd-member-summaries"><dt class="tsd-member-summary" id="classusageflags"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Type Alias"><use href="assets/icons.svg#icon-2097152"></use></svg><a href="types/ClassUsageFlags.html">ClassUsageFlags</a><a href="#classusageflags" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="filefilter"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Type Alias"><use href="assets/icons.svg#icon-2097152"></use></svg><a href="types/FileFilter.html">FileFilter</a><a href="#filefilter" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="mapobjectshape"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Type Alias"><use href="assets/icons.svg#icon-2097152"></use></svg><a href="types/MapObjectShape.html">MapObjectShape</a><a href="#mapobjectshape" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="menuitem"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Type Alias"><use href="assets/icons.svg#icon-2097152"></use></svg><a href="types/MenuItem.html">MenuItem</a><a href="#menuitem" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="polygon"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Type Alias"><use href="assets/icons.svg#icon-2097152"></use></svg><a href="types/Polygon.html">Polygon</a><a href="#polygon" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd><dt class="tsd-member-summary" id="tiledobjectpropertyvalue"><span class="tsd-member-summary-name"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Type Alias"><use href="assets/icons.svg#icon-2097152"></use></svg><a href="types/TiledObjectPropertyValue.html">TiledObjectPropertyValue</a><a href="#tiledobjectpropertyvalue" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></span></dt><dd class="tsd-member-summary"></dd></dl></details></div>
+<div class="col-sidebar">
+<div class="page-menu">
+<div class="tsd-navigation settings">
+<details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>Settings</h3></summary>
+<div class="tsd-accordion-details">
+<div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span>
+<ul id="tsd-filter-options">
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li></ul></div>
+<div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div>
+<details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>On This Page</h3></summary>
+<div class="tsd-accordion-details"><a href="#type-definitions"><span>Type <wbr/>Definitions</span></a>
+<details open class="tsd-accordion tsd-page-navigation-section"><summary class="tsd-accordion-summary" data-key="section-Namespaces"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg>Namespaces</summary>
+<div><a href="#base64"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Namespace"><use href="assets/icons.svg#icon-4"></use></svg><span>Base64</span></a><a href="#file"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Namespace"><use href="assets/icons.svg#icon-4"></use></svg><span>File</span></a><a href="#fileinfo"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Namespace"><use href="assets/icons.svg#icon-4"></use></svg><span>File<wbr/>Info</span></a><a href="#geometry"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Namespace"><use href="assets/icons.svg#icon-4"></use></svg><span>Geometry</span></a><a href="#qt"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Namespace"><use href="assets/icons.svg#icon-4"></use></svg><span>Qt</span></a><a href="#tiled"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Namespace"><use href="assets/icons.svg#icon-4"></use></svg><span>tiled</span></a><a href="#tiled-1"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Namespace"><use href="assets/icons.svg#icon-4"></use></svg><span>Tiled</span></a></div></details>
+<details open class="tsd-accordion tsd-page-navigation-section"><summary class="tsd-accordion-summary" data-key="section-Enumerations"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg>Enumerations</summary>
+<div><a href="#assettype"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Enumeration"><use href="assets/icons.svg#icon-8"></use></svg><span>Asset<wbr/>Type</span></a><a href="#blendmode"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Enumeration"><use href="assets/icons.svg#icon-8"></use></svg><span>Blend<wbr/>Mode</span></a><a href="#storagetype"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Enumeration"><use href="assets/icons.svg#icon-8"></use></svg><span>Storage<wbr/>Type</span></a><a href="#wangindex"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Enumeration"><use href="assets/icons.svg#icon-8"></use></svg><span>Wang<wbr/>Index</span></a></div></details>
+<details open class="tsd-accordion tsd-page-navigation-section"><summary class="tsd-accordion-summary" data-key="section-Classes"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg>Classes</summary>
+<div><a href="#asset"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>Asset</span></a><a href="#binaryfile"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>Binary<wbr/>File</span></a><a href="#classpropertytype"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>Class<wbr/>Property<wbr/>Type</span></a><a href="#colorbutton"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>Color<wbr/>Button</span></a><a href="#dialog"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>Dialog</span></a><a href="#enumpropertytype"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>Enum<wbr/>Property<wbr/>Type</span></a><a href="#fileedit"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>File<wbr/>Edit</span></a><a href="#grouplayer"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>Group<wbr/>Layer</span></a><a href="#image"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>Image</span></a><a href="#imagelayer"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>Image<wbr/>Layer</span></a><a href="#imagewidget"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>Image<wbr/>Widget</span></a><a href="#layer"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>Layer</span></a><a href="#mapobject"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>Map<wbr/>Object</span></a><a href="#objectgroup"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>Object<wbr/>Group</span></a><a href="#process"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>Process</span></a><a href="#project"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>Project</span></a><a href="#propertytype"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>Property<wbr/>Type</span></a><a href="#textfile"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>Text<wbr/>File</span></a><a href="#tile"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>Tile</span></a><a href="#tiledobject"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>Tiled<wbr/>Object</span></a><a href="#tilelayer"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>Tile<wbr/>Layer</span></a><a href="#tilemap"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>Tile<wbr/>Map</span></a><a href="#tileset"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>Tileset</span></a><a href="#wangset"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>Wang<wbr/>Set</span></a><a href="#world"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>World</span></a><a href="#worldmapentry"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>World<wbr/>Map<wbr/>Entry</span></a><a href="#worldpattern"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Class"><use href="assets/icons.svg#icon-128"></use></svg><span>World<wbr/>Pattern</span></a></div></details>
+<details open class="tsd-accordion tsd-page-navigation-section"><summary class="tsd-accordion-summary" data-key="section-Interfaces"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg>Interfaces</summary>
+<div><a href="#action"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Action</span></a><a href="#cell"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>cell</span></a><a href="#classpropertytypemembers"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Class<wbr/>Property<wbr/>Type<wbr/>Members</span></a><a href="#color"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>color</span></a><a href="#fileformat"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>File<wbr/>Format</span></a><a href="#filepath"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>File<wbr/>Path</span></a><a href="#font"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Font</span></a><a href="#frame"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>frame</span></a><a href="#mapeditor"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Map<wbr/>Editor</span></a><a href="#mapformat"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Map<wbr/>Format</span></a><a href="#mapview"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Map<wbr/>View</span></a><a href="#menuaction"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Menu<wbr/>Action</span></a><a href="#menuseparator"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Menu<wbr/>Separator</span></a><a href="#objectref"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Object<wbr/>Ref</span></a><a href="#point"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>point</span></a><a href="#propertyvalue"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Property<wbr/>Value</span></a><a href="#rect"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>rect</span></a><a href="#region"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>region</span></a><a href="#scriptedmapformat"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Scripted<wbr/>Map<wbr/>Format</span></a><a href="#scriptedtilesetformat"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Scripted<wbr/>Tileset<wbr/>Format</span></a><a href="#selectedarea"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Selected<wbr/>Area</span></a><a href="#session"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Session</span></a><a href="#signal"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Signal</span></a><a href="#size"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>size</span></a><a href="#tilecollisioneditor"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Tile<wbr/>Collision<wbr/>Editor</span></a><a href="#tiledobjectproperties"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Tiled<wbr/>Object<wbr/>Properties</span></a><a href="#tilelayeredit"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Tile<wbr/>Layer<wbr/>Edit</span></a><a href="#tilelayerwangedit"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Tile<wbr/>Layer<wbr/>Wang<wbr/>Edit</span></a><a href="#tileseteditor"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Tileset<wbr/>Editor</span></a><a href="#tilesetformat"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Tileset<wbr/>Format</span></a><a href="#tilesetsview"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Tilesets<wbr/>View</span></a><a href="#tool"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Tool</span></a><a href="#tooldefinition"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Interface"><use href="assets/icons.svg#icon-256"></use></svg><span>Tool<wbr/>Definition</span></a></div></details>
+<details open class="tsd-accordion tsd-page-navigation-section"><summary class="tsd-accordion-summary" data-key="section-Type Aliases"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg>Type Aliases</summary>
+<div><a href="#classusageflags"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Type Alias"><use href="assets/icons.svg#icon-2097152"></use></svg><span>Class<wbr/>Usage<wbr/>Flags</span></a><a href="#filefilter"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Type Alias"><use href="assets/icons.svg#icon-2097152"></use></svg><span>File<wbr/>Filter</span></a><a href="#mapobjectshape"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Type Alias"><use href="assets/icons.svg#icon-2097152"></use></svg><span>Map<wbr/>Object<wbr/>Shape</span></a><a href="#menuitem"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Type Alias"><use href="assets/icons.svg#icon-2097152"></use></svg><span>Menu<wbr/>Item</span></a><a href="#polygon"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Type Alias"><use href="assets/icons.svg#icon-2097152"></use></svg><span>Polygon</span></a><a href="#tiledobjectpropertyvalue"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Type Alias"><use href="assets/icons.svg#icon-2097152"></use></svg><span>Tiled<wbr/>Object<wbr/>Property<wbr/>Value</span></a></div></details></div></details></div>
+<div class="site-menu">
+<nav class="tsd-navigation"><a href="index.html" class="current">Tiled Scripting API</a>
+<ul class="tsd-small-nested-navigation" id="tsd-nav-container">
+<li>Loading...</li></ul></nav></div></div></div><footer>
+<p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer>
+<div class="overlay"></div><footer class="media-content">
+<div class="footer-content container">
+<p>Tiled — Copyright © 2008–2025 Thorbjørn Lindeijer<br/> and <a href="https://www.openhub.net/p/tiled-qt/contributors/summary">many other contributors</a></p>
+<nav style="display: flex; justify-content: center; align-items: top; margin-left: 1em;">
+<ul style="float: right; border-left: 2px solid #ececec; padding: 0 1em">
+<li><a href="/docs">Documentation</a></li>
+<li><a href="/news">News</a></li>
+<li><a href="/donate">Donate</a></li>
+<li><a href="https://discourse.mapeditor.org/">Forum</a></li>
+<li><a href="https://discord.gg/39wbTv7">Discord</a></li>
+<li><a rel="me" href="https://floss.social/@tiled">Mastodon</a></li>
+<li><a href="https://github.com/mapeditor/tiled">GitHub</a></li>
+<li><a href="https://x.com/TiledApp">X</a></li></ul></nav></div></footer></body></html>
