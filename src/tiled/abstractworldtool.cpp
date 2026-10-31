@@ -572,21 +572,25 @@ void AbstractWorldTool::deleteMapFile(WorldDocument *worldDocument,
 
     const QString fileName = QFileInfo(mapFileName).fileName();
 
+    DocumentManager *manager = DocumentManager::instance();
+    const int documentIndex = manager->findDocument(mapDocument);
+
+    QString text = tr("Are you sure you want to delete \"%1\"?\n\n"
+                      "The file is moved to the trash and the map is removed from the "
+                      "world. Deleting the file can't be undone.").arg(fileName);
+
+    if (manager->isDocumentModified(mapDocument))
+        text.append(QLatin1String("\n\n"))
+            .append(tr("The map has unsaved changes, which will be lost."));
+
     const int answer = QMessageBox::warning(
             MainWindow::instance(), tr("Delete Map File"),
-            tr("Are you sure you want to delete \"%1\"?\n\n"
-               "The file is moved to the trash and the map is removed from the "
-               "world. Deleting the file can't be undone.").arg(fileName),
+            text,
             QMessageBox::Yes | QMessageBox::No,
             QMessageBox::No);
 
     if (answer != QMessageBox::Yes)
         return;
-
-    // Documents are looked up by canonical path, which is only available
-    // while the file is still there
-    DocumentManager *manager = DocumentManager::instance();
-    const int documentIndex = manager->findDocument(mapFileName);
 
     // Nothing is changed when the file can't be trashed, so the user is left
     // to deal with whatever is holding on to it
