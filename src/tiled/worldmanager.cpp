@@ -188,6 +188,23 @@ WorldDocumentPtr WorldManager::worldForMap(const QString &fileName) const
     return nullptr;
 }
 
+WorldDocumentPtr WorldManager::worldForMap(MapDocument *mapDocument) const
+{
+    if (!mapDocument)
+        return nullptr;
+
+    if (!mapDocument->fileName().isEmpty())
+        return worldForMap(mapDocument->fileName());
+
+    // An unsaved map can only be found by its document
+    for (auto &worldDocument : mWorldDocuments)
+        for (const auto &unsavedMap : worldDocument->unsavedMaps())
+            if (unsavedMap.mapDocument.data() == mapDocument)
+                return worldDocument;
+
+    return nullptr;
+}
+
 } // namespace Tiled
 
 #include "moc_worldmanager.cpp"
