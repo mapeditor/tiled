@@ -93,27 +93,6 @@ std::array<QPointF, HandleCount> resizeHandlePositions(const QRectF &bounds)
     }};
 }
 
-// Finds the map whose center is nearest to the center of rect, so a newly
-// created map can take its format from what is already around it
-MapDocumentPtr nearestMapDocument(const World *world, const QRect &rect)
-{
-    QString nearestFileName;
-    int nearestDistance = 0;
-
-    for (const WorldMapEntry &entry : world->allMaps()) {
-        const int distance = (entry.rect.center() - rect.center()).manhattanLength();
-        if (nearestFileName.isEmpty() || distance < nearestDistance) {
-            nearestFileName = entry.fileName;
-            nearestDistance = distance;
-        }
-    }
-
-    if (nearestFileName.isEmpty())
-        return MapDocumentPtr();
-
-    return DocumentManager::instance()->loadDocument(nearestFileName).objectCast<MapDocument>();
-}
-
 } // namespace
 
 Qt::CursorShape cursorForHandle(int handle)
@@ -474,28 +453,18 @@ void AbstractWorldTool::createMapAt(const QRect &worldRect)
     if (!worldDocument || !worldDocument->world()->canBeModified())
         return;
 
-    const World *world = worldDocument->world();
+    // The active map decides the format of the new one
+    const Map *templateMap = mapDocument()->map();
 
-    // The nearest map decides the format of the new one
-    const MapDocumentPtr nearest = nearestMapDocument(world, worldRect);
-    const Map *templateMap = nearest ? nearest->map() : mapDocument()->map();
-
-    Map::Parameters parameters;
-    parameters.orientation = templateMap->orientation();
+    Map::Parameters parameters { templateMap->parameters() };
     parameters.tileWidth = qMax(1, templateMap->tileWidth());
     parameters.tileHeight = qMax(1, templateMap->tileHeight());
-    parameters.staggerAxis = templateMap->staggerAxis();
-    parameters.staggerIndex = templateMap->staggerIndex();
-    parameters.hexSideLength = templateMap->hexSideLength();
-    parameters.skewX = templateMap->skewX();
-    parameters.skewY = templateMap->skewY();
-
-    // A map is always a whole number of tiles, so round the dragged size
     parameters.width = qMax(1, qRound(qreal(worldRect.width()) / parameters.tileWidth));
     parameters.height = qMax(1, qRound(qreal(worldRect.height()) / parameters.tileHeight));
 
     auto map = std::make_unique<Map>(parameters);
-    map->setRenderOrder(templateMap->renderOrder());
+    map->setCompressionLevel(templateMap->compressionLevel());
+    map->setChunkSize(templateMap->chunkSize());
     map->setLayerDataFormat(templateMap->layerDataFormat());
 
     for (const SharedTileset &tileset : templateMap->tilesets())
