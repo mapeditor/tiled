@@ -46,6 +46,7 @@
 #include <QProcess>
 #include <QRegularExpression>
 #include <QScreen>
+#include <QWheelEvent>
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0) && QT_VERSION < QT_VERSION_CHECK(6, 5, 1)
 #include <QtCore/qapplicationstatic.h>
@@ -439,6 +440,15 @@ QSize smallIconSize()
 {
     static QSize size = dpiScaled(QSize(16, 16));
     return size;
+}
+
+bool isTouchPadScrollEvent(QWheelEvent *event)
+{
+    if (event->phase() != Qt::NoScrollPhase)
+        return true;
+
+    const QPointingDevice *device = event->pointingDevice();
+    return device && device->type() == QInputDevice::DeviceType::TouchPad;
 }
 
 bool isZoomInShortcut(QKeyEvent *event)

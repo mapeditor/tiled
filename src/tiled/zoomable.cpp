@@ -125,20 +125,30 @@ void Zoomable::handlePinchGesture(QPinchGesture *pinch)
     case Qt::NoGesture:
         break;
     case Qt::GestureStarted:
-        mGestureStartScale = mScale;
+        beginPinchZoom();
         [[fallthrough]];
-    case Qt::GestureUpdated: {
-        qreal factor = pinch->totalScaleFactor();
-        qreal scale = qBound(mZoomFactors.first(),
-                             mGestureStartScale * factor,
-                             mZoomFactors.last());
-        setScale(std::floor(scale * 10000 + 0.5) / 10000);
+    case Qt::GestureUpdated:
+        updatePinchZoom(pinch->totalScaleFactor());
         break;
-    }
     case Qt::GestureFinished:
     case Qt::GestureCanceled:
         break;
     }
+}
+
+void Zoomable::beginPinchZoom()
+{
+    mGestureStartScale = mScale;
+}
+
+void Zoomable::updatePinchZoom(qreal totalScaleFactor)
+{
+    const qreal scale = qBound(mZoomFactors.first(),
+                               mGestureStartScale * totalScaleFactor,
+                               mZoomFactors.last());
+
+    // Round to at most four digits after the decimal point
+    setScale(std::floor(scale * 10000 + 0.5) / 10000);
 }
 
 void Zoomable::zoomIn()

@@ -25,6 +25,8 @@
 #include <QGraphicsView>
 #include <QPinchGesture>
 
+#include <functional>
+
 namespace Tiled {
 
 class Layer;
@@ -34,6 +36,7 @@ class MapDocument;
 class MapScene;
 class PannableViewHelper;
 class TileAnimationDriver;
+class TouchInputHelper;
 class Zoomable;
 
 /**
@@ -83,6 +86,7 @@ public:
 
 protected:
     bool event(QEvent *event) override;
+    bool viewportEvent(QEvent *event) override;
 
     void paintEvent(QPaintEvent *event) override;
     void hideEvent(QHideEvent *) override;
@@ -99,7 +103,10 @@ protected:
 
     void handlePinchGesture(QPinchGesture *pinch);
 
-    void adjustCenterFromMousePosition(QPoint mousePos);
+    void zoomAt(QPoint globalPos, const std::function<void()> &changeScale);
+    void zoomAt(QPoint globalPos, QPointF scenePos,
+                const std::function<void()> &changeScale);
+    void adjustCenterFromMousePosition(QPoint mousePos, QPointF scenePos);
 
 signals:
     void focused();
@@ -133,7 +140,9 @@ private:
     QPoint mLastMousePos;
     QPoint mScrollStartPos;
     QPointF mLastMouseScenePos;
+    QPointF mPinchScenePos;
     PannableViewHelper *mPannableViewHelper;
+    TouchInputHelper *mTouchInputHelper;
     std::unique_ptr<QCursor> mToolCursor;
     bool mViewInitialized = false;
     bool mHasInitialCenterPos = false;

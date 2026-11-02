@@ -545,6 +545,8 @@ DynamicLibrary {
         "tilestampsdock.h",
         "toolmanager.cpp",
         "toolmanager.h",
+        "touchinputhelper.cpp",
+        "touchinputhelper.h",
         "transformmapobjects.cpp",
         "transformmapobjects.h",
         "treeviewcombobox.cpp",

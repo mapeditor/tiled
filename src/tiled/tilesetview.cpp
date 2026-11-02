@@ -30,6 +30,7 @@
 #include "tileset.h"
 #include "tilesetdocument.h"
 #include "tilesetmodel.h"
+#include "touchinputhelper.h"
 #include "utils.h"
 #include "wangoverlay.h"
 #include "zoomable.h"
@@ -333,7 +334,30 @@ TilesetView::TilesetView(QWidget *parent)
     Preferences *prefs = Preferences::instance();
     mDrawGrid = prefs->showTilesetGrid();
 
+#ifdef Q_OS_MACOS
+    // On macOS, the native pinch gesture is turned into a QPinchGesture. On
+    // other platforms touchpad gestures are delivered as QNativeGestureEvent
+    // and touchscreens deliver QTouchEvent, handled by the TouchInputHelper.
     grabGesture(Qt::PinchGesture);
+#endif
+
+    // Needed to receive touch events, which are handled by TouchInputHelper
+    viewport()->setAttribute(Qt::WA_AcceptTouchEvents);
+
+    mTouchInputHelper = new TouchInputHelper(this);
+
+    connect(mTouchInputHelper, &TouchInputHelper::pinchStarted,
+            this, [this] (QPoint center) {
+        mPinchRelPos = relativeContentPos(viewport()->mapFromGlobal(center));
+        mZoomable->beginPinchZoom();
+    });
+    connect(mTouchInputHelper, &TouchInputHelper::pinchUpdated,
+            this, [this] (QPointF center, qreal factor) {
+        mZoomable->updatePinchZoom(factor);
+        executeDelayedItemsLayout();
+        restoreRelativePos(viewport()->mapFromGlobal(center.toPoint()),
+                           mPinchRelPos);
+    });
 
     connect(prefs, &Preferences::showTilesetGridChanged,
             this, &TilesetView::setDrawGrid);
@@ -473,6 +497,14 @@ bool TilesetView::event(QEvent *event)
     }
 
     return QTableView::event(event);
+}
+
+bool TilesetView::viewportEvent(QEvent *event)
+{
+    if (mTouchInputHelper->handleViewportEvent(event))
+        return true;
+
+    return QTableView::viewportEvent(event);
 }
 
 void TilesetView::keyPressEvent(QKeyEvent *event)
@@ -717,33 +749,21 @@ void TilesetView::wheelEvent(QWheelEvent *event)
     auto hor = horizontalScrollBar();
     auto ver = verticalScrollBar();
 
-    bool wheelZoomsByDefault = !dynamicWrapping() && Preferences::instance()->wheelZoomsByDefault();
+    bool wheelZoomsByDefault = !dynamicWrapping()
+            && !Utils::isTouchPadScrollEvent(event)
+            && Preferences::instance()->wheelZoomsByDefault();
     bool control = event->modifiers() & Qt::ControlModifier;
 
     if ((wheelZoomsByDefault != control) && event->angleDelta().y()) {
 
-        const QPointF &viewportPos = event->position();
-        const QPointF contentPos(viewportPos.x() + hor->value(),
-                                 viewportPos.y() + ver->value());
-
-        QPointF relativeContentPos;
-
-        const QSize oldContentSize = viewportSizeHint();
-        if (!oldContentSize.isEmpty()) {
-            relativeContentPos = QPointF(contentPos.x() / oldContentSize.width(),
-                                         contentPos.y() / oldContentSize.height());
-        }
+        const QPoint viewportPos = event->position().toPoint();
+        const QPointF relPos = relativeContentPos(viewportPos);
 
         mZoomable->handleWheelDelta(event->angleDelta().y());
 
         executeDelayedItemsLayout();
 
-        const QSize newContentSizeHint = viewportSizeHint();
-        const QPointF newContentPos(relativeContentPos.x() * newContentSizeHint.width(),
-                                    relativeContentPos.y() * newContentSizeHint.height());
-
-        hor->setValue(newContentPos.x() - viewportPos.x());
-        ver->setValue(newContentPos.y() - viewportPos.y());
+        restoreRelativePos(viewportPos, relPos);
         return;
     }
 
@@ -755,6 +775,37 @@ void TilesetView::wheelEvent(QWheelEvent *event)
         hor->setValue(hor->value() - delta.x());
     if (delta.y())
         ver->setValue(ver->value() - delta.y());
+}
+
+/**
+ * Returns the content position below \a viewportPos as a fraction of the
+ * content size. This can be used to restore that position after the content
+ * size has changed, keeping it below the same point in the view.
+ */
+QPointF TilesetView::relativeContentPos(QPoint viewportPos) const
+{
+    const QSize contentSize = viewportSizeHint();
+    if (contentSize.isEmpty())
+        return QPointF();
+
+    const QPointF contentPos(viewportPos.x() + horizontalScrollBar()->value(),
+                             viewportPos.y() + verticalScrollBar()->value());
+    return QPointF(contentPos.x() / contentSize.width(),
+                   contentPos.y() / contentSize.height());
+}
+
+/**
+ * Adjusts the scroll bars such that the content position indicated by
+ * \a relPos ends up below \a viewportPos.
+ */
+void TilesetView::restoreRelativePos(QPoint viewportPos, QPointF relPos)
+{
+    const QSize contentSize = viewportSizeHint();
+    const QPointF contentPos(relPos.x() * contentSize.width(),
+                             relPos.y() * contentSize.height());
+
+    horizontalScrollBar()->setValue(contentPos.x() - viewportPos.x());
+    verticalScrollBar()->setValue(contentPos.y() - viewportPos.y());
 }
 
 /**

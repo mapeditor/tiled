@@ -7,5 +7,6 @@ Project {
         "properties",
         "scriptmodule",
         "staggeredrenderer",
+        "touchinputhelper",
     ]
 }

@@ -29,6 +29,7 @@
 #include "pannableviewhelper.h"
 #include "preferences.h"
 #include "tileanimationdriver.h"
+#include "touchinputhelper.h"
 #include "utils.h"
 #include "zoomable.h"
 
@@ -85,10 +86,18 @@ MapView::MapView(QWidget *parent)
      * hover events. We need to set it since our scene wants the events. */
     v->setMouseTracking(true);
 
+    // Needed to receive touch events, which are handled by TouchInputHelper
+    v->setAttribute(Qt::WA_AcceptTouchEvents);
+
     // Adjustment for antialiasing is done by the items that need it
     setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing);
 
+#ifdef Q_OS_MACOS
+    // On macOS, the native pinch gesture is turned into a QPinchGesture. On
+    // other platforms touchpad gestures are delivered as QNativeGestureEvent
+    // and touchscreens deliver QTouchEvent, handled by the TouchInputHelper.
     grabGesture(Qt::PinchGesture);
+#endif
 
     setVerticalScrollBar(new FlexibleScrollBar(Qt::Vertical, this));
     setHorizontalScrollBar(new FlexibleScrollBar(Qt::Horizontal, this));
@@ -103,6 +112,19 @@ MapView::MapView(QWidget *parent)
     connect(mZoomable, &Zoomable::scaleChanged, this, &MapView::adjustScale);
 
     connect(mPanningDriver, &TileAnimationDriver::update, this, &MapView::updatePanning);
+
+    mTouchInputHelper = new TouchInputHelper(this);
+
+    connect(mTouchInputHelper, &TouchInputHelper::pinchStarted,
+            this, [this] (QPoint center) {
+        mPinchScenePos = mapToScene(viewport()->mapFromGlobal(center));
+        mZoomable->beginPinchZoom();
+    });
+    connect(mTouchInputHelper, &TouchInputHelper::pinchUpdated,
+            this, [this] (QPointF center, qreal factor) {
+        zoomAt(center.toPoint(), mPinchScenePos,
+               [this, factor] { mZoomable->updatePinchZoom(factor); });
+    });
 
     mPannableViewHelper = new PannableViewHelper(this);
     mPannableViewHelper->setAutoPanningEnabled(true);
@@ -222,6 +244,7 @@ void MapView::setUseOpenGL(bool useOpenGL)
     QWidget *v = viewport();
     v->setAttribute(Qt::WA_StaticContents);
     v->setMouseTracking(true);
+    v->setAttribute(Qt::WA_AcceptTouchEvents);
 #else
     Q_UNUSED(useOpenGL)
 #endif
@@ -463,6 +486,14 @@ bool MapView::event(QEvent *e)
     return QGraphicsView::event(e);
 }
 
+bool MapView::viewportEvent(QEvent *event)
+{
+    if (mTouchInputHelper->handleViewportEvent(event))
+        return true;
+
+    return QGraphicsView::viewportEvent(event);
+}
+
 void MapView::paintEvent(QPaintEvent *event)
 {
     if (!mViewInitialized) {
@@ -569,30 +600,22 @@ void MapView::keyReleaseEvent(QKeyEvent *event)
 }
 
 /**
- * Override to support zooming in and out using the mouse wheel.
+ * Override to support zooming in and out using the mouse wheel, and panning
+ * the view in response to two-finger touchpad scrolling.
  */
 void MapView::wheelEvent(QWheelEvent *event)
 {
     auto *hBar = static_cast<FlexibleScrollBar*>(horizontalScrollBar());
     auto *vBar = static_cast<FlexibleScrollBar*>(verticalScrollBar());
 
-    bool wheelZoomsByDefault = Preferences::instance()->wheelZoomsByDefault();
+    const bool wheelZoomsByDefault = !Utils::isTouchPadScrollEvent(event)
+            && Preferences::instance()->wheelZoomsByDefault();
     bool control = event->modifiers() & Qt::ControlModifier;
 
     if ((wheelZoomsByDefault != control) && event->angleDelta().y()) {
-        // No automatic anchoring since we'll do it manually
-        setTransformationAnchor(QGraphicsView::NoAnchor);
-
-        // Mouse move events need to be suppressed while zooming, otherwise
-        // the tools will get several mouse move events in various stages of
-        // the zooming process.
-        mapScene()->setSuppressMouseMoveEvents(true);
-        mZoomable->handleWheelDelta(event->angleDelta().y());
-        adjustCenterFromMousePosition(mLastMousePos);
-        mapScene()->setSuppressMouseMoveEvents(false);
-
-        // Restore the centering anchor
-        setTransformationAnchor(QGraphicsView::AnchorViewCenter);
+        zoomAt(mLastMousePos, [&] {
+            mZoomable->handleWheelDelta(event->angleDelta().y());
+        });
         return;
     }
 
@@ -631,24 +654,60 @@ void MapView::mouseMoveEvent(QMouseEvent *event)
 
 void MapView::handlePinchGesture(QPinchGesture *pinch)
 {
-    setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-
-    mZoomable->handlePinchGesture(pinch);
-
-    QPoint centerPoint = pinch->hotSpot().toPoint();
-    adjustCenterFromMousePosition(centerPoint);
-
-    setTransformationAnchor(QGraphicsView::AnchorViewCenter);
+    zoomAt(pinch->hotSpot().toPoint(), [&] {
+        mZoomable->handlePinchGesture(pinch);
+    });
 }
 
-void MapView::adjustCenterFromMousePosition(QPoint mousePos)
+/**
+ * Changes the scale using \a changeScale while keeping the scene position
+ * below the given global position in place.
+ */
+void MapView::zoomAt(QPoint globalPos, const std::function<void()> &changeScale)
 {
-    // Place the last known mouse scene pos below the mouse again
+    const bool atMouse = globalPos == mLastMousePos;
+    const QPointF scenePos = atMouse ? mLastMouseScenePos
+                                     : mapToScene(viewport()->mapFromGlobal(globalPos));
+    zoomAt(globalPos, scenePos, changeScale);
+}
+
+/**
+ * Changes the scale using \a changeScale while keeping the given scene
+ * position below the given global position in place.
+ */
+void MapView::zoomAt(QPoint globalPos, QPointF scenePos,
+                     const std::function<void()> &changeScale)
+{
+    // No automatic anchoring since we'll do it manually
+    setTransformationAnchor(QGraphicsView::NoAnchor);
+
+    // Mouse move events need to be suppressed while zooming, otherwise
+    // the tools will get several mouse move events in various stages of
+    // the zooming process.
+    mapScene()->setSuppressMouseMoveEvents(true);
+    changeScale();
+    adjustCenterFromMousePosition(globalPos, scenePos);
+    mapScene()->setSuppressMouseMoveEvents(false);
+
+    // Restore the centering anchor
+    setTransformationAnchor(QGraphicsView::AnchorViewCenter);
+
+    // The scene position below the mouse changed. When the zoom was anchored
+    // at the mouse, it now matches the given scene position.
+    if (globalPos == mLastMousePos)
+        mLastMouseScenePos = scenePos;
+    else
+        mLastMouseScenePos = mapToScene(viewport()->mapFromGlobal(mLastMousePos));
+}
+
+void MapView::adjustCenterFromMousePosition(QPoint mousePos, QPointF scenePos)
+{
+    // Place the given scene pos below the given position again
     const QWidget *view = viewport();
     const QPointF viewCenterScenePos = viewportTransform().inverted().map(QRectF(view->rect()).center());
     const QPointF mouseScenePos = mapToScene(view->mapFromGlobal(mousePos));
     const QPointF diff = viewCenterScenePos - mouseScenePos;
-    forceCenterOn(mLastMouseScenePos + diff);
+    forceCenterOn(scenePos + diff);
 }
 
 #include "moc_mapview.cpp"

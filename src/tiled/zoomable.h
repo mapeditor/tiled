@@ -65,6 +65,17 @@ public:
     void handlePinchGesture(QPinchGesture *pinch);
 
     /**
+     * Remembers the current scale as the starting point for a pinch zoom.
+     */
+    void beginPinchZoom();
+
+    /**
+     * Changes the current scale to the scale at the start of the pinch zoom,
+     * multiplied by the given \a totalScaleFactor.
+     */
+    void updatePinchZoom(qreal totalScaleFactor);
+
+    /**
      * Returns whether images should be smoothly transformed when drawn at the
      * current scale. This is the case when the scale is not 1 and smaller than
      * 2.

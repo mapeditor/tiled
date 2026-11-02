@@ -33,6 +33,7 @@ class QAction;
 class QKeyEvent;
 class QLayout;
 class QMenu;
+class QWheelEvent;
 
 namespace Tiled {
 namespace Utils {
@@ -94,6 +95,12 @@ QSize dpiScaled(QSize value);
 QPoint dpiScaled(QPoint value);
 QRectF dpiScaled(QRectF value);
 QSize smallIconSize();
+
+/**
+ * Returns whether the given \a event comes from a touchpad. These either
+ * carry a scroll phase or come from a touchpad device.
+ */
+bool isTouchPadScrollEvent(QWheelEvent *event);
 
 bool isZoomInShortcut(QKeyEvent *event);
 bool isZoomOutShortcut(QKeyEvent *event);

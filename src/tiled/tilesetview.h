@@ -29,6 +29,7 @@ namespace Tiled {
 
 class ChangeEvent;
 class TilesetDocument;
+class TouchInputHelper;
 class Zoomable;
 
 /**
@@ -109,6 +110,7 @@ signals:
 
 protected:
     bool event(QEvent *event) override;
+    bool viewportEvent(QEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
@@ -130,6 +132,9 @@ private:
     void adjustScale();
     void refreshColumnCount();
 
+    QPointF relativeContentPos(QPoint viewportPos) const;
+    void restoreRelativePos(QPoint viewportPos, QPointF relPos);
+
     void applyWangId();
     void finishWangIdChange();
     Tile *currentTile() const;
@@ -146,6 +151,8 @@ private:
     };
 
     Zoomable *mZoomable;
+    TouchInputHelper *mTouchInputHelper;
+    QPointF mPinchRelPos;
     TilesetDocument *mTilesetDocument = nullptr;
     bool mDrawGrid;
     bool mMarkAnimatedTiles = true;
