@@ -2384,6 +2384,16 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
             this, &PropertiesWidget::showContextMenu);
     connect(mPropertiesView, &PropertiesView::selectedPropertiesChanged,
             this, &PropertiesWidget::updateActions);
+    connect(mPropertiesView, &PropertiesView::propertyNameDoubleClicked,
+            this, [this](Property *property) {
+        // Match single-click selection, then rename when the action is enabled
+        // (custom property, single selection, owned by the object).
+        if (property->actions().testFlag(Property::Action::Select))
+            mPropertiesView->setSelectedProperties({ property });
+        updateActions();
+        if (mActionRenameProperty->isEnabled())
+            mActionRenameProperty->trigger();
+    });
 
     retranslateUi();
 }
