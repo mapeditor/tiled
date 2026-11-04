@@ -1,1066 +1,608 @@
-<!doctype html>
-<html class="default no-js">
-<head>
-	<meta charset="utf-8">
-	<link rel="stylesheet" href="../assets/css/main.css">
-	<meta name='viewport' content="width=device-width, initial-scale=1" />
-	<meta property="og:image" content="https://www.mapeditor.org/img/tiled-logo-filled.png" />
-	<link href='/favicon.ico' rel='icon' type='image/png'/>
-	<link rel="preconnect" href="https://fonts.gstatic.com">
-	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="/css/base.css">
-	<link href="/atom.xml" rel="alternate" type="application/atom+xml" />
-	<script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script>
-	<link rel="stylesheet" href="../assets/css/override.css">
-	<title>Dialog | Tiled Scripting API</title>
-	<meta name="description" content="Documentation for Tiled Scripting API">
-	<script async src="../assets/js/search.js" id="search-script"></script>
-</head>
-<body>
+<!DOCTYPE html><html class="default" lang="en" data-base="../"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Dialog | Tiled Scripting API</title><meta name="description" content="Documentation for Tiled Scripting API"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><link rel="stylesheet" href="../assets/custom.css"/><script defer src="../assets/main.js"></script><script async src="../assets/icons.js" id="tsd-icons-script"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script><script async src="../assets/hierarchy.js" id="tsd-hierarchy-script"></script><meta property="og:image" content="https://www.mapeditor.org/img/tiled-logo-filled.png"/><link href="/favicon.ico" rel="icon" type="image/png"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/><link rel="stylesheet" href="/css/base.css"/><link href="/atom.xml" rel="alternate" type="application/atom+xml"/><script async defer data-domain="mapeditor.org" src="https://plausible.io/js/plausible.js"></script></head><body>
 <div class="headerbar-container">
-	<nav class="headerbar container">
-		<a href="/" class="headerbar-logo"><img src="/img/tiled-logo-white.png" class="logo" alt="Tiled logo" width="393" height="213" /></a>
-		<div class="headerbar-content">
-			<a class="header-item" href="/docs">Docs</a>
-			<a class="header-item" href="/news">News</a>
-			<a class="header-item" href="/donate">Donate</a>
-			<div class="stretch"></div>
-			<!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
-			<a href="https://discourse.mapeditor.org/" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44.8 51.2"><path d="m22.59 2.7652c-12.26 0-22.59 9.85-22.59 22.01 0 0.39 0.01 22.79 0.01 22.79l22.58-0.02c12.27 0 22.21-10.23 22.21-22.39s-9.94-22.39-22.21-22.39zm-0.19 35.2c-1.94 0-3.79-0.43-5.44-1.21l-8.11 2.01 2.29-7.5c-0.98-1.81-1.54-3.89-1.54-6.1 0-7.07 5.73-12.8 12.8-12.8s12.8 5.73 12.8 12.8-5.73 12.8-12.8 12.8z"/></svg> <span class="tooltiptext">Forum</span></a>
-			<a href="https://discord.gg/39wbTv7" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44.8 51.2"><path d="m29.722 24.32c0 1.5616-1.152 2.8416-2.6112 2.8416-1.4336 0-2.6112-1.28-2.6112-2.8416s1.152-2.8416 2.6112-2.8416 2.6112 1.28 2.6112 2.8416zm-11.955-2.8416c-1.4592 0-2.6112 1.28-2.6112 2.8416s1.1776 2.8416 2.6112 2.8416c1.4592 0 2.6112-1.28 2.6112-2.8416 0.0256-1.5616-1.152-2.8416-2.6112-2.8416zm27.034-16.205v45.926c-6.4494-5.6994-4.3868-3.8128-11.878-10.778l1.3568 4.736h-29.03c-2.8928 0-5.248-2.3552-5.248-5.2736v-34.611c0-2.9184 2.3552-5.2736 5.248-5.2736h34.304c2.8928 0 5.248 2.3552 5.248 5.2736zm-7.296 24.269c0-8.2432-3.6864-14.925-3.6864-14.925-3.6864-2.7648-7.1936-2.688-7.1936-2.688l-0.3584 0.4096c4.352 1.3312 6.3744 3.2512 6.3744 3.2512-6.0811-3.3329-13.224-3.3335-19.123-0.7424-0.9472 0.4352-1.5104 0.7424-1.5104 0.7424s2.1248-2.0224 6.7328-3.3536l-0.256-0.3072s-3.5072-0.0768-7.1936 2.688c0 0-3.6864 6.6816-3.6864 14.925 0 0 2.1504 3.712 7.808 3.8912 0 0 0.9472-1.152 1.7152-2.1248-3.2512-0.9728-4.48-3.0208-4.48-3.0208 0.3766 0.2636 0.9976 0.6053 1.0496 0.64 4.321 2.4198 10.459 3.2126 15.974 0.896 0.896-0.3328 1.8944-0.8192 2.944-1.5104 0 0-1.28 2.0992-4.6336 3.0464 0.768 0.9728 1.6896 2.0736 1.6896 2.0736 5.6576-0.1792 7.8336-3.8912 7.8336-3.8912z"/></svg> <span class="tooltiptext">Discord</span></a>
-			<a href="https://floss.social/@tiled" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M433 179.1c0-97.2-63.7-125.7-63.7-125.7-62.5-28.7-228.6-28.4-290.5 0 0 0-63.7 28.5-63.7 125.7 0 115.7-6.6 259.4 105.6 289.1 40.5 10.7 75.3 13 103.3 11.4 50.8-2.8 79.3-18.1 79.3-18.1l-1.7-36.9s-36.3 11.4-77.1 10.1c-40.4-1.4-83-4.4-89.6-54a102.5 102.5 0 0 1 -.9-13.9c85.6 20.9 158.7 9.1 178.8 6.7 56.1-6.7 105-41.3 111.2-72.9 9.8-49.8 9-121.5 9-121.5zm-75.1 125.2h-46.6v-114.2c0-49.7-64-51.6-64 6.9v62.5h-46.3V197c0-58.5-64-56.6-64-6.9v114.2H90.2c0-122.1-5.2-147.9 18.4-175 25.9-28.9 79.8-30.8 103.8 6.1l11.6 19.5 11.6-19.5c24.1-37.1 78.1-34.8 103.8-6.1 23.7 27.3 18.4 53 18.4 175z"/></svg> <span class="tooltiptext">Mastodon</span></a>
-			<a href="https://github.com/mapeditor/tiled" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49.6 51.2"><path d="m16.59 40.099c0 0.2-0.23 0.36-0.52 0.36-0.33 0.03-0.56-0.13-0.56-0.36 0-0.2 0.23-0.36 0.52-0.36 0.3-0.03 0.56 0.13 0.56 0.36zm-3.11-0.45c-0.07 0.2 0.13 0.43 0.43 0.49 0.26 0.1 0.56 0 0.62-0.2s-0.13-0.43-0.43-0.52c-0.26-0.07-0.55 0.03-0.62 0.23zm4.42-0.17c-0.29 0.07-0.49 0.26-0.46 0.49 0.03 0.2 0.29 0.33 0.59 0.26 0.29-0.07 0.49-0.26 0.46-0.46-0.03-0.19-0.3-0.32-0.59-0.29zm6.58-38.32c-13.87 0-24.48 10.53-24.48 24.4 0 11.09 6.98 20.58 16.95 23.92 1.28 0.23 1.73-0.56 1.73-1.21 0-0.62-0.03-4.04-0.03-6.14 0 0-7 1.5-8.47-2.98 0 0-1.14-2.91-2.78-3.66 0 0-2.29-1.57 0.16-1.54 0 0 2.49 0.2 3.86 2.58 2.19 3.86 5.86 2.75 7.29 2.09 0.23-1.6 0.88-2.71 1.6-3.37-5.59-0.62-11.23-1.43-11.23-11.05 0-2.75 0.76-4.13 2.36-5.89-0.26-0.65-1.11-3.33 0.26-6.79 2.09-0.65 6.9 2.7 6.9 2.7 2-0.56 4.15-0.85 6.28-0.85s4.28 0.29 6.28 0.85c0 0 4.81-3.36 6.9-2.7 1.37 3.47 0.52 6.14 0.26 6.79 1.6 1.77 2.58 3.15 2.58 5.89 0 9.65-5.89 10.42-11.48 11.05 0.92 0.79 1.7 2.29 1.7 4.64 0 3.37-0.03 7.54-0.03 8.36 0 0.65 0.46 1.44 1.73 1.21 10-3.32 16.78-12.81 16.78-23.9 0-13.87-11.25-24.4-25.12-24.4zm-14.76 34.49c-0.13 0.1-0.1 0.33 0.07 0.52 0.16 0.16 0.39 0.23 0.52 0.1 0.13-0.1 0.1-0.33-0.07-0.52-0.16-0.16-0.39-0.23-0.52-0.1zm-1.08-0.81c-0.07 0.13 0.03 0.29 0.23 0.39 0.16 0.1 0.36 0.07 0.43-0.07 0.07-0.13-0.03-0.29-0.23-0.39-0.2-0.06-0.36-0.03-0.43 0.07zm3.24 3.56c-0.16 0.13-0.1 0.43 0.13 0.62 0.23 0.23 0.52 0.26 0.65 0.1 0.13-0.13 0.07-0.43-0.13-0.62-0.22-0.23-0.52-0.26-0.65-0.1zm-1.14-1.47c-0.16 0.1-0.16 0.36 0 0.59s0.43 0.33 0.56 0.23c0.16-0.13 0.16-0.39 0-0.62-0.14-0.23-0.4-0.33-0.56-0.2z"/></svg> <span class="tooltiptext">GitHub</span></a>
-		</div>
-	</nav>
-</div>
-<header>
-	<div class="tsd-page-toolbar">
-		<div class="container">
-			<div class="table-wrap">
-				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
-					<div class="field">
-						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
-						<input id="tsd-search-field" type="text" />
-					</div>
-					<ul class="results">
-						<li class="state loading">Preparing search index...</li>
-						<li class="state failure">The search index is not available</li>
-					</ul>
-					<a href="../index.html" class="title">Tiled Scripting API</a>
-				</div>
-				<div class="table-cell" id="tsd-widgets">
-					<div id="tsd-filter">
-						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
-						<div class="tsd-filter-group">
-							<div class="tsd-select" id="tsd-filter-visibility">
-								<span class="tsd-select-label">All</span>
-								<ul class="tsd-select-list">
-									<li data-value="public">Public</li>
-									<li data-value="protected">Public/Protected</li>
-									<li data-value="private" class="selected">All</li>
-								</ul>
-							</div>
-							<input type="checkbox" id="tsd-filter-inherited" checked />
-							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
-						</div>
-					</div>
-					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="tsd-page-title">
-		<div class="container">
-			<ul class="tsd-breadcrumb">
-				<li>
-					<a href="../index.html">Tiled Scripting API</a>
-				</li>
-				<li>
-					<a href="Dialog.html">Dialog</a>
-				</li>
-			</ul>
-			<h1>Class Dialog</h1>
-		</div>
-	</div>
-</header>
+<nav class="headerbar container"><a href="/" class="headerbar-logo"><img src="/img/tiled-logo-white.png" class="logo" alt="Tiled logo" width="393" height="213"/></a>
+<div class="headerbar-content"><a class="header-item" href="/docs">Docs</a><a class="header-item" href="/news">News</a><a class="header-item" href="/donate">Donate</a>
+<div class="stretch"></div>
+    <a href="https://discourse.mapeditor.org/" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44.8 51.2"><path d="m22.59 2.7652c-12.26 0-22.59 9.85-22.59 22.01 0 0.39 0.01 22.79 0.01 22.79l22.58-0.02c12.27 0 22.21-10.23 22.21-22.39s-9.94-22.39-22.21-22.39zm-0.19 35.2c-1.94 0-3.79-0.43-5.44-1.21l-8.11 2.01 2.29-7.5c-0.98-1.81-1.54-3.89-1.54-6.1 0-7.07 5.73-12.8 12.8-12.8s12.8 5.73 12.8 12.8-5.73 12.8-12.8 12.8z"/></svg> <span class="tooltiptext">Forum</span></a>
+    <a href="https://discord.gg/39wbTv7" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44.8 51.2"><path d="m29.722 24.32c0 1.5616-1.152 2.8416-2.6112 2.8416-1.4336 0-2.6112-1.28-2.6112-2.8416s1.152-2.8416 2.6112-2.8416 2.6112 1.28 2.6112 2.8416zm-11.955-2.8416c-1.4592 0-2.6112 1.28-2.6112 2.8416s1.1776 2.8416 2.6112 2.8416c1.4592 0 2.6112-1.28 2.6112-2.8416 0.0256-1.5616-1.152-2.8416-2.6112-2.8416zm27.034-16.205v45.926c-6.4494-5.6994-4.3868-3.8128-11.878-10.778l1.3568 4.736h-29.03c-2.8928 0-5.248-2.3552-5.248-5.2736v-34.611c0-2.9184 2.3552-5.2736 5.248-5.2736h34.304c2.8928 0 5.248 2.3552 5.248 5.2736zm-7.296 24.269c0-8.2432-3.6864-14.925-3.6864-14.925-3.6864-2.7648-7.1936-2.688-7.1936-2.688l-0.3584 0.4096c4.352 1.3312 6.3744 3.2512 6.3744 3.2512-6.0811-3.3329-13.224-3.3335-19.123-0.7424-0.9472 0.4352-1.5104 0.7424-1.5104 0.7424s2.1248-2.0224 6.7328-3.3536l-0.256-0.3072s-3.5072-0.0768-7.1936 2.688c0 0-3.6864 6.6816-3.6864 14.925 0 0 2.1504 3.712 7.808 3.8912 0 0 0.9472-1.152 1.7152-2.1248-3.2512-0.9728-4.48-3.0208-4.48-3.0208 0.3766 0.2636 0.9976 0.6053 1.0496 0.64 4.321 2.4198 10.459 3.2126 15.974 0.896 0.896-0.3328 1.8944-0.8192 2.944-1.5104 0 0-1.28 2.0992-4.6336 3.0464 0.768 0.9728 1.6896 2.0736 1.6896 2.0736 5.6576-0.1792 7.8336-3.8912 7.8336-3.8912z"/></svg> <span class="tooltiptext">Discord</span></a>
+    <a href="https://floss.social/@tiled" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M433 179.1c0-97.2-63.7-125.7-63.7-125.7-62.5-28.7-228.6-28.4-290.5 0 0 0-63.7 28.5-63.7 125.7 0 115.7-6.6 259.4 105.6 289.1 40.5 10.7 75.3 13 103.3 11.4 50.8-2.8 79.3-18.1 79.3-18.1l-1.7-36.9s-36.3 11.4-77.1 10.1c-40.4-1.4-83-4.4-89.6-54a102.5 102.5 0 0 1 -.9-13.9c85.6 20.9 158.7 9.1 178.8 6.7 56.1-6.7 105-41.3 111.2-72.9 9.8-49.8 9-121.5 9-121.5zm-75.1 125.2h-46.6v-114.2c0-49.7-64-51.6-64 6.9v62.5h-46.3V197c0-58.5-64-56.6-64-6.9v114.2H90.2c0-122.1-5.2-147.9 18.4-175 25.9-28.9 79.8-30.8 103.8 6.1l11.6 19.5 11.6-19.5c24.1-37.1 78.1-34.8 103.8-6.1 23.7 27.3 18.4 53 18.4 175z"/></svg> <span class="tooltiptext">Mastodon</span></a>
+    <a href="https://github.com/mapeditor/tiled" class="header-item headerbar-social"><svg style="display: inline-block; width: 1.5em; height: 1.5em; fill: currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49.6 51.2"><path d="m16.59 40.099c0 0.2-0.23 0.36-0.52 0.36-0.33 0.03-0.56-0.13-0.56-0.36 0-0.2 0.23-0.36 0.52-0.36 0.3-0.03 0.56 0.13 0.56 0.36zm-3.11-0.45c-0.07 0.2 0.13 0.43 0.43 0.49 0.26 0.1 0.56 0 0.62-0.2s-0.13-0.43-0.43-0.52c-0.26-0.07-0.55 0.03-0.62 0.23zm4.42-0.17c-0.29 0.07-0.49 0.26-0.46 0.49 0.03 0.2 0.29 0.33 0.59 0.26 0.29-0.07 0.49-0.26 0.46-0.46-0.03-0.19-0.3-0.32-0.59-0.29zm6.58-38.32c-13.87 0-24.48 10.53-24.48 24.4 0 11.09 6.98 20.58 16.95 23.92 1.28 0.23 1.73-0.56 1.73-1.21 0-0.62-0.03-4.04-0.03-6.14 0 0-7 1.5-8.47-2.98 0 0-1.14-2.91-2.78-3.66 0 0-2.29-1.57 0.16-1.54 0 0 2.49 0.2 3.86 2.58 2.19 3.86 5.86 2.75 7.29 2.09 0.23-1.6 0.88-2.71 1.6-3.37-5.59-0.62-11.23-1.43-11.23-11.05 0-2.75 0.76-4.13 2.36-5.89-0.26-0.65-1.11-3.33 0.26-6.79 2.09-0.65 6.9 2.7 6.9 2.7 2-0.56 4.15-0.85 6.28-0.85s4.28 0.29 6.28 0.85c0 0 4.81-3.36 6.9-2.7 1.37 3.47 0.52 6.14 0.26 6.79 1.6 1.77 2.58 3.15 2.58 5.89 0 9.65-5.89 10.42-11.48 11.05 0.92 0.79 1.7 2.29 1.7 4.64 0 3.37-0.03 7.54-0.03 8.36 0 0.65 0.46 1.44 1.73 1.21 10-3.32 16.78-12.81 16.78-23.9 0-13.87-11.25-24.4-25.12-24.4zm-14.76 34.49c-0.13 0.1-0.1 0.33 0.07 0.52 0.16 0.16 0.39 0.23 0.52 0.1 0.13-0.1 0.1-0.33-0.07-0.52-0.16-0.16-0.39-0.23-0.52-0.1zm-1.08-0.81c-0.07 0.13 0.03 0.29 0.23 0.39 0.16 0.1 0.36 0.07 0.43-0.07 0.07-0.13-0.03-0.29-0.23-0.39-0.2-0.06-0.36-0.03-0.43 0.07zm3.24 3.56c-0.16 0.13-0.1 0.43 0.13 0.62 0.23 0.23 0.52 0.26 0.65 0.1 0.13-0.13 0.07-0.43-0.13-0.62-0.22-0.23-0.52-0.26-0.65-0.1zm-1.14-1.47c-0.16 0.1-0.16 0.36 0 0.59s0.43 0.33 0.56 0.23c0.16-0.13 0.16-0.39 0-0.62-0.14-0.23-0.4-0.33-0.56-0.2z"/></svg> <span class="tooltiptext">GitHub</span></a>
+</div></nav></div><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar">
+<div class="tsd-toolbar-contents container"><a href="../index.html" class="title">Tiled Scripting API</a>
+<div id="tsd-toolbar-links"></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/>
+<ul role="listbox" id="tsd-search-results"></ul>
+<div id="tsd-search-status" aria-live="polite" aria-atomic="true">
+<div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-menu"></use></svg></a></div></header>
 <div class="container container-main">
-	<div class="row">
-		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>The <code>Dialog</code> object is used to display a dialog to the user
-						which can be filled with a variety of widgets.</p>
-					</div>
-					<p>The left-hand column of the dialog can only contain headings. If you call
-						<a href="Dialog.html#addHeading">addHeading</a> without specifying maxWidth = true, your heading will be
-					placed in the left-hand column of the dialog.</p>
-					<p>All other widgets will be placed in the right-hand side column. When you add
-						multiple instances of the same type of widget sequentially, they will be
-						grouped into the same row unless you call <a href="Dialog.html#addNewRow">addNewRow</a> in between
-					adding the widgets or change the <a href="Dialog.html#newRowMode">newRowMode</a> property.</p>
-					<p>This type is an extension of the <a href="https://doc.qt.io/qt-6/qdialog.html">QDialog</a> type from Qt.</p>
-					<dl class="tsd-comment-tags">
-						<dt>since</dt>
-						<dd><p>1.9</p>
-						</dd>
-					</dl>
-				</div>
-			</section>
-			<section class="tsd-panel tsd-hierarchy">
-				<h3>Hierarchy</h3>
-				<ul class="tsd-hierarchy">
-					<li>
-						<a href="Qt.QWidget.html" class="tsd-signature-type" data-tsd-kind="Class">QWidget</a>
-						<ul class="tsd-hierarchy">
-							<li>
-								<span class="target">Dialog</span>
-							</li>
-						</ul>
-					</li>
-				</ul>
-			</section>
-			<section class="tsd-panel-group tsd-index-group">
-				<h2>Index</h2>
-				<section class="tsd-panel tsd-index-panel">
-					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
-							<h3>Constructors</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite"><a href="Dialog.html#constructor" class="tsd-kind-icon">constructor</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Properties</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Dialog.html#accepted" class="tsd-kind-icon">accepted</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Dialog.html#enabled" class="tsd-kind-icon">enabled</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Dialog.html#finished" class="tsd-kind-icon">finished</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Dialog.html#minimumHeight" class="tsd-kind-icon">minimum<wbr>Height</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Dialog.html#minimumWidth" class="tsd-kind-icon">minimum<wbr>Width</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Dialog.html#newRowMode" class="tsd-kind-icon">new<wbr>Row<wbr>Mode</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Dialog.html#rejected" class="tsd-kind-icon">rejected</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Dialog.html#styleSheet" class="tsd-kind-icon">style<wbr>Sheet</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Dialog.html#toolTip" class="tsd-kind-icon">tool<wbr>Tip</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="Dialog.html#visible" class="tsd-kind-icon">visible</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="Dialog.html#windowTitle" class="tsd-kind-icon">window<wbr>Title</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Dialog.html#Accepted" class="tsd-kind-icon">Accepted</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Dialog.html#ManualRows" class="tsd-kind-icon">Manual<wbr>Rows</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Dialog.html#Rejected" class="tsd-kind-icon">Rejected</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Dialog.html#SameWidgetRows" class="tsd-kind-icon">Same<wbr>Widget<wbr>Rows</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="Dialog.html#SingleWidgetRows" class="tsd-kind-icon">Single<wbr>Widget<wbr>Rows</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Methods</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#accept" class="tsd-kind-icon">accept</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#addButton" class="tsd-kind-icon">add<wbr>Button</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#addCheckBox" class="tsd-kind-icon">add<wbr>Check<wbr>Box</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#addColorButton" class="tsd-kind-icon">add<wbr>Color<wbr>Button</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#addComboBox" class="tsd-kind-icon">add<wbr>Combo<wbr>Box</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#addFilePicker" class="tsd-kind-icon">add<wbr>File<wbr>Picker</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#addHeading" class="tsd-kind-icon">add<wbr>Heading</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#addImage" class="tsd-kind-icon">add<wbr>Image</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#addLabel" class="tsd-kind-icon">add<wbr>Label</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#addNewRow" class="tsd-kind-icon">add<wbr>New<wbr>Row</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#addNumberInput" class="tsd-kind-icon">add<wbr>Number<wbr>Input</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#addRadioButtonGroup" class="tsd-kind-icon">add<wbr>Radio<wbr>Button<wbr>Group</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#addSeparator" class="tsd-kind-icon">add<wbr>Separator</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#addSlider" class="tsd-kind-icon">add<wbr>Slider</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#addTextEdit" class="tsd-kind-icon">add<wbr>Text<wbr>Edit</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#addTextInput" class="tsd-kind-icon">add<wbr>Text<wbr>Input</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#clear" class="tsd-kind-icon">clear</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#done" class="tsd-kind-icon">done</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#exec" class="tsd-kind-icon">exec</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#reject" class="tsd-kind-icon">reject</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Dialog.html#show" class="tsd-kind-icon">show</a></li>
-							</ul>
-						</section>
-					</div>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-					<a name="constructor" class="tsd-anchor"></a>
-					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Dialog<span class="tsd-signature-symbol">(</span>windowTitle<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Dialog.html" class="tsd-signature-type" data-tsd-kind="Class">Dialog</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Overrides <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#constructor">constructor</a></p>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Create a new dialog with the given window title.</p>
-								</div>
-								<p>When not given the title defaults to &quot;Script&quot;.</p>
-							</div>
-						</li>
-					</ul>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="accepted" class="tsd-anchor"></a>
-					<h3>accepted</h3>
-					<div class="tsd-signature tsd-kind-icon">accepted<span class="tsd-signature-symbol">:</span> <a href="../interfaces/Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Called when the dialog is closed via <a href="Dialog.html#accept">accept</a> or the <a href="Dialog.html#done">done</a>
-							method is called with <a href="Dialog.html#Accepted">Dialog.Accepted</a> as its argument.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="enabled" class="tsd-anchor"></a>
-					<h3>enabled</h3>
-					<div class="tsd-signature tsd-kind-icon">enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#enabled">enabled</a></p>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>If false, the widget cannot be interacted with.
-							Qt documentation: <a href="https://doc.qt.io/qt-6/qwidget.html#enabled-prop">QWidget::enabled</a></p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="finished" class="tsd-anchor"></a>
-					<h3>finished</h3>
-					<div class="tsd-signature tsd-kind-icon">finished<span class="tsd-signature-symbol">:</span> <a href="../interfaces/Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Called when the dialog is closed or the <a href="Dialog.html#done">done</a> method is called.
-								The number value it provides is either <a href="Dialog.html#Accepted">Dialog.Accepted</a> or
-							<a href="Dialog.html#Rejected">Dialog.Rejected</a>.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="minimumHeight" class="tsd-anchor"></a>
-					<h3>minimum<wbr>Height</h3>
-					<div class="tsd-signature tsd-kind-icon">minimum<wbr>Height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#minimumHeight">minimumHeight</a></p>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>You can use this property to prevent the widget from being resized to a height
-							below this amount.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="minimumWidth" class="tsd-anchor"></a>
-					<h3>minimum<wbr>Width</h3>
-					<div class="tsd-signature tsd-kind-icon">minimum<wbr>Width<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#minimumWidth">minimumWidth</a></p>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>You can use this property to prevent the widget from being resized to a width
-							below this amount.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="newRowMode" class="tsd-anchor"></a>
-					<h3>new<wbr>Row<wbr>Mode</h3>
-					<div class="tsd-signature tsd-kind-icon">new<wbr>Row<wbr>Mode<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Dialog.html#SameWidgetRows" class="tsd-signature-type" data-tsd-kind="Property">SameWidgetRows</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="Dialog.html#ManualRows" class="tsd-signature-type" data-tsd-kind="Property">ManualRows</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="Dialog.html#SingleWidgetRows" class="tsd-signature-type" data-tsd-kind="Property">SingleWidgetRows</a></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Controls the automatic widget placement behavior of the dialog.
-							Defaults to <a href="Dialog.html#SameWidgetRows">SameWidgetRows</a>.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="rejected" class="tsd-anchor"></a>
-					<h3>rejected</h3>
-					<div class="tsd-signature tsd-kind-icon">rejected<span class="tsd-signature-symbol">:</span> <a href="../interfaces/Signal.html" class="tsd-signature-type" data-tsd-kind="Interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Called when the dialog is closed via the X button, <a href="Dialog.html#reject">reject</a>, or the
-								<a href="Dialog.html#done">done</a> method is called with <a href="Dialog.html#Rejected">Dialog.Rejected</a> as its
-							argument.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="styleSheet" class="tsd-anchor"></a>
-					<h3>style<wbr>Sheet</h3>
-					<div class="tsd-signature tsd-kind-icon">style<wbr>Sheet<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#styleSheet">styleSheet</a></p>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Set this property to override the style sheet for this widget.</p>
-						</div>
-						<p>See <a href="https://doc.qt.io/qt-6/stylesheet.html">https://doc.qt.io/qt-6/stylesheet.html</a> and <a href="https://doc.qt.io/qt-6/stylesheet-examples.html">https://doc.qt.io/qt-6/stylesheet-examples.html</a> for more information.</p>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="toolTip" class="tsd-anchor"></a>
-					<h3>tool<wbr>Tip</h3>
-					<div class="tsd-signature tsd-kind-icon">tool<wbr>Tip<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#toolTip">toolTip</a></p>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The toolTip displayed when the user mouses over this widget</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="visible" class="tsd-anchor"></a>
-					<h3>visible</h3>
-					<div class="tsd-signature tsd-kind-icon">visible<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#visible">visible</a></p>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Controls whether this widget is visible.
-								When toggling this property, the dialog layout will automatically adjust itself
-								based on the visible widgets.
-							Qt documentation: <a href="https://doc.qt.io/qt-6/qwidget.html#visible-prop">QWidget::visible</a>;</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="windowTitle" class="tsd-anchor"></a>
-					<h3>window<wbr>Title</h3>
-					<div class="tsd-signature tsd-kind-icon">window<wbr>Title<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The title of your dialog.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Accepted" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Accepted</h3>
-					<div class="tsd-signature tsd-kind-icon">Accepted<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Dialog.html#Accepted" class="tsd-signature-type" data-tsd-kind="Property">Accepted</a></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The dialog was accepted. Value is 1.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="ManualRows" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Manual<wbr>Rows</h3>
-					<div class="tsd-signature tsd-kind-icon">Manual<wbr>Rows<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Dialog.html#ManualRows" class="tsd-signature-type" data-tsd-kind="Property">ManualRows</a></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>In this mode, the dialog will not add a new row unless you call
-							<a href="Dialog.html#addNewRow">addNewRow</a>, <a href="Dialog.html#addHeading">addHeading</a> or <a href="Dialog.html#addSeparator">addSeparator</a>.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="Rejected" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Rejected</h3>
-					<div class="tsd-signature tsd-kind-icon">Rejected<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Dialog.html#Rejected" class="tsd-signature-type" data-tsd-kind="Property">Rejected</a></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The dialog was rejected. Value is 0.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="SameWidgetRows" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Same<wbr>Widget<wbr>Rows</h3>
-					<div class="tsd-signature tsd-kind-icon">Same<wbr>Widget<wbr>Rows<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Dialog.html#SameWidgetRows" class="tsd-signature-type" data-tsd-kind="Property">SameWidgetRows</a></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The default row layout mode.</p>
-						</div>
-						<p>In this mode, if you add multiple of the same type of widget in a row,
-							(for instance by calling <a href="Dialog.html#addButton">addButton</a> twice in a row), the Dialog
-						will automatically group them into the same row.</p>
-						<p>As soon as a differently typed widget is added, a new row will be added to
-							the dialog. The exception to this rule is the widget created by <a href="Dialog.html#addLabel">addLabel</a>, which will be mixed with any other widget types when using this
-						mode.</p>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="SingleWidgetRows" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> Single<wbr>Widget<wbr>Rows</h3>
-					<div class="tsd-signature tsd-kind-icon">Single<wbr>Widget<wbr>Rows<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><a href="Dialog.html#SingleWidgetRows" class="tsd-signature-type" data-tsd-kind="Property">SingleWidgetRows</a></div>
-					<aside class="tsd-sources">
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>In this mode, only one widget will be allowed in the right column.
-								A new row will be added after each time you place a widget in the right
-							column.</p>
-						</div>
-					</div>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="accept" class="tsd-anchor"></a>
-					<h3>accept</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">accept<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Close this dialog, setting its result code to <a href="Dialog.html#Accepted">Dialog.Accepted</a>.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="addButton" class="tsd-anchor"></a>
-					<h3>add<wbr>Button</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Button<span class="tsd-signature-symbol">(</span>text<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, toolTip<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QPushButton.html" class="tsd-signature-type" data-tsd-kind="Class">QPushButton</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Add a <a href="Qt.QPushButton.html">Qt.QPushButton</a> widget with the given text to the dialog.
-										Allows the user to press a button that you can respond to the clicked
-									signal of.</p>
-								</div>
-								<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="addCheckBox" class="tsd-anchor"></a>
-					<h3>add<wbr>Check<wbr>Box</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Check<wbr>Box<span class="tsd-signature-symbol">(</span>text<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, defaultValue<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span>, toolTip<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QCheckBox.html" class="tsd-signature-type" data-tsd-kind="Class">QCheckBox</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Add a <a href="Qt.QCheckBox.html">Qt.QCheckBox</a> widget with the given text to the dialog.
-									Allows a user to toggle a boolean value.</p>
-								</div>
-								<p>If the defaultValue parameter is true the checkbox is checked by default.</p>
-								<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="addColorButton" class="tsd-anchor"></a>
-					<h3>add<wbr>Color<wbr>Button</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Color<wbr>Button<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, defaultValue<span class="tsd-signature-symbol">?: </span><a href="../interfaces/color.html" class="tsd-signature-type" data-tsd-kind="Interface">color</a>, toolTip<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="ColorButton.html" class="tsd-signature-type" data-tsd-kind="Class">ColorButton</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Add a <a href="ColorButton.html">ColorButton</a> widget that allows the user to pick a color.</p>
-								</div>
-								<p>If the labelText is non-empty, a label widget will be added to the left of
-								the widget.</p>
-								<p>The optional defaultValue parameter sets the initial color (since 1.12). Pass <code>undefined</code>
-								to skip setting a default color while still providing a toolTip.</p>
-								<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="addComboBox" class="tsd-anchor"></a>
-					<h3>add<wbr>Combo<wbr>Box</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Combo<wbr>Box<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, defaultIndex<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, toolTip<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QComboBox.html" class="tsd-signature-type" data-tsd-kind="Class">QComboBox</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Add a <a href="Qt.QComboBox.html">Qt.QComboBox</a> widget (also known as a dropdown) allowing the
-									user to select one of the given values.</p>
-								</div>
-								<p>If the labelText is non-empty, a label widget will be added to the left of
-								the widget.</p>
-								<p>The optional defaultIndex parameter sets the initially selected index (0-based) (since 1.12).</p>
-								<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="addFilePicker" class="tsd-anchor"></a>
-					<h3>add<wbr>File<wbr>Picker</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>File<wbr>Picker<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, defaultValue<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, toolTip<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="FileEdit.html" class="tsd-signature-type" data-tsd-kind="Class">FileEdit</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Add a <a href="FileEdit.html">FileEdit</a> widget with a button which opens a file picker
-									dialog and displays the path in the dialog.</p>
-								</div>
-								<p>If the labelText is non-empty, a label widget will be added to the left of
-								the widget.</p>
-								<p>The optional defaultValue parameter sets the initial file path (since 1.12).</p>
-								<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="addHeading" class="tsd-anchor"></a>
-					<h3>add<wbr>Heading</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Heading<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, maxWidth<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QLabel.html" class="tsd-signature-type" data-tsd-kind="Class">QLabel</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Add a heading to the dialog with the given labelText. A heading will
-									always be the first widget in a row.</p>
-								</div>
-								<p>If the optional maxWidth parameter is true, the heading will be expanded
-									to the full width of the dialog. Otherwise, it will be confined to the
-								left-hand column of the dialog.</p>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="addImage" class="tsd-anchor"></a>
-					<h3>add<wbr>Image</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Image<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, image<span class="tsd-signature-symbol">: </span><a href="Image.html" class="tsd-signature-type" data-tsd-kind="Class">Image</a>, toolTip<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="ImageWidget.html" class="tsd-signature-type" data-tsd-kind="Class">ImageWidget</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Adds an image widget that can display an image in a dialog.</p>
-								</div>
-								<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="addLabel" class="tsd-anchor"></a>
-					<h3>add<wbr>Label</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Label<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, toolTip<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QLabel.html" class="tsd-signature-type" data-tsd-kind="Class">QLabel</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Add a label to the dialog with the given text. A label will always be the
-									first widget in a row.</p>
-								</div>
-								<p>The optional toolTip parameter sets a tooltip on the label (since 1.12).</p>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="addNewRow" class="tsd-anchor"></a>
-					<h3>add<wbr>New<wbr>Row</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>New<wbr>Row<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Call this to force the next widget to go on a new row,
-									even if it is the same type widget as the last one you added.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="addNumberInput" class="tsd-anchor"></a>
-					<h3>add<wbr>Number<wbr>Input</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Number<wbr>Input<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, defaultValue<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, toolTip<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QDoubleSpinBox.html" class="tsd-signature-type" data-tsd-kind="Class">QDoubleSpinBox</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Add a <a href="Qt.QDoubleSpinBox.html">Qt.QDoubleSpinBox</a> widget to the dialog to allow a user to type a
-										numerical value or use up and down controls on the widget to manipulate
-									the value.</p>
-								</div>
-								<p>This can be used to enter integer or decimal values.</p>
-								<p>The optional defaultValue parameter sets the initial value of the spin box (since 1.12).</p>
-								<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="addRadioButtonGroup" class="tsd-anchor"></a>
-					<h3>add<wbr>Radio<wbr>Button<wbr>Group</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Radio<wbr>Button<wbr>Group<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, values<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, labelToolTip<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span>, buttonToolTips<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QButtonGroup.html" class="tsd-signature-type" data-tsd-kind="Class">QButtonGroup</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Add a <a href="Qt.QButtonGroup.html">QButtonGroup</a> widget which allows you to add multiple radio
-									buttons, where only one radio button can be selected at a time.</p>
-								</div>
-								<p>Each radio button is a <a href="Qt.QAbstractButton.html">QAbstractButton</a>. You can force selection of
-								a radio button by setting checked = true, and also disable</p>
-								<p>If the labelText is non-empty, a label widget will be added to the left of
-								the widget.</p>
-								<p>Each entry in the values array is the text that will appear on the radio button.</p>
-								<p>labelToolTip is an optional tooltip for the label to the left of the radio button group.</p>
-								<p>buttonToolTips is an optional list of tooltips, where each entry is a tooltip that corresponds
-								to the radio button in the list of values at each index.</p>
-								<dl class="tsd-comment-tags">
-									<dt>since</dt>
-									<dd><p>1.11.1</p>
-									</dd>
-								</dl>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="addSeparator" class="tsd-anchor"></a>
-					<h3>add<wbr>Separator</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Separator<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QFrame.html" class="tsd-signature-type" data-tsd-kind="Class">QFrame</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Adds a separator line with optional label to the dialog.
-									Used to visually split up sections of the dialog.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="addSlider" class="tsd-anchor"></a>
-					<h3>add<wbr>Slider</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Slider<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, defaultValue<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, toolTip<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QSlider.html" class="tsd-signature-type" data-tsd-kind="Class">QSlider</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Add a <a href="Qt.QSlider.html">Qt.QSlider</a> widget to the dialog to allow a user to
-									slide a handle within a number range.</p>
-								</div>
-								<p>This can only be used to enter integer-type values.</p>
-								<p>The optional defaultValue parameter sets the initial value of the slider.</p>
-								<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="addTextEdit" class="tsd-anchor"></a>
-					<h3>add<wbr>Text<wbr>Edit</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Text<wbr>Edit<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, defaultValue<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, toolTip<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QTextEdit.html" class="tsd-signature-type" data-tsd-kind="Class">QTextEdit</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Add a <a href="Qt.QTextEdit.html">Qt.QTextEdit</a> widget to the dialog to allow the user to edit
-										multiple lines of text. Also allows display of rendered HTML by setting
-										the <a href="Qt.QTextEdit.html#html">Qt.QTextEdit.html</a> property. The initial text on the widget can
-									be given by defaultValue parameter.</p>
-								</div>
-								<p>If the labelText is non-empty, a label widget will be added to the left of
-								the widget.</p>
-								<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="addTextInput" class="tsd-anchor"></a>
-					<h3>add<wbr>Text<wbr>Input</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Text<wbr>Input<span class="tsd-signature-symbol">(</span>labelText<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, defaultValue<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, toolTip<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Qt.QLineEdit.html" class="tsd-signature-type" data-tsd-kind="Class">QLineEdit</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Add a <a href="Qt.QLineEdit.html">Qt.QLineEdit</a> widget to the dialog to allow the user to enter
-										a single line of text. The initial text on the widget can be given by
-									defaultValue parameter.</p>
-								</div>
-								<p>If the labelText is non-empty, a label widget will be added to the left of
-								the widget.</p>
-								<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="clear" class="tsd-anchor"></a>
-					<h3>clear</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">clear<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Erase all of the widgets that you have added to the dialog.
-									Call this if you want to re-draw your dialog with a new configuration of widgets.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="done" class="tsd-anchor"></a>
-					<h3>done</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">done<span class="tsd-signature-symbol">(</span>resultCode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">typeof </span><a href="Dialog.html#Rejected" class="tsd-signature-type" data-tsd-kind="Property">Rejected</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="Dialog.html#Accepted" class="tsd-signature-type" data-tsd-kind="Property">Accepted</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Close this dialog, setting its result code to <a href="Dialog.html#Accepted">Dialog.Accepted</a> or
-									<a href="Dialog.html#Rejected">Dialog.Rejected</a>.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="exec" class="tsd-anchor"></a>
-					<h3>exec</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">exec<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">typeof </span><a href="Dialog.html#Rejected" class="tsd-signature-type" data-tsd-kind="Property">Rejected</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">typeof </span><a href="Dialog.html#Accepted" class="tsd-signature-type" data-tsd-kind="Property">Accepted</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Open the dialog, blocking your script until the Dialog has been
-									accepted or rejected.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="reject" class="tsd-anchor"></a>
-					<h3>reject</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">reject<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Close this dialog, setting its result code to <a href="Dialog.html#Rejected">Dialog.Rejected</a>.</p>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="show" class="tsd-anchor"></a>
-					<h3>show</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">show<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Show the dialog. Call this after you have added all of your desired widgets.
-									This will not block your script until the dialog opens.</p>
-								</div>
-								<p>To respond to the dialog closing, it is recommended to connect to the <a href="Dialog.html#finished">finished</a>
-								signal.</p>
-							</div>
-						</li>
-					</ul>
-				</section>
-			</section>
-		</div>
-		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
-			<nav class="tsd-navigation primary">
-				<ul>
-					<li class=" ">
-						<a href="../index.html">Exports</a>
-					</li>
-				</ul>
-			</nav>
-			<nav class="tsd-navigation secondary menu-sticky">
-				<ul class="before-current">
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-class">
-						<a href="Dialog.html" class="tsd-kind-icon">Dialog</a>
-						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-								<a href="Dialog.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="Dialog.html#accepted" class="tsd-kind-icon">accepted</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="Dialog.html#enabled" class="tsd-kind-icon">enabled</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="Dialog.html#finished" class="tsd-kind-icon">finished</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="Dialog.html#minimumHeight" class="tsd-kind-icon">minimum<wbr>Height</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="Dialog.html#minimumWidth" class="tsd-kind-icon">minimum<wbr>Width</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="Dialog.html#newRowMode" class="tsd-kind-icon">new<wbr>Row<wbr>Mode</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="Dialog.html#rejected" class="tsd-kind-icon">rejected</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="Dialog.html#styleSheet" class="tsd-kind-icon">style<wbr>Sheet</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="Dialog.html#toolTip" class="tsd-kind-icon">tool<wbr>Tip</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="Dialog.html#visible" class="tsd-kind-icon">visible</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="Dialog.html#windowTitle" class="tsd-kind-icon">window<wbr>Title</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Dialog.html#Accepted" class="tsd-kind-icon">Accepted</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Dialog.html#ManualRows" class="tsd-kind-icon">Manual<wbr>Rows</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Dialog.html#Rejected" class="tsd-kind-icon">Rejected</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Dialog.html#SameWidgetRows" class="tsd-kind-icon">Same<wbr>Widget<wbr>Rows</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="Dialog.html#SingleWidgetRows" class="tsd-kind-icon">Single<wbr>Widget<wbr>Rows</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Dialog.html#accept" class="tsd-kind-icon">accept</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Dialog.html#addButton" class="tsd-kind-icon">add<wbr>Button</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Dialog.html#addCheckBox" class="tsd-kind-icon">add<wbr>Check<wbr>Box</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Dialog.html#addColorButton" class="tsd-kind-icon">add<wbr>Color<wbr>Button</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Dialog.html#addComboBox" class="tsd-kind-icon">add<wbr>Combo<wbr>Box</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Dialog.html#addFilePicker" class="tsd-kind-icon">add<wbr>File<wbr>Picker</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Dialog.html#addHeading" class="tsd-kind-icon">add<wbr>Heading</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Dialog.html#addImage" class="tsd-kind-icon">add<wbr>Image</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Dialog.html#addLabel" class="tsd-kind-icon">add<wbr>Label</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Dialog.html#addNewRow" class="tsd-kind-icon">add<wbr>New<wbr>Row</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Dialog.html#addNumberInput" class="tsd-kind-icon">add<wbr>Number<wbr>Input</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Dialog.html#addRadioButtonGroup" class="tsd-kind-icon">add<wbr>Radio<wbr>Button<wbr>Group</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Dialog.html#addSeparator" class="tsd-kind-icon">add<wbr>Separator</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Dialog.html#addSlider" class="tsd-kind-icon">add<wbr>Slider</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Dialog.html#addTextEdit" class="tsd-kind-icon">add<wbr>Text<wbr>Edit</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Dialog.html#addTextInput" class="tsd-kind-icon">add<wbr>Text<wbr>Input</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Dialog.html#clear" class="tsd-kind-icon">clear</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Dialog.html#done" class="tsd-kind-icon">done</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Dialog.html#exec" class="tsd-kind-icon">exec</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Dialog.html#reject" class="tsd-kind-icon">reject</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="Dialog.html#show" class="tsd-kind-icon">show</a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<ul class="after-current">
-				</ul>
-			</nav>
-		</div>
-	</div>
+<div class="col-content">
+<div class="tsd-page-title">
+<ul class="tsd-breadcrumb" aria-label="Breadcrumb">
+<li><a href="" aria-current="page">Dialog</a></li></ul>
+<h1>Class Dialog</h1></div>
+<section class="tsd-panel tsd-comment">
+<div class="tsd-comment tsd-typography"><p>The <code>Dialog</code> object is used to display a dialog to the user
+which can be filled with a variety of widgets.</p>
+<p>The left-hand column of the dialog can only contain headings. If you call
+<a href="#addheading" class="tsd-kind-method">addHeading</a> without specifying maxWidth = true, your heading will be
+placed in the left-hand column of the dialog.</p>
+<p>All other widgets will be placed in the right-hand side column. When you add
+multiple instances of the same type of widget sequentially, they will be
+grouped into the same row unless you call <a href="#addnewrow" class="tsd-kind-method">addNewRow</a> in between
+adding the widgets or change the <a href="#newrowmode" class="tsd-kind-property">newRowMode</a> property.</p>
+<p>This type is an extension of the <a href="https://doc.qt.io/qt-6/qdialog.html">QDialog</a> type from Qt.</p>
 </div>
-<footer class="with-border-bottom">
-	<div class="container">
-		<h2>Legend</h2>
-		<div class="tsd-legend-group">
-			<ul class="tsd-legend">
-				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
-			</ul>
-		</div>
-	</div>
-</footer>
-<div class="container tsd-generator">
-	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+<div class="tsd-comment tsd-typography">
+<div class="tsd-tag-since">
+<h4 class="tsd-anchor-link" id="since">Since<a href="#since" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p>1.9</p>
+</div></div></section>
+<section class="tsd-panel tsd-hierarchy" data-refl="2595">
+<h4>Hierarchy (<a href="../hierarchy.html#Dialog">View Summary</a>)</h4>
+<ul class="tsd-hierarchy">
+<li class="tsd-hierarchy-item"><a href="Qt.QWidget.html" class="tsd-signature-type tsd-kind-class">QWidget</a>
+<ul class="tsd-hierarchy">
+<li class="tsd-hierarchy-item"><span class="tsd-hierarchy-target">Dialog</span></li></ul></li></ul></section>
+<section class="tsd-panel-group tsd-index-group">
+<section class="tsd-panel tsd-index-panel">
+<details class="tsd-index-content tsd-accordion" open><summary class="tsd-accordion-summary tsd-index-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h5 class="tsd-index-heading uppercase">Index</h5></summary>
+<div class="tsd-accordion-details">
+<section class="tsd-index-section">
+<h3 class="tsd-index-heading tsd-anchor-link" id="constructors">Constructors<a href="#constructors" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-index-list"><a href="#constructor" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Constructor"><use href="../assets/icons.svg#icon-512"></use></svg><span>constructor</span></a>
+</div></section>
+<section class="tsd-index-section">
+<h3 class="tsd-index-heading tsd-anchor-link" id="properties">Properties<a href="#properties" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-index-list"><a href="#accepted" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>accepted</span></a>
+<a href="#enabled" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>enabled</span></a>
+<a href="#finished" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>finished</span></a>
+<a href="#minimumheight" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>minimum<wbr/>Height</span></a>
+<a href="#minimumwidth" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>minimum<wbr/>Width</span></a>
+<a href="#newrowmode" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>new<wbr/>Row<wbr/>Mode</span></a>
+<a href="#rejected" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>rejected</span></a>
+<a href="#stylesheet" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>style<wbr/>Sheet</span></a>
+<a href="#tooltip" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>tool<wbr/>Tip</span></a>
+<a href="#visible" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>visible</span></a>
+<a href="#windowtitle" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>window<wbr/>Title</span></a>
+<a href="#accepted-1" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Accepted</span></a>
+<a href="#manualrows" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Manual<wbr/>Rows</span></a>
+<a href="#rejected-1" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Rejected</span></a>
+<a href="#samewidgetrows" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Same<wbr/>Widget<wbr/>Rows</span></a>
+<a href="#singlewidgetrows" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Single<wbr/>Widget<wbr/>Rows</span></a>
+</div></section>
+<section class="tsd-index-section">
+<h3 class="tsd-index-heading tsd-anchor-link" id="methods">Methods<a href="#methods" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-index-list"><a href="#accept" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>accept</span></a>
+<a href="#addbutton" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Button</span></a>
+<a href="#addcheckbox" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Check<wbr/>Box</span></a>
+<a href="#addcolorbutton" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Color<wbr/>Button</span></a>
+<a href="#addcombobox" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Combo<wbr/>Box</span></a>
+<a href="#addfilepicker" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>File<wbr/>Picker</span></a>
+<a href="#addheading" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Heading</span></a>
+<a href="#addimage" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Image</span></a>
+<a href="#addlabel" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Label</span></a>
+<a href="#addnewrow" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>New<wbr/>Row</span></a>
+<a href="#addnumberinput" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Number<wbr/>Input</span></a>
+<a href="#addradiobuttongroup" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Radio<wbr/>Button<wbr/>Group</span></a>
+<a href="#addseparator" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Separator</span></a>
+<a href="#addslider" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Slider</span></a>
+<a href="#addtextedit" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Text<wbr/>Edit</span></a>
+<a href="#addtextinput" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Text<wbr/>Input</span></a>
+<a href="#clear" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>clear</span></a>
+<a href="#done" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>done</span></a>
+<a href="#exec" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>exec</span></a>
+<a href="#reject" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>reject</span></a>
+<a href="#show" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>show</span></a>
+</div></section></div></details></section></section>
+<details class="tsd-panel-group tsd-member-group tsd-accordion" open><summary class="tsd-accordion-summary" data-key="section-Constructors"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h2 class="tsd-anchor-link" id="constructors-1">Constructors<a href="#constructors-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2></summary>
+<section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="constructor"><span>constructor</span><a href="#constructor" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="constructordialog"><span class="tsd-signature-keyword">new</span> <span class="tsd-kind-constructor-signature">Dialog</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">windowTitle</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-class">Dialog</a><a href="#constructordialog" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Create a new dialog with the given window title.</p>
+<p>When not given the title defaults to &quot;Script&quot;.</p>
 </div>
-<div class="overlay"></div>
-<script src="../assets/js/main.js"></script>
-<footer class="media-content">
-	<div class="footer-content container">
-		<p>Tiled - Copyright © 2008-2025 Thorbjørn Lindeijer<br> and <a href="https://www.openhub.net/p/tiled-qt/contributors/summary">many other contributors</a></p>
-		<nav style="display: flex; justify-content: center; align-items: top; margin-left: 1em;">
-			<ul style="float: right; border-left: 2px solid #ececec; padding: 0 1em">
-				<li><a href="/docs">Documentation</a></li>
-				<li><a href="/news">News</a></li>
-				<li><a href="/donate">Donate</a></li>
-				<li><a href="https://discourse.mapeditor.org/">Forum</a></li>
-				<li><a href="https://discord.gg/39wbTv7">Discord</a></li>
-				<li><a rel="me" href="https://floss.social/@tiled">Mastodon</a></li>
-				<li><a href="https://github.com/mapeditor/tiled">GitHub</a></li>
-				<li><a href="https://x.com/TiledApp">X</a></li>
-			</ul>
-		</nav>
-	</div>
-</footer>
-</body>
-</html>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">windowTitle</span>: <span class="tsd-signature-type">string</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="" class="tsd-signature-type tsd-kind-class">Dialog</a></h4><aside class="tsd-sources">
+<p>Overrides <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#constructor">constructor</a></p></aside></div></li></ul></section></section></details>
+<details class="tsd-panel-group tsd-member-group tsd-accordion" open><summary class="tsd-accordion-summary" data-key="section-Properties"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h2 class="tsd-anchor-link" id="properties-1">Properties<a href="#properties-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2></summary>
+<section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="accepted"><span>accepted</span><a href="#accepted" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">accepted</span><span class="tsd-signature-symbol">:</span> <a href="../interfaces/Signal.html" class="tsd-signature-type tsd-kind-interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div>
+<div class="tsd-comment tsd-typography"><p>Called when the dialog is closed via <a href="#accept" class="tsd-kind-method">accept</a> or the <a href="#done" class="tsd-kind-method">done</a>
+method is called with <a href="#accepted-1" class="tsd-kind-property">Dialog.Accepted</a> as its argument.</p>
+</div></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="enabled"><span>enabled</span><a href="#enabled" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">enabled</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+<div class="tsd-comment tsd-typography"><p>If false, the widget cannot be interacted with.
+Qt documentation: <a href="https://doc.qt.io/qt-6/qwidget.html#enabled-prop">QWidget::enabled</a></p>
+</div><aside class="tsd-sources">
+<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#enabled">enabled</a></p></aside></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="finished"><span>finished</span><a href="#finished" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">finished</span><span class="tsd-signature-symbol">:</span> <a href="../interfaces/Signal.html" class="tsd-signature-type tsd-kind-interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></div>
+<div class="tsd-comment tsd-typography"><p>Called when the dialog is closed or the <a href="#done" class="tsd-kind-method">done</a> method is called.
+The number value it provides is either <a href="#accepted-1" class="tsd-kind-property">Dialog.Accepted</a> or
+<a href="#rejected-1" class="tsd-kind-property">Dialog.Rejected</a>.</p>
+</div></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="minimumheight"><span>minimum<wbr/>Height</span><a href="#minimumheight" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">minimumHeight</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+<div class="tsd-comment tsd-typography"><p>You can use this property to prevent the widget from being resized to a height
+below this amount.</p>
+</div><aside class="tsd-sources">
+<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#minimumheight">minimumHeight</a></p></aside></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="minimumwidth"><span>minimum<wbr/>Width</span><a href="#minimumwidth" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">minimumWidth</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+<div class="tsd-comment tsd-typography"><p>You can use this property to prevent the widget from being resized to a width
+below this amount.</p>
+</div><aside class="tsd-sources">
+<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#minimumwidth">minimumWidth</a></p></aside></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="newrowmode"><span>new<wbr/>Row<wbr/>Mode</span><a href="#newrowmode" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">newRowMode</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#samewidgetrows" class="tsd-signature-type tsd-kind-property">SameWidgetRows</a> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-keyword">typeof</span> <a href="#manualrows" class="tsd-signature-type tsd-kind-property">ManualRows</a> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-keyword">typeof</span> <a href="#singlewidgetrows" class="tsd-signature-type tsd-kind-property">SingleWidgetRows</a></div>
+<div class="tsd-comment tsd-typography"><p>Controls the automatic widget placement behavior of the dialog.
+Defaults to <a href="#samewidgetrows" class="tsd-kind-property">SameWidgetRows</a>.</p>
+</div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="rejected"><span>rejected</span><a href="#rejected" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">rejected</span><span class="tsd-signature-symbol">:</span> <a href="../interfaces/Signal.html" class="tsd-signature-type tsd-kind-interface">Signal</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div>
+<div class="tsd-comment tsd-typography"><p>Called when the dialog is closed via the X button, <a href="#reject" class="tsd-kind-method">reject</a>, or the
+<a href="#done" class="tsd-kind-method">done</a> method is called with <a href="#rejected-1" class="tsd-kind-property">Dialog.Rejected</a> as its
+argument.</p>
+</div></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="stylesheet"><span>style<wbr/>Sheet</span><a href="#stylesheet" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">styleSheet</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+<div class="tsd-comment tsd-typography"><p>Set this property to override the style sheet for this widget.</p>
+<p>See <a href="https://doc.qt.io/qt-6/stylesheet.html">https://doc.qt.io/qt-6/stylesheet.html</a> and <a href="https://doc.qt.io/qt-6/stylesheet-examples.html">https://doc.qt.io/qt-6/stylesheet-examples.html</a> for more information.</p>
+</div><aside class="tsd-sources">
+<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#stylesheet">styleSheet</a></p></aside></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="tooltip"><span>tool<wbr/>Tip</span><a href="#tooltip" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">toolTip</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+<div class="tsd-comment tsd-typography"><p>The toolTip displayed when the user mouses over this widget</p>
+</div><aside class="tsd-sources">
+<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#tooltip">toolTip</a></p></aside></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="visible"><span>visible</span><a href="#visible" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">visible</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+<div class="tsd-comment tsd-typography"><p>Controls whether this widget is visible.
+When toggling this property, the dialog layout will automatically adjust itself
+based on the visible widgets.
+Qt documentation: <a href="https://doc.qt.io/qt-6/qwidget.html#visible-prop">QWidget::visible</a>;</p>
+</div><aside class="tsd-sources">
+<p>Inherited from <a href="Qt.QWidget.html">QWidget</a>.<a href="Qt.QWidget.html#visible">visible</a></p></aside></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="windowtitle"><span>window<wbr/>Title</span><a href="#windowtitle" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">windowTitle</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+<div class="tsd-comment tsd-typography"><p>The title of your dialog.</p>
+</div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="accepted-1"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Accepted</span><a href="#accepted-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Accepted</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#accepted-1" class="tsd-signature-type tsd-kind-property">Accepted</a></div>
+<div class="tsd-comment tsd-typography"><p>The dialog was accepted. Value is 1.</p>
+</div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="manualrows"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Manual<wbr/>Rows</span><a href="#manualrows" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">ManualRows</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#manualrows" class="tsd-signature-type tsd-kind-property">ManualRows</a></div>
+<div class="tsd-comment tsd-typography"><p>In this mode, the dialog will not add a new row unless you call
+<a href="#addnewrow" class="tsd-kind-method">addNewRow</a>, <a href="#addheading" class="tsd-kind-method">addHeading</a> or <a href="#addseparator" class="tsd-kind-method">addSeparator</a>.</p>
+</div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="rejected-1"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Rejected</span><a href="#rejected-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">Rejected</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#rejected-1" class="tsd-signature-type tsd-kind-property">Rejected</a></div>
+<div class="tsd-comment tsd-typography"><p>The dialog was rejected. Value is 0.</p>
+</div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="samewidgetrows"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Same<wbr/>Widget<wbr/>Rows</span><a href="#samewidgetrows" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">SameWidgetRows</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#samewidgetrows" class="tsd-signature-type tsd-kind-property">SameWidgetRows</a></div>
+<div class="tsd-comment tsd-typography"><p>The default row layout mode.</p>
+<p>In this mode, if you add multiple of the same type of widget in a row,
+(for instance by calling <a href="#addbutton" class="tsd-kind-method">addButton</a> twice in a row), the Dialog
+will automatically group them into the same row.</p>
+<p>As soon as a differently typed widget is added, a new row will be added to
+the dialog. The exception to this rule is the widget created by <a href="#addlabel" class="tsd-kind-method">addLabel</a>, which will be mixed with any other widget types when using this
+mode.</p>
+</div></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="singlewidgetrows"><code class="tsd-tag">Static</code> <code class="tsd-tag">Readonly</code><span>Single<wbr/>Widget<wbr/>Rows</span><a href="#singlewidgetrows" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">SingleWidgetRows</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#singlewidgetrows" class="tsd-signature-type tsd-kind-property">SingleWidgetRows</a></div>
+<div class="tsd-comment tsd-typography"><p>In this mode, only one widget will be allowed in the right column.
+A new row will be added after each time you place a widget in the right
+column.</p>
+</div></section></section></details>
+<details class="tsd-panel-group tsd-member-group tsd-accordion" open><summary class="tsd-accordion-summary" data-key="section-Methods"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h2 class="tsd-anchor-link" id="methods-1">Methods<a href="#methods-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h2></summary>
+<section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="accept"><span>accept</span><a href="#accept" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="accept-1"><span class="tsd-kind-call-signature">accept</span><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#accept-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Close this dialog, setting its result code to <a href="#accepted-1" class="tsd-kind-property">Dialog.Accepted</a>.</p>
+</div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="addbutton"><span>add<wbr/>Button</span><a href="#addbutton" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="addbutton-1"><span class="tsd-kind-call-signature">addButton</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">text</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">toolTip</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="Qt.QPushButton.html" class="tsd-signature-type tsd-kind-class">QPushButton</a><a href="#addbutton-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Add a <a href="Qt.QPushButton.html" class="tsd-kind-class">Qt.QPushButton</a> widget with the given text to the dialog.
+Allows the user to press a button that you can respond to the clicked
+signal of.</p>
+<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">text</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">toolTip</span>: <span class="tsd-signature-type">string</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="Qt.QPushButton.html" class="tsd-signature-type tsd-kind-class">QPushButton</a></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="addcheckbox"><span>add<wbr/>Check<wbr/>Box</span><a href="#addcheckbox" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="addcheckbox-1"><span class="tsd-kind-call-signature">addCheckBox</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">text</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">defaultValue</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">toolTip</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="Qt.QCheckBox.html" class="tsd-signature-type tsd-kind-class">QCheckBox</a><a href="#addcheckbox-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Add a <a href="Qt.QCheckBox.html" class="tsd-kind-class">Qt.QCheckBox</a> widget with the given text to the dialog.
+Allows a user to toggle a boolean value.</p>
+<p>If the defaultValue parameter is true the checkbox is checked by default.</p>
+<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">text</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">defaultValue</span>: <span class="tsd-signature-type">boolean</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">toolTip</span>: <span class="tsd-signature-type">string</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="Qt.QCheckBox.html" class="tsd-signature-type tsd-kind-class">QCheckBox</a></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="addcolorbutton"><span>add<wbr/>Color<wbr/>Button</span><a href="#addcolorbutton" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="addcolorbutton-1"><span class="tsd-kind-call-signature">addColorButton</span><span class="tsd-signature-symbol">(</span><br/>    <span class="tsd-kind-parameter">labelText</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">defaultValue</span><span class="tsd-signature-symbol">?:</span> <a href="../interfaces/color.html" class="tsd-signature-type tsd-kind-interface">color</a><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">toolTip</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span><br/><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="ColorButton.html" class="tsd-signature-type tsd-kind-class">ColorButton</a><a href="#addcolorbutton-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Add a <a href="ColorButton.html" class="tsd-kind-class">ColorButton</a> widget that allows the user to pick a color.</p>
+<p>If the labelText is non-empty, a label widget will be added to the left of
+the widget.</p>
+<p>The optional defaultValue parameter sets the initial color (since 1.12). Pass <code>undefined</code>
+to skip setting a default color while still providing a toolTip.</p>
+<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">labelText</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">defaultValue</span>: <a href="../interfaces/color.html" class="tsd-signature-type tsd-kind-interface">color</a></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">toolTip</span>: <span class="tsd-signature-type">string</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="ColorButton.html" class="tsd-signature-type tsd-kind-class">ColorButton</a></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="addcombobox"><span>add<wbr/>Combo<wbr/>Box</span><a href="#addcombobox" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="addcombobox-1"><span class="tsd-kind-call-signature">addComboBox</span><span class="tsd-signature-symbol">(</span><br/>    <span class="tsd-kind-parameter">labelText</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">values</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">defaultIndex</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">toolTip</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span><br/><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="Qt.QComboBox.html" class="tsd-signature-type tsd-kind-class">QComboBox</a><a href="#addcombobox-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Add a <a href="Qt.QComboBox.html" class="tsd-kind-class">Qt.QComboBox</a> widget (also known as a dropdown) allowing the
+user to select one of the given values.</p>
+<p>If the labelText is non-empty, a label widget will be added to the left of
+the widget.</p>
+<p>The optional defaultIndex parameter sets the initially selected index (0-based) (since 1.12).</p>
+<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">labelText</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><span class="tsd-kind-parameter">values</span>: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">defaultIndex</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">toolTip</span>: <span class="tsd-signature-type">string</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="Qt.QComboBox.html" class="tsd-signature-type tsd-kind-class">QComboBox</a></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="addfilepicker"><span>add<wbr/>File<wbr/>Picker</span><a href="#addfilepicker" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="addfilepicker-1"><span class="tsd-kind-call-signature">addFilePicker</span><span class="tsd-signature-symbol">(</span><br/>    <span class="tsd-kind-parameter">labelText</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">defaultValue</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">toolTip</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span><br/><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="FileEdit.html" class="tsd-signature-type tsd-kind-class">FileEdit</a><a href="#addfilepicker-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Add a <a href="FileEdit.html" class="tsd-kind-class">FileEdit</a> widget with a button which opens a file picker
+dialog and displays the path in the dialog.</p>
+<p>If the labelText is non-empty, a label widget will be added to the left of
+the widget.</p>
+<p>The optional defaultValue parameter sets the initial file path (since 1.12).</p>
+<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">labelText</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">defaultValue</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">toolTip</span>: <span class="tsd-signature-type">string</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="FileEdit.html" class="tsd-signature-type tsd-kind-class">FileEdit</a></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="addheading"><span>add<wbr/>Heading</span><a href="#addheading" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="addheading-1"><span class="tsd-kind-call-signature">addHeading</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">labelText</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">maxWidth</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="Qt.QLabel.html" class="tsd-signature-type tsd-kind-class">QLabel</a><a href="#addheading-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Add a heading to the dialog with the given labelText. A heading will
+always be the first widget in a row.</p>
+<p>If the optional maxWidth parameter is true, the heading will be expanded
+to the full width of the dialog. Otherwise, it will be confined to the
+left-hand column of the dialog.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">labelText</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">maxWidth</span>: <span class="tsd-signature-type">boolean</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="Qt.QLabel.html" class="tsd-signature-type tsd-kind-class">QLabel</a></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="addimage"><span>add<wbr/>Image</span><a href="#addimage" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="addimage-1"><span class="tsd-kind-call-signature">addImage</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">labelText</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">image</span><span class="tsd-signature-symbol">:</span> <a href="Image.html" class="tsd-signature-type tsd-kind-class">Image</a><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">toolTip</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="ImageWidget.html" class="tsd-signature-type tsd-kind-class">ImageWidget</a><a href="#addimage-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Adds an image widget that can display an image in a dialog.</p>
+<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">labelText</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><span class="tsd-kind-parameter">image</span>: <a href="Image.html" class="tsd-signature-type tsd-kind-class">Image</a></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">toolTip</span>: <span class="tsd-signature-type">string</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="ImageWidget.html" class="tsd-signature-type tsd-kind-class">ImageWidget</a></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="addlabel"><span>add<wbr/>Label</span><a href="#addlabel" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="addlabel-1"><span class="tsd-kind-call-signature">addLabel</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">labelText</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">toolTip</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="Qt.QLabel.html" class="tsd-signature-type tsd-kind-class">QLabel</a><a href="#addlabel-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Add a label to the dialog with the given text. A label will always be the
+first widget in a row.</p>
+<p>The optional toolTip parameter sets a tooltip on the label (since 1.12).</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">labelText</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">toolTip</span>: <span class="tsd-signature-type">string</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="Qt.QLabel.html" class="tsd-signature-type tsd-kind-class">QLabel</a></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="addnewrow"><span>add<wbr/>New<wbr/>Row</span><a href="#addnewrow" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="addnewrow-1"><span class="tsd-kind-call-signature">addNewRow</span><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#addnewrow-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Call this to force the next widget to go on a new row,
+even if it is the same type widget as the last one you added.</p>
+</div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="addnumberinput"><span>add<wbr/>Number<wbr/>Input</span><a href="#addnumberinput" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="addnumberinput-1"><span class="tsd-kind-call-signature">addNumberInput</span><span class="tsd-signature-symbol">(</span><br/>    <span class="tsd-kind-parameter">labelText</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">defaultValue</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">toolTip</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span><br/><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="Qt.QDoubleSpinBox.html" class="tsd-signature-type tsd-kind-class">QDoubleSpinBox</a><a href="#addnumberinput-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Add a <a href="Qt.QDoubleSpinBox.html" class="tsd-kind-class">Qt.QDoubleSpinBox</a> widget to the dialog to allow a user to type a
+numerical value or use up and down controls on the widget to manipulate
+the value.</p>
+<p>This can be used to enter integer or decimal values.</p>
+<p>The optional defaultValue parameter sets the initial value of the spin box (since 1.12).</p>
+<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">labelText</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">defaultValue</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">toolTip</span>: <span class="tsd-signature-type">string</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="Qt.QDoubleSpinBox.html" class="tsd-signature-type tsd-kind-class">QDoubleSpinBox</a></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="addradiobuttongroup"><span>add<wbr/>Radio<wbr/>Button<wbr/>Group</span><a href="#addradiobuttongroup" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="addradiobuttongroup-1"><span class="tsd-kind-call-signature">addRadioButtonGroup</span><span class="tsd-signature-symbol">(</span><br/>    <span class="tsd-kind-parameter">labelText</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">values</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">labelToolTip</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">buttonToolTips</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">,</span><br/><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="Qt.QButtonGroup.html" class="tsd-signature-type tsd-kind-class">QButtonGroup</a><a href="#addradiobuttongroup-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Add a <a href="Qt.QButtonGroup.html" class="tsd-kind-class">Qt.QButtonGroup</a> widget which allows you to add multiple radio
+buttons, where only one radio button can be selected at a time.</p>
+<p>Each radio button is a <a href="Qt.QAbstractButton.html" class="tsd-kind-class">Qt.QAbstractButton</a>. You can force selection of
+a radio button by setting checked = true, and also disable</p>
+<p>If the labelText is non-empty, a label widget will be added to the left of
+the widget.</p>
+<p>Each entry in the values array is the text that will appear on the radio button.</p>
+<p>labelToolTip is an optional tooltip for the label to the left of the radio button group.</p>
+<p>buttonToolTips is an optional list of tooltips, where each entry is a tooltip that corresponds
+to the radio button in the list of values at each index.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">labelText</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><span class="tsd-kind-parameter">values</span>: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></span></li>
+<li><span><span class="tsd-kind-parameter">labelToolTip</span>: <span class="tsd-signature-type">string</span> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">undefined</span></span></li>
+<li><span><span class="tsd-kind-parameter">buttonToolTips</span>: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">undefined</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="Qt.QButtonGroup.html" class="tsd-signature-type tsd-kind-class">QButtonGroup</a></h4>
+<div class="tsd-comment tsd-typography">
+<div class="tsd-tag-since">
+<h4 class="tsd-anchor-link" id="since-1">Since<a href="#since-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p>1.11.1</p>
+</div></div></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="addseparator"><span>add<wbr/>Separator</span><a href="#addseparator" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="addseparator-1"><span class="tsd-kind-call-signature">addSeparator</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">labelText</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="Qt.QFrame.html" class="tsd-signature-type tsd-kind-class">QFrame</a><a href="#addseparator-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Adds a separator line with optional label to the dialog.
+Used to visually split up sections of the dialog.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">labelText</span>: <span class="tsd-signature-type">string</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="Qt.QFrame.html" class="tsd-signature-type tsd-kind-class">QFrame</a></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="addslider"><span>add<wbr/>Slider</span><a href="#addslider" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="addslider-1"><span class="tsd-kind-call-signature">addSlider</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">labelText</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">defaultValue</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">toolTip</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="Qt.QSlider.html" class="tsd-signature-type tsd-kind-class">QSlider</a><a href="#addslider-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Add a <a href="Qt.QSlider.html" class="tsd-kind-class">Qt.QSlider</a> widget to the dialog to allow a user to
+slide a handle within a number range.</p>
+<p>This can only be used to enter integer-type values.</p>
+<p>The optional defaultValue parameter sets the initial value of the slider.</p>
+<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">labelText</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">defaultValue</span>: <span class="tsd-signature-type">number</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">toolTip</span>: <span class="tsd-signature-type">string</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="Qt.QSlider.html" class="tsd-signature-type tsd-kind-class">QSlider</a></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="addtextedit"><span>add<wbr/>Text<wbr/>Edit</span><a href="#addtextedit" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="addtextedit-1"><span class="tsd-kind-call-signature">addTextEdit</span><span class="tsd-signature-symbol">(</span><br/>    <span class="tsd-kind-parameter">labelText</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">defaultValue</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">toolTip</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span><br/><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="Qt.QTextEdit.html" class="tsd-signature-type tsd-kind-class">QTextEdit</a><a href="#addtextedit-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Add a <a href="Qt.QTextEdit.html" class="tsd-kind-class">Qt.QTextEdit</a> widget to the dialog to allow the user to edit
+multiple lines of text. Also allows display of rendered HTML by setting
+the <a href="Qt.QTextEdit.html#html" class="tsd-kind-property">Qt.QTextEdit.html</a> property. The initial text on the widget can
+be given by defaultValue parameter.</p>
+<p>If the labelText is non-empty, a label widget will be added to the left of
+the widget.</p>
+<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">labelText</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">defaultValue</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">toolTip</span>: <span class="tsd-signature-type">string</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="Qt.QTextEdit.html" class="tsd-signature-type tsd-kind-class">QTextEdit</a></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="addtextinput"><span>add<wbr/>Text<wbr/>Input</span><a href="#addtextinput" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="addtextinput-1"><span class="tsd-kind-call-signature">addTextInput</span><span class="tsd-signature-symbol">(</span><br/>    <span class="tsd-kind-parameter">labelText</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">defaultValue</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">toolTip</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span><br/><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="Qt.QLineEdit.html" class="tsd-signature-type tsd-kind-class">QLineEdit</a><a href="#addtextinput-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Add a <a href="Qt.QLineEdit.html" class="tsd-kind-class">Qt.QLineEdit</a> widget to the dialog to allow the user to enter
+a single line of text. The initial text on the widget can be given by
+defaultValue parameter.</p>
+<p>If the labelText is non-empty, a label widget will be added to the left of
+the widget.</p>
+<p>The optional toolTip parameter sets a tooltip on the widget (since 1.12).</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">labelText</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">defaultValue</span>: <span class="tsd-signature-type">string</span></span></li>
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">toolTip</span>: <span class="tsd-signature-type">string</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="Qt.QLineEdit.html" class="tsd-signature-type tsd-kind-class">QLineEdit</a></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="clear"><span>clear</span><a href="#clear" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="clear-1"><span class="tsd-kind-call-signature">clear</span><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#clear-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Erase all of the widgets that you have added to the dialog.
+Call this if you want to re-draw your dialog with a new configuration of widgets.</p>
+</div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="done"><span>done</span><a href="#done" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="done-1"><span class="tsd-kind-call-signature">done</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">resultCode</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#rejected-1" class="tsd-signature-type tsd-kind-property">Rejected</a> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-keyword">typeof</span> <a href="#accepted-1" class="tsd-signature-type tsd-kind-property">Accepted</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#done-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Close this dialog, setting its result code to <a href="#accepted-1" class="tsd-kind-property">Dialog.Accepted</a> or
+<a href="#rejected-1" class="tsd-kind-property">Dialog.Rejected</a>.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">resultCode</span>: <span class="tsd-signature-keyword">typeof</span> <a href="#rejected-1" class="tsd-signature-type tsd-kind-property">Rejected</a> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-keyword">typeof</span> <a href="#accepted-1" class="tsd-signature-type tsd-kind-property">Accepted</a></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="exec"><span>exec</span><a href="#exec" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="exec-1"><span class="tsd-kind-call-signature">exec</span><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">typeof</span> <a href="#rejected-1" class="tsd-signature-type tsd-kind-property">Rejected</a> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-keyword">typeof</span> <a href="#accepted-1" class="tsd-signature-type tsd-kind-property">Accepted</a><a href="#exec-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Open the dialog, blocking your script until the Dialog has been
+accepted or rejected.</p>
+</div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-keyword">typeof</span> <a href="#rejected-1" class="tsd-signature-type tsd-kind-property">Rejected</a> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-keyword">typeof</span> <a href="#accepted-1" class="tsd-signature-type tsd-kind-property">Accepted</a></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="reject"><span>reject</span><a href="#reject" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="reject-1"><span class="tsd-kind-call-signature">reject</span><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#reject-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Close this dialog, setting its result code to <a href="#rejected-1" class="tsd-kind-property">Dialog.Rejected</a>.</p>
+</div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4></div></li></ul></section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="show"><span>show</span><a href="#show" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="show-1"><span class="tsd-kind-call-signature">show</span><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#show-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Show the dialog. Call this after you have added all of your desired widgets.
+This will not block your script until the dialog opens.</p>
+<p>To respond to the dialog closing, it is recommended to connect to the <a href="#finished" class="tsd-kind-property">finished</a>
+signal.</p>
+</div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4></div></li></ul></section></section></details></div>
+<div class="col-sidebar">
+<div class="page-menu">
+<div class="tsd-navigation settings">
+<details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>Settings</h3></summary>
+<div class="tsd-accordion-details">
+<div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span>
+<ul id="tsd-filter-options">
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li>
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li></ul></div>
+<div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div>
+<details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>On This Page</h3></summary>
+<div class="tsd-accordion-details">
+<details open class="tsd-accordion tsd-page-navigation-section"><summary class="tsd-accordion-summary" data-key="section-Constructors"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>Constructors</summary>
+<div><a href="#constructor"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Constructor"><use href="../assets/icons.svg#icon-512"></use></svg><span>constructor</span></a></div></details>
+<details open class="tsd-accordion tsd-page-navigation-section"><summary class="tsd-accordion-summary" data-key="section-Properties"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>Properties</summary>
+<div><a href="#accepted"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>accepted</span></a><a href="#enabled" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>enabled</span></a><a href="#finished"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>finished</span></a><a href="#minimumheight" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>minimum<wbr/>Height</span></a><a href="#minimumwidth" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>minimum<wbr/>Width</span></a><a href="#newrowmode"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>new<wbr/>Row<wbr/>Mode</span></a><a href="#rejected"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>rejected</span></a><a href="#stylesheet" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>style<wbr/>Sheet</span></a><a href="#tooltip" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>tool<wbr/>Tip</span></a><a href="#visible" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>visible</span></a><a href="#windowtitle"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>window<wbr/>Title</span></a><a href="#accepted-1"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Accepted</span></a><a href="#manualrows"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Manual<wbr/>Rows</span></a><a href="#rejected-1"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Rejected</span></a><a href="#samewidgetrows"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Same<wbr/>Widget<wbr/>Rows</span></a><a href="#singlewidgetrows"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../assets/icons.svg#icon-1024"></use></svg><span>Single<wbr/>Widget<wbr/>Rows</span></a></div></details>
+<details open class="tsd-accordion tsd-page-navigation-section"><summary class="tsd-accordion-summary" data-key="section-Methods"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>Methods</summary>
+<div><a href="#accept"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>accept</span></a><a href="#addbutton"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Button</span></a><a href="#addcheckbox"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Check<wbr/>Box</span></a><a href="#addcolorbutton"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Color<wbr/>Button</span></a><a href="#addcombobox"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Combo<wbr/>Box</span></a><a href="#addfilepicker"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>File<wbr/>Picker</span></a><a href="#addheading"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Heading</span></a><a href="#addimage"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Image</span></a><a href="#addlabel"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Label</span></a><a href="#addnewrow"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>New<wbr/>Row</span></a><a href="#addnumberinput"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Number<wbr/>Input</span></a><a href="#addradiobuttongroup"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Radio<wbr/>Button<wbr/>Group</span></a><a href="#addseparator"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Separator</span></a><a href="#addslider"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Slider</span></a><a href="#addtextedit"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Text<wbr/>Edit</span></a><a href="#addtextinput"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>add<wbr/>Text<wbr/>Input</span></a><a href="#clear"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>clear</span></a><a href="#done"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>done</span></a><a href="#exec"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>exec</span></a><a href="#reject"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>reject</span></a><a href="#show"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../assets/icons.svg#icon-2048"></use></svg><span>show</span></a></div></details></div></details></div>
+<div class="site-menu">
+<nav class="tsd-navigation"><a href="../index.html">Tiled Scripting API</a>
+<ul class="tsd-small-nested-navigation" id="tsd-nav-container">
+<li>Loading...</li></ul></nav></div></div></div><footer>
+<p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer>
+<div class="overlay"></div><footer class="media-content">
+<div class="footer-content container">
+<p>Tiled — Copyright © 2008–2025 Thorbjørn Lindeijer<br/> and <a href="https://www.openhub.net/p/tiled-qt/contributors/summary">many other contributors</a></p>
+<nav style="display: flex; justify-content: center; align-items: top; margin-left: 1em;">
+<ul style="float: right; border-left: 2px solid #ececec; padding: 0 1em">
+<li><a href="/docs">Documentation</a></li>
+<li><a href="/news">News</a></li>
+<li><a href="/donate">Donate</a></li>
+<li><a href="https://discourse.mapeditor.org/">Forum</a></li>
+<li><a href="https://discord.gg/39wbTv7">Discord</a></li>
+<li><a rel="me" href="https://floss.social/@tiled">Mastodon</a></li>
+<li><a href="https://github.com/mapeditor/tiled">GitHub</a></li>
+<li><a href="https://x.com/TiledApp">X</a></li></ul></nav></div></footer></body></html>
