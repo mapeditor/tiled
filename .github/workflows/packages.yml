@@ -188,6 +188,13 @@ jobs:
     - name: Install snapcraft
       run: sudo snap install --classic snapcraft
 
+    - name: Install arm64 Qt SDK
+      if: matrix.arch == 'arm64'
+      run: |
+        # The stable channel no longer publishes arm64. Use the revision from
+        # the last successful arm64 build until the channel is restored.
+        sudo snap install kde-qt6-core24-sdk --revision=52
+
     - name: Build snap
       id: build
       env:
