@@ -1,5 +1,20 @@
 /*
- * This file is part of Tiled, licensed under the GNU GPL, version 2 or later.
+ * mcpserver.cpp
+ *
+ * This file is part of Tiled.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "mcpserver.h"
@@ -8,6 +23,7 @@
 
 #include <QCheckBox>
 #include <QClipboard>
+#include <QCoreApplication>
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QFile>
@@ -16,6 +32,7 @@
 #include <QJSEngine>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QJsonObject>
 #include <QLabel>
 #include <QMessageBox>
 #include <QPushButton>
@@ -27,20 +44,20 @@ namespace Tiled {
 
 namespace {
 
-const QString protocolVersion = QStringLiteral("2025-11-25");
-const QString apiUri = QStringLiteral("tiled://scripting-api");
+const char protocolVersion[] = "2025-11-25";
+const char apiUri[] = "tiled://scripting-api";
 
 bool supportedVersion(const QString &version)
 {
-    return version == protocolVersion || version == QLatin1String("2025-06-18")
-            || version == QLatin1String("2025-03-26");
+    return version == QLatin1String(protocolVersion) || version == QLatin1String("2025-06-18")
+           || version == QLatin1String("2025-03-26");
 }
 
 QJsonObject error(int code, const QString &message)
 {
-    return {{QStringLiteral("error"), QJsonObject {
-        {QStringLiteral("code"), code}, {QStringLiteral("message"), message}
-    }}};
+    return {
+        {QStringLiteral("error"),
+         QJsonObject{{QStringLiteral("code"), code}, {QStringLiteral("message"), message}}}};
 }
 
 QJsonObject result(const QJsonObject &value)
@@ -50,13 +67,11 @@ QJsonObject result(const QJsonObject &value)
 
 QJsonObject textResult(const QString &text, bool isError = false)
 {
-    return result({
-        {QStringLiteral("content"), QJsonArray {QJsonObject {
-            {QStringLiteral("type"), QStringLiteral("text")},
-            {QStringLiteral("text"), text}
-        }}},
-        {QStringLiteral("isError"), isError}
-    });
+    return result(
+        {{QStringLiteral("content"),
+          QJsonArray{QJsonObject{
+              {QStringLiteral("type"), QStringLiteral("text")}, {QStringLiteral("text"), text}}}},
+         {QStringLiteral("isError"), isError}});
 }
 
 } // namespace
@@ -97,8 +112,10 @@ QHttpServerResponse McpServer::handleRequest(const QHttpServerRequest &request)
 
     // No browser origins are allowed. Validate Host as well to prevent DNS rebinding.
     if (!request.value("Origin").isEmpty()
-            || request.value("Host") != QByteArray("127.0.0.1:") + QByteArray::number(mListener.serverPort()))
+        || request.value("Host")
+               != QByteArray("127.0.0.1:") + QByteArray::number(mListener.serverPort())) {
         return Status::Forbidden;
+    }
     if (mToken.isEmpty() || request.value("Authorization") != QByteArray("Bearer ") + mToken)
         return Status::Unauthorized;
     if (request.method() != QHttpServerRequest::Method::Post)
@@ -120,11 +137,12 @@ QHttpServerResponse McpServer::handleRequest(const QHttpServerRequest &request)
     QJsonObject response;
     if (parseError.error != QJsonParseError::NoError) {
         response = error(-32700, QStringLiteral("Parse error"));
-    } else if (!document.isObject()
-               || message.value(QStringLiteral("jsonrpc")) != QLatin1String("2.0")
-               || !message.value(QStringLiteral("method")).isString()
-               || (!id.isUndefined() && !id.isString() && !id.isDouble())
-               || (message.contains(QStringLiteral("params")) && !message.value(QStringLiteral("params")).isObject())) {
+    } else if (
+        !document.isObject() || message.value(QStringLiteral("jsonrpc")) != QLatin1String("2.0")
+        || !message.value(QStringLiteral("method")).isString()
+        || (!id.isUndefined() && !id.isString() && !id.isDouble())
+        || (message.contains(QStringLiteral("params"))
+            && !message.value(QStringLiteral("params")).isObject())) {
         response = error(-32600, QStringLiteral("Invalid request"));
     } else if (id.isUndefined()) {
         // Notifications never execute tools, and do not produce JSON-RPC responses.
@@ -143,46 +161,56 @@ QJsonObject McpServer::dispatch(const QJsonObject &request)
     const auto params = request.value(QStringLiteral("params")).toObject();
     if (method == QLatin1String("initialize")) {
         if (!params.value(QStringLiteral("protocolVersion")).isString()
-                || !params.value(QStringLiteral("capabilities")).isObject()
-                || !params.value(QStringLiteral("clientInfo")).isObject())
+            || !params.value(QStringLiteral("capabilities")).isObject()
+            || !params.value(QStringLiteral("clientInfo")).isObject()) {
             return error(-32602, QStringLiteral("Invalid initialization parameters"));
+        }
         const auto requested = params.value(QStringLiteral("protocolVersion")).toString();
-        return result({
-            {QStringLiteral("protocolVersion"), supportedVersion(requested) ? requested : protocolVersion},
-            {QStringLiteral("capabilities"), QJsonObject {
-                {QStringLiteral("tools"), QJsonObject {}},
-                {QStringLiteral("resources"), QJsonObject {}}
-            }},
-            {QStringLiteral("serverInfo"), QJsonObject {
-                {QStringLiteral("name"), QStringLiteral("Tiled")},
-                {QStringLiteral("version"), QCoreApplication::applicationVersion()}
-            }},
-            {QStringLiteral("instructions"), QStringLiteral(
-                "Read tiled://scripting-api before editing. Work with the live documents, including unsaved changes. "
-                "Group edits with asset.macro() for Undo. Save only when requested. Scripts have the same "
-                "file and process access as local extensions. Script errors do not roll back preceding edits.")}
-        });
+        return result(
+            {{QStringLiteral("protocolVersion"),
+              supportedVersion(requested) ? requested : QString::fromLatin1(protocolVersion)},
+             {QStringLiteral("capabilities"),
+              QJsonObject{
+                  {QStringLiteral("tools"), QJsonObject{}},
+                  {QStringLiteral("resources"), QJsonObject{}}}},
+             {QStringLiteral("serverInfo"),
+              QJsonObject{
+                  {QStringLiteral("name"), QStringLiteral("Tiled")},
+                  {QStringLiteral("version"), QCoreApplication::applicationVersion()}}},
+             {QStringLiteral("instructions"),
+              QStringLiteral("Read tiled://scripting-api before editing. Work with the live "
+                             "documents, including unsaved changes. "
+                             "Group edits with asset.macro() for Undo. Save only when requested. "
+                             "Scripts have the same "
+                             "file and process access as local extensions. Script errors do not "
+                             "roll back preceding edits.")}});
     }
     if (method == QLatin1String("ping"))
         return result({});
     if (method == QLatin1String("tools/list")) {
-        return result({{QStringLiteral("tools"), QJsonArray {QJsonObject {
-            {QStringLiteral("name"), QStringLiteral("execute_script")},
-            {QStringLiteral("description"), QStringLiteral(
-                "Execute JavaScript in the running Tiled editor using its scripting API. "
-                "code is a synchronous function body; return a JSON-serializable value. "
-                "For example: return tiled.openAssets.map(a => ({fileName: a.fileName, modified: a.modified})); "
-                "Read tiled://scripting-api for the API, including tiled.activeAsset and asset.macro(). "
-                "Use existing API operations for edits and explicit save() calls only when requested.")},
-            {QStringLiteral("inputSchema"), QJsonObject {
-                {QStringLiteral("type"), QStringLiteral("object")},
-                {QStringLiteral("properties"), QJsonObject {
-                    {QStringLiteral("code"), QJsonObject {{QStringLiteral("type"), QStringLiteral("string")}}}
-                }},
-                {QStringLiteral("required"), QJsonArray {QStringLiteral("code")}},
-                {QStringLiteral("additionalProperties"), false}
-            }}
-        }}}});
+        return result(
+            {{QStringLiteral("tools"),
+              QJsonArray{QJsonObject{
+                  {QStringLiteral("name"), QStringLiteral("execute_script")},
+                  {QStringLiteral("description"),
+                   QStringLiteral(
+                       "Execute JavaScript in the running Tiled editor using its scripting API. "
+                       "code is a synchronous function body; return a JSON-serializable value. "
+                       "For example: return tiled.openAssets.map(a => ({fileName: a.fileName, "
+                       "modified: a.modified})); "
+                       "Read tiled://scripting-api for the API, including tiled.activeAsset and "
+                       "asset.macro(). "
+                       "Use existing API operations for edits and explicit save() calls only when "
+                       "requested.")},
+                  {QStringLiteral("inputSchema"),
+                   QJsonObject{
+                       {QStringLiteral("type"), QStringLiteral("object")},
+                       {QStringLiteral("properties"),
+                        QJsonObject{
+                            {QStringLiteral("code"),
+                             QJsonObject{{QStringLiteral("type"), QStringLiteral("string")}}}}},
+                       {QStringLiteral("required"), QJsonArray{QStringLiteral("code")}},
+                       {QStringLiteral("additionalProperties"), false}}}}}}});
     }
     if (method == QLatin1String("tools/call")) {
         const auto arguments = params.value(QStringLiteral("arguments")).toObject();
@@ -193,23 +221,25 @@ QJsonObject McpServer::dispatch(const QJsonObject &request)
         return executeScript(arguments.value(QStringLiteral("code")).toString());
     }
     if (method == QLatin1String("resources/list")) {
-        return result({{QStringLiteral("resources"), QJsonArray {QJsonObject {
-            {QStringLiteral("uri"), apiUri},
-            {QStringLiteral("name"), QStringLiteral("Tiled scripting API")},
-            {QStringLiteral("mimeType"), QStringLiteral("text/plain")}
-        }}}});
+        return result(
+            {{QStringLiteral("resources"),
+              QJsonArray{QJsonObject{
+                  {QStringLiteral("uri"), QString::fromLatin1(apiUri)},
+                  {QStringLiteral("name"), QStringLiteral("Tiled scripting API")},
+                  {QStringLiteral("mimeType"), QStringLiteral("text/plain")}}}}});
     }
     if (method == QLatin1String("resources/read")) {
-        if (params.value(QStringLiteral("uri")) != apiUri)
+        if (params.value(QStringLiteral("uri")) != QLatin1String(apiUri))
             return error(-32002, QStringLiteral("Unknown resource"));
         QFile file(QStringLiteral(":/mcp/scripting-api.d.ts"));
         if (!file.open(QFile::ReadOnly))
             return error(-32603, QStringLiteral("Could not read scripting API"));
-        return result({{QStringLiteral("contents"), QJsonArray {QJsonObject {
-            {QStringLiteral("uri"), apiUri},
-            {QStringLiteral("mimeType"), QStringLiteral("text/plain")},
-            {QStringLiteral("text"), QString::fromUtf8(file.readAll())}
-        }}}});
+        return result(
+            {{QStringLiteral("contents"),
+              QJsonArray{QJsonObject{
+                  {QStringLiteral("uri"), QString::fromLatin1(apiUri)},
+                  {QStringLiteral("mimeType"), QStringLiteral("text/plain")},
+                  {QStringLiteral("text"), QString::fromUtf8(file.readAll())}}}}});
     }
     return error(-32601, QStringLiteral("Method not found"));
 }
@@ -237,7 +267,7 @@ void McpServer::showDialog(QWidget *parent)
     dialog.setWindowTitle(tr("MCP Server"));
     auto layout = new QVBoxLayout(&dialog);
     auto label = new QLabel(tr("Allow an MCP client to run scripts in this editor.\n"
-                              "Connected clients have the same access as local extensions."));
+                               "Connected clients have the same access as local extensions."));
     layout->addWidget(label);
     auto enabled = new QCheckBox(tr("Enable MCP server"));
     enabled->setChecked(mListener.isListening());
@@ -255,14 +285,16 @@ void McpServer::showDialog(QWidget *parent)
         copy->setEnabled(mListener.isListening());
     });
     connect(copy, &QPushButton::clicked, &dialog, [this] {
-        const QJsonObject config {{QStringLiteral("mcpServers"), QJsonObject {
-            {QStringLiteral("tiled"), QJsonObject {
-                {QStringLiteral("url"), url()},
-                {QStringLiteral("headers"), QJsonObject {
-                    {QStringLiteral("Authorization"), QString::fromLatin1("Bearer " + mToken)}
-                }}
-            }}
-        }}};
+        const QJsonObject config{
+            {QStringLiteral("mcpServers"),
+             QJsonObject{
+                 {QStringLiteral("tiled"),
+                  QJsonObject{
+                      {QStringLiteral("url"), url()},
+                      {QStringLiteral("headers"),
+                       QJsonObject{
+                           {QStringLiteral("Authorization"),
+                            QString::fromLatin1("Bearer " + mToken)}}}}}}}};
         QGuiApplication::clipboard()->setText(QString::fromUtf8(QJsonDocument(config).toJson()));
     });
     auto buttons = new QDialogButtonBox(QDialogButtonBox::Close);

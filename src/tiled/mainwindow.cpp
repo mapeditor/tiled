@@ -238,7 +238,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     auto mcpAction = new QAction(tr("MCP Server..."), this);
     mUi->menuEdit->insertAction(mUi->actionPreferences, mcpAction);
     ActionManager::registerAction(mcpAction, "McpServer");
-    connect(mcpAction, &QAction::triggered, this, [this, mcpServer] { mcpServer->showDialog(this); });
+    connect(mcpAction, &QAction::triggered, this,
+            [this, mcpServer] { mcpServer->showDialog(this); });
 #endif
 
     ActionManager::registerMenu(mUi->menuFile, "File");
