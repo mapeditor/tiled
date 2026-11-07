@@ -87,6 +87,7 @@ Layer
 
     chunks,           array,            "Array of :ref:`chunks <json-chunk>` (optional). ``tilelayer`` only."
     class,            string,           "The class of the layer (since 1.9, optional)"
+    color,            string,           "The color used to display the objects in this layer (#RRGGBB or #AARRGGBB) (optional). ``objectgroup`` only."
     compression,      string,           "``zlib``, ``gzip``, ``zstd`` (since 1.3) or empty (default). ``tilelayer`` only."
     data,             array or string,  "Array of ``unsigned int`` (GIDs) or base64-encoded data. ``tilelayer`` only."
     draworder,        string,           "``topdown`` (default) or ``index``. ``objectgroup`` only."
