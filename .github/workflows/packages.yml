@@ -79,7 +79,7 @@ jobs:
       with:
         version: 6.11.2
         arch: linux_gcc_64
-        modules: "qtimageformats qtshadertools"
+        modules: "qtimageformats qtshadertools qthttpserver qtwebsockets"
         tools: 'tools_qtcreator'
         setup-python: false
         cache: true
@@ -168,6 +168,7 @@ jobs:
     needs: version
 
     strategy:
+      fail-fast: false
       matrix:
         include:
         - runs_on: ubuntu-24.04
@@ -186,6 +187,18 @@ jobs:
 
     - name: Install snapcraft
       run: sudo snap install --classic snapcraft
+
+    - name: Install arm64 Qt SDK
+      if: matrix.arch == 'arm64'
+      run: |
+        # The arm64 Qt SDK channel is unavailable; use the last working revision.
+        sudo snap install kde-qt6-core24-sdk --revision=52
+        # An explicit KF6 SDK dependency prevents the KDE extension from adding
+        # the unavailable Qt SDK channel alongside the installed revision.
+        sed -i '/^parts:/a\
+          kde-sdk:\
+            plugin: nil\
+            build-snaps: [kf6-core24-sdk]' snap/snapcraft.yaml
 
     - name: Build snap
       id: build
@@ -216,7 +229,7 @@ jobs:
           runner: macos-15
           deployment_target: "10.14"
         - qt_version: 6.11.2
-          qt_modules: "qtimageformats qtshadertools"
+          qt_modules: "qtimageformats qtshadertools qthttpserver qtwebsockets"
           version_suffix: "13+"
           architectures: x86_64,arm64
           cmake_architectures: x86_64;arm64
@@ -355,7 +368,7 @@ jobs:
         - qt_version: 6.11.2
           qt_version_major: 6
           qt_arch: win64_mingw
-          qt_modules: "qtimageformats qtshadertools"
+          qt_modules: "qtimageformats qtshadertools qthttpserver qtwebsockets"
           arch: 64
           openssl_arch: x64
           filename_suffix: 'Windows-10+_x86_64'

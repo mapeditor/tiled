@@ -30,7 +30,7 @@ jobs:
     - name: Install dependencies
       run: |
         brew update
-        brew install qbs qttools
+        brew install qbs qttools qthttpserver
         echo "$(brew --prefix qbs)/bin" >> "$GITHUB_PATH"
 
     - name: Setup Qbs

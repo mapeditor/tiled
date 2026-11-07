@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/mcp">
+        <file alias="scripting-api.d.ts">../../docs/scripting-doc/index.d.ts</file>
+    </qresource>
+</RCC>
