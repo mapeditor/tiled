@@ -4,6 +4,7 @@ Project {
     references: [
         "automapping",
         "mapreader",
+        "mcpserver",
         "properties",
         "scriptmodule",
         "staggeredrenderer",

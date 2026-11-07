@@ -1,6 +1,6 @@
 name: tiled
 adopt-info: tiled
-license: GPL-2.0
+license: GPL-3.0
 base: core24
 
 grade: stable
@@ -39,6 +39,7 @@ apps:
       # Let Qt query connectivity status through the NetworkMonitor portal
       # instead of being denied it inside the sandbox.
       - network-status
+      - network-bind
   tmxviewer:
     extensions: [kde-neon-6]
     command: usr/bin/tmxviewer

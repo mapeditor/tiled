@@ -77,6 +77,10 @@
 #include "worldpropertiesdialog.h"
 #include "zoomable.h"
 
+#ifdef TILED_MCP
+#include "mcpserver.h"
+#endif
+
 #include <QActionGroup>
 #include <QCloseEvent>
 #include <QDesktopServices>
@@ -228,6 +232,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mInstance = this;
 
     mUi->setupUi(this);
+
+#ifdef TILED_MCP
+    auto mcpServer = new McpServer(this);
+    auto mcpAction = new QAction(tr("MCP Server..."), this);
+    mUi->menuEdit->insertAction(mUi->actionPreferences, mcpAction);
+    ActionManager::registerAction(mcpAction, "McpServer");
+    connect(mcpAction, &QAction::triggered, this, [this, mcpServer] { mcpServer->showDialog(this); });
+#endif
 
     ActionManager::registerMenu(mUi->menuFile, "File");
     ActionManager::registerMenu(mUi->menuRecentFiles, "RecentFiles");

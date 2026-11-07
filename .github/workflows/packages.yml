@@ -79,7 +79,7 @@ jobs:
       with:
         version: 6.11.2
         arch: linux_gcc_64
-        modules: "qtimageformats qtshadertools"
+        modules: "qtimageformats qtshadertools qthttpserver qtwebsockets"
         tools: 'tools_qtcreator'
         setup-python: false
         cache: true
@@ -216,7 +216,7 @@ jobs:
           runner: macos-15
           deployment_target: "10.14"
         - qt_version: 6.11.2
-          qt_modules: "qtimageformats qtshadertools"
+          qt_modules: "qtimageformats qtshadertools qthttpserver qtwebsockets"
           version_suffix: "13+"
           architectures: x86_64,arm64
           cmake_architectures: x86_64;arm64
@@ -355,7 +355,7 @@ jobs:
         - qt_version: 6.11.2
           qt_version_major: 6
           qt_arch: win64_mingw
-          qt_modules: "qtimageformats qtshadertools"
+          qt_modules: "qtimageformats qtshadertools qthttpserver qtwebsockets"
           arch: 64
           openssl_arch: x64
           filename_suffix: 'Windows-10+_x86_64'

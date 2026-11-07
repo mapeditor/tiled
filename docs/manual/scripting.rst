@@ -135,6 +135,52 @@ If you want to evaluate several scripts, use ``--evaluate`` for each file. Note
 that evaluating the same JavaScript module (``.mjs``) does not work, since
 modules are loaded only once.
 
+.. _script-mcp:
+
+MCP Server
+^^^^^^^^^^
+
+Tiled can expose its scripting API to clients supporting the `Model Context
+Protocol <https://modelcontextprotocol.io/>`_ (MCP). The server is built into
+the editor when Qt HTTP Server (Qt 6.4 or later) is available at build time.
+No companion process or extension is needed.
+
+Open **Edit > MCP Server**, enable the server, and click **Copy Client
+Configuration**. Add the copied connection settings to your client's MCP
+configuration. The client must support Streamable HTTP and an
+``Authorization`` header. Keep Tiled running while using the connection.
+
+The server listens only on ``127.0.0.1``, uses an automatically assigned port,
+and requires a randomly generated bearer token. Disabling the server revokes
+the token. Restarting it creates new connection settings, which must be
+copied to the client again. The server is disabled whenever Tiled starts.
+
+Connected clients can read ``tiled://scripting-api`` for the scripting API
+reference and call ``execute_script`` with a ``code`` string. Code runs as
+a synchronous function body in Tiled's existing script engine. Use ``return``
+to produce a JSON-serializable result; no return value produces ``null``.
+For example::
+
+    return tiled.openAssets.map(asset => ({
+        fileName: asset.fileName,
+        modified: asset.modified
+    }));
+
+Scripts work with the live documents, including unsaved changes. Use
+``asset.macro("Description", function() { /* edits */ })`` to group changes
+into one Undo command. Files are saved only by explicit scripting API calls.
+Script errors are returned to the client, but do not roll back prior edits.
+As with console scripts, a long-running script blocks the editor.
+
+Only connect trusted clients: scripts have the same file and process access
+as local extensions. The bearer token grants that access; keep the copied
+configuration private. Browser origins are rejected.
+
+The endpoint implements the ``2025-11-25``, ``2025-06-18``, and ``2025-03-26``
+protocol versions using JSON responses without sessions or server-initiated
+messages. Notifications receive HTTP 202; GET and DELETE receive HTTP 405.
+
+
 API Reference
 -------------
 

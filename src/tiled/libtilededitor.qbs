@@ -11,6 +11,7 @@ DynamicLibrary {
     Depends { name: "Qt"; submodules: ["core", "widgets", "concurrent", "qml"]; versionAtLeast: "6.2.0" }
     Depends { name: "Qt.svg"; condition: qbs.targetOS.contains("macos") }
     Depends { name: "Qt.openglwidgets"; required: false }
+    Depends { name: "Qt.httpserver"; versionAtLeast: "6.4"; required: false }
     Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux") && project.dbus; required: false }
     Depends { name: "Qt.gui-private"; condition: qbs.targetOS.contains("windows") }
 
@@ -53,6 +54,9 @@ DynamicLibrary {
 
         if (project.sentry)
             defs.push("TILED_SENTRY");
+
+        if (Qt.httpserver.present)
+            defs.push("TILED_MCP");
 
         return defs;
     }
@@ -589,6 +593,12 @@ DynamicLibrary {
         "zoomable.cpp",
         "zoomable.h",
     ]
+
+    Group {
+        name: "MCP server"
+        condition: Qt.httpserver.present
+        files: ["mcpserver.cpp", "mcpserver.h", "mcp.qrc"]
+    }
 
     Group {
         name: "Resources"
